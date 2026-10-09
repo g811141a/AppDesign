@@ -1,0 +1,608 @@
+# Designrichtlinie allgemein
+
+**Version 4.0.0** · Stand 09.10.2026
+
+Allgemeine Gestaltungs- und Bedienregeln für alle iPad-Web-Apps von g811141a.
+Diese Datei liegt im Design-Repo **AppDesign** (g811141a/AppDesign); ihre Versionsnummer ist
+die Versionsnummer des Repos. Die Komponenten sind dort einmal programmiert (`v4/design.css`,
+`v4/ui.js`) und werden von allen Apps übernommen (Abschnitt 14).
+App-spezifische Regeln stehen in einer eigenen Datei je App
+(z. B. `README - Designrichtlinie Reiselogbuch.md`). Regeln zur Zusammenarbeit stehen in
+`README - Zusammenarbeit allgemein.md`.
+
+> **Vorbild Apple:** Grundlage sind die Apple Human Interface Guidelines
+> ([HIG](https://developer.apple.com/design/human-interface-guidelines)) und die [Apple Design Resources](https://developer.apple.com/design/resources/)
+> (Vorlagen mit Maßen). Bei jedem Abschnitt bzw. jeder Komponente steht der Link zur
+> passenden Apple-Richtlinie („**Apple:** …“).
+
+> **Hinweis für Claude:** Diese Regeln gelten verbindlich für jede Weiterentwicklung.
+> Bei jeder Design-Änderung wird diese Datei aktualisiert und ihre Versionsnummer erhöht
+> (siehe Abschnitt 12 und Versionsgeschichte). Wiederkehrende Elemente sind in
+> Abschnitt 15 „Komponenten“ einmal definiert und werden überall genau so verwendet.
+
+---
+
+## 1. Grundprinzipien
+
+- Zielgerät iPad (Safari, zum Home-Bildschirm hinzugefügt, PWA, offline nutzbar);
+  eine Person nutzt die App, kein Login, kein Teilen.
+- Daten bleiben lokal (localStorage); beim Start fordert die App **dauerhaften Speicher** an
+  (`navigator.storage.persist()`), damit Safari die Daten nicht von selbst löscht; Sicherung über
+  eine Backup-Datei.
+- Oberfläche Deutsch, schlicht und klar.
+- Eine HTML-Datei (HTML + CSS + JS), dazu `sw.js`, `manifest.json`, Icons 180/512 px.
+- Keine Hilfeseite – die Oberfläche ist selbsterklärend; Hinweise bei Bedarf hinter einem
+  Info-Icon.
+- Alle Aktionen sind echte Schaltflächen (kein reiner Text als Link).
+- Keine Systemfenster (alert/confirm mit „OK“/„Close“) – Abfragen als **Sprechblase** an der
+  angetippten Schaltfläche, reine Meldungen in einem kleinen Fenster (Abschnitt 15).
+- **Apple-Look** (iPadOS): Hintergrund Hellgrau, Kästen weiß ohne Rand, schwebende Schaltflächen.
+- **Aufbau wie Apple-Apps:** links eine **Seitenleiste** mit der zentralen Liste, rechts der
+  Inhalt mit einer **Kopfzeile** (Titel in der Mitte, rechts eine Kapsel mit den wichtigsten
+  Aktionen; Weiteres im **Mehr-Menü** ellipsis).
+- Bewusst verworfen: eigene Kennzeichnung von Pflichtfeldern; harte, schmale Schatten;
+  Glas-Leiste (schlechter lesbar).
+
+## 2. Farben
+
+**Apple:** [HIG – Color](https://developer.apple.com/design/human-interface-guidelines/color) · [HIG – Dark Mode](https://developer.apple.com/design/human-interface-guidelines/dark-mode)
+
+CSS-Variablen auf `:root`; Dunkelmodus über `data-theme="dark"`. Helligkeitsstufen wie bei
+Apple: Hintergrund → Kasten/Fenster → Schaltfläche (im Dunkelmodus Schwarz → Dunkelgrau →
+heller).
+
+| Variable | Hell | Dunkel | Verwendung |
+|---|---|---|---|
+| `--bg` | `#f2f2f7` | `#000000` | Seitenhintergrund, Kopfzeile |
+| `--card` | `#ffffff` | `#1c1c1e` | Kästen, Tabelle, Eingabefelder (ohne Rand), Seitenleiste, Menüs (dunkel `#2c2c2e`) |
+| `--dlg-bg` / `--dlg-card` / `--dlg-field` | `#f2f2f7` / `#ffffff` / `#ffffff` | `#1c1c1e` / `#2c2c2e` / `#1c1c1e` | Fenster, Kästen im Fenster, Felder im Fenster |
+| `--btn` | `#f9f9f9` | `#3a3a3c` | Fläche der Schaltflächen und Suchfelder |
+| `--btn-rim` | `#ffffff` | `rgba(255,255,255,.16)` | Lichtkante (Haarlinie 0,5 px) |
+| `--float` | `0 3px 28px rgba(0,0,0,.16)` | `0 3px 28px rgba(0,0,0,.7)` | Schatten „schwebend“ (Apple Mail gemessen) |
+| `--ink` | `#1c1c1e` | `#ffffff` | Text |
+| `--muted` | `#6e6e73` | `#98989d` | dezente Texte, Hinweise (Kontrast ≥ 4,5 : 1) |
+| `--line` | `#d1d1d6` | `#38383a` | Trennlinien (Haarlinie) |
+| `--field-line` | `#c7c7cc` | `#48484a` | Haarlinie um Eingabefelder |
+| `--accent` | `#007aff` | `#0a84ff` | **Akzentfarbe Apple-Blau:** Hauptaktion, Auswahl, Schritt-Nummern, Links, Rahmen und Markierungen |
+| `--accent-ink` | `#ffffff` | `#ffffff` | Text auf Akzentfarbe |
+| `--sel-bg` | `#dcebff` | `#10335c` | Fläche eingeschalteter und gedrückter Schaltflächen, Options-Kapseln |
+| `--sw-on` / `--sw-off` | `#34c759` / `#e9e9eb` | `#30d158` / `#39393d` | Schalter ein (Apple-Grün) / aus |
+| `--glow-accent` | `0 2px 4px rgba(0,0,0,.10), 0 5px 18px rgba(0,122,255,.50)` | `0 2px 4px rgba(0,0,0,.5), 0 5px 18px rgba(10,132,255,.50)` | leuchtender Schein der Hauptaktion und eingeschalteter Elemente |
+| `--table-shadow` | `0 1px 3px rgba(0,0,0,.12), 0 8px 24px rgba(0,0,0,.12)` | zusätzlich `0 0 0 .5px rgba(255,255,255,.12)`, Schatten `.6` | Schatten um Tabellen |
+| `--danger` | `#b3261e` | `#ff6961` | Fehlermeldungen, Icon ban, roter Feldrahmen |
+| `--danger-fill` | `#d70015` | `#d70015` | Lösch-Schaltfläche (gefüllt; dunkel gleiches Rot, damit Weiß lesbar bleibt) |
+| `--glow-danger` | `0 2px 4px rgba(0,0,0,.12), 0 5px 14px rgba(215,0,21,.35)` | `0 2px 4px rgba(0,0,0,.5), 0 5px 16px rgba(255,69,58,.35)` | Schatten der Lösch-Schaltfläche |
+| `--warn` | `#c07a12` | `#e2a64b` | Markierungen („fehlt“) |
+| `--focus` | `#fff1c2` | `#45391a` | markierte Zeile (gelb) |
+| `--th-bg` / `--th-line` | `#e5e5ea` / `#c7c7cc` | `#2c2c2e` / `#48484a` | Tabellen-Kopfzeile und ihre Ränder |
+| `--zebra` | `#f7f7f9` | `#161618` | jede 2. sichtbare Tabellenzeile |
+| `--mark` / `--mark-cur` | `#ffe45c` / `#ffc46b` | `#8a6d00` / `#e08a1e` (schwarze Schrift) | Suchtreffer / Treffer im Fokus |
+
+- **Darstellung wie Apple:** Die App folgt automatisch der Hell/Dunkel-Einstellung des iPads
+  (Voreinstellung ‚Automatisch‘, wechselt sofort mit). Im Mehr-Menü lässt sie sich übersteuern:
+  Untermenü ‚Darstellung ›‘ (sun-moon, rechts grau der aktuelle Wert) mit Automatisch · Hell ·
+  Dunkel (Häkchen). Gespeichert in `settings.appearance` (`auto` | `light` | `dark`).
+  [HIG – Dark Mode](https://developer.apple.com/design/human-interface-guidelines/dark-mode)
+
+## 3. Schrift und Abstände
+
+**Apple:** [HIG – Typography](https://developer.apple.com/design/human-interface-guidelines/typography) · [HIG – Layout](https://developer.apple.com/design/human-interface-guidelines/layout)
+
+- Systemschrift `-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`,
+  17 px, Zeilenhöhe 1,45.
+- h1 28 px, h2 20 px, Fenstertitel 19 px zentriert; Hinweise 14 px in `--muted`.
+- Seitenrand 16 px bzw. iPad-Safe-Area.
+- **Abstand zwischen Schaltflächen 12 px** (wie bei Apple), in Leisten, Reihen und Listen.
+- Radien: Schaltflächen und Suchfelder Kapsel (22 px), Icon-Schaltflächen rund,
+  Listeneinträge und Kästen 14 px, Eingabefelder 10 px, Tabelle 12 px, Fenster 18 px.
+- Trennlinien und Feldränder als Haarlinie (0,5 px); Kästen und Tabelle ohne Rand.
+- Keine klassischen Checkboxen: Ein/Aus-Einstellungen als **Schalter**, Optionen beim Erfassen als **Options-Kapsel** (Abschnitt 15).
+- **Text steht in Schaltflächen in der Höhe genau mittig zum Icon** (Zeilenhöhe 20 px wie das Icon).
+- **Tabellenüberschriften** 17 px halbfett (600), gleich groß wie der Text der Zellen (Apple-Textstil „Headline“).
+
+## 4. Schaltflächen
+
+**Apple:** [HIG – Buttons](https://developer.apple.com/design/human-interface-guidelines/buttons)
+
+- **Alle Schaltflächen 44 px hoch** (auch lange Texte, Vorschläge, Auswahl-Chips).
+  Ausnahmen: mehrzeilige Listeneinträge (z. B. umbrochene Titel) und Textkästen.
+- **Reine Icon-, Wetter- und Smiley-Schaltflächen quadratisch 44 × 44 px**;
+  Emoji 24 px, Icon 20 px.
+- **Alle Schaltflächen und Suchfelder schweben** (Komponente „Schwebende Schaltfläche“):
+  Fläche `--btn`, Lichtkante `--btn-rim` (0,5 px), Schatten `--float`, Kapselform;
+  Icon-Schaltflächen rund. Text-Schaltflächen: Icon links, dann Text (Abstand 6 px).
+- **Mehrere Schaltflächen nebeneinander stehen in einer Kapsel** (Komponente Kapsel).
+- **Farben von Schaltflächen** – jede Farbe hat genau eine Bedeutung:
+  - **Blau gefüllt = Hauptaktion** – nur **in Fenstern**, höchstens eine je Fenster (z. B.
+    Häkchen nach einer Änderung, Teilen in der Vorschau, Backup sichern in der Erinnerung):
+    `--accent`, weiße Schrift, Lichtkante, Schatten `--glow-accent`. **Menüs und die Kapsel der
+    Kopfzeile werden nicht eingefärbt.**
+  - **Blau getönt mit Haarlinie = eingeschaltet** (Umschalt-Schaltflächen wie Wetter,
+    Reisemittel, Mikrofon während der Aufnahme): Fläche `--sel-bg`, Haarlinie (0,5 px)
+    `--accent`, Schrift normal, Schatten `--glow-accent` (`aria-pressed="true"`). Die Breite
+    ändert sich beim Einschalten nicht.
+  - **Blau getönt = gedrückt:** Die Schaltfläche, von der ein offenes Menü, eine Sprechblase
+    oder ein Fenster kommt, ist so lange `--sel-bg` mit Haarlinie `--accent`, wie es offen ist –
+    man sieht, woher man kommt (Klasse `.on`). Das gilt auch für Folgeschritte (Teilen-Menü,
+  Dateiauswahl, Meldung danach): die Schaltfläche bleibt blau, bis alles abgeschlossen ist.
+  - **Grundsatz: Gewähltes bleibt eingefärbt, solange es sichtbar ist.** Ein angetippter Punkt
+    oder eine Schaltfläche bleibt blau getönt, solange das, was er geöffnet hat, offen ist und er
+    selbst sichtbar bleibt – auch Listenzeilen (Eintrag der Seitenleiste, z. B. über das
+    Kontextmenü → Einstellungen), Tabellenzeilen (Tag, beim Blättern wandert die Markierung mit)
+    und Kästen (Fazit). Technisch: `setOpener(selector)`.
+    [HIG – Lists and tables](https://developer.apple.com/design/human-interface-guidelines/lists-and-tables)
+  - **Apple-Grün** nur für eingeschaltete **Schalter**.
+  - **Rot gefüllt = Löschen/Verwerfen** (endgültige Aktionen, z. B. in Sprechblasen):
+    `--danger-fill`, weiße Schrift, Schatten `--glow-danger`. In Menüs steht
+    „… löschen“ als roter Text mit rotem Icon.
+  - Alle übrigen Schaltflächen neutral (schwebend).
+- „Abbrechen“ (in Sprechblasen): neutral, ohne Icon, normale Schrift.
+- Gesperrte Schaltflächen: ausgegraut (Deckkraft 40 %).
+- Keine Hover-Farbe auf dem iPad – Hover nur in `@media (hover: hover)`.
+- Schaltflächen unten rechts (z. B. nach oben / ans Ende): runde schwebende
+  Icon-Schaltflächen; ausgeblendet, wenn es nichts zu scrollen gibt.
+
+## 5. Icons
+
+**Apple:** [HIG – Icons](https://developer.apple.com/design/human-interface-guidelines/icons) · [HIG – SF Symbols](https://developer.apple.com/design/human-interface-guidelines/sf-symbols) (im Web nicht erlaubt, daher Lucide)
+
+- Schaltflächen-Icons aus **Lucide** (Liniengrafiken, Strichstärke 2, `currentColor`),
+  als SVG eingebettet (offline). SF Symbols dürfen im Web nicht verwendet werden.
+- **Inhalte bleiben Emojis** (z. B. Smileys, Wetter, Spaltenköpfe).
+- Allgemeine Zuordnung:
+
+| Aktion | Lucide-Icon | Darstellung |
+|---|---|---|
+| Fertig (Fenster) | `check` | rund, nur Icon; grau, nach einer Änderung weiß auf Blau |
+| Abbrechen / Schließen (Fenster) | `x` | rund, nur Icon, links oben |
+| Seitenleiste aus-/einblenden | `panel-left` | rund, nur Icon |
+| Mehr-Menü | `ellipsis` | nur Icon, in einer Kapsel |
+| Einstellungen | `settings` | im Mehr-Menü |
+| Neu anlegen | `plus` | nur Icon, in einer Kapsel |
+| Teilen / Ausgabe | `share` | **immer nur Icon, nie mit Text** |
+| Suchen | `search` | in der Kapsel und im Suchfeld |
+| Voriger / nächster Treffer | `chevron-up` / `chevron-down` | nur Icon, als Kapsel |
+| Zurück / Weiter (Blättern) | `chevron-left` / `chevron-right` | nur Icon, als Kapsel |
+| Löschen / Entfernen / Verwerfen | `trash` | weiß auf Rot (Sprechblase), rot (Menü) |
+| Weiter bearbeiten | `pencil` | Icon + Text |
+| Backup sichern / laden | `save` / `folder-open` | Icon + Text |
+| Vorschau | `eye` | Icon + Text |
+| HTML / PDF | `file-code` / `file-text` | Icon + Text |
+| Info / Hinweis ein-/ausblenden | `info` | nur Icon |
+| Darstellung | `sun-moon` | im Mehr-Menü, Untermenü Automatisch · Hell · Dunkel |
+| Nach oben / Ans Ende | `arrow-up-to-line` / `arrow-down-to-line` | nur Icon |
+| Diktieren | `mic` | nur Icon, pulsiert während der Aufnahme |
+| Zurücksetzen | `rotate-ccw` | nur Icon, gedämpft |
+
+- In Menüs stehen die Icons **vor** dem Text.
+
+## 6. Begriffe
+
+- Fenster haben **keine Fußleiste mehr**: links oben ein rundes x, rechts oben ein rundes
+  Häkchen (Komponente Fenster-Kopfzeile).
+- x = Fenster schließen; wurde etwas geändert, fragt eine Sprechblase „Änderungen
+  verwerfen“ / „Weiter bearbeiten“ (die Eingaben bleiben dann erhalten). So macht es auch
+  Apple (z. B. Kontakte).
+- Häkchen = übernehmen und schließen; ohne Änderung schließt es einfach.
+- Bestätigungen immer mit dem Verb der Aktion: „Löschen“, „Entfernen“, „Zurücksetzen“,
+  „Ersetzen“, „Änderungen verwerfen“.
+- Menüpunkt und Fenster heißen gleich (z. B. „Einstellungen“).
+- Systembeschriftungen (z. B. „Reset“ der iPad-Datumsauswahl) bleiben.
+- **Anführungszeichen:** In den Texten der Apps immer **einfache** Anführungszeichen ‚…‘
+  (z. B. ‚In Dateien sichern‘, Spalte ‚Wie war was?‘), **keine doppelten** „…“.
+
+## 7. Fenster (Dialoge)
+
+**Apple:** [HIG – Sheets](https://developer.apple.com/design/human-interface-guidelines/sheets) · [HIG – Modality](https://developer.apple.com/design/human-interface-guidelines/modality)
+
+- Aufbau: Kopfzeile (Komponente Fenster-Kopfzeile) · Inhalt (scrollbar).
+- Breite passt sich dem Inhalt an: höchstens 90 % der Bildschirmbreite, Mindestbreite
+  480 px. Erfassungs- und Vorschaufenster fast bildschirmbreit (bis 1100 px).
+- Hintergrund `--dlg-bg`, Kästen darin `--dlg-card`, Radius 18 px, Schatten, abgedunkelter
+  Hintergrund dahinter.
+- Escape wirkt wie das x.
+- **Bei sichtbarer Tastatur** passt sich jedes Fenster dem sichtbaren Bereich über der Tastatur an:
+  die Kopfzeile bleibt immer sichtbar, nur der Inhalt scrollt; das angetippte Feld wird in den
+  sichtbaren Teil gerollt. Das gilt ebenso für die Kopfzeile (inkl. Suchzeile) der Hauptansicht.
+- Gibt es noch keinen Eintrag, öffnet sich „Neues …“ einmal von selbst; mit x bleibt die
+  leere Seite mit grauem Hinweis „Noch kein … angelegt.“.
+- **Erfassungsfenster** (Einträge erfassen): fast bildschirmbreit; Kopfzeile x · Titel mit
+  Zusatzzeile „Automatisch gespeichert um hh:mm“ · Kapsel [chevron-left | chevron-right] zum
+  Blättern · Häkchen; automatisches Speichern (Abschnitt 8).
+- **Vorschaufenster**: fast bildschirmbreit, Inhalt immer hell und genau wie die
+  ausgegebene Datei; Kopfzeile x · „Vorschau“ mit Dateiname als Zusatzzeile · Kapsel
+  [PDF | share blau gefüllt]; nach Teilen bzw. PDF folgt das Ergebnisfenster mit ggf.
+  Backup-Erinnerung.
+- **Meldung** (ohne Entscheidung, z. B. Fehler): kleines Fenster, x links oben, Titel,
+  Text zentriert.
+- Technisch: ein Dialog, dessen Inhalt ausgetauscht wird (nicht schließen und neu öffnen);
+  ein zweiter Dialog nur für Meldungen.
+
+## 8. Eingaben, Pflichtfelder und Fehlermeldungen
+
+**Apple:** [HIG – Text fields](https://developer.apple.com/design/human-interface-guidelines/text-fields) · [HIG – Pickers](https://developer.apple.com/design/human-interface-guidelines/pickers)
+
+- Eingaben in nummerierten Schritten (blaue runde Nummer 26 px), jeder Schritt als
+  Kasten ohne Rand; Nummern laufen fortlaufend über die sichtbaren Schritte.
+- Options-Kapseln eines Schritts rechts in dessen Kopfzeile; zusammengehörige Einstellungen in
+  einem gemeinsamen Kasten mit Überschrift (z. B. „Konfiguration …“).
+- Eingabefelder schlicht; Formatierung erst in Anzeige und Ausgabe.
+- **Pflichtfelder werden nicht gekennzeichnet** (kein Sternchen, kein „erforderlich“,
+  auch kein „optional“ bei anderen Feldern).
+- **Fehlermeldungen in Rot direkt unter dem betroffenen Feld**, das Feld bekommt einen
+  roten Rahmen.
+- Beim Öffnen eines Fensters erscheint keine Meldung. Eine Meldung erscheint erst nach
+  einer Eingabe: Textfeld leer verlassen oder geleert, Datum geändert, letzte Auswahl
+  abgewählt.
+- Das Häkchen ist grau, bis etwas geändert wurde, dann blau. **Ein Tippen auf das Häkchen
+  zeigt alle fehlenden Angaben** (falls etwas fehlt) und scrollt zur ersten.
+- **Textfelder wachsen mit dem Inhalt**; man muss nie innerhalb eines Feldes scrollen.
+- **Datumsfelder sind so breit wie das Datum** und haben rechts ein eigenes Kalender-Icon
+  (Lucide `calendar`, auf allen Geräten gleich, kurzer Abstand zum Datum); zwei zusammengehörige
+  Daten mit grauer Beschriftung „Von“ · „Bis“ in einer Zeile.
+- **Beträge** wie bei Apple (Region Deutschland): immer zwei Nachkommastellen, Tausenderpunkt,
+  Währung **hinter** dem Betrag mit Leerzeichen – „4.850,00 €“. Im Eingabefeld steht das €
+  rechts neben dem Feld; fehlen beim Verlassen die Nachkommastellen, ergänzt die App „,00“.
+  **Betragsfelder sind immer rechtsbündig** und dynamisch breit: mindestens so breit, dass
+  „100.000,00“ vollständig passt; längere Beträge lassen das Feld beim Tippen mitwachsen.
+- **Smiley-Leisten** (Schnellauswahl über einem Textfeld): nur einzeilig, mit dem Finger
+  nach links/rechts wischen, Verlauf am Rand als Hinweis auf weitere Smileys,
+  Zurücksetzen (rotate-ccw) fest rechts daneben. Sortiert nach Häufigkeit (meistbenutzte
+  vorne), nie benutzte in Standardreihenfolge dahinter. Langes Drücken entfernt einen
+  Smiley (Sprechblase „Entfernen“, rot); wird er wieder verwendet, kommt er zurück.
+  Zurücksetzen stellt die Standard-Smileys her und setzt die Zähler auf null (Sprechblase
+  „Zurücksetzen“, rot). Ein angetippter Smiley wird angehängt, wenn der Cursor in einer leeren Zeile
+  oder hinter Smileys steht, sonst beginnt eine neue Zeile.
+- Diktieren über eine mic-Schaltfläche am Textfeld (sonst Hinweis auf die Mikrofon-Taste).
+- Automatisches Speichern alle 10 Sekunden in Erfassungsfenstern; „Änderungen verwerfen“
+  (über x) stellt den Zustand beim Öffnen wieder her.
+- Zahlen- und Betragsfelder rechtsbündig, Tausenderpunkt schon beim Tippen.
+
+## 9. Tabellen (App, HTML und PDF)
+
+**Apple:** [HIG – Lists and tables](https://developer.apple.com/design/human-interface-guidelines/lists-and-tables)
+
+- Kopfzeile grau (`--th-bg`) mit Rändern `--th-line`; die Tabelle selbst ohne äußeren Rand,
+  mit Schatten `--table-shadow`, damit die seitlichen Grenzen gut zu sehen sind.
+- Jede 2. sichtbare Zeile heller (Zebra); gezählt werden nur sichtbare Zeilen; eine
+  markierte Zeile bleibt gelb.
+- Trennlinien zwischen allen Spalten.
+- Tabellenkopf bleibt beim Scrollen direkt unter der Kopfzeile stehen; Schrift 17 px halbfett wie die Zellen.
+- Nur zwischen ganzen Wörtern umbrechen (die Spalte wird so breit wie das längste Wort).
+- Spaltenbreiten passen sich dem Inhalt an; kompakte Tabellen nur so breit wie nötig;
+  Zahlenspalten rechtsbündig (Überschrift und Werte).
+- Hängender Einzug: Folgezeilen beginnen unter dem Text, nicht unter Aufzählungszeichen
+  oder Emoji.
+- Links ohne Unterstreichung.
+- Statistiken bleiben schlichte Listen.
+
+## 10. Ausgabe, Teilen und Meldungen
+
+- Ausgabe-Inhalt unter einer eigenen CSS-Klasse, damit er nicht in die App durchschlägt;
+  immer hell (weiß, schwarzer Text), auch in der Vorschau.
+- Vorschau vor dem Sichern im App-Fenster; erhöht keinen Zähler.
+- Speichern immer über das Teilen-Menü („In Dateien sichern“); PDF über das
+  Drucken-Menü. Die App meldet ehrlich, dass das Menü geöffnet bzw. abgebrochen wurde.
+- **Ausgabe-Design** (HTML und PDF): Systemschrift 11 pt, h1 20 pt, h2 14 pt, schwarzer
+  Text auf Weiß, Links `#1a5fb4` ohne Unterstreichung, Tabellen wie in der App
+  (Kopf `#d9d9d9`, Ränder `#a5a5a5`, Zebra `#f5f5f5`), Zeilen nicht über Seitenumbrüche
+  teilen. Dezente letzte Zeile (9 pt, grau): „Ausgabe V003 erstellt am TT.MM.JJJJ um
+  hh:mm“. PDF im Hochformat, weißer Seitenhintergrund, Dateiname als Seitentitel.
+- **Dateinamen-Muster**:
+  - Ausgabe: „<App> <Titel> JJJJ.MM.TT-JJJJ.MM.TT V001“ – fortlaufender Zähler je Eintrag
+    (gemeinsam für HTML und PDF, im Backup enthalten), nie zwei Leerzeichen hintereinander.
+  - Backup: „Ω Backup <App> JJJJ.MM.TT hh.mm.json“ (ohne Zähler).
+- Datumsformat in Texten TT.MM.JJJJ, in Dateinamen JJJJ.MM.TT, Uhrzeit hh:mm
+  (im Dateinamen hh.mm).
+- Sicherheitsabfrage (Sprechblase) vor jeder Lösch-, Ersetz- oder Rücksetz-Aktion.
+- **Backup einmal am Tag:** Wurde heute noch keines erstellt, steht unten in der Seitenleiste
+  dezent „Letztes Backup erstellt am …“ (bzw. „Noch kein Backup erstellt.“) mit der
+  Schaltfläche „Backup erstellen“; nach einer Ausgabe erinnert das Ergebnisfenster daran. Nur
+  ein abgeschlossenes Teilen-Menü zählt als Backup.
+
+## 11. Versionen und Aktualisierung
+
+- **Versionsnummer dreistufig Hauptversion.Nebenversion.Korrektur** (z. B. 1.2.1):
+  - Hauptversion: grundlegende Änderung (Aufbau, Bedienkonzept, Datenstruktur).
+  - Nebenversion: neue Funktion oder sichtbare Verbesserung.
+  - Korrektur: Fehlerbehebung ohne neue Funktion.
+  - Steigt eine Stufe, beginnen die folgenden wieder bei 0.
+- Jede App hat eine `CHANGELOG.md` (Version, Datum, Art, Inhalt).
+- Versionsnummer, Erstellungszeitpunkt und Cache-Name des Service Workers bei jeder
+  Version erhöhen.
+- Service Worker „network first“ mit `cache: 'no-cache'`: Beim Start wird immer bei
+  GitHub nachgefragt, neue Versionen sind nach einem Neustart sofort da; offline läuft
+  die gespeicherte Version.
+
+## 12. Designrichtlinien pflegen
+
+- Diese Datei und die App-spezifischen Richtlinien werden **bei jeder Design-Änderung**
+  aktualisiert, gemeinsam mit der App-Version.
+- **Bei jeder Design-Änderung wird geklärt, ob sie eine allgemeine Regel ist (diese
+  Datei) oder nur für eine App gilt** (App-Richtlinie); Claude fragt nach und nennt dabei
+  seine Einschätzung als Vorschlag.
+- App-Richtlinien verweisen eingangs auf diese Datei und enthalten **keine
+  Wiederholungen**, nur **Abweichungen** (bewusst anders als hier) und **Ausprägungen**
+  (konkrete Ausgestaltung einer allgemeinen Regel für die App), jeweils so gekennzeichnet.
+- Eigene dreistufige Versionsnummer je Datei (Bedeutung wie in Abschnitt 11, bezogen auf
+  Regeln: neue Regel = Nebenversion, Präzisierung = Korrektur, grundlegend neue
+  Gestaltung = Hauptversion).
+- Wiederkehrende Elemente werden als **Komponente** (Abschnitt 15) definiert; Apps und
+  App-Richtlinien verweisen nur noch auf den Namen der Komponente.
+- In PROMPT.md und CHANGELOG.md jeder App steht, welchen Richtlinien-Versionen sie folgt,
+  z. B. „Reiselogbuch 1.0.0 · Designrichtlinie allgemein 1.0.0 · Designrichtlinie
+  Reiselogbuch 1.0.0“.
+
+## 13. iPad-Erfahrungen (technisch)
+
+- Safe-Area beachten (`env(safe-area-inset-*)`, `viewport-fit=cover`).
+- Speichern über `navigator.share` mit Dateien; Download-Links funktionieren in der
+  Home-Bildschirm-App nicht zuverlässig.
+- Long-Press-Menü und Textauswahl auf Emoji-Schaltflächen abschalten
+  (`-webkit-touch-callout: none`, `user-select: none`).
+- Beim Drucken nur den Ausgabe-Inhalt zeigen: Seitenleiste, Fenster und deren Abstände
+  (z. B. `padding-left` für die Seitenleiste) ausblenden bzw. auf 0 setzen.
+- Bei offener Tastatur verschiebt Safari den sichtbaren Bereich: fixierte Kopfzeilen über
+  `visualViewport.offsetTop` nachführen.
+- Elemente mit `display` im CSS brauchen eine eigene `[hidden]`-Regel, sonst bleiben sie
+  sichtbar.
+- Emojis mit und ohne Variantenzeichen (z. B. ☹️/☹) als gleich behandeln.
+- Nach Updates die App einmal ganz schließen und neu öffnen.
+
+## 14. Design-Repo AppDesign
+
+- **Inhalt:** diese Richtlinie, `README - Zusammenarbeit allgemein.md`, `v4/design.css`
+  (Farben, Schrift, Schaltflächen, Suchfeld, Kapsel, Eingabe- und Datumsfelder, Kopfzeile,
+  Seitenleiste, Menü, Sprechblase, schwebende Schaltflächen, Fenster, Kasten, Auswahl-Kapsel,
+  Schalter, Options-Kapsel), `v4/ui.js` (Icons, Menüs mit Untermenü, Sprechblase, gedrückte
+  Schaltflächen, Meldung, Fenster, Darstellung, Auswahl-Kapsel, Tastatur/sichtbarer Bereich,
+  Beträge), `apple-referenz/` (Vergleichsbilder), `tests/hig.mjs` (HIG-Prüfung) und
+  `vorlage/index.html` (Startpunkt für neue Apps).
+- **Einbindung (versioniert):** Jede App lädt die Bausteine von GitHub Pages aus dem Ordner der
+  Hauptversion: `<link rel="stylesheet" href="../AppDesign/v4/design.css">` im `<head>` vor dem
+  eigenen `<style>`, `<script src="../AppDesign/v4/ui.js"></script>` am Ende von `<body>` vor dem
+  Skript der App. Der Service Worker der App nimmt beide Dateien in seinen Cache auf (offline).
+- **Versionen:** Neben- und Korrekturversionen (4.x.y) ändern `v4/` rückwärtsverträglich und
+  gelten sofort für alle Apps. Eine Hauptversion (5.0.0) bekommt einen neuen Ordner `v5/`; jede
+  App wird bewusst umgestellt. Reihenfolge beim Veröffentlichen: **erst AppDesign, dann die App.**
+- **Schnittstelle von ui.js:** Die App stellt bereit: `<dialog id="dlg">`, `<dialog id="msg">`,
+  `db.settings.appearance` (`auto` | `light` | `dark`), `save()`, `render()`; optional
+  `onDialogOpen()` (wird bei jedem `openDialog` aufgerufen).
+- **Prüfen:** Jede App hat ein eigenes Prüfskript, das ihre Ansichten durchgeht und mit
+  `AppDesign/tests/hig.mjs` misst (AppDesign liegt beim Testen neben dem App-Repo).
+- **Geplant:** Startseite g811141a.github.io mit allen Apps.
+
+## 15. Komponenten
+
+Jede Komponente ist hier einmal beschrieben (Zweck · Aufbau · Maße · Aussehen · Zustände ·
+Verhalten · technischer Name). In AppDesign ist jede Komponente einmal programmiert
+(`v4/design.css`, `v4/ui.js`) und wird von allen Apps übernommen.
+
+### 15.1 Schwebende Schaltfläche
+- **Apple:** [HIG – Buttons](https://developer.apple.com/design/human-interface-guidelines/buttons)
+- **Zweck:** jede Aktion. **Technisch:** `button` (Hauptaktion `.primary`, Löschen
+  `.danger`, eingeschaltet `aria-pressed="true"`, nur Icon `.iconbtn`).
+- **Aufbau:** Icon (20 px) links, dann Text; oder nur Icon bzw. Emoji (24 px).
+- **Maße:** 44 px hoch, Kapsel (Radius 22 px); Icon-/Emoji-Schaltflächen 44 × 44 rund;
+  Abstand zu Nachbarn 12 px.
+- **Aussehen/Zustände:** neutral `--btn` + Lichtkante + `--float`; Hauptaktion,
+  eingeschaltet und Löschen siehe Abschnitt 4; gesperrt 40 % Deckkraft.
+
+### 15.2 Suchfeld
+- **Apple:** [HIG – Search fields](https://developer.apple.com/design/human-interface-guidelines/search-fields)
+- **Zweck:** Suchen in der aktuellen Ansicht. **Technisch:** `.searchbox`, `.navgrp`.
+- **Aufbau:** Lupe (search) · Eingabe „Suchen“ · Trefferanzeige · x-Schaltfläche;
+  rechts daneben Kapsel-Gruppe chevron-up / chevron-down.
+- **Maße:** 44 px hoch, Kapsel; in der zweiten Zeile der Kopfzeile über die volle Breite,
+  Treffer-Navigation immer am rechten Rand; Abstand 12 px.
+- **Aussehen:** wie die schwebende Schaltfläche; Lupe, Trefferanzeige grau; x als grauer
+  Kreis mit weißem Kreuz.
+- **Zustände:**
+  - leer: nur Lupe und Platzhalter, Pfeile ausgegraut
+  - mit Treffern: rechtsbündig „3 von 57“ (ohne das Wort „Treffer“), x; Navigation
+    sichtbar; am ersten Treffer chevron-up ausgegraut, am letzten chevron-down
+  - ohne Treffer: rechtsbündig „0“, beide Pfeile ausgegraut
+- **Verhalten:** Suche beim Tippen (Markierung sofort); jede Markierung ist ein Treffer; zum
+  ersten wird erst nach einer kurzen Tipp-Pause (ca. 0,5 s) gesprungen. Der Treffer steht dann
+  **direkt unter der Suchzeile** (und dem Tabellenkopf), nicht in der Bildmitte. Kopf- und
+  Suchzeile bleiben fest oben, auch bei offener Tastatur. Treffer gelb (`--mark`), Treffer im Fokus hellorange (`--mark-cur`) und
+  unter die Suchzeile gescrollt. Pfeile und Eingabetaste springen weiter, ohne Umlauf vom letzten
+  zum ersten. x löscht die Eingabe, der Cursor bleibt im Feld. Gefiltert wird auf Einträge
+  mit Treffern.
+- **Fokus:** kein blauer Fokus-Rahmen (wie Apple) – der Cursor zeigt, dass man tippen kann; beim
+  Blättern mit ⌃ ⌄ geht die Tastatur zu.
+
+### 15.3 Kopfzeile
+- **Apple:** [HIG – Toolbars](https://developer.apple.com/design/human-interface-guidelines/toolbars)
+- **Zweck:** oberste Zeile des Inhalts. **Technisch:** `.nb`.
+- **Aufbau:** links panel-left (nur wenn die Seitenleiste ausgeblendet ist) · Titel in der
+  Mitte (17 px, fett) · rechts eine Kapsel mit den wichtigsten Aktionen, zuletzt ellipsis
+  (Mehr-Menü). Suche: search in der Kapsel blendet eine **zweite Zeile** mit dem Suchfeld
+  über die volle Breite ein, Treffer-Navigation rechts.
+- **Verhalten:** bleibt beim Scrollen oben stehen (Hintergrund `--bg`, beim Scrollen
+  Haarlinie unten); keine Glas-Leiste.
+- **Filter** (z. B. „Alle / Nur erfasste“): beim Öffnen eines Eintrags und beim Start immer auf
+  „Alle“.
+
+### 15.4 Seitenleiste
+- **Apple:** [HIG – Sidebars](https://developer.apple.com/design/human-interface-guidelines/sidebars)
+- **Zweck:** zentrale Liste der App. **Technisch:** `#side`.
+- **Aufbau:** Kopf: Überschrift (20 px, fett, linksbündig) · Kapsel [plus | ellipsis] ·
+  runde Schaltfläche panel-left (ausblenden). Darunter die Einträge: Titel fett, darunter
+  grau Zeitraum · Status; gewählter Eintrag blau gefüllt (wie eine Hauptaktion). Unten
+  dezente Hinweise (z. B. Backup).
+- **Maße und Aussehen:** schwebend wie in Safari – eigenes Rechteck mit 10 px Abstand oben und
+  links und 4 px unten (der Schatten endet fast am unteren Bildschirmrand), Radius 22 px, Lichtkante `--btn-rim` und Schatten `--float` wie die
+  Schaltflächen; so breit wie Kopf bzw. längster Titel, 340–420 px; Hintergrund `--card`.
+- **Verhalten:** beim Start immer eingeblendet (quer fest links, hoch über den Inhalt gelegt) mit
+  dem aktuellen Eintrag geöffnet; quer fest links neben dem Inhalt, mit panel-left aus- und
+  einblendbar (bis zum nächsten Start); im Hochformat über den Inhalt gelegt (abgedunkelt dahinter), schließt sich
+  nach der Auswahl.
+- **Mehr-Menü der Seitenleiste:** Backup erstellen (darunter grau „Letztes Backup erstellt am …“) ·
+  Backup laden · durchgehender Strich · darunter ohne Leerzeilen grau die Versionszeile
+  „<App> · Version X.Y.Z · erstellt am …“ und ein verständlicher Satz zum Speicher: „Die Daten
+  bleiben in Safari gespeichert, solange <App> auf dem Home-Bildschirm nicht entfernt wird.“ bzw.
+  (nicht dauerhaft) „Safari kann die Daten bei Speichermangel löschen – bitte regelmäßig ein
+  Backup erstellen.“
+- **Kontextmenü:** Langes Drücken (ca. 0,6 s) auf einen Eintrag öffnet rechts daneben ein Menü
+  (Komponente Menü) mit Einstellungen (settings) · … löschen (rot, Sprechblase) – **ohne ‚Öffnen‘**,
+  weil Tippen öffnet (wie Notizen); der Eintrag ist dabei blau getönt. Kein Wischen, kein Hinweistext.
+  [HIG – Context menus](https://developer.apple.com/design/human-interface-guidelines/context-menus)
+
+### 15.5 Kapsel
+- **Apple:** [HIG – Toolbars](https://developer.apple.com/design/human-interface-guidelines/toolbars)
+- Mehrere Schaltflächen in einer schwebenden Kapsel (44 px hoch, je Icon 48 px breit);
+  Text-Schaltflächen darin mit Innenabstand 14 px. Technisch `.grp` (`.navgrp`).
+- **Alle Kapseln gleich gebaut** (Kopfzeile, Seitenleiste, Treffer-Pfeile, Blättern, Auswahl-Kapseln):
+  Schaltflächen genau so hoch wie der Innenraum (44 px minus Rand); die Markierung (gedrückt bzw.
+  blau gefüllt) ist eine eigene Kapsel mit 3 px Luft und liegt immer innerhalb des Randes.
+
+### 15.6 Menü
+- **Apple:** [HIG – Menus](https://developer.apple.com/design/human-interface-guidelines/menus)
+- **Zweck:** weitere Aktionen hinter ellipsis bzw. Auswahl hinter einer Schaltfläche.
+  **Technisch:** `.menu` (öffnen mit `openMenu`).
+- **Aussehen:** Karte 340 px, Radius 14 px, Lichtkante und Schatten wie die Schaltflächen;
+  Einträge 46 px hoch, Icon **vor** dem Text, **keine Linien zwischen einzelnen Punkten**; Gruppen durch eine **dünne, links und
+  rechts eingerückte Linie** getrennt (wie Apple, iOS 26 – `'sep'`/`'line'`, 1 px, 20 px Einzug);
+  Auswahl mit blauem Häkchen vorne; graue Zusatzzeile unter einem Eintrag; graue Notizen und
+  technische Informationen (Version, Speicher, Zahl der Tage, Dateiname) ganz unten nach der
+  Linie, ohne Leerzeilen. Nichts blau eingefärbt, „… löschen“ rot.
+- **Untermenü** (`submenu`, eine Ebene, höchstens etwa 5 Punkte): Eintrag mit grauem Wert und ›;
+  öffnet neben dem Menü, oben bündig; der Eintrag bleibt blau, solange es offen ist.
+- **Verhalten:** erscheint unter der Schaltfläche (darf über die Seitenleiste
+  hinausragen); die Schaltfläche ist so lange gedrückt (blau getönt); daneben tippen schließt.
+
+### 15.7 Sprechblase (Abfrage)
+- **Apple:** [HIG – Popovers](https://developer.apple.com/design/human-interface-guidelines/popovers) · [HIG – Action sheets](https://developer.apple.com/design/human-interface-guidelines/action-sheets) · [HIG – Alerts](https://developer.apple.com/design/human-interface-guidelines/alerts)
+- **Zweck:** jede Abfrage mit Entscheidung. **Technisch:** `.pop` (`confirmPop`).
+- **Aufbau:** grauer Text · rote Schaltfläche mit dem Verb der Aktion · darunter der Weg
+  zurück („Abbrechen“ bzw. „Weiter bearbeiten“, normale Schrift); **Schaltflächen ohne Icons**
+  wie in Apple-Abfragen; Breite 320 px.
+- **Verhalten:** an der angetippten Schaltfläche (diese ist gedrückt); daneben tippen bricht ab.
+
+### 15.8 Fenster-Kopfzeile
+- **Apple:** [HIG – Sheets](https://developer.apple.com/design/human-interface-guidelines/sheets)
+- **Aufbau:** links rundes x (44 × 44) · Mitte Titel (19 px) mit grauer Zusatzzeile (13 px) ·
+  rechts ggf. eine Kapsel und das runde Häkchen. Häkchen grau, nach einer Änderung blau
+  gefüllt. Technisch `dlgHead()`.
+
+### 15.9 Fenster
+- **Apple:** [HIG – Sheets](https://developer.apple.com/design/human-interface-guidelines/sheets)
+- Typen: **Bearbeiten** (z. B. Neu, Einstellungen), **Erfassung**, **Vorschau**, **Meldung**
+  – Aufbau und Verhalten siehe Abschnitt 7.
+
+### 15.10 Kasten (Schritt)
+- **Apple:** [HIG – Boxes](https://developer.apple.com/design/human-interface-guidelines/boxes)
+- Fläche `--dlg-card` bzw. `--card`, Radius 14 px, ohne Rand, Innenabstand 14 px;
+  Kopfzeile mit blauer Schritt-Nummer, Titel, rechts Options-Kapseln und Icon-Schaltflächen.
+
+### 15.11 Eingabefeld mit Fehlermeldung
+- **Apple:** [HIG – Text fields](https://developer.apple.com/design/human-interface-guidelines/text-fields)
+- Fläche weiß bzw. `--dlg-field`, Lichtkante `--btn-rim` und Schatten `--float` wie die
+  schwebenden Schaltflächen (auch Zahlenfelder wie Gesamtkosten), Radius 10 px, 44 px hoch
+  (Textfelder mehrzeilig); Fehler: 1 px roter Rand und rote Meldung darunter
+  (Abschnitt 8). Textfelder wachsen mit dem Inhalt; Datumsfelder so breit wie das Datum.
+
+### 15.12 Smiley-Leiste und Auswahl-Kapsel
+- **Apple:** [HIG – Collections](https://developer.apple.com/design/human-interface-guidelines/collections)
+- Siehe Abschnitt 8; Smileys als runde schwebende 44 × 44-Schaltflächen, Abstand 12 px.
+- **Auswahl-Kapsel:** Mehrere Auswahl-Schaltflächen (Smileys, Wetter, Reisemittel …) stehen in
+  **einer** schwebenden Kapsel (44 px hoch, Lichtkante, Schatten, keine Ränder dazwischen).
+  Reicht der Platz nicht, lässt sich der Inhalt nach links/rechts wischen; ein weicher Verlauf am
+  Rand zeigt, wo es weitergeht. Gewählte Einträge sind blau getönt (Haarlinie `--accent`), und
+  zwar als eigene Form **innerhalb** der Schaltfläche mit Luft rundherum (wie Tapback): bei
+  Emojis ein Kreis von 36 px, bei Text eine Kapsel mit 3 px Abstand nach innen – markierte
+  Nachbarn stoßen nie aneinander. Schaltflächen füllen genau den Innenraum der Kapsel. Zurücksetzen (rotate-ccw) steht als eigene runde Schaltfläche rechts daneben.
+  Vorbild: Tapback-Leiste in Nachrichten. Technisch `.cap` > `.scroll`.
+
+### 15.13 Tabelle
+- **Apple:** [HIG – Lists and tables](https://developer.apple.com/design/human-interface-guidelines/lists-and-tables)
+- Siehe Abschnitt 9.
+
+### 15.14 Info-Icon mit Hinweis
+- **Apple:** [HIG – Buttons](https://developer.apple.com/design/human-interface-guidelines/buttons)
+- Runde Icon-Schaltfläche `info`; ein Tippen blendet einen grauen Hinweis ein bzw. aus.
+
+### 15.15 Schalter (Einstellungen ein/aus)
+- **Apple:** [HIG – Toggles](https://developer.apple.com/design/human-interface-guidelines/toggles)
+- **Zweck:** Ein/Aus-Einstellungen, z. B. in Bearbeiten-Fenstern. **Technisch:** `.swlist`,
+  `label.check.sw` mit `input[type=checkbox]`.
+- **Aufbau:** Zeile mit Text links und Apple-Schalter rechts; Zeilen 52 px hoch, dazwischen
+  Haarlinie; Schalter 51 × 31 px, weißer Knopf.
+- **Zustände:** ein = `--sw-on` (Apple-Grün), Knopf rechts; aus = `--sw-off`, Knopf links;
+  gesperrt 40 % Deckkraft (Text und Schalter). Kein Schein.
+
+### 15.16 Options-Kapsel (Optionen beim Erfassen)
+- **Apple:** [HIG – Toggles](https://developer.apple.com/design/human-interface-guidelines/toggles)
+- **Zweck:** einzelne Ein/Aus-Optionen in der Kopfzeile eines Kastens. **Technisch:**
+  `label.check.chip` mit verstecktem `input[type=checkbox]`.
+- **Aussehen:** wie eine schwebende Schaltfläche (Kapsel, 44 px, Schrift 15 px); ein =
+  `--sel-bg`, Haarlinie `--accent`, Schein `--glow-accent` und **Häkchen in Akzentfarbe vor
+  dem Text**; aus = neutral ohne Häkchen; gesperrt 40 % Deckkraft.
+
+## 16. HIG-Checkliste
+
+Jedes Muster und jede Version wird **vorher** an dieser Liste gemessen (Apple-Abgleich, siehe
+`README - Zusammenarbeit allgemein.md`, Abschnitt 3). Abweichungen werden genannt und begründet.
+Messbare Punkte prüft das HIG-Prüfskript automatisch.
+
+1. **Antippflächen** ([Accessibility](https://developer.apple.com/design/human-interface-guidelines/accessibility)): Standard 44 × 44 pt, nie kleiner
+   als 28 × 28 pt (Knöpfe in Kapseln und Schalter wie bei Apple ab 28 pt). Kleine Zeichen und
+   Links bekommen eine unsichtbar größere Antippfläche (Innenabstand), das Layout bleibt gleich.
+2. **Schrift:** Fließtext 17 pt, kleinste Schrift 11 pt, Hinweise 13 pt grau; Überschriften nach
+   Apple-Textstilen (17 halbfett, 20, 22, 28, 34 pt).
+3. **Kontrast und Farbe:** Kontrast mindestens 4,5 : 1 bis 17 pt, 3 : 1 ab 18 pt oder fett –
+   immer hell **und** dunkel prüfen. Farbe nie als einziges Merkmal. Blau = Aktion/Auswahl,
+   Rot = Löschen.
+4. **Auswahl** ([Lists and tables](https://developer.apple.com/design/human-interface-guidelines/lists-and-tables)): Was zu einem Inhalt führt, bleibt
+   markiert, solange dieser offen ist; Optionen kurz markieren, dann Häkchen. Jede Berührung
+   gibt sichtbare Rückmeldung.
+5. **Menüs** ([Menus](https://developer.apple.com/design/human-interface-guidelines/menus)): Gruppen durch Strich getrennt, Wichtigstes oben; Icons in
+   einer Gruppe alle oder keine, für Standardaktionen die bekannten Symbole (Teilen, Suchen,
+   Löschen); Beschriftung mit Verb; **kein „…“** am Ende (die HIG nennt es für weitere Eingaben,
+   Apples iPhone-/iPad-Apps verwenden es nicht, z. B. ‚Move Note‘); nicht verfügbare Punkte grau; Untermenüs nur eine Ebene, höchstens etwa 5 Punkte.
+6. **Kontextmenüs** ([Context menus](https://developer.apple.com/design/human-interface-guidelines/context-menus)): wenige Punkte, höchstens etwa 3 Gruppen;
+   Häufigstes nah am Finger, Löschen rot am Ende; nicht verfügbare Punkte **ausblenden** statt
+   grau; alles auch ohne Kontextmenü erreichbar; in der ganzen App einheitlich.
+7. **Abfragen:** Löschen und Verwerfen immer bestätigen; die Schaltfläche heißt wie die Aktion
+   (‚Löschen‘), ‚Abbrechen‘ ist immer da.
+8. **Texte** ([Writing](https://developer.apple.com/design/human-interface-guidelines/writing)): einfach, ohne Fachbegriffe, so kurz wie möglich; kein
+   ‚wir‘; ‚tippen‘ statt ‚klicken‘; Fehlermeldungen sagen, **was zu tun ist** – ohne Vorwurf,
+   direkt beim Problem; ein leerer Bildschirm nennt den nächsten Schritt; ein Schalter beschreibt,
+   was er eingeschaltet tut; Anführungszeichen ‚…‘.
+9. **Fenster:** links x (Abbrechen), rechts Häkchen (Fertig), hervorgehoben sobald etwas
+   geändert wurde; Schließen mit Änderungen fragt nach.
+
+**Bewusste Abweichungen** (entschieden, werden vom HIG-Prüfskript nicht als Fehler gezählt):
+
+| Was | Messwert | Grund | Entschieden |
+|---|---|---|---|
+| Weiße Schrift auf Systemblau (`--accent`): gewählte Zeile, ‚heute‘, Schrittnummern, Häkchen | 4,0 : 1 hell · 3,7 : 1 dunkel | Apple-Systemblau wie in allen Apple-Apps | 09.10.2026 |
+| Orange `--warn` (z. B. ‚fehlt‘) | 3,1–3,5 : 1 | bleibt wie es ist | 09.10.2026 |
+
+---
+
+## Versionsgeschichte
+
+| Version | Datum | Art | Inhalt |
+|---|---|---|---|
+| 4.0.0 | 09.10.2026 | Haupt | Umzug ins Design-Repo AppDesign; Komponenten einmal programmiert in `v4/design.css` und `v4/ui.js` (versioniert eingebunden); HIG-Prüfung `tests/hig.mjs` für alle Apps; Vorlage für neue Apps; Abschnitt 14 neu |
+| 3.6.1 | 09.10.2026 | Korrektur | Menüs ohne Linien zwischen einzelnen Punkten (wie iOS 26); Suchfeld ohne blauen Fokus-Rahmen |
+| 3.6.0 | 09.10.2026 | Neben | Darstellung folgt dem iPad (Untermenü zum Übersteuern); Untermenüs; Trennlinie in Menüs dünn und eingerückt; alle Kapseln gleich gebaut; Sprechblasen ohne Icons; Kontextmenü ohne ‚Öffnen‘; `--muted` und Rot im Dunkelmodus kontrastreicher; unsichtbar vergrößerte Antippflächen; HIG-Prüfskript `tests/hig.mjs` |
+| 3.5.1 | 09.10.2026 | Korrektur | HIG-Checkliste: kein „…“ in Menüs (wie Apples iPhone-/iPad-Apps); Liste der bewussten Abweichungen (Weiß auf Systemblau, Orange) |
+| 3.5.0 | 09.10.2026 | Neben | Neuer Abschnitt 16 HIG-Checkliste (Antippflächen, Schrift, Kontrast, Auswahl, Menüs, Kontextmenüs, Abfragen, Texte, Fenster) mit Links zu den Apple-Seiten |
+| 3.4.1 | 09.10.2026 | Korrektur | Menü: graue Notizen in allen Menüs (auch Teilen-Menü) nach durchgehendem Strich |
+| 3.4.0 | 09.10.2026 | Neben | Vorgabe: in den Texten der Apps einfache Anführungszeichen ‚…‘ statt doppelter „…“ |
+| 3.3.1 | 09.10.2026 | Korrektur | Grundsatz „Gewähltes bleibt eingefärbt, solange es sichtbar ist“ (auch Listen- und Tabellenzeilen, Kästen); Menü: technische Informationen nach durchgehendem Strich ohne Leerzeilen; verständlicher Satz zum Speicher statt „Speicher: dauerhaft“ |
+| 3.3.0 | 09.10.2026 | Neben | Kontextmenü in der Seitenleiste (langes Drücken); dauerhafter Speicher mit Anzeige im Menü der Seitenleiste und Hinweis zum Entfernen vom Home-Bildschirm |
+| 3.2.3 | 08.10.2026 | Korrektur | Fenster und Kopfzeilen bleiben bei sichtbarer Tastatur sichtbar (Ausrichtung am sichtbaren Bereich) |
+| 3.2.2 | 08.10.2026 | Korrektur | Auswahl-Kapsel: Markierung als Kreis bzw. Kapsel innerhalb der Schaltfläche mit Abstand; Schaltflächen so hoch wie der Innenraum |
+| 3.2.1 | 08.10.2026 | Korrektur | Seitenleiste beim Start immer eingeblendet (auch hoch, darübergelegt); unten 4 px Abstand wie Safari |
+| 3.2.0 | 08.10.2026 | Neben | Auswahl-Kapsel (Smileys, Wetter, Reisemittel in einer wischbaren Kapsel); Suche springt nach Tipp-Pause und zeigt den Treffer unter der Suchzeile, Kopfzeile bleibt bei Tastatur fest; Betragsfelder dynamisch breit (mind. „100.000,00“); Drucken ohne Seitenleiste und ohne deren Abstand |
+| 3.1.0 | 08.10.2026 | Neben | Schwebende Seitenleiste wie in Safari; Kalender-Icon in Datumsfeldern; Beträge „4.850,00 €“, rechtsbündig, „,00“ wird ergänzt; Tabellenüberschriften 17 px halbfett (Headline); Filter beim Öffnen auf „Alle“; gedrückte Schaltfläche bleibt auch bei Folgeschritten blau; „Backup erstellen“ / „Letztes Backup erstellt am …“ |
+| 3.0.1 | 08.10.2026 | Korrektur | Links zu den Apple Human Interface Guidelines bei den Abschnitten und bei jeder Komponente |
+| 3.0.0 | 08.10.2026 | Haupt | Neues Bedienkonzept wie Apple-Apps: Seitenleiste, Kopfzeile mit Kapsel und Mehr-Menü, Suche als zweite Zeile; Fenster ohne Fußleiste mit rundem x und Häkchen (grau bis zur Änderung); Abfragen als Sprechblase, „Änderungen verwerfen“ beim x; gedrückte Schaltfläche blau getönt; Hauptaktion nur in Fenstern blau; share immer ohne Text; Icons in Menüs vor dem Text; Text mittig zum Icon; Textfelder wachsen mit; Datumsfelder so breit wie das Datum; Backup-Hinweis einmal am Tag; neue Komponenten Kopfzeile, Seitenleiste, Kapsel, Menü, Sprechblase, Fenster-Kopfzeile |
+| 2.1.0 | 07.10.2026 | Neben | Akzentfarbe Apple-Blau (Hauptaktion, Auswahl, Nummern, Links, Rahmen); Auswahl mit Haarlinie ohne Breitenänderung und leuchtenderem Schein; Schatten um Tabellen und bei allen Eingabefeldern; neue Komponenten Schalter (Apple-Grün) und Options-Kapsel statt Checkboxen |
+| 2.0.0 | 07.10.2026 | Haupt | Apple-Look: neue Farben (Hellgrau, Weiß, Apple-Dunkel), schwebende Schaltflächen und Suchfelder, Haarlinien, Abstände 12 px; Farbbedeutungen Grün/Auswahl/Rot; neuer Abschnitt „Komponenten“ (u. a. Suchfeld mit Treffer-Navigation); Zusammenarbeit in eigene Datei ausgelagert |
+| 1.1.0 | 06.10.2026 | Neben | Neu: Regel „allgemein oder App?“ klären, App-Richtlinien nur mit Abweichungen/Ausprägungen; aus der Reiselogbuch-Richtlinie übernommen: Smiley-Leisten, Erfassungsfenster, Vorschaufenster, Liste in Spalten, Ausgabe-Design, Dateinamen-Muster |
+| 1.0.0 | 06.10.2026 | erste Fassung | Zusammenfassung aller bisher vereinbarten allgemeinen Regeln (Stand Reiselogbuch 1.0.0) |
