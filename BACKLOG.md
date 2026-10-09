@@ -17,7 +17,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| – | – | geprüft wird über die Apps (Reiselogbuch 3.0.0, P-14) | – |
+| – | – | zurzeit nichts zu prüfen (Reiselogbuch 3.0.0 / P-14 geprüft und ok, 09.10.2026) | – |
 
 ## 2. Weitere Themen (in Klärung)
 
