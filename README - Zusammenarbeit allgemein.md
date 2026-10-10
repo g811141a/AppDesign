@@ -64,9 +64,9 @@ App-spezifische Punkte stehen in der `CLAUDE.md` des jeweiligen App-Repos.
   vorigen Antwort) und das aktuelle Nutzungsfenster mit Zeitpunkt der Rücksetzung. Prozentwerte
   (aktuelle und wöchentliche Nutzung) und die wöchentliche Rücksetzung zeigt nur die Claude-App
   unter ‚Nutzung‘ – Claude kann sie nicht abrufen und schreibt dann ‚nicht abrufbar‘.
-- **Auswahlfenster mit Vorschau:** Text vor einem Auswahlfenster ist in der App oft nicht zu sehen.
-  Muster und Beispiele stehen deshalb zusätzlich als **Vorschau** in den Möglichkeiten des
-  Auswahlfensters.
+- **Muster im Auswahlfenster:** Text vor einem Auswahlfenster und die Vorschau-Funktion sind in der
+  App nicht zu sehen. Muster und Beispiele stehen deshalb **direkt im Fragetext** des
+  Auswahlfensters (oder als Bild/Datei, die vor dem Fenster geschickt wird).
 
 ## 3. Apple-like entwickeln
 
@@ -194,7 +194,7 @@ App-spezifische Punkte stehen in der `CLAUDE.md` des jeweiligen App-Repos.
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
-| 1.12.0 | 10.10.2026 | Neben | Nutzungsstatistik (Token, Nutzungsfenster, Rücksetzung) mit der Zeitmessung; Muster als Vorschau im Auswahlfenster |
+| 1.12.0 | 10.10.2026 | Neben | Nutzungsstatistik (Token, Nutzungsfenster, Rücksetzung) mit der Zeitmessung; Muster direkt im Fragetext des Auswahlfensters |
 | 1.11.0 | 10.10.2026 | Neben | Pflicht: Zeitmessung je Aktion, Ausgabe am Ende der Rückmeldung im Format mm:ss |
 | 1.10.0 | 09.10.2026 | Neben | Umzug ins Design-Repo AppDesign; Ablage, Vergleichsbilder und Reihenfolge beim Veröffentlichen (erst AppDesign, dann Apps) |
 | 1.9.0 | 09.10.2026 | Neben | Verpflichtend: nach jeder Version erst alle Prüfpunkte testen und Fehler beseitigen, dann Neues (Hinweis, Ausnahme nur auf Wunsch); Auswahlfenster auch nach einem geschlossenen Fenster wieder verwenden |
