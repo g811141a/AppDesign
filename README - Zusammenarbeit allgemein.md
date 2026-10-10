@@ -1,6 +1,6 @@
 # Zusammenarbeit allgemein
 
-**Version 1.12.1** · Stand 10.10.2026
+**Version 1.12.2** · Stand 10.10.2026
 
 Regeln für die Zusammenarbeit mit Claude bei allen iPad-Web-Apps von g811141a.
 Diese Datei liegt im Design-Repo **AppDesign** (g811141a/AppDesign).
@@ -48,8 +48,9 @@ App-spezifische Punkte stehen in der `CLAUDE.md` des jeweiligen App-Repos.
   - Am Ende jeder Antwort mit Fragen steht eine fertige **Antwortzeile zum Kopieren** mit den
     empfohlenen Antworten, z. B. `1 ja · 2 a · 3 ja` – bei mehr als 4 Fragen ist sie der einzige Weg.
   - Den Vorschlag im Eingabefeld der App erzeugt die App selbst; Claude kann ihn nicht befüllen.
-- **Zeit und Token (Pflicht):** Claude misst bei jeder Antwort die Gesamtzeit (Zeitstempel zu Beginn
-  und am Ende) und die Token aus den Sitzungsdaten (Unterschied zum Stand am Ende der vorigen Antwort;
+- **Zeit und Token (Pflicht):** Claude misst bei jeder Antwort seine **Arbeitszeit** (Zeitstempel zu
+  Beginn, vor und nach jedem Auswahlfenster und am Ende – die Wartezeit auf die Antwort im
+  Auswahlfenster zählt **nicht**) und die Token aus den Sitzungsdaten (Unterschied zum Stand am Ende der vorigen Antwort;
   die Sitzungsdaten zählen erst nach dem Ende einer Antwort, darum stehen die Token der
   **vorigen** Antwort). Ausgabe als **eine kompakte Zeile ganz am Ende**, klein gesetzt:
   `<sub>⏱ Gesamt mm:ss · Token vorige Antwort: N neu · N aus Zwischenspeicher · N geschrieben</sub>`
@@ -61,7 +62,9 @@ App-spezifische Punkte stehen in der `CLAUDE.md` des jeweiligen App-Repos.
   kommen Muster und Frage einmalig im Text am Ende der Antwort; bei der nächsten Frage wieder das
   Fenster.
 - **Reihenfolge in einer Antwort:** Erst die Arbeit, dann das Auswahlfenster, nach der Antwort die
-  Zusammenfassung – die Zeile mit Zeit und Token steht immer ganz am Ende.
+  Zusammenfassung – die Zeile mit Zeit und Token steht immer ganz am Ende, also **nach** der letzten
+  Antwort im Auswahlfenster. Solange ein Fenster offen ist, ist die Antwort noch nicht fertig.
+  Die laufende Zeitanzeige während der Bearbeitung kommt von der App, nicht von Claude.
 
 ## 3. Apple-like entwickeln
 
@@ -189,6 +192,7 @@ App-spezifische Punkte stehen in der `CLAUDE.md` des jeweiligen App-Repos.
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 1.12.2 | 10.10.2026 | Korrektur | Arbeitszeit ohne Wartezeit im Auswahlfenster; Zeile mit Zeit und Token nach der letzten Fensterantwort |
 | 1.12.1 | 10.10.2026 | Korrektur | Zeit und Token als eine kompakte, kleine Zeile am Ende; Ausnahme für Muster mit Schriftdarstellung; Reihenfolge in einer Antwort |
 | 1.12.0 | 10.10.2026 | Neben | Nutzungsstatistik (Token, Nutzungsfenster, Rücksetzung) mit der Zeitmessung; Muster direkt im Fragetext des Auswahlfensters |
 | 1.11.0 | 10.10.2026 | Neben | Pflicht: Zeitmessung je Aktion, Ausgabe am Ende der Rückmeldung im Format mm:ss |
