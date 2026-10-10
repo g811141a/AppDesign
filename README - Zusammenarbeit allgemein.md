@@ -1,6 +1,6 @@
 # Zusammenarbeit allgemein
 
-**Version 1.12.4** · Stand 10.10.2026
+**Version 1.12.5** · Stand 10.10.2026
 
 Regeln für die Zusammenarbeit mit Claude bei allen iPad-Web-Apps von g811141a.
 Diese Datei liegt im Design-Repo **AppDesign** (g811141a/AppDesign).
@@ -66,10 +66,9 @@ App-spezifische Punkte stehen in der `CLAUDE.md` des jeweiligen App-Repos.
   Zusammenfassung – die Zeile mit Zeit und Token steht immer ganz am Ende, also **nach** der letzten
   Antwort im Auswahlfenster. Solange ein Fenster offen ist, ist die Antwort noch nicht fertig.
   Die laufende Zeitanzeige während der Bearbeitung kommt von der App, nicht von Claude.
-- **Zeit bei jeder Übergabe:** Jedes Mal, wenn Claude an den Nutzer übergibt (Auswahlfenster oder
-  Ende der Antwort), steht die Arbeitszeit seit der letzten Übergabe und die bisherige Gesamtzeit seit
-  der Nachricht des Nutzers dabei: im Auswahlfenster als letzte Zeile des Fragetexts
-  (`⏱ 00:45 · bisher 02:10`), am Ende der Antwort in der kleinen Zeile zusammen mit den Token.
+- **Auswahlfenster nur mit Schaltflächen:** Im Auswahlfenster steht nur eine **kurze Frage** und die
+  Schaltflächen – keine Erklärtexte, keine Zeitangaben. Erklärungen stehen im normalen Text der
+  Antwort; die Zeile mit Zeit und Token steht nur **ganz am Ende der Antwort** (= Übergabe an den Nutzer).
 
 ## 3. Apple-like entwickeln
 
@@ -197,6 +196,7 @@ App-spezifische Punkte stehen in der `CLAUDE.md` des jeweiligen App-Repos.
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 1.12.5 | 10.10.2026 | Korrektur | Auswahlfenster nur mit kurzer Frage und Schaltflächen; Zeit und Token nur am Ende der Antwort |
 | 1.12.4 | 10.10.2026 | Korrektur | Zeit ab Eingang der Nachricht (inkl. Nachdenken), Neubeginn bei jeder Nachricht; Token genau je Antwort aus den Sitzungsdaten |
 | 1.12.3 | 10.10.2026 | Korrektur | Arbeitszeit bei jeder Übergabe (auch im Auswahlfenster) |
 | 1.12.2 | 10.10.2026 | Korrektur | Arbeitszeit ohne Wartezeit im Auswahlfenster; Zeile mit Zeit und Token nach der letzten Fensterantwort |
