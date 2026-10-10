@@ -1,6 +1,6 @@
 # Zusammenarbeit allgemein
 
-**Version 1.11.0** · Stand 10.10.2026
+**Version 1.12.0** · Stand 10.10.2026
 
 Regeln für die Zusammenarbeit mit Claude bei allen iPad-Web-Apps von g811141a.
 Diese Datei liegt im Design-Repo **AppDesign** (g811141a/AppDesign).
@@ -59,6 +59,14 @@ App-spezifische Punkte stehen in der `CLAUDE.md` des jeweiligen App-Repos.
   ```
   Gemessen wird von Claudes erstem Schritt bis zum Ende der Antwort; die Zeit, bis der Nutzer
   antwortet, zählt nicht. Ab 60 Minuten: hh:mm:ss.
+- **Nutzungsstatistik (Pflicht, im selben Block):** Token dieser Antwort (neu gelesen · aus dem
+  Zwischenspeicher gelesen · geschrieben) aus den Sitzungsdaten (Unterschied zum Stand am Ende der
+  vorigen Antwort) und das aktuelle Nutzungsfenster mit Zeitpunkt der Rücksetzung. Prozentwerte
+  (aktuelle und wöchentliche Nutzung) und die wöchentliche Rücksetzung zeigt nur die Claude-App
+  unter ‚Nutzung‘ – Claude kann sie nicht abrufen und schreibt dann ‚nicht abrufbar‘.
+- **Auswahlfenster mit Vorschau:** Text vor einem Auswahlfenster ist in der App oft nicht zu sehen.
+  Muster und Beispiele stehen deshalb zusätzlich als **Vorschau** in den Möglichkeiten des
+  Auswahlfensters.
 
 ## 3. Apple-like entwickeln
 
@@ -186,6 +194,7 @@ App-spezifische Punkte stehen in der `CLAUDE.md` des jeweiligen App-Repos.
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 1.12.0 | 10.10.2026 | Neben | Nutzungsstatistik (Token, Nutzungsfenster, Rücksetzung) mit der Zeitmessung; Muster als Vorschau im Auswahlfenster |
 | 1.11.0 | 10.10.2026 | Neben | Pflicht: Zeitmessung je Aktion, Ausgabe am Ende der Rückmeldung im Format mm:ss |
 | 1.10.0 | 09.10.2026 | Neben | Umzug ins Design-Repo AppDesign; Ablage, Vergleichsbilder und Reihenfolge beim Veröffentlichen (erst AppDesign, dann Apps) |
 | 1.9.0 | 09.10.2026 | Neben | Verpflichtend: nach jeder Version erst alle Prüfpunkte testen und Fehler beseitigen, dann Neues (Hinweis, Ausnahme nur auf Wunsch); Auswahlfenster auch nach einem geschlossenen Fenster wieder verwenden |
