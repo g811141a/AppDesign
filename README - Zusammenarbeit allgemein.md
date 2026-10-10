@@ -1,6 +1,6 @@
 # Zusammenarbeit allgemein
 
-**Version 1.10.0** · Stand 09.10.2026
+**Version 1.11.0** · Stand 10.10.2026
 
 Regeln für die Zusammenarbeit mit Claude bei allen iPad-Web-Apps von g811141a.
 Diese Datei liegt im Design-Repo **AppDesign** (g811141a/AppDesign).
@@ -48,6 +48,17 @@ App-spezifische Punkte stehen in der `CLAUDE.md` des jeweiligen App-Repos.
   - Am Ende jeder Antwort mit Fragen steht eine fertige **Antwortzeile zum Kopieren** mit den
     empfohlenen Antworten, z. B. `1 ja · 2 a · 3 ja` – bei mehr als 4 Fragen ist sie der einzige Weg.
   - Den Vorschlag im Eingabefeld der App erzeugt die App selbst; Claude kann ihn nicht befüllen.
+- **Zeitmessung (Pflicht):** Claude misst bei jeder Antwort die Zeit seiner Aktionen (Zeitstempel
+  zu Beginn, nach jeder Aktion und am Ende) und gibt sie **am Ende der Rückmeldung** im Format
+  **mm:ss** mit aussagekräftigem Text aus – je Aktion eine Zeile und die Gesamtzeit, z. B.:
+  ```
+  ⏱ Zeitaufwand dieser Antwort
+  · Muster erstellt (3 Bilder, hell/quer)   01:48
+  · Backlog eingetragen und hochgeladen     00:22
+  · Gesamt                                  02:10
+  ```
+  Gemessen wird von Claudes erstem Schritt bis zum Ende der Antwort; die Zeit, bis der Nutzer
+  antwortet, zählt nicht. Ab 60 Minuten: hh:mm:ss.
 
 ## 3. Apple-like entwickeln
 
@@ -175,6 +186,7 @@ App-spezifische Punkte stehen in der `CLAUDE.md` des jeweiligen App-Repos.
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 1.11.0 | 10.10.2026 | Neben | Pflicht: Zeitmessung je Aktion, Ausgabe am Ende der Rückmeldung im Format mm:ss |
 | 1.10.0 | 09.10.2026 | Neben | Umzug ins Design-Repo AppDesign; Ablage, Vergleichsbilder und Reihenfolge beim Veröffentlichen (erst AppDesign, dann Apps) |
 | 1.9.0 | 09.10.2026 | Neben | Verpflichtend: nach jeder Version erst alle Prüfpunkte testen und Fehler beseitigen, dann Neues (Hinweis, Ausnahme nur auf Wunsch); Auswahlfenster auch nach einem geschlossenen Fenster wieder verwenden |
 | 1.8.0 | 09.10.2026 | Neben | Pflicht: Antwortvorschläge immer im Auswahlfenster (Empfehlung zuerst) und als Antwortzeile zum Kopieren |

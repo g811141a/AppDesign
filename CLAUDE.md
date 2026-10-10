@@ -1,12 +1,12 @@
 # AppDesign – Hinweise für Claude
 
-**Version 1.0.0** · Stand 09.10.2026
+**Version 1.1.0** · Stand 10.10.2026
 
 ## Verpflichtend
 
 Es gelten alle Regeln aus `README - Zusammenarbeit allgemein.md` – insbesondere: nie ohne
 ausdrückliches „Ja“ bauen, Sammelversionen, erst Prüfpunkte dann Neues, Fragen im Auswahlfenster
-mit Antwortzeile, Apple-Abgleich vor jedem Muster.
+mit Antwortzeile, Apple-Abgleich vor jedem Muster, Zeitmessung je Aktion (mm:ss am Ende jeder Antwort).
 
 ## Zuerst lesen
 
@@ -26,4 +26,5 @@ mit Antwortzeile, Apple-Abgleich vor jedem Muster.
 
 | Version | Datum | Inhalt |
 |---|---|---|
+| 1.1.0 | 10.10.2026 | Zeitmessung |
 | 1.0.0 | 09.10.2026 | erste Fassung |
