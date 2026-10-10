@@ -1,6 +1,6 @@
 # Zusammenarbeit allgemein
 
-**Version 1.12.0** · Stand 10.10.2026
+**Version 1.12.1** · Stand 10.10.2026
 
 Regeln für die Zusammenarbeit mit Claude bei allen iPad-Web-Apps von g811141a.
 Diese Datei liegt im Design-Repo **AppDesign** (g811141a/AppDesign).
@@ -48,25 +48,20 @@ App-spezifische Punkte stehen in der `CLAUDE.md` des jeweiligen App-Repos.
   - Am Ende jeder Antwort mit Fragen steht eine fertige **Antwortzeile zum Kopieren** mit den
     empfohlenen Antworten, z. B. `1 ja · 2 a · 3 ja` – bei mehr als 4 Fragen ist sie der einzige Weg.
   - Den Vorschlag im Eingabefeld der App erzeugt die App selbst; Claude kann ihn nicht befüllen.
-- **Zeitmessung (Pflicht):** Claude misst bei jeder Antwort die Zeit seiner Aktionen (Zeitstempel
-  zu Beginn, nach jeder Aktion und am Ende) und gibt sie **am Ende der Rückmeldung** im Format
-  **mm:ss** mit aussagekräftigem Text aus – je Aktion eine Zeile und die Gesamtzeit, z. B.:
-  ```
-  ⏱ Zeitaufwand dieser Antwort
-  · Muster erstellt (3 Bilder, hell/quer)   01:48
-  · Backlog eingetragen und hochgeladen     00:22
-  · Gesamt                                  02:10
-  ```
-  Gemessen wird von Claudes erstem Schritt bis zum Ende der Antwort; die Zeit, bis der Nutzer
-  antwortet, zählt nicht. Ab 60 Minuten: hh:mm:ss.
-- **Nutzungsstatistik (Pflicht, im selben Block):** Token dieser Antwort (neu gelesen · aus dem
-  Zwischenspeicher gelesen · geschrieben) aus den Sitzungsdaten (Unterschied zum Stand am Ende der
-  vorigen Antwort) und das aktuelle Nutzungsfenster mit Zeitpunkt der Rücksetzung. Prozentwerte
-  (aktuelle und wöchentliche Nutzung) und die wöchentliche Rücksetzung zeigt nur die Claude-App
-  unter ‚Nutzung‘ – Claude kann sie nicht abrufen und schreibt dann ‚nicht abrufbar‘.
+- **Zeit und Token (Pflicht):** Claude misst bei jeder Antwort die Gesamtzeit (Zeitstempel zu Beginn
+  und am Ende) und die Token aus den Sitzungsdaten (Unterschied zum Stand am Ende der vorigen Antwort;
+  die Sitzungsdaten zählen erst nach dem Ende einer Antwort, darum stehen die Token der
+  **vorigen** Antwort). Ausgabe als **eine kompakte Zeile ganz am Ende**, klein gesetzt:
+  `<sub>⏱ Gesamt mm:ss · Token vorige Antwort: N neu · N aus Zwischenspeicher · N geschrieben</sub>`
+  (ab 60 Minuten hh:mm:ss). Nutzung in Prozent und Rücksetzzeiten zeigt nur die Claude-App.
 - **Muster im Auswahlfenster:** Text vor einem Auswahlfenster und die Vorschau-Funktion sind in der
   App nicht zu sehen. Muster und Beispiele stehen deshalb **direkt im Fragetext** des
-  Auswahlfensters (oder als Bild/Datei, die vor dem Fenster geschickt wird).
+  Auswahlfensters (oder als Bild/Datei, die vor dem Fenster geschickt wird). **Ausnahme:** Muster,
+  die von der Schriftdarstellung abhängen (klein, grau, kursiv …), zeigt das Fenster nicht – dann
+  kommen Muster und Frage einmalig im Text am Ende der Antwort; bei der nächsten Frage wieder das
+  Fenster.
+- **Reihenfolge in einer Antwort:** Erst die Arbeit, dann das Auswahlfenster, nach der Antwort die
+  Zusammenfassung – die Zeile mit Zeit und Token steht immer ganz am Ende.
 
 ## 3. Apple-like entwickeln
 
@@ -194,6 +189,7 @@ App-spezifische Punkte stehen in der `CLAUDE.md` des jeweiligen App-Repos.
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 1.12.1 | 10.10.2026 | Korrektur | Zeit und Token als eine kompakte, kleine Zeile am Ende; Ausnahme für Muster mit Schriftdarstellung; Reihenfolge in einer Antwort |
 | 1.12.0 | 10.10.2026 | Neben | Nutzungsstatistik (Token, Nutzungsfenster, Rücksetzung) mit der Zeitmessung; Muster direkt im Fragetext des Auswahlfensters |
 | 1.11.0 | 10.10.2026 | Neben | Pflicht: Zeitmessung je Aktion, Ausgabe am Ende der Rückmeldung im Format mm:ss |
 | 1.10.0 | 09.10.2026 | Neben | Umzug ins Design-Repo AppDesign; Ablage, Vergleichsbilder und Reihenfolge beim Veröffentlichen (erst AppDesign, dann Apps) |
