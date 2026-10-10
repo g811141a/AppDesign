@@ -1,9 +1,9 @@
-/* AppDesign 4.0.0 · design.css – gemeinsame Gestaltung der iPad-Web-Apps von g811141a (Apple-like)
+/* AppDesign 4.1.0 · design.css – gemeinsame Gestaltung der iPad-Web-Apps von g811141a (Apple-like)
    Einbinden im <head> vor dem eigenen <style> der App:  <link rel="stylesheet" href="../AppDesign/v4/design.css">
    Farben als Variablen auf :root, Dunkelmodus über data-theme="dark" (setzt ui.js / applyTheme).
    Komponenten: Schaltflächen, Suchfeld, Kapsel, Eingabefelder, Datumsfelder, Kopfzeile, Seitenleiste,
    Menü, Sprechblase, schwebende Schaltflächen, Fenster, Kasten (Schritt), Auswahl-Kapsel, Schalter,
-   Options-Kapsel. Regeln dazu: README - Designrichtlinie allgemein.md */
+   Options-Kapsel; seit 4.1.0 iPhone-Ansicht (html.phone: Seitenkopf, großer Titel, Liste, Kasten, untere Leiste). Regeln dazu: README - Designrichtlinie allgemein.md */
 /* Farben im Apple-Look: Hintergrund Hellgrau, Kästen weiß ohne Rand, schwebende Schaltflächen */
 :root {
   --bg: #f2f2f7;
@@ -41,6 +41,7 @@
   --bar-h: 64px;
   --side-w: 0px;
   --vv-top: 0px;
+  --vv-bottom: 0px;
   color-scheme: light;
 }
 :root[data-theme="dark"] {
@@ -76,6 +77,7 @@ button {
 }
 button:disabled, button[aria-disabled="true"] { opacity: .4; cursor: default; }
 button { display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
+button[hidden] { display: none; }
 .ic { width: 20px; height: 20px; flex: none; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 .ic.red { color: var(--danger); }
 button.primary .ic.red { color: inherit; }
@@ -299,3 +301,54 @@ dialog input[type=text], dialog input[type=date], dialog textarea { background: 
 .check.chip:has(input:disabled) { opacity: .4; cursor: default; }
 .step-head .head-check { flex: none; margin: 0 0 0 4px; }
 .saved { font-size: 13px; color: var(--muted); }
+
+/* ---------- iPhone (kompakte Breite) – seit 4.1.0 ----------
+   html.phone (setzt ui.js / applyLayout): iPhone hoch und quer sowie sehr schmale Fenster (unter 700 px breit
+   oder unter 500 px hoch). Wie Apple (Notizen, iOS 26): eine Seite nach der anderen mit großem Titel,
+   runder Zurück-Knopf ohne Text, Suche unten, Fenster bildschirmfüllend, Abfragen als Sprechblase am Knopf. */
+html.phone body { padding-bottom: calc(env(safe-area-inset-bottom) + 96px); }
+html.phone #side, html.phone .side-shade, html.phone .fab { display: none !important; }
+/* Komponente Seitenkopf (iPhone): links rund zurück, rechts Kapsel oder runder Knopf; scrollt nicht mit */
+.pnav { position: sticky; top: var(--vv-top); z-index: 6; display: flex; align-items: center; gap: 8px; min-height: 44px;
+  margin: 0 -16px; padding: calc(env(safe-area-inset-top) + 8px) 16px 8px; background: var(--bg); border-bottom: .5px solid transparent; }
+.pnav.line { border-bottom-color: var(--line); }
+/* Großer Titel mit grauer Zeile darunter (z. B. Anzahl) */
+.ltitle { font-size: 34px; font-weight: 700; line-height: 1.15; margin: 4px 0 2px; overflow-wrap: anywhere; }
+.lcount { color: var(--muted); font-size: 17px; margin: 0 0 16px; }
+/* Komponente Liste (iPhone): weiße Karte mit runden Ecken, Zeilen mit eingerückter Haarlinie und › */
+.ilist { background: var(--card); border-radius: 22px; overflow: hidden; box-shadow: var(--table-shadow); }
+.irow { display: flex; align-items: center; gap: 10px; width: 100%; min-height: 60px; padding: 12px 16px; position: relative; text-align: left;
+  border: none; border-radius: 0; background: none; box-shadow: none; -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
+.irow + .irow::before { content: ''; position: absolute; top: 0; left: 16px; right: 0; border-top: .5px solid var(--line); }
+.irow .t { flex: 1; min-width: 0; }
+.irow b { display: block; font-weight: 600; overflow-wrap: anywhere; }
+.irow small { display: block; color: var(--muted); font-size: 15px; }
+.irow > .ic { color: var(--th-line); }
+.irow.on { background: var(--sel-bg); }
+.irow a { text-decoration: none; }
+/* Komponente Kasten (iPhone): ein Eintrag als Karte; Zeilen mit grauer Bezeichnung links */
+.box { background: var(--card); border-radius: 22px; padding: 12px 16px; margin-top: 10px; box-shadow: var(--table-shadow); }
+.box .kv { display: flex; gap: 8px; margin-top: 6px; }
+.box .kv .k { flex: none; width: 74px; font-size: 13px; color: var(--muted); padding-top: 2px; }
+.box .kv .v { flex: 1; min-width: 0; }
+.box.on { background: var(--sel-bg); }
+/* Komponente untere Leiste (iPhone): Suchfeld und runde Knöpfe unten; wandert mit der Tastatur nach oben */
+.bbar { position: fixed; z-index: 8; left: max(16px, env(safe-area-inset-left)); right: max(16px, env(safe-area-inset-right));
+  bottom: calc(max(var(--vv-bottom), env(safe-area-inset-bottom)) + 10px); display: flex; gap: 10px; align-items: center; justify-content: flex-end; }
+.bbar::before { content: ''; position: fixed; left: 0; right: 0; bottom: 0; height: calc(max(var(--vv-bottom), env(safe-area-inset-bottom)) + 90px); z-index: -1;
+  background: linear-gradient(to bottom, transparent, var(--bg) 55%); pointer-events: none; }
+.bbar .searchbox { flex: 1 1 auto; }
+/* Fenster auf dem iPhone bildschirmfüllend; Kopfzeile kompakt, Titel einzeilig */
+html.phone dialog#dlg { width: 100%; max-width: none; min-width: 0; height: var(--dlg-max); border-radius: 0; box-shadow: none; }
+html.phone dialog#dlg form { height: 100%; }
+html.phone #msg { width: min(360px, calc(100vw - 32px)); }
+html.phone #dlg .dlg-head { gap: 8px; padding: calc(env(safe-area-inset-top) + 8px) max(12px, env(safe-area-inset-right)) 8px max(12px, env(safe-area-inset-left)); }
+html.phone #dlg .dlg-head .hl, html.phone #dlg .dlg-head .hr { flex: none; gap: 8px; }
+html.phone #dlg .dlg-head .mid { flex: 1; max-width: none; min-width: 0; }
+html.phone #dlg .dlg-head h3 { font-size: 17px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+html.phone #dlg .dlg-head .grp button { width: 44px; min-width: 44px; }
+html.phone #dlg .dlg-body { padding: 4px max(12px, env(safe-area-inset-right)) calc(20px + env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left)); }
+html.phone .step-head { flex-wrap: wrap; row-gap: 8px; }
+/* Kasten-Kopf: Titel und Mikrofon in der ersten Zeile, Options-Kapseln darunter */
+html.phone .step-head > label:first-child { white-space: nowrap; flex: 1 0 60%; }
+html.phone .step-head .head-check { order: 3; margin-left: 0; }

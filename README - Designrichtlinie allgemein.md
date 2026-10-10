@@ -1,8 +1,9 @@
 # Designrichtlinie allgemein
 
-**Version 4.0.0** · Stand 09.10.2026
+**Version 4.1.0** · Stand 10.10.2026
 
-Allgemeine Gestaltungs- und Bedienregeln für alle iPad-Web-Apps von g811141a.
+Allgemeine Gestaltungs- und Bedienregeln für alle iPad-Web-Apps von g811141a (seit 4.1.0 auch
+auf dem iPhone, Abschnitt 15.17).
 Diese Datei liegt im Design-Repo **AppDesign** (g811141a/AppDesign); ihre Versionsnummer ist
 die Versionsnummer des Repos. Die Komponenten sind dort einmal programmiert (`v4/design.css`,
 `v4/ui.js`) und werden von allen Apps übernommen (Abschnitt 14).
@@ -354,9 +355,10 @@ heller).
 - **Inhalt:** diese Richtlinie, `README - Zusammenarbeit allgemein.md`, `v4/design.css`
   (Farben, Schrift, Schaltflächen, Suchfeld, Kapsel, Eingabe- und Datumsfelder, Kopfzeile,
   Seitenleiste, Menü, Sprechblase, schwebende Schaltflächen, Fenster, Kasten, Auswahl-Kapsel,
-  Schalter, Options-Kapsel), `v4/ui.js` (Icons, Menüs mit Untermenü, Sprechblase, gedrückte
-  Schaltflächen, Meldung, Fenster, Darstellung, Auswahl-Kapsel, Tastatur/sichtbarer Bereich,
-  Beträge), `apple-referenz/` (Vergleichsbilder), `tests/hig.mjs` (HIG-Prüfung) und
+  Schalter, Options-Kapsel; iPhone-Ansicht: Seitenkopf, großer Titel, Liste, Kasten, untere
+  Leiste), `v4/ui.js` (Icons, Menüs mit Untermenü, Sprechblase, gedrückte Schaltflächen, Meldung,
+  Fenster, Darstellung, Auswahl-Kapsel, Tastatur/sichtbarer Bereich, Beträge, iPhone-Erkennung
+  `isPhone()`), `apple-referenz/` (Vergleichsbilder), `tests/hig.mjs` (HIG-Prüfung) und
   `vorlage/index.html` (Startpunkt für neue Apps).
 - **Einbindung (versioniert):** Jede App lädt die Bausteine von GitHub Pages aus dem Ordner der
   Hauptversion: `<link rel="stylesheet" href="../AppDesign/v4/design.css">` im `<head>` vor dem
@@ -464,7 +466,7 @@ Verhalten · technischer Name). In AppDesign ist jede Komponente einmal programm
 - **Aussehen:** Karte 340 px, Radius 14 px, Lichtkante und Schatten wie die Schaltflächen;
   Einträge 46 px hoch, Icon **vor** dem Text, **keine Linien zwischen einzelnen Punkten**; Gruppen durch eine **dünne, links und
   rechts eingerückte Linie** getrennt (wie Apple, iOS 26 – `'sep'`/`'line'`, 1 px, 20 px Einzug);
-  Auswahl mit blauem Häkchen vorne; graue Zusatzzeile unter einem Eintrag; graue Notizen und
+  Auswahl mit blauem Häkchen vorne (bei Punkten mit Icon: Häkchen, dann Icon und Text); graue Zusatzzeile unter einem Eintrag; graue Notizen und
   technische Informationen (Version, Speicher, Zahl der Tage, Dateiname) ganz unten nach der
   Linie, ohne Leerzeilen. Nichts blau eingefärbt, „… löschen“ rot.
 - **Untermenü** (`submenu`, eine Ebene, höchstens etwa 5 Punkte): Eintrag mit grauem Wert und ›;
@@ -540,6 +542,35 @@ Verhalten · technischer Name). In AppDesign ist jede Komponente einmal programm
   `--sel-bg`, Haarlinie `--accent`, Schein `--glow-accent` und **Häkchen in Akzentfarbe vor
   dem Text**; aus = neutral ohne Häkchen; gesperrt 40 % Deckkraft.
 
+### 15.17 iPhone-Ansicht (kompakte Breite)
+- **Apple:** [HIG – Layout](https://developer.apple.com/design/human-interface-guidelines/layout) ·
+  [HIG – Navigation](https://developer.apple.com/design/human-interface-guidelines/navigation-and-search) ·
+  Vorbild Notizen auf dem iPhone (iOS 26, `apple-referenz/iphone/notizen`).
+- **Wann:** iPhone hoch **und** quer sowie sehr schmale Fenster – unter 700 px breit oder unter
+  500 px hoch. **Technisch:** `isPhone()` in `ui.js`; `<html>` bekommt die Klasse `phone`
+  (`applyLayout`, auch beim Drehen); die App baut ihre Seiten danach, ihr `resize`-Handler ruft
+  bei einem Wechsel `render()`.
+- **Seiten:** eine Seite nach der anderen statt Seitenleiste. Startliste als eigene Seite; ein
+  Eintrag öffnet seine Seite.
+- **Seitenkopf** (`.pnav`): bleibt oben stehen; links runder Zurück-Knopf mit `chevron-left`
+  **ohne Text**, rechts eine Kapsel (z. B. [`share` | `ellipsis`]) bzw. ein runder Knopf.
+- **Großer Titel** (`.ltitle`, 34 pt fett) mit grauer Zeile darunter (`.lcount`, z. B. Anzahl).
+- **Liste** (`.ilist` mit `.irow`): weiße Karte mit runden Ecken (22 px); Zeilen mit fettem Titel,
+  grauer Zeile darunter und `chevron-right`; Haarlinie links eingerückt. Tippen öffnet, lange
+  drücken zeigt das Kontextmenü; markierte Zeile `--sel-bg`.
+- **Kasten** (`.box` mit Zeilen `.kv` = graue Bezeichnung `.k` links, Wert `.v` rechts): ein
+  Eintrag als Karte, z. B. ein Tag statt einer Tabellenzeile.
+- **Untere Leiste** (`.bbar`): Suchfeld (Komponente Suchfeld) und runde Knöpfe unten wie in
+  Notizen; runder `plus`-Knopf rechts unten zum Anlegen; rundes `x` neben dem Suchfeld beendet
+  die Suche. Ein Verlauf dahinter lässt den Inhalt auslaufen; bei offener Tastatur wandert die
+  Leiste über die Tastatur (`--vv-bottom`).
+- **Fenster** bildschirmfüllend (bei offener Tastatur bis zur Tastatur); Kopfzeile kompakt mit
+  einzeiligem Titel (kurze Form, z. B. ‚Di, 25.08.2026‘); Options-Kapseln stehen unter dem
+  Kasten-Titel. Meldungen bleiben kleine Fenster in der Mitte.
+- **Abfragen** wie auf dem iPad als Sprechblase an der angetippten Schaltfläche (iOS 26 zeigt
+  Abfragen ebenfalls an der Schaltfläche).
+- Menüs, Kapseln und Schaltflächen wie auf dem iPad (44 pt).
+
 ## 16. HIG-Checkliste
 
 Jedes Muster und jede Version wird **vorher** an dieser Liste gemessen (Apple-Abgleich, siehe
@@ -586,6 +617,7 @@ Messbare Punkte prüft das HIG-Prüfskript automatisch.
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 4.1.0 | 10.10.2026 | Neben | iPhone-Ansicht (15.17): Seitenkopf, großer Titel, Liste, Kasten, untere Leiste, Fenster bildschirmfüllend, `isPhone()`; Menüpunkte mit Häkchen **und** Icon (Häkchen vorne, dann Icon und Text); `button[hidden]` blendet aus |
 | 4.0.0 | 09.10.2026 | Haupt | Umzug ins Design-Repo AppDesign; Komponenten einmal programmiert in `v4/design.css` und `v4/ui.js` (versioniert eingebunden); HIG-Prüfung `tests/hig.mjs` für alle Apps; Vorlage für neue Apps; Abschnitt 14 neu |
 | 3.6.1 | 09.10.2026 | Korrektur | Menüs ohne Linien zwischen einzelnen Punkten (wie iOS 26); Suchfeld ohne blauen Fokus-Rahmen |
 | 3.6.0 | 09.10.2026 | Neben | Darstellung folgt dem iPad (Untermenü zum Übersteuern); Untermenüs; Trennlinie in Menüs dünn und eingerückt; alle Kapseln gleich gebaut; Sprechblasen ohne Icons; Kontextmenü ohne ‚Öffnen‘; `--muted` und Rot im Dunkelmodus kontrastreicher; unsichtbar vergrößerte Antippflächen; HIG-Prüfskript `tests/hig.mjs` |

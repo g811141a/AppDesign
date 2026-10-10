@@ -1,4 +1,4 @@
-// AppDesign 4.0.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
+// AppDesign 4.1.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
 // Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/v4/ui.js"></script>
 // Klassisches Skript: alle Funktionen sind global und für das Skript der App sichtbar.
 //
@@ -10,7 +10,7 @@
 // Inhalt: Icons (ic) · esc · Beträge (money, formatEuro) · autoGrow · onLongPress · Darstellung
 // (applyTheme, setAppearance) · Menüs (openMenu mit Untermenü) · Sprechblase (confirmPop) ·
 // gedrückte Schaltflächen (hold, release, setOpener) · Meldung (inform) · Fenster (openDialog, dlgHead) ·
-// Auswahl-Kapsel (capHtml, mountCap) · Tastatur/sichtbarer Bereich (placeDialogs)
+// Auswahl-Kapsel (capHtml, mountCap) · Tastatur/sichtbarer Bereich (placeDialogs) · iPhone (isPhone, applyLayout)
 // Regeln dazu: README - Designrichtlinie allgemein.md
 'use strict';
 /* ---------- Icons ---------- */
@@ -132,12 +132,12 @@ function placeAt(el, anchor, align) {
   el.style.top = top + 'px';
 }
 
-// Einträge: { icon, label, sub, red, tick, disabled, act } · { …, value, submenu: [Einträge] } (Untermenü ›, eine Ebene)
+// Einträge: { icon, label, sub, red, tick, disabled, act } (tick und icon zusammen: Häkchen vorne, dann Icon und Text) · { …, value, submenu: [Einträge] } (Untermenü ›, eine Ebene)
 // · 'sep' (Abstand) · 'line' (Strich) · { note } (graue Zeile).
 const menuHtml = items => items.map((it, i) => it === 'sep' ? '<div class="sep"></div>' : it === 'line' ? '<div class="line"></div>'
   : it.note ? `<div class="note">${esc(it.note)}</div>`
   : `<button type="button" class="mi ${it.red ? 'red' : ''} ${it.sub ? 'has-sub' : ''}" data-i="${i}" ${it.disabled ? 'disabled' : ''} role="menuitem">${
-      'tick' in it ? `<span class="tick">${it.tick ? ic('check') : ''}</span>` : ic(it.icon)}${esc(it.label)}${
+      'tick' in it ? `<span class="tick">${it.tick ? ic('check') : ''}</span>` : ''}${it.icon ? ic(it.icon) : ''}${esc(it.label)}${
       it.value ? `<span class="val">${esc(it.value)}</span>` : ''}${it.submenu ? ic('chevron-right', 'chev') : ''}</button>${
       it.sub ? `<div class="sub">${esc(it.sub)}</div>` : ''}`).join('');
 function openMenu(anchor, items, align = 'right') {
@@ -299,6 +299,16 @@ function mountCap(root) {
   });
 }
 
+/* ---------- iPhone ---------- */
+
+// Wie Apple: auf dem iPhone (hoch und quer) und in sehr schmalen Fenstern gilt die kompakte Ansicht –
+// eine Seite nach der anderen, Fenster bildschirmfüllend. <html> bekommt dann die Klasse 'phone'.
+// Die App fragt isPhone() und baut ihre Seiten danach; bei einem Wechsel ruft ihr resize-Handler render().
+const isPhone = () => innerWidth < 700 || innerHeight < 500;
+function applyLayout() { document.documentElement.classList.toggle('phone', isPhone()); }
+applyLayout();
+window.addEventListener('resize', applyLayout);
+
 /* ---------- Tastatur und sichtbarer Bereich ---------- */
 
 // Bei offener Tastatur verkleinert und verschiebt Safari den sichtbaren Bereich. Kopfzeile, Tabellenkopf
@@ -307,11 +317,16 @@ function placeDialogs() {
   const vv = window.visualViewport;
   const top = vv ? Math.max(0, vv.offsetTop) : 0;
   const h = vv ? vv.height : innerHeight;
+  const full = isPhone();
   const root = document.documentElement.style;
   root.setProperty('--vv-top', top + 'px');
-  root.setProperty('--dlg-max', Math.max(200, h - 20) + 'px');
+  // Abstand der Tastatur vom unteren Rand: die untere Leiste (iPhone) bleibt darüber sichtbar.
+  root.setProperty('--vv-bottom', Math.max(0, Math.round(innerHeight - top - h)) + 'px');
+  root.setProperty('--dlg-max', Math.max(200, full ? h : h - 20) + 'px');
   [dlg, msg].forEach(d => {
     if (!d.open) return;
+    // iPhone: das Fenster füllt den sichtbaren Bereich (bei offener Tastatur bis zur Tastatur).
+    if (full && d === dlg) { d.style.margin = '0'; d.style.bottom = 'auto'; d.style.top = Math.round(top) + 'px'; return; }
     // Fenster im sichtbaren Bereich zentrieren (bei offener Tastatur oberhalb der Tastatur).
     d.style.margin = '0 auto';
     d.style.bottom = 'auto';

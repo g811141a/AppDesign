@@ -1,6 +1,6 @@
 # AppDesign – Backlog (allgemeine Themen)
 
-**Stand 09.10.2026** · Aktuelle Version: AppDesign 4.0.0
+**Stand 10.10.2026** · Aktuelle Version: AppDesign 4.1.0
 
 Allgemeine Themen, die alle Apps betreffen. App-Themen stehen im Backlog der jeweiligen App.
 Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
@@ -13,11 +13,11 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 |---|---|---|---|
 | – | – | zurzeit nichts | – |
 
-## 1. Auf dem iPad prüfen
+## 1. Auf iPad und iPhone prüfen
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| – | – | zurzeit nichts zu prüfen (Reiselogbuch 3.0.0 / P-14 geprüft und ok, 09.10.2026) | – |
+| T-02 | 2 | iPhone-Ansicht (15.17) und Menüpunkte mit Häkchen und Icon – geprüft wird mit Reiselogbuch 3.1.0 (Prüfliste dort) | prüfen |
 
 ## 2. Weitere Themen (in Klärung)
 
