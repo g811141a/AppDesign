@@ -1,5 +1,5 @@
-// AppDesign 4.0.0 · HIG-Prüfung: misst eine App-Ansicht gegen die HIG-Checkliste
-// (README - Designrichtlinie allgemein.md, Abschnitt 16). Wird vom Prüfskript jeder App eingebunden:
+// AppDesign 4.6.0 · HIG- und Regel-Prüfung: misst eine App-Ansicht gegen die HIG-Checkliste (Abschnitt 16)
+// und alle automatisch prüfbaren Regeln des Regelkatalogs (Abschnitt 17, R-01 …) der Designrichtlinie allgemein. Wird vom Prüfskript jeder App eingebunden:
 //   import { createCheck } from '../../AppDesign/tests/hig.mjs';
 //   const hig = createCheck({ skipTargets: ['table.days .ln:not(.q) a'] });   // bewusste Abweichungen der App
 //   await hig.measure(page, 'Mehr-Menü (hell quer)');  await hig.stays(page, '#mainMore', 'Mehr-Menü');
@@ -23,7 +23,7 @@ const found = new Map();
       const onTop = e => { if (document.querySelector('.layer')) return !!e.closest('.menu, .pop');
         const d = document.querySelector('dialog[open]'); return d ? d.contains(e) : true; };
       const label = e => ((e.id ? '#' + e.id + ' ' : '') + (e.getAttribute('aria-label') || e.textContent || e.placeholder || '')).trim().replace(/\s+/g, ' ').slice(0, 40);
-      const res = { target: [], font: [], contrast: [], quotes: [], menu: [] };
+      const res = { target: [], font: [], contrast: [], quotes: [], menu: [], rules: [] };
       // Antippflächen: 44 pt Standard; Knöpfe in Kapseln und Schalter wie bei Apple ab 28 pt.
       document.querySelectorAll('button, a[href], input:not([type=hidden]):not([type=file]), textarea, select, [role=menuitem]').forEach(e => {
         if (!vis(e) || !onTop(e)) return;
@@ -69,17 +69,56 @@ const found = new Map();
         // Wie Apple: keine Linien zwischen einzelnen Punkten
         if ([...m.querySelectorAll('.mi, .sub')].some(x => parseFloat(getComputedStyle(x).borderBottomWidth) > 0)) res.menu.push('Linie zwischen einzelnen Menüpunkten');
       });
+      // Regelkatalog (Designrichtlinie allgemein, Abschnitt 17): alle automatisch prüfbaren Regeln
+      const R = (nr, t) => res.rules.push(`${nr} ${t}`);
+      const cs = e => getComputedStyle(e);
+      const phone = document.documentElement.classList.contains('phone');
+      const hex = v => rgb(v.trim().replace(/^#(..)(..)(..)$/, (m, a, b, c) => `rgb(${parseInt(a, 16)},${parseInt(b, 16)},${parseInt(c, 16)})`));
+      const openDlg = [...document.querySelectorAll('dialog')].some(d => d.open);
+      // R-01 Nur der Vordergrund reagiert
+      if (openDlg && !document.documentElement.classList.contains('locked')) R('R-01', 'Seite hinter dem Fenster nicht gesperrt');
+      document.querySelectorAll('.layer').forEach(l => { if (cs(l).touchAction !== 'none') R('R-01', 'Ebene hinter Menü/Sprechblase fängt Wischen nicht ab'); });
+      // R-02 Kein Fokus-Rahmen beim Öffnen eines Fensters
+      if (openDlg && document.activeElement?.id === 'dlgX') R('R-02', 'x hat beim Öffnen den Fokus (blauer Rahmen)');
+      document.querySelectorAll('.searchbox input').forEach(e => { if (e === document.activeElement && cs(e).outlineStyle !== 'none') R('R-02', 'Suchfeld mit Fokus-Rahmen'); });
+      // R-04 Doppeltippen vergrößert nie
+      if ([...document.querySelectorAll('button, a[href], input, textarea, [role=button]')].some(e => vis(e) && !['manipulation', 'none'].includes(cs(e).touchAction))) R('R-04', 'Doppeltippen kann die Ansicht vergrößern');
+      // R-05 Leisten bewegen sich nie
+      document.querySelectorAll('.nb, .pnav').forEach(b => { if (vis(b) && cs(b).position !== 'fixed') R('R-05', `Leiste .${b.classList[0]} ist ${cs(b).position} statt fest – sie federt mit`); });
+      if (cs(document.documentElement).overscrollBehaviorY !== 'none') R('R-05', 'Seite federt am Rand nach');
+      const side = document.getElementById('side');
+      const scroller = e => { for (let x = e.parentElement; x && x !== document.body; x = x.parentElement) if (/auto|scroll/.test(cs(x).overflowY)) return x; return null; };
+      if (side && vis(side)) side.querySelectorAll('.side-head, .bhint').forEach(e => { if (scroller(e)) R('R-05', `.${e.classList[0]} liegt im Scrollbereich der Seitenleiste – federt mit`); });
+      // R-06 Bezeichnung und Feld gehören zusammen
+      document.querySelectorAll('.dates .dl').forEach(d => { if (vis(d) && !d.parentElement.classList.contains('pair')) R('R-06', 'Bezeichnung nicht mit ihrem Feld verbunden'); });
+      // R-08 Gelbe Markierung ohne blauen Rand
+      const focus = hex(root.getPropertyValue('--focus'));
+      document.querySelectorAll('tr, .box, .irow, .side-row').forEach(e => { if (vis(e) && same(rgb(cs(e).backgroundColor), focus) && /inset/.test(cs(e).boxShadow)) R('R-08', 'gelbe Markierung mit blauem Rand'); });
+      // R-09 Titel steht in der Leiste (ohne großen Titel)
+      document.querySelectorAll('.pnav-title').forEach(t => { if (vis(t.parentElement) && !document.querySelector('.ltitle') && cs(t).opacity !== '1') R('R-09', 'Titel nicht in der Leiste'); });
+      // R-10 Backup-Kachel immer da, sobald es Einträge gibt
+      if (side && vis(side) && side.querySelector('.side-row') && !side.querySelector('.bhint')) R('R-10', 'Backup-Kachel fehlt in der Seitenleiste');
+      if (document.querySelector('.pnav-head') && document.querySelector('.irow') && !document.querySelector('.bnote')) R('R-10', 'Backup-Kachel fehlt in der Startliste');
+      // R-18 Fenster auf dem iPhone bildschirmfüllend
+      const dl = document.getElementById('dlg');
+      if (phone && dl?.open && Math.abs(dl.getBoundingClientRect().width - innerWidth) > 2) R('R-18', 'Fenster nicht bildschirmfüllend');
+      // R-19 Nach oben / Ans Ende in einer senkrechten Kapsel
+      document.querySelectorAll('.fab').forEach(f => { if (vis(f) && parseFloat(cs(f).borderTopLeftRadius) < 10) R('R-19', 'Nach oben / Ans Ende nicht in einer Kapsel'); });
+      // R-20 Eingabefelder mindestens 16 px (sonst vergrößert iOS beim Antippen)
+      document.querySelectorAll('input:not([type=checkbox]):not([type=hidden]):not([type=file]), textarea').forEach(e => { if (vis(e) && parseFloat(cs(e).fontSize) < 16) R('R-20', `Eingabefeld ${e.id ? '#' + e.id : ''} unter 16 px – iOS vergrößert beim Antippen`); });
+      // R-21 Anzahl unter dem Titel der Liste
+      document.querySelectorAll('.side-head, .pnav-head').forEach(h => { if (vis(h) && !h.querySelector('small')) R('R-21', 'Anzahl unter dem Titel fehlt'); });
       return res;
     }, skipTargets);
-    for (const [k, list] of Object.entries(r)) for (const x of list) note({ target: 'Antippfläche', font: 'Schrift', contrast: 'Kontrast', quotes: 'Anführungszeichen', menu: 'Menü' }[k], x, where);
+    for (const [k, list] of Object.entries(r)) for (const x of list) note({ target: 'Antippfläche', font: 'Schrift', contrast: 'Kontrast', quotes: 'Anführungszeichen', menu: 'Menü', rules: 'Regel' }[k], x, where);
   }
 
   const stays = async (p, sel, where) => {
     if (!await p.locator(sel).first().evaluate(e => e.classList.contains('on')).catch(() => false)) note('Markierung', `${sel} bleibt nicht blau`, where);
   };
   const report = () => {
-    if (!found.size) { console.log('HIG-Prüfung: keine Abweichungen.'); return 0; }
-    console.log(`HIG-Prüfung: ${found.size} Abweichung(en)\n`);
+    if (!found.size) { console.log('HIG- und Regel-Prüfung: keine Abweichungen.'); return 0; }
+    console.log(`HIG- und Regel-Prüfung: ${found.size} Abweichung(en)\n`);
     for (const [k, where] of found) console.log(`- ${k}\n    ${[...where].slice(0, 3).join(' · ')}${where.size > 3 ? ` · +${where.size - 3}` : ''}`);
     return 1;
   };

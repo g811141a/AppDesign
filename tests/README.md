@@ -1,4 +1,4 @@
-# HIG-Prüfung
+# HIG- und Regel-Prüfung
 
 `hig.mjs` misst eine App-Ansicht gegen die HIG-Checkliste (Designrichtlinie allgemein, Abschnitt 16):
 Antippflächen, Schriftgrößen, Kontraste (hell und dunkel), doppelte Anführungszeichen, Löschen am Ende
@@ -15,3 +15,7 @@ process.exit(hig.report());
 ```
 
 AppDesign liegt dazu neben dem App-Repo; Playwright wird im Ordner `tests/` der App installiert.
+
+
+Seit 4.6.0 prüft `hig.mjs` zusätzlich alle automatisch prüfbaren Regeln des Regelkatalogs
+(Designrichtlinie allgemein, Abschnitt 17, R-01 …) in jeder Ansicht; Funde erscheinen als ‚Regel: R-xx …‘.

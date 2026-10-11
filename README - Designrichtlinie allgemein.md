@@ -1,6 +1,6 @@
 # Designrichtlinie allgemein
 
-**Version 4.5.0** · Stand 11.10.2026
+**Version 4.6.0** · Stand 11.10.2026
 
 Allgemeine Gestaltungs- und Bedienregeln für alle iPad-Web-Apps von g811141a (seit 4.1.0 auch
 auf dem iPhone, Abschnitt 15.17).
@@ -656,12 +656,46 @@ Messbare Punkte prüft das HIG-Prüfskript automatisch.
 | Weiße Schrift auf Systemblau (`--accent`): gewählte Zeile, ‚heute‘, Schrittnummern, Häkchen | 4,0 : 1 hell · 3,7 : 1 dunkel | Apple-Systemblau wie in allen Apple-Apps | 09.10.2026 |
 | Orange `--warn` (z. B. ‚fehlt‘) | 3,1–3,5 : 1 | bleibt wie es ist | 09.10.2026 |
 
+## 17. Regelkatalog
+
+Alle allgemeinen Regeln mit Nummer. **Skript** = prüft das HIG- und Regel-Prüfskript
+(`tests/hig.mjs`) in jeder Ansicht jeder App automatisch · **Ablauf** = prüft der Ablauf-Test der
+App · **Gerät** = nur am iPad/iPhone prüfbar; diese Punkte kommen in die Prüfliste, wenn eine
+Version sie betrifft. Vor jedem Muster und nach jeder Version wird gegen diesen Katalog geprüft
+(`README - Zusammenarbeit allgemein.md`, Abschnitte 3 und 7). Neue allgemeine Regeln bekommen
+hier sofort eine Nummer und – wo möglich – eine Prüfung im Skript.
+
+| Nr. | Regel | Prüfung | Abschnitt |
+|---|---|---|---|
+| R-01 | Nur der Vordergrund reagiert: offenes Fenster sperrt die Seite, Menü/Sprechblase fangen Wischen ab | Skript | 1 |
+| R-02 | Kein Fokus-Rahmen beim Antippen oder Öffnen eines Fensters (auch nicht im Suchfeld) | Skript | 1, 15.2 |
+| R-03 | Gleiche Bedienung auf iPad und iPhone (gleiche Kapseln, Suche, Menüs) | Muster, Ablauf | 1 |
+| R-04 | Doppeltippen vergrößert nie die Ansicht | Skript | 1 |
+| R-05 | Leisten bewegen sich nie: Kopfzeile und Seitenkopf fest, Seite federt nicht, in der Seitenleiste scrollen nur die Einträge | Skript · Gerät (Federn) | 1 |
+| R-06 | Bezeichnung und Feld gehören zusammen (Umbruch nur vor der Bezeichnung) | Skript | 8 |
+| R-07 | Großbuchstabe am Zeilenanfang und nach einem Vorschlag | Ablauf · Gerät (iOS-Tastatur) | 8 |
+| R-08 | Gelbe Markierung ohne blauen Rand | Skript | 9 |
+| R-09 | Titel einer Inhaltsseite steht in der Leiste | Skript | 15.17 |
+| R-10 | Backup-Kachel immer da (gelb, solange heute noch kein Backup erstellt wurde) | Skript | 15.4, 15.17 |
+| R-11 | Antippflächen 44 pt (in Kapseln und Schaltern 28 pt) | Skript | 16 |
+| R-12 | Schrift mindestens 11 pt | Skript | 16 |
+| R-13 | Kontrast 4,5 : 1 bzw. 3 : 1, hell und dunkel | Skript | 16 |
+| R-14 | Anführungszeichen ‚…‘ | Skript | 16 |
+| R-15 | Menüs: Löschen rot am Ende, keine Linien zwischen einzelnen Punkten | Skript | 15.6 |
+| R-16 | Gewähltes bleibt blau, solange sein Menü, Fenster oder seine Abfrage offen ist | Skript | 16 |
+| R-17 | Diktieren nur über die Mikrofon-Taste der Tastatur | Muster | 8 |
+| R-18 | Fenster auf dem iPhone bildschirmfüllend | Skript | 15.17 |
+| R-19 | Nach oben / Ans Ende in einer senkrechten Kapsel | Skript | 4 |
+| R-20 | Eingabefelder mindestens 16 px (sonst vergrößert iOS beim Antippen) | Skript · Gerät | 8 |
+| R-21 | Anzahl klein und grau unter dem Titel der Seitenleiste bzw. Startliste | Skript | 15.4, 15.17 |
+
 ---
 
 ## Versionsgeschichte
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 4.6.0 | 11.10.2026 | Neben | Regelkatalog (Abschnitt 17) mit Nummern R-01 bis R-21; HIG- und Regel-Prüfung prüft alle automatisch prüfbaren Regeln; Leisten fest auch am iPad (Kopfzeile fest, in der Seitenleiste scrollen nur die Einträge) |
 | 4.5.0 | 11.10.2026 | Neben | Leisten bewegen sich nie (Seite federt nicht nach, iPhone-Seitenkopf fest) |
 | 4.4.0 | 11.10.2026 | Neben | Titel der Inhaltsseite immer in der Leiste (iPhone wie iPad); Anzahl unter dem Titel von Seitenleiste und Startliste; Backup-Kachel immer sichtbar (gelb nur ohne Backup heute); Großschreibung schon vor der Eingabe und nach Vorschlägen |
 | 4.3.0 | 11.10.2026 | Neben | Kein Zoom durch Doppeltippen; Bezeichnung und Feld bleiben zusammen (Umbruch vor der Bezeichnung); App setzt Großbuchstaben am Zeilenanfang; Diktieren nur über die Tastatur; gelbe Markierung ohne blauen Rand; Seitenleiste mit Kacheln und gelber Backup-Kachel, iPhone-Startliste gleich wie die Seitenleiste; Bezeichnung im Kasten halbfett; Nach oben/Ans Ende in senkrechter Kapsel |

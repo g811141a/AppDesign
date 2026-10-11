@@ -1,6 +1,6 @@
 # Zusammenarbeit allgemein
 
-**Version 1.12.5** · Stand 10.10.2026
+**Version 1.13.0** · Stand 11.10.2026
 
 Regeln für die Zusammenarbeit mit Claude bei allen iPad-Web-Apps von g811141a.
 Diese Datei liegt im Design-Repo **AppDesign** (g811141a/AppDesign).
@@ -84,10 +84,13 @@ App-spezifische Punkte stehen in der `CLAUDE.md` des jeweiligen App-Repos.
   nachgebaut und als Abweichung genannt.
 - **Apple-Abgleich vor jedem Muster (Pflicht):** Bevor Claude ein Muster zeigt, steht kurz
   dabei: welche Apple-App es so löst (z. B. Notizen, Dateien, Erinnerungen), welche Punkte der
-  **HIG-Checkliste** (Designrichtlinie allgemein, Abschnitt 16) betroffen sind und wo bewusst abgewichen
-  wird – mit Grund. Die HIG wird **vorher** geprüft, nicht erst nach einer Meldung.
+  **HIG-Checkliste** (Designrichtlinie allgemein, Abschnitt 16) und welche Regeln des
+  **Regelkatalogs** (Abschnitt 17, R-01 …) betroffen sind und wo bewusst abgewichen wird – mit
+  Grund. HIG und Regelkatalog werden **vorher** geprüft, nicht erst nach einer Meldung.
 - **Apple-Review nach jeder Version (Pflicht):** In der Zusammenfassung steht je Punkt
-  „entspricht HIG“ oder „weicht ab, weil …“, dazu das Ergebnis des HIG-Prüfskripts.
+  „entspricht HIG“ oder „weicht ab, weil …“, dazu das Ergebnis des HIG- und Regel-Prüfskripts.
+- **Neue allgemeine Regel:** bekommt sofort eine Nummer im Regelkatalog und – wo es geht – eine
+  automatische Prüfung im Skript; sonst steht dort ‚Gerät‘.
 - **Vergleichsbilder:** Claude bittet bei Bedarf **konkret** um 1–4 Screenshots aus
   Apple-Apps (iPad oder iPhone) zum jeweiligen Thema. Sie liegen in AppDesign im Ordner
   `apple-referenz/<Gerät>/<App>/` mit einer `README.md` (je Bild: was es zeigt, was wir daraus
@@ -156,9 +159,11 @@ App-spezifische Punkte stehen in der `CLAUDE.md` des jeweiligen App-Repos.
 
 ## 7. Nach jeder Version
 
-- Testen (hell und dunkel, iPad quer und hoch, alle betroffenen Abläufe) und das
-  HIG-Prüfskript laufen lassen (Antippflächen, Schriftgrößen, Kontraste, Markierung bleibt,
-  Anführungszeichen …).
+- Testen (hell und dunkel, iPad quer und hoch, iPhone hoch und quer, alle betroffenen Abläufe)
+  und das **HIG- und Regel-Prüfskript** laufen lassen: es prüft in jeder Ansicht die HIG-Punkte
+  und **alle automatisch prüfbaren Regeln des Regelkatalogs** – nicht nur die geänderten.
+- Regeln, die nur am Gerät prüfbar sind (Regelkatalog ‚Gerät‘, z. B. Federn, iOS-Tastatur),
+  kommen in die Prüfliste, **wenn die Version sie betrifft**.
 - Im Backlog die gebauten Punkte aus „0. Nächste Version“ entfernen, die Prüfliste unter
   „1. Auf dem iPad prüfen“ anlegen und „Erledigt“ ergänzen.
 - PROMPT.md, CHANGELOG.md und betroffene Designrichtlinien aktualisieren; in PROMPT.md und
@@ -196,6 +201,7 @@ App-spezifische Punkte stehen in der `CLAUDE.md` des jeweiligen App-Repos.
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 1.13.0 | 11.10.2026 | Neben | Regelkatalog: Abgleich vor jedem Muster, Prüfung aller automatisch prüfbaren Regeln nach jeder Version; neue Regeln sofort mit Nummer und Prüfung; Geräte-Regeln in die Prüfliste, wenn betroffen |
 | 1.12.5 | 10.10.2026 | Korrektur | Auswahlfenster nur mit kurzer Frage und Schaltflächen; Zeit und Token nur am Ende der Antwort |
 | 1.12.4 | 10.10.2026 | Korrektur | Zeit ab Eingang der Nachricht (inkl. Nachdenken), Neubeginn bei jeder Nachricht; Token genau je Antwort aus den Sitzungsdaten |
 | 1.12.3 | 10.10.2026 | Korrektur | Arbeitszeit bei jeder Übergabe (auch im Auswahlfenster) |
