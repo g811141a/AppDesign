@@ -1,6 +1,6 @@
 # AppDesign – Backlog (allgemeine Themen)
 
-**Stand 11.10.2026** · Aktuelle Version: AppDesign 4.5.0
+**Stand 11.10.2026** · Aktuelle Version: AppDesign 4.6.0
 
 Allgemeine Themen, die alle Apps betreffen. App-Themen stehen im Backlog der jeweiligen App.
 Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
@@ -17,7 +17,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| T-02 | 2 | iPhone-Ansicht (15.17), überarbeitet in 4.2.0 (Titel in der Leiste, Kapseln und Suche wie am iPad, Kacheln, fester Hinweis, nur Vordergrund reagiert) – weiter verfeinert in 4.5.0 – geprüft wird mit Reiselogbuch 3.5.0 (Prüfliste P-19 dort) | prüfen |
+| T-02 | 2 | iPhone-Ansicht (15.17), überarbeitet in 4.2.0 (Titel in der Leiste, Kapseln und Suche wie am iPad, Kacheln, fester Hinweis, nur Vordergrund reagiert) – weiter verfeinert in 4.6.0 – geprüft wird mit Reiselogbuch 3.6.0 (Prüfliste P-20 dort) | prüfen |
 
 ## 2. Weitere Themen (in Klärung)
 
