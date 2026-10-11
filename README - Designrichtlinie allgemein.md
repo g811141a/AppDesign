@@ -48,7 +48,9 @@ App-spezifische Regeln stehen in einer eigenen Datei je App
   Tastatur); ein Fenster öffnet ohne vorausgewählte Schaltfläche.
 - **Leisten bewegen sich nie:** Kopfzeile, Seitenkopf (iPhone) und Seitenleisten-Kopf stehen fest;
   nur der Inhalt darunter scrollt. Die Seite federt am Rand nicht nach (`overscroll-behavior: none`
-  auf `html`/`body`); der Seitenkopf auf dem iPhone ist fest positioniert (`position: fixed`).
+  auf `html`/`body`); Kopfzeile (iPad) und Seitenkopf (iPhone) sind fest positioniert
+  (`position: fixed`, nicht sticky). In der Seitenleiste scrollen nur die Einträge (`.side-list`);
+  Kopf und Backup-Kachel liegen außerhalb des Scrollbereichs.
 - **Doppeltippen vergrößert nie** die Ansicht (`touch-action: manipulation`); Zoomen mit zwei
   Fingern bleibt möglich.
 - **Gleiche Bedienung auf iPad und iPhone:** gleiche Kapseln oben (z. B. [`plus` | `ellipsis`],
