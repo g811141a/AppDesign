@@ -182,7 +182,7 @@ body.docked { padding-left: calc(var(--side-w) + max(10px, env(safe-area-inset-l
 .bhint { margin-top: auto; padding: 16px 12px 0; font-size: 13px; color: var(--muted); display: flex; flex-direction: column; gap: 10px; align-items: flex-start; }
 .bhint button { color: var(--ink); font-size: 17px; }
 /* Seit 4.2.0: Backup-Hinweis bleibt am unteren Rand der Seitenleiste stehen; viele Einträge laufen dahinter durch */
-#side .bhint { position: sticky; bottom: -14px; margin-left: -12px; margin-right: -12px; padding: 16px 24px 14px; background: var(--focus); color: var(--ink); }
+#side .bhint { position: sticky; bottom: -14px; margin: auto -12px -14px; padding: 16px 24px 18px; background: var(--focus); color: var(--ink); }
 /* Backup-Hinweis gelb getönt mit blau gefülltem Knopf, damit man die Funktion sofort erkennt (iPad und iPhone) */
 #side .bhint button, .bbar .bnote button { background: var(--accent); color: var(--accent-ink); border: .5px solid var(--rim-color); box-shadow: var(--glow-accent); }
 
