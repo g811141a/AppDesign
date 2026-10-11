@@ -1,4 +1,4 @@
-/* AppDesign 4.3.0 · design.css – gemeinsame Gestaltung der iPad-Web-Apps von g811141a (Apple-like)
+/* AppDesign 4.4.0 · design.css – gemeinsame Gestaltung der iPad-Web-Apps von g811141a (Apple-like)
    Einbinden im <head> vor dem eigenen <style> der App:  <link rel="stylesheet" href="../AppDesign/v4/design.css">
    Farben als Variablen auf :root, Dunkelmodus über data-theme="dark" (setzt ui.js / applyTheme).
    Komponenten: Schaltflächen, Suchfeld, Kapsel, Eingabefelder, Datumsfelder, Kopfzeile, Seitenleiste,
@@ -196,6 +196,13 @@ body.docked { padding-left: calc(var(--side-w) + max(10px, env(safe-area-inset-l
 
 /* Backup-Hinweis gelb getönt mit blau gefülltem Knopf, damit man die Funktion sofort erkennt (iPad und iPhone) */
 #side .bhint button, .bbar .bnote button { background: var(--accent); color: var(--accent-ink); border: .5px solid var(--rim-color); box-shadow: var(--glow-accent); }
+/* Seit 4.4.0: Die Backup-Kachel steht immer da; gelb nur, solange heute noch kein Backup erstellt wurde (.ok = erledigt) */
+#side .bhint.ok, .bbar .bnote.ok { background: var(--card); color: var(--muted); }
+#side .bhint.ok button, .bbar .bnote.ok button { background: var(--btn); color: var(--ink); border-color: var(--btn-rim); box-shadow: var(--float); }
+/* Seit 4.4.0: Anzahl der Einträge klein und grau unter dem Titel (Seitenleiste und iPhone-Startliste) */
+.side-head .ttl { flex: 1; min-width: 0; }
+.side-head .ttl h2 { margin: 0; }
+.side-head small, .pnav-head small { display: block; font-size: 13px; font-weight: 400; color: var(--muted); line-height: 1.2; }
 
 /* Komponente Menü: Karte mit Schatten wie die Schaltflächen, Icons vor dem Text; antippen daneben schließt */
 .layer { position: fixed; inset: 0; z-index: 29; }
@@ -342,7 +349,7 @@ html.phone #side, html.phone .side-shade, html.phone .fab { display: none !impor
 .pnav.titled .pnav-title { opacity: 1; }
 .pnav .nb2 { grid-column: 1 / -1; margin-top: 2px; }
 /* Startliste (iPhone) wie die Seitenleiste: Titel links in der Leiste, 20 pt fett */
-.pnav-head { margin: 0; font-size: 20px; font-weight: 700; white-space: nowrap; padding-left: 4px; }
+.pnav-head { margin: 0; font-size: 20px; font-weight: 700; white-space: nowrap; padding-left: 4px; line-height: 1.25; }
 .pnav + .ilist.tiles { margin-top: 8px; }
 /* Großer Titel mit grauer Zeile darunter (z. B. Anzahl) */
 .ltitle { font-size: 34px; font-weight: 700; line-height: 1.15; margin: 4px 0 2px; overflow-wrap: anywhere; }

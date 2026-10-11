@@ -1,6 +1,6 @@
 # Designrichtlinie allgemein
 
-**Version 4.3.0** · Stand 11.10.2026
+**Version 4.4.0** · Stand 11.10.2026
 
 Allgemeine Gestaltungs- und Bedienregeln für alle iPad-Web-Apps von g811141a (seit 4.1.0 auch
 auf dem iPhone, Abschnitt 15.17).
@@ -255,7 +255,8 @@ heller).
   Bezeichnung und Feld.
 - **Großbuchstabe am Zeilenanfang:** Die App setzt den ersten Buchstaben jeder Zeile und nach
   ‚.‘, ‚!‘, ‚?‘ selbst groß – auch nach einem Smiley am Zeilenanfang (iOS macht das nicht
-  zuverlässig).
+  zuverlässig); schon vor der Eingabe (`beforeinput`). Nach einem Vorschlag (z. B. ‚Freetour …‘)
+  beginnt auch das nächste Wort groß (`capNext`).
 - **Beträge** wie bei Apple (Region Deutschland): immer zwei Nachkommastellen, Tausenderpunkt,
   Währung **hinter** dem Betrag mit Leerzeichen – „4.850,00 €“. Im Eingabefeld steht das €
   rechts neben dem Feld; fehlen beim Verlassen die Nachkommastellen, ergänzt die App „,00“.
@@ -447,10 +448,12 @@ Verhalten · technischer Name). In AppDesign ist jede Komponente einmal programm
 - **Apple:** [HIG – Sidebars](https://developer.apple.com/design/human-interface-guidelines/sidebars)
 - **Zweck:** zentrale Liste der App. **Technisch:** `#side`.
 - **Aufbau:** Kopf: Überschrift (20 px, fett, linksbündig) · Kapsel [plus | ellipsis] ·
-  runde Schaltfläche panel-left (ausblenden); der Kopf bleibt oben stehen. Darunter die Einträge
+  runde Schaltfläche panel-left (ausblenden); unter der Überschrift klein und grau die Anzahl
+  (‚5 Reiselogbücher‘); der Kopf bleibt oben stehen. Darunter die Einträge
   als **Kacheln** (wie auf dem iPhone): Titel fett, darunter grau Zeitraum · Status, rechts ›;
   gewählter Eintrag blau gefüllt; reichen sie über den Rand, wischt man sie nach oben. Unten fest
-  der Backup-Hinweis als gelbe Kachel mit blauem Knopf.
+  **immer** die Backup-Kachel ‚Letztes Backup erstellt am …‘ – gelb mit blauem Knopf, solange heute
+  noch kein Backup erstellt wurde, sonst weiß mit normalem Knopf (`.ok`).
 - **Maße und Aussehen:** schwebend wie in Safari – eigenes Rechteck mit 10 px Abstand oben und
   links und 4 px unten (der Schatten endet fast am unteren Bildschirmrand), Radius 22 px, Lichtkante `--btn-rim` und Schatten `--float` wie die
   Schaltflächen; so breit wie Kopf bzw. längster Titel, 340–420 px; Hintergrund `--bg` (wie die
@@ -578,7 +581,10 @@ Verhalten · technischer Name). In AppDesign ist jede Komponente einmal programm
 - **Seitenkopf** (`.pnav`): bleibt fest oben stehen; links runder Zurück-Knopf mit
   `chevron-left` **ohne Text**, rechts **dieselbe Kapsel wie am iPad** (z. B. [`plus` |
   `ellipsis`] in der Startliste, [`share` | `search` | `ellipsis`] im Inhalt).
-- **Großer Titel** (`.ltitle`, 34 pt fett) mit grauer Zeile darunter (`.lcount`, z. B. Anzahl).
+- **Titel einer Inhaltsseite** (z. B. ein Reiselogbuch) steht wie am iPad **immer in der Leiste**
+  (`.pnav-title`, ohne großen Titel darüber); darunter die Angaben mit Bezeichnung, auf dem iPhone
+  mit Umbruch nach dem Doppelpunkt.
+- **Großer Titel** (`.ltitle`, 34 pt fett, nur noch bei Bedarf) mit grauer Zeile darunter (`.lcount`).
   Wie Notizen: Wird er hochgeschoben, erscheint der Titel klein (17 pt halbfett) in der Mitte
   der Leiste (`.pnav-title`, `.pnav.titled`, `updateBar()` in `ui.js`) und bleibt dort, bis man
   wieder ganz nach unten zieht.
@@ -586,8 +592,8 @@ Verhalten · technischer Name). In AppDesign ist jede Komponente einmal programm
   grauer Zeile darunter und `chevron-right`; Haarlinie links eingerückt. Tippen öffnet, lange
   drücken zeigt das Kontextmenü; markierte Zeile `--sel-bg`.
 - **Startliste = Seitenleiste:** gleicher Kopf wie die Seitenleiste – Titel links in der fest
-  stehenden Leiste (`.pnav-head`, 20 pt fett), rechts [`plus` | `ellipsis`]; ohne großen Titel und
-  ohne Anzahl. **Kacheln** (`.ilist.tiles`): jeder Eintrag eine eigene Karte (22 px Radius, 10 px
+  stehenden Leiste (`.pnav-head`, 20 pt fett, darunter klein und grau die Anzahl), rechts
+  [`plus` | `ellipsis`]; ohne großen Titel. **Kacheln** (`.ilist.tiles`): jeder Eintrag eine eigene Karte (22 px Radius, 10 px
   Abstand); der zuletzt geöffnete blau gefüllt (`.irow.current`); sie laufen unter der Leiste und
   hinter dem Backup-Hinweis durch.
 - **Kasten** (`.box` mit Zeilen `.kv` = graue Bezeichnung `.k` links, Wert `.v` rechts): ein
@@ -651,6 +657,7 @@ Messbare Punkte prüft das HIG-Prüfskript automatisch.
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 4.4.0 | 11.10.2026 | Neben | Titel der Inhaltsseite immer in der Leiste (iPhone wie iPad); Anzahl unter dem Titel von Seitenleiste und Startliste; Backup-Kachel immer sichtbar (gelb nur ohne Backup heute); Großschreibung schon vor der Eingabe und nach Vorschlägen |
 | 4.3.0 | 11.10.2026 | Neben | Kein Zoom durch Doppeltippen; Bezeichnung und Feld bleiben zusammen (Umbruch vor der Bezeichnung); App setzt Großbuchstaben am Zeilenanfang; Diktieren nur über die Tastatur; gelbe Markierung ohne blauen Rand; Seitenleiste mit Kacheln und gelber Backup-Kachel, iPhone-Startliste gleich wie die Seitenleiste; Bezeichnung im Kasten halbfett; Nach oben/Ans Ende in senkrechter Kapsel |
 | 4.2.0 | 11.10.2026 | Neben | Grundprinzipien: nur der Vordergrund reagiert, kein Fokus-Rahmen, gleiche Bedienung iPad/iPhone; iPhone (15.17): Titel wandert in die Leiste, Kapseln oben wie am iPad, Suche wie am iPad, Kacheln mit aktuellem Eintrag blau, fester Hinweis unten (gelb, blauer Knopf, auch in der Seitenleiste); Kasten mit Linien waagrecht und senkrecht (15.10) |
 | 4.1.0 | 10.10.2026 | Neben | iPhone-Ansicht (15.17): Seitenkopf, großer Titel, Liste, Kasten, untere Leiste, Fenster bildschirmfüllend, `isPhone()`; Menüpunkte mit Häkchen **und** Icon (Häkchen vorne, dann Icon und Text); `button[hidden]` blendet aus |

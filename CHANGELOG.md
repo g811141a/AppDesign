@@ -3,6 +3,15 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.4.0 – 11.10.2026 (Nebenversion)
+
+AppDesign 4.4.0 · Designrichtlinie allgemein 4.4.0 · Zusammenarbeit allgemein 1.12.5
+
+- `updateBar`: ohne großen Titel steht der Titel immer in der Leiste.
+- Backup-Kachel `.bhint`/`.bnote` immer sichtbar; `.ok` = heute schon gesichert (weiß, normaler Knopf).
+- Anzahl klein und grau unter dem Titel (`.side-head .ttl small`, `.pnav-head small`).
+- Großschreibung: `capBefore` (beforeinput) und `capNext(feld)` für das Wort nach einem Vorschlag.
+
 ## 4.3.0 – 11.10.2026 (Nebenversion)
 
 AppDesign 4.3.0 · Designrichtlinie allgemein 4.3.0 · Zusammenarbeit allgemein 1.12.5

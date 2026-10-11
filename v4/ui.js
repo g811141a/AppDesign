@@ -1,4 +1,4 @@
-// AppDesign 4.3.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
+// AppDesign 4.4.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
 // Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/v4/ui.js"></script>
 // Klassisches Skript: alle Funktionen sind global und für das Skript der App sichtbar.
 //
@@ -293,17 +293,36 @@ function refreshOk() {
   placeDialogs();
 }
 // Seit 4.3.0: Der erste Buchstabe jeder Zeile (und nach . ! ?) wird groß – iOS macht das nicht zuverlässig,
-// z. B. nach einem Smiley am Zeilenanfang.
+// z. B. nach einem Smiley am Zeilenanfang. Seit 4.4.0 schon vor der Eingabe (beforeinput), damit die Tastatur nicht
+// zurückschreibt; capNext(feld) macht auch den nächsten Buchstaben groß (z. B. nach einem Vorschlag ‚Freetour …‘).
+function capNext(f) { f.dataset.capNext = '1'; }
+function capWanted(f, pos) {
+  if (f.dataset.capNext) return true;
+  const before = f.value.slice(f.value.lastIndexOf('\n', pos - 1) + 1, pos);
+  return !/[\p{L}\p{N}]/u.test(before) || /[.!?]\s+$/.test(before);
+}
+function capBefore(e) {
+  const f = e.target;
+  if (e.inputType !== 'insertText' || !e.data || !/^\p{Ll}/u.test(e.data) || !f.matches?.('textarea, input[type=text]')) return;
+  const start = f.selectionStart, end = f.selectionEnd;
+  if (!capWanted(f, start)) return;
+  e.preventDefault();
+  delete f.dataset.capNext;
+  f.setRangeText(e.data.charAt(0).toLocaleUpperCase('de') + e.data.slice(1), start, end, 'end');
+  f.dispatchEvent(new Event('input', { bubbles: true }));
+}
+// Rückfall, falls die Eingabe nicht abgefangen werden konnte: Buchstabe nachträglich groß machen.
 function autoCapital(e) {
   const f = e.target;
   if (e.inputType !== 'insertText' || !e.data || !f.matches?.('textarea, input[type=text]')) return;
   const pos = f.selectionStart;
   const ch = f.value.charAt(pos - 1);
-  if (!/^\p{Ll}$/u.test(ch)) return;
-  const before = f.value.slice(f.value.lastIndexOf('\n', pos - 2) + 1, pos - 1);
-  if (/[\p{L}\p{N}]/u.test(before) && !/[.!?]\s+$/.test(before)) return;
+  if (!/^\p{Ll}$/u.test(ch)) { if (/\p{L}/u.test(ch)) delete f.dataset.capNext; return; }
+  if (!capWanted(f, pos - 1)) return;
+  delete f.dataset.capNext;
   f.setRangeText(ch.toLocaleUpperCase('de'), pos - 1, pos, 'end');
 }
+dlg.addEventListener('beforeinput', capBefore);
 dlg.addEventListener('input', autoCapital);
 dlg.addEventListener('input', refreshOk);
 dlg.addEventListener('change', refreshOk);
@@ -349,7 +368,8 @@ function updateBar() {
   if (!bar) return;
   bar.classList.toggle('line', scrollY > 4);
   const big = document.querySelector('.ltitle');
-  if (bar.classList.contains('pnav')) bar.classList.toggle('titled', Boolean(big) && big.getBoundingClientRect().bottom < bar.getBoundingClientRect().bottom);
+  // Ohne großen Titel steht der Titel immer in der Leiste.
+  if (bar.classList.contains('pnav')) bar.classList.toggle('titled', !big || big.getBoundingClientRect().bottom < bar.getBoundingClientRect().bottom);
 }
 window.addEventListener('scroll', updateBar, { passive: true });
 
