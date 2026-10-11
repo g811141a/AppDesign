@@ -147,7 +147,8 @@ const found = new Map();
       // R-37 Kein Text ragt über Zelle oder Kachel hinaus – zu lange Wörter brechen im Wort um
       document.querySelectorAll('#app td, #app th, #app dd, #app .box, .box .kv .v, .box .ln, .irow, .side-row, .bhint, .bnote, .msg-text, .pop p, .fazit-box').forEach(e => {
         if (!vis(e) || e.closest('.rt, #printout') || cs(e).textOverflow === 'ellipsis') return;
-        if (e.scrollWidth > e.clientWidth + 1) R('R-37', `Text ragt über ${e.tagName.toLowerCase()}${e.classList[0] ? '.' + e.classList[0] : ''} hinaus: ‚${label(e)}‘`);
+        const right = e.getBoundingClientRect().right;
+        if (e.scrollWidth > e.clientWidth + 1 || [...e.querySelectorAll('*')].some(c => vis(c) && c.getBoundingClientRect().right > right + 1)) R('R-37', `Text ragt über ${e.tagName.toLowerCase()}${e.classList[0] ? '.' + e.classList[0] : ''} hinaus: ‚${label(e)}‘`);
       });
       document.querySelectorAll('#app table').forEach(t => { if (vis(t) && !t.closest('.rt') && t.offsetWidth > t.parentElement.clientWidth + 1 && !/auto|scroll/.test(cs(t.parentElement).overflowX)) R('R-37', `Tabelle breiter als ihr Platz (${t.offsetWidth} statt ${t.parentElement.clientWidth} px)`); });
       if (document.documentElement.scrollWidth > innerWidth + 1) R('R-37', 'Seite breiter als der Bildschirm');

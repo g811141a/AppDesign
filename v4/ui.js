@@ -63,10 +63,10 @@ let dlgDirty = null;       // Prüft, ob im offenen Fenster etwas geändert wurd
 function esc(s) {
   return String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 }
-// Seit 4.7.0: Sehr lange Wörter (über 20 Zeichen) bekommen unsichtbare Umbruchstellen, damit sie auch in Tabellen
-// im Wort umbrechen, statt über die Zelle hinauszuragen (R-37). Normale Wörter bleiben ganz.
+// Seit 4.7.0: Sehr lange Wörter (über 20 Zeichen) bekommen nach jedem Zeichen eine unsichtbare Umbruchstelle, damit sie
+// auch in Tabellen genau am Spaltenrand im Wort umbrechen, statt über die Zelle hinauszuragen (R-37). Normale Wörter bleiben ganz.
 function breakable(text) {
-  return String(text ?? '').replace(/\S{21,}/gu, w => Array.from(w).reduce((acc, ch, i) => acc + (i && i % 12 === 0 ? '\u200B' : '') + ch, ''));
+  return String(text ?? '').replace(/\S{21,}/gu, w => Array.from(w).join('\u200B'));
 }
 // Ganze Zahl mit Tausenderpunkt, z. B. 4850 → "4.850".
 function thousands(n) {

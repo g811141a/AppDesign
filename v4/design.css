@@ -82,7 +82,7 @@ button { display: inline-flex; align-items: center; justify-content: center; gap
 button[hidden] { display: none; }
 /* Seit 4.7.0: Kein Text ragt über seine Zelle oder Kachel hinaus – zu lange Wörter brechen im Wort um (R-37);
    in Tabellen sorgt breakable() in ui.js für Umbruchstellen in sehr langen Wörtern */
-dd, .box .kv .v, .irow .t, .side-row .t, .fazit-box, .bhint, .bnote, .msg-text, .pop p { overflow-wrap: anywhere; }
+td, th, .ln .t, dd, .box .kv .v, .irow .t, .side-row .t, .fazit-box, .bhint, .bnote, .msg-text, .pop p { overflow-wrap: anywhere; }
 /* Seit 4.3.0: Doppeltippen vergrößert nie die Ansicht (Zoomen mit zwei Fingern bleibt möglich) */
 * { touch-action: manipulation; }
 /* Seit 4.2.0: kein Fokus-Rahmen beim Antippen oder Öffnen eines Fensters (nur bei Tastatur-Bedienung) */
