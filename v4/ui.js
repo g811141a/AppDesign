@@ -1,4 +1,4 @@
-// AppDesign 4.4.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
+// AppDesign 4.5.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
 // Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/v4/ui.js"></script>
 // Klassisches Skript: alle Funktionen sind global und für das Skript der App sichtbar.
 //
@@ -367,11 +367,13 @@ function updateBar() {
   const bar = document.querySelector('.pnav, .nb');
   if (!bar) return;
   bar.classList.toggle('line', scrollY > 4);
+  if (bar.classList.contains('pnav')) document.documentElement.style.setProperty('--pnav-h', bar.offsetHeight + 'px');
   const big = document.querySelector('.ltitle');
   // Ohne großen Titel steht der Titel immer in der Leiste.
   if (bar.classList.contains('pnav')) bar.classList.toggle('titled', !big || big.getBoundingClientRect().bottom < bar.getBoundingClientRect().bottom);
 }
 window.addEventListener('scroll', updateBar, { passive: true });
+window.addEventListener('resize', updateBar);
 
 /* ---------- Tastatur und sichtbarer Bereich ---------- */
 

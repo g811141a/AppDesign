@@ -1,6 +1,6 @@
 # Designrichtlinie allgemein
 
-**Version 4.4.0** · Stand 11.10.2026
+**Version 4.5.0** · Stand 11.10.2026
 
 Allgemeine Gestaltungs- und Bedienregeln für alle iPad-Web-Apps von g811141a (seit 4.1.0 auch
 auf dem iPhone, Abschnitt 15.17).
@@ -46,6 +46,9 @@ App-spezifische Regeln stehen in einer eigenen Datei je App
   `overscroll-behavior: contain`). Daneben tippen schließt Menü bzw. Sprechblase.
 - **Kein Fokus-Rahmen** beim Antippen oder Öffnen eines Fensters (nur bei Bedienung mit
   Tastatur); ein Fenster öffnet ohne vorausgewählte Schaltfläche.
+- **Leisten bewegen sich nie:** Kopfzeile, Seitenkopf (iPhone) und Seitenleisten-Kopf stehen fest;
+  nur der Inhalt darunter scrollt. Die Seite federt am Rand nicht nach (`overscroll-behavior: none`
+  auf `html`/`body`); der Seitenkopf auf dem iPhone ist fest positioniert (`position: fixed`).
 - **Doppeltippen vergrößert nie** die Ansicht (`touch-action: manipulation`); Zoomen mit zwei
   Fingern bleibt möglich.
 - **Gleiche Bedienung auf iPad und iPhone:** gleiche Kapseln oben (z. B. [`plus` | `ellipsis`],
@@ -657,6 +660,7 @@ Messbare Punkte prüft das HIG-Prüfskript automatisch.
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 4.5.0 | 11.10.2026 | Neben | Leisten bewegen sich nie (Seite federt nicht nach, iPhone-Seitenkopf fest) |
 | 4.4.0 | 11.10.2026 | Neben | Titel der Inhaltsseite immer in der Leiste (iPhone wie iPad); Anzahl unter dem Titel von Seitenleiste und Startliste; Backup-Kachel immer sichtbar (gelb nur ohne Backup heute); Großschreibung schon vor der Eingabe und nach Vorschlägen |
 | 4.3.0 | 11.10.2026 | Neben | Kein Zoom durch Doppeltippen; Bezeichnung und Feld bleiben zusammen (Umbruch vor der Bezeichnung); App setzt Großbuchstaben am Zeilenanfang; Diktieren nur über die Tastatur; gelbe Markierung ohne blauen Rand; Seitenleiste mit Kacheln und gelber Backup-Kachel, iPhone-Startliste gleich wie die Seitenleiste; Bezeichnung im Kasten halbfett; Nach oben/Ans Ende in senkrechter Kapsel |
 | 4.2.0 | 11.10.2026 | Neben | Grundprinzipien: nur der Vordergrund reagiert, kein Fokus-Rahmen, gleiche Bedienung iPad/iPhone; iPhone (15.17): Titel wandert in die Leiste, Kapseln oben wie am iPad, Suche wie am iPad, Kacheln mit aktuellem Eintrag blau, fester Hinweis unten (gelb, blauer Knopf, auch in der Seitenleiste); Kasten mit Linien waagrecht und senkrecht (15.10) |
