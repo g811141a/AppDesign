@@ -1,4 +1,4 @@
-/* AppDesign 4.1.0 · design.css – gemeinsame Gestaltung der iPad-Web-Apps von g811141a (Apple-like)
+/* AppDesign 4.2.0 · design.css – gemeinsame Gestaltung der iPad-Web-Apps von g811141a (Apple-like)
    Einbinden im <head> vor dem eigenen <style> der App:  <link rel="stylesheet" href="../AppDesign/v4/design.css">
    Farben als Variablen auf :root, Dunkelmodus über data-theme="dark" (setzt ui.js / applyTheme).
    Komponenten: Schaltflächen, Suchfeld, Kapsel, Eingabefelder, Datumsfelder, Kopfzeile, Seitenleiste,
@@ -78,6 +78,12 @@ button {
 button:disabled, button[aria-disabled="true"] { opacity: .4; cursor: default; }
 button { display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
 button[hidden] { display: none; }
+/* Seit 4.2.0: kein Fokus-Rahmen beim Antippen oder Öffnen eines Fensters (nur bei Tastatur-Bedienung) */
+button:focus:not(:focus-visible), dialog:focus { outline: none; }
+/* Seit 4.2.0: Was im Vordergrund ist, bekommt jedes Wischen – die Seite dahinter bewegt sich nicht */
+html.locked, html.locked body { overflow: hidden; }
+dialog, .dlg-body, .menu, #side { overscroll-behavior: contain; }
+.layer { touch-action: none; }
 .ic { width: 20px; height: 20px; flex: none; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 .ic.red { color: var(--danger); }
 button.primary .ic.red { color: inherit; }
@@ -175,6 +181,10 @@ body.docked { padding-left: calc(var(--side-w) + max(10px, env(safe-area-inset-l
 .side-empty { color: var(--muted); padding: 8px 12px; }
 .bhint { margin-top: auto; padding: 16px 12px 0; font-size: 13px; color: var(--muted); display: flex; flex-direction: column; gap: 10px; align-items: flex-start; }
 .bhint button { color: var(--ink); font-size: 17px; }
+/* Seit 4.2.0: Backup-Hinweis bleibt am unteren Rand der Seitenleiste stehen; viele Einträge laufen dahinter durch */
+#side .bhint { position: sticky; bottom: -14px; margin-left: -12px; margin-right: -12px; padding: 16px 24px 14px; background: var(--focus); color: var(--ink); }
+/* Backup-Hinweis gelb getönt mit blau gefülltem Knopf, damit man die Funktion sofort erkennt (iPad und iPhone) */
+#side .bhint button, .bbar .bnote button { background: var(--accent); color: var(--accent-ink); border: .5px solid var(--rim-color); box-shadow: var(--glow-accent); }
 
 /* Komponente Menü: Karte mit Schatten wie die Schaltflächen, Icons vor dem Text; antippen daneben schließt */
 .layer { position: fixed; inset: 0; z-index: 29; }
@@ -307,11 +317,17 @@ dialog input[type=text], dialog input[type=date], dialog textarea { background: 
    oder unter 500 px hoch). Wie Apple (Notizen, iOS 26): eine Seite nach der anderen mit großem Titel,
    runder Zurück-Knopf ohne Text, Suche unten, Fenster bildschirmfüllend, Abfragen als Sprechblase am Knopf. */
 html.phone body { padding-bottom: calc(env(safe-area-inset-bottom) + 96px); }
+html.phone body:has(.bnote) { padding-bottom: calc(env(safe-area-inset-bottom) + 150px); }
 html.phone #side, html.phone .side-shade, html.phone .fab { display: none !important; }
 /* Komponente Seitenkopf (iPhone): links rund zurück, rechts Kapsel oder runder Knopf; scrollt nicht mit */
-.pnav { position: sticky; top: var(--vv-top); z-index: 6; display: flex; align-items: center; gap: 8px; min-height: 44px;
+.pnav { position: sticky; top: var(--vv-top); z-index: 6; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px; min-height: 44px;
   margin: 0 -16px; padding: calc(env(safe-area-inset-top) + 8px) 16px 8px; background: var(--bg); border-bottom: .5px solid transparent; }
 .pnav.line { border-bottom-color: var(--line); }
+.pnav > .r { justify-self: end; }
+/* Wie Notizen: Beim Hochschieben wandert der große Titel als kleiner Titel (17 pt halbfett) in die Leiste und bleibt dort */
+.pnav-title { font-size: 17px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 50vw; opacity: 0; transition: opacity .15s; }
+.pnav.titled .pnav-title { opacity: 1; }
+.pnav .nb2 { grid-column: 1 / -1; margin-top: 2px; }
 /* Großer Titel mit grauer Zeile darunter (z. B. Anzahl) */
 .ltitle { font-size: 34px; font-weight: 700; line-height: 1.15; margin: 4px 0 2px; overflow-wrap: anywhere; }
 .lcount { color: var(--muted); font-size: 17px; margin: 0 0 16px; }
@@ -326,11 +342,23 @@ html.phone #side, html.phone .side-shade, html.phone .fab { display: none !impor
 .irow > .ic { color: var(--th-line); }
 .irow.on { background: var(--sel-bg); }
 .irow a { text-decoration: none; }
+/* Seit 4.2.0: Liste als einzelne Kacheln (.ilist.tiles) – jeder Eintrag eine eigene Karte; der aktuelle blau gefüllt */
+.ilist.tiles { background: none; border-radius: 0; overflow: visible; box-shadow: none; }
+.tiles .irow { background: var(--card); border-radius: 22px; box-shadow: var(--table-shadow); margin-top: 10px; }
+.tiles .irow:first-child { margin-top: 0; }
+.tiles .irow + .irow::before { display: none; }
+.irow.current { background: var(--accent); color: var(--accent-ink); box-shadow: var(--glow-accent); }
+.irow.current small, .irow.current > .ic { color: rgba(255,255,255,.85); }
 /* Komponente Kasten (iPhone): ein Eintrag als Karte; Zeilen mit grauer Bezeichnung links */
 .box { background: var(--card); border-radius: 22px; padding: 12px 16px; margin-top: 10px; box-shadow: var(--table-shadow); }
-.box .kv { display: flex; gap: 8px; margin-top: 6px; }
-.box .kv .k { flex: none; width: 74px; font-size: 13px; color: var(--muted); padding-top: 2px; }
+.box .kv { display: flex; gap: 10px; padding: 7px 0; }
+.box .h + .kv { margin-top: 2px; }
+/* Seit 4.2.0: Felder im Kasten durch dünne Linien getrennt (wie die Trennlinie im Menü) – waagrecht zwischen
+   den Feldern, senkrecht zwischen Bezeichnung und Inhalt */
+.box .kv + .kv { border-top: 1px solid var(--line); }
+.box .kv .k { flex: none; width: 74px; font-size: 13px; color: var(--muted); margin: -7px 0; padding: 9px 8px 7px 0; border-right: 1px solid var(--line); }
 .box .kv .v { flex: 1; min-width: 0; }
+.box .kv .k.word { font-size: 17px; color: var(--ink); padding-top: 7px; }
 .box.on { background: var(--sel-bg); }
 /* Komponente untere Leiste (iPhone): Suchfeld und runde Knöpfe unten; wandert mit der Tastatur nach oben */
 .bbar { position: fixed; z-index: 8; left: max(16px, env(safe-area-inset-left)); right: max(16px, env(safe-area-inset-right));
@@ -338,6 +366,11 @@ html.phone #side, html.phone .side-shade, html.phone .fab { display: none !impor
 .bbar::before { content: ''; position: fixed; left: 0; right: 0; bottom: 0; height: calc(max(var(--vv-bottom), env(safe-area-inset-bottom)) + 90px); z-index: -1;
   background: linear-gradient(to bottom, transparent, var(--bg) 55%); pointer-events: none; }
 .bbar .searchbox { flex: 1 1 auto; }
+/* Seit 4.2.0: fester Hinweis unten (z. B. Backup) als Karte in der unteren Leiste */
+.bbar .bnote { flex: 1; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding: 12px 16px; border-radius: 22px;
+  background: var(--focus); box-shadow: var(--float); font-size: 13px; color: var(--ink); }
+.bbar .bnote > div { flex: 1 1 160px; }
+.bbar .bnote button { font-size: 17px; }
 /* Fenster auf dem iPhone bildschirmfüllend; Kopfzeile kompakt, Titel einzeilig */
 html.phone dialog#dlg { width: 100%; max-width: none; min-width: 0; height: var(--dlg-max); border-radius: 0; box-shadow: none; }
 html.phone dialog#dlg form { height: 100%; }
@@ -346,7 +379,7 @@ html.phone #dlg .dlg-head { gap: 8px; padding: calc(env(safe-area-inset-top) + 8
 html.phone #dlg .dlg-head .hl, html.phone #dlg .dlg-head .hr { flex: none; gap: 8px; }
 html.phone #dlg .dlg-head .mid { flex: 1; max-width: none; min-width: 0; }
 html.phone #dlg .dlg-head h3 { font-size: 17px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-html.phone #dlg .dlg-head .grp button { width: 44px; min-width: 44px; }
+html.phone #dlg .dlg-head .grp button:not(.txt) { width: 44px; min-width: 44px; }
 html.phone #dlg .dlg-body { padding: 4px max(12px, env(safe-area-inset-right)) calc(20px + env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left)); }
 html.phone .step-head { flex-wrap: wrap; row-gap: 8px; }
 /* Kasten-Kopf: Titel und Mikrofon in der ersten Zeile, Options-Kapseln darunter */

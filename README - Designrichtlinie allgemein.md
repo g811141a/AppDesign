@@ -1,6 +1,6 @@
 # Designrichtlinie allgemein
 
-**Version 4.1.0** · Stand 10.10.2026
+**Version 4.2.0** · Stand 11.10.2026
 
 Allgemeine Gestaltungs- und Bedienregeln für alle iPad-Web-Apps von g811141a (seit 4.1.0 auch
 auf dem iPhone, Abschnitt 15.17).
@@ -41,6 +41,14 @@ App-spezifische Regeln stehen in einer eigenen Datei je App
 - **Aufbau wie Apple-Apps:** links eine **Seitenleiste** mit der zentralen Liste, rechts der
   Inhalt mit einer **Kopfzeile** (Titel in der Mitte, rechts eine Kapsel mit den wichtigsten
   Aktionen; Weiteres im **Mehr-Menü** ellipsis).
+- **Nur der Vordergrund reagiert:** Ist ein Fenster, Menü oder eine Sprechblase offen, wirkt
+  jedes Wischen und Tippen nur dort – die Seite dahinter bewegt sich nicht (Seite gesperrt,
+  `overscroll-behavior: contain`). Daneben tippen schließt Menü bzw. Sprechblase.
+- **Kein Fokus-Rahmen** beim Antippen oder Öffnen eines Fensters (nur bei Bedienung mit
+  Tastatur); ein Fenster öffnet ohne vorausgewählte Schaltfläche.
+- **Gleiche Bedienung auf iPad und iPhone:** gleiche Kapseln oben (z. B. [`plus` | `ellipsis`],
+  [`share` | `search` | `ellipsis`]), gleiche Suche, gleiche Menüs – das iPhone ordnet nur die
+  Seiten anders an (Abschnitt 15.17).
 - Bewusst verworfen: eigene Kennzeichnung von Pflichtfeldern; harte, schmale Schatten;
   Glas-Leiste (schlechter lesbar).
 
@@ -497,6 +505,10 @@ Verhalten · technischer Name). In AppDesign ist jede Komponente einmal programm
 - **Apple:** [HIG – Boxes](https://developer.apple.com/design/human-interface-guidelines/boxes)
 - Fläche `--dlg-card` bzw. `--card`, Radius 14 px, ohne Rand, Innenabstand 14 px;
   Kopfzeile mit blauer Schritt-Nummer, Titel, rechts Options-Kapseln und Icon-Schaltflächen.
+- **Kasten mit Feldern** (`.box` mit `.kv`, iPhone statt Tabellenzeile): Felder durch dünne
+  Linien getrennt (1 px `--line`, wie die Trennlinie im Menü) – waagrecht zwischen den Feldern,
+  senkrecht zwischen Bezeichnung und Inhalt. Bezeichnung als Wort in normaler Schrift
+  (`.k.word`, 17 pt) oder als Emoji/klein grau.
 
 ### 15.11 Eingabefeld mit Fehlermeldung
 - **Apple:** [HIG – Text fields](https://developer.apple.com/design/human-interface-guidelines/text-fields)
@@ -552,18 +564,27 @@ Verhalten · technischer Name). In AppDesign ist jede Komponente einmal programm
   bei einem Wechsel `render()`.
 - **Seiten:** eine Seite nach der anderen statt Seitenleiste. Startliste als eigene Seite; ein
   Eintrag öffnet seine Seite.
-- **Seitenkopf** (`.pnav`): bleibt oben stehen; links runder Zurück-Knopf mit `chevron-left`
-  **ohne Text**, rechts eine Kapsel (z. B. [`share` | `ellipsis`]) bzw. ein runder Knopf.
+- **Seitenkopf** (`.pnav`): bleibt fest oben stehen; links runder Zurück-Knopf mit
+  `chevron-left` **ohne Text**, rechts **dieselbe Kapsel wie am iPad** (z. B. [`plus` |
+  `ellipsis`] in der Startliste, [`share` | `search` | `ellipsis`] im Inhalt).
 - **Großer Titel** (`.ltitle`, 34 pt fett) mit grauer Zeile darunter (`.lcount`, z. B. Anzahl).
+  Wie Notizen: Wird er hochgeschoben, erscheint der Titel klein (17 pt halbfett) in der Mitte
+  der Leiste (`.pnav-title`, `.pnav.titled`, `updateBar()` in `ui.js`) und bleibt dort, bis man
+  wieder ganz nach unten zieht.
 - **Liste** (`.ilist` mit `.irow`): weiße Karte mit runden Ecken (22 px); Zeilen mit fettem Titel,
   grauer Zeile darunter und `chevron-right`; Haarlinie links eingerückt. Tippen öffnet, lange
   drücken zeigt das Kontextmenü; markierte Zeile `--sel-bg`.
+- **Kacheln** (`.ilist.tiles`): die zentrale Liste der Startseite – jeder Eintrag eine eigene
+  Karte (22 px Radius, 10 px Abstand); der zuletzt geöffnete blau gefüllt (`.irow.current`, wie
+  in der Seitenleiste).
 - **Kasten** (`.box` mit Zeilen `.kv` = graue Bezeichnung `.k` links, Wert `.v` rechts): ein
   Eintrag als Karte, z. B. ein Tag statt einer Tabellenzeile.
-- **Untere Leiste** (`.bbar`): Suchfeld (Komponente Suchfeld) und runde Knöpfe unten wie in
-  Notizen; runder `plus`-Knopf rechts unten zum Anlegen; rundes `x` neben dem Suchfeld beendet
-  die Suche. Ein Verlauf dahinter lässt den Inhalt auslaufen; bei offener Tastatur wandert die
-  Leiste über die Tastatur (`--vv-bottom`).
+- **Suche** wie am iPad (Komponente Suchfeld): `search` in der Kapsel öffnet unter der Leiste
+  die Suchzeile mit ‚1 von 4‘, ⓧ und ⌃ ⌄; gefiltert wird auf Einträge mit Treffern.
+- **Fester Hinweis unten** (`.bbar` mit `.bnote`): z. B. der Backup-Hinweis – gelb getönte Karte
+  (`--focus`) mit blau gefülltem Knopf, fest am unteren Rand; die Liste läuft dahinter durch
+  (Verlauf), bei offener Tastatur wandert die Leiste über die Tastatur (`--vv-bottom`). Am iPad
+  steht derselbe Hinweis ebenso gelb fest am unteren Rand der Seitenleiste.
 - **Fenster** bildschirmfüllend (bei offener Tastatur bis zur Tastatur); Kopfzeile kompakt mit
   einzeiligem Titel (kurze Form, z. B. ‚Di, 25.08.2026‘); Options-Kapseln stehen unter dem
   Kasten-Titel. Meldungen bleiben kleine Fenster in der Mitte.
@@ -617,6 +638,7 @@ Messbare Punkte prüft das HIG-Prüfskript automatisch.
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 4.2.0 | 11.10.2026 | Neben | Grundprinzipien: nur der Vordergrund reagiert, kein Fokus-Rahmen, gleiche Bedienung iPad/iPhone; iPhone (15.17): Titel wandert in die Leiste, Kapseln oben wie am iPad, Suche wie am iPad, Kacheln mit aktuellem Eintrag blau, fester Hinweis unten (gelb, blauer Knopf, auch in der Seitenleiste); Kasten mit Linien waagrecht und senkrecht (15.10) |
 | 4.1.0 | 10.10.2026 | Neben | iPhone-Ansicht (15.17): Seitenkopf, großer Titel, Liste, Kasten, untere Leiste, Fenster bildschirmfüllend, `isPhone()`; Menüpunkte mit Häkchen **und** Icon (Häkchen vorne, dann Icon und Text); `button[hidden]` blendet aus |
 | 4.0.0 | 09.10.2026 | Haupt | Umzug ins Design-Repo AppDesign; Komponenten einmal programmiert in `v4/design.css` und `v4/ui.js` (versioniert eingebunden); HIG-Prüfung `tests/hig.mjs` für alle Apps; Vorlage für neue Apps; Abschnitt 14 neu |
 | 3.6.1 | 09.10.2026 | Korrektur | Menüs ohne Linien zwischen einzelnen Punkten (wie iOS 26); Suchfeld ohne blauen Fokus-Rahmen |

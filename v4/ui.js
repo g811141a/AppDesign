@@ -1,4 +1,4 @@
-// AppDesign 4.1.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
+// AppDesign 4.2.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
 // Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/v4/ui.js"></script>
 // Klassisches Skript: alle Funktionen sind global und für das Skript der App sichtbar.
 //
@@ -119,6 +119,26 @@ const APPEARANCES = { auto: 'Automatisch', light: 'Hell', dark: 'Dunkel' };
 
 /* ---------- Menüs und Sprechblasen ---------- */
 
+// Ebene hinter Menü und Sprechblase: daneben tippen schließt, Wischen bewegt die Seite dahinter nicht.
+function blockingLayer() {
+  const layer = document.createElement('div');
+  layer.className = 'layer';
+  layer.addEventListener('touchmove', e => e.preventDefault(), { passive: false });
+  return layer;
+}
+
+// Seite sperren, solange ein Fenster offen ist: Wischen wirkt nur im Fenster (seit 4.2.0).
+function lockPage() { document.documentElement.classList.add('locked'); }
+function unlockPage() { if (!dlg.open && !msg.open) document.documentElement.classList.remove('locked'); }
+
+// Fenster ohne Fokus-Rahmen öffnen: der Fokus liegt auf dem Fenster selbst, nicht auf dem x.
+function showModalQuiet(d) {
+  d.tabIndex = -1;
+  d.showModal();
+  d.focus({ preventScroll: true });
+  lockPage();
+}
+
 // Menü oder Sprechblase unter (bzw. über) der Schaltfläche, im Bildschirm gehalten.
 function placeAt(el, anchor, align) {
   const r = anchor.getBoundingClientRect();
@@ -142,8 +162,7 @@ const menuHtml = items => items.map((it, i) => it === 'sep' ? '<div class="sep">
       it.sub ? `<div class="sub">${esc(it.sub)}</div>` : ''}`).join('');
 function openMenu(anchor, items, align = 'right') {
   const host = anchor.closest('dialog') || document.body;
-  const layer = document.createElement('div');
-  layer.className = 'layer';
+  const layer = blockingLayer();
   const menu = document.createElement('div');
   menu.className = 'menu';
   menu.setAttribute('role', 'menu');
@@ -181,8 +200,7 @@ function confirmPop(anchor, html, act, back = { label: 'Abbrechen' }) {
   return new Promise(resolve => {
     const visible = anchor?.isConnected && anchor.getClientRects().length;
     const host = (visible && anchor.closest('dialog')) || (dlg.open ? dlg : document.body);
-    const layer = document.createElement('div');
-    layer.className = 'layer';
+    const layer = blockingLayer();
     const pop = document.createElement('div');
     pop.className = 'pop';
     pop.innerHTML = `<p>${html}</p><div class="btns">
@@ -227,7 +245,7 @@ function inform(title, html) {
     const done = () => { if (msg.open) msg.close(); resolve(); };
     msg.querySelector('[data-x]').onclick = done;
     msg.oncancel = e => { e.preventDefault(); done(); };
-    msg.showModal();
+    showModalQuiet(msg);
     placeDialogs();
   });
 }
@@ -242,7 +260,7 @@ function openDialog(html, wide = false) {
   dlgDirty = null;
   dlg.innerHTML = html;
   dlg.returnValue = '';
-  if (!dlg.open) dlg.showModal();
+  if (!dlg.open) showModalQuiet(dlg);
   placeDialogs();
   dlg.querySelector('.dlg-body')?.scrollTo(0, 0);
   const x = dlg.querySelector('#dlgX');
@@ -279,7 +297,9 @@ dlg.addEventListener('change', refreshOk);
 dlg.addEventListener('click', () => setTimeout(refreshOk));
 // Escape wirkt wie das x.
 dlg.addEventListener('cancel', e => { e.preventDefault(); dlg.querySelector('#dlgX')?.click(); });
+msg.addEventListener('close', unlockPage);
 dlg.addEventListener('close', () => {
+  unlockPage();
   if (dlg.open) return;
   if (dlgOpener) document.querySelector(dlgOpener)?.classList.remove('on');
   dlgOpener = '';
@@ -308,6 +328,17 @@ const isPhone = () => innerWidth < 700 || innerHeight < 500;
 function applyLayout() { document.documentElement.classList.toggle('phone', isPhone()); }
 applyLayout();
 window.addEventListener('resize', applyLayout);
+
+// Großer Titel (iPhone): sobald er unter die Leiste geschoben ist, steht er klein in der Leiste (.pnav.titled).
+// Die Leiste bekommt beim Scrollen eine Haarlinie. Die App ruft updateBar() nach jedem Aufbau der Seite.
+function updateBar() {
+  const bar = document.querySelector('.pnav, .nb');
+  if (!bar) return;
+  bar.classList.toggle('line', scrollY > 4);
+  const big = document.querySelector('.ltitle');
+  if (bar.classList.contains('pnav')) bar.classList.toggle('titled', Boolean(big) && big.getBoundingClientRect().bottom < bar.getBoundingClientRect().bottom);
+}
+window.addEventListener('scroll', updateBar, { passive: true });
 
 /* ---------- Tastatur und sichtbarer Bereich ---------- */
 
