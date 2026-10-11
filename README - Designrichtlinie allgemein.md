@@ -702,6 +702,8 @@ hier sofort eine Nummer und – wo möglich – eine Prüfung im Skript.
 | R-33 | Darstellung folgt dem Gerät (‚Automatisch‘), im Mehr-Menü übersteuerbar | Skript | 2 |
 | R-34 | Teilen (`share`) immer nur als Icon, nie mit Text | Skript | 5 |
 | R-35 | Schatten zierlich, Seitenleiste schwebend wie in Safari, Apple-Look | Muster | 1, 15.4 |
+| R-36 | Gleiche Funktion = gleicher Baustein auf iPad und iPhone: eine Umsetzung, die sich nur in der Breite unterscheidet (z. B. Seitenleiste am iPad = Startliste am iPhone; Kacheln laufen auf beiden unter der Backup-Kachel durch) – nie zwei getrennte Nachbauten | Skript (Gerätevergleich des Aufbaus) | 1, 15.4, 15.17 |
+| R-37 | Kein Text ragt über Zelle, Kasten oder Kachel hinaus: zu lange Wörter brechen im Wort um und laufen in der nächsten Zeile weiter (iPad und iPhone) | Skript (Testdaten mit 100 × ‚a‘) | 9, 15.10 |
 
 ---
 

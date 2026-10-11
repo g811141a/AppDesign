@@ -1,4 +1,4 @@
-// AppDesign 4.6.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
+// AppDesign 4.7.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
 // Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/v4/ui.js"></script>
 // Klassisches Skript: alle Funktionen sind global und für das Skript der App sichtbar.
 //
@@ -62,6 +62,11 @@ let dlgDirty = null;       // Prüft, ob im offenen Fenster etwas geändert wurd
 
 function esc(s) {
   return String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+// Seit 4.7.0: Sehr lange Wörter (über 20 Zeichen) bekommen unsichtbare Umbruchstellen, damit sie auch in Tabellen
+// im Wort umbrechen, statt über die Zelle hinauszuragen (R-37). Normale Wörter bleiben ganz.
+function breakable(text) {
+  return String(text ?? '').replace(/\S{21,}/gu, w => Array.from(w).reduce((acc, ch, i) => acc + (i && i % 12 === 0 ? '\u200B' : '') + ch, ''));
 }
 // Ganze Zahl mit Tausenderpunkt, z. B. 4850 → "4.850".
 function thousands(n) {

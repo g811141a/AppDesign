@@ -1,8 +1,9 @@
-// AppDesign 4.6.0 · HIG- und Regel-Prüfung: misst eine App-Ansicht gegen die HIG-Checkliste (Abschnitt 16)
+// AppDesign 4.7.0 · HIG- und Regel-Prüfung: misst eine App-Ansicht gegen die HIG-Checkliste (Abschnitt 16)
 // und alle automatisch prüfbaren Regeln des Regelkatalogs (Abschnitt 17, R-01 …) der Designrichtlinie allgemein. Wird vom Prüfskript jeder App eingebunden:
 //   import { createCheck } from '../../AppDesign/tests/hig.mjs';
 //   const hig = createCheck({ skipTargets: ['table.days .ln:not(.q) a'] });   // bewusste Abweichungen der App
 //   await hig.measure(page, 'Mehr-Menü (hell quer)');  await hig.stays(page, '#mainMore', 'Mehr-Menü');
+//   await hig.shape(page, '#side', 'Seitenleiste', 'iPad');   // gleicher Baustein auf iPad und iPhone (R-36)
 //   process.exit(hig.report());
 // Geprüft: Antippflächen (44 pt, in Kapseln/Schalter 28 pt), Schrift ≥ 11 pt, Kontrast (4,5 : 1 bzw. 3 : 1),
 // doppelte Anführungszeichen, Löschen am Ende von Menüs, keine Linien zwischen Menüpunkten,
@@ -140,19 +141,63 @@ const found = new Map();
       try { if (typeof db !== 'undefined' && db.settings?.appearance === 'auto') { const want = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'; if (document.documentElement.dataset.theme !== want) R('R-33', 'Darstellung folgt nicht dem Gerät'); } } catch (e) {}
       // R-34 Teilen nur als Icon
       document.querySelectorAll('button').forEach(b => { if (vis(b) && b.querySelector('svg') && /teilen|share/i.test(b.getAttribute('aria-label') || '') && b.textContent.trim()) R('R-34', 'Teilen mit Text'); });
+      // R-36 Gleiche Funktion = gleicher Baustein: die Kacheln laufen unter der Backup-Kachel durch (iPad wie iPhone)
+      document.querySelectorAll('.side-foot').forEach(f => { const l = f.parentElement.querySelector('.side-list');
+        if (vis(f) && l && l.getBoundingClientRect().bottom < f.getBoundingClientRect().bottom - 2) R('R-36', 'Liste endet über der Backup-Kachel (starre Begrenzung statt durchlaufen)'); });
+      // R-37 Kein Text ragt über Zelle oder Kachel hinaus – zu lange Wörter brechen im Wort um
+      document.querySelectorAll('#app td, #app th, #app dd, #app .box, .box .kv .v, .box .ln, .irow, .side-row, .bhint, .bnote, .msg-text, .pop p, .fazit-box').forEach(e => {
+        if (!vis(e) || e.closest('.rt, #printout') || cs(e).textOverflow === 'ellipsis') return;
+        if (e.scrollWidth > e.clientWidth + 1) R('R-37', `Text ragt über ${e.tagName.toLowerCase()}${e.classList[0] ? '.' + e.classList[0] : ''} hinaus: ‚${label(e)}‘`);
+      });
+      document.querySelectorAll('#app table').forEach(t => { if (vis(t) && !t.closest('.rt') && t.offsetWidth > t.parentElement.clientWidth + 1 && !/auto|scroll/.test(cs(t.parentElement).overflowX)) R('R-37', `Tabelle breiter als ihr Platz (${t.offsetWidth} statt ${t.parentElement.clientWidth} px)`); });
+      if (document.documentElement.scrollWidth > innerWidth + 1) R('R-37', 'Seite breiter als der Bildschirm');
       return res;
     }, skipTargets);
     for (const [k, list] of Object.entries(r)) for (const x of list) note({ target: 'Antippfläche', font: 'Schrift', contrast: 'Kontrast', quotes: 'Anführungszeichen', menu: 'Menü', rules: 'Regel' }[k], x, where);
   }
 
+  // R-36 Gleiche Funktion = gleicher Baustein auf iPad und iPhone: Aufbau (Elemente, Klassen, Scrollbereiche,
+  // feste Teile) eines Bausteins je Gerät festhalten; report() vergleicht die Geräte. allow: bewusst nur auf einem Gerät.
+  const shapes = new Map();
+  const shape = async (p, sel, name, device, allow = []) => {
+    const sig = await p.locator(sel).first().evaluate((root, allow) => {
+      if (getComputedStyle(root).display === 'none' || root.hidden) return null;
+      const ignore = /^(current|on|ok|page|over|red|held)$/, out = new Set();
+      const walk = (e, path, d) => { for (const c of e.children) {
+        const s = getComputedStyle(c);
+        if (s.display === 'none' || allow.some(a => c.matches(a))) continue;
+        const cls = [...c.classList].filter(x => !ignore.test(x)).sort().join('.');
+        const key = `${path} > ${c.tagName.toLowerCase()}${c.id ? '#' + c.id : ''}${cls ? '.' + cls : ''}`;
+        out.add(key + (/auto|scroll/.test(s.overflowY) ? ' [scrollt]' : '') + (/absolute|fixed|sticky/.test(s.position) ? ' [fest]' : ''));
+        if (d < 4) walk(c, key, d + 1);
+      } };
+      walk(root, '', 0);
+      return [...out];
+    }, allow).catch(() => null);
+    if (!shapes.has(name)) shapes.set(name, new Map());
+    shapes.get(name).set(device, sig);
+  };
+  const compareShapes = () => {
+    for (const [name, byDev] of shapes) {
+      const devs = [...byDev.keys()]; if (devs.length < 2) continue;
+      const [d0, ...rest] = devs, a = byDev.get(d0);
+      for (const d of rest) { const b = byDev.get(d);
+        if (!a || !b) { note('Regel', `R-36 Baustein ‚${name}‘ fehlt auf ${!a ? d0 : d} – dort eigene Umsetzung statt desselben Bausteins`, `${d0} ↔ ${d}`); continue; }
+        const only = (x, y) => x.filter(k => !y.includes(k)).slice(0, 3).join(' · ');
+        const ab = only(a, b), ba = only(b, a);
+        if (ab || ba) note('Regel', `R-36 Baustein ‚${name}‘ auf ${d0} und ${d} verschieden${ab ? ` – nur ${d0}: ${ab}` : ''}${ba ? ` – nur ${d}: ${ba}` : ''}`, `${d0} ↔ ${d}`);
+      }
+    }
+  };
   const stays = async (p, sel, where) => {
     if (!await p.locator(sel).first().evaluate(e => e.classList.contains('on')).catch(() => false)) note('Markierung', `${sel} bleibt nicht blau`, where);
   };
   const report = () => {
+    compareShapes();
     if (!found.size) { console.log('HIG- und Regel-Prüfung: keine Abweichungen.'); return 0; }
     console.log(`HIG- und Regel-Prüfung: ${found.size} Abweichung(en)\n`);
     for (const [k, where] of found) console.log(`- ${k}\n    ${[...where].slice(0, 3).join(' · ')}${where.size > 3 ? ` · +${where.size - 3}` : ''}`);
     return 1;
   };
-  return { measure, stays, note, report };
+  return { measure, stays, shape, note, report };
 }
