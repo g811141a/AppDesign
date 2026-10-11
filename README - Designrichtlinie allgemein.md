@@ -688,6 +688,20 @@ hier sofort eine Nummer und – wo möglich – eine Prüfung im Skript.
 | R-19 | Nach oben / Ans Ende in einer senkrechten Kapsel | Skript | 4 |
 | R-20 | Eingabefelder mindestens 16 px (sonst vergrößert iOS beim Antippen) | Skript · Gerät | 8 |
 | R-21 | Anzahl klein und grau unter dem Titel der Seitenleiste bzw. Startliste | Skript | 15.4, 15.17 |
+| R-22 | Alle Schaltflächen und Suchfelder schweben (Lichtkante und Schatten); Kapseln als Ganzes | Skript | 4, 15.1 |
+| R-23 | Keine Systemfenster und keine englischen Texte (‚OK‘, ‚Close‘, ‚Cancel‘) – Abfragen als Sprechblase, Meldungen im kleinen Fenster | Skript | 1 |
+| R-24 | Alle Aktionen sind echte Schaltflächen, gleiche Aktion = gleiche Bezeichnung und gleiches Icon überall | Muster | 1, 5, 6 |
+| R-25 | Tabellen: Trennlinien zwischen allen Spalten | Skript | 9 |
+| R-26 | Datumsfelder so breit wie das Datum (mit Kalender-Icon) | Skript | 8 |
+| R-27 | Betragsfelder rechtsbündig, Betrag ‚4.850,00 €‘ | Skript | 8 |
+| R-28 | Kopfzeile und Suchzeile bleiben bei offener Tastatur sichtbar | Ablauf · Gerät | 13 |
+| R-29 | Hängender Einzug: Folgezeilen beginnen unter dem Text, nicht unter dem Zeichen | Skript | 9 |
+| R-30 | Kasten mit Feldern: Linien waagrecht zwischen den Feldern und senkrecht zwischen Bezeichnung und Inhalt | Skript | 15.10 |
+| R-31 | Zentrale Liste (Seitenleiste, Startliste) als Kacheln, höchstens ein Eintrag blau | Skript | 15.4, 15.17 |
+| R-32 | Aktionen und Suche stehen oben in der Kapsel – unten nur feste Hinweise (z. B. Backup-Kachel) | Skript | 15.17 |
+| R-33 | Darstellung folgt dem Gerät (‚Automatisch‘), im Mehr-Menü übersteuerbar | Skript | 2 |
+| R-34 | Teilen (`share`) immer nur als Icon, nie mit Text | Skript | 5 |
+| R-35 | Schatten zierlich, Seitenleiste schwebend wie in Safari, Apple-Look | Muster | 1, 15.4 |
 
 ---
 
@@ -695,7 +709,7 @@ hier sofort eine Nummer und – wo möglich – eine Prüfung im Skript.
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
-| 4.6.0 | 11.10.2026 | Neben | Regelkatalog (Abschnitt 17) mit Nummern R-01 bis R-21; HIG- und Regel-Prüfung prüft alle automatisch prüfbaren Regeln; Leisten fest auch am iPad (Kopfzeile fest, in der Seitenleiste scrollen nur die Einträge) |
+| 4.6.0 | 11.10.2026 | Neben | Regelkatalog (Abschnitt 17) mit Nummern R-01 bis R-35; HIG- und Regel-Prüfung prüft alle automatisch prüfbaren Regeln; Leisten fest auch am iPad (Kopfzeile fest, in der Seitenleiste scrollen nur die Einträge) |
 | 4.5.0 | 11.10.2026 | Neben | Leisten bewegen sich nie (Seite federt nicht nach, iPhone-Seitenkopf fest) |
 | 4.4.0 | 11.10.2026 | Neben | Titel der Inhaltsseite immer in der Leiste (iPhone wie iPad); Anzahl unter dem Titel von Seitenleiste und Startliste; Backup-Kachel immer sichtbar (gelb nur ohne Backup heute); Großschreibung schon vor der Eingabe und nach Vorschlägen |
 | 4.3.0 | 11.10.2026 | Neben | Kein Zoom durch Doppeltippen; Bezeichnung und Feld bleiben zusammen (Umbruch vor der Bezeichnung); App setzt Großbuchstaben am Zeilenanfang; Diktieren nur über die Tastatur; gelbe Markierung ohne blauen Rand; Seitenleiste mit Kacheln und gelber Backup-Kachel, iPhone-Startliste gleich wie die Seitenleiste; Bezeichnung im Kasten halbfett; Nach oben/Ans Ende in senkrechter Kapsel |

@@ -108,6 +108,38 @@ const found = new Map();
       document.querySelectorAll('input:not([type=checkbox]):not([type=hidden]):not([type=file]), textarea').forEach(e => { if (vis(e) && parseFloat(cs(e).fontSize) < 16) R('R-20', `Eingabefeld ${e.id ? '#' + e.id : ''} unter 16 px – iOS vergrößert beim Antippen`); });
       // R-21 Anzahl unter dem Titel der Liste
       document.querySelectorAll('.side-head, .pnav-head').forEach(h => { if (vis(h) && !h.querySelector('small')) R('R-21', 'Anzahl unter dem Titel fehlt'); });
+      // R-22 Schaltflächen und Suchfelder schweben (außer innerhalb von Kapseln, Menüs, Listen und als Link)
+      document.querySelectorAll('button, .searchbox input').forEach(e => {
+        if (!vis(e) || !onTop(e) || e.closest('.grp, .navgrp, .cap, .menu, .pop .btns, #side .side-row, .irow, .fab, .smeta, .chips') || e.matches('.link, .mi, .side-row, .irow, .sclear, .fazit-box, [data-day]')) return;
+        if (cs(e).boxShadow === 'none') R('R-22', `Schaltfläche ohne Schatten (schwebt nicht): ‚${label(e)}‘`);
+      });
+      // R-23 Keine englischen Systemtexte
+      const ui = [...document.querySelectorAll('button, .pop, dialog[open] .dlg-head, .menu')].filter(vis).map(e => e.textContent).join(' ');
+      const en = ui.match(/\b(OK|Close|Cancel|Done|Delete|Share)\b/);
+      if (en) R('R-23', `englischer Text ‚${en[1]}‘`);
+      // R-25 Tabellen: Trennlinien zwischen allen Spalten (App-Tabellen)
+      document.querySelectorAll('#app table td + td').forEach(td => { if (vis(td) && parseFloat(cs(td).borderLeftWidth) === 0) R('R-25', 'Tabelle ohne Trennlinie zwischen Spalten'); });
+      // R-26 Datumsfelder so breit wie das Datum
+      document.querySelectorAll('input[type=date]').forEach(e => { if (vis(e) && e.getBoundingClientRect().width > 220) R('R-26', `Datumsfeld zu breit (${Math.round(e.getBoundingClientRect().width)} px)`); });
+      // R-27 Betragsfelder rechtsbündig
+      document.querySelectorAll('input[inputmode=decimal]').forEach(e => { if (vis(e) && !['right', 'end'].includes(cs(e).textAlign)) R('R-27', 'Betragsfeld nicht rechtsbündig'); });
+      // R-29 Hängender Einzug
+      document.querySelectorAll('#app .ln').forEach(e => { if (vis(e) && cs(e).display !== 'flex') R('R-29', 'Zeile ohne hängenden Einzug'); });
+      // R-30 Kasten mit Feldern: Linien waagrecht und senkrecht
+      document.querySelectorAll('.box .kv').forEach(kv => {
+        if (!vis(kv)) return;
+        if (kv.previousElementSibling?.classList.contains('kv') && parseFloat(cs(kv).borderTopWidth) === 0) R('R-30', 'keine waagrechte Linie zwischen den Feldern');
+        const k = kv.querySelector('.k'); if (k && parseFloat(cs(k).borderRightWidth) === 0) R('R-30', 'keine senkrechte Linie zwischen Bezeichnung und Inhalt');
+      });
+      // R-31 Zentrale Liste als Kacheln, höchstens ein Eintrag blau
+      document.querySelectorAll('#side .side-row, .ilist.tiles .irow').forEach(e => { if (vis(e) && parseFloat(cs(e).borderTopLeftRadius) < 12) R('R-31', 'Eintrag der Liste ist keine Kachel'); });
+      [document.getElementById('side'), document.querySelector('.ilist.tiles')].forEach(l => { if (l && l.querySelectorAll('.current').length > 1) R('R-31', 'mehr als ein Eintrag blau'); });
+      // R-32 Aktionen und Suche oben – unten nur feste Hinweise
+      document.querySelectorAll('.bbar').forEach(b => { if (!vis(b)) return; if ([...b.querySelectorAll('button')].some(x => !x.closest('.bnote')) || b.querySelector('.searchbox')) R('R-32', 'Aktion oder Suche in der unteren Leiste statt oben in der Kapsel'); });
+      // R-33 Darstellung folgt dem Gerät
+      try { if (typeof db !== 'undefined' && db.settings?.appearance === 'auto') { const want = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'; if (document.documentElement.dataset.theme !== want) R('R-33', 'Darstellung folgt nicht dem Gerät'); } } catch (e) {}
+      // R-34 Teilen nur als Icon
+      document.querySelectorAll('button').forEach(b => { if (vis(b) && b.querySelector('svg') && /teilen|share/i.test(b.getAttribute('aria-label') || '') && b.textContent.trim()) R('R-34', 'Teilen mit Text'); });
       return res;
     }, skipTargets);
     for (const [k, list] of Object.entries(r)) for (const x of list) note({ target: 'Antippfläche', font: 'Schrift', contrast: 'Kontrast', quotes: 'Anführungszeichen', menu: 'Menü', rules: 'Regel' }[k], x, where);
