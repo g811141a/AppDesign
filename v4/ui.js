@@ -1,4 +1,4 @@
-// AppDesign 4.2.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
+// AppDesign 4.3.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
 // Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/v4/ui.js"></script>
 // Klassisches Skript: alle Funktionen sind global und für das Skript der App sichtbar.
 //
@@ -292,6 +292,19 @@ function refreshOk() {
   growAll();
   placeDialogs();
 }
+// Seit 4.3.0: Der erste Buchstabe jeder Zeile (und nach . ! ?) wird groß – iOS macht das nicht zuverlässig,
+// z. B. nach einem Smiley am Zeilenanfang.
+function autoCapital(e) {
+  const f = e.target;
+  if (e.inputType !== 'insertText' || !e.data || !f.matches?.('textarea, input[type=text]')) return;
+  const pos = f.selectionStart;
+  const ch = f.value.charAt(pos - 1);
+  if (!/^\p{Ll}$/u.test(ch)) return;
+  const before = f.value.slice(f.value.lastIndexOf('\n', pos - 2) + 1, pos - 1);
+  if (/[\p{L}\p{N}]/u.test(before) && !/[.!?]\s+$/.test(before)) return;
+  f.setRangeText(ch.toLocaleUpperCase('de'), pos - 1, pos, 'end');
+}
+dlg.addEventListener('input', autoCapital);
 dlg.addEventListener('input', refreshOk);
 dlg.addEventListener('change', refreshOk);
 dlg.addEventListener('click', () => setTimeout(refreshOk));

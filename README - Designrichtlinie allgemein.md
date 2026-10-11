@@ -1,6 +1,6 @@
 # Designrichtlinie allgemein
 
-**Version 4.2.0** · Stand 11.10.2026
+**Version 4.3.0** · Stand 11.10.2026
 
 Allgemeine Gestaltungs- und Bedienregeln für alle iPad-Web-Apps von g811141a (seit 4.1.0 auch
 auf dem iPhone, Abschnitt 15.17).
@@ -46,6 +46,8 @@ App-spezifische Regeln stehen in einer eigenen Datei je App
   `overscroll-behavior: contain`). Daneben tippen schließt Menü bzw. Sprechblase.
 - **Kein Fokus-Rahmen** beim Antippen oder Öffnen eines Fensters (nur bei Bedienung mit
   Tastatur); ein Fenster öffnet ohne vorausgewählte Schaltfläche.
+- **Doppeltippen vergrößert nie** die Ansicht (`touch-action: manipulation`); Zoomen mit zwei
+  Fingern bleibt möglich.
 - **Gleiche Bedienung auf iPad und iPhone:** gleiche Kapseln oben (z. B. [`plus` | `ellipsis`],
   [`share` | `search` | `ellipsis`]), gleiche Suche, gleiche Menüs – das iPhone ordnet nur die
   Seiten anders an (Abschnitt 15.17).
@@ -148,8 +150,8 @@ heller).
 - „Abbrechen“ (in Sprechblasen): neutral, ohne Icon, normale Schrift.
 - Gesperrte Schaltflächen: ausgegraut (Deckkraft 40 %).
 - Keine Hover-Farbe auf dem iPad – Hover nur in `@media (hover: hover)`.
-- Schaltflächen unten rechts (z. B. nach oben / ans Ende): runde schwebende
-  Icon-Schaltflächen; ausgeblendet, wenn es nichts zu scrollen gibt.
+- Schaltflächen unten rechts (nach oben / ans Ende): zusammen in einer **senkrechten Kapsel**
+  (`.fab`); ausgeblendet, wenn es nichts zu scrollen gibt.
 
 ## 5. Icons
 
@@ -180,7 +182,6 @@ heller).
 | Info / Hinweis ein-/ausblenden | `info` | nur Icon |
 | Darstellung | `sun-moon` | im Mehr-Menü, Untermenü Automatisch · Hell · Dunkel |
 | Nach oben / Ans Ende | `arrow-up-to-line` / `arrow-down-to-line` | nur Icon |
-| Diktieren | `mic` | nur Icon, pulsiert während der Aufnahme |
 | Zurücksetzen | `rotate-ccw` | nur Icon, gedämpft |
 
 - In Menüs stehen die Icons **vor** dem Text.
@@ -249,6 +250,12 @@ heller).
 - **Datumsfelder sind so breit wie das Datum** und haben rechts ein eigenes Kalender-Icon
   (Lucide `calendar`, auf allen Geräten gleich, kurzer Abstand zum Datum); zwei zusammengehörige
   Daten mit grauer Beschriftung „Von“ · „Bis“ in einer Zeile.
+- **Bezeichnung und Feld gehören zusammen** (`.pair`): reicht der Platz nicht, bricht die Zeile
+  **vor** der Bezeichnung um (z. B. auf dem iPhone ‚Bis‘ mit Datum unter ‚Von‘), nie zwischen
+  Bezeichnung und Feld.
+- **Großbuchstabe am Zeilenanfang:** Die App setzt den ersten Buchstaben jeder Zeile und nach
+  ‚.‘, ‚!‘, ‚?‘ selbst groß – auch nach einem Smiley am Zeilenanfang (iOS macht das nicht
+  zuverlässig).
 - **Beträge** wie bei Apple (Region Deutschland): immer zwei Nachkommastellen, Tausenderpunkt,
   Währung **hinter** dem Betrag mit Leerzeichen – „4.850,00 €“. Im Eingabefeld steht das €
   rechts neben dem Feld; fehlen beim Verlassen die Nachkommastellen, ergänzt die App „,00“.
@@ -262,7 +269,8 @@ heller).
   Zurücksetzen stellt die Standard-Smileys her und setzt die Zähler auf null (Sprechblase
   „Zurücksetzen“, rot). Ein angetippter Smiley wird angehängt, wenn der Cursor in einer leeren Zeile
   oder hinter Smileys steht, sonst beginnt eine neue Zeile.
-- Diktieren über eine mic-Schaltfläche am Textfeld (sonst Hinweis auf die Mikrofon-Taste).
+- Diktieren **über die Mikrofon-Taste der Tastatur** (Hinweis im Fenster); keine eigene
+  mic-Schaltfläche – iOS liefert Web-Apps vom Home-Bildschirm keine Spracherkennung.
 - Automatisches Speichern alle 10 Sekunden in Erfassungsfenstern; „Änderungen verwerfen“
   (über x) stellt den Zustand beim Öffnen wieder her.
 - Zahlen- und Betragsfelder rechtsbündig, Tausenderpunkt schon beim Tippen.
@@ -274,7 +282,8 @@ heller).
 - Kopfzeile grau (`--th-bg`) mit Rändern `--th-line`; die Tabelle selbst ohne äußeren Rand,
   mit Schatten `--table-shadow`, damit die seitlichen Grenzen gut zu sehen sind.
 - Jede 2. sichtbare Zeile heller (Zebra); gezählt werden nur sichtbare Zeilen; eine
-  markierte Zeile bleibt gelb.
+  markierte Zeile bleibt gelb. Die gelbe Markierung (z. B. erster offener Tag) hat **keinen
+  blauen Rand** – in Tabelle und Kachel.
 - Trennlinien zwischen allen Spalten.
 - Tabellenkopf bleibt beim Scrollen direkt unter der Kopfzeile stehen; Schrift 17 px halbfett wie die Zellen.
 - Nur zwischen ganzen Wörtern umbrechen (die Spalte wird so breit wie das längste Wort).
@@ -438,12 +447,14 @@ Verhalten · technischer Name). In AppDesign ist jede Komponente einmal programm
 - **Apple:** [HIG – Sidebars](https://developer.apple.com/design/human-interface-guidelines/sidebars)
 - **Zweck:** zentrale Liste der App. **Technisch:** `#side`.
 - **Aufbau:** Kopf: Überschrift (20 px, fett, linksbündig) · Kapsel [plus | ellipsis] ·
-  runde Schaltfläche panel-left (ausblenden). Darunter die Einträge: Titel fett, darunter
-  grau Zeitraum · Status; gewählter Eintrag blau gefüllt (wie eine Hauptaktion). Unten
-  dezente Hinweise (z. B. Backup).
+  runde Schaltfläche panel-left (ausblenden); der Kopf bleibt oben stehen. Darunter die Einträge
+  als **Kacheln** (wie auf dem iPhone): Titel fett, darunter grau Zeitraum · Status, rechts ›;
+  gewählter Eintrag blau gefüllt; reichen sie über den Rand, wischt man sie nach oben. Unten fest
+  der Backup-Hinweis als gelbe Kachel mit blauem Knopf.
 - **Maße und Aussehen:** schwebend wie in Safari – eigenes Rechteck mit 10 px Abstand oben und
   links und 4 px unten (der Schatten endet fast am unteren Bildschirmrand), Radius 22 px, Lichtkante `--btn-rim` und Schatten `--float` wie die
-  Schaltflächen; so breit wie Kopf bzw. längster Titel, 340–420 px; Hintergrund `--card`.
+  Schaltflächen; so breit wie Kopf bzw. längster Titel, 340–420 px; Hintergrund `--bg` (wie die
+  iPhone-Startliste, damit die weißen Kacheln sich abheben).
 - **Verhalten:** beim Start immer eingeblendet (quer fest links, hoch über den Inhalt gelegt) mit
   dem aktuellen Eintrag geöffnet; quer fest links neben dem Inhalt, mit panel-left aus- und
   einblendbar (bis zum nächsten Start); im Hochformat über den Inhalt gelegt (abgedunkelt dahinter), schließt sich
@@ -508,7 +519,7 @@ Verhalten · technischer Name). In AppDesign ist jede Komponente einmal programm
 - **Kasten mit Feldern** (`.box` mit `.kv`, iPhone statt Tabellenzeile): Felder durch dünne
   Linien getrennt (1 px `--line`, wie die Trennlinie im Menü) – waagrecht zwischen den Feldern,
   senkrecht zwischen Bezeichnung und Inhalt. Bezeichnung als Wort in normaler Schrift
-  (`.k.word`, 17 pt) oder als Emoji/klein grau.
+  (`.k.word`, 17 pt halbfett) oder als Emoji/klein grau.
 
 ### 15.11 Eingabefeld mit Fehlermeldung
 - **Apple:** [HIG – Text fields](https://developer.apple.com/design/human-interface-guidelines/text-fields)
@@ -574,9 +585,11 @@ Verhalten · technischer Name). In AppDesign ist jede Komponente einmal programm
 - **Liste** (`.ilist` mit `.irow`): weiße Karte mit runden Ecken (22 px); Zeilen mit fettem Titel,
   grauer Zeile darunter und `chevron-right`; Haarlinie links eingerückt. Tippen öffnet, lange
   drücken zeigt das Kontextmenü; markierte Zeile `--sel-bg`.
-- **Kacheln** (`.ilist.tiles`): die zentrale Liste der Startseite – jeder Eintrag eine eigene
-  Karte (22 px Radius, 10 px Abstand); der zuletzt geöffnete blau gefüllt (`.irow.current`, wie
-  in der Seitenleiste).
+- **Startliste = Seitenleiste:** gleicher Kopf wie die Seitenleiste – Titel links in der fest
+  stehenden Leiste (`.pnav-head`, 20 pt fett), rechts [`plus` | `ellipsis`]; ohne großen Titel und
+  ohne Anzahl. **Kacheln** (`.ilist.tiles`): jeder Eintrag eine eigene Karte (22 px Radius, 10 px
+  Abstand); der zuletzt geöffnete blau gefüllt (`.irow.current`); sie laufen unter der Leiste und
+  hinter dem Backup-Hinweis durch.
 - **Kasten** (`.box` mit Zeilen `.kv` = graue Bezeichnung `.k` links, Wert `.v` rechts): ein
   Eintrag als Karte, z. B. ein Tag statt einer Tabellenzeile.
 - **Suche** wie am iPad (Komponente Suchfeld): `search` in der Kapsel öffnet unter der Leiste
@@ -638,6 +651,7 @@ Messbare Punkte prüft das HIG-Prüfskript automatisch.
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 4.3.0 | 11.10.2026 | Neben | Kein Zoom durch Doppeltippen; Bezeichnung und Feld bleiben zusammen (Umbruch vor der Bezeichnung); App setzt Großbuchstaben am Zeilenanfang; Diktieren nur über die Tastatur; gelbe Markierung ohne blauen Rand; Seitenleiste mit Kacheln und gelber Backup-Kachel, iPhone-Startliste gleich wie die Seitenleiste; Bezeichnung im Kasten halbfett; Nach oben/Ans Ende in senkrechter Kapsel |
 | 4.2.0 | 11.10.2026 | Neben | Grundprinzipien: nur der Vordergrund reagiert, kein Fokus-Rahmen, gleiche Bedienung iPad/iPhone; iPhone (15.17): Titel wandert in die Leiste, Kapseln oben wie am iPad, Suche wie am iPad, Kacheln mit aktuellem Eintrag blau, fester Hinweis unten (gelb, blauer Knopf, auch in der Seitenleiste); Kasten mit Linien waagrecht und senkrecht (15.10) |
 | 4.1.0 | 10.10.2026 | Neben | iPhone-Ansicht (15.17): Seitenkopf, großer Titel, Liste, Kasten, untere Leiste, Fenster bildschirmfüllend, `isPhone()`; Menüpunkte mit Häkchen **und** Icon (Häkchen vorne, dann Icon und Text); `button[hidden]` blendet aus |
 | 4.0.0 | 09.10.2026 | Haupt | Umzug ins Design-Repo AppDesign; Komponenten einmal programmiert in `v4/design.css` und `v4/ui.js` (versioniert eingebunden); HIG-Prüfung `tests/hig.mjs` für alle Apps; Vorlage für neue Apps; Abschnitt 14 neu |

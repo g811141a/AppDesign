@@ -1,4 +1,4 @@
-/* AppDesign 4.2.0 · design.css – gemeinsame Gestaltung der iPad-Web-Apps von g811141a (Apple-like)
+/* AppDesign 4.3.0 · design.css – gemeinsame Gestaltung der iPad-Web-Apps von g811141a (Apple-like)
    Einbinden im <head> vor dem eigenen <style> der App:  <link rel="stylesheet" href="../AppDesign/v4/design.css">
    Farben als Variablen auf :root, Dunkelmodus über data-theme="dark" (setzt ui.js / applyTheme).
    Komponenten: Schaltflächen, Suchfeld, Kapsel, Eingabefelder, Datumsfelder, Kopfzeile, Seitenleiste,
@@ -78,6 +78,8 @@ button {
 button:disabled, button[aria-disabled="true"] { opacity: .4; cursor: default; }
 button { display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
 button[hidden] { display: none; }
+/* Seit 4.3.0: Doppeltippen vergrößert nie die Ansicht (Zoomen mit zwei Fingern bleibt möglich) */
+* { touch-action: manipulation; }
 /* Seit 4.2.0: kein Fokus-Rahmen beim Antippen oder Öffnen eines Fensters (nur bei Tastatur-Bedienung) */
 button:focus:not(:focus-visible), dialog:focus { outline: none; }
 /* Seit 4.2.0: Was im Vordergrund ist, bekommt jedes Wischen – die Seite dahinter bewegt sich nicht */
@@ -136,9 +138,10 @@ textarea { resize: none; overflow: hidden; min-height: 96px; }
 input[type=date] { -webkit-appearance: none; appearance: none; text-align: left; }
 input[type=date]::-webkit-date-and-time-value { text-align: left; }
 dialog input[type=date] { flex: none; }
-.dates { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-.dates .dl { color: var(--muted); }
-.dates .dl + .datebox + .dl { margin-left: 14px; }
+.dates { display: flex; align-items: center; gap: 10px 24px; flex-wrap: wrap; }
+.dates .dl { color: var(--muted); min-width: 2.2em; }
+/* Seit 4.3.0: Bezeichnung und Feld gehören zusammen (.pair) – reicht der Platz nicht, bricht die Zeile vor der Bezeichnung um */
+.dates .pair { display: inline-flex; align-items: center; gap: 10px; flex: none; }
 .datebox { position: relative; display: inline-flex; align-items: center; flex: none; }
 .datebox input[type=date] { padding-right: 40px; }
 .datebox > .ic { position: absolute; right: 12px; pointer-events: none; }
@@ -162,27 +165,35 @@ label { display: block; font-weight: 600; margin: 0 0 6px; }
 body.docked { padding-left: calc(var(--side-w) + max(10px, env(safe-area-inset-left)) + 20px); }
 #side { position: fixed; z-index: 7; top: calc(env(safe-area-inset-top) + 10px); bottom: calc(env(safe-area-inset-bottom) + 4px); left: max(10px, env(safe-area-inset-left));
   width: max-content; min-width: 340px; max-width: 420px; overflow-y: auto;
-  background: var(--card); border: .5px solid var(--btn-rim); border-radius: 22px; box-shadow: var(--float);
+  background: var(--bg); border: .5px solid var(--btn-rim); border-radius: 22px; box-shadow: var(--float);
   display: flex; flex-direction: column; padding: 10px 12px 14px; }
 #side[hidden] { display: none; }
 #side.over { z-index: 25; }
 .side-shade { position: fixed; inset: 0; z-index: 24; background: rgba(0,0,0,.25); }
-.side-head { display: flex; align-items: center; gap: 12px; min-height: 44px; margin-bottom: 14px; padding-left: 8px; }
+/* Seit 4.3.0: Seitenleiste und iPhone-Startliste gleich – Kopf mit Titel links bleibt stehen, die Einträge sind Kacheln
+   und laufen darunter durch, der Backup-Hinweis ist eine gelbe Kachel fest am unteren Rand */
+.side-head { display: flex; align-items: center; gap: 12px; min-height: 44px; padding-left: 8px;
+  position: sticky; top: -10px; z-index: 2; background: var(--bg); margin: -10px -12px 4px; padding: 10px 12px 10px 20px; }
 .side-head h2 { margin: 0 4px 0 0; flex: 1; font-size: 20px; white-space: nowrap; }
-#side .side-row { display: block; width: 100%; text-align: left; border: none; box-shadow: none; background: none; border-radius: 12px; padding: 9px 12px; margin-bottom: 4px; min-height: 0;
+#side .side-row { display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; border: none; background: var(--card); border-radius: 22px;
+  box-shadow: var(--table-shadow); padding: 12px 16px; margin-bottom: 10px; min-height: 60px;
   -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
+#side .side-row .t { flex: 1; min-width: 0; }
+#side .side-row > .ic { color: var(--th-line); }
+#side .side-row.current > .ic { color: rgba(255,255,255,.85); }
 /* Langes Drücken (Kontextmenü): Eintrag blau getönt, solange das Menü bzw. die Abfrage offen ist */
 #side .side-row.on { background: var(--sel-bg); box-shadow: inset 0 0 0 .5px var(--accent); color: var(--ink); }
 #side .side-row.on small { color: var(--muted); }
 .side-row b { display: block; font-size: 17px; font-weight: 600; overflow-wrap: anywhere; }
-.side-row small { display: block; color: var(--muted); font-size: 14px; white-space: nowrap; }
+.side-row small { display: block; color: var(--muted); font-size: 15px; white-space: nowrap; }
 #side .side-row.current { background: var(--accent); color: var(--accent-ink); box-shadow: var(--glow-accent); }
 .side-row.current small { color: rgba(255,255,255,.85); }
 .side-empty { color: var(--muted); padding: 8px 12px; }
 .bhint { margin-top: auto; padding: 16px 12px 0; font-size: 13px; color: var(--muted); display: flex; flex-direction: column; gap: 10px; align-items: flex-start; }
 .bhint button { color: var(--ink); font-size: 17px; }
-/* Seit 4.2.0: Backup-Hinweis bleibt am unteren Rand der Seitenleiste stehen; viele Einträge laufen dahinter durch */
-#side .bhint { position: sticky; bottom: -14px; margin: auto -12px -14px; padding: 16px 24px 18px; background: var(--focus); color: var(--ink); }
+#side .bhint { position: sticky; bottom: 0; z-index: 2; margin-top: auto; padding: 12px 16px; border-radius: 22px; background: var(--focus); color: var(--ink);
+  box-shadow: var(--float); }
+
 /* Backup-Hinweis gelb getönt mit blau gefülltem Knopf, damit man die Funktion sofort erkennt (iPad und iPhone) */
 #side .bhint button, .bbar .bnote button { background: var(--accent); color: var(--accent-ink); border: .5px solid var(--rim-color); box-shadow: var(--glow-accent); }
 
@@ -217,8 +228,10 @@ body.docked { padding-left: calc(var(--side-w) + max(10px, env(safe-area-inset-l
 
 .msg-text { padding: 8px 2px; }
 
-.fab { position: fixed; right: max(16px, env(safe-area-inset-right)); bottom: calc(16px + env(safe-area-inset-bottom)); display: flex; flex-direction: column; gap: 12px; z-index: 4; }
-.fab button { padding: 0; font-size: 20px; }
+/* Seit 4.3.0: Nach oben / Ans Ende in einer senkrechten Kapsel */
+.fab { position: fixed; right: max(16px, env(safe-area-inset-right)); bottom: calc(16px + env(safe-area-inset-bottom)); display: flex; flex-direction: column; z-index: 4;
+  border-radius: 22px; background: var(--btn); border: .5px solid var(--btn-rim); box-shadow: var(--float); }
+.fab button { padding: 0; font-size: 20px; background: none; border: none; box-shadow: none; height: 48px; }
 .fab[hidden] { display: none; }
 
 /* Dialoge */
@@ -328,6 +341,9 @@ html.phone #side, html.phone .side-shade, html.phone .fab { display: none !impor
 .pnav-title { font-size: 17px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 50vw; opacity: 0; transition: opacity .15s; }
 .pnav.titled .pnav-title { opacity: 1; }
 .pnav .nb2 { grid-column: 1 / -1; margin-top: 2px; }
+/* Startliste (iPhone) wie die Seitenleiste: Titel links in der Leiste, 20 pt fett */
+.pnav-head { margin: 0; font-size: 20px; font-weight: 700; white-space: nowrap; padding-left: 4px; }
+.pnav + .ilist.tiles { margin-top: 8px; }
 /* Großer Titel mit grauer Zeile darunter (z. B. Anzahl) */
 .ltitle { font-size: 34px; font-weight: 700; line-height: 1.15; margin: 4px 0 2px; overflow-wrap: anywhere; }
 .lcount { color: var(--muted); font-size: 17px; margin: 0 0 16px; }
@@ -358,7 +374,7 @@ html.phone #side, html.phone .side-shade, html.phone .fab { display: none !impor
 .box .kv + .kv { border-top: 1px solid var(--line); }
 .box .kv .k { flex: none; width: 74px; font-size: 13px; color: var(--muted); margin: -7px 0; padding: 9px 8px 7px 0; border-right: 1px solid var(--line); }
 .box .kv .v { flex: 1; min-width: 0; }
-.box .kv .k.word { font-size: 17px; color: var(--ink); padding-top: 7px; }
+.box .kv .k.word { font-size: 17px; font-weight: 600; color: var(--ink); padding-top: 7px; }
 .box.on { background: var(--sel-bg); }
 /* Komponente untere Leiste (iPhone): Suchfeld und runde Knöpfe unten; wandert mit der Tastatur nach oben */
 .bbar { position: fixed; z-index: 8; left: max(16px, env(safe-area-inset-left)); right: max(16px, env(safe-area-inset-right));
