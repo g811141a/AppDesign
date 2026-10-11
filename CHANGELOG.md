@@ -3,6 +3,20 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.7.0 – 12.10.2026 (Nebenversion)
+
+AppDesign 4.7.0 · Designrichtlinie allgemein 4.7.0 · Zusammenarbeit allgemein 1.13.0
+
+- **R-36 Gleiche Funktion = gleicher Baustein auf iPad und iPhone:** die iPhone-Startliste ist die
+  Seitenleiste `#side` als ganze Seite (`#side.page`), kein eigener Nachbau mehr. Die Kacheln
+  laufen auf beiden Geräten unter dem Kopf und hinter der Backup-Kachel (`.side-foot`) durch.
+  Das Prüfskript hält den Aufbau eines Bausteins je Gerät fest (`hig.shape()`) und meldet jeden
+  Unterschied; zusätzlich prüft es, dass die Liste unter die Backup-Kachel reicht.
+- **R-37 Kein Text ragt über Zelle, Kasten oder Kachel hinaus:** zu lange Wörter (über 20 Zeichen)
+  brechen im Wort um (`breakable()` in `ui.js`, `overflow-wrap` in `design.css`). Das Prüfskript
+  misst jede Zelle, jeden Kasten und jede Kachel; die Apps prüfen mit Testdaten aus 100 × ‚a‘.
+- Gegenprobe: mit absichtlich wieder eingebauten Fehlern melden R-36 und R-37 beide Fälle.
+
 ## 4.6.0 – 11.10.2026 (Nebenversion)
 
 AppDesign 4.6.0 · Designrichtlinie allgemein 4.6.0 · Zusammenarbeit allgemein 1.13.0

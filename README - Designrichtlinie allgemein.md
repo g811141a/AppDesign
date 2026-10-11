@@ -1,6 +1,6 @@
 # Designrichtlinie allgemein
 
-**Version 4.6.0** · Stand 11.10.2026
+**Version 4.7.0** · Stand 12.10.2026
 
 Allgemeine Gestaltungs- und Bedienregeln für alle iPad-Web-Apps von g811141a (seit 4.1.0 auch
 auf dem iPhone, Abschnitt 15.17).
@@ -292,7 +292,10 @@ heller).
   blauen Rand** – in Tabelle und Kachel.
 - Trennlinien zwischen allen Spalten.
 - Tabellenkopf bleibt beim Scrollen direkt unter der Kopfzeile stehen; Schrift 17 px halbfett wie die Zellen.
-- Nur zwischen ganzen Wörtern umbrechen (die Spalte wird so breit wie das längste Wort).
+- Zwischen ganzen Wörtern umbrechen (die Spalte wird so breit wie das längste Wort). Ein zu
+  langes Wort (über 20 Zeichen, z. B. 100 × ‚a‘) bricht **im Wort** um und läuft in der nächsten
+  Zeile weiter – nie über die Zelle oder den Rand hinaus (R-37; `breakable()` in `ui.js`,
+  `overflow-wrap` in `design.css`). Gilt auch für Kästen, Kacheln und Hinweise, iPad und iPhone.
 - Spaltenbreiten passen sich dem Inhalt an; kompakte Tabellen nur so breit wie nötig;
   Zahlenspalten rechtsbündig (Überschrift und Werte).
 - Hängender Einzug: Folgezeilen beginnen unter dem Text, nicht unter Aufzählungszeichen
@@ -456,7 +459,8 @@ Verhalten · technischer Name). In AppDesign ist jede Komponente einmal programm
   runde Schaltfläche panel-left (ausblenden); unter der Überschrift klein und grau die Anzahl
   (‚5 Reiselogbücher‘); der Kopf bleibt oben stehen. Darunter die Einträge
   als **Kacheln** (wie auf dem iPhone): Titel fett, darunter grau Zeitraum · Status, rechts ›;
-  gewählter Eintrag blau gefüllt; reichen sie über den Rand, wischt man sie nach oben. Unten fest
+  gewählter Eintrag blau gefüllt; reichen sie über den Rand, wischt man sie nach oben – sie laufen
+  unter dem Kopf und **hinter der Backup-Kachel durch** (keine starre Begrenzung). Unten fest
   **immer** die Backup-Kachel ‚Letztes Backup erstellt am …‘ – gelb mit blauem Knopf, solange heute
   noch kein Backup erstellt wurde, sonst weiß mit normalem Knopf (`.ok`).
 - **Maße und Aussehen:** schwebend wie in Safari – eigenes Rechteck mit 10 px Abstand oben und
@@ -596,11 +600,12 @@ Verhalten · technischer Name). In AppDesign ist jede Komponente einmal programm
 - **Liste** (`.ilist` mit `.irow`): weiße Karte mit runden Ecken (22 px); Zeilen mit fettem Titel,
   grauer Zeile darunter und `chevron-right`; Haarlinie links eingerückt. Tippen öffnet, lange
   drücken zeigt das Kontextmenü; markierte Zeile `--sel-bg`.
-- **Startliste = Seitenleiste:** gleicher Kopf wie die Seitenleiste – Titel links in der fest
-  stehenden Leiste (`.pnav-head`, 20 pt fett, darunter klein und grau die Anzahl), rechts
-  [`plus` | `ellipsis`]; ohne großen Titel. **Kacheln** (`.ilist.tiles`): jeder Eintrag eine eigene Karte (22 px Radius, 10 px
-  Abstand); der zuletzt geöffnete blau gefüllt (`.irow.current`); sie laufen unter der Leiste und
-  hinter dem Backup-Hinweis durch.
+- **Startliste = Seitenleiste (seit 4.7.0 derselbe Baustein, R-36):** die Startliste ist die
+  Seitenleiste `#side` als ganze Seite (`#side.page`) – kein eigener Nachbau. Kopf wie am iPad
+  (Titel links, 20 pt fett, darunter klein und grau die Anzahl, rechts [`plus` | `ellipsis`];
+  panel-left entfällt), Kacheln `.side-row` in `.side-list`, Backup-Kachel `.side-foot`; die
+  Kacheln laufen unter dem Kopf und hinter der Backup-Kachel durch – genau wie am iPad.
+  (`.ilist.tiles` bleibt als Liste für andere Seiten.)
 - **Kasten** (`.box` mit Zeilen `.kv` = graue Bezeichnung `.k` links, Wert `.v` rechts): ein
   Eintrag als Karte, z. B. ein Tag statt einer Tabellenzeile.
 - **Suche** wie am iPad (Komponente Suchfeld): `search` in der Kapsel öffnet unter der Leiste
@@ -702,6 +707,8 @@ hier sofort eine Nummer und – wo möglich – eine Prüfung im Skript.
 | R-33 | Darstellung folgt dem Gerät (‚Automatisch‘), im Mehr-Menü übersteuerbar | Skript | 2 |
 | R-34 | Teilen (`share`) immer nur als Icon, nie mit Text | Skript | 5 |
 | R-35 | Schatten zierlich, Seitenleiste schwebend wie in Safari, Apple-Look | Muster | 1, 15.4 |
+| R-36 | Gleiche Funktion = gleicher Baustein auf iPad und iPhone: eine Umsetzung, die sich nur in der Breite unterscheidet (z. B. Seitenleiste am iPad = Startliste am iPhone; Kacheln laufen auf beiden unter der Backup-Kachel durch) – nie zwei getrennte Nachbauten | Skript (Gerätevergleich des Aufbaus) | 1, 15.4, 15.17 |
+| R-37 | Kein Text ragt über Zelle, Kasten oder Kachel hinaus: zu lange Wörter brechen im Wort um und laufen in der nächsten Zeile weiter (iPad und iPhone) | Skript (Testdaten mit 100 × ‚a‘) | 9, 15.10 |
 
 ---
 
@@ -709,6 +716,7 @@ hier sofort eine Nummer und – wo möglich – eine Prüfung im Skript.
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 4.7.0 | 12.10.2026 | Neben | Regeln R-36 (gleiche Funktion = gleicher Baustein auf iPad und iPhone, mit Gerätevergleich im Prüfskript) und R-37 (zu lange Wörter brechen im Wort um, nichts ragt über Zelle oder Kachel hinaus); iPhone-Startliste ist jetzt die Seitenleiste als ganze Seite; Kacheln laufen auch am iPad hinter der Backup-Kachel durch |
 | 4.6.0 | 11.10.2026 | Neben | Regelkatalog (Abschnitt 17) mit Nummern R-01 bis R-35; HIG- und Regel-Prüfung prüft alle automatisch prüfbaren Regeln; Leisten fest auch am iPad (Kopfzeile fest, in der Seitenleiste scrollen nur die Einträge) |
 | 4.5.0 | 11.10.2026 | Neben | Leisten bewegen sich nie (Seite federt nicht nach, iPhone-Seitenkopf fest) |
 | 4.4.0 | 11.10.2026 | Neben | Titel der Inhaltsseite immer in der Leiste (iPhone wie iPad); Anzahl unter dem Titel von Seitenleiste und Startliste; Backup-Kachel immer sichtbar (gelb nur ohne Backup heute); Großschreibung schon vor der Eingabe und nach Vorschlägen |
