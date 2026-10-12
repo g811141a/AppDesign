@@ -1,4 +1,4 @@
-// AppDesign 4.8.1 · HIG- und Regel-Prüfung: misst eine App-Ansicht gegen die HIG-Checkliste (Abschnitt 16)
+// AppDesign 4.9.0 · HIG- und Regel-Prüfung: misst eine App-Ansicht gegen die HIG-Checkliste (Abschnitt 16)
 // und alle automatisch prüfbaren Regeln des Regelkatalogs (Abschnitt 17, R-01 …) der Designrichtlinie allgemein. Wird vom Prüfskript jeder App eingebunden:
 //   import { createCheck } from '../../AppDesign/tests/hig.mjs';
 //   const hig = createCheck({ skipTargets: ['table.days .ln:not(.q) a'] });   // bewusste Abweichungen der App
@@ -145,6 +145,11 @@ const found = new Map();
       // R-36 Gleiche Funktion = gleicher Baustein: die Kacheln laufen unter der Backup-Kachel durch (iPad wie iPhone)
       document.querySelectorAll('.side-foot').forEach(f => { const l = f.parentElement.querySelector('.side-list');
         if (vis(f) && l && l.getBoundingClientRect().bottom < f.getBoundingClientRect().bottom - 2) R('R-36', 'Liste endet über der Backup-Kachel (starre Begrenzung statt durchlaufen)'); });
+      // R-38 Abfrage mit mehreren Wegen: empfohlene Aktion blau zuerst, zerstörende rot, Abbrechen zuletzt
+      document.querySelectorAll('.pop .btns').forEach(g => { const bs = [...g.querySelectorAll('button')]; if (bs.length < 3 || !vis(g)) return;
+        if (!bs[0].classList.contains('primary')) R('R-38', 'empfohlene Aktion nicht blau gefüllt an erster Stelle');
+        if (!/Abbrechen|Weiter bearbeiten/.test(bs[bs.length - 1].textContent)) R('R-38', '‚Abbrechen‘ nicht zuletzt');
+        bs.slice(1, -1).forEach(b => { if (/Ersetzen|löschen|Löschen/.test(b.textContent) && !b.classList.contains('danger-text')) R('R-38', `zerstörende Aktion ‚${b.textContent}‘ nicht in roter Schrift`); }); });
       // R-37 Kein Text ragt über Zelle oder Kachel hinaus – zu lange Wörter brechen im Wort um
       document.querySelectorAll('#app td, #app th, #app dd, #app .box, .box .kv .v, .box .ln, .irow, .side-row, .bhint, .bnote, .msg-text, .pop p, .fazit-box').forEach(e => {
         if (!vis(e) || e.closest('.rt, #printout') || cs(e).textOverflow === 'ellipsis') return;

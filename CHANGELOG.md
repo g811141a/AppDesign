@@ -3,6 +3,18 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.9.0 – 12.10.2026 (Nebenversion)
+
+AppDesign 4.9.0 · Designrichtlinie allgemein 4.9.0 · Zusammenarbeit allgemein 1.13.0
+
+- **Abgleich zwischen iPad und iPhone** (Designrichtlinie 15.4): ‚Backup laden‘ fragt mit drei Wegen
+  – Abgleichen · Ersetzen · Abbrechen –, zeigt Zeitpunkt und Gerät des Backups und ob es neuer oder
+  älter ist; das Ergebnis steht im kleinen Fenster.
+- **`choosePop()`** in `ui.js`: Sprechblase mit mehreren Wegen; `confirmPop()` nutzt sie. Neue Regel
+  **R-38** mit Prüfung im Skript (empfohlene Aktion blau zuerst, zerstörende rot, Abbrechen zuletzt).
+- **`deviceName()`** in `ui.js` (iPad/iPhone, iPadOS meldet sich als Mac mit Touch); Kachelzeile
+  ‚geändert am … · Gerät‘ (`.side-row small.chg`); `button.danger-text` (im Dunkeln heller für 4,5 : 1).
+
 ## 4.8.1 – 12.10.2026 (Korrektur)
 
 AppDesign 4.8.1 · Designrichtlinie allgemein 4.8.1 · Zusammenarbeit allgemein 1.13.0

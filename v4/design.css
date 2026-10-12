@@ -1,4 +1,4 @@
-/* AppDesign 4.8.1 · design.css – gemeinsame Gestaltung der iPad-Web-Apps von g811141a (Apple-like)
+/* AppDesign 4.9.0 · design.css – gemeinsame Gestaltung der iPad-Web-Apps von g811141a (Apple-like)
    Einbinden im <head> vor dem eigenen <style> der App:  <link rel="stylesheet" href="../AppDesign/v4/design.css">
    Farben als Variablen auf :root, Dunkelmodus über data-theme="dark" (setzt ui.js / applyTheme).
    Komponenten: Schaltflächen, Suchfeld, Kapsel, Eingabefelder, Datumsfelder, Kopfzeile, Seitenleiste,
@@ -129,6 +129,9 @@ button.primary { background: var(--accent); color: var(--accent-ink); border: .5
 button.link { border: none; background: none; box-shadow: none; color: var(--accent); padding: 6px 8px; }
 button.danger { background: var(--danger-fill); color: #fff; border: .5px solid var(--rim-color); box-shadow: var(--glow-danger); }
 button.danger .ic.red { color: inherit; }
+/* Seit 4.9.0: zerstörende Aktion in einer Abfrage mit mehreren Wegen (rote Schrift, wie bei Apple) */
+button.danger-text { color: var(--danger); }
+:root[data-theme="dark"] button.danger-text { color: #ff8a82; }   /* Kontrast 4,5 : 1 auf der dunklen Schaltfläche */
 button[aria-pressed="true"] { background: var(--sel-bg); border: .5px solid var(--accent); color: var(--ink); box-shadow: var(--glow-accent); }
 input[type=text], input[type=search], input[type=date], input[type=number], textarea {
   width: 100%; border: .5px solid var(--btn-rim); border-radius: 10px; background: var(--card); box-shadow: var(--float);
@@ -209,6 +212,8 @@ body.docked { padding-left: calc(var(--side-w) + max(10px, env(safe-area-inset-l
 #side .side-row.on small { color: var(--muted); }
 .side-row b { display: block; font-size: 17px; font-weight: 600; overflow-wrap: anywhere; }
 .side-row small { display: block; color: var(--muted); font-size: 15px; white-space: nowrap; }
+/* Seit 4.9.0: dritte Zeile der Kachel – ‚geändert am … · Gerät‘ */
+.side-row small.chg { font-size: 13px; margin-top: 2px; }
 #side .side-row.current { background: var(--accent); color: var(--accent-ink); box-shadow: var(--glow-accent); }
 .side-row.current small { color: rgba(255,255,255,.85); }
 .side-empty { color: var(--muted); padding: 8px 12px; }

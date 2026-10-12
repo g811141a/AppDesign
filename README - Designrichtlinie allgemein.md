@@ -1,6 +1,6 @@
 # Designrichtlinie allgemein
 
-**Version 4.8.1** · Stand 12.10.2026
+**Version 4.9.0** · Stand 12.10.2026
 
 Allgemeine Gestaltungs- und Bedienregeln für alle iPad-Web-Apps von g811141a (seit 4.1.0 auch
 auf dem iPhone, Abschnitt 15.17).
@@ -471,6 +471,9 @@ Verhalten · technischer Name). In AppDesign ist jede Komponente einmal programm
   Wischen sichtbar wurde. Unten fest
   **immer** die Backup-Kachel ‚Letztes Backup erstellt am …‘ – gelb mit blauem Knopf, solange heute
   noch kein Backup erstellt wurde, sonst weiß mit normalem Knopf (`.ok`).
+- **Geändert am (seit 4.9.0):** jede Kachel zeigt als dritte Zeile klein und grau (13 px)
+  ‚geändert am TT.MM.JJJJ um hh:mm · iPad‘ bzw. ‚· iPhone‘ (`small.chg`); das Gerät liefert
+  `deviceName()`. Ohne bekannte Änderung entfällt die Zeile.
 - **Maße und Aussehen:** schwebend wie in Safari – eigenes Rechteck mit 10 px Abstand oben und
   links und 4 px unten (der Schatten endet fast am unteren Bildschirmrand), Radius 22 px, Lichtkante `--btn-rim` und Schatten `--float` wie die
   Schaltflächen; so breit wie Kopf bzw. längster Titel, 340–420 px; Hintergrund `--bg` (wie die
@@ -485,6 +488,13 @@ Verhalten · technischer Name). In AppDesign ist jede Komponente einmal programm
   bleiben in Safari gespeichert, solange <App> auf dem Home-Bildschirm nicht entfernt wird.“ bzw.
   (nicht dauerhaft) „Safari kann die Daten bei Speichermangel löschen – bitte regelmäßig ein
   Backup erstellen.“
+- **Backup laden = Abgleich zwischen iPad und iPhone (seit 4.9.0):** Ein Backup enthält Zeitpunkt
+  und Gerät. Nach der Dateiauswahl (z. B. aus iCloud Drive) fragt eine Sprechblase mit drei Wegen
+  (R-38): ‚Backup vom … (iPhone) mit n …‘, ob es **neuer** oder **älter** ist als die Daten auf
+  diesem Gerät, kurz erklärt · **Abgleichen** (blau gefüllt) · **Ersetzen** (rote Schrift) ·
+  **Abbrechen**. Abgleichen nimmt je Eintrag und Tag die neuere Fassung, Gelöschtes wird auch
+  hier gelöscht; das Ergebnis (Aktualisiert · Neu · Gelöscht · Unverändert) zeigt ein kleines
+  Fenster. Einstellungen bleiben die des Geräts.
 - **Kontextmenü:** Langes Drücken (ca. 0,6 s) auf einen Eintrag öffnet rechts daneben ein Menü
   (Komponente Menü) mit Einstellungen (settings) · … löschen (rot, Sprechblase) – **ohne ‚Öffnen‘**,
   weil Tippen öffnet (wie Notizen); der Eintrag ist dabei blau getönt. Kein Wischen, kein Hinweistext.
@@ -519,6 +529,9 @@ Verhalten · technischer Name). In AppDesign ist jede Komponente einmal programm
 - **Aufbau:** grauer Text · rote Schaltfläche mit dem Verb der Aktion · darunter der Weg
   zurück („Abbrechen“ bzw. „Weiter bearbeiten“, normale Schrift); **Schaltflächen ohne Icons**
   wie in Apple-Abfragen; Breite 320 px.
+- **Mehrere Wege (seit 4.9.0, `choosePop`, R-38):** wie eine Apple-Abfrage mit drei Knöpfen –
+  die empfohlene Aktion blau gefüllt (`primary`) zuerst, eine zerstörende in roter Schrift
+  (`danger-text`), zuletzt ‚Abbrechen‘; eine kurze graue Erklärung der Wege steht im Text.
 - **Verhalten:** an der angetippten Schaltfläche (diese ist gedrückt); daneben tippen bricht ab.
 
 ### 15.8 Fenster-Kopfzeile
@@ -720,6 +733,7 @@ hier sofort eine Nummer und – wo möglich – eine Prüfung im Skript.
 | R-35 | Schatten zierlich, Seitenleiste schwebend wie in Safari, Apple-Look | Muster | 1, 15.4 |
 | R-36 | Gleiche Funktion = gleicher Baustein auf iPad und iPhone: eine Umsetzung, die sich nur in der Breite unterscheidet (z. B. Seitenleiste am iPad = Startliste am iPhone; Kacheln laufen auf beiden unter der Backup-Kachel durch) – nie zwei getrennte Nachbauten | Skript (Gerätevergleich des Aufbaus) | 1, 15.4, 15.17 |
 | R-37 | Kein Text ragt über Zelle, Kasten oder Kachel hinaus: zu lange Wörter brechen im Wort um und laufen in der nächsten Zeile weiter (iPad und iPhone) | Skript (Testdaten mit 100 × ‚a‘) | 9, 15.10 |
+| R-38 | Abfrage mit mehreren Wegen: empfohlene Aktion blau gefüllt zuerst, zerstörende in roter Schrift, ‚Abbrechen‘ zuletzt; kurze Erklärung der Wege im Text | Skript | 15.7 |
 
 ---
 
@@ -727,6 +741,7 @@ hier sofort eine Nummer und – wo möglich – eine Prüfung im Skript.
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 4.9.0 | 12.10.2026 | Neben | Backup laden = Abgleich zwischen iPad und iPhone (Zeitpunkt und Gerät im Backup, neuer/älter, Abgleichen · Ersetzen · Abbrechen, Ergebnis im kleinen Fenster); Sprechblase mit mehreren Wegen (`choosePop`, R-38); Kachelzeile ‚geändert am … · Gerät‘ (`deviceName`) |
 | 4.8.1 | 12.10.2026 | Korrektur | R-05 verschärft: eine Symbolleiste – mit oder ohne Suchzeile – bewegt sich beim Wischen keinen Millimeter (auch bei offener und beim Schließen der Tastatur); bei offener Tastatur schließt das erste Wischen nur die Tastatur, die Seite bleibt stehen; Prüfskript misst die Lage der Leisten beim Scrollen |
 | 4.8.0 | 12.10.2026 | Neben | R-37 verschärft: Reihen von Smileys ohne Leerzeichen brechen um (mehr als drei Smileys am Zeilenanfang sind Text, kein Zeichen), Umbruch nach ganzen Zeichen; Liste der Seitenleiste behält beim Neuaufbau ihre Position, der gewählte Eintrag bleibt sichtbar; Wischen bei offener Tastatur der Suche schließt sie (wie Apple) |
 | 4.7.0 | 12.10.2026 | Neben | Regeln R-36 (gleiche Funktion = gleicher Baustein auf iPad und iPhone, mit Gerätevergleich im Prüfskript) und R-37 (zu lange Wörter brechen im Wort um, nichts ragt über Zelle oder Kachel hinaus); iPhone-Startliste ist jetzt die Seitenleiste als ganze Seite; Kacheln laufen auch am iPad hinter der Backup-Kachel durch |

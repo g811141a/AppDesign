@@ -1,4 +1,4 @@
-// AppDesign 4.8.1 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
+// AppDesign 4.9.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
 // Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/v4/ui.js"></script>
 // Klassisches Skript: alle Funktionen sind global und für das Skript der App sichtbar.
 //
@@ -204,19 +204,26 @@ function openMenu(anchor, items, align = 'right') {
 // Abfrage als Sprechblase an der angetippten Schaltfläche; daneben tippen bricht ab.
 // Schaltflächen ohne Icons wie in Apple-Abfragen: die Aktion rot gefüllt, darunter der Weg zurück in normaler Schrift.
 function confirmPop(anchor, html, act, back = { label: 'Abbrechen' }) {
+  return choosePop(anchor, html, [{ label: act.label, cls: act.cls || 'danger', value: true }, { label: back.label, value: false }])
+    .then(v => v === true);
+}
+
+// Seit 4.9.0: Abfrage mit mehreren Wegen (wie eine Apple-Abfrage mit drei Knöpfen): die bevorzugte Aktion blau
+// gefüllt (cls 'primary'), eine zerstörende in roter Schrift (cls 'danger-text'), zuletzt der Weg zurück.
+// Ergebnis: value des gewählten Knopfs; daneben tippen ergibt null.
+function choosePop(anchor, html, buttons) {
   return new Promise(resolve => {
     const visible = anchor?.isConnected && anchor.getClientRects().length;
     const host = (visible && anchor.closest('dialog')) || (dlg.open ? dlg : document.body);
     const layer = blockingLayer();
     const pop = document.createElement('div');
     pop.className = 'pop';
-    pop.innerHTML = `<p>${html}</p><div class="btns">
-      <button type="button" class="${act.cls || 'danger'}" data-v="1">${esc(act.label)}</button>
-      <button type="button" data-v="0">${esc(back.label)}</button></div>`;
+    pop.innerHTML = `<p>${html}</p><div class="btns">${buttons.map((b, i) =>
+      `<button type="button" class="${b.cls || ''}" data-i="${i}">${esc(b.label)}</button>`).join('')}</div>`;
     if (visible) anchor.classList.add('on');
     const done = v => { layer.remove(); pop.remove(); if (visible) anchor.classList.remove('on'); resolve(v); };
-    layer.onclick = () => done(false);
-    pop.querySelectorAll('[data-v]').forEach(b => b.onclick = () => done(b.dataset.v === '1'));
+    layer.onclick = () => done(null);
+    pop.querySelectorAll('[data-i]').forEach(b => b.onclick = () => done(buttons[b.dataset.i].value));
     host.append(layer, pop);
     if (visible) placeAt(pop, anchor, anchor.classList.contains('side-row') ? 'beside' : anchor.getBoundingClientRect().left > innerWidth / 2 ? 'right' : 'left');
     else { pop.style.left = (innerWidth - pop.offsetWidth) / 2 + 'px'; pop.style.top = '120px'; }
@@ -364,6 +371,13 @@ function mountCap(root) {
 // eine Seite nach der anderen, Fenster bildschirmfüllend. <html> bekommt dann die Klasse 'phone'.
 // Die App fragt isPhone() und baut ihre Seiten danach; bei einem Wechsel ruft ihr resize-Handler render().
 const isPhone = () => innerWidth < 700 || innerHeight < 500;
+// Seit 4.9.0: Name des Geräts für ‚geändert am … · iPad‘ und den Abgleich (iPadOS meldet sich als Mac mit Touch).
+function deviceName() {
+  const ua = navigator.userAgent;
+  if (/iPhone/.test(ua)) return 'iPhone';
+  if (/iPad/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1)) return 'iPad';
+  return isPhone() ? 'iPhone' : 'iPad';
+}
 function applyLayout() { document.documentElement.classList.toggle('phone', isPhone()); }
 applyLayout();
 window.addEventListener('resize', applyLayout);
