@@ -152,9 +152,24 @@ function placeAt(el, anchor, align) {
   // Reicht der Platz darunter nicht, scrollt ihr Inhalt darin (erst bei weniger als 200 px Platz darunter
   // öffnen sie nach oben). 'beside': rechts neben dem Eintrag (Kontextmenü in der Seitenleiste), oben bündig.
   el.style.maxHeight = ''; el.style.overflowY = '';   // nach dem Drehen neu messen
-  const r = anchor.getBoundingClientRect();
+  let r = anchor.getBoundingClientRect();
   const fit = room => { if (el.scrollHeight > room) { el.style.maxHeight = room + 'px'; el.style.overflowY = 'auto'; el.style.overscrollBehavior = 'contain'; } };
   let top;
+  // Seit 4.10.0: ist neben dem Eintrag kein Platz (iPhone: Kachel so breit wie der Bildschirm), steht das Menü
+  // linksbündig unter der Kachel – ganz sichtbar über der Backup-Kachel; dafür wird die Liste nötigenfalls
+  // etwas nach oben geschoben (R-40).
+  if (align === 'beside' && innerWidth - (r.right - 40) - 12 < el.offsetWidth) {
+    const list = anchor.closest('.side-list'), tile = anchor.closest('#side')?.querySelector('.side-foot .bhint');
+    const tr = tile?.getBoundingClientRect();
+    const limit = Math.min(innerHeight, tr && tr.height ? tr.top : innerHeight) - 12;
+    const need = r.bottom + 8 + el.offsetHeight - limit;
+    if (need > 0 && list) { list.scrollTop += need; r = anchor.getBoundingClientRect(); }
+    top = r.bottom + 8;
+    fit(limit - top);
+    el.style.left = Math.max(12, Math.min(r.left, innerWidth - el.offsetWidth - 12)) + 'px';
+    el.style.top = Math.max(12, top) + 'px';
+    return;
+  }
   if (align === 'beside') {
     fit(innerHeight - 24);
     top = Math.max(12, Math.min(r.top, innerHeight - el.offsetHeight - 12));

@@ -496,6 +496,8 @@ Verhalten · technischer Name). In AppDesign ist jede Komponente einmal programm
   hier gelöscht; das Ergebnis (Aktualisiert · Neu · Gelöscht · Unverändert) zeigt ein kleines
   Fenster. Einstellungen bleiben die des Geräts.
 - **Kontextmenü:** Langes Drücken (ca. 0,6 s) auf einen Eintrag öffnet rechts daneben ein Menü
+  (ist daneben kein Platz – iPhone –, linksbündig unter der Kachel, ganz sichtbar über der
+  Backup-Kachel; die Liste rückt dafür nötigenfalls nach oben, R-40)
   (Komponente Menü) mit Einstellungen (settings) · … löschen (rot, Sprechblase) – **ohne ‚Öffnen‘**,
   weil Tippen öffnet (wie Notizen); der Eintrag ist dabei blau getönt. Kein Wischen, kein Hinweistext.
   [HIG – Context menus](https://developer.apple.com/design/human-interface-guidelines/context-menus)
@@ -741,7 +743,7 @@ hier sofort eine Nummer und – wo möglich – eine Prüfung im Skript.
 | R-37 | Kein Text ragt über Zelle, Kasten oder Kachel hinaus: zu lange Wörter brechen im Wort um und laufen in der nächsten Zeile weiter (iPad und iPhone) | Skript (Testdaten mit 100 × ‚a‘) | 9, 15.10 |
 | R-38 | Abfrage mit mehreren Wegen: empfohlene Aktion blau gefüllt zuerst, zerstörende in roter Schrift, ‚Abbrechen‘ zuletzt; kurze Erklärung der Wege im Text | Skript | 15.7 |
 | R-39 | Menü, Sprechblase und Fenster passen immer ganz auf den Bildschirm (auch iPhone quer); ist der Inhalt zu hoch, scrollt er darin – kein Knopf liegt außerhalb | Skript | 15.6, 15.7, 15.9 |
-| R-40 | Menüs, Untermenüs und Sprechblasen bleiben beim Drehen (quer ↔ hoch) an ihrer Schaltfläche: Menü unterhalb der aufrufenden Schaltfläche, Untermenü neben seinem Eintrag, immer ganz sichtbar (reicht der Platz nicht, scrollt der Inhalt darin); die Schaltfläche bleibt blau | Skript (Drehen mit offenem Untermenü) · Gerät | 15.6, 15.7 |
+| R-40 | Menüs, Untermenüs und Sprechblasen bleiben beim Drehen (quer ↔ hoch) an ihrer Schaltfläche: Menü unterhalb der aufrufenden Schaltfläche, Untermenü neben seinem Eintrag, Kontextmenü einer Kachel daneben bzw. (iPhone) linksbündig darunter über der Backup-Kachel, immer ganz sichtbar (reicht der Platz nicht, scrollt der Inhalt darin bzw. rückt die Liste nach oben); die Schaltfläche bleibt blau | Skript (Drehen mit offenem Untermenü) · Ablauf (Kontextmenü iPhone) · Gerät | 15.6, 15.7 |
 
 ---
 
