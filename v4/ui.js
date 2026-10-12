@@ -1,4 +1,4 @@
-// AppDesign 4.9.1 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
+// AppDesign 4.10.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
 // Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/v4/ui.js"></script>
 // Klassisches Skript: alle Funktionen sind global und für das Skript der App sichtbar.
 //
@@ -148,20 +148,41 @@ function showModalQuiet(d) {
 
 // Menü oder Sprechblase unter (bzw. über) der Schaltfläche, im Bildschirm gehalten.
 function placeAt(el, anchor, align) {
-  // Seit 4.9.1 (R-39): Menü und Sprechblase passen immer auf den Bildschirm – sind sie zu hoch
-  // (z. B. iPhone quer), stehen sie oben bündig und ihr Inhalt scrollt darin.
-  const room = innerHeight - 24;
-  if (el.scrollHeight > room) { el.style.maxHeight = room + 'px'; el.style.overflowY = 'auto'; el.style.overscrollBehavior = 'contain'; }
-  const r = anchor.getBoundingClientRect();
-  const w = el.offsetWidth, h = el.offsetHeight;
-  // 'beside': rechts neben dem Eintrag (Kontextmenü in der Seitenleiste), oben bündig.
+  // R-39/R-40: Menü und Sprechblase stehen unter ihrer Schaltfläche und passen immer ganz auf den Bildschirm.
+  // Reicht der Platz darunter nicht, scrollt ihr Inhalt darin (erst bei weniger als 200 px Platz darunter
+  // öffnen sie nach oben). 'beside': rechts neben dem Eintrag (Kontextmenü in der Seitenleiste), oben bündig.
+  el.style.maxHeight = ''; el.style.overflowY = '';   // nach dem Drehen neu messen
+  let r = anchor.getBoundingClientRect();
+  const fit = room => { if (el.scrollHeight > room) { el.style.maxHeight = room + 'px'; el.style.overflowY = 'auto'; el.style.overscrollBehavior = 'contain'; } };
+  let top;
+  // Seit 4.10.0: ist neben dem Eintrag kein Platz (iPhone: Kachel so breit wie der Bildschirm), steht das Menü
+  // linksbündig unter der Kachel – ganz sichtbar über der Backup-Kachel; dafür wird die Liste nötigenfalls
+  // etwas nach oben geschoben (R-40).
+  if (align === 'beside' && innerWidth - (r.right - 40) - 12 < el.offsetWidth) {
+    const list = anchor.closest('.side-list'), tile = anchor.closest('#side')?.querySelector('.side-foot .bhint');
+    const tr = tile?.getBoundingClientRect();
+    const limit = Math.min(innerHeight, tr && tr.height ? tr.top : innerHeight) - 12;
+    const need = r.bottom + 8 + el.offsetHeight - limit;
+    if (need > 0 && list) { list.scrollTop += need; r = anchor.getBoundingClientRect(); }
+    top = r.bottom + 8;
+    fit(limit - top);
+    el.style.left = Math.max(12, Math.min(r.left, innerWidth - el.offsetWidth - 12)) + 'px';
+    el.style.top = Math.max(12, top) + 'px';
+    return;
+  }
+  if (align === 'beside') {
+    fit(innerHeight - 24);
+    top = Math.max(12, Math.min(r.top, innerHeight - el.offsetHeight - 12));
+  } else {
+    const below = innerHeight - r.bottom - 8 - 12, above = r.top - 8 - 12;
+    if (el.scrollHeight <= below || below >= 200 || below >= above) { fit(below); top = r.bottom + 8; }
+    else { fit(above); top = r.top - 8 - el.offsetHeight; }
+  }
+  const w = el.offsetWidth;
   let left = align === 'right' ? r.right - w : align === 'beside' ? r.right - 40 : r.left;
   left = Math.max(12, Math.min(left, innerWidth - w - 12));
-  let top = align === 'beside' ? r.top : r.bottom + 8;
-  if (top + h > innerHeight - 12) top = align === 'beside' ? innerHeight - h - 12 : r.top - h - 8;
-  top = Math.max(12, Math.min(top, innerHeight - h - 12));
   el.style.left = left + 'px';
-  el.style.top = top + 'px';
+  el.style.top = Math.max(12, top) + 'px';
 }
 
 // Einträge: { icon, label, sub, red, tick, disabled, act } (tick und icon zusammen: Häkchen vorne, dann Icon und Text) · { …, value, submenu: [Einträge] } (Untermenü ›, eine Ebene)
@@ -172,6 +193,25 @@ const menuHtml = items => items.map((it, i) => it === 'sep' ? '<div class="sep">
       'tick' in it ? `<span class="tick">${it.tick ? ic('check') : ''}</span>` : ''}${it.icon ? ic(it.icon) : ''}${esc(it.label)}${
       it.value ? `<span class="val">${esc(it.value)}</span>` : ''}${it.submenu ? ic('chevron-right', 'chev') : ''}</button>${
       it.sub ? `<div class="sub">${esc(it.sub)}</div>` : ''}`).join('');
+// Seit 4.10.0 (R-40): Menüs, Untermenüs und Sprechblasen bleiben beim Drehen (quer ↔ hoch) und bei jeder
+// Größenänderung an ihrer Schaltfläche – neu ausgerichtet, ganz sichtbar. Baut die App die Leiste dabei neu
+// auf, wird die Schaltfläche über ihre id wiedergefunden; gibt es sie nicht mehr, schließt sich das Menü.
+const floating = new Set();
+function liveAnchor(anchor) {
+  if (anchor.isConnected) return anchor.getClientRects().length ? anchor : null;
+  const key = anchor.id ? '#' + CSS.escape(anchor.id)
+    : anchor.dataset.id ? `.${anchor.classList[0]}[data-id="${CSS.escape(anchor.dataset.id)}"]`
+    : anchor.dataset.day ? `[data-day="${CSS.escape(anchor.dataset.day)}"]` : '';
+  const again = key && document.querySelector(key);
+  if (again) again.classList.add('on');
+  return again || null;
+}
+function placeFloating() { floating.forEach(f => f()); }
+const replaceSoon = () => { requestAnimationFrame(() => requestAnimationFrame(placeFloating)); setTimeout(placeFloating, 350); };
+window.addEventListener('resize', replaceSoon);
+window.addEventListener('orientationchange', replaceSoon);
+window.visualViewport?.addEventListener('resize', replaceSoon);
+
 function openMenu(anchor, items, align = 'right') {
   const host = anchor.closest('dialog') || document.body;
   const layer = blockingLayer();
@@ -179,10 +219,27 @@ function openMenu(anchor, items, align = 'right') {
   menu.className = 'menu';
   menu.setAttribute('role', 'menu');
   menu.innerHTML = menuHtml(items);
-  let subMenu = null;
-  const closeSub = () => { subMenu?.remove(); subMenu = null; menu.querySelector('.mi.on')?.classList.remove('on'); };
+  let subMenu = null, subItem = null;
+  const closeSub = () => { subMenu?.remove(); subMenu = null; subItem = null; menu.querySelector('.mi.on')?.classList.remove('on'); };
   anchor.classList.add('on');
-  const close = () => { closeSub(); layer.remove(); menu.remove(); anchor.classList.remove('on'); };
+  // Untermenü neben dem Menü, oben bündig mit seinem Eintrag; passt es links nicht hin, rechts daneben.
+  const placeSub = () => {
+    if (!subMenu) return;
+    subMenu.style.maxHeight = ''; subMenu.style.overflowY = '';
+    const room = innerHeight - 24;
+    if (subMenu.scrollHeight > room) { subMenu.style.maxHeight = room + 'px'; subMenu.style.overflowY = 'auto'; }
+    const mr = menu.getBoundingClientRect(), br = subItem.getBoundingClientRect(), w = subMenu.offsetWidth;
+    subMenu.style.left = Math.max(12, mr.left - w - 8 >= 12 ? mr.left - w - 8 : Math.min(mr.right + 8, innerWidth - w - 12)) + 'px';
+    subMenu.style.top = Math.max(12, Math.min(br.top, innerHeight - subMenu.offsetHeight - 12)) + 'px';
+  };
+  const place = () => {
+    const a = liveAnchor(anchor);
+    if (!a) return close();
+    anchor = a;
+    placeAt(menu, anchor, align);
+    placeSub();
+  };
+  const close = () => { closeSub(); layer.remove(); menu.remove(); anchor.classList.remove('on'); floating.delete(place); };
   layer.onclick = close;
   menu.querySelectorAll('[data-i]').forEach(b => b.onclick = () => {
     const it = items[b.dataset.i];
@@ -198,12 +255,12 @@ function openMenu(anchor, items, align = 'right') {
     subMenu.innerHTML = menuHtml(it.submenu);
     subMenu.querySelectorAll('[data-i]').forEach(sb => sb.onclick = () => { close(); it.submenu[sb.dataset.i].act(); });
     host.append(subMenu);
-    const mr = menu.getBoundingClientRect(), br = b.getBoundingClientRect(), w = subMenu.offsetWidth;
-    subMenu.style.left = (mr.left - w - 8 >= 12 ? mr.left - w - 8 : Math.min(mr.right + 8, innerWidth - w - 12)) + 'px';
-    subMenu.style.top = Math.max(12, Math.min(br.top, innerHeight - subMenu.offsetHeight - 12)) + 'px';
+    subItem = b;
+    placeSub();
   });
   host.append(layer, menu);
   placeAt(menu, anchor, align);
+  floating.add(place);
 }
 
 // Abfrage als Sprechblase an der angetippten Schaltfläche; daneben tippen bricht ab.
@@ -223,10 +280,23 @@ function choosePop(anchor, html, buttons) {
     const layer = blockingLayer();
     const pop = document.createElement('div');
     pop.className = 'pop';
-    pop.innerHTML = `<p>${html}</p><div class="btns">${buttons.map((b, i) =>
-      `<button type="button" class="${b.cls || ''}" data-i="${i}">${esc(b.label)}</button>`).join('')}</div>`;
+    // Seit 4.10.0 (R-46): Wege mit Erklärung (desc) stehen je in einer eigenen Kachel – Erklärung, darunter der Knopf;
+    // Wege ohne Erklärung (z. B. Abbrechen) darunter wie bisher.
+    const btn = (b, i) => `<button type="button" class="${b.cls || ''}" data-i="${i}">${esc(b.label)}</button>`;
+    const tiles = buttons.map((b, i) => b.desc ? `<div class="tile"><p>${b.desc}</p>${btn(b, i)}</div>` : '').join('');
+    pop.innerHTML = `<p>${html}</p>${tiles ? `<div class="tiles">${tiles}</div>` : ''}<div class="btns">${buttons.map((b, i) => b.desc ? '' : btn(b, i)).join('')}</div>`;
+    if (tiles) pop.classList.add('wide');
     if (visible) anchor.classList.add('on');
-    const done = v => { layer.remove(); pop.remove(); if (visible) anchor.classList.remove('on'); resolve(v); };
+    const place = () => {
+      if (!visible) { pop.style.left = (innerWidth - pop.offsetWidth) / 2 + 'px'; return; }
+      const a = liveAnchor(anchor);
+      // Schaltfläche nicht mehr zu sehen: die Abfrage bleibt offen und steht mittig (eine Entscheidung geht nicht verloren).
+      if (!a) { pop.style.left = (innerWidth - pop.offsetWidth) / 2 + 'px'; pop.style.top = Math.max(12, (innerHeight - pop.offsetHeight) / 2) + 'px'; return; }
+      anchor = a;
+      placeAt(pop, anchor, anchor.classList.contains('side-row') ? 'beside' : anchor.getBoundingClientRect().left > innerWidth / 2 ? 'right' : 'left');
+    };
+    floating.add(place);
+    const done = v => { floating.delete(place); layer.remove(); pop.remove(); if (visible) anchor.classList.remove('on'); resolve(v); };
     layer.onclick = () => done(null);
     pop.querySelectorAll('[data-i]').forEach(b => b.onclick = () => done(buttons[b.dataset.i].value));
     host.append(layer, pop);
@@ -248,6 +318,197 @@ function setOpener(sel) {
 }
 function markOpener() {
   if (dlgOpener) document.querySelector(dlgOpener)?.classList.add('on');
+}
+
+/* ---------- Backup erstellen und laden (R-45, R-46, seit 4.10.0) ---------- */
+
+// Ergebnis des Teilen-Menüs als Text für das kleine Fenster (✅ bzw. ⚠️ davor).
+const SHARE_RESULT = {
+  shared: name => `Teilen-Menü abgeschlossen für <b>${esc(name)}</b>.<div class="hint">Wenn du ‚In Dateien sichern‘ gewählt hast, liegt die Datei im gewählten Ordner.</div>`,
+  downloaded: name => `<b>${esc(name)}</b> wird geladen.<div class="hint">Du findest die Datei in der Dateien-App unter ‚Downloads‘.</div>`,
+  aborted: name => `Teilen-Menü abgebrochen – <b>${esc(name)}</b> wurde nicht gespeichert.`,
+  error: name => `<b>${esc(name)}</b> konnte nicht übergeben werden.`,
+  print: name => `Drucken-Menü geöffnet für <b>${esc(name)}</b>.<div class="hint">Dort über ‚Teilen‘ → ‚In Dateien sichern‘ als PDF ablegen.</div>`,
+};
+const shareResultText = (result, name) => `${result === 'aborted' || result === 'error' ? '⚠️' : '✅'} ${SHARE_RESULT[result](name)}`;
+const MIME = { json: 'application/json', html: 'text/html' };
+// Dateien über das Teilen-Menü (iOS) weitergeben, sonst herunterladen. Ergebnis: shared · downloaded · aborted · error.
+async function shareFiles(files) {
+  const list = files.map(f => new File([f.content], f.name, { type: MIME[f.type] || 'application/octet-stream' }));
+  if (navigator.canShare && navigator.canShare({ files: list })) {
+    try { await navigator.share({ files: list }); return 'shared'; }
+    catch (e) { return e.name === 'AbortError' ? 'aborted' : 'error'; }
+  }
+  files.forEach(f => downloadFile(f.name, f.content, MIME[f.type]));
+  return 'downloaded';
+}
+function downloadFile(name, content, type) {
+  const blob = new Blob([content], { type });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = name;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+}
+// ‚Letztes Backup erstellt am …‘ (je Gerät) und ob heute schon eins erstellt wurde (sonst ist die Backup-Kachel gelb).
+const backupLastText = ms => ms ? `Letztes Backup erstellt am ${whenText(ms)}` : 'Noch kein Backup erstellt.';
+const backupToday = ms => Boolean(ms) && new Date(ms).toDateString() === new Date().toDateString();
+// Backup-Datei: ‚Ω Backup <App> JJJJ.MM.TT hh.mm.json‘, mit Zeitpunkt und Gerät (für den Abgleich, R-41).
+function backupFileOf(app, data) {
+  const n = new Date(), two = x => String(x).padStart(2, '0');
+  return { name: `Ω Backup ${app} ${n.getFullYear()}.${two(n.getMonth() + 1)}.${two(n.getDate())} ${two(n.getHours())}.${two(n.getMinutes())}.json`, type: 'json',
+    content: JSON.stringify({ ...data, savedAt: Date.now(), savedOn: deviceName() }, null, 2) };
+}
+// Backup-Kachel unten in der Seitenleiste bzw. Startliste: gelb, solange heute noch kein Backup erstellt wurde.
+const backupTileHtml = ms => `<div class="side-foot"><div class="bhint ${backupToday(ms) ? 'ok' : ''}"><div>${backupLastText(ms)}</div>
+      <button type="button" id="hintBackup">${ic('save')}Backup erstellen</button></div></div>`;
+// Die beiden Einträge im Mehr-Menü der Seitenleiste.
+const backupMenuEntries = ({ last, disabled, onSave, onLoad }) => [
+  { icon: 'save', label: 'Backup erstellen', sub: backupLastText(last), disabled, act: onSave },
+  { icon: 'folder-open', label: 'Backup laden', act: onLoad }];
+// Backup-Datei lesen und prüfen; Ergebnis { data, savedAt, savedOn } – Fehler mit verständlichem Grund.
+async function readBackup(file, list) {
+  let data;
+  try { data = JSON.parse(await file.text()); } catch (e) { throw new Error('Die Datei ist kein Backup (kein lesbarer Inhalt).'); }
+  if (!data || !Array.isArray(data[list])) throw new Error('Die Datei ist kein Backup dieser App.');
+  const savedAt = data.savedAt || file.lastModified, savedOn = data.savedOn;
+  delete data.savedAt; delete data.savedOn;
+  return { data, savedAt, savedOn };
+}
+
+/* ---------- Abgleich zwischen Geräten (R-41 bis R-44, seit 4.10.0) ---------- */
+
+// Zeitpunkt als ‚12.10.2026 um 13:55‘.
+function whenText(ms) {
+  const d = new Date(ms), two = n => String(n).padStart(2, '0');
+  return `${two(d.getDate())}.${two(d.getMonth() + 1)}.${d.getFullYear()} um ${two(d.getHours())}:${two(d.getMinutes())}`;
+}
+
+// Gemeinsamer Baustein für den Abgleich zwischen iPad und iPhone über ein Backup. Die App beschreibt ihre Daten:
+//   const sync = createSync({ list: 'trips', sub: 'days', subAt: 'dayAt', maxFields: ['outputCounter'],
+//                             nouns: ['Reiselogbuch', 'Reiselogbücher', 'Reiselogbüchern'] });
+// list = Liste der Einträge (je Eintrag eine id und ein title), sub = Unterdaten je Schlüssel (z. B. Tage), subAt = Feld für deren
+// Zeitpunkte, maxFields = Felder ohne Zeitpunkt, beim Abgleich gilt der größere Wert (z. B. Dateinummer).
+// Jede Änderung bekommt je Feld Zeitpunkt und Gerät (metaAt = { Feld: Zeitpunkt }, subAt = { Schlüssel: { Feld: Zeitpunkt } },
+// changedAt/changedOn für ‚geändert am … · Gerät‘). Gelöschte Einträge stehen in data.deleted ({ id, at, on }).
+// R-42: je Feld gilt die neuere Änderung; gleich alt: das Vorhandene hier bleibt, Fehlendes kommt dazu.
+// R-43: ein gelöschter Eintrag bleibt gelöscht, solange er danach nicht mehr geändert wurde – mit Hinweisen.
+function createSync({ list, sub, subAt, maxFields = [], nouns = ['Eintrag', 'Einträge', 'Einträgen'] }) {
+  const STAMPS = [sub, subAt, 'metaAt', 'changedAt', 'changedOn', ...maxFields];
+  const metaKeys = e => Object.keys(e).filter(k => !STAMPS.includes(k));
+  const metaObj = e => Object.fromEntries(metaKeys(e).map(k => [k, e[k]]));
+  const fieldsOf = o => Object.fromEntries(Object.entries(o || {}).map(([k, v]) => [k, JSON.stringify(v)]));
+  // Ältere Daten mit nur einem Zeitpunkt je Eintrag bzw. Unterdatum: der gilt für alle Felder.
+  const metaTime = (e, k) => typeof e.metaAt === 'number' ? e.metaAt : e.metaAt?.[k] || 0;
+  const subTime = (e, key, k) => { const a = e[subAt]?.[key]; return typeof a === 'number' ? a : a?.[k] || 0; };
+  const snapshot = data => new Map(data[list].map(e => [e.id, { meta: fieldsOf(metaObj(e)),
+    subs: Object.fromEntries(Object.entries(e[sub] || {}).map(([key, d]) => [key, fieldsOf(d)])) }]));
+  // Vergleicht mit dem zuletzt gespeicherten Stand und stempelt jedes geänderte Feld; gibt den neuen Stand zurück.
+  function stamp(data, before, now = Date.now(), on = deviceName()) {
+    data.deleted ||= [];
+    const next = snapshot(data);
+    for (const e of data[list]) {
+      const b = before.get(e.id), a = next.get(e.id);
+      e[subAt] ||= {};
+      if (typeof e.metaAt !== 'object' || !e.metaAt) e.metaAt = {};
+      let changed = false;
+      for (const k of new Set([...Object.keys(b?.meta || {}), ...Object.keys(a.meta)])) {
+        if (!b || b.meta[k] !== a.meta[k]) { e.metaAt[k] = now; changed = true; }
+      }
+      for (const key of new Set([...Object.keys(b?.subs || {}), ...Object.keys(a.subs)])) {
+        const bs = b?.subs[key] || {}, as = a.subs[key] || {};
+        for (const k of new Set([...Object.keys(bs), ...Object.keys(as)])) {
+          if (bs[k] !== as[k]) { if (typeof e[subAt][key] !== 'object' || !e[subAt][key]) e[subAt][key] = {}; e[subAt][key][k] = now; changed = true; }
+        }
+      }
+      if (changed) { e.changedAt = now; e.changedOn = on; }
+    }
+    for (const id of before.keys()) if (!next.has(id)) data.deleted = [...data.deleted.filter(x => x.id !== id), { id, at: now, on }];
+    return next;
+  }
+  // Letzte Änderung eines Datenbestands (geändert oder gelöscht).
+  const latest = data => Math.max(0, ...data[list].map(e => e.changedAt || 0), ...(data.deleted || []).map(x => x.at || 0));
+  function mergeFields(l, r, timeL, timeR) {
+    const out = {}, at = {};
+    let fromR = false;
+    for (const k of new Set([...Object.keys(l || {}), ...Object.keys(r || {})])) {
+      const la = timeL(k), ra = timeR(k);
+      const useR = ra > la || (ra === la && l?.[k] === undefined && r?.[k] !== undefined);
+      const v = useR ? r?.[k] : l?.[k];
+      if (v !== undefined) out[k] = structuredClone(v);
+      if (Math.max(la, ra)) at[k] = useR ? ra : la;
+      if (useR && JSON.stringify(l?.[k] ?? null) !== JSON.stringify(r?.[k] ?? null)) fromR = true;
+    }
+    return { out, at, fromR };
+  }
+  // Abgleichen: Ergebnis { data, stats } – stats: updated [{ title, subs }], added, removed, keptDeleted [{ title, at }], keptChanged, same.
+  function merge(local, remote) {
+    const stats = { updated: [], added: [], removed: [], keptDeleted: [], keptChanged: [], same: 0 };
+    const del = new Map();
+    for (const x of [...(local.deleted || []), ...(remote.deleted || [])]) if (!del.has(x.id) || del.get(x.id).at < x.at) del.set(x.id, x);
+    const L = new Map(local[list].map(e => [e.id, e])), R = new Map(remote[list].map(e => [e.id, e]));
+    const out = [];
+    for (const id of new Set([...L.keys(), ...R.keys()])) {
+      const l = L.get(id), r = R.get(id), gone = del.get(id);
+      if (l && r) {
+        const meta = mergeFields(metaObj(l), metaObj(r), k => metaTime(l, k), k => metaTime(r, k));
+        const e = { id, ...meta.out, metaAt: meta.at, [sub]: {}, [subAt]: {} };
+        let subs = 0;
+        for (const key of new Set([...Object.keys(l[sub] || {}), ...Object.keys(r[sub] || {}), ...Object.keys(l[subAt] || {}), ...Object.keys(r[subAt] || {})])) {
+          const d = mergeFields(l[sub]?.[key], r[sub]?.[key], k => subTime(l, key, k), k => subTime(r, key, k));
+          if (Object.keys(d.out).length) e[sub][key] = d.out;
+          if (Object.keys(d.at).length) e[subAt][key] = d.at;
+          if (d.fromR) subs++;
+        }
+        const newer = (r.changedAt || 0) > (l.changedAt || 0) ? r : l;
+        e.changedAt = newer.changedAt; e.changedOn = newer.changedOn;
+        for (const k of maxFields) e[k] = Math.max(l[k] || 0, r[k] || 0);
+        out.push(e);
+        if (subs || meta.fromR) stats.updated.push({ title: e.title, subs }); else stats.same++;
+      } else if (l) {
+        if (gone && gone.at > (l.changedAt || 0)) stats.removed.push(l.title);
+        else { out.push(l); stats.same++; if (gone) stats.keptChanged.push(l.title); }
+      } else if (gone && gone.at >= (r.changedAt || 0)) {
+        stats.keptDeleted.push({ title: r.title, at: gone.at });
+      } else {
+        out.push(structuredClone(r)); stats.added.push(r.title);
+      }
+    }
+    return { data: { ...local, [list]: out, deleted: [...del.values()] }, stats };
+  }
+  const count = n => `${n} ${n === 1 ? nouns[0] : nouns[1]}`;
+  // R-41: Abfrage beim Laden eines Backups – Zeitpunkt und Gerät, neuer oder älter, kurze Erklärung der Wege.
+  function question(local, remote, savedAt, savedOn, unit = 'Tag') {
+    const n = remote[list].length, here = deviceName(), mine = latest(local), theirs = latest(remote) || savedAt;
+    const cmp = !mine ? '' : `<br>Es ist <b>${theirs > mine ? 'neuer' : theirs < mine ? 'älter' : 'gleich alt'}</b> ${theirs === mine ? 'wie' : 'als'} die Daten auf diesem ${here} (zuletzt geändert am ${whenText(mine)}).`;
+    return `Backup vom <b>${whenText(savedAt)}</b>${savedOn ? ` (${esc(savedOn)})` : ''} mit ${n} ${n === 1 ? nouns[0] : nouns[2]}.${cmp}`;
+  }
+  // R-46: je Weg eine Kachel mit Erklärung und Knopf; Abbrechen darunter.
+  const choices = (unit = 'Tag') => [
+    { label: 'Abgleichen', cls: 'primary', value: 'merge', desc: `Je ${nouns[0]} und ${unit} gilt die neuere Fassung; gelöschte ${nouns[1]} werden auch hier gelöscht.` },
+    { label: 'Ersetzen', cls: 'danger-text', value: 'replace', desc: `Alle Daten auf diesem ${deviceName()} werden durch das Backup ersetzt.` },
+    { label: 'Abbrechen', value: null }];
+  const ask = (anchor, local, remote, savedAt, savedOn) => choosePop(anchor, question(local, remote, savedAt, savedOn), choices());
+  // R-44: Ergebnis als kleines Fenster mit Hinweisen zu Gelöschtem.
+  function resultText({ updated, added, removed, keptDeleted, keptChanged, same }, savedAt, savedOn, unit = ['Tag', 'Tage']) {
+    const head = `✅ Abgeglichen mit dem Backup vom ${whenText(savedAt)}${savedOn ? ` (${esc(savedOn)})` : ''}.`;
+    const notes = [];
+    if (keptDeleted.length) notes.push(`ℹ️ <b>Hier gelöscht, im Backup noch vorhanden:</b> ${keptDeleted.map(k => `${esc(k.title)} (gelöscht am ${whenText(k.at)})`).join(', ')} – ${keptDeleted.length === 1 ? 'bleibt' : 'bleiben'} gelöscht. Zurückholen nur mit ‚Backup laden‘ → ‚Ersetzen‘ (ersetzt alle Daten auf diesem Gerät).`);
+    if (keptChanged.length) notes.push(`ℹ️ <b>Drüben gelöscht, hier danach noch geändert:</b> ${keptChanged.map(esc).join(', ')} – ${keptChanged.length === 1 ? 'bleibt' : 'bleiben'} erhalten.`);
+    const tail = notes.length ? `<br><br>${notes.join('<br><br>')}` : '';
+    if (!updated.length && !added.length && !removed.length) return `${head}<br><br>Alles war schon auf dem gleichen Stand.${tail}`;
+    const rows = [];
+    if (updated.length) rows.push(`<b>Aktualisiert:</b> ${updated.map(u => esc(u.title) + (u.subs ? ` (${u.subs} ${u.subs === 1 ? unit[0] : unit[1]})` : '')).join(', ')}`);
+    if (added.length) rows.push(`<b>Neu:</b> ${added.map(esc).join(', ')}`);
+    if (removed.length) rows.push(`<b>Gelöscht:</b> ${removed.map(esc).join(', ')}`);
+    if (same) rows.push(`<b>Unverändert:</b> ${count(same)}`);
+    return `${head}<br><br>${rows.join('<br>')}${tail}`;
+  }
+  // R-44: dritte Zeile der Kachel.
+  const changedLine = e => e.changedAt ? `<small class="chg">geändert am ${whenText(e.changedAt)}${e.changedOn ? ' · ' + esc(e.changedOn) : ''}</small>` : '';
+  return { snapshot, stamp, latest, merge, question, choices, ask, resultText, changedLine, config: { list, sub, subAt, maxFields, nouns } };
 }
 
 /* ---------- Meldungen und Sicherheitsabfragen ---------- */
