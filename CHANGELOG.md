@@ -3,6 +3,23 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.10.0 – 12.10.2026 (Nebenversion)
+
+AppDesign 4.10.0 · Designrichtlinie allgemein 4.10.0 · Zusammenarbeit allgemein 1.13.0
+
+- **R-40 Drehen:** offenes Menü, Untermenü und Sprechblase werden beim Drehen (hoch ↔ quer) neu ausgerichtet –
+  Menü unter der Schaltfläche, Untermenü neben seinem Eintrag, ganz sichtbar; die Seitenleiste bleibt dabei
+  sichtbar. Menüs stehen immer unter ihrer Schaltfläche (zu wenig Platz: Inhalt scrollt). Kontextmenü ohne Platz
+  daneben (iPhone): linksbündig unter der Kachel, über der Backup-Kachel. Das Prüfskript dreht jede Ansicht mit
+  offenem Menü automatisch (`measure()`).
+- **Abgleich als allgemeine Regel R-41 bis R-44:** Baustein `createSync()` in `ui.js` (je Feld das Neuere,
+  gelöschte Einträge mit Hinweisen, Ergebnisfenster, ‚geändert am … · Gerät‘), Fall-Tabelle in Abschnitt 15.18,
+  allgemeine Prüfung `tests/abgleich.mjs` (alle Fälle, beide Richtungen, jede App).
+- **Backup erstellen und laden als Standard R-45, R-46** (Abschnitt 15.19): Bausteine `backupFileOf`, `shareFiles`,
+  `shareResultText`, `backupLastText`, `backupToday`, `backupTileHtml`, `backupMenuEntries`, `readBackup`;
+  Abfrage ‚Backup laden‘ mit je einer Kachel für Abgleichen und Ersetzen (`choosePop` mit `desc`);
+  allgemeine Prüfung `tests/backup.mjs`.
+
 ## 4.9.1 – 12.10.2026 (Korrektur)
 
 AppDesign 4.9.1 · Designrichtlinie allgemein 4.9.1 · Zusammenarbeit allgemein 1.13.0
