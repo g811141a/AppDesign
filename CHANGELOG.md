@@ -3,6 +3,17 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.9.1 – 12.10.2026 (Korrektur)
+
+AppDesign 4.9.1 · Designrichtlinie allgemein 4.9.1 · Zusammenarbeit allgemein 1.13.0
+
+- **Neue Regel R-39:** Menü, Sprechblase und Fenster passen immer ganz auf den Bildschirm. `placeAt()`
+  begrenzt die Höhe (Inhalt scrollt darin) und hält sie im Bild; auf dem iPhone quer ist die
+  Sprechblase breiter, die Knöpfe stehen nebeneinander. Fenster werden neu platziert, wenn sie nach
+  dem Öffnen wachsen (`ResizeObserver`).
+- Prüfskript: R-39 (ragt etwas über den Bildschirm hinaus?) und R-38 geprüft; Gegenprobe gemacht –
+  sie fand auch das Fenster ‚Tag‘ am iPad hoch, das 10 px über den Rand ragte.
+
 ## 4.9.0 – 12.10.2026 (Nebenversion)
 
 AppDesign 4.9.0 · Designrichtlinie allgemein 4.9.0 · Zusammenarbeit allgemein 1.13.0
