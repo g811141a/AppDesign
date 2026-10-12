@@ -1,4 +1,4 @@
-// AppDesign 4.9.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
+// AppDesign 4.9.1 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
 // Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/v4/ui.js"></script>
 // Klassisches Skript: alle Funktionen sind global und für das Skript der App sichtbar.
 //
@@ -148,13 +148,18 @@ function showModalQuiet(d) {
 
 // Menü oder Sprechblase unter (bzw. über) der Schaltfläche, im Bildschirm gehalten.
 function placeAt(el, anchor, align) {
+  // Seit 4.9.1 (R-39): Menü und Sprechblase passen immer auf den Bildschirm – sind sie zu hoch
+  // (z. B. iPhone quer), stehen sie oben bündig und ihr Inhalt scrollt darin.
+  const room = innerHeight - 24;
+  if (el.scrollHeight > room) { el.style.maxHeight = room + 'px'; el.style.overflowY = 'auto'; el.style.overscrollBehavior = 'contain'; }
   const r = anchor.getBoundingClientRect();
   const w = el.offsetWidth, h = el.offsetHeight;
   // 'beside': rechts neben dem Eintrag (Kontextmenü in der Seitenleiste), oben bündig.
   let left = align === 'right' ? r.right - w : align === 'beside' ? r.right - 40 : r.left;
   left = Math.max(12, Math.min(left, innerWidth - w - 12));
   let top = align === 'beside' ? r.top : r.bottom + 8;
-  if (top + h > innerHeight - 12) top = Math.max(12, align === 'beside' ? innerHeight - h - 12 : r.top - h - 8);
+  if (top + h > innerHeight - 12) top = align === 'beside' ? innerHeight - h - 12 : r.top - h - 8;
+  top = Math.max(12, Math.min(top, innerHeight - h - 12));
   el.style.left = left + 'px';
   el.style.top = top + 'px';
 }
@@ -435,6 +440,9 @@ if (window.visualViewport) {
   visualViewport.addEventListener('scroll', placeDialogs);
   visualViewport.addEventListener('resize', placeDialogs);
 }
+// Seit 4.9.1 (R-39): wächst ein Fenster nach dem Öffnen (Inhalt, Textfelder), wird es neu platziert –
+// es ragt nie über den Bildschirm hinaus.
+if (window.ResizeObserver) [dlg, msg].forEach(d => new ResizeObserver(() => { if (d.open) placeDialogs(); }).observe(d));
 // Das angetippte Feld im Fenster in den sichtbaren Teil rollen, sobald die Tastatur offen ist.
 dlg.addEventListener('focusin', e => {
   if (!e.target.matches('input, textarea')) return;

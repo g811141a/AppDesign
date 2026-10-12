@@ -1,4 +1,4 @@
-// AppDesign 4.9.0 · HIG- und Regel-Prüfung: misst eine App-Ansicht gegen die HIG-Checkliste (Abschnitt 16)
+// AppDesign 4.9.1 · HIG- und Regel-Prüfung: misst eine App-Ansicht gegen die HIG-Checkliste (Abschnitt 16)
 // und alle automatisch prüfbaren Regeln des Regelkatalogs (Abschnitt 17, R-01 …) der Designrichtlinie allgemein. Wird vom Prüfskript jeder App eingebunden:
 //   import { createCheck } from '../../AppDesign/tests/hig.mjs';
 //   const hig = createCheck({ skipTargets: ['table.days .ln:not(.q) a'] });   // bewusste Abweichungen der App
@@ -150,6 +150,9 @@ const found = new Map();
         if (!bs[0].classList.contains('primary')) R('R-38', 'empfohlene Aktion nicht blau gefüllt an erster Stelle');
         if (!/Abbrechen|Weiter bearbeiten/.test(bs[bs.length - 1].textContent)) R('R-38', '‚Abbrechen‘ nicht zuletzt');
         bs.slice(1, -1).forEach(b => { if (/Ersetzen|löschen|Löschen/.test(b.textContent) && !b.classList.contains('danger-text')) R('R-38', `zerstörende Aktion ‚${b.textContent}‘ nicht in roter Schrift`); }); });
+      // R-39 Menü, Sprechblase und Fenster passen ganz auf den Bildschirm (sonst wären Knöpfe unerreichbar)
+      document.querySelectorAll('.pop, .menu, dialog[open]').forEach(e => { const b = e.getBoundingClientRect(); if (!b.width || !b.height) return;
+        if (b.top < -1 || b.left < -1 || b.bottom > innerHeight + 1 || b.right > innerWidth + 1) R('R-39', `${e.classList[0] || e.tagName.toLowerCase()} ragt über den Bildschirm hinaus (${Math.round(b.top)}–${Math.round(b.bottom)} von ${innerHeight} px)`); });
       // R-37 Kein Text ragt über Zelle oder Kachel hinaus – zu lange Wörter brechen im Wort um
       document.querySelectorAll('#app td, #app th, #app dd, #app .box, .box .kv .v, .box .ln, .irow, .side-row, .bhint, .bnote, .msg-text, .pop p, .fazit-box').forEach(e => {
         if (!vis(e) || e.closest('.rt, #printout') || cs(e).textOverflow === 'ellipsis') return;
