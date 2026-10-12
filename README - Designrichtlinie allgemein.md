@@ -492,9 +492,8 @@ Verhalten · technischer Name). In AppDesign ist jede Komponente einmal programm
   und Gerät. Nach der Dateiauswahl (z. B. aus iCloud Drive) fragt eine Sprechblase mit drei Wegen
   (R-38): ‚Backup vom … (iPhone) mit n …‘, ob es **neuer** oder **älter** ist als die Daten auf
   diesem Gerät, kurz erklärt · **Abgleichen** (blau gefüllt) · **Ersetzen** (rote Schrift) ·
-  **Abbrechen**. Abgleichen nimmt je Eintrag und Tag die neuere Fassung, Gelöschtes wird auch
-  hier gelöscht; das Ergebnis (Aktualisiert · Neu · Gelöscht · Unverändert) zeigt ein kleines
-  Fenster. Einstellungen bleiben die des Geräts.
+  **Abbrechen**. Abgleichen nimmt je Feld die neuere Fassung (R-42), Gelöschtes bleibt gelöscht (R-43); das
+  Ergebnis zeigt ein kleines Fenster (R-44). Alle Fälle: Abschnitt 15.18.
 - **Kontextmenü:** Langes Drücken (ca. 0,6 s) auf einen Eintrag öffnet rechts daneben ein Menü
   (ist daneben kein Platz – iPhone –, linksbündig unter der Kachel, ganz sichtbar über der
   Backup-Kachel; die Liste rückt dafür nötigenfalls nach oben, R-40)
@@ -656,6 +655,40 @@ Verhalten · technischer Name). In AppDesign ist jede Komponente einmal programm
   Abfragen ebenfalls an der Schaltfläche).
 - Menüs, Kapseln und Schaltflächen wie auf dem iPad (44 pt).
 
+### 15.18 Abgleich zwischen iPad und iPhone (seit 4.10.0, R-41 bis R-44)
+- **Apple:** iCloud gleicht ohne Rückfrage ab; ohne Entwicklerkonto geht es bei uns über ein Backup in
+  iCloud Drive – mit derselben Grundregel wie Apple: **die neuere Änderung gilt**, je Feld.
+- **Technisch:** gemeinsamer Baustein `createSync({ list, sub, subAt, maxFields, nouns })` in `ui.js` – jede App mit
+  Backup nutzt ihn (keine eigene Umsetzung, R-36). Beim Speichern stempelt `sync.stamp()` jedes geänderte Feld mit
+  Zeitpunkt und Gerät (Kopfdaten `metaAt`, Unterdaten wie Tage `subAt`), gelöschte Einträge kommen nach
+  `data.deleted`; das Backup enthält `savedAt` und `savedOn`.
+- **Weg:** auf dem einen Gerät ‚Backup erstellen‘ → ‚In Dateien sichern‘ → iCloud Drive; auf dem anderen
+  ‚Backup laden‘ → Datei wählen → Abfrage (R-41) → ‚Abgleichen‘ → Ergebnisfenster (R-44).
+- **Prüfung:** `tests/abgleich.mjs` prüft alle Fälle der Tabelle in beide Richtungen für jede App automatisch.
+
+| Nr. | Anwendungsfall | iPhone lädt das Backup vom iPad → ‚Abgleichen‘ | iPad lädt das Backup vom iPhone → ‚Abgleichen‘ |
+|---|---|---|---|
+| 1 | Eintrag nur auf dem iPad neu angelegt | kommt dazu – ‚Neu: …‘ | bleibt – ‚Alles war schon auf dem gleichen Stand‘ |
+| 2 | Auf dem iPad gelöscht, auf dem iPhone seitdem nicht geändert | wird gelöscht – ‚Gelöscht: …‘ | bleibt gelöscht – Hinweis ‚Hier gelöscht, im Backup noch vorhanden: … (gelöscht am …) – bleibt gelöscht. Zurückholen nur mit Ersetzen‘ |
+| 3 | Auf dem iPad gelöscht, auf dem iPhone **danach** noch geändert | bleibt erhalten – Hinweis ‚Drüben gelöscht, hier danach noch geändert: … – bleibt erhalten‘ | kommt mit den Änderungen vom iPhone zurück – ‚Neu: …‘ |
+| 4 | Auf dem iPad gelöscht, auf dem iPhone **vorher** geändert | wird gelöscht – ‚Gelöscht: …‘ | bleibt gelöscht – Hinweis wie Fall 2 |
+| 5 | Auf beiden Geräten gelöscht | bleibt weg, keine Meldung | bleibt weg, keine Meldung |
+| 6 | Nur auf dem iPad Unterdaten (z. B. ein Tag) erfasst oder geändert | übernommen – ‚Aktualisiert: … (1 Tag)‘ | bleibt – ‚Alles war schon auf dem gleichen Stand‘ |
+| 7 | Verschiedene Unterdaten (Tage) auf iPad und iPhone geändert | beide sind da | beide sind da |
+| 8 | Gleiche Unterdaten, verschiedene Felder (iPad: Wetter, iPhone: Verlauf) | beides bleibt | beides bleibt |
+| 9 | Gleiches Feld auf beiden geändert (iPhone später) | die neuere Fassung (iPhone) bleibt | die neuere Fassung (iPhone) wird übernommen |
+| 10 | Feld auf dem iPad geleert, iPhone unverändert | Feld wird auch hier geleert, der Rest bleibt | bleibt leer |
+| 11 | Feld auf dem iPad geleert, auf dem iPhone **danach** neu eingetragen | der neue Eintrag bleibt | der neue Eintrag wird übernommen |
+| 12 | Kopfdaten: verschiedene Felder (iPad Titel, iPhone Fazit) | beides bleibt | beides bleibt |
+| 13 | Kopfdaten: gleiches Feld auf beiden geändert | das Neuere gilt | das Neuere gilt |
+| 14 | Auf beiden ein neuer Eintrag mit gleichem Namen | beide bleiben (verschiedene Einträge) | beide bleiben |
+| 15 | Nichts geändert bzw. dasselbe Backup noch einmal | ‚Alles war schon auf dem gleichen Stand‘ | wie links |
+| 16 | Daten ohne Zeitpunkt (vor dem Abgleich-Update, ältere Backups) | Vorhandenes bleibt, Fehlendes kommt dazu; unterschiedliche Werte bleiben je Gerät verschieden | wie links – Tipp: einmal ‚Ersetzen‘, dann starten beide gleich |
+| 17 | Zähler ohne Zeitpunkt (`maxFields`, z. B. Dateinummer) verschieden | der größere Wert gilt | wie links |
+| 18 | Einstellungen (Darstellung, Smiley-Leiste, ‚Letztes Backup‘) | bleiben die des iPhones | bleiben die des iPads |
+| 19 | ‚Ersetzen‘ statt ‚Abgleichen‘ | alle Daten des iPhones werden durch das Backup ersetzt (hier Gelöschtes kommt zurück, hier Geändertes geht verloren); ‚Letztes Backup‘ bleibt | wie links |
+| 20 | ‚Abbrechen‘ oder daneben tippen | nichts ändert sich | wie links |
+
 ## 16. HIG-Checkliste
 
 Jedes Muster und jede Version wird **vorher** an dieser Liste gemessen (Apple-Abgleich, siehe
@@ -747,6 +780,10 @@ hier sofort eine Nummer und – wo möglich – eine Prüfung im Skript.
 | R-38 | Abfrage mit mehreren Wegen: empfohlene Aktion blau gefüllt zuerst, zerstörende in roter Schrift, ‚Abbrechen‘ zuletzt; kurze Erklärung der Wege im Text | Skript | 15.7 |
 | R-39 | Menü, Sprechblase und Fenster passen immer ganz auf den Bildschirm (auch iPhone quer); ist der Inhalt zu hoch, scrollt er darin – kein Knopf liegt außerhalb | Skript | 15.6, 15.7, 15.9 |
 | R-40 | Beim Drehen (hoch ↔ quer) wird jedes offene Menü, Untermenü und jede Sprechblase sofort neu ausgerichtet: Menü unterhalb seiner aufrufenden Schaltfläche, Untermenü neben seinem Eintrag, Kontextmenü einer Kachel daneben bzw. (iPhone) linksbündig darunter über der Backup-Kachel – immer vollständig sichtbar (reicht der Platz nicht, scrollt der Inhalt darin bzw. rückt die Liste nach oben); die Schaltfläche bleibt blau. Liegt die Schaltfläche in der Seitenleiste, bleibt diese dabei sichtbar (hoch darübergelegt) | Skript – automatisch: jede Ansicht mit offenem Menü, Untermenü oder offener Sprechblase wird hoch ↔ quer gedreht und zurück, in jeder App ohne eigenen Aufruf · Ablauf (Kontextmenü iPhone) · Gerät | 15.4, 15.6, 15.7 |
+| R-41 | Abgleich zwischen iPad und iPhone über das Backup: das Backup enthält Zeitpunkt und Gerät; ‚Backup laden‘ fragt (Sprechblase, R-38) mit Zeitpunkt, Gerät und ‚neuer/älter als die Daten auf diesem Gerät‘ und den Wegen Abgleichen · Ersetzen · Abbrechen; jede App nutzt dafür den gemeinsamen Baustein `createSync` | Skript (`tests/abgleich.mjs`) · Ablauf | 15.4, 15.18 |
+| R-42 | Beim Abgleichen gilt **je Feld** die neuere Änderung – in den Kopfdaten und in den Unterdaten (z. B. je Tag); gleich alt oder ohne Zeitpunkt: das Vorhandene hier bleibt, Fehlendes kommt dazu; Zähler ohne Zeitpunkt: der größere Wert; Einstellungen bleiben je Gerät | Skript (`tests/abgleich.mjs`, Fälle 6–18) | 15.18 |
+| R-43 | Ein gelöschter Eintrag bleibt gelöscht, solange er danach nicht mehr geändert wurde (auch wenn er im Backup noch vorhanden ist – mit Hinweis); wurde er danach noch geändert, bleibt er bzw. kommt zurück (mit Hinweis); auf beiden gelöscht bleibt er weg | Skript (`tests/abgleich.mjs`, Fälle 1–5) | 15.18 |
+| R-44 | Ergebnis des Abgleichs im kleinen Fenster: Aktualisiert (mit Zahl der Tage) · Neu · Gelöscht · Unverändert und die Hinweise zu Gelöschtem bzw. ‚Alles war schon auf dem gleichen Stand‘; jede Kachel zeigt ‚geändert am … · Gerät‘ | Skript (`tests/abgleich.mjs`) · Ablauf | 15.4, 15.18 |
 
 ---
 

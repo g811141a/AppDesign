@@ -316,6 +316,134 @@ function markOpener() {
   if (dlgOpener) document.querySelector(dlgOpener)?.classList.add('on');
 }
 
+/* ---------- Abgleich zwischen Geräten (R-41 bis R-44, seit 4.10.0) ---------- */
+
+// Zeitpunkt als ‚12.10.2026 um 13:55‘.
+function whenText(ms) {
+  const d = new Date(ms), two = n => String(n).padStart(2, '0');
+  return `${two(d.getDate())}.${two(d.getMonth() + 1)}.${d.getFullYear()} um ${two(d.getHours())}:${two(d.getMinutes())}`;
+}
+
+// Gemeinsamer Baustein für den Abgleich zwischen iPad und iPhone über ein Backup. Die App beschreibt ihre Daten:
+//   const sync = createSync({ list: 'trips', sub: 'days', subAt: 'dayAt', maxFields: ['outputCounter'],
+//                             nouns: ['Reiselogbuch', 'Reiselogbücher', 'Reiselogbüchern'] });
+// list = Liste der Einträge (je Eintrag eine id und ein title), sub = Unterdaten je Schlüssel (z. B. Tage), subAt = Feld für deren
+// Zeitpunkte, maxFields = Felder ohne Zeitpunkt, beim Abgleich gilt der größere Wert (z. B. Dateinummer).
+// Jede Änderung bekommt je Feld Zeitpunkt und Gerät (metaAt = { Feld: Zeitpunkt }, subAt = { Schlüssel: { Feld: Zeitpunkt } },
+// changedAt/changedOn für ‚geändert am … · Gerät‘). Gelöschte Einträge stehen in data.deleted ({ id, at, on }).
+// R-42: je Feld gilt die neuere Änderung; gleich alt: das Vorhandene hier bleibt, Fehlendes kommt dazu.
+// R-43: ein gelöschter Eintrag bleibt gelöscht, solange er danach nicht mehr geändert wurde – mit Hinweisen.
+function createSync({ list, sub, subAt, maxFields = [], nouns = ['Eintrag', 'Einträge', 'Einträgen'] }) {
+  const STAMPS = [sub, subAt, 'metaAt', 'changedAt', 'changedOn', ...maxFields];
+  const metaKeys = e => Object.keys(e).filter(k => !STAMPS.includes(k));
+  const metaObj = e => Object.fromEntries(metaKeys(e).map(k => [k, e[k]]));
+  const fieldsOf = o => Object.fromEntries(Object.entries(o || {}).map(([k, v]) => [k, JSON.stringify(v)]));
+  // Ältere Daten mit nur einem Zeitpunkt je Eintrag bzw. Unterdatum: der gilt für alle Felder.
+  const metaTime = (e, k) => typeof e.metaAt === 'number' ? e.metaAt : e.metaAt?.[k] || 0;
+  const subTime = (e, key, k) => { const a = e[subAt]?.[key]; return typeof a === 'number' ? a : a?.[k] || 0; };
+  const snapshot = data => new Map(data[list].map(e => [e.id, { meta: fieldsOf(metaObj(e)),
+    subs: Object.fromEntries(Object.entries(e[sub] || {}).map(([key, d]) => [key, fieldsOf(d)])) }]));
+  // Vergleicht mit dem zuletzt gespeicherten Stand und stempelt jedes geänderte Feld; gibt den neuen Stand zurück.
+  function stamp(data, before, now = Date.now(), on = deviceName()) {
+    data.deleted ||= [];
+    const next = snapshot(data);
+    for (const e of data[list]) {
+      const b = before.get(e.id), a = next.get(e.id);
+      e[subAt] ||= {};
+      if (typeof e.metaAt !== 'object' || !e.metaAt) e.metaAt = {};
+      let changed = false;
+      for (const k of new Set([...Object.keys(b?.meta || {}), ...Object.keys(a.meta)])) {
+        if (!b || b.meta[k] !== a.meta[k]) { e.metaAt[k] = now; changed = true; }
+      }
+      for (const key of new Set([...Object.keys(b?.subs || {}), ...Object.keys(a.subs)])) {
+        const bs = b?.subs[key] || {}, as = a.subs[key] || {};
+        for (const k of new Set([...Object.keys(bs), ...Object.keys(as)])) {
+          if (bs[k] !== as[k]) { if (typeof e[subAt][key] !== 'object' || !e[subAt][key]) e[subAt][key] = {}; e[subAt][key][k] = now; changed = true; }
+        }
+      }
+      if (changed) { e.changedAt = now; e.changedOn = on; }
+    }
+    for (const id of before.keys()) if (!next.has(id)) data.deleted = [...data.deleted.filter(x => x.id !== id), { id, at: now, on }];
+    return next;
+  }
+  // Letzte Änderung eines Datenbestands (geändert oder gelöscht).
+  const latest = data => Math.max(0, ...data[list].map(e => e.changedAt || 0), ...(data.deleted || []).map(x => x.at || 0));
+  function mergeFields(l, r, timeL, timeR) {
+    const out = {}, at = {};
+    let fromR = false;
+    for (const k of new Set([...Object.keys(l || {}), ...Object.keys(r || {})])) {
+      const la = timeL(k), ra = timeR(k);
+      const useR = ra > la || (ra === la && l?.[k] === undefined && r?.[k] !== undefined);
+      const v = useR ? r?.[k] : l?.[k];
+      if (v !== undefined) out[k] = structuredClone(v);
+      if (Math.max(la, ra)) at[k] = useR ? ra : la;
+      if (useR && JSON.stringify(l?.[k] ?? null) !== JSON.stringify(r?.[k] ?? null)) fromR = true;
+    }
+    return { out, at, fromR };
+  }
+  // Abgleichen: Ergebnis { data, stats } – stats: updated [{ title, subs }], added, removed, keptDeleted [{ title, at }], keptChanged, same.
+  function merge(local, remote) {
+    const stats = { updated: [], added: [], removed: [], keptDeleted: [], keptChanged: [], same: 0 };
+    const del = new Map();
+    for (const x of [...(local.deleted || []), ...(remote.deleted || [])]) if (!del.has(x.id) || del.get(x.id).at < x.at) del.set(x.id, x);
+    const L = new Map(local[list].map(e => [e.id, e])), R = new Map(remote[list].map(e => [e.id, e]));
+    const out = [];
+    for (const id of new Set([...L.keys(), ...R.keys()])) {
+      const l = L.get(id), r = R.get(id), gone = del.get(id);
+      if (l && r) {
+        const meta = mergeFields(metaObj(l), metaObj(r), k => metaTime(l, k), k => metaTime(r, k));
+        const e = { id, ...meta.out, metaAt: meta.at, [sub]: {}, [subAt]: {} };
+        let subs = 0;
+        for (const key of new Set([...Object.keys(l[sub] || {}), ...Object.keys(r[sub] || {}), ...Object.keys(l[subAt] || {}), ...Object.keys(r[subAt] || {})])) {
+          const d = mergeFields(l[sub]?.[key], r[sub]?.[key], k => subTime(l, key, k), k => subTime(r, key, k));
+          if (Object.keys(d.out).length) e[sub][key] = d.out;
+          if (Object.keys(d.at).length) e[subAt][key] = d.at;
+          if (d.fromR) subs++;
+        }
+        const newer = (r.changedAt || 0) > (l.changedAt || 0) ? r : l;
+        e.changedAt = newer.changedAt; e.changedOn = newer.changedOn;
+        for (const k of maxFields) e[k] = Math.max(l[k] || 0, r[k] || 0);
+        out.push(e);
+        if (subs || meta.fromR) stats.updated.push({ title: e.title, subs }); else stats.same++;
+      } else if (l) {
+        if (gone && gone.at > (l.changedAt || 0)) stats.removed.push(l.title);
+        else { out.push(l); stats.same++; if (gone) stats.keptChanged.push(l.title); }
+      } else if (gone && gone.at >= (r.changedAt || 0)) {
+        stats.keptDeleted.push({ title: r.title, at: gone.at });
+      } else {
+        out.push(structuredClone(r)); stats.added.push(r.title);
+      }
+    }
+    return { data: { ...local, [list]: out, deleted: [...del.values()] }, stats };
+  }
+  const count = n => `${n} ${n === 1 ? nouns[0] : nouns[1]}`;
+  // R-41: Abfrage beim Laden eines Backups – Zeitpunkt und Gerät, neuer oder älter, kurze Erklärung der Wege.
+  function question(local, remote, savedAt, savedOn, unit = 'Tag') {
+    const n = remote[list].length, here = deviceName(), mine = latest(local), theirs = latest(remote) || savedAt;
+    const cmp = !mine ? '' : `<br>Es ist <b>${theirs > mine ? 'neuer' : theirs < mine ? 'älter' : 'gleich alt'}</b> ${theirs === mine ? 'wie' : 'als'} die Daten auf diesem ${here} (zuletzt geändert am ${whenText(mine)}).`;
+    return `Backup vom <b>${whenText(savedAt)}</b>${savedOn ? ` (${esc(savedOn)})` : ''} mit ${n} ${n === 1 ? nouns[0] : nouns[2]}.${cmp}<br><br><small>Abgleichen: je ${nouns[0]} und ${unit} gilt die neuere Fassung, gelöschte ${nouns[1]} werden auch hier gelöscht.<br>Ersetzen: alle Daten auf diesem ${here} werden durch das Backup ersetzt.</small>`;
+  }
+  const choices = [{ label: 'Abgleichen', cls: 'primary', value: 'merge' }, { label: 'Ersetzen', cls: 'danger-text', value: 'replace' }, { label: 'Abbrechen', value: null }];
+  // R-44: Ergebnis als kleines Fenster mit Hinweisen zu Gelöschtem.
+  function resultText({ updated, added, removed, keptDeleted, keptChanged, same }, savedAt, savedOn, unit = ['Tag', 'Tage']) {
+    const head = `✅ Abgeglichen mit dem Backup vom ${whenText(savedAt)}${savedOn ? ` (${esc(savedOn)})` : ''}.`;
+    const notes = [];
+    if (keptDeleted.length) notes.push(`ℹ️ <b>Hier gelöscht, im Backup noch vorhanden:</b> ${keptDeleted.map(k => `${esc(k.title)} (gelöscht am ${whenText(k.at)})`).join(', ')} – ${keptDeleted.length === 1 ? 'bleibt' : 'bleiben'} gelöscht. Zurückholen nur mit ‚Backup laden‘ → ‚Ersetzen‘ (ersetzt alle Daten auf diesem Gerät).`);
+    if (keptChanged.length) notes.push(`ℹ️ <b>Drüben gelöscht, hier danach noch geändert:</b> ${keptChanged.map(esc).join(', ')} – ${keptChanged.length === 1 ? 'bleibt' : 'bleiben'} erhalten.`);
+    const tail = notes.length ? `<br><br>${notes.join('<br><br>')}` : '';
+    if (!updated.length && !added.length && !removed.length) return `${head}<br><br>Alles war schon auf dem gleichen Stand.${tail}`;
+    const rows = [];
+    if (updated.length) rows.push(`<b>Aktualisiert:</b> ${updated.map(u => esc(u.title) + (u.subs ? ` (${u.subs} ${u.subs === 1 ? unit[0] : unit[1]})` : '')).join(', ')}`);
+    if (added.length) rows.push(`<b>Neu:</b> ${added.map(esc).join(', ')}`);
+    if (removed.length) rows.push(`<b>Gelöscht:</b> ${removed.map(esc).join(', ')}`);
+    if (same) rows.push(`<b>Unverändert:</b> ${count(same)}`);
+    return `${head}<br><br>${rows.join('<br>')}${tail}`;
+  }
+  // R-44: dritte Zeile der Kachel.
+  const changedLine = e => e.changedAt ? `<small class="chg">geändert am ${whenText(e.changedAt)}${e.changedOn ? ' · ' + esc(e.changedOn) : ''}</small>` : '';
+  return { snapshot, stamp, latest, merge, question, choices, resultText, changedLine, config: { list, sub, subAt, maxFields, nouns } };
+}
+
 /* ---------- Meldungen und Sicherheitsabfragen ---------- */
 
 // Kleines Fenster mit rundem x; Abfragen mit Entscheidung sind Sprechblasen (confirmPop).
