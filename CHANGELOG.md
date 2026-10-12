@@ -3,6 +3,18 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.8.1 – 12.10.2026 (Korrektur)
+
+AppDesign 4.8.1 · Designrichtlinie allgemein 4.8.1 · Zusammenarbeit allgemein 1.13.0
+
+- **R-05 verschärft:** Eine Symbolleiste – mit oder ohne Suchzeile – steht immer an ihrem Platz und
+  bewegt sich beim Wischen keinen Millimeter, auch am Rand, bei offener und beim Schließen der
+  Tastatur. Ist die Tastatur der Suche offen, schließt das erste Wischen nur die Tastatur; die Seite
+  bewegt sich dabei nicht (4.8.0 ließ sie im selben Wischen schon scrollen, die Leiste konnte zittern).
+- **Prüfskript:** `hig.barStill()` misst Lage und Höhe jeder sichtbaren Leiste (Kopfzeile, Seitenkopf,
+  Suchzeile, Seitenleisten-Kopf, Backup-Kachel) an acht Scroll-Stellen bis über die Ränder hinaus;
+  ab 0,5 px Bewegung meldet es R-05. Gegenprobe mit absichtlich zitternder Leiste gemacht.
+
 ## 4.8.0 – 12.10.2026 (Nebenversion)
 
 AppDesign 4.8.0 · Designrichtlinie allgemein 4.8.0 · Zusammenarbeit allgemein 1.13.0
