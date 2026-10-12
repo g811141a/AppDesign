@@ -536,6 +536,8 @@ Verhalten · technischer Name). In AppDesign ist jede Komponente einmal programm
 - **Aufbau:** grauer Text · rote Schaltfläche mit dem Verb der Aktion · darunter der Weg
   zurück („Abbrechen“ bzw. „Weiter bearbeiten“, normale Schrift); **Schaltflächen ohne Icons**
   wie in Apple-Abfragen; Breite 320 px.
+- **Wege mit Erklärung (seit 4.10.0, R-46):** bekommt ein Weg eine Erklärung (`desc`), steht er in einer eigenen
+  Kachel – Erklärung oben (gleiche Schrift wie der Text der Sprechblase), Knopf darunter; ‚Abbrechen‘ darunter.
 - **Mehrere Wege (seit 4.9.0, `choosePop`, R-38):** wie eine Apple-Abfrage mit drei Knöpfen –
   die empfohlene Aktion blau gefüllt (`primary`) zuerst, eine zerstörende in roter Schrift
   (`danger-text`), zuletzt ‚Abbrechen‘; eine kurze graue Erklärung der Wege steht im Text.
@@ -689,6 +691,33 @@ Verhalten · technischer Name). In AppDesign ist jede Komponente einmal programm
 | 19 | ‚Ersetzen‘ statt ‚Abgleichen‘ | alle Daten des iPhones werden durch das Backup ersetzt (hier Gelöschtes kommt zurück, hier Geändertes geht verloren); ‚Letztes Backup‘ bleibt | wie links |
 | 20 | ‚Abbrechen‘ oder daneben tippen | nichts ändert sich | wie links |
 
+### 15.19 Backup erstellen und Backup laden (seit 4.10.0, R-45, R-46)
+- **Apple:** [HIG – Activity views](https://developer.apple.com/design/human-interface-guidelines/activity-views) (Teilen-Menü) ·
+  [HIG – File management](https://developer.apple.com/design/human-interface-guidelines/file-management) (Dateien-App, iCloud Drive)
+- **Technisch:** gemeinsame Bausteine in `ui.js` – `backupFileOf(app, data)`, `shareFiles()`, `shareResultText()`,
+  `backupLastText()`, `backupToday()`, `backupTileHtml()`, `backupMenuEntries()`, `readBackup()`; für den Abgleich
+  `createSync()` (15.18). Jede App mit Backup nutzt sie – keine eigene Umsetzung (R-36).
+- **Backup erstellen** (R-45):
+  - **Wo:** Backup-Kachel unten in der Seitenleiste bzw. Startliste (‚Letztes Backup erstellt am …‘ bzw. ‚Noch kein
+    Backup erstellt.‘ und der Knopf ‚Backup erstellen‘ – gelb mit blauem Knopf, solange heute noch kein Backup
+    erstellt wurde) und im Mehr-Menü der Seitenleiste: ‚Backup erstellen‘ (Icon `save`, darunter grau ‚Letztes Backup
+    erstellt am …‘), direkt darunter ‚Backup laden‘ (Icon `folder-open`).
+  - **Ablauf:** Teilen-Menü (iOS) → ‚In Dateien sichern‘ (z. B. iCloud Drive). Datei
+    ‚Ω Backup <App> JJJJ.MM.TT hh.mm.json‘ mit allen Daten, Zeitpunkt und Gerät.
+  - **Danach:** kleines Fenster ‚Backup‘ mit ✅ und Ort der Datei bzw. ⚠️ bei Abbruch; ‚Letztes Backup‘ zählt nur,
+    wenn das Teilen abgeschlossen wurde, und gilt je Gerät; die Backup-Kachel wird weiß.
+- **Backup laden** (R-46):
+  - **Ablauf:** Mehr-Menü → ‚Backup laden‘ → Dateiauswahl (z. B. iCloud Drive) → Abfrage → Ergebnisfenster (R-44).
+  - **Abfrage** (Sprechblase an der Schaltfläche, 400 px breit): oben grau ‚Backup vom **…** (Gerät) mit n …‘ und
+    ‚Es ist **neuer/älter/gleich alt** als die Daten auf diesem Gerät (zuletzt geändert am …)‘; darunter **je Weg eine
+    Kachel** (Hintergrund `--bg`, Radius 14 px): oben die Erklärung in **derselben Schrift** wie ‚Backup vom …‘
+    (15 px, grau), darunter der Knopf – Kachel 1 ‚Abgleichen‘ (blau gefüllt), Kachel 2 ‚Ersetzen‘ (rote Schrift);
+    unter den Kacheln ‚Abbrechen‘ wie in jeder Abfrage. iPhone quer: Kacheln nebeneinander (R-39).
+  - **Unlesbare Datei:** kleines Fenster ‚Backup laden‘ mit ⚠️ und dem Grund.
+  - **Abbrechen / daneben tippen:** nichts ändert sich.
+- **Prüfung:** `tests/backup.mjs` bedient Menü, Backup erstellen, Backup laden (Abfrage, Abbrechen, unlesbare Datei)
+  in jeder App automatisch und prüft Texte, Layout, Schriftgrößen und Ergebnis.
+
 ## 16. HIG-Checkliste
 
 Jedes Muster und jede Version wird **vorher** an dieser Liste gemessen (Apple-Abgleich, siehe
@@ -780,10 +809,12 @@ hier sofort eine Nummer und – wo möglich – eine Prüfung im Skript.
 | R-38 | Abfrage mit mehreren Wegen: empfohlene Aktion blau gefüllt zuerst, zerstörende in roter Schrift, ‚Abbrechen‘ zuletzt; kurze Erklärung der Wege im Text | Skript | 15.7 |
 | R-39 | Menü, Sprechblase und Fenster passen immer ganz auf den Bildschirm (auch iPhone quer); ist der Inhalt zu hoch, scrollt er darin – kein Knopf liegt außerhalb | Skript | 15.6, 15.7, 15.9 |
 | R-40 | Beim Drehen (hoch ↔ quer) wird jedes offene Menü, Untermenü und jede Sprechblase sofort neu ausgerichtet: Menü unterhalb seiner aufrufenden Schaltfläche, Untermenü neben seinem Eintrag, Kontextmenü einer Kachel daneben bzw. (iPhone) linksbündig darunter über der Backup-Kachel – immer vollständig sichtbar (reicht der Platz nicht, scrollt der Inhalt darin bzw. rückt die Liste nach oben); die Schaltfläche bleibt blau. Liegt die Schaltfläche in der Seitenleiste, bleibt diese dabei sichtbar (hoch darübergelegt) | Skript – automatisch: jede Ansicht mit offenem Menü, Untermenü oder offener Sprechblase wird hoch ↔ quer gedreht und zurück, in jeder App ohne eigenen Aufruf · Ablauf (Kontextmenü iPhone) · Gerät | 15.4, 15.6, 15.7 |
-| R-41 | Abgleich zwischen iPad und iPhone über das Backup: das Backup enthält Zeitpunkt und Gerät; ‚Backup laden‘ fragt (Sprechblase, R-38) mit Zeitpunkt, Gerät und ‚neuer/älter als die Daten auf diesem Gerät‘ und den Wegen Abgleichen · Ersetzen · Abbrechen; jede App nutzt dafür den gemeinsamen Baustein `createSync` | Skript (`tests/abgleich.mjs`) · Ablauf | 15.4, 15.18 |
+| R-41 | Abgleich zwischen iPad und iPhone über das Backup: das Backup enthält Zeitpunkt und Gerät; ‚Backup laden‘ fragt (Sprechblase mit Kacheln, R-46) mit Zeitpunkt, Gerät und ‚neuer/älter als die Daten auf diesem Gerät‘ und den Wegen Abgleichen · Ersetzen · Abbrechen; jede App nutzt dafür den gemeinsamen Baustein `createSync` | Skript (`tests/abgleich.mjs`) · Ablauf | 15.4, 15.18 |
 | R-42 | Beim Abgleichen gilt **je Feld** die neuere Änderung – in den Kopfdaten und in den Unterdaten (z. B. je Tag); gleich alt oder ohne Zeitpunkt: das Vorhandene hier bleibt, Fehlendes kommt dazu; Zähler ohne Zeitpunkt: der größere Wert; Einstellungen bleiben je Gerät | Skript (`tests/abgleich.mjs`, Fälle 6–18) | 15.18 |
 | R-43 | Ein gelöschter Eintrag bleibt gelöscht, solange er danach nicht mehr geändert wurde (auch wenn er im Backup noch vorhanden ist – mit Hinweis); wurde er danach noch geändert, bleibt er bzw. kommt zurück (mit Hinweis); auf beiden gelöscht bleibt er weg | Skript (`tests/abgleich.mjs`, Fälle 1–5) | 15.18 |
 | R-44 | Ergebnis des Abgleichs im kleinen Fenster: Aktualisiert (mit Zahl der Tage) · Neu · Gelöscht · Unverändert und die Hinweise zu Gelöschtem bzw. ‚Alles war schon auf dem gleichen Stand‘; jede Kachel zeigt ‚geändert am … · Gerät‘ | Skript (`tests/abgleich.mjs`) · Ablauf | 15.4, 15.18 |
+| R-45 | Backup erstellen: Backup-Kachel unten (gelb ohne Backup heute) und Mehr-Menü (‚Backup erstellen‘ mit grauer Zeile ‚Letztes Backup …‘, darunter ‚Backup laden‘); Teilen-Menü → In Dateien sichern; Datei ‚Ω Backup <App> JJJJ.MM.TT hh.mm.json‘ mit Zeitpunkt und Gerät; danach kleines Fenster ‚Backup‘ (✅/⚠️); ‚Letztes Backup‘ je Gerät, nur nach abgeschlossenem Teilen; gemeinsame Bausteine aus ui.js | Skript (`tests/backup.mjs`) | 15.4, 15.19 |
+| R-46 | Backup laden: Abfrage mit ‚Backup vom … (Gerät) mit n …‘ und ‚neuer/älter‘ oben, darunter je eine Kachel für Abgleichen (blau) und Ersetzen (rot) mit Erklärung in derselben Schrift wie der Text oben und dem Knopf darunter, zuletzt ‚Abbrechen‘; unlesbare Datei: kleines Fenster ‚Backup laden‘ mit ⚠️ und Grund; Abbrechen ändert nichts | Skript (`tests/backup.mjs`) | 15.7, 15.19 |
 
 ---
 

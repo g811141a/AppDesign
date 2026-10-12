@@ -76,7 +76,7 @@ export async function checkSync(page) {
     // R-41: Abfrage und Wege; R-44: ‚geändert am … · Gerät‘
     const q = sync.question(start, start, T('09:00'), 'iPhone');
     if (!/Backup vom <b>12\.10\.2026 um 09:00<\/b> \(iPhone\)/.test(q) || !/gleich alt|neuer|älter/.test(q)) errors.push('R-41 Abfrage nennt Zeitpunkt, Gerät oder neuer/älter nicht');
-    if (sync.choices.map(c => `${c.label}:${c.cls || ''}`).join('|') !== 'Abgleichen:primary|Ersetzen:danger-text|Abbrechen:') errors.push('R-41/R-38 Wege nicht Abgleichen (blau) · Ersetzen (rot) · Abbrechen');
+    if (sync.choices().map(c => `${c.label}:${c.cls || ''}:${c.desc ? 'Kachel' : ''}`).join('|') !== 'Abgleichen:primary:Kachel|Ersetzen:danger-text:Kachel|Abbrechen::') errors.push('R-41/R-46 Wege nicht Abgleichen (blau, Kachel) · Ersetzen (rot, Kachel) · Abbrechen');
     if (!sync.changedLine(start[list][0]).includes('geändert am 12.10.2026 um 09:00 · iPad')) errors.push('R-44 Zeile ‚geändert am … · Gerät‘ fehlt');
     return errors;
   });

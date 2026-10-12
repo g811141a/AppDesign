@@ -280,8 +280,12 @@ function choosePop(anchor, html, buttons) {
     const layer = blockingLayer();
     const pop = document.createElement('div');
     pop.className = 'pop';
-    pop.innerHTML = `<p>${html}</p><div class="btns">${buttons.map((b, i) =>
-      `<button type="button" class="${b.cls || ''}" data-i="${i}">${esc(b.label)}</button>`).join('')}</div>`;
+    // Seit 4.10.0 (R-46): Wege mit Erklärung (desc) stehen je in einer eigenen Kachel – Erklärung, darunter der Knopf;
+    // Wege ohne Erklärung (z. B. Abbrechen) darunter wie bisher.
+    const btn = (b, i) => `<button type="button" class="${b.cls || ''}" data-i="${i}">${esc(b.label)}</button>`;
+    const tiles = buttons.map((b, i) => b.desc ? `<div class="tile"><p>${b.desc}</p>${btn(b, i)}</div>` : '').join('');
+    pop.innerHTML = `<p>${html}</p>${tiles ? `<div class="tiles">${tiles}</div>` : ''}<div class="btns">${buttons.map((b, i) => b.desc ? '' : btn(b, i)).join('')}</div>`;
+    if (tiles) pop.classList.add('wide');
     if (visible) anchor.classList.add('on');
     const place = () => {
       if (!visible) { pop.style.left = (innerWidth - pop.offsetWidth) / 2 + 'px'; return; }
@@ -314,6 +318,64 @@ function setOpener(sel) {
 }
 function markOpener() {
   if (dlgOpener) document.querySelector(dlgOpener)?.classList.add('on');
+}
+
+/* ---------- Backup erstellen und laden (R-45, R-46, seit 4.10.0) ---------- */
+
+// Ergebnis des Teilen-Menüs als Text für das kleine Fenster (✅ bzw. ⚠️ davor).
+const SHARE_RESULT = {
+  shared: name => `Teilen-Menü abgeschlossen für <b>${esc(name)}</b>.<div class="hint">Wenn du ‚In Dateien sichern‘ gewählt hast, liegt die Datei im gewählten Ordner.</div>`,
+  downloaded: name => `<b>${esc(name)}</b> wird geladen.<div class="hint">Du findest die Datei in der Dateien-App unter ‚Downloads‘.</div>`,
+  aborted: name => `Teilen-Menü abgebrochen – <b>${esc(name)}</b> wurde nicht gespeichert.`,
+  error: name => `<b>${esc(name)}</b> konnte nicht übergeben werden.`,
+  print: name => `Drucken-Menü geöffnet für <b>${esc(name)}</b>.<div class="hint">Dort über ‚Teilen‘ → ‚In Dateien sichern‘ als PDF ablegen.</div>`,
+};
+const shareResultText = (result, name) => `${result === 'aborted' || result === 'error' ? '⚠️' : '✅'} ${SHARE_RESULT[result](name)}`;
+const MIME = { json: 'application/json', html: 'text/html' };
+// Dateien über das Teilen-Menü (iOS) weitergeben, sonst herunterladen. Ergebnis: shared · downloaded · aborted · error.
+async function shareFiles(files) {
+  const list = files.map(f => new File([f.content], f.name, { type: MIME[f.type] || 'application/octet-stream' }));
+  if (navigator.canShare && navigator.canShare({ files: list })) {
+    try { await navigator.share({ files: list }); return 'shared'; }
+    catch (e) { return e.name === 'AbortError' ? 'aborted' : 'error'; }
+  }
+  files.forEach(f => downloadFile(f.name, f.content, MIME[f.type]));
+  return 'downloaded';
+}
+function downloadFile(name, content, type) {
+  const blob = new Blob([content], { type });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = name;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+}
+// ‚Letztes Backup erstellt am …‘ (je Gerät) und ob heute schon eins erstellt wurde (sonst ist die Backup-Kachel gelb).
+const backupLastText = ms => ms ? `Letztes Backup erstellt am ${whenText(ms)}` : 'Noch kein Backup erstellt.';
+const backupToday = ms => Boolean(ms) && new Date(ms).toDateString() === new Date().toDateString();
+// Backup-Datei: ‚Ω Backup <App> JJJJ.MM.TT hh.mm.json‘, mit Zeitpunkt und Gerät (für den Abgleich, R-41).
+function backupFileOf(app, data) {
+  const n = new Date(), two = x => String(x).padStart(2, '0');
+  return { name: `Ω Backup ${app} ${n.getFullYear()}.${two(n.getMonth() + 1)}.${two(n.getDate())} ${two(n.getHours())}.${two(n.getMinutes())}.json`, type: 'json',
+    content: JSON.stringify({ ...data, savedAt: Date.now(), savedOn: deviceName() }, null, 2) };
+}
+// Backup-Kachel unten in der Seitenleiste bzw. Startliste: gelb, solange heute noch kein Backup erstellt wurde.
+const backupTileHtml = ms => `<div class="side-foot"><div class="bhint ${backupToday(ms) ? 'ok' : ''}"><div>${backupLastText(ms)}</div>
+      <button type="button" id="hintBackup">${ic('save')}Backup erstellen</button></div></div>`;
+// Die beiden Einträge im Mehr-Menü der Seitenleiste.
+const backupMenuEntries = ({ last, disabled, onSave, onLoad }) => [
+  { icon: 'save', label: 'Backup erstellen', sub: backupLastText(last), disabled, act: onSave },
+  { icon: 'folder-open', label: 'Backup laden', act: onLoad }];
+// Backup-Datei lesen und prüfen; Ergebnis { data, savedAt, savedOn } – Fehler mit verständlichem Grund.
+async function readBackup(file, list) {
+  let data;
+  try { data = JSON.parse(await file.text()); } catch (e) { throw new Error('Die Datei ist kein Backup (kein lesbarer Inhalt).'); }
+  if (!data || !Array.isArray(data[list])) throw new Error('Die Datei ist kein Backup dieser App.');
+  const savedAt = data.savedAt || file.lastModified, savedOn = data.savedOn;
+  delete data.savedAt; delete data.savedOn;
+  return { data, savedAt, savedOn };
 }
 
 /* ---------- Abgleich zwischen Geräten (R-41 bis R-44, seit 4.10.0) ---------- */
@@ -421,9 +483,14 @@ function createSync({ list, sub, subAt, maxFields = [], nouns = ['Eintrag', 'Ein
   function question(local, remote, savedAt, savedOn, unit = 'Tag') {
     const n = remote[list].length, here = deviceName(), mine = latest(local), theirs = latest(remote) || savedAt;
     const cmp = !mine ? '' : `<br>Es ist <b>${theirs > mine ? 'neuer' : theirs < mine ? 'älter' : 'gleich alt'}</b> ${theirs === mine ? 'wie' : 'als'} die Daten auf diesem ${here} (zuletzt geändert am ${whenText(mine)}).`;
-    return `Backup vom <b>${whenText(savedAt)}</b>${savedOn ? ` (${esc(savedOn)})` : ''} mit ${n} ${n === 1 ? nouns[0] : nouns[2]}.${cmp}<br><br><small>Abgleichen: je ${nouns[0]} und ${unit} gilt die neuere Fassung, gelöschte ${nouns[1]} werden auch hier gelöscht.<br>Ersetzen: alle Daten auf diesem ${here} werden durch das Backup ersetzt.</small>`;
+    return `Backup vom <b>${whenText(savedAt)}</b>${savedOn ? ` (${esc(savedOn)})` : ''} mit ${n} ${n === 1 ? nouns[0] : nouns[2]}.${cmp}`;
   }
-  const choices = [{ label: 'Abgleichen', cls: 'primary', value: 'merge' }, { label: 'Ersetzen', cls: 'danger-text', value: 'replace' }, { label: 'Abbrechen', value: null }];
+  // R-46: je Weg eine Kachel mit Erklärung und Knopf; Abbrechen darunter.
+  const choices = (unit = 'Tag') => [
+    { label: 'Abgleichen', cls: 'primary', value: 'merge', desc: `Je ${nouns[0]} und ${unit} gilt die neuere Fassung; gelöschte ${nouns[1]} werden auch hier gelöscht.` },
+    { label: 'Ersetzen', cls: 'danger-text', value: 'replace', desc: `Alle Daten auf diesem ${deviceName()} werden durch das Backup ersetzt.` },
+    { label: 'Abbrechen', value: null }];
+  const ask = (anchor, local, remote, savedAt, savedOn) => choosePop(anchor, question(local, remote, savedAt, savedOn), choices());
   // R-44: Ergebnis als kleines Fenster mit Hinweisen zu Gelöschtem.
   function resultText({ updated, added, removed, keptDeleted, keptChanged, same }, savedAt, savedOn, unit = ['Tag', 'Tage']) {
     const head = `✅ Abgeglichen mit dem Backup vom ${whenText(savedAt)}${savedOn ? ` (${esc(savedOn)})` : ''}.`;
@@ -441,7 +508,7 @@ function createSync({ list, sub, subAt, maxFields = [], nouns = ['Eintrag', 'Ein
   }
   // R-44: dritte Zeile der Kachel.
   const changedLine = e => e.changedAt ? `<small class="chg">geändert am ${whenText(e.changedAt)}${e.changedOn ? ' · ' + esc(e.changedOn) : ''}</small>` : '';
-  return { snapshot, stamp, latest, merge, question, choices, resultText, changedLine, config: { list, sub, subAt, maxFields, nouns } };
+  return { snapshot, stamp, latest, merge, question, choices, ask, resultText, changedLine, config: { list, sub, subAt, maxFields, nouns } };
 }
 
 /* ---------- Meldungen und Sicherheitsabfragen ---------- */
