@@ -198,7 +198,7 @@ const menuHtml = items => items.map((it, i) => it === 'sep' ? '<div class="sep">
 // auf, wird die Schaltfläche über ihre id wiedergefunden; gibt es sie nicht mehr, schließt sich das Menü.
 const floating = new Set();
 function liveAnchor(anchor) {
-  if (anchor.isConnected) return anchor;
+  if (anchor.isConnected) return anchor.getClientRects().length ? anchor : null;
   const key = anchor.id ? '#' + CSS.escape(anchor.id)
     : anchor.dataset.id ? `.${anchor.classList[0]}[data-id="${CSS.escape(anchor.dataset.id)}"]`
     : anchor.dataset.day ? `[data-day="${CSS.escape(anchor.dataset.day)}"]` : '';
@@ -286,7 +286,8 @@ function choosePop(anchor, html, buttons) {
     const place = () => {
       if (!visible) { pop.style.left = (innerWidth - pop.offsetWidth) / 2 + 'px'; return; }
       const a = liveAnchor(anchor);
-      if (!a) return;
+      // Schaltfläche nicht mehr zu sehen: die Abfrage bleibt offen und steht mittig (eine Entscheidung geht nicht verloren).
+      if (!a) { pop.style.left = (innerWidth - pop.offsetWidth) / 2 + 'px'; pop.style.top = Math.max(12, (innerHeight - pop.offsetHeight) / 2) + 'px'; return; }
       anchor = a;
       placeAt(pop, anchor, anchor.classList.contains('side-row') ? 'beside' : anchor.getBoundingClientRect().left > innerWidth / 2 ? 'right' : 'left');
     };

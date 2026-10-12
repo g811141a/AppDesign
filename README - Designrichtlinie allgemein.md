@@ -527,6 +527,9 @@ Verhalten · technischer Name). In AppDesign ist jede Komponente einmal programm
   Reicht der Platz darunter nicht, scrollt das Menü in sich (erst unter 200 px Platz öffnet es nach oben).
 - **Beim Drehen (seit 4.10.0, R-40):** offenes Menü, Untermenü und Sprechblase werden neu ausgerichtet –
   das Menü unter der aufrufenden Schaltfläche, das Untermenü neben seinem Eintrag, ganz sichtbar.
+  Liegt die Schaltfläche in der Seitenleiste, bleibt die Seitenleiste dabei sichtbar (iPad hoch: darübergelegt).
+  Ist eine Schaltfläche danach nicht mehr da, schließt sich ihr Menü; eine Sprechblase (offene Entscheidung)
+  bleibt und steht mittig. Das Prüfskript dreht jede Ansicht mit offenem Menü automatisch (R-40).
 
 ### 15.7 Sprechblase (Abfrage)
 - **Apple:** [HIG – Popovers](https://developer.apple.com/design/human-interface-guidelines/popovers) · [HIG – Action sheets](https://developer.apple.com/design/human-interface-guidelines/action-sheets) · [HIG – Alerts](https://developer.apple.com/design/human-interface-guidelines/alerts)
@@ -743,7 +746,7 @@ hier sofort eine Nummer und – wo möglich – eine Prüfung im Skript.
 | R-37 | Kein Text ragt über Zelle, Kasten oder Kachel hinaus: zu lange Wörter brechen im Wort um und laufen in der nächsten Zeile weiter (iPad und iPhone) | Skript (Testdaten mit 100 × ‚a‘) | 9, 15.10 |
 | R-38 | Abfrage mit mehreren Wegen: empfohlene Aktion blau gefüllt zuerst, zerstörende in roter Schrift, ‚Abbrechen‘ zuletzt; kurze Erklärung der Wege im Text | Skript | 15.7 |
 | R-39 | Menü, Sprechblase und Fenster passen immer ganz auf den Bildschirm (auch iPhone quer); ist der Inhalt zu hoch, scrollt er darin – kein Knopf liegt außerhalb | Skript | 15.6, 15.7, 15.9 |
-| R-40 | Menüs, Untermenüs und Sprechblasen bleiben beim Drehen (quer ↔ hoch) an ihrer Schaltfläche: Menü unterhalb der aufrufenden Schaltfläche, Untermenü neben seinem Eintrag, Kontextmenü einer Kachel daneben bzw. (iPhone) linksbündig darunter über der Backup-Kachel, immer ganz sichtbar (reicht der Platz nicht, scrollt der Inhalt darin bzw. rückt die Liste nach oben); die Schaltfläche bleibt blau | Skript (Drehen mit offenem Untermenü) · Ablauf (Kontextmenü iPhone) · Gerät | 15.6, 15.7 |
+| R-40 | Beim Drehen (hoch ↔ quer) wird jedes offene Menü, Untermenü und jede Sprechblase sofort neu ausgerichtet: Menü unterhalb seiner aufrufenden Schaltfläche, Untermenü neben seinem Eintrag, Kontextmenü einer Kachel daneben bzw. (iPhone) linksbündig darunter über der Backup-Kachel – immer vollständig sichtbar (reicht der Platz nicht, scrollt der Inhalt darin bzw. rückt die Liste nach oben); die Schaltfläche bleibt blau. Liegt die Schaltfläche in der Seitenleiste, bleibt diese dabei sichtbar (hoch darübergelegt) | Skript – automatisch: jede Ansicht mit offenem Menü, Untermenü oder offener Sprechblase wird hoch ↔ quer gedreht und zurück, in jeder App ohne eigenen Aufruf · Ablauf (Kontextmenü iPhone) · Gerät | 15.4, 15.6, 15.7 |
 
 ---
 

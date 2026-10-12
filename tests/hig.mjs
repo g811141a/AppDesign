@@ -5,18 +5,51 @@
 //   await hig.measure(page, 'Mehr-Menü (hell quer)');  await hig.stays(page, '#mainMore', 'Mehr-Menü');
 //   await hig.shape(page, '#side', 'Seitenleiste', 'iPad');   // gleicher Baustein auf iPad und iPhone (R-36)
 //   await hig.barStill(page, 'Hauptansicht');                  // Leisten bewegen sich beim Wischen nicht (R-05)
+// Offene Menüs, Untermenüs und Sprechblasen dreht measure() automatisch quer ↔ hoch und prüft ihre Lage (R-40).
 //   process.exit(hig.report());
 // Geprüft: Antippflächen (44 pt, in Kapseln/Schalter 28 pt), Schrift ≥ 11 pt, Kontrast (4,5 : 1 bzw. 3 : 1),
 // doppelte Anführungszeichen, Löschen am Ende von Menüs, keine Linien zwischen Menüpunkten,
 // gedrückte Schaltfläche bleibt blau. Bewusste Abweichungen allgemein: Weiß auf Systemblau, Orange --warn.
 export function createCheck({ skipTargets = [] } = {}) {
 const found = new Map();
+  let rotating = false;
   const note = (kind, text, where) => {
     const key = `${kind}: ${text}`;
     if (!found.has(key)) found.set(key, new Set());
     found.get(key).add(where);
   };
   
+  // R-40: Ein offenes Menü (mit Untermenü) bzw. eine Sprechblase bleibt beim Drehen (quer ↔ hoch) an ihrer
+  // Schaltfläche: darunter, an ihr ausgerichtet, ganz sichtbar; das Untermenü neben seinem Eintrag. Danach zurückdrehen.
+  const rotate = async (p, anchorSel, where) => {
+    const vp = p.viewportSize();
+    for (const size of [{ width: vp.height, height: vp.width }, vp]) {
+      await p.setViewportSize(size); await p.waitForTimeout(700);
+      const bad = await p.evaluate(sel => {
+        const out = [], a = document.querySelector(sel), m = document.querySelector('.menu:not(.submenu), .pop'), s = document.querySelector('.menu.submenu');
+        const inside = r => r.top >= -1 && r.left >= -1 && r.bottom <= innerHeight + 1 && r.right <= innerWidth + 1;
+        // Ist die Schaltfläche nach dem Drehen nicht mehr zu sehen (z. B. Seitenleiste ausgeblendet), muss das Menü zu sein.
+        // Eine Abfrage (Sprechblase) bleibt dann offen und muss ganz zu sehen sein.
+        if (!a || !a.getClientRects().length) return !m ? [] : m.classList.contains('pop') ? (inside(m.getBoundingClientRect()) ? [] : ['Sprechblase ohne Schaltfläche nicht ganz sichtbar']) : ['Menü offen, obwohl seine Schaltfläche nach dem Drehen nicht mehr zu sehen ist'];
+        if (!m) return ['Menü bzw. Sprechblase nach dem Drehen verschwunden'];
+        const mr = m.getBoundingClientRect();
+        if (!inside(mr)) out.push('Menü bzw. Sprechblase nach dem Drehen nicht ganz sichtbar');
+        {
+          const ar = a.getBoundingClientRect();
+          if (!a.classList.contains('on')) out.push('aufrufende Schaltfläche nach dem Drehen nicht mehr blau');
+          if (ar.top < innerHeight / 2 && mr.top < ar.bottom) out.push('Menü nach dem Drehen nicht unterhalb der Schaltfläche');
+          if (!(mr.right > ar.left - 1 && mr.left < ar.right + 1)) out.push('Menü nach dem Drehen nicht an der Schaltfläche ausgerichtet');
+        }
+        if (s) {
+          const sr = s.getBoundingClientRect(), it = m.querySelector('.mi.on');
+          if (!inside(sr)) out.push('Untermenü nach dem Drehen nicht ganz sichtbar');
+          if (it) { const ir = it.getBoundingClientRect(); if (Math.abs(sr.top - Math.max(12, Math.min(ir.top, innerHeight - sr.height - 12))) > 2) out.push('Untermenü nach dem Drehen nicht neben seinem Eintrag'); }
+        }
+        return out;
+      }, anchorSel);
+      for (const x of bad) note('Regel', `R-40 ${x} (${size.width}×${size.height})`, where);
+    }
+  };
   // Misst die sichtbare, oberste Ebene (Menü/Sprechblase, sonst offenes Fenster, sonst Seite).
   async function measure(p, where) {
     const r = await p.evaluate(skip => {
@@ -164,6 +197,12 @@ const found = new Map();
       return res;
     }, skipTargets);
     for (const [k, list] of Object.entries(r)) for (const x of list) note({ target: 'Antippfläche', font: 'Schrift', contrast: 'Kontrast', quotes: 'Anführungszeichen', menu: 'Menü', rules: 'Regel' }[k], x, where);
+    // R-40 automatisch: ist ein Menü, Untermenü oder eine Sprechblase offen, wird jedes Mal gedreht (quer ↔ hoch) und zurück.
+    if (!rotating) {
+      const anchor = await p.evaluate(() => { const a = [...document.querySelectorAll('.on')].find(e => !e.closest('.menu, .pop, dialog') && e.getClientRects().length && document.querySelector('.menu, .pop'));
+        return !a ? null : a.id ? '#' + CSS.escape(a.id) : a.dataset.id ? `.${a.classList[0]}[data-id="${CSS.escape(a.dataset.id)}"]` : null; });
+      if (anchor) { rotating = true; try { await rotate(p, anchor, `${where} – gedreht`); } finally { rotating = false; } }
+    }
   }
 
   // R-36 Gleiche Funktion = gleicher Baustein auf iPad und iPhone: Aufbau (Elemente, Klassen, Scrollbereiche,
@@ -220,35 +259,6 @@ const found = new Map();
       return [...out];
     });
     for (const x of bad) note('Regel', `R-05 ${x}`, where);
-  };
-  // R-40: Ein offenes Menü (mit Untermenü) bzw. eine Sprechblase bleibt beim Drehen (quer ↔ hoch) an ihrer
-  // Schaltfläche: darunter, an ihr ausgerichtet, ganz sichtbar; das Untermenü neben seinem Eintrag. Danach zurückdrehen.
-  const rotate = async (p, anchorSel, where) => {
-    const vp = p.viewportSize();
-    for (const size of [{ width: vp.height, height: vp.width }, vp]) {
-      await p.setViewportSize(size); await p.waitForTimeout(700);
-      const bad = await p.evaluate(sel => {
-        const out = [], a = document.querySelector(sel), m = document.querySelector('.menu:not(.submenu), .pop'), s = document.querySelector('.menu.submenu');
-        const inside = r => r.top >= -1 && r.left >= -1 && r.bottom <= innerHeight + 1 && r.right <= innerWidth + 1;
-        if (!m) return ['Menü bzw. Sprechblase nach dem Drehen verschwunden'];
-        const mr = m.getBoundingClientRect();
-        if (!inside(mr)) out.push('Menü bzw. Sprechblase nach dem Drehen nicht ganz sichtbar');
-        if (!a) out.push('aufrufende Schaltfläche nach dem Drehen nicht gefunden');
-        else {
-          const ar = a.getBoundingClientRect();
-          if (!a.classList.contains('on')) out.push('aufrufende Schaltfläche nach dem Drehen nicht mehr blau');
-          if (ar.top < innerHeight / 2 && mr.top < ar.bottom) out.push('Menü nach dem Drehen nicht unterhalb der Schaltfläche');
-          if (!(mr.right > ar.left - 1 && mr.left < ar.right + 1)) out.push('Menü nach dem Drehen nicht an der Schaltfläche ausgerichtet');
-        }
-        if (s) {
-          const sr = s.getBoundingClientRect(), it = m.querySelector('.mi.on');
-          if (!inside(sr)) out.push('Untermenü nach dem Drehen nicht ganz sichtbar');
-          if (it) { const ir = it.getBoundingClientRect(); if (Math.abs(sr.top - Math.max(12, Math.min(ir.top, innerHeight - sr.height - 12))) > 2) out.push('Untermenü nach dem Drehen nicht neben seinem Eintrag'); }
-        }
-        return out;
-      }, anchorSel);
-      for (const x of bad) note('Regel', `R-40 ${x} (${size.width}×${size.height})`, where);
-    }
   };
   const stays = async (p, sel, where) => {
     if (!await p.locator(sel).first().evaluate(e => e.classList.contains('on')).catch(() => false)) note('Markierung', `${sel} bleibt nicht blau`, where);
