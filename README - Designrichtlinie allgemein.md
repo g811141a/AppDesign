@@ -734,6 +734,7 @@ hier sofort eine Nummer und – wo möglich – eine Prüfung im Skript.
 | R-36 | Gleiche Funktion = gleicher Baustein auf iPad und iPhone: eine Umsetzung, die sich nur in der Breite unterscheidet (z. B. Seitenleiste am iPad = Startliste am iPhone; Kacheln laufen auf beiden unter der Backup-Kachel durch) – nie zwei getrennte Nachbauten | Skript (Gerätevergleich des Aufbaus) | 1, 15.4, 15.17 |
 | R-37 | Kein Text ragt über Zelle, Kasten oder Kachel hinaus: zu lange Wörter brechen im Wort um und laufen in der nächsten Zeile weiter (iPad und iPhone) | Skript (Testdaten mit 100 × ‚a‘) | 9, 15.10 |
 | R-38 | Abfrage mit mehreren Wegen: empfohlene Aktion blau gefüllt zuerst, zerstörende in roter Schrift, ‚Abbrechen‘ zuletzt; kurze Erklärung der Wege im Text | Skript | 15.7 |
+| R-39 | Menü, Sprechblase und Fenster passen immer ganz auf den Bildschirm (auch iPhone quer); ist der Inhalt zu hoch, scrollt er darin – kein Knopf liegt außerhalb | Skript | 15.6, 15.7, 15.9 |
 
 ---
 
