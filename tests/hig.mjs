@@ -23,7 +23,7 @@ const found = new Map();
         return b.width > 0 && b.height > 0 && s.visibility !== 'hidden' && s.display !== 'none' && b.bottom > 0 && b.top < innerHeight && b.right > 0 && b.left < innerWidth; };
       const onTop = e => { if (document.querySelector('.layer')) return !!e.closest('.menu, .pop');
         const d = document.querySelector('dialog[open]'); return d ? d.contains(e) : true; };
-      const label = e => ((e.id ? '#' + e.id + ' ' : '') + (e.getAttribute('aria-label') || e.textContent || e.placeholder || '')).trim().replace(/\s+/g, ' ').slice(0, 40);
+      const label = e => Array.from(((e.id ? '#' + e.id + ' ' : '') + (e.getAttribute('aria-label') || e.textContent || e.placeholder || '')).trim().replace(/\s+/g, ' ')).slice(0, 40).join('');
       const res = { target: [], font: [], contrast: [], quotes: [], menu: [], rules: [] };
       // Antippflächen: 44 pt Standard; Knöpfe in Kapseln und Schalter wie bei Apple ab 28 pt.
       document.querySelectorAll('button, a[href], input:not([type=hidden]):not([type=file]), textarea, select, [role=menuitem]').forEach(e => {

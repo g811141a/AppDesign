@@ -63,10 +63,12 @@ let dlgDirty = null;       // Prüft, ob im offenen Fenster etwas geändert wurd
 function esc(s) {
   return String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 }
-// Seit 4.7.0: Sehr lange Wörter (über 20 Zeichen) bekommen nach jedem Zeichen eine unsichtbare Umbruchstelle, damit sie
-// auch in Tabellen genau am Spaltenrand im Wort umbrechen, statt über die Zelle hinauszuragen (R-37). Normale Wörter bleiben ganz.
+// Seit 4.7.0: Sehr lange Wörter (über 20 Zeichen, auch Reihen von Smileys) bekommen nach jedem Zeichen eine unsichtbare
+// Umbruchstelle, damit sie auch in Tabellen genau am Spaltenrand umbrechen, statt über die Zelle hinauszuragen (R-37).
+// Seit 4.8.0 nach ganzen Zeichen (Graphemen): zusammengesetzte Smileys wie 🤷🏻‍♂️ bleiben ganz. Normale Wörter bleiben ganz.
+const graphemeSeg = typeof Intl !== 'undefined' && Intl.Segmenter ? new Intl.Segmenter('de', { granularity: 'grapheme' }) : null;
 function breakable(text) {
-  return String(text ?? '').replace(/\S{21,}/gu, w => Array.from(w).join('\u200B'));
+  return String(text ?? '').replace(/\S{21,}/gu, w => (graphemeSeg ? Array.from(graphemeSeg.segment(w), s => s.segment) : Array.from(w)).join('\u200B'));
 }
 // Ganze Zahl mit Tausenderpunkt, z. B. 4850 → "4.850".
 function thousands(n) {
@@ -379,6 +381,13 @@ function updateBar() {
 }
 window.addEventListener('scroll', updateBar, { passive: true });
 window.addEventListener('resize', updateBar);
+
+// Wie Apple: wischt man den Inhalt, während die Tastatur der Suche offen ist, schließt sich die Tastatur (seit 4.8.0).
+// Sonst verschiebt iOS beim Scrollen den sichtbaren Bereich, die Leisten müssen ihm folgen und zittern (R-05).
+document.addEventListener('touchmove', e => {
+  const a = document.activeElement;
+  if (a?.matches?.('.searchbox input') && !e.target.closest?.('.searchbox, dialog')) a.blur();
+}, { passive: true });
 
 /* ---------- Tastatur und sichtbarer Bereich ---------- */
 
