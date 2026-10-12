@@ -1,4 +1,4 @@
-// AppDesign 4.8.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
+// AppDesign 4.8.1 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
 // Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/v4/ui.js"></script>
 // Klassisches Skript: alle Funktionen sind global und für das Skript der App sichtbar.
 //
@@ -382,12 +382,16 @@ function updateBar() {
 window.addEventListener('scroll', updateBar, { passive: true });
 window.addEventListener('resize', updateBar);
 
-// Wie Apple: wischt man den Inhalt, während die Tastatur der Suche offen ist, schließt sich die Tastatur (seit 4.8.0).
-// Sonst verschiebt iOS beim Scrollen den sichtbaren Bereich, die Leisten müssen ihm folgen und zittern (R-05).
+// R-05: Die Leiste (mit oder ohne Suchzeile) bewegt sich beim Wischen keinen Millimeter.
+// Bei offener Tastatur würde iOS beim Wischen den sichtbaren Bereich verschieben; die Leiste müsste ihm
+// hinterherlaufen und zittert. Deshalb schließt das erste Wischen nur die Tastatur – die Seite bewegt sich
+// bei diesem Wischen nicht (seit 4.8.1; 4.8.0 ließ die Seite dabei schon scrollen). Das nächste Wischen scrollt.
 document.addEventListener('touchmove', e => {
   const a = document.activeElement;
-  if (a?.matches?.('.searchbox input') && !e.target.closest?.('.searchbox, dialog')) a.blur();
-}, { passive: true });
+  if (!a?.matches?.('.searchbox input') || e.target.closest?.('.searchbox, dialog')) return;
+  if (e.cancelable) e.preventDefault();
+  a.blur();
+}, { passive: false });
 
 /* ---------- Tastatur und sichtbarer Bereich ---------- */
 

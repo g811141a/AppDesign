@@ -1,9 +1,10 @@
-// AppDesign 4.8.0 · HIG- und Regel-Prüfung: misst eine App-Ansicht gegen die HIG-Checkliste (Abschnitt 16)
+// AppDesign 4.8.1 · HIG- und Regel-Prüfung: misst eine App-Ansicht gegen die HIG-Checkliste (Abschnitt 16)
 // und alle automatisch prüfbaren Regeln des Regelkatalogs (Abschnitt 17, R-01 …) der Designrichtlinie allgemein. Wird vom Prüfskript jeder App eingebunden:
 //   import { createCheck } from '../../AppDesign/tests/hig.mjs';
 //   const hig = createCheck({ skipTargets: ['table.days .ln:not(.q) a'] });   // bewusste Abweichungen der App
 //   await hig.measure(page, 'Mehr-Menü (hell quer)');  await hig.stays(page, '#mainMore', 'Mehr-Menü');
 //   await hig.shape(page, '#side', 'Seitenleiste', 'iPad');   // gleicher Baustein auf iPad und iPhone (R-36)
+//   await hig.barStill(page, 'Hauptansicht');                  // Leisten bewegen sich beim Wischen nicht (R-05)
 //   process.exit(hig.report());
 // Geprüft: Antippflächen (44 pt, in Kapseln/Schalter 28 pt), Schrift ≥ 11 pt, Kontrast (4,5 : 1 bzw. 3 : 1),
 // doppelte Anführungszeichen, Löschen am Ende von Menüs, keine Linien zwischen Menüpunkten,
@@ -190,6 +191,28 @@ const found = new Map();
       }
     }
   };
+  // R-05: Eine Symbolleiste – mit oder ohne Suchzeile – bewegt sich beim Wischen keinen Millimeter.
+  // Misst Lage und Höhe jeder sichtbaren Leiste, scrollt die Seite (und die Liste der Seitenleiste) in Schritten
+  // bis über die Ränder hinaus und meldet jede Abweichung ab 0,5 px.
+  const barStill = async (p, where) => {
+    const bad = await p.evaluate(async () => {
+      const frame = () => new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+      const sel = '.nb, .pnav, .nb2, .searchbox, #side .side-head, #side .side-foot';
+      const snap = () => new Map([...document.querySelectorAll(sel)].filter(e => e.getBoundingClientRect().height > 0)
+        .map(e => { const b = e.getBoundingClientRect(); return [e, [b.top, b.left, b.height]]; }));
+      const base = snap(), out = new Set(), y0 = scrollY;
+      const name = e => (e.id ? '#' + e.id : '') + '.' + (e.className.baseVal ?? e.className).split(' ')[0];
+      const cmp = step => { for (const [e, v] of snap()) { const o = base.get(e); if (!o) { out.add(`${name(e)} erscheint beim Wischen (${step})`); continue; }
+        const d = v.map((x, i) => Math.abs(x - o[i])); if (Math.max(...d) >= 0.5) out.add(`Leiste ${name(e)} bewegt sich beim Wischen um ${Math.max(...d).toFixed(1)} px (${step})`); } };
+      const max = document.documentElement.scrollHeight - innerHeight;
+      for (const y of [1, 40, 300, max / 2, max, max + 300, -100, 0]) { scrollTo(0, y); await frame(); cmp('Seite'); }
+      const list = document.querySelector('#side .side-list');
+      if (list && list.getBoundingClientRect().height > 0) { const t0 = list.scrollTop; for (const y of [1, 200, list.scrollHeight, 0]) { list.scrollTop = y; await frame(); cmp('Seitenleiste'); } list.scrollTop = t0; }
+      scrollTo(0, y0); await frame();
+      return [...out];
+    });
+    for (const x of bad) note('Regel', `R-05 ${x}`, where);
+  };
   const stays = async (p, sel, where) => {
     if (!await p.locator(sel).first().evaluate(e => e.classList.contains('on')).catch(() => false)) note('Markierung', `${sel} bleibt nicht blau`, where);
   };
@@ -200,5 +223,5 @@ const found = new Map();
     for (const [k, where] of found) console.log(`- ${k}\n    ${[...where].slice(0, 3).join(' · ')}${where.size > 3 ? ` · +${where.size - 3}` : ''}`);
     return 1;
   };
-  return { measure, stays, shape, note, report };
+  return { measure, stays, shape, barStill, note, report };
 }

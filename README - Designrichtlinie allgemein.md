@@ -46,8 +46,11 @@ App-spezifische Regeln stehen in einer eigenen Datei je App
   `overscroll-behavior: contain`). Daneben tippen schließt Menü bzw. Sprechblase.
 - **Kein Fokus-Rahmen** beim Antippen oder Öffnen eines Fensters (nur bei Bedienung mit
   Tastatur); ein Fenster öffnet ohne vorausgewählte Schaltfläche.
-- **Leisten bewegen sich nie:** Kopfzeile, Seitenkopf (iPhone) und Seitenleisten-Kopf stehen fest;
-  nur der Inhalt darunter scrollt. Die Seite federt am Rand nicht nach (`overscroll-behavior: none`
+- **Leisten bewegen sich nie – keinen Millimeter:** Eine Symbolleiste – mit oder ohne Suchzeile – steht
+  immer an ihrem Platz und bewegt sich beim Wischen keinen Millimeter: nicht beim Scrollen, nicht am
+  Rand, nicht bei offener Tastatur und nicht beim Schließen der Tastatur. Das gilt für Kopfzeile (iPad),
+  Seitenkopf (iPhone) und Seitenleisten-Kopf; nur der Inhalt darunter scrollt. Ist die Tastatur der
+  Suche offen, schließt das erste Wischen nur die Tastatur, die Seite bleibt dabei stehen. Die Seite federt am Rand nicht nach (`overscroll-behavior: none`
   auf `html`/`body`); Kopfzeile (iPad) und Seitenkopf (iPhone) sind fest positioniert
   (`position: fixed`, nicht sticky). In der Seitenleiste scrollen nur die Einträge (`.side-list`);
   Kopf und Backup-Kachel liegen außerhalb des Scrollbereichs.
@@ -684,7 +687,7 @@ hier sofort eine Nummer und – wo möglich – eine Prüfung im Skript.
 | R-02 | Kein Fokus-Rahmen beim Antippen oder Öffnen eines Fensters (auch nicht im Suchfeld) | Skript | 1, 15.2 |
 | R-03 | Gleiche Bedienung auf iPad und iPhone (gleiche Kapseln, Suche, Menüs) | Muster, Ablauf | 1 |
 | R-04 | Doppeltippen vergrößert nie die Ansicht | Skript | 1 |
-| R-05 | Leisten bewegen sich nie: Kopfzeile und Seitenkopf fest, Seite federt nicht, in der Seitenleiste scrollen nur die Einträge | Skript · Gerät (Federn) | 1 |
+| R-05 | Eine Symbolleiste – mit oder ohne Suchzeile – steht immer an ihrem Platz und bewegt sich beim Wischen keinen Millimeter (auch am Rand, bei offener und beim Schließen der Tastatur); Seite federt nicht; in der Seitenleiste scrollen nur die Einträge | Skript (Lage der Leiste beim Scrollen gemessen, mit und ohne Suchzeile) · Ablauf (erstes Wischen bei offener Tastatur bewegt nichts) · Gerät (Tastatur, Federn) | 1 |
 | R-06 | Bezeichnung und Feld gehören zusammen (Umbruch nur vor der Bezeichnung) | Skript | 8 |
 | R-07 | Großbuchstabe am Zeilenanfang und nach einem Vorschlag | Ablauf · Gerät (iOS-Tastatur) | 8 |
 | R-08 | Gelbe Markierung ohne blauen Rand | Skript | 9 |
