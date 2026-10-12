@@ -23,6 +23,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
+| A-02 | 1 | Konsolidierung aller Richtlinien: Designrichtlinie allgemein, Zusammenarbeit allgemein, Designrichtlinie Reiselogbuch und PROMPT gemeinsam durchgehen – Doppeltes zusammenführen, Veraltetes und Widersprüche bereinigen (z. B. Abschnitte, die inzwischen durch Regeln oder gemeinsame Bausteine ersetzt sind), einheitliche Gliederung, Verweise statt Wiederholungen; sicherstellen, dass jede allgemeine Regel genau einmal im Regelkatalog steht und eine Prüfung hat | offen |
 | A-01 | 3 | Startseite g811141a.github.io mit allen Apps (früher S-03) | später |
 
 ---
