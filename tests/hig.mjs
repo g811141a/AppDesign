@@ -1,4 +1,4 @@
-// AppDesign 4.9.1 · HIG- und Regel-Prüfung: misst eine App-Ansicht gegen die HIG-Checkliste (Abschnitt 16)
+// AppDesign 4.10.0 · HIG- und Regel-Prüfung: misst eine App-Ansicht gegen die HIG-Checkliste (Abschnitt 16)
 // und alle automatisch prüfbaren Regeln des Regelkatalogs (Abschnitt 17, R-01 …) der Designrichtlinie allgemein. Wird vom Prüfskript jeder App eingebunden:
 //   import { createCheck } from '../../AppDesign/tests/hig.mjs';
 //   const hig = createCheck({ skipTargets: ['table.days .ln:not(.q) a'] });   // bewusste Abweichungen der App
@@ -221,6 +221,35 @@ const found = new Map();
     });
     for (const x of bad) note('Regel', `R-05 ${x}`, where);
   };
+  // R-40: Ein offenes Menü (mit Untermenü) bzw. eine Sprechblase bleibt beim Drehen (quer ↔ hoch) an ihrer
+  // Schaltfläche: darunter, an ihr ausgerichtet, ganz sichtbar; das Untermenü neben seinem Eintrag. Danach zurückdrehen.
+  const rotate = async (p, anchorSel, where) => {
+    const vp = p.viewportSize();
+    for (const size of [{ width: vp.height, height: vp.width }, vp]) {
+      await p.setViewportSize(size); await p.waitForTimeout(700);
+      const bad = await p.evaluate(sel => {
+        const out = [], a = document.querySelector(sel), m = document.querySelector('.menu:not(.submenu), .pop'), s = document.querySelector('.menu.submenu');
+        const inside = r => r.top >= -1 && r.left >= -1 && r.bottom <= innerHeight + 1 && r.right <= innerWidth + 1;
+        if (!m) return ['Menü bzw. Sprechblase nach dem Drehen verschwunden'];
+        const mr = m.getBoundingClientRect();
+        if (!inside(mr)) out.push('Menü bzw. Sprechblase nach dem Drehen nicht ganz sichtbar');
+        if (!a) out.push('aufrufende Schaltfläche nach dem Drehen nicht gefunden');
+        else {
+          const ar = a.getBoundingClientRect();
+          if (!a.classList.contains('on')) out.push('aufrufende Schaltfläche nach dem Drehen nicht mehr blau');
+          if (ar.top < innerHeight / 2 && mr.top < ar.bottom) out.push('Menü nach dem Drehen nicht unterhalb der Schaltfläche');
+          if (!(mr.right > ar.left - 1 && mr.left < ar.right + 1)) out.push('Menü nach dem Drehen nicht an der Schaltfläche ausgerichtet');
+        }
+        if (s) {
+          const sr = s.getBoundingClientRect(), it = m.querySelector('.mi.on');
+          if (!inside(sr)) out.push('Untermenü nach dem Drehen nicht ganz sichtbar');
+          if (it) { const ir = it.getBoundingClientRect(); if (Math.abs(sr.top - Math.max(12, Math.min(ir.top, innerHeight - sr.height - 12))) > 2) out.push('Untermenü nach dem Drehen nicht neben seinem Eintrag'); }
+        }
+        return out;
+      }, anchorSel);
+      for (const x of bad) note('Regel', `R-40 ${x} (${size.width}×${size.height})`, where);
+    }
+  };
   const stays = async (p, sel, where) => {
     if (!await p.locator(sel).first().evaluate(e => e.classList.contains('on')).catch(() => false)) note('Markierung', `${sel} bleibt nicht blau`, where);
   };
@@ -231,5 +260,5 @@ const found = new Map();
     for (const [k, where] of found) console.log(`- ${k}\n    ${[...where].slice(0, 3).join(' · ')}${where.size > 3 ? ` · +${where.size - 3}` : ''}`);
     return 1;
   };
-  return { measure, stays, shape, barStill, note, report };
+  return { measure, stays, shape, barStill, rotate, note, report };
 }

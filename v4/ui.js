@@ -1,4 +1,4 @@
-// AppDesign 4.9.1 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
+// AppDesign 4.10.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
 // Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/v4/ui.js"></script>
 // Klassisches Skript: alle Funktionen sind global und für das Skript der App sichtbar.
 //
@@ -148,20 +148,26 @@ function showModalQuiet(d) {
 
 // Menü oder Sprechblase unter (bzw. über) der Schaltfläche, im Bildschirm gehalten.
 function placeAt(el, anchor, align) {
-  // Seit 4.9.1 (R-39): Menü und Sprechblase passen immer auf den Bildschirm – sind sie zu hoch
-  // (z. B. iPhone quer), stehen sie oben bündig und ihr Inhalt scrollt darin.
-  const room = innerHeight - 24;
-  if (el.scrollHeight > room) { el.style.maxHeight = room + 'px'; el.style.overflowY = 'auto'; el.style.overscrollBehavior = 'contain'; }
+  // R-39/R-40: Menü und Sprechblase stehen unter ihrer Schaltfläche und passen immer ganz auf den Bildschirm.
+  // Reicht der Platz darunter nicht, scrollt ihr Inhalt darin (erst bei weniger als 200 px Platz darunter
+  // öffnen sie nach oben). 'beside': rechts neben dem Eintrag (Kontextmenü in der Seitenleiste), oben bündig.
+  el.style.maxHeight = ''; el.style.overflowY = '';   // nach dem Drehen neu messen
   const r = anchor.getBoundingClientRect();
-  const w = el.offsetWidth, h = el.offsetHeight;
-  // 'beside': rechts neben dem Eintrag (Kontextmenü in der Seitenleiste), oben bündig.
+  const fit = room => { if (el.scrollHeight > room) { el.style.maxHeight = room + 'px'; el.style.overflowY = 'auto'; el.style.overscrollBehavior = 'contain'; } };
+  let top;
+  if (align === 'beside') {
+    fit(innerHeight - 24);
+    top = Math.max(12, Math.min(r.top, innerHeight - el.offsetHeight - 12));
+  } else {
+    const below = innerHeight - r.bottom - 8 - 12, above = r.top - 8 - 12;
+    if (el.scrollHeight <= below || below >= 200 || below >= above) { fit(below); top = r.bottom + 8; }
+    else { fit(above); top = r.top - 8 - el.offsetHeight; }
+  }
+  const w = el.offsetWidth;
   let left = align === 'right' ? r.right - w : align === 'beside' ? r.right - 40 : r.left;
   left = Math.max(12, Math.min(left, innerWidth - w - 12));
-  let top = align === 'beside' ? r.top : r.bottom + 8;
-  if (top + h > innerHeight - 12) top = align === 'beside' ? innerHeight - h - 12 : r.top - h - 8;
-  top = Math.max(12, Math.min(top, innerHeight - h - 12));
   el.style.left = left + 'px';
-  el.style.top = top + 'px';
+  el.style.top = Math.max(12, top) + 'px';
 }
 
 // Einträge: { icon, label, sub, red, tick, disabled, act } (tick und icon zusammen: Häkchen vorne, dann Icon und Text) · { …, value, submenu: [Einträge] } (Untermenü ›, eine Ebene)
@@ -172,6 +178,25 @@ const menuHtml = items => items.map((it, i) => it === 'sep' ? '<div class="sep">
       'tick' in it ? `<span class="tick">${it.tick ? ic('check') : ''}</span>` : ''}${it.icon ? ic(it.icon) : ''}${esc(it.label)}${
       it.value ? `<span class="val">${esc(it.value)}</span>` : ''}${it.submenu ? ic('chevron-right', 'chev') : ''}</button>${
       it.sub ? `<div class="sub">${esc(it.sub)}</div>` : ''}`).join('');
+// Seit 4.10.0 (R-40): Menüs, Untermenüs und Sprechblasen bleiben beim Drehen (quer ↔ hoch) und bei jeder
+// Größenänderung an ihrer Schaltfläche – neu ausgerichtet, ganz sichtbar. Baut die App die Leiste dabei neu
+// auf, wird die Schaltfläche über ihre id wiedergefunden; gibt es sie nicht mehr, schließt sich das Menü.
+const floating = new Set();
+function liveAnchor(anchor) {
+  if (anchor.isConnected) return anchor;
+  const key = anchor.id ? '#' + CSS.escape(anchor.id)
+    : anchor.dataset.id ? `.${anchor.classList[0]}[data-id="${CSS.escape(anchor.dataset.id)}"]`
+    : anchor.dataset.day ? `[data-day="${CSS.escape(anchor.dataset.day)}"]` : '';
+  const again = key && document.querySelector(key);
+  if (again) again.classList.add('on');
+  return again || null;
+}
+function placeFloating() { floating.forEach(f => f()); }
+const replaceSoon = () => { requestAnimationFrame(() => requestAnimationFrame(placeFloating)); setTimeout(placeFloating, 350); };
+window.addEventListener('resize', replaceSoon);
+window.addEventListener('orientationchange', replaceSoon);
+window.visualViewport?.addEventListener('resize', replaceSoon);
+
 function openMenu(anchor, items, align = 'right') {
   const host = anchor.closest('dialog') || document.body;
   const layer = blockingLayer();
@@ -179,10 +204,27 @@ function openMenu(anchor, items, align = 'right') {
   menu.className = 'menu';
   menu.setAttribute('role', 'menu');
   menu.innerHTML = menuHtml(items);
-  let subMenu = null;
-  const closeSub = () => { subMenu?.remove(); subMenu = null; menu.querySelector('.mi.on')?.classList.remove('on'); };
+  let subMenu = null, subItem = null;
+  const closeSub = () => { subMenu?.remove(); subMenu = null; subItem = null; menu.querySelector('.mi.on')?.classList.remove('on'); };
   anchor.classList.add('on');
-  const close = () => { closeSub(); layer.remove(); menu.remove(); anchor.classList.remove('on'); };
+  // Untermenü neben dem Menü, oben bündig mit seinem Eintrag; passt es links nicht hin, rechts daneben.
+  const placeSub = () => {
+    if (!subMenu) return;
+    subMenu.style.maxHeight = ''; subMenu.style.overflowY = '';
+    const room = innerHeight - 24;
+    if (subMenu.scrollHeight > room) { subMenu.style.maxHeight = room + 'px'; subMenu.style.overflowY = 'auto'; }
+    const mr = menu.getBoundingClientRect(), br = subItem.getBoundingClientRect(), w = subMenu.offsetWidth;
+    subMenu.style.left = Math.max(12, mr.left - w - 8 >= 12 ? mr.left - w - 8 : Math.min(mr.right + 8, innerWidth - w - 12)) + 'px';
+    subMenu.style.top = Math.max(12, Math.min(br.top, innerHeight - subMenu.offsetHeight - 12)) + 'px';
+  };
+  const place = () => {
+    const a = liveAnchor(anchor);
+    if (!a) return close();
+    anchor = a;
+    placeAt(menu, anchor, align);
+    placeSub();
+  };
+  const close = () => { closeSub(); layer.remove(); menu.remove(); anchor.classList.remove('on'); floating.delete(place); };
   layer.onclick = close;
   menu.querySelectorAll('[data-i]').forEach(b => b.onclick = () => {
     const it = items[b.dataset.i];
@@ -198,12 +240,12 @@ function openMenu(anchor, items, align = 'right') {
     subMenu.innerHTML = menuHtml(it.submenu);
     subMenu.querySelectorAll('[data-i]').forEach(sb => sb.onclick = () => { close(); it.submenu[sb.dataset.i].act(); });
     host.append(subMenu);
-    const mr = menu.getBoundingClientRect(), br = b.getBoundingClientRect(), w = subMenu.offsetWidth;
-    subMenu.style.left = (mr.left - w - 8 >= 12 ? mr.left - w - 8 : Math.min(mr.right + 8, innerWidth - w - 12)) + 'px';
-    subMenu.style.top = Math.max(12, Math.min(br.top, innerHeight - subMenu.offsetHeight - 12)) + 'px';
+    subItem = b;
+    placeSub();
   });
   host.append(layer, menu);
   placeAt(menu, anchor, align);
+  floating.add(place);
 }
 
 // Abfrage als Sprechblase an der angetippten Schaltfläche; daneben tippen bricht ab.
@@ -226,7 +268,15 @@ function choosePop(anchor, html, buttons) {
     pop.innerHTML = `<p>${html}</p><div class="btns">${buttons.map((b, i) =>
       `<button type="button" class="${b.cls || ''}" data-i="${i}">${esc(b.label)}</button>`).join('')}</div>`;
     if (visible) anchor.classList.add('on');
-    const done = v => { layer.remove(); pop.remove(); if (visible) anchor.classList.remove('on'); resolve(v); };
+    const place = () => {
+      if (!visible) { pop.style.left = (innerWidth - pop.offsetWidth) / 2 + 'px'; return; }
+      const a = liveAnchor(anchor);
+      if (!a) return;
+      anchor = a;
+      placeAt(pop, anchor, anchor.classList.contains('side-row') ? 'beside' : anchor.getBoundingClientRect().left > innerWidth / 2 ? 'right' : 'left');
+    };
+    floating.add(place);
+    const done = v => { floating.delete(place); layer.remove(); pop.remove(); if (visible) anchor.classList.remove('on'); resolve(v); };
     layer.onclick = () => done(null);
     pop.querySelectorAll('[data-i]').forEach(b => b.onclick = () => done(buttons[b.dataset.i].value));
     host.append(layer, pop);

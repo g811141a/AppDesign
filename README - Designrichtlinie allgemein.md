@@ -522,6 +522,9 @@ Verhalten · technischer Name). In AppDesign ist jede Komponente einmal programm
   öffnet neben dem Menü, oben bündig; der Eintrag bleibt blau, solange es offen ist.
 - **Verhalten:** erscheint unter der Schaltfläche (darf über die Seitenleiste
   hinausragen); die Schaltfläche ist so lange gedrückt (blau getönt); daneben tippen schließt.
+  Reicht der Platz darunter nicht, scrollt das Menü in sich (erst unter 200 px Platz öffnet es nach oben).
+- **Beim Drehen (seit 4.10.0, R-40):** offenes Menü, Untermenü und Sprechblase werden neu ausgerichtet –
+  das Menü unter der aufrufenden Schaltfläche, das Untermenü neben seinem Eintrag, ganz sichtbar.
 
 ### 15.7 Sprechblase (Abfrage)
 - **Apple:** [HIG – Popovers](https://developer.apple.com/design/human-interface-guidelines/popovers) · [HIG – Action sheets](https://developer.apple.com/design/human-interface-guidelines/action-sheets) · [HIG – Alerts](https://developer.apple.com/design/human-interface-guidelines/alerts)
@@ -738,6 +741,7 @@ hier sofort eine Nummer und – wo möglich – eine Prüfung im Skript.
 | R-37 | Kein Text ragt über Zelle, Kasten oder Kachel hinaus: zu lange Wörter brechen im Wort um und laufen in der nächsten Zeile weiter (iPad und iPhone) | Skript (Testdaten mit 100 × ‚a‘) | 9, 15.10 |
 | R-38 | Abfrage mit mehreren Wegen: empfohlene Aktion blau gefüllt zuerst, zerstörende in roter Schrift, ‚Abbrechen‘ zuletzt; kurze Erklärung der Wege im Text | Skript | 15.7 |
 | R-39 | Menü, Sprechblase und Fenster passen immer ganz auf den Bildschirm (auch iPhone quer); ist der Inhalt zu hoch, scrollt er darin – kein Knopf liegt außerhalb | Skript | 15.6, 15.7, 15.9 |
+| R-40 | Menüs, Untermenüs und Sprechblasen bleiben beim Drehen (quer ↔ hoch) an ihrer Schaltfläche: Menü unterhalb der aufrufenden Schaltfläche, Untermenü neben seinem Eintrag, immer ganz sichtbar (reicht der Platz nicht, scrollt der Inhalt darin); die Schaltfläche bleibt blau | Skript (Drehen mit offenem Untermenü) · Gerät | 15.6, 15.7 |
 
 ---
 
