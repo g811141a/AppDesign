@@ -3,6 +3,19 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.8.0 – 12.10.2026 (Nebenversion)
+
+AppDesign 4.8.0 · Designrichtlinie allgemein 4.8.0 · Zusammenarbeit allgemein 1.13.0
+
+- **R-37 verschärft:** Reihen von Smileys ohne Leerzeichen brechen am Rand der Zelle um; mehr als
+  drei Smileys am Zeilenanfang sind Inhalt, kein Zeichen (hängender Einzug). `breakable()` setzt
+  die Umbruchstellen nach ganzen Zeichen (Graphemen), zusammengesetzte Smileys bleiben ganz.
+- **Seitenleiste:** die Liste behält beim Neuaufbau ihre Position, der gewählte Eintrag bleibt
+  sichtbar (iPad und iPhone, derselbe Baustein).
+- **Suche (iPhone):** Wischen bei offener Tastatur schließt sie wie bei Apple – die Leisten zittern
+  nicht mehr (R-05).
+- Prüfskript: Ansichten laufen bei einem Fehler weiter, der Bericht nennt alle Funde.
+
 ## 4.7.0 – 12.10.2026 (Nebenversion)
 
 AppDesign 4.7.0 · Designrichtlinie allgemein 4.7.0 · Zusammenarbeit allgemein 1.13.0

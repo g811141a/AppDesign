@@ -1,6 +1,6 @@
 # Designrichtlinie allgemein
 
-**Version 4.7.0** · Stand 12.10.2026
+**Version 4.8.0** · Stand 12.10.2026
 
 Allgemeine Gestaltungs- und Bedienregeln für alle iPad-Web-Apps von g811141a (seit 4.1.0 auch
 auf dem iPhone, Abschnitt 15.17).
@@ -296,6 +296,9 @@ heller).
   langes Wort (über 20 Zeichen, z. B. 100 × ‚a‘) bricht **im Wort** um und läuft in der nächsten
   Zeile weiter – nie über die Zelle oder den Rand hinaus (R-37; `breakable()` in `ui.js`,
   `overflow-wrap` in `design.css`). Gilt auch für Kästen, Kacheln und Hinweise, iPad und iPhone.
+  Das gilt auch für Reihen von Smileys ohne Leerzeichen: höchstens drei Smileys am Zeilenanfang
+  werden zum Zeichen (hängender Einzug), eine längere Reihe ist Inhalt und bricht am Rand um.
+  Umgebrochen wird nach ganzen Zeichen – zusammengesetzte Smileys (z. B. 🤷🏻‍♂️) bleiben ganz.
 - Spaltenbreiten passen sich dem Inhalt an; kompakte Tabellen nur so breit wie nötig;
   Zahlenspalten rechtsbündig (Überschrift und Werte).
 - Hängender Einzug: Folgezeilen beginnen unter dem Text, nicht unter Aufzählungszeichen
@@ -460,7 +463,9 @@ Verhalten · technischer Name). In AppDesign ist jede Komponente einmal programm
   (‚5 Reiselogbücher‘); der Kopf bleibt oben stehen. Darunter die Einträge
   als **Kacheln** (wie auf dem iPhone): Titel fett, darunter grau Zeitraum · Status, rechts ›;
   gewählter Eintrag blau gefüllt; reichen sie über den Rand, wischt man sie nach oben – sie laufen
-  unter dem Kopf und **hinter der Backup-Kachel durch** (keine starre Begrenzung). Unten fest
+  unter dem Kopf und **hinter der Backup-Kachel durch** (keine starre Begrenzung). Die Liste behält
+  beim Neuaufbau ihre Position; der gewählte Eintrag bleibt sichtbar, auch wenn er erst durch
+  Wischen sichtbar wurde. Unten fest
   **immer** die Backup-Kachel ‚Letztes Backup erstellt am …‘ – gelb mit blauem Knopf, solange heute
   noch kein Backup erstellt wurde, sonst weiß mit normalem Knopf (`.ok`).
 - **Maße und Aussehen:** schwebend wie in Safari – eigenes Rechteck mit 10 px Abstand oben und
@@ -608,6 +613,9 @@ Verhalten · technischer Name). In AppDesign ist jede Komponente einmal programm
   (`.ilist.tiles` bleibt als Liste für andere Seiten.)
 - **Kasten** (`.box` mit Zeilen `.kv` = graue Bezeichnung `.k` links, Wert `.v` rechts): ein
   Eintrag als Karte, z. B. ein Tag statt einer Tabellenzeile.
+- **Tastatur der Suche:** wischt man den Inhalt, während die Tastatur der Suche offen ist,
+  schließt sie sich (wie bei Apple). Sonst verschiebt iOS den sichtbaren Bereich und die
+  Leisten zittern (R-05).
 - **Suche** wie am iPad (Komponente Suchfeld): `search` in der Kapsel öffnet unter der Leiste
   die Suchzeile mit ‚1 von 4‘, ⓧ und ⌃ ⌄; gefiltert wird auf Einträge mit Treffern.
 - **Fester Hinweis unten** (`.bbar` mit `.bnote`): z. B. der Backup-Hinweis – gelb getönte Karte
@@ -716,6 +724,7 @@ hier sofort eine Nummer und – wo möglich – eine Prüfung im Skript.
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 4.8.0 | 12.10.2026 | Neben | R-37 verschärft: Reihen von Smileys ohne Leerzeichen brechen um (mehr als drei Smileys am Zeilenanfang sind Text, kein Zeichen), Umbruch nach ganzen Zeichen; Liste der Seitenleiste behält beim Neuaufbau ihre Position, der gewählte Eintrag bleibt sichtbar; Wischen bei offener Tastatur der Suche schließt sie (wie Apple) |
 | 4.7.0 | 12.10.2026 | Neben | Regeln R-36 (gleiche Funktion = gleicher Baustein auf iPad und iPhone, mit Gerätevergleich im Prüfskript) und R-37 (zu lange Wörter brechen im Wort um, nichts ragt über Zelle oder Kachel hinaus); iPhone-Startliste ist jetzt die Seitenleiste als ganze Seite; Kacheln laufen auch am iPad hinter der Backup-Kachel durch |
 | 4.6.0 | 11.10.2026 | Neben | Regelkatalog (Abschnitt 17) mit Nummern R-01 bis R-35; HIG- und Regel-Prüfung prüft alle automatisch prüfbaren Regeln; Leisten fest auch am iPad (Kopfzeile fest, in der Seitenleiste scrollen nur die Einträge) |
 | 4.5.0 | 11.10.2026 | Neben | Leisten bewegen sich nie (Seite federt nicht nach, iPhone-Seitenkopf fest) |
