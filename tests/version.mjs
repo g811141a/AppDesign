@@ -1,4 +1,4 @@
-// AppDesign 4.11.0 · Prüfung der Versionskopplung App ↔ AppDesign (Regel R-48, Designrichtlinie allgemein 15.20).
+// AppDesign 4.11.1 · Prüfung der Versionskopplung App ↔ AppDesign (Regel R-48, Designrichtlinie allgemein 15.20).
 // Prüft die Dateien der App: ui.js und design.css mit ?v=<AppDesign-Version> in index.html und sw.js, AD_NEEDED in der App
 // gleich AD_VERSION (ui.js) und --ad-version (design.css), Cache-Name in sw.js mit der App-Version.
 // Mit einer Seite (page) zusätzlich: lädt die App mit einer älteren ui.js und erwartet den Hinweis beim Start.

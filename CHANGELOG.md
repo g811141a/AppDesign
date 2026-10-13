@@ -3,6 +3,17 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.11.1 – 13.10.2026 (Korrektur)
+
+AppDesign 4.11.1 · Designrichtlinie allgemein 4.11.1 · Zusammenarbeit allgemein 1.15.0
+
+- **R-49 (neu):** Die README jeder App zeigt ganz oben ‚Verwendete Versionen‘ (App, AppDesign, Designrichtlinie allgemein,
+  Designrichtlinie <App>, Zusammenarbeit allgemein – je Version und Link).
+- **R-50 (neu):** Jede Prüfliste beginnt mit /0 ‚Version prüfen‘; jeder Schritt nennt die Meldung je Gerät; jeder solche Fall
+  hat einen automatischen Test. Neue Prüfung `tests/doku.mjs` (R-49, R-50).
+- **Zusammenarbeit allgemein 1.15.0:** ‚Fertig‘ erst nach erfolgreichen Pages-Läufen beider Repos; R-49 und R-50 als
+  Zusammenarbeitsregeln (Anlass: P-26/6, 7 und 9).
+
 ## 4.11.0 – 13.10.2026 (Nebenversion)
 
 AppDesign 4.11.0 · Designrichtlinie allgemein 4.11.0 · Zusammenarbeit allgemein 1.14.0
