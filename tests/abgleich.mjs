@@ -1,4 +1,4 @@
-// AppDesign 4.10.0 · Prüfung des Abgleichs zwischen iPad und iPhone (Regeln R-41 bis R-44, Designrichtlinie allgemein 15.4 und 17).
+// AppDesign 4.10.1 · Prüfung des Abgleichs zwischen iPad und iPhone (Regeln R-41 bis R-44, Designrichtlinie allgemein 15.4 und 17).
 // Prüft für jede App, die den gemeinsamen Baustein createSync (ui.js) nutzt, alle Anwendungsfälle der Tabelle ‚Abgleich‘ in beiden
 // Richtungen (iPhone lädt das Backup vom iPad und umgekehrt) – mit neutralen Testdaten nach der Beschreibung der App (sync.config).
 // Einbinden im Prüfskript der App (Seite mit geladener App, globales `sync`):

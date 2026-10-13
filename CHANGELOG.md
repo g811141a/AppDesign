@@ -3,6 +3,20 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.10.1 – 13.10.2026 (Korrektur)
+
+AppDesign 4.10.1 · Designrichtlinie allgemein 4.10.1 · Zusammenarbeit allgemein 1.14.0
+
+- **R-47 (neu):** Die Seitenleiste behält beim Drehen ihren Zustand – sichtbar bleibt sichtbar, ausgeblendet bleibt
+  ausgeblendet. Das Prüfskript prüft das automatisch je Seite (beide Zustände).
+- **R-40 ergänzt:** Kontextmenü an einer Kachel ist nie abgeschnitten und steht nie über bzw. hinter der Backup-Kachel –
+  am iPhone rückt die Liste nach oben und bekommt bei wenigen Einträgen unten Platz, am iPad endet das Menü über der
+  Kachel. Neue allgemeine Prüfung `tests/kontextmenue.mjs` (jede sichtbare Kachel, verschiedene Listenlängen).
+- **R-42 ergänzt:** Leere Felder gelten beim Abgleich als nicht vorhanden – ein Fenster, das alle Felder speichert,
+  überschreibt nichts mehr mit ‚leer‘ (Fall 8b in `tests/abgleich.mjs`).
+- **R-43:** Die Hinweise nennen die Geräte beim Namen (‚Auf dem iPad gelöscht, auf diesem iPhone danach noch geändert‘).
+- **Zusammenarbeit allgemein 1.14.0:** am Ende jeder Umsetzung alle offenen Prüfpunkte einzeln Schritt für Schritt.
+
 ## 4.10.0 – 12.10.2026 (Nebenversion)
 
 AppDesign 4.10.0 · Designrichtlinie allgemein 4.10.0 · Zusammenarbeit allgemein 1.13.0
