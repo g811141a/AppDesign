@@ -50,6 +50,28 @@ const found = new Map();
       for (const x of bad) note('Regel', `R-40 ${x} (${size.width}×${size.height})`, where);
     }
   };
+  // R-47: Die Seitenleiste (iPad) behält beim Drehen ihren Zustand – sichtbar bleibt sichtbar (quer fest, hoch darübergelegt),
+  // ausgeblendet bleibt ausgeblendet. Wird je Seite einmal automatisch geprüft (beide Zustände, hin und zurück).
+  const sideChecked = new WeakSet();
+  const sideKeep = async (p, where) => {
+    sideChecked.add(p);
+    const vp = p.viewportSize();
+    const shown = () => p.evaluate(() => { const s = document.getElementById('side'); return !!s && !s.hidden && s.getClientRects().length > 0 && s.getBoundingClientRect().right > 0; });
+    const toggle = async () => {
+      const all = p.locator('#sideHide, [data-side-toggle]');
+      for (let i = 0; i < await all.count(); i++) if (await all.nth(i).isVisible().catch(() => false)) { await all.nth(i).click(); await p.waitForTimeout(300); return true; }
+      return false;
+    };
+    for (const pass of [0, 1]) {
+      const before = await shown();
+      for (const size of [{ width: vp.height, height: vp.width }, vp]) {
+        await p.setViewportSize(size); await p.waitForTimeout(500);
+        if (await shown() !== before) note('Regel', `R-47 Seitenleiste ${before ? 'sichtbar' : 'ausgeblendet'} – nach dem Drehen auf ${size.width}×${size.height} ${before ? 'verschwunden' : 'erschienen'}`, where);
+      }
+      if (pass === 0 && !(await toggle())) break;   // zweiter Durchgang mit dem anderen Zustand
+    }
+    await toggle();   // Ausgangszustand wiederherstellen
+  };
   // Misst die sichtbare, oberste Ebene (Menü/Sprechblase, sonst offenes Fenster, sonst Seite).
   async function measure(p, where) {
     const r = await p.evaluate(skip => {
@@ -197,6 +219,10 @@ const found = new Map();
       return res;
     }, skipTargets);
     for (const [k, list] of Object.entries(r)) for (const x of list) note({ target: 'Antippfläche', font: 'Schrift', contrast: 'Kontrast', quotes: 'Anführungszeichen', menu: 'Menü', rules: 'Regel' }[k], x, where);
+    // R-47 automatisch: einmal je Seite, wenn eine Seitenleiste da ist und nichts darüber offen ist (nur iPad).
+    if (!rotating && !sideChecked.has(p) && await p.evaluate(() => !!document.getElementById('side') && !document.documentElement.classList.contains('phone') && !document.querySelector('.menu, .pop, dialog[open]'))) {
+      rotating = true; try { await sideKeep(p, `${where} – Seitenleiste gedreht`); } finally { rotating = false; }
+    }
     // R-40 automatisch: ist ein Menü, Untermenü oder eine Sprechblase offen, wird jedes Mal gedreht (quer ↔ hoch) und zurück.
     if (!rotating) {
       const anchor = await p.evaluate(() => { const a = [...document.querySelectorAll('.on')].find(e => !e.closest('.menu, .pop, dialog') && e.getClientRects().length && document.querySelector('.menu, .pop'));
@@ -270,5 +296,5 @@ const found = new Map();
     for (const [k, where] of found) console.log(`- ${k}\n    ${[...where].slice(0, 3).join(' · ')}${where.size > 3 ? ` · +${where.size - 3}` : ''}`);
     return 1;
   };
-  return { measure, stays, shape, barStill, rotate, note, report };
+  return { measure, stays, shape, barStill, rotate, sideKeep, note, report };
 }
