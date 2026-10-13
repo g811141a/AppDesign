@@ -1,5 +1,7 @@
-// AppDesign 4.10.1 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
-// Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/v4/ui.js"></script>
+// AppDesign 4.11.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
+// Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/v4/ui.js?v=4.11.0"></script>
+// Seit 4.11.0 (R-48): ui.js und design.css immer mit ?v=<AppDesign-Version> einbinden (auch in sw.js) und beim Start
+// prüfen, ob genau diese Fassung geladen ist (AD_VERSION hier, --ad-version in design.css).
 // Klassisches Skript: alle Funktionen sind global und für das Skript der App sichtbar.
 //
 // Die App muss bereitstellen (Schnittstelle):
@@ -12,7 +14,10 @@
 // gedrückte Schaltflächen (hold, release, setOpener) · Meldung (inform) · Fenster (openDialog, dlgHead) ·
 // Auswahl-Kapsel (capHtml, mountCap) · Tastatur/sichtbarer Bereich (placeDialogs) · iPhone (isPhone, applyLayout)
 // Regeln dazu: README - Designrichtlinie allgemein.md
+
 'use strict';
+// Version der Bausteine (R-48): die App vergleicht sie beim Start mit der benötigten Fassung.
+const AD_VERSION = '4.11.0';
 /* ---------- Icons ---------- */
 
 // Schaltflächen-Icons aus Lucide (ISC-Lizenz), direkt eingebettet, damit die App offline funktioniert.
@@ -169,12 +174,16 @@ function placeAt(el, anchor, align) {
       list.scrollTop = from + need;
       if (list.scrollTop - from < need - 1) {   // Liste kürzer als nötig: unten eine Bildschirmhöhe Platz dazugeben
         list.style.paddingBottom = (parseFloat(getComputedStyle(list).paddingBottom) + list.clientHeight) + 'px';
+        list.dataset.padded = '1';   // wird beim Schließen des Menüs wieder entfernt
         list.scrollTop = from + need;
       }
       r = anchor.getBoundingClientRect();
     }
     top = r.bottom + 8;
-    fit(limit - top);
+    // Seit 4.11.0: rückt die Liste trotzdem nicht weit genug (z. B. iOS hält die Liste fest, solange der Finger
+    // noch liegt), steht das Menü linksbündig über der Kachel statt hinter der Backup-Kachel (wie Apple).
+    if (top + el.offsetHeight > limit + 2 && r.top - 8 - el.offsetHeight >= 12) top = r.top - 8 - el.offsetHeight;
+    else fit(limit - top);
     el.style.left = Math.max(12, Math.min(r.left, innerWidth - el.offsetWidth - 12)) + 'px';
     el.style.top = Math.max(12, top) + 'px';
     return;
@@ -252,7 +261,11 @@ function openMenu(anchor, items, align = 'right') {
     placeAt(menu, anchor, align);
     placeSub();
   };
-  const close = () => { closeSub(); layer.remove(); menu.remove(); anchor.classList.remove('on'); floating.delete(place); };
+  const close = () => {
+    closeSub(); layer.remove(); menu.remove(); anchor.classList.remove('on'); floating.delete(place);
+    // Seit 4.11.0: den für das Kontextmenü dazugegebenen Platz unter der Liste wieder entfernen.
+    document.querySelectorAll('.side-list[data-padded]').forEach(l => { l.style.paddingBottom = ''; delete l.dataset.padded; });
+  };
   layer.onclick = close;
   menu.querySelectorAll('[data-i]').forEach(b => b.onclick = () => {
     const it = items[b.dataset.i];
@@ -274,6 +287,13 @@ function openMenu(anchor, items, align = 'right') {
   host.append(layer, menu);
   placeAt(menu, anchor, align);
   floating.add(place);
+  // Seit 4.11.0: Kontextmenü (lange drücken) – nach dem Loslassen noch einmal ausrichten; erst dann lässt iOS
+  // die Liste sicher rücken (R-40).
+  if (align === 'beside') {
+    const again = () => { document.removeEventListener('pointerup', again, true); document.removeEventListener('touchend', again, true); replaceSoon(); };
+    document.addEventListener('pointerup', again, true);
+    document.addEventListener('touchend', again, true);
+  }
 }
 
 // Abfrage als Sprechblase an der angetippten Schaltfläche; daneben tippen bricht ab.
@@ -408,7 +428,9 @@ function whenText(ms) {
 // changedAt/changedOn für ‚geändert am … · Gerät‘). Gelöschte Einträge stehen in data.deleted ({ id, at, on }).
 // R-42: je Feld gilt die neuere Änderung; gleich alt: das Vorhandene hier bleibt, Fehlendes kommt dazu.
 // R-43: ein gelöschter Eintrag bleibt gelöscht, solange er danach nicht mehr geändert wurde – mit Hinweisen.
-function createSync({ list, sub, subAt, maxFields = [], nouns = ['Eintrag', 'Einträge', 'Einträgen'] }) {
+// Seit 4.11.0: labels – Namen der Felder für die Tabelle der Änderungen ({ title: 'Titel', … }); Unterdaten mit einem
+// ISO-Datum als Schlüssel erscheinen als ‚Mo 12.10.2026‘, sonst über subLabel(key).
+function createSync({ list, sub, subAt, maxFields = [], nouns = ['Eintrag', 'Einträge', 'Einträgen'], labels = {}, subLabel = null, app = document.title }) {
   const STAMPS = [sub, subAt, 'metaAt', 'changedAt', 'changedOn', ...maxFields];
   const metaKeys = e => Object.keys(e).filter(k => !STAMPS.includes(k));
   const metaObj = e => Object.fromEntries(metaKeys(e).map(k => [k, e[k]]));
@@ -446,22 +468,30 @@ function createSync({ list, sub, subAt, maxFields = [], nouns = ['Eintrag', 'Ein
   }
   // Letzte Änderung eines Datenbestands (geändert oder gelöscht).
   const latest = data => Math.max(0, ...data[list].map(e => e.changedAt || 0), ...(data.deleted || []).map(x => x.at || 0));
+  // Seit 4.11.0 mit Feldlisten: taken – aus dem Backup übernommen (geleert: cleared), kept – hier neuer, das Backup ist älter.
+  const same = (a, b) => (filled(a) ? JSON.stringify(a) : '') === (filled(b) ? JSON.stringify(b) : '');
   function mergeFields(l, r, timeL, timeR) {
-    const out = {}, at = {};
-    let fromR = false;
+    const out = {}, at = {}, taken = [], cleared = [], kept = [];
     for (const k of new Set([...Object.keys(l || {}), ...Object.keys(r || {})])) {
       const la = timeL(k), ra = timeR(k);
       const useR = ra > la || (ra === la && !filled(l?.[k]) && filled(r?.[k]));
       const v = useR ? r?.[k] : l?.[k];
       if (v !== undefined) out[k] = structuredClone(v);
       if (Math.max(la, ra)) at[k] = useR ? ra : la;
-      if (useR && (filled(l?.[k]) || filled(r?.[k])) && JSON.stringify(l?.[k] ?? null) !== JSON.stringify(r?.[k] ?? null)) fromR = true;
+      if (same(l?.[k], r?.[k])) continue;
+      if (useR) (filled(r?.[k]) ? taken : cleared).push({ k, v: r?.[k], old: l?.[k], at: ra, cleared: !filled(r?.[k]) });
+      else kept.push({ k, v: l?.[k], old: r?.[k], at: la, cleared: !filled(l?.[k]) });
     }
-    return { out, at, fromR };
+    return { out, at, taken, cleared, kept, fromR: taken.length + cleared.length > 0 };
   }
-  // Abgleichen: Ergebnis { data, stats } – stats: updated [{ title, subs }], added, removed, keptDeleted [{ title, at }], keptChanged, same.
+  // Abgleichen: Ergebnis { data, stats } – stats: updated [{ title, subs, rows }] (rows: [{ key (null = Kopfdaten), fields:
+  // [{ k, v, at, cleared }], at, on }]), added [{ title, subs, at, on }], removed [{ title, at, on }], keptDeleted [{ title, at,
+  // on }], keptChanged [{ title, on }], newer [{ title, rows, only, at, on }] (hier neuer als im Backup), same (Anzahl unverändert).
+  // on = Gerät der Änderung, soweit bekannt (sonst null: das Gerät des Backups bzw. dieses Gerät).
   function merge(local, remote) {
-    const stats = { updated: [], added: [], removed: [], keptDeleted: [], keptChanged: [], same: 0 };
+    const stats = { updated: [], added: [], removed: [], keptDeleted: [], keptChanged: [], newer: [], same: 0 };
+    // Zeile der Tabelle: Felder, jüngster Zeitpunkt; Gerät, wenn es die letzte Änderung des Eintrags war.
+    const row = (key, fields, e) => { const at = Math.max(0, ...fields.map(f => f.at || 0)); return { key, fields, at, on: at && at === e.changedAt ? e.changedOn : null }; };
     const del = new Map();
     for (const x of [...(local.deleted || []), ...(remote.deleted || [])]) if (!del.has(x.id) || del.get(x.id).at < x.at) del.set(x.id, x);
     const L = new Map(local[list].map(e => [e.id, e])), R = new Map(remote[list].map(e => [e.id, e]));
@@ -471,30 +501,38 @@ function createSync({ list, sub, subAt, maxFields = [], nouns = ['Eintrag', 'Ein
       if (l && r) {
         const meta = mergeFields(metaObj(l), metaObj(r), k => metaTime(l, k), k => metaTime(r, k));
         const e = { id, ...meta.out, metaAt: meta.at, [sub]: {}, [subAt]: {} };
-        let subs = 0;
-        for (const key of new Set([...Object.keys(l[sub] || {}), ...Object.keys(r[sub] || {}), ...Object.keys(l[subAt] || {}), ...Object.keys(r[subAt] || {})])) {
+        const rows = [], newerRows = [];
+        if (meta.taken.length + meta.cleared.length) rows.push(row(null, [...meta.taken, ...meta.cleared], r));
+        if (meta.kept.length) newerRows.push(row(null, meta.kept, l));
+        for (const key of [...new Set([...Object.keys(l[sub] || {}), ...Object.keys(r[sub] || {}), ...Object.keys(l[subAt] || {}), ...Object.keys(r[subAt] || {})])].sort()) {
           const d = mergeFields(l[sub]?.[key], r[sub]?.[key], k => subTime(l, key, k), k => subTime(r, key, k));
           if (Object.keys(d.out).length) e[sub][key] = d.out;
           if (Object.keys(d.at).length) e[subAt][key] = d.at;
-          if (d.fromR) subs++;
+          if (d.fromR) rows.push(row(key, [...d.taken, ...d.cleared], r));
+          if (d.kept.length) newerRows.push(row(key, d.kept, l));
         }
+        const subs = rows.filter(x => x.key !== null).length;
         const newer = (r.changedAt || 0) > (l.changedAt || 0) ? r : l;
         e.changedAt = newer.changedAt; e.changedOn = newer.changedOn;
         for (const k of maxFields) e[k] = Math.max(l[k] || 0, r[k] || 0);
         out.push(e);
-        if (subs || meta.fromR) stats.updated.push({ title: e.title, subs }); else stats.same++;
+        if (rows.length) stats.updated.push({ title: e.title, subs, rows }); else stats.same++;
+        if (newerRows.length) stats.newer.push({ title: e.title, rows: newerRows });
       } else if (l) {
-        if (gone && gone.at > (l.changedAt || 0)) stats.removed.push(l.title);
-        else { out.push(l); stats.same++; if (gone) stats.keptChanged.push({ title: l.title, on: gone.on }); }
+        if (gone && gone.at > (l.changedAt || 0)) stats.removed.push({ title: l.title, at: gone.at, on: gone.on });
+        else {
+          out.push(l); stats.same++;
+          if (gone) stats.keptChanged.push({ title: l.title, on: gone.on });
+          else stats.newer.push({ title: l.title, rows: [], only: true, subs: Object.keys(l[sub] || {}).length, at: l.changedAt, on: l.changedOn });   // nur hier
+        }
       } else if (gone && gone.at >= (r.changedAt || 0)) {
         stats.keptDeleted.push({ title: r.title, at: gone.at, on: gone.on });
       } else {
-        out.push(structuredClone(r)); stats.added.push(r.title);
+        out.push(structuredClone(r)); stats.added.push({ title: r.title, subs: Object.keys(r[sub] || {}).length, at: r.changedAt, on: r.changedOn });
       }
     }
     return { data: { ...local, [list]: out, deleted: [...del.values()] }, stats };
   }
-  const count = n => `${n} ${n === 1 ? nouns[0] : nouns[1]}`;
   // R-41: Abfrage beim Laden eines Backups – Zeitpunkt und Gerät, neuer oder älter, kurze Erklärung der Wege.
   function question(local, remote, savedAt, savedOn, unit = 'Tag') {
     const n = remote[list].length, here = deviceName(), mine = latest(local), theirs = latest(remote) || savedAt;
@@ -507,43 +545,125 @@ function createSync({ list, sub, subAt, maxFields = [], nouns = ['Eintrag', 'Ein
     { label: 'Ersetzen', cls: 'danger-text', value: 'replace', desc: `Alle Daten auf diesem ${deviceName()} werden durch das Backup ersetzt.` },
     { label: 'Abbrechen', value: null }];
   const ask = (anchor, local, remote, savedAt, savedOn) => choosePop(anchor, question(local, remote, savedAt, savedOn), choices());
-  // R-44: Ergebnis als kleines Fenster mit Hinweisen zu Gelöschtem.
-  // here: dieses Gerät; savedOn: Gerät des Backups. Die Hinweise nennen die Geräte beim Namen (iPad, iPhone).
-  function resultText({ updated, added, removed, keptDeleted, keptChanged, same }, savedAt, savedOn, here = deviceName(), unit = ['Tag', 'Tage']) {
-    const head = `✅ Abgeglichen mit dem Backup vom ${whenText(savedAt)}${savedOn ? ` (${esc(savedOn)})` : ''}.`;
-    const other = on => !on ? 'dem anderen Gerät' : on === here ? `dem anderen ${esc(on)}` : `dem ${esc(on)}`;
+  // R-44 (seit 4.11.0): Ergebnis in zwei Stufen. Das kleine Fenster ‚Abgleichen‘ nennt nur Backup (Gerät, Zeitpunkt) und
+  // das Ergebnis in einem Satz; gibt es etwas zu berichten, öffnet die Schaltfläche ‚Abgleichbericht anzeigen‘ den Bericht –
+  // eine Vorschau wie die Ausgabe der App (weiß, Tabellen mit grauem Kopf, teilbar als HTML). Ohne jede Änderung bleibt es bei
+  // ‚Alles war schon auf dem gleichen Stand.‘ ohne Schaltfläche. here: dieses Gerät; savedOn: Gerät des Backups.
+  const WD = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'];
+  const two = n => String(n).padStart(2, '0');
+  const keyText = key => subLabel ? subLabel(key) : /^\d{4}-\d{2}-\d{2}$/.test(key)
+    ? (([y, m, d]) => `${WD[new Date(y, m - 1, d).getDay()]}, ${d}.${m}.${y}`)(key.split('-')) : key;
+  const valueText = v => !filled(v) ? '–' : typeof v === 'boolean' ? (v ? 'ja' : 'nein') : Array.isArray(v) ? v.join(', ') : String(v);
+  const anything = st => st.updated.length + st.added.length + st.removed.length > 0;
+  const worthReport = st => anything(st) || (st.newer || []).length + st.keptDeleted.length + st.keptChanged.length > 0;
+  function resultText(stats, savedAt, savedOn, here = deviceName()) {
+    const head = `✅ Abgeglichen mit dem Backup ${savedOn ? `vom <b>${esc(savedOn)}</b> ` : ''}(${whenText(savedAt)}).`;
+    if (anything(stats)) return `${head}<br><br>Auf diesem ${esc(here)} hat sich etwas geändert – Einzelheiten im Abgleichbericht.`;
+    if (worthReport(stats)) return `${head}<br><br>Auf diesem ${esc(here)} hat sich nichts geändert – Hinweise im Abgleichbericht.`;
+    return `${head}<br><br>Alles war schon auf dem gleichen Stand.`;
+  }
+  // Bericht: Kopf mit Gerät, Backup und Ergebnis; Tabelle ‚Änderungen auf diesem Gerät‘ (je Feld eine Zeile mit neuem Inhalt,
+  // vorherigem Inhalt, Gerät und Zeitpunkt), Tabelle ‚Auf diesem Gerät neuer als im Backup – bleibt so‘, Hinweise, Unverändertes.
+  const REPORT_CSS = `
+    .sync-report { font: 11pt/1.4 -apple-system, "Segoe UI", Roboto, Arial, sans-serif; color: #000; }
+    .sync-report h1 { font-size: 20pt; margin: 0 0 8px; }
+    .sync-report h2 { font-size: 14pt; margin: 20px 0 6px; }
+    .sync-report table { border-collapse: collapse; }
+    .sync-report .meta td { border: none; padding: 1px 16px 1px 0; vertical-align: top; }
+    .sync-report table.grid { width: 100%; margin-top: 8px; table-layout: fixed; }
+    .sync-report table.grid col.c1 { width: 15%; } .sync-report table.grid col.c2 { width: 14%; } .sync-report table.grid col.c3 { width: 12%; }
+    .sync-report table.grid col.c4 { width: 24%; } .sync-report table.grid col.c5 { width: 14%; } .sync-report table.grid col.c6 { width: 9%; } .sync-report table.grid col.c7 { width: 12%; }
+    .sync-report table.grid tbody th { background: #fff; }
+    .sync-report table.grid th, .sync-report table.grid td { border: 1px solid #999; padding: 6px 8px; vertical-align: top; text-align: left; overflow-wrap: anywhere; }
+    .sync-report table.grid th { background: #d9d9d9; border-color: #a5a5a5; font-weight: 600; }
+    .sync-report table.grid td.nw { white-space: nowrap; }
+    .sync-report table.grid tbody + tbody { border-top: 2px solid #a5a5a5; }
+    .sync-report .new { color: #0a5bd3; font-weight: 600; } .sync-report .del { color: #c0362c; font-weight: 600; }
+    .sync-report .old { color: #555; }
+    .sync-report p { margin: 8px 0; }
+    .sync-report .created { margin-top: 28px; font-size: 9pt; color: #6b6b6b; }`;
+  const atText = at => at ? (d => `${d.getDate()}.${d.getMonth() + 1}.${d.getFullYear()} ${two(d.getHours())}:${two(d.getMinutes())}`)(new Date(at)) : '–';
+  // Eine Gruppe je Eintrag; je Feld eine Zeile; Eintrag und Tag über ihre Zeilen zusammengefasst (rowspan).
+  function reportTable(groups, cols) {
+    const body = groups.map(g => {
+      const lines = g.rows.flatMap(r => r.fields.map((f, i) => ({ r, f, first: !i })));
+      return `<tbody data-kind="${g.kind}" data-title="${esc(g.title)}">${lines.map((x, n) => `<tr>${n ? '' : `<th scope="rowgroup" rowspan="${lines.length}">${esc(g.title)}</th>`}${
+        x.first ? `<td class="nw" rowspan="${x.r.fields.length}">${x.r.key === null ? '–' : esc(keyText(x.r.key))}</td>` : ''}<td>${x.f.label}</td><td>${x.f.now}</td><td class="old">${x.f.before}</td>${
+        x.first ? `<td class="nw" rowspan="${x.r.fields.length}">${esc(x.r.on || '–')}</td><td class="nw" rowspan="${x.r.fields.length}">${atText(x.r.at)}</td>` : ''}</tr>`).join('')}</tbody>`;
+    }).join('');
+    return `<table class="grid"><colgroup>${[1, 2, 3, 4, 5, 6, 7].map(i => `<col class="c${i}">`).join('')}</colgroup><thead><tr><th>${esc(nouns[0])}</th><th>Tag</th><th>Feld</th><th>${cols[0]}</th><th>${cols[1]}</th><th>Vom Gerät</th><th>Geändert am</th></tr></thead>${body}</table>`;
+  }
+  const fieldRows = (rows, dflt) => (rows || []).map(r => ({ key: r.key, on: r.on || dflt, at: r.at, fields: r.fields.map(f => ({
+    label: esc(labels[f.k] || f.k), now: f.cleared ? '<i>geleert</i>' : esc(valueText(f.v)).replace(/\n/g, '<br>'), before: esc(valueText(f.old)).replace(/\n/g, '<br>') })) }));
+  const one = (now, n, unit) => [{ key: null, on: null, at: 0, fields: [{ label: '–', now: `${now}${n ? ` (${n} ${n === 1 ? unit[0] : unit[1]})` : ''}`, before: '–' }] }];
+  function reportHtml(stats, savedAt, savedOn, here = deviceName(), unit = ['Tag', 'Tage'], now = Date.now()) {
+    const { updated, added, removed, keptDeleted, keptChanged, same } = stats, newer = stats.newer || [];
+    const withBy = (rows, on, at) => rows.map(r => ({ ...r, on, at }));
+    const groups = [
+      ...updated.map(u => ({ title: u.title, kind: 'updated', rows: fieldRows(u.rows, savedOn) })),
+      ...added.map(a => ({ title: a.title, kind: 'added', rows: withBy(one('<span class="new">neu angelegt</span>', a.subs, unit), a.on || savedOn, a.at) })),
+      ...removed.map(r => ({ title: r.title, kind: 'removed', rows: withBy(one('<span class="del">gelöscht</span>', 0, unit), r.on || savedOn, r.at) }))];
+    const newerGroups = newer.map(n => ({ title: n.title, kind: 'newer', rows: n.only
+      ? withBy(one('<span class="new">nur hier vorhanden</span>', n.subs, unit), n.on || here, n.at) : fieldRows(n.rows, here) }));
+    const count = (n, w) => n ? [`${n} ${w}`] : [];
+    const result = [...count(updated.length, 'aktualisiert'), ...count(added.length, 'neu'), ...count(removed.length, 'gelöscht'), ...count(same, 'unverändert')].join(' · ') || '–';
     const notes = [];
-    if (keptDeleted.length) notes.push(`ℹ️ <b>Auf diesem ${esc(here)} gelöscht, im Backup vom ${savedOn ? esc(savedOn) : 'anderen Gerät'} noch vorhanden:</b> ${keptDeleted.map(k => `${esc(k.title)} (gelöscht am ${whenText(k.at)})`).join(', ')} – ${keptDeleted.length === 1 ? 'bleibt' : 'bleiben'} gelöscht. Zurückholen nur mit ‚Backup laden‘ → ‚Ersetzen‘ (ersetzt alle Daten auf diesem ${esc(here)}).`);
+    if (keptDeleted.length) notes.push(`<b>Auf diesem ${esc(here)} gelöscht, im Backup vom ${savedOn ? esc(savedOn) : 'anderen Gerät'} noch vorhanden:</b> ${keptDeleted.map(k => `${esc(k.title)} (gelöscht am ${whenText(k.at)})`).join(', ')} – ${keptDeleted.length === 1 ? 'bleibt' : 'bleiben'} gelöscht. Zurückholen nur mit ‚Backup laden‘ → ‚Ersetzen‘ (ersetzt alle Daten auf diesem ${esc(here)}).`);
     for (const on of [...new Set(keptChanged.map(k => k.on))]) {
-      const list = keptChanged.filter(k => k.on === on);
-      notes.push(`ℹ️ <b>Auf ${other(on || savedOn)} gelöscht, auf diesem ${esc(here)} danach noch geändert:</b> ${list.map(k => esc(k.title)).join(', ')} – ${list.length === 1 ? 'bleibt' : 'bleiben'} erhalten.`);
+      const l = keptChanged.filter(k => k.on === on), other = !(on || savedOn) ? 'dem anderen Gerät' : (on || savedOn) === here ? `dem anderen ${esc(on || savedOn)}` : `dem ${esc(on || savedOn)}`;
+      notes.push(`<b>Auf ${other} gelöscht, auf diesem ${esc(here)} danach noch geändert:</b> ${l.map(k => esc(k.title)).join(', ')} – ${l.length === 1 ? 'bleibt' : 'bleiben'} erhalten.`);
     }
-    const tail = notes.length ? `<br><br>${notes.join('<br><br>')}` : '';
-    if (!updated.length && !added.length && !removed.length) return `${head}<br><br>Alles war schon auf dem gleichen Stand.${tail}`;
-    const rows = [];
-    if (updated.length) rows.push(`<b>Aktualisiert:</b> ${updated.map(u => esc(u.title) + (u.subs ? ` (${u.subs} ${u.subs === 1 ? unit[0] : unit[1]})` : '')).join(', ')}`);
-    if (added.length) rows.push(`<b>Neu:</b> ${added.map(esc).join(', ')}`);
-    if (removed.length) rows.push(`<b>Gelöscht:</b> ${removed.map(esc).join(', ')}`);
-    if (same) rows.push(`<b>Unverändert:</b> ${count(same)}`);
-    return `${head}<br><br>${rows.join('<br>')}${tail}`;
+    return `<div class="sync-report"><style>${REPORT_CSS}</style>
+      <h1>Abgleichbericht</h1>
+      <table class="meta"><tr><td><b>Abgeglichen am:</b></td><td>${whenText(now)} auf diesem ${esc(here)}</td></tr>
+        <tr><td><b>Backup:</b></td><td>vom ${savedOn ? esc(savedOn) : 'anderen Gerät'}, erstellt am ${whenText(savedAt)}</td></tr>
+        <tr><td><b>Ergebnis:</b></td><td>${result} (${esc(nouns[1])})</td></tr></table>
+      <h2>Änderungen auf diesem ${esc(here)}</h2>
+      ${groups.length ? reportTable(groups, ['Neu', 'Vorher']) : '<p>Keine – hier hat sich nichts geändert.</p>'}
+      ${same ? `<p>${same === 1 ? `1 ${esc(nouns[0])} ist` : `${same} ${esc(nouns[1])} sind`} unverändert.</p>` : ''}
+      ${newerGroups.length ? `<h2>Auf diesem ${esc(here)} neuer als im Backup – bleibt so</h2>${reportTable(newerGroups, [`Auf diesem ${esc(here)}`, 'Im Backup'])}
+        <p>Damit das ${savedOn ? esc(savedOn) : 'andere Gerät'} diesen Stand bekommt: hier ‚Backup erstellen‘, dort ‚Backup laden‘ → ‚Abgleichen‘.</p>` : ''}
+      ${notes.length ? `<h2>Hinweise</h2>${notes.map(n => `<p>ℹ️ ${n}</p>`).join('')}` : ''}
+      <div class="created">Erstellt mit ${esc(app)} am ${whenText(now)}</div></div>`;
+  }
+  const reportName = (now = Date.now()) => (d => `Abgleichbericht ${app} ${d.getFullYear()}.${two(d.getMonth() + 1)}.${two(d.getDate())} ${two(d.getHours())}.${two(d.getMinutes())}`)(new Date(now));
+  // Bericht als Vorschau (wie die Ausgabe der App, immer hell), oben rechts Teilen (HTML-Datei).
+  function openReport(stats, savedAt, savedOn) {
+    const now = Date.now(), html = reportHtml(stats, savedAt, savedOn, deviceName(), undefined, now), name = reportName(now);
+    openDialog(`
+      <form method="dialog">
+        ${dlgHead('Abgleichbericht', { sub: esc(name), check: false, right: `<span class="grp"><button type="button" class="fill" id="repShare" aria-label="Teilen">${ic('share')}</button></span>` })}
+        <div class="dlg-body sync-preview">${html}</div>
+      </form>`, true);
+    dlg.querySelector('#repShare').onclick = async () => {
+      const result = await shareFiles([{ name: name + '.html', type: 'html', content: `<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>${esc(name)}</title><style>body { margin: 24px; background: #fff; }</style></head><body>${html}</body></html>` }]);
+      inform('Abgleichbericht', shareResultText(result, name + '.html'));
+    };
   }
   // R-44: dritte Zeile der Kachel.
   const changedLine = e => e.changedAt ? `<small class="chg">geändert am ${whenText(e.changedAt)}${e.changedOn ? ' · ' + esc(e.changedOn) : ''}</small>` : '';
-  return { snapshot, stamp, latest, merge, question, choices, ask, resultText, changedLine, config: { list, sub, subAt, maxFields, nouns } };
+  // R-44: kleines Fenster nach dem Abgleichen; mit Schaltfläche zum Bericht, wenn es etwas zu berichten gibt.
+  const showResult = (stats, savedAt, savedOn, title = 'Abgleichen') => inform(title, resultText(stats, savedAt, savedOn),
+    worthReport(stats) ? { action: { label: 'Abgleichbericht anzeigen', icon: 'eye', run: () => openReport(stats, savedAt, savedOn) } } : {});
+  return { snapshot, stamp, latest, merge, question, choices, ask, resultText, reportHtml, openReport, showResult, changedLine, config: { list, sub, subAt, maxFields, nouns, labels, app } };
 }
 
 /* ---------- Meldungen und Sicherheitsabfragen ---------- */
 
 // Kleines Fenster mit rundem x; Abfragen mit Entscheidung sind Sprechblasen (confirmPop).
-function inform(title, html) {
+// Seit 4.11.0: { wide: true } – breiteres Fenster; { action: { label, icon, run } } – eine blaue Schaltfläche unter dem
+// Text (z. B. ‚Abgleichbericht anzeigen‘, R-44): schließt das Fenster und führt run() aus.
+function inform(title, html, { wide = false, action = null } = {}) {
   return new Promise(resolve => {
+    msg.classList.toggle('wide', wide);
     msg.innerHTML = `
       <form method="dialog">
         <div class="dlg-head"><div class="hl"><button type="button" class="round" data-x aria-label="Schließen">${ic('x')}</button></div>
           <div class="mid"><h3>${esc(title)}</h3></div><div class="hr"></div></div>
-        <div class="dlg-body"><div class="msg-text">${html}</div></div>
+        <div class="dlg-body"><div class="msg-text">${html}</div>${action ? `<div class="msg-btns"><button type="button" class="primary" data-act>${action.icon ? ic(action.icon) : ''}${esc(action.label)}</button></div>` : ''}</div>
       </form>`;
     const done = () => { if (msg.open) msg.close(); resolve(); };
+    if (action) msg.querySelector('[data-act]').onclick = () => { done(); action.run(); };
     msg.querySelector('[data-x]').onclick = done;
     msg.oncancel = e => { e.preventDefault(); done(); };
     showModalQuiet(msg);

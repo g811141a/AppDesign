@@ -1,6 +1,6 @@
 # Designrichtlinie allgemein
 
-**Version 4.10.1** · Stand 13.10.2026
+**Version 4.11.0** · Stand 13.10.2026
 
 Allgemeine Gestaltungs- und Bedienregeln für alle iPad-Web-Apps von g811141a (seit 4.1.0 auch
 auf dem iPhone, Abschnitt 15.17).
@@ -325,9 +325,13 @@ heller).
   - Ausgabe: „<App> <Titel> JJJJ.MM.TT-JJJJ.MM.TT V001“ – fortlaufender Zähler je Eintrag
     (gemeinsam für HTML und PDF, im Backup enthalten), nie zwei Leerzeichen hintereinander.
   - Backup: „Ω Backup <App> JJJJ.MM.TT hh.mm.json“ (ohne Zähler).
+  - Abgleichbericht (seit 4.11.0): „Abgleichbericht <App> JJJJ.MM.TT hh.mm.html“.
 - Datumsformat in Texten TT.MM.JJJJ, in Dateinamen JJJJ.MM.TT, Uhrzeit hh:mm
   (im Dateinamen hh.mm).
 - Sicherheitsabfrage (Sprechblase) vor jeder Lösch-, Ersetz- oder Rücksetz-Aktion.
+- **Meldung mit Weiterweg (seit 4.11.0):** ein kleines Fenster darf unter dem Text **eine** blaue Schaltfläche
+  haben, die zu den Einzelheiten führt (`inform(titel, text, { action: { label, icon, run } })`, z. B. ‚Abgleichbericht
+  anzeigen‘); sie schließt das Fenster und öffnet die Einzelheiten. Ohne Einzelheiten keine Schaltfläche.
 - **Backup einmal am Tag:** Wurde heute noch keines erstellt, steht unten in der Seitenleiste
   dezent „Letztes Backup erstellt am …“ (bzw. „Noch kein Backup erstellt.“) mit der
   Schaltfläche „Backup erstellen“; nach einer Ausgabe erinnert das Ergebnisfenster daran. Nur
@@ -346,6 +350,13 @@ heller).
 - Service Worker „network first“ mit `cache: 'no-cache'`: Beim Start wird immer bei
   GitHub nachgefragt, neue Versionen sind nach einem Neustart sofort da; offline läuft
   die gespeicherte Version.
+- **Versionskopplung App ↔ AppDesign (seit 4.11.0, R-48):** `ui.js` und `design.css` werden immer mit
+  `?v=<AppDesign-Version>` eingebunden – in `index.html` und in der Dateiliste von `sw.js`. Jede neue Version lädt so
+  sicher die passende Fassung (kein alter Zwischenspeicher). `ui.js` nennt ihre Version in `AD_VERSION`, `design.css`
+  in `--ad-version`; die App nennt die benötigte in `AD_NEEDED` und zeigt beim Start ein kleines Fenster ‚Neue Version
+  wird geladen‘ (⚠️ benötigt/geladen, ‚App ganz schließen und nach ein paar Minuten neu öffnen‘), wenn eine andere
+  Fassung geladen ist (z. B. GitHub Pages noch nicht fertig). Die Versionszeile im Mehr-Menü nennt auch ‚AppDesign X.Y.Z‘.
+  Prüfung: `tests/version.mjs`.
 
 ## 12. Designrichtlinien pflegen
 
@@ -479,7 +490,9 @@ Verhalten · technischer Name). In AppDesign ist jede Komponente einmal programm
   Schaltflächen; so breit wie Kopf bzw. längster Titel, 340–420 px; Hintergrund `--bg` (wie die
   iPhone-Startliste, damit die weißen Kacheln sich abheben).
 - **Drehen (seit 4.10.1, R-47):** die Seitenleiste behält ihren Zustand – sichtbar bleibt sichtbar (quer fest,
-  hoch darübergelegt), ausgeblendet bleibt ausgeblendet.
+  hoch darübergelegt), ausgeblendet bleibt ausgeblendet. Seit 4.11.0 technisch mit **einem einzigen Zustand** für quer
+  und hoch, den nur Tippen ändert (Knopf panel-left, Abdunkelung, Auswahl im Hochformat) – nie das Drehen und keine
+  Zwischengrößen, die iOS beim Drehen meldet.
 - **Verhalten:** beim Start immer eingeblendet (quer fest links, hoch über den Inhalt gelegt) mit
   dem aktuellen Eintrag geöffnet; quer fest links neben dem Inhalt, mit panel-left aus- und
   einblendbar (bis zum nächsten Start); im Hochformat über den Inhalt gelegt (abgedunkelt dahinter), schließt sich
@@ -495,7 +508,7 @@ Verhalten · technischer Name). In AppDesign ist jede Komponente einmal programm
   (R-38): ‚Backup vom … (iPhone) mit n …‘, ob es **neuer** oder **älter** ist als die Daten auf
   diesem Gerät, kurz erklärt · **Abgleichen** (blau gefüllt) · **Ersetzen** (rote Schrift) ·
   **Abbrechen**. Abgleichen nimmt je Feld die neuere Fassung (R-42), Gelöschtes bleibt gelöscht (R-43); das
-  Ergebnis zeigt ein kleines Fenster (R-44). Alle Fälle: Abschnitt 15.18.
+  Ergebnis zeigt ein kleines Fenster mit der Schaltfläche ‚Abgleichbericht anzeigen‘ (R-44). Alle Fälle: Abschnitt 15.18.
 - **Kontextmenü:** Langes Drücken (ca. 0,6 s) auf einen Eintrag öffnet rechts daneben ein Menü
   (ist daneben kein Platz – iPhone –, linksbündig unter der Kachel; immer vollständig und ganz oberhalb der
   Backup-Kachel, nie über oder hinter ihr – die Liste rückt dafür nach oben und bekommt bei wenigen Einträgen
@@ -663,25 +676,46 @@ Verhalten · technischer Name). In AppDesign ist jede Komponente einmal programm
 ### 15.18 Abgleich zwischen iPad und iPhone (seit 4.10.0, R-41 bis R-44)
 - **Apple:** iCloud gleicht ohne Rückfrage ab; ohne Entwicklerkonto geht es bei uns über ein Backup in
   iCloud Drive – mit derselben Grundregel wie Apple: **die neuere Änderung gilt**, je Feld.
-- **Technisch:** gemeinsamer Baustein `createSync({ list, sub, subAt, maxFields, nouns })` in `ui.js` – jede App mit
+- **Technisch:** gemeinsamer Baustein `createSync({ list, sub, subAt, maxFields, nouns, labels, app })` in `ui.js` – jede App mit
   Backup nutzt ihn (keine eigene Umsetzung, R-36). Beim Speichern stempelt `sync.stamp()` jedes geänderte Feld mit
   Zeitpunkt und Gerät (Kopfdaten `metaAt`, Unterdaten wie Tage `subAt`), gelöschte Einträge kommen nach
   `data.deleted`; das Backup enthält `savedAt` und `savedOn`.
 - **Weg:** auf dem einen Gerät ‚Backup erstellen‘ → ‚In Dateien sichern‘ → iCloud Drive; auf dem anderen
   ‚Backup laden‘ → Datei wählen → Abfrage (R-41) → ‚Abgleichen‘ → Ergebnisfenster (R-44).
-- **Prüfung:** `tests/abgleich.mjs` prüft alle Fälle der Tabelle in beide Richtungen für jede App automatisch.
+- **Ergebnis (seit 4.11.0, R-44) in zwei Stufen** – `sync.showResult(stats, savedAt, savedOn)`:
+  1. **Kleines Fenster ‚Abgleichen‘** (wie jede Meldung): ‚✅ Abgeglichen mit dem Backup vom **iPad** (13.10.2026 um
+     10:05).‘ und ein Satz – ‚Auf diesem iPhone hat sich etwas geändert – Einzelheiten im Abgleichbericht.‘ bzw. ‚… nichts
+     geändert – Hinweise im Abgleichbericht.‘; darunter die blaue Schaltfläche **‚Abgleichbericht anzeigen‘** (Icon `eye`).
+     Keine Einzelheiten im Fenster. Ohne jede Änderung und ohne Hinweis nur ‚Alles war schon auf dem gleichen Stand.‘ –
+     **ohne** Schaltfläche.
+  2. **Abgleichbericht** (`sync.openReport`): Vorschau wie die Ausgabe der App – großes Fenster, immer hell, Kopf
+     ‚Abgleichbericht‘ mit Dateiname, oben rechts Teilen (HTML-Datei ‚Abgleichbericht <App> JJJJ.MM.TT hh.mm.html‘); auf dem
+     iPhone seitlich wischen statt umbrechen. Inhalt:
+     - Kopf: ‚Abgeglichen am … auf diesem iPhone‘ · ‚Backup: vom iPad, erstellt am …‘ · ‚Ergebnis: 1 aktualisiert · 1 neu ·
+       1 gelöscht · 3 unverändert‘.
+     - **‚Änderungen auf diesem iPhone‘** – Tabelle wie in der Ausgabe (grauer Kopf, Spaltenköpfe halbfett, Linien):
+       Eintrag (z. B. Reiselogbuch) · Tag (‚Mo, 12.10.2026‘, ‚–‘ für Kopfdaten) · Feld (Namen aus `labels`) · Neu · Vorher
+       · Vom Gerät · Geändert am; je Feld eine Zeile, Eintrag und Tag über ihre Zeilen zusammengefasst; neu angelegte
+       Einträge ‚**neu angelegt** (n Tage)‘ blau, gelöschte ‚**gelöscht**‘ rot. Unveränderte Einträge stehen **nicht** in
+       der Tabelle, darunter nur ‚n Reiselogbücher sind unverändert.‘
+     - **‚Auf diesem iPhone neuer als im Backup – bleibt so‘** – gleiche Tabelle (Spalten ‚Auf diesem iPhone‘ · ‚Im
+       Backup‘) und ‚Damit das iPad diesen Stand bekommt: hier ‚Backup erstellen‘, dort ‚Backup laden‘ → ‚Abgleichen‘.‘
+     - **Hinweise** zu Gelöschtem (R-43), zuletzt ‚Erstellt mit <App> am …‘.
+- **Prüfung:** `tests/abgleich.mjs` prüft alle Fälle der Tabelle in beide Richtungen für jede App automatisch, seit
+  4.11.0 auch kurzes Fenster und Abgleichbericht (keine Einzelheiten im Fenster, Spalten, Zeilen, Unverändertes nur als
+  Anzahl, Gerät im Kopf, ‚hier neuer‘); das Prüfskript misst Fenster und Bericht (HIG).
 
 | Nr. | Anwendungsfall | iPhone lädt das Backup vom iPad → ‚Abgleichen‘ | iPad lädt das Backup vom iPhone → ‚Abgleichen‘ |
 |---|---|---|---|
-| 1 | Eintrag nur auf dem iPad neu angelegt | kommt dazu – ‚Neu: …‘ | bleibt – ‚Alles war schon auf dem gleichen Stand‘ |
-| 2 | Auf dem iPad gelöscht, auf dem iPhone seitdem nicht geändert | wird gelöscht – ‚Gelöscht: …‘ | bleibt gelöscht – Hinweis ‚Auf diesem iPad gelöscht, im Backup vom iPhone noch vorhanden: … (gelöscht am …) – bleibt gelöscht. Zurückholen nur mit Ersetzen‘ |
-| 3 | Auf dem iPad gelöscht, auf dem iPhone **danach** noch geändert | bleibt erhalten – Hinweis ‚Auf dem iPad gelöscht, auf diesem iPhone danach noch geändert: … – bleibt erhalten‘ | kommt mit den Änderungen vom iPhone zurück – ‚Neu: …‘ |
-| 4 | Auf dem iPad gelöscht, auf dem iPhone **vorher** geändert | wird gelöscht – ‚Gelöscht: …‘ | bleibt gelöscht – Hinweis wie Fall 2 |
+| 1 | Eintrag nur auf dem iPad neu angelegt | kommt dazu – Zeile ‚neu angelegt‘ im Abgleichbericht | bleibt – ‚nichts geändert‘, im Abgleichbericht unter ‚Auf diesem iPad neuer als im Backup‘ als ‚nur hier vorhanden‘ |
+| 2 | Auf dem iPad gelöscht, auf dem iPhone seitdem nicht geändert | wird gelöscht – Zeile ‚gelöscht‘ im Abgleichbericht | bleibt gelöscht – Hinweis ‚Auf diesem iPad gelöscht, im Backup vom iPhone noch vorhanden: … (gelöscht am …) – bleibt gelöscht. Zurückholen nur mit Ersetzen‘ |
+| 3 | Auf dem iPad gelöscht, auf dem iPhone **danach** noch geändert | bleibt erhalten – Hinweis ‚Auf dem iPad gelöscht, auf diesem iPhone danach noch geändert: … – bleibt erhalten‘ | kommt mit den Änderungen vom iPhone zurück – Zeile ‚neu angelegt‘ im Abgleichbericht |
+| 4 | Auf dem iPad gelöscht, auf dem iPhone **vorher** geändert | wird gelöscht – Zeile ‚gelöscht‘ im Abgleichbericht | bleibt gelöscht – Hinweis wie Fall 2 |
 | 5 | Auf beiden Geräten gelöscht | bleibt weg, keine Meldung | bleibt weg, keine Meldung |
-| 6 | Nur auf dem iPad Unterdaten (z. B. ein Tag) erfasst oder geändert | übernommen – ‚Aktualisiert: … (1 Tag)‘ | bleibt – ‚Alles war schon auf dem gleichen Stand‘ |
+| 6 | Nur auf dem iPad Unterdaten (z. B. ein Tag) erfasst oder geändert | übernommen – Zeilen mit Tag und Feldern im Abgleichbericht | bleibt – ‚nichts geändert‘, im Abgleichbericht unter ‚hier neuer als im Backup‘ |
 | 7 | Verschiedene Unterdaten (Tage) auf iPad und iPhone geändert | beide sind da | beide sind da |
 | 8 | Gleiche Unterdaten, verschiedene Felder (iPad: Wetter, iPhone: Verlauf) – auch wenn der Tag auf beiden neu angelegt wurde und das Fenster leere Felder mitspeichert | beides bleibt | beides bleibt |
-| 9 | Gleiches Feld auf beiden geändert (iPhone später) | die neuere Fassung (iPhone) bleibt | die neuere Fassung (iPhone) wird übernommen |
+| 9 | Gleiches Feld auf beiden geändert (iPhone später) | die neuere Fassung (iPhone) bleibt – ‚nichts geändert‘, im Abgleichbericht unter ‚Auf diesem iPhone neuer als im Backup – bleibt so‘ | die neuere Fassung (iPhone) wird übernommen – Zeile mit Tag und Feld im Abgleichbericht |
 | 10 | Feld auf dem iPad geleert, iPhone unverändert | Feld wird auch hier geleert, der Rest bleibt | bleibt leer |
 | 11 | Feld auf dem iPad geleert, auf dem iPhone **danach** neu eingetragen | der neue Eintrag bleibt | der neue Eintrag wird übernommen |
 | 12 | Kopfdaten: verschiedene Felder (iPad Titel, iPhone Fazit) | beides bleibt | beides bleibt |
@@ -811,14 +845,15 @@ hier sofort eine Nummer und – wo möglich – eine Prüfung im Skript.
 | R-37 | Kein Text ragt über Zelle, Kasten oder Kachel hinaus: zu lange Wörter brechen im Wort um und laufen in der nächsten Zeile weiter (iPad und iPhone) | Skript (Testdaten mit 100 × ‚a‘) | 9, 15.10 |
 | R-38 | Abfrage mit mehreren Wegen: empfohlene Aktion blau gefüllt zuerst, zerstörende in roter Schrift, ‚Abbrechen‘ zuletzt; kurze Erklärung der Wege im Text | Skript | 15.7 |
 | R-39 | Menü, Sprechblase und Fenster passen immer ganz auf den Bildschirm (auch iPhone quer); ist der Inhalt zu hoch, scrollt er darin – kein Knopf liegt außerhalb | Skript | 15.6, 15.7, 15.9 |
-| R-40 | Beim Drehen (hoch ↔ quer) wird jedes offene Menü, Untermenü und jede Sprechblase sofort neu ausgerichtet: Menü unterhalb seiner aufrufenden Schaltfläche, Untermenü neben seinem Eintrag, Kontextmenü einer Kachel daneben bzw. (iPhone) linksbündig darunter – immer vollständig (nie abgeschnitten) und ganz oberhalb der Backup-Kachel, nie über oder hinter ihr; ist die Liste zu kurz zum Rücken, bekommt sie unten Platz – immer vollständig sichtbar (reicht der Platz nicht, scrollt der Inhalt darin bzw. rückt die Liste nach oben); die Schaltfläche bleibt blau. Liegt die Schaltfläche in der Seitenleiste, bleibt diese dabei sichtbar (hoch darübergelegt) | Skript – automatisch: jede Ansicht mit offenem Menü, Untermenü oder offener Sprechblase wird hoch ↔ quer gedreht und zurück, in jeder App ohne eigenen Aufruf · Skript `tests/kontextmenue.mjs` (jede sichtbare Kachel, 3–12 Einträge, iPad und iPhone) · Gerät | 15.4, 15.6, 15.7 |
+| R-40 | Beim Drehen (hoch ↔ quer) wird jedes offene Menü, Untermenü und jede Sprechblase sofort neu ausgerichtet: Menü unterhalb seiner aufrufenden Schaltfläche, Untermenü neben seinem Eintrag, Kontextmenü einer Kachel daneben bzw. (iPhone) linksbündig darunter – immer vollständig (nie abgeschnitten) und ganz oberhalb der Backup-Kachel, nie über oder hinter ihr; ist die Liste zu kurz zum Rücken, bekommt sie unten Platz; seit 4.11.0 wird das Kontextmenü nach dem Loslassen noch einmal ausgerichtet, und rückt die Liste trotzdem nicht, steht es linksbündig über der Kachel – immer vollständig sichtbar (reicht der Platz nicht, scrollt der Inhalt darin bzw. rückt die Liste nach oben); die Schaltfläche bleibt blau. Liegt die Schaltfläche in der Seitenleiste, bleibt diese dabei sichtbar (hoch darübergelegt) | Skript – automatisch: jede Ansicht mit offenem Menü, Untermenü oder offener Sprechblase wird hoch ↔ quer gedreht und zurück, in jeder App ohne eigenen Aufruf · Skript `tests/kontextmenue.mjs` (jede sichtbare Kachel, 3–12 Einträge, iPad und iPhone; seit 4.11.0 auch der letzte Eintrag bei ganz nach unten gewischter Liste) · Gerät | 15.4, 15.6, 15.7 |
 | R-41 | Abgleich zwischen iPad und iPhone über das Backup: das Backup enthält Zeitpunkt und Gerät; ‚Backup laden‘ fragt (Sprechblase mit Kacheln, R-46) mit Zeitpunkt, Gerät und ‚neuer/älter als die Daten auf diesem Gerät‘ und den Wegen Abgleichen · Ersetzen · Abbrechen; jede App nutzt dafür den gemeinsamen Baustein `createSync` | Skript (`tests/abgleich.mjs`) · Ablauf | 15.4, 15.18 |
 | R-42 | Beim Abgleichen gilt **je Feld** die neuere Änderung – in den Kopfdaten und in den Unterdaten (z. B. je Tag); leere Felder gelten als nicht vorhanden (sie überschreiben nichts, nur ein geleertes Feld zählt als Änderung); gleich alt oder ohne Zeitpunkt: das Vorhandene hier bleibt, Fehlendes kommt dazu; Zähler ohne Zeitpunkt: der größere Wert; Einstellungen bleiben je Gerät | Skript (`tests/abgleich.mjs`, Fälle 6–18) | 15.18 |
 | R-43 | Ein gelöschter Eintrag bleibt gelöscht, solange er danach nicht mehr geändert wurde (auch wenn er im Backup noch vorhanden ist – mit Hinweis, der die Geräte beim Namen nennt: ‚Auf diesem iPad gelöscht, im Backup vom iPhone noch vorhanden‘); wurde er danach noch geändert, bleibt er bzw. kommt zurück (Hinweis ‚Auf dem iPhone gelöscht, auf diesem iPad danach noch geändert‘); auf beiden gelöscht bleibt er weg | Skript (`tests/abgleich.mjs`, Fälle 1–5) | 15.18 |
-| R-44 | Ergebnis des Abgleichs im kleinen Fenster: Aktualisiert (mit Zahl der Tage) · Neu · Gelöscht · Unverändert und die Hinweise zu Gelöschtem bzw. ‚Alles war schon auf dem gleichen Stand‘; jede Kachel zeigt ‚geändert am … · Gerät‘ | Skript (`tests/abgleich.mjs`) · Ablauf | 15.4, 15.18 |
+| R-44 | Ergebnis des Abgleichs (seit 4.11.0) in zwei Stufen: kleines Fenster ‚Abgeglichen mit dem Backup vom <Gerät> (…)‘ ohne Einzelheiten, mit der Schaltfläche ‚Abgleichbericht anzeigen‘ nur, wenn es etwas zu berichten gibt (sonst ‚Alles war schon auf dem gleichen Stand.‘); Abgleichbericht als Vorschau wie die Ausgabe (teilbar als HTML) mit Kopf, Tabelle ‚Änderungen auf diesem Gerät‘ (Eintrag · Tag · Feld · Neu · Vorher · Vom Gerät · Geändert am, Spaltenköpfe halbfett), Unverändertes nur als Anzahl, Tabelle ‚hier neuer als im Backup‘ und Hinweisen; jede Kachel zeigt ‚geändert am … · Gerät‘ | Skript (`tests/abgleich.mjs`) · Ablauf | 15.4, 15.18 |
 | R-45 | Backup erstellen: Backup-Kachel unten (gelb ohne Backup heute) und Mehr-Menü (‚Backup erstellen‘ mit grauer Zeile ‚Letztes Backup …‘, darunter ‚Backup laden‘); Teilen-Menü → In Dateien sichern; Datei ‚Ω Backup <App> JJJJ.MM.TT hh.mm.json‘ mit Zeitpunkt und Gerät; danach kleines Fenster ‚Backup‘ (✅/⚠️); ‚Letztes Backup‘ je Gerät, nur nach abgeschlossenem Teilen; gemeinsame Bausteine aus ui.js | Skript (`tests/backup.mjs`) | 15.4, 15.19 |
 | R-46 | Backup laden: Abfrage mit ‚Backup vom … (Gerät) mit n …‘ und ‚neuer/älter‘ oben, darunter je eine Kachel für Abgleichen (blau) und Ersetzen (rot) mit Erklärung in derselben Schrift wie der Text oben und dem Knopf darunter, zuletzt ‚Abbrechen‘; unlesbare Datei: kleines Fenster ‚Backup laden‘ mit ⚠️ und Grund; Abbrechen ändert nichts | Skript (`tests/backup.mjs`) | 15.7, 15.19 |
-| R-47 | Die Seitenleiste (iPad) behält beim Drehen ihren Zustand: sichtbar bleibt sichtbar (quer fest, hoch darübergelegt), ausgeblendet bleibt ausgeblendet | Skript – automatisch in jeder App mit Seitenleiste (beide Zustände, hin und zurück) | 15.4 |
+| R-47 | Die Seitenleiste (iPad) behält beim Drehen ihren Zustand: sichtbar bleibt sichtbar (quer fest, hoch darübergelegt), ausgeblendet bleibt ausgeblendet – ein einziger Zustand für quer und hoch, den nur Tippen ändert | Skript – automatisch in jeder App mit Seitenleiste (beide Zustände, hin und zurück, mit Zwischengrößen wie beim echten Drehen) | 15.4 |
+| R-48 | Versionskopplung: `ui.js` und `design.css` mit `?v=<AppDesign-Version>` in `index.html` und `sw.js`; `AD_VERSION` (ui.js) = `--ad-version` (design.css) = `AD_NEEDED` (App); bei anderer geladener Fassung beim Start ein Hinweis; Versionszeile nennt AppDesign | Skript (`tests/version.mjs`) | 11 |
 
 ---
 
@@ -826,6 +861,7 @@ hier sofort eine Nummer und – wo möglich – eine Prüfung im Skript.
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 4.11.0 | 13.10.2026 | Neben | R-44 Ergebnis des Abgleichs in zwei Stufen: kleines Fenster mit ‚Abgleichbericht anzeigen‘, Bericht als Vorschau wie die Ausgabe (Tabellen ‚Änderungen‘ und ‚hier neuer als im Backup‘, Unverändertes nur als Anzahl, teilbar als HTML); neue Regel R-48 Versionskopplung App ↔ AppDesign (`?v=`, Startprüfung, `tests/version.mjs`); R-47 mit einem einzigen Zustand und Prüfung mit Zwischengrößen; R-40 Kontextmenü wird nach dem Loslassen nachgeführt, ohne Platz darunter steht es über der Kachel |
 | 4.10.1 | 13.10.2026 | Korrektur | Neue Regel R-47 (Seitenleiste behält beim Drehen ihren Zustand); R-40 ergänzt (Kontextmenü nie abgeschnitten, nie über/hinter der Backup-Kachel; Prüfung `tests/kontextmenue.mjs`); R-42 ergänzt (leere Felder überschreiben nichts); R-43 Hinweise mit Gerätenamen |
 | 4.10.0 | 12.10.2026 | Neben | R-40 Menüs, Untermenüs und Sprechblasen beim Drehen (automatische Drehprüfung, Kontextmenü am iPhone unter der Kachel); Abgleich als allgemeine Regeln R-41 bis R-44 mit Baustein `createSync`, Fall-Tabelle 15.18 und Prüfung `tests/abgleich.mjs` (je Feld das Neuere, Hinweise zu Gelöschtem); Backup erstellen und laden als Standard R-45, R-46 (15.19, Abfrage mit Kacheln, Bausteine in ui.js, Prüfung `tests/backup.mjs`) |
 | 4.9.1 | 12.10.2026 | Korrektur | Neue Regel R-39: Menü, Sprechblase und Fenster passen immer ganz auf den Bildschirm (iPhone quer: Sprechblase breiter, Knöpfe nebeneinander; sonst scrollt der Inhalt darin); Fenster werden neu platziert, wenn sie wachsen |

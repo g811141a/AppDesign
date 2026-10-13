@@ -8,8 +8,9 @@
 <meta name="apple-mobile-web-app-title" content="Neue App">
 <meta name="theme-color" content="#f2f2f7">
 <title>Neue App</title>
-<!-- Vorlage für eine neue App (AppDesign 4.0.0). Im App-Repo liegt AppDesign daneben: ../AppDesign/v4/… -->
-<link rel="stylesheet" href="../v4/design.css">
+<!-- Vorlage für eine neue App (AppDesign 4.11.0). Im App-Repo liegt AppDesign daneben: ../AppDesign/v4/…
+     R-48: ui.js und design.css immer mit ?v=<AppDesign-Version> einbinden (auch in sw.js), AD_NEEDED gleich setzen. -->
+<link rel="stylesheet" href="../v4/design.css?v=4.11.0">
 <style>
   /* Nur, was zur App gehört – alles Gemeinsame kommt aus design.css */
 </style>
@@ -19,11 +20,21 @@
 <dialog id="dlg"></dialog>
 <dialog id="msg"></dialog>
 
-<script src="../v4/ui.js"></script>
+<script src="../v4/ui.js?v=4.11.0"></script>
 <script>
 'use strict';
 
 const APP_VERSION = '0.1.0';
+// R-48: benötigte AppDesign-Fassung; ist eine andere geladen, erscheint beim Start ein Hinweis.
+const AD_NEEDED = '4.11.0';
+const adLoaded = () => ({ js: typeof AD_VERSION === 'string' ? AD_VERSION : 'älter',
+  css: getComputedStyle(document.documentElement).getPropertyValue('--ad-version').trim().replace(/"/g, '') || 'älter' });
+setTimeout(() => {
+  const { js, css } = adLoaded();
+  if (js !== AD_NEEDED || css !== AD_NEEDED) inform('Neue Version wird geladen',
+    `⚠️ Die App braucht AppDesign ${AD_NEEDED}, geladen ist ${js === css ? js : `${js} / ${css}`}.<br><br>` +
+    'Bitte die App ganz schließen und nach ein paar Minuten neu öffnen.');
+});
 const STORAGE_KEY = 'neueapp.v1';
 const app = document.getElementById('app');
 
@@ -56,7 +67,7 @@ function render() {
     { icon: 'sun-moon', label: 'Darstellung', value: APPEARANCES[db.settings.appearance],
       submenu: Object.entries(APPEARANCES).map(([k, l]) => ({ tick: db.settings.appearance === k, label: l, act: () => setAppearance(k) })) },
     'line',
-    { note: `Neue App · Version ${APP_VERSION}` },
+    { note: `Neue App · Version ${APP_VERSION} · AppDesign ${adLoaded().js}` },
   ]);
   app.querySelector('#openDlg').onclick = () => {
     setOpener('#openDlg');
