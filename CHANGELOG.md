@@ -3,6 +3,27 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.11.0 – 13.10.2026 (Nebenversion)
+
+AppDesign 4.11.0 · Designrichtlinie allgemein 4.11.0 · Zusammenarbeit allgemein 1.14.0
+
+- **R-44 neu gestaltet – Ergebnis des Abgleichs in zwei Stufen:** kleines Fenster ‚Abgleichen‘ ohne Einzelheiten mit der
+  Schaltfläche ‚Abgleichbericht anzeigen‘ (nur, wenn es etwas zu berichten gibt); der **Abgleichbericht** ist eine Vorschau
+  wie die Ausgabe (immer hell, teilbar als HTML) mit Kopf, Tabelle ‚Änderungen auf diesem Gerät‘ (Eintrag · Tag · Feld ·
+  Neu · Vorher · Vom Gerät · Geändert am, Spaltenköpfe halbfett), Unverändertes nur als Anzahl, Tabelle ‚Auf diesem Gerät
+  neuer als im Backup – bleibt so‘ und Hinweisen. Bausteine `sync.showResult`, `sync.reportHtml`, `sync.openReport`;
+  `createSync` mit `labels` (Feldnamen) und `app`; `inform(…, { action })` für eine Schaltfläche im kleinen Fenster.
+- **‚Hier neuer als im Backup‘:** ist dieses Gerät neuer, heißt es nicht mehr ‚Alles war schon auf dem gleichen Stand‘,
+  sondern ‚Auf diesem … hat sich nichts geändert‘ mit den neueren Feldern im Bericht (P-26/9).
+- **R-48 (neu) – Versionskopplung App ↔ AppDesign:** `ui.js` und `design.css` mit `?v=<Version>` in `index.html` und
+  `sw.js`, `AD_VERSION` / `--ad-version` / `AD_NEEDED`, Hinweis beim Start bei falscher Fassung, Versionszeile nennt
+  AppDesign; Prüfung `tests/version.mjs`; Vorlage angepasst. Anlass: auf dem Gerät lief bei P-26 noch die alte Fassung.
+- **R-47:** ein einziger Zustand der Seitenleiste für quer und hoch (nur Tippen ändert ihn); die Prüfung dreht mit
+  Zwischengrößen wie am echten Gerät.
+- **R-40:** Kontextmenü wird nach dem Loslassen noch einmal ausgerichtet; rückt die Liste nicht, steht es über der Kachel;
+  der dazugegebene Platz unter der Liste verschwindet beim Schließen. `tests/kontextmenue.mjs` prüft zusätzlich den letzten
+  Eintrag bei ganz nach unten gewischter Liste.
+
 ## 4.10.1 – 13.10.2026 (Korrektur)
 
 AppDesign 4.10.1 · Designrichtlinie allgemein 4.10.1 · Zusammenarbeit allgemein 1.14.0

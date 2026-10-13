@@ -1,4 +1,4 @@
-// AppDesign 4.10.1 · HIG- und Regel-Prüfung: misst eine App-Ansicht gegen die HIG-Checkliste (Abschnitt 16)
+// AppDesign 4.11.0 · HIG- und Regel-Prüfung: misst eine App-Ansicht gegen die HIG-Checkliste (Abschnitt 16)
 // und alle automatisch prüfbaren Regeln des Regelkatalogs (Abschnitt 17, R-01 …) der Designrichtlinie allgemein. Wird vom Prüfskript jeder App eingebunden:
 //   import { createCheck } from '../../AppDesign/tests/hig.mjs';
 //   const hig = createCheck({ skipTargets: ['table.days .ln:not(.q) a'] });   // bewusste Abweichungen der App
@@ -64,7 +64,10 @@ const found = new Map();
     };
     for (const pass of [0, 1]) {
       const before = await shown();
-      for (const size of [{ width: vp.height, height: vp.width }, vp]) {
+      // Seit 4.11.0 mit Zwischenschritten wie am echten Gerät (erst die Breite, dann die Höhe bzw. umgekehrt).
+      const turned = { width: vp.height, height: vp.width };
+      for (const [mid, size] of [[{ width: turned.width, height: vp.height }, turned], [{ width: vp.width, height: turned.height }, vp]]) {
+        await p.setViewportSize(mid); await p.waitForTimeout(60);
         await p.setViewportSize(size); await p.waitForTimeout(500);
         if (await shown() !== before) note('Regel', `R-47 Seitenleiste ${before ? 'sichtbar' : 'ausgeblendet'} – nach dem Drehen auf ${size.width}×${size.height} ${before ? 'verschwunden' : 'erschienen'}`, where);
       }

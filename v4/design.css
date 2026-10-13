@@ -1,11 +1,12 @@
-/* AppDesign 4.10.1 · design.css – gemeinsame Gestaltung der iPad-Web-Apps von g811141a (Apple-like)
-   Einbinden im <head> vor dem eigenen <style> der App:  <link rel="stylesheet" href="../AppDesign/v4/design.css">
+/* AppDesign 4.11.0 · design.css – gemeinsame Gestaltung der iPad-Web-Apps von g811141a (Apple-like)
+   Einbinden im <head> vor dem eigenen <style> der App:  <link rel="stylesheet" href="../AppDesign/v4/design.css?v=4.11.0">
    Farben als Variablen auf :root, Dunkelmodus über data-theme="dark" (setzt ui.js / applyTheme).
    Komponenten: Schaltflächen, Suchfeld, Kapsel, Eingabefelder, Datumsfelder, Kopfzeile, Seitenleiste,
    Menü, Sprechblase, schwebende Schaltflächen, Fenster, Kasten (Schritt), Auswahl-Kapsel, Schalter,
    Options-Kapsel; seit 4.1.0 iPhone-Ansicht (html.phone: Seitenkopf, großer Titel, Liste, Kasten, untere Leiste). Regeln dazu: README - Designrichtlinie allgemein.md */
 /* Farben im Apple-Look: Hintergrund Hellgrau, Kästen weiß ohne Rand, schwebende Schaltflächen */
 :root {
+  --ad-version: "4.11.0";   /* R-48: Version der Bausteine, die App prüft sie beim Start */
   --bg: #f2f2f7;
   --card: #ffffff;
   --ink: #1c1c1e;
@@ -300,6 +301,14 @@ dialog form { display: flex; flex-direction: column; max-height: var(--dlg-max, 
 #msg { width: 360px; min-width: 0; }
 #msg .dlg-head { border: none; }
 #msg .msg-text { text-align: center; padding: 0 4px 10px; }
+/* Seit 4.11.0 (R-44): kleines Fenster mit einer blauen Schaltfläche unter dem Text (z. B. ‚Abgleichbericht anzeigen‘) */
+#msg.wide { width: min(600px, calc(100vw - 32px)); }
+#msg .msg-btns { display: flex; justify-content: center; padding: 2px 0 6px; }
+#msg .msg-btns button { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 20px; border-radius: 999px; font-size: 17px; }
+/* Abgleichbericht als Vorschau wie die Ausgabe der App: immer hell, volle Breite, seitlich wischen statt umbrechen */
+.dlg-body.sync-preview { margin: 0; padding: 24px; background: #fff; color: #000; color-scheme: light; overflow: auto; }
+.dlg-body.sync-preview .sync-report { min-width: 760px; }
+html.phone .dlg-body.sync-preview { padding: 16px; }
 .dlg-body { padding: 8px 16px 20px; overflow-y: auto; flex: 1; }
 .dlg-foot { display: flex; gap: 12px; align-items: center; padding: 14px 16px 16px; border-top: .5px solid var(--line); }
 .step { background: var(--dlg-card); border-radius: 14px; padding: 14px; margin-top: 12px; }
@@ -436,6 +445,7 @@ html.phone body { padding-top: var(--pnav-h, 60px); }
 html.phone dialog#dlg { width: 100%; max-width: none; min-width: 0; height: var(--dlg-max); border-radius: 0; box-shadow: none; }
 html.phone dialog#dlg form { height: 100%; }
 html.phone #msg { width: min(360px, calc(100vw - 32px)); }
+html.phone #msg.wide { width: min(600px, calc(100vw - 24px)); }
 html.phone #dlg .dlg-head { gap: 8px; padding: calc(env(safe-area-inset-top) + 8px) max(12px, env(safe-area-inset-right)) 8px max(12px, env(safe-area-inset-left)); }
 html.phone #dlg .dlg-head .hl, html.phone #dlg .dlg-head .hr { flex: none; gap: 8px; }
 html.phone #dlg .dlg-head .mid { flex: 1; max-width: none; min-width: 0; }
