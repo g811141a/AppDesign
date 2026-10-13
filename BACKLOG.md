@@ -11,7 +11,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Prio | Thema | bereit seit |
 |---|---|---|---|
-| – | – | zurzeit nichts | – |
+| A-03 | 1 | Zusammenarbeit allgemein 1.15.1, §1 Sprache: jede Meldung deutsch – auch Zwischenmeldungen während der Arbeit, Statuszeilen, Bildunterschriften und Fragen im Auswahlfenster | 13.10.2026 |
 
 ## 1. Auf iPad und iPhone prüfen
 
