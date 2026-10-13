@@ -1,4 +1,4 @@
-// AppDesign 4.10.0 · Prüfung von ‚Backup erstellen‘ und ‚Backup laden‘ (Regeln R-45, R-46; Designrichtlinie allgemein 15.19).
+// AppDesign 4.10.1 · Prüfung von ‚Backup erstellen‘ und ‚Backup laden‘ (Regeln R-45, R-46; Designrichtlinie allgemein 15.19).
 // Bedient die App wie ein Mensch: Mehr-Menü der Seitenleiste → Backup erstellen → Meldung; Backup laden → Abfrage mit Kacheln →
 // Abbrechen; unlesbare Datei → Meldung. Einbinden im Prüfskript der App:
 //   import { checkBackup } from '../../AppDesign/tests/backup.mjs';

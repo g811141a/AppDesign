@@ -1,6 +1,6 @@
 # Zusammenarbeit allgemein
 
-**Version 1.13.0** · Stand 11.10.2026
+**Version 1.14.0** · Stand 13.10.2026
 
 Regeln für die Zusammenarbeit mit Claude bei allen iPad-Web-Apps von g811141a.
 Diese Datei liegt im Design-Repo **AppDesign** (g811141a/AppDesign).
@@ -175,6 +175,13 @@ App-spezifische Punkte stehen in der `CLAUDE.md` des jeweiligen App-Repos.
   den Neustart der App erinnern.
 - **Ausdrücklicher Hinweis** am Ende des Berichts: „Bitte zuerst alle Prüfpunkte testen – neue
   Punkte setze ich erst um, wenn die Prüfliste erledigt und gefundene Fehler beseitigt sind.“
+- **Prüfpunkte Schritt für Schritt (seit 1.14.0, verpflichtend):** Am Ende **jeder Umsetzung** – nach
+  einer Version und ebenso nach vorbereiteten, noch nicht gebauten Änderungen – gibt Claude **alle
+  offenen Prüfpunkte einzeln** aus, jeden mit Nummer (z. B. P-26/3) und als **Schritt-für-Schritt-
+  Anleitung**: 1. was antippen bzw. einstellen (Gerät, quer/hoch, hell/dunkel), 2. was tun,
+  3. was zu sehen sein muss (erwartetes Ergebnis). Ein Prüfpunkt prüft genau eine Sache; Verweise
+  wie „wie oben“ oder „siehe Tabelle“ ersetzen keine Schritte. Noch offene Prüfpunkte früherer
+  Versionen stehen mit dabei.
 
 ## 8. Versionen
 
@@ -201,6 +208,7 @@ App-spezifische Punkte stehen in der `CLAUDE.md` des jeweiligen App-Repos.
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 1.14.0 | 13.10.2026 | Neben | Verpflichtend: am Ende jeder Umsetzung alle offenen Prüfpunkte einzeln als Schritt-für-Schritt-Anleitung (Gerät/Lage/Darstellung · Handgriffe · erwartetes Ergebnis), mit Nummer, ohne Verweise |
 | 1.13.0 | 11.10.2026 | Neben | Regelkatalog: Abgleich vor jedem Muster, Prüfung aller automatisch prüfbaren Regeln nach jeder Version; neue Regeln sofort mit Nummer und Prüfung; Geräte-Regeln in die Prüfliste, wenn betroffen |
 | 1.12.5 | 10.10.2026 | Korrektur | Auswahlfenster nur mit kurzer Frage und Schaltflächen; Zeit und Token nur am Ende der Antwort |
 | 1.12.4 | 10.10.2026 | Korrektur | Zeit ab Eingang der Nachricht (inkl. Nachdenken), Neubeginn bei jeder Nachricht; Token genau je Antwort aus den Sitzungsdaten |

@@ -1,4 +1,4 @@
-// AppDesign 4.10.0 · Prüfung des Abgleichs zwischen iPad und iPhone (Regeln R-41 bis R-44, Designrichtlinie allgemein 15.4 und 17).
+// AppDesign 4.10.1 · Prüfung des Abgleichs zwischen iPad und iPhone (Regeln R-41 bis R-44, Designrichtlinie allgemein 15.4 und 17).
 // Prüft für jede App, die den gemeinsamen Baustein createSync (ui.js) nutzt, alle Anwendungsfälle der Tabelle ‚Abgleich‘ in beiden
 // Richtungen (iPhone lädt das Backup vom iPad und umgekehrt) – mit neutralen Testdaten nach der Beschreibung der App (sync.config).
 // Einbinden im Prüfskript der App (Seite mit geladener App, globales `sync`):
@@ -33,7 +33,7 @@ export async function checkSync(page) {
       onIphone.forEach(([t, fn]) => opts.legacy ? fn(iphone.data) : act(iphone, t, fn));
       for (const [who, here, there] of [['iPhone', iphone, ipad], ['iPad', ipad, iphone]]) {
         const { data, stats } = sync.merge(clone(here.data), clone(there.data));
-        const text = sync.resultText(stats, T('12:00'), there.name);
+        const text = sync.resultText(stats, T('12:00'), there.name, here.name);
         const msg = expect[who]({ data, stats, text, has: s => text.includes(s), e: id => E(data, id) });
         if (msg) errors.push(`Abgleich Fall ${nr} (${name}) – ${who} lädt das Backup vom ${there.name}: ${msg}`);
       }
@@ -42,11 +42,11 @@ export async function checkSync(page) {
     fall(1, 'nur auf dem iPad neu angelegt', [['10:00', add('n', 'Neu N')]], [],
       { iPhone: r => r.e('n') && r.has('<b>Neu:</b> Neu N') ? '' : 'neuer Eintrag kommt nicht dazu', iPad: r => r.e('n') ? same(r) : 'eigener neuer Eintrag verloren' });
     fall(2, 'auf dem iPad gelöscht, iPhone unverändert', [['10:00', del('y')]], [],
-      { iPhone: r => !r.e('y') && r.has('<b>Gelöscht:</b> Eintrag Y') ? '' : 'wird nicht gelöscht', iPad: r => !r.e('y') && r.has('Hier gelöscht, im Backup noch vorhanden:</b> Eintrag Y') ? '' : 'kommt zurück oder Hinweis fehlt (R-43)' });
+      { iPhone: r => !r.e('y') && r.has('<b>Gelöscht:</b> Eintrag Y') ? '' : 'wird nicht gelöscht', iPad: r => !r.e('y') && r.has('Auf diesem iPad gelöscht, im Backup vom iPhone noch vorhanden:</b> Eintrag Y') ? '' : 'kommt zurück oder Hinweis (mit Gerätenamen) fehlt (R-43)' });
     fall(3, 'auf dem iPad gelöscht, auf dem iPhone danach geändert', [['10:00', del('y')]], [['11:00', setF('y', 'a', 'später')]],
-      { iPhone: r => r.e('y') && r.has('Drüben gelöscht, hier danach noch geändert:</b> Eintrag Y') ? '' : 'verschwindet oder Hinweis fehlt (R-43)', iPad: r => r.e('y')?.a === 'später' && r.has('<b>Neu:</b> Eintrag Y') ? '' : 'kommt nicht mit der Änderung zurück' });
+      { iPhone: r => r.e('y') && r.has('Auf dem iPad gelöscht, auf diesem iPhone danach noch geändert:</b> Eintrag Y') ? '' : 'verschwindet oder Hinweis (mit Gerätenamen) fehlt (R-43)', iPad: r => r.e('y')?.a === 'später' && r.has('<b>Neu:</b> Eintrag Y') ? '' : 'kommt nicht mit der Änderung zurück' });
     fall(4, 'auf dem iPad gelöscht, auf dem iPhone vorher geändert', [['11:00', del('y')]], [['10:00', setF('y', 'a', 'früher')]],
-      { iPhone: r => !r.e('y') ? '' : 'wird nicht gelöscht', iPad: r => !r.e('y') && r.has('Hier gelöscht, im Backup noch vorhanden') ? '' : 'kommt zurück oder Hinweis fehlt' });
+      { iPhone: r => !r.e('y') ? '' : 'wird nicht gelöscht', iPad: r => !r.e('y') && r.has('Auf diesem iPad gelöscht, im Backup vom iPhone noch vorhanden') ? '' : 'kommt zurück oder Hinweis fehlt' });
     fall(5, 'auf beiden gelöscht', [['10:00', del('y')]], [['11:00', del('y')]],
       { iPhone: r => !r.e('y') && !r.has('Eintrag Y') ? '' : 'taucht auf', iPad: r => !r.e('y') && !r.has('Eintrag Y') ? '' : 'taucht auf' });
     fall(6, 'nur auf dem iPad Unterdaten erfasst', [['10:00', setS('x', 'k2', 'p', 'neu')]], [],
@@ -55,6 +55,9 @@ export async function checkSync(page) {
       { iPhone: r => S(r.e('x'), 'k2').p === 'iPad' && S(r.e('x'), 'k3').p === 'iPhone' ? '' : 'eines fehlt', iPad: r => S(r.e('x'), 'k2').p === 'iPad' && S(r.e('x'), 'k3').p === 'iPhone' ? '' : 'eines fehlt' });
     fall(8, 'gleiche Unterdaten, verschiedene Felder', [['10:00', setS('x', 'k1', 'p', 'P-iPad')]], [['11:00', setS('x', 'k1', 'q', 'Q-iPhone')]],
       { iPhone: r => S(r.e('x'), 'k1').p === 'P-iPad' && S(r.e('x'), 'k1').q === 'Q-iPhone' ? '' : 'ein Feld verloren (R-42)', iPad: r => S(r.e('x'), 'k1').p === 'P-iPad' && S(r.e('x'), 'k1').q === 'Q-iPhone' ? '' : 'ein Feld verloren (R-42)' });
+    // Fenster, die beim Sichern alle Felder schreiben (leere mit ''), dürfen beim Abgleich nichts mit ‚leer‘ überschreiben.
+    fall('8b', 'neue Unterdaten auf beiden, verschiedene Felder, leere Felder mitgespeichert', [['10:00', d => { E(d, 'x')[sub].k5 = { p: 'P iPad', q: '' }; }]], [['11:00', d => { E(d, 'x')[sub].k5 = { p: '', q: 'Q iPhone' }; }]],
+      { iPhone: r => S(r.e('x'), 'k5').p === 'P iPad' && S(r.e('x'), 'k5').q === 'Q iPhone' ? '' : 'ein Feld durch ein leeres Feld überschrieben (R-42)', iPad: r => S(r.e('x'), 'k5').p === 'P iPad' && S(r.e('x'), 'k5').q === 'Q iPhone' ? '' : 'ein Feld durch ein leeres Feld überschrieben (R-42)' });
     fall(9, 'gleiches Feld auf beiden (iPhone später)', [['10:00', setS('x', 'k1', 'p', 'iPad')]], [['11:00', setS('x', 'k1', 'p', 'iPhone')]],
       { iPhone: r => S(r.e('x'), 'k1').p === 'iPhone' ? '' : 'neuere Fassung nicht behalten', iPad: r => S(r.e('x'), 'k1').p === 'iPhone' ? '' : 'neuere Fassung nicht übernommen' });
     fall(10, 'Feld auf dem iPad geleert', [['10:00', setS('x', 'k1', 'p', null)]], [],

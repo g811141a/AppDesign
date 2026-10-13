@@ -1,4 +1,4 @@
-// AppDesign 4.10.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
+// AppDesign 4.10.1 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
 // Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/v4/ui.js"></script>
 // Klassisches Skript: alle Funktionen sind global und für das Skript der App sichtbar.
 //
@@ -163,7 +163,16 @@ function placeAt(el, anchor, align) {
     const tr = tile?.getBoundingClientRect();
     const limit = Math.min(innerHeight, tr && tr.height ? tr.top : innerHeight) - 12;
     const need = r.bottom + 8 + el.offsetHeight - limit;
-    if (need > 0 && list) { list.scrollTop += need; r = anchor.getBoundingClientRect(); }
+    if (need > 0 && list) {
+      // Reicht der Scrollweg nicht (wenige Einträge), bekommt die Liste unten so viel Platz, dass sie weit genug rückt.
+      const from = list.scrollTop;
+      list.scrollTop = from + need;
+      if (list.scrollTop - from < need - 1) {   // Liste kürzer als nötig: unten eine Bildschirmhöhe Platz dazugeben
+        list.style.paddingBottom = (parseFloat(getComputedStyle(list).paddingBottom) + list.clientHeight) + 'px';
+        list.scrollTop = from + need;
+      }
+      r = anchor.getBoundingClientRect();
+    }
     top = r.bottom + 8;
     fit(limit - top);
     el.style.left = Math.max(12, Math.min(r.left, innerWidth - el.offsetWidth - 12)) + 'px';
@@ -171,8 +180,12 @@ function placeAt(el, anchor, align) {
     return;
   }
   if (align === 'beside') {
-    fit(innerHeight - 24);
-    top = Math.max(12, Math.min(r.top, innerHeight - el.offsetHeight - 12));
+    // Neben der Kachel (iPad): nie über bzw. hinter die Backup-Kachel – unten endet das Menü über ihr (R-40).
+    const tr = anchor.closest('#side')?.querySelector('.side-foot .bhint')?.getBoundingClientRect();
+    const left0 = Math.max(12, Math.min(r.right - 40, innerWidth - el.offsetWidth - 12));
+    const bottom = tr && tr.height && left0 < tr.right ? tr.top - 12 : innerHeight - 12;
+    fit(bottom - 12);
+    top = Math.max(12, Math.min(r.top, bottom - el.offsetHeight));
   } else {
     const below = innerHeight - r.bottom - 8 - 12, above = r.top - 8 - 12;
     if (el.scrollHeight <= below || below >= 200 || below >= above) { fit(below); top = r.bottom + 8; }
@@ -399,7 +412,10 @@ function createSync({ list, sub, subAt, maxFields = [], nouns = ['Eintrag', 'Ein
   const STAMPS = [sub, subAt, 'metaAt', 'changedAt', 'changedOn', ...maxFields];
   const metaKeys = e => Object.keys(e).filter(k => !STAMPS.includes(k));
   const metaObj = e => Object.fromEntries(metaKeys(e).map(k => [k, e[k]]));
-  const fieldsOf = o => Object.fromEntries(Object.entries(o || {}).map(([k, v]) => [k, JSON.stringify(v)]));
+  // Leere Felder ('' · false · null · []) gelten als nicht vorhanden: ein Fenster, das beim Sichern alle Felder schreibt,
+  // überschreibt so beim Abgleich nichts mit ‚leer‘. Wird ein Feld geleert, zählt das als Änderung (es verschwindet).
+  const filled = v => !(v === undefined || v === null || v === '' || v === false || (Array.isArray(v) && !v.length));
+  const fieldsOf = o => Object.fromEntries(Object.entries(o || {}).filter(([, v]) => filled(v)).map(([k, v]) => [k, JSON.stringify(v)]));
   // Ältere Daten mit nur einem Zeitpunkt je Eintrag bzw. Unterdatum: der gilt für alle Felder.
   const metaTime = (e, k) => typeof e.metaAt === 'number' ? e.metaAt : e.metaAt?.[k] || 0;
   const subTime = (e, key, k) => { const a = e[subAt]?.[key]; return typeof a === 'number' ? a : a?.[k] || 0; };
@@ -435,11 +451,11 @@ function createSync({ list, sub, subAt, maxFields = [], nouns = ['Eintrag', 'Ein
     let fromR = false;
     for (const k of new Set([...Object.keys(l || {}), ...Object.keys(r || {})])) {
       const la = timeL(k), ra = timeR(k);
-      const useR = ra > la || (ra === la && l?.[k] === undefined && r?.[k] !== undefined);
+      const useR = ra > la || (ra === la && !filled(l?.[k]) && filled(r?.[k]));
       const v = useR ? r?.[k] : l?.[k];
       if (v !== undefined) out[k] = structuredClone(v);
       if (Math.max(la, ra)) at[k] = useR ? ra : la;
-      if (useR && JSON.stringify(l?.[k] ?? null) !== JSON.stringify(r?.[k] ?? null)) fromR = true;
+      if (useR && (filled(l?.[k]) || filled(r?.[k])) && JSON.stringify(l?.[k] ?? null) !== JSON.stringify(r?.[k] ?? null)) fromR = true;
     }
     return { out, at, fromR };
   }
@@ -469,9 +485,9 @@ function createSync({ list, sub, subAt, maxFields = [], nouns = ['Eintrag', 'Ein
         if (subs || meta.fromR) stats.updated.push({ title: e.title, subs }); else stats.same++;
       } else if (l) {
         if (gone && gone.at > (l.changedAt || 0)) stats.removed.push(l.title);
-        else { out.push(l); stats.same++; if (gone) stats.keptChanged.push(l.title); }
+        else { out.push(l); stats.same++; if (gone) stats.keptChanged.push({ title: l.title, on: gone.on }); }
       } else if (gone && gone.at >= (r.changedAt || 0)) {
-        stats.keptDeleted.push({ title: r.title, at: gone.at });
+        stats.keptDeleted.push({ title: r.title, at: gone.at, on: gone.on });
       } else {
         out.push(structuredClone(r)); stats.added.push(r.title);
       }
@@ -492,11 +508,16 @@ function createSync({ list, sub, subAt, maxFields = [], nouns = ['Eintrag', 'Ein
     { label: 'Abbrechen', value: null }];
   const ask = (anchor, local, remote, savedAt, savedOn) => choosePop(anchor, question(local, remote, savedAt, savedOn), choices());
   // R-44: Ergebnis als kleines Fenster mit Hinweisen zu Gelöschtem.
-  function resultText({ updated, added, removed, keptDeleted, keptChanged, same }, savedAt, savedOn, unit = ['Tag', 'Tage']) {
+  // here: dieses Gerät; savedOn: Gerät des Backups. Die Hinweise nennen die Geräte beim Namen (iPad, iPhone).
+  function resultText({ updated, added, removed, keptDeleted, keptChanged, same }, savedAt, savedOn, here = deviceName(), unit = ['Tag', 'Tage']) {
     const head = `✅ Abgeglichen mit dem Backup vom ${whenText(savedAt)}${savedOn ? ` (${esc(savedOn)})` : ''}.`;
+    const other = on => !on ? 'dem anderen Gerät' : on === here ? `dem anderen ${esc(on)}` : `dem ${esc(on)}`;
     const notes = [];
-    if (keptDeleted.length) notes.push(`ℹ️ <b>Hier gelöscht, im Backup noch vorhanden:</b> ${keptDeleted.map(k => `${esc(k.title)} (gelöscht am ${whenText(k.at)})`).join(', ')} – ${keptDeleted.length === 1 ? 'bleibt' : 'bleiben'} gelöscht. Zurückholen nur mit ‚Backup laden‘ → ‚Ersetzen‘ (ersetzt alle Daten auf diesem Gerät).`);
-    if (keptChanged.length) notes.push(`ℹ️ <b>Drüben gelöscht, hier danach noch geändert:</b> ${keptChanged.map(esc).join(', ')} – ${keptChanged.length === 1 ? 'bleibt' : 'bleiben'} erhalten.`);
+    if (keptDeleted.length) notes.push(`ℹ️ <b>Auf diesem ${esc(here)} gelöscht, im Backup vom ${savedOn ? esc(savedOn) : 'anderen Gerät'} noch vorhanden:</b> ${keptDeleted.map(k => `${esc(k.title)} (gelöscht am ${whenText(k.at)})`).join(', ')} – ${keptDeleted.length === 1 ? 'bleibt' : 'bleiben'} gelöscht. Zurückholen nur mit ‚Backup laden‘ → ‚Ersetzen‘ (ersetzt alle Daten auf diesem ${esc(here)}).`);
+    for (const on of [...new Set(keptChanged.map(k => k.on))]) {
+      const list = keptChanged.filter(k => k.on === on);
+      notes.push(`ℹ️ <b>Auf ${other(on || savedOn)} gelöscht, auf diesem ${esc(here)} danach noch geändert:</b> ${list.map(k => esc(k.title)).join(', ')} – ${list.length === 1 ? 'bleibt' : 'bleiben'} erhalten.`);
+    }
     const tail = notes.length ? `<br><br>${notes.join('<br><br>')}` : '';
     if (!updated.length && !added.length && !removed.length) return `${head}<br><br>Alles war schon auf dem gleichen Stand.${tail}`;
     const rows = [];
