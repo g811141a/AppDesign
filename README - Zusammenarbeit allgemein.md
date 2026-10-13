@@ -1,6 +1,6 @@
 # Zusammenarbeit allgemein
 
-**Version 1.14.0** · Stand 13.10.2026
+**Version 1.15.0** · Stand 13.10.2026
 
 Regeln für die Zusammenarbeit mit Claude bei allen iPad-Web-Apps von g811141a.
 Diese Datei liegt im Design-Repo **AppDesign** (g811141a/AppDesign).
@@ -171,6 +171,12 @@ App-spezifische Punkte stehen in der `CLAUDE.md` des jeweiligen App-Repos.
   allgemein 2.0.0 · Designrichtlinie Reiselogbuch 1.1.0 · Zusammenarbeit allgemein 1.0.0“).
 - Versionsnummer, Erstellungszeitpunkt und Cache-Name des Service Workers erhöhen.
 - Auf `main` hochladen, prüfen, ob GitHub Pages die Version online gestellt hat.
+- **Fertig erst nach Pages (seit 1.15.0):** ‚Fertig‘ meldet Claude erst, wenn die Pages-Läufe **beider** Repos
+  (erst AppDesign, dann die App) erfolgreich abgeschlossen sind und die veröffentlichten Dateien die neue Version
+  enthalten (`APP_VERSION`, `AD_NEEDED`, `AD_VERSION`); vorher wird nicht zum Testen aufgefordert.
+- **Versionen in der README (seit 1.15.0, R-49):** Die README jeder App zeigt ganz oben die Tabelle ‚Verwendete
+  Versionen‘ – App, AppDesign, Designrichtlinie allgemein, Designrichtlinie <App>, Zusammenarbeit allgemein – je mit
+  Version und Link; bei jeder Version nachführen.
 - Screenshots in Viererpaketen schicken und die Änderungen auf Deutsch zusammenfassen; an
   den Neustart der App erinnern.
 - **Ausdrücklicher Hinweis** am Ende des Berichts: „Bitte zuerst alle Prüfpunkte testen – neue
@@ -182,6 +188,13 @@ App-spezifische Punkte stehen in der `CLAUDE.md` des jeweiligen App-Repos.
   3. was zu sehen sein muss (erwartetes Ergebnis). Ein Prüfpunkt prüft genau eine Sache; Verweise
   wie „wie oben“ oder „siehe Tabelle“ ersetzen keine Schritte. Noch offene Prüfpunkte früherer
   Versionen stehen mit dabei.
+- **Prüfliste beginnt mit /0 (seit 1.15.0, R-50):** Jede Prüfliste beginnt mit dem Prüfpunkt **/0 ‚Version prüfen‘** –
+  auf jedem Gerät die Versionszeile ansehen (App-Version **und** AppDesign-Version); erst wenn beide stimmen, wird
+  weiter getestet. So fällt ein noch nicht geladener Stand sofort auf (Anlass: P-26/6 und 7).
+- **Jede Meldung je Gerät (seit 1.15.0, R-50):** Ein Prüfpunkt nennt bei **jedem** Schritt, der etwas anzeigt, die
+  erwartete Meldung **auf jedem beteiligten Gerät** (wörtlich), nicht nur das Endergebnis. Für jeden solchen Fall
+  prüft ein automatischer Test genau diese Texte auf beiden Geräten (Anlass: P-26/9 – die Meldung des ersten Geräts
+  war nicht beschrieben und irreführend).
 
 ## 8. Versionen
 
@@ -208,6 +221,7 @@ App-spezifische Punkte stehen in der `CLAUDE.md` des jeweiligen App-Repos.
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 1.15.0 | 13.10.2026 | Neben | ‚Fertig‘ erst nach erfolgreichen Pages-Läufen beider Repos; README mit Tabelle ‚Verwendete Versionen‘ (R-49); Prüfliste beginnt mit /0 ‚Version prüfen‘, jeder Schritt nennt die Meldung je Gerät, mit automatischem Test (R-50) |
 | 1.14.0 | 13.10.2026 | Neben | Verpflichtend: am Ende jeder Umsetzung alle offenen Prüfpunkte einzeln als Schritt-für-Schritt-Anleitung (Gerät/Lage/Darstellung · Handgriffe · erwartetes Ergebnis), mit Nummer, ohne Verweise |
 | 1.13.0 | 11.10.2026 | Neben | Regelkatalog: Abgleich vor jedem Muster, Prüfung aller automatisch prüfbaren Regeln nach jeder Version; neue Regeln sofort mit Nummer und Prüfung; Geräte-Regeln in die Prüfliste, wenn betroffen |
 | 1.12.5 | 10.10.2026 | Korrektur | Auswahlfenster nur mit kurzer Frage und Schaltflächen; Zeit und Token nur am Ende der Antwort |

@@ -1,6 +1,6 @@
 # Designrichtlinie allgemein
 
-**Version 4.11.0** · Stand 13.10.2026
+**Version 4.11.1** · Stand 13.10.2026
 
 Allgemeine Gestaltungs- und Bedienregeln für alle iPad-Web-Apps von g811141a (seit 4.1.0 auch
 auf dem iPhone, Abschnitt 15.17).
@@ -357,6 +357,10 @@ heller).
   wird geladen‘ (⚠️ benötigt/geladen, ‚App ganz schließen und nach ein paar Minuten neu öffnen‘), wenn eine andere
   Fassung geladen ist (z. B. GitHub Pages noch nicht fertig). Die Versionszeile im Mehr-Menü nennt auch ‚AppDesign X.Y.Z‘.
   Prüfung: `tests/version.mjs`.
+- **Verwendete Versionen in der README (seit 4.11.1, R-49):** ganz oben in der README jeder App eine Tabelle mit App,
+  AppDesign, Designrichtlinie allgemein, Designrichtlinie <App> und Zusammenarbeit allgemein – je Version und Link
+  (GitHub). So ist auf GitHub auf einen Blick zu sehen, welche Fassung der allgemeinen Regeln die App verwendet.
+  Prüfung: `tests/doku.mjs`.
 
 ## 12. Designrichtlinien pflegen
 
@@ -854,6 +858,8 @@ hier sofort eine Nummer und – wo möglich – eine Prüfung im Skript.
 | R-46 | Backup laden: Abfrage mit ‚Backup vom … (Gerät) mit n …‘ und ‚neuer/älter‘ oben, darunter je eine Kachel für Abgleichen (blau) und Ersetzen (rot) mit Erklärung in derselben Schrift wie der Text oben und dem Knopf darunter, zuletzt ‚Abbrechen‘; unlesbare Datei: kleines Fenster ‚Backup laden‘ mit ⚠️ und Grund; Abbrechen ändert nichts | Skript (`tests/backup.mjs`) | 15.7, 15.19 |
 | R-47 | Die Seitenleiste (iPad) behält beim Drehen ihren Zustand: sichtbar bleibt sichtbar (quer fest, hoch darübergelegt), ausgeblendet bleibt ausgeblendet – ein einziger Zustand für quer und hoch, den nur Tippen ändert | Skript – automatisch in jeder App mit Seitenleiste (beide Zustände, hin und zurück, mit Zwischengrößen wie beim echten Drehen) | 15.4 |
 | R-48 | Versionskopplung: `ui.js` und `design.css` mit `?v=<AppDesign-Version>` in `index.html` und `sw.js`; `AD_VERSION` (ui.js) = `--ad-version` (design.css) = `AD_NEEDED` (App); bei anderer geladener Fassung beim Start ein Hinweis; Versionszeile nennt AppDesign | Skript (`tests/version.mjs`) | 11 |
+| R-49 | Die README jeder App zeigt ganz oben ‚Verwendete Versionen‘: App, AppDesign, Designrichtlinie allgemein, Designrichtlinie <App>, Zusammenarbeit allgemein – je Version (gleich wie in der App bzw. den Richtlinien) und Link | Skript (`tests/doku.mjs`) | 11 |
+| R-50 | Jede Prüfliste beginnt mit /0 ‚Version prüfen‘ (App- und AppDesign-Version in der Versionszeile); jeder Prüfpunkt hat nummerierte Schritte und nennt bei jedem Schritt, der etwas anzeigt, die Meldung je Gerät; jeder solche Fall hat einen automatischen Test der Texte auf beiden Geräten | Skript (`tests/doku.mjs`) · Ablauf (`tests/abgleich.mjs` u. a.) | Zusammenarbeit 7 |
 
 ---
 
@@ -861,6 +867,7 @@ hier sofort eine Nummer und – wo möglich – eine Prüfung im Skript.
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 4.11.1 | 13.10.2026 | Korrektur | Neue Regeln R-49 (README ‚Verwendete Versionen‘) und R-50 (Prüfliste beginnt mit /0 ‚Version prüfen‘, Meldung je Gerät und Schritt) mit Prüfung `tests/doku.mjs`; Zusammenarbeit allgemein 1.15.0 |
 | 4.11.0 | 13.10.2026 | Neben | R-44 Ergebnis des Abgleichs in zwei Stufen: kleines Fenster mit ‚Abgleichbericht anzeigen‘, Bericht als Vorschau wie die Ausgabe (Tabellen ‚Änderungen‘ und ‚hier neuer als im Backup‘, Unverändertes nur als Anzahl, teilbar als HTML); neue Regel R-48 Versionskopplung App ↔ AppDesign (`?v=`, Startprüfung, `tests/version.mjs`); R-47 mit einem einzigen Zustand und Prüfung mit Zwischengrößen; R-40 Kontextmenü wird nach dem Loslassen nachgeführt, ohne Platz darunter steht es über der Kachel |
 | 4.10.1 | 13.10.2026 | Korrektur | Neue Regel R-47 (Seitenleiste behält beim Drehen ihren Zustand); R-40 ergänzt (Kontextmenü nie abgeschnitten, nie über/hinter der Backup-Kachel; Prüfung `tests/kontextmenue.mjs`); R-42 ergänzt (leere Felder überschreiben nichts); R-43 Hinweise mit Gerätenamen |
 | 4.10.0 | 12.10.2026 | Neben | R-40 Menüs, Untermenüs und Sprechblasen beim Drehen (automatische Drehprüfung, Kontextmenü am iPhone unter der Kachel); Abgleich als allgemeine Regeln R-41 bis R-44 mit Baustein `createSync`, Fall-Tabelle 15.18 und Prüfung `tests/abgleich.mjs` (je Feld das Neuere, Hinweise zu Gelöschtem); Backup erstellen und laden als Standard R-45, R-46 (15.19, Abfrage mit Kacheln, Bausteine in ui.js, Prüfung `tests/backup.mjs`) |
