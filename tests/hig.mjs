@@ -85,8 +85,10 @@ const found = new Map();
     const y0 = await p.evaluate(() => scrollY);
     await p.evaluate(() => window.scrollTo(0, Math.round(document.documentElement.scrollHeight * 0.45))); await p.waitForTimeout(300);
     const before = await top();
+    // Zwischengröße nur, wenn sie wie am echten Gerät vorkommen kann: am iPhone wird beim Drehen nie eine iPad-Größe gemeldet.
+    const phone = z => z.width < 700 || z.height < 500;
     for (const [mid, size] of [[{ width: turned.width, height: vp.height }, turned], [{ width: vp.width, height: turned.height }, vp]]) {
-      await p.setViewportSize(mid); await p.waitForTimeout(60);
+      if (phone(mid) === phone(vp)) { await p.setViewportSize(mid); await p.waitForTimeout(60); }
       await p.setViewportSize(size); await p.waitForTimeout(600);
       const now = await top();
       if (now !== before) note('Regel', `R-51 nach dem Drehen auf ${size.width}×${size.height} steht oben ein anderer Eintrag`, where);

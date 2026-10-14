@@ -819,11 +819,13 @@ window.addEventListener('resize', updateBar);
 // der oberste sichtbare Eintrag unter der Leiste (Elemente mit data-day bzw. data-keep) samt Abstand; nach einer
 // Größenänderung (auch nach dem Neuaufbau durch die App) wird er wieder an dieselbe Stelle gerückt.
 const KEEP_SEL = '#app [data-day], #app [data-keep]';
-let keepTop = null, keepWidth = innerWidth, keepBusy = false;
+// Als Drehen zählt eine neue Breite oder eine um mehr als 150 px andere Höhe (Leisten von Safari ändern sie weniger).
+let keepTop = null, keepWidth = innerWidth, keepHeight = innerHeight, keepBusy = false;
+const keepTurned = () => innerWidth !== keepWidth || Math.abs(innerHeight - keepHeight) > 150;
 const keepEdge = () => document.querySelector('.pnav, .nb')?.getBoundingClientRect().bottom || 0;
 const keepKey = e => e.dataset.day ? `[data-day="${CSS.escape(e.dataset.day)}"]` : `[data-keep="${CSS.escape(e.dataset.keep)}"]`;
 function rememberTop() {
-  if (keepBusy || innerWidth !== keepWidth) return;   // während des Drehens nichts überschreiben
+  if (keepBusy || keepTurned()) return;   // während des Drehens nichts überschreiben
   if (scrollY < 4) { keepTop = null; return; }       // ganz oben bleibt ganz oben
   const edge = keepEdge();
   const e = [...document.querySelectorAll(KEEP_SEL)].find(x => x.getClientRects().length && x.getBoundingClientRect().bottom > edge + 1);
@@ -831,7 +833,7 @@ function rememberTop() {
   keepTop = e ? { sel: keepKey(e), part: (e.getBoundingClientRect().top - edge) / (e.getBoundingClientRect().height || 1) } : null;
 }
 function restoreTop() {
-  keepWidth = innerWidth;
+  keepWidth = innerWidth; keepHeight = innerHeight;
   if (!keepTop) return;
   const e = [...document.querySelectorAll(KEEP_SEL.split(', ').map(s => `${s.split(' ')[0]} ${keepTop.sel}`).join(', '))].find(x => x.getClientRects().length);
   if (!e) return;
@@ -841,7 +843,7 @@ function restoreTop() {
   requestAnimationFrame(() => { keepBusy = false; });
 }
 window.addEventListener('scroll', () => { if (!keepBusy) rememberTop(); }, { passive: true });
-window.addEventListener('resize', () => { if (innerWidth === keepWidth) return; requestAnimationFrame(() => requestAnimationFrame(restoreTop)); setTimeout(restoreTop, 350); });
+window.addEventListener('resize', () => { if (!keepTurned()) return; requestAnimationFrame(() => requestAnimationFrame(restoreTop)); setTimeout(restoreTop, 350); });
 
 // R-05: Die Leiste (mit oder ohne Suchzeile) bewegt sich beim Wischen keinen Millimeter.
 // Bei offener Tastatur würde iOS beim Wischen den sichtbaren Bereich verschieben; die Leiste müsste ihm
