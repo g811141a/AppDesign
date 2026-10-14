@@ -1,6 +1,6 @@
 # AppDesign – Hinweise für Claude
 
-**Version 2.1.0** · Stand 14.10.2026
+**Version 2.1.1** · Stand 14.10.2026
 
 ## Zuerst lesen
 
@@ -18,7 +18,7 @@ nie ohne ausdrückliches ‚Ja‘ bauen, Fall-Liste vor jedem Bau (0 Nr. 1), Aus
 ## Technisch
 
 - Feste Fassung (seit 4.14.0, R-10.3): jede Version liegt unveränderlich in `fassung/X.Y.Z/` (`design.css`, `ui.js`,
-  `tests/`, Prüfsummen `fassung/PRUEFSUMMEN`, Markierung `vX.Y.Z`); jede App lädt genau ihre Fassung
+  `tests/`, Designrichtlinie und Zusammenarbeit dieser Version, Prüfsummen `fassung/PRUEFSUMMEN`); jede App lädt genau ihre Fassung
   (`../AppDesign/fassung/X.Y.Z/…`) und wird nur nach Rückfrage gehoben. `v4/` ist der Arbeitsstand (= neueste Fassung);
   Hauptversion → neuer Ordner `v5/`. Nach Änderungen an `v4/` oder `tests/` vor dem Veröffentlichen
   `node werkzeug/veroeffentlichen.mjs fassung`. `AD_VERSION` (ui.js) und `--ad-version`
@@ -33,6 +33,7 @@ nie ohne ausdrückliches ‚Ja‘ bauen, Fall-Liste vor jedem Bau (0 Nr. 1), Aus
 
 | Version | Datum | Inhalt |
 |---|---|---|
+| 2.1.1 | 14.10.2026 | Fassung enthält Designrichtlinie und Zusammenarbeit statt Git-Markierung (aus der Cloud gesperrt) |
 | 2.1.0 | 14.10.2026 | Feste Fassung `fassung/X.Y.Z/` statt `v4/…?v=` (A-05 Version B, W-4), Veröffentlichungs-Skript |
 | 2.0.0 | 14.10.2026 | Neu gefasst (A-02 Schritt 4): zuerst UEBERGABE.md, Regeln nur noch als Verweis auf die Zusammenarbeit (ohne Antwortzeile), Prüfungen und Versionskopplung |
 | 1.1.0 | 10.10.2026 | Zeitmessung |

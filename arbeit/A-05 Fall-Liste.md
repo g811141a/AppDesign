@@ -91,7 +91,7 @@ nur zusätzlich nach jedem Schritt der Ablauf-Tests.
 | D-3 | Eine neue AppDesign-Version ändert eine App **nicht**, solange sie nicht gehoben wird | – | Test: App mit Fassung N, AppDesign-Arbeitsstand N+1 mit absichtlich geändertem Knopf → App unverändert |
 | D-4 | Heben nur nach Rückfrage (0 Nr. 10): das Veröffentlichungs-Skript nennt Apps auf älteren Fassungen, hebt aber nichts | Hinweiszeile im Skript | Selbsttest des Skripts |
 | D-5 | `v4/` bleibt bestehen und zeigt weiter die neueste 4er-Fassung (für schon installierte ältere App-Stände) | – | `version.mjs`: `v4/` = neueste `fassung/4.*` |
-| D-6 | Richtlinien-Text je Fassung: Git-Markierung (Tag) `v4.14.0` je AppDesign-Version; die README der App verlinkt die Richtlinien dieser Markierung statt `main` | README ‚Verwendete Versionen‘ (R-10.4) | `doku.mjs`: Links zeigen auf die Markierung der benutzten Fassung |
+| D-6 | Richtlinien-Text je Fassung: ~~Git-Markierung (Tag) je Version~~ – aus der Cloud gesperrt (Fund 4.14.0, `arbeit/A-05 Fund Markierung.md`, Entscheidung a); **seit 4.14.1 liegen Designrichtlinie und Zusammenarbeit in `fassung/X.Y.Z/`**, die README der App verlinkt sie dort | README ‚Verwendete Versionen‘ (R-10.4) | `doku.mjs`: Links zeigen auf `main/fassung/<Fassung>/` |
 | D-7 | W-4 nachführen: Designrichtlinie 14, README AppDesign, CLAUDE.md AppDesign | Text | `checkCollab`: ‚gelten sofort für alle Apps‘ nirgends mehr (außer Versionsgeschichte) |
 | D-8 | Offline: die App läuft mit ihrer Fassung aus dem Zwischenspeicher | sw.js-Dateiliste mit dem Fassungs-Pfad | bestehende sw-Prüfung in `version.mjs` |
 

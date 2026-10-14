@@ -1,9 +1,9 @@
-// AppDesign 4.14.0 · Prüfung der Versionskopplung App ↔ AppDesign (Regel R-10.3, Designrichtlinie allgemein 15.20).
+// AppDesign 4.14.1 · Prüfung der Versionskopplung App ↔ AppDesign (Regel R-10.3, Designrichtlinie allgemein 15.20).
 // Seit 4.14.0 (A-05 Version B, feste Fassung): Jede AppDesign-Version liegt unveränderlich in fassung/X.Y.Z/ (design.css,
 // ui.js, tests/); die App lädt genau ihre Fassung: ../AppDesign/fassung/X.Y.Z/ui.js und …/design.css in index.html und in der
 // Dateiliste von sw.js (ohne ?v=, der Pfad enthält die Version), AD_NEEDED = X.Y.Z = AD_VERSION (ui.js) = --ad-version
 // (design.css) der Fassung; Cache-Name in sw.js mit der App-Version. checkFassungen: Prüfsummen (fassung/PRUEFSUMMEN) –
-// keine Datei geändert, keine fehlt, keine dazu; v4/ und tests/ = neueste Fassung (D-5).
+// keine Datei geändert, keine fehlt, keine dazu; v4/ und tests/ = neueste Fassung (D-5). Seit 4.14.1 mit dem Richtlinien-Text.
 // Mit einer Seite (page) zusätzlich: Hinweis beim Start bei einer älteren ui.js; kein Abruf aus v4/ (D-3).
 // Einbinden im Prüfskript der App (Repo-Ordner der App, AppDesign daneben):
 //   import { checkVersions } from '../../AppDesign/fassung/4.14.0/tests/version.mjs';
@@ -16,9 +16,11 @@ const hash = buf => createHash('sha256').update(buf).digest('hex');
 const dateien = (dir, pre = '') => readdirSync(dir).flatMap(f => statSync(new URL(f, dir)).isDirectory() ?
   dateien(new URL(f + '/', dir), pre + f + '/') : [pre + f]).sort();
 
-// Die Dateien einer Fassung: Ziel in fassung/X.Y.Z/ → Quelle im Arbeitsstand von AppDesign.
+// Die Dateien einer Fassung: Ziel in fassung/X.Y.Z/ → Quelle im Arbeitsstand von AppDesign. Seit 4.14.1 auch der Text von
+// Designrichtlinie und Zusammenarbeit dieser Version (statt einer Git-Markierung, die aus der Cloud nicht angelegt werden kann).
+export const TEXTE = ['README - Designrichtlinie allgemein.md', 'README - Zusammenarbeit allgemein.md'];
 export function fassungQuellen(ad) {
-  const q = { 'design.css': 'v4/design.css', 'ui.js': 'v4/ui.js' };
+  const q = { 'design.css': 'v4/design.css', 'ui.js': 'v4/ui.js', ...Object.fromEntries(TEXTE.map(f => [f, f])) };
   for (const f of readdirSync(new URL('tests/', ad))) if (statSync(new URL('tests/' + f, ad)).isFile()) q['tests/' + f] = 'tests/' + f;
   return q;
 }
@@ -54,7 +56,8 @@ export function checkFassungen(ad) {
   if (vergleiche(neu, letzte) < 0) E(`v4/ hat AppDesign ${neu}, die neueste Fassung ist ${letzte} – v4/ muss die neueste Fassung zeigen`);
   if (liste.includes(neu)) {
     const q = fassungQuellen(ad), inFassung = dateien(new URL(`fassung/${neu}/`, ad));
-    const ab = Object.entries(q).filter(([z, s]) => !existsSync(new URL(`fassung/${neu}/${z}`, ad)) ||
+    // Die Texte ändern sich auch ohne neue AppDesign-Version (z. B. Zusammenarbeit) – verglichen werden nur v4/ und tests/.
+    const ab = Object.entries(q).filter(([z]) => !TEXTE.includes(z)).filter(([z, s]) => !existsSync(new URL(`fassung/${neu}/${z}`, ad)) ||
       !readFileSync(new URL(s, ad)).equals(readFileSync(new URL(`fassung/${neu}/${z}`, ad)))).map(([, s]) => s);
     ab.push(...inFassung.filter(z => !(z in q)).map(z => `fassung/${neu}/${z} (ohne Quelle)`));
     if (ab.length) E(`v4/ bzw. tests/ weicht von fassung/${neu} ab: ${ab.join(', ')} – vor dem Veröffentlichen ‚node werkzeug/veroeffentlichen.mjs fassung‘, danach nur mit neuer Version`);

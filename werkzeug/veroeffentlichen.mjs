@@ -1,4 +1,4 @@
-// AppDesign 4.14.0 · Veröffentlichungs-Skript (A-05 Version B, Fall-Liste Teil E; Zusammenarbeit allgemein 0 Nr. 9 und 10).
+// AppDesign 4.14.1 · Veröffentlichungs-Skript (A-05 Version B, Fall-Liste Teil E; Zusammenarbeit allgemein 0 Nr. 9 und 10).
 // Zwei Schritte, damit Claude dazwischen die Texte (CHANGELOG, Prüfliste, Backlog) schreibt:
 //   node werkzeug/veroeffentlichen.mjs vorbereiten --ad 4.14.0 --app reiselogbuch=3.13.0
 //        erhöht alle Versionsnummern (AppDesign und App) und legt die feste Fassung fassung/4.14.0/ an (D-1);
@@ -7,7 +7,8 @@
 //        legt die Fassung der aktuellen AppDesign-Version neu an (nach Änderungen an v4/ oder tests/, nur vor dem Veröffentlichen).
 //   node werkzeug/veroeffentlichen.mjs los [--app reiselogbuch] [--nur-app]
 //        prüft (Zweig, keine offenen Änderungen, Texte, Fassung, alle Tests der App) und veröffentlicht: erst AppDesign
-//        (--no-ff nach main, Markierung vX.Y.Z, Push, Pages-Lauf abwarten), dann die App genauso. --nur-app: AppDesign ist schon online.
+//        (--no-ff nach main, Push, Pages-Lauf abwarten), dann die App genauso. --nur-app: AppDesign ist schon online.
+// Seit 4.14.1 ohne Git-Markierung (aus der Cloud gesperrt): veröffentlicht = fassung/X.Y.Z/ liegt auf origin/main.
 // AppDesign und die Apps liegen nebeneinander (Liste werkzeug/apps.json). Rückgabewert 0 = fertig, 1 = abgebrochen.
 // Für den Selbsttest: --ad-dir <Ordner>, VEROEFF_PAGES=success|failure|haengt (Pages-Lauf nachgebildet), VEROEFF_PAGES_MAX_S,
 // VEROEFF_WARTE_MS (Grundzeit der Wiederholungen, Standard 1000 → 2, 4, 8, 16 s).
@@ -37,7 +38,7 @@ const adVersion = () => lies(AD, 'v4/ui.js').match(/const AD_VERSION = '([\d.]+)
 const appVersion = a => lies(a.dir, 'index.html').match(/const APP_VERSION = '([\d.]+)'/)?.[1];
 const appFassung = a => lies(a.dir, 'index.html').match(/const AD_NEEDED = '([\d.]+)'/)?.[1];
 const version = text => text.match(/\*\*Version (\d+\.\d+\.\d+)\*\*/)?.[1];
-const tagDa = (dir, tag) => !!gitOk(dir, 'rev-parse', '-q', '--verify', `refs/tags/${tag}`) || !!gitOk(dir, 'ls-remote', '--tags', 'origin', `refs/tags/${tag}`);
+const online = v => { gitOk(AD, 'fetch', '-q', 'origin', 'main'); return gitOk(AD, 'cat-file', '-e', `origin/main:fassung/${v}/ui.js`) !== null; };
 
 // Änderungen erst sammeln, dann alle zusammen schreiben – bei einem Fehler bleibt alles unverändert (E-2).
 function aenderungen() {
@@ -59,7 +60,7 @@ function aenderungen() {
 
 function legeFassungAn() {
   const v = adVersion();
-  if (tagDa(AD, `v${v}`)) abbruch(`AppDesign ${v} ist schon veröffentlicht (Markierung v${v}) – eine Fassung ist unveränderlich, neue Version mit ‚vorbereiten‘`);
+  if (online(v)) abbruch(`AppDesign ${v} ist schon veröffentlicht (fassung/${v}/ auf main) – eine Fassung ist unveränderlich, neue Version mit ‚vorbereiten‘`);
   const ziel = new URL(`fassung/${v}/`, AD);
   rmSync(ziel, { recursive: true, force: true });
   for (const [z, q] of Object.entries(fassungQuellen(AD))) { mkdirSync(new URL('.', new URL(z, ziel)), { recursive: true }); copyFileSync(new URL(q, AD), new URL(z, ziel)); }
@@ -86,7 +87,7 @@ function vorbereiten() {
   if (X) {
     if (!re.test(X)) abbruch(`--ad ${X}: keine Version X.Y.Z`);
     if (vergleiche(X, altX) <= 0) abbruch(`AppDesign ${X} ist nicht höher als ${altX} – nichts geändert`);
-    if (fassungListe(AD).includes(X) || tagDa(AD, `v${X}`)) abbruch(`Fassung ${X} gibt es schon – nichts geändert`);
+    if (fassungListe(AD).includes(X) || online(X)) abbruch(`Fassung ${X} gibt es schon – nichts geändert`);
     if (X.split('.')[0] !== altX.split('.')[0]) abbruch(`Hauptversion ${X}: neuer Ordner v${X.split('.')[0]}/ (Designrichtlinie 14) – das macht das Skript nicht`);
     ch.ersetze(AD, 'v4/ui.js', [[/^\/\/ AppDesign [\d.]+ ·/m, `// AppDesign ${X} ·`], [/const AD_VERSION = '[\d.]+';/, `const AD_VERSION = '${X}';`]]);
     ch.ersetze(AD, 'v4/design.css', [[/^\/\* AppDesign [\d.]+ ·/m, `/* AppDesign ${X} ·`], [/--ad-version: "[\d.]+";/, `--ad-version: "${X}";`]]);
@@ -95,12 +96,13 @@ function vorbereiten() {
     ch.ersetze(AD, 'vorlage/index.html', [[/\(AppDesign [\d.]+\)/, `(AppDesign ${X})`], [/\.\.\/(?:v4|fassung\/[\d.]+)\/(ui\.js|design\.css)(?:\?v=[\d.]+)?"/g, `../fassung/${X}/$1"`, 2],
       [/const AD_NEEDED = '[\d.]+';/, `const AD_NEEDED = '${X}';`]]);
   }
-  const zus = version(lies(AD, 'README - Zusammenarbeit allgemein.md'));
+  // Texte so, wie sie in der Fassung der App stehen (ohne --ad: ihre bisherige Fassung; mit --ad: der Arbeitsstand, der die Fassung wird).
+  const text = (F, f) => { try { if (F !== X) return lies(AD, `fassung/${F}/${f}`); } catch {} return lies(AD, f); };
   for (const a of apps) {
     const altY = appVersion(a), F = X || appFassung(a), T = a.titel;
     if (!re.test(a.Y)) abbruch(`--app ${a.name}=${a.Y}: keine Version X.Y.Z`);
     if (vergleiche(a.Y, altY) <= 0) abbruch(`${T} ${a.Y} ist nicht höher als ${altY} – nichts geändert`);
-    const richt = version(lies(AD, 'README - Designrichtlinie allgemein.md')), RA = X || richt;
+    const RA = X || version(text(F, 'README - Designrichtlinie allgemein.md')), zus = version(text(F, 'README - Zusammenarbeit allgemein.md'));
     const ref = /\.\.\/AppDesign\/(?:v4|fassung\/[\d.]+)\/(ui\.js|design\.css)(?:\?v=[\d.]+)?(["'])/g;
     ch.ersetze(a.dir, 'index.html', [[/const APP_VERSION = '[\d.]+';/, `const APP_VERSION = '${a.Y}';`], [/const APP_BUILT = '[^']*';/, `const APP_BUILT = '${jetzt()}';`],
       [/const AD_NEEDED = '[\d.]+';/, `const AD_NEEDED = '${F}';`], [ref, `../AppDesign/fassung/${F}/$1$2`, 2]]);
@@ -112,8 +114,9 @@ function vorbereiten() {
     }
     const row = (name, v) => [new RegExp(`^(\\| ${name} \\| )[\\d.]+( \\|)`, 'm'), `$1${v}$2`];
     ch.ersetze(a.dir, 'README.md', [row(T, a.Y), row('AppDesign', F), row('Designrichtlinie allgemein', RA), row(`Designrichtlinie ${T}`, a.Y), row('Zusammenarbeit allgemein', zus),
-      // D-6: Richtlinien und Bausteine aus der Markierung der benutzten Fassung, nicht aus main
-      [/(github\.com\/g811141a\/AppDesign\/blob\/)(?:main|v[\d.]+)\//g, `$1v${F}/`, 2], [/(AppDesign\/blob\/v[\d.]+\/)(?:v4|fassung\/[\d.]+)\/(ui\.js|design\.css)\)/g, `$1fassung/${F}/$2)`, 2],
+      // D-6 (seit 4.14.1): Richtlinien und Bausteine aus dem Ordner der benutzten Fassung auf main
+      [/(github\.com\/g811141a\/AppDesign\/blob\/)(?:main|v[\d.]+)\//g, '$1main/', 2],
+      [/(AppDesign\/blob\/main\/)(?:v4\/|fassung\/[\d.]+\/)?(ui\.js|design\.css|README%20-%20(?:Designrichtlinie|Zusammenarbeit)%20allgemein\.md)\)/g, `$1fassung/${F}/$2)`, 2],
       [/\[(?:v4|fassung\/[\d.]+)\/(ui\.js|design\.css)\]/g, `[fassung/${F}/$1]`, 2]]);
     const own = `README - Designrichtlinie ${T}.md`;
     ch.ersetze(a.dir, own, [[/\*\*Version [\d.]+\*\* · Stand [\d.]+/, `**Version ${a.Y}** · Stand ${d}`], [/(Designrichtlinie allgemein aus AppDesign \(Version )[\d.]+\)/, `$1${RA})`]]);
@@ -171,15 +174,14 @@ function pruefeRepo(dir, name, branchName) {
   return b;
 }
 
-async function veroeffentliche(dir, name, branch, tag, pruefe) {
+async function veroeffentliche(dir, name, branch, pruefe) {
   const t0 = Date.now();
   await mitWiederholung(`${name}: git fetch`, () => git(dir, 'fetch', 'origin', 'main'));
   git(dir, 'checkout', '-q', '-B', 'main', 'origin/main');
   git(dir, 'merge', '-q', '--no-ff', branch, '-m', `Merge ${branch}: ${name}`);
-  if (tag) git(dir, 'tag', '-a', tag, '-m', name);
   const sha = git(dir, 'rev-parse', 'HEAD');
-  await mitWiederholung(`${name}: git push`, () => git(dir, 'push', '-q', 'origin', 'main', ...(tag ? [`refs/tags/${tag}`] : [])));
-  console.log(`✓ ${name}: ${sha.slice(0, 7)} auf main${tag ? `, Markierung ${tag}` : ''}`);
+  await mitWiederholung(`${name}: git push`, () => git(dir, 'push', '-q', 'origin', 'main'));
+  console.log(`✓ ${name}: ${sha.slice(0, 7)} auf main`);
   const pages = await warteAufPages(dir, sha, name);
   await mitWiederholung(`${name}: git fetch`, () => git(dir, 'fetch', 'origin', 'main'));
   pruefe(f => git(dir, 'show', `origin/main:${f}`));
@@ -192,9 +194,9 @@ async function los() {
     // ohne --app: jede App, deren Version neuer ist als auf origin/main (also vorbereitet) – egal auf welchem Zweig sie steht
     APPS.filter(a => existsSync(new URL('index.html', a.dir)) && appVersion(a) !== (gitOk(a.dir, 'show', 'origin/main:index.html') || '').match(/const APP_VERSION = '([\d.]+)'/)?.[1]));
   // E-3: vor dem Push – Zweig, offene Änderungen, Texte, Fassung
-  if (!nurApp && tagDa(AD, `v${X}`)) abbruch(`AppDesign ${X} ist schon veröffentlicht (Markierung v${X}) – nur die App: los --nur-app`);
+  if (!nurApp && online(X)) abbruch(`AppDesign ${X} ist schon veröffentlicht (fassung/${X}/ auf main) – nur die App: los --nur-app`);
   const adBranch = nurApp ? null : pruefeRepo(AD, 'AppDesign', `vorbereitung-${X}`);
-  if (nurApp) { if (!tagDa(AD, `v${X}`)) abbruch(`--nur-app: AppDesign ${X} ist noch nicht veröffentlicht (Markierung v${X} fehlt)`); }
+  if (nurApp) { if (!online(X)) abbruch(`--nur-app: AppDesign ${X} ist noch nicht veröffentlicht (fassung/${X}/ fehlt auf main)`); }
   else {
     if (!new RegExp(`^## ${X.replace(/\./g, '\\.')} – `, 'm').test(lies(AD, 'CHANGELOG.md'))) abbruch(`AppDesign CHANGELOG.md: Eintrag ‚## ${X} – …‘ fehlt`);
     if (!fassungListe(AD).includes(X)) abbruch(`fassung/${X}/ fehlt – node werkzeug/veroeffentlichen.mjs fassung`);
@@ -217,17 +219,17 @@ async function los() {
   }
   const ergebnis = [];
   if (!nurApp) try {
-    ergebnis.push(await veroeffentliche(AD, `AppDesign ${X}`, adBranch, `v${X}`, show => {
+    ergebnis.push(await veroeffentliche(AD, `AppDesign ${X}`, adBranch, show => {
       if (!show('v4/ui.js').includes(`const AD_VERSION = '${X}'`) || !show(`fassung/${X}/ui.js`).includes(`const AD_VERSION = '${X}'`)) abbruch(`AppDesign: main enthält nicht die Version ${X}`);
     }));
   } catch (e) {
-    if (e instanceof Abbruch) e.message += `\n  Die App${apps.length > 1 ? 's bleiben' : ' bleibt'} unverändert. Ist AppDesign ${X} schon auf main (Markierung v${X}) und der Pages-Lauf später doch ‚success‘: los --nur-app`;
+    if (e instanceof Abbruch) e.message += `\n  Die App${apps.length > 1 ? 's bleiben' : ' bleibt'} unverändert. Ist AppDesign ${X} schon auf main (fassung/${X}/) und der Pages-Lauf später doch ‚success‘: los --nur-app`;
     throw e;
   }
   for (const [i, a] of apps.entries()) {
     const Y = appVersion(a), F = appFassung(a);
     try {
-      ergebnis.push(await veroeffentliche(a.dir, `${a.titel} ${Y}`, appBranches[i], null, show => {
+      ergebnis.push(await veroeffentliche(a.dir, `${a.titel} ${Y}`, appBranches[i], show => {
         const h = show('index.html');
         if (!h.includes(`const APP_VERSION = '${Y}'`) || !h.includes(`const AD_NEEDED = '${F}'`)) abbruch(`${a.titel}: main enthält nicht ${Y} mit Fassung ${F}`);
       }));

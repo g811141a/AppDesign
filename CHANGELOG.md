@@ -3,6 +3,30 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.14.1 – 14.10.2026 (Korrektur)
+
+AppDesign 4.14.1 · Designrichtlinie allgemein 4.14.1 · Zusammenarbeit allgemein 2.3.2 · geprüft mit Reiselogbuch 3.13.1
+
+Korrektur zu 4.14.0 (Fund `arbeit/A-05 Fund Markierung.md`, Entscheidung a). `v4/` nur Versionsnummer.
+
+- **Fund:** Die Git-Markierung `v4.14.0` ließ sich nicht hochladen – der Git-Zugang der Cloud lehnt Markierungen ab (HTTP 403),
+  die GitHub-Schnittstelle ebenso. `main` war schon oben, das Skript brach beim Push ab; die Links der App-README auf
+  `blob/v4.14.0/…` führten zur Fehlerseite. Warum übersehen: der Selbsttest lud in ein lokales Schein-Repo, das Markierungen
+  annimmt.
+- **Fassung mit Richtlinien-Text (D-6 neu):** `fassung/X.Y.Z/` enthält zusätzlich `README - Designrichtlinie allgemein.md` und
+  `README - Zusammenarbeit allgemein.md` (Prüfsummen); die App-README verlinkt `main/fassung/X.Y.Z/…`. `doku.mjs` liest die
+  Richtlinien-Versionen aus der Fassung (geht auch in einer flachen Kopie) und prüft die Links; `version.mjs` vergleicht die
+  Texte nicht mit dem Arbeitsstand (sie ändern sich auch zwischen Versionen).
+- **Veröffentlichungs-Skript:** keine Markierung mehr; ‚veröffentlicht‘ heißt: `fassung/X.Y.Z/` liegt auf `origin/main`.
+  Selbsttest prüft zusätzlich, dass keine Markierung gebraucht wird (20 Fälle grün).
+- **`pruefe.mjs` – `ruhe()` (gefunden beim Veröffentlichen):** `tastatur · webkit` wurde im vollen Lauf (8 Browser parallel)
+  rot – R-2.2 ‚Titel nicht in der Leiste‘ und R-5.4 ‚Kapsel ohne Verlauf‘ in den Einstellungen am iPhone; allein (3×) und
+  unter reiner Rechenlast grün. Ursache wahrscheinlich: unter Volllast kamen Bildwechsel so spät, dass die Ruhe-Prüfung
+  (dreimal gleich nach je 100 ms) erfüllt war, bevor die App diese beiden Werte im nächsten Bild setzte. Jetzt wartet jede
+  Ruhe-Messung auf einen echten Bildwechsel; ohne Bild innerhalb 2 s gilt die Seite nicht als ruhig. Die App war nicht falsch.
+- `fassung/4.14.0/` bleibt unverändert (ohne Texte); die lokale Markierung `v4.14.0` ist gelöscht.
+- Designrichtlinie allgemein 4.14.1 (Abschnitt 14), README, CLAUDE.md 2.1.1, `tests/README.md`, Fall-Liste D-6.
+
 ## 4.14.0 – 14.10.2026 (Neben)
 
 AppDesign 4.14.0 · Designrichtlinie allgemein 4.14.0 · Zusammenarbeit allgemein 2.3.2 · geprüft mit Reiselogbuch 3.13.0

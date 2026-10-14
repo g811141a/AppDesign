@@ -7,14 +7,14 @@
 
 | Teil | Version | Datei |
 |---|---|---|
-| Reiselogbuch | 3.13.0 | g811141a/ReiseLogBuch – `CHANGELOG.md`, `BACKLOG.md`, `PROMPT.md` |
-| AppDesign (ui.js, design.css, tests; feste Fassung `fassung/4.14.0/`) | 4.14.0 | g811141a/AppDesign – `CHANGELOG.md`, `BACKLOG.md` |
-| Designrichtlinie allgemein | 4.14.0 (Regelkatalog R-1.1 bis R-10.4, 34 Regeln in 10 Themen) | `README - Designrichtlinie allgemein.md` |
-| Designrichtlinie Reiselogbuch | 3.13.0 | im Repo ReiseLogBuch |
+| Reiselogbuch | 3.13.1 | g811141a/ReiseLogBuch – `CHANGELOG.md`, `BACKLOG.md`, `PROMPT.md` |
+| AppDesign (ui.js, design.css, tests; feste Fassung `fassung/4.14.1/`) | 4.14.1 | g811141a/AppDesign – `CHANGELOG.md`, `BACKLOG.md` |
+| Designrichtlinie allgemein | 4.14.1 (Regelkatalog R-1.1 bis R-10.4, 34 Regeln in 10 Themen) | `README - Designrichtlinie allgemein.md` |
+| Designrichtlinie Reiselogbuch | 3.13.1 | im Repo ReiseLogBuch |
 | Zusammenarbeit allgemein | 2.3.2 (Abschnitt 0 = Arbeitsprozess 2.0, hat Vorrang) | `README - Zusammenarbeit allgemein.md` |
 
 - **Chatnummer:** laufend **Reiselogbuch 0004**; die nächste Sitzung heißt **Reiselogbuch 0005** (Zusammenarbeit 0 Nr. 13).
-- **Offene Prüfpunkte:** **P-36** (AppDesign 4.14.0 mit Reiselogbuch 3.13.0, Prüfliste im CHANGELOG des Reiselogbuchs).
+- **Offene Prüfpunkte:** **P-37** (AppDesign 4.14.1 mit Reiselogbuch 3.13.1, Prüfliste im CHANGELOG des Reiselogbuchs; ersetzt P-36).
 - **Nächste Version:** nichts bereit.
 - **Erinnerung:** ‚Backlog-Erinnerung (AppDesign und Reiselogbuch)‘ montags 8:58.
 
@@ -38,8 +38,9 @@ Frühere Sitzungen: siehe `VERLAUF.md` und Versionsgeschichten.
 
 ## 3. Nächster Schritt
 
-**Stand 0004:** A-05 Version B gebaut und mit dem Skript veröffentlicht (AppDesign 4.14.0 · Reiselogbuch 3.13.0). Zuerst
-**P-36 prüfen** (Zusammenarbeit: erst prüfen, dann Neues); danach ist A-05 abgeschlossen. Veröffentlichen ab jetzt:
+**Stand 0004:** A-05 Version B gebaut und mit dem Skript veröffentlicht (AppDesign 4.14.0 · Reiselogbuch 3.13.0), dazu die
+Korrektur 4.14.1 · 3.13.1 (Richtlinien-Text in der Fassung statt Git-Markierung, `arbeit/A-05 Fund Markierung.md`). Zuerst
+**P-37 prüfen** (Zusammenarbeit: erst prüfen, dann Neues); danach ist A-05 abgeschlossen. Veröffentlichen ab jetzt:
 `node werkzeug/veroeffentlichen.mjs vorbereiten --ad X.Y.Z --app reiselogbuch=X.Y.Z`, Texte, Commit, `… los`.
 
 Früher geplant (erledigt):
@@ -64,9 +65,10 @@ AppDesign 4.14.0 / Reiselogbuch 3.13.0 mit … erstellen? Ja/Nein‘.** Vorher p
   [grundregeln]`, `--abdeckung`); AppDesign-Selbsttest `node tests/lauf-selbsttest.mjs`.
 - Veröffentlichen (seit 4.14.0): Vorbereitungs-Zweige in beiden Repos, `node werkzeug/veroeffentlichen.mjs vorbereiten --ad X.Y.Z
   --app reiselogbuch=X.Y.Z`, Texte schreiben, committen, `node werkzeug/veroeffentlichen.mjs los` (prüft, alle Tests, erst
-  AppDesign mit Markierung, dann die App, wartet über `gh api …/actions/runs?head_sha=` auf Pages; `github.io` ist gesperrt).
+  AppDesign, dann die App, wartet über `gh api …/actions/runs?head_sha=` auf Pages; `github.io` ist gesperrt).
   Nach Änderungen an `v4/` oder `tests/`: `… fassung`. Selbsttest `node werkzeug/veroeffentlichen-selbsttest.mjs`.
-  In einer flachen Kopie fehlen Markierungen: `git fetch --depth 1 origin tag v4.14.0` (für `doku.mjs`).
+  Git-Markierungen (Tags) lassen sich aus der Cloud nicht hochladen (HTTP 403) – deshalb steht seit 4.14.1 der Richtlinien-Text
+  in der Fassung.
 - Zeit und Token am Ende jeder Antwort aus den Sitzungsdaten (`/root/.claude/projects/…/*.jsonl`).
 
 ## 6. Ablage auf GitHub (alles auf Branch `main`)

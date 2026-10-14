@@ -1,6 +1,6 @@
 # Designrichtlinie allgemein
 
-**Version 4.14.0** · Stand 14.10.2026
+**Version 4.14.1** · Stand 14.10.2026
 
 Allgemeine Gestaltungs- und Bedienregeln für alle iPad-Web-Apps von g811141a (seit 4.1.0 auch
 auf dem iPhone, Abschnitt 15.17).
@@ -401,8 +401,8 @@ heller).
   Worker der App nimmt beide Dateien in seinen Cache auf (offline). Die Prüfskripte der App binden die Prüfungen
   derselben Fassung ein (`fassung/X.Y.Z/tests/`).
 - **Versionen:** Jede AppDesign-Version liegt zusätzlich unveränderlich in `fassung/X.Y.Z/` (`design.css`, `ui.js`,
-  `tests/`; Prüfsummen in `fassung/PRUEFSUMMEN`) und hat die Git-Markierung `vX.Y.Z`; die README der App verlinkt die
-  Richtlinien dieser Markierung. Eine neue AppDesign-Version ändert eine App **nicht**; gehoben wird eine App nur nach
+  `tests/`, seit 4.14.1 auch der Text dieser Richtlinie und der Zusammenarbeit; Prüfsummen in `fassung/PRUEFSUMMEN`); die
+  README der App verlinkt die Richtlinien in ihrer Fassung (eine Git-Markierung ist aus der Cloud nicht möglich). Eine neue AppDesign-Version ändert eine App **nicht**; gehoben wird eine App nur nach
   Rückfrage (Zusammenarbeit 0 Nr. 10). `v4/` ist der Arbeitsstand und zeigt die neueste 4er-Fassung; eine Hauptversion
   (5.0.0) bekommt einen neuen Ordner `v5/`. Veröffentlicht wird mit `werkzeug/veroeffentlichen.mjs` (`vorbereiten`,
   dann `los`): **erst AppDesign, dann die App**, jeweils erst nach dem erfolgreichen Pages-Lauf weiter.
@@ -927,6 +927,7 @@ Die alten Nummern R-01 bis R-52 (bis 4.11.4) gelten nicht mehr; sie stehen nur n
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 4.14.1 | 14.10.2026 | Korrektur | Abschnitt 14: die Fassung enthält auch den Text dieser Richtlinie und der Zusammenarbeit; keine Git-Markierung mehr (aus der Cloud gesperrt, Fund 4.14.0) |
 | 4.14.0 | 14.10.2026 | Neben | A-05 Version B: feste Fassung je Version `fassung/X.Y.Z/` (Einleitung, 15.20, Abschnitt 14 – W-4 nachgeführt: Versionen gelten nicht mehr sofort für alle Apps), R-10.3 angepasst (Fassungs-Pfad statt `?v=`, Prüfsummen, `v4/` = neueste Fassung), Veröffentlichungs-Skript |
 | 4.13.0 | 14.10.2026 | Neben | A-05 Version A (Prüfungen 2.0): Abschnitt 14 ‚Prüfen‘ und 17 ‚Grundregeln‘ – Prüfskripte melden Fehler mit Rückgabewert (`pruefe.mjs`), Grundregeln nach jedem Schritt, Chromium und WebKit, paralleler Lauf (`lauf.mjs`); `hig.mjs` zählt eine unsichtbare Antippfläche (`::after`) mit (R-3.1). Keine neue Regel |
 | 4.12.2 | 14.10.2026 | Korrektur | A-02 Schritt 3: Abschnitt 7 – Vorschaufenster in voller Seitenbreite, seitlich wischen auf iPad und iPhone (R-6.4, bisher nur in der Designrichtlinie Reiselogbuch, F-4); neue Prüfung `checkCollab` (doku.mjs): Zusammenarbeit, CLAUDE.md, Backlogs und App-Doku ohne veraltete Stellen, Versionszeile in PROMPT.md, Feldnamen des Abgleichberichts; `checkCatalog` prüft jetzt auch die Zusammenarbeit |
