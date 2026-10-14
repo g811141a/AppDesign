@@ -1,6 +1,6 @@
 # Zusammenarbeit allgemein
 
-**Version 1.16.0** · Stand 14.10.2026
+**Version 2.0.0** · Stand 14.10.2026
 
 Regeln für die Zusammenarbeit mit Claude bei allen iPad-Web-Apps von g811141a.
 Diese Datei liegt im Design-Repo **AppDesign** (g811141a/AppDesign).
@@ -22,8 +22,68 @@ App-spezifische Punkte stehen in der `CLAUDE.md` des jeweiligen App-Repos.
 > Hinweis trotzdem darauf, zuerst Neues umzusetzen.
 
 > **Hinweis für Claude:** Diese Regeln gelten in jeder Sitzung, auch nach langer Pause.
-> Lies zu Beginn zusätzlich `README - Designrichtlinie allgemein.md` und die
-> Designrichtlinie der App.
+> Lies zu Beginn **`UEBERGABE.md`** (Stand der letzten Sitzung), dann `README - Designrichtlinie allgemein.md`
+> und die Designrichtlinie der App.
+
+---
+
+## 0. Arbeitsprozess 2.0 (seit 2.0.0 – hat Vorrang vor älteren Stellen dieser Datei)
+
+Vereinbart am 14.10.2026 nach dem Brainstorming (A-04). Ziel: **nichts mehr vergessen**, Fehler finden, bevor der
+Nutzer sie findet, schneller und günstiger arbeiten.
+
+**A. Testen und Qualität**
+1. **Fall-Liste vor jedem Bau:** Zu jeder Anforderung schreibt Claude **vor dem Bauen** eine kurze Liste der Fälle –
+   Gerät (iPad, iPhone) × Lage (quer, hoch) × Darstellung (hell, dunkel) × Handlung (drehen, wischen, Tastatur,
+   abgleichen, teilen …) × Daten (leer, lang, viele). Jeder Fall wird ein automatischer Test. Die Liste kommt mit dem
+   Muster, damit der Nutzer Lücken sieht. Was nur das echte Gerät zeigt (Teilen-Menü, iCloud, Drucken,
+   Silbentrennung, Gefühl beim Wischen), kommt in die Prüfliste.
+2. **Parallel arbeiten, sparsam:** Tests laufen parallel, die schnellsten zuerst, Abbruch beim ersten Fehler.
+   Hilfsagenten nur für große, klar abgegrenzte Aufgaben mit wenig Token-Verbrauch.
+3. **Regeln schlank halten:** Bei **jeder** neuen Regel prüft Claude, ob sie eine bestehende **ersetzt oder ergänzt**,
+   und fasst Regeln zum selben Thema zusammen (z. B. alle Tabellenregeln an einer Stelle). Je Regel **genau eine**
+   Prüfung. Der Regelkatalog ist nach Themen geordnet.
+4. **Allgemeine Regel immer erfragen:** Legt eine Eingabe des Nutzers eine Formatierung oder ein Verhalten fest, prüft
+   Claude (mit Recherche), ob daraus eine **allgemeine Regel** werden sollte, und fragt **verlässlich** im
+   Auswahlfenster: ‚Als allgemeine Regel festhalten? Ja/Nein‘. Grundsatz: Allgemeine Regeln sind die Grundlage jeder
+   App (gleiche Schaltflächen an gleichen Stellen, gleiche Formatierung); in der App steht nur, was anders ist.
+5. **Safari nachbilden:** Tests bilden Safari nach, wo Chrome anders arbeitet; WebKit wird verwendet, sobald es in
+   der Umgebung installierbar ist.
+
+**B. Muster und Entscheidungen**
+6. **Varianten nebeneinander:** Beim ersten Muster 2–3 Varianten, wo sinnvoll; bei kleinen Korrekturen eine.
+7. **Auswahlfenster nur für Ja/Nein und klare Auswahl.** Jedes Fenster hat die Option **‚Ich schreibe im Chat‘**;
+   wählt der Nutzer sie, beendet Claude die Antwort, damit der Nutzer im Chat schreiben kann. Längere Wünsche,
+   Einwände und Fragen immer im Chat (das Feld ‚Sonstiges‘ im Fenster schneidet lange Texte ab).
+   Erklärungen, die der Nutzer **vor** einer Entscheidung lesen muss, schickt Claude als Datei vor dem Fenster.
+
+**C. Bauen und Veröffentlichen**
+8. **Kleine Versionen:** 2–3 zusammengehörige Punkte, **höchstens 2 Themen** je Version; Korrekturen sofort, bevor
+   Neues kommt; nicht kreuz und quer. (Ersetzt die ‚etwa 5 Punkte‘ in Abschnitt 6.)
+9. **Veröffentlichungs-Skript:** erhöht alle Versionen, prüft, veröffentlicht AppDesign vor der App und wartet auf
+   Pages (A-05).
+10. **Feste Fassung der allgemeinen Regeln je App:** Jede AppDesign-Version liegt zusätzlich in einem eigenen,
+    unveränderlichen Ordner; jede App bindet **genau ihre** Fassung ein. Eine App wird nur auf eine neuere Fassung
+    gehoben, wenn Claude **vorher fragt** und der Nutzer zustimmt (Umsetzung mit A-05).
+11. **Bericht nach einer Version:** 3–5 Sätze, dazu eine **vollständige Aufzählung aller Änderungen**, dann die
+    Prüfpunkte Schritt für Schritt. Ist ein Fehler durchgerutscht, steht immer dabei, **warum** die Prüfung ihn
+    übersehen hat.
+
+**D. Sitzungen und Übergabe**
+12. **Ein Thema je Sitzung.** Eine Sitzung ist ein Chat in der Claude-Code-App. Lange Sitzungen fasst das System
+    automatisch zusammen – dabei gehen Einzelheiten verloren. Deshalb:
+13. **Claude schlägt rechtzeitig eine neue Sitzung vor**, sobald ein Thema abgeschlossen ist, die Sitzung groß wird
+    (etwa ab 300.000 Token Kontext) oder bereits automatisch zusammengefasst wurde – im Auswahlfenster
+    ‚Neue Sitzung beginnen? Ja/Nein‘.
+14. **Bei Ja schreibt Claude sofort die Übergabe** nach `UEBERGABE.md` im Repo AppDesign und veröffentlicht sie:
+    Versionen, offene Prüfpunkte, nächste Schritte, neue Vereinbarungen (die zusätzlich schon in den Richtlinien
+    stehen) und was zuerst zu lesen ist. Dazu gibt Claude einen **Starttext** zum Kopieren.
+15. **Neue Sitzung:** Der Nutzer öffnet einen neuen Chat mit derselben Umgebung und fügt den Starttext ein. Claude
+    liest die Übergabe und die Richtlinien und gibt zuerst das **Lagebild** (Version, offene Prüfpunkte,
+    Backlog-Spitze), dann wird gearbeitet.
+16. **Übergabe statt Gedächtnis:** Jede Vereinbarung kommt **sofort** in die Richtlinien, nicht erst am Ende. Was
+    nicht auf GitHub steht, gibt es in der nächsten Sitzung nicht.
+17. **Rückmeldung kurz:** Nummer, ‚nicht ok‘ und ein Stichwort genügen; bei Unklarem fragt Claude nach.
 
 ---
 
@@ -147,8 +207,8 @@ App-spezifische Punkte stehen in der `CLAUDE.md` des jeweiligen App-Repos.
 ## 6. Sammelversionen
 
 - **Wann Claude nach einer Version fragt:** erst, wenn sich eine Version lohnt –
-  - ein **größeres Thema** ist fertig geklärt, **oder**
-  - etwa **5 Punkte** sind in „0. Nächste Version“ gesammelt, **oder**
+  - ein **Thema** ist fertig geklärt, **oder**
+  - **2–3 zusammengehörige Punkte** (höchstens 2 Themen, Abschnitt 0 Nr. 8) sind in „0. Nächste Version“ gesammelt, **oder**
   - der Nutzer sagt jederzeit „Version bauen“.
   Dann: „Soll ich Version X.Y.Z mit [Liste aller bereiten Punkte] erstellen? Ja/Nein“.
 - **Sofort-Korrektur** (eigene kleine Version außer der Reihe) nur bei schweren Fehlern:
@@ -232,6 +292,7 @@ App-spezifische Punkte stehen in der `CLAUDE.md` des jeweiligen App-Repos.
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 2.0.0 | 14.10.2026 | Haupt | Arbeitsprozess 2.0 (Abschnitt 0, Vorrang): Fall-Liste vor jedem Bau, parallel und sparsam arbeiten, Regeln bei jeder neuen Regel zusammenfassen, allgemeine Regel immer erfragen, Safari nachbilden, Varianten nebeneinander, Fenster nur Ja/Nein mit ‚Ich schreibe im Chat‘, kleine Versionen (höchstens 2 Themen), Veröffentlichungs-Skript, feste AppDesign-Fassung je App, Bericht mit vollständiger Aufzählung, ein Thema je Sitzung, Übergabe-Datei `UEBERGABE.md`, Lagebild, kurze Rückmeldung |
 | 1.16.0 | 14.10.2026 | Neben | Fehler aus der Prüfung am Gerät: zuerst die automatische Prüfung so schärfen, dass sie den Fehler findet, dann beheben, dann dieselbe Lücke überall suchen; Testfälle selbst ableiten; Tests bilden Safari nach. §1: jede Meldung deutsch (aus 1.15.1) |
 | 1.15.1 | 13.10.2026 | Korrektur | §1: jede Meldung deutsch – auch Zwischenmeldungen, Statuszeilen, Bildunterschriften und Fragen im Auswahlfenster |
 | 1.15.0 | 13.10.2026 | Neben | ‚Fertig‘ erst nach erfolgreichen Pages-Läufen beider Repos; README mit Tabelle ‚Verwendete Versionen‘ (R-49); Prüfliste beginnt mit /0 ‚Version prüfen‘, jeder Schritt nennt die Meldung je Gerät, mit automatischem Test (R-50) |
