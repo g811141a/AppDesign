@@ -11,9 +11,9 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Prio | Thema | bereit seit |
 |---|---|---|---|
-| – | – | zurzeit nichts bereit | – |
+| A-05a | 1 | Prüfungen 2.0, Version A (AppDesign 4.13.0 · Reiselogbuch 3.12.0): Tests melden Fehler, Grundregeln nach jedem Schritt, parallel mit Abbruch beim ersten Fehler, zusätzlich WebKit – Fall-Liste `arbeit/A-05 Fall-Liste.md` Teile A, B, C | 14.10.2026 |
 
-**0 Punkte bereit** · gebaut wird erst nach ‚Ja‘
+**1 Punkt bereit** · gebaut wird erst nach ‚Ja‘
 
 ## 1. Auf iPad und iPhone prüfen
 
@@ -25,7 +25,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| A-05 | 1 | Prüfungen 2.0 (eigene Sitzung; begonnen in 4.11.2–4.11.4: R-37 überall, R-51, R-52): Veröffentlichungs-Skript; feste AppDesign-Fassung je App (unveränderlicher Ordner je Version, App nur nach Rückfrage heben; danach W-4 nachführen); Tests parallel, schnellste zuerst; Ablauf-Tests der App melden Fehler statt nur Werte auszugeben (gefunden in A-02a: viele `ablauf-*.mjs` geben nur aus, `alle.sh` zeigt nur Skriptfehler); Grundregeln nach jeder Handlung in jeder Ansicht; WebKit – gesperrte Adressen und Ort der Freigabe nennen (F-1) | offen |
+| A-05 | 1 | Prüfungen 2.0 – Fall-Liste freigegeben 14.10.2026; Version A siehe 0., danach Version B (4.14.0: feste Fassung mit `tests/`, Veröffentlichungs-Skript, W-4). Ursprünglich (eigene Sitzung; begonnen in 4.11.2–4.11.4: R-37 überall, R-51, R-52): Veröffentlichungs-Skript; feste AppDesign-Fassung je App (unveränderlicher Ordner je Version, App nur nach Rückfrage heben; danach W-4 nachführen); Tests parallel, schnellste zuerst; Ablauf-Tests der App melden Fehler statt nur Werte auszugeben (gefunden in A-02a: viele `ablauf-*.mjs` geben nur aus, `alle.sh` zeigt nur Skriptfehler); Grundregeln nach jeder Handlung in jeder Ansicht; WebKit – gesperrte Adressen und Ort der Freigabe nennen (F-1) | offen |
 | A-01 | 3 | Startseite g811141a.github.io mit allen Apps (früher S-03) | später |
 
 ---
