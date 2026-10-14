@@ -1772,3 +1772,5 @@ Alle punkte ok
 **2026-10-14 · Entscheidung (Sitzung Reiselogbuch 0003):** WebKit in Version A → **Ja** · Setup-Skript → **Ja** · Fall-Liste A-05 → **Ja** · feste Fassung mit `design.css`, `ui.js` und `tests/` → **ok** · zwei Versionen (A: Tests, B: Fassung und Skript) → **Ja** · Version A bauen → **Ja** · Fund R-3.1 Quartier-Link → **a) unsichtbar 44 px, in Version A**.
 
 **2026-10-14 · Nutzer (Sitzung Reiselogbuch 0003):** Neues Thema Prio 2: Beim Neustart soll das iPhone in der Startliste stehen, nicht im ersten offenen Tag einer Reise; das iPad bleibt, wie es ist. → Backlog Reiselogbuch T-84 · allgemeine Regel → **Nein, nur Reiselogbuch**.
+
+**2026-10-14 · Nutzer (Sitzung Reiselogbuch 0003):** P-35 erfolgreich (alle Punkte ok).
