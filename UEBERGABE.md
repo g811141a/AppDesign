@@ -14,8 +14,7 @@
 | Zusammenarbeit allgemein | 2.2.0 (Abschnitt 0 = Arbeitsprozess 2.0, hat Vorrang; Abschnitte 1–9 angepasst) | `README - Zusammenarbeit allgemein.md` |
 
 - **Chatnummer:** die nächste Sitzung heißt **Reiselogbuch 0003** (Zusammenarbeit 0 Nr. 13).
-- **Offene Prüfpunkte:** **P-34** (Reiselogbuch 3.11.7 mit AppDesign 4.12.2) – nur /0 Version prüfen; Prüfliste im
-  CHANGELOG des Reiselogbuchs.
+- **Offene Prüfpunkte:** keine – P-34 erledigt (alles in Ordnung, 14.10.2026).
 - **Nächste Version:** nichts bereit (AppDesign und Reiselogbuch).
 - **Erinnerung:** ‚Backlog-Erinnerung (AppDesign und Reiselogbuch)‘ montags 8:58 – startet jede Woche eine frische
   Sitzung, liest diese Datei und beide Backlogs und endet mit dem Starttext.
@@ -52,8 +51,10 @@
 
 ## 3. Nächster Schritt
 
-1. **P-34 prüfen lassen** (Zusammenarbeit: erst prüfen, dann Neues).
-2. Danach **A-05 Prüfungen 2.0** (eigene Sitzung, Prio 1) – siehe 4.
+**A-05 Prüfungen 2.0** (eigene Sitzung ‚Reiselogbuch 0003 – A-05 Prüfungen 2.0‘, Prio 1) – zuerst die Fall-Liste,
+Umfang siehe 4. Bekannt aus 0002: `github.io` ist aus der Cloud-Umgebung gesperrt (403) – das Veröffentlichungs-Skript
+muss auf den Pages-Lauf über die GitHub-Actions-Liste warten, nicht über die Pages-Adresse; das ReiseLogBuch-Repo muss
+mit Schreibzugriff in der Sitzung sein (`add_repo`, Zugriff push).
 
 ## 4. Danach
 
@@ -82,7 +83,7 @@
 | A-02b Fall-Liste (Schritte 3 und 4) | g811141a/AppDesign | `arbeit/A-02b Fall-Liste.md` |
 | Regeln (Zusammenarbeit, Design) | g811141a/AppDesign | `README - Zusammenarbeit allgemein.md`, `README - Designrichtlinie allgemein.md` |
 | Backlog allgemein | g811141a/AppDesign | `BACKLOG.md` |
-| App: Backlog (P-34 prüfen), Richtlinie, Funktionsbeschreibung, Prüfliste im CHANGELOG | g811141a/ReiseLogBuch | `BACKLOG.md`, `README - Designrichtlinie Reiselogbuch.md`, `PROMPT.md` |
+| App: Backlog, Richtlinie, Funktionsbeschreibung, Prüfliste im CHANGELOG | g811141a/ReiseLogBuch | `BACKLOG.md`, `README - Designrichtlinie Reiselogbuch.md`, `PROMPT.md` |
 
 In der neuen Sitzung müssen **beide Repos** (AppDesign und ReiseLogBuch) ausgewählt sein.
 
