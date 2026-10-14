@@ -3,6 +3,20 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.12.1 – 14.10.2026 (Korrektur)
+
+AppDesign 4.12.1 · Designrichtlinie allgemein 4.12.1 · Zusammenarbeit allgemein 2.1.1 · geprüft mit Reiselogbuch 3.11.6
+
+- **R-2.1 – Seitenleiste bei offener Tastatur (P-32/2):** `#side` wandert wie die Kopfzeile um `--vv-top` mit, wenn Safari den
+  sichtbaren Bereich verschiebt (z. B. beim Sprung zum ersten Treffer der Suche); vorher rückte sie nach oben.
+  `barStill` (hig.mjs) bildet die Verschiebung von Safari jetzt nach (`visualViewport.offsetTop`) – meldete den Fehler am
+  iPad und in der iPhone-Startliste, dann behoben. Warum übersehen: Chrome verschiebt den sichtbaren Bereich nie, die
+  Tastatur war nur durch ein kleineres Fenster nachgebildet.
+- **R-10.1 – Werte im Abgleichbericht (P-32/1):** `createSync` hat die Angabe `values` (je Feld, wie ein Wert angezeigt
+  wird); der Bericht zeigt so dasselbe wie die App statt gespeicherter Kürzel. Rückwärtsverträglich.
+- **Katalogprüfung:** `checkCatalog` sucht jetzt auch in den Kommentaren von `v4/`, Vorlage und App und meldet ungültige
+  Nummern wie ‚R-9.1.3‘ – zwei solche Stellen aus dem Umnummerieren in 4.12.0 (design.css, index.html) behoben.
+
 ## 4.12.0 – 14.10.2026 (Neben)
 
 AppDesign 4.12.0 · Designrichtlinie allgemein 4.12.0 · Zusammenarbeit allgemein 2.1.1 · geprüft mit Reiselogbuch 3.11.5

@@ -1,6 +1,6 @@
 # Designrichtlinie allgemein
 
-**Version 4.12.0** · Stand 14.10.2026
+**Version 4.12.1** · Stand 14.10.2026
 
 Allgemeine Gestaltungs- und Bedienregeln für alle iPad-Web-Apps von g811141a (seit 4.1.0 auch
 auf dem iPhone, Abschnitt 15.17).
@@ -46,6 +46,8 @@ App-spezifische Regeln stehen in einer eigenen Datei je App
 - **Leisten stehen fest** (R-2.1): Kopfzeile (iPad) und Seitenkopf (iPhone) `position: fixed` (nicht sticky), keine
   Feder am Rand (`overscroll-behavior: none` auf `html`/`body`); in der Seitenleiste scrollen nur die Einträge
   (`.side-list`), Kopf und Backup-Kachel liegen außerhalb des Scrollbereichs.
+  Bei offener Tastatur verschiebt Safari den sichtbaren Bereich; Kopfzeile und Seitenleiste wandern um `--vv-top` mit
+  (seit 4.12.1 auch die Seitenleiste).
 - **Nie ungewollt vergrößern** (R-1.3): `touch-action: manipulation`; Zoomen mit zwei Fingern bleibt möglich.
 - **Gleiche Bedienung auf iPad und iPhone** (R-1.1): gleiche Kapseln oben (z. B. [`plus` | `ellipsis`],
   [`share` | `search` | `ellipsis`]), gleiche Suche, gleiche Menüs – das iPhone ordnet nur die Seiten anders an (15.17).
@@ -574,7 +576,7 @@ Verhalten · technischer Name). In AppDesign ist jede Komponente einmal programm
 ### 15.11 Eingabefeld mit Fehlermeldung
 - **Apple:** [HIG – Text fields](https://developer.apple.com/design/human-interface-guidelines/text-fields)
 - Fläche weiß bzw. `--dlg-field`, Lichtkante `--btn-rim` und Schatten `--float` wie die
-  schwebenden Schaltflächen (auch Zahlenfelder wie Gesamtkosten), Radius 10 px, 44 px hoch
+  schwebenden Schaltflächen (auch Zahlenfelder wie Gesamtausgaben), Radius 10 px, 44 px hoch
   (Textfelder mehrzeilig); Fehler: 1 px roter Rand und rote Meldung darunter
   (Abschnitt 8). Textfelder wachsen mit dem Inhalt; Datumsfelder so breit wie das Datum.
 
@@ -665,7 +667,7 @@ Verhalten · technischer Name). In AppDesign ist jede Komponente einmal programm
 ### 15.18 Abgleich zwischen iPad und iPhone (seit 4.10.0, R-9.2 bis R-9.4)
 - **Apple:** iCloud gleicht ohne Rückfrage ab; ohne Entwicklerkonto geht es bei uns über ein Backup in
   iCloud Drive – mit derselben Grundregel wie Apple: **die neuere Änderung gilt**, je Feld.
-- **Technisch:** gemeinsamer Baustein `createSync({ list, sub, subAt, maxFields, nouns, labels, app })` in `ui.js` – jede App mit
+- **Technisch:** gemeinsamer Baustein `createSync({ list, sub, subAt, maxFields, nouns, labels, values, app })` in `ui.js` – jede App mit
   Backup nutzt ihn (keine eigene Umsetzung, R-1.1). Beim Speichern stempelt `sync.stamp()` jedes geänderte Feld mit
   Zeitpunkt und Gerät (Kopfdaten `metaAt`, Unterdaten wie Tage `subAt`), gelöschte Einträge kommen nach
   `data.deleted`; das Backup enthält `savedAt` und `savedOn`.
@@ -684,7 +686,7 @@ Verhalten · technischer Name). In AppDesign ist jede Komponente einmal programm
      - Kopf: ‚Abgeglichen am … auf diesem iPhone‘ · ‚Backup: vom iPad, erstellt am …‘ · ‚Ergebnis: 1 aktualisiert · 1 neu ·
        1 gelöscht · 3 unverändert‘.
      - **‚Änderungen auf diesem iPhone‘** – Tabelle wie in der Ausgabe (grauer Kopf, Spaltenköpfe halbfett, Linien):
-       Eintrag (z. B. Reiselogbuch) · Tag (‚Mo, 12.10.2026‘, ‚–‘ für Kopfdaten) · Feld (Namen aus `labels`) · Neu · Vorher
+       Eintrag (z. B. Reiselogbuch) · Tag (‚Mo, 12.10.2026‘, ‚–‘ für Kopfdaten) · Feld (Namen aus `labels`) · Neu · Vorher (Werte wie in der App über `values`, seit 4.12.1)
        · Vom Gerät · Geändert am; je Feld eine Zeile; der Eintrag ist in der ersten Spalte über alle seine Zeilen
        zusammengefasst (Tag, Gerät und Zeitpunkt je Tag) und bildet eine Tabellenzeile – sie ist ganz weiß oder ganz grau,
        im Wechsel je Eintrag (R-6.2); neu angelegte
@@ -913,6 +915,7 @@ Die alten Nummern R-01 bis R-52 (bis 4.11.4) gelten nicht mehr; sie stehen nur n
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 4.12.1 | 14.10.2026 | Korrektur | Aus P-32: Seitenleiste folgt bei offener Tastatur dem von Safari verschobenen sichtbaren Bereich wie die Kopfzeile (R-2.1, Prüfung bildet Safari nach); `createSync` mit `values` – der Abgleichbericht zeigt Werte wie die App (R-10.1); Katalogprüfung auch in Code-Kommentaren |
 | 4.12.0 | 14.10.2026 | Neben | **Regelkatalog neu (A-02a):** 52 Regeln → 34 in 10 Themen, Nummern R-<Thema>.<Nr>, je Regel genau eine Prüfung (Spalte ‚Prüfung‘), 5 neue Regeln R-2.3, R-4.4, R-5.3, R-5.4, R-6.4; Zebra je Tabellenzeile auch in App-Tabellen (R-6.1); R-50 → Zusammenarbeit 7; Zuordnung alt → neu; Abschnitte 1, 9, 10, 11, 12, 14 verweisen auf die Regeln statt sie zu wiederholen; Grundprinzipien: iPad und iPhone, Abgleich über das Backup (W-6) |
 | 4.11.4 | 14.10.2026 | Korrektur | R-52: zusammengefasste Zellen in der ersten Spalte gelten als eine Tabellenzeile – alle Zellen dahinter in ihrer Farbe, Wechsel weiß/grau je Tabellenzeile; Abgleichbericht je Reiselogbuch eine Tabellenzeile; Prüfung zählt Tabellenzeilen |
 | 4.11.3 | 14.10.2026 | Korrektur | Neue Regel R-52: Mustertabelle der Ausgabe als Baustein `outputCss` für jede Ausgabe, Vorschau und jeden Bericht; Prüfung vergleicht jede Tabelle Eigenschaft für Eigenschaft mit ihr – Anlass: Abgleichbericht mit dickerer Linie, ohne graue Zeilen und mit halbfettem Kopf (P-29/3) |

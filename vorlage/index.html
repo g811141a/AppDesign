@@ -8,9 +8,9 @@
 <meta name="apple-mobile-web-app-title" content="Neue App">
 <meta name="theme-color" content="#f2f2f7">
 <title>Neue App</title>
-<!-- Vorlage für eine neue App (AppDesign 4.12.0). Im App-Repo liegt AppDesign daneben: ../AppDesign/v4/…
+<!-- Vorlage für eine neue App (AppDesign 4.12.1). Im App-Repo liegt AppDesign daneben: ../AppDesign/v4/…
      R-10.3: ui.js und design.css immer mit ?v=<AppDesign-Version> einbinden (auch in sw.js), AD_NEEDED gleich setzen. -->
-<link rel="stylesheet" href="../v4/design.css?v=4.12.0">
+<link rel="stylesheet" href="../v4/design.css?v=4.12.1">
 <style>
   /* Nur, was zur App gehört – alles Gemeinsame kommt aus design.css */
 </style>
@@ -20,13 +20,13 @@
 <dialog id="dlg"></dialog>
 <dialog id="msg"></dialog>
 
-<script src="../v4/ui.js?v=4.12.0"></script>
+<script src="../v4/ui.js?v=4.12.1"></script>
 <script>
 'use strict';
 
 const APP_VERSION = '0.1.0';
 // R-10.3: benötigte AppDesign-Fassung; ist eine andere geladen, erscheint beim Start ein Hinweis.
-const AD_NEEDED = '4.12.0';
+const AD_NEEDED = '4.12.1';
 const adLoaded = () => ({ js: typeof AD_VERSION === 'string' ? AD_VERSION : 'älter',
   css: getComputedStyle(document.documentElement).getPropertyValue('--ad-version').trim().replace(/"/g, '') || 'älter' });
 setTimeout(() => {
