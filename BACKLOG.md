@@ -11,7 +11,9 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Prio | Thema | bereit seit |
 |---|---|---|---|
-| – | – | zurzeit nichts – A-05 ist noch in Klärung (eigene Sitzung, siehe unten) | – |
+| A-02a | 1 | **AppDesign 4.12.0 – Regelkatalog neu:** 52 Regeln → 34 in 10 Themen, Nummern R-Thema.Nr, je Regel eine Prüfung, 5 neue Regeln mit Prüfung, R-50 → Zusammenarbeit 7; Abschnitte 1–15 verweisen statt wiederholen; Prüfskripte auf neue Nummern; Zebra je Tabellenzeile auch in App-Tabellen. Freigegeben 14.10. – Grundlage `arbeit/A-02 Regelkatalog-Entwurf.md` | 14.10.2026 |
+
+**1 Punkt bereit** · gebaut wird erst nach ‚Ja‘
 
 ## 1. Auf iPad und iPhone prüfen
 
@@ -23,7 +25,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| A-02 | 1 | **In Arbeit (Sitzung 14.10.2026):** Richtlinien aufräumen – Schritt 1 Verlauf-Abgleich erledigt, Ergebnis in `arbeit/A-02 Verlauf-Abgleich.md` (fehlt F-1 bis F-4, widersprüchlich W-1 bis W-9, doppelt). Weiter: 2. Regelkatalog nach Themen ordnen und zusammenfassen (Ziel 30–35 Regeln, je Regel eine Prüfung; dabei F-3 Zebra je Tabellenzeile für alle Tabellen) · 3. Allgemeines aus Designrichtlinie Reiselogbuch und PROMPT nach AppDesign (F-4 Vorschau wischen, W-7) · 4. Zusammenarbeit allgemein und CLAUDE.md beider Repos an Abschnitt 0 anpassen (W-1 bis W-3, W-5, W-6) | offen |
+| A-02 | 1 | **In Arbeit (Sitzung 14.10.2026):** Richtlinien aufräumen – Schritt 1 Verlauf-Abgleich erledigt, Ergebnis in `arbeit/A-02 Verlauf-Abgleich.md` (fehlt F-1 bis F-4, widersprüchlich W-1 bis W-9, doppelt). Schritt 2 als Entwurf freigegeben → A-02a (Abschnitt 0). Weiter: 3. Allgemeines aus Designrichtlinie Reiselogbuch und PROMPT nach AppDesign (F-4 Vorschau wischen, W-7) · 4. Zusammenarbeit allgemein und CLAUDE.md beider Repos an Abschnitt 0 anpassen (W-1 bis W-3, W-5, W-6; entschieden: W-1 Korrekturen sofort, W-2 Antwortzeile entfällt) | offen |
 | A-05 | 1 | Prüfungen 2.0 (eigene Sitzung; begonnen in 4.11.2–4.11.4: R-37 überall, R-51, R-52): Veröffentlichungs-Skript; feste AppDesign-Fassung je App (unveränderlicher Ordner je Version, App nur nach Rückfrage heben; danach W-4 nachführen); Tests parallel, schnellste zuerst; Grundregeln nach jeder Handlung in jeder Ansicht; WebKit – gesperrte Adressen und Ort der Freigabe nennen (F-1) | offen |
 | A-01 | 3 | Startseite g811141a.github.io mit allen Apps (früher S-03) | später |
 
