@@ -1756,3 +1756,7 @@ Alle punkte ok
 **2026-10-14 · Entscheidung (Sitzung Reiselogbuch 0001):** Vorschau-Spalten → **c) zwei breit, zwei schmal** (28 : 28 : 22 : 22) · feste Spaltenanteile als allgemeine Regel → **Nein** (nur Reiselogbuch) · AppDesign 4.12.1 und Reiselogbuch 3.11.6 mit 1, 2, 4 und ‚Gesamtausgaben‘ erstellen → **Ja (Empfohlen)**
 
 **2026-10-14 · Nutzer (Sitzung Reiselogbuch 0001):** Test zu P-33 alle ok.
+
+**2026-10-14 · Start (Sitzung Reiselogbuch 0002):** von Sitzung 0001 gestartet – Lagebild, dann A-02 Schritte 3 und 4, zuerst die Fall-Liste.
+
+**2026-10-14 · Entscheidung (Sitzung Reiselogbuch 0002):** Fall-Liste A-02b → **Ja** · Schritt 3: Wiederholungen in der Designrichtlinie Reiselogbuch durch Verweise ersetzen → **Ja, alle** · Schritt 4: Abschnitt 0 bleibt vorne, Abschnitte 1–9 mit Verweisen (2.2.0) → **Ja** · Versionen AppDesign 4.12.2, Zusammenarbeit 2.2.0, Reiselogbuch 3.11.7 → **Ja** · Bauen → **Ja**.

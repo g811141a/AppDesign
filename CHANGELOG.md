@@ -3,6 +3,27 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.12.2 – 14.10.2026 (Korrektur)
+
+AppDesign 4.12.2 · Designrichtlinie allgemein 4.12.2 · Zusammenarbeit allgemein 2.2.0 · geprüft mit Reiselogbuch 3.11.7
+
+A-02 Schritte 3 und 4 (Fall-Liste `arbeit/A-02b Fall-Liste.md`) – nur Richtlinien, Zusammenarbeit und Prüfungen; `v4/` nur
+Versionsnummer.
+
+- **Designrichtlinie allgemein, Abschnitt 7 (F-4):** Vorschaufenster in voller Seitenbreite, seitlich wischen auf iPad und
+  iPhone (R-6.4) – stand bisher nur in der Designrichtlinie Reiselogbuch.
+- **Zusammenarbeit allgemein 2.2.0 (W-1 bis W-3):** Korrekturen sofort als Korrekturversion, auch ohne Datenverlust (§6);
+  Antwortzeile nur noch bei mehr als 4 Fragen, jedes Fenster mit ‚Ich schreibe im Chat‘ (§2); Muster und Erklärungen als
+  Datei vor dem Fenster (§2); Doppeltes in §5 und §7 durch Verweise auf Abschnitt 0 ersetzt.
+- **CLAUDE.md 2.0.0:** zuerst UEBERGABE.md, Regeln nur noch als Verweis.
+- **Neue Prüfung `checkCollab` (doku.mjs):** veraltete Stellen in Zusammenarbeit, CLAUDE.md, Backlogs, App-Richtlinie und
+  PROMPT.md (‚etwa 5 Punkte‘, Korrektur nur bei Datenverlust, Muster im Fragetext, Antwortzeile, ‚⏱ Gesamt‘, ‚Backup laden
+  … ersetzt‘, ‚nur auf dem iPad‘); Verweise auf die Zusammenarbeit; CLAUDE.md mit UEBERGABE.md zuerst; Versionszeile in
+  PROMPT.md; Feldnamen des Abgleichberichts in der App-Richtlinie = `labels`. Vorher rot mit 23 Meldungen, jetzt grün.
+- **Gefunden:** `checkCatalog` prüfte die Zusammenarbeit nie – der Eintrag stand versehentlich im Kommentar der Zeile
+  davor. Behoben. Die Versionszeile in PROMPT.md des Reiselogbuchs stand seit 3.11.5 auf alten Nummern; Warum übersehen:
+  `checkDocs` prüfte nur README und CHANGELOG.
+
 ## 4.12.1 – 14.10.2026 (Korrektur)
 
 AppDesign 4.12.1 · Designrichtlinie allgemein 4.12.1 · Zusammenarbeit allgemein 2.1.1 · geprüft mit Reiselogbuch 3.11.6

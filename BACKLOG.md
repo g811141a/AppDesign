@@ -1,6 +1,6 @@
 # AppDesign – Backlog (allgemeine Themen)
 
-**Stand 14.10.2026** · Aktuelle Version: AppDesign 4.12.1
+**Stand 14.10.2026** · Aktuelle Version: AppDesign 4.12.2
 
 Allgemeine Themen, die alle Apps betreffen. App-Themen stehen im Backlog der jeweiligen App.
 Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
@@ -19,13 +19,12 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| – | – | zurzeit nichts zu prüfen | – |
+| P-34 | 1 | AppDesign 4.12.2 mit Reiselogbuch 3.11.7 (A-02 Schritte 3 und 4) – Prüfliste im CHANGELOG des Reiselogbuchs | prüfen |
 
 ## 2. Weitere Themen (in Klärung)
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| A-02 | 1 | **In Arbeit (Sitzung 14.10.2026):** Richtlinien aufräumen – Schritt 1 Verlauf-Abgleich erledigt, Ergebnis in `arbeit/A-02 Verlauf-Abgleich.md` (fehlt F-1 bis F-4, widersprüchlich W-1 bis W-9, doppelt). Schritt 2 gebaut in AppDesign 4.12.0 (A-02a). Weiter: 3. Allgemeines aus Designrichtlinie Reiselogbuch und PROMPT nach AppDesign (F-4 Vorschau wischen, W-7) · 4. Zusammenarbeit allgemein und CLAUDE.md beider Repos an Abschnitt 0 anpassen (W-1 bis W-3, W-5, W-6; entschieden: W-1 Korrekturen sofort, W-2 Antwortzeile entfällt) | offen |
 | A-05 | 1 | Prüfungen 2.0 (eigene Sitzung; begonnen in 4.11.2–4.11.4: R-37 überall, R-51, R-52): Veröffentlichungs-Skript; feste AppDesign-Fassung je App (unveränderlicher Ordner je Version, App nur nach Rückfrage heben; danach W-4 nachführen); Tests parallel, schnellste zuerst; Ablauf-Tests der App melden Fehler statt nur Werte auszugeben (gefunden in A-02a: viele `ablauf-*.mjs` geben nur aus, `alle.sh` zeigt nur Skriptfehler); Grundregeln nach jeder Handlung in jeder Ansicht; WebKit – gesperrte Adressen und Ort der Freigabe nennen (F-1) | offen |
 | A-01 | 3 | Startseite g811141a.github.io mit allen Apps (früher S-03) | später |
 
@@ -35,6 +34,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Thema | Version | Datum |
 |---|---|---|---|
+| E-08 | A-02 Schritte 3 und 4: Allgemeines aus der App nach AppDesign (F-4, W-7, W-8), Zusammenarbeit an Abschnitt 0 angepasst (W-1 bis W-3), CLAUDE.md beider Repos neu (W-5), Prüfung `checkCollab`; W-6 war schon erledigt, W-4 bleibt bis A-05 | AppDesign 4.12.2 | 14.10.2026 |
 | E-07 | Geprüft: P-33 alles in Ordnung (AppDesign 4.12.1 mit Reiselogbuch 3.11.6); A-02a damit abgeschlossen | AppDesign 4.12.1 | 14.10.2026 |
 | E-06 | Korrekturen aus P-32: Seitenleiste folgt dem sichtbaren Bereich (R-2.1, Safari nachgebildet), `createSync` mit `values` (R-10.1), Katalogprüfung in Code-Kommentaren | AppDesign 4.12.1 | 14.10.2026 |
 | E-05 | A-02a Regelkatalog neu: 34 Regeln in 10 Themen (R-<Thema>.<Nr>), je Regel eine Prüfung, 5 neue Regeln, `ablauf.mjs` und `checkCatalog` neu, Zebra auch in App-Tabellen | AppDesign 4.12.0 | 14.10.2026 |

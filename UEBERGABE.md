@@ -1,26 +1,38 @@
 # Übergabe an die nächste Sitzung
 
-**Stand 14.10.2026** · geschrieben am Ende der Sitzung ‚Reiselogbuch 0001 – AppDesign 4.12.0‘
+**Stand 14.10.2026** · geschrieben in der Sitzung ‚Reiselogbuch 0002 – A-02 Schritte 3 und 4‘
 (Zusammenarbeit allgemein 2.0.0, Abschnitt 0 Nr. 14). **Claude liest diese Datei zu Beginn jeder Sitzung zuerst.**
 
 ## 1. Lagebild
 
 | Teil | Version | Datei |
 |---|---|---|
-| Reiselogbuch | 3.11.6 (14.10.2026 12:19) | g811141a/ReiseLogBuch – `CHANGELOG.md`, `BACKLOG.md`, `PROMPT.md` |
-| AppDesign (ui.js, design.css) | 4.12.1 | g811141a/AppDesign – `CHANGELOG.md`, `BACKLOG.md` |
-| Designrichtlinie allgemein | 4.12.1 (Regelkatalog R-1.1 bis R-10.4, 34 Regeln in 10 Themen) | `README - Designrichtlinie allgemein.md` |
-| Designrichtlinie Reiselogbuch | 3.11.6 | im Repo ReiseLogBuch |
-| Zusammenarbeit allgemein | 2.1.1 (Abschnitt 0 = Arbeitsprozess 2.0, hat Vorrang) | `README - Zusammenarbeit allgemein.md` |
+| Reiselogbuch | 3.11.7 (14.10.2026 12:58) | g811141a/ReiseLogBuch – `CHANGELOG.md`, `BACKLOG.md`, `PROMPT.md` |
+| AppDesign (ui.js, design.css) | 4.12.2 | g811141a/AppDesign – `CHANGELOG.md`, `BACKLOG.md` |
+| Designrichtlinie allgemein | 4.12.2 (Regelkatalog R-1.1 bis R-10.4, 34 Regeln in 10 Themen) | `README - Designrichtlinie allgemein.md` |
+| Designrichtlinie Reiselogbuch | 3.11.7 | im Repo ReiseLogBuch |
+| Zusammenarbeit allgemein | 2.2.0 (Abschnitt 0 = Arbeitsprozess 2.0, hat Vorrang; Abschnitte 1–9 angepasst) | `README - Zusammenarbeit allgemein.md` |
 
-- **Chatnummer:** diese Übergabe ist für **Reiselogbuch 0002**; die übernächste Sitzung heißt **Reiselogbuch 0003**
-  (Zusammenarbeit 0 Nr. 13).
-- **Offene Prüfpunkte:** keine – P-32 und P-33 erledigt (P-33 alles in Ordnung, 14.10.2026).
+- **Chatnummer:** die nächste Sitzung heißt **Reiselogbuch 0003** (Zusammenarbeit 0 Nr. 13).
+- **Offene Prüfpunkte:** **P-34** (Reiselogbuch 3.11.7 mit AppDesign 4.12.2) – nur /0 Version prüfen; Prüfliste im
+  CHANGELOG des Reiselogbuchs.
 - **Nächste Version:** nichts bereit (AppDesign und Reiselogbuch).
 - **Erinnerung:** ‚Backlog-Erinnerung (AppDesign und Reiselogbuch)‘ montags 8:58 – startet jede Woche eine frische
   Sitzung, liest diese Datei und beide Backlogs und endet mit dem Starttext.
 
-## 2. Ergebnisse der Sitzung ‚Reiselogbuch 0001 – AppDesign 4.12.0‘
+## 2. Ergebnisse
+
+**Sitzung ‚Reiselogbuch 0002 – A-02 Schritte 3 und 4‘** (Fall-Liste `arbeit/A-02b Fall-Liste.md`, freigegeben):
+- AppDesign 4.12.2 / Reiselogbuch 3.11.7: Vorschau seitlich wischen jetzt in der allgemeinen Richtlinie (Abschnitt 7,
+  R-6.4); Designrichtlinie Reiselogbuch nur noch Ausprägungen mit Verweisen; alter Text ‚Backup laden … ersetzt‘ weg;
+  Feldnamen ‚Reisemittel‘; PROMPT-Versionszeile nachgeführt.
+- Zusammenarbeit 2.2.0: Korrekturen sofort (auch ohne Datenverlust), Antwortzeile nur bei mehr als 4 Fragen, Muster als
+  Datei vor dem Fenster, Doppeltes durch Verweise auf Abschnitt 0. CLAUDE.md AppDesign 2.0.0, Reiselogbuch 3.0.0.
+- Neue Prüfung `checkCollab` (doku.mjs) gegen veraltete Stellen; `checkCatalog` prüft jetzt auch die Zusammenarbeit
+  (stand versehentlich im Kommentar); Vorschau-Prüfung auch iPad hoch und iPhone quer.
+- A-02 ist damit abgeschlossen (W-4 bleibt bis A-05).
+
+**Sitzung ‚Reiselogbuch 0001 – AppDesign 4.12.0‘:**
 
 - **Fall-Liste:** `arbeit/A-02a Fall-Liste.md` (freigegeben), mit Ergebnis je Fall.
 - **AppDesign 4.12.0 (A-02a):** Regelkatalog neu (Abschnitt 17, mit Spalte ‚ersetzt‘ und Zuordnung alt → neu); alle
@@ -38,13 +50,10 @@
 - **Gefunden:** Viele `ablauf-*.mjs` der App geben Werte nur aus und melden keine Fehler (`alle.sh` zeigt nur
   Skriptfehler) → in A-05 aufgenommen.
 
-## 3. Nächster Schritt: A-02 Schritte 3 und 4 (eigene Version, Prio 1)
+## 3. Nächster Schritt
 
-1. **Zuerst die Fall-Liste** (Zusammenarbeit 0 Nr. 1), dann Bau erst nach ‚Ja‘ (Version vorher erfragen).
-2. Schritt 3: Allgemeines aus Designrichtlinie Reiselogbuch und PROMPT nach AppDesign (F-4 Vorschau wischen, W-7 alter
-   Text ‚Backup laden … ersetzt‘) – Grundlage `arbeit/A-02 Verlauf-Abgleich.md`.
-3. Schritt 4: Zusammenarbeit allgemein (W-1 Korrekturen sofort, W-2 Antwortzeile entfällt, W-3, Abschnitte 1–9 an
-   Abschnitt 0 anpassen); CLAUDE.md beider Repos neu fassen (W-5).
+1. **P-34 prüfen lassen** (Zusammenarbeit: erst prüfen, dann Neues).
+2. Danach **A-05 Prüfungen 2.0** (eigene Sitzung, Prio 1) – siehe 4.
 
 ## 4. Danach
 
@@ -70,14 +79,15 @@
 | A-02 Schritt 1: Verlauf-Abgleich | g811141a/AppDesign | `arbeit/A-02 Verlauf-Abgleich.md` |
 | A-02 Schritt 2: Regelkatalog-Entwurf (gebaut in 4.12.0) | g811141a/AppDesign | `arbeit/A-02 Regelkatalog-Entwurf.md` |
 | A-02a Fall-Liste mit Ergebnis | g811141a/AppDesign | `arbeit/A-02a Fall-Liste.md` |
+| A-02b Fall-Liste (Schritte 3 und 4) | g811141a/AppDesign | `arbeit/A-02b Fall-Liste.md` |
 | Regeln (Zusammenarbeit, Design) | g811141a/AppDesign | `README - Zusammenarbeit allgemein.md`, `README - Designrichtlinie allgemein.md` |
 | Backlog allgemein | g811141a/AppDesign | `BACKLOG.md` |
-| App: Backlog (P-33 prüfen), Richtlinie, Funktionsbeschreibung, Prüfliste im CHANGELOG | g811141a/ReiseLogBuch | `BACKLOG.md`, `README - Designrichtlinie Reiselogbuch.md`, `PROMPT.md` |
+| App: Backlog (P-34 prüfen), Richtlinie, Funktionsbeschreibung, Prüfliste im CHANGELOG | g811141a/ReiseLogBuch | `BACKLOG.md`, `README - Designrichtlinie Reiselogbuch.md`, `PROMPT.md` |
 
 In der neuen Sitzung müssen **beide Repos** (AppDesign und ReiseLogBuch) ausgewählt sein.
 
 ## 7. Starttext für die neue Sitzung
 
 ```
-Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md, dann die Zusammenarbeit allgemein und die Designrichtlinien, gib mir das Lagebild und beginne mit A-02 Schritte 3 und 4 – zuerst die Fall-Liste.
+Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md, dann die Zusammenarbeit allgemein und die Designrichtlinien, gib mir das Lagebild und beginne mit A-05 Prüfungen 2.0 – zuerst die Fall-Liste.
 ```

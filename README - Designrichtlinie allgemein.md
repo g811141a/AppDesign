@@ -1,6 +1,6 @@
 # Designrichtlinie allgemein
 
-**Version 4.12.1** · Stand 14.10.2026
+**Version 4.12.2** · Stand 14.10.2026
 
 Allgemeine Gestaltungs- und Bedienregeln für alle iPad-Web-Apps von g811141a (seit 4.1.0 auch
 auf dem iPhone, Abschnitt 15.17).
@@ -219,8 +219,9 @@ heller).
 - **Erfassungsfenster** (Einträge erfassen): fast bildschirmbreit; Kopfzeile x · Titel mit
   Zusatzzeile „Automatisch gespeichert um hh:mm“ · Kapsel [chevron-left | chevron-right] zum
   Blättern · Häkchen; automatisches Speichern (Abschnitt 8).
-- **Vorschaufenster**: fast bildschirmbreit, Inhalt immer hell und genau wie die
-  ausgegebene Datei; Kopfzeile x · „Vorschau“ mit Dateiname als Zusatzzeile · Kapsel
+- **Vorschaufenster** (R-6.4): fast bildschirmbreit, Inhalt immer hell und genau wie die
+  ausgegebene Datei, in voller Seitenbreite – ist das Fenster schmaler (iPad hoch, iPhone), wischt man seitlich; kein
+  Inhalt ragt aus der Tabelle (R-6.3); Kopfzeile x · „Vorschau“ mit Dateiname als Zusatzzeile · Kapsel
   [PDF | share blau gefüllt]; nach Teilen bzw. PDF folgt das Ergebnisfenster mit ggf.
   Backup-Erinnerung.
 - **Meldung** (ohne Entscheidung, z. B. Fehler): kleines Fenster, x links oben, Titel,
@@ -915,6 +916,7 @@ Die alten Nummern R-01 bis R-52 (bis 4.11.4) gelten nicht mehr; sie stehen nur n
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 4.12.2 | 14.10.2026 | Korrektur | A-02 Schritt 3: Abschnitt 7 – Vorschaufenster in voller Seitenbreite, seitlich wischen auf iPad und iPhone (R-6.4, bisher nur in der Designrichtlinie Reiselogbuch, F-4); neue Prüfung `checkCollab` (doku.mjs): Zusammenarbeit, CLAUDE.md, Backlogs und App-Doku ohne veraltete Stellen, Versionszeile in PROMPT.md, Feldnamen des Abgleichberichts; `checkCatalog` prüft jetzt auch die Zusammenarbeit |
 | 4.12.1 | 14.10.2026 | Korrektur | Aus P-32: Seitenleiste folgt bei offener Tastatur dem von Safari verschobenen sichtbaren Bereich wie die Kopfzeile (R-2.1, Prüfung bildet Safari nach); `createSync` mit `values` – der Abgleichbericht zeigt Werte wie die App (R-10.1); Katalogprüfung auch in Code-Kommentaren |
 | 4.12.0 | 14.10.2026 | Neben | **Regelkatalog neu (A-02a):** 52 Regeln → 34 in 10 Themen, Nummern R-<Thema>.<Nr>, je Regel genau eine Prüfung (Spalte ‚Prüfung‘), 5 neue Regeln R-2.3, R-4.4, R-5.3, R-5.4, R-6.4; Zebra je Tabellenzeile auch in App-Tabellen (R-6.1); R-50 → Zusammenarbeit 7; Zuordnung alt → neu; Abschnitte 1, 9, 10, 11, 12, 14 verweisen auf die Regeln statt sie zu wiederholen; Grundprinzipien: iPad und iPhone, Abgleich über das Backup (W-6) |
 | 4.11.4 | 14.10.2026 | Korrektur | R-52: zusammengefasste Zellen in der ersten Spalte gelten als eine Tabellenzeile – alle Zellen dahinter in ihrer Farbe, Wechsel weiß/grau je Tabellenzeile; Abgleichbericht je Reiselogbuch eine Tabellenzeile; Prüfung zählt Tabellenzeilen |
