@@ -385,6 +385,15 @@ const found = new Map(), icons = new Map();
       const list = document.querySelector('#side .side-list');
       if (list && list.getBoundingClientRect().height > 0) { const t0 = list.scrollTop; for (const y of [1, 200, list.scrollHeight, 0]) { list.scrollTop = y; await frame(); cmp('Seitenleiste'); } list.scrollTop = t0; }
       scrollTo(0, y0); await frame();
+      // Seit 4.12.1 (P-32/2): Safari nachgebildet – bei offener Tastatur verschiebt Safari den sichtbaren Bereich (visualViewport.offsetTop),
+      // Chrome nie. Jede feste Leiste muss um genau diese Strecke mitwandern, damit sie auf dem Bildschirm an ihrem Platz bleibt.
+      if (window.visualViewport) {
+        const shift = 200, before = snap();
+        Object.defineProperty(visualViewport, 'offsetTop', { get: () => shift, configurable: true });
+        visualViewport.dispatchEvent(new Event('scroll')); await frame();
+        for (const [e, v] of snap()) { const o = before.get(e); if (o && Math.abs(v[0] - o[0] - shift) >= 0.5) out.add(`Leiste ${name(e)} folgt dem von Safari verschobenen sichtbaren Bereich nicht (rückt um ${Math.round(shift - (v[0] - o[0]))} px nach oben)`); }
+        delete visualViewport.offsetTop; visualViewport.dispatchEvent(new Event('scroll')); await frame();
+      }
       return [...out];
     });
     for (const x of bad) note('Regel', `R-2.1 ${x}`, where);
