@@ -2,7 +2,7 @@
 
 **Stand 14.10.2026** · Sitzung ‚Reiselogbuch 0003 – A-05 Prüfungen 2.0‘ · Zusammenarbeit allgemein 0 Nr. 1
 (Fall-Liste vor jedem Bau). Grundlage: `UEBERGABE.md` Abschnitte 3 und 4, `BACKLOG.md` A-05, Zusammenarbeit 0 Nr. 2,
-5, 9, 10, `arbeit/A-02 Verlauf-Abgleich.md` (F-1, W-4). **Noch nicht freigegeben, noch nichts gebaut.**
+5, 9, 10, `arbeit/A-02 Verlauf-Abgleich.md` (F-1, W-4). **Freigegeben 14.10.2026** (Fall-Liste ja · feste Fassung mit `design.css`, `ui.js` und `tests/` · Aufteilung der Versionen noch offen). Noch nichts gebaut.
 
 Jeder Fall wird ein automatischer Test (Spalte ‚Test‘); was nur das Gerät zeigt, kommt in die Prüfliste (Teil F).
 A-05 ändert Prüfskripte, Werkzeuge und die Art, wie die App AppDesign einbindet – **die App sieht gleich aus**.
@@ -86,7 +86,7 @@ nur zusätzlich nach jedem Schritt der Ablauf-Tests.
 
 | Nr. | Fall | Änderung | Test |
 |---|---|---|---|
-| D-1 | Jede AppDesign-Version liegt zusätzlich unveränderlich in `fassung/X.Y.Z/` (`design.css`, `ui.js`, siehe Frage 2 zu `tests/`) | Ordner wird beim Veröffentlichen angelegt (E) | `version.mjs`: Prüfsummenliste `fassung/PRUEFSUMMEN` – jede vorhandene Datei unverändert, keine fehlt; `AD_VERSION` im Ordner = Ordnername |
+| D-1 | Jede AppDesign-Version liegt zusätzlich unveränderlich in `fassung/X.Y.Z/` (`design.css`, `ui.js` und `tests/` – entschieden 14.10.2026; die App wird mit den Prüfungen ihrer Fassung geprüft) | Ordner wird beim Veröffentlichen angelegt (E) | `version.mjs`: Prüfsummenliste `fassung/PRUEFSUMMEN` – jede vorhandene Datei unverändert, keine fehlt; `AD_VERSION` im Ordner = Ordnername |
 | D-2 | Die App lädt **genau ihre** Fassung: `../AppDesign/fassung/4.14.0/ui.js` (index.html und sw.js); `AD_NEEDED` = Ordnername | Reiselogbuch umstellen; `?v=` entfällt, weil der Pfad die Version schon enthält (R-10.3 wird angepasst, nicht neu) | `version.mjs` (R-10.3): Pfad in index.html = sw.js = `AD_NEEDED`; Ordner vorhanden |
 | D-3 | Eine neue AppDesign-Version ändert eine App **nicht**, solange sie nicht gehoben wird | – | Test: App mit Fassung N, AppDesign-Arbeitsstand N+1 mit absichtlich geändertem Knopf → App unverändert |
 | D-4 | Heben nur nach Rückfrage (0 Nr. 10): das Veröffentlichungs-Skript nennt Apps auf älteren Fassungen, hebt aber nichts | Hinweiszeile im Skript | Selbsttest des Skripts |
