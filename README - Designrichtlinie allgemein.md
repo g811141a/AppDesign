@@ -1,6 +1,6 @@
 # Designrichtlinie allgemein
 
-**Version 4.11.2** · Stand 14.10.2026
+**Version 4.11.3** · Stand 14.10.2026
 
 Allgemeine Gestaltungs- und Bedienregeln für alle iPad-Web-Apps von g811141a (seit 4.1.0 auch
 auf dem iPhone, Abschnitt 15.17).
@@ -319,7 +319,9 @@ heller).
 - **Ausgabe-Design** (HTML und PDF): Systemschrift 11 pt, h1 20 pt, h2 14 pt, schwarzer
   Text auf Weiß, Links `#1a5fb4` ohne Unterstreichung, Tabellen wie in der App
   (Kopf `#d9d9d9`, Ränder `#a5a5a5`, Zebra `#f5f5f5`), Zeilen nicht über Seitenumbrüche
-  teilen. Dezente letzte Zeile (9 pt, grau): „Ausgabe V003 erstellt am TT.MM.JJJJ um
+  teilen. Seit 4.11.3 (R-52) ist das die **Mustertabelle der Ausgabe** – ein Baustein `outputCss(scope)` in ui.js, den
+  jede Ausgabe, Vorschau und jeder Bericht verwendet (z. B. HTML-Ausgabe des Reiselogbuchs, Abgleichbericht); keine
+  eigenen Nachbildungen. Die letzte Zeile ist `#6b6b6b` (Kontrast 4,5 : 1). Dezente letzte Zeile (9 pt, grau): „Ausgabe V003 erstellt am TT.MM.JJJJ um
   hh:mm“. PDF im Hochformat, weißer Seitenhintergrund, Dateiname als Seitentitel.
 - **Dateinamen-Muster**:
   - Ausgabe: „<App> <Titel> JJJJ.MM.TT-JJJJ.MM.TT V001“ – fortlaufender Zähler je Eintrag
@@ -867,6 +869,7 @@ hier sofort eine Nummer und – wo möglich – eine Prüfung im Skript.
 | R-49 | Die README jeder App zeigt ganz oben ‚Verwendete Versionen‘: App, AppDesign, Designrichtlinie allgemein, Designrichtlinie <App>, Zusammenarbeit allgemein – je Version (gleich wie in der App bzw. den Richtlinien) und Link | Skript (`tests/doku.mjs`) | 11 |
 | R-50 | Jede Prüfliste beginnt mit /0 ‚Version prüfen‘ (App- und AppDesign-Version in der Versionszeile); jeder Prüfpunkt hat nummerierte Schritte und nennt bei jedem Schritt, der etwas anzeigt, die Meldung je Gerät; jeder solche Fall hat einen automatischen Test der Texte auf beiden Geräten | Skript (`tests/doku.mjs`) · Ablauf (`tests/abgleich.mjs` u. a.) | Zusammenarbeit 7 |
 | R-51 | Beim Drehen (quer ↔ hoch) und jeder Größenänderung bleibt oben derselbe Eintrag stehen (z. B. derselbe Tag) – auch in Safari, das keinen Scroll-Anker kennt; Baustein in ui.js für Einträge mit `data-day` bzw. `data-keep` | Skript – automatisch je Seite mit Einträgen (Safari nachgebildet, mit Zwischengrößen, hin und zurück) | 13 |
+| R-52 | Jede Tabelle in Ausgaben, Vorschauen und Berichten (z. B. HTML-Ausgabe, Abgleichbericht) ist die **Mustertabelle der Ausgabe** aus dem Baustein `outputCss(scope)` in ui.js – Systemschrift 11 pt, Kopf `#d9d9d9` fett mit Rand `#a5a5a5`, Linien überall gleich stark (1 px `#999`, außen `#a5a5a5`), Innenabstand 6/8 px, jede zweite Zeile `#f5f5f5` (bei zusammengefassten Zellen je Block, z. B. je Tag im Abgleichbericht), Zeilen nicht über Seitenumbrüche geteilt; keine eigene Nachbildung | Skript – jede sichtbare Tabelle in Ausgabe und Bericht wird Eigenschaft für Eigenschaft mit einer unsichtbaren Mustertabelle verglichen | 10 |
 
 ---
 
@@ -874,6 +877,7 @@ hier sofort eine Nummer und – wo möglich – eine Prüfung im Skript.
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 4.11.3 | 14.10.2026 | Korrektur | Neue Regel R-52: Mustertabelle der Ausgabe als Baustein `outputCss` für jede Ausgabe, Vorschau und jeden Bericht; Prüfung vergleicht jede Tabelle Eigenschaft für Eigenschaft mit ihr – Anlass: Abgleichbericht mit dickerer Linie, ohne graue Zeilen und mit halbfettem Kopf (P-29/3) |
 | 4.11.2 | 14.10.2026 | Korrektur | R-37 gilt überall (auch Fenster, Vorschau, Bericht) und wird in jeder Zelle geprüft – Anlass: Abgleichbericht ragte in Nachbarzellen; Abgleichbericht mit PDF in der Kapsel; neue Regel R-51 (oberster Eintrag bleibt beim Drehen, Baustein in ui.js, Prüfung mit nachgebildetem Safari) |
 | 4.11.1 | 13.10.2026 | Korrektur | Neue Regeln R-49 (README ‚Verwendete Versionen‘) und R-50 (Prüfliste beginnt mit /0 ‚Version prüfen‘, Meldung je Gerät und Schritt) mit Prüfung `tests/doku.mjs`; Zusammenarbeit allgemein 1.15.0 |
 | 4.11.0 | 13.10.2026 | Neben | R-44 Ergebnis des Abgleichs in zwei Stufen: kleines Fenster mit ‚Abgleichbericht anzeigen‘, Bericht als Vorschau wie die Ausgabe (Tabellen ‚Änderungen‘ und ‚hier neuer als im Backup‘, Unverändertes nur als Anzahl, teilbar als HTML); neue Regel R-48 Versionskopplung App ↔ AppDesign (`?v=`, Startprüfung, `tests/version.mjs`); R-47 mit einem einzigen Zustand und Prüfung mit Zwischengrößen; R-40 Kontextmenü wird nach dem Loslassen nachgeführt, ohne Platz darunter steht es über der Kachel |

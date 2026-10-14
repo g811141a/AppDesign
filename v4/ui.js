@@ -1,5 +1,5 @@
-// AppDesign 4.11.2 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
-// Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/v4/ui.js?v=4.11.2"></script>
+// AppDesign 4.11.3 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
+// Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/v4/ui.js?v=4.11.3"></script>
 // Seit 4.11.0 (R-48): ui.js und design.css immer mit ?v=<AppDesign-Version> einbinden (auch in sw.js) und beim Start
 // prüfen, ob genau diese Fassung geladen ist (AD_VERSION hier, --ad-version in design.css).
 // Klassisches Skript: alle Funktionen sind global und für das Skript der App sichtbar.
@@ -17,7 +17,7 @@
 
 'use strict';
 // Version der Bausteine (R-48): die App vergleicht sie beim Start mit der benötigten Fassung.
-const AD_VERSION = '4.11.2';
+const AD_VERSION = '4.11.3';
 /* ---------- Icons ---------- */
 
 // Schaltflächen-Icons aus Lucide (ISC-Lizenz), direkt eingebettet, damit die App offline funktioniert.
@@ -365,6 +365,29 @@ const SHARE_RESULT = {
 };
 const shareResultText = (result, name) => `${result === 'aborted' || result === 'error' ? '⚠️' : '✅'} ${SHARE_RESULT[result](name)}`;
 const MIME = { json: 'application/json', html: 'text/html' };
+// R-52 (seit 4.11.3): Mustertabelle der Ausgabe (Designrichtlinie allgemein 10) – eine Quelle für jede Ausgabe, Vorschau und
+// jeden Bericht (z. B. HTML-Ausgabe des Reiselogbuchs, Abgleichbericht): Systemschrift 11 pt, h1 20 pt, h2 14 pt, Tabellen
+// mit Linien 1 px #999 (außen und Kopf #a5a5a5), Kopf #d9d9d9 fett, jede zweite Zeile #f5f5f5, Zeilen nicht über
+// Seitenumbrüche teilen, dezente letzte Zeile 9 pt grau. scope: Klasse des Inhalts (z. B. '.rt').
+const outputCss = scope => `
+  ${scope} { font: 11pt/1.4 -apple-system, "Segoe UI", Roboto, Arial, sans-serif; color: #000; }
+  ${scope}, ${scope} * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  ${scope} h1 { font-size: 20pt; margin: 0 0 8px; }
+  ${scope} h2 { font-size: 14pt; margin: 20px 0 6px; break-after: avoid; page-break-after: avoid; }
+  ${scope} table { border-collapse: collapse; }
+  ${scope} .meta td { border: none; padding: 1px 16px 1px 0; vertical-align: top; }
+  ${scope} table.grid { width: 100%; margin-top: 12px; table-layout: auto; }
+  ${scope} table.grid.fit { width: auto; }
+  ${scope} table.grid th, ${scope} table.grid td { border: 1px solid #999; padding: 6px 8px; vertical-align: top; text-align: left; }
+  ${scope} table.grid thead th { background: #d9d9d9; border-color: #a5a5a5; font-weight: 700; }
+  ${scope} table.grid tr > :first-child { border-left-color: #a5a5a5; }
+  ${scope} table.grid tr > :last-child { border-right-color: #a5a5a5; }
+  ${scope} table.grid tbody:last-child tr:last-child > * { border-bottom-color: #a5a5a5; }
+  ${scope} table.grid tbody tr:nth-child(even) { background: #f5f5f5; }
+  ${scope} table.grid td.nw { white-space: nowrap; }
+  ${scope} table.grid td.num, ${scope} table.grid th.num { text-align: right; white-space: nowrap; }
+  ${scope} table.grid tr { break-inside: avoid; }
+  ${scope} .created { margin-top: 28px; font-size: 9pt; color: #6b6b6b; }`;
 // Dateien über das Teilen-Menü (iOS) weitergeben, sonst herunterladen. Ergebnis: shared · downloaded · aborted · error.
 async function shareFiles(files) {
   const list = files.map(f => new File([f.content], f.name, { type: MIME[f.type] || 'application/octet-stream' }));
@@ -562,31 +585,31 @@ function createSync({ list, sub, subAt, maxFields = [], nouns = ['Eintrag', 'Ein
     if (worthReport(stats)) return `${head}<br><br>Auf diesem ${esc(here)} hat sich nichts geändert – Hinweise im Abgleichbericht.`;
     return `${head}<br><br>Alles war schon auf dem gleichen Stand.`;
   }
+  // Tabellen wie die HTML-Ausgabe der App (R-52): Linien 1 px #999, Kopf #d9d9d9 mit Rand #a5a5a5, überall gleich stark.
   // Bericht: Kopf mit Gerät, Backup und Ergebnis; Tabelle ‚Änderungen auf diesem Gerät‘ (je Feld eine Zeile mit neuem Inhalt,
   // vorherigem Inhalt, Gerät und Zeitpunkt), Tabelle ‚Auf diesem Gerät neuer als im Backup – bleibt so‘, Hinweise, Unverändertes.
-  const REPORT_CSS = `
-    .sync-report { font: 11pt/1.4 -apple-system, "Segoe UI", Roboto, Arial, sans-serif; color: #000; }
-    .sync-report h1 { font-size: 20pt; margin: 0 0 8px; }
-    .sync-report h2 { font-size: 14pt; margin: 20px 0 6px; }
-    .sync-report table { border-collapse: collapse; }
-    .sync-report .meta td { border: none; padding: 1px 16px 1px 0; vertical-align: top; }
-    .sync-report table.grid { width: 100%; margin-top: 8px; table-layout: fixed; }
+  // Tabellen und Schrift aus der Mustertabelle der Ausgabe (outputCss, R-52); hier nur, was der Bericht zusätzlich braucht:
+  // feste Spaltenbreiten, Umbruch mit Silbentrennung (R-37), Eintrag-Zelle über ihre Zeilen weiß, Farben für neu/gelöscht.
+  const REPORT_CSS = outputCss('.sync-report') + `
+    .sync-report table.grid { table-layout: fixed; }
     .sync-report table.grid col.c1 { width: 15%; } .sync-report table.grid col.c2 { width: 13%; } .sync-report table.grid col.c3 { width: 13%; }
     .sync-report table.grid col.c4 { width: 22%; } .sync-report table.grid col.c5 { width: 14%; } .sync-report table.grid col.c6 { width: 10%; } .sync-report table.grid col.c7 { width: 13%; }
-    .sync-report table.grid tbody th { background: #fff; }
-    .sync-report table.grid th, .sync-report table.grid td { border: 1px solid #999; padding: 6px 8px; vertical-align: top; text-align: left; overflow-wrap: break-word; -webkit-hyphens: auto; hyphens: auto; }
-    .sync-report table.grid th { background: #d9d9d9; border-color: #a5a5a5; font-weight: 600; }
-    .sync-report table.grid tbody + tbody { border-top: 2px solid #a5a5a5; }
+    .sync-report table.grid td, .sync-report table.grid th { overflow-wrap: break-word; -webkit-hyphens: auto; hyphens: auto; }
+    .sync-report table.grid tbody th { background: #fff; font-weight: 700; }
+    /* Grau wie die Ausgabe je Tag (Zeilenblock mit seinen zusammengefassten Zellen), nicht je Feldzeile. */
+    .sync-report table.grid tbody tr:nth-child(even) { background: none; }
+    .sync-report table.grid tbody tr.z > td { background: #f5f5f5; }
     .sync-report .new { color: #0a5bd3; font-weight: 600; } .sync-report .del { color: #c0362c; font-weight: 600; }
     .sync-report .old { color: #555; }
-    .sync-report p { margin: 8px 0; }
-    .sync-report .created { margin-top: 28px; font-size: 9pt; color: #6b6b6b; }`;
+    .sync-report p { margin: 8px 0; }`;
   const atText = at => at ? (d => `${d.getDate()}.${d.getMonth() + 1}.${d.getFullYear()} ${two(d.getHours())}:${two(d.getMinutes())}`)(new Date(at)) : '–';
   // Eine Gruppe je Eintrag; je Feld eine Zeile; Eintrag und Tag über ihre Zeilen zusammengefasst (rowspan).
   function reportTable(groups, cols) {
+    let n = 0;   // Tage über die ganze Tabelle gezählt: jeder zweite Tag grau (wie jede zweite Zeile der Ausgabe)
     const body = groups.map(g => {
       const lines = g.rows.flatMap(r => r.fields.map((f, i) => ({ r, f, first: !i })));
-      return `<tbody data-kind="${g.kind}" data-title="${esc(g.title)}">${lines.map((x, n) => `<tr>${n ? '' : `<th scope="rowgroup" rowspan="${lines.length}">${esc(g.title)}</th>`}${
+      const z = new Map(g.rows.map(r => [r, ++n % 2 === 0]));
+      return `<tbody data-kind="${g.kind}" data-title="${esc(g.title)}">${lines.map((x, i) => `<tr${z.get(x.r) ? ' class="z"' : ''}>${i ? '' : `<th scope="rowgroup" rowspan="${lines.length}">${esc(g.title)}</th>`}${
         x.first ? `<td rowspan="${x.r.fields.length}">${x.r.key === null ? '–' : esc(keyText(x.r.key))}</td>` : ''}<td>${x.f.label}</td><td>${x.f.now}</td><td class="old">${x.f.before}</td>${
         x.first ? `<td rowspan="${x.r.fields.length}">${esc(x.r.on || '–')}</td><td rowspan="${x.r.fields.length}">${atText(x.r.at)}</td>` : ''}</tr>`).join('')}</tbody>`;
     }).join('');
