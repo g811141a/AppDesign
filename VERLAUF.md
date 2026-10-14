@@ -1762,3 +1762,5 @@ Alle punkte ok
 **2026-10-14 · Entscheidung (Sitzung Reiselogbuch 0002):** Fall-Liste A-02b → **Ja** · Schritt 3: Wiederholungen in der Designrichtlinie Reiselogbuch durch Verweise ersetzen → **Ja, alle** · Schritt 4: Abschnitt 0 bleibt vorne, Abschnitte 1–9 mit Verweisen (2.2.0) → **Ja** · Versionen AppDesign 4.12.2, Zusammenarbeit 2.2.0, Reiselogbuch 3.11.7 → **Ja** · Bauen → **Ja**.
 
 **2026-10-14 · Nutzer (Sitzung Reiselogbuch 0002):** P-34 alle Punkte ok.
+
+**2026-10-14 · Nutzer (Sitzung Reiselogbuch 0002):** Schreib nach der Übergabe am Ende in fetter Schrift: Die Sitzung (Chat) ist damit beendet! Dies ist eine allgemeine Regel. → Zusammenarbeit 2.3.0, Abschnitt 0 Nr. 14.

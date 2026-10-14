@@ -1,6 +1,6 @@
 # Zusammenarbeit allgemein
 
-**Version 2.2.0** · Stand 14.10.2026
+**Version 2.3.0** · Stand 14.10.2026
 
 Regeln für die Zusammenarbeit mit Claude bei allen iPad-Web-Apps von g811141a.
 Diese Datei liegt im Design-Repo **AppDesign** (g811141a/AppDesign).
@@ -85,7 +85,9 @@ Nutzer sie findet, schneller und günstiger arbeiten.
     Versionen, offene Prüfpunkte, nächste Schritte, neue Vereinbarungen (die zusätzlich schon in den Richtlinien
     stehen) und was zuerst zu lesen ist. Dazu gibt Claude einen **Starttext** zum Kopieren – **immer als Codeblock**
     (```), damit er mit der Kopieren-Schaltfläche übernommen werden kann – und nennt, **wo auf GitHub** alles liegt
-    (Repo, Branch `main`, Dateien), damit die neue Sitzung es findet.
+    (Repo, Branch `main`, Dateien), damit die neue Sitzung es findet. **Abschluss (seit 2.3.0):** Am Ende der Antwort
+    mit der Übergabe steht in fetter Schrift **‚Die Sitzung (Chat) ist damit beendet!‘** – danach nur noch die Zeile mit
+    Zeit und Token.
 15. **Neue Sitzung:** Der Nutzer öffnet einen neuen Chat mit derselben Umgebung und fügt den Starttext ein. Claude
     liest die Übergabe und die Richtlinien und gibt zuerst das **Lagebild** (Version, offene Prüfpunkte,
     Backlog-Spitze), dann wird gearbeitet.
@@ -290,6 +292,7 @@ Nutzer sie findet, schneller und günstiger arbeiten.
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 2.3.0 | 14.10.2026 | Neben | Abschnitt 0 Nr. 14: nach der Übergabe am Ende der Antwort fett ‚Die Sitzung (Chat) ist damit beendet!‘ |
 | 2.2.0 | 14.10.2026 | Neben | A-02 Schritt 4 – Abschnitte 1–9 an Abschnitt 0 angepasst: Korrekturen sofort als Korrekturversion, auch ohne Datenverlust (§6, 0 Nr. 8); Antwortzeile nur noch bei mehr als 4 Fragen, jedes Fenster mit ‚Ich schreibe im Chat‘ (§2, 0 Nr. 7); Muster und Erklärungen als Datei vor dem Fenster statt im Fragetext (§2); Doppeltes durch Verweise auf Abschnitt 0 ersetzt (§5 Nr. 3, §7 Testfälle und Bericht) |
 | 2.1.1 | 14.10.2026 | Korrektur | Regelnummern nach dem neuen Regelkatalog (Designrichtlinie allgemein 4.12.0): R-1.1 …, R-10.4; die frühere R-50 (Prüfliste mit /0, Meldung je Gerät) ist Arbeitsregel in Abschnitt 7 |
 | 2.1.0 | 14.10.2026 | Neben | Abschnitt 0 Nr. 13: Claude startet die neue Sitzung selbst, Name ‚<App> <vierstellige Chatnummer> – Thema‘, Nummer in UEBERGABE.md |

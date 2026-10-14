@@ -11,7 +11,7 @@
 | AppDesign (ui.js, design.css) | 4.12.2 | g811141a/AppDesign – `CHANGELOG.md`, `BACKLOG.md` |
 | Designrichtlinie allgemein | 4.12.2 (Regelkatalog R-1.1 bis R-10.4, 34 Regeln in 10 Themen) | `README - Designrichtlinie allgemein.md` |
 | Designrichtlinie Reiselogbuch | 3.11.7 | im Repo ReiseLogBuch |
-| Zusammenarbeit allgemein | 2.2.0 (Abschnitt 0 = Arbeitsprozess 2.0, hat Vorrang; Abschnitte 1–9 angepasst) | `README - Zusammenarbeit allgemein.md` |
+| Zusammenarbeit allgemein | 2.3.0 (Abschnitt 0 = Arbeitsprozess 2.0, hat Vorrang; Abschnitte 1–9 angepasst) | `README - Zusammenarbeit allgemein.md` |
 
 - **Chatnummer:** die nächste Sitzung heißt **Reiselogbuch 0003** (Zusammenarbeit 0 Nr. 13).
 - **Offene Prüfpunkte:** keine – P-34 erledigt (alles in Ordnung, 14.10.2026).
@@ -30,6 +30,8 @@
 - Neue Prüfung `checkCollab` (doku.mjs) gegen veraltete Stellen; `checkCatalog` prüft jetzt auch die Zusammenarbeit
   (stand versehentlich im Kommentar); Vorschau-Prüfung auch iPad hoch und iPhone quer.
 - A-02 ist damit abgeschlossen (W-4 bleibt bis A-05).
+- **Neue allgemeine Regel (Zusammenarbeit 2.3.0, 0 Nr. 14):** nach der Übergabe am Ende der Antwort fett
+  ‚Die Sitzung (Chat) ist damit beendet!‘, danach nur die Zeile mit Zeit und Token.
 
 **Sitzung ‚Reiselogbuch 0001 – AppDesign 4.12.0‘:**
 
