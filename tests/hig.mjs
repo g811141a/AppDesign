@@ -1,4 +1,4 @@
-// AppDesign 4.11.2 · HIG- und Regel-Prüfung: misst eine App-Ansicht gegen die HIG-Checkliste (Abschnitt 16)
+// AppDesign 4.11.3 · HIG- und Regel-Prüfung: misst eine App-Ansicht gegen die HIG-Checkliste (Abschnitt 16)
 // und alle automatisch prüfbaren Regeln des Regelkatalogs (Abschnitt 17, R-01 …) der Designrichtlinie allgemein. Wird vom Prüfskript jeder App eingebunden:
 //   import { createCheck } from '../../AppDesign/tests/hig.mjs';
 //   const hig = createCheck({ skipTargets: ['table.days .ln:not(.q) a'] });   // bewusste Abweichungen der App
@@ -231,6 +231,44 @@ const found = new Map();
       // R-39 Menü, Sprechblase und Fenster passen ganz auf den Bildschirm (sonst wären Knöpfe unerreichbar)
       document.querySelectorAll('.pop, .menu, dialog[open]').forEach(e => { const b = e.getBoundingClientRect(); if (!b.width || !b.height) return;
         if (b.top < -1 || b.left < -1 || b.bottom > innerHeight + 1 || b.right > innerWidth + 1) R('R-39', `${e.classList[0] || e.tagName.toLowerCase()} ragt über den Bildschirm hinaus (${Math.round(b.top)}–${Math.round(b.bottom)} von ${innerHeight} px)`); });
+      // R-52 (seit 4.11.3): Tabellen in Ausgaben, Vorschauen und Berichten = Mustertabelle der Ausgabe (outputCss in ui.js).
+      // Verglichen wird Eigenschaft für Eigenschaft mit einer unsichtbar aufgebauten Mustertabelle: Schrift, Kopf (Farbe,
+      // Schriftstärke, Rand), Linien (überall gleich stark), Innenabstände, jede zweite Zeile grau.
+      const grids = [...document.querySelectorAll('.rt table.grid, .sync-report table.grid')].filter(vis);
+      if (grids.length && typeof outputCss === 'function') {
+        const ref = document.createElement('div'); ref.className = 'r52ref'; ref.style.cssText = 'position:absolute;left:-9999px;top:0;width:600px';
+        ref.innerHTML = `<style>${outputCss('.r52ref')}</style><table class="grid"><thead><tr><th>K</th><th>K</th></tr></thead><tbody><tr><td>a</td><td>b</td></tr><tr><td>c</td><td>d</td></tr></tbody></table>`;
+        document.body.append(ref);
+        const pick = (e, ks) => e ? ks.map(k => cs(e)[k]).join(' | ') : '–';
+        const head = ['backgroundColor', 'fontWeight', 'borderTopColor', 'borderTopWidth', 'paddingTop', 'paddingLeft', 'fontSize', 'fontFamily'];
+        const cell = ['borderTopWidth', 'borderTopColor', 'paddingTop', 'paddingLeft', 'fontSize', 'fontFamily', 'verticalAlign'];
+        const want = { head: pick(ref.querySelector('thead th'), head), cell: pick(ref.querySelector('tbody tr:first-child td'), cell),
+          odd: cs(ref.querySelector('tbody tr:nth-child(1)')).backgroundColor, even: cs(ref.querySelector('tbody tr:nth-child(2)')).backgroundColor };
+        ref.remove();
+        grids.forEach(t => {
+          const name = t.closest('.sync-report') ? 'Bericht' : 'Ausgabe';
+          if (pick(t.querySelector('thead th'), head) !== want.head) R('R-52', `${name}: Tabellenkopf anders als die Mustertabelle (${pick(t.querySelector('thead th'), head)})`);
+          const td = [...t.querySelectorAll('tbody td')].find(c => !c.closest('tr').querySelector('th'));
+          if (td && pick(td, cell) !== want.cell) R('R-52', `${name}: Zellen anders als die Mustertabelle (${pick(td, cell)})`);
+          const widths = new Set();
+          t.querySelectorAll('th, td').forEach(c => { const x = cs(c); for (const side of ['Top', 'Right', 'Bottom', 'Left']) { const w = parseFloat(x[`border${side}Width`]); if (w) widths.add(w); } });
+          t.querySelectorAll('tbody').forEach(b => { const w = parseFloat(cs(b).borderTopWidth); if (w) widths.add(w); });
+          if (widths.size > 1) R('R-52', `${name}: verschiedene Linienstärken (${[...widths].join(', ')} px) – wie die Mustertabelle überall gleich`);
+          // Datenzellen nur weiß oder grau wie die Mustertabelle; ab zwei Zeilen bzw. Tagen kommen beide vor (Zebra).
+          const bg = c => { const own = cs(c).backgroundColor; return own !== 'rgba(0, 0, 0, 0)' ? own : cs(c.parentElement).backgroundColor; };
+          const white = want.odd === 'rgba(0, 0, 0, 0)' ? ['rgba(0, 0, 0, 0)', 'rgb(255, 255, 255)'] : [want.odd];
+          const tds = [...t.querySelectorAll('tbody td')], colors = new Set(tds.map(bg).map(c => white.includes(c) ? 'weiß' : c === want.even ? 'grau' : c));
+          [...colors].filter(c => c !== 'weiß' && c !== 'grau').forEach(c => R('R-52', `${name}: Zeilenfarbe ${c} nicht wie die Mustertabelle`));
+          // Zebra gilt für die ganze Tabellenzeile (allgemeiner Standard): alle Zellen einer Zeile gleich, keine zusammengefasste
+          // Zelle über verschieden gefärbte Zeilen.
+          [...t.querySelectorAll('tbody tr')].forEach(r => { const c = new Set([...r.cells].filter(x => x.tagName === 'TD').map(bg)); if (c.size > 1) R('R-52', `${name}: graue Zeile nur teilweise gefärbt – Zebra gilt für die ganze Zeile`); });
+          t.querySelectorAll('tbody [rowspan]').forEach(x => { const n = +x.getAttribute('rowspan'); if (n > 1) { const r0 = x.parentElement, rows = [...r0.parentElement.children], i0 = rows.indexOf(r0);
+            if (new Set(rows.slice(i0, i0 + n).map(r => cs(r).backgroundColor === 'rgba(0, 0, 0, 0)' ? bg(r.querySelector('td') || r) : cs(r).backgroundColor)).size > 1) R('R-52', `${name}: zusammengefasste Zelle über weiße und graue Zeilen – Zebra gilt für die ganze Zeile`); } });
+          // Zeilen bzw. Blöcke zählen: ein Block beginnt mit einer vollständigen Zeile (zusammengefasste Zellen setzen sich fort).
+          const trs = [...t.querySelectorAll('tbody tr')], tdCount = r => r.querySelectorAll('td').length, full = Math.max(0, ...trs.map(tdCount));
+          if (trs.filter(r => tdCount(r) === full).length >= 2 && !colors.has('grau')) R('R-52', `${name}: keine grauen Zeilen wie die Mustertabelle (jede zweite Zeile grau)`);
+        });
+      }
       // R-37 Kein Text ragt über Zelle oder Kachel hinaus – zu lange Wörter brechen im Wort um
       // Seit 4.11.2: jede Tabellenzelle überall – auch in Fenstern, Vorschauen und Berichten (vorher nur #app).
       document.querySelectorAll('td, th, #app dd, #app .box, .box .kv .v, .box .ln, .irow, .side-row, .bhint, .bnote, .msg-text, .pop p, .fazit-box').forEach(e => {

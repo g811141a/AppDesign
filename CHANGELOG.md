@@ -3,6 +3,20 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.11.3 – 14.10.2026 (Korrektur)
+
+AppDesign 4.11.3 · Designrichtlinie allgemein 4.11.3 · Zusammenarbeit allgemein 1.16.0
+
+- **R-52 (neu) – Mustertabelle der Ausgabe als Baustein:** `outputCss(scope)` in ui.js enthält Schrift und Tabellen der
+  HTML-Ausgabe (Kopf grau und fett, Linien überall gleich stark, jede zweite Zeile grau, Innenabstände). Die Ausgabe des
+  Reiselogbuchs und der Abgleichbericht verwenden ihn – eine Quelle statt Nachbildung. Anlass: Der Abgleichbericht hatte
+  eine dickere Linie zwischen den Reiselogbüchern, keine grauen Zeilen und einen halbfetten Kopf (P-29/3). Die Prüfung
+  vergleicht jede Tabelle Eigenschaft für Eigenschaft mit der Mustertabelle; nach Zusammenarbeit 1.16.0 zuerst geschärft
+  (sie meldete die Abweichungen), dann behoben.
+- **Zebra über die ganze Zeile:** Jede zweite Zeile ist über die ganze Breite grau (allgemeiner Standard); deshalb hat der
+  Abgleichbericht keine zusammengefassten Zellen mehr – Reiselogbuch, Tag, Gerät und Zeitpunkt stehen nur in der ersten
+  Zeile ihrer Gruppe. Die Prüfung meldet teilweise gefärbte Zeilen und zusammengefasste Zellen über weiße und graue Zeilen.
+
 ## 4.11.2 – 14.10.2026 (Korrektur)
 
 AppDesign 4.11.2 · Designrichtlinie allgemein 4.11.2 · Zusammenarbeit allgemein 1.16.0
