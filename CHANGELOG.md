@@ -3,6 +3,32 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.13.0 – 14.10.2026 (Neben)
+
+AppDesign 4.13.0 · Designrichtlinie allgemein 4.13.0 · Zusammenarbeit allgemein 2.3.1 · geprüft mit Reiselogbuch 3.12.0
+
+A-05 Version A – Prüfungen 2.0 (Fall-Liste `arbeit/A-05 Fall-Liste.md`, Teile A, B, C). `v4/` nur Versionsnummer.
+
+- **`tests/pruefe.mjs` (neu, A):** Prüfskripte melden Fehler mit Sollwerten (Wert, RegExp, Funktion, Liste) und
+  Rückgabewert 1, jede Meldung mit Regel, Browser, Ansicht und Schritt; Skriptfehler der Seite sind Fehler; Gegenprobe
+  `PRUEF_GEGENPROBE=1` (erster Vergleich absichtlich falsch).
+- **Grundregeln nach jedem Schritt (C):** `schritt()` misst nach jeder Handlung mit `hig.measure(…, { schnell: true })` –
+  dieselben Prüfungen wie `hig.mjs`, ohne Drehen; erst wenn die Seite ruht. Gegenprobe `PRUEF_GEGENPROBE=grundregeln`.
+- **`tests/lauf.mjs` (neu, B):** alle Prüfskripte parallel, schnellste zuerst, Abbruch beim ersten Fehler, `--alle`,
+  Zeitgrenze je Test, Teilung langer Prüfungen, `--abdeckung` (Test × Ansicht); Chromium **und WebKit**, fehlt ein Browser:
+  Abbruch mit Hinweis. Selbsttest `tests/lauf-selbsttest.mjs` (6 Fälle, Gegenprobe rot).
+- **`hig.mjs`:** `measure(…, { schnell })`, `report({ still })`; misst erst, wenn keine Animation mehr läuft (vorher
+  zufällige Funde unter Last); zählt eine unsichtbare Antippfläche (`::after`, absolut) zur Antippfläche (R-3.1).
+- **`version.mjs`:** zweiter Teil mit frischer Seite (WebKit nahm sonst die untergeschobene alte ui.js aus dem Speicher).
+- **Safari nachgebildet:** kein Fokus beim Antippen einer Schaltfläche (Chromium und Linux-WebKit setzen ihn, iPad nicht).
+- **Gefunden (Grundregeln):** Quartier-Link ‚Hotel‘ nur 42 px breit (R-3.1) – im Reiselogbuch 3.12.0 behoben (unsichtbare
+  Antippfläche, Entscheidung a). Warum übersehen: `hig.mjs` lief nur mit langen Quartiernamen.
+- **Gefunden (Test):** `tastatur.mjs` bildete die Tastatur durch ein kleineres Fenster nach – die App schaltete dadurch in
+  die iPhone-Ansicht; jetzt über `visualViewport` wie Safari.
+- **Designrichtlinie allgemein 4.13.0** (Abschnitte 14 und 17), **Zusammenarbeit allgemein 2.3.1** (0 Nr. 2 und 5).
+- **Dauer:** alle Prüfungen des Reiselogbuchs in Chromium und WebKit (40 Läufe) in etwa 4 min – vorher nur Chromium
+  nacheinander 9 min 15 s.
+
 ## 4.12.2 – 14.10.2026 (Korrektur)
 
 AppDesign 4.12.2 · Designrichtlinie allgemein 4.12.2 · Zusammenarbeit allgemein 2.2.0 · geprüft mit Reiselogbuch 3.11.7

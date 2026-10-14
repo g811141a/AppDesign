@@ -1,4 +1,4 @@
-// AppDesign 4.12.0 · HIG- und Regel-Prüfung: misst eine App-Ansicht gegen die HIG-Checkliste (Abschnitt 16)
+// AppDesign 4.13.0 · HIG- und Regel-Prüfung: misst eine App-Ansicht gegen die HIG-Checkliste (Abschnitt 16)
 // und alle automatisch prüfbaren Regeln des Regelkatalogs (Abschnitt 17, R-1.1 …) der Designrichtlinie allgemein. Wird vom Prüfskript jeder App eingebunden:
 //   import { createCheck } from '../../AppDesign/tests/hig.mjs';
 //   const hig = createCheck({ skipTargets: ['table.days .ln:not(.q) a'] });   // bewusste Abweichungen der App
@@ -10,6 +10,7 @@
 // Geprüft: Antippflächen (R-3.1), Schrift und Kontrast (R-10.2), doppelte Anführungszeichen (R-10.1), Menüs (R-4.1),
 // gedrückte Schaltfläche bleibt blau (R-3.3) und alle weiteren Regeln mit ‚hig.mjs‘ im Regelkatalog. Jede Meldung trägt
 // ihre Regelnummer (seit 4.12.0). Bewusste Abweichungen allgemein: Weiß auf Systemblau, Orange --warn.
+import { ruhe } from './pruefe.mjs';
 export function createCheck({ skipTargets = [] } = {}) {
 const found = new Map(), icons = new Map();
   let rotating = false;
@@ -96,7 +97,10 @@ const found = new Map(), icons = new Map();
     await p.evaluate(y => window.scrollTo(0, y), y0); await p.waitForTimeout(200);
   };
   // Misst die sichtbare, oberste Ebene (Menü/Sprechblase, sonst offenes Fenster, sonst Seite).
-  async function measure(p, where) {
+  // schnell (seit 4.13.0): nur messen, nicht drehen – für die Grundregeln nach jedem Schritt eines Ablauf-Tests (pruefe.mjs).
+  async function measure(p, where, { schnell = false } = {}) {
+    // Seit 4.13.0: erst messen, wenn keine Animation mehr läuft (sonst zufällige Funde bei Last, z. B. Titel halb eingeblendet).
+    await ruhe(p);
     const r = await p.evaluate(skip => {
       const vis = e => { const s = getComputedStyle(e), b = e.getBoundingClientRect();
         return b.width > 0 && b.height > 0 && s.visibility !== 'hidden' && s.display !== 'none' && b.bottom > 0 && b.top < innerHeight && b.right > 0 && b.left < innerWidth; };
@@ -111,10 +115,13 @@ const found = new Map(), icons = new Map();
         if (skip.some(sel => e.matches(sel))) return;
         const b = e.getBoundingClientRect(), s = getComputedStyle(e);
         // Inline-Links: die Antippfläche schließt den (unsichtbaren) Innenabstand ein.
-        const h = s.display === 'inline' ? b.height + parseFloat(s.paddingTop) + parseFloat(s.paddingBottom) : b.height;
+        let h = s.display === 'inline' ? b.height + parseFloat(s.paddingTop) + parseFloat(s.paddingBottom) : b.height, wd = b.width;
+        // Seit 4.13.0: eine unsichtbare, absolut gesetzte Fläche (::after) gehört zur Antippfläche – so vergrößert iOS kurze Links.
+        const af = getComputedStyle(e, '::after');
+        if (af.content !== 'none' && af.position === 'absolute') { wd = Math.max(wd, parseFloat(af.width) || 0); h = Math.max(h, parseFloat(af.height) || 0); }
         const inCap = e.closest('.cap, .grp, .navgrp') || (e.type === 'checkbox' && /switch|toggle/.test(e.className + e.parentElement.className)) || (e.type === 'checkbox' && b.width >= 51 && b.height >= 31);
         const min = inCap ? 28 : 44;
-        if (Math.min(b.width, h) < min) res.target.push(`${e.tagName.toLowerCase()} ‚${label(e)}‘ ${Math.round(b.width)}×${Math.round(h)} px (mind. ${min})`);
+        if (Math.min(wd, h) < min) res.target.push(`${e.tagName.toLowerCase()} ‚${label(e)}‘ ${Math.round(wd)}×${Math.round(h)} px (mind. ${min})`);
       });
       // Schrift und Kontrast
       const rgb = c => (c.match(/[\d.]+/g) || [0, 0, 0, 0]).map(Number);
@@ -317,6 +324,7 @@ const found = new Map(), icons = new Map();
     for (const [lbl, sig] of r.icons) { if (!icons.has(lbl)) icons.set(lbl, new Map()); if (!icons.get(lbl).has(sig)) icons.get(lbl).set(sig, where); }
     delete r.icons;
     for (const [k, list] of Object.entries(r)) for (const x of list) note('Regel', { target: 'R-3.1 Antippfläche ', font: 'R-10.2 Schrift ', contrast: 'R-10.2 Kontrast ', quotes: 'R-10.1 Anführungszeichen ', menu: 'R-4.1 Menü: ', rules: '' }[k] + x, where);
+    if (schnell) return;
     // R-8.1 automatisch: einmal je Seite, wenn eine Seitenleiste da ist und nichts darüber offen ist (nur iPad).
     if (!rotating && !sideChecked.has(p) && await p.evaluate(() => !!document.getElementById('side') && !document.documentElement.classList.contains('phone') && !document.querySelector('.menu, .pop, dialog[open]'))) {
       rotating = true; try { await sideKeep(p, `${where} – Seitenleiste gedreht`); } finally { rotating = false; }
@@ -401,10 +409,11 @@ const found = new Map(), icons = new Map();
   const stays = async (p, sel, where) => {
     if (!await p.locator(sel).first().evaluate(e => e.classList.contains('on')).catch(() => false)) note('Regel', `R-3.3 ${sel} bleibt nicht blau, solange sein Menü, Fenster oder seine Abfrage offen ist`, where);
   };
-  const report = () => {
+  // still (seit 4.13.0): ohne Abweichungen nichts ausgeben (Grundregeln in den Ablauf-Tests).
+  const report = ({ still = false } = {}) => {
     compareShapes();
     for (const [lbl, m] of icons) if (m.size > 1) note('Regel', `R-10.1 ‚${lbl}‘ mit ${m.size} verschiedenen Icons – gleiche Aktion, gleiches Icon`, [...m.values()].join(' ↔ '));
-    if (!found.size) { console.log('HIG- und Regel-Prüfung: keine Abweichungen.'); return 0; }
+    if (!found.size) { if (!still) console.log('HIG- und Regel-Prüfung: keine Abweichungen.'); return 0; }
     console.log(`HIG- und Regel-Prüfung: ${found.size} Abweichung(en)\n`);
     for (const [k, where] of found) console.log(`- ${k}\n    ${[...where].slice(0, 3).join(' · ')}${where.size > 3 ? ` · +${where.size - 3}` : ''}`);
     return 1;

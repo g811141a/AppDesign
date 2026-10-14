@@ -1,6 +1,6 @@
 # Zusammenarbeit allgemein
 
-**Version 2.3.0** · Stand 14.10.2026
+**Version 2.3.1** · Stand 14.10.2026
 
 Regeln für die Zusammenarbeit mit Claude bei allen iPad-Web-Apps von g811141a.
 Diese Datei liegt im Design-Repo **AppDesign** (g811141a/AppDesign).
@@ -38,8 +38,10 @@ Nutzer sie findet, schneller und günstiger arbeiten.
    abgleichen, teilen …) × Daten (leer, lang, viele). Jeder Fall wird ein automatischer Test. Die Liste kommt mit dem
    Muster, damit der Nutzer Lücken sieht. Was nur das echte Gerät zeigt (Teilen-Menü, iCloud, Drucken,
    Silbentrennung, Gefühl beim Wischen), kommt in die Prüfliste.
-2. **Parallel arbeiten, sparsam:** Tests laufen parallel, die schnellsten zuerst, Abbruch beim ersten Fehler.
-   Hilfsagenten nur für große, klar abgegrenzte Aufgaben mit wenig Token-Verbrauch.
+2. **Parallel arbeiten, sparsam:** Tests laufen parallel, die schnellsten zuerst, Abbruch beim ersten Fehler
+   (seit AppDesign 4.13.0: `node tests/alle.mjs` in der App, Werkzeug `AppDesign/tests/lauf.mjs`; jeder Test meldet Fehler
+   mit Rückgabewert, Gegenprobe mit `--gegenprobe`). Hilfsagenten nur für große, klar abgegrenzte Aufgaben mit wenig
+   Token-Verbrauch.
 3. **Regeln schlank halten:** Bei **jeder** neuen Regel prüft Claude, ob sie eine bestehende **ersetzt oder ergänzt**,
    und fasst Regeln zum selben Thema zusammen (z. B. alle Tabellenregeln an einer Stelle). Je Regel **genau eine**
    Prüfung. Der Regelkatalog ist nach Themen geordnet.
@@ -47,8 +49,8 @@ Nutzer sie findet, schneller und günstiger arbeiten.
    Claude (mit Recherche), ob daraus eine **allgemeine Regel** werden sollte, und fragt **verlässlich** im
    Auswahlfenster: ‚Als allgemeine Regel festhalten? Ja/Nein‘. Grundsatz: Allgemeine Regeln sind die Grundlage jeder
    App (gleiche Schaltflächen an gleichen Stellen, gleiche Formatierung); in der App steht nur, was anders ist.
-5. **Safari nachbilden:** Tests bilden Safari nach, wo Chrome anders arbeitet; WebKit wird verwendet, sobald es in
-   der Umgebung installierbar ist.
+5. **Safari nachbilden:** Tests bilden Safari nach, wo Chrome anders arbeitet; seit AppDesign 4.13.0 läuft jeder Test
+   zusätzlich in WebKit (Installation im Setup-Skript der Umgebung ‚Standard‘).
 
 **B. Muster und Entscheidungen**
 6. **Varianten nebeneinander:** Beim ersten Muster 2–3 Varianten, wo sinnvoll; bei kleinen Korrekturen eine.
@@ -292,6 +294,7 @@ Nutzer sie findet, schneller und günstiger arbeiten.
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 2.3.1 | 14.10.2026 | Korrektur | Abschnitt 0 Nr. 2 und 5: Verweise auf die Werkzeuge aus A-05 Version A (`tests/alle.mjs`, `lauf.mjs`, Gegenprobe) und WebKit in jedem Test |
 | 2.3.0 | 14.10.2026 | Neben | Abschnitt 0 Nr. 14: nach der Übergabe am Ende der Antwort fett ‚Die Sitzung (Chat) ist damit beendet!‘ |
 | 2.2.0 | 14.10.2026 | Neben | A-02 Schritt 4 – Abschnitte 1–9 an Abschnitt 0 angepasst: Korrekturen sofort als Korrekturversion, auch ohne Datenverlust (§6, 0 Nr. 8); Antwortzeile nur noch bei mehr als 4 Fragen, jedes Fenster mit ‚Ich schreibe im Chat‘ (§2, 0 Nr. 7); Muster und Erklärungen als Datei vor dem Fenster statt im Fragetext (§2); Doppeltes durch Verweise auf Abschnitt 0 ersetzt (§5 Nr. 3, §7 Testfälle und Bericht) |
 | 2.1.1 | 14.10.2026 | Korrektur | Regelnummern nach dem neuen Regelkatalog (Designrichtlinie allgemein 4.12.0): R-1.1 …, R-10.4; die frühere R-50 (Prüfliste mit /0, Meldung je Gerät) ist Arbeitsregel in Abschnitt 7 |

@@ -1,6 +1,6 @@
 # Designrichtlinie allgemein
 
-**Version 4.12.2** · Stand 14.10.2026
+**Version 4.13.0** · Stand 14.10.2026
 
 Allgemeine Gestaltungs- und Bedienregeln für alle iPad-Web-Apps von g811141a (seit 4.1.0 auch
 auf dem iPhone, Abschnitt 15.17).
@@ -407,6 +407,10 @@ heller).
   `onDialogOpen()` (wird bei jedem `openDialog` aufgerufen).
 - **Prüfen:** Jede App hat eigene Prüfskripte, die ihre Ansichten und Fenster durchgehen und mit den Bausteinen aus
   `AppDesign/tests/` messen (`hig.mjs`, `ablauf.mjs` u. a., Abschnitt 17; AppDesign liegt beim Testen neben dem App-Repo).
+  **Seit 4.13.0 (A-05):** jedes Prüfskript meldet Fehler mit Sollwerten und Rückgabewert (`pruefe.mjs`), prüft nach jedem
+  Schritt die Grundregeln (dieselben Prüfungen wie `hig.mjs`, ohne Drehen) und läuft in Chromium **und WebKit**;
+  `lauf.mjs` startet alle Prüfskripte einer App parallel, die schnellsten zuerst, mit Abbruch beim ersten Fehler
+  (`node tests/alle.mjs` in der App; Einzelheiten `tests/README.md`).
 - **Geplant:** Startseite g811141a.github.io mit allen Apps.
 
 ## 15. Komponenten
@@ -801,7 +805,10 @@ hier**; die Abschnitte 1–16 beschreiben Werte und Komponenten und verweisen au
 `backup.mjs`, `abgleich.mjs`, `version.mjs`, `doku.mjs`. Jede Meldung beginnt mit der Regelnummer. `checkCatalog`
 (`doku.mjs`) prüft, dass jede Regel eine Prüfung hat und keine alte Nummer mehr verwendet wird. **Gerät** = zusätzlich
 am iPad/iPhone zu prüfen; kommt in die Prüfliste, wenn eine Version es betrifft. Vor jedem Muster und nach jeder
-Version wird gegen diesen Katalog geprüft (`README - Zusammenarbeit allgemein.md`, Abschnitte 3 und 7). Eine neue
+Version wird gegen diesen Katalog geprüft (`README - Zusammenarbeit allgemein.md`, Abschnitte 3 und 7). **Grundregeln (seit
+4.13.0):** Die Ablauf-Prüfungen der Apps messen nach jedem Schritt mit denselben Prüfungen aus `hig.mjs` (ohne Drehen) – keine
+zweite Prüfung je Regel, nur mehr Zustände. Safari nachgebildet: Tastatur über `visualViewport`, kein Fokus beim Antippen
+einer Schaltfläche, kein Scroll-Anker; jede Prüfung zusätzlich in WebKit. Eine neue
 Regel ersetzt oder ergänzt eine bestehende (Zusammenarbeit 0 Nr. 3) und bekommt sofort Nummer und Prüfung.
 
 ### 1. Aufbau und Grundsätze
@@ -916,6 +923,7 @@ Die alten Nummern R-01 bis R-52 (bis 4.11.4) gelten nicht mehr; sie stehen nur n
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 4.13.0 | 14.10.2026 | Neben | A-05 Version A (Prüfungen 2.0): Abschnitt 14 ‚Prüfen‘ und 17 ‚Grundregeln‘ – Prüfskripte melden Fehler mit Rückgabewert (`pruefe.mjs`), Grundregeln nach jedem Schritt, Chromium und WebKit, paralleler Lauf (`lauf.mjs`); `hig.mjs` zählt eine unsichtbare Antippfläche (`::after`) mit (R-3.1). Keine neue Regel |
 | 4.12.2 | 14.10.2026 | Korrektur | A-02 Schritt 3: Abschnitt 7 – Vorschaufenster in voller Seitenbreite, seitlich wischen auf iPad und iPhone (R-6.4, bisher nur in der Designrichtlinie Reiselogbuch, F-4); neue Prüfung `checkCollab` (doku.mjs): Zusammenarbeit, CLAUDE.md, Backlogs und App-Doku ohne veraltete Stellen, Versionszeile in PROMPT.md, Feldnamen des Abgleichberichts; `checkCatalog` prüft jetzt auch die Zusammenarbeit |
 | 4.12.1 | 14.10.2026 | Korrektur | Aus P-32: Seitenleiste folgt bei offener Tastatur dem von Safari verschobenen sichtbaren Bereich wie die Kopfzeile (R-2.1, Prüfung bildet Safari nach); `createSync` mit `values` – der Abgleichbericht zeigt Werte wie die App (R-10.1); Katalogprüfung auch in Code-Kommentaren |
 | 4.12.0 | 14.10.2026 | Neben | **Regelkatalog neu (A-02a):** 52 Regeln → 34 in 10 Themen, Nummern R-<Thema>.<Nr>, je Regel genau eine Prüfung (Spalte ‚Prüfung‘), 5 neue Regeln R-2.3, R-4.4, R-5.3, R-5.4, R-6.4; Zebra je Tabellenzeile auch in App-Tabellen (R-6.1); R-50 → Zusammenarbeit 7; Zuordnung alt → neu; Abschnitte 1, 9, 10, 11, 12, 14 verweisen auf die Regeln statt sie zu wiederholen; Grundprinzipien: iPad und iPhone, Abgleich über das Backup (W-6) |
