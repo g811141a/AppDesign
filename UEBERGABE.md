@@ -7,14 +7,14 @@
 
 | Teil | Version | Datei |
 |---|---|---|
-| Reiselogbuch | 3.13.1 | g811141a/ReiseLogBuch – `CHANGELOG.md`, `BACKLOG.md`, `PROMPT.md` |
-| AppDesign (ui.js, design.css, tests; feste Fassung `fassung/4.14.1/`) | 4.14.1 | g811141a/AppDesign – `CHANGELOG.md`, `BACKLOG.md` |
-| Designrichtlinie allgemein | 4.14.1 (Regelkatalog R-1.1 bis R-10.4, 34 Regeln in 10 Themen) | `README - Designrichtlinie allgemein.md` |
-| Designrichtlinie Reiselogbuch | 3.13.1 | im Repo ReiseLogBuch |
+| Reiselogbuch | 3.13.2 | g811141a/ReiseLogBuch – `CHANGELOG.md`, `BACKLOG.md`, `PROMPT.md` |
+| AppDesign (ui.js, design.css, tests; feste Fassung `fassung/4.14.2/`) | 4.14.2 | g811141a/AppDesign – `CHANGELOG.md`, `BACKLOG.md` |
+| Designrichtlinie allgemein | 4.14.2 (Regelkatalog R-1.1 bis R-10.4, 35 Regeln in 10 Themen) | `README - Designrichtlinie allgemein.md` |
+| Designrichtlinie Reiselogbuch | 3.13.2 | im Repo ReiseLogBuch |
 | Zusammenarbeit allgemein | 2.3.2 (Abschnitt 0 = Arbeitsprozess 2.0, hat Vorrang) | `README - Zusammenarbeit allgemein.md` |
 
 - **Chatnummer:** laufend **Reiselogbuch 0004**; die nächste Sitzung heißt **Reiselogbuch 0005** (Zusammenarbeit 0 Nr. 13).
-- **Offene Prüfpunkte:** **P-37** (AppDesign 4.14.1 mit Reiselogbuch 3.13.1, Prüfliste im CHANGELOG des Reiselogbuchs; ersetzt P-36).
+- **Offene Prüfpunkte:** **P-38** (AppDesign 4.14.2 mit Reiselogbuch 3.13.2, Prüfliste im CHANGELOG des Reiselogbuchs; P-37 ok bis auf /2 und /3 → Korrektur).
 - **Nächste Version:** nichts bereit.
 - **Erinnerung:** ‚Backlog-Erinnerung (AppDesign und Reiselogbuch)‘ montags 8:58.
 
@@ -39,8 +39,9 @@ Frühere Sitzungen: siehe `VERLAUF.md` und Versionsgeschichten.
 ## 3. Nächster Schritt
 
 **Stand 0004:** A-05 Version B gebaut und mit dem Skript veröffentlicht (AppDesign 4.14.0 · Reiselogbuch 3.13.0), dazu die
-Korrektur 4.14.1 · 3.13.1 (Richtlinien-Text in der Fassung statt Git-Markierung, `arbeit/A-05 Fund Markierung.md`). Zuerst
-**P-37 prüfen** (Zusammenarbeit: erst prüfen, dann Neues); danach ist A-05 abgeschlossen. Veröffentlichen ab jetzt:
+Korrektur 4.14.1 · 3.13.1 (Richtlinien-Text in der Fassung statt Git-Markierung, `arbeit/A-05 Fund Markierung.md`). Danach Korrektur 4.14.2 · 3.13.2 zu P-37
+(Schrittkopf, Offline-Start; `arbeit/P-37 Rückmeldung.md`). Zuerst **P-38 prüfen** (erst prüfen, dann Neues); danach ist A-05
+abgeschlossen, als Nächstes **A-06 Offline-Hinweis** (Prio 1, allgemein, zuerst Muster mit Varianten). Veröffentlichen ab jetzt:
 `node werkzeug/veroeffentlichen.mjs vorbereiten --ad X.Y.Z --app reiselogbuch=X.Y.Z`, Texte, Commit, `… los`.
 
 Früher geplant (erledigt):
