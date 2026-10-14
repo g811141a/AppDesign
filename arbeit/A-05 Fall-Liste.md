@@ -42,10 +42,11 @@ Gemessen heute in dieser Sitzung: Reiselogbuch 3.11.7, AppDesign 4.12.2, Chromiu
 - **Feste Fassung fehlt:** Die App lädt `../AppDesign/v4/…?v=4.12.2`. `v4/` ändert sich mit jeder AppDesign-Version
   – `?v=` verhindert nur den alten Zwischenspeicher, nicht, dass eine neue AppDesign-Version die App verändert.
   W-4 (‚4.x.y gilt sofort für alle Apps‘) steht in Designrichtlinie 14, README AppDesign und CLAUDE.md AppDesign.
-- **WebKit (F-1):** beide Adressen heute nicht erreichbar (`cdn.playwright.dev`, `playwright.download.prss.microsoft.com`).
-  **Freigabe:** in der Claude-App in der Titelleiste der Sitzung das Umgebungsmenü → Bearbeiten → **Netzwerkzugriff** →
-  beide Adressen unter ‚Erlaubte Domains‘ eintragen (Haken ‚Paketmanager erlauben‘ gesetzt lassen). Anleitung:
-  https://code.claude.com/docs/en/cloud-environments#network-access – gilt erst für neue Sitzungen.
+- **WebKit (F-1) – erledigt 14.10.2026:** Der Nutzer hat `cdn.playwright.dev` und
+  `playwright.download.prss.microsoft.com` unter Umgebung ‚Standard‘ → Netzwerkzugriff → Erlaubte Domains freigegeben
+  (auf claude.ai/code in Safari; in der iPad-App war das Umgebungsmenü nicht zu finden). Wirkt sofort, ohne neue Sitzung.
+  WebKit 26.0 (Playwright 1.56.1, Revision 2215) mit `install-deps` installiert; Probelauf Reiselogbuch 3.11.7 iPad quer
+  und iPhone hoch ohne Skriptfehler. Dauerhaft über das Setup-Skript der Umgebung (Zeilen siehe Teil G).
 
 ## A. Tests melden Fehler (Version A)
 
@@ -66,6 +67,8 @@ Gemessen heute in dieser Sitzung: Reiselogbuch 3.11.7, AppDesign 4.12.2, Chromiu
 | B-3 | Alles grün: eine Zeile je Test (Dauer) und ‚Alle N Tests grün in mm:ss‘ | `lauf.mjs` | Selbsttest |
 | B-4 | `--alle` läuft trotz Fehler weiter und zeigt am Ende alle roten Tests | Schalter | Selbsttest |
 | B-5 | Die zwei langen Tests werden geteilt (iPad / iPhone), damit die Gesamtdauer sinkt | `hig.mjs` und `kontextmenue-regeln.mjs` mit Schalter `--geraet` | Ziel: ≤ 3 min gesamt; die Dauer steht im Bericht. Abdeckung bleibt gleich (Zahl der geprüften Ansichten vorher = nachher) |
+| B-7 | Jeder Test läuft zusätzlich in **WebKit** (Safari-Engine), nicht nur in Chromium; Nachbildungen (C-3) bleiben für Chromium | `lauf.mjs --browser chromium,webkit` (Standard: beide); `pruefe.mjs` startet den gewählten Browser | Gegenprobe: ein Unterschied, den nur WebKit zeigt, wird gemeldet; Dauer beider zusammen im Bericht |
+| B-8 | WebKit fehlt in einer Sitzung (Setup-Skript nicht gelaufen) | Lauf bricht mit Hinweis ab: ‚WebKit fehlt – `npx playwright install webkit` und `install-deps webkit`‘, nicht stillschweigend nur Chromium | Selbsttest ohne WebKit-Pfad |
 | B-6 | Gleichzeitig laufende Tests stören sich nicht (eigene Seiten, eigene Ausgabedateien in `tests/out/`) | Dateinamen je Test | `--alle` zweimal hintereinander → gleiches Ergebnis |
 
 ## C. Grundregeln nach jeder Handlung in jeder Ansicht (Version A)
@@ -121,9 +124,9 @@ schreibt: **`vorbereiten`** erhöht alle Versionsnummern, **`los`** prüft und v
 
 | Version | Inhalt (höchstens 2 Themen, 0 Nr. 8) |
 |---|---|
-| **AppDesign 4.13.0 · Reiselogbuch 3.12.0** | Thema 1 Tests melden Fehler (A, C), Thema 2 Lauf-Werkzeug parallel (B). App ändert sich nicht sichtbar. |
+| **AppDesign 4.13.0 · Reiselogbuch 3.12.0** | Thema 1 Tests melden Fehler (A, C), Thema 2 Lauf-Werkzeug parallel mit WebKit (B). App ändert sich nicht sichtbar. |
 | **AppDesign 4.14.0 · Reiselogbuch 3.13.0** | Thema 1 Feste Fassung (D, mit W-4), Thema 2 Veröffentlichungs-Skript (E) – 4.14.0 wird schon mit dem Skript veröffentlicht. |
-| WebKit | erst nach der Freigabe der beiden Adressen (Befund); dann eigener kleiner Punkt: `alle.mjs --webkit`. Bis dahin: Hinweis in `tests/README.md`. |
+| WebKit | **in Version A** (entschieden 14.10.2026, B-7, B-8). Setup-Skript der Umgebung ‚Standard‘ (trägt der Nutzer ein): `npx -y playwright@1.56.1 install webkit` und `npx -y playwright@1.56.1 install-deps webkit` |
 
 Dazu bei beiden: Regelkatalog R-10.3 angepasst (D-2), Designrichtlinie 14, Zusammenarbeit 0 Nr. 2/9/10 (nur Verweise
 auf die Werkzeuge), CHANGELOG, Backlog, Übergabe.
