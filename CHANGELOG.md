@@ -19,6 +19,11 @@ Korrektur zu 4.14.0 (Fund `arbeit/A-05 Fund Markierung.md`, Entscheidung a). `v4
   Texte nicht mit dem Arbeitsstand (sie ändern sich auch zwischen Versionen).
 - **Veröffentlichungs-Skript:** keine Markierung mehr; ‚veröffentlicht‘ heißt: `fassung/X.Y.Z/` liegt auf `origin/main`.
   Selbsttest prüft zusätzlich, dass keine Markierung gebraucht wird (20 Fälle grün).
+- **`pruefe.mjs` – `ruhe()` (gefunden beim Veröffentlichen):** `tastatur · webkit` wurde im vollen Lauf (8 Browser parallel)
+  rot – R-2.2 ‚Titel nicht in der Leiste‘ und R-5.4 ‚Kapsel ohne Verlauf‘ in den Einstellungen am iPhone; allein (3×) und
+  unter reiner Rechenlast grün. Ursache wahrscheinlich: unter Volllast kamen Bildwechsel so spät, dass die Ruhe-Prüfung
+  (dreimal gleich nach je 100 ms) erfüllt war, bevor die App diese beiden Werte im nächsten Bild setzte. Jetzt wartet jede
+  Ruhe-Messung auf einen echten Bildwechsel; ohne Bild innerhalb 2 s gilt die Seite nicht als ruhig. Die App war nicht falsch.
 - `fassung/4.14.0/` bleibt unverändert (ohne Texte); die lokale Markierung `v4.14.0` ist gelöscht.
 - Designrichtlinie allgemein 4.14.1 (Abschnitt 14), README, CLAUDE.md 2.1.1, `tests/README.md`, Fall-Liste D-6.
 

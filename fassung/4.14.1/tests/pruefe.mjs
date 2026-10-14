@@ -1,4 +1,4 @@
-// AppDesign 4.13.0 · Prüf-Baustein (A-05, seit 4.13.0): jedes Prüfskript einer App meldet Fehler statt nur Werte
+// AppDesign 4.14.1 · Prüf-Baustein (A-05, seit 4.13.0): jedes Prüfskript einer App meldet Fehler statt nur Werte
 // auszugeben und endet bei einem Fehler mit Rückgabewert 1. Dazu Browserwahl (Chromium oder WebKit), die gemeinsamen
 // Ansichten und die Grundregeln nach jedem Schritt. Einbinden im Prüfskript der App:
 //   import * as pw from 'playwright';
@@ -41,14 +41,17 @@ export async function ruhe(p) {
   // Zuerst zwei Bildwechsel abwarten (höchstens 2 s): manches setzt die App erst im nächsten Bild (z. B. den Verlauf der
   // Auswahl-Kapsel); WebKit verzögert Bildwechsel unter Last deutlich (gemessen: Verlauf kommt immer, aber verspätet).
   await Promise.race([p.evaluate(() => new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)))).catch(() => {}), p.waitForTimeout(2000)]);
+  // Seit 4.14.1: jede Messung erst im nächsten Bild – unter Volllast (8 Browser parallel) kamen in WebKit Bildwechsel so spät,
+  // dass dreimal ‚gleich‘ nach je 100 ms erreicht war, bevor die App Titel-Einblendung (R-2.2) und Verlauf der Kapsel (R-5.4)
+  // gesetzt hatte (tastatur · webkit, Einstellungen iPhone). Kommt kein Bild innerhalb 2 s, gilt die Seite nicht als ruhig.
   let vorher = '', gleich = 0;
-  for (let i = 0; i < 20 && gleich < 2; i++) {
-    const jetzt = await p.evaluate(() => {
-      if (document.getAnimations().some(a => a.playState === 'running')) return 'läuft';
+  for (let i = 0; i < 40 && gleich < 2; i++) {
+    const jetzt = await Promise.race([p.evaluate(() => new Promise(r => requestAnimationFrame(() => {
+      if (document.getAnimations().some(a => a.playState === 'running')) return r('läuft');
       const d = document.querySelector('dialog[open]')?.getBoundingClientRect();
-      if (d && (d.top < -1 || d.bottom > innerHeight + 1)) return 'Fenster noch nicht an seinem Platz';
-      return JSON.stringify([scrollY, ...[...document.querySelectorAll('dialog[open], .menu, .pop')].map(e => { const r = e.getBoundingClientRect(); return [r.top, r.left, r.width, r.height]; })]);
-    }).catch(() => '');
+      if (d && (d.top < -1 || d.bottom > innerHeight + 1)) return r('Fenster noch nicht an seinem Platz');
+      r(JSON.stringify([scrollY, ...[...document.querySelectorAll('dialog[open], .menu, .pop')].map(e => { const r = e.getBoundingClientRect(); return [r.top, r.left, r.width, r.height]; })]));
+    }))).catch(() => ''), new Promise(r => setTimeout(() => r('kein Bild'), 2000))]);
     gleich = jetzt.startsWith('[') && jetzt === vorher ? gleich + 1 : 0;
     vorher = jetzt; if (gleich < 2) await p.waitForTimeout(100);
   }
