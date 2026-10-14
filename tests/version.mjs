@@ -1,4 +1,4 @@
-// AppDesign 4.12.0 · Prüfung der Versionskopplung App ↔ AppDesign (Regel R-10.3, Designrichtlinie allgemein 15.20).
+// AppDesign 4.13.0 · Prüfung der Versionskopplung App ↔ AppDesign (Regel R-10.3, Designrichtlinie allgemein 15.20).
 // Prüft die Dateien der App: ui.js und design.css mit ?v=<AppDesign-Version> in index.html und sw.js, AD_NEEDED in der App
 // gleich AD_VERSION (ui.js) und --ad-version (design.css), Cache-Name in sw.js mit der App-Version.
 // Mit einer Seite (page) zusätzlich: lädt die App mit einer älteren ui.js und erwartet den Hinweis beim Start.
@@ -33,10 +33,12 @@ export async function checkVersions(appDir, browser = null) {
     await p.goto(new URL('index.html', appDir).href); await p.waitForTimeout(400);
     const t = await p.evaluate(() => document.querySelector('#msg[open]')?.textContent || '');
     if (!/AppDesign/.test(t) || !/neu öffnen/.test(t)) E('kein Hinweis beim Start, obwohl eine ältere AppDesign-Fassung geladen ist');
-    await p.unroute(/AppDesign\/v4\/ui\.js/);
-    await p.goto(new URL('index.html', appDir).href); await p.waitForTimeout(400);
-    if (await p.evaluate(() => /AppDesign/.test(document.querySelector('#msg[open]')?.textContent || ''))) E('Hinweis erscheint, obwohl die passende Fassung geladen ist');
     await p.close();
+    // Seit 4.13.0 mit frischer Seite: WebKit nähme sonst die untergeschobene alte ui.js aus dem Zwischenspeicher.
+    const q = await browser.newPage();
+    await q.goto(new URL('index.html', appDir).href); await q.waitForTimeout(400);
+    if (await q.evaluate(() => /AppDesign/.test(document.querySelector('#msg[open]')?.textContent || ''))) E('Hinweis erscheint, obwohl die passende Fassung geladen ist');
+    await q.close();
   }
   return errors;
 }

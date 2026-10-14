@@ -19,6 +19,41 @@ await hig.measure(page, 'Mehr-Menü (hell quer)');
 process.exit(hig.report());
 ```
 
+## Prüfskripte melden Fehler `pruefe.mjs` (seit 4.13.0, A-05)
+
+Gemeinsamer Baustein für jedes Prüfskript einer App: Sollwerte statt ausgegebener Werte, Rückgabewert 1 bei jedem Fehler
+(auch bei Skriptfehlern der Seite), Browser nach `PRUEF_BROWSER` (chromium | webkit), gemeinsame Ansichten (`ANSICHTEN`:
+iPad quer und hoch, iPhone hoch und quer, je hell oder dunkel) und die **Grundregeln nach jedem Schritt**: `schritt()` führt
+eine Handlung aus und misst danach mit `hig.measure(…, { schnell: true })` – dieselben Prüfungen wie `hig.mjs`, ohne Drehen,
+erst wenn die Seite ruht (`ruhe`: keine Animation, Fenster und Menüs bewegen sich nicht mehr).
+
+```js
+import * as pw from 'playwright';
+import { pruefung } from '../../AppDesign/tests/pruefe.mjs';
+import { createCheck } from '../../AppDesign/tests/hig.mjs';
+const t = pruefung('ablauf-fenster', pw, { hig: createCheck(), out: new URL('out/', import.meta.url) });
+const b = await t.browser(); const p = await t.seite(b, 'iPad quer', { theme: 'dark' });
+await t.schritt(p, 'Mehr-Menü', () => p.click('#mainMore'));
+t.ist('Mehr-Menü', await p.locator('.menu .mi').allTextContents(), ['Alle Tage', /Darstellung/], 'R-4.1');   // Wert, RegExp, Funktion, Liste
+t.liste(await checkSync(p));                                                                                 // Meldungen allgemeiner Prüfungen
+await t.ende(b);
+```
+
+Meldung: `✗ R-4.1 webkit · iPad quer dunkel · Mehr-Menü: … – ist …, soll …`. Safari nachgebildet: kein Fokus beim Antippen
+einer Schaltfläche (Chromium und das Linux-WebKit setzen ihn). **Gegenprobe:** `PRUEF_GEGENPROBE=1` macht den ersten Vergleich
+absichtlich falsch, `PRUEF_GEGENPROBE=grundregeln` legt beim ersten Schritt zu breiten Text in den Vordergrund (R-6.3) – der
+Test muss rot werden.
+
+## Alle Prüfungen einer App `lauf.mjs` (seit 4.13.0, A-05)
+
+Startet alle Prüfskripte parallel (Standard 2 × Kerne), die schnellsten zuerst (gemessene Dauer in `tests/out/dauer.json`
+der App), in Chromium und WebKit; beim ersten roten Test werden die übrigen beendet und seine Fehlerzeilen gezeigt.
+Aufruf über `tests/alle.mjs` der App: `node tests/alle.mjs [--alle] [--browser chromium] [--nur hig] [--abdeckung]
+[--gegenprobe [grundregeln]] [--jobs N] [--zeit S]`. Fehlt WebKit, bricht der Lauf mit Hinweis ab (Rückgabewert 2) – nie
+stillschweigend nur Chromium. WebKit einmalig: `npx playwright install webkit` und `npx playwright install-deps webkit`
+(im Setup-Skript der Umgebung ‚Standard‘ eingetragen). Lange Prüfungen lassen sich teilen (`teile`, z. B. hig nach
+Darstellung). Selbsttest mit Schein-Tests: `node tests/lauf-selbsttest.mjs` (in AppDesign).
+
 ## Weitere allgemeine Prüfungen
 
 | Datei | Regeln | Prüft |
@@ -28,6 +63,6 @@ process.exit(hig.report());
 | `backup.mjs` | R-9.1, R-9.2 | Backup erstellen und laden (Menü, Abfrage mit Kacheln, Abbrechen, unlesbare Datei) |
 | `kontextmenue.mjs` | R-4.2 | Kontextmenü jeder sichtbaren Kachel und des letzten Eintrags, ganz sichtbar, über der Backup-Kachel |
 | `doku.mjs` | R-10.4, Zusammenarbeit 7, Katalog | README mit ‚Verwendete Versionen‘, Prüfliste beginnt mit /0; `checkCatalog` (seit 4.12.0): jede Regel hat eine Prüfung, alte Nummern zugeordnet und nirgends mehr verwendet |
-| `version.mjs` | R-10.3 | `?v=` in `index.html` und `sw.js`, gleiche Versionen, Hinweis beim Start bei älterer Fassung |
+| `version.mjs` | R-10.3 | `?v=` in `index.html` und `sw.js`, gleiche Versionen, Hinweis beim Start bei älterer Fassung (seit 4.13.0 mit frischer Seite – WebKit) |
 
 **Erst rot, dann grün:** Jede neue Prüfung wird einmal mit einem eingebauten Fehler laufen gelassen und muss ihn melden.
