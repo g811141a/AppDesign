@@ -1,6 +1,6 @@
 # Zusammenarbeit allgemein
 
-**Version 2.1.1** · Stand 14.10.2026
+**Version 2.2.0** · Stand 14.10.2026
 
 Regeln für die Zusammenarbeit mit Claude bei allen iPad-Web-Apps von g811141a.
 Diese Datei liegt im Design-Repo **AppDesign** (g811141a/AppDesign).
@@ -58,8 +58,9 @@ Nutzer sie findet, schneller und günstiger arbeiten.
    Erklärungen, die der Nutzer **vor** einer Entscheidung lesen muss, schickt Claude als Datei vor dem Fenster.
 
 **C. Bauen und Veröffentlichen**
-8. **Kleine Versionen:** 2–3 zusammengehörige Punkte, **höchstens 2 Themen** je Version; Korrekturen sofort, bevor
-   Neues kommt; nicht kreuz und quer. (Ersetzt die ‚etwa 5 Punkte‘ in Abschnitt 6.)
+8. **Kleine Versionen:** 2–3 zusammengehörige Punkte, **höchstens 2 Themen** je Version; nicht kreuz und quer.
+   **Korrekturen sofort:** Fehler aus einer Prüfrunde kommen als eigene Korrekturversion, bevor Neues gebaut wird – auch
+   ohne Datenverlust (Abschnitt 6).
 9. **Veröffentlichungs-Skript:** erhöht alle Versionen, prüft, veröffentlicht AppDesign vor der App und wartet auf
    Pages (A-05).
 10. **Feste Fassung der allgemeinen Regeln je App:** Jede AppDesign-Version liegt zusätzlich in einem eigenen,
@@ -110,14 +111,14 @@ Nutzer sie findet, schneller und günstiger arbeiten.
   - Bei mehreren Möglichkeiten eine **Aufzählung mit a, b, c, d …**
   - Fragen nummerieren (1, 2, 3 …), damit die Antwort „1) a, 2) ja“ lauten kann.
 - Eigene Empfehlung jeweils kurz dazuschreiben.
-- **Antwortvorschläge zum Übernehmen (Pflicht, immer beides):**
-  - Die Fragen kommen zusätzlich im **Auswahlfenster** (bis zu 4 Fragen, je 2–4 Möglichkeiten);
-    die Empfehlung steht immer an erster Stelle mit „(Empfohlen)“ und kann einfach angetippt werden.
+- **Auswahlfenster (0 Nr. 7):**
+  - Fragen kommen im **Auswahlfenster** (bis zu 4 Fragen, je 2–4 Möglichkeiten): nur eine **kurze Frage** und die
+    Schaltflächen, keine Erklärtexte, keine Zeitangaben. Die Empfehlung steht an erster Stelle mit „(Empfohlen)“;
+    jedes Fenster hat die Option **‚Ich schreibe im Chat‘**.
   - Schließt der Nutzer das Auswahlfenster und antwortet im Text, gilt die Antwort; bei den
     **nächsten** Fragen kommt **trotzdem wieder automatisch** das Auswahlfenster.
-  - Am Ende jeder Antwort mit Fragen steht eine fertige **Antwortzeile zum Kopieren** mit den
-    empfohlenen Antworten, z. B. `1 ja · 2 a · 3 ja` – bei mehr als 4 Fragen ist sie der einzige Weg.
-  - Den Vorschlag im Eingabefeld der App erzeugt die App selbst; Claude kann ihn nicht befüllen.
+  - Eine **Antwortzeile zum Kopieren** (z. B. `1 ja · 2 a · 3 ja`) gibt es nur noch bei mehr als 4 Fragen –
+    dann ist sie der einzige Weg.
 - **Zeit und Token (Pflicht):** Gemessen wird die **Arbeitszeit ab dem Eingang der Nachricht des
   Nutzers** (Zeitpunkt aus den Sitzungsdaten, nicht erst ab Claudes erstem Schritt – das Nachdenken
   davor zählt mit) bis zur Übergabe; Wartezeit in Auswahlfenstern zählt nicht. Die Gesamtzeit beginnt
@@ -126,19 +127,14 @@ Nutzer sie findet, schneller und günstiger arbeiten.
   gezählt). Ausgabe als **eine kompakte Zeile**, klein gesetzt:
   `<sub>⏱ mm:ss · Token vorige Antwort: N neu · N aus Zwischenspeicher · N geschrieben</sub>`
   (ab 60 Minuten hh:mm:ss). Nutzung in Prozent und Rücksetzzeiten zeigt nur die Claude-App.
-- **Muster im Auswahlfenster:** Text vor einem Auswahlfenster und die Vorschau-Funktion sind in der
-  App nicht zu sehen. Muster und Beispiele stehen deshalb **direkt im Fragetext** des
-  Auswahlfensters (oder als Bild/Datei, die vor dem Fenster geschickt wird). **Ausnahme:** Muster,
-  die von der Schriftdarstellung abhängen (klein, grau, kursiv …), zeigt das Fenster nicht – dann
-  kommen Muster und Frage einmalig im Text am Ende der Antwort; bei der nächsten Frage wieder das
-  Fenster.
+- **Muster und Erklärungen vor dem Fenster (0 Nr. 7, seit 2.2.0):** Text vor einem Auswahlfenster und die
+  Vorschau-Funktion sind in der App nicht zu sehen. Muster, Beispiele und Erklärungen, die der Nutzer vor der
+  Entscheidung lesen muss, schickt Claude deshalb **als Datei oder Bild vor dem Fenster**; im Fenster steht nur die
+  kurze Frage.
 - **Reihenfolge in einer Antwort:** Erst die Arbeit, dann das Auswahlfenster, nach der Antwort die
   Zusammenfassung – die Zeile mit Zeit und Token steht immer ganz am Ende, also **nach** der letzten
   Antwort im Auswahlfenster. Solange ein Fenster offen ist, ist die Antwort noch nicht fertig.
   Die laufende Zeitanzeige während der Bearbeitung kommt von der App, nicht von Claude.
-- **Auswahlfenster nur mit Schaltflächen:** Im Auswahlfenster steht nur eine **kurze Frage** und die
-  Schaltflächen – keine Erklärtexte, keine Zeitangaben. Erklärungen stehen im normalen Text der
-  Antwort; die Zeile mit Zeit und Token steht nur **ganz am Ende der Antwort** (= Übergabe an den Nutzer).
 
 ## 3. Apple-like entwickeln
 
@@ -201,8 +197,7 @@ Nutzer sie findet, schneller und günstiger arbeiten.
    - Muster zuerst **nur hell und quer**; dunkel und hoch erst, wenn hell passt.
    - Muster und Screenshots **in Viererpaketen** schicken (je Sendung höchstens 4 Bilder),
      damit man sie nacheinander durchsehen kann.
-3. **Bei jeder Design-Änderung fragen, ob sie allgemein gilt oder nur für die App**
-   (eigene Einschätzung als Vorschlag).
+3. **Allgemein oder App** – bei jeder Design-Änderung erfragen (Abschnitt 0 Nr. 4).
 4. Zusammenfassen und in den Backlog-Abschnitt **„0. Nächste Version“** eintragen (Status
    bereit) – **nicht** sofort bauen. Auch kleine Fehler aus dem Testen kommen dorthin.
 5. Gebaut wird nur nach Abschnitt 6 und **erst nach ausdrücklichem „Ja“ – verpflichtend,
@@ -213,16 +208,15 @@ Nutzer sie findet, schneller und günstiger arbeiten.
 
 ## 6. Sammelversionen
 
-- **Wann Claude nach einer Version fragt:** erst, wenn sich eine Version lohnt –
+- **Wann Claude nach einer Version fragt** (0 Nr. 8): erst, wenn sich eine Version lohnt –
   - ein **Thema** ist fertig geklärt, **oder**
   - **2–3 zusammengehörige Punkte** (höchstens 2 Themen, Abschnitt 0 Nr. 8) sind in „0. Nächste Version“ gesammelt, **oder**
   - der Nutzer sagt jederzeit „Version bauen“.
   Dann: „Soll ich Version X.Y.Z mit [Liste aller bereiten Punkte] erstellen? Ja/Nein“.
-- **Sofort-Korrektur** (eigene kleine Version außer der Reihe) nur bei schweren Fehlern:
-  **Datenverlust** droht oder die App ist **nicht benutzbar**. Claude fragt auch dann vorher.
-  Alles andere wartet auf die nächste Sammelversion.
+- **Korrekturen sofort (0 Nr. 8, seit 2.2.0):** Fehler aus einer Prüfrunde kommen als eigene Korrekturversion,
+  **bevor** Neues gebaut wird – auch ohne Datenverlust. Claude fragt auch dann vorher.
 - **Versionsnummer:** Sammelversion = in der Regel **Nebenversion** (z. B. 2.3.0);
-  Korrekturversion (z. B. 2.3.1) nur für Sofort-Korrekturen.
+  Korrekturversion (z. B. 2.3.1) für Korrekturen.
 - **Eine Prüfrunde je Version:** Claude legt einen Prüfpunkt mit nummerierter Prüfliste an
   (je Punkt der Version: was auf dem iPad zu prüfen ist). Antwort z. B. „alles ok“ oder
   „ok bis auf 3“; Abweichungen kommen wieder in „0. Nächste Version“.
@@ -247,8 +241,7 @@ Nutzer sie findet, schneller und günstiger arbeiten.
 - **Versionen in der README (seit 1.15.0, R-10.4):** Die README jeder App zeigt ganz oben die Tabelle ‚Verwendete
   Versionen‘ – App, AppDesign, Designrichtlinie allgemein, Designrichtlinie <App>, Zusammenarbeit allgemein – je mit
   Version und Link; bei jeder Version nachführen.
-- Screenshots in Viererpaketen schicken und die Änderungen auf Deutsch zusammenfassen; an
-  den Neustart der App erinnern.
+- Bericht nach 0 Nr. 11; Screenshots in Viererpaketen; an den Neustart der App erinnern.
 - **Ausdrücklicher Hinweis** am Ende des Berichts: „Bitte zuerst alle Prüfpunkte testen – neue
   Punkte setze ich erst um, wenn die Prüfliste erledigt und gefundene Fehler beseitigt sind.“
 - **Prüfpunkte Schritt für Schritt (seit 1.14.0, verpflichtend):** Am Ende **jeder Umsetzung** – nach
@@ -262,10 +255,8 @@ Nutzer sie findet, schneller und günstiger arbeiten.
   verbietet, ist auch die automatische Prüfung lückenhaft. Reihenfolge: 1. die Prüfung so erweitern, dass sie den
   Fehler findet (rot), 2. beheben (grün), 3. dieselbe Lücke in allen Ansichten, Fenstern und Apps suchen (z. B. eine
   Prüfung, die nur einen Bereich abdeckt), 4. im Bericht nennen, warum die Prüfung den Fehler übersehen hat.
-- **Testfälle selbst ableiten (seit 1.16.0):** Zu jeder Anforderung leitet Claude die Testfälle selbst ab – Gerät ×
-  Lage × Darstellung × Handlung (Drehen, Wischen, Tastatur, Abgleich) × Daten (leer, lang, viele) – und prüft
-  allgemeine Grundregeln nach jeder Handlung (z. B. nach dem Drehen: oberster Eintrag, Seitenleiste, Menüs bleiben).
-  Die Tests bilden Safari nach, wo sich Chrome anders verhält (z. B. kein Scroll-Anker).
+- **Testfälle selbst ableiten:** Fall-Liste vor jedem Bau (0 Nr. 1), Safari nachbilden (0 Nr. 5); nach jeder Handlung
+  die allgemeinen Grundregeln prüfen (z. B. nach dem Drehen: oberster Eintrag, Seitenleiste, Menüs bleiben).
 - **Prüfliste beginnt mit /0 (seit 1.15.0; Arbeitsregel, Prüfung `doku.mjs`):** Jede Prüfliste beginnt mit dem Prüfpunkt **/0 ‚Version prüfen‘** –
   auf jedem Gerät die Versionszeile ansehen (App-Version **und** AppDesign-Version); erst wenn beide stimmen, wird
   weiter getestet. So fällt ein noch nicht geladener Stand sofort auf (Anlass: P-26/6 und 7).
@@ -299,6 +290,7 @@ Nutzer sie findet, schneller und günstiger arbeiten.
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 2.2.0 | 14.10.2026 | Neben | A-02 Schritt 4 – Abschnitte 1–9 an Abschnitt 0 angepasst: Korrekturen sofort als Korrekturversion, auch ohne Datenverlust (§6, 0 Nr. 8); Antwortzeile nur noch bei mehr als 4 Fragen, jedes Fenster mit ‚Ich schreibe im Chat‘ (§2, 0 Nr. 7); Muster und Erklärungen als Datei vor dem Fenster statt im Fragetext (§2); Doppeltes durch Verweise auf Abschnitt 0 ersetzt (§5 Nr. 3, §7 Testfälle und Bericht) |
 | 2.1.1 | 14.10.2026 | Korrektur | Regelnummern nach dem neuen Regelkatalog (Designrichtlinie allgemein 4.12.0): R-1.1 …, R-10.4; die frühere R-50 (Prüfliste mit /0, Meldung je Gerät) ist Arbeitsregel in Abschnitt 7 |
 | 2.1.0 | 14.10.2026 | Neben | Abschnitt 0 Nr. 13: Claude startet die neue Sitzung selbst, Name ‚<App> <vierstellige Chatnummer> – Thema‘, Nummer in UEBERGABE.md |
 | 2.0.1 | 14.10.2026 | Korrektur | Abschnitt 0 Nr. 14: Starttext immer als Codeblock (Kopieren-Schaltfläche) und Angabe, wo auf GitHub alles liegt |

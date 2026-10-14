@@ -1,4 +1,4 @@
-// AppDesign 4.12.0 · Prüfung der Doku einer App (Regel R-10.4, Zusammenarbeit allgemein 7) und des Regelkatalogs (checkCatalog).
+// AppDesign 4.12.2 · Prüfung der Doku einer App (Regel R-10.4, Zusammenarbeit allgemein 7) und des Regelkatalogs (checkCatalog).
 // R-10.4: README.md zeigt ganz oben ‚Verwendete Versionen‘ – App, AppDesign, Designrichtlinie allgemein, Designrichtlinie <App>,
 //       Zusammenarbeit allgemein – je mit Version (gleich wie in index.html bzw. den Richtlinien) und Link.
 // Zusammenarbeit 7: Die Prüfliste der neuesten Version im CHANGELOG beginnt mit /0 ‚Version prüfen‘ (App- und AppDesign-Version);
@@ -61,7 +61,9 @@ export function checkCatalog(appDir, app) {
   const old = new Set([...map.matchAll(/\| (R-\d{2}) \| ([^|]+?) (?=\|)/g)].map(m => (m[2].trim().split(/, /).forEach(t => { if (!nrs.includes(t) && !/^Zusammenarbeit/.test(t)) E(`Zuordnung ${m[1]} → ${t}: gibt es nicht`); }), m[1])));
   for (let i = 1; i <= 52; i++) { const o = `R-${String(i).padStart(2, '0')}`; if (!old.has(o)) E(`alte Regel ${o} ist keiner neuen zugeordnet`); }
   const noHistory = t => t.split(/\n## Versionsgeschichte/)[0];
-  const docs = { 'Designrichtlinie allgemein': noHistory(guide).replace(cat, ''),   // der Katalog selbst nennt in ‚ersetzt‘ die alten Nummern 'Zusammenarbeit allgemein': noHistory(read(ad, 'README - Zusammenarbeit allgemein.md')),
+  // Seit 4.12.2: ‚Zusammenarbeit allgemein‘ stand bis dahin versehentlich im Kommentar und wurde nicht geprüft.
+  const docs = { 'Designrichtlinie allgemein': noHistory(guide).replace(cat, ''),   // der Katalog selbst nennt in ‚ersetzt‘ die alten Nummern
+    'Zusammenarbeit allgemein': noHistory(read(ad, 'README - Zusammenarbeit allgemein.md')),
     'AppDesign README.md': read(ad, 'README.md'), 'AppDesign CLAUDE.md': read(ad, 'CLAUDE.md'), 'AppDesign tests/README.md': read(ad, 'tests/README.md'),
     [`${app} README.md`]: read(appDir, 'README.md'), [`${app} CLAUDE.md`]: read(appDir, 'CLAUDE.md'), [`${app} tests/README.md`]: read(appDir, 'tests/README.md'),
     [`Designrichtlinie ${app}`]: noHistory(read(appDir, readdirSync(appDir).find(f => /^README - Designrichtlinie (?!allgemein)/.test(f)) || 'x')),
@@ -73,6 +75,71 @@ export function checkCatalog(appDir, app) {
     if (o.length) E(`${name}: alte Nummern ${o.slice(0, 6).join(', ')}${o.length > 6 ? ' …' : ''}`);
     const u = [...new Set((text.match(/\bR-\d+\.\d+(?:\.\d+)?/g) || []).filter(n => !nrs.includes(n)))];
     if (u.length) E(`${name}: Nummern, die es im Katalog nicht gibt: ${u.join(', ')}`);
+  }
+  return errors;
+}
+
+// Seit 4.12.2 (A-02 Schritte 3 und 4) – Zusammenarbeit, CLAUDE.md, Backlogs und App-Doku widersprechen Abschnitt 0 der
+// Zusammenarbeit nicht, nennen keine veralteten Abläufe und dieselben Versionen und Feldnamen wie die App.
+export function checkCollab(appDir, app) {
+  const errors = [], E = t => errors.push(t);
+  const ad = new URL('../AppDesign/', appDir);
+  const read = (base, f) => { try { return readFileSync(new URL(f, base), 'utf8'); } catch { return ''; } };
+  const noHistory = t => t.split(/\n## (?:Versionsgeschichte|Erledigt)/)[0];
+  const version = text => text.match(/\*\*Version (\d+\.\d+\.\d+)\*\*/)?.[1];
+  const own = readdirSync(appDir).find(f => /^README - Designrichtlinie (?!allgemein)/.test(f)) || 'x';
+  const collab = read(ad, 'README - Zusammenarbeit allgemein.md'), html = read(appDir, 'index.html');
+  const prompt = noHistory(read(appDir, 'PROMPT.md')), guideApp = noHistory(read(appDir, own));
+  const files = { 'Zusammenarbeit allgemein': noHistory(collab), 'AppDesign CLAUDE.md': noHistory(read(ad, 'CLAUDE.md')),
+    [`${app} CLAUDE.md`]: noHistory(read(appDir, 'CLAUDE.md')), 'AppDesign BACKLOG.md': noHistory(read(ad, 'BACKLOG.md')),
+    [`${app} BACKLOG.md`]: noHistory(read(appDir, 'BACKLOG.md')), [`Designrichtlinie ${app}`]: guideApp, [`${app} PROMPT.md`]: prompt };
+  // Veraltete Stellen (Verlauf-Abgleich W-1 bis W-3, W-5, W-7)
+  const stale = [
+    [/etwa 5 Punkte/, 'Zusammenarbeit 0 Nr. 8: ‚etwa 5 Punkte‘ – es gilt 2–3 Punkte, höchstens 2 Themen'],
+    [/nur bei schweren Fehlern|Eigene Version außer der Reihe nur bei/, 'Zusammenarbeit 0 Nr. 8: Korrekturversion nur bei Datenverlust – es gilt ‚Korrekturen sofort‘'],
+    [/direkt im Fragetext/, 'Zusammenarbeit 0 Nr. 7: Muster im Fragetext – Muster und Erklärungen kommen als Datei vor dem Fenster'],
+    [/⏱ Gesamt/, 'Zusammenarbeit 2: Zeitzeile mit ‚Gesamt‘ – es gilt ‚⏱ mm:ss · Token vorige Antwort …‘'],
+    [/werden ersetzt\.|ersetzt nach einer Sprechblase/, 'R-9.2: alter Text ‚Backup laden … ersetzt‘ – die Abfrage hat die Kacheln Abgleichen und Ersetzen (15.19)'],
+    [/Läuft nur auf dem iPad|kein Teilen, kein Login/, 'Designrichtlinie 1: ‚nur auf dem iPad‘ – Zielgeräte sind iPad und iPhone'],
+  ];
+  for (const [name, text] of Object.entries(files)) {
+    for (const [re, msg] of stale) if (re.test(text)) E(`${msg} (${name})`);
+    // W-2: eine Antwortzeile gibt es nur noch bei mehr als 4 Fragen
+    for (const m of text.matchAll(/Antwortzeile/g)) {
+      const around = text.slice(Math.max(0, m.index - 250), m.index + 250);
+      if (!/mehr als 4 Fragen/.test(around)) { E(`Zusammenarbeit 0 Nr. 7: Antwortzeile ohne ‚nur bei mehr als 4 Fragen‘ (${name})`); break; }
+    }
+    // Verweise auf die Zusammenarbeit zeigen auf vorhandene Stellen (Abschnitte 0–9, Abschnitt 0 Nr. 1–17)
+    const sections = [...collab.matchAll(/^## (\d+)\. /gm)].map(m => +m[1]);
+    const items = (collab.split(/\n## 0\. /)[1]?.split(/\n## /)[0].match(/^\d+\. /gm) || []).length;
+    for (const m of text.matchAll(/(?:Zusammenarbeit(?: allgemein)?,? (?:Abschnitt )?|§)(\d+)(?: Nr\. (\d+))?/g)) {
+      if (!sections.includes(+m[1])) E(`Zusammenarbeit: Verweis ‚${m[0]}‘ – Abschnitt ${m[1]} gibt es nicht (${name})`);
+      else if (m[2] && (+m[1] !== 0 || +m[2] > items)) E(`Zusammenarbeit: Verweis ‚${m[0]}‘ zeigt ins Leere (${name})`);
+    }
+  }
+  // CLAUDE.md beider Repos: zuerst UEBERGABE.md, Version und Versionsgeschichte, Prüfung mit alle.sh
+  for (const [name, base] of [['AppDesign CLAUDE.md', ad], [`${app} CLAUDE.md`, appDir]]) {
+    const t = read(base, 'CLAUDE.md');
+    const first = t.split(/\n## Zuerst lesen/)[1]?.match(/^\d+\. (.*)$/m)?.[1] || '';
+    if (!/UEBERGABE\.md/.test(first)) E(`Zusammenarbeit 0 Nr. 15: ${name} nennt unter ‚Zuerst lesen‘ nicht zuerst UEBERGABE.md`);
+    if (!version(t) || !/\n## Versionsgeschichte/.test(t)) E(`Designrichtlinie 11: ${name} ohne Version oder Versionsgeschichte`);
+  }
+  if (read(appDir, 'tests/alle.sh') && !/sh tests\/alle\.sh/.test(read(appDir, 'CLAUDE.md'))) E(`Zusammenarbeit 7: ${app} CLAUDE.md nennt nicht ‚sh tests/alle.sh‘`);
+  // PROMPT.md: Versionszeile nennt die aktuellen Fassungen (wie die README, R-10.4)
+  const want = { [app]: html.match(/const APP_VERSION = '([\d.]+)'/)?.[1], AppDesign: html.match(/const AD_NEEDED = '([\d.]+)'/)?.[1],
+    'Designrichtlinie allgemein': version(read(ad, 'README - Designrichtlinie allgemein.md')), [`Designrichtlinie ${app}`]: version(read(appDir, own)),
+    'Zusammenarbeit allgemein': version(collab) };
+  const line = prompt.split('\n').find(l => l.startsWith(`${app} `) && /\d+\.\d+\.\d+/.test(l)) || '';
+  if (!line) E(`Zusammenarbeit 7: ${app} PROMPT.md ohne Versionszeile`);
+  for (const [n, v] of Object.entries(want)) if (line && !line.includes(`${n} ${v}`)) E(`Zusammenarbeit 7: Versionszeile in ${app} PROMPT.md nennt nicht ‚${n} ${v}‘`);
+  if (/siehe Designrichtlinie allgemein \d/.test(prompt)) E(`Zusammenarbeit 7: ${app} PROMPT.md verweist auf eine alte Fassung der Designrichtlinie allgemein`);
+  // R-10.1: Feldnamen des Abgleichberichts in der App-Richtlinie = labels in index.html
+  const labels = html.match(/labels:\s*\{([^}]*)\}/)?.[1];
+  const listed = guideApp.match(/Feldnamen im Abgleichbericht \(`labels`\): ([^.]*)/)?.[1];
+  if (labels && listed) {
+    const inCode = new Set([...labels.matchAll(/'([^']+)'/g)].map(m => m[1]));
+    for (const w of listed.split(/,|;/).map(s => s.replace(/^\s*je Tag\s*/, '').trim()).filter(Boolean))
+      if (!inCode.has(w)) E(`R-10.1: Designrichtlinie ${app} nennt im Abgleichbericht das Feld ‚${w}‘, die App heißt es anders`);
   }
   return errors;
 }
