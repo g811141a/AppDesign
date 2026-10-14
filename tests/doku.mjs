@@ -1,4 +1,4 @@
-// AppDesign 4.12.2 · Prüfung der Doku einer App (Regel R-10.4, Zusammenarbeit allgemein 7) und des Regelkatalogs (checkCatalog).
+// AppDesign 4.14.0 · Prüfung der Doku einer App (Regel R-10.4, Zusammenarbeit allgemein 7) und des Regelkatalogs (checkCatalog).
 // R-10.4: README.md zeigt ganz oben ‚Verwendete Versionen‘ – App, AppDesign, Designrichtlinie allgemein, Designrichtlinie <App>,
 //       Zusammenarbeit allgemein – je mit Version (gleich wie in index.html bzw. den Richtlinien) und Link.
 // Zusammenarbeit 7: Die Prüfliste der neuesten Version im CHANGELOG beginnt mit /0 ‚Version prüfen‘ (App- und AppDesign-Version);
@@ -6,18 +6,28 @@
 // Einbinden im Prüfskript der App:  import { checkDocs } from '../../AppDesign/tests/doku.mjs';
 //                                   const fehler = checkDocs(new URL('..', import.meta.url), 'Reiselogbuch');
 import { readFileSync, readdirSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
+// Seit 4.14.0 (A-05 D-6): Richtlinie und Zusammenarbeit so, wie sie in der Markierung vX.Y.Z der benutzten Fassung stehen –
+// spätere AppDesign-Versionen ändern die Prüfung einer App nicht. Ohne Markierung (Version noch in Arbeit): der Arbeitsstand.
+export function adText(appDir, f, needed) {
+  const ad = new URL('../AppDesign/', appDir);
+  if (needed) try { return execFileSync('git', ['-C', fileURLToPath(ad), 'show', `v${needed}:${f}`], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }); } catch {}
+  try { return readFileSync(new URL(f, ad), 'utf8'); } catch { return ''; }
+}
 export function checkDocs(appDir, app) {
   const errors = [], E = t => errors.push(t);
   const read = f => readFileSync(new URL(f, appDir), 'utf8');
   const version = text => text.match(/\*\*Version (\d+\.\d+\.\d+)\*\*/)?.[1];
   const html = read('index.html'), readme = read('README.md'), changelog = read('CHANGELOG.md');
   const own = readdirSync(appDir).find(f => /^README - Designrichtlinie (?!allgemein)/.test(f));
+  const needed = html.match(/const AD_NEEDED = '([\d.]+)'/)?.[1];
   const want = {
     [app]: html.match(/const APP_VERSION = '([\d.]+)'/)?.[1],
-    AppDesign: html.match(/const AD_NEEDED = '([\d.]+)'/)?.[1],
-    'Designrichtlinie allgemein': version(read('../AppDesign/README - Designrichtlinie allgemein.md')),
+    AppDesign: needed,
+    'Designrichtlinie allgemein': version(adText(appDir, 'README - Designrichtlinie allgemein.md', needed)),
     [`Designrichtlinie ${app}`]: own ? version(read(own)) : undefined,
-    'Zusammenarbeit allgemein': version(read('../AppDesign/README - Zusammenarbeit allgemein.md')),
+    'Zusammenarbeit allgemein': version(adText(appDir, 'README - Zusammenarbeit allgemein.md', needed)),
   };
   // R-10.4
   const head = readme.split(/\n## /)[1] || '';
@@ -27,6 +37,11 @@ export function checkDocs(appDir, app) {
     if (!row) { E(`R-10.4 README.md: Zeile ‚${name}‘ fehlt in ‚Verwendete Versionen‘`); continue; }
     if (!v || !row.includes(`| ${v} |`)) E(`R-10.4 README.md: ‚${name}‘ nennt nicht die Version ${v || '(unbekannt)'}`);
     if (!/\]\(https:\/\/github\.com\//.test(row)) E(`R-10.4 README.md: ‚${name}‘ ohne Link`);
+    // D-6: Links nach AppDesign zeigen auf die Markierung der benutzten Fassung, Bausteine auf ihren Fassungs-Ordner
+    for (const m of row.matchAll(/github\.com\/g811141a\/AppDesign\/blob\/([^/]+)\/([^)]*)/g)) {
+      if (m[1] !== `v${needed}`) E(`R-10.4 README.md: ‚${name}‘ verlinkt AppDesign ‚${m[1]}‘ statt der Markierung v${needed}`);
+      if (/^(?:v4|fassung)\//.test(m[2]) && !m[2].startsWith(`fassung/${needed}/`)) E(`R-10.4 README.md: ‚${name}‘ verlinkt ${m[2]} statt fassung/${needed}/`);
+    }
   }
   // Zusammenarbeit 7: neueste Version im CHANGELOG
   const newest = changelog.split(/\n## /)[1] || '';
@@ -126,13 +141,18 @@ export function checkCollab(appDir, app) {
   }
   if (read(appDir, 'tests/alle.sh') && !/sh tests\/alle\.sh/.test(read(appDir, 'CLAUDE.md'))) E(`Zusammenarbeit 7: ${app} CLAUDE.md nennt nicht ‚sh tests/alle.sh‘`);
   // PROMPT.md: Versionszeile nennt die aktuellen Fassungen (wie die README, R-10.4)
-  const want = { [app]: html.match(/const APP_VERSION = '([\d.]+)'/)?.[1], AppDesign: html.match(/const AD_NEEDED = '([\d.]+)'/)?.[1],
-    'Designrichtlinie allgemein': version(read(ad, 'README - Designrichtlinie allgemein.md')), [`Designrichtlinie ${app}`]: version(read(appDir, own)),
-    'Zusammenarbeit allgemein': version(collab) };
+  const needed = html.match(/const AD_NEEDED = '([\d.]+)'/)?.[1];
+  const want = { [app]: html.match(/const APP_VERSION = '([\d.]+)'/)?.[1], AppDesign: needed,
+    'Designrichtlinie allgemein': version(adText(appDir, 'README - Designrichtlinie allgemein.md', needed)), [`Designrichtlinie ${app}`]: version(read(appDir, own)),
+    'Zusammenarbeit allgemein': version(adText(appDir, 'README - Zusammenarbeit allgemein.md', needed)) };
   const line = prompt.split('\n').find(l => l.startsWith(`${app} `) && /\d+\.\d+\.\d+/.test(l)) || '';
   if (!line) E(`Zusammenarbeit 7: ${app} PROMPT.md ohne Versionszeile`);
   for (const [n, v] of Object.entries(want)) if (line && !line.includes(`${n} ${v}`)) E(`Zusammenarbeit 7: Versionszeile in ${app} PROMPT.md nennt nicht ‚${n} ${v}‘`);
   if (/siehe Designrichtlinie allgemein \d/.test(prompt)) E(`Zusammenarbeit 7: ${app} PROMPT.md verweist auf eine alte Fassung der Designrichtlinie allgemein`);
+  // Seit 4.14.0 (A-05 D-7, W-4): feste Fassung je App – ‚gilt sofort für alle Apps‘ steht nirgends mehr (außer Versionsgeschichte).
+  for (const [name, text] of [['Designrichtlinie allgemein', noHistory(read(ad, 'README - Designrichtlinie allgemein.md'))], ['AppDesign README.md', noHistory(read(ad, 'README.md'))],
+    ['AppDesign CLAUDE.md', noHistory(read(ad, 'CLAUDE.md'))], [`${app} CLAUDE.md`, noHistory(read(appDir, 'CLAUDE.md'))]])
+    if (/(?:gilt|gelten) sofort für alle Apps|\?v=<(?:AppDesign-)?Version>/.test(text)) E(`R-10.3 W-4: ${name} nennt noch ‚gilt sofort für alle Apps‘ bzw. ‚?v=‘ – jede App lädt ihre feste Fassung`);
   // R-10.1: Feldnamen des Abgleichberichts in der App-Richtlinie = labels in index.html
   const labels = html.match(/labels:\s*\{([^}]*)\}/)?.[1];
   const listed = guideApp.match(/Feldnamen im Abgleichbericht \(`labels`\): ([^.]*)/)?.[1];

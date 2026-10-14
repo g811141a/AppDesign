@@ -1776,3 +1776,5 @@ Alle punkte ok
 **2026-10-14 · Nutzer (Sitzung Reiselogbuch 0003):** P-35 erfolgreich (alle Punkte ok).
 
 **2026-10-14 · Übergabe (Sitzung Reiselogbuch 0003):** Sitzung groß (rund 440.000 Token) → Übergabe geschrieben, neue Sitzung ‚Reiselogbuch 0004 – A-05 Version B‘ gestartet.
+
+**2026-10-14 · Entscheidung (Sitzung Reiselogbuch 0004):** Version AppDesign 4.14.0 / Reiselogbuch 3.13.0 mit fester Fassung (Teil D, mit W-4) und Veröffentlichungs-Skript (Teil E) erstellen → **Ja**. WebKit war über das Setup-Skript installiert (`webkit-2215`, WebKit 26.0 startet).
