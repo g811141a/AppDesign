@@ -1754,3 +1754,5 @@ Alle punkte ok
 **2026-10-14 · Nutzer (Sitzung Reiselogbuch 0001):** Rückmeldung zu P-32: 1) im Abgleichbericht sind die Reisemittel in Neu und Vorher kleingeschrieben – warum? In den Einstellungen richtig mit Großbuchstaben. 2) iPad: wenn nach der Eingabe auf den ersten Treffer weiter unten aufgesetzt wird, verschiebt sich die Seitenleiste etwas nach oben – warum? 4) Die Vorschau war schon einmal besser, die letzte Spalte wird zusammengequetscht; wenn es eng wird, sollen sich die letzten beiden Spalten gleichmäßig präsentieren – Vorschlag, wenn in allen Spalten viel Inhalt steht. Rest ok. Sonstiges: ‚Gesamtkosten‘ durch ‚Gesamtausgaben‘ ersetzen.
 
 **2026-10-14 · Entscheidung (Sitzung Reiselogbuch 0001):** Vorschau-Spalten → **c) zwei breit, zwei schmal** (28 : 28 : 22 : 22) · feste Spaltenanteile als allgemeine Regel → **Nein** (nur Reiselogbuch) · AppDesign 4.12.1 und Reiselogbuch 3.11.6 mit 1, 2, 4 und ‚Gesamtausgaben‘ erstellen → **Ja (Empfohlen)**
+
+**2026-10-14 · Nutzer (Sitzung Reiselogbuch 0001):** Test zu P-33 alle ok.

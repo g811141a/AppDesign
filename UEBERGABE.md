@@ -15,10 +15,7 @@
 
 - **Chatnummer:** diese Übergabe ist für **Reiselogbuch 0002**; die übernächste Sitzung heißt **Reiselogbuch 0003**
   (Zusammenarbeit 0 Nr. 13).
-- **Offene Prüfpunkte:** **P-33** (Reiselogbuch 3.11.6 mit AppDesign 4.12.1) – /0 Version, /1 Reisemittel mit Namen im
-  Abgleichbericht, /2 iPad: Seitenleiste bleibt bei der Suche stehen, /3 Spalten der Vorschau 28 : 28 : 22 : 22,
-  /4 ‚Gesamtausgaben‘; Schritte im CHANGELOG des Reiselogbuchs. P-32 ist erledigt (0 und 3 ok, 1, 2, 4 → 3.11.6).
-  **Erst prüfen, dann Neues.**
+- **Offene Prüfpunkte:** keine – P-32 und P-33 erledigt (P-33 alles in Ordnung, 14.10.2026).
 - **Nächste Version:** nichts bereit (AppDesign und Reiselogbuch).
 - **Erinnerung:** ‚Backlog-Erinnerung (AppDesign und Reiselogbuch)‘ montags 8:58 – startet jede Woche eine frische
   Sitzung, liest diese Datei und beide Backlogs und endet mit dem Starttext.
@@ -41,12 +38,13 @@
 - **Gefunden:** Viele `ablauf-*.mjs` der App geben Werte nur aus und melden keine Fehler (`alle.sh` zeigt nur
   Skriptfehler) → in A-05 aufgenommen.
 
-## 3. Nächster Schritt
+## 3. Nächster Schritt: A-02 Schritte 3 und 4 (eigene Version, Prio 1)
 
-1. Nutzer prüft **P-33**; Fehler zuerst mit geschärfter Prüfung beheben (Zusammenarbeit 7).
-2. Danach **A-02 Schritte 3 und 4 (eigene Version):** Allgemeines aus Designrichtlinie Reiselogbuch und PROMPT nach
-   AppDesign (F-4 Vorschau wischen, W-7 alter Text ‚Backup laden … ersetzt‘); Zusammenarbeit allgemein (W-1, W-2, W-3,
-   Abschnitte 1–9 an Abschnitt 0 anpassen); CLAUDE.md beider Repos neu fassen (W-5).
+1. **Zuerst die Fall-Liste** (Zusammenarbeit 0 Nr. 1), dann Bau erst nach ‚Ja‘ (Version vorher erfragen).
+2. Schritt 3: Allgemeines aus Designrichtlinie Reiselogbuch und PROMPT nach AppDesign (F-4 Vorschau wischen, W-7 alter
+   Text ‚Backup laden … ersetzt‘) – Grundlage `arbeit/A-02 Verlauf-Abgleich.md`.
+3. Schritt 4: Zusammenarbeit allgemein (W-1 Korrekturen sofort, W-2 Antwortzeile entfällt, W-3, Abschnitte 1–9 an
+   Abschnitt 0 anpassen); CLAUDE.md beider Repos neu fassen (W-5).
 
 ## 4. Danach
 
@@ -81,5 +79,5 @@ In der neuen Sitzung müssen **beide Repos** (AppDesign und ReiseLogBuch) ausgew
 ## 7. Starttext für die neue Sitzung
 
 ```
-Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md, dann die Zusammenarbeit allgemein und die Designrichtlinien, gib mir das Lagebild und die offenen Prüfpunkte von P-33 Schritt für Schritt.
+Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md, dann die Zusammenarbeit allgemein und die Designrichtlinien, gib mir das Lagebild und beginne mit A-02 Schritte 3 und 4 – zuerst die Fall-Liste.
 ```
