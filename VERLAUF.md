@@ -1740,3 +1740,5 @@ Alle punkte ok
 **2026-10-14 05:10 · Entscheidung (Sitzung A-02):** Gliederung in 10 Themen mit 34 Regeln (arbeit/A-02 Regelkatalog-Entwurf.md) so übernehmen? → **Ja (Empfohlen)** · Nummern nach Thema (R-2.1 statt R-05)? → **Ja, R-Thema.Nr (Empfohlen)** · Die 5 neuen Regeln (R-2.3, R-4.4, R-5.3, R-5.4, R-6.4) mit eigener Prüfung aufnehmen? → **Ja (Empfohlen)**
 
 **2026-10-14 05:15 · Entscheidung (Sitzung A-02):** Soll ich Version AppDesign 4.12.0 mit dem neuen Regelkatalog (A-02a) erstellen? → **Ja (Empfohlen)** · Den Bau in einer neuen Sitzung beginnen? → **Ja, neue Sitzung (Empfohlen)**
+
+**2026-10-14 05:25 · Nutzer:** Starttext immer so ausgeben, dass er mit einer Schaltfläche kopiert werden kann; dazu angeben, wo alles auf GitHub abgelegt ist, damit die neue Sitzung die Daten übernehmen kann. → Zusammenarbeit 2.0.1 (Abschnitt 0 Nr. 14), UEBERGABE.md Abschnitte 6 und 7

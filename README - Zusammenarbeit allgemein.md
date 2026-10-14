@@ -1,6 +1,6 @@
 # Zusammenarbeit allgemein
 
-**Version 2.0.0** · Stand 14.10.2026
+**Version 2.0.1** · Stand 14.10.2026
 
 Regeln für die Zusammenarbeit mit Claude bei allen iPad-Web-Apps von g811141a.
 Diese Datei liegt im Design-Repo **AppDesign** (g811141a/AppDesign).
@@ -77,7 +77,9 @@ Nutzer sie findet, schneller und günstiger arbeiten.
     ‚Neue Sitzung beginnen? Ja/Nein‘.
 14. **Bei Ja schreibt Claude sofort die Übergabe** nach `UEBERGABE.md` im Repo AppDesign und veröffentlicht sie:
     Versionen, offene Prüfpunkte, nächste Schritte, neue Vereinbarungen (die zusätzlich schon in den Richtlinien
-    stehen) und was zuerst zu lesen ist. Dazu gibt Claude einen **Starttext** zum Kopieren.
+    stehen) und was zuerst zu lesen ist. Dazu gibt Claude einen **Starttext** zum Kopieren – **immer als Codeblock**
+    (```), damit er mit der Kopieren-Schaltfläche übernommen werden kann – und nennt, **wo auf GitHub** alles liegt
+    (Repo, Branch `main`, Dateien), damit die neue Sitzung es findet.
 15. **Neue Sitzung:** Der Nutzer öffnet einen neuen Chat mit derselben Umgebung und fügt den Starttext ein. Claude
     liest die Übergabe und die Richtlinien und gibt zuerst das **Lagebild** (Version, offene Prüfpunkte,
     Backlog-Spitze), dann wird gearbeitet.
@@ -292,6 +294,7 @@ Nutzer sie findet, schneller und günstiger arbeiten.
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 2.0.1 | 14.10.2026 | Korrektur | Abschnitt 0 Nr. 14: Starttext immer als Codeblock (Kopieren-Schaltfläche) und Angabe, wo auf GitHub alles liegt |
 | 2.0.0 | 14.10.2026 | Haupt | Arbeitsprozess 2.0 (Abschnitt 0, Vorrang): Fall-Liste vor jedem Bau, parallel und sparsam arbeiten, Regeln bei jeder neuen Regel zusammenfassen, allgemeine Regel immer erfragen, Safari nachbilden, Varianten nebeneinander, Fenster nur Ja/Nein mit ‚Ich schreibe im Chat‘, kleine Versionen (höchstens 2 Themen), Veröffentlichungs-Skript, feste AppDesign-Fassung je App, Bericht mit vollständiger Aufzählung, ein Thema je Sitzung, Übergabe-Datei `UEBERGABE.md`, Lagebild, kurze Rückmeldung |
 | 1.16.0 | 14.10.2026 | Neben | Fehler aus der Prüfung am Gerät: zuerst die automatische Prüfung so schärfen, dass sie den Fehler findet, dann beheben, dann dieselbe Lücke überall suchen; Testfälle selbst ableiten; Tests bilden Safari nach. §1: jede Meldung deutsch (aus 1.15.1) |
 | 1.15.1 | 13.10.2026 | Korrektur | §1: jede Meldung deutsch – auch Zwischenmeldungen, Statuszeilen, Bildunterschriften und Fragen im Auswahlfenster |

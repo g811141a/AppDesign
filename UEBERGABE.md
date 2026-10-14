@@ -11,7 +11,7 @@
 | AppDesign (ui.js, design.css) | 4.11.4 | g811141a/AppDesign – `CHANGELOG.md`, `BACKLOG.md` |
 | Designrichtlinie allgemein | 4.11.4 (Regelkatalog R-01 bis R-52) | `README - Designrichtlinie allgemein.md` |
 | Designrichtlinie Reiselogbuch | 3.11.4 | im Repo ReiseLogBuch |
-| Zusammenarbeit allgemein | 2.0.0 (Abschnitt 0 = Arbeitsprozess 2.0, hat Vorrang) | `README - Zusammenarbeit allgemein.md` |
+| Zusammenarbeit allgemein | 2.0.1 (Abschnitt 0 = Arbeitsprozess 2.0, hat Vorrang) | `README - Zusammenarbeit allgemein.md` |
 
 - **Offene Prüfpunkte:** keine.
 - **Nächste Version AppDesign:** A-02a (freigegeben, Bau mit ‚Ja‘ bestätigt). **Reiselogbuch:** T-83 (‚Verkehrsmittel‘ →
@@ -62,8 +62,22 @@
 - Veröffentlichen: Vorbereitungs-Zweig, `--no-ff` nach `main`, erst AppDesign, dann App; Pages-Läufe abwarten.
 - Zeit und Token am Ende jeder Antwort aus den Sitzungsdaten (`/root/.claude/projects/…/*.jsonl`).
 
-## 6. Starttext für die neue Sitzung
+## 6. Ablage auf GitHub (alles auf Branch `main`)
 
-> Lies im Repo g811141a/AppDesign zuerst UEBERGABE.md, dann die Zusammenarbeit allgemein, die Designrichtlinien und
-> die beiden Dateien im Ordner arbeit/, gib mir das Lagebild und beginne mit dem Bau von AppDesign 4.12.0 (A-02a) –
-> zuerst die Fall-Liste.
+| Was | Repo | Datei |
+|---|---|---|
+| Diese Übergabe | g811141a/AppDesign | `UEBERGABE.md` |
+| Verlauf aller Wünsche und Entscheidungen | g811141a/AppDesign | `VERLAUF.md` |
+| A-02 Schritt 1: Verlauf-Abgleich | g811141a/AppDesign | `arbeit/A-02 Verlauf-Abgleich.md` |
+| A-02 Schritt 2: Regelkatalog-Entwurf (freigegeben) | g811141a/AppDesign | `arbeit/A-02 Regelkatalog-Entwurf.md` |
+| Regeln (Zusammenarbeit, Design) | g811141a/AppDesign | `README - Zusammenarbeit allgemein.md`, `README - Designrichtlinie allgemein.md` |
+| Backlog allgemein (A-02a bereit) | g811141a/AppDesign | `BACKLOG.md` |
+| App: Backlog (T-83 bereit), Richtlinie, Funktionsbeschreibung | g811141a/ReiseLogBuch | `BACKLOG.md`, `README - Designrichtlinie Reiselogbuch.md`, `PROMPT.md` |
+
+In der neuen Sitzung müssen **beide Repos** (AppDesign und ReiseLogBuch) ausgewählt sein.
+
+## 7. Starttext für die neue Sitzung
+
+```
+Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md, dann die Zusammenarbeit allgemein, die Designrichtlinien und die beiden Dateien im Ordner arbeit/, gib mir das Lagebild und beginne mit dem Bau von AppDesign 4.12.0 (A-02a) – zuerst die Fall-Liste.
+```
