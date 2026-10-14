@@ -1,6 +1,6 @@
 # AppDesign – Backlog (allgemeine Themen)
 
-**Stand 14.10.2026** · Aktuelle Version: AppDesign 4.14.1
+**Stand 15.10.2026** · Aktuelle Version: AppDesign 4.14.2
 
 Allgemeine Themen, die alle Apps betreffen. App-Themen stehen im Backlog der jeweiligen App.
 Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
@@ -19,12 +19,13 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| P-37 | 1 | AppDesign 4.14.1 mit Reiselogbuch 3.13.1 (feste Fassung, Veröffentlichungs-Skript, Richtlinien-Text in der Fassung): Prüfliste P-37 im CHANGELOG des Reiselogbuchs (ersetzt P-36); danach ist A-05 abgeschlossen | prüfen |
+| P-38 | 1 | AppDesign 4.14.2 mit Reiselogbuch 3.13.2 (Korrektur zu P-37: Schrittkopf, Offline-Start): Prüfliste P-38 im CHANGELOG des Reiselogbuchs; danach ist A-05 abgeschlossen | prüfen |
 
 ## 2. Weitere Themen (in Klärung)
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
+| A-06 | 1 | **Offline-Hinweis** (allgemeine Regel, Ergänzung R-1.5): arbeitet die App offline, sieht man es – kurzer Hinweis beim Wechsel und/oder kleine, gut sichtbare Dauer-Anzeige (z. B. ganz unten). Zuerst Muster mit Varianten (a: graue Zeile unten in Seitenleiste/Startliste wie Mail, b: Band oben wie Musik, c: a + kurze Meldung beim Wechsel) | offen |
 | A-01 | 3 | Startseite g811141a.github.io mit allen Apps (früher S-03) | später |
 
 ---
@@ -33,6 +34,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Thema | Version | Datum |
 |---|---|---|---|
+| E-14 | Korrektur zu P-37: Schrittkopf als Gruppe (R-5.1), Offline-Start mit Frist 3 s (neue Regel R-1.5, Prüfung `offline.mjs`) | AppDesign 4.14.2 | 14.10.2026 |
 | E-13 | Korrektur: Fassung enthält Designrichtlinie und Zusammenarbeit statt Git-Markierung (aus der Cloud gesperrt); Skript ohne Markierung | AppDesign 4.14.1 | 14.10.2026 |
 | E-12 | A-05 Version B: feste Fassung `fassung/X.Y.Z/` (design.css, ui.js, tests/, Prüfsummen, Markierung), Apps laden genau ihre Fassung, `v4/` = neueste Fassung, W-4 nachgeführt; Veröffentlichungs-Skript `werkzeug/veroeffentlichen.mjs` (vorbereiten, fassung, los) mit Selbsttest | AppDesign 4.14.0 | 14.10.2026 |
 | E-11 | Geprüft: P-35 alles in Ordnung (AppDesign 4.13.0 mit Reiselogbuch 3.12.0); A-05 Version A damit abgeschlossen | AppDesign 4.13.0 | 14.10.2026 |

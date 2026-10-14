@@ -1,6 +1,6 @@
 # Designrichtlinie allgemein
 
-**Version 4.14.1** · Stand 14.10.2026
+**Version 4.14.2** · Stand 15.10.2026
 
 Allgemeine Gestaltungs- und Bedienregeln für alle iPad-Web-Apps von g811141a (seit 4.1.0 auch
 auf dem iPhone, Abschnitt 15.17).
@@ -335,7 +335,9 @@ heller).
   Version erhöhen.
 - Service Worker „network first“ mit `cache: 'no-cache'`: Beim Start wird immer bei
   GitHub nachgefragt, neue Versionen sind nach einem Neustart sofort da; offline läuft
-  die gespeicherte Version.
+  die gespeicherte Version. **Seit 4.14.2 (R-1.5):** das Netz höchstens 3 s abwarten, dann aus dem Speicher (sonst bleibt
+  die Seite bei schlechtem oder abgeschaltetem Netz weiß); die feste Fassung (unveränderlich) zuerst aus dem Speicher;
+  ohne Netz unter anderer Adresse geöffnet → die gespeicherte App; beim Einrichten alle Dateien frisch holen.
 - **Versionskopplung App ↔ AppDesign (seit 4.11.0, R-10.3; feste Fassung seit 4.14.0):** `ui.js` und `design.css` kommen
   aus der festen Fassung der App, `../AppDesign/fassung/X.Y.Z/` – in `index.html` und in der Dateiliste von `sw.js`, ohne
   `?v=` (der Pfad enthält die Version; kein alter Zwischenspeicher). Eine neue AppDesign-Version ändert die App nicht. `ui.js` nennt ihre Version in `AD_VERSION`, `design.css`
@@ -577,6 +579,9 @@ Verhalten · technischer Name). In AppDesign ist jede Komponente einmal programm
 - **Apple:** [HIG – Boxes](https://developer.apple.com/design/human-interface-guidelines/boxes)
 - Fläche `--dlg-card` bzw. `--card`, Radius 14 px, ohne Rand, Innenabstand 14 px;
   Kopfzeile mit blauer Schritt-Nummer, Titel, rechts Options-Kapseln und Icon-Schaltflächen.
+- **Schaltflächen im Schrittkopf als Gruppe (seit 4.14.2, R-5.1):** mehrere Options-Kapseln (`.head-check`) stehen in
+  `<span class="head-checks">`. Passt alles in eine Zeile, stehen sie rechts neben dem Titel (auch iPhone quer); sonst rückt
+  die ganze Gruppe unter den Titel – nie eine Kapsel allein.
 - **Kasten mit Feldern** (`.box` mit `.kv`, iPhone statt Tabellenzeile): Felder durch dünne
   Linien getrennt (1 px `--line`, wie die Trennlinie im Menü) – waagrecht zwischen den Feldern,
   senkrecht zwischen Bezeichnung und Inhalt. Bezeichnung als Wort in normaler Schrift
@@ -823,6 +828,7 @@ Regel ersetzt oder ergänzt eine bestehende (Zusammenarbeit 0 Nr. 3) und bekommt
 | R-1.2 | **Darstellung** folgt dem Gerät (‚Automatisch‘), im Mehr-Menü übersteuerbar (Automatisch · Hell · Dunkel) | hig.mjs | – | R-33 |
 | R-1.3 | **Nie ungewollt vergrößern:** Doppeltippen vergrößert nicht; Eingabefelder mindestens 16 px (sonst vergrößert iOS beim Antippen) | hig.mjs | iOS-Tastatur | R-04, R-20 |
 | R-1.4 | **Nur der Vordergrund reagiert:** offenes Fenster sperrt die Seite, Menü und Sprechblase fangen Wischen ab, daneben tippen schließt | hig.mjs | – | R-01 |
+| R-1.5 | **Offline nutzbar (seit 4.14.2):** die App startet ohne Netz aus dem Speicher – auch unter anderer Adresse und bei hängendem Netz nach höchstens 3 s, nie eine weiße Seite (Hinweis, dass die App offline arbeitet: A-06, folgt) | offline.mjs | Gerät (Flugmodus) | – |
 
 ### 2. Leisten, Suche, Scrollen
 
@@ -855,7 +861,7 @@ Regel ersetzt oder ergänzt eine bestehende (Zusammenarbeit 0 Nr. 3) und bekommt
 
 | Nr. | Regel | Prüfung | Gerät | ersetzt |
 |---|---|---|---|---|
-| R-5.1 | **Felder:** Bezeichnung und Feld gehören zusammen (Umbruch nur davor); Datumsfelder so breit wie das Datum mit Kalender-Icon; Betragsfelder rechtsbündig, ‚4.850,00 €‘ | hig.mjs | – | R-06, R-26, R-27 |
+| R-5.1 | **Felder:** Bezeichnung und Feld gehören zusammen (Umbruch nur davor); Schaltflächen im Schrittkopf bleiben als Gruppe zusammen und stehen neben dem Titel, wenn alles in eine Zeile passt (seit 4.14.2); Datumsfelder so breit wie das Datum mit Kalender-Icon; Betragsfelder rechtsbündig, ‚4.850,00 €‘ | hig.mjs | – | R-06, R-26, R-27 |
 | R-5.2 | **Texteingabe:** Großbuchstabe am Zeilenanfang und nach einem Vorschlag; Textfelder wachsen mit; Diktieren nur über die Mikrofon-Taste der Tastatur (kein eigener Knopf) | ablauf.mjs – `checkCapital` | iOS-Tastatur | R-07, R-17 |
 | R-5.3 | **Fehlermeldungen:** rot direkt unter dem Feld (Feld rot umrandet), erst nach einer Eingabe bzw. beim Häkchen; Pflichtfelder werden nicht gekennzeichnet | ablauf.mjs – `checkFieldErrors` | – | **neu** (bisher 8) |
 | R-5.4 | **Auswahl-Kapsel:** mehrere Auswahl-Schaltflächen in einer Kapsel, seitlich wischbar mit Verlauf am Rand; Markierung als eigene Form innen, Breite ändert sich nicht | hig.mjs – Verlauf am Rand, Breite beim Wählen | Wischen | **neu** (bisher 15.12) |
@@ -927,6 +933,7 @@ Die alten Nummern R-01 bis R-52 (bis 4.11.4) gelten nicht mehr; sie stehen nur n
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 4.14.2 | 14.10.2026 | Korrektur | Fund P-37: R-5.1 ergänzt (Schaltflächen im Schrittkopf als Gruppe, 15.10), neue Regel R-1.5 (Offline-Start, Service Worker mit Frist 3 s, 15.20) |
 | 4.14.1 | 14.10.2026 | Korrektur | Abschnitt 14: die Fassung enthält auch den Text dieser Richtlinie und der Zusammenarbeit; keine Git-Markierung mehr (aus der Cloud gesperrt, Fund 4.14.0) |
 | 4.14.0 | 14.10.2026 | Neben | A-05 Version B: feste Fassung je Version `fassung/X.Y.Z/` (Einleitung, 15.20, Abschnitt 14 – W-4 nachgeführt: Versionen gelten nicht mehr sofort für alle Apps), R-10.3 angepasst (Fassungs-Pfad statt `?v=`, Prüfsummen, `v4/` = neueste Fassung), Veröffentlichungs-Skript |
 | 4.13.0 | 14.10.2026 | Neben | A-05 Version A (Prüfungen 2.0): Abschnitt 14 ‚Prüfen‘ und 17 ‚Grundregeln‘ – Prüfskripte melden Fehler mit Rückgabewert (`pruefe.mjs`), Grundregeln nach jedem Schritt, Chromium und WebKit, paralleler Lauf (`lauf.mjs`); `hig.mjs` zählt eine unsichtbare Antippfläche (`::after`) mit (R-3.1). Keine neue Regel |

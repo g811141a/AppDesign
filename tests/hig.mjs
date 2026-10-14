@@ -177,6 +177,22 @@ const found = new Map(), icons = new Map();
       const scroller = e => { for (let x = e.parentElement; x && x !== document.body; x = x.parentElement) if (/auto|scroll/.test(cs(x).overflowY)) return x; return null; };
       if (side && vis(side)) side.querySelectorAll('.side-head, .bhint').forEach(e => { if (scroller(e)) R('R-2.1', `.${e.classList[0]} liegt im Scrollbereich der Seitenleiste – federt mit`); });
       // R-5.1 Bezeichnung und Feld gehören zusammen
+      // R-5.1 (seit 4.14.2, P-37/2): Schaltflächen im Schrittkopf bleiben als Gruppe zusammen; passt alles in eine Zeile, steht
+      // es in der Zeile der Überschrift (gemessen mit der Textbreite der Überschrift und den Abständen des Kopfs).
+      // Auch außerhalb des Ausschnitts (die Anordnung hängt nicht vom Scrollen ab) – nur angezeigt muss der Kopf sein.
+      const shown = e => { const b = e.getBoundingClientRect(), s = getComputedStyle(e); return b.width > 0 && b.height > 0 && s.display !== 'none' && s.visibility !== 'hidden'; };
+      document.querySelectorAll('.step-head').forEach(h => {
+        const chips = [...h.querySelectorAll('.head-check')].filter(shown), lab = h.querySelector(':scope > label');
+        if (!shown(h) || !chips.length || !lab) return;
+        const rg = document.createRange(); rg.selectNodeContents(lab);
+        const gap = parseFloat(cs(h).columnGap) || 0, hw = h.clientWidth - parseFloat(cs(h).paddingLeft) - parseFloat(cs(h).paddingRight);
+        const cw = chips.reduce((a, c) => a + c.getBoundingClientRect().width, 0) + gap * (chips.length - 1);
+        const tops = chips.map(c => Math.round(c.getBoundingClientRect().top)), lr = lab.getBoundingClientRect();
+        const zusammen = Math.max(...tops) - Math.min(...tops) < 4, inZeile = tops.every(t => t < lr.bottom - 4);
+        const name = (lab.textContent || '').replace(/^\d+/, '').trim().slice(0, 20);
+        if (rg.getBoundingClientRect().width + gap + cw <= hw + 1 && !(zusammen && inZeile)) R('R-5.1', `Schrittkopf ‚${name}‘: Schaltflächen brechen um, obwohl alles in die Zeile der Überschrift passt`);
+        else if (cw <= hw + 1 && !zusammen) R('R-5.1', `Schrittkopf ‚${name}‘: Schaltflächen nicht zusammen in einer Zeile`);
+      });
       document.querySelectorAll('.dates .dl').forEach(d => { if (vis(d) && !d.parentElement.classList.contains('pair')) R('R-5.1', 'Bezeichnung nicht mit ihrem Feld verbunden'); });
       // R-6.1 Gelbe Markierung ohne blauen Rand
       const focus = hex(root.getPropertyValue('--focus'));

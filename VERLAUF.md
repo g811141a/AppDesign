@@ -1780,3 +1780,7 @@ Alle punkte ok
 **2026-10-14 · Entscheidung (Sitzung Reiselogbuch 0004):** Version AppDesign 4.14.0 / Reiselogbuch 3.13.0 mit fester Fassung (Teil D, mit W-4) und Veröffentlichungs-Skript (Teil E) erstellen → **Ja**. WebKit war über das Setup-Skript installiert (`webkit-2215`, WebKit 26.0 startet).
 
 **2026-10-14 · Entscheidung (Sitzung Reiselogbuch 0004):** Fund: Git-Markierung `v4.14.0` aus der Cloud nicht hochladbar (HTTP 403). Weg → **a** (Text von Designrichtlinie und Zusammenarbeit in die Fassung, keine Markierung) · Korrekturversion AppDesign 4.14.1 / Reiselogbuch 3.13.1 → **Ja**.
+
+**2026-10-14 · Nutzer (Sitzung Reiselogbuch 0004):** P-37 ok bis auf 2 (iPhone quer: im Quartier-Kopf bricht ‚keinen Google-Maps Link‘ allein um, obwohl alles in die Zeile der Überschrift passt) und 3 (iPad startet offline – Flugmodus und ohne WLAN – nur mit weißer Seite; iPhone einwandfrei). Neuer Wunsch: ein kurzer Hinweis oder eine kleine, gut sichtbare Dauer-Anzeige, wenn die App offline arbeitet, z. B. ganz unten.
+
+**2026-10-14 · Entscheidung (Sitzung Reiselogbuch 0004):** Korrekturversion AppDesign 4.14.2 / Reiselogbuch 3.13.2 mit Schrittkopf (Muster) und robustem Offline-Start → **Ja** · Schrittkopf als allgemeine Regel → **Ja** (R-5.1 ergänzt) · Offline-Hinweis ins Backlog → **Prio 1** (A-06, zuerst Muster) · Offline-Hinweis als allgemeine Regel → **Ja**.

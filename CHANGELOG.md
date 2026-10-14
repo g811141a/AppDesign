@@ -3,6 +3,23 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.14.2 – 14.10.2026 (Korrektur)
+
+AppDesign 4.14.2 · Designrichtlinie allgemein 4.14.2 · Zusammenarbeit allgemein 2.3.2 · geprüft mit Reiselogbuch 3.13.2
+
+Korrektur zu P-37 (Auswertung und Fall-Liste `arbeit/P-37 Rückmeldung.md`).
+
+- **Schrittkopf (R-5.1 ergänzt, allgemeine Regel):** Options-Kapseln im Kopf eines Kastens stehen als Gruppe
+  `.head-checks`; passt alles in eine Zeile, neben dem Titel (auch iPhone quer), sonst die ganze Gruppe darunter
+  (`design.css`, Designrichtlinie 15.10). Vorher brach im iPhone-Querformat eine Kapsel allein um, weil der Titel mindestens
+  60 % breit war. Prüfung in `hig.mjs` (misst jeden angezeigten Schrittkopf, auch außerhalb des Ausschnitts).
+- **Offline-Start (neue Regel R-1.5):** Service Worker mit Frist 3 s, Fassung zuerst aus dem Speicher, gespeicherte App bei
+  anderer Adresse (Designrichtlinie 15.20). Neue Prüfung `tests/offline.mjs`: eigener Webserver mit echtem Service Worker,
+  Netz ‚aus‘ und ‚hängt‘ nachgebildet, iPad und iPhone, Chromium und WebKit. Fand den Fehler (weiße Seite bei hängendem Netz)
+  in beiden Browsern.
+- **Neu im Backlog:** A-06 Offline-Hinweis (Prio 1, allgemeine Regel, zuerst Muster).
+- Designrichtlinie allgemein 4.14.2 (15.10, 15.20, Regelkatalog: 35 Regeln).
+
 ## 4.14.1 – 14.10.2026 (Korrektur)
 
 AppDesign 4.14.1 · Designrichtlinie allgemein 4.14.1 · Zusammenarbeit allgemein 2.3.2 · geprüft mit Reiselogbuch 3.13.1
