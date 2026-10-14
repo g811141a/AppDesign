@@ -574,7 +574,7 @@ function createSync({ list, sub, subAt, maxFields = [], nouns = ['Eintrag', 'Ein
     .sync-report table.grid col.c1 { width: 15%; } .sync-report table.grid col.c2 { width: 13%; } .sync-report table.grid col.c3 { width: 13%; }
     .sync-report table.grid col.c4 { width: 22%; } .sync-report table.grid col.c5 { width: 14%; } .sync-report table.grid col.c6 { width: 10%; } .sync-report table.grid col.c7 { width: 13%; }
     .sync-report table.grid tbody th { background: #fff; }
-    .sync-report table.grid th, .sync-report table.grid td { border: 1px solid #999; padding: 6px 8px; vertical-align: top; text-align: left; overflow-wrap: anywhere; }
+    .sync-report table.grid th, .sync-report table.grid td { border: 1px solid #999; padding: 6px 8px; vertical-align: top; text-align: left; overflow-wrap: break-word; -webkit-hyphens: auto; hyphens: auto; }
     .sync-report table.grid th { background: #d9d9d9; border-color: #a5a5a5; font-weight: 600; }
     .sync-report table.grid tbody + tbody { border-top: 2px solid #a5a5a5; }
     .sync-report .new { color: #0a5bd3; font-weight: 600; } .sync-report .del { color: #c0362c; font-weight: 600; }
@@ -612,7 +612,7 @@ function createSync({ list, sub, subAt, maxFields = [], nouns = ['Eintrag', 'Ein
       const l = keptChanged.filter(k => k.on === on), other = !(on || savedOn) ? 'dem anderen Gerät' : (on || savedOn) === here ? `dem anderen ${esc(on || savedOn)}` : `dem ${esc(on || savedOn)}`;
       notes.push(`<b>Auf ${other} gelöscht, auf diesem ${esc(here)} danach noch geändert:</b> ${l.map(k => esc(k.title)).join(', ')} – ${l.length === 1 ? 'bleibt' : 'bleiben'} erhalten.`);
     }
-    return `<div class="sync-report"><style>${REPORT_CSS}</style>
+    return `<div class="sync-report" lang="de"><style>${REPORT_CSS}</style>
       <h1>Abgleichbericht</h1>
       <table class="meta"><tr><td><b>Abgeglichen am:</b></td><td>${whenText(now)} auf diesem ${esc(here)}</td></tr>
         <tr><td><b>Backup:</b></td><td>vom ${savedOn ? esc(savedOn) : 'anderen Gerät'}, erstellt am ${whenText(savedAt)}</td></tr>
