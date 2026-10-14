@@ -1,5 +1,5 @@
-// AppDesign 4.11.1 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
-// Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/v4/ui.js?v=4.11.1"></script>
+// AppDesign 4.11.2 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
+// Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/v4/ui.js?v=4.11.2"></script>
 // Seit 4.11.0 (R-48): ui.js und design.css immer mit ?v=<AppDesign-Version> einbinden (auch in sw.js) und beim Start
 // prüfen, ob genau diese Fassung geladen ist (AD_VERSION hier, --ad-version in design.css).
 // Klassisches Skript: alle Funktionen sind global und für das Skript der App sichtbar.
@@ -17,7 +17,7 @@
 
 'use strict';
 // Version der Bausteine (R-48): die App vergleicht sie beim Start mit der benötigten Fassung.
-const AD_VERSION = '4.11.1';
+const AD_VERSION = '4.11.2';
 /* ---------- Icons ---------- */
 
 // Schaltflächen-Icons aus Lucide (ISC-Lizenz), direkt eingebettet, damit die App offline funktioniert.
@@ -571,12 +571,11 @@ function createSync({ list, sub, subAt, maxFields = [], nouns = ['Eintrag', 'Ein
     .sync-report table { border-collapse: collapse; }
     .sync-report .meta td { border: none; padding: 1px 16px 1px 0; vertical-align: top; }
     .sync-report table.grid { width: 100%; margin-top: 8px; table-layout: fixed; }
-    .sync-report table.grid col.c1 { width: 15%; } .sync-report table.grid col.c2 { width: 14%; } .sync-report table.grid col.c3 { width: 12%; }
-    .sync-report table.grid col.c4 { width: 24%; } .sync-report table.grid col.c5 { width: 14%; } .sync-report table.grid col.c6 { width: 9%; } .sync-report table.grid col.c7 { width: 12%; }
+    .sync-report table.grid col.c1 { width: 15%; } .sync-report table.grid col.c2 { width: 13%; } .sync-report table.grid col.c3 { width: 13%; }
+    .sync-report table.grid col.c4 { width: 22%; } .sync-report table.grid col.c5 { width: 14%; } .sync-report table.grid col.c6 { width: 10%; } .sync-report table.grid col.c7 { width: 13%; }
     .sync-report table.grid tbody th { background: #fff; }
     .sync-report table.grid th, .sync-report table.grid td { border: 1px solid #999; padding: 6px 8px; vertical-align: top; text-align: left; overflow-wrap: anywhere; }
     .sync-report table.grid th { background: #d9d9d9; border-color: #a5a5a5; font-weight: 600; }
-    .sync-report table.grid td.nw { white-space: nowrap; }
     .sync-report table.grid tbody + tbody { border-top: 2px solid #a5a5a5; }
     .sync-report .new { color: #0a5bd3; font-weight: 600; } .sync-report .del { color: #c0362c; font-weight: 600; }
     .sync-report .old { color: #555; }
@@ -588,8 +587,8 @@ function createSync({ list, sub, subAt, maxFields = [], nouns = ['Eintrag', 'Ein
     const body = groups.map(g => {
       const lines = g.rows.flatMap(r => r.fields.map((f, i) => ({ r, f, first: !i })));
       return `<tbody data-kind="${g.kind}" data-title="${esc(g.title)}">${lines.map((x, n) => `<tr>${n ? '' : `<th scope="rowgroup" rowspan="${lines.length}">${esc(g.title)}</th>`}${
-        x.first ? `<td class="nw" rowspan="${x.r.fields.length}">${x.r.key === null ? '–' : esc(keyText(x.r.key))}</td>` : ''}<td>${x.f.label}</td><td>${x.f.now}</td><td class="old">${x.f.before}</td>${
-        x.first ? `<td class="nw" rowspan="${x.r.fields.length}">${esc(x.r.on || '–')}</td><td class="nw" rowspan="${x.r.fields.length}">${atText(x.r.at)}</td>` : ''}</tr>`).join('')}</tbody>`;
+        x.first ? `<td rowspan="${x.r.fields.length}">${x.r.key === null ? '–' : esc(keyText(x.r.key))}</td>` : ''}<td>${x.f.label}</td><td>${x.f.now}</td><td class="old">${x.f.before}</td>${
+        x.first ? `<td rowspan="${x.r.fields.length}">${esc(x.r.on || '–')}</td><td rowspan="${x.r.fields.length}">${atText(x.r.at)}</td>` : ''}</tr>`).join('')}</tbody>`;
     }).join('');
     return `<table class="grid"><colgroup>${[1, 2, 3, 4, 5, 6, 7].map(i => `<col class="c${i}">`).join('')}</colgroup><thead><tr><th>${esc(nouns[0])}</th><th>Tag</th><th>Feld</th><th>${cols[0]}</th><th>${cols[1]}</th><th>Vom Gerät</th><th>Geändert am</th></tr></thead>${body}</table>`;
   }
@@ -632,9 +631,21 @@ function createSync({ list, sub, subAt, maxFields = [], nouns = ['Eintrag', 'Ein
     const now = Date.now(), html = reportHtml(stats, savedAt, savedOn, deviceName(), undefined, now), name = reportName(now);
     openDialog(`
       <form method="dialog">
-        ${dlgHead('Abgleichbericht', { sub: esc(name), check: false, right: `<span class="grp"><button type="button" class="fill" id="repShare" aria-label="Teilen">${ic('share')}</button></span>` })}
+        ${dlgHead('Abgleichbericht', { sub: esc(name), check: false, right: `<span class="grp"><button type="button" class="txt" id="repPdf">${ic('file-text')}PDF</button><button type="button" class="fill" id="repShare" aria-label="Teilen">${ic('share')}</button></span>` })}
         <div class="dlg-body sync-preview">${html}</div>
       </form>`, true);
+    // PDF wie bei der Ausgabe: über das Drucken-Menü, der Dateiname wird als Seitentitel vorgeschlagen (#printout, design.css).
+    dlg.querySelector('#repPdf').onclick = () => {
+      let out = document.getElementById('printout');
+      if (!out) { out = document.createElement('div'); out.id = 'printout'; document.body.append(out); }
+      out.innerHTML = html;
+      const old = document.title;
+      document.title = name;
+      const restore = () => { document.title = old; out.innerHTML = ''; window.removeEventListener('afterprint', restore); };
+      window.addEventListener('afterprint', restore);
+      inform('Abgleichbericht', shareResultText('print', name + '.pdf'));
+      setTimeout(() => window.print(), 50);
+    };
     dlg.querySelector('#repShare').onclick = async () => {
       const result = await shareFiles([{ name: name + '.html', type: 'html', content: `<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>${esc(name)}</title><style>body { margin: 24px; background: #fff; }</style></head><body>${html}</body></html>` }]);
       inform('Abgleichbericht', shareResultText(result, name + '.html'));
@@ -802,6 +813,37 @@ function updateBar() {
 }
 window.addEventListener('scroll', updateBar, { passive: true });
 window.addEventListener('resize', updateBar);
+
+// R-51 (seit 4.11.2): Beim Drehen (und jeder anderen Größenänderung) bleibt oben derselbe Eintrag stehen. Safari kennt
+// keinen Scroll-Anker – ohne Hilfe springt die Seite, weil sich die Höhen beim Drehen ändern. Gemerkt wird beim Scrollen
+// der oberste sichtbare Eintrag unter der Leiste (Elemente mit data-day bzw. data-keep) samt Abstand; nach einer
+// Größenänderung (auch nach dem Neuaufbau durch die App) wird er wieder an dieselbe Stelle gerückt.
+const KEEP_SEL = '#app [data-day], #app [data-keep]';
+// Als Drehen zählt eine neue Breite oder eine um mehr als 150 px andere Höhe (Leisten von Safari ändern sie weniger).
+let keepTop = null, keepWidth = innerWidth, keepHeight = innerHeight, keepBusy = false;
+const keepTurned = () => innerWidth !== keepWidth || Math.abs(innerHeight - keepHeight) > 150;
+const keepEdge = () => document.querySelector('.pnav, .nb')?.getBoundingClientRect().bottom || 0;
+const keepKey = e => e.dataset.day ? `[data-day="${CSS.escape(e.dataset.day)}"]` : `[data-keep="${CSS.escape(e.dataset.keep)}"]`;
+function rememberTop() {
+  if (keepBusy || keepTurned()) return;   // während des Drehens nichts überschreiben
+  if (scrollY < 4) { keepTop = null; return; }       // ganz oben bleibt ganz oben
+  const edge = keepEdge();
+  const e = [...document.querySelectorAll(KEEP_SEL)].find(x => x.getClientRects().length && x.getBoundingClientRect().bottom > edge + 1);
+  // Abstand als Anteil der Höhe: nach dem Drehen ist der Eintrag anders hoch, der sichtbare Teil bleibt gleich.
+  keepTop = e ? { sel: keepKey(e), part: (e.getBoundingClientRect().top - edge) / (e.getBoundingClientRect().height || 1) } : null;
+}
+function restoreTop() {
+  keepWidth = innerWidth; keepHeight = innerHeight;
+  if (!keepTop) return;
+  const e = [...document.querySelectorAll(KEEP_SEL.split(', ').map(s => `${s.split(' ')[0]} ${keepTop.sel}`).join(', '))].find(x => x.getClientRects().length);
+  if (!e) return;
+  keepBusy = true;
+  const r = e.getBoundingClientRect();
+  window.scrollBy(0, Math.round(r.top - keepEdge() - keepTop.part * r.height));
+  requestAnimationFrame(() => { keepBusy = false; });
+}
+window.addEventListener('scroll', () => { if (!keepBusy) rememberTop(); }, { passive: true });
+window.addEventListener('resize', () => { if (!keepTurned()) return; requestAnimationFrame(() => requestAnimationFrame(restoreTop)); setTimeout(restoreTop, 350); });
 
 // R-05: Die Leiste (mit oder ohne Suchzeile) bewegt sich beim Wischen keinen Millimeter.
 // Bei offener Tastatur würde iOS beim Wischen den sichtbaren Bereich verschieben; die Leiste müsste ihm

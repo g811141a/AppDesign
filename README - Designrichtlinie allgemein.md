@@ -1,6 +1,6 @@
 # Designrichtlinie allgemein
 
-**Version 4.11.1** · Stand 13.10.2026
+**Version 4.11.2** · Stand 14.10.2026
 
 Allgemeine Gestaltungs- und Bedienregeln für alle iPad-Web-Apps von g811141a (seit 4.1.0 auch
 auf dem iPhone, Abschnitt 15.17).
@@ -397,6 +397,11 @@ heller).
 - Emojis mit und ohne Variantenzeichen (z. B. ☹️/☹) als gleich behandeln.
 - Nach Updates die App einmal ganz schließen und neu öffnen.
 
+- **Drehen und Scroll-Position (seit 4.11.2, R-51):** Safari hat keinen Scroll-Anker – ändern sich beim Drehen die
+  Höhen, springt die Seite. ui.js merkt sich beim Scrollen den obersten sichtbaren Eintrag unter der Leiste
+  (`data-day` bzw. `data-keep`) und den sichtbaren Anteil; nach dem Drehen rückt er ihn wieder an dieselbe Stelle. Tests
+  bilden Safari nach (`overflow-anchor: none`), sonst verdeckt Chrome den Fehler.
+
 ## 14. Design-Repo AppDesign
 
 - **Inhalt:** diese Richtlinie, `README - Zusammenarbeit allgemein.md`, `v4/design.css`
@@ -693,8 +698,9 @@ Verhalten · technischer Name). In AppDesign ist jede Komponente einmal programm
      Keine Einzelheiten im Fenster. Ohne jede Änderung und ohne Hinweis nur ‚Alles war schon auf dem gleichen Stand.‘ –
      **ohne** Schaltfläche.
   2. **Abgleichbericht** (`sync.openReport`): Vorschau wie die Ausgabe der App – großes Fenster, immer hell, Kopf
-     ‚Abgleichbericht‘ mit Dateiname, oben rechts Teilen (HTML-Datei ‚Abgleichbericht <App> JJJJ.MM.TT hh.mm.html‘); auf dem
-     iPhone seitlich wischen statt umbrechen. Inhalt:
+     ‚Abgleichbericht‘ mit Dateiname, oben rechts die Kapsel wie bei der Vorschau der Ausgabe: **PDF** (Drucken-Menü,
+     seit 4.11.2) und Teilen (HTML-Datei ‚Abgleichbericht <App> JJJJ.MM.TT hh.mm.html‘); auf dem iPhone und am iPad hoch
+     seitlich wischen – der Inhalt jeder Zelle bricht um und ragt nie in die Nachbarzelle (R-37). Inhalt:
      - Kopf: ‚Abgeglichen am … auf diesem iPhone‘ · ‚Backup: vom iPad, erstellt am …‘ · ‚Ergebnis: 1 aktualisiert · 1 neu ·
        1 gelöscht · 3 unverändert‘.
      - **‚Änderungen auf diesem iPhone‘** – Tabelle wie in der Ausgabe (grauer Kopf, Spaltenköpfe halbfett, Linien):
@@ -846,7 +852,7 @@ hier sofort eine Nummer und – wo möglich – eine Prüfung im Skript.
 | R-34 | Teilen (`share`) immer nur als Icon, nie mit Text | Skript | 5 |
 | R-35 | Schatten zierlich, Seitenleiste schwebend wie in Safari, Apple-Look | Muster | 1, 15.4 |
 | R-36 | Gleiche Funktion = gleicher Baustein auf iPad und iPhone: eine Umsetzung, die sich nur in der Breite unterscheidet (z. B. Seitenleiste am iPad = Startliste am iPhone; Kacheln laufen auf beiden unter der Backup-Kachel durch) – nie zwei getrennte Nachbauten | Skript (Gerätevergleich des Aufbaus) | 1, 15.4, 15.17 |
-| R-37 | Kein Text ragt über Zelle, Kasten oder Kachel hinaus: zu lange Wörter brechen im Wort um und laufen in der nächsten Zeile weiter (iPad und iPhone) | Skript (Testdaten mit 100 × ‚a‘) | 9, 15.10 |
+| R-37 | Kein Text ragt über Zelle, Kasten oder Kachel hinaus – **überall**, auch in Fenstern, Vorschauen, Berichten und Ausgaben (seit 4.11.2): zu lange Wörter und Daten brechen um und laufen in der nächsten Zeile weiter (iPad und iPhone, quer und hoch) | Skript – jede sichtbare Tabellenzelle in jeder Ansicht, auch nach seitlichem Wischen (Testdaten mit 100 × ‚a‘) | 9, 15.10 |
 | R-38 | Abfrage mit mehreren Wegen: empfohlene Aktion blau gefüllt zuerst, zerstörende in roter Schrift, ‚Abbrechen‘ zuletzt; kurze Erklärung der Wege im Text | Skript | 15.7 |
 | R-39 | Menü, Sprechblase und Fenster passen immer ganz auf den Bildschirm (auch iPhone quer); ist der Inhalt zu hoch, scrollt er darin – kein Knopf liegt außerhalb | Skript | 15.6, 15.7, 15.9 |
 | R-40 | Beim Drehen (hoch ↔ quer) wird jedes offene Menü, Untermenü und jede Sprechblase sofort neu ausgerichtet: Menü unterhalb seiner aufrufenden Schaltfläche, Untermenü neben seinem Eintrag, Kontextmenü einer Kachel daneben bzw. (iPhone) linksbündig darunter – immer vollständig (nie abgeschnitten) und ganz oberhalb der Backup-Kachel, nie über oder hinter ihr; ist die Liste zu kurz zum Rücken, bekommt sie unten Platz; seit 4.11.0 wird das Kontextmenü nach dem Loslassen noch einmal ausgerichtet, und rückt die Liste trotzdem nicht, steht es linksbündig über der Kachel – immer vollständig sichtbar (reicht der Platz nicht, scrollt der Inhalt darin bzw. rückt die Liste nach oben); die Schaltfläche bleibt blau. Liegt die Schaltfläche in der Seitenleiste, bleibt diese dabei sichtbar (hoch darübergelegt) | Skript – automatisch: jede Ansicht mit offenem Menü, Untermenü oder offener Sprechblase wird hoch ↔ quer gedreht und zurück, in jeder App ohne eigenen Aufruf · Skript `tests/kontextmenue.mjs` (jede sichtbare Kachel, 3–12 Einträge, iPad und iPhone; seit 4.11.0 auch der letzte Eintrag bei ganz nach unten gewischter Liste) · Gerät | 15.4, 15.6, 15.7 |
@@ -860,6 +866,7 @@ hier sofort eine Nummer und – wo möglich – eine Prüfung im Skript.
 | R-48 | Versionskopplung: `ui.js` und `design.css` mit `?v=<AppDesign-Version>` in `index.html` und `sw.js`; `AD_VERSION` (ui.js) = `--ad-version` (design.css) = `AD_NEEDED` (App); bei anderer geladener Fassung beim Start ein Hinweis; Versionszeile nennt AppDesign | Skript (`tests/version.mjs`) | 11 |
 | R-49 | Die README jeder App zeigt ganz oben ‚Verwendete Versionen‘: App, AppDesign, Designrichtlinie allgemein, Designrichtlinie <App>, Zusammenarbeit allgemein – je Version (gleich wie in der App bzw. den Richtlinien) und Link | Skript (`tests/doku.mjs`) | 11 |
 | R-50 | Jede Prüfliste beginnt mit /0 ‚Version prüfen‘ (App- und AppDesign-Version in der Versionszeile); jeder Prüfpunkt hat nummerierte Schritte und nennt bei jedem Schritt, der etwas anzeigt, die Meldung je Gerät; jeder solche Fall hat einen automatischen Test der Texte auf beiden Geräten | Skript (`tests/doku.mjs`) · Ablauf (`tests/abgleich.mjs` u. a.) | Zusammenarbeit 7 |
+| R-51 | Beim Drehen (quer ↔ hoch) und jeder Größenänderung bleibt oben derselbe Eintrag stehen (z. B. derselbe Tag) – auch in Safari, das keinen Scroll-Anker kennt; Baustein in ui.js für Einträge mit `data-day` bzw. `data-keep` | Skript – automatisch je Seite mit Einträgen (Safari nachgebildet, mit Zwischengrößen, hin und zurück) | 13 |
 
 ---
 
@@ -867,6 +874,7 @@ hier sofort eine Nummer und – wo möglich – eine Prüfung im Skript.
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 4.11.2 | 14.10.2026 | Korrektur | R-37 gilt überall (auch Fenster, Vorschau, Bericht) und wird in jeder Zelle geprüft – Anlass: Abgleichbericht ragte in Nachbarzellen; Abgleichbericht mit PDF in der Kapsel; neue Regel R-51 (oberster Eintrag bleibt beim Drehen, Baustein in ui.js, Prüfung mit nachgebildetem Safari) |
 | 4.11.1 | 13.10.2026 | Korrektur | Neue Regeln R-49 (README ‚Verwendete Versionen‘) und R-50 (Prüfliste beginnt mit /0 ‚Version prüfen‘, Meldung je Gerät und Schritt) mit Prüfung `tests/doku.mjs`; Zusammenarbeit allgemein 1.15.0 |
 | 4.11.0 | 13.10.2026 | Neben | R-44 Ergebnis des Abgleichs in zwei Stufen: kleines Fenster mit ‚Abgleichbericht anzeigen‘, Bericht als Vorschau wie die Ausgabe (Tabellen ‚Änderungen‘ und ‚hier neuer als im Backup‘, Unverändertes nur als Anzahl, teilbar als HTML); neue Regel R-48 Versionskopplung App ↔ AppDesign (`?v=`, Startprüfung, `tests/version.mjs`); R-47 mit einem einzigen Zustand und Prüfung mit Zwischengrößen; R-40 Kontextmenü wird nach dem Loslassen nachgeführt, ohne Platz darunter steht es über der Kachel |
 | 4.10.1 | 13.10.2026 | Korrektur | Neue Regel R-47 (Seitenleiste behält beim Drehen ihren Zustand); R-40 ergänzt (Kontextmenü nie abgeschnitten, nie über/hinter der Backup-Kachel; Prüfung `tests/kontextmenue.mjs`); R-42 ergänzt (leere Felder überschreiben nichts); R-43 Hinweise mit Gerätenamen |

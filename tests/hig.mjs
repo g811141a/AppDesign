@@ -1,4 +1,4 @@
-// AppDesign 4.11.0 · HIG- und Regel-Prüfung: misst eine App-Ansicht gegen die HIG-Checkliste (Abschnitt 16)
+// AppDesign 4.11.2 · HIG- und Regel-Prüfung: misst eine App-Ansicht gegen die HIG-Checkliste (Abschnitt 16)
 // und alle automatisch prüfbaren Regeln des Regelkatalogs (Abschnitt 17, R-01 …) der Designrichtlinie allgemein. Wird vom Prüfskript jeder App eingebunden:
 //   import { createCheck } from '../../AppDesign/tests/hig.mjs';
 //   const hig = createCheck({ skipTargets: ['table.days .ln:not(.q) a'] });   // bewusste Abweichungen der App
@@ -74,6 +74,26 @@ const found = new Map();
       if (pass === 0 && !(await toggle())) break;   // zweiter Durchgang mit dem anderen Zustand
     }
     await toggle();   // Ausgangszustand wiederherstellen
+  };
+  // R-51: oberster Eintrag bleibt beim Drehen (Safari nachgebildet: kein Scroll-Anker).
+  const topChecked = new WeakSet();
+  const topKeep = async (p, where) => {
+    const vp = p.viewportSize(), turned = { width: vp.height, height: vp.width };
+    const top = () => p.evaluate(() => { const edge = document.querySelector('.pnav, .nb')?.getBoundingClientRect().bottom || 0;
+      return [...document.querySelectorAll('#app [data-day], #app [data-keep]')].find(e => e.getClientRects().length && e.getBoundingClientRect().bottom > edge + 1)?.outerHTML.slice(0, 80); });
+    await p.addStyleTag({ content: '* { overflow-anchor: none !important; }' });
+    const y0 = await p.evaluate(() => scrollY);
+    await p.evaluate(() => window.scrollTo(0, Math.round(document.documentElement.scrollHeight * 0.45))); await p.waitForTimeout(300);
+    const before = await top();
+    // Zwischengröße nur, wenn sie wie am echten Gerät vorkommen kann: am iPhone wird beim Drehen nie eine iPad-Größe gemeldet.
+    const phone = z => z.width < 700 || z.height < 500;
+    for (const [mid, size] of [[{ width: turned.width, height: vp.height }, turned], [{ width: vp.width, height: turned.height }, vp]]) {
+      if (phone(mid) === phone(vp)) { await p.setViewportSize(mid); await p.waitForTimeout(60); }
+      await p.setViewportSize(size); await p.waitForTimeout(600);
+      const now = await top();
+      if (now !== before) note('Regel', `R-51 nach dem Drehen auf ${size.width}×${size.height} steht oben ein anderer Eintrag`, where);
+    }
+    await p.evaluate(y => window.scrollTo(0, y), y0); await p.waitForTimeout(200);
   };
   // Misst die sichtbare, oberste Ebene (Menü/Sprechblase, sonst offenes Fenster, sonst Seite).
   async function measure(p, where) {
@@ -212,8 +232,9 @@ const found = new Map();
       document.querySelectorAll('.pop, .menu, dialog[open]').forEach(e => { const b = e.getBoundingClientRect(); if (!b.width || !b.height) return;
         if (b.top < -1 || b.left < -1 || b.bottom > innerHeight + 1 || b.right > innerWidth + 1) R('R-39', `${e.classList[0] || e.tagName.toLowerCase()} ragt über den Bildschirm hinaus (${Math.round(b.top)}–${Math.round(b.bottom)} von ${innerHeight} px)`); });
       // R-37 Kein Text ragt über Zelle oder Kachel hinaus – zu lange Wörter brechen im Wort um
-      document.querySelectorAll('#app td, #app th, #app dd, #app .box, .box .kv .v, .box .ln, .irow, .side-row, .bhint, .bnote, .msg-text, .pop p, .fazit-box').forEach(e => {
-        if (!vis(e) || e.closest('.rt, #printout') || cs(e).textOverflow === 'ellipsis') return;
+      // Seit 4.11.2: jede Tabellenzelle überall – auch in Fenstern, Vorschauen und Berichten (vorher nur #app).
+      document.querySelectorAll('td, th, #app dd, #app .box, .box .kv .v, .box .ln, .irow, .side-row, .bhint, .bnote, .msg-text, .pop p, .fazit-box').forEach(e => {
+        if (!vis(e) || e.closest('#printout') || cs(e).textOverflow === 'ellipsis') return;
         const right = e.getBoundingClientRect().right;
         if (e.scrollWidth > e.clientWidth + 1 || [...e.querySelectorAll('*')].some(c => vis(c) && c.getBoundingClientRect().right > right + 1)) R('R-37', `Text ragt über ${e.tagName.toLowerCase()}${e.classList[0] ? '.' + e.classList[0] : ''} hinaus: ‚${label(e)}‘`);
       });
@@ -225,6 +246,11 @@ const found = new Map();
     // R-47 automatisch: einmal je Seite, wenn eine Seitenleiste da ist und nichts darüber offen ist (nur iPad).
     if (!rotating && !sideChecked.has(p) && await p.evaluate(() => !!document.getElementById('side') && !document.documentElement.classList.contains('phone') && !document.querySelector('.menu, .pop, dialog[open]'))) {
       rotating = true; try { await sideKeep(p, `${where} – Seitenleiste gedreht`); } finally { rotating = false; }
+    }
+    // R-51 automatisch (seit 4.11.2): einmal je Seite mit Einträgen (data-day/data-keep) – wie in Safari ohne Scroll-Anker
+    // nach unten wischen, drehen, zurückdrehen: oben steht jedes Mal derselbe Eintrag.
+    if (!rotating && !topChecked.has(p) && await p.evaluate(sel => document.querySelectorAll(sel).length > 3 && document.documentElement.scrollHeight > innerHeight * 2 && !document.querySelector('.menu, .pop, dialog[open]'), '#app [data-day], #app [data-keep]')) {
+      topChecked.add(p); rotating = true; try { await topKeep(p, `${where} – oberster Eintrag gedreht`); } finally { rotating = false; }
     }
     // R-40 automatisch: ist ein Menü, Untermenü oder eine Sprechblase offen, wird jedes Mal gedreht (quer ↔ hoch) und zurück.
     if (!rotating) {
