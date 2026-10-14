@@ -1,6 +1,6 @@
 # Übergabe an die nächste Sitzung
 
-**Stand 14.10.2026** · geschrieben am Ende der Sitzung ‚Abgleich, Abgleichbericht, Arbeitsprozess 2.0‘
+**Stand 14.10.2026** · geschrieben am Ende der Sitzung ‚A-02 Richtlinien aufräumen – Schritte 1 und 2‘
 (Zusammenarbeit allgemein 2.0.0, Abschnitt 0 Nr. 14). **Claude liest diese Datei zu Beginn jeder Sitzung zuerst.**
 
 ## 1. Lagebild
@@ -11,44 +11,59 @@
 | AppDesign (ui.js, design.css) | 4.11.4 | g811141a/AppDesign – `CHANGELOG.md`, `BACKLOG.md` |
 | Designrichtlinie allgemein | 4.11.4 (Regelkatalog R-01 bis R-52) | `README - Designrichtlinie allgemein.md` |
 | Designrichtlinie Reiselogbuch | 3.11.4 | im Repo ReiseLogBuch |
-| Zusammenarbeit allgemein | **2.0.0** (Abschnitt 0 = Arbeitsprozess 2.0, hat Vorrang) | `README - Zusammenarbeit allgemein.md` |
+| Zusammenarbeit allgemein | 2.0.0 (Abschnitt 0 = Arbeitsprozess 2.0, hat Vorrang) | `README - Zusammenarbeit allgemein.md` |
 
-- **Offene Prüfpunkte:** keine (P-31 zuletzt, alles in Ordnung).
-- **Nächste Version:** nichts gesammelt.
+- **Offene Prüfpunkte:** keine.
+- **Nächste Version AppDesign:** A-02a (freigegeben, Bau mit ‚Ja‘ bestätigt). **Reiselogbuch:** T-83 (‚Verkehrsmittel‘ →
+  ‚Reisemittel‘ im Abgleichbericht).
+- **Erinnerung:** ‚Backlog-Erinnerung (AppDesign und Reiselogbuch)‘ montags 8:58 – startet jede Woche eine frische
+  Sitzung, liest diese Datei und beide Backlogs und endet mit dem Starttext (die alte Erinnerung ist gelöscht).
 
-## 2. Nächster Schritt: A-02 Richtlinien aufräumen (eigene Sitzung)
+## 2. Ergebnisse dieser Sitzung (A-02 Schritte 1 und 2)
 
-1. **Verlauf prüfen:** `VERLAUF.md` (alle Nachrichten des Nutzers und alle Entscheidungen seit 04.10.2026) von unten
-   nach oben durchgehen und je Wunsch prüfen, ob er umgesetzt und in den Richtlinien festgehalten ist. Ergebnis als
-   Liste ‚umgesetzt / fehlt / widersprüchlich‘; Fehlendes ins Backlog.
-2. **Regeln zusammenfassen und neu ordnen:** R-01 bis R-52 nach Themen gliedern (Tabellen und Ausgabe, Menüs und
-   Sprechblasen, Fenster, Seitenleiste, Drehen, Abgleich und Backup, Versionen und Doku …); Doppeltes zusammenführen
-   (z. B. Abgleich in 15.4 und 15.18, Tabellen in 9, 10, R-37, R-52), Veraltetes streichen; je Regel genau eine
-   Prüfung. Erwartung: etwa 30–35 Regeln.
-3. **Allgemein statt App:** Was in der Designrichtlinie Reiselogbuch und im PROMPT eigentlich allgemein ist, wandert
-   in die allgemeinen Regeln; die App behält nur Ausnahmen und Ausprägungen.
-4. **Zusammenarbeit allgemein** ebenso aufräumen (Abschnitte 1–9 an Abschnitt 0 anpassen, z. B. die alte
-   ‚Antwortzeile zum Kopieren‘ in Abschnitt 2, Sammelversionen in Abschnitt 6).
-5. Kleine Versionen: höchstens 2 Themen je Version (Abschnitt 0 Nr. 8).
+- **Schritt 1 – Verlauf-Abgleich:** `arbeit/A-02 Verlauf-Abgleich.md` – fehlt F-1 bis F-4, widersprüchlich W-1 bis W-9,
+  doppelt (Liste für das Zusammenführen), umgesetzt.
+- **Schritt 2 – Regelkatalog-Entwurf (freigegeben):** `arbeit/A-02 Regelkatalog-Entwurf.md` – 52 Regeln → **34 in 10
+  Themen**, Nummern **R-Thema.Nr** (z. B. R-2.1), je Regel genau eine Prüfung, 5 neue Regeln mit Prüfung (R-2.3,
+  R-4.4, R-5.3, R-5.4, R-6.4), R-50 wandert in Zusammenarbeit 7, Zuordnung alt → neu.
+- **Entschieden (für Schritt 4, Zusammenarbeit 2.1.0):** W-1 Korrekturen nach einer Prüfung sofort als eigene
+  Korrekturversion (Abschnitt 0 Nr. 8 gilt, §6 anpassen) · W-2 Antwortzeile zum Kopieren entfällt (nur noch bei mehr
+  als 4 Fragen; §2 und CLAUDE.md beider Repos anpassen).
 
-## 3. Danach
+## 3. Nächster Schritt: Bau AppDesign 4.12.0 (A-02a) – ‚Ja‘ liegt vor
 
-- **A-05 Prüfungen 2.0 (eigene Sitzung):** Veröffentlichungs-Skript (Versionen, Tests, AppDesign vor App, Pages
-  abwarten); **feste AppDesign-Fassung je App** (unveränderlicher Ordner je Version, App nur nach Rückfrage heben –
-  heute lädt jede App den Letztstand von `v4/`!); Tests parallel und schnellste zuerst; Grundregeln nach jeder
-  Handlung in jeder Ansicht; **WebKit** – Download war blockiert (`cdn.playwright.dev`,
-  `playwright.download.prss.microsoft.com`); prüfen, ob der Nutzer die Adressen freigegeben hat.
-- **Danach Funktionen:** T-05 (alte Reiselogbücher aufbereiten), T-06 (Ausschreibungstexte umwandeln).
+1. **Zuerst die Fall-Liste** (Abschnitt 0 Nr. 1) zeigen, z. B.: jede der 34 Regeln hat genau eine Prüfung, die in
+   `tests/` wirklich läuft · jede alte Nummer ist zugeordnet (keine Regel verloren) · Prüfskripte melden neue Nummern ·
+   die 5 neuen Prüfungen schlagen bei einem eingebauten Fehler an (erst rot, dann grün) · Zebra je Tabellenzeile in
+   App-Tabellen (R-6.1) · alle Tests der App grün (`sh tests/alle.sh`) · iPad/iPhone × quer/hoch × hell/dunkel.
+2. Designrichtlinie allgemein: Abschnitt 17 durch den Entwurf ersetzen; Abschnitte 1–15 kürzen (Regeltext → Verweis
+   auf R-x.y; Doppeltes laut Verlauf-Abgleich Abschnitt 3 entfernen); Grundprinzipien nachführen (W-6).
+3. Prüfskripte (`AppDesign/tests/*.mjs`, `ReiseLogBuch/tests/*.mjs`): Regelnummern umstellen, neue Prüfungen.
+4. Verweise in Designrichtlinie Reiselogbuch, PROMPT.md, CHANGELOG (neue Einträge) auf R-x.y.
+5. Version: AppDesign 4.12.0 (v4/ ändert sich nicht). Reiselogbuch nur, wenn seine Tests/Doku sich ändern
+   (dann 3.11.5 mit T-83 – vorher fragen).
+6. Bericht nach Abschnitt 0 Nr. 11, Prüfpunkte Schritt für Schritt (beginnend mit /0).
 
-## 4. Arbeitsumgebung (für Claude)
+## 4. Danach
 
-- Repos nebeneinander klonen: `/home/user/AppDesign` und `/home/user/reiselogbuch` (App lädt `../AppDesign/v4/…`).
-- Tests: im Ordner `reiselogbuch/tests` `npm install` (Playwright 1.56, Chromium unter `/opt/pw-browsers`), dann
-  `sh tests/alle.sh` (alle Abläufe, Regeln und HIG-Prüfung).
+- **A-02 Schritte 3 und 4 (eigene Version):** Allgemeines aus Designrichtlinie Reiselogbuch und PROMPT nach AppDesign
+  (F-4 Vorschau wischen, W-7 alter Text ‚Backup laden … ersetzt‘); Zusammenarbeit allgemein 2.1.0 (W-1, W-2, W-3,
+  Abschnitte 1–9 an Abschnitt 0 anpassen); CLAUDE.md beider Repos neu fassen (W-5).
+- **A-05 Prüfungen 2.0 (eigene Sitzung):** Veröffentlichungs-Skript; feste AppDesign-Fassung je App (danach W-4);
+  Tests parallel; WebKit – gesperrte Adressen `cdn.playwright.dev`, `playwright.download.prss.microsoft.com` und den
+  Ort der Freigabe nennen (F-1).
+- **Danach Funktionen:** T-05, T-06.
+
+## 5. Arbeitsumgebung (für Claude)
+
+- Repos nebeneinander klonen: `/home/user/AppDesign` und `/home/user/ReiseLogBuch` (App lädt `../AppDesign/v4/…`).
+- Tests: im Ordner `ReiseLogBuch/tests` `npm install` (Playwright 1.56, Chromium unter `/opt/pw-browsers`), dann
+  `sh tests/alle.sh`.
 - Veröffentlichen: Vorbereitungs-Zweig, `--no-ff` nach `main`, erst AppDesign, dann App; Pages-Läufe abwarten.
 - Zeit und Token am Ende jeder Antwort aus den Sitzungsdaten (`/root/.claude/projects/…/*.jsonl`).
 
-## 5. Starttext für die neue Sitzung
+## 6. Starttext für die neue Sitzung
 
-> Lies im Repo g811141a/AppDesign zuerst UEBERGABE.md, dann die Zusammenarbeit allgemein und die Designrichtlinien,
-> gib mir das Lagebild und beginne mit A-02.
+> Lies im Repo g811141a/AppDesign zuerst UEBERGABE.md, dann die Zusammenarbeit allgemein, die Designrichtlinien und
+> die beiden Dateien im Ordner arbeit/, gib mir das Lagebild und beginne mit dem Bau von AppDesign 4.12.0 (A-02a) –
+> zuerst die Fall-Liste.

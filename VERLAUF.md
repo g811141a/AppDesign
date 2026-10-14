@@ -1738,3 +1738,5 @@ Alle punkte ok
 **2026-10-14 05:00 · Entscheidung (Sitzung A-02):** W-1 Korrekturen nach einer Prüfung sofort als eigene Korrekturversion, §6 anpassen? → **Ja (Empfohlen)** · W-2 Antwortzeile zum Kopieren weglassen (nur noch bei mehr als 4 Fragen)? → **Ja (Empfohlen)** · F-2 Montags-Erinnerung auf frische Sitzung umstellen, die UEBERGABE.md und beide Backlogs liest? → **Ja (Empfohlen)** · Weiter mit Schritt 2 (Entwurf Regelkatalog als Datei)? → **Ja (Empfohlen)**
 
 **2026-10-14 05:10 · Entscheidung (Sitzung A-02):** Gliederung in 10 Themen mit 34 Regeln (arbeit/A-02 Regelkatalog-Entwurf.md) so übernehmen? → **Ja (Empfohlen)** · Nummern nach Thema (R-2.1 statt R-05)? → **Ja, R-Thema.Nr (Empfohlen)** · Die 5 neuen Regeln (R-2.3, R-4.4, R-5.3, R-5.4, R-6.4) mit eigener Prüfung aufnehmen? → **Ja (Empfohlen)**
+
+**2026-10-14 05:15 · Entscheidung (Sitzung A-02):** Soll ich Version AppDesign 4.12.0 mit dem neuen Regelkatalog (A-02a) erstellen? → **Ja (Empfohlen)** · Den Bau in einer neuen Sitzung beginnen? → **Ja, neue Sitzung (Empfohlen)**
