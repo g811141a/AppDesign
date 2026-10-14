@@ -1,4 +1,4 @@
-// AppDesign 4.14.0 · Prüfung der Doku einer App (Regel R-10.4, Zusammenarbeit allgemein 7) und des Regelkatalogs (checkCatalog).
+// AppDesign 4.14.1 · Prüfung der Doku einer App (Regel R-10.4, Zusammenarbeit allgemein 7) und des Regelkatalogs (checkCatalog).
 // R-10.4: README.md zeigt ganz oben ‚Verwendete Versionen‘ – App, AppDesign, Designrichtlinie allgemein, Designrichtlinie <App>,
 //       Zusammenarbeit allgemein – je mit Version (gleich wie in index.html bzw. den Richtlinien) und Link.
 // Zusammenarbeit 7: Die Prüfliste der neuesten Version im CHANGELOG beginnt mit /0 ‚Version prüfen‘ (App- und AppDesign-Version);
@@ -6,14 +6,12 @@
 // Einbinden im Prüfskript der App:  import { checkDocs } from '../../AppDesign/tests/doku.mjs';
 //                                   const fehler = checkDocs(new URL('..', import.meta.url), 'Reiselogbuch');
 import { readFileSync, readdirSync } from 'node:fs';
-import { execFileSync } from 'node:child_process';
-import { fileURLToPath } from 'node:url';
-// Seit 4.14.0 (A-05 D-6): Richtlinie und Zusammenarbeit so, wie sie in der Markierung vX.Y.Z der benutzten Fassung stehen –
-// spätere AppDesign-Versionen ändern die Prüfung einer App nicht. Ohne Markierung (Version noch in Arbeit): der Arbeitsstand.
+// Seit 4.14.1 (A-05 D-6): Richtlinie und Zusammenarbeit so, wie sie in der Fassung der App stehen (fassung/X.Y.Z/) –
+// spätere AppDesign-Versionen ändern die Prüfung einer App nicht. Fassung ohne Text (4.14.0): der Arbeitsstand.
 export function adText(appDir, f, needed) {
   const ad = new URL('../AppDesign/', appDir);
-  if (needed) try { return execFileSync('git', ['-C', fileURLToPath(ad), 'show', `v${needed}:${f}`], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }); } catch {}
-  try { return readFileSync(new URL(f, ad), 'utf8'); } catch { return ''; }
+  for (const p of [needed && `fassung/${needed}/${f}`, f].filter(Boolean)) try { return readFileSync(new URL(p, ad), 'utf8'); } catch {}
+  return '';
 }
 export function checkDocs(appDir, app) {
   const errors = [], E = t => errors.push(t);
@@ -37,10 +35,11 @@ export function checkDocs(appDir, app) {
     if (!row) { E(`R-10.4 README.md: Zeile ‚${name}‘ fehlt in ‚Verwendete Versionen‘`); continue; }
     if (!v || !row.includes(`| ${v} |`)) E(`R-10.4 README.md: ‚${name}‘ nennt nicht die Version ${v || '(unbekannt)'}`);
     if (!/\]\(https:\/\/github\.com\//.test(row)) E(`R-10.4 README.md: ‚${name}‘ ohne Link`);
-    // D-6: Links nach AppDesign zeigen auf die Markierung der benutzten Fassung, Bausteine auf ihren Fassungs-Ordner
+    // D-6 (seit 4.14.1): Links nach AppDesign auf main; Richtlinie, Zusammenarbeit und Bausteine aus dem Ordner der Fassung
     for (const m of row.matchAll(/github\.com\/g811141a\/AppDesign\/blob\/([^/]+)\/([^)]*)/g)) {
-      if (m[1] !== `v${needed}`) E(`R-10.4 README.md: ‚${name}‘ verlinkt AppDesign ‚${m[1]}‘ statt der Markierung v${needed}`);
-      if (/^(?:v4|fassung)\//.test(m[2]) && !m[2].startsWith(`fassung/${needed}/`)) E(`R-10.4 README.md: ‚${name}‘ verlinkt ${m[2]} statt fassung/${needed}/`);
+      if (m[1] !== 'main') E(`R-10.4 README.md: ‚${name}‘ verlinkt AppDesign ‚${m[1]}‘ statt main`);
+      if (/(?:^|\/)(?:ui\.js|design\.css|README%20-%20(?:Designrichtlinie|Zusammenarbeit)%20allgemein\.md)$/.test(m[2]) && !m[2].startsWith(`fassung/${needed}/`))
+        E(`R-10.4 README.md: ‚${name}‘ verlinkt ${decodeURIComponent(m[2])} statt aus fassung/${needed}/`);
     }
   }
   // Zusammenarbeit 7: neueste Version im CHANGELOG

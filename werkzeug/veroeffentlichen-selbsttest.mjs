@@ -1,4 +1,4 @@
-// AppDesign 4.14.0 · Selbsttest des Veröffentlichungs-Skripts (A-05 Fall-Liste Teil E und D-4) in Kopien der Repos
+// AppDesign 4.14.1 · Selbsttest des Veröffentlichungs-Skripts (A-05 Fall-Liste Teil E und D-4) in Kopien der Repos
 // AppDesign und Reiselogbuch, mit lokalen Schein-Remotes (kein echter Push) und nachgebildetem Pages-Lauf.
 // Aufruf in AppDesign: node werkzeug/veroeffentlichen-selbsttest.mjs (AppDesign und ReiseLogBuch liegen nebeneinander).
 import { mkdtempSync, mkdirSync, copyFileSync, writeFileSync, readFileSync, rmSync } from 'node:fs';
@@ -56,13 +56,13 @@ try {
   r = skript(k, {}, 'vorbereiten', '--ad', X);
   pruefe(r.code === 0 && new RegExp(`Reiselogbuch nutzt die Fassung ${X0.replace(/\./g, '\\.')}`).test(r.text) && lies(k.app, 'index.html').includes(`AD_NEEDED = '${X0}'`),
     'D-4 nur AppDesign erhöht: Skript nennt die App auf der älteren Fassung und hebt sie nicht');
-  git(k.ad, 'tag', `v${hoch(X)}`);
+  mkdirSync(join(k.ad, 'fassung', hoch(X)), { recursive: true }); schreibe(k.ad, `fassung/${hoch(X)}/ui.js`, '');
   const vorher = git(k.ad, 'status', '--porcelain');
   r = skript(k, {}, 'vorbereiten', '--ad', hoch(X));
-  pruefe(r.code === 1 && /gibt es schon/.test(r.text) && git(k.ad, 'status', '--porcelain') === vorher, 'E-2 Fassung (Markierung) gibt es schon → Abbruch, nichts geändert');
+  pruefe(r.code === 1 && /gibt es schon/.test(r.text) && git(k.ad, 'status', '--porcelain') === vorher, 'E-2 Fassung gibt es schon → Abbruch, nichts geändert');
 
   // ——— Kopie 2: E-1, E-2, E-3, E-4, E-6 (hängt), E-8 (--nur-app), E-7 ———
-  k = kopie();
+  k = kopie(); const adStart = remote(k, 'ad');
   r = skript(k, {}, 'vorbereiten', '--ad', X, '--app', `reiselogbuch=${Y}`);
   pruefe(r.code === 0, `E-1 vorbereiten --ad ${X} --app reiselogbuch=${Y} läuft durch`);
   const { checkVersions } = await import(pathToFileURL(join(k.ad, 'tests/version.mjs')));
@@ -74,7 +74,9 @@ try {
   const d = [...checkDocs(appUrl, 'Reiselogbuch'), ...checkCollab(appUrl, 'Reiselogbuch')].filter(e => !/CHANGELOG/.test(e));
   pruefe(!d.length, `E-1 danach doku.mjs grün (außer CHANGELOG)${d.length ? ': ' + d.join(' | ') : ''}`);
   pruefe(lies(k.app, 'index.html').includes(`../AppDesign/fassung/${X}/ui.js"`) && lies(k.app, 'tests/hig.mjs').includes(`AppDesign/fassung/${X}/tests/`) &&
-    lies(k.app, 'README.md').includes(`AppDesign/blob/v${X}/`), 'E-1 App lädt die Fassung, Prüfskripte binden ihre Prüfungen ein, README verlinkt die Markierung (D-2, D-6)');
+    lies(k.app, 'README.md').includes(`AppDesign/blob/main/fassung/${X}/README%20-%20Designrichtlinie%20allgemein.md`) && !/blob\/v\d/.test(lies(k.app, 'README.md')) &&
+    lies(k.ad, `fassung/${X}/README - Zusammenarbeit allgemein.md`).length > 0,
+    'E-1 App lädt die Fassung, Prüfskripte binden ihre Prüfungen ein, README verlinkt den Richtlinien-Text der Fassung (D-2, D-6)');
   const stand = git(k.app, 'status', '--porcelain');
   r = skript(k, {}, 'vorbereiten', '--ad', X, '--app', `reiselogbuch=${Y}`);
   pruefe(r.code === 1 && /nicht höher/.test(r.text) && git(k.app, 'status', '--porcelain') === stand, 'E-2 Version nicht höher → Abbruch, nichts geändert');
@@ -86,7 +88,7 @@ try {
   texte(k, X, Y); commitAlle(k, 'Texte');
   git(k.app, 'checkout', '-q', 'main'); git(k.app, 'merge', '-q', '--ff-only', 'vorbereitung-test');   // vorbereitet, aber auf main
   r = skript(k, {}, 'los');
-  pruefe(r.code === 1 && /Reiselogbuch: steht auf main/.test(r.text) && !remote(k, 'ad', `refs/tags/v${X}`), 'E-3 falscher Zweig (main) → Abbruch vor dem Push');
+  pruefe(r.code === 1 && /Reiselogbuch: steht auf main/.test(r.text) && remote(k, 'ad') === adStart, 'E-3 falscher Zweig (main) → Abbruch vor dem Push');
   git(k.app, 'checkout', '-q', 'vorbereitung-test'); git(k.app, 'branch', '-f', 'main', 'origin/main');
   ersetze(k.ad, 'v4/ui.js', /$/, '\n// nachträglich geändert\n'); commitAlle(k, 'v4 geändert');
   r = skript(k, {}, 'los');
@@ -99,7 +101,9 @@ try {
   r = skript(k, { VEROEFF_PAGES: 'haengt', VEROEFF_PAGES_MAX_S: '1' }, 'los');
   pruefe(r.code === 1 && /nicht fertig/.test(r.text) && /--nur-app/.test(r.text) && remote(k, 'app') === mainVorher.split(',')[1],
     'E-6 Pages-Lauf von AppDesign hängt → Abbruch nach der Zeitgrenze, App unverändert, Hinweis ‚--nur-app‘');
-  pruefe(!!remote(k, 'ad', `refs/tags/v${X}`) && git(k.ad, 'show', 'origin/main:v4/ui.js').includes(`'${X}'`), 'E-5 AppDesign mit Markierung und --no-ff auf main (Schein-Remote)');
+  pruefe(git(k.ad, 'show', `origin/main:fassung/${X}/ui.js`).includes(`'${X}'`) && git(k.ad, 'show', 'origin/main:v4/ui.js').includes(`'${X}'`) &&
+    git(k.ad, 'log', '-1', '--format=%P', 'origin/main').split(' ').length === 2 && !git(k.ad, 'ls-remote', '--tags', 'origin'),
+    'E-5 AppDesign mit Fassung --no-ff auf main, ohne Markierung (Schein-Remote)');
   r = skript(k, {}, 'los');
   pruefe(r.code === 1 && /schon veröffentlicht/.test(r.text), 'E-2 AppDesign schon veröffentlicht → los ohne --nur-app bricht ab');
   r = skript(k, {}, 'los', '--nur-app');
@@ -122,7 +126,7 @@ try {
   skript(k, {}, 'vorbereiten', '--ad', X, '--app', `reiselogbuch=${Y}`); texte(k, X, Y); commitAlle(k, 'bereit');
   r = skript(k, {}, 'los');
   pruefe(r.code === 0 && new RegExp(`AppDesign ${X.replace(/\./g, '\\.')}: Commit`).test(r.text) && new RegExp(`Reiselogbuch ${Y.replace(/\./g, '\\.')}: Commit`).test(r.text) &&
-    r.text.indexOf('auf main, Markierung') < r.text.indexOf(`Reiselogbuch ${Y}: `), 'E-7 los: erst AppDesign, dann die App, ‚Fertig‘ mit Versionen, Commits und Pages-Läufen');
+    r.text.indexOf(`✓ AppDesign ${X}: `) < r.text.indexOf(`✓ Reiselogbuch ${Y}: `) && r.text.indexOf(`✓ AppDesign ${X}: `) >= 0, 'E-7 los: erst AppDesign, dann die App, ‚Fertig‘ mit Versionen, Commits und Pages-Läufen');
 } finally { rmSync(TMP, { recursive: true, force: true }); }
 
 console.log(fehler.length ? `\n✗ ${fehler.length} Fälle rot` : '\n✓ Selbsttest Veröffentlichungs-Skript: alle Fälle grün');

@@ -1,6 +1,6 @@
 # AppDesign
 
-**Version 4.14.0** · Stand 14.10.2026
+**Version 4.14.1** · Stand 14.10.2026
 
 Gemeinsames Design für alle iPad-Web-Apps von g811141a – Apple-like nach den
 [Human Interface Guidelines](https://developer.apple.com/design/human-interface-guidelines).
@@ -14,7 +14,7 @@ Jede Komponente ist hier einmal beschrieben **und** einmal programmiert; alle Ap
 | `VERLAUF.md` | alle Wünsche und Entscheidungen des Nutzers (seit 04.10.2026) – damit nichts vergessen wird |
 | `v4/design.css` | Farben, Schrift und alle Komponenten (Arbeitsstand der Hauptversion 4 = neueste Fassung) |
 | `v4/ui.js` | Icons, Menüs, Sprechblasen, Fenster, Darstellung … (Arbeitsstand der Hauptversion 4 = neueste Fassung) |
-| `fassung/X.Y.Z/` | feste, unveränderliche Fassung je Version seit 4.14.0: `design.css`, `ui.js`, `tests/`; Prüfsummen in `fassung/PRUEFSUMMEN` |
+| `fassung/X.Y.Z/` | feste, unveränderliche Fassung je Version seit 4.14.0: `design.css`, `ui.js`, `tests/`, seit 4.14.1 auch Designrichtlinie und Zusammenarbeit dieser Version; Prüfsummen in `fassung/PRUEFSUMMEN` |
 | `werkzeug/veroeffentlichen.mjs` | Veröffentlichungs-Skript: `vorbereiten` (Versionen erhöhen, Fassung anlegen), `los` (prüfen, erst AppDesign, dann die App, Pages abwarten) |
 | `apple-referenz/` | Vergleichsbilder aus Apple-Apps (private Inhalte verpixelt) |
 | `tests/` | Prüfungen des Regelkatalogs (`hig.mjs`, `ablauf.mjs` u. a.), werden von den Prüfskripten jeder App eingebunden |
@@ -50,8 +50,8 @@ Jede Komponente ist hier einmal beschrieben **und** einmal programmiert; alle Ap
 ## Versionen
 
 - Version des Repos = Version der Designrichtlinie allgemein.
-- Jede Version liegt zusätzlich unveränderlich in `fassung/X.Y.Z/` mit der Git-Markierung `vX.Y.Z` (Richtlinien-Text
-  dieser Version). Eine neue AppDesign-Version ändert eine App **nicht**; eine App wird nur nach Rückfrage auf eine
+- Jede Version liegt zusätzlich unveränderlich in `fassung/X.Y.Z/` – Bausteine, Prüfungen und (seit 4.14.1) der Text
+  von Designrichtlinie und Zusammenarbeit dieser Version; die README der App verlinkt ihn. Eine neue AppDesign-Version ändert eine App **nicht**; eine App wird nur nach Rückfrage auf eine
   neuere Fassung gehoben (Zusammenarbeit 0 Nr. 10).
 - `v4/` ist der Arbeitsstand und zeigt die neueste 4er-Fassung (für schon installierte ältere App-Stände).
 - Eine Hauptversion bekommt einen neuen Ordner (`v5/`).
@@ -62,4 +62,4 @@ Jede Komponente ist hier einmal beschrieben **und** einmal programmiert; alle Ap
 
 | App | Repo | nutzt |
 |---|---|---|
-| Reiselogbuch | [g811141a/ReiseLogBuch](https://github.com/g811141a/ReiseLogBuch) | Fassung 4.14.0 (ab Reiselogbuch 3.13.0; v4 ab 3.0.0) |
+| Reiselogbuch | [g811141a/ReiseLogBuch](https://github.com/g811141a/ReiseLogBuch) | feste Fassung (ab Reiselogbuch 3.13.0; v4 ab 3.0.0) – welche, steht in der README der App |
