@@ -10,6 +10,8 @@ Jede Komponente ist hier einmal beschrieben **und** einmal programmiert; alle Ap
 |---|---|
 | `README - Designrichtlinie allgemein.md` | Gestaltungs- und Bedienregeln, Komponenten, HIG-Checkliste |
 | `README - Zusammenarbeit allgemein.md` | Regeln für die Zusammenarbeit mit Claude |
+| `UEBERGABE.md` | Stand der letzten Sitzung – Claude liest sie zu Beginn jeder Sitzung zuerst |
+| `VERLAUF.md` | alle Wünsche und Entscheidungen des Nutzers (seit 04.10.2026) – damit nichts vergessen wird |
 | `v4/design.css` | Farben, Schrift und alle Komponenten (Hauptversion 4) |
 | `v4/ui.js` | Icons, Menüs, Sprechblasen, Fenster, Darstellung … (Hauptversion 4) |
 | `apple-referenz/` | Vergleichsbilder aus Apple-Apps (private Inhalte verpixelt) |

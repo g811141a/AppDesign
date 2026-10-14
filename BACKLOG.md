@@ -11,8 +11,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Prio | Thema | bereit seit |
 |---|---|---|---|
-| A-04 | 1 | Arbeitsprozess 2.0 (Brainstorming 13.10.2026) in Zusammenarbeit allgemein 2.0.0: Claude leitet zu jeder Anforderung selbst Testfälle ab (Gerät × Lage × Darstellung × Handlung × Daten) und prüft sie, bevor etwas gezeigt wird; Varianten nebeneinander; längere Wünsche im Chat statt im Auswahlfenster; kleinere Versionen (2–3 Punkte); kürzere Berichte; ein Thema je Sitzung; Lagebild zu Beginn; Rückmeldung nur mit Nummern und Stichwort | 13.10.2026 |
-| A-05 | 1 | Prüfungen 2.0 (in 4.11.2 begonnen: R-37 überall, R-51 Drehen mit Safari-Nachbildung): allgemeine Invarianten nach jeder Handlung in jeder Ansicht (z. B. Drehen: oberster Tag, Seitenleiste, Menü und Fenster bleiben), Safari nachbilden (kein Scroll-Anker, sichtbarer Bereich, Safe Area), Tests parallel und schnellste zuerst (Abbruch beim ersten Fehler), Veröffentlichungs-Skript (Versionen, Tests, AppDesign vor App, Pages abwarten) | 13.10.2026 |
+| A-05 | 1 | Prüfungen 2.0 (begonnen in 4.11.2–4.11.4: R-37 überall, R-51, R-52): Veröffentlichungs-Skript; feste AppDesign-Fassung je App (unveränderlicher Ordner je Version, App nur nach Rückfrage heben); Tests parallel, schnellste zuerst; Grundregeln nach jeder Handlung in jeder Ansicht; WebKit (Adressen freigeben lassen) – siehe UEBERGABE.md | 14.10.2026 |
 
 ## 1. Auf iPad und iPhone prüfen
 
@@ -24,7 +23,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| A-02 | 1 | Konsolidierung aller Richtlinien: Designrichtlinie allgemein, Zusammenarbeit allgemein, Designrichtlinie Reiselogbuch und PROMPT gemeinsam durchgehen – Doppeltes zusammenführen, Veraltetes und Widersprüche bereinigen (z. B. Abschnitte, die inzwischen durch Regeln oder gemeinsame Bausteine ersetzt sind), einheitliche Gliederung, Verweise statt Wiederholungen; sicherstellen, dass jede allgemeine Regel genau einmal im Regelkatalog steht und eine Prüfung hat | offen |
+| A-02 | 1 | **Als Nächstes (eigene Sitzung, siehe UEBERGABE.md):** Verlauf (VERLAUF.md) auf Vergessenes prüfen; Konsolidierung aller Richtlinien: Designrichtlinie allgemein, Zusammenarbeit allgemein, Designrichtlinie Reiselogbuch und PROMPT gemeinsam durchgehen – Doppeltes zusammenführen, Veraltetes und Widersprüche bereinigen (z. B. Abschnitte, die inzwischen durch Regeln oder gemeinsame Bausteine ersetzt sind), einheitliche Gliederung, Verweise statt Wiederholungen; sicherstellen, dass jede allgemeine Regel genau einmal im Regelkatalog steht und eine Prüfung hat | offen |
 | A-01 | 3 | Startseite g811141a.github.io mit allen Apps (früher S-03) | später |
 
 ---
@@ -33,5 +32,6 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Thema | Version | Datum |
 |---|---|---|---|
+| E-03 | A-04 Arbeitsprozess 2.0 festgeschrieben (Zusammenarbeit allgemein 2.0.0, Abschnitt 0), Übergabe-Datei UEBERGABE.md, Verlauf VERLAUF.md | Zusammenarbeit 2.0.0 | 14.10.2026 |
 | E-02 | A-03 Sprache (jede Meldung deutsch), R-37 überall geprüft, R-51 oberster Eintrag beim Drehen, Zusammenarbeit 1.16.0 (Prüfung zuerst schärfen, Testfälle selbst ableiten) | AppDesign 4.11.2 | 14.10.2026 |
 | E-01 | Design-Repo angelegt (S-01) und Komponenten einmal programmiert (S-02) | AppDesign 4.0.0 | 09.10.2026 |
