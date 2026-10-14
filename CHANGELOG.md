@@ -3,6 +3,16 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.11.4 – 14.10.2026 (Korrektur)
+
+AppDesign 4.11.4 · Designrichtlinie allgemein 4.11.4 · Zusammenarbeit allgemein 1.16.0
+
+- **R-52 präzisiert:** Zusammengefasste Zellen in der ersten Spalte gelten als **eine Tabellenzeile**; alle Zellen dahinter
+  haben die Farbe der ersten Spalte, weiß und grau wechseln je Tabellenzeile. Im Abgleichbericht ist jedes Reiselogbuch
+  eine Tabellenzeile (Name in der ersten Spalte zusammengefasst), ganz weiß oder ganz grau. 4.11.3 färbte innerhalb eines
+  Reiselogbuchs abwechselnd – vom Nutzer vor dem Test gefunden. Die Prüfung zählt jetzt Tabellenzeilen (zusammengefasste
+  oder leere erste Zelle setzt die Zeile fort); sie meldete den Fehler, dann behoben.
+
 ## 4.11.3 – 14.10.2026 (Korrektur)
 
 AppDesign 4.11.3 · Designrichtlinie allgemein 4.11.3 · Zusammenarbeit allgemein 1.16.0

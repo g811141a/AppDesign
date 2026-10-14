@@ -1,12 +1,12 @@
-/* AppDesign 4.11.3 · design.css – gemeinsame Gestaltung der iPad-Web-Apps von g811141a (Apple-like)
-   Einbinden im <head> vor dem eigenen <style> der App:  <link rel="stylesheet" href="../AppDesign/v4/design.css?v=4.11.3">
+/* AppDesign 4.11.4 · design.css – gemeinsame Gestaltung der iPad-Web-Apps von g811141a (Apple-like)
+   Einbinden im <head> vor dem eigenen <style> der App:  <link rel="stylesheet" href="../AppDesign/v4/design.css?v=4.11.4">
    Farben als Variablen auf :root, Dunkelmodus über data-theme="dark" (setzt ui.js / applyTheme).
    Komponenten: Schaltflächen, Suchfeld, Kapsel, Eingabefelder, Datumsfelder, Kopfzeile, Seitenleiste,
    Menü, Sprechblase, schwebende Schaltflächen, Fenster, Kasten (Schritt), Auswahl-Kapsel, Schalter,
    Options-Kapsel; seit 4.1.0 iPhone-Ansicht (html.phone: Seitenkopf, großer Titel, Liste, Kasten, untere Leiste). Regeln dazu: README - Designrichtlinie allgemein.md */
 /* Farben im Apple-Look: Hintergrund Hellgrau, Kästen weiß ohne Rand, schwebende Schaltflächen */
 :root {
-  --ad-version: "4.11.3";   /* R-48: Version der Bausteine, die App prüft sie beim Start */
+  --ad-version: "4.11.4";   /* R-48: Version der Bausteine, die App prüft sie beim Start */
   --bg: #f2f2f7;
   --card: #ffffff;
   --ink: #1c1c1e;
