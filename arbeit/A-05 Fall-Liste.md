@@ -126,7 +126,7 @@ schreibt: **`vorbereiten`** erhöht alle Versionsnummern, **`los`** prüft und v
 |---|---|
 | **AppDesign 4.13.0 · Reiselogbuch 3.12.0** | Thema 1 Tests melden Fehler (A, C), Thema 2 Lauf-Werkzeug parallel mit WebKit (B). App ändert sich nicht sichtbar. |
 | **AppDesign 4.14.0 · Reiselogbuch 3.13.0** | Thema 1 Feste Fassung (D, mit W-4), Thema 2 Veröffentlichungs-Skript (E) – 4.14.0 wird schon mit dem Skript veröffentlicht. |
-| WebKit | **in Version A** (entschieden 14.10.2026, B-7, B-8). Setup-Skript der Umgebung ‚Standard‘ (trägt der Nutzer ein): `npx -y playwright@1.56.1 install webkit` und `npx -y playwright@1.56.1 install-deps webkit` |
+| WebKit | **in Version A** (entschieden 14.10.2026, B-7, B-8). Setup-Skript der Umgebung ‚Standard‘ (vom Nutzer eingetragen 14.10.2026, mit `#!/bin/bash`; wirkt ab der nächsten Sitzung – dort prüfen, ob `/opt/pw-browsers/webkit-2215` da ist): `npx -y playwright@1.56.1 install webkit` und `npx -y playwright@1.56.1 install-deps webkit` |
 
 Dazu bei beiden: Regelkatalog R-10.3 angepasst (D-2), Designrichtlinie 14, Zusammenarbeit 0 Nr. 2/9/10 (nur Verweise
 auf die Werkzeuge), CHANGELOG, Backlog, Übergabe.
