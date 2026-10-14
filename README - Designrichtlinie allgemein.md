@@ -1,12 +1,12 @@
 # Designrichtlinie allgemein
 
-**Version 4.13.0** · Stand 14.10.2026
+**Version 4.14.0** · Stand 14.10.2026
 
 Allgemeine Gestaltungs- und Bedienregeln für alle iPad-Web-Apps von g811141a (seit 4.1.0 auch
 auf dem iPhone, Abschnitt 15.17).
 Diese Datei liegt im Design-Repo **AppDesign** (g811141a/AppDesign); ihre Versionsnummer ist
 die Versionsnummer des Repos. Die Komponenten sind dort einmal programmiert (`v4/design.css`,
-`v4/ui.js`) und werden von allen Apps übernommen (Abschnitt 14).
+`v4/ui.js`, je Version fest in `fassung/X.Y.Z/`) und werden von allen Apps übernommen (Abschnitt 14).
 App-spezifische Regeln stehen in einer eigenen Datei je App
 (z. B. `README - Designrichtlinie Reiselogbuch.md`). Regeln zur Zusammenarbeit stehen in
 `README - Zusammenarbeit allgemein.md`.
@@ -336,9 +336,9 @@ heller).
 - Service Worker „network first“ mit `cache: 'no-cache'`: Beim Start wird immer bei
   GitHub nachgefragt, neue Versionen sind nach einem Neustart sofort da; offline läuft
   die gespeicherte Version.
-- **Versionskopplung App ↔ AppDesign (seit 4.11.0, R-10.3):** `ui.js` und `design.css` werden immer mit
-  `?v=<AppDesign-Version>` eingebunden – in `index.html` und in der Dateiliste von `sw.js`. Jede neue Version lädt so
-  sicher die passende Fassung (kein alter Zwischenspeicher). `ui.js` nennt ihre Version in `AD_VERSION`, `design.css`
+- **Versionskopplung App ↔ AppDesign (seit 4.11.0, R-10.3; feste Fassung seit 4.14.0):** `ui.js` und `design.css` kommen
+  aus der festen Fassung der App, `../AppDesign/fassung/X.Y.Z/` – in `index.html` und in der Dateiliste von `sw.js`, ohne
+  `?v=` (der Pfad enthält die Version; kein alter Zwischenspeicher). Eine neue AppDesign-Version ändert die App nicht. `ui.js` nennt ihre Version in `AD_VERSION`, `design.css`
   in `--ad-version`; die App nennt die benötigte in `AD_NEEDED` und zeigt beim Start ein kleines Fenster ‚Neue Version
   wird geladen‘ (⚠️ benötigt/geladen, ‚App ganz schließen und nach ein paar Minuten neu öffnen‘), wenn eine andere
   Fassung geladen ist (z. B. GitHub Pages noch nicht fertig). Die Versionszeile im Mehr-Menü nennt auch ‚AppDesign X.Y.Z‘.
@@ -395,13 +395,17 @@ heller).
   Fenster, Darstellung, Auswahl-Kapsel, Tastatur/sichtbarer Bereich, Beträge, iPhone-Erkennung
   `isPhone()`), `apple-referenz/` (Vergleichsbilder), `tests/` (Prüfungen des Regelkatalogs) und
   `vorlage/index.html` (Startpunkt für neue Apps).
-- **Einbindung (versioniert):** Jede App lädt die Bausteine von GitHub Pages aus dem Ordner der
-  Hauptversion: `<link rel="stylesheet" href="../AppDesign/v4/design.css">` im `<head>` vor dem
-  eigenen `<style>`, `<script src="../AppDesign/v4/ui.js"></script>` am Ende von `<body>` vor dem
-  Skript der App. Der Service Worker der App nimmt beide Dateien in seinen Cache auf (offline).
-- **Versionen:** Neben- und Korrekturversionen (4.x.y) ändern `v4/` rückwärtsverträglich und
-  gelten sofort für alle Apps. Eine Hauptversion (5.0.0) bekommt einen neuen Ordner `v5/`; jede
-  App wird bewusst umgestellt. Reihenfolge beim Veröffentlichen: **erst AppDesign, dann die App.**
+- **Einbindung (feste Fassung, seit 4.14.0):** Jede App lädt die Bausteine von GitHub Pages aus **ihrer** Fassung:
+  `<link rel="stylesheet" href="../AppDesign/fassung/X.Y.Z/design.css">` im `<head>` vor dem eigenen `<style>`,
+  `<script src="../AppDesign/fassung/X.Y.Z/ui.js"></script>` am Ende von `<body>` vor dem Skript der App. Der Service
+  Worker der App nimmt beide Dateien in seinen Cache auf (offline). Die Prüfskripte der App binden die Prüfungen
+  derselben Fassung ein (`fassung/X.Y.Z/tests/`).
+- **Versionen:** Jede AppDesign-Version liegt zusätzlich unveränderlich in `fassung/X.Y.Z/` (`design.css`, `ui.js`,
+  `tests/`; Prüfsummen in `fassung/PRUEFSUMMEN`) und hat die Git-Markierung `vX.Y.Z`; die README der App verlinkt die
+  Richtlinien dieser Markierung. Eine neue AppDesign-Version ändert eine App **nicht**; gehoben wird eine App nur nach
+  Rückfrage (Zusammenarbeit 0 Nr. 10). `v4/` ist der Arbeitsstand und zeigt die neueste 4er-Fassung; eine Hauptversion
+  (5.0.0) bekommt einen neuen Ordner `v5/`. Veröffentlicht wird mit `werkzeug/veroeffentlichen.mjs` (`vorbereiten`,
+  dann `los`): **erst AppDesign, dann die App**, jeweils erst nach dem erfolgreichen Pages-Lauf weiter.
 - **Schnittstelle von ui.js:** Die App stellt bereit: `<dialog id="dlg">`, `<dialog id="msg">`,
   `db.settings.appearance` (`auto` | `light` | `dark`), `save()`, `render()`; optional
   `onDialogOpen()` (wird bei jedem `openDialog` aufgerufen).
@@ -892,7 +896,7 @@ Regel ersetzt oder ergänzt eine bestehende (Zusammenarbeit 0 Nr. 3) und bekommt
 |---|---|---|---|---|
 | R-10.1 | **Texte:** deutsch, kein ‚OK‘/‚Close‘/‚Cancel‘; Anführungszeichen ‚…‘; gleiche Aktion = gleiche Bezeichnung und gleiches Icon überall; Teilen nur als Icon | hig.mjs – auch Icon je Bezeichnung über alle Ansichten | – | R-14, R-23 (Teil Texte), R-24, R-34 |
 | R-10.2 | **Lesbarkeit:** Schrift mindestens 11 pt; Kontrast 4,5 : 1 bzw. 3 : 1, hell und dunkel | hig.mjs | – | R-12, R-13 |
-| R-10.3 | **Versionskopplung:** ui.js/design.css mit `?v=`; Versionen stimmen überein, sonst Hinweis beim Start; Versionszeile nennt AppDesign (mit A-05: feste Fassung je App) | version.mjs | – | R-48 |
+| R-10.3 | **Versionskopplung:** ui.js/design.css aus der festen Fassung `fassung/X.Y.Z/` (index.html, sw.js; seit 4.14.0), Fassungen unverändert (Prüfsummen), `v4/` = neueste Fassung; Versionen stimmen überein, sonst Hinweis beim Start; Versionszeile nennt AppDesign | version.mjs | – | R-48 |
 | R-10.4 | **README ‚Verwendete Versionen‘** ganz oben, je Version und Link | doku.mjs – `checkDocs`; Katalog selbst: `checkCatalog` | – | R-49 |
 
 **Aus dem Katalog genommen:** R-50 (Prüfliste mit /0, Meldung je Gerät) → Zusammenarbeit allgemein 7 als Arbeitsregel,
@@ -923,6 +927,7 @@ Die alten Nummern R-01 bis R-52 (bis 4.11.4) gelten nicht mehr; sie stehen nur n
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 4.14.0 | 14.10.2026 | Neben | A-05 Version B: feste Fassung je Version `fassung/X.Y.Z/` (Einleitung, 15.20, Abschnitt 14 – W-4 nachgeführt: Versionen gelten nicht mehr sofort für alle Apps), R-10.3 angepasst (Fassungs-Pfad statt `?v=`, Prüfsummen, `v4/` = neueste Fassung), Veröffentlichungs-Skript |
 | 4.13.0 | 14.10.2026 | Neben | A-05 Version A (Prüfungen 2.0): Abschnitt 14 ‚Prüfen‘ und 17 ‚Grundregeln‘ – Prüfskripte melden Fehler mit Rückgabewert (`pruefe.mjs`), Grundregeln nach jedem Schritt, Chromium und WebKit, paralleler Lauf (`lauf.mjs`); `hig.mjs` zählt eine unsichtbare Antippfläche (`::after`) mit (R-3.1). Keine neue Regel |
 | 4.12.2 | 14.10.2026 | Korrektur | A-02 Schritt 3: Abschnitt 7 – Vorschaufenster in voller Seitenbreite, seitlich wischen auf iPad und iPhone (R-6.4, bisher nur in der Designrichtlinie Reiselogbuch, F-4); neue Prüfung `checkCollab` (doku.mjs): Zusammenarbeit, CLAUDE.md, Backlogs und App-Doku ohne veraltete Stellen, Versionszeile in PROMPT.md, Feldnamen des Abgleichberichts; `checkCatalog` prüft jetzt auch die Zusammenarbeit |
 | 4.12.1 | 14.10.2026 | Korrektur | Aus P-32: Seitenleiste folgt bei offener Tastatur dem von Safari verschobenen sichtbaren Bereich wie die Kopfzeile (R-2.1, Prüfung bildet Safari nach); `createSync` mit `values` – der Abgleichbericht zeigt Werte wie die App (R-10.1); Katalogprüfung auch in Code-Kommentaren |

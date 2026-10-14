@@ -3,6 +3,33 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.14.0 – 14.10.2026 (Neben)
+
+AppDesign 4.14.0 · Designrichtlinie allgemein 4.14.0 · Zusammenarbeit allgemein 2.3.2 · geprüft mit Reiselogbuch 3.13.0
+
+A-05 Version B – feste Fassung und Veröffentlichungs-Skript (Fall-Liste `arbeit/A-05 Fall-Liste.md`, Teile D und E).
+`v4/` nur Versionsnummer und Kommentar zur Einbindung.
+
+- **Feste Fassung `fassung/4.14.0/` (D-1):** `design.css`, `ui.js` und `tests/` je Version unveränderlich, Prüfsummen in
+  `fassung/PRUEFSUMMEN`, Git-Markierung `v4.14.0`. Apps laden genau ihre Fassung (`../AppDesign/fassung/X.Y.Z/…`, ohne
+  `?v=`) und prüfen mit den Prüfungen dieser Fassung; gehoben wird nur nach Rückfrage. `v4/` bleibt Arbeitsstand und zeigt die
+  neueste Fassung (D-5). Ältere Versionen (bis 4.13.0) haben keine Fassung – die Apps waren bisher auf `v4/`.
+- **`tests/version.mjs` (R-10.3):** Fassungs-Pfad in `index.html` und `sw.js` = `AD_NEEDED`, nichts aus `v4/`; Versionen in
+  der Fassung; `checkFassungen`: keine Datei geändert, fehlt oder dazu, `v4/` und `tests/` = neueste Fassung; ein geänderter
+  Arbeitsstand `v4/` (roter Knopf, Skriptfehler) erreicht die App nicht (D-3).
+- **`tests/doku.mjs`:** README der App verlinkt AppDesign über die Markierung der Fassung (D-6), Richtlinien-Versionen aus der
+  Markierung (`adText`); `checkCollab` meldet ‚gilt sofort für alle Apps‘ und `?v=` (D-7, W-4).
+- **`werkzeug/veroeffentlichen.mjs` (neu, E):** `vorbereiten` erhöht alle Versionsnummern in AppDesign und App und legt die
+  Fassung an; `fassung` legt sie nach Änderungen neu an (nur vor dem Veröffentlichen); `los` prüft Zweig, offene Änderungen,
+  Texte (CHANGELOG, Prüfliste /0), Fassung und **alle Tests der App**, dann AppDesign `--no-ff` nach `main` mit Markierung,
+  Push (4 Wiederholungen), Pages-Lauf über die Actions-Liste abwarten (höchstens 10 min), dann die App genauso; nennt Apps auf
+  älteren Fassungen (D-4); `--nur-app`, wenn AppDesign schon online ist (E-8). Liste der Apps `werkzeug/apps.json`.
+- **Selbsttest `werkzeug/veroeffentlichen-selbsttest.mjs` (neu):** 20 Fälle in Kopien beider Repos mit Schein-Remotes und
+  nachgebildetem Pages-Lauf (success, failure, hängt). **Gefunden:** ‚los‘ ließ eine App aus, die auf `main` stand, und
+  veröffentlichte AppDesign allein – jetzt zählt jede App, deren Version neuer ist als auf `origin/main`.
+- **Vorlage** lädt `../fassung/4.14.0/…`; **README**, **CLAUDE.md 2.1.0**, `tests/README.md` nachgeführt.
+- **Designrichtlinie allgemein 4.14.0** (Einleitung, 14, 15.20, R-10.3), **Zusammenarbeit allgemein 2.3.2** (0 Nr. 9 und 10).
+
 ## 4.13.0 – 14.10.2026 (Neben)
 
 AppDesign 4.13.0 · Designrichtlinie allgemein 4.13.0 · Zusammenarbeit allgemein 2.3.1 · geprüft mit Reiselogbuch 3.12.0

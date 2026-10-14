@@ -1,6 +1,6 @@
 # AppDesign – Hinweise für Claude
 
-**Version 2.0.0** · Stand 14.10.2026
+**Version 2.1.0** · Stand 14.10.2026
 
 ## Zuerst lesen
 
@@ -17,18 +17,23 @@ nie ohne ausdrückliches ‚Ja‘ bauen, Fall-Liste vor jedem Bau (0 Nr. 1), Aus
 
 ## Technisch
 
-- `v4/design.css` und `v4/ui.js` werden von den Apps über GitHub Pages geladen (`../AppDesign/v4/…?v=<Version>`, R-10.3).
-  Änderungen in `v4/` müssen rückwärtsverträglich sein; sonst neuer Ordner `v5/`. `AD_VERSION` (ui.js) und `--ad-version`
+- Feste Fassung (seit 4.14.0, R-10.3): jede Version liegt unveränderlich in `fassung/X.Y.Z/` (`design.css`, `ui.js`,
+  `tests/`, Prüfsummen `fassung/PRUEFSUMMEN`, Markierung `vX.Y.Z`); jede App lädt genau ihre Fassung
+  (`../AppDesign/fassung/X.Y.Z/…`) und wird nur nach Rückfrage gehoben. `v4/` ist der Arbeitsstand (= neueste Fassung);
+  Hauptversion → neuer Ordner `v5/`. Nach Änderungen an `v4/` oder `tests/` vor dem Veröffentlichen
+  `node werkzeug/veroeffentlichen.mjs fassung`. `AD_VERSION` (ui.js) und `--ad-version`
   (design.css) steigen mit jeder AppDesign-Version.
 - Prüfungen in `tests/` (Abschnitt 17); sie laufen über die Prüfskripte der Apps (AppDesign liegt neben dem App-Repo),
   z. B. im Reiselogbuch `sh tests/alle.sh`.
-- Vor dem Veröffentlichen jede App testen, die die Bausteine nutzt. **Erst AppDesign, dann die App.**
+- Veröffentlichen mit `node werkzeug/veroeffentlichen.mjs vorbereiten --ad X.Y.Z --app <app>=X.Y.Z`, Texte schreiben,
+  committen, dann `… los` (prüft, alle Tests der App, **erst AppDesign, dann die App**, wartet auf Pages).
 - GitHub Pages: Branch `main`, Hauptordner.
 
 ## Versionsgeschichte
 
 | Version | Datum | Inhalt |
 |---|---|---|
+| 2.1.0 | 14.10.2026 | Feste Fassung `fassung/X.Y.Z/` statt `v4/…?v=` (A-05 Version B, W-4), Veröffentlichungs-Skript |
 | 2.0.0 | 14.10.2026 | Neu gefasst (A-02 Schritt 4): zuerst UEBERGABE.md, Regeln nur noch als Verweis auf die Zusammenarbeit (ohne Antwortzeile), Prüfungen und Versionskopplung |
 | 1.1.0 | 10.10.2026 | Zeitmessung |
 | 1.0.0 | 09.10.2026 | erste Fassung |

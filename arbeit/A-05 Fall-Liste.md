@@ -2,7 +2,7 @@
 
 **Stand 14.10.2026** · Sitzung ‚Reiselogbuch 0003 – A-05 Prüfungen 2.0‘ · Zusammenarbeit allgemein 0 Nr. 1
 (Fall-Liste vor jedem Bau). Grundlage: `UEBERGABE.md` Abschnitte 3 und 4, `BACKLOG.md` A-05, Zusammenarbeit 0 Nr. 2,
-5, 9, 10, `arbeit/A-02 Verlauf-Abgleich.md` (F-1, W-4). **Freigegeben 14.10.2026** (Fall-Liste ja · feste Fassung mit `design.css`, `ui.js` und `tests/` · zwei Versionen: erst A 4.13.0/3.12.0, dann B 4.14.0/3.13.0). Noch nichts gebaut.
+5, 9, 10, `arbeit/A-02 Verlauf-Abgleich.md` (F-1, W-4). **Freigegeben 14.10.2026** (Fall-Liste ja · feste Fassung mit `design.css`, `ui.js` und `tests/` · zwei Versionen: erst A 4.13.0/3.12.0, dann B 4.14.0/3.13.0). Version A gebaut (4.13.0/3.12.0, P-35 ok); **Version B gebaut 14.10.2026** (4.14.0/3.13.0, Teile D und E; Prüfung P-36).
 
 Jeder Fall wird ein automatischer Test (Spalte ‚Test‘); was nur das Gerät zeigt, kommt in die Prüfliste (Teil F).
 A-05 ändert Prüfskripte, Werkzeuge und die Art, wie die App AppDesign einbindet – **die App sieht gleich aus**.

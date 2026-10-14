@@ -1,6 +1,6 @@
 # Zusammenarbeit allgemein
 
-**Version 2.3.1** · Stand 14.10.2026
+**Version 2.3.2** · Stand 14.10.2026
 
 Regeln für die Zusammenarbeit mit Claude bei allen iPad-Web-Apps von g811141a.
 Diese Datei liegt im Design-Repo **AppDesign** (g811141a/AppDesign).
@@ -64,10 +64,11 @@ Nutzer sie findet, schneller und günstiger arbeiten.
    **Korrekturen sofort:** Fehler aus einer Prüfrunde kommen als eigene Korrekturversion, bevor Neues gebaut wird – auch
    ohne Datenverlust (Abschnitt 6).
 9. **Veröffentlichungs-Skript:** erhöht alle Versionen, prüft, veröffentlicht AppDesign vor der App und wartet auf
-   Pages (A-05).
+   Pages (seit AppDesign 4.14.0: `node werkzeug/veroeffentlichen.mjs vorbereiten …`, Texte schreiben, dann `… los`).
 10. **Feste Fassung der allgemeinen Regeln je App:** Jede AppDesign-Version liegt zusätzlich in einem eigenen,
     unveränderlichen Ordner; jede App bindet **genau ihre** Fassung ein. Eine App wird nur auf eine neuere Fassung
-    gehoben, wenn Claude **vorher fragt** und der Nutzer zustimmt (Umsetzung mit A-05).
+    gehoben, wenn Claude **vorher fragt** und der Nutzer zustimmt (seit AppDesign 4.14.0: `fassung/X.Y.Z/` mit
+    `design.css`, `ui.js` und `tests/`; das Veröffentlichungs-Skript nennt Apps auf älteren Fassungen, hebt aber nichts).
 11. **Bericht nach einer Version:** 3–5 Sätze, dazu eine **vollständige Aufzählung aller Änderungen**, dann die
     Prüfpunkte Schritt für Schritt. Ist ein Fehler durchgerutscht, steht immer dabei, **warum** die Prüfung ihn
     übersehen hat.
@@ -294,6 +295,7 @@ Nutzer sie findet, schneller und günstiger arbeiten.
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 2.3.2 | 14.10.2026 | Korrektur | Abschnitt 0 Nr. 9 und 10: Verweise auf das Veröffentlichungs-Skript und die feste Fassung (A-05 Version B) |
 | 2.3.1 | 14.10.2026 | Korrektur | Abschnitt 0 Nr. 2 und 5: Verweise auf die Werkzeuge aus A-05 Version A (`tests/alle.mjs`, `lauf.mjs`, Gegenprobe) und WebKit in jedem Test |
 | 2.3.0 | 14.10.2026 | Neben | Abschnitt 0 Nr. 14: nach der Übergabe am Ende der Antwort fett ‚Die Sitzung (Chat) ist damit beendet!‘ |
 | 2.2.0 | 14.10.2026 | Neben | A-02 Schritt 4 – Abschnitte 1–9 an Abschnitt 0 angepasst: Korrekturen sofort als Korrekturversion, auch ohne Datenverlust (§6, 0 Nr. 8); Antwortzeile nur noch bei mehr als 4 Fragen, jedes Fenster mit ‚Ich schreibe im Chat‘ (§2, 0 Nr. 7); Muster und Erklärungen als Datei vor dem Fenster statt im Fragetext (§2); Doppeltes durch Verweise auf Abschnitt 0 ersetzt (§5 Nr. 3, §7 Testfälle und Bericht) |

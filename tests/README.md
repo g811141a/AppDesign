@@ -62,7 +62,15 @@ Darstellung). Selbsttest mit Schein-Tests: `node tests/lauf-selbsttest.mjs` (in 
 | `abgleich.mjs` | R-9.2 bis R-9.4 | alle Fälle des Abgleichs in beide Richtungen, kurzes Fenster und Abgleichbericht |
 | `backup.mjs` | R-9.1, R-9.2 | Backup erstellen und laden (Menü, Abfrage mit Kacheln, Abbrechen, unlesbare Datei) |
 | `kontextmenue.mjs` | R-4.2 | Kontextmenü jeder sichtbaren Kachel und des letzten Eintrags, ganz sichtbar, über der Backup-Kachel |
-| `doku.mjs` | R-10.4, Zusammenarbeit 7, Katalog | README mit ‚Verwendete Versionen‘, Prüfliste beginnt mit /0; `checkCatalog` (seit 4.12.0): jede Regel hat eine Prüfung, alte Nummern zugeordnet und nirgends mehr verwendet |
-| `version.mjs` | R-10.3 | `?v=` in `index.html` und `sw.js`, gleiche Versionen, Hinweis beim Start bei älterer Fassung (seit 4.13.0 mit frischer Seite – WebKit) |
+| `doku.mjs` | R-10.4, Zusammenarbeit 7, Katalog | README mit ‚Verwendete Versionen‘ (seit 4.14.0: Links nach AppDesign auf die Markierung `vX.Y.Z` der Fassung, Richtlinien-Versionen aus dieser Markierung), Prüfliste beginnt mit /0; `checkCatalog` (seit 4.12.0): jede Regel hat eine Prüfung, alte Nummern zugeordnet und nirgends mehr verwendet; `checkCollab` (seit 4.14.0 auch W-4: kein ‚gilt sofort für alle Apps‘, kein `?v=`) |
+| `version.mjs` | R-10.3 | seit 4.14.0 feste Fassung: `index.html` und `sw.js` laden genau `fassung/<AD_NEEDED>/` (ohne `?v=`, nichts aus `v4/`), Versionen der Fassung stimmen, Prüfsummen `fassung/PRUEFSUMMEN` (keine Datei geändert, fehlt oder dazu), `v4/` und `tests/` = neueste Fassung; Hinweis beim Start bei älterer Fassung; ein geänderter Arbeitsstand `v4/` erreicht die App nicht (kein Abruf) |
+
+## Feste Fassung (seit 4.14.0)
+
+Die Prüfskripte einer App binden die Prüfungen **ihrer** Fassung ein: `import … from '../../AppDesign/fassung/X.Y.Z/tests/pruefe.mjs'`
+(das Veröffentlichungs-Skript setzt die Pfade mit `vorbereiten`). Nach Änderungen an `v4/` oder `tests/` vor dem
+Veröffentlichen `node werkzeug/veroeffentlichen.mjs fassung` – sonst meldet `version.mjs` die Abweichung. Ist eine Fassung
+mit `los` veröffentlicht (Markierung `vX.Y.Z`), ist sie unveränderlich. Richtlinien-Versionen liest `doku.mjs` aus der
+Markierung; in einer flachen Kopie ohne Markierungen einmal `git fetch --depth 1 origin tag vX.Y.Z`.
 
 **Erst rot, dann grün:** Jede neue Prüfung wird einmal mit einem eingebauten Fehler laufen gelassen und muss ihn melden.
