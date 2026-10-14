@@ -707,7 +707,8 @@ Verhalten · technischer Name). In AppDesign ist jede Komponente einmal programm
        1 gelöscht · 3 unverändert‘.
      - **‚Änderungen auf diesem iPhone‘** – Tabelle wie in der Ausgabe (grauer Kopf, Spaltenköpfe halbfett, Linien):
        Eintrag (z. B. Reiselogbuch) · Tag (‚Mo, 12.10.2026‘, ‚–‘ für Kopfdaten) · Feld (Namen aus `labels`) · Neu · Vorher
-       · Vom Gerät · Geändert am; je Feld eine Zeile, Eintrag und Tag über ihre Zeilen zusammengefasst; neu angelegte
+       · Vom Gerät · Geändert am; je Feld eine Zeile ohne zusammengefasste Zellen – Eintrag, Tag, Gerät und Zeitpunkt nur in
+       der ersten Zeile ihrer Gruppe, jede zweite Zeile über die ganze Breite grau (R-52); neu angelegte
        Einträge ‚**neu angelegt** (n Tage)‘ blau, gelöschte ‚**gelöscht**‘ rot. Unveränderte Einträge stehen **nicht** in
        der Tabelle, darunter nur ‚n Reiselogbücher sind unverändert.‘
      - **‚Auf diesem iPhone neuer als im Backup – bleibt so‘** – gleiche Tabelle (Spalten ‚Auf diesem iPhone‘ · ‚Im
@@ -869,7 +870,7 @@ hier sofort eine Nummer und – wo möglich – eine Prüfung im Skript.
 | R-49 | Die README jeder App zeigt ganz oben ‚Verwendete Versionen‘: App, AppDesign, Designrichtlinie allgemein, Designrichtlinie <App>, Zusammenarbeit allgemein – je Version (gleich wie in der App bzw. den Richtlinien) und Link | Skript (`tests/doku.mjs`) | 11 |
 | R-50 | Jede Prüfliste beginnt mit /0 ‚Version prüfen‘ (App- und AppDesign-Version in der Versionszeile); jeder Prüfpunkt hat nummerierte Schritte und nennt bei jedem Schritt, der etwas anzeigt, die Meldung je Gerät; jeder solche Fall hat einen automatischen Test der Texte auf beiden Geräten | Skript (`tests/doku.mjs`) · Ablauf (`tests/abgleich.mjs` u. a.) | Zusammenarbeit 7 |
 | R-51 | Beim Drehen (quer ↔ hoch) und jeder Größenänderung bleibt oben derselbe Eintrag stehen (z. B. derselbe Tag) – auch in Safari, das keinen Scroll-Anker kennt; Baustein in ui.js für Einträge mit `data-day` bzw. `data-keep` | Skript – automatisch je Seite mit Einträgen (Safari nachgebildet, mit Zwischengrößen, hin und zurück) | 13 |
-| R-52 | Jede Tabelle in Ausgaben, Vorschauen und Berichten (z. B. HTML-Ausgabe, Abgleichbericht) ist die **Mustertabelle der Ausgabe** aus dem Baustein `outputCss(scope)` in ui.js – Systemschrift 11 pt, Kopf `#d9d9d9` fett mit Rand `#a5a5a5`, Linien überall gleich stark (1 px `#999`, außen `#a5a5a5`), Innenabstand 6/8 px, jede zweite Zeile `#f5f5f5` (bei zusammengefassten Zellen je Block, z. B. je Tag im Abgleichbericht), Zeilen nicht über Seitenumbrüche geteilt; keine eigene Nachbildung | Skript – jede sichtbare Tabelle in Ausgabe und Bericht wird Eigenschaft für Eigenschaft mit einer unsichtbaren Mustertabelle verglichen | 10 |
+| R-52 | Jede Tabelle in Ausgaben, Vorschauen und Berichten (z. B. HTML-Ausgabe, Abgleichbericht) ist die **Mustertabelle der Ausgabe** aus dem Baustein `outputCss(scope)` in ui.js – Systemschrift 11 pt, Kopf `#d9d9d9` fett mit Rand `#a5a5a5`, Linien überall gleich stark (1 px `#999`, außen `#a5a5a5`), Innenabstand 6/8 px, jede zweite Zeile `#f5f5f5` – **immer die ganze Tabellenzeile** (allgemeiner Standard), deshalb keine zusammengefassten Zellen über mehrere Zeilen; Gruppen zeigen ihren Namen nur in der ersten Zeile, die Zählung läuft über die ganze Tabelle; Zeilen nicht über Seitenumbrüche geteilt; keine eigene Nachbildung | Skript – jede sichtbare Tabelle in Ausgabe und Bericht wird Eigenschaft für Eigenschaft mit einer unsichtbaren Mustertabelle verglichen; jede Zeile einfarbig, keine zusammengefasste Zelle über weiße und graue Zeilen | 10 |
 
 ---
 

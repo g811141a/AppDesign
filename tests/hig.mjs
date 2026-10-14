@@ -259,6 +259,11 @@ const found = new Map();
           const white = want.odd === 'rgba(0, 0, 0, 0)' ? ['rgba(0, 0, 0, 0)', 'rgb(255, 255, 255)'] : [want.odd];
           const tds = [...t.querySelectorAll('tbody td')], colors = new Set(tds.map(bg).map(c => white.includes(c) ? 'weiß' : c === want.even ? 'grau' : c));
           [...colors].filter(c => c !== 'weiß' && c !== 'grau').forEach(c => R('R-52', `${name}: Zeilenfarbe ${c} nicht wie die Mustertabelle`));
+          // Zebra gilt für die ganze Tabellenzeile (allgemeiner Standard): alle Zellen einer Zeile gleich, keine zusammengefasste
+          // Zelle über verschieden gefärbte Zeilen.
+          [...t.querySelectorAll('tbody tr')].forEach(r => { const c = new Set([...r.cells].filter(x => x.tagName === 'TD').map(bg)); if (c.size > 1) R('R-52', `${name}: graue Zeile nur teilweise gefärbt – Zebra gilt für die ganze Zeile`); });
+          t.querySelectorAll('tbody [rowspan]').forEach(x => { const n = +x.getAttribute('rowspan'); if (n > 1) { const r0 = x.parentElement, rows = [...r0.parentElement.children], i0 = rows.indexOf(r0);
+            if (new Set(rows.slice(i0, i0 + n).map(r => cs(r).backgroundColor === 'rgba(0, 0, 0, 0)' ? bg(r.querySelector('td') || r) : cs(r).backgroundColor)).size > 1) R('R-52', `${name}: zusammengefasste Zelle über weiße und graue Zeilen – Zebra gilt für die ganze Zeile`); } });
           // Zeilen bzw. Blöcke zählen: ein Block beginnt mit einer vollständigen Zeile (zusammengefasste Zellen setzen sich fort).
           const trs = [...t.querySelectorAll('tbody tr')], tdCount = r => r.querySelectorAll('td').length, full = Math.max(0, ...trs.map(tdCount));
           if (trs.filter(r => tdCount(r) === full).length >= 2 && !colors.has('grau')) R('R-52', `${name}: keine grauen Zeilen wie die Mustertabelle (jede zweite Zeile grau)`);

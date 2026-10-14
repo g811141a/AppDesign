@@ -595,26 +595,28 @@ function createSync({ list, sub, subAt, maxFields = [], nouns = ['Eintrag', 'Ein
     .sync-report table.grid col.c1 { width: 15%; } .sync-report table.grid col.c2 { width: 13%; } .sync-report table.grid col.c3 { width: 13%; }
     .sync-report table.grid col.c4 { width: 22%; } .sync-report table.grid col.c5 { width: 14%; } .sync-report table.grid col.c6 { width: 10%; } .sync-report table.grid col.c7 { width: 13%; }
     .sync-report table.grid td, .sync-report table.grid th { overflow-wrap: break-word; -webkit-hyphens: auto; hyphens: auto; }
-    .sync-report table.grid tbody th { background: #fff; font-weight: 700; }
-    /* Grau wie die Ausgabe je Tag (Zeilenblock mit seinen zusammengefassten Zellen), nicht je Feldzeile. */
+    .sync-report table.grid tbody th { font-weight: 700; }
+    /* Jede zweite Zeile grau über die ganze Tabelle gezählt (die Gruppen je Reiselogbuch zählen durch). */
     .sync-report table.grid tbody tr:nth-child(even) { background: none; }
-    .sync-report table.grid tbody tr.z > td { background: #f5f5f5; }
+    .sync-report table.grid tbody tr.z { background: #f5f5f5; }
     .sync-report .new { color: #0a5bd3; font-weight: 600; } .sync-report .del { color: #c0362c; font-weight: 600; }
     .sync-report .old { color: #555; }
     .sync-report p { margin: 8px 0; }`;
   const atText = at => at ? (d => `${d.getDate()}.${d.getMonth() + 1}.${d.getFullYear()} ${two(d.getHours())}:${two(d.getMinutes())}`)(new Date(at)) : '–';
   // Eine Gruppe je Eintrag; je Feld eine Zeile; Eintrag und Tag über ihre Zeilen zusammengefasst (rowspan).
+  // Eine Tabellenzeile je Feld, ohne zusammengefasste Zellen: Reiselogbuch, Tag, Gerät und Zeitpunkt stehen nur in der
+  // ersten Zeile ihrer Gruppe. So gilt jede zweite graue Zeile für die ganze Breite (R-52, allgemeiner Standard).
   function reportTable(groups, cols) {
-    let n = 0;   // Tage über die ganze Tabelle gezählt: jeder zweite Tag grau (wie jede zweite Zeile der Ausgabe)
+    let n = 0;
     const body = groups.map(g => {
       const lines = g.rows.flatMap(r => r.fields.map((f, i) => ({ r, f, first: !i })));
-      const z = new Map(g.rows.map(r => [r, ++n % 2 === 0]));
-      return `<tbody data-kind="${g.kind}" data-title="${esc(g.title)}">${lines.map((x, i) => `<tr${z.get(x.r) ? ' class="z"' : ''}>${i ? '' : `<th scope="rowgroup" rowspan="${lines.length}">${esc(g.title)}</th>`}${
-        x.first ? `<td rowspan="${x.r.fields.length}">${x.r.key === null ? '–' : esc(keyText(x.r.key))}</td>` : ''}<td>${x.f.label}</td><td>${x.f.now}</td><td class="old">${x.f.before}</td>${
-        x.first ? `<td rowspan="${x.r.fields.length}">${esc(x.r.on || '–')}</td><td rowspan="${x.r.fields.length}">${atText(x.r.at)}</td>` : ''}</tr>`).join('')}</tbody>`;
+      return `<tbody data-kind="${g.kind}" data-title="${esc(g.title)}">${lines.map((x, i) => `<tr${++n % 2 === 0 ? ' class="z"' : ''}>${
+        i ? '<td></td>' : `<th scope="row">${esc(g.title)}</th>`}<td>${x.first ? (x.r.key === null ? '–' : esc(keyText(x.r.key))) : ''}</td><td>${x.f.label}</td><td>${x.f.now}</td><td class="old">${x.f.before}</td>${
+        x.first ? `<td>${esc(x.r.on || '–')}</td><td>${atText(x.r.at)}</td>` : '<td></td><td></td>'}</tr>`).join('')}</tbody>`;
     }).join('');
     return `<table class="grid"><colgroup>${[1, 2, 3, 4, 5, 6, 7].map(i => `<col class="c${i}">`).join('')}</colgroup><thead><tr><th>${esc(nouns[0])}</th><th>Tag</th><th>Feld</th><th>${cols[0]}</th><th>${cols[1]}</th><th>Vom Gerät</th><th>Geändert am</th></tr></thead>${body}</table>`;
   }
+
   const fieldRows = (rows, dflt) => (rows || []).map(r => ({ key: r.key, on: r.on || dflt, at: r.at, fields: r.fields.map(f => ({
     label: esc(labels[f.k] || f.k), now: f.cleared ? '<i>geleert</i>' : esc(valueText(f.v)).replace(/\n/g, '<br>'), before: esc(valueText(f.old)).replace(/\n/g, '<br>') })) }));
   const one = (now, n, unit) => [{ key: null, on: null, at: 0, fields: [{ label: '–', now: `${now}${n ? ` (${n} ${n === 1 ? unit[0] : unit[1]})` : ''}`, before: '–' }] }];
