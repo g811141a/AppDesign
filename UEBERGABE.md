@@ -11,8 +11,9 @@
 | AppDesign (ui.js, design.css) | 4.11.4 | g811141a/AppDesign – `CHANGELOG.md`, `BACKLOG.md` |
 | Designrichtlinie allgemein | 4.11.4 (Regelkatalog R-01 bis R-52) | `README - Designrichtlinie allgemein.md` |
 | Designrichtlinie Reiselogbuch | 3.11.4 | im Repo ReiseLogBuch |
-| Zusammenarbeit allgemein | 2.0.1 (Abschnitt 0 = Arbeitsprozess 2.0, hat Vorrang) | `README - Zusammenarbeit allgemein.md` |
+| Zusammenarbeit allgemein | 2.1.0 (Abschnitt 0 = Arbeitsprozess 2.0, hat Vorrang) | `README - Zusammenarbeit allgemein.md` |
 
+- **Chatnummer:** diese Übergabe ist für **Reiselogbuch 0001** (von Claude gestartet); die nächste Sitzung heißt **Reiselogbuch 0002** (Zusammenarbeit 0 Nr. 13).
 - **Offene Prüfpunkte:** keine.
 - **Nächste Version AppDesign:** A-02a (freigegeben, Bau mit ‚Ja‘ bestätigt). **Reiselogbuch:** T-83 (‚Verkehrsmittel‘ →
   ‚Reisemittel‘ im Abgleichbericht).

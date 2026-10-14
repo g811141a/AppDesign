@@ -1742,3 +1742,5 @@ Alle punkte ok
 **2026-10-14 05:15 · Entscheidung (Sitzung A-02):** Soll ich Version AppDesign 4.12.0 mit dem neuen Regelkatalog (A-02a) erstellen? → **Ja (Empfohlen)** · Den Bau in einer neuen Sitzung beginnen? → **Ja, neue Sitzung (Empfohlen)**
 
 **2026-10-14 05:25 · Nutzer:** Starttext immer so ausgeben, dass er mit einer Schaltfläche kopiert werden kann; dazu angeben, wo alles auf GitHub abgelegt ist, damit die neue Sitzung die Daten übernehmen kann. → Zusammenarbeit 2.0.1 (Abschnitt 0 Nr. 14), UEBERGABE.md Abschnitte 6 und 7
+
+**2026-10-14 05:35 · Nutzer:** Claude startet die neue Sitzung selbst, sobald die Token-Grenze naht, und macht die Übergabe selbstständig; Name mit App und aufsteigender vierstelliger Chatnummer (erste 0001); braucht ein Chat eine Entscheidung, bleibt er stehen. → Zusammenarbeit 2.1.0 (Abschnitt 0 Nr. 13)
