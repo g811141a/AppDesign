@@ -3,6 +3,19 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.11.2 – 14.10.2026 (Korrektur)
+
+AppDesign 4.11.2 · Designrichtlinie allgemein 4.11.2 · Zusammenarbeit allgemein 1.16.0
+
+- **R-37 überall:** Die Prüfung erfasste nur Tabellen der App-Seite (`#app`), nicht Fenster, Vorschauen und Berichte –
+  deshalb blieb unentdeckt, dass im Abgleichbericht Datum und Uhrzeit in die Nachbarzellen ragten (P-27/8). Jetzt wird
+  jede sichtbare Zelle überall geprüft, auch nach seitlichem Wischen; der Bericht bricht in jeder Zelle um.
+- **Abgleichbericht:** PDF in der Kapsel oben rechts wie bei der Vorschau der Ausgabe (Drucken-Menü, `#printout`).
+- **R-51 (neu):** Beim Drehen bleibt oben derselbe Eintrag stehen (Baustein in ui.js); das Prüfskript dreht jede Seite mit
+  Einträgen einmal hin und zurück und bildet Safari nach (kein Scroll-Anker).
+- **Zusammenarbeit allgemein 1.16.0:** Fehler am Gerät → zuerst die Prüfung schärfen; Testfälle selbst ableiten; Tests
+  bilden Safari nach; jede Meldung deutsch.
+
 ## 4.11.1 – 13.10.2026 (Korrektur)
 
 AppDesign 4.11.1 · Designrichtlinie allgemein 4.11.1 · Zusammenarbeit allgemein 1.15.0

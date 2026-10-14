@@ -1,12 +1,12 @@
-/* AppDesign 4.11.1 · design.css – gemeinsame Gestaltung der iPad-Web-Apps von g811141a (Apple-like)
-   Einbinden im <head> vor dem eigenen <style> der App:  <link rel="stylesheet" href="../AppDesign/v4/design.css?v=4.11.1">
+/* AppDesign 4.11.2 · design.css – gemeinsame Gestaltung der iPad-Web-Apps von g811141a (Apple-like)
+   Einbinden im <head> vor dem eigenen <style> der App:  <link rel="stylesheet" href="../AppDesign/v4/design.css?v=4.11.2">
    Farben als Variablen auf :root, Dunkelmodus über data-theme="dark" (setzt ui.js / applyTheme).
    Komponenten: Schaltflächen, Suchfeld, Kapsel, Eingabefelder, Datumsfelder, Kopfzeile, Seitenleiste,
    Menü, Sprechblase, schwebende Schaltflächen, Fenster, Kasten (Schritt), Auswahl-Kapsel, Schalter,
    Options-Kapsel; seit 4.1.0 iPhone-Ansicht (html.phone: Seitenkopf, großer Titel, Liste, Kasten, untere Leiste). Regeln dazu: README - Designrichtlinie allgemein.md */
 /* Farben im Apple-Look: Hintergrund Hellgrau, Kästen weiß ohne Rand, schwebende Schaltflächen */
 :root {
-  --ad-version: "4.11.1";   /* R-48: Version der Bausteine, die App prüft sie beim Start */
+  --ad-version: "4.11.2";   /* R-48: Version der Bausteine, die App prüft sie beim Start */
   --bg: #f2f2f7;
   --card: #ffffff;
   --ink: #1c1c1e;
@@ -309,6 +309,13 @@ dialog form { display: flex; flex-direction: column; max-height: var(--dlg-max, 
 .dlg-body.sync-preview { margin: 0; padding: 24px; background: #fff; color: #000; color-scheme: light; overflow: auto; }
 .dlg-body.sync-preview .sync-report { min-width: 760px; }
 html.phone .dlg-body.sync-preview { padding: 16px; }
+/* Seit 4.11.2: Drucken (PDF) – nur der Inhalt von #printout, alles andere ausgeblendet (z. B. Abgleichbericht). */
+#printout { display: none; }
+@media print {
+  html, body { background: #fff !important; color: #000; }
+  body > *:not(#printout) { display: none !important; }
+  #printout { display: block; }
+}
 .dlg-body { padding: 8px 16px 20px; overflow-y: auto; flex: 1; }
 .dlg-foot { display: flex; gap: 12px; align-items: center; padding: 14px 16px 16px; border-top: .5px solid var(--line); }
 .step { background: var(--dlg-card); border-radius: 14px; padding: 14px; margin-top: 12px; }

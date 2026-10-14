@@ -1,6 +1,6 @@
 # Zusammenarbeit allgemein
 
-**Version 1.15.0** · Stand 13.10.2026
+**Version 1.16.0** · Stand 14.10.2026
 
 Regeln für die Zusammenarbeit mit Claude bei allen iPad-Web-Apps von g811141a.
 Diese Datei liegt im Design-Repo **AppDesign** (g811141a/AppDesign).
@@ -30,6 +30,9 @@ App-spezifische Punkte stehen in der `CLAUDE.md` des jeweiligen App-Repos.
 ## 1. Sprache und Ton
 
 - Deutsch, kurz und klar.
+- **Jede Meldung deutsch (seit 1.15.1):** auch kurze Zwischenmeldungen während der Arbeit, Statuszeilen,
+  Bildunterschriften zu Screenshots und Fragen im Auswahlfenster – nie englisch. Englisch bleiben nur Code,
+  Dateinamen und Fachbegriffe ohne gängiges deutsches Wort.
 - Schaltflächen im Chat mit ihren Lucide-Icon-Namen benennen (z. B. „pencil“, „trash“),
   nicht mit Emojis.
 
@@ -188,6 +191,14 @@ App-spezifische Punkte stehen in der `CLAUDE.md` des jeweiligen App-Repos.
   3. was zu sehen sein muss (erwartetes Ergebnis). Ein Prüfpunkt prüft genau eine Sache; Verweise
   wie „wie oben“ oder „siehe Tabelle“ ersetzen keine Schritte. Noch offene Prüfpunkte früherer
   Versionen stehen mit dabei.
+- **Fehler am Gerät gefunden → Prüfung zuerst schärfen (seit 1.16.0):** Findet der Nutzer einen Fehler, den eine Regel
+  verbietet, ist auch die automatische Prüfung lückenhaft. Reihenfolge: 1. die Prüfung so erweitern, dass sie den
+  Fehler findet (rot), 2. beheben (grün), 3. dieselbe Lücke in allen Ansichten, Fenstern und Apps suchen (z. B. eine
+  Prüfung, die nur einen Bereich abdeckt), 4. im Bericht nennen, warum die Prüfung den Fehler übersehen hat.
+- **Testfälle selbst ableiten (seit 1.16.0):** Zu jeder Anforderung leitet Claude die Testfälle selbst ab – Gerät ×
+  Lage × Darstellung × Handlung (Drehen, Wischen, Tastatur, Abgleich) × Daten (leer, lang, viele) – und prüft
+  allgemeine Grundregeln nach jeder Handlung (z. B. nach dem Drehen: oberster Eintrag, Seitenleiste, Menüs bleiben).
+  Die Tests bilden Safari nach, wo sich Chrome anders verhält (z. B. kein Scroll-Anker).
 - **Prüfliste beginnt mit /0 (seit 1.15.0, R-50):** Jede Prüfliste beginnt mit dem Prüfpunkt **/0 ‚Version prüfen‘** –
   auf jedem Gerät die Versionszeile ansehen (App-Version **und** AppDesign-Version); erst wenn beide stimmen, wird
   weiter getestet. So fällt ein noch nicht geladener Stand sofort auf (Anlass: P-26/6 und 7).
@@ -221,6 +232,8 @@ App-spezifische Punkte stehen in der `CLAUDE.md` des jeweiligen App-Repos.
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 1.16.0 | 14.10.2026 | Neben | Fehler aus der Prüfung am Gerät: zuerst die automatische Prüfung so schärfen, dass sie den Fehler findet, dann beheben, dann dieselbe Lücke überall suchen; Testfälle selbst ableiten; Tests bilden Safari nach. §1: jede Meldung deutsch (aus 1.15.1) |
+| 1.15.1 | 13.10.2026 | Korrektur | §1: jede Meldung deutsch – auch Zwischenmeldungen, Statuszeilen, Bildunterschriften und Fragen im Auswahlfenster |
 | 1.15.0 | 13.10.2026 | Neben | ‚Fertig‘ erst nach erfolgreichen Pages-Läufen beider Repos; README mit Tabelle ‚Verwendete Versionen‘ (R-49); Prüfliste beginnt mit /0 ‚Version prüfen‘, jeder Schritt nennt die Meldung je Gerät, mit automatischem Test (R-50) |
 | 1.14.0 | 13.10.2026 | Neben | Verpflichtend: am Ende jeder Umsetzung alle offenen Prüfpunkte einzeln als Schritt-für-Schritt-Anleitung (Gerät/Lage/Darstellung · Handgriffe · erwartetes Ergebnis), mit Nummer, ohne Verweise |
 | 1.13.0 | 11.10.2026 | Neben | Regelkatalog: Abgleich vor jedem Muster, Prüfung aller automatisch prüfbaren Regeln nach jeder Version; neue Regeln sofort mit Nummer und Prüfung; Geräte-Regeln in die Prüfliste, wenn betroffen |
