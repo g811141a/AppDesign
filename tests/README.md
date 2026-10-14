@@ -1,11 +1,16 @@
-# HIG- und Regel-Prüfung
+# Prüfungen des Regelkatalogs
 
-`hig.mjs` misst eine App-Ansicht gegen die HIG-Checkliste (Designrichtlinie allgemein, Abschnitt 16):
-Antippflächen, Schriftgrößen, Kontraste (hell und dunkel), doppelte Anführungszeichen, Löschen am Ende
-von Menüs, keine Linien zwischen Menüpunkten, gedrückte Schaltfläche bleibt blau.
+Die Dateien in `tests/` prüfen alle Regeln des Regelkatalogs (Designrichtlinie allgemein, Abschnitt 17, R-1.1 …) –
+**je Regel genau eine Prüfung**; jede Meldung beginnt mit ihrer Regelnummer (seit 4.12.0). Jede App bindet sie in
+eigene Prüfskripte ein (Beispiele in `ReiseLogBuch/tests/`); AppDesign liegt dazu neben dem App-Repo, Playwright wird
+im Ordner `tests/` der App installiert.
 
-Jede App hat ein eigenes Prüfskript (z. B. `ReiseLogBuch/tests/hig.mjs`), das ihre Ansichten durchgeht
-und diese Prüfung einbindet:
+## HIG- und Regel-Prüfung `hig.mjs`
+
+Misst jede Ansicht gegen die HIG-Checkliste (Abschnitt 16) und alle Regeln mit ‚hig.mjs‘ im Katalog: Antippflächen
+(R-3.1), Schrift und Kontrast hell und dunkel (R-10.2), Anführungszeichen (R-10.1), Menüs (R-4.1), gedrückte
+Schaltfläche bleibt blau (R-3.3) usw.; dazu automatisch beim Drehen (R-8.1), Leisten beim Wischen (`barStill`, R-2.1)
+und der Gerätevergleich iPad ↔ iPhone (`shape`, R-1.1).
 
 ```js
 import { createCheck } from '../../AppDesign/tests/hig.mjs';
@@ -14,20 +19,15 @@ await hig.measure(page, 'Mehr-Menü (hell quer)');
 process.exit(hig.report());
 ```
 
-AppDesign liegt dazu neben dem App-Repo; Playwright wird im Ordner `tests/` der App installiert.
-
-
-Seit 4.6.0 prüft `hig.mjs` zusätzlich alle automatisch prüfbaren Regeln des Regelkatalogs
-(Designrichtlinie allgemein, Abschnitt 17, R-01 …) in jeder Ansicht; Funde erscheinen als ‚Regel: R-xx …‘.
-
 ## Weitere allgemeine Prüfungen
-
-Jede App bindet sie in eigene Prüfskripte ein (Beispiele in `ReiseLogBuch/tests/`):
 
 | Datei | Regeln | Prüft |
 |---|---|---|
-| `abgleich.mjs` | R-41 bis R-44 | alle Fälle des Abgleichs in beide Richtungen, kurzes Fenster und Abgleichbericht |
-| `backup.mjs` | R-45, R-46 | Backup erstellen und laden (Menü, Abfrage mit Kacheln, Abbrechen, unlesbare Datei) |
-| `kontextmenue.mjs` | R-40 | Kontextmenü jeder sichtbaren Kachel und des letzten Eintrags, ganz sichtbar, über der Backup-Kachel |
-| `doku.mjs` | R-49, R-50 (seit 4.11.1) | README mit ‚Verwendete Versionen‘ (Versionen und Links), Prüfliste der neuesten Version beginnt mit /0 ‚Version prüfen‘, Schritte und ‚Erwartet‘ |
-| `version.mjs` | R-48 (seit 4.11.0) | `?v=` in `index.html` und `sw.js`, gleiche Versionen, Hinweis beim Start bei älterer Fassung |
+| `ablauf.mjs` (seit 4.12.0) | R-2.3, R-4.4, R-5.2, R-5.3, R-6.4 | Abläufe mit Handlung: Suche (`checkSearch`), Fenster-Kopfzeile (`checkDialogHead`), Großbuchstaben (`checkCapital`), Fehlermeldungen (`checkFieldErrors`), Vorschau (`checkPreview`) |
+| `abgleich.mjs` | R-9.2 bis R-9.4 | alle Fälle des Abgleichs in beide Richtungen, kurzes Fenster und Abgleichbericht |
+| `backup.mjs` | R-9.1, R-9.2 | Backup erstellen und laden (Menü, Abfrage mit Kacheln, Abbrechen, unlesbare Datei) |
+| `kontextmenue.mjs` | R-4.2 | Kontextmenü jeder sichtbaren Kachel und des letzten Eintrags, ganz sichtbar, über der Backup-Kachel |
+| `doku.mjs` | R-10.4, Zusammenarbeit 7, Katalog | README mit ‚Verwendete Versionen‘, Prüfliste beginnt mit /0; `checkCatalog` (seit 4.12.0): jede Regel hat eine Prüfung, alte Nummern zugeordnet und nirgends mehr verwendet |
+| `version.mjs` | R-10.3 | `?v=` in `index.html` und `sw.js`, gleiche Versionen, Hinweis beim Start bei älterer Fassung |
+
+**Erst rot, dann grün:** Jede neue Prüfung wird einmal mit einem eingebauten Fehler laufen gelassen und muss ihn melden.

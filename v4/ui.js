@@ -1,6 +1,6 @@
-// AppDesign 4.11.4 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
-// Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/v4/ui.js?v=4.11.4"></script>
-// Seit 4.11.0 (R-48): ui.js und design.css immer mit ?v=<AppDesign-Version> einbinden (auch in sw.js) und beim Start
+// AppDesign 4.12.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
+// Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/v4/ui.js?v=4.12.0"></script>
+// Seit 4.11.0 (R-10.3): ui.js und design.css immer mit ?v=<AppDesign-Version> einbinden (auch in sw.js) und beim Start
 // prüfen, ob genau diese Fassung geladen ist (AD_VERSION hier, --ad-version in design.css).
 // Klassisches Skript: alle Funktionen sind global und für das Skript der App sichtbar.
 //
@@ -16,8 +16,8 @@
 // Regeln dazu: README - Designrichtlinie allgemein.md
 
 'use strict';
-// Version der Bausteine (R-48): die App vergleicht sie beim Start mit der benötigten Fassung.
-const AD_VERSION = '4.11.4';
+// Version der Bausteine (R-10.3): die App vergleicht sie beim Start mit der benötigten Fassung.
+const AD_VERSION = '4.12.0';
 /* ---------- Icons ---------- */
 
 // Schaltflächen-Icons aus Lucide (ISC-Lizenz), direkt eingebettet, damit die App offline funktioniert.
@@ -69,7 +69,7 @@ function esc(s) {
   return String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 }
 // Seit 4.7.0: Sehr lange Wörter (über 20 Zeichen, auch Reihen von Smileys) bekommen nach jedem Zeichen eine unsichtbare
-// Umbruchstelle, damit sie auch in Tabellen genau am Spaltenrand umbrechen, statt über die Zelle hinauszuragen (R-37).
+// Umbruchstelle, damit sie auch in Tabellen genau am Spaltenrand umbrechen, statt über die Zelle hinauszuragen (R-6.3).
 // Seit 4.8.0 nach ganzen Zeichen (Graphemen): zusammengesetzte Smileys wie 🤷🏻‍♂️ bleiben ganz. Normale Wörter bleiben ganz.
 const graphemeSeg = typeof Intl !== 'undefined' && Intl.Segmenter ? new Intl.Segmenter('de', { granularity: 'grapheme' }) : null;
 function breakable(text) {
@@ -153,7 +153,7 @@ function showModalQuiet(d) {
 
 // Menü oder Sprechblase unter (bzw. über) der Schaltfläche, im Bildschirm gehalten.
 function placeAt(el, anchor, align) {
-  // R-39/R-40: Menü und Sprechblase stehen unter ihrer Schaltfläche und passen immer ganz auf den Bildschirm.
+  // R-4.5/R-8.1: Menü und Sprechblase stehen unter ihrer Schaltfläche und passen immer ganz auf den Bildschirm.
   // Reicht der Platz darunter nicht, scrollt ihr Inhalt darin (erst bei weniger als 200 px Platz darunter
   // öffnen sie nach oben). 'beside': rechts neben dem Eintrag (Kontextmenü in der Seitenleiste), oben bündig.
   el.style.maxHeight = ''; el.style.overflowY = '';   // nach dem Drehen neu messen
@@ -162,7 +162,7 @@ function placeAt(el, anchor, align) {
   let top;
   // Seit 4.10.0: ist neben dem Eintrag kein Platz (iPhone: Kachel so breit wie der Bildschirm), steht das Menü
   // linksbündig unter der Kachel – ganz sichtbar über der Backup-Kachel; dafür wird die Liste nötigenfalls
-  // etwas nach oben geschoben (R-40).
+  // etwas nach oben geschoben (R-4.2).
   if (align === 'beside' && innerWidth - (r.right - 40) - 12 < el.offsetWidth) {
     const list = anchor.closest('.side-list'), tile = anchor.closest('#side')?.querySelector('.side-foot .bhint');
     const tr = tile?.getBoundingClientRect();
@@ -189,7 +189,7 @@ function placeAt(el, anchor, align) {
     return;
   }
   if (align === 'beside') {
-    // Neben der Kachel (iPad): nie über bzw. hinter die Backup-Kachel – unten endet das Menü über ihr (R-40).
+    // Neben der Kachel (iPad): nie über bzw. hinter die Backup-Kachel – unten endet das Menü über ihr (R-4.2).
     const tr = anchor.closest('#side')?.querySelector('.side-foot .bhint')?.getBoundingClientRect();
     const left0 = Math.max(12, Math.min(r.right - 40, innerWidth - el.offsetWidth - 12));
     const bottom = tr && tr.height && left0 < tr.right ? tr.top - 12 : innerHeight - 12;
@@ -215,7 +215,7 @@ const menuHtml = items => items.map((it, i) => it === 'sep' ? '<div class="sep">
       'tick' in it ? `<span class="tick">${it.tick ? ic('check') : ''}</span>` : ''}${it.icon ? ic(it.icon) : ''}${esc(it.label)}${
       it.value ? `<span class="val">${esc(it.value)}</span>` : ''}${it.submenu ? ic('chevron-right', 'chev') : ''}</button>${
       it.sub ? `<div class="sub">${esc(it.sub)}</div>` : ''}`).join('');
-// Seit 4.10.0 (R-40): Menüs, Untermenüs und Sprechblasen bleiben beim Drehen (quer ↔ hoch) und bei jeder
+// Seit 4.10.0 (R-8.1): Menüs, Untermenüs und Sprechblasen bleiben beim Drehen (quer ↔ hoch) und bei jeder
 // Größenänderung an ihrer Schaltfläche – neu ausgerichtet, ganz sichtbar. Baut die App die Leiste dabei neu
 // auf, wird die Schaltfläche über ihre id wiedergefunden; gibt es sie nicht mehr, schließt sich das Menü.
 const floating = new Set();
@@ -288,7 +288,7 @@ function openMenu(anchor, items, align = 'right') {
   placeAt(menu, anchor, align);
   floating.add(place);
   // Seit 4.11.0: Kontextmenü (lange drücken) – nach dem Loslassen noch einmal ausrichten; erst dann lässt iOS
-  // die Liste sicher rücken (R-40).
+  // die Liste sicher rücken (R-4.2).
   if (align === 'beside') {
     const again = () => { document.removeEventListener('pointerup', again, true); document.removeEventListener('touchend', again, true); replaceSoon(); };
     document.addEventListener('pointerup', again, true);
@@ -313,7 +313,7 @@ function choosePop(anchor, html, buttons) {
     const layer = blockingLayer();
     const pop = document.createElement('div');
     pop.className = 'pop';
-    // Seit 4.10.0 (R-46): Wege mit Erklärung (desc) stehen je in einer eigenen Kachel – Erklärung, darunter der Knopf;
+    // Seit 4.10.0 (R-9.2): Wege mit Erklärung (desc) stehen je in einer eigenen Kachel – Erklärung, darunter der Knopf;
     // Wege ohne Erklärung (z. B. Abbrechen) darunter wie bisher.
     const btn = (b, i) => `<button type="button" class="${b.cls || ''}" data-i="${i}">${esc(b.label)}</button>`;
     const tiles = buttons.map((b, i) => b.desc ? `<div class="tile"><p>${b.desc}</p>${btn(b, i)}</div>` : '').join('');
@@ -353,7 +353,7 @@ function markOpener() {
   if (dlgOpener) document.querySelector(dlgOpener)?.classList.add('on');
 }
 
-/* ---------- Backup erstellen und laden (R-45, R-46, seit 4.10.0) ---------- */
+/* ---------- Backup erstellen und laden (R-9.1, R-9.2, seit 4.10.0) ---------- */
 
 // Ergebnis des Teilen-Menüs als Text für das kleine Fenster (✅ bzw. ⚠️ davor).
 const SHARE_RESULT = {
@@ -365,7 +365,7 @@ const SHARE_RESULT = {
 };
 const shareResultText = (result, name) => `${result === 'aborted' || result === 'error' ? '⚠️' : '✅'} ${SHARE_RESULT[result](name)}`;
 const MIME = { json: 'application/json', html: 'text/html' };
-// R-52 (seit 4.11.3): Mustertabelle der Ausgabe (Designrichtlinie allgemein 10) – eine Quelle für jede Ausgabe, Vorschau und
+// R-6.2 (seit 4.11.3): Mustertabelle der Ausgabe (Designrichtlinie allgemein 10) – eine Quelle für jede Ausgabe, Vorschau und
 // jeden Bericht (z. B. HTML-Ausgabe des Reiselogbuchs, Abgleichbericht): Systemschrift 11 pt, h1 20 pt, h2 14 pt, Tabellen
 // mit Linien 1 px #999 (außen und Kopf #a5a5a5), Kopf #d9d9d9 fett, jede zweite Zeile #f5f5f5, Zeilen nicht über
 // Seitenumbrüche teilen, dezente letzte Zeile 9 pt grau. scope: Klasse des Inhalts (z. B. '.rt').
@@ -411,7 +411,7 @@ function downloadFile(name, content, type) {
 // ‚Letztes Backup erstellt am …‘ (je Gerät) und ob heute schon eins erstellt wurde (sonst ist die Backup-Kachel gelb).
 const backupLastText = ms => ms ? `Letztes Backup erstellt am ${whenText(ms)}` : 'Noch kein Backup erstellt.';
 const backupToday = ms => Boolean(ms) && new Date(ms).toDateString() === new Date().toDateString();
-// Backup-Datei: ‚Ω Backup <App> JJJJ.MM.TT hh.mm.json‘, mit Zeitpunkt und Gerät (für den Abgleich, R-41).
+// Backup-Datei: ‚Ω Backup <App> JJJJ.MM.TT hh.mm.json‘, mit Zeitpunkt und Gerät (für den Abgleich, R-9.2).
 function backupFileOf(app, data) {
   const n = new Date(), two = x => String(x).padStart(2, '0');
   return { name: `Ω Backup ${app} ${n.getFullYear()}.${two(n.getMonth() + 1)}.${two(n.getDate())} ${two(n.getHours())}.${two(n.getMinutes())}.json`, type: 'json',
@@ -434,7 +434,7 @@ async function readBackup(file, list) {
   return { data, savedAt, savedOn };
 }
 
-/* ---------- Abgleich zwischen Geräten (R-41 bis R-44, seit 4.10.0) ---------- */
+/* ---------- Abgleich zwischen Geräten (R-9.2 bis R-9.4, seit 4.10.0) ---------- */
 
 // Zeitpunkt als ‚12.10.2026 um 13:55‘.
 function whenText(ms) {
@@ -449,8 +449,8 @@ function whenText(ms) {
 // Zeitpunkte, maxFields = Felder ohne Zeitpunkt, beim Abgleich gilt der größere Wert (z. B. Dateinummer).
 // Jede Änderung bekommt je Feld Zeitpunkt und Gerät (metaAt = { Feld: Zeitpunkt }, subAt = { Schlüssel: { Feld: Zeitpunkt } },
 // changedAt/changedOn für ‚geändert am … · Gerät‘). Gelöschte Einträge stehen in data.deleted ({ id, at, on }).
-// R-42: je Feld gilt die neuere Änderung; gleich alt: das Vorhandene hier bleibt, Fehlendes kommt dazu.
-// R-43: ein gelöschter Eintrag bleibt gelöscht, solange er danach nicht mehr geändert wurde – mit Hinweisen.
+// R-9.3: je Feld gilt die neuere Änderung; gleich alt: das Vorhandene hier bleibt, Fehlendes kommt dazu.
+// R-9.3: ein gelöschter Eintrag bleibt gelöscht, solange er danach nicht mehr geändert wurde – mit Hinweisen.
 // Seit 4.11.0: labels – Namen der Felder für die Tabelle der Änderungen ({ title: 'Titel', … }); Unterdaten mit einem
 // ISO-Datum als Schlüssel erscheinen als ‚Mo 12.10.2026‘, sonst über subLabel(key).
 function createSync({ list, sub, subAt, maxFields = [], nouns = ['Eintrag', 'Einträge', 'Einträgen'], labels = {}, subLabel = null, app = document.title }) {
@@ -556,19 +556,19 @@ function createSync({ list, sub, subAt, maxFields = [], nouns = ['Eintrag', 'Ein
     }
     return { data: { ...local, [list]: out, deleted: [...del.values()] }, stats };
   }
-  // R-41: Abfrage beim Laden eines Backups – Zeitpunkt und Gerät, neuer oder älter, kurze Erklärung der Wege.
+  // R-9.2: Abfrage beim Laden eines Backups – Zeitpunkt und Gerät, neuer oder älter, kurze Erklärung der Wege.
   function question(local, remote, savedAt, savedOn, unit = 'Tag') {
     const n = remote[list].length, here = deviceName(), mine = latest(local), theirs = latest(remote) || savedAt;
     const cmp = !mine ? '' : `<br>Es ist <b>${theirs > mine ? 'neuer' : theirs < mine ? 'älter' : 'gleich alt'}</b> ${theirs === mine ? 'wie' : 'als'} die Daten auf diesem ${here} (zuletzt geändert am ${whenText(mine)}).`;
     return `Backup vom <b>${whenText(savedAt)}</b>${savedOn ? ` (${esc(savedOn)})` : ''} mit ${n} ${n === 1 ? nouns[0] : nouns[2]}.${cmp}`;
   }
-  // R-46: je Weg eine Kachel mit Erklärung und Knopf; Abbrechen darunter.
+  // R-9.2: je Weg eine Kachel mit Erklärung und Knopf; Abbrechen darunter.
   const choices = (unit = 'Tag') => [
     { label: 'Abgleichen', cls: 'primary', value: 'merge', desc: `Je ${nouns[0]} und ${unit} gilt die neuere Fassung; gelöschte ${nouns[1]} werden auch hier gelöscht.` },
     { label: 'Ersetzen', cls: 'danger-text', value: 'replace', desc: `Alle Daten auf diesem ${deviceName()} werden durch das Backup ersetzt.` },
     { label: 'Abbrechen', value: null }];
   const ask = (anchor, local, remote, savedAt, savedOn) => choosePop(anchor, question(local, remote, savedAt, savedOn), choices());
-  // R-44 (seit 4.11.0): Ergebnis in zwei Stufen. Das kleine Fenster ‚Abgleichen‘ nennt nur Backup (Gerät, Zeitpunkt) und
+  // R-9.4 (seit 4.11.0): Ergebnis in zwei Stufen. Das kleine Fenster ‚Abgleichen‘ nennt nur Backup (Gerät, Zeitpunkt) und
   // das Ergebnis in einem Satz; gibt es etwas zu berichten, öffnet die Schaltfläche ‚Abgleichbericht anzeigen‘ den Bericht –
   // eine Vorschau wie die Ausgabe der App (weiß, Tabellen mit grauem Kopf, teilbar als HTML). Ohne jede Änderung bleibt es bei
   // ‚Alles war schon auf dem gleichen Stand.‘ ohne Schaltfläche. here: dieses Gerät; savedOn: Gerät des Backups.
@@ -585,11 +585,11 @@ function createSync({ list, sub, subAt, maxFields = [], nouns = ['Eintrag', 'Ein
     if (worthReport(stats)) return `${head}<br><br>Auf diesem ${esc(here)} hat sich nichts geändert – Hinweise im Abgleichbericht.`;
     return `${head}<br><br>Alles war schon auf dem gleichen Stand.`;
   }
-  // Tabellen wie die HTML-Ausgabe der App (R-52): Linien 1 px #999, Kopf #d9d9d9 mit Rand #a5a5a5, überall gleich stark.
+  // Tabellen wie die HTML-Ausgabe der App (R-6.2): Linien 1 px #999, Kopf #d9d9d9 mit Rand #a5a5a5, überall gleich stark.
   // Bericht: Kopf mit Gerät, Backup und Ergebnis; Tabelle ‚Änderungen auf diesem Gerät‘ (je Feld eine Zeile mit neuem Inhalt,
   // vorherigem Inhalt, Gerät und Zeitpunkt), Tabelle ‚Auf diesem Gerät neuer als im Backup – bleibt so‘, Hinweise, Unverändertes.
-  // Tabellen und Schrift aus der Mustertabelle der Ausgabe (outputCss, R-52); hier nur, was der Bericht zusätzlich braucht:
-  // feste Spaltenbreiten, Umbruch mit Silbentrennung (R-37), Eintrag-Zelle über ihre Zeilen weiß, Farben für neu/gelöscht.
+  // Tabellen und Schrift aus der Mustertabelle der Ausgabe (outputCss, R-6.2); hier nur, was der Bericht zusätzlich braucht:
+  // feste Spaltenbreiten, Umbruch mit Silbentrennung (R-6.3), Eintrag-Zelle über ihre Zeilen weiß, Farben für neu/gelöscht.
   const REPORT_CSS = outputCss('.sync-report') + `
     .sync-report table.grid { table-layout: fixed; }
     .sync-report table.grid col.c1 { width: 15%; } .sync-report table.grid col.c2 { width: 13%; } .sync-report table.grid col.c3 { width: 13%; }
@@ -606,7 +606,7 @@ function createSync({ list, sub, subAt, maxFields = [], nouns = ['Eintrag', 'Ein
   // Eine Gruppe je Eintrag; je Feld eine Zeile; Eintrag und Tag über ihre Zeilen zusammengefasst (rowspan).
   // Je Reiselogbuch (allgemein: Eintrag) eine Tabellenzeile: sein Name ist in der ersten Spalte über alle seine Feldzeilen
   // zusammengefasst, Tag, Gerät und Zeitpunkt je Tag. Zusammengefasste Zellen in der ersten Spalte gelten als eine
-  // Tabellenzeile – alle Zellen dahinter haben ihre Farbe, weiß und grau wechseln je Eintrag (R-52).
+  // Tabellenzeile – alle Zellen dahinter haben ihre Farbe, weiß und grau wechseln je Eintrag (R-6.2).
   function reportTable(groups, cols) {
     const body = groups.map((g, k) => {
       const lines = g.rows.flatMap(r => r.fields.map((f, i) => ({ r, f, first: !i })));
@@ -677,9 +677,9 @@ function createSync({ list, sub, subAt, maxFields = [], nouns = ['Eintrag', 'Ein
       inform('Abgleichbericht', shareResultText(result, name + '.html'));
     };
   }
-  // R-44: dritte Zeile der Kachel.
+  // R-9.4: dritte Zeile der Kachel.
   const changedLine = e => e.changedAt ? `<small class="chg">geändert am ${whenText(e.changedAt)}${e.changedOn ? ' · ' + esc(e.changedOn) : ''}</small>` : '';
-  // R-44: kleines Fenster nach dem Abgleichen; mit Schaltfläche zum Bericht, wenn es etwas zu berichten gibt.
+  // R-9.4: kleines Fenster nach dem Abgleichen; mit Schaltfläche zum Bericht, wenn es etwas zu berichten gibt.
   const showResult = (stats, savedAt, savedOn, title = 'Abgleichen') => inform(title, resultText(stats, savedAt, savedOn),
     worthReport(stats) ? { action: { label: 'Abgleichbericht anzeigen', icon: 'eye', run: () => openReport(stats, savedAt, savedOn) } } : {});
   return { snapshot, stamp, latest, merge, question, choices, ask, resultText, reportHtml, openReport, showResult, changedLine, config: { list, sub, subAt, maxFields, nouns, labels, app } };
@@ -689,7 +689,7 @@ function createSync({ list, sub, subAt, maxFields = [], nouns = ['Eintrag', 'Ein
 
 // Kleines Fenster mit rundem x; Abfragen mit Entscheidung sind Sprechblasen (confirmPop).
 // Seit 4.11.0: { wide: true } – breiteres Fenster; { action: { label, icon, run } } – eine blaue Schaltfläche unter dem
-// Text (z. B. ‚Abgleichbericht anzeigen‘, R-44): schließt das Fenster und führt run() aus.
+// Text (z. B. ‚Abgleichbericht anzeigen‘, R-9.4): schließt das Fenster und führt run() aus.
 function inform(title, html, { wide = false, action = null } = {}) {
   return new Promise(resolve => {
     msg.classList.toggle('wide', wide);
@@ -840,7 +840,7 @@ function updateBar() {
 window.addEventListener('scroll', updateBar, { passive: true });
 window.addEventListener('resize', updateBar);
 
-// R-51 (seit 4.11.2): Beim Drehen (und jeder anderen Größenänderung) bleibt oben derselbe Eintrag stehen. Safari kennt
+// R-8.1 (seit 4.11.2): Beim Drehen (und jeder anderen Größenänderung) bleibt oben derselbe Eintrag stehen. Safari kennt
 // keinen Scroll-Anker – ohne Hilfe springt die Seite, weil sich die Höhen beim Drehen ändern. Gemerkt wird beim Scrollen
 // der oberste sichtbare Eintrag unter der Leiste (Elemente mit data-day bzw. data-keep) samt Abstand; nach einer
 // Größenänderung (auch nach dem Neuaufbau durch die App) wird er wieder an dieselbe Stelle gerückt.
@@ -871,7 +871,7 @@ function restoreTop() {
 window.addEventListener('scroll', () => { if (!keepBusy) rememberTop(); }, { passive: true });
 window.addEventListener('resize', () => { if (!keepTurned()) return; requestAnimationFrame(() => requestAnimationFrame(restoreTop)); setTimeout(restoreTop, 350); });
 
-// R-05: Die Leiste (mit oder ohne Suchzeile) bewegt sich beim Wischen keinen Millimeter.
+// R-2.1: Die Leiste (mit oder ohne Suchzeile) bewegt sich beim Wischen keinen Millimeter.
 // Bei offener Tastatur würde iOS beim Wischen den sichtbaren Bereich verschieben; die Leiste müsste ihm
 // hinterherlaufen und zittert. Deshalb schließt das erste Wischen nur die Tastatur – die Seite bewegt sich
 // bei diesem Wischen nicht (seit 4.8.1; 4.8.0 ließ die Seite dabei schon scrollen). Das nächste Wischen scrollt.
@@ -910,7 +910,7 @@ if (window.visualViewport) {
   visualViewport.addEventListener('scroll', placeDialogs);
   visualViewport.addEventListener('resize', placeDialogs);
 }
-// Seit 4.9.1 (R-39): wächst ein Fenster nach dem Öffnen (Inhalt, Textfelder), wird es neu platziert –
+// Seit 4.9.1 (R-4.5): wächst ein Fenster nach dem Öffnen (Inhalt, Textfelder), wird es neu platziert –
 // es ragt nie über den Bildschirm hinaus.
 if (window.ResizeObserver) [dlg, msg].forEach(d => new ResizeObserver(() => { if (d.open) placeDialogs(); }).observe(d));
 // Das angetippte Feld im Fenster in den sichtbaren Teil rollen, sobald die Tastatur offen ist.

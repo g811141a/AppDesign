@@ -1,11 +1,11 @@
-// AppDesign 4.11.0 · Prüfung der Kontextmenüs in der Seitenleiste bzw. Startliste (Regel R-40, Designrichtlinie allgemein 15.4).
+// AppDesign 4.11.0 · Prüfung der Kontextmenüs in der Seitenleiste bzw. Startliste (Regel R-4.2, Designrichtlinie allgemein 15.4).
 // Drückt lange auf jede sichtbare Kachel und prüft: Menü ganz sichtbar und nicht abgeschnitten, nicht über bzw. hinter der
 // Backup-Kachel, die Kachel bleibt sichtbar; ohne Platz daneben (iPhone) linksbündig unter der Kachel.
 // Einbinden im Prüfskript der App (Seite mit sichtbarer Seitenleiste bzw. Startliste):
 //   import { checkContextMenus } from '../../AppDesign/tests/kontextmenue.mjs';
 //   const fehler = await checkContextMenus(page, 'iPhone hoch, 8 Einträge');   // [] = alles richtig
 export async function checkContextMenus(page, where = '') {
-  const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}R-40 ${t}`);
+  const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}R-4.2 ${t}`);
   const ids = await page.evaluate(() => { const foot = document.querySelector('#side .bhint')?.getBoundingClientRect(), lt = document.querySelector('#side .side-list').getBoundingClientRect().top;
     return [...document.querySelectorAll('#side .side-row')].filter(r => { const b = r.getBoundingClientRect(); return b.height && b.top >= lt - 1 && (!foot || b.bottom <= foot.top); }).map(r => r.dataset.id); });
   // Seit 4.11.0: zuletzt auch der letzte Eintrag bei ganz nach unten gewischter Liste (direkt über der Backup-Kachel).

@@ -1,6 +1,6 @@
 # Designrichtlinie allgemein
 
-**Version 4.11.4** · Stand 14.10.2026
+**Version 4.12.0** · Stand 14.10.2026
 
 Allgemeine Gestaltungs- und Bedienregeln für alle iPad-Web-Apps von g811141a (seit 4.1.0 auch
 auf dem iPhone, Abschnitt 15.17).
@@ -25,8 +25,8 @@ App-spezifische Regeln stehen in einer eigenen Datei je App
 
 ## 1. Grundprinzipien
 
-- Zielgerät iPad (Safari, zum Home-Bildschirm hinzugefügt, PWA, offline nutzbar);
-  eine Person nutzt die App, kein Login, kein Teilen.
+- Zielgeräte iPad und iPhone (Safari, zum Home-Bildschirm hinzugefügt, PWA, offline nutzbar; iPhone-Ansicht 15.17);
+  eine Person nutzt die App auf ihren Geräten, kein Login; abgeglichen wird über das Backup (15.18).
 - Daten bleiben lokal (localStorage); beim Start fordert die App **dauerhaften Speicher** an
   (`navigator.storage.persist()`), damit Safari die Daten nicht von selbst löscht; Sicherung über
   eine Backup-Datei.
@@ -34,31 +34,21 @@ App-spezifische Regeln stehen in einer eigenen Datei je App
 - Eine HTML-Datei (HTML + CSS + JS), dazu `sw.js`, `manifest.json`, Icons 180/512 px.
 - Keine Hilfeseite – die Oberfläche ist selbsterklärend; Hinweise bei Bedarf hinter einem
   Info-Icon.
-- Alle Aktionen sind echte Schaltflächen (kein reiner Text als Link).
-- Keine Systemfenster (alert/confirm mit „OK“/„Close“) – Abfragen als **Sprechblase** an der
-  angetippten Schaltfläche, reine Meldungen in einem kleinen Fenster (Abschnitt 15).
+- Alle Aktionen sind echte Schaltflächen, gleiche Aktion = gleiche Bezeichnung und gleiches Icon (R-10.1).
+- Keine Systemfenster – Abfragen als **Sprechblase**, Meldungen im kleinen Fenster (R-4.3, Abschnitt 15.7).
 - **Apple-Look** (iPadOS): Hintergrund Hellgrau, Kästen weiß ohne Rand, schwebende Schaltflächen.
 - **Aufbau wie Apple-Apps:** links eine **Seitenleiste** mit der zentralen Liste, rechts der
   Inhalt mit einer **Kopfzeile** (Titel in der Mitte, rechts eine Kapsel mit den wichtigsten
   Aktionen; Weiteres im **Mehr-Menü** ellipsis).
-- **Nur der Vordergrund reagiert:** Ist ein Fenster, Menü oder eine Sprechblase offen, wirkt
-  jedes Wischen und Tippen nur dort – die Seite dahinter bewegt sich nicht (Seite gesperrt,
-  `overscroll-behavior: contain`). Daneben tippen schließt Menü bzw. Sprechblase.
-- **Kein Fokus-Rahmen** beim Antippen oder Öffnen eines Fensters (nur bei Bedienung mit
-  Tastatur); ein Fenster öffnet ohne vorausgewählte Schaltfläche.
-- **Leisten bewegen sich nie – keinen Millimeter:** Eine Symbolleiste – mit oder ohne Suchzeile – steht
-  immer an ihrem Platz und bewegt sich beim Wischen keinen Millimeter: nicht beim Scrollen, nicht am
-  Rand, nicht bei offener Tastatur und nicht beim Schließen der Tastatur. Das gilt für Kopfzeile (iPad),
-  Seitenkopf (iPhone) und Seitenleisten-Kopf; nur der Inhalt darunter scrollt. Ist die Tastatur der
-  Suche offen, schließt das erste Wischen nur die Tastatur, die Seite bleibt dabei stehen. Die Seite federt am Rand nicht nach (`overscroll-behavior: none`
-  auf `html`/`body`); Kopfzeile (iPad) und Seitenkopf (iPhone) sind fest positioniert
-  (`position: fixed`, nicht sticky). In der Seitenleiste scrollen nur die Einträge (`.side-list`);
-  Kopf und Backup-Kachel liegen außerhalb des Scrollbereichs.
-- **Doppeltippen vergrößert nie** die Ansicht (`touch-action: manipulation`); Zoomen mit zwei
-  Fingern bleibt möglich.
-- **Gleiche Bedienung auf iPad und iPhone:** gleiche Kapseln oben (z. B. [`plus` | `ellipsis`],
-  [`share` | `search` | `ellipsis`]), gleiche Suche, gleiche Menüs – das iPhone ordnet nur die
-  Seiten anders an (Abschnitt 15.17).
+- **Nur der Vordergrund reagiert** (R-1.4): Seite gesperrt (`html.locked`), `overscroll-behavior: contain`.
+- **Kein Fokus-Rahmen** (R-3.4): Fokus-Rahmen nur bei Bedienung mit Tastatur; ein Fenster öffnet ohne vorausgewählte
+  Schaltfläche.
+- **Leisten stehen fest** (R-2.1): Kopfzeile (iPad) und Seitenkopf (iPhone) `position: fixed` (nicht sticky), keine
+  Feder am Rand (`overscroll-behavior: none` auf `html`/`body`); in der Seitenleiste scrollen nur die Einträge
+  (`.side-list`), Kopf und Backup-Kachel liegen außerhalb des Scrollbereichs.
+- **Nie ungewollt vergrößern** (R-1.3): `touch-action: manipulation`; Zoomen mit zwei Fingern bleibt möglich.
+- **Gleiche Bedienung auf iPad und iPhone** (R-1.1): gleiche Kapseln oben (z. B. [`plus` | `ellipsis`],
+  [`share` | `search` | `ellipsis`]), gleiche Suche, gleiche Menüs – das iPhone ordnet nur die Seiten anders an (15.17).
 - Bewusst verworfen: eigene Kennzeichnung von Pflichtfeldern; harte, schmale Schatten;
   Glas-Leiste (schlechter lesbar).
 
@@ -290,36 +280,29 @@ heller).
 
 - Kopfzeile grau (`--th-bg`) mit Rändern `--th-line`; die Tabelle selbst ohne äußeren Rand,
   mit Schatten `--table-shadow`, damit die seitlichen Grenzen gut zu sehen sind.
-- Jede 2. sichtbare Zeile heller (Zebra); gezählt werden nur sichtbare Zeilen; eine
-  markierte Zeile bleibt gelb. Die gelbe Markierung (z. B. erster offener Tag) hat **keinen
-  blauen Rand** – in Tabelle und Kachel.
-- Trennlinien zwischen allen Spalten.
+- **Zebra je Tabellenzeile**, Trennlinien zwischen allen Spalten, gelbe Markierung ohne blauen Rand (R-6.1); gezählt
+  werden nur sichtbare Zeilen, eine markierte Zeile bleibt gelb.
 - Tabellenkopf bleibt beim Scrollen direkt unter der Kopfzeile stehen; Schrift 17 px halbfett wie die Zellen.
-- Zwischen ganzen Wörtern umbrechen (die Spalte wird so breit wie das längste Wort). Ein zu
-  langes Wort (über 20 Zeichen, z. B. 100 × ‚a‘) bricht **im Wort** um und läuft in der nächsten
-  Zeile weiter – nie über die Zelle oder den Rand hinaus (R-37; `breakable()` in `ui.js`,
-  `overflow-wrap` in `design.css`). Gilt auch für Kästen, Kacheln und Hinweise, iPad und iPhone.
-  Das gilt auch für Reihen von Smileys ohne Leerzeichen: höchstens drei Smileys am Zeilenanfang
-  werden zum Zeichen (hängender Einzug), eine längere Reihe ist Inhalt und bricht am Rand um.
-  Umgebrochen wird nach ganzen Zeichen – zusammengesetzte Smileys (z. B. 🤷🏻‍♂️) bleiben ganz.
+- **Kein Text ragt hinaus** (R-6.3): zwischen ganzen Wörtern umbrechen (die Spalte wird so breit wie das längste
+  Wort); ein Wort über 20 Zeichen bricht im Wort um (`breakable()` in `ui.js`, `overflow-wrap` in `design.css`).
+  Höchstens drei Smileys am Zeilenanfang werden zum Zeichen (hängender Einzug), eine längere Reihe ist Inhalt;
+  zusammengesetzte Smileys (z. B. 🤷🏻‍♂️) bleiben ganz.
 - Spaltenbreiten passen sich dem Inhalt an; kompakte Tabellen nur so breit wie nötig;
   Zahlenspalten rechtsbündig (Überschrift und Werte).
-- Hängender Einzug: Folgezeilen beginnen unter dem Text, nicht unter Aufzählungszeichen
-  oder Emoji.
 - Links ohne Unterstreichung.
 - Statistiken bleiben schlichte Listen.
 
 ## 10. Ausgabe, Teilen und Meldungen
 
-- Ausgabe-Inhalt unter einer eigenen CSS-Klasse, damit er nicht in die App durchschlägt;
-  immer hell (weiß, schwarzer Text), auch in der Vorschau.
+- Ausgabe-Inhalt unter einer eigenen CSS-Klasse, damit er nicht in die App durchschlägt; Ausgabe und Vorschau
+  immer hell, Vorschau in voller Breite und seitlich wischbar, Kapsel [PDF · Teilen] (R-6.4).
 - Vorschau vor dem Sichern im App-Fenster; erhöht keinen Zähler.
 - Speichern immer über das Teilen-Menü („In Dateien sichern“); PDF über das
   Drucken-Menü. Die App meldet ehrlich, dass das Menü geöffnet bzw. abgebrochen wurde.
 - **Ausgabe-Design** (HTML und PDF): Systemschrift 11 pt, h1 20 pt, h2 14 pt, schwarzer
   Text auf Weiß, Links `#1a5fb4` ohne Unterstreichung, Tabellen wie in der App
   (Kopf `#d9d9d9`, Ränder `#a5a5a5`, Zebra `#f5f5f5`), Zeilen nicht über Seitenumbrüche
-  teilen. Seit 4.11.3 (R-52) ist das die **Mustertabelle der Ausgabe** – ein Baustein `outputCss(scope)` in ui.js, den
+  teilen. Seit 4.11.3 ist das die **Mustertabelle der Ausgabe** (R-6.2) – ein Baustein `outputCss(scope)` in ui.js, den
   jede Ausgabe, Vorschau und jeder Bericht verwendet (z. B. HTML-Ausgabe des Reiselogbuchs, Abgleichbericht); keine
   eigenen Nachbildungen. Die letzte Zeile ist `#6b6b6b` (Kontrast 4,5 : 1). Dezente letzte Zeile (9 pt, grau): „Ausgabe V003 erstellt am TT.MM.JJJJ um
   hh:mm“. PDF im Hochformat, weißer Seitenhintergrund, Dateiname als Seitentitel.
@@ -334,10 +317,8 @@ heller).
 - **Meldung mit Weiterweg (seit 4.11.0):** ein kleines Fenster darf unter dem Text **eine** blaue Schaltfläche
   haben, die zu den Einzelheiten führt (`inform(titel, text, { action: { label, icon, run } })`, z. B. ‚Abgleichbericht
   anzeigen‘); sie schließt das Fenster und öffnet die Einzelheiten. Ohne Einzelheiten keine Schaltfläche.
-- **Backup einmal am Tag:** Wurde heute noch keines erstellt, steht unten in der Seitenleiste
-  dezent „Letztes Backup erstellt am …“ (bzw. „Noch kein Backup erstellt.“) mit der
-  Schaltfläche „Backup erstellen“; nach einer Ausgabe erinnert das Ergebnisfenster daran. Nur
-  ein abgeschlossenes Teilen-Menü zählt als Backup.
+- **Backup einmal am Tag:** Backup-Kachel und ‚Backup erstellen‘ (R-9.1, Abschnitt 15.19); nach einer Ausgabe
+  erinnert das Ergebnisfenster daran.
 
 ## 11. Versionen und Aktualisierung
 
@@ -352,25 +333,22 @@ heller).
 - Service Worker „network first“ mit `cache: 'no-cache'`: Beim Start wird immer bei
   GitHub nachgefragt, neue Versionen sind nach einem Neustart sofort da; offline läuft
   die gespeicherte Version.
-- **Versionskopplung App ↔ AppDesign (seit 4.11.0, R-48):** `ui.js` und `design.css` werden immer mit
+- **Versionskopplung App ↔ AppDesign (seit 4.11.0, R-10.3):** `ui.js` und `design.css` werden immer mit
   `?v=<AppDesign-Version>` eingebunden – in `index.html` und in der Dateiliste von `sw.js`. Jede neue Version lädt so
   sicher die passende Fassung (kein alter Zwischenspeicher). `ui.js` nennt ihre Version in `AD_VERSION`, `design.css`
   in `--ad-version`; die App nennt die benötigte in `AD_NEEDED` und zeigt beim Start ein kleines Fenster ‚Neue Version
   wird geladen‘ (⚠️ benötigt/geladen, ‚App ganz schließen und nach ein paar Minuten neu öffnen‘), wenn eine andere
   Fassung geladen ist (z. B. GitHub Pages noch nicht fertig). Die Versionszeile im Mehr-Menü nennt auch ‚AppDesign X.Y.Z‘.
-  Prüfung: `tests/version.mjs`.
-- **Verwendete Versionen in der README (seit 4.11.1, R-49):** ganz oben in der README jeder App eine Tabelle mit App,
+- **Verwendete Versionen in der README (seit 4.11.1, R-10.4):** ganz oben in der README jeder App eine Tabelle mit App,
   AppDesign, Designrichtlinie allgemein, Designrichtlinie <App> und Zusammenarbeit allgemein – je Version und Link
   (GitHub). So ist auf GitHub auf einen Blick zu sehen, welche Fassung der allgemeinen Regeln die App verwendet.
-  Prüfung: `tests/doku.mjs`.
 
 ## 12. Designrichtlinien pflegen
 
 - Diese Datei und die App-spezifischen Richtlinien werden **bei jeder Design-Änderung**
   aktualisiert, gemeinsam mit der App-Version.
-- **Bei jeder Design-Änderung wird geklärt, ob sie eine allgemeine Regel ist (diese
-  Datei) oder nur für eine App gilt** (App-Richtlinie); Claude fragt nach und nennt dabei
-  seine Einschätzung als Vorschlag.
+- **Allgemein oder App?** Bei jeder Design-Änderung fragt Claude, ob sie eine allgemeine Regel wird
+  (Zusammenarbeit allgemein 0 Nr. 4); allgemeine Regeln stehen im Regelkatalog (Abschnitt 17).
 - App-Richtlinien verweisen eingangs auf diese Datei und enthalten **keine
   Wiederholungen**, nur **Abweichungen** (bewusst anders als hier) und **Ausprägungen**
   (konkrete Ausgestaltung einer allgemeinen Regel für die App), jeweils so gekennzeichnet.
@@ -399,7 +377,7 @@ heller).
 - Emojis mit und ohne Variantenzeichen (z. B. ☹️/☹) als gleich behandeln.
 - Nach Updates die App einmal ganz schließen und neu öffnen.
 
-- **Drehen und Scroll-Position (seit 4.11.2, R-51):** Safari hat keinen Scroll-Anker – ändern sich beim Drehen die
+- **Drehen und Scroll-Position (seit 4.11.2, R-8.1):** Safari hat keinen Scroll-Anker – ändern sich beim Drehen die
   Höhen, springt die Seite. ui.js merkt sich beim Scrollen den obersten sichtbaren Eintrag unter der Leiste
   (`data-day` bzw. `data-keep`) und den sichtbaren Anteil; nach dem Drehen rückt er ihn wieder an dieselbe Stelle. Tests
   bilden Safari nach (`overflow-anchor: none`), sonst verdeckt Chrome den Fehler.
@@ -412,7 +390,7 @@ heller).
   Schalter, Options-Kapsel; iPhone-Ansicht: Seitenkopf, großer Titel, Liste, Kasten, untere
   Leiste), `v4/ui.js` (Icons, Menüs mit Untermenü, Sprechblase, gedrückte Schaltflächen, Meldung,
   Fenster, Darstellung, Auswahl-Kapsel, Tastatur/sichtbarer Bereich, Beträge, iPhone-Erkennung
-  `isPhone()`), `apple-referenz/` (Vergleichsbilder), `tests/hig.mjs` (HIG-Prüfung) und
+  `isPhone()`), `apple-referenz/` (Vergleichsbilder), `tests/` (Prüfungen des Regelkatalogs) und
   `vorlage/index.html` (Startpunkt für neue Apps).
 - **Einbindung (versioniert):** Jede App lädt die Bausteine von GitHub Pages aus dem Ordner der
   Hauptversion: `<link rel="stylesheet" href="../AppDesign/v4/design.css">` im `<head>` vor dem
@@ -424,8 +402,8 @@ heller).
 - **Schnittstelle von ui.js:** Die App stellt bereit: `<dialog id="dlg">`, `<dialog id="msg">`,
   `db.settings.appearance` (`auto` | `light` | `dark`), `save()`, `render()`; optional
   `onDialogOpen()` (wird bei jedem `openDialog` aufgerufen).
-- **Prüfen:** Jede App hat ein eigenes Prüfskript, das ihre Ansichten durchgeht und mit
-  `AppDesign/tests/hig.mjs` misst (AppDesign liegt beim Testen neben dem App-Repo).
+- **Prüfen:** Jede App hat eigene Prüfskripte, die ihre Ansichten und Fenster durchgehen und mit den Bausteinen aus
+  `AppDesign/tests/` messen (`hig.mjs`, `ablauf.mjs` u. a., Abschnitt 17; AppDesign liegt beim Testen neben dem App-Repo).
 - **Geplant:** Startseite g811141a.github.io mit allen Apps.
 
 ## 15. Komponenten
@@ -500,7 +478,7 @@ Verhalten · technischer Name). In AppDesign ist jede Komponente einmal programm
   links und 4 px unten (der Schatten endet fast am unteren Bildschirmrand), Radius 22 px, Lichtkante `--btn-rim` und Schatten `--float` wie die
   Schaltflächen; so breit wie Kopf bzw. längster Titel, 340–420 px; Hintergrund `--bg` (wie die
   iPhone-Startliste, damit die weißen Kacheln sich abheben).
-- **Drehen (seit 4.10.1, R-47):** die Seitenleiste behält ihren Zustand – sichtbar bleibt sichtbar (quer fest,
+- **Drehen (seit 4.10.1, R-8.1):** die Seitenleiste behält ihren Zustand – sichtbar bleibt sichtbar (quer fest,
   hoch darübergelegt), ausgeblendet bleibt ausgeblendet. Seit 4.11.0 technisch mit **einem einzigen Zustand** für quer
   und hoch, den nur Tippen ändert (Knopf panel-left, Abdunkelung, Auswahl im Hochformat) – nie das Drehen und keine
   Zwischengrößen, die iOS beim Drehen meldet.
@@ -516,14 +494,14 @@ Verhalten · technischer Name). In AppDesign ist jede Komponente einmal programm
   Backup erstellen.“
 - **Backup laden = Abgleich zwischen iPad und iPhone (seit 4.9.0):** Ein Backup enthält Zeitpunkt
   und Gerät. Nach der Dateiauswahl (z. B. aus iCloud Drive) fragt eine Sprechblase mit drei Wegen
-  (R-38): ‚Backup vom … (iPhone) mit n …‘, ob es **neuer** oder **älter** ist als die Daten auf
+  (R-4.3): ‚Backup vom … (iPhone) mit n …‘, ob es **neuer** oder **älter** ist als die Daten auf
   diesem Gerät, kurz erklärt · **Abgleichen** (blau gefüllt) · **Ersetzen** (rote Schrift) ·
-  **Abbrechen**. Abgleichen nimmt je Feld die neuere Fassung (R-42), Gelöschtes bleibt gelöscht (R-43); das
-  Ergebnis zeigt ein kleines Fenster mit der Schaltfläche ‚Abgleichbericht anzeigen‘ (R-44). Alle Fälle: Abschnitt 15.18.
+  **Abbrechen**. Abgleichen nimmt je Feld die neuere Fassung (R-9.3), Gelöschtes bleibt gelöscht (R-9.3); das
+  Ergebnis zeigt ein kleines Fenster mit der Schaltfläche ‚Abgleichbericht anzeigen‘ (R-9.4). Alle Fälle: Abschnitt 15.18.
 - **Kontextmenü:** Langes Drücken (ca. 0,6 s) auf einen Eintrag öffnet rechts daneben ein Menü
   (ist daneben kein Platz – iPhone –, linksbündig unter der Kachel; immer vollständig und ganz oberhalb der
   Backup-Kachel, nie über oder hinter ihr – die Liste rückt dafür nach oben und bekommt bei wenigen Einträgen
-  unten Platz; am iPad endet das Menü daneben ebenfalls über der Backup-Kachel, R-40)
+  unten Platz; am iPad endet das Menü daneben ebenfalls über der Backup-Kachel, R-4.2)
   (Komponente Menü) mit Einstellungen (settings) · … löschen (rot, Sprechblase) – **ohne ‚Öffnen‘**,
   weil Tippen öffnet (wie Notizen); der Eintrag ist dabei blau getönt. Kein Wischen, kein Hinweistext.
   [HIG – Context menus](https://developer.apple.com/design/human-interface-guidelines/context-menus)
@@ -551,11 +529,11 @@ Verhalten · technischer Name). In AppDesign ist jede Komponente einmal programm
 - **Verhalten:** erscheint unter der Schaltfläche (darf über die Seitenleiste
   hinausragen); die Schaltfläche ist so lange gedrückt (blau getönt); daneben tippen schließt.
   Reicht der Platz darunter nicht, scrollt das Menü in sich (erst unter 200 px Platz öffnet es nach oben).
-- **Beim Drehen (seit 4.10.0, R-40):** offenes Menü, Untermenü und Sprechblase werden neu ausgerichtet –
+- **Beim Drehen (seit 4.10.0, R-8.1):** offenes Menü, Untermenü und Sprechblase werden neu ausgerichtet –
   das Menü unter der aufrufenden Schaltfläche, das Untermenü neben seinem Eintrag, ganz sichtbar.
   Liegt die Schaltfläche in der Seitenleiste, bleibt die Seitenleiste dabei sichtbar (iPad hoch: darübergelegt).
   Ist eine Schaltfläche danach nicht mehr da, schließt sich ihr Menü; eine Sprechblase (offene Entscheidung)
-  bleibt und steht mittig. Das Prüfskript dreht jede Ansicht mit offenem Menü automatisch (R-40).
+  bleibt und steht mittig. Das Prüfskript dreht jede Ansicht mit offenem Menü automatisch (R-8.1).
 
 ### 15.7 Sprechblase (Abfrage)
 - **Apple:** [HIG – Popovers](https://developer.apple.com/design/human-interface-guidelines/popovers) · [HIG – Action sheets](https://developer.apple.com/design/human-interface-guidelines/action-sheets) · [HIG – Alerts](https://developer.apple.com/design/human-interface-guidelines/alerts)
@@ -563,13 +541,13 @@ Verhalten · technischer Name). In AppDesign ist jede Komponente einmal programm
 - **Aufbau:** grauer Text · rote Schaltfläche mit dem Verb der Aktion · darunter der Weg
   zurück („Abbrechen“ bzw. „Weiter bearbeiten“, normale Schrift); **Schaltflächen ohne Icons**
   wie in Apple-Abfragen; Breite 320 px.
-- **Wege mit Erklärung (seit 4.10.0, R-46):** bekommt ein Weg eine Erklärung (`desc`), steht er in einer eigenen
+- **Wege mit Erklärung (seit 4.10.0, R-9.2):** bekommt ein Weg eine Erklärung (`desc`), steht er in einer eigenen
   Kachel – Erklärung oben (gleiche Schrift wie der Text der Sprechblase), Knopf darunter; ‚Abbrechen‘ darunter.
-- **Mehrere Wege (seit 4.9.0, `choosePop`, R-38):** wie eine Apple-Abfrage mit drei Knöpfen –
+- **Mehrere Wege (seit 4.9.0, `choosePop`, R-4.3):** wie eine Apple-Abfrage mit drei Knöpfen –
   die empfohlene Aktion blau gefüllt (`primary`) zuerst, eine zerstörende in roter Schrift
   (`danger-text`), zuletzt ‚Abbrechen‘; eine kurze graue Erklärung der Wege steht im Text.
 - **Verhalten:** an der angetippten Schaltfläche (diese ist gedrückt); daneben tippen bricht ab.
-- **Passt immer auf den Bildschirm (seit 4.9.1, R-39):** auf dem iPhone quer ist die Sprechblase
+- **Passt immer auf den Bildschirm (seit 4.9.1, R-4.5):** auf dem iPhone quer ist die Sprechblase
   breiter (bis 600 px) und die Knöpfe stehen nebeneinander; reicht der Platz trotzdem nicht, scrollt
   der Inhalt in ihr. Gilt ebenso für Menüs und Fenster.
 
@@ -660,7 +638,7 @@ Verhalten · technischer Name). In AppDesign ist jede Komponente einmal programm
 - **Liste** (`.ilist` mit `.irow`): weiße Karte mit runden Ecken (22 px); Zeilen mit fettem Titel,
   grauer Zeile darunter und `chevron-right`; Haarlinie links eingerückt. Tippen öffnet, lange
   drücken zeigt das Kontextmenü; markierte Zeile `--sel-bg`.
-- **Startliste = Seitenleiste (seit 4.7.0 derselbe Baustein, R-36):** die Startliste ist die
+- **Startliste = Seitenleiste (seit 4.7.0 derselbe Baustein, R-1.1):** die Startliste ist die
   Seitenleiste `#side` als ganze Seite (`#side.page`) – kein eigener Nachbau. Kopf wie am iPad
   (Titel links, 20 pt fett, darunter klein und grau die Anzahl, rechts [`plus` | `ellipsis`];
   panel-left entfällt), Kacheln `.side-row` in `.side-list`, Backup-Kachel `.side-foot`; die
@@ -670,7 +648,7 @@ Verhalten · technischer Name). In AppDesign ist jede Komponente einmal programm
   Eintrag als Karte, z. B. ein Tag statt einer Tabellenzeile.
 - **Tastatur der Suche:** wischt man den Inhalt, während die Tastatur der Suche offen ist,
   schließt sie sich (wie bei Apple). Sonst verschiebt iOS den sichtbaren Bereich und die
-  Leisten zittern (R-05).
+  Leisten zittern (R-2.1).
 - **Suche** wie am iPad (Komponente Suchfeld): `search` in der Kapsel öffnet unter der Leiste
   die Suchzeile mit ‚1 von 4‘, ⓧ und ⌃ ⌄; gefiltert wird auf Einträge mit Treffern.
 - **Fester Hinweis unten** (`.bbar` mit `.bnote`): z. B. der Backup-Hinweis – gelb getönte Karte
@@ -684,16 +662,16 @@ Verhalten · technischer Name). In AppDesign ist jede Komponente einmal programm
   Abfragen ebenfalls an der Schaltfläche).
 - Menüs, Kapseln und Schaltflächen wie auf dem iPad (44 pt).
 
-### 15.18 Abgleich zwischen iPad und iPhone (seit 4.10.0, R-41 bis R-44)
+### 15.18 Abgleich zwischen iPad und iPhone (seit 4.10.0, R-9.2 bis R-9.4)
 - **Apple:** iCloud gleicht ohne Rückfrage ab; ohne Entwicklerkonto geht es bei uns über ein Backup in
   iCloud Drive – mit derselben Grundregel wie Apple: **die neuere Änderung gilt**, je Feld.
 - **Technisch:** gemeinsamer Baustein `createSync({ list, sub, subAt, maxFields, nouns, labels, app })` in `ui.js` – jede App mit
-  Backup nutzt ihn (keine eigene Umsetzung, R-36). Beim Speichern stempelt `sync.stamp()` jedes geänderte Feld mit
+  Backup nutzt ihn (keine eigene Umsetzung, R-1.1). Beim Speichern stempelt `sync.stamp()` jedes geänderte Feld mit
   Zeitpunkt und Gerät (Kopfdaten `metaAt`, Unterdaten wie Tage `subAt`), gelöschte Einträge kommen nach
   `data.deleted`; das Backup enthält `savedAt` und `savedOn`.
 - **Weg:** auf dem einen Gerät ‚Backup erstellen‘ → ‚In Dateien sichern‘ → iCloud Drive; auf dem anderen
-  ‚Backup laden‘ → Datei wählen → Abfrage (R-41) → ‚Abgleichen‘ → Ergebnisfenster (R-44).
-- **Ergebnis (seit 4.11.0, R-44) in zwei Stufen** – `sync.showResult(stats, savedAt, savedOn)`:
+  ‚Backup laden‘ → Datei wählen → Abfrage (R-9.2) → ‚Abgleichen‘ → Ergebnisfenster (R-9.4).
+- **Ergebnis (seit 4.11.0, R-9.4) in zwei Stufen** – `sync.showResult(stats, savedAt, savedOn)`:
   1. **Kleines Fenster ‚Abgleichen‘** (wie jede Meldung): ‚✅ Abgeglichen mit dem Backup vom **iPad** (13.10.2026 um
      10:05).‘ und ein Satz – ‚Auf diesem iPhone hat sich etwas geändert – Einzelheiten im Abgleichbericht.‘ bzw. ‚… nichts
      geändert – Hinweise im Abgleichbericht.‘; darunter die blaue Schaltfläche **‚Abgleichbericht anzeigen‘** (Icon `eye`).
@@ -702,19 +680,19 @@ Verhalten · technischer Name). In AppDesign ist jede Komponente einmal programm
   2. **Abgleichbericht** (`sync.openReport`): Vorschau wie die Ausgabe der App – großes Fenster, immer hell, Kopf
      ‚Abgleichbericht‘ mit Dateiname, oben rechts die Kapsel wie bei der Vorschau der Ausgabe: **PDF** (Drucken-Menü,
      seit 4.11.2) und Teilen (HTML-Datei ‚Abgleichbericht <App> JJJJ.MM.TT hh.mm.html‘); auf dem iPhone und am iPad hoch
-     seitlich wischen – der Inhalt jeder Zelle bricht um und ragt nie in die Nachbarzelle (R-37). Inhalt:
+     seitlich wischen – der Inhalt jeder Zelle bricht um und ragt nie in die Nachbarzelle (R-6.3). Inhalt:
      - Kopf: ‚Abgeglichen am … auf diesem iPhone‘ · ‚Backup: vom iPad, erstellt am …‘ · ‚Ergebnis: 1 aktualisiert · 1 neu ·
        1 gelöscht · 3 unverändert‘.
      - **‚Änderungen auf diesem iPhone‘** – Tabelle wie in der Ausgabe (grauer Kopf, Spaltenköpfe halbfett, Linien):
        Eintrag (z. B. Reiselogbuch) · Tag (‚Mo, 12.10.2026‘, ‚–‘ für Kopfdaten) · Feld (Namen aus `labels`) · Neu · Vorher
        · Vom Gerät · Geändert am; je Feld eine Zeile; der Eintrag ist in der ersten Spalte über alle seine Zeilen
        zusammengefasst (Tag, Gerät und Zeitpunkt je Tag) und bildet eine Tabellenzeile – sie ist ganz weiß oder ganz grau,
-       im Wechsel je Eintrag (R-52); neu angelegte
+       im Wechsel je Eintrag (R-6.2); neu angelegte
        Einträge ‚**neu angelegt** (n Tage)‘ blau, gelöschte ‚**gelöscht**‘ rot. Unveränderte Einträge stehen **nicht** in
        der Tabelle, darunter nur ‚n Reiselogbücher sind unverändert.‘
      - **‚Auf diesem iPhone neuer als im Backup – bleibt so‘** – gleiche Tabelle (Spalten ‚Auf diesem iPhone‘ · ‚Im
        Backup‘) und ‚Damit das iPad diesen Stand bekommt: hier ‚Backup erstellen‘, dort ‚Backup laden‘ → ‚Abgleichen‘.‘
-     - **Hinweise** zu Gelöschtem (R-43), zuletzt ‚Erstellt mit <App> am …‘.
+     - **Hinweise** zu Gelöschtem (R-9.3), zuletzt ‚Erstellt mit <App> am …‘.
 - **Prüfung:** `tests/abgleich.mjs` prüft alle Fälle der Tabelle in beide Richtungen für jede App automatisch, seit
   4.11.0 auch kurzes Fenster und Abgleichbericht (keine Einzelheiten im Fenster, Spalten, Zeilen, Unverändertes nur als
   Anzahl, Gerät im Kopf, ‚hier neuer‘); das Prüfskript misst Fenster und Bericht (HIG).
@@ -742,13 +720,13 @@ Verhalten · technischer Name). In AppDesign ist jede Komponente einmal programm
 | 19 | ‚Ersetzen‘ statt ‚Abgleichen‘ | alle Daten des iPhones werden durch das Backup ersetzt (hier Gelöschtes kommt zurück, hier Geändertes geht verloren); ‚Letztes Backup‘ bleibt | wie links |
 | 20 | ‚Abbrechen‘ oder daneben tippen | nichts ändert sich | wie links |
 
-### 15.19 Backup erstellen und Backup laden (seit 4.10.0, R-45, R-46)
+### 15.19 Backup erstellen und Backup laden (seit 4.10.0, R-9.1, R-9.2)
 - **Apple:** [HIG – Activity views](https://developer.apple.com/design/human-interface-guidelines/activity-views) (Teilen-Menü) ·
   [HIG – File management](https://developer.apple.com/design/human-interface-guidelines/file-management) (Dateien-App, iCloud Drive)
 - **Technisch:** gemeinsame Bausteine in `ui.js` – `backupFileOf(app, data)`, `shareFiles()`, `shareResultText()`,
   `backupLastText()`, `backupToday()`, `backupTileHtml()`, `backupMenuEntries()`, `readBackup()`; für den Abgleich
-  `createSync()` (15.18). Jede App mit Backup nutzt sie – keine eigene Umsetzung (R-36).
-- **Backup erstellen** (R-45):
+  `createSync()` (15.18). Jede App mit Backup nutzt sie – keine eigene Umsetzung (R-1.1).
+- **Backup erstellen** (R-9.1):
   - **Wo:** Backup-Kachel unten in der Seitenleiste bzw. Startliste (‚Letztes Backup erstellt am …‘ bzw. ‚Noch kein
     Backup erstellt.‘ und der Knopf ‚Backup erstellen‘ – gelb mit blauem Knopf, solange heute noch kein Backup
     erstellt wurde) und im Mehr-Menü der Seitenleiste: ‚Backup erstellen‘ (Icon `save`, darunter grau ‚Letztes Backup
@@ -757,13 +735,13 @@ Verhalten · technischer Name). In AppDesign ist jede Komponente einmal programm
     ‚Ω Backup <App> JJJJ.MM.TT hh.mm.json‘ mit allen Daten, Zeitpunkt und Gerät.
   - **Danach:** kleines Fenster ‚Backup‘ mit ✅ und Ort der Datei bzw. ⚠️ bei Abbruch; ‚Letztes Backup‘ zählt nur,
     wenn das Teilen abgeschlossen wurde, und gilt je Gerät; die Backup-Kachel wird weiß.
-- **Backup laden** (R-46):
-  - **Ablauf:** Mehr-Menü → ‚Backup laden‘ → Dateiauswahl (z. B. iCloud Drive) → Abfrage → Ergebnisfenster (R-44).
+- **Backup laden** (R-9.2):
+  - **Ablauf:** Mehr-Menü → ‚Backup laden‘ → Dateiauswahl (z. B. iCloud Drive) → Abfrage → Ergebnisfenster (R-9.4).
   - **Abfrage** (Sprechblase an der Schaltfläche, 400 px breit): oben grau ‚Backup vom **…** (Gerät) mit n …‘ und
     ‚Es ist **neuer/älter/gleich alt** als die Daten auf diesem Gerät (zuletzt geändert am …)‘; darunter **je Weg eine
     Kachel** (Hintergrund `--bg`, Radius 14 px): oben die Erklärung in **derselben Schrift** wie ‚Backup vom …‘
     (15 px, grau), darunter der Knopf – Kachel 1 ‚Abgleichen‘ (blau gefüllt), Kachel 2 ‚Ersetzen‘ (rote Schrift);
-    unter den Kacheln ‚Abbrechen‘ wie in jeder Abfrage. iPhone quer: Kacheln nebeneinander (R-39).
+    unter den Kacheln ‚Abbrechen‘ wie in jeder Abfrage. iPhone quer: Kacheln nebeneinander (R-4.5).
   - **Unlesbare Datei:** kleines Fenster ‚Backup laden‘ mit ⚠️ und dem Grund.
   - **Abbrechen / daneben tippen:** nichts ändert sich.
 - **Prüfung:** `tests/backup.mjs` bedient Menü, Backup erstellen, Backup laden (Abfrage, Abbrechen, unlesbare Datei)
@@ -811,74 +789,131 @@ Messbare Punkte prüft das HIG-Prüfskript automatisch.
 
 ## 17. Regelkatalog
 
-Alle allgemeinen Regeln mit Nummer. **Skript** = prüft das HIG- und Regel-Prüfskript
-(`tests/hig.mjs`) in jeder Ansicht jeder App automatisch · **Ablauf** = prüft der Ablauf-Test der
-App · **Gerät** = nur am iPad/iPhone prüfbar; diese Punkte kommen in die Prüfliste, wenn eine
-Version sie betrifft. Vor jedem Muster und nach jeder Version wird gegen diesen Katalog geprüft
-(`README - Zusammenarbeit allgemein.md`, Abschnitte 3 und 7). Neue allgemeine Regeln bekommen
-hier sofort eine Nummer und – wo möglich – eine Prüfung im Skript.
+**Seit 4.12.0 nach Themen geordnet** (vorher R-01 bis R-52, Zuordnung am Ende). Jede allgemeine Regel steht **nur
+hier**; die Abschnitte 1–16 beschreiben Werte und Komponenten und verweisen auf die Regel. Nummer `R-<Thema>.<Nr>`
+(z. B. R-6.2 = Thema 6, Regel 2) – eine neue Regel wird in ihr Thema eingefügt, ohne die anderen umzunummerieren.
 
-| Nr. | Regel | Prüfung | Abschnitt |
-|---|---|---|---|
-| R-01 | Nur der Vordergrund reagiert: offenes Fenster sperrt die Seite, Menü/Sprechblase fangen Wischen ab | Skript | 1 |
-| R-02 | Kein Fokus-Rahmen beim Antippen oder Öffnen eines Fensters (auch nicht im Suchfeld) | Skript | 1, 15.2 |
-| R-03 | Gleiche Bedienung auf iPad und iPhone (gleiche Kapseln, Suche, Menüs) | Muster, Ablauf | 1 |
-| R-04 | Doppeltippen vergrößert nie die Ansicht | Skript | 1 |
-| R-05 | Eine Symbolleiste – mit oder ohne Suchzeile – steht immer an ihrem Platz und bewegt sich beim Wischen keinen Millimeter (auch am Rand, bei offener und beim Schließen der Tastatur); Seite federt nicht; in der Seitenleiste scrollen nur die Einträge | Skript (Lage der Leiste beim Scrollen gemessen, mit und ohne Suchzeile) · Ablauf (erstes Wischen bei offener Tastatur bewegt nichts) · Gerät (Tastatur, Federn) | 1 |
-| R-06 | Bezeichnung und Feld gehören zusammen (Umbruch nur vor der Bezeichnung) | Skript | 8 |
-| R-07 | Großbuchstabe am Zeilenanfang und nach einem Vorschlag | Ablauf · Gerät (iOS-Tastatur) | 8 |
-| R-08 | Gelbe Markierung ohne blauen Rand | Skript | 9 |
-| R-09 | Titel einer Inhaltsseite steht in der Leiste | Skript | 15.17 |
-| R-10 | Backup-Kachel immer da (gelb, solange heute noch kein Backup erstellt wurde) | Skript | 15.4, 15.17 |
-| R-11 | Antippflächen 44 pt (in Kapseln und Schaltern 28 pt) | Skript | 16 |
-| R-12 | Schrift mindestens 11 pt | Skript | 16 |
-| R-13 | Kontrast 4,5 : 1 bzw. 3 : 1, hell und dunkel | Skript | 16 |
-| R-14 | Anführungszeichen ‚…‘ | Skript | 16 |
-| R-15 | Menüs: Löschen rot am Ende, keine Linien zwischen einzelnen Punkten | Skript | 15.6 |
-| R-16 | Gewähltes bleibt blau, solange sein Menü, Fenster oder seine Abfrage offen ist | Skript | 16 |
-| R-17 | Diktieren nur über die Mikrofon-Taste der Tastatur | Muster | 8 |
-| R-18 | Fenster auf dem iPhone bildschirmfüllend | Skript | 15.17 |
-| R-19 | Nach oben / Ans Ende in einer senkrechten Kapsel | Skript | 4 |
-| R-20 | Eingabefelder mindestens 16 px (sonst vergrößert iOS beim Antippen) | Skript · Gerät | 8 |
-| R-21 | Anzahl klein und grau unter dem Titel der Seitenleiste bzw. Startliste | Skript | 15.4, 15.17 |
-| R-22 | Alle Schaltflächen und Suchfelder schweben (Lichtkante und Schatten); Kapseln als Ganzes | Skript | 4, 15.1 |
-| R-23 | Keine Systemfenster und keine englischen Texte (‚OK‘, ‚Close‘, ‚Cancel‘) – Abfragen als Sprechblase, Meldungen im kleinen Fenster | Skript | 1 |
-| R-24 | Alle Aktionen sind echte Schaltflächen, gleiche Aktion = gleiche Bezeichnung und gleiches Icon überall | Muster | 1, 5, 6 |
-| R-25 | Tabellen: Trennlinien zwischen allen Spalten | Skript | 9 |
-| R-26 | Datumsfelder so breit wie das Datum (mit Kalender-Icon) | Skript | 8 |
-| R-27 | Betragsfelder rechtsbündig, Betrag ‚4.850,00 €‘ | Skript | 8 |
-| R-28 | Kopfzeile und Suchzeile bleiben bei offener Tastatur sichtbar | Ablauf · Gerät | 13 |
-| R-29 | Hängender Einzug: Folgezeilen beginnen unter dem Text, nicht unter dem Zeichen | Skript | 9 |
-| R-30 | Kasten mit Feldern: Linien waagrecht zwischen den Feldern und senkrecht zwischen Bezeichnung und Inhalt | Skript | 15.10 |
-| R-31 | Zentrale Liste (Seitenleiste, Startliste) als Kacheln, höchstens ein Eintrag blau | Skript | 15.4, 15.17 |
-| R-32 | Aktionen und Suche stehen oben in der Kapsel – unten nur feste Hinweise (z. B. Backup-Kachel) | Skript | 15.17 |
-| R-33 | Darstellung folgt dem Gerät (‚Automatisch‘), im Mehr-Menü übersteuerbar | Skript | 2 |
-| R-34 | Teilen (`share`) immer nur als Icon, nie mit Text | Skript | 5 |
-| R-35 | Schatten zierlich, Seitenleiste schwebend wie in Safari, Apple-Look | Muster | 1, 15.4 |
-| R-36 | Gleiche Funktion = gleicher Baustein auf iPad und iPhone: eine Umsetzung, die sich nur in der Breite unterscheidet (z. B. Seitenleiste am iPad = Startliste am iPhone; Kacheln laufen auf beiden unter der Backup-Kachel durch) – nie zwei getrennte Nachbauten | Skript (Gerätevergleich des Aufbaus) | 1, 15.4, 15.17 |
-| R-37 | Kein Text ragt über Zelle, Kasten oder Kachel hinaus – **überall**, auch in Fenstern, Vorschauen, Berichten und Ausgaben (seit 4.11.2): zu lange Wörter und Daten brechen um und laufen in der nächsten Zeile weiter (iPad und iPhone, quer und hoch) | Skript – jede sichtbare Tabellenzelle in jeder Ansicht, auch nach seitlichem Wischen (Testdaten mit 100 × ‚a‘) | 9, 15.10 |
-| R-38 | Abfrage mit mehreren Wegen: empfohlene Aktion blau gefüllt zuerst, zerstörende in roter Schrift, ‚Abbrechen‘ zuletzt; kurze Erklärung der Wege im Text | Skript | 15.7 |
-| R-39 | Menü, Sprechblase und Fenster passen immer ganz auf den Bildschirm (auch iPhone quer); ist der Inhalt zu hoch, scrollt er darin – kein Knopf liegt außerhalb | Skript | 15.6, 15.7, 15.9 |
-| R-40 | Beim Drehen (hoch ↔ quer) wird jedes offene Menü, Untermenü und jede Sprechblase sofort neu ausgerichtet: Menü unterhalb seiner aufrufenden Schaltfläche, Untermenü neben seinem Eintrag, Kontextmenü einer Kachel daneben bzw. (iPhone) linksbündig darunter – immer vollständig (nie abgeschnitten) und ganz oberhalb der Backup-Kachel, nie über oder hinter ihr; ist die Liste zu kurz zum Rücken, bekommt sie unten Platz; seit 4.11.0 wird das Kontextmenü nach dem Loslassen noch einmal ausgerichtet, und rückt die Liste trotzdem nicht, steht es linksbündig über der Kachel – immer vollständig sichtbar (reicht der Platz nicht, scrollt der Inhalt darin bzw. rückt die Liste nach oben); die Schaltfläche bleibt blau. Liegt die Schaltfläche in der Seitenleiste, bleibt diese dabei sichtbar (hoch darübergelegt) | Skript – automatisch: jede Ansicht mit offenem Menü, Untermenü oder offener Sprechblase wird hoch ↔ quer gedreht und zurück, in jeder App ohne eigenen Aufruf · Skript `tests/kontextmenue.mjs` (jede sichtbare Kachel, 3–12 Einträge, iPad und iPhone; seit 4.11.0 auch der letzte Eintrag bei ganz nach unten gewischter Liste) · Gerät | 15.4, 15.6, 15.7 |
-| R-41 | Abgleich zwischen iPad und iPhone über das Backup: das Backup enthält Zeitpunkt und Gerät; ‚Backup laden‘ fragt (Sprechblase mit Kacheln, R-46) mit Zeitpunkt, Gerät und ‚neuer/älter als die Daten auf diesem Gerät‘ und den Wegen Abgleichen · Ersetzen · Abbrechen; jede App nutzt dafür den gemeinsamen Baustein `createSync` | Skript (`tests/abgleich.mjs`) · Ablauf | 15.4, 15.18 |
-| R-42 | Beim Abgleichen gilt **je Feld** die neuere Änderung – in den Kopfdaten und in den Unterdaten (z. B. je Tag); leere Felder gelten als nicht vorhanden (sie überschreiben nichts, nur ein geleertes Feld zählt als Änderung); gleich alt oder ohne Zeitpunkt: das Vorhandene hier bleibt, Fehlendes kommt dazu; Zähler ohne Zeitpunkt: der größere Wert; Einstellungen bleiben je Gerät | Skript (`tests/abgleich.mjs`, Fälle 6–18) | 15.18 |
-| R-43 | Ein gelöschter Eintrag bleibt gelöscht, solange er danach nicht mehr geändert wurde (auch wenn er im Backup noch vorhanden ist – mit Hinweis, der die Geräte beim Namen nennt: ‚Auf diesem iPad gelöscht, im Backup vom iPhone noch vorhanden‘); wurde er danach noch geändert, bleibt er bzw. kommt zurück (Hinweis ‚Auf dem iPhone gelöscht, auf diesem iPad danach noch geändert‘); auf beiden gelöscht bleibt er weg | Skript (`tests/abgleich.mjs`, Fälle 1–5) | 15.18 |
-| R-44 | Ergebnis des Abgleichs (seit 4.11.0) in zwei Stufen: kleines Fenster ‚Abgeglichen mit dem Backup vom <Gerät> (…)‘ ohne Einzelheiten, mit der Schaltfläche ‚Abgleichbericht anzeigen‘ nur, wenn es etwas zu berichten gibt (sonst ‚Alles war schon auf dem gleichen Stand.‘); Abgleichbericht als Vorschau wie die Ausgabe (teilbar als HTML) mit Kopf, Tabelle ‚Änderungen auf diesem Gerät‘ (Eintrag · Tag · Feld · Neu · Vorher · Vom Gerät · Geändert am, Spaltenköpfe halbfett), Unverändertes nur als Anzahl, Tabelle ‚hier neuer als im Backup‘ und Hinweisen; jede Kachel zeigt ‚geändert am … · Gerät‘ | Skript (`tests/abgleich.mjs`) · Ablauf | 15.4, 15.18 |
-| R-45 | Backup erstellen: Backup-Kachel unten (gelb ohne Backup heute) und Mehr-Menü (‚Backup erstellen‘ mit grauer Zeile ‚Letztes Backup …‘, darunter ‚Backup laden‘); Teilen-Menü → In Dateien sichern; Datei ‚Ω Backup <App> JJJJ.MM.TT hh.mm.json‘ mit Zeitpunkt und Gerät; danach kleines Fenster ‚Backup‘ (✅/⚠️); ‚Letztes Backup‘ je Gerät, nur nach abgeschlossenem Teilen; gemeinsame Bausteine aus ui.js | Skript (`tests/backup.mjs`) | 15.4, 15.19 |
-| R-46 | Backup laden: Abfrage mit ‚Backup vom … (Gerät) mit n …‘ und ‚neuer/älter‘ oben, darunter je eine Kachel für Abgleichen (blau) und Ersetzen (rot) mit Erklärung in derselben Schrift wie der Text oben und dem Knopf darunter, zuletzt ‚Abbrechen‘; unlesbare Datei: kleines Fenster ‚Backup laden‘ mit ⚠️ und Grund; Abbrechen ändert nichts | Skript (`tests/backup.mjs`) | 15.7, 15.19 |
-| R-47 | Die Seitenleiste (iPad) behält beim Drehen ihren Zustand: sichtbar bleibt sichtbar (quer fest, hoch darübergelegt), ausgeblendet bleibt ausgeblendet – ein einziger Zustand für quer und hoch, den nur Tippen ändert | Skript – automatisch in jeder App mit Seitenleiste (beide Zustände, hin und zurück, mit Zwischengrößen wie beim echten Drehen) | 15.4 |
-| R-48 | Versionskopplung: `ui.js` und `design.css` mit `?v=<AppDesign-Version>` in `index.html` und `sw.js`; `AD_VERSION` (ui.js) = `--ad-version` (design.css) = `AD_NEEDED` (App); bei anderer geladener Fassung beim Start ein Hinweis; Versionszeile nennt AppDesign | Skript (`tests/version.mjs`) | 11 |
-| R-49 | Die README jeder App zeigt ganz oben ‚Verwendete Versionen‘: App, AppDesign, Designrichtlinie allgemein, Designrichtlinie <App>, Zusammenarbeit allgemein – je Version (gleich wie in der App bzw. den Richtlinien) und Link | Skript (`tests/doku.mjs`) | 11 |
-| R-50 | Jede Prüfliste beginnt mit /0 ‚Version prüfen‘ (App- und AppDesign-Version in der Versionszeile); jeder Prüfpunkt hat nummerierte Schritte und nennt bei jedem Schritt, der etwas anzeigt, die Meldung je Gerät; jeder solche Fall hat einen automatischen Test der Texte auf beiden Geräten | Skript (`tests/doku.mjs`) · Ablauf (`tests/abgleich.mjs` u. a.) | Zusammenarbeit 7 |
-| R-51 | Beim Drehen (quer ↔ hoch) und jeder Größenänderung bleibt oben derselbe Eintrag stehen (z. B. derselbe Tag) – auch in Safari, das keinen Scroll-Anker kennt; Baustein in ui.js für Einträge mit `data-day` bzw. `data-keep` | Skript – automatisch je Seite mit Einträgen (Safari nachgebildet, mit Zwischengrößen, hin und zurück) | 13 |
-| R-52 | Jede Tabelle in Ausgaben, Vorschauen und Berichten (z. B. HTML-Ausgabe, Abgleichbericht) ist die **Mustertabelle der Ausgabe** aus dem Baustein `outputCss(scope)` in ui.js – Systemschrift 11 pt, Kopf `#d9d9d9` fett mit Rand `#a5a5a5`, Linien überall gleich stark (1 px `#999`, außen `#a5a5a5`), Innenabstand 6/8 px, jede zweite **Tabellenzeile** `#f5f5f5` – immer über die ganze Breite (allgemeiner Standard). Seit 4.11.4: **zusammengefasste Zellen in der ersten Spalte gelten als eine Tabellenzeile** – alle Zellen dahinter haben die Farbe der ersten Spalte, weiß und grau wechseln von Tabellenzeile zu Tabellenzeile (z. B. je Reiselogbuch im Abgleichbericht); eine leere erste Zelle setzt die Zeile darüber fort; Zeilen nicht über Seitenumbrüche geteilt; keine eigene Nachbildung | Skript – jede sichtbare Tabelle in Ausgabe und Bericht wird Eigenschaft für Eigenschaft mit einer unsichtbaren Mustertabelle verglichen; jede Tabellenzeile (zusammengefasste bzw. fortgesetzte erste Spalte) einheitlich gefärbt, Farben wechseln von Tabellenzeile zu Tabellenzeile | 10 |
+**Prüfung:** je Regel **genau eine** automatische Prüfung in `tests/` (AppDesign): `hig.mjs` misst jede Ansicht jeder App,
+`ablauf.mjs` prüft Regeln, die eine Handlung brauchen (die App ruft sie mit ihren Fenstern auf), dazu `kontextmenue.mjs`,
+`backup.mjs`, `abgleich.mjs`, `version.mjs`, `doku.mjs`. Jede Meldung beginnt mit der Regelnummer. `checkCatalog`
+(`doku.mjs`) prüft, dass jede Regel eine Prüfung hat und keine alte Nummer mehr verwendet wird. **Gerät** = zusätzlich
+am iPad/iPhone zu prüfen; kommt in die Prüfliste, wenn eine Version es betrifft. Vor jedem Muster und nach jeder
+Version wird gegen diesen Katalog geprüft (`README - Zusammenarbeit allgemein.md`, Abschnitte 3 und 7). Eine neue
+Regel ersetzt oder ergänzt eine bestehende (Zusammenarbeit 0 Nr. 3) und bekommt sofort Nummer und Prüfung.
 
----
+### 1. Aufbau und Grundsätze
+
+| Nr. | Regel | Prüfung | Gerät | ersetzt |
+|---|---|---|---|---|
+| R-1.1 | **Gleiche Funktion = gleicher Baustein, gleiche Bedienung** auf iPad und iPhone: eine Umsetzung, nur die Anordnung unterscheidet sich (Seitenleiste = Startliste); Aktionen und Suche oben in der Kapsel, unten nur feste Hinweise (Backup-Kachel) | hig.mjs – Gerätevergleich des Aufbaus | – | R-03, R-32, R-36 |
+| R-1.2 | **Darstellung** folgt dem Gerät (‚Automatisch‘), im Mehr-Menü übersteuerbar (Automatisch · Hell · Dunkel) | hig.mjs | – | R-33 |
+| R-1.3 | **Nie ungewollt vergrößern:** Doppeltippen vergrößert nicht; Eingabefelder mindestens 16 px (sonst vergrößert iOS beim Antippen) | hig.mjs | iOS-Tastatur | R-04, R-20 |
+| R-1.4 | **Nur der Vordergrund reagiert:** offenes Fenster sperrt die Seite, Menü und Sprechblase fangen Wischen ab, daneben tippen schließt | hig.mjs | – | R-01 |
+
+### 2. Leisten, Suche, Scrollen
+
+| Nr. | Regel | Prüfung | Gerät | ersetzt |
+|---|---|---|---|---|
+| R-2.1 | **Leisten stehen fest – keinen Millimeter:** Kopfzeile, Seitenkopf, Seitenleisten-Kopf, mit und ohne Suchzeile, beim Wischen, am Rand, bei offener und beim Schließen der Tastatur; nichts federt; erstes Wischen bei offener Tastatur schließt nur die Tastatur | hig.mjs – `barStill`: Lage der Leiste beim Scrollen gemessen, auch mit nachgebildeter Tastatur | Federn, Tastatur | R-05, R-28 |
+| R-2.2 | **Titel in der Leiste:** Titel einer Inhaltsseite steht in der Leiste; unter dem Titel der Seitenleiste bzw. Startliste klein und grau die Anzahl | hig.mjs | – | R-09, R-21 |
+| R-2.3 | **Suche:** Suchzeile unter der Leiste über die volle Breite; Treffer ‚3 von 57‘ bzw. ‚0‘; nach kurzer Pause steht der Treffer direkt unter der Suchzeile; Pfeile ohne Umlauf; gefiltert auf Einträge mit Treffern; gleich auf iPad und iPhone | ablauf.mjs – `checkSearch` | – | **neu** (bisher nur 15.2) |
+
+### 3. Schaltflächen
+
+| Nr. | Regel | Prüfung | Gerät | ersetzt |
+|---|---|---|---|---|
+| R-3.1 | **Antippflächen** 44 pt, in Kapseln und Schaltern mindestens 28 pt; reine Icon-Schaltflächen quadratisch | hig.mjs | – | R-11 |
+| R-3.2 | **Schweben und Kapseln:** alle Schaltflächen und Suchfelder schweben (Lichtkante, zierlicher Schatten); mehrere nebeneinander stehen in einer Kapsel, Nach oben / Ans Ende in einer senkrechten Kapsel | hig.mjs | – | R-19, R-22, R-35 |
+| R-3.3 | **Jede Farbe hat eine Bedeutung:** blau gefüllt nur die Hauptaktion im Fenster (höchstens eine); Gewähltes bleibt blau getönt, solange sein Menü, Fenster oder seine Abfrage offen ist; Grün nur für eingeschaltete Schalter; Rot nur für Löschen | hig.mjs – höchstens eine blaue Hauptaktion, `stays` | – | R-16 (+ Abschnitt 4) |
+| R-3.4 | **Kein Fokus-Rahmen** beim Antippen, beim Öffnen eines Fensters und im Suchfeld | hig.mjs | – | R-02 |
+
+### 4. Menüs, Abfragen, Fenster
+
+| Nr. | Regel | Prüfung | Gerät | ersetzt |
+|---|---|---|---|---|
+| R-4.1 | **Menüs:** Icon vor dem Text, keine Linien zwischen einzelnen Punkten, Gruppen durch eingerückten Strich, ‚… löschen‘ rot am Ende, graue Zusatzinfos unten nach dem Strich, Untermenü eine Ebene | hig.mjs | – | R-15 |
+| R-4.2 | **Kontextmenü** einer Kachel: daneben bzw. (iPhone) darunter, immer vollständig und ganz über der Backup-Kachel; die Liste rückt dafür; ohne ‚Öffnen‘ | kontextmenue.mjs | – | R-40 (Teil Kontextmenü) |
+| R-4.3 | **Abfragen und Meldungen:** keine Systemfenster; Abfrage als Sprechblase an der Schaltfläche, rote Schaltfläche mit dem Verb, ‚Abbrechen‘ zuletzt; mehrere Wege: empfohlener blau zuerst, zerstörender rot; Meldung im kleinen Fenster mit höchstens einer Schaltfläche zu den Einzelheiten | hig.mjs | – | R-23 (Teil Systemfenster), R-38 |
+| R-4.4 | **Fenster-Kopfzeile:** x links, Häkchen rechts – grau, nach einer Änderung blau; x mit Änderungen fragt ‚Änderungen verwerfen‘ / ‚Weiter bearbeiten‘ | ablauf.mjs – `checkDialogHead` | – | **neu** (bisher 6, 15.8, HIG 9) |
+| R-4.5 | **Passt immer auf den Bildschirm:** Menü, Sprechblase und Fenster ganz sichtbar (auch iPhone quer), zu hoher Inhalt scrollt darin; Fenster auf dem iPhone bildschirmfüllend | hig.mjs | – | R-18, R-39 |
+
+### 5. Eingaben
+
+| Nr. | Regel | Prüfung | Gerät | ersetzt |
+|---|---|---|---|---|
+| R-5.1 | **Felder:** Bezeichnung und Feld gehören zusammen (Umbruch nur davor); Datumsfelder so breit wie das Datum mit Kalender-Icon; Betragsfelder rechtsbündig, ‚4.850,00 €‘ | hig.mjs | – | R-06, R-26, R-27 |
+| R-5.2 | **Texteingabe:** Großbuchstabe am Zeilenanfang und nach einem Vorschlag; Textfelder wachsen mit; Diktieren nur über die Mikrofon-Taste der Tastatur (kein eigener Knopf) | ablauf.mjs – `checkCapital` | iOS-Tastatur | R-07, R-17 |
+| R-5.3 | **Fehlermeldungen:** rot direkt unter dem Feld (Feld rot umrandet), erst nach einer Eingabe bzw. beim Häkchen; Pflichtfelder werden nicht gekennzeichnet | ablauf.mjs – `checkFieldErrors` | – | **neu** (bisher 8) |
+| R-5.4 | **Auswahl-Kapsel:** mehrere Auswahl-Schaltflächen in einer Kapsel, seitlich wischbar mit Verlauf am Rand; Markierung als eigene Form innen, Breite ändert sich nicht | hig.mjs – Verlauf am Rand, Breite beim Wählen | Wischen | **neu** (bisher 15.12) |
+
+### 6. Tabellen, Kästen, Ausgabe
+
+| Nr. | Regel | Prüfung | Gerät | ersetzt |
+|---|---|---|---|---|
+| R-6.1 | **Tabelle und Kasten in der App:** Kopf grau, Linien zwischen allen Spalten, **Zebra je Tabellenzeile** (zusammengefasste erste Spalte = eine Zeile), gelbe Markierung ohne blauen Rand; Kasten mit Feldern (iPhone) mit Linien waagrecht und senkrecht | hig.mjs (Zebra seit 4.12.0 auch in App-Tabellen) | – | R-08, R-25, R-30 (+ F-3) |
+| R-6.2 | **Mustertabelle der Ausgabe** (`outputCss`): jede Tabelle in Ausgabe, Vorschau und Bericht, Zebra je Tabellenzeile, keine eigene Nachbildung | hig.mjs – Vergleich mit unsichtbarer Mustertabelle | – | R-52 |
+| R-6.3 | **Kein Text ragt hinaus:** zu lange Wörter und Smiley-Reihen brechen um, hängender Einzug (Folgezeilen unter dem Text) – überall, auch in Fenstern, Vorschauen, Berichten | hig.mjs – jede sichtbare Zelle, auch nach seitlichem Wischen (100 × ‚a‘) | – | R-29, R-37 |
+| R-6.4 | **Ausgabe und Vorschau:** immer hell; Vorschau zeigt genau die Datei, in voller Seitenbreite, seitlich wischen (iPad und iPhone); Kapsel [PDF · Teilen]; Dateinamen nach Muster | ablauf.mjs – `checkPreview` | Teilen, Drucken | **neu** (bisher 7, 10; F-4) |
+
+### 7. Seitenleiste und Liste
+
+| Nr. | Regel | Prüfung | Gerät | ersetzt |
+|---|---|---|---|---|
+| R-7.1 | **Zentrale Liste als Kacheln:** höchstens ein Eintrag blau; je Kachel ‚geändert am … · Gerät‘; Kacheln laufen unter dem Kopf und hinter der Backup-Kachel durch; Position bleibt beim Neuaufbau, der gewählte Eintrag bleibt sichtbar | hig.mjs | – | R-31 (+ Teil R-44, 15.4) |
+
+### 8. Drehen
+
+| Nr. | Regel | Prüfung | Gerät | ersetzt |
+|---|---|---|---|---|
+| R-8.1 | **Drehen ändert nur die Anordnung:** offene Menüs, Untermenüs und Sprechblasen werden neu ausgerichtet (Schaltfläche bleibt blau); die Seitenleiste behält ihren Zustand; oben bleibt derselbe Eintrag stehen (Safari nachgebildet) | hig.mjs – Drehprüfung jeder Ansicht, hin und zurück, mit Zwischengrößen | Drehen | R-40 (Teil Drehen), R-47, R-51 |
+
+### 9. Backup und Abgleich
+
+| Nr. | Regel | Prüfung | Gerät | ersetzt |
+|---|---|---|---|---|
+| R-9.1 | **Backup erstellen:** Backup-Kachel immer da (gelb, solange heute keines), Mehr-Menü; Teilen-Menü; Dateiname; Fenster ✅/⚠️; zählt nur abgeschlossen, je Gerät | backup.mjs | iCloud, Teilen | R-10, R-45 |
+| R-9.2 | **Backup laden:** Abfrage mit Zeitpunkt, Gerät und ‚neuer/älter‘; Kacheln Abgleichen (blau) und Ersetzen (rot) mit Erklärung; unlesbare Datei ⚠️; Abbrechen ändert nichts | backup.mjs | – | R-41, R-46 |
+| R-9.3 | **Abgleichen:** je Feld gilt das Neuere; leere Felder überschreiben nichts; Gelöschtes bleibt gelöscht, solange danach nicht geändert (Hinweis nennt die Geräte); Zähler: größerer Wert; Einstellungen je Gerät | abgleich.mjs (Fälle 1–20) | – | R-42, R-43 |
+| R-9.4 | **Ergebnis:** kleines Fenster ohne Einzelheiten, Schaltfläche ‚Abgleichbericht anzeigen‘ nur bei Inhalt; Bericht als Vorschau wie die Ausgabe | abgleich.mjs | – | R-44 |
+
+### 10. Texte und Versionen
+
+| Nr. | Regel | Prüfung | Gerät | ersetzt |
+|---|---|---|---|---|
+| R-10.1 | **Texte:** deutsch, kein ‚OK‘/‚Close‘/‚Cancel‘; Anführungszeichen ‚…‘; gleiche Aktion = gleiche Bezeichnung und gleiches Icon überall; Teilen nur als Icon | hig.mjs – auch Icon je Bezeichnung über alle Ansichten | – | R-14, R-23 (Teil Texte), R-24, R-34 |
+| R-10.2 | **Lesbarkeit:** Schrift mindestens 11 pt; Kontrast 4,5 : 1 bzw. 3 : 1, hell und dunkel | hig.mjs | – | R-12, R-13 |
+| R-10.3 | **Versionskopplung:** ui.js/design.css mit `?v=`; Versionen stimmen überein, sonst Hinweis beim Start; Versionszeile nennt AppDesign (mit A-05: feste Fassung je App) | version.mjs | – | R-48 |
+| R-10.4 | **README ‚Verwendete Versionen‘** ganz oben, je Version und Link | doku.mjs – `checkDocs`; Katalog selbst: `checkCatalog` | – | R-49 |
+
+**Aus dem Katalog genommen:** R-50 (Prüfliste mit /0, Meldung je Gerät) → Zusammenarbeit allgemein 7 als Arbeitsregel,
+Prüfung `doku.mjs` bleibt.
+
+
+### Zuordnung alt → neu
+
+Die alten Nummern R-01 bis R-52 (bis 4.11.4) gelten nicht mehr; sie stehen nur noch in Versionsgeschichten und Changelogs.
+
+| alt | neu | alt | neu | alt | neu | alt | neu |
+|---|---|---|---|---|---|---|---|
+| R-01 | R-1.4 | R-14 | R-10.1 | R-27 | R-5.1 | R-40 | R-4.2, R-8.1 |
+| R-02 | R-3.4 | R-15 | R-4.1 | R-28 | R-2.1 | R-41 | R-9.2 |
+| R-03 | R-1.1 | R-16 | R-3.3 | R-29 | R-6.3 | R-42 | R-9.3 |
+| R-04 | R-1.3 | R-17 | R-5.2 | R-30 | R-6.1 | R-43 | R-9.3 |
+| R-05 | R-2.1 | R-18 | R-4.5 | R-31 | R-7.1 | R-44 | R-9.4 |
+| R-06 | R-5.1 | R-19 | R-3.2 | R-32 | R-1.1 | R-45 | R-9.1 |
+| R-07 | R-5.2 | R-20 | R-1.3 | R-33 | R-1.2 | R-46 | R-9.2 |
+| R-08 | R-6.1 | R-21 | R-2.2 | R-34 | R-10.1 | R-47 | R-8.1 |
+| R-09 | R-2.2 | R-22 | R-3.2 | R-35 | R-3.2 | R-48 | R-10.3 |
+| R-10 | R-9.1 | R-23 | R-4.3, R-10.1 | R-36 | R-1.1 | R-49 | R-10.4 |
+| R-11 | R-3.1 | R-24 | R-10.1 | R-37 | R-6.3 | R-50 | Zusammenarbeit 7 |
+| R-12 | R-10.2 | R-25 | R-6.1 | R-38 | R-4.3 | R-51 | R-8.1 |
+| R-13 | R-10.2 | R-26 | R-5.1 | R-39 | R-4.5 | R-52 | R-6.2 |
 
 ## Versionsgeschichte
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 4.12.0 | 14.10.2026 | Neben | **Regelkatalog neu (A-02a):** 52 Regeln → 34 in 10 Themen, Nummern R-<Thema>.<Nr>, je Regel genau eine Prüfung (Spalte ‚Prüfung‘), 5 neue Regeln R-2.3, R-4.4, R-5.3, R-5.4, R-6.4; Zebra je Tabellenzeile auch in App-Tabellen (R-6.1); R-50 → Zusammenarbeit 7; Zuordnung alt → neu; Abschnitte 1, 9, 10, 11, 12, 14 verweisen auf die Regeln statt sie zu wiederholen; Grundprinzipien: iPad und iPhone, Abgleich über das Backup (W-6) |
 | 4.11.4 | 14.10.2026 | Korrektur | R-52: zusammengefasste Zellen in der ersten Spalte gelten als eine Tabellenzeile – alle Zellen dahinter in ihrer Farbe, Wechsel weiß/grau je Tabellenzeile; Abgleichbericht je Reiselogbuch eine Tabellenzeile; Prüfung zählt Tabellenzeilen |
 | 4.11.3 | 14.10.2026 | Korrektur | Neue Regel R-52: Mustertabelle der Ausgabe als Baustein `outputCss` für jede Ausgabe, Vorschau und jeden Bericht; Prüfung vergleicht jede Tabelle Eigenschaft für Eigenschaft mit ihr – Anlass: Abgleichbericht mit dickerer Linie, ohne graue Zeilen und mit halbfettem Kopf (P-29/3) |
 | 4.11.2 | 14.10.2026 | Korrektur | R-37 gilt überall (auch Fenster, Vorschau, Bericht) und wird in jeder Zelle geprüft – Anlass: Abgleichbericht ragte in Nachbarzellen; Abgleichbericht mit PDF in der Kapsel; neue Regel R-51 (oberster Eintrag bleibt beim Drehen, Baustein in ui.js, Prüfung mit nachgebildetem Safari) |
