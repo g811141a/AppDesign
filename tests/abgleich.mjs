@@ -36,7 +36,7 @@ export async function checkSync(page) {
         // Seit 4.11.0: kurzes Fenster (resultText) und Abgleichbericht (reportHtml) zusammen geprüft.
         const text = sync.resultText(stats, T('12:00'), there.name, here.name) + sync.reportHtml(stats, T('12:00'), there.name, here.name);
         const msg = expect[who]({ data, stats, text, has: s => text.includes(s), e: id => E(data, id),
-          row: (kind, title) => text.includes(`<tbody data-kind="${kind}" data-title="${title}">`) });
+          row: (kind, title) => text.includes(`<tbody data-kind="${kind}" data-title="${title}"`) });
         if (msg) errors.push(`Abgleich Fall ${nr} (${name}) – ${who} lädt das Backup vom ${there.name}: ${msg}`);
       }
     }

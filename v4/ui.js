@@ -1,5 +1,5 @@
-// AppDesign 4.11.3 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
-// Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/v4/ui.js?v=4.11.3"></script>
+// AppDesign 4.11.4 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
+// Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/v4/ui.js?v=4.11.4"></script>
 // Seit 4.11.0 (R-48): ui.js und design.css immer mit ?v=<AppDesign-Version> einbinden (auch in sw.js) und beim Start
 // prüfen, ob genau diese Fassung geladen ist (AD_VERSION hier, --ad-version in design.css).
 // Klassisches Skript: alle Funktionen sind global und für das Skript der App sichtbar.
@@ -17,7 +17,7 @@
 
 'use strict';
 // Version der Bausteine (R-48): die App vergleicht sie beim Start mit der benötigten Fassung.
-const AD_VERSION = '4.11.3';
+const AD_VERSION = '4.11.4';
 /* ---------- Icons ---------- */
 
 // Schaltflächen-Icons aus Lucide (ISC-Lizenz), direkt eingebettet, damit die App offline funktioniert.
@@ -596,26 +596,27 @@ function createSync({ list, sub, subAt, maxFields = [], nouns = ['Eintrag', 'Ein
     .sync-report table.grid col.c4 { width: 22%; } .sync-report table.grid col.c5 { width: 14%; } .sync-report table.grid col.c6 { width: 10%; } .sync-report table.grid col.c7 { width: 13%; }
     .sync-report table.grid td, .sync-report table.grid th { overflow-wrap: break-word; -webkit-hyphens: auto; hyphens: auto; }
     .sync-report table.grid tbody th { font-weight: 700; }
-    /* Jede zweite Zeile grau über die ganze Tabelle gezählt (die Gruppen je Reiselogbuch zählen durch). */
+    /* Grau je Tabellenzeile = je Eintrag (zusammengefasste erste Spalte), nicht je Feldzeile. */
     .sync-report table.grid tbody tr:nth-child(even) { background: none; }
-    .sync-report table.grid tbody tr.z { background: #f5f5f5; }
+    .sync-report table.grid tbody.z > tr { background: #f5f5f5; }
     .sync-report .new { color: #0a5bd3; font-weight: 600; } .sync-report .del { color: #c0362c; font-weight: 600; }
     .sync-report .old { color: #555; }
     .sync-report p { margin: 8px 0; }`;
   const atText = at => at ? (d => `${d.getDate()}.${d.getMonth() + 1}.${d.getFullYear()} ${two(d.getHours())}:${two(d.getMinutes())}`)(new Date(at)) : '–';
   // Eine Gruppe je Eintrag; je Feld eine Zeile; Eintrag und Tag über ihre Zeilen zusammengefasst (rowspan).
-  // Eine Tabellenzeile je Feld, ohne zusammengefasste Zellen: Reiselogbuch, Tag, Gerät und Zeitpunkt stehen nur in der
-  // ersten Zeile ihrer Gruppe. So gilt jede zweite graue Zeile für die ganze Breite (R-52, allgemeiner Standard).
+  // Je Reiselogbuch (allgemein: Eintrag) eine Tabellenzeile: sein Name ist in der ersten Spalte über alle seine Feldzeilen
+  // zusammengefasst, Tag, Gerät und Zeitpunkt je Tag. Zusammengefasste Zellen in der ersten Spalte gelten als eine
+  // Tabellenzeile – alle Zellen dahinter haben ihre Farbe, weiß und grau wechseln je Eintrag (R-52).
   function reportTable(groups, cols) {
-    let n = 0;
-    const body = groups.map(g => {
+    const body = groups.map((g, k) => {
       const lines = g.rows.flatMap(r => r.fields.map((f, i) => ({ r, f, first: !i })));
-      return `<tbody data-kind="${g.kind}" data-title="${esc(g.title)}">${lines.map((x, i) => `<tr${++n % 2 === 0 ? ' class="z"' : ''}>${
-        i ? '<td></td>' : `<th scope="row">${esc(g.title)}</th>`}<td>${x.first ? (x.r.key === null ? '–' : esc(keyText(x.r.key))) : ''}</td><td>${x.f.label}</td><td>${x.f.now}</td><td class="old">${x.f.before}</td>${
-        x.first ? `<td>${esc(x.r.on || '–')}</td><td>${atText(x.r.at)}</td>` : '<td></td><td></td>'}</tr>`).join('')}</tbody>`;
+      return `<tbody data-kind="${g.kind}" data-title="${esc(g.title)}"${k % 2 ? ' class="z"' : ''}>${lines.map((x, i) => `<tr>${i ? '' : `<th scope="rowgroup" rowspan="${lines.length}">${esc(g.title)}</th>`}${
+        x.first ? `<td rowspan="${x.r.fields.length}">${x.r.key === null ? '–' : esc(keyText(x.r.key))}</td>` : ''}<td>${x.f.label}</td><td>${x.f.now}</td><td class="old">${x.f.before}</td>${
+        x.first ? `<td rowspan="${x.r.fields.length}">${esc(x.r.on || '–')}</td><td rowspan="${x.r.fields.length}">${atText(x.r.at)}</td>` : ''}</tr>`).join('')}</tbody>`;
     }).join('');
     return `<table class="grid"><colgroup>${[1, 2, 3, 4, 5, 6, 7].map(i => `<col class="c${i}">`).join('')}</colgroup><thead><tr><th>${esc(nouns[0])}</th><th>Tag</th><th>Feld</th><th>${cols[0]}</th><th>${cols[1]}</th><th>Vom Gerät</th><th>Geändert am</th></tr></thead>${body}</table>`;
   }
+
 
   const fieldRows = (rows, dflt) => (rows || []).map(r => ({ key: r.key, on: r.on || dflt, at: r.at, fields: r.fields.map(f => ({
     label: esc(labels[f.k] || f.k), now: f.cleared ? '<i>geleert</i>' : esc(valueText(f.v)).replace(/\n/g, '<br>'), before: esc(valueText(f.old)).replace(/\n/g, '<br>') })) }));

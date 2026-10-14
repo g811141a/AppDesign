@@ -1,4 +1,4 @@
-// AppDesign 4.11.3 · HIG- und Regel-Prüfung: misst eine App-Ansicht gegen die HIG-Checkliste (Abschnitt 16)
+// AppDesign 4.11.4 · HIG- und Regel-Prüfung: misst eine App-Ansicht gegen die HIG-Checkliste (Abschnitt 16)
 // und alle automatisch prüfbaren Regeln des Regelkatalogs (Abschnitt 17, R-01 …) der Designrichtlinie allgemein. Wird vom Prüfskript jeder App eingebunden:
 //   import { createCheck } from '../../AppDesign/tests/hig.mjs';
 //   const hig = createCheck({ skipTargets: ['table.days .ln:not(.q) a'] });   // bewusste Abweichungen der App
@@ -261,12 +261,21 @@ const found = new Map();
           [...colors].filter(c => c !== 'weiß' && c !== 'grau').forEach(c => R('R-52', `${name}: Zeilenfarbe ${c} nicht wie die Mustertabelle`));
           // Zebra gilt für die ganze Tabellenzeile (allgemeiner Standard): alle Zellen einer Zeile gleich, keine zusammengefasste
           // Zelle über verschieden gefärbte Zeilen.
-          [...t.querySelectorAll('tbody tr')].forEach(r => { const c = new Set([...r.cells].filter(x => x.tagName === 'TD').map(bg)); if (c.size > 1) R('R-52', `${name}: graue Zeile nur teilweise gefärbt – Zebra gilt für die ganze Zeile`); });
           t.querySelectorAll('tbody [rowspan]').forEach(x => { const n = +x.getAttribute('rowspan'); if (n > 1) { const r0 = x.parentElement, rows = [...r0.parentElement.children], i0 = rows.indexOf(r0);
             if (new Set(rows.slice(i0, i0 + n).map(r => cs(r).backgroundColor === 'rgba(0, 0, 0, 0)' ? bg(r.querySelector('td') || r) : cs(r).backgroundColor)).size > 1) R('R-52', `${name}: zusammengefasste Zelle über weiße und graue Zeilen – Zebra gilt für die ganze Zeile`); } });
-          // Zeilen bzw. Blöcke zählen: ein Block beginnt mit einer vollständigen Zeile (zusammengefasste Zellen setzen sich fort).
-          const trs = [...t.querySelectorAll('tbody tr')], tdCount = r => r.querySelectorAll('td').length, full = Math.max(0, ...trs.map(tdCount));
-          if (trs.filter(r => tdCount(r) === full).length >= 2 && !colors.has('grau')) R('R-52', `${name}: keine grauen Zeilen wie die Mustertabelle (jede zweite Zeile grau)`);
+          // Tabellenzeilen zählen (seit 4.11.4): eine Zeile beginnt dort, wo die erste Spalte einen Inhalt hat und nicht von einer
+          // zusammengefassten Zelle darüber bedeckt ist – zusammengefasste Zellen in der ersten Spalte gelten als eine Tabellenzeile.
+          const trs = [...t.querySelectorAll('tbody tr')], units = []; let cover = 0;
+          // Eine leere erste Zelle setzt die Zeile darüber fort (wirkt wie zusammengefasst).
+          for (const r of trs) { if (cover > 0) { cover--; units[units.length - 1].push(r); continue; }
+            if (units.length && !r.cells[0]?.textContent.trim()) { units[units.length - 1].push(r); continue; }
+            units.push([r]); cover = (+r.cells[0]?.getAttribute('rowspan') || 1) - 1; }
+          if (units.length >= 2 && !colors.has('grau')) R('R-52', `${name}: keine grauen Zeilen wie die Mustertabelle (jede zweite Zeile grau)`);
+          // Alle Zellen einer Tabellenzeile in derselben Farbe wie ihre erste Spalte; die Farben wechseln von Zeile zu Zeile.
+          const unitColor = u => new Set(u.flatMap(r => [...r.cells].map(bg)));
+          units.forEach((u, k) => { const c = unitColor(u);
+            if (c.size > 1) R('R-52', `${name}: Tabellenzeile ${k + 1} nicht einheitlich gefärbt – alle Zellen wie die erste Spalte`);
+            if (k && c.size === 1 && [...c][0] === [...unitColor(units[k - 1])][0]) R('R-52', `${name}: Tabellenzeilen ${k} und ${k + 1} gleich gefärbt – weiß und grau wechseln sich ab`); });
         });
       }
       // R-37 Kein Text ragt über Zelle oder Kachel hinaus – zu lange Wörter brechen im Wort um
