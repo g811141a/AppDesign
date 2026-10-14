@@ -1,6 +1,6 @@
 # AppDesign
 
-**Version 4.11.4** · Stand 14.10.2026
+**Version 4.12.0** · Stand 14.10.2026
 
 Gemeinsames Design für alle iPad-Web-Apps von g811141a – Apple-like nach den
 [Human Interface Guidelines](https://developer.apple.com/design/human-interface-guidelines).
@@ -8,14 +8,14 @@ Jede Komponente ist hier einmal beschrieben **und** einmal programmiert; alle Ap
 
 | Datei / Ordner | Inhalt |
 |---|---|
-| `README - Designrichtlinie allgemein.md` | Gestaltungs- und Bedienregeln, Komponenten, HIG-Checkliste |
+| `README - Designrichtlinie allgemein.md` | Gestaltungs- und Bedienregeln, Komponenten, HIG-Checkliste, Regelkatalog (Abschnitt 17) |
 | `README - Zusammenarbeit allgemein.md` | Regeln für die Zusammenarbeit mit Claude |
 | `UEBERGABE.md` | Stand der letzten Sitzung – Claude liest sie zu Beginn jeder Sitzung zuerst |
 | `VERLAUF.md` | alle Wünsche und Entscheidungen des Nutzers (seit 04.10.2026) – damit nichts vergessen wird |
 | `v4/design.css` | Farben, Schrift und alle Komponenten (Hauptversion 4) |
 | `v4/ui.js` | Icons, Menüs, Sprechblasen, Fenster, Darstellung … (Hauptversion 4) |
 | `apple-referenz/` | Vergleichsbilder aus Apple-Apps (private Inhalte verpixelt) |
-| `tests/hig.mjs` | HIG-Prüfung, wird vom Prüfskript jeder App eingebunden |
+| `tests/` | Prüfungen des Regelkatalogs (`hig.mjs`, `ablauf.mjs` u. a.), werden von den Prüfskripten jeder App eingebunden |
 | `vorlage/index.html` | Startpunkt für eine neue App |
 | `CHANGELOG.md` · `BACKLOG.md` | Versionsgeschichte · offene allgemeine Themen |
 

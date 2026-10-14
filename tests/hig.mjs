@@ -1,17 +1,17 @@
-// AppDesign 4.11.4 · HIG- und Regel-Prüfung: misst eine App-Ansicht gegen die HIG-Checkliste (Abschnitt 16)
-// und alle automatisch prüfbaren Regeln des Regelkatalogs (Abschnitt 17, R-01 …) der Designrichtlinie allgemein. Wird vom Prüfskript jeder App eingebunden:
+// AppDesign 4.12.0 · HIG- und Regel-Prüfung: misst eine App-Ansicht gegen die HIG-Checkliste (Abschnitt 16)
+// und alle automatisch prüfbaren Regeln des Regelkatalogs (Abschnitt 17, R-1.1 …) der Designrichtlinie allgemein. Wird vom Prüfskript jeder App eingebunden:
 //   import { createCheck } from '../../AppDesign/tests/hig.mjs';
 //   const hig = createCheck({ skipTargets: ['table.days .ln:not(.q) a'] });   // bewusste Abweichungen der App
 //   await hig.measure(page, 'Mehr-Menü (hell quer)');  await hig.stays(page, '#mainMore', 'Mehr-Menü');
-//   await hig.shape(page, '#side', 'Seitenleiste', 'iPad');   // gleicher Baustein auf iPad und iPhone (R-36)
-//   await hig.barStill(page, 'Hauptansicht');                  // Leisten bewegen sich beim Wischen nicht (R-05)
-// Offene Menüs, Untermenüs und Sprechblasen dreht measure() automatisch quer ↔ hoch und prüft ihre Lage (R-40).
+//   await hig.shape(page, '#side', 'Seitenleiste', 'iPad');   // gleicher Baustein auf iPad und iPhone (R-1.1)
+//   await hig.barStill(page, 'Hauptansicht');                  // Leisten bewegen sich beim Wischen nicht (R-2.1)
+// Offene Menüs, Untermenüs und Sprechblasen dreht measure() automatisch quer ↔ hoch und prüft ihre Lage (R-8.1).
 //   process.exit(hig.report());
-// Geprüft: Antippflächen (44 pt, in Kapseln/Schalter 28 pt), Schrift ≥ 11 pt, Kontrast (4,5 : 1 bzw. 3 : 1),
-// doppelte Anführungszeichen, Löschen am Ende von Menüs, keine Linien zwischen Menüpunkten,
-// gedrückte Schaltfläche bleibt blau. Bewusste Abweichungen allgemein: Weiß auf Systemblau, Orange --warn.
+// Geprüft: Antippflächen (R-3.1), Schrift und Kontrast (R-10.2), doppelte Anführungszeichen (R-10.1), Menüs (R-4.1),
+// gedrückte Schaltfläche bleibt blau (R-3.3) und alle weiteren Regeln mit ‚hig.mjs‘ im Regelkatalog. Jede Meldung trägt
+// ihre Regelnummer (seit 4.12.0). Bewusste Abweichungen allgemein: Weiß auf Systemblau, Orange --warn.
 export function createCheck({ skipTargets = [] } = {}) {
-const found = new Map();
+const found = new Map(), icons = new Map();
   let rotating = false;
   const note = (kind, text, where) => {
     const key = `${kind}: ${text}`;
@@ -19,7 +19,7 @@ const found = new Map();
     found.get(key).add(where);
   };
   
-  // R-40: Ein offenes Menü (mit Untermenü) bzw. eine Sprechblase bleibt beim Drehen (quer ↔ hoch) an ihrer
+  // R-8.1: Ein offenes Menü (mit Untermenü) bzw. eine Sprechblase bleibt beim Drehen (quer ↔ hoch) an ihrer
   // Schaltfläche: darunter, an ihr ausgerichtet, ganz sichtbar; das Untermenü neben seinem Eintrag. Danach zurückdrehen.
   const rotate = async (p, anchorSel, where) => {
     const vp = p.viewportSize();
@@ -47,10 +47,10 @@ const found = new Map();
         }
         return out;
       }, anchorSel);
-      for (const x of bad) note('Regel', `R-40 ${x} (${size.width}×${size.height})`, where);
+      for (const x of bad) note('Regel', `R-8.1 ${x} (${size.width}×${size.height})`, where);
     }
   };
-  // R-47: Die Seitenleiste (iPad) behält beim Drehen ihren Zustand – sichtbar bleibt sichtbar (quer fest, hoch darübergelegt),
+  // R-8.1: Die Seitenleiste (iPad) behält beim Drehen ihren Zustand – sichtbar bleibt sichtbar (quer fest, hoch darübergelegt),
   // ausgeblendet bleibt ausgeblendet. Wird je Seite einmal automatisch geprüft (beide Zustände, hin und zurück).
   const sideChecked = new WeakSet();
   const sideKeep = async (p, where) => {
@@ -69,13 +69,13 @@ const found = new Map();
       for (const [mid, size] of [[{ width: turned.width, height: vp.height }, turned], [{ width: vp.width, height: turned.height }, vp]]) {
         await p.setViewportSize(mid); await p.waitForTimeout(60);
         await p.setViewportSize(size); await p.waitForTimeout(500);
-        if (await shown() !== before) note('Regel', `R-47 Seitenleiste ${before ? 'sichtbar' : 'ausgeblendet'} – nach dem Drehen auf ${size.width}×${size.height} ${before ? 'verschwunden' : 'erschienen'}`, where);
+        if (await shown() !== before) note('Regel', `R-8.1 Seitenleiste ${before ? 'sichtbar' : 'ausgeblendet'} – nach dem Drehen auf ${size.width}×${size.height} ${before ? 'verschwunden' : 'erschienen'}`, where);
       }
       if (pass === 0 && !(await toggle())) break;   // zweiter Durchgang mit dem anderen Zustand
     }
     await toggle();   // Ausgangszustand wiederherstellen
   };
-  // R-51: oberster Eintrag bleibt beim Drehen (Safari nachgebildet: kein Scroll-Anker).
+  // R-8.1: oberster Eintrag bleibt beim Drehen (Safari nachgebildet: kein Scroll-Anker).
   const topChecked = new WeakSet();
   const topKeep = async (p, where) => {
     const vp = p.viewportSize(), turned = { width: vp.height, height: vp.width };
@@ -91,7 +91,7 @@ const found = new Map();
       if (phone(mid) === phone(vp)) { await p.setViewportSize(mid); await p.waitForTimeout(60); }
       await p.setViewportSize(size); await p.waitForTimeout(600);
       const now = await top();
-      if (now !== before) note('Regel', `R-51 nach dem Drehen auf ${size.width}×${size.height} steht oben ein anderer Eintrag`, where);
+      if (now !== before) note('Regel', `R-8.1 nach dem Drehen auf ${size.width}×${size.height} steht oben ein anderer Eintrag`, where);
     }
     await p.evaluate(y => window.scrollTo(0, y), y0); await p.waitForTimeout(200);
   };
@@ -155,83 +155,106 @@ const found = new Map();
       const phone = document.documentElement.classList.contains('phone');
       const hex = v => rgb(v.trim().replace(/^#(..)(..)(..)$/, (m, a, b, c) => `rgb(${parseInt(a, 16)},${parseInt(b, 16)},${parseInt(c, 16)})`));
       const openDlg = [...document.querySelectorAll('dialog')].some(d => d.open);
-      // R-01 Nur der Vordergrund reagiert
-      if (openDlg && !document.documentElement.classList.contains('locked')) R('R-01', 'Seite hinter dem Fenster nicht gesperrt');
-      document.querySelectorAll('.layer').forEach(l => { if (cs(l).touchAction !== 'none') R('R-01', 'Ebene hinter Menü/Sprechblase fängt Wischen nicht ab'); });
-      // R-02 Kein Fokus-Rahmen beim Öffnen eines Fensters
-      if (openDlg && document.activeElement?.id === 'dlgX') R('R-02', 'x hat beim Öffnen den Fokus (blauer Rahmen)');
-      document.querySelectorAll('.searchbox input').forEach(e => { if (e === document.activeElement && cs(e).outlineStyle !== 'none') R('R-02', 'Suchfeld mit Fokus-Rahmen'); });
-      // R-04 Doppeltippen vergrößert nie
-      if ([...document.querySelectorAll('button, a[href], input, textarea, [role=button]')].some(e => vis(e) && !['manipulation', 'none'].includes(cs(e).touchAction))) R('R-04', 'Doppeltippen kann die Ansicht vergrößern');
-      // R-05 Leisten bewegen sich nie
-      document.querySelectorAll('.nb, .pnav').forEach(b => { if (vis(b) && cs(b).position !== 'fixed') R('R-05', `Leiste .${b.classList[0]} ist ${cs(b).position} statt fest – sie federt mit`); });
-      if (cs(document.documentElement).overscrollBehaviorY !== 'none') R('R-05', 'Seite federt am Rand nach');
+      // R-1.4 Nur der Vordergrund reagiert
+      if (openDlg && !document.documentElement.classList.contains('locked')) R('R-1.4', 'Seite hinter dem Fenster nicht gesperrt');
+      document.querySelectorAll('.layer').forEach(l => { if (cs(l).touchAction !== 'none') R('R-1.4', 'Ebene hinter Menü/Sprechblase fängt Wischen nicht ab'); });
+      // R-3.4 Kein Fokus-Rahmen beim Öffnen eines Fensters
+      if (openDlg && document.activeElement?.id === 'dlgX') R('R-3.4', 'x hat beim Öffnen den Fokus (blauer Rahmen)');
+      document.querySelectorAll('.searchbox input').forEach(e => { if (e === document.activeElement && cs(e).outlineStyle !== 'none') R('R-3.4', 'Suchfeld mit Fokus-Rahmen'); });
+      // R-1.3 Doppeltippen vergrößert nie
+      if ([...document.querySelectorAll('button, a[href], input, textarea, [role=button]')].some(e => vis(e) && !['manipulation', 'none'].includes(cs(e).touchAction))) R('R-1.3', 'Doppeltippen kann die Ansicht vergrößern');
+      // R-2.1 Leisten bewegen sich nie
+      document.querySelectorAll('.nb, .pnav').forEach(b => { if (vis(b) && cs(b).position !== 'fixed') R('R-2.1', `Leiste .${b.classList[0]} ist ${cs(b).position} statt fest – sie federt mit`); });
+      if (cs(document.documentElement).overscrollBehaviorY !== 'none') R('R-2.1', 'Seite federt am Rand nach');
       const side = document.getElementById('side');
       const scroller = e => { for (let x = e.parentElement; x && x !== document.body; x = x.parentElement) if (/auto|scroll/.test(cs(x).overflowY)) return x; return null; };
-      if (side && vis(side)) side.querySelectorAll('.side-head, .bhint').forEach(e => { if (scroller(e)) R('R-05', `.${e.classList[0]} liegt im Scrollbereich der Seitenleiste – federt mit`); });
-      // R-06 Bezeichnung und Feld gehören zusammen
-      document.querySelectorAll('.dates .dl').forEach(d => { if (vis(d) && !d.parentElement.classList.contains('pair')) R('R-06', 'Bezeichnung nicht mit ihrem Feld verbunden'); });
-      // R-08 Gelbe Markierung ohne blauen Rand
+      if (side && vis(side)) side.querySelectorAll('.side-head, .bhint').forEach(e => { if (scroller(e)) R('R-2.1', `.${e.classList[0]} liegt im Scrollbereich der Seitenleiste – federt mit`); });
+      // R-5.1 Bezeichnung und Feld gehören zusammen
+      document.querySelectorAll('.dates .dl').forEach(d => { if (vis(d) && !d.parentElement.classList.contains('pair')) R('R-5.1', 'Bezeichnung nicht mit ihrem Feld verbunden'); });
+      // R-6.1 Gelbe Markierung ohne blauen Rand
       const focus = hex(root.getPropertyValue('--focus'));
-      document.querySelectorAll('tr, .box, .irow, .side-row').forEach(e => { if (vis(e) && same(rgb(cs(e).backgroundColor), focus) && /inset/.test(cs(e).boxShadow)) R('R-08', 'gelbe Markierung mit blauem Rand'); });
-      // R-09 Titel steht in der Leiste (ohne großen Titel)
-      document.querySelectorAll('.pnav-title').forEach(t => { if (vis(t.parentElement) && !document.querySelector('.ltitle') && cs(t).opacity !== '1') R('R-09', 'Titel nicht in der Leiste'); });
-      // R-10 Backup-Kachel immer da, sobald es Einträge gibt
-      if (side && vis(side) && side.querySelector('.side-row') && !side.querySelector('.bhint')) R('R-10', 'Backup-Kachel fehlt in der Seitenleiste');
-      if (document.querySelector('.pnav-head') && document.querySelector('.irow') && !document.querySelector('.bnote')) R('R-10', 'Backup-Kachel fehlt in der Startliste');
-      // R-18 Fenster auf dem iPhone bildschirmfüllend
+      document.querySelectorAll('tr, .box, .irow, .side-row').forEach(e => { if (vis(e) && same(rgb(cs(e).backgroundColor), focus) && /inset/.test(cs(e).boxShadow)) R('R-6.1', 'gelbe Markierung mit blauem Rand'); });
+      // R-2.2 Titel steht in der Leiste (ohne großen Titel)
+      document.querySelectorAll('.pnav-title').forEach(t => { if (vis(t.parentElement) && !document.querySelector('.ltitle') && cs(t).opacity !== '1') R('R-2.2', 'Titel nicht in der Leiste'); });
+      // R-9.1 Backup-Kachel immer da, sobald es Einträge gibt
+      if (side && vis(side) && side.querySelector('.side-row') && !side.querySelector('.bhint')) R('R-9.1', 'Backup-Kachel fehlt in der Seitenleiste');
+      if (document.querySelector('.pnav-head') && document.querySelector('.irow') && !document.querySelector('.bnote')) R('R-9.1', 'Backup-Kachel fehlt in der Startliste');
+      // R-4.5 Fenster auf dem iPhone bildschirmfüllend
       const dl = document.getElementById('dlg');
-      if (phone && dl?.open && Math.abs(dl.getBoundingClientRect().width - innerWidth) > 2) R('R-18', 'Fenster nicht bildschirmfüllend');
-      // R-19 Nach oben / Ans Ende in einer senkrechten Kapsel
-      document.querySelectorAll('.fab').forEach(f => { if (vis(f) && parseFloat(cs(f).borderTopLeftRadius) < 10) R('R-19', 'Nach oben / Ans Ende nicht in einer Kapsel'); });
-      // R-20 Eingabefelder mindestens 16 px (sonst vergrößert iOS beim Antippen)
-      document.querySelectorAll('input:not([type=checkbox]):not([type=hidden]):not([type=file]), textarea').forEach(e => { if (vis(e) && parseFloat(cs(e).fontSize) < 16) R('R-20', `Eingabefeld ${e.id ? '#' + e.id : ''} unter 16 px – iOS vergrößert beim Antippen`); });
-      // R-21 Anzahl unter dem Titel der Liste
-      document.querySelectorAll('.side-head, .pnav-head').forEach(h => { if (vis(h) && !h.querySelector('small')) R('R-21', 'Anzahl unter dem Titel fehlt'); });
-      // R-22 Schaltflächen und Suchfelder schweben (außer innerhalb von Kapseln, Menüs, Listen und als Link)
+      if (phone && dl?.open && Math.abs(dl.getBoundingClientRect().width - innerWidth) > 2) R('R-4.5', 'Fenster nicht bildschirmfüllend');
+      // R-3.2 Nach oben / Ans Ende in einer senkrechten Kapsel
+      document.querySelectorAll('.fab').forEach(f => { if (vis(f) && parseFloat(cs(f).borderTopLeftRadius) < 10) R('R-3.2', 'Nach oben / Ans Ende nicht in einer Kapsel'); });
+      // R-1.3 Eingabefelder mindestens 16 px (sonst vergrößert iOS beim Antippen)
+      document.querySelectorAll('input:not([type=checkbox]):not([type=hidden]):not([type=file]), textarea').forEach(e => { if (vis(e) && parseFloat(cs(e).fontSize) < 16) R('R-1.3', `Eingabefeld ${e.id ? '#' + e.id : ''} unter 16 px – iOS vergrößert beim Antippen`); });
+      // R-2.2 Anzahl unter dem Titel der Liste
+      document.querySelectorAll('.side-head, .pnav-head').forEach(h => { if (vis(h) && !h.querySelector('small')) R('R-2.2', 'Anzahl unter dem Titel fehlt'); });
+      // R-3.2 Schaltflächen und Suchfelder schweben (außer innerhalb von Kapseln, Menüs, Listen und als Link)
       document.querySelectorAll('button, .searchbox input').forEach(e => {
         if (!vis(e) || !onTop(e) || e.closest('.grp, .navgrp, .cap, .menu, .pop .btns, #side .side-row, .irow, .fab, .smeta, .chips') || e.matches('.link, .mi, .side-row, .irow, .sclear, .fazit-box, [data-day]')) return;
-        if (cs(e).boxShadow === 'none') R('R-22', `Schaltfläche ohne Schatten (schwebt nicht): ‚${label(e)}‘`);
+        if (cs(e).boxShadow === 'none') R('R-3.2', `Schaltfläche ohne Schatten (schwebt nicht): ‚${label(e)}‘`);
       });
-      // R-23 Keine englischen Systemtexte
+      // R-10.1 Keine englischen Systemtexte
       const ui = [...document.querySelectorAll('button, .pop, dialog[open] .dlg-head, .menu')].filter(vis).map(e => e.textContent).join(' ');
       const en = ui.match(/\b(OK|Close|Cancel|Done|Delete|Share)\b/);
-      if (en) R('R-23', `englischer Text ‚${en[1]}‘`);
-      // R-25 Tabellen: Trennlinien zwischen allen Spalten (App-Tabellen)
-      document.querySelectorAll('#app table td + td').forEach(td => { if (vis(td) && parseFloat(cs(td).borderLeftWidth) === 0) R('R-25', 'Tabelle ohne Trennlinie zwischen Spalten'); });
-      // R-26 Datumsfelder so breit wie das Datum
-      document.querySelectorAll('input[type=date]').forEach(e => { if (vis(e) && e.getBoundingClientRect().width > 220) R('R-26', `Datumsfeld zu breit (${Math.round(e.getBoundingClientRect().width)} px)`); });
-      // R-27 Betragsfelder rechtsbündig
-      document.querySelectorAll('input[inputmode=decimal]').forEach(e => { if (vis(e) && !['right', 'end'].includes(cs(e).textAlign)) R('R-27', 'Betragsfeld nicht rechtsbündig'); });
-      // R-29 Hängender Einzug
-      document.querySelectorAll('#app .ln').forEach(e => { if (vis(e) && cs(e).display !== 'flex') R('R-29', 'Zeile ohne hängenden Einzug'); });
-      // R-30 Kasten mit Feldern: Linien waagrecht und senkrecht
+      if (en) R('R-10.1', `englischer Text ‚${en[1]}‘`);
+      // R-6.1 Tabellen: Trennlinien zwischen allen Spalten (App-Tabellen)
+      document.querySelectorAll('#app table td + td').forEach(td => { if (vis(td) && parseFloat(cs(td).borderLeftWidth) === 0) R('R-6.1', 'Tabelle ohne Trennlinie zwischen Spalten'); });
+      // R-5.1 Datumsfelder so breit wie das Datum
+      document.querySelectorAll('input[type=date]').forEach(e => { if (vis(e) && e.getBoundingClientRect().width > 220) R('R-5.1', `Datumsfeld zu breit (${Math.round(e.getBoundingClientRect().width)} px)`); });
+      // R-5.1 Betragsfelder rechtsbündig
+      document.querySelectorAll('input[inputmode=decimal]').forEach(e => { if (vis(e) && !['right', 'end'].includes(cs(e).textAlign)) R('R-5.1', 'Betragsfeld nicht rechtsbündig'); });
+      // R-6.3 Hängender Einzug
+      document.querySelectorAll('#app .ln').forEach(e => { if (vis(e) && cs(e).display !== 'flex') R('R-6.3', 'Zeile ohne hängenden Einzug'); });
+      // R-6.1 Kasten mit Feldern: Linien waagrecht und senkrecht
       document.querySelectorAll('.box .kv').forEach(kv => {
         if (!vis(kv)) return;
-        if (kv.previousElementSibling?.classList.contains('kv') && parseFloat(cs(kv).borderTopWidth) === 0) R('R-30', 'keine waagrechte Linie zwischen den Feldern');
-        const k = kv.querySelector('.k'); if (k && parseFloat(cs(k).borderRightWidth) === 0) R('R-30', 'keine senkrechte Linie zwischen Bezeichnung und Inhalt');
+        if (kv.previousElementSibling?.classList.contains('kv') && parseFloat(cs(kv).borderTopWidth) === 0) R('R-6.1', 'keine waagrechte Linie zwischen den Feldern');
+        const k = kv.querySelector('.k'); if (k && parseFloat(cs(k).borderRightWidth) === 0) R('R-6.1', 'keine senkrechte Linie zwischen Bezeichnung und Inhalt');
       });
-      // R-31 Zentrale Liste als Kacheln, höchstens ein Eintrag blau
-      document.querySelectorAll('#side .side-row, .ilist.tiles .irow').forEach(e => { if (vis(e) && parseFloat(cs(e).borderTopLeftRadius) < 12) R('R-31', 'Eintrag der Liste ist keine Kachel'); });
-      [document.getElementById('side'), document.querySelector('.ilist.tiles')].forEach(l => { if (l && l.querySelectorAll('.current').length > 1) R('R-31', 'mehr als ein Eintrag blau'); });
-      // R-32 Aktionen und Suche oben – unten nur feste Hinweise
-      document.querySelectorAll('.bbar').forEach(b => { if (!vis(b)) return; if ([...b.querySelectorAll('button')].some(x => !x.closest('.bnote')) || b.querySelector('.searchbox')) R('R-32', 'Aktion oder Suche in der unteren Leiste statt oben in der Kapsel'); });
-      // R-33 Darstellung folgt dem Gerät
-      try { if (typeof db !== 'undefined' && db.settings?.appearance === 'auto') { const want = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'; if (document.documentElement.dataset.theme !== want) R('R-33', 'Darstellung folgt nicht dem Gerät'); } } catch (e) {}
-      // R-34 Teilen nur als Icon
-      document.querySelectorAll('button').forEach(b => { if (vis(b) && b.querySelector('svg') && /teilen|share/i.test(b.getAttribute('aria-label') || '') && b.textContent.trim()) R('R-34', 'Teilen mit Text'); });
-      // R-36 Gleiche Funktion = gleicher Baustein: die Kacheln laufen unter der Backup-Kachel durch (iPad wie iPhone)
+      // R-7.1 Zentrale Liste als Kacheln, höchstens ein Eintrag blau
+      document.querySelectorAll('#side .side-row, .ilist.tiles .irow').forEach(e => { if (vis(e) && parseFloat(cs(e).borderTopLeftRadius) < 12) R('R-7.1', 'Eintrag der Liste ist keine Kachel'); });
+      [document.getElementById('side'), document.querySelector('.ilist.tiles')].forEach(l => { if (l && l.querySelectorAll('.current').length > 1) R('R-7.1', 'mehr als ein Eintrag blau'); });
+      // R-1.1 Aktionen und Suche oben – unten nur feste Hinweise
+      document.querySelectorAll('.bbar').forEach(b => { if (!vis(b)) return; if ([...b.querySelectorAll('button')].some(x => !x.closest('.bnote')) || b.querySelector('.searchbox')) R('R-1.1', 'Aktion oder Suche in der unteren Leiste statt oben in der Kapsel'); });
+      // R-1.2 Darstellung folgt dem Gerät
+      try { if (typeof db !== 'undefined' && db.settings?.appearance === 'auto') { const want = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'; if (document.documentElement.dataset.theme !== want) R('R-1.2', 'Darstellung folgt nicht dem Gerät'); } } catch (e) {}
+      // R-10.1 Teilen nur als Icon
+      document.querySelectorAll('button').forEach(b => { if (vis(b) && b.querySelector('svg') && /teilen|share/i.test(b.getAttribute('aria-label') || '') && b.textContent.trim()) R('R-10.1', 'Teilen mit Text'); });
+      // R-1.1 Gleiche Funktion = gleicher Baustein: die Kacheln laufen unter der Backup-Kachel durch (iPad wie iPhone)
       document.querySelectorAll('.side-foot').forEach(f => { const l = f.parentElement.querySelector('.side-list');
-        if (vis(f) && l && l.getBoundingClientRect().bottom < f.getBoundingClientRect().bottom - 2) R('R-36', 'Liste endet über der Backup-Kachel (starre Begrenzung statt durchlaufen)'); });
-      // R-38 Abfrage mit mehreren Wegen: empfohlene Aktion blau zuerst, zerstörende rot, Abbrechen zuletzt
+        if (vis(f) && l && l.getBoundingClientRect().bottom < f.getBoundingClientRect().bottom - 2) R('R-1.1', 'Liste endet über der Backup-Kachel (starre Begrenzung statt durchlaufen)'); });
+      // R-4.3 Abfrage mit mehreren Wegen: empfohlene Aktion blau zuerst, zerstörende rot, Abbrechen zuletzt
       document.querySelectorAll('.pop .btns').forEach(g => { const bs = [...g.querySelectorAll('button')]; if (bs.length < 3 || !vis(g)) return;
-        if (!bs[0].classList.contains('primary')) R('R-38', 'empfohlene Aktion nicht blau gefüllt an erster Stelle');
-        if (!/Abbrechen|Weiter bearbeiten/.test(bs[bs.length - 1].textContent)) R('R-38', '‚Abbrechen‘ nicht zuletzt');
-        bs.slice(1, -1).forEach(b => { if (/Ersetzen|löschen|Löschen/.test(b.textContent) && !b.classList.contains('danger-text')) R('R-38', `zerstörende Aktion ‚${b.textContent}‘ nicht in roter Schrift`); }); });
-      // R-39 Menü, Sprechblase und Fenster passen ganz auf den Bildschirm (sonst wären Knöpfe unerreichbar)
+        if (!bs[0].classList.contains('primary')) R('R-4.3', 'empfohlene Aktion nicht blau gefüllt an erster Stelle');
+        if (!/Abbrechen|Weiter bearbeiten/.test(bs[bs.length - 1].textContent)) R('R-4.3', '‚Abbrechen‘ nicht zuletzt');
+        bs.slice(1, -1).forEach(b => { if (/Ersetzen|löschen|Löschen/.test(b.textContent) && !b.classList.contains('danger-text')) R('R-4.3', `zerstörende Aktion ‚${b.textContent}‘ nicht in roter Schrift`); }); });
+      // R-4.5 Menü, Sprechblase und Fenster passen ganz auf den Bildschirm (sonst wären Knöpfe unerreichbar)
       document.querySelectorAll('.pop, .menu, dialog[open]').forEach(e => { const b = e.getBoundingClientRect(); if (!b.width || !b.height) return;
-        if (b.top < -1 || b.left < -1 || b.bottom > innerHeight + 1 || b.right > innerWidth + 1) R('R-39', `${e.classList[0] || e.tagName.toLowerCase()} ragt über den Bildschirm hinaus (${Math.round(b.top)}–${Math.round(b.bottom)} von ${innerHeight} px)`); });
-      // R-52 (seit 4.11.3): Tabellen in Ausgaben, Vorschauen und Berichten = Mustertabelle der Ausgabe (outputCss in ui.js).
+        if (b.top < -1 || b.left < -1 || b.bottom > innerHeight + 1 || b.right > innerWidth + 1) R('R-4.5', `${e.classList[0] || e.tagName.toLowerCase()} ragt über den Bildschirm hinaus (${Math.round(b.top)}–${Math.round(b.bottom)} von ${innerHeight} px)`); });
+      // R-3.3 (seit 4.12.0): blau gefüllt nur die Hauptaktion – höchstens eine je Fenster bzw. Sprechblase.
+      document.querySelectorAll('dialog[open], .pop').forEach(d => { const n = [...d.querySelectorAll('button.primary')].filter(vis).length;
+        if (n > 1) R('R-3.3', `${n} blau gefüllte Schaltflächen in einem ${d.tagName === 'DIALOG' ? 'Fenster' : 'Abfrage'} – höchstens eine Hauptaktion`); });
+      // R-5.4 (seit 4.12.0): Auswahl-Kapsel – wischbar mit Verlauf am Rand; die Markierung ändert die Breite nicht.
+      document.querySelectorAll('.cap .scroll').forEach(s => { if (!vis(s) || !onTop(s)) return;
+        const more = s.scrollLeft + s.clientWidth < s.scrollWidth - 2, mask = (cs(s).maskImage || cs(s).webkitMaskImage || 'none');
+        if (more && mask === 'none') R('R-5.4', 'Auswahl-Kapsel geht rechts weiter, aber ohne Verlauf am Rand');
+        s.querySelectorAll('button[aria-pressed]').forEach(b => { const was = b.getAttribute('aria-pressed'), w0 = b.getBoundingClientRect().width;
+          b.setAttribute('aria-pressed', was === 'true' ? 'false' : 'true'); const w1 = b.getBoundingClientRect().width; b.setAttribute('aria-pressed', was);
+          if (Math.abs(w1 - w0) > 0.5) R('R-5.4', `Auswahl ‚${label(b)}‘ ändert beim Wählen ihre Breite (${Math.round(w0)} → ${Math.round(w1)} px)`); }); });
+      // R-6.1 (seit 4.12.0): Zebra je Tabellenzeile auch in den Tabellen der App – eine Tabellenzeile sind alle Zeilen unter einer
+      // zusammengefassten bzw. leeren ersten Zelle; sie ist einheitlich gefärbt, weiß und grau wechseln sich ab. Gelb markierte
+      // Zeilen (--focus) zählen nicht.
+      document.querySelectorAll('#app table').forEach(t => { if (!vis(t)) return;
+        const bgc = c => { const own = cs(c).backgroundColor; return own !== 'rgba(0, 0, 0, 0)' ? own : cs(c.parentElement).backgroundColor; };
+        const units = []; let cover = 0;
+        for (const r of t.querySelectorAll('tbody tr')) { if (!r.getClientRects().length) continue;
+          if (cover > 0) { cover--; units[units.length - 1].push(r); continue; }
+          if (units.length && !r.cells[0]?.textContent.trim()) { units[units.length - 1].push(r); continue; }
+          units.push([r]); cover = (+r.cells[0]?.getAttribute('rowspan') || 1) - 1; }
+        const col = units.map(u => [...new Set(u.flatMap(r => [...r.cells].map(bgc)).filter(c => !same(rgb(c), focus)))]);
+        col.forEach((c, k) => { if (c.length > 1) R('R-6.1', `Tabellenzeile ${k + 1} nicht einheitlich gefärbt – Zebra gilt für die ganze Tabellenzeile`);
+          else if (k && c.length === 1 && col[k - 1].length === 1 && c[0] === col[k - 1][0]) R('R-6.1', `Tabellenzeilen ${k} und ${k + 1} gleich gefärbt – weiß und grau wechseln sich ab`); }); });
+      // R-6.2 (seit 4.11.3): Tabellen in Ausgaben, Vorschauen und Berichten = Mustertabelle der Ausgabe (outputCss in ui.js).
       // Verglichen wird Eigenschaft für Eigenschaft mit einer unsichtbar aufgebauten Mustertabelle: Schrift, Kopf (Farbe,
       // Schriftstärke, Rand), Linien (überall gleich stark), Innenabstände, jede zweite Zeile grau.
       const grids = [...document.querySelectorAll('.rt table.grid, .sync-report table.grid')].filter(vis);
@@ -247,22 +270,22 @@ const found = new Map();
         ref.remove();
         grids.forEach(t => {
           const name = t.closest('.sync-report') ? 'Bericht' : 'Ausgabe';
-          if (pick(t.querySelector('thead th'), head) !== want.head) R('R-52', `${name}: Tabellenkopf anders als die Mustertabelle (${pick(t.querySelector('thead th'), head)})`);
+          if (pick(t.querySelector('thead th'), head) !== want.head) R('R-6.2', `${name}: Tabellenkopf anders als die Mustertabelle (${pick(t.querySelector('thead th'), head)})`);
           const td = [...t.querySelectorAll('tbody td')].find(c => !c.closest('tr').querySelector('th'));
-          if (td && pick(td, cell) !== want.cell) R('R-52', `${name}: Zellen anders als die Mustertabelle (${pick(td, cell)})`);
+          if (td && pick(td, cell) !== want.cell) R('R-6.2', `${name}: Zellen anders als die Mustertabelle (${pick(td, cell)})`);
           const widths = new Set();
           t.querySelectorAll('th, td').forEach(c => { const x = cs(c); for (const side of ['Top', 'Right', 'Bottom', 'Left']) { const w = parseFloat(x[`border${side}Width`]); if (w) widths.add(w); } });
           t.querySelectorAll('tbody').forEach(b => { const w = parseFloat(cs(b).borderTopWidth); if (w) widths.add(w); });
-          if (widths.size > 1) R('R-52', `${name}: verschiedene Linienstärken (${[...widths].join(', ')} px) – wie die Mustertabelle überall gleich`);
+          if (widths.size > 1) R('R-6.2', `${name}: verschiedene Linienstärken (${[...widths].join(', ')} px) – wie die Mustertabelle überall gleich`);
           // Datenzellen nur weiß oder grau wie die Mustertabelle; ab zwei Zeilen bzw. Tagen kommen beide vor (Zebra).
           const bg = c => { const own = cs(c).backgroundColor; return own !== 'rgba(0, 0, 0, 0)' ? own : cs(c.parentElement).backgroundColor; };
           const white = want.odd === 'rgba(0, 0, 0, 0)' ? ['rgba(0, 0, 0, 0)', 'rgb(255, 255, 255)'] : [want.odd];
           const tds = [...t.querySelectorAll('tbody td')], colors = new Set(tds.map(bg).map(c => white.includes(c) ? 'weiß' : c === want.even ? 'grau' : c));
-          [...colors].filter(c => c !== 'weiß' && c !== 'grau').forEach(c => R('R-52', `${name}: Zeilenfarbe ${c} nicht wie die Mustertabelle`));
+          [...colors].filter(c => c !== 'weiß' && c !== 'grau').forEach(c => R('R-6.2', `${name}: Zeilenfarbe ${c} nicht wie die Mustertabelle`));
           // Zebra gilt für die ganze Tabellenzeile (allgemeiner Standard): alle Zellen einer Zeile gleich, keine zusammengefasste
           // Zelle über verschieden gefärbte Zeilen.
           t.querySelectorAll('tbody [rowspan]').forEach(x => { const n = +x.getAttribute('rowspan'); if (n > 1) { const r0 = x.parentElement, rows = [...r0.parentElement.children], i0 = rows.indexOf(r0);
-            if (new Set(rows.slice(i0, i0 + n).map(r => cs(r).backgroundColor === 'rgba(0, 0, 0, 0)' ? bg(r.querySelector('td') || r) : cs(r).backgroundColor)).size > 1) R('R-52', `${name}: zusammengefasste Zelle über weiße und graue Zeilen – Zebra gilt für die ganze Zeile`); } });
+            if (new Set(rows.slice(i0, i0 + n).map(r => cs(r).backgroundColor === 'rgba(0, 0, 0, 0)' ? bg(r.querySelector('td') || r) : cs(r).backgroundColor)).size > 1) R('R-6.2', `${name}: zusammengefasste Zelle über weiße und graue Zeilen – Zebra gilt für die ganze Zeile`); } });
           // Tabellenzeilen zählen (seit 4.11.4): eine Zeile beginnt dort, wo die erste Spalte einen Inhalt hat und nicht von einer
           // zusammengefassten Zelle darüber bedeckt ist – zusammengefasste Zellen in der ersten Spalte gelten als eine Tabellenzeile.
           const trs = [...t.querySelectorAll('tbody tr')], units = []; let cover = 0;
@@ -270,36 +293,40 @@ const found = new Map();
           for (const r of trs) { if (cover > 0) { cover--; units[units.length - 1].push(r); continue; }
             if (units.length && !r.cells[0]?.textContent.trim()) { units[units.length - 1].push(r); continue; }
             units.push([r]); cover = (+r.cells[0]?.getAttribute('rowspan') || 1) - 1; }
-          if (units.length >= 2 && !colors.has('grau')) R('R-52', `${name}: keine grauen Zeilen wie die Mustertabelle (jede zweite Zeile grau)`);
+          if (units.length >= 2 && !colors.has('grau')) R('R-6.2', `${name}: keine grauen Zeilen wie die Mustertabelle (jede zweite Zeile grau)`);
           // Alle Zellen einer Tabellenzeile in derselben Farbe wie ihre erste Spalte; die Farben wechseln von Zeile zu Zeile.
           const unitColor = u => new Set(u.flatMap(r => [...r.cells].map(bg)));
           units.forEach((u, k) => { const c = unitColor(u);
-            if (c.size > 1) R('R-52', `${name}: Tabellenzeile ${k + 1} nicht einheitlich gefärbt – alle Zellen wie die erste Spalte`);
-            if (k && c.size === 1 && [...c][0] === [...unitColor(units[k - 1])][0]) R('R-52', `${name}: Tabellenzeilen ${k} und ${k + 1} gleich gefärbt – weiß und grau wechseln sich ab`); });
+            if (c.size > 1) R('R-6.2', `${name}: Tabellenzeile ${k + 1} nicht einheitlich gefärbt – alle Zellen wie die erste Spalte`);
+            if (k && c.size === 1 && [...c][0] === [...unitColor(units[k - 1])][0]) R('R-6.2', `${name}: Tabellenzeilen ${k} und ${k + 1} gleich gefärbt – weiß und grau wechseln sich ab`); });
         });
       }
-      // R-37 Kein Text ragt über Zelle oder Kachel hinaus – zu lange Wörter brechen im Wort um
+      // R-6.3 Kein Text ragt über Zelle oder Kachel hinaus – zu lange Wörter brechen im Wort um
       // Seit 4.11.2: jede Tabellenzelle überall – auch in Fenstern, Vorschauen und Berichten (vorher nur #app).
       document.querySelectorAll('td, th, #app dd, #app .box, .box .kv .v, .box .ln, .irow, .side-row, .bhint, .bnote, .msg-text, .pop p, .fazit-box').forEach(e => {
         if (!vis(e) || e.closest('#printout') || cs(e).textOverflow === 'ellipsis') return;
         const right = e.getBoundingClientRect().right;
-        if (e.scrollWidth > e.clientWidth + 1 || [...e.querySelectorAll('*')].some(c => vis(c) && c.getBoundingClientRect().right > right + 1)) R('R-37', `Text ragt über ${e.tagName.toLowerCase()}${e.classList[0] ? '.' + e.classList[0] : ''} hinaus: ‚${label(e)}‘`);
+        if (e.scrollWidth > e.clientWidth + 1 || [...e.querySelectorAll('*')].some(c => vis(c) && c.getBoundingClientRect().right > right + 1)) R('R-6.3', `Text ragt über ${e.tagName.toLowerCase()}${e.classList[0] ? '.' + e.classList[0] : ''} hinaus: ‚${label(e)}‘`);
       });
-      document.querySelectorAll('#app table').forEach(t => { if (vis(t) && !t.closest('.rt') && t.offsetWidth > t.parentElement.clientWidth + 1 && !/auto|scroll/.test(cs(t.parentElement).overflowX)) R('R-37', `Tabelle breiter als ihr Platz (${t.offsetWidth} statt ${t.parentElement.clientWidth} px)`); });
-      if (document.documentElement.scrollWidth > innerWidth + 1) R('R-37', 'Seite breiter als der Bildschirm');
+      document.querySelectorAll('#app table').forEach(t => { if (vis(t) && !t.closest('.rt') && t.offsetWidth > t.parentElement.clientWidth + 1 && !/auto|scroll/.test(cs(t.parentElement).overflowX)) R('R-6.3', `Tabelle breiter als ihr Platz (${t.offsetWidth} statt ${t.parentElement.clientWidth} px)`); });
+      if (document.documentElement.scrollWidth > innerWidth + 1) R('R-6.3', 'Seite breiter als der Bildschirm');
+      // R-10.1 (seit 4.12.0): gleiche Aktion = gleiches Icon – Bezeichnung und Icon jeder sichtbaren Schaltfläche, verglichen in report()
+      res.icons = [...document.querySelectorAll('button[aria-label]')].filter(b => vis(b) && b.querySelector('svg.ic')).map(b => [b.getAttribute('aria-label'), b.querySelector('svg.ic').innerHTML.slice(0, 80)]);
       return res;
     }, skipTargets);
-    for (const [k, list] of Object.entries(r)) for (const x of list) note({ target: 'Antippfläche', font: 'Schrift', contrast: 'Kontrast', quotes: 'Anführungszeichen', menu: 'Menü', rules: 'Regel' }[k], x, where);
-    // R-47 automatisch: einmal je Seite, wenn eine Seitenleiste da ist und nichts darüber offen ist (nur iPad).
+    for (const [lbl, sig] of r.icons) { if (!icons.has(lbl)) icons.set(lbl, new Map()); if (!icons.get(lbl).has(sig)) icons.get(lbl).set(sig, where); }
+    delete r.icons;
+    for (const [k, list] of Object.entries(r)) for (const x of list) note('Regel', { target: 'R-3.1 Antippfläche ', font: 'R-10.2 Schrift ', contrast: 'R-10.2 Kontrast ', quotes: 'R-10.1 Anführungszeichen ', menu: 'R-4.1 Menü: ', rules: '' }[k] + x, where);
+    // R-8.1 automatisch: einmal je Seite, wenn eine Seitenleiste da ist und nichts darüber offen ist (nur iPad).
     if (!rotating && !sideChecked.has(p) && await p.evaluate(() => !!document.getElementById('side') && !document.documentElement.classList.contains('phone') && !document.querySelector('.menu, .pop, dialog[open]'))) {
       rotating = true; try { await sideKeep(p, `${where} – Seitenleiste gedreht`); } finally { rotating = false; }
     }
-    // R-51 automatisch (seit 4.11.2): einmal je Seite mit Einträgen (data-day/data-keep) – wie in Safari ohne Scroll-Anker
+    // R-8.1 automatisch (seit 4.11.2): einmal je Seite mit Einträgen (data-day/data-keep) – wie in Safari ohne Scroll-Anker
     // nach unten wischen, drehen, zurückdrehen: oben steht jedes Mal derselbe Eintrag.
     if (!rotating && !topChecked.has(p) && await p.evaluate(sel => document.querySelectorAll(sel).length > 3 && document.documentElement.scrollHeight > innerHeight * 2 && !document.querySelector('.menu, .pop, dialog[open]'), '#app [data-day], #app [data-keep]')) {
       topChecked.add(p); rotating = true; try { await topKeep(p, `${where} – oberster Eintrag gedreht`); } finally { rotating = false; }
     }
-    // R-40 automatisch: ist ein Menü, Untermenü oder eine Sprechblase offen, wird jedes Mal gedreht (quer ↔ hoch) und zurück.
+    // R-8.1 automatisch: ist ein Menü, Untermenü oder eine Sprechblase offen, wird jedes Mal gedreht (quer ↔ hoch) und zurück.
     if (!rotating) {
       const anchor = await p.evaluate(() => { const a = [...document.querySelectorAll('.on')].find(e => !e.closest('.menu, .pop, dialog') && e.getClientRects().length && document.querySelector('.menu, .pop'));
         return !a ? null : a.id ? '#' + CSS.escape(a.id) : a.dataset.id ? `.${a.classList[0]}[data-id="${CSS.escape(a.dataset.id)}"]` : null; });
@@ -307,7 +334,7 @@ const found = new Map();
     }
   }
 
-  // R-36 Gleiche Funktion = gleicher Baustein auf iPad und iPhone: Aufbau (Elemente, Klassen, Scrollbereiche,
+  // R-1.1 Gleiche Funktion = gleicher Baustein auf iPad und iPhone: Aufbau (Elemente, Klassen, Scrollbereiche,
   // feste Teile) eines Bausteins je Gerät festhalten; report() vergleicht die Geräte. allow: bewusst nur auf einem Gerät.
   const shapes = new Map();
   const shape = async (p, sel, name, device, allow = []) => {
@@ -333,14 +360,14 @@ const found = new Map();
       const devs = [...byDev.keys()]; if (devs.length < 2) continue;
       const [d0, ...rest] = devs, a = byDev.get(d0);
       for (const d of rest) { const b = byDev.get(d);
-        if (!a || !b) { note('Regel', `R-36 Baustein ‚${name}‘ fehlt auf ${!a ? d0 : d} – dort eigene Umsetzung statt desselben Bausteins`, `${d0} ↔ ${d}`); continue; }
+        if (!a || !b) { note('Regel', `R-1.1 Baustein ‚${name}‘ fehlt auf ${!a ? d0 : d} – dort eigene Umsetzung statt desselben Bausteins`, `${d0} ↔ ${d}`); continue; }
         const only = (x, y) => x.filter(k => !y.includes(k)).slice(0, 3).join(' · ');
         const ab = only(a, b), ba = only(b, a);
-        if (ab || ba) note('Regel', `R-36 Baustein ‚${name}‘ auf ${d0} und ${d} verschieden${ab ? ` – nur ${d0}: ${ab}` : ''}${ba ? ` – nur ${d}: ${ba}` : ''}`, `${d0} ↔ ${d}`);
+        if (ab || ba) note('Regel', `R-1.1 Baustein ‚${name}‘ auf ${d0} und ${d} verschieden${ab ? ` – nur ${d0}: ${ab}` : ''}${ba ? ` – nur ${d}: ${ba}` : ''}`, `${d0} ↔ ${d}`);
       }
     }
   };
-  // R-05: Eine Symbolleiste – mit oder ohne Suchzeile – bewegt sich beim Wischen keinen Millimeter.
+  // R-2.1: Eine Symbolleiste – mit oder ohne Suchzeile – bewegt sich beim Wischen keinen Millimeter.
   // Misst Lage und Höhe jeder sichtbaren Leiste, scrollt die Seite (und die Liste der Seitenleiste) in Schritten
   // bis über die Ränder hinaus und meldet jede Abweichung ab 0,5 px.
   const barStill = async (p, where) => {
@@ -360,13 +387,14 @@ const found = new Map();
       scrollTo(0, y0); await frame();
       return [...out];
     });
-    for (const x of bad) note('Regel', `R-05 ${x}`, where);
+    for (const x of bad) note('Regel', `R-2.1 ${x}`, where);
   };
   const stays = async (p, sel, where) => {
-    if (!await p.locator(sel).first().evaluate(e => e.classList.contains('on')).catch(() => false)) note('Markierung', `${sel} bleibt nicht blau`, where);
+    if (!await p.locator(sel).first().evaluate(e => e.classList.contains('on')).catch(() => false)) note('Regel', `R-3.3 ${sel} bleibt nicht blau, solange sein Menü, Fenster oder seine Abfrage offen ist`, where);
   };
   const report = () => {
     compareShapes();
+    for (const [lbl, m] of icons) if (m.size > 1) note('Regel', `R-10.1 ‚${lbl}‘ mit ${m.size} verschiedenen Icons – gleiche Aktion, gleiches Icon`, [...m.values()].join(' ↔ '));
     if (!found.size) { console.log('HIG- und Regel-Prüfung: keine Abweichungen.'); return 0; }
     console.log(`HIG- und Regel-Prüfung: ${found.size} Abweichung(en)\n`);
     for (const [k, where] of found) console.log(`- ${k}\n    ${[...where].slice(0, 3).join(' · ')}${where.size > 3 ? ` · +${where.size - 3}` : ''}`);

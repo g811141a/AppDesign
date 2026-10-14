@@ -3,6 +3,27 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.12.0 – 14.10.2026 (Neben)
+
+AppDesign 4.12.0 · Designrichtlinie allgemein 4.12.0 · Zusammenarbeit allgemein 2.1.1 · geprüft mit Reiselogbuch 3.11.5
+
+- **Regelkatalog neu (A-02a, Abschnitt 17):** 52 Regeln → **34 in 10 Themen**, Nummern `R-<Thema>.<Nr>` (z. B. R-6.2);
+  je Regel genau eine Prüfung (Spalte ‚Prüfung‘), Spalte ‚ersetzt‘ und Zuordnung alt → neu. R-50 ist Arbeitsregel in
+  Zusammenarbeit 7.
+- **5 neue Regeln mit Prüfung:** R-2.3 Suche, R-4.4 Fenster-Kopfzeile, R-5.3 Fehlermeldungen, R-5.4 Auswahl-Kapsel,
+  R-6.4 Ausgabe und Vorschau.
+- **Prüfungen:** jede Meldung trägt ihre Regelnummer (auch Antippfläche R-3.1, Schrift/Kontrast R-10.2, Anführungszeichen
+  R-10.1, Menü R-4.1, Markierung R-3.3). Neu in `hig.mjs`: Zebra je Tabellenzeile in App-Tabellen (R-6.1), Auswahl-Kapsel
+  (R-5.4), höchstens eine blaue Hauptaktion (R-3.3), gleiches Icon für gleiche Bezeichnung über alle Ansichten (R-10.1).
+  Neu `tests/ablauf.mjs`: `checkSearch` (R-2.3), `checkDialogHead` (R-4.4), `checkCapital` (R-5.2), `checkFieldErrors`
+  (R-5.3), `checkPreview` (R-6.4). Neu `checkCatalog` in `doku.mjs`: jede Regel hat eine Prüfung, jede alte Nummer ist
+  zugeordnet und wird nirgends mehr verwendet. Jede neue Prüfung schlug mit einem eingebauten Fehler an (erst rot).
+- **Richtlinie gekürzt:** Abschnitte 1, 9, 10, 11, 12, 14 verweisen auf die Regel statt sie zu wiederholen; Grundprinzipien
+  nennen iPad und iPhone und den Abgleich über das Backup (W-6).
+- `v4/`: nur die Versionsnummer (`AD_VERSION`, `--ad-version`) und Regelnummern in Kommentaren – keine Änderung der Bausteine.
+- **Lücke gefunden:** Viele Ablauf-Tests der App geben Werte nur aus und melden keine Fehler; die Regeln, die sie betreffen,
+  haben jetzt eigene Prüfungen mit Fehlermeldung. Der Rest kommt mit A-05.
+
 ## 4.11.4 – 14.10.2026 (Korrektur)
 
 AppDesign 4.11.4 · Designrichtlinie allgemein 4.11.4 · Zusammenarbeit allgemein 1.16.0

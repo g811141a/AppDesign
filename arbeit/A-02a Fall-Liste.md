@@ -64,3 +64,22 @@ Jede neue Prüfung wird einmal mit einem eingebauten Fehler laufen gelassen (mus
 - G-4: Ändert sich nur Doku und Tests, bleibt `v4/` gleich. Zeigt die Versionszeile der App dann weiter
   ‚AppDesign 4.11.4‘ (Bausteine) oder 4.12.0 (Repo)? Vorschlag: `AD_VERSION` auf 4.12.0 heben (nur Zahl), damit
   Versionszeile, README und Richtlinie übereinstimmen – das berührt `v4/` und die App (Reiselogbuch 3.11.5 mit T-83).
+
+## Ergebnis (Bau 14.10.2026)
+
+| Fall | Ergebnis |
+|---|---|
+| K-1 bis K-5 | `checkCatalog` (doku.mjs): alle 34 Regeln haben eine Prüfung, alle 52 alten Nummern zugeordnet, keine alte Nummer mehr in Richtlinien, PROMPT, README, CLAUDE.md und Prüfskripten – grün (vorher rot: 52 fehlende Zuordnungen, alte Nummern in 7 Dateien) |
+| K-6 | Versionen überall 4.12.0 / 3.11.5 / 2.1.1 – grün (`doku.mjs`, `version.mjs`); dabei gefunden: README des Reiselogbuchs nannte noch Zusammenarbeit 2.0.0 (rot schon vor dem Bau) |
+| N-1 R-2.3 | `checkSearch`: rot mit ‚1/4‘ statt ‚1 von 4‘ und mit Umlauf, dann grün (iPad, iPhone) |
+| N-2 R-4.4 | `checkDialogHead`: rot mit blauem Häkchen vor der Änderung, dann grün |
+| N-3 R-5.3 | `checkFieldErrors`: rot mit Meldung schon beim Öffnen, dann grün |
+| N-4 R-5.4 | `hig.mjs`: rot mit breiterer Auswahl und ohne Verlauf, dann grün |
+| N-5 R-6.4 | `checkPreview`: rot mit dunkler Vorschau und ohne [PDF · Teilen], dann grün (hell und dunkel) |
+| N-6 R-6.1 | `hig.mjs`: rot ohne graue Zeilen, dann grün |
+| M-1 bis M-3 | alle Meldungen mit neuer Nummer; R-3.3 (zwei blaue Hauptaktionen), R-10.1 (anderes Icon für ‚Suchen‘), R-10.2 (Schrift 9 px) rot, dann grün; R-5.2 `checkCapital` rot (Großbuchstaben ausgeschaltet), dann grün; R-2.1 mit nachgebildeter Tastatur grün |
+| T-83 | neue Prüfung (Feldnamen Bericht = Fenster) rot mit ‚Verkehrsmittel‘, nach dem Ändern grün |
+| G-1, G-3 | `sh tests/alle.sh`: alle 17 Skripte ohne Fehler, HIG- und Regel-Prüfung ohne Abweichungen (iPad und iPhone, quer und hoch, hell und dunkel) |
+| G-2 | AppDesign-Prüfungen laufen über die Skripte des Reiselogbuchs – grün |
+| G-4 | `v4/`: nur Versionsnummer und Regelnummern in Kommentaren |
+| E | Prüfliste P-32 im CHANGELOG des Reiselogbuchs |

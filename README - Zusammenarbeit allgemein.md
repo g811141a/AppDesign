@@ -1,6 +1,6 @@
 # Zusammenarbeit allgemein
 
-**Version 2.1.0** · Stand 14.10.2026
+**Version 2.1.1** · Stand 14.10.2026
 
 Regeln für die Zusammenarbeit mit Claude bei allen iPad-Web-Apps von g811141a.
 Diese Datei liegt im Design-Repo **AppDesign** (g811141a/AppDesign).
@@ -155,7 +155,7 @@ Nutzer sie findet, schneller und günstiger arbeiten.
 - **Apple-Abgleich vor jedem Muster (Pflicht):** Bevor Claude ein Muster zeigt, steht kurz
   dabei: welche Apple-App es so löst (z. B. Notizen, Dateien, Erinnerungen), welche Punkte der
   **HIG-Checkliste** (Designrichtlinie allgemein, Abschnitt 16) und welche Regeln des
-  **Regelkatalogs** (Abschnitt 17, R-01 …) betroffen sind und wo bewusst abgewichen wird – mit
+  **Regelkatalogs** (Abschnitt 17, R-1.1 …) betroffen sind und wo bewusst abgewichen wird – mit
   Grund. HIG und Regelkatalog werden **vorher** geprüft, nicht erst nach einer Meldung.
 - **Apple-Review nach jeder Version (Pflicht):** In der Zusammenfassung steht je Punkt
   „entspricht HIG“ oder „weicht ab, weil …“, dazu das Ergebnis des HIG- und Regel-Prüfskripts.
@@ -244,7 +244,7 @@ Nutzer sie findet, schneller und günstiger arbeiten.
 - **Fertig erst nach Pages (seit 1.15.0):** ‚Fertig‘ meldet Claude erst, wenn die Pages-Läufe **beider** Repos
   (erst AppDesign, dann die App) erfolgreich abgeschlossen sind und die veröffentlichten Dateien die neue Version
   enthalten (`APP_VERSION`, `AD_NEEDED`, `AD_VERSION`); vorher wird nicht zum Testen aufgefordert.
-- **Versionen in der README (seit 1.15.0, R-49):** Die README jeder App zeigt ganz oben die Tabelle ‚Verwendete
+- **Versionen in der README (seit 1.15.0, R-10.4):** Die README jeder App zeigt ganz oben die Tabelle ‚Verwendete
   Versionen‘ – App, AppDesign, Designrichtlinie allgemein, Designrichtlinie <App>, Zusammenarbeit allgemein – je mit
   Version und Link; bei jeder Version nachführen.
 - Screenshots in Viererpaketen schicken und die Änderungen auf Deutsch zusammenfassen; an
@@ -266,10 +266,10 @@ Nutzer sie findet, schneller und günstiger arbeiten.
   Lage × Darstellung × Handlung (Drehen, Wischen, Tastatur, Abgleich) × Daten (leer, lang, viele) – und prüft
   allgemeine Grundregeln nach jeder Handlung (z. B. nach dem Drehen: oberster Eintrag, Seitenleiste, Menüs bleiben).
   Die Tests bilden Safari nach, wo sich Chrome anders verhält (z. B. kein Scroll-Anker).
-- **Prüfliste beginnt mit /0 (seit 1.15.0, R-50):** Jede Prüfliste beginnt mit dem Prüfpunkt **/0 ‚Version prüfen‘** –
+- **Prüfliste beginnt mit /0 (seit 1.15.0; Arbeitsregel, Prüfung `doku.mjs`):** Jede Prüfliste beginnt mit dem Prüfpunkt **/0 ‚Version prüfen‘** –
   auf jedem Gerät die Versionszeile ansehen (App-Version **und** AppDesign-Version); erst wenn beide stimmen, wird
   weiter getestet. So fällt ein noch nicht geladener Stand sofort auf (Anlass: P-26/6 und 7).
-- **Jede Meldung je Gerät (seit 1.15.0, R-50):** Ein Prüfpunkt nennt bei **jedem** Schritt, der etwas anzeigt, die
+- **Jede Meldung je Gerät (seit 1.15.0; Arbeitsregel):** Ein Prüfpunkt nennt bei **jedem** Schritt, der etwas anzeigt, die
   erwartete Meldung **auf jedem beteiligten Gerät** (wörtlich), nicht nur das Endergebnis. Für jeden solchen Fall
   prüft ein automatischer Test genau diese Texte auf beiden Geräten (Anlass: P-26/9 – die Meldung des ersten Geräts
   war nicht beschrieben und irreführend).
@@ -299,6 +299,7 @@ Nutzer sie findet, schneller und günstiger arbeiten.
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 2.1.1 | 14.10.2026 | Korrektur | Regelnummern nach dem neuen Regelkatalog (Designrichtlinie allgemein 4.12.0): R-1.1 …, R-10.4; die frühere R-50 (Prüfliste mit /0, Meldung je Gerät) ist Arbeitsregel in Abschnitt 7 |
 | 2.1.0 | 14.10.2026 | Neben | Abschnitt 0 Nr. 13: Claude startet die neue Sitzung selbst, Name ‚<App> <vierstellige Chatnummer> – Thema‘, Nummer in UEBERGABE.md |
 | 2.0.1 | 14.10.2026 | Korrektur | Abschnitt 0 Nr. 14: Starttext immer als Codeblock (Kopieren-Schaltfläche) und Angabe, wo auf GitHub alles liegt |
 | 2.0.0 | 14.10.2026 | Haupt | Arbeitsprozess 2.0 (Abschnitt 0, Vorrang): Fall-Liste vor jedem Bau, parallel und sparsam arbeiten, Regeln bei jeder neuen Regel zusammenfassen, allgemeine Regel immer erfragen, Safari nachbilden, Varianten nebeneinander, Fenster nur Ja/Nein mit ‚Ich schreibe im Chat‘, kleine Versionen (höchstens 2 Themen), Veröffentlichungs-Skript, feste AppDesign-Fassung je App, Bericht mit vollständiger Aufzählung, ein Thema je Sitzung, Übergabe-Datei `UEBERGABE.md`, Lagebild, kurze Rückmeldung |
