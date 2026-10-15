@@ -1,6 +1,6 @@
 # Designrichtlinie allgemein
 
-**Version 4.14.2** · Stand 15.10.2026
+**Version 4.15.0** · Stand 15.10.2026
 
 Allgemeine Gestaltungs- und Bedienregeln für alle iPad-Web-Apps von g811141a (seit 4.1.0 auch
 auf dem iPhone, Abschnitt 15.17).
@@ -338,6 +338,7 @@ heller).
   die gespeicherte Version. **Seit 4.14.2 (R-1.5):** das Netz höchstens 3 s abwarten, dann aus dem Speicher (sonst bleibt
   die Seite bei schlechtem oder abgeschaltetem Netz weiß); die feste Fassung (unveränderlich) zuerst aus dem Speicher;
   ohne Netz unter anderer Adresse geöffnet → die gespeicherte App; beim Einrichten alle Dateien frisch holen.
+  **Seit 4.15.0 (R-1.5, 15.20):** der Service Worker meldet der Seite, ob die App offline arbeitet (`{ netz: 'aus' | 'an' }`).
 - **Versionskopplung App ↔ AppDesign (seit 4.11.0, R-10.3; feste Fassung seit 4.14.0):** `ui.js` und `design.css` kommen
   aus der festen Fassung der App, `../AppDesign/fassung/X.Y.Z/` – in `index.html` und in der Dateiliste von `sw.js`, ohne
   `?v=` (der Pfad enthält die Version; kein alter Zwischenspeicher). Eine neue AppDesign-Version ändert die App nicht. `ui.js` nennt ihre Version in `AD_VERSION`, `design.css`
@@ -484,6 +485,7 @@ Verhalten · technischer Name). In AppDesign ist jede Komponente einmal programm
   Wischen sichtbar wurde. Unten fest
   **immer** die Backup-Kachel ‚Letztes Backup erstellt am …‘ – gelb mit blauem Knopf, solange heute
   noch kein Backup erstellt wurde, sonst weiß mit normalem Knopf (`.ok`).
+  Darunter, solange die App offline arbeitet, grau ‚Offline – alles bleibt auf diesem Gerät‘ (seit 4.15.0, 15.20).
 - **Geändert am (seit 4.9.0):** jede Kachel zeigt als dritte Zeile klein und grau (13 px)
   ‚geändert am TT.MM.JJJJ um hh:mm · iPad‘ bzw. ‚· iPhone‘ (`small.chg`); das Gerät liefert
   `deviceName()`. Ohne bekannte Änderung entfällt die Zeile.
@@ -763,6 +765,27 @@ Verhalten · technischer Name). In AppDesign ist jede Komponente einmal programm
 - **Prüfung:** `tests/backup.mjs` bedient Menü, Backup erstellen, Backup laden (Abfrage, Abbrechen, unlesbare Datei)
   in jeder App automatisch und prüft Texte, Layout, Schriftgrößen und Ergebnis.
 
+### 15.20 Offline (Start und Hinweis, R-1.5)
+- **Apple:** Vorbild Mail (Zustand klein und grau unten in der Liste) und Musik (‚Du bist offline‘); HIG *Feedback* und
+  *Writing* – Zustand ruhig zeigen, sagen, was weiter geht. Muster und Fall-Liste: `arbeit/A-06 Muster und Fall-Liste.md`.
+- **Start (seit 4.14.2):** Service Worker wartet höchstens 3 s auf das Netz, dann aus dem Speicher (Abschnitt 11).
+- **Hinweis (seit 4.15.0, A-06 Variante c):**
+  - **Zeile:** solange die App offline arbeitet, unter der Backup-Kachel (Seitenleiste iPad, Startliste iPhone) grau,
+    13 pt, Icon `wifi-off`: ‚Offline – alles bleibt auf diesem Gerät‘ (`.offl` in `backupTileHtml()`); die Liste läuft
+    auch hinter der Zeile durch.
+  - **Meldung beim Wechsel und beim Start ohne Netz:** weiße Karte unten (`.nettoast`), Icon grau, ‚Du bist offline‘ und
+    darunter grau ‚Die App arbeitet weiter; alles bleibt auf diesem Gerät.‘ bzw. ‚Wieder online‘ (`wifi`); mittig im
+    freien Bereich neben einer sichtbaren Seitenleiste, mit Abstand zu ‚Nach oben / Ans Ende‘, auf dem iPhone über der
+    Backup-Kachel, bei offener Tastatur darüber; verschwindet nach 4 s, Antippen schließt sie; höchstens eine zugleich;
+    sie ist kein Fenster (R-4.3), sperrt nichts und steht in der obersten Ebene auch über einem offenen Fenster.
+- **Technisch:** `ui.js` – `setNet()`, `isOffline()`, `netLineHtml()`; ‚Netz aus‘ meldet Safari (`offline`/`online`),
+  ‚Netz hängt‘ meldet der Service Worker der App mit `postMessage({ netz: 'aus' | 'an' })` (‚aus‘, sobald er aus dem
+  Speicher liefert; ‚an‘, sobald das Netz antwortet). Die Seite fragt ihn beim Start `{ netz: '?' }` (bei
+  `DOMContentLoaded`, nicht erst bei `load`) und bei der Rückkehr in die App bzw. wenn Safari wieder Netz meldet
+  `{ netz: 'pruefe' }`; er antwortet immer. Eine verspätete Antwort ‚an‘ gilt nicht, solange Safari kein Netz meldet.
+  Jede App übernimmt diese Nachrichten in ihren `sw.js` (Vorbild Reiselogbuch 3.14.0).
+- **Prüfung:** `tests/offline.mjs` (Fälle F-1 bis F-16).
+
 ## 16. HIG-Checkliste
 
 Jedes Muster und jede Version wird **vorher** an dieser Liste gemessen (Apple-Abgleich, siehe
@@ -828,7 +851,7 @@ Regel ersetzt oder ergänzt eine bestehende (Zusammenarbeit 0 Nr. 3) und bekommt
 | R-1.2 | **Darstellung** folgt dem Gerät (‚Automatisch‘), im Mehr-Menü übersteuerbar (Automatisch · Hell · Dunkel) | hig.mjs | – | R-33 |
 | R-1.3 | **Nie ungewollt vergrößern:** Doppeltippen vergrößert nicht; Eingabefelder mindestens 16 px (sonst vergrößert iOS beim Antippen) | hig.mjs | iOS-Tastatur | R-04, R-20 |
 | R-1.4 | **Nur der Vordergrund reagiert:** offenes Fenster sperrt die Seite, Menü und Sprechblase fangen Wischen ab, daneben tippen schließt | hig.mjs | – | R-01 |
-| R-1.5 | **Offline nutzbar (seit 4.14.2):** die App startet ohne Netz aus dem Speicher – auch unter anderer Adresse und bei hängendem Netz nach höchstens 3 s, nie eine weiße Seite (Hinweis, dass die App offline arbeitet: A-06, folgt) | offline.mjs | Gerät (Flugmodus) | – |
+| R-1.5 | **Offline nutzbar und erkennbar (seit 4.14.2, Hinweis seit 4.15.0):** die App startet ohne Netz aus dem Speicher – auch unter anderer Adresse und bei hängendem Netz nach höchstens 3 s, nie eine weiße Seite; arbeitet sie offline, steht unter der Backup-Kachel grau ‚Offline – alles bleibt auf diesem Gerät‘, beim Wechsel und beim Start ohne Netz kurz die Meldung ‚Du bist offline‘ bzw. ‚Wieder online‘ (15.20) | offline.mjs | Gerät (Flugmodus) | – |
 
 ### 2. Leisten, Suche, Scrollen
 
@@ -933,6 +956,7 @@ Die alten Nummern R-01 bis R-52 (bis 4.11.4) gelten nicht mehr; sie stehen nur n
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 4.15.0 | 15.10.2026 | Neben | A-06 Offline-Hinweis (Variante c): R-1.5 ergänzt – graue Zeile unter der Backup-Kachel, kurze Meldung beim Wechsel und beim Start ohne Netz; neue Komponente 15.20, Abschnitt 11 (Nachrichten des Service Workers) |
 | 4.14.2 | 14.10.2026 | Korrektur | Fund P-37: R-5.1 ergänzt (Schaltflächen im Schrittkopf als Gruppe, 15.10), neue Regel R-1.5 (Offline-Start, Service Worker mit Frist 3 s, 15.20) |
 | 4.14.1 | 14.10.2026 | Korrektur | Abschnitt 14: die Fassung enthält auch den Text dieser Richtlinie und der Zusammenarbeit; keine Git-Markierung mehr (aus der Cloud gesperrt, Fund 4.14.0) |
 | 4.14.0 | 14.10.2026 | Neben | A-05 Version B: feste Fassung je Version `fassung/X.Y.Z/` (Einleitung, 15.20, Abschnitt 14 – W-4 nachgeführt: Versionen gelten nicht mehr sofort für alle Apps), R-10.3 angepasst (Fassungs-Pfad statt `?v=`, Prüfsummen, `v4/` = neueste Fassung), Veröffentlichungs-Skript |

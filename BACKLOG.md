@@ -1,6 +1,6 @@
 # AppDesign – Backlog (allgemeine Themen)
 
-**Stand 15.10.2026** · Aktuelle Version: AppDesign 4.14.2
+**Stand 15.10.2026** · Aktuelle Version: AppDesign 4.15.0
 
 Allgemeine Themen, die alle Apps betreffen. App-Themen stehen im Backlog der jeweiligen App.
 Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
@@ -11,15 +11,15 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Prio | Thema | bereit seit |
 |---|---|---|---|
-| A-06 | 1 | **Offline-Hinweis** (allgemeine Regel, Ergänzung R-1.5), Variante c: graue Zeile `wifi-off` ‚Offline – alles bleibt auf diesem Gerät‘ unter der Backup-Kachel; kurze Meldung ‚Du bist offline‘ (auch beim Start ohne Netz) bzw. ‚Wieder online‘, etwa 4 s, mittig im freien Bereich; Erkennen auch bei hängendem Netz über den Service Worker. Muster, Texte und Fall-Liste F-1 bis F-16: `arbeit/A-06 Muster und Fall-Liste.md` | 15.10.2026 |
+| – | – | zurzeit nichts bereit | – |
 
-**1 Punkt bereit** (A-06) · gebaut wird erst nach ‚Ja‘
+**0 Punkte bereit** · gebaut wird erst nach ‚Ja‘
 
 ## 1. Auf iPad und iPhone prüfen
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| – | – | zurzeit nichts zu prüfen | – |
+| P-39 | 1 | AppDesign 4.15.0 mit Reiselogbuch 3.14.0: Offline-Hinweis (A-06) – Prüfliste im CHANGELOG des Reiselogbuchs (/0 bis /5) | prüfen |
 
 ## 2. Weitere Themen (in Klärung)
 
@@ -33,6 +33,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Thema | Version | Datum |
 |---|---|---|---|
+| E-16 | A-06 Offline-Hinweis (Variante c, R-1.5 ergänzt): graue Zeile unter der Backup-Kachel, kurze Meldung beim Wechsel und beim Start ohne Netz, Nachrichten des Service Workers, Prüfung F-1 bis F-16 | AppDesign 4.15.0 | 15.10.2026 |
 | E-15 | Geprüft: P-38 alles in Ordnung (AppDesign 4.14.2 mit Reiselogbuch 3.13.2); **A-05 damit abgeschlossen** | AppDesign 4.14.2 | 15.10.2026 |
 | E-14 | Korrektur zu P-37: Schrittkopf als Gruppe (R-5.1), Offline-Start mit Frist 3 s (neue Regel R-1.5, Prüfung `offline.mjs`) | AppDesign 4.14.2 | 14.10.2026 |
 | E-13 | Korrektur: Fassung enthält Designrichtlinie und Zusammenarbeit statt Git-Markierung (aus der Cloud gesperrt); Skript ohne Markierung | AppDesign 4.14.1 | 14.10.2026 |

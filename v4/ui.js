@@ -1,4 +1,4 @@
-// AppDesign 4.14.2 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
+// AppDesign 4.15.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
 // Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/fassung/X.Y.Z/ui.js"></script> (feste Fassung, R-10.3)
 // Seit 4.11.0 (R-10.3): ui.js und design.css immer mit ?v=<AppDesign-Version> einbinden (auch in sw.js) und beim Start
 // prüfen, ob genau diese Fassung geladen ist (AD_VERSION hier, --ad-version in design.css).
@@ -17,7 +17,7 @@
 
 'use strict';
 // Version der Bausteine (R-10.3): die App vergleicht sie beim Start mit der benötigten Fassung.
-const AD_VERSION = '4.14.2';
+const AD_VERSION = '4.15.0';
 /* ---------- Icons ---------- */
 
 // Schaltflächen-Icons aus Lucide (ISC-Lizenz), direkt eingebettet, damit die App offline funktioniert.
@@ -52,6 +52,9 @@ const ICONS = {
   'rotate-ccw': '<path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/>',
   'calendar': '<path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/>',
   'panel-left': '<rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 3v18"/>',
+  // Seit 4.15.0 (R-1.5, A-06): Offline-Hinweis
+  'wifi-off': '<path d="M12 20h.01"/><path d="M8.5 16.429a5 5 0 0 1 7 0"/><path d="M5 12.859a10 10 0 0 1 5.17-2.69"/><path d="M19 12.859a10 10 0 0 0-2.007-1.523"/><path d="M2 8.82a15 15 0 0 1 4.177-2.643"/><path d="M22 8.82a15 15 0 0 0-11.288-3.764"/><path d="m2 2 20 20"/>',
+  'wifi': '<path d="M12 20h.01"/><path d="M2 8.82a15 15 0 0 1 20 0"/><path d="M5 12.859a10 10 0 0 1 14 0"/><path d="M8.5 16.429a5 5 0 0 1 7 0"/>',
   'ellipsis': '<circle cx="12" cy="12" r="1.3"/><circle cx="19" cy="12" r="1.3"/><circle cx="5" cy="12" r="1.3"/>',
   'settings': '<path d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915"/><circle cx="12" cy="12" r="3"/>'
 };
@@ -418,8 +421,80 @@ function backupFileOf(app, data) {
     content: JSON.stringify({ ...data, savedAt: Date.now(), savedOn: deviceName() }, null, 2) };
 }
 // Backup-Kachel unten in der Seitenleiste bzw. Startliste: gelb, solange heute noch kein Backup erstellt wurde.
+// Seit 4.15.0 (R-1.5): darunter grau die Zeile ‚Offline – …‘, solange die App offline arbeitet.
 const backupTileHtml = ms => `<div class="side-foot"><div class="bhint ${backupToday(ms) ? 'ok' : ''}"><div>${backupLastText(ms)}</div>
-      <button type="button" id="hintBackup">${ic('save')}Backup erstellen</button></div></div>`;
+      <button type="button" id="hintBackup">${ic('save')}Backup erstellen</button></div>${netLineHtml()}</div>`;
+
+/* ---------- Offline-Hinweis (seit 4.15.0, R-1.5, A-06 Variante c) ---------- */
+// Solange die App offline arbeitet, steht unter der Backup-Kachel (Seitenleiste bzw. Startliste) grau ‚Offline – alles
+// bleibt auf diesem Gerät‘; beim Wechsel (und beim Start ohne Netz) erscheint unten kurz eine Meldung, mittig im freien
+// Bereich neben einer sichtbaren Seitenleiste – sie verschwindet nach 4 s, Antippen schließt sie, sie sperrt nichts.
+// Erkannt wird ‚Netz aus‘ über Safari (online/offline) und ‚Netz hängt‘ über den Service Worker der App: er liefert nach
+// 3 s aus dem Speicher und meldet { netz: 'aus' | 'an' }; die Seite fragt ihn beim Start ({ netz: '?' }) und bei der
+// Rückkehr in die App bzw. wenn Safari wieder Netz meldet ({ netz: 'pruefe' }).
+let netState = 'an', netTimer = null, netClose = null;
+const NET_TEXT = 'Offline – alles bleibt auf diesem Gerät';
+const netLineHtml = () => `<div class="offl"${netState === 'aus' ? '' : ' hidden'}>${ic('wifi-off')}${NET_TEXT}</div>`;
+const isOffline = () => netState === 'aus';
+function placeNetToast() {
+  const t = document.querySelector('.nettoast');
+  if (!t) return;
+  const side = document.getElementById('side');
+  const r = side && !side.hidden && !document.documentElement.classList.contains('phone') ? side.getBoundingClientRect() : null;
+  const left = r && r.width ? r.right : 0;
+  // Mittig im freien Bereich; seitlich Platz für ‚Nach oben / Ans Ende‘ (72 px je Seite)
+  t.style.setProperty('--toast-x', Math.round((left + innerWidth) / 2) + 'px');
+  t.style.setProperty('--toast-w', Math.max(200, Math.round(innerWidth - left - (left || innerWidth >= 700 ? 144 : 32))) + 'px');
+  // Über einer festen unteren Leiste (iPhone, .bbar), sonst am unteren Rand
+  // iPhone-Startliste: über der Backup-Kachel (die Meldung verdeckt sie nicht)
+  const bar = document.querySelector('.bbar')?.getBoundingClientRect();
+  const tile = !left && side && !side.hidden ? side.querySelector('.side-foot .bhint')?.getBoundingClientRect() : null;
+  const lift = Math.max(bar && bar.height ? innerHeight - bar.top : 0, tile && tile.height ? innerHeight - tile.top - 28 + 10 : 0);
+  t.style.setProperty('--toast-lift', Math.round(lift) + 'px');
+}
+window.addEventListener('resize', () => requestAnimationFrame(placeNetToast));
+function showNetToast(state) {
+  netClose?.();   // höchstens eine Meldung zugleich (samt Beobachter)
+  clearTimeout(netTimer);
+  const t = document.createElement('div');
+  t.className = 'nettoast';
+  t.setAttribute('role', 'status');
+  t.innerHTML = state === 'aus'
+    ? `${ic('wifi-off')}<div><b>Du bist offline</b><small>Die App arbeitet weiter; alles bleibt auf diesem Gerät.</small></div>`
+    : `${ic('wifi')}<div><b>Wieder online</b></div>`;
+  // Über einem offenen Fenster sichtbar (oberste Ebene), ohne etwas zu sperren
+  if (t.showPopover) t.popover = 'manual';
+  document.body.appendChild(t);
+  try { t.showPopover?.(); } catch {}
+  placeNetToast();
+  // Wechselt die Seite, solange die Meldung steht (z. B. iPhone: zurück in die Startliste), neu ausrichten
+  const watch = new MutationObserver(() => requestAnimationFrame(placeNetToast));
+  watch.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['hidden', 'class'] });
+  const weg = netClose = () => { watch.disconnect(); t.remove(); netClose = null; };
+  t.onclick = weg;
+  netTimer = setTimeout(weg, 4000);
+}
+function setNet(state) {
+  if (state !== 'aus' && state !== 'an') return;
+  // Eine verspätete Antwort ‚an‘ des Service Workers gilt nicht, solange Safari kein Netz meldet (schnelles Hin und Her)
+  if (state === 'an' && navigator.onLine === false) return;
+  if (state === netState) return;
+  netState = state;
+  document.querySelectorAll('.offl').forEach(l => { l.hidden = state !== 'aus'; });
+  showNetToast(state);
+}
+const netAsk = what => navigator.serviceWorker?.controller?.postMessage({ netz: what });
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.addEventListener('message', e => { if (e.data && 'netz' in e.data) setNet(e.data.netz); });
+  navigator.serviceWorker.startMessages?.();
+}
+window.addEventListener('offline', () => setNet('aus'));
+window.addEventListener('online', () => { if (navigator.serviceWorker?.controller) netAsk('pruefe'); else setNet('an'); });
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') netAsk('pruefe'); });
+// Beim Start: Safari meldet kein Netz → offline; sonst den Service Worker fragen (er weiß, ob die App aus dem Speicher kam).
+const netStart = () => { if (navigator.onLine === false) setNet('aus'); else netAsk('?'); };
+// Nicht erst bei ‚load‘ – das wartet bei hängendem Netz zusätzlich auf Manifest und Icons.
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', netStart); else setTimeout(netStart);
 // Die beiden Einträge im Mehr-Menü der Seitenleiste.
 const backupMenuEntries = ({ last, disabled, onSave, onLoad }) => [
   { icon: 'save', label: 'Backup erstellen', sub: backupLastText(last), disabled, act: onSave },

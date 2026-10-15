@@ -3,6 +3,29 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.15.0 – 15.10.2026 (Neben)
+
+AppDesign 4.15.0 · Designrichtlinie allgemein 4.15.0 · Zusammenarbeit allgemein 2.3.2 · geprüft mit Reiselogbuch 3.14.0
+
+A-06 Offline-Hinweis, Variante c als allgemeine Regel (Muster und Fall-Liste `arbeit/A-06 Muster und Fall-Liste.md`).
+
+- **R-1.5 ergänzt (keine neue Regel):** arbeitet die App offline, sieht man es.
+- **`ui.js`:** graue Zeile `.offl` (Icon `wifi-off`, ‚Offline – alles bleibt auf diesem Gerät‘) in `backupTileHtml()` – jede
+  App mit Backup-Kachel hat sie ohne eigene Änderung; kurze Meldung `.nettoast` (‚Du bist offline‘ mit grauer Zeile darunter
+  bzw. ‚Wieder online‘, Icon `wifi`) beim Wechsel und beim Start ohne Netz: mittig im freien Bereich neben einer sichtbaren
+  Seitenleiste, Abstand zu ‚Nach oben / Ans Ende‘, auf dem iPhone über der Backup-Kachel, über der Tastatur, 4 s, Antippen
+  schließt, höchstens eine, oberste Ebene (Popover) auch über einem offenen Fenster; richtet sich bei einem Seitenwechsel
+  neu aus. Erkennen: Safari `offline`/`online` und Nachrichten des Service Workers (`{ netz: '?' | 'pruefe' }` →
+  `{ netz: 'aus' | 'an' }`); neue Icons `wifi-off`, `wifi`; `setNet()`, `isOffline()`, `netLineHtml()`.
+- **`design.css`:** Zeile, Meldung, Liste läuft auch hinter der Zeile durch (`padding-bottom` 176 px, solange offline), Druck ohne beides.
+- **`tests/offline.mjs`:** Fälle F-1 bis F-16 – Meldung und Zeile beim Start ohne Netz und bei hängendem Netz, Wechsel,
+  Lage (im Bild, nicht über Seitenleiste, ‚Nach oben / Ans Ende‘, Zeile und Backup-Kachel), Kontrast 4,5 : 1, 4 s,
+  ‚Wieder online‘, schnelles Hin und Her, Drehen, offenes Fenster, Tastatur, lange Liste, Backup-Kachel gelb und weiß,
+  iPhone-Startliste; neue Option `vorbereiten(page)`. Gegenprobe: ohne Meldung 32 Fehler. Beim Bauen gefunden (alle behoben):
+  ‚Wieder online‘ fehlte, verspätete Antwort ‚an‘ beim schnellen Hin und Her, Meldung bei hängendem Netz in WebKit zu spät
+  (wartete auf `load`), Meldung verdeckte am iPhone die Backup-Kachel und folgte dem Seitenwechsel nicht.
+- Designrichtlinie allgemein 4.15.0 (R-1.5, Abschnitt 11, neue Komponente 15.20 Offline, 15.4); `tests/README.md`.
+
 ## 4.14.2 – 14.10.2026 (Korrektur)
 
 AppDesign 4.14.2 · Designrichtlinie allgemein 4.14.2 · Zusammenarbeit allgemein 2.3.2 · geprüft mit Reiselogbuch 3.13.2
