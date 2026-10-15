@@ -12,8 +12,15 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 | Nr. | Prio | Thema | bereit seit |
 |---|---|---|---|
 | A-07 | 1 | Schneller arbeiten (entschieden 15.10.2026): a) zu Beginn gezielt lesen – `UEBERGABE.md`, Zusammenarbeit Abschnitt 0, Inhaltsverzeichnis der Designrichtlinie, Rest bei Bedarf; CHANGELOG und PROMPT.md nicht mehr auf der Leseliste (CLAUDE.md beider Repos, Zusammenarbeit 0 Nr. 15) · b) nur **ein** voller Prüflauf je Version (im Veröffentlichungs-Skript), vorher nur die betroffenen Prüfungen (Zusammenarbeit 0 Nr. 2, §7) · c) Versionsgeschichten der Richtlinien in eigene Dateien auslagern (`doku.mjs` anpassen). Nicht übernommen: d) Fall-Liste und Apple-Abgleich bleiben auch bei kleinen Korrekturen | 15.10.2026 |
+| A-08 | 1 | Dunkelmodus nicht mehr in jeder Prüfung (allgemeine Regelung, 15.10.2026): einzelne Prüfungen und der Gesamtlauf (`alle.mjs`, Veröffentlichungs-Skript) prüfen nur **hell**; der Dunkel-Prüflauf ist ein **Dauerauftrag** (Abschnitt ‚Daueraufträge‘) – spätestens nach 10 Versionen erinnert Claude daran (Zähler, am besten im Veröffentlichungs-Skript). Betrifft `pruefe.mjs`, `hig.mjs`, `lauf.mjs`, die Ablauf-Prüfungen der Apps, Zusammenarbeit 0 Nr. 1 und §7, Regelkatalog (Einleitung, R-10.2) | 15.10.2026 |
 
-**1 Punkt bereit** (A-07) · gebaut wird erst nach ‚Ja‘
+**2 Punkte bereit** (A-07, A-08) · gebaut wird erst nach ‚Ja‘
+
+## Daueraufträge
+
+| Nr. | Auftrag | Abstand | zuletzt | fällig |
+|---|---|---|---|---|
+| D-01 | Dunkel-Prüflauf: alle Prüfungen jeder App auch **dunkel** (`node tests/alle.mjs --dunkel`), Funde als Korrekturversion | spätestens alle 10 Versionen | – (bisher in jedem Lauf) | nach 10 Versionen ab A-08 |
 
 ## 1. Auf iPad und iPhone prüfen
 
