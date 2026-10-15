@@ -25,6 +25,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
+| A-11 | 1 | **Schwankende WebKit-Prüfungen im vollen Lauf beheben:** im gemeinsamen Lauf Chromium + WebKit werden einzelne WebKit-Prüfungen rot, die einzeln und im reinen WebKit-Lauf grün sind – schon beim Stand 3.14.1 (Vergleich 15.10.2026); betroffen: Drehen am iPad (`hig` R-8.1), Tastatur (`hig` R-2.1), Netz-Wechsel (`offline-regeln` R-1.5). Vorschlag: voller Lauf erst Chromium, dann WebKit; Prüfungen warten auf Zustände statt fester Zeiten. Vor dem Bau Fall-Liste | offen |
 | A-01 | 3 | Startseite g811141a.github.io mit allen Apps (früher S-03) | später |
 
 ---
