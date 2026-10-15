@@ -1,6 +1,6 @@
 # AppDesign – Backlog (allgemeine Themen)
 
-**Stand 15.10.2026** · Aktuelle Version: AppDesign 4.16.0
+**Stand 15.10.2026** · Aktuelle Version: AppDesign 4.16.1
 
 Allgemeine Themen, die alle Apps betreffen. App-Themen stehen im Backlog der jeweiligen App.
 Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
@@ -11,15 +11,15 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Prio | Thema | bereit seit |
 |---|---|---|---|
-| A-10 | 1 | Prüflauf mit höchstens so vielen gleichzeitigen Browsern wie Prozessoren (Container: 4 statt bisher 8, `tests/lauf.mjs` `--jobs`); Anlass: beim Veröffentlichen von 4.16.0 zweimal rot durch WebKit unter Last (`offline-regeln`, `hig` – Drehen am iPad), einzeln jeweils grün | 15.10.2026 |
+| – | – | zurzeit nichts bereit | – |
 
-**1 Punkt bereit** (A-10) · gebaut wird erst nach ‚Ja‘
+**0 Punkte bereit** · gebaut wird erst nach ‚Ja‘
 
 ## 1. Auf iPad und iPhone prüfen
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| – | – | zurzeit nichts zu prüfen | – |
+| P-42 | 1 | AppDesign 4.16.1 mit Reiselogbuch 3.15.1: nur Version prüfen (A-10 betrifft nur die Prüfungen) – Prüfliste P-42 im CHANGELOG des Reiselogbuchs | prüfen |
 
 ## 2. Weitere Themen (in Klärung)
 
@@ -33,6 +33,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Thema | Version | Datum |
 |---|---|---|---|
+| E-23 | A-10 Lauf-Werkzeug mit höchstens so vielen Browsern wie Kernen (4 statt 8) | AppDesign 4.16.1 | 15.10.2026 |
 | E-22 | Geprüft: P-41 alles in Ordnung (AppDesign 4.16.0 mit Reiselogbuch 3.15.0); **A-09 (R-7.2) und A-07 damit abgeschlossen** | AppDesign 4.16.0 | 15.10.2026 |
 | E-21 | A-09 neue Regel R-7.2 (aus Reiselogbuch T-84): Start im iPhone-Aufbau in der Startliste ohne blauen Eintrag, Prüfung `start.mjs`; Abschnitt 13 Neustart nicht erkennbar | AppDesign 4.16.0 | 15.10.2026 |
 | E-20 | A-07 Schneller arbeiten: gezielt lesen, ein voller Prüflauf je Version (Zusammenarbeit 2.4.0, CLAUDE.md 2.2.0) | AppDesign 4.16.0 | 15.10.2026 |

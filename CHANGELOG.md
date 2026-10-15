@@ -3,6 +3,17 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.16.1 – 15.10.2026 (Korrektur)
+
+AppDesign 4.16.1 · Designrichtlinie allgemein 4.16.1 · Zusammenarbeit allgemein 2.4.0 · geprüft mit Reiselogbuch 3.15.1
+
+A-10 (Fund beim Veröffentlichen von 4.16.0).
+
+- **Lauf-Werkzeug `tests/lauf.mjs`:** gleichzeitig laufen standardmäßig nur noch so viele Browser, wie der Rechner Kerne hat
+  (Container: 4 statt 8); `--jobs N` überschreibt das weiter. **Anlass:** der volle Lauf für 4.16.0 war zweimal rot durch
+  WebKit unter Volllast (`offline-regeln`, `hig` – Drehen am iPad), einzeln jeweils grün.
+- **Feste Fassung `fassung/4.16.1/`**; Designrichtlinie allgemein 4.16.1 (nur Version).
+
 ## 4.16.0 – 15.10.2026 (Neben)
 
 AppDesign 4.16.0 · Designrichtlinie allgemein 4.16.0 · Zusammenarbeit allgemein 2.4.0 · geprüft mit Reiselogbuch 3.15.0

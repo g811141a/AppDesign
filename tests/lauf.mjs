@@ -5,7 +5,7 @@
 //   import { lauf } from '../../AppDesign/tests/lauf.mjs';
 //   process.exit(await lauf({ dir: new URL('..', import.meta.url), pw, tests: ['ablauf-fenster', { name: 'hig', teile: { hell: { PRUEF_DARSTELLUNG: 'light' } } }] }));
 // Schalter: --alle (trotz Fehler weiter, am Ende alle roten) · --browser chromium,webkit · --nur name,name ·
-// --gegenprobe [grundregeln] (jeder Test muss rot werden; zusammen mit --alle) · --jobs N (Standard: 2 × Kerne) · --zeit S (Zeitgrenze je Test, Standard 300) · --abdeckung (Test × Ansicht ausgeben).
+// --gegenprobe [grundregeln] (jeder Test muss rot werden; zusammen mit --alle) · --jobs N (Standard seit 4.16.1: so viele wie Kerne – A-10, unter Volllast mit 2 × Kernen schwankte WebKit) · --zeit S (Zeitgrenze je Test, Standard 300) · --abdeckung (Test × Ansicht ausgeben).
 // Rückgabewert: 0 alles grün, 1 mindestens ein Test rot, 2 Browser fehlt (B-8).
 import { spawn } from 'node:child_process';
 import { existsSync, readFileSync, writeFileSync, mkdirSync, readdirSync } from 'node:fs';
@@ -20,7 +20,7 @@ export async function lauf({ dir, pw, tests, argv = process.argv.slice(2) }) {
   const alleLaufen = alle || !!gegenprobe;   // die Gegenprobe läuft immer ganz durch
   const browsers = arg('--browser', 'chromium,webkit').split(',');
   const nur = arg('--nur', '') ? arg('--nur', '').split(',') : null;
-  const jobs = +arg('--jobs', 2 * cpus().length), zeit = +arg('--zeit', 300) * 1000;
+  const jobs = +arg('--jobs', cpus().length), zeit = +arg('--zeit', 300) * 1000;
   const root = fileURLToPath(dir), out = new URL('tests/out/', dir), dauerDatei = new URL('dauer.json', out);
   mkdirSync(out, { recursive: true });
 
