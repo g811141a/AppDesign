@@ -1,4 +1,4 @@
-// AppDesign 4.14.2 · Prüfung ‚Offline-Start‘ (Regel R-1.5, seit 4.14.2, Fund P-37/3: iPad startete offline mit weißer Seite).
+// AppDesign 4.16.1 · Prüfung ‚Offline-Start‘ (Regel R-1.5, seit 4.14.2, Fund P-37/3: iPad startete offline mit weißer Seite).
 // Startet einen eigenen Webserver über dem Ordner, in dem AppDesign und die App nebeneinander liegen, meldet den Service
 // Worker der App an (die App selbst nur unter https) und bildet das Netz nach – Abbruch statt Antwort (‚aus‘, wie Flugmodus)
 // oder keine Antwort (‚hängt‘, wie schlechtes WLAN). Je Ansicht:
@@ -157,9 +157,17 @@ export async function checkOffline(appDir, browser, { ansichten, grenze = 4500, 
     if (h?.toast !== TEXT_AN) E(`${name}: ohne Safari-Meldung (iPad) – ‚Wieder online‘ fehlt nach 15 s (gesehen: ${h?.toast ?? 'keine'})`);
     if (h?.linie) E(`${name}: ohne Safari-Meldung (iPad) – wieder online steht trotzdem die graue Zeile`);
   }
+  // Seit 4.16.1 (A-11): Unter Last stürzt in der Prüfumgebung der Netzprozess von WebKit ab – der Speicher des Service
+  // Workers (CacheStorage, bei Playwright nur im Arbeitsspeicher) ist danach leer, obwohl ihn niemand löscht, und die nächste
+  // Seite wird gar nicht mehr angefragt. Gemessen 15.10.2026: nach der Installation 7 Dateien, nach dem Absturz keine. Das ist
+  // kein Fehler der App (am Gerät liegt der Speicher dauerhaft). Erscheint die App nicht und ist der Speicher leer, wird die
+  // Ansicht einmal in einem frischen Kontext neu geprüft; geschieht es zweimal, ist die Prüfung rot. Erscheint die App nicht,
+  // obwohl der Speicher gefüllt ist, bleibt es sofort ein Fehler (weiße Seite).
+  const speicherWeg = p => Promise.race([p.evaluate(async () => (await caches.keys()).length === 0).catch(() => true), new Promise(r => setTimeout(() => r(true), 3000))]);
   try {
-    for (const [name, a] of Object.entries(ansichten)) {
+    ansicht: for (const [name, a] of Object.entries(ansichten)) for (let versuch = 1; versuch <= 2; versuch++) {
       netz = 'an';
+      const vorher = errors.length; let verloren = false;
       const c = await browser.newContext({ ...a, serviceWorkers: 'allow' }), p = await c.newPage();
       try {
         log(name, 'start'); await p.goto(basis); log(name, 'geladen');
@@ -169,23 +177,28 @@ export async function checkOffline(appDir, browser, { ansichten, grenze = 4500, 
           await Promise.race([navigator.serviceWorker.ready, new Promise((_, x) => setTimeout(() => x(new Error('kein Service Worker nach 10 s')), 10000))]);
           return 'ok';
         }).catch(e => e.message);
-        if (sw !== 'ok') { E(`${name}: ${sw}`); continue; }
+        if (sw !== 'ok') { E(`${name}: ${sw}`); continue ansicht; }
         await p.reload(); await wartet(p, 3000);
-        if (!(await p.evaluate(() => !!navigator.serviceWorker.controller))) { E(`${name}: Service Worker steuert die App nach dem Neuladen nicht`); continue; }
+        if (!(await p.evaluate(() => !!navigator.serviceWorker.controller))) { E(`${name}: Service Worker steuert die App nach dem Neuladen nicht`); continue ansicht; }
+        if (await speicherWeg(p)) { E(`${name}: nach der Installation ist der Speicher des Service Workers leer`); continue ansicht; }
         for (const [fall, adresse, modus] of [['ohne Netz', basis, 'aus'], ['ohne Netz, andere Adresse (index.html?start=1)', basis + 'index.html?start=1', 'aus'], ['Netz hängt', basis, 'haengt']]) {
           netz = modus; log(name, fall, 'los');
           // Neu öffnen, ohne auf das Netz zu warten; die alte Seite ist markiert und zählt nicht (WebKit lässt sie stehen).
           await p.evaluate(u => { window.__alteSeite = true; location.href = u; }, adresse).catch(() => {});
           const ms = await wartet(p, modus === 'haengt' ? grenze : 6000);
           log(name, fall, ms);
+          if (ms === null && await speicherWeg(p)) { verloren = true; netz = 'an'; for (const r of offen) r.destroy?.(); offen.clear(); break; }
           if (ms === null) E(`${name}: ${fall} – die App erscheint nicht${modus === 'haengt' ? ` innerhalb ${grenze / 1000} s` : ''} (weiße Seite)`);
           // F-7, F-8: beim Start ohne Netz bzw. bei hängendem Netz Meldung und Zeile
           else pruefeAus(name, fall, await bis(p, 2500, h => h.toast === TEXT_AUS && (!h.fuss || h.linie === LINIE)));
           netz = 'an'; for (const r of offen) r.destroy?.(); offen.clear();
         }
-        await wechsel(name, c, p);
-        await ohneMeldung(name, c, p);
+        if (!verloren) { await wechsel(name, c, p); await ohneMeldung(name, c, p); if (errors.length > vorher && await speicherWeg(p)) verloren = true; }
       } finally { await c.close(); }
+      if (!verloren) break;
+      errors.length = vorher;
+      if (versuch === 2) E(`${name}: Prüfumgebung – der Browser hat den Speicher des Service Workers zweimal verloren (Netzprozess des Browsers abgestürzt) – nicht prüfbar`);
+      else console.error(`ℹ R-1.5 ${name}: Speicher des Service Workers in der Prüfumgebung verloren (Netzprozess des Browsers) – Ansicht wird einmal neu geprüft`);
     }
   } finally { netz = 'an'; for (const r of offen) r.destroy?.(); server.closeAllConnections?.(); server.close(); }
   return errors;
