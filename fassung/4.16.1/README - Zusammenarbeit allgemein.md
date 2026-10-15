@@ -1,6 +1,6 @@
 # Zusammenarbeit allgemein
 
-**Version 2.4.0** · Stand 15.10.2026
+**Version 2.5.0** · Stand 15.10.2026
 
 Regeln für die Zusammenarbeit mit Claude bei allen iPad-Web-Apps von g811141a.
 Diese Datei liegt im Design-Repo **AppDesign** (g811141a/AppDesign).
@@ -103,11 +103,23 @@ Nutzer sie findet, schneller und günstiger arbeiten.
     nicht auf GitHub steht, gibt es in der nächsten Sitzung nicht.
 17. **Rückmeldung kurz:** Nummer, ‚nicht ok‘ und ein Stichwort genügen; bei Unklarem fragt Claude nach.
 
+**E. Widerspruch (seit 2.5.0)**
+18. **Massiv widersprechen bei Regelbruch:** Weicht eine Anforderung des Nutzers offensichtlich und grundlegend vom
+    Regelwerk ab (Zusammenarbeit, Designrichtlinien, Regelkatalog, HIG-Checkliste), widerspricht Claude **deutlich und
+    sofort** – welche Regel, was sie schützt, welche Folgen die Abweichung hat, was Claude stattdessen empfiehlt – und
+    trägt sie **nicht** ins Backlog ein und setzt sie **nicht** um. Umgesetzt wird erst, wenn der Nutzer **ausdrücklich
+    die Umsetzung anordnet** (‚Umsetzungspflicht‘, z. B. ‚Trotzdem umsetzen – Umsetzungspflicht‘); ein einfaches ‚Ja‘
+    oder die Wiederholung des Wunsches genügt nicht. Das Auswahlfenster dafür fragt ausdrücklich ‚Trotz Abweichung von
+    R-… umsetzen (Umsetzungspflicht)?‘. Kleine, begründete Abweichungen (z. B. eine bewusste Abweichung von der HIG)
+    bleiben wie bisher eine Rückfrage mit Empfehlung (Abschnitt 3).
+
 ---
 
 ## 1. Sprache und Ton
 
 - Deutsch, kurz und klar.
+- **Per du (seit 2.5.0):** Claude spricht den Nutzer immer mit ‚du‘ an – nie ‚Sie‘ und nie ‚ihr‘, auch nicht in Dateien,
+  Prüflisten und Auswahlfenstern.
 - **Jede Meldung deutsch (seit 1.15.1):** auch kurze Zwischenmeldungen während der Arbeit, Statuszeilen,
   Bildunterschriften zu Screenshots und Fragen im Auswahlfenster – nie englisch. Englisch bleiben nur Code,
   Dateinamen und Fachbegriffe ohne gängiges deutsches Wort.
@@ -300,6 +312,7 @@ Nutzer sie findet, schneller und günstiger arbeiten.
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 2.5.0 | 15.10.2026 | Neben | Abschnitt 1: per du (nie ‚Sie‘ oder ‚ihr‘); Abschnitt 0 Nr. 18: bei offensichtlichem Regelbruch massiv widersprechen, umsetzen erst nach ausdrücklicher Umsetzungspflicht |
 | 2.4.0 | 15.10.2026 | Neben | A-07: zu Beginn gezielt lesen (0 Nr. 15, Hinweis oben) und nur ein voller Prüflauf je Version im Veröffentlichungs-Skript (0 Nr. 2, §7) |
 | 2.3.2 | 14.10.2026 | Korrektur | Abschnitt 0 Nr. 9 und 10: Verweise auf das Veröffentlichungs-Skript und die feste Fassung (A-05 Version B) |
 | 2.3.1 | 14.10.2026 | Korrektur | Abschnitt 0 Nr. 2 und 5: Verweise auf die Werkzeuge aus A-05 Version A (`tests/alle.mjs`, `lauf.mjs`, Gegenprobe) und WebKit in jedem Test |
