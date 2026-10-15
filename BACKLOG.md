@@ -25,7 +25,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| A-06 | 1 | **Offline-Hinweis** (allgemeine Regel, Ergänzung R-1.5): arbeitet die App offline, sieht man es – kurzer Hinweis beim Wechsel und/oder kleine, gut sichtbare Dauer-Anzeige (z. B. ganz unten). Zuerst Muster mit Varianten (a: graue Zeile unten in Seitenleiste/Startliste wie Mail, b: Band oben wie Musik, c: a + kurze Meldung beim Wechsel) | offen |
+| A-06 | 1 | **Offline-Hinweis** (allgemeine Regel, Ergänzung R-1.5): arbeitet die App offline, sieht man es. **Entschieden 15.10.2026: Variante c** – graue Zeile mit `wifi-off` unter der Backup-Kachel (Seitenleiste bzw. Startliste) ‚Offline – alles bleibt auf diesem Gerät‘ und beim Wechsel eine kurze Meldung unten mittig (verschwindet von selbst), als allgemeine Regel. Offen: Muster dunkel/hoch/iPhone, Texte, Fall-Liste | offen |
 | A-01 | 3 | Startseite g811141a.github.io mit allen Apps (früher S-03) | später |
 
 ---

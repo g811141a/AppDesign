@@ -1788,3 +1788,7 @@ Alle punkte ok
 **2026-10-15 · Nutzer (Sitzung Reiselogbuch 0004):** P-38 alle Punkte ok. → A-05 abgeschlossen.
 
 **2026-10-15 · Übergabe (Sitzung Reiselogbuch 0004):** Thema A-05 abgeschlossen → Übergabe geschrieben, neue Sitzung ‚Reiselogbuch 0005 – A-06 Offline-Hinweis‘ gestartet.
+
+**2026-10-15 · Muster (Sitzung Reiselogbuch 0005):** A-06 Offline-Hinweis – Apple-Abgleich (Musik: Band oben; Mail: Zustand unten in der Liste; Notizen: nichts) und drei Varianten (a: graue Zeile unter der Backup-Kachel, b: Kapsel oben im Inhalt, c: a + kurze Meldung beim Wechsel), Empfehlung c.
+
+**2026-10-15 · Nutzer (Sitzung Reiselogbuch 0005):** Variante C aber als allgemeine regel → A-06 Variante c, allgemeine Regel (Ergänzung R-1.5); als Nächstes Muster dunkel/hoch/iPhone und Fall-Liste.
