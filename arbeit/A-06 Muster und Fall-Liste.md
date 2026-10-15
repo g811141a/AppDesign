@@ -41,7 +41,7 @@ c4 iPhone Inhalt ‚Wieder online‘.
 | F-4 | iPad quer, Seitenleiste mit panel-left ausgeblendet | Wechsel | Meldung mittig über die ganze Breite |
 | F-5 | iPhone hoch und quer, Startliste | Wechsel | Zeile unter der Backup-Kachel, Meldung unten mittig über dem Home-Balken |
 | F-6 | iPhone hoch, Inhaltsseite | Wechsel | Meldung unten mittig; Zeile beim Zurück in die Startliste da |
-| F-7 | alle | **Start ohne Netz** | App erscheint (R-1.5), Zeile da; Meldung ‚Du bist offline‘ einmal (offene Frage 2) |
+| F-7 | alle | **Start ohne Netz** | App erscheint (R-1.5), Zeile da; Meldung ‚Du bist offline‘ einmal (entschieden: ja) |
 | F-8 | alle | **Start bei hängendem Netz** | nach höchstens 3 s App mit Zeile (Service Worker meldet ‚aus dem Speicher‘) |
 | F-9 | alle | Wechsel schnell hin und her | nur eine Meldung zugleich, die letzte gilt; Zeile zeigt den letzten Zustand |
 | F-10 | iPad, iPhone | Drehen während Meldung bzw. Zeile sichtbar | Meldung neu ausgerichtet, Zeile bleibt (R-8.1) |
@@ -55,8 +55,9 @@ c4 iPhone Inhalt ‚Wieder online‘.
 **Nur am Gerät (Prüfliste):** Flugmodus ein/aus am iPad und iPhone (Zeile und Meldungen), schlechtes WLAN, Start aus
 dem Home-Bildschirm im Flugmodus.
 
-## Offene Fragen
+## Entschieden (15.10.2026)
 
-1. Muster ok?
-2. Meldung ‚Du bist offline‘ auch beim **Start** ohne Netz (Empfehlung: ja – sonst merkt man es nur an der Zeile)?
-3. Meldung ‚Wieder online‘ (Empfehlung: ja, kurz)?
+1. Muster ok – ja.
+2. Meldung ‚Du bist offline‘ auch beim Start ohne Netz – ja.
+3. Meldung ‚Wieder online‘ – ja.
+4. Fall-Liste F-1 bis F-16 vollständig – ja.

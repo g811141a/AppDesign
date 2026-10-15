@@ -11,9 +11,9 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Prio | Thema | bereit seit |
 |---|---|---|---|
-| – | – | zurzeit nichts bereit | – |
+| A-06 | 1 | **Offline-Hinweis** (allgemeine Regel, Ergänzung R-1.5), Variante c: graue Zeile `wifi-off` ‚Offline – alles bleibt auf diesem Gerät‘ unter der Backup-Kachel; kurze Meldung ‚Du bist offline‘ (auch beim Start ohne Netz) bzw. ‚Wieder online‘, etwa 4 s, mittig im freien Bereich; Erkennen auch bei hängendem Netz über den Service Worker. Muster, Texte und Fall-Liste F-1 bis F-16: `arbeit/A-06 Muster und Fall-Liste.md` | 15.10.2026 |
 
-**0 Punkte bereit** · gebaut wird erst nach ‚Ja‘
+**1 Punkt bereit** (A-06) · gebaut wird erst nach ‚Ja‘
 
 ## 1. Auf iPad und iPhone prüfen
 
@@ -25,7 +25,6 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| A-06 | 1 | **Offline-Hinweis** (allgemeine Regel, Ergänzung R-1.5): arbeitet die App offline, sieht man es. **Entschieden 15.10.2026: Variante c** – graue Zeile mit `wifi-off` unter der Backup-Kachel (Seitenleiste bzw. Startliste) ‚Offline – alles bleibt auf diesem Gerät‘ und beim Wechsel eine kurze Meldung unten mittig (verschwindet von selbst), als allgemeine Regel. Offen: Muster dunkel/hoch/iPhone, Texte, Fall-Liste | offen |
 | A-01 | 3 | Startseite g811141a.github.io mit allen Apps (früher S-03) | später |
 
 ---
