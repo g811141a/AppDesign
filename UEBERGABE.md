@@ -1,21 +1,21 @@
 # Übergabe an die nächste Sitzung
 
 **Stand 15.10.2026** · geschrieben in der Sitzung ‚Reiselogbuch 0005 – A-06 Offline-Hinweis‘
-(Zusammenarbeit allgemein 2.4.0, Abschnitt 0 Nr. 14). **Claude liest diese Datei zu Beginn jeder Sitzung zuerst.**
+(Zusammenarbeit allgemein 2.5.0, Abschnitt 0 Nr. 14). **Claude liest diese Datei zu Beginn jeder Sitzung zuerst.**
 
 ## 1. Lagebild
 
 | Teil | Version | Datei |
 |---|---|---|
-| Reiselogbuch | 3.15.0 | g811141a/ReiseLogBuch – `CHANGELOG.md`, `BACKLOG.md`, `PROMPT.md` |
-| AppDesign (ui.js, design.css, tests; feste Fassung `fassung/4.16.0/`) | 4.16.0 | g811141a/AppDesign – `CHANGELOG.md`, `BACKLOG.md` |
-| Designrichtlinie allgemein | 4.16.0 (Regelkatalog R-1.1 bis R-10.4, 36 Regeln in 10 Themen; neu R-7.2) | `README - Designrichtlinie allgemein.md` |
-| Designrichtlinie Reiselogbuch | 3.15.0 | im Repo ReiseLogBuch |
-| Zusammenarbeit allgemein | 2.4.0 (Abschnitt 0 = Arbeitsprozess 2.0, hat Vorrang) | `README - Zusammenarbeit allgemein.md` |
+| Reiselogbuch | 3.15.1 | g811141a/ReiseLogBuch – `CHANGELOG.md`, `BACKLOG.md`, `PROMPT.md` |
+| AppDesign (ui.js, design.css, tests; feste Fassung `fassung/4.16.1/`) | 4.16.1 | g811141a/AppDesign – `CHANGELOG.md`, `BACKLOG.md` |
+| Designrichtlinie allgemein | 4.16.1 (Regelkatalog R-1.1 bis R-10.4, 36 Regeln in 10 Themen; neu R-7.2) | `README - Designrichtlinie allgemein.md` |
+| Designrichtlinie Reiselogbuch | 3.15.1 | im Repo ReiseLogBuch |
+| Zusammenarbeit allgemein | 2.5.0 (Abschnitt 0 = Arbeitsprozess 2.0, hat Vorrang) | `README - Zusammenarbeit allgemein.md` |
 
 - **Chatnummer:** die nächste Sitzung heißt **Reiselogbuch 0006** (Zusammenarbeit 0 Nr. 13); die danach 0007.
-- **Offene Prüfpunkte:** keine – P-41 alles in Ordnung (15.10.2026).
-- **Nächste Version:** AppDesign – A-10 bereit (Prüflauf mit höchstens so vielen Browsern wie Prozessoren).
+- **Offene Prüfpunkte:** **P-42** (Reiselogbuch 3.15.1 · AppDesign 4.16.1 – nur /0 Version prüfen).
+- **Nächste Version:** nichts bereit.
 - **Sitzungsgröße:** höchstens 1.000.000 Token Kontext (Sitzungsdaten, `get_session` → `context_usage`); unsere Grenze
   bleibt **etwa 300.000 Token** (Nutzer, 15.10.2026: keine Änderung der Grenze).
 - **Erinnerung:** ‚Backlog-Erinnerung (AppDesign und Reiselogbuch)‘ montags 8:58.
@@ -30,8 +30,12 @@
 - **A-07 (Zusammenarbeit 2.4.0):** zu Beginn gezielt lesen (UEBERGABE, Abschnitt 0, Überschriften), nur ein voller
   Prüflauf je Version im Veröffentlichungs-Skript. Nicht übernommen: Versionsgeschichten auslagern, weniger
   Pflichtschritte bei Korrekturen; Dunkelmodus bleibt in jedem Lauf (Wunsch zurückgenommen).
-- **Fund beim Veröffentlichen:** zweimal rot durch WebKit unter Last (4 Prozessoren, 8 Browser gleichzeitig; einzeln
-  grün), erst der dritte Lauf grün.
+- **AppDesign 4.16.1 · Reiselogbuch 3.15.1 veröffentlicht (A-10, A-11):** voller Prüflauf mit höchstens so vielen Browsern
+  wie Kernen und **Browser nacheinander** (erst Chromium, dann WebKit). Ursache der roten Läufe gemessen: der Netzprozess von
+  WebKit stürzt in der Prüfumgebung unter Last ab und verliert den Speicher des Service Workers → `offline.mjs` prüft die
+  Ansicht dann einmal neu (zweimal → rot); kein Fehler der App. Danach drei volle Läufe grün.
+- **Neue Arbeitsregeln (Zusammenarbeit 2.5.0):** per du (§1); bei offensichtlichem Regelbruch massiv widersprechen, nichts ins
+  Backlog, umsetzen erst nach ausdrücklicher **Umsetzungspflicht** (0 Nr. 18).
 
 **Sitzung ‚Reiselogbuch 0005 – A-06 Offline-Hinweis‘ – A-06 abgeschlossen:**
 - **Offline-Hinweis (AppDesign 4.15.0 · Reiselogbuch 3.14.0, Variante c, allgemeine Regel – R-1.5 ergänzt):** graue
