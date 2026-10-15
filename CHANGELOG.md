@@ -5,7 +5,7 @@ allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
 ## 4.16.1 – 15.10.2026 (Korrektur)
 
-AppDesign 4.16.1 · Designrichtlinie allgemein 4.16.1 · Zusammenarbeit allgemein 2.4.0 · geprüft mit Reiselogbuch 3.15.1
+AppDesign 4.16.1 · Designrichtlinie allgemein 4.16.1 · Zusammenarbeit allgemein 2.5.0 · geprüft mit Reiselogbuch 3.15.1
 
 A-10 und A-11 (Funde beim Veröffentlichen von 4.16.0 und 4.16.1).
 
@@ -16,6 +16,14 @@ A-10 und A-11 (Funde beim Veröffentlichen von 4.16.0 und 4.16.1).
   gleichzeitig. **Befund:** im gemeinsamen Lauf wurden vier von fünf Läufen rot, jedes Mal eine andere WebKit-Prüfung mit
   fester Zeitgrenze (Drehen, Tastatur, Netz-Wechsel); einzeln und im reinen WebKit-Lauf grün – auch beim Stand 3.14.1, die
   Schwankung bestand also schon vorher. Selbsttest um den Fall ‚Browser nacheinander‘ ergänzt (Gegenprobe rot).
+- **Ursache der ‚weißen Seite‘ in `offline.mjs` (A-11):** gemessen – nach der Installation 7 Dateien im Speicher des Service
+  Workers, nach dem Fund keine, ohne dass jemand löscht, und die nächste Seite wird gar nicht angefragt: der Netzprozess von
+  WebKit stürzt in der Prüfumgebung unter Last ab (Playwright hält den Speicher nur im Arbeitsspeicher). Die Prüfung erkennt
+  das (App erscheint nicht **und** Speicher leer) und prüft die Ansicht einmal in einem frischen Kontext neu; zweimal → rot.
+  Leerer Speicher direkt nach der Installation und weiße Seite bei gefülltem Speicher bleiben sofort rot. Gegenproben:
+  Speicher einmal gelöscht → Hinweis, grün; immer gelöscht → rot. Nachweis: drei volle Läufe hintereinander grün.
+- **Zusammenarbeit 2.5.0:** per du (§1); 0 Nr. 18 – bei offensichtlichem Regelbruch massiv widersprechen, umsetzen erst nach
+  ausdrücklicher Umsetzungspflicht.
 - **Feste Fassung `fassung/4.16.1/`**; Designrichtlinie allgemein 4.16.1 (nur Version).
 
 ## 4.16.0 – 15.10.2026 (Neben)
