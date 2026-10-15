@@ -11,9 +11,9 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Prio | Thema | bereit seit |
 |---|---|---|---|
-| – | – | zurzeit nichts bereit | – |
+| A-07 | 1 | Schneller arbeiten (entschieden 15.10.2026): a) zu Beginn gezielt lesen – `UEBERGABE.md`, Zusammenarbeit Abschnitt 0, Inhaltsverzeichnis der Designrichtlinie, Rest bei Bedarf; CHANGELOG und PROMPT.md nicht mehr auf der Leseliste (CLAUDE.md beider Repos, Zusammenarbeit 0 Nr. 15) · b) nur **ein** voller Prüflauf je Version (im Veröffentlichungs-Skript), vorher nur die betroffenen Prüfungen (Zusammenarbeit 0 Nr. 2, §7) · c) Versionsgeschichten der Richtlinien in eigene Dateien auslagern (`doku.mjs` anpassen). Nicht übernommen: d) Fall-Liste und Apple-Abgleich bleiben auch bei kleinen Korrekturen | 15.10.2026 |
 
-**0 Punkte bereit** · gebaut wird erst nach ‚Ja‘
+**1 Punkt bereit** (A-07) · gebaut wird erst nach ‚Ja‘
 
 ## 1. Auf iPad und iPhone prüfen
 
