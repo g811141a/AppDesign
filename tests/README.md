@@ -49,7 +49,7 @@ Test muss rot werden.
 Startet alle Prüfskripte parallel (Standard 2 × Kerne), die schnellsten zuerst (gemessene Dauer in `tests/out/dauer.json`
 der App), in Chromium und WebKit; beim ersten roten Test werden die übrigen beendet und seine Fehlerzeilen gezeigt.
 Aufruf über `tests/alle.mjs` der App: `node tests/alle.mjs [--alle] [--browser chromium] [--nur hig] [--abdeckung]
-[--gegenprobe [grundregeln]] [--jobs N] [--zeit S]`. Gleichzeitig laufen standardmäßig so viele Browser, wie der Rechner Kerne hat (seit 4.16.1, A-10; vorher doppelt so viele – WebKit schwankte unter Volllast). Fehlt WebKit, bricht der Lauf mit Hinweis ab (Rückgabewert 2) – nie
+[--gegenprobe [grundregeln]] [--jobs N] [--zeit S]`. Gleichzeitig laufen standardmäßig so viele Browser, wie der Rechner Kerne hat (seit 4.16.1, A-10; vorher doppelt so viele – WebKit schwankte unter Volllast). Erst laufen alle Prüfungen in Chromium, dann alle in WebKit – nie beide gleichzeitig (seit 4.16.1, A-11). Fehlt WebKit, bricht der Lauf mit Hinweis ab (Rückgabewert 2) – nie
 stillschweigend nur Chromium. WebKit einmalig: `npx playwright install webkit` und `npx playwright install-deps webkit`
 (im Setup-Skript der Umgebung ‚Standard‘ eingetragen). Lange Prüfungen lassen sich teilen (`teile`, z. B. hig nach
 Darstellung). Selbsttest mit Schein-Tests: `node tests/lauf-selbsttest.mjs` (in AppDesign).

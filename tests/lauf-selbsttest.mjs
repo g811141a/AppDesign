@@ -36,6 +36,10 @@ pruefe(rc === 1 && /Zeitgrenze 1 s überschritten/.test(out), `A-5 Zeitgrenze: R
 // B-8 WebKit fehlt: Abbruch mit Hinweis, Rückgabewert 2, kein Test gestartet
 [rc, out] = await mitschreiben(() => lauf({ dir: url, pw, tests: ['schnell'] }));
 pruefe(rc === 2 && /webkit fehlt/.test(out) && !/✓/.test(out), `B-8 WebKit fehlt: Rückgabewert ${rc}\n${out}`);
+// A-11 (seit 4.16.1): Browser nacheinander – WebKit beginnt erst, wenn alle Chromium-Läufe fertig sind, auch bei freien Plätzen
+[rc, out] = await mitschreiben(() => lauf({ dir: url, pw: { ...pw, webkit: pw.chromium }, tests: ['langsam', 'schnell'], argv: ['--jobs', '4'] }));
+const folge = [...out.matchAll(/✓ (\w+) · (\w+)/g)].map(m => m[2]).join(',');
+pruefe(rc === 0 && folge === 'chromium,chromium,webkit,webkit' && /Browser nacheinander/.test(out), `A-11 Browser nacheinander: ${folge}\n${out}`);
 // Zwei Browser: jeder Test je Browser (WebKit hier als vorhanden nachgebildet)
 [rc, out] = await mitschreiben(() => lauf({ dir: url, pw: { ...pw, webkit: pw.chromium }, tests: ['schnell'] }));
 pruefe(rc === 0 && /schnell · chromium/.test(out) && /schnell · webkit/.test(out), `B-7 beide Browser\n${out}`);

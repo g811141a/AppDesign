@@ -19,13 +19,12 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| P-42 | 1 | AppDesign 4.16.1 mit Reiselogbuch 3.15.1: nur Version prüfen (A-10 betrifft nur die Prüfungen) – Prüfliste P-42 im CHANGELOG des Reiselogbuchs | prüfen |
+| P-42 | 1 | AppDesign 4.16.1 mit Reiselogbuch 3.15.1: nur Version prüfen (A-10, A-11 betreffen nur die Prüfungen) – Prüfliste P-42 im CHANGELOG des Reiselogbuchs | prüfen |
 
 ## 2. Weitere Themen (in Klärung)
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| A-11 | 1 | **Schwankende WebKit-Prüfungen im vollen Lauf beheben:** im gemeinsamen Lauf Chromium + WebKit werden einzelne WebKit-Prüfungen rot, die einzeln und im reinen WebKit-Lauf grün sind – schon beim Stand 3.14.1 (Vergleich 15.10.2026); betroffen: Drehen am iPad (`hig` R-8.1), Tastatur (`hig` R-2.1), Netz-Wechsel (`offline-regeln` R-1.5). Vorschlag: voller Lauf erst Chromium, dann WebKit; Prüfungen warten auf Zustände statt fester Zeiten. Vor dem Bau Fall-Liste | offen |
 | A-01 | 3 | Startseite g811141a.github.io mit allen Apps (früher S-03) | später |
 
 ---
@@ -34,6 +33,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Thema | Version | Datum |
 |---|---|---|---|
+| E-24 | A-11 Lauf-Werkzeug: Browser nacheinander (erst Chromium, dann WebKit) – schwankende WebKit-Prüfungen im gemeinsamen Lauf | AppDesign 4.16.1 | 15.10.2026 |
 | E-23 | A-10 Lauf-Werkzeug mit höchstens so vielen Browsern wie Kernen (4 statt 8) | AppDesign 4.16.1 | 15.10.2026 |
 | E-22 | Geprüft: P-41 alles in Ordnung (AppDesign 4.16.0 mit Reiselogbuch 3.15.0); **A-09 (R-7.2) und A-07 damit abgeschlossen** | AppDesign 4.16.0 | 15.10.2026 |
 | E-21 | A-09 neue Regel R-7.2 (aus Reiselogbuch T-84): Start im iPhone-Aufbau in der Startliste ohne blauen Eintrag, Prüfung `start.mjs`; Abschnitt 13 Neustart nicht erkennbar | AppDesign 4.16.0 | 15.10.2026 |

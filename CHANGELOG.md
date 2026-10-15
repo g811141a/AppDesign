@@ -7,11 +7,15 @@ allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
 AppDesign 4.16.1 · Designrichtlinie allgemein 4.16.1 · Zusammenarbeit allgemein 2.4.0 · geprüft mit Reiselogbuch 3.15.1
 
-A-10 (Fund beim Veröffentlichen von 4.16.0).
+A-10 und A-11 (Funde beim Veröffentlichen von 4.16.0 und 4.16.1).
 
 - **Lauf-Werkzeug `tests/lauf.mjs`:** gleichzeitig laufen standardmäßig nur noch so viele Browser, wie der Rechner Kerne hat
   (Container: 4 statt 8); `--jobs N` überschreibt das weiter. **Anlass:** der volle Lauf für 4.16.0 war zweimal rot durch
   WebKit unter Volllast (`offline-regeln`, `hig` – Drehen am iPad), einzeln jeweils grün.
+- **Browser nacheinander (A-11):** `lauf.mjs` startet erst alle Prüfungen in Chromium, dann alle in WebKit – nie beide
+  gleichzeitig. **Befund:** im gemeinsamen Lauf wurden vier von fünf Läufen rot, jedes Mal eine andere WebKit-Prüfung mit
+  fester Zeitgrenze (Drehen, Tastatur, Netz-Wechsel); einzeln und im reinen WebKit-Lauf grün – auch beim Stand 3.14.1, die
+  Schwankung bestand also schon vorher. Selbsttest um den Fall ‚Browser nacheinander‘ ergänzt (Gegenprobe rot).
 - **Feste Fassung `fassung/4.16.1/`**; Designrichtlinie allgemein 4.16.1 (nur Version).
 
 ## 4.16.0 – 15.10.2026 (Neben)
