@@ -1,13 +1,13 @@
 # AppDesign – Hinweise für Claude
 
-**Version 2.1.1** · Stand 14.10.2026
+**Version 2.2.0** · Stand 15.10.2026
 
-## Zuerst lesen
+## Zuerst lesen (gezielt, Zusammenarbeit 0 Nr. 15)
 
 1. `UEBERGABE.md` – Stand der letzten Sitzung, nächster Schritt, Chatnummer
-2. `README - Zusammenarbeit allgemein.md` – Abschnitt 0 (Arbeitsprozess 2.0) hat Vorrang
-3. `README - Designrichtlinie allgemein.md` (Abschnitt 14: Aufbau dieses Repos, 16: HIG-Checkliste, 17: Regelkatalog)
-4. `README.md`, `CHANGELOG.md`, `BACKLOG.md`
+2. `README - Zusammenarbeit allgemein.md` – nur Abschnitt 0 (Arbeitsprozess 2.0, hat Vorrang)
+3. `README - Designrichtlinie allgemein.md` – nur die Überschriften (`grep -n '^##'`); Abschnitte (14: Aufbau dieses Repos,
+   16: HIG-Checkliste, 17: Regelkatalog), `README.md`, `CHANGELOG.md` und `BACKLOG.md` erst, wenn die Aufgabe sie braucht
 
 ## Verpflichtend
 
@@ -23,7 +23,8 @@ nie ohne ausdrückliches ‚Ja‘ bauen, Fall-Liste vor jedem Bau (0 Nr. 1), Aus
   Hauptversion → neuer Ordner `v5/`. Nach Änderungen an `v4/` oder `tests/` vor dem Veröffentlichen
   `node werkzeug/veroeffentlichen.mjs fassung`. `AD_VERSION` (ui.js) und `--ad-version`
   (design.css) steigen mit jeder AppDesign-Version.
-- Prüfungen in `tests/` (Abschnitt 17); sie laufen über die Prüfskripte der Apps (AppDesign liegt neben dem App-Repo),
+- Prüfungen in `tests/` (Abschnitt 17); während der Arbeit nur die betroffenen, der volle Lauf genau einmal im
+  Veröffentlichungs-Skript (Zusammenarbeit 0 Nr. 2); sie laufen über die Prüfskripte der Apps (AppDesign liegt neben dem App-Repo),
   z. B. im Reiselogbuch `sh tests/alle.sh`.
 - Veröffentlichen mit `node werkzeug/veroeffentlichen.mjs vorbereiten --ad X.Y.Z --app <app>=X.Y.Z`, Texte schreiben,
   committen, dann `… los` (prüft, alle Tests der App, **erst AppDesign, dann die App**, wartet auf Pages).
@@ -33,6 +34,7 @@ nie ohne ausdrückliches ‚Ja‘ bauen, Fall-Liste vor jedem Bau (0 Nr. 1), Aus
 
 | Version | Datum | Inhalt |
 |---|---|---|
+| 2.2.0 | 15.10.2026 | Gezielt lesen (nur Abschnitt 0 und Überschriften), ein voller Prüflauf je Version (A-07) |
 | 2.1.1 | 14.10.2026 | Fassung enthält Designrichtlinie und Zusammenarbeit statt Git-Markierung (aus der Cloud gesperrt) |
 | 2.1.0 | 14.10.2026 | Feste Fassung `fassung/X.Y.Z/` statt `v4/…?v=` (A-05 Version B, W-4), Veröffentlichungs-Skript |
 | 2.0.0 | 14.10.2026 | Neu gefasst (A-02 Schritt 4): zuerst UEBERGABE.md, Regeln nur noch als Verweis auf die Zusammenarbeit (ohne Antwortzeile), Prüfungen und Versionskopplung |

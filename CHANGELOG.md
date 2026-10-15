@@ -3,6 +3,22 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.16.0 – 15.10.2026 (Neben)
+
+AppDesign 4.16.0 · Designrichtlinie allgemein 4.16.0 · Zusammenarbeit allgemein 2.4.0 · geprüft mit Reiselogbuch 3.15.0
+
+A-07 und A-09 (entschieden 15.10.2026).
+
+- **Neue Regel R-7.2 (A-09, aus Reiselogbuch T-84):** Jedes Neuladen beginnt im iPhone-Aufbau (auch iPad im schmalen
+  Fenster) in der Startliste, ganz oben, ohne blauen Eintrag; der iPad-Aufbau öffnet wie bisher den aktuellen Eintrag;
+  Rückkehr aus dem Hintergrund ändert nichts. Designrichtlinie 15.4, 15.17, Regelkatalog Thema 7.
+- **Neue Prüfung `tests/start.mjs`** (`checkStart`, `checkRueckkehr`) für jede App.
+- **Designrichtlinie 13:** Neustart ist in einer Web-App nicht erkennbar (iOS beendet Apps im Hintergrund).
+- **Zusammenarbeit 2.4.0 (A-07):** zu Beginn gezielt lesen (Abschnitt 0, Überschriften), nur ein voller Prüflauf je
+  Version im Veröffentlichungs-Skript; `CLAUDE.md` 2.2.0. Nicht übernommen: Versionsgeschichten auslagern, weniger
+  Pflichtschritte bei kleinen Korrekturen; der Dunkelmodus bleibt in jedem Prüflauf.
+- **Feste Fassung `fassung/4.16.0/`.**
+
 ## 4.15.1 – 15.10.2026 (Korrektur)
 
 AppDesign 4.15.1 · Designrichtlinie allgemein 4.15.1 · Zusammenarbeit allgemein 2.3.2 · geprüft mit Reiselogbuch 3.14.1
