@@ -1800,3 +1800,5 @@ Alle punkte ok
 **2026-10-15 · Nutzer (Sitzung Reiselogbuch 0005):** Wie groß darf eine Sitzung maximal werden? → 1.000.000 Token Kontext (Sitzungsdaten), belegt 335.530; Grenze bleibt **300.000** (Nutzer: ‚Keine Änderung der Grenze‘).
 
 **2026-10-15 · Nutzer (Sitzung Reiselogbuch 0005):** Testrückmeldung zu P-39: 1) keine Meldung sichtbar, 2) keine Meldung sichtbar, die restlichen Punkte sind ok. → Auswertung `arbeit/P-39 Rückmeldung.md`, Korrektur K-07 bereit.
+
+**2026-10-15 · Entscheidung (Sitzung Reiselogbuch 0005):** Version AppDesign 4.15.1 / Reiselogbuch 3.14.1 mit K-07 → **Ja, hier bauen** (in dieser Sitzung, über 300.000 Token).

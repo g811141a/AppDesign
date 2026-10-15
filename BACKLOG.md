@@ -1,6 +1,6 @@
 # AppDesign – Backlog (allgemeine Themen)
 
-**Stand 15.10.2026** · Aktuelle Version: AppDesign 4.15.0
+**Stand 15.10.2026** · Aktuelle Version: AppDesign 4.15.1
 
 Allgemeine Themen, die alle Apps betreffen. App-Themen stehen im Backlog der jeweiligen App.
 Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
@@ -11,15 +11,15 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Prio | Thema | bereit seit |
 |---|---|---|---|
-| K-07 | 1 | **Korrektur zu P-39/1 und /2:** iPad zeigt keine Meldung, wenn das Netz bei offener App wegfällt bzw. zurückkommt. Prüfung schärfen (Gerät ohne Safari-Meldung nachbilden), dann alle 10 s beim Service Worker nachfragen, Schutz über laufende Nummer statt `navigator.onLine`. Auswertung `arbeit/P-39 Rückmeldung.md` | 15.10.2026 |
+| – | – | zurzeit nichts bereit | – |
 
-**1 Punkt bereit** (K-07) · gebaut wird erst nach ‚Ja‘
+**0 Punkte bereit** · gebaut wird erst nach ‚Ja‘
 
 ## 1. Auf iPad und iPhone prüfen
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| P-39 | 1 | AppDesign 4.15.0 mit Reiselogbuch 3.14.0: Offline-Hinweis (A-06) – **ok bis auf /1 und /2** (iPad: keine Meldung beim Wechsel bei offener App) → K-07 | Korrektur |
+| P-40 | 1 | AppDesign 4.15.1 mit Reiselogbuch 3.14.1: Korrektur K-07 (iPad erkennt den Wechsel bei offener App) – Prüfliste im CHANGELOG des Reiselogbuchs (/0 bis /2) | prüfen |
 
 ## 2. Weitere Themen (in Klärung)
 
@@ -33,6 +33,8 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Thema | Version | Datum |
 |---|---|---|---|
+| E-18 | K-07 Korrektur zu P-39/1 und /2: App fragt alle 10 s den Service Worker, laufende Nummer statt `navigator.onLine`, Prüfung F-17 (Gerät ohne Safari-Meldung) | AppDesign 4.15.1 | 15.10.2026 |
+| E-17 | Geprüft: P-39 ok bis auf /1 und /2 (iPad ohne Meldung beim Wechsel bei offener App) → K-07 | AppDesign 4.15.0 | 15.10.2026 |
 | E-16 | A-06 Offline-Hinweis (Variante c, R-1.5 ergänzt): graue Zeile unter der Backup-Kachel, kurze Meldung beim Wechsel und beim Start ohne Netz, Nachrichten des Service Workers, Prüfung F-1 bis F-16 | AppDesign 4.15.0 | 15.10.2026 |
 | E-15 | Geprüft: P-38 alles in Ordnung (AppDesign 4.14.2 mit Reiselogbuch 3.13.2); **A-05 damit abgeschlossen** | AppDesign 4.14.2 | 15.10.2026 |
 | E-14 | Korrektur zu P-37: Schrittkopf als Gruppe (R-5.1), Offline-Start mit Frist 3 s (neue Regel R-1.5, Prüfung `offline.mjs`) | AppDesign 4.14.2 | 14.10.2026 |
