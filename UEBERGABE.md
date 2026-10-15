@@ -14,15 +14,15 @@
 | Zusammenarbeit allgemein | 2.4.0 (Abschnitt 0 = Arbeitsprozess 2.0, hat Vorrang) | `README - Zusammenarbeit allgemein.md` |
 
 - **Chatnummer:** die nächste Sitzung heißt **Reiselogbuch 0006** (Zusammenarbeit 0 Nr. 13); die danach 0007.
-- **Offene Prüfpunkte:** **P-41** (Reiselogbuch 3.15.0 · AppDesign 4.16.0, Prüfliste /0 bis /5 im CHANGELOG des Reiselogbuchs) – zuerst prüfen, dann Neues.
-- **Nächste Version:** nichts bereit.
+- **Offene Prüfpunkte:** keine – P-41 alles in Ordnung (15.10.2026).
+- **Nächste Version:** AppDesign – A-10 bereit (Prüflauf mit höchstens so vielen Browsern wie Prozessoren).
 - **Sitzungsgröße:** höchstens 1.000.000 Token Kontext (Sitzungsdaten, `get_session` → `context_usage`); unsere Grenze
   bleibt **etwa 300.000 Token** (Nutzer, 15.10.2026: keine Änderung der Grenze).
 - **Erinnerung:** ‚Backlog-Erinnerung (AppDesign und Reiselogbuch)‘ montags 8:58.
 
 ## 2. Ergebnisse
 
-**Sitzung ‚Reiselogbuch 0006 – T-84 iPhone-Start‘ (läuft):**
+**Sitzung ‚Reiselogbuch 0006 – T-84 iPhone-Start‘ – T-84 abgeschlossen (P-41 ok):**
 - **AppDesign 4.16.0 · Reiselogbuch 3.15.0 veröffentlicht:** T-84 wurde allgemeine Regel **R-7.2** (A-09): jedes
   Neuladen beginnt im iPhone-Aufbau (auch iPad im schmalen Fenster) in der Startliste ohne blauen Eintrag; iPad-Aufbau
   unverändert. Prüfung `start.mjs` (AppDesign) und `start-regeln.mjs` (F-1 bis F-18). Fall-Liste `arbeit/T-84 Fall-Liste.md`.
