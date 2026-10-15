@@ -1802,3 +1802,7 @@ Alle punkte ok
 **2026-10-15 · Nutzer (Sitzung Reiselogbuch 0005):** Testrückmeldung zu P-39: 1) keine Meldung sichtbar, 2) keine Meldung sichtbar, die restlichen Punkte sind ok. → Auswertung `arbeit/P-39 Rückmeldung.md`, Korrektur K-07 bereit.
 
 **2026-10-15 · Entscheidung (Sitzung Reiselogbuch 0005):** Version AppDesign 4.15.1 / Reiselogbuch 3.14.1 mit K-07 → **Ja, hier bauen** (in dieser Sitzung, über 300.000 Token).
+
+**2026-10-15 · Nutzer (Sitzung Reiselogbuch 0005):** P-40 alles ok → A-06 abgeschlossen.
+
+**2026-10-15 · Übergabe (Sitzung Reiselogbuch 0005):** Thema A-06 abgeschlossen, Sitzung über 300.000 Token → Übergabe geschrieben, neue Sitzung ‚Reiselogbuch 0006 – T-84 iPhone-Start‘ gestartet.
