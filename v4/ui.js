@@ -1,4 +1,4 @@
-// AppDesign 4.15.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
+// AppDesign 4.15.1 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
 // Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/fassung/X.Y.Z/ui.js"></script> (feste Fassung, R-10.3)
 // Seit 4.11.0 (R-10.3): ui.js und design.css immer mit ?v=<AppDesign-Version> einbinden (auch in sw.js) und beim Start
 // prüfen, ob genau diese Fassung geladen ist (AD_VERSION hier, --ad-version in design.css).
@@ -17,7 +17,7 @@
 
 'use strict';
 // Version der Bausteine (R-10.3): die App vergleicht sie beim Start mit der benötigten Fassung.
-const AD_VERSION = '4.15.0';
+const AD_VERSION = '4.15.1';
 /* ---------- Icons ---------- */
 
 // Schaltflächen-Icons aus Lucide (ISC-Lizenz), direkt eingebettet, damit die App offline funktioniert.
@@ -476,21 +476,29 @@ function showNetToast(state) {
 }
 function setNet(state) {
   if (state !== 'aus' && state !== 'an') return;
-  // Eine verspätete Antwort ‚an‘ des Service Workers gilt nicht, solange Safari kein Netz meldet (schnelles Hin und Her)
-  if (state === 'an' && navigator.onLine === false) return;
   if (state === netState) return;
   netState = state;
   document.querySelectorAll('.offl').forEach(l => { l.hidden = state !== 'aus'; });
   showNetToast(state);
 }
-const netAsk = what => navigator.serviceWorker?.controller?.postMessage({ netz: what });
+// Seit 4.15.1 (Fund P-39/1 und /2): Das iPad als Home-Bildschirm-App meldet den Wechsel nicht zuverlässig (keine
+// Ereignisse offline/online, navigator.onLine bleibt stehen) – deshalb fragt die App, solange sie sichtbar ist, alle 10 s
+// den Service Worker; die Ereignisse beschleunigen nur. Jede Frage hat eine laufende Nummer: Antworten auf Fragen, die vor
+// einer Meldung ‚offline‘ von Safari gestellt wurden, gelten nicht (schnelles Hin und Her).
+let netSeq = 0, netBlock = 0;
+const netAsk = what => navigator.serviceWorker?.controller?.postMessage({ netz: what, id: ++netSeq });
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.addEventListener('message', e => { if (e.data && 'netz' in e.data) setNet(e.data.netz); });
+  navigator.serviceWorker.addEventListener('message', e => {
+    if (!e.data || !('netz' in e.data)) return;
+    if (e.data.id && e.data.id <= netBlock) return;
+    setNet(e.data.netz);
+  });
   navigator.serviceWorker.startMessages?.();
 }
-window.addEventListener('offline', () => setNet('aus'));
+window.addEventListener('offline', () => { netBlock = netSeq; setNet('aus'); });
 window.addEventListener('online', () => { if (navigator.serviceWorker?.controller) netAsk('pruefe'); else setNet('an'); });
 document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') netAsk('pruefe'); });
+setInterval(() => { if (document.visibilityState === 'visible') netAsk('pruefe'); }, 10000);
 // Beim Start: Safari meldet kein Netz → offline; sonst den Service Worker fragen (er weiß, ob die App aus dem Speicher kam).
 const netStart = () => { if (navigator.onLine === false) setNet('aus'); else netAsk('?'); };
 // Nicht erst bei ‚load‘ – das wartet bei hängendem Netz zusätzlich auf Manifest und Icons.

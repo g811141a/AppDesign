@@ -3,6 +3,25 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.15.1 – 15.10.2026 (Korrektur)
+
+AppDesign 4.15.1 · Designrichtlinie allgemein 4.15.1 · Zusammenarbeit allgemein 2.3.2 · geprüft mit Reiselogbuch 3.14.1
+
+Korrektur zu P-39 (ok bis auf /1 und /2; Auswertung `arbeit/P-39 Rückmeldung.md`).
+
+- **Fund P-39/1 und /2:** Das iPad zeigte keine Meldung, wenn das Netz bei offener App wegfiel oder zurückkam (beim Start
+  ohne Netz schon). Ursache: Der Wechsel hing nur an den Safari-Ereignissen `offline`/`online` und an der Rückkehr in die
+  App; das iPad als Home-Bildschirm-App meldet ihn nicht zuverlässig, und eine Antwort ‚an‘ wurde verworfen, solange
+  `navigator.onLine` noch `false` sagte.
+- **Behoben (`ui.js`):** solange die App sichtbar ist, fragt sie alle 10 s den Service Worker (`pruefe`); Schutz gegen das
+  schnelle Hin und Her über eine laufende Nummer der Frage statt über `navigator.onLine`.
+- **Prüfung geschärft (`offline.mjs`, F-17):** Gerät ohne Safari-Meldung – erst rot (10 Fehler in jedem Browser), dann grün;
+  Gegenprobe ohne die Nachfrage alle 10 s: 10 Fehler. **Warum übersehen:** die Prüfung schaltete mit `setOffline()`, das in
+  Chromium und WebKit immer `offline`/`online` sendet und `navigator.onLine` sofort setzt – ein Gerät ohne diese Meldung war
+  nicht nachgebildet. Dabei gefunden: `setOffline()` erreicht in Chromium den Service Worker nicht – F-17 nimmt deshalb das
+  Netz am Prüf-Webserver weg.
+- Designrichtlinie allgemein 4.15.1 (15.20); `tests/README.md`.
+
 ## 4.15.0 – 15.10.2026 (Neben)
 
 AppDesign 4.15.0 · Designrichtlinie allgemein 4.15.0 · Zusammenarbeit allgemein 2.3.2 · geprüft mit Reiselogbuch 3.14.0

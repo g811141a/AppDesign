@@ -10,6 +10,9 @@
 //   4. Wechsel (Safari meldet offline/online): Meldung, Zeile, Lage der Meldung (im Bild, neben der Seitenleiste, nicht über
 //      ‚Nach oben / Ans Ende‘ und der Zeile), Kontrast, verschwindet nach 4 s, ‚Wieder online‘, schnelles Hin und Her, Drehen,
 //      offenes Fenster, Tastatur, lange Liste (letzter Eintrag über der Backup-Kachel), Backup-Kachel gelb und weiß.
+//   5. Seit 4.15.1 (Fund P-39/1 und /2 – iPad zeigte bei offener App keine Meldung): Gerät ohne Safari-Meldung – die
+//      Ereignisse offline/online kommen nicht an, navigator.onLine bleibt true; Meldung und Zeile trotzdem nach höchstens
+//      15 s, ebenso ‚Wieder online‘.
 // Einbinden im Prüfskript der App:
 //   import { checkOffline } from '../../AppDesign/fassung/X.Y.Z/tests/offline.mjs';
 //   const fehler = await checkOffline(new URL('..', import.meta.url), browser, { ansichten: { 'iPad quer': {…} } });
@@ -136,6 +139,24 @@ export async function checkOffline(appDir, browser, { ansichten, grenze = 4500, 
     await p.evaluate(() => document.documentElement.style.setProperty('--vv-bottom', '0px'));
     await c.setOffline(false); await bis(p, 4000, h => h.toast === TEXT_AN);
   }
+  // F-17 (seit 4.15.1, Fund P-39/1 und /2): Gerät ohne Safari-Meldung – wie das iPad als Home-Bildschirm-App
+  async function ohneMeldung(name, c, p) {
+    await p.addInitScript(() => {
+      for (const ev of ['online', 'offline']) window.addEventListener(ev, e => e.stopImmediatePropagation(), true);
+      Object.defineProperty(Navigator.prototype, 'onLine', { get: () => true, configurable: true });
+    });
+    await p.evaluate(u => { window.__alteSeite = true; location.href = u; }, basis).catch(() => {});
+    if (await wartet(p, 8000) === null) return E(`${name}: ohne Safari-Meldung – App lädt nicht`);
+    await bis(p, 1500, h => !h.linie);
+    // Netz am Webserver weg (wie WLAN aus) – setOffline erreicht in Chromium den Service Worker nicht
+    netz = 'aus';
+    let h = await bis(p, 15000, h => h.toast === TEXT_AUS);
+    pruefeAus(name, 'ohne Safari-Meldung (iPad), online → offline', h);
+    netz = 'an';
+    h = await bis(p, 15000, h => h.toast === TEXT_AN && !h.linie);
+    if (h?.toast !== TEXT_AN) E(`${name}: ohne Safari-Meldung (iPad) – ‚Wieder online‘ fehlt nach 15 s (gesehen: ${h?.toast ?? 'keine'})`);
+    if (h?.linie) E(`${name}: ohne Safari-Meldung (iPad) – wieder online steht trotzdem die graue Zeile`);
+  }
   try {
     for (const [name, a] of Object.entries(ansichten)) {
       netz = 'an';
@@ -163,6 +184,7 @@ export async function checkOffline(appDir, browser, { ansichten, grenze = 4500, 
           netz = 'an'; for (const r of offen) r.destroy?.(); offen.clear();
         }
         await wechsel(name, c, p);
+        await ohneMeldung(name, c, p);
       } finally { await c.close(); }
     }
   } finally { netz = 'an'; for (const r of offen) r.destroy?.(); server.closeAllConnections?.(); server.close(); }

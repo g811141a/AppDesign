@@ -1,6 +1,6 @@
 # Designrichtlinie allgemein
 
-**Version 4.15.0** · Stand 15.10.2026
+**Version 4.15.1** · Stand 15.10.2026
 
 Allgemeine Gestaltungs- und Bedienregeln für alle iPad-Web-Apps von g811141a (seit 4.1.0 auch
 auf dem iPhone, Abschnitt 15.17).
@@ -782,9 +782,13 @@ Verhalten · technischer Name). In AppDesign ist jede Komponente einmal programm
   ‚Netz hängt‘ meldet der Service Worker der App mit `postMessage({ netz: 'aus' | 'an' })` (‚aus‘, sobald er aus dem
   Speicher liefert; ‚an‘, sobald das Netz antwortet). Die Seite fragt ihn beim Start `{ netz: '?' }` (bei
   `DOMContentLoaded`, nicht erst bei `load`) und bei der Rückkehr in die App bzw. wenn Safari wieder Netz meldet
-  `{ netz: 'pruefe' }`; er antwortet immer. Eine verspätete Antwort ‚an‘ gilt nicht, solange Safari kein Netz meldet.
+  `{ netz: 'pruefe' }`; er antwortet immer. **Seit 4.15.1 (Fund P-39/1 und /2):** solange die App sichtbar ist, fragt
+  sie alle 10 s (`pruefe`, der Service Worker ruft `./` mit `HEAD` ab) – das iPad als Home-Bildschirm-App meldet den
+  Wechsel nicht zuverlässig (keine Ereignisse `offline`/`online`, `navigator.onLine` bleibt stehen); die Ereignisse
+  beschleunigen nur. Jede Frage trägt eine laufende Nummer (`id`), die Antwort ebenso; Antworten auf Fragen von vor einer
+  Meldung ‚offline‘ gelten nicht (schnelles Hin und Her).
   Jede App übernimmt diese Nachrichten in ihren `sw.js` (Vorbild Reiselogbuch 3.14.0).
-- **Prüfung:** `tests/offline.mjs` (Fälle F-1 bis F-16).
+- **Prüfung:** `tests/offline.mjs` (Fälle F-1 bis F-17; F-17 = Gerät ohne Safari-Meldung).
 
 ## 16. HIG-Checkliste
 
@@ -956,6 +960,7 @@ Die alten Nummern R-01 bis R-52 (bis 4.11.4) gelten nicht mehr; sie stehen nur n
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 4.15.1 | 15.10.2026 | Korrektur | Fund P-39/1 und /2 (iPad ohne Meldung beim Wechsel): 15.20 – die App fragt alle 10 s den Service Worker, laufende Nummer statt `navigator.onLine` |
 | 4.15.0 | 15.10.2026 | Neben | A-06 Offline-Hinweis (Variante c): R-1.5 ergänzt – graue Zeile unter der Backup-Kachel, kurze Meldung beim Wechsel und beim Start ohne Netz; neue Komponente 15.20, Abschnitt 11 (Nachrichten des Service Workers) |
 | 4.14.2 | 14.10.2026 | Korrektur | Fund P-37: R-5.1 ergänzt (Schaltflächen im Schrittkopf als Gruppe, 15.10), neue Regel R-1.5 (Offline-Start, Service Worker mit Frist 3 s, 15.20) |
 | 4.14.1 | 14.10.2026 | Korrektur | Abschnitt 14: die Fassung enthält auch den Text dieser Richtlinie und der Zusammenarbeit; keine Git-Markierung mehr (aus der Cloud gesperrt, Fund 4.14.0) |
