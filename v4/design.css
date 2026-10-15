@@ -1,4 +1,4 @@
-/* AppDesign 4.14.2 · design.css – gemeinsame Gestaltung der iPad-Web-Apps von g811141a (Apple-like)
+/* AppDesign 4.15.0 · design.css – gemeinsame Gestaltung der iPad-Web-Apps von g811141a (Apple-like)
    Einbinden im <head> vor dem eigenen <style> der App:  <link rel="stylesheet" href="../AppDesign/fassung/X.Y.Z/design.css"> (feste Fassung, R-10.3)
    Farben als Variablen auf :root, Dunkelmodus über data-theme="dark" (setzt ui.js / applyTheme).
    Komponenten: Schaltflächen, Suchfeld, Kapsel, Eingabefelder, Datumsfelder, Kopfzeile, Seitenleiste,
@@ -6,7 +6,7 @@
    Options-Kapsel; seit 4.1.0 iPhone-Ansicht (html.phone: Seitenkopf, großer Titel, Liste, Kasten, untere Leiste). Regeln dazu: README - Designrichtlinie allgemein.md */
 /* Farben im Apple-Look: Hintergrund Hellgrau, Kästen weiß ohne Rand, schwebende Schaltflächen */
 :root {
-  --ad-version: "4.14.2";   /* R-10.3: Version der Bausteine, die App prüft sie beim Start */
+  --ad-version: "4.15.0";   /* R-10.3: Version der Bausteine, die App prüft sie beim Start */
   --bg: #f2f2f7;
   --card: #ffffff;
   --ink: #1c1c1e;
@@ -472,3 +472,17 @@ html.phone .step-head > label:first-child { white-space: nowrap; flex: 1 0 60%; 
 html.phone .step-head .head-check { order: 3; margin-left: 0; }
 html.phone .step-head:has(.head-checks) > label:first-child { flex: 1 0 auto; }
 html.phone .step-head .head-checks { order: 3; margin-left: 0; justify-content: flex-start; }
+/* Seit 4.15.0 (R-1.5, A-06): Offline-Hinweis – graue Zeile unter der Backup-Kachel und kurze Meldung beim Wechsel */
+#side .side-foot .offl { display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 8px; font-size: 13px; color: var(--muted); }
+#side .side-foot .offl[hidden] { display: none; }
+#side .side-foot .offl .ic { width: 15px; height: 15px; flex: none; }
+/* Die Liste läuft auch hinter der Zeile durch, der letzte Eintrag bleibt erreichbar */
+#side:has(.offl:not([hidden])) .side-list { padding-bottom: 176px; }
+.nettoast { position: fixed; z-index: 40; inset: auto auto calc(max(var(--vv-bottom), env(safe-area-inset-bottom)) + var(--toast-lift, 0px) + 28px) var(--toast-x, 50%);
+  transform: translateX(-50%); margin: 0; border: 0; display: flex; align-items: center; gap: 10px; padding: 12px 18px; border-radius: 22px;
+  background: var(--card); color: var(--ink); font-size: 15px; box-shadow: var(--float); width: max-content; max-width: min(420px, var(--toast-w, calc(100vw - 32px)));
+  overflow: visible; -webkit-user-select: none; user-select: none; }
+.nettoast b { display: block; font-weight: 400; }
+.nettoast small { display: block; color: var(--muted); font-size: 13px; }
+.nettoast .ic { width: 22px; height: 22px; color: var(--muted); flex: none; }
+@media print { .nettoast, #side .side-foot .offl { display: none !important; } }

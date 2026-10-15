@@ -1794,3 +1794,5 @@ Alle punkte ok
 **2026-10-15 · Nutzer (Sitzung Reiselogbuch 0005):** Variante C aber als allgemeine regel → A-06 Variante c, allgemeine Regel (Ergänzung R-1.5); als Nächstes Muster dunkel/hoch/iPhone und Fall-Liste.
 
 **2026-10-15 · Entscheidung (Sitzung Reiselogbuch 0005):** A-06 Muster Variante c (dunkel, hoch, iPhone) → **Ja** · Meldung ‚Du bist offline‘ auch beim Start ohne Netz → **Ja** · Meldung ‚Wieder online‘ → **Ja** · Fall-Liste F-1 bis F-16 vollständig → **Ja**. A-06 bereit für die nächste Version.
+
+**2026-10-15 · Entscheidung (Sitzung Reiselogbuch 0005):** Version AppDesign 4.15.0 / Reiselogbuch 3.14.0 mit A-06 Offline-Hinweis (Variante c, R-1.5 ergänzt, Prüfung F-1 bis F-16) → **Ja**.
