@@ -46,11 +46,16 @@ man war. → **Frage 1**.
    **Aufbau** – im iPhone-Aufbau Startliste (gleicher Aufbau = gleiches Verhalten, R-1.1) – *Empfehlung* · b)
    entscheidet das **Gerät** – iPad öffnet immer das Reiselogbuch.
 
+## 4a. Entschieden (15.10.2026)
+
+1 a – Startliste bei jedem Neuladen · 2 a – beim Start kein Eintrag blau · 3 a – es entscheidet der Aufbau
+(iPhone-Aufbau → Startliste, auch iPad im schmalen Fenster).
+
 ## 5. Fall-Liste (je Fall ein automatischer Test, hell und dunkel, Chromium und WebKit)
 
 | Nr. | Gerät · Lage | Handlung · Daten | Erwartet |
 |---|---|---|---|
-| F-1 | iPhone hoch | Start, laufende Reise vorhanden | Startliste ‚Reiselogbücher‘ mit Anzahl, kein Reiselogbuch offen, Liste ganz oben, Backup-Kachel unten; blau nach Frage 2 |
+| F-1 | iPhone hoch | Start, laufende Reise vorhanden | Startliste ‚Reiselogbücher‘ mit Anzahl, kein Reiselogbuch offen, Liste ganz oben, Backup-Kachel unten; kein Eintrag blau |
 | F-2 | iPhone quer | Start | wie F-1 |
 | F-3 | iPhone hoch/quer | Start nur mit beendeten bzw. nur geplanten Reisen | wie F-1 |
 | F-4 | iPhone | Start mit **leerer** Liste | wie bisher: ‚Noch kein Reiselogbuch angelegt.‘ und Fenster ‚Neues Reiselogbuch‘ |
@@ -60,11 +65,11 @@ man war. → **Frage 1**.
 | F-8 | iPhone | in der Startliste drehen (hoch ↔ quer) | bleibt Startliste, gleicher oberster Eintrag (R-8.1) |
 | F-9 | iPhone | im Reiselogbuch drehen | bleibt im Reiselogbuch (R-8.1, wie bisher) |
 | F-10 | iPhone | Rückkehr aus dem Hintergrund ohne Neuladen (`visibilitychange`, `pageshow` aus dem Zwischenspeicher) | bleibt, wo es war – Startliste **oder** Reiselogbuch |
-| F-11 | iPhone | Neuladen, während ein Reiselogbuch offen ist (iOS hat die App beendet) | Startliste (Frage 1 a) |
+| F-11 | iPhone | Neuladen, während ein Reiselogbuch offen ist (iOS hat die App beendet) | Startliste |
 | F-12 | iPhone | Start ohne Netz | Startliste, Meldung ‚Du bist offline‘ über der Backup-Kachel, graue Offline-Zeile (R-1.5) |
 | F-13 | iPad quer | Start | **unverändert:** laufende Reise offen, Seitenleiste fest links, Sprung zum ersten offenen Tag |
 | F-14 | iPad hoch | Start | **unverändert:** laufende Reise offen, Seitenleiste darübergelegt |
-| F-15 | iPad schmales Fenster | Start | nach Frage 3 |
+| F-15 | iPad schmales Fenster | Start | Startliste (iPhone-Aufbau, wie F-1) |
 | F-16 | Wechsel iPhone-Aufbau → iPad-Aufbau | in der Startliste Fenster verbreitern | iPad-Aufbau mit Seitenleiste und der Startreise; zurück schmal → Startliste |
 | F-17 | iPhone | nach dem Start ‚Backup laden‘ → ‚Abgleichen‘ | bleibt in der Startliste, Ergebnisfenster wie bisher |
 | F-18 | iPhone | Reiselogbuch löschen | Startliste (wie bisher) |
@@ -77,6 +82,6 @@ und zurück → bleibt, wo es war · iPad quer und hoch neu öffnen → laufende
 ## 6. Umfang einer Version (nach den Antworten)
 
 Nur Reiselogbuch **3.15.0** (AppDesign bleibt 4.15.1, Fassung unverändert): Start am iPhone in der Startliste,
-Markierung nach Frage 2, Test `ablauf-iphone.mjs` (bisher erwartet er den Start im laufenden Reiselogbuch) und neue
+beim Start kein Eintrag blau, Test `ablauf-iphone.mjs` (bisher erwartet er den Start im laufenden Reiselogbuch) und neue
 Fälle F-1 bis F-18, Designrichtlinie Reiselogbuch Abschnitt 3a, `PROMPT.md`, `CHANGELOG.md`, `BACKLOG.md`. Kein Muster
 nötig – die Startliste sieht aus wie bisher.
