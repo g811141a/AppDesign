@@ -1796,3 +1796,7 @@ Alle punkte ok
 **2026-10-15 · Entscheidung (Sitzung Reiselogbuch 0005):** A-06 Muster Variante c (dunkel, hoch, iPhone) → **Ja** · Meldung ‚Du bist offline‘ auch beim Start ohne Netz → **Ja** · Meldung ‚Wieder online‘ → **Ja** · Fall-Liste F-1 bis F-16 vollständig → **Ja**. A-06 bereit für die nächste Version.
 
 **2026-10-15 · Entscheidung (Sitzung Reiselogbuch 0005):** Version AppDesign 4.15.0 / Reiselogbuch 3.14.0 mit A-06 Offline-Hinweis (Variante c, R-1.5 ergänzt, Prüfung F-1 bis F-16) → **Ja**.
+
+**2026-10-15 · Nutzer (Sitzung Reiselogbuch 0005):** Wie groß darf eine Sitzung maximal werden? → 1.000.000 Token Kontext (Sitzungsdaten), belegt 335.530; Grenze bleibt **300.000** (Nutzer: ‚Keine Änderung der Grenze‘).
+
+**2026-10-15 · Nutzer (Sitzung Reiselogbuch 0005):** Testrückmeldung zu P-39: 1) keine Meldung sichtbar, 2) keine Meldung sichtbar, die restlichen Punkte sind ok. → Auswertung `arbeit/P-39 Rückmeldung.md`, Korrektur K-07 bereit.

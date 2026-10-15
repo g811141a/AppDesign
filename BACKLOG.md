@@ -11,15 +11,15 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Prio | Thema | bereit seit |
 |---|---|---|---|
-| – | – | zurzeit nichts bereit | – |
+| K-07 | 1 | **Korrektur zu P-39/1 und /2:** iPad zeigt keine Meldung, wenn das Netz bei offener App wegfällt bzw. zurückkommt. Prüfung schärfen (Gerät ohne Safari-Meldung nachbilden), dann alle 10 s beim Service Worker nachfragen, Schutz über laufende Nummer statt `navigator.onLine`. Auswertung `arbeit/P-39 Rückmeldung.md` | 15.10.2026 |
 
-**0 Punkte bereit** · gebaut wird erst nach ‚Ja‘
+**1 Punkt bereit** (K-07) · gebaut wird erst nach ‚Ja‘
 
 ## 1. Auf iPad und iPhone prüfen
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| P-39 | 1 | AppDesign 4.15.0 mit Reiselogbuch 3.14.0: Offline-Hinweis (A-06) – Prüfliste im CHANGELOG des Reiselogbuchs (/0 bis /5) | prüfen |
+| P-39 | 1 | AppDesign 4.15.0 mit Reiselogbuch 3.14.0: Offline-Hinweis (A-06) – **ok bis auf /1 und /2** (iPad: keine Meldung beim Wechsel bei offener App) → K-07 | Korrektur |
 
 ## 2. Weitere Themen (in Klärung)
 
