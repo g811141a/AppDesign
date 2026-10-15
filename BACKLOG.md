@@ -11,9 +11,9 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Prio | Thema | bereit seit |
 |---|---|---|---|
-| – | – | zurzeit nichts bereit | – |
+| A-10 | 1 | Prüflauf mit höchstens so vielen gleichzeitigen Browsern wie Prozessoren (Container: 4 statt bisher 8, `tests/lauf.mjs` `--jobs`); Anlass: beim Veröffentlichen von 4.16.0 zweimal rot durch WebKit unter Last (`offline-regeln`, `hig` – Drehen am iPad), einzeln jeweils grün | 15.10.2026 |
 
-**0 Punkte bereit** · gebaut wird erst nach ‚Ja‘
+**1 Punkt bereit** (A-10) · gebaut wird erst nach ‚Ja‘
 
 ## 1. Auf iPad und iPhone prüfen
 
