@@ -1,6 +1,6 @@
 # Zusammenarbeit allgemein
 
-**Version 2.3.2** · Stand 14.10.2026
+**Version 2.4.0** · Stand 15.10.2026
 
 Regeln für die Zusammenarbeit mit Claude bei allen iPad-Web-Apps von g811141a.
 Diese Datei liegt im Design-Repo **AppDesign** (g811141a/AppDesign).
@@ -22,8 +22,8 @@ App-spezifische Punkte stehen in der `CLAUDE.md` des jeweiligen App-Repos.
 > Hinweis trotzdem darauf, zuerst Neues umzusetzen.
 
 > **Hinweis für Claude:** Diese Regeln gelten in jeder Sitzung, auch nach langer Pause.
-> Lies zu Beginn **`UEBERGABE.md`** (Stand der letzten Sitzung), dann `README - Designrichtlinie allgemein.md`
-> und die Designrichtlinie der App.
+> Lies zu Beginn **`UEBERGABE.md`** (Stand der letzten Sitzung) und Abschnitt 0 dieser Datei, alles Weitere
+> gezielt (0 Nr. 15).
 
 ---
 
@@ -40,7 +40,9 @@ Nutzer sie findet, schneller und günstiger arbeiten.
    Silbentrennung, Gefühl beim Wischen), kommt in die Prüfliste.
 2. **Parallel arbeiten, sparsam:** Tests laufen parallel, die schnellsten zuerst, Abbruch beim ersten Fehler
    (seit AppDesign 4.13.0: `node tests/alle.mjs` in der App, Werkzeug `AppDesign/tests/lauf.mjs`; jeder Test meldet Fehler
-   mit Rückgabewert, Gegenprobe mit `--gegenprobe`). Hilfsagenten nur für große, klar abgegrenzte Aufgaben mit wenig
+   mit Rückgabewert, Gegenprobe mit `--gegenprobe`). **Ein voller Prüflauf je Version (seit 2.4.0):** während der Arbeit
+   laufen nur die betroffenen Prüfungen (einzelne Datei oder `--nur …`); alle Prüfungen – Chromium und WebKit, hell und
+   dunkel – laufen genau einmal, im Veröffentlichungs-Skript (`… los`), nicht zusätzlich vorher. Hilfsagenten nur für große, klar abgegrenzte Aufgaben mit wenig
    Token-Verbrauch.
 3. **Regeln schlank halten:** Bei **jeder** neuen Regel prüft Claude, ob sie eine bestehende **ersetzt oder ergänzt**,
    und fasst Regeln zum selben Thema zusammen (z. B. alle Tabellenregeln an einer Stelle). Je Regel **genau eine**
@@ -93,7 +95,10 @@ Nutzer sie findet, schneller und günstiger arbeiten.
     Zeit und Token.
 15. **Neue Sitzung:** Der Nutzer öffnet einen neuen Chat mit derselben Umgebung und fügt den Starttext ein. Claude
     liest die Übergabe und die Richtlinien und gibt zuerst das **Lagebild** (Version, offene Prüfpunkte,
-    Backlog-Spitze), dann wird gearbeitet.
+    Backlog-Spitze), dann wird gearbeitet. **Gezielt lesen (seit 2.4.0):** zu Beginn nur `UEBERGABE.md`, Abschnitt 0
+    dieser Datei und die Überschriften (Inhaltsverzeichnis) der Designrichtlinien; weitere Abschnitte, Regelkatalog,
+    Backlog, CHANGELOG und PROMPT.md nur, soweit die Aufgabe sie braucht. Alles Gelesene wird bei jedem weiteren Schritt
+    mitverarbeitet – weniger Lesestoff macht die ganze Sitzung schneller.
 16. **Übergabe statt Gedächtnis:** Jede Vereinbarung kommt **sofort** in die Richtlinien, nicht erst am Ende. Was
     nicht auf GitHub steht, gibt es in der nächsten Sitzung nicht.
 17. **Rückmeldung kurz:** Nummer, ‚nicht ok‘ und ein Stichwort genügen; bei Unklarem fragt Claude nach.
@@ -229,7 +234,7 @@ Nutzer sie findet, schneller und günstiger arbeiten.
 ## 7. Nach jeder Version
 
 - Testen (hell und dunkel, iPad quer und hoch, iPhone hoch und quer, alle betroffenen Abläufe)
-  und das **HIG- und Regel-Prüfskript** laufen lassen: es prüft in jeder Ansicht die HIG-Punkte
+  und das **HIG- und Regel-Prüfskript** laufen lassen – der volle Lauf genau einmal im Veröffentlichungs-Skript (0 Nr. 2): es prüft in jeder Ansicht die HIG-Punkte
   und **alle automatisch prüfbaren Regeln des Regelkatalogs** – nicht nur die geänderten.
 - Regeln, die nur am Gerät prüfbar sind (Regelkatalog ‚Gerät‘, z. B. Federn, iOS-Tastatur),
   kommen in die Prüfliste, **wenn die Version sie betrifft**.
@@ -295,6 +300,7 @@ Nutzer sie findet, schneller und günstiger arbeiten.
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 2.4.0 | 15.10.2026 | Neben | A-07: zu Beginn gezielt lesen (0 Nr. 15, Hinweis oben) und nur ein voller Prüflauf je Version im Veröffentlichungs-Skript (0 Nr. 2, §7) |
 | 2.3.2 | 14.10.2026 | Korrektur | Abschnitt 0 Nr. 9 und 10: Verweise auf das Veröffentlichungs-Skript und die feste Fassung (A-05 Version B) |
 | 2.3.1 | 14.10.2026 | Korrektur | Abschnitt 0 Nr. 2 und 5: Verweise auf die Werkzeuge aus A-05 Version A (`tests/alle.mjs`, `lauf.mjs`, Gegenprobe) und WebKit in jedem Test |
 | 2.3.0 | 14.10.2026 | Neben | Abschnitt 0 Nr. 14: nach der Übergabe am Ende der Antwort fett ‚Die Sitzung (Chat) ist damit beendet!‘ |

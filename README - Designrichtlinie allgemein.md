@@ -1,6 +1,6 @@
 # Designrichtlinie allgemein
 
-**Version 4.15.1** · Stand 15.10.2026
+**Version 4.16.0** · Stand 15.10.2026
 
 Allgemeine Gestaltungs- und Bedienregeln für alle iPad-Web-Apps von g811141a (seit 4.1.0 auch
 auf dem iPhone, Abschnitt 15.17).
@@ -387,6 +387,10 @@ heller).
   Höhen, springt die Seite. ui.js merkt sich beim Scrollen den obersten sichtbaren Eintrag unter der Leiste
   (`data-day` bzw. `data-keep`) und den sichtbaren Anteil; nach dem Drehen rückt er ihn wieder an dieselbe Stelle. Tests
   bilden Safari nach (`overflow-anchor: none`), sonst verdeckt Chrome den Fehler.
+- **Neustart ist nicht erkennbar (seit 4.16.0, R-7.2):** Safari meldet nicht, **warum** eine Seite neu lädt. Als Neustart
+  zählt jedes Neuladen: App im App-Umschalter weggewischt, **von iOS im Hintergrund beendet** (Speicher – auch nach kurzer
+  Zeit in einer anderen App) oder neue Version geladen. Bleibt die Seite im Speicher, kommen nur `visibilitychange` und
+  `pageshow` (aus dem Zwischenspeicher) – dann ändert sich nichts. Was ‚beim Start‘ gilt, gilt also bei jedem Neuladen.
 
 ## 14. Design-Repo AppDesign
 
@@ -498,7 +502,7 @@ Verhalten · technischer Name). In AppDesign ist jede Komponente einmal programm
   und hoch, den nur Tippen ändert (Knopf panel-left, Abdunkelung, Auswahl im Hochformat) – nie das Drehen und keine
   Zwischengrößen, die iOS beim Drehen meldet.
 - **Verhalten:** beim Start immer eingeblendet (quer fest links, hoch über den Inhalt gelegt) mit
-  dem aktuellen Eintrag geöffnet; quer fest links neben dem Inhalt, mit panel-left aus- und
+  dem aktuellen Eintrag geöffnet (im iPhone-Aufbau stattdessen die Startliste ohne blauen Eintrag, R-7.2, 15.17); quer fest links neben dem Inhalt, mit panel-left aus- und
   einblendbar (bis zum nächsten Start); im Hochformat über den Inhalt gelegt (abgedunkelt dahinter), schließt sich
   nach der Auswahl.
 - **Mehr-Menü der Seitenleiste:** Backup erstellen (darunter grau „Letztes Backup erstellt am …“) ·
@@ -643,6 +647,11 @@ Verhalten · technischer Name). In AppDesign ist jede Komponente einmal programm
   bei einem Wechsel `render()`.
 - **Seiten:** eine Seite nach der anderen statt Seitenleiste. Startliste als eigene Seite; ein
   Eintrag öffnet seine Seite.
+- **Start (seit 4.16.0, R-7.2):** jedes Neuladen beginnt in der **Startliste**, ganz oben, **kein Eintrag blau** (nichts ist
+  geöffnet, HIG 4); nach ‚Zurück‘ ist wie bisher der zuletzt geöffnete blau. Es entscheidet der **Aufbau** (`isPhone()`),
+  nicht das Gerät – auch ein iPad im schmalen Fenster beginnt in der Startliste; der iPad-Aufbau öffnet den aktuellen
+  Eintrag (15.4). Rückkehr aus dem Hintergrund ohne Neuladen ändert nichts (Abschnitt 13). Die App merkt sich den
+  Start-Eintrag trotzdem, damit ein breiteres Fenster ihn mit der Seitenleiste zeigt.
 - **Seitenkopf** (`.pnav`): bleibt fest oben stehen; links runder Zurück-Knopf mit
   `chevron-left` **ohne Text**, rechts **dieselbe Kapsel wie am iPad** (z. B. [`plus` |
   `ellipsis`] in der Startliste, [`share` | `search` | `ellipsis`] im Inhalt).
@@ -837,7 +846,7 @@ hier**; die Abschnitte 1–16 beschreiben Werte und Komponenten und verweisen au
 (z. B. R-6.2 = Thema 6, Regel 2) – eine neue Regel wird in ihr Thema eingefügt, ohne die anderen umzunummerieren.
 
 **Prüfung:** je Regel **genau eine** automatische Prüfung in `tests/` (AppDesign): `hig.mjs` misst jede Ansicht jeder App,
-`ablauf.mjs` prüft Regeln, die eine Handlung brauchen (die App ruft sie mit ihren Fenstern auf), dazu `kontextmenue.mjs`,
+`ablauf.mjs` prüft Regeln, die eine Handlung brauchen (die App ruft sie mit ihren Fenstern auf), dazu `kontextmenue.mjs`, `start.mjs`,
 `backup.mjs`, `abgleich.mjs`, `version.mjs`, `doku.mjs`. Jede Meldung beginnt mit der Regelnummer. `checkCatalog`
 (`doku.mjs`) prüft, dass jede Regel eine Prüfung hat und keine alte Nummer mehr verwendet wird. **Gerät** = zusätzlich
 am iPad/iPhone zu prüfen; kommt in die Prüfliste, wenn eine Version es betrifft. Vor jedem Muster und nach jeder
@@ -907,6 +916,7 @@ Regel ersetzt oder ergänzt eine bestehende (Zusammenarbeit 0 Nr. 3) und bekommt
 | Nr. | Regel | Prüfung | Gerät | ersetzt |
 |---|---|---|---|---|
 | R-7.1 | **Zentrale Liste als Kacheln:** höchstens ein Eintrag blau; je Kachel ‚geändert am … · Gerät‘; Kacheln laufen unter dem Kopf und hinter der Backup-Kachel durch; Position bleibt beim Neuaufbau, der gewählte Eintrag bleibt sichtbar | hig.mjs | – | R-31 (+ Teil R-44, 15.4) |
+| R-7.2 | **Start im iPhone-Aufbau in der Startliste (seit 4.16.0):** jedes Neuladen zeigt im iPhone-Aufbau (auch iPad im schmalen Fenster) die Startliste ganz oben ohne blauen Eintrag; der iPad-Aufbau öffnet den aktuellen Eintrag; Rückkehr aus dem Hintergrund ändert nichts (15.17) | start.mjs | Gerät (App neu öffnen) | **neu** (aus Reiselogbuch T-84) |
 
 ### 8. Drehen
 
@@ -960,6 +970,7 @@ Die alten Nummern R-01 bis R-52 (bis 4.11.4) gelten nicht mehr; sie stehen nur n
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 4.16.0 | 15.10.2026 | Neben | Neue Regel **R-7.2** (A-09, aus Reiselogbuch T-84): Start im iPhone-Aufbau in der Startliste ohne blauen Eintrag, der Aufbau entscheidet, iPad-Aufbau unverändert – 15.4, 15.17, Regelkatalog Thema 7, Prüfung `start.mjs`; Abschnitt 13: Neustart ist in einer Web-App nicht erkennbar |
 | 4.15.1 | 15.10.2026 | Korrektur | Fund P-39/1 und /2 (iPad ohne Meldung beim Wechsel): 15.20 – die App fragt alle 10 s den Service Worker, laufende Nummer statt `navigator.onLine` |
 | 4.15.0 | 15.10.2026 | Neben | A-06 Offline-Hinweis (Variante c): R-1.5 ergänzt – graue Zeile unter der Backup-Kachel, kurze Meldung beim Wechsel und beim Start ohne Netz; neue Komponente 15.20, Abschnitt 11 (Nachrichten des Service Workers) |
 | 4.14.2 | 14.10.2026 | Korrektur | Fund P-37: R-5.1 ergänzt (Schaltflächen im Schrittkopf als Gruppe, 15.10), neue Regel R-1.5 (Offline-Start, Service Worker mit Frist 3 s, 15.20) |
