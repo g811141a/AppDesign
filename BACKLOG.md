@@ -11,9 +11,10 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Prio | Thema | bereit seit |
 |---|---|---|---|
-| A-07 | 1 | Schneller arbeiten (entschieden 15.10.2026): a) zu Beginn gezielt lesen – `UEBERGABE.md`, Zusammenarbeit Abschnitt 0, Inhaltsverzeichnis der Designrichtlinie, Rest bei Bedarf; CHANGELOG und PROMPT.md nicht mehr auf der Leseliste (CLAUDE.md beider Repos, Zusammenarbeit 0 Nr. 15) · b) nur **ein** voller Prüflauf je Version (im Veröffentlichungs-Skript), vorher nur die betroffenen Prüfungen (Zusammenarbeit 0 Nr. 2, §7) · c) Versionsgeschichten der Richtlinien in eigene Dateien auslagern (`doku.mjs` anpassen). Nicht übernommen: d) Fall-Liste und Apple-Abgleich bleiben auch bei kleinen Korrekturen | 15.10.2026 |
+| A-07 | 1 | Schneller arbeiten (entschieden 15.10.2026, allgemein): a) zu Beginn gezielt lesen – `UEBERGABE.md`, Zusammenarbeit Abschnitt 0, Inhaltsverzeichnis der Designrichtlinie, Rest bei Bedarf; CHANGELOG und PROMPT.md nicht mehr auf der Leseliste (Zusammenarbeit 0 Nr. 15, CLAUDE.md beider Repos) · b) nur **ein** voller Prüflauf je Version (im Veröffentlichungs-Skript), vorher nur die betroffenen Prüfungen (Zusammenarbeit 0 Nr. 2, §7). Nicht übernommen: c) Versionsgeschichten bleiben, wo sie sind · d) Fall-Liste und Apple-Abgleich bleiben auch bei kleinen Korrekturen. Dunkelmodus bleibt in jedem Prüflauf (A-08 zurückgenommen) | 15.10.2026 |
+| A-09 | 2 | **Start im iPhone-Aufbau in der Startliste (aus T-84, allgemein seit 15.10.2026):** bei jedem Neuladen zeigt der iPhone-Aufbau die Startliste (= Seitenleiste als Seite), nicht den Inhalt; beim Start ist **kein** Eintrag blau (HIG 4 – nichts ist geöffnet); es entscheidet der **Aufbau** (`isPhone()`, auch iPad im schmalen Fenster), nicht das Gerät; iPad-Aufbau unverändert; Rückkehr aus dem Hintergrund ohne Neuladen bleibt, wo sie war. Neue Regel im Thema 7 (R-7.2) mit Prüfung, 15.4 und 15.17 ergänzt; Fund ‚Web-App erkennt keinen echten Neustart‘ in Designrichtlinie 13. Reiselogbuch übernimmt es (T-84). Fall-Liste: `arbeit/T-84 Fall-Liste.md` | 15.10.2026 |
 
-**1 Punkt bereit** (A-07) · gebaut wird erst nach ‚Ja‘
+**2 Punkte bereit** (A-07, A-09) · gebaut wird erst nach ‚Ja‘
 
 ## 1. Auf iPad und iPhone prüfen
 

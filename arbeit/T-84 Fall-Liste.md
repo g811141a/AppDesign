@@ -1,7 +1,7 @@
 # T-84 – iPhone startet in der Startliste: Apple-Abgleich und Fall-Liste
 
-**Stand 15.10.2026** · Sitzung ‚Reiselogbuch 0006 – T-84 iPhone-Start‘ · nur Reiselogbuch, keine allgemeine Regel
-(entschieden 14.10.2026)
+**Stand 15.10.2026** · Sitzung ‚Reiselogbuch 0006 – T-84 iPhone-Start‘ · **allgemeine Regel seit 15.10.2026** (A-09; vorher am
+14.10.2026 nur Reiselogbuch)
 
 ## 1. Heute
 
@@ -49,7 +49,8 @@ man war. → **Frage 1**.
 ## 4a. Entschieden (15.10.2026)
 
 1 a – Startliste bei jedem Neuladen · 2 a – beim Start kein Eintrag blau · 3 a – es entscheidet der Aufbau
-(iPhone-Aufbau → Startliste, auch iPad im schmalen Fenster).
+(iPhone-Aufbau → Startliste, auch iPad im schmalen Fenster). Alles allgemein (A-09): Start in der Startliste,
+kein Eintrag blau, Aufbau entscheidet, Fund zum Neustart in Designrichtlinie 13.
 
 ## 5. Fall-Liste (je Fall ein automatischer Test, hell und dunkel, Chromium und WebKit)
 
