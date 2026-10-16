@@ -19,7 +19,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| P-42 | 1 | AppDesign 4.16.1 mit Reiselogbuch 3.15.1: nur Version prüfen (A-10, A-11 betreffen nur die Prüfungen) – Prüfliste P-42 im CHANGELOG des Reiselogbuchs | prüfen |
+| P-42 | 1 | AppDesign 4.16.1 mit Reiselogbuch 3.15.1: Version und Offline-Start nach dem Update (P-42/0, /1) – Prüfliste P-42 im CHANGELOG des Reiselogbuchs | prüfen |
 
 ## 2. Weitere Themen (in Klärung)
 

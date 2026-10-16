@@ -14,7 +14,7 @@
 | Zusammenarbeit allgemein | 2.5.0 (Abschnitt 0 = Arbeitsprozess 2.0, hat Vorrang) | `README - Zusammenarbeit allgemein.md` |
 
 - **Chatnummer:** die nächste Sitzung heißt **Reiselogbuch 0006** (Zusammenarbeit 0 Nr. 13); die danach 0007.
-- **Offene Prüfpunkte:** **P-42** (Reiselogbuch 3.15.1 · AppDesign 4.16.1 – nur /0 Version prüfen).
+- **Offene Prüfpunkte:** **P-42** (Reiselogbuch 3.15.1 · AppDesign 4.16.1 – /0 Version, /1 Offline-Start nach dem Update).
 - **Nächste Version:** nichts bereit.
 - **Sitzungsgröße:** höchstens 1.000.000 Token Kontext (Sitzungsdaten, `get_session` → `context_usage`); unsere Grenze
   bleibt **etwa 300.000 Token** (Nutzer, 15.10.2026: keine Änderung der Grenze).
