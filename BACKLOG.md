@@ -19,7 +19,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| P-43 | 1 | A-12: am Ende jeder Antwort steht die Zeile aus `messung.mjs` (Zeit ohne Wartezeit im Auswahlfenster, Token der vorigen Antwort) | prüfen |
+| – | – | zurzeit nichts zu prüfen | – |
 
 ## 2. Weitere Themen (in Klärung)
 
@@ -34,6 +34,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Thema | Version | Datum |
 |---|---|---|---|
+| E-28 | Geprüft: P-43 alles in Ordnung (Zeile aus `messung.mjs`); **A-12 damit abgeschlossen** | AppDesign 4.17.0 | 16.10.2026 |
 | E-27 | A-12 Werkzeug `werkzeug/messung.mjs` für die Zeile Zeit und Token (Fall-Liste `arbeit/A-12 Fall-Liste.md`, Prüfung `tests/messung.mjs`) | AppDesign 4.17.0 | 16.10.2026 |
 | E-26 | Geprüft: T-05 erste Konvertierung (Import-Datei mit ‚Abgleichen‘ geladen, Stichprobe in Ordnung) | ReiseLogBuch-Import 1.2.1 | 16.10.2026 |
 | E-25 | Geprüft: P-42 alles in Ordnung (AppDesign 4.16.1 mit Reiselogbuch 3.15.1); **A-10 und A-11 damit abgeschlossen** | AppDesign 4.16.1 | 16.10.2026 |
