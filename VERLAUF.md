@@ -1818,3 +1818,5 @@ Alle punkte ok
 **2026-10-16 · Entscheidung (Sitzung Reiselogbuch 0007):** Ergänzungen E-1 bis E-11 einzeln per Kachelabfrage → alle **ja**, E-4 (Angaben ohne Feld) **immer Kachelfrage**. Ablegen im Import-Repo → **Nein** (noch nicht).
 
 **2026-10-16 · Nutzer (Sitzung Reiselogbuch 0007):** Texte in Verlauf und ‚Wie war was?‘ grammatikalisch verbessern, ohne den Sinn zu verfälschen → **N-11**; Entscheidung: auch Fazit (Essen, Quartier nur Tippfehler), geänderte Zeilen im Protokoll vorher → nachher.
+
+**2026-10-16 · Nutzer (Sitzung Reiselogbuch 0007):** ‚Jetzt alles im Import-Repo ablegen‘ → ReiseLogBuch-Import **1.0.0** (PROMPT.md, CLAUDE.md, ERKENNTNISSE.md, README mit Versionen, `werkzeug/pruefen.mjs` F-1 bis F-19, Selbsttest grün in Chromium und WebKit) und Korrektur **1.0.1** (F-18 las `git status` falsch – beim Hochladen von 1.0.0 übersehen, weil das Ergebnis des Selbsttests vor dem Hochladen nicht ausgewertet wurde). Apps unverändert.
