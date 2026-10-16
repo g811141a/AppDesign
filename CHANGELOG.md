@@ -3,6 +3,28 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.17.0 – 16.10.2026 (Neben)
+
+AppDesign 4.17.0 · Designrichtlinie allgemein 4.17.0 · Zusammenarbeit allgemein 2.7.0 · keine App gehoben (Reiselogbuch bleibt auf 4.16.1)
+
+A-12: Zeile Zeit und Token aus einem Werkzeug statt von Hand (Fall-Liste `arbeit/A-12 Fall-Liste.md`, M-1 bis M-14).
+
+- **Werkzeug `werkzeug/messung.mjs`:** gibt `<sub>⏱ mm:ss · Token vorige Antwort: N neu · N aus Zwischenspeicher · N geschrieben</sub>`
+  aus den Sitzungsdaten aus. Zeit ab der letzten Nachricht des Nutzers ohne Wartezeit in Auswahlfenstern; Systemmeldungen
+  (Neustart, Hintergrund, Start durch eine andere Sitzung) und Werkzeug-Ergebnisse zählen nicht als Nachricht; Token der
+  vorigen Antwort je Modell-Aufruf einmal, Hilfsagenten mitgezählt; ‚neu‘ = Eingabe + Ausgabe (Entscheidung des Nutzers);
+  nach einem Neustart die zuletzt geänderte Sitzungsdatei; ohne Daten Fehler statt Zeile.
+- **Funde beim Bau:** eine Modell-Antwort steht auf mehreren Zeilen der Sitzungsdaten – die Handmessung hatte deshalb
+  mehrfach gezählt; nach einem Neustart liegt die Sitzung in einem zweiten Ordner.
+- **Prüfung `tests/messung.mjs`** mit künstlichen Sitzungsdaten (alle 14 Fälle), Gegenprobe (mehrfach zählen) rot.
+- **Zusammenarbeit 2.7.0** (§2 Werkzeug), **CLAUDE.md 2.4.0**; feste Fassung `fassung/4.17.0/`.
+
+### Prüfliste (P-43)
+
+1. In der nächsten Antwort steht am Ende die Zeile aus `messung.mjs`; die Zeit passt ungefähr zur Arbeitszeit ohne die Zeit,
+   in der ein Auswahlfenster offen war.
+2. Die Token gelten der **vorigen** Antwort (bei der ersten Antwort einer Sitzung ‚–‘).
+
 ## 4.16.1 – 15.10.2026 (Korrektur)
 
 AppDesign 4.16.1 · Designrichtlinie allgemein 4.16.1 · Zusammenarbeit allgemein 2.5.0 · geprüft mit Reiselogbuch 3.15.1

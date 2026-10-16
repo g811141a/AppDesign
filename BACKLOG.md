@@ -1,6 +1,6 @@
 # AppDesign – Backlog (allgemeine Themen)
 
-**Stand 15.10.2026** · Aktuelle Version: AppDesign 4.16.1
+**Stand 16.10.2026** · Aktuelle Version: AppDesign 4.17.0
 
 Allgemeine Themen, die alle Apps betreffen. App-Themen stehen im Backlog der jeweiligen App.
 Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
@@ -11,15 +11,15 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Prio | Thema | bereit seit |
 |---|---|---|---|
-| A-12 | 1 | Werkzeug `werkzeug/messung.mjs`: gibt die Zeile ‚⏱ mm:ss · Token vorige Antwort: N neu · N aus Zwischenspeicher · N geschrieben‘ aus den Sitzungsdaten (`/root/.claude/projects/…/*.jsonl`) aus – Zeit ab Eingang der letzten Nachricht des Nutzers, Token der vorigen Antwort; Claude ruft es am Ende jeder Antwort auf, nie geschätzt (Anlass 16.10.2026: in Sitzung 0006 fünfzehnmal ‚nicht einzeln gemessen‘ statt Messung – Verstoß gegen Zusammenarbeit §2). Verweis in Zusammenarbeit §2 und CLAUDE.md | 16.10.2026 |
+| – | – | zurzeit nichts bereit | – |
 
-**1 Punkt bereit** (A-12) · gebaut wird erst nach ‚Ja‘
+**0 Punkte bereit**
 
 ## 1. Auf iPad und iPhone prüfen
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| – | – | zurzeit nichts zu prüfen | – |
+| P-43 | 1 | A-12: am Ende jeder Antwort steht die Zeile aus `messung.mjs` (Zeit ohne Wartezeit im Auswahlfenster, Token der vorigen Antwort) | prüfen |
 
 ## 2. Weitere Themen (in Klärung)
 
@@ -34,6 +34,8 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Thema | Version | Datum |
 |---|---|---|---|
+| E-27 | A-12 Werkzeug `werkzeug/messung.mjs` für die Zeile Zeit und Token (Fall-Liste `arbeit/A-12 Fall-Liste.md`, Prüfung `tests/messung.mjs`) | AppDesign 4.17.0 | 16.10.2026 |
+| E-26 | Geprüft: T-05 erste Konvertierung (Import-Datei mit ‚Abgleichen‘ geladen, Stichprobe in Ordnung) | ReiseLogBuch-Import 1.2.1 | 16.10.2026 |
 | E-25 | Geprüft: P-42 alles in Ordnung (AppDesign 4.16.1 mit Reiselogbuch 3.15.1); **A-10 und A-11 damit abgeschlossen** | AppDesign 4.16.1 | 16.10.2026 |
 | E-24 | A-11 Lauf-Werkzeug: Browser nacheinander (erst Chromium, dann WebKit) – schwankende WebKit-Prüfungen im gemeinsamen Lauf | AppDesign 4.16.1 | 15.10.2026 |
 | E-23 | A-10 Lauf-Werkzeug mit höchstens so vielen Browsern wie Kernen (4 statt 8) | AppDesign 4.16.1 | 15.10.2026 |

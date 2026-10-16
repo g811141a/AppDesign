@@ -1828,3 +1828,5 @@ Alle punkte ok
 **2026-10-16 · Nutzer (Sitzung Reiselogbuch 0007):** Neue allgemeine Regel: nach dem Schließen des Fensters ‚Tag‘ steht die Zeile des bearbeiteten Tages ganz oben → **A-13** (AppDesign-Backlog, Prio 2, offen; Verweis im Reiselogbuch-Backlog).
 
 **2026-10-16 · Übergabe (Sitzung Reiselogbuch 0007):** T-05-Werkzeug fertig, erste Konvertierung erledigt, Sitzung über 300.000 Token → Übergabe geschrieben, neue Sitzung ‚Reiselogbuch 0008 – T-05 Prüfung und A-12‘ gestartet.
+
+**2026-10-16 · Sitzung Reiselogbuch 0008:** T-05 geprüft – Import-Datei mit ‚Abgleichen‘ geladen, alles in Ordnung. A-12 gebaut (Fall-Liste M-1 bis M-14, Entscheidung ‚neu‘ = Eingabe + Ausgabe) → AppDesign 4.17.0 mit `werkzeug/messung.mjs`, Zusammenarbeit 2.7.0.

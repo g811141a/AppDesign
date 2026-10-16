@@ -1,6 +1,6 @@
 # Zusammenarbeit allgemein
 
-**Version 2.6.0** · Stand 16.10.2026
+**Version 2.7.0** · Stand 16.10.2026
 
 Regeln für die Zusammenarbeit mit Claude bei allen iPad-Web-Apps von g811141a.
 Diese Datei liegt im Design-Repo **AppDesign** (g811141a/AppDesign).
@@ -158,6 +158,11 @@ Nutzer sie findet, schneller und günstiger arbeiten.
   gezählt). Ausgabe als **eine kompakte Zeile**, klein gesetzt:
   `<sub>⏱ mm:ss · Token vorige Antwort: N neu · N aus Zwischenspeicher · N geschrieben</sub>`
   (ab 60 Minuten hh:mm:ss). Nutzung in Prozent und Rücksetzzeiten zeigt nur die Claude-App.
+  **Werkzeug (seit 2.7.0, A-12):** Claude erzeugt die Zeile am Ende jeder Antwort mit
+  `node ../AppDesign/werkzeug/messung.mjs` (in AppDesign `node werkzeug/messung.mjs`) und übernimmt sie unverändert –
+  nie schätzen, nie weglassen; meldet das Werkzeug einen Fehler, steht der Fehler statt der Zeile da. Es zieht die
+  Wartezeit in Auswahlfenstern ab, zählt Systemmeldungen nicht als Nachricht und jeden Modell-Aufruf nur einmal;
+  ‚neu‘ = Eingabe + Ausgabe.
 - **Muster und Erklärungen vor dem Fenster (0 Nr. 7, seit 2.2.0):** Text vor einem Auswahlfenster und die
   Vorschau-Funktion sind in der App nicht zu sehen. Muster, Beispiele und Erklärungen, die der Nutzer vor der
   Entscheidung lesen muss, schickt Claude deshalb **als Datei oder Bild vor dem Fenster**; im Fenster steht nur die
@@ -321,6 +326,7 @@ Nutzer sie findet, schneller und günstiger arbeiten.
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 2.7.0 | 16.10.2026 | Neben | §2: Zeile Zeit und Token mit dem Werkzeug `werkzeug/messung.mjs`, ‚neu‘ = Eingabe + Ausgabe (A-12) |
 | 2.6.0 | 16.10.2026 | Neben | Abschnitt 0 Nr. 19: Startfrage – Sitzung ohne Auftrag beginnt mit dem Auswahlfenster ‚Was möchtest du als Nächstes tun?‘ je angehängtem Repo (T-05) |
 | 2.5.0 | 15.10.2026 | Neben | Abschnitt 1: per du (nie ‚Sie‘ oder ‚ihr‘); Abschnitt 0 Nr. 18: bei offensichtlichem Regelbruch massiv widersprechen, umsetzen erst nach ausdrücklicher Umsetzungspflicht |
 | 2.4.0 | 15.10.2026 | Neben | A-07: zu Beginn gezielt lesen (0 Nr. 15, Hinweis oben) und nur ein voller Prüflauf je Version im Veröffentlichungs-Skript (0 Nr. 2, §7) |
