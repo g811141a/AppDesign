@@ -25,6 +25,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
+| A-13 | 2 | **Allgemeine Regel (Nutzer, 16.10.2026):** Schließt man das Fenster einer Tageserfassung (bzw. eines Eintrags), steht die Zeile des bearbeiteten Tages **immer ganz oben** in der Liste bzw. Tabelle. Zu klären: Abgrenzung zu R-7.1 (Position bleibt beim Neuaufbau), Fälle letzte Tage (Tabelle zu kurz zum Hochschieben), iPhone-Tagesliste, Häkchen vs. x (ohne Änderung), Blättern mit ‹ › im Fenster, Suche offen; Apple-Abgleich, Fall-Liste, Regel-Nr. im Regelkatalog. Gilt zuerst für das Reiselogbuch (Tagestabelle) | offen |
 | A-01 | 3 | Startseite g811141a.github.io mit allen Apps (früher S-03) | später |
 
 ---

@@ -1,75 +1,73 @@
 # Übergabe an die nächste Sitzung
 
-**Stand 16.10.2026** · geschrieben in der Sitzung ‚Reiselogbuch 0006 – T-84 iPhone-Start‘
-(Zusammenarbeit allgemein 2.5.0, Abschnitt 0 Nr. 14). **Claude liest diese Datei zu Beginn jeder Sitzung zuerst.**
+**Stand 16.10.2026** · geschrieben in der Sitzung ‚Reiselogbuch 0007 – T-05 Alte Reiselogbücher‘
+(Zusammenarbeit allgemein 2.6.0, Abschnitt 0 Nr. 14). **Claude liest diese Datei zu Beginn jeder Sitzung zuerst.**
 
 ## 1. Lagebild
 
 | Teil | Version | Datei |
 |---|---|---|
-| Reiselogbuch | 3.15.1 | g811141a/ReiseLogBuch – `CHANGELOG.md`, `BACKLOG.md`, `PROMPT.md` |
-| AppDesign (ui.js, design.css, tests; feste Fassung `fassung/4.16.1/`) | 4.16.1 | g811141a/AppDesign – `CHANGELOG.md`, `BACKLOG.md` |
-| Designrichtlinie allgemein | 4.16.1 (Regelkatalog R-1.1 bis R-10.4, 36 Regeln in 10 Themen; neu R-7.2) | `README - Designrichtlinie allgemein.md` |
+| Reiselogbuch | 3.15.1 (unverändert) | g811141a/ReiseLogBuch – `CHANGELOG.md`, `BACKLOG.md`, `PROMPT.md` |
+| AppDesign (ui.js, design.css, tests; feste Fassung `fassung/4.16.1/`) | 4.16.1 (unverändert) | g811141a/AppDesign – `CHANGELOG.md`, `BACKLOG.md` |
+| **ReiseLogBuch-Import (neu, privat)** | 1.2.1 | g811141a/ReiseLogBuch-Import – `README.md`, `PROMPT.md`, `CLAUDE.md`, `ERKENNTNISSE.md`, `werkzeug/pruefen.mjs` |
+| Designrichtlinie allgemein | 4.16.1 (R-1.1 bis R-10.4) | `README - Designrichtlinie allgemein.md` |
 | Designrichtlinie Reiselogbuch | 3.15.1 | im Repo ReiseLogBuch |
-| Zusammenarbeit allgemein | 2.5.0 (Abschnitt 0 = Arbeitsprozess 2.0, hat Vorrang) | `README - Zusammenarbeit allgemein.md` |
+| Zusammenarbeit allgemein | **2.6.0** (neu: 0 Nr. 19 Startfrage) | `README - Zusammenarbeit allgemein.md` |
 
-- **Chatnummer:** die nächste Sitzung heißt **Reiselogbuch 0007** (Zusammenarbeit 0 Nr. 13); die danach 0008.
-- **Offene Prüfpunkte:** keine – P-42 alles in Ordnung (16.10.2026).
-- **Nächste Version:** AppDesign – A-12 bereit (Werkzeug `messung.mjs` für die Zeile Zeit und Token, Prio 1). **Bis dahin Zeit und Token am Ende jeder Antwort von Hand aus den Sitzungsdaten messen – nie schätzen, nie weglassen.**
-- **Sitzungsgröße:** höchstens 1.000.000 Token Kontext (Sitzungsdaten, `get_session` → `context_usage`); unsere Grenze
-  bleibt **etwa 300.000 Token** (Nutzer, 15.10.2026: keine Änderung der Grenze).
+- **Chatnummer:** die nächste Sitzung heißt **Reiselogbuch 0008** (Zusammenarbeit 0 Nr. 13); die danach 0009.
+- **Offene Prüfpunkte:** **T-05** – der Nutzer lädt die Import-Datei ‚Ω Import Reiselogbuch 2026.10.16 19.52.json‘ (aus dem
+  Chat der Sitzung 0007) mit ‚Backup laden‘ → ‚Abgleichen‘. Erwartet: die Reise steht unter ‚Hinzugefügt‘; Stichprobe 23.09.
+  (vier Punkte mit ▫️), 14./15.10. (ergänzte ▫️), Fazit mit Smileys, ab 16.10. kein Wetter. Zuerst nach dem Ergebnis fragen.
+- **Nächste Version:** AppDesign – **A-12** bereit (Werkzeug `messung.mjs` für die Zeile Zeit und Token, Prio 1). Bis dahin
+  Zeit und Token am Ende jeder Antwort von Hand aus den Sitzungsdaten messen – nie schätzen, nie weglassen.
+- **Neu im Backlog:** **A-13** (AppDesign, Prio 2, allgemeine Regel): nach dem Schließen des Fensters ‚Tag‘ steht die Zeile
+  des bearbeiteten Tages ganz oben – zu klären (Fall-Liste, Abgrenzung R-7.1, letzte Tage, iPhone).
+- **Sitzungsgröße:** unsere Grenze bleibt **etwa 300.000 Token** (0007 endete bei etwa 330.000).
 - **Erinnerung:** ‚Backlog-Erinnerung (AppDesign und Reiselogbuch)‘ montags 8:58.
 
 ## 2. Ergebnisse
 
-**Sitzung ‚Reiselogbuch 0006 – T-84 iPhone-Start‘ – T-84, A-07, A-09, A-10, A-11 abgeschlossen (P-41, P-42 ok):**
-- **AppDesign 4.16.0 · Reiselogbuch 3.15.0 veröffentlicht:** T-84 wurde allgemeine Regel **R-7.2** (A-09): jedes
-  Neuladen beginnt im iPhone-Aufbau (auch iPad im schmalen Fenster) in der Startliste ohne blauen Eintrag; iPad-Aufbau
-  unverändert. Prüfung `start.mjs` (AppDesign) und `start-regeln.mjs` (F-1 bis F-18). Fall-Liste `arbeit/T-84 Fall-Liste.md`.
-  Designrichtlinie 13: Neustart ist in einer Web-App nicht erkennbar.
-- **A-07 (Zusammenarbeit 2.4.0):** zu Beginn gezielt lesen (UEBERGABE, Abschnitt 0, Überschriften), nur ein voller
-  Prüflauf je Version im Veröffentlichungs-Skript. Nicht übernommen: Versionsgeschichten auslagern, weniger
-  Pflichtschritte bei Korrekturen; Dunkelmodus bleibt in jedem Lauf (Wunsch zurückgenommen).
-- **AppDesign 4.16.1 · Reiselogbuch 3.15.1 veröffentlicht (A-10, A-11):** voller Prüflauf mit höchstens so vielen Browsern
-  wie Kernen und **Browser nacheinander** (erst Chromium, dann WebKit). Ursache der roten Läufe gemessen: der Netzprozess von
-  WebKit stürzt in der Prüfumgebung unter Last ab und verliert den Speicher des Service Workers → `offline.mjs` prüft die
-  Ansicht dann einmal neu (zweimal → rot); kein Fehler der App. Danach drei volle Läufe grün.
-- **Neue Arbeitsregeln (Zusammenarbeit 2.5.0):** per du (§1); bei offensichtlichem Regelbruch massiv widersprechen, nichts ins
-  Backlog, umsetzen erst nach ausdrücklicher **Umsetzungspflicht** (0 Nr. 18).
-
-**Sitzung ‚Reiselogbuch 0005 – A-06 Offline-Hinweis‘ – A-06 abgeschlossen:**
-- **Offline-Hinweis (AppDesign 4.15.0 · Reiselogbuch 3.14.0, Variante c, allgemeine Regel – R-1.5 ergänzt):** graue
-  Zeile `wifi-off` ‚Offline – alles bleibt auf diesem Gerät‘ unter der Backup-Kachel (in `backupTileHtml()`, jede App hat
-  sie); kurze Meldung ‚Du bist offline‘ bzw. ‚Wieder online‘ beim Wechsel und beim Start ohne Netz (4 s, mittig neben der
-  Seitenleiste, iPhone über der Backup-Kachel, oberste Ebene). Erkennen über Safari-Ereignisse und Nachrichten des Service
-  Workers (`{ netz: '?' | 'pruefe', id }` → `{ netz: 'aus' | 'an', id }`) – **jede App übernimmt das in ihren `sw.js`**
-  (Vorbild Reiselogbuch). Komponente 15.20, Prüfung `offline.mjs` F-1 bis F-17. Muster und Fall-Liste:
-  `arbeit/A-06 Muster und Fall-Liste.md`.
-- **P-39 → Korrektur 4.15.1 · 3.14.1 (P-40 ok):** das iPad als Home-Bildschirm-App meldet den Wechsel nicht (keine
-  Ereignisse `offline`/`online`) → die App fragt alle 10 s den Service Worker (`HEAD`), laufende Nummer statt
-  `navigator.onLine`. Auswertung `arbeit/P-39 Rückmeldung.md`.
-- **Funde für Prüfungen:** `setOffline()` von Playwright sendet immer `offline`/`online` (Gerät verhält sich anders) und
-  erreicht in Chromium den Service Worker nicht → Netz am Prüf-Webserver wegnehmen. `elementFromPoint` trifft bei offenem
-  Fenster (modal) nichts außerhalb – ‚oberste Ebene‘ über `:popover-open` prüfen.
-- **Bekannte Lücke (nicht entschieden):** ist die Liste leer, gibt es keine Backup-Kachel und damit keine graue Zeile – dann
-  nur die kurze Meldung.
+**Sitzung ‚Reiselogbuch 0007 – T-05 Alte Reiselogbücher‘ – T-05 Werkzeug fertig, erste Konvertierung erledigt:**
+- **Weg:** Kein Umbau der App. Claude macht aus einer alten Unterlage eine Datei im Backup-Format (nur die alten Reisen,
+  feste Kennung `import-<Beginn>-<titel>`, Zeitpunkte). Der Nutzer lädt sie mit ‚Backup laden‘ → **‚Abgleichen‘**.
+- **Privates Repo `ReiseLogBuch-Import`:** Anleitung `PROMPT.md` (N-1 bis N-15, E-1 bis E-11), `CLAUDE.md` mit Startfrage,
+  `ERKENNTNISSE.md` (K-1 bis K-12, ohne Daten), Prüfwerkzeug `werkzeug/pruefen.mjs`: F-1 bis F-22 in der echten App,
+  Chromium und WebKit, hell und dunkel; Apps unverändert (N-2); Datenschutz-Sperre (F-18); Selbsttest mit Gegenprobe.
+  Anforderungen und Fall-Liste: AppDesign `arbeit/T-05 Anforderungen.md`, `arbeit/T-05 Fall-Liste.md`.
+- **Wichtigste Regeln:** Daten nie in ein Repo. Apps bei einer Konvertierung nie ändern. Format jedes Mal frisch aus
+  `ReiseLogBuch/index.html` lesen. Kachelfragen bei Unklarem und bei fehlenden Pflichtangaben (Titel, Teilnehmer,
+  Zeitraum, Reisemittel), Bestätigung vor der Ausgabe. Grammatik in Verlauf, Wie war was? und Fazit verbessern.
+  Verlauf mit ▫️. Fazit mit Smileys. Kein Wetter ab heute. Uhrzeit in der Ortszeit des Nutzers (Kachelfrage).
+  Konvertierungsprotokoll.
+- **Fund K-12:** Löscht der Nutzer eine Reise mit derselben Kennung, **nachdem** die Datei erstellt wurde, gewinnt beim
+  Abgleichen die Löschung (‚bleibt gelöscht‘) → Datei neu erstellen.
+- **Zusammenarbeit 2.6.0:** 0 Nr. 19 **Startfrage** – Sitzung ohne Auftrag beginnt mit dem Auswahlfenster ‚Was möchtest
+  du als Nächstes tun?‘ je angehängtem Repo (CLAUDE.md AppDesign 2.3.0, Reiselogbuch 3.4.0, Import 1.0.0).
+- **Fehler in 0007:** ReiseLogBuch-Import 1.0.0 wurde hochgeladen, obwohl der Selbsttest rot war (Ergebnis nicht
+  ausgewertet) → Korrektur 1.0.1. Lehre: Ergebnis jeder Prüfung vor dem Hochladen lesen.
 
 Frühere Sitzungen: siehe `VERLAUF.md` und Versionsgeschichten.
 
 ## 3. Nächster Schritt
 
-**T-05** (Reiselogbuch, Prio 2): bestehende (alte) Reiselogbücher aufbereiten und importierbar machen – Dateien
-(Word/PDF/Excel/HTML/Fotos) auslesen, Unklarheiten nachfragen, Vorschau zeigen, Datei erstellen; Überschneidungen prüfen.
-**Zuerst klären** (Auswahlfenster, Zusammenarbeit 0 Nr. 7): Form der Unterlagen, Anzahl, Weg (a: in aktuelles Backup
-einfügen · b: neue Funktion ‚Reiselogbuch importieren‘, die hinzufügt statt ersetzt). Dann Apple-Abgleich (z. B. Notizen
-‚Importieren‘, Dateien), Fall-Liste, bei Bedarf Muster; gebaut wird erst nach ‚Ja‘.
+1. Ergebnis der Prüfung T-05 erfragen (Import-Datei geladen?). Bei Fehler: Konvertierung im Import-Repo nach `PROMPT.md`
+   korrigieren (das Original hängt der Nutzer erneut an – es liegt nirgends gespeichert).
+2. Weitere alte Reiselogbücher konvertieren, sobald der Nutzer sie anhängt (Startfrage → ‚Reiselogbücher konvertieren‘).
+3. A-12 (bereit, Prio 1) bauen – erst nach ‚Ja‘.
+4. A-13 klären (Apple-Abgleich, Fall-Liste, Muster).
 
 ## 4. Danach
 
-- **T-06** (Ausschreibungstexte in Reiselogbücher umwandeln, Prio 3).
+- **T-06** (Ausschreibungstexte in Reiselogbücher umwandeln, Prio 3) – kann das Import-Repo mitnutzen.
 - **A-01** Startseite (später).
 
 ## 5. Arbeitsumgebung (für Claude)
+
+- **Import-Repo (neu):** `g811141a/ReiseLogBuch-Import` ist **privat**. Mit `add_repo` (push) dazuholen, nach
+  `/home/user/ReiseLogBuch-Import` klonen und `ln -s ReiseLogBuch-Import reiselogbuch-import` anlegen. `register_repo_root`
+  mit `/home/user/reiselogbuch-import`. Dort **nie Reisedaten** ablegen (Datenschutz): Originale, Ergebnisse und Protokolle
+  nur im Notizordner der Sitzung. Im Ordner `werkzeug` einmal `npm install`, dann `node werkzeug/pruefen.mjs <Datei> --zone <Zeitzone>`.
+- Für AppDesign gilt dasselbe: Verweis `ln -s AppDesign appdesign`, `register_repo_root` mit `/home/user/appdesign`.
 
 - Repos nebeneinander klonen: `/home/user/AppDesign` und `/home/user/ReiseLogBuch` (`add_repo` ReiseLogBuch mit Zugriff
   push; die Sitzung erwartet den Pfad `/home/user/reiselogbuch` – ein Verweis `ln -s ReiseLogBuch reiselogbuch` genügt;
@@ -100,10 +98,10 @@ einfügen · b: neue Funktion ‚Reiselogbuch importieren‘, die hinzufügt sta
 | Backlog allgemein | g811141a/AppDesign | `BACKLOG.md` |
 | App: Backlog, Richtlinie, Funktionsbeschreibung, Prüfliste im CHANGELOG, Tests | g811141a/ReiseLogBuch | `BACKLOG.md`, `README - Designrichtlinie Reiselogbuch.md`, `PROMPT.md`, `CHANGELOG.md`, `tests/alle.mjs` |
 
-In der neuen Sitzung müssen **beide Repos** (AppDesign und ReiseLogBuch) verfügbar sein.
+In der neuen Sitzung müssen **AppDesign** und **ReiseLogBuch** verfügbar sein, für Konvertierungen auch **ReiseLogBuch-Import** (privat).
 
 ## 7. Starttext für die neue Sitzung
 
 ```
-Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md und gezielt die Regeln (Zusammenarbeit 0 Nr. 15), gib mir das Lagebild und beginne mit T-05 (alte Reiselogbücher importieren) – zuerst die offenen Fragen im Auswahlfenster klären.
+Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md und gezielt die Regeln (Zusammenarbeit 0 Nr. 15), gib mir das Lagebild und frag mich zuerst nach dem Ergebnis der Prüfung T-05 (Import-Datei geladen?) – danach Startfrage (0 Nr. 19).
 ```

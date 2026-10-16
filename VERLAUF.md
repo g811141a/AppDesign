@@ -1822,3 +1822,9 @@ Alle punkte ok
 **2026-10-16 · Nutzer (Sitzung Reiselogbuch 0007):** ‚Jetzt alles im Import-Repo ablegen‘ → ReiseLogBuch-Import **1.0.0** (PROMPT.md, CLAUDE.md, ERKENNTNISSE.md, README mit Versionen, `werkzeug/pruefen.mjs` F-1 bis F-19, Selbsttest grün in Chromium und WebKit) und Korrektur **1.0.1** (F-18 las `git status` falsch – beim Hochladen von 1.0.0 übersehen, weil das Ergebnis des Selbsttests vor dem Hochladen nicht ausgewertet wurde). Apps unverändert.
 
 **2026-10-16 · Nutzer (Sitzung Reiselogbuch 0007):** Korrekturen nach der ersten Konvertierung: kein Wetter an heute/Zukunft, Uhrzeit im Dateinamen falsch (Ortszeit), Aufzählungszeichen im Verlauf (▫️ der App, vergessene erkennen), Smileys im Fazit → **N-12 bis N-15**, ReiseLogBuch-Import **1.2.0** (F-20 bis F-22), Konvertierung neu.
+
+**2026-10-16 · Nutzer (Sitzung Reiselogbuch 0007):** Vorige Reise gelöscht, neue Import-Datei abgeglichen → nicht übernommen. Ursache: Löschung neuer als die Datei (gleiche Kennung) → K-12, Datei neu erstellt (19:52), ReiseLogBuch-Import 1.2.1.
+
+**2026-10-16 · Nutzer (Sitzung Reiselogbuch 0007):** Neue allgemeine Regel: nach dem Schließen des Fensters ‚Tag‘ steht die Zeile des bearbeiteten Tages ganz oben → **A-13** (AppDesign-Backlog, Prio 2, offen; Verweis im Reiselogbuch-Backlog).
+
+**2026-10-16 · Übergabe (Sitzung Reiselogbuch 0007):** T-05-Werkzeug fertig, erste Konvertierung erledigt, Sitzung über 300.000 Token → Übergabe geschrieben, neue Sitzung ‚Reiselogbuch 0008 – T-05 Prüfung und A-12‘ gestartet.
