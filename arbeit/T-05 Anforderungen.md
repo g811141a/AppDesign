@@ -16,6 +16,7 @@ Stand 16.10.2026 · Sitzung ‚Reiselogbuch 0007‘ · ohne Reisedaten · ergän
 | N-8 | **Quartierliste in der Ausgabe** einschalten, wenn Quartiere je Tag angegeben sind. |
 | N-9 | **Spalten** ‚Wie war was?‘, ‚Essen und Trinken‘ und ‚Quartier‘ einschalten, wenn es Einträge dazu gibt. |
 | N-10 | **Bestätigung vor der Ausgabe:** Reisetitel, Reiseteilnehmer, Reisezeitraum und Reisemittel bestätigst du per Kachelabfrage (ein Fenster, je Feld eine Frage: ‚passt‘ / ‚ändern‘). |
+| N-11 | **Texte verbessern (16.10.2026):** In **Verlauf**, **Wie war was?** und **Fazit** Grammatik verbessern, ohne den Sinn zu verfälschen; Essen und Trinken, Quartier und übrige Felder nur Tippfehler korrigieren. Jede geänderte Zeile steht im Protokoll (vorher → nachher). Ersetzt dort ‚Tippfehler korrigieren, sonst unverändert‘. |
 
 ## B. Meine Ergänzungen
 
@@ -49,3 +50,4 @@ Stand 16.10.2026 · Sitzung ‚Reiselogbuch 0007‘ · ohne Reisedaten · ergän
 - E-1, E-2, E-3, E-5, E-6, E-7, E-8, E-9, E-10, E-11: **ja**.
 - E-4: **immer Kachelfrage** (nicht: Standard Verlauf).
 - Im Import-Repo ablegen und das Repo anlegen: **Nein** (noch nicht).
+- N-11 (Grammatik in Verlauf, Wie war was?, Fazit; Protokoll vorher → nachher): **ja**.
