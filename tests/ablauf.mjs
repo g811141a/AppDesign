@@ -171,8 +171,10 @@ export async function checkListStill(p, { item, field, next = '', where = '' } =
     await tap(key); await wait(p, 300);
     if (art === 'Häkchen') { await p.locator(field).first().click(); await p.evaluate(() => scrollBy(0, 300)); await p.locator(field).first().pressSequentially(' neu', { delay: 10 }); }
     else await p.evaluate(() => scrollBy(0, 300));                   // Wischen bzw. Tastatur schiebt die Seite
-    await p.click(close); await wait(p, 120);
-    if (!(await state(key)).flash) E(`${art}: Zeile ${key} wird nach dem Schließen nicht kurz hervorgehoben`);
+    await p.click(close);
+    // die Hervorhebung beginnt im nächsten Bildaufbau – unter Last (voller Lauf, WebKit) bis zu 800 ms warten
+    let flash = false; for (let i = 0; i < 16 && !flash; i++) { await wait(p, 50); flash = (await state(key)).flash; }
+    if (!flash) E(`${art}: Zeile ${key} wird nach dem Schließen nicht kurz hervorgehoben`);
     await wait(p, 1200);
     const ruhig = await state(key);
     if (Math.abs(ruhig.y - vor.y) > 1 || Math.abs(ruhig.top - vor.top) > 1) E(`${art}: Seite steht nach dem Schließen nicht wie vorher (Scrollstand ${vor.y} → ${ruhig.y}, Zeile ${key} ${vor.top} → ${ruhig.top} px)`);
