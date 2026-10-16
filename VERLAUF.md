@@ -1812,3 +1812,7 @@ Alle punkte ok
 **2026-10-16 · Entscheidung (Sitzung Reiselogbuch 0007):** Privates Repo `ReiseLogBuch-Import` mit Anleitung (`PROMPT.md`), Prüfskript und `CLAUDE.md`; Originale und Ergebnisse nur im Chat (nie in einem Repo) → **Ja**. Wer das Repo anlegt: offen (Nutzer schreibt im Chat).
 
 **2026-10-16 · Entscheidung (Sitzung Reiselogbuch 0007):** Startfrage ‚Was möchtest du als Nächstes tun?‘ (Auswahlfenster je angehängtem Repo) als allgemeine Regel → **Ja** – Zusammenarbeit 2.6.0, 0 Nr. 19; CLAUDE.md AppDesign 2.3.0, Reiselogbuch 3.4.0.
+
+**2026-10-16 · Nutzer (Sitzung Reiselogbuch 0007):** Anforderungen N-1 bis N-10 an ‚Reiselogbücher konvertieren‘ (README versionsgetreu, Apps nie ändern, Erkenntnisse ablegen, Format jedes Mal frisch aus ReiseLogBuch lesen, so viel wie möglich übernehmen mit Kachelfragen, Konvertierungsprotokoll, Pflichtangaben Reisetitel/-teilnehmer/-zeitraum/-mittel, Quartierliste und Spalten bei Einträgen an, Bestätigung der Pflichtangaben vor der Ausgabe) – `arbeit/T-05 Anforderungen.md`.
+
+**2026-10-16 · Entscheidung (Sitzung Reiselogbuch 0007):** Ergänzungen E-1 bis E-11 einzeln per Kachelabfrage → alle **ja**, E-4 (Angaben ohne Feld) **immer Kachelfrage**. Ablegen im Import-Repo → **Nein** (noch nicht).
