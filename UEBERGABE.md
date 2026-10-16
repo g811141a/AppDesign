@@ -15,11 +15,10 @@
 | Zusammenarbeit allgemein | **2.6.0** (neu: 0 Nr. 19 Startfrage) | `README - Zusammenarbeit allgemein.md` |
 
 - **Chatnummer:** die nächste Sitzung heißt **Reiselogbuch 0008** (Zusammenarbeit 0 Nr. 13); die danach 0009.
-- **Offene Prüfpunkte:** **T-05** – der Nutzer lädt die Import-Datei ‚Ω Import Reiselogbuch 2026.10.16 19.52.json‘ (aus dem
-  Chat der Sitzung 0007) mit ‚Backup laden‘ → ‚Abgleichen‘. Erwartet: die Reise steht unter ‚Hinzugefügt‘; Stichprobe 23.09.
-  (vier Punkte mit ▫️), 14./15.10. (ergänzte ▫️), Fazit mit Smileys, ab 16.10. kein Wetter. Zuerst nach dem Ergebnis fragen.
-- **Nächste Version:** AppDesign – **A-12** bereit (Werkzeug `messung.mjs` für die Zeile Zeit und Token, Prio 1). Bis dahin
-  Zeit und Token am Ende jeder Antwort von Hand aus den Sitzungsdaten messen – nie schätzen, nie weglassen.
+- **Offene Prüfpunkte:** **P-43** (AppDesign 4.17.0, A-12: Zeile aus `messung.mjs` am Ende jeder Antwort). **T-05 geprüft
+  (Sitzung 0008): Import-Datei geladen, alles in Ordnung.**
+- **Zeit und Token (seit AppDesign 4.17.0):** am Ende jeder Antwort `node ../AppDesign/werkzeug/messung.mjs` aufrufen und
+  die Zeile unverändert übernehmen – nie schätzen.
 - **Neu im Backlog:** **A-13** (AppDesign, Prio 2, allgemeine Regel): nach dem Schließen des Fensters ‚Tag‘ steht die Zeile
   des bearbeiteten Tages ganz oben – zu klären (Fall-Liste, Abgrenzung R-7.1, letzte Tage, iPhone).
 - **Sitzungsgröße:** unsere Grenze bleibt **etwa 300.000 Token** (0007 endete bei etwa 330.000).

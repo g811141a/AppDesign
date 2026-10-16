@@ -1,6 +1,6 @@
 # AppDesign – Hinweise für Claude
 
-**Version 2.3.0** · Stand 16.10.2026
+**Version 2.4.0** · Stand 16.10.2026
 
 ## Zuerst lesen (gezielt, Zusammenarbeit 0 Nr. 15)
 
@@ -16,7 +16,7 @@
 
 Alle Regeln der Zusammenarbeit allgemein gelten; die Regeln stehen nur dort (hier keine Wiederholung). Besonders:
 nie ohne ausdrückliches ‚Ja‘ bauen, Fall-Liste vor jedem Bau (0 Nr. 1), Auswahlfenster mit ‚Ich schreibe im Chat‘
-(0 Nr. 7), erst Prüfpunkte dann Neues, Zeit und Token am Ende jeder Antwort (Abschnitt 2).
+(0 Nr. 7), erst Prüfpunkte dann Neues, Zeit und Token am Ende jeder Antwort mit `node werkzeug/messung.mjs` (Abschnitt 2).
 
 ## Technisch
 
@@ -37,6 +37,7 @@ nie ohne ausdrückliches ‚Ja‘ bauen, Fall-Liste vor jedem Bau (0 Nr. 1), Aus
 
 | Version | Datum | Inhalt |
 |---|---|---|
+| 2.4.0 | 16.10.2026 | Zeile Zeit und Token mit `werkzeug/messung.mjs` (A-12) |
 | 2.3.0 | 16.10.2026 | Startfrage zu Beginn einer Sitzung ohne Auftrag (Zusammenarbeit 0 Nr. 19) |
 | 2.2.0 | 15.10.2026 | Gezielt lesen (nur Abschnitt 0 und Überschriften), ein voller Prüflauf je Version (A-07) |
 | 2.1.1 | 14.10.2026 | Fassung enthält Designrichtlinie und Zusammenarbeit statt Git-Markierung (aus der Cloud gesperrt) |

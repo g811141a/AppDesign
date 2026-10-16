@@ -52,7 +52,8 @@ Aufruf über `tests/alle.mjs` der App: `node tests/alle.mjs [--alle] [--browser 
 [--gegenprobe [grundregeln]] [--jobs N] [--zeit S]`. Gleichzeitig laufen standardmäßig so viele Browser, wie der Rechner Kerne hat (seit 4.16.1, A-10; vorher doppelt so viele – WebKit schwankte unter Volllast). Erst laufen alle Prüfungen in Chromium, dann alle in WebKit – nie beide gleichzeitig (seit 4.16.1, A-11). Fehlt WebKit, bricht der Lauf mit Hinweis ab (Rückgabewert 2) – nie
 stillschweigend nur Chromium. WebKit einmalig: `npx playwright install webkit` und `npx playwright install-deps webkit`
 (im Setup-Skript der Umgebung ‚Standard‘ eingetragen). Lange Prüfungen lassen sich teilen (`teile`, z. B. hig nach
-Darstellung). Selbsttest mit Schein-Tests: `node tests/lauf-selbsttest.mjs` (in AppDesign).
+Darstellung). Selbsttest mit Schein-Tests: `node tests/lauf-selbsttest.mjs` (in AppDesign). Werkzeug Zeit und Token (seit 4.17.0):
+`node tests/messung.mjs` (Gegenprobe `--gegenprobe`).
 
 ## Weitere allgemeine Prüfungen
 
