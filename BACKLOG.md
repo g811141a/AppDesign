@@ -19,7 +19,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| P-42 | 1 | AppDesign 4.16.1 mit Reiselogbuch 3.15.1: Version und Offline-Start nach dem Update (P-42/0, /1) – Prüfliste P-42 im CHANGELOG des Reiselogbuchs | prüfen |
+| – | – | zurzeit nichts zu prüfen | – |
 
 ## 2. Weitere Themen (in Klärung)
 
@@ -33,6 +33,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Thema | Version | Datum |
 |---|---|---|---|
+| E-25 | Geprüft: P-42 alles in Ordnung (AppDesign 4.16.1 mit Reiselogbuch 3.15.1); **A-10 und A-11 damit abgeschlossen** | AppDesign 4.16.1 | 16.10.2026 |
 | E-24 | A-11 Lauf-Werkzeug: Browser nacheinander (erst Chromium, dann WebKit) – schwankende WebKit-Prüfungen im gemeinsamen Lauf | AppDesign 4.16.1 | 15.10.2026 |
 | E-23 | A-10 Lauf-Werkzeug mit höchstens so vielen Browsern wie Kernen (4 statt 8) | AppDesign 4.16.1 | 15.10.2026 |
 | E-22 | Geprüft: P-41 alles in Ordnung (AppDesign 4.16.0 mit Reiselogbuch 3.15.0); **A-09 (R-7.2) und A-07 damit abgeschlossen** | AppDesign 4.16.0 | 15.10.2026 |
