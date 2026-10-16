@@ -1,6 +1,6 @@
 # AppDesign – Hinweise für Claude
 
-**Version 2.2.0** · Stand 15.10.2026
+**Version 2.3.0** · Stand 16.10.2026
 
 ## Zuerst lesen (gezielt, Zusammenarbeit 0 Nr. 15)
 
@@ -10,6 +10,9 @@
    16: HIG-Checkliste, 17: Regelkatalog), `README.md`, `CHANGELOG.md` und `BACKLOG.md` erst, wenn die Aufgabe sie braucht
 
 ## Verpflichtend
+
+**Startfrage (Zusammenarbeit 0 Nr. 19):** Beginnt die Sitzung ohne konkreten Auftrag, zuerst das Auswahlfenster
+‚Was möchtest du als Nächstes tun?‘ mit je einer Möglichkeit pro angehängtem Repo (Version, Backlog-Spitze).
 
 Alle Regeln der Zusammenarbeit allgemein gelten; die Regeln stehen nur dort (hier keine Wiederholung). Besonders:
 nie ohne ausdrückliches ‚Ja‘ bauen, Fall-Liste vor jedem Bau (0 Nr. 1), Auswahlfenster mit ‚Ich schreibe im Chat‘
@@ -34,6 +37,7 @@ nie ohne ausdrückliches ‚Ja‘ bauen, Fall-Liste vor jedem Bau (0 Nr. 1), Aus
 
 | Version | Datum | Inhalt |
 |---|---|---|
+| 2.3.0 | 16.10.2026 | Startfrage zu Beginn einer Sitzung ohne Auftrag (Zusammenarbeit 0 Nr. 19) |
 | 2.2.0 | 15.10.2026 | Gezielt lesen (nur Abschnitt 0 und Überschriften), ein voller Prüflauf je Version (A-07) |
 | 2.1.1 | 14.10.2026 | Fassung enthält Designrichtlinie und Zusammenarbeit statt Git-Markierung (aus der Cloud gesperrt) |
 | 2.1.0 | 14.10.2026 | Feste Fassung `fassung/X.Y.Z/` statt `v4/…?v=` (A-05 Version B, W-4), Veröffentlichungs-Skript |

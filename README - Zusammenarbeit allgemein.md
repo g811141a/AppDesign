@@ -1,6 +1,6 @@
 # Zusammenarbeit allgemein
 
-**Version 2.5.0** · Stand 15.10.2026
+**Version 2.6.0** · Stand 16.10.2026
 
 Regeln für die Zusammenarbeit mit Claude bei allen iPad-Web-Apps von g811141a.
 Diese Datei liegt im Design-Repo **AppDesign** (g811141a/AppDesign).
@@ -112,6 +112,15 @@ Nutzer sie findet, schneller und günstiger arbeiten.
     oder die Wiederholung des Wunsches genügt nicht. Das Auswahlfenster dafür fragt ausdrücklich ‚Trotz Abweichung von
     R-… umsetzen (Umsetzungspflicht)?‘. Kleine, begründete Abweichungen (z. B. eine bewusste Abweichung von der HIG)
     bleiben wie bisher eine Rückfrage mit Empfehlung (Abschnitt 3).
+
+**F. Start einer Sitzung (seit 2.6.0)**
+19. **Startfrage:** Beginnt eine Sitzung **ohne konkreten Auftrag** (z. B. ‚Start‘, ‚Hallo‘ oder nur angehängte Repos),
+    liest Claude gezielt (Nr. 15) `UEBERGABE.md` und die Backlog-Köpfe der angehängten Repos und zeigt **zuerst** das
+    Auswahlfenster ‚Was möchtest du als Nächstes tun?‘: je angehängtem Repo eine Möglichkeit mit Version und
+    Backlog-Spitze (offene Prüfpunkte zuerst), beim Repo **ReiseLogBuch-Import** ‚Reiselogbücher konvertieren‘, dazu
+    ‚Ich schreibe im Chat‘. Mehr als 3 Repos: die mit der höchsten Priorität, der Rest über ‚Ich schreibe im Chat‘. Eine
+    Sitzung beginnt erst mit einer Nachricht des Nutzers – ein Wort genügt. Hat die Sitzung einen Starttext mit Auftrag
+    (Nr. 13), gilt der Auftrag.
 
 ---
 
@@ -312,6 +321,7 @@ Nutzer sie findet, schneller und günstiger arbeiten.
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 2.6.0 | 16.10.2026 | Neben | Abschnitt 0 Nr. 19: Startfrage – Sitzung ohne Auftrag beginnt mit dem Auswahlfenster ‚Was möchtest du als Nächstes tun?‘ je angehängtem Repo (T-05) |
 | 2.5.0 | 15.10.2026 | Neben | Abschnitt 1: per du (nie ‚Sie‘ oder ‚ihr‘); Abschnitt 0 Nr. 18: bei offensichtlichem Regelbruch massiv widersprechen, umsetzen erst nach ausdrücklicher Umsetzungspflicht |
 | 2.4.0 | 15.10.2026 | Neben | A-07: zu Beginn gezielt lesen (0 Nr. 15, Hinweis oben) und nur ein voller Prüflauf je Version im Veröffentlichungs-Skript (0 Nr. 2, §7) |
 | 2.3.2 | 14.10.2026 | Korrektur | Abschnitt 0 Nr. 9 und 10: Verweise auf das Veröffentlichungs-Skript und die feste Fassung (A-05 Version B) |

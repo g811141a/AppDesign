@@ -1806,3 +1806,9 @@ Alle punkte ok
 **2026-10-15 · Nutzer (Sitzung Reiselogbuch 0005):** P-40 alles ok → A-06 abgeschlossen.
 
 **2026-10-15 · Übergabe (Sitzung Reiselogbuch 0005):** Thema A-06 abgeschlossen, Sitzung über 300.000 Token → Übergabe geschrieben, neue Sitzung ‚Reiselogbuch 0006 – T-84 iPhone-Start‘ gestartet.
+
+**2026-10-16 · Nutzer (Sitzung Reiselogbuch 0007):** T-05 – Übernahme alter Reiselogbücher soll nur eine Eingabedatei in eine Backup-Datei umformen; Anleitung (Prompt) einmal auf GitHub ablegen, eigenes Repo für die Einstellungen; **keine Daten in einem öffentlichen Repo**.
+
+**2026-10-16 · Entscheidung (Sitzung Reiselogbuch 0007):** Privates Repo `ReiseLogBuch-Import` mit Anleitung (`PROMPT.md`), Prüfskript und `CLAUDE.md`; Originale und Ergebnisse nur im Chat (nie in einem Repo) → **Ja**. Wer das Repo anlegt: offen (Nutzer schreibt im Chat).
+
+**2026-10-16 · Entscheidung (Sitzung Reiselogbuch 0007):** Startfrage ‚Was möchtest du als Nächstes tun?‘ (Auswahlfenster je angehängtem Repo) als allgemeine Regel → **Ja** – Zusammenarbeit 2.6.0, 0 Nr. 19; CLAUDE.md AppDesign 2.3.0, Reiselogbuch 3.4.0.

@@ -109,3 +109,10 @@ in der App nicht** – Fotos werden nur gelesen (Text auf den Bildern), nicht ü
 3. Text: **Tippfehler korrigieren**, sonst unverändert (statt I-7)
 4. I-8 bis I-18: **ja, alle** – offen, wo Prüfskript, Statusliste und das aktuelle Backup liegen, weil es kein privates
    Repo gibt (Vorschlag: Prüfskript ohne Daten in `ReiseLogBuch/werkzeug/`, Statusliste nur mit Nummer und Jahr)
+
+## Neuausrichtung (16.10.2026)
+
+Der Nutzer: nur Eingabedatei → Backup-Datei umformen. Entschieden: privates Repo `ReiseLogBuch-Import` mit Anleitung
+(`PROMPT.md`), Prüfskript (`werkzeug/pruefen.mjs`) und `CLAUDE.md`; **Daten nur im Chat**. Übernommen bleiben
+Tippfehler korrigieren, nichts erfinden, Rückfragen gesammelt, feste Kennungen, Prüfung in der echten App. Entfallen:
+Statusliste, Vorschau als App-Ausgabe, Probelauf und Stapel. Neu: Startfrage (Zusammenarbeit 0 Nr. 19).
