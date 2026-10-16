@@ -11,9 +11,9 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Prio | Thema | bereit seit |
 |---|---|---|---|
-| – | – | zurzeit nichts bereit | – |
+| A-12 | 1 | Werkzeug `werkzeug/messung.mjs`: gibt die Zeile ‚⏱ mm:ss · Token vorige Antwort: N neu · N aus Zwischenspeicher · N geschrieben‘ aus den Sitzungsdaten (`/root/.claude/projects/…/*.jsonl`) aus – Zeit ab Eingang der letzten Nachricht des Nutzers, Token der vorigen Antwort; Claude ruft es am Ende jeder Antwort auf, nie geschätzt (Anlass 16.10.2026: in Sitzung 0006 fünfzehnmal ‚nicht einzeln gemessen‘ statt Messung – Verstoß gegen Zusammenarbeit §2). Verweis in Zusammenarbeit §2 und CLAUDE.md | 16.10.2026 |
 
-**0 Punkte bereit** · gebaut wird erst nach ‚Ja‘
+**1 Punkt bereit** (A-12) · gebaut wird erst nach ‚Ja‘
 
 ## 1. Auf iPad und iPhone prüfen
 

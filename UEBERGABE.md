@@ -15,7 +15,7 @@
 
 - **Chatnummer:** die nächste Sitzung heißt **Reiselogbuch 0007** (Zusammenarbeit 0 Nr. 13); die danach 0008.
 - **Offene Prüfpunkte:** keine – P-42 alles in Ordnung (16.10.2026).
-- **Nächste Version:** nichts bereit.
+- **Nächste Version:** AppDesign – A-12 bereit (Werkzeug `messung.mjs` für die Zeile Zeit und Token, Prio 1). **Bis dahin Zeit und Token am Ende jeder Antwort von Hand aus den Sitzungsdaten messen – nie schätzen, nie weglassen.**
 - **Sitzungsgröße:** höchstens 1.000.000 Token Kontext (Sitzungsdaten, `get_session` → `context_usage`); unsere Grenze
   bleibt **etwa 300.000 Token** (Nutzer, 15.10.2026: keine Änderung der Grenze).
 - **Erinnerung:** ‚Backlog-Erinnerung (AppDesign und Reiselogbuch)‘ montags 8:58.
