@@ -1,5 +1,5 @@
 // AppDesign 4.12.0 · Ablauf-Prüfungen für Regeln, die eine Handlung brauchen (Designrichtlinie allgemein, Abschnitt 17):
-// R-2.3 Suche · R-4.4 Fenster-Kopfzeile · R-5.2 Texteingabe · R-5.3 Fehlermeldungen · R-6.4 Ausgabe und Vorschau.
+// R-2.3 Suche · R-4.4 Fenster-Kopfzeile · R-5.2 Texteingabe · R-5.3 Fehlermeldungen · R-6.4 Ausgabe und Vorschau · R-7.3 Liste steht still (seit 4.18.0).
 // Jede Funktion bekommt eine Playwright-Seite und gibt eine Liste von Fehlern zurück (leer = in Ordnung), je mit Regelnummer.
 // Einbinden im Prüfskript der App:  import { checkSearch, checkDialogHead } from '../../AppDesign/tests/ablauf.mjs';
 //                                   fehler.push(...await checkSearch(page, { term: 'Sydney' }));
@@ -142,5 +142,55 @@ export async function checkPreview(p, { open, body = '#dlg .dlg-body.preview', w
     if (!r.cap) E('Kopfzeile ohne Kapsel [PDF · Teilen] (Teilen nur als Icon)');
   }
   await p.evaluate(() => document.getElementById('dlg').close()); await wait(p);
+  return errors;
+}
+
+// R-7.3 (seit 4.18.0, A-13) Liste steht still: solange ein Fenster aus einer Zeile offen ist, bewegt sich die Seite dahinter
+// nicht; danach steht sie wie vorher, die Zeile wird kurz hervorgehoben; nach ‹ › im Fenster rollt sie nur so weit, bis die
+// zuletzt gezeigte Zeile ganz sichtbar ist. Safari nachgebildet: die Tastatur schiebt beim Schreiben die ganze Seite (scrollBy).
+// item: Zeilen bzw. Kästen; field: Eingabefeld im Fenster; next: Schaltfläche ‚Folgetag‘ im Fenster (ohne: kein Blättern).
+export async function checkListStill(p, { item, field, next = '', where = '' } = {}) {
+  const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}R-7.3 ${t}`);
+  // Zeilen im Bild: tippbar (Kopf sichtbar) bzw. ganz sichtbar (unter Leiste und Tabellenkopf, über dem unteren Rand)
+  const rows = () => p.evaluate(item => {
+    const edge = Math.max(...[...document.querySelectorAll('.nb, .pnav, #bar, table.days:not(.static) th')].map(e => e.getBoundingClientRect().bottom), 0);
+    const all = [...document.querySelectorAll(item)].filter(e => e.getClientRects().length).map(e => ({ key: e.dataset.day || e.dataset.keep, r: e.getBoundingClientRect() }));
+    return { edge, y: scrollY, n: all.length, keys: all.map(x => x.key), tap: all.filter(x => x.r.top >= edge - 1 && x.r.top <= innerHeight - 80).map(x => x.key),
+      full: all.filter(x => x.r.top >= edge - 1 && (x.r.bottom <= innerHeight + 1 || x.r.top <= edge + 8)).map(x => x.key) };
+  }, item);
+  const state = key => p.evaluate(({ item, key }) => {
+    const e = [...document.querySelectorAll(item)].find(x => (x.dataset.day || x.dataset.keep) === key && x.getClientRects().length);
+    return { y: Math.round(scrollY), top: e ? Math.round(e.getBoundingClientRect().top) : null, flash: e ? e.getAnimations().length > 0 : false };
+  }, { item, key });
+  const tap = key => p.evaluate(({ item, key }) => [...document.querySelectorAll(item)].find(x => (x.dataset.day || x.dataset.keep) === key && x.getClientRects().length).click(), { item, key });
+  await p.evaluate(() => scrollTo(0, Math.min(1200, document.documentElement.scrollHeight - innerHeight - 400))); await wait(p, 300);
+  const shown = await rows();
+  if (shown.tap.length < 2) { E(`zu wenige sichtbare Zeilen zum Prüfen (${shown.tap.length} von ${shown.n}, Kante ${Math.round(shown.edge)} px, Scrollstand ${Math.round(shown.y)})`); return errors; }
+  for (const [art, close] of [['Häkchen', '#dlgOk'], ['x ohne Änderung', '#dlgX']]) {
+    const key = shown.tap[0], vor = await state(key);
+    await tap(key); await wait(p, 300);
+    if (art === 'Häkchen') { await p.locator(field).first().click(); await p.evaluate(() => scrollBy(0, 300)); await p.locator(field).first().pressSequentially(' neu', { delay: 10 }); }
+    else await p.evaluate(() => scrollBy(0, 300));                   // Wischen bzw. Tastatur schiebt die Seite
+    await p.click(close); await wait(p, 120);
+    if (!(await state(key)).flash) E(`${art}: Zeile ${key} wird nach dem Schließen nicht kurz hervorgehoben`);
+    await wait(p, 1200);
+    const ruhig = await state(key);
+    if (Math.abs(ruhig.y - vor.y) > 1 || Math.abs(ruhig.top - vor.top) > 1) E(`${art}: Seite steht nach dem Schließen nicht wie vorher (Scrollstand ${vor.y} → ${ruhig.y}, Zeile ${key} ${vor.top} → ${ruhig.top} px)`);
+    if (ruhig.flash) E(`${art}: Hervorhebung der Zeile ${key} endet nicht`);
+  }
+  if (next) {
+    const first = shown.tap.at(-1); await tap(first); await wait(p, 300);
+    for (let i = 0; i < 4; i++) { await p.click(next); await wait(p, 200); }
+    await p.click('#dlgOk'); await wait(p, 400);
+    const nach = await rows(), want = nach.keys[nach.keys.indexOf(first) + 4];
+    if (!nach.full.includes(want)) E(`nach ‹ › ist die zuletzt gezeigte Zeile ${want} nicht ganz sichtbar`);
+    // ‹ › auf eine Zeile, die schon ganz sichtbar ist: nichts rollt
+    const key = nach.keys.find((k, i) => nach.full.includes(nach.keys[i + 1]) && nach.tap.includes(k));
+    if (key) {
+      const vor = await state(key); await tap(key); await wait(p, 300); await p.click(next); await wait(p, 200); await p.click('#dlgOk'); await wait(p, 400);
+      const y = (await state(key)).y;
+      if (y !== vor.y) E(`nach ‹ › auf eine sichtbare Zeile rollt die Seite (${vor.y} → ${y})`);
+    }
+  }
   return errors;
 }

@@ -3,6 +3,25 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.18.0 – 16.10.2026 (Neben)
+
+AppDesign 4.18.0 · Designrichtlinie allgemein 4.18.0 · Zusammenarbeit allgemein 2.7.0 · geprüft mit Reiselogbuch 3.16.0
+
+A-13: Liste steht still, solange ein Fenster offen ist (neue Regel R-7.3, gilt für alle Apps, iPad und iPhone gleich).
+
+- **Ursache des Fehlers (Reiselogbuch, iPad quer):** Nach dem Erfassen eines Tages stand die Tabelle weiter unten, der
+  erfasste Tag war nach oben verschwunden. Beim Schreiben im Fenster schiebt Safari für die Tastatur die **ganze Seite**;
+  die Sperre `overflow: hidden` hält das nicht auf, und Safari schiebt nicht zurück. Nachgebildet: Scrollstand 1200 → 1500.
+- **`lockPage`/`unlockPage` (ui.js):** merken den Scrollstand beim Öffnen eines Fensters und stellen ihn beim Schließen
+  genau wieder her (auch bei Meldungen über dem Fenster erst, wenn beide zu sind; gedreht → wie beim Drehen, R-8.1).
+  `position: fixed` wurde verworfen, weil der Tabellenkopf haftet (sticky) und dabei verschwände.
+- **`revealRow` (ui.js):** nach dem Schließen wird die Zeile bzw. der Kasten, aus dem das Fenster kam, kurz blau hinterlegt
+  und blendet aus (~1 s, bei ‚Bewegung reduzieren‘ ohne Ausblenden); nach ‹ › im Fenster rollt die Liste nur so weit, bis
+  die zuletzt gezeigte Zeile ganz sichtbar ist. Fenster aus Schaltflächen bleiben ohne Hervorhebung.
+- **Prüfung `checkListStill` (tests/ablauf.mjs)** mit nachgebildeter Tastatur: Häkchen, x, ‹ › auf eine verdeckte und auf
+  eine sichtbare Zeile – iPad quer und iPhone hoch, Chromium und WebKit; Gegenprobe ohne die Änderung rot (10 Fehler).
+- Neue Regel **R-7.3**, Abschnitt 7; feste Fassung `fassung/4.18.0/`.
+
 ## 4.17.0 – 16.10.2026 (Neben)
 
 AppDesign 4.17.0 · Designrichtlinie allgemein 4.17.0 · Zusammenarbeit allgemein 2.7.0 · keine App gehoben (Reiselogbuch bleibt auf 4.16.1)

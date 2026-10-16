@@ -1,6 +1,6 @@
 # Designrichtlinie allgemein
 
-**Version 4.17.0** · Stand 16.10.2026
+**Version 4.18.0** · Stand 16.10.2026
 
 Allgemeine Gestaltungs- und Bedienregeln für alle iPad-Web-Apps von g811141a (seit 4.1.0 auch
 auf dem iPhone, Abschnitt 15.17).
@@ -211,6 +211,10 @@ heller).
 - Hintergrund `--dlg-bg`, Kästen darin `--dlg-card`, Radius 18 px, Schatten, abgedunkelter
   Hintergrund dahinter.
 - Escape wirkt wie das x.
+- **Liste steht still (R-7.3, seit 4.18.0):** Solange ein Fenster offen ist, bewegt sich die Seite dahinter nicht; nach
+  dem Schließen steht sie wie vorher, die Zeile, aus der das Fenster kam, wird kurz hervorgehoben (`ui.js` merkt den
+  Scrollstand beim Öffnen und stellt ihn beim Schließen wieder her – Safari schiebt beim Öffnen der Tastatur sonst die
+  ganze Seite; `position: fixed` ginge nicht, weil der Tabellenkopf haftet).
 - **Bei sichtbarer Tastatur** passt sich jedes Fenster dem sichtbaren Bereich über der Tastatur an:
   die Kopfzeile bleibt immer sichtbar, nur der Inhalt scrollt; das angetippte Feld wird in den
   sichtbaren Teil gerollt. Das gilt ebenso für die Kopfzeile (inkl. Suchzeile) der Hauptansicht.
@@ -917,6 +921,7 @@ Regel ersetzt oder ergänzt eine bestehende (Zusammenarbeit 0 Nr. 3) und bekommt
 |---|---|---|---|---|
 | R-7.1 | **Zentrale Liste als Kacheln:** höchstens ein Eintrag blau; je Kachel ‚geändert am … · Gerät‘; Kacheln laufen unter dem Kopf und hinter der Backup-Kachel durch; Position bleibt beim Neuaufbau, der gewählte Eintrag bleibt sichtbar | hig.mjs | – | R-31 (+ Teil R-44, 15.4) |
 | R-7.2 | **Start im iPhone-Aufbau in der Startliste (seit 4.16.0):** jedes Neuladen zeigt im iPhone-Aufbau (auch iPad im schmalen Fenster) die Startliste ganz oben ohne blauen Eintrag; der iPad-Aufbau öffnet den aktuellen Eintrag; Rückkehr aus dem Hintergrund ändert nichts (15.17) | start.mjs | Gerät (App neu öffnen) | **neu** (aus Reiselogbuch T-84) |
+| R-7.3 | **Liste steht still (seit 4.18.0):** solange ein Fenster aus einer Zeile (bzw. einem Kasten) offen ist, bewegt sich die Liste dahinter nicht – auch wenn Safari beim Schreiben die Seite für die Tastatur schiebt; nach dem Schließen (Häkchen oder x) steht sie genau wie vorher, die Zeile wird kurz blau hinterlegt und blendet aus (~1 s); nach ‹ › im Fenster rollt sie nur so weit, bis die zuletzt gezeigte Zeile ganz sichtbar ist; iPad und iPhone gleich | ablauf.mjs – `checkListStill` (Tastatur nachgebildet) | Gerät (echte Tastatur, Diktieren) | **neu** (A-13) |
 
 ### 8. Drehen
 
@@ -970,6 +975,7 @@ Die alten Nummern R-01 bis R-52 (bis 4.11.4) gelten nicht mehr; sie stehen nur n
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 4.18.0 | 16.10.2026 | Neben | Neue Regel **R-7.3** (A-13): Liste steht still, solange ein Fenster offen ist; danach wie vorher, Zeile kurz hervorgehoben, nach ‹ › nur so weit rollen wie nötig – Abschnitt 7, Regelkatalog Thema 7, Prüfung `checkListStill` |
 | 4.17.0 | 16.10.2026 | Neben | Keine Regeländerung; Werkzeug `werkzeug/messung.mjs` für die Zeile Zeit und Token (A-12, Zusammenarbeit 2.7.0) |
 | 4.16.1 | 15.10.2026 | Korrektur | Keine Regeländerung; Lauf-Werkzeug mit höchstens so vielen Browsern wie Kernen (A-10) |
 | 4.16.0 | 15.10.2026 | Neben | Neue Regel **R-7.2** (A-09, aus Reiselogbuch T-84): Start im iPhone-Aufbau in der Startliste ohne blauen Eintrag, der Aufbau entscheidet, iPad-Aufbau unverändert – 15.4, 15.17, Regelkatalog Thema 7, Prüfung `start.mjs`; Abschnitt 13: Neustart ist in einer Web-App nicht erkennbar |
