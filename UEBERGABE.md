@@ -15,7 +15,7 @@
 | Zusammenarbeit allgemein | **2.6.0** (neu: 0 Nr. 19 Startfrage) | `README - Zusammenarbeit allgemein.md` |
 
 - **Chatnummer:** die nächste Sitzung heißt **Reiselogbuch 0008** (Zusammenarbeit 0 Nr. 13); die danach 0009.
-- **Offene Prüfpunkte:** keine – **P-43 geprüft (A-12 abgeschlossen)**. **T-05 geprüft
+- **Offene Prüfpunkte:** **P-44** (Reiselogbuch 3.16.0 mit AppDesign 4.18.0, A-13/R-7.3: Tabelle steht still beim Erfassen) – zuerst nach dem Ergebnis fragen. P-43 geprüft (A-12 abgeschlossen). **T-05 geprüft
   (Sitzung 0008): Import-Datei geladen, alles in Ordnung.**
 - **Zeit und Token (seit AppDesign 4.17.0):** am Ende jeder Antwort `node ../AppDesign/werkzeug/messung.mjs` aufrufen und
   die Zeile unverändert übernehmen – nie schätzen.

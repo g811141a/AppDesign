@@ -1,6 +1,6 @@
 # AppDesign – Backlog (allgemeine Themen)
 
-**Stand 16.10.2026** · Aktuelle Version: AppDesign 4.17.0
+**Stand 16.10.2026** · Aktuelle Version: AppDesign 4.18.0
 
 Allgemeine Themen, die alle Apps betreffen. App-Themen stehen im Backlog der jeweiligen App.
 Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
@@ -19,13 +19,12 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| – | – | zurzeit nichts zu prüfen | – |
+| P-44 | 1 | A-13 / R-7.3: Tabelle bzw. Tageskästen stehen still, solange das Fenster ‚Tag‘ offen ist (auch beim Schreiben mit Tastatur und Diktieren); danach wie vorher, Zeile kurz blau; nach ‹ › sichtbar – Prüfliste Reiselogbuch 3.16.0 | prüfen |
 
 ## 2. Weitere Themen (in Klärung)
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| A-13 | 2 | **Allgemeine Regel (Nutzer, 16.10.2026):** Schließt man das Fenster einer Tageserfassung (bzw. eines Eintrags), steht die Zeile des bearbeiteten Tages **immer ganz oben** in der Liste bzw. Tabelle. Zu klären: Abgrenzung zu R-7.1 (Position bleibt beim Neuaufbau), Fälle letzte Tage (Tabelle zu kurz zum Hochschieben), iPhone-Tagesliste, Häkchen vs. x (ohne Änderung), Blättern mit ‹ › im Fenster, Suche offen; Apple-Abgleich, Fall-Liste, Regel-Nr. im Regelkatalog. Gilt zuerst für das Reiselogbuch (Tagestabelle) | offen |
 | A-01 | 3 | Startseite g811141a.github.io mit allen Apps (früher S-03) | später |
 
 ---
@@ -34,6 +33,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Thema | Version | Datum |
 |---|---|---|---|
+| E-29 | A-13 Liste steht still (R-7.3): Scrollstand beim Öffnen eines Fensters gemerkt und beim Schließen wiederhergestellt, Zeile kurz hervorgehoben, nach ‹ › sichtbar gerollt – Ursache: Safari schiebt beim Öffnen der Tastatur die ganze Seite (Klärung `arbeit/A-13 Klärung und Fall-Liste.md`) | AppDesign 4.18.0 | 16.10.2026 |
 | E-28 | Geprüft: P-43 alles in Ordnung (Zeile aus `messung.mjs`); **A-12 damit abgeschlossen** | AppDesign 4.17.0 | 16.10.2026 |
 | E-27 | A-12 Werkzeug `werkzeug/messung.mjs` für die Zeile Zeit und Token (Fall-Liste `arbeit/A-12 Fall-Liste.md`, Prüfung `tests/messung.mjs`) | AppDesign 4.17.0 | 16.10.2026 |
 | E-26 | Geprüft: T-05 erste Konvertierung (Import-Datei mit ‚Abgleichen‘ geladen, Stichprobe in Ordnung) | ReiseLogBuch-Import 1.2.1 | 16.10.2026 |

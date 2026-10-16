@@ -1,4 +1,4 @@
-// AppDesign 4.17.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
+// AppDesign 4.18.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
 // Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/fassung/X.Y.Z/ui.js"></script> (feste Fassung, R-10.3)
 // Seit 4.11.0 (R-10.3): ui.js und design.css immer mit ?v=<AppDesign-Version> einbinden (auch in sw.js) und beim Start
 // prüfen, ob genau diese Fassung geladen ist (AD_VERSION hier, --ad-version in design.css).
@@ -17,7 +17,7 @@
 
 'use strict';
 // Version der Bausteine (R-10.3): die App vergleicht sie beim Start mit der benötigten Fassung.
-const AD_VERSION = '4.17.0';
+const AD_VERSION = '4.18.0';
 /* ---------- Icons ---------- */
 
 // Schaltflächen-Icons aus Lucide (ISC-Lizenz), direkt eingebettet, damit die App offline funktioniert.
@@ -143,8 +143,23 @@ function blockingLayer() {
 }
 
 // Seite sperren, solange ein Fenster offen ist: Wischen wirkt nur im Fenster (seit 4.2.0).
-function lockPage() { document.documentElement.classList.add('locked'); }
-function unlockPage() { if (!dlg.open && !msg.open) document.documentElement.classList.remove('locked'); }
+// R-7.3 (seit 4.18.0, A-13): Solange ein Fenster offen ist, steht die Seite dahinter still. Safari schiebt beim Öffnen der
+// Tastatur trotz overflow: hidden die ganze Seite und schiebt sie nicht zurück – deshalb wird der Scrollstand beim Öffnen
+// gemerkt und beim Schließen genau wiederhergestellt (position: fixed ginge nicht: der Tabellenkopf ist sticky).
+let lockY = null;
+function lockPage() {
+  if (lockY === null) lockY = scrollY;
+  document.documentElement.classList.add('locked');
+}
+function unlockPage() {
+  if (dlg.open || msg.open) return;
+  document.documentElement.classList.remove('locked');
+  if (lockY === null) return;
+  const y = lockY;
+  lockY = null;
+  if (keepTurned()) restoreTop();                       // gedreht, während das Fenster offen war (R-8.1)
+  else if (Math.round(scrollY) !== Math.round(y)) window.scrollTo({ top: y, behavior: 'instant' });
+}
 
 // Fenster ohne Fokus-Rahmen öffnen: der Fokus liegt auf dem Fenster selbst, nicht auf dem x.
 function showModalQuiet(d) {
@@ -876,9 +891,31 @@ msg.addEventListener('close', unlockPage);
 dlg.addEventListener('close', () => {
   unlockPage();
   if (dlg.open) return;
-  if (dlgOpener) document.querySelector(dlgOpener)?.classList.remove('on');
+  const sel = dlgOpener;
+  if (sel) document.querySelector(sel)?.classList.remove('on');
   dlgOpener = '';
+  // R-7.3: nach dem Neuaufbau durch die App die Zeile zeigen (nur falls nötig) und kurz hervorheben
+  if (sel) requestAnimationFrame(() => revealRow(sel));
 });
+
+// R-7.3 (seit 4.18.0, A-13): Zeile bzw. Kasten, aus dem ein Fenster kam, nach dem Schließen zeigen und kurz hervorheben.
+// Ist sie ganz sichtbar (unter Leiste und Tabellenkopf), rollt nichts; sonst nur so weit, bis sie es ist (nach ‹ › im Fenster).
+// Schaltflächen sind keine Zeilen und werden nicht hervorgehoben.
+function revealRow(sel) {
+  const el = document.querySelector(sel);
+  if (!el || !el.matches(KEEP_SEL) || !el.getClientRects().length) return;
+  const head = el.closest('table')?.querySelector('thead');
+  const th = head?.querySelector('th');   // der Tabellenkopf haftet über die Zellen (sticky), nicht über thead
+  const top = Math.max(keepEdge(), th && getComputedStyle(th).position === 'sticky' ? th.getBoundingClientRect().bottom : 0) + 6;
+  const vv = window.visualViewport, bottom = (vv ? vv.offsetTop + vv.height : innerHeight) - 6;
+  const r = el.getBoundingClientRect();
+  if (r.top < top) window.scrollBy({ top: r.top - top, behavior: 'instant' });
+  else if (r.bottom > bottom) window.scrollBy({ top: Math.min(r.bottom - bottom, r.top - top), behavior: 'instant' });
+  if (!el.animate) return;
+  const from = getComputedStyle(document.documentElement).getPropertyValue('--sel-bg').trim(), to = getComputedStyle(el).backgroundColor;
+  const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  el.animate([{ backgroundColor: from }, { backgroundColor: to }], { duration: 1000, easing: still ? 'steps(1, end)' : 'ease-in' });
+}
 
 // Auswahl-Kapsel: Schaltflächen in einer Kapsel; ist sie zu schmal, lässt sich der Inhalt wischen,
 // ein Verlauf am Rand zeigt, wo es weitergeht.
@@ -936,7 +973,7 @@ const keepTurned = () => innerWidth !== keepWidth || Math.abs(innerHeight - keep
 const keepEdge = () => document.querySelector('.pnav, .nb')?.getBoundingClientRect().bottom || 0;
 const keepKey = e => e.dataset.day ? `[data-day="${CSS.escape(e.dataset.day)}"]` : `[data-keep="${CSS.escape(e.dataset.keep)}"]`;
 function rememberTop() {
-  if (keepBusy || keepTurned()) return;   // während des Drehens nichts überschreiben
+  if (keepBusy || keepTurned() || lockY !== null) return;   // bei offenem Fenster (R-7.3) nichts überschreiben   // während des Drehens nichts überschreiben
   if (scrollY < 4) { keepTop = null; return; }       // ganz oben bleibt ganz oben
   const edge = keepEdge();
   const e = [...document.querySelectorAll(KEEP_SEL)].find(x => x.getClientRects().length && x.getBoundingClientRect().bottom > edge + 1);
