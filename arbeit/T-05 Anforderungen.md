@@ -17,6 +17,10 @@ Stand 16.10.2026 · Sitzung ‚Reiselogbuch 0007‘ · ohne Reisedaten · ergän
 | N-9 | **Spalten** ‚Wie war was?‘, ‚Essen und Trinken‘ und ‚Quartier‘ einschalten, wenn es Einträge dazu gibt. |
 | N-10 | **Bestätigung vor der Ausgabe:** Reisetitel, Reiseteilnehmer, Reisezeitraum und Reisemittel bestätigst du per Kachelabfrage (ein Fenster, je Feld eine Frage: ‚passt‘ / ‚ändern‘). |
 | N-11 | **Texte verbessern (16.10.2026):** In **Verlauf**, **Wie war was?** und **Fazit** Grammatik verbessern, ohne den Sinn zu verfälschen; Essen und Trinken, Quartier und übrige Felder nur Tippfehler korrigieren. Jede geänderte Zeile steht im Protokoll (vorher → nachher). Ersetzt dort ‚Tippfehler korrigieren, sonst unverändert‘. |
+| N-12 | **Kein Wetter an heute und künftigen Tagen** (16.10.2026); bleibt ein Tag dadurch leer, entfällt er. |
+| N-13 | **Uhrzeit im Dateinamen = Ortszeit des Nutzers** (16.10.2026) – per Kachelfrage klären, Zeitzone nicht speichern. |
+| N-14 | **Verlauf mit dem Aufzählungszeichen der App ‚▫️‘** (16.10.2026): alle anderen Zeichen ersetzen; vergessene Zeichen erkennen, ergänzen und im Protokoll vermerken. |
+| N-15 | **Fazit ohne Smiley** (16.10.2026): passenden Smiley aus dem Text wählen, einfügen und protokollieren. |
 
 ## B. Meine Ergänzungen
 
