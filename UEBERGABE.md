@@ -1,6 +1,6 @@
 # Übergabe an die nächste Sitzung
 
-**Stand 15.10.2026** · geschrieben in der Sitzung ‚Reiselogbuch 0005 – A-06 Offline-Hinweis‘
+**Stand 16.10.2026** · geschrieben in der Sitzung ‚Reiselogbuch 0006 – T-84 iPhone-Start‘
 (Zusammenarbeit allgemein 2.5.0, Abschnitt 0 Nr. 14). **Claude liest diese Datei zu Beginn jeder Sitzung zuerst.**
 
 ## 1. Lagebild
@@ -13,7 +13,7 @@
 | Designrichtlinie Reiselogbuch | 3.15.1 | im Repo ReiseLogBuch |
 | Zusammenarbeit allgemein | 2.5.0 (Abschnitt 0 = Arbeitsprozess 2.0, hat Vorrang) | `README - Zusammenarbeit allgemein.md` |
 
-- **Chatnummer:** die nächste Sitzung heißt **Reiselogbuch 0006** (Zusammenarbeit 0 Nr. 13); die danach 0007.
+- **Chatnummer:** die nächste Sitzung heißt **Reiselogbuch 0007** (Zusammenarbeit 0 Nr. 13); die danach 0008.
 - **Offene Prüfpunkte:** keine – P-42 alles in Ordnung (16.10.2026).
 - **Nächste Version:** nichts bereit.
 - **Sitzungsgröße:** höchstens 1.000.000 Token Kontext (Sitzungsdaten, `get_session` → `context_usage`); unsere Grenze
@@ -22,7 +22,7 @@
 
 ## 2. Ergebnisse
 
-**Sitzung ‚Reiselogbuch 0006 – T-84 iPhone-Start‘ – T-84 abgeschlossen (P-41 ok):**
+**Sitzung ‚Reiselogbuch 0006 – T-84 iPhone-Start‘ – T-84, A-07, A-09, A-10, A-11 abgeschlossen (P-41, P-42 ok):**
 - **AppDesign 4.16.0 · Reiselogbuch 3.15.0 veröffentlicht:** T-84 wurde allgemeine Regel **R-7.2** (A-09): jedes
   Neuladen beginnt im iPhone-Aufbau (auch iPad im schmalen Fenster) in der Startliste ohne blauen Eintrag; iPad-Aufbau
   unverändert. Prüfung `start.mjs` (AppDesign) und `start-regeln.mjs` (F-1 bis F-18). Fall-Liste `arbeit/T-84 Fall-Liste.md`.
@@ -58,15 +58,15 @@ Frühere Sitzungen: siehe `VERLAUF.md` und Versionsgeschichten.
 
 ## 3. Nächster Schritt
 
-**T-84** (Reiselogbuch, Prio 2): iPhone startet beim Neustart in der **Startliste ‚Reiselogbücher‘**, nicht im ersten
-offenen Tag einer Reise; iPad bleibt wie es ist. Entschieden: nur Reiselogbuch, keine allgemeine Regel (14.10.2026).
-Vorgehen: Apple-Abgleich (Notizen/Erinnerungen am iPhone: Start in der Liste bzw. letzter Ort), Fall-Liste (iPhone
-hoch/quer, Neustart vs. Rückkehr aus dem Hintergrund, leere Liste, Wechsel iPad ↔ iPhone), bei Bedarf Muster, dann
-fragen: ‚Soll ich Version Reiselogbuch 3.15.0 mit … erstellen? Ja/Nein‘ (AppDesign nur, wenn Gemeinsames betroffen ist).
+**T-05** (Reiselogbuch, Prio 2): bestehende (alte) Reiselogbücher aufbereiten und importierbar machen – Dateien
+(Word/PDF/Excel/HTML/Fotos) auslesen, Unklarheiten nachfragen, Vorschau zeigen, Datei erstellen; Überschneidungen prüfen.
+**Zuerst klären** (Auswahlfenster, Zusammenarbeit 0 Nr. 7): Form der Unterlagen, Anzahl, Weg (a: in aktuelles Backup
+einfügen · b: neue Funktion ‚Reiselogbuch importieren‘, die hinzufügt statt ersetzt). Dann Apple-Abgleich (z. B. Notizen
+‚Importieren‘, Dateien), Fall-Liste, bei Bedarf Muster; gebaut wird erst nach ‚Ja‘.
 
 ## 4. Danach
 
-- **T-05, T-06** (Funktionen, Reiselogbuch).
+- **T-06** (Ausschreibungstexte in Reiselogbücher umwandeln, Prio 3).
 - **A-01** Startseite (später).
 
 ## 5. Arbeitsumgebung (für Claude)
@@ -77,12 +77,15 @@ fragen: ‚Soll ich Version Reiselogbuch 3.15.0 mit … erstellen? Ja/Nein‘ (A
 - Tests: im Ordner `ReiseLogBuch/tests` `npm install playwright@1.56.1` (die entstehenden `package.json`/`package-lock.json`
   nicht hochladen – löschen), dann im Repo-Ordner `node tests/alle.mjs` (`--alle`, `--gegenprobe [grundregeln]`,
   `--abdeckung`); einzelne Prüfung in WebKit: `PRUEF_BROWSER=webkit node tests/<datei>.mjs`. AppDesign-Selbsttest
-  `node tests/lauf-selbsttest.mjs`. Unter Volllast (8 Browser parallel) kann WebKit einzeln schwanken – einzeln wiederholen.
+  `node tests/lauf-selbsttest.mjs`. Seit 4.16.1 laufen höchstens so viele Browser wie Kerne, erst Chromium, dann WebKit
+  (A-10, A-11); `offline.mjs` erkennt den Absturz des WebKit-Netzprozesses der Prüfumgebung und prüft die Ansicht einmal neu.
+  Während der Arbeit nur betroffene Prüfungen, der volle Lauf einmal in `… los` (Zusammenarbeit 0 Nr. 2).
 - Veröffentlichen: Vorbereitungs-Zweige in beiden Repos (`vorbereitung-X.Y.Z`), `node werkzeug/veroeffentlichen.mjs
   vorbereiten --ad X.Y.Z --app reiselogbuch=X.Y.Z` (ohne `--ad`, wenn nur die App), Texte schreiben, committen,
   `node werkzeug/veroeffentlichen.mjs los --app reiselogbuch` (prüft, alle Tests, erst AppDesign, dann die App, wartet auf
   Pages; im Hintergrund starten, dauert ~8 min). Nach Änderungen an `v4/` oder `tests/`: `… fassung`. Danach lokale
-  Vorbereitungs-Zweige löschen (sonst meldet der Stop-Hook ‚unpushed‘).
+  Vorbereitungs-Zweige löschen (sonst meldet der Stop-Hook ‚unpushed‘). Zweige auf GitHub löschen geht aus der Cloud nicht
+  (403) – `vorbereitung-4.16.1` (AppDesign) und `vorbereitung-3.15.1` (ReiseLogBuch) liegen noch dort, schaden nicht.
 - Zeit und Token am Ende jeder Antwort aus den Sitzungsdaten (`/root/.claude/projects/…/*.jsonl`).
 
 ## 6. Ablage auf GitHub (alles auf Branch `main`)
@@ -91,8 +94,8 @@ fragen: ‚Soll ich Version Reiselogbuch 3.15.0 mit … erstellen? Ja/Nein‘ (A
 |---|---|---|
 | Diese Übergabe | g811141a/AppDesign | `UEBERGABE.md` |
 | Verlauf aller Wünsche und Entscheidungen | g811141a/AppDesign | `VERLAUF.md` |
-| A-06 Muster und Fall-Liste, P-39 Auswertung | g811141a/AppDesign | `arbeit/A-06 Muster und Fall-Liste.md`, `arbeit/P-39 Rückmeldung.md` |
-| Prüf-Bausteine | g811141a/AppDesign | `tests/pruefe.mjs`, `tests/lauf.mjs`, `tests/offline.mjs`, `tests/README.md` |
+| Muster, Fall-Listen, Auswertungen | g811141a/AppDesign | `arbeit/A-06 Muster und Fall-Liste.md`, `arbeit/P-39 Rückmeldung.md`, `arbeit/T-84 Fall-Liste.md` |
+| Prüf-Bausteine | g811141a/AppDesign | `tests/pruefe.mjs`, `tests/lauf.mjs`, `tests/offline.mjs`, `tests/start.mjs`, `tests/README.md` |
 | Regeln (Zusammenarbeit, Design) | g811141a/AppDesign | `README - Zusammenarbeit allgemein.md`, `README - Designrichtlinie allgemein.md` |
 | Backlog allgemein | g811141a/AppDesign | `BACKLOG.md` |
 | App: Backlog, Richtlinie, Funktionsbeschreibung, Prüfliste im CHANGELOG, Tests | g811141a/ReiseLogBuch | `BACKLOG.md`, `README - Designrichtlinie Reiselogbuch.md`, `PROMPT.md`, `CHANGELOG.md`, `tests/alle.mjs` |
@@ -102,5 +105,5 @@ In der neuen Sitzung müssen **beide Repos** (AppDesign und ReiseLogBuch) verfü
 ## 7. Starttext für die neue Sitzung
 
 ```
-Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md, dann die Zusammenarbeit allgemein und die Designrichtlinien, gib mir das Lagebild und beginne mit T-84 (iPhone startet in der Startliste) – zuerst Apple-Abgleich und Fall-Liste.
+Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md und gezielt die Regeln (Zusammenarbeit 0 Nr. 15), gib mir das Lagebild und beginne mit T-05 (alte Reiselogbücher importieren) – zuerst die offenen Fragen im Auswahlfenster klären.
 ```
