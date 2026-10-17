@@ -1,6 +1,6 @@
 # Designrichtlinie allgemein
 
-**Version 4.20.0** · Stand 17.10.2026
+**Version 4.21.0** · Stand 17.10.2026
 
 Allgemeine Gestaltungs- und Bedienregeln für alle iPad-Web-Apps von g811141a (seit 4.1.0 auch
 auf dem iPhone, Abschnitt 15.17).
@@ -398,7 +398,13 @@ heller).
 - **Drehen und Scroll-Position (seit 4.11.2, R-8.1):** Safari hat keinen Scroll-Anker – ändern sich beim Drehen die
   Höhen, springt die Seite. ui.js merkt sich beim Scrollen den obersten sichtbaren Eintrag unter der Leiste
   (`data-day` bzw. `data-keep`) und den sichtbaren Anteil; nach dem Drehen rückt er ihn wieder an dieselbe Stelle. Tests
-  bilden Safari nach (`overflow-anchor: none`), sonst verdeckt Chrome den Fehler.
+  bilden Safari nach (`overflow-anchor: none`), sonst verdeckt Chrome den Fehler. **Seit 4.21.0 (A-17)** gilt das für jede
+  Änderung der Anordnung durch die App, z. B. Seitenleiste ein/aus: `keepPlace(() => { …; render(); })`. Steht oben kein
+  Eintrag (Ende der Seite: Fazit, Statistik), bleibt der Abstand zum Ende gleich; ganz oben bleibt ganz oben.
+- **Position beim Öffnen (seit 4.21.0, R-7.4, A-16):** ein Eintrag öffnet **ganz oben**. Gibt die App einen ‚nächsten
+  offenen‘ Eintrag an (Reiselogbuch: erster nicht erfasster Tag), steht er hervorgehoben **direkt unter dem Kopf** – unter
+  der Leiste und einem haftenden Tabellenkopf –, nie in der Mitte; ist die Seite nicht so weit rollbar, ganz unten.
+  `openAt(element | null)` in ui.js.
 - **Neustart ist nicht erkennbar (seit 4.16.0, R-7.2):** Safari meldet nicht, **warum** eine Seite neu lädt. Als Neustart
   zählt jedes Neuladen: App im App-Umschalter weggewischt, **von iOS im Hintergrund beendet** (Speicher – auch nach kurzer
   Zeit in einer anderen App) oder neue Version geladen. Bleibt die Seite im Speicher, kommen nur `visibilitychange` und
@@ -934,12 +940,13 @@ Regel ersetzt oder ergänzt eine bestehende (Zusammenarbeit 0 Nr. 3) und bekommt
 | R-7.1 | **Zentrale Liste als Kacheln:** höchstens ein Eintrag blau; je Kachel ‚geändert am … · Gerät‘; Kacheln laufen unter dem Kopf und hinter der Backup-Kachel durch; Position bleibt beim Neuaufbau, der gewählte Eintrag bleibt sichtbar | hig.mjs | – | R-31 (+ Teil R-44, 15.4) |
 | R-7.2 | **Start im iPhone-Aufbau in der Startliste (seit 4.16.0):** jedes Neuladen zeigt im iPhone-Aufbau (auch iPad im schmalen Fenster) die Startliste ganz oben ohne blauen Eintrag; der iPad-Aufbau öffnet den aktuellen Eintrag; Rückkehr aus dem Hintergrund ändert nichts (15.17) | start.mjs | Gerät (App neu öffnen) | **neu** (aus Reiselogbuch T-84) |
 | R-7.3 | **Liste steht still (seit 4.18.0):** solange ein Fenster aus einer Zeile (bzw. einem Kasten) offen ist, bewegt sich die Liste dahinter nicht – auch wenn Safari beim Schreiben die Seite für die Tastatur schiebt; nach dem Schließen (Häkchen oder x) steht sie genau wie vorher, die Zeile wird kurz blau hinterlegt und blendet aus (~1 s); nach ‹ › im Fenster rollt sie nur so weit, bis die zuletzt gezeigte Zeile ganz sichtbar ist; iPad und iPhone gleich | ablauf.mjs – `checkListStill` (Tastatur nachgebildet) | Gerät (echte Tastatur, Diktieren) | **neu** (A-13) |
+| R-7.4 | **Position beim Öffnen (seit 4.21.0):** ein Eintrag öffnet ganz oben; ein ‚nächster offener‘ Eintrag (von der App bestimmt) steht hervorgehoben direkt unter dem Kopf bzw. Tabellenkopf, nie in der Mitte | ablauf.mjs – `checkOpenAt` | – | **neu** (A-16 aus Reiselogbuch T-89) |
 
 ### 8. Drehen
 
 | Nr. | Regel | Prüfung | Gerät | ersetzt |
 |---|---|---|---|---|
-| R-8.1 | **Drehen ändert nur die Anordnung:** offene Menüs, Untermenüs und Sprechblasen werden neu ausgerichtet (Schaltfläche bleibt blau); die Seitenleiste behält ihren Zustand; oben bleibt derselbe Eintrag stehen (Safari nachgebildet) | hig.mjs – Drehprüfung jeder Ansicht, hin und zurück, mit Zwischengrößen | Drehen | R-40 (Teil Drehen), R-47, R-51 |
+| R-8.1 | **Drehen ändert nur die Anordnung:** offene Menüs, Untermenüs und Sprechblasen werden neu ausgerichtet (Schaltfläche bleibt blau); die Seitenleiste behält ihren Zustand; oben bleibt derselbe Eintrag stehen (Safari nachgebildet) – seit 4.21.0 bei jeder Änderung der Anordnung, auch Seitenleiste ein/aus | hig.mjs – Drehprüfung jeder Ansicht, hin und zurück, mit Zwischengrößen; ablauf.mjs – `checkSideToggle` | Drehen | R-40 (Teil Drehen), R-47, R-51 |
 
 ### 9. Backup und Abgleich
 
@@ -987,6 +994,7 @@ Die alten Nummern R-01 bis R-52 (bis 4.11.4) gelten nicht mehr; sie stehen nur n
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 4.21.0 | 17.10.2026 | Neben | Neue Regel **R-7.4** Position beim Öffnen (A-16); **R-8.1** erweitert auf jede Änderung der Anordnung, auch Seitenleiste ein/aus (A-17) – Abschnitt 13, Regelkatalog Themen 7 und 8, Prüfungen `checkOpenAt`, `checkSideToggle` |
 | 4.20.0 | 17.10.2026 | Neben | R-3.2 erweitert (A-15): Kapsel ‚Nach oben / Ans Ende‘ auch im iPhone-Aufbau (Inhaltsansicht), ausgeblendet ohne Scrollen – Abschnitt 4, 15.17, Regelkatalog Thema 3 |
 | 4.19.0 | 17.10.2026 | Neben | Neue Regel **R-5.5** (A-14 aus Reiselogbuch T-87): Eingabetaste in einzeiligen Feldern ‚Fertig‘ und schließt die Tastatur, in mehrzeiligen Zeilenumbruch – Abschnitt 8, Regelkatalog Thema 5, Prüfung `checkEnterDone` |
 | 4.18.0 | 16.10.2026 | Neben | Neue Regel **R-7.3** (A-13): Liste steht still, solange ein Fenster offen ist; danach wie vorher, Zeile kurz hervorgehoben, nach ‹ › nur so weit rollen wie nötig – Abschnitt 7, Regelkatalog Thema 7, Prüfung `checkListStill` |
