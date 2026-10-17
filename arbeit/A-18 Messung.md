@@ -112,3 +112,9 @@ Die Messseite ist ruhig, die App springt. Deshalb wird **in der echten App** gem
 - Du öffnest einen Tag mit viel Text, bei dem es springt, und tippst in das Feld wie sonst. Protokoll kopieren, im Chat
   einfügen. Dazu ein Wort: springt / ruhig, und wann (beim Hochfahren der Tastatur, beim Tippen, beim Wechsel des Feldes).
 - Die App selbst und ihr Repo bleiben unverändert; die Kopie wird nach der Korrektur gelöscht.
+
+**Messung 3 gebaut (17.10.2026, ‚Ja‘):** `messen/reiselogbuch.html` (erzeugt mit `node messen/erzeuge-reiselogbuch.mjs` aus
+Reiselogbuch 3.20.1). Speichern abgeschaltet (`setItem`/`removeItem`/`clear` ohne Wirkung), kein Service Worker; rotes Schild
+‚Messung – speichert nicht‘ unten links mit ‚Protokoll kopieren‘. Protokoll zusätzlich: Höhe des Fensters, wie weit sein Inhalt
+gerollt ist, jeder Aufruf von `placeDialogs`, jede Eingabe, Rollen der Seite und im Fenster; jede Eingabe verlängert um 1,5 s.
+Geprüft in Chromium und WebKit: Daten sichtbar, Speicher nach Änderung unverändert, Protokoll vollständig.
