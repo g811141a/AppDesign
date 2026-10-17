@@ -1832,3 +1832,5 @@ Alle punkte ok
 **2026-10-16 · Sitzung Reiselogbuch 0008:** T-05 geprüft – Import-Datei mit ‚Abgleichen‘ geladen, alles in Ordnung. A-12 gebaut (Fall-Liste M-1 bis M-14, Entscheidung ‚neu‘ = Eingabe + Ausgabe) → AppDesign 4.17.0 mit `werkzeug/messung.mjs`, Zusammenarbeit 2.7.0.
 
 **2026-10-16 · Sitzung Reiselogbuch 0008:** P-43 ok. A-13 geklärt: Wunsch ‚Tabelle eingefroren, bis man von der Tageserfassung zurück ist‘ statt ‚immer ganz oben‘; Ursache gefunden (Safari schiebt beim Öffnen der Tastatur die Seite); Nutzer: iPhone und iPad gleich, allgemein gültig → neue Regel R-7.3, AppDesign 4.18.0 und Reiselogbuch 3.16.0.
+
+**2026-10-17 · Übergabe (Sitzung Reiselogbuch 0008):** T-05, A-12 und A-13 abgeschlossen (P-43, P-44 ok) → Übergabe geschrieben, neue Sitzung ‚Reiselogbuch 0009 – Startfrage‘ gestartet.

@@ -1,62 +1,56 @@
 # Übergabe an die nächste Sitzung
 
-**Stand 16.10.2026** · geschrieben in der Sitzung ‚Reiselogbuch 0007 – T-05 Alte Reiselogbücher‘
-(Zusammenarbeit allgemein 2.6.0, Abschnitt 0 Nr. 14). **Claude liest diese Datei zu Beginn jeder Sitzung zuerst.**
+**Stand 17.10.2026** · geschrieben in der Sitzung ‚Reiselogbuch 0008 – T-05 Prüfung und A-12‘
+(Zusammenarbeit allgemein 2.7.0, Abschnitt 0 Nr. 14). **Claude liest diese Datei zu Beginn jeder Sitzung zuerst.**
 
 ## 1. Lagebild
 
 | Teil | Version | Datei |
 |---|---|---|
-| Reiselogbuch | 3.15.1 (unverändert) | g811141a/ReiseLogBuch – `CHANGELOG.md`, `BACKLOG.md`, `PROMPT.md` |
-| AppDesign (ui.js, design.css, tests; feste Fassung `fassung/4.16.1/`) | 4.16.1 (unverändert) | g811141a/AppDesign – `CHANGELOG.md`, `BACKLOG.md` |
-| **ReiseLogBuch-Import (neu, privat)** | 1.2.1 | g811141a/ReiseLogBuch-Import – `README.md`, `PROMPT.md`, `CLAUDE.md`, `ERKENNTNISSE.md`, `werkzeug/pruefen.mjs` |
-| Designrichtlinie allgemein | 4.16.1 (R-1.1 bis R-10.4) | `README - Designrichtlinie allgemein.md` |
-| Designrichtlinie Reiselogbuch | 3.15.1 | im Repo ReiseLogBuch |
-| Zusammenarbeit allgemein | **2.6.0** (neu: 0 Nr. 19 Startfrage) | `README - Zusammenarbeit allgemein.md` |
+| Reiselogbuch | **3.16.0** (Fassung 4.18.0) | g811141a/ReiseLogBuch – `CHANGELOG.md`, `BACKLOG.md`, `PROMPT.md` |
+| AppDesign (ui.js, design.css, tests; feste Fassung `fassung/4.18.0/`) | **4.18.0** | g811141a/AppDesign – `CHANGELOG.md`, `BACKLOG.md` |
+| ReiseLogBuch-Import (privat) | 1.2.1 (unverändert) | g811141a/ReiseLogBuch-Import – `README.md`, `PROMPT.md`, `CLAUDE.md`, `ERKENNTNISSE.md`, `werkzeug/pruefen.mjs` |
+| Designrichtlinie allgemein | **4.18.0** (R-1.1 bis R-10.4, neu R-7.3) | `README - Designrichtlinie allgemein.md` |
+| Designrichtlinie Reiselogbuch | 3.16.0 | im Repo ReiseLogBuch |
+| Zusammenarbeit allgemein | **2.7.0** (§2: Zeile mit `messung.mjs`) | `README - Zusammenarbeit allgemein.md` |
 
-- **Chatnummer:** die nächste Sitzung heißt **Reiselogbuch 0008** (Zusammenarbeit 0 Nr. 13); die danach 0009.
-- **Offene Prüfpunkte:** keine – P-43 und P-44 geprüft (A-12 und A-13 abgeschlossen).
+- **Chatnummer:** die nächste Sitzung heißt **Reiselogbuch 0009** (Zusammenarbeit 0 Nr. 13); die danach 0010.
+- **Offene Prüfpunkte:** keine – T-05, P-43 und P-44 geprüft.
+- **Nächste Version:** nichts bereit (AppDesign und Reiselogbuch: Abschnitt 0 der Backlogs leer).
 - **Zeit und Token (seit AppDesign 4.17.0):** am Ende jeder Antwort `node ../AppDesign/werkzeug/messung.mjs` aufrufen und
-  die Zeile unverändert übernehmen – nie schätzen.
-- **Neu im Backlog:** **A-13** (AppDesign, Prio 2, allgemeine Regel): nach dem Schließen des Fensters ‚Tag‘ steht die Zeile
-  des bearbeiteten Tages ganz oben – zu klären (Fall-Liste, Abgrenzung R-7.1, letzte Tage, iPhone).
-- **Sitzungsgröße:** unsere Grenze bleibt **etwa 300.000 Token** (0007 endete bei etwa 330.000).
+  die Zeile unverändert übernehmen – nie schätzen. Token ‚vorige Antwort‘ beziehen sich auf die Antwort vor der letzten
+  **Chat**-Nachricht; Antworten in Auswahlfenstern sind keine neue Nachricht.
+- **Sitzungsgröße:** unsere Grenze bleibt **etwa 300.000 Token**.
 - **Erinnerung:** ‚Backlog-Erinnerung (AppDesign und Reiselogbuch)‘ montags 8:58.
 
 ## 2. Ergebnisse
 
-**Sitzung ‚Reiselogbuch 0007 – T-05 Alte Reiselogbücher‘ – T-05 Werkzeug fertig, erste Konvertierung erledigt:**
-- **Weg:** Kein Umbau der App. Claude macht aus einer alten Unterlage eine Datei im Backup-Format (nur die alten Reisen,
-  feste Kennung `import-<Beginn>-<titel>`, Zeitpunkte). Der Nutzer lädt sie mit ‚Backup laden‘ → **‚Abgleichen‘**.
-- **Privates Repo `ReiseLogBuch-Import`:** Anleitung `PROMPT.md` (N-1 bis N-15, E-1 bis E-11), `CLAUDE.md` mit Startfrage,
-  `ERKENNTNISSE.md` (K-1 bis K-12, ohne Daten), Prüfwerkzeug `werkzeug/pruefen.mjs`: F-1 bis F-22 in der echten App,
-  Chromium und WebKit, hell und dunkel; Apps unverändert (N-2); Datenschutz-Sperre (F-18); Selbsttest mit Gegenprobe.
-  Anforderungen und Fall-Liste: AppDesign `arbeit/T-05 Anforderungen.md`, `arbeit/T-05 Fall-Liste.md`.
-- **Wichtigste Regeln:** Daten nie in ein Repo. Apps bei einer Konvertierung nie ändern. Format jedes Mal frisch aus
-  `ReiseLogBuch/index.html` lesen. Kachelfragen bei Unklarem und bei fehlenden Pflichtangaben (Titel, Teilnehmer,
-  Zeitraum, Reisemittel), Bestätigung vor der Ausgabe. Grammatik in Verlauf, Wie war was? und Fazit verbessern.
-  Verlauf mit ▫️. Fazit mit Smileys. Kein Wetter ab heute. Uhrzeit in der Ortszeit des Nutzers (Kachelfrage).
-  Konvertierungsprotokoll.
-- **Fund K-12:** Löscht der Nutzer eine Reise mit derselben Kennung, **nachdem** die Datei erstellt wurde, gewinnt beim
-  Abgleichen die Löschung (‚bleibt gelöscht‘) → Datei neu erstellen.
-- **Zusammenarbeit 2.6.0:** 0 Nr. 19 **Startfrage** – Sitzung ohne Auftrag beginnt mit dem Auswahlfenster ‚Was möchtest
-  du als Nächstes tun?‘ je angehängtem Repo (CLAUDE.md AppDesign 2.3.0, Reiselogbuch 3.4.0, Import 1.0.0).
-- **Fehler in 0007:** ReiseLogBuch-Import 1.0.0 wurde hochgeladen, obwohl der Selbsttest rot war (Ergebnis nicht
-  ausgewertet) → Korrektur 1.0.1. Lehre: Ergebnis jeder Prüfung vor dem Hochladen lesen.
+**Sitzung ‚Reiselogbuch 0008 – T-05 Prüfung und A-12‘ – drei Themen abgeschlossen:**
+- **T-05 geprüft:** die erste Import-Datei wurde mit ‚Backup laden‘ → ‚Abgleichen‘ geladen, alles in Ordnung (E-75, E-26).
+- **A-12 → AppDesign 4.17.0:** Werkzeug `werkzeug/messung.mjs` (Fall-Liste `arbeit/A-12 Fall-Liste.md`, Prüfung
+  `tests/messung.mjs` mit Gegenprobe). Funde: eine Modell-Antwort steht auf mehreren Zeilen der Sitzungsdaten (Handmessung
+  zählte mehrfach); nach einem Neustart liegt die Sitzung in einem zweiten Ordner. ‚neu‘ = Eingabe + Ausgabe (Entscheidung
+  des Nutzers). Zusammenarbeit 2.7.0, CLAUDE.md 2.4.0. P-43 ok.
+- **A-13 → AppDesign 4.18.0 und Reiselogbuch 3.16.0:** Wunsch geändert von ‚Zeile immer ganz oben‘ zu ‚Tabelle eingefroren,
+  bis man von der Tageserfassung zurück ist‘. Ursache des Fehlers: Safari schiebt beim Öffnen der Tastatur die ganze Seite
+  (overflow: hidden hält das nicht auf) und schiebt nicht zurück. Lösung in `ui.js`: Scrollstand beim Öffnen merken, beim
+  Schließen wiederherstellen; `revealRow` hebt die Zeile kurz hervor und zeigt sie nach ‹ ›. Neue Regel **R-7.3**, Prüfung
+  `checkListStill` (Tastatur nachgebildet, Gegenprobe rot). Nutzer: iPhone und iPad verhalten sich gleich, Änderungen gelten
+  allgemein. Klärung `arbeit/A-13 Klärung und Fall-Liste.md`. P-44 ok.
+- **Fehler in 0008:** nach dem ersten (roten) Veröffentlichungslauf die Vorbereitungs-Zweige gelöscht, bevor das Ergebnis
+  gelesen war – aus dem lokalen Verlauf wiederhergestellt. Lehre (wie 0007): erst das Ergebnis lesen, dann aufräumen.
+  Ursache des roten Laufs: die Prüfung erwartete die Hervorhebung nach 120 ms, unter Last in WebKit später → wartet bis 800 ms.
 
 Frühere Sitzungen: siehe `VERLAUF.md` und Versionsgeschichten.
 
 ## 3. Nächster Schritt
 
-1. Ergebnis der Prüfung T-05 erfragen (Import-Datei geladen?). Bei Fehler: Konvertierung im Import-Repo nach `PROMPT.md`
-   korrigieren (das Original hängt der Nutzer erneut an – es liegt nirgends gespeichert).
-2. Weitere alte Reiselogbücher konvertieren, sobald der Nutzer sie anhängt (Startfrage → ‚Reiselogbücher konvertieren‘).
-3. A-12 (bereit, Prio 1) bauen – erst nach ‚Ja‘.
-4. A-13 klären (Apple-Abgleich, Fall-Liste, Muster).
+1. Startfrage (0 Nr. 19). Kein Prüfpunkt offen, nichts bereit.
+2. Weitere alte Reiselogbücher konvertieren, sobald der Nutzer sie anhängt (Import-Repo, `PROMPT.md` vollständig lesen).
+3. T-06 klären (Ausschreibungstexte in Reiselogbücher umwandeln, Prio 3) – kann das Import-Repo mitnutzen.
 
 ## 4. Danach
 
-- **T-06** (Ausschreibungstexte in Reiselogbücher umwandeln, Prio 3) – kann das Import-Repo mitnutzen.
 - **A-01** Startseite (später).
 
 ## 5. Arbeitsumgebung (für Claude)
@@ -101,5 +95,5 @@ In der neuen Sitzung müssen **AppDesign** und **ReiseLogBuch** verfügbar sein,
 ## 7. Starttext für die neue Sitzung
 
 ```
-Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md und gezielt die Regeln (Zusammenarbeit 0 Nr. 15), gib mir das Lagebild und frag mich zuerst nach dem Ergebnis der Prüfung T-05 (Import-Datei geladen?) – danach Startfrage (0 Nr. 19).
+Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md und gezielt die Regeln (Zusammenarbeit 0 Nr. 15), gib mir das Lagebild und dann die Startfrage (0 Nr. 19).
 ```
