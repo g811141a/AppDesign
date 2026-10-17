@@ -1,6 +1,6 @@
 # AppDesign – Backlog (allgemeine Themen)
 
-**Stand 17.10.2026** · Aktuelle Version: AppDesign 4.22.0
+**Stand 17.10.2026** · Aktuelle Version: AppDesign 4.23.0
 
 Allgemeine Themen, die alle Apps betreffen. App-Themen stehen im Backlog der jeweiligen App.
 Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
@@ -11,13 +11,13 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Prio | Thema | bereit seit |
 |---|---|---|---|
-| A-19 | 2 | **Suche in der zentralen Liste (aus Reiselogbuch T-92, Variante C):** Lupe in der Kopfzeile der Liste → Suchzeile (wie 15.2, ohne Pfeile); filtert die Einträge, Kachel zeigt die Trefferzahl je Fundstelle, Öffnen übergibt den Begriff an die Suche im Eintrag; sind beide Suchfelder offen, laufen sie 1:1 mit – Erweiterung von R-2.3, 15.2, 15.4 (`arbeit/T-92 Fall-Liste.md`, Muster bestätigt) | 17.10.2026 |
+| – | – | zurzeit nichts bereit | – |
 
 ## 1. Auf iPad und iPhone prüfen
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| – | – | zurzeit nichts zu prüfen | – |
+| A-19 | 1 | Suche in der zentralen Liste (R-2.3) – geprüft mit Reiselogbuch 3.21.0, Prüfliste P-51 | prüfen |
 
 ## 2. Weitere Themen (in Klärung)
 
@@ -31,6 +31,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Thema | Version | Datum |
 |---|---|---|---|
+| E-43 | **A-19 gebaut:** Suche in der zentralen Liste (R-2.3 erweitert, 15.4, `checkListSearch`), beide Suchfelder 1:1 | AppDesign 4.23.0 | 17.10.2026 |
 | E-42 | **A-18 verworfen (Nutzer, 17.10.2026):** Tastatur im Fenster ‚Tag‘ – das Mitfahren beim ersten Hochfahren kommt von Safari (rollt die Seite unabhängig vom Feld); Messungen in Sitzung 0010, Messseiten entfernt; R-7.3 bleibt unverändert | – | 17.10.2026 |
 | E-41 | Geprüft: P-50 in Ordnung (Zeile Zeit und Token mit Kontext); **A-20 damit abgeschlossen** | AppDesign 4.22.0 | 17.10.2026 |
 | E-40 | **A-20 gebaut:** Kontext in der Zeile Zeit und Token, ab 300.000 bzw. nach Zusammenfassung ‚⚠ Übergabe fällig‘ | AppDesign 4.22.0 | 17.10.2026 |

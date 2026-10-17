@@ -1,5 +1,5 @@
 // AppDesign 4.12.0 · Ablauf-Prüfungen für Regeln, die eine Handlung brauchen (Designrichtlinie allgemein, Abschnitt 17):
-// R-2.3 Suche · R-4.4 Fenster-Kopfzeile · R-5.2 Texteingabe · R-5.3 Fehlermeldungen · R-5.5 Eingabetaste (seit 4.19.0) · R-6.4 Ausgabe und Vorschau · R-7.3 Liste steht still (seit 4.18.0) · R-7.4 Position beim Öffnen und R-8.1 Seitenleiste ein/aus (seit 4.21.0).
+// R-2.3 Suche (seit 4.23.0 auch in der zentralen Liste) · R-4.4 Fenster-Kopfzeile · R-5.2 Texteingabe · R-5.3 Fehlermeldungen · R-5.5 Eingabetaste (seit 4.19.0) · R-6.4 Ausgabe und Vorschau · R-7.3 Liste steht still (seit 4.18.0) · R-7.4 Position beim Öffnen und R-8.1 Seitenleiste ein/aus (seit 4.21.0).
 // Jede Funktion bekommt eine Playwright-Seite und gibt eine Liste von Fehlern zurück (leer = in Ordnung), je mit Regelnummer.
 // Einbinden im Prüfskript der App:  import { checkSearch, checkDialogHead } from '../../AppDesign/tests/ablauf.mjs';
 //                                   fehler.push(...await checkSearch(page, { term: 'Sydney' }));
@@ -43,6 +43,60 @@ export async function checkSearch(p, { term, open = '#searchBtn', input = '#sear
   const z = await state();
   if (z.c !== '0') E(`ohne Treffer ‚${z.c}‘ statt ‚0‘`);
   await p.click(open); await wait(p);
+  return errors;
+}
+
+// R-2.3 Suche in der zentralen Liste (seit 4.23.0, A-19): Lupe in der Kopfzeile der Liste öffnet die Suchzeile; beim Tippen
+// bleiben nur Einträge mit Treffer, jede Kachel zeigt ‚N Treffer‘ (je Fundstelle); Antippen öffnet den Eintrag mit gefüllter
+// Suche ‚1 von N‘ (gleiches N); sind beide Suchfelder offen, laufen sie 1:1 mit; zurück bleibt die Liste gefiltert; x zeigt
+// wieder alle; ohne Treffer ‚Keine Treffer‘. term: kommt in einigen, nicht allen Einträgen vor. back(): zurück zur Liste
+// (iPhone-Aufbau), sonst ist die Liste neben dem Eintrag sichtbar.
+export async function checkListSearch(p, { term, open = '#listSearchBtn', input = '#lsearch', clear = '#lsclear', row = '#side .side-row',
+  hits = 'small.hits', inner = '#search', innerCount = '#scount', back = null, where = '' } = {}) {
+  const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}R-2.3 Liste: ${t}`);
+  const list = () => p.evaluate(({ row, hits, input }) => ({ value: document.querySelector(input)?.value ?? null,
+    focus: document.activeElement?.id || '', rows: [...document.querySelectorAll(row)].filter(e => e.getClientRects().length)
+      .map(e => ({ hits: e.querySelector(hits)?.textContent.trim() || '' })),
+    empty: /Keine Treffer/.test(document.querySelector('#side')?.textContent || '') }), { row, hits, input });
+  const all = (await list()).rows.length;
+  await p.click(open); await wait(p);
+  let l = await list();
+  if (l.value === null) E('Lupe öffnet keine Suchzeile');
+  else if (l.focus !== input.replace('#', '')) E('Suchzeile hat nach der Lupe keinen Fokus');
+  await p.locator(input).pressSequentially(term, { delay: 20 }); await wait(p, 400);
+  l = await list();
+  if (!l.rows.length) E(`‚${term}‘ findet keinen Eintrag`);
+  else if (l.rows.length >= all) E(`nicht gefiltert – ${l.rows.length} von ${all} Einträgen sichtbar`);
+  const bad = l.rows.filter(r => !/^\d+ Treffer$/.test(r.hits));
+  if (bad.length) E(`${bad.length} Kacheln ohne ‚N Treffer‘ (${bad.map(r => r.hits || 'leer').join(', ')})`);
+  const n = +(l.rows[0]?.hits.match(/^\d+/)?.[0] || 0);
+  await p.locator(row).first().click(); await wait(p, 800);
+  const inside = await p.evaluate(({ inner, innerCount }) => ({ v: document.querySelector(inner)?.value ?? null,
+    c: document.querySelector(innerCount)?.textContent.trim() || '' }), { inner, innerCount });
+  if (inside.v !== term) E(`Eintrag öffnet ohne den Begriff (Suchfeld ‚${inside.v ?? 'zu'}‘)`);
+  else if (inside.c !== `1 von ${n}`) E(`Zählung weicht ab: Kachel ‚${n} Treffer‘, im Eintrag ‚${inside.c}‘`);
+  if (!back) {
+    // Beide Suchfelder offen: Eingaben laufen 1:1 in das andere Feld (beide Richtungen, auch x).
+    await p.locator(input).focus(); await p.keyboard.press('End'); await p.keyboard.type('x', { delay: 20 }); await wait(p, 300);
+    if (await p.inputValue(inner) !== term + 'x') E('Eingabe in der Liste kommt nicht 1:1 im Suchfeld des Eintrags an');
+    if (await p.evaluate(() => document.activeElement?.id) !== input.replace('#', '')) E('Fokus springt beim Tippen aus dem Suchfeld der Liste');
+    await p.locator(inner).focus(); await p.keyboard.press('End'); await p.keyboard.press('Backspace'); await wait(p, 300);
+    if (await p.inputValue(input) !== term) E('Eingabe im Eintrag kommt nicht 1:1 im Suchfeld der Liste an');
+  } else {
+    await back(); await wait(p, 400);
+    l = await list();
+    if (l.value !== term || !l.rows.length || l.rows.length >= all) E('zurück in der Liste ist der Filter weg');
+  }
+  await p.click(clear); await wait(p, 300);
+  l = await list();
+  if (l.rows.length !== all || l.rows.some(r => r.hits)) E('x zeigt nicht wieder alle Einträge ohne Trefferzahl');
+  if (!back && await p.inputValue(inner) !== '') E('x in der Liste leert das offene Suchfeld des Eintrags nicht');
+  await p.locator(input).pressSequentially('zqxzqx', { delay: 10 }); await wait(p, 300);
+  l = await list();
+  if (l.rows.length || !l.empty) E('ohne Treffer nicht ‚Keine Treffer‘');
+  await p.click(open); await wait(p);
+  l = await list();
+  if (l.value !== null || l.rows.length !== all) E('Lupe schließt die Suchzeile nicht bzw. zeigt nicht wieder alle Einträge');
   return errors;
 }
 

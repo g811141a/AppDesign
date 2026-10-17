@@ -3,6 +3,23 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.23.0 – 17.10.2026 (Neben)
+
+AppDesign 4.23.0 · Designrichtlinie allgemein 4.23.0 · Zusammenarbeit allgemein 2.8.0 · geprüft mit Reiselogbuch 3.21.0
+
+A-19 (aus Reiselogbuch T-92, Variante C; Vorschläge `arbeit/T-92 Vorschläge.md`, Fall-Liste `arbeit/T-92 Fall-Liste.md`).
+
+- **R-2.3 erweitert – Suche in der zentralen Liste:** Lupe im Kopf der Seitenleiste bzw. Startliste öffnet eine Suchzeile
+  (wie 15.2, ohne Pfeile); nur Einträge mit Treffer, je Kachel ‚N Treffer‘ (je Fundstelle, gleich wie ‚1 von N‘ im
+  Eintrag), ‚2 von 5 …‘ unter der Überschrift, ‚Keine Treffer‘; Antippen öffnet mit gefüllter Suche; die Liste bleibt
+  gefiltert bis x bzw. Lupe; ein offener Eintrag bleibt unberührt, außer seine Suche ist offen – dann laufen beide Felder
+  1:1 mit (Zusatz des Nutzers); Backup-Kachel bleibt.
+- **design.css:** `#side .side-search` (Suchzeile unter dem Kopf, bleibt stehen).
+- **Prüfung `checkListSearch` (tests/ablauf.mjs):** Lupe und Fokus, Filter, ‚N Treffer‘ = ‚1 von N‘, Öffnen mit Begriff,
+  1:1 in beide Richtungen (iPad) bzw. zurück gefiltert (iPhone, iPad hoch), x, ‚Keine Treffer‘, Lupe schließt; Gegenprobe
+  (Zählung +1, ohne 1:1) rot.
+- Abschnitt 15.2, 15.4, Regelkatalog Thema 2; feste Fassung `fassung/4.23.0/`.
+
 ## 4.22.0 – 17.10.2026 (Neben)
 
 AppDesign 4.22.0 · Designrichtlinie allgemein 4.22.0 · Zusammenarbeit allgemein 2.8.0 · nur Werkzeug, Reiselogbuch bleibt auf Fassung 4.21.1
