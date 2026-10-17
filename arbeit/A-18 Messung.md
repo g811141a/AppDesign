@@ -68,3 +68,15 @@ Befund: Die Tastatur meldet sich in **zwei** Schritten (Größe nach 154 ms, Ver
 jeweils nach 1–2 ms wieder richtig. Die Seite dahinter rollt 146 px. Auf der Messseite wirkt es ruhig – **das Springen der App
 ist hier nicht nachgestellt**. Unterschiede zur App: echtes Fenster ‚Tag‘ (Wetter, Vorschläge, Smileys, wachsende Textfelder,
 viel Text), echte Daten, Eingaben während die Tastatur fährt.
+
+## Vorschlag für die nächste Messung (Messung 3)
+
+Die Messseite ist ruhig, die App springt. Deshalb wird **in der echten App** gemessen:
+
+- `messen/reiselogbuch.html` = Kopie der App Reiselogbuch 3.20.1 (Fassung 4.21.1) mit demselben Protokoll wie die Messseite.
+- Sie liegt auf derselben Adresse (g811141a.github.io), deshalb sieht sie **deine echten Reiselogbücher**. Damit nichts
+  passiert, kann sie **nicht speichern**: Schreiben in den Speicher ist abgeschaltet, kein Abgleich, keine Installation
+  (Service Worker). Änderungen verschwinden beim Neuladen.
+- Du öffnest einen Tag mit viel Text, bei dem es springt, und tippst in das Feld wie sonst. Protokoll kopieren, im Chat
+  einfügen. Dazu ein Wort: springt / ruhig, und wann (beim Hochfahren der Tastatur, beim Tippen, beim Wechsel des Feldes).
+- Die App selbst und ihr Repo bleiben unverändert; die Kopie wird nach der Korrektur gelöscht.
