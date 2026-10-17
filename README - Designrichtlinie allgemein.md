@@ -1,6 +1,6 @@
 # Designrichtlinie allgemein
 
-**Version 4.19.0** · Stand 17.10.2026
+**Version 4.20.0** · Stand 17.10.2026
 
 Allgemeine Gestaltungs- und Bedienregeln für alle iPad-Web-Apps von g811141a (seit 4.1.0 auch
 auf dem iPhone, Abschnitt 15.17).
@@ -151,7 +151,9 @@ heller).
 - Gesperrte Schaltflächen: ausgegraut (Deckkraft 40 %).
 - Keine Hover-Farbe auf dem iPad – Hover nur in `@media (hover: hover)`.
 - Schaltflächen unten rechts (nach oben / ans Ende): zusammen in einer **senkrechten Kapsel**
-  (`.fab`); ausgeblendet, wenn es nichts zu scrollen gibt.
+  (`.fab`); ausgeblendet, wenn es nichts zu scrollen gibt (seit 4.20.0 in `ui.js`). **Seit 4.20.0 (A-15) auch im
+  iPhone-Aufbau** in der Inhaltsansicht (nicht in der Startliste) – bewusste Abweichung von Apple: Statusleiste antippen und
+  Scroll-Leiste ziehen waren dem Nutzer zu schwerfällig.
 
 ## 5. Icons
 
@@ -683,6 +685,9 @@ Verhalten · technischer Name). In AppDesign ist jede Komponente einmal programm
   (`.ilist.tiles` bleibt als Liste für andere Seiten.)
 - **Kasten** (`.box` mit Zeilen `.kv` = graue Bezeichnung `.k` links, Wert `.v` rechts): ein
   Eintrag als Karte, z. B. ein Tag statt einer Tabellenzeile.
+- **Nach oben / Ans Ende (seit 4.20.0, R-3.2, A-15):** in einer Inhaltsseite (z. B. Tageskästen) dieselbe senkrechte
+  Kapsel unten rechts wie am iPad, nicht in der Startliste; ohne Scrollen ausgeblendet. Unten 120 px Platz, damit der letzte
+  Inhalt nicht verdeckt wird. Bewusste Abweichung von Apple (dort Statusleiste antippen bzw. Scroll-Leiste ziehen).
 - **Tastatur der Suche:** wischt man den Inhalt, während die Tastatur der Suche offen ist,
   schließt sie sich (wie bei Apple). Sonst verschiebt iOS den sichtbaren Bereich und die
   Leisten zittern (R-2.1).
@@ -889,7 +894,7 @@ Regel ersetzt oder ergänzt eine bestehende (Zusammenarbeit 0 Nr. 3) und bekommt
 | Nr. | Regel | Prüfung | Gerät | ersetzt |
 |---|---|---|---|---|
 | R-3.1 | **Antippflächen** 44 pt, in Kapseln und Schaltern mindestens 28 pt; reine Icon-Schaltflächen quadratisch | hig.mjs | – | R-11 |
-| R-3.2 | **Schweben und Kapseln:** alle Schaltflächen und Suchfelder schweben (Lichtkante, zierlicher Schatten); mehrere nebeneinander stehen in einer Kapsel, Nach oben / Ans Ende in einer senkrechten Kapsel | hig.mjs | – | R-19, R-22, R-35 |
+| R-3.2 | **Schweben und Kapseln:** alle Schaltflächen und Suchfelder schweben (Lichtkante, zierlicher Schatten); mehrere nebeneinander stehen in einer Kapsel, Nach oben / Ans Ende in einer senkrechten Kapsel unten rechts – iPad und (seit 4.20.0) iPhone in der Inhaltsansicht, nur wenn es etwas zu scrollen gibt | hig.mjs | – | R-19, R-22, R-35 |
 | R-3.3 | **Jede Farbe hat eine Bedeutung:** blau gefüllt nur die Hauptaktion im Fenster (höchstens eine); Gewähltes bleibt blau getönt, solange sein Menü, Fenster oder seine Abfrage offen ist; Grün nur für eingeschaltete Schalter; Rot nur für Löschen | hig.mjs – höchstens eine blaue Hauptaktion, `stays` | – | R-16 (+ Abschnitt 4) |
 | R-3.4 | **Kein Fokus-Rahmen** beim Antippen, beim Öffnen eines Fensters und im Suchfeld | hig.mjs | – | R-02 |
 
@@ -982,6 +987,7 @@ Die alten Nummern R-01 bis R-52 (bis 4.11.4) gelten nicht mehr; sie stehen nur n
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 4.20.0 | 17.10.2026 | Neben | R-3.2 erweitert (A-15): Kapsel ‚Nach oben / Ans Ende‘ auch im iPhone-Aufbau (Inhaltsansicht), ausgeblendet ohne Scrollen – Abschnitt 4, 15.17, Regelkatalog Thema 3 |
 | 4.19.0 | 17.10.2026 | Neben | Neue Regel **R-5.5** (A-14 aus Reiselogbuch T-87): Eingabetaste in einzeiligen Feldern ‚Fertig‘ und schließt die Tastatur, in mehrzeiligen Zeilenumbruch – Abschnitt 8, Regelkatalog Thema 5, Prüfung `checkEnterDone` |
 | 4.18.0 | 16.10.2026 | Neben | Neue Regel **R-7.3** (A-13): Liste steht still, solange ein Fenster offen ist; danach wie vorher, Zeile kurz hervorgehoben, nach ‹ › nur so weit rollen wie nötig – Abschnitt 7, Regelkatalog Thema 7, Prüfung `checkListStill` |
 | 4.17.0 | 16.10.2026 | Neben | Keine Regeländerung; Werkzeug `werkzeug/messung.mjs` für die Zeile Zeit und Token (A-12, Zusammenarbeit 2.7.0) |

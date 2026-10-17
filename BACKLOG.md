@@ -1,6 +1,6 @@
 # AppDesign – Backlog (allgemeine Themen)
 
-**Stand 17.10.2026** · Aktuelle Version: AppDesign 4.19.0
+**Stand 17.10.2026** · Aktuelle Version: AppDesign 4.20.0
 
 Allgemeine Themen, die alle Apps betreffen. App-Themen stehen im Backlog der jeweiligen App.
 Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
@@ -20,7 +20,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| – | – | zurzeit nichts zu prüfen | – |
+| A-15 | 1 | Kapsel ‚Nach oben / Ans Ende‘ auch auf dem iPhone (R-3.2) – geprüft mit Reiselogbuch 3.19.0, Prüfliste P-47 | prüfen |
 
 ## 2. Weitere Themen (in Klärung)
 
@@ -34,6 +34,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Thema | Version | Datum |
 |---|---|---|---|
+| E-34 | A-15 Kapsel ‚Nach oben / Ans Ende‘ auch im iPhone-Aufbau (Inhaltsansicht, nicht Startliste), ohne Scrollen ausgeblendet (`updateFab`); widerruft E-33 | AppDesign 4.20.0 | 17.10.2026 |
 | E-33 | Entscheidung (aus P-45): iPhone ohne Kapsel ‚Nach oben / Ans Ende‘ – nach oben über Tippen auf die Statusleiste, nach unten über die Scroll-Leiste (festhalten und ziehen), wie bei Apple; Satz kommt mit der nächsten Version in 15.17 | – | 17.10.2026 |
 | E-32 | Geprüft: P-45 alles in Ordnung (Reiselogbuch 3.17.0 mit AppDesign 4.19.0); **A-14 damit abgeschlossen** | AppDesign 4.19.0 | 17.10.2026 |
 | E-31 | A-14 Eingabetaste in Eingabefeldern (R-5.5): einzeilige Felder ‚Fertig‘ schließt die Tastatur, Fenster bleiben offen (vorher schickte die Eingabetaste das Formular ab), mehrzeilige Zeilenumbruch; Prüfung `checkEnterDone` | AppDesign 4.19.0 | 17.10.2026 |

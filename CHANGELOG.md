@@ -3,6 +3,19 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.20.0 – 17.10.2026 (Neben)
+
+AppDesign 4.20.0 · Designrichtlinie allgemein 4.20.0 · Zusammenarbeit allgemein 2.7.0 · geprüft mit Reiselogbuch 3.19.0
+
+A-15: Kapsel ‚Nach oben / Ans Ende‘ auch im iPhone-Aufbau (R-3.2 erweitert; Fall-Liste `arbeit/A-15 Fall-Liste.md`).
+Widerruft E-33 (Apple-Weg Statusleiste/Scroll-Leiste war dem Nutzer zu schwerfällig).
+
+- **design.css:** `html.phone .fab` wird nicht mehr ausgeblendet; im iPhone-Aufbau unten 120 px Platz (statt 96 px), damit
+  der letzte Inhalt nicht unter der Kapsel liegt. Ob die Kapsel in der Startliste erscheint, steuert die App (`hidden`).
+- **ui.js `updateFab`:** Kapsel mit der Klasse `still` ausgeblendet, wenn es nichts zu scrollen gibt (R-3.2, iPad und iPhone);
+  der Offline-Hinweis lässt bei sichtbarer Kapsel seitlich 72 px frei, auch auf dem iPhone.
+- Regel **R-3.2** erweitert, Abschnitt 4 und 15.17; feste Fassung `fassung/4.20.0/`.
+
 ## 4.19.0 – 17.10.2026 (Neben)
 
 AppDesign 4.19.0 · Designrichtlinie allgemein 4.19.0 · Zusammenarbeit allgemein 2.7.0 · geprüft mit Reiselogbuch 3.17.0

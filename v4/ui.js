@@ -1,4 +1,4 @@
-// AppDesign 4.19.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
+// AppDesign 4.20.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
 // Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/fassung/X.Y.Z/ui.js"></script> (feste Fassung, R-10.3)
 // Seit 4.11.0 (R-10.3): ui.js und design.css immer mit ?v=<AppDesign-Version> einbinden (auch in sw.js) und beim Start
 // prüfen, ob genau diese Fassung geladen ist (AD_VERSION hier, --ad-version in design.css).
@@ -17,7 +17,7 @@
 
 'use strict';
 // Version der Bausteine (R-10.3): die App vergleicht sie beim Start mit der benötigten Fassung.
-const AD_VERSION = '4.19.0';
+const AD_VERSION = '4.20.0';
 /* ---------- Icons ---------- */
 
 // Schaltflächen-Icons aus Lucide (ISC-Lizenz), direkt eingebettet, damit die App offline funktioniert.
@@ -459,7 +459,8 @@ function placeNetToast() {
   const left = r && r.width ? r.right : 0;
   // Mittig im freien Bereich; seitlich Platz für ‚Nach oben / Ans Ende‘ (72 px je Seite)
   t.style.setProperty('--toast-x', Math.round((left + innerWidth) / 2) + 'px');
-  t.style.setProperty('--toast-w', Math.max(200, Math.round(innerWidth - left - (left || innerWidth >= 700 ? 144 : 32))) + 'px');
+  const fab = document.querySelector('.fab:not([hidden]):not(.still)');
+  t.style.setProperty('--toast-w', Math.max(200, Math.round(innerWidth - left - (fab || left || innerWidth >= 700 ? 144 : 32))) + 'px');
   // Über einer festen unteren Leiste (iPhone, .bbar), sonst am unteren Rand
   // iPhone-Startliste: über der Backup-Kachel (die Meldung verdeckt sie nicht)
   const bar = document.querySelector('.bbar')?.getBoundingClientRect();
@@ -880,6 +881,13 @@ function autoCapital(e) {
   delete f.dataset.capNext;
   f.setRangeText(ch.toLocaleUpperCase('de'), pos - 1, pos, 'end');
 }
+// R-3.2 (seit 4.20.0, A-15): ‚Nach oben / Ans Ende‘ (.fab) nur, wenn es etwas zu scrollen gibt – iPad und iPhone.
+function updateFab() {
+  const f = document.querySelector('.fab');
+  if (f) f.classList.toggle('still', document.documentElement.scrollHeight <= innerHeight + 1);
+}
+if (window.ResizeObserver) new ResizeObserver(() => requestAnimationFrame(updateFab)).observe(document.body);
+window.addEventListener('resize', () => requestAnimationFrame(updateFab));
 // R-5.5 (seit 4.19.0, A-14): in einzeiligen Feldern bestätigt die Eingabetaste und schließt die Tastatur (‚Fertig‘, HIG);
 // mehrzeilige Felder machen einen Zeilenumbruch. Das Suchfeld (type=search) behält ‚Suchen‘ und seine eigene Eingabetaste.
 const SINGLE_LINE = 'input:not([type]), input[type=text], input[type=number], input[type=email], input[type=tel], input[type=url], input[type=password]';
