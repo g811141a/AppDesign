@@ -1,6 +1,6 @@
 # AppDesign – Backlog (allgemeine Themen)
 
-**Stand 17.10.2026** · Aktuelle Version: AppDesign 4.20.0
+**Stand 17.10.2026** · Aktuelle Version: AppDesign 4.21.0
 
 Allgemeine Themen, die alle Apps betreffen. App-Themen stehen im Backlog der jeweiligen App.
 Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
@@ -12,6 +12,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 | Nr. | Prio | Thema | bereit seit |
 |---|---|---|---|
 
+
 | – | – | zurzeit nichts bereit | – |
 
 **0 Punkte bereit**
@@ -20,12 +21,13 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| – | – | zurzeit nichts zu prüfen | – |
+| A-16, A-17 | 1 | Position beim Öffnen (R-7.4), Seitenleiste ein/aus (R-8.1) – geprüft mit Reiselogbuch 3.20.0, Prüfliste P-48 | prüfen |
 
 ## 2. Weitere Themen (in Klärung)
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
+| A-18 | 1 | **R-7.3 erweitert (aus Reiselogbuch T-91):** iPad – beim Erscheinen der Tastatur im Fenster ‚Tag‘ springen Fenster und Tabelle hin und her; Ursache vermutlich `placeDialogs` bei jedem Schritt der Tastatur plus Rollen zum Feld; Prüfung bildet nur den Endzustand nach. Plan: Messung auf dem iPad, dann Korrektur (Version B) | offen |
 | A-01 | 3 | Startseite g811141a.github.io mit allen Apps (früher S-03) | später |
 
 ---
@@ -34,6 +36,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Thema | Version | Datum |
 |---|---|---|---|
+| E-36 | A-16 Position beim Öffnen (R-7.4, `openAt`) und A-17 R-8.1 bei jeder Änderung der Anordnung (`keepPlace`, Seitenleiste ein/aus) | AppDesign 4.21.0 | 17.10.2026 |
 | E-35 | Geprüft: P-47 alles in Ordnung (Reiselogbuch 3.19.0 mit AppDesign 4.20.0); **A-15 damit abgeschlossen** | AppDesign 4.20.0 | 17.10.2026 |
 | E-34 | A-15 Kapsel ‚Nach oben / Ans Ende‘ auch im iPhone-Aufbau (Inhaltsansicht, nicht Startliste), ohne Scrollen ausgeblendet (`updateFab`); widerruft E-33 | AppDesign 4.20.0 | 17.10.2026 |
 | E-33 | Entscheidung (aus P-45): iPhone ohne Kapsel ‚Nach oben / Ans Ende‘ – nach oben über Tippen auf die Statusleiste, nach unten über die Scroll-Leiste (festhalten und ziehen), wie bei Apple; Satz kommt mit der nächsten Version in 15.17 | – | 17.10.2026 |

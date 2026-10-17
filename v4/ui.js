@@ -1,4 +1,4 @@
-// AppDesign 4.20.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
+// AppDesign 4.21.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
 // Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/fassung/X.Y.Z/ui.js"></script> (feste Fassung, R-10.3)
 // Seit 4.11.0 (R-10.3): ui.js und design.css immer mit ?v=<AppDesign-Version> einbinden (auch in sw.js) und beim Start
 // prüfen, ob genau diese Fassung geladen ist (AD_VERSION hier, --ad-version in design.css).
@@ -17,7 +17,7 @@
 
 'use strict';
 // Version der Bausteine (R-10.3): die App vergleicht sie beim Start mit der benötigten Fassung.
-const AD_VERSION = '4.20.0';
+const AD_VERSION = '4.21.0';
 /* ---------- Icons ---------- */
 
 // Schaltflächen-Icons aus Lucide (ISC-Lizenz), direkt eingebettet, damit die App offline funktioniert.
@@ -996,13 +996,17 @@ let keepTop = null, keepWidth = innerWidth, keepHeight = innerHeight, keepBusy =
 const keepTurned = () => innerWidth !== keepWidth || Math.abs(innerHeight - keepHeight) > 150;
 const keepEdge = () => document.querySelector('.pnav, .nb')?.getBoundingClientRect().bottom || 0;
 const keepKey = e => e.dataset.day ? `[data-day="${CSS.escape(e.dataset.day)}"]` : `[data-keep="${CSS.escape(e.dataset.keep)}"]`;
-function rememberTop() {
-  if (keepBusy || keepTurned() || lockY !== null) return;   // bei offenem Fenster (R-7.3) nichts überschreiben   // während des Drehens nichts überschreiben
-  if (scrollY < 4) { keepTop = null; return; }       // ganz oben bleibt ganz oben
+// Oberster sichtbarer Eintrag unter der Leiste; ganz oben → null (ganz oben bleibt ganz oben).
+function topAnchor() {
+  if (scrollY < 4) return null;
   const edge = keepEdge();
   const e = [...document.querySelectorAll(KEEP_SEL)].find(x => x.getClientRects().length && x.getBoundingClientRect().bottom > edge + 1);
   // Abstand als Anteil der Höhe: nach dem Drehen ist der Eintrag anders hoch, der sichtbare Teil bleibt gleich.
-  keepTop = e ? { sel: keepKey(e), part: (e.getBoundingClientRect().top - edge) / (e.getBoundingClientRect().height || 1) } : null;
+  return e ? { sel: keepKey(e), part: (e.getBoundingClientRect().top - edge) / (e.getBoundingClientRect().height || 1) } : null;
+}
+function rememberTop() {
+  if (keepBusy || keepTurned() || lockY !== null) return;   // bei offenem Fenster (R-7.3) und während des Drehens nichts überschreiben
+  keepTop = topAnchor();
 }
 function restoreTop() {
   keepWidth = innerWidth; keepHeight = innerHeight;
@@ -1015,6 +1019,34 @@ function restoreTop() {
   requestAnimationFrame(() => { keepBusy = false; });
 }
 window.addEventListener('scroll', () => { if (!keepBusy) rememberTop(); }, { passive: true });
+
+// R-8.1 (seit 4.21.0, A-17): Ändert die App die Anordnung selbst (z. B. Seitenleiste ein/aus – die Breite des Inhalts und
+// damit die Zeilenhöhen ändern sich, das Fenster nicht), bleibt oben derselbe Eintrag: keepPlace(() => { …; render(); }).
+function keepPlace(change) {
+  const atTop = scrollY < 4, anchor = topAnchor();
+  const rest = document.documentElement.scrollHeight - innerHeight - scrollY;   // ohne Eintrag oben (z. B. am Ende): Abstand zum Ende
+  change();
+  keepTop = anchor;
+  if (anchor) return restoreTop();
+  keepBusy = true;
+  window.scrollTo({ top: atTop ? 0 : Math.max(0, document.documentElement.scrollHeight - innerHeight - rest), behavior: 'instant' });
+  requestAnimationFrame(() => { keepBusy = false; });
+}
+
+// R-7.4 (seit 4.21.0, A-16): Position beim Öffnen eines Eintrags – ganz oben; gibt die App einen ‚nächsten offenen‘ Eintrag
+// an, steht er direkt unter dem Kopf (Leiste und haftender Tabellenkopf), nie in der Mitte. openAt(null) = ganz oben.
+function openAt(el) {
+  let top = 0;
+  if (el) {
+    const th = el.closest('table')?.tHead?.querySelector('th');
+    const head = th && getComputedStyle(th).position === 'sticky' ? th.offsetHeight : 0;
+    top = Math.max(0, Math.round(scrollY + el.getBoundingClientRect().top - keepEdge() - head));
+  }
+  keepBusy = true;
+  window.scrollTo({ top, behavior: 'instant' });
+  keepTop = topAnchor();
+  requestAnimationFrame(() => { keepBusy = false; });
+}
 window.addEventListener('resize', () => { if (!keepTurned()) return; requestAnimationFrame(() => requestAnimationFrame(restoreTop)); setTimeout(restoreTop, 350); });
 
 // R-2.1: Die Leiste (mit oder ohne Suchzeile) bewegt sich beim Wischen keinen Millimeter.

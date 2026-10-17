@@ -1,5 +1,5 @@
 // AppDesign 4.12.0 · Ablauf-Prüfungen für Regeln, die eine Handlung brauchen (Designrichtlinie allgemein, Abschnitt 17):
-// R-2.3 Suche · R-4.4 Fenster-Kopfzeile · R-5.2 Texteingabe · R-5.3 Fehlermeldungen · R-5.5 Eingabetaste (seit 4.19.0) · R-6.4 Ausgabe und Vorschau · R-7.3 Liste steht still (seit 4.18.0).
+// R-2.3 Suche · R-4.4 Fenster-Kopfzeile · R-5.2 Texteingabe · R-5.3 Fehlermeldungen · R-5.5 Eingabetaste (seit 4.19.0) · R-6.4 Ausgabe und Vorschau · R-7.3 Liste steht still (seit 4.18.0) · R-7.4 Position beim Öffnen und R-8.1 Seitenleiste ein/aus (seit 4.21.0).
 // Jede Funktion bekommt eine Playwright-Seite und gibt eine Liste von Fehlern zurück (leer = in Ordnung), je mit Regelnummer.
 // Einbinden im Prüfskript der App:  import { checkSearch, checkDialogHead } from '../../AppDesign/tests/ablauf.mjs';
 //                                   fehler.push(...await checkSearch(page, { term: 'Sydney' }));
@@ -147,6 +147,59 @@ export async function checkEnterDone(p, { open, fields = [], multi = '', where =
     if (!r.v.includes('\n') || !r.fokus) E(`${multi}: Eingabetaste macht keinen Zeilenumbruch (‚${r.v.replace(/\n/g, '⏎')}‘${r.fokus ? '' : ', Fokus weg'})`);
   }
   if (wasOpen) { await p.evaluate(() => document.getElementById('dlg').close()); await wait(p); }
+  return errors;
+}
+
+// R-7.4 Position beim Öffnen (seit 4.21.0, A-16): open() öffnet einen Eintrag; want = data-day (bzw. data-keep) des
+// ‚nächsten offenen‘ Eintrags oder null. Mit want: genau dieser ist hervorgehoben (mark) und steht direkt unter dem Kopf
+// (Leiste und haftender Tabellenkopf, ± 2 px) – ist die Seite nicht so weit rollbar, ganz unten und ganz sichtbar.
+// Ohne want: ganz oben, nichts hervorgehoben.
+export async function checkOpenAt(p, { open, want = null, mark = '.gap', where = '' } = {}) {
+  const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}R-7.4 ${t}`);
+  await open(); await wait(p, 400);
+  const r = await p.evaluate(({ want, mark }) => {
+    const bar = document.querySelector('.pnav, .nb')?.getBoundingClientRect().bottom || 0;
+    const marked = [...document.querySelectorAll(`#app ${mark}`)].filter(e => e.getClientRects().length).map(e => e.dataset.day || e.dataset.keep);
+    const el = want ? document.querySelector(`#app [data-day="${want}"], #app [data-keep="${want}"]`) : null;
+    const th = el?.closest('table')?.tHead?.querySelector('th');
+    const edge = bar + (th && getComputedStyle(th).position === 'sticky' ? th.offsetHeight : 0);
+    const er = el?.getBoundingClientRect();
+    return { y: Math.round(scrollY), max: Math.round(document.documentElement.scrollHeight - innerHeight), marked, edge: Math.round(edge),
+      top: er ? Math.round(er.top) : null, bottom: er ? Math.round(er.bottom) : null, h: innerHeight };
+  }, { want, mark });
+  if (!want) {
+    if (r.y > 1) E(`alles erfasst: nicht ganz oben (${r.y} px gerollt)`);
+    if (r.marked.length) E(`alles erfasst: hervorgehoben ${r.marked.join(', ')}`);
+  } else {
+    if (r.marked.join() !== want) E(`hervorgehoben ‚${r.marked.join(', ')}‘ statt ‚${want}‘`);
+    if (r.top === null) E(`Eintrag ${want} fehlt`);
+    else if (Math.abs(r.top - r.edge) > 2 && !(r.y >= r.max - 1 && r.top >= r.edge - 2 && r.bottom <= r.h)) E(`${want} steht nicht direkt unter dem Kopf (oben ${r.top} px, Kopf endet bei ${r.edge} px, gerollt ${r.y} von ${r.max})`);
+  }
+  return errors;
+}
+
+// R-8.1 Seitenleiste ein/aus (seit 4.21.0, A-17): der oberste sichtbare Eintrag bleibt derselbe; nach einer geraden Zahl von
+// Umschaltungen steht er auf ± 2 px an derselben Stelle (kein Wandern); ganz oben bleibt ganz oben; ohne Eintrag oben (Ende der
+// Seite) bleibt der Abstand zum Ende gleich – kein Sprung nach oben oder ans Ende. at: Anteil des Scrollwegs.
+export async function checkSideToggle(p, { toggle = '[data-side-toggle]', at = 0.5, times = 5, where = '' } = {}) {
+  const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}R-8.1 ${t}`);
+  const top = () => p.evaluate(() => {
+    const edge = document.querySelector('.pnav, .nb')?.getBoundingClientRect().bottom || 0;
+    const e = [...document.querySelectorAll('#app [data-day], #app [data-keep]')].find(x => x.getClientRects().length && x.getBoundingClientRect().bottom > edge + 1);
+    return { id: e ? e.dataset.day || e.dataset.keep : null, top: e ? Math.round(e.getBoundingClientRect().top) : null, y: Math.round(scrollY),
+      rest: Math.round(document.documentElement.scrollHeight - innerHeight - scrollY) };
+  });
+  const press = async () => { await p.locator(toggle).filter({ visible: true }).first().click(); await wait(p, 350); };
+  await p.evaluate(a => scrollTo({ top: Math.round((document.documentElement.scrollHeight - innerHeight) * a), behavior: 'instant' }), at); await wait(p, 300);
+  const vor = await top();
+  for (let i = 1; i <= times * 2; i++) {
+    await press();
+    const n = await top();
+    if (at === 0 && n.y > 1) { E(`ganz oben: nach ${i}. Umschalten ${n.y} px gerollt`); break; }
+    if (at > 0 && !vor.id && Math.abs(n.rest - vor.rest) > 2) { E(`ohne Eintrag oben: nach ${i}. Umschalten ${n.rest} px statt ${vor.rest} px vor dem Ende (gerollt ${n.y} px)`); break; }
+    if (at > 0 && vor.id && n.id !== vor.id) { E(`nach ${i}. Umschalten oben ${n.id} statt ${vor.id} (gerollt ${n.y} px)`); break; }
+    if (at > 0 && i % 2 === 0 && Math.abs(n.top - vor.top) > 2) { E(`nach ${i}. Umschalten ${vor.id} bei ${n.top} px statt ${vor.top} px`); break; }
+  }
   return errors;
 }
 

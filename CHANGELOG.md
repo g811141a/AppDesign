@@ -3,6 +3,23 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.21.0 – 17.10.2026 (Neben)
+
+AppDesign 4.21.0 · Designrichtlinie allgemein 4.21.0 · Zusammenarbeit allgemein 2.7.0 · geprüft mit Reiselogbuch 3.20.0
+
+A-16 und A-17 (aus Reiselogbuch T-89 und T-90; Fall-Liste `arbeit/A-16 A-17 Fall-Liste.md`).
+
+- **`openAt(element | null)` (R-7.4 neu):** Position beim Öffnen – ohne Element ganz oben, sonst steht das Element direkt
+  unter der Leiste und einem haftenden Tabellenkopf (bisher rief die App `scrollIntoView({ block: 'center' })` – Mitte –
+  und rollte ohne offenen Tag gar nicht, die Seite blieb beim vorigen Eintrag stehen).
+- **`keepPlace(change)` (R-8.1 erweitert):** die App ändert die Anordnung (Seitenleiste ein/aus), oben bleibt derselbe
+  Eintrag. Ursache des Fehlers: R-8.1 griff nur bei einer Größenänderung des Fensters; beim Umschalten der Seitenleiste
+  ändert sich nur die Breite des Inhalts – die Zeilen werden höher bzw. niedriger und die Seite rutschte, nahe dem Ende
+  sprang Safari ans Ende. Ohne Eintrag oben (Ende der Seite) bleibt der Abstand zum Ende gleich.
+- `topAnchor()` aus `rememberTop()` herausgelöst (eine Stelle für ‚oberster sichtbarer Eintrag‘).
+- **Prüfungen `checkOpenAt` und `checkSideToggle` (tests/ablauf.mjs);** Gegenprobe mit dem alten Verhalten rot (40 Fehler).
+- Neue Regel **R-7.4**, R-8.1 erweitert (Abschnitt 13, Regelkatalog 7 und 8); feste Fassung `fassung/4.21.0/`.
+
 ## 4.20.0 – 17.10.2026 (Neben)
 
 AppDesign 4.20.0 · Designrichtlinie allgemein 4.20.0 · Zusammenarbeit allgemein 2.7.0 · geprüft mit Reiselogbuch 3.19.0
