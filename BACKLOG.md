@@ -23,7 +23,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| A-19 | 2 | **Suche in der zentralen Liste (aus Reiselogbuch T-92, Variante C):** Suchfeld in Startliste/Seitenleiste filtert die Einträge, Kachel zeigt die Trefferzahl, Öffnen übergibt den Begriff an die Suche im Eintrag – Erweiterung von R-2.3, 15.2, 15.4 (`arbeit/T-92 Vorschläge.md`) | in Klärung |
+| A-19 | 2 | **Suche in der zentralen Liste (aus Reiselogbuch T-92, Variante C):** Suchfeld in Startliste/Seitenleiste filtert die Einträge, Kachel zeigt die Trefferzahl, Öffnen übergibt den Begriff an die Suche im Eintrag – Erweiterung von R-2.3, 15.2, 15.4 (`arbeit/T-92 Vorschläge.md`); entschieden 17.10.2026 (0011): Lupe in der Kopfzeile, Zählung je Fundstelle | in Klärung |
 | A-01 | 3 | Startseite g811141a.github.io mit allen Apps (früher S-03) | später |
 
 ---
