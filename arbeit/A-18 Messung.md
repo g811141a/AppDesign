@@ -148,3 +148,10 @@ bleibt 0, Fenster bleibt bei 10 px; auch nach Schließen und erneutem Hochfahren
 53 % → frei 377) fuhr alles hoch. Geändert: Schätzung großzügiger (quer 60 %, hoch 38 %), Schreibstelle höchstens bei 40 %
 des freien Teils, Tastaturhöhe je Lage und Fenstergröße gemerkt (`appdesign.tastatur`, darf die Kopie schreiben), Schaltfläche
 ‚Höhe vergessen‘ zum Nachstellen des ersten Mals.
+
+**Messung D2 (Höhe gemerkt 428, frei 374): fährt mit.** Safari schob 213 px. Lokal nachgestellt (WebKit, Hook auf `scrollTop`):
+nach dem Antippen rollt **Safari selbst** das Feld noch einmal ‚in Sicht‘ – mit der Lage im alten, großen Fenster – und damit
+zurück nach unten (637 → 171, kein Skript beteiligt). Danach liegt es unter der Tastatur, Safari schiebt. Geändert: D setzt die
+Rollposition nach diesem Rollen erneut (sofort, nächstes Bild, 30 und 60 ms); im Protokoll je eine Zeile ‚D …‘ mit Stelle und
+Ziel, neue Spalte ‚Feld oben–unten‘. Dazu: `autoGrow` lässt die Rollposition des Fensters unverändert (setzt die Höhe kurz auf
+‚auto‘, das kürzte die Rollposition).

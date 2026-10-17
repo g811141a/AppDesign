@@ -1803,7 +1803,8 @@ window.addEventListener('resize', () => {
     const oben = vv ? vv.offsetTop : 0, unten = vv ? vv.offsetTop + vv.height : innerHeight, fr = f?.getBoundingClientRect?.();
     return [vv ? Math.round(vv.height) : '-', vv ? Math.round(oben) : '-', Math.round(scrollY), Math.round(d.top), Math.round(d.height),
       Math.round(body()?.scrollTop ?? 0), z ? Math.round(z.top) : '-',
-      fr && f !== dlg ? (fr.top >= oben && fr.bottom <= unten ? 'ja' : 'nein') : '-'].join('\t');
+      fr && f !== dlg ? (fr.top >= oben && fr.bottom <= unten ? 'ja' : 'nein') : '-',
+      fr && f !== dlg ? Math.round(fr.top) + '–' + Math.round(fr.bottom) : '-'].join('\t');
   };
   const notiere = q => {
     if (t0 === null || performance.now() > ende || zeilen.length > 400) return;
@@ -1837,11 +1838,29 @@ window.addEventListener('resize', () => {
     vorabBis = performance.now() + 1500;
     const h = setzeVorab();
     // Schreibstelle: dort, wo getippt wurde (sonst 30 px unter der Oberkante des Feldes); höchstens bis zur Mitte des freien Teils
-    const r = f.getBoundingClientRect(), stelle = r.top + Math.min(tippY ?? 30, r.height - 10), ziel = Math.round(h * 0.4);
-    if (body && stelle > ziel) body.scrollTop += stelle - ziel;
-    setTimeout(() => notiere('D vorab (frei ' + h + ')'));
+    // Safari rollt das Feld nach dem Antippen selbst noch einmal ‚in Sicht‘ – gerechnet mit dem alten, großen Fenster – und
+    // damit wieder nach unten. Deshalb wird die Rollposition danach erneut gesetzt (nächstes Bild, 30 und 60 ms).
+    const tipp = tippY, rolle = wann => {
+      if (!body || offen()) return;
+      const r = f.getBoundingClientRect(), stelle = r.top + Math.min(tipp ?? 30, r.height - 10), ziel = Math.round(h * 0.4);
+      const vorher = Math.round(body.scrollTop);
+      if (Math.abs(stelle - ziel) > 4 && (stelle > ziel || r.top < dlg.getBoundingClientRect().top + 40)) body.scrollTop += stelle - ziel;
+      notiere('D ' + wann + ': frei ' + h + ', getippt ' + Math.round(tipp ?? -1) + ' px im Feld, Stelle ' + Math.round(stelle) + ' → Ziel ' + ziel + ', gerollt ' + vorher + ' → ' + Math.round(body.scrollTop));
+    };
+    setTimeout(() => rolle('sofort'));
+    requestAnimationFrame(() => rolle('Bild'));
+    setTimeout(() => rolle('30 ms'), 30);
+    setTimeout(() => rolle('60 ms'), 60);
   }, true);
   if (vv) vv.addEventListener('resize', () => { if (offen()) { merke(innerHeight - Math.round(vv.height)); vorabBis = 0; } });
+  // Versuch D, Teil 2: autoGrow (ui.js) setzt die Höhe jedes Textfelds kurz auf 'auto' – der Inhalt des Fensters schrumpft
+  // dabei, der Browser kürzt seine Rollposition, das Feld rutscht wieder nach unten. Hier bleibt die Rollposition erhalten.
+  const autoGrowAlt = autoGrow;
+  autoGrow = function (ta) {
+    const b = versuchD ? ta.closest('.dlg-body') : null, y = b?.scrollTop;
+    autoGrowAlt(ta);
+    if (b && b.scrollTop !== y) b.scrollTop = y;
+  };
   const orig = placeDialogs;
   placeDialogs = function () { orig(); if (versuchD && performance.now() < vorabBis && !offen()) setzeVorab(); notiere('placeDialogs'); };
   document.getElementById('mVergiss').onclick = () => { try { localStorage.removeItem('appdesign.tastatur'); MESSUNG_SET.call(localStorage, 'appdesign.tastatur', '{}'); } catch (e) { /* */ } inform('Vergessen', 'Die Tastaturhöhe ist vergessen – das nächste Antippen ist wieder ‚das erste Mal‘.'); };
@@ -1858,7 +1877,7 @@ window.addEventListener('resize', () => {
     if (t0 === null || performance.now() > ende) {
       t0 = performance.now(); ende = 0; letzte = '';
       zeilen = ['Reiselogbuch 3.20.1 (Kopie) · Versuch D ' + (versuchD ? 'an' : 'aus') + ' · Tastatur ' + (gemerkt()[lage()] ? 'gemerkt ' + gemerkt()[lage()] : 'geschätzt') + ' · ' + innerWidth + '×' + innerHeight + ' · ' + (navigator.userAgent.match(/Version\/[\d.]+/)?.[0] || ''),
-        '    ms\tvv-Höhe\tvv-oben\tscrollY\tFenster\tF-Höhe\tF-gerollt\tZeile\tFeld sichtbar\tAuslöser'];
+        '    ms\tvv-Höhe\tvv-oben\tscrollY\tFenster\tF-Höhe\tF-gerollt\tZeile\tFeld sichtbar\tFeld oben–unten\tAuslöser'];
     }
     verlaengere(3000);
     notiere('Antippen ' + (e.target.id || e.target.tagName));
