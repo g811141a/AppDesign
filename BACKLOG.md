@@ -23,7 +23,6 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| A-18 | 1 | **R-7.3 erweitert (aus Reiselogbuch T-91):** iPad – beim Erscheinen der Tastatur im Fenster ‚Tag‘ springen Fenster und Tabelle hin und her; Ursache vermutlich `placeDialogs` bei jedem Schritt der Tastatur plus Rollen zum Feld; Prüfung bildet nur den Endzustand nach. Plan: Messung auf dem iPad, dann Korrektur (Version B) | offen |
 | A-19 | 2 | **Suche in der zentralen Liste (aus Reiselogbuch T-92, Variante C):** Suchfeld in Startliste/Seitenleiste filtert die Einträge, Kachel zeigt die Trefferzahl, Öffnen übergibt den Begriff an die Suche im Eintrag – Erweiterung von R-2.3, 15.2, 15.4 (`arbeit/T-92 Vorschläge.md`) | in Klärung |
 | A-01 | 3 | Startseite g811141a.github.io mit allen Apps (früher S-03) | später |
 
@@ -33,6 +32,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Thema | Version | Datum |
 |---|---|---|---|
+| E-42 | **A-18 verworfen (Nutzer, 17.10.2026):** Tastatur im Fenster ‚Tag‘ – das Mitfahren beim ersten Hochfahren kommt von Safari (rollt die Seite unabhängig vom Feld); Messungen in Sitzung 0010, Messseiten entfernt; R-7.3 bleibt unverändert | – | 17.10.2026 |
 | E-41 | Geprüft: P-50 in Ordnung (Zeile Zeit und Token mit Kontext); **A-20 damit abgeschlossen** | AppDesign 4.22.0 | 17.10.2026 |
 | E-40 | **A-20 gebaut:** Kontext in der Zeile Zeit und Token, ab 300.000 bzw. nach Zusammenfassung ‚⚠ Übergabe fällig‘ | AppDesign 4.22.0 | 17.10.2026 |
 | E-39 | Geprüft: P-49 alles in Ordnung (Reiselogbuch 3.20.1 mit AppDesign 4.21.1); **A-17 damit abgeschlossen** | AppDesign 4.21.1 | 17.10.2026 |

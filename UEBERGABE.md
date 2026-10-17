@@ -17,10 +17,9 @@
 - **Chatnummer:** die nächste Sitzung heißt **Reiselogbuch 0010** (Zusammenarbeit 0 Nr. 13); die danach 0011.
 - **Offene Prüfpunkte:** keine – P-50 geprüft (A-20 abgeschlossen).
 - **Nächste Version (bereit):** keine. A-20 gebaut in Sitzung 0010 (AppDesign 4.22.0, nur Werkzeug).
-- **In Klärung:** **A-18 / T-91** (Prio 1) – iPad: Tastatur im Fenster ‚Tag‘ → Fenster **und** Tabelle springen, bis die
-  Tastatur steht; Plan: erst eine kurze Messung auf dem iPad (wie verschiebt Safari den sichtbaren Bereich), dann Korrektur
-  (vermutete Ursache: `placeDialogs` bei jedem Schritt von `visualViewport` plus Rollen zum Feld nach 350 ms; die Prüfung
-  `checkListStill` bildet nur den Endzustand der Tastatur nach). **A-19 / T-92** (Prio 2) – Suche über alle
+- **Verworfen:** A-18 / T-91 (Tastatur im Fenster ‚Tag‘) – vom Nutzer in 0010 beendet, Messseiten entfernt (E-42 / E-89);
+  **nicht wieder aufgreifen**, außer der Nutzer bringt es selbst.
+- **In Klärung:** **A-19 / T-92** (Prio 2) – Suche über alle
   Reiselogbücher, entschieden **Variante C** (`arbeit/T-92 Vorschläge.md`); offen: Platz des Feldes, Zählweise.
   T-06 (Prio 3), A-01 (später).
 - **Zeit und Token:** am Ende jeder Antwort `node ../AppDesign/werkzeug/messung.mjs`, Zeile unverändert übernehmen.
@@ -53,9 +52,8 @@ Frühere Sitzungen: siehe `VERLAUF.md` und Versionsgeschichten.
 ## 3. Nächster Schritt
 
 1. ~~P-50 prüfen~~ – geprüft in 0010, A-20 abgeschlossen.
-2. A-18 / T-91 Tastatur (Messung am iPad, dann Korrektur).
-3. A-19 / T-92 Suche über alle Reiselogbücher (Variante C, Einzelheiten klären, Fall-Liste).
-4. Weitere alte Reiselogbücher konvertieren, sobald der Nutzer sie anhängt (Import-Repo, `PROMPT.md` vollständig lesen).
+2. A-19 / T-92 Suche über alle Reiselogbücher (Variante C, Einzelheiten klären, Fall-Liste).
+3. Weitere alte Reiselogbücher konvertieren, sobald der Nutzer sie anhängt (Import-Repo, `PROMPT.md` vollständig lesen).
 
 ## 4. Danach
 
