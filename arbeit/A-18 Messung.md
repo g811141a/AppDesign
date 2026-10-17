@@ -131,3 +131,14 @@ Nutzer vom Home-Bildschirm (ohne Safari-Leisten), die Messung lief im Safari-Tab
 Wie 3: Tastatur nach 101 ms, Seite rollt nach 125 ms um 190 px, Fenster 4 ms später richtig (−180 → 11), 350 ms rollt der
 Inhalt einmal 62 px. Danach 18 s Tippen (~110 Eingaben): Fenster immer auf 11 px, Höhe 354, Seite steht still, der Inhalt
 rollt nur viermal mit dem Text (62 → 71 → 95 → 119). Befund: **kein Springen messbar.**
+
+## Klärung (17.10.2026) und Versuch D
+
+Gemeint ist mit ‚Zittern‘: **Beim Hochfahren der Tastatur fahren Fenster und Tagestabelle mit nach oben.** Das ist das
+Hochschieben der ganzen Ansicht durch Safari (Protokoll: ‚Seite rollt‘ 190 px, vv-oben 191), weil das angetippte Feld sonst
+unter der Tastatur läge – nicht `placeDialogs`. Deshalb änderten A–C nichts daran.
+
+**Versuch D** (in `messen/reiselogbuch.html`, Schalter ‚Versuch D an/aus‘ im roten Schild): beim Antippen, bevor die Tastatur
+kommt, nimmt das Fenster schon seine Höhe mit Tastatur an und rollt seinen Inhalt so, dass die Schreibstelle höchstens in der
+Mitte des frei bleibenden Teils liegt – Safari muss nichts schieben. Tastaturhöhe: zuletzt gemessen, sonst geschätzt (quer 53 %,
+hoch 32 %). Erwartet im Protokoll: keine Zeile ‚Seite rollt‘, vv-oben bleibt 0.
