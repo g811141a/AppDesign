@@ -69,6 +69,24 @@ jeweils nach 1–2 ms wieder richtig. Die Seite dahinter rollt 146 px. Auf der M
 ist hier nicht nachgestellt**. Unterschiede zur App: echtes Fenster ‚Tag‘ (Wetter, Vorschläge, Smileys, wachsende Textfelder,
 viel Text), echte Daten, Eingaben während die Tastatur fährt.
 
+**Messung 2b – Versuch B, iPad quer 1194 × 777 – Eindruck: unruhig.**
+
+```
+    ms	vv-Höhe	vv-oben	scrollY	Fenster	Zeile	Feld sichtbar	Auslöser
+    1	777	0	1723	31	518	ja	Antippen
+  131	349	0	1723	31	518	nein	vv resize
+  131	349	0	1723	31	518	nein	vv scroll
+  160	349	146	1869	-115	372	nein	vv scroll
+  310	349	146	1869	-115	372	nein	B gesetzt
+  326	349	146	1869	10	372	ja	Bild
+  361	349	146	1869	10	372	ja	350 ms (scrollIntoView)
+```
+
+Befund: Wird das Fenster nicht **sofort** bei jeder Meldung gesetzt, steht es ~165 ms zu hoch (−115) und springt dann –
+sichtbar unruhig. **Versuch B scheidet aus.** Umgekehrt heißt das: Unruhe entsteht, sobald das Fenster nach einer Meldung
+nicht im selben Bild richtig steht. In der App muss also etwas das Setzen verzögern oder danach noch einmal verschieben
+(z. B. wachsende Textfelder, ResizeObserver, `refreshOk`, mehr Inhalt) – das zeigt nur die Messung in der echten App.
+
 ## Vorschlag für die nächste Messung (Messung 3)
 
 Die Messseite ist ruhig, die App springt. Deshalb wird **in der echten App** gemessen:
