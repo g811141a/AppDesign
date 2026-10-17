@@ -142,3 +142,9 @@ unter der Tastatur läge – nicht `placeDialogs`. Deshalb änderten A–C nicht
 kommt, nimmt das Fenster schon seine Höhe mit Tastatur an und rollt seinen Inhalt so, dass die Schreibstelle höchstens in der
 Mitte des frei bleibenden Teils liegt – Safari muss nichts schieben. Tastaturhöhe: zuletzt gemessen, sonst geschätzt (quer 53 %,
 hoch 32 %). Erwartet im Protokoll: keine Zeile ‚Seite rollt‘, vv-oben bleibt 0.
+
+**Messung D1 (iPad quer 1194 × 802):** Mit bekannter Tastaturhöhe (frei 374) **ruhig** – keine Zeile ‚Seite rollt‘, vv-oben
+bleibt 0, Fenster bleibt bei 10 px; auch nach Schließen und erneutem Hochfahren. **Nur das erste Mal** (Höhe geschätzt,
+53 % → frei 377) fuhr alles hoch. Geändert: Schätzung großzügiger (quer 60 %, hoch 38 %), Schreibstelle höchstens bei 40 %
+des freien Teils, Tastaturhöhe je Lage und Fenstergröße gemerkt (`appdesign.tastatur`, darf die Kopie schreiben), Schaltfläche
+‚Höhe vergessen‘ zum Nachstellen des ersten Mals.
