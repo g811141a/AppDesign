@@ -1,6 +1,6 @@
 # AppDesign – Backlog (allgemeine Themen)
 
-**Stand 16.10.2026** · Aktuelle Version: AppDesign 4.18.0
+**Stand 17.10.2026** · Aktuelle Version: AppDesign 4.18.0
 
 Allgemeine Themen, die alle Apps betreffen. App-Themen stehen im Backlog der jeweiligen App.
 Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
@@ -11,9 +11,9 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Prio | Thema | bereit seit |
 |---|---|---|---|
-| – | – | zurzeit nichts bereit | – |
+| A-14 | 1 | **Eingabetaste in Eingabefeldern** (neue Regel R-5.5, aus Reiselogbuch T-87): einzeilige Felder bestätigen mit der Eingabetaste und schließen die Tastatur (`enterkeyhint` passend: ‚Fertig‘, ‚Suchen‘), mehrzeilige Felder machen einen Zeilenumbruch und schließen mit Häkchen oder Tippen daneben (HIG); gemeinsam in `ui.js`, eine Prüfung | 17.10.2026 |
 
-**0 Punkte bereit**
+**1 Punkt bereit**
 
 ## 1. Auf iPad und iPhone prüfen
 
