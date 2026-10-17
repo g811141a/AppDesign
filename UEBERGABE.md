@@ -8,15 +8,15 @@
 | Teil | Version | Datei |
 |---|---|---|
 | Reiselogbuch | **3.20.1** (Fassung 4.21.1) | g811141a/ReiseLogBuch – `CHANGELOG.md`, `BACKLOG.md`, `PROMPT.md` |
-| AppDesign (ui.js, design.css, tests; feste Fassung `fassung/4.21.1/`) | **4.21.1** | g811141a/AppDesign – `CHANGELOG.md`, `BACKLOG.md` |
+| AppDesign (ui.js, design.css, tests; feste Fassung `fassung/4.22.0/`) | **4.22.0** | g811141a/AppDesign – `CHANGELOG.md`, `BACKLOG.md` |
 | ReiseLogBuch-Import (privat) | 1.2.1 (unverändert) | g811141a/ReiseLogBuch-Import – `README.md`, `PROMPT.md`, `CLAUDE.md`, `ERKENNTNISSE.md`, `werkzeug/pruefen.mjs` |
 | Designrichtlinie allgemein | **4.21.1** (neu R-5.5, R-7.4; erweitert R-3.2, R-8.1) | `README - Designrichtlinie allgemein.md` |
 | Designrichtlinie Reiselogbuch | 3.20.1 | im Repo ReiseLogBuch |
-| Zusammenarbeit allgemein | 2.7.0 (unverändert) | `README - Zusammenarbeit allgemein.md` |
+| Zusammenarbeit allgemein | **2.8.0** (§2 Kontext in der Zeile Zeit und Token) | `README - Zusammenarbeit allgemein.md` |
 
 - **Chatnummer:** die nächste Sitzung heißt **Reiselogbuch 0010** (Zusammenarbeit 0 Nr. 13); die danach 0011.
-- **Offene Prüfpunkte:** keine – P-45 bis P-49 geprüft.
-- **Nächste Version (bereit):** **A-20** (AppDesign, Prio 1) – Kontext in der Zeile Zeit und Token, Warnung ab 300.000.
+- **Offene Prüfpunkte:** **P-50** (AppDesign 4.22.0, A-20: Zeile endet mit ‚Kontext N‘) – im Chat prüfen.
+- **Nächste Version (bereit):** keine. A-20 gebaut in Sitzung 0010 (AppDesign 4.22.0, nur Werkzeug).
 - **In Klärung:** **A-18 / T-91** (Prio 1) – iPad: Tastatur im Fenster ‚Tag‘ → Fenster **und** Tabelle springen, bis die
   Tastatur steht; Plan: erst eine kurze Messung auf dem iPad (wie verschiebt Safari den sichtbaren Bereich), dann Korrektur
   (vermutete Ursache: `placeDialogs` bei jedem Schritt von `visualViewport` plus Rollen zum Feld nach 350 ms; die Prüfung
@@ -25,9 +25,8 @@
   T-06 (Prio 3), A-01 (später).
 - **Zeit und Token:** am Ende jeder Antwort `node ../AppDesign/werkzeug/messung.mjs`, Zeile unverändert übernehmen.
 - **Sitzungsgröße (wichtig):** Grenze **etwa 300.000 Token Kontext**. ‚Token vorige Antwort‘ ist **nicht** der Kontext
-  (Summe aller Modell-Aufrufe der Antwort). Bis A-20 gebaut ist, den Kontext selbst prüfen: in der Sitzungsdatei
-  (`/root/.claude/projects/…/*.jsonl`) beim letzten Assistant-Eintrag `input_tokens + cache_read_input_tokens +
-  cache_creation_input_tokens`. Sitzung 0009 lag unbemerkt bei ~451.600.
+  (Summe aller Modell-Aufrufe der Antwort). Seit 4.22.0 (A-20) zeigt die Zeile Zeit und Token den
+  Kontext; bei ‚⚠ Übergabe fällig‘ die Übergabe vorschlagen. Sitzung 0009 lag unbemerkt bei ~451.600.
 - **Erinnerung:** ‚Backlog-Erinnerung (AppDesign und Reiselogbuch)‘ montags 8:58.
 
 ## 2. Ergebnisse
@@ -53,8 +52,7 @@ Frühere Sitzungen: siehe `VERLAUF.md` und Versionsgeschichten.
 
 ## 3. Nächster Schritt
 
-1. **A-20 bauen** (bereit): Fall-Liste, Rückfrage ‚Ja‘, dann AppDesign 4.22.0 (Reiselogbuch nur heben, wenn der Nutzer es will –
-   `messung.mjs` ist ein Werkzeug, keine App-Änderung).
+1. **P-50 prüfen** (A-20, AppDesign 4.22.0 – erledigt in 0010).
 2. A-18 / T-91 Tastatur (Messung am iPad, dann Korrektur).
 3. A-19 / T-92 Suche über alle Reiselogbücher (Variante C, Einzelheiten klären, Fall-Liste).
 4. Weitere alte Reiselogbücher konvertieren, sobald der Nutzer sie anhängt (Import-Repo, `PROMPT.md` vollständig lesen).

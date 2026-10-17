@@ -1,6 +1,6 @@
 # Designrichtlinie allgemein
 
-**Version 4.21.1** · Stand 17.10.2026
+**Version 4.22.0** · Stand 17.10.2026
 
 Allgemeine Gestaltungs- und Bedienregeln für alle iPad-Web-Apps von g811141a (seit 4.1.0 auch
 auf dem iPhone, Abschnitt 15.17).
@@ -995,6 +995,7 @@ Die alten Nummern R-01 bis R-52 (bis 4.11.4) gelten nicht mehr; sie stehen nur n
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 4.22.0 | 17.10.2026 | Neben | Keine Regeländerung – Werkzeug `messung.mjs` zeigt den Kontext (A-20, Zusammenarbeit 2.8.0) |
 | 4.21.1 | 17.10.2026 | Korrektur | R-8.1: auch beim Drehen bleibt am Ende der Seite der Abstand zum Ende (ganz unten bleibt ganz unten) – Prüfung `checkTurnEnd` |
 | 4.21.0 | 17.10.2026 | Neben | Neue Regel **R-7.4** Position beim Öffnen (A-16); **R-8.1** erweitert auf jede Änderung der Anordnung, auch Seitenleiste ein/aus (A-17) – Abschnitt 13, Regelkatalog Themen 7 und 8, Prüfungen `checkOpenAt`, `checkSideToggle` |
 | 4.20.0 | 17.10.2026 | Neben | R-3.2 erweitert (A-15): Kapsel ‚Nach oben / Ans Ende‘ auch im iPhone-Aufbau (Inhaltsansicht), ausgeblendet ohne Scrollen – Abschnitt 4, 15.17, Regelkatalog Thema 3 |

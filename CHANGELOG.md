@@ -3,6 +3,22 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.22.0 – 17.10.2026 (Neben)
+
+AppDesign 4.22.0 · Designrichtlinie allgemein 4.22.0 · Zusammenarbeit allgemein 2.8.0 · nur Werkzeug, Reiselogbuch bleibt auf Fassung 4.21.1
+
+A-20: Kontext in der Zeile Zeit und Token (Fall-Liste `arbeit/A-20 Fall-Liste.md`, K-1 bis K-12).
+
+- **`werkzeug/messung.mjs`:** die Zeile endet mit ‚Kontext N‘ – Eingabe + aus Zwischenspeicher + geschrieben des **letzten**
+  eigenen Modell-Aufrufs, also die Größe der Sitzung. Ab 300.000 (`GRENZE`) oder nach einer automatischen Zusammenfassung
+  steht dahinter **‚⚠ Übergabe fällig‘** (Zusammenarbeit 0 Nr. 13). Noch kein Aufruf: ‚Kontext –‘.
+- Hilfsagenten zählen nicht zum Kontext (eigener Kontext), weiter aber zu ‚Token vorige Antwort‘.
+- **Warum es nötig war:** ‚Token vorige Antwort‘ summiert alle Aufrufe einer Antwort und taugt nicht für die Grenze – Sitzung
+  0009 lag unbemerkt bei ~451.600.
+- **Prüfung** `tests/messung.mjs` um K-1 bis K-11 erweitert (Grenze 299.999/300.000, letzter Aufruf statt Summe, Aufruf auf
+  mehreren Zeilen, Hilfsagent, Zusammenfassung, kein Aufruf, Darstellung); Gegenprobe weiter rot.
+- Zusammenarbeit allgemein 2.8.0 (§2: Zeile mit Kontext); feste Fassung `fassung/4.22.0/`.
+
 ## 4.21.1 – 17.10.2026 (Korrektur)
 
 AppDesign 4.21.1 · Designrichtlinie allgemein 4.21.1 · Zusammenarbeit allgemein 2.7.0 · geprüft mit Reiselogbuch 3.20.1
