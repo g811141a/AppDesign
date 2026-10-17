@@ -13,9 +13,9 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 |---|---|---|---|
 
 
-| – | – | zurzeit nichts bereit | – |
+| A-20 | 1 | **Kontext in der Zeile Zeit und Token:** `werkzeug/messung.mjs` zeigt zusätzlich den Kontext des letzten Modell-Aufrufs (Eingabe + Zwischenspeicher + geschrieben, z. B. ‚Kontext 452.000‘) und ab 300.000 ‚⚠ Übergabe fällig‘ – ‚Token vorige Antwort‘ summiert alle Aufrufe und taugt nicht für die Grenze (Sitzung 0009 lag unbemerkt bei ~451.600) | 17.10.2026 |
 
-**0 Punkte bereit**
+**1 Punkt bereit**
 
 ## 1. Auf iPad und iPhone prüfen
 

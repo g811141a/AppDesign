@@ -1,57 +1,67 @@
 # Übergabe an die nächste Sitzung
 
-**Stand 17.10.2026** · geschrieben in der Sitzung ‚Reiselogbuch 0008 – T-05 Prüfung und A-12‘
+**Stand 17.10.2026** · geschrieben in der Sitzung ‚Reiselogbuch 0009 – Startfrage‘
 (Zusammenarbeit allgemein 2.7.0, Abschnitt 0 Nr. 14). **Claude liest diese Datei zu Beginn jeder Sitzung zuerst.**
 
 ## 1. Lagebild
 
 | Teil | Version | Datei |
 |---|---|---|
-| Reiselogbuch | **3.16.0** (Fassung 4.18.0) | g811141a/ReiseLogBuch – `CHANGELOG.md`, `BACKLOG.md`, `PROMPT.md` |
-| AppDesign (ui.js, design.css, tests; feste Fassung `fassung/4.18.0/`) | **4.18.0** | g811141a/AppDesign – `CHANGELOG.md`, `BACKLOG.md` |
+| Reiselogbuch | **3.20.1** (Fassung 4.21.1) | g811141a/ReiseLogBuch – `CHANGELOG.md`, `BACKLOG.md`, `PROMPT.md` |
+| AppDesign (ui.js, design.css, tests; feste Fassung `fassung/4.21.1/`) | **4.21.1** | g811141a/AppDesign – `CHANGELOG.md`, `BACKLOG.md` |
 | ReiseLogBuch-Import (privat) | 1.2.1 (unverändert) | g811141a/ReiseLogBuch-Import – `README.md`, `PROMPT.md`, `CLAUDE.md`, `ERKENNTNISSE.md`, `werkzeug/pruefen.mjs` |
-| Designrichtlinie allgemein | **4.18.0** (R-1.1 bis R-10.4, neu R-7.3) | `README - Designrichtlinie allgemein.md` |
-| Designrichtlinie Reiselogbuch | 3.16.0 | im Repo ReiseLogBuch |
-| Zusammenarbeit allgemein | **2.7.0** (§2: Zeile mit `messung.mjs`) | `README - Zusammenarbeit allgemein.md` |
+| Designrichtlinie allgemein | **4.21.1** (neu R-5.5, R-7.4; erweitert R-3.2, R-8.1) | `README - Designrichtlinie allgemein.md` |
+| Designrichtlinie Reiselogbuch | 3.20.1 | im Repo ReiseLogBuch |
+| Zusammenarbeit allgemein | 2.7.0 (unverändert) | `README - Zusammenarbeit allgemein.md` |
 
-- **Chatnummer:** die nächste Sitzung heißt **Reiselogbuch 0009** (Zusammenarbeit 0 Nr. 13); die danach 0010.
-- **Offene Prüfpunkte:** keine – T-05, P-43 und P-44 geprüft.
-- **Nächste Version:** nichts bereit (AppDesign und Reiselogbuch: Abschnitt 0 der Backlogs leer).
-- **Zeit und Token (seit AppDesign 4.17.0):** am Ende jeder Antwort `node ../AppDesign/werkzeug/messung.mjs` aufrufen und
-  die Zeile unverändert übernehmen – nie schätzen. Token ‚vorige Antwort‘ beziehen sich auf die Antwort vor der letzten
-  **Chat**-Nachricht; Antworten in Auswahlfenstern sind keine neue Nachricht.
-- **Sitzungsgröße:** unsere Grenze bleibt **etwa 300.000 Token**.
+- **Chatnummer:** die nächste Sitzung heißt **Reiselogbuch 0010** (Zusammenarbeit 0 Nr. 13); die danach 0011.
+- **Offene Prüfpunkte:** keine – P-45 bis P-49 geprüft.
+- **Nächste Version (bereit):** **A-20** (AppDesign, Prio 1) – Kontext in der Zeile Zeit und Token, Warnung ab 300.000.
+- **In Klärung:** **A-18 / T-91** (Prio 1) – iPad: Tastatur im Fenster ‚Tag‘ → Fenster **und** Tabelle springen, bis die
+  Tastatur steht; Plan: erst eine kurze Messung auf dem iPad (wie verschiebt Safari den sichtbaren Bereich), dann Korrektur
+  (vermutete Ursache: `placeDialogs` bei jedem Schritt von `visualViewport` plus Rollen zum Feld nach 350 ms; die Prüfung
+  `checkListStill` bildet nur den Endzustand der Tastatur nach). **A-19 / T-92** (Prio 2) – Suche über alle
+  Reiselogbücher, entschieden **Variante C** (`arbeit/T-92 Vorschläge.md`); offen: Platz des Feldes, Zählweise.
+  T-06 (Prio 3), A-01 (später).
+- **Zeit und Token:** am Ende jeder Antwort `node ../AppDesign/werkzeug/messung.mjs`, Zeile unverändert übernehmen.
+- **Sitzungsgröße (wichtig):** Grenze **etwa 300.000 Token Kontext**. ‚Token vorige Antwort‘ ist **nicht** der Kontext
+  (Summe aller Modell-Aufrufe der Antwort). Bis A-20 gebaut ist, den Kontext selbst prüfen: in der Sitzungsdatei
+  (`/root/.claude/projects/…/*.jsonl`) beim letzten Assistant-Eintrag `input_tokens + cache_read_input_tokens +
+  cache_creation_input_tokens`. Sitzung 0009 lag unbemerkt bei ~451.600.
 - **Erinnerung:** ‚Backlog-Erinnerung (AppDesign und Reiselogbuch)‘ montags 8:58.
 
 ## 2. Ergebnisse
 
-**Sitzung ‚Reiselogbuch 0008 – T-05 Prüfung und A-12‘ – drei Themen abgeschlossen:**
-- **T-05 geprüft:** die erste Import-Datei wurde mit ‚Backup laden‘ → ‚Abgleichen‘ geladen, alles in Ordnung (E-75, E-26).
-- **A-12 → AppDesign 4.17.0:** Werkzeug `werkzeug/messung.mjs` (Fall-Liste `arbeit/A-12 Fall-Liste.md`, Prüfung
-  `tests/messung.mjs` mit Gegenprobe). Funde: eine Modell-Antwort steht auf mehreren Zeilen der Sitzungsdaten (Handmessung
-  zählte mehrfach); nach einem Neustart liegt die Sitzung in einem zweiten Ordner. ‚neu‘ = Eingabe + Ausgabe (Entscheidung
-  des Nutzers). Zusammenarbeit 2.7.0, CLAUDE.md 2.4.0. P-43 ok.
-- **A-13 → AppDesign 4.18.0 und Reiselogbuch 3.16.0:** Wunsch geändert von ‚Zeile immer ganz oben‘ zu ‚Tabelle eingefroren,
-  bis man von der Tageserfassung zurück ist‘. Ursache des Fehlers: Safari schiebt beim Öffnen der Tastatur die ganze Seite
-  (overflow: hidden hält das nicht auf) und schiebt nicht zurück. Lösung in `ui.js`: Scrollstand beim Öffnen merken, beim
-  Schließen wiederherstellen; `revealRow` hebt die Zeile kurz hervor und zeigt sie nach ‹ ›. Neue Regel **R-7.3**, Prüfung
-  `checkListStill` (Tastatur nachgebildet, Gegenprobe rot). Nutzer: iPhone und iPad verhalten sich gleich, Änderungen gelten
-  allgemein. Klärung `arbeit/A-13 Klärung und Fall-Liste.md`. P-44 ok.
-- **Fehler in 0008:** nach dem ersten (roten) Veröffentlichungslauf die Vorbereitungs-Zweige gelöscht, bevor das Ergebnis
-  gelesen war – aus dem lokalen Verlauf wiederhergestellt. Lehre (wie 0007): erst das Ergebnis lesen, dann aufräumen.
-  Ursache des roten Laufs: die Prüfung erwartete die Hervorhebung nach 120 ms, unter Last in WebKit später → wartet bis 800 ms.
+**Sitzung ‚Reiselogbuch 0009‘ – sechs Versionen, alle geprüft:**
+- **AppDesign 4.19.0 / Reiselogbuch 3.17.0:** R-5.5 Eingabetaste ‚Fertig‘ in einzeiligen Feldern (A-14, T-87); Fund: die
+  Eingabetaste schickte die Fenster ‚Tag‘ und ‚Einstellungen‘ ab. T-88 zuletzt verwendetes Reiselogbuch öffnet beim Start
+  (iPad; iPhone-Startliste ohne Blau, R-7.2). T-85 (Emoji-Taste) geschlossen – nicht steuerbar.
+- **Reiselogbuch 3.18.0:** T-86 Maps-Link nur über den Namen (endet an ‚ – ‘, Komma, Doppelpunkt, Klammer; nicht vor Ziffer;
+  auch Quartier).
+- **AppDesign 4.20.0 / Reiselogbuch 3.19.0:** R-3.2 Kapsel ‚Nach oben / Ans Ende‘ auch am iPhone (A-15), nicht in der
+  Startliste; widerruft E-33 (Apple-Weg war zu schwerfällig).
+- **AppDesign 4.21.0 / Reiselogbuch 3.20.0:** R-7.4 Position beim Öffnen (A-16, T-89: ganz oben bzw. erster offener Tag
+  direkt unter dem Kopf; `openAt`), R-8.1 erweitert auf Seitenleiste ein/aus (A-17, T-90; `keepPlace`).
+- **Korrektur 4.21.1 / 3.20.1 (aus P-48/3):** Drehen am Ende der Seite – ganz unten bleibt ganz unten (`topAnchor` mit
+  `{ rest }`, Prüfung `checkTurnEnd`).
+- **Lehren aus 0009:** (1) Den Kontext beobachten (A-20). (2) `… los` im Hintergrund immer mit **vollem Pfad** starten
+  (`node /home/user/AppDesign/werkzeug/veroeffentlichen.mjs …`) – ein `cd` davor wirkt im Hintergrund nicht. (3) Jeder
+  Prüflisten-Schritt braucht ‚Erwartet‘ (doku-regeln bricht sonst ab). (4) WebKit-Netzprozess stürzte einmal ab
+  (offline-regeln, ‚nicht prüfbar‘) – einzeln wiederholt grün, dann `los` neu.
 
 Frühere Sitzungen: siehe `VERLAUF.md` und Versionsgeschichten.
 
 ## 3. Nächster Schritt
 
-1. Startfrage (0 Nr. 19). Kein Prüfpunkt offen, nichts bereit.
-2. Weitere alte Reiselogbücher konvertieren, sobald der Nutzer sie anhängt (Import-Repo, `PROMPT.md` vollständig lesen).
-3. T-06 klären (Ausschreibungstexte in Reiselogbücher umwandeln, Prio 3) – kann das Import-Repo mitnutzen.
+1. **A-20 bauen** (bereit): Fall-Liste, Rückfrage ‚Ja‘, dann AppDesign 4.22.0 (Reiselogbuch nur heben, wenn der Nutzer es will –
+   `messung.mjs` ist ein Werkzeug, keine App-Änderung).
+2. A-18 / T-91 Tastatur (Messung am iPad, dann Korrektur).
+3. A-19 / T-92 Suche über alle Reiselogbücher (Variante C, Einzelheiten klären, Fall-Liste).
+4. Weitere alte Reiselogbücher konvertieren, sobald der Nutzer sie anhängt (Import-Repo, `PROMPT.md` vollständig lesen).
 
 ## 4. Danach
 
-- **A-01** Startseite (später).
+- T-06 Ausschreibungstexte (Prio 3) · **A-01** Startseite (später).
 
 ## 5. Arbeitsumgebung (für Claude)
 
@@ -95,5 +105,5 @@ In der neuen Sitzung müssen **AppDesign** und **ReiseLogBuch** verfügbar sein,
 ## 7. Starttext für die neue Sitzung
 
 ```
-Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md und gezielt die Regeln (Zusammenarbeit 0 Nr. 15), gib mir das Lagebild und dann die Startfrage (0 Nr. 19).
+Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md und gezielt die Regeln (Zusammenarbeit 0 Nr. 15), gib mir das Lagebild und dann die Startfrage (0 Nr. 19). Hole vorher die Repos g811141a/ReiseLogBuch und g811141a/ReiseLogBuch-Import (privat) dazu (add_repo, Zugriff push), wie in UEBERGABE.md Abschnitt 5.
 ```
