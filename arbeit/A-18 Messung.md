@@ -126,3 +126,8 @@ steht 4 ms später wieder richtig (−180 → 11). Nach 350 ms rollt der Inhalt 
 die Seite dahinter steht still; der Inhalt rollt nur in kleinen Schritten mit dem Text (62 → 71 → 95 → 119).
 Befund: **auch in der echten App mit echten Daten ruhig.** Offener Unterschied zur Rückmeldung T-91: die App läuft beim
 Nutzer vom Home-Bildschirm (ohne Safari-Leisten), die Messung lief im Safari-Tab.
+
+**Messung 3b – Kopie der App, iPad quer 1194 × 802, iOS 26.6.2, Safari – Eindruck: ruhig.**
+Wie 3: Tastatur nach 101 ms, Seite rollt nach 125 ms um 190 px, Fenster 4 ms später richtig (−180 → 11), 350 ms rollt der
+Inhalt einmal 62 px. Danach 18 s Tippen (~110 Eingaben): Fenster immer auf 11 px, Höhe 354, Seite steht still, der Inhalt
+rollt nur viermal mit dem Text (62 → 71 → 95 → 119). Befund: **kein Springen messbar.**
