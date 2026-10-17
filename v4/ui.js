@@ -1,4 +1,4 @@
-// AppDesign 4.21.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
+// AppDesign 4.21.1 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
 // Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/fassung/X.Y.Z/ui.js"></script> (feste Fassung, R-10.3)
 // Seit 4.11.0 (R-10.3): ui.js und design.css immer mit ?v=<AppDesign-Version> einbinden (auch in sw.js) und beim Start
 // prüfen, ob genau diese Fassung geladen ist (AD_VERSION hier, --ad-version in design.css).
@@ -17,7 +17,7 @@
 
 'use strict';
 // Version der Bausteine (R-10.3): die App vergleicht sie beim Start mit der benötigten Fassung.
-const AD_VERSION = '4.21.0';
+const AD_VERSION = '4.21.1';
 /* ---------- Icons ---------- */
 
 // Schaltflächen-Icons aus Lucide (ISC-Lizenz), direkt eingebettet, damit die App offline funktioniert.
@@ -996,13 +996,15 @@ let keepTop = null, keepWidth = innerWidth, keepHeight = innerHeight, keepBusy =
 const keepTurned = () => innerWidth !== keepWidth || Math.abs(innerHeight - keepHeight) > 150;
 const keepEdge = () => document.querySelector('.pnav, .nb')?.getBoundingClientRect().bottom || 0;
 const keepKey = e => e.dataset.day ? `[data-day="${CSS.escape(e.dataset.day)}"]` : `[data-keep="${CSS.escape(e.dataset.keep)}"]`;
-// Oberster sichtbarer Eintrag unter der Leiste; ganz oben → null (ganz oben bleibt ganz oben).
+// Oberster sichtbarer Eintrag unter der Leiste; ganz oben → null (ganz oben bleibt ganz oben). Steht oben kein Eintrag
+// (Ende der Seite, z. B. Fazit und Statistik), zählt der Abstand zum Ende – ganz unten bleibt ganz unten (seit 4.21.1).
+const scrollRest = () => document.documentElement.scrollHeight - innerHeight - scrollY;
 function topAnchor() {
   if (scrollY < 4) return null;
   const edge = keepEdge();
   const e = [...document.querySelectorAll(KEEP_SEL)].find(x => x.getClientRects().length && x.getBoundingClientRect().bottom > edge + 1);
   // Abstand als Anteil der Höhe: nach dem Drehen ist der Eintrag anders hoch, der sichtbare Teil bleibt gleich.
-  return e ? { sel: keepKey(e), part: (e.getBoundingClientRect().top - edge) / (e.getBoundingClientRect().height || 1) } : null;
+  return e ? { sel: keepKey(e), part: (e.getBoundingClientRect().top - edge) / (e.getBoundingClientRect().height || 1) } : { rest: scrollRest() };
 }
 function rememberTop() {
   if (keepBusy || keepTurned() || lockY !== null) return;   // bei offenem Fenster (R-7.3) und während des Drehens nichts überschreiben
@@ -1011,6 +1013,12 @@ function rememberTop() {
 function restoreTop() {
   keepWidth = innerWidth; keepHeight = innerHeight;
   if (!keepTop) return;
+  if ('rest' in keepTop) {
+    keepBusy = true;
+    window.scrollTo({ top: Math.max(0, Math.round(scrollY + scrollRest() - keepTop.rest)), behavior: 'instant' });
+    requestAnimationFrame(() => { keepBusy = false; });
+    return;
+  }
   const e = [...document.querySelectorAll(KEEP_SEL.split(', ').map(s => `${s.split(' ')[0]} ${keepTop.sel}`).join(', '))].find(x => x.getClientRects().length);
   if (!e) return;
   keepBusy = true;
@@ -1023,13 +1031,12 @@ window.addEventListener('scroll', () => { if (!keepBusy) rememberTop(); }, { pas
 // R-8.1 (seit 4.21.0, A-17): Ändert die App die Anordnung selbst (z. B. Seitenleiste ein/aus – die Breite des Inhalts und
 // damit die Zeilenhöhen ändern sich, das Fenster nicht), bleibt oben derselbe Eintrag: keepPlace(() => { …; render(); }).
 function keepPlace(change) {
-  const atTop = scrollY < 4, anchor = topAnchor();
-  const rest = document.documentElement.scrollHeight - innerHeight - scrollY;   // ohne Eintrag oben (z. B. am Ende): Abstand zum Ende
+  const anchor = topAnchor();
   change();
   keepTop = anchor;
   if (anchor) return restoreTop();
   keepBusy = true;
-  window.scrollTo({ top: atTop ? 0 : Math.max(0, document.documentElement.scrollHeight - innerHeight - rest), behavior: 'instant' });
+  if (scrollY) window.scrollTo({ top: 0, behavior: 'instant' });
   requestAnimationFrame(() => { keepBusy = false; });
 }
 
