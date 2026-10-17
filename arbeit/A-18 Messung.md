@@ -43,3 +43,28 @@ dazu eine Prüfung, die die Tastatur **schrittweise** nachbildet, nicht nur ihre
 
 Die Messseite liegt in AppDesign `main` (Ordner `messen/`). Sie ist keine Version und keine Fassung, und keine App lädt sie.
 Nach der Korrektur wird sie gelöscht.
+
+## Ergebnisse
+
+**Messung 1 – Versuch A, 580 × 522 (iPhone-Aufbau), iOS 26.6.2:**
+Tastatur in einem Schritt (121 ms, vv 522 → 290, oben 142); Seite dahinter rollt 132 px (`scrollY` 1747 → 1879), Fenster
+für ~2 ms bei −142, dann richtig; 350 ms ohne Wirkung.
+
+**Messung 2 – Versuch A, iPad quer 1194 × 777, iOS 26.6.2 – Eindruck: ruhig.**
+
+```
+    ms	vv-Höhe	vv-oben	scrollY	Fenster	Zeile	Feld sichtbar	Auslöser
+    0	777	0	2394	31	497	ja	Antippen
+  154	349	0	2394	31	497	nein	vv resize
+  156	349	0	2394	10	497	ja	Bild
+  170	349	146	2540	-136	351	nein	vv scroll
+  171	349	146	2540	10	351	ja	Bild
+  361	349	146	2540	10	351	ja	350 ms (scrollIntoView)
+ 1185	349	145	2539	11	352	ja	vv scroll
+ 1188	349	145	2539	10	352	ja	Bild
+```
+
+Befund: Die Tastatur meldet sich in **zwei** Schritten (Größe nach 154 ms, Verschiebung um 146 px nach 170 ms); das Fenster steht
+jeweils nach 1–2 ms wieder richtig. Die Seite dahinter rollt 146 px. Auf der Messseite wirkt es ruhig – **das Springen der App
+ist hier nicht nachgestellt**. Unterschiede zur App: echtes Fenster ‚Tag‘ (Wetter, Vorschläge, Smileys, wachsende Textfelder,
+viel Text), echte Daten, Eingaben während die Tastatur fährt.
