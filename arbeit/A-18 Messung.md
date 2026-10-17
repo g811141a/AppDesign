@@ -155,3 +155,20 @@ zurück nach unten (637 → 171, kein Skript beteiligt). Danach liegt es unter d
 Rollposition nach diesem Rollen erneut (sofort, nächstes Bild, 30 und 60 ms); im Protokoll je eine Zeile ‚D …‘ mit Stelle und
 Ziel, neue Spalte ‚Feld oben–unten‘. Dazu: `autoGrow` lässt die Rollposition des Fensters unverändert (setzt die Höhe kurz auf
 ‚auto‘, das kürzte die Rollposition).
+
+**Messung D3 (neue Fassung, Höhe gemerkt 428): fährt mit – jetzt in jedem Fall.** Vor der Tastatur steht das Feld bei
+104–201 px (Ziel 150, frei 374) – also **sicher über der Tastatur**. Trotzdem rollt Safari beim Erscheinen der Tastatur die
+Seite um 190 px (`scrollY` +190, vv-oben 190) und das Fenster kurz zurück (225 → 146 → 225).
+
+**Befund:** Safari schiebt **nicht wegen der Lage des Feldes**. Auffällig in allen Messungen: `scrollY` steigt jedes Mal um genau
+so viel wie vv-oben (A: 146/146, C: 162/162, App: 190/190). Beim **zweiten** Hochfahren im selben offenen Fenster bleibt vv-oben 0,
+die Seite steht – sie ist da schon um diesen Betrag gerollt. Safari will die Seite offenbar einmal auf eine bestimmte Lage
+rollen, unabhängig vom Feld. Versuch D (Feld vorab nach oben) hilft deshalb nicht.
+
+**Nächste Ansätze (offen):**
+- **E – Seite fest stellen:** solange ein Fenster offen ist, `body` mit `position: fixed; top: -scrollY` sperren (klassische
+  Sperre, Safari kann nichts rollen); der haftende Tabellenkopf muss dafür nachgebildet werden (Grund, warum R-7.3 das bisher
+  nicht tut).
+- **F – Seite vorab rollen:** die Seite beim Öffnen des Fensters unsichtbar (hinter dem abgedunkelten Hintergrund) so stellen,
+  dass Safari nichts mehr rollen muss – braucht erst eine Messung, welche Lage Safari will.
+- **G – hinnehmen:** Bewegung beim ersten Hochfahren bleibt; T-91 schließen.
