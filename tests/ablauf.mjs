@@ -325,10 +325,19 @@ export async function checkListStill(p, { item, field, next = '', where = '' } =
   await p.evaluate(() => scrollTo(0, Math.min(1200, document.documentElement.scrollHeight - innerHeight - 400))); await wait(p, 300);
   const shown = await rows();
   if (shown.tap.length < 2) { E(`zu wenige sichtbare Zeilen zum Prüfen (${shown.tap.length} von ${shown.n}, Kante ${Math.round(shown.edge)} px, Scrollstand ${Math.round(shown.y)})`); return errors; }
-  for (const [art, close] of [['Häkchen', '#dlgOk'], ['x ohne Änderung', '#dlgX']]) {
-    const key = shown.tap[0], vor = await state(key);
+  // Seit 4.23.0: zusätzlich eine Zeile genau 2 px unter Leiste bzw. Tabellenkopf (ganz sichtbar, innerhalb des Abstands von 6 px,
+  // den die App beim Rollen lässt) – vorher hing es von der Breite der Seitenleiste ab, ob eine Zeile so lag.
+  const edge2 = key => p.evaluate(({ item, key }) => {
+    const edge = Math.max(...[...document.querySelectorAll('.nb, .pnav, #bar, table.days:not(.static) th')].map(e => e.getBoundingClientRect().bottom), 0);
+    const e = [...document.querySelectorAll(item)].find(x => (x.dataset.day || x.dataset.keep) === key && x.getClientRects().length);
+    scrollBy({ top: e.getBoundingClientRect().top - edge - 2, behavior: 'instant' });
+  }, { item, key });
+  for (const [art, close, nah] of [['Häkchen', '#dlgOk'], ['x ohne Änderung', '#dlgX'], ['Häkchen, Zeile 2 px unter dem Kopf', '#dlgOk', true]]) {
+    const key = nah ? shown.tap[1] : shown.tap[0];
+    if (nah) { await edge2(key); await wait(p, 300); }
+    const vor = await state(key);
     await tap(key); await wait(p, 300);
-    if (art === 'Häkchen') { await p.locator(field).first().click(); await p.evaluate(() => scrollBy(0, 300)); await p.locator(field).first().pressSequentially(' neu', { delay: 10 }); }
+    if (close === '#dlgOk') { await p.locator(field).first().click(); await p.evaluate(() => scrollBy(0, 300)); await p.locator(field).first().pressSequentially(' neu', { delay: 10 }); }
     else await p.evaluate(() => scrollBy(0, 300));                   // Wischen bzw. Tastatur schiebt die Seite
     await p.click(close);
     // die Hervorhebung beginnt im nächsten Bildaufbau – unter Last (voller Lauf, WebKit) bis zu 800 ms warten
