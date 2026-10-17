@@ -1,70 +1,57 @@
 # Übergabe an die nächste Sitzung
 
-**Stand 17.10.2026** · geschrieben in der Sitzung ‚Reiselogbuch 0010‘
+**Stand 17.10.2026** · geschrieben in der Sitzung ‚Reiselogbuch 0011‘
 (Zusammenarbeit allgemein 2.8.0, Abschnitt 0 Nr. 14). **Claude liest diese Datei zu Beginn jeder Sitzung zuerst.**
 
 ## 1. Lagebild
 
 | Teil | Version | Datei |
 |---|---|---|
-| Reiselogbuch | **3.20.1** (Fassung 4.21.1) | g811141a/ReiseLogBuch – `CHANGELOG.md`, `BACKLOG.md`, `PROMPT.md` |
-| AppDesign (ui.js, design.css, tests; feste Fassung `fassung/4.22.0/`) | **4.22.0** | g811141a/AppDesign – `CHANGELOG.md`, `BACKLOG.md` |
-| ReiseLogBuch-Import (privat) | 1.2.1 (unverändert) | g811141a/ReiseLogBuch-Import – `README.md`, `PROMPT.md`, `CLAUDE.md`, `ERKENNTNISSE.md`, `werkzeug/pruefen.mjs` |
-| Designrichtlinie allgemein | **4.22.0** (keine Regeländerung) | `README - Designrichtlinie allgemein.md` |
-| Designrichtlinie Reiselogbuch | 3.20.1 | im Repo ReiseLogBuch |
-| Zusammenarbeit allgemein | **2.8.0** (§2 Kontext in der Zeile Zeit und Token) | `README - Zusammenarbeit allgemein.md` |
+| Reiselogbuch | **3.20.1** online (Fassung 4.21.1) · **3.21.0 gebaut, nicht veröffentlicht** | g811141a/ReiseLogBuch – `CHANGELOG.md`, `BACKLOG.md`, `PROMPT.md` |
+| AppDesign | **4.22.0** online · **4.23.0 gebaut, nicht veröffentlicht** | g811141a/AppDesign – `CHANGELOG.md`, `BACKLOG.md` |
+| ReiseLogBuch-Import (privat) | 1.2.1 (unverändert) | g811141a/ReiseLogBuch-Import |
+| Zusammenarbeit allgemein | 2.8.0 | `README - Zusammenarbeit allgemein.md` |
 
-- **Chatnummer:** die nächste Sitzung heißt **Reiselogbuch 0011** (Zusammenarbeit 0 Nr. 13); die danach 0012.
-- **Offene Prüfpunkte:** keine – P-50 geprüft (A-20 abgeschlossen).
-- **Nächste Version (bereit):** keine.
-- **Verworfen:** A-18 / T-91 (Tastatur im Fenster ‚Tag‘) – vom Nutzer in 0010 beendet, Messseiten entfernt (E-42 / E-89);
-  **nicht wieder aufgreifen**, außer der Nutzer bringt es selbst.
-- **Nächstes Thema:** **A-19 / T-92** (jetzt Spitze, Prio 2) – Suche über alle
-  Reiselogbücher, entschieden **Variante C** (`arbeit/T-92 Vorschläge.md`); offen: Platz des Feldes, Zählweise.
-  T-06 (Prio 3), A-01 (später).
-- **Zeit und Token:** am Ende jeder Antwort `node ../AppDesign/werkzeug/messung.mjs`, Zeile unverändert übernehmen.
-- **Sitzungsgröße (wichtig):** Grenze **etwa 300.000 Token Kontext**. ‚Token vorige Antwort‘ ist **nicht** der Kontext
-  (Summe aller Modell-Aufrufe der Antwort). Seit 4.22.0 (A-20) zeigt die Zeile Zeit und Token den
-  Kontext; bei ‚⚠ Übergabe fällig‘ die Übergabe vorschlagen. Sitzung 0009 lag unbemerkt bei ~451.600.
+- **Chatnummer:** die nächste Sitzung heißt **Reiselogbuch 0012**; die danach 0013.
+- **Offene Prüfpunkte:** keine online. P-51 (Reiselogbuch 3.21.0) entsteht erst mit dem Veröffentlichen.
+- **Auf `main` steht noch der alte Backlog-Stand:** T-92 / A-19 in ‚0. Nächste Version‘ (bereit). Die Zweige
+  `vorbereitung-*` verschieben sie nach ‚1. Prüfen‘ (P-51), mit E-43 bzw. E-90.
+- **Sitzungsgröße:** Grenze etwa 300.000 Token Kontext; die Zeile Zeit und Token zeigt ihn (‚⚠ Übergabe fällig‘).
 - **Erinnerung:** ‚Backlog-Erinnerung (AppDesign und Reiselogbuch)‘ montags 8:58.
 
 ## 2. Ergebnisse
 
-**Sitzung ‚Reiselogbuch 0010‘:**
-- **AppDesign 4.22.0 (A-20, P-50 ok):** `werkzeug/messung.mjs` – die Zeile endet mit ‚Kontext N‘ (letzter eigener Aufruf),
-  ab 300.000 oder nach Zusammenfassung ‚⚠ Übergabe fällig‘; Zusammenarbeit 2.8.0. Reiselogbuch blieb auf Fassung 4.21.1.
-- **A-18 / T-91 verworfen:** Messungen am iPad (Messseite, Kopie der App, Versuche A–D). Ergebnis: beim ersten Hochfahren
-  der Tastatur rollt Safari die Seite (Fenster und Tabelle fahren mit) – **unabhängig von der Lage des Feldes**; Feld vorab
-  nach oben (D) half nicht. Nutzer: Thema vergessen, Messeinrichtungen entfernt (Ordner `messen/` gelöscht).
-- **Lehren aus 0010:** (1) Lokaler Zweig `main` kann nach dem Start veraltet sein (Sitzung stand auf losgelöstem HEAD) – vor
-  einem neuen Zweig `git fetch origin main` und vom Stand `origin/main` abzweigen. (2) GitHub Pages hält Seiten bis 10 min im
-  Zwischenspeicher – für Messungen einen Link mit `?neu=N` geben. (3) Eine Rückmeldung erst wörtlich klären (‚Zittern‘ hieß
-  ‚fährt mit hoch‘), bevor gemessen wird. (4) github.io ist aus der Cloud gesperrt (403); den Pages-Lauf über
-  `gh api repos/…/actions/runs?head_sha=…` prüfen.
-
-**Sitzung ‚Reiselogbuch 0009‘ – sechs Versionen, alle geprüft:**
-- **AppDesign 4.19.0 / Reiselogbuch 3.17.0:** R-5.5 Eingabetaste ‚Fertig‘ in einzeiligen Feldern (A-14, T-87); Fund: die
-  Eingabetaste schickte die Fenster ‚Tag‘ und ‚Einstellungen‘ ab. T-88 zuletzt verwendetes Reiselogbuch öffnet beim Start
-  (iPad; iPhone-Startliste ohne Blau, R-7.2). T-85 (Emoji-Taste) geschlossen – nicht steuerbar.
-- **Reiselogbuch 3.18.0:** T-86 Maps-Link nur über den Namen (endet an ‚ – ‘, Komma, Doppelpunkt, Klammer; nicht vor Ziffer;
-  auch Quartier).
-- **AppDesign 4.20.0 / Reiselogbuch 3.19.0:** R-3.2 Kapsel ‚Nach oben / Ans Ende‘ auch am iPhone (A-15), nicht in der
-  Startliste; widerruft E-33 (Apple-Weg war zu schwerfällig).
-- **AppDesign 4.21.0 / Reiselogbuch 3.20.0:** R-7.4 Position beim Öffnen (A-16, T-89: ganz oben bzw. erster offener Tag
-  direkt unter dem Kopf; `openAt`), R-8.1 erweitert auf Seitenleiste ein/aus (A-17, T-90; `keepPlace`).
-- **Korrektur 4.21.1 / 3.20.1 (aus P-48/3):** Drehen am Ende der Seite – ganz unten bleibt ganz unten (`topAnchor` mit
-  `{ rest }`, Prüfung `checkTurnEnd`).
-- **Lehren aus 0009:** (1) Den Kontext beobachten (A-20). (2) `… los` im Hintergrund immer mit **vollem Pfad** starten
-  (`node /home/user/AppDesign/werkzeug/veroeffentlichen.mjs …`) – ein `cd` davor wirkt im Hintergrund nicht. (3) Jeder
-  Prüflisten-Schritt braucht ‚Erwartet‘ (doku-regeln bricht sonst ab). (4) WebKit-Netzprozess stürzte einmal ab
-  (offline-regeln, ‚nicht prüfbar‘) – einzeln wiederholt grün, dann `los` neu.
+**Sitzung ‚Reiselogbuch 0011‘:**
+- **T-92 / A-19 geklärt und gebaut** (Fall-Liste `arbeit/T-92 Fall-Liste.md`, alle Fragen entschieden, Muster bestätigt):
+  Lupe in der Kopfzeile der Seitenleiste/Startliste, Zählung je Fundstelle (= ‚1 von N‘ drinnen, `hitCount` zählt die
+  Markierungen wie `hitMarks`), Öffnen mit gefüllter Suche, Liste bleibt gefiltert, Backup-Kachel bleibt, rechts offenes
+  Reiselogbuch bleibt unberührt – **Zusatz des Nutzers:** sind beide Suchfelder offen, laufen sie **1:1** (beide Richtungen,
+  auch x). Als **allgemeine Regel** (R-2.3 erweitert, 15.2, 15.4, `checkListSearch`, CSS `#side .side-search`).
+- Neue App-Prüfung `tests/ablauf-suche-liste.mjs`; Gegenprobe rot, Chromium und WebKit grün.
+- **`… los` abgebrochen (nichts veröffentlicht):** `regeln-ablauf` in WebKit rot –
+  `iPad quer: R-7.3 Häkchen: Seite steht nach dem Schließen nicht wie vorher (Scrollstand 1200 → 1195, Zeile 2026-08-31 111 → 116 px)`.
+  **Ursache eingegrenzt:** die Lupe macht den Kopf breiter → Seitenleiste 401 statt 340 px (`width: max-content`) → Tabelle
+  schmaler. **Der alte App-Stand 3.20.1 fällt mit `#side { min-width: 401px }` genauso durch** – es ist eine bestehende
+  Schwäche von R-7.3 (ui.js oder `checkListStill`), die T-92 nur sichtbar macht. Vermutung: ` neu` im Verlauf ändert bei
+  `table-layout: auto` die Spaltenbreiten, Zeilen darüber werden höher; die Wiederherstellung landet 5 px daneben
+  (Scrollstand sinkt, statt zu steigen). Chromium grün.
+- **Entscheidung des Nutzers:** Ursache an der Wurzel beheben (nicht die Seitenleiste schmal halten), in neuer Sitzung; die
+  Korrektur kommt mit in AppDesign 4.23.0 (noch nicht veröffentlicht).
+- **Lehren aus 0011:** (1) Neue Schaltflächen im Kopf ändern die Breite der Seitenleiste – Gegenprobe immer auch mit dem
+  alten Stand bei gleicher Geometrie. (2) Muster als echter Code auf lokalem Zweig + Playwright-Screenshots ging schnell.
+  (3) Nach Neustart des Arbeitsprozesses: lokale Zweige sofort nach GitHub sichern.
 
 Frühere Sitzungen: siehe `VERLAUF.md` und Versionsgeschichten.
 
 ## 3. Nächster Schritt
 
-1. A-19 / T-92 Suche über alle Reiselogbücher (Variante C, Einzelheiten klären, Fall-Liste).
-2. Weitere alte Reiselogbücher konvertieren, sobald der Nutzer sie anhängt (Import-Repo, `PROMPT.md` vollständig lesen).
+1. Zweige `vorbereitung-4.23.0` und `vorbereitung-3.21.0` holen (Abschnitt 5), Playwright installieren.
+2. R-7.3-Fehler nachstellen: `PRUEF_BROWSER=webkit node tests/regeln-ablauf.mjs` (im ReiseLogBuch). Ursache in ui.js
+   (Wiederherstellung nach dem Fenster, R-7.3) bzw. `checkListStill` finden, im Zweig `vorbereitung-4.23.0` beheben, als
+   Teil von 4.23.0 im CHANGELOG nennen (mit ‚warum die Prüfung es bisher nicht sah‘: Seitenleiste immer 340 px).
+   Fall-Liste kurz, vor dem Bau ‚Ja‘ einholen.
+3. `node werkzeug/veroeffentlichen.mjs fassung`, betroffene Prüfungen, dann `node /home/user/AppDesign/werkzeug/veroeffentlichen.mjs los --app reiselogbuch`
+   im Hintergrund. Danach Bericht (0 Nr. 11) mit Prüfliste P-51.
 
 ## 4. Danach
 
@@ -72,6 +59,9 @@ Frühere Sitzungen: siehe `VERLAUF.md` und Versionsgeschichten.
 
 ## 5. Arbeitsumgebung (für Claude)
 
+- **Vorbereitungs-Zweige 4.23.0 / 3.21.0 (aus 0011):** liegen auf GitHub (`vorbereitung-4.23.0` in AppDesign,
+  `vorbereitung-3.21.0` in ReiseLogBuch). Nach dem Klonen: `git fetch origin vorbereitung-4.23.0 && git checkout -b
+  vorbereitung-4.23.0 origin/vorbereitung-4.23.0` (ReiseLogBuch entsprechend). Nach dem Veröffentlichen lokal löschen.
 - **Import-Repo (neu):** `g811141a/ReiseLogBuch-Import` ist **privat**. Mit `add_repo` (push) dazuholen, nach
   `/home/user/ReiseLogBuch-Import` klonen und `ln -s ReiseLogBuch-Import reiselogbuch-import` anlegen. `register_repo_root`
   mit `/home/user/reiselogbuch-import`. Dort **nie Reisedaten** ablegen (Datenschutz): Originale, Ergebnisse und Protokolle
@@ -112,5 +102,5 @@ In der neuen Sitzung müssen **AppDesign** und **ReiseLogBuch** verfügbar sein,
 ## 7. Starttext für die neue Sitzung
 
 ```
-Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md und gezielt die Regeln (Zusammenarbeit 0 Nr. 15), gib mir das Lagebild und dann die Startfrage (0 Nr. 19). Hole vorher die Repos g811141a/ReiseLogBuch und g811141a/ReiseLogBuch-Import (privat) dazu (add_repo, Zugriff push), wie in UEBERGABE.md Abschnitt 5.
+Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md und gezielt die Regeln (Zusammenarbeit 0 Nr. 15), gib mir das Lagebild und arbeite dann Abschnitt 3 ab (R-7.3-Fehler beheben, 4.23.0 / 3.21.0 veröffentlichen). Hole vorher die Repos g811141a/ReiseLogBuch und g811141a/ReiseLogBuch-Import (privat) dazu (add_repo, Zugriff push), wie in UEBERGABE.md Abschnitt 5.
 ```
