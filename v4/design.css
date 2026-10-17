@@ -1,4 +1,4 @@
-/* AppDesign 4.19.0 · design.css – gemeinsame Gestaltung der iPad-Web-Apps von g811141a (Apple-like)
+/* AppDesign 4.20.0 · design.css – gemeinsame Gestaltung der iPad-Web-Apps von g811141a (Apple-like)
    Einbinden im <head> vor dem eigenen <style> der App:  <link rel="stylesheet" href="../AppDesign/fassung/X.Y.Z/design.css"> (feste Fassung, R-10.3)
    Farben als Variablen auf :root, Dunkelmodus über data-theme="dark" (setzt ui.js / applyTheme).
    Komponenten: Schaltflächen, Suchfeld, Kapsel, Eingabefelder, Datumsfelder, Kopfzeile, Seitenleiste,
@@ -6,7 +6,7 @@
    Options-Kapsel; seit 4.1.0 iPhone-Ansicht (html.phone: Seitenkopf, großer Titel, Liste, Kasten, untere Leiste). Regeln dazu: README - Designrichtlinie allgemein.md */
 /* Farben im Apple-Look: Hintergrund Hellgrau, Kästen weiß ohne Rand, schwebende Schaltflächen */
 :root {
-  --ad-version: "4.19.0";   /* R-10.3: Version der Bausteine, die App prüft sie beim Start */
+  --ad-version: "4.20.0";   /* R-10.3: Version der Bausteine, die App prüft sie beim Start */
   --bg: #f2f2f7;
   --card: #ffffff;
   --ink: #1c1c1e;
@@ -395,9 +395,11 @@ dialog input[type=text], dialog input[type=date], dialog textarea { background: 
    html.phone (setzt ui.js / applyLayout): iPhone hoch und quer sowie sehr schmale Fenster (unter 700 px breit
    oder unter 500 px hoch). Wie Apple (Notizen, iOS 26): eine Seite nach der anderen mit großem Titel,
    runder Zurück-Knopf ohne Text, Suche unten, Fenster bildschirmfüllend, Abfragen als Sprechblase am Knopf. */
-html.phone body { padding-bottom: calc(env(safe-area-inset-bottom) + 96px); }
+html.phone body { padding-bottom: calc(env(safe-area-inset-bottom) + 120px); }
 html.phone body:has(.bnote) { padding-bottom: calc(env(safe-area-inset-bottom) + 150px); }
-html.phone #side:not(.page), html.phone .side-shade, html.phone .fab { display: none !important; }
+html.phone #side:not(.page), html.phone .side-shade { display: none !important; }
+/* Seit 4.20.0 (A-15): Kapsel ‚Nach oben / Ans Ende‘ auch im iPhone-Aufbau; ausgeblendet, wenn es nichts zu scrollen gibt (R-3.2) */
+.fab.still { display: none; }
 /* Komponente Seitenkopf (iPhone): links rund zurück, rechts Kapsel oder runder Knopf; scrollt nicht mit */
 .pnav { position: fixed; left: 0; right: 0; top: var(--vv-top); z-index: 6; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px; min-height: 44px;
   padding: calc(env(safe-area-inset-top) + 8px) max(16px, env(safe-area-inset-right)) 8px max(16px, env(safe-area-inset-left)); background: var(--bg); border-bottom: .5px solid transparent; }
