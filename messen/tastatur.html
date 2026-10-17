@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f2f2f7">
+<title>Messung Tastatur</title>
+<!-- A-18 / T-91 (Sitzung Reiselogbuch 0010): Messseite, keine App und keine Fassung – wird nach der Korrektur gelöscht.
+     Plan: arbeit/A-18 Messung.md. Echtes ui.js der Fassung 4.22.0; Versuch A wie heute, B setzt das Fenster erst, wenn die
+     Tastatur steht, C verankert das Fenster oben im sichtbaren Bereich. -->
+<link rel="stylesheet" href="../fassung/4.22.0/design.css">
+<style>
+  table.days { border-collapse: separate; border-spacing: 0; width: 100%; }
+  table.days th, table.days td { border-bottom: 1px solid var(--line); padding: 10px 12px; vertical-align: top; text-align: left; }
+  table.days td + td { border-left: 1px solid var(--line); }
+  table.days th { position: sticky; top: calc(var(--bar-h) + var(--vv-top)); background: var(--th-bg); font-size: 17px; font-weight: 600; z-index: 2; }
+  table.days tbody tr { cursor: pointer; }
+  .versuch { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin: 8px 0 16px; }
+  .versuch button.on { background: var(--accent, #007aff); color: #fff; }
+  #protokoll { white-space: pre; font: 12px/1.4 ui-monospace, Menlo, monospace; overflow-x: auto; max-height: 30vh; }
+</style>
+</head>
+<body>
+<main id="app"></main>
+<dialog id="dlg"></dialog>
+<dialog id="msg"></dialog>
+
+<script src="../fassung/4.22.0/ui.js"></script>
+<script>
+'use strict';
+const db = { settings: { appearance: 'auto' } };
+function save() { return true; }
+const app = document.getElementById('app');
+const VERSUCHE = { A: 'A – wie heute', B: 'B – erst setzen, wenn die Tastatur steht', C: 'C – Fenster oben verankern' };
+let versuch = 'A';
+try { versuch = sessionStorage.getItem('messung.versuch') || 'A'; } catch (e) { /* ohne Speicher */ }
+
+/* ---------- Versuche: placeDialogs aus ui.js ersetzen ---------- */
+const original = placeDialogs;
+const vv = window.visualViewport;
+const tastaturOffen = () => vv && vv.height < innerHeight - 80;
+let ruheBis = 0, ruheTimer = null;
+function platziere(quelle) {
+  if (versuch === 'B' && quelle === 'vv') {
+    // Während die Tastatur fährt, bleibt das Fenster stehen; 150 ms nach dem letzten Schritt wird es einmal gesetzt.
+    ruheBis = performance.now() + 150;
+    clearTimeout(ruheTimer);
+    ruheTimer = setTimeout(() => { notiere('B gesetzt'); original(); }, 150);
+    return;
+  }
+  if (versuch === 'B' && performance.now() < ruheBis) return;
+  original();
+  if (versuch === 'C' && dlg.open && tastaturOffen() && !isPhone())
+    dlg.style.top = Math.round(Math.max(0, vv.offsetTop) + 10) + 'px';
+}
+placeDialogs = () => platziere('aufruf');
+if (vv) {
+  vv.removeEventListener('scroll', original);
+  vv.removeEventListener('resize', original);
+  vv.addEventListener('scroll', () => { notiere('vv scroll'); platziere('vv'); });
+  vv.addEventListener('resize', () => { notiere('vv resize'); platziere('vv'); });
+}
+
+/* ---------- Protokoll ---------- */
+let t0 = null, zeilen = [], letzte = '', ende = 0;
+let offen = null;                          // Zeile, aus der das Fenster kam – bewegt sie sich, springt die Tabelle
+const zeileOffen = () => app.querySelector(`tr[data-n="${offen}"]`);
+function stand() {
+  const f = document.activeElement, d = dlg.getBoundingClientRect(), z = zeileOffen()?.getBoundingClientRect();
+  const sicht = vv ? vv.offsetTop + vv.height : innerHeight, fr = f?.getBoundingClientRect?.();
+  return [vv ? Math.round(vv.height) : '-', vv ? Math.round(vv.offsetTop) : '-', Math.round(scrollY), Math.round(d.top),
+    z ? Math.round(z.top) : '-', fr ? (fr.top >= (vv?.offsetTop || 0) && fr.bottom <= sicht ? 'ja' : 'nein') : '-'].join('\t');
+}
+function notiere(quelle) {
+  if (t0 === null || performance.now() > ende) return;
+  const s = stand();
+  if (s === letzte && quelle === 'Bild') return;
+  letzte = s;
+  zeilen.push(`${String(Math.round(performance.now() - t0)).padStart(5)}\t${s}\t${quelle}`);
+}
+function bild() { notiere('Bild'); if (performance.now() < ende) requestAnimationFrame(bild); else zeige(); }
+dlg.addEventListener('focusin', e => {
+  if (!e.target.matches('input, textarea')) return;
+  t0 = performance.now(); ende = t0 + 2000; letzte = '';
+  zeilen = [`Versuch ${versuch} · ${innerWidth}×${innerHeight} · ${navigator.userAgent.match(/OS [\d_]+|Version\/[\d.]+/g)?.join(' ') || ''} · Feld ${e.target.id}`,
+    '    ms\tvv-Höhe\tvv-oben\tscrollY\tFenster\tZeile\tFeld sichtbar\tAuslöser'];
+  notiere('Antippen');
+  setTimeout(() => notiere('350 ms (scrollIntoView)'), 360);
+  requestAnimationFrame(bild);
+});
+function zeige() {
+  const p = document.getElementById('protokoll');
+  if (p) p.textContent = zeilen.join('\n');
+}
+async function kopiere() {
+  const text = zeilen.join('\n') || 'Noch kein Protokoll – im Fenster ein Feld antippen.';
+  try { await navigator.clipboard.writeText(text); inform('Kopiert', 'Das Protokoll ist in der Zwischenablage. Füge es im Chat ein.'); }
+  catch (e) { inform('Nicht kopiert', 'Bitte den Text unten markieren und kopieren.'); }
+}
+
+/* ---------- Seite und Fenster wie ‚Tag‘ ---------- */
+function render() {
+  const rows = Array.from({ length: 60 }, (_, i) => `<tr data-n="${i + 1}"><td>Tag ${i + 1}</td><td>Verlauf des Tages mit ein paar Worten, damit die Zeile wie im Reiselogbuch aussieht.</td><td>Quartier ${i + 1}</td></tr>`).join('');
+  app.innerHTML = `
+    <div class="nb" id="bar"><div class="nb1"><span></span><div class="nb-title">Messung Tastatur</div><div class="r"></div></div></div>
+    <h1>Messung Tastatur (A-18)</h1>
+    <div class="step"><div class="step-head"><label>Versuch</label></div>
+      <div class="versuch">${Object.entries(VERSUCHE).map(([k, l]) => `<button type="button" data-v="${k}" class="${k === versuch ? 'on' : ''}">${l}</button>`).join('')}</div>
+      <p class="hint">Zeile antippen, im Fenster in ‚Verlauf‘ tippen, Tastatur abwarten, Fenster schließen, dann ‚Protokoll kopieren‘ und im Chat einfügen.</p>
+      <button type="button" id="kopieren">Protokoll kopieren</button>
+      <div id="protokoll"></div></div>
+    <table class="days"><thead><tr><th>Tag</th><th>Verlauf</th><th>Quartier</th></tr></thead><tbody>${rows}</tbody></table>`;
+  app.querySelectorAll('[data-v]').forEach(b => b.onclick = () => {
+    versuch = b.dataset.v;
+    try { sessionStorage.setItem('messung.versuch', versuch); } catch (e) { /* ohne Speicher */ }
+    app.querySelectorAll('[data-v]').forEach(x => x.classList.toggle('on', x === b));
+  });
+  app.querySelector('#kopieren').onclick = kopiere;
+  app.querySelectorAll('tbody tr').forEach(tr => tr.onclick = () => {
+    offen = tr.dataset.n;
+    setOpener(`#app tr[data-n="${tr.dataset.n}"]`);
+    openDialog(`<form method="dialog">${dlgHead(`Tag ${tr.dataset.n}`)}
+      <div class="dlg-body">
+        <div class="step"><div class="step-head"><label>Wetter</label></div><p class="hint">☀️ 🌤️ ⛅ 🌧️</p></div>
+        <div class="step"><div class="step-head"><label for="fProgram">Verlauf</label></div>
+          <textarea id="fProgram" placeholder="Wie ist der Tag verlaufen?">Frühstück im Hotel\nStadtrundgang\nAbendessen</textarea></div>
+        <div class="step"><div class="step-head"><label for="fComment">Wie war was?</label></div>
+          <textarea id="fComment" placeholder="Ein paar Worte"></textarea></div>
+        <div class="step"><div class="step-head"><label for="fQuarter">Quartier</label></div>
+          <div class="qrow"><input type="text" id="fQuarter" placeholder="z. B. Oaks Townsville Hotel"><input type="text" id="fPlace" placeholder="Ort für Google Maps"></div></div>
+      </div></form>`, true);
+    dlgDirty = () => false;
+    dlg.onclose = zeige;
+  });
+  markOpener();
+}
+applyTheme();
+render();
+</script>
+</body>
+</html>
