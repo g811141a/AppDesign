@@ -118,3 +118,11 @@ Reiselogbuch 3.20.1). Speichern abgeschaltet (`setItem`/`removeItem`/`clear` ohn
 ‚Messung – speichert nicht‘ unten links mit ‚Protokoll kopieren‘. Protokoll zusätzlich: Höhe des Fensters, wie weit sein Inhalt
 gerollt ist, jeder Aufruf von `placeDialogs`, jede Eingabe, Rollen der Seite und im Fenster; jede Eingabe verlängert um 1,5 s.
 Geprüft in Chromium und WebKit: Daten sichtbar, Speicher nach Änderung unverändert, Protokoll vollständig.
+
+**Messung 3 – Kopie der App, iPad quer 1194 × 802, iOS 26.6.2, Safari – Eindruck: ruhig.**
+Tastatur: Größe nach 132 ms (802 → 374, Fenster sofort 354 hoch), Safari rollt die Seite nach 153 ms um 190 px, das Fenster
+steht 4 ms später wieder richtig (−180 → 11). Nach 350 ms rollt der Inhalt des Fensters einmal 62 px zum Feld. Beim Tippen
+(10 s, 17 Eingaben, viermal Feld neu angetippt) ruft jede Eingabe `placeDialogs` auf, das Fenster bleibt aber auf 11 px,
+die Seite dahinter steht still; der Inhalt rollt nur in kleinen Schritten mit dem Text (62 → 71 → 95 → 119).
+Befund: **auch in der echten App mit echten Daten ruhig.** Offener Unterschied zur Rückmeldung T-91: die App läuft beim
+Nutzer vom Home-Bildschirm (ohne Safari-Leisten), die Messung lief im Safari-Tab.
