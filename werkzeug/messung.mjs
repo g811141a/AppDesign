@@ -1,15 +1,19 @@
-// AppDesign 4.17.0 · Zeile ‚Zeit und Token‘ aus den Sitzungsdaten (A-12, Fall-Liste arbeit/A-12 Fall-Liste.md M-1 bis M-14;
+// AppDesign 4.22.0 · Zeile ‚Zeit und Token‘ aus den Sitzungsdaten (A-12, Fall-Liste arbeit/A-12 Fall-Liste.md M-1 bis M-14;
 // Zusammenarbeit allgemein §2). Claude ruft es am Ende jeder Antwort auf und übernimmt die Zeile unverändert – nie schätzen.
 //   node werkzeug/messung.mjs [--datei <sitzung.jsonl>] [--jetzt <ISO-Zeit>]
 // Zeit: ab der letzten Nachricht des Nutzers bis jetzt, ohne Wartezeit in Auswahlfenstern (M-1 bis M-4).
 // Token: alle Modell-Aufrufe zwischen der vorletzten und der letzten Nachricht des Nutzers, je Aufruf einmal (M-5, Fund 2);
 // ‚neu‘ = Eingabe + Ausgabe, ‚aus Zwischenspeicher‘ = gelesen, ‚geschrieben‘ = in den Zwischenspeicher geschrieben.
+// Kontext (seit 4.22.0, A-20, Fall-Liste arbeit/A-20 Fall-Liste.md K-1 bis K-12): Größe der Sitzung = Eingabe + gelesen +
+// geschrieben des letzten eigenen Modell-Aufrufs (nicht die Summe der Antwort, nicht die Hilfsagenten); ab GRENZE oder nach einer
+// automatischen Zusammenfassung ‚⚠ Übergabe fällig‘ (Zusammenarbeit 0 Nr. 13).
 // Rückgabewert 0 = Zeile ausgegeben, 1 = keine Sitzungsdaten (M-9).
 import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const PROJEKTE = '/root/.claude/projects';
+export const GRENZE = 300000;
 
 // M-7/M-8: Datei der Sitzung – bei mehreren Ordnern (Neustart) die zuletzt geänderte; ohne Kennung die neueste überhaupt.
 export function sitzungsdatei(kennung = process.env.CLAUDE_CODE_SESSION_ID, wurzel = PROJEKTE) {
@@ -83,7 +87,12 @@ export function messe(zeilen, jetzt = Date.now()) {
       token.geschrieben += u.cache_creation_input_tokens || 0;
     }
   }
-  return { ms, token, ab: nachrichten.at(-1).timestamp };
+  // K-4/K-6/K-8: Kontext des letzten eigenen Modell-Aufrufs; K-7: nach einer Zusammenfassung immer Übergabe fällig
+  const aufruf = zeilen.findLast(z => z.type === 'assistant' && !z.isSidechain && z.message?.usage && (!z.timestamp || zeit(z) <= jetzt));
+  const u = aufruf?.message.usage;
+  const kontext = u ? (u.input_tokens || 0) + (u.cache_read_input_tokens || 0) + (u.cache_creation_input_tokens || 0) : null;
+  const faellig = zeilen.some(z => z.isCompactSummary) || (kontext ?? 0) >= GRENZE;
+  return { ms, token, kontext, faellig, ab: nachrichten.at(-1).timestamp };
 }
 
 // M-10: ab 60 Minuten hh:mm:ss; M-11: Tausenderpunkt
@@ -93,9 +102,10 @@ export const dauer = ms => {
 };
 export const zahl = n => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 
-export function zeile({ ms, token }) {
+export function zeile({ ms, token, kontext = null, faellig = false }) {
   const t = token ? `${zahl(token.neu)} neu · ${zahl(token.gelesen)} aus Zwischenspeicher · ${zahl(token.geschrieben)} geschrieben` : '–';
-  return `<sub>⏱ ${dauer(ms)} · Token vorige Antwort: ${t}</sub>`;
+  const k = `Kontext ${kontext === null ? '–' : zahl(kontext)}${faellig ? ' ⚠ Übergabe fällig' : ''}`;
+  return `<sub>⏱ ${dauer(ms)} · Token vorige Antwort: ${t} · ${k}</sub>`;
 }
 
 export function hauptprogramm(argv = process.argv.slice(2), env = process.env) {

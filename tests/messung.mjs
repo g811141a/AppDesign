@@ -1,10 +1,11 @@
-// AppDesign 4.17.0 · Prüfung des Werkzeugs werkzeug/messung.mjs (A-12, Fall-Liste arbeit/A-12 Fall-Liste.md M-1 bis M-14)
+// AppDesign 4.22.0 · Prüfung des Werkzeugs werkzeug/messung.mjs (A-12, Fall-Liste arbeit/A-12 Fall-Liste.md M-1 bis M-14;
+// A-20, arbeit/A-20 Fall-Liste.md K-1 bis K-12)
 // mit künstlichen Sitzungsdaten in einem Ordner auf Zeit. Aufruf: node tests/messung.mjs (braucht kein Playwright).
 // Gegenprobe: node tests/messung.mjs --gegenprobe – zählt jede Zeile einzeln (Fund 2) und muss rot werden.
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync, utimesSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { messe, zeile, dauer, zahl, sitzungsdatei, hauptprogramm } from '../werkzeug/messung.mjs';
+import { messe, zeile, dauer, zahl, sitzungsdatei, hauptprogramm, GRENZE } from '../werkzeug/messung.mjs';
 
 const gegenprobe = process.argv.includes('--gegenprobe');
 const fehler = [], pruefe = (ok, text) => { if (!ok) fehler.push(text); };
@@ -43,7 +44,7 @@ const daten = [
 
 // M-6: erste Antwort einer Sitzung – keine vorige Antwort
 let m = messe(daten.slice(0, 4), Date.parse(T(9)));
-pruefe(m && m.token === null && zeile(m) === '<sub>⏱ 00:09 · Token vorige Antwort: –</sub>', `M-6 erste Antwort: ${m && zeile(m)}`);
+pruefe(m && m.token === null && zeile(m) === '<sub>⏱ 00:09 · Token vorige Antwort: – · Kontext 1.502</sub>', `M-6 erste Antwort: ${m && zeile(m)}`);
 // M-2/M-3: Zeit der ersten Antwort ohne Fensterzeit (10 → 400 s), Neustart-Hinweis zählt nicht
 m = messe(daten.slice(0, 8), Date.parse(T(410)));
 pruefe(m.ms === 20000, `M-2 Wartezeit abgezogen (erwartet 00:20): ${dauer(m.ms)}`);
@@ -64,6 +65,22 @@ pruefe(m.ms === 60000, `M-14 mitten in der Antwort, Fenster offen (erwartet 01:0
 pruefe(dauer(3599000) === '59:59' && dauer(3600000) === '01:00:00' && dauer(7384000) === '02:03:04', 'M-10 hh:mm:ss ab 60 Minuten');
 pruefe(zahl(0) === '0' && zahl(999) === '999' && zahl(1234) === '1.234' && zahl(1234567) === '1.234.567', 'M-11 Tausenderpunkt');
 
+// K-1 bis K-11 Kontext des letzten eigenen Aufrufs (A-20)
+const kontext = (s, t) => messe(daten.slice(0, s), Date.parse(T(t)));
+m = kontext(12, 2025);
+pruefe(m.kontext === 3205 && !m.faellig && zeile(m).endsWith(' · Kontext 3.205</sub>'), `K-1/K-4 letzter Aufruf, nicht die Summe (erwartet 3.205): ${zeile(m)}`);
+m = kontext(14, 2060);
+pruefe(m.kontext === 3501, `K-5 Aufruf auf mehreren Zeilen einmal (erwartet 3.501): ${m.kontext}`);
+m = kontext(11, 2016);
+pruefe(m.kontext === 3205, `K-6 Hilfsagent zählt nicht zum Kontext (erwartet 3.205): ${m.kontext}`);
+m = messe(daten, Date.parse(T(2300)));
+pruefe(m.kontext === 3501 && m.faellig && zeile(m).endsWith('Kontext 3.501 ⚠ Übergabe fällig</sub>'), `K-7 nach Zusammenfassung Übergabe fällig: ${zeile(m)}`);
+m = messe([nutzer(0, 'Hallo')], Date.parse(T(1)));
+pruefe(m.kontext === null && !m.faellig && zeile(m) === '<sub>⏱ 00:01 · Token vorige Antwort: – · Kontext –</sub>', `K-8 noch kein Aufruf: ${zeile(m)}`);
+const grenze = g => messe([nutzer(0, 'Hallo'), ...modell(1, [{ type: 'text' }], [1, g - 1001, 1000, 50])], Date.parse(T(2)));
+pruefe(GRENZE === 300000 && !grenze(299999).faellig && grenze(300000).faellig, 'K-2/K-3 Grenze 300.000');
+pruefe(zeile({ ms: 0, token: null, kontext: 312400, faellig: true }) === '<sub>⏱ 00:00 · Token vorige Antwort: – · Kontext 312.400 ⚠ Übergabe fällig</sub>', 'K-11 Darstellung');
+
 // M-7/M-8/M-9 Dateien
 const dir = mkdtempSync(join(tmpdir(), 'messung-'));
 const schreibe = (pfad, zeilen, alter) => { writeFileSync(pfad, zeilen.map(z => typeof z === 'string' ? z : JSON.stringify(z)).join('\n') + '\n'); utimesSync(pfad, alter, alter); };
@@ -79,7 +96,7 @@ let [rc, out] = mitschreiben(() => hauptprogramm(['--datei', join(dir, 'fehlt.js
 pruefe(rc === 1 && /keine Sitzungsdaten/.test(out) && !/⏱/.test(out), `M-9 fehlende Datei: Rückgabewert ${rc}\n${out}`);
 schreibe(join(dir, 'kaputt.jsonl'), [...daten.slice(0, 4), '{kaputt', ...daten.slice(4, 12)], 1000);
 [rc, out] = mitschreiben(() => hauptprogramm(['--datei', join(dir, 'kaputt.jsonl'), '--jetzt', T(2025)], {}));
-pruefe(rc === 0 && /1 unlesbare Zeile/.test(out) && out.includes(`<sub>⏱ 00:25 · Token vorige Antwort: ${neu} neu · 5.500 aus Zwischenspeicher · 600 geschrieben</sub>`),
+pruefe(rc === 0 && /1 unlesbare Zeile/.test(out) && out.includes(`<sub>⏱ 00:25 · Token vorige Antwort: ${neu} neu · 5.500 aus Zwischenspeicher · 600 geschrieben · Kontext 3.205</sub>`),
   `M-9 kaputte Zeile übersprungen und genannt\n${out}`);
 // M-12 Nebenstrang im Ordner subagents wird mitgezählt
 mkdirSync(join(dir, 'neben/subagents'), { recursive: true });
