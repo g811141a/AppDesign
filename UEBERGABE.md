@@ -1,7 +1,7 @@
 # Übergabe an die nächste Sitzung
 
-**Stand 17.10.2026** · geschrieben in der Sitzung ‚Reiselogbuch 0009 – Startfrage‘
-(Zusammenarbeit allgemein 2.7.0, Abschnitt 0 Nr. 14). **Claude liest diese Datei zu Beginn jeder Sitzung zuerst.**
+**Stand 17.10.2026** · geschrieben in der Sitzung ‚Reiselogbuch 0010‘
+(Zusammenarbeit allgemein 2.8.0, Abschnitt 0 Nr. 14). **Claude liest diese Datei zu Beginn jeder Sitzung zuerst.**
 
 ## 1. Lagebild
 
@@ -10,16 +10,16 @@
 | Reiselogbuch | **3.20.1** (Fassung 4.21.1) | g811141a/ReiseLogBuch – `CHANGELOG.md`, `BACKLOG.md`, `PROMPT.md` |
 | AppDesign (ui.js, design.css, tests; feste Fassung `fassung/4.22.0/`) | **4.22.0** | g811141a/AppDesign – `CHANGELOG.md`, `BACKLOG.md` |
 | ReiseLogBuch-Import (privat) | 1.2.1 (unverändert) | g811141a/ReiseLogBuch-Import – `README.md`, `PROMPT.md`, `CLAUDE.md`, `ERKENNTNISSE.md`, `werkzeug/pruefen.mjs` |
-| Designrichtlinie allgemein | **4.21.1** (neu R-5.5, R-7.4; erweitert R-3.2, R-8.1) | `README - Designrichtlinie allgemein.md` |
+| Designrichtlinie allgemein | **4.22.0** (keine Regeländerung) | `README - Designrichtlinie allgemein.md` |
 | Designrichtlinie Reiselogbuch | 3.20.1 | im Repo ReiseLogBuch |
 | Zusammenarbeit allgemein | **2.8.0** (§2 Kontext in der Zeile Zeit und Token) | `README - Zusammenarbeit allgemein.md` |
 
-- **Chatnummer:** die nächste Sitzung heißt **Reiselogbuch 0010** (Zusammenarbeit 0 Nr. 13); die danach 0011.
+- **Chatnummer:** die nächste Sitzung heißt **Reiselogbuch 0011** (Zusammenarbeit 0 Nr. 13); die danach 0012.
 - **Offene Prüfpunkte:** keine – P-50 geprüft (A-20 abgeschlossen).
-- **Nächste Version (bereit):** keine. A-20 gebaut in Sitzung 0010 (AppDesign 4.22.0, nur Werkzeug).
+- **Nächste Version (bereit):** keine.
 - **Verworfen:** A-18 / T-91 (Tastatur im Fenster ‚Tag‘) – vom Nutzer in 0010 beendet, Messseiten entfernt (E-42 / E-89);
   **nicht wieder aufgreifen**, außer der Nutzer bringt es selbst.
-- **In Klärung:** **A-19 / T-92** (Prio 2) – Suche über alle
+- **Nächstes Thema:** **A-19 / T-92** (jetzt Spitze, Prio 2) – Suche über alle
   Reiselogbücher, entschieden **Variante C** (`arbeit/T-92 Vorschläge.md`); offen: Platz des Feldes, Zählweise.
   T-06 (Prio 3), A-01 (später).
 - **Zeit und Token:** am Ende jeder Antwort `node ../AppDesign/werkzeug/messung.mjs`, Zeile unverändert übernehmen.
@@ -29,6 +29,18 @@
 - **Erinnerung:** ‚Backlog-Erinnerung (AppDesign und Reiselogbuch)‘ montags 8:58.
 
 ## 2. Ergebnisse
+
+**Sitzung ‚Reiselogbuch 0010‘:**
+- **AppDesign 4.22.0 (A-20, P-50 ok):** `werkzeug/messung.mjs` – die Zeile endet mit ‚Kontext N‘ (letzter eigener Aufruf),
+  ab 300.000 oder nach Zusammenfassung ‚⚠ Übergabe fällig‘; Zusammenarbeit 2.8.0. Reiselogbuch blieb auf Fassung 4.21.1.
+- **A-18 / T-91 verworfen:** Messungen am iPad (Messseite, Kopie der App, Versuche A–D). Ergebnis: beim ersten Hochfahren
+  der Tastatur rollt Safari die Seite (Fenster und Tabelle fahren mit) – **unabhängig von der Lage des Feldes**; Feld vorab
+  nach oben (D) half nicht. Nutzer: Thema vergessen, Messeinrichtungen entfernt (Ordner `messen/` gelöscht).
+- **Lehren aus 0010:** (1) Lokaler Zweig `main` kann nach dem Start veraltet sein (Sitzung stand auf losgelöstem HEAD) – vor
+  einem neuen Zweig `git fetch origin main` und vom Stand `origin/main` abzweigen. (2) GitHub Pages hält Seiten bis 10 min im
+  Zwischenspeicher – für Messungen einen Link mit `?neu=N` geben. (3) Eine Rückmeldung erst wörtlich klären (‚Zittern‘ hieß
+  ‚fährt mit hoch‘), bevor gemessen wird. (4) github.io ist aus der Cloud gesperrt (403); den Pages-Lauf über
+  `gh api repos/…/actions/runs?head_sha=…` prüfen.
 
 **Sitzung ‚Reiselogbuch 0009‘ – sechs Versionen, alle geprüft:**
 - **AppDesign 4.19.0 / Reiselogbuch 3.17.0:** R-5.5 Eingabetaste ‚Fertig‘ in einzeiligen Feldern (A-14, T-87); Fund: die
@@ -51,9 +63,8 @@ Frühere Sitzungen: siehe `VERLAUF.md` und Versionsgeschichten.
 
 ## 3. Nächster Schritt
 
-1. ~~P-50 prüfen~~ – geprüft in 0010, A-20 abgeschlossen.
-2. A-19 / T-92 Suche über alle Reiselogbücher (Variante C, Einzelheiten klären, Fall-Liste).
-3. Weitere alte Reiselogbücher konvertieren, sobald der Nutzer sie anhängt (Import-Repo, `PROMPT.md` vollständig lesen).
+1. A-19 / T-92 Suche über alle Reiselogbücher (Variante C, Einzelheiten klären, Fall-Liste).
+2. Weitere alte Reiselogbücher konvertieren, sobald der Nutzer sie anhängt (Import-Repo, `PROMPT.md` vollständig lesen).
 
 ## 4. Danach
 
