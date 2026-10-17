@@ -3,6 +3,24 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.19.0 – 17.10.2026 (Neben)
+
+AppDesign 4.19.0 · Designrichtlinie allgemein 4.19.0 · Zusammenarbeit allgemein 2.7.0 · geprüft mit Reiselogbuch 3.17.0
+
+A-14 (aus Reiselogbuch T-87): Eingabetaste in Eingabefeldern (neue Regel R-5.5, gilt für alle Apps; Fall-Liste
+`arbeit/A-14 T-88 Fall-Liste.md`).
+
+- **Einzeilige Felder (ui.js):** bekommen von selbst `enterkeyhint="done"` (Taste ‚Fertig‘, auch für später eingefügte
+  Felder über einen MutationObserver); die Eingabetaste bestätigt und schließt die Tastatur (`blur`). Ein Feld mit eigenem
+  `enterkeyhint` behält es; das Suchfeld (`type=search`) behält ‚Suchen‘ und seine eigene Eingabetaste.
+- **Fehler behoben:** In Fenstern, die ein Formular sind (`<form method="dialog">`), schickte die Eingabetaste das
+  Formular ab und schloss das Fenster. Jetzt bleibt es offen; gespeichert wird erst mit dem Häkchen.
+- **Mehrzeilige Felder:** Eingabetaste macht wie bisher einen Zeilenumbruch (HIG).
+- **Prüfung `checkEnterDone` (tests/ablauf.mjs):** alle sichtbaren einzeiligen Felder zeigen ‚Fertig‘, Eingabetaste nimmt
+  den Fokus, das Fenster bleibt offen, mehrzeilige Felder behalten Zeilenumbruch und Fokus – iPad quer und iPhone hoch,
+  Chromium und WebKit; Gegenprobe ohne die Änderung rot (8 Fehler).
+- Neue Regel **R-5.5**, Abschnitt 8; feste Fassung `fassung/4.19.0/`.
+
 ## 4.18.0 – 16.10.2026 (Neben)
 
 AppDesign 4.18.0 · Designrichtlinie allgemein 4.18.0 · Zusammenarbeit allgemein 2.7.0 · geprüft mit Reiselogbuch 3.16.0

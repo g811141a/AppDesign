@@ -1,6 +1,6 @@
 # AppDesign – Backlog (allgemeine Themen)
 
-**Stand 17.10.2026** · Aktuelle Version: AppDesign 4.18.0
+**Stand 17.10.2026** · Aktuelle Version: AppDesign 4.19.0
 
 Allgemeine Themen, die alle Apps betreffen. App-Themen stehen im Backlog der jeweiligen App.
 Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
@@ -11,15 +11,16 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Prio | Thema | bereit seit |
 |---|---|---|---|
-| A-14 | 1 | **Eingabetaste in Eingabefeldern** (neue Regel R-5.5, aus Reiselogbuch T-87): einzeilige Felder bestätigen mit der Eingabetaste und schließen die Tastatur (`enterkeyhint` passend: ‚Fertig‘, ‚Suchen‘), mehrzeilige Felder machen einen Zeilenumbruch und schließen mit Häkchen oder Tippen daneben (HIG); gemeinsam in `ui.js`, eine Prüfung | 17.10.2026 |
 
-**1 Punkt bereit**
+| – | – | zurzeit nichts bereit | – |
+
+**0 Punkte bereit**
 
 ## 1. Auf iPad und iPhone prüfen
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| – | – | zurzeit nichts zu prüfen | – |
+| A-14 | 1 | Eingabetaste ‚Fertig‘ (R-5.5) – geprüft mit Reiselogbuch 3.17.0, Prüfliste P-45 | prüfen |
 
 ## 2. Weitere Themen (in Klärung)
 
@@ -33,6 +34,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Thema | Version | Datum |
 |---|---|---|---|
+| E-31 | A-14 Eingabetaste in Eingabefeldern (R-5.5): einzeilige Felder ‚Fertig‘ schließt die Tastatur, Fenster bleiben offen (vorher schickte die Eingabetaste das Formular ab), mehrzeilige Zeilenumbruch; Prüfung `checkEnterDone` | AppDesign 4.19.0 | 17.10.2026 |
 | E-30 | Geprüft: P-44 alles in Ordnung (Reiselogbuch 3.16.0 mit AppDesign 4.18.0); **A-13 damit abgeschlossen** | AppDesign 4.18.0 | 17.10.2026 |
 | E-29 | A-13 Liste steht still (R-7.3): Scrollstand beim Öffnen eines Fensters gemerkt und beim Schließen wiederhergestellt, Zeile kurz hervorgehoben, nach ‹ › sichtbar gerollt – Ursache: Safari schiebt beim Öffnen der Tastatur die ganze Seite (Klärung `arbeit/A-13 Klärung und Fall-Liste.md`) | AppDesign 4.18.0 | 16.10.2026 |
 | E-28 | Geprüft: P-43 alles in Ordnung (Zeile aus `messung.mjs`); **A-12 damit abgeschlossen** | AppDesign 4.17.0 | 16.10.2026 |

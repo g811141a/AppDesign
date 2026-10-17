@@ -1,6 +1,6 @@
 # Designrichtlinie allgemein
 
-**Version 4.18.0** · Stand 16.10.2026
+**Version 4.19.0** · Stand 17.10.2026
 
 Allgemeine Gestaltungs- und Bedienregeln für alle iPad-Web-Apps von g811141a (seit 4.1.0 auch
 auf dem iPhone, Abschnitt 15.17).
@@ -252,6 +252,12 @@ heller).
 - Das Häkchen ist grau, bis etwas geändert wurde, dann blau. **Ein Tippen auf das Häkchen
   zeigt alle fehlenden Angaben** (falls etwas fehlt) und scrollt zur ersten.
 - **Textfelder wachsen mit dem Inhalt**; man muss nie innerhalb eines Feldes scrollen.
+- **Eingabetaste (seit 4.19.0, R-5.5):** In **einzeiligen** Feldern bestätigt die Eingabetaste die Eingabe und schließt
+  die Tastatur; die Taste heißt ‚Fertig‘ (`enterkeyhint="done"`), auch in Fenstern mit mehreren Feldern (kein ‚Weiter‘) –
+  das Fenster bleibt offen, gespeichert wird erst mit dem Häkchen. Das Suchfeld behält ‚Suchen‘ (nächster Treffer).
+  In **mehrzeiligen** Feldern macht die Eingabetaste einen Zeilenumbruch; die Tastatur schließt mit dem Häkchen bzw. x des
+  Fensters oder durch Tippen daneben (HIG). Ziffernfelder auf dem iPhone haben keine Eingabetaste – dort schließt ‚Fertig‘
+  bzw. ✓ in der Leiste über der Tastatur. Gebaut in `ui.js` für alle Felder, die App setzt nichts selbst.
 - **Datumsfelder sind so breit wie das Datum** und haben rechts ein eigenes Kalender-Icon
   (Lucide `calendar`, auf allen Geräten gleich, kurzer Abstand zum Datum); zwei zusammengehörige
   Daten mit grauer Beschriftung „Von“ · „Bis“ in einer Zeile.
@@ -905,6 +911,7 @@ Regel ersetzt oder ergänzt eine bestehende (Zusammenarbeit 0 Nr. 3) und bekommt
 | R-5.2 | **Texteingabe:** Großbuchstabe am Zeilenanfang und nach einem Vorschlag; Textfelder wachsen mit; Diktieren nur über die Mikrofon-Taste der Tastatur (kein eigener Knopf) | ablauf.mjs – `checkCapital` | iOS-Tastatur | R-07, R-17 |
 | R-5.3 | **Fehlermeldungen:** rot direkt unter dem Feld (Feld rot umrandet), erst nach einer Eingabe bzw. beim Häkchen; Pflichtfelder werden nicht gekennzeichnet | ablauf.mjs – `checkFieldErrors` | – | **neu** (bisher 8) |
 | R-5.4 | **Auswahl-Kapsel:** mehrere Auswahl-Schaltflächen in einer Kapsel, seitlich wischbar mit Verlauf am Rand; Markierung als eigene Form innen, Breite ändert sich nicht | hig.mjs – Verlauf am Rand, Breite beim Wählen | Wischen | **neu** (bisher 15.12) |
+| R-5.5 | **Eingabetaste (seit 4.19.0):** einzeilige Felder – ‚Fertig‘, die Eingabetaste schließt die Tastatur, ein Fenster bleibt offen; mehrzeilige Felder – Zeilenumbruch; Suchfeld – ‚Suchen‘ | ablauf.mjs – `checkEnterDone` | iOS-Tastatur (Beschriftung, iPhone-Ziffernfeld) | **neu** (A-14 aus Reiselogbuch T-87) |
 
 ### 6. Tabellen, Kästen, Ausgabe
 
@@ -975,6 +982,7 @@ Die alten Nummern R-01 bis R-52 (bis 4.11.4) gelten nicht mehr; sie stehen nur n
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 4.19.0 | 17.10.2026 | Neben | Neue Regel **R-5.5** (A-14 aus Reiselogbuch T-87): Eingabetaste in einzeiligen Feldern ‚Fertig‘ und schließt die Tastatur, in mehrzeiligen Zeilenumbruch – Abschnitt 8, Regelkatalog Thema 5, Prüfung `checkEnterDone` |
 | 4.18.0 | 16.10.2026 | Neben | Neue Regel **R-7.3** (A-13): Liste steht still, solange ein Fenster offen ist; danach wie vorher, Zeile kurz hervorgehoben, nach ‹ › nur so weit rollen wie nötig – Abschnitt 7, Regelkatalog Thema 7, Prüfung `checkListStill` |
 | 4.17.0 | 16.10.2026 | Neben | Keine Regeländerung; Werkzeug `werkzeug/messung.mjs` für die Zeile Zeit und Token (A-12, Zusammenarbeit 2.7.0) |
 | 4.16.1 | 15.10.2026 | Korrektur | Keine Regeländerung; Lauf-Werkzeug mit höchstens so vielen Browsern wie Kernen (A-10) |
