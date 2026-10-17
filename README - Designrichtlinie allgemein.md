@@ -1,6 +1,6 @@
 # Designrichtlinie allgemein
 
-**Version 4.21.0** · Stand 17.10.2026
+**Version 4.21.1** · Stand 17.10.2026
 
 Allgemeine Gestaltungs- und Bedienregeln für alle iPad-Web-Apps von g811141a (seit 4.1.0 auch
 auf dem iPhone, Abschnitt 15.17).
@@ -400,7 +400,8 @@ heller).
   (`data-day` bzw. `data-keep`) und den sichtbaren Anteil; nach dem Drehen rückt er ihn wieder an dieselbe Stelle. Tests
   bilden Safari nach (`overflow-anchor: none`), sonst verdeckt Chrome den Fehler. **Seit 4.21.0 (A-17)** gilt das für jede
   Änderung der Anordnung durch die App, z. B. Seitenleiste ein/aus: `keepPlace(() => { …; render(); })`. Steht oben kein
-  Eintrag (Ende der Seite: Fazit, Statistik), bleibt der Abstand zum Ende gleich; ganz oben bleibt ganz oben.
+  Eintrag (Ende der Seite: Fazit, Statistik), bleibt der Abstand zum Ende gleich; ganz oben bleibt ganz oben. **Seit
+  4.21.1** gilt das auch beim Drehen – ganz unten bleibt ganz unten.
 - **Position beim Öffnen (seit 4.21.0, R-7.4, A-16):** ein Eintrag öffnet **ganz oben**. Gibt die App einen ‚nächsten
   offenen‘ Eintrag an (Reiselogbuch: erster nicht erfasster Tag), steht er hervorgehoben **direkt unter dem Kopf** – unter
   der Leiste und einem haftenden Tabellenkopf –, nie in der Mitte; ist die Seite nicht so weit rollbar, ganz unten.
@@ -994,6 +995,7 @@ Die alten Nummern R-01 bis R-52 (bis 4.11.4) gelten nicht mehr; sie stehen nur n
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 4.21.1 | 17.10.2026 | Korrektur | R-8.1: auch beim Drehen bleibt am Ende der Seite der Abstand zum Ende (ganz unten bleibt ganz unten) – Prüfung `checkTurnEnd` |
 | 4.21.0 | 17.10.2026 | Neben | Neue Regel **R-7.4** Position beim Öffnen (A-16); **R-8.1** erweitert auf jede Änderung der Anordnung, auch Seitenleiste ein/aus (A-17) – Abschnitt 13, Regelkatalog Themen 7 und 8, Prüfungen `checkOpenAt`, `checkSideToggle` |
 | 4.20.0 | 17.10.2026 | Neben | R-3.2 erweitert (A-15): Kapsel ‚Nach oben / Ans Ende‘ auch im iPhone-Aufbau (Inhaltsansicht), ausgeblendet ohne Scrollen – Abschnitt 4, 15.17, Regelkatalog Thema 3 |
 | 4.19.0 | 17.10.2026 | Neben | Neue Regel **R-5.5** (A-14 aus Reiselogbuch T-87): Eingabetaste in einzeiligen Feldern ‚Fertig‘ und schließt die Tastatur, in mehrzeiligen Zeilenumbruch – Abschnitt 8, Regelkatalog Thema 5, Prüfung `checkEnterDone` |

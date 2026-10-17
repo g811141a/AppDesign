@@ -3,6 +3,20 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.21.1 – 17.10.2026 (Korrektur)
+
+AppDesign 4.21.1 · Designrichtlinie allgemein 4.21.1 · Zusammenarbeit allgemein 2.7.0 · geprüft mit Reiselogbuch 3.20.1
+
+Korrektur aus P-48/3 (Fall-Liste `arbeit/A-17 Korrektur Fall-Liste.md`).
+
+- **Fehler:** Drehen am Ende der Seite – die Seite stand danach nicht mehr am Ende. `rememberTop` fand oben keinen Eintrag
+  (`data-day`/`data-keep`) und merkte nichts; `restoreTop` tat nichts, Safari ließ die Seite irgendwo stehen.
+- **`topAnchor` (eine Stelle für Drehen und `keepPlace`):** steht oben kein Eintrag, wird der Abstand zum Ende gemerkt
+  (`{ rest }`) und nach dem Drehen bzw. Umschalten wiederhergestellt – ganz unten bleibt ganz unten.
+- **Warum die Prüfung es übersehen hat:** die Drehprüfung (hig.mjs) dreht in der Mitte; neu `checkTurnEnd` (tests/ablauf.mjs).
+  Gegenprobe ohne Korrektur rot (u. a. ‚zurückgedreht: 360 px vor dem Ende statt 0 px‘ – genau die Rückmeldung).
+- R-8.1 (Abschnitt 13) ergänzt; feste Fassung `fassung/4.21.1/`.
+
 ## 4.21.0 – 17.10.2026 (Neben)
 
 AppDesign 4.21.0 · Designrichtlinie allgemein 4.21.0 · Zusammenarbeit allgemein 2.7.0 · geprüft mit Reiselogbuch 3.20.0

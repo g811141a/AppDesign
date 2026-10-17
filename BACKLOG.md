@@ -1,6 +1,6 @@
 # AppDesign – Backlog (allgemeine Themen)
 
-**Stand 17.10.2026** · Aktuelle Version: AppDesign 4.21.0
+**Stand 17.10.2026** · Aktuelle Version: AppDesign 4.21.1
 
 Allgemeine Themen, die alle Apps betreffen. App-Themen stehen im Backlog der jeweiligen App.
 Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
@@ -21,7 +21,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| A-16, A-17 | 1 | Position beim Öffnen (R-7.4), Seitenleiste ein/aus (R-8.1) – geprüft mit Reiselogbuch 3.20.0, Prüfliste P-48 | prüfen |
+| A-17 | 1 | Korrektur 4.21.1: Drehen am Ende der Seite (R-8.1) – geprüft mit Reiselogbuch 3.20.1, Prüfliste P-49 | prüfen |
 
 ## 2. Weitere Themen (in Klärung)
 
@@ -37,6 +37,8 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Thema | Version | Datum |
 |---|---|---|---|
+| E-38 | Korrektur A-17: Drehen am Ende der Seite – Abstand zum Ende statt nichts (`topAnchor` mit `{ rest }`), Prüfung `checkTurnEnd` | AppDesign 4.21.1 | 17.10.2026 |
+| E-37 | Geprüft: P-48 – A-16 in Ordnung (**A-16 abgeschlossen**); A-17 Seitenleiste ein/aus in Ordnung, Drehen am Ende nicht ok → Korrektur 4.21.1 | AppDesign 4.21.0 | 17.10.2026 |
 | E-36 | A-16 Position beim Öffnen (R-7.4, `openAt`) und A-17 R-8.1 bei jeder Änderung der Anordnung (`keepPlace`, Seitenleiste ein/aus) | AppDesign 4.21.0 | 17.10.2026 |
 | E-35 | Geprüft: P-47 alles in Ordnung (Reiselogbuch 3.19.0 mit AppDesign 4.20.0); **A-15 damit abgeschlossen** | AppDesign 4.20.0 | 17.10.2026 |
 | E-34 | A-15 Kapsel ‚Nach oben / Ans Ende‘ auch im iPhone-Aufbau (Inhaltsansicht, nicht Startliste), ohne Scrollen ausgeblendet (`updateFab`); widerruft E-33 | AppDesign 4.20.0 | 17.10.2026 |

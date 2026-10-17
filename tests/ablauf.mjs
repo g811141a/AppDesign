@@ -203,6 +203,29 @@ export async function checkSideToggle(p, { toggle = '[data-side-toggle]', at = 0
   return errors;
 }
 
+// R-8.1 Drehen am Ende der Seite (seit 4.21.1, Korrektur aus P-48/3): steht oben kein Eintrag (Fazit, Statistik …), bleibt der
+// Abstand zum Ende gleich – ganz unten bleibt ganz unten. back: Abstand zum Ende vor dem Drehen (0 = ganz unten).
+// Gedreht wird hin und zurück; Safari nachgebildet (kein Scroll-Anker).
+export async function checkTurnEnd(p, { back = 0, where = '' } = {}) {
+  const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}R-8.1 ${t}`);
+  await p.addStyleTag({ content: 'html, body { overflow-anchor: none !important; }' });
+  const lage = () => p.evaluate(() => {
+    const edge = document.querySelector('.pnav, .nb')?.getBoundingClientRect().bottom || 0;
+    const e = [...document.querySelectorAll('#app [data-day], #app [data-keep]')].find(x => x.getClientRects().length && x.getBoundingClientRect().bottom > edge + 1);
+    return { tag: e ? e.dataset.day || e.dataset.keep : null, rest: Math.round(document.documentElement.scrollHeight - innerHeight - scrollY), y: Math.round(scrollY) };
+  });
+  await p.evaluate(b => scrollTo({ top: document.documentElement.scrollHeight - innerHeight - b, behavior: 'instant' }), back); await wait(p, 400);
+  const vor = await lage(), v = p.viewportSize();
+  if (vor.tag) { E(`Vorbereitung: oben steht noch ${vor.tag} – kein Fall ‚Ende der Seite‘ (Abstand ${back} zu groß)`); return errors; }
+  for (const [w, h, name] of [[v.height, v.width, 'gedreht'], [v.width, v.height, 'zurückgedreht']]) {
+    await p.setViewportSize({ width: w, height: h }); await wait(p, 800);
+    const n = await lage();
+    if (!n.tag && Math.abs(n.rest - vor.rest) > 2) E(`${name}: ${n.rest} px vor dem Ende statt ${vor.rest} px (gerollt ${n.y} px)`);
+    if (n.tag && back === 0) E(`${name}: nicht mehr am Ende – oben steht ${n.tag} (${n.rest} px vor dem Ende)`);
+  }
+  return errors;
+}
+
 // R-6.4 Ausgabe und Vorschau: immer hell, in voller Fensterbreite, seitlich wischbar, wenn breiter; Kapsel [PDF · Teilen].
 export async function checkPreview(p, { open, body = '#dlg .dlg-body.preview', where = '' } = {}) {
   const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}R-6.4 ${t}`);
