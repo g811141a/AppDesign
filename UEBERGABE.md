@@ -15,7 +15,7 @@
 | Zusammenarbeit allgemein | **2.8.0** (§2 Kontext in der Zeile Zeit und Token) | `README - Zusammenarbeit allgemein.md` |
 
 - **Chatnummer:** die nächste Sitzung heißt **Reiselogbuch 0010** (Zusammenarbeit 0 Nr. 13); die danach 0011.
-- **Offene Prüfpunkte:** **P-50** (AppDesign 4.22.0, A-20: Zeile endet mit ‚Kontext N‘) – im Chat prüfen.
+- **Offene Prüfpunkte:** keine – P-50 geprüft (A-20 abgeschlossen).
 - **Nächste Version (bereit):** keine. A-20 gebaut in Sitzung 0010 (AppDesign 4.22.0, nur Werkzeug).
 - **In Klärung:** **A-18 / T-91** (Prio 1) – iPad: Tastatur im Fenster ‚Tag‘ → Fenster **und** Tabelle springen, bis die
   Tastatur steht; Plan: erst eine kurze Messung auf dem iPad (wie verschiebt Safari den sichtbaren Bereich), dann Korrektur
@@ -52,7 +52,7 @@ Frühere Sitzungen: siehe `VERLAUF.md` und Versionsgeschichten.
 
 ## 3. Nächster Schritt
 
-1. **P-50 prüfen** (A-20, AppDesign 4.22.0 – erledigt in 0010).
+1. ~~P-50 prüfen~~ – geprüft in 0010, A-20 abgeschlossen.
 2. A-18 / T-91 Tastatur (Messung am iPad, dann Korrektur).
 3. A-19 / T-92 Suche über alle Reiselogbücher (Variante C, Einzelheiten klären, Fall-Liste).
 4. Weitere alte Reiselogbücher konvertieren, sobald der Nutzer sie anhängt (Import-Repo, `PROMPT.md` vollständig lesen).

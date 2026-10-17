@@ -17,7 +17,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| P-50 | 1 | **AppDesign 4.22.0 (A-20):** die Zeile Zeit und Token am Ende jeder Antwort endet mit ‚Kontext N‘ (ab 300.000 ‚⚠ Übergabe fällig‘) – im Chat prüfen | offen |
+| – | – | zurzeit nichts zu prüfen | – |
 
 ## 2. Weitere Themen (in Klärung)
 
@@ -33,6 +33,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Thema | Version | Datum |
 |---|---|---|---|
+| E-41 | Geprüft: P-50 in Ordnung (Zeile Zeit und Token mit Kontext); **A-20 damit abgeschlossen** | AppDesign 4.22.0 | 17.10.2026 |
 | E-40 | **A-20 gebaut:** Kontext in der Zeile Zeit und Token, ab 300.000 bzw. nach Zusammenfassung ‚⚠ Übergabe fällig‘ | AppDesign 4.22.0 | 17.10.2026 |
 | E-39 | Geprüft: P-49 alles in Ordnung (Reiselogbuch 3.20.1 mit AppDesign 4.21.1); **A-17 damit abgeschlossen** | AppDesign 4.21.1 | 17.10.2026 |
 | E-38 | Korrektur A-17: Drehen am Ende der Seite – Abstand zum Ende statt nichts (`topAnchor` mit `{ rest }`), Prüfung `checkTurnEnd` | AppDesign 4.21.1 | 17.10.2026 |
