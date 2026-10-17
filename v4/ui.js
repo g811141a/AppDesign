@@ -1,4 +1,4 @@
-// AppDesign 4.22.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
+// AppDesign 4.23.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
 // Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/fassung/X.Y.Z/ui.js"></script> (feste Fassung, R-10.3)
 // Seit 4.11.0 (R-10.3): ui.js und design.css immer mit ?v=<AppDesign-Version> einbinden (auch in sw.js) und beim Start
 // prüfen, ob genau diese Fassung geladen ist (AD_VERSION hier, --ad-version in design.css).
@@ -17,7 +17,7 @@
 
 'use strict';
 // Version der Bausteine (R-10.3): die App vergleicht sie beim Start mit der benötigten Fassung.
-const AD_VERSION = '4.22.0';
+const AD_VERSION = '4.23.0';
 /* ---------- Icons ---------- */
 
 // Schaltflächen-Icons aus Lucide (ISC-Lizenz), direkt eingebettet, damit die App offline funktioniert.
@@ -930,11 +930,13 @@ function revealRow(sel) {
   if (!el || !el.matches(KEEP_SEL) || !el.getClientRects().length) return;
   const head = el.closest('table')?.querySelector('thead');
   const th = head?.querySelector('th');   // der Tabellenkopf haftet über die Zellen (sticky), nicht über thead
-  const top = Math.max(keepEdge(), th && getComputedStyle(th).position === 'sticky' ? th.getBoundingClientRect().bottom : 0) + 6;
-  const vv = window.visualViewport, bottom = (vv ? vv.offsetTop + vv.height : innerHeight) - 6;
+  // Seit 4.23.0: ‚ganz sichtbar‘ ohne Abstand (1 px Spielraum) – die 6 px Abstand gelten nur als Ziel, wenn gerollt werden muss.
+  // Vorher rollte eine ganz sichtbare Zeile direkt unter dem Tabellenkopf um bis zu 6 px.
+  const edge = Math.max(keepEdge(), th && getComputedStyle(th).position === 'sticky' ? th.getBoundingClientRect().bottom : 0);
+  const vv = window.visualViewport, end = vv ? vv.offsetTop + vv.height : innerHeight;
   const r = el.getBoundingClientRect();
-  if (r.top < top) window.scrollBy({ top: r.top - top, behavior: 'instant' });
-  else if (r.bottom > bottom) window.scrollBy({ top: Math.min(r.bottom - bottom, r.top - top), behavior: 'instant' });
+  if (r.top < edge - 1) window.scrollBy({ top: r.top - edge - 6, behavior: 'instant' });
+  else if (r.bottom > end + 1) window.scrollBy({ top: Math.min(r.bottom - end + 6, r.top - edge - 6), behavior: 'instant' });
   if (!el.animate) return;
   const from = getComputedStyle(document.documentElement).getPropertyValue('--sel-bg').trim(), to = getComputedStyle(el).backgroundColor;
   const still = matchMedia('(prefers-reduced-motion: reduce)').matches;

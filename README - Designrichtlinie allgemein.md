@@ -1,6 +1,6 @@
 # Designrichtlinie allgemein
 
-**Version 4.22.0** · Stand 17.10.2026
+**Version 4.23.0** · Stand 17.10.2026
 
 Allgemeine Gestaltungs- und Bedienregeln für alle iPad-Web-Apps von g811141a (seit 4.1.0 auch
 auf dem iPhone, Abschnitt 15.17).
@@ -461,7 +461,8 @@ Verhalten · technischer Name). In AppDesign ist jede Komponente einmal programm
 
 ### 15.2 Suchfeld
 - **Apple:** [HIG – Search fields](https://developer.apple.com/design/human-interface-guidelines/search-fields)
-- **Zweck:** Suchen in der aktuellen Ansicht. **Technisch:** `.searchbox`, `.navgrp`.
+- **Zweck:** Suchen in der aktuellen Ansicht. **Technisch:** `.searchbox`, `.navgrp`. Seit 4.23.0 auch in der zentralen Liste
+  (15.4, ‚Suche in der Liste‘).
 - **Aufbau:** Lupe (search) · Eingabe „Suchen“ · Trefferanzeige · x-Schaltfläche;
   rechts daneben Kapsel-Gruppe chevron-up / chevron-down.
 - **Maße:** 44 px hoch, Kapsel; in der zweiten Zeile der Kopfzeile über die volle Breite,
@@ -498,7 +499,7 @@ Verhalten · technischer Name). In AppDesign ist jede Komponente einmal programm
 ### 15.4 Seitenleiste
 - **Apple:** [HIG – Sidebars](https://developer.apple.com/design/human-interface-guidelines/sidebars)
 - **Zweck:** zentrale Liste der App. **Technisch:** `#side`.
-- **Aufbau:** Kopf: Überschrift (20 px, fett, linksbündig) · Kapsel [plus | ellipsis] ·
+- **Aufbau:** Kopf: Überschrift (20 px, fett, linksbündig) · Kapsel [search | plus | ellipsis] (search seit 4.23.0) ·
   runde Schaltfläche panel-left (ausblenden); unter der Überschrift klein und grau die Anzahl
   (‚5 Reiselogbücher‘); der Kopf bleibt oben stehen. Darunter die Einträge
   als **Kacheln** (wie auf dem iPhone): Titel fett, darunter grau Zeitraum · Status, rechts ›;
@@ -506,9 +507,19 @@ Verhalten · technischer Name). In AppDesign ist jede Komponente einmal programm
   unter dem Kopf und **hinter der Backup-Kachel durch** (keine starre Begrenzung). Die Liste behält
   beim Neuaufbau ihre Position; der gewählte Eintrag bleibt sichtbar, auch wenn er erst durch
   Wischen sichtbar wurde. Unten fest
-  **immer** die Backup-Kachel ‚Letztes Backup erstellt am …‘ – gelb mit blauem Knopf, solange heute
+  **immer** die Backup-Kachel ‚Letztes Backup erstellt am …‘ (auch während der Suche) – gelb mit blauem Knopf, solange heute
   noch kein Backup erstellt wurde, sonst weiß mit normalem Knopf (`.ok`).
   Darunter, solange die App offline arbeitet, grau ‚Offline – alles bleibt auf diesem Gerät‘ (seit 4.15.0, 15.20).
+- **Suche in der Liste (seit 4.23.0, R-2.3, A-19 aus Reiselogbuch T-92):** Kapsel im Kopf [search | plus | ellipsis]
+  (search nur, wenn es Einträge gibt). search blendet unter dem Kopf eine Suchzeile ein (wie 15.2, Platzhalter ‚In allen
+  suchen‘, x, **ohne** Pfeile; `#side .side-search`), Fokus im Feld. Beim Tippen bleiben nur Einträge mit Treffer; jede
+  Kachel zeigt statt ‚geändert am …‘ ‚N Treffer‘ – gezählt **je Fundstelle** genau wie ‚1 von N‘ im Eintrag (nur sichtbare
+  Felder); unter der Überschrift ‚2 von 5 <Einträgen>‘; ohne Treffer ‚Keine Treffer‘. Antippen öffnet den Eintrag mit
+  **gefüllter Suche**: erster Treffer hervorgehoben direkt unter der Suchzeile, ‚1 von N‘ (statt der Position beim Öffnen,
+  R-7.4). Die Liste bleibt gefiltert, bis x oder search die Suche beendet; Neuladen beginnt ohne Suche. Ein daneben
+  offener Eintrag (iPad) bleibt unberührt, solange seine Suche zu ist; **sind beide Suchfelder offen, wird jede Eingabe
+  (auch x) 1:1 ins andere übernommen**. Die Eingabetaste ‚Suchen‘ schließt nur die Tastatur (R-5.5). Vorbild: Notizen
+  (dort steht das Feld immer unter dem Titel; hier hinter der Lupe wie im Eintrag – bewusst, Entscheidung des Nutzers).
 - **Geändert am (seit 4.9.0):** jede Kachel zeigt als dritte Zeile klein und grau (13 px)
   ‚geändert am TT.MM.JJJJ um hh:mm · iPad‘ bzw. ‚· iPhone‘ (`small.chg`); das Gerät liefert
   `deviceName()`. Ohne bekannte Änderung entfällt die Zeile.
@@ -894,7 +905,7 @@ Regel ersetzt oder ergänzt eine bestehende (Zusammenarbeit 0 Nr. 3) und bekommt
 |---|---|---|---|---|
 | R-2.1 | **Leisten stehen fest – keinen Millimeter:** Kopfzeile, Seitenkopf, Seitenleisten-Kopf, mit und ohne Suchzeile, beim Wischen, am Rand, bei offener und beim Schließen der Tastatur; nichts federt; erstes Wischen bei offener Tastatur schließt nur die Tastatur | hig.mjs – `barStill`: Lage der Leiste beim Scrollen gemessen, auch mit nachgebildeter Tastatur | Federn, Tastatur | R-05, R-28 |
 | R-2.2 | **Titel in der Leiste:** Titel einer Inhaltsseite steht in der Leiste; unter dem Titel der Seitenleiste bzw. Startliste klein und grau die Anzahl | hig.mjs | – | R-09, R-21 |
-| R-2.3 | **Suche:** Suchzeile unter der Leiste über die volle Breite; Treffer ‚3 von 57‘ bzw. ‚0‘; nach kurzer Pause steht der Treffer direkt unter der Suchzeile; Pfeile ohne Umlauf; gefiltert auf Einträge mit Treffern; gleich auf iPad und iPhone | ablauf.mjs – `checkSearch` | – | **neu** (bisher nur 15.2) |
+| R-2.3 | **Suche:** Suchzeile unter der Leiste über die volle Breite; Treffer ‚3 von 57‘ bzw. ‚0‘; nach kurzer Pause steht der Treffer direkt unter der Suchzeile; Pfeile ohne Umlauf; gefiltert auf Einträge mit Treffern; gleich auf iPad und iPhone. **Seit 4.23.0 auch in der zentralen Liste** (Lupe im Kopf): filtert die Einträge, Kachel ‚N Treffer‘ je Fundstelle wie ‚1 von N‘, Öffnen mit gefüllter Suche, beide Suchfelder offen = 1:1, ‚Keine Treffer‘ (15.4) | ablauf.mjs – `checkSearch`, `checkListSearch` | – | **neu** (bisher nur 15.2) |
 
 ### 3. Schaltflächen
 
@@ -995,6 +1006,7 @@ Die alten Nummern R-01 bis R-52 (bis 4.11.4) gelten nicht mehr; sie stehen nur n
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 4.23.0 | 17.10.2026 | Neben | **R-2.3 erweitert (A-19 aus Reiselogbuch T-92):** Suche in der zentralen Liste – Lupe im Kopf der Seitenleiste/Startliste, Filter, ‚N Treffer‘ je Fundstelle, Öffnen mit gefüllter Suche, beide Suchfelder 1:1 – Abschnitt 15.2, 15.4, Regelkatalog Thema 2, Prüfung `checkListSearch` |
 | 4.22.0 | 17.10.2026 | Neben | Keine Regeländerung – Werkzeug `messung.mjs` zeigt den Kontext (A-20, Zusammenarbeit 2.8.0) |
 | 4.21.1 | 17.10.2026 | Korrektur | R-8.1: auch beim Drehen bleibt am Ende der Seite der Abstand zum Ende (ganz unten bleibt ganz unten) – Prüfung `checkTurnEnd` |
 | 4.21.0 | 17.10.2026 | Neben | Neue Regel **R-7.4** Position beim Öffnen (A-16); **R-8.1** erweitert auf jede Änderung der Anordnung, auch Seitenleiste ein/aus (A-17) – Abschnitt 13, Regelkatalog Themen 7 und 8, Prüfungen `checkOpenAt`, `checkSideToggle` |

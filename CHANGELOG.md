@@ -3,6 +3,31 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.23.0 – 17.10.2026 (Neben)
+
+AppDesign 4.23.0 · Designrichtlinie allgemein 4.23.0 · Zusammenarbeit allgemein 2.8.0 · geprüft mit Reiselogbuch 3.21.0
+
+A-19 (aus Reiselogbuch T-92, Variante C; Vorschläge `arbeit/T-92 Vorschläge.md`, Fall-Liste `arbeit/T-92 Fall-Liste.md`).
+
+- **R-2.3 erweitert – Suche in der zentralen Liste:** Lupe im Kopf der Seitenleiste bzw. Startliste öffnet eine Suchzeile
+  (wie 15.2, ohne Pfeile); nur Einträge mit Treffer, je Kachel ‚N Treffer‘ (je Fundstelle, gleich wie ‚1 von N‘ im
+  Eintrag), ‚2 von 5 …‘ unter der Überschrift, ‚Keine Treffer‘; Antippen öffnet mit gefüllter Suche; die Liste bleibt
+  gefiltert bis x bzw. Lupe; ein offener Eintrag bleibt unberührt, außer seine Suche ist offen – dann laufen beide Felder
+  1:1 mit (Zusatz des Nutzers); Backup-Kachel bleibt.
+- **design.css:** `#side .side-search` (Suchzeile unter dem Kopf, bleibt stehen).
+- **Prüfung `checkListSearch` (tests/ablauf.mjs):** Lupe und Fokus, Filter, ‚N Treffer‘ = ‚1 von N‘, Öffnen mit Begriff,
+  1:1 in beide Richtungen (iPad) bzw. zurück gefiltert (iPhone, iPad hoch), x, ‚Keine Treffer‘, Lupe schließt; Gegenprobe
+  (Zählung +1, ohne 1:1) rot.
+- **Korrektur R-7.3 (Liste steht still, ui.js `revealRow`):** Nach dem Schließen eines Fensters rollte eine ganz sichtbare
+  Zeile, die 0–6 px unter Leiste bzw. Tabellenkopf stand, um bis zu 6 px nach – der Abstand, den die App beim Rollen
+  lässt, galt auch für die Frage ‚ganz sichtbar?‘. Jetzt: ganz sichtbar ohne Abstand (1 px Spielraum), die 6 px nur als
+  Ziel, wenn wirklich gerollt werden muss (oben wie unten). Gefunden in WebKit, iPad quer (Scrollstand 1200 → 1195).
+- **Warum die Prüfung es bisher nicht sah:** `checkListStill` nahm die erste Zeile unter dem Kopf, wo sie gerade lag. Bei
+  340 px Seitenleiste lag dort zufällig keine Zeile 0–6 px unter dem Kopf; erst die Lupe (Seitenleiste 401 px) verschob die
+  Zeilen. Die Prüfung rollt jetzt zusätzlich eine Zeile gezielt **2 px unter den Kopf** (Häkchen) – unabhängig von der
+  Breite der Seitenleiste; Gegenprobe mit dem alten `revealRow` rot (Chromium und WebKit, iPad und iPhone).
+- Abschnitt 15.2, 15.4, Regelkatalog Thema 2; feste Fassung `fassung/4.23.0/`.
+
 ## 4.22.0 – 17.10.2026 (Neben)
 
 AppDesign 4.22.0 · Designrichtlinie allgemein 4.22.0 · Zusammenarbeit allgemein 2.8.0 · nur Werkzeug, Reiselogbuch bleibt auf Fassung 4.21.1
