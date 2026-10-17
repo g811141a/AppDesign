@@ -87,6 +87,20 @@ sichtbar unruhig. **Versuch B scheidet aus.** Umgekehrt heißt das: Unruhe entst
 nicht im selben Bild richtig steht. In der App muss also etwas das Setzen verzögern oder danach noch einmal verschieben
 (z. B. wachsende Textfelder, ResizeObserver, `refreshOk`, mehr Inhalt) – das zeigt nur die Messung in der echten App.
 
+**Messung 2c – Versuch C, iPad quer 1194 × 702 – Eindruck: ruhig.**
+
+```
+    ms	vv-Höhe	vv-oben	scrollY	Fenster	Zeile	Feld sichtbar	Auslöser
+    1	702	0	0	10	560	ja	Antippen
+  137	274	162	162	-152	398	nein	vv resize
+  139	274	162	162	10	398	ja	vv scroll
+  362	274	162	162	10	398	ja	350 ms (scrollIntoView)
+```
+
+Befund: wie A – das Fenster steht 2 ms nach der Meldung wieder richtig. Hier lag die Seite ganz oben (`scrollY` 0) und
+rollte trotzdem 162 px. **A und C sind auf der Messseite gleich ruhig**; C bringt nur einen Vorteil, wenn das Fenster in der
+App beim Tippen wächst (oben verankert wandert es dann nicht) – auch das zeigt erst Messung 3.
+
 ## Vorschlag für die nächste Messung (Messung 3)
 
 Die Messseite ist ruhig, die App springt. Deshalb wird **in der echten App** gemessen:
