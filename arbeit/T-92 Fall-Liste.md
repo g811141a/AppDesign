@@ -33,7 +33,10 @@ das Reiselogbuch mit gefüllter Suche, erster Treffer markiert, ‚1 von 12‘ �
 | F-17 | alle | hell / dunkel | – | Suchzeile und ‚N Treffer‘ in beiden Darstellungen lesbar (Grundregeln) |
 | F-18 | alle | Abgleich (iCloud) ändert ein Reiselogbuch während der Suche | – | Liste und Zahlen neu, Begriff bleibt |
 | F-19 | alle | Neuladen der Seite | Suche aktiv | Suche beginnt leer (wie im Reiselogbuch, nichts gespeichert) |
+| F-21 | iPad | beide Suchfelder offen (Liste und Reiselogbuch), in einem tippen oder ⓧ | – | Begriff 1:1 im anderen Feld; Cursor bleibt im Feld, in dem getippt wird (Zusatz des Nutzers 17.10.2026) |
 | F-20 | alle | Begriff im Reiselogbuch ändern, dann zurück | ‚Paella‘ → ‚Tapas‘ | Liste ist nach ‚Tapas‘ gefiltert – ein Begriff für beide Suchen (entschieden, Frage 3) |
+
+**Muster bestätigt 17.10.2026** (Bilder 1–8: iPad quer hell/dunkel, iPad hoch, iPhone), mit Zusatz F-21.
 
 ## Nur am Gerät (Prüfliste)
 

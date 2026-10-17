@@ -11,7 +11,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Prio | Thema | bereit seit |
 |---|---|---|---|
-| – | – | zurzeit nichts bereit | – |
+| A-19 | 2 | **Suche in der zentralen Liste (aus Reiselogbuch T-92, Variante C):** Lupe in der Kopfzeile der Liste → Suchzeile (wie 15.2, ohne Pfeile); filtert die Einträge, Kachel zeigt die Trefferzahl je Fundstelle, Öffnen übergibt den Begriff an die Suche im Eintrag; sind beide Suchfelder offen, laufen sie 1:1 mit – Erweiterung von R-2.3, 15.2, 15.4 (`arbeit/T-92 Fall-Liste.md`, Muster bestätigt) | 17.10.2026 |
 
 ## 1. Auf iPad und iPhone prüfen
 
@@ -23,7 +23,6 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| A-19 | 2 | **Suche in der zentralen Liste (aus Reiselogbuch T-92, Variante C):** Suchfeld in Startliste/Seitenleiste filtert die Einträge, Kachel zeigt die Trefferzahl, Öffnen übergibt den Begriff an die Suche im Eintrag – Erweiterung von R-2.3, 15.2, 15.4 (`arbeit/T-92 Vorschläge.md`); entschieden 17.10.2026 (0011): Lupe in der Kopfzeile, Zählung je Fundstelle | in Klärung |
 | A-01 | 3 | Startseite g811141a.github.io mit allen Apps (früher S-03) | später |
 
 ---
