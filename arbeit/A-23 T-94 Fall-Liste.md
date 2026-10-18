@@ -38,7 +38,7 @@
 
 **Heute:** vier Vorschläge (Weiterfahrt nach …, Rundgang durch …, Besichtigung …, Freetour …), je an der Cursorstelle als
 eigene Zeile, danach groß weiter (`capNext`).
-**Neu:** dahinter **‚Tour …‘** (wie die anderen, Text ‚Tour ‘) und **‚Sonstiges …‘** (nur neue Zeile am Ende, Cursor dorthin).
+**Neu:** dahinter **‚Tour …‘** (wie die anderen, Text ‚Tour ‘) und **‚Sonstiges …‘** (Leerzeile **am Anfang** des Felds, Cursor dorthin – geändert vom Nutzer 18.10.2026, vorher ‚am Ende‘).
 
 | Nr. | Fall | Erwartung | Prüfung |
 |---|---|---|---|
@@ -46,12 +46,12 @@ eigene Zeile, danach groß weiter (`capNext`).
 | V2 | ‚Tour …‘ im leeren Feld, dann ‚wien‘ tippen | ‚Tour Wien‘ | verlauf-vorschlaege |
 | V3 | ‚Tour …‘ mit Cursor mitten im Text | wie die anderen: eigene Zeile an der Cursorstelle | verlauf-vorschlaege |
 | V4 | ‚Sonstiges …‘ im leeren Feld | nichts eingefügt, Cursor im Feld, Tastatur offen | verlauf-vorschlaege |
-| V5 | ‚Sonstiges …‘, Text endet ohne Zeilenumbruch | ein Zeilenumbruch am Ende, Cursor dahinter | verlauf-vorschlaege |
-| V6 | ‚Sonstiges …‘, letzte Zeile schon leer | **kein** zweiter Umbruch, Cursor ans Ende | verlauf-vorschlaege |
-| V7 | ‚Sonstiges …‘ mit Cursor mitten im Text | Zeile trotzdem **am Ende**, Text davor unverändert | verlauf-vorschlaege |
-| V8 | ‚Sonstiges …‘ zweimal hintereinander | nur eine neue Zeile (wie V6) | verlauf-vorschlaege |
-| V9 | Nach ‚Sonstiges …‘ ‚museum‘ tippen | ‚Museum‘ (groß, wie nach den anderen) | verlauf-vorschlaege |
-| V10 | Feld wächst mit, neue Zeile sichtbar (iPad und iPhone, Tastatur offen) | Cursorzeile sichtbar | verlauf-vorschlaege |
+| V5 | ‚Sonstiges …‘, Text vorhanden | eine Leerzeile **am Anfang**, Cursor dort, Text darunter unverändert | verlauf-vorschlaege |
+| V6 | ‚Sonstiges …‘, erste Zeile schon leer | **keine** zweite Leerzeile, Cursor an den Anfang | verlauf-vorschlaege |
+| V7 | ‚Sonstiges …‘ mit Cursor mitten oder am Ende des Texts | Zeile trotzdem **am Anfang** | verlauf-vorschlaege |
+| V8 | ‚Sonstiges …‘ zweimal hintereinander | nur eine Leerzeile (wie V6) | verlauf-vorschlaege |
+| V9 | Nach ‚Sonstiges …‘ ‚museum‘ tippen | ‚Museum‘ in der ersten Zeile (groß, wie nach den anderen) | verlauf-vorschlaege |
+| V10 | Feld wächst mit, Cursorzeile (oben) sichtbar (iPad und iPhone, Tastatur offen) | Cursorzeile sichtbar | verlauf-vorschlaege |
 | V11 | Häkchen wird nach dem Einfügen blau, x fragt nach (R-4.4) | wie bei den anderen | vorhanden (checkDialogHead) |
 | V12 | Aufbau der Reihe iPad quer/hoch, iPhone hoch/quer, hell/dunkel | je Variante (siehe Muster): nichts abgeschnitten, Ziel ≥ 44 px | hig.mjs (Zielgröße, Überlauf) |
 | V13 | Gegenprobe | ohne die neuen Schaltflächen V1–V9 rot | `--gegenprobe` |
@@ -61,7 +61,10 @@ eigene Zeile, danach groß weiter (`capNext`).
 - **Variante 2:** eine Reihe als Auswahl-Kapsel zum Wischen (wie Wetter) – immer eine Reihe, die letzten Vorschläge
   muss man auf dem iPhone erst herwischen.
 
-**Nur am Gerät (Prüfliste):** Tastatur bleibt nach ‚Sonstiges …‘ offen, Cursor blinkt in der neuen Zeile; Diktieren dort.
+**Nur am Gerät (Prüfliste):** Tastatur bleibt nach ‚Sonstiges …‘ offen, Cursor blinkt in der neuen ersten Zeile; Diktieren dort.
 
-**Offen für dich:** Soll ‚Sonstiges …‘ wirklich nichts schreiben (nur neue Zeile)? Die drei Punkte deuten sonst ‚hier geht
-es weiter‘ an – das passt, weil der Cursor dort steht.
+## Entschieden (18.10.2026)
+
+- A-23: **Variante A** – 2 s voll blau, 1 s ausblenden.
+- T-94: **Variante 1** – Reihe umbrechen wie heute; ‚Sonstiges …‘ fügt die Leerzeile **am Anfang** ein (nicht am Ende).
+- Bauen: **Ja** – AppDesign 4.24.0, Reiselogbuch 3.22.0 auf Fassung 4.24.0.

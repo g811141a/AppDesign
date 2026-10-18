@@ -3,6 +3,21 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.24.0 – 18.10.2026
+
+AppDesign 4.24.0 · Designrichtlinie allgemein 4.24.0 · Zusammenarbeit allgemein 2.9.0 · geprüft mit Reiselogbuch 3.22.0
+
+Die Zeile aus einem Fenster fällt nach dem Schließen deutlicher auf (A-23, Wunsch des Nutzers: ‚mindestens doppelt so lange‘).
+
+- **R-7.3, ui.js (`revealRow`):** die Zeile bzw. der Kasten bleibt **2 s voll blau** (`--sel-bg`) und blendet dann in **1 s** aus
+  (vorher: sofort 1 s ausblenden). ‚Bewegung reduzieren‘: 2 s voll blau, dann ohne Ausblenden weg. Geht während der
+  Hervorhebung das nächste Fenster auf, endet sie sofort. Dauer an einer Stelle (`REVEAL_HOLD`, `REVEAL_FADE`).
+- **Prüfung `checkListStill` erweitert:** in jedem Fall Farbe kurz vor Ende des Haltens (1,95 s: voll `--sel-bg`) und
+  Gesamtdauer (3 s); ein Fall mit ‚Bewegung reduzieren‘ (2 s); neuer Fall ‚nächstes Fenster während der Hervorhebung‘.
+  Gegenprobe mit der alten Dauer: rot (‚dauert 1000 ms statt 3000 ms‘, ‚läuft weiter, obwohl das nächste Fenster offen ist‘).
+- Fall-Liste und Muster: `arbeit/A-23 T-94 Fall-Liste.md`, `arbeit/A-23 T-94 Muster.html` (entschieden: Variante A).
+- Regelkatalog R-7.3, Abschnitt 7; feste Fassung `fassung/4.24.0/`.
+
 ## 4.23.2 – 18.10.2026 (Korrektur)
 
 AppDesign 4.23.2 · Designrichtlinie allgemein 4.23.2 · Zusammenarbeit allgemein 2.8.0 · geprüft mit Reiselogbuch 3.21.2
