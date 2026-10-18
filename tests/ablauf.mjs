@@ -304,77 +304,76 @@ export async function checkPreview(p, { open, body = '#dlg .dlg-body.preview', w
   return errors;
 }
 
-// R-7.3 (seit 4.18.0, A-13) Liste steht still: solange ein Fenster aus einer Zeile offen ist, bewegt sich die Seite dahinter
-// nicht; danach steht sie wie vorher, die Zeile wird kurz hervorgehoben; nach ‹ › im Fenster rollt sie nur so weit, bis die
-// zuletzt gezeigte Zeile ganz sichtbar ist. Safari nachgebildet: die Tastatur schiebt beim Schreiben die ganze Seite (scrollBy).
+// R-7.3 (seit 4.18.0, A-13; seit 4.23.2 neu gefasst nach P-52) Liste steht still: solange ein Fenster aus einer Zeile offen
+// ist, bewegt sich die Liste dahinter nicht; nach dem Schließen (Häkchen oder x) steht die oberste Zeile unter der Leiste
+// genau wie beim Öffnen – auch nach ‹ › im Fenster; die Zeile aus dem Fenster wird kurz hervorgehoben (wenn sichtbar).
+// Safari-Tastatur nachgebildet, je Fall eine Art (einzeln und zusammen – zusammen heben sich Fehler teils auf): sie rollt die
+// Seite beim Öffnen und macht den sichtbaren Bereich (visualViewport) niedriger ('vv'), dazu das Fenster ('resize') bzw. rollt
+// die Seite beim Zugehen 250 ms nach dem Schließen noch einmal ('late'); 'alle' = alles zugleich.
+// start: bringt die Liste in den Ausgangszustand (z. B. Eintrag öffnen → erster fehlender Tag oben); ohne: Scrollstand 1200.
 // item: Zeilen bzw. Kästen; field: Eingabefeld im Fenster; next: Schaltfläche ‚Folgetag‘ im Fenster (ohne: kein Blättern).
-export async function checkListStill(p, { item, field, next = '', where = '' } = {}) {
+export async function checkListStill(p, { item, field, next = '', where = '', start = null } = {}) {
   const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}R-7.3 ${t}`);
-  // Zeilen im Bild: tippbar (Kopf sichtbar) bzw. ganz sichtbar (unter Leiste und Tabellenkopf, über dem unteren Rand)
-  const rows = () => p.evaluate(item => {
-    const edge = Math.max(...[...document.querySelectorAll('.nb, .pnav, #bar, table.days:not(.static) th')].map(e => e.getBoundingClientRect().bottom), 0);
-    const all = [...document.querySelectorAll(item)].filter(e => e.getClientRects().length).map(e => ({ key: e.dataset.day || e.dataset.keep, r: e.getBoundingClientRect() }));
-    return { edge, y: scrollY, n: all.length, keys: all.map(x => x.key), tap: all.filter(x => x.r.top >= edge - 1 && x.r.top <= innerHeight - 80).map(x => x.key),
-      full: all.filter(x => x.r.top >= edge - 1 && (x.r.bottom <= innerHeight + 1 || x.r.top <= edge + 8)).map(x => x.key) };
-  }, item);
-  const state = key => p.evaluate(({ item, key }) => {
-    const e = [...document.querySelectorAll(item)].find(x => (x.dataset.day || x.dataset.keep) === key && x.getClientRects().length);
-    return { y: Math.round(scrollY), top: e ? Math.round(e.getBoundingClientRect().top) : null, flash: e ? e.getAnimations().length > 0 : false };
-  }, { item, key });
+  const vp = p.viewportSize();
+  const edgeJs = `Math.max(...[...document.querySelectorAll('.nb, .pnav, #bar, table.days:not(.static) th')].map(e => e.getBoundingClientRect().bottom), 0)`;
+  // oberste Zeile unter der Leiste samt Lage; dazu die Zeilen im Bild (Kopf sichtbar und antippbar)
+  const look = () => p.evaluate(({ item, edgeJs }) => {
+    const edge = eval(edgeJs), all = [...document.querySelectorAll(item)].filter(e => e.getClientRects().length);
+    const k = e => e.dataset.day || e.dataset.keep, top = all.find(e => e.getBoundingClientRect().bottom > edge + 1);
+    return { y: Math.round(scrollY), key: top && k(top), top: top ? Math.round(top.getBoundingClientRect().top) : null,
+      tap: all.filter(e => e.getBoundingClientRect().top >= edge - 1 && e.getBoundingClientRect().top <= innerHeight - 80).map(e => ({ key: k(e), at: e.getBoundingClientRect().top / innerHeight })) };
+  }, { item, edgeJs });
+  const flash = key => p.evaluate(({ item, key }) => [...document.querySelectorAll(item)].some(x => (x.dataset.day || x.dataset.keep) === key && x.getAnimations().length > 0), { item, key });
   const tap = key => p.evaluate(({ item, key }) => [...document.querySelectorAll(item)].find(x => (x.dataset.day || x.dataset.keep) === key && x.getClientRects().length).click(), { item, key });
-  await p.evaluate(() => scrollTo(0, Math.min(1200, document.documentElement.scrollHeight - innerHeight - 400))); await wait(p, 300);
-  const shown = await rows();
-  if (shown.tap.length < 2) { E(`zu wenige sichtbare Zeilen zum Prüfen (${shown.tap.length} von ${shown.n}, Kante ${Math.round(shown.edge)} px, Scrollstand ${Math.round(shown.y)})`); return errors; }
-  // Seit 4.23.0: zusätzlich eine Zeile genau 2 px unter Leiste bzw. Tabellenkopf (ganz sichtbar, innerhalb des Abstands von 6 px,
-  // den die App beim Rollen lässt) – vorher hing es von der Breite der Seitenleiste ab, ob eine Zeile so lag.
-  const edge2 = key => p.evaluate(({ item, key }) => {
-    const edge = Math.max(...[...document.querySelectorAll('.nb, .pnav, #bar, table.days:not(.static) th')].map(e => e.getBoundingClientRect().bottom), 0);
-    const e = [...document.querySelectorAll(item)].find(x => (x.dataset.day || x.dataset.keep) === key && x.getClientRects().length);
-    scrollBy({ top: e.getBoundingClientRect().top - edge - 2, behavior: 'instant' });
-  }, { item, key });
-  // Seit 4.23.1 (P-51/5): Tastatur nachgebildet wie in Safari – solange sie offen ist, ist der sichtbare Bereich
-  // (visualViewport) nur halb so hoch; sie geht erst 400 ms nach dem Schließen des Fensters zu. Dazu Zeilen aus der unteren Hälfte.
-  const keyboard = on => p.evaluate(on => {
-    if (!on) return Object.defineProperty(window, 'visualViewport', { configurable: true, get: () => window.__realVV });
-    window.__realVV = window.__realVV || window.visualViewport;
-    const fake = { height: innerHeight / 2, width: innerWidth, offsetTop: 0, offsetLeft: 0, scale: 1, addEventListener() {}, removeEventListener() {} };
-    Object.defineProperty(window, 'visualViewport', { configurable: true, get: () => fake });
-  }, on);
-  const lower = () => p.evaluate(item => [...document.querySelectorAll(item)].filter(e => e.getClientRects().length)
-    .filter(e => e.getBoundingClientRect().top > innerHeight * 0.55 && e.getBoundingClientRect().top < innerHeight - 80).map(e => e.dataset.day || e.dataset.keep)[0], item);
-  for (const [art, close, wo] of [['Häkchen', '#dlgOk'], ['x ohne Änderung', '#dlgX'], ['Häkchen, Zeile 2 px unter dem Kopf', '#dlgOk', 'nah'],
-    ['Häkchen, Zeile in der unteren Hälfte', '#dlgOk', 'unten'], ['x, Zeile in der unteren Hälfte', '#dlgX', 'unten']]) {
-    const key = wo === 'nah' ? shown.tap[1] : wo === 'unten' ? await lower() : shown.tap[0];
-    if (!key) { E(`${art}: keine Zeile zum Prüfen`); continue; }
-    if (wo === 'nah') { await edge2(key); await wait(p, 300); }
-    const vor = await state(key);
-    await tap(key); await wait(p, 300);
-    await keyboard(true);
-    if (close === '#dlgOk') { await p.locator(field).first().click(); await p.evaluate(() => scrollBy(0, 300)); await p.locator(field).first().pressSequentially(' neu', { delay: 10 }); }
-    else await p.evaluate(() => scrollBy(0, 300));                   // Wischen bzw. Tastatur schiebt die Seite
-    await p.click(close);
-    setTimeout(() => keyboard(false).catch(() => {}), 400);
-    // die Hervorhebung beginnt im nächsten Bildaufbau – unter Last (voller Lauf, WebKit) bis zu 800 ms warten
-    let flash = false; for (let i = 0; i < 16 && !flash; i++) { await wait(p, 50); flash = (await state(key)).flash; }
-    if (!flash) E(`${art}: Zeile ${key} wird nach dem Schließen nicht kurz hervorgehoben`);
-    await wait(p, 1200);
-    const ruhig = await state(key);
-    if (Math.abs(ruhig.y - vor.y) > 1 || Math.abs(ruhig.top - vor.top) > 1) E(`${art}: Seite steht nach dem Schließen nicht wie vorher (Scrollstand ${vor.y} → ${ruhig.y}, Zeile ${key} ${vor.top} → ${ruhig.top} px)`);
-    if (ruhig.flash) E(`${art}: Hervorhebung der Zeile ${key} endet nicht`);
-  }
-  if (next) {
-    const first = shown.tap.at(-1); await tap(first); await wait(p, 300);
-    for (let i = 0; i < 4; i++) { await p.click(next); await wait(p, 200); }
-    await p.click('#dlgOk'); await wait(p, 400);
-    const nach = await rows(), want = nach.keys[nach.keys.indexOf(first) + 4];
-    if (!nach.full.includes(want)) E(`nach ‹ › ist die zuletzt gezeigte Zeile ${want} nicht ganz sichtbar`);
-    // ‹ › auf eine Zeile, die schon ganz sichtbar ist: nichts rollt
-    const key = nach.keys.find((k, i) => nach.full.includes(nach.keys[i + 1]) && nach.tap.includes(k));
-    if (key) {
-      const vor = await state(key); await tap(key); await wait(p, 300); await p.click(next); await wait(p, 200); await p.click('#dlgOk'); await wait(p, 400);
-      const y = (await state(key)).y;
-      if (y !== vor.y) E(`nach ‹ › auf eine sichtbare Zeile rollt die Seite (${vor.y} → ${y})`);
+  const keyboard = async (on, kb) => {
+    const resize = kb === 'resize' || kb === 'alle', late = kb === 'late' || kb === 'alle';
+    if (on) {
+      // iPad bleibt iPad: unter 500 px Höhe schaltet ui.js auf die iPhone-Ansicht (isPhone) – das tut die echte Tastatur nicht
+      if (resize) await p.setViewportSize({ width: vp.width, height: vp.height >= 500 ? Math.max(500, Math.round(vp.height * 0.6)) : Math.round(vp.height * 0.6) });
+      await p.evaluate(resize => { window.__realVV ||= window.visualViewport;
+        const fake = { height: resize ? innerHeight : Math.round(innerHeight * 0.6), width: innerWidth, offsetTop: 0, offsetLeft: 0, scale: 1, addEventListener() {}, removeEventListener() {} };
+        Object.defineProperty(window, 'visualViewport', { configurable: true, get: () => fake }); scrollBy(0, 250); }, resize);
+    } else {
+      await wait(p, 250);
+      if (resize) await p.setViewportSize(vp);
+      await p.evaluate(late => { Object.defineProperty(window, 'visualViewport', { configurable: true, get: () => window.__realVV }); if (late) scrollBy(0, -250); }, late);
     }
+  };
+  const reset = async () => {
+    if (start) await start();
+    else { await p.evaluate(() => scrollTo(0, Math.min(1200, document.documentElement.scrollHeight - innerHeight - 400))); await wait(p, 300); }
+  };
+  // Fälle wie in P-51/5 und P-52/2–4: Zeile oben, 3 Zeilen tiefer, untere Hälfte, Zeile 2 px unter dem Kopf, 5 Tage vorblättern
+  const cases = [['Häkchen, oberste Zeile', '#dlgOk', 'oben', 'alle'], ['x, oberste Zeile', '#dlgX', 'oben', 'late'],
+    ['Häkchen, 3 Zeilen tiefer', '#dlgOk', 'tiefer', 'vv'], ['Häkchen, 3 Zeilen tiefer', '#dlgOk', 'tiefer', 'resize'], ['Häkchen, 3 Zeilen tiefer', '#dlgOk', 'tiefer', 'late'],
+    ['Häkchen, untere Hälfte', '#dlgOk', 'unten', 'vv'], ['x, untere Hälfte', '#dlgX', 'unten', 'alle'], ['Häkchen, Zeile 2 px unter dem Kopf', '#dlgOk', 'nah', 'alle']];
+  if (next) cases.push(['Häkchen nach 5× ‹ ›', '#dlgOk', 'blättern', 'vv'], ['Häkchen nach 5× ‹ ›', '#dlgOk', 'blättern', 'resize'], ['x nach 5× ‹ ›', '#dlgX', 'blättern', 'late']);
+  for (const [fall, close, wo, kb] of cases) {
+    const art = `${fall} (Tastatur ${kb})`;
+    await reset();
+    let vor = await look();
+    if (vor.tap.length < 4) { E(`${art}: zu wenige sichtbare Zeilen zum Prüfen (${vor.tap.length}, Scrollstand ${vor.y})`); continue; }
+    const key = { oben: vor.tap[0], tiefer: vor.tap[3], nah: vor.tap[1], blättern: vor.tap.at(-2) }[wo]?.key ?? vor.tap.find(t => t.at > 0.55)?.key;
+    if (!key) { E(`${art}: keine Zeile in der unteren Hälfte`); continue; }
+    if (wo === 'nah') {
+      await p.evaluate(({ item, key, edgeJs }) => { const e = [...document.querySelectorAll(item)].find(x => (x.dataset.day || x.dataset.keep) === key && x.getClientRects().length);
+        scrollBy({ top: e.getBoundingClientRect().top - eval(edgeJs) - 2, behavior: 'instant' }); }, { item, key, edgeJs });
+      await wait(p, 300); vor = await look();
+    }
+    await tap(key); await wait(p, 300);
+    await p.locator(field).first().click(); await keyboard(true, kb);
+    if (wo === 'blättern') for (let i = 0; i < 5; i++) { await p.click(next); await wait(p, 150); }
+    if (close === '#dlgOk') await p.locator(field).first().pressSequentially(' neu', { delay: 10 });
+    await p.click(close);
+    const zu = keyboard(false, kb);
+    // die Hervorhebung beginnt im nächsten Bildaufbau – unter Last (voller Lauf, WebKit) bis zu 800 ms warten
+    let lit = wo === 'blättern'; for (let i = 0; i < 16 && !lit; i++) { await wait(p, 50); lit = await flash(key); }
+    if (!lit) E(`${art}: Zeile ${key} wird nach dem Schließen nicht kurz hervorgehoben`);
+    await zu; await wait(p, 1500);
+    const nach = await look();
+    if (nach.key !== vor.key || Math.abs(nach.top - vor.top) > 1)
+      E(`${art} (Zeile ${key}): Liste steht nach dem Schließen nicht wie beim Öffnen – oben ${vor.key} bei ${vor.top} px → ${nach.key} bei ${nach.top} px (Scrollstand ${vor.y} → ${nach.y})`);
+    if (wo !== 'blättern' && await flash(key)) E(`${art}: Hervorhebung der Zeile ${key} endet nicht`);
   }
   return errors;
 }
