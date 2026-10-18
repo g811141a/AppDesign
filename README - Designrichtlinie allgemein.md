@@ -1,6 +1,6 @@
 # Designrichtlinie allgemein
 
-**Version 4.23.2** · Stand 18.10.2026
+**Version 4.24.0** · Stand 18.10.2026
 
 Allgemeine Gestaltungs- und Bedienregeln für alle iPad-Web-Apps von g811141a (seit 4.1.0 auch
 auf dem iPhone, Abschnitt 15.17).
@@ -955,7 +955,7 @@ Regel ersetzt oder ergänzt eine bestehende (Zusammenarbeit 0 Nr. 3) und bekommt
 |---|---|---|---|---|
 | R-7.1 | **Zentrale Liste als Kacheln:** höchstens ein Eintrag blau; je Kachel ‚geändert am … · Gerät‘; Kacheln laufen unter dem Kopf und hinter der Backup-Kachel durch; Position bleibt beim Neuaufbau, der gewählte Eintrag bleibt sichtbar | hig.mjs | – | R-31 (+ Teil R-44, 15.4) |
 | R-7.2 | **Start im iPhone-Aufbau in der Startliste (seit 4.16.0):** jedes Neuladen zeigt im iPhone-Aufbau (auch iPad im schmalen Fenster) die Startliste ganz oben ohne blauen Eintrag; der iPad-Aufbau öffnet den aktuellen Eintrag; Rückkehr aus dem Hintergrund ändert nichts (15.17) | start.mjs | Gerät (App neu öffnen) | **neu** (aus Reiselogbuch T-84) |
-| R-7.3 | **Liste steht still (seit 4.18.0):** solange ein Fenster aus einer Zeile (bzw. einem Kasten) offen ist, bewegt sich die Liste dahinter nicht – auch wenn Safari beim Schreiben die Seite für die Tastatur schiebt; nach dem Schließen (Häkchen oder x) steht sie genau wie vorher – die oberste Zeile an derselben Stelle (seit 4.23.1), auch wenn die Tastatur offen war –, die Zeile wird kurz blau hinterlegt und blendet aus (~1 s); auch nach ‹ › im Fenster steht die Liste wie beim Öffnen (seit 4.23.2); iPad und iPhone gleich | ablauf.mjs – `checkListStill` (seit 4.23.2: Start z. B. mit dem ersten fehlenden Tag oben; Zeile oben, 3 tiefer, untere Hälfte, 2 px unter dem Kopf, nach 5× ‹ ›; Häkchen und x; Safari-Tastatur einzeln und zusammen: sichtbarer Bereich, Fensterhöhe, Nachrollen beim Zugehen) | Gerät (echte Tastatur, Diktieren) | **neu** (A-13) |
+| R-7.3 | **Liste steht still (seit 4.18.0):** solange ein Fenster aus einer Zeile (bzw. einem Kasten) offen ist, bewegt sich die Liste dahinter nicht – auch wenn Safari beim Schreiben die Seite für die Tastatur schiebt; nach dem Schließen (Häkchen oder x) steht sie genau wie vorher – die oberste Zeile an derselben Stelle (seit 4.23.1), auch wenn die Tastatur offen war –, die Zeile wird 2 s blau hinterlegt und blendet in 1 s aus (seit 4.24.0, A-23; ‚Bewegung reduzieren‘: 2 s ohne Ausblenden; endet, sobald das nächste Fenster aufgeht); auch nach ‹ › im Fenster steht die Liste wie beim Öffnen (seit 4.23.2); iPad und iPhone gleich | ablauf.mjs – `checkListStill` (seit 4.23.2: Start z. B. mit dem ersten fehlenden Tag oben; Zeile oben, 3 tiefer, untere Hälfte, 2 px unter dem Kopf, nach 5× ‹ ›; Häkchen und x; Safari-Tastatur einzeln und zusammen: sichtbarer Bereich, Fensterhöhe, Nachrollen beim Zugehen) | Gerät (echte Tastatur, Diktieren) | **neu** (A-13) |
 | R-7.4 | **Position beim Öffnen (seit 4.21.0):** ein Eintrag öffnet ganz oben; ein ‚nächster offener‘ Eintrag (von der App bestimmt) steht hervorgehoben direkt unter dem Kopf bzw. Tabellenkopf, nie in der Mitte | ablauf.mjs – `checkOpenAt` | – | **neu** (A-16 aus Reiselogbuch T-89) |
 
 ### 8. Drehen
@@ -1010,6 +1010,7 @@ Die alten Nummern R-01 bis R-52 (bis 4.11.4) gelten nicht mehr; sie stehen nur n
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 4.24.0 | 18.10.2026 | Neben | **R-7.3 (A-23):** Hervorhebung nach dem Fenster länger – 2 s voll blau, 1 s ausblenden (vorher ~1 s); `checkListStill` prüft Farbe und Dauer |
 | 4.23.2 | 18.10.2026 | Korrektur | **R-7.3 (P-52/2–4):** oberste Zeile nach dem Schließen 1,5 s festhalten (Safari rollt beim Zugehen der Tastatur nach bzw. ändert die Fensterhöhe – kein Drehen), auch nach ‹ › kein Rollen mehr; `checkListStill` neu gefasst (Start mit Lücke, 11 Fälle, Tastatur einzeln und zusammen) – Abschnitt 7, Regelkatalog Thema 7 |
 | 4.23.1 | 18.10.2026 | Korrektur | **R-7.3 (P-51/5):** oberste Zeile beim Öffnen merken und nach dem Schließen genau dort ausrichten; gerollt wird nur nach ‹ ›, gegen die ganze Fensterhöhe statt gegen den Bereich über der Tastatur – Abschnitt 7, Regelkatalog Thema 7, `checkListStill` mit nachgebildeter Tastatur |
 | 4.23.0 | 17.10.2026 | Neben | **R-2.3 erweitert (A-19 aus Reiselogbuch T-92):** Suche in der zentralen Liste – Lupe im Kopf der Seitenleiste/Startliste, Filter, ‚N Treffer‘ je Fundstelle, Öffnen mit gefüllter Suche, beide Suchfelder 1:1 – Abschnitt 15.2, 15.4, Regelkatalog Thema 2, Prüfung `checkListSearch` |

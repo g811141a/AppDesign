@@ -1,4 +1,4 @@
-// AppDesign 4.23.2 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
+// AppDesign 4.24.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
 // Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/fassung/X.Y.Z/ui.js"></script> (feste Fassung, R-10.3)
 // Seit 4.11.0 (R-10.3): ui.js und design.css immer mit ?v=<AppDesign-Version> einbinden (auch in sw.js) und beim Start
 // prüfen, ob genau diese Fassung geladen ist (AD_VERSION hier, --ad-version in design.css).
@@ -17,7 +17,7 @@
 
 'use strict';
 // Version der Bausteine (R-10.3): die App vergleicht sie beim Start mit der benötigten Fassung.
-const AD_VERSION = '4.23.2';
+const AD_VERSION = '4.24.0';
 /* ---------- Icons ---------- */
 
 // Schaltflächen-Icons aus Lucide (ISC-Lizenz), direkt eingebettet, damit die App offline funktioniert.
@@ -393,6 +393,7 @@ function release(sel) { if (!sel) return; held.delete(sel); document.querySelect
 
 // Die Schaltfläche oder Zeile, von der ein Fenster kommt, bleibt blau hinterlegt, solange es offen ist.
 function setOpener(sel) {
+  endReveal(); // A-23: eine laufende Hervorhebung endet, sobald das nächste Fenster aufgeht
   if (dlgOpener && dlgOpener !== sel) document.querySelector(dlgOpener)?.classList.remove('on');
   dlgOpener = sel;
   markOpener();
@@ -955,14 +956,23 @@ dlg.addEventListener('close', () => {
 
 // R-7.3 (seit 4.18.0, A-13): Zeile bzw. Kasten, aus dem ein Fenster kam, nach dem Schließen kurz hervorheben.
 // Seit 4.23.2 rollt dafür nichts mehr (vorher: nach ‹ › bis die zuletzt gezeigte Zeile sichtbar war) – die Liste steht wie beim Öffnen.
+// Seit 4.24.0 (A-23): REVEAL_HOLD voll blau, dann in REVEAL_FADE ausblenden (vorher 1 s ausblenden);
+// ‚Bewegung reduzieren‘: REVEAL_HOLD voll blau, dann ohne Ausblenden weg.
 // Schaltflächen sind keine Zeilen und werden nicht hervorgehoben.
+const REVEAL_HOLD = 2000, REVEAL_FADE = 1000;
+let revealing = null;
+function endReveal() { revealing?.cancel(); revealing = null; }
 function revealRow(sel) {
+  endReveal();
   const el = document.querySelector(sel);
   if (!el || !el.matches(KEEP_SEL) || !el.getClientRects().length) return;
   if (!el.animate) return;
   const from = getComputedStyle(document.documentElement).getPropertyValue('--sel-bg').trim(), to = getComputedStyle(el).backgroundColor;
   const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  el.animate([{ backgroundColor: from }, { backgroundColor: to }], { duration: 1000, easing: still ? 'steps(1, end)' : 'ease-in' });
+  revealing = still
+    ? el.animate([{ backgroundColor: from }, { backgroundColor: from }], { duration: REVEAL_HOLD })
+    : el.animate([{ backgroundColor: from }, { backgroundColor: from, offset: REVEAL_HOLD / (REVEAL_HOLD + REVEAL_FADE), easing: 'ease-in' }, { backgroundColor: to }],
+      { duration: REVEAL_HOLD + REVEAL_FADE });
 }
 
 // Auswahl-Kapsel: Schaltflächen in einer Kapsel; ist sie zu schmal, lässt sich der Inhalt wischen,

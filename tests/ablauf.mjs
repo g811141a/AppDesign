@@ -306,7 +306,8 @@ export async function checkPreview(p, { open, body = '#dlg .dlg-body.preview', w
 
 // R-7.3 (seit 4.18.0, A-13; seit 4.23.2 neu gefasst nach P-52) Liste steht still: solange ein Fenster aus einer Zeile offen
 // ist, bewegt sich die Liste dahinter nicht; nach dem Schließen (Häkchen oder x) steht die oberste Zeile unter der Leiste
-// genau wie beim Öffnen – auch nach ‹ › im Fenster; die Zeile aus dem Fenster wird kurz hervorgehoben (wenn sichtbar).
+// genau wie beim Öffnen – auch nach ‹ › im Fenster; die Zeile aus dem Fenster wird hervorgehoben (wenn sichtbar; seit 4.24.0, A-23:
+// 2 s voll, 1 s ausblenden, ‚Bewegung reduzieren‘ 2 s ohne Ausblenden; endet, sobald das nächste Fenster aufgeht).
 // Safari-Tastatur nachgebildet, je Fall eine Art (einzeln und zusammen – zusammen heben sich Fehler teils auf): sie rollt die
 // Seite beim Öffnen und macht den sichtbaren Bereich (visualViewport) niedriger ('vv'), dazu das Fenster ('resize') bzw. rollt
 // die Seite beim Zugehen 250 ms nach dem Schließen noch einmal ('late'); 'alle' = alles zugleich.
@@ -324,6 +325,16 @@ export async function checkListStill(p, { item, field, next = '', where = '', st
       tap: all.filter(e => e.getBoundingClientRect().top >= edge - 1 && e.getBoundingClientRect().top <= innerHeight - 80).map(e => ({ key: k(e), at: e.getBoundingClientRect().top / innerHeight })) };
   }, { item, edgeJs });
   const flash = key => p.evaluate(({ item, key }) => [...document.querySelectorAll(item)].some(x => (x.dataset.day || x.dataset.keep) === key && x.getAnimations().length > 0), { item, key });
+  // A-23 (seit 4.24.0): Verlauf der Hervorhebung – Farbe kurz vor Ende des Haltens (voll --sel-bg?) und Gesamtdauer; danach beenden
+  const glow = (key, at) => p.evaluate(({ item, key, at }) => {
+    const el = [...document.querySelectorAll(item)].find(x => (x.dataset.day || x.dataset.keep) === key && x.getAnimations().length > 0);
+    const a = el?.getAnimations()[0]; if (!a) return null;
+    const probe = document.body.appendChild(document.createElement('i')); probe.style.backgroundColor = 'var(--sel-bg)';
+    const sel = getComputedStyle(probe).backgroundColor; probe.remove();
+    const now = a.currentTime; a.currentTime = at; const bg = getComputedStyle(el).backgroundColor; a.currentTime = now;
+    return { full: bg === sel, bg, sel, end: Math.round(a.effect.getComputedTiming().endTime) };
+  }, { item, key, at });
+  const stop = () => p.evaluate(item => document.querySelectorAll(item).forEach(x => x.getAnimations().forEach(a => a.finish())), item);
   const tap = key => p.evaluate(({ item, key }) => [...document.querySelectorAll(item)].find(x => (x.dataset.day || x.dataset.keep) === key && x.getClientRects().length).click(), { item, key });
   const keyboard = async (on, kb) => {
     const resize = kb === 'resize' || kb === 'alle', late = kb === 'late' || kb === 'alle';
@@ -348,8 +359,10 @@ export async function checkListStill(p, { item, field, next = '', where = '', st
     ['Häkchen, 3 Zeilen tiefer', '#dlgOk', 'tiefer', 'vv'], ['Häkchen, 3 Zeilen tiefer', '#dlgOk', 'tiefer', 'resize'], ['Häkchen, 3 Zeilen tiefer', '#dlgOk', 'tiefer', 'late'],
     ['Häkchen, untere Hälfte', '#dlgOk', 'unten', 'vv'], ['x, untere Hälfte', '#dlgX', 'unten', 'alle'], ['Häkchen, Zeile 2 px unter dem Kopf', '#dlgOk', 'nah', 'alle']];
   if (next) cases.push(['Häkchen nach 5× ‹ ›', '#dlgOk', 'blättern', 'vv'], ['Häkchen nach 5× ‹ ›', '#dlgOk', 'blättern', 'resize'], ['x nach 5× ‹ ›', '#dlgX', 'blättern', 'late']);
-  for (const [fall, close, wo, kb] of cases) {
+  for (const [n, [fall, close, wo, kb]] of cases.entries()) {
     const art = `${fall} (Tastatur ${kb})`;
+    // A-23: der zweite Fall läuft mit ‚Bewegung reduzieren‘ (2 s voll, dann ohne Ausblenden weg)
+    const still = n === 1; await p.emulateMedia({ reducedMotion: still ? 'reduce' : 'no-preference' });
     await reset();
     let vor = await look();
     if (vor.tap.length < 4) { E(`${art}: zu wenige sichtbare Zeilen zum Prüfen (${vor.tap.length}, Scrollstand ${vor.y})`); continue; }
@@ -369,11 +382,30 @@ export async function checkListStill(p, { item, field, next = '', where = '', st
     // die Hervorhebung beginnt im nächsten Bildaufbau – unter Last (voller Lauf, WebKit) bis zu 800 ms warten
     let lit = wo === 'blättern'; for (let i = 0; i < 16 && !lit; i++) { await wait(p, 50); lit = await flash(key); }
     if (!lit) E(`${art}: Zeile ${key} wird nach dem Schließen nicht kurz hervorgehoben`);
+    else if (wo !== 'blättern') {
+      const g = await glow(key, 1950), soll = still ? 2000 : 3000;
+      if (!g) E(`${art}: Hervorhebung der Zeile ${key} endet vor 2 s`);
+      else {
+        if (!g.full) E(`${art}: Zeile ${key} ist nach 1,95 s nicht mehr voll blau (${g.bg} statt ${g.sel})`);
+        if (Math.abs(g.end - soll) > 50) E(`${art}: Hervorhebung dauert ${g.end} ms statt ${soll} ms (A-23${still ? ', Bewegung reduzieren' : ''})`);
+      }
+    }
     await zu; await wait(p, 1500);
     const nach = await look();
     if (nach.key !== vor.key || Math.abs(nach.top - vor.top) > 1)
       E(`${art} (Zeile ${key}): Liste steht nach dem Schließen nicht wie beim Öffnen – oben ${vor.key} bei ${vor.top} px → ${nach.key} bei ${nach.top} px (Scrollstand ${vor.y} → ${nach.y})`);
-    if (wo !== 'blättern' && await flash(key)) E(`${art}: Hervorhebung der Zeile ${key} endet nicht`);
+    await stop();
+  }
+  await p.emulateMedia({ reducedMotion: 'no-preference' });
+  // A-23: geht während der Hervorhebung das nächste Fenster auf, endet sie sofort
+  await reset();
+  const z = (await look()).tap;
+  if (z.length >= 4) {
+    await tap(z[1].key); await wait(p, 300); await p.click('#dlgX');
+    let lit = false; for (let i = 0; i < 16 && !lit; i++) { await wait(p, 50); lit = await flash(z[1].key); }
+    await tap(z[3].key); await wait(p, 100);
+    if (lit && await flash(z[1].key)) E(`Hervorhebung der Zeile ${z[1].key} läuft weiter, obwohl das nächste Fenster offen ist`);
+    await p.click('#dlgX'); await wait(p, 300); await stop();
   }
   return errors;
 }
