@@ -1,6 +1,6 @@
 # Zusammenarbeit allgemein
 
-**Version 2.9.0** · Stand 18.10.2026
+**Version 2.10.0** · Stand 18.10.2026
 
 Regeln für die Zusammenarbeit mit Claude bei allen iPad-Web-Apps von g811141a.
 Diese Datei liegt im Design-Repo **AppDesign** (g811141a/AppDesign).
@@ -78,6 +78,10 @@ Nutzer sie findet, schneller und günstiger arbeiten.
 11. **Bericht nach einer Version:** 3–5 Sätze, dazu eine **vollständige Aufzählung aller Änderungen**, dann die
     Prüfpunkte Schritt für Schritt. Ist ein Fehler durchgerutscht, steht immer dabei, **warum** die Prüfung ihn
     übersehen hat.
+    **Rückmeldung als Auswahlfenster (seit 2.10.0):** Der Bericht endet **immer** mit einem Auswahlfenster zur Rückmeldung
+    (z. B. ‚P-54: Wie ist die Prüfung ausgegangen?‘ – ‚Alles ok‘ · ‚Nicht ok – ich schreibe im Chat‘ · ‚Ich prüfe später‘ ·
+    ‚Ich schreibe im Chat‘), nie nur mit Text: nur ein Auswahlfenster löst auf dem iPad eine Push-Nachricht aus, so merkt der
+    Nutzer, dass die nächste Prüfung ansteht. Das gilt auch, wenn die Version im Hintergrund fertig wird.
 
 **D. Sitzungen und Übergabe**
 12. **Ein Thema je Sitzung.** Eine Sitzung ist ein Chat in der Claude-Code-App. Lange Sitzungen fasst das System
@@ -332,6 +336,7 @@ Nutzer sie findet, schneller und günstiger arbeiten.
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 2.10.0 | 18.10.2026 | Neben | 0 Nr. 11: Bericht nach einer Version endet immer mit einem Auswahlfenster zur Rückmeldung (Push-Nachricht auf dem iPad, Wunsch des Nutzers) |
 | 2.9.0 | 18.10.2026 | Neben | 0 Nr. 1: bei ‚nicht ok‘ zuerst den Ablauf des Nutzers als feste Prüfung nachbauen, rot gegen den veröffentlichten Stand, dann korrigieren (aus P-51/5 und P-52) |
 | 2.8.0 | 17.10.2026 | Neben | §2: Zeile Zeit und Token endet mit ‚Kontext N‘, ab 300.000 ‚⚠ Übergabe fällig‘ (A-20) |
 | 2.7.0 | 16.10.2026 | Neben | §2: Zeile Zeit und Token mit dem Werkzeug `werkzeug/messung.mjs`, ‚neu‘ = Eingabe + Ausgabe (A-12) |
