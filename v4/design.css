@@ -1,4 +1,4 @@
-/* AppDesign 4.25.0 · design.css – gemeinsame Gestaltung der iPad-Web-Apps von g811141a (Apple-like)
+/* AppDesign 4.25.1 · design.css – gemeinsame Gestaltung der iPad-Web-Apps von g811141a (Apple-like)
    Einbinden im <head> vor dem eigenen <style> der App:  <link rel="stylesheet" href="../AppDesign/fassung/X.Y.Z/design.css"> (feste Fassung, R-10.3)
    Farben als Variablen auf :root, Dunkelmodus über data-theme="dark" (setzt ui.js / applyTheme).
    Komponenten: Schaltflächen, Suchfeld, Kapsel, Eingabefelder, Datumsfelder, Kopfzeile, Seitenleiste,
@@ -6,7 +6,7 @@
    Options-Kapsel; seit 4.1.0 iPhone-Ansicht (html.phone: Seitenkopf, großer Titel, Liste, Kasten, untere Leiste). Regeln dazu: README - Designrichtlinie allgemein.md */
 /* Farben im Apple-Look: Hintergrund Hellgrau, Kästen weiß ohne Rand, schwebende Schaltflächen */
 :root {
-  --ad-version: "4.25.0";   /* R-10.3: Version der Bausteine, die App prüft sie beim Start */
+  --ad-version: "4.25.1";   /* R-10.3: Version der Bausteine, die App prüft sie beim Start */
   --bg: #f2f2f7;
   --card: #ffffff;
   --ink: #1c1c1e;
@@ -124,6 +124,10 @@ button.on { background: var(--sel-bg); border-color: var(--accent); }
 .grp button.on, .navgrp button.on { background: none; box-shadow: none; }
 .grp button.on::before, .navgrp button.on::before { content: ''; position: absolute; z-index: -1; inset: 3px; border-radius: 999px;
   background: var(--sel-bg); box-shadow: inset 0 0 0 .5px var(--accent); }
+/* Seit 4.25.1 (A-25): bei Icons ist die Markierung ein Kreis 36 × 36 wie bei Wetter und Smileys (Tapback), bei Text eine Kapsel –
+   vorher 42 × 36 (eiförmig). */
+.grp button:not(.txt).on::before, .navgrp button:not(.txt).on::before, .grp button:not(.txt).fill::before {
+  inset: 50% auto auto 50%; width: 36px; height: 36px; transform: translate(-50%, -50%); }
 .round { width: 44px; min-width: 44px; height: 44px; padding: 0; border-radius: 50%; flex: none; }
 /* Grün gefüllt = Hauptaktion; grün getönt mit Rand = eingeschaltet; rot gefüllt = Löschen (jeweils mit farbigem Schein) */
 button.primary { background: var(--accent); color: var(--accent-ink); border: .5px solid var(--rim-color); box-shadow: var(--glow-accent); }

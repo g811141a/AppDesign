@@ -3,6 +3,31 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.25.1 – 19.10.2026 (Korrektur)
+
+AppDesign 4.25.1 · Designrichtlinie allgemein 4.25.1 · Zusammenarbeit allgemein 2.10.1 · geprüft mit Reiselogbuch 3.23.1
+
+Zwei Korrekturen aus deiner Rückmeldung vom 18.10.2026: Kopf- und Suchzeile zitterten am iPhone beim Tippen (A-24), die
+Markierung in den Kapseln war eiförmig (A-25).
+
+- **A-24, R-2.3, ui.js – neuer Baustein `setHtml(el, html)`:** die App baut ihre Seite damit statt mit `innerHTML` auf. Liegt der
+  Fokus in einem Eingabefeld (Suche beim Tippen), wird der neue Inhalt in den alten eingearbeitet: das Feld und seine Vorfahren
+  bleiben dieselben Elemente, Fokus, Cursor und Tastatur bleiben; alles andere wird angeglichen, andere Eingabefelder werden
+  ersetzt. Vorher ersetzte jeder Buchstabe das Suchfeld – Safari schloss am iPhone die Tastatur kurz und verschob den sichtbaren
+  Bereich, die feste Leiste rückte für 2 Bilder um bis zu 120 px mit.
+- **A-25, R-3.1, design.css:** die Markierung ‚gedrückt‘ bzw. ‚blau gefüllt‘ bei Icons in Kapseln ist ein **Kreis 36 × 36** wie
+  bei Wetter und Smileys (vorher 42 × 36, seit 4.0.0); Text in Kapseln bleibt eine Kapsel. Einzelne runde Schaltflächen waren
+  schon kreisrund (44 × 44).
+- **Prüfungen:** `checkSearch` und `checkListSearch` tippen Buchstabe für Buchstabe (auch Löschen) und melden, sobald das Suchfeld
+  ersetzt wird oder den Fokus verliert; neue Grundregel R-3.1 ‚Rund ist ein Kreis‘ (runde Schaltflächen und Markierungen in
+  Kapseln: Breite = Höhe). Gegenprobe: mit `innerHTML` bzw. der alten Markierung rot (‚Markierung von #searchBtn ist kein Kreis
+  (42 × 36 px)‘).
+- **Warum die Prüfungen es übersehen haben:** A-24 – die Suche wurde nur mit fertigem Ergebnis geprüft, nicht Bild für Bild beim
+  Tippen, und Safari war nur einzeln nachgebildet (verschoben *oder* Fokusverlust); der Fehler zeigt sich erst zusammen.
+  A-25 – geprüft wurde nur, dass die Markierung innerhalb des Randes liegt, nicht ihre Form.
+- Fall-Liste und Muster: `arbeit/A-24 A-25 Fall-Liste.md`, `arbeit/A-25 Muster.html` (entschieden: Variante A).
+- Designrichtlinie 15.2, 15.5, Regelkatalog R-2.3, R-3.1; feste Fassung `fassung/4.25.1/`.
+
 ## 4.25.0 – 18.10.2026
 
 AppDesign 4.25.0 · Designrichtlinie allgemein 4.25.0 · Zusammenarbeit allgemein 2.10.1 · geprüft mit Reiselogbuch 3.23.0

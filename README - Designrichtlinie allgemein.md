@@ -1,6 +1,6 @@
 # Designrichtlinie allgemein
 
-**Version 4.25.0** · Stand 18.10.2026
+**Version 4.25.1** · Stand 19.10.2026
 
 Allgemeine Gestaltungs- und Bedienregeln für alle iPad-Web-Apps von g811141a (seit 4.1.0 auch
 auf dem iPhone, Abschnitt 15.17).
@@ -492,6 +492,9 @@ Verhalten · technischer Name). In AppDesign ist jede Komponente einmal programm
   mit Treffern.
 - **Fokus:** kein blauer Fokus-Rahmen (wie Apple) – der Cursor zeigt, dass man tippen kann; beim
   Blättern mit ⌃ ⌄ geht die Tastatur zu.
+- **Feld bleibt beim Tippen (seit 4.25.1, A-24):** beim Tippen wird nur der Inhalt neu aufgebaut; das Suchfeld bleibt dasselbe
+  Element und behält den Fokus (Baustein `setHtml` statt `innerHTML`) – sonst schließt Safari am iPhone die Tastatur kurz und
+  Kopf- und Suchzeile zittern bei jedem Buchstaben.
 
 ### 15.3 Kopfzeile
 - **Apple:** [HIG – Toolbars](https://developer.apple.com/design/human-interface-guidelines/toolbars)
@@ -572,7 +575,8 @@ Verhalten · technischer Name). In AppDesign ist jede Komponente einmal programm
   wie Apple (Suche am Ende der Leiste); z. B. [plus | search | ellipsis], [share | search | ellipsis].
 - **Alle Kapseln gleich gebaut** (Kopfzeile, Seitenleiste, Treffer-Pfeile, Blättern, Auswahl-Kapseln):
   Schaltflächen genau so hoch wie der Innenraum (44 px minus Rand); die Markierung (gedrückt bzw.
-  blau gefüllt) ist eine eigene Kapsel mit 3 px Luft und liegt immer innerhalb des Randes.
+  blau gefüllt) ist eine eigene Form innerhalb des Randes: **bei Icons ein Kreis 36 × 36** wie bei Wetter und Smileys (seit 4.25.1,
+  A-25; vorher 42 × 36, eiförmig), bei Text eine Kapsel mit 3 px Luft.
 
 ### 15.6 Menü
 - **Apple:** [HIG – Menus](https://developer.apple.com/design/human-interface-guidelines/menus)
@@ -916,13 +920,13 @@ Regel ersetzt oder ergänzt eine bestehende (Zusammenarbeit 0 Nr. 3) und bekommt
 |---|---|---|---|---|
 | R-2.1 | **Leisten stehen fest – keinen Millimeter:** Kopfzeile, Seitenkopf, Seitenleisten-Kopf, mit und ohne Suchzeile, beim Wischen, am Rand, bei offener und beim Schließen der Tastatur; nichts federt; erstes Wischen bei offener Tastatur schließt nur die Tastatur | hig.mjs – `barStill`: Lage der Leiste beim Scrollen gemessen, auch mit nachgebildeter Tastatur | Federn, Tastatur | R-05, R-28 |
 | R-2.2 | **Titel in der Leiste:** Titel einer Inhaltsseite steht in der Leiste; unter dem Titel der Seitenleiste bzw. Startliste klein und grau die Anzahl | hig.mjs | – | R-09, R-21 |
-| R-2.3 | **Suche:** Suchzeile unter der Leiste über die volle Breite; Treffer ‚3 von 57‘ bzw. ‚0‘; nach kurzer Pause steht der Treffer direkt unter der Suchzeile; Pfeile ohne Umlauf; gefiltert auf Einträge mit Treffern; gleich auf iPad und iPhone. **Seit 4.25.0 mehrere Wörter** (alle müssen vorkommen, Reihenfolge egal, „…“ = genaue Folge, alle markiert; Einheit legt die App fest) und **Lupe am Ende der Kapsel**, dahinter nur ellipsis (15.2, 15.5). **Seit 4.23.0 auch in der zentralen Liste** (Lupe im Kopf): filtert die Einträge, Kachel ‚N Treffer‘ je Fundstelle wie ‚1 von N‘, Öffnen mit gefüllter Suche, beide Suchfelder offen = 1:1, ‚Keine Treffer‘ (15.4) | ablauf.mjs – `checkSearch`, `checkListSearch`, `checkSearchWords`, `checkSearchPlace` (seit 4.25.0) | – | **neu** (bisher nur 15.2) |
+| R-2.3 | **Suche:** Suchzeile unter der Leiste über die volle Breite; Treffer ‚3 von 57‘ bzw. ‚0‘; nach kurzer Pause steht der Treffer direkt unter der Suchzeile; Pfeile ohne Umlauf; gefiltert auf Einträge mit Treffern; gleich auf iPad und iPhone; **beim Tippen bleibt das Suchfeld dasselbe Feld mit Fokus** (seit 4.25.1, `setHtml`). **Seit 4.25.0 mehrere Wörter** (alle müssen vorkommen, Reihenfolge egal, „…“ = genaue Folge, alle markiert; Einheit legt die App fest) und **Lupe am Ende der Kapsel**, dahinter nur ellipsis (15.2, 15.5). **Seit 4.23.0 auch in der zentralen Liste** (Lupe im Kopf): filtert die Einträge, Kachel ‚N Treffer‘ je Fundstelle wie ‚1 von N‘, Öffnen mit gefüllter Suche, beide Suchfelder offen = 1:1, ‚Keine Treffer‘ (15.4) | ablauf.mjs – `checkSearch`, `checkListSearch`, `checkSearchWords`, `checkSearchPlace` (seit 4.25.0), Feld bleibt beim Tippen (seit 4.25.1) | – | **neu** (bisher nur 15.2) |
 
 ### 3. Schaltflächen
 
 | Nr. | Regel | Prüfung | Gerät | ersetzt |
 |---|---|---|---|---|
-| R-3.1 | **Antippflächen** 44 pt, in Kapseln und Schaltern mindestens 28 pt; reine Icon-Schaltflächen quadratisch | hig.mjs | – | R-11 |
+| R-3.1 | **Antippflächen** 44 pt, in Kapseln und Schaltern mindestens 28 pt; reine Icon-Schaltflächen quadratisch; **rund ist ein Kreis** – runde Schaltflächen und die Markierung bei Icons in Kapseln (36 × 36) haben gleiche Breite und Höhe (seit 4.25.1) | hig.mjs | – | R-11 |
 | R-3.2 | **Schweben und Kapseln:** alle Schaltflächen und Suchfelder schweben (Lichtkante, zierlicher Schatten); mehrere nebeneinander stehen in einer Kapsel, Nach oben / Ans Ende in einer senkrechten Kapsel unten rechts – iPad und (seit 4.20.0) iPhone in der Inhaltsansicht, nur wenn es etwas zu scrollen gibt | hig.mjs | – | R-19, R-22, R-35 |
 | R-3.3 | **Jede Farbe hat eine Bedeutung:** blau gefüllt nur die Hauptaktion im Fenster (höchstens eine); Gewähltes bleibt blau getönt, solange sein Menü, Fenster oder seine Abfrage offen ist; Grün nur für eingeschaltete Schalter; Rot nur für Löschen | hig.mjs – höchstens eine blaue Hauptaktion, `stays` | – | R-16 (+ Abschnitt 4) |
 | R-3.4 | **Kein Fokus-Rahmen** beim Antippen, beim Öffnen eines Fensters und im Suchfeld | hig.mjs | – | R-02 |
@@ -1017,6 +1021,7 @@ Die alten Nummern R-01 bis R-52 (bis 4.11.4) gelten nicht mehr; sie stehen nur n
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 4.25.1 | 19.10.2026 | Korrektur | **A-24:** beim Tippen bleibt das Suchfeld dasselbe Feld mit Fokus (Baustein `setHtml`), Kopf- und Suchzeile zittern am iPhone nicht mehr (15.2, R-2.3); **A-25:** Markierung bei Icons in Kapseln als Kreis 36 × 36 statt 42 × 36 (15.5, R-3.1, Grundregel ‚rund ist ein Kreis‘) |
 | 4.25.0 | 18.10.2026 | Neben | **R-2.3 erweitert (A-21, A-22):** Suche mit mehreren Wörtern (alle müssen vorkommen, Reihenfolge egal) und „…“ als genaue Wortfolge – allgemeine Regel; Lupe am Ende der Kapsel vor ellipsis (15.2, 15.4, 15.5); Bausteine `searchWords`/`findsAll`/`findsAny`/`markWords`, Prüfungen `checkSearchWords`, `checkSearchPlace` |
 | 4.24.0 | 18.10.2026 | Neben | **R-7.3 (A-23):** Hervorhebung nach dem Fenster länger – 2 s voll blau, 1 s ausblenden (vorher ~1 s); `checkListStill` prüft Farbe und Dauer |
 | 4.23.2 | 18.10.2026 | Korrektur | **R-7.3 (P-52/2–4):** oberste Zeile nach dem Schließen 1,5 s festhalten (Safari rollt beim Zugehen der Tastatur nach bzw. ändert die Fensterhöhe – kein Drehen), auch nach ‹ › kein Rollen mehr; `checkListStill` neu gefasst (Start mit Lücke, 11 Fälle, Tastatur einzeln und zusammen) – Abschnitt 7, Regelkatalog Thema 7 |

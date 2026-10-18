@@ -1,9 +1,23 @@
 // AppDesign 4.12.0 · Ablauf-Prüfungen für Regeln, die eine Handlung brauchen (Designrichtlinie allgemein, Abschnitt 17):
-// R-2.3 Suche (seit 4.23.0 auch in der zentralen Liste, seit 4.25.0 mehrere Wörter und „…“) · A-22 Lupe am Ende der Kapsel · R-4.4 Fenster-Kopfzeile · R-5.2 Texteingabe · R-5.3 Fehlermeldungen · R-5.5 Eingabetaste (seit 4.19.0) · R-6.4 Ausgabe und Vorschau · R-7.3 Liste steht still (seit 4.18.0) · R-7.4 Position beim Öffnen und R-8.1 Seitenleiste ein/aus (seit 4.21.0).
+// R-2.3 Suche (seit 4.23.0 auch in der zentralen Liste, seit 4.25.0 mehrere Wörter und „…“, seit 4.25.1 Suchfeld bleibt beim Tippen) · A-22 Lupe am Ende der Kapsel · R-4.4 Fenster-Kopfzeile · R-5.2 Texteingabe · R-5.3 Fehlermeldungen · R-5.5 Eingabetaste (seit 4.19.0) · R-6.4 Ausgabe und Vorschau · R-7.3 Liste steht still (seit 4.18.0) · R-7.4 Position beim Öffnen und R-8.1 Seitenleiste ein/aus (seit 4.21.0).
 // Jede Funktion bekommt eine Playwright-Seite und gibt eine Liste von Fehlern zurück (leer = in Ordnung), je mit Regelnummer.
 // Einbinden im Prüfskript der App:  import { checkSearch, checkDialogHead } from '../../AppDesign/tests/ablauf.mjs';
 //                                   fehler.push(...await checkSearch(page, { term: 'Sydney' }));
 const wait = (p, ms = 250) => p.waitForTimeout(ms);
+// R-2.3 (seit 4.25.1, A-24): beim Tippen bleibt das Suchfeld dasselbe Element und behält den Fokus – sonst schließt Safari am
+// iPhone die Tastatur kurz und Kopf- und Suchzeile zittern bei jedem Buchstaben. Tippt Buchstabe für Buchstabe (und löscht
+// wieder, wenn back), meldet den ersten Buchstaben, bei dem das Feld ersetzt wurde oder den Fokus verlor.
+async function typeKeeps(p, input, text, E, back = false) {
+  await p.evaluate(sel => { window.__feld = document.querySelector(sel); }, input);
+  const keeps = () => p.evaluate(sel => document.querySelector(sel) === window.__feld && document.activeElement === window.__feld, input);
+  await p.locator(input).focus();
+  const keys = [...text].concat(back ? [...text].map(() => 'Backspace') : []);
+  for (const [i, k] of keys.entries()) {
+    if (k === 'Backspace') await p.keyboard.press(k); else await p.keyboard.type(k);
+    await wait(p, 20);
+    if (!await keeps()) { E(`beim Tippen (${k === 'Backspace' ? 'Löschen' : `‚${text.slice(0, i + 1)}‘`}) wird das Suchfeld ersetzt oder verliert den Fokus – am iPhone zittern Kopf- und Suchzeile (A-24)`); return; }
+  }
+}
 const rgbOf = c => (c.match(/[\d.]+/g) || [0, 0, 0]).slice(0, 3).map(Number);
 
 // R-2.3 Suche: Suchzeile unter der Leiste über die volle Breite; Treffer ‚3 von 57‘ bzw. ‚0‘; nach kurzer Pause steht der
@@ -13,7 +27,7 @@ export async function checkSearch(p, { term, open = '#searchBtn', input = '#sear
   const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}R-2.3 ${t}`);
   await p.evaluate(() => scrollTo(0, 0));
   await p.click(open); await wait(p);
-  await p.locator(input).pressSequentially(term, { delay: 20 }); await wait(p, 900);
+  await typeKeeps(p, input, term, E); await wait(p, 900);
   const state = () => p.evaluate(({ count, bar, row, item }) => {
     const c = document.querySelector(count)?.textContent.trim() || '';
     const edge = Math.max(...[bar, row].map(s => document.querySelector(s)?.getBoundingClientRect().bottom || 0));
@@ -39,7 +53,7 @@ export async function checkSearch(p, { term, open = '#searchBtn', input = '#sear
     await press(next); await wait(p, 150);
     if ((await state()).c !== `${n} von ${n}`) E(`Pfeil nach unten beim letzten Treffer springt um (Umlauf) – ‚${(await state()).c}‘`);
   }
-  await p.locator(input).fill(''); await p.locator(input).pressSequentially('zqxzqx', { delay: 10 }); await wait(p, 700);
+  await p.locator(input).fill(''); await typeKeeps(p, input, 'zqxzqx', E, true); await typeKeeps(p, input, 'zqxzqx', E); await wait(p, 700);
   const z = await state();
   if (z.c !== '0') E(`ohne Treffer ‚${z.c}‘ statt ‚0‘`);
   await p.click(open); await wait(p);
@@ -63,7 +77,7 @@ export async function checkListSearch(p, { term, open = '#listSearchBtn', input 
   let l = await list();
   if (l.value === null) E('Lupe öffnet keine Suchzeile');
   else if (l.focus !== input.replace('#', '')) E('Suchzeile hat nach der Lupe keinen Fokus');
-  await p.locator(input).pressSequentially(term, { delay: 20 }); await wait(p, 400);
+  await typeKeeps(p, input, term, E); await wait(p, 400);
   l = await list();
   if (!l.rows.length) E(`‚${term}‘ findet keinen Eintrag`);
   else if (l.rows.length >= all) E(`nicht gefiltert – ${l.rows.length} von ${all} Einträgen sichtbar`);

@@ -8,9 +8,9 @@
 <meta name="apple-mobile-web-app-title" content="Neue App">
 <meta name="theme-color" content="#f2f2f7">
 <title>Neue App</title>
-<!-- Vorlage für eine neue App (AppDesign 4.25.0). Im App-Repo liegt AppDesign daneben: ../AppDesign/fassung/X.Y.Z/…
+<!-- Vorlage für eine neue App (AppDesign 4.25.1). Im App-Repo liegt AppDesign daneben: ../AppDesign/fassung/X.Y.Z/…
      R-10.3: ui.js und design.css aus der festen Fassung einbinden (auch in sw.js), AD_NEEDED = X.Y.Z. -->
-<link rel="stylesheet" href="../fassung/4.25.0/design.css">
+<link rel="stylesheet" href="../fassung/4.25.1/design.css">
 <style>
   /* Nur, was zur App gehört – alles Gemeinsame kommt aus design.css */
 </style>
@@ -20,13 +20,13 @@
 <dialog id="dlg"></dialog>
 <dialog id="msg"></dialog>
 
-<script src="../fassung/4.25.0/ui.js"></script>
+<script src="../fassung/4.25.1/ui.js"></script>
 <script>
 'use strict';
 
 const APP_VERSION = '0.1.0';
 // R-10.3: benötigte AppDesign-Fassung; ist eine andere geladen, erscheint beim Start ein Hinweis.
-const AD_NEEDED = '4.25.0';
+const AD_NEEDED = '4.25.1';
 const adLoaded = () => ({ js: typeof AD_VERSION === 'string' ? AD_VERSION : 'älter',
   css: getComputedStyle(document.documentElement).getPropertyValue('--ad-version').trim().replace(/"/g, '') || 'älter' });
 setTimeout(() => {
@@ -54,15 +54,15 @@ function save() {
 }
 let db = load();
 
-// Kopfzeile mit Kapsel [ellipsis], darunter der Inhalt.
+// Kopfzeile mit Kapsel [ellipsis], darunter der Inhalt. Seite immer mit setHtml aufbauen (Feld mit Fokus bleibt, R-2.3).
 function render() {
-  app.innerHTML = `
+  setHtml(app, `
     <div class="nb" id="bar"><div class="nb1"><span></span><div class="nb-title">Neue App</div>
       <div class="r"><span class="grp"><button type="button" id="mainMore" aria-label="Mehr">${ic('ellipsis')}</button></span></div></div></div>
     <h1>Neue App</h1>
     <div class="step"><div class="step-head"><label>Erster Kasten</label></div>
       <p class="hint">Hier beginnt die App. Komponenten und Regeln: README - Designrichtlinie allgemein.md</p>
-      <button type="button" id="openDlg">${ic('pencil')}Fenster öffnen</button></div>`;
+      <button type="button" id="openDlg">${ic('pencil')}Fenster öffnen</button></div>`);
   app.querySelector('#mainMore').onclick = e => openMenu(e.currentTarget, [
     { icon: 'sun-moon', label: 'Darstellung', value: APPEARANCES[db.settings.appearance],
       submenu: Object.entries(APPEARANCES).map(([k, l]) => ({ tick: db.settings.appearance === k, label: l, act: () => setAppearance(k) })) },
