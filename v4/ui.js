@@ -1,4 +1,4 @@
-// AppDesign 4.23.1 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
+// AppDesign 4.23.2 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
 // Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/fassung/X.Y.Z/ui.js"></script> (feste Fassung, R-10.3)
 // Seit 4.11.0 (R-10.3): ui.js und design.css immer mit ?v=<AppDesign-Version> einbinden (auch in sw.js) und beim Start
 // prüfen, ob genau diese Fassung geladen ist (AD_VERSION hier, --ad-version in design.css).
@@ -17,7 +17,7 @@
 
 'use strict';
 // Version der Bausteine (R-10.3): die App vergleicht sie beim Start mit der benötigten Fassung.
-const AD_VERSION = '4.23.1';
+const AD_VERSION = '4.23.2';
 /* ---------- Icons ---------- */
 
 // Schaltflächen-Icons aus Lucide (ISC-Lizenz), direkt eingebettet, damit die App offline funktioniert.
@@ -148,7 +148,10 @@ function blockingLayer() {
 // gemerkt und beim Schließen genau wiederhergestellt (position: fixed ginge nicht: der Tabellenkopf ist sticky).
 // Seit 4.23.1 (P-51/5): zusätzlich die oberste Zeile unter der Leiste samt Abstand in px – nach dem Schließen und dem
 // Neuaufbau durch die App steht genau sie wieder dort (auch wenn Safari die Seite für die Tastatur verschoben hat).
-let lockY = null, lockTop = null, lockSel = '', closedTop = null, closedSel = '';
+// Seit 4.23.2 (P-52/2–4): die Zeile wird nach dem Schließen 1,5 s lang festgehalten – Safari rollt, während die Tastatur
+// zugeht, die Seite noch einmal bzw. ändert die Fensterhöhe; jede solche Bewegung wird sofort zurückgenommen. Ein Tippen
+// oder Wischen des Nutzers beendet das Festhalten. Auch nach ‹ › im Fenster steht die Liste wie beim Öffnen (Wunsch des Nutzers).
+let lockY = null, lockTop = null, holdTop = null, holdUntil = 0;
 function lockAnchor() {
   if (scrollY < 4) return null;
   const edge = keepEdge();
@@ -162,7 +165,7 @@ function alignTop(a) {
   if (d) window.scrollBy({ top: d, behavior: 'instant' });
 }
 function lockPage() {
-  if (lockY === null) { lockY = scrollY; lockTop = lockAnchor(); lockSel = dlgOpener; }
+  if (lockY === null) { lockY = scrollY; lockTop = lockAnchor(); holdTop = null; }
   document.documentElement.classList.add('locked');
 }
 function unlockPage() {
@@ -170,11 +173,23 @@ function unlockPage() {
   document.documentElement.classList.remove('locked');
   if (lockY === null) return;
   const y = lockY, a = lockTop;
-  closedSel = lockSel; lockY = null; lockTop = null; lockSel = ''; closedTop = null;
-  if (keepTurned()) return restoreTop();                // gedreht, während das Fenster offen war (R-8.1)
+  lockY = null; lockTop = null;
+  // gedreht, während das Fenster offen war (R-8.1) – nur eine neue Breite zählt: die Tastatur ändert die Höhe
+  if (innerWidth !== keepWidth) return restoreTop();
+  keepHeight = innerHeight;
   if (Math.round(scrollY) !== Math.round(y)) window.scrollTo({ top: y, behavior: 'instant' });
-  alignTop(a); closedTop = a;                           // nach dem Neuaufbau durch die App noch einmal (dlg 'close')
+  holdTop = a; holdUntil = performance.now() + 1500; alignTop(a);
 }
+// Festhalten nach dem Schließen: bei jeder Bewegung (Neuaufbau, Safari, Tastatur) die Zeile zurück an ihren Platz.
+function holdAlign() {
+  if (!holdTop) return;
+  if (performance.now() > holdUntil) { holdTop = null; return; }
+  alignTop(holdTop);
+}
+['scroll', 'resize'].forEach(t => window.addEventListener(t, holdAlign, { passive: true }));
+window.visualViewport?.addEventListener('resize', holdAlign);
+window.visualViewport?.addEventListener('scroll', holdAlign);
+['touchstart', 'wheel', 'mousedown'].forEach(t => window.addEventListener(t, () => { if (!dlg.open && !msg.open) holdTop = null; }, { passive: true, capture: true }));
 
 // Fenster ohne Fokus-Rahmen öffnen: der Fokus liegt auf dem Fenster selbst, nicht auf dem x.
 function showModalQuiet(d) {
@@ -933,30 +948,17 @@ dlg.addEventListener('close', () => {
   const sel = dlgOpener;
   if (sel) document.querySelector(sel)?.classList.remove('on');
   dlgOpener = '';
-  // R-7.3: nach dem Neuaufbau durch die App die Zeile zeigen (nur falls nötig) und kurz hervorheben
-  // seit 4.23.1: erst die oberste Zeile wieder genau an ihren Platz; gerollt wird nur, wenn im Fenster mit ‹ › auf eine
-  // andere Zeile geblättert wurde (und sie verdeckt ist) – sonst steht die Liste genau wie vorher, die Zeile wird nur hervorgehoben.
-  const moved = sel !== closedSel;
-  requestAnimationFrame(() => { alignTop(closedTop); closedTop = null; if (sel) revealRow(sel, moved); });
+  // R-7.3: nach dem Neuaufbau durch die App die oberste Zeile zurück an ihren Platz, die Zeile aus dem Fenster kurz hervorheben
+  // (seit 4.23.2 rollt nichts mehr – auch nach ‹ › nicht)
+  requestAnimationFrame(() => { holdAlign(); if (sel) revealRow(sel); });
 });
 
-// R-7.3 (seit 4.18.0, A-13): Zeile bzw. Kasten, aus dem ein Fenster kam, nach dem Schließen zeigen und kurz hervorheben.
-// Nur nach ‹ › im Fenster (moved) und nur, wenn sie nicht ganz sichtbar ist (unter Leiste und Tabellenkopf), rollt die Liste so weit, bis sie es ist.
+// R-7.3 (seit 4.18.0, A-13): Zeile bzw. Kasten, aus dem ein Fenster kam, nach dem Schließen kurz hervorheben.
+// Seit 4.23.2 rollt dafür nichts mehr (vorher: nach ‹ › bis die zuletzt gezeigte Zeile sichtbar war) – die Liste steht wie beim Öffnen.
 // Schaltflächen sind keine Zeilen und werden nicht hervorgehoben.
-function revealRow(sel, moved = true) {
+function revealRow(sel) {
   const el = document.querySelector(sel);
   if (!el || !el.matches(KEEP_SEL) || !el.getClientRects().length) return;
-  const head = el.closest('table')?.querySelector('thead');
-  const th = head?.querySelector('th');   // der Tabellenkopf haftet über die Zellen (sticky), nicht über thead
-  // Seit 4.23.0: ‚ganz sichtbar‘ ohne Abstand (1 px Spielraum) – die 6 px Abstand gelten nur als Ziel, wenn gerollt werden muss.
-  // Vorher rollte eine ganz sichtbare Zeile direkt unter dem Tabellenkopf um bis zu 6 px.
-  const edge = Math.max(keepEdge(), th && getComputedStyle(th).position === 'sticky' ? th.getBoundingClientRect().bottom : 0);
-  // Seit 4.23.1 (P-51/5): gegen die ganze Fensterhöhe – die Tastatur geht mit dem Fenster zu; gegen den Bereich über der
-  // noch offenen Tastatur gemessen rückte eine Zeile aus der unteren Hälfte 1–3 Zeilen hoch.
-  const end = innerHeight;
-  const r = el.getBoundingClientRect();
-  if (moved && r.top < edge - 1) window.scrollBy({ top: r.top - edge - 6, behavior: 'instant' });
-  else if (moved && r.bottom > end + 1) window.scrollBy({ top: Math.min(r.bottom - end + 6, r.top - edge - 6), behavior: 'instant' });
   if (!el.animate) return;
   const from = getComputedStyle(document.documentElement).getPropertyValue('--sel-bg').trim(), to = getComputedStyle(el).backgroundColor;
   const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -1076,7 +1078,8 @@ function openAt(el) {
   keepTop = topAnchor();
   requestAnimationFrame(() => { keepBusy = false; });
 }
-window.addEventListener('resize', () => { if (!keepTurned()) return; requestAnimationFrame(() => requestAnimationFrame(restoreTop)); setTimeout(restoreTop, 350); });
+// Seit 4.23.2: bei offenem bzw. gerade geschlossenem Fenster ändert nur die Tastatur die Höhe – das ist kein Drehen (R-7.3).
+window.addEventListener('resize', () => { if ((lockY !== null || holdTop) && innerWidth === keepWidth) { keepHeight = innerHeight; return; } if (!keepTurned()) return; requestAnimationFrame(() => requestAnimationFrame(restoreTop)); setTimeout(restoreTop, 350); });
 
 // R-2.1: Die Leiste (mit oder ohne Suchzeile) bewegt sich beim Wischen keinen Millimeter.
 // Bei offener Tastatur würde iOS beim Wischen den sichtbaren Bereich verschieben; die Leiste müsste ihm

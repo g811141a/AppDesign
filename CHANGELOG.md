@@ -3,6 +3,29 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.23.2 – 18.10.2026 (Korrektur)
+
+AppDesign 4.23.2 · Designrichtlinie allgemein 4.23.2 · Zusammenarbeit allgemein 2.8.0 · geprüft mit Reiselogbuch 3.21.2
+
+Korrektur aus P-52/2–4 (Reiselogbuch 3.21.1): nach dem Fenster ‚Tag‘ stand die Liste weiter nicht still – nach dem Öffnen
+eines Reiselogbuchs (erster fehlender Tag oben) rückte sie nach dem Erfassen eines Tages 2–3 Zeilen tiefer nach oben, mal ganz
+an den Anfang, mal irgendwohin; nach 5× ‹ › sprang sie an den Anfang (iPad) bzw. zum geänderten Tag (iPhone).
+
+- **Ursachen (nachgestellt, alle drei):** (1) Safari rollt die Seite beim Zugehen der Tastatur **nach** dem Schließen noch einmal –
+  die Wiederherstellung lief nur einmal davor. (2) Ändert die Tastatur die Fensterhöhe um mehr als 150 px, hielt ui.js das für
+  **Drehen** (R-8.1) und stellte einen alten Stand her. (3) Nach ‹ › rollte `revealRow` gewollt zum zuletzt gezeigten Tag.
+- **R-7.3, ui.js:** nach dem Schließen wird die oberste Zeile **1,5 s festgehalten** – jede Bewegung durch Neuaufbau, Safari oder
+  Tastatur wird sofort zurückgenommen; ein Tippen oder Wischen des Nutzers beendet das Festhalten. Bei offenem bzw. gerade
+  geschlossenem Fenster zählt nur eine neue **Breite** als Drehen. **Auch nach ‹ › steht die Liste wie beim Öffnen** (Wunsch des
+  Nutzers); die Zeile aus dem Fenster wird nur noch hervorgehoben, wenn sie sichtbar ist – gerollt wird nie.
+- **Warum die Prüfung es nicht sah:** sie begann bei Scrollstand 1200 mit lauter erfassten Tagen (nicht mit dem ersten fehlenden
+  Tag oben), tippte nur die oberste Zeile an und bildete von der Tastatur nur einen Teil nach; das Nachrollen beim Zugehen und
+  die kleinere Fensterhöhe fehlten. **`checkListStill` neu gefasst:** Ausgangszustand von der App (`start`, im Reiselogbuch:
+  Reiselogbuch mit Lücke öffnen), 11 Fälle – oberste Zeile, 3 Zeilen tiefer, untere Hälfte, 2 px unter dem Kopf, nach 5× ‹ ›;
+  Häkchen und x – mit der Safari-Tastatur **einzeln und zusammen** (zusammen hoben sich Fehler teils auf). Gegenprobe mit 4.23.1:
+  22 Fälle rot, darunter genau P-52/2, /3 und /4.
+- Regelkatalog R-7.3, Abschnitt 7; feste Fassung `fassung/4.23.2/`.
+
 ## 4.23.1 – 18.10.2026 (Korrektur)
 
 AppDesign 4.23.1 · Designrichtlinie allgemein 4.23.1 · Zusammenarbeit allgemein 2.8.0 · geprüft mit Reiselogbuch 3.21.1
