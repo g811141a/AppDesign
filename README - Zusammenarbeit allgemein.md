@@ -1,6 +1,6 @@
 # Zusammenarbeit allgemein
 
-**Version 2.10.0** · Stand 18.10.2026
+**Version 2.10.1** · Stand 18.10.2026
 
 Regeln für die Zusammenarbeit mit Claude bei allen iPad-Web-Apps von g811141a.
 Diese Datei liegt im Design-Repo **AppDesign** (g811141a/AppDesign).
@@ -76,9 +76,12 @@ Nutzer sie findet, schneller und günstiger arbeiten.
     gehoben, wenn Claude **vorher fragt** und der Nutzer zustimmt (seit AppDesign 4.14.0: `fassung/X.Y.Z/` mit
     `design.css`, `ui.js` und `tests/`; das Veröffentlichungs-Skript nennt Apps auf älteren Fassungen, hebt aber nichts).
 11. **Bericht nach einer Version:** 3–5 Sätze, dazu eine **vollständige Aufzählung aller Änderungen**, dann die
-    Prüfpunkte Schritt für Schritt. Ist ein Fehler durchgerutscht, steht immer dabei, **warum** die Prüfung ihn
+    Prüfpunkte Schritt für Schritt – **alle Prüfpunkte vollständig im Chat ausgeschrieben** (jeder Punkt mit
+    nummerierten Schritten und ‚Erwartet: …‘, wörtlich wie im CHANGELOG); ein Verweis auf das CHANGELOG oder eine
+    Kurzliste genügt **nie** (seit 2.10.1). Reihenfolge immer: Bericht → Änderungen → Prüfpunkte im Chat → Auswahlfenster. Ist ein Fehler durchgerutscht, steht immer dabei, **warum** die Prüfung ihn
     übersehen hat.
-    **Rückmeldung als Auswahlfenster (seit 2.10.0):** Der Bericht endet **immer** mit einem Auswahlfenster zur Rückmeldung
+    **Rückmeldung als Auswahlfenster (seit 2.10.0):** Der Bericht endet **immer** – direkt nach den ausgeschriebenen
+    Prüfpunkten – mit einem Auswahlfenster zur Rückmeldung
     (z. B. ‚P-54: Wie ist die Prüfung ausgegangen?‘ – ‚Alles ok‘ · ‚Nicht ok – ich schreibe im Chat‘ · ‚Ich prüfe später‘ ·
     ‚Ich schreibe im Chat‘), nie nur mit Text: nur ein Auswahlfenster löst auf dem iPad eine Push-Nachricht aus, so merkt der
     Nutzer, dass die nächste Prüfung ansteht. Das gilt auch, wenn die Version im Hintergrund fertig wird.
@@ -336,6 +339,7 @@ Nutzer sie findet, schneller und günstiger arbeiten.
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 2.10.1 | 18.10.2026 | Korrektur | 0 Nr. 11 verschärft: alle Prüfpunkte vollständig Schritt für Schritt im Chat (nie nur Verweis aufs CHANGELOG), danach das Auswahlfenster (Regel war nach 3.22.0 nicht eingehalten) |
 | 2.10.0 | 18.10.2026 | Neben | 0 Nr. 11: Bericht nach einer Version endet immer mit einem Auswahlfenster zur Rückmeldung (Push-Nachricht auf dem iPad, Wunsch des Nutzers) |
 | 2.9.0 | 18.10.2026 | Neben | 0 Nr. 1: bei ‚nicht ok‘ zuerst den Ablauf des Nutzers als feste Prüfung nachbauen, rot gegen den veröffentlichten Stand, dann korrigieren (aus P-51/5 und P-52) |
 | 2.8.0 | 17.10.2026 | Neben | §2: Zeile Zeit und Token endet mit ‚Kontext N‘, ab 300.000 ‚⚠ Übergabe fällig‘ (A-20) |
