@@ -17,12 +17,13 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| A-19 | 1 | Suche in der zentralen Liste (R-2.3) – P-51 bis auf /5 in Ordnung; P-52/1 in Ordnung, /2–4 nicht ok; Korrektur R-7.3 mit Reiselogbuch 3.21.2, Prüfliste P-53 | prüfen |
+| – | – | zurzeit nichts zu prüfen | – |
 
 ## 2. Weitere Themen (in Klärung)
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
+| A-23 | 1 | **Hervorhebung nach dem Fenster länger (R-7.3, allgemeine Regel – Nutzer 18.10.2026):** die geänderte Zeile ist nur ~1 s blau und fällt kaum auf – mindestens doppelt so lange. Apple: beim Zurückkehren in eine Liste blendet die Auswahl in ~0,3–0,5 s aus (UIKit `deselectRow`), eine eigene ‚geändert‘-Hervorhebung hat Apple nicht; Vorschlag: ~2 s voll blau, dann ~1 s ausblenden (‚Bewegung reduzieren‘: ohne Ausblenden). Fall-Liste und Muster folgen | in Klärung |
 | A-21 | 1 | **Suche mit mehreren Begriffen (UND, R-2.3 erweitert, allgemeine Regel – Nutzer 18.10.2026):** Wörter mit Leerzeichen = alle müssen vorkommen, Reihenfolge egal (wie Mail, Notizen, Fotos); alle Wörter markiert und gezählt; gilt im Eintrag und in der zentralen Liste. Fall-Liste und Muster folgen | in Klärung |
 | A-22 | 2 | **Lupe am Ende der Kapsel (Nutzer 18.10.2026):** Apple setzt Suche ans Ende der Leiste, nur das Mehr-Menü (…) steht dahinter – Varianten [+ \| Lupe \| …] oder Lupe als eigene Schaltfläche vor der Kapsel; Muster mit 2 Varianten | in Klärung |
 | A-01 | 3 | Startseite g811141a.github.io mit allen Apps (früher S-03) | später |
@@ -33,6 +34,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Thema | Version | Datum |
 |---|---|---|---|
+| E-48 | Geprüft: P-53 alles in Ordnung (Liste steht still nach dem Fenster ‚Tag‘, auch nach ‹ ›, iPad und iPhone); **A-19 damit abgeschlossen**; Zusammenarbeit 2.9.0 (0 Nr. 1: bei ‚nicht ok‘ zuerst den Ablauf des Nutzers als feste Prüfung) | AppDesign 4.23.2 | 18.10.2026 |
 | E-47 | **Korrektur R-7.3 gebaut (P-52/2–4):** oberste Zeile nach dem Schließen 1,5 s festhalten, Tastaturhöhe ist kein Drehen, auch nach ‹ › kein Rollen; `checkListStill` neu gefasst (Start mit Lücke, 11 Fälle, Safari-Tastatur einzeln und zusammen), Reiselogbuch-Prüfung `ablauf-liste-still` | AppDesign 4.23.2 | 18.10.2026 |
 | E-46 | Geprüft: P-52/1 in Ordnung; **P-52/2–4 nicht ok** – nach dem Öffnen (erster fehlender Tag oben) rückt die Liste nach dem Erfassen eines tieferen Tages bzw. nach ‹ › weg (iPad und iPhone). Wunsch des Nutzers: auch nach ‹ › bei der Zeile bleiben, von der das Fenster kam; feste Prüffälle genau dieser Abläufe | AppDesign 4.23.1 | 18.10.2026 |
 | E-45 | **Korrektur R-7.3 gebaut (P-51/5):** beim Öffnen wird die oberste Zeile samt Abstand gemerkt, nach dem Schließen steht sie genau wieder dort; gerollt wird nur nach ‹ › (und gegen die ganze Fensterhöhe statt gegen den Bereich über der Tastatur); `checkListStill` mit nachgebildeter Tastatur | AppDesign 4.23.1 | 18.10.2026 |

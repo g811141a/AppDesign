@@ -1,57 +1,47 @@
 # Übergabe an die nächste Sitzung
 
-**Stand 17.10.2026** · geschrieben in der Sitzung ‚Reiselogbuch 0011‘
-(Zusammenarbeit allgemein 2.8.0, Abschnitt 0 Nr. 14). **Claude liest diese Datei zu Beginn jeder Sitzung zuerst.**
+**Stand 18.10.2026** · geschrieben in der Sitzung ‚Reiselogbuch 0012‘
+(Zusammenarbeit allgemein 2.9.0, Abschnitt 0 Nr. 14). **Claude liest diese Datei zu Beginn jeder Sitzung zuerst.**
 
 ## 1. Lagebild
 
 | Teil | Version | Datei |
 |---|---|---|
-| Reiselogbuch | **3.20.1** online (Fassung 4.21.1) · **3.21.0 gebaut, nicht veröffentlicht** | g811141a/ReiseLogBuch – `CHANGELOG.md`, `BACKLOG.md`, `PROMPT.md` |
-| AppDesign | **4.22.0** online · **4.23.0 gebaut, nicht veröffentlicht** | g811141a/AppDesign – `CHANGELOG.md`, `BACKLOG.md` |
+| Reiselogbuch | **3.21.2** online (Fassung 4.23.2) | g811141a/ReiseLogBuch – `CHANGELOG.md`, `BACKLOG.md`, `PROMPT.md` |
+| AppDesign | **4.23.2** online | g811141a/AppDesign – `CHANGELOG.md`, `BACKLOG.md` |
 | ReiseLogBuch-Import (privat) | 1.2.1 (unverändert) | g811141a/ReiseLogBuch-Import |
-| Zusammenarbeit allgemein | 2.8.0 | `README - Zusammenarbeit allgemein.md` |
+| Zusammenarbeit allgemein | **2.9.0** | `README - Zusammenarbeit allgemein.md` |
 
-- **Chatnummer:** die nächste Sitzung heißt **Reiselogbuch 0012**; die danach 0013.
-- **Offene Prüfpunkte:** keine online. P-51 (Reiselogbuch 3.21.0) entsteht erst mit dem Veröffentlichen.
-- **Auf `main` steht noch der alte Backlog-Stand:** T-92 / A-19 in ‚0. Nächste Version‘ (bereit). Die Zweige
-  `vorbereitung-*` verschieben sie nach ‚1. Prüfen‘ (P-51), mit E-43 bzw. E-90.
-- **Sitzungsgröße:** Grenze etwa 300.000 Token Kontext; die Zeile Zeit und Token zeigt ihn (‚⚠ Übergabe fällig‘).
+- **Chatnummer:** die nächste Sitzung heißt **Reiselogbuch 0013**; die danach 0014.
+- **Offene Prüfpunkte:** keine (P-51 bis P-53 geprüft, T-92 / A-19 abgeschlossen).
+- **Sitzungsgröße:** Grenze etwa 300.000 Token Kontext; die Zeile Zeit und Token zeigt ihn.
 - **Erinnerung:** ‚Backlog-Erinnerung (AppDesign und Reiselogbuch)‘ montags 8:58.
 
 ## 2. Ergebnisse
 
-**Sitzung ‚Reiselogbuch 0011‘:**
-- **T-92 / A-19 geklärt und gebaut** (Fall-Liste `arbeit/T-92 Fall-Liste.md`, alle Fragen entschieden, Muster bestätigt):
-  Lupe in der Kopfzeile der Seitenleiste/Startliste, Zählung je Fundstelle (= ‚1 von N‘ drinnen, `hitCount` zählt die
-  Markierungen wie `hitMarks`), Öffnen mit gefüllter Suche, Liste bleibt gefiltert, Backup-Kachel bleibt, rechts offenes
-  Reiselogbuch bleibt unberührt – **Zusatz des Nutzers:** sind beide Suchfelder offen, laufen sie **1:1** (beide Richtungen,
-  auch x). Als **allgemeine Regel** (R-2.3 erweitert, 15.2, 15.4, `checkListSearch`, CSS `#side .side-search`).
-- Neue App-Prüfung `tests/ablauf-suche-liste.mjs`; Gegenprobe rot, Chromium und WebKit grün.
-- **`… los` abgebrochen (nichts veröffentlicht):** `regeln-ablauf` in WebKit rot –
-  `iPad quer: R-7.3 Häkchen: Seite steht nach dem Schließen nicht wie vorher (Scrollstand 1200 → 1195, Zeile 2026-08-31 111 → 116 px)`.
-  **Ursache eingegrenzt:** die Lupe macht den Kopf breiter → Seitenleiste 401 statt 340 px (`width: max-content`) → Tabelle
-  schmaler. **Der alte App-Stand 3.20.1 fällt mit `#side { min-width: 401px }` genauso durch** – es ist eine bestehende
-  Schwäche von R-7.3 (ui.js oder `checkListStill`), die T-92 nur sichtbar macht. Vermutung: ` neu` im Verlauf ändert bei
-  `table-layout: auto` die Spaltenbreiten, Zeilen darüber werden höher; die Wiederherstellung landet 5 px daneben
-  (Scrollstand sinkt, statt zu steigen). Chromium grün.
-- **Entscheidung des Nutzers:** Ursache an der Wurzel beheben (nicht die Seitenleiste schmal halten), in neuer Sitzung; die
-  Korrektur kommt mit in AppDesign 4.23.0 (noch nicht veröffentlicht).
-- **Lehren aus 0011:** (1) Neue Schaltflächen im Kopf ändern die Breite der Seitenleiste – Gegenprobe immer auch mit dem
-  alten Stand bei gleicher Geometrie. (2) Muster als echter Code auf lokalem Zweig + Playwright-Screenshots ging schnell.
-  (3) Nach Neustart des Arbeitsprozesses: lokale Zweige sofort nach GitHub sichern.
+**Sitzung ‚Reiselogbuch 0012‘:**
+- **4.23.0 / 3.21.0 veröffentlicht** (Suche über alle Reiselogbücher, T-92 / A-19) mit Korrektur R-7.3 (`revealRow` rollte eine
+  ganz sichtbare Zeile direkt unter dem Kopf um bis zu 6 px; F-11 misst den besten von 3 Durchgängen).
+- **P-51/5 nicht ok → 4.23.1 / 3.21.1:** oberste Zeile beim Öffnen merken, danach genau dort ausrichten (Wunsch des Nutzers).
+- **P-52/2–4 nicht ok → 4.23.2 / 3.21.2:** nach dem Schließen die oberste Zeile 1,5 s festhalten (Safari rollt beim Zugehen der
+  Tastatur nach), Tastaturhöhe ist kein Drehen, **auch nach ‹ › rollt nichts mehr** (Wunsch des Nutzers). **P-53 alles ok.**
+- **Neue feste Prüfung** `ReiseLogBuch/tests/ablauf-liste-still.mjs` (AppDesign `checkListStill` neu): Start mit Lücke, 11 Fälle,
+  Safari-Tastatur einzeln und zusammen (`vv`, `resize`, `late`, `alle`), iPad quer/hoch, iPhone hoch/quer. R-7.3 nur noch dort.
+- **Zusammenarbeit 2.9.0 (0 Nr. 1):** bei ‚nicht ok‘ zuerst genau den Ablauf des Nutzers als feste Prüfung nachbauen, sie muss
+  gegen den veröffentlichten Stand rot sein, dann korrigieren; sie bleibt im vollen Lauf.
+- **Lehren aus 0012:** (1) Prüfungen beginnen im Zustand des Geräts (Daten mit Lücke, Öffnen wie der Nutzer), nicht bei einem
+  bequemen Scrollstand. (2) Safari-Eigenheiten einzeln **und** zusammen nachbilden – zusammen heben sich Fehler auf.
+  (3) Die nachgebildete Tastatur darf das iPad nicht unter 500 px Höhe drücken (sonst iPhone-Ansicht).
 
 Frühere Sitzungen: siehe `VERLAUF.md` und Versionsgeschichten.
 
 ## 3. Nächster Schritt
 
-1. Zweige `vorbereitung-4.23.0` und `vorbereitung-3.21.0` holen (Abschnitt 5), Playwright installieren.
-2. R-7.3-Fehler nachstellen: `PRUEF_BROWSER=webkit node tests/regeln-ablauf.mjs` (im ReiseLogBuch). Ursache in ui.js
-   (Wiederherstellung nach dem Fenster, R-7.3) bzw. `checkListStill` finden, im Zweig `vorbereitung-4.23.0` beheben, als
-   Teil von 4.23.0 im CHANGELOG nennen (mit ‚warum die Prüfung es bisher nicht sah‘: Seitenleiste immer 340 px).
-   Fall-Liste kurz, vor dem Bau ‚Ja‘ einholen.
-3. `node werkzeug/veroeffentlichen.mjs fassung`, betroffene Prüfungen, dann `node /home/user/AppDesign/werkzeug/veroeffentlichen.mjs los --app reiselogbuch`
-   im Hintergrund. Danach Bericht (0 Nr. 11) mit Prüfliste P-51.
+Backlog-Spitze (alle Prio 1, je mit Fall-Liste und Muster, vor dem Bau ‚Ja‘; höchstens 2 Themen je Version):
+1. **A-23** Hervorhebung nach dem Fenster länger (allgemein, R-7.3; Vorschlag ~2 s voll blau + ~1 s ausblenden).
+2. **T-94** Verlauf im Fenster ‚Tag‘: ‚Tour …‘ und ‚Sonstiges …‘ (neue Zeile am Ende, Cursor dorthin) nach ‚Freetour …‘.
+3. **A-21 / T-93** Suche mit mehreren Begriffen (UND, allgemeine Regel); danach **A-22** Lupe am Ende der Kapsel (2 Varianten).
+Vorschlag: A-23 + T-94 als eine Version (AppDesign 4.24.0 / Reiselogbuch 3.22.0), dann A-21.
 
 ## 4. Danach
 
@@ -59,9 +49,10 @@ Frühere Sitzungen: siehe `VERLAUF.md` und Versionsgeschichten.
 
 ## 5. Arbeitsumgebung (für Claude)
 
-- **Vorbereitungs-Zweige 4.23.0 / 3.21.0 (aus 0011):** liegen auf GitHub (`vorbereitung-4.23.0` in AppDesign,
-  `vorbereitung-3.21.0` in ReiseLogBuch). Nach dem Klonen: `git fetch origin vorbereitung-4.23.0 && git checkout -b
-  vorbereitung-4.23.0 origin/vorbereitung-4.23.0` (ReiseLogBuch entsprechend). Nach dem Veröffentlichen lokal löschen.
+- **Klonen (aus 0012):** `git clone --depth 50 …` nach `/home/user/ReiseLogBuch` bzw. `/home/user/ReiseLogBuch-Import`, dann
+  die Verweise. Ein im flachen Klon neu angelegter Zweig hat nach dem Push keine Verfolgung (Stop-Hook meldet ‚unpushed‘):
+  `git config --add remote.origin.fetch '+refs/heads/<zweig>:refs/remotes/origin/<zweig>' && git fetch origin`.
+- **Nie `… fassung` für eine schon veröffentlichte Version** – erst `vorbereiten` (neue Version), dann ändern.
 - **Import-Repo (neu):** `g811141a/ReiseLogBuch-Import` ist **privat**. Mit `add_repo` (push) dazuholen, nach
   `/home/user/ReiseLogBuch-Import` klonen und `ln -s ReiseLogBuch-Import reiselogbuch-import` anlegen. `register_repo_root`
   mit `/home/user/reiselogbuch-import`. Dort **nie Reisedaten** ablegen (Datenschutz): Originale, Ergebnisse und Protokolle
@@ -102,5 +93,5 @@ In der neuen Sitzung müssen **AppDesign** und **ReiseLogBuch** verfügbar sein,
 ## 7. Starttext für die neue Sitzung
 
 ```
-Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md und gezielt die Regeln (Zusammenarbeit 0 Nr. 15), gib mir das Lagebild und arbeite dann Abschnitt 3 ab (R-7.3-Fehler beheben, 4.23.0 / 3.21.0 veröffentlichen). Hole vorher die Repos g811141a/ReiseLogBuch und g811141a/ReiseLogBuch-Import (privat) dazu (add_repo, Zugriff push), wie in UEBERGABE.md Abschnitt 5.
+Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md und gezielt die Regeln (Zusammenarbeit 0 Nr. 15), gib mir das Lagebild und arbeite dann Abschnitt 3 ab (Fall-Listen und Muster für A-23 und T-94, vor dem Bau mein Ja). Hole vorher die Repos g811141a/ReiseLogBuch und g811141a/ReiseLogBuch-Import (privat) dazu (add_repo, Zugriff push), wie in UEBERGABE.md Abschnitt 5.
 ```
