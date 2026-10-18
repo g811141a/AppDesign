@@ -1,47 +1,52 @@
 # Übergabe an die nächste Sitzung
 
-**Stand 18.10.2026** · geschrieben in der Sitzung ‚Reiselogbuch 0012‘
-(Zusammenarbeit allgemein 2.9.0, Abschnitt 0 Nr. 14). **Claude liest diese Datei zu Beginn jeder Sitzung zuerst.**
+**Stand 18.10.2026** · geschrieben in der Sitzung ‚Reiselogbuch 0013‘
+(Zusammenarbeit allgemein 2.10.1, Abschnitt 0 Nr. 14). **Claude liest diese Datei zu Beginn jeder Sitzung zuerst.**
 
 ## 1. Lagebild
 
 | Teil | Version | Datei |
 |---|---|---|
-| Reiselogbuch | **3.21.2** online (Fassung 4.23.2) | g811141a/ReiseLogBuch – `CHANGELOG.md`, `BACKLOG.md`, `PROMPT.md` |
-| AppDesign | **4.23.2** online | g811141a/AppDesign – `CHANGELOG.md`, `BACKLOG.md` |
+| Reiselogbuch | **3.23.0** online (Fassung 4.25.0) | g811141a/ReiseLogBuch – `CHANGELOG.md`, `BACKLOG.md`, `PROMPT.md` |
+| AppDesign | **4.25.0** online | g811141a/AppDesign – `CHANGELOG.md`, `BACKLOG.md` |
 | ReiseLogBuch-Import (privat) | 1.2.1 (unverändert) | g811141a/ReiseLogBuch-Import |
-| Zusammenarbeit allgemein | **2.9.0** | `README - Zusammenarbeit allgemein.md` |
+| Zusammenarbeit allgemein | **2.10.1** | `README - Zusammenarbeit allgemein.md` |
 
-- **Chatnummer:** die nächste Sitzung heißt **Reiselogbuch 0013**; die danach 0014.
-- **Offene Prüfpunkte:** keine (P-51 bis P-53 geprüft, T-92 / A-19 abgeschlossen).
-- **Sitzungsgröße:** Grenze etwa 300.000 Token Kontext; die Zeile Zeit und Token zeigt ihn.
+- **Chatnummer:** die nächste Sitzung heißt **Reiselogbuch 0014**; die danach 0015.
+- **Offene Prüfpunkte:** keine (P-54 und P-55 geprüft, A-21/A-22/A-23, T-93/T-94 abgeschlossen).
+- **Sitzungsgröße:** Grenze etwa 300.000 Token Kontext; die Zeile Zeit und Token zeigt ihn (0013 endete bei ~262.000).
 - **Erinnerung:** ‚Backlog-Erinnerung (AppDesign und Reiselogbuch)‘ montags 8:58.
 
 ## 2. Ergebnisse
 
-**Sitzung ‚Reiselogbuch 0012‘:**
-- **4.23.0 / 3.21.0 veröffentlicht** (Suche über alle Reiselogbücher, T-92 / A-19) mit Korrektur R-7.3 (`revealRow` rollte eine
-  ganz sichtbare Zeile direkt unter dem Kopf um bis zu 6 px; F-11 misst den besten von 3 Durchgängen).
-- **P-51/5 nicht ok → 4.23.1 / 3.21.1:** oberste Zeile beim Öffnen merken, danach genau dort ausrichten (Wunsch des Nutzers).
-- **P-52/2–4 nicht ok → 4.23.2 / 3.21.2:** nach dem Schließen die oberste Zeile 1,5 s festhalten (Safari rollt beim Zugehen der
-  Tastatur nach), Tastaturhöhe ist kein Drehen, **auch nach ‹ › rollt nichts mehr** (Wunsch des Nutzers). **P-53 alles ok.**
-- **Neue feste Prüfung** `ReiseLogBuch/tests/ablauf-liste-still.mjs` (AppDesign `checkListStill` neu): Start mit Lücke, 11 Fälle,
-  Safari-Tastatur einzeln und zusammen (`vv`, `resize`, `late`, `alle`), iPad quer/hoch, iPhone hoch/quer. R-7.3 nur noch dort.
-- **Zusammenarbeit 2.9.0 (0 Nr. 1):** bei ‚nicht ok‘ zuerst genau den Ablauf des Nutzers als feste Prüfung nachbauen, sie muss
-  gegen den veröffentlichten Stand rot sein, dann korrigieren; sie bleibt im vollen Lauf.
-- **Lehren aus 0012:** (1) Prüfungen beginnen im Zustand des Geräts (Daten mit Lücke, Öffnen wie der Nutzer), nicht bei einem
-  bequemen Scrollstand. (2) Safari-Eigenheiten einzeln **und** zusammen nachbilden – zusammen heben sich Fehler auf.
-  (3) Die nachgebildete Tastatur darf das iPad nicht unter 500 px Höhe drücken (sonst iPhone-Ansicht).
+**Sitzung ‚Reiselogbuch 0013‘:**
+- **4.24.0 / 3.22.0 veröffentlicht:** A-23 Hervorhebung nach dem Fenster 2 s voll blau + 1 s ausblenden (‚Bewegung
+  reduzieren‘ 2 s), endet beim nächsten Fenster; T-94 Verlauf mit ‚Tour …‘ und ‚Sonstiges …‘ (leere Zeile **am Anfang**,
+  Cursor dorthin). Neue Prüfung `ReiseLogBuch/tests/verlauf-vorschlaege.mjs`, `checkListStill` prüft Farbe und Dauer. **P-54 ok.**
+- **4.25.0 / 3.23.0 veröffentlicht:** A-21 Suche mit mehreren Wörtern (alle müssen vorkommen, Reihenfolge egal), **„…“ =
+  genaue Wortfolge (allgemeine Regel)**; Einheit im Reiselogbuch = ganzes Reiselogbuch (gezeigt die Tage mit mindestens einem
+  Wort); A-22 Lupe am Ende der Kapsel vor ‚…‘ (Liste [plus | search | ellipsis]). Bausteine `searchWords`, `findsAll`,
+  `findsAny`, `markWords` (ui.js), Prüfungen `checkSearchWords`, `checkSearchPlace`, `ReiseLogBuch/tests/ablauf-suche-woerter.mjs`.
+  **P-55 ok.**
+- **Zusammenarbeit 2.10.0 / 2.10.1 (0 Nr. 11, Wunsch des Nutzers):** nach jeder Version **alle Prüfpunkte vollständig Schritt
+  für Schritt im Chat** (nie nur Verweis aufs CHANGELOG), **danach immer ein Auswahlfenster zur Rückmeldung** – nur das löst
+  auf dem iPad eine Push-Nachricht aus. Claude hatte die Regel zweimal nicht eingehalten → **immer anwenden.**
+- **Lehren aus 0013:** (1) Prüfdaten müssen lang genug zum Rollen sein (Treffer unter der Suchzeile). (2) Gegenprobe gegen
+  einen alten Stand: alte `ui.js` meldet Versionsabweichung – stattdessen die neue `ui.js` gezielt zurückdrehen.
 
 Frühere Sitzungen: siehe `VERLAUF.md` und Versionsgeschichten.
 
 ## 3. Nächster Schritt
 
-Backlog-Spitze (alle Prio 1, je mit Fall-Liste und Muster, vor dem Bau ‚Ja‘; höchstens 2 Themen je Version):
-1. **A-23** Hervorhebung nach dem Fenster länger (allgemein, R-7.3; Vorschlag ~2 s voll blau + ~1 s ausblenden).
-2. **T-94** Verlauf im Fenster ‚Tag‘: ‚Tour …‘ und ‚Sonstiges …‘ (neue Zeile am Ende, Cursor dorthin) nach ‚Freetour …‘.
-3. **A-21 / T-93** Suche mit mehreren Begriffen (UND, allgemeine Regel); danach **A-22** Lupe am Ende der Kapsel (2 Varianten).
-Vorschlag: A-23 + T-94 als eine Version (AppDesign 4.24.0 / Reiselogbuch 3.22.0), dann A-21.
+Neue Rückmeldungen des Nutzers vom 18.10.2026 (Backlog AppDesign A-24 bis A-26, Reiselogbuch T-95), alle Prio 1:
+1. **A-24 Korrektur:** iPhone – in der Tabelle eines Reiselogbuchs zittern Symbolleisten- und Suchzeile mit jedem Buchstaben im
+   Suchfeld; beide müssen fest stehen. **Zuerst den Ablauf als feste Prüfung nachbauen, rot gegen 4.25.0** (0 Nr. 1).
+2. **A-25 Korrektur:** runde Schaltflächen (Lupe, …) sind eiförmig statt rund – sie waren schon einmal rund; Ursache und seit
+   welcher Version, Prüfung ‚Kreis = gleiche Breite und Höhe‘.
+3. **A-26 allgemeine Regel:** Datumsfeld – nach dem Antippen eines Tages übernimmt das System den Tag und kehrt in die
+   Ausgangsmaske zurück (Apple-Abgleich, Machbarkeit in Safari).
+Vorschlag: A-24 + A-25 als Korrekturversion (AppDesign 4.25.1 / Reiselogbuch 3.23.1), dann A-26 (4.26.0). Je Fall-Liste,
+vor dem Bau ‚Ja‘.
 
 ## 4. Danach
 
@@ -82,7 +87,7 @@ Vorschlag: A-23 + T-94 als eine Version (AppDesign 4.24.0 / Reiselogbuch 3.22.0)
 |---|---|---|
 | Diese Übergabe | g811141a/AppDesign | `UEBERGABE.md` |
 | Verlauf aller Wünsche und Entscheidungen | g811141a/AppDesign | `VERLAUF.md` |
-| Muster, Fall-Listen, Auswertungen | g811141a/AppDesign | `arbeit/A-06 Muster und Fall-Liste.md`, `arbeit/P-39 Rückmeldung.md`, `arbeit/T-84 Fall-Liste.md` |
+| Muster, Fall-Listen, Auswertungen | g811141a/AppDesign | `arbeit/A-21 A-22 Fall-Liste.md`, `arbeit/A-23 T-94 Fall-Liste.md` (je mit Muster) und ältere in `arbeit/` |
 | Prüf-Bausteine | g811141a/AppDesign | `tests/pruefe.mjs`, `tests/lauf.mjs`, `tests/offline.mjs`, `tests/start.mjs`, `tests/README.md` |
 | Regeln (Zusammenarbeit, Design) | g811141a/AppDesign | `README - Zusammenarbeit allgemein.md`, `README - Designrichtlinie allgemein.md` |
 | Backlog allgemein | g811141a/AppDesign | `BACKLOG.md` |
@@ -93,5 +98,5 @@ In der neuen Sitzung müssen **AppDesign** und **ReiseLogBuch** verfügbar sein,
 ## 7. Starttext für die neue Sitzung
 
 ```
-Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md und gezielt die Regeln (Zusammenarbeit 0 Nr. 15), gib mir das Lagebild und arbeite dann Abschnitt 3 ab (Fall-Listen und Muster für A-23 und T-94, vor dem Bau mein Ja). Hole vorher die Repos g811141a/ReiseLogBuch und g811141a/ReiseLogBuch-Import (privat) dazu (add_repo, Zugriff push), wie in UEBERGABE.md Abschnitt 5.
+Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md und gezielt die Regeln (Zusammenarbeit 0 Nr. 15), gib mir das Lagebild und arbeite dann Abschnitt 3 ab (zuerst A-24: Ablauf als feste Prüfung nachbauen, dann Fall-Listen für A-24 und A-25, vor dem Bau mein Ja). Hole vorher die Repos g811141a/ReiseLogBuch und g811141a/ReiseLogBuch-Import (privat) dazu (add_repo, Zugriff push), wie in UEBERGABE.md Abschnitt 5.
 ```

@@ -17,13 +17,15 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| A-21 | 1 | Suche mit mehreren Wörtern und „…“ (R-2.3) – Prüfliste P-55 im CHANGELOG des Reiselogbuchs 3.23.0 | zu prüfen |
-| A-22 | 2 | Lupe am Ende der Kapsel (15.5) – P-55 | zu prüfen |
+| – | – | zurzeit nichts zu prüfen | – |
 
 ## 2. Weitere Themen (in Klärung)
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
+| A-24 | 1 | **Korrektur: Symbolleiste zittert beim Suchen am iPhone (R-2.1, R-2.3 – Nutzer 18.10.2026, T-95):** in der Tabelle eines Reiselogbuchs am iPhone zittern Symbolleisten- und Suchzeile mit jedem Buchstaben im Suchfeld; beide Zeilen müssen auch am iPhone fest stehen (iPad ok). Zuerst den Ablauf als feste Prüfung nachbauen (iPhone, Safari-Tastatur offen, Tippen), rot gegen 4.25.0 (0 Nr. 1) | in Klärung |
+| A-25 | 1 | **Korrektur: runde Schaltflächen eiförmig (R-3.1/R-3.2, 15.5 – Nutzer 18.10.2026):** Symbole wie Lupe oder … sind nicht mehr rund, sondern eiförmig – sie waren schon einmal rund. Ursache suchen (Maße 48 × 44 der Kapsel-Schaltflächen bzw. Markierung, `.round`), seit welcher Version; Prüfung: Kreis = gleiche Breite und Höhe | in Klärung |
+| A-26 | 1 | **Datumsfeld: Tag antippen übernimmt und schließt (allgemeine Regel, R-5.x – Nutzer 18.10.2026):** nach dem Antippen eines Tages im Kalender übernimmt das System den Tag ins Datumsfeld und kehrt in die Ausgangsmaske zurück (heute bleibt der Kalender offen). Apple-Abgleich (iOS-Datumsauswahl), Machbarkeit in Safari (Schließen nach `change`), Fall-Liste und Muster | in Klärung |
 | A-01 | 3 | Startseite g811141a.github.io mit allen Apps (früher S-03) | später |
 
 ---
@@ -32,6 +34,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Thema | Version | Datum |
 |---|---|---|---|
+| E-52 | Geprüft: P-55 alles in Ordnung (Lupe am Ende, zwei Wörter, „…“, zentrale Liste, Tippen und Diktieren); **A-21 und A-22 damit abgeschlossen** | AppDesign 4.25.0 | 18.10.2026 |
 | E-51 | **A-21 und A-22 gebaut:** Suche mit mehreren Wörtern (alle müssen vorkommen, „…“ = genaue Folge, allgemeine Regel; Einheit legt die App fest), Lupe am Ende der Kapsel; Bausteine und Prüfungen `checkSearchWords`, `checkSearchPlace` | AppDesign 4.25.0 | 18.10.2026 |
 | E-50 | Geprüft: P-54 alles in Ordnung (Hervorhebung 2 s + 1 s, iPad und iPhone); **A-23 damit abgeschlossen**; Zusammenarbeit 2.10.0/2.10.1 (0 Nr. 11: Prüfpunkte vollständig im Chat, danach Auswahlfenster zur Rückmeldung) | AppDesign 4.24.0 | 18.10.2026 |
 | E-49 | **A-23 gebaut:** Hervorhebung nach dem Fenster 2 s voll blau, 1 s ausblenden (Variante A; ‚Bewegung reduzieren‘ 2 s), endet beim nächsten Fenster; `checkListStill` prüft Farbe und Dauer | AppDesign 4.24.0 | 18.10.2026 |
