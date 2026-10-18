@@ -3,6 +3,24 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.25.0 – 18.10.2026
+
+AppDesign 4.25.0 · Designrichtlinie allgemein 4.25.0 · Zusammenarbeit allgemein 2.10.1 · geprüft mit Reiselogbuch 3.23.0
+
+Suchen wie in Mail und Notizen (A-21) und die Lupe am Ende der Kapsel (A-22); beides allgemeine Regeln (Entscheidungen des
+Nutzers 18.10.2026: Einheit Reiselogbuch, „…“ ja und allgemein, Lupe V1).
+
+- **R-2.3 mehrere Wörter, ui.js:** neue Bausteine `searchWords` (Leerzeichen trennt, „…“ = genaue Wortfolge, doppelte und
+  leere fallen weg, einzelne Anführungszeichen werden übergangen), `findsAll` / `findsAny` (alle bzw. eines der Wörter,
+  Groß/klein egal) und `markWords` (alle Wörter gelb, längere zuerst, aneinanderstoßende Stellen als eine Markierung,
+  unsichtbare Umbruchstellen R-6.3). Was ‚ein Eintrag‘ ist, legt die App fest.
+- **A-22, 15.5:** die Lupe steht in jeder Kapsel am Ende, dahinter höchstens ‚…‘ – zentrale Liste [plus | search | ellipsis]
+  (vorher [search | plus | ellipsis]); im Eintrag war sie schon so.
+- **Prüfungen:** `checkSearchWords` (Bausteine in der Seite der App: S2–S17 der Fall-Liste), `checkSearchPlace` (Lupe am Ende
+  jeder sichtbaren Kapsel). Gegenprobe mit Reiselogbuch 3.22.0: rot.
+- Fall-Liste und Muster: `arbeit/A-21 A-22 Fall-Liste.md`, `arbeit/A-21 A-22 Muster.html`.
+- Designrichtlinie 15.2, 15.4, 15.5, Regelkatalog R-2.3; feste Fassung `fassung/4.25.0/`.
+
 ## 4.24.0 – 18.10.2026
 
 AppDesign 4.24.0 · Designrichtlinie allgemein 4.24.0 · Zusammenarbeit allgemein 2.9.0 · geprüft mit Reiselogbuch 3.22.0

@@ -1,6 +1,6 @@
 # Designrichtlinie allgemein
 
-**Version 4.24.0** · Stand 18.10.2026
+**Version 4.25.0** · Stand 18.10.2026
 
 Allgemeine Gestaltungs- und Bedienregeln für alle iPad-Web-Apps von g811141a (seit 4.1.0 auch
 auf dem iPhone, Abschnitt 15.17).
@@ -478,6 +478,11 @@ Verhalten · technischer Name). In AppDesign ist jede Komponente einmal programm
   - mit Treffern: rechtsbündig „3 von 57“ (ohne das Wort „Treffer“), x; Navigation
     sichtbar; am ersten Treffer chevron-up ausgegraut, am letzten chevron-down
   - ohne Treffer: rechtsbündig „0“, beide Pfeile ausgegraut
+- **Mehrere Wörter (seit 4.25.0, A-21, allgemeine Regel):** Leerzeichen trennt Wörter; ein Eintrag passt, wenn **jedes** Wort
+  darin vorkommt – Reihenfolge und Groß/klein egal (wie Mail, Notizen, Fotos); **„…“ sucht eine genaue Wortfolge**
+  (‚„Opera House“ sydney‘). Markiert und gezählt werden alle Wörter, längere zuerst, aneinanderstoßende Stellen als eine
+  Markierung. Was ‚ein Eintrag‘ ist, legt die App fest (Reiselogbuch: das ganze Reiselogbuch, gezeigt werden die Tage mit
+  mindestens einem Wort). Technisch `searchWords`, `findsAll`, `findsAny`, `markWords` (ui.js).
 - **Verhalten:** Suche beim Tippen (Markierung sofort); jede Markierung ist ein Treffer; zum
   ersten wird erst nach einer kurzen Tipp-Pause (ca. 0,5 s) gesprungen. Der Treffer steht dann
   **direkt unter der Suchzeile** (und dem Tabellenkopf), nicht in der Bildmitte. Kopf- und
@@ -503,7 +508,7 @@ Verhalten · technischer Name). In AppDesign ist jede Komponente einmal programm
 ### 15.4 Seitenleiste
 - **Apple:** [HIG – Sidebars](https://developer.apple.com/design/human-interface-guidelines/sidebars)
 - **Zweck:** zentrale Liste der App. **Technisch:** `#side`.
-- **Aufbau:** Kopf: Überschrift (20 px, fett, linksbündig) · Kapsel [search | plus | ellipsis] (search seit 4.23.0) ·
+- **Aufbau:** Kopf: Überschrift (20 px, fett, linksbündig) · Kapsel [plus | search | ellipsis] (search seit 4.23.0, am Ende seit 4.25.0) ·
   runde Schaltfläche panel-left (ausblenden); unter der Überschrift klein und grau die Anzahl
   (‚5 Reiselogbücher‘); der Kopf bleibt oben stehen. Darunter die Einträge
   als **Kacheln** (wie auf dem iPhone): Titel fett, darunter grau Zeitraum · Status, rechts ›;
@@ -514,7 +519,7 @@ Verhalten · technischer Name). In AppDesign ist jede Komponente einmal programm
   **immer** die Backup-Kachel ‚Letztes Backup erstellt am …‘ (auch während der Suche) – gelb mit blauem Knopf, solange heute
   noch kein Backup erstellt wurde, sonst weiß mit normalem Knopf (`.ok`).
   Darunter, solange die App offline arbeitet, grau ‚Offline – alles bleibt auf diesem Gerät‘ (seit 4.15.0, 15.20).
-- **Suche in der Liste (seit 4.23.0, R-2.3, A-19 aus Reiselogbuch T-92):** Kapsel im Kopf [search | plus | ellipsis]
+- **Suche in der Liste (seit 4.23.0, R-2.3, A-19 aus Reiselogbuch T-92):** Kapsel im Kopf [plus | search | ellipsis]
   (search nur, wenn es Einträge gibt). search blendet unter dem Kopf eine Suchzeile ein (wie 15.2, Platzhalter ‚In allen
   suchen‘, x, **ohne** Pfeile; `#side .side-search`), Fokus im Feld. Beim Tippen bleiben nur Einträge mit Treffer; jede
   Kachel zeigt statt ‚geändert am …‘ ‚N Treffer‘ – gezählt **je Fundstelle** genau wie ‚1 von N‘ im Eintrag (nur sichtbare
@@ -563,6 +568,8 @@ Verhalten · technischer Name). In AppDesign ist jede Komponente einmal programm
 - **Apple:** [HIG – Toolbars](https://developer.apple.com/design/human-interface-guidelines/toolbars)
 - Mehrere Schaltflächen in einer schwebenden Kapsel (44 px hoch, je Icon 48 px breit);
   Text-Schaltflächen darin mit Innenabstand 14 px. Technisch `.grp` (`.navgrp`).
+- **Suche am Ende (seit 4.25.0, A-22):** die Lupe steht in jeder Kapsel am Ende, dahinter höchstens das Mehr-Menü (ellipsis) –
+  wie Apple (Suche am Ende der Leiste); z. B. [plus | search | ellipsis], [share | search | ellipsis].
 - **Alle Kapseln gleich gebaut** (Kopfzeile, Seitenleiste, Treffer-Pfeile, Blättern, Auswahl-Kapseln):
   Schaltflächen genau so hoch wie der Innenraum (44 px minus Rand); die Markierung (gedrückt bzw.
   blau gefüllt) ist eine eigene Kapsel mit 3 px Luft und liegt immer innerhalb des Randes.
@@ -909,7 +916,7 @@ Regel ersetzt oder ergänzt eine bestehende (Zusammenarbeit 0 Nr. 3) und bekommt
 |---|---|---|---|---|
 | R-2.1 | **Leisten stehen fest – keinen Millimeter:** Kopfzeile, Seitenkopf, Seitenleisten-Kopf, mit und ohne Suchzeile, beim Wischen, am Rand, bei offener und beim Schließen der Tastatur; nichts federt; erstes Wischen bei offener Tastatur schließt nur die Tastatur | hig.mjs – `barStill`: Lage der Leiste beim Scrollen gemessen, auch mit nachgebildeter Tastatur | Federn, Tastatur | R-05, R-28 |
 | R-2.2 | **Titel in der Leiste:** Titel einer Inhaltsseite steht in der Leiste; unter dem Titel der Seitenleiste bzw. Startliste klein und grau die Anzahl | hig.mjs | – | R-09, R-21 |
-| R-2.3 | **Suche:** Suchzeile unter der Leiste über die volle Breite; Treffer ‚3 von 57‘ bzw. ‚0‘; nach kurzer Pause steht der Treffer direkt unter der Suchzeile; Pfeile ohne Umlauf; gefiltert auf Einträge mit Treffern; gleich auf iPad und iPhone. **Seit 4.23.0 auch in der zentralen Liste** (Lupe im Kopf): filtert die Einträge, Kachel ‚N Treffer‘ je Fundstelle wie ‚1 von N‘, Öffnen mit gefüllter Suche, beide Suchfelder offen = 1:1, ‚Keine Treffer‘ (15.4) | ablauf.mjs – `checkSearch`, `checkListSearch` | – | **neu** (bisher nur 15.2) |
+| R-2.3 | **Suche:** Suchzeile unter der Leiste über die volle Breite; Treffer ‚3 von 57‘ bzw. ‚0‘; nach kurzer Pause steht der Treffer direkt unter der Suchzeile; Pfeile ohne Umlauf; gefiltert auf Einträge mit Treffern; gleich auf iPad und iPhone. **Seit 4.25.0 mehrere Wörter** (alle müssen vorkommen, Reihenfolge egal, „…“ = genaue Folge, alle markiert; Einheit legt die App fest) und **Lupe am Ende der Kapsel**, dahinter nur ellipsis (15.2, 15.5). **Seit 4.23.0 auch in der zentralen Liste** (Lupe im Kopf): filtert die Einträge, Kachel ‚N Treffer‘ je Fundstelle wie ‚1 von N‘, Öffnen mit gefüllter Suche, beide Suchfelder offen = 1:1, ‚Keine Treffer‘ (15.4) | ablauf.mjs – `checkSearch`, `checkListSearch`, `checkSearchWords`, `checkSearchPlace` (seit 4.25.0) | – | **neu** (bisher nur 15.2) |
 
 ### 3. Schaltflächen
 
@@ -1010,6 +1017,7 @@ Die alten Nummern R-01 bis R-52 (bis 4.11.4) gelten nicht mehr; sie stehen nur n
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 4.25.0 | 18.10.2026 | Neben | **R-2.3 erweitert (A-21, A-22):** Suche mit mehreren Wörtern (alle müssen vorkommen, Reihenfolge egal) und „…“ als genaue Wortfolge – allgemeine Regel; Lupe am Ende der Kapsel vor ellipsis (15.2, 15.4, 15.5); Bausteine `searchWords`/`findsAll`/`findsAny`/`markWords`, Prüfungen `checkSearchWords`, `checkSearchPlace` |
 | 4.24.0 | 18.10.2026 | Neben | **R-7.3 (A-23):** Hervorhebung nach dem Fenster länger – 2 s voll blau, 1 s ausblenden (vorher ~1 s); `checkListStill` prüft Farbe und Dauer |
 | 4.23.2 | 18.10.2026 | Korrektur | **R-7.3 (P-52/2–4):** oberste Zeile nach dem Schließen 1,5 s festhalten (Safari rollt beim Zugehen der Tastatur nach bzw. ändert die Fensterhöhe – kein Drehen), auch nach ‹ › kein Rollen mehr; `checkListStill` neu gefasst (Start mit Lücke, 11 Fälle, Tastatur einzeln und zusammen) – Abschnitt 7, Regelkatalog Thema 7 |
 | 4.23.1 | 18.10.2026 | Korrektur | **R-7.3 (P-51/5):** oberste Zeile beim Öffnen merken und nach dem Schließen genau dort ausrichten; gerollt wird nur nach ‹ ›, gegen die ganze Fensterhöhe statt gegen den Bereich über der Tastatur – Abschnitt 7, Regelkatalog Thema 7, `checkListStill` mit nachgebildeter Tastatur |

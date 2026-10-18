@@ -79,3 +79,11 @@ Dateien) ist die Lupe eine **eigene** runde Schaltfläche neben der Kapsel.
 runde Schaltfläche vor der Kapsel‘ (V2).
 
 **Nur am Gerät (Prüfliste):** Gefühl, ob die Lupe dort gefunden wird; Daumen-Erreichbarkeit iPhone.
+
+## Entschieden (18.10.2026)
+
+- A-21: **Variante B** – ein Eintrag ist das ganze **Reiselogbuch** (Wörter dürfen an verschiedenen Tagen stehen); gezeigt
+  werden die Tage mit mindestens einem Wort, gezählt alle Markierungen. S5/S6 gelten damit je Reiselogbuch.
+- „…“ = genaue Wortfolge: **ja, als allgemeine Regel** (R-2.3).
+- A-22: **V1** – Lupe in der Kapsel direkt vor ‚…‘.
+- Bauen: **Ja** – AppDesign 4.25.0, Reiselogbuch 3.23.0 auf Fassung 4.25.0.

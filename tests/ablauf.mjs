@@ -1,5 +1,5 @@
 // AppDesign 4.12.0 · Ablauf-Prüfungen für Regeln, die eine Handlung brauchen (Designrichtlinie allgemein, Abschnitt 17):
-// R-2.3 Suche (seit 4.23.0 auch in der zentralen Liste) · R-4.4 Fenster-Kopfzeile · R-5.2 Texteingabe · R-5.3 Fehlermeldungen · R-5.5 Eingabetaste (seit 4.19.0) · R-6.4 Ausgabe und Vorschau · R-7.3 Liste steht still (seit 4.18.0) · R-7.4 Position beim Öffnen und R-8.1 Seitenleiste ein/aus (seit 4.21.0).
+// R-2.3 Suche (seit 4.23.0 auch in der zentralen Liste, seit 4.25.0 mehrere Wörter und „…“) · A-22 Lupe am Ende der Kapsel · R-4.4 Fenster-Kopfzeile · R-5.2 Texteingabe · R-5.3 Fehlermeldungen · R-5.5 Eingabetaste (seit 4.19.0) · R-6.4 Ausgabe und Vorschau · R-7.3 Liste steht still (seit 4.18.0) · R-7.4 Position beim Öffnen und R-8.1 Seitenleiste ein/aus (seit 4.21.0).
 // Jede Funktion bekommt eine Playwright-Seite und gibt eine Liste von Fehlern zurück (leer = in Ordnung), je mit Regelnummer.
 // Einbinden im Prüfskript der App:  import { checkSearch, checkDialogHead } from '../../AppDesign/tests/ablauf.mjs';
 //                                   fehler.push(...await checkSearch(page, { term: 'Sydney' }));
@@ -407,5 +407,56 @@ export async function checkListStill(p, { item, field, next = '', where = '', st
     if (lit && await flash(z[1].key)) E(`Hervorhebung der Zeile ${z[1].key} läuft weiter, obwohl das nächste Fenster offen ist`);
     await p.click('#dlgX'); await wait(p, 300); await stop();
   }
+  return errors;
+}
+
+// R-2.3 (seit 4.25.0, A-21; Fall-Liste arbeit/A-21 A-22 Fall-Liste.md) Suche mit mehreren Begriffen – die Bausteine aus ui.js
+// (searchWords, findsAll, findsAny, markWords) in der Seite der App: Wörter zerlegen (Leerzeichen, „…“, doppelte, Ränder),
+// alle müssen vorkommen (Reihenfolge egal), Markierung aller Wörter (längere zuerst, Überlappung = eine Markierung),
+// Sonderzeichen, Umlaute und unsichtbare Umbruchstellen (R-6.3). Wie ein Eintrag zusammengesetzt ist, prüft die App selbst.
+export async function checkSearchWords(p, { where = '' } = {}) {
+  const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}R-2.3 Wörter: ${t}`);
+  const r = await p.evaluate(() => {
+    if (typeof searchWords !== 'function' || typeof markWords !== 'function') return null;
+    const W = t => searchWords(t), M = (h, t) => markWords(h, W(t));
+    return {
+      S2: findsAll('Freetour Sydney\nBesichtigung Opera House', W('sydney opera')), S3: findsAll('Freetour Sydney\nBesichtigung Opera House', W('opera sydney')),
+      S5: findsAll('Freetour Sydney', W('sydney opera')), any: findsAny('Freetour Sydney', W('sydney opera')),
+      S7: W('  sydney   '), S8: W('sydney '), S9: W('rom Rom rom'), S14: W('„Opera  House“ sydney'), S14b: W('"opera house" "x"'),
+      S14c: findsAll('Opera und House', W('„opera house“')), S15: W('„opera'), S15b: W('„“ ""'),
+      S10: M('Opera di Roma', 'oper opera'), S10b: M('Sydney', 'syd ney'), S2m: M('Freetour Sydney, Opera House', 'opera sydney'),
+      S14m: M('Opera House und Opera', '„opera house“'), S16: M('Würzburg (Main) 3.5 * x', '( würzburg 3.5 *'),
+      S17: M('Sehr​lange​Wörter', 'langewörter'), empty: M('Sydney', '   '),
+    };
+  });
+  if (!r) { E('Bausteine searchWords/markWords fehlen in ui.js'); return errors; }
+  const eq = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+  if (!r.S2 || !r.S3) E('zwei Wörter am selben Ort werden nicht gefunden (Reihenfolge egal)');
+  if (r.S5) E('fehlt ein Wort, darf nichts gefunden werden');
+  if (!r.any) E('findsAny findet ein einzelnes Wort nicht');
+  if (!eq(r.S7, ['sydney']) || !eq(r.S8, ['sydney'])) E(`Leerzeichen am Rand bzw. doppelt: ${JSON.stringify(r.S7)} / ${JSON.stringify(r.S8)}`);
+  if (!eq(r.S9, ['rom'])) E(`doppelte Wörter: ${JSON.stringify(r.S9)} statt ["rom"]`);
+  if (!eq(r.S14, ['opera house', 'sydney']) || !eq(r.S14b, ['opera house', 'x'])) E(`„…“ als genaue Wortfolge: ${JSON.stringify(r.S14)} / ${JSON.stringify(r.S14b)}`);
+  if (r.S14c) E('„opera house“ findet auch getrennte Wörter (keine genaue Folge)');
+  if (!eq(r.S15, ['opera']) || !eq(r.S15b, [])) E(`einzelnes bzw. leeres Anführungszeichen: ${JSON.stringify(r.S15)} / ${JSON.stringify(r.S15b)}`);
+  if (r.S10 !== '<mark>Opera</mark> di Roma') E(`Überlappung ‚oper opera‘: ${r.S10}`);
+  if (r.S10b !== '<mark>Sydney</mark>') E(`aneinanderstoßende Wörter ‚syd ney‘: ${r.S10b}`);
+  if (r.S2m !== 'Freetour <mark>Sydney</mark>, <mark>Opera</mark> House') E(`Markierung aller Wörter: ${r.S2m}`);
+  if (r.S14m !== '<mark>Opera House</mark> und Opera') E(`Markierung der genauen Folge: ${r.S14m}`);
+  if (r.S16 !== '<mark>Würzburg</mark> <mark>(</mark>Main) <mark>3.5</mark> <mark>*</mark> x') E(`Sonderzeichen und Umlaute: ${r.S16}`);
+  if (!/^Sehr​<mark>lange​Wörter<\/mark>$/.test(r.S17)) E(`unsichtbare Umbruchstellen (R-6.3): ${JSON.stringify(r.S17)}`);
+  if (r.empty !== 'Sydney') E(`leere Suche markiert etwas: ${r.empty}`);
+  return errors;
+}
+
+// A-22 (seit 4.25.0): die Lupe steht in jeder Kapsel am Ende, dahinter höchstens das Mehr-Menü (…) – wie Apple (15.5).
+export async function checkSearchPlace(p, { search = 'button[aria-label="Suchen"]', more = 'button[aria-label="Mehr"]', where = '' } = {}) {
+  const errors = [];
+  const r = await p.evaluate(({ search, more }) => [...document.querySelectorAll(`.grp ${search}`)].filter(b => b.getClientRects().length).map(b => {
+    const after = [...b.parentElement.children].slice([...b.parentElement.children].indexOf(b) + 1).filter(x => x.getClientRects().length);
+    return { id: b.id, ok: after.length === 0 || (after.length === 1 && after[0].matches(more)), after: after.map(x => x.getAttribute('aria-label') || x.id) };
+  }), { search, more });
+  if (!r.length) errors.push(`${where ? where + ': ' : ''}A-22 keine Lupe in einer Kapsel gefunden`);
+  r.filter(x => !x.ok).forEach(x => errors.push(`${where ? where + ': ' : ''}A-22 Lupe ${x.id} steht nicht am Ende der Kapsel – dahinter ${x.after.join(', ')}`));
   return errors;
 }
