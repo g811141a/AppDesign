@@ -17,7 +17,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| A-23 | 1 | Hervorhebung nach dem Fenster länger (R-7.3) – Prüfliste P-54/1 im CHANGELOG des Reiselogbuchs 3.22.0 | zu prüfen |
+| – | – | zurzeit nichts zu prüfen | – |
 
 ## 2. Weitere Themen (in Klärung)
 
@@ -33,6 +33,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Thema | Version | Datum |
 |---|---|---|---|
+| E-50 | Geprüft: P-54 alles in Ordnung (Hervorhebung 2 s + 1 s, iPad und iPhone); **A-23 damit abgeschlossen**; Zusammenarbeit 2.10.0/2.10.1 (0 Nr. 11: Prüfpunkte vollständig im Chat, danach Auswahlfenster zur Rückmeldung) | AppDesign 4.24.0 | 18.10.2026 |
 | E-49 | **A-23 gebaut:** Hervorhebung nach dem Fenster 2 s voll blau, 1 s ausblenden (Variante A; ‚Bewegung reduzieren‘ 2 s), endet beim nächsten Fenster; `checkListStill` prüft Farbe und Dauer | AppDesign 4.24.0 | 18.10.2026 |
 | E-48 | Geprüft: P-53 alles in Ordnung (Liste steht still nach dem Fenster ‚Tag‘, auch nach ‹ ›, iPad und iPhone); **A-19 damit abgeschlossen**; Zusammenarbeit 2.9.0 (0 Nr. 1: bei ‚nicht ok‘ zuerst den Ablauf des Nutzers als feste Prüfung) | AppDesign 4.23.2 | 18.10.2026 |
 | E-47 | **Korrektur R-7.3 gebaut (P-52/2–4):** oberste Zeile nach dem Schließen 1,5 s festhalten, Tastaturhöhe ist kein Drehen, auch nach ‹ › kein Rollen; `checkListStill` neu gefasst (Start mit Lücke, 11 Fälle, Safari-Tastatur einzeln und zusammen), Reiselogbuch-Prüfung `ablauf-liste-still` | AppDesign 4.23.2 | 18.10.2026 |
