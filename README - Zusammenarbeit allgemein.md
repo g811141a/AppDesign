@@ -1,6 +1,6 @@
 # Zusammenarbeit allgemein
 
-**Version 2.8.0** · Stand 17.10.2026
+**Version 2.9.0** · Stand 18.10.2026
 
 Regeln für die Zusammenarbeit mit Claude bei allen iPad-Web-Apps von g811141a.
 Diese Datei liegt im Design-Repo **AppDesign** (g811141a/AppDesign).
@@ -38,6 +38,10 @@ Nutzer sie findet, schneller und günstiger arbeiten.
    abgleichen, teilen …) × Daten (leer, lang, viele). Jeder Fall wird ein automatischer Test. Die Liste kommt mit dem
    Muster, damit der Nutzer Lücken sieht. Was nur das echte Gerät zeigt (Teilen-Menü, iCloud, Drucken,
    Silbentrennung, Gefühl beim Wischen), kommt in die Prüfliste.
+   **Rückmeldung ‚nicht ok‘ (seit 2.9.0):** Claude baut zuerst **genau den Ablauf des Nutzers** als feste Prüfung nach
+   (Ausgangszustand wie auf dem Gerät, z. B. Reiselogbuch mit Lücke öffnen; dieselben Handgriffe; Safari-Eigenheiten
+   einzeln und zusammen nachgebildet). Sie muss gegen den **veröffentlichten Stand rot** sein, bevor korrigiert wird, und
+   bleibt danach für immer im vollen Lauf. Gelingt das Nachstellen nicht, fragt Claude nach, statt zu raten.
 2. **Parallel arbeiten, sparsam:** Tests laufen parallel, die schnellsten zuerst, Abbruch beim ersten Fehler
    (seit AppDesign 4.13.0: `node tests/alle.mjs` in der App, Werkzeug `AppDesign/tests/lauf.mjs`; jeder Test meldet Fehler
    mit Rückgabewert, Gegenprobe mit `--gegenprobe`). **Ein voller Prüflauf je Version (seit 2.4.0):** während der Arbeit
@@ -328,6 +332,7 @@ Nutzer sie findet, schneller und günstiger arbeiten.
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 2.9.0 | 18.10.2026 | Neben | 0 Nr. 1: bei ‚nicht ok‘ zuerst den Ablauf des Nutzers als feste Prüfung nachbauen, rot gegen den veröffentlichten Stand, dann korrigieren (aus P-51/5 und P-52) |
 | 2.8.0 | 17.10.2026 | Neben | §2: Zeile Zeit und Token endet mit ‚Kontext N‘, ab 300.000 ‚⚠ Übergabe fällig‘ (A-20) |
 | 2.7.0 | 16.10.2026 | Neben | §2: Zeile Zeit und Token mit dem Werkzeug `werkzeug/messung.mjs`, ‚neu‘ = Eingabe + Ausgabe (A-12) |
 | 2.6.0 | 16.10.2026 | Neben | Abschnitt 0 Nr. 19: Startfrage – Sitzung ohne Auftrag beginnt mit dem Auswahlfenster ‚Was möchtest du als Nächstes tun?‘ je angehängtem Repo (T-05) |
