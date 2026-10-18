@@ -1,4 +1,4 @@
-// AppDesign 4.23.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
+// AppDesign 4.23.1 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
 // Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/fassung/X.Y.Z/ui.js"></script> (feste Fassung, R-10.3)
 // Seit 4.11.0 (R-10.3): ui.js und design.css immer mit ?v=<AppDesign-Version> einbinden (auch in sw.js) und beim Start
 // prüfen, ob genau diese Fassung geladen ist (AD_VERSION hier, --ad-version in design.css).
@@ -17,7 +17,7 @@
 
 'use strict';
 // Version der Bausteine (R-10.3): die App vergleicht sie beim Start mit der benötigten Fassung.
-const AD_VERSION = '4.23.0';
+const AD_VERSION = '4.23.1';
 /* ---------- Icons ---------- */
 
 // Schaltflächen-Icons aus Lucide (ISC-Lizenz), direkt eingebettet, damit die App offline funktioniert.
@@ -146,19 +146,34 @@ function blockingLayer() {
 // R-7.3 (seit 4.18.0, A-13): Solange ein Fenster offen ist, steht die Seite dahinter still. Safari schiebt beim Öffnen der
 // Tastatur trotz overflow: hidden die ganze Seite und schiebt sie nicht zurück – deshalb wird der Scrollstand beim Öffnen
 // gemerkt und beim Schließen genau wiederhergestellt (position: fixed ginge nicht: der Tabellenkopf ist sticky).
-let lockY = null;
+// Seit 4.23.1 (P-51/5): zusätzlich die oberste Zeile unter der Leiste samt Abstand in px – nach dem Schließen und dem
+// Neuaufbau durch die App steht genau sie wieder dort (auch wenn Safari die Seite für die Tastatur verschoben hat).
+let lockY = null, lockTop = null, lockSel = '', closedTop = null, closedSel = '';
+function lockAnchor() {
+  if (scrollY < 4) return null;
+  const edge = keepEdge();
+  const e = [...document.querySelectorAll(KEEP_SEL)].find(x => x.getClientRects().length && x.getBoundingClientRect().bottom > edge + 1);
+  return e ? { sel: keepKey(e), top: e.getBoundingClientRect().top - edge } : null;
+}
+function alignTop(a) {
+  if (!a) return;
+  const e = [...document.querySelectorAll(KEEP_SEL.split(', ').map(s => `${s.split(' ')[0]} ${a.sel}`).join(', '))].find(x => x.getClientRects().length);
+  const d = e ? Math.round(e.getBoundingClientRect().top - keepEdge() - a.top) : 0;
+  if (d) window.scrollBy({ top: d, behavior: 'instant' });
+}
 function lockPage() {
-  if (lockY === null) lockY = scrollY;
+  if (lockY === null) { lockY = scrollY; lockTop = lockAnchor(); lockSel = dlgOpener; }
   document.documentElement.classList.add('locked');
 }
 function unlockPage() {
   if (dlg.open || msg.open) return;
   document.documentElement.classList.remove('locked');
   if (lockY === null) return;
-  const y = lockY;
-  lockY = null;
-  if (keepTurned()) restoreTop();                       // gedreht, während das Fenster offen war (R-8.1)
-  else if (Math.round(scrollY) !== Math.round(y)) window.scrollTo({ top: y, behavior: 'instant' });
+  const y = lockY, a = lockTop;
+  closedSel = lockSel; lockY = null; lockTop = null; lockSel = ''; closedTop = null;
+  if (keepTurned()) return restoreTop();                // gedreht, während das Fenster offen war (R-8.1)
+  if (Math.round(scrollY) !== Math.round(y)) window.scrollTo({ top: y, behavior: 'instant' });
+  alignTop(a); closedTop = a;                           // nach dem Neuaufbau durch die App noch einmal (dlg 'close')
 }
 
 // Fenster ohne Fokus-Rahmen öffnen: der Fokus liegt auf dem Fenster selbst, nicht auf dem x.
@@ -919,13 +934,16 @@ dlg.addEventListener('close', () => {
   if (sel) document.querySelector(sel)?.classList.remove('on');
   dlgOpener = '';
   // R-7.3: nach dem Neuaufbau durch die App die Zeile zeigen (nur falls nötig) und kurz hervorheben
-  if (sel) requestAnimationFrame(() => revealRow(sel));
+  // seit 4.23.1: erst die oberste Zeile wieder genau an ihren Platz; gerollt wird nur, wenn im Fenster mit ‹ › auf eine
+  // andere Zeile geblättert wurde (und sie verdeckt ist) – sonst steht die Liste genau wie vorher, die Zeile wird nur hervorgehoben.
+  const moved = sel !== closedSel;
+  requestAnimationFrame(() => { alignTop(closedTop); closedTop = null; if (sel) revealRow(sel, moved); });
 });
 
 // R-7.3 (seit 4.18.0, A-13): Zeile bzw. Kasten, aus dem ein Fenster kam, nach dem Schließen zeigen und kurz hervorheben.
-// Ist sie ganz sichtbar (unter Leiste und Tabellenkopf), rollt nichts; sonst nur so weit, bis sie es ist (nach ‹ › im Fenster).
+// Nur nach ‹ › im Fenster (moved) und nur, wenn sie nicht ganz sichtbar ist (unter Leiste und Tabellenkopf), rollt die Liste so weit, bis sie es ist.
 // Schaltflächen sind keine Zeilen und werden nicht hervorgehoben.
-function revealRow(sel) {
+function revealRow(sel, moved = true) {
   const el = document.querySelector(sel);
   if (!el || !el.matches(KEEP_SEL) || !el.getClientRects().length) return;
   const head = el.closest('table')?.querySelector('thead');
@@ -933,10 +951,12 @@ function revealRow(sel) {
   // Seit 4.23.0: ‚ganz sichtbar‘ ohne Abstand (1 px Spielraum) – die 6 px Abstand gelten nur als Ziel, wenn gerollt werden muss.
   // Vorher rollte eine ganz sichtbare Zeile direkt unter dem Tabellenkopf um bis zu 6 px.
   const edge = Math.max(keepEdge(), th && getComputedStyle(th).position === 'sticky' ? th.getBoundingClientRect().bottom : 0);
-  const vv = window.visualViewport, end = vv ? vv.offsetTop + vv.height : innerHeight;
+  // Seit 4.23.1 (P-51/5): gegen die ganze Fensterhöhe – die Tastatur geht mit dem Fenster zu; gegen den Bereich über der
+  // noch offenen Tastatur gemessen rückte eine Zeile aus der unteren Hälfte 1–3 Zeilen hoch.
+  const end = innerHeight;
   const r = el.getBoundingClientRect();
-  if (r.top < edge - 1) window.scrollBy({ top: r.top - edge - 6, behavior: 'instant' });
-  else if (r.bottom > end + 1) window.scrollBy({ top: Math.min(r.bottom - end + 6, r.top - edge - 6), behavior: 'instant' });
+  if (moved && r.top < edge - 1) window.scrollBy({ top: r.top - edge - 6, behavior: 'instant' });
+  else if (moved && r.bottom > end + 1) window.scrollBy({ top: Math.min(r.bottom - end + 6, r.top - edge - 6), behavior: 'instant' });
   if (!el.animate) return;
   const from = getComputedStyle(document.documentElement).getPropertyValue('--sel-bg').trim(), to = getComputedStyle(el).backgroundColor;
   const still = matchMedia('(prefers-reduced-motion: reduce)').matches;

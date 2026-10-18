@@ -1,6 +1,6 @@
 # AppDesign – Backlog (allgemeine Themen)
 
-**Stand 17.10.2026** · Aktuelle Version: AppDesign 4.23.0
+**Stand 18.10.2026** · Aktuelle Version: AppDesign 4.23.1
 
 Allgemeine Themen, die alle Apps betreffen. App-Themen stehen im Backlog der jeweiligen App.
 Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
@@ -17,12 +17,14 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| A-19 | 1 | Suche in der zentralen Liste (R-2.3) – geprüft mit Reiselogbuch 3.21.0, Prüfliste P-51 | prüfen |
+| A-19 | 1 | Suche in der zentralen Liste (R-2.3) – P-51 bis auf /5 in Ordnung; Korrektur R-7.3 mit Reiselogbuch 3.21.1, Prüfliste P-52 | prüfen |
 
 ## 2. Weitere Themen (in Klärung)
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
+| A-21 | 1 | **Suche mit mehreren Begriffen (UND, R-2.3 erweitert, allgemeine Regel – Nutzer 18.10.2026):** Wörter mit Leerzeichen = alle müssen vorkommen, Reihenfolge egal (wie Mail, Notizen, Fotos); alle Wörter markiert und gezählt; gilt im Eintrag und in der zentralen Liste. Fall-Liste und Muster folgen | in Klärung |
+| A-22 | 2 | **Lupe am Ende der Kapsel (Nutzer 18.10.2026):** Apple setzt Suche ans Ende der Leiste, nur das Mehr-Menü (…) steht dahinter – Varianten [+ \| Lupe \| …] oder Lupe als eigene Schaltfläche vor der Kapsel; Muster mit 2 Varianten | in Klärung |
 | A-01 | 3 | Startseite g811141a.github.io mit allen Apps (früher S-03) | später |
 
 ---
@@ -31,6 +33,8 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Thema | Version | Datum |
 |---|---|---|---|
+| E-45 | **Korrektur R-7.3 gebaut (P-51/5):** beim Öffnen wird die oberste Zeile samt Abstand gemerkt, nach dem Schließen steht sie genau wieder dort; gerollt wird nur nach ‹ › (und gegen die ganze Fensterhöhe statt gegen den Bereich über der Tastatur); `checkListStill` mit nachgebildeter Tastatur | AppDesign 4.23.1 | 18.10.2026 |
+| E-44 | Geprüft: P-51/0–4 in Ordnung; **P-51/5 nicht ok** – die Liste rückt nach dem Fenster ‚Tag‘ 1–3 Zeilen hoch (Häkchen und x, sobald die Tastatur offen war) → Korrektur 4.23.1; Wunsch des Nutzers: oberen Stand der Tabelle merken und genau dort wieder ausrichten | AppDesign 4.23.0 | 18.10.2026 |
 | E-43 | **A-19 gebaut:** Suche in der zentralen Liste (R-2.3 erweitert, 15.4, `checkListSearch`), beide Suchfelder 1:1 | AppDesign 4.23.0 | 17.10.2026 |
 | E-42 | **A-18 verworfen (Nutzer, 17.10.2026):** Tastatur im Fenster ‚Tag‘ – das Mitfahren beim ersten Hochfahren kommt von Safari (rollt die Seite unabhängig vom Feld); Messungen in Sitzung 0010, Messseiten entfernt; R-7.3 bleibt unverändert | – | 17.10.2026 |
 | E-41 | Geprüft: P-50 in Ordnung (Zeile Zeit und Token mit Kontext); **A-20 damit abgeschlossen** | AppDesign 4.22.0 | 17.10.2026 |

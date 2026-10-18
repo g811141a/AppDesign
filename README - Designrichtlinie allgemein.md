@@ -1,6 +1,6 @@
 # Designrichtlinie allgemein
 
-**Version 4.23.0** · Stand 17.10.2026
+**Version 4.23.1** · Stand 18.10.2026
 
 Allgemeine Gestaltungs- und Bedienregeln für alle iPad-Web-Apps von g811141a (seit 4.1.0 auch
 auf dem iPhone, Abschnitt 15.17).
@@ -216,7 +216,9 @@ heller).
 - **Liste steht still (R-7.3, seit 4.18.0):** Solange ein Fenster offen ist, bewegt sich die Seite dahinter nicht; nach
   dem Schließen steht sie wie vorher, die Zeile, aus der das Fenster kam, wird kurz hervorgehoben (`ui.js` merkt den
   Scrollstand beim Öffnen und stellt ihn beim Schließen wieder her – Safari schiebt beim Öffnen der Tastatur sonst die
-  ganze Seite; `position: fixed` ginge nicht, weil der Tabellenkopf haftet).
+  ganze Seite; `position: fixed` ginge nicht, weil der Tabellenkopf haftet). Seit 4.23.1 merkt `ui.js` zusätzlich die
+  oberste Zeile unter der Leiste samt Abstand und richtet sie nach dem Neuaufbau genau dort aus; gerollt wird nur nach ‹ ›
+  im Fenster, gemessen gegen die ganze Fensterhöhe (nicht gegen den Bereich über der noch offenen Tastatur).
 - **Bei sichtbarer Tastatur** passt sich jedes Fenster dem sichtbaren Bereich über der Tastatur an:
   die Kopfzeile bleibt immer sichtbar, nur der Inhalt scrollt; das angetippte Feld wird in den
   sichtbaren Teil gerollt. Das gilt ebenso für die Kopfzeile (inkl. Suchzeile) der Hauptansicht.
@@ -951,7 +953,7 @@ Regel ersetzt oder ergänzt eine bestehende (Zusammenarbeit 0 Nr. 3) und bekommt
 |---|---|---|---|---|
 | R-7.1 | **Zentrale Liste als Kacheln:** höchstens ein Eintrag blau; je Kachel ‚geändert am … · Gerät‘; Kacheln laufen unter dem Kopf und hinter der Backup-Kachel durch; Position bleibt beim Neuaufbau, der gewählte Eintrag bleibt sichtbar | hig.mjs | – | R-31 (+ Teil R-44, 15.4) |
 | R-7.2 | **Start im iPhone-Aufbau in der Startliste (seit 4.16.0):** jedes Neuladen zeigt im iPhone-Aufbau (auch iPad im schmalen Fenster) die Startliste ganz oben ohne blauen Eintrag; der iPad-Aufbau öffnet den aktuellen Eintrag; Rückkehr aus dem Hintergrund ändert nichts (15.17) | start.mjs | Gerät (App neu öffnen) | **neu** (aus Reiselogbuch T-84) |
-| R-7.3 | **Liste steht still (seit 4.18.0):** solange ein Fenster aus einer Zeile (bzw. einem Kasten) offen ist, bewegt sich die Liste dahinter nicht – auch wenn Safari beim Schreiben die Seite für die Tastatur schiebt; nach dem Schließen (Häkchen oder x) steht sie genau wie vorher, die Zeile wird kurz blau hinterlegt und blendet aus (~1 s); nach ‹ › im Fenster rollt sie nur so weit, bis die zuletzt gezeigte Zeile ganz sichtbar ist; iPad und iPhone gleich | ablauf.mjs – `checkListStill` (Tastatur nachgebildet) | Gerät (echte Tastatur, Diktieren) | **neu** (A-13) |
+| R-7.3 | **Liste steht still (seit 4.18.0):** solange ein Fenster aus einer Zeile (bzw. einem Kasten) offen ist, bewegt sich die Liste dahinter nicht – auch wenn Safari beim Schreiben die Seite für die Tastatur schiebt; nach dem Schließen (Häkchen oder x) steht sie genau wie vorher – die oberste Zeile an derselben Stelle (seit 4.23.1), auch wenn die Tastatur offen war –, die Zeile wird kurz blau hinterlegt und blendet aus (~1 s); nach ‹ › im Fenster rollt sie nur so weit, bis die zuletzt gezeigte Zeile ganz sichtbar ist; iPad und iPhone gleich | ablauf.mjs – `checkListStill` (Tastatur nachgebildet: Rollen und halber sichtbarer Bereich, Zeilen oben und unten) | Gerät (echte Tastatur, Diktieren) | **neu** (A-13) |
 | R-7.4 | **Position beim Öffnen (seit 4.21.0):** ein Eintrag öffnet ganz oben; ein ‚nächster offener‘ Eintrag (von der App bestimmt) steht hervorgehoben direkt unter dem Kopf bzw. Tabellenkopf, nie in der Mitte | ablauf.mjs – `checkOpenAt` | – | **neu** (A-16 aus Reiselogbuch T-89) |
 
 ### 8. Drehen
@@ -1006,6 +1008,7 @@ Die alten Nummern R-01 bis R-52 (bis 4.11.4) gelten nicht mehr; sie stehen nur n
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 4.23.1 | 18.10.2026 | Korrektur | **R-7.3 (P-51/5):** oberste Zeile beim Öffnen merken und nach dem Schließen genau dort ausrichten; gerollt wird nur nach ‹ ›, gegen die ganze Fensterhöhe statt gegen den Bereich über der Tastatur – Abschnitt 7, Regelkatalog Thema 7, `checkListStill` mit nachgebildeter Tastatur |
 | 4.23.0 | 17.10.2026 | Neben | **R-2.3 erweitert (A-19 aus Reiselogbuch T-92):** Suche in der zentralen Liste – Lupe im Kopf der Seitenleiste/Startliste, Filter, ‚N Treffer‘ je Fundstelle, Öffnen mit gefüllter Suche, beide Suchfelder 1:1 – Abschnitt 15.2, 15.4, Regelkatalog Thema 2, Prüfung `checkListSearch` |
 | 4.22.0 | 17.10.2026 | Neben | Keine Regeländerung – Werkzeug `messung.mjs` zeigt den Kontext (A-20, Zusammenarbeit 2.8.0) |
 | 4.21.1 | 17.10.2026 | Korrektur | R-8.1: auch beim Drehen bleibt am Ende der Seite der Abstand zum Ende (ganz unten bleibt ganz unten) – Prüfung `checkTurnEnd` |

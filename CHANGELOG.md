@@ -3,6 +3,25 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.23.1 – 18.10.2026 (Korrektur)
+
+AppDesign 4.23.1 · Designrichtlinie allgemein 4.23.1 · Zusammenarbeit allgemein 2.8.0 · geprüft mit Reiselogbuch 3.21.1
+
+Korrektur aus P-51/5 (Reiselogbuch 3.21.0): nach dem Fenster ‚Tag‘ rückte die Liste 1–3 Zeilen nach oben – bei Häkchen und
+bei x, sobald die Tastatur offen war.
+
+- **Ursache:** `revealRow` maß gleich nach dem Schließen gegen den sichtbaren Bereich über der **noch offenen Tastatur**
+  (`visualViewport`, etwa halbe Höhe). Eine Zeile aus der unteren Hälfte galt als verdeckt und wurde unter den Kopf gerollt.
+- **R-7.3, ui.js (Wunsch des Nutzers):** Beim Öffnen merkt sich die App die **oberste Zeile unter der Leiste samt Abstand in
+  px** (`lockAnchor`); nach dem Schließen und nach dem Neuaufbau durch die App steht genau sie wieder dort (`alignTop`). Gerollt
+  wird nur noch, wenn im Fenster mit ‹ › auf eine andere Zeile geblättert wurde und sie verdeckt ist – gemessen gegen die
+  ganze Fensterhöhe (die Tastatur geht mit dem Fenster zu). Ohne Blättern wird die Zeile nur kurz hervorgehoben.
+- **Warum die Prüfung es nicht sah:** `checkListStill` bildete die Tastatur nur als Rollen der Seite nach (`scrollBy`), nicht
+  den kleineren sichtbaren Bereich; geprüft wurden nur Zeilen oben. Jetzt: Tastatur nachgebildet (`visualViewport` halb so
+  hoch, geht 400 ms nach dem Schließen zu) und zusätzlich Zeilen aus der unteren Hälfte (Häkchen und x). Gegenprobe mit
+  4.23.0 rot (iPad quer 573 → 284 px, iPhone hoch 315 → 111 px).
+- Regelkatalog R-7.3 (Text); feste Fassung `fassung/4.23.1/`.
+
 ## 4.23.0 – 17.10.2026 (Neben)
 
 AppDesign 4.23.0 · Designrichtlinie allgemein 4.23.0 · Zusammenarbeit allgemein 2.8.0 · geprüft mit Reiselogbuch 3.21.0

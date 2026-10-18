@@ -332,14 +332,28 @@ export async function checkListStill(p, { item, field, next = '', where = '' } =
     const e = [...document.querySelectorAll(item)].find(x => (x.dataset.day || x.dataset.keep) === key && x.getClientRects().length);
     scrollBy({ top: e.getBoundingClientRect().top - edge - 2, behavior: 'instant' });
   }, { item, key });
-  for (const [art, close, nah] of [['Häkchen', '#dlgOk'], ['x ohne Änderung', '#dlgX'], ['Häkchen, Zeile 2 px unter dem Kopf', '#dlgOk', true]]) {
-    const key = nah ? shown.tap[1] : shown.tap[0];
-    if (nah) { await edge2(key); await wait(p, 300); }
+  // Seit 4.23.1 (P-51/5): Tastatur nachgebildet wie in Safari – solange sie offen ist, ist der sichtbare Bereich
+  // (visualViewport) nur halb so hoch; sie geht erst 400 ms nach dem Schließen des Fensters zu. Dazu Zeilen aus der unteren Hälfte.
+  const keyboard = on => p.evaluate(on => {
+    if (!on) return Object.defineProperty(window, 'visualViewport', { configurable: true, get: () => window.__realVV });
+    window.__realVV = window.__realVV || window.visualViewport;
+    const fake = { height: innerHeight / 2, width: innerWidth, offsetTop: 0, offsetLeft: 0, scale: 1, addEventListener() {}, removeEventListener() {} };
+    Object.defineProperty(window, 'visualViewport', { configurable: true, get: () => fake });
+  }, on);
+  const lower = () => p.evaluate(item => [...document.querySelectorAll(item)].filter(e => e.getClientRects().length)
+    .filter(e => e.getBoundingClientRect().top > innerHeight * 0.55 && e.getBoundingClientRect().top < innerHeight - 80).map(e => e.dataset.day || e.dataset.keep)[0], item);
+  for (const [art, close, wo] of [['Häkchen', '#dlgOk'], ['x ohne Änderung', '#dlgX'], ['Häkchen, Zeile 2 px unter dem Kopf', '#dlgOk', 'nah'],
+    ['Häkchen, Zeile in der unteren Hälfte', '#dlgOk', 'unten'], ['x, Zeile in der unteren Hälfte', '#dlgX', 'unten']]) {
+    const key = wo === 'nah' ? shown.tap[1] : wo === 'unten' ? await lower() : shown.tap[0];
+    if (!key) { E(`${art}: keine Zeile zum Prüfen`); continue; }
+    if (wo === 'nah') { await edge2(key); await wait(p, 300); }
     const vor = await state(key);
     await tap(key); await wait(p, 300);
+    await keyboard(true);
     if (close === '#dlgOk') { await p.locator(field).first().click(); await p.evaluate(() => scrollBy(0, 300)); await p.locator(field).first().pressSequentially(' neu', { delay: 10 }); }
     else await p.evaluate(() => scrollBy(0, 300));                   // Wischen bzw. Tastatur schiebt die Seite
     await p.click(close);
+    setTimeout(() => keyboard(false).catch(() => {}), 400);
     // die Hervorhebung beginnt im nächsten Bildaufbau – unter Last (voller Lauf, WebKit) bis zu 800 ms warten
     let flash = false; for (let i = 0; i < 16 && !flash; i++) { await wait(p, 50); flash = (await state(key)).flash; }
     if (!flash) E(`${art}: Zeile ${key} wird nach dem Schließen nicht kurz hervorgehoben`);
