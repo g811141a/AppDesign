@@ -1,4 +1,4 @@
-// AppDesign 4.24.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
+// AppDesign 4.25.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
 // Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/fassung/X.Y.Z/ui.js"></script> (feste Fassung, R-10.3)
 // Seit 4.11.0 (R-10.3): ui.js und design.css immer mit ?v=<AppDesign-Version> einbinden (auch in sw.js) und beim Start
 // prüfen, ob genau diese Fassung geladen ist (AD_VERSION hier, --ad-version in design.css).
@@ -17,7 +17,7 @@
 
 'use strict';
 // Version der Bausteine (R-10.3): die App vergleicht sie beim Start mit der benötigten Fassung.
-const AD_VERSION = '4.24.0';
+const AD_VERSION = '4.25.0';
 /* ---------- Icons ---------- */
 
 // Schaltflächen-Icons aus Lucide (ISC-Lizenz), direkt eingebettet, damit die App offline funktioniert.
@@ -112,6 +112,30 @@ function onLongPress(btn, onLong, onTap) {
     if (fired) { fired = false; return; }
     onTap();
   });
+}
+
+// R-2.3 (seit 4.25.0, A-21): Suche mit mehreren Begriffen wie Mail und Notizen – Leerzeichen trennt Wörter, ein Eintrag passt,
+// wenn alle darin vorkommen (Reihenfolge und Groß/klein egal); „…“ sucht eine genaue Wortfolge. Was ‚ein Eintrag‘ ist, sagt
+// die App (Reiselogbuch: das ganze Reiselogbuch; gezeigt werden dann die Tage mit mindestens einem Wort).
+const QUOTES = /["„“”]/g;
+function searchWords(term) {
+  const out = [];
+  const rest = String(term ?? '').toLocaleLowerCase('de').replace(/["„“”]([^"„“”]*)["„“”]/g, (_, w) => {
+    if ((w = w.trim().replace(/\s+/g, ' '))) out.push(w);
+    return ' ';
+  });
+  rest.replace(QUOTES, ' ').split(/\s+/).forEach(w => w && out.push(w));
+  return [...new Set(out)];
+}
+const findsAll = (text, words) => words.length > 0 && words.every(w => String(text ?? '').toLocaleLowerCase('de').includes(w));
+const findsAny = (text, words) => words.some(w => String(text ?? '').toLocaleLowerCase('de').includes(w));
+// Alle Wörter im (bereits maskierten) Text gelb markieren, längere zuerst; aneinanderstoßende Stellen sind eine Markierung.
+// Zwischen den Zeichen darf eine unsichtbare Umbruchstelle stehen (lange Wörter, R-6.3).
+function markWords(html, words) {
+  if (!words.length) return html;
+  const pattern = [...words].sort((a, b) => b.length - a.length)
+    .map(w => (esc(w).match(/&[a-z0-9#]+;|./gsu) || []).map(ch => ch.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('\u200B?')).join('|');
+  return html.replace(new RegExp(pattern, 'gi'), m => `<mark>${m}</mark>`).replaceAll('</mark><mark>', '');
 }
 
 /* ---------- Darstellung ---------- */

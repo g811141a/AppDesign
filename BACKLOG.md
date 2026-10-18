@@ -1,6 +1,6 @@
 # AppDesign – Backlog (allgemeine Themen)
 
-**Stand 18.10.2026** · Aktuelle Version: AppDesign 4.24.0
+**Stand 18.10.2026** · Aktuelle Version: AppDesign 4.25.0
 
 Allgemeine Themen, die alle Apps betreffen. App-Themen stehen im Backlog der jeweiligen App.
 Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
@@ -17,14 +17,13 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| – | – | zurzeit nichts zu prüfen | – |
+| A-21 | 1 | Suche mit mehreren Wörtern und „…“ (R-2.3) – Prüfliste P-55 im CHANGELOG des Reiselogbuchs 3.23.0 | zu prüfen |
+| A-22 | 2 | Lupe am Ende der Kapsel (15.5) – P-55 | zu prüfen |
 
 ## 2. Weitere Themen (in Klärung)
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| A-21 | 1 | **Suche mit mehreren Begriffen (UND, R-2.3 erweitert, allgemeine Regel – Nutzer 18.10.2026):** Wörter mit Leerzeichen = alle müssen vorkommen, Reihenfolge egal (wie Mail, Notizen, Fotos); alle Wörter markiert und gezählt; gilt im Eintrag und in der zentralen Liste. Fall-Liste und Muster folgen | in Klärung |
-| A-22 | 2 | **Lupe am Ende der Kapsel (Nutzer 18.10.2026):** Apple setzt Suche ans Ende der Leiste, nur das Mehr-Menü (…) steht dahinter – Varianten [+ \| Lupe \| …] oder Lupe als eigene Schaltfläche vor der Kapsel; Muster mit 2 Varianten | in Klärung |
 | A-01 | 3 | Startseite g811141a.github.io mit allen Apps (früher S-03) | später |
 
 ---
@@ -33,6 +32,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Thema | Version | Datum |
 |---|---|---|---|
+| E-51 | **A-21 und A-22 gebaut:** Suche mit mehreren Wörtern (alle müssen vorkommen, „…“ = genaue Folge, allgemeine Regel; Einheit legt die App fest), Lupe am Ende der Kapsel; Bausteine und Prüfungen `checkSearchWords`, `checkSearchPlace` | AppDesign 4.25.0 | 18.10.2026 |
 | E-50 | Geprüft: P-54 alles in Ordnung (Hervorhebung 2 s + 1 s, iPad und iPhone); **A-23 damit abgeschlossen**; Zusammenarbeit 2.10.0/2.10.1 (0 Nr. 11: Prüfpunkte vollständig im Chat, danach Auswahlfenster zur Rückmeldung) | AppDesign 4.24.0 | 18.10.2026 |
 | E-49 | **A-23 gebaut:** Hervorhebung nach dem Fenster 2 s voll blau, 1 s ausblenden (Variante A; ‚Bewegung reduzieren‘ 2 s), endet beim nächsten Fenster; `checkListStill` prüft Farbe und Dauer | AppDesign 4.24.0 | 18.10.2026 |
 | E-48 | Geprüft: P-53 alles in Ordnung (Liste steht still nach dem Fenster ‚Tag‘, auch nach ‹ ›, iPad und iPhone); **A-19 damit abgeschlossen**; Zusammenarbeit 2.9.0 (0 Nr. 1: bei ‚nicht ok‘ zuerst den Ablauf des Nutzers als feste Prüfung) | AppDesign 4.23.2 | 18.10.2026 |
