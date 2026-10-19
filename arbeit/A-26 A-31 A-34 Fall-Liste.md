@@ -169,3 +169,53 @@ Safari verhält sich dabei so, wie das Gerät es gemessen hat.
   Wiederaufgehen ist die Animation von Safari und lässt sich von der App nicht beschleunigen.
 - **Nächster Versuch:** Link mit `?v=c2` (umgeht den Zwischenspeicher). Danach entscheidet der Nutzer, ob A-26 gebaut wird oder
   entfällt (Apple lässt die Auswahl offen).
+
+## 9. Vierter Versuch C2 (Protokoll iPad, 19.10.2026) – ok
+
+- **Nutzer: ‚C2 habe ich getestet und ist ok.‘** Protokoll iPad (Safari 26.6.2, meldet sich als Macintosh):
+  - Feld C: jeder angetippte Tag schließt (10-19 → 10-16, → 10-30, → 10-31, → 2027-06-26 in einem anderen Monat), Rad nur Monat
+    (2027-06-26 → 09-26) bleibt offen, danach Tag 16 schließt.
+  - Leeres Feld C: Safari setzt beim Öffnen heute (61 ms nach `focus`) – **bleibt offen** (D-2a erfüllt); danach schließt jeder Tag
+    (zwölfmal, auch 31.); Rad Monat (06-28 → 12-28, 12-19 → 02-19) und Jahr (2027 → 2035) bleiben offen; der Tag 28.02.2035
+    angetippt schließt.
+- Nicht in diesem Protokoll: Rad vom 31. in einen kürzeren Monat (D-3a; im 3. Versuch nachgespielt) und iPhone – beides kommt in
+  die Prüfliste von 4.28.0.
+- **Fragen des Nutzers vor dem Bündel** (Apple-Empfehlung, andere Apps, Zeitraum durch Ziehen): Antworten in
+  `arbeit/A-26 Datumserfassung Apple und andere Apps.md` – C2 verbaut nichts; Vorschlag R-5.1-Wortlaut und neuer Punkt A-36
+  (Zeitraum-Kalender).
+
+## 10. Fall-Liste A-35 – Feld im Inhalt über der Tastatur (Prüfung zuerst rot gegen 4.27.1)
+
+Vorschlag aus Abschnitt 5: geht die Tastatur auf und liegt das Feld mit Fokus im Rollbereich (`#rolle`) unter ihr oder unter der
+Suchzeile, rollt `ui.js` den **Inhalt**, bis das Feld ganz sichtbar ist und 16 px über der Tastatur steht – wie heute in Fenstern.
+Allgemein für alle Felder im Inhalt aller Apps (keine Zeile im Reiselogbuch).
+
+| Nr. | Gerät / Lage | Handlung | Erwartet | Prüfung |
+|---|---|---|---|---|
+| F-1 | iPhone quer (sichtbar 170 px, wie gemessen) | Gesamtausgaben (unterstes Feld) antippen | Feld ganz sichtbar, Unterkante ≥ 16 px über der Tastatur; Kopf- und Suchzeile fest (R-2.1) | neu `checkFieldVisible` (`ablauf.mjs`) |
+| F-2 | iPhone hoch, iPad quer und hoch | dasselbe | dasselbe | `checkFieldVisible` |
+| F-3 | alle | Feld liegt schon sichtbar über der Tastatur | Inhalt rollt nicht (Rollstand gleich) | `checkFieldVisible` |
+| F-4 | alle | Tastatur schließen (Eingabetaste, R-5.5) | Inhalt bleibt, wo er ist; Seite rollt nie (Grundregel) | `checkFieldVisible`, Grundregel |
+| F-5 | alle | mit ⌃ ⌄ über der Tastatur zum nächsten Feld | das neue Feld wird ebenso sichtbar | `checkFieldVisible` |
+| F-6 | alle | unterstes Feld, Inhalt kurz | genug Platz zum Rollen (Platzhalter `.rolle::after`, A-33) | `checkFieldVisible` |
+| F-7 | iPhone hoch und quer | Kapsel ‚Nach oben / Ans Ende‘ dabei | Kapsel überdeckt das Feld nicht (R-3.2, A-33) | `checkFab` |
+| F-8 | Felder in Fenstern | antippen mit Tastatur | unverändert (rollt wie heute) | `tastatur.mjs` (besteht) |
+| F-9 | Safari-Modell | Feld unter der Tastatur antippen | Safari rollt das **Fenster** um den gemessenen Betrag (`offsetTop` 232 px), `--vv-top` gleicht aus – genau der Ablauf der Messung | `tests/safari.mjs` (neu: Rollen zum Feld) |
+| F-10 | Gegenprobe | `checkFieldVisible` gegen 4.27.1 | **rot** (F-1), danach grün | `--gegenprobe` |
+| F-11 | A-31 | Messdatei abspielen (Gesamtausgaben-Teil) | Feld über der Tastatur | `ablauf-messung.mjs` |
+
+- **Allgemeine Regel (Zusammenarbeit 0 Nr. 3/4):** ergänzt eine bestehende – Designrichtlinie ‚Bei sichtbarer Tastatur … das
+  angetippte Feld wird in den sichtbaren Teil gerollt‘ und R-4.5 gelten bisher nur für Fenster; neu: **auch für den Inhalt der
+  Hauptansicht**. Frage an dich: so festhalten?
+- **Nur am Gerät (Prüfliste):** iPhone quer und hoch, iPad: Gesamtausgaben antippen – Feld über der Tastatur.
+- **Warum es die Prüfungen übersehen haben:** `checkEnterDone` tippt Gesamtausgaben an, misst aber nicht, ob das Feld sichtbar ist;
+  das Safari-Modell kannte das Rollen des Fensters zum Feld nicht (Abschnitt 5).
+
+## 11. Offene Fragen vor dem Bau (19.10.2026)
+
+1. **A-36 Zeitraum-Kalender** als neuen Backlog-Punkt aufnehmen (Empfehlung: Prio 2, offen; nicht im Bündel)?
+2. **R-5.1-Wortlaut** ‚Datumsauswahl: sie schließt, sobald die Eingabe vollständig ist – beim Einzeldatum nach dem Antippen des
+   Tages; Blättern in Monat und Jahr lässt sie offen‘?
+3. **A-35 als allgemeine Regel:** ‚Ein Feld mit Fokus steht immer ganz über der Tastatur – in Fenstern und im Inhalt‘ (R-4.5 und
+   Designrichtlinie ergänzen)?
+4. **Ja zum Bau** AppDesign 4.28.0 / Reiselogbuch 3.26.0 (A-35, A-26 C2, A-31)?
