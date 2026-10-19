@@ -209,6 +209,16 @@ const found = new Map(), icons = new Map();
       if (phone && dl?.open && Math.abs(dl.getBoundingClientRect().width - innerWidth) > 2) R('R-4.5', 'Fenster nicht bildschirmfüllend');
       // R-3.2 Nach oben / Ans Ende in einer senkrechten Kapsel
       document.querySelectorAll('.fab').forEach(f => { if (vis(f) && parseFloat(cs(f).borderTopLeftRadius) < 10) R('R-3.2', 'Nach oben / Ans Ende nicht in einer Kapsel'); });
+      // R-3.2 (seit 4.27.1, A-33): die Kapsel überdeckt nie Kopf- oder Suchzeile (Leisten und feste Zeilen des Rahmens)
+      document.querySelectorAll('.fab').forEach(f => {
+        const k = f.getBoundingClientRect();
+        if (cs(f).display === 'none' || f.hidden || !k.height) return;
+        new Set([...document.querySelectorAll('.nb, .pnav, #app > :not(.rolle):not(.fab)')]).forEach(l => {
+          const b = l.getBoundingClientRect();
+          if (cs(l).display !== 'none' && b.height && k.top < b.bottom - .5 && k.bottom > b.top + .5 && k.left < b.right - .5 && k.right > b.left + .5)
+            R('R-3.2', `Kapsel Nach oben / Ans Ende überdeckt die Leiste ${l.id ? '#' + l.id : '.' + l.classList[0]} (A-33)`);
+        });
+      });
       // R-3.1 (seit 4.25.1, A-25) Rund ist ein Kreis: runde Schaltflächen und die Markierung (gedrückt, blau gefüllt) bei Icons und
       // Emojis in Kapseln haben gleiche Breite und Höhe; Text in Kapseln (.txt, Auswahl-Kapsel mit Text) bleibt eine Kapsel.
       document.querySelectorAll('button').forEach(e => {

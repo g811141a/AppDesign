@@ -189,7 +189,10 @@ body:has(> #app > .rolle) { padding: 0; }
 body.docked #app:has(> .rolle) { left: calc(var(--side-w) + max(10px, env(safe-area-inset-left)) + 4px); }
 #app > .rolle ~ .nb, #app > .nb:has(~ .rolle), #app > .pnav:has(~ .rolle) { position: relative; top: 0; left: 0; flex: none; }
 .rolle { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch;
-  padding: 0 max(16px, env(safe-area-inset-right)) 100px max(16px, env(safe-area-inset-left)); }
+  padding: 0 max(16px, env(safe-area-inset-right)) 0 max(16px, env(safe-area-inset-left)); }
+/* Seit 4.27.1 (A-33): der Abstand unter dem Inhalt (100 px, Platz für die Kapsel) als Platzhalter am Ende statt als Innenabstand –
+   so wird der Rollbereich auch bei sehr niedrigem sichtbarem Bereich (iPhone quer mit Tastatur) nicht höher als sein Platz. */
+.rolle::after { content: ''; display: block; height: 100px; }
 body.docked .rolle { padding-left: 16px; }
 @media print {
   html:has(#app > .rolle), html:has(#app > .rolle) body { height: auto; overflow: visible; }
@@ -420,8 +423,8 @@ dialog input[type=text], dialog input[type=date], dialog textarea { background: 
    runder Zurück-Knopf ohne Text, Suche unten, Fenster bildschirmfüllend, Abfragen als Sprechblase am Knopf. */
 html.phone body { padding-bottom: calc(env(safe-area-inset-bottom) + 120px); }
 html.phone body:has(.bnote) { padding-bottom: calc(env(safe-area-inset-bottom) + 150px); }
-html.phone .rolle { padding-bottom: calc(env(safe-area-inset-bottom) + 120px); }
-html.phone body:has(.bnote) .rolle { padding-bottom: calc(env(safe-area-inset-bottom) + 150px); }
+html.phone .rolle::after { height: calc(env(safe-area-inset-bottom) + 120px); }   /* seit 4.27.1 Platzhalter statt Innenabstand (A-33) */
+html.phone body:has(.bnote) .rolle::after { height: calc(env(safe-area-inset-bottom) + 150px); }
 html.phone #side:not(.page), html.phone .side-shade { display: none !important; }
 /* Seit 4.20.0 (A-15): Kapsel ‚Nach oben / Ans Ende‘ auch im iPhone-Aufbau; ausgeblendet, wenn es nichts zu scrollen gibt (R-3.2) */
 .fab.still { display: none; }

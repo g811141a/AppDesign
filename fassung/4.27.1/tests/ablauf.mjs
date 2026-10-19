@@ -594,12 +594,17 @@ export async function checkSearchTop(p, { term, open = '#searchBtn', input = '#s
 // ‚Ans Ende‘ rollt den Inhalt ganz nach unten, ‚Nach oben‘ ganz nach oben – das Fenster rollt nie. Bei offener Tastatur (sichtbarer
 // Bereich niedriger, Safari nachgebildet) stehen Rahmen und Kapsel über ihr (B1). kurz(): macht den Inhalt so kurz, dass er auf
 // den Bildschirm passt (z. B. Suche ohne Treffer), danach muss die Kapsel weg sein.
-export async function checkFab(p, { top = '.fab button:first-child', end = '.fab button:last-child', kurz = null, where = '' } = {}) {
+// Seit 4.27.1 (A-33, Fall-Liste K-1 bis K-5): die Kapsel überdeckt nie Kopf- oder Suchzeile – sie steht ganz im Rollbereich mit
+// 16 px Abstand oben und unten, sonst ist sie ausgeblendet; die Schaltflächen der Leisten bleiben frei antippbar; nach dem Schließen
+// der Tastatur ist sie wieder da. sichtbar: Höhe des sichtbaren Bereichs bei offener Tastatur (gemessen A-27: iPhone hoch 409,
+// quer 126 px; ohne Angabe innerHeight − 300); suche: Schaltfläche, die die Suche öffnet – dann auch mit offener Suche gemessen.
+export async function checkFab(p, { top = '.fab button:first-child', end = '.fab button:last-child', kurz = null, sichtbar = null, suche = null, where = '' } = {}) {
   const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}R-3.2 ${t}`);
   const sicht = () => p.evaluate(() => { const f = document.querySelector('.fab'); return !!f && getComputedStyle(f).display !== 'none' && !f.hidden && f.getClientRects().length > 0; });
   const st = await rollstand(p);
   if (st.max <= 1) { E('Vorbereitung: der Inhalt ist zu kurz zum Rollen'); return errors; }
   if (!await sicht()) { E(`Kapsel fehlt, obwohl es ${st.max} px zu rollen gibt`); return errors; }
+  const fabH = await p.evaluate(() => Math.round(document.querySelector('.fab').getBoundingClientRect().height));
   await rolle(p, '30%'); await wait(p, 200);
   await p.click(end); await wait(p, 1200);
   let s = await rollstand(p);
@@ -609,19 +614,46 @@ export async function checkFab(p, { top = '.fab button:first-child', end = '.fab
   s = await rollstand(p);
   if (s.y > 1) E(`‚Nach oben‘ rollt den Inhalt nicht ganz nach oben (${s.y} px)`);
   if (s.fenster) E(`‚Nach oben‘ rollt die Seite (scrollY ${s.fenster}) statt des Inhalts`);
-  // B1: Tastatur offen – der sichtbare Bereich wird 300 px niedriger; Rahmen und Kapsel enden darüber
-  const kb = await p.evaluate(async () => {
+  // B1: Tastatur offen – der sichtbare Bereich wird niedriger; Rahmen und Kapsel enden darüber (K-2, K-4). A-33 (K-1): die Kapsel
+  // schneidet keine Leiste (Kopfzeile mit Suchzeile, feste Zeilen des Rahmens) und passt ganz in den Rollbereich, sonst ist sie weg;
+  // jede Schaltfläche der Leisten ist in ihrer Mitte antippbar (nichts liegt darüber).
+  const mitTastatur = wann => p.evaluate(async sichtbar => {
     const vv = window.visualViewport; if (!vv) return null;
-    const h = Math.round(innerHeight - 300), frame = () => new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
-    Object.defineProperty(vv, 'height', { configurable: true, get: () => h }); vv.dispatchEvent(new Event('resize')); await frame();
-    const f = document.querySelector('.fab')?.getBoundingClientRect(), r = document.querySelector('#app > .rolle')?.getBoundingClientRect();
-    const out = { h, fab: f ? Math.round(f.bottom) : null, rolle: r ? Math.round(r.bottom) : null };
-    delete vv.height; vv.dispatchEvent(new Event('resize')); await frame();
+    const h = Math.round(sichtbar ?? innerHeight - 300), frame = () => new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+    Object.defineProperty(vv, 'height', { configurable: true, get: () => h }); vv.dispatchEvent(new Event('resize')); await frame(); await frame();
+    const fe = document.querySelector('.fab'), fv = !!fe && !fe.hidden && getComputedStyle(fe).display !== 'none' && fe.getClientRects().length > 0;
+    const f = fe?.getBoundingClientRect(), re = document.querySelector('#app > .rolle'), r = re?.getBoundingClientRect();
+    const zeig = e => e.getClientRects().length > 0 && getComputedStyle(e).display !== 'none' && getComputedStyle(e).visibility !== 'hidden';
+    const leisten = [...new Set([...document.querySelectorAll('.nb, .pnav, #app > :not(.rolle):not(.fab)')])].filter(zeig);
+    const schneidet = fv ? leisten.filter(l => { const b = l.getBoundingClientRect(); return f.top < b.bottom - .5 && f.bottom > b.top + .5 && f.left < b.right - .5 && f.right > b.left + .5; })
+      .map(l => `${l.tagName.toLowerCase()}${l.id ? '#' + l.id : l.classList[0] ? '.' + l.classList[0] : ''} ${Math.round(l.getBoundingClientRect().top)}–${Math.round(l.getBoundingClientRect().bottom)}`) : [];
+    const verdeckt = leisten.flatMap(l => [...l.querySelectorAll('button')]).filter(b => zeig(b) && b.getBoundingClientRect().width > 0).filter(b => {
+      const q = b.getBoundingClientRect(), x = q.left + q.width / 2, y = q.top + q.height / 2;
+      if (y < 0 || y > h) return false;
+      const t = document.elementFromPoint(x, y); return !t || (t !== b && !b.contains(t));
+    }).map(b => b.getAttribute('aria-label') || b.id || b.textContent.trim().slice(0, 12));
+    const out = { h, fv, fab: fv ? { top: Math.round(f.top), bottom: Math.round(f.bottom) } : null, rolle: r ? { top: Math.round(r.top), bottom: Math.round(r.bottom) } : null,
+      raum: r ? Math.round(Math.min(r.bottom, h) - r.top) : null, max: re ? Math.round(re.scrollHeight - re.clientHeight) : null, schneidet, verdeckt };
+    delete vv.height; vv.dispatchEvent(new Event('resize')); await frame(); await frame();
     return out;
+  }, sichtbar).then(kb => {
+    if (!kb) return;
+    const w = `bei offener Tastatur${wann} (sichtbar ${kb.h} px)`;
+    if (kb.rolle && kb.rolle.bottom > kb.h + 1) E(`${w} endet der Inhalt unter ihr (unten ${kb.rolle.bottom} px, B1)`);
+    if (kb.fab && kb.fab.bottom > kb.h + 1) E(`${w} liegt die Kapsel unter ihr (unten ${kb.fab.bottom} px, B1)`);
+    if (kb.schneidet.length) E(`${w} überdeckt die Kapsel (${kb.fab.top}–${kb.fab.bottom} px) die Leiste ${kb.schneidet.join(', ')} (A-33)`);
+    if (kb.fab && kb.rolle && (kb.fab.top < kb.rolle.top + 16 - 1 || kb.fab.bottom > Math.min(kb.rolle.bottom, kb.h) - 16 + 1))
+      E(`${w} passt die Kapsel (${kb.fab.top}–${kb.fab.bottom} px) nicht mit 16 px Abstand in den Inhalt (${kb.rolle.top}–${Math.min(kb.rolle.bottom, kb.h)} px, A-33)`);
+    if (kb.verdeckt.length) E(`${w} sind Schaltflächen der Leisten verdeckt: ${kb.verdeckt.join(', ')} (A-33)`);
+    if (!kb.fv && kb.max > 1 && kb.raum >= fabH + 32) E(`${w} fehlt die Kapsel, obwohl sie in den Inhalt passt (${kb.raum} px Platz, Kapsel ${fabH} px + 2 × 16)`);
   });
-  if (kb) {
-    if (kb.rolle !== null && kb.rolle > kb.h + 1) E(`bei offener Tastatur endet der Inhalt unter ihr (unten ${kb.rolle} px, Tastatur ab ${kb.h} px, B1)`);
-    if (kb.fab !== null && kb.fab > kb.h + 1) E(`bei offener Tastatur liegt die Kapsel unter ihr (unten ${kb.fab} px, Tastatur ab ${kb.h} px, B1)`);
+  await mitTastatur('');
+  if (!await sicht()) E('nach dem Schließen der Tastatur ist die Kapsel nicht wieder da (K-5)');
+  if (suche) {
+    await p.click(suche); await wait(p, 400);
+    await mitTastatur(', Suche offen');
+    if (!await sicht()) E('nach dem Schließen der Tastatur (Suche offen) ist die Kapsel nicht wieder da (K-5)');
+    await p.click(suche); await wait(p, 400);
   }
   if (kurz) {
     await kurz(); await wait(p, 400);
