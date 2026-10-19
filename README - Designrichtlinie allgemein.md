@@ -1,6 +1,6 @@
 # Designrichtlinie allgemein
 
-**Version 4.25.1** · Stand 19.10.2026
+**Version 4.26.0** · Stand 19.10.2026
 
 Allgemeine Gestaltungs- und Bedienregeln für alle iPad-Web-Apps von g811141a (seit 4.1.0 auch
 auf dem iPhone, Abschnitt 15.17).
@@ -410,6 +410,13 @@ heller).
   offenen‘ Eintrag an (Reiselogbuch: erster nicht erfasster Tag), steht er hervorgehoben **direkt unter dem Kopf** – unter
   der Leiste und einem haftenden Tabellenkopf –, nie in der Mitte; ist die Seite nicht so weit rollbar, ganz unten.
   `openAt(element | null)` in ui.js.
+- **Safari schiebt den sichtbaren Bereich bei kurzer Seite (seit 4.26.0, Vermutung aus A-24 – Messung ausstehend):** am
+  iPhone verkleinert die Tastatur nur den sichtbaren Bereich. Ist die Seite zu kurz zum Rollen (wenige Treffer, nach ⓧ),
+  verschiebt Safari `visualViewport.offsetTop`; feste Leisten rutschen mit, der Ausgleich über das Ereignis kommt ein Bild
+  später (Zittern). Unter iOS 26 setzt sich `offsetTop` nach dem Schließen der Tastatur teils nicht auf 0 zurück. Quellen:
+  developer.apple.com/forums/thread/824765, bugs.webkit.org/show_bug.cgi?id=300523. Grundsätze: Felder mit Fokus nie
+  ersetzen (`setHtml`), rollen nur vor dem Öffnen bzw. nach dem Schließen der Tastatur, feste Leisten nicht laufend mit
+  JavaScript nachführen; geklärt wird mit dem Messmodus (15.21), gelöst mit A-28.
 - **Neustart ist nicht erkennbar (seit 4.16.0, R-7.2):** Safari meldet nicht, **warum** eine Seite neu lädt. Als Neustart
   zählt jedes Neuladen: App im App-Umschalter weggewischt, **von iOS im Hintergrund beendet** (Speicher – auch nach kurzer
   Zeit in einer anderen App) oder neue Version geladen. Bleibt die Seite im Speicher, kommen nur `visibilitychange` und
@@ -847,6 +854,23 @@ Verhalten · technischer Name). In AppDesign ist jede Komponente einmal programm
   Jede App übernimmt diese Nachrichten in ihren `sw.js` (Vorbild Reiselogbuch 3.14.0).
 - **Prüfung:** `tests/offline.mjs` (Fälle F-1 bis F-17; F-17 = Gerät ohne Safari-Meldung).
 
+### 15.21 Messmodus (seit 4.26.0, R-1.6, A-27)
+- **Wozu:** Bewegungsfehler am Gerät (Zittern, Springen, Rollen) werden zuerst **gemessen**, nicht erraten (Zusammenarbeit 0
+  Nr. 20). Die App zeichnet auf, was Safari tut; Claude richtet damit das Safari-Modell der Prüfungen aus.
+- **Bedienung:** Mehr-Menü der Seitenleiste (iPhone: Startliste), nach Backup durch Abstand getrennt: ‚Messung starten‘
+  (`activity`, grau ‚Für Claude: Bewegungen aufzeichnen‘); während und nach der Messung ‚Messung beenden und teilen‘
+  (`circle-stop`, grau ‚läuft · 0:42 · 1.318 Zeilen‘ bzw. ‚beendet · …‘). Kein Zeichen auf dem Bildschirm – es würde selbst
+  mitrutschen. Teilen-Menü mit `messung-JJJJ-MM-TT-hhmm.txt` (ohne Teilen-Menü: laden); abgebrochen bleibt die Messung.
+- **Inhalt:** Kopf mit App, AppDesign, Gerät, Home-Bildschirm/Safari, Bildschirm, Darstellung, Startzeit; dann je Bild eine
+  Zeile, **nur wenn sich ein Wert geändert hat**: `t` (ms), `scrollY`, Seitenhöhe, `innerHeight`, `visualViewport` Höhe und
+  `offsetTop`, `--vv-top`, Oberkante der Teile der App (Kopf, Suchzeile, erster Inhalt …), Rollstand eigener Bereiche, Fokus
+  (id), Lage. Ereignisse sofort mit den Werten im Augenblick: focus/blur, Eingabe (Länge), Tippen (id), scroll, resize,
+  Drehen, `visualViewport` resize/scroll, Neuaufbau (`setHtml`).
+- **Grenzen:** aus, solange nicht gestartet (kein `requestAnimationFrame`, keine Hörer); keine Texte; nichts gespeichert (neu
+  laden verwirft); Ende nach 5 Minuten oder 20 000 Zeilen.
+- **Technisch:** `ui.js` – `messungMenuItems({ app, teile, rollen })` ins Menü der Seitenleiste; `teile`/`rollen` = Spalte →
+  Selektor (erstes sichtbares Element). Prüfung `checkMessung` (Fall-Liste `arbeit/A-27 Fall-Liste.md`, F1–F12).
+
 ## 16. HIG-Checkliste
 
 Jedes Muster und jede Version wird **vorher** an dieser Liste gemessen (Apple-Abgleich, siehe
@@ -913,6 +937,7 @@ Regel ersetzt oder ergänzt eine bestehende (Zusammenarbeit 0 Nr. 3) und bekommt
 | R-1.3 | **Nie ungewollt vergrößern:** Doppeltippen vergrößert nicht; Eingabefelder mindestens 16 px (sonst vergrößert iOS beim Antippen) | hig.mjs | iOS-Tastatur | R-04, R-20 |
 | R-1.4 | **Nur der Vordergrund reagiert:** offenes Fenster sperrt die Seite, Menü und Sprechblase fangen Wischen ab, daneben tippen schließt | hig.mjs | – | R-01 |
 | R-1.5 | **Offline nutzbar und erkennbar (seit 4.14.2, Hinweis seit 4.15.0):** die App startet ohne Netz aus dem Speicher – auch unter anderer Adresse und bei hängendem Netz nach höchstens 3 s, nie eine weiße Seite; arbeitet sie offline, steht unter der Backup-Kachel grau ‚Offline – alles bleibt auf diesem Gerät‘, beim Wechsel und beim Start ohne Netz kurz die Meldung ‚Du bist offline‘ bzw. ‚Wieder online‘ (15.20) | offline.mjs | Gerät (Flugmodus) | – |
+| R-1.6 | **Messmodus (seit 4.26.0, A-27):** im Mehr-Menü der Seitenleiste bzw. Startliste ‚Messung starten‘ (grau ‚Für Claude: Bewegungen aufzeichnen‘) und ‚Messung beenden und teilen‘ (grau ‚läuft · m:ss · N Zeilen‘); aus, solange nicht gestartet; je Bild eine Zeile nur bei Änderung, dazu jedes Ereignis; keine Texte (nur Längen und ids); endet nach 5 min bzw. 20 000 Zeilen; Datei `messung-JJJJ-MM-TT-hhmm.txt` über das Teilen-Menü; neu laden verwirft (15.21) | ablauf.mjs – `checkMessung` | Gerät (Messung, Teilen) | **neu** |
 
 ### 2. Leisten, Suche, Scrollen
 
@@ -1021,6 +1046,7 @@ Die alten Nummern R-01 bis R-52 (bis 4.11.4) gelten nicht mehr; sie stehen nur n
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 4.26.0 | 19.10.2026 | Neben | **R-1.6 neu (A-27):** Messmodus im Mehr-Menü der Seitenleiste – zeichnet am Gerät Scrollstand, `visualViewport`, Lage der Leisten, Fokus und Ereignisse auf, ‚Messung teilen‘ als Textdatei (15.21); Abschnitt 13: Safari schiebt den sichtbaren Bereich bei kurzer Seite (mit Quellen) |
 | 4.25.1 | 19.10.2026 | Korrektur | **A-24:** beim Tippen bleibt das Suchfeld dasselbe Feld mit Fokus (Baustein `setHtml`), Kopf- und Suchzeile zittern am iPhone nicht mehr (15.2, R-2.3); **A-25:** Markierung bei Icons in Kapseln als Kreis 36 × 36 statt 42 × 36 (15.5, R-3.1, Grundregel ‚rund ist ein Kreis‘) |
 | 4.25.0 | 18.10.2026 | Neben | **R-2.3 erweitert (A-21, A-22):** Suche mit mehreren Wörtern (alle müssen vorkommen, Reihenfolge egal) und „…“ als genaue Wortfolge – allgemeine Regel; Lupe am Ende der Kapsel vor ellipsis (15.2, 15.4, 15.5); Bausteine `searchWords`/`findsAll`/`findsAny`/`markWords`, Prüfungen `checkSearchWords`, `checkSearchPlace` |
 | 4.24.0 | 18.10.2026 | Neben | **R-7.3 (A-23):** Hervorhebung nach dem Fenster länger – 2 s voll blau, 1 s ausblenden (vorher ~1 s); `checkListStill` prüft Farbe und Dauer |

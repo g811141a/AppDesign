@@ -1,6 +1,6 @@
 # Zusammenarbeit allgemein
 
-**Version 2.10.1** · Stand 18.10.2026
+**Version 2.11.0** · Stand 19.10.2026
 
 Regeln für die Zusammenarbeit mit Claude bei allen iPad-Web-Apps von g811141a.
 Diese Datei liegt im Design-Repo **AppDesign** (g811141a/AppDesign).
@@ -132,6 +132,13 @@ Nutzer sie findet, schneller und günstiger arbeiten.
     ‚Ich schreibe im Chat‘. Mehr als 3 Repos: die mit der höchsten Priorität, der Rest über ‚Ich schreibe im Chat‘. Eine
     Sitzung beginnt erst mit einer Nachricht des Nutzers – ein Wort genügt. Hat die Sitzung einen Starttext mit Auftrag
     (Nr. 13), gilt der Auftrag.
+
+**G. Fehler am Gerät (seit 2.11.0)**
+20. **Erst messen, dann nachbilden:** Bei Bewegungsfehlern am Gerät (Zittern, Springen, Rollen) gibt es zuerst eine
+    **Messung am Gerät** (Messmodus, Designrichtlinie 15.21); die feste Prüfung muss genau das gemessene Muster rot zeigen
+    (Nr. 1). Für Safari gibt es **ein** Modell (`tests/safari.mjs`); jede Abweichung vom Gerät wird dort korrigiert, nie nur
+    in einer Prüfung. Im Bericht steht ehrlich **‚in der Nachbildung behoben, am Gerät zu bestätigen‘**, bis der Nutzer ok
+    meldet. Jede gefundene Safari-Eigenheit kommt mit Quelle in Designrichtlinie 13 und gilt damit für alle Apps.
 
 ---
 
@@ -339,6 +346,7 @@ Nutzer sie findet, schneller und günstiger arbeiten.
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 2.11.0 | 19.10.2026 | Neben | 0 Nr. 20 neu (Abschnitt G): bei Bewegungsfehlern am Gerät zuerst messen, ein Safari-Modell, Bericht ‚in der Nachbildung behoben, am Gerät zu bestätigen‘, Safari-Eigenheiten mit Quelle in Designrichtlinie 13 (Nutzer 19.10.2026) |
 | 2.10.1 | 18.10.2026 | Korrektur | 0 Nr. 11 verschärft: alle Prüfpunkte vollständig Schritt für Schritt im Chat (nie nur Verweis aufs CHANGELOG), danach das Auswahlfenster (Regel war nach 3.22.0 nicht eingehalten) |
 | 2.10.0 | 18.10.2026 | Neben | 0 Nr. 11: Bericht nach einer Version endet immer mit einem Auswahlfenster zur Rückmeldung (Push-Nachricht auf dem iPad, Wunsch des Nutzers) |
 | 2.9.0 | 18.10.2026 | Neben | 0 Nr. 1: bei ‚nicht ok‘ zuerst den Ablauf des Nutzers als feste Prüfung nachbauen, rot gegen den veröffentlichten Stand, dann korrigieren (aus P-51/5 und P-52) |

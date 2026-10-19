@@ -1,5 +1,5 @@
 // AppDesign 4.12.0 · Ablauf-Prüfungen für Regeln, die eine Handlung brauchen (Designrichtlinie allgemein, Abschnitt 17):
-// R-2.3 Suche (seit 4.23.0 auch in der zentralen Liste, seit 4.25.0 mehrere Wörter und „…“, seit 4.25.1 Suchfeld bleibt beim Tippen) · A-22 Lupe am Ende der Kapsel · R-4.4 Fenster-Kopfzeile · R-5.2 Texteingabe · R-5.3 Fehlermeldungen · R-5.5 Eingabetaste (seit 4.19.0) · R-6.4 Ausgabe und Vorschau · R-7.3 Liste steht still (seit 4.18.0) · R-7.4 Position beim Öffnen und R-8.1 Seitenleiste ein/aus (seit 4.21.0).
+// R-1.6 Messmodus (seit 4.26.0) · R-2.3 Suche (seit 4.23.0 auch in der zentralen Liste, seit 4.25.0 mehrere Wörter und „…“, seit 4.25.1 Suchfeld bleibt beim Tippen) · A-22 Lupe am Ende der Kapsel · R-4.4 Fenster-Kopfzeile · R-5.2 Texteingabe · R-5.3 Fehlermeldungen · R-5.5 Eingabetaste (seit 4.19.0) · R-6.4 Ausgabe und Vorschau · R-7.3 Liste steht still (seit 4.18.0) · R-7.4 Position beim Öffnen und R-8.1 Seitenleiste ein/aus (seit 4.21.0).
 // Jede Funktion bekommt eine Playwright-Seite und gibt eine Liste von Fehlern zurück (leer = in Ordnung), je mit Regelnummer.
 // Einbinden im Prüfskript der App:  import { checkSearch, checkDialogHead } from '../../AppDesign/tests/ablauf.mjs';
 //                                   fehler.push(...await checkSearch(page, { term: 'Sydney' }));
@@ -472,5 +472,79 @@ export async function checkSearchPlace(p, { search = 'button[aria-label="Suchen"
   }), { search, more });
   if (!r.length) errors.push(`${where ? where + ': ' : ''}A-22 keine Lupe in einer Kapsel gefunden`);
   r.filter(x => !x.ok).forEach(x => errors.push(`${where ? where + ': ' : ''}A-22 Lupe ${x.id} steht nicht am Ende der Kapsel – dahinter ${x.after.join(', ')}`));
+  return errors;
+}
+
+// R-1.6 Messmodus (seit 4.26.0, A-27, Fall-Liste arbeit/A-27 Fall-Liste.md F1–F12): Start und Ende im Mehr-Menü der Seitenleiste,
+// eine Zeile je Bild nur bei Änderung, Ereignisse, keine Texte, Grenze, Datei, neu laden verwirft. menu: öffnet das Mehr-Menü;
+// search: öffnet die Suche und gibt den Selektor des Suchfelds zurück; secret: Texte, die nie in der Datei stehen dürfen.
+export async function checkMessung(p, { menu, search, secret = [], where = '' } = {}) {
+  const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}R-1.6 ${t}`);
+  const item = () => p.locator('.menu .mi', { hasText: 'Messung' }).first();
+  const label = async () => { await menu(); await wait(p, 200); const t = await item().evaluate(e => e.textContent.trim() + ' | ' + (e.nextElementSibling?.classList.contains('sub') ? e.nextElementSibling.textContent.trim() : '')).catch(() => ''); return t; };
+  const close = async () => { await p.evaluate(() => document.querySelector('.layer')?.click()); await wait(p, 200); if (await p.locator('.menu').count()) await p.keyboard.press('Escape'); await wait(p, 150); };
+  const rows = () => p.evaluate(() => mess?.zeilen.length ?? 0);
+  // F1: aus – nichts läuft
+  if (await p.evaluate(() => mess !== null)) E('Messung läuft, ohne gestartet zu sein');
+  const bar = () => p.evaluate(() => [...document.querySelectorAll('#bar, .side-head, .nb2')].filter(e => e.getClientRects().length).map(e => Math.round(e.getBoundingClientRect().top)).join(','));
+  const vorher = await bar();
+  // F2: starten
+  const l0 = await label();
+  if (!/^Messung starten \| Für Claude: Bewegungen aufzeichnen$/.test(l0)) { E(`Mehr-Menü ohne ‚Messung starten‘ mit grauer Zeile (‚${l0}‘)`); await close(); return errors; }
+  if (!await item().locator('svg').count()) E('‚Messung starten‘ ohne Icon (R-4.1)');
+  await item().click(); await wait(p, 300);
+  if (!await p.evaluate(() => mess?.an)) { E('‚Messung starten‘ startet keine Messung'); return errors; }
+  // F12: die Messung verschiebt nichts
+  if (await bar() !== vorher) E(`Leisten stehen nach dem Start anders (${vorher} → ${await bar()})`);
+  const l1 = await label();
+  if (!/^Messung beenden und teilen \| läuft · \d+:\d\d · [\d.]+ Zeilen$/.test(l1)) E(`Mehr-Menü während der Messung nicht ‚Messung beenden und teilen · läuft · m:ss · N Zeilen‘ (‚${l1}‘)`);
+  await close();
+  // F6: Ruhe – keine neuen Zeilen
+  const r0 = await rows(); await wait(p, 600);
+  if (await rows() !== r0) E(`in Ruhe entstehen neue Zeilen (${r0} → ${await rows()})`);
+  // F3/F9: Suche öffnen, ‚Rom‘ tippen, rollen
+  const input = await search();
+  for (const k of 'Rom') { await p.keyboard.type(k); await wait(p, 40); }
+  await wait(p, 300);
+  await p.evaluate(() => scrollBy(0, 40)); await wait(p, 300);
+  // F5: drehen
+  const vp = p.viewportSize(); await p.setViewportSize({ width: vp.height, height: vp.width }); await wait(p, 400);
+  await p.setViewportSize(vp); await wait(p, 400);
+  const z = await p.evaluate(() => mess.zeilen);
+  for (const [re, was] of [[/! start$/, 'Start'], [new RegExp(`! focus ${input.replace('#', '')}$`), 'Fokus auf das Suchfeld'], [/! eingabe 1$/, 'Eingabe (Länge 1)'], [/! eingabe 3$/, 'Eingabe (Länge 3)'],
+    [/! tippen /, 'Tippen'], [/! resize$/, 'Größenänderung'], [/ quer( |$)/, 'Lage quer'], [/! neuaufbau /, 'Neuaufbau']])
+    if (!z.some(x => re.test(x))) E(`Datei ohne Zeile für ${was}`);
+  const kopf = z[1].split(/\s+/);
+  for (const k of ['t', 'sy', 'sh', 'ih', 'vh', 'vt', 'vvtop', 'fokus', 'lage']) if (!kopf.includes(k)) E(`Spalte ‚${k}‘ fehlt (${z[1]})`);
+  const daten = z.slice(2).filter(x => !x.startsWith('#'));
+  if (daten.some(x => x.split('!')[0].trim().split(/\s+/).length !== kopf.length)) E('Zeilen haben nicht so viele Werte wie Spalten');
+  // F4: Werte stimmen mit der Seite überein (letzte Zeile ohne Ereignis ↔ jetzt)
+  await p.evaluate(() => messZeile('probe'));
+  const probe = await p.evaluate(() => ({ z: mess.zeilen.at(-1).split(/\s+/), sy: Math.round(scrollY), ih: innerHeight, vh: Math.round(visualViewport?.height ?? innerHeight) }));
+  if (+probe.z[kopf.indexOf('sy')] !== probe.sy || +probe.z[kopf.indexOf('ih')] !== probe.ih || +probe.z[kopf.indexOf('vh')] !== probe.vh)
+    E(`Werte der Zeile passen nicht zur Seite (${probe.z.join(' ')} – scrollY ${probe.sy}, innerHeight ${probe.ih}, vv ${probe.vh})`);
+  // F7: Grenze 5 Minuten – endet von selbst, Menü zeigt ‚beendet‘
+  await p.evaluate(() => { mess.start -= MESS_MAX_MS + 1000; messZeile('grenze'); });
+  if (await p.evaluate(() => mess.an)) E('Messung endet nach 5 Minuten nicht von selbst');
+  if (!/Grenze erreicht/.test(await p.evaluate(() => mess.zeilen.at(-1)))) E('Ende der Messung ohne Zeile ‚Grenze erreicht‘');
+  const l2 = await label();
+  if (!/^Messung beenden und teilen \| beendet · /.test(l2)) E(`Mehr-Menü nach der Grenze nicht ‚beendet‘ (‚${l2}‘)`);
+  // F8/F9: beenden und teilen – Datei messung-JJJJ-MM-TT-hhmm.txt (geladen, wo es kein Teilen-Menü gibt)
+  await p.evaluate(() => { window.__mess = []; const orig = shareFiles; shareFiles = files => { window.__mess.push(...files); return orig(files); }; });
+  const [dl] = await Promise.all([p.waitForEvent('download', { timeout: 5000 }).catch(() => null), item().click()]);
+  await wait(p, 300);
+  const f = (await p.evaluate(() => window.__mess.map(x => ({ name: x.name, content: x.content }))))[0];
+  if (!dl || !f) E('‚Messung beenden und teilen‘ liefert keine Datei');
+  else {
+    if (!/^messung-\d{4}-\d\d-\d\d-\d{4}\.txt$/.test(f.name)) E(`Dateiname ‚${f.name}‘ nicht ‚messung-JJJJ-MM-TT-hhmm.txt‘`);
+    if (!/^# Messung · .+ \d+\.\d+\.\d+ · AppDesign \d+\.\d+\.\d+ · .+ · (Home-Bildschirm|Safari) · \d+×\d+ @[\d.]+ · (hell|dunkel) · \d{4}-/.test(f.content)) E(`Kopf der Datei unvollständig: ${f.content.split('\n')[0]}`);
+    for (const s of ['Rom', ...secret]) if (f.content.includes(s)) E(`Datei enthält den Text ‚${s}‘ (Datenschutz: nur Längen und ids)`);
+  }
+  if (await p.evaluate(() => mess !== null)) E('nach dem Teilen ist die Messung nicht abgeschlossen');
+  // F11: neu laden verwirft eine laufende Messung
+  await menu(); await wait(p, 200); await item().click(); await wait(p, 200);
+  await p.reload(); await wait(p, 400);
+  if (await p.evaluate(() => mess !== null)) E('nach dem Neuladen läuft noch eine Messung');
+  await p.evaluate(() => scrollTo(0, 0));
   return errors;
 }
