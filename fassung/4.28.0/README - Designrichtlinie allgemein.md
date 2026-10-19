@@ -223,7 +223,9 @@ heller).
   ‹ › im Fenster steht die Liste wie beim Öffnen** (Wunsch des Nutzers, P-52/3–4) – vorher rollte sie zum zuletzt gezeigten Tag.
 - **Bei sichtbarer Tastatur** passt sich jedes Fenster dem sichtbaren Bereich über der Tastatur an:
   die Kopfzeile bleibt immer sichtbar, nur der Inhalt scrollt; das angetippte Feld wird in den
-  sichtbaren Teil gerollt. Das gilt ebenso für die Kopfzeile (inkl. Suchzeile) der Hauptansicht.
+  sichtbaren Teil gerollt. Das gilt ebenso für die Kopfzeile (inkl. Suchzeile) der Hauptansicht. **Seit 4.28.0 (R-4.5, A-35)**
+  auch für ein Feld im **Inhalt** der Hauptansicht (z. B. Gesamtausgaben): es steht ganz sichtbar, 16 px über der Tastatur;
+  reicht der Platz dafür nicht (iPhone quer mit Suchzeile), direkt unter Kopf- bzw. Suchzeile (`fieldIntoView` in ui.js).
 - Gibt es noch keinen Eintrag, öffnet sich „Neues …“ einmal von selbst; mit x bleibt die
   leere Seite mit grauem Hinweis „Noch kein … angelegt.“.
 - **Erfassungsfenster** (Einträge erfassen): fast bildschirmbreit; Kopfzeile x · Titel mit
@@ -424,6 +426,12 @@ heller).
   vorerst. Antippen der Statusleiste rollt einen eigenen Rollbereich nicht nach oben (iOS); ‚Nach oben‘ genügt (Nutzer
   19.10.2026). Quellen: Messung P-57 (`arbeit/A-27 Auswertung P-57.md`), Safari-Modell `tests/safari.mjs`,
   developer.apple.com/forums/thread/824765, bugs.webkit.org/show_bug.cgi?id=300523.
+- **Feld unter der Tastatur antippen (seit 4.28.0, A-35):** Liegt ein Feld im Rollbereich dort, wo die Tastatur aufgeht, verschiebt
+  Safari den **sichtbaren Bereich** um den ganzen Raum (gemessen iPhone quer, Gesamtausgaben: `offsetTop` 232 = 402 − 170) und rollt
+  den Inhalt nicht. Der Rahmen folgt dem sichtbaren Bereich (`--vv-top`, 15.22) – das Feld bliebe unter der Tastatur. Deshalb rollt
+  ui.js den Inhalt, sobald Safari die Tastatur meldet (R-4.5). Die Zifferntastatur (`inputmode="decimal"`) lässt quer 170 statt
+  126 px sichtbar. Quelle: Messung `tests/messungen/2026-10-19 iPhone quer Suche Fenster Gesamtausgaben.txt` (Zeilen 404–408),
+  Safari-Modell `tests/safari.mjs`. Felder in Fenstern: Safari verschiebt dort 225 px (Regel noch unklar, nicht nachgebildet).
 - **Neustart ist nicht erkennbar (seit 4.16.0, R-7.2):** Safari meldet nicht, **warum** eine Seite neu lädt. Als Neustart
   zählt jedes Neuladen: App im App-Umschalter weggewischt, **von iOS im Hintergrund beendet** (Speicher – auch nach kurzer
   Zeit in einer anderen App) oder neue Version geladen. Bleibt die Seite im Speicher, kommen nur `visibilitychange` und
@@ -437,7 +445,8 @@ heller).
   Schalter, Options-Kapsel; iPhone-Ansicht: Seitenkopf, großer Titel, Liste, Kasten, untere
   Leiste), `v4/ui.js` (Icons, Menüs mit Untermenü, Sprechblase, gedrückte Schaltflächen, Meldung,
   Fenster, Darstellung, Auswahl-Kapsel, Tastatur/sichtbarer Bereich, Beträge, iPhone-Erkennung
-  `isPhone()`), `apple-referenz/` (Vergleichsbilder), `tests/` (Prüfungen des Regelkatalogs) und
+  `isPhone()`), `apple-referenz/` (Vergleichsbilder), `tests/` (Prüfungen des Regelkatalogs, seit 4.28.0 mit Messdateien in
+  `tests/messungen/` zum Abspielen, 15.21) und
   `vorlage/index.html` (Startpunkt für neue Apps).
 - **Einbindung (feste Fassung, seit 4.14.0):** Jede App lädt die Bausteine von GitHub Pages aus **ihrer** Fassung:
   `<link rel="stylesheet" href="../AppDesign/fassung/X.Y.Z/design.css">` im `<head>` vor dem eigenen `<style>`,
@@ -878,6 +887,13 @@ Verhalten · technischer Name). In AppDesign ist jede Komponente einmal programm
   laden verwirft); Ende nach 5 Minuten oder 20 000 Zeilen.
 - **Technisch:** `ui.js` – `messungMenuItems({ app, teile, rollen })` ins Menü der Seitenleiste; `teile`/`rollen` = Spalte →
   Selektor (erstes sichtbares Element). Prüfung `checkMessung` (Fall-Liste `arbeit/A-27 Fall-Liste.md`, F1–F12).
+- **Abspielen (seit 4.28.0, A-31):** Messdateien liegen in `tests/messungen/` (nur Zahlen, Längen und ids, keine Texte) und
+  laufen in den Prüfungen der App mit: `tests/abspielen.mjs` – `lies(text)` (Kopf, Spalten, Zeilen; Fehler mit Zeilennummer),
+  `ansicht(m)` (Größe und Darstellung des Geräts), `spieleAb(p, m, { ziele, woerter, bis, nachSchritt })` spielt Tippen,
+  Eingaben und das Schließen der Tastatur nach, Safari meldet sichtbare Höhe und `offsetTop` genau wie gemessen
+  (`__safari.setze`). Am Ende jedes Schritts: Kopf- und Suchzeile ± 1 px und Fokus wie gemessen; der Inhalt hängt an den eigenen
+  Daten und wird nicht verglichen. Gegenprobe: dieselbe Messung um 20 px verschoben wird rot. Grenze: Wischen zeichnet die
+  Messung nicht auf – dafür bleibt das Safari-Modell. Fall-Liste `arbeit/A-26 A-31 A-34 Fall-Liste.md` (2.3, M-1 bis M-6).
 
 ### 15.22 Rahmen und Rollbereich (seit 4.27.0, R-2.1, A-28)
 - **Apple:** [HIG – Scroll views](https://developer.apple.com/design/human-interface-guidelines/scroll-views) – wie in den
@@ -898,7 +914,8 @@ Verhalten · technischer Name). In AppDesign ist jede Komponente einmal programm
   `rolle.to(y, weich)`, `rolle.by(d)`, `rolle.ende()`), `onRoll(fn)`, `fabTop()`/`fabEnd()`. Die App ruft **nie**
   `window.scrollTo`. Ohne Rollbereich rollt wie bisher das Fenster (ältere Apps). Prüfungen: `pruefe.mjs` – `rolle(p, y)`,
   `rollstand(p)`; `hig.mjs` – Grundregel ‚Seite rollt nie‘ (`scrollY` 0 nach jedem Schritt), `barStill`; `ablauf.mjs` –
-  `checkFab`, `checkPrint`, `checkSearchTop`. Fall-Liste und Muster: `arbeit/A-28 Fall-Liste.md`, `arbeit/A-28 Muster.html`.
+  `checkFab`, `checkPrint`, `checkSearchTop`, seit 4.28.0 `checkFieldVisible` (Feld im Inhalt über der Tastatur, R-4.5). Fall-Liste und
+  Muster: `arbeit/A-28 Fall-Liste.md`, `arbeit/A-28 Muster.html`.
 
 ## 16. HIG-Checkliste
 
@@ -993,7 +1010,7 @@ Regel ersetzt oder ergänzt eine bestehende (Zusammenarbeit 0 Nr. 3) und bekommt
 | R-4.2 | **Kontextmenü** einer Kachel: daneben bzw. (iPhone) darunter, immer vollständig und ganz über der Backup-Kachel; die Liste rückt dafür; ohne ‚Öffnen‘ | kontextmenue.mjs | – | R-40 (Teil Kontextmenü) |
 | R-4.3 | **Abfragen und Meldungen:** keine Systemfenster; Abfrage als Sprechblase an der Schaltfläche, rote Schaltfläche mit dem Verb, ‚Abbrechen‘ zuletzt; mehrere Wege: empfohlener blau zuerst, zerstörender rot; Meldung im kleinen Fenster mit höchstens einer Schaltfläche zu den Einzelheiten | hig.mjs | – | R-23 (Teil Systemfenster), R-38 |
 | R-4.4 | **Fenster-Kopfzeile:** x links, Häkchen rechts – grau, nach einer Änderung blau; x mit Änderungen fragt ‚Änderungen verwerfen‘ / ‚Weiter bearbeiten‘ | ablauf.mjs – `checkDialogHead` | – | **neu** (bisher 6, 15.8, HIG 9) |
-| R-4.5 | **Passt immer auf den Bildschirm:** Menü, Sprechblase und Fenster ganz sichtbar (auch iPhone quer), zu hoher Inhalt scrollt darin; Fenster auf dem iPhone bildschirmfüllend | hig.mjs | – | R-18, R-39 |
+| R-4.5 | **Passt immer auf den Bildschirm:** Menü, Sprechblase und Fenster ganz sichtbar (auch iPhone quer), zu hoher Inhalt scrollt darin; Fenster auf dem iPhone bildschirmfüllend. **Seit 4.28.0 (A-35):** ein Feld mit Fokus steht immer ganz über der Tastatur – in Fenstern und im Inhalt, 16 px darüber (reicht der Platz nicht, direkt unter Kopf- bzw. Suchzeile) | hig.mjs, ablauf.mjs – `checkFieldVisible` (seit 4.28.0, Safari-Modell: Feld unter der Tastatur antippen) | – | R-18, R-39 |
 
 ### 5. Eingaben
 
@@ -1075,6 +1092,7 @@ Die alten Nummern R-01 bis R-52 (bis 4.11.4) gelten nicht mehr; sie stehen nur n
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 4.28.0 | 20.10.2026 | Neben | **A-35:** R-4.5 ergänzt – ein Feld mit Fokus steht immer ganz über der Tastatur, auch im Inhalt (16 px darüber, sonst direkt unter Kopf- bzw. Suchzeile; `fieldIntoView`, Abschnitt 7); neue Safari-Eigenheit in 13 (Feld unter der Tastatur: Safari verschiebt nur den sichtbaren Bereich, quer 232 px; Zifferntastatur 170 px sichtbar); `checkFieldVisible`, Safari-Modell erweitert. **A-31:** Messung abspielen (15.21, `tests/abspielen.mjs`, Messdateien in `tests/messungen/`). A-26 entfällt (Datumsfelder bleiben) |
 | 4.27.1 | 19.10.2026 | Korrektur | **A-33 (P-58/2):** R-3.2 ergänzt – die Kapsel ‚Nach oben / Ans Ende‘ überdeckt nie Kopf- oder Suchzeile, passt sie nicht ganz in den Inhalt, ist sie ausgeblendet (`updateFab`, 15.17, 15.22); Platz unter dem Inhalt als Platzhalter `.rolle::after` statt Innenabstand; `checkFab` mit Tastatur quer (126 px) und Suche, Grundregel ‚Kapsel schneidet keine Leiste‘ |
 | 4.27.0 | 19.10.2026 | Neben | **A-28 Umbau B (Variante B1):** Die Seite rollt nie, nur der Inhalt – Rahmen mit festen Zeilen und Rollbereich `rolle`, so hoch wie der sichtbare Bereich (neu 15.22, R-2.1 ergänzt, 15.3); **A-29:** Suche öffnen und ⓧ rollen ganz nach oben (R-2.3 ergänzt); Abschnitt 13 berichtigt (zwei Bereiche, Ursache ist das Rollen des Fensters bei offener Tastatur); Messmodus mit Spalte `inh` (15.21); Prüfungen `rolle`/`rollstand`, `checkSearchTop`, `checkFab`, `checkPrint`, Grundregel ‚Seite rollt nie‘, Safari-Modell `tests/safari.mjs` |
 | 4.26.0 | 19.10.2026 | Neben | **R-1.6 neu (A-27):** Messmodus im Mehr-Menü der Seitenleiste – zeichnet am Gerät Scrollstand, `visualViewport`, Lage der Leisten, Fokus und Ereignisse auf, ‚Messung teilen‘ als Textdatei (15.21); Abschnitt 13: Safari schiebt den sichtbaren Bereich bei kurzer Seite (mit Quellen) |
