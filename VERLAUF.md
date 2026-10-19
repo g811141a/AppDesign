@@ -1851,3 +1851,5 @@ Alle punkte ok
 
 **2026-10-19 · Sitzung Reiselogbuch 0017:** A-28 Umbau B (Variante B1) und A-29 gebaut (AppDesign 4.27.0 / Reiselogbuch 3.25.0): Rahmen mit festen Zeilen und Rollbereich `rolle` – die Seite rollt nie, nur der Inhalt; Suche öffnen und ⓧ rollen nach oben. `ablauf-suche-iphone.mjs` grün unter dem Safari-Modell (vorher rot gegen 3.24.0); neue Prüfungen `checkSearchTop`, `checkFab`, `checkPrint`, Grundregel ‚Seite rollt nie‘. Zusammenarbeit 2.12.0 (Link und Schritte bei jeder Bitte am Gerät). Prüfpunkte P-58.
 P-58 geprüft: Zittern am Gerät weg (Messung: Seite rollt nie, Leisten in jeder Zeile still); /2 nicht ok (Kapsel verdeckt quer mit Tastatur ⌄) → A-33, Weg A, R-3.2 ergänzt, Ja zum Bau 4.27.1 / 3.25.1 in Sitzung 0018.
+
+**2026-10-19 · Sitzung Reiselogbuch 0018:** A-33 gebaut (AppDesign 4.27.1 / Reiselogbuch 3.25.1, Weg A): die Kapsel ‚Nach oben / Ans Ende‘ überdeckt nie Kopf- oder Suchzeile, quer mit Tastatur ist sie ausgeblendet; R-3.2 ergänzt; dabei gefunden: der Rollbereich ragte quer mit Tastatur unter sie (Innenabstand → Platzhalter `.rolle::after`). Prüfung zuerst rot (18 Fehler), dann grün. P-59 offen.

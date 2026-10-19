@@ -3,6 +3,31 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.27.1 – 19.10.2026
+
+AppDesign 4.27.1 · Designrichtlinie allgemein 4.27.1 · Zusammenarbeit allgemein 2.12.0 · geprüft mit Reiselogbuch 3.25.1
+
+Korrektur aus P-58/2 (A-33, deine Entscheidung vom 19.10.2026 für Weg A): Am iPhone quer mit offener Tastatur verdeckte die Kapsel
+‚Nach oben / Ans Ende‘ die Suchzeile (⌄) und ‚…‘ der Kopfzeile. Jetzt ist sie dort ausgeblendet. In der Nachbildung behoben, am Gerät
+zu bestätigen (P-59).
+
+- **R-3.2 ergänzt (allgemeine Regel):** Die Kapsel ‚Nach oben / Ans Ende‘ überdeckt nie Kopf- oder Suchzeile. Passt sie nicht ganz in
+  den Inhalt (sichtbarer Teil des Rollbereichs mindestens Kapsel + 2 × 16 px), ist sie ausgeblendet (15.17, 15.22).
+- **ui.js – `updateFab`:** misst den sichtbaren Teil des Rollbereichs (bis zur Tastatur) und blendet die Kapsel aus (`still`), wenn
+  sie nicht hineinpasst; neu geprüft, sobald sich der sichtbare Bereich ändert (`visualViewport` resize: Tastatur auf und zu).
+- **design.css – Platz unter dem Inhalt:** die 100 px (iPhone 120 bzw. 150 px) unter dem letzten Inhalt sind jetzt ein Platzhalter
+  am Ende des Rollbereichs (`.rolle::after`) statt Innenabstand. Als Innenabstand konnte der Rollbereich nicht niedriger als 120 px
+  werden und ragte am iPhone quer mit Tastatur (126 px sichtbar) 55 px unter sie (B1). Rollweg und Platz unten bleiben gleich.
+- **Prüfungen:** `checkFab` misst bei offener Tastatur mit der gemessenen Höhe (Option `sichtbar`: iPhone hoch 409, quer 126 px)
+  und mit offener Suche (Option `suche`), ob die Kapsel eine Leiste schneidet, mit 16 px Abstand in den Inhalt passt, ob jede
+  Schaltfläche der Leisten frei antippbar ist, ob sie fehlt, obwohl sie passt, und ob sie nach dem Schließen der Tastatur wieder da
+  ist (K-1 bis K-5). Neue Grundregel in `hig.mjs` nach jedem Schritt: ‚Kapsel schneidet keine Leiste‘.
+- **Warum die Prüfung es übersehen hat:** `checkFab` prüfte seit 4.27.0 nur, ob die Kapsel über der Tastatur endet, und das nur mit
+  300 px Tastatur am iPhone hoch und am iPad, nie quer. Ob sie dabei Kopf- oder Suchzeile überdeckt, hat keine Prüfung gemessen.
+- **Gegenprobe (K-6):** die neuen Prüfungen gegen den Stand 4.27.0 – 18 Fehler in `kapsel-iphone.mjs` des Reiselogbuchs (Kapsel
+  20–110 px über der Kopfzeile 0–61 bzw. Suchzeile bis 115 px, ‚Mehr‘ und ‚Nächster Treffer‘ verdeckt, Inhalt unter der Tastatur).
+- Fall-Liste `arbeit/A-33 Fall-Liste.md`; feste Fassung `fassung/4.27.1/`.
+
 ## 4.27.0 – 19.10.2026
 
 AppDesign 4.27.0 · Designrichtlinie allgemein 4.27.0 · Zusammenarbeit allgemein 2.12.0 · geprüft mit Reiselogbuch 3.25.0

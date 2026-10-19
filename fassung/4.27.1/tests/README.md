@@ -67,7 +67,7 @@ Darstellung). Selbsttest mit Schein-Tests: `node tests/lauf-selbsttest.mjs` (in 
 
 | Datei | Regeln | Prüft |
 |---|---|---|
-| `ablauf.mjs` (seit 4.12.0) | R-2.3, R-3.2, R-4.4, R-5.2, R-5.3, R-5.5, R-6.4 | Abläufe mit Handlung: Suche (`checkSearch`), Suche öffnen und ⓧ nach oben (`checkSearchTop`, seit 4.27.0), Nach oben / Ans Ende im Rollbereich und über der Tastatur (`checkFab`, seit 4.27.0), Drucken der ganzen Ausgabe (`checkPrint`, seit 4.27.0), Fenster-Kopfzeile (`checkDialogHead`), Großbuchstaben (`checkCapital`), Fehlermeldungen (`checkFieldErrors`), Eingabetaste (`checkEnterDone`, seit 4.19.0), Suche in der Liste (`checkListSearch`, seit 4.23.0), Vorschau (`checkPreview`) |
+| `ablauf.mjs` (seit 4.12.0) | R-2.3, R-3.2, R-4.4, R-5.2, R-5.3, R-5.5, R-6.4 | Abläufe mit Handlung: Suche (`checkSearch`), Suche öffnen und ⓧ nach oben (`checkSearchTop`, seit 4.27.0), Nach oben / Ans Ende im Rollbereich und über der Tastatur (`checkFab`, seit 4.27.0; seit 4.27.1 mit `sichtbar` und `suche`: die Kapsel schneidet keine Leiste, A-33), Drucken der ganzen Ausgabe (`checkPrint`, seit 4.27.0), Fenster-Kopfzeile (`checkDialogHead`), Großbuchstaben (`checkCapital`), Fehlermeldungen (`checkFieldErrors`), Eingabetaste (`checkEnterDone`, seit 4.19.0), Suche in der Liste (`checkListSearch`, seit 4.23.0), Vorschau (`checkPreview`) |
 | `abgleich.mjs` | R-9.2 bis R-9.4 | alle Fälle des Abgleichs in beide Richtungen, kurzes Fenster und Abgleichbericht |
 | `backup.mjs` | R-9.1, R-9.2 | Backup erstellen und laden (Menü, Abfrage mit Kacheln, Abbrechen, unlesbare Datei) |
 | `kontextmenue.mjs` | R-4.2 | Kontextmenü jeder sichtbaren Kachel und des letzten Eintrags, ganz sichtbar, über der Backup-Kachel |

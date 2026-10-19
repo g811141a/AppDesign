@@ -1,25 +1,33 @@
 # Übergabe an die nächste Sitzung
 
-**Stand 19.10.2026** · geschrieben in der Sitzung ‚Reiselogbuch 0017‘ (Ende)
+**Stand 19.10.2026** · geschrieben in der Sitzung ‚Reiselogbuch 0017‘ (Ende), ergänzt in ‚Reiselogbuch 0018‘ nach 4.27.1
 (Zusammenarbeit allgemein 2.12.0, Abschnitt 0 Nr. 14). **Claude liest diese Datei zu Beginn jeder Sitzung zuerst.**
 
 ## 1. Lagebild
 
 | Teil | Version | Datei |
 |---|---|---|
-| Reiselogbuch | **3.25.0** online (Fassung 4.27.0) | g811141a/ReiseLogBuch – `CHANGELOG.md`, `BACKLOG.md`, `PROMPT.md` |
-| AppDesign | **4.27.0** online | g811141a/AppDesign – `CHANGELOG.md`, `BACKLOG.md` |
+| Reiselogbuch | **3.25.1** online (Fassung 4.27.1) | g811141a/ReiseLogBuch – `CHANGELOG.md`, `BACKLOG.md`, `PROMPT.md` |
+| AppDesign | **4.27.1** online | g811141a/AppDesign – `CHANGELOG.md`, `BACKLOG.md` |
 | ReiseLogBuch-Import (privat) | 1.2.1 (unverändert) | g811141a/ReiseLogBuch-Import |
 | Zusammenarbeit allgemein | **2.12.0** | `README - Zusammenarbeit allgemein.md` |
 
-- **Chatnummer:** die nächste Sitzung heißt **Reiselogbuch 0018**; die danach 0019.
-- **Offene Prüfpunkte:** keine. **P-58 geprüft:** /0, /1, /3–/6 ok – das Zittern ist am Gerät weg (A-24, A-28, T-95 (1)
+- **Chatnummer:** die laufende Sitzung ist **Reiselogbuch 0018**; die nächste heißt **0019**.
+- **Offene Prüfpunkte:** **P-59** (3.25.1, A-33: Kapsel quer mit Tastatur ausgeblendet; Prüfliste im CHANGELOG des Reiselogbuchs).
+- **P-58 geprüft:** /0, /1, /3–/6 ok – das Zittern ist am Gerät weg (A-24, A-28, T-95 (1)
   abgeschlossen). /2 nicht ok: am iPhone quer mit offener Tastatur verdeckt die Kapsel ‚Nach oben / Ans Ende‘ ⌄ der Suche → A-33.
 - **Messung P-58/6** (iPhone hoch): `sy`, `offsetTop` und `--vv-top` immer 0; Kopfzeile 0, Suchzeile 62 in jeder Zeile → A-34.
 - **Sitzungsgröße:** 0017 endete bei ~350.000 Token Kontext.
 - **Erinnerung:** ‚Backlog-Erinnerung (AppDesign und Reiselogbuch)‘ montags 8:58.
 
 ## 2. Ergebnisse
+
+**Sitzung ‚Reiselogbuch 0018‘ (19.10.2026):**
+- **A-33 gebaut und veröffentlicht** (AppDesign 4.27.1 / Reiselogbuch 3.25.1, Weg A): `updateFab` blendet die Kapsel aus, wenn sie
+  nicht mit 16 px Abstand in den sichtbaren Inhalt passt (auch bei Tastatur auf/zu); R-3.2 ergänzt. Dabei gefunden: der Rollbereich
+  ragte quer mit Tastatur 55 px unter sie (120 px Innenabstand) – jetzt Platzhalter `.rolle::after`.
+- **Prüfungen:** `checkFab` mit `sichtbar` (409/126 px) und `suche`, Grundregel ‚Kapsel schneidet keine Leiste‘ (`hig.mjs`),
+  `kapsel-iphone.mjs` mit dem Ablauf P-58/2 (Safari-Modell). Gegen 4.27.0 rot (18 Fehler), jetzt grün.
 
 **Sitzung ‚Reiselogbuch 0017‘ (19.10.2026):**
 - **A-28 Umbau B (B1) und A-29 gebaut und veröffentlicht** (AppDesign 4.27.0 / Reiselogbuch 3.25.0):
@@ -41,14 +49,9 @@ Frühere Sitzungen: siehe `VERLAUF.md` und Versionsgeschichten.
 
 ## 3. Nächster Schritt
 
-1. **Bauen (Ja liegt vor):** Vorbereitungs-Zweige, `vorbereiten --ad 4.27.1 --app reiselogbuch=3.25.1`. Zuerst die Prüfung rot gegen
-   4.27.0 (Zusammenarbeit 0 Nr. 1): `checkFab` misst iPhone quer mit offener Tastatur (sichtbarer Bereich 126 px, Safari-Modell
-   `safari.mjs` bzw. `visualViewport.height` nachgebildet), ob die Kapsel Kopf- oder Suchzeile schneidet. Dann `updateFab` in `ui.js`:
-   ausblenden (`still`), wenn der Rollbereich (sichtbarer Teil über der Tastatur) niedriger ist als Kapsel + 2 × 16 px; neu prüfen bei
-   `visualViewport` resize. Regelkatalog R-3.2 ergänzen, Abschnitt 15.22/15.17, CHANGELOGs, Prüfliste **P-59** (iPhone quer: Suche mit
-   Tastatur, ⌃ ⌄ ⓧ frei, Kapsel nach dem Schließen wieder da; iPhone hoch: Kapsel über der Tastatur, nichts verdeckt). Fall fehlt
-   in den Prüfungen, weil `checkFab` nur ‚über der Tastatur‘ maß – im Bericht nennen.
-2. Bericht mit Prüfpunkten P-59, dann **A-26** Datumsfeld.
+1. **Rückmeldung P-59** abwarten (Prüfliste im CHANGELOG des Reiselogbuchs 3.25.1). Nicht ok → zuerst der Ablauf des Nutzers als
+   feste Prüfung, rot gegen 4.27.1 (Zusammenarbeit 0 Nr. 1).
+2. Danach **A-26** Datumsfeld (Tag antippen übernimmt und schließt, allgemeine Regel): Fall-Liste und Muster, Ja abwarten.
 
 ## 4. Danach
 
