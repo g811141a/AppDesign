@@ -3,6 +3,7 @@
 // Jede Funktion bekommt eine Playwright-Seite und gibt eine Liste von Fehlern zurück (leer = in Ordnung), je mit Regelnummer.
 // Einbinden im Prüfskript der App:  import { checkSearch, checkDialogHead } from '../../AppDesign/tests/ablauf.mjs';
 //                                   fehler.push(...await checkSearch(page, { term: 'Sydney' }));
+import { ROLL, rolle, rollstand } from './pruefe.mjs';
 const wait = (p, ms = 250) => p.waitForTimeout(ms);
 // R-2.3 (seit 4.25.1, A-24): beim Tippen bleibt das Suchfeld dasselbe Element und behält den Fokus – sonst schließt Safari am
 // iPhone die Tastatur kurz und Kopf- und Suchzeile zittern bei jedem Buchstaben. Tippt Buchstabe für Buchstabe (und löscht
@@ -25,7 +26,7 @@ const rgbOf = c => (c.match(/[\d.]+/g) || [0, 0, 0]).slice(0, 3).map(Number);
 export async function checkSearch(p, { term, open = '#searchBtn', input = '#search', count = '#scount', prev = '#sprev', next = '#snext',
   bar = '#bar', row = '.nb2', item = '#app [data-day]', where = '' } = {}) {
   const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}R-2.3 ${t}`);
-  await p.evaluate(() => scrollTo(0, 0));
+  await rolle(p, 0);
   await p.click(open); await wait(p);
   await typeKeeps(p, input, term, E); await wait(p, 900);
   const state = () => p.evaluate(({ count, bar, row, item }) => {
@@ -225,16 +226,17 @@ export async function checkEnterDone(p, { open, fields = [], multi = '', where =
 export async function checkOpenAt(p, { open, want = null, mark = '.gap', where = '' } = {}) {
   const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}R-7.4 ${t}`);
   await open(); await wait(p, 400);
-  const r = await p.evaluate(({ want, mark }) => {
+  const r = await p.evaluate(({ want, mark, R }) => {
+    const roll = eval(R);
     const bar = document.querySelector('.pnav, .nb')?.getBoundingClientRect().bottom || 0;
     const marked = [...document.querySelectorAll(`#app ${mark}`)].filter(e => e.getClientRects().length).map(e => e.dataset.day || e.dataset.keep);
     const el = want ? document.querySelector(`#app [data-day="${want}"], #app [data-keep="${want}"]`) : null;
     const th = el?.closest('table')?.tHead?.querySelector('th');
     const edge = bar + (th && getComputedStyle(th).position === 'sticky' ? th.offsetHeight : 0);
     const er = el?.getBoundingClientRect();
-    return { y: Math.round(scrollY), max: Math.round(document.documentElement.scrollHeight - innerHeight), marked, edge: Math.round(edge),
-      top: er ? Math.round(er.top) : null, bottom: er ? Math.round(er.bottom) : null, h: innerHeight };
-  }, { want, mark });
+    return { y: Math.round(roll.y), max: Math.round(roll.max), marked, edge: Math.round(edge),
+      top: er ? Math.round(er.top) : null, bottom: er ? Math.round(er.bottom) : null, h: roll.el ? Math.round(roll.el.getBoundingClientRect().bottom) : innerHeight };
+  }, { want, mark, R: ROLL });
   if (!want) {
     if (r.y > 1) E(`alles erfasst: nicht ganz oben (${r.y} px gerollt)`);
     if (r.marked.length) E(`alles erfasst: hervorgehoben ${r.marked.join(', ')}`);
@@ -251,14 +253,14 @@ export async function checkOpenAt(p, { open, want = null, mark = '.gap', where =
 // Seite) bleibt der Abstand zum Ende gleich – kein Sprung nach oben oder ans Ende. at: Anteil des Scrollwegs.
 export async function checkSideToggle(p, { toggle = '[data-side-toggle]', at = 0.5, times = 5, where = '' } = {}) {
   const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}R-8.1 ${t}`);
-  const top = () => p.evaluate(() => {
-    const edge = document.querySelector('.pnav, .nb')?.getBoundingClientRect().bottom || 0;
+  const top = () => p.evaluate(R => {
+    const roll = eval(R), edge = document.querySelector('.pnav, .nb')?.getBoundingClientRect().bottom || 0;
     const e = [...document.querySelectorAll('#app [data-day], #app [data-keep]')].find(x => x.getClientRects().length && x.getBoundingClientRect().bottom > edge + 1);
-    return { id: e ? e.dataset.day || e.dataset.keep : null, top: e ? Math.round(e.getBoundingClientRect().top) : null, y: Math.round(scrollY),
-      rest: Math.round(document.documentElement.scrollHeight - innerHeight - scrollY) };
-  });
+    return { id: e ? e.dataset.day || e.dataset.keep : null, top: e ? Math.round(e.getBoundingClientRect().top) : null, y: Math.round(roll.y),
+      rest: Math.round(roll.rest) };
+  }, ROLL);
   const press = async () => { await p.locator(toggle).filter({ visible: true }).first().click(); await wait(p, 350); };
-  await p.evaluate(a => scrollTo({ top: Math.round((document.documentElement.scrollHeight - innerHeight) * a), behavior: 'instant' }), at); await wait(p, 300);
+  await rolle(p, `${at * 100}%`); await wait(p, 300);
   const vor = await top();
   for (let i = 1; i <= times * 2; i++) {
     await press();
@@ -276,13 +278,13 @@ export async function checkSideToggle(p, { toggle = '[data-side-toggle]', at = 0
 // Gedreht wird hin und zurück; Safari nachgebildet (kein Scroll-Anker).
 export async function checkTurnEnd(p, { back = 0, where = '' } = {}) {
   const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}R-8.1 ${t}`);
-  await p.addStyleTag({ content: 'html, body { overflow-anchor: none !important; }' });
-  const lage = () => p.evaluate(() => {
-    const edge = document.querySelector('.pnav, .nb')?.getBoundingClientRect().bottom || 0;
+  await p.addStyleTag({ content: '* { overflow-anchor: none !important; }' });
+  const lage = () => p.evaluate(R => {
+    const roll = eval(R), edge = document.querySelector('.pnav, .nb')?.getBoundingClientRect().bottom || 0;
     const e = [...document.querySelectorAll('#app [data-day], #app [data-keep]')].find(x => x.getClientRects().length && x.getBoundingClientRect().bottom > edge + 1);
-    return { tag: e ? e.dataset.day || e.dataset.keep : null, rest: Math.round(document.documentElement.scrollHeight - innerHeight - scrollY), y: Math.round(scrollY) };
-  });
-  await p.evaluate(b => scrollTo({ top: document.documentElement.scrollHeight - innerHeight - b, behavior: 'instant' }), back); await wait(p, 400);
+    return { tag: e ? e.dataset.day || e.dataset.keep : null, rest: Math.round(roll.rest), y: Math.round(roll.y) };
+  }, ROLL);
+  await rolle(p, { vorEnde: back }); await wait(p, 400);
   const vor = await lage(), v = p.viewportSize();
   if (vor.tag) { E(`Vorbereitung: oben steht noch ${vor.tag} – kein Fall ‚Ende der Seite‘ (Abstand ${back} zu groß)`); return errors; }
   for (const [w, h, name] of [[v.height, v.width, 'gedreht'], [v.width, v.height, 'zurückgedreht']]) {
@@ -332,12 +334,12 @@ export async function checkListStill(p, { item, field, next = '', where = '', st
   const vp = p.viewportSize();
   const edgeJs = `Math.max(...[...document.querySelectorAll('.nb, .pnav, #bar, table.days:not(.static) th')].map(e => e.getBoundingClientRect().bottom), 0)`;
   // oberste Zeile unter der Leiste samt Lage; dazu die Zeilen im Bild (Kopf sichtbar und antippbar)
-  const look = () => p.evaluate(({ item, edgeJs }) => {
-    const edge = eval(edgeJs), all = [...document.querySelectorAll(item)].filter(e => e.getClientRects().length);
+  const look = () => p.evaluate(({ item, edgeJs, R }) => {
+    const roll = eval(R), edge = eval(edgeJs), all = [...document.querySelectorAll(item)].filter(e => e.getClientRects().length);
     const k = e => e.dataset.day || e.dataset.keep, top = all.find(e => e.getBoundingClientRect().bottom > edge + 1);
-    return { y: Math.round(scrollY), key: top && k(top), top: top ? Math.round(top.getBoundingClientRect().top) : null,
+    return { y: Math.round(roll.y), key: top && k(top), top: top ? Math.round(top.getBoundingClientRect().top) : null,
       tap: all.filter(e => e.getBoundingClientRect().top >= edge - 1 && e.getBoundingClientRect().top <= innerHeight - 80).map(e => ({ key: k(e), at: e.getBoundingClientRect().top / innerHeight })) };
-  }, { item, edgeJs });
+  }, { item, edgeJs, R: ROLL });
   const flash = key => p.evaluate(({ item, key }) => [...document.querySelectorAll(item)].some(x => (x.dataset.day || x.dataset.keep) === key && x.getAnimations().length > 0), { item, key });
   // A-23 (seit 4.24.0): Verlauf der Hervorhebung – Farbe kurz vor Ende des Haltens (voll --sel-bg?) und Gesamtdauer; danach beenden
   const glow = (key, at) => p.evaluate(({ item, key, at }) => {
@@ -355,18 +357,19 @@ export async function checkListStill(p, { item, field, next = '', where = '', st
     if (on) {
       // iPad bleibt iPad: unter 500 px Höhe schaltet ui.js auf die iPhone-Ansicht (isPhone) – das tut die echte Tastatur nicht
       if (resize) await p.setViewportSize({ width: vp.width, height: vp.height >= 500 ? Math.max(500, Math.round(vp.height * 0.6)) : Math.round(vp.height * 0.6) });
-      await p.evaluate(resize => { window.__realVV ||= window.visualViewport;
+      // Safari rollt beim Öffnen der Tastatur; seit 4.27.0 (A-28) als ungünstigster Fall auch den Rollbereich (Sicherung R-7.3)
+      await p.evaluate(([resize, R]) => { window.__realVV ||= window.visualViewport;
         const fake = { height: resize ? innerHeight : Math.round(innerHeight * 0.6), width: innerWidth, offsetTop: 0, offsetLeft: 0, scale: 1, addEventListener() {}, removeEventListener() {} };
-        Object.defineProperty(window, 'visualViewport', { configurable: true, get: () => fake }); scrollBy(0, 250); }, resize);
+        Object.defineProperty(window, 'visualViewport', { configurable: true, get: () => fake }); scrollBy(0, 250); eval(R).by(250); }, [resize, ROLL]);
     } else {
       await wait(p, 250);
       if (resize) await p.setViewportSize(vp);
-      await p.evaluate(late => { Object.defineProperty(window, 'visualViewport', { configurable: true, get: () => window.__realVV }); if (late) scrollBy(0, -250); }, late);
+      await p.evaluate(([late, R]) => { Object.defineProperty(window, 'visualViewport', { configurable: true, get: () => window.__realVV }); if (late) { scrollBy(0, -250); eval(R).by(-250); } }, [late, ROLL]);
     }
   };
   const reset = async () => {
     if (start) await start();
-    else { await p.evaluate(() => scrollTo(0, Math.min(1200, document.documentElement.scrollHeight - innerHeight - 400))); await wait(p, 300); }
+    else { await p.evaluate(R => { const r = eval(R); r.to(Math.min(1200, r.max - 400)); }, ROLL); await wait(p, 300); }
   };
   // Fälle wie in P-51/5 und P-52/2–4: Zeile oben, 3 Zeilen tiefer, untere Hälfte, Zeile 2 px unter dem Kopf, 5 Tage vorblättern
   const cases = [['Häkchen, oberste Zeile', '#dlgOk', 'oben', 'alle'], ['x, oberste Zeile', '#dlgX', 'oben', 'late'],
@@ -383,8 +386,8 @@ export async function checkListStill(p, { item, field, next = '', where = '', st
     const key = { oben: vor.tap[0], tiefer: vor.tap[3], nah: vor.tap[1], blättern: vor.tap.at(-2) }[wo]?.key ?? vor.tap.find(t => t.at > 0.55)?.key;
     if (!key) { E(`${art}: keine Zeile in der unteren Hälfte`); continue; }
     if (wo === 'nah') {
-      await p.evaluate(({ item, key, edgeJs }) => { const e = [...document.querySelectorAll(item)].find(x => (x.dataset.day || x.dataset.keep) === key && x.getClientRects().length);
-        scrollBy({ top: e.getBoundingClientRect().top - eval(edgeJs) - 2, behavior: 'instant' }); }, { item, key, edgeJs });
+      await p.evaluate(({ item, key, edgeJs, R }) => { const e = [...document.querySelectorAll(item)].find(x => (x.dataset.day || x.dataset.keep) === key && x.getClientRects().length);
+        eval(R).by(e.getBoundingClientRect().top - eval(edgeJs) - 2); }, { item, key, edgeJs, R: ROLL });
       await wait(p, 300); vor = await look();
     }
     await tap(key); await wait(p, 300);
@@ -506,7 +509,7 @@ export async function checkMessung(p, { menu, search, secret = [], where = '' } 
   const input = await search();
   for (const k of 'Rom') { await p.keyboard.type(k); await wait(p, 40); }
   await wait(p, 300);
-  await p.evaluate(() => scrollBy(0, 40)); await wait(p, 300);
+  await rolle(p, { um: 40 }); await wait(p, 300);
   // F5: drehen
   const vp = p.viewportSize(); await p.setViewportSize({ width: vp.height, height: vp.width }); await wait(p, 400);
   await p.setViewportSize(vp); await wait(p, 400);
@@ -515,14 +518,17 @@ export async function checkMessung(p, { menu, search, secret = [], where = '' } 
     [/! tippen /, 'Tippen'], [/! resize$/, 'Größenänderung'], [/ quer( |$)/, 'Lage quer'], [/! neuaufbau /, 'Neuaufbau']])
     if (!z.some(x => re.test(x))) E(`Datei ohne Zeile für ${was}`);
   const kopf = z[1].split(/\s+/);
-  for (const k of ['t', 'sy', 'sh', 'ih', 'vh', 'vt', 'vvtop', 'fokus', 'lage']) if (!kopf.includes(k)) E(`Spalte ‚${k}‘ fehlt (${z[1]})`);
+  for (const k of ['t', 'sy', 'inh', 'sh', 'ih', 'vh', 'vt', 'vvtop', 'fokus', 'lage']) if (!kopf.includes(k)) E(`Spalte ‚${k}‘ fehlt (${z[1]})`);
   const daten = z.slice(2).filter(x => !x.startsWith('#'));
   if (daten.some(x => x.split('!')[0].trim().split(/\s+/).length !== kopf.length)) E('Zeilen haben nicht so viele Werte wie Spalten');
   // F4: Werte stimmen mit der Seite überein (letzte Zeile ohne Ereignis ↔ jetzt)
   await p.evaluate(() => messZeile('probe'));
-  const probe = await p.evaluate(() => ({ z: mess.zeilen.at(-1).split(/\s+/), sy: Math.round(scrollY), ih: innerHeight, vh: Math.round(visualViewport?.height ?? innerHeight) }));
-  if (+probe.z[kopf.indexOf('sy')] !== probe.sy || +probe.z[kopf.indexOf('ih')] !== probe.ih || +probe.z[kopf.indexOf('vh')] !== probe.vh)
-    E(`Werte der Zeile passen nicht zur Seite (${probe.z.join(' ')} – scrollY ${probe.sy}, innerHeight ${probe.ih}, vv ${probe.vh})`);
+  const probe = await p.evaluate(() => ({ z: mess.zeilen.at(-1).split(/\s+/), sy: Math.round(scrollY), ih: innerHeight, vh: Math.round(visualViewport?.height ?? innerHeight),
+    inh: document.querySelector('#app > .rolle') ? String(Math.round(document.querySelector('#app > .rolle').scrollTop)) : '-' }));
+  if (+probe.z[kopf.indexOf('sy')] !== probe.sy || +probe.z[kopf.indexOf('ih')] !== probe.ih || +probe.z[kopf.indexOf('vh')] !== probe.vh || probe.z[kopf.indexOf('inh')] !== probe.inh)
+    E(`Werte der Zeile passen nicht zur Seite (${probe.z.join(' ')} – scrollY ${probe.sy}, Rollbereich ${probe.inh}, innerHeight ${probe.ih}, vv ${probe.vh})`);
+  // F-17 (seit 4.27.0, A-28): Spalte inh zeigt den Rollstand des Inhalts – nach dem Rollen um 40 px nicht 0
+  if (probe.inh !== '-' && +probe.inh <= 0) E(`Spalte inh zeigt den Rollstand des Inhalts nicht (${probe.inh} nach dem Rollen)`);
   // F7: Grenze 5 Minuten – endet von selbst, Menü zeigt ‚beendet‘
   await p.evaluate(() => { mess.start -= MESS_MAX_MS + 1000; messZeile('grenze'); });
   if (await p.evaluate(() => mess.an)) E('Messung endet nach 5 Minuten nicht von selbst');
@@ -545,6 +551,108 @@ export async function checkMessung(p, { menu, search, secret = [], where = '' } 
   await menu(); await wait(p, 200); await item().click(); await wait(p, 200);
   await p.reload(); await wait(p, 400);
   if (await p.evaluate(() => mess !== null)) E('nach dem Neuladen läuft noch eine Messung');
-  await p.evaluate(() => scrollTo(0, 0));
+  await rolle(p, 0);
+  return errors;
+}
+
+// R-2.3 Suche nach oben (seit 4.27.0, A-29, F-3/F-4): Lupe antippen (Suche öffnen) rollt den Inhalt ganz nach oben; ⓧ leert die
+// Suche, rollt ganz nach oben und lässt den Fokus im Feld. Kopf- und Suchzeile bewegen sich dabei nicht, das Fenster rollt nie.
+// term: ein Begriff, der weit unten steht (der Treffer rollt den Inhalt nach unten).
+export async function checkSearchTop(p, { term, open = '#searchBtn', input = '#search', clear = '#sclear', bar = '#bar', where = '' } = {}) {
+  const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}R-2.3 ${t}`);
+  const lage = () => p.evaluate(([bar, input, R]) => { const r = eval(R), b = document.querySelector(bar)?.getBoundingClientRect();
+    return { y: Math.round(r.y), fenster: Math.round(scrollY), bar: b ? Math.round(b.top) : null, fokus: document.activeElement === document.querySelector(input),
+      wert: document.querySelector(input)?.value ?? null }; }, [bar, input, ROLL]);
+  if (await p.locator(input).count()) { await p.click(open); await wait(p); }   // Suche zu
+  await rolle(p, '50%'); await wait(p, 300);
+  const vor = await lage();
+  if (vor.y < 50) { E(`Vorbereitung: Inhalt lässt sich nicht in die Mitte rollen (${vor.y} px)`); return errors; }
+  await p.click(open); await wait(p, 400);
+  const auf = await lage();
+  if (auf.y !== 0) E(`Suche öffnen rollt den Inhalt nicht ganz nach oben (${auf.y} px statt 0, A-29)`);
+  if (!auf.fokus) E('nach dem Öffnen der Suche liegt der Fokus nicht im Suchfeld');
+  if (auf.bar !== vor.bar) E(`Kopfzeile bewegt sich beim Öffnen der Suche (${vor.bar} → ${auf.bar} px)`);
+  for (const k of term) { await p.keyboard.type(k); await wait(p, 30); }
+  await wait(p, 900);
+  const treffer = await lage();
+  if (treffer.y < 1) E(`Vorbereitung: der Treffer ‚${term}‘ rollt den Inhalt nicht (er muss weit unten stehen)`);
+  // ⓧ wie am Gerät antippen (Mitte der Schaltfläche); Playwright meldete im Rahmen quer mit Tastatur ‚outside of the viewport‘
+  const x = await p.locator(clear).boundingBox();
+  if (!x) { E('ⓧ fehlt bei gefüllter Suche'); return errors; }
+  await p.mouse.click(x.x + x.width / 2, x.y + x.height / 2); await wait(p, 400);
+  const zu = await lage();
+  if (zu.wert !== '') E(`ⓧ leert die Suche nicht (‚${zu.wert}‘)`);
+  if (zu.y !== 0) E(`ⓧ rollt den Inhalt nicht ganz nach oben (${zu.y} px statt 0, A-29)`);
+  if (!zu.fokus) E('nach ⓧ liegt der Fokus nicht mehr im Suchfeld');
+  if (zu.bar !== vor.bar) E(`Kopfzeile bewegt sich bei ⓧ (${vor.bar} → ${zu.bar} px)`);
+  if ([vor, auf, treffer, zu].some(l => l.fenster)) E(`die Seite rollt (scrollY ${[vor, auf, treffer, zu].map(l => l.fenster).join(' → ')}) – nur der Inhalt darf rollen (R-2.1)`);
+  await p.click(open); await wait(p);
+  return errors;
+}
+
+// R-3.2 Nach oben / Ans Ende (seit 4.27.0, A-28, F-12): die Kapsel (.fab) ist nur da, wenn es im Inhalt etwas zu rollen gibt;
+// ‚Ans Ende‘ rollt den Inhalt ganz nach unten, ‚Nach oben‘ ganz nach oben – das Fenster rollt nie. Bei offener Tastatur (sichtbarer
+// Bereich niedriger, Safari nachgebildet) stehen Rahmen und Kapsel über ihr (B1). kurz(): macht den Inhalt so kurz, dass er auf
+// den Bildschirm passt (z. B. Suche ohne Treffer), danach muss die Kapsel weg sein.
+export async function checkFab(p, { top = '.fab button:first-child', end = '.fab button:last-child', kurz = null, where = '' } = {}) {
+  const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}R-3.2 ${t}`);
+  const sicht = () => p.evaluate(() => { const f = document.querySelector('.fab'); return !!f && getComputedStyle(f).display !== 'none' && !f.hidden && f.getClientRects().length > 0; });
+  const st = await rollstand(p);
+  if (st.max <= 1) { E('Vorbereitung: der Inhalt ist zu kurz zum Rollen'); return errors; }
+  if (!await sicht()) { E(`Kapsel fehlt, obwohl es ${st.max} px zu rollen gibt`); return errors; }
+  await rolle(p, '30%'); await wait(p, 200);
+  await p.click(end); await wait(p, 1200);
+  let s = await rollstand(p);
+  if (s.rest > 1) E(`‚Ans Ende‘ rollt den Inhalt nicht ganz nach unten (${s.rest} px vor dem Ende)`);
+  if (s.fenster) E(`‚Ans Ende‘ rollt die Seite (scrollY ${s.fenster}) statt des Inhalts`);
+  await p.click(top); await wait(p, 1200);
+  s = await rollstand(p);
+  if (s.y > 1) E(`‚Nach oben‘ rollt den Inhalt nicht ganz nach oben (${s.y} px)`);
+  if (s.fenster) E(`‚Nach oben‘ rollt die Seite (scrollY ${s.fenster}) statt des Inhalts`);
+  // B1: Tastatur offen – der sichtbare Bereich wird 300 px niedriger; Rahmen und Kapsel enden darüber
+  const kb = await p.evaluate(async () => {
+    const vv = window.visualViewport; if (!vv) return null;
+    const h = Math.round(innerHeight - 300), frame = () => new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+    Object.defineProperty(vv, 'height', { configurable: true, get: () => h }); vv.dispatchEvent(new Event('resize')); await frame();
+    const f = document.querySelector('.fab')?.getBoundingClientRect(), r = document.querySelector('#app > .rolle')?.getBoundingClientRect();
+    const out = { h, fab: f ? Math.round(f.bottom) : null, rolle: r ? Math.round(r.bottom) : null };
+    delete vv.height; vv.dispatchEvent(new Event('resize')); await frame();
+    return out;
+  });
+  if (kb) {
+    if (kb.rolle !== null && kb.rolle > kb.h + 1) E(`bei offener Tastatur endet der Inhalt unter ihr (unten ${kb.rolle} px, Tastatur ab ${kb.h} px, B1)`);
+    if (kb.fab !== null && kb.fab > kb.h + 1) E(`bei offener Tastatur liegt die Kapsel unter ihr (unten ${kb.fab} px, Tastatur ab ${kb.h} px, B1)`);
+  }
+  if (kurz) {
+    await kurz(); await wait(p, 400);
+    const k = await rollstand(p);
+    if (k.max <= 1 && await sicht()) E('Kapsel ist da, obwohl es nichts zu rollen gibt');
+    if (k.max > 1) E(`Vorbereitung: kurz() macht den Inhalt nicht kurz genug (${k.max} px zu rollen)`);
+  }
+  return errors;
+}
+
+// Drucken (seit 4.27.0, A-28, F-16): mit Rahmen und Rollbereich druckt die Seite trotzdem ganz, nicht nur einen Bildschirm –
+// im Druck ist nichts auf Bildschirmhöhe begrenzt. print(): startet das Drucken der App (window.print wird abgefangen);
+// mehr: Mindestzahl der Seiten (Chromium druckt ein PDF und zählt die Seiten; WebKit misst die Höhe in der Druckansicht).
+export async function checkPrint(p, { print, mehr = 2, where = '' } = {}) {
+  const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}Drucken ${t}`);
+  await p.evaluate(() => { window.__druck = 0; window.print = () => { window.__druck++; }; });
+  await print(); await wait(p, 400);
+  if (!await p.evaluate(() => window.__druck)) { E('die App startet das Drucken nicht'); return errors; }
+  await p.emulateMedia({ media: 'print' });
+  const r = await p.evaluate(() => { const cs = e => getComputedStyle(e), sichtbar = e => e && cs(e).display !== 'none' && e.getClientRects().length > 0;
+    const inhalt = Math.max(...[...document.body.children].filter(sichtbar).map(e => e.getBoundingClientRect().bottom), 0);
+    return { inhalt: Math.round(inhalt), h: innerHeight, html: cs(document.documentElement).overflowY + '/' + cs(document.documentElement).height,
+      body: cs(document.body).overflowY, leisten: ['.nb', '.pnav', '.fab', '.searchbox'].filter(s => [...document.querySelectorAll(s)].some(sichtbar)) }; });
+  if (/hidden/.test(r.html) || /hidden/.test(r.body)) E(`im Druck ist die Seite auf eine Bildschirmhöhe begrenzt (html ${r.html}, body ${r.body}) – es druckt nur ein Bildschirm`);
+  if (r.leisten.length) E(`im Druck sind Leisten sichtbar: ${r.leisten.join(', ')}`);
+  if (r.inhalt <= r.h) E(`Vorbereitung: der Druckinhalt ist nicht länger als ein Bildschirm (${r.inhalt} px)`);
+  if (p.context().browser()?.browserType().name() === 'chromium') {
+    const pdf = (await p.pdf({ format: 'A4', landscape: true })).toString('latin1');
+    const seiten = (pdf.match(/\/Type\s*\/Page[^s]/g) || []).length;
+    if (seiten < mehr) E(`das PDF hat ${seiten} Seite(n) statt mindestens ${mehr} – es druckt nur einen Bildschirm`);
+  }
+  await p.emulateMedia({ media: 'screen' });
   return errors;
 }

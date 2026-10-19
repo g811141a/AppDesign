@@ -16,7 +16,7 @@ const zustand = p => p.evaluate(() => {
     sichtbar: !!side && !side.hidden && r.width > 0 && r.height > 0,
     blau: [...document.querySelectorAll('#side .side-row.current')].map(e => e.dataset.id),
     eintraege: document.querySelectorAll('#side .side-row').length,
-    oben: Math.round(scrollY + (document.querySelector('#side .side-list')?.scrollTop || 0)),
+    oben: Math.round(scrollY + (document.querySelector('#app > .rolle')?.scrollTop || 0) + (document.querySelector('#side .side-list')?.scrollTop || 0)),
   };
 });
 

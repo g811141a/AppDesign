@@ -31,6 +31,24 @@ const passt = (ist, soll) => soll instanceof RegExp ? soll.test(String(ist)) : t
   : JSON.stringify(ist) === JSON.stringify(soll);
 const zeige = v => typeof v === 'string' ? `‚${v}‘` : JSON.stringify(v, (k, x) => x instanceof RegExp ? String(x) : x);
 
+// Rollbereich (seit 4.27.0, A-28): Die Seite rollt nie, nur der Inhalt (#app > .rolle). Alle Prüfungen rollen und messen
+// darüber, damit keine aus Versehen das Fenster misst; ohne Rollbereich (App noch nicht umgebaut) gilt das Fenster.
+// In der Seite: const r = eval(ROLL) → r.y, r.h (sichtbare Höhe), r.max, r.rest, r.to(y), r.by(d), r.el (null = Fenster).
+export const ROLL = `(() => { const e = document.querySelector('#app > .rolle');
+  const r = { el: e, get y() { return e ? e.scrollTop : scrollY; }, get h() { return e ? e.clientHeight : innerHeight; },
+    get max() { return Math.max(0, (e ? e.scrollHeight : document.documentElement.scrollHeight) - r.h); }, get rest() { return r.max - r.y; },
+    to(y) { (e || window).scrollTo({ top: Math.max(0, Math.round(y)), behavior: 'instant' }); }, by(d) { r.to(r.y + d); } };
+  return r; })()`;
+// rolle(p, y): y in px, 'ende', 'N%' (Anteil des Rollwegs), { um: d } (relativ) oder { vorEnde: d } (d px vor dem Ende).
+export async function rolle(p, y) {
+  await p.evaluate(([R, y]) => { const r = eval(R);
+    r.to(typeof y === 'number' ? y : y === 'ende' ? r.max : typeof y === 'string' && y.endsWith('%') ? r.max * parseFloat(y) / 100
+      : 'um' in y ? r.y + y.um : r.max - y.vorEnde); }, [ROLL, y]);
+}
+// rollstand(p): { y, max, rest, h } des Rollbereichs, dazu fenster = scrollY (muss 0 bleiben).
+export const rollstand = p => p.evaluate(R => { const r = eval(R), m = Math.round;
+  return { y: m(r.y), max: m(r.max), rest: m(r.rest), h: m(r.h), fenster: m(scrollY), bereich: !!r.el }; }, ROLL);
+
 // Wartet, bis die Seite nach einer Handlung zur Ruhe gekommen ist (zwei Bildwechsel, keine laufende Animation, Lage stabil) –
 // sonst messen die Grundregeln Zwischenzustände (WebKit setzt manches einige Millisekunden später als Chromium).
 export async function ruhe(p) {
@@ -50,7 +68,7 @@ export async function ruhe(p) {
       if (document.getAnimations().some(a => a.playState === 'running')) return r('läuft');
       const d = document.querySelector('dialog[open]')?.getBoundingClientRect();
       if (d && (d.top < -1 || d.bottom > innerHeight + 1)) return r('Fenster noch nicht an seinem Platz');
-      r(JSON.stringify([scrollY, ...[...document.querySelectorAll('dialog[open], .menu, .pop')].map(e => { const r = e.getBoundingClientRect(); return [r.top, r.left, r.width, r.height]; })]));
+      r(JSON.stringify([scrollY, document.querySelector('#app > .rolle')?.scrollTop ?? 0, ...[...document.querySelectorAll('dialog[open], .menu, .pop')].map(e => { const r = e.getBoundingClientRect(); return [r.top, r.left, r.width, r.height]; })]));
     }))).catch(() => ''), new Promise(r => setTimeout(() => r('kein Bild'), 2000))]);
     gleich = jetzt.startsWith('[') && jetzt === vorher ? gleich + 1 : 0;
     vorher = jetzt; if (gleich < 2) await p.waitForTimeout(100);

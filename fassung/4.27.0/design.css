@@ -90,6 +90,7 @@ td, th, .ln .t, dd, .box .kv .v, .irow .t, .side-row .t, .fazit-box, .bhint, .bn
 button:focus:not(:focus-visible), dialog:focus { outline: none; }
 /* Seit 4.2.0: Was im Vordergrund ist, bekommt jedes Wischen – die Seite dahinter bewegt sich nicht */
 html.locked, html.locked body { overflow: hidden; }
+html.locked .rolle { overflow: hidden; }   /* seit 4.27.0 (A-28): auch der Rollbereich steht still, solange ein Fenster offen ist */
 dialog, .dlg-body, .menu, #side { overscroll-behavior: contain; }
 .layer { touch-action: none; }
 .ic { width: 20px; height: 20px; flex: none; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
@@ -177,6 +178,22 @@ body.docked .nb { left: calc(var(--side-w) + max(10px, env(safe-area-inset-left)
 .nb2 { display: flex; gap: 12px; align-items: center; margin-top: 10px; }
 .nb2 .searchbox { flex: 1 1 auto; }
 .emptymain { margin-top: 120px; text-align: center; color: var(--muted); font-size: 19px; }
+
+/* Rahmen und Rollbereich (seit 4.27.0, A-28, R-2.1): Die Seite rollt nie, nur der Inhalt. #app ist ein Rahmen aus festen
+   Zeilen – Kopfzeile (.nb bzw. .pnav, mit Suchzeile), darunter der Rollbereich .rolle. Der Rahmen ist so hoch wie der
+   sichtbare Bereich (--vv-h, setzt ui.js) und endet bei offener Tastatur über ihr (B1). Neben der festen Seitenleiste beginnt
+   er rechts davon. Tabellenköpfe haften im Rollbereich mit top: 0. */
+html:has(#app > .rolle), html:has(#app > .rolle) body { height: 100%; overflow: hidden; }
+body:has(> #app > .rolle) { padding: 0; }
+#app:has(> .rolle) { position: fixed; top: var(--vv-top); left: 0; right: 0; height: var(--vv-h, 100dvh); display: flex; flex-direction: column; padding: 0; }
+body.docked #app:has(> .rolle) { left: calc(var(--side-w) + max(10px, env(safe-area-inset-left)) + 4px); }
+#app > .rolle ~ .nb, #app > .nb:has(~ .rolle), #app > .pnav:has(~ .rolle) { position: relative; top: 0; left: 0; flex: none; }
+.rolle { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch;
+  padding: 0 max(16px, env(safe-area-inset-right)) 100px max(16px, env(safe-area-inset-left)); }
+body.docked .rolle { padding-left: 16px; }
+@media print {
+  html:has(#app > .rolle), html:has(#app > .rolle) body { height: auto; overflow: visible; }
+}
 
 /* Komponente Seitenleiste: quer fest links neben dem Inhalt, im Hochformat über den Inhalt gelegt */
 /* Schwebend wie in Safari: runde Ecken, Lichtkante und Schatten wie die Schaltflächen, Abstand zum Rand */
@@ -282,7 +299,7 @@ body.docked { padding-left: calc(var(--side-w) + max(10px, env(safe-area-inset-l
 .msg-text { padding: 8px 2px; }
 
 /* Seit 4.3.0: Nach oben / Ans Ende in einer senkrechten Kapsel */
-.fab { position: fixed; right: max(16px, env(safe-area-inset-right)); bottom: calc(16px + env(safe-area-inset-bottom)); display: flex; flex-direction: column; z-index: 4;
+.fab { position: fixed; right: max(16px, env(safe-area-inset-right)); bottom: calc(16px + max(var(--vv-bottom), env(safe-area-inset-bottom))); display: flex; flex-direction: column; z-index: 4;
   border-radius: 22px; background: var(--btn); border: .5px solid var(--btn-rim); box-shadow: var(--float); }
 .fab button { padding: 0; font-size: 20px; background: none; border: none; box-shadow: none; height: 48px; }
 .fab[hidden] { display: none; }
@@ -403,6 +420,8 @@ dialog input[type=text], dialog input[type=date], dialog textarea { background: 
    runder Zurück-Knopf ohne Text, Suche unten, Fenster bildschirmfüllend, Abfragen als Sprechblase am Knopf. */
 html.phone body { padding-bottom: calc(env(safe-area-inset-bottom) + 120px); }
 html.phone body:has(.bnote) { padding-bottom: calc(env(safe-area-inset-bottom) + 150px); }
+html.phone .rolle { padding-bottom: calc(env(safe-area-inset-bottom) + 120px); }
+html.phone body:has(.bnote) .rolle { padding-bottom: calc(env(safe-area-inset-bottom) + 150px); }
 html.phone #side:not(.page), html.phone .side-shade { display: none !important; }
 /* Seit 4.20.0 (A-15): Kapsel ‚Nach oben / Ans Ende‘ auch im iPhone-Aufbau; ausgeblendet, wenn es nichts zu scrollen gibt (R-3.2) */
 .fab.still { display: none; }
