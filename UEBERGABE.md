@@ -1,6 +1,6 @@
 # Übergabe an die nächste Sitzung
 
-**Stand 19.10.2026** · geschrieben in der Sitzung ‚Reiselogbuch 0017‘ (Ende), ergänzt in ‚Reiselogbuch 0018‘ nach 4.27.1
+**Stand 19.10.2026** · geschrieben in der Sitzung ‚Reiselogbuch 0018‘ (Ende)
 (Zusammenarbeit allgemein 2.12.0, Abschnitt 0 Nr. 14). **Claude liest diese Datei zu Beginn jeder Sitzung zuerst.**
 
 ## 1. Lagebild
@@ -13,12 +13,17 @@
 | Zusammenarbeit allgemein | **2.13.0** (0 Nr. 13/15: Opus 5.5, Aufwand hoch) | `README - Zusammenarbeit allgemein.md` |
 
 - **Chatnummer:** die nächste Sitzung heißt **Reiselogbuch 0019**; die danach 0020.
-- **Sitzungsgröße:** 0018 endete bei ~300.000 Token Kontext.
+- **Sitzungsgröße:** 0018 endete bei ~305.000 Token Kontext.
+- **Modell und Aufwand:** Opus 5.5, Aufwand hoch – `CLAUDE_CODE_EFFORT_LEVEL=high` ist in der Umgebung gesetzt (Nutzer 19.10.2026);
+  zu Beginn prüfen und im Lagebild nennen (Zusammenarbeit 0 Nr. 15).
 - **Offene Prüfpunkte:** keine. **P-59 geprüft:** alles ok (A-33 abgeschlossen).
 - **P-58 geprüft:** /0, /1, /3–/6 ok – das Zittern ist am Gerät weg (A-24, A-28, T-95 (1)
   abgeschlossen). /2 nicht ok: am iPhone quer mit offener Tastatur verdeckt die Kapsel ‚Nach oben / Ans Ende‘ ⌄ der Suche → A-33.
-- **Messung P-58/6** (iPhone hoch): `sy`, `offsetTop` und `--vv-top` immer 0; Kopfzeile 0, Suchzeile 62 in jeder Zeile → A-34.
-- **Sitzungsgröße:** 0017 endete bei ~350.000 Token Kontext.
+- **Messung iPhone quer (0018):** `offsetTop` 21–232 px (Suche, Fenster, Gesamtausgaben) → A-34 entschieden (`--vv-top` bleibt),
+  neuer Fehler A-35 (Gesamtausgaben unter der Tastatur); Datei `tests/messungen/2026-10-19 iPhone quer Suche Fenster Gesamtausgaben.txt`.
+- **Muster A-26 offen:** Variante C2 (`arbeit/A-26 Muster.html`) am Gerät noch nicht gesehen – drei Versuche liefen auf älteren
+  Fassungen (GitHub Pages hing am 19.10. ab 15:30 UTC). Nutzer: Schließen beim leeren Feld sofort (in C behoben durch C2),
+  Gefühl ‚schleppend und hackig‘.
 - **Erinnerung:** ‚Backlog-Erinnerung (AppDesign und Reiselogbuch)‘ montags 8:58.
 
 ## 2. Ergebnisse
@@ -112,5 +117,5 @@ In der neuen Sitzung müssen **AppDesign** und **ReiseLogBuch** verfügbar sein,
 ## 7. Starttext für die neue Sitzung
 
 ```
-Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md, dann arbeit/A-33 Fall-Liste.md und gezielt die Regeln (Zusammenarbeit 0 Nr. 15), gib mir das Lagebild und arbeite dann Abschnitt 3 ab: das Ja zum Bau der Korrektur A-33 (Weg A, R-3.2 ergänzt) als AppDesign 4.27.1 / Reiselogbuch 3.25.1 liegt vor – Prüfung zuerst rot, bauen, prüfen, veröffentlichen, Bericht mit Prüfpunkten P-59. Hole vorher die Repos g811141a/ReiseLogBuch und g811141a/ReiseLogBuch-Import (privat) dazu (add_repo, Zugriff push), wie in UEBERGABE.md Abschnitt 5.
+Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md, dann arbeit/A-26 A-31 A-34 Fall-Liste.md (Abschnitte 5–8) und gezielt die Regeln (Zusammenarbeit 0 Nr. 15), prüfe Modell und Aufwand, gib mir das Lagebild und arbeite dann Abschnitt 3 ab: zuerst meine Rückmeldung zum Muster A-26 Variante C2, dann das Ja zum Bau des Bündels AppDesign 4.28.0 / Reiselogbuch 3.26.0 (A-35, A-26, A-31). Hole vorher die Repos g811141a/ReiseLogBuch und g811141a/ReiseLogBuch-Import (privat) dazu (add_repo, Zugriff push), wie in UEBERGABE.md Abschnitt 5.
 ```

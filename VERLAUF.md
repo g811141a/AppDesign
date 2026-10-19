@@ -1853,3 +1853,5 @@ Alle punkte ok
 P-58 geprüft: Zittern am Gerät weg (Messung: Seite rollt nie, Leisten in jeder Zeile still); /2 nicht ok (Kapsel verdeckt quer mit Tastatur ⌄) → A-33, Weg A, R-3.2 ergänzt, Ja zum Bau 4.27.1 / 3.25.1 in Sitzung 0018.
 
 **2026-10-19 · Sitzung Reiselogbuch 0018:** A-33 gebaut (AppDesign 4.27.1 / Reiselogbuch 3.25.1, Weg A): die Kapsel ‚Nach oben / Ans Ende‘ überdeckt nie Kopf- oder Suchzeile, quer mit Tastatur ist sie ausgeblendet; R-3.2 ergänzt; dabei gefunden: der Rollbereich ragte quer mit Tastatur unter sie (Innenabstand → Platzhalter `.rolle::after`). Prüfung zuerst rot (18 Fehler), dann grün. P-59 offen.
+
+P-59 geprüft: alles ok (A-33 abgeschlossen). Zusammenarbeit 2.13.0 (Opus 5.5, Aufwand hoch). Bündel 4.28.0 beschlossen: A-26 Datumsfeld (R-5.1 allgemeine Regel, Muster A → C → C2 nach Protokollen vom iPad), A-31 Messung abspielen (erste Messdatei iPhone quer), A-34 entschieden (`--vv-top` bleibt, quer offsetTop bis 232 px), neu A-35 Gesamtausgaben unter der Tastatur.
