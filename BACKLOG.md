@@ -12,6 +12,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 | Nr. | Prio | Thema | bereit seit |
 |---|---|---|---|
 | A-35 | 1 | **Fehler aus der Messung iPhone quer (19.10.2026):** Gesamtausgaben (Feld ganz unten im Inhalt) antippen – die Tastatur verdeckt das Feld; Safari rollt das Fenster statt des Inhalts (seit 4.27.0, B1). Vorschlag: `ui.js` rollt den Inhalt, bis das Feld mit Fokus über der Tastatur steht; Prüfung zuerst rot. `arbeit/A-26 A-31 A-34 Fall-Liste.md` Abschnitt 5 | 19.10.2026 |
+| A-31 | 1 | **Messung abspielen (Vorschlag V8, Nutzer 19.10.2026):** eine geteilte Messdatei wird in einer Prüfung als Vorgabe für das Safari-Modell geladen – die Prüfung macht genau, was das Gerät gemessen hat; nach der Auswertung von P-57, mit `tests/safari.mjs` | 20.10.2026 (Bündel 4.28.0, Ja 20.10.2026) |
 
 ## 1. Auf iPad und iPhone prüfen
 
@@ -23,9 +24,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| A-26 | 1 | **Datumsfeld: Tag antippen übernimmt und schließt (allgemeine Regel, R-5.x – Nutzer 18.10.2026):** nach dem Antippen eines Tages im Kalender übernimmt das System den Tag ins Datumsfeld und kehrt in die Ausgangsmaske zurück (heute bleibt der Kalender offen). Apple-Abgleich (iOS-Datumsauswahl), Machbarkeit in Safari (Schließen nach `change`), Fall-Liste und Muster | **Bündel 4.28.0** (Nutzer 19.10.2026) – Fall-Liste `arbeit/A-26 A-31 A-34 Fall-Liste.md`, Muster `arbeit/A-26 Muster.html` |
 | A-30 | 3 | Vorschläge von Claude (19.10.2026, Analyse Abschnitt 5): Rückgängig nach Löschen (‚Gelöscht · Widerrufen‘), einheitliche leere Zustände, ‚Ziehen zum Aktualisieren‘ bewusst aus – je einzeln entscheiden | Vorschlag |
-| A-31 | 1 | **Messung abspielen (Vorschlag V8, Nutzer 19.10.2026):** eine geteilte Messdatei wird in einer Prüfung als Vorgabe für das Safari-Modell geladen – die Prüfung macht genau, was das Gerät gemessen hat; nach der Auswertung von P-57, mit `tests/safari.mjs` | **Bündel 4.28.0** (Nutzer 19.10.2026) – Fall-Liste `arbeit/A-26 A-31 A-34 Fall-Liste.md`, Messung quer und iPad zuerst |
 | A-32 | 3 | **‚Problem melden‘ (Vorschlag V9, Nutzer 19.10.2026):** Messung, Version und Gerät in einer Datei | später |
 | A-01 | 3 | Startseite g811141a.github.io mit allen Apps (früher S-03) | später |
 
@@ -35,6 +34,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Thema | Version | Datum |
 |---|---|---|---|
+| E-62 | **A-26 entfällt (Nutzer 20.10.2026):** C2 am iPad ok, aber nicht vollständig machbar – Safari meldet nur den Wert, daher bleiben G-1 bis G-3 (31. → letzter Tag eines anderen Monats, gleicher Tag, heute im leeren Feld) und die 400-ms-Annahme; Grundsatz des Nutzers: ‚Wenn nicht alles funktioniert, bauen wir es so nicht ein.‘ Datumsfelder bleiben wie heute, kein eigener Kalender. `arbeit/A-26 A-31 A-34 Fall-Liste.md` Abschnitte 9–13, `arbeit/A-26 Datumserfassung Apple und andere Apps.md` | – | 20.10.2026 |
 | E-61 | **A-34 entschieden: `--vv-top` bleibt** – Messung iPhone quer: `offsetTop` 21–232 px (Suche, Fenster, Gesamtausgaben), `--vv-top` hält Kopf- und Suchzeile still | – | 19.10.2026 |
 | E-60 | Geprüft P-59: alles ok – **A-33 abgeschlossen** (Kapsel am iPhone quer mit Tastatur ausgeblendet, ⌃ ⌄ frei; hoch über der Tastatur; iPad unverändert) | AppDesign 4.27.1 | 19.10.2026 |
 | E-59 | **A-33 gebaut (Weg A):** die Kapsel ‚Nach oben / Ans Ende‘ überdeckt nie Kopf- oder Suchzeile – `updateFab` blendet sie aus, wenn sie nicht ganz in den sichtbaren Inhalt passt (auch bei Tastatur auf/zu); Platz unter dem Inhalt als Platzhalter `.rolle::after` (der Rollbereich ragte quer mit Tastatur 55 px unter sie); R-3.2 ergänzt; `checkFab` mit Tastatur quer 126 px und Suche, Grundregel ‚Kapsel schneidet keine Leiste‘ (Gegenprobe gegen 4.27.0: 18 Fehler). Wartet auf P-59 | AppDesign 4.27.1 | 19.10.2026 |

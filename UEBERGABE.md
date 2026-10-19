@@ -10,7 +10,7 @@
 | Reiselogbuch | **3.25.1** online (Fassung 4.27.1) | g811141a/ReiseLogBuch – `CHANGELOG.md`, `BACKLOG.md`, `PROMPT.md` |
 | AppDesign | **4.27.1** online | g811141a/AppDesign – `CHANGELOG.md`, `BACKLOG.md` |
 | ReiseLogBuch-Import (privat) | 1.2.1 (unverändert) | g811141a/ReiseLogBuch-Import |
-| Zusammenarbeit allgemein | **2.14.0** (0 Nr. 15: zu Beginn auch Abschnitt 1, per du) | `README - Zusammenarbeit allgemein.md` |
+| Zusammenarbeit allgemein | **2.14.1** (0 Nr. 15: zu Beginn auch Abschnitt 1, per du) | `README - Zusammenarbeit allgemein.md` |
 
 - **Chatnummer:** die nächste Sitzung heißt **Reiselogbuch 0019**; die danach 0020.
 - **Sitzungsgröße:** 0018 endete bei ~305.000 Token Kontext.

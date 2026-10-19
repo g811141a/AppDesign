@@ -249,3 +249,12 @@ vom iPhone.
 speichert einen falschen Wert; im schlechtesten Fall bleibt die Auswahl offen wie heute. Vollständig (und automatisch prüfbar)
 ginge ‚Tag antippen schließt‘ nur mit einem **eigenen Kalender** der App (`arbeit/A-26 Datumserfassung Apple und andere Apps.md`
 Abschnitt 3.2) – zusammen mit dem Zeitraum (A-36).
+
+## 13. Entscheidungen des Nutzers 20.10.2026
+
+- **A-26 entfällt ganz** – Datumsfelder bleiben wie heute (Safaris Kalender, schließen durch Tippen daneben), kein eigener Kalender,
+  kein A-36. R-5.1 bleibt unverändert. Grundsatz: ‚Wenn nicht alles funktioniert, bauen wir es so nicht ein.‘
+- **A-35 als allgemeine Regel: Ja** – ‚Ein Feld mit Fokus steht immer ganz über der Tastatur – in Fenstern und im Inhalt‘
+  (R-4.5 und Designrichtlinie ergänzen), Prüfung `checkFieldVisible` (Abschnitt 10).
+- **Ja zum Bau** des Bündels **AppDesign 4.28.0 / Reiselogbuch 3.26.0** mit **A-35 und A-31** (Abschnitte 2.3 und 10).
+- Zusammenarbeit 2.14.0 (zu Beginn auch Abschnitt 1, per du) und 2.14.1 (Aufwand aus der Sitzungsdatei) angenommen.

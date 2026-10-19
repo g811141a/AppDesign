@@ -1,6 +1,6 @@
 # Zusammenarbeit allgemein
 
-**Version 2.14.0** · Stand 20.10.2026
+**Version 2.14.1** · Stand 20.10.2026
 
 Regeln für die Zusammenarbeit mit Claude bei allen iPad-Web-Apps von g811141a.
 Diese Datei liegt im Design-Repo **AppDesign** (g811141a/AppDesign).
@@ -117,7 +117,9 @@ Nutzer sie findet, schneller und günstiger arbeiten.
     Backlog, CHANGELOG und PROMPT.md nur, soweit die Aufgabe sie braucht. Alles Gelesene wird bei jedem weiteren Schritt
     mitverarbeitet – weniger Lesestoff macht die ganze Sitzung schneller.
     **Modell und Aufwand prüfen (seit 2.13.0):** Claude prüft zu Beginn Modell (`get_session`) und Aufwand (`echo
-    $CLAUDE_CODE_EFFORT_LEVEL`) und nennt beides im Lagebild. Ist es nicht Opus 5.5 bzw. nicht ‚hoch‘, weist Claude darauf hin:
+    $CLAUDE_CODE_EFFORT_LEVEL` und – seit 2.14.1 maßgeblich – `"effort"` der Modell-Aufrufe in der Sitzungsdatei
+    `/root/.claude/projects/…/*.jsonl`) und nennt beides im Lagebild. Die Claude-App zeigt im Chat ggf. ‚mittel‘, obwohl die
+    Aufrufe mit ‚hoch‘ laufen (0019: alle Aufrufe ab dem ersten ‚high‘); zeigt sie ‚mittel‘, stellt der Nutzer sie zur Sicherheit auf ‚hoch‘. Ist es nicht Opus 5.5 bzw. nicht ‚hoch‘, weist Claude darauf hin:
     für diese Sitzung `/model` bzw. `/effort high` im Chat, dauerhaft die Umgebungsvariable (Nr. 13).
 16. **Übergabe statt Gedächtnis:** Jede Vereinbarung kommt **sofort** in die Richtlinien, nicht erst am Ende. Was
     nicht auf GitHub steht, gibt es in der nächsten Sitzung nicht.
@@ -355,6 +357,7 @@ Nutzer sie findet, schneller und günstiger arbeiten.
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 2.14.1 | 20.10.2026 | Korrektur | 0 Nr. 15: Aufwand aus der Sitzungsdatei (`"effort"`) nennen; die App zeigte ‚mittel‘, obwohl alle Aufrufe mit ‚hoch‘ liefen – dann in der App auf ‚hoch‘ stellen (Nutzer 20.10.2026) |
 | 2.14.0 | 20.10.2026 | Korrektur | 0 Nr. 15: zu Beginn auch Abschnitt 1 ‚Sprache und Ton‘ lesen – in 0019 sprach Claude den Nutzer mit ‚Sie‘ an, weil Abschnitt 1 (per du) nicht im Startumfang lag (Nutzer 20.10.2026) |
 | 2.13.0 | 19.10.2026 | Neben | 0 Nr. 13 und 15 ergänzt: neue Sitzungen mit Opus 5.5 und Aufwand hoch (`CLAUDE_CODE_EFFORT_LEVEL=high` in der Umgebung); zu Beginn Modell und Aufwand prüfen und im Lagebild nennen (Nutzer 19.10.2026) |
 | 2.12.0 | 19.10.2026 | Neben | 0 Nr. 11 ergänzt: jede Bitte, etwas am Gerät zu prüfen oder auszuprobieren (Muster, Versuch, Messung), enthält im Chat den vollständigen Link und nummerierte Schritte mit ‚Erwartet: …‘ (Nutzer 19.10.2026) |
