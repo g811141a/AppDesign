@@ -14,9 +14,9 @@ h2{font-size:22px;margin:4px 0 12px}
 <div class="kasten"><b>Heute (zum Vergleich)</b><p>Die Auswahl bleibt nach dem Antippen eines Tages offen – schließen durch Tippen daneben.</p>
 <input type="date" id="heute" value="2026-10-19"></div>
 
-<div class="kasten"><b>A (Vorschlag): schließt beim Antippen eines Tages</b><p>Schließt, wenn sich nur der Tag ändert (oder ein leeres Feld ein Datum bekommt). Monat oder Jahr an den Rädern ändern lässt die Auswahl offen, ebenso Tippen mit einer Tastatur.</p>
-<input type="date" id="a" value="2026-10-19">
-<div class="leer"><span>leeres Feld A:</span><input type="date" id="a2" value=""></div></div>
+<div class="kasten"><b>C (neuer Vorschlag): schließt, sobald sich der Tag ändert</b><p>Schließt, wenn ein anderer Tag angetippt wird – auch in einem anderen Monat (mit &lt; &gt; geblättert). Dreht man an den Rädern nur Monat oder Jahr (der Tag bleibt gleich), bleibt die Auswahl offen; Tippen mit einer Tastatur ebenso.</p>
+<input type="date" id="c" value="2026-10-19">
+<div class="leer"><span>leeres Feld C:</span><input type="date" id="c2" value=""></div></div>
 
 <div class="kasten"><b>B: schließt bei jeder Änderung</b><p>Schließt nach jeder Änderung – auch, wenn man an den Rädern Monat oder Jahr dreht.</p>
 <input type="date" id="b" value="2026-10-19"></div>
@@ -32,21 +32,23 @@ document.getElementById('kopie').onclick = () => navigator.clipboard?.writeText(
 // Protokoll aller Felder
 document.querySelectorAll('input[type=date]').forEach(f => ['focus', 'blur', 'input', 'change', 'keydown'].forEach(typ =>
   f.addEventListener(typ, () => schreibe(`${f.id.padEnd(5)} ${typ.padEnd(7)} ${f.value || '(leer)'}`))));
-// A: schließen, wenn sich nur der Tag ändert bzw. ein leeres Feld ein Datum bekommt; nicht nach einer Taste (Tastatur)
+// C (nach dem Protokoll vom 19.10.2026, iPad): schließen, sobald sich der Tag des Monats ändert bzw. ein leeres Feld ein Datum
+// bekommt – ein Tag in einem anderen Monat ändert Monat und Tag; die Räder ändern nur Monat oder Jahr (der Tag bleibt). Nicht nach
+// einer Taste (Tastatur).
 function variante(f, nurTag) {
   let vorher = f.value, taste = 0;
   f.addEventListener('focus', () => { vorher = f.value; });
   f.addEventListener('keydown', () => { taste = Date.now(); });
   const pruefe = () => {
     const v = f.value; if (v === vorher) return;
-    const tag = !vorher ? !!v : !!v && v.slice(0, 7) === vorher.slice(0, 7);
+    const tag = !vorher ? !!v : !!v && v.slice(8) !== vorher.slice(8);
     vorher = v;
     if ((!nurTag || tag) && Date.now() - taste > 1000) { schreibe(`${f.id.padEnd(5)} → schließen (blur)`); f.blur(); }
   };
   f.addEventListener('input', pruefe); f.addEventListener('change', pruefe);
 }
-variante(document.getElementById('a'), true);
-variante(document.getElementById('a2'), true);
+variante(document.getElementById('c'), true);
+variante(document.getElementById('c2'), true);
 variante(document.getElementById('b'), false);
 schreibe(navigator.userAgent.replace(/^.*?\(/, '(').slice(0, 90));
 </script>

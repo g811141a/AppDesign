@@ -49,10 +49,12 @@ Frühere Sitzungen: siehe `VERLAUF.md` und Versionsgeschichten.
 
 ## 3. Nächster Schritt
 
-1. **Bündel AppDesign 4.28.0 / Reiselogbuch 3.26.0** (Nutzer 19.10.2026: 2–3 Themen je Version): A-26 Datumsfeld, A-31 Messung
-   abspielen, A-34 `--vv-top` entfernen. Fall-Liste `arbeit/A-26 A-31 A-34 Fall-Liste.md` (Abschnitt 3: Fragen), Muster
-   `arbeit/A-26 Muster.html`. Offen: Ergebnis des Musters (schließt Safari die Auswahl?), Variante A/B, R-5.1, Messungen iPhone
-   quer und iPad (Ablauf 2.1), dann Ja zum Bau.
+Stand und Fragen: `arbeit/A-26 A-31 A-34 Fall-Liste.md` **Abschnitt 5** (Ergebnisse vom Gerät 19.10.2026).
+1. **A-35 Korrektur** (Gesamtausgaben unter der Tastatur, seit 4.27.0): Prüfung zuerst rot (Safari-Modell: Fenster rollt zum
+   Feld), dann `ui.js` rollt den Inhalt; als 4.27.2 / 3.25.2 oder im Bündel – Entscheidung des Nutzers.
+2. **A-26 Variante C** (Tag ändert sich → schließen) – Muster am iPhone noch ausprobieren; R-5.1 ist beschlossen.
+3. **A-31** Messung abspielen – Messdatei iPhone quer vom 19.10.2026 (Ablage in `tests/messungen/` noch zu bestätigen).
+4. A-34 erledigt (`--vv-top` bleibt).
 
 ## 4. Danach
 

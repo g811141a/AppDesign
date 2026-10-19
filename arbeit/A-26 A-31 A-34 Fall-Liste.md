@@ -112,3 +112,32 @@ Safari verhält sich dabei so, wie das Gerät es gemessen hat.
 - **Bündel:** A-26 + A-31 + A-34 in einer Version, Arbeit in Sitzung 0018 begonnen.
 - **A-26 allgemeine Regel: Ja** – R-5.1 wird ergänzt (alle Apps).
 - Offen: Variante A/B nach dem Muster, Messungen iPhone quer und iPad, Ablage der Messdateien, Ja zum Bau.
+
+## 5. Ergebnisse vom Gerät (19.10.2026)
+
+**A-26 Muster (Protokoll iPad, Safari 26.6.2):**
+- Das Verlassen des Felds (`blur()`) **schließt die Auswahl** – B schloss jedes Mal. Machbar.
+- **A versagt:** Auf dem iPad blättert man mit ‹ › in einen anderen Monat und tippt dort einen Tag – das ändert Monat **und** Tag
+  (10-19 → 11-20, leer-Feld 10-19 → 11-17). A hielt das für ‚Monat am Rad geändert‘ und blieb offen.
+- Die Räder ändern den Wert sofort, aber nur Monat oder Jahr – der Tag bleibt (B: 2027-06-08 → 2030-06-08, schloss zu früh).
+- **Neu Variante C:** schließen, sobald sich der **Tag des Monats** ändert (oder ein leeres Feld ein Datum bekommt); bleibt offen,
+  wenn nur Monat oder Jahr ändern. Gegen das Protokoll nachgespielt: schließt bei jedem angetippten Tag, bleibt beim Rad offen.
+  Grenze: am Rad vom 31. auf einen kürzeren Monat (Safari setzt z. B. den 30.) schließt C – selten.
+- Muster `arbeit/A-26 Muster.html` jetzt mit Heute, C und B. iPhone noch nicht ausprobiert.
+
+**Messung iPhone quer (Reiselogbuch 3.25.1, Home-Bildschirm, iOS 18.7 / Safari 26.6.2):**
+- **A-34 entschieden – `--vv-top` bleibt:** quer ist `offsetTop` nicht 0 – Suche 21 bzw. 42 px, Feld im Fenster 225 px,
+  Gesamtausgaben 232 px; Safari rollt dabei auch das Fenster (`scrollY` = `offsetTop`), obwohl die Seite selbst nie rollt.
+  `--vv-top` gleicht genau das aus (Kopfzeile 0, Suchzeile 62 in jeder Zeile). Ohne `--vv-top` stünde die Kopfzeile um bis zu
+  232 px über dem Bildschirm. A-34 wird geschlossen.
+- **Neuer Fehler (A-35):** Gesamtausgaben antippen (ganz unten im Inhalt) – die Tastatur (sichtbar 170 px) verdeckt das Feld.
+  Safari will das Feld zeigen und rollt dafür das **Fenster** um 232 px; weil der Rahmen dem sichtbaren Bereich folgt
+  (`--vv-top`), bleibt das Feld, wo es war – unter der Tastatur. Der **Inhalt** (Rollbereich) wird nicht gerollt (`inh` bleibt
+  1690). Seit 4.27.0 (A-28 B1, vorher rollte Safari die ganze Seite und das Feld kam in Sicht). Felder in Fenstern sind nicht
+  betroffen (dort rollt `ui.js` das Feld in den sichtbaren Teil).
+  Warum die Prüfungen es übersehen haben: `checkEnterDone` tippt Gesamtausgaben an, misst aber nicht, ob das Feld über der
+  Tastatur sichtbar ist; das Safari-Modell kennt das Rollen des Fensters zum angetippten Feld nicht.
+  **Vorschlag:** wie in Fenstern – geht die Tastatur auf und liegt das Feld mit Fokus im Rollbereich unter ihr, rollt `ui.js` den
+  Inhalt, bis das Feld 16 px über der Tastatur steht (allgemein, alle Felder im Inhalt). Safari-Modell: neues Verhalten ‚Feld unter
+  der Tastatur antippen → Safari rollt das Fenster um den gemessenen Betrag‘; Prüfung `checkFieldVisible` zuerst rot gegen 4.27.1.
+- **A-31:** die Messdatei ist die erste Vorgabe zum Abspielen (Suche, Fenster, Gesamtausgaben – alles enthalten).
