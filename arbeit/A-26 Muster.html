@@ -1,0 +1,53 @@
+<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>A-26 Muster</title><link rel="stylesheet" href="../fassung/4.27.1/design.css">
+<style>
+body{padding:16px;font:17px -apple-system,system-ui,sans-serif;max-width:640px}
+h2{font-size:22px;margin:4px 0 12px}
+.kasten{background:var(--card,#fff);border-radius:14px;padding:12px 14px;margin:14px 0;box-shadow:var(--float)}
+.kasten b{display:block;margin-bottom:4px}.kasten p{margin:4px 0 10px;color:var(--muted);font-size:15px}
+.kasten input[type=date]{min-width:170px}
+#log{font:12px ui-monospace,Menlo,monospace;white-space:pre-wrap;background:rgba(127,127,127,.12);border-radius:10px;padding:10px;min-height:120px;max-height:260px;overflow:auto}
+.leer{display:flex;gap:10px;align-items:center;margin:8px 0}
+</style></head><body>
+<h2>A-26 – Datumsfeld: Tag antippen übernimmt und schließt</h2>
+
+<div class="kasten"><b>Heute (zum Vergleich)</b><p>Die Auswahl bleibt nach dem Antippen eines Tages offen – schließen durch Tippen daneben.</p>
+<input type="date" id="heute" value="2026-10-19"></div>
+
+<div class="kasten"><b>A (Vorschlag): schließt beim Antippen eines Tages</b><p>Schließt, wenn sich nur der Tag ändert (oder ein leeres Feld ein Datum bekommt). Monat oder Jahr an den Rädern ändern lässt die Auswahl offen, ebenso Tippen mit einer Tastatur.</p>
+<input type="date" id="a" value="2026-10-19">
+<div class="leer"><span>leeres Feld A:</span><input type="date" id="a2" value=""></div></div>
+
+<div class="kasten"><b>B: schließt bei jeder Änderung</b><p>Schließt nach jeder Änderung – auch, wenn man an den Rädern Monat oder Jahr dreht.</p>
+<input type="date" id="b" value="2026-10-19"></div>
+
+<p><b>Protokoll</b> (für Claude: zeigt, welche Ereignisse Safari meldet)</p>
+<div id="log"></div>
+<p><button type="button" id="kopie">Protokoll kopieren</button></p>
+
+<script>
+const log = document.getElementById('log'), t0 = performance.now();
+const schreibe = t => { log.textContent += `${String(Math.round(performance.now() - t0)).padStart(6)} ${t}\n`; log.scrollTop = 1e9; };
+document.getElementById('kopie').onclick = () => navigator.clipboard?.writeText(navigator.userAgent + '\n' + log.textContent).then(() => schreibe('kopiert'));
+// Protokoll aller Felder
+document.querySelectorAll('input[type=date]').forEach(f => ['focus', 'blur', 'input', 'change', 'keydown'].forEach(typ =>
+  f.addEventListener(typ, () => schreibe(`${f.id.padEnd(5)} ${typ.padEnd(7)} ${f.value || '(leer)'}`))));
+// A: schließen, wenn sich nur der Tag ändert bzw. ein leeres Feld ein Datum bekommt; nicht nach einer Taste (Tastatur)
+function variante(f, nurTag) {
+  let vorher = f.value, taste = 0;
+  f.addEventListener('focus', () => { vorher = f.value; });
+  f.addEventListener('keydown', () => { taste = Date.now(); });
+  const pruefe = () => {
+    const v = f.value; if (v === vorher) return;
+    const tag = !vorher ? !!v : !!v && v.slice(0, 7) === vorher.slice(0, 7);
+    vorher = v;
+    if ((!nurTag || tag) && Date.now() - taste > 1000) { schreibe(`${f.id.padEnd(5)} → schließen (blur)`); f.blur(); }
+  };
+  f.addEventListener('input', pruefe); f.addEventListener('change', pruefe);
+}
+variante(document.getElementById('a'), true);
+variante(document.getElementById('a2'), true);
+variante(document.getElementById('b'), false);
+schreibe(navigator.userAgent.replace(/^.*?\(/, '(').slice(0, 90));
+</script>
+</body></html>

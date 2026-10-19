@@ -49,11 +49,14 @@ Frühere Sitzungen: siehe `VERLAUF.md` und Versionsgeschichten.
 
 ## 3. Nächster Schritt
 
-1. **A-26** Datumsfeld (Tag antippen übernimmt und schließt, allgemeine Regel): Fall-Liste und Muster, Ja abwarten.
+1. **Bündel AppDesign 4.28.0 / Reiselogbuch 3.26.0** (Nutzer 19.10.2026: 2–3 Themen je Version): A-26 Datumsfeld, A-31 Messung
+   abspielen, A-34 `--vv-top` entfernen. Fall-Liste `arbeit/A-26 A-31 A-34 Fall-Liste.md` (Abschnitt 3: Fragen), Muster
+   `arbeit/A-26 Muster.html`. Offen: Ergebnis des Musters (schließt Safari die Auswahl?), Variante A/B, R-5.1, Messungen iPhone
+   quer und iPad (Ablauf 2.1), dann Ja zum Bau.
 
 ## 4. Danach
 
-- A-34 `--vv-top` entfernen (vorher quer und iPad messen) · A-31 Messung abspielen (mit safari.mjs) · A-30 Vorschläge (Rückgängig nach Löschen, leere Zustände, Ziehen zum Aktualisieren aus) ·
+- A-30 Vorschläge (Rückgängig nach Löschen, leere Zustände, Ziehen zum Aktualisieren aus) ·
   A-32 ‚Problem melden‘ · T-06 Ausschreibungstexte (Prio 3) · **A-01** Startseite (später).
 
 ## 5. Arbeitsumgebung (für Claude)
