@@ -64,6 +64,9 @@ Suche, in jedem Bild gemessen. Ablauf wie bei P-57: in die Mitte rollen, 🔍, �
 - **Was nur das Gerät zeigt:** ob Safari den sichtbaren Bereich auch dann schiebt, wenn die Seite gar nicht rollen kann
   (quer schob Safari beim Fokus 21 px). Das Modell kann das nicht wissen. Deshalb kommt der Versuch am Gerät **vor** dem Bau
   (Zusammenarbeit 0 Nr. 20: erst messen). Zeigt B am Gerät mehr als 0 px, wird das Modell ergänzt, bevor gebaut wird.
+- **Ergebnis am iPhone (Versuch M-1, Nutzer 19.10.2026): alles wie erwartet.** A zittert (hoch etwa 120 px nach ⓧ), B1 zeigt
+  hoch und quer 0 px, Suche öffnen und ⓧ rollen nach oben, das Ende der Liste und ↑ ↓ liegen über der Tastatur. Safari schiebt
+  bei B1 also nichts. Das Modell braucht keine Ergänzung.
 
 ## 4. Betroffene Regeln und was sich ändert
 
