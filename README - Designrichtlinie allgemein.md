@@ -1,6 +1,6 @@
 # Designrichtlinie allgemein
 
-**Version 4.26.0** · Stand 19.10.2026
+**Version 4.27.0** · Stand 19.10.2026
 
 Allgemeine Gestaltungs- und Bedienregeln für alle iPad-Web-Apps von g811141a (seit 4.1.0 auch
 auf dem iPhone, Abschnitt 15.17).

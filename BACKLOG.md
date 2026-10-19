@@ -1,6 +1,6 @@
 # AppDesign – Backlog (allgemeine Themen)
 
-**Stand 19.10.2026** · Aktuelle Version: AppDesign 4.26.0
+**Stand 19.10.2026** · Aktuelle Version: AppDesign 4.27.0
 
 Allgemeine Themen, die alle Apps betreffen. App-Themen stehen im Backlog der jeweiligen App.
 Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
