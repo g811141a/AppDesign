@@ -219,3 +219,33 @@ Allgemein für alle Felder im Inhalt aller Apps (keine Zeile im Reiselogbuch).
 3. **A-35 als allgemeine Regel:** ‚Ein Feld mit Fokus steht immer ganz über der Tastatur – in Fenstern und im Inhalt‘ (R-4.5 und
    Designrichtlinie ergänzen)?
 4. **Ja zum Bau** AppDesign 4.28.0 / Reiselogbuch 3.26.0 (A-35, A-26 C2, A-31)?
+
+## 12. Grenzen von C2 – lässt sich der 31. beheben? (20.10.2026)
+
+**Nutzer 20.10.2026:** ‚Wenn in der Datumserfassung nicht alles funktioniert, bauen wir die Datumserfassung so nicht ein.‘
+Frage: 31.10. beheben, und geht am iPhone alles analog?
+
+**Der Fall 31. lässt sich nicht beheben.** Safari meldet der App aus seinem Kalender nur den neuen Wert (`input`/`change`), keine
+Berührung und nicht, ob Tage oder Räder sichtbar sind. ‚31.10. → am Rad November‘ (Safari setzt 30.11.) und ‚31.10. → mit › in den
+November blättern, 30. antippen‘ ergeben exakt dasselbe Ereignis mit demselben Wert. Die App muss raten; C2 rät ‚Rad‘ (bleibt offen).
+
+**Alle Fälle, in denen C2 nicht schließt, obwohl ein Tag angetippt wurde** (keiner ist behebbar, alle aus demselben Grund):
+
+| Nr. | Fall | Häufigkeit | Folge |
+|---|---|---|---|
+| G-1 | Feld steht auf einem höheren Tag, im anderen Monat dessen letzten Tag antippen (31.10. → 30.11., 30.01. → 28.02.) | selten | bleibt offen (wie heute) |
+| G-2 | den schon gewählten Tag noch einmal antippen | gelegentlich | kein Ereignis – bleibt offen (wie heute) |
+| G-3 | leeres Feld öffnen und **heute** antippen (Safari hat heute schon eingetragen) | gelegentlich | kein Ereignis – bleibt offen (wie heute) |
+
+**Wo C2 sich auf eine Zeitannahme stützt:** ‚Safari setzt heute beim leeren Feld innerhalb von 400 ms‘ (gemessen 39–64 ms). Wäre
+Safari einmal langsamer (altes Gerät, viel Last) oder ändert Apple das Verhalten in einem iOS-Update, schlösse die Auswahl beim
+Öffnen sofort – der Fehler aus dem 2. Versuch käme zurück. Prüfbar ist das nur am Gerät, nicht automatisch.
+
+**iPhone:** gleiche Safari-Version, gleicher Kalender von iOS – vermutlich gleich, aber **nicht belegt**: alle vier Protokolle
+stammen vom iPad. Ob `blur()` am iPhone den Kalender schließt und wie schnell Safari dort heute einträgt, zeigt nur ein Protokoll
+vom iPhone.
+
+**Folge für die Entscheidung:** C2 kann nie *alles* – G-1 bis G-3 bleiben, und die 400 ms sind eine Annahme über Safari. Kein Fall
+speichert einen falschen Wert; im schlechtesten Fall bleibt die Auswahl offen wie heute. Vollständig (und automatisch prüfbar)
+ginge ‚Tag antippen schließt‘ nur mit einem **eigenen Kalender** der App (`arbeit/A-26 Datumserfassung Apple und andere Apps.md`
+Abschnitt 3.2) – zusammen mit dem Zeitraum (A-36).
