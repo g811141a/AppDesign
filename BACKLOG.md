@@ -11,19 +11,19 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Prio | Thema | bereit seit |
 |---|---|---|---|
-| – | – | zurzeit nichts bereit | – |
+| A-33 | 1 | **Korrektur aus P-58/2:** die Kapsel ‚Nach oben / Ans Ende‘ verdeckt am iPhone quer mit offener Tastatur die Suchzeile (⌄). **Weg A:** die Kapsel erscheint nur, wenn sie ganz in den Inhalt passt; **R-3.2 ergänzt** (allgemeine Regel, Nutzer 19.10.2026), Prüfung `checkFab` und Grundregel in `hig.mjs`. Fall-Liste `arbeit/A-33 Fall-Liste.md`. **Ja zum Bau** als AppDesign 4.27.1 / Reiselogbuch 3.25.1 | 19.10.2026 |
 
 ## 1. Auf iPad und iPhone prüfen
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| P-58 | 1 | **AppDesign 4.27.0 / Reiselogbuch 3.25.0 am Gerät prüfen** (Prüfliste im CHANGELOG des Reiselogbuchs): A-28 Umbau B (B1) – Zittern beim Tippen (Ablauf P-57), Wischgefühl im Rollbereich, Nach oben / Ans Ende über der Tastatur, Drucken der ganzen Liste, neue Messung; A-29 Suche öffnen und ⓧ nach oben; damit auch A-24 (in der Nachbildung behoben, am Gerät zu bestätigen) | zu prüfen |
+| – | – | zurzeit nichts zu prüfen (P-59 kommt mit 4.27.1) | – |
 
 ## 2. Weitere Themen (in Klärung)
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| A-24 | 1 | Korrektur: Kopf- und Suchzeile zittern beim Tippen am iPhone (P-56/1, /2) – mit A-28 Umbau B (4.27.0) **in der Nachbildung behoben, am Gerät zu bestätigen** (P-58) | wartet auf P-58 |
+| A-34 | 2 | **`--vv-top` entfernen:** die Messung P-58/6 zeigt `offsetTop` und `--vv-top` immer 0 (iPhone hoch, Home-Bildschirm); vorher noch quer und am iPad messen (Fall-Liste A-28, Vorschlag 5) | in Klärung |
 | A-26 | 1 | **Datumsfeld: Tag antippen übernimmt und schließt (allgemeine Regel, R-5.x – Nutzer 18.10.2026):** nach dem Antippen eines Tages im Kalender übernimmt das System den Tag ins Datumsfeld und kehrt in die Ausgangsmaske zurück (heute bleibt der Kalender offen). Apple-Abgleich (iOS-Datumsauswahl), Machbarkeit in Safari (Schließen nach `change`), Fall-Liste und Muster | in Klärung |
 | A-30 | 3 | Vorschläge von Claude (19.10.2026, Analyse Abschnitt 5): Rückgängig nach Löschen (‚Gelöscht · Widerrufen‘), einheitliche leere Zustände, ‚Ziehen zum Aktualisieren‘ bewusst aus – je einzeln entscheiden | Vorschlag |
 | A-31 | 1 | **Messung abspielen (Vorschlag V8, Nutzer 19.10.2026):** eine geteilte Messdatei wird in einer Prüfung als Vorgabe für das Safari-Modell geladen – die Prüfung macht genau, was das Gerät gemessen hat; nach der Auswertung von P-57, mit `tests/safari.mjs` | in Klärung |
@@ -36,6 +36,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Thema | Version | Datum |
 |---|---|---|---|
+| E-58 | Geprüft P-58: /0, /1, /3–/6 ok – **Zittern am Gerät weg, A-24 und A-28 abgeschlossen**; Messung P-58/6: `sy`, `offsetTop`, `--vv-top` immer 0, Kopfzeile 0 und Suchzeile 62 in jeder Zeile. /2 nicht ok (Kapsel verdeckt quer mit Tastatur ⌄) → A-33; `--vv-top` → A-34 | AppDesign 4.27.0 | 19.10.2026 |
 | E-57 | **A-28 Umbau B (B1) und A-29 gebaut:** Rahmen mit festen Zeilen und Rollbereich `rolle` (die Seite rollt nie, so hoch wie der sichtbare Bereich), alle Bausteine rollen darüber; Suche öffnen und ⓧ nach oben; `ablauf-suche-iphone.mjs` grün (vorher rot gegen 3.24.0); neue Prüfungen `checkSearchTop`, `checkFab`, `checkPrint`, Grundregel ‚Seite rollt nie‘ (Gegenprobe rot); Designrichtlinie 13 berichtigt, 15.22, R-2.1/R-2.3 ergänzt; Zusammenarbeit 2.12.0 (Link und Schritte bei jeder Bitte am Gerät). A-24 wartet auf P-58 | AppDesign 4.27.0 | 19.10.2026 |
 | E-56 | Geprüft P-57: alles ok – **A-27 abgeschlossen**; Auswertung `arbeit/A-27 Auswertung P-57.md`: Ursache des Zitterns ist das Hin und Her zwischen Rollen zum Treffer (`scrollUnderBar` zieht `offsetTop` ab) und Safari (±121 px hoch, ±21 px quer je Buchstabe nach ⓧ), nicht eine zu kurze Seite; Nutzer 19.10.2026: trotzdem **Umbau B** (A-28) | AppDesign 4.26.0 | 19.10.2026 |
 | E-55 | **A-27 gebaut:** Messmodus als Baustein (`messungMenuItems`), Regel R-1.6, Prüfung `checkMessung` (F1–F12, Gegenprobe rot); Zusammenarbeit 0 Nr. 20 übernommen; V8/V9 als A-31/A-32 aufgenommen | AppDesign 4.26.0 | 19.10.2026 |

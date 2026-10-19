@@ -1,46 +1,58 @@
 # Übergabe an die nächste Sitzung
 
-**Stand 19.10.2026** · geschrieben in der Sitzung ‚Reiselogbuch 0017‘
+**Stand 19.10.2026** · geschrieben in der Sitzung ‚Reiselogbuch 0017‘ (Ende)
 (Zusammenarbeit allgemein 2.12.0, Abschnitt 0 Nr. 14). **Claude liest diese Datei zu Beginn jeder Sitzung zuerst.**
 
 ## 1. Lagebild
 
 | Teil | Version | Datei |
 |---|---|---|
-| Reiselogbuch | **3.25.0** (Fassung 4.27.0) | g811141a/ReiseLogBuch – `CHANGELOG.md`, `BACKLOG.md`, `PROMPT.md` |
-| AppDesign | **4.27.0** | g811141a/AppDesign – `CHANGELOG.md`, `BACKLOG.md` |
+| Reiselogbuch | **3.25.0** online (Fassung 4.27.0) | g811141a/ReiseLogBuch – `CHANGELOG.md`, `BACKLOG.md`, `PROMPT.md` |
+| AppDesign | **4.27.0** online | g811141a/AppDesign – `CHANGELOG.md`, `BACKLOG.md` |
 | ReiseLogBuch-Import (privat) | 1.2.1 (unverändert) | g811141a/ReiseLogBuch-Import |
 | Zusammenarbeit allgemein | **2.12.0** | `README - Zusammenarbeit allgemein.md` |
 
-- **Sitzung:** ‚Reiselogbuch 0017‘ läuft; die nächste heißt **Reiselogbuch 0018**.
-- **Offene Prüfpunkte:** **P-58** (Prüfliste im CHANGELOG des Reiselogbuchs 3.25.0): Umbau B am Gerät – Zittern beim Tippen
-  nach ⓧ (hoch und quer), Wischen, Nach oben / Ans Ende über der Tastatur, Liste steht still, Drucken, neue Messung.
-  A-24 / T-95 (1) sind ‚in der Nachbildung behoben, am Gerät zu bestätigen‘.
+- **Chatnummer:** die nächste Sitzung heißt **Reiselogbuch 0018**; die danach 0019.
+- **Offene Prüfpunkte:** keine. **P-58 geprüft:** /0, /1, /3–/6 ok – das Zittern ist am Gerät weg (A-24, A-28, T-95 (1)
+  abgeschlossen). /2 nicht ok: am iPhone quer mit offener Tastatur verdeckt die Kapsel ‚Nach oben / Ans Ende‘ ⌄ der Suche → A-33.
+- **Messung P-58/6** (iPhone hoch): `sy`, `offsetTop` und `--vv-top` immer 0; Kopfzeile 0, Suchzeile 62 in jeder Zeile → A-34.
+- **Sitzungsgröße:** 0017 endete bei ~350.000 Token Kontext.
 - **Erinnerung:** ‚Backlog-Erinnerung (AppDesign und Reiselogbuch)‘ montags 8:58.
 
 ## 2. Ergebnisse
 
 **Sitzung ‚Reiselogbuch 0017‘ (19.10.2026):**
-- **A-28 Umbau B (Variante B1) und A-29 gebaut** als AppDesign 4.27.0 / Reiselogbuch 3.25.0: `#app` ist ein Rahmen aus festen
-  Zeilen (Kopfzeile mit Suchzeile), darunter der Rollbereich `<div class="rolle" id="rolle">`; der Rahmen ist so hoch wie der
-  sichtbare Bereich (`--vv-h`). Baustein `rolle` in `ui.js` (alle Bausteine rollen darüber), `setHtml` behält den Rollbereich.
-  Lupe und ⓧ rollen nach oben. Designrichtlinie 13 berichtigt, neu 15.22, R-2.1/R-2.3 ergänzt; Zusammenarbeit 2.12.0.
-- **Prüfungen:** `pruefe.mjs` `rolle(p, y)`/`rollstand(p)`/`ROLL`; neu `checkSearchTop`, `checkFab`, `checkPrint`, Grundregel
-  ‚Seite rollt nie‘; `ablauf-suche-iphone.mjs` grün (vorher rot gegen 3.24.0); Safari-Modell `tests/safari.mjs` auf `main`.
+- **A-28 Umbau B (B1) und A-29 gebaut und veröffentlicht** (AppDesign 4.27.0 / Reiselogbuch 3.25.0):
+  - `#app` ist ein Rahmen aus festen Zeilen (Kopfzeile mit Suchzeile), darunter der Rollbereich `<div class="rolle" id="rolle">`.
+  - Der Rahmen ist so hoch wie der sichtbare Bereich (`--vv-h`).
+  - Baustein `rolle` in `ui.js`; `setHtml` behält den Rollbereich. Lupe und ⓧ rollen nach oben.
+  - Designrichtlinie 13 berichtigt, neu 15.22, R-2.1/R-2.3 ergänzt.
+- **Prüfungen:** `pruefe.mjs` `rolle(p, y)`/`rollstand(p)`/`ROLL`; neu `checkSearchTop`, `checkFab`, `checkPrint`, Grundregel ‚Seite rollt
+  nie‘; Safari-Modell `tests/safari.mjs`. Voller Lauf: 62 Läufe grün.
+- **Entscheidungen des Nutzers 19.10.2026 zu A-33** (`arbeit/A-33 Fall-Liste.md`, **zuerst lesen**):
+  - **Weg A:** die Kapsel erscheint nur, wenn sie ganz in den Inhalt unter der Suchzeile passt (Inhalt mindestens Kapsel + 2 × 16 px), sonst ausgeblendet.
+  - **Allgemeine Regel:** R-3.2 wird ergänzt: ‚Die Kapsel überdeckt nie Kopf- oder Suchzeile; passt sie nicht, ist sie ausgeblendet‘.
+    Prüfung: `checkFab` (Abstand zu Kopf- und Suchzeile, auch mit Tastatur iPhone quer 126 px sichtbar) und eine Grundregel in `hig.mjs`
+    (Kapsel schneidet keine Leiste).
+  - **‚Ja‘ zum Bau** als Korrektur **AppDesign 4.27.1 / Reiselogbuch 3.25.1**, in der Sitzung 0018.
 - **Vorsicht (Lehre aus 0017):** während einer Gegenprobe nie `git checkout <datei>` auf nicht committete Arbeit – erst committen.
 
 Frühere Sitzungen: siehe `VERLAUF.md` und Versionsgeschichten.
 
 ## 3. Nächster Schritt
 
-1. Rückmeldung zu **P-58** abwarten (Auswahlfenster). Nicht ok → genau den Ablauf als Prüfung nachbauen, rot zeigen, mit
-   Messung (Zusammenarbeit 0 Nr. 1 und 20); ggf. Safari-Modell ergänzen.
-2. Danach **A-26** Datumsfeld (Tag antippen übernimmt und schließt).
-3. Offen aus der Fall-Liste: `--vv-top` entfällt, wenn die Messung P-58 zeigt, dass `offsetTop` immer 0 bleibt.
+1. **Bauen (Ja liegt vor):** Vorbereitungs-Zweige, `vorbereiten --ad 4.27.1 --app reiselogbuch=3.25.1`. Zuerst die Prüfung rot gegen
+   4.27.0 (Zusammenarbeit 0 Nr. 1): `checkFab` misst iPhone quer mit offener Tastatur (sichtbarer Bereich 126 px, Safari-Modell
+   `safari.mjs` bzw. `visualViewport.height` nachgebildet), ob die Kapsel Kopf- oder Suchzeile schneidet. Dann `updateFab` in `ui.js`:
+   ausblenden (`still`), wenn der Rollbereich (sichtbarer Teil über der Tastatur) niedriger ist als Kapsel + 2 × 16 px; neu prüfen bei
+   `visualViewport` resize. Regelkatalog R-3.2 ergänzen, Abschnitt 15.22/15.17, CHANGELOGs, Prüfliste **P-59** (iPhone quer: Suche mit
+   Tastatur, ⌃ ⌄ ⓧ frei, Kapsel nach dem Schließen wieder da; iPhone hoch: Kapsel über der Tastatur, nichts verdeckt). Fall fehlt
+   in den Prüfungen, weil `checkFab` nur ‚über der Tastatur‘ maß – im Bericht nennen.
+2. Bericht mit Prüfpunkten P-59, dann **A-26** Datumsfeld.
 
 ## 4. Danach
 
-- A-31 Messung abspielen (mit safari.mjs) · A-30 Vorschläge (Rückgängig nach Löschen, leere Zustände, Ziehen zum Aktualisieren aus) ·
+- A-34 `--vv-top` entfernen (vorher quer und iPad messen) · A-31 Messung abspielen (mit safari.mjs) · A-30 Vorschläge (Rückgängig nach Löschen, leere Zustände, Ziehen zum Aktualisieren aus) ·
   A-32 ‚Problem melden‘ · T-06 Ausschreibungstexte (Prio 3) · **A-01** Startseite (später).
 
 ## 5. Arbeitsumgebung (für Claude)
@@ -91,5 +103,5 @@ In der neuen Sitzung müssen **AppDesign** und **ReiseLogBuch** verfügbar sein,
 ## 7. Starttext für die neue Sitzung
 
 ```
-Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md, dann arbeit/A-28 Fall-Liste.md und gezielt die Regeln (Zusammenarbeit 0 Nr. 15), gib mir das Lagebild und arbeite dann Abschnitt 3 ab: das Ja zum Bau von A-28 Umbau B (Variante B1) mit A-29 als AppDesign 4.27.0 / Reiselogbuch 3.25.0 liegt vor – bauen, prüfen, veröffentlichen, Bericht mit Prüfpunkten P-58. Hole vorher die Repos g811141a/ReiseLogBuch und g811141a/ReiseLogBuch-Import (privat) dazu (add_repo, Zugriff push), wie in UEBERGABE.md Abschnitt 5; die Vorarbeit liegt in beiden Repos auf dem Zweig a28-safari-modell.
+Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md, dann arbeit/A-33 Fall-Liste.md und gezielt die Regeln (Zusammenarbeit 0 Nr. 15), gib mir das Lagebild und arbeite dann Abschnitt 3 ab: das Ja zum Bau der Korrektur A-33 (Weg A, R-3.2 ergänzt) als AppDesign 4.27.1 / Reiselogbuch 3.25.1 liegt vor – Prüfung zuerst rot, bauen, prüfen, veröffentlichen, Bericht mit Prüfpunkten P-59. Hole vorher die Repos g811141a/ReiseLogBuch und g811141a/ReiseLogBuch-Import (privat) dazu (add_repo, Zugriff push), wie in UEBERGABE.md Abschnitt 5.
 ```
