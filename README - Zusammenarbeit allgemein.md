@@ -1,6 +1,6 @@
 # Zusammenarbeit allgemein
 
-**Version 2.13.0** · Stand 19.10.2026
+**Version 2.14.0** · Stand 20.10.2026
 
 Regeln für die Zusammenarbeit mit Claude bei allen iPad-Web-Apps von g811141a.
 Diese Datei liegt im Design-Repo **AppDesign** (g811141a/AppDesign).
@@ -112,8 +112,8 @@ Nutzer sie findet, schneller und günstiger arbeiten.
     Zeit und Token.
 15. **Neue Sitzung:** Der Nutzer öffnet einen neuen Chat mit derselben Umgebung und fügt den Starttext ein. Claude
     liest die Übergabe und die Richtlinien und gibt zuerst das **Lagebild** (Version, offene Prüfpunkte,
-    Backlog-Spitze), dann wird gearbeitet. **Gezielt lesen (seit 2.4.0):** zu Beginn nur `UEBERGABE.md`, Abschnitt 0
-    dieser Datei und die Überschriften (Inhaltsverzeichnis) der Designrichtlinien; weitere Abschnitte, Regelkatalog,
+    Backlog-Spitze), dann wird gearbeitet. **Gezielt lesen (seit 2.4.0):** zu Beginn nur `UEBERGABE.md`, **Abschnitte 0 und 1**
+    dieser Datei (Abschnitt 1 ‚Sprache und Ton‘ seit 2.14.0: per du, jede Meldung deutsch) und die Überschriften (Inhaltsverzeichnis) der Designrichtlinien; weitere Abschnitte, Regelkatalog,
     Backlog, CHANGELOG und PROMPT.md nur, soweit die Aufgabe sie braucht. Alles Gelesene wird bei jedem weiteren Schritt
     mitverarbeitet – weniger Lesestoff macht die ganze Sitzung schneller.
     **Modell und Aufwand prüfen (seit 2.13.0):** Claude prüft zu Beginn Modell (`get_session`) und Aufwand (`echo
@@ -355,6 +355,7 @@ Nutzer sie findet, schneller und günstiger arbeiten.
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 2.14.0 | 20.10.2026 | Korrektur | 0 Nr. 15: zu Beginn auch Abschnitt 1 ‚Sprache und Ton‘ lesen – in 0019 sprach Claude den Nutzer mit ‚Sie‘ an, weil Abschnitt 1 (per du) nicht im Startumfang lag (Nutzer 20.10.2026) |
 | 2.13.0 | 19.10.2026 | Neben | 0 Nr. 13 und 15 ergänzt: neue Sitzungen mit Opus 5.5 und Aufwand hoch (`CLAUDE_CODE_EFFORT_LEVEL=high` in der Umgebung); zu Beginn Modell und Aufwand prüfen und im Lagebild nennen (Nutzer 19.10.2026) |
 | 2.12.0 | 19.10.2026 | Neben | 0 Nr. 11 ergänzt: jede Bitte, etwas am Gerät zu prüfen oder auszuprobieren (Muster, Versuch, Messung), enthält im Chat den vollständigen Link und nummerierte Schritte mit ‚Erwartet: …‘ (Nutzer 19.10.2026) |
 | 2.11.0 | 19.10.2026 | Neben | 0 Nr. 20 neu (Abschnitt G): bei Bewegungsfehlern am Gerät zuerst messen, ein Safari-Modell, Bericht ‚in der Nachbildung behoben, am Gerät zu bestätigen‘, Safari-Eigenheiten mit Quelle in Designrichtlinie 13 (Nutzer 19.10.2026) |

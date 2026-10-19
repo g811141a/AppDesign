@@ -1,11 +1,11 @@
 # AppDesign – Hinweise für Claude
 
-**Version 2.4.0** · Stand 16.10.2026
+**Version 2.5.0** · Stand 20.10.2026
 
 ## Zuerst lesen (gezielt, Zusammenarbeit 0 Nr. 15)
 
 1. `UEBERGABE.md` – Stand der letzten Sitzung, nächster Schritt, Chatnummer
-2. `README - Zusammenarbeit allgemein.md` – nur Abschnitt 0 (Arbeitsprozess 2.0, hat Vorrang)
+2. `README - Zusammenarbeit allgemein.md` – nur Abschnitte 0 (Arbeitsprozess 2.0, hat Vorrang) und 1 (Sprache und Ton: per du)
 3. `README - Designrichtlinie allgemein.md` – nur die Überschriften (`grep -n '^##'`); Abschnitte (14: Aufbau dieses Repos,
    16: HIG-Checkliste, 17: Regelkatalog), `README.md`, `CHANGELOG.md` und `BACKLOG.md` erst, wenn die Aufgabe sie braucht
 
@@ -37,6 +37,7 @@ nie ohne ausdrückliches ‚Ja‘ bauen, Fall-Liste vor jedem Bau (0 Nr. 1), Aus
 
 | Version | Datum | Inhalt |
 |---|---|---|
+| 2.5.0 | 20.10.2026 | Zu Beginn Abschnitte 0 und 1 der Zusammenarbeit (Sprache und Ton: per du) – Zusammenarbeit 2.14.0 |
 | 2.4.0 | 16.10.2026 | Zeile Zeit und Token mit `werkzeug/messung.mjs` (A-12) |
 | 2.3.0 | 16.10.2026 | Startfrage zu Beginn einer Sitzung ohne Auftrag (Zusammenarbeit 0 Nr. 19) |
 | 2.2.0 | 15.10.2026 | Gezielt lesen (nur Abschnitt 0 und Überschriften), ein voller Prüflauf je Version (A-07) |
