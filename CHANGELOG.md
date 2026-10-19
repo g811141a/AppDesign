@@ -3,6 +3,30 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.26.0 – 19.10.2026
+
+AppDesign 4.26.0 · Designrichtlinie allgemein 4.26.0 · Zusammenarbeit allgemein 2.11.0 · geprüft mit Reiselogbuch 3.24.0
+
+Messmodus (A-27): bevor A-24 mit Umbau B (A-28) gelöst wird, misst die App am Gerät, was Safari tut. Dazu Zusammenarbeit 0 Nr. 20
+(zuerst messen) – beides deine Entscheidung vom 19.10.2026.
+
+- **R-1.6 neu, ui.js – Baustein `messungMenuItems({ app, teile, rollen })`:** Eintrag im Mehr-Menü der Seitenleiste bzw. Startliste:
+  ‚Messung starten‘ (`activity`, grau ‚Für Claude: Bewegungen aufzeichnen‘), während der Messung ‚Messung beenden und teilen‘
+  (`circle-stop`, grau ‚läuft · m:ss · N Zeilen‘). Je Bild eine Zeile nur bei Änderung (`scrollY`, Seitenhöhe, `innerHeight`,
+  `visualViewport` Höhe und `offsetTop`, `--vv-top`, Oberkante der Teile, Rollstand eigener Bereiche, Fokus, Lage), dazu jedes
+  Ereignis sofort (focus/blur, Eingabe-Länge, Tippen, scroll, resize, Drehen, `visualViewport` resize/scroll, Neuaufbau über
+  `setHtml`). Keine Texte (nur Längen und ids), nichts gespeichert, Ende nach 5 min bzw. 20 000 Zeilen, Datei
+  `messung-JJJJ-MM-TT-hhmm.txt` über `shareFiles` (MIME `txt` neu). Aus, solange nicht gestartet.
+- **Prüfung `checkMessung` (ablauf.mjs):** Fall-Liste F1–F12 (aus, Start, Menüzeile, Ruhe ohne Zeilen, Ereignisse, Spalten,
+  Werte wie auf der Seite, Drehen, Grenze, Datei mit Kopf, keine Texte, Neuladen verwirft, Leisten unverändert). Gegenprobe:
+  mit Text statt Länge bzw. Zeilen in Ruhe rot.
+- **Designrichtlinie:** 15.21 Messmodus, Regelkatalog R-1.6, Abschnitt 13 ‚Safari schiebt den sichtbaren Bereich bei kurzer Seite‘
+  mit Quellen (Vermutung aus A-24, wird mit der Messung geklärt).
+- **Zusammenarbeit 2.11.0:** 0 Nr. 20 – bei Bewegungsfehlern am Gerät zuerst messen, ein Safari-Modell, Bericht ‚in der
+  Nachbildung behoben, am Gerät zu bestätigen‘, Safari-Eigenheiten mit Quelle in Abschnitt 13.
+- Backlog: V8 ‚Messung abspielen‘ (A-31) und V9 ‚Problem melden‘ (A-32) aufgenommen. Fall-Liste und Muster:
+  `arbeit/A-27 Fall-Liste.md`; feste Fassung `fassung/4.26.0/`.
+
 ## 4.25.1 – 19.10.2026 (Korrektur)
 
 AppDesign 4.25.1 · Designrichtlinie allgemein 4.25.1 · Zusammenarbeit allgemein 2.10.1 · geprüft mit Reiselogbuch 3.23.1

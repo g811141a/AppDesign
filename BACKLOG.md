@@ -1,6 +1,6 @@
 # AppDesign – Backlog (allgemeine Themen)
 
-**Stand 19.10.2026** · Aktuelle Version: AppDesign 4.25.1
+**Stand 19.10.2026** · Aktuelle Version: AppDesign 4.26.0
 
 Allgemeine Themen, die alle Apps betreffen. App-Themen stehen im Backlog der jeweiligen App.
 Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
@@ -17,18 +17,19 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| – | – | zurzeit nichts zu prüfen | – |
+| A-27 | 1 | **Messmodus** (R-1.6, 15.21) gebaut in 4.26.0 / Reiselogbuch 3.24.0 – **P-57:** am iPhone (Home-Bildschirm, hoch und quer) und iPad messen und die Datei in den Chat teilen; dann Auswertung → `tests/safari.mjs`, A-28 | zu prüfen (P-57) |
 
 ## 2. Weitere Themen (in Klärung)
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
 | A-24 | 1 | Korrektur: Kopf- und Suchzeile zittern beim Tippen am iPhone – **P-56/1, /2 nicht ok** (4.25.1 half nur am Anfang; nach ⓧ massiv; nur bei offener Tastatur; iPad ok). Ursache (Vermutung, `arbeit/A-24 Analyse nach P-56.md`): Safari verschiebt den sichtbaren Bereich (enges iPhone, kurze Seite, iOS-26-Fehler). **Nutzer 19.10.2026: Suche bleibt oben, Umbau B mit Messung vorher** → A-27, A-28 | in Arbeit |
-| A-27 | 1 | **Messmodus (allgemeiner Baustein):** App zeichnet je Bild Scrollstand, `visualViewport` (Höhe, offsetTop), Lage der Leisten und Tastatur auf, ‚Messung teilen‘ in den Chat; schlank, abschaltbar, keine Kopie der App (Lehre aus A-18/E-42). Zuerst messen: iPhone hoch und quer, Suche öffnen, tippen, ⓧ, weitertippen; iPad zum Vergleich | in Klärung (zuerst) |
 | A-28 | 1 | **Umbau B – nur der Inhalt rollt, die Seite nie:** Leisten nicht mehr `position: fixed`, sondern feste Zeilen eines Rahmens; der Inhalt rollt in einem eigenen Bereich – Safari hat nichts zu verschieben. Betroffen: R-2.1, R-7.3 (Liste steht still), R-7.4, R-8.1 (Drehen), Nach oben/Ans Ende, Druck. Erst nach der Messung (A-27); Fall-Liste und Muster, eine gut vorbereitete Version | in Klärung |
 | A-29 | 1 | **Suche öffnen und ⓧ rollen ganz nach oben (allgemeine Regel, Nutzer 19.10.2026):** Seitenleiste/Startliste und Eintrag; ohne Zittern der beiden oberen Zeilen – mit A-28 | in Klärung |
 | A-26 | 1 | **Datumsfeld: Tag antippen übernimmt und schließt (allgemeine Regel, R-5.x – Nutzer 18.10.2026):** nach dem Antippen eines Tages im Kalender übernimmt das System den Tag ins Datumsfeld und kehrt in die Ausgangsmaske zurück (heute bleibt der Kalender offen). Apple-Abgleich (iOS-Datumsauswahl), Machbarkeit in Safari (Schließen nach `change`), Fall-Liste und Muster | in Klärung |
 | A-30 | 3 | Vorschläge von Claude (19.10.2026, Analyse Abschnitt 5): Rückgängig nach Löschen (‚Gelöscht · Widerrufen‘), einheitliche leere Zustände, ‚Ziehen zum Aktualisieren‘ bewusst aus – je einzeln entscheiden | Vorschlag |
+| A-31 | 1 | **Messung abspielen (Vorschlag V8, Nutzer 19.10.2026):** eine geteilte Messdatei wird in einer Prüfung als Vorgabe für das Safari-Modell geladen – die Prüfung macht genau, was das Gerät gemessen hat; nach der Auswertung von P-57, mit `tests/safari.mjs` | in Klärung |
+| A-32 | 3 | **‚Problem melden‘ (Vorschlag V9, Nutzer 19.10.2026):** Messung, Version und Gerät in einer Datei | später |
 | A-01 | 3 | Startseite g811141a.github.io mit allen Apps (früher S-03) | später |
 
 ---
@@ -37,6 +38,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Thema | Version | Datum |
 |---|---|---|---|
+| E-55 | **A-27 gebaut:** Messmodus als Baustein (`messungMenuItems`), Regel R-1.6, Prüfung `checkMessung` (F1–F12, Gegenprobe rot); Zusammenarbeit 0 Nr. 20 übernommen; V8/V9 als A-31/A-32 aufgenommen | AppDesign 4.26.0 | 19.10.2026 |
 | E-54 | Geprüft P-56: /0, /3, /4 ok – **A-25 abgeschlossen** (Markierung als Kreis); /1, /2 nicht ok → A-24 offen (Umbau B, A-27/A-28) | AppDesign 4.25.1 | 19.10.2026 |
 | E-53 | **A-24 und A-25 gebaut:** Ablauf als feste Prüfung nachgebaut (rot gegen 4.25.0: Suchfeld bei jedem Buchstaben ersetzt, Leiste springt 120 px); Baustein `setHtml` (Feld mit Fokus bleibt), Markierung als Kreis 36 × 36 (seit 4.0.0 42 × 36); Prüfungen Feld bleibt beim Tippen (`checkSearch`, `checkListSearch`), Grundregel ‚rund ist ein Kreis‘ | AppDesign 4.25.1 | 19.10.2026 |
 | E-52 | Geprüft: P-55 alles in Ordnung (Lupe am Ende, zwei Wörter, „…“, zentrale Liste, Tippen und Diktieren); **A-21 und A-22 damit abgeschlossen** | AppDesign 4.25.0 | 18.10.2026 |

@@ -1,4 +1,4 @@
-// AppDesign 4.25.1 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
+// AppDesign 4.26.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
 // Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/fassung/X.Y.Z/ui.js"></script> (feste Fassung, R-10.3)
 // Seit 4.11.0 (R-10.3): ui.js und design.css immer mit ?v=<AppDesign-Version> einbinden (auch in sw.js) und beim Start
 // prüfen, ob genau diese Fassung geladen ist (AD_VERSION hier, --ad-version in design.css).
@@ -12,12 +12,13 @@
 // Inhalt: Icons (ic) · esc · Beträge (money, formatEuro) · autoGrow · onLongPress · Darstellung
 // (applyTheme, setAppearance) · Menüs (openMenu mit Untermenü) · Sprechblase (confirmPop) ·
 // gedrückte Schaltflächen (hold, release, setOpener) · Meldung (inform) · Fenster (openDialog, dlgHead) ·
-// Auswahl-Kapsel (capHtml, mountCap) · Tastatur/sichtbarer Bereich (placeDialogs) · iPhone (isPhone, applyLayout)
+// Auswahl-Kapsel (capHtml, mountCap) · Tastatur/sichtbarer Bereich (placeDialogs) · iPhone (isPhone, applyLayout) ·
+// Messmodus (messungMenuItems, seit 4.26.0)
 // Regeln dazu: README - Designrichtlinie allgemein.md
 
 'use strict';
 // Version der Bausteine (R-10.3): die App vergleicht sie beim Start mit der benötigten Fassung.
-const AD_VERSION = '4.25.1';
+const AD_VERSION = '4.26.0';
 /* ---------- Icons ---------- */
 
 // Schaltflächen-Icons aus Lucide (ISC-Lizenz), direkt eingebettet, damit die App offline funktioniert.
@@ -55,6 +56,8 @@ const ICONS = {
   // Seit 4.15.0 (R-1.5, A-06): Offline-Hinweis
   'wifi-off': '<path d="M12 20h.01"/><path d="M8.5 16.429a5 5 0 0 1 7 0"/><path d="M5 12.859a10 10 0 0 1 5.17-2.69"/><path d="M19 12.859a10 10 0 0 0-2.007-1.523"/><path d="M2 8.82a15 15 0 0 1 4.177-2.643"/><path d="M22 8.82a15 15 0 0 0-11.288-3.764"/><path d="m2 2 20 20"/>',
   'wifi': '<path d="M12 20h.01"/><path d="M2 8.82a15 15 0 0 1 20 0"/><path d="M5 12.859a10 10 0 0 1 14 0"/><path d="M8.5 16.429a5 5 0 0 1 7 0"/>',
+  'activity': '<path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"/>',
+  'circle-stop': '<circle cx="12" cy="12" r="10"/><rect x="9" y="9" width="6" height="6" rx="1"/>',
   'ellipsis': '<circle cx="12" cy="12" r="1.3"/><circle cx="19" cy="12" r="1.3"/><circle cx="5" cy="12" r="1.3"/>',
   'settings': '<path d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915"/><circle cx="12" cy="12" r="3"/>'
 };
@@ -143,6 +146,7 @@ function markWords(html, words) {
 // eingearbeitet: das Feld und seine Vorfahren bleiben dieselben Elemente (Fokus, Cursor, Tastatur bleiben), alles andere wird
 // angeglichen. Sonst ersetzt Safari am iPhone mit dem Feld auch die Tastatur kurz – Kopf- und Suchzeile zittern bei jedem Buchstaben.
 function setHtml(el, html) {
+  if (mess?.an) messEreignis('neuaufbau ' + (el.id || el.className || el.tagName.toLowerCase()));
   const f = document.activeElement;
   if (!f?.matches?.('input, textarea') || !el.contains(f) || !f.id) { el.innerHTML = html; return; }
   const tpl = document.createElement('template');
@@ -471,7 +475,7 @@ const SHARE_RESULT = {
   print: name => `Drucken-Menü geöffnet für <b>${esc(name)}</b>.<div class="hint">Dort über ‚Teilen‘ → ‚In Dateien sichern‘ als PDF ablegen.</div>`,
 };
 const shareResultText = (result, name) => `${result === 'aborted' || result === 'error' ? '⚠️' : '✅'} ${SHARE_RESULT[result](name)}`;
-const MIME = { json: 'application/json', html: 'text/html' };
+const MIME = { json: 'application/json', html: 'text/html', txt: 'text/plain' };
 // R-6.2 (seit 4.11.3): Mustertabelle der Ausgabe (Designrichtlinie allgemein 10) – eine Quelle für jede Ausgabe, Vorschau und
 // jeden Bericht (z. B. HTML-Ausgabe des Reiselogbuchs, Abgleichbericht): Systemschrift 11 pt, h1 20 pt, h2 14 pt, Tabellen
 // mit Linien 1 px #999 (außen und Kopf #a5a5a5), Kopf #d9d9d9 fett, jede zweite Zeile #f5f5f5, Zeilen nicht über
@@ -1196,3 +1200,78 @@ dlg.addEventListener('focusin', e => {
   if (!e.target.matches('input, textarea')) return;
   setTimeout(() => { placeDialogs(); e.target.scrollIntoView({ block: 'nearest' }); }, 350);
 });
+
+/* ---------- Messmodus (seit 4.26.0, A-27, R-1.6) ---------- */
+
+// Zeichnet am Gerät auf, was Safari beim Rollen und Tippen tut, damit Claude misst statt rät: je Bild eine Zeile, nur wenn
+// sich ein Wert geändert hat, dazu jedes Ereignis sofort mit den Werten in diesem Augenblick. Aus, solange nicht gestartet
+// (kein requestAnimationFrame, keine Hörer); nichts wird gespeichert (neu laden verwirft die Messung); keine Texte – vom
+// Eingabefeld nur die Länge, von Schaltflächen und Fokus nur die id. Endet von selbst nach 5 Minuten oder 20 000 Zeilen.
+// Die App setzt messungMenuItems({ app, teile, rollen }) ins Mehr-Menü der Seitenleiste: teile = { Spalte: Selektor } (Oberkante
+// des ersten sichtbaren Elements), rollen = { Spalte: Selektor } (scrollTop eines eigenen Rollbereichs).
+const MESS_MAX_MS = 5 * 60e3, MESS_MAX_ZEILEN = 20000;
+let mess = null;
+const messSicht = sel => [...document.querySelectorAll(sel)].find(e => e.getClientRects().length);
+const messId = e => !e || e === document.body ? '-' : e.id || e.tagName.toLowerCase();
+function messWerte() {
+  const vv = window.visualViewport, r = Math.round, w = {
+    sy: r(scrollY), sh: document.documentElement.scrollHeight, ih: innerHeight, vh: vv ? r(vv.height) : '-', vt: vv ? r(vv.offsetTop) : '-',
+    vvtop: parseInt(document.documentElement.style.getPropertyValue('--vv-top')) || 0 };
+  for (const [k, sel] of Object.entries(mess.teile)) { const e = messSicht(sel); w[k] = e ? r(e.getBoundingClientRect().top) : '-'; }
+  for (const [k, sel] of Object.entries(mess.rollen)) { const e = messSicht(sel); w[k] = e ? r(e.scrollTop) : '-'; }
+  w.fokus = messId(document.activeElement);
+  w.lage = innerWidth > innerHeight ? 'quer' : 'hoch';
+  return w;
+}
+function messZeile(ereignis) {
+  if (!mess?.an) return;
+  const t = Math.round(performance.now() - mess.start), w = messWerte(), werte = Object.values(w).join(' ');
+  if (!ereignis && werte === mess.zuletzt) return;
+  mess.zuletzt = werte;
+  mess.zeilen.push([t, ...Object.values(w)].map(v => String(v).padEnd(6)).join(' ').trimEnd() + (ereignis ? '   ! ' + ereignis : ''));
+  if (t > MESS_MAX_MS || mess.zeilen.length >= MESS_MAX_ZEILEN) messAus('Grenze erreicht');
+}
+const messEreignis = e => messZeile(e);
+function messBild() { if (!mess?.an) return; messZeile(); mess.bild = requestAnimationFrame(messBild); }
+function messAus(grund) {
+  if (!mess?.an) return;
+  mess.an = false;
+  cancelAnimationFrame(mess.bild);
+  mess.hoerer.forEach(([z, typ, fn]) => z.removeEventListener(typ, fn, true));
+  mess.zeilen.push(`# Ende nach ${Math.round((performance.now() - mess.start) / 1000)} s${grund ? ' · ' + grund : ''}`);
+}
+function messStart({ app = '', teile = {}, rollen = {} } = {}) {
+  messAus();
+  const st = matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+  mess = { an: true, start: performance.now(), beginn: new Date(), teile, rollen, zeilen: [], zuletzt: '', hoerer: [] };
+  mess.zeilen.push(`# Messung · ${app} · AppDesign ${AD_VERSION} · ${navigator.userAgent} · ${st ? 'Home-Bildschirm' : 'Safari'} · ${screen.width}×${screen.height} @${devicePixelRatio} · ${
+    matchMedia('(prefers-color-scheme: dark)').matches ? 'dunkel' : 'hell'} · ${mess.beginn.toISOString()}`);
+  mess.zeilen.push(['t', ...Object.keys(messWerte())].map(v => v.padEnd(6)).join(' ').trimEnd());
+  const hoere = (z, typ, text) => { if (!z) return; const fn = e => messEreignis(text(e)); z.addEventListener(typ, fn, true); mess.hoerer.push([z, typ, fn]); };
+  hoere(document, 'focusin', e => 'focus ' + messId(e.target));
+  hoere(document, 'focusout', e => 'blur ' + messId(e.target));
+  hoere(document, 'input', e => 'eingabe ' + (e.target.value?.length ?? 0));
+  hoere(document, 'click', e => 'tippen ' + messId(e.target.closest('button, a, input, [role=menuitem]')));
+  hoere(window, 'scroll', () => 'scroll');
+  hoere(window, 'orientationchange', () => 'drehen');
+  hoere(window, 'resize', () => 'resize');
+  hoere(window.visualViewport, 'resize', () => 'vv resize');
+  hoere(window.visualViewport, 'scroll', () => 'vv scroll');
+  messZeile('start');
+  mess.bild = requestAnimationFrame(messBild);
+}
+const messName = d => `messung-${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}-${
+  String(d.getHours()).padStart(2, '0')}${String(d.getMinutes()).padStart(2, '0')}.txt`;
+// Beenden und teilen: bricht man das Teilen-Menü ab, bleibt die Messung und kann noch einmal geteilt werden.
+async function messTeilen() {
+  messAus();
+  const res = await shareFiles([{ name: messName(mess.beginn), content: mess.zeilen.join('\n') + '\n', type: 'txt' }]);
+  if (res === 'shared' || res === 'downloaded') mess = null;
+  return res;
+}
+function messungMenuItems(opt) {
+  if (!mess) return [{ icon: 'activity', label: 'Messung starten', sub: 'Für Claude: Bewegungen aufzeichnen', act: () => messStart(opt) }];
+  const s = Math.round((performance.now() - mess.start) / 1000), n = mess.zeilen.length - 2;
+  return [{ icon: 'circle-stop', label: 'Messung beenden und teilen', act: messTeilen,
+    sub: `${mess.an ? 'läuft' : 'beendet'} · ${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')} · ${n.toLocaleString('de-DE')} Zeilen` }];
+}
