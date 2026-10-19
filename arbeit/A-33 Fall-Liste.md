@@ -56,3 +56,9 @@ Nur am Gerät: P-59 (Suche quer mit Tastatur: ⌃ ⌄ frei, Kapsel nach dem Schl
 - **Allgemeine Regel: Ja.** R-3.2 wird ergänzt: ‚Die Kapsel Nach oben / Ans Ende überdeckt nie Kopf- oder Suchzeile; passt sie
   nicht ganz in den Inhalt, ist sie ausgeblendet.‘ Prüfung: `checkFab` und eine Grundregel in `hig.mjs`.
 - **Ja zum Bau** als Korrektur AppDesign 4.27.1 / Reiselogbuch 3.25.1, in der neuen Sitzung Reiselogbuch 0018. Danach Prüfpunkte P-59.
+
+## 7. Gebaut (Sitzung 0018, 19.10.2026)
+
+- K-1 bis K-5: `checkFab` (Optionen `sichtbar`, `suche`) und Grundregel in `hig.mjs`; im Reiselogbuch `kapsel-iphone.mjs` mit dem Safari-Modell (Suche offen, Tastatur auf).
+- K-6: gegen 4.27.0 rot (18 Fehler, iPhone quer hell und dunkel), mit der Korrektur grün in Chromium und WebKit.
+- Dabei gefunden: der Rollbereich konnte wegen 120 px Innenabstand nicht niedriger werden und ragte quer mit Tastatur 55 px unter sie (B1) – Platz unter dem Inhalt jetzt als Platzhalter `.rolle::after`.

@@ -1,6 +1,6 @@
 # AppDesign – Backlog (allgemeine Themen)
 
-**Stand 19.10.2026** · Aktuelle Version: AppDesign 4.27.0
+**Stand 19.10.2026** · Aktuelle Version: AppDesign 4.27.1
 
 Allgemeine Themen, die alle Apps betreffen. App-Themen stehen im Backlog der jeweiligen App.
 Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
@@ -11,13 +11,13 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Prio | Thema | bereit seit |
 |---|---|---|---|
-| A-33 | 1 | **Korrektur aus P-58/2:** die Kapsel ‚Nach oben / Ans Ende‘ verdeckt am iPhone quer mit offener Tastatur die Suchzeile (⌄). **Weg A:** die Kapsel erscheint nur, wenn sie ganz in den Inhalt passt; **R-3.2 ergänzt** (allgemeine Regel, Nutzer 19.10.2026), Prüfung `checkFab` und Grundregel in `hig.mjs`. Fall-Liste `arbeit/A-33 Fall-Liste.md`. **Ja zum Bau** als AppDesign 4.27.1 / Reiselogbuch 3.25.1 | 19.10.2026 |
+| – | – | zurzeit nichts gesammelt | – |
 
 ## 1. Auf iPad und iPhone prüfen
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| – | – | zurzeit nichts zu prüfen (P-59 kommt mit 4.27.1) | – |
+| A-33 | 1 | **P-59** (Reiselogbuch 3.25.1): Kapsel ‚Nach oben / Ans Ende‘ am iPhone quer mit offener Tastatur ausgeblendet, ⌃ ⌄ frei; hoch über der Tastatur unter der Suchzeile; iPad unverändert | gebaut 4.27.1, am Gerät zu prüfen |
 
 ## 2. Weitere Themen (in Klärung)
 
@@ -36,6 +36,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Thema | Version | Datum |
 |---|---|---|---|
+| E-59 | **A-33 gebaut (Weg A):** die Kapsel ‚Nach oben / Ans Ende‘ überdeckt nie Kopf- oder Suchzeile – `updateFab` blendet sie aus, wenn sie nicht ganz in den sichtbaren Inhalt passt (auch bei Tastatur auf/zu); Platz unter dem Inhalt als Platzhalter `.rolle::after` (der Rollbereich ragte quer mit Tastatur 55 px unter sie); R-3.2 ergänzt; `checkFab` mit Tastatur quer 126 px und Suche, Grundregel ‚Kapsel schneidet keine Leiste‘ (Gegenprobe gegen 4.27.0: 18 Fehler). Wartet auf P-59 | AppDesign 4.27.1 | 19.10.2026 |
 | E-58 | Geprüft P-58: /0, /1, /3–/6 ok – **Zittern am Gerät weg, A-24 und A-28 abgeschlossen**; Messung P-58/6: `sy`, `offsetTop`, `--vv-top` immer 0, Kopfzeile 0 und Suchzeile 62 in jeder Zeile. /2 nicht ok (Kapsel verdeckt quer mit Tastatur ⌄) → A-33; `--vv-top` → A-34 | AppDesign 4.27.0 | 19.10.2026 |
 | E-57 | **A-28 Umbau B (B1) und A-29 gebaut:** Rahmen mit festen Zeilen und Rollbereich `rolle` (die Seite rollt nie, so hoch wie der sichtbare Bereich), alle Bausteine rollen darüber; Suche öffnen und ⓧ nach oben; `ablauf-suche-iphone.mjs` grün (vorher rot gegen 3.24.0); neue Prüfungen `checkSearchTop`, `checkFab`, `checkPrint`, Grundregel ‚Seite rollt nie‘ (Gegenprobe rot); Designrichtlinie 13 berichtigt, 15.22, R-2.1/R-2.3 ergänzt; Zusammenarbeit 2.12.0 (Link und Schritte bei jeder Bitte am Gerät). A-24 wartet auf P-58 | AppDesign 4.27.0 | 19.10.2026 |
 | E-56 | Geprüft P-57: alles ok – **A-27 abgeschlossen**; Auswertung `arbeit/A-27 Auswertung P-57.md`: Ursache des Zitterns ist das Hin und Her zwischen Rollen zum Treffer (`scrollUnderBar` zieht `offsetTop` ab) und Safari (±121 px hoch, ±21 px quer je Buchstabe nach ⓧ), nicht eine zu kurze Seite; Nutzer 19.10.2026: trotzdem **Umbau B** (A-28) | AppDesign 4.26.0 | 19.10.2026 |

@@ -1,4 +1,4 @@
-// AppDesign 4.27.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
+// AppDesign 4.27.1 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
 // Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/fassung/X.Y.Z/ui.js"></script> (feste Fassung, R-10.3)
 // Seit 4.11.0 (R-10.3): ui.js und design.css immer mit ?v=<AppDesign-Version> einbinden (auch in sw.js) und beim Start
 // prüfen, ob genau diese Fassung geladen ist (AD_VERSION hier, --ad-version in design.css).
@@ -18,7 +18,7 @@
 
 'use strict';
 // Version der Bausteine (R-10.3): die App vergleicht sie beim Start mit der benötigten Fassung.
-const AD_VERSION = '4.27.0';
+const AD_VERSION = '4.27.1';
 /* ---------- Icons ---------- */
 
 // Schaltflächen-Icons aus Lucide (ISC-Lizenz), direkt eingebettet, damit die App offline funktioniert.
@@ -1010,14 +1010,23 @@ function autoCapital(e) {
 }
 // R-3.2 (seit 4.20.0, A-15): ‚Nach oben / Ans Ende‘ (.fab) nur, wenn es etwas zu scrollen gibt – iPad und iPhone.
 // Seit 4.27.0 (A-28) am Rollbereich gemessen; updateBar() ruft es nach jedem Aufbau der Seite. fabTop()/fabEnd() rollen den Inhalt.
+// Seit 4.27.1 (A-33): die Kapsel überdeckt nie Kopf- oder Suchzeile – passt sie nicht mit 16 px Abstand oben und unten in den
+// sichtbaren Teil des Rollbereichs (iPhone quer mit offener Tastatur: 126 px sichtbar, davon gut 100 px Leisten), ist sie
+// ausgeblendet; neu geprüft, sobald sich der sichtbare Bereich ändert (Tastatur auf und zu).
+let fabH = 0;
 function updateFab() {
   const f = document.querySelector('.fab');
-  if (f) f.classList.toggle('still', rolle.max <= 1);
+  if (!f) return;
+  if (f.offsetHeight) fabH = f.offsetHeight;   // ausgeblendet hat sie keine Höhe – dann die zuletzt gemessene
+  const e = rolle.el, vv = window.visualViewport;
+  const raum = e ? Math.min(e.getBoundingClientRect().bottom, vv ? vv.offsetTop + vv.height : innerHeight) - e.getBoundingClientRect().top : Infinity;
+  f.classList.toggle('still', rolle.max <= 1 || raum < (fabH || 96) + 32);
 }
 const fabTop = () => rolle.to(0, true);
 const fabEnd = () => rolle.ende(true);
 if (window.ResizeObserver) new ResizeObserver(() => requestAnimationFrame(updateFab)).observe(document.body);
 window.addEventListener('resize', () => requestAnimationFrame(updateFab));
+window.visualViewport?.addEventListener('resize', () => requestAnimationFrame(updateFab));
 // R-5.5 (seit 4.19.0, A-14): in einzeiligen Feldern bestätigt die Eingabetaste und schließt die Tastatur (‚Fertig‘, HIG);
 // mehrzeilige Felder machen einen Zeilenumbruch. Das Suchfeld (type=search) behält ‚Suchen‘ und seine eigene Eingabetaste.
 const SINGLE_LINE = 'input:not([type]), input[type=text], input[type=number], input[type=email], input[type=tel], input[type=url], input[type=password]';

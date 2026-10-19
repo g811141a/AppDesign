@@ -1,6 +1,6 @@
 # Designrichtlinie allgemein
 
-**Version 4.27.0** · Stand 19.10.2026
+**Version 4.27.1** · Stand 19.10.2026
 
 Allgemeine Gestaltungs- und Bedienregeln für alle iPad-Web-Apps von g811141a (seit 4.1.0 auch
 auf dem iPhone, Abschnitt 15.17).
@@ -734,7 +734,8 @@ Verhalten · technischer Name). In AppDesign ist jede Komponente einmal programm
   Eintrag als Karte, z. B. ein Tag statt einer Tabellenzeile.
 - **Nach oben / Ans Ende (seit 4.20.0, R-3.2, A-15):** in einer Inhaltsseite (z. B. Tageskästen) dieselbe senkrechte
   Kapsel unten rechts wie am iPad, nicht in der Startliste; ohne Scrollen ausgeblendet. Unten 120 px Platz, damit der letzte
-  Inhalt nicht verdeckt wird. Bewusste Abweichung von Apple (dort Statusleiste antippen bzw. Scroll-Leiste ziehen).
+  Inhalt nicht verdeckt wird. Seit 4.27.1 (A-33): quer mit offener Tastatur (126 px sichtbar) passt sie nicht unter die Suchzeile
+  und ist ausgeblendet – sie überdeckt nie Kopf- oder Suchzeile (R-3.2). Bewusste Abweichung von Apple (dort Statusleiste antippen bzw. Scroll-Leiste ziehen).
 - **Tastatur der Suche:** wischt man den Inhalt, während die Tastatur der Suche offen ist,
   schließt sie sich (wie bei Apple). Sonst verschiebt iOS den sichtbaren Bereich und die
   Leisten zittern (R-2.1).
@@ -887,7 +888,9 @@ Verhalten · technischer Name). In AppDesign ist jede Komponente einmal programm
   Rahmen rechts davon. Tabellenköpfe haften im Rollbereich mit `top: 0`.
 - **Höhe (Variante B1, Nutzer 19.10.2026):** der Rahmen ist so hoch wie der sichtbare Bereich (`--vv-h`) und endet bei
   offener Tastatur über ihr – das letzte Ergebnis lässt sich bis über die Tastatur rollen; die Kapsel ‚Nach oben / Ans Ende‘
-  steht über der Tastatur (`--vv-bottom`).
+  steht über der Tastatur (`--vv-bottom`). Seit 4.27.1 (A-33): passt sie nicht mit 16 px Abstand oben und unten in den sichtbaren
+  Teil des Rollbereichs, ist sie ausgeblendet (`updateFab`, R-3.2). Der Platz unter dem Inhalt ist ein Platzhalter am Ende
+  (`.rolle::after`), kein Innenabstand – so wird der Rollbereich nie höher als sein Platz.
 - **Verhalten:** Treffer, Nach oben / Ans Ende, Öffnen (R-7.4), Drehen (R-8.1), Liste steht still (R-7.3) und der Messmodus
   rollen bzw. messen nur den Rollbereich. Beim Neuaufbau bleibt der Rollbereich dasselbe Element (`setHtml`), der Rollstand
   bleibt. Solange ein Fenster offen ist, steht er still (`html.locked`). Im Druck ist nichts auf Bildschirmhöhe begrenzt.
@@ -978,7 +981,7 @@ Regel ersetzt oder ergänzt eine bestehende (Zusammenarbeit 0 Nr. 3) und bekommt
 | Nr. | Regel | Prüfung | Gerät | ersetzt |
 |---|---|---|---|---|
 | R-3.1 | **Antippflächen** 44 pt, in Kapseln und Schaltern mindestens 28 pt; reine Icon-Schaltflächen quadratisch; **rund ist ein Kreis** – runde Schaltflächen und die Markierung bei Icons in Kapseln (36 × 36) haben gleiche Breite und Höhe (seit 4.25.1) | hig.mjs | – | R-11 |
-| R-3.2 | **Schweben und Kapseln:** alle Schaltflächen und Suchfelder schweben (Lichtkante, zierlicher Schatten); mehrere nebeneinander stehen in einer Kapsel, Nach oben / Ans Ende in einer senkrechten Kapsel unten rechts – iPad und (seit 4.20.0) iPhone in der Inhaltsansicht, nur wenn es etwas zu scrollen gibt; seit 4.27.0 rollt sie den Inhalt (15.22) und steht bei offener Tastatur über ihr | hig.mjs, ablauf.mjs – `checkFab` (seit 4.27.0) | – | R-19, R-22, R-35 |
+| R-3.2 | **Schweben und Kapseln:** alle Schaltflächen und Suchfelder schweben (Lichtkante, zierlicher Schatten); mehrere nebeneinander stehen in einer Kapsel, Nach oben / Ans Ende in einer senkrechten Kapsel unten rechts – iPad und (seit 4.20.0) iPhone in der Inhaltsansicht, nur wenn es etwas zu scrollen gibt; seit 4.27.0 rollt sie den Inhalt (15.22) und steht bei offener Tastatur über ihr; seit 4.27.1 überdeckt sie **nie Kopf- oder Suchzeile** – passt sie nicht ganz in den Inhalt (Kapsel + 2 × 16 px), ist sie ausgeblendet (A-33) | hig.mjs (seit 4.27.1 Grundregel ‚Kapsel schneidet keine Leiste‘), ablauf.mjs – `checkFab` (seit 4.27.0, seit 4.27.1 mit Tastatur quer und Suche) | – | R-19, R-22, R-35 |
 | R-3.3 | **Jede Farbe hat eine Bedeutung:** blau gefüllt nur die Hauptaktion im Fenster (höchstens eine); Gewähltes bleibt blau getönt, solange sein Menü, Fenster oder seine Abfrage offen ist; Grün nur für eingeschaltete Schalter; Rot nur für Löschen | hig.mjs – höchstens eine blaue Hauptaktion, `stays` | – | R-16 (+ Abschnitt 4) |
 | R-3.4 | **Kein Fokus-Rahmen** beim Antippen, beim Öffnen eines Fensters und im Suchfeld | hig.mjs | – | R-02 |
 
@@ -1072,6 +1075,7 @@ Die alten Nummern R-01 bis R-52 (bis 4.11.4) gelten nicht mehr; sie stehen nur n
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 4.27.1 | 19.10.2026 | Korrektur | **A-33 (P-58/2):** R-3.2 ergänzt – die Kapsel ‚Nach oben / Ans Ende‘ überdeckt nie Kopf- oder Suchzeile, passt sie nicht ganz in den Inhalt, ist sie ausgeblendet (`updateFab`, 15.17, 15.22); Platz unter dem Inhalt als Platzhalter `.rolle::after` statt Innenabstand; `checkFab` mit Tastatur quer (126 px) und Suche, Grundregel ‚Kapsel schneidet keine Leiste‘ |
 | 4.27.0 | 19.10.2026 | Neben | **A-28 Umbau B (Variante B1):** Die Seite rollt nie, nur der Inhalt – Rahmen mit festen Zeilen und Rollbereich `rolle`, so hoch wie der sichtbare Bereich (neu 15.22, R-2.1 ergänzt, 15.3); **A-29:** Suche öffnen und ⓧ rollen ganz nach oben (R-2.3 ergänzt); Abschnitt 13 berichtigt (zwei Bereiche, Ursache ist das Rollen des Fensters bei offener Tastatur); Messmodus mit Spalte `inh` (15.21); Prüfungen `rolle`/`rollstand`, `checkSearchTop`, `checkFab`, `checkPrint`, Grundregel ‚Seite rollt nie‘, Safari-Modell `tests/safari.mjs` |
 | 4.26.0 | 19.10.2026 | Neben | **R-1.6 neu (A-27):** Messmodus im Mehr-Menü der Seitenleiste – zeichnet am Gerät Scrollstand, `visualViewport`, Lage der Leisten, Fokus und Ereignisse auf, ‚Messung teilen‘ als Textdatei (15.21); Abschnitt 13: Safari schiebt den sichtbaren Bereich bei kurzer Seite (mit Quellen) |
 | 4.25.1 | 19.10.2026 | Korrektur | **A-24:** beim Tippen bleibt das Suchfeld dasselbe Feld mit Fokus (Baustein `setHtml`), Kopf- und Suchzeile zittern am iPhone nicht mehr (15.2, R-2.3); **A-25:** Markierung bei Icons in Kapseln als Kreis 36 × 36 statt 42 × 36 (15.5, R-3.1, Grundregel ‚rund ist ein Kreis‘) |
