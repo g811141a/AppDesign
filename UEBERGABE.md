@@ -1,7 +1,7 @@
 # Übergabe an die nächste Sitzung
 
 **Stand 19.10.2026** · geschrieben in der Sitzung ‚Reiselogbuch 0017‘
-(Zusammenarbeit allgemein 2.11.0, Abschnitt 0 Nr. 14). **Claude liest diese Datei zu Beginn jeder Sitzung zuerst.**
+(Zusammenarbeit allgemein 2.12.0, Abschnitt 0 Nr. 14). **Claude liest diese Datei zu Beginn jeder Sitzung zuerst.**
 
 ## 1. Lagebild
 
