@@ -1,4 +1,4 @@
-// AppDesign 4.26.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
+// AppDesign 4.27.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
 // Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/fassung/X.Y.Z/ui.js"></script> (feste Fassung, R-10.3)
 // Seit 4.11.0 (R-10.3): ui.js und design.css immer mit ?v=<AppDesign-Version> einbinden (auch in sw.js) und beim Start
 // prüfen, ob genau diese Fassung geladen ist (AD_VERSION hier, --ad-version in design.css).
@@ -18,7 +18,7 @@
 
 'use strict';
 // Version der Bausteine (R-10.3): die App vergleicht sie beim Start mit der benötigten Fassung.
-const AD_VERSION = '4.26.0';
+const AD_VERSION = '4.27.0';
 /* ---------- Icons ---------- */
 
 // Schaltflächen-Icons aus Lucide (ISC-Lizenz), direkt eingebettet, damit die App offline funktioniert.
@@ -145,13 +145,26 @@ function markWords(html, words) {
 // el.innerHTML = html. Liegt der Fokus in einem Eingabefeld darin (z. B. Suche beim Tippen), wird der neue Inhalt in den alten
 // eingearbeitet: das Feld und seine Vorfahren bleiben dieselben Elemente (Fokus, Cursor, Tastatur bleiben), alles andere wird
 // angeglichen. Sonst ersetzt Safari am iPhone mit dem Feld auch die Tastatur kurz – Kopf- und Suchzeile zittern bei jedem Buchstaben.
+// Seit 4.27.0 (A-28): der Rollbereich (.rolle mit id, direkt in el) bleibt dasselbe Element – nur sein Inhalt wird ersetzt. So
+// bleibt der Rollstand beim Neuaufbau erhalten (wie früher der des Fensters), und ein laufender Schwung reißt nicht ab.
 function setHtml(el, html) {
   if (mess?.an) messEreignis('neuaufbau ' + (el.id || el.className || el.tagName.toLowerCase()));
   const f = document.activeElement;
-  if (!f?.matches?.('input, textarea') || !el.contains(f) || !f.id) { el.innerHTML = html; return; }
   const tpl = document.createElement('template');
   tpl.innerHTML = html;
-  if (!tpl.content.getElementById(f.id)) { el.innerHTML = html; return; }
+  if (!f?.matches?.('input, textarea') || !el.contains(f) || !f.id || !tpl.content.getElementById(f.id)) {
+    const alt = el.querySelector(':scope > .rolle[id]'), neu = alt && tpl.content.getElementById(alt.id);
+    if (!neu || neu.parentNode !== tpl.content || !neu.matches('.rolle')) { el.innerHTML = html; return; }
+    for (const { name } of [...alt.attributes]) if (!neu.hasAttribute(name)) alt.removeAttribute(name);
+    for (const { name, value } of [...neu.attributes]) if (alt.getAttribute(name) !== value) alt.setAttribute(name, value);
+    // nie aus dem Dokument nehmen (sonst ist der Rollstand weg): Geschwister davor und danach ersetzen, Inhalt in einem Zug
+    const vorher = [...tpl.content.childNodes], i = vorher.indexOf(neu);
+    for (const n of [...el.childNodes]) if (n !== alt) n.remove();
+    alt.before(...vorher.slice(0, i));
+    alt.after(...vorher.slice(i + 1));
+    alt.replaceChildren(...neu.childNodes);
+    return;
+  }
   // gleich = gleiches Tag und (falls vorhanden) gleiche id; Eingabefelder außer dem mit dem Fokus werden immer ersetzt
   const same = (a, b) => a.nodeType === b.nodeType && a.nodeName === b.nodeName && (a.id || '') === (b.id || '')
     && (a === f || !a.matches?.('input, textarea, select'));
@@ -194,6 +207,26 @@ function setAppearance(a) {
 }
 const APPEARANCES = { auto: 'Automatisch', light: 'Hell', dark: 'Dunkel' };
 
+/* ---------- Rahmen und Rollbereich (seit 4.27.0, A-28, R-2.1) ---------- */
+
+// Die Seite rollt nie, nur der Inhalt. Die App baut #app als Rahmen aus festen Zeilen: oben die Kopfzeile (.nb bzw. .pnav, mit
+// Suchzeile), darunter der Rollbereich <div class="rolle" id="rolle">…Inhalt…</div>. Der Rahmen ist so hoch wie der sichtbare
+// Bereich (--vv-h, Variante B1) und endet über der Tastatur. Weil das Fenster nicht rollt, hat Safari beim Tippen nichts zu
+// verschieben (A-27: jedes Rollen des Fensters bei offener Tastatur verschob den sichtbaren Bereich, der Ausgleich kam 2 Bilder
+// zu spät; Muster A-28 und Versuch M-1 am iPhone: 0 px). Alle Bausteine (Leiste, R-3.2, R-7.3, R-7.4, R-8.1, Messmodus) rollen
+// nur über rolle; die App ruft nie window.scrollTo. Ohne Rollbereich (App noch nicht umgebaut) rollt wie bisher das Fenster.
+const rolle = {
+  get el() { return document.querySelector('#app > .rolle'); },
+  get y() { const e = rolle.el; return e ? e.scrollTop : scrollY; },
+  get max() { const e = rolle.el; return Math.max(0, e ? e.scrollHeight - e.clientHeight : document.documentElement.scrollHeight - innerHeight); },
+  get rest() { return rolle.max - rolle.y; },
+  to(y, smooth = false) { (rolle.el || window).scrollTo({ top: Math.max(0, Math.round(y)), behavior: smooth ? 'smooth' : 'instant' }); },
+  by(d) { if (Math.round(d)) rolle.to(rolle.y + d); },
+  ende(smooth = false) { rolle.to(rolle.max, smooth); },
+};
+// Rollen hören (Fenster und Rollbereich): scroll-Ereignisse von Elementen steigen nicht auf – deshalb in der Einfangphase.
+const onRoll = fn => window.addEventListener('scroll', e => { if (e.target === document || e.target === rolle.el) fn(e); }, { capture: true, passive: true });
+
 /* ---------- Menüs und Sprechblasen ---------- */
 
 // Ebene hinter Menü und Sprechblase: daneben tippen schließt, Wischen bewegt die Seite dahinter nicht.
@@ -215,7 +248,7 @@ function blockingLayer() {
 // oder Wischen des Nutzers beendet das Festhalten. Auch nach ‹ › im Fenster steht die Liste wie beim Öffnen (Wunsch des Nutzers).
 let lockY = null, lockTop = null, holdTop = null, holdUntil = 0;
 function lockAnchor() {
-  if (scrollY < 4) return null;
+  if (rolle.y < 4) return null;
   const edge = keepEdge();
   const e = [...document.querySelectorAll(KEEP_SEL)].find(x => x.getClientRects().length && x.getBoundingClientRect().bottom > edge + 1);
   return e ? { sel: keepKey(e), top: e.getBoundingClientRect().top - edge } : null;
@@ -224,10 +257,10 @@ function alignTop(a) {
   if (!a) return;
   const e = [...document.querySelectorAll(KEEP_SEL.split(', ').map(s => `${s.split(' ')[0]} ${a.sel}`).join(', '))].find(x => x.getClientRects().length);
   const d = e ? Math.round(e.getBoundingClientRect().top - keepEdge() - a.top) : 0;
-  if (d) window.scrollBy({ top: d, behavior: 'instant' });
+  rolle.by(d);
 }
 function lockPage() {
-  if (lockY === null) { lockY = scrollY; lockTop = lockAnchor(); holdTop = null; }
+  if (lockY === null) { lockY = rolle.y; lockTop = lockAnchor(); holdTop = null; }
   document.documentElement.classList.add('locked');
 }
 function unlockPage() {
@@ -239,7 +272,7 @@ function unlockPage() {
   // gedreht, während das Fenster offen war (R-8.1) – nur eine neue Breite zählt: die Tastatur ändert die Höhe
   if (innerWidth !== keepWidth) return restoreTop();
   keepHeight = innerHeight;
-  if (Math.round(scrollY) !== Math.round(y)) window.scrollTo({ top: y, behavior: 'instant' });
+  if (Math.round(rolle.y) !== Math.round(y)) rolle.to(y);
   holdTop = a; holdUntil = performance.now() + 1500; alignTop(a);
 }
 // Festhalten nach dem Schließen: bei jeder Bewegung (Neuaufbau, Safari, Tastatur) die Zeile zurück an ihren Platz.
@@ -248,7 +281,8 @@ function holdAlign() {
   if (performance.now() > holdUntil) { holdTop = null; return; }
   alignTop(holdTop);
 }
-['scroll', 'resize'].forEach(t => window.addEventListener(t, holdAlign, { passive: true }));
+onRoll(holdAlign);
+window.addEventListener('resize', holdAlign, { passive: true });
 window.visualViewport?.addEventListener('resize', holdAlign);
 window.visualViewport?.addEventListener('scroll', holdAlign);
 ['touchstart', 'wheel', 'mousedown'].forEach(t => window.addEventListener(t, () => { if (!dlg.open && !msg.open) holdTop = null; }, { passive: true, capture: true }));
@@ -975,10 +1009,13 @@ function autoCapital(e) {
   f.setRangeText(ch.toLocaleUpperCase('de'), pos - 1, pos, 'end');
 }
 // R-3.2 (seit 4.20.0, A-15): ‚Nach oben / Ans Ende‘ (.fab) nur, wenn es etwas zu scrollen gibt – iPad und iPhone.
+// Seit 4.27.0 (A-28) am Rollbereich gemessen; updateBar() ruft es nach jedem Aufbau der Seite. fabTop()/fabEnd() rollen den Inhalt.
 function updateFab() {
   const f = document.querySelector('.fab');
-  if (f) f.classList.toggle('still', document.documentElement.scrollHeight <= innerHeight + 1);
+  if (f) f.classList.toggle('still', rolle.max <= 1);
 }
+const fabTop = () => rolle.to(0, true);
+const fabEnd = () => rolle.ende(true);
 if (window.ResizeObserver) new ResizeObserver(() => requestAnimationFrame(updateFab)).observe(document.body);
 window.addEventListener('resize', () => requestAnimationFrame(updateFab));
 // R-5.5 (seit 4.19.0, A-14): in einzeiligen Feldern bestätigt die Eingabetaste und schließt die Tastatur (‚Fertig‘, HIG);
@@ -1073,13 +1110,14 @@ window.addEventListener('resize', applyLayout);
 function updateBar() {
   const bar = document.querySelector('.pnav, .nb');
   if (!bar) return;
-  bar.classList.toggle('line', scrollY > 4);
+  bar.classList.toggle('line', rolle.y > 4);
   if (bar.classList.contains('pnav')) document.documentElement.style.setProperty('--pnav-h', bar.offsetHeight + 'px');
   const big = document.querySelector('.ltitle');
   // Ohne großen Titel steht der Titel immer in der Leiste.
   if (bar.classList.contains('pnav')) bar.classList.toggle('titled', !big || big.getBoundingClientRect().bottom < bar.getBoundingClientRect().bottom);
+  updateFab();
 }
-window.addEventListener('scroll', updateBar, { passive: true });
+onRoll(updateBar);
 window.addEventListener('resize', updateBar);
 
 // R-8.1 (seit 4.11.2): Beim Drehen (und jeder anderen Größenänderung) bleibt oben derselbe Eintrag stehen. Safari kennt
@@ -1094,9 +1132,9 @@ const keepEdge = () => document.querySelector('.pnav, .nb')?.getBoundingClientRe
 const keepKey = e => e.dataset.day ? `[data-day="${CSS.escape(e.dataset.day)}"]` : `[data-keep="${CSS.escape(e.dataset.keep)}"]`;
 // Oberster sichtbarer Eintrag unter der Leiste; ganz oben → null (ganz oben bleibt ganz oben). Steht oben kein Eintrag
 // (Ende der Seite, z. B. Fazit und Statistik), zählt der Abstand zum Ende – ganz unten bleibt ganz unten (seit 4.21.1).
-const scrollRest = () => document.documentElement.scrollHeight - innerHeight - scrollY;
+const scrollRest = () => rolle.rest;
 function topAnchor() {
-  if (scrollY < 4) return null;
+  if (rolle.y < 4) return null;
   const edge = keepEdge();
   const e = [...document.querySelectorAll(KEEP_SEL)].find(x => x.getClientRects().length && x.getBoundingClientRect().bottom > edge + 1);
   // Abstand als Anteil der Höhe: nach dem Drehen ist der Eintrag anders hoch, der sichtbare Teil bleibt gleich.
@@ -1111,7 +1149,7 @@ function restoreTop() {
   if (!keepTop) return;
   if ('rest' in keepTop) {
     keepBusy = true;
-    window.scrollTo({ top: Math.max(0, Math.round(scrollY + scrollRest() - keepTop.rest)), behavior: 'instant' });
+    rolle.to(rolle.y + scrollRest() - keepTop.rest);
     requestAnimationFrame(() => { keepBusy = false; });
     return;
   }
@@ -1119,10 +1157,10 @@ function restoreTop() {
   if (!e) return;
   keepBusy = true;
   const r = e.getBoundingClientRect();
-  window.scrollBy(0, Math.round(r.top - keepEdge() - keepTop.part * r.height));
+  rolle.by(r.top - keepEdge() - keepTop.part * r.height);
   requestAnimationFrame(() => { keepBusy = false; });
 }
-window.addEventListener('scroll', () => { if (!keepBusy) rememberTop(); }, { passive: true });
+onRoll(() => { if (!keepBusy) rememberTop(); });
 
 // R-8.1 (seit 4.21.0, A-17): Ändert die App die Anordnung selbst (z. B. Seitenleiste ein/aus – die Breite des Inhalts und
 // damit die Zeilenhöhen ändern sich, das Fenster nicht), bleibt oben derselbe Eintrag: keepPlace(() => { …; render(); }).
@@ -1132,7 +1170,7 @@ function keepPlace(change) {
   keepTop = anchor;
   if (anchor) return restoreTop();
   keepBusy = true;
-  if (scrollY) window.scrollTo({ top: 0, behavior: 'instant' });
+  if (rolle.y) rolle.to(0);
   requestAnimationFrame(() => { keepBusy = false; });
 }
 
@@ -1143,10 +1181,10 @@ function openAt(el) {
   if (el) {
     const th = el.closest('table')?.tHead?.querySelector('th');
     const head = th && getComputedStyle(th).position === 'sticky' ? th.offsetHeight : 0;
-    top = Math.max(0, Math.round(scrollY + el.getBoundingClientRect().top - keepEdge() - head));
+    top = Math.max(0, Math.round(rolle.y + el.getBoundingClientRect().top - keepEdge() - head));
   }
   keepBusy = true;
-  window.scrollTo({ top, behavior: 'instant' });
+  rolle.to(top);
   keepTop = topAnchor();
   requestAnimationFrame(() => { keepBusy = false; });
 }
@@ -1175,6 +1213,8 @@ function placeDialogs() {
   const full = isPhone();
   const root = document.documentElement.style;
   root.setProperty('--vv-top', top + 'px');
+  // A-28 (B1): der Rahmen ist so hoch wie der sichtbare Bereich und endet über der Tastatur.
+  root.setProperty('--vv-h', Math.round(h) + 'px');
   // Abstand der Tastatur vom unteren Rand: die untere Leiste (iPhone) bleibt darüber sichtbar.
   root.setProperty('--vv-bottom', Math.max(0, Math.round(innerHeight - top - h)) + 'px');
   root.setProperty('--dlg-max', Math.max(200, full ? h : h - 20) + 'px');
@@ -1192,6 +1232,7 @@ if (window.visualViewport) {
   visualViewport.addEventListener('scroll', placeDialogs);
   visualViewport.addEventListener('resize', placeDialogs);
 }
+placeDialogs();   // --vv-h (Höhe des Rahmens, A-28) gleich beim Start
 // Seit 4.9.1 (R-4.5): wächst ein Fenster nach dem Öffnen (Inhalt, Textfelder), wird es neu platziert –
 // es ragt nie über den Bildschirm hinaus.
 if (window.ResizeObserver) [dlg, msg].forEach(d => new ResizeObserver(() => { if (d.open) placeDialogs(); }).observe(d));
@@ -1215,7 +1256,7 @@ const messSicht = sel => [...document.querySelectorAll(sel)].find(e => e.getClie
 const messId = e => !e || e === document.body ? '-' : e.id || e.tagName.toLowerCase();
 function messWerte() {
   const vv = window.visualViewport, r = Math.round, w = {
-    sy: r(scrollY), sh: document.documentElement.scrollHeight, ih: innerHeight, vh: vv ? r(vv.height) : '-', vt: vv ? r(vv.offsetTop) : '-',
+    sy: r(scrollY), inh: rolle.el ? r(rolle.el.scrollTop) : '-', sh: document.documentElement.scrollHeight, ih: innerHeight, vh: vv ? r(vv.height) : '-', vt: vv ? r(vv.offsetTop) : '-',
     vvtop: parseInt(document.documentElement.style.getPropertyValue('--vv-top')) || 0 };
   for (const [k, sel] of Object.entries(mess.teile)) { const e = messSicht(sel); w[k] = e ? r(e.getBoundingClientRect().top) : '-'; }
   for (const [k, sel] of Object.entries(mess.rollen)) { const e = messSicht(sel); w[k] = e ? r(e.scrollTop) : '-'; }
@@ -1252,7 +1293,7 @@ function messStart({ app = '', teile = {}, rollen = {} } = {}) {
   hoere(document, 'focusout', e => 'blur ' + messId(e.target));
   hoere(document, 'input', e => 'eingabe ' + (e.target.value?.length ?? 0));
   hoere(document, 'click', e => 'tippen ' + messId(e.target.closest('button, a, input, [role=menuitem]')));
-  hoere(window, 'scroll', () => 'scroll');
+  hoere(window, 'scroll', e => 'scroll' + (e.target === document ? '' : ' ' + messId(e.target)));
   hoere(window, 'orientationchange', () => 'drehen');
   hoere(window, 'resize', () => 'resize');
   hoere(window.visualViewport, 'resize', () => 'vv resize');

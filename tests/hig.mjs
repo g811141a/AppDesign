@@ -10,7 +10,7 @@
 // Geprüft: Antippflächen (R-3.1), Schrift und Kontrast (R-10.2), doppelte Anführungszeichen (R-10.1), Menüs (R-4.1),
 // gedrückte Schaltfläche bleibt blau (R-3.3) und alle weiteren Regeln mit ‚hig.mjs‘ im Regelkatalog. Jede Meldung trägt
 // ihre Regelnummer (seit 4.12.0). Bewusste Abweichungen allgemein: Weiß auf Systemblau, Orange --warn.
-import { ruhe } from './pruefe.mjs';
+import { ruhe, ROLL, rolle, rollstand } from './pruefe.mjs';
 export function createCheck({ skipTargets = [] } = {}) {
 const found = new Map(), icons = new Map();
   let rotating = false;
@@ -83,8 +83,8 @@ const found = new Map(), icons = new Map();
     const top = () => p.evaluate(() => { const edge = document.querySelector('.pnav, .nb')?.getBoundingClientRect().bottom || 0;
       return [...document.querySelectorAll('#app [data-day], #app [data-keep]')].find(e => e.getClientRects().length && e.getBoundingClientRect().bottom > edge + 1)?.outerHTML.slice(0, 80); });
     await p.addStyleTag({ content: '* { overflow-anchor: none !important; }' });
-    const y0 = await p.evaluate(() => scrollY);
-    await p.evaluate(() => window.scrollTo(0, Math.round(document.documentElement.scrollHeight * 0.45))); await p.waitForTimeout(300);
+    const y0 = (await rollstand(p)).y;
+    await rolle(p, '45%'); await p.waitForTimeout(300);
     const before = await top();
     // Zwischengröße nur, wenn sie wie am echten Gerät vorkommen kann: am iPhone wird beim Drehen nie eine iPad-Größe gemeldet.
     const phone = z => z.width < 700 || z.height < 500;
@@ -94,7 +94,7 @@ const found = new Map(), icons = new Map();
       const now = await top();
       if (now !== before) note('Regel', `R-8.1 nach dem Drehen auf ${size.width}×${size.height} steht oben ein anderer Eintrag`, where);
     }
-    await p.evaluate(y => window.scrollTo(0, y), y0); await p.waitForTimeout(200);
+    await rolle(p, y0); await p.waitForTimeout(200);
   };
   // Misst die sichtbare, oberste Ebene (Menü/Sprechblase, sonst offenes Fenster, sonst Seite).
   // schnell (seit 4.13.0): nur messen, nicht drehen – für die Grundregeln nach jedem Schritt eines Ablauf-Tests (pruefe.mjs).
@@ -171,10 +171,12 @@ const found = new Map(), icons = new Map();
       // R-1.3 Doppeltippen vergrößert nie
       if ([...document.querySelectorAll('button, a[href], input, textarea, [role=button]')].some(e => vis(e) && !['manipulation', 'none'].includes(cs(e).touchAction))) R('R-1.3', 'Doppeltippen kann die Ansicht vergrößern');
       // R-2.1 Leisten bewegen sich nie
-      document.querySelectorAll('.nb, .pnav').forEach(b => { if (vis(b) && cs(b).position !== 'fixed') R('R-2.1', `Leiste .${b.classList[0]} ist ${cs(b).position} statt fest – sie federt mit`); });
+      // Seit 4.27.0 (A-28): fest heißt position: fixed oder feste Zeile im festen Rahmen (#app fest, die Leiste nicht im Rollbereich).
+      const scroller = e => { for (let x = e.parentElement; x && x !== document.body; x = x.parentElement) if (/auto|scroll/.test(cs(x).overflowY)) return x; return null; };
+      document.querySelectorAll('.nb, .pnav').forEach(b => { if (vis(b) && cs(b).position !== 'fixed' && (scroller(b) || cs(b.parentElement).position !== 'fixed'))
+        R('R-2.1', `Leiste .${b.classList[0]} ist ${cs(b).position} ${scroller(b) ? 'im Rollbereich' : 'ohne festen Rahmen'} statt fest – sie federt mit`); });
       if (cs(document.documentElement).overscrollBehaviorY !== 'none') R('R-2.1', 'Seite federt am Rand nach');
       const side = document.getElementById('side');
-      const scroller = e => { for (let x = e.parentElement; x && x !== document.body; x = x.parentElement) if (/auto|scroll/.test(cs(x).overflowY)) return x; return null; };
       if (side && vis(side)) side.querySelectorAll('.side-head, .bhint').forEach(e => { if (scroller(e)) R('R-2.1', `.${e.classList[0]} liegt im Scrollbereich der Seitenleiste – federt mit`); });
       // R-5.1 Bezeichnung und Feld gehören zusammen
       // R-5.1 (seit 4.14.2, P-37/2): Schaltflächen im Schrittkopf bleiben als Gruppe zusammen; passt alles in eine Zeile, steht
@@ -346,6 +348,8 @@ const found = new Map(), icons = new Map();
       });
       document.querySelectorAll('#app table').forEach(t => { if (vis(t) && !t.closest('.rt') && t.offsetWidth > t.parentElement.clientWidth + 1 && !/auto|scroll/.test(cs(t.parentElement).overflowX)) R('R-6.3', `Tabelle breiter als ihr Platz (${t.offsetWidth} statt ${t.parentElement.clientWidth} px)`); });
       if (document.documentElement.scrollWidth > innerWidth + 1) R('R-6.3', 'Seite breiter als der Bildschirm');
+      // R-2.1 (seit 4.27.0, A-28): Die Seite rollt nie, nur der Inhalt – nach jedem Schritt steht das Fenster bei 0.
+      if (Math.round(scrollY) !== 0) R('R-2.1', `Die Seite rollt (scrollY ${Math.round(scrollY)}) – nur der Inhalt darf rollen (Rollbereich .rolle)`);
       // R-10.1 (seit 4.12.0): gleiche Aktion = gleiches Icon – Bezeichnung und Icon jeder sichtbaren Schaltfläche, verglichen in report()
       res.icons = [...document.querySelectorAll('button[aria-label]')].filter(b => vis(b) && b.querySelector('svg.ic')).map(b => [b.getAttribute('aria-label'), b.querySelector('svg.ic').innerHTML.slice(0, 80)]);
       return res;
@@ -360,7 +364,7 @@ const found = new Map(), icons = new Map();
     }
     // R-8.1 automatisch (seit 4.11.2): einmal je Seite mit Einträgen (data-day/data-keep) – wie in Safari ohne Scroll-Anker
     // nach unten wischen, drehen, zurückdrehen: oben steht jedes Mal derselbe Eintrag.
-    if (!rotating && !topChecked.has(p) && await p.evaluate(sel => document.querySelectorAll(sel).length > 3 && document.documentElement.scrollHeight > innerHeight * 2 && !document.querySelector('.menu, .pop, dialog[open]'), '#app [data-day], #app [data-keep]')) {
+    if (!rotating && !topChecked.has(p) && await p.evaluate(([sel, R]) => { const r = eval(R); return document.querySelectorAll(sel).length > 3 && r.max > r.h && !document.querySelector('.menu, .pop, dialog[open]'); }, ['#app [data-day], #app [data-keep]', ROLL])) {
       topChecked.add(p); rotating = true; try { await topKeep(p, `${where} – oberster Eintrag gedreht`); } finally { rotating = false; }
     }
     // R-8.1 automatisch: ist ein Menü, Untermenü oder eine Sprechblase offen, wird jedes Mal gedreht (quer ↔ hoch) und zurück.
@@ -408,20 +412,23 @@ const found = new Map(), icons = new Map();
   // Misst Lage und Höhe jeder sichtbaren Leiste, scrollt die Seite (und die Liste der Seitenleiste) in Schritten
   // bis über die Ränder hinaus und meldet jede Abweichung ab 0,5 px.
   const barStill = async (p, where) => {
-    const bad = await p.evaluate(async () => {
+    const bad = await p.evaluate(async R => {
+      const roll = eval(R);
       const frame = () => new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
       const sel = '.nb, .pnav, .nb2, .searchbox, #side .side-head, #side .side-foot';
       const snap = () => new Map([...document.querySelectorAll(sel)].filter(e => e.getBoundingClientRect().height > 0)
         .map(e => { const b = e.getBoundingClientRect(); return [e, [b.top, b.left, b.height]]; }));
-      const base = snap(), out = new Set(), y0 = scrollY;
+      const base = snap(), out = new Set(), y0 = roll.y;
       const name = e => (e.id ? '#' + e.id : '') + '.' + (e.className.baseVal ?? e.className).split(' ')[0];
       const cmp = step => { for (const [e, v] of snap()) { const o = base.get(e); if (!o) { out.add(`${name(e)} erscheint beim Wischen (${step})`); continue; }
         const d = v.map((x, i) => Math.abs(x - o[i])); if (Math.max(...d) >= 0.5) out.add(`Leiste ${name(e)} bewegt sich beim Wischen um ${Math.max(...d).toFixed(1)} px (${step})`); } };
-      const max = document.documentElement.scrollHeight - innerHeight;
-      for (const y of [1, 40, 300, max / 2, max, max + 300, -100, 0]) { scrollTo(0, y); await frame(); cmp('Seite'); }
+      const max = roll.max;
+      for (const y of [1, 40, 300, max / 2, max, max + 300, -100, 0]) { roll.to(y); await frame(); cmp('Inhalt'); }
+      // Seit 4.27.0 (A-28): auch ein Versuch, das Fenster zu rollen, bewegt nichts – die Seite rollt nie.
+      if (roll.el) { scrollTo(0, 300); await frame(); if (Math.round(scrollY)) out.add(`Die Seite rollt (scrollY ${Math.round(scrollY)}) – nur der Inhalt darf rollen`); cmp('Fenster'); scrollTo(0, 0); }
       const list = document.querySelector('#side .side-list');
       if (list && list.getBoundingClientRect().height > 0) { const t0 = list.scrollTop; for (const y of [1, 200, list.scrollHeight, 0]) { list.scrollTop = y; await frame(); cmp('Seitenleiste'); } list.scrollTop = t0; }
-      scrollTo(0, y0); await frame();
+      roll.to(y0); await frame();
       // Seit 4.12.1 (P-32/2): Safari nachgebildet – bei offener Tastatur verschiebt Safari den sichtbaren Bereich (visualViewport.offsetTop),
       // Chrome nie. Jede feste Leiste muss um genau diese Strecke mitwandern, damit sie auf dem Bildschirm an ihrem Platz bleibt.
       if (window.visualViewport) {
@@ -432,7 +439,7 @@ const found = new Map(), icons = new Map();
         delete visualViewport.offsetTop; visualViewport.dispatchEvent(new Event('scroll')); await frame();
       }
       return [...out];
-    });
+    }, ROLL);
     for (const x of bad) note('Regel', `R-2.1 ${x}`, where);
   };
   const stays = async (p, sel, where) => {

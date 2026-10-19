@@ -1,6 +1,6 @@
 # AppDesign – Backlog (allgemeine Themen)
 
-**Stand 19.10.2026** · Aktuelle Version: AppDesign 4.26.0
+**Stand 19.10.2026** · Aktuelle Version: AppDesign 4.27.0
 
 Allgemeine Themen, die alle Apps betreffen. App-Themen stehen im Backlog der jeweiligen App.
 Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
@@ -17,15 +17,13 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| – | – | zurzeit nichts zu prüfen | – |
+| P-58 | 1 | **AppDesign 4.27.0 / Reiselogbuch 3.25.0 am Gerät prüfen** (Prüfliste im CHANGELOG des Reiselogbuchs): A-28 Umbau B (B1) – Zittern beim Tippen (Ablauf P-57), Wischgefühl im Rollbereich, Nach oben / Ans Ende über der Tastatur, Drucken der ganzen Liste, neue Messung; A-29 Suche öffnen und ⓧ nach oben; damit auch A-24 (in der Nachbildung behoben, am Gerät zu bestätigen) | zu prüfen |
 
 ## 2. Weitere Themen (in Klärung)
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| A-24 | 1 | Korrektur: Kopf- und Suchzeile zittern beim Tippen am iPhone – **P-56/1, /2 nicht ok** (4.25.1 half nur am Anfang; nach ⓧ massiv; nur bei offener Tastatur; iPad ok). Ursache (Vermutung, `arbeit/A-24 Analyse nach P-56.md`): Safari verschiebt den sichtbaren Bereich (enges iPhone, kurze Seite, iOS-26-Fehler). **Nutzer 19.10.2026: Suche bleibt oben, Umbau B mit Messung vorher** → A-27, A-28 | in Arbeit |
-| A-28 | 1 | **Umbau B – nur der Inhalt rollt, die Seite nie:** Leisten nicht mehr `position: fixed`, sondern feste Zeilen eines Rahmens; der Inhalt rollt in einem eigenen Bereich – Safari hat nichts zu verschieben. Betroffen: R-2.1, R-7.3 (Liste steht still), R-7.4, R-8.1 (Drehen), Nach oben/Ans Ende, Druck. **Messung liegt vor (P-57, Auswertung `arbeit/A-27 Auswertung P-57.md`), Nutzer 19.10.2026: Umbau B statt kleiner Korrektur.** Zuerst `tests/safari.mjs` nach den Messwerten, `ablauf-suche-iphone.mjs` rot gegen 3.24.0; Fall-Liste und Muster, eine gut vorbereitete Version | in Klärung |
-| A-29 | 1 | **Suche öffnen und ⓧ rollen ganz nach oben (allgemeine Regel, Nutzer 19.10.2026):** Seitenleiste/Startliste und Eintrag; ohne Zittern der beiden oberen Zeilen – mit A-28 | in Klärung |
+| A-24 | 1 | Korrektur: Kopf- und Suchzeile zittern beim Tippen am iPhone (P-56/1, /2) – mit A-28 Umbau B (4.27.0) **in der Nachbildung behoben, am Gerät zu bestätigen** (P-58) | wartet auf P-58 |
 | A-26 | 1 | **Datumsfeld: Tag antippen übernimmt und schließt (allgemeine Regel, R-5.x – Nutzer 18.10.2026):** nach dem Antippen eines Tages im Kalender übernimmt das System den Tag ins Datumsfeld und kehrt in die Ausgangsmaske zurück (heute bleibt der Kalender offen). Apple-Abgleich (iOS-Datumsauswahl), Machbarkeit in Safari (Schließen nach `change`), Fall-Liste und Muster | in Klärung |
 | A-30 | 3 | Vorschläge von Claude (19.10.2026, Analyse Abschnitt 5): Rückgängig nach Löschen (‚Gelöscht · Widerrufen‘), einheitliche leere Zustände, ‚Ziehen zum Aktualisieren‘ bewusst aus – je einzeln entscheiden | Vorschlag |
 | A-31 | 1 | **Messung abspielen (Vorschlag V8, Nutzer 19.10.2026):** eine geteilte Messdatei wird in einer Prüfung als Vorgabe für das Safari-Modell geladen – die Prüfung macht genau, was das Gerät gemessen hat; nach der Auswertung von P-57, mit `tests/safari.mjs` | in Klärung |
@@ -38,6 +36,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Thema | Version | Datum |
 |---|---|---|---|
+| E-57 | **A-28 Umbau B (B1) und A-29 gebaut:** Rahmen mit festen Zeilen und Rollbereich `rolle` (die Seite rollt nie, so hoch wie der sichtbare Bereich), alle Bausteine rollen darüber; Suche öffnen und ⓧ nach oben; `ablauf-suche-iphone.mjs` grün (vorher rot gegen 3.24.0); neue Prüfungen `checkSearchTop`, `checkFab`, `checkPrint`, Grundregel ‚Seite rollt nie‘ (Gegenprobe rot); Designrichtlinie 13 berichtigt, 15.22, R-2.1/R-2.3 ergänzt; Zusammenarbeit 2.12.0 (Link und Schritte bei jeder Bitte am Gerät). A-24 wartet auf P-58 | AppDesign 4.27.0 | 19.10.2026 |
 | E-56 | Geprüft P-57: alles ok – **A-27 abgeschlossen**; Auswertung `arbeit/A-27 Auswertung P-57.md`: Ursache des Zitterns ist das Hin und Her zwischen Rollen zum Treffer (`scrollUnderBar` zieht `offsetTop` ab) und Safari (±121 px hoch, ±21 px quer je Buchstabe nach ⓧ), nicht eine zu kurze Seite; Nutzer 19.10.2026: trotzdem **Umbau B** (A-28) | AppDesign 4.26.0 | 19.10.2026 |
 | E-55 | **A-27 gebaut:** Messmodus als Baustein (`messungMenuItems`), Regel R-1.6, Prüfung `checkMessung` (F1–F12, Gegenprobe rot); Zusammenarbeit 0 Nr. 20 übernommen; V8/V9 als A-31/A-32 aufgenommen | AppDesign 4.26.0 | 19.10.2026 |
 | E-54 | Geprüft P-56: /0, /3, /4 ok – **A-25 abgeschlossen** (Markierung als Kreis); /1, /2 nicht ok → A-24 offen (Umbau B, A-27/A-28) | AppDesign 4.25.1 | 19.10.2026 |
