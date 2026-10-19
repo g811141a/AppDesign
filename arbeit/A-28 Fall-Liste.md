@@ -134,8 +134,10 @@ Drucken über das Teilen-Menü, neue Messung mit dem Messmodus (P-58).
 
 - **AppDesign 4.27.0 / Reiselogbuch 3.25.0** mit den Themen Umbau B (A-28) und Suche nach oben (A-29). A-29 ist mit dem
   Rollbereich nur eine Zeile, deshalb kommt es mit. Danach misst du am Gerät (P-58).
-- **Frage 1:** B1 (Rahmen endet über der Tastatur, Vorschlag) oder B2?
-- **Frage 2 (allgemeine Regel, Zusammenarbeit 0 Nr. 4):** ‚Die Seite rollt nie, nur der Inhalt‘ als allgemeine Regel
-  festhalten (Ergänzung von R-2.1, gilt für alle Apps)? Ebenso A-29 ‚Suche öffnen und ⓧ rollen ganz nach oben‘ (R-2.3)?
-- **Frage 3:** Antippen der Statusleiste rollt in iOS nur das Fenster nach oben. Mit Umbau B geht das nicht mehr, dafür
-  gibt es ‚Nach oben‘. Ist das in Ordnung?
+**Entscheidungen des Nutzers 19.10.2026:**
+- **Variante B1:** Der Rahmen endet über der Tastatur.
+- **Allgemeine Regeln (Zusammenarbeit 0 Nr. 4):** ‚Die Seite rollt nie, nur der Inhalt‘ ergänzt R-2.1, ‚Suche öffnen und ⓧ
+  rollen ganz nach oben‘ ergänzt R-2.3. Beide gelten für alle Apps und bekommen je eine Prüfung (`hig.mjs`: `scrollY` bleibt 0;
+  `checkSearchTop`).
+- **Statusleiste:** Dass das Antippen nicht mehr nach oben rollt, ist in Ordnung. ‚Nach oben‘ genügt.
+- Fall-Liste und Muster liegen auf `main` (GitHub Pages). Vor dem Bau probierst du das Muster am iPhone aus; das ‚Ja‘ zum Bau steht noch aus.
