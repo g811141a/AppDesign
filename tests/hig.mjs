@@ -207,6 +207,19 @@ const found = new Map(), icons = new Map();
       if (phone && dl?.open && Math.abs(dl.getBoundingClientRect().width - innerWidth) > 2) R('R-4.5', 'Fenster nicht bildschirmfüllend');
       // R-3.2 Nach oben / Ans Ende in einer senkrechten Kapsel
       document.querySelectorAll('.fab').forEach(f => { if (vis(f) && parseFloat(cs(f).borderTopLeftRadius) < 10) R('R-3.2', 'Nach oben / Ans Ende nicht in einer Kapsel'); });
+      // R-3.1 (seit 4.25.1, A-25) Rund ist ein Kreis: runde Schaltflächen und die Markierung (gedrückt, blau gefüllt) bei Icons und
+      // Emojis in Kapseln haben gleiche Breite und Höhe; Text in Kapseln (.txt, Auswahl-Kapsel mit Text) bleibt eine Kapsel.
+      document.querySelectorAll('button').forEach(e => {
+        if (!vis(e)) return;
+        const b = e.getBoundingClientRect();
+        if (cs(e).borderRadius === '50%' && Math.abs(b.width - b.height) >= 0.5) R('R-3.1', `runde Schaltfläche ‚${label(e)}‘ ist kein Kreis (${Math.round(b.width)} × ${Math.round(b.height)} px)`);
+        if (!e.closest('.grp, .navgrp, .emoji-row .cap') || e.classList.contains('txt')) return;
+        const f = getComputedStyle(e, '::before');
+        if (f.content === 'none' || f.position !== 'absolute') return;
+        const w = /px$/.test(f.width) ? parseFloat(f.width) : b.width - parseFloat(f.left) - parseFloat(f.right);
+        const h = /px$/.test(f.height) ? parseFloat(f.height) : b.height - parseFloat(f.top) - parseFloat(f.bottom);
+        if (Math.abs(w - h) >= 0.5) R('R-3.1', `Markierung von ‚${label(e)}‘ ist kein Kreis (${Math.round(w)} × ${Math.round(h)} px, eiförmig)`);
+      });
       // R-1.3 Eingabefelder mindestens 16 px (sonst vergrößert iOS beim Antippen)
       document.querySelectorAll('input:not([type=checkbox]):not([type=hidden]):not([type=file]), textarea').forEach(e => { if (vis(e) && parseFloat(cs(e).fontSize) < 16) R('R-1.3', `Eingabefeld ${e.id ? '#' + e.id : ''} unter 16 px – iOS vergrößert beim Antippen`); });
       // R-2.2 Anzahl unter dem Titel der Liste

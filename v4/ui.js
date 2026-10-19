@@ -1,4 +1,4 @@
-// AppDesign 4.25.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
+// AppDesign 4.25.1 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
 // Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/fassung/X.Y.Z/ui.js"></script> (feste Fassung, R-10.3)
 // Seit 4.11.0 (R-10.3): ui.js und design.css immer mit ?v=<AppDesign-Version> einbinden (auch in sw.js) und beim Start
 // prüfen, ob genau diese Fassung geladen ist (AD_VERSION hier, --ad-version in design.css).
@@ -17,7 +17,7 @@
 
 'use strict';
 // Version der Bausteine (R-10.3): die App vergleicht sie beim Start mit der benötigten Fassung.
-const AD_VERSION = '4.25.0';
+const AD_VERSION = '4.25.1';
 /* ---------- Icons ---------- */
 
 // Schaltflächen-Icons aus Lucide (ISC-Lizenz), direkt eingebettet, damit die App offline funktioniert.
@@ -136,6 +136,40 @@ function markWords(html, words) {
   const pattern = [...words].sort((a, b) => b.length - a.length)
     .map(w => (esc(w).match(/&[a-z0-9#]+;|./gsu) || []).map(ch => ch.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('\u200B?')).join('|');
   return html.replace(new RegExp(pattern, 'gi'), m => `<mark>${m}</mark>`).replaceAll('</mark><mark>', '');
+}
+
+// R-2.3 (seit 4.25.1, A-24): Seite neu aufbauen, ohne das Feld mit dem Fokus zu ersetzen. Die App ruft setHtml(el, html) statt
+// el.innerHTML = html. Liegt der Fokus in einem Eingabefeld darin (z. B. Suche beim Tippen), wird der neue Inhalt in den alten
+// eingearbeitet: das Feld und seine Vorfahren bleiben dieselben Elemente (Fokus, Cursor, Tastatur bleiben), alles andere wird
+// angeglichen. Sonst ersetzt Safari am iPhone mit dem Feld auch die Tastatur kurz – Kopf- und Suchzeile zittern bei jedem Buchstaben.
+function setHtml(el, html) {
+  const f = document.activeElement;
+  if (!f?.matches?.('input, textarea') || !el.contains(f) || !f.id) { el.innerHTML = html; return; }
+  const tpl = document.createElement('template');
+  tpl.innerHTML = html;
+  if (!tpl.content.getElementById(f.id)) { el.innerHTML = html; return; }
+  // gleich = gleiches Tag und (falls vorhanden) gleiche id; Eingabefelder außer dem mit dem Fokus werden immer ersetzt
+  const same = (a, b) => a.nodeType === b.nodeType && a.nodeName === b.nodeName && (a.id || '') === (b.id || '')
+    && (a === f || !a.matches?.('input, textarea, select'));
+  const attrs = (a, b) => {
+    for (const { name } of [...a.attributes]) if (!b.hasAttribute(name) && !(a === f && name === 'value')) a.removeAttribute(name);
+    for (const { name, value } of [...b.attributes]) if (a.getAttribute(name) !== value && !(a === f && name === 'value')) a.setAttribute(name, value);
+  };
+  const kids = (a, b) => {
+    const neu = [...b.childNodes];
+    neu.forEach((nb, i) => {
+      const na = a.childNodes[i];
+      if (na && same(na, nb)) {
+        if (na.nodeType !== 1) { if (na.nodeValue !== nb.nodeValue) na.nodeValue = nb.nodeValue; }
+        else if (na !== f) { attrs(na, nb); kids(na, nb); }
+        else { attrs(na, nb); const v = nb.getAttribute('value') ?? ''; if (f.tagName === 'INPUT' && f.value !== v) f.value = v; }   // z. B. x leert
+      } else if (na?.contains(f)) a.insertBefore(nb, na);   // den Weg zum Feld nie entfernen
+      else if (na) a.replaceChild(nb, na);
+      else a.appendChild(nb);
+    });
+    while (a.childNodes.length > neu.length) a.removeChild(a.lastChild);
+  };
+  kids(el, tpl.content);
 }
 
 /* ---------- Darstellung ---------- */
