@@ -13,7 +13,7 @@
 | Zusammenarbeit allgemein | **2.12.0** | `README - Zusammenarbeit allgemein.md` |
 
 - **Chatnummer:** die laufende Sitzung ist **Reiselogbuch 0018**; die nächste heißt **0019**.
-- **Offene Prüfpunkte:** **P-59** (3.25.1, A-33: Kapsel quer mit Tastatur ausgeblendet; Prüfliste im CHANGELOG des Reiselogbuchs).
+- **Offene Prüfpunkte:** keine. **P-59 geprüft:** alles ok (A-33 abgeschlossen).
 - **P-58 geprüft:** /0, /1, /3–/6 ok – das Zittern ist am Gerät weg (A-24, A-28, T-95 (1)
   abgeschlossen). /2 nicht ok: am iPhone quer mit offener Tastatur verdeckt die Kapsel ‚Nach oben / Ans Ende‘ ⌄ der Suche → A-33.
 - **Messung P-58/6** (iPhone hoch): `sy`, `offsetTop` und `--vv-top` immer 0; Kopfzeile 0, Suchzeile 62 in jeder Zeile → A-34.
@@ -49,9 +49,7 @@ Frühere Sitzungen: siehe `VERLAUF.md` und Versionsgeschichten.
 
 ## 3. Nächster Schritt
 
-1. **Rückmeldung P-59** abwarten (Prüfliste im CHANGELOG des Reiselogbuchs 3.25.1). Nicht ok → zuerst der Ablauf des Nutzers als
-   feste Prüfung, rot gegen 4.27.1 (Zusammenarbeit 0 Nr. 1).
-2. Danach **A-26** Datumsfeld (Tag antippen übernimmt und schließt, allgemeine Regel): Fall-Liste und Muster, Ja abwarten.
+1. **A-26** Datumsfeld (Tag antippen übernimmt und schließt, allgemeine Regel): Fall-Liste und Muster, Ja abwarten.
 
 ## 4. Danach
 
