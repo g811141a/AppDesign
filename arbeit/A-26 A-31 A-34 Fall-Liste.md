@@ -148,3 +148,14 @@ Safari verhält sich dabei so, wie das Gerät es gemessen hat.
 - **Messdatei darf in `tests/messungen/` liegen:** `tests/messungen/2026-10-19 iPhone quer Suche Fenster Gesamtausgaben.txt`
   (iPhone quer, Reiselogbuch 3.25.1; Suche, Feld ‚Ort‘ im Fenster, Gesamtausgaben).
 - **Ja zum Bau: noch nicht** – zuerst Variante C am Gerät (iPhone und iPad) ausprobieren.
+
+## 7. Zweiter Versuch Variante C (Protokoll iPad, 19.10.2026)
+
+- **Nicht ok beim leeren Feld:** Safari trägt beim Öffnen eines leeren Datumsfelds sofort das heutige Datum ein (`input` 64 ms
+  nach `focus`). C hielt das für ‚leeres Feld bekommt ein Datum‘ und schloss sofort.
+- **Bestätigt:** Rad nur Monat (23. → 23.12., 19.12. → 19.04.) bleibt offen; jeder angetippte Tag schließt, auch in anderen Monaten.
+- **Grenzfall gesehen:** Rad vom 31.10. in den Februar setzt Safari auf den 28. – C schloss.
+- **Angepasst (C2):** ein Datum, das innerhalb von 400 ms nach dem Öffnen eines leeren Felds kommt, schließt nicht; ein Wechsel
+  vom höheren Tag auf den letzten Tag eines anderen Monats gilt als Rad und schließt nicht. Beide Protokolle nachgespielt: alles
+  wie erwartet. Fall-Liste ergänzt: **D-2a** leeres Feld öffnen (Safari setzt heute) – bleibt offen; **D-3a** Rad vom 31. in einen
+  kürzeren Monat – bleibt offen.
