@@ -1,56 +1,64 @@
 # Übergabe an die nächste Sitzung
 
-**Stand 18.10.2026** · geschrieben in der Sitzung ‚Reiselogbuch 0013‘
+**Stand 19.10.2026** · geschrieben in der Sitzung ‚Reiselogbuch 0014‘
 (Zusammenarbeit allgemein 2.10.1, Abschnitt 0 Nr. 14). **Claude liest diese Datei zu Beginn jeder Sitzung zuerst.**
 
 ## 1. Lagebild
 
 | Teil | Version | Datei |
 |---|---|---|
-| Reiselogbuch | **3.23.0** online (Fassung 4.25.0) | g811141a/ReiseLogBuch – `CHANGELOG.md`, `BACKLOG.md`, `PROMPT.md` |
-| AppDesign | **4.25.0** online | g811141a/AppDesign – `CHANGELOG.md`, `BACKLOG.md` |
+| Reiselogbuch | **3.23.1** online (Fassung 4.25.1) | g811141a/ReiseLogBuch – `CHANGELOG.md`, `BACKLOG.md`, `PROMPT.md` |
+| AppDesign | **4.25.1** online | g811141a/AppDesign – `CHANGELOG.md`, `BACKLOG.md` |
 | ReiseLogBuch-Import (privat) | 1.2.1 (unverändert) | g811141a/ReiseLogBuch-Import |
 | Zusammenarbeit allgemein | **2.10.1** | `README - Zusammenarbeit allgemein.md` |
 
-- **Chatnummer:** die nächste Sitzung heißt **Reiselogbuch 0014**; die danach 0015.
-- **Offene Prüfpunkte:** keine (P-54 und P-55 geprüft, A-21/A-22/A-23, T-93/T-94 abgeschlossen).
-- **Sitzungsgröße:** Grenze etwa 300.000 Token Kontext; die Zeile Zeit und Token zeigt ihn (0013 endete bei ~262.000).
+- **Chatnummer:** die nächste Sitzung heißt **Reiselogbuch 0015**; die danach 0016.
+- **Offene Prüfpunkte:** keine offenen Schritte; P-56/1 und /2 waren **nicht ok** → A-24 bleibt offen (Abschnitt 3).
+- **Sitzungsgröße:** Grenze etwa 300.000 Token Kontext (0014 endete bei ~275.000).
 - **Erinnerung:** ‚Backlog-Erinnerung (AppDesign und Reiselogbuch)‘ montags 8:58.
 
 ## 2. Ergebnisse
 
-**Sitzung ‚Reiselogbuch 0013‘:**
-- **4.24.0 / 3.22.0 veröffentlicht:** A-23 Hervorhebung nach dem Fenster 2 s voll blau + 1 s ausblenden (‚Bewegung
-  reduzieren‘ 2 s), endet beim nächsten Fenster; T-94 Verlauf mit ‚Tour …‘ und ‚Sonstiges …‘ (leere Zeile **am Anfang**,
-  Cursor dorthin). Neue Prüfung `ReiseLogBuch/tests/verlauf-vorschlaege.mjs`, `checkListStill` prüft Farbe und Dauer. **P-54 ok.**
-- **4.25.0 / 3.23.0 veröffentlicht:** A-21 Suche mit mehreren Wörtern (alle müssen vorkommen, Reihenfolge egal), **„…“ =
-  genaue Wortfolge (allgemeine Regel)**; Einheit im Reiselogbuch = ganzes Reiselogbuch (gezeigt die Tage mit mindestens einem
-  Wort); A-22 Lupe am Ende der Kapsel vor ‚…‘ (Liste [plus | search | ellipsis]). Bausteine `searchWords`, `findsAll`,
-  `findsAny`, `markWords` (ui.js), Prüfungen `checkSearchWords`, `checkSearchPlace`, `ReiseLogBuch/tests/ablauf-suche-woerter.mjs`.
-  **P-55 ok.**
-- **Zusammenarbeit 2.10.0 / 2.10.1 (0 Nr. 11, Wunsch des Nutzers):** nach jeder Version **alle Prüfpunkte vollständig Schritt
-  für Schritt im Chat** (nie nur Verweis aufs CHANGELOG), **danach immer ein Auswahlfenster zur Rückmeldung** – nur das löst
-  auf dem iPad eine Push-Nachricht aus. Claude hatte die Regel zweimal nicht eingehalten → **immer anwenden.**
-- **Lehren aus 0013:** (1) Prüfdaten müssen lang genug zum Rollen sein (Treffer unter der Suchzeile). (2) Gegenprobe gegen
-  einen alten Stand: alte `ui.js` meldet Versionsabweichung – stattdessen die neue `ui.js` gezielt zurückdrehen.
+**Sitzung ‚Reiselogbuch 0014‘:**
+- **4.25.1 / 3.23.1 veröffentlicht:** Baustein `setHtml(el, html)` (ui.js) – Neuaufbau ohne das Feld mit dem Fokus zu ersetzen
+  (App ruft ihn statt `innerHTML`); Markierung bei Icons in Kapseln als Kreis 36 × 36 (vorher 42 × 36); Prüfungen `checkSearch`/
+  `checkListSearch` tippen Buchstabe für Buchstabe (Feld bleibt), Grundregel R-3.1 ‚rund ist ein Kreis‘, neue feste Prüfung
+  `ReiseLogBuch/tests/ablauf-suche-iphone.mjs`. **P-56:** /0, /3, /4 ok (**A-25 abgeschlossen**); **/1, /2 nicht ok.**
+- **Rückmeldung des Nutzers (sehr deutlich):** das Zittern am iPhone ist ‚schon unzählige Male gemeldet‘ – nach einigen Buchstaben
+  leicht, **nach ⓧ massiv**, nur bei offener Tastatur (mit ⌃ ⌄ ruhig), iPad ruhig. Er will **kein Hin und Her mit Testen** mehr.
+- **Analyse** `arbeit/A-24 Analyse nach P-56.md`: Safari verschiebt am iPhone den sichtbaren Bereich (`visualViewport.offsetTop`)
+  – wenig Platz über der Tastatur (quer ~100–150 px), kurze Seite nach dem Filtern, iOS-26-Fehler bei Home-Bildschirm-Apps
+  (Apple-Forum 824765, WebKit 300523); `--vv-top` gleicht erst ein Bild später aus. Meine Nachbildung verschob um eine **feste**
+  Strecke statt aus der Geometrie – deshalb grün. iPad und iPhone sind **gleich gebaut**; der Unterschied ist Safari.
+- **Angaben des Nutzers:** iPad mit **Bildschirmtastatur**; iPhone **vom Home-Bildschirm**, **iOS 26**.
+- **Entscheidungen 19.10.2026:** Suche **bleibt oben**; **Umbau B** (nur der Inhalt rollt, die Seite nie – Leisten nicht mehr
+  `position: fixed`) **mit Messung vorher** (A-27 Messmodus, A-28 Umbau). Neue allgemeine Regel: **Suche öffnen und ⓧ rollen ganz
+  nach oben** (A-29). Weg A (Leerraum) und C (Suche unten) verworfen.
+- **Wünsche an Claude:** (1) mehr eigene Vorschläge für AppDesign – jede Fall-Liste endet mit ‚Vorschläge für AppDesign‘ (erste
+  in A-30); (2) nicht wieder dieselben Fehler: **Vorschlag 0 Nr. 20** (noch nicht bestätigt, in 0015 fragen): bei Bewegungsfehlern am
+  Gerät zuerst messen; **ein** Safari-Modell (`tests/safari.mjs`) für alle Prüfungen; im Bericht ‚in der Nachbildung behoben, am Gerät
+  zu bestätigen‘; Safari-Eigenheiten mit Quelle in Designrichtlinie 13.
+- **Lehre:** Schon in 0010 gab es Messungen am iPad (Messseite als Kopie der App, A-18) – der Nutzer ließ sie wieder entfernen
+  (E-42). Den Messmodus deshalb **schlank** als Baustein in der App, abschaltbar, keine Kopie.
 
 Frühere Sitzungen: siehe `VERLAUF.md` und Versionsgeschichten.
 
 ## 3. Nächster Schritt
 
-Neue Rückmeldungen des Nutzers vom 18.10.2026 (Backlog AppDesign A-24 bis A-26, Reiselogbuch T-95), alle Prio 1:
-1. **A-24 Korrektur:** iPhone – in der Tabelle eines Reiselogbuchs zittern Symbolleisten- und Suchzeile mit jedem Buchstaben im
-   Suchfeld; beide müssen fest stehen. **Zuerst den Ablauf als feste Prüfung nachbauen, rot gegen 4.25.0** (0 Nr. 1).
-2. **A-25 Korrektur:** runde Schaltflächen (Lupe, …) sind eiförmig statt rund – sie waren schon einmal rund; Ursache und seit
-   welcher Version, Prüfung ‚Kreis = gleiche Breite und Höhe‘.
-3. **A-26 allgemeine Regel:** Datumsfeld – nach dem Antippen eines Tages übernimmt das System den Tag und kehrt in die
-   Ausgangsmaske zurück (Apple-Abgleich, Machbarkeit in Safari).
-Vorschlag: A-24 + A-25 als Korrekturversion (AppDesign 4.25.1 / Reiselogbuch 3.23.1), dann A-26 (4.26.0). Je Fall-Liste,
-vor dem Bau ‚Ja‘.
+1. **A-27 Messmodus** (AppDesign 4.26.0 / Reiselogbuch 3.24.0?, oder Korrekturversion – mit dem Nutzer klären): Fall-Liste
+   (was je Bild aufgezeichnet wird: Zeit, `scrollY`, `visualViewport.height/offsetTop`, `innerHeight`, Lage von Leiste und Suchfeld,
+   Fokus, Ereignisse; Start/Stopp im Mehr-Menü; ‚Messung teilen‘ als Text), Muster, **Ja**, bauen, veröffentlichen. Dann misst der
+   Nutzer am iPhone (hoch und quer: Suche öffnen, tippen, ⓧ, weitertippen) und am iPad zum Vergleich.
+2. **Auswertung** der Messung → gemeinsames Safari-Modell `AppDesign/tests/safari.mjs` an den echten Werten ausrichten;
+   `ablauf-suche-iphone.mjs` damit **rot gegen 4.25.1/3.23.1** machen (genau das gemessene Muster).
+3. **A-28 Umbau B** + **A-29** (nach oben bei Suche öffnen/ⓧ): Fall-Liste (alle betroffenen Regeln R-2.1, R-7.3, R-7.4, R-8.1,
+   Nach oben/Ans Ende, Druck, Seitenleiste) mit Muster, **Ja**, eine gut vorbereitete Version.
+4. Danach **A-26** Datumsfeld (allgemeine Regel).
 
 ## 4. Danach
 
-- T-06 Ausschreibungstexte (Prio 3) · **A-01** Startseite (später).
+- A-30 Vorschläge (Rückgängig nach Löschen, leere Zustände, Ziehen zum Aktualisieren aus) · T-06 Ausschreibungstexte (Prio 3) ·
+  **A-01** Startseite (später).
 
 ## 5. Arbeitsumgebung (für Claude)
 
@@ -62,6 +70,8 @@ vor dem Bau ‚Ja‘.
   `/home/user/ReiseLogBuch-Import` klonen und `ln -s ReiseLogBuch-Import reiselogbuch-import` anlegen. `register_repo_root`
   mit `/home/user/reiselogbuch-import`. Dort **nie Reisedaten** ablegen (Datenschutz): Originale, Ergebnisse und Protokolle
   nur im Notizordner der Sitzung. Im Ordner `werkzeug` einmal `npm install`, dann `node werkzeug/pruefen.mjs <Datei> --zone <Zeitzone>`.
+- **Lokaler `main` im AppDesign-Klon kann veraltet sein (0014):** vor dem ersten Commit `git fetch origin main` und auf `origin/main`
+  aufsetzen (`git checkout -b neu origin/main`), sonst wird der Push abgelehnt; `git reset --hard` ist gesperrt.
 - Für AppDesign gilt dasselbe: Verweis `ln -s AppDesign appdesign`, `register_repo_root` mit `/home/user/appdesign`.
 
 - Repos nebeneinander klonen: `/home/user/AppDesign` und `/home/user/ReiseLogBuch` (`add_repo` ReiseLogBuch mit Zugriff
@@ -98,5 +108,5 @@ In der neuen Sitzung müssen **AppDesign** und **ReiseLogBuch** verfügbar sein,
 ## 7. Starttext für die neue Sitzung
 
 ```
-Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md und gezielt die Regeln (Zusammenarbeit 0 Nr. 15), gib mir das Lagebild und arbeite dann Abschnitt 3 ab (zuerst A-24: Ablauf als feste Prüfung nachbauen, dann Fall-Listen für A-24 und A-25, vor dem Bau mein Ja). Hole vorher die Repos g811141a/ReiseLogBuch und g811141a/ReiseLogBuch-Import (privat) dazu (add_repo, Zugriff push), wie in UEBERGABE.md Abschnitt 5.
+Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md und gezielt die Regeln (Zusammenarbeit 0 Nr. 15), gib mir das Lagebild und arbeite dann Abschnitt 3 ab (zuerst A-27 Messmodus: Fall-Liste, vor dem Bau mein Ja). Hole vorher die Repos g811141a/ReiseLogBuch und g811141a/ReiseLogBuch-Import (privat) dazu (add_repo, Zugriff push), wie in UEBERGABE.md Abschnitt 5.
 ```

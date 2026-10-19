@@ -23,9 +23,12 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| A-24 | 1 | Korrektur: Kopf- und Suchzeile zittern beim Tippen am iPhone (R-2.3, Baustein `setHtml`) – Prüfliste P-56 im CHANGELOG des Reiselogbuchs 3.23.1 | zu prüfen |
-| A-25 | 1 | Korrektur: Markierung bei Icons in Kapseln als Kreis 36 × 36 (R-3.1, 15.5) – P-56 | zu prüfen |
+| A-24 | 1 | Korrektur: Kopf- und Suchzeile zittern beim Tippen am iPhone – **P-56/1, /2 nicht ok** (4.25.1 half nur am Anfang; nach ⓧ massiv; nur bei offener Tastatur; iPad ok). Ursache (Vermutung, `arbeit/A-24 Analyse nach P-56.md`): Safari verschiebt den sichtbaren Bereich (enges iPhone, kurze Seite, iOS-26-Fehler). **Nutzer 19.10.2026: Suche bleibt oben, Umbau B mit Messung vorher** → A-27, A-28 | in Arbeit |
+| A-27 | 1 | **Messmodus (allgemeiner Baustein):** App zeichnet je Bild Scrollstand, `visualViewport` (Höhe, offsetTop), Lage der Leisten und Tastatur auf, ‚Messung teilen‘ in den Chat; schlank, abschaltbar, keine Kopie der App (Lehre aus A-18/E-42). Zuerst messen: iPhone hoch und quer, Suche öffnen, tippen, ⓧ, weitertippen; iPad zum Vergleich | in Klärung (zuerst) |
+| A-28 | 1 | **Umbau B – nur der Inhalt rollt, die Seite nie:** Leisten nicht mehr `position: fixed`, sondern feste Zeilen eines Rahmens; der Inhalt rollt in einem eigenen Bereich – Safari hat nichts zu verschieben. Betroffen: R-2.1, R-7.3 (Liste steht still), R-7.4, R-8.1 (Drehen), Nach oben/Ans Ende, Druck. Erst nach der Messung (A-27); Fall-Liste und Muster, eine gut vorbereitete Version | in Klärung |
+| A-29 | 1 | **Suche öffnen und ⓧ rollen ganz nach oben (allgemeine Regel, Nutzer 19.10.2026):** Seitenleiste/Startliste und Eintrag; ohne Zittern der beiden oberen Zeilen – mit A-28 | in Klärung |
 | A-26 | 1 | **Datumsfeld: Tag antippen übernimmt und schließt (allgemeine Regel, R-5.x – Nutzer 18.10.2026):** nach dem Antippen eines Tages im Kalender übernimmt das System den Tag ins Datumsfeld und kehrt in die Ausgangsmaske zurück (heute bleibt der Kalender offen). Apple-Abgleich (iOS-Datumsauswahl), Machbarkeit in Safari (Schließen nach `change`), Fall-Liste und Muster | in Klärung |
+| A-30 | 3 | Vorschläge von Claude (19.10.2026, Analyse Abschnitt 5): Rückgängig nach Löschen (‚Gelöscht · Widerrufen‘), einheitliche leere Zustände, ‚Ziehen zum Aktualisieren‘ bewusst aus – je einzeln entscheiden | Vorschlag |
 | A-01 | 3 | Startseite g811141a.github.io mit allen Apps (früher S-03) | später |
 
 ---
@@ -34,6 +37,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Thema | Version | Datum |
 |---|---|---|---|
+| E-54 | Geprüft P-56: /0, /3, /4 ok – **A-25 abgeschlossen** (Markierung als Kreis); /1, /2 nicht ok → A-24 offen (Umbau B, A-27/A-28) | AppDesign 4.25.1 | 19.10.2026 |
 | E-53 | **A-24 und A-25 gebaut:** Ablauf als feste Prüfung nachgebaut (rot gegen 4.25.0: Suchfeld bei jedem Buchstaben ersetzt, Leiste springt 120 px); Baustein `setHtml` (Feld mit Fokus bleibt), Markierung als Kreis 36 × 36 (seit 4.0.0 42 × 36); Prüfungen Feld bleibt beim Tippen (`checkSearch`, `checkListSearch`), Grundregel ‚rund ist ein Kreis‘ | AppDesign 4.25.1 | 19.10.2026 |
 | E-52 | Geprüft: P-55 alles in Ordnung (Lupe am Ende, zwei Wörter, „…“, zentrale Liste, Tippen und Diktieren); **A-21 und A-22 damit abgeschlossen** | AppDesign 4.25.0 | 18.10.2026 |
 | E-51 | **A-21 und A-22 gebaut:** Suche mit mehreren Wörtern (alle müssen vorkommen, „…“ = genaue Folge, allgemeine Regel; Einheit legt die App fest), Lupe am Ende der Kapsel; Bausteine und Prüfungen `checkSearchWords`, `checkSearchPlace` | AppDesign 4.25.0 | 18.10.2026 |
