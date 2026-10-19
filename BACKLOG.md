@@ -1,6 +1,6 @@
 # AppDesign – Backlog (allgemeine Themen)
 
-**Stand 19.10.2026** · Aktuelle Version: AppDesign 4.27.1
+**Stand 20.10.2026** · Aktuelle Version: AppDesign 4.28.0
 
 Allgemeine Themen, die alle Apps betreffen. App-Themen stehen im Backlog der jeweiligen App.
 Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
@@ -11,14 +11,13 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Prio | Thema | bereit seit |
 |---|---|---|---|
-| A-35 | 1 | **Fehler aus der Messung iPhone quer (19.10.2026):** Gesamtausgaben (Feld ganz unten im Inhalt) antippen – die Tastatur verdeckt das Feld; Safari rollt das Fenster statt des Inhalts (seit 4.27.0, B1). Vorschlag: `ui.js` rollt den Inhalt, bis das Feld mit Fokus über der Tastatur steht; Prüfung zuerst rot. `arbeit/A-26 A-31 A-34 Fall-Liste.md` Abschnitt 5 | 19.10.2026 |
-| A-31 | 1 | **Messung abspielen (Vorschlag V8, Nutzer 19.10.2026):** eine geteilte Messdatei wird in einer Prüfung als Vorgabe für das Safari-Modell geladen – die Prüfung macht genau, was das Gerät gemessen hat; nach der Auswertung von P-57, mit `tests/safari.mjs` | 20.10.2026 (Bündel 4.28.0, Ja 20.10.2026) |
+| – | – | zurzeit nichts gesammelt | – |
 
 ## 1. Auf iPad und iPhone prüfen
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| – | – | zurzeit nichts zu prüfen | – |
+| A-35 | 1 | **Feld im Inhalt über der Tastatur (R-4.5, 4.28.0):** Gesamtausgaben im Reiselogbuch am iPhone quer und hoch, iPad – in der Nachbildung behoben, am Gerät zu bestätigen | **prüfen** – Reiselogbuch P-60 |
 
 ## 2. Weitere Themen (in Klärung)
 
@@ -34,6 +33,8 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Thema | Version | Datum |
 |---|---|---|---|
+| E-64 | **A-31 gebaut:** Messung abspielen – `tests/abspielen.mjs` (`lies`, `ansicht`, `spieleAb`), Messdateien in `tests/messungen/`, Safari-Modell `__safari.setze`; im Reiselogbuch `ablauf-abspielen.mjs` mit Gegenprobe (M-1 bis M-6); Designrichtlinie 15.21 | AppDesign 4.28.0 | 20.10.2026 |
+| E-63 | **A-35 gebaut:** R-4.5 ergänzt – ein Feld mit Fokus steht immer ganz über der Tastatur, auch im Inhalt (`fieldIntoView` in ui.js, 16 px darüber bzw. direkt unter Kopf- oder Suchzeile); Safari-Modell: Feld unter der Tastatur verschiebt den sichtbaren Bereich (quer 232 px), Zifferntastatur 170 px; `checkFieldVisible` (gegen 4.27.1 rot); Designrichtlinie 7, 13. Wartet auf P-60 | AppDesign 4.28.0 | 20.10.2026 |
 | E-62 | **A-26 entfällt (Nutzer 20.10.2026):** C2 am iPad ok, aber nicht vollständig machbar – Safari meldet nur den Wert, daher bleiben G-1 bis G-3 (31. → letzter Tag eines anderen Monats, gleicher Tag, heute im leeren Feld) und die 400-ms-Annahme; Grundsatz des Nutzers: ‚Wenn nicht alles funktioniert, bauen wir es so nicht ein.‘ Datumsfelder bleiben wie heute, kein eigener Kalender. `arbeit/A-26 A-31 A-34 Fall-Liste.md` Abschnitte 9–13, `arbeit/A-26 Datumserfassung Apple und andere Apps.md` | – | 20.10.2026 |
 | E-61 | **A-34 entschieden: `--vv-top` bleibt** – Messung iPhone quer: `offsetTop` 21–232 px (Suche, Fenster, Gesamtausgaben), `--vv-top` hält Kopf- und Suchzeile still | – | 19.10.2026 |
 | E-60 | Geprüft P-59: alles ok – **A-33 abgeschlossen** (Kapsel am iPhone quer mit Tastatur ausgeblendet, ⌃ ⌄ frei; hoch über der Tastatur; iPad unverändert) | AppDesign 4.27.1 | 19.10.2026 |

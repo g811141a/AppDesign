@@ -258,3 +258,21 @@ Abschnitt 3.2) – zusammen mit dem Zeitraum (A-36).
   (R-4.5 und Designrichtlinie ergänzen), Prüfung `checkFieldVisible` (Abschnitt 10).
 - **Ja zum Bau** des Bündels **AppDesign 4.28.0 / Reiselogbuch 3.26.0** mit **A-35 und A-31** (Abschnitte 2.3 und 10).
 - Zusammenarbeit 2.14.0 (zu Beginn auch Abschnitt 1, per du) und 2.14.1 (Aufwand aus der Sitzungsdatei) angenommen.
+
+## 14. Gebaut (AppDesign 4.28.0 / Reiselogbuch 3.26.0, 20.10.2026)
+
+- **A-35:** `fieldIntoView` in `ui.js`. Ergänzt beim Bau: **F-1a** – reicht der Platz für 16 px Abstand nicht (iPhone quer mit
+  Suchzeile und Zifferntastatur: 55 px Inhalt, Feld 47 px), steht das Feld ganz sichtbar direkt unter der Suchzeile. Gefunden
+  beim Nachspielen der Messung (A-31).
+- **F-2 iPad:** nur am Gerät (P-60/4) – die Tastatur des iPad ist nicht gemessen, das Safari-Modell gilt nur für das iPhone.
+  iPhone hoch mit der Buchstaben-Tastatur (403 px), die Zifferntastatur hoch ist nicht gemessen.
+- **F-5 (nächstes Feld):** im Reiselogbuch gibt es im Inhalt nur ein Feld (Gesamtausgaben) – `fieldIntoView` hört zusätzlich auf
+  `focusin`, geprüft wird es erst, wenn eine App ein zweites Feld im Inhalt hat.
+- **F-9:** Safari-Modell – Feld im Rollbereich unter der Tastatur: der sichtbare Bereich verschiebt sich um den ganzen Raum (quer
+  232 px). Felder in Fenstern nicht nachgebildet (gemessen 225 bei 276 px Raum).
+- **Prüfungen:** `checkFieldVisible` (`ablauf.mjs`), im Reiselogbuch `ablauf-feld-tastatur.mjs` (F-1 bis F-4, F-6) und
+  `ablauf-abspielen.mjs` (A-31, M-1 bis M-6, F-11) – statt in `ablauf-messung.mjs` eine eigene Datei. Gegenprobe ohne
+  `fieldIntoView`: 4 bzw. 15 Fehler, mit der Korrektur grün (Chromium und WebKit).
+- **A-31 Abspielen:** `tests/abspielen.mjs`. Ergänzt beim Bau: Safari meldet focus/blur 1–2 ms **vor** dem Antippen – diese
+  Zeilen gehören zum nächsten Schritt; ein blur ohne Antippen in ±50 ms ist das Schließen der Tastatur. Ziele ohne id (‚button‘,
+  ‚-‘) gibt die Prüfung der App an.

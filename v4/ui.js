@@ -1,4 +1,4 @@
-// AppDesign 4.27.1 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
+// AppDesign 4.28.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
 // Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/fassung/X.Y.Z/ui.js"></script> (feste Fassung, R-10.3)
 // Seit 4.11.0 (R-10.3): ui.js und design.css immer mit ?v=<AppDesign-Version> einbinden (auch in sw.js) und beim Start
 // prüfen, ob genau diese Fassung geladen ist (AD_VERSION hier, --ad-version in design.css).
@@ -18,7 +18,7 @@
 
 'use strict';
 // Version der Bausteine (R-10.3): die App vergleicht sie beim Start mit der benötigten Fassung.
-const AD_VERSION = '4.27.1';
+const AD_VERSION = '4.28.0';
 /* ---------- Icons ---------- */
 
 // Schaltflächen-Icons aus Lucide (ISC-Lizenz), direkt eingebettet, damit die App offline funktioniert.
@@ -1250,6 +1250,22 @@ dlg.addEventListener('focusin', e => {
   if (!e.target.matches('input, textarea')) return;
   setTimeout(() => { placeDialogs(); e.target.scrollIntoView({ block: 'nearest' }); }, 350);
 });
+// R-4.5 (seit 4.28.0, A-35): ebenso ein Feld im Inhalt. Safari verschiebt beim Antippen eines Felds unter der Tastatur nur den
+// sichtbaren Bereich; der Rahmen folgt ihm (--vv-top), das Feld bliebe unter der Tastatur (Messung iPhone quer 19.10.2026).
+// Sobald Safari die Tastatur meldet (und beim Wechsel des Felds), rollt der Inhalt, bis das Feld ganz sichtbar ist und 16 px über
+// der Tastatur steht – nur dann, nie gegen das Wischen des Nutzers. Reicht der Platz dafür nicht (iPhone quer mit Suchzeile und
+// Tastatur: 55 px Inhalt), steht das Feld ganz sichtbar direkt unter Kopf- bzw. Suchzeile. Rollbereich und Feld werden gegeneinander
+// gemessen, das gilt in Safari (gegen den sichtbaren Bereich) wie in Chromium (gegen das Fenster).
+function fieldIntoView() {
+  const f = document.activeElement, e = rolle.el;
+  if (!e || !f?.matches?.('input, textarea, select') || !e.contains(f)) return;
+  const r = f.getBoundingClientRect(), b = e.getBoundingClientRect(), unten = b.bottom - 16;
+  if (r.height > unten - b.top) { if (Math.abs(r.top - b.top) > 1) rolle.by(r.top - b.top); }
+  else if (r.bottom > unten) rolle.by(r.bottom - unten);
+  else if (r.top < b.top) rolle.by(r.top - b.top - 16);
+}
+if (window.visualViewport) ['resize', 'scroll'].forEach(t => visualViewport.addEventListener(t, () => requestAnimationFrame(fieldIntoView)));
+document.addEventListener('focusin', e => { if (rolle.el?.contains(e.target)) setTimeout(fieldIntoView, 350); });
 
 /* ---------- Messmodus (seit 4.26.0, A-27, R-1.6) ---------- */
 
