@@ -10,7 +10,7 @@
 | Reiselogbuch | **3.25.1** online (Fassung 4.27.1) | g811141a/ReiseLogBuch – `CHANGELOG.md`, `BACKLOG.md`, `PROMPT.md` |
 | AppDesign | **4.27.1** online | g811141a/AppDesign – `CHANGELOG.md`, `BACKLOG.md` |
 | ReiseLogBuch-Import (privat) | 1.2.1 (unverändert) | g811141a/ReiseLogBuch-Import |
-| Zusammenarbeit allgemein | **2.12.0** | `README - Zusammenarbeit allgemein.md` |
+| Zusammenarbeit allgemein | **2.13.0** (0 Nr. 13/15: Opus 5.5, Aufwand hoch) | `README - Zusammenarbeit allgemein.md` |
 
 - **Chatnummer:** die laufende Sitzung ist **Reiselogbuch 0018**; die nächste heißt **0019**.
 - **Offene Prüfpunkte:** keine. **P-59 geprüft:** alles ok (A-33 abgeschlossen).

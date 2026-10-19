@@ -1,6 +1,6 @@
 # Zusammenarbeit allgemein
 
-**Version 2.12.0** · Stand 19.10.2026
+**Version 2.13.0** · Stand 19.10.2026
 
 Regeln für die Zusammenarbeit mit Claude bei allen iPad-Web-Apps von g811141a.
 Diese Datei liegt im Design-Repo **AppDesign** (g811141a/AppDesign).
@@ -99,6 +99,10 @@ Nutzer sie findet, schneller und günstiger arbeiten.
     ‚Reiselogbuch 0001 – AppDesign 4.12.0‘; jede Sitzung, die die nächste startet, erhöht die Nummer um 1. Die
     nächste Nummer steht in `UEBERGABE.md`. Braucht eine Sitzung eine Entscheidung des Nutzers, bleibt sie dort stehen
     und startet keine neue. Claude nennt dem Nutzer den Namen der neuen Sitzung.
+    **Modell und Aufwand (seit 2.13.0, Nutzer 19.10.2026):** neue Sitzungen immer mit **Opus 5.5** (`create_session` mit
+    `model: claude-opus-5-5`) und Aufwand **hoch**. Den Aufwand kann `create_session` nicht setzen; er kommt aus der
+    Umgebungsvariablen `CLAUDE_CODE_EFFORT_LEVEL=high` der Umgebung (setzt der Nutzer: Umgebungsmenü in der Titelleiste →
+    Bearbeiten → Umgebungsvariablen) und gilt dann auch für Chats, die der Nutzer selbst öffnet.
 14. **Bei Ja schreibt Claude sofort die Übergabe** nach `UEBERGABE.md` im Repo AppDesign und veröffentlicht sie:
     Versionen, offene Prüfpunkte, nächste Schritte, neue Vereinbarungen (die zusätzlich schon in den Richtlinien
     stehen) und was zuerst zu lesen ist. Dazu gibt Claude einen **Starttext** zum Kopieren – **immer als Codeblock**
@@ -112,6 +116,9 @@ Nutzer sie findet, schneller und günstiger arbeiten.
     dieser Datei und die Überschriften (Inhaltsverzeichnis) der Designrichtlinien; weitere Abschnitte, Regelkatalog,
     Backlog, CHANGELOG und PROMPT.md nur, soweit die Aufgabe sie braucht. Alles Gelesene wird bei jedem weiteren Schritt
     mitverarbeitet – weniger Lesestoff macht die ganze Sitzung schneller.
+    **Modell und Aufwand prüfen (seit 2.13.0):** Claude prüft zu Beginn Modell (`get_session`) und Aufwand (`echo
+    $CLAUDE_CODE_EFFORT_LEVEL`) und nennt beides im Lagebild. Ist es nicht Opus 5.5 bzw. nicht ‚hoch‘, weist Claude darauf hin:
+    für diese Sitzung `/model` bzw. `/effort high` im Chat, dauerhaft die Umgebungsvariable (Nr. 13).
 16. **Übergabe statt Gedächtnis:** Jede Vereinbarung kommt **sofort** in die Richtlinien, nicht erst am Ende. Was
     nicht auf GitHub steht, gibt es in der nächsten Sitzung nicht.
 17. **Rückmeldung kurz:** Nummer, ‚nicht ok‘ und ein Stichwort genügen; bei Unklarem fragt Claude nach.
@@ -348,6 +355,7 @@ Nutzer sie findet, schneller und günstiger arbeiten.
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 2.13.0 | 19.10.2026 | Neben | 0 Nr. 13 und 15 ergänzt: neue Sitzungen mit Opus 5.5 und Aufwand hoch (`CLAUDE_CODE_EFFORT_LEVEL=high` in der Umgebung); zu Beginn Modell und Aufwand prüfen und im Lagebild nennen (Nutzer 19.10.2026) |
 | 2.12.0 | 19.10.2026 | Neben | 0 Nr. 11 ergänzt: jede Bitte, etwas am Gerät zu prüfen oder auszuprobieren (Muster, Versuch, Messung), enthält im Chat den vollständigen Link und nummerierte Schritte mit ‚Erwartet: …‘ (Nutzer 19.10.2026) |
 | 2.11.0 | 19.10.2026 | Neben | 0 Nr. 20 neu (Abschnitt G): bei Bewegungsfehlern am Gerät zuerst messen, ein Safari-Modell, Bericht ‚in der Nachbildung behoben, am Gerät zu bestätigen‘, Safari-Eigenheiten mit Quelle in Designrichtlinie 13 (Nutzer 19.10.2026) |
 | 2.10.1 | 18.10.2026 | Korrektur | 0 Nr. 11 verschärft: alle Prüfpunkte vollständig Schritt für Schritt im Chat (nie nur Verweis aufs CHANGELOG), danach das Auswahlfenster (Regel war nach 3.22.0 nicht eingehalten) |
