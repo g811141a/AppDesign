@@ -632,11 +632,11 @@ export async function checkFab(p, { top = '.fab button:first-child', end = '.fab
   return errors;
 }
 
-// Drucken (seit 4.27.0, A-28, F-16): mit Rahmen und Rollbereich druckt die Seite trotzdem ganz, nicht nur einen Bildschirm –
+// R-6.4 Drucken (seit 4.27.0, A-28, F-16): mit Rahmen und Rollbereich druckt die Seite trotzdem ganz, nicht nur einen Bildschirm –
 // im Druck ist nichts auf Bildschirmhöhe begrenzt. print(): startet das Drucken der App (window.print wird abgefangen);
 // mehr: Mindestzahl der Seiten (Chromium druckt ein PDF und zählt die Seiten; WebKit misst die Höhe in der Druckansicht).
 export async function checkPrint(p, { print, mehr = 2, where = '' } = {}) {
-  const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}Drucken ${t}`);
+  const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}R-6.4 Drucken: ${t}`);
   await p.evaluate(() => { window.__druck = 0; window.print = () => { window.__druck++; }; });
   await print(); await wait(p, 400);
   if (!await p.evaluate(() => window.__druck)) { E('die App startet das Drucken nicht'); return errors; }

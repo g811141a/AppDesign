@@ -392,8 +392,8 @@ heller).
   (`-webkit-touch-callout: none`, `user-select: none`).
 - Beim Drucken nur den Ausgabe-Inhalt zeigen: Seitenleiste, Fenster und deren Abstände
   (z. B. `padding-left` für die Seitenleiste) ausblenden bzw. auf 0 setzen.
-- Bei offener Tastatur verschiebt Safari den sichtbaren Bereich: fixierte Kopfzeilen über
-  `visualViewport.offsetTop` nachführen.
+- Bei offener Tastatur verschiebt Safari den sichtbaren Bereich: der Rahmen (15.22) folgt `visualViewport.offsetTop`
+  (`--vv-top`) und ist so hoch wie der sichtbare Bereich (`--vv-h`).
 - Elemente mit `display` im CSS brauchen eine eigene `[hidden]`-Regel, sonst bleiben sie
   sichtbar.
 - Emojis mit und ohne Variantenzeichen (z. B. ☹️/☹) als gleich behandeln.
@@ -410,13 +410,20 @@ heller).
   offenen‘ Eintrag an (Reiselogbuch: erster nicht erfasster Tag), steht er hervorgehoben **direkt unter dem Kopf** – unter
   der Leiste und einem haftenden Tabellenkopf –, nie in der Mitte; ist die Seite nicht so weit rollbar, ganz unten.
   `openAt(element | null)` in ui.js.
-- **Safari schiebt den sichtbaren Bereich bei kurzer Seite (seit 4.26.0, Vermutung aus A-24 – Messung ausstehend):** am
-  iPhone verkleinert die Tastatur nur den sichtbaren Bereich. Ist die Seite zu kurz zum Rollen (wenige Treffer, nach ⓧ),
-  verschiebt Safari `visualViewport.offsetTop`; feste Leisten rutschen mit, der Ausgleich über das Ereignis kommt ein Bild
-  später (Zittern). Unter iOS 26 setzt sich `offsetTop` nach dem Schließen der Tastatur teils nicht auf 0 zurück. Quellen:
-  developer.apple.com/forums/thread/824765, bugs.webkit.org/show_bug.cgi?id=300523. Grundsätze: Felder mit Fokus nie
-  ersetzen (`setHtml`), rollen nur vor dem Öffnen bzw. nach dem Schließen der Tastatur, feste Leisten nicht laufend mit
-  JavaScript nachführen; geklärt wird mit dem Messmodus (15.21), gelöst mit A-28.
+- **Safari hat zwei Bereiche – nur der Inhalt rollt (berichtigt in 4.27.0 nach der Messung P-57, A-27/A-28):** Safari am
+  iPhone unterscheidet den **Layout-Bereich** (an ihm hängen feste Leisten, Höhe `innerHeight`) und den **sichtbaren
+  Bereich** (`visualViewport`). Die Tastatur verkleinert nur den sichtbaren Bereich (gemessen hoch 409 statt 812 px, quer
+  126 statt 402 px); `innerHeight` bleibt (quer schrumpft es je Fokus um 19 px). Rollt das **Fenster** bei offener
+  Tastatur, bewegt sich zuerst nur der sichtbare Bereich (`offsetTop` = Abstand der beiden), der Layout-Bereich folgt erst
+  am Rand; Safari meldet die neue Lage **2 Bilder (33 ms) später** – jeder Ausgleich über `--vv-top` kommt zu spät, feste
+  Leisten zittern. Beim neuen Fokus (z. B. nach ⓧ) rollt Safari hoch um 120 px bzw. schiebt quer um 21 px. Die
+  Vermutung aus 4.26.0 (‚kurze Seite‘) war falsch: die Ursache ist **jedes Rollen des Fensters bei offener Tastatur**.
+  **Grundsatz (R-2.1): Die Seite rollt nie, nur der Inhalt** – Rahmen und Rollbereich (15.22); dann hat Safari beim Tippen
+  nichts zu verschieben (Versuch M-1 am iPhone: 0 px hoch und quer). Dazu: Felder mit Fokus nie ersetzen (`setHtml`).
+  Unter iOS 26 setzt sich `offsetTop` nach dem Schließen der Tastatur teils nicht auf 0 zurück – `--vv-top` bleibt deshalb
+  vorerst. Antippen der Statusleiste rollt einen eigenen Rollbereich nicht nach oben (iOS); ‚Nach oben‘ genügt (Nutzer
+  19.10.2026). Quellen: Messung P-57 (`arbeit/A-27 Auswertung P-57.md`), Safari-Modell `tests/safari.mjs`,
+  developer.apple.com/forums/thread/824765, bugs.webkit.org/show_bug.cgi?id=300523.
 - **Neustart ist nicht erkennbar (seit 4.16.0, R-7.2):** Safari meldet nicht, **warum** eine Seite neu lädt. Als Neustart
   zählt jedes Neuladen: App im App-Umschalter weggewischt, **von iOS im Hintergrund beendet** (Speicher – auch nach kurzer
   Zeit in einer anderen App) oder neue Version geladen. Bleibt die Seite im Speicher, kommen nur `visibilitychange` und
@@ -510,8 +517,8 @@ Verhalten · technischer Name). In AppDesign ist jede Komponente einmal programm
   Mitte (17 px, fett) · rechts eine Kapsel mit den wichtigsten Aktionen, zuletzt ellipsis
   (Mehr-Menü). Suche: search in der Kapsel blendet eine **zweite Zeile** mit dem Suchfeld
   über die volle Breite ein, Treffer-Navigation rechts.
-- **Verhalten:** bleibt beim Scrollen oben stehen (Hintergrund `--bg`, beim Scrollen
-  Haarlinie unten); keine Glas-Leiste.
+- **Verhalten:** feste Zeile des Rahmens (15.22) – nur der Inhalt darunter rollt (Hintergrund `--bg`, sobald der Inhalt
+  gerollt ist, Haarlinie unten); keine Glas-Leiste.
 - **Filter** (z. B. „Alle / Nur erfasste“): beim Öffnen eines Eintrags und beim Start immer auf
   „Alle“.
 
@@ -862,7 +869,7 @@ Verhalten · technischer Name). In AppDesign ist jede Komponente einmal programm
   (`circle-stop`, grau ‚läuft · 0:42 · 1.318 Zeilen‘ bzw. ‚beendet · …‘). Kein Zeichen auf dem Bildschirm – es würde selbst
   mitrutschen. Teilen-Menü mit `messung-JJJJ-MM-TT-hhmm.txt` (ohne Teilen-Menü: laden); abgebrochen bleibt die Messung.
 - **Inhalt:** Kopf mit App, AppDesign, Gerät, Home-Bildschirm/Safari, Bildschirm, Darstellung, Startzeit; dann je Bild eine
-  Zeile, **nur wenn sich ein Wert geändert hat**: `t` (ms), `scrollY`, Seitenhöhe, `innerHeight`, `visualViewport` Höhe und
+  Zeile, **nur wenn sich ein Wert geändert hat**: `t` (ms), `scrollY`, `inh` (Rollstand des Inhalts, seit 4.27.0), Seitenhöhe, `innerHeight`, `visualViewport` Höhe und
   `offsetTop`, `--vv-top`, Oberkante der Teile der App (Kopf, Suchzeile, erster Inhalt …), Rollstand eigener Bereiche, Fokus
   (id), Lage. Ereignisse sofort mit den Werten im Augenblick: focus/blur, Eingabe (Länge), Tippen (id), scroll, resize,
   Drehen, `visualViewport` resize/scroll, Neuaufbau (`setHtml`).
@@ -870,6 +877,25 @@ Verhalten · technischer Name). In AppDesign ist jede Komponente einmal programm
   laden verwirft); Ende nach 5 Minuten oder 20 000 Zeilen.
 - **Technisch:** `ui.js` – `messungMenuItems({ app, teile, rollen })` ins Menü der Seitenleiste; `teile`/`rollen` = Spalte →
   Selektor (erstes sichtbares Element). Prüfung `checkMessung` (Fall-Liste `arbeit/A-27 Fall-Liste.md`, F1–F12).
+
+### 15.22 Rahmen und Rollbereich (seit 4.27.0, R-2.1, A-28)
+- **Apple:** [HIG – Scroll views](https://developer.apple.com/design/human-interface-guidelines/scroll-views) – wie in den
+  Apps von Apple rollt nur der Inhalt unter der Leiste, nie die Leiste selbst.
+- **Zweck:** Die Seite rollt nie, nur der Inhalt. Damit hat Safari bei offener Tastatur nichts zu verschieben (13).
+- **Aufbau:** `#app` ist ein Rahmen aus festen Zeilen: oben die Kopfzeile (`.nb` bzw. `.pnav`, mit Suchzeile), darunter
+  der **Rollbereich** `<div class="rolle" id="rolle">` mit dem ganzen Inhalt. Neben der festen Seitenleiste beginnt der
+  Rahmen rechts davon. Tabellenköpfe haften im Rollbereich mit `top: 0`.
+- **Höhe (Variante B1, Nutzer 19.10.2026):** der Rahmen ist so hoch wie der sichtbare Bereich (`--vv-h`) und endet bei
+  offener Tastatur über ihr – das letzte Ergebnis lässt sich bis über die Tastatur rollen; die Kapsel ‚Nach oben / Ans Ende‘
+  steht über der Tastatur (`--vv-bottom`).
+- **Verhalten:** Treffer, Nach oben / Ans Ende, Öffnen (R-7.4), Drehen (R-8.1), Liste steht still (R-7.3) und der Messmodus
+  rollen bzw. messen nur den Rollbereich. Beim Neuaufbau bleibt der Rollbereich dasselbe Element (`setHtml`), der Rollstand
+  bleibt. Solange ein Fenster offen ist, steht er still (`html.locked`). Im Druck ist nichts auf Bildschirmhöhe begrenzt.
+- **Technisch:** `design.css` (`#app:has(> .rolle)`, `.rolle`), `ui.js` – `rolle` (`rolle.y`, `rolle.max`, `rolle.rest`,
+  `rolle.to(y, weich)`, `rolle.by(d)`, `rolle.ende()`), `onRoll(fn)`, `fabTop()`/`fabEnd()`. Die App ruft **nie**
+  `window.scrollTo`. Ohne Rollbereich rollt wie bisher das Fenster (ältere Apps). Prüfungen: `pruefe.mjs` – `rolle(p, y)`,
+  `rollstand(p)`; `hig.mjs` – Grundregel ‚Seite rollt nie‘ (`scrollY` 0 nach jedem Schritt), `barStill`; `ablauf.mjs` –
+  `checkFab`, `checkPrint`, `checkSearchTop`. Fall-Liste und Muster: `arbeit/A-28 Fall-Liste.md`, `arbeit/A-28 Muster.html`.
 
 ## 16. HIG-Checkliste
 
@@ -943,16 +969,16 @@ Regel ersetzt oder ergänzt eine bestehende (Zusammenarbeit 0 Nr. 3) und bekommt
 
 | Nr. | Regel | Prüfung | Gerät | ersetzt |
 |---|---|---|---|---|
-| R-2.1 | **Leisten stehen fest – keinen Millimeter:** Kopfzeile, Seitenkopf, Seitenleisten-Kopf, mit und ohne Suchzeile, beim Wischen, am Rand, bei offener und beim Schließen der Tastatur; nichts federt; erstes Wischen bei offener Tastatur schließt nur die Tastatur | hig.mjs – `barStill`: Lage der Leiste beim Scrollen gemessen, auch mit nachgebildeter Tastatur | Federn, Tastatur | R-05, R-28 |
+| R-2.1 | **Leisten stehen fest – keinen Millimeter:** Kopfzeile, Seitenkopf, Seitenleisten-Kopf, mit und ohne Suchzeile, beim Wischen, am Rand, bei offener und beim Schließen der Tastatur; nichts federt; erstes Wischen bei offener Tastatur schließt nur die Tastatur. **Seit 4.27.0 (A-28): Die Seite rollt nie, nur der Inhalt** – Rahmen mit festen Zeilen und Rollbereich, so hoch wie der sichtbare Bereich (15.22) | hig.mjs – `barStill`: Lage der Leiste beim Rollen des Inhalts gemessen, auch mit nachgebildeter Tastatur; Grundregel ‚Seite rollt nie‘ (`scrollY` bleibt 0) | Federn, Tastatur, Wischgefühl | R-05, R-28 |
 | R-2.2 | **Titel in der Leiste:** Titel einer Inhaltsseite steht in der Leiste; unter dem Titel der Seitenleiste bzw. Startliste klein und grau die Anzahl | hig.mjs | – | R-09, R-21 |
-| R-2.3 | **Suche:** Suchzeile unter der Leiste über die volle Breite; Treffer ‚3 von 57‘ bzw. ‚0‘; nach kurzer Pause steht der Treffer direkt unter der Suchzeile; Pfeile ohne Umlauf; gefiltert auf Einträge mit Treffern; gleich auf iPad und iPhone; **beim Tippen bleibt das Suchfeld dasselbe Feld mit Fokus** (seit 4.25.1, `setHtml`). **Seit 4.25.0 mehrere Wörter** (alle müssen vorkommen, Reihenfolge egal, „…“ = genaue Folge, alle markiert; Einheit legt die App fest) und **Lupe am Ende der Kapsel**, dahinter nur ellipsis (15.2, 15.5). **Seit 4.23.0 auch in der zentralen Liste** (Lupe im Kopf): filtert die Einträge, Kachel ‚N Treffer‘ je Fundstelle wie ‚1 von N‘, Öffnen mit gefüllter Suche, beide Suchfelder offen = 1:1, ‚Keine Treffer‘ (15.4) | ablauf.mjs – `checkSearch`, `checkListSearch`, `checkSearchWords`, `checkSearchPlace` (seit 4.25.0), Feld bleibt beim Tippen (seit 4.25.1) | – | **neu** (bisher nur 15.2) |
+| R-2.3 | **Suche:** Suchzeile unter der Leiste über die volle Breite; Treffer ‚3 von 57‘ bzw. ‚0‘; nach kurzer Pause steht der Treffer direkt unter der Suchzeile; Pfeile ohne Umlauf; gefiltert auf Einträge mit Treffern; gleich auf iPad und iPhone; **beim Tippen bleibt das Suchfeld dasselbe Feld mit Fokus** (seit 4.25.1, `setHtml`). **Seit 4.25.0 mehrere Wörter** (alle müssen vorkommen, Reihenfolge egal, „…“ = genaue Folge, alle markiert; Einheit legt die App fest) und **Lupe am Ende der Kapsel**, dahinter nur ellipsis (15.2, 15.5). **Seit 4.23.0 auch in der zentralen Liste** (Lupe im Kopf): filtert die Einträge, Kachel ‚N Treffer‘ je Fundstelle wie ‚1 von N‘, Öffnen mit gefüllter Suche, beide Suchfelder offen = 1:1, ‚Keine Treffer‘ (15.4). **Seit 4.27.0 (A-29): Suche öffnen und ⓧ rollen den Inhalt ganz nach oben**, der Fokus bleibt im Feld | ablauf.mjs – `checkSearch`, `checkListSearch`, `checkSearchWords`, `checkSearchPlace` (seit 4.25.0), Feld bleibt beim Tippen (seit 4.25.1), `checkSearchTop` (seit 4.27.0) | – | **neu** (bisher nur 15.2) |
 
 ### 3. Schaltflächen
 
 | Nr. | Regel | Prüfung | Gerät | ersetzt |
 |---|---|---|---|---|
 | R-3.1 | **Antippflächen** 44 pt, in Kapseln und Schaltern mindestens 28 pt; reine Icon-Schaltflächen quadratisch; **rund ist ein Kreis** – runde Schaltflächen und die Markierung bei Icons in Kapseln (36 × 36) haben gleiche Breite und Höhe (seit 4.25.1) | hig.mjs | – | R-11 |
-| R-3.2 | **Schweben und Kapseln:** alle Schaltflächen und Suchfelder schweben (Lichtkante, zierlicher Schatten); mehrere nebeneinander stehen in einer Kapsel, Nach oben / Ans Ende in einer senkrechten Kapsel unten rechts – iPad und (seit 4.20.0) iPhone in der Inhaltsansicht, nur wenn es etwas zu scrollen gibt | hig.mjs | – | R-19, R-22, R-35 |
+| R-3.2 | **Schweben und Kapseln:** alle Schaltflächen und Suchfelder schweben (Lichtkante, zierlicher Schatten); mehrere nebeneinander stehen in einer Kapsel, Nach oben / Ans Ende in einer senkrechten Kapsel unten rechts – iPad und (seit 4.20.0) iPhone in der Inhaltsansicht, nur wenn es etwas zu scrollen gibt; seit 4.27.0 rollt sie den Inhalt (15.22) und steht bei offener Tastatur über ihr | hig.mjs, ablauf.mjs – `checkFab` (seit 4.27.0) | – | R-19, R-22, R-35 |
 | R-3.3 | **Jede Farbe hat eine Bedeutung:** blau gefüllt nur die Hauptaktion im Fenster (höchstens eine); Gewähltes bleibt blau getönt, solange sein Menü, Fenster oder seine Abfrage offen ist; Grün nur für eingeschaltete Schalter; Rot nur für Löschen | hig.mjs – höchstens eine blaue Hauptaktion, `stays` | – | R-16 (+ Abschnitt 4) |
 | R-3.4 | **Kein Fokus-Rahmen** beim Antippen, beim Öffnen eines Fensters und im Suchfeld | hig.mjs | – | R-02 |
 
@@ -983,7 +1009,7 @@ Regel ersetzt oder ergänzt eine bestehende (Zusammenarbeit 0 Nr. 3) und bekommt
 | R-6.1 | **Tabelle und Kasten in der App:** Kopf grau, Linien zwischen allen Spalten, **Zebra je Tabellenzeile** (zusammengefasste erste Spalte = eine Zeile), gelbe Markierung ohne blauen Rand; Kasten mit Feldern (iPhone) mit Linien waagrecht und senkrecht | hig.mjs (Zebra seit 4.12.0 auch in App-Tabellen) | – | R-08, R-25, R-30 (+ F-3) |
 | R-6.2 | **Mustertabelle der Ausgabe** (`outputCss`): jede Tabelle in Ausgabe, Vorschau und Bericht, Zebra je Tabellenzeile, keine eigene Nachbildung | hig.mjs – Vergleich mit unsichtbarer Mustertabelle | – | R-52 |
 | R-6.3 | **Kein Text ragt hinaus:** zu lange Wörter und Smiley-Reihen brechen um, hängender Einzug (Folgezeilen unter dem Text) – überall, auch in Fenstern, Vorschauen, Berichten | hig.mjs – jede sichtbare Zelle, auch nach seitlichem Wischen (100 × ‚a‘) | – | R-29, R-37 |
-| R-6.4 | **Ausgabe und Vorschau:** immer hell; Vorschau zeigt genau die Datei, in voller Seitenbreite, seitlich wischen (iPad und iPhone); Kapsel [PDF · Teilen]; Dateinamen nach Muster | ablauf.mjs – `checkPreview` | Teilen, Drucken | **neu** (bisher 7, 10; F-4) |
+| R-6.4 | **Ausgabe und Vorschau:** immer hell; Vorschau zeigt genau die Datei, in voller Seitenbreite, seitlich wischen (iPad und iPhone); Kapsel [PDF · Teilen]; Dateinamen nach Muster; **seit 4.27.0 druckt das PDF die ganze Ausgabe**, nie nur einen Bildschirm (Rahmen, 15.22) | ablauf.mjs – `checkPreview`, `checkPrint` (seit 4.27.0) | Teilen, Drucken | **neu** (bisher 7, 10; F-4) |
 
 ### 7. Seitenleiste und Liste
 
@@ -1046,6 +1072,7 @@ Die alten Nummern R-01 bis R-52 (bis 4.11.4) gelten nicht mehr; sie stehen nur n
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 4.27.0 | 19.10.2026 | Neben | **A-28 Umbau B (Variante B1):** Die Seite rollt nie, nur der Inhalt – Rahmen mit festen Zeilen und Rollbereich `rolle`, so hoch wie der sichtbare Bereich (neu 15.22, R-2.1 ergänzt, 15.3); **A-29:** Suche öffnen und ⓧ rollen ganz nach oben (R-2.3 ergänzt); Abschnitt 13 berichtigt (zwei Bereiche, Ursache ist das Rollen des Fensters bei offener Tastatur); Messmodus mit Spalte `inh` (15.21); Prüfungen `rolle`/`rollstand`, `checkSearchTop`, `checkFab`, `checkPrint`, Grundregel ‚Seite rollt nie‘, Safari-Modell `tests/safari.mjs` |
 | 4.26.0 | 19.10.2026 | Neben | **R-1.6 neu (A-27):** Messmodus im Mehr-Menü der Seitenleiste – zeichnet am Gerät Scrollstand, `visualViewport`, Lage der Leisten, Fokus und Ereignisse auf, ‚Messung teilen‘ als Textdatei (15.21); Abschnitt 13: Safari schiebt den sichtbaren Bereich bei kurzer Seite (mit Quellen) |
 | 4.25.1 | 19.10.2026 | Korrektur | **A-24:** beim Tippen bleibt das Suchfeld dasselbe Feld mit Fokus (Baustein `setHtml`), Kopf- und Suchzeile zittern am iPhone nicht mehr (15.2, R-2.3); **A-25:** Markierung bei Icons in Kapseln als Kreis 36 × 36 statt 42 × 36 (15.5, R-3.1, Grundregel ‚rund ist ein Kreis‘) |
 | 4.25.0 | 18.10.2026 | Neben | **R-2.3 erweitert (A-21, A-22):** Suche mit mehreren Wörtern (alle müssen vorkommen, Reihenfolge egal) und „…“ als genaue Wortfolge – allgemeine Regel; Lupe am Ende der Kapsel vor ellipsis (15.2, 15.4, 15.5); Bausteine `searchWords`/`findsAll`/`findsAny`/`markWords`, Prüfungen `checkSearchWords`, `checkSearchPlace` |

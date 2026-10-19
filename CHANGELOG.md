@@ -3,6 +3,40 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.27.0 – 19.10.2026
+
+AppDesign 4.27.0 · Designrichtlinie allgemein 4.27.0 · Zusammenarbeit allgemein 2.12.0 · geprüft mit Reiselogbuch 3.25.0
+
+Umbau B (A-28, Variante B1) und Suche nach oben (A-29) – deine Entscheidungen vom 19.10.2026 nach der Messung P-57 und dem
+Versuch M-1. Die Seite rollt nie mehr, nur der Inhalt: Safari hat beim Tippen nichts zu verschieben. In der Nachbildung
+(Safari-Modell) behoben, am Gerät zu bestätigen (P-58).
+
+- **R-2.1 ergänzt, neu 15.22 – Rahmen und Rollbereich:** `#app` ist ein Rahmen aus festen Zeilen (Kopfzeile mit Suchzeile),
+  darunter der Rollbereich `<div class="rolle" id="rolle">`. Der Rahmen ist so hoch wie der sichtbare Bereich (`--vv-h`, B1)
+  und endet bei offener Tastatur über ihr; neben der festen Seitenleiste beginnt er rechts davon. Tabellenköpfe haften mit
+  `top: 0`. Solange ein Fenster offen ist, steht auch der Rollbereich still. Im Druck ist nichts auf Bildschirmhöhe begrenzt.
+- **ui.js – Baustein `rolle`** (`y`, `max`, `rest`, `to(y, weich)`, `by(d)`, `ende()`) und `onRoll(fn)`: Haarlinie und großer
+  Titel (`updateBar`), Nach oben / Ans Ende (`updateFab`, neu `fabTop()`/`fabEnd()`), Liste steht still (R-7.3: `lockPage`,
+  Festhalten), Position beim Öffnen (R-7.4: `openAt`), Drehen und Seitenleiste ein/aus (R-8.1: `rememberTop`/`restoreTop`/
+  `keepPlace`) rechnen nur noch mit dem Rollbereich. Ohne Rollbereich rollt wie bisher das Fenster.
+- **`setHtml`:** der Rollbereich bleibt beim Neuaufbau dasselbe Element (nie aus dem Dokument genommen) – der Rollstand bleibt.
+- **Nach oben / Ans Ende:** steht bei offener Tastatur über ihr (`--vv-bottom`).
+- **Messmodus:** neue Spalte `inh` (Rollstand des Inhalts); scroll-Ereignisse des Rollbereichs mit id.
+- **R-2.3 ergänzt (A-29):** Suche öffnen und ⓧ rollen den Inhalt ganz nach oben, der Fokus bleibt im Feld (in der App).
+- **Prüfungen:** `pruefe.mjs` – `rolle(p, y)`, `rollstand(p)`, `ROLL` (alle Rollstellen der Prüfungen gehen darüber);
+  `hig.mjs` – Grundregel ‚Seite rollt nie‘ (`scrollY` bleibt 0) nach jedem Schritt, `barStill` rollt den Inhalt und versucht,
+  das Fenster zu rollen, ‚Leiste fest‘ erkennt feste Zeilen im Rahmen; `ablauf.mjs` – neu `checkSearchTop` (F-3/F-4),
+  `checkFab` (F-12, auch mit Tastatur), `checkPrint` (F-16, PDF mit mehreren Seiten); `checkListStill` lässt Safari als
+  ungünstigsten Fall auch den Rollbereich rollen; `checkMessung` prüft die Spalte `inh`. **Safari-Modell `tests/safari.mjs`**
+  (zwei Bereiche, Meldung 2 Bilder später, Rollen beim neuen Fokus). Gegenprobe: ohne Druckregel, ohne Rollen nach oben und mit
+  Fenster statt Rollbereich werden die neuen Prüfungen rot.
+- **Designrichtlinie:** Abschnitt 13 berichtigt (zwei Bereiche; Ursache ist jedes Rollen des Fensters bei offener Tastatur,
+  nicht eine kurze Seite), 15.3, 15.21, 15.22, Regelkatalog R-2.1, R-2.3, R-3.2 (`checkFab`), R-6.4 (`checkPrint`).
+- **Zusammenarbeit 2.12.0:** 0 Nr. 11 – jede Bitte, etwas am Gerät zu prüfen oder auszuprobieren, enthält den vollständigen Link
+  und nummerierte Schritte mit ‚Erwartet: …‘.
+- Vorlage `vorlage/index.html` mit Rollbereich. Fall-Liste und Muster: `arbeit/A-28 Fall-Liste.md`, `arbeit/A-28 Muster.html`;
+  feste Fassung `fassung/4.27.0/`.
+
 ## 4.26.0 – 19.10.2026
 
 AppDesign 4.26.0 · Designrichtlinie allgemein 4.26.0 · Zusammenarbeit allgemein 2.11.0 · geprüft mit Reiselogbuch 3.24.0

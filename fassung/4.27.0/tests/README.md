@@ -44,6 +44,14 @@ einer Schaltfläche (Chromium und das Linux-WebKit setzen ihn). **Gegenprobe:** 
 absichtlich falsch, `PRUEF_GEGENPROBE=grundregeln` legt beim ersten Schritt zu breiten Text in den Vordergrund (R-6.3) – der
 Test muss rot werden.
 
+**Rollbereich (seit 4.27.0, A-28):** Die Seite rollt nie, nur der Inhalt (`#app > .rolle`). Prüfungen rollen und messen nur
+über `rolle(p, y)` (y in px, `'ende'`, `'50%'`, `{ um: d }`, `{ vorEnde: d }`) und `rollstand(p)` (`{ y, max, rest, h, fenster }`);
+in der Seite `const r = eval(ROLL)` (`r.y`, `r.max`, `r.to(y)` …). Nie `window.scrollTo` in einer Prüfung.
+
+**Safari-Modell `safari.mjs` (seit 4.27.0, Zusammenarbeit 0 Nr. 20):** das eine Modell für Safari am iPhone nach der Messung
+P-57 – zwei Bereiche (Layout und sichtbar), Tastatur 403 bzw. 276 px, Meldung 2 Bilder später, Rollen bzw. Schieben beim neuen
+Fokus. `await safariModell(p, 'iPhone hoch')`, dann `__safari.tastatur(true)`, `__safari.bilder(true/false)`.
+
 ## Alle Prüfungen einer App `lauf.mjs` (seit 4.13.0, A-05)
 
 Startet alle Prüfskripte parallel (Standard 2 × Kerne), die schnellsten zuerst (gemessene Dauer in `tests/out/dauer.json`
@@ -59,7 +67,7 @@ Darstellung). Selbsttest mit Schein-Tests: `node tests/lauf-selbsttest.mjs` (in 
 
 | Datei | Regeln | Prüft |
 |---|---|---|
-| `ablauf.mjs` (seit 4.12.0) | R-2.3, R-4.4, R-5.2, R-5.3, R-5.5, R-6.4 | Abläufe mit Handlung: Suche (`checkSearch`), Fenster-Kopfzeile (`checkDialogHead`), Großbuchstaben (`checkCapital`), Fehlermeldungen (`checkFieldErrors`), Eingabetaste (`checkEnterDone`, seit 4.19.0), Suche in der Liste (`checkListSearch`, seit 4.23.0), Vorschau (`checkPreview`) |
+| `ablauf.mjs` (seit 4.12.0) | R-2.3, R-3.2, R-4.4, R-5.2, R-5.3, R-5.5, R-6.4 | Abläufe mit Handlung: Suche (`checkSearch`), Suche öffnen und ⓧ nach oben (`checkSearchTop`, seit 4.27.0), Nach oben / Ans Ende im Rollbereich und über der Tastatur (`checkFab`, seit 4.27.0), Drucken der ganzen Ausgabe (`checkPrint`, seit 4.27.0), Fenster-Kopfzeile (`checkDialogHead`), Großbuchstaben (`checkCapital`), Fehlermeldungen (`checkFieldErrors`), Eingabetaste (`checkEnterDone`, seit 4.19.0), Suche in der Liste (`checkListSearch`, seit 4.23.0), Vorschau (`checkPreview`) |
 | `abgleich.mjs` | R-9.2 bis R-9.4 | alle Fälle des Abgleichs in beide Richtungen, kurzes Fenster und Abgleichbericht |
 | `backup.mjs` | R-9.1, R-9.2 | Backup erstellen und laden (Menü, Abfrage mit Kacheln, Abbrechen, unlesbare Datei) |
 | `kontextmenue.mjs` | R-4.2 | Kontextmenü jeder sichtbaren Kachel und des letzten Eintrags, ganz sichtbar, über der Backup-Kachel |

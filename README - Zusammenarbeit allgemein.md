@@ -1,6 +1,6 @@
 # Zusammenarbeit allgemein
 
-**Version 2.11.0** · Stand 19.10.2026
+**Version 2.12.0** · Stand 19.10.2026
 
 Regeln für die Zusammenarbeit mit Claude bei allen iPad-Web-Apps von g811141a.
 Diese Datei liegt im Design-Repo **AppDesign** (g811141a/AppDesign).
@@ -78,7 +78,9 @@ Nutzer sie findet, schneller und günstiger arbeiten.
 11. **Bericht nach einer Version:** 3–5 Sätze, dazu eine **vollständige Aufzählung aller Änderungen**, dann die
     Prüfpunkte Schritt für Schritt – **alle Prüfpunkte vollständig im Chat ausgeschrieben** (jeder Punkt mit
     nummerierten Schritten und ‚Erwartet: …‘, wörtlich wie im CHANGELOG); ein Verweis auf das CHANGELOG oder eine
-    Kurzliste genügt **nie** (seit 2.10.1). Reihenfolge immer: Bericht → Änderungen → Prüfpunkte im Chat → Auswahlfenster. Ist ein Fehler durchgerutscht, steht immer dabei, **warum** die Prüfung ihn
+    Kurzliste genügt **nie** (seit 2.10.1). **Seit 2.12.0 gilt das für jede Bitte, etwas am Gerät zu prüfen oder
+    auszuprobieren** (Muster, Versuch, Messung, Prüfpunkt): im Chat stehen immer der **vollständige Link** und **nummerierte
+    Schritte** mit ‚Erwartet: …‘ (Nutzer 19.10.2026 – in 0016 fehlten sie beim Muster). Reihenfolge immer: Bericht → Änderungen → Prüfpunkte im Chat → Auswahlfenster. Ist ein Fehler durchgerutscht, steht immer dabei, **warum** die Prüfung ihn
     übersehen hat.
     **Rückmeldung als Auswahlfenster (seit 2.10.0):** Der Bericht endet **immer** – direkt nach den ausgeschriebenen
     Prüfpunkten – mit einem Auswahlfenster zur Rückmeldung
@@ -346,6 +348,7 @@ Nutzer sie findet, schneller und günstiger arbeiten.
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 2.12.0 | 19.10.2026 | Neben | 0 Nr. 11 ergänzt: jede Bitte, etwas am Gerät zu prüfen oder auszuprobieren (Muster, Versuch, Messung), enthält im Chat den vollständigen Link und nummerierte Schritte mit ‚Erwartet: …‘ (Nutzer 19.10.2026) |
 | 2.11.0 | 19.10.2026 | Neben | 0 Nr. 20 neu (Abschnitt G): bei Bewegungsfehlern am Gerät zuerst messen, ein Safari-Modell, Bericht ‚in der Nachbildung behoben, am Gerät zu bestätigen‘, Safari-Eigenheiten mit Quelle in Designrichtlinie 13 (Nutzer 19.10.2026) |
 | 2.10.1 | 18.10.2026 | Korrektur | 0 Nr. 11 verschärft: alle Prüfpunkte vollständig Schritt für Schritt im Chat (nie nur Verweis aufs CHANGELOG), danach das Auswahlfenster (Regel war nach 3.22.0 nicht eingehalten) |
 | 2.10.0 | 18.10.2026 | Neben | 0 Nr. 11: Bericht nach einer Version endet immer mit einem Auswahlfenster zur Rückmeldung (Push-Nachricht auf dem iPad, Wunsch des Nutzers) |
