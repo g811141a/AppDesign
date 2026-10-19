@@ -1,5 +1,5 @@
 // AppDesign 4.12.0 · Ablauf-Prüfungen für Regeln, die eine Handlung brauchen (Designrichtlinie allgemein, Abschnitt 17):
-// R-1.6 Messmodus (seit 4.26.0) · R-2.3 Suche (seit 4.23.0 auch in der zentralen Liste, seit 4.25.0 mehrere Wörter und „…“, seit 4.25.1 Suchfeld bleibt beim Tippen) · A-22 Lupe am Ende der Kapsel · R-4.4 Fenster-Kopfzeile · R-5.2 Texteingabe · R-5.3 Fehlermeldungen · R-5.5 Eingabetaste (seit 4.19.0) · R-6.4 Ausgabe und Vorschau · R-7.3 Liste steht still (seit 4.18.0) · R-7.4 Position beim Öffnen und R-8.1 Seitenleiste ein/aus (seit 4.21.0).
+// R-1.6 Messmodus (seit 4.26.0) · R-4.5 Feld über der Tastatur (seit 4.28.0) · R-2.3 Suche (seit 4.23.0 auch in der zentralen Liste, seit 4.25.0 mehrere Wörter und „…“, seit 4.25.1 Suchfeld bleibt beim Tippen) · A-22 Lupe am Ende der Kapsel · R-4.4 Fenster-Kopfzeile · R-5.2 Texteingabe · R-5.3 Fehlermeldungen · R-5.5 Eingabetaste (seit 4.19.0) · R-6.4 Ausgabe und Vorschau · R-7.3 Liste steht still (seit 4.18.0) · R-7.4 Position beim Öffnen und R-8.1 Seitenleiste ein/aus (seit 4.21.0).
 // Jede Funktion bekommt eine Playwright-Seite und gibt eine Liste von Fehlern zurück (leer = in Ordnung), je mit Regelnummer.
 // Einbinden im Prüfskript der App:  import { checkSearch, checkDialogHead } from '../../AppDesign/tests/ablauf.mjs';
 //                                   fehler.push(...await checkSearch(page, { term: 'Sydney' }));
@@ -661,6 +661,54 @@ export async function checkFab(p, { top = '.fab button:first-child', end = '.fab
     if (k.max <= 1 && await sicht()) E('Kapsel ist da, obwohl es nichts zu rollen gibt');
     if (k.max > 1) E(`Vorbereitung: kurz() macht den Inhalt nicht kurz genug (${k.max} px zu rollen)`);
   }
+  return errors;
+}
+
+// R-4.5 (seit 4.28.0, A-35, Fall-Liste arbeit/A-26 A-31 A-34 Fall-Liste.md Abschnitt 10): ein Feld mit Fokus im Inhalt (Rollbereich)
+// steht bei offener Tastatur ganz sichtbar, die Unterkante mindestens 16 px über der Tastatur (F-1, F-2, F-6) – reicht der Platz
+// dafür nicht, direkt unter Kopf- bzw. Suchzeile (F-1a); Kopfzeile fest
+// (R-2.1); ist es schon sichtbar, rollt nichts (F-3); nach dem Schließen der Tastatur bleibt es sichtbar und die Seite rollt nie
+// (F-4). Braucht das Safari-Modell (tests/safari.mjs, safariModell vorher): Safari verschiebt beim Antippen eines Felds unter der
+// Tastatur den sichtbaren Bereich, das Feld bleibt im Rahmen stehen – bis 4.27.1 unter der Tastatur (Messung iPhone quer).
+// vorher: bringt das Feld an seinen Platz (z. B. Inhalt ans Ende rollen), wie am Gerät vor dem Antippen.
+export async function checkFieldVisible(p, { field, vorher = null, where = '' } = {}) {
+  const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}R-4.5 ${t}`);
+  if (!await p.evaluate(() => !!window.__safari)) { E('Vorbereitung: Safari-Modell fehlt (safariModell)'); return errors; }
+  if (vorher) { await vorher(); await wait(p, 400); }
+  // Bildschirm = Lage im Fenster minus offsetTop (Safari misst gegen den sichtbaren Bereich, Chromium gegen das Fenster)
+  const lage = () => p.evaluate(({ field, R }) => {
+    const vv = visualViewport, o = vv.offsetTop, f = document.querySelector(field)?.getBoundingClientRect();
+    const re = document.querySelector('#app > .rolle')?.getBoundingClientRect(), k = document.querySelector('.nb, .pnav')?.getBoundingClientRect();
+    const m = x => x == null ? null : Math.round(x - o);
+    return { oben: m(f?.top), unten: m(f?.bottom), rolle: m(re?.top), kopf: m(k?.top), kb: Math.round(vv.height), y: Math.round(eval(R).y), fenster: Math.round(scrollY),
+      fokus: document.activeElement === document.querySelector(field) };
+  }, { field, R: ROLL });
+  const vorTastatur = await lage();
+  if (vorTastatur.unten == null) { E(`Vorbereitung: ${field} fehlt`); return errors; }
+  if (vorTastatur.unten > vorTastatur.kb || vorTastatur.oben < (vorTastatur.rolle ?? 0)) { E(`Vorbereitung: ${field} ist vor dem Antippen nicht sichtbar (${vorTastatur.oben}–${vorTastatur.unten} px)`); return errors; }
+  await p.evaluate(sel => document.querySelector(sel).focus({ preventScroll: true }), field);
+  await p.evaluate(() => __safari.tastatur(true)); await wait(p, 500);
+  let l = await lage();
+  const w = `mit Tastatur (sichtbar ${l.kb} px)`;
+  // reicht der Platz nicht für 16 px Abstand (iPhone quer mit Suchzeile), steht das Feld direkt unter Kopf- bzw. Suchzeile
+  const eng = l.unten - l.oben > l.kb - 16 - (l.rolle ?? 0);
+  if (eng ? l.unten > l.kb || Math.abs(l.oben - (l.rolle ?? 0)) > 1 : l.unten > l.kb - 16 + 1)
+    E(`F-1 ${field} ${w} nicht ganz über der Tastatur: ${l.oben}–${l.unten} px, Inhalt ab ${l.rolle} px, Tastatur ab ${l.kb} px (${eng ? 'zu wenig Platz: direkt unter der Kopf- bzw. Suchzeile' : 'mindestens 16 px Abstand'})`);
+  if (l.oben < (l.rolle ?? 0) - 1) E(`F-1 ${field} ${w} oben unter der Kopf- bzw. Suchzeile (${l.oben} px, Inhalt ab ${l.rolle} px)`);
+  if (Math.abs(l.kopf ?? 0) > 1) E(`F-1 ${w}: Kopfzeile verschoben (${l.kopf} px statt 0, R-2.1)`);
+  if (!l.fokus) E(`F-1 ${field} ${w} hat den Fokus verloren`);
+  // F-3: schon sichtbar – eine weitere Meldung von Safari rollt nichts
+  const y = l.y;
+  await p.evaluate(() => { visualViewport.dispatchEvent(new Event('resize')); visualViewport.dispatchEvent(new Event('scroll')); }); await wait(p, 400);
+  l = await lage();
+  if (Math.abs(l.y - y) > 1) E(`F-3 ${field} ${w} schon sichtbar, trotzdem rollt der Inhalt (${y} → ${l.y} px)`);
+  // F-4: Tastatur zu – das Feld bleibt sichtbar, die Seite rollt nie
+  await p.evaluate(sel => document.querySelector(sel).blur(), field);
+  await p.evaluate(() => __safari.tastatur(false)); await wait(p, 500);
+  l = await lage();
+  if (l.unten > l.kb || l.oben < (l.rolle ?? 0) - 1) E(`F-4 ${field} nach dem Schließen der Tastatur nicht mehr sichtbar (${l.oben}–${l.unten} px, sichtbar ${l.kb} px)`);
+  if (Math.abs(l.kopf ?? 0) > 1) E(`F-4 nach dem Schließen der Tastatur: Kopfzeile verschoben (${l.kopf} px)`);
+  if (l.fenster) E(`F-4 die Seite rollt (scrollY ${l.fenster}) – nur der Inhalt darf rollen (R-2.1)`);
   return errors;
 }
 

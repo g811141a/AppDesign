@@ -3,6 +3,37 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.28.0 – 20.10.2026
+
+AppDesign 4.28.0 · Designrichtlinie allgemein 4.28.0 · Zusammenarbeit allgemein 2.14.1 · geprüft mit Reiselogbuch 3.26.0
+
+Bündel aus der Messung iPhone quer vom 19.10.2026 (A-35 und A-31, dein Ja vom 20.10.2026; A-26 entfällt, A-34 war schon
+entschieden). Ein Feld unten im Inhalt verschwand beim Antippen unter der Tastatur – jetzt rollt der Inhalt es darüber. Dazu läuft
+die Messung selbst als Prüfung mit. In der Nachbildung behoben, am Gerät zu bestätigen (Reiselogbuch P-60).
+
+- **R-4.5 ergänzt (allgemeine Regel, A-35):** Ein Feld mit Fokus steht immer ganz über der Tastatur – in Fenstern und im Inhalt,
+  16 px darüber; reicht der Platz nicht (iPhone quer mit Suchzeile: 55 px Inhalt), direkt unter Kopf- bzw. Suchzeile (Abschnitt 7).
+- **ui.js – `fieldIntoView`:** sobald Safari die Tastatur meldet (`visualViewport` resize/scroll) und beim Wechsel des Felds rollt
+  der Inhalt, bis das Feld mit Fokus ganz sichtbar ist; nie gegen das Wischen des Nutzers. Felder in Fenstern wie bisher.
+- **Neue Safari-Eigenheit (13):** Liegt ein Feld dort, wo die Tastatur aufgeht, verschiebt Safari nur den sichtbaren Bereich (quer
+  232 px) und rollt den Inhalt nicht – weil der Rahmen dem sichtbaren Bereich folgt, blieb das Feld unter der Tastatur (seit 4.27.0).
+  Die Zifferntastatur lässt quer 170 statt 126 px sichtbar.
+- **Safari-Modell (`tests/safari.mjs`):** Zifferntastatur quer, Verschieben des sichtbaren Bereichs beim Antippen eines Felds unter
+  der Tastatur, `__safari.setze({ h, top })` für das Abspielen.
+- **Messung abspielen (A-31, 15.21):** neu `tests/abspielen.mjs` – `lies` (Messdatei mit Fehlern samt Zeilennummer), `ansicht`
+  (Größe und Darstellung des Geräts), `spieleAb` (Tippen, Eingaben, Tastatur schließen; Safari meldet Höhe und `offsetTop` wie
+  gemessen; je Schritt Kopf- und Suchzeile ± 1 px und Fokus wie gemessen). Messdateien in `tests/messungen/`, die erste:
+  `2026-10-19 iPhone quer Suche Fenster Gesamtausgaben.txt`.
+- **Prüfungen:** `checkFieldVisible` in `ablauf.mjs` (F-1 bis F-4: ganz über der Tastatur, schon sichtbar rollt nichts, nach dem
+  Schließen sichtbar, Seite rollt nie). Im Reiselogbuch `ablauf-feld-tastatur.mjs` (Ablauf der Messung) und `ablauf-abspielen.mjs`
+  (Messung nachgespielt, F-11; Gegenprobe M-5: um 20 px verschoben wird rot).
+- **Warum die Prüfung es übersehen hat:** `checkEnterDone` tippt Gesamtausgaben an, misst aber nicht, ob das Feld über der Tastatur
+  sichtbar ist; das Safari-Modell kannte das Verschieben des sichtbaren Bereichs zum angetippten Feld nicht.
+- **Gegenprobe:** ohne `fieldIntoView` sind `ablauf-feld-tastatur.mjs` (4 Fehler: Feld 781–828 px bzw. bis 369 px, Tastatur ab 449
+  bzw. 161 px) und `ablauf-abspielen.mjs` (15 Fehler) rot, mit der Korrektur grün (Chromium und WebKit).
+- **A-26 entfällt (E-62):** Datumsfelder bleiben, wie sie sind (Safari meldet nur den Wert – nicht alles wäre machbar).
+- Fall-Liste `arbeit/A-26 A-31 A-34 Fall-Liste.md` (Abschnitte 2.3, 10–13); feste Fassung `fassung/4.28.0/`.
+
 ## 4.27.1 – 19.10.2026
 
 AppDesign 4.27.1 · Designrichtlinie allgemein 4.27.1 · Zusammenarbeit allgemein 2.12.0 · geprüft mit Reiselogbuch 3.25.1

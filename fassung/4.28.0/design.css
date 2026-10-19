@@ -1,0 +1,518 @@
+/* AppDesign 4.28.0 · design.css – gemeinsame Gestaltung der iPad-Web-Apps von g811141a (Apple-like)
+   Einbinden im <head> vor dem eigenen <style> der App:  <link rel="stylesheet" href="../AppDesign/fassung/X.Y.Z/design.css"> (feste Fassung, R-10.3)
+   Farben als Variablen auf :root, Dunkelmodus über data-theme="dark" (setzt ui.js / applyTheme).
+   Komponenten: Schaltflächen, Suchfeld, Kapsel, Eingabefelder, Datumsfelder, Kopfzeile, Seitenleiste,
+   Menü, Sprechblase, schwebende Schaltflächen, Fenster, Kasten (Schritt), Auswahl-Kapsel, Schalter,
+   Options-Kapsel; seit 4.1.0 iPhone-Ansicht (html.phone: Seitenkopf, großer Titel, Liste, Kasten, untere Leiste). Regeln dazu: README - Designrichtlinie allgemein.md */
+/* Farben im Apple-Look: Hintergrund Hellgrau, Kästen weiß ohne Rand, schwebende Schaltflächen */
+:root {
+  --ad-version: "4.28.0";   /* R-10.3: Version der Bausteine, die App prüft sie beim Start */
+  --bg: #f2f2f7;
+  --card: #ffffff;
+  --ink: #1c1c1e;
+  --muted: #6e6e73;
+  --line: #d1d1d6;
+  --accent: #007aff;
+  --accent-ink: #ffffff;
+  --sw-on: #34c759;
+  --sw-off: #e9e9eb;
+  --danger: #b3261e;
+  --danger-fill: #d70015;
+  --warn: #c07a12;
+  --focus: #fff1c2;
+  --row-hover: #ececf1;
+  --th-bg: #e5e5ea;
+  --th-line: #c7c7cc;
+  --zebra: #f7f7f9;
+  --field-line: #c7c7cc;
+  --dlg-bg: #f2f2f7;
+  --dlg-card: #ffffff;
+  --dlg-field: #ffffff;
+  --btn: #f9f9f9;
+  --btn-rim: #ffffff;
+  --sel-bg: #dcebff;
+  --mark: #ffe45c;
+  --mark-cur: #ffc46b;
+  --mark-cur-ink: inherit;
+  --float: 0 3px 28px rgba(0,0,0,.16);
+  --glow-accent: 0 2px 4px rgba(0,0,0,.10), 0 5px 18px rgba(0,122,255,.50);
+  --table-shadow: 0 1px 3px rgba(0,0,0,.12), 0 8px 24px rgba(0,0,0,.12);
+  --glow-danger: 0 2px 4px rgba(0,0,0,.12), 0 5px 14px rgba(215,0,21,.35);
+  --rim-color: rgba(255,255,255,.5);
+  --bar-h: 64px;
+  --side-w: 0px;
+  --vv-top: 0px;
+  --vv-bottom: 0px;
+  color-scheme: light;
+}
+:root[data-theme="dark"] {
+  --bg: #000000; --card: #1c1c1e; --ink: #ffffff; --muted: #98989d; --line: #38383a;
+  --accent: #0a84ff; --accent-ink: #ffffff; --sw-on: #30d158; --sw-off: #39393d; --danger: #ff6961; --danger-fill: #d70015; --warn: #e2a64b;
+  --focus: #45391a; --row-hover: #2c2c2e;
+  --th-bg: #2c2c2e; --th-line: #48484a; --zebra: #161618; --field-line: #48484a;
+  --dlg-bg: #1c1c1e; --dlg-card: #2c2c2e; --dlg-field: #1c1c1e;
+  --btn: #3a3a3c; --btn-rim: rgba(255,255,255,.16); --sel-bg: #10335c;
+  --mark: #8a6d00; --mark-cur: #e08a1e; --mark-cur-ink: #000;
+  --float: 0 3px 28px rgba(0,0,0,.7);
+  --glow-accent: 0 2px 4px rgba(0,0,0,.5), 0 5px 18px rgba(10,132,255,.50);
+  --table-shadow: 0 0 0 .5px rgba(255,255,255,.12), 0 1px 3px rgba(0,0,0,.6), 0 8px 24px rgba(0,0,0,.6);
+  --glow-danger: 0 2px 4px rgba(0,0,0,.5), 0 5px 16px rgba(255,69,58,.35);
+  --rim-color: rgba(255,255,255,.4);
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; background: var(--bg); color: var(--ink); }
+/* Seit 4.5.0: Leisten bewegen sich nie – die Seite federt am Rand nicht nach (iPad und iPhone) */
+html, body { overscroll-behavior: none; }
+body {
+  font: 17px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  padding: 0 max(16px, env(safe-area-inset-right)) 100px max(16px, env(safe-area-inset-left));
+  -webkit-text-size-adjust: 100%;
+}
+h1 { font-size: 28px; margin: 12px 0 6px; }
+h2 { font-size: 20px; margin: 28px 0 8px; }
+a { color: var(--accent); }
+button, input, textarea { font: inherit; color: inherit; }
+/* Schwebende Schaltfläche: fast weiße Fläche, weiße Lichtkante (Haarlinie), weicher Schatten, Kapselform */
+button {
+  border: .5px solid var(--btn-rim); background: var(--btn); border-radius: 22px; box-shadow: var(--float);
+  padding: 8px 14px; cursor: pointer; min-height: 44px; line-height: 20px;
+}
+button:disabled, button[aria-disabled="true"] { opacity: .4; cursor: default; }
+button { display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
+button[hidden] { display: none; }
+/* Seit 4.7.0: Kein Text ragt über seine Zelle oder Kachel hinaus – zu lange Wörter brechen im Wort um (R-6.3);
+   in Tabellen sorgt breakable() in ui.js für Umbruchstellen in sehr langen Wörtern */
+td, th, .ln .t, dd, .box .kv .v, .irow .t, .side-row .t, .fazit-box, .bhint, .bnote, .msg-text, .pop p { overflow-wrap: anywhere; }
+/* Seit 4.3.0: Doppeltippen vergrößert nie die Ansicht (Zoomen mit zwei Fingern bleibt möglich) */
+* { touch-action: manipulation; }
+/* Seit 4.2.0: kein Fokus-Rahmen beim Antippen oder Öffnen eines Fensters (nur bei Tastatur-Bedienung) */
+button:focus:not(:focus-visible), dialog:focus { outline: none; }
+/* Seit 4.2.0: Was im Vordergrund ist, bekommt jedes Wischen – die Seite dahinter bewegt sich nicht */
+html.locked, html.locked body { overflow: hidden; }
+html.locked .rolle { overflow: hidden; }   /* seit 4.27.0 (A-28): auch der Rollbereich steht still, solange ein Fenster offen ist */
+dialog, .dlg-body, .menu, #side { overscroll-behavior: contain; }
+.layer { touch-action: none; }
+.ic { width: 20px; height: 20px; flex: none; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.ic.red { color: var(--danger); }
+button.primary .ic.red { color: inherit; }
+/* Komponente Suchfeld: schwebende Kapsel mit Lupe, Trefferanzeige "3 von 57" und x; daneben Treffer-Navigation */
+.searchbox { position: relative; display: inline-flex; align-items: center; flex: 0 1 200px; }
+.searchbox.active { flex-basis: 300px; }
+.searchbox > .ic { position: absolute; left: 12px; color: var(--muted); pointer-events: none; }
+.searchbox input[type=search] { width: 100%; height: 44px; border-radius: 22px; padding: 0 14px 0 38px;
+  background: var(--btn); border: .5px solid var(--btn-rim); box-shadow: var(--float); -webkit-appearance: none; appearance: none; }
+.searchbox input[type=search]::-webkit-search-cancel-button { display: none; }
+/* Wie Apple: kein blauer Fokus-Rahmen – der Cursor zeigt, dass man tippen kann */
+.searchbox input[type=search]:focus, .searchbox input[type=search]:focus-visible { outline: none; }
+.searchbox .smeta { position: absolute; right: 6px; display: flex; align-items: center; gap: 4px; }
+.searchbox .scount { font-size: 15px; color: var(--muted); font-variant-numeric: tabular-nums; pointer-events: none; }
+/* Antippfläche 44 px (unsichtbar), das Zeichen bleibt so groß und am selben Platz wie bisher */
+.searchbox .sclear { width: 44px; height: 44px; margin: -6px; min-height: 0; min-width: 0; padding: 0; border: none; box-shadow: none; background: none; color: #a1a1a6; border-radius: 50%; }
+.searchbox .sclear svg { width: 20px; height: 20px; }
+/* Komponente Kapsel: mehrere Schaltflächen in einer schwebenden Kapsel */
+.grp, .navgrp { display: inline-flex; flex: none; height: 44px; border-radius: 22px; background: var(--btn); border: .5px solid var(--btn-rim); box-shadow: var(--float); }
+/* Alle Kapseln gleich gebaut: Schaltflächen genau so hoch wie der Innenraum (44 px minus Rand); die Markierung
+   „gedrückt“ ist eine eigene Kapsel mit 3 px Luft und liegt damit immer innerhalb des Randes. */
+.grp button, .navgrp button { background: none; border: none; box-shadow: none; width: 48px; min-width: 48px; padding: 0; border-radius: 22px;
+  height: 100%; min-height: 0; position: relative; isolation: isolate; }
+.grp button.txt { width: auto; padding: 0 14px; }
+.grp button.fill { background: none; color: var(--accent-ink); }
+.grp button.fill::before { content: ''; position: absolute; z-index: -1; inset: 3px; border-radius: 999px; background: var(--accent); }
+.grp button:disabled, .navgrp button:disabled { opacity: .3; }
+/* Gedrückt: Die Schaltfläche, von der ein offenes Menü, eine Sprechblase oder ein Fenster kommt, ist blau hinterlegt. */
+button.on { background: var(--sel-bg); border-color: var(--accent); }
+.grp button.on, .navgrp button.on { background: none; box-shadow: none; }
+.grp button.on::before, .navgrp button.on::before { content: ''; position: absolute; z-index: -1; inset: 3px; border-radius: 999px;
+  background: var(--sel-bg); box-shadow: inset 0 0 0 .5px var(--accent); }
+/* Seit 4.25.1 (A-25): bei Icons ist die Markierung ein Kreis 36 × 36 wie bei Wetter und Smileys (Tapback), bei Text eine Kapsel –
+   vorher 42 × 36 (eiförmig). */
+.grp button:not(.txt).on::before, .navgrp button:not(.txt).on::before, .grp button:not(.txt).fill::before {
+  inset: 50% auto auto 50%; width: 36px; height: 36px; transform: translate(-50%, -50%); }
+.round { width: 44px; min-width: 44px; height: 44px; padding: 0; border-radius: 50%; flex: none; }
+/* Grün gefüllt = Hauptaktion; grün getönt mit Rand = eingeschaltet; rot gefüllt = Löschen (jeweils mit farbigem Schein) */
+button.primary { background: var(--accent); color: var(--accent-ink); border: .5px solid var(--rim-color); box-shadow: var(--glow-accent); }
+button.link { border: none; background: none; box-shadow: none; color: var(--accent); padding: 6px 8px; }
+button.danger { background: var(--danger-fill); color: #fff; border: .5px solid var(--rim-color); box-shadow: var(--glow-danger); }
+button.danger .ic.red { color: inherit; }
+/* Seit 4.9.0: zerstörende Aktion in einer Abfrage mit mehreren Wegen (rote Schrift, wie bei Apple) */
+button.danger-text { color: var(--danger); }
+:root[data-theme="dark"] button.danger-text { color: #ff8a82; }   /* Kontrast 4,5 : 1 auf der dunklen Schaltfläche */
+button[aria-pressed="true"] { background: var(--sel-bg); border: .5px solid var(--accent); color: var(--ink); box-shadow: var(--glow-accent); }
+input[type=text], input[type=search], input[type=date], input[type=number], textarea {
+  width: 100%; border: .5px solid var(--btn-rim); border-radius: 10px; background: var(--card); box-shadow: var(--float);
+  padding: 10px 12px; min-height: 44px;
+}
+input:disabled { opacity: .6; }
+input.invalid { border: 1px solid var(--danger); }
+.step.off .hint { opacity: .5; }
+/* Textfelder wachsen mit dem Inhalt; man muss nie innerhalb eines Feldes scrollen. */
+textarea { resize: none; overflow: hidden; min-height: 96px; }
+/* Datumsfelder sind so breit wie das Datum (wird beim Öffnen berechnet). */
+input[type=date] { -webkit-appearance: none; appearance: none; text-align: left; }
+input[type=date]::-webkit-date-and-time-value { text-align: left; }
+dialog input[type=date] { flex: none; }
+.dates { display: flex; align-items: center; gap: 10px 24px; flex-wrap: wrap; }
+.dates .dl { color: var(--muted); min-width: 2.2em; }
+/* Seit 4.3.0: Bezeichnung und Feld gehören zusammen (.pair) – reicht der Platz nicht, bricht die Zeile vor der Bezeichnung um */
+.dates .pair { display: inline-flex; align-items: center; gap: 10px; flex: none; }
+.datebox { position: relative; display: inline-flex; align-items: center; flex: none; }
+.datebox input[type=date] { padding-right: 40px; }
+.datebox > .ic { position: absolute; right: 12px; pointer-events: none; }
+.datebox input::-webkit-calendar-picker-indicator { position: absolute; inset: 0; width: auto; height: auto; opacity: 0; cursor: pointer; }
+label { display: block; font-weight: 600; margin: 0 0 6px; }
+.muted { color: var(--muted); }
+.spacer { flex: 1; }
+
+/* Komponente Kopfzeile: fest oben, Titel in der Mitte, rechts eine Kapsel; die Suche erscheint als zweite Zeile */
+/* Seit 4.5.1 fest positioniert (nicht sticky), damit sie auch beim Nachfedern der Seite stehen bleibt;
+   neben der festen Seitenleiste beginnt sie rechts davon. Der Inhalt beginnt unter ihr (--bar-h). */
+.nb { position: fixed; top: var(--vv-top); left: 0; right: 0; z-index: 6; background: var(--bg); margin: 0;
+  padding: calc(env(safe-area-inset-top) + 10px) max(16px, env(safe-area-inset-right)) 10px max(16px, env(safe-area-inset-left)); border-bottom: .5px solid transparent; }
+body.docked .nb { left: calc(var(--side-w) + max(10px, env(safe-area-inset-left)) + 4px); padding-left: 16px; }
+#app:has(> .nb) { padding-top: var(--bar-h); }
+.nb.line { border-bottom-color: var(--line); }
+.nb1 { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 12px; min-height: 44px; }
+.nb1 > .r { justify-self: end; }
+.nb-title { font-weight: 600; font-size: 17px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.nb2 { display: flex; gap: 12px; align-items: center; margin-top: 10px; }
+.nb2 .searchbox { flex: 1 1 auto; }
+.emptymain { margin-top: 120px; text-align: center; color: var(--muted); font-size: 19px; }
+
+/* Rahmen und Rollbereich (seit 4.27.0, A-28, R-2.1): Die Seite rollt nie, nur der Inhalt. #app ist ein Rahmen aus festen
+   Zeilen – Kopfzeile (.nb bzw. .pnav, mit Suchzeile), darunter der Rollbereich .rolle. Der Rahmen ist so hoch wie der
+   sichtbare Bereich (--vv-h, setzt ui.js) und endet bei offener Tastatur über ihr (B1). Neben der festen Seitenleiste beginnt
+   er rechts davon. Tabellenköpfe haften im Rollbereich mit top: 0. */
+html:has(#app > .rolle), html:has(#app > .rolle) body { height: 100%; overflow: hidden; }
+body:has(> #app > .rolle) { padding: 0; }
+#app:has(> .rolle) { position: fixed; top: var(--vv-top); left: 0; right: 0; height: var(--vv-h, 100dvh); display: flex; flex-direction: column; padding: 0; }
+body.docked #app:has(> .rolle) { left: calc(var(--side-w) + max(10px, env(safe-area-inset-left)) + 4px); }
+#app > .rolle ~ .nb, #app > .nb:has(~ .rolle), #app > .pnav:has(~ .rolle) { position: relative; top: 0; left: 0; flex: none; }
+.rolle { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch;
+  padding: 0 max(16px, env(safe-area-inset-right)) 0 max(16px, env(safe-area-inset-left)); }
+/* Seit 4.27.1 (A-33): der Abstand unter dem Inhalt (100 px, Platz für die Kapsel) als Platzhalter am Ende statt als Innenabstand –
+   so wird der Rollbereich auch bei sehr niedrigem sichtbarem Bereich (iPhone quer mit Tastatur) nicht höher als sein Platz. */
+.rolle::after { content: ''; display: block; height: 100px; }
+body.docked .rolle { padding-left: 16px; }
+@media print {
+  html:has(#app > .rolle), html:has(#app > .rolle) body { height: auto; overflow: visible; }
+}
+
+/* Komponente Seitenleiste: quer fest links neben dem Inhalt, im Hochformat über den Inhalt gelegt */
+/* Schwebend wie in Safari: runde Ecken, Lichtkante und Schatten wie die Schaltflächen, Abstand zum Rand */
+body.docked { padding-left: calc(var(--side-w) + max(10px, env(safe-area-inset-left)) + 20px); }
+#side { position: fixed; z-index: 7; top: calc(env(safe-area-inset-top) + 10px); bottom: calc(env(safe-area-inset-bottom) + 4px); left: max(10px, env(safe-area-inset-left));
+  width: max-content; min-width: 340px; max-width: 420px; overflow: hidden;
+  background: var(--bg); border: .5px solid var(--btn-rim); border-radius: 22px; box-shadow: var(--float);
+  display: flex; flex-direction: column; padding: 10px 12px 14px; }
+/* Seit 4.12.1 (R-2.1): Bei offener Tastatur verschiebt Safari den sichtbaren Bereich – die Seitenleiste wandert wie die
+   Kopfzeile mit (--vv-top), sonst rückt sie auf dem Bildschirm nach oben. */
+#side { transform: translateY(var(--vv-top)); }
+#side[hidden] { display: none; }
+#side.over { z-index: 25; }
+/* Seit 4.7.0: Auf dem iPhone ist die Seitenleiste die Startliste – derselbe Baustein, nur bildschirmfüllend (R-1.1) */
+#side.page { inset: 0; width: auto; min-width: 0; max-width: none; border: none; border-radius: 0; box-shadow: none; z-index: 5;
+  padding: calc(env(safe-area-inset-top) + 8px) max(16px, env(safe-area-inset-right)) 0 max(16px, env(safe-area-inset-left)); }
+#side.page .side-head { margin: -8px -16px 0; padding: calc(env(safe-area-inset-top) + 8px) 16px 8px 20px; }
+#side.page #sideHide { display: none; }
+#side.page .side-list { margin: 0 -16px; padding: 6px 16px 160px; }
+.side-shade { position: fixed; inset: 0; z-index: 24; background: rgba(0,0,0,.25); }
+/* Seit 4.3.0: Seitenleiste und iPhone-Startliste gleich – Kopf mit Titel links bleibt stehen, die Einträge sind Kacheln
+   und laufen darunter durch, der Backup-Hinweis ist eine gelbe Kachel fest am unteren Rand */
+.side-head { display: flex; align-items: center; gap: 12px; min-height: 44px; padding-left: 8px;
+  flex: none; background: var(--bg); margin: -10px -12px 0; padding: 10px 12px 10px 20px; }
+/* Seit 4.5.1: Nur die Kacheln scrollen; Kopf und Backup-Kachel liegen außerhalb und bewegen sich nie */
+#side .side-list { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: none; margin: 0 -12px -14px; padding: 6px 12px 150px; }
+/* Seit 4.7.0: Die Backup-Kachel liegt fest über dem unteren Ende der Liste; die Kacheln laufen dahinter aus (wie auf dem iPhone) */
+#side .side-foot { position: absolute; left: 0; right: 0; bottom: 0; z-index: 2; padding: 30px 12px 14px;
+  background: linear-gradient(to bottom, transparent, var(--bg) 40px); pointer-events: none; }
+#side.page .side-foot { padding: 30px max(16px, env(safe-area-inset-right)) calc(10px + env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left)); }
+#side .side-foot > * { pointer-events: auto; }
+.side-head h2 { margin: 0 4px 0 0; flex: 1; font-size: 20px; white-space: nowrap; }
+#side .side-row { display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; border: none; background: var(--card); border-radius: 22px;
+  box-shadow: var(--table-shadow); padding: 12px 16px; margin-bottom: 10px; min-height: 60px;
+  -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
+#side .side-row .t { flex: 1; min-width: 0; }
+#side .side-row > .ic { color: var(--th-line); }
+#side .side-row.current > .ic { color: rgba(255,255,255,.85); }
+/* Langes Drücken (Kontextmenü): Eintrag blau getönt, solange das Menü bzw. die Abfrage offen ist */
+#side .side-row.on { background: var(--sel-bg); box-shadow: inset 0 0 0 .5px var(--accent); color: var(--ink); }
+#side .side-row.on small { color: var(--muted); }
+.side-row b { display: block; font-size: 17px; font-weight: 600; overflow-wrap: anywhere; }
+.side-row small { display: block; color: var(--muted); font-size: 15px; white-space: nowrap; }
+/* Seit 4.9.0: dritte Zeile der Kachel – ‚geändert am … · Gerät‘ */
+.side-row small.chg { font-size: 13px; margin-top: 2px; }
+#side .side-row.current { background: var(--accent); color: var(--accent-ink); box-shadow: var(--glow-accent); }
+.side-row.current small { color: rgba(255,255,255,.85); }
+.side-empty { color: var(--muted); padding: 8px 12px; }
+.bhint { margin-top: auto; padding: 16px 12px 0; font-size: 13px; color: var(--muted); display: flex; flex-direction: column; gap: 10px; align-items: flex-start; }
+.bhint button { color: var(--ink); font-size: 17px; }
+#side .bhint { margin: 0; padding: 12px 16px; border-radius: 22px; background: var(--focus); color: var(--ink);
+  box-shadow: var(--float); }
+
+/* Backup-Hinweis gelb getönt mit blau gefülltem Knopf, damit man die Funktion sofort erkennt (iPad und iPhone) */
+#side .bhint button, .bbar .bnote button { background: var(--accent); color: var(--accent-ink); border: .5px solid var(--rim-color); box-shadow: var(--glow-accent); }
+/* Seit 4.4.0: Die Backup-Kachel steht immer da; gelb nur, solange heute noch kein Backup erstellt wurde (.ok = erledigt) */
+#side .bhint.ok, .bbar .bnote.ok { background: var(--card); color: var(--muted); }
+#side .bhint.ok button, .bbar .bnote.ok button { background: var(--btn); color: var(--ink); border-color: var(--btn-rim); box-shadow: var(--float); }
+/* Seit 4.4.0: Anzahl der Einträge klein und grau unter dem Titel (Seitenleiste und iPhone-Startliste) */
+.side-head .ttl { flex: 1; min-width: 0; }
+.side-head .ttl h2 { margin: 0; }
+.side-head small, .pnav-head small { display: block; font-size: 13px; font-weight: 400; color: var(--muted); line-height: 1.2; }
+/* Seit 4.23.0 (A-19, R-2.3): Suchzeile der zentralen Liste unter dem Kopf (wie 15.2, ohne Pfeile); bleibt stehen wie der Kopf */
+#side .side-search { flex: none; margin: 0 0 8px; }
+
+/* Komponente Menü: Karte mit Schatten wie die Schaltflächen, Icons vor dem Text; antippen daneben schließt */
+.layer { position: fixed; inset: 0; z-index: 29; }
+.menu { position: fixed; z-index: 30; width: 340px; background: var(--card); border-radius: 14px; border: .5px solid var(--btn-rim); box-shadow: var(--float); overflow: hidden; }
+.menu .mi { display: flex; justify-content: flex-start; align-items: center; gap: 10px; width: 100%; min-height: 46px; padding: 0 16px; font-size: 17px; text-align: left;
+  border: none; border-radius: 0; background: none; box-shadow: none; }
+/* Wie Apple (iOS 26): keine Linien zwischen einzelnen Punkten – nur die eingerückte Linie zwischen Gruppen */
+.menu .mi.red { color: var(--danger); }
+.menu .tick { width: 20px; display: inline-flex; color: var(--accent); }
+.menu .mi .val { margin-left: auto; color: var(--muted); font-size: 15px; }
+.menu .mi .chev { margin-left: auto; color: var(--muted); }
+.menu .mi .val + .chev { margin-left: 6px; }
+.menu .mi.on { background: var(--sel-bg); }
+.menu .mi.on .val { color: var(--ink); }
+.menu.submenu { width: 260px; }
+.menu .sub { font-size: 13px; color: var(--muted); padding: 0 16px 10px 46px; margin-top: -8px; }
+/* Gruppen getrennt durch eine dünne, links und rechts eingerückte Linie (wie Apple, iOS 26) */
+.menu .sep, .menu .line { height: 0; border-top: 1px solid var(--line); margin: 6px 20px; background: none; }
+.menu .note { font-size: 13px; color: var(--muted); padding: 10px 16px; }
+/* 'line': durchgehender Strich vor den technischen Informationen, diese ohne Leerzeilen */
+.menu .line ~ .note { padding: 2px 16px; line-height: 1.35; }
+.menu .line + .note { padding-top: 8px; }
+.menu .line ~ .note:last-child { padding-bottom: 10px; }
+/* Komponente Sprechblase (Abfrage): an der angetippten Schaltfläche; roter Knopf, darunter der Weg zurück */
+.pop { position: fixed; z-index: 30; width: 320px; background: var(--card); border-radius: 14px; border: .5px solid var(--btn-rim); box-shadow: var(--float); padding: 16px; text-align: center; }
+.pop p { margin: 0 0 14px; font-size: 15px; color: var(--muted); }
+.pop .btns { display: flex; flex-direction: column; gap: 10px; }
+.pop .btns button { width: 100%; }
+/* Seit 4.10.0 (R-9.2): Sprechblase mit Kacheln – je Weg eine Kachel mit Erklärung (gleiche Schrift wie der Text oben) und Knopf */
+.pop.wide { width: min(400px, calc(100vw - 24px)); }
+.pop .tiles { display: flex; flex-direction: column; gap: 10px; margin-bottom: 10px; }
+.pop .tile { background: var(--bg); border-radius: 14px; padding: 12px; text-align: left; }
+.pop .tile p { margin: 0 0 10px; font-size: 15px; color: var(--muted); }
+.pop .tile button { width: 100%; }
+/* Seit 4.9.1: iPhone quer – Sprechblase breiter, damit sie ohne Wischen ganz zu sehen ist (R-4.5) */
+@media (max-height: 500px) { .pop, .pop.wide { width: min(640px, calc(100vw - 24px)); } .pop .btns, .pop .tiles { flex-direction: row; } .pop .tile { flex: 1; display: flex; flex-direction: column; justify-content: space-between; } }
+:root[data-theme="dark"] .menu, :root[data-theme="dark"] .pop { background: #2c2c2e; }
+
+.msg-text { padding: 8px 2px; }
+
+/* Seit 4.3.0: Nach oben / Ans Ende in einer senkrechten Kapsel */
+.fab { position: fixed; right: max(16px, env(safe-area-inset-right)); bottom: calc(16px + max(var(--vv-bottom), env(safe-area-inset-bottom))); display: flex; flex-direction: column; z-index: 4;
+  border-radius: 22px; background: var(--btn); border: .5px solid var(--btn-rim); box-shadow: var(--float); }
+.fab button { padding: 0; font-size: 20px; background: none; border: none; box-shadow: none; height: 48px; }
+.fab[hidden] { display: none; }
+
+/* Dialoge */
+dialog {
+  border: none; border-radius: 18px; padding: 0;
+  width: fit-content; min-width: min(480px, 90vw); max-width: 90vw;
+  max-height: var(--dlg-max, calc(100vh - 40px)); background: var(--dlg-bg); color: var(--ink);
+  box-shadow: 0 20px 60px rgba(0,0,0,.3);
+}
+dialog.wide { width: min(1100px, 100vw - 24px); max-width: none; }
+dialog::backdrop { background: rgba(0,0,0,.35); }
+dialog form { display: flex; flex-direction: column; max-height: var(--dlg-max, calc(100vh - 40px)); }
+.dlg-head { flex: none; }
+.dlg-head { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-bottom: .5px solid var(--line); }
+.dlg-head h3 { margin: 0; flex: 1; text-align: center; font-size: 19px; min-height: 28px; line-height: 28px; }
+/* Fenster-Kopfzeile: rundes x links, Titel (mit Zusatzzeile) in der Mitte, rechts weitere Schaltflächen und rundes Häkchen.
+   Das Häkchen ist grau, bis etwas geändert wurde; dann blau. */
+.dlg-head .hl, .dlg-head .hr { flex: 1 1 0; display: flex; align-items: center; gap: 12px; }
+.dlg-head .hr { justify-content: flex-end; }
+.dlg-head .mid { flex: none; max-width: 60%; text-align: center; }
+.dlg-head .mid .sub { display: block; font-size: 13px; color: var(--muted); line-height: 1.2; }
+.dlg-head .mid .sub:empty { display: none; }
+#msg { width: 360px; min-width: 0; }
+#msg .dlg-head { border: none; }
+#msg .msg-text { text-align: center; padding: 0 4px 10px; }
+/* Seit 4.11.0 (R-9.4): kleines Fenster mit einer blauen Schaltfläche unter dem Text (z. B. ‚Abgleichbericht anzeigen‘) */
+#msg.wide { width: min(600px, calc(100vw - 32px)); }
+#msg .msg-btns { display: flex; justify-content: center; padding: 2px 0 6px; }
+#msg .msg-btns button { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 20px; border-radius: 999px; font-size: 17px; }
+/* Abgleichbericht als Vorschau wie die Ausgabe der App: immer hell, volle Breite, seitlich wischen statt umbrechen */
+.dlg-body.sync-preview { margin: 0; padding: 24px; background: #fff; color: #000; color-scheme: light; overflow: auto; }
+.dlg-body.sync-preview .sync-report { min-width: 760px; }
+html.phone .dlg-body.sync-preview { padding: 16px; }
+/* Seit 4.11.2: Drucken (PDF) – nur der Inhalt von #printout, alles andere ausgeblendet (z. B. Abgleichbericht). */
+#printout { display: none; }
+@media print {
+  html, body { background: #fff !important; color: #000; }
+  body > *:not(#printout) { display: none !important; }
+  #printout { display: block; }
+}
+.dlg-body { padding: 8px 16px 20px; overflow-y: auto; flex: 1; }
+.dlg-foot { display: flex; gap: 12px; align-items: center; padding: 14px 16px 16px; border-top: .5px solid var(--line); }
+.step { background: var(--dlg-card); border-radius: 14px; padding: 14px; margin-top: 12px; }
+dialog input[type=text], dialog input[type=date], dialog textarea { background: var(--dlg-field); }
+.step-head { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+.step-head label { margin: 0; flex: 1; }
+.step-num {
+  display: inline-flex; width: 26px; height: 26px; border-radius: 50%; background: var(--accent); color: var(--accent-ink);
+  align-items: center; justify-content: center; font-size: 14px; margin-right: 8px;
+}
+.chips { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 10px; }
+.chips button { font-size: 15px; padding: 6px 10px; min-height: 44px; }
+.emoji-row { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 10px; }
+.emoji-row button {
+  font-size: 24px; line-height: 1; padding: 0; width: 44px; min-width: 44px; height: 44px;
+  -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; touch-action: manipulation;
+}
+.emoji-row button.reset { font-size: 20px; color: var(--muted); flex: none; }
+/* Reine Icon-, Wetter- und Smiley-Schaltflächen einheitlich quadratisch 44 × 44 px */
+.fab button, .mic, .emoji-row button.reset, .iconbtn { width: 44px; min-width: 44px; height: 44px; padding: 0; border-radius: 50%; }
+.emoji-row button { border-radius: 50%; }
+/* Komponente Auswahl-Kapsel: Smileys, Wetter, Reisemittel in einer Kapsel; bei knappem Platz wischbar */
+.emoji-row.strip { flex-wrap: nowrap; align-items: center; }
+.cap { flex: 0 1 auto; min-width: 0; display: flex; height: 44px; border-radius: 22px; overflow: hidden;
+  background: var(--btn); border: .5px solid var(--btn-rim); box-shadow: var(--float); }
+.cap .scroll { display: flex; min-width: 0; height: 100%; overflow-x: auto; overflow-y: hidden; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+.cap .scroll::-webkit-scrollbar { display: none; }
+/* Schaltflächen füllen genau den Innenraum der Kapsel (44 px minus Rand), damit nichts abgeschnitten wird */
+.cap .scroll button { flex: none; background: none; border: none; box-shadow: none; border-radius: 22px; min-height: 0; height: 100%; }
+/* Markierung wie bei Apple (Tapback): eigene Form innerhalb der Schaltfläche, mit Luft rundherum –
+   bei Emojis ein Kreis (36 px), bei Text eine Kapsel; markierte Nachbarn stoßen nie aneinander. */
+.cap .scroll button { position: relative; isolation: isolate; }
+.cap .scroll button[aria-pressed="true"]::before { content: ''; position: absolute; z-index: -1; inset: 3px; border-radius: 999px;
+  background: var(--sel-bg); box-shadow: inset 0 0 0 .5px var(--accent); }
+.emoji-row .cap .scroll button[aria-pressed="true"]::before { inset: 50% auto auto 50%; width: 36px; height: 36px; transform: translate(-50%, -50%); }
+.emoji-row .cap .scroll button { width: 48px; min-width: 48px; }
+.chips .cap .scroll button { padding: 0 14px; white-space: nowrap; }
+.strip > .reset { margin-left: auto; }
+.cap .scroll.fr { -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 48px), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 48px), transparent); }
+.cap .scroll.fl { -webkit-mask-image: linear-gradient(to left, #000 calc(100% - 48px), transparent); mask-image: linear-gradient(to left, #000 calc(100% - 48px), transparent); }
+.cap .scroll.fl.fr { -webkit-mask-image: linear-gradient(to right, transparent, #000 48px, #000 calc(100% - 48px), transparent); mask-image: linear-gradient(to right, transparent, #000 48px, #000 calc(100% - 48px), transparent); }
+.mic { font-size: 18px; padding: 0; min-height: 44px; }
+.mic[aria-pressed="true"] { animation: pulse 1s infinite; }
+@keyframes pulse { 50% { opacity: .5; } }
+.hint { font-size: 14px; color: var(--muted); margin-top: 6px; }
+.warn { font-size: 15px; color: var(--danger); margin-top: 10px; }
+.check { display: flex; align-items: center; gap: 10px; font-weight: 400; margin: 0 0 10px; min-height: 44px; cursor: pointer; }
+.check input { width: 24px; height: 24px; accent-color: var(--accent); }
+/* Komponente Schalter (Einstellungen): Zeile mit Text links, Apple-Schalter rechts, Haarlinie dazwischen */
+.swlist { margin: 4px 0 10px; }
+.swlist .check { justify-content: space-between; gap: 12px; min-height: 52px; margin: 0; border-bottom: .5px solid var(--line); }
+.swlist .check:last-child { border-bottom: none; }
+.check.sw input { order: 2; -webkit-appearance: none; appearance: none; flex: none; width: 51px; height: 31px; margin: 0; border-radius: 16px; cursor: pointer;
+  background: radial-gradient(circle at 15.5px 50%, #fff 13.5px, transparent 14px), var(--sw-off); transition: background .2s; }
+.check.sw input:checked { background: radial-gradient(circle at calc(100% - 15.5px) 50%, #fff 13.5px, transparent 14px), var(--sw-on); }
+.check.sw:has(input:disabled) { opacity: .4; cursor: default; }
+/* Komponente Options-Kapsel (Optionen beim Erfassen): wie eine Auswahl-Schaltfläche, eingeschaltet mit Häkchen */
+.check.chip { display: inline-flex; gap: 8px; height: 44px; min-height: 44px; margin: 0; padding: 0 16px; border-radius: 22px; font-size: 15px;
+  background: var(--btn); border: .5px solid var(--btn-rim); box-shadow: var(--float); -webkit-user-select: none; user-select: none; }
+.check.chip input { position: absolute; opacity: 0; width: 0; height: 0; pointer-events: none; }
+.check.chip:has(input:checked) { background: var(--sel-bg); border-color: var(--accent); box-shadow: var(--glow-accent); }
+.check.chip:has(input:checked)::before { content: ''; width: 16px; height: 16px; flex: none; background: var(--accent);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E") center/contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E") center/contain no-repeat; }
+.check.chip:has(input:disabled) { opacity: .4; cursor: default; }
+.step-head .head-check { flex: none; margin: 0 0 0 4px; }
+/* Seit 4.14.2 (R-5.1, P-37/2): Schaltflächen eines Schrittkopfs als Gruppe – passt alles in eine Zeile, stehen sie neben der
+   Überschrift, sonst rückt die ganze Gruppe darunter (nie eine allein). */
+.step-head .head-checks { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px 12px; flex: none; max-width: 100%; margin-left: 4px; }
+.step-head .head-checks .head-check { margin: 0; }
+.saved { font-size: 13px; color: var(--muted); }
+
+/* ---------- iPhone (kompakte Breite) – seit 4.1.0 ----------
+   html.phone (setzt ui.js / applyLayout): iPhone hoch und quer sowie sehr schmale Fenster (unter 700 px breit
+   oder unter 500 px hoch). Wie Apple (Notizen, iOS 26): eine Seite nach der anderen mit großem Titel,
+   runder Zurück-Knopf ohne Text, Suche unten, Fenster bildschirmfüllend, Abfragen als Sprechblase am Knopf. */
+html.phone body { padding-bottom: calc(env(safe-area-inset-bottom) + 120px); }
+html.phone body:has(.bnote) { padding-bottom: calc(env(safe-area-inset-bottom) + 150px); }
+html.phone .rolle::after { height: calc(env(safe-area-inset-bottom) + 120px); }   /* seit 4.27.1 Platzhalter statt Innenabstand (A-33) */
+html.phone body:has(.bnote) .rolle::after { height: calc(env(safe-area-inset-bottom) + 150px); }
+html.phone #side:not(.page), html.phone .side-shade { display: none !important; }
+/* Seit 4.20.0 (A-15): Kapsel ‚Nach oben / Ans Ende‘ auch im iPhone-Aufbau; ausgeblendet, wenn es nichts zu scrollen gibt (R-3.2) */
+.fab.still { display: none; }
+/* Komponente Seitenkopf (iPhone): links rund zurück, rechts Kapsel oder runder Knopf; scrollt nicht mit */
+.pnav { position: fixed; left: 0; right: 0; top: var(--vv-top); z-index: 6; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px; min-height: 44px;
+  padding: calc(env(safe-area-inset-top) + 8px) max(16px, env(safe-area-inset-right)) 8px max(16px, env(safe-area-inset-left)); background: var(--bg); border-bottom: .5px solid transparent; }
+/* Die Leiste steht fest (seit 4.5.0); der Inhalt beginnt unter ihr (Höhe setzt updateBar) */
+html.phone body { padding-top: var(--pnav-h, 60px); }
+.pnav.line { border-bottom-color: var(--line); }
+.pnav > .r { justify-self: end; }
+/* Wie Notizen: Beim Hochschieben wandert der große Titel als kleiner Titel (17 pt halbfett) in die Leiste und bleibt dort */
+.pnav-title { font-size: 17px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 50vw; opacity: 0; transition: opacity .15s; }
+.pnav.titled .pnav-title { opacity: 1; }
+.pnav .nb2 { grid-column: 1 / -1; margin-top: 2px; }
+/* Startliste (iPhone) wie die Seitenleiste: Titel links in der Leiste, 20 pt fett */
+.pnav-head { margin: 0; font-size: 20px; font-weight: 700; white-space: nowrap; padding-left: 4px; line-height: 1.25; }
+.pnav + .ilist.tiles { margin-top: 8px; }
+/* Großer Titel mit grauer Zeile darunter (z. B. Anzahl) */
+.ltitle { font-size: 34px; font-weight: 700; line-height: 1.15; margin: 4px 0 2px; overflow-wrap: anywhere; }
+.lcount { color: var(--muted); font-size: 17px; margin: 0 0 16px; }
+/* Komponente Liste (iPhone): weiße Karte mit runden Ecken, Zeilen mit eingerückter Haarlinie und › */
+.ilist { background: var(--card); border-radius: 22px; overflow: hidden; box-shadow: var(--table-shadow); }
+.irow { display: flex; align-items: center; gap: 10px; width: 100%; min-height: 60px; padding: 12px 16px; position: relative; text-align: left;
+  border: none; border-radius: 0; background: none; box-shadow: none; -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
+.irow + .irow::before { content: ''; position: absolute; top: 0; left: 16px; right: 0; border-top: .5px solid var(--line); }
+.irow .t { flex: 1; min-width: 0; }
+.irow b { display: block; font-weight: 600; overflow-wrap: anywhere; }
+.irow small { display: block; color: var(--muted); font-size: 15px; }
+.irow > .ic { color: var(--th-line); }
+.irow.on { background: var(--sel-bg); }
+.irow a { text-decoration: none; }
+/* Seit 4.2.0: Liste als einzelne Kacheln (.ilist.tiles) – jeder Eintrag eine eigene Karte; der aktuelle blau gefüllt */
+.ilist.tiles { background: none; border-radius: 0; overflow: visible; box-shadow: none; }
+.tiles .irow { background: var(--card); border-radius: 22px; box-shadow: var(--table-shadow); margin-top: 10px; }
+.tiles .irow:first-child { margin-top: 0; }
+.tiles .irow + .irow::before { display: none; }
+.irow.current { background: var(--accent); color: var(--accent-ink); box-shadow: var(--glow-accent); }
+.irow.current small, .irow.current > .ic { color: rgba(255,255,255,.85); }
+/* Komponente Kasten (iPhone): ein Eintrag als Karte; Zeilen mit grauer Bezeichnung links */
+.box { background: var(--card); border-radius: 22px; padding: 12px 16px; margin-top: 10px; box-shadow: var(--table-shadow); }
+.box .kv { display: flex; gap: 10px; padding: 7px 0; }
+.box .h + .kv { margin-top: 2px; }
+/* Seit 4.2.0: Felder im Kasten durch dünne Linien getrennt (wie die Trennlinie im Menü) – waagrecht zwischen
+   den Feldern, senkrecht zwischen Bezeichnung und Inhalt */
+.box .kv + .kv { border-top: 1px solid var(--line); }
+.box .kv .k { flex: none; width: 74px; font-size: 13px; color: var(--muted); margin: -7px 0; padding: 9px 8px 7px 0; border-right: 1px solid var(--line); }
+.box .kv .v { flex: 1; min-width: 0; }
+.box .kv .k.word { font-size: 17px; font-weight: 600; color: var(--ink); padding-top: 7px; }
+.box.on { background: var(--sel-bg); }
+/* Komponente untere Leiste (iPhone): Suchfeld und runde Knöpfe unten; wandert mit der Tastatur nach oben */
+.bbar { position: fixed; z-index: 8; left: max(16px, env(safe-area-inset-left)); right: max(16px, env(safe-area-inset-right));
+  bottom: calc(max(var(--vv-bottom), env(safe-area-inset-bottom)) + 10px); display: flex; gap: 10px; align-items: center; justify-content: flex-end; }
+.bbar::before { content: ''; position: fixed; left: 0; right: 0; bottom: 0; height: calc(max(var(--vv-bottom), env(safe-area-inset-bottom)) + 90px); z-index: -1;
+  background: linear-gradient(to bottom, transparent, var(--bg) 55%); pointer-events: none; }
+.bbar .searchbox { flex: 1 1 auto; }
+/* Seit 4.2.0: fester Hinweis unten (z. B. Backup) als Karte in der unteren Leiste */
+.bbar .bnote { flex: 1; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding: 12px 16px; border-radius: 22px;
+  background: var(--focus); box-shadow: var(--float); font-size: 13px; color: var(--ink); }
+.bbar .bnote > div { flex: 1 1 160px; }
+.bbar .bnote button { font-size: 17px; }
+/* Fenster auf dem iPhone bildschirmfüllend; Kopfzeile kompakt, Titel einzeilig */
+html.phone dialog#dlg { width: 100%; max-width: none; min-width: 0; height: var(--dlg-max); border-radius: 0; box-shadow: none; }
+html.phone dialog#dlg form { height: 100%; }
+html.phone #msg { width: min(360px, calc(100vw - 32px)); }
+html.phone #msg.wide { width: min(600px, calc(100vw - 24px)); }
+html.phone #dlg .dlg-head { gap: 8px; padding: calc(env(safe-area-inset-top) + 8px) max(12px, env(safe-area-inset-right)) 8px max(12px, env(safe-area-inset-left)); }
+html.phone #dlg .dlg-head .hl, html.phone #dlg .dlg-head .hr { flex: none; gap: 8px; }
+html.phone #dlg .dlg-head .mid { flex: 1; max-width: none; min-width: 0; }
+html.phone #dlg .dlg-head h3 { font-size: 17px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+html.phone #dlg .dlg-head .grp button:not(.txt) { width: 44px; min-width: 44px; }
+html.phone #dlg .dlg-body { padding: 4px max(12px, env(safe-area-inset-right)) calc(20px + env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left)); }
+html.phone .step-head { flex-wrap: wrap; row-gap: 8px; }
+/* Kasten-Kopf: Titel und Mikrofon in der ersten Zeile, Options-Kapseln darunter */
+html.phone .step-head > label:first-child { white-space: nowrap; flex: 1 0 60%; }
+html.phone .step-head .head-check { order: 3; margin-left: 0; }
+html.phone .step-head:has(.head-checks) > label:first-child { flex: 1 0 auto; }
+html.phone .step-head .head-checks { order: 3; margin-left: 0; justify-content: flex-start; }
+/* Seit 4.15.0 (R-1.5, A-06): Offline-Hinweis – graue Zeile unter der Backup-Kachel und kurze Meldung beim Wechsel */
+#side .side-foot .offl { display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 8px; font-size: 13px; color: var(--muted); }
+#side .side-foot .offl[hidden] { display: none; }
+#side .side-foot .offl .ic { width: 15px; height: 15px; flex: none; }
+/* Die Liste läuft auch hinter der Zeile durch, der letzte Eintrag bleibt erreichbar */
+#side:has(.offl:not([hidden])) .side-list { padding-bottom: 176px; }
+.nettoast { position: fixed; z-index: 40; inset: auto auto calc(max(var(--vv-bottom), env(safe-area-inset-bottom)) + var(--toast-lift, 0px) + 28px) var(--toast-x, 50%);
+  transform: translateX(-50%); margin: 0; border: 0; display: flex; align-items: center; gap: 10px; padding: 12px 18px; border-radius: 22px;
+  background: var(--card); color: var(--ink); font-size: 15px; box-shadow: var(--float); width: max-content; max-width: min(420px, var(--toast-w, calc(100vw - 32px)));
+  overflow: visible; -webkit-user-select: none; user-select: none; }
+.nettoast b { display: block; font-weight: 400; }
+.nettoast small { display: block; color: var(--muted); font-size: 13px; }
+.nettoast .ic { width: 22px; height: 22px; color: var(--muted); flex: none; }
+@media print { .nettoast, #side .side-foot .offl { display: none !important; } }
