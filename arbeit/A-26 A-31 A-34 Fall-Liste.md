@@ -106,3 +106,9 @@ Safari verhält sich dabei so, wie das Gerät es gemessen hat.
 3. **A-34/A-31:** Messungen quer und iPad wie in 2.1 machen und hier teilen; die Messdateien dürfen in
    `AppDesign/tests/messungen/` liegen (keine Texte, nur Gerät, iOS-Version und Zahlen)?
 4. **Ja zum Bau** als AppDesign 4.28.0 / Reiselogbuch 3.26.0, sobald 1–3 geklärt sind.
+
+## 4. Entscheidungen des Nutzers 19.10.2026
+
+- **Bündel:** A-26 + A-31 + A-34 in einer Version, Arbeit in Sitzung 0018 begonnen.
+- **A-26 allgemeine Regel: Ja** – R-5.1 wird ergänzt (alle Apps).
+- Offen: Variante A/B nach dem Muster, Messungen iPhone quer und iPad, Ablage der Messdateien, Ja zum Bau.
