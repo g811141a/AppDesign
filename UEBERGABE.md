@@ -49,12 +49,12 @@ Frühere Sitzungen: siehe `VERLAUF.md` und Versionsgeschichten.
 
 ## 3. Nächster Schritt
 
-Stand und Fragen: `arbeit/A-26 A-31 A-34 Fall-Liste.md` **Abschnitt 5** (Ergebnisse vom Gerät 19.10.2026).
-1. **A-35 Korrektur** (Gesamtausgaben unter der Tastatur, seit 4.27.0): Prüfung zuerst rot (Safari-Modell: Fenster rollt zum
-   Feld), dann `ui.js` rollt den Inhalt; als 4.27.2 / 3.25.2 oder im Bündel – Entscheidung des Nutzers.
-2. **A-26 Variante C** (Tag ändert sich → schließen) – Muster am iPhone noch ausprobieren; R-5.1 ist beschlossen.
-3. **A-31** Messung abspielen – Messdatei iPhone quer vom 19.10.2026 (Ablage in `tests/messungen/` noch zu bestätigen).
-4. A-34 erledigt (`--vv-top` bleibt).
+Stand und Entscheidungen: `arbeit/A-26 A-31 A-34 Fall-Liste.md` **Abschnitte 5 und 6**.
+1. **Rückmeldung zum Muster Variante C** (A-26, iPhone und iPad) abwarten: https://g811141a.github.io/AppDesign/arbeit/A-26%20Muster.html
+2. Dann **Ja zum Bau** des Bündels **AppDesign 4.28.0 / Reiselogbuch 3.26.0** einholen: A-35 (Feld im Inhalt über der Tastatur,
+   Prüfung zuerst rot gegen 4.27.1, Safari-Modell: Fenster rollt zum Feld), A-26 Variante C (R-5.1 beschlossen), A-31 (Messung
+   abspielen, erste Datei `tests/messungen/2026-10-19 iPhone quer Suche Fenster Gesamtausgaben.txt`). A-34 erledigt.
+3. Neue Sitzung mit Opus 5.5, Aufwand hoch (Zusammenarbeit 2.13.0; Variable in der Umgebung ist gesetzt).
 
 ## 4. Danach
 

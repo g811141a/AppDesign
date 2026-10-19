@@ -141,3 +141,10 @@ Safari verhält sich dabei so, wie das Gerät es gemessen hat.
   Inhalt, bis das Feld 16 px über der Tastatur steht (allgemein, alle Felder im Inhalt). Safari-Modell: neues Verhalten ‚Feld unter
   der Tastatur antippen → Safari rollt das Fenster um den gemessenen Betrag‘; Prüfung `checkFieldVisible` zuerst rot gegen 4.27.1.
 - **A-31:** die Messdatei ist die erste Vorgabe zum Abspielen (Suche, Fenster, Gesamtausgaben – alles enthalten).
+
+## 6. Entscheidungen des Nutzers 19.10.2026 (nach den Ergebnissen)
+
+- **A-35 kommt ins Bündel 4.28.0** (A-35 + A-26 Variante C + A-31; A-34 entfällt).
+- **Messdatei darf in `tests/messungen/` liegen:** `tests/messungen/2026-10-19 iPhone quer Suche Fenster Gesamtausgaben.txt`
+  (iPhone quer, Reiselogbuch 3.25.1; Suche, Feld ‚Ort‘ im Fenster, Gesamtausgaben).
+- **Ja zum Bau: noch nicht** – zuerst Variante C am Gerät (iPhone und iPad) ausprobieren.
