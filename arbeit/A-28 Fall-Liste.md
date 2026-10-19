@@ -144,3 +144,7 @@ Drucken über das Teilen-Menü, neue Messung mit dem Messmodus (P-58).
   `checkSearchTop`).
 - **Statusleiste:** Dass das Antippen nicht mehr nach oben rollt, ist in Ordnung. ‚Nach oben‘ genügt.
 - Fall-Liste und Muster liegen auf `main` (GitHub Pages). Vor dem Bau probierst du das Muster am iPhone aus; das ‚Ja‘ zum Bau steht noch aus.
+- **Neue Regel (Nutzer 19.10.2026, kommt mit 4.27.0 als Zusammenarbeit 2.12.0, Ergänzung von 0 Nr. 11):** Jede Bitte, etwas am
+  Gerät zu prüfen oder auszuprobieren (Muster, Versuch, Messung), enthält im Chat immer den vollständigen Link und nummerierte
+  Schritte mit ‚Erwartet: …‘.
+- **B2** wird nicht am Gerät geprüft (Entscheidung B1). Der Vergleich ist mit dem Muster freiwillig möglich.
