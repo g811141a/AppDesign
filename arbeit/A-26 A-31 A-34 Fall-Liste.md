@@ -159,3 +159,13 @@ Safari verhält sich dabei so, wie das Gerät es gemessen hat.
   vom höheren Tag auf den letzten Tag eines anderen Monats gilt als Rad und schließt nicht. Beide Protokolle nachgespielt: alles
   wie erwartet. Fall-Liste ergänzt: **D-2a** leeres Feld öffnen (Safari setzt heute) – bleibt offen; **D-3a** Rad vom 31. in einen
   kürzeren Monat – bleibt offen.
+
+## 8. Dritter Versuch (Protokoll iPad, 19.10.2026) – noch die alte Fassung
+
+- Das Protokoll stammt noch vom **Muster vor C2** (Zwischenspeicher bzw. Pages noch nicht fertig): es fehlt die Zeile
+  ‚(Safari setzt heute – bleibt offen)‘, und 31.01. → 28.02. am Rad schloss – beides behandelt C2 anders. C2 gegen dieses Protokoll
+  nachgespielt: das leere Feld bliebe beim Öffnen offen (Safari setzte heute nach 39 ms), 31.01. → 28.02. bliebe offen.
+- Rückmeldung des Nutzers: ‚schleppend und hackig‘. Die App schließt 1–2 ms nach dem Antippen (`input` → `blur`); das Zu- und
+  Wiederaufgehen ist die Animation von Safari und lässt sich von der App nicht beschleunigen.
+- **Nächster Versuch:** Link mit `?v=c2` (umgeht den Zwischenspeicher). Danach entscheidet der Nutzer, ob A-26 gebaut wird oder
+  entfällt (Apple lässt die Auswahl offen).

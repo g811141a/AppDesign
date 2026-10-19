@@ -12,7 +12,8 @@
 | ReiseLogBuch-Import (privat) | 1.2.1 (unverändert) | g811141a/ReiseLogBuch-Import |
 | Zusammenarbeit allgemein | **2.13.0** (0 Nr. 13/15: Opus 5.5, Aufwand hoch) | `README - Zusammenarbeit allgemein.md` |
 
-- **Chatnummer:** die laufende Sitzung ist **Reiselogbuch 0018**; die nächste heißt **0019**.
+- **Chatnummer:** die nächste Sitzung heißt **Reiselogbuch 0019**; die danach 0020.
+- **Sitzungsgröße:** 0018 endete bei ~300.000 Token Kontext.
 - **Offene Prüfpunkte:** keine. **P-59 geprüft:** alles ok (A-33 abgeschlossen).
 - **P-58 geprüft:** /0, /1, /3–/6 ok – das Zittern ist am Gerät weg (A-24, A-28, T-95 (1)
   abgeschlossen). /2 nicht ok: am iPhone quer mit offener Tastatur verdeckt die Kapsel ‚Nach oben / Ans Ende‘ ⌄ der Suche → A-33.
@@ -50,7 +51,9 @@ Frühere Sitzungen: siehe `VERLAUF.md` und Versionsgeschichten.
 ## 3. Nächster Schritt
 
 Stand und Entscheidungen: `arbeit/A-26 A-31 A-34 Fall-Liste.md` **Abschnitte 5 und 6**.
-1. **Rückmeldung zum Muster Variante C** (A-26, iPhone und iPad) abwarten: https://g811141a.github.io/AppDesign/arbeit/A-26%20Muster.html
+1. **Rückmeldung zum Muster Variante C2** (A-26, iPad und iPhone; Fall-Liste Abschnitte 7 und 8) abwarten:
+   https://g811141a.github.io/AppDesign/arbeit/A-26%20Muster.html?v=c2 – der 3. Versuch lief noch auf der alten Fassung.
+   Der Nutzer fand es ‚schleppend und hackig‘: ggf. entscheidet er, A-26 fallen zu lassen.
 2. Dann **Ja zum Bau** des Bündels **AppDesign 4.28.0 / Reiselogbuch 3.26.0** einholen: A-35 (Feld im Inhalt über der Tastatur,
    Prüfung zuerst rot gegen 4.27.1, Safari-Modell: Fenster rollt zum Feld), A-26 Variante C (R-5.1 beschlossen), A-31 (Messung
    abspielen, erste Datei `tests/messungen/2026-10-19 iPhone quer Suche Fenster Gesamtausgaben.txt`). A-34 erledigt.
