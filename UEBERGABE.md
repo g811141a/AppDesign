@@ -1,6 +1,6 @@
 # Übergabe an die nächste Sitzung
 
-**Stand 19.10.2026** · geschrieben in der Sitzung ‚Reiselogbuch 0015‘
+**Stand 19.10.2026** · geschrieben in der Sitzung ‚Reiselogbuch 0016‘
 (Zusammenarbeit allgemein 2.11.0, Abschnitt 0 Nr. 14). **Claude liest diese Datei zu Beginn jeder Sitzung zuerst.**
 
 ## 1. Lagebild
@@ -10,44 +10,57 @@
 | Reiselogbuch | **3.24.0** online (Fassung 4.26.0) | g811141a/ReiseLogBuch – `CHANGELOG.md`, `BACKLOG.md`, `PROMPT.md` |
 | AppDesign | **4.26.0** online | g811141a/AppDesign – `CHANGELOG.md`, `BACKLOG.md` |
 | ReiseLogBuch-Import (privat) | 1.2.1 (unverändert) | g811141a/ReiseLogBuch-Import |
-| Zusammenarbeit allgemein | **2.11.0** | `README - Zusammenarbeit allgemein.md` |
+| Zusammenarbeit allgemein | **2.11.0** (2.12.0 kommt mit 4.27.0) | `README - Zusammenarbeit allgemein.md` |
 
-- **Chatnummer:** die nächste Sitzung heißt **Reiselogbuch 0016**; die danach 0017.
-- **Offene Prüfpunkte:** keine – P-57 alles ok (**A-27 abgeschlossen**). A-24 bleibt offen → Umbau B (A-28).
-- **Sitzungsgröße:** Grenze etwa 300.000 Token Kontext (0015 endete bei ~295.000).
+- **Chatnummer:** die nächste Sitzung heißt **Reiselogbuch 0017**; die danach 0018.
+- **Offene Prüfpunkte:** keine. Versuch **M-1** (Muster A-28 am iPhone) ist **alles wie erwartet**.
+- **Sitzungsgröße:** Grenze etwa 300.000 Token Kontext (0016 endete bei ~222.000; gewechselt, damit der Umbau nicht abreißt).
 - **Erinnerung:** ‚Backlog-Erinnerung (AppDesign und Reiselogbuch)‘ montags 8:58.
 
 ## 2. Ergebnisse
 
-**Sitzung ‚Reiselogbuch 0015‘:**
-- **4.26.0 / 3.24.0 veröffentlicht:** Messmodus (R-1.6, Designrichtlinie 15.21, Baustein `messungMenuItems` in ui.js, Prüfung
-  `checkMessung`, App-Prüfung `tests/ablauf-messung.mjs`); Zusammenarbeit **2.11.0** mit **0 Nr. 20** (zuerst messen, ein
-  Safari-Modell, ‚in der Nachbildung behoben, am Gerät zu bestätigen‘, Safari-Eigenheiten mit Quelle in Designrichtlinie 13);
-  Backlog A-31 (Messung abspielen, V8) und A-32 (‚Problem melden‘, V9). Prüfungen robuster: `kapsel-iphone` wartet auf den Aufbau,
-  `ablauf-suche-liste` F-11 misst über 5 Runden mit Pause (Grenze 50 ms bleibt; 3.23.1 und 3.24.0 maßen unter Last gleich 42–58 ms).
-- **Messung P-57 ausgewertet** (`arbeit/A-27 Auswertung P-57.md` – **zuerst lesen**): Das Zittern kommt **nicht** von einer zu kurzen
-  Seite. Ursache ist ein **Hin und Her**: 0,5 s nach jedem Buchstaben rollt die App den Treffer unter die Suchzeile (`showHit` →
-  `scrollUnderBar`, zieht `visualViewport.offsetTop` ab); am iPhone schiebt Safari den sichtbaren Bereich dann um 121 px (quer
-  21 px), beim nächsten Buchstaben rollt die App zurück. scrollY 230 ↔ 109, `offsetTop` 121 ↔ 0, Kopf- und Suchzeile je Buchstabe
-  **2 Bilder (33 ms) um ±121 px** falsch, bis `vv scroll` und `--vv-top` nachziehen. Vor ⓧ nur einmal (leicht), nach ⓧ bei jedem
-  Buchstaben (massiv); iPad `offsetTop` immer 0. Neu: quer schrumpft `innerHeight` mit jedem Fokus um 19 px (402 → 383 → 364).
-  Messartefakt: in der Zeile eines `scroll`-Ereignisses ist die Lage fester Leisten um den Rollweg versetzt – nicht nachbilden.
-- **Entscheidung des Nutzers 19.10.2026:** trotz der engen Ursache **Umbau B** (A-28), nicht die kleine Korrektur.
-- **Noch nachzutragen (mit der nächsten Version):** Designrichtlinie 13 berichtigen (Ursache = Rollen bei offener Tastatur, nicht
-  kurze Seite; `innerHeight` quer).
+**Sitzung ‚Reiselogbuch 0016‘:**
+- **Safari-Modell `AppDesign/tests/safari.mjs`** (neu, **Zweig `a28-safari-modell`**, noch nicht auf `main`). Es bildet zwei
+  Bereiche nach: den Layout-Bereich, an dem die festen Leisten hängen, und den sichtbaren Bereich. Bei offener Tastatur ist
+  der sichtbare Bereich 403 px (hoch) bzw. 276 px (quer) kleiner. Rollt die App, bewegt sich zuerst nur der sichtbare Bereich.
+  Safari meldet die neue Lage 2 Bilder später. Antippen einer Schaltfläche nimmt dem Feld den Fokus. Beim neuen Fokus rollt
+  Safari hoch um −120 px bzw. schiebt quer um 21 px. API: `safariModell(p, ansicht)`, dann `__safari.tastatur(true)`,
+  `__safari.bilder(true/false)`.
+- **`ReiseLogBuch/tests/ablauf-suche-iphone.mjs`** (Zweig `a28-safari-modell`) stellt den Ablauf von P-57 nach (langsam
+  tippen, ⓧ, noch einmal tippen). Die Prüfung ist **rot gegen 3.24.0** (hoch ±120 px nach ⓧ, quer 21 px), in Chromium und
+  WebKit. Sie bindet das Modell vorerst über `../../AppDesign/tests/safari.mjs` ein; mit `vorbereiten` auf
+  `fassung/4.27.0/tests/` umstellen.
+- **Gegenprobe:** Auch mit der kleinen Korrektur (ohne Abzug von `offsetTop`) bleibt die Prüfung rot, weil ein einzelner
+  Sprung bleibt. Das bestätigt Umbau B.
+- **Fall-Liste und Muster** liegen auf `main`: `arbeit/A-28 Fall-Liste.md` (**zuerst lesen**: Abschnitte 2, 4, 5, 6, 7) und
+  `arbeit/A-28 Muster.html` (Pages, Varianten A/B1/B2 mit Zitter-Anzeige). Unter dem Modell und am iPhone (M-1) zittert A,
+  B1 steht still (0 px hoch und quer).
+- **Entscheidungen des Nutzers 19.10.2026:**
+  - **Variante B1:** Der Rahmen ist so hoch wie der sichtbare Bereich und endet über der Tastatur.
+  - **Allgemeine Regeln:** ‚Die Seite rollt nie, nur der Inhalt‘ ergänzt R-2.1 (Prüfung `hig.mjs`: `scrollY` bleibt 0).
+    ‚Suche öffnen und ⓧ rollen ganz nach oben‘ ergänzt R-2.3 (Prüfung `checkSearchTop`).
+  - **Statusleiste:** Dass das Antippen nicht mehr nach oben rollt, ist in Ordnung.
+  - **Neue Regel für die Zusammenarbeit (2.12.0, Ergänzung von 0 Nr. 11):** Jede Bitte, etwas am Gerät zu prüfen oder
+    auszuprobieren, enthält im Chat immer den vollständigen Link und nummerierte Schritte mit ‚Erwartet: …‘. Anlass: In 0016
+    fehlten sie beim Muster, und der Nutzer musste nachfragen.
+  - **‚Ja‘ zum Bau** von A-28 + A-29 als **AppDesign 4.27.0 / Reiselogbuch 3.25.0**, in der neuen Sitzung 0017.
 
 Frühere Sitzungen: siehe `VERLAUF.md` und Versionsgeschichten.
 
 ## 3. Nächster Schritt
 
-1. **Safari-Modell `AppDesign/tests/safari.mjs`** nach den gemessenen Werten (Auswertung Abschnitt 6): Tastatur offen = sichtbare
-   Höhe 409 (iPhone hoch) bzw. 126 (quer); `scrollTo` der App bei offener Tastatur verschiebt den sichtbaren Bereich wie gemessen
-   (230 → offsetTop 121, 109 → 0), `vv scroll` 2 Bilder später. `ReiseLogBuch/tests/ablauf-suche-iphone.mjs` damit **rot gegen
-   3.24.0** (±121 px bei jedem Buchstaben nach ⓧ) – Zusammenarbeit 0 Nr. 1 und 20.
-2. **A-28 Umbau B** + **A-29** (Suche öffnen und ⓧ rollen nach oben): Fall-Liste (alle betroffenen Regeln R-2.1, R-2.3, R-7.3,
-   R-7.4, R-8.1, Nach oben/Ans Ende, Druck, Seitenleiste, Messmodus-Spalten) mit Muster und ‚Vorschläge für AppDesign‘, **Ja**,
-   eine gut vorbereitete Version (AppDesign 4.27.0 / Reiselogbuch 3.25.0?). Danach neue Messung am Gerät.
-3. Danach **A-26** Datumsfeld (allgemeine Regel).
+1. **Bauen (Ja liegt vor):** Vorbereitungs-Zweige anlegen, mit `vorbereiten --ad 4.27.0 --app reiselogbuch=3.25.0`, dabei
+   `tests/safari.mjs` vom Zweig `a28-safari-modell` übernehmen und die geänderte `ablauf-suche-iphone.mjs` ebenso.
+   Dann nach der Fall-Liste bauen:
+   - Rahmen und Rollbereich `rolle` in `ui.js`/`design.css`. Alle Bausteine von Abschnitt 4 rechnen damit; die App ruft nie
+     mehr `window.scrollTo`.
+   - `pruefe.mjs` mit `rolle(p, y)`/`rollstand(p)`; alle rund 55 Rollstellen der Prüfungen umstellen.
+   - Neue Prüfungen F-3/F-4 (`checkSearchTop`), F-12 (`checkFab`), F-16 (`checkPrint`) und die Grundregel ‚Seite rollt nie‘.
+   - Designrichtlinie 13 berichtigen; 15.x zum Rahmen; Regelkatalog R-2.1, R-2.3 ergänzen; Zusammenarbeit 2.12.0 (neue Regel).
+   - Messmodus-Spalte `inh`.
+   - **Hinweis:** In Playwright meldete ein Klick auf ⓧ im Rahmen (quer, Tastatur offen) ‚outside of the viewport‘;
+     `mouse.click` auf die Mitte des Felds ging.
+2. Bericht mit Prüfpunkten P-58 (am Gerät: Zittern, Wischgefühl, Drucken, neue Messung), dann **A-26** Datumsfeld.
 
 ## 4. Danach
 
@@ -102,5 +115,5 @@ In der neuen Sitzung müssen **AppDesign** und **ReiseLogBuch** verfügbar sein,
 ## 7. Starttext für die neue Sitzung
 
 ```
-Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md, dann arbeit/A-27 Auswertung P-57.md und gezielt die Regeln (Zusammenarbeit 0 Nr. 15), gib mir das Lagebild und arbeite dann Abschnitt 3 ab (zuerst Safari-Modell und rote Prüfung, dann A-28 Umbau B: Fall-Liste mit Muster, vor dem Bau mein Ja). Hole vorher die Repos g811141a/ReiseLogBuch und g811141a/ReiseLogBuch-Import (privat) dazu (add_repo, Zugriff push), wie in UEBERGABE.md Abschnitt 5.
+Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md, dann arbeit/A-28 Fall-Liste.md und gezielt die Regeln (Zusammenarbeit 0 Nr. 15), gib mir das Lagebild und arbeite dann Abschnitt 3 ab: das Ja zum Bau von A-28 Umbau B (Variante B1) mit A-29 als AppDesign 4.27.0 / Reiselogbuch 3.25.0 liegt vor – bauen, prüfen, veröffentlichen, Bericht mit Prüfpunkten P-58. Hole vorher die Repos g811141a/ReiseLogBuch und g811141a/ReiseLogBuch-Import (privat) dazu (add_repo, Zugriff push), wie in UEBERGABE.md Abschnitt 5; die Vorarbeit liegt in beiden Repos auf dem Zweig a28-safari-modell.
 ```
