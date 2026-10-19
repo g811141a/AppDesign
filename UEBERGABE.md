@@ -1,68 +1,51 @@
 # Übergabe an die nächste Sitzung
 
-**Stand 19.10.2026** · geschrieben in der Sitzung ‚Reiselogbuch 0018‘ (Ende)
-(Zusammenarbeit allgemein 2.12.0, Abschnitt 0 Nr. 14). **Claude liest diese Datei zu Beginn jeder Sitzung zuerst.**
+**Stand 20.10.2026** · geschrieben in der Sitzung ‚Reiselogbuch 0019‘ (Ende)
+(Zusammenarbeit allgemein 2.14.1, Abschnitt 0 Nr. 14). **Claude liest diese Datei zu Beginn jeder Sitzung zuerst.**
 
 ## 1. Lagebild
 
 | Teil | Version | Datei |
 |---|---|---|
-| Reiselogbuch | **3.25.1** online (Fassung 4.27.1) | g811141a/ReiseLogBuch – `CHANGELOG.md`, `BACKLOG.md`, `PROMPT.md` |
-| AppDesign | **4.27.1** online | g811141a/AppDesign – `CHANGELOG.md`, `BACKLOG.md` |
+| Reiselogbuch | **3.26.0** online (Fassung 4.28.0) | g811141a/ReiseLogBuch – `CHANGELOG.md`, `BACKLOG.md`, `PROMPT.md` |
+| AppDesign | **4.28.0** online | g811141a/AppDesign – `CHANGELOG.md`, `BACKLOG.md` |
 | ReiseLogBuch-Import (privat) | 1.2.1 (unverändert) | g811141a/ReiseLogBuch-Import |
-| Zusammenarbeit allgemein | **2.14.1** (0 Nr. 15: zu Beginn auch Abschnitt 1, per du) | `README - Zusammenarbeit allgemein.md` |
+| Zusammenarbeit allgemein | **2.14.1** (0 Nr. 15: zu Beginn auch Abschnitt 1 – per du; Aufwand aus der Sitzungsdatei) | `README - Zusammenarbeit allgemein.md` |
 
-- **Chatnummer:** die nächste Sitzung heißt **Reiselogbuch 0019**; die danach 0020.
-- **Sitzungsgröße:** 0018 endete bei ~305.000 Token Kontext.
-- **Modell und Aufwand:** Opus 5.5, Aufwand hoch – `CLAUDE_CODE_EFFORT_LEVEL=high` ist in der Umgebung gesetzt (Nutzer 19.10.2026);
-  zu Beginn prüfen und im Lagebild nennen (Zusammenarbeit 0 Nr. 15).
-- **Offene Prüfpunkte:** keine. **P-59 geprüft:** alles ok (A-33 abgeschlossen).
-- **P-58 geprüft:** /0, /1, /3–/6 ok – das Zittern ist am Gerät weg (A-24, A-28, T-95 (1)
-  abgeschlossen). /2 nicht ok: am iPhone quer mit offener Tastatur verdeckt die Kapsel ‚Nach oben / Ans Ende‘ ⌄ der Suche → A-33.
-- **Messung iPhone quer (0018):** `offsetTop` 21–232 px (Suche, Fenster, Gesamtausgaben) → A-34 entschieden (`--vv-top` bleibt),
-  neuer Fehler A-35 (Gesamtausgaben unter der Tastatur); Datei `tests/messungen/2026-10-19 iPhone quer Suche Fenster Gesamtausgaben.txt`.
-- **Muster A-26 offen:** Variante C2 (`arbeit/A-26 Muster.html`) am Gerät noch nicht gesehen – drei Versuche liefen auf älteren
-  Fassungen (GitHub Pages hing am 19.10. ab 15:30 UTC). Nutzer: Schließen beim leeren Feld sofort (in C behoben durch C2),
-  Gefühl ‚schleppend und hackig‘.
+- **Chatnummer:** die nächste Sitzung heißt **Reiselogbuch 0020**; die danach 0021.
+- **Sitzungsgröße:** 0019 endete bei ~365.000 Token Kontext.
+- **Modell und Aufwand:** Opus 5.5, Aufwand hoch. Prüfen nach 0 Nr. 15 (seit 2.14.1): `"effort"` in der Sitzungsdatei
+  (`/root/.claude/projects/…/*.jsonl`) ist maßgeblich – die App zeigte in 0019 ‚mittel‘, obwohl alle Aufrufe mit ‚high‘ liefen; der
+  Nutzer hat sie auf ‚hoch‘ gestellt.
+- **Per du!** (Zusammenarbeit Abschnitt 1) – in 0019 sprach Claude anfangs mit ‚Sie‘ an, weil Abschnitt 1 nicht gelesen war.
+- **Offene Prüfpunkte:** **P-60** (Reiselogbuch 3.26.0, CHANGELOG): /0 Version, /1 iPhone quer Gesamtausgaben, /2 quer mit offener
+  Suche, /3 iPhone hoch, /4 iPad, /5 Fenster unverändert – Rückmeldung abwarten (ausgeschrieben im Chat von 0019).
 - **Erinnerung:** ‚Backlog-Erinnerung (AppDesign und Reiselogbuch)‘ montags 8:58.
 
 ## 2. Ergebnisse
 
-**Sitzung ‚Reiselogbuch 0018‘ (19.10.2026):**
-- **A-33 gebaut und veröffentlicht** (AppDesign 4.27.1 / Reiselogbuch 3.25.1, Weg A): `updateFab` blendet die Kapsel aus, wenn sie
-  nicht mit 16 px Abstand in den sichtbaren Inhalt passt (auch bei Tastatur auf/zu); R-3.2 ergänzt. Dabei gefunden: der Rollbereich
-  ragte quer mit Tastatur 55 px unter sie (120 px Innenabstand) – jetzt Platzhalter `.rolle::after`.
-- **Prüfungen:** `checkFab` mit `sichtbar` (409/126 px) und `suche`, Grundregel ‚Kapsel schneidet keine Leiste‘ (`hig.mjs`),
-  `kapsel-iphone.mjs` mit dem Ablauf P-58/2 (Safari-Modell). Gegen 4.27.0 rot (18 Fehler), jetzt grün.
-
-**Sitzung ‚Reiselogbuch 0017‘ (19.10.2026):**
-- **A-28 Umbau B (B1) und A-29 gebaut und veröffentlicht** (AppDesign 4.27.0 / Reiselogbuch 3.25.0):
-  - `#app` ist ein Rahmen aus festen Zeilen (Kopfzeile mit Suchzeile), darunter der Rollbereich `<div class="rolle" id="rolle">`.
-  - Der Rahmen ist so hoch wie der sichtbare Bereich (`--vv-h`).
-  - Baustein `rolle` in `ui.js`; `setHtml` behält den Rollbereich. Lupe und ⓧ rollen nach oben.
-  - Designrichtlinie 13 berichtigt, neu 15.22, R-2.1/R-2.3 ergänzt.
-- **Prüfungen:** `pruefe.mjs` `rolle(p, y)`/`rollstand(p)`/`ROLL`; neu `checkSearchTop`, `checkFab`, `checkPrint`, Grundregel ‚Seite rollt
-  nie‘; Safari-Modell `tests/safari.mjs`. Voller Lauf: 62 Läufe grün.
-- **Entscheidungen des Nutzers 19.10.2026 zu A-33** (`arbeit/A-33 Fall-Liste.md`, **zuerst lesen**):
-  - **Weg A:** die Kapsel erscheint nur, wenn sie ganz in den Inhalt unter der Suchzeile passt (Inhalt mindestens Kapsel + 2 × 16 px), sonst ausgeblendet.
-  - **Allgemeine Regel:** R-3.2 wird ergänzt: ‚Die Kapsel überdeckt nie Kopf- oder Suchzeile; passt sie nicht, ist sie ausgeblendet‘.
-    Prüfung: `checkFab` (Abstand zu Kopf- und Suchzeile, auch mit Tastatur iPhone quer 126 px sichtbar) und eine Grundregel in `hig.mjs`
-    (Kapsel schneidet keine Leiste).
-  - **‚Ja‘ zum Bau** als Korrektur **AppDesign 4.27.1 / Reiselogbuch 3.25.1**, in der Sitzung 0018.
-- **Vorsicht (Lehre aus 0017):** während einer Gegenprobe nie `git checkout <datei>` auf nicht committete Arbeit – erst committen.
+**Sitzung ‚Reiselogbuch 0019‘ (19./20.10.2026):**
+- **A-26 entfällt** (E-62): Muster C2 am iPad ok, aber Safari meldet nur den Wert – drei Fälle (31. → letzter Tag eines anderen
+  Monats, gleicher Tag, heute im leeren Feld) und eine 400-ms-Annahme bleiben. Nutzer: ‚Wenn nicht alles funktioniert, bauen wir es
+  so nicht ein.‘ Antworten zu Apple, anderen Apps und Zeitraum durch Ziehen: `arbeit/A-26 Datumserfassung Apple und andere Apps.md`.
+- **A-35 und A-31 gebaut und veröffentlicht** (AppDesign 4.28.0 / Reiselogbuch 3.26.0, Ja 20.10.2026):
+  - R-4.5 ergänzt: ein Feld mit Fokus steht immer ganz über der Tastatur, auch im Inhalt (`fieldIntoView`, 16 px darüber; reicht der
+    Platz nicht – quer mit Suchzeile 55 px –, direkt unter der Suchzeile).
+  - Safari-Modell: Feld im Rollbereich unter der Tastatur verschiebt den sichtbaren Bereich um den ganzen Raum (quer 232 px),
+    Zifferntastatur quer 170 px sichtbar, `__safari.setze` für das Abspielen; Designrichtlinie 13.
+  - `tests/abspielen.mjs` (A-31): Messdatei nachspielen, Kopf-/Suchzeile ± 1 px und Fokus je Schritt; Reiselogbuch
+    `ablauf-abspielen.mjs` (mit Gegenprobe) und `ablauf-feld-tastatur.mjs` (gegen 3.25.1 rot). Voller Lauf: 66 Läufe grün.
+- **Zusammenarbeit 2.14.0/2.14.1**, CLAUDE.md AppDesign 2.5.0, ReiseLogBuch 3.5.0.
+- Fall-Liste `arbeit/A-26 A-31 A-34 Fall-Liste.md` Abschnitte 9–14.
 
 Frühere Sitzungen: siehe `VERLAUF.md` und Versionsgeschichten.
 
 ## 3. Nächster Schritt
 
-Stand und Entscheidungen: `arbeit/A-26 A-31 A-34 Fall-Liste.md` **Abschnitte 5 und 6**.
-1. **Rückmeldung zum Muster Variante C2** (A-26, iPad und iPhone; Fall-Liste Abschnitte 7 und 8) abwarten:
-   https://g811141a.github.io/AppDesign/arbeit/A-26%20Muster.html?v=c2 – der 3. Versuch lief noch auf der alten Fassung.
-   Der Nutzer fand es ‚schleppend und hackig‘: ggf. entscheidet er, A-26 fallen zu lassen.
-2. Dann **Ja zum Bau** des Bündels **AppDesign 4.28.0 / Reiselogbuch 3.26.0** einholen: A-35 (Feld im Inhalt über der Tastatur,
-   Prüfung zuerst rot gegen 4.27.1, Safari-Modell: Fenster rollt zum Feld), A-26 Variante C (R-5.1 beschlossen), A-31 (Messung
-   abspielen, erste Datei `tests/messungen/2026-10-19 iPhone quer Suche Fenster Gesamtausgaben.txt`). A-34 erledigt.
-3. Neue Sitzung mit Opus 5.5, Aufwand hoch (Zusammenarbeit 2.13.0; Variable in der Umgebung ist gesetzt).
+1. **Rückmeldung zu P-60** abwarten (Reiselogbuch `CHANGELOG.md`, 3.26.0). Bei ‚nicht ok‘: zuerst den Ablauf des Nutzers als feste
+   Prüfung nachbauen (0 Nr. 1), ggf. Messung (Messmodus) erbitten und mit `spieleAb` nachspielen (A-31).
+2. Danach Backlog-Spitze (Abschnitt 4).
+3. Neue Sitzung mit Opus 5.5, Aufwand hoch.
 
 ## 4. Danach
 
@@ -117,5 +100,5 @@ In der neuen Sitzung müssen **AppDesign** und **ReiseLogBuch** verfügbar sein,
 ## 7. Starttext für die neue Sitzung
 
 ```
-Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md, dann arbeit/A-26 A-31 A-34 Fall-Liste.md (Abschnitte 5–8) und gezielt die Regeln (Zusammenarbeit 0 Nr. 15), prüfe Modell und Aufwand, gib mir das Lagebild und arbeite dann Abschnitt 3 ab: zuerst meine Rückmeldung zum Muster A-26 Variante C2, dann das Ja zum Bau des Bündels AppDesign 4.28.0 / Reiselogbuch 3.26.0 (A-35, A-26, A-31). Hole vorher die Repos g811141a/ReiseLogBuch und g811141a/ReiseLogBuch-Import (privat) dazu (add_repo, Zugriff push), wie in UEBERGABE.md Abschnitt 5.
+Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md und gezielt die Regeln (Zusammenarbeit Abschnitte 0 und 1, 0 Nr. 15), prüfe Modell und Aufwand (Sitzungsdatei), gib mir das Lagebild und arbeite dann Abschnitt 3 ab: zuerst meine Rückmeldung zu P-60 (Reiselogbuch 3.26.0). Hole vorher die Repos g811141a/ReiseLogBuch und g811141a/ReiseLogBuch-Import (privat) dazu (add_repo, Zugriff push), wie in UEBERGABE.md Abschnitt 5.
 ```
