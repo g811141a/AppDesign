@@ -1,9 +1,5 @@
 <!doctype html><html lang="de"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<script>
-// V3: Systemweg – Safari soll den Bereich verkleinern statt verschieben (muss vor dem Laden im Viewport stehen)
-if (/[?&]v=v3/.test(location.search)) document.querySelector('meta[name=viewport]').content += ', interactive-widget=resizes-content';
-</script>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="A-36 Muster">
@@ -11,14 +7,19 @@ if (/[?&]v=v3/.test(location.search)) document.querySelector('meta[name=viewport
 <title>A-36 Muster</title>
 <style>
 /* A-36 Tastatur ohne Springen – Muster mit Messung (Sitzung Reiselogbuch 0020, Fall-Liste arbeit/A-36 Fall-Liste.md Abschnitt 4).
-   Varianten über ?v=heute|v1|v1m|v2|v3 (oben umschalten):
+   2. Fassung (20.10.2026 nach dem ersten Versuch): Umschalten ohne Neuladen – die Messung aller Varianten bleibt in einer Datei
+   (bis 0020 gingen beim Umschalten alle Zeilen verloren). V3 (interactive-widget) entfällt: Safari kennt es nicht (verschiebt trotzdem
+   218 px, virtualKeyboard fehlt). Safari stellt ein verdecktes Feld in die Mitte des sichtbaren Bereichs (gemessen 218 = Mitte).
+   Varianten (oben umschalten, ?v= wählt die erste):
    Heute = wie AppDesign 4.28.0: Safari verschiebt, das Muster gleicht 2 Bilder später aus (--vv-top), Kapsel und iPhone/iPad nach innerHeight.
-   V1 = Feld vorher hoch: beim Antippen rückt das Feld über die künftige Tastatur (Höhe gemerkt je Gerät, Lage und Tastatur), dann Fokus.
-   V1m = wie V1, das Feld rückt aber in die Mitte des künftigen sichtbaren Bereichs (falls Safari ein Feld knapp über der Tastatur
-   trotzdem verschiebt – quer gemessen 21 px bei der Suche oben).
-   V2 = Ersatzfeld oben: zuerst ein unsichtbares Feld oben, nach der Meldung der Tastatur das echte Feld darüber.
-   V3 = Systemweg: Viewport interactive-widget=resizes-content (sonst wie V1 ohne Vorab-Rollen).
-   Nach jedem Öffnen und Schließen der Tastatur steht oben im Inhalt das Ergebnis; ‚Messung teilen‘ gibt Claude jedes Bild. */
+   V1 = Feld vorher in die obere Hälfte: beim Antippen rückt das Feld in die obere Hälfte des künftigen sichtbaren Bereichs (Höhe der
+        Tastatur gemerkt je Gerät, Lage und Tastatur), dann Fokus – Safari hat keinen Grund zu verschieben.
+        Der Platz unter dem Inhalt bleibt danach genau so groß, dass beim Schließen der Tastatur nichts zurückrutscht; das iPad-Fenster
+        gleitet beim Schließen in 0,25 s zurück in die Mitte. (V1k und V2 der ersten Fassung entfallen: V2 verschob im Modell das
+        iPad-Fenster trotzdem, V1k misst das Lineal genauer.)
+   Lineal = Feld beim Antippen mit wechselndem Abstand über der künftigen Tastatur (24, 40, 56, 72, 88, 104 px – je Antippen der nächste):
+        zeigt, ab welchem Abstand Safari nicht mehr verschiebt (iPad hoch: 80 px → nichts; iPhone quer Suche: 28 px → 21 px verschoben).
+   Nach jedem Öffnen und Schließen der Tastatur steht oben im Inhalt das Ergebnis; ‚Messung teilen‘ gibt Claude jedes Bild aller Varianten. */
 :root { --bg: #f2f2f7; --card: #fff; --line: #d1d1d6; --txt: #000; --sub: #6e6e73; --blue: #007aff; --ok: #248a3d; --bad: #d70015;
   --vv-top: 0px; --vv-h: 100dvh; --vv-bottom: 0px; --side: 0px; color-scheme: light dark; }
 @media (prefers-color-scheme: dark) { :root { --bg: #000; --card: #1c1c1e; --line: #38383a; --txt: #fff; --sub: #98989d; --ok: #30d158; --bad: #ff453a; } }
@@ -59,8 +60,10 @@ button { font: inherit; color: var(--blue); background: var(--card); border: 0; 
 .fab button { width: 44px; height: 44px; padding: 0; font-size: 20px; }
 html.suche.quer .fab { display: none; }
 #sonde { position: fixed; bottom: 0; left: 0; width: 1px; height: 1px; pointer-events: none; }
-#proxy { position: fixed; top: 0; left: 0; width: 1px; height: 1px; opacity: 0; font-size: 16px; padding: 0; border: 0; }
 dialog { border: 0; padding: 0; background: var(--bg); color: var(--txt); border-radius: 14px; width: min(540px, 100vw - 24px); box-shadow: 0 10px 40px rgba(0,0,0,.3); }
+/* V1: das iPad-Fenster gleitet beim Schließen der Tastatur zurück in die Mitte (wie die Tastatur, 0,25 s) – nur dann: beim Antippen
+   muss das Feld sofort oben stehen, sonst sieht Safari es noch unten */
+dialog.zurueck { transition: top .25s ease; }
 dialog::backdrop { background: rgba(0,0,0,.35); }
 dialog form { display: flex; flex-direction: column; max-height: var(--dlg-max, calc(100vh - 40px)); margin: 0; }
 html.phone dialog { width: 100%; max-width: none; max-height: none; height: var(--dlg-max); border-radius: 0; box-shadow: none; }
@@ -72,12 +75,13 @@ html.phone dialog form { height: 100%; }
 <nav id="side"><h2>Reiselogbücher</h2><div class="sel">Australien</div><div>Japan</div><div>Island</div></nav>
 <div id="rahmen">
   <div class="kopf" id="kopf"><span></span><b id="titel">A-36</b><span style="justify-self:end" class="kapsel" id="var">
-    <a data-v="heute">Heute</a><a data-v="v1">V1</a><a data-v="v1m">V1m</a><a data-v="v2">V2</a><a data-v="v3">V3</a></span></div>
+    <a data-v="heute">Heute</a><a data-v="v1">V1</a><a data-v="lineal">Lineal</a></span></div>
   <div class="suche" id="suchzeile"><input type="search" id="such" placeholder="Suchen" enterkeyhint="search" autocomplete="off"></div>
   <div class="rolle" id="rolle">
     <div id="ergebnis"><p>Feld antippen, etwas tippen, Tastatur schließen – hier steht danach, ob etwas gesprungen ist.</p></div>
     <div class="knopfe"><button type="button" id="fenster">Fenster öffnen</button><button type="button" id="suchknopf">Suche ein/aus</button>
-      <button type="button" id="teilen">Messung teilen</button><button type="button" id="vergessen">Höhen vergessen</button></div>
+      <button type="button" id="teilen">Messung teilen</button><button type="button" id="vergessen">Höhen vergessen</button>
+      <button type="button" id="neu">Messung neu beginnen</button></div>
     <label>Feld oben (über jeder Tastatur)</label><input type="text" id="oben" placeholder="oben">
     <div id="liste"></div>
     <label>Gesamtausgaben (Ziffern)</label><input type="text" id="kosten" inputmode="decimal" placeholder="0,00">
@@ -85,7 +89,7 @@ html.phone dialog form { height: 100%; }
   </div>
 </div>
 <div class="fab"><button type="button" id="hoch" aria-label="Nach oben">↑</button><button type="button" id="runter" aria-label="Ans Ende">↓</button></div>
-<div id="sonde"></div><input id="proxy" tabindex="-1" aria-hidden="true">
+<div id="sonde"></div>
 <dialog id="dlg"><form method="dialog">
   <div class="dkopf" id="dkopf"><button type="button" id="dlgX">Abbrechen</button><b>Mi., 26.08.2026</b><button type="button" id="dlgOk">Fertig</button></div>
   <div class="dkörper" id="dkoerper">
@@ -97,9 +101,18 @@ html.phone dialog form { height: 100%; }
   </div></form></dialog>
 <script>
 const $ = s => document.querySelector(s), vv = window.visualViewport, root = document.documentElement, R = Math.round;
-const V = (location.search.match(/[?&]v=(heute|v1m|v1|v2|v3)/) || [, 'v1'])[1];
-document.querySelectorAll('#var a').forEach(a => { a.classList.toggle('on', a.dataset.v === V); a.href = '?v=' + a.dataset.v; });
-$('#titel').textContent = 'A-36 · ' + (V === 'heute' ? 'Heute' : V.toUpperCase());
+let V = (location.search.match(/[?&]v=(heute|v1|lineal)/) || [, 'heute'])[1];
+const vName = v => ({ heute: 'Heute', v1: 'V1', lineal: 'Lineal' })[v];
+const LINEAL = [24, 40, 56, 72, 88, 104]; let linealN = 0, linealAbstand = null;
+// Umschalten ohne Neuladen: die Messung läuft weiter (erste Fassung verlor sie beim Neuladen)
+function variante(v) {
+  V = v; document.querySelectorAll('#var a').forEach(a => a.classList.toggle('on', a.dataset.v === V));
+  $('#titel').textContent = 'A-36 · ' + vName(V);
+  try { history.replaceState(null, '', '?v=' + V); } catch {}
+  if (window.a36bereit) zeile('variante ' + V);
+}
+document.querySelectorAll('#var a').forEach(a => { a.href = '?v=' + a.dataset.v; a.onclick = e => { e.preventDefault(); document.activeElement?.blur(); variante(a.dataset.v); }; });
+variante(V);
 // Liste mit Feldern in mehreren Höhen (Lineal)
 $('#liste').innerHTML = Array.from({ length: 14 }, (_, i) => `<div class="zeile">Tag ${i + 1} <small>· Programm ${i + 1}</small></div>` +
   ([3, 7, 11].includes(i) ? `<label>Feld nach Tag ${i + 1}</label><input type="text" id="feld${i + 1}" placeholder="Feld ${i + 1}">` : '')).join('');
@@ -113,7 +126,7 @@ let H = hoehe();
 const art = f => /^(decimal|numeric)$/.test(f.getAttribute('inputmode') || '') ? 'ziffern' : 'text';
 const schluessel = f => `${Math.min(screen.width, screen.height) < 500 ? 'iPhone' : 'iPad'} ${quer() ? 'quer' : 'hoch'} ${art(f)}`;
 const SCHAETZUNG = { 'iPhone hoch text': 403, 'iPhone hoch ziffern': 403, 'iPhone quer text': 276, 'iPhone quer ziffern': 232,
-  'iPad quer text': 428, 'iPad quer ziffern': 428, 'iPad hoch text': 440, 'iPad hoch ziffern': 440 };
+  'iPad quer text': 428, 'iPad quer ziffern': 428, 'iPad hoch text': 340, 'iPad hoch ziffern': 340 };   // iPad hoch gemessen 20.10. (V3)
 let gemerkt = {}; try { gemerkt = JSON.parse(localStorage.getItem('a36.kb') || '{}'); } catch {}
 const tastatur = f => gemerkt[schluessel(f)] ?? SCHAETZUNG[schluessel(f)] ?? R(H * 0.5);
 function layout() { root.classList.toggle('phone', phone()); root.classList.toggle('ipad', !phone()); root.classList.toggle('quer', quer()); }
@@ -130,6 +143,8 @@ function place() {
   if (!dlg.open) return;
   if (phone()) { dlg.style.margin = '0'; dlg.style.top = R(top) + 'px'; dlg.style.bottom = 'auto'; return; }
   dlg.style.margin = '0 auto'; dlg.style.bottom = 'auto';
+  const jetzt = parseFloat(dlg.style.top), ganz = jetzt >= top + 10 - 1 && jetzt + dlg.offsetHeight <= top + h - 10 + 1;
+  if (V !== 'heute' && offen() && ganz) return;   // V1 hat das Fenster schon gestellt – nicht noch einmal bewegen
   dlg.style.top = R(top + Math.max(10, (h - dlg.offsetHeight) / 2)) + 'px';
 }
 // Feld 16 px über die Tastatur rollen (R-4.5) – im Rollbereich bzw. im Fenster
@@ -140,17 +155,31 @@ function insBild(f, unten) {
   if (r.bottom > grenze) c.scrollTop += r.bottom - grenze; else if (r.top < b.top) c.scrollTop -= b.top - r.top + 16;
 }
 
+// Platz unter dem Inhalt (V1, V1k, Lineal): beim Antippen reichlich, danach immer genau so viel, dass der Rollstand bleibt – der Inhalt
+// springt weder nach der Meldung (Rahmen kürzer) noch beim Schließen der Tastatur (Rahmen länger) zurück.
+const basis = c => { if (!c.dataset.basis) c.dataset.basis = parseFloat(getComputedStyle(c).paddingBottom) || 0; return +c.dataset.basis; };
+const platz = (c, px) => { c.style.paddingBottom = (basis(c) + px) + 'px'; };
+function knapp(c) {
+  const y = c.scrollTop, pad = parseFloat(getComputedStyle(c).paddingBottom) || 0, natur = c.scrollHeight - pad;
+  c.style.paddingBottom = Math.max(basis(c), Math.ceil(y + c.clientHeight - natur)) + 'px'; c.scrollTop = y;
+}
 // ---------- Messung (vor allen anderen Hörern: Lage vor dem Ausgleich) ----------
-const zeilen = [], start = performance.now(); let lauf = null;
+// bleibt über Neuladen erhalten (sessionStorage), alle Varianten in einer Datei
+let alt = null; try { alt = JSON.parse(sessionStorage.getItem('a36.messung') || 'null'); } catch {}
+const zeilen = alt?.zeilen || [], start = alt?.start || Date.now(); let lauf = null;
+if (alt) zeilen.push(`${Date.now() - start} # neu geladen`);
+addEventListener('pagehide', () => { try { sessionStorage.setItem('a36.messung', JSON.stringify({ zeilen: zeilen.slice(-15000), start, ergebnis: $('#ergebnis').innerHTML })); } catch {} });
 const sicht = s => { const e = $(s); return e && e.getClientRects().length ? e.getBoundingClientRect() : null; };
 function werte() {
   const d = $('#dlg').open ? sicht('#dkopf') : null, k = sicht('.fab'), so = $('#sonde').getBoundingClientRect(), a = document.activeElement;
+  const fr = a?.matches?.('input, textarea') ? a.getBoundingClientRect() : null;   // Feld mit Fokus (oben, unten)
   return { vh: R(vv.height), vt: R(vv.offsetTop), sy: R(scrollY), ih: innerHeight, ch: root.clientHeight, kopf: R(sicht('#kopf').top),
     side: sicht('#side') ? R(sicht('#side').top) : '-', dkopf: d ? R(d.top) : '-', dlinks: d ? R($('#dlg').getBoundingClientRect().left) : '-',
-    kapsel: k ? R(k.bottom) : '-', sonde: R(so.bottom), fokus: a && a !== document.body ? a.id || a.tagName.toLowerCase() : '-' };
+    kapsel: k ? R(k.bottom) : '-', sonde: R(so.bottom), fokus: a && a !== document.body ? a.id || a.tagName.toLowerCase() : '-',
+    ft: fr ? R(fr.top) : '-', fb: fr ? R(fr.bottom) : '-', v: V };
 }
 function zeile(ereignis = '') {
-  const w = werte(), t = R(performance.now() - start), s = Object.values(w).join(' ');
+  const w = werte(), t = Date.now() - start, s = Object.values(w).join(' ');
   if (!ereignis && s === zeile.zuletzt) return w;
   zeile.zuletzt = s; if (zeilen.length < 20000) zeilen.push(`${t} ${s}${ereignis ? ' ! ' + ereignis : ''}`);
   if (lauf) lauf.bilder.push(w);
@@ -165,6 +194,8 @@ document.addEventListener('click', e => { const b = e.target.closest('button, in
 function beginne(was, feld) {
   if (lauf) ende();
   lauf = { was, feld, variante: V, bilder: [], vorher: werte(), letzte: performance.now() };
+  // Lage des Felds im Augenblick des Fokus (nach V1) – daraus, wie viel Abstand Safari verlangt
+  const f = document.getElementById(feld); if (f && was !== 'zu') { const r = f.getBoundingClientRect(); lauf.feldVor = { oben: R(r.top), unten: R(r.bottom) }; }
   const warte = () => { if (!lauf) return; if (performance.now() - lauf.letzte > 900) ende(); else setTimeout(warte, 100); };
   setTimeout(warte, 400);
 }
@@ -173,7 +204,7 @@ function ende() {
   const n = werte(), b = l.bilder, num = k => b.map(x => x[k]).filter(x => x !== '-');
   const spanne = (k, still) => { const v = num(k); if (!v.length || l.vorher[k] === '-') return null;
     const lo = Math.min(l.vorher[k], still ? l.vorher[k] : n[k]) - 1, hi = Math.max(l.vorher[k], still ? l.vorher[k] : n[k]) + 1;
-    const aus = v.filter(x => x < lo || x > hi); return aus.length ? { n: aus.length, w: aus.reduce((a, x) => Math.abs(x - l.vorher[k]) > Math.abs(a - l.vorher[k]) ? x : a) } : 0; };
+    const aus = v.filter(x => x < lo || x > hi); return aus.length ? { n: aus.length, w: aus.reduce((a, x) => Math.abs(x - l.vorher[k]) > Math.abs(a - l.vorher[k]) ? x : a, aus[0]) } : 0; };
   const ok = (t, gut) => `<span class="${gut ? 'ok' : 'bad'}">${t} ${gut ? '✓' : '✗'}</span>`;
   const vt = Math.max(0, ...num('vt')), sy = Math.max(0, ...num('sy')), teile = [];
   teile.push(ok(vt || sy ? `Safari verschiebt ${Math.max(vt, sy)} px` : 'Safari verschiebt nicht', !vt && !sy));
@@ -185,93 +216,105 @@ function ende() {
   const f = document.activeElement;
   if (l.was !== 'zu' && f?.matches('input, textarea')) { const r = f.getBoundingClientRect(); teile.push(ok(`Feld ${R(vv.height - r.bottom)} px über der Tastatur`, r.bottom <= vv.height + 1 && r.top >= -1)); }
   if (l.was !== 'zu') teile.push(`Tastatur ${R(hoehe() - vv.height)} px (${l.kb ? 'angenommen ' + l.kb : 'keine Annahme'})`);
-  const text = `<b>${V === 'heute' ? 'Heute' : V.toUpperCase()} · ${l.was === 'auf' ? 'Tastatur auf' : l.was === 'zu' ? 'Tastatur zu' : 'Feld gewechselt'} · ${l.feld}</b><br>${teile.join(' · ')}`;
+  if (l.lineal) teile.push(`<b>Lineal: Abstand ${l.lineal} px gewollt</b>`);
+  if (l.feldVor && l.was !== 'zu') teile.push(`beim Fokus: Feld ${l.feldVor.oben}–${l.feldVor.unten} px, ${R(vv.height - l.feldVor.unten)} px über der Tastatur, Mitte des Felds ${R((l.feldVor.oben + l.feldVor.unten) / 2 - vv.height / 2)} px unter der Mitte`);
+  const text = `<b>${vName(l.variante)} · ${l.was === 'auf' ? 'Tastatur auf' : l.was === 'zu' ? 'Tastatur zu' : 'Feld gewechselt'} · ${l.feld}</b><br>${teile.join(' · ')}`;
   zeilen.push('# Ergebnis ' + text.replace(/<[^>]+>/g, ''));
   const e = document.createElement('p'); e.innerHTML = text; $('#ergebnis').prepend(e);
-  while ($('#ergebnis').children.length > 6) $('#ergebnis').lastChild.remove();
+  while ($('#ergebnis').children.length > 30) $('#ergebnis').lastChild.remove();
 }
-document.addEventListener('focusin', e => { if (e.target.matches('input, textarea') && e.target !== $('#proxy')) {
-  if (!lauf || lauf.was === 'zu') beginne(offen() ? 'wechsel' : 'auf', e.target.id); if (lauf) lauf.kb = lauf.kb || annahme; annahme = 0; } }, true);
-document.addEventListener('focusout', e => { if (!e.target.matches('input, textarea') || e.target === $('#proxy')) return;
-  setTimeout(() => { const a = document.activeElement; if (!a?.matches('input, textarea') && !wartet) beginne('zu', e.target.id); }, 50); }, true);
+document.addEventListener('focusin', e => { if (e.target.matches('input, textarea')) {
+  if (!lauf || lauf.was === 'zu') beginne(offen() ? 'wechsel' : 'auf', e.target.id);
+  if (lauf) { lauf.kb = lauf.kb || annahme; const r = e.target.getBoundingClientRect(); lauf.feldVor = { oben: R(r.top), unten: R(r.bottom) };
+    if (V === 'lineal') lauf.lineal = linealAbstand; }
+  annahme = 0; } }, true);
+document.addEventListener('focusout', e => { if (!e.target.matches('input, textarea')) return;
+  setTimeout(() => { const a = document.activeElement; if (!a?.matches('input, textarea') ) beginne('zu', e.target.id); }, 50); }, true);
 const offen = () => vv.height < hoehe() - 80;
-let annahme = 0, wartet = null;
+let annahme = 0;
 
 // ---------- Ausgleich bei jeder Meldung (alle Varianten) und Tastaturhöhe merken ----------
 function gemeldet() {
   const vorH = $('#rolle').scrollTop, vorD = $('#dkoerper').scrollTop;
+  // vor dem Wachsen des Rahmens Platz geben, sonst kürzt der Browser den Rollstand und der Inhalt rutscht zurück
+  const d = $('#dlg'), ipadFenster = d.open && !phone() && V !== 'heute';
+  // V1: Tastatur zu – das iPad-Fenster gleitet zurück in die Mitte, sein Inhalt bleibt, wo er war
+  if (ipadFenster && !offen()) { d.classList.add('zurueck'); setTimeout(() => d.classList.remove('zurueck'), 300); }
+  for (const c of [$('#rolle'), $('#dkoerper')]) if (c.style.paddingBottom) platz(c, 2000);
   place();
-  // V1: Platz unter dem Inhalt wieder weg – der Rahmen ist jetzt so hoch wie der sichtbare Bereich, das Feld bleibt, wo es ist
-  if (offen() || !document.activeElement?.matches('input, textarea')) { $('#rolle').style.paddingBottom = $('#dkoerper').style.paddingBottom = ''; $('#rolle').scrollTop = vorH; $('#dkoerper').scrollTop = vorD; }
+  // Rahmen jetzt so hoch wie der sichtbare Bereich: Platz unter dem Inhalt so anpassen, dass das Feld bleibt, wo es ist
+  $('#rolle').scrollTop = vorH; $('#dkoerper').scrollTop = vorD;
+  for (const c of [$('#rolle'), $('#dkoerper')]) if (c.style.paddingBottom) knapp(c);
+  if (ipadFenster) place();   // Fenster nach dem knappen Platz neu mitteln
   const f = document.activeElement;
-  if (offen() && f?.matches('input, textarea') && f !== $('#proxy')) {
+  if (offen() && f?.matches('input, textarea')) {
     gemerkt[schluessel(f)] = R(hoehe() - vv.height); try { localStorage.setItem('a36.kb', JSON.stringify(gemerkt)); } catch {}
     insBild(f, vv.height);
   }
   if (!offen()) H = hoehe();
-  // V2: nach der Meldung das echte Feld über die Tastatur stellen und fokussieren
-  if (wartet && offen()) { const z = wartet; wartet = null; insBild(z, vv.height); zielFokus(z); }
 }
 vv.addEventListener('resize', () => requestAnimationFrame(gemeldet));
 vv.addEventListener('scroll', () => requestAnimationFrame(gemeldet));
 addEventListener('resize', () => { if (!offen()) H = hoehe(); place(); });
 
-// ---------- V1 und V2: Antippen eines Felds abfangen (Ende der Berührung, vor dem Fokus) ----------
+// ---------- V1 und Lineal: Antippen eines Felds abfangen (Ende der Berührung, vor dem Fokus) ----------
 let beruehrung = null;
 document.addEventListener('touchstart', e => { const t = e.touches[0]; beruehrung = { x: t.clientX, y: t.clientY, z: performance.now(), ziel: e.target }; }, { passive: true, capture: true });
 document.addEventListener('touchend', e => {
   const b = beruehrung, f = e.target; beruehrung = null;
-  if (!['v1', 'v1m', 'v2'].includes(V) || !b || !f.matches?.('input, textarea') || f === $('#proxy') || f === document.activeElement) return;
+  if (!['v1', 'lineal'].includes(V) || !b || !f.matches?.('input, textarea') || f === document.activeElement) return;
   const t = e.changedTouches[0];
   if (Math.hypot(t.clientX - b.x, t.clientY - b.y) > 10 || performance.now() - b.z > 600) return;   // gewischt bzw. lange gedrückt
   e.preventDefault();
-  if (V !== 'v2') { vorbereiten(f); zielFokus(f); return; }
-  // V2: Ersatzfeld oben mit derselben Tastatur fokussieren, das echte Feld nach der Meldung
-  const p = $('#proxy');
-  for (const a of ['inputmode', 'autocapitalize', 'enterkeyhint', 'autocomplete']) f.hasAttribute(a) ? p.setAttribute(a, f.getAttribute(a)) : p.removeAttribute(a);
-  p.type = f.type === 'search' ? 'search' : 'text'; p.value = '';
-  if (offen()) { vorbereiten(f); zielFokus(f); return; }
-  // ein offenes Fenster macht alles außerhalb unbedienbar (inert) – das Ersatzfeld muss dann im Fenster stehen
-  const wirt = $('#dlg').open ? $('#dlg') : document.body; if (p.parentNode !== wirt) wirt.appendChild(p);
-  annahme = 0; beginne('auf', f.id); wartet = f; p.focus({ preventScroll: true });
-  setTimeout(() => { if (wartet === f) { wartet = null; zielFokus(f); } }, 900);
+  vorbereiten(f); zielFokus(f);
 }, { passive: false, capture: true });
 function zielFokus(f) {
-  const p = $('#proxy'), text = document.activeElement === p ? p.value : '';
   f.focus({ preventScroll: true });
-  if (text) f.value += text;
   try { const n = f.value.length; f.setSelectionRange(n, n); } catch {}
 }
-// V1: Rahmen bzw. Fenster schon so stellen wie nach der Tastatur – Platz unter dem Inhalt in Tastaturhöhe, Feld 16 px darüber
+// V1: Rahmen bzw. Fenster schon so stellen wie nach der Tastatur, bevor Safari das Feld sieht. Ziel: V1 Mitte des Felds in der oberen
+// Hälfte (höchstens 24 px über der Mitte), V1k Unterkante 16 px über der Tastatur, Lineal Unterkante im wechselnden Abstand.
+// iPhone (Rahmen und Fenster über den ganzen Bildschirm): Platz unter dem Inhalt in Tastaturhöhe, dann rollen. iPad-Fenster:
+// zuerst das Fenster höher rücken (höchstens bis 10 px unter den Rand), den Rest im Fenster rollen.
 function vorbereiten(f) {
   const kb = offen() ? R(hoehe() - vv.height) : tastatur(f), sichtbar = offen() ? vv.height : H - kb, c = behaelter(f), d = $('#dlg');
   annahme = kb;
-  if (d.open && !phone()) {   // iPad: Fenster in die Mitte über der künftigen Tastatur
+  if (V === 'lineal') linealAbstand = LINEAL[linealN++ % LINEAL.length];
+  const fehlt = () => { const r = f.getBoundingClientRect(), b = c.getBoundingClientRect();
+    if (V === 'v1') return (r.top + r.bottom) / 2 - Math.max(b.top + 8 + r.height / 2, sichtbar / 2 - 24);
+    return r.bottom - (sichtbar - (V === 'lineal' ? linealAbstand : 16)); };
+  if (!c) return;
+  platz(c, kb + sichtbar);   // reichlich – nach dem Rollen wieder knapp
+  if (d.open && !phone() && c === $('#dkoerper')) {
     root.style.setProperty('--dlg-max', Math.max(200, sichtbar - 20) + 'px');
-    d.style.top = R(Math.max(10, (sichtbar - d.offsetHeight) / 2)) + 'px';
+    const top = parseFloat(d.style.top) || d.getBoundingClientRect().top, n = fehlt();
+    if (n > 0) d.style.top = R(Math.max(10, top - n)) + 'px';
+    if (d.getBoundingClientRect().bottom > sichtbar - 10) d.style.top = R(Math.max(10, sichtbar - 10 - d.offsetHeight)) + 'px';
   }
-  if (c && !offen()) c.style.paddingBottom = kb + 'px';
-  if (V === 'v1m' && c) { const r = f.getBoundingClientRect(); c.scrollTop += (r.top + r.bottom) / 2 - sichtbar / 2; }
-  else insBild(f, sichtbar);
+  const n = fehlt(); if (V === 'lineal' || n > 0) c.scrollTop += n;
+  knapp(c);
 }
 
 // ---------- Bedienung ----------
 $('#fenster').onclick = () => { const d = $('#dlg'); d.showModal(); place(); $('#dkoerper').scrollTop = 0; };
-$('#dlgX').onclick = $('#dlgOk').onclick = () => { document.activeElement?.blur(); $('#dlg').close(); };
+$('#dlgX').onclick = $('#dlgOk').onclick = () => { document.activeElement?.blur(); $('#dlg').close(); $('#dkoerper').style.paddingBottom = ''; };
 $('#suchknopf').onclick = () => { root.classList.toggle('suche'); place(); };
 $('#hoch').onclick = () => $('#rolle').scrollTo({ top: 0, behavior: 'smooth' });
 $('#runter').onclick = () => $('#rolle').scrollTo({ top: 1e6, behavior: 'smooth' });
+$('#neu').onclick = () => { zeilen.length = 0; $('#ergebnis').innerHTML = '<p>Messung neu begonnen.</p>'; try { sessionStorage.removeItem('a36.messung'); } catch {} zeile('neu'); };
 $('#vergessen').onclick = () => { gemerkt = {}; try { localStorage.removeItem('a36.kb'); } catch {} $('#ergebnis').insertAdjacentHTML('afterbegin', '<p>Gemerkte Tastaturhöhen gelöscht.</p>'); };
 $('#teilen').onclick = async () => {
   const st = matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
-  const kopf = `# A-36 Muster · ${V} · ${navigator.userAgent} · ${st ? 'Home-Bildschirm' : 'Safari'} · ${screen.width}×${screen.height} · ${new Date().toISOString()}\n` +
+  const kopf = `# A-36 Muster 2 · ${navigator.userAgent} · ${st ? 'Home-Bildschirm' : 'Safari'} · ${screen.width}×${screen.height} · ${new Date().toISOString()}\n` +
     `# virtualKeyboard: ${'virtualKeyboard' in navigator ? 'ja' : 'nein'} · viewport: ${document.querySelector('meta[name=viewport]').content}\n` +
     `t ${Object.keys(werte()).join(' ')}\n`;
-  const text = kopf + zeilen.join('\n') + '\n', name = `a36-${V}-${new Date().toISOString().slice(0, 16).replace(/[:T]/g, '-')}.txt`;
+  const text = kopf + zeilen.join('\n') + '\n', name = `a36-${new Date().toISOString().slice(0, 16).replace(/[:T]/g, '-')}.txt`;
   try { await navigator.share({ files: [new File([text], name, { type: 'text/plain' })] }); }
   catch (e) { if (e.name !== 'AbortError') { try { await navigator.clipboard.writeText(text); alert('Messung in die Zwischenablage kopiert.'); } catch { alert('Teilen nicht möglich.'); } } }
 };
+window.a36bereit = true;
 place();
-$('#ergebnis').insertAdjacentHTML('beforeend', `<p style="color:var(--sub)">${V === 'v3' ? 'V3: interactive-widget gesetzt · ' : ''}virtualKeyboard: ${'virtualKeyboard' in navigator ? 'ja' : 'nein'} · ${matchMedia('(display-mode: standalone)').matches || navigator.standalone ? 'Home-Bildschirm' : 'Safari'}</p>`);
+if (alt?.ergebnis) $('#ergebnis').innerHTML = alt.ergebnis;
+$('#ergebnis').insertAdjacentHTML('beforeend', `<p style="color:var(--sub)">virtualKeyboard: ${'virtualKeyboard' in navigator ? 'ja' : 'nein'} · ${matchMedia('(display-mode: standalone)').matches || navigator.standalone ? 'Home-Bildschirm' : 'Safari'}</p>`);
 </script>
 </body></html>

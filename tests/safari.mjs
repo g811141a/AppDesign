@@ -41,14 +41,20 @@
 //   beides gilt ab der Meldung. Chromiums eigener Rollstand bleibt V (Modell oben); scrollY meldet zusätzlich die Verschiebung.
 // - S-4 Option auto: Fokus auf ein Feld mit Tastatur öffnet sie im nächsten Bild (Höhe für das nächste Öffnen: __safari.naechste),
 //   bleibt nach dem Verlassen 100 ms kein Feld mit Fokus, schließt sie sich – wie am Gerät.
+// - S-5 (Muster A-36, 20.10.2026): Safari verschiebt nur, wenn das Feld weniger als ABSTAND über der Tastatur endet (iPad hoch: 80 px
+//   Abstand → nichts; iPhone quer Suche: 28 px → verschoben), dann bis zur Mitte. Der Schub quer (A-27 3, 21 px) folgt aus derselben
+//   Regel (Suche 62–104 px, sichtbar 126 → Mitte 20 px) und ist kein eigener Wert mehr. ABSTAND ist zwischen 29 und 80 px – bis das
+//   Lineal des Musters ihn genau misst, gilt vorsichtig 80. iPad hoch: Tastatur 340 px (gemessen, Muster V3).
+export const ABSTAND = 80;
 export const SAFARI = {
   'iPhone hoch': { tastatur: 403, fokusRollen: -120, fokusSchub: 0 },
-  'iPhone quer': { tastatur: 276, ziffern: 232, fokusRollen: 0, fokusSchub: 21 },
+  'iPhone quer': { tastatur: 276, ziffern: 232, fokusRollen: 0, fokusSchub: 0 },
   'iPad quer': { tastatur: 428, fokusRollen: 0, fokusSchub: 0 },
+  'iPad hoch': { tastatur: 340, fokusRollen: 0, fokusSchub: 0 },
 };
 
-export async function safariModell(p, ansicht, { leisten = { bar: '.nb, .pnav', box: '.searchbox' }, links = {}, auto = false } = {}) {
-  const werte = SAFARI[ansicht];
+export async function safariModell(p, ansicht, { leisten = { bar: '.nb, .pnav', box: '.searchbox' }, links = {}, auto = false, abstand = ABSTAND } = {}) {
+  const werte = { abstand, ...SAFARI[ansicht] };
   if (!werte) throw new Error(`Safari-Modell: keine Werte für ${ansicht}`);
   await p.evaluate(({ werte, leisten, links, auto }) => {
     const vv = window.visualViewport;
@@ -74,7 +80,8 @@ export async function safariModell(p, ansicht, { leisten = { bar: '.nb, .pnav', 
         let fest = false;
         for (let e = a; e && e !== document.documentElement; e = e.parentElement) if (e.matches('dialog[open]') || getComputedStyle(e).position === 'fixed') { fest = true; break; }
         const v = s.top(), r = a.getBoundingClientRect(), d = fest ? v : 0;
-        if (r.bottom - d > s.hoehe()) s.pan = Math.min(H() - s.hoehe() - (Y() - s.L), s.pan + Math.round((r.top + r.bottom) / 2 - d - s.hoehe() / 2));
+        // S-5: zu nah über der Tastatur (weniger als abstand) – Safari stellt das Feld in die Mitte
+        if (r.bottom - d > s.hoehe() - werte.abstand) s.pan = Math.min(H() - s.hoehe() - (Y() - s.L), s.pan + Math.max(0, Math.round((r.top + r.bottom) / 2 - d - s.hoehe() / 2)));
       },
       // Safari meldet 2 Bilder später, was es zeigt
       melde() {

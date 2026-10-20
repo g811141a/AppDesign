@@ -96,7 +96,33 @@ Fenster links, Kapsel), und zeichnet jedes Bild auf (Teilen als Datei für Claud
   hoch, iPad quer; iPad-Fenster bleibt mittig, Kapsel 16 px über der Tastatur); quer bleibt der 21-px-Schub (Modellannahme, offen);
   V3 wie Heute (das Modell kennt `interactive-widget` nicht – das zeigt nur das Gerät).
 
-## 6. Grenzen
+## 6. Erster Versuch am Gerät (20.10.2026) – ‚springt in verschiedensten Konstellationen‘
+
+- **Fehler im Muster (Claude):** das Umschalten der Variante lud die Seite neu und verwarf die Messung – geteilt kamen nur die
+  Läufe mit V3 an (iPhone hoch, iPad hoch). Welche Konstellationen bei Heute, V1, V1m und V2 sprangen, ist deshalb nicht gemessen.
+- **V3 scheidet aus:** Safari kennt `interactive-widget=resizes-content` nicht (iPhone: verschiebt trotzdem 218 px), kein
+  `navigator.virtualKeyboard`.
+- **Regel bestätigt und geschärft (S-5):** Safari verschiebt nur, wenn das Feld **zu nah** über der künftigen Tastatur endet
+  (iPad hoch: Ort endet 80 px darüber → nichts; iPhone quer Suche: 22–28 px → verschoben), und dann **bis zur Mitte** (iPhone hoch
+  Ort 393–435 bei sichtbar 409 → Mitte 210, gemessen 218). Der 21-px-Schub quer ist dieselbe Regel (Suche 62–104 → 20 px). Der
+  nötige Abstand liegt zwischen 29 und 80 px; das Modell nimmt vorsichtig 80 (`ABSTAND`), das Lineal misst ihn.
+- **Warum V1 am Gerät sprang (Vermutung aus dem Modell mit der geschärften Regel):** V1 stellte das Feld nur **16 px** über die
+  Tastatur – zu nah, Safari stellt es trotzdem in die Mitte; im iPhone-Fenster reichte zudem der Platz unter dem Inhalt nicht, um
+  Ort hoch genug zu rollen; beim Schließen rutschte der Inhalt zurück (Rollstand gekürzt, als der Rahmen wuchs).
+- **iPad hoch:** Tastatur 340 px (sichtbar 822 von 1162) – ins Modell und in die Schätzung übernommen.
+
+**Muster 2. Fassung:** Umschalten ohne Neuladen, alle Varianten in einer Messung (bleibt auch beim Neuladen), Spalten Variante und
+Lage des Felds mit Fokus. Varianten **Heute · V1 · Lineal**:
+- **V1 neu:** Feld beim Antippen in die **obere Hälfte** des künftigen sichtbaren Bereichs (nie unter Kopf- bzw. Fensterkopf); dafür
+  reichlich Platz unter dem Inhalt, danach genau so viel, dass der Rollstand bleibt – auch beim Schließen der Tastatur. iPad-Fenster:
+  zuerst das Fenster höher, beim Schließen gleitet es in 0,25 s zurück in die Mitte.
+- **Lineal:** Feld beim Antippen 24, 40, 56, 72, 88, 104 px über der künftigen Tastatur (je Antippen der nächste) – zeigt den Abstand,
+  ab dem Safari nicht mehr verschiebt.
+- Im Modell (Chromium und WebKit, `ABSTAND` 80): V1 still beim Öffnen und Schließen – iPhone hoch (Fenster und Inhalt), iPhone quer
+  Gesamtausgaben, iPad quer (Fenster bleibt mittig). **Offen: iPhone quer im Fenster** – unter dem Fensterkopf (57 px) bleiben bei
+  126 px Sicht nur 69 px; das Feld kann nicht weit genug über die Tastatur, Safari verschiebt ~23 px. Hängt am gemessenen Abstand.
+
+## 7. Grenzen
 
 - Was Safari zwischen zwei Bildern zeigt, kennt die Prüfung nur aus dem Modell – deshalb Muster und Messung am Gerät.
 - Drehen mit offener Tastatur, iPad hoch und Zifferntastatur hoch sind nicht gemessen → Muster bzw. Prüfliste.
