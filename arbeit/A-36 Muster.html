@@ -1,0 +1,277 @@
+<!doctype html><html lang="de"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>
+// V3: Systemweg – Safari soll den Bereich verkleinern statt verschieben (muss vor dem Laden im Viewport stehen)
+if (/[?&]v=v3/.test(location.search)) document.querySelector('meta[name=viewport]').content += ', interactive-widget=resizes-content';
+</script>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="A-36 Muster">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>A-36 Muster</title>
+<style>
+/* A-36 Tastatur ohne Springen – Muster mit Messung (Sitzung Reiselogbuch 0020, Fall-Liste arbeit/A-36 Fall-Liste.md Abschnitt 4).
+   Varianten über ?v=heute|v1|v1m|v2|v3 (oben umschalten):
+   Heute = wie AppDesign 4.28.0: Safari verschiebt, das Muster gleicht 2 Bilder später aus (--vv-top), Kapsel und iPhone/iPad nach innerHeight.
+   V1 = Feld vorher hoch: beim Antippen rückt das Feld über die künftige Tastatur (Höhe gemerkt je Gerät, Lage und Tastatur), dann Fokus.
+   V1m = wie V1, das Feld rückt aber in die Mitte des künftigen sichtbaren Bereichs (falls Safari ein Feld knapp über der Tastatur
+   trotzdem verschiebt – quer gemessen 21 px bei der Suche oben).
+   V2 = Ersatzfeld oben: zuerst ein unsichtbares Feld oben, nach der Meldung der Tastatur das echte Feld darüber.
+   V3 = Systemweg: Viewport interactive-widget=resizes-content (sonst wie V1 ohne Vorab-Rollen).
+   Nach jedem Öffnen und Schließen der Tastatur steht oben im Inhalt das Ergebnis; ‚Messung teilen‘ gibt Claude jedes Bild. */
+:root { --bg: #f2f2f7; --card: #fff; --line: #d1d1d6; --txt: #000; --sub: #6e6e73; --blue: #007aff; --ok: #248a3d; --bad: #d70015;
+  --vv-top: 0px; --vv-h: 100dvh; --vv-bottom: 0px; --side: 0px; color-scheme: light dark; }
+@media (prefers-color-scheme: dark) { :root { --bg: #000; --card: #1c1c1e; --line: #38383a; --txt: #fff; --sub: #98989d; --ok: #30d158; --bad: #ff453a; } }
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; overflow: hidden; overscroll-behavior: none; background: var(--bg); color: var(--txt);
+  font: 17px -apple-system, system-ui, sans-serif; -webkit-text-size-adjust: 100%; }
+html.ipad { --side: 280px; }
+#side { position: fixed; left: 0; top: var(--vv-top); width: var(--side); height: var(--vv-h); background: var(--card); border-right: 1px solid var(--line);
+  padding: 12px; overflow: auto; display: none; }
+html.ipad #side { display: block; }
+#side h2 { font-size: 20px; margin: 4px 0 12px; }
+#side div { padding: 10px 8px; border-radius: 10px; }
+#side div.sel { background: var(--blue); color: #fff; }
+#rahmen { position: fixed; top: var(--vv-top); left: var(--side); right: 0; height: var(--vv-h); display: flex; flex-direction: column; }
+.kopf { flex: none; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; min-height: 44px; padding: 0 12px; background: var(--bg);
+  border-bottom: 1px solid var(--line); }
+.kopf b { text-align: center; font-size: 17px; }
+.kapsel { display: inline-flex; background: var(--card); border-radius: 999px; padding: 2px; gap: 2px; box-shadow: 0 1px 4px rgba(0,0,0,.15); }
+.kapsel a { padding: 6px 10px; border-radius: 999px; color: var(--blue); text-decoration: none; font-size: 15px; }
+.kapsel a.on { background: var(--blue); color: #fff; }
+.suche { flex: none; padding: 6px 12px; background: var(--bg); border-bottom: 1px solid var(--line); display: none; }
+html.suche .suche { display: block; }
+.rolle { flex: 1; overflow: auto; overscroll-behavior: contain; padding: 12px 16px 24px; }
+input, textarea { font: inherit; font-size: 17px; width: 100%; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px;
+  background: var(--card); color: var(--txt); }
+textarea { min-height: 96px; resize: none; }
+label { display: block; margin: 14px 0 4px; color: var(--sub); font-size: 15px; }
+.zeile { background: var(--card); border-radius: 12px; padding: 12px 14px; margin: 8px 0; }
+.zeile small { color: var(--sub); }
+button { font: inherit; color: var(--blue); background: var(--card); border: 0; border-radius: 999px; padding: 8px 14px; box-shadow: 0 1px 4px rgba(0,0,0,.15); }
+/* feste Höhe: ein neues Ergebnis darf den Inhalt (und das Feld mit Fokus) nicht verschieben */
+#ergebnis { background: var(--card); border-radius: 12px; padding: 10px 12px; margin-bottom: 10px; font-size: 14px; line-height: 1.45;
+  height: 9.5em; overflow: auto; overscroll-behavior: contain; }
+#ergebnis .ok { color: var(--ok); } #ergebnis .bad { color: var(--bad); }
+#ergebnis p { margin: 4px 0; }
+.knopfe { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 12px; }
+.fab { position: fixed; right: 16px; bottom: calc(16px + max(var(--vv-bottom), env(safe-area-inset-bottom))); display: flex; flex-direction: column; gap: 8px; z-index: 4; }
+.fab button { width: 44px; height: 44px; padding: 0; font-size: 20px; }
+html.suche.quer .fab { display: none; }
+#sonde { position: fixed; bottom: 0; left: 0; width: 1px; height: 1px; pointer-events: none; }
+#proxy { position: fixed; top: 0; left: 0; width: 1px; height: 1px; opacity: 0; font-size: 16px; padding: 0; border: 0; }
+dialog { border: 0; padding: 0; background: var(--bg); color: var(--txt); border-radius: 14px; width: min(540px, 100vw - 24px); box-shadow: 0 10px 40px rgba(0,0,0,.3); }
+dialog::backdrop { background: rgba(0,0,0,.35); }
+dialog form { display: flex; flex-direction: column; max-height: var(--dlg-max, calc(100vh - 40px)); margin: 0; }
+html.phone dialog { width: 100%; max-width: none; max-height: none; height: var(--dlg-max); border-radius: 0; box-shadow: none; }
+html.phone dialog form { height: 100%; }
+.dkopf { flex: none; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+.dkopf button:last-child { justify-self: end; font-weight: 600; }
+.dkörper { flex: 1; overflow: auto; overscroll-behavior: contain; padding: 4px 16px 24px; }
+</style></head><body>
+<nav id="side"><h2>Reiselogbücher</h2><div class="sel">Australien</div><div>Japan</div><div>Island</div></nav>
+<div id="rahmen">
+  <div class="kopf" id="kopf"><span></span><b id="titel">A-36</b><span style="justify-self:end" class="kapsel" id="var">
+    <a data-v="heute">Heute</a><a data-v="v1">V1</a><a data-v="v1m">V1m</a><a data-v="v2">V2</a><a data-v="v3">V3</a></span></div>
+  <div class="suche" id="suchzeile"><input type="search" id="such" placeholder="Suchen" enterkeyhint="search" autocomplete="off"></div>
+  <div class="rolle" id="rolle">
+    <div id="ergebnis"><p>Feld antippen, etwas tippen, Tastatur schließen – hier steht danach, ob etwas gesprungen ist.</p></div>
+    <div class="knopfe"><button type="button" id="fenster">Fenster öffnen</button><button type="button" id="suchknopf">Suche ein/aus</button>
+      <button type="button" id="teilen">Messung teilen</button><button type="button" id="vergessen">Höhen vergessen</button></div>
+    <label>Feld oben (über jeder Tastatur)</label><input type="text" id="oben" placeholder="oben">
+    <div id="liste"></div>
+    <label>Gesamtausgaben (Ziffern)</label><input type="text" id="kosten" inputmode="decimal" placeholder="0,00">
+    <div class="zeile">Reisedaten <small>(unter dem Feld wie im Reiselogbuch)</small></div><div class="zeile">Ende</div>
+  </div>
+</div>
+<div class="fab"><button type="button" id="hoch" aria-label="Nach oben">↑</button><button type="button" id="runter" aria-label="Ans Ende">↓</button></div>
+<div id="sonde"></div><input id="proxy" tabindex="-1" aria-hidden="true">
+<dialog id="dlg"><form method="dialog">
+  <div class="dkopf" id="dkopf"><button type="button" id="dlgX">Abbrechen</button><b>Mi., 26.08.2026</b><button type="button" id="dlgOk">Fertig</button></div>
+  <div class="dkörper" id="dkoerper">
+    <label>Wetter</label><input type="text" id="fWetter" placeholder="☀️">
+    <label>Programm</label><textarea id="fProgram" placeholder="Wie ist der Tag verlaufen?"></textarea>
+    <label>Unterkunft</label><input type="text" id="fQuarter" placeholder="Hotel">
+    <label>Ort</label><input type="text" id="fPlace" placeholder="Ort für Google Maps">
+    <label>Notiz (ganz unten)</label><input type="text" id="fNotiz" placeholder="Notiz">
+  </div></form></dialog>
+<script>
+const $ = s => document.querySelector(s), vv = window.visualViewport, root = document.documentElement, R = Math.round;
+const V = (location.search.match(/[?&]v=(heute|v1m|v1|v2|v3)/) || [, 'v1'])[1];
+document.querySelectorAll('#var a').forEach(a => { a.classList.toggle('on', a.dataset.v === V); a.href = '?v=' + a.dataset.v; });
+$('#titel').textContent = 'A-36 · ' + (V === 'heute' ? 'Heute' : V.toUpperCase());
+// Liste mit Feldern in mehreren Höhen (Lineal)
+$('#liste').innerHTML = Array.from({ length: 14 }, (_, i) => `<div class="zeile">Tag ${i + 1} <small>· Programm ${i + 1}</small></div>` +
+  ([3, 7, 11].includes(i) ? `<label>Feld nach Tag ${i + 1}</label><input type="text" id="feld${i + 1}" placeholder="Feld ${i + 1}">` : '')).join('');
+
+// ---------- Gerät, Höhe, Tastaturhöhe ----------
+// iPhone/iPad: Heute wie ui.js 4.28.0 (innerHeight < 500 – am iPad mit Tastatur falsch, A-36), sonst fest nach dem Bildschirm
+const phone = () => V === 'heute' ? innerWidth < 700 || innerHeight < 500 : Math.min(screen.width, screen.height) < 500;
+const quer = () => innerWidth > innerHeight + scrollY;
+const hoehe = () => innerHeight + scrollY;   // Bildschirmhöhe der Seite: Safari 26 meldet innerHeight = Höhe − scrollY (Fall-Liste 1)
+let H = hoehe();
+const art = f => /^(decimal|numeric)$/.test(f.getAttribute('inputmode') || '') ? 'ziffern' : 'text';
+const schluessel = f => `${Math.min(screen.width, screen.height) < 500 ? 'iPhone' : 'iPad'} ${quer() ? 'quer' : 'hoch'} ${art(f)}`;
+const SCHAETZUNG = { 'iPhone hoch text': 403, 'iPhone hoch ziffern': 403, 'iPhone quer text': 276, 'iPhone quer ziffern': 232,
+  'iPad quer text': 428, 'iPad quer ziffern': 428, 'iPad hoch text': 440, 'iPad hoch ziffern': 440 };
+let gemerkt = {}; try { gemerkt = JSON.parse(localStorage.getItem('a36.kb') || '{}'); } catch {}
+const tastatur = f => gemerkt[schluessel(f)] ?? SCHAETZUNG[schluessel(f)] ?? R(H * 0.5);
+function layout() { root.classList.toggle('phone', phone()); root.classList.toggle('ipad', !phone()); root.classList.toggle('quer', quer()); }
+
+// ---------- Rahmen nach dem sichtbaren Bereich (wie placeDialogs) ----------
+function place() {
+  const top = Math.max(0, vv.offsetTop), h = vv.height, dlg = $('#dlg');
+  root.style.setProperty('--vv-top', R(top) + 'px');
+  root.style.setProperty('--vv-h', R(h) + 'px');
+  // Kapsel: Heute wie 4.28.0 (innerHeight − top − h), sonst Bildschirmhöhe − top − h
+  root.style.setProperty('--vv-bottom', Math.max(0, R((V === 'heute' ? innerHeight : hoehe()) - top - h)) + 'px');
+  root.style.setProperty('--dlg-max', Math.max(200, phone() ? h : h - 20) + 'px');
+  layout();
+  if (!dlg.open) return;
+  if (phone()) { dlg.style.margin = '0'; dlg.style.top = R(top) + 'px'; dlg.style.bottom = 'auto'; return; }
+  dlg.style.margin = '0 auto'; dlg.style.bottom = 'auto';
+  dlg.style.top = R(top + Math.max(10, (h - dlg.offsetHeight) / 2)) + 'px';
+}
+// Feld 16 px über die Tastatur rollen (R-4.5) – im Rollbereich bzw. im Fenster
+const behaelter = f => f.closest('.dkörper, .rolle');
+function insBild(f, unten) {
+  const c = behaelter(f); if (!c) return;
+  const r = f.getBoundingClientRect(), b = c.getBoundingClientRect(), grenze = Math.min(unten, b.bottom) - 16;
+  if (r.bottom > grenze) c.scrollTop += r.bottom - grenze; else if (r.top < b.top) c.scrollTop -= b.top - r.top + 16;
+}
+
+// ---------- Messung (vor allen anderen Hörern: Lage vor dem Ausgleich) ----------
+const zeilen = [], start = performance.now(); let lauf = null;
+const sicht = s => { const e = $(s); return e && e.getClientRects().length ? e.getBoundingClientRect() : null; };
+function werte() {
+  const d = $('#dlg').open ? sicht('#dkopf') : null, k = sicht('.fab'), so = $('#sonde').getBoundingClientRect(), a = document.activeElement;
+  return { vh: R(vv.height), vt: R(vv.offsetTop), sy: R(scrollY), ih: innerHeight, ch: root.clientHeight, kopf: R(sicht('#kopf').top),
+    side: sicht('#side') ? R(sicht('#side').top) : '-', dkopf: d ? R(d.top) : '-', dlinks: d ? R($('#dlg').getBoundingClientRect().left) : '-',
+    kapsel: k ? R(k.bottom) : '-', sonde: R(so.bottom), fokus: a && a !== document.body ? a.id || a.tagName.toLowerCase() : '-' };
+}
+function zeile(ereignis = '') {
+  const w = werte(), t = R(performance.now() - start), s = Object.values(w).join(' ');
+  if (!ereignis && s === zeile.zuletzt) return w;
+  zeile.zuletzt = s; if (zeilen.length < 20000) zeilen.push(`${t} ${s}${ereignis ? ' ! ' + ereignis : ''}`);
+  if (lauf) lauf.bilder.push(w);
+  return w;
+}
+(function bild() { zeile(); requestAnimationFrame(bild); })();
+['resize', 'scroll'].forEach(e => vv.addEventListener(e, () => { zeile('vv ' + e); if (lauf) lauf.letzte = performance.now(); }));
+document.addEventListener('focusin', e => zeile('focus ' + (e.target.id || e.target.tagName)), true);
+document.addEventListener('focusout', e => zeile('blur ' + (e.target.id || e.target.tagName)), true);
+document.addEventListener('click', e => { const b = e.target.closest('button, input, textarea'); if (b) zeile('tippen ' + (b.id || b.tagName)); }, true);
+// ein Lauf = Tastatur auf, Feld wechseln oder zu; endet 900 ms nach der letzten Meldung von Safari
+function beginne(was, feld) {
+  if (lauf) ende();
+  lauf = { was, feld, variante: V, bilder: [], vorher: werte(), letzte: performance.now() };
+  const warte = () => { if (!lauf) return; if (performance.now() - lauf.letzte > 900) ende(); else setTimeout(warte, 100); };
+  setTimeout(warte, 400);
+}
+function ende() {
+  const l = lauf; lauf = null; if (!l) return;
+  const n = werte(), b = l.bilder, num = k => b.map(x => x[k]).filter(x => x !== '-');
+  const spanne = (k, still) => { const v = num(k); if (!v.length || l.vorher[k] === '-') return null;
+    const lo = Math.min(l.vorher[k], still ? l.vorher[k] : n[k]) - 1, hi = Math.max(l.vorher[k], still ? l.vorher[k] : n[k]) + 1;
+    const aus = v.filter(x => x < lo || x > hi); return aus.length ? { n: aus.length, w: aus.reduce((a, x) => Math.abs(x - l.vorher[k]) > Math.abs(a - l.vorher[k]) ? x : a) } : 0; };
+  const ok = (t, gut) => `<span class="${gut ? 'ok' : 'bad'}">${t} ${gut ? '✓' : '✗'}</span>`;
+  const vt = Math.max(0, ...num('vt')), sy = Math.max(0, ...num('sy')), teile = [];
+  teile.push(ok(vt || sy ? `Safari verschiebt ${Math.max(vt, sy)} px` : 'Safari verschiebt nicht', !vt && !sy));
+  for (const [k, name, still] of [['kopf', 'Kopfzeile', true], ['side', 'Seitenleiste', true], ['dkopf', 'Fensterkopf', false], ['dlinks', 'Fenster links', true]]) {
+    const s = spanne(k, still); if (s === null) continue;
+    teile.push(ok(s ? `${name} springt bis ${s.w} px (${s.n} Bilder)` : `${name} still`, !s));
+  }
+  if (l.was !== 'zu' && n.kapsel !== '-') { const abstand = R(vv.height - n.kapsel); teile.push(ok(`Kapsel ${abstand} px über der Tastatur`, abstand >= 10)); }
+  const f = document.activeElement;
+  if (l.was !== 'zu' && f?.matches('input, textarea')) { const r = f.getBoundingClientRect(); teile.push(ok(`Feld ${R(vv.height - r.bottom)} px über der Tastatur`, r.bottom <= vv.height + 1 && r.top >= -1)); }
+  if (l.was !== 'zu') teile.push(`Tastatur ${R(hoehe() - vv.height)} px (${l.kb ? 'angenommen ' + l.kb : 'keine Annahme'})`);
+  const text = `<b>${V === 'heute' ? 'Heute' : V.toUpperCase()} · ${l.was === 'auf' ? 'Tastatur auf' : l.was === 'zu' ? 'Tastatur zu' : 'Feld gewechselt'} · ${l.feld}</b><br>${teile.join(' · ')}`;
+  zeilen.push('# Ergebnis ' + text.replace(/<[^>]+>/g, ''));
+  const e = document.createElement('p'); e.innerHTML = text; $('#ergebnis').prepend(e);
+  while ($('#ergebnis').children.length > 6) $('#ergebnis').lastChild.remove();
+}
+document.addEventListener('focusin', e => { if (e.target.matches('input, textarea') && e.target !== $('#proxy')) {
+  if (!lauf || lauf.was === 'zu') beginne(offen() ? 'wechsel' : 'auf', e.target.id); if (lauf) lauf.kb = lauf.kb || annahme; annahme = 0; } }, true);
+document.addEventListener('focusout', e => { if (!e.target.matches('input, textarea') || e.target === $('#proxy')) return;
+  setTimeout(() => { const a = document.activeElement; if (!a?.matches('input, textarea') && !wartet) beginne('zu', e.target.id); }, 50); }, true);
+const offen = () => vv.height < hoehe() - 80;
+let annahme = 0, wartet = null;
+
+// ---------- Ausgleich bei jeder Meldung (alle Varianten) und Tastaturhöhe merken ----------
+function gemeldet() {
+  const vorH = $('#rolle').scrollTop, vorD = $('#dkoerper').scrollTop;
+  place();
+  // V1: Platz unter dem Inhalt wieder weg – der Rahmen ist jetzt so hoch wie der sichtbare Bereich, das Feld bleibt, wo es ist
+  if (offen() || !document.activeElement?.matches('input, textarea')) { $('#rolle').style.paddingBottom = $('#dkoerper').style.paddingBottom = ''; $('#rolle').scrollTop = vorH; $('#dkoerper').scrollTop = vorD; }
+  const f = document.activeElement;
+  if (offen() && f?.matches('input, textarea') && f !== $('#proxy')) {
+    gemerkt[schluessel(f)] = R(hoehe() - vv.height); try { localStorage.setItem('a36.kb', JSON.stringify(gemerkt)); } catch {}
+    insBild(f, vv.height);
+  }
+  if (!offen()) H = hoehe();
+  // V2: nach der Meldung das echte Feld über die Tastatur stellen und fokussieren
+  if (wartet && offen()) { const z = wartet; wartet = null; insBild(z, vv.height); zielFokus(z); }
+}
+vv.addEventListener('resize', () => requestAnimationFrame(gemeldet));
+vv.addEventListener('scroll', () => requestAnimationFrame(gemeldet));
+addEventListener('resize', () => { if (!offen()) H = hoehe(); place(); });
+
+// ---------- V1 und V2: Antippen eines Felds abfangen (Ende der Berührung, vor dem Fokus) ----------
+let beruehrung = null;
+document.addEventListener('touchstart', e => { const t = e.touches[0]; beruehrung = { x: t.clientX, y: t.clientY, z: performance.now(), ziel: e.target }; }, { passive: true, capture: true });
+document.addEventListener('touchend', e => {
+  const b = beruehrung, f = e.target; beruehrung = null;
+  if (!['v1', 'v1m', 'v2'].includes(V) || !b || !f.matches?.('input, textarea') || f === $('#proxy') || f === document.activeElement) return;
+  const t = e.changedTouches[0];
+  if (Math.hypot(t.clientX - b.x, t.clientY - b.y) > 10 || performance.now() - b.z > 600) return;   // gewischt bzw. lange gedrückt
+  e.preventDefault();
+  if (V !== 'v2') { vorbereiten(f); zielFokus(f); return; }
+  // V2: Ersatzfeld oben mit derselben Tastatur fokussieren, das echte Feld nach der Meldung
+  const p = $('#proxy');
+  for (const a of ['inputmode', 'autocapitalize', 'enterkeyhint', 'autocomplete']) f.hasAttribute(a) ? p.setAttribute(a, f.getAttribute(a)) : p.removeAttribute(a);
+  p.type = f.type === 'search' ? 'search' : 'text'; p.value = '';
+  if (offen()) { vorbereiten(f); zielFokus(f); return; }
+  // ein offenes Fenster macht alles außerhalb unbedienbar (inert) – das Ersatzfeld muss dann im Fenster stehen
+  const wirt = $('#dlg').open ? $('#dlg') : document.body; if (p.parentNode !== wirt) wirt.appendChild(p);
+  annahme = 0; beginne('auf', f.id); wartet = f; p.focus({ preventScroll: true });
+  setTimeout(() => { if (wartet === f) { wartet = null; zielFokus(f); } }, 900);
+}, { passive: false, capture: true });
+function zielFokus(f) {
+  const p = $('#proxy'), text = document.activeElement === p ? p.value : '';
+  f.focus({ preventScroll: true });
+  if (text) f.value += text;
+  try { const n = f.value.length; f.setSelectionRange(n, n); } catch {}
+}
+// V1: Rahmen bzw. Fenster schon so stellen wie nach der Tastatur – Platz unter dem Inhalt in Tastaturhöhe, Feld 16 px darüber
+function vorbereiten(f) {
+  const kb = offen() ? R(hoehe() - vv.height) : tastatur(f), sichtbar = offen() ? vv.height : H - kb, c = behaelter(f), d = $('#dlg');
+  annahme = kb;
+  if (d.open && !phone()) {   // iPad: Fenster in die Mitte über der künftigen Tastatur
+    root.style.setProperty('--dlg-max', Math.max(200, sichtbar - 20) + 'px');
+    d.style.top = R(Math.max(10, (sichtbar - d.offsetHeight) / 2)) + 'px';
+  }
+  if (c && !offen()) c.style.paddingBottom = kb + 'px';
+  if (V === 'v1m' && c) { const r = f.getBoundingClientRect(); c.scrollTop += (r.top + r.bottom) / 2 - sichtbar / 2; }
+  else insBild(f, sichtbar);
+}
+
+// ---------- Bedienung ----------
+$('#fenster').onclick = () => { const d = $('#dlg'); d.showModal(); place(); $('#dkoerper').scrollTop = 0; };
+$('#dlgX').onclick = $('#dlgOk').onclick = () => { document.activeElement?.blur(); $('#dlg').close(); };
+$('#suchknopf').onclick = () => { root.classList.toggle('suche'); place(); };
+$('#hoch').onclick = () => $('#rolle').scrollTo({ top: 0, behavior: 'smooth' });
+$('#runter').onclick = () => $('#rolle').scrollTo({ top: 1e6, behavior: 'smooth' });
+$('#vergessen').onclick = () => { gemerkt = {}; try { localStorage.removeItem('a36.kb'); } catch {} $('#ergebnis').insertAdjacentHTML('afterbegin', '<p>Gemerkte Tastaturhöhen gelöscht.</p>'); };
+$('#teilen').onclick = async () => {
+  const st = matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+  const kopf = `# A-36 Muster · ${V} · ${navigator.userAgent} · ${st ? 'Home-Bildschirm' : 'Safari'} · ${screen.width}×${screen.height} · ${new Date().toISOString()}\n` +
+    `# virtualKeyboard: ${'virtualKeyboard' in navigator ? 'ja' : 'nein'} · viewport: ${document.querySelector('meta[name=viewport]').content}\n` +
+    `t ${Object.keys(werte()).join(' ')}\n`;
+  const text = kopf + zeilen.join('\n') + '\n', name = `a36-${V}-${new Date().toISOString().slice(0, 16).replace(/[:T]/g, '-')}.txt`;
+  try { await navigator.share({ files: [new File([text], name, { type: 'text/plain' })] }); }
+  catch (e) { if (e.name !== 'AbortError') { try { await navigator.clipboard.writeText(text); alert('Messung in die Zwischenablage kopiert.'); } catch { alert('Teilen nicht möglich.'); } } }
+};
+place();
+$('#ergebnis').insertAdjacentHTML('beforeend', `<p style="color:var(--sub)">${V === 'v3' ? 'V3: interactive-widget gesetzt · ' : ''}virtualKeyboard: ${'virtualKeyboard' in navigator ? 'ja' : 'nein'} · ${matchMedia('(display-mode: standalone)').matches || navigator.standalone ? 'Home-Bildschirm' : 'Safari'}</p>`);
+</script>
+</body></html>

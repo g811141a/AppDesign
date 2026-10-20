@@ -1,5 +1,5 @@
 // AppDesign 4.12.0 · Ablauf-Prüfungen für Regeln, die eine Handlung brauchen (Designrichtlinie allgemein, Abschnitt 17):
-// R-1.6 Messmodus (seit 4.26.0) · R-4.5 Feld über der Tastatur (seit 4.28.0) · R-2.3 Suche (seit 4.23.0 auch in der zentralen Liste, seit 4.25.0 mehrere Wörter und „…“, seit 4.25.1 Suchfeld bleibt beim Tippen) · A-22 Lupe am Ende der Kapsel · R-4.4 Fenster-Kopfzeile · R-5.2 Texteingabe · R-5.3 Fehlermeldungen · R-5.5 Eingabetaste (seit 4.19.0) · R-6.4 Ausgabe und Vorschau · R-7.3 Liste steht still (seit 4.18.0) · R-7.4 Position beim Öffnen und R-8.1 Seitenleiste ein/aus (seit 4.21.0).
+// R-1.6 Messmodus (seit 4.26.0) · R-4.5 Feld über der Tastatur (seit 4.28.0), Tastatur ohne Springen (seit 4.28.1) · R-2.3 Suche (seit 4.23.0 auch in der zentralen Liste, seit 4.25.0 mehrere Wörter und „…“, seit 4.25.1 Suchfeld bleibt beim Tippen) · A-22 Lupe am Ende der Kapsel · R-4.4 Fenster-Kopfzeile · R-5.2 Texteingabe · R-5.3 Fehlermeldungen · R-5.5 Eingabetaste (seit 4.19.0) · R-6.4 Ausgabe und Vorschau · R-7.3 Liste steht still (seit 4.18.0) · R-7.4 Position beim Öffnen und R-8.1 Seitenleiste ein/aus (seit 4.21.0).
 // Jede Funktion bekommt eine Playwright-Seite und gibt eine Liste von Fehlern zurück (leer = in Ordnung), je mit Regelnummer.
 // Einbinden im Prüfskript der App:  import { checkSearch, checkDialogHead } from '../../AppDesign/tests/ablauf.mjs';
 //                                   fehler.push(...await checkSearch(page, { term: 'Sydney' }));
@@ -709,6 +709,62 @@ export async function checkFieldVisible(p, { field, vorher = null, where = '' } 
   if (l.unten > l.kb || l.oben < (l.rolle ?? 0) - 1) E(`F-4 ${field} nach dem Schließen der Tastatur nicht mehr sichtbar (${l.oben}–${l.unten} px, sichtbar ${l.kb} px)`);
   if (Math.abs(l.kopf ?? 0) > 1) E(`F-4 nach dem Schließen der Tastatur: Kopfzeile verschoben (${l.kopf} px)`);
   if (l.fenster) E(`F-4 die Seite rollt (scrollY ${l.fenster}) – nur der Inhalt darf rollen (R-2.1)`);
+  return errors;
+}
+
+// R-4.5 Tastatur ohne Springen (seit 4.28.1, A-36, Fall-Liste arbeit/A-36 Fall-Liste.md T-1 bis T-7): Feld antippen, Tastatur
+// auf, Feld wechseln, Tastatur zu – in jedem Bild (Aufnahme des Safari-Modells) stehen Kopfzeile, Suchzeile, Seitenleiste und der
+// linke Rand eines Fensters still (± 1 px); der Fensterkopf darf sich nur auf seinen neuen Platz zu bewegen (iPad: in die Mitte über
+// der Tastatur), nie darüber hinaus. Danach steht das Feld ganz über der Tastatur und die Kapsel (wenn sichtbar) 10 px darüber.
+// Gegen 4.28.0 rot: Safari verschiebt bei einem Feld unter der künftigen Tastatur den sichtbaren Bereich, ui.js gleicht erst 2 Bilder
+// später aus (P-60). Braucht safariModell(p, ansicht, { auto: true, leisten: STILL_LEISTEN, links: STILL_LINKS }).
+export const STILL_LEISTEN = { bar: '.nb, .pnav', box: '.searchbox', side: '#side', kopf: 'dialog[open] .dlg-head' };
+export const STILL_LINKS = { links: 'dialog[open]' };
+const STILL_NAME = { bar: 'Kopfzeile', box: 'Suchzeile', side: 'Seitenleiste', kopf: 'Fensterkopf', links: 'Fenster (linker Rand)' };
+export async function checkTastaturStill(p, { field, vorher = null, wechsel = null, fab = '.fab', where = '' } = {}) {
+  const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}R-4.5 ${t}`);
+  if (!await p.evaluate(() => !!window.__safari?.lage().hasOwnProperty('kopf'))) { E('Vorbereitung: Safari-Modell mit auto und STILL_LEISTEN fehlt'); return errors; }
+  if (vorher) { await vorher(); await wait(p, 400); }
+  if (!await p.locator(field).isVisible()) { E(`Vorbereitung: ${field} ist nicht sichtbar`); return errors; }
+  // eine Handlung filmen: jedes Bild von davor bis 700 ms danach; der Fensterkopf darf nur zwischen vorher und nachher liegen
+  const film = async (name, handlung) => {
+    const a = await p.evaluate(() => __safari.lage());
+    await p.evaluate(() => __safari.bilder(true));
+    await handlung(); await wait(p, 700);
+    const bilder = await p.evaluate(() => __safari.bilder(false)), e = await p.evaluate(() => __safari.lage());
+    for (const k of Object.keys(STILL_NAME)) {
+      if (a[k] == null || e[k] == null) continue;
+      const still = k !== 'kopf', lo = Math.min(a[k], still ? a[k] : e[k]) - 1, hi = Math.max(a[k], still ? a[k] : e[k]) + 1;
+      const aus = bilder.filter(b => b[k] != null && (b[k] < lo || b[k] > hi));
+      if (aus.length) {
+        const w = aus.reduce((m, b) => Math.abs(b[k] - a[k]) > Math.abs(m - a[k]) ? b[k] : m, aus[0][k]);
+        E(`${name}: ${STILL_NAME[k]} springt in ${aus.length} von ${bilder.length} Bildern bis ${w} px (vorher ${a[k]}, danach ${e[k]} px)`);
+      } else if (still && Math.abs(e[k] - a[k]) > 1) E(`${name}: ${STILL_NAME[k]} danach bei ${e[k]} statt ${a[k]} px`);
+    }
+  };
+  // Feld mit Fokus ganz über der Tastatur, Kapsel 10 px darüber (Bildschirm = Lage minus offsetTop, alle Rahmen sind fest)
+  const ueber = async (name, sel) => {
+    const l = await p.evaluate(({ sel, fab }) => {
+      const o = __safari.top(), f = document.querySelector(sel), r = f.getBoundingClientRect(), k = document.querySelector(fab);
+      const ks = k && getComputedStyle(k).display !== 'none' && !k.hidden && k.getClientRects().length ? Math.round(k.getBoundingClientRect().bottom - o) : null;
+      const c = f.closest('.dlg-body, #app > .rolle'), ct = c ? Math.round(c.getBoundingClientRect().top - o) : 0;
+      return { oben: Math.round(r.top - o), unten: Math.round(r.bottom - o), ct, kb: __safari.hoehe(), offen: __safari.offen, fokus: document.activeElement === f, kapsel: ks };
+    }, { sel, fab });
+    if (!l.fokus) E(`${name}: ${sel} hat nach dem Antippen keinen Fokus`);
+    if (!l.offen) E(`${name}: die Tastatur ist nicht offen`);
+    // reicht der Platz nicht (iPhone quer: 117 px sichtbar), steht das Feld oben im Rollbereich (wie checkFieldVisible F-1a)
+    if (l.unten - l.oben > l.kb - Math.max(0, l.ct) ? Math.abs(l.oben - l.ct) > 1 : l.unten > l.kb + 1 || l.oben < l.ct - 1)
+      E(`${name}: ${sel} nicht ganz über der Tastatur (${l.oben}–${l.unten} px, Rollbereich ab ${l.ct}, Tastatur ab ${l.kb} px)`);
+    if (l.kapsel != null && l.kapsel > l.kb - 10 + 1) E(`${name}: Kapsel unten bei ${l.kapsel} px – unter oder an der Tastatur (ab ${l.kb} px), T-7`);
+  };
+  await film('T-1/T-2 Feld antippen', () => p.tap(field));
+  await ueber('T-1/T-2 Feld antippen', field);
+  if (wechsel) {
+    await film('T-5 Feld wechseln', () => p.tap(wechsel));
+    await ueber('T-5 Feld wechseln', wechsel);
+  }
+  await film('T-4 Tastatur schließen', () => p.evaluate(() => document.activeElement?.blur()));
+  if (await p.evaluate(() => __safari.offen)) E('T-4 die Tastatur ist nach dem Verlassen des Felds noch offen');
   return errors;
 }
 

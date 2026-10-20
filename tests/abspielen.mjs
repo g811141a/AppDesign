@@ -1,4 +1,4 @@
-// AppDesign 4.28.0 · Messung abspielen (A-31, Fall-Liste arbeit/A-26 A-31 A-34 Fall-Liste.md Abschnitt 2.3, M-1 bis M-6):
+// AppDesign 4.28.1 · Messung abspielen (A-31, Fall-Liste arbeit/A-26 A-31 A-34 Fall-Liste.md Abschnitt 2.3, M-1 bis M-6):
 // eine Messdatei des Messmodus (R-1.6, 15.21) wird in einer Prüfung nachgespielt – die Prüfung macht, was am Gerät geschah, und
 // Safari meldet dabei sichtbare Höhe und offsetTop genau wie gemessen (Safari-Modell tests/safari.mjs, __safari.setze).
 // Einbinden im Prüfskript der App:
@@ -16,6 +16,11 @@
 // Optionen: ziele = { name: Selektor | [Selektoren, der Reihe nach] | async p => … } für Ziele ohne id (‚button‘, ‚-‘);
 // woerter = { feld-id: Prüfwort }; bis = Zeit (ms) – Handlungen danach nicht mehr; nachSchritt(s) = zusätzliche Prüfung je Schritt
 // ({ ereignis, zeile } → Liste von Fehlern); verschiebe = { such: 20 } verschiebt die Messung (Gegenprobe M-5, muss rot werden).
+// Seit 4.28.1 (A-36, Fall-Liste arbeit/A-36 Fall-Liste.md T-8) modell: true – Safari wird nicht aus der Datei gesetzt, sondern
+// entscheidet nach dem Modell (safariModell mit auto: true): die Datei liefert nur die Handlungen und die Höhe der Tastatur (ih − vh der
+// Meldung), Felder werden angetippt (p.tap). Jedes Bild eines Schritts mit Tastatur (auf, zu, Feld wechseln) wird aufgenommen: Kopf-
+// und Suchzeile liegen in jedem Bild zwischen ihrer Lage vor und nach dem Schritt (± toleranz) – so wird ein Springen sichtbar,
+// das der Vergleich des Endzustands nicht sieht (P-60). Gegen 4.28.0 rot (−403, −428, −232).
 
 export const SPALTEN = ['t', 'sy', 'inh', 'sh', 'ih', 'vh', 'vt', 'vvtop', 'kopf', 'such', 'tag', 'lkopf', 'lsuch', 'lroll', 'fokus', 'lage'];
 const ZAHL = new Set(SPALTEN.filter(s => !['fokus', 'lage'].includes(s)));
@@ -77,13 +82,20 @@ function schritte(m, bis) {
   return out;
 }
 
-export async function spieleAb(p, m, { ziele = {}, woerter = {}, bis = Infinity, nachSchritt = null, verschiebe = null, toleranz = 1, where = '' } = {}) {
+export async function spieleAb(p, m, { ziele = {}, woerter = {}, bis = Infinity, nachSchritt = null, verschiebe = null, toleranz = 1, modell = false, where = '' } = {}) {
   const errors = [], E = (z, t) => errors.push(`${where ? where + ': ' : ''}A-31 Messung Zeile ${z.nr} (${z.t} ms, ${z.ereignis || 'Folge'}): ${t}`);
   if (!await p.evaluate(() => !!window.__safari)) { errors.push('A-31 Vorbereitung: Safari-Modell fehlt (safariModell)'); return errors; }
   const vorrat = Object.fromEntries(Object.entries(ziele).map(([k, v]) => [k, Array.isArray(v) ? [...v] : v]));
   let lage = m.lage;
+  const lagen = () => p.evaluate(() => { const o = __safari.top(), top = sel => { const e = [...document.querySelectorAll(sel)].find(x => x.getClientRects().length); return e ? Math.round(e.getBoundingClientRect().top - o) : null; };
+    return { kopf: top('#app .nb, #app .pnav'), such: top('#app .searchbox') }; });
   for (const s of schritte(m, bis)) {
     const z = s.zeile, [art, arg] = [s.ereignis.split(' ')[0], s.ereignis.split(' ').slice(1).join(' ')];
+    // T-8: Schritt mit Tastatur – Höhe aus der Meldung, jedes Bild aufnehmen
+    const kbZeile = [z, ...s.folgen].find(f => f.ereignis === 'vv resize'), film = modell && (!!kbZeile || art === 'tastatur');
+    if (modell && kbZeile && kbZeile.vh < m.zeilen[0].ih - 40) await p.evaluate(kb => { __safari.naechste = kb; }, m.zeilen[0].ih - kbZeile.vh);
+    const vorher = film ? await lagen() : null;
+    if (film) await p.evaluate(() => __safari.bilder(true));
     if (z.lage !== lage) {   // drehen
       const v = p.viewportSize(); await p.setViewportSize({ width: v.height, height: v.width }); lage = z.lage; await p.waitForTimeout(400);
     }
@@ -94,8 +106,9 @@ export async function spieleAb(p, m, { ziele = {}, woerter = {}, bis = Infinity,
       if (ziel === undefined && /^[A-Za-z][\w-]*$/.test(arg) && await p.evaluate(id => !!document.getElementById(id), arg)) ziel = '#' + arg;
       if (!ziel) { E(z, `‚tippen ${arg}‘ nicht nachspielbar – Ziel ohne id, in ziele angeben`); return errors; }
       if (typeof ziel === 'function') await ziel(p);
-      else if (await p.evaluate(sel => document.querySelector(sel)?.matches('input, textarea'), ziel)) await p.evaluate(sel => document.querySelector(sel).focus({ preventScroll: true }), ziel);
-      else await p.click(ziel);
+      else if (await p.evaluate(sel => document.querySelector(sel)?.matches('input, textarea'), ziel)) {
+        if (modell) await p.tap(ziel); else await p.evaluate(sel => document.querySelector(sel).focus({ preventScroll: true }), ziel);
+      } else await p.click(ziel);
     } else {   // eingabe <Länge>: tippen bzw. löschen, bis das Feld so lang ist
       const soll = +arg;
       for (let i = 0; i < 40; i++) {
@@ -107,17 +120,26 @@ export async function spieleAb(p, m, { ziele = {}, woerter = {}, bis = Infinity,
         await p.waitForTimeout(20);
       }
     }
-    // M-3: was Safari danach meldete, genau so
-    for (const f of [z, ...s.folgen].filter(f => /^vv (resize|scroll)$/.test(f.ereignis))) {
+    // M-3: was Safari danach meldete, genau so (modell: Safari entscheidet selbst)
+    if (!modell) for (const f of [z, ...s.folgen].filter(f => /^vv (resize|scroll)$/.test(f.ereignis))) {
       await p.evaluate(v => __safari.setze(v), { h: f.vh, top: f.vt });
       await p.evaluate(() => new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r))));
     }
-    await p.waitForTimeout(400);
+    await p.waitForTimeout(modell ? 700 : 400);
+    if (film) {
+      const bilder = await p.evaluate(() => __safari.bilder(false)), nachher = await lagen();
+      for (const k of ['kopf', 'such']) {
+        if (vorher[k] == null || nachher[k] == null) continue;
+        const lo = Math.min(vorher[k], nachher[k]) - toleranz, hi = Math.max(vorher[k], nachher[k]) + toleranz;
+        const aus = bilder.map(b => b[k === 'kopf' ? 'bar' : 'box']).filter(v => v != null && (v < lo || v > hi));
+        if (aus.length) E(z, `T-8 ${k === 'kopf' ? 'Kopfzeile' : 'Suchzeile'} springt in ${aus.length} von ${bilder.length} Bildern bis ${aus.reduce((a, v) => Math.abs(v - vorher[k]) > Math.abs(a - vorher[k]) ? v : a)} px (vorher ${vorher[k]}, danach ${nachher[k]} px)`);
+      }
+    }
     // M-4: Endzustand des Schritts wie die letzte Zeile
     const soll = { ...(s.folgen.at(-1) || z) };
     for (const [k, d] of Object.entries(verschiebe || {})) if (soll[k] != null) soll[k] += d;
     const ist = await p.evaluate(() => {
-      const o = visualViewport.offsetTop, top = sel => { const e = [...document.querySelectorAll(sel)].find(x => x.getClientRects().length); return e ? Math.round(e.getBoundingClientRect().top - o) : null; };
+      const o = __safari.fest ? visualViewport.offsetTop : __safari.top(), top = sel => { const e = [...document.querySelectorAll(sel)].find(x => x.getClientRects().length); return e ? Math.round(e.getBoundingClientRect().top - o) : null; };
       const a = document.activeElement, fokus = !a || a === document.body ? null : a.id || a.tagName.toLowerCase();
       return { kopf: top('#app .nb, #app .pnav'), such: top('#app .searchbox'), fokus };
     });
