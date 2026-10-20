@@ -1,6 +1,6 @@
 # Übergabe an die nächste Sitzung
 
-**Stand 20.10.2026** · geschrieben in der Sitzung ‚Reiselogbuch 0021‘ (Ende)
+**Stand 20.10.2026** · geschrieben in der Sitzung ‚Reiselogbuch 0022‘ (Ende)
 (Zusammenarbeit allgemein 2.15.0, Abschnitt 0 Nr. 14). **Claude liest diese Datei zu Beginn jeder Sitzung zuerst.**
 
 ## 1. Lagebild
@@ -8,52 +8,47 @@
 | Teil | Version | Datei |
 |---|---|---|
 | Reiselogbuch | **3.26.0** online (Fassung 4.28.0) | g811141a/ReiseLogBuch – `CHANGELOG.md`, `BACKLOG.md`, `PROMPT.md` |
-| AppDesign | **4.28.0** online | g811141a/AppDesign – `CHANGELOG.md`, `BACKLOG.md` |
+| AppDesign | **4.28.0** online; Arbeitsstand: `tests/safari.mjs` S-6, S-7 (noch keine Version) | g811141a/AppDesign – `CHANGELOG.md`, `BACKLOG.md` |
 | ReiseLogBuch-Import (privat) | 1.2.1 (unverändert) | g811141a/ReiseLogBuch-Import |
-| Zusammenarbeit allgemein | **2.15.0** (0 Nr. 20: Muster mit Messung vorher im Modell geprüft, führen durch den Versuch, zeigen nur ‚aufgenommen‘) | `README - Zusammenarbeit allgemein.md` |
+| Zusammenarbeit allgemein | **2.15.0** | `README - Zusammenarbeit allgemein.md` |
 
-- **Chatnummer:** die nächste Sitzung heißt **Reiselogbuch 0022**; die danach 0023.
-- **Sitzungsgröße:** 0021 endete bei ~325.000 Token Kontext.
-- **Modell und Aufwand:** Opus 5.5, Aufwand hoch (0021: alle Aufrufe ‚high‘). Prüfen nach 0 Nr. 15 (`"effort"` in der Sitzungsdatei).
-- **Per du!** Der Nutzer ist nach drei Muster-Versuchen **verärgert** (‚nur Arbeit ohne Mehrwert‘, ‚Test extrem schwer, Anleitungen
-  nicht sichtbar‘). Nächster Versuch nur, wenn er **kurz** ist und **sicher** sauber misst.
-- **Kein Mac** (Nutzer 20.10.2026): Claude kann nicht selbst am Gerät oder im iOS-Simulator testen – nur Versuche des Nutzers.
-- **P-60 nicht ok (A-36, Tastatur: Leisten springen)** – alles in **`arbeit/A-36 Fall-Liste.md`: zuerst Abschnitte 6a, 6b, 6c lesen**
-  (dazu 1 und 2 bei Bedarf). Messungen: `arbeit/A-36 Messungen/` (6 Dateien). Werkzeuge: `arbeit/A-36 auswerten.mjs` (Auswertung aus den
-  Rohdaten, `--selbsttest`), `arbeit/A-36 Muster prüfen.mjs` (Muster im Safari-Modell, Chromium und WebKit, Gegenproben).
+- **Chatnummer:** die nächste Sitzung heißt **Reiselogbuch 0023**; die danach 0024.
+- **Sitzungsgröße:** 0022 endete bei ~305.000 Token Kontext.
+- **Modell und Aufwand:** Opus 5.5, Aufwand hoch (0022: alle Aufrufe ‚high‘, `CLAUDE_CODE_EFFORT_LEVEL=high`). Prüfen nach 0 Nr. 15.
+- **Per du!** Der Nutzer macht die Versuche mit, will sie aber **kurz** (3–4 Handgriffe je Gerät, Anleitung nur im Chat).
+- **Kein Mac** – nur Versuche des Nutzers am Gerät.
+- **P-60 nicht ok (A-36, Tastatur: Leisten springen)** – alles in **`arbeit/A-36 Fall-Liste.md`: zuerst Abschnitte 6d bis 6g lesen**.
+  Messungen: `arbeit/A-36 Messungen/` (10 Dateien). Werkzeuge: `arbeit/A-36 auswerten.mjs` (meldet auch ‚Fokus verloren‘,
+  `--selbsttest` 35/35), `arbeit/A-36 Muster prüfen.mjs` (kurzer Versuch in allen vier Lagen, Chromium und WebKit, Gegenproben G-1 bis
+  G-3, ‚keine Berührung abgefangen‘, `--muster <Datei>` für ältere Fassungen aus Git).
+- **Entscheidungen des Nutzers (0022):** niedrige Leisten quer am iPhone (Kopfzeile und Fensterkopf 32 statt 44 px) übernehmen und
+  **als allgemeine Regel** (kommt mit 4.28.1 in Designrichtlinie 15 und Regelkatalog, eine Prüfung) – Fall-Liste 6d.
 - **Erinnerung:** ‚Backlog-Erinnerung (AppDesign und Reiselogbuch)‘ montags 8:58.
 
 ## 2. Ergebnisse
 
-**Sitzung ‚Reiselogbuch 0021‘ (20.10.2026):**
-- Muster 2. Fassung am Gerät in allen vier Lagen: **V1 (Feld vorher in die obere Hälfte) still** beim Öffnen und Schließen, auch
-  iPhone quer im Fenster (15 px über der Tastatur, kein Verschieben). Bestätigt: Safari verschiebt bis zur Mitte, höchstens um den
-  ganzen Raum (218/212/362, 340 begrenzt), Kapsel-Fehler `--vv-bottom`, `isPhone()` (iPad quer: Fenster links 327 → 0, Seitenleiste
-  verschwindet mit Tastatur).
-- Safari-Modell: `ABSTAND` 80 → 24, neu `ABSTAND_FENSTER` 15 (`tests/safari.mjs`); `ablauf-tastatur-still.mjs` gegen 3.26.0 weiter rot (59).
-- **Zusammenarbeit 2.15.0** (0 Nr. 20, Ja des Nutzers): Muster mit Messung vorher im Modell geprüft (mit Gegenprobe), führen durch den
-  Versuch, zeigen nur ‚aufgenommen‘.
-- Muster 3. Fassung (geführt, V1 ‚nur so weit wie nötig‘) – **am Gerät gescheitert:** Anleitung scrollte weg; iPhone lief in ‚Heute‘
-  (Home-Bildschirm-Symbol mit alter Adresse `?v=heute`); iPad: vier neue V1-Fehler (Fall-Liste 6c): 2× tippen nötig, Feld wechseln
-  bei offener Tastatur → Safari zentriert (132), Gesamtausgaben rutscht unter die Tastatur, erneutes Antippen nach Tastatur-Taste → 428.
-  Neu gelernt: Suche quer bei 32 px → 9 px verschoben; Wechsel bei offener Tastatur → Safari zentriert schon bei 24–34 px;
-  **iPhone quer im Fenster ist ‚Notiz‘ mit offener Tastatur nicht erreichbar** (Heute = 4.28.0, vermutlich auch Reiselogbuch 3.26.0).
+**Sitzung ‚Reiselogbuch 0022‘ (20.10.2026):**
+- Safari-Modell S-6 (Mitte bei Wechsel, erneutem Antippen und außerhalb eines Rollbereichs) und S-7 (Lage beim Fokus, vor den Hörern
+  der App), Zifferntastatur iPhone hoch 376 px. Muster 3 und Muster 5 im Modell rot, wie am Gerät.
+- Muster 4 (V1: Berührung abfangen, obere Hälfte, iPad-Fenster bleibt oben, niedrige Leisten quer): am Gerät **in allen Bildern still**,
+  aber **13 von ~40 abgefangenen Berührungen verlieren den Fokus** (‚2× tippen‘, iPhone und iPad) – auch mit Bewegung → Abfangen
+  scheidet aus.
+- Muster 5 (V2: Safari tippen lassen, im focusin rollen, Klick danach unterdrücken): **Fokus immer sicher**, aber Safari liest die Lage
+  beim Fokus → verschiebt wie Heute (362 / 428 px). Wechsel bei offener Tastatur still.
+- Muster am Gerät aktuell: **Muster 5** (`arbeit/A-36 Muster.html`).
 
 Frühere Sitzungen: siehe `VERLAUF.md` und Versionsgeschichten.
 
 ## 3. Nächster Schritt
 
-1. **Lehren aus 0021 zuerst umsetzen** (Nutzer verärgert): Anleitung **nur im Chat** (vollständig, nummeriert, 0 Nr. 11), wenige
-   Schritte, **V1 im Muster erzwingen** (keine Variante aus der Adresse, kein Umschalter – Heute ist ausreichend gemessen), nichts im
-   Muster, was weg-scrollt oder eine Reihenfolge erzwingt.
-2. **Safari-Modell** um 6c ergänzen (0 Nr. 20): Wechsel bei offener Tastatur zentriert ab ≥ 34 px (Mitte), Suche quer 32 px → Mitte,
-   erneutes Antippen nach der Tastatur-Taste; Prüfungen erst rot, dann V1 so ändern, dass sie grün werden: Feld **immer in die obere
-   Hälfte** (wie 2. Fassung) – beim ersten Antippen, beim Wechseln und beim erneuten Antippen; iPad-Fenster gleitet (3. Fassung, gut);
-   Ursache ‚2× tippen‘ suchen (Unterschied 2. ↔ 3. Fassung im Abfangen der Berührung); Gesamtausgaben iPad quer nachstellen.
-3. Dem Nutzer Vorschlag machen: kurzer Versuch (iPad und iPhone, je ~4 Schritte) **oder** gleich Ja zum Bau 4.28.1 / 3.26.1 mit
-   Prüfliste – der Nutzer entscheidet; ohne ausdrückliches Ja wird nicht gebaut. Für die Suche quer: kompakte Kopfzeile quer
-   (iOS: niedrige Leiste) vorschlagen oder 9 px hinnehmen (Nutzer entscheidet).
-4. Danach A-37 (‚Nach oben / Ans Ende‘ wie in der Gemini-App, allgemeine Regel).
+1. Dem Nutzer **V3** vorschlagen (Fall-Liste 6g, Ende): Safari tippen lassen, im `focusin` rollen und den Fokus neu setzen
+   (a: `blur()` + `focus()`; b: `readonly` ab `touchstart`, im `focusin` rollen, `readonly` weg, neu fokussieren). Ein Muster 6 prüft
+   beide ohne Umschalter (je Feld eine Art). Vorher im Modell als Annahme nachbilden (0 Nr. 20), Prüfung ‚keine Berührung abgefangen‘
+   und G-1 wieder grün bzw. rot. Am Gerät: Titel ‚A-36 · 6‘ prüfen lassen (iPhone hatte in 0022 noch die alte Seite).
+2. Hält V3 am Gerät (Fokus beim ersten Mal, Safari verschiebt nicht): Fall-Liste für den Bau, Ja des Nutzers → 4.28.1 / 3.26.1 mit
+   niedrigen Leisten quer (allgemeine Regel). Hält V3 nicht: dem Nutzer ehrlich die Wahl lassen – V2 (Fokus sicher, Safari verschiebt,
+   App gleicht so ruhig wie möglich aus) oder V1 (still, gelegentlich 2× tippen).
+3. Danach A-37 (‚Nach oben / Ans Ende‘ wie in der Gemini-App, allgemeine Regel).
 
 ## 4. Danach
 
@@ -108,5 +103,5 @@ In der neuen Sitzung müssen **AppDesign** und **ReiseLogBuch** verfügbar sein,
 ## 7. Starttext für die neue Sitzung
 
 ```
-Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md, dann arbeit/A-36 Fall-Liste.md (Abschnitte 6a, 6b, 6c) und gezielt die Regeln (Zusammenarbeit Abschnitte 0 und 1), prüfe Modell und Aufwand (Sitzungsdatei), gib mir das Lagebild und arbeite dann Abschnitt 3 ab. Hole vorher die Repos g811141a/ReiseLogBuch und g811141a/ReiseLogBuch-Import (privat) dazu (add_repo, Zugriff push), wie in UEBERGABE.md Abschnitt 5.
+Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md, dann arbeit/A-36 Fall-Liste.md (Abschnitte 6d bis 6g) und gezielt die Regeln (Zusammenarbeit Abschnitte 0 und 1), prüfe Modell und Aufwand (Sitzungsdatei), gib mir das Lagebild und arbeite dann Abschnitt 3 ab. Hole vorher die Repos g811141a/ReiseLogBuch und g811141a/ReiseLogBuch-Import (privat) dazu (add_repo, Zugriff push), wie in UEBERGABE.md Abschnitt 5.
 ```

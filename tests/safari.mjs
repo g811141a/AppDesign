@@ -60,8 +60,8 @@
 //       __safari.tastatur(false) bei bleibendem Fokus.
 //   Nicht nachgebildet: Fokus, den die App am Ende einer abgefangenen Berührung selbst setzt, geht am Gerät oft nach 33–37 ms
 //   verloren (12 von ~35, iPhone und iPad, 6c 1 und 6e) – Berührungen nie abfangen. Zifferntastatur iPhone hoch 376 px (Versuch 4).
-//   Annahme (am Gerät zu bestätigen, 6f): Safari liest die Lage des Felds erst beim Öffnen der Tastatur (im Modell im Bild nach dem
-//   Fokus), Rollen im Fokus-Ereignis zählt also schon.
+// - S-7 (Muster 5, 6g): Safari liest die Lage des Felds für das erste Öffnen **beim Fokus**, bevor die Fokus-Hörer der App laufen –
+//   Rollen im focusin zählt nicht (iPad quer: Ort 527–571 → 362, Gesamtausgaben 618–662 → 428, obwohl danach in der oberen Hälfte).
 export const ABSTAND = 24, ABSTAND_FENSTER = 15;
 export const SAFARI = {
   'iPhone hoch': { tastatur: 403, ziffern: 376, fokusRollen: -120, fokusSchub: 0 },
@@ -96,7 +96,8 @@ export async function safariModell(p, ansicht, { leisten = { bar: '.nb, .pnav', 
         if (!s.offen || !a?.matches?.('input, textarea')) return;
         let fest = false;
         for (let e = a; e && e !== document.documentElement; e = e.parentElement) if (e.matches('dialog[open]') || getComputedStyle(e).position === 'fixed') { fest = true; break; }
-        const v = s.top(), r = a.getBoundingClientRect(), d = fest ? v : 0;
+        // S-7: beim ersten Öffnen zählt die Lage beim Fokus (vor den Hörern der App)
+        const v = s.top(), r = art === 'auf' && s.fokusLage?.el === a ? s.fokusLage.r : a.getBoundingClientRect(), d = fest ? v : 0;
         // S-5: zu nah über der Tastatur (weniger als abstand, im Fenster abstandFenster) – Safari stellt das Feld in die Mitte;
         // S-6: außerhalb eines Rollbereichs, beim Wechseln und erneuten Antippen genügt eine Mitte unter der Mitte
         let rolle = false;
@@ -179,6 +180,8 @@ export async function safariModell(p, ansicht, { leisten = { bar: '.nb, .pnav', 
       if (s.offen && a?.matches?.('input, textarea') && e.target.closest?.('button')) a.blur();
     }, true);
     document.addEventListener('focusout', e => { if (e.target.matches?.('input, textarea')) s.blur = true; }, true);
+    // S-7: window vor document – läuft vor jedem Fokus-Hörer der Seite
+    window.addEventListener('focusin', e => { const r = e.target.getBoundingClientRect?.(); s.fokusLage = r ? { el: e.target, r: { top: r.top, bottom: r.bottom } } : null; }, true);
     document.addEventListener('focusin', e => {
       if (!s.offen || !s.blur || !e.target.matches?.('input, textarea')) return;
       s.blur = false;

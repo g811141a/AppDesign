@@ -1871,3 +1871,9 @@ Zusammenarbeit 2.15.0 (0 Nr. 20): Muster mit Messung vorher im Modell geprüft, 
 Danach Muster 3. Fassung (geführt) am Gerät gescheitert (Anleitung weg-gescrollt, iPhone in ‚Heute‘, iPad vier V1-Fehler, Fall-Liste
 6c). Nutzer: ‚Warum kannst du den Test nicht selbst auf meinem iPad erledigen?‘ – kein Zugriff aufs Gerät; mit Mac und iOS-Simulator
 ginge es, **kein Mac**. Übergabe an 0022.
+
+**2026-10-20 · Sitzung Reiselogbuch 0022:** Lehren aus 0021 umgesetzt (Anleitung nur im Chat, nur V1, nichts Wegrollendes), Safari-Modell
+um 6c ergänzt (S-6). Muster 4 am Gerät: alle Bilder still, aber abgefangene Berührungen verlieren oft den Fokus (‚2× tippen‘, 13 von
+~40). Nutzer: niedrige Leisten quer am iPhone übernehmen, **als allgemeine Regel** (Ja). Nutzer: ‚V2 gleich hier‘ → Muster 5 (Safari
+tippen lassen, dann rollen): Fokus sicher, aber Safari liest die Lage beim Fokus und verschiebt (S-7). Vorschlag V3 (Fokus neu setzen)
+für 0023. Übergabe an 0023.

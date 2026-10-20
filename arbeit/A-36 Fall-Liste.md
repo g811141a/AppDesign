@@ -318,6 +318,26 @@ gedreht). `auswerten.mjs` meldet jetzt auch **‚Fokus nach n ms verloren‘** (
 sie nicht, verschiebt Safari wie ‚Heute‘ – dann sieht man es in der Messung (‚Safari verschiebt n px‘) und das Modell wird korrigiert.
 **Kurzer Versuch:** iPhone hoch und iPad quer, je: Fenster öffnen → ‚Ort‘ einmal → ‚Notiz‘ → ‚Fertig‘ → ↓ → ‚Gesamtausgaben‘ einmal → teilen.
 
+## 6g. Fünfter Versuch am Gerät (20.10.2026 nachts, Muster 5 = V2 am iPad; iPhone lief noch Muster 4)
+
+Dateien `arbeit/A-36 Messungen/2026-10-20 23-27 Muster 5 iPad.txt` und `… 23-26 Muster 4 iPhone (2).txt` (iPhone hatte die alte Seite
+noch geladen – Titel ‚A-36 · 4‘; nächstes Mal vorher prüfen, ggf. App im App-Umschalter schließen).
+- **V2 löst ‚2× tippen‘:** jede Berührung öffnete beim ersten Mal, kein Fokus verloren (5 von 5, ‚klick unterdrückt‘ wirkt).
+  iPhone mit Muster 4: wieder ein Verlust (Ort, 242 px abgefangen) – zusammen 13 von ~40 abgefangenen verloren, 0 von Safaris eigenen.
+- **V2 scheitert am Verschieben:** Safari liest die Lage für das erste Öffnen **beim Fokus, vor den Hörern der App** – Ort 527–571
+  → **362**, Gesamtausgaben 618–662 → **428** (wie Heute), obwohl V2 das Feld sofort auf 190–234 bzw. 141–185 gerollt hatte. Wechsel bei
+  offener Tastatur (Ort 174–218, Notiz 222–266, Mitte unter der Mitte) → **nichts** verschoben; ob Safari dort die neue Lage las oder
+  die Regel für den Wechsel milder ist (6c: 34 px darüber → 132), ist offen.
+- **Modell S-7:** Lage beim Fokus zählt (window-focusin vor den Hörern der Seite) → V2 im Modell rot (iPad quer 359, gemessen 362).
+  G-1 meldet dadurch ‚auf NEIN‘ (Sprung größer als 50 px) – bei V3 wieder prüfen. Auswertung Selbsttest 35/35.
+
+**Stand:** V1 (abfangen) – Safari still, aber Fokus geht oft verloren; V2 (Safari tippen lassen, dann rollen) – Fokus sicher, aber
+Safari verschiebt. **Vorschlag V3 (nächste Sitzung, mit dem Nutzer):** Safari tippen lassen (Fokus sicher) und im `focusin` – noch in
+der Berührung – rollen und dann **den Fokus neu setzen** (a: `blur()` + `focus()`; b: Feld beim Antippen (`touchstart`) `readonly` – dann
+öffnet iOS keine Tastatur und verschiebt nicht –, im `focusin` rollen, `readonly` weg, `blur()` + `focus()`). Ob Safari dann die neue Lage
+liest und ob der neue Fokus hält, zeigt nur das Gerät; im Modell als Annahme. Ein Versuch kann beide prüfen (je Feld eine Art, ohne
+Umschalter, z. B. Ort = a, Gesamtausgaben = b).
+
 ## 7. Grenzen
 
 - Was Safari zwischen zwei Bildern zeigt, kennt die Prüfung nur aus dem Modell – deshalb Muster und Messung am Gerät.

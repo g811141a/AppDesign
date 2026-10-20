@@ -113,6 +113,8 @@ const ERWARTET = {
     ['v1', 'auf', 'Fokus nach 33 ms verloren'], ['v1', 'auf', 'Fokus nach 34 ms verloren'], ['v1', 'wechsel', 'Safari verschiebt nicht']],
   '2026-10-20 23-01 Muster 4 iPad.txt': [
     ['v1', 'auf', 'Fokus nach 36 ms verloren'], ['v1', 'auf', 'Fokus nach 35 ms verloren'], ['v1', 'auf', 'Fensterkopf gleitet 127 → 10']],
+  '2026-10-20 23-27 Muster 5 iPad.txt': [
+    ['v2', 'auf', 'Safari verschiebt 362 px'], ['v2', 'auf', 'Safari verschiebt 428 px'], ['v2', 'wechsel', 'Safari verschiebt nicht']],
   '2026-10-20 16-01 Muster 2 iPad hoch Fenster Notiz Ort.txt': [
     ['heute', 'auf', 'Safari verschiebt 340 px'], ['heute', 'auf', 'Seitenleiste springt -340 px'], ['heute', 'wechsel', 'Safari bleibt bei 340 px'],
     ['heute', 'zu', 'Kopfzeile springt +340 px'], ['v1', 'auf', 'Safari verschiebt nicht'], ['v1', 'zu', 'Kopfzeile still']],
