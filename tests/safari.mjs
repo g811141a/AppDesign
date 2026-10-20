@@ -46,9 +46,10 @@
 //   eigener Wert mehr. iPad hoch: Tastatur 340 px (gemessen, Muster V3).
 //   ABSTAND gemessen (Muster 2. Fassung, 20.10.2026, arbeit/A-36 Messungen/): Felder im Fenster 15 px (iPhone quer), 24 px (iPhone
 //   hoch, iPad quer) und 40–80 px darüber → nichts; nur die Suche der Kopfzeile quer (0019) bei 20 px → verschoben. 24 = sichere
-//   Seite, bis die Suche im Muster gemessen ist. Mitte bestätigt: 218 (iPhone hoch), 212 (quer), 362 (iPad quer); 340 iPad hoch
-//   = ganzer Raum (Mitte wäre 399).
-export const ABSTAND = 24;
+//   Seite, bis die Suche im Muster gemessen ist. Felder in Fenstern (dialog): ABSTAND_FENSTER 15 – dort am Gerät gemessen (V1 quer
+//   Ort 67–111 bei sichtbar 126 → nichts); darunter nicht gemessen. Mitte bestätigt: 218 (iPhone hoch), 212 (quer), 362 (iPad quer);
+//   340 iPad hoch = ganzer Raum (Mitte wäre 399).
+export const ABSTAND = 24, ABSTAND_FENSTER = 15;
 export const SAFARI = {
   'iPhone hoch': { tastatur: 403, fokusRollen: -120, fokusSchub: 0 },
   'iPhone quer': { tastatur: 276, ziffern: 232, fokusRollen: 0, fokusSchub: 0 },
@@ -56,8 +57,8 @@ export const SAFARI = {
   'iPad hoch': { tastatur: 340, fokusRollen: 0, fokusSchub: 0 },
 };
 
-export async function safariModell(p, ansicht, { leisten = { bar: '.nb, .pnav', box: '.searchbox' }, links = {}, auto = false, abstand = ABSTAND } = {}) {
-  const werte = { abstand, ...SAFARI[ansicht] };
+export async function safariModell(p, ansicht, { leisten = { bar: '.nb, .pnav', box: '.searchbox' }, links = {}, auto = false, abstand = ABSTAND, abstandFenster = ABSTAND_FENSTER } = {}) {
+  const werte = { abstand, abstandFenster, ...SAFARI[ansicht] };
   if (!werte) throw new Error(`Safari-Modell: keine Werte für ${ansicht}`);
   await p.evaluate(({ werte, leisten, links, auto }) => {
     const vv = window.visualViewport;
@@ -83,8 +84,9 @@ export async function safariModell(p, ansicht, { leisten = { bar: '.nb, .pnav', 
         let fest = false;
         for (let e = a; e && e !== document.documentElement; e = e.parentElement) if (e.matches('dialog[open]') || getComputedStyle(e).position === 'fixed') { fest = true; break; }
         const v = s.top(), r = a.getBoundingClientRect(), d = fest ? v : 0;
-        // S-5: zu nah über der Tastatur (weniger als abstand) – Safari stellt das Feld in die Mitte
-        if (r.bottom - d > s.hoehe() - werte.abstand) s.pan = Math.min(H() - s.hoehe() - (Y() - s.L), s.pan + Math.max(0, Math.round((r.top + r.bottom) / 2 - d - s.hoehe() / 2)));
+        // S-5: zu nah über der Tastatur (weniger als abstand, im Fenster abstandFenster) – Safari stellt das Feld in die Mitte
+        const ab = a.closest('dialog[open]') ? werte.abstandFenster : werte.abstand;
+        if (r.bottom - d > s.hoehe() - ab) s.pan = Math.min(H() - s.hoehe() - (Y() - s.L), s.pan + Math.max(0, Math.round((r.top + r.bottom) / 2 - d - s.hoehe() / 2)));
       },
       // Safari meldet 2 Bilder später, was es zeigt
       melde() {

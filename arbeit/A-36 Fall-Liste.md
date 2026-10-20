@@ -167,6 +167,48 @@ Messungen: `arbeit/A-36 Messungen/` (vier Dateien, alle Home-Bildschirm, je Fens
 - **Noch nicht gemessen:** Tastatur schließen bei offenem Fenster, Feld wechseln mit V1, Feld im Inhalt (Gesamtausgaben), Suche
   (vor allem quer), Lineal unter 24 px.
 
+## 6b. Muster 3. Fassung (Zusammenarbeit 2.15.0, 0 Nr. 20) – Fall-Liste
+
+**V1 neu** (aus 6a): beim Antippen rollt der Inhalt **nur so weit wie nötig** – das Feld endet mindestens **32 px** (ABSTAND 24 + 8
+Reserve) über der künftigen Tastatur, nie über dem oberen Rand seines Bereichs (+8 px); liegt es schon so, bewegt sich nichts.
+Das **iPad-Fenster bleibt beim Antippen stehen**; erst wenn die Tastatur da ist, **gleitet** es (0,25 s) in die Mitte des sichtbaren
+Bereichs (nur wenn es verdeckt wäre) und beim Schließen zurück; seine **Höhe bleibt wie vor dem Antippen** (kein fast
+bildschirmhohes Fenster mehr). Heute bleibt wie 4.28.0 zum Vergleich.
+
+**Geführter Versuch** – je Lage (iPhone hoch/quer, iPad hoch/quer) dieselben 9 Schritte, das Muster zeigt ‚Nächster Schritt‘, hakt ab
+und zeigt nur ‚aufgenommen‘; ‚Messung teilen‘ erst, wenn beide Lagen des Geräts fertig sind (sonst Rückfrage ‚trotzdem teilen‘):
+
+| Schritt | Handlung | prüft (Auswertung aus den Rohdaten) |
+|---|---|---|
+| S1 | ‚Fenster öffnen‘ | Fenster mittig, kein Messartefakt mehr beim Öffnen |
+| S2 | ‚Ort‘ antippen | Tastatur auf im Fenster: Safari verschiebt nicht, Leisten still, Fenster gleitet (iPad), Kapsel über der Tastatur |
+| S3 | ‚Notiz (ganz unten)‘ antippen | Feld wechseln bei offener Tastatur (neu) |
+| S4 | nur die Tastatur schließen, Fenster bleibt offen | Tastatur zu bei offenem Fenster (neu): Leisten still, iPad-Fenster gleitet zurück, Höhe wie vorher |
+| S5 | ‚Fertig‘ im Fenster | Fenster zu ohne Sprung |
+| S6 | mit ↓ ans Ende, ‚Gesamtausgaben‘ antippen | Feld im Inhalt, Zifferntastatur (neu am Gerät) |
+| S7 | Tastatur schließen | Inhalt rutscht nicht zurück |
+| S8 | ‚Suche ein/aus‘, ins Suchfeld tippen | Suche der Kopfzeile (offen aus 6a: 20 px quer verschoben?) |
+| S9 | Tastatur schließen, ‚Suche ein/aus‘ | – |
+
+**Prüfung des Musters vor der Übergabe** (`arbeit/A-36 Muster prüfen.mjs`, Chromium und WebKit, alle vier Lagen): spielt S1–S9 im
+Safari-Modell durch, wie das Muster sie anzeigt; die geteilte Datei wird mit `arbeit/A-36 auswerten.mjs` ausgewertet – V1 muss in
+jedem Schritt still sein, alle 9 Schritte je Lage müssen in der Datei stehen. **Gegenproben:** (1) ein eingebauter Sprung der
+Kopfzeile von 50 px beim Öffnen **und** Schließen der Tastatur muss in der Auswertung rot werden (der Fehler der 2. Fassung lag beim
+Schließen); (2) Heute muss ‚Safari verschiebt‘ zeigen. **Auswertung selbst geprüft** (`auswerten.mjs --selbsttest`): an den vier
+Messungen der 2. Fassung muss sie die Werte aus 6a liefern (218/212/362/340, Sprünge beim Schließen +218/+212/+362/+340).
+
+**Stand nach dem Bau des Musters (20.10.2026):** `Muster prüfen.mjs` grün in Chromium und WebKit (alle vier Lagen, je 9 Schritte,
+7 Handlungen mit Tastatur still), G-1 und G-2 rot wie verlangt; `auswerten.mjs --selbsttest` liefert an den vier Messungen alle 26
+von Hand gelesenen Werte (dabei gefunden: Heute am iPad quer **verschwindet die Seitenleiste**, solange die Tastatur offen ist –
+`isPhone()`, P-60). Die Prüfung fand vor der Übergabe zwei Fehler: (1) **‚Suche ein/aus‘ blendete die ganze Seite aus** (Klasse
+`suche` am `html` traf `.suche { display: none }`) – schon in der 2. Fassung, dort nicht ausprobiert; behoben (`mitsuche`).
+(2) Das Modell verschob V1 quer im Fenster (Ort 19 px über der Tastatur, Modell verlangte 24) – am Gerät verschob Safari bei 15 px im
+Fenster nicht → Modell nach dem Gerät korrigiert: **`ABSTAND_FENSTER` 15** für Felder in Fenstern, sonst weiter 24 (Suche 0019).
+`ablauf-tastatur-still.mjs` gegen 3.26.0 weiter rot (59).
+
+**Nur am Gerät (Prüfliste):** ob die Kapsel mit der Tastatur mitgeht oder vorausspringt; ob das Gleiten des iPad-Fensters zur Tastatur
+passt; Pfeile ∧ ∨ über der Tastatur (Safari wählt das Feld, kein Antippen) – nicht im Versuch.
+
 ## 7. Grenzen
 
 - Was Safari zwischen zwei Bildern zeigt, kennt die Prüfung nur aus dem Modell – deshalb Muster und Messung am Gerät.
