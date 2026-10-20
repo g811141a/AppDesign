@@ -49,6 +49,16 @@
 //   Seite, bis die Suche im Muster gemessen ist. Felder in Fenstern (dialog): ABSTAND_FENSTER 15 – dort am Gerät gemessen (V1 quer
 //   Ort 67–111 bei sichtbar 126 → nichts); darunter nicht gemessen. Mitte bestätigt: 218 (iPhone hoch), 212 (quer), 362 (iPad quer);
 //   340 iPad hoch = ganzer Raum (Mitte wäre 399).
+// - S-6 (Muster 3. Fassung, 20.10.2026 abends, arbeit/A-36 Fall-Liste.md 6c): die Grenze ABSTAND gilt nur beim ersten Öffnen der
+//   Tastatur für ein Feld in einem Rollbereich (Inhalt, Fenster). Sonst stellt Safari das Feld in die Mitte, sobald seine Mitte
+//   unter der Mitte des sichtbaren Bereichs liegt (sichere Seite – darunter nicht gemessen):
+//   (a) Feld außerhalb eines Rollbereichs (Suche der Kopfzeile): quer 50–94 bei sichtbar 126 → 9 px (0019: 62–106 → 20 px);
+//   (b) Feld wechseln bei offener Tastatur: iPad quer Notiz 296–340 bei sichtbar 374 (34 px darüber) → 132 px; iPhone hoch 24 px
+//       darüber → bis zum Raum;
+//   (c) erneutes Antippen des Felds mit Fokus, nachdem die Tastatur-Taste (iPad) nur die Tastatur geschlossen hat: die Tastatur
+//       öffnet sich ohne neuen Fokus, Safari verschiebt (iPad quer 618–662 → 428 = ganzer Raum). Tastatur-Taste im Modell:
+//       __safari.tastatur(false) bei bleibendem Fokus.
+//   Nicht nachgebildet: am iPad ging der Fokus nach dem Abfangen der Berührung 6-mal nach 35 ms ans Fenster (Ursache offen, 6c 1).
 export const ABSTAND = 24, ABSTAND_FENSTER = 15;
 export const SAFARI = {
   'iPhone hoch': { tastatur: 403, fokusRollen: -120, fokusSchub: 0 },
@@ -78,14 +88,17 @@ export async function safariModell(p, ansicht, { leisten = { bar: '.nb, .pnav', 
       },
       // S-1 (A-35, A-36): liegt das Feld mit Fokus unter der Tastatur, verschiebt Safari den sichtbaren Bereich so weit wie nötig,
       // höchstens um den ganzen Raum. Bildschirm = Lage im Fenster, bei festen Elementen (Rahmen, Fenster) minus offsetTop.
-      zumFeld() {
+      zumFeld(art = 'auf') {
         const a = document.activeElement;
         if (!s.offen || !a?.matches?.('input, textarea')) return;
         let fest = false;
         for (let e = a; e && e !== document.documentElement; e = e.parentElement) if (e.matches('dialog[open]') || getComputedStyle(e).position === 'fixed') { fest = true; break; }
         const v = s.top(), r = a.getBoundingClientRect(), d = fest ? v : 0;
-        // S-5: zu nah über der Tastatur (weniger als abstand, im Fenster abstandFenster) – Safari stellt das Feld in die Mitte
-        const ab = a.closest('dialog[open]') ? werte.abstandFenster : werte.abstand;
+        // S-5: zu nah über der Tastatur (weniger als abstand, im Fenster abstandFenster) – Safari stellt das Feld in die Mitte;
+        // S-6: außerhalb eines Rollbereichs, beim Wechseln und erneuten Antippen genügt eine Mitte unter der Mitte
+        let rolle = false;
+        for (let e = a.parentElement; e && e !== document.body; e = e.parentElement) if (/(auto|scroll)/.test(getComputedStyle(e).overflowY)) { rolle = true; break; }
+        const ab = art !== 'auf' || !rolle ? Infinity : a.closest('dialog[open]') ? werte.abstandFenster : werte.abstand;
         if (r.bottom - d > s.hoehe() - ab) s.pan = Math.min(H() - s.hoehe() - (Y() - s.L), s.pan + Math.max(0, Math.round((r.top + r.bottom) / 2 - d - s.hoehe() / 2)));
       },
       // Safari meldet 2 Bilder später, was es zeigt
@@ -106,14 +119,14 @@ export async function safariModell(p, ansicht, { leisten = { bar: '.nb, .pnav', 
       // quer schiebt Safari den sichtbaren Bereich beim Fokus um 21 px (A-27 3) – seit A-36 als Verschiebung (die Seite rollt seit
       // 4.27.0 nicht mehr, Safari verschiebt trotzdem: Messung 19.10. Zeile 11, Kopfzeile −21)
       schub() { const raum = H() - s.hoehe(); s.top(); s.pan = Math.min(raum - (Y() - s.L), s.pan + werte.fokusSchub); },
-      tastatur(auf) {
+      tastatur(auf, art = 'auf') {
         // A-35: Felder mit Ziffern bekommen quer die niedrigere Zifferntastatur (gemessen; hoch nicht gemessen – wie Buchstaben)
         const a = document.activeElement;
         s.kb = auf && s.naechste ? s.naechste : auf && werte.ziffern && /^(decimal|numeric)$/.test(a?.getAttribute?.('inputmode') || '') ? werte.ziffern : werte.tastatur;
         if (auf) s.naechste = null;
         if (!auf) s.pan = 0;
         s.offen = auf; s.top();
-        if (auf) s.zumFeld();
+        if (auf) s.zumFeld(art);
         if (auf && werte.fokusSchub) s.schub();
         if (!auf) s.L = Y();
         s.melde();
@@ -148,8 +161,12 @@ export async function safariModell(p, ansicht, { leisten = { bar: '.nb, .pnav', 
     // S-4: Tastatur folgt dem Fokus (Felder mit Tastatur; Datum, Auswahl und Schalter öffnen keine)
     const mitTastatur = e => e?.matches?.('textarea, input:not([type=date],[type=time],[type=checkbox],[type=radio],[type=button],[type=submit],[type=range],[type=color],[type=file]):not([readonly])');
     if (auto) {
-      document.addEventListener('focusin', e => { if (!s.offen && mitTastatur(e.target)) requestAnimationFrame(() => { if (!s.offen && mitTastatur(document.activeElement)) s.tastatur(true); }); }, true);
+      document.addEventListener('focusin', e => { if (!s.offen && mitTastatur(e.target)) requestAnimationFrame(() => { if (!s.offen && mitTastatur(document.activeElement)) s.tastatur(true, s.erneut === document.activeElement ? 'erneut' : 'auf'); }); }, true);
       document.addEventListener('focusout', () => setTimeout(() => { if (s.offen && !mitTastatur(document.activeElement)) s.tastatur(false); }, 100), true);
+      // S-6 (c): Antippen des Felds, das den Fokus noch hat, bei geschlossener Tastatur öffnet sie wieder (ohne neuen Fokus); wie Safari
+      // es bewertet, wenn die App dabei den Fokus neu setzt, ist nicht gemessen – das Modell bleibt auf der sicheren Seite (erneut)
+      window.addEventListener('touchstart', e => { s.erneut = !s.offen && e.target === document.activeElement && mitTastatur(e.target) ? e.target : null; }, true);
+      document.addEventListener('touchend', e => { if (s.erneut === e.target) requestAnimationFrame(() => { if (!s.offen && s.erneut === document.activeElement) s.tastatur(true, 'erneut'); }); }, true);
     }
     // jede Bewegung (App oder Safari) zeigt sich sofort und wird 2 Bilder später gemeldet
     addEventListener('scroll', () => { s.top(); s.melde(); }, { capture: true, passive: true });
@@ -164,7 +181,7 @@ export async function safariModell(p, ansicht, { leisten = { bar: '.nb, .pnav', 
       s.blur = false;
       // neuer Fokus bei offener Tastatur: Safari rollt bzw. schiebt nach dem Fokus (im nächsten Bild)
       requestAnimationFrame(() => {
-        s.zumFeld();
+        s.zumFeld('wechsel');
         if (werte.fokusRollen) scrollTo(0, Math.max(0, Y() + werte.fokusRollen));
         if (werte.fokusSchub) s.schub();
         s.top(); s.melde();

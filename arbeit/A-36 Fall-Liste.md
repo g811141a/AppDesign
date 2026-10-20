@@ -232,6 +232,53 @@ Dateien `arbeit/A-36 Messungen/2026-10-20 21-56 Muster 3 iPhone (Heute).txt` und
   beim Wechseln und erneuten Antippen ebenso; die Suche quer braucht eine niedrigere Kopfzeile (iOS quer: kompakte Leiste) oder
   9 px bleiben. Das Modell kennt (b), (2), (3) und (4) noch nicht.
 
+## 6d. Muster 4. Fassung (Sitzung 0022, 20.10.2026) – Lehren aus 0021, Modell um 6c ergänzt
+
+**Lehren (Nutzer verärgert):** Anleitung **nur im Chat**, nichts im Muster, was wegrollt oder eine Reihenfolge erzwingt; **nur V1**
+(keine Variante aus der Adresse – das Symbol auf dem Home-Bildschirm mit `?v=heute` startet trotzdem V1 –, kein Umschalter; ‚Heute‘
+nur noch für die Gegenprobe über `a36.variante`). Das Muster zeigt oben rechts nur ‚n aufgenommen‘; ‚Messung teilen‘ jederzeit.
+
+**Ursache ‚2× tippen‘ (6c 1), aus den Rohdaten aller iPad-Messungen:** jede Berührung, die das Muster abfängt (`preventDefault`, eigener
+Fokus), ohne dabei etwas zu bewegen, und vor der eine Schaltfläche (`dlgX`, Fokus von `showModal`) oder ein Feld bei geschlossener Tastatur
+den Fokus hatte, verlor den Fokus nach 34–37 ms ans Fenster (6 von 6). Ging es, hatte vorher das Fenster den Fokus (nach einem
+verlorenen) oder die Tastatur war offen (Wechsel). In der 2. Fassung bewegte V1 bei jeder Berührung das Fenster – nie verloren (4 von 4).
+Die Berührungen, die Safari selbst behandelte (‚focus‘ mit ‚tippen‘ danach), gingen immer. Der Mechanismus in WebKit ist nicht bekannt
+→ **Vermutung, am Gerät zu bestätigen**. Abhilfe in V1: abfangen **nur, wenn etwas bewegt wird**, sonst bleibt die Berührung bei Safari;
+bei geschlossener Tastatur vorher den alten Fokus lösen. Jede Berührung steht als Zeile ‚berührung <Feld> abgefangen n | bei Safari‘
+in der Messung.
+**Gesamtausgaben iPad quer (6c 3):** trat nur direkt nach so einem verlorenen Fokus auf (2. Antippen), beim zweiten Durchgang ohne
+Verlust nicht (299 → 322 → 315). Im Modell nicht nachgestellt; Vermutung: Folge von 6c 1.
+
+**Safari-Modell (`tests/safari.mjs`, S-6):** die Grenze ABSTAND gilt nur beim **ersten Öffnen** für ein Feld **in einem Rollbereich**;
+sonst stellt Safari das Feld in die Mitte, sobald seine Mitte unter der Mitte des sichtbaren Bereichs liegt: (a) Feld außerhalb eines
+Rollbereichs (Suche der Kopfzeile: 50–94 bei 126 → 9 px, 0019: 62–106 → 20 px), (b) Wechsel bei offener Tastatur (34 px darüber
+→ 132), (c) erneutes Antippen nach der Tastatur-Taste (Tastatur öffnet ohne neuen Fokus; im Modell `__safari.tastatur(false)` bei
+bleibendem Fokus). Mit dem Modell ist das Muster 3 rot (iPad quer Wechsel 125 px, erneut 213 px; iPad hoch 258 / 340; iPhone quer
+Wechsel 23 px; Suche quer 8 px) – passt zu den Messungen.
+
+**V1 4. Fassung:**
+
+| Fall | V1 | geprüft (Modell, `Muster prüfen.mjs`) |
+|---|---|---|
+| erstes Antippen (Fenster, Inhalt) | Feld in die **obere Hälfte** (Mitte ≤ Mitte − 24, nie über dem Rand seines Bereichs + 4) | alle vier Lagen still |
+| Wechsel bei offener Tastatur | ebenso | still (vorher 125 / 258 / 23 px) |
+| Tastatur-Taste (iPad), Feld behält den Fokus | iPad-Fenster **bleibt oben**, solange ein Feld darin den Fokus hat | still |
+| erneutes Antippen danach | Feld schon in der oberen Hälfte → bei Safari; sonst abfangen | still (vorher 213 / 340 px) |
+| nichts zu bewegen | Berührung bleibt bei Safari | – (nur am Gerät, 6c 1) |
+| iPhone quer, Fenster offen, Tastatur offen | ‚Notiz‘ erreichbar | G-3: Heute nicht erreichbar (wie am Gerät), V1 erreichbar |
+| iPhone quer: Suche, Fensterfelder | **niedrige Leisten** quer (Kopfzeile 32 statt 44 px, wie iOS quer) | Suche quer still (vorher 8 px) |
+| iPad-Fenster | gleitet mit der Tastatur (0,25 s), Höhe bleibt (3. Fassung, am Gerät gut) | Fensterkopf gleitet, sonst still |
+
+Auswertung korrigiert: bei der Tastatur-Taste begann die nächste Handlung eine Zeile zu früh, der vorigen fehlte ihr letztes Bild
+(‚Kapsel −412 px‘ war deshalb falsch); Selbsttest weiter 26/26.
+
+**Kurzer Versuch (Anleitung nur im Chat):** iPad (eine Lage genügt, quer) und iPhone (hoch und quer), je: Fenster öffnen → ‚Ort‘ einmal
+antippen → ‚Notiz‘ → Tastatur schließen (iPad: Tastatur-Taste) → ‚Notiz‘ erneut → ‚Fertig‘ → ↓ → ‚Gesamtausgaben‘ → Tastatur
+schließen → ‚Gesamtausgaben‘ erneut → Tastatur schließen → teilen. Die Prüfung spielt genau das in allen vier Lagen durch.
+
+**Offen (Nutzer entscheidet):** niedrige Leisten quer am iPhone übernehmen (HIG: iOS-Leisten sind quer niedriger) oder 9 px bei der
+Suche quer hinnehmen.
+
 ## 7. Grenzen
 
 - Was Safari zwischen zwei Bildern zeigt, kennt die Prüfung nur aus dem Modell – deshalb Muster und Messung am Gerät.

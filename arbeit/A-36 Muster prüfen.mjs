@@ -1,15 +1,19 @@
-// A-36 · Muster (3. Fassung) vor der Übergabe im Safari-Modell prüfen (Zusammenarbeit 0 Nr. 20 seit 2.15.0, Fall-Liste 6b).
-//   node "arbeit/A-36 Muster prüfen.mjs"            – Chromium und WebKit, alle vier Lagen (Playwright aus ReiseLogBuch/tests)
-// Je Lage: der Prüfer macht genau den Schritt, den das Muster anzeigt, bis alle 9 Schritte aufgenommen sind; die geteilte Datei wird
-// mit auswerten.mjs bewertet (V1 muss in jedem Schritt still sein, jede Handlung muss in der Datei stehen), dazu die Bilder des
-// Modells selbst (Lage auf dem Bildschirm, mit Safaris Verschiebung). Gegenproben (müssen rot werden): G-1 eingebauter Sprung der
-// Kopfzeile (50 px, 2 Bilder) bei jeder Meldung von Safari – beim Öffnen und Schließen der Tastatur; G-2 Variante Heute.
+// A-36 · Muster (4. Fassung) vor der Übergabe im Safari-Modell prüfen (Zusammenarbeit 0 Nr. 20 seit 2.15.0, Fall-Liste 6d).
+//   node "arbeit/A-36 Muster prüfen.mjs" [--nur-chromium] [--muster <Datei>]   – Chromium und WebKit, alle vier Lagen
+// Je Lage genau die Handgriffe des kurzen Versuchs (Anleitung nur im Chat, Fall-Liste 6d); die geteilte Datei wird mit
+// auswerten.mjs bewertet (V1 muss bei jeder Handlung still sein, jede Handlung muss in der Datei stehen), dazu die Bilder des Modells
+// (Lage auf dem Bildschirm, mit Safaris Verschiebung) und ob ‚Notiz‘ bei offener Tastatur im Fenster erreichbar ist (6c c).
+// Gegenproben (müssen rot werden): G-1 eingebauter Sprung der Kopfzeile (50 px, 2 Bilder) bei jeder Meldung von Safari – beim Öffnen
+// und Schließen der Tastatur; G-2 Variante Heute; G-3 Heute iPhone quer: ‚Notiz‘ bei offener Tastatur nicht erreichbar. Die Suche quer (6c a) wird nur berichtet – Entscheidung des Nutzers offen.
+// --muster: anderes Muster prüfen (z. B. die 3. Fassung aus Git – muss gegen das Modell mit 6c rot sein).
 import { createRequire } from 'node:module';
+import { pathToFileURL } from 'node:url';
 import { lies, werteAus } from './A-36 auswerten.mjs';
 const pw = createRequire(new URL('../../ReiseLogBuch/tests/', import.meta.url))('playwright');
 const { safariModell } = await import('../tests/safari.mjs');
 
-const URL_MUSTER = new URL('./A-36 Muster.html', import.meta.url).href;
+const arg = process.argv.indexOf('--muster');
+const URL_MUSTER = arg > 0 ? pathToFileURL(process.argv[arg + 1]).href : new URL('./A-36 Muster.html', import.meta.url).href;
 const LAGEN = {
   'iPhone hoch': { viewport: { width: 402, height: 812 }, screen: { width: 402, height: 874 }, isMobile: true },
   'iPhone quer': { viewport: { width: 874, height: 402 }, screen: { width: 874, height: 402 }, isMobile: true },
@@ -18,22 +22,45 @@ const LAGEN = {
 };
 const warte = (p, ms) => p.waitForTimeout(ms);
 const blur = p => p.evaluate(() => document.activeElement?.blur());
-const HANDLUNG = [
-  p => p.tap('#fenster'),
-  p => p.tap('#fPlace'),
-  p => p.tap('#fNotiz'),
-  blur,
-  p => p.tap('#dlgOk'),
-  async p => { await p.tap('#runter'); await warte(p, 700); await p.tap('#kosten'); },
-  blur,
-  async p => { await p.tap('#hoch'); await warte(p, 700); await p.tap('#suchknopf'); await warte(p, 200); await p.tap('#such'); },
-  async p => { await blur(p); await warte(p, 400); await p.tap('#suchknopf'); },
+// iPad: Tastatur-Taste schließt nur die Tastatur, das Feld behält den Fokus; iPhone: ✓ bzw. ‚Fertig‘ über der Tastatur nimmt ihn
+const taste = (p, ipad) => ipad ? p.evaluate(() => __safari.tastatur(false)) : blur(p);
+// ‚Notiz‘ bei offener Tastatur erreichbar: gibt es einen Rollstand des Fensterinhalts, bei dem das Feld ganz im sichtbaren Teil des
+// Fensterinhalts steht (Bildschirm: unter dem Fensterkopf, über der Tastatur)?
+const erreichbar = p => p.evaluate(() => {
+  const k = document.querySelector('#dkoerper'), f = document.querySelector('#fNotiz'), y = k.scrollTop, top = __safari.top();
+  let ok = false, text = '';
+  for (let s = 0; s <= k.scrollHeight && !ok; s += 2) {
+    k.scrollTop = s;
+    const r = f.getBoundingClientRect(), b = k.getBoundingClientRect(), oben = b.top - top, unten = Math.min(b.bottom - top, __safari.hoehe());
+    ok = r.top - top >= oben && r.bottom - top <= unten;
+    text = `${Math.round(r.top - top)}–${Math.round(r.bottom - top)}, Fensterinhalt sichtbar ${Math.round(oben)}–${Math.round(unten)}`;
+  }
+  k.scrollTop = y; return { ok, text };
+});
+// der kurze Versuch (Fall-Liste 6d, Anleitung im Chat): erwartete Handlungen in der Auswertung
+const VERSUCH = ipad => [
+  ['Fenster öffnen', p => p.tap('#fenster')],
+  ['Ort', p => p.tap('#fPlace'), 'auf fPlace'],
+  ['Notiz erreichbar', null],
+  ['Notiz', p => p.tap('#fNotiz'), 'wechsel fNotiz'],
+  ['Tastatur zu', p => taste(p, ipad), 'zu fNotiz'],
+  ['Notiz erneut', p => p.tap('#fNotiz'), 'auf fNotiz'],
+  ['Fertig', p => p.tap('#dlgOk'), 'zu fNotiz'],
+  ['Gesamtausgaben', async p => { await p.tap('#runter'); await warte(p, 700); await p.tap('#kosten'); }, 'auf kosten'],
+  ['Tastatur zu', p => taste(p, ipad), 'zu kosten'],
+  ['Gesamtausgaben erneut', p => p.tap('#kosten'), 'auf kosten'],
+  ['Tastatur zu', blur, 'zu kosten'],
+];
+const SUCHE = [
+  ['Suche ein', async p => { await p.tap('#hoch'); await warte(p, 700); await p.tap('#suchknopf'); await warte(p, 200); await p.tap('#such'); }, 'auf such'],
+  ['Suche aus', async p => { await blur(p); await warte(p, 400); await p.tap('#suchknopf'); }, 'zu such'],
 ];
 
-async function lauf(b, name, { v = 'v1', gegenprobe = false } = {}) {
-  const p = await b.newPage({ hasTouch: true, ...LAGEN[name] }), fehler = [];
+async function lauf(b, name, { heute = false, gegenprobe = false, ablauf } = {}) {
+  const p = await b.newPage({ hasTouch: true, ...LAGEN[name] }), fehler = [], ipad = name.startsWith('iPad');
   p.on('pageerror', e => fehler.push('Skriptfehler: ' + e.message));
-  await p.goto(URL_MUSTER + '?v=' + v);
+  await p.goto(URL_MUSTER + (heute ? '?v=heute' : ''));
+  if (heute) await p.evaluate(() => window.a36.variante?.('heute'));
   await safariModell(p, name, { auto: true, leisten: { kopf: '#kopf', side: '#side', dkopf: '#dkopf' }, links: { dlinks: '#dlg' } });
   if (gegenprobe) await p.evaluate(() => visualViewport.addEventListener('resize', () => {
     const k = document.querySelector('#kopf'); k.style.transform = 'translateY(-50px)';
@@ -42,24 +69,25 @@ async function lauf(b, name, { v = 'v1', gegenprobe = false } = {}) {
   const lage = await p.evaluate(() => a36.lage());
   if (lage !== name) fehler.push(`Muster erkennt ‚${lage}‘ statt ‚${name}‘`);
   await p.evaluate(() => __safari.bilder(true));
-  for (let i = 0; i < HANDLUNG.length; i++) {
-    const n = await p.evaluate(() => a36.schritt());
-    if (v === 'v1' && n !== i) { fehler.push(`Schritt S${i + 1}: Muster zeigt Schritt ${n + 1}`); break; }
-    await HANDLUNG[i](p); await warte(p, 1300);
-    if (v !== 'v1' && i === 1) break;   // G-2: Heute nur bis ‚Ort antippen‘
+  const schritte = ablauf || VERSUCH(ipad).slice(0, heute ? 2 : undefined), erwartet = [], hinweise = [];
+  for (const [was, tu, soll] of schritte) {
+    if (!tu) { const r = await erreichbar(p); (r.ok ? hinweise : fehler).push(`Notiz bei offener Tastatur ${r.ok ? 'erreichbar' : 'NICHT erreichbar'} (${r.text})`); continue; }
+    await tu(p); await warte(p, 1300);
+    if (soll) erwartet.push(soll);
   }
   const bilder = await p.evaluate(() => __safari.bilder(false)), text = await p.evaluate(() => a36.text());
   await p.close();
-  const { handlungen, schritte } = werteAus(lies(text));
-  if (v === 'v1' && !gegenprobe && schritte.filter(s => s.startsWith(name)).length !== 9) fehler.push(`nur ${schritte.length} von 9 Schritten in der Datei: ${schritte.join(', ')}`);
-  const erwartet = v === 'v1' ? 7 : 1;   // auf Ort, wechsel Notiz, zu, auf kosten, zu, auf such, zu
-  if (handlungen.length < erwartet) fehler.push(`nur ${handlungen.length} Handlungen mit Tastatur in der Datei (erwartet ${erwartet})`);
+  const { handlungen } = werteAus(lies(text));
+  // jede Handlung des Versuchs muss in der Datei stehen, in dieser Reihenfolge (‚wechsel‘ und ‚erneut‘ eingeschlossen)
+  let i = 0;
+  for (const h of handlungen) if (i < erwartet.length && `${h.was} ${h.feld}`.startsWith(erwartet[i])) i++;
+  if (i < erwartet.length) fehler.push(`Handlung ‚${erwartet[i]}‘ fehlt in der Datei (gefunden: ${handlungen.map(h => h.was + ' ' + h.feld).join(', ')})`);
   for (const h of handlungen) for (const f of h.fehler) fehler.push(`Auswertung ${h.was} ${h.feld}: ${f}`);
-  // Bilder des Modells: Lage auf dem Bildschirm (mit Safaris Verschiebung) – Kopf- und Seitenleiste still, Safari verschiebt nie
+  // Bilder des Modells: Kopf- und Seitenleiste still, Safari verschiebt nie
   const vt = Math.max(0, ...bilder.map(x => x.vt));
   if (vt) fehler.push(`Modell: Safari verschiebt ${vt} px`);
   for (const k of ['kopf', 'side']) { const w = bilder.map(x => x[k]).filter(x => x != null); if (w.length && Math.max(...w) - Math.min(...w) > 1) fehler.push(`Modell: ${k} ${Math.min(...w)}…${Math.max(...w)}`); }
-  return { fehler, handlungen };
+  return { fehler, handlungen, hinweise };
 }
 
 const browser = process.argv.includes('--nur-chromium') ? ['chromium'] : ['chromium', 'webkit'];
@@ -68,18 +96,25 @@ for (const bn of browser) {
   const b = await pw[bn].launch();
   for (const name of Object.keys(LAGEN)) {
     const r = await lauf(b, name);
-    console.log(`${r.fehler.length ? '✗' : '✓'} ${bn} · ${name} · V1, 9 Schritte: ${r.fehler.length ? r.fehler.join(' | ') : `${r.handlungen.length} Handlungen still`}`);
-    for (const h of r.handlungen) console.log('    ' + h.text);
+    console.log(`${r.fehler.length ? '✗' : '✓'} ${bn} · ${name} · V1, kurzer Versuch: ${r.fehler.length ? r.fehler.join(' | ') : `${r.handlungen.length} Handlungen still`}`);
+    for (const h of [...r.hinweise, ...r.handlungen.map(h => h.text)]) console.log('    ' + h);
     rot += r.fehler.length ? 1 : 0;
+  }
+  for (const name of ['iPhone quer', 'iPad quer']) {
+    const r = await lauf(b, name, { ablauf: SUCHE });
+    console.log(`${r.fehler.length ? '○' : '✓'} ${bn} · ${name} · Suche (nur berichtet, Entscheidung offen): ${r.fehler.length ? r.fehler.join(' | ') : 'still'}`);
   }
   // Gegenproben – müssen rot werden
   const g1 = await lauf(b, 'iPhone hoch', { gegenprobe: true });
   const auf = g1.fehler.some(f => /auf fPlace: Kopfzeile springt -50/.test(f)), zu = g1.fehler.some(f => /zu \w+: Kopfzeile springt -50/.test(f));
   console.log(`${auf && zu ? '✓' : '✗'} ${bn} · G-1 Sprung 50 px beim Öffnen und Schließen erkannt: auf ${auf ? 'ja' : 'NEIN'}, zu ${zu ? 'ja' : 'NEIN'}`);
-  const g2 = await lauf(b, 'iPad quer', { v: 'heute' });
+  const g2 = await lauf(b, 'iPad quer', { heute: true });
   const g2ok = g2.fehler.some(f => /Safari verschiebt \d+ px/.test(f));
-  console.log(`${g2ok ? '✓' : '✗'} ${bn} · G-2 Heute zeigt ‚Safari verschiebt‘: ${g2.fehler.filter(f => /Auswertung/.test(f)).join(' | ') || 'NEIN'}`);
-  rot += (auf && zu ? 0 : 1) + (g2ok ? 0 : 1);
+  console.log(`${g2ok ? '✓' : '✗'} ${bn} · G-2 Heute zeigt ‚Safari verschiebt‘: ${g2.fehler.filter(f => /Auswertung/.test(f)).slice(0, 2).join(' | ') || 'NEIN'}`);
+  const g3 = await lauf(b, 'iPhone quer', { heute: true, ablauf: VERSUCH(false).slice(0, 3) });
+  const g3ok = g3.fehler.some(f => /NICHT erreichbar/.test(f));
+  console.log(`${g3ok ? '✓' : '✗'} ${bn} · G-3 Heute iPhone quer: ‚Notiz‘ bei offener Tastatur nicht erreichbar (wie am Gerät, 6c c): ${g3ok ? 'ja' : 'NEIN'}`);
+  rot += (auf && zu ? 0 : 1) + (g2ok ? 0 : 1) + (g3ok ? 0 : 1);
   await b.close();
 }
 console.log(rot ? `Muster-Prüfung: ${rot} rot` : 'Muster-Prüfung: alles grün, Gegenproben rot wie verlangt');

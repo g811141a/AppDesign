@@ -36,8 +36,9 @@ function handlungen(z) {
   z.forEach((r, i) => {
     const vor = z[i - 1];
     if (vor && /^vv resize/.test(r.ereignis) && FELD.test(String(r.fokus)) && zahl(r.vh) && zahl(vor.vh)) {
-      if (r.vh - vor.vh > 80 && h.length && h.at(-1).offen) { h.push({ i: i - 1, was: 'zu', feld: r.fokus + ' (Tastatur-Taste)', offen: false }); return; }
-      if (vor.vh - r.vh > 80 && h.length && !h.at(-1).offen && h.at(-1).feld.startsWith(r.fokus)) { h.push({ i: i - 1, was: 'auf', feld: r.fokus + ' (erneut)', offen: true }); return; }
+      // Ausgangslage ist die Zeile davor; sie bleibt zugleich das letzte Bild der vorigen Handlung (bis = i)
+      if (r.vh - vor.vh > 80 && h.length && h.at(-1).offen) { h.push({ i: i - 1, bis: i, was: 'zu', feld: r.fokus + ' (Tastatur-Taste)', offen: false }); return; }
+      if (vor.vh - r.vh > 80 && h.length && !h.at(-1).offen && h.at(-1).feld.startsWith(r.fokus)) { h.push({ i: i - 1, bis: i, was: 'auf', feld: r.fokus + ' (erneut)', offen: true }); return; }
     }
     const [art, id] = r.ereignis.split(' ');
     if (!FELD.test(id || '')) return;
@@ -54,7 +55,7 @@ const zahl = v => typeof v === 'number';
 export function werteAus(m) {
   const z = m.zeilen, h = handlungen(z), ergebnis = [];
   h.forEach((a, n) => {
-    const r0 = z[a.i], grenze = n + 1 < h.length ? h[n + 1].i : z.length;
+    const r0 = z[a.i], grenze = n + 1 < h.length ? h[n + 1].bis ?? h[n + 1].i : z.length;
     let ende = a.i, letzteMeldung = r0.t;
     for (let j = a.i + 1; j < grenze; j++) {
       if (/^vv /.test(z[j].ereignis)) letzteMeldung = z[j].t;
