@@ -17,12 +17,14 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| A-35 | 1 | **Feld im Inhalt über der Tastatur (R-4.5, 4.28.0):** Gesamtausgaben im Reiselogbuch am iPhone quer und hoch, iPad – in der Nachbildung behoben, am Gerät zu bestätigen | **prüfen** – Reiselogbuch P-60 |
+| A-35 | 1 | **Feld im Inhalt über der Tastatur (R-4.5, 4.28.0):** P-60 **nicht ok** – das Feld steht über der Tastatur, aber Kopf- und Suchzeile (iPad auch Seitenleiste) springen beim Ein- und Ausblenden → A-36 | nicht ok – A-36 |
 
 ## 2. Weitere Themen (in Klärung)
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
+| A-36 | 1 | **Korrektur aus P-60 (Nutzer 20.10.2026): Tastatur ohne Springen** – Safari verschiebt den sichtbaren Bereich um die ganze Tastaturhöhe, wenn das Feld unter der künftigen Tastatur liegt (Inhalt und Fenster, iPhone und iPad, gemessen 232/403/428 px), meldet es 2 Bilder später → Kopf-, Such- und Seitenleiste springen; dazu Kapsel unter der Tastatur bzw. am iPad weg (`--vv-bottom`), iPad-Fenster rutscht nach links. Ziel: Safari muss nie verschieben. `arbeit/A-36 Analyse P-60.md` | **zuerst** – Fall-Liste, Prüfungen rot, Muster am Gerät |
+| A-37 | 2 | **‚Nach oben / Ans Ende‘ verbessern (allgemeine Regel, Nutzer 20.10.2026):** z. B. wie in der Gemini-App für iOS – Apple-Abgleich und Muster | offen |
 | A-30 | 3 | Vorschläge von Claude (19.10.2026, Analyse Abschnitt 5): Rückgängig nach Löschen (‚Gelöscht · Widerrufen‘), einheitliche leere Zustände, ‚Ziehen zum Aktualisieren‘ bewusst aus – je einzeln entscheiden | Vorschlag |
 | A-32 | 3 | **‚Problem melden‘ (Vorschlag V9, Nutzer 19.10.2026):** Messung, Version und Gerät in einer Datei | später |
 | A-01 | 3 | Startseite g811141a.github.io mit allen Apps (früher S-03) | später |

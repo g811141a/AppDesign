@@ -18,8 +18,12 @@
   (`/root/.claude/projects/…/*.jsonl`) ist maßgeblich – die App zeigte in 0019 ‚mittel‘, obwohl alle Aufrufe mit ‚high‘ liefen; der
   Nutzer hat sie auf ‚hoch‘ gestellt.
 - **Per du!** (Zusammenarbeit Abschnitt 1) – in 0019 sprach Claude anfangs mit ‚Sie‘ an, weil Abschnitt 1 nicht gelesen war.
-- **Offene Prüfpunkte:** **P-60** (Reiselogbuch 3.26.0, CHANGELOG): /0 Version, /1 iPhone quer Gesamtausgaben, /2 quer mit offener
-  Suche, /3 iPhone hoch, /4 iPad, /5 Fenster unverändert – Rückmeldung abwarten (ausgeschrieben im Chat von 0019).
+- **P-60 geprüft (20.10.2026): nicht ok** – Kopf- und Suchzeile (iPad auch Seitenleiste) springen beim Ein- und Ausblenden der
+  Tastatur (iPhone hoch und quer, iPad quer, auch in Fenstern); Kapsel unter der Tastatur bzw. am iPad weg; iPad-Fenster rutscht an
+  den linken Rand. iPad hoch: alles top. /0 und der Rest ok. **Ursache gemessen:** `arbeit/A-36 Analyse P-60.md` (**zuerst lesen**).
+  Der Nutzer ist zu Recht verärgert (‚katastrophal schlecht getestet‘) – diesmal jedes Bild prüfen, nicht nur den Endzustand.
+- **Neue Messungen** in `tests/messungen/` (2026-10-20 iPhone hoch und iPad quer, Fenster ‚Ort‘) – `ablauf-abspielen.mjs` spielt
+  sie im nächsten vollen Lauf mit (iPad-Datei braucht passende Ziele/Ansicht; erwartet rot bis A-36 behoben).
 - **Erinnerung:** ‚Backlog-Erinnerung (AppDesign und Reiselogbuch)‘ montags 8:58.
 
 ## 2. Ergebnisse
@@ -42,10 +46,10 @@ Frühere Sitzungen: siehe `VERLAUF.md` und Versionsgeschichten.
 
 ## 3. Nächster Schritt
 
-1. **Rückmeldung zu P-60** abwarten (Reiselogbuch `CHANGELOG.md`, 3.26.0). Bei ‚nicht ok‘: zuerst den Ablauf des Nutzers als feste
-   Prüfung nachbauen (0 Nr. 1), ggf. Messung (Messmodus) erbitten und mit `spieleAb` nachspielen (A-31).
-2. Danach Backlog-Spitze (Abschnitt 4).
-3. Neue Sitzung mit Opus 5.5, Aufwand hoch.
+1. **A-36 Tastatur ohne Springen** (Korrektur AppDesign 4.28.1 / Reiselogbuch 3.26.1): `arbeit/A-36 Analyse P-60.md` Abschnitt 4 –
+   Fall-Liste, Prüfungen zuerst rot gegen 4.28.0 (jedes Bild, alle drei Messungen), Muster am Gerät mit Messung (V1–V3), dann
+   **Ja zum Bau** einholen. Ziel: Safari muss nie verschieben.
+2. Danach A-37 (‚Nach oben / Ans Ende‘ wie in der Gemini-App, allgemeine Regel) und Abschnitt 4.
 
 ## 4. Danach
 
@@ -100,5 +104,5 @@ In der neuen Sitzung müssen **AppDesign** und **ReiseLogBuch** verfügbar sein,
 ## 7. Starttext für die neue Sitzung
 
 ```
-Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md und gezielt die Regeln (Zusammenarbeit Abschnitte 0 und 1, 0 Nr. 15), prüfe Modell und Aufwand (Sitzungsdatei), gib mir das Lagebild und arbeite dann Abschnitt 3 ab: zuerst meine Rückmeldung zu P-60 (Reiselogbuch 3.26.0). Hole vorher die Repos g811141a/ReiseLogBuch und g811141a/ReiseLogBuch-Import (privat) dazu (add_repo, Zugriff push), wie in UEBERGABE.md Abschnitt 5.
+Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md, dann arbeit/A-36 Analyse P-60.md und gezielt die Regeln (Zusammenarbeit Abschnitte 0 und 1), prüfe Modell und Aufwand (Sitzungsdatei), gib mir das Lagebild und arbeite dann Abschnitt 3 ab: A-36 Tastatur ohne Springen – Fall-Liste, Prüfungen zuerst rot, Muster am Gerät. Hole vorher die Repos g811141a/ReiseLogBuch und g811141a/ReiseLogBuch-Import (privat) dazu (add_repo, Zugriff push), wie in UEBERGABE.md Abschnitt 5.
 ```
