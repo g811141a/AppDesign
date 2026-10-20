@@ -6,16 +6,16 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <title>A-36 Muster</title>
 <style>
-/* A-36 Tastatur ohne Springen – Muster mit Messung, 4. Fassung (Sitzung Reiselogbuch 0022, Fall-Liste arbeit/A-36 Fall-Liste.md 6d;
+/* A-36 Tastatur ohne Springen – Muster mit Messung, 5. Fassung (Sitzung Reiselogbuch 0022, Fall-Liste arbeit/A-36 Fall-Liste.md 6e/6f;
    Zusammenarbeit 0 Nr. 20: vorher im Safari-Modell geprüft – arbeit/A-36 Muster prüfen.mjs –, zeigt am Gerät nur ‚aufgenommen‘;
-   bewertet wird aus den Rohdaten mit arbeit/A-36 auswerten.mjs). Die Anleitung steht nur im Chat (Lehre aus 0021).
-   Nur V1 (keine Variante aus der Adresse, kein Umschalter; ‚Heute‘ = AppDesign 4.28.0 nur für die Gegenprobe über a36.variante):
-   V1 = beim Antippen (Ende der Berührung, vor dem Fokus) rollt der Inhalt das Feld in die obere Hälfte des künftig sichtbaren
-        Bereichs (Mitte höchstens 24 px über der Mitte, nie über dem oberen Rand seines Bereichs + 4 px) – beim ersten Antippen, beim
-        Wechseln und beim erneuten Antippen nach der Tastatur-Taste (6c). Liegt es schon so, bleibt die Berührung bei Safari (eigener
-        Fokus nur, wenn etwas bewegt wird – 6c: verlorener Fokus nur, wenn abgefangen und nichts bewegt). Das iPad-Fenster gleitet
-        mit der Tastatur (0,25 s) und behält seine Höhe. iPhone quer: niedrige Leisten (wie iOS quer), damit Suche und Fensterfelder
-        in die obere Hälfte passen. Kapsel nach der Bildschirmhöhe, iPhone/iPad nach dem Bildschirm. */
+   bewertet wird aus den Rohdaten mit arbeit/A-36 auswerten.mjs). Die Anleitung steht nur im Chat.
+   Nur V2 (keine Variante aus der Adresse; ‚Heute‘ = AppDesign 4.28.0 nur für die Gegenprobe über a36.variante):
+   V2 = die Berührung bleibt immer bei Safari (6e: von abgefangenen Berührungen verloren 12 von ~35 den Fokus, von Safaris eigenen
+        keine). Sobald ein Feld den Fokus bekommt (focusin, sofort, vor dem ersten Bild), rollt der Inhalt es in die obere Hälfte des
+        künftig sichtbaren Bereichs (Mitte höchstens 24 px über der Mitte, nie über dem Rand seines Bereichs + 4 px) – Safari liest die
+        Lage hoffentlich erst beim Anzeigen der Tastatur (~90 ms später; nur am Gerät zu klären). Schließt die Tastatur-Taste (iPad)
+        die Tastatur, gibt das Feld den Fokus ab – erneutes Antippen ist dann ein gewöhnliches Antippen. Das iPad-Fenster gleitet mit
+        der Tastatur (0,25 s) und behält seine Höhe. iPhone quer: niedrige Leisten (Entscheidung des Nutzers, allgemeine Regel). */
 :root { --bg: #f2f2f7; --card: #fff; --line: #d1d1d6; --txt: #000; --sub: #6e6e73; --blue: #007aff; --ok: #248a3d; --bad: #d70015;
   --vv-top: 0px; --vv-h: 100dvh; --vv-bottom: 0px; --side: 0px; color-scheme: light dark; }
 @media (prefers-color-scheme: dark) { :root { --bg: #000; --card: #1c1c1e; --line: #38383a; --txt: #fff; --sub: #98989d; --ok: #30d158; --bad: #ff453a; } }
@@ -96,9 +96,9 @@ html.phone.quer .dkopf button { padding: 3px 10px; }
   </div></form></dialog>
 <script>
 const $ = s => document.querySelector(s), vv = window.visualViewport, root = document.documentElement, R = Math.round;
-let V = 'v1';   // immer V1 – auch wenn das Symbol auf dem Home-Bildschirm noch eine alte Adresse (?v=heute) hat
+let V = 'v2';   // immer V2 – auch wenn das Symbol auf dem Home-Bildschirm noch eine alte Adresse (?v=heute) hat
 // nur für die Gegenprobe im Modell (G-2), nicht am Gerät
-function variante(v) { V = v; $('#titel').textContent = 'A-36 · 4' + (V === 'v1' ? '' : ' · ' + V); if (window.a36bereit) zeile('variante ' + V); }
+function variante(v) { V = v; $('#titel').textContent = 'A-36 · 5' + (V === 'v2' ? '' : ' · ' + V); if (window.a36bereit) zeile('variante ' + V); }
 $('#liste').innerHTML = Array.from({ length: 14 }, (_, i) => `<div class="zeile">Tag ${i + 1} <small>· Programm ${i + 1}</small></div>`).join('');
 
 // ---------- Gerät, Höhe, Tastaturhöhe ----------
@@ -111,8 +111,8 @@ let H = hoehe();
 const lage = () => `${iphone() ? 'iPhone' : 'iPad'} ${quer() ? 'quer' : 'hoch'}`;
 const art = f => /^(decimal|numeric)$/.test(f.getAttribute('inputmode') || '') ? 'ziffern' : 'text';
 const schluessel = f => `${lage()} ${art(f)}`;
-const SCHAETZUNG = { 'iPhone hoch text': 403, 'iPhone hoch ziffern': 403, 'iPhone quer text': 276, 'iPhone quer ziffern': 232,
-  'iPad quer text': 428, 'iPad quer ziffern': 428, 'iPad hoch text': 340, 'iPad hoch ziffern': 340 };   // alle am Gerät gemessen (20.10.)
+const SCHAETZUNG = { 'iPhone hoch text': 403, 'iPhone hoch ziffern': 376, 'iPhone quer text': 276, 'iPhone quer ziffern': 232,
+  'iPad quer text': 428, 'iPad quer ziffern': 428, 'iPad hoch text': 340, 'iPad hoch ziffern': 340 };   // alle am Gerät gemessen (20.10.; Ziffern hoch 376: Versuch 4)
 let gemerkt = {}; try { gemerkt = JSON.parse(localStorage.getItem('a36.kb') || '{}'); } catch {}
 const tastatur = f => gemerkt[schluessel(f)] ?? SCHAETZUNG[schluessel(f)] ?? R(H * 0.5);
 function layout() { root.classList.toggle('phone', phone()); root.classList.toggle('ipad', !phone()); root.classList.toggle('quer', quer()); }
@@ -127,7 +127,7 @@ function place() {
   // Kapsel: Heute wie 4.28.0 (innerHeight − top − h), V1 Bildschirmhöhe − top − h
   root.style.setProperty('--vv-bottom', Math.max(0, R((V === 'heute' ? innerHeight : hoehe()) - top - h)) + 'px');
   const max = phone() ? h : h - 20;
-  root.style.setProperty('--dlg-max', Math.max(200, V === 'v1' && !phone() && fensterHoehe ? Math.min(max, fensterHoehe) : max) + 'px');
+  root.style.setProperty('--dlg-max', Math.max(200, V !== 'heute' && !phone() && fensterHoehe ? Math.min(max, fensterHoehe) : max) + 'px');
   layout();
   if (!dlg.open) return;
   if (phone()) { dlg.style.margin = '0'; dlg.style.top = R(top) + 'px'; dlg.style.bottom = 'auto'; return; }
@@ -135,7 +135,7 @@ function place() {
   const jetzt = parseFloat(dlg.style.top), ganz = jetzt >= top + 10 - 1 && jetzt + dlg.offsetHeight <= top + h - 10 + 1;
   // V1: ganz sichtbar über der Tastatur nicht bewegen – auch nach der Tastatur-Taste, solange ein Feld im Fenster den Fokus hat, damit
   // es beim erneuten Antippen in der oberen Hälfte bleibt (6c 4)
-  if (V === 'v1' && (offen() || dlg.contains(document.activeElement) && document.activeElement.matches('input, textarea')) && ganz) return;
+  if (V !== 'heute' && (offen() || dlg.contains(document.activeElement) && document.activeElement.matches('input, textarea')) && ganz) return;
   dlg.style.top = R(top + Math.max(10, (h - dlg.offsetHeight) / 2)) + 'px';
 }
 const behaelter = f => f.closest('.dkörper, .rolle');
@@ -155,10 +155,10 @@ function knapp(c) {
 
 // ---------- Messung (vor allen anderen Hörern: Lage vor dem Ausgleich) ----------
 // bleibt über Neuladen erhalten (sessionStorage); am Gerät wird nichts bewertet – nur aufgenommen
-let alt = null; try { alt = JSON.parse(sessionStorage.getItem('a36.messung4') || 'null'); } catch {}
+let alt = null; try { alt = JSON.parse(sessionStorage.getItem('a36.messung5') || 'null'); } catch {}
 const zeilen = alt?.zeilen || [], start = alt?.start || Date.now();
 if (alt) zeilen.push(`${Date.now() - start} # neu geladen`);
-const sichere = () => { try { sessionStorage.setItem('a36.messung4', JSON.stringify({ zeilen: zeilen.slice(-20000), start })); } catch {} };
+const sichere = () => { try { sessionStorage.setItem('a36.messung5', JSON.stringify({ zeilen: zeilen.slice(-20000), start })); } catch {} };
 addEventListener('pagehide', sichere);
 let oeffnet = false;   // showModal setzt den Fokus, bevor das Fenster steht – diese Lage nicht aufzeichnen (Messartefakt der 2. Fassung)
 const sicht = s => { const e = $(s); return e && e.getClientRects().length ? e.getBoundingClientRect() : null; };
@@ -188,7 +188,7 @@ function bald() { clearTimeout(bald.t); bald.t = setTimeout(() => { $('#zaehler'
 
 // ---------- Ausgleich bei jeder Meldung und Tastaturhöhe merken ----------
 function gemeldet() {
-  const vorH = $('#rolle').scrollTop, vorD = $('#dkoerper').scrollTop, d = $('#dlg'), ipadFenster = d.open && !phone() && V === 'v1';
+  const vorH = $('#rolle').scrollTop, vorD = $('#dkoerper').scrollTop, d = $('#dlg'), ipadFenster = d.open && !phone() && V !== 'heute';
   // V1: das iPad-Fenster gleitet mit der Tastatur in die Mitte des sichtbaren Bereichs bzw. zurück
   if (ipadFenster) { d.classList.add('gleitet'); clearTimeout(gemeldet.t); gemeldet.t = setTimeout(() => d.classList.remove('gleitet'), 300); }
   // vor dem Wachsen des Rahmens Platz geben, sonst kürzt der Browser den Rollstand und der Inhalt rutscht zurück
@@ -203,41 +203,40 @@ function gemeldet() {
     insBild(f, vv.height);
   }
   if (!offen()) H = hoehe();
+  // V2: Tastatur-Taste (iPad) schließt nur die Tastatur – das Feld gibt den Fokus ab, damit erneutes Antippen ein gewöhnliches ist
+  // (nur beim Übergang offen → zu; mit Hardware-Tastatur öffnet sich nie eine, dann bleibt der Fokus)
+  if (V !== 'heute' && gemeldet.offen && !offen() && f?.matches('input, textarea')) f.blur();
+  gemeldet.offen = offen();
 }
 vv.addEventListener('resize', () => requestAnimationFrame(gemeldet));
 vv.addEventListener('scroll', () => requestAnimationFrame(gemeldet));
 addEventListener('resize', () => { if (!offen()) H = hoehe(); place(); zeile('lage ' + lage()); bald(); });
 
-// ---------- V1: Antippen eines Felds abfangen (Ende der Berührung, vor dem Fokus) ----------
-let beruehrung = null;
-document.addEventListener('touchstart', e => { const t = e.touches[0]; beruehrung = { x: t.clientX, y: t.clientY, z: performance.now() }; }, { passive: true, capture: true });
-// Abgefangen wird nur, wenn das Feld bewegt werden muss; sonst bleibt die Berührung bei Safari (6c 1: am iPad ging der Fokus 6-mal
-// verloren – jedes Mal abgefangen, ohne etwas zu bewegen, und vorher hatte eine Schaltfläche oder ein Feld bei geschlossener Tastatur
-// den Fokus; mit Bewegung bzw. vorher Fokus beim Fenster nie). Bei geschlossener Tastatur wird der alte Fokus vorher gelöst (wie im
-// Fall, der immer ging); das gilt auch für das erneute Antippen des Felds mit Fokus nach der Tastatur-Taste (6c 4).
-document.addEventListener('touchend', e => {
-  const b = beruehrung, f = e.target; beruehrung = null;
-  if (V !== 'v1' || !b || !f.matches?.('input, textarea') || (f === document.activeElement && offen())) return;
-  const t = e.changedTouches[0];
-  if (Math.hypot(t.clientX - b.x, t.clientY - b.y) > 10 || performance.now() - b.z > 600) return;   // gewischt bzw. lange gedrückt
-  const n = noetig(f);
-  zeile(`berührung ${f.id} ${n > 0 ? 'abgefangen ' + R(n) : 'bei Safari'}`);
-  if (n <= 0) return;
-  e.preventDefault();
-  if (!offen()) document.activeElement?.blur();
-  vorbereiten(f, n);
-  f.focus({ preventScroll: true });
-  try { const k = f.value.length; f.setSelectionRange(k, k); } catch {}
-}, { passive: false, capture: true });
-// V1: obere Hälfte – die Mitte des Felds höchstens 24 px über der Mitte des künftig sichtbaren Bereichs, nie über dem oberen Rand
-// seines Bereichs (+4 px). Liefert, wie weit der Inhalt rollen muss (≤ 0: nichts). Das iPad-Fenster bleibt dabei stehen (es gleitet
-// erst mit der Tastatur).
+// ---------- V2: sobald ein Feld den Fokus hat, sofort in die obere Hälfte rollen (die Berührung bleibt bei Safari) ----------
+// Die Mitte des Felds höchstens 24 px über der Mitte des künftig sichtbaren Bereichs, nie über dem oberen Rand seines Bereichs
+// (+4 px). Liefert, wie weit der Inhalt rollen muss (≤ 0: nichts). Das iPad-Fenster bleibt dabei stehen (es gleitet mit der Tastatur).
 function noetig(f) {
   const c = behaelter(f); if (!c) return 0;
   const kb = offen() ? R(hoehe() - vv.height) : tastatur(f), sichtbar = offen() ? vv.height : H - kb;
   const r = f.getBoundingClientRect(), b = c.getBoundingClientRect();
   return (r.top + r.bottom) / 2 - Math.max(b.top + 4 + r.height / 2, sichtbar / 2 - 24);
 }
+document.addEventListener('focusin', e => {
+  const f = e.target;
+  if (V === 'heute' || !f.matches?.('input, textarea')) return;
+  const n = noetig(f);
+  zeile(`vorbereitet ${f.id} ${n > 0 ? R(n) : 0}`);
+  if (n > 0) { vorbereiten(f, n); gerollt = { f, t: performance.now() }; }
+}, true);
+// Safaris Klick kommt nach dem Fokus an derselben Stelle – dort liegt nach dem Rollen etwas anderes (in einer App womöglich eine
+// Schaltfläche): diesen einen Klick unterdrücken, wenn er nicht das Feld trifft
+let gerollt = null;
+addEventListener('click', e => {
+  const g = gerollt; gerollt = null;
+  if (!g || performance.now() - g.t > 1000 || e.target === g.f) return;
+  e.preventDefault(); e.stopImmediatePropagation();
+  zeile(`klick unterdrückt ${e.target.id || e.target.tagName} (Feld ${g.f.id})`);
+}, true);
 function vorbereiten(f, n) {
   const c = behaelter(f), kb = offen() ? R(hoehe() - vv.height) : tastatur(f), sichtbar = offen() ? vv.height : H - kb;
   platz(c, kb + sichtbar);   // reichlich – nach dem Rollen wieder knapp
@@ -255,16 +254,16 @@ $('#suchknopf').onclick = () => { root.classList.toggle('mitsuche'); place(); ba
 $('#hoch').onclick = () => $('#rolle').scrollTo({ top: 0, behavior: 'smooth' });
 $('#runter').onclick = () => $('#rolle').scrollTo({ top: 1e6, behavior: 'smooth' });
 $('#neu').onclick = () => { if (!confirm('Messung löschen und neu beginnen?')) return;
-  zeilen.length = 0; try { sessionStorage.removeItem('a36.messung4'); } catch {} zeile('neu'); bald(); };
+  zeilen.length = 0; try { sessionStorage.removeItem('a36.messung5'); } catch {} zeile('neu'); bald(); };
 $('#vergessen').onclick = () => { gemerkt = {}; try { localStorage.removeItem('a36.kb'); } catch {} };
 function text() {
   const st = matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
-  return `# A-36 Muster 4 · ${navigator.userAgent} · ${st ? 'Home-Bildschirm' : 'Safari'} · ${screen.width}×${screen.height} · ${new Date().toISOString()}\n` +
+  return `# A-36 Muster 5 · ${navigator.userAgent} · ${st ? 'Home-Bildschirm' : 'Safari'} · ${screen.width}×${screen.height} · ${new Date().toISOString()}\n` +
     `# ${aufgenommen()} Felder angetippt · virtualKeyboard: ${'virtualKeyboard' in navigator ? 'ja' : 'nein'}\n` +
     `t ${Object.keys(werte()).join(' ')}\n` + zeilen.join('\n') + '\n';
 }
 $('#teilen').onclick = async () => {
-  const name = `a36-4-${new Date().toISOString().slice(0, 16).replace(/[:T]/g, '-')}.txt`;
+  const name = `a36-5-${new Date().toISOString().slice(0, 16).replace(/[:T]/g, '-')}.txt`;
   try { await navigator.share({ files: [new File([text()], name, { type: 'text/plain' })] }); }
   catch (e) { if (e.name !== 'AbortError') { try { await navigator.clipboard.writeText(text()); alert('Messung in die Zwischenablage kopiert.'); } catch { alert('Teilen nicht möglich.'); } } }
 };

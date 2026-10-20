@@ -303,6 +303,21 @@ gedreht). `auswerten.mjs` meldet jetzt auch **‚Fokus nach n ms verloren‘** (
   Verschieben beim Anzeigen der Tastatur ab, ~90 ms nach dem Fokus), verschiebt es nicht. Ob das so ist, zeigt nur das Gerät (im Modell
   nicht entscheidbar) → kurzer Versuch mit 3 Handgriffen je Gerät.
 
+## 6f. Muster 5. Fassung (V2, Ja des Nutzers 20.10.2026, Sitzung 0022)
+
+| Fall | V2 | geprüft (Modell, `Muster prüfen.mjs`) |
+|---|---|---|
+| jede Berührung | bleibt bei Safari (nie `preventDefault`) | auf jeden Fokus eines Felds folgt Safaris ‚tippen‘ oder ‚klick unterdrückt‘; gegen Muster 4 rot |
+| Feld bekommt den Fokus (erstes Antippen, Wechsel) | im `focusin` sofort in die obere Hälfte rollen | alle vier Lagen still |
+| Klick nach dem Rollen trifft etwas anderes | genau diesen Klick unterdrücken (in einer App läge dort womöglich eine Schaltfläche) | Zeile ‚klick unterdrückt‘ |
+| Tastatur-Taste (iPad) | Feld gibt den Fokus ab (nur beim Übergang offen → zu; Hardware-Tastatur unberührt) – erneutes Antippen ist gewöhnlich | iPad hoch/quer still |
+| Zifferntastatur iPhone hoch | 376 px (Versuch 4) in Muster und Modell | still |
+| iPhone quer, Fenster | ‚Notiz‘ erreichbar, niedrige Leisten | G-3 Heute rot, V2 erreichbar |
+
+**Annahme, nur am Gerät zu klären:** Safari liest die Lage des Felds erst beim Anzeigen der Tastatur, nicht schon beim Fokus. Stimmt
+sie nicht, verschiebt Safari wie ‚Heute‘ – dann sieht man es in der Messung (‚Safari verschiebt n px‘) und das Modell wird korrigiert.
+**Kurzer Versuch:** iPhone hoch und iPad quer, je: Fenster öffnen → ‚Ort‘ einmal → ‚Notiz‘ → ‚Fertig‘ → ↓ → ‚Gesamtausgaben‘ einmal → teilen.
+
 ## 7. Grenzen
 
 - Was Safari zwischen zwei Bildern zeigt, kennt die Prüfung nur aus dem Modell – deshalb Muster und Messung am Gerät.

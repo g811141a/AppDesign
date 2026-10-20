@@ -1,7 +1,7 @@
-// A-36 · Muster (4. Fassung) vor der Übergabe im Safari-Modell prüfen (Zusammenarbeit 0 Nr. 20 seit 2.15.0, Fall-Liste 6d).
+// A-36 · Muster (5. Fassung) vor der Übergabe im Safari-Modell prüfen (Zusammenarbeit 0 Nr. 20 seit 2.15.0, Fall-Liste 6f).
 //   node "arbeit/A-36 Muster prüfen.mjs" [--nur-chromium] [--muster <Datei>]   – Chromium und WebKit, alle vier Lagen
-// Je Lage genau die Handgriffe des kurzen Versuchs (Anleitung nur im Chat, Fall-Liste 6d); die geteilte Datei wird mit
-// auswerten.mjs bewertet (V1 muss bei jeder Handlung still sein, jede Handlung muss in der Datei stehen), dazu die Bilder des Modells
+// Je Lage genau die Handgriffe des kurzen Versuchs (Anleitung nur im Chat, Fall-Liste 6f); die geteilte Datei wird mit
+// auswerten.mjs bewertet (V2 muss bei jeder Handlung still sein, jede Handlung muss in der Datei stehen), dazu die Bilder des Modells
 // (Lage auf dem Bildschirm, mit Safaris Verschiebung) und ob ‚Notiz‘ bei offener Tastatur im Fenster erreichbar ist (6c c).
 // Gegenproben (müssen rot werden): G-1 eingebauter Sprung der Kopfzeile (50 px, 2 Bilder) bei jeder Meldung von Safari – beim Öffnen
 // und Schließen der Tastatur; G-2 Variante Heute; G-3 Heute iPhone quer: ‚Notiz‘ bei offener Tastatur nicht erreichbar. Die Suche quer (6c a) wird nur berichtet – Entscheidung des Nutzers offen.
@@ -37,7 +37,7 @@ const erreichbar = p => p.evaluate(() => {
   }
   k.scrollTop = y; return { ok, text };
 });
-// der kurze Versuch (Fall-Liste 6d, Anleitung im Chat): erwartete Handlungen in der Auswertung
+// der kurze Versuch (Fall-Liste 6f, Anleitung im Chat): erwartete Handlungen in der Auswertung
 const VERSUCH = ipad => [
   ['Fenster öffnen', p => p.tap('#fenster')],
   ['Ort', p => p.tap('#fPlace'), 'auf fPlace'],
@@ -83,6 +83,9 @@ async function lauf(b, name, { heute = false, gegenprobe = false, ablauf } = {})
   for (const h of handlungen) if (i < erwartet.length && `${h.was} ${h.feld}`.startsWith(erwartet[i])) i++;
   if (i < erwartet.length) fehler.push(`Handlung ‚${erwartet[i]}‘ fehlt in der Datei (gefunden: ${handlungen.map(h => h.was + ' ' + h.feld).join(', ')})`);
   for (const h of handlungen) for (const f of h.fehler) fehler.push(`Auswertung ${h.was} ${h.feld}: ${f}`);
+  // 6e: keine Berührung abfangen – auf jeden Fokus eines Felds durch Antippen folgt Safaris eigenes ‚tippen‘ (Klick) desselben Felds
+  if (!heute) { const z = text.split('\n'), fokus = z.filter(x => / ! focus (f[A-Z]\w*|kosten|such)$/.test(x)).length, tippen = z.filter(x => / ! (tippen (f[A-Z]\w*|kosten|such)|klick unterdrückt .*)$/.test(x)).length;
+    if (tippen < fokus) fehler.push(`Berührung abgefangen: ${fokus} Felder mit Fokus, nur ${tippen}-mal ‚tippen‘ bzw. ‚klick unterdrückt‘ (Safari)`); }
   // Bilder des Modells: Kopf- und Seitenleiste still, Safari verschiebt nie
   const vt = Math.max(0, ...bilder.map(x => x.vt));
   if (vt) fehler.push(`Modell: Safari verschiebt ${vt} px`);
@@ -96,7 +99,7 @@ for (const bn of browser) {
   const b = await pw[bn].launch();
   for (const name of Object.keys(LAGEN)) {
     const r = await lauf(b, name);
-    console.log(`${r.fehler.length ? '✗' : '✓'} ${bn} · ${name} · V1, kurzer Versuch: ${r.fehler.length ? r.fehler.join(' | ') : `${r.handlungen.length} Handlungen still`}`);
+    console.log(`${r.fehler.length ? '✗' : '✓'} ${bn} · ${name} · V2, kurzer Versuch: ${r.fehler.length ? r.fehler.join(' | ') : `${r.handlungen.length} Handlungen still`}`);
     for (const h of [...r.hinweise, ...r.handlungen.map(h => h.text)]) console.log('    ' + h);
     rot += r.fehler.length ? 1 : 0;
   }
