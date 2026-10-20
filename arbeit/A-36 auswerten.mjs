@@ -63,8 +63,12 @@ export function werteAus(m) {
       ende = j;
     }
     const bilder = z.slice(a.i + 1, ende + 1), e = z[ende], f = [];
+    // 6c 1 / 6e: Fokus nach dem Antippen gleich wieder verloren (‚zu‘ desselben Felds innerhalb von 100 ms, Tastatur nie ganz offen)
+    const nach = h[n + 1];
+    const verloren = a.offen && a.was === 'auf' && nach && nach.was === 'zu' && nach.feld === a.feld && z[nach.i].t - r0.t <= 100;
     const vt = Math.max(0, ...bilder.map(b => Math.max(zahl(b.vt) ? b.vt : 0, zahl(b.sy) ? b.sy : 0)));
     const teile = [], E = t => { f.push(t); teile.push('✗ ' + t); };
+    if (verloren) E(`Fokus nach ${z[nach.i].t - r0.t} ms verloren (Tastatur nicht geöffnet – 2× tippen)`);
     if (vt > (zahl(r0.vt) ? r0.vt : 0) + 1) E(`Safari verschiebt ${vt} px`);
     else teile.push(vt ? `Safari bleibt bei ${vt} px` : 'Safari verschiebt nicht');
     for (const [k, name, gleitet] of [['kopf', 'Kopfzeile'], ['side', 'Seitenleiste'], ['dlinks', 'Fenster links'], ['dkopf', 'Fensterkopf', true]]) {
@@ -105,6 +109,10 @@ const ERWARTET = {
   '2026-10-20 15-53 Muster 2 iPad quer Fenster Ort.txt': [
     ['heute', 'auf', 'Safari verschiebt 362 px'], ['heute', 'auf', 'Fenster links springt -327 px'], ['heute', 'zu', 'Kopfzeile springt +362 px'],
     ['heute', 'auf', 'Seitenleiste verschwindet'], ['heute', 'zu', 'Seitenleiste erscheint'], ['v1', 'auf', 'Safari verschiebt nicht'], ['v1', 'auf', 'Fenster links still'], ['lineal', 'auf', '(24 px über der Tastatur)']],
+  '2026-10-20 22-58 Muster 4 iPhone.txt': [
+    ['v1', 'auf', 'Fokus nach 33 ms verloren'], ['v1', 'auf', 'Fokus nach 34 ms verloren'], ['v1', 'wechsel', 'Safari verschiebt nicht']],
+  '2026-10-20 23-01 Muster 4 iPad.txt': [
+    ['v1', 'auf', 'Fokus nach 36 ms verloren'], ['v1', 'auf', 'Fokus nach 35 ms verloren'], ['v1', 'auf', 'Fensterkopf gleitet 127 → 10']],
   '2026-10-20 16-01 Muster 2 iPad hoch Fenster Notiz Ort.txt': [
     ['heute', 'auf', 'Safari verschiebt 340 px'], ['heute', 'auf', 'Seitenleiste springt -340 px'], ['heute', 'wechsel', 'Safari bleibt bei 340 px'],
     ['heute', 'zu', 'Kopfzeile springt +340 px'], ['v1', 'auf', 'Safari verschiebt nicht'], ['v1', 'zu', 'Kopfzeile still']],

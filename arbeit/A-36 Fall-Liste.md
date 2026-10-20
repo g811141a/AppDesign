@@ -282,6 +282,27 @@ schließen → ‚Gesamtausgaben‘ erneut → Tastatur schließen → teilen. D
 und die Suche in der oberen Hälfte über der Tastatur liegen‘ – kommt mit 4.28.1 in Designrichtlinie allgemein 15 und den Regelkatalog
 (eine Prüfung).
 
+## 6e. Vierter Versuch am Gerät (20.10.2026 spät, Muster 4. Fassung) – Auswertung aus den Rohdaten
+
+Dateien `arbeit/A-36 Messungen/2026-10-20 22-58 Muster 4 iPhone.txt` (hoch und quer) und `… 23-01 Muster 4 iPad.txt` (quer, zwischendurch
+gedreht). `auswerten.mjs` meldet jetzt auch **‚Fokus nach n ms verloren‘** (Selbsttest 32/32).
+- **Still:** in keiner Handlung verschiebt Safari, Kopfzeile, Seitenleiste und Fenster bleiben stehen – erstes Antippen, Wechsel bei
+  offener Tastatur (iPhone hoch und quer, iPad), erneutes Antippen nach der Tastatur-Taste (iPad), Gesamtausgaben mit Zifferntastatur.
+  iPad-Fenster gleitet 127 → 10 und **bleibt nach der Tastatur-Taste oben** (wie gewollt). iPhone quer: ‚Notiz‘ bei offener Tastatur
+  erreicht (35–79, 47 px über der Tastatur). Kapsel 16 px über der Tastatur. Das einzige ✗ (Fenster links −180) ist das Drehen.
+- **Neu gemessen:** Zifferntastatur **iPhone hoch 376 px** (sichtbar 436; Modell und Muster nahmen 403 an).
+- **Nicht ok – ‚2× tippen‘ bleibt:** 5 von 11 abgefangenen Berührungen verloren den Fokus nach 33–36 ms (iPhone hoch Ort und
+  Gesamtausgaben, iPhone quer Gesamtausgaben, iPad Ort und Gesamtausgaben) – **auch mit Bewegung** (60–477 px) und auch ohne vorherigen
+  Fokus. Die Vermutung aus 6d (‚nur ohne Bewegung‘) ist damit **widerlegt**. Zusammen mit 6c: 12 von rund 35 abgefangenen Berührungen
+  verloren, **keine einzige** der Berührungen, die Safari selbst behandelte (‚bei Safari‘, ‚focus‘ mit ‚tippen‘). Nach dem Verlust
+  rollte der Inhalt am iPhone um genau den vorbereiteten Betrag zurück (456 bzw. 60 px) – so entsteht auch das Rutschen von
+  ‚Gesamtausgaben‘ (6c 3).
+- **Folgerung:** Abfangen der Berührung (`preventDefault` am Ende der Berührung, eigener Fokus) ist am Gerät nicht verlässlich und
+  scheidet aus. **Vorschlag V2:** die Berührung bleibt immer bei Safari; im Fokus-Ereignis (`focusin`, sofort, vor dem ersten Bild)
+  rollt das Muster das Feld in die obere Hälfte – wenn Safari die Lage des Felds erst danach liest (WebKit fragt die Lage für das
+  Verschieben beim Anzeigen der Tastatur ab, ~90 ms nach dem Fokus), verschiebt es nicht. Ob das so ist, zeigt nur das Gerät (im Modell
+  nicht entscheidbar) → kurzer Versuch mit 3 Handgriffen je Gerät.
+
 ## 7. Grenzen
 
 - Was Safari zwischen zwei Bildern zeigt, kennt die Prüfung nur aus dem Modell – deshalb Muster und Messung am Gerät.
