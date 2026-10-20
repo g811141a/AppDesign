@@ -277,7 +277,10 @@ antippen → ‚Notiz‘ → Tastatur schließen (iPad: Tastatur-Taste) → ‚N
 schließen → ‚Gesamtausgaben‘ erneut → Tastatur schließen → teilen. Die Prüfung spielt genau das in allen vier Lagen durch.
 
 **Entscheidung des Nutzers (20.10.2026, 0022):** kurzer Versuch mit Muster 4 vor dem Bau; **niedrige Leisten quer am iPhone werden
-übernommen** (Kopfzeile und Fensterkopf 32 statt 44 px, wie iOS quer) – kommt in den Bau 4.28.1 / 3.26.1.
+übernommen** (Kopfzeile und Fensterkopf 32 statt 44 px, wie iOS quer) – kommt in den Bau 4.28.1 / 3.26.1. **Als allgemeine Regel**
+(Zusammenarbeit 0 Nr. 4, Ja des Nutzers): ‚iPhone quer: Kopfzeile und Fensterkopf niedrig (32 px, wie iOS quer), damit Felder darunter
+und die Suche in der oberen Hälfte über der Tastatur liegen‘ – kommt mit 4.28.1 in Designrichtlinie allgemein 15 und den Regelkatalog
+(eine Prüfung).
 
 ## 7. Grenzen
 
