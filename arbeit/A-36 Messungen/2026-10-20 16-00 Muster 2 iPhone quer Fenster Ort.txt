@@ -1,0 +1,57 @@
+# A-36 Muster 2 · Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.6.2 Mobile/15E148 Safari/604.1 · Home-Bildschirm · 402×874 · 2026-10-20T16:00:11.327Z
+# virtualKeyboard: nein · viewport: width=device-width, initial-scale=1, viewport-fit=cover
+t vh vt sy ih ch kopf side dkopf dlinks kapsel sonde fokus ft fb v
+359982 402 0 0 402 402 0 - - - 366 402 - - - lineal ! neu
+360984 402 0 0 402 402 0 - - - 366 402 - - - heute ! variante heute
+363086 402 0 0 402 402 0 - - - 366 402 - - - heute ! tippen fenster
+363089 402 0 0 402 402 0 - 0 0 366 402 dlgX - - heute ! focus dlgX
+364857 402 0 0 402 402 0 - 0 0 366 402 - - - heute ! blur dlgX
+364860 402 0 0 402 402 0 - 0 0 366 402 fPlace 253 297 heute ! focus fPlace
+364862 402 0 0 402 402 0 - 0 0 366 402 fPlace 253 297 heute ! tippen fPlace
+364967 126 0 0 402 402 0 - 0 0 366 402 fPlace 253 297 heute ! vv resize
+364983 126 212 212 190 402 -212 - -212 0 -102 190 fPlace -146 -102 heute ! vv scroll
+365000 126 212 212 190 402 0 - 0 0 154 190 fPlace 66 110 heute
+# Ergebnis Heute · Tastatur auf · fPlaceSafari verschiebt 212 px ✗ · Kopfzeile springt bis -212 px (1 Bilder) ✗ · Fensterkopf springt bis -212 px (1 Bilder) ✗ · Fenster links still ✓ · Kapsel -28 px über der Tastatur ✗ · Feld 16 px über der Tastatur ✓ · Tastatur 276 px (keine Annahme) · beim Fokus: Feld 253–297 px, -171 px über der Tastatur, Mitte des Felds 212 px unter der Mitte
+366761 126 212 212 190 402 0 - 0 0 154 190 - - - heute ! blur fPlace
+366761 126 212 212 190 402 0 - 0 0 154 190 dlg - - heute ! focus dlg
+366761 126 212 212 190 402 0 - 0 0 154 190 dlg - - heute ! tippen dlgOk
+366761 126 212 212 190 402 0 - 0 0 154 190 - - - heute ! blur dlg
+366795 126 212 212 190 402 0 - - - 154 190 - - - heute
+366821 402 0 0 402 402 212 - - - 366 402 - - - heute ! vv resize
+366821 402 0 0 402 402 212 - - - 366 402 - - - heute ! vv scroll
+366838 402 0 0 402 402 0 - - - 366 402 - - - heute
+# Ergebnis Heute · Tastatur zu · fPlaceSafari verschiebt nicht ✓ · Kopfzeile springt bis 0 px (1 Bilder) ✗
+368245 402 0 0 402 402 0 - - - 366 402 - - - v1 ! variante v1
+369512 402 0 0 402 402 0 - - - 366 402 - - - v1 ! tippen fenster
+369516 402 0 0 402 402 0 - 212 0 366 402 dlgX - - v1 ! focus dlgX
+369521 402 0 0 402 402 0 - 0 0 366 402 dlgX - - v1
+372413 402 0 0 402 402 0 - 0 0 366 402 - - - v1 ! blur dlgX
+372417 402 0 0 402 402 0 - 0 0 366 402 fPlace 67 111 v1 ! focus fPlace
+372526 126 0 0 402 402 0 - 0 0 366 402 fPlace 67 111 v1 ! vv resize
+372543 126 0 0 402 402 0 - 0 0 110 402 fPlace 66 110 v1
+# Ergebnis V1 · Tastatur auf · fPlaceSafari verschiebt nicht ✓ · Kopfzeile still ✓ · Fensterkopf still ✓ · Fenster links still ✓ · Kapsel 16 px über der Tastatur ✓ · Feld 16 px über der Tastatur ✓ · Tastatur 276 px (angenommen 276) · beim Fokus: Feld 67–111 px, 15 px über der Tastatur, Mitte des Felds 26 px unter der Mitte
+375101 126 0 0 402 402 0 - 0 0 110 402 - - - v1 ! blur fPlace
+375101 126 0 0 402 402 0 - 0 0 110 402 dlg - - v1 ! focus dlg
+375102 126 0 0 402 402 0 - 0 0 110 402 dlg - - v1 ! tippen dlgOk
+375102 126 0 0 402 402 0 - 0 0 110 402 - - - v1 ! blur dlg
+375135 126 0 0 402 402 0 - - - 110 402 - - - v1
+375160 402 0 0 402 402 0 - - - 110 402 - - - v1 ! vv resize
+375177 402 0 0 402 402 0 - - - 366 402 - - - v1
+# Ergebnis V1 · Tastatur zu · fPlaceSafari verschiebt nicht ✓ · Kopfzeile still ✓
+376430 402 0 0 402 402 0 - - - 366 402 - - - lineal ! variante lineal
+377613 402 0 0 402 402 0 - - - 366 402 - - - lineal ! tippen fenster
+377617 402 0 0 402 402 0 - 0 0 366 402 dlgX - - lineal ! focus dlgX
+379388 402 0 0 402 402 0 - 0 0 366 402 - - - lineal ! blur dlgX
+379391 402 0 0 402 402 0 - 0 0 366 402 fPlace 26 70 lineal ! focus fPlace
+379502 126 0 0 402 402 0 - 0 0 366 402 fPlace 26 70 lineal ! vv resize
+379519 126 0 0 402 402 0 - 0 0 110 402 fPlace 75 119 lineal
+# Ergebnis Lineal · Tastatur auf · fPlaceSafari verschiebt nicht ✓ · Kopfzeile still ✓ · Fensterkopf still ✓ · Fenster links still ✓ · Kapsel 16 px über der Tastatur ✓ · Feld 7 px über der Tastatur ✓ · Tastatur 276 px (angenommen 276) · Lineal: Abstand 56 px gewollt · beim Fokus: Feld 26–70 px, 56 px über der Tastatur, Mitte des Felds -15 px unter der Mitte
+381951 126 0 0 402 402 0 - 0 0 110 402 - - - lineal ! blur fPlace
+381951 126 0 0 402 402 0 - 0 0 110 402 dlg - - lineal ! focus dlg
+381951 126 0 0 402 402 0 - 0 0 110 402 dlg - - lineal ! tippen dlgOk
+381951 126 0 0 402 402 0 - 0 0 110 402 - - - lineal ! blur dlg
+381983 126 0 0 402 402 0 - - - 110 402 - - - lineal
+382007 402 0 0 402 402 0 - - - 110 402 - - - lineal ! vv resize
+382024 402 0 0 402 402 0 - - - 366 402 - - - lineal
+# Ergebnis Lineal · Tastatur zu · fPlaceSafari verschiebt nicht ✓ · Kopfzeile still ✓
+385509 402 0 0 402 402 0 - - - 366 402 - - - lineal ! tippen teilen

@@ -44,9 +44,10 @@
 // - S-5 (Muster A-36, 20.10.2026): Safari verschiebt nur, wenn das Feld weniger als ABSTAND über der Tastatur endet, dann bis zur
 //   Mitte. Der Schub quer (A-27 3, 21 px) folgt aus derselben Regel (Suche 62–106 px, sichtbar 126 → Mitte 20 px) und ist kein
 //   eigener Wert mehr. iPad hoch: Tastatur 340 px (gemessen, Muster V3).
-//   ABSTAND gemessen (Muster 2. Fassung, Lineal, 20.10.2026 15:53/15:54): 24 px darüber → nichts (iPhone hoch und iPad quer, Fenster
-//   ‚Ort‘); 20 px (iPhone quer, Suche) → verschoben; 80 px (iPad hoch) → nichts. Die Grenze liegt über 20 und höchstens bei 24 px.
-//   Mitte bestätigt: iPhone hoch Ort 400–444 bei sichtbar 409 → 218 (gemessen 218), iPad quer Ort 527–571 bei 374 → 362 (gemessen 362).
+//   ABSTAND gemessen (Muster 2. Fassung, 20.10.2026, arbeit/A-36 Messungen/): Felder im Fenster 15 px (iPhone quer), 24 px (iPhone
+//   hoch, iPad quer) und 40–80 px darüber → nichts; nur die Suche der Kopfzeile quer (0019) bei 20 px → verschoben. 24 = sichere
+//   Seite, bis die Suche im Muster gemessen ist. Mitte bestätigt: 218 (iPhone hoch), 212 (quer), 362 (iPad quer); 340 iPad hoch
+//   = ganzer Raum (Mitte wäre 399).
 export const ABSTAND = 24;
 export const SAFARI = {
   'iPhone hoch': { tastatur: 403, fokusRollen: -120, fokusSchub: 0 },

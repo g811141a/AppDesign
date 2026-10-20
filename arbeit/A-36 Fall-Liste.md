@@ -124,38 +124,48 @@ Lage des Felds mit Fokus. Varianten **Heute · V1 · Lineal**:
 
 ## 6a. Zweiter Versuch am Gerät (20.10.2026, Muster 2. Fassung) – Auswertung Sitzung 0021
 
-Messungen: `arbeit/A-36 Messungen/` (iPhone hoch und iPad quer, beide Home-Bildschirm, je Fenster → ‚Ort‘ mit Heute, V1 und Lineal;
-Tastatur jeweils mit ‚Fertig‘ geschlossen, also zusammen mit dem Fenster). Nicht im Ordner `tests/messungen/` – anderes Format.
+Messungen: `arbeit/A-36 Messungen/` (vier Dateien, alle Home-Bildschirm, je Fenster mit Heute, V1 und Lineal; Tastatur jeweils mit
+‚Fertig‘ geschlossen, also zusammen mit dem Fenster). Nicht im Ordner `tests/messungen/` – anderes Format. Jedes Bild geprüft.
 
-| Gerät | Variante | Safari verschiebt | Kopfzeile / Seitenleiste / Fensterkopf | Fenster links | Kapsel | Modell (ABSTAND 24) |
+| Gerät | Variante · Feld | Feld beim Fokus (Abstand zur Tastatur) | Safari verschiebt | Leisten (Kopf / Seite / Fensterkopf) | Fenster links | Kapsel |
 |---|---|---|---|---|---|---|
-| iPhone hoch | Heute | 218 (Ort 400–444, Mitte) | −218 beim Öffnen, +218 beim Schließen (je 1 Bild) | – | 135 px unter der Tastatur | 210 (Feld in Chromium 8 px höher) |
-| iPhone hoch | V1 | nichts (Ort vorher 159–203) | still | – | 16 px darüber | still |
-| iPhone hoch | Lineal 24 | **nichts** | still | – | 16 px darüber | still (mit 80: −160) |
-| iPad quer | Heute | 362 (Ort 527–571, Mitte) | −362 / −362 / Fensterkopf 127 → −235; beim Schließen +362 | **327 → 0** | 30 px unter der Tastatur | 359 |
-| iPad quer | V1 | nichts (Fenster 127 → 10, Ort 141–185) | still | 327 still | 16 px darüber | still |
-| iPad quer | Lineal 24 | **nichts** | still | 327 still | 16 px darüber | still (mit 80: −142) |
+| iPhone hoch | Heute · Ort | 400–444 (−35) | **218** = Mitte | −218 auf, +218 zu (je 1–2 Bilder) | – | 135 px unter der Tastatur |
+| iPhone hoch | V1 · Ort | 159–203 (206) | nichts | still | – | 16 px darüber |
+| iPhone hoch | Lineal · Ort | 341–385 (**24**) | **nichts** | still | – | 16 px darüber |
+| iPhone quer | Heute · Ort | 253–297 (−171) | **212** = Mitte | −212 auf, +212 zu | – | 28 px unter der Tastatur |
+| iPhone quer | V1 · Ort | 67–111 (**15**) | **nichts** | still | – | 16 px darüber |
+| iPhone quer | Lineal · Ort | 26–70 (56) | nichts | still; danach rollt der Inhalt 49 px (nur Lineal) | – | 16 px darüber |
+| iPad quer | Heute · Ort | 527–571 (−197) | **362** = Mitte | −362 / −362 / 127 → −235; zu +362 | **327 → 0** | 30 px unter der Tastatur |
+| iPad quer | V1 · Ort | 141–185 (189) | nichts | still (Fenster beim Antippen 127 → 10) | 327 still | 16 px darüber |
+| iPad quer | Lineal · Ort | 306–350 (**24**) | **nichts** | still | 327 still | 16 px darüber |
+| iPad hoch | Heute · Notiz | 788–832 (−10) | **340** = ganzer Raum (Mitte wäre 399) | −340 / −340 / 307 → −33; zu +340 | 147 still | 36 px darüber |
+| iPad hoch | V1 · Ort | 365–409 (413) | nichts | still (Fenster beim Antippen **307 → 10**) | 147 still | 16 px darüber |
+| iPad hoch | Lineal · Ort | 410–454 (368) | nichts | still | 147 still | 16 px darüber |
 
-- **Bestätigt:** S-1 ‚bis zur Mitte‘ (218 und 362 genau), S-3 (`innerHeight` = Höhe − `scrollY`: 594, 440), Kapsel-Fehler
-  (`--vv-bottom`), `isPhone()` schiebt das iPad-Fenster an den linken Rand (P-60/5), Tastatur 403 bzw. 428 px. V1 still beim Öffnen
-  und Schließen (iPhone hoch, iPad quer).
-- **Korrigiert (0 Nr. 20): `ABSTAND` 80 → 24** – 24 px über der Tastatur verschiebt Safari nicht (beide Geräte), 20 px (quer, Suche
-  62–106) schon: die Grenze liegt über 20 und höchstens bei 24 px. Prüfung `ablauf-tastatur-still.mjs` gegen 3.26.0 weiter rot
-  (59 Fehler, Chromium und WebKit).
-- **Fehler im Muster (Claude):** die Bewertung ‚Tastatur zu‘ beginnt erst 50 ms nach dem Verlassen des Felds; liegt die Meldung von
-  Safari davor, fehlt der Sprung (iPad Heute: ‚still ✓‘, die Zeilen zeigen Kopfzeile +362), oder er wird vom gesprungenen Bild aus
-  gemessen (iPhone Heute: ‚bis 0 px‘ statt +218). Die Rohzeilen stimmen; ausgewertet wurde aus den Zeilen.
-- **Nur Messartefakt:** beim Öffnen des Fensters steht der Fensterkopf in der Zeile ‚focus dlgX‘ noch an der alten Stelle (218 bzw.
-  362 bzw. 10) – `showModal` setzt den Fokus, bevor `place()` das Fenster stellt; im nächsten Bild richtig, nie gezeichnet.
-- **Auffällig, nicht gemessen:** Kapsel (Pfeile) springt beim Öffnen und Schließen sofort an die neue Stelle, während die Tastatur
-  noch gleitet (1 Bild unter bzw. über der Tastatur); iPad-Fenster rückt beim Antippen ohne Übergang 117 px hoch.
-- **Im Modell gefunden (am Gerät noch nicht gemessen):** (a) **iPad V1, Tastatur zu bei offenem Fenster:** das Fenster gleitet nicht
-  zurück in die Mitte, sondern wird fast bildschirmhoch (oben 20 statt 132, hoch 20 statt 312) – der Platz unter dem Inhalt wächst
-  mit der Höhe des Fensters. Abhilfe: Fensterhöhe beim Schließen wie vor dem Antippen. (b) **iPhone quer im Fenster:** V1 stellt Ort
-  auf 73–115 (11 px über der Tastatur, 8 px Rand unter dem Fensterkopf 57 px) → Safari verschiebt 23 px; das Lineal (24) zeigt, dass
-  58–102 knapp reichen würde (0 bis 4 px Reserve).
-- **Noch nicht gemessen:** Tastatur schließen bei offenem Fenster, Feld im Inhalt (Gesamtausgaben), Suche, iPhone quer, iPad hoch,
-  Lineal unter 24 px.
+- **Bestätigt (Modell stimmt):** S-1 ‚bis zur Mitte, höchstens um den ganzen Raum‘ viermal genau (218, 212, 362; 340 begrenzt),
+  S-3 (`innerHeight` = Höhe − `scrollY`), Kapsel-Fehler `--vv-bottom` (Heute: 135, 28 und 30 px unter der Tastatur), `isPhone()`
+  schiebt das iPad-Fenster quer an den linken Rand (hoch nicht: `innerHeight` bleibt 822 ≥ 500), Tastatur 403 / 276 / 428 / 340 px.
+- **V1 still beim Öffnen und Schließen in allen vier Lagen** (Schließen zusammen mit dem Fenster). Offene Frage aus 0020 – iPhone quer
+  im Fenster – am Gerät geklärt: V1 stellt Ort 15 px über die Tastatur, Safari verschiebt **nicht**.
+- **Abstand (S-5):** im Fenster verschiebt Safari bei 15, 24, 40–80 px nicht; nur das **Suchfeld der Kopfzeile** (Reiselogbuch
+  3.25.1, quer, 0019) wurde bei 20 px verschoben (21 px). Eine einzige Grenze erklärt das nicht – entweder gilt für die Suche
+  (`type=search`, feste Kopfzeile) etwas anderes, oder die Messung 0019 hatte eine andere Ursache. **Modell: `ABSTAND` 80 → 24**
+  (sichere Seite: alles darüber nie verschoben); am Gerät zu klären mit der Suche im Muster quer.
+  `ablauf-tastatur-still.mjs` gegen 3.26.0 weiter rot (59 Fehler, Chromium und WebKit).
+- **Fehler im Muster (Claude):** die Bewertung ‚Tastatur zu‘ beginnt erst 50 ms nach dem Verlassen des Felds; die Meldung von Safari
+  liegt oft davor – der Sprung fehlt (‚still ✓‘, die Zeilen zeigen +362 bzw. +340) oder wird vom gesprungenen Bild aus gemessen
+  (‚bis 0 px‘ statt +218 bzw. +212). Die Rohzeilen stimmen; ausgewertet wurde aus den Zeilen.
+- **Nur Messartefakt:** beim Öffnen des Fensters steht der Fensterkopf in der Zeile ‚focus dlgX‘ noch an der alten Stelle –
+  `showModal` setzt den Fokus, bevor `place()` das Fenster stellt; im nächsten Bild richtig, nie gezeichnet.
+- **Schwächen von V1 (für den Bau):**
+  1. **iPad-Fenster springt beim Antippen ohne Übergang hoch** (quer 117 px, hoch 297 px) – hoch unnötig: Ort läge ohne V1 etwa
+     71 px über der Tastatur, Safari hätte nichts verschoben. Besser: nur so weit wie nötig (≥ ABSTAND + Reserve), und das Fenster
+     gleitet (0,25 s) – wie die Formularblätter von iPadOS.
+  2. **Kapsel** springt beim Öffnen und Schließen sofort an die neue Stelle, während die Tastatur noch gleitet (1 Bild).
+  3. **Im Modell: iPad, Tastatur zu bei offenem Fenster** – das Fenster wird fast bildschirmhoch (oben 20 statt 132 bzw. 312), weil
+     der Platz unter dem Inhalt mit dem Fenster wächst. Abhilfe: Fensterhöhe wie vor dem Antippen. Am Gerät nicht gemessen.
+- **Noch nicht gemessen:** Tastatur schließen bei offenem Fenster, Feld wechseln mit V1, Feld im Inhalt (Gesamtausgaben), Suche
+  (vor allem quer), Lineal unter 24 px.
 
 ## 7. Grenzen
 
