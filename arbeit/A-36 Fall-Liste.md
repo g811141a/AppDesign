@@ -276,8 +276,8 @@ Auswertung korrigiert: bei der Tastatur-Taste begann die nächste Handlung eine 
 antippen → ‚Notiz‘ → Tastatur schließen (iPad: Tastatur-Taste) → ‚Notiz‘ erneut → ‚Fertig‘ → ↓ → ‚Gesamtausgaben‘ → Tastatur
 schließen → ‚Gesamtausgaben‘ erneut → Tastatur schließen → teilen. Die Prüfung spielt genau das in allen vier Lagen durch.
 
-**Offen (Nutzer entscheidet):** niedrige Leisten quer am iPhone übernehmen (HIG: iOS-Leisten sind quer niedriger) oder 9 px bei der
-Suche quer hinnehmen.
+**Entscheidung des Nutzers (20.10.2026, 0022):** kurzer Versuch mit Muster 4 vor dem Bau; **niedrige Leisten quer am iPhone werden
+übernommen** (Kopfzeile und Fensterkopf 32 statt 44 px, wie iOS quer) – kommt in den Bau 4.28.1 / 3.26.1.
 
 ## 7. Grenzen
 
