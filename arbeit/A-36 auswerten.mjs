@@ -29,9 +29,16 @@ export function lies(text) {
 }
 
 // Handlungen finden: focus auf ein Feld bzw. blur eines Felds, nach dem 100 ms lang kein Feld den Fokus bekommt
+// iPad: die Tastatur-Taste schließt die Tastatur, das Feld behält den Fokus – dann zählt die Meldung (sichtbare Höhe wächst) als
+// ‚zu‘, und ein erneutes Antippen desselben Felds (Höhe schrumpft ohne neuen Fokus) als ‚auf‘
 function handlungen(z) {
   const h = [];
   z.forEach((r, i) => {
+    const vor = z[i - 1];
+    if (vor && /^vv resize/.test(r.ereignis) && FELD.test(String(r.fokus)) && zahl(r.vh) && zahl(vor.vh)) {
+      if (r.vh - vor.vh > 80 && h.length && h.at(-1).offen) { h.push({ i: i - 1, was: 'zu', feld: r.fokus + ' (Tastatur-Taste)', offen: false }); return; }
+      if (vor.vh - r.vh > 80 && h.length && !h.at(-1).offen && h.at(-1).feld.startsWith(r.fokus)) { h.push({ i: i - 1, was: 'auf', feld: r.fokus + ' (erneut)', offen: true }); return; }
+    }
     const [art, id] = r.ereignis.split(' ');
     if (!FELD.test(id || '')) return;
     if (art === 'focus') h.push({ i, was: h.length && h.at(-1).offen ? 'wechsel' : 'auf', feld: id, offen: true });

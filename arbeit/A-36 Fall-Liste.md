@@ -209,6 +209,29 @@ Fenster nicht → Modell nach dem Gerät korrigiert: **`ABSTAND_FENSTER` 15** f�
 **Nur am Gerät (Prüfliste):** ob die Kapsel mit der Tastatur mitgeht oder vorausspringt; ob das Gleiten des iPad-Fensters zur Tastatur
 passt; Pfeile ∧ ∨ über der Tastatur (Safari wählt das Feld, kein Antippen) – nicht im Versuch.
 
+## 6c. Dritter Versuch am Gerät (20.10.2026 abends, Muster 3. Fassung) – Auswertung aus den Rohdaten
+
+Dateien `arbeit/A-36 Messungen/2026-10-20 21-56 Muster 3 iPhone (Heute).txt` und `… 22-06 Muster 3 iPad.txt`;
+`auswerten.mjs` erkennt jetzt auch die Tastatur-Taste des iPad (Tastatur zu, Feld behält den Fokus).
+- **iPhone lief in ‚Heute‘, nicht in V1:** das Symbol auf dem Home-Bildschirm startet mit der alten Adresse `?v=heute`; die Anleitung
+  im Muster zeigte nur ‚Variante Heute – tippe V1‘ (Fehler Claude: V1 hätte erzwungen bzw. im Chat genannt werden müssen).
+  Trotzdem neu gelernt: (a) **Suche quer** 50–94 bei sichtbar 126 (32 px darüber) → Safari verschiebt 9 px (= Mitte); (b) **Feld
+  wechseln bei offener Tastatur** (Notiz 24 px darüber, hoch) → Safari verschiebt weiter bis zum Raum (403); (c) **iPhone quer im
+  Fenster ist ‚Notiz‘ mit offener Tastatur nicht erreichbar** (Heute = 4.28.0: der Fensterinhalt rollt nur ~35 px, Notiz bleibt unter
+  der Tastatur – Nutzer: ‚Feld kann nicht angeklickt werden‘) – Fehler auch im Reiselogbuch 3.26.0 zu vermuten.
+- **iPad (V1, beide Lagen, alle Schritte):** Öffnen, Schließen, Suche und Inhalt meist still; das Fenster gleitet sauber
+  (93 → 10 in 15 Bildern, zurück ebenso). **Neue Fehler von V1:**
+  1. **Erstes Antippen eines Felds im Fenster öffnet die Tastatur oft nicht** – Fokus nach 35 ms zurück ans Fenster (‚blur fPlace,
+     focus dlg‘), erst das zweite Antippen wirkt (6-mal). In der 2. Fassung nicht aufgetreten; Ursache offen (Abfangen der Berührung).
+  2. **Feld wechseln bei offener Tastatur:** Notiz 296–340 (34 px darüber) → **Safari verschiebt 132 px** (= Mitte), Leisten springen.
+     Die Regel ‚32 px genügen‘ gilt nur beim ersten Öffnen im Fenster; beim Wechseln zentriert Safari schon bei 34 px.
+  3. **Gesamtausgaben iPad quer:** nach dem Öffnen rutscht das Feld von 299–343 auf 618–662 – unter die Tastatur (Ursache offen, im
+     Modell nicht nachgebildet).
+  4. **Erneutes Antippen nach der Tastatur-Taste** (Feld hat noch den Fokus): V1 bereitet nicht vor → Safari verschiebt 428 px.
+- **Folgerung:** ‚nur so weit wie nötig‘ ist zu knapp – sicher ist die **obere Hälfte** (2. Fassung, in allen vier Lagen still),
+  beim Wechseln und erneuten Antippen ebenso; die Suche quer braucht eine niedrigere Kopfzeile (iOS quer: kompakte Leiste) oder
+  9 px bleiben. Das Modell kennt (b), (2), (3) und (4) noch nicht.
+
 ## 7. Grenzen
 
 - Was Safari zwischen zwei Bildern zeigt, kennt die Prüfung nur aus dem Modell – deshalb Muster und Messung am Gerät.
