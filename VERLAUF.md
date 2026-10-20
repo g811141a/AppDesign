@@ -1868,3 +1868,6 @@ Abstand bis zur Mitte. Nutzer: ‚Bitte intensiv nachbessern.‘ → Muster 2. F
 quer im Fenster, 15 px ohne Verschieben), ‚bis zur Mitte‘ viermal bestätigt, Modell `ABSTAND` 80 → 24. Fehler im Muster: Auswertung
 ‚Tastatur zu‘ 50 ms zu spät, Fälle fehlten. Nutzer: ‚Woran liegt es, dass du nicht einmal eine Messung sauber hinbekommst?‘ →
 Zusammenarbeit 2.15.0 (0 Nr. 20): Muster mit Messung vorher im Modell geprüft, führen durch den Versuch, zeigen nur ‚aufgenommen‘.
+Danach Muster 3. Fassung (geführt) am Gerät gescheitert (Anleitung weg-gescrollt, iPhone in ‚Heute‘, iPad vier V1-Fehler, Fall-Liste
+6c). Nutzer: ‚Warum kannst du den Test nicht selbst auf meinem iPad erledigen?‘ – kein Zugriff aufs Gerät; mit Mac und iOS-Simulator
+ginge es, **kein Mac**. Übergabe an 0022.
