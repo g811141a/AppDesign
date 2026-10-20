@@ -41,11 +41,13 @@
 //   beides gilt ab der Meldung. Chromiums eigener Rollstand bleibt V (Modell oben); scrollY meldet zusätzlich die Verschiebung.
 // - S-4 Option auto: Fokus auf ein Feld mit Tastatur öffnet sie im nächsten Bild (Höhe für das nächste Öffnen: __safari.naechste),
 //   bleibt nach dem Verlassen 100 ms kein Feld mit Fokus, schließt sie sich – wie am Gerät.
-// - S-5 (Muster A-36, 20.10.2026): Safari verschiebt nur, wenn das Feld weniger als ABSTAND über der Tastatur endet (iPad hoch: 80 px
-//   Abstand → nichts; iPhone quer Suche: 28 px → verschoben), dann bis zur Mitte. Der Schub quer (A-27 3, 21 px) folgt aus derselben
-//   Regel (Suche 62–104 px, sichtbar 126 → Mitte 20 px) und ist kein eigener Wert mehr. ABSTAND ist zwischen 29 und 80 px – bis das
-//   Lineal des Musters ihn genau misst, gilt vorsichtig 80. iPad hoch: Tastatur 340 px (gemessen, Muster V3).
-export const ABSTAND = 80;
+// - S-5 (Muster A-36, 20.10.2026): Safari verschiebt nur, wenn das Feld weniger als ABSTAND über der Tastatur endet, dann bis zur
+//   Mitte. Der Schub quer (A-27 3, 21 px) folgt aus derselben Regel (Suche 62–106 px, sichtbar 126 → Mitte 20 px) und ist kein
+//   eigener Wert mehr. iPad hoch: Tastatur 340 px (gemessen, Muster V3).
+//   ABSTAND gemessen (Muster 2. Fassung, Lineal, 20.10.2026 15:53/15:54): 24 px darüber → nichts (iPhone hoch und iPad quer, Fenster
+//   ‚Ort‘); 20 px (iPhone quer, Suche) → verschoben; 80 px (iPad hoch) → nichts. Die Grenze liegt über 20 und höchstens bei 24 px.
+//   Mitte bestätigt: iPhone hoch Ort 400–444 bei sichtbar 409 → 218 (gemessen 218), iPad quer Ort 527–571 bei 374 → 362 (gemessen 362).
+export const ABSTAND = 24;
 export const SAFARI = {
   'iPhone hoch': { tastatur: 403, fokusRollen: -120, fokusSchub: 0 },
   'iPhone quer': { tastatur: 276, ziffern: 232, fokusRollen: 0, fokusSchub: 0 },
