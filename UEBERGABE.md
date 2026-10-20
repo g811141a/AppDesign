@@ -1,6 +1,6 @@
 # Übergabe an die nächste Sitzung
 
-**Stand 20.10.2026** · geschrieben in der Sitzung ‚Reiselogbuch 0019‘ (Ende)
+**Stand 20.10.2026** · geschrieben in der Sitzung ‚Reiselogbuch 0020‘ (Ende)
 (Zusammenarbeit allgemein 2.14.1, Abschnitt 0 Nr. 14). **Claude liest diese Datei zu Beginn jeder Sitzung zuerst.**
 
 ## 1. Lagebild
@@ -12,21 +12,33 @@
 | ReiseLogBuch-Import (privat) | 1.2.1 (unverändert) | g811141a/ReiseLogBuch-Import |
 | Zusammenarbeit allgemein | **2.14.1** (0 Nr. 15: zu Beginn auch Abschnitt 1 – per du; Aufwand aus der Sitzungsdatei) | `README - Zusammenarbeit allgemein.md` |
 
-- **Chatnummer:** die nächste Sitzung heißt **Reiselogbuch 0020**; die danach 0021.
-- **Sitzungsgröße:** 0019 endete bei ~365.000 Token Kontext.
-- **Modell und Aufwand:** Opus 5.5, Aufwand hoch. Prüfen nach 0 Nr. 15 (seit 2.14.1): `"effort"` in der Sitzungsdatei
-  (`/root/.claude/projects/…/*.jsonl`) ist maßgeblich – die App zeigte in 0019 ‚mittel‘, obwohl alle Aufrufe mit ‚high‘ liefen; der
-  Nutzer hat sie auf ‚hoch‘ gestellt.
+- **Chatnummer:** die nächste Sitzung heißt **Reiselogbuch 0021**; die danach 0022.
+- **Sitzungsgröße:** 0020 endete bei ~365.000 Token Kontext.
+- **Modell und Aufwand:** Opus 5.5, Aufwand hoch (0020: alle Aufrufe ‚high‘). Prüfen nach 0 Nr. 15: `"effort"` in der Sitzungsdatei
+  (`/root/.claude/projects/…/*.jsonl`) ist maßgeblich.
 - **Per du!** (Zusammenarbeit Abschnitt 1) – in 0019 sprach Claude anfangs mit ‚Sie‘ an, weil Abschnitt 1 nicht gelesen war.
-- **P-60 geprüft (20.10.2026): nicht ok** – Kopf- und Suchzeile (iPad auch Seitenleiste) springen beim Ein- und Ausblenden der
-  Tastatur (iPhone hoch und quer, iPad quer, auch in Fenstern); Kapsel unter der Tastatur bzw. am iPad weg; iPad-Fenster rutscht an
-  den linken Rand. iPad hoch: alles top. /0 und der Rest ok. **Ursache gemessen:** `arbeit/A-36 Analyse P-60.md` (**zuerst lesen**).
-  Der Nutzer ist zu Recht verärgert (‚katastrophal schlecht getestet‘) – diesmal jedes Bild prüfen, nicht nur den Endzustand.
-- **Neue Messungen** in `tests/messungen/` (2026-10-20 iPhone hoch und iPad quer, Fenster ‚Ort‘) – `ablauf-abspielen.mjs` spielt
-  sie im nächsten vollen Lauf mit (iPad-Datei braucht passende Ziele/Ansicht; erwartet rot bis A-36 behoben).
+- **P-60 nicht ok (A-36, Tastatur: Leisten springen)** – Ursache und Fall-Liste: `arbeit/A-36 Analyse P-60.md`,
+  **`arbeit/A-36 Fall-Liste.md` (zuerst lesen, Abschnitte 1, 2, 5, 6)**. Der Nutzer erwartet gründliche Arbeit: jedes Bild prüfen.
+- **Muster A-36, 2. Fassung, wartet auf den Versuch am Gerät:** `https://g811141a.github.io/AppDesign/arbeit/A-36%20Muster.html?v=heute`
+  (Varianten Heute · V1 · Lineal; Messung aller Varianten in einer Datei). Der erste Versuch (‚springt in verschiedensten
+  Konstellationen‘) lieferte nur V3-Daten – das Muster verwarf beim Umschalten die Messung (Fehler Claude, behoben).
+- **Prüfungen zuerst rot (fertig):** Safari-Modell S-1 bis S-5 (`tests/safari.mjs`), `checkTastaturStill` (`tests/ablauf.mjs`),
+  `spieleAb … modell: true` (`tests/abspielen.mjs`); Reiselogbuch `tests/ablauf-tastatur-still.mjs` (59 Fehler gegen 3.26.0, Chromium
+  und WebKit; importiert bis zum Bau den Arbeitsstand `../../AppDesign/tests/`, beim Bau auf `fassung/4.28.1` umstellen).
 - **Erinnerung:** ‚Backlog-Erinnerung (AppDesign und Reiselogbuch)‘ montags 8:58.
 
 ## 2. Ergebnisse
+
+**Sitzung ‚Reiselogbuch 0020‘ (20.10.2026):**
+- Fall-Liste A-36 (T-1 bis T-12, S-1 bis S-5), Prüfungen zuerst rot, Muster mit Messung (`arbeit/A-36 Muster.html`).
+- **Befunde:** Safari rollt die Seite selbst (`scrollY` = `offsetTop`, `innerHeight` = Höhe − `scrollY`) → `--vv-bottom` falsch
+  (richtig `innerHeight + scrollY − top − h`); **`isPhone()` (`innerHeight < 500`) hält das iPad mit Tastatur für ein iPhone** →
+  Fenster rutscht an den linken Rand (P-60/5); Safari verschiebt nur, wenn das Feld weniger als 29–80 px über der künftigen Tastatur
+  endet, dann bis zur Mitte (218 px gemessen = Mitte; 21 px quer bei der Suche = dieselbe Regel); iPad hoch Tastatur 340 px;
+  `interactive-widget` und `navigator.virtualKeyboard` kennt Safari nicht (V3 entfällt).
+- Lösungsweg **V1**: beim Antippen (touchend, vor dem Fokus) das Feld in die obere Hälfte des künftigen sichtbaren Bereichs, Platz
+  unter dem Inhalt knapp halten (nichts rutscht beim Schließen), iPad-Fenster vorher höher, beim Schließen gleitet es zurück.
+  Im Modell still; offen: iPhone quer im Fenster (Fensterkopf 57 px, nur 69 px Sicht) – hängt am gemessenen Abstand (Lineal).
 
 **Sitzung ‚Reiselogbuch 0019‘ (19./20.10.2026):**
 - **A-26 entfällt** (E-62): Muster C2 am iPad ok, aber Safari meldet nur den Wert – drei Fälle (31. → letzter Tag eines anderen
@@ -46,10 +58,12 @@ Frühere Sitzungen: siehe `VERLAUF.md` und Versionsgeschichten.
 
 ## 3. Nächster Schritt
 
-1. **A-36 Tastatur ohne Springen** (Korrektur AppDesign 4.28.1 / Reiselogbuch 3.26.1): `arbeit/A-36 Analyse P-60.md` Abschnitt 4 –
-   Fall-Liste, Prüfungen zuerst rot gegen 4.28.0 (jedes Bild, alle drei Messungen), Muster am Gerät mit Messung (V1–V3), dann
-   **Ja zum Bau** einholen. Ziel: Safari muss nie verschieben.
-2. Danach A-37 (‚Nach oben / Ans Ende‘ wie in der Gemini-App, allgemeine Regel) und Abschnitt 4.
+1. **Messungen des Muster-Versuchs auswerten** (der Nutzer legt die Dateien in 0021 ab): je Variante ‚Safari verschiebt‘, Lineal →
+   `ABSTAND` in `tests/safari.mjs` genau setzen, Modell an jeder Abweichung korrigieren (0 Nr. 20); offene Frage iPhone quer im Fenster
+   klären (ggf. Vorschläge: Rest hinnehmen oder anders lösen – Nutzer entscheidet).
+2. Danach **Ja zum Bau** von AppDesign 4.28.1 / Reiselogbuch 3.26.1 einholen (V1 in ui.js statt `fieldIntoView`/Ausgleich allein,
+   `isPhone` nach der Höhe ohne Tastatur, `--vv-bottom` neu, Prüfungen auf die Fassung umstellen) – erst nach ausdrücklichem Ja.
+3. Danach A-37 (‚Nach oben / Ans Ende‘ wie in der Gemini-App, allgemeine Regel).
 
 ## 4. Danach
 
@@ -104,5 +118,5 @@ In der neuen Sitzung müssen **AppDesign** und **ReiseLogBuch** verfügbar sein,
 ## 7. Starttext für die neue Sitzung
 
 ```
-Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md, dann arbeit/A-36 Analyse P-60.md und gezielt die Regeln (Zusammenarbeit Abschnitte 0 und 1), prüfe Modell und Aufwand (Sitzungsdatei), gib mir das Lagebild und arbeite dann Abschnitt 3 ab: A-36 Tastatur ohne Springen – Fall-Liste, Prüfungen zuerst rot, Muster am Gerät. Hole vorher die Repos g811141a/ReiseLogBuch und g811141a/ReiseLogBuch-Import (privat) dazu (add_repo, Zugriff push), wie in UEBERGABE.md Abschnitt 5.
+Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md, dann arbeit/A-36 Fall-Liste.md (Abschnitte 1, 2, 5, 6) und gezielt die Regeln (Zusammenarbeit Abschnitte 0 und 1), prüfe Modell und Aufwand (Sitzungsdatei), gib mir das Lagebild und arbeite dann Abschnitt 3 ab: ich prüfe das Muster A-36 (2. Fassung) am Gerät und lege die Messungen hier ab – werte sie aus. Hole vorher die Repos g811141a/ReiseLogBuch und g811141a/ReiseLogBuch-Import (privat) dazu (add_repo, Zugriff push), wie in UEBERGABE.md Abschnitt 5.
 ```
