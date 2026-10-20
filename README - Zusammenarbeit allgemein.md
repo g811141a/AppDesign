@@ -1,6 +1,6 @@
 # Zusammenarbeit allgemein
 
-**Version 2.14.1** · Stand 20.10.2026
+**Version 2.15.0** · Stand 20.10.2026
 
 Regeln für die Zusammenarbeit mit Claude bei allen iPad-Web-Apps von g811141a.
 Diese Datei liegt im Design-Repo **AppDesign** (g811141a/AppDesign).
@@ -150,6 +150,14 @@ Nutzer sie findet, schneller und günstiger arbeiten.
     (Nr. 1). Für Safari gibt es **ein** Modell (`tests/safari.mjs`); jede Abweichung vom Gerät wird dort korrigiert, nie nur
     in einer Prüfung. Im Bericht steht ehrlich **‚in der Nachbildung behoben, am Gerät zu bestätigen‘**, bis der Nutzer ok
     meldet. Jede gefundene Safari-Eigenheit kommt mit Quelle in Designrichtlinie 13 und gilt damit für alle Apps.
+    **Muster mit Messung (seit 2.15.0, Nutzer 20.10.2026):** Ein Muster, das am Gerät misst, wird wie die App geprüft, **bevor**
+    der Nutzer es bekommt: es läuft automatisch im Safari-Modell (Chromium und WebKit), jeder Fall des Versuchs wird dabei
+    durchgespielt, und was das Muster aufzeichnet und auswertet, muss zu den Bildern des Modells passen; eine **Gegenprobe** mit
+    absichtlich eingebautem Sprung muss rot werden. Das Muster **führt durch den Versuch**: feste Liste der Fälle, oben ‚Nächster
+    Schritt: …‘, erledigte Fälle abgehakt, ‚Messung teilen‘ erst, wenn alle Fälle drin sind (oder ausdrücklich ‚trotzdem teilen‘).
+    Am Gerät zeigt es nur **‚aufgenommen‘** – bewertet wird ausschließlich aus den Rohdaten durch Claude, damit keine falsche
+    Anzeige den Nutzer in die Irre führt. (Anlass: A-36 – erste Fassung verlor die Messung beim Umschalten, zweite wertete ‚Tastatur
+    zu‘ 50 ms zu spät aus und ließ Fälle aus.)
 
 ---
 
@@ -357,6 +365,7 @@ Nutzer sie findet, schneller und günstiger arbeiten.
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 2.15.0 | 20.10.2026 | Neben | 0 Nr. 20 ergänzt: Muster mit Messung vor der Übergabe im Safari-Modell gegen die Rohdaten geprüft (mit Gegenprobe), führen Schritt für Schritt durch den Versuch, zeigen am Gerät nur ‚aufgenommen‘ (Nutzer 20.10.2026, A-36) |
 | 2.14.1 | 20.10.2026 | Korrektur | 0 Nr. 15: Aufwand aus der Sitzungsdatei (`"effort"`) nennen; die App zeigte ‚mittel‘, obwohl alle Aufrufe mit ‚hoch‘ liefen – dann in der App auf ‚hoch‘ stellen (Nutzer 20.10.2026) |
 | 2.14.0 | 20.10.2026 | Korrektur | 0 Nr. 15: zu Beginn auch Abschnitt 1 ‚Sprache und Ton‘ lesen – in 0019 sprach Claude den Nutzer mit ‚Sie‘ an, weil Abschnitt 1 (per du) nicht im Startumfang lag (Nutzer 20.10.2026) |
 | 2.13.0 | 19.10.2026 | Neben | 0 Nr. 13 und 15 ergänzt: neue Sitzungen mit Opus 5.5 und Aufwand hoch (`CLAUDE_CODE_EFFORT_LEVEL=high` in der Umgebung); zu Beginn Modell und Aufwand prüfen und im Lagebild nennen (Nutzer 19.10.2026) |

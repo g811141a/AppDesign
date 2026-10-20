@@ -1863,3 +1863,8 @@ P-59 geprüft: alles ok (A-33 abgeschlossen). Zusammenarbeit 2.13.0 (Opus 5.5, A
 hält das iPad mit Tastatur für ein iPhone (Ursache P-60/5). Muster am Gerät: erster Versuch ‚springt in verschiedensten
 Konstellationen‘ – geteilt nur V3 (Muster verwarf beim Umschalten die Messung); V3 scheidet aus; Safari verschiebt bei zu wenig
 Abstand bis zur Mitte. Nutzer: ‚Bitte intensiv nachbessern.‘ → Muster 2. Fassung (V1 obere Hälfte, Lineal), Übergabe an 0021.
+
+**2026-10-20 · Sitzung Reiselogbuch 0021:** Muster A-36 (2. Fassung) am Gerät in allen vier Lagen gemessen: V1 still (auch iPhone
+quer im Fenster, 15 px ohne Verschieben), ‚bis zur Mitte‘ viermal bestätigt, Modell `ABSTAND` 80 → 24. Fehler im Muster: Auswertung
+‚Tastatur zu‘ 50 ms zu spät, Fälle fehlten. Nutzer: ‚Woran liegt es, dass du nicht einmal eine Messung sauber hinbekommst?‘ →
+Zusammenarbeit 2.15.0 (0 Nr. 20): Muster mit Messung vorher im Modell geprüft, führen durch den Versuch, zeigen nur ‚aufgenommen‘.
