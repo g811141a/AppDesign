@@ -500,3 +500,21 @@ Bereich‘, ersetzt `fieldIntoView` und den 350-ms-Ausgleich im Fenster) und `v4
   unterdrückt.
 - **Messung vom 19.10. (iPhone quer)** wurde mit 44-px-Leisten aufgenommen: `ablauf-abspielen.mjs` rechnet die Suchzeile 29 px höher
   (R-2.4, `aufbau`); die Gegenprobe (20 px verschoben) bleibt rot.
+
+## 8a. Zehnter Versuch am Gerät (21.10.2026, P-61 mit 3.26.1 / 4.28.1) – Auswertung aus den Rohdaten
+
+Dateien `arbeit/A-36 Messungen/2026-10-21 16-34 P-61 iPhone hoch.txt`, `… 16-37 P-61 iPad quer.txt`, `… 16-38 P-61 iPhone quer.txt`
+(Messmodus der App, Home-Bildschirm).
+- **In allen drei:** `offsetTop` (vt) in jeder Zeile 0 – Safari verschiebt nie; Kopfzeile in jeder Zeile 0. Jedes Antippen eines Felds
+  unten: ‚neu fokussiert‘ (11×, nie ‚Fokus weg‘), Tastatur beim ersten Mal (iPhone hoch 409 bzw. Ziffern 436, quer 126 bzw. 170, iPad
+  374), Safaris Klick unterdrückt (11×, Ziel `div` im Fenster bzw. `rolle`).
+- **Rückstellung (S-9) wirkt:** Gesamtausgaben 8× zurückgestellt (iPhone hoch 2682 → 2742, iPad 2149 → 2306, quer 2669/2750 → 2799).
+  iPad einmal: in der Zeile der Meldung (23190) steht der Inhalt noch zurück, 4 ms später zurückgestellt – vermutlich nie gezeichnet
+  (wie 6n).
+- **‚Nach oben‘ bei offener Tastatur (B-8):** iPhone hoch 3×, iPad 1×: ein Antippen schließt die Tastatur und rollt bis 0.
+- **Platz unter dem Inhalt (B-7):** nach jedem Schließen ‚platz weg‘; ‚Ans Ende‘ endet jedes Mal gleich (iPhone hoch 2682, iPad 2149,
+  quer 2954).
+- **Tastatur-Taste iPad (B-6):** 24214 und 31845 – Tastatur zu, das Feld gibt 3 ms später den Fokus ab.
+- iPhone quer: nach ‚Ans Ende‘ jeweils ~1 s später gleitend 200–285 px zurück – vermutlich eigenes Wischen (Messmodus zeichnet
+  Berührungen nicht auf).
+- Nicht messbar: Gleiten des iPad-Fensters und Höhe der Leisten (der Messmodus misst Fensterkopf und Höhen nicht) – nur Eindruck.
