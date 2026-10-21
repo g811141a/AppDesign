@@ -429,6 +429,20 @@ Dateien `arbeit/A-36 Messungen/2026-10-21 04-40 Muster 8 iPhone.txt` (hoch) und 
   rot). Modell: alles grün, G-1 bis G-6 rot.
 **Kurzer Versuch:** iPhone hoch und iPad, je: Titel ‚A-36 · 9‘ → ↓ → ‚Gesamtausgaben‘ → Tastatur schließen → ↑ → ↓ → teilen.
 
+## 6n. Neunter Versuch am Gerät (21.10.2026, Muster 9) – Auswertung aus den Rohdaten
+
+Dateien `arbeit/A-36 Messungen/2026-10-21 13-00 Muster 9 iPhone.txt` (hoch) und `… 12-59 Muster 9 iPad.txt` (quer, zwischendurch gedreht).
+- **Platz wieder weg (6m behoben):** nach ↑ jedes Mal ‚platz weg rolle‘; das nächste ↓ endet wie das erste (Gesamtausgaben iPhone 628,
+  iPad 618 – 3× bzw. 3×). Rückstellung wirkt weiter (‚zurückgestellt‘), Safari verschiebt nie, Kopfzeile und Seitenleiste still.
+- **Neu gefunden – ↑ bei offener Tastatur braucht zwei Antipper:** tippt man ↑ (oder ↓), während die Tastatur offen ist, schließt das
+  Antippen die Tastatur, und der Ausgleich beim Schließen (`gemeldet`: Rollstand halten, `knapp()` setzt scrollTop) bricht das sanfte
+  Rollen ab – der Inhalt bleibt stehen (iPhone: danach Gesamtausgaben bei 215, also kaum gerollt); der Nutzer tippte jedes Mal ein
+  2. Mal (iPhone 15593/16426, 22040/22830; iPad 60376/61875). Im Bau: beim Schließen den Rollstand nur halten, wenn kein Rollen der App
+  läuft (bzw. ↑/↓ erst nach dem Schließen rollen); Prüfung ‚↑ bei offener Tastatur‘.
+- **iPad, 2 von 3:** in der Zeile der Meldung ‚vv resize‘ steht das Feld noch zurückgerollt (618), im selben Augenblick (gleiche ms)
+  ‚zurückgestellt‘ – vermutlich nie gezeichnet (vom Nutzer nicht bemerkt); `auswerten.mjs` meldet es als ‚Feld springt‘. Im Bau mit dem
+  Messmodus prüfen; ggf. erst ab dem nächsten Bild werten.
+
 ## 7. Grenzen
 
 - Was Safari zwischen zwei Bildern zeigt, kennt die Prüfung nur aus dem Modell – deshalb Muster und Messung am Gerät.

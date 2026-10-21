@@ -1,53 +1,58 @@
 # Übergabe an die nächste Sitzung
 
-**Stand 20.10.2026** · geschrieben in der Sitzung ‚Reiselogbuch 0022‘ (Ende)
-(Zusammenarbeit allgemein 2.15.0, Abschnitt 0 Nr. 14). **Claude liest diese Datei zu Beginn jeder Sitzung zuerst.**
+**Stand 21.10.2026** · geschrieben in der Sitzung ‚Reiselogbuch 0023‘ (Ende)
+(Zusammenarbeit allgemein 2.16.0, Abschnitt 0 Nr. 14). **Claude liest diese Datei zu Beginn jeder Sitzung zuerst.**
 
 ## 1. Lagebild
 
 | Teil | Version | Datei |
 |---|---|---|
 | Reiselogbuch | **3.26.0** online (Fassung 4.28.0) | g811141a/ReiseLogBuch – `CHANGELOG.md`, `BACKLOG.md`, `PROMPT.md` |
-| AppDesign | **4.28.0** online; Arbeitsstand: `tests/safari.mjs` S-6, S-7 (noch keine Version) | g811141a/AppDesign – `CHANGELOG.md`, `BACKLOG.md` |
+| AppDesign | **4.28.0** online; Arbeitsstand: `tests/safari.mjs` S-6 bis S-9 (noch keine Version) | g811141a/AppDesign – `CHANGELOG.md`, `BACKLOG.md` |
 | ReiseLogBuch-Import (privat) | 1.2.1 (unverändert) | g811141a/ReiseLogBuch-Import |
-| Zusammenarbeit allgemein | **2.15.0** | `README - Zusammenarbeit allgemein.md` |
+| Zusammenarbeit allgemein | **2.16.0** (0 Nr. 11: Link und Schritte zusätzlich im Auswahlfenster) | `README - Zusammenarbeit allgemein.md` |
 
-- **Chatnummer:** die nächste Sitzung heißt **Reiselogbuch 0023**; die danach 0024.
-- **Sitzungsgröße:** 0022 endete bei ~305.000 Token Kontext.
-- **Modell und Aufwand:** Opus 5.5, Aufwand hoch (0022: alle Aufrufe ‚high‘, `CLAUDE_CODE_EFFORT_LEVEL=high`). Prüfen nach 0 Nr. 15.
-- **Per du!** Der Nutzer macht die Versuche mit, will sie aber **kurz** (3–4 Handgriffe je Gerät, Anleitung nur im Chat).
+- **Chatnummer:** die nächste Sitzung heißt **Reiselogbuch 0024**; die danach 0025.
+- **Sitzungsgröße:** 0023 endete bei ~300.000 Token Kontext.
+- **Modell und Aufwand:** Opus 5.5, Aufwand hoch (0023: alle Aufrufe ‚high‘, `CLAUDE_CODE_EFFORT_LEVEL=high`). Prüfen nach 0 Nr. 15.
+- **Per du!** Versuche **kurz** (3–6 Handgriffe je Gerät). **Neu (2.16.0): Link und Schritte immer auch im Auswahlfenster selbst** –
+  der Text davor kam beim Nutzer zweimal nicht an (Nutzer verärgert: ‚Schon wieder kein Link und keine Anleitung‘).
 - **Kein Mac** – nur Versuche des Nutzers am Gerät.
-- **P-60 nicht ok (A-36, Tastatur: Leisten springen)** – alles in **`arbeit/A-36 Fall-Liste.md`: zuerst Abschnitte 6d bis 6g lesen**.
-  Messungen: `arbeit/A-36 Messungen/` (10 Dateien). Werkzeuge: `arbeit/A-36 auswerten.mjs` (meldet auch ‚Fokus verloren‘,
-  `--selbsttest` 35/35), `arbeit/A-36 Muster prüfen.mjs` (kurzer Versuch in allen vier Lagen, Chromium und WebKit, Gegenproben G-1 bis
-  G-3, ‚keine Berührung abgefangen‘, `--muster <Datei>` für ältere Fassungen aus Git).
-- **Entscheidungen des Nutzers (0022):** niedrige Leisten quer am iPhone (Kopfzeile und Fensterkopf 32 statt 44 px) übernehmen und
-  **als allgemeine Regel** (kommt mit 4.28.1 in Designrichtlinie 15 und Regelkatalog, eine Prüfung) – Fall-Liste 6d.
+- **P-60 (A-36, Tastatur: Leisten springen) – Lösung gefunden (V3), Bau steht aus.** Alles in **`arbeit/A-36 Fall-Liste.md`: zuerst
+  Abschnitte 6h bis 6n lesen**. Messungen: `arbeit/A-36 Messungen/` (20 Dateien). Werkzeuge: `arbeit/A-36 auswerten.mjs` (‚Feld springt‘,
+  ‚Fokus verloren‘, `--selbsttest` 39/39), `arbeit/A-36 Muster prüfen.mjs` (alle vier Lagen, Chromium und WebKit, Gegenproben G-1 bis G-6,
+  ‚wieder ans Ende‘), Muster `arbeit/A-36 Muster.html` (Fassung 9, am Gerät aktuell).
+- **Entscheidungen des Nutzers:** niedrige Leisten quer am iPhone (Kopfzeile und Fensterkopf 32 statt 44 px) übernehmen und **als
+  allgemeine Regel** (Designrichtlinie 15 und Regelkatalog, eine Prüfung) – Fall-Liste 6d.
 - **Erinnerung:** ‚Backlog-Erinnerung (AppDesign und Reiselogbuch)‘ montags 8:58.
 
 ## 2. Ergebnisse
 
-**Sitzung ‚Reiselogbuch 0022‘ (20.10.2026):**
-- Safari-Modell S-6 (Mitte bei Wechsel, erneutem Antippen und außerhalb eines Rollbereichs) und S-7 (Lage beim Fokus, vor den Hörern
-  der App), Zifferntastatur iPhone hoch 376 px. Muster 3 und Muster 5 im Modell rot, wie am Gerät.
-- Muster 4 (V1: Berührung abfangen, obere Hälfte, iPad-Fenster bleibt oben, niedrige Leisten quer): am Gerät **in allen Bildern still**,
-  aber **13 von ~40 abgefangenen Berührungen verlieren den Fokus** (‚2× tippen‘, iPhone und iPad) – auch mit Bewegung → Abfangen
-  scheidet aus.
-- Muster 5 (V2: Safari tippen lassen, im focusin rollen, Klick danach unterdrücken): **Fokus immer sicher**, aber Safari liest die Lage
-  beim Fokus → verschiebt wie Heute (362 / 428 px). Wechsel bei offener Tastatur still.
-- Muster am Gerät aktuell: **Muster 5** (`arbeit/A-36 Muster.html`).
+**Sitzung ‚Reiselogbuch 0023‘ (21.10.2026), Muster 6 bis 9 am Gerät:**
+- **V3 = Lösung:** Berührung bleibt bei Safari; im `focusin` das Feld in die obere Hälfte rollen und – bei geschlossener Tastatur, nur
+  wenn gerollt wurde – **sofort `blur()` + `focus({ preventScroll: true })`** (synchron im focusin, noch in der Berührung). Safari liest die
+  Lage beim neuen Fokus neu (S-8, bestätigt): **Safari verschiebt nie, Fokus beim ersten Mal, Leisten still, kein Flackern** (iPhone hoch,
+  iPad quer, 10 von 10 und alle späteren). Bei offener Tastatur (Wechsel) kein neuer Fokus. Klick nach dem Rollen unterdrücken,
+  Tastatur-Taste (iPad) gibt den Fokus ab (aus V2).
+- **readonly (Muster 6, Art b) verworfen.** Felder **im Inhalt** rollt Safari beim Erscheinen der Tastatur auf den Stand vor dem Rollen
+  zurück (S-9, auch ohne readonly; im Fenster nie) → **Rückstellung**: im scroll-Ereignis des Rollbereichs sofort zurück (solange das
+  Feld den Fokus hat, ≤ 1,5 s, eigenes Wischen beendet sie) – am Gerät wirksam (Muster 8, 9).
+- **Platz unter dem Inhalt** schrumpft nach dem Schließen der Tastatur beim Rollen wieder (nur padding, nie scrollTop) – sonst rollt ↓
+  beim 2. Mal zu weit (Muster 8, Nutzer: ‚die gesamte Tabelle verschwand nach oben‘). Muster 9: behoben.
+- **Offen für den Bau (6n):** ↑/↓ bei offener Tastatur braucht zwei Antipper (Ausgleich beim Schließen bricht das sanfte Rollen ab);
+  iPad: ‚Feld springt‘ in der Meldungszeile, im selben ms zurückgestellt (vermutlich nie gezeichnet).
 
 Frühere Sitzungen: siehe `VERLAUF.md` und Versionsgeschichten.
 
 ## 3. Nächster Schritt
 
-1. Dem Nutzer **V3** vorschlagen (Fall-Liste 6g, Ende): Safari tippen lassen, im `focusin` rollen und den Fokus neu setzen
-   (a: `blur()` + `focus()`; b: `readonly` ab `touchstart`, im `focusin` rollen, `readonly` weg, neu fokussieren). Ein Muster 6 prüft
-   beide ohne Umschalter (je Feld eine Art). Vorher im Modell als Annahme nachbilden (0 Nr. 20), Prüfung ‚keine Berührung abgefangen‘
-   und G-1 wieder grün bzw. rot. Am Gerät: Titel ‚A-36 · 6‘ prüfen lassen (iPhone hatte in 0022 noch die alte Seite).
-2. Hält V3 am Gerät (Fokus beim ersten Mal, Safari verschiebt nicht): Fall-Liste für den Bau, Ja des Nutzers → 4.28.1 / 3.26.1 mit
-   niedrigen Leisten quer (allgemeine Regel). Hält V3 nicht: dem Nutzer ehrlich die Wahl lassen – V2 (Fokus sicher, Safari verschiebt,
-   App gleicht so ruhig wie möglich aus) oder V1 (still, gelegentlich 2× tippen).
+1. **Fall-Liste für den Bau AppDesign 4.28.1 / Reiselogbuch 3.26.1** schreiben (0 Nr. 1) und das **Ja** des Nutzers holen. Inhalt:
+   V3 in `ui.js` (Ersatz für bzw. Erweiterung von `fieldIntoView`, R-4.5), Rückstellung, Platz schrumpft nach dem Schließen,
+   ↑/↓ bei offener Tastatur (6n), Tastatur-Taste iPad, iPad-Fenster gleitet und bleibt oben (6d), **niedrige Leisten quer am iPhone als
+   allgemeine Regel** (Designrichtlinie 15, Regelkatalog, eine Prüfung). Jeder Fall eine Prüfung im Safari-Modell (S-1 bis S-9); die
+   Prüfungen aus `A-36 Muster prüfen.mjs` (vier Lagen, G-1 bis G-6, ‚wieder ans Ende‘) in die App-Prüfungen übernehmen; gegen 3.26.0
+   rot (P-60 nachgebaut). Safari-Eigenheiten S-6 bis S-9 mit Quelle in Designrichtlinie 13.
+2. Bau, `… los`, Bericht mit Prüfpunkten (Link und Schritte **auch im Auswahlfenster**), am Gerät mit Messmodus bestätigen.
 3. Danach A-37 (‚Nach oben / Ans Ende‘ wie in der Gemini-App, allgemeine Regel).
 
 ## 4. Danach
@@ -103,5 +108,5 @@ In der neuen Sitzung müssen **AppDesign** und **ReiseLogBuch** verfügbar sein,
 ## 7. Starttext für die neue Sitzung
 
 ```
-Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md, dann arbeit/A-36 Fall-Liste.md (Abschnitte 6d bis 6g) und gezielt die Regeln (Zusammenarbeit Abschnitte 0 und 1), prüfe Modell und Aufwand (Sitzungsdatei), gib mir das Lagebild und arbeite dann Abschnitt 3 ab. Hole vorher die Repos g811141a/ReiseLogBuch und g811141a/ReiseLogBuch-Import (privat) dazu (add_repo, Zugriff push), wie in UEBERGABE.md Abschnitt 5.
+Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md, dann arbeit/A-36 Fall-Liste.md (Abschnitte 6d und 6h bis 6n) und gezielt die Regeln (Zusammenarbeit Abschnitte 0 und 1), prüfe Modell und Aufwand (Sitzungsdatei), gib mir das Lagebild und arbeite dann Abschnitt 3 ab. Hole vorher die Repos g811141a/ReiseLogBuch und g811141a/ReiseLogBuch-Import (privat) dazu (add_repo, Zugriff push), wie in UEBERGABE.md Abschnitt 5.
 ```

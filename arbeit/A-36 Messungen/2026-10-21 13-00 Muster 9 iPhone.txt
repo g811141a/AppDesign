@@ -1,0 +1,50 @@
+# A-36 Muster 9 · Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.6.2 Mobile/15E148 Safari/604.1 · Home-Bildschirm · 402×874 · 2026-10-21T13:00:09.445Z
+# 3 Felder angetippt · virtualKeyboard: nein
+t vh vt sy ih ch kopf side dkopf dlinks kapsel sonde fokus ft fb v
+5219 812 0 0 812 812 0 - - - 762 812 - - - v3 ! neu
+6617 812 0 0 812 812 0 - - - 762 812 - - - v3 ! tippen runter
+7948 812 0 0 812 812 0 - - - 762 812 kosten 628 672 v3 ! focus kosten
+7948 812 0 0 812 812 0 - - - 762 812 kosten 628 672 v3 ! vorbereitet kosten 456
+7949 812 0 0 812 812 0 - - - 762 812 - - - v3 ! blur kosten neu
+7950 812 0 0 812 812 0 - - - 762 812 kosten 172 216 v3 ! focus kosten neu
+7950 812 0 0 812 812 0 - - - 762 812 kosten 172 216 v3 ! neu fokussiert kosten a
+7952 812 0 0 812 812 0 - - - 762 812 kosten 172 216 v3 ! klick unterdrückt rolle (Feld kosten)
+8013 812 0 0 812 812 0 - - - 762 812 kosten 172 216 v3 ! zurückgestellt kosten 471 → 927
+8035 436 0 0 812 812 0 - - - 762 812 kosten 172 216 v3 ! vv resize
+8052 436 0 0 812 812 0 - - - 420 812 kosten 172 216 v3
+11679 436 0 0 812 812 0 - - - 420 812 - - - v3 ! blur kosten
+11679 436 0 0 812 812 0 - - - 420 812 - - - v3 ! tippen hoch
+11723 812 0 0 812 812 0 - - - 420 812 - - - v3 ! vv resize
+11741 812 0 0 812 812 0 - - - 762 812 - - - v3
+14355 812 0 0 812 812 0 - - - 762 812 kosten 215 259 v3 ! focus kosten
+14355 812 0 0 812 812 0 - - - 762 812 kosten 215 259 v3 ! vorbereitet kosten 43
+14356 812 0 0 812 812 0 - - - 762 812 - - - v3 ! blur kosten neu
+14358 812 0 0 812 812 0 - - - 762 812 kosten 172 216 v3 ! focus kosten neu
+14358 812 0 0 812 812 0 - - - 762 812 kosten 172 216 v3 ! neu fokussiert kosten a
+14358 812 0 0 812 812 0 - - - 762 812 kosten 172 216 v3 ! klick unterdrückt rolle (Feld kosten)
+14426 812 0 0 812 812 0 - - - 762 812 kosten 172 216 v3 ! zurückgestellt kosten 884 → 927
+14445 436 0 0 812 812 0 - - - 762 812 kosten 172 216 v3 ! vv resize
+14461 436 0 0 812 812 0 - - - 420 812 kosten 172 216 v3
+15593 436 0 0 812 812 0 - - - 420 812 - - - v3 ! blur kosten
+15593 436 0 0 812 812 0 - - - 420 812 - - - v3 ! tippen hoch
+15637 812 0 0 812 812 0 - - - 420 812 - - - v3 ! vv resize
+15654 812 0 0 812 812 0 - - - 762 812 - - - v3
+16426 812 0 0 812 812 0 - - - 762 812 - - - v3 ! tippen hoch
+16592 812 0 0 812 812 0 - - - 762 812 - - - v3 ! platz weg rolle
+17737 812 0 0 812 812 0 - - - 762 812 - - - v3 ! tippen runter
+19179 812 0 0 812 812 0 - - - 762 812 kosten 628 672 v3 ! focus kosten
+19179 812 0 0 812 812 0 - - - 762 812 kosten 628 672 v3 ! vorbereitet kosten 456
+19180 812 0 0 812 812 0 - - - 762 812 - - - v3 ! blur kosten neu
+19181 812 0 0 812 812 0 - - - 762 812 kosten 172 216 v3 ! focus kosten neu
+19181 812 0 0 812 812 0 - - - 762 812 kosten 172 216 v3 ! neu fokussiert kosten a
+19181 812 0 0 812 812 0 - - - 762 812 kosten 172 216 v3 ! klick unterdrückt rolle (Feld kosten)
+19249 812 0 0 812 812 0 - - - 762 812 kosten 172 216 v3 ! zurückgestellt kosten 471 → 927
+19271 436 0 0 812 812 0 - - - 762 812 kosten 172 216 v3 ! vv resize
+19287 436 0 0 812 812 0 - - - 420 812 kosten 172 216 v3
+22039 436 0 0 812 812 0 - - - 420 812 - - - v3 ! blur kosten
+22040 436 0 0 812 812 0 - - - 420 812 - - - v3 ! tippen hoch
+22075 812 0 0 812 812 0 - - - 420 812 - - - v3 ! vv resize
+22085 812 0 0 812 812 0 - - - 762 812 - - - v3
+22830 812 0 0 812 812 0 - - - 762 812 - - - v3 ! tippen hoch
+23022 812 0 0 812 812 0 - - - 762 812 - - - v3 ! platz weg rolle
+25312 812 0 0 812 812 0 - - - 762 812 - - - v3 ! tippen teilen

@@ -1882,3 +1882,5 @@ für 0023. Übergabe an 0023.
 Fokus beim ersten Mal, Leisten still (10 von 10) – P-60 im Kern gelöst. Rest: Felder im Inhalt springen beim Erscheinen der Tastatur
 einmal zurück (Modell S-9); Muster 8 stellt den Rollstand sofort zurück. Nutzer: Link und Anleitung kamen nicht an (standen vor dem
 Auswahlfenster) → Zusammenarbeit 2.16.0 (0 Nr. 11): Link und Schritte zusätzlich im Auswahlfenster selbst, **als allgemeine Regel** (Ja).
+Muster 8 und 9: Rückstellung wirkt; Platz unter dem Inhalt blieb stehen (2. Mal ↓ zu weit, Nutzer) → Muster 9 behoben; offen: ↑ bei
+offener Tastatur braucht zwei Antipper. Übergabe an 0024 (Bau 4.28.1 / 3.26.1).

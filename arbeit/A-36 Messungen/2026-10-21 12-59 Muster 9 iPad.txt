@@ -1,0 +1,65 @@
+# A-36 Muster 9 · Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.6.2 Safari/605.1.15 · Home-Bildschirm · 834×1194 · 2026-10-21T12:59:05.319Z
+# 4 Felder angetippt · virtualKeyboard: nein
+t vh vt sy ih ch kopf side dkopf dlinks kapsel sonde fokus ft fb v
+24939 802 0 0 802 802 0 0 - - 766 802 - - - v3 ! neu
+26586 802 0 0 802 802 0 0 - - 766 802 - - - v3 ! tippen runter
+28111 802 0 0 802 802 0 0 - - 766 802 kosten 618 662 v3 ! focus kosten
+28111 802 0 0 802 802 0 0 - - 766 802 kosten 618 662 v3 ! vorbereitet kosten 477
+28112 802 0 0 802 802 0 0 - - 766 802 - - - v3 ! blur kosten neu
+28113 802 0 0 802 802 0 0 - - 766 802 kosten 141 185 v3 ! focus kosten neu
+28114 802 0 0 802 802 0 0 - - 766 802 kosten 141 185 v3 ! neu fokussiert kosten a
+28117 802 0 0 802 802 0 0 - - 766 802 kosten 141 185 v3 ! klick unterdrückt rolle (Feld kosten)
+28370 802 0 0 802 802 0 0 - - 766 802 kosten 141 185 v3 ! zurückgestellt kosten 389 → 866
+28450 374 0 0 802 802 0 0 - - 766 802 kosten 141 185 v3 ! vv resize
+28474 374 0 0 802 802 0 0 - - 358 802 kosten 141 185 v3
+31650 802 0 0 802 802 0 0 - - 358 802 kosten 141 185 v3 ! vv resize
+31652 802 0 0 802 802 0 0 - - 766 802 - - - v3 ! blur kosten
+32127 1162 0 0 1162 1162 0 0 - - 1126 1162 - - - v3 ! lage iPad hoch
+32127 1162 0 0 1162 1162 0 0 - - 1126 1162 - - - v3 ! vv resize
+32127 1162 0 0 1162 1162 0 0 - - 1126 1162 - - - v3 ! vv scroll
+32718 1162 0 0 1162 802 0 0 - - 1126 1162 - - - v3
+40928 802 0 0 802 802 0 0 - - 766 802 - - - v3 ! vv scroll
+40941 802 0 0 802 802 0 0 - - 766 802 - - - v3 ! lage iPad quer
+40941 802 0 0 802 802 0 0 - - 766 802 - - - v3 ! vv resize
+42917 802 0 0 802 802 0 0 - - 766 802 kosten 141 185 v3 ! focus kosten
+42918 802 0 0 802 802 0 0 - - 766 802 kosten 141 185 v3 ! vorbereitet kosten 0
+42919 802 0 0 802 802 0 0 - - 766 802 kosten 141 185 v3 ! tippen kosten
+42996 374 0 0 802 802 0 0 - - 766 802 kosten 141 185 v3 ! vv resize
+43013 374 0 0 802 802 0 0 - - 358 802 kosten 141 185 v3
+44337 802 0 0 802 802 0 0 - - 358 802 kosten 141 185 v3 ! vv resize
+44339 802 0 0 802 802 0 0 - - 766 802 - - - v3 ! blur kosten
+46959 802 0 0 802 802 0 0 - - 766 802 - - - v3 ! tippen hoch
+47132 802 0 0 802 802 0 0 - - 766 802 - - - v3 ! platz weg rolle
+50094 802 0 0 802 802 0 0 - - 766 802 - - - v3 ! tippen runter
+51483 802 0 0 802 802 0 0 - - 766 802 kosten 618 662 v3 ! focus kosten
+51483 802 0 0 802 802 0 0 - - 766 802 kosten 618 662 v3 ! vorbereitet kosten 477
+51485 802 0 0 802 802 0 0 - - 766 802 - - - v3 ! blur kosten neu
+51488 802 0 0 802 802 0 0 - - 766 802 kosten 141 185 v3 ! focus kosten neu
+51488 802 0 0 802 802 0 0 - - 766 802 kosten 141 185 v3 ! neu fokussiert kosten a
+51491 802 0 0 802 802 0 0 - - 766 802 kosten 141 185 v3 ! klick unterdrückt rolle (Feld kosten)
+51640 374 0 0 802 802 0 0 - - 766 802 kosten 618 662 v3 ! vv resize
+51640 374 0 0 802 802 0 0 - - 766 802 kosten 141 185 v3 ! zurückgestellt kosten 389 → 866
+51667 374 0 0 802 802 0 0 - - 358 802 kosten 141 185 v3 ! zurückgestellt kosten 389 → 866
+53130 374 0 0 802 802 0 0 - - 358 802 - - - v3 ! blur kosten
+53130 374 0 0 802 802 0 0 - - 358 802 - - - v3 ! tippen runter
+53154 802 0 0 802 802 0 0 - - 358 802 - - - v3 ! vv resize
+53167 802 0 0 802 802 0 0 - - 766 802 - - - v3
+55232 802 0 0 802 802 0 0 - - 766 802 - - - v3 ! tippen hoch
+55419 802 0 0 802 802 0 0 - - 766 802 - - - v3 ! platz weg rolle
+56178 802 0 0 802 802 0 0 - - 766 802 - - - v3 ! tippen runter
+57402 802 0 0 802 802 0 0 - - 766 802 kosten 618 662 v3 ! focus kosten
+57402 802 0 0 802 802 0 0 - - 766 802 kosten 618 662 v3 ! vorbereitet kosten 477
+57404 802 0 0 802 802 0 0 - - 766 802 - - - v3 ! blur kosten neu
+57407 802 0 0 802 802 0 0 - - 766 802 kosten 141 185 v3 ! focus kosten neu
+57407 802 0 0 802 802 0 0 - - 766 802 kosten 141 185 v3 ! neu fokussiert kosten a
+57410 802 0 0 802 802 0 0 - - 766 802 kosten 141 185 v3 ! klick unterdrückt rolle (Feld kosten)
+57558 374 0 0 802 802 0 0 - - 766 802 kosten 618 662 v3 ! vv resize
+57558 374 0 0 802 802 0 0 - - 766 802 kosten 141 185 v3 ! zurückgestellt kosten 389 → 866
+57586 374 0 0 802 802 0 0 - - 358 802 kosten 141 185 v3 ! zurückgestellt kosten 389 → 866
+60375 374 0 0 802 802 0 0 - - 358 802 - - - v3 ! blur kosten
+60376 374 0 0 802 802 0 0 - - 358 802 - - - v3 ! tippen hoch
+60402 802 0 0 802 802 0 0 - - 358 802 - - - v3 ! vv resize
+60420 802 0 0 802 802 0 0 - - 766 802 - - - v3
+61875 802 0 0 802 802 0 0 - - 766 802 - - - v3 ! tippen hoch
+62054 802 0 0 802 802 0 0 - - 766 802 - - - v3 ! platz weg rolle
+64409 802 0 0 802 802 0 0 - - 766 802 - - - v3 ! tippen teilen
