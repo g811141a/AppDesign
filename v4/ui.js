@@ -1,4 +1,4 @@
-// AppDesign 4.28.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
+// AppDesign 4.28.1 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
 // Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/fassung/X.Y.Z/ui.js"></script> (feste Fassung, R-10.3)
 // Seit 4.11.0 (R-10.3): ui.js und design.css immer mit ?v=<AppDesign-Version> einbinden (auch in sw.js) und beim Start
 // prüfen, ob genau diese Fassung geladen ist (AD_VERSION hier, --ad-version in design.css).
@@ -18,7 +18,7 @@
 
 'use strict';
 // Version der Bausteine (R-10.3): die App vergleicht sie beim Start mit der benötigten Fassung.
-const AD_VERSION = '4.28.0';
+const AD_VERSION = '4.28.1';
 /* ---------- Icons ---------- */
 
 // Schaltflächen-Icons aus Lucide (ISC-Lizenz), direkt eingebettet, damit die App offline funktioniert.
@@ -222,7 +222,8 @@ const rolle = {
   get rest() { return rolle.max - rolle.y; },
   to(y, smooth = false) { (rolle.el || window).scrollTo({ top: Math.max(0, Math.round(y)), behavior: smooth ? 'smooth' : 'instant' }); },
   by(d) { if (Math.round(d)) rolle.to(rolle.y + d); },
-  ende(smooth = false) { rolle.to(rolle.max, smooth); },
+  // seit 4.28.1 (A-36): bis zum Ende des Inhalts – Platz, der nach dem Schließen der Tastatur noch darunter steht, zählt nicht
+  ende(smooth = false) { rolle.to(rolle.max - platzVon(rolle.el), smooth); },
 };
 // Rollen hören (Fenster und Rollbereich): scroll-Ereignisse von Elementen steigen nicht auf – deshalb in der Einfangphase.
 const onRoll = fn => window.addEventListener('scroll', e => { if (e.target === document || e.target === rolle.el) fn(e); }, { capture: true, passive: true });
@@ -945,6 +946,7 @@ function openDialog(html, wide = false) {
   dlg.onclose = null;
   dlgDirty = null;
   dlg.innerHTML = html;
+  dlgFest = 0;
   dlg.returnValue = '';
   if (!dlg.open) showModalQuiet(dlg);
   placeDialogs();
@@ -1022,8 +1024,8 @@ function updateFab() {
   const raum = e ? Math.min(e.getBoundingClientRect().bottom, vv ? vv.offsetTop + vv.height : innerHeight) - e.getBoundingClientRect().top : Infinity;
   f.classList.toggle('still', rolle.max <= 1 || raum < (fabH || 96) + 32);
 }
-const fabTop = () => rolle.to(0, true);
-const fabEnd = () => rolle.ende(true);
+const fabTop = () => nachTastatur(() => rolle.to(0, true));
+const fabEnd = () => nachTastatur(() => rolle.ende(true));
 if (window.ResizeObserver) new ResizeObserver(() => requestAnimationFrame(updateFab)).observe(document.body);
 window.addEventListener('resize', () => requestAnimationFrame(updateFab));
 window.visualViewport?.addEventListener('resize', () => requestAnimationFrame(updateFab));
@@ -1052,6 +1054,7 @@ dlg.addEventListener('click', () => setTimeout(refreshOk));
 dlg.addEventListener('cancel', e => { e.preventDefault(); dlg.querySelector('#dlgX')?.click(); });
 msg.addEventListener('close', unlockPage);
 dlg.addEventListener('close', () => {
+  dlgFest = 0;
   unlockPage();
   if (dlg.open) return;
   const sel = dlgOpener;
@@ -1102,7 +1105,9 @@ function mountCap(root) {
 // Wie Apple: auf dem iPhone (hoch und quer) und in sehr schmalen Fenstern gilt die kompakte Ansicht –
 // eine Seite nach der anderen, Fenster bildschirmfüllend. <html> bekommt dann die Klasse 'phone'.
 // Die App fragt isPhone() und baut ihre Seiten danach; bei einem Wechsel ruft ihr resize-Handler render().
-const isPhone = () => innerWidth < 700 || innerHeight < 500;
+// Seit 4.28.1 (A-36): die Höhe ohne Tastatur zählt (S-3: verschiebt Safari den sichtbaren Bereich, wird innerHeight kleiner – das
+// iPad galt mit offener Tastatur als iPhone, das Fenster sprang an den linken Rand).
+const isPhone = () => innerWidth < 700 || seitenHoehe() < 500;
 // Seit 4.9.0: Name des Geräts für ‚geändert am … · iPad‘ und den Abgleich (iPadOS meldet sich als Mac mit Touch).
 function deviceName() {
   const ua = navigator.userAgent;
@@ -1215,6 +1220,14 @@ document.addEventListener('touchmove', e => {
 
 // Bei offener Tastatur verkleinert und verschiebt Safari den sichtbaren Bereich. Kopfzeile, Tabellenkopf
 // und alle Fenster richten sich danach: die Kopfzeilen bleiben sichtbar, nur der Inhalt scrollt.
+// Seit 4.28.1 (A-36, Safari-Eigenheit S-3): Höhe der Seite ohne Tastatur = innerHeight + scrollY – verschiebt Safari den sichtbaren
+// Bereich, wird innerHeight um genau so viel kleiner. Daraus der Abstand der Tastatur vom unteren Rand (Kapsel) und ob sie offen ist.
+// Mit Rollbereich rollt die Seite selbst nie – scrollY ist dann nur Safaris Verschiebung (ohne Rollbereich rollt das Fenster).
+function seitenHoehe() { return innerHeight + (rolle.el ? Math.max(0, scrollY) : 0); }
+function kbOffen() { return !!window.visualViewport && visualViewport.height < seitenHoehe() - 80; }
+// Felder, die eine Tastatur öffnen (Datum, Uhrzeit, Auswahl und Schalter öffnen keine)
+const FELD = 'textarea, input:not([type=date],[type=time],[type=datetime-local],[type=month],[type=checkbox],[type=radio],[type=button],[type=submit],[type=reset],[type=range],[type=color],[type=file],[type=hidden]):not([readonly])';
+let dlgFest = 0;   // seit 4.28.1: Höhe des iPad-Fensters vor dem Antippen – der Platz unter dem Inhalt macht es nicht höher
 function placeDialogs() {
   const vv = window.visualViewport;
   const top = vv ? Math.max(0, vv.offsetTop) : 0;
@@ -1224,48 +1237,163 @@ function placeDialogs() {
   root.setProperty('--vv-top', top + 'px');
   // A-28 (B1): der Rahmen ist so hoch wie der sichtbare Bereich und endet über der Tastatur.
   root.setProperty('--vv-h', Math.round(h) + 'px');
-  // Abstand der Tastatur vom unteren Rand: die untere Leiste (iPhone) bleibt darüber sichtbar.
-  root.setProperty('--vv-bottom', Math.max(0, Math.round(innerHeight - top - h)) + 'px');
-  root.setProperty('--dlg-max', Math.max(200, full ? h : h - 20) + 'px');
+  // Abstand der Tastatur vom unteren Rand: die untere Leiste (iPhone) und die Kapsel bleiben darüber sichtbar.
+  root.setProperty('--vv-bottom', Math.max(0, Math.round(seitenHoehe() - top - h)) + 'px');
+  const max = full ? h : h - 20;
+  root.setProperty('--dlg-max', Math.max(200, !full && dlgFest ? Math.min(max, dlgFest) : max) + 'px');
   [dlg, msg].forEach(d => {
     if (!d.open) return;
     // iPhone: das Fenster füllt den sichtbaren Bereich (bei offener Tastatur bis zur Tastatur).
     if (full && d === dlg) { d.style.margin = '0'; d.style.bottom = 'auto'; d.style.top = Math.round(top) + 'px'; return; }
-    // Fenster im sichtbaren Bereich zentrieren (bei offener Tastatur oberhalb der Tastatur).
+    // Fenster im sichtbaren Bereich zentrieren (bei offener Tastatur oberhalb der Tastatur). Seit 4.28.1 (A-36): steht es dort
+    // schon ganz, bleibt es stehen – auch nach dem Schließen der Tastatur, solange ein Feld darin den Fokus hat.
     d.style.margin = '0 auto';
     d.style.bottom = 'auto';
+    const jetzt = parseFloat(d.style.top), ganz = jetzt >= top + 9 && jetzt + d.offsetHeight <= top + h - 9;
+    if (ganz && (kbOffen() || d.contains(document.activeElement) && document.activeElement.matches(FELD))) return;
     d.style.top = Math.round(top + Math.max(10, (h - d.offsetHeight) / 2)) + 'px';
   });
-}
-if (window.visualViewport) {
-  visualViewport.addEventListener('scroll', placeDialogs);
-  visualViewport.addEventListener('resize', placeDialogs);
 }
 placeDialogs();   // --vv-h (Höhe des Rahmens, A-28) gleich beim Start
 // Seit 4.9.1 (R-4.5): wächst ein Fenster nach dem Öffnen (Inhalt, Textfelder), wird es neu platziert –
 // es ragt nie über den Bildschirm hinaus.
 if (window.ResizeObserver) [dlg, msg].forEach(d => new ResizeObserver(() => { if (d.open) placeDialogs(); }).observe(d));
-// Das angetippte Feld im Fenster in den sichtbaren Teil rollen, sobald die Tastatur offen ist.
-dlg.addEventListener('focusin', e => {
-  if (!e.target.matches('input, textarea')) return;
-  setTimeout(() => { placeDialogs(); e.target.scrollIntoView({ block: 'nearest' }); }, 350);
-});
-// R-4.5 (seit 4.28.0, A-35): ebenso ein Feld im Inhalt. Safari verschiebt beim Antippen eines Felds unter der Tastatur nur den
-// sichtbaren Bereich; der Rahmen folgt ihm (--vv-top), das Feld bliebe unter der Tastatur (Messung iPhone quer 19.10.2026).
-// Sobald Safari die Tastatur meldet (und beim Wechsel des Felds), rollt der Inhalt, bis das Feld ganz sichtbar ist und 16 px über
-// der Tastatur steht – nur dann, nie gegen das Wischen des Nutzers. Reicht der Platz dafür nicht (iPhone quer mit Suchzeile und
-// Tastatur: 55 px Inhalt), steht das Feld ganz sichtbar direkt unter Kopf- bzw. Suchzeile. Rollbereich und Feld werden gegeneinander
-// gemessen, das gilt in Safari (gegen den sichtbaren Bereich) wie in Chromium (gegen das Fenster).
-function fieldIntoView() {
-  const f = document.activeElement, e = rolle.el;
-  if (!e || !f?.matches?.('input, textarea, select') || !e.contains(f)) return;
-  const r = f.getBoundingClientRect(), b = e.getBoundingClientRect(), unten = b.bottom - 16;
-  if (r.height > unten - b.top) { if (Math.abs(r.top - b.top) > 1) rolle.by(r.top - b.top); }
-  else if (r.bottom > unten) rolle.by(r.bottom - unten);
-  else if (r.top < b.top) rolle.by(r.top - b.top - 16);
+
+// R-4.5 Tastatur ohne Springen (seit 4.28.1, A-36, Fall-Liste arbeit/A-36 Fall-Liste.md Abschnitt 8, Muster 9 am Gerät 10 von 10 still).
+// Safari verschiebt den sichtbaren Bereich (und mit ihm alle Leisten), wenn das Feld beim Fokus unter der künftigen Tastatur liegt,
+// und liest diese Lage beim Fokus, bevor die App etwas tun kann (Designrichtlinie 13, S-1, S-7). Deshalb:
+// - Die Berührung bleibt bei Safari. Sobald ein Feld den Fokus hat (focusin), rollt sein Bereich (Inhalt bzw. Fenster) es in die obere
+//   Hälfte des künftig sichtbaren Bereichs; ist die Tastatur noch zu, bekommt es danach sofort einen neuen Fokus (blur + focus, noch
+//   in der Berührung) – Safari liest die Lage dann neu und verschiebt nichts (S-8). Bei offener Tastatur (Feld wechseln) kein neuer
+//   Fokus: die Tastatur würde flackern. Die Ereignisse des neuen Fokus sieht die App nicht (sonst z. B. ‚Pflichtfeld‘ beim ersten Antippen).
+// - Der Klick, den Safari danach an derselben Stelle auslöst, trifft dort jetzt etwas anderes – er wird unterdrückt.
+// - Safari stellt den Inhalt beim Erscheinen der Tastatur auf den Stand vor dem Rollen zurück (S-9, nur im Inhalt): die App rollt ihn
+//   im scroll-Ereignis sofort wieder hin (Rückstellung, solange das Feld den Fokus hat, höchstens 1,5 s; Wischen beendet sie).
+// - Platz unter dem Inhalt: beim Antippen so viel wie nötig, bei jeder Meldung von Safari genau so viel, dass der Rollstand bleibt;
+//   nach dem Schließen der Tastatur schrumpft er beim Rollen wieder (nur der Platz, nie scrollTop – das bräche das sanfte Rollen ab).
+// - Die Tastaturhöhe vor dem ersten Öffnen ist geschätzt (am Gerät gemessen) und wird je Gerät, Lage und Tastaturart gemerkt.
+// Nur bei Berührung oder offener Tastatur – am Rechner mit Maus rollt nichts vorab.
+const SCHAETZUNG = { 'iPhone hoch text': 403, 'iPhone hoch ziffern': 376, 'iPhone quer text': 276, 'iPhone quer ziffern': 232,
+  'iPad quer text': 428, 'iPad quer ziffern': 428, 'iPad hoch text': 340, 'iPad hoch ziffern': 340 };
+const KB_SPEICHER = 'appdesign.tastatur';
+let kbGemerkt = {}; try { kbGemerkt = JSON.parse(localStorage.getItem(KB_SPEICHER) || '{}') || {}; } catch {}
+const kbSchluessel = f => `${Math.min(screen.width, screen.height) < 500 ? 'iPhone' : 'iPad'} ${innerWidth > seitenHoehe() ? 'quer' : 'hoch'} ${
+  /^(decimal|numeric)$/.test(f.getAttribute('inputmode') || '') ? 'ziffern' : 'text'}`;
+const kbHoehe = f => kbGemerkt[kbSchluessel(f)] ?? SCHAETZUNG[kbSchluessel(f)] ?? Math.round(seitenHoehe() / 2);
+function kbMerken(f) {
+  const k = kbSchluessel(f), h = Math.round(seitenHoehe() - visualViewport.height);
+  if (kbGemerkt[k] === h) return;
+  kbGemerkt[k] = h;
+  try { localStorage.setItem(KB_SPEICHER, JSON.stringify(kbGemerkt)); } catch {}
 }
-if (window.visualViewport) ['resize', 'scroll'].forEach(t => visualViewport.addEventListener(t, () => requestAnimationFrame(fieldIntoView)));
-document.addEventListener('focusin', e => { if (rolle.el?.contains(e.target)) setTimeout(fieldIntoView, 350); });
+const behaelter = f => f.closest('.dlg-body, #app > .rolle');
+// Platz unter dem Inhalt: --platz verlängert den Platzhalter am Ende (::after, design.css) – ein Innenabstand machte den Bereich selbst
+// höher als seinen Platz (A-33)
+const platzVon = c => parseFloat(c?.style.getPropertyValue('--platz')) || 0;
+const platz = (c, px) => { c.style.setProperty('--platz', Math.max(0, Math.ceil(px)) + 'px'); };
+// genau so viel Platz, dass der Rollstand bleibt
+function knapp(c) {
+  const y = c.scrollTop;
+  platz(c, y + c.clientHeight - (c.scrollHeight - platzVon(c)));
+  c.scrollTop = y;
+}
+// rollen, notfalls mit Platz darunter
+function rollen(c, d) {
+  d = Math.round(d);
+  if (!d) return;
+  const fehlt = c.scrollTop + d - (c.scrollHeight - c.clientHeight);
+  if (fehlt > 0) platz(c, platzVon(c) + fehlt);
+  c.scrollTop += d;
+}
+// wie weit das Feld rollen muss, damit seine Mitte höchstens 24 px über der Mitte des künftig sichtbaren Bereichs steht, nie über dem
+// oberen Rand seines Bereichs (+4 px; passt es nicht zweimal in den sichtbaren Teil, direkt an den Rand wie R-4.5); ≤ 0: nichts
+function noetig(f, c) {
+  const kb = kbOffen() ? seitenHoehe() - visualViewport.height : kbHoehe(f), sichtbar = seitenHoehe() - kb;
+  const r = f.getBoundingClientRect(), b = c.getBoundingClientRect(), oben = 2 * r.height > sichtbar - b.top ? b.top : b.top + 4;
+  return (r.top + r.bottom) / 2 - Math.max(oben + r.height / 2, sichtbar / 2 - 24);
+}
+// Feld ganz über der Tastatur (R-4.5, seit 4.28.0): 16 px darüber; reicht der Platz nicht, direkt unter Kopf- bzw. Suchzeile.
+// Rahmen und Fenster enden über der Tastatur – Feld und Bereich werden gegeneinander gemessen (Safari wie Chromium). Gleitet das
+// iPad-Fenster noch, zählt seine neue Lage.
+function feldZeigen(f) {
+  const c = behaelter(f);
+  if (!c) return;
+  const d = f.closest('dialog'), dy = d && !isPhone() ? (parseFloat(d.style.top) || 0) - d.getBoundingClientRect().top : 0;
+  const r = f.getBoundingClientRect(), b = c.getBoundingClientRect(), oben = b.top + dy, unten = b.bottom + dy - 16, ro = r.top + dy, ru = r.bottom + dy;
+  if (r.height > unten - oben) { if (Math.abs(ro - oben) > 1) rollen(c, ro - oben); }
+  else if (ru > unten) rollen(c, ru - unten);
+  else if (ro < oben) rollen(c, ro - oben - 16);
+}
+let neuFokus = false, beruehrt = -1e9, gerollt = null, halten = null, kbWar = false, nachKb = null;
+// die Ereignisse des neuen Fokus nicht an die App weitergeben (Safari-Modell und Safari selbst lesen die Lage vorher, auf window)
+['focusout', 'blur', 'focusin', 'focus'].forEach(t => document.addEventListener(t, e => { if (neuFokus) e.stopImmediatePropagation(); }, true));
+addEventListener('touchstart', () => { beruehrt = performance.now(); gerollt = null; halten = null; }, { capture: true, passive: true });
+addEventListener('focusout', () => { if (!neuFokus) halten = null; }, true);
+document.addEventListener('focusin', e => {
+  const f = e.target;
+  if (!f.matches?.(FELD) || !kbOffen() && performance.now() - beruehrt > 1500) return;
+  const c = behaelter(f);
+  if (!c) return;
+  const n = noetig(f, c);
+  if (n <= 0) return;
+  if (c.closest('dialog') === dlg && !isPhone() && !dlgFest) { dlgFest = Math.round(dlg.offsetHeight); placeDialogs(); }
+  platz(c, seitenHoehe());   // reichlich – gleich danach wieder knapp
+  c.scrollTop += n;
+  knapp(c);
+  gerollt = { f, t: performance.now() };
+  halten = { f, c, y: c.scrollTop, bis: performance.now() + 1500 };
+  if (kbOffen()) return;
+  neuFokus = true;
+  try { f.blur(); f.focus({ preventScroll: true }); } finally { neuFokus = false; }
+  messZeile(`neu fokussiert ${messId(f)}${document.activeElement === f ? '' : ' Fokus weg'}`);
+}, true);
+addEventListener('click', e => {
+  const g = gerollt;
+  gerollt = null;
+  if (!g || performance.now() - g.t > 1000 || g.f.contains(e.target)) return;
+  e.preventDefault(); e.stopImmediatePropagation();
+  messZeile(`klick unterdrückt ${messId(e.target)} (Feld ${messId(g.f)})`);
+}, true);
+// Rückstellung (S-9) und Platz schrumpft (nach dem Schließen der Tastatur, ohne Feld mit Fokus im Bereich)
+addEventListener('scroll', e => {
+  const c = e.target, h = halten;
+  if (h && c === h.c) {
+    if (performance.now() > h.bis || document.activeElement !== h.f) halten = null;
+    else if (c.scrollTop < h.y - 20) { const alt = Math.round(c.scrollTop); c.scrollTop = h.y; messZeile(`zurückgestellt ${messId(h.f)} ${alt} → ${Math.round(c.scrollTop)}`); return; }
+  }
+  if (!c.style?.getPropertyValue('--platz') || !c.matches?.('.dlg-body, #app > .rolle') || kbOffen() || c.contains(document.activeElement)) return;
+  const pad = platzVon(c), n = Math.ceil(c.scrollTop + c.clientHeight - (c.scrollHeight - pad));
+  if (n <= 0) {
+    c.style.removeProperty('--platz');
+    messZeile(`platz weg ${messId(c)}`);
+    if (dlgFest && c.closest('dialog') === dlg) { dlgFest = 0; placeDialogs(); }
+  } else if (n < pad) platz(c, n);
+}, { capture: true, passive: true });
+// Jede Meldung von Safari (Tastatur auf und zu, sichtbarer Bereich verschoben): Rahmen und Fenster neu stellen, ohne dass ein Inhalt
+// rutscht – vor dem Wachsen des Rahmens Platz geben, sonst kürzt der Browser den Rollstand. Das iPad-Fenster gleitet (0,25 s) mit.
+// Schließt die Tastatur (iPad: Tastatur-Taste), gibt das Feld den Fokus ab – erneutes Antippen ist dann ein gewöhnliches.
+function gemeldet() {
+  const cs = [rolle.el, dlg.open ? dlg.querySelector('.dlg-body') : null].filter(Boolean), y = cs.map(c => c.scrollTop);
+  const offen = kbOffen(), f = document.activeElement, feld = f?.matches?.(FELD) ? f : null;
+  if (dlg.open && !isPhone()) { dlg.classList.add('gleitet'); clearTimeout(gemeldet.t); gemeldet.t = setTimeout(() => dlg.classList.remove('gleitet'), 300); }
+  cs.forEach(c => { if (platzVon(c)) platz(c, 2000); });
+  placeDialogs();
+  cs.forEach((c, i) => { if (platzVon(c)) { c.scrollTop = y[i]; knapp(c); } });
+  if (offen && feld) { kbMerken(feld); feldZeigen(feld); }
+  if (kbWar && !offen) {
+    if (feld) feld.blur();
+    if (nachKb) { const fn = nachKb; nachKb = null; fn(); }
+  }
+  kbWar = offen;
+}
+if (window.visualViewport) ['resize', 'scroll'].forEach(t => visualViewport.addEventListener(t, gemeldet));
+// Seit 4.28.1 (A-36, 6n): ‚Nach oben / Ans Ende‘ bei offener Tastatur – das Antippen schließt die Tastatur; gerollt wird erst danach
+// (sonst bricht der Ausgleich beim Schließen das sanfte Rollen ab und es braucht ein zweites Antippen), spätestens nach 600 ms.
+function nachTastatur(fn) {
+  if (!kbOffen()) return fn();
+  nachKb = fn;
+  setTimeout(() => { if (nachKb === fn) { nachKb = null; fn(); } }, 600);
+}
 
 /* ---------- Messmodus (seit 4.26.0, A-27, R-1.6) ---------- */
 
@@ -1314,7 +1442,7 @@ function messStart({ app = '', teile = {}, rollen = {} } = {}) {
     matchMedia('(prefers-color-scheme: dark)').matches ? 'dunkel' : 'hell'} · ${mess.beginn.toISOString()}`);
   mess.zeilen.push(['t', ...Object.keys(messWerte())].map(v => v.padEnd(6)).join(' ').trimEnd());
   const hoere = (z, typ, text) => { if (!z) return; const fn = e => messEreignis(text(e)); z.addEventListener(typ, fn, true); mess.hoerer.push([z, typ, fn]); };
-  hoere(document, 'focusin', e => 'focus ' + messId(e.target));
+  hoere(document, 'focusin', e => 'focus ' + messId(e.target));   // seit 4.28.1: der neue Fokus (R-4.5) steht als ‚neu fokussiert‘ da
   hoere(document, 'focusout', e => 'blur ' + messId(e.target));
   hoere(document, 'input', e => 'eingabe ' + (e.target.value?.length ?? 0));
   hoere(document, 'click', e => 'tippen ' + messId(e.target.closest('button, a, input, [role=menuitem]')));

@@ -1884,3 +1884,9 @@ einmal zurück (Modell S-9); Muster 8 stellt den Rollstand sofort zurück. Nutze
 Auswahlfenster) → Zusammenarbeit 2.16.0 (0 Nr. 11): Link und Schritte zusätzlich im Auswahlfenster selbst, **als allgemeine Regel** (Ja).
 Muster 8 und 9: Rückstellung wirkt; Platz unter dem Inhalt blieb stehen (2. Mal ↓ zu weit, Nutzer) → Muster 9 behoben; offen: ↑ bei
 offener Tastatur braucht zwei Antipper. Übergabe an 0024 (Bau 4.28.1 / 3.26.1).
+
+**2026-10-21 · Sitzung Reiselogbuch 0024:** Fall-Liste für den Bau (A-36 Abschnitt 8, B-1 bis B-17) – Ja des Nutzers. Gebaut: AppDesign
+4.28.1 / Reiselogbuch 3.26.1 – V3 in ui.js (neuer Fokus nach dem Rollen, Rückstellung, Platz unter dem Inhalt als `--platz` am
+Platzhalter, Klick unterdrückt, Tastatur-Taste, ‚Nach oben‘ bei offener Tastatur mit einem Antippen, iPad-Fenster gleitet) und die
+allgemeine Regel R-2.4 (iPhone quer niedrige Leisten, Suchfeld als Kapsel 32 px). Beim Bau gefunden: B-18 (die App darf die Ereignisse
+des neuen Fokus nicht sehen – ‚Pflichtfeld‘). Prüfung gegen 3.26.0 rot (177 Fehler), jetzt grün; am Gerät zu bestätigen (P-61).

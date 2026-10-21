@@ -1,4 +1,4 @@
-/* AppDesign 4.28.0 · design.css – gemeinsame Gestaltung der iPad-Web-Apps von g811141a (Apple-like)
+/* AppDesign 4.28.1 · design.css – gemeinsame Gestaltung der iPad-Web-Apps von g811141a (Apple-like)
    Einbinden im <head> vor dem eigenen <style> der App:  <link rel="stylesheet" href="../AppDesign/fassung/X.Y.Z/design.css"> (feste Fassung, R-10.3)
    Farben als Variablen auf :root, Dunkelmodus über data-theme="dark" (setzt ui.js / applyTheme).
    Komponenten: Schaltflächen, Suchfeld, Kapsel, Eingabefelder, Datumsfelder, Kopfzeile, Seitenleiste,
@@ -6,7 +6,7 @@
    Options-Kapsel; seit 4.1.0 iPhone-Ansicht (html.phone: Seitenkopf, großer Titel, Liste, Kasten, untere Leiste). Regeln dazu: README - Designrichtlinie allgemein.md */
 /* Farben im Apple-Look: Hintergrund Hellgrau, Kästen weiß ohne Rand, schwebende Schaltflächen */
 :root {
-  --ad-version: "4.28.0";   /* R-10.3: Version der Bausteine, die App prüft sie beim Start */
+  --ad-version: "4.28.1";   /* R-10.3: Version der Bausteine, die App prüft sie beim Start */
   --bg: #f2f2f7;
   --card: #ffffff;
   --ink: #1c1c1e;
@@ -192,7 +192,9 @@ body.docked #app:has(> .rolle) { left: calc(var(--side-w) + max(10px, env(safe-a
   padding: 0 max(16px, env(safe-area-inset-right)) 0 max(16px, env(safe-area-inset-left)); }
 /* Seit 4.27.1 (A-33): der Abstand unter dem Inhalt (100 px, Platz für die Kapsel) als Platzhalter am Ende statt als Innenabstand –
    so wird der Rollbereich auch bei sehr niedrigem sichtbarem Bereich (iPhone quer mit Tastatur) nicht höher als sein Platz. */
-.rolle::after { content: ''; display: block; height: 100px; }
+.rolle::after { content: ''; display: block; height: calc(100px + var(--platz, 0px)); }
+/* Seit 4.28.1 (A-36, R-4.5): --platz (setzt ui.js) = Platz unter dem Inhalt, damit ein Feld beim Antippen in die obere Hälfte rollen kann */
+.dlg-body::after { content: ''; display: block; height: var(--platz, 0px); }
 body.docked .rolle { padding-left: 16px; }
 @media print {
   html:has(#app > .rolle), html:has(#app > .rolle) body { height: auto; overflow: visible; }
@@ -423,8 +425,8 @@ dialog input[type=text], dialog input[type=date], dialog textarea { background: 
    runder Zurück-Knopf ohne Text, Suche unten, Fenster bildschirmfüllend, Abfragen als Sprechblase am Knopf. */
 html.phone body { padding-bottom: calc(env(safe-area-inset-bottom) + 120px); }
 html.phone body:has(.bnote) { padding-bottom: calc(env(safe-area-inset-bottom) + 150px); }
-html.phone .rolle::after { height: calc(env(safe-area-inset-bottom) + 120px); }   /* seit 4.27.1 Platzhalter statt Innenabstand (A-33) */
-html.phone body:has(.bnote) .rolle::after { height: calc(env(safe-area-inset-bottom) + 150px); }
+html.phone .rolle::after { height: calc(env(safe-area-inset-bottom) + 120px + var(--platz, 0px)); }   /* seit 4.27.1 Platzhalter statt Innenabstand (A-33) */
+html.phone body:has(.bnote) .rolle::after { height: calc(env(safe-area-inset-bottom) + 150px + var(--platz, 0px)); }
 html.phone #side:not(.page), html.phone .side-shade { display: none !important; }
 /* Seit 4.20.0 (A-15): Kapsel ‚Nach oben / Ans Ende‘ auch im iPhone-Aufbau; ausgeblendet, wenn es nichts zu scrollen gibt (R-3.2) */
 .fab.still { display: none; }
@@ -516,3 +518,26 @@ html.phone .step-head .head-checks { order: 3; margin-left: 0; justify-content: 
 .nettoast small { display: block; color: var(--muted); font-size: 13px; }
 .nettoast .ic { width: 22px; height: 22px; color: var(--muted); flex: none; }
 @media print { .nettoast, #side .side-foot .offl { display: none !important; } }
+
+/* R-4.5 (seit 4.28.1, A-36): das iPad-Fenster gleitet mit der Tastatur in die Mitte des sichtbaren Bereichs und zurück (wie die
+   Formularblätter von iPadOS); ui.js setzt .gleitet bei jeder Meldung von Safari für 0,3 s. */
+dialog.gleitet { transition: top .25s ease; }
+@media (prefers-reduced-motion: reduce) { dialog.gleitet { transition: none; } }
+/* R-2.4 (seit 4.28.1, A-36): iPhone quer – niedrige Leisten wie iOS quer. Kopfzeile, Suchzeile und Fensterkopf 32 statt 44 px
+   hoch, damit Felder darunter und die Suche bei offener Tastatur in der oberen Hälfte des sichtbaren Bereichs liegen – dann verschiebt
+   Safari nichts (R-4.5). Knöpfe in Kapseln 31 px (R-3.1: ab 28), Markierung 25 × 25; runde Knöpfe 32 × 32 mit einer unsichtbaren
+   Antippfläche von 44 × 44, das Suchfeld als Kapsel 32 px (R-3.1: Kapseln ab 28). */
+@media (orientation: landscape) and (max-height: 500px) {
+  html.phone .pnav { min-height: 32px; padding-top: env(safe-area-inset-top); padding-bottom: 0; }
+  html.phone .pnav .nb2 { margin: 0 0 3px; }
+  html.phone #dlg .dlg-head { padding-top: env(safe-area-inset-top); padding-bottom: 0; min-height: 32px; }
+  html.phone :is(.pnav, #dlg .dlg-head) :is(.grp, .navgrp) { height: 32px; border-radius: 16px; }
+  html.phone :is(.pnav, #dlg .dlg-head) :is(.grp, .navgrp) button { border-radius: 16px; }
+  html.phone :is(.pnav, #dlg .dlg-head) :is(.grp, .navgrp) button:not(.txt):is(.on, .fill)::before { width: 25px; height: 25px; }
+  html.phone :is(.pnav, #dlg .dlg-head) .round, html.phone #dlg .dlg-head .grp button:not(.txt) { min-height: 0; }
+  html.phone :is(.pnav, #dlg .dlg-head) .round { width: 32px; min-width: 32px; height: 32px; position: relative; }
+  html.phone :is(.pnav, #dlg .dlg-head) .round::after { content: ''; position: absolute; left: 50%; top: 50%; width: 44px; height: 44px; transform: translate(-50%, -50%); }
+  html.phone .pnav .searchbox input[type=search] { height: 32px; min-height: 0; border-radius: 16px; }
+  html.phone .pnav { row-gap: 0; }
+  html.phone #dlg .dlg-head h3 { min-height: 0; }
+}

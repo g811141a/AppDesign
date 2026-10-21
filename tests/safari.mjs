@@ -62,9 +62,9 @@
 //   verloren (12 von ~35, iPhone und iPad, 6c 1 und 6e) – Berührungen nie abfangen. Zifferntastatur iPhone hoch 376 px (Versuch 4).
 // - S-7 (Muster 5, 6g): Safari liest die Lage des Felds für das erste Öffnen **beim Fokus**, bevor die Fokus-Hörer der App laufen –
 //   Rollen im focusin zählt nicht (iPad quer: Ort 527–571 → 362, Gesamtausgaben 618–662 → 428, obwohl danach in der oberen Hälfte).
-// - S-8 (Muster 6, 6h) **Annahme, am Gerät zu bestätigen:** ein neuer Fokus (blur() + focus() noch im focusin) zählt wie ein eigener –
-//   Safari liest die Lage dann neu (window-focusin des neuen Fokus, S-7). Ein Feld mit readonly öffnet keine Tastatur und verschiebt
-//   nicht (mitTastatur). Hält die Annahme am Gerät nicht, wird sie hier korrigiert. Bestätigt am Gerät (6i, iPhone hoch, iPad).
+// - S-8 (Muster 6, 6h; am Gerät bestätigt 6i, 6k, 6m, 6n – iPhone hoch, iPad quer, 10 von 10): ein neuer Fokus (blur() + focus()
+//   noch im focusin) zählt wie ein eigener – Safari liest die Lage dann neu (window-focusin des neuen Fokus, S-7); die Tastatur öffnet
+//   beim ersten Mal und klappt dabei nicht zu und auf. Ein Feld mit readonly öffnet keine Tastatur und verschiebt nicht (mitTastatur).
 // - S-9 (Muster 5 bis 7, 6i, 6k): Feld im Inhalt (Rollbereich außerhalb eines Fensters) – sobald die Tastatur erscheint, steht der
 //   Rollbereich wieder auf dem Rollstand beim ersten Fokus, vor dem Rollen der App (Muster 6: 456 / 427, Muster 7 ohne readonly:
 //   456 / 477, Muster 5: 477, dort von Safaris Verschiebung verdeckt: 618 − 428 = 190). Felder im Fenster nie (Ort, 7 von 7).
@@ -150,6 +150,9 @@ export async function safariModell(p, ansicht, { leisten = { bar: '.nb, .pnav', 
         const sicht = sel => [...document.querySelectorAll(sel)].find(x => x.getClientRects().length);
         for (const [k, sel] of Object.entries(leisten)) { const e = sicht(sel); r[k] = e ? Math.round(e.getBoundingClientRect().top - top) : null; }
         for (const [k, sel] of Object.entries(links)) { const e = sicht(sel); r[k] = e ? Math.round(e.getBoundingClientRect().left) : null; }
+        // seit 4.28.1 (A-36): das Feld mit Fokus (Rahmen und Fenster sind fest) – springt es, steht es zwischen zwei Bildern anders
+        const a = document.activeElement;
+        if (a?.matches?.('input, textarea')) { r.feld = Math.round(a.getBoundingClientRect().top - top); r.feldId = a.id || a.name || a.tagName; }
         return r;
       },
       // A-31: Werte aus einer Messdatei – so meldet Safari, sofort (die Datei zeigt den Augenblick der Meldung)
