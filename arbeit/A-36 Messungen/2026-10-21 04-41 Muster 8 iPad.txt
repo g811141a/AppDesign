@@ -1,0 +1,38 @@
+# A-36 Muster 8 · Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.6.2 Safari/605.1.15 · Home-Bildschirm · 834×1194 · 2026-10-21T04:41:45.839Z
+# 2 Felder angetippt · virtualKeyboard: nein
+t vh vt sy ih ch kopf side dkopf dlinks kapsel sonde fokus ft fb v
+5035 802 0 0 802 802 0 0 - - 766 802 - - - v3 ! neu
+8811 802 0 0 802 802 0 0 - - 766 802 - - - v3 ! tippen runter
+10223 802 0 0 802 802 0 0 - - 766 802 kosten 618 662 v3 ! focus kosten
+10223 802 0 0 802 802 0 0 - - 766 802 kosten 618 662 v3 ! vorbereitet kosten 477
+10224 802 0 0 802 802 0 0 - - 766 802 - - - v3 ! blur kosten neu
+10226 802 0 0 802 802 0 0 - - 766 802 kosten 141 185 v3 ! focus kosten neu
+10227 802 0 0 802 802 0 0 - - 766 802 kosten 141 185 v3 ! neu fokussiert kosten a
+10230 802 0 0 802 802 0 0 - - 766 802 kosten 141 185 v3 ! klick unterdrückt rolle (Feld kosten)
+10440 802 0 0 802 802 0 0 - - 766 802 kosten 141 185 v3 ! zurückgestellt kosten 389 → 866
+10468 374 0 0 802 802 0 0 - - 766 802 kosten 141 185 v3 ! vv resize
+10503 374 0 0 802 802 0 0 - - 358 802 kosten 141 185 v3
+19362 802 0 0 802 802 0 0 - - 358 802 kosten 141 185 v3 ! vv resize
+19363 802 0 0 802 802 0 0 - - 766 802 - - - v3 ! blur kosten
+21906 802 0 0 802 802 0 0 - - 766 802 - - - v3 ! tippen hoch
+25092 802 0 0 802 802 0 0 - - 766 802 - - - v3 ! tippen runter
+27503 802 0 0 802 802 0 0 - - 766 802 kosten 435 479 v3 ! focus kosten
+27503 802 0 0 802 802 0 0 - - 766 802 kosten 435 479 v3 ! vorbereitet kosten 294
+27504 802 0 0 802 802 0 0 - - 766 802 - - - v3 ! blur kosten neu
+27506 802 0 0 802 802 0 0 - - 766 802 kosten 141 185 v3 ! focus kosten neu
+27506 802 0 0 802 802 0 0 - - 766 802 kosten 141 185 v3 ! neu fokussiert kosten a
+27506 802 0 0 802 802 0 0 - - 766 802 kosten 141 185 v3 ! klick unterdrückt rolle (Feld kosten)
+27634 802 0 0 802 802 0 0 - - 766 802 kosten 141 185 v3 ! zurückgestellt kosten 572 → 866
+27657 374 0 0 802 802 0 0 - - 766 802 kosten 141 185 v3 ! vv resize
+27674 374 0 0 802 802 0 0 - - 358 802 kosten 141 185 v3
+36182 802 0 0 802 802 0 0 - - 358 802 kosten 141 185 v3 ! vv resize
+36184 802 0 0 802 802 0 0 - - 766 802 - - - v3 ! blur kosten
+37050 802 0 0 802 802 0 0 - - 766 802 - - - v3 ! tippen hoch
+40915 1162 0 0 1162 1162 0 0 - - 1126 1162 - - - v3 ! lage iPad hoch
+40915 1162 0 0 1162 1162 0 0 - - 1126 1162 - - - v3 ! vv resize
+40915 1162 0 0 1162 1162 0 0 - - 1126 1162 - - - v3 ! vv scroll
+46708 802 0 0 802 802 0 0 - - 1126 1162 - - - v3 ! vv scroll
+46745 802 0 0 802 802 0 0 - - 1126 1162 - - - v3 ! lage iPad quer
+46745 802 0 0 802 802 0 0 - - 1126 1162 - - - v3 ! vv resize
+46785 802 0 0 802 802 0 0 - - 766 802 - - - v3
+48082 802 0 0 802 802 0 0 - - 766 802 - - - v3 ! tippen teilen

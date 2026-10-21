@@ -51,11 +51,14 @@ const VERSUCH = ipad => [
   ['Tastatur zu', p => taste(p, ipad), 'zu fNotiz'],
   ['Notiz erneut', p => p.tap('#fNotiz'), 'auf fNotiz'],
   ['Fertig', p => p.tap('#dlgOk'), 'zu fNotiz'],
-  ['Gesamtausgaben', async p => { await p.tap('#runter'); await warte(p, 700); await p.tap('#kosten'); }, 'auf kosten'],
+  ['Gesamtausgaben', async p => { await p.tap('#runter'); await warte(p, 700); (p.ende ??= []).push(await kostenOben(p)); await p.tap('#kosten'); }, 'auf kosten'],
   ['Tastatur zu', p => taste(p, ipad), 'zu kosten'],
   ['Gesamtausgaben erneut', p => p.tap('#kosten'), 'auf kosten'],
   ['Tastatur zu', blur, 'zu kosten'],
+  // 6m: nach dem Schließen der Tastatur ↑ und wieder ↓ – das Ende des Inhalts liegt wie beim ersten Mal (kein Platz bleibt stehen)
+  ['wieder ans Ende', async p => { await p.tap('#hoch'); await warte(p, 700); await p.tap('#runter'); await warte(p, 700); (p.ende ??= []).push(await kostenOben(p)); }],
 ];
+const kostenOben = p => p.evaluate(() => Math.round(document.querySelector('#kosten').getBoundingClientRect().top));
 const SUCHE = [
   ['Suche ein', async p => { await p.tap('#hoch'); await warte(p, 700); await p.tap('#suchknopf'); await warte(p, 200); await p.tap('#such'); }, 'auf such'],
   ['Suche aus', async p => { await blur(p); await warte(p, 400); await p.tap('#suchknopf'); }, 'zu such'],
@@ -80,6 +83,7 @@ async function lauf(b, name, { heute = false, variante, gegenprobe = false, abla
     await tu(p); await warte(p, 1300);
     if (soll) erwartet.push(soll);
   }
+  if (p.ende?.length === 2 && p.ende[1] < p.ende[0] - 4) fehler.push(`2. Mal ans Ende: Inhalt rollt zu weit (Gesamtausgaben ${p.ende[0]} → ${p.ende[1]})`);
   const bilder = await p.evaluate(() => __safari.bilder(false)), text = await p.evaluate(() => a36.text());
   const lesend = await p.evaluate(() => [...document.querySelectorAll('input, textarea')].filter(x => x.readOnly).map(x => x.id));
   await p.close();

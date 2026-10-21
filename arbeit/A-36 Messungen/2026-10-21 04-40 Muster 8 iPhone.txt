@@ -1,0 +1,33 @@
+# A-36 Muster 8 · Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.6.2 Mobile/15E148 Safari/604.1 · Home-Bildschirm · 402×874 · 2026-10-21T04:40:41.146Z
+# 2 Felder angetippt · virtualKeyboard: nein
+t vh vt sy ih ch kopf side dkopf dlinks kapsel sonde fokus ft fb v
+3588 812 0 0 812 812 0 - - - 762 812 - - - v3 ! neu
+4668 812 0 0 812 812 0 - - - 762 812 - - - v3 ! tippen runter
+6345 812 0 0 812 812 0 - - - 762 812 kosten 628 672 v3 ! focus kosten
+6346 812 0 0 812 812 0 - - - 762 812 kosten 628 672 v3 ! vorbereitet kosten 456
+6346 812 0 0 812 812 0 - - - 762 812 - - - v3 ! blur kosten neu
+6348 812 0 0 812 812 0 - - - 762 812 kosten 172 216 v3 ! focus kosten neu
+6348 812 0 0 812 812 0 - - - 762 812 kosten 172 216 v3 ! neu fokussiert kosten a
+6349 812 0 0 812 812 0 - - - 762 812 kosten 172 216 v3 ! klick unterdrückt rolle (Feld kosten)
+6412 812 0 0 812 812 0 - - - 762 812 kosten 172 216 v3 ! zurückgestellt kosten 471 → 927
+6428 436 0 0 812 812 0 - - - 762 812 kosten 172 216 v3 ! vv resize
+6445 436 0 0 812 812 0 - - - 420 812 kosten 172 216 v3
+13289 436 0 0 812 812 0 - - - 420 812 - - - v3 ! blur kosten
+13320 812 0 0 812 812 0 - - - 420 812 - - - v3 ! vv resize
+13346 812 0 0 812 812 0 - - - 762 812 - - - v3
+14458 812 0 0 812 812 0 - - - 762 812 - - - v3 ! tippen hoch
+17466 812 0 0 812 812 0 - - - 762 812 - - - v3 ! tippen runter
+20423 812 0 0 812 812 0 - - - 762 812 kosten 382 426 v3 ! focus kosten
+20423 812 0 0 812 812 0 - - - 762 812 kosten 382 426 v3 ! vorbereitet kosten 210
+20424 812 0 0 812 812 0 - - - 762 812 - - - v3 ! blur kosten neu
+20426 812 0 0 812 812 0 - - - 762 812 kosten 172 216 v3 ! focus kosten neu
+20426 812 0 0 812 812 0 - - - 762 812 kosten 172 216 v3 ! neu fokussiert kosten a
+20426 812 0 0 812 812 0 - - - 762 812 kosten 172 216 v3 ! klick unterdrückt rolle (Feld kosten)
+20492 812 0 0 812 812 0 - - - 762 812 kosten 172 216 v3 ! zurückgestellt kosten 717 → 927
+20514 436 0 0 812 812 0 - - - 762 812 kosten 172 216 v3 ! vv resize
+20531 436 0 0 812 812 0 - - - 420 812 kosten 172 216 v3
+23305 436 0 0 812 812 0 - - - 420 812 - - - v3 ! blur kosten
+23336 812 0 0 812 812 0 - - - 420 812 - - - v3 ! vv resize
+23360 812 0 0 812 812 0 - - - 762 812 - - - v3
+24285 812 0 0 812 812 0 - - - 762 812 - - - v3 ! tippen hoch
+27212 812 0 0 812 812 0 - - - 762 812 - - - v3 ! tippen teilen

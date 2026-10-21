@@ -415,6 +415,20 @@ Dateien `arbeit/A-36 Messungen/2026-10-21 04-21 Muster 7 iPhone.txt` (hoch) und 
 **Am Gerät zu klären:** setzt die Rückstellung vor dem nächsten Bild (Zeile ‚zurückgestellt‘, ‚Feld springt‘ verschwindet), oder ist
 der Sprung ein Bild lang zu sehen? **Kurzer Versuch:** iPhone hoch und iPad, je: Titel ‚A-36 · 8‘ → ↓ → ‚Gesamtausgaben‘ einmal → teilen.
 
+## 6m. Achter Versuch am Gerät (21.10.2026, Muster 8) und Muster 9. Fassung
+
+Dateien `arbeit/A-36 Messungen/2026-10-21 04-40 Muster 8 iPhone.txt` (hoch) und `… 04-41 Muster 8 iPad.txt` (quer).
+- **Rückstellung wirkt:** Gesamtausgaben 4× angetippt, je einmal ‚zurückgestellt‘ (iPhone 471 → 927, iPad 389 → 866), das Feld bleibt
+  in jedem Bild stehen (172 bzw. 141), Safari verschiebt nie, Kopfzeile und Seitenleiste still. Kein ‚Feld springt‘ mehr.
+- **Nicht ok (Nutzer: ‚beim 2. Mal nach unten verschwand die gesamte Tabelle nach oben‘):** der Platz unter dem Inhalt blieb nach dem
+  Schließen der Tastatur stehen – ↓ rollte beim 2. Mal zu weit (Gesamtausgaben iPhone 628 → 382, iPad 618 → 435). Die Prüfung kannte
+  diesen Fall nicht (Versuch endete mit dem Schließen) → neuer Fall ‚wieder ans Ende‘ (↑, ↓, Gesamtausgaben wie beim 1. Mal), gegen
+  Muster 8 in allen vier Lagen rot.
+- **Muster 9:** bei geschlossener Tastatur und ohne Feld mit Fokus im Rollbereich schrumpft der Platz beim Rollen auf das Nötige (nur
+  padding, nie scrollTop – das bräche sanftes Rollen und das Nachrollen nach dem Wischen ab; erster Versuch mit `knapp()` blieb deshalb
+  rot). Modell: alles grün, G-1 bis G-6 rot.
+**Kurzer Versuch:** iPhone hoch und iPad, je: Titel ‚A-36 · 9‘ → ↓ → ‚Gesamtausgaben‘ → Tastatur schließen → ↑ → ↓ → teilen.
+
 ## 7. Grenzen
 
 - Was Safari zwischen zwei Bildern zeigt, kennt die Prüfung nur aus dem Modell – deshalb Muster und Messung am Gerät.
