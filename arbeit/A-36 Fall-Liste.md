@@ -375,6 +375,20 @@ Dateien `arbeit/A-36 Messungen/2026-10-21 02-30 Muster 6 iPhone.txt` (hoch, Home
   → Vermutung: das Zurückrollen hängt an readonly (Art b), nicht am Inhalt – am Gerät zu bestätigen.
 - `auswerten.mjs` meldete den Sprung nicht (prüft das Feld nur am Ende der Handlung) – Lücke, wird geschlossen.
 
+## 6j. Muster 7. Fassung (V3 mit Art a für alle Felder, Ja des Nutzers 21.10.2026, Sitzung 0023)
+
+| Fall | Muster 7 | geprüft |
+|---|---|---|
+| Feld springt zwischen zwei Bildern > 60 px (eigenes Rollen beim Fokus ausgenommen) | `auswerten.mjs` meldet ‚Feld springt‘ | Selbsttest 39/39: Muster 6 iPhone +456, iPad +427; Ort still (im Fenster gegen den Fensterkopf gemessen – das iPad-Fenster gleitet) |
+| readonly beim Fokus → Inhalt rollt beim Erscheinen der Tastatur zurück | Modell S-9 (wie gemessen) | Muster 6 im Modell rot (alle vier Lagen, iPhone hoch +441) |
+| jedes Feld, bei geschlossener Tastatur gerollt | rollen, dann `blur()` + `focus()` (Art a), auch Gesamtausgaben; kein readonly | alle vier Lagen still; jedes Rollen ohne Tastatur ist neu fokussiert |
+| Wechsel bei offener Tastatur, Tastatur-Taste | wie Muster 6 | still |
+| Gegenproben | G-1 bis G-4 wie bisher, **G-5 Muster 6 (readonly)** – Feld springt | alle rot |
+
+**Annahme, am Gerät zu klären:** das Zurückrollen hängt an readonly; Gesamtausgaben mit Art a bleibt stehen.
+**Kurzer Versuch:** iPhone hoch und iPad, je: Titel ‚A-36 · 7‘ → Fenster öffnen → ‚Ort‘ einmal → ‚Fertig‘ → ↓ → ‚Gesamtausgaben‘
+einmal → teilen.
+
 ## 7. Grenzen
 
 - Was Safari zwischen zwei Bildern zeigt, kennt die Prüfung nur aus dem Modell – deshalb Muster und Messung am Gerät.

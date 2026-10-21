@@ -1,13 +1,14 @@
-// A-36 · Muster (6. Fassung, V3) vor der Übergabe im Safari-Modell prüfen (Zusammenarbeit 0 Nr. 20 seit 2.15.0, Fall-Liste 6h).
+// A-36 · Muster (7. Fassung, V3) vor der Übergabe im Safari-Modell prüfen (Zusammenarbeit 0 Nr. 20 seit 2.15.0, Fall-Liste 6h, 6j).
 //   node "arbeit/A-36 Muster prüfen.mjs" [--nur-chromium] [--muster <Datei>]   – Chromium und WebKit, alle vier Lagen
 // Je Lage die Handgriffe der Versuche (Anleitung nur im Chat, Fall-Liste 6d/6h); die geteilte Datei wird mit
 // auswerten.mjs bewertet (V3 muss bei jeder Handlung still sein, jede Handlung muss in der Datei stehen), dazu die Bilder des Modells
 // (Lage auf dem Bildschirm, mit Safaris Verschiebung) und ob ‚Notiz‘ bei offener Tastatur im Fenster erreichbar ist (6c c).
 // Gegenproben (müssen rot werden): G-1 eingebauter Sprung der Kopfzeile (50 px, 2 Bilder) bei jeder Meldung von Safari – beim Öffnen
 // und Schließen der Tastatur; G-2 Variante Heute; G-3 Heute iPhone quer: ‚Notiz‘ bei offener Tastatur nicht erreichbar; G-4 V2 (rollen
-// ohne neuen Fokus) – Safari verschiebt wie am Gerät (6g, S-7). Die Suche quer (6c a) wird nur berichtet.
-// V3 (6h): Gesamtausgaben (Art b) bekommt bei jedem Antippen mit geschlossener Tastatur einen neuen Fokus, kein Feld bleibt readonly,
-// kein neuer Fokus geht verloren (‚Fokus weg‘). Ob Safari die Lage beim neuen Fokus neu liest, ist eine Annahme (safari.mjs S-8).
+// ohne neuen Fokus) – Safari verschiebt wie am Gerät (6g, S-7); G-5 Muster 6 (v3b, readonly) – Feld springt wie am Gerät (6i, S-9).
+// Die Suche quer (6c a) wird nur berichtet.
+// V3 (6h, 6j): jedes Feld, das bei geschlossener Tastatur gerollt wird, bekommt danach einen neuen Fokus, kein neuer Fokus geht verloren
+// (‚Fokus weg‘), kein Feld bleibt readonly.
 // --muster: anderes Muster prüfen (z. B. die 3. Fassung aus Git – muss gegen das Modell mit 6c rot sein).
 import { createRequire } from 'node:module';
 import { pathToFileURL } from 'node:url';
@@ -90,10 +91,13 @@ async function lauf(b, name, { heute = false, variante, gegenprobe = false, abla
   // 6e: keine Berührung abfangen – auf jeden Fokus eines Felds durch Antippen folgt Safaris eigenes ‚tippen‘ (Klick) desselben Felds
   if (!heute) { const z = text.split('\n'), fokus = z.filter(x => / ! focus (f[A-Z]\w*|kosten|such)$/.test(x)).length, tippen = z.filter(x => / ! (tippen (f[A-Z]\w*|kosten|such)|klick unterdrückt .*)$/.test(x)).length;
     if (tippen < fokus) fehler.push(`Berührung abgefangen: ${fokus} Felder mit Fokus, nur ${tippen}-mal ‚tippen‘ bzw. ‚klick unterdrückt‘ (Safari)`); }
-  // V3 (6h): neuer Fokus – Art b bei jedem Antippen von Gesamtausgaben, nie verloren, kein Feld bleibt readonly
+  // V3 (6h, 6j): neuer Fokus nach jedem Rollen bei geschlossener Tastatur, nie verloren, kein Feld bleibt readonly
   if (!heute && !variante) {
-    const z = text.split('\n'), neuB = z.filter(x => / ! neu fokussiert kosten b$/.test(x)).length, soll = erwartet.filter(x => x === 'auf kosten').length;
-    if (neuB < soll) fehler.push(`V3 b: ${soll}× Gesamtausgaben angetippt, nur ${neuB}× neu fokussiert`);
+    const z = text.split('\n'), zl = lies(text).zeilen;
+    zl.forEach((x, i) => {
+      const m = /^vorbereitet (\S+) (\d+)/.exec(x.ereignis); if (!m || +m[2] <= 0 || x.vh < x.ih + x.sy - 80) return;
+      if (!zl.slice(i + 1, i + 6).some(y => y.ereignis === `neu fokussiert ${m[1]} a`)) fehler.push(`V3: ${m[1]} bei ${x.t} ms gerollt, aber nicht neu fokussiert`);
+    });
     for (const x of z.filter(x => / ! neu fokussiert .* Fokus weg$/.test(x))) fehler.push(`V3: ${x.split(' ! ')[1]}`);
     for (const x of z.filter(x => / ! neu fokussiert /.test(x))) hinweise.push(x.split(' ! ')[1]);
   }
@@ -132,7 +136,10 @@ for (const bn of browser) {
   const g4 = await lauf(b, 'iPad quer', { variante: 'v2' });
   const g4ok = g4.fehler.some(f => /Auswertung auf fPlace: Safari verschiebt \d+ px/.test(f));
   console.log(`${g4ok ? '✓' : '✗'} ${bn} · G-4 V2 ohne neuen Fokus zeigt ‚Safari verschiebt‘ (wie am Gerät, 6g): ${g4.fehler.filter(f => /Safari verschiebt/.test(f)).slice(0, 2).join(' | ') || 'NEIN'}`);
-  rot += (auf && zu ? 0 : 1) + (g2ok ? 0 : 1) + (g3ok ? 0 : 1) + (g4ok ? 0 : 1);
+  const g5 = await lauf(b, 'iPhone hoch', { variante: 'v3b' });
+  const g5ok = g5.fehler.some(f => /Auswertung auf kosten: Feld springt \+\d+/.test(f));
+  console.log(`${g5ok ? '✓' : '✗'} ${bn} · G-5 Muster 6 (readonly) zeigt ‚Feld springt‘ (wie am Gerät, 6i): ${g5.fehler.filter(f => /Feld springt/.test(f)).slice(0, 1).join('') || 'NEIN'}`);
+  rot += (auf && zu ? 0 : 1) + (g2ok ? 0 : 1) + (g3ok ? 0 : 1) + (g4ok ? 0 : 1) + (g5ok ? 0 : 1);
   await b.close();
 }
 console.log(rot ? `Muster-Prüfung: ${rot} rot` : 'Muster-Prüfung: alles grün, Gegenproben rot wie verlangt');

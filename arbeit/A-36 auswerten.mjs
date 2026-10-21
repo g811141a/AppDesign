@@ -90,6 +90,21 @@ export function werteAus(m) {
         E(`${name} springt ${w - r0[k] > 0 ? '+' : ''}${w - r0[k]} px (${r0[k]} → ${w}, ${aus.length} Bilder)`);
       } else teile.push(gleitet && Math.abs(fertig - r0[k]) > 1 ? `${name} gleitet ${r0[k]} → ${fertig}` : `${name} still`);
     }
+    // 6i: das Feld mit Fokus springt zwischen zwei Bildern (Muster 6, Art b: Inhalt beim Erscheinen der Tastatur zurückgerollt) –
+    // das eigene Rollen beim Fokus (vorbereitet, neuer Fokus, unterdrückter Klick) zählt nicht; im Fenster gegen den Fensterkopf
+    // gemessen (das iPad-Fenster gleitet mit der Tastatur, das Feld mit ihm)
+    if (a.offen) {
+      const lage = b => b.ft - (zahl(b.dkopf) ? b.dkopf : 0);
+      const eigen = /^(vorbereitet|neu fokussiert|klick unterdrückt|readonly|focus \S+ neu|blur \S+ neu)/;
+      let start = a.i;
+      for (let j = a.i + 1; j <= ende && (eigen.test(z[j].ereignis) || z[j].t - r0.t <= 5); j++) if (eigen.test(z[j].ereignis)) start = j;
+      let vor = z[start].fokus === a.feld.split(' ')[0] && zahl(z[start].ft) ? z[start] : null;
+      for (let j = start + 1; j <= ende; j++) {
+        const b = z[j]; if (b.fokus !== a.feld.split(' ')[0] || !zahl(b.ft)) continue;
+        if (vor && Math.abs(lage(b) - lage(vor)) > 60) { const d = lage(b) - lage(vor); E(`Feld springt ${d > 0 ? '+' : ''}${d} px (${vor.ft} → ${b.ft})`); break; }
+        vor = b;
+      }
+    }
     if (a.offen && zahl(e.vh)) {
       if (zahl(r0.fb)) teile.push(`Feld beim Fokus ${r0.ft}–${r0.fb} (${e.vh - r0.fb} px über der Tastatur)`);
       if (zahl(e.kapsel)) { const k = e.vh - e.kapsel; if (k < 10) E(`Kapsel ${k} px über der Tastatur`); else teile.push(`Kapsel ${k} px darüber`); }
@@ -118,6 +133,10 @@ const ERWARTET = {
     ['v1', 'auf', 'Fokus nach 36 ms verloren'], ['v1', 'auf', 'Fokus nach 35 ms verloren'], ['v1', 'auf', 'Fensterkopf gleitet 127 → 10']],
   '2026-10-20 23-27 Muster 5 iPad.txt': [
     ['v2', 'auf', 'Safari verschiebt 362 px'], ['v2', 'auf', 'Safari verschiebt 428 px'], ['v2', 'wechsel', 'Safari verschiebt nicht']],
+  '2026-10-21 02-30 Muster 6 iPhone.txt': [
+    ['v3', 'auf', 'Safari verschiebt nicht'], ['v3', 'auf', 'Feld springt +456 px (172 → 628)']],
+  '2026-10-21 02-31 Muster 6 iPad.txt': [
+    ['v3', 'auf', 'Fensterkopf gleitet 77 → 10'], ['v3', 'auf', 'Feld springt +427 px (91 → 518)']],
   '2026-10-20 16-01 Muster 2 iPad hoch Fenster Notiz Ort.txt': [
     ['heute', 'auf', 'Safari verschiebt 340 px'], ['heute', 'auf', 'Seitenleiste springt -340 px'], ['heute', 'wechsel', 'Safari bleibt bei 340 px'],
     ['heute', 'zu', 'Kopfzeile springt +340 px'], ['v1', 'auf', 'Safari verschiebt nicht'], ['v1', 'zu', 'Kopfzeile still']],
