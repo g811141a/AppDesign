@@ -23,7 +23,8 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| A-37 | 2 | **‚Nach oben / Ans Ende‘ verbessern (allgemeine Regel, Nutzer 20.10.2026):** z. B. wie in der Gemini-App für iOS – Apple-Abgleich und Muster | offen |
+| A-37 | 2 | **‚Nach oben / Ans Ende‘ verbessern (allgemeine Regel, Nutzer 20.10.2026):** z. B. wie in der Gemini-App für iOS – Apple-Abgleich, Muster mit Varianten Heute/A/B/C und Fall-Liste: `arbeit/A-37 Fall-Liste.md`, `arbeit/A-37 Muster.html` | Muster online, wartet auf Wahl |
+| A-38 | 2 | **Framework7 auswerten (Nutzer 21.10.2026):** Verbesserungen für AppDesign herausholen und nachbauen – Auswertung `arbeit/A-38 Framework7 Auswertung.md`: V1 sichere Ränder prüfbar, V2 Rückmeldung beim Antippen, V3 Titel antippen = nach oben, V4 Glas-Optik, V6 lange Listen | Vorschläge, wartet auf Wahl |
 | A-30 | 3 | Vorschläge von Claude (19.10.2026, Analyse Abschnitt 5): Rückgängig nach Löschen (‚Gelöscht · Widerrufen‘), einheitliche leere Zustände, ‚Ziehen zum Aktualisieren‘ bewusst aus – je einzeln entscheiden | Vorschlag |
 | A-32 | 3 | **‚Problem melden‘ (Vorschlag V9, Nutzer 19.10.2026):** Messung, Version und Gerät in einer Datei | später |
 | A-01 | 3 | Startseite g811141a.github.io mit allen Apps (früher S-03) | später |
