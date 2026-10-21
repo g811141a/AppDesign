@@ -17,7 +17,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| A-36 | 1 | **Tastatur ohne Springen (R-4.5, 4.28.1, aus P-60):** beim Antippen rollt das Feld in die obere Hälfte und bekommt einen neuen Fokus – Safari verschiebt nichts, Leisten still; Rückstellung, Platz unter dem Inhalt, Klick nach dem Rollen unterdrückt, Tastatur-Taste (iPad), ‚Nach oben‘ bei offener Tastatur mit einem Antippen, iPad-Fenster gleitet; **R-2.4 neu:** iPhone quer niedrige Leisten. Im Modell grün, **am Gerät zu bestätigen** (Reiselogbuch P-61, mit Messmodus); A-35 wird damit mitgeprüft | prüfen (P-61) |
+| – | – | zurzeit nichts zu prüfen | – |
 
 ## 2. Weitere Themen (in Klärung)
 
@@ -34,6 +34,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Thema | Version | Datum |
 |---|---|---|---|
+| E-66 | Geprüft **P-61: alles ok** (Nutzer 21.10.2026, Messungen iPhone hoch, iPhone quer, iPad quer: Safari verschiebt nie, Leisten still, Rückstellung, ‚Nach oben‘ mit einem Antippen) – **A-35 und A-36 abgeschlossen** | AppDesign 4.28.1 | 21.10.2026 |
 | E-65 | **A-36 gebaut:** Tastatur ohne Springen (V3 aus Muster 9) in `ui.js` – neuer Fokus nach dem Rollen, Rückstellung (S-9), `--platz`, Klick unterdrückt, Tastatur-Taste, `nachTastatur`, iPad-Fenster gleitet, `isPhone()`/Kapsel nach `innerHeight + scrollY`; R-2.4 niedrige Leisten iPhone quer; Safari-Eigenheiten S-1 bis S-9 in Designrichtlinie 13; `checkTastaturStill` erweitert (B-1 bis B-18), R-2.4 in `hig.mjs`; gegen 4.28.0 rot (177 Fehler), jetzt grün. Wartet auf P-61 | AppDesign 4.28.1 | 21.10.2026 |
 | E-64 | **A-31 gebaut:** Messung abspielen – `tests/abspielen.mjs` (`lies`, `ansicht`, `spieleAb`), Messdateien in `tests/messungen/`, Safari-Modell `__safari.setze`; im Reiselogbuch `ablauf-abspielen.mjs` mit Gegenprobe (M-1 bis M-6); Designrichtlinie 15.21 | AppDesign 4.28.0 | 20.10.2026 |
 | E-63 | **A-35 gebaut:** R-4.5 ergänzt – ein Feld mit Fokus steht immer ganz über der Tastatur, auch im Inhalt (`fieldIntoView` in ui.js, 16 px darüber bzw. direkt unter Kopf- oder Suchzeile); Safari-Modell: Feld unter der Tastatur verschiebt den sichtbaren Bereich (quer 232 px), Zifferntastatur 170 px; `checkFieldVisible` (gegen 4.27.1 rot); Designrichtlinie 7, 13. Wartet auf P-60 | AppDesign 4.28.0 | 20.10.2026 |

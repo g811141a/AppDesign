@@ -1890,3 +1890,4 @@ offener Tastatur braucht zwei Antipper. Übergabe an 0024 (Bau 4.28.1 / 3.26.1).
 Platzhalter, Klick unterdrückt, Tastatur-Taste, ‚Nach oben‘ bei offener Tastatur mit einem Antippen, iPad-Fenster gleitet) und die
 allgemeine Regel R-2.4 (iPhone quer niedrige Leisten, Suchfeld als Kapsel 32 px). Beim Bau gefunden: B-18 (die App darf die Ereignisse
 des neuen Fokus nicht sehen – ‚Pflichtfeld‘). Prüfung gegen 3.26.0 rot (177 Fehler), jetzt grün; am Gerät zu bestätigen (P-61).
+P-61 am Gerät mit Messungen: **alles ok** (Safari verschiebt nie, Leisten still) – A-35/A-36 (T-97) abgeschlossen. Übergabe an 0025 (A-37).
