@@ -14,15 +14,15 @@ A-/T-/P-Nummern, ‚seit …‘, `?v=`, ‚kurze Seite‘).
 | – davon Abschnitte 0 und 1 (Lesestoff zu Beginn) | | | 13.882 | 12.312 (−11 %) |
 | D | 121.845 | 120.658 | 102.727 | 100.570 (−2 %) |
 | AppDesign `CLAUDE.md` (nimmt die Arbeitsumgebung auf) | 3.327 | 5.638 | 2.347 | 4.433 |
-| AppDesign `UEBERGABE.md` | 10.717 | ≈ 5.000 (Schritt 4) | | |
+| AppDesign `UEBERGABE.md` (nur noch Sitzungsstand) | 10.717 | 4.253 (−60 %) | | |
 | AppDesign `tests/README.md` (Regel je Prüfung) | 9.325 | 9.778 | | |
 | RL | 22.588 | 14.148 | 11.797 | 2.494 (−79 %) |
 | P | 34.686 | 20.092 (−42 %) | | |
 | Reiselogbuch `CLAUDE.md` | 5.462 | 4.726 | 3.773 | 2.837 |
 | Reiselogbuch `tests/README.md` (+ 7 fehlende Prüfungen) | 6.694 | 7.558 | | |
 | Import `CLAUDE.md` | 1.643 | 1.714 | | |
-| **Summe** | **254.947** | **≈ 223.000 (−13 %)** | **≈ 202.400** | **≈ 173.400 (−14 %)** |
-| **Lesestoff zu Beginn** (UEBERGABE + Z 0 und 1 + AppDesign-CLAUDE) | ≈ 27.900 | ≈ 23.000 (−18 %) | | |
+| **Summe** | **254.947** | **≈ 222.400 (−13 %)** | **≈ 202.400** | **≈ 173.400 (−14 %)** |
+| **Lesestoff zu Beginn** (UEBERGABE + Z 0 und 1 + AppDesign-CLAUDE) | ≈ 27.900 | ≈ 22.200 (−20 %) | | |
 
 Ehrlich zum Plan (geschätzt −23 %): Die Designrichtlinie besteht fast nur aus Werten, Maßen und Bauteilen – echte Doppelungen gab
 es wenig, und keine Regel durfte verloren gehen; dazu kamen die Liste G-1 bis G-19, die Spalte ‚Bau‘ und die HIG-Zuordnung. Gekürzt
