@@ -3,6 +3,31 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.28.2 – 21.10.2026
+
+AppDesign 4.28.2 · Designrichtlinie allgemein 4.28.2 · Zusammenarbeit allgemein 2.17.0 · geprüft mit Reiselogbuch 3.26.2
+
+**A-39 Konsolidierung aller Regeln** (dein Ja vom 21.10.2026 zum Plan `arbeit/A-39 Konsolidierung Plan.md`, Antworten F-1 bis
+F-10). Kein Code geändert – `v4/` nur in den Versionsnummern; die Prüfungen sind dieselben. Abgleich alt → neu:
+`arbeit/A-39 Abgleichliste.md`.
+
+- **Zusammenarbeit 2.17.0:** Abschnitt 0 ist das eine Arbeitsmodell – die drei Kästen oben und die Abschnitte 2–9 sind in 0 Nr. 8
+  und den neuen Nummern 21 (nie ohne Ja bauen), 22 (erst prüfen, dann Neues), 23 (Apple-like), 24 (Backlog), 25 (Ablauf einer
+  Änderung) aufgegangen; Einzelheiten und Formate stehen im neuen Abschnitt 2 (2.1 Auswahlfenster, 2.2 Zeit und Token, 2.3 Bericht
+  und Prüfpunkte, 2.4 Backlog, 2.5 Übergabe und neue Sitzung, 2.6 Apple-Abgleich, 2.7 Muster mit Messung); Tabelle ‚Zuordnung
+  alt → neu‘. Jede Regel nennt ihre Prüfung. **Neu 0 Nr. 13: Übergabe schon ab etwa 150.000 Token** (das Werkzeug warnt weiter erst
+  ab 300.000 – F-1). Geklärt: im Auswahlfenster nur die kurze Frage, bei Bitten, am Gerät zu prüfen, auch Link und Schritte (F-2);
+  Übergabe vorschlagen, bei Ja schreiben und die neue Sitzung selbst starten, Starttext als Rückfall (F-3); keine eigene Version
+  für eine einzelne Kleinigkeit (F-4).
+- **Designrichtlinie allgemein 4.28.2:** Regeln nur noch im Katalog (17, neue Spalte ‚Bau‘ statt ‚ersetzt‘), die Abschnitte 1–16
+  verweisen darauf; neue Liste **‚Regeln ohne automatische Prüfung‘ G-1 bis G-19** (Prüfungen dafür: Backlog A-40); HIG-Checkliste
+  16 als Zuordnung HIG-Punkt → Regel; 11 mit den Versionsregeln (bisher Zusammenarbeit §8); 12: App-Richtlinien enthalten nur
+  Abweichungen (F-5); 13 ‚Safari und iPad – technische Erfahrungen‘ ohne Geschichte; überholte Stellen angeglichen (F-7).
+- **CLAUDE.md 2.6.0:** die Arbeitsumgebung (klonen, Verweise, Tests einrichten, Veröffentlichen) steht jetzt dort statt in der
+  Übergabe (F-9). `tests/README.md`: jede Prüfung mit ihrer Regel, ohne Geschichte.
+- Größe: Regeltext aller Dateien im Umfang 202.400 → 173.400 Zeichen (−14 %), Lesestoff zu Beginn einer Sitzung 27.900 → etwa
+  23.400 (−16 %).
+
 ## 4.28.1 – 21.10.2026
 
 AppDesign 4.28.1 · Designrichtlinie allgemein 4.28.1 · Zusammenarbeit allgemein 2.16.0 · geprüft mit Reiselogbuch 3.26.1
