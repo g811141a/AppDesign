@@ -15,13 +15,13 @@
 - **Chatnummer:** die nächste Sitzung heißt **Reiselogbuch 0027**; die danach 0028.
 - **Sitzungsgröße:** Übergabe ab etwa 150.000 Token Kontext (Zusammenarbeit 0 Nr. 13); 0026 endete deutlich darüber.
 - **Modell und Aufwand:** Opus 5.5, Aufwand hoch (0026: alle Aufrufe ‚high‘) – prüfen nach 0 Nr. 15.
-- **Offene Prüfpunkte:** **P-62** (Reiselogbuch 3.26.2, nur Texte: /0 Version, /1 App unverändert) – Rückmeldung steht aus.
+- **Offene Prüfpunkte:** keine (P-62 alles ok, Nutzer 21.10.2026).
 - **Erinnerung:** ‚Backlog-Erinnerung (AppDesign und Reiselogbuch)‘ montags 8:58.
 
 ## 2. Ergebnisse der Sitzung 0026
 
 **A-39 Konsolidierung aller Regeln** (Plan `arbeit/A-39 Konsolidierung Plan.md`, Antworten F-1 bis F-10, Abgleichliste
-`arbeit/A-39 Abgleichliste.md`), veröffentlicht als AppDesign 4.28.2 / Reiselogbuch 3.26.2, voller Prüflauf grün:
+`arbeit/A-39 Abgleichliste.md`), veröffentlicht als AppDesign 4.28.2 / Reiselogbuch 3.26.2, voller Prüflauf grün (66 Läufe), **P-62 alles ok**:
 - **Zusammenarbeit 2.17.0:** Abschnitt 0 ist das eine Arbeitsmodell (Nr. 1–25; neu Nr. 21 nie ohne Ja bauen, 22 erst prüfen, 23
   Apple-like, 24 Backlog, 25 Ablauf einer Änderung), Abschnitt 2 ‚Einzelheiten und Formate‘ (2.1–2.7), Zuordnung alt → neu.
 - **Neue Vereinbarungen** (stehen schon in den Richtlinien): Übergabe ab etwa 150.000 Token, das Werkzeug warnt weiter erst ab
@@ -36,9 +36,8 @@ Frühere Sitzungen: `VERLAUF.md` und Versionsgeschichten.
 
 ## 3. Nächster Schritt
 
-1. Rückmeldung zu **P-62** abholen (Prüfliste im Reiselogbuch-CHANGELOG, Schritte vollständig im Chat und kurz im Fenster).
-2. **A-38** Frameworks mit dem Nutzer durchgehen (Prio 1): `arbeit/A-38 Framework7 Auswertung.md` (V1–V6, Mischform AppDesign 5).
-3. Dann **A-37** ‚Nach oben / Ans Ende‘ (Prio 2): Muster https://g811141a.github.io/AppDesign/arbeit/A-37%20Muster.html, Erklärung und
+1. **A-38** Frameworks mit dem Nutzer durchgehen (Prio 1): `arbeit/A-38 Framework7 Auswertung.md` (V1–V6, Mischform AppDesign 5).
+2. Dann **A-37** ‚Nach oben / Ans Ende‘ (Prio 2): Muster https://g811141a.github.io/AppDesign/arbeit/A-37%20Muster.html, Erklärung und
    Fall-Liste `arbeit/A-37 Fall-Liste.md` – Link und nummerierte Schritte im Chat und im Auswahlfenster, Wahl der Variante, Ja.
 
 ## 4. Danach
@@ -52,7 +51,7 @@ In der neuen Sitzung müssen **AppDesign** und **ReiseLogBuch** verfügbar sein 
 **ReiseLogBuch-Import** (privat).
 
 ```
-Reiselogbuch 0027 – P-62 und A-38 Frameworks
+Reiselogbuch 0027 – A-38 Frameworks
 
-Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md, dann gezielt die Zusammenarbeit (Abschnitte 0 und 1) und die Überschriften der Designrichtlinien; prüfe Modell und Aufwand (Sitzungsdatei) und hole die Repos g811141a/ReiseLogBuch und g811141a/ReiseLogBuch-Import (privat) dazu, wie in der AppDesign-CLAUDE.md unter ‚Arbeitsumgebung‘. Gib das Lagebild. Dann: 1) Rückmeldung zu P-62 (Reiselogbuch 3.26.2) abholen – Schritte vollständig im Chat und kurz im Auswahlfenster. 2) A-38 Frameworks (Prio 1) mit mir durchgehen: arbeit/A-38 Framework7 Auswertung.md, Vorschläge V1 bis V6, Mischform. Danach A-37 (Prio 2).
+Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md, dann gezielt die Zusammenarbeit (Abschnitte 0 und 1) und die Überschriften der Designrichtlinien; prüfe Modell und Aufwand (Sitzungsdatei) und hole die Repos g811141a/ReiseLogBuch und g811141a/ReiseLogBuch-Import (privat) dazu, wie in der AppDesign-CLAUDE.md unter ‚Arbeitsumgebung‘. Gib das Lagebild. Dann A-38 Frameworks (Prio 1) mit mir durchgehen: arbeit/A-38 Framework7 Auswertung.md, Vorschläge V1 bis V6, Mischform. Danach A-37 (Prio 2).
 ```

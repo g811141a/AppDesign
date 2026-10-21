@@ -36,6 +36,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Thema | Version | Datum |
 |---|---|---|---|
+| E-68 | Geprüft **P-62 (Reiselogbuch 3.26.2): alles ok** (Nutzer 21.10.2026) – **A-39 abgeschlossen** | AppDesign 4.28.2 | 21.10.2026 |
 | E-67 | **A-39 Konsolidierung aller Regeln:** Zusammenarbeit 2.17.0 (Abschnitt 0 = das eine Arbeitsmodell, Abschnitt 2 Einzelheiten und Formate, Übergabe ab etwa 150.000 Token), Designrichtlinie allgemein 4.28.2 (Regeln nur im Katalog, Liste G-1 bis G-19, HIG-Zuordnung), Reiselogbuch: App-Richtlinie nur Abweichungen, PROMPT.md als Funktionsbeschreibung; CLAUDE.md mit Arbeitsumgebung; Plan und Abgleichliste `arbeit/A-39 Konsolidierung Plan.md`, `arbeit/A-39 Abgleichliste.md` | AppDesign 4.28.2 · Reiselogbuch 3.26.2 | 21.10.2026 |
 | E-66 | Geprüft **P-61: alles ok** (Nutzer 21.10.2026, Messungen iPhone hoch, iPhone quer, iPad quer: Safari verschiebt nie, Leisten still, Rückstellung, ‚Nach oben‘ mit einem Antippen) – **A-35 und A-36 abgeschlossen** | AppDesign 4.28.1 | 21.10.2026 |
 | E-65 | **A-36 gebaut:** Tastatur ohne Springen (V3 aus Muster 9) in `ui.js` – neuer Fokus nach dem Rollen, Rückstellung (S-9), `--platz`, Klick unterdrückt, Tastatur-Taste, `nachTastatur`, iPad-Fenster gleitet, `isPhone()`/Kapsel nach `innerHeight + scrollY`; R-2.4 niedrige Leisten iPhone quer; Safari-Eigenheiten S-1 bis S-9 in Designrichtlinie 13; `checkTastaturStill` erweitert (B-1 bis B-18), R-2.4 in `hig.mjs`; gegen 4.28.0 rot (177 Fehler), jetzt grün. Wartet auf P-61 | AppDesign 4.28.1 | 21.10.2026 |
