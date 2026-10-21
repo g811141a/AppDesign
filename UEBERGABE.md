@@ -1,14 +1,14 @@
 # Übergabe an die nächste Sitzung
 
-**Stand 21.10.2026** · geschrieben in der Sitzung ‚Reiselogbuch 0023‘ (Ende)
+**Stand 21.10.2026** · fortgeschrieben in der Sitzung ‚Reiselogbuch 0024‘ (nach dem Bau, wartet auf P-61)
 (Zusammenarbeit allgemein 2.16.0, Abschnitt 0 Nr. 14). **Claude liest diese Datei zu Beginn jeder Sitzung zuerst.**
 
 ## 1. Lagebild
 
 | Teil | Version | Datei |
 |---|---|---|
-| Reiselogbuch | **3.26.0** online (Fassung 4.28.0) | g811141a/ReiseLogBuch – `CHANGELOG.md`, `BACKLOG.md`, `PROMPT.md` |
-| AppDesign | **4.28.0** online; Arbeitsstand: `tests/safari.mjs` S-6 bis S-9 (noch keine Version) | g811141a/AppDesign – `CHANGELOG.md`, `BACKLOG.md` |
+| Reiselogbuch | **3.26.1** online (Fassung 4.28.1) | g811141a/ReiseLogBuch – `CHANGELOG.md`, `BACKLOG.md`, `PROMPT.md` |
+| AppDesign | **4.28.1** online | g811141a/AppDesign – `CHANGELOG.md`, `BACKLOG.md` |
 | ReiseLogBuch-Import (privat) | 1.2.1 (unverändert) | g811141a/ReiseLogBuch-Import |
 | Zusammenarbeit allgemein | **2.16.0** (0 Nr. 11: Link und Schritte zusätzlich im Auswahlfenster) | `README - Zusammenarbeit allgemein.md` |
 
@@ -18,7 +18,8 @@
 - **Per du!** Versuche **kurz** (3–6 Handgriffe je Gerät). **Neu (2.16.0): Link und Schritte immer auch im Auswahlfenster selbst** –
   der Text davor kam beim Nutzer zweimal nicht an (Nutzer verärgert: ‚Schon wieder kein Link und keine Anleitung‘).
 - **Kein Mac** – nur Versuche des Nutzers am Gerät.
-- **P-60 (A-36, Tastatur: Leisten springen) – Lösung gefunden (V3), Bau steht aus.** Alles in **`arbeit/A-36 Fall-Liste.md`: zuerst
+- **0024: A-36 gebaut (AppDesign 4.28.1 / Reiselogbuch 3.26.1, Fall-Liste Abschnitt 8, B-1 bis B-18), alle 66 Läufe grün – P-61 am Gerät
+  steht aus (mit Messmodus, Messungen aus Rohdaten auswerten).** Früher: **P-60 (A-36, Tastatur: Leisten springen) – Lösung V3.** Alles in **`arbeit/A-36 Fall-Liste.md`: zuerst
   Abschnitte 6h bis 6n lesen**. Messungen: `arbeit/A-36 Messungen/` (20 Dateien). Werkzeuge: `arbeit/A-36 auswerten.mjs` (‚Feld springt‘,
   ‚Fokus verloren‘, `--selbsttest` 39/39), `arbeit/A-36 Muster prüfen.mjs` (alle vier Lagen, Chromium und WebKit, Gegenproben G-1 bis G-6,
   ‚wieder ans Ende‘), Muster `arbeit/A-36 Muster.html` (Fassung 9, am Gerät aktuell).
@@ -46,7 +47,9 @@ Frühere Sitzungen: siehe `VERLAUF.md` und Versionsgeschichten.
 
 ## 3. Nächster Schritt
 
-1. **Fall-Liste für den Bau AppDesign 4.28.1 / Reiselogbuch 3.26.1** schreiben (0 Nr. 1) und das **Ja** des Nutzers holen. Inhalt:
+0. **Stand 0024:** Schritte 1 und 2 erledigt (Ja zur Fall-Liste, gebaut, online). Offen: **Rückmeldung P-61** (Prüfliste im CHANGELOG des
+   Reiselogbuchs) und die zwei geteilten Messungen (P-61/1, P-61/3) aus den Rohdaten auswerten; bei ‚nicht ok‘ zuerst nachbauen (0 Nr. 1).
+1. ~~**Fall-Liste für den Bau AppDesign 4.28.1 / Reiselogbuch 3.26.1** schreiben~~ (0 Nr. 1) und das **Ja** des Nutzers holen. Inhalt:
    V3 in `ui.js` (Ersatz für bzw. Erweiterung von `fieldIntoView`, R-4.5), Rückstellung, Platz schrumpft nach dem Schließen,
    ↑/↓ bei offener Tastatur (6n), Tastatur-Taste iPad, iPad-Fenster gleitet und bleibt oben (6d), **niedrige Leisten quer am iPhone als
    allgemeine Regel** (Designrichtlinie 15, Regelkatalog, eine Prüfung). Jeder Fall eine Prüfung im Safari-Modell (S-1 bis S-9); die
