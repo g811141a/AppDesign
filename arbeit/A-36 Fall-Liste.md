@@ -495,3 +495,8 @@ Bereich‘, ersetzt `fieldIntoView` und den 350-ms-Ausgleich im Fenster) und `v4
   96 px hoch bei 84 px sichtbarem Fensterinhalt – wie Safari dann verschiebt, ist nicht gemessen (Prüfliste, Grenze in 13).
 - **Ergebnis:** `ablauf-tastatur-still.mjs` gegen 3.26.0 rot (177 Fehler, alle Fälle außer ‚Suche oben‘, die schon vorher still war),
   mit 3.26.1 grün in Chromium und WebKit; die drei Messungen (T-8) still.
+- **Klick-Unterdrückung** endet auch bei `pointerdown` (nicht nur bei einer Berührung): sonst verschluckte sie Klicks mit Maus bzw.
+  Trackpad (`ablauf-liste-still`, ‹ › bei offener Tastatur). `pointerdown` kommt vor dem Fokus – der eine Klick von Safari wird weiter
+  unterdrückt.
+- **Messung vom 19.10. (iPhone quer)** wurde mit 44-px-Leisten aufgenommen: `ablauf-abspielen.mjs` rechnet die Suchzeile 29 px höher
+  (R-2.4, `aufbau`); die Gegenprobe (20 px verschoben) bleibt rot.

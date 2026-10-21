@@ -1327,7 +1327,10 @@ function feldZeigen(f) {
 let neuFokus = false, beruehrt = -1e9, gerollt = null, halten = null, kbWar = false, nachKb = null;
 // die Ereignisse des neuen Fokus nicht an die App weitergeben (Safari-Modell und Safari selbst lesen die Lage vorher, auf window)
 ['focusout', 'blur', 'focusin', 'focus'].forEach(t => document.addEventListener(t, e => { if (neuFokus) e.stopImmediatePropagation(); }, true));
+// jede neue Berührung bzw. jeder Klick mit Maus oder Trackpad beginnt hier (pointerdown kommt vor dem Fokus) – erst der Klick derselben
+// Berührung, die das Feld fokussiert hat, wird unterdrückt
 addEventListener('touchstart', () => { beruehrt = performance.now(); gerollt = null; halten = null; }, { capture: true, passive: true });
+addEventListener('pointerdown', () => { gerollt = null; halten = null; }, { capture: true, passive: true });
 addEventListener('focusout', () => { if (!neuFokus) halten = null; }, true);
 document.addEventListener('focusin', e => {
   const f = e.target;
