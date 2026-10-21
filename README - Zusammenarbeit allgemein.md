@@ -1,6 +1,6 @@
 # Zusammenarbeit allgemein
 
-**Version 2.15.0** · Stand 20.10.2026
+**Version 2.16.0** · Stand 21.10.2026
 
 Regeln für die Zusammenarbeit mit Claude bei allen iPad-Web-Apps von g811141a.
 Diese Datei liegt im Design-Repo **AppDesign** (g811141a/AppDesign).
@@ -80,7 +80,9 @@ Nutzer sie findet, schneller und günstiger arbeiten.
     nummerierten Schritten und ‚Erwartet: …‘, wörtlich wie im CHANGELOG); ein Verweis auf das CHANGELOG oder eine
     Kurzliste genügt **nie** (seit 2.10.1). **Seit 2.12.0 gilt das für jede Bitte, etwas am Gerät zu prüfen oder
     auszuprobieren** (Muster, Versuch, Messung, Prüfpunkt): im Chat stehen immer der **vollständige Link** und **nummerierte
-    Schritte** mit ‚Erwartet: …‘ (Nutzer 19.10.2026 – in 0016 fehlten sie beim Muster). Reihenfolge immer: Bericht → Änderungen → Prüfpunkte im Chat → Auswahlfenster. Ist ein Fehler durchgerutscht, steht immer dabei, **warum** die Prüfung ihn
+    Schritte** mit ‚Erwartet: …‘ (Nutzer 19.10.2026 – in 0016 fehlten sie beim Muster). **Seit 2.16.0 stehen Link und Schritte zusätzlich im Auswahlfenster
+    selbst** (in der Frage, kurz: Link, nummerierte Schritte, ‚erwartet: …‘) – der Text vor dem Fenster kam beim Nutzer nicht an
+    (Nutzer 21.10.2026, Sitzung 0023, Muster 7 und 8). Reihenfolge immer: Bericht → Änderungen → Prüfpunkte im Chat → Auswahlfenster. Ist ein Fehler durchgerutscht, steht immer dabei, **warum** die Prüfung ihn
     übersehen hat.
     **Rückmeldung als Auswahlfenster (seit 2.10.0):** Der Bericht endet **immer** – direkt nach den ausgeschriebenen
     Prüfpunkten – mit einem Auswahlfenster zur Rückmeldung
@@ -365,6 +367,7 @@ Nutzer sie findet, schneller und günstiger arbeiten.
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 2.16.0 | 21.10.2026 | Neben | 0 Nr. 11 ergänzt: Link und Schritte jeder Bitte, am Gerät zu prüfen, zusätzlich im Auswahlfenster selbst – der Text davor kam nicht an (Nutzer 21.10.2026, Sitzung 0023) |
 | 2.15.0 | 20.10.2026 | Neben | 0 Nr. 20 ergänzt: Muster mit Messung vor der Übergabe im Safari-Modell gegen die Rohdaten geprüft (mit Gegenprobe), führen Schritt für Schritt durch den Versuch, zeigen am Gerät nur ‚aufgenommen‘ (Nutzer 20.10.2026, A-36) |
 | 2.14.1 | 20.10.2026 | Korrektur | 0 Nr. 15: Aufwand aus der Sitzungsdatei (`"effort"`) nennen; die App zeigte ‚mittel‘, obwohl alle Aufrufe mit ‚hoch‘ liefen – dann in der App auf ‚hoch‘ stellen (Nutzer 20.10.2026) |
 | 2.14.0 | 20.10.2026 | Korrektur | 0 Nr. 15: zu Beginn auch Abschnitt 1 ‚Sprache und Ton‘ lesen – in 0019 sprach Claude den Nutzer mit ‚Sie‘ an, weil Abschnitt 1 (per du) nicht im Startumfang lag (Nutzer 20.10.2026) |

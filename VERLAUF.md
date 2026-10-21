@@ -1877,3 +1877,8 @@ um 6c ergänzt (S-6). Muster 4 am Gerät: alle Bilder still, aber abgefangene Be
 ~40). Nutzer: niedrige Leisten quer am iPhone übernehmen, **als allgemeine Regel** (Ja). Nutzer: ‚V2 gleich hier‘ → Muster 5 (Safari
 tippen lassen, dann rollen): Fokus sicher, aber Safari liest die Lage beim Fokus und verschiebt (S-7). Vorschlag V3 (Fokus neu setzen)
 für 0023. Übergabe an 0023.
+
+**2026-10-21 · Sitzung Reiselogbuch 0023:** V3 (Fokus nach dem Rollen neu setzen) in Muster 6 und 7 am Gerät: Safari verschiebt nie,
+Fokus beim ersten Mal, Leisten still (10 von 10) – P-60 im Kern gelöst. Rest: Felder im Inhalt springen beim Erscheinen der Tastatur
+einmal zurück (Modell S-9); Muster 8 stellt den Rollstand sofort zurück. Nutzer: Link und Anleitung kamen nicht an (standen vor dem
+Auswahlfenster) → Zusammenarbeit 2.16.0 (0 Nr. 11): Link und Schritte zusätzlich im Auswahlfenster selbst, **als allgemeine Regel** (Ja).
