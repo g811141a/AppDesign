@@ -403,6 +403,18 @@ Dateien `arbeit/A-36 Messungen/2026-10-21 04-21 Muster 7 iPhone.txt` (hoch) und 
 - **Abhilfe (Vorschlag):** die App stellt den Rollstand sofort zurück, wenn der Inhalt nach dem Rollen beim Fokus zurückspringt
   (scroll-Ereignis des Rollbereichs, solange das Feld den Fokus hat) – bleibt höchstens ein Bild sichtbar; am Gerät zu bestätigen.
 
+## 6l. Muster 8. Fassung (Rückstellung, Ja des Nutzers 21.10.2026, Sitzung 0023)
+
+| Fall | Muster 8 | geprüft (Modell mit S-9) |
+|---|---|---|
+| Inhalt springt beim Erscheinen der Tastatur zurück (S-9) | im scroll-Ereignis des Rollbereichs sofort zurück auf den Rollstand nach dem Rollen (Zeile ‚zurückgestellt <Feld> alt → neu‘), solange das Feld den Fokus hat, höchstens 1,5 s | alle vier Lagen still, je einmal zurückgestellt |
+| eigenes Wischen, Fokus weg | beendet die Rückstellung (nicht der neue Fokus des Musters) | – (nur am Gerät) |
+| Felder im Fenster | unverändert (springen nie) | still |
+| Gegenproben | G-1 bis G-5, **G-6 Muster 7 ohne Rückstellung** – Feld springt (+482) | alle rot |
+
+**Am Gerät zu klären:** setzt die Rückstellung vor dem nächsten Bild (Zeile ‚zurückgestellt‘, ‚Feld springt‘ verschwindet), oder ist
+der Sprung ein Bild lang zu sehen? **Kurzer Versuch:** iPhone hoch und iPad, je: Titel ‚A-36 · 8‘ → ↓ → ‚Gesamtausgaben‘ einmal → teilen.
+
 ## 7. Grenzen
 
 - Was Safari zwischen zwei Bildern zeigt, kennt die Prüfung nur aus dem Modell – deshalb Muster und Messung am Gerät.
