@@ -338,6 +338,29 @@ der Berührung – rollen und dann **den Fokus neu setzen** (a: `blur()` + `focu
 liest und ob der neue Fokus hält, zeigt nur das Gerät; im Modell als Annahme. Ein Versuch kann beide prüfen (je Feld eine Art, ohne
 Umschalter, z. B. Ort = a, Gesamtausgaben = b).
 
+## 6h. Muster 6. Fassung (V3, Ja des Nutzers 21.10.2026, Sitzung 0023)
+
+V3 = V2 (Berührung bleibt bei Safari, im `focusin` in die obere Hälfte rollen, Klick danach unterdrücken, Tastatur-Taste gibt den Fokus
+ab) und dazu bei **geschlossener Tastatur** einen **neuen Fokus**, damit Safari die Lage nach dem Rollen liest (S-7). Je Feld eine Art,
+ohne Umschalter:
+
+| Fall | V3 | geprüft (Modell, `Muster prüfen.mjs`) |
+|---|---|---|
+| Art a – Felder im Fenster (Ort, Notiz …), erstes Antippen | im `focusin` rollen, dann `blur()` + `focus()` (nur wenn gerollt wurde) | alle vier Lagen still |
+| Art b – Felder im Inhalt (Gesamtausgaben …), erstes Antippen | beim `touchstart` `readonly` (iOS öffnet keine Tastatur), im `focusin` rollen, `readonly` weg, `blur()` + `focus()` | alle vier Lagen still; jedes Antippen neu fokussiert |
+| Wischen über ein Feld (kein Fokus) | `readonly` 600 ms nach dem Loslassen wieder weg | kein Feld bleibt readonly |
+| Wechsel bei offener Tastatur | wie V2, **kein** neuer Fokus (Tastatur würde flackern; V2 war dort am Gerät still) | still |
+| Tastatur-Taste (iPad), erneutes Antippen | wie V2 (Fokus abgeben) – erneutes Antippen ist ein erstes | still |
+| neuer Fokus geht verloren | Zeile ‚neu fokussiert <Feld> a/b Fokus weg‘ | Fehler, wenn sie vorkommt |
+| Berührung | nie abgefangen; Ereignisse des neuen Fokus stehen als ‚focus/blur <Feld> neu‘ in der Messung und zählen nicht als Antippen oder Handlung (`auswerten.mjs`) | ‚keine Berührung abgefangen‘ grün |
+| Gegenproben | G-1 Sprung 50 px (auf **und** zu wieder erkannt), G-2 Heute, G-3 Heute iPhone quer, **G-4 V2 ohne neuen Fokus** (iPad quer: Ort 359, Gesamtausgaben 428 – wie am Gerät) | alle rot |
+
+**Annahme (Modell S-8), nur am Gerät zu klären:** Safari liest die Lage beim neuen Fokus neu; ein Feld mit `readonly` öffnet keine
+Tastatur und verschiebt nicht; die Tastatur öffnet sich beim neuen Fokus (er fällt noch in die Berührung) und hält. Offen außerdem: klappt
+bei a die Tastatur sichtbar auf und zu?
+**Kurzer Versuch:** iPhone hoch und iPad quer, je: Titel ‚A-36 · 6‘ prüfen → Fenster öffnen → ‚Ort‘ einmal → ‚Fertig‘ → ↓ →
+‚Gesamtausgaben‘ einmal → teilen.
+
 ## 7. Grenzen
 
 - Was Safari zwischen zwei Bildern zeigt, kennt die Prüfung nur aus dem Modell – deshalb Muster und Messung am Gerät.

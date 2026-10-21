@@ -6,10 +6,14 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <title>A-36 Muster</title>
 <style>
-/* A-36 Tastatur ohne Springen – Muster mit Messung, 5. Fassung (Sitzung Reiselogbuch 0022, Fall-Liste arbeit/A-36 Fall-Liste.md 6e/6f;
+/* A-36 Tastatur ohne Springen – Muster mit Messung, 6. Fassung (Sitzung Reiselogbuch 0023, Fall-Liste arbeit/A-36 Fall-Liste.md 6g/6h;
    Zusammenarbeit 0 Nr. 20: vorher im Safari-Modell geprüft – arbeit/A-36 Muster prüfen.mjs –, zeigt am Gerät nur ‚aufgenommen‘;
    bewertet wird aus den Rohdaten mit arbeit/A-36 auswerten.mjs). Die Anleitung steht nur im Chat.
-   Nur V2 (keine Variante aus der Adresse; ‚Heute‘ = AppDesign 4.28.0 nur für die Gegenprobe über a36.variante):
+   Nur V3 (keine Variante aus der Adresse; ‚Heute‘ = AppDesign 4.28.0 nur für die Gegenprobe über a36.variante):
+   V3 = V2 und dazu: bei geschlossener Tastatur setzt das Muster den Fokus nach dem Rollen neu, damit Safari die neue Lage liest (6g, S-7:
+        Safari liest sie beim Fokus). Je Feld eine Art, ohne Umschalter: a (Felder im Fenster, z. B. Ort) blur() + focus(), nur wenn
+        gerollt wurde; b (Felder im Inhalt, z. B. Gesamtausgaben) beim Antippen readonly – dann öffnet iOS keine Tastatur –, im focusin
+        rollen, readonly weg, blur() + focus(). Bei offener Tastatur (Wechsel) wie V2, ohne neuen Fokus.
    V2 = die Berührung bleibt immer bei Safari (6e: von abgefangenen Berührungen verloren 12 von ~35 den Fokus, von Safaris eigenen
         keine). Sobald ein Feld den Fokus bekommt (focusin, sofort, vor dem ersten Bild), rollt der Inhalt es in die obere Hälfte des
         künftig sichtbaren Bereichs (Mitte höchstens 24 px über der Mitte, nie über dem Rand seines Bereichs + 4 px) – Safari liest die
@@ -96,9 +100,9 @@ html.phone.quer .dkopf button { padding: 3px 10px; }
   </div></form></dialog>
 <script>
 const $ = s => document.querySelector(s), vv = window.visualViewport, root = document.documentElement, R = Math.round;
-let V = 'v2';   // immer V2 – auch wenn das Symbol auf dem Home-Bildschirm noch eine alte Adresse (?v=heute) hat
+let V = 'v3';   // immer V3 – auch wenn das Symbol auf dem Home-Bildschirm noch eine alte Adresse (?v=heute) hat
 // nur für die Gegenprobe im Modell (G-2), nicht am Gerät
-function variante(v) { V = v; $('#titel').textContent = 'A-36 · 5' + (V === 'v2' ? '' : ' · ' + V); if (window.a36bereit) zeile('variante ' + V); }
+function variante(v) { V = v; $('#titel').textContent = 'A-36 · 6' + (V === 'v3' ? '' : ' · ' + V); if (window.a36bereit) zeile('variante ' + V); }
 $('#liste').innerHTML = Array.from({ length: 14 }, (_, i) => `<div class="zeile">Tag ${i + 1} <small>· Programm ${i + 1}</small></div>`).join('');
 
 // ---------- Gerät, Höhe, Tastaturhöhe ----------
@@ -155,10 +159,10 @@ function knapp(c) {
 
 // ---------- Messung (vor allen anderen Hörern: Lage vor dem Ausgleich) ----------
 // bleibt über Neuladen erhalten (sessionStorage); am Gerät wird nichts bewertet – nur aufgenommen
-let alt = null; try { alt = JSON.parse(sessionStorage.getItem('a36.messung5') || 'null'); } catch {}
+let alt = null; try { alt = JSON.parse(sessionStorage.getItem('a36.messung6') || 'null'); } catch {}
 const zeilen = alt?.zeilen || [], start = alt?.start || Date.now();
 if (alt) zeilen.push(`${Date.now() - start} # neu geladen`);
-const sichere = () => { try { sessionStorage.setItem('a36.messung5', JSON.stringify({ zeilen: zeilen.slice(-20000), start })); } catch {} };
+const sichere = () => { try { sessionStorage.setItem('a36.messung6', JSON.stringify({ zeilen: zeilen.slice(-20000), start })); } catch {} };
 addEventListener('pagehide', sichere);
 let oeffnet = false;   // showModal setzt den Fokus, bevor das Fenster steht – diese Lage nicht aufzeichnen (Messartefakt der 2. Fassung)
 const sicht = s => { const e = $(s); return e && e.getClientRects().length ? e.getBoundingClientRect() : null; };
@@ -178,8 +182,10 @@ function zeile(ereignis = '') {
 }
 (function bild() { zeile(); requestAnimationFrame(bild); })();
 ['resize', 'scroll'].forEach(e => vv.addEventListener(e, () => { zeile('vv ' + e); bald(); }));
-document.addEventListener('focusin', e => { zeile('focus ' + (e.target.id || e.target.tagName)); bald(); }, true);
-document.addEventListener('focusout', e => { zeile('blur ' + (e.target.id || e.target.tagName)); bald(); }, true);
+// V3: Ereignisse beim Neusetzen des Fokus mit ‚neu‘ – keine neue Handlung und kein Antippen (auswerten.mjs, Muster prüfen.mjs)
+let neu = false;
+document.addEventListener('focusin', e => { zeile('focus ' + (e.target.id || e.target.tagName) + (neu ? ' neu' : '')); bald(); }, true);
+document.addEventListener('focusout', e => { zeile('blur ' + (e.target.id || e.target.tagName) + (neu ? ' neu' : '')); bald(); }, true);
 document.addEventListener('click', e => { const b = e.target.closest('button, input, textarea'); if (b) zeile('tippen ' + (b.id || b.tagName)); bald(); }, true);
 
 // ---------- am Gerät nur ‚aufgenommen‘: Anzahl der angetippten Felder (Zusammenarbeit 0 Nr. 20) ----------
@@ -223,11 +229,36 @@ function noetig(f) {
 }
 document.addEventListener('focusin', e => {
   const f = e.target;
-  if (V === 'heute' || !f.matches?.('input, textarea')) return;
+  if (V === 'heute' || neu || !f.matches?.('input, textarea')) return;
   const n = noetig(f);
   zeile(`vorbereitet ${f.id} ${n > 0 ? R(n) : 0}`);
   if (n > 0) { vorbereiten(f, n); gerollt = { f, t: performance.now() }; }
+  // V3: Fokus neu setzen, damit Safari die Lage nach dem Rollen liest – b immer (readonly weg), a nur nach dem Rollen; nie bei offener
+  // Tastatur (dort hat V2 am Gerät nichts verschoben, und ein neuer Fokus ließe die Tastatur flackern)
+  if (V !== 'v3') return;
+  if (lesend === f) neuFokus(f, 'b');
+  else if (n > 0 && !offen()) neuFokus(f, 'a');
 }, true);
+// V3: Fokus neu setzen – synchron im focusin, also noch in der Berührung (sonst öffnet iOS keine Tastatur)
+function neuFokus(f, wie) {
+  neu = true;
+  f.blur();
+  if (wie === 'b') { f.readOnly = false; lesend = null; }
+  f.focus({ preventScroll: true });
+  neu = false;
+  zeile(`neu fokussiert ${f.id} ${wie}${document.activeElement === f ? '' : ' Fokus weg'}`);
+}
+// V3 b: Feld im Inhalt beim Antippen bei geschlossener Tastatur readonly – iOS fokussiert es ohne Tastatur und verschiebt nicht.
+// War es ein Wischen (kein Fokus), ist readonly kurz nach dem Loslassen wieder weg.
+let lesend = null;
+addEventListener('touchstart', e => {
+  const f = e.target;
+  if (V !== 'v3' || offen() || !f.matches?.('input, textarea') || f.readOnly || f === document.activeElement || f.closest('dialog')) return;
+  lesend = f; f.readOnly = true; zeile(`readonly ${f.id}`);
+}, { capture: true, passive: true });
+['touchend', 'touchcancel'].forEach(t => addEventListener(t, () => setTimeout(() => {
+  if (lesend && document.activeElement !== lesend) { lesend.readOnly = false; zeile(`readonly weg ${lesend.id} (kein Fokus)`); lesend = null; }
+}, 600), { capture: true, passive: true }));
 // Safaris Klick kommt nach dem Fokus an derselben Stelle – dort liegt nach dem Rollen etwas anderes (in einer App womöglich eine
 // Schaltfläche): diesen einen Klick unterdrücken, wenn er nicht das Feld trifft
 let gerollt = null;
@@ -254,16 +285,16 @@ $('#suchknopf').onclick = () => { root.classList.toggle('mitsuche'); place(); ba
 $('#hoch').onclick = () => $('#rolle').scrollTo({ top: 0, behavior: 'smooth' });
 $('#runter').onclick = () => $('#rolle').scrollTo({ top: 1e6, behavior: 'smooth' });
 $('#neu').onclick = () => { if (!confirm('Messung löschen und neu beginnen?')) return;
-  zeilen.length = 0; try { sessionStorage.removeItem('a36.messung5'); } catch {} zeile('neu'); bald(); };
+  zeilen.length = 0; try { sessionStorage.removeItem('a36.messung6'); } catch {} zeile('neu'); bald(); };
 $('#vergessen').onclick = () => { gemerkt = {}; try { localStorage.removeItem('a36.kb'); } catch {} };
 function text() {
   const st = matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
-  return `# A-36 Muster 5 · ${navigator.userAgent} · ${st ? 'Home-Bildschirm' : 'Safari'} · ${screen.width}×${screen.height} · ${new Date().toISOString()}\n` +
+  return `# A-36 Muster 6 · ${navigator.userAgent} · ${st ? 'Home-Bildschirm' : 'Safari'} · ${screen.width}×${screen.height} · ${new Date().toISOString()}\n` +
     `# ${aufgenommen()} Felder angetippt · virtualKeyboard: ${'virtualKeyboard' in navigator ? 'ja' : 'nein'}\n` +
     `t ${Object.keys(werte()).join(' ')}\n` + zeilen.join('\n') + '\n';
 }
 $('#teilen').onclick = async () => {
-  const name = `a36-5-${new Date().toISOString().slice(0, 16).replace(/[:T]/g, '-')}.txt`;
+  const name = `a36-6-${new Date().toISOString().slice(0, 16).replace(/[:T]/g, '-')}.txt`;
   try { await navigator.share({ files: [new File([text()], name, { type: 'text/plain' })] }); }
   catch (e) { if (e.name !== 'AbortError') { try { await navigator.clipboard.writeText(text()); alert('Messung in die Zwischenablage kopiert.'); } catch { alert('Teilen nicht möglich.'); } } }
 };

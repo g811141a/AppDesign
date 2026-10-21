@@ -62,6 +62,9 @@
 //   verloren (12 von ~35, iPhone und iPad, 6c 1 und 6e) – Berührungen nie abfangen. Zifferntastatur iPhone hoch 376 px (Versuch 4).
 // - S-7 (Muster 5, 6g): Safari liest die Lage des Felds für das erste Öffnen **beim Fokus**, bevor die Fokus-Hörer der App laufen –
 //   Rollen im focusin zählt nicht (iPad quer: Ort 527–571 → 362, Gesamtausgaben 618–662 → 428, obwohl danach in der oberen Hälfte).
+// - S-8 (Muster 6, 6h) **Annahme, am Gerät zu bestätigen:** ein neuer Fokus (blur() + focus() noch im focusin) zählt wie ein eigener –
+//   Safari liest die Lage dann neu (window-focusin des neuen Fokus, S-7). Ein Feld mit readonly öffnet keine Tastatur und verschiebt
+//   nicht (mitTastatur). Hält die Annahme am Gerät nicht, wird sie hier korrigiert.
 export const ABSTAND = 24, ABSTAND_FENSTER = 15;
 export const SAFARI = {
   'iPhone hoch': { tastatur: 403, ziffern: 376, fokusRollen: -120, fokusSchub: 0 },

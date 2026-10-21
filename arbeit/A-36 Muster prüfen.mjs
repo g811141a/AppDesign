@@ -1,10 +1,13 @@
-// A-36 · Muster (5. Fassung) vor der Übergabe im Safari-Modell prüfen (Zusammenarbeit 0 Nr. 20 seit 2.15.0, Fall-Liste 6f).
+// A-36 · Muster (6. Fassung, V3) vor der Übergabe im Safari-Modell prüfen (Zusammenarbeit 0 Nr. 20 seit 2.15.0, Fall-Liste 6h).
 //   node "arbeit/A-36 Muster prüfen.mjs" [--nur-chromium] [--muster <Datei>]   – Chromium und WebKit, alle vier Lagen
-// Je Lage genau die Handgriffe des kurzen Versuchs (Anleitung nur im Chat, Fall-Liste 6f); die geteilte Datei wird mit
-// auswerten.mjs bewertet (V2 muss bei jeder Handlung still sein, jede Handlung muss in der Datei stehen), dazu die Bilder des Modells
+// Je Lage die Handgriffe der Versuche (Anleitung nur im Chat, Fall-Liste 6d/6h); die geteilte Datei wird mit
+// auswerten.mjs bewertet (V3 muss bei jeder Handlung still sein, jede Handlung muss in der Datei stehen), dazu die Bilder des Modells
 // (Lage auf dem Bildschirm, mit Safaris Verschiebung) und ob ‚Notiz‘ bei offener Tastatur im Fenster erreichbar ist (6c c).
 // Gegenproben (müssen rot werden): G-1 eingebauter Sprung der Kopfzeile (50 px, 2 Bilder) bei jeder Meldung von Safari – beim Öffnen
-// und Schließen der Tastatur; G-2 Variante Heute; G-3 Heute iPhone quer: ‚Notiz‘ bei offener Tastatur nicht erreichbar. Die Suche quer (6c a) wird nur berichtet – Entscheidung des Nutzers offen.
+// und Schließen der Tastatur; G-2 Variante Heute; G-3 Heute iPhone quer: ‚Notiz‘ bei offener Tastatur nicht erreichbar; G-4 V2 (rollen
+// ohne neuen Fokus) – Safari verschiebt wie am Gerät (6g, S-7). Die Suche quer (6c a) wird nur berichtet.
+// V3 (6h): Gesamtausgaben (Art b) bekommt bei jedem Antippen mit geschlossener Tastatur einen neuen Fokus, kein Feld bleibt readonly,
+// kein neuer Fokus geht verloren (‚Fokus weg‘). Ob Safari die Lage beim neuen Fokus neu liest, ist eine Annahme (safari.mjs S-8).
 // --muster: anderes Muster prüfen (z. B. die 3. Fassung aus Git – muss gegen das Modell mit 6c rot sein).
 import { createRequire } from 'node:module';
 import { pathToFileURL } from 'node:url';
@@ -56,11 +59,11 @@ const SUCHE = [
   ['Suche aus', async p => { await blur(p); await warte(p, 400); await p.tap('#suchknopf'); }, 'zu such'],
 ];
 
-async function lauf(b, name, { heute = false, gegenprobe = false, ablauf } = {}) {
+async function lauf(b, name, { heute = false, variante, gegenprobe = false, ablauf } = {}) {
   const p = await b.newPage({ hasTouch: true, ...LAGEN[name] }), fehler = [], ipad = name.startsWith('iPad');
   p.on('pageerror', e => fehler.push('Skriptfehler: ' + e.message));
   await p.goto(URL_MUSTER + (heute ? '?v=heute' : ''));
-  if (heute) await p.evaluate(() => window.a36.variante?.('heute'));
+  if (heute || variante) await p.evaluate(v => window.a36.variante?.(v), heute ? 'heute' : variante);
   await safariModell(p, name, { auto: true, leisten: { kopf: '#kopf', side: '#side', dkopf: '#dkopf' }, links: { dlinks: '#dlg' } });
   if (gegenprobe) await p.evaluate(() => visualViewport.addEventListener('resize', () => {
     const k = document.querySelector('#kopf'); k.style.transform = 'translateY(-50px)';
@@ -76,6 +79,7 @@ async function lauf(b, name, { heute = false, gegenprobe = false, ablauf } = {})
     if (soll) erwartet.push(soll);
   }
   const bilder = await p.evaluate(() => __safari.bilder(false)), text = await p.evaluate(() => a36.text());
+  const lesend = await p.evaluate(() => [...document.querySelectorAll('input, textarea')].filter(x => x.readOnly).map(x => x.id));
   await p.close();
   const { handlungen } = werteAus(lies(text));
   // jede Handlung des Versuchs muss in der Datei stehen, in dieser Reihenfolge (‚wechsel‘ und ‚erneut‘ eingeschlossen)
@@ -86,6 +90,14 @@ async function lauf(b, name, { heute = false, gegenprobe = false, ablauf } = {})
   // 6e: keine Berührung abfangen – auf jeden Fokus eines Felds durch Antippen folgt Safaris eigenes ‚tippen‘ (Klick) desselben Felds
   if (!heute) { const z = text.split('\n'), fokus = z.filter(x => / ! focus (f[A-Z]\w*|kosten|such)$/.test(x)).length, tippen = z.filter(x => / ! (tippen (f[A-Z]\w*|kosten|such)|klick unterdrückt .*)$/.test(x)).length;
     if (tippen < fokus) fehler.push(`Berührung abgefangen: ${fokus} Felder mit Fokus, nur ${tippen}-mal ‚tippen‘ bzw. ‚klick unterdrückt‘ (Safari)`); }
+  // V3 (6h): neuer Fokus – Art b bei jedem Antippen von Gesamtausgaben, nie verloren, kein Feld bleibt readonly
+  if (!heute && !variante) {
+    const z = text.split('\n'), neuB = z.filter(x => / ! neu fokussiert kosten b$/.test(x)).length, soll = erwartet.filter(x => x === 'auf kosten').length;
+    if (neuB < soll) fehler.push(`V3 b: ${soll}× Gesamtausgaben angetippt, nur ${neuB}× neu fokussiert`);
+    for (const x of z.filter(x => / ! neu fokussiert .* Fokus weg$/.test(x))) fehler.push(`V3: ${x.split(' ! ')[1]}`);
+    for (const x of z.filter(x => / ! neu fokussiert /.test(x))) hinweise.push(x.split(' ! ')[1]);
+  }
+  if (lesend.length) fehler.push(`readonly geblieben: ${lesend.join(', ')}`);
   // Bilder des Modells: Kopf- und Seitenleiste still, Safari verschiebt nie
   const vt = Math.max(0, ...bilder.map(x => x.vt));
   if (vt) fehler.push(`Modell: Safari verschiebt ${vt} px`);
@@ -99,7 +111,7 @@ for (const bn of browser) {
   const b = await pw[bn].launch();
   for (const name of Object.keys(LAGEN)) {
     const r = await lauf(b, name);
-    console.log(`${r.fehler.length ? '✗' : '✓'} ${bn} · ${name} · V2, kurzer Versuch: ${r.fehler.length ? r.fehler.join(' | ') : `${r.handlungen.length} Handlungen still`}`);
+    console.log(`${r.fehler.length ? '✗' : '✓'} ${bn} · ${name} · V3, Versuch: ${r.fehler.length ? r.fehler.join(' | ') : `${r.handlungen.length} Handlungen still`}`);
     for (const h of [...r.hinweise, ...r.handlungen.map(h => h.text)]) console.log('    ' + h);
     rot += r.fehler.length ? 1 : 0;
   }
@@ -117,7 +129,10 @@ for (const bn of browser) {
   const g3 = await lauf(b, 'iPhone quer', { heute: true, ablauf: VERSUCH(false).slice(0, 3) });
   const g3ok = g3.fehler.some(f => /NICHT erreichbar/.test(f));
   console.log(`${g3ok ? '✓' : '✗'} ${bn} · G-3 Heute iPhone quer: ‚Notiz‘ bei offener Tastatur nicht erreichbar (wie am Gerät, 6c c): ${g3ok ? 'ja' : 'NEIN'}`);
-  rot += (auf && zu ? 0 : 1) + (g2ok ? 0 : 1) + (g3ok ? 0 : 1);
+  const g4 = await lauf(b, 'iPad quer', { variante: 'v2' });
+  const g4ok = g4.fehler.some(f => /Auswertung auf fPlace: Safari verschiebt \d+ px/.test(f));
+  console.log(`${g4ok ? '✓' : '✗'} ${bn} · G-4 V2 ohne neuen Fokus zeigt ‚Safari verschiebt‘ (wie am Gerät, 6g): ${g4.fehler.filter(f => /Safari verschiebt/.test(f)).slice(0, 2).join(' | ') || 'NEIN'}`);
+  rot += (auf && zu ? 0 : 1) + (g2ok ? 0 : 1) + (g3ok ? 0 : 1) + (g4ok ? 0 : 1);
   await b.close();
 }
 console.log(rot ? `Muster-Prüfung: ${rot} rot` : 'Muster-Prüfung: alles grün, Gegenproben rot wie verlangt');

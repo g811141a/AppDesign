@@ -3,6 +3,7 @@
 //   node "arbeit/A-36 auswerten.mjs" --selbsttest  – an den vier Messungen der 2. Fassung (Fall-Liste 6a) müssen die bekannten Werte
 //                                                    herauskommen, auch die Sprünge beim Schließen, die das Muster selbst übersah
 // Eine Handlung beginnt mit ‚focus <Feld>‘ (Tastatur auf oder Feld gewechselt) bzw. ‚blur <Feld>‘ ohne neues Feld (Tastatur zu).
+// ‚focus <Feld> neu‘ (Muster 6: Fokus neu gesetzt) beginnt keine; ‚blur <Feld> neu‘ ohne neuen Fokus ist ‚zu‘ (Fokus verloren).
 // Ausgangslage = die Zeile des Ereignisses selbst (Safari meldet frühestens danach); Ende = nächste Handlung bzw. 900 ms nach der
 // letzten Meldung von Safari (‚vv …‘). Jede Zeile dazwischen ist ein Bild: Kopfzeile, Seitenleiste und Fenster links müssen in jedem
 // Bild bei der Ausgangslage bleiben (± 1 px), der Fensterkopf darf nur zwischen Anfang und Ende liegen (Gleiten).
@@ -40,8 +41,10 @@ function handlungen(z) {
       if (r.vh - vor.vh > 80 && h.length && h.at(-1).offen) { h.push({ i: i - 1, bis: i, was: 'zu', feld: r.fokus + ' (Tastatur-Taste)', offen: false }); return; }
       if (vor.vh - r.vh > 80 && h.length && !h.at(-1).offen && h.at(-1).feld.startsWith(r.fokus)) { h.push({ i: i - 1, bis: i, was: 'auf', feld: r.fokus + ' (erneut)', offen: true }); return; }
     }
-    const [art, id] = r.ereignis.split(' ');
+    const [art, id, zusatz] = r.ereignis.split(' ');
     if (!FELD.test(id || '')) return;
+    // Muster 6 (V3): Fokus neu gesetzt (‚focus <Feld> neu‘) – keine neue Handlung; geht er dabei verloren, zählt das blur wie sonst
+    if (art === 'focus' && zusatz === 'neu') return;
     if (art === 'focus') h.push({ i, was: h.length && h.at(-1).offen ? 'wechsel' : 'auf', feld: id, offen: true });
     if (art === 'blur') {
       const neu = z.slice(i + 1).find(x => x.t - r.t <= 100 && /^focus /.test(x.ereignis) && FELD.test(x.ereignis.split(' ')[1]));
