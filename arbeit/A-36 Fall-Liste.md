@@ -361,6 +361,20 @@ bei a die Tastatur sichtbar auf und zu?
 **Kurzer Versuch:** iPhone hoch und iPad quer, je: Titel ‚A-36 · 6‘ prüfen → Fenster öffnen → ‚Ort‘ einmal → ‚Fertig‘ → ↓ →
 ‚Gesamtausgaben‘ einmal → teilen.
 
+## 6i. Sechster Versuch am Gerät (21.10.2026, Muster 6 = V3) – Auswertung aus den Rohdaten
+
+Dateien `arbeit/A-36 Messungen/2026-10-21 02-30 Muster 6 iPhone.txt` (hoch, Home-Bildschirm) und `… 02-31 Muster 6 iPad.txt` (Safari,
+834×1194, sichtbar 702 px – Fenster nicht bildschirmfüllend; Tastatur 428).
+- **Neuer Fokus wirkt (S-8 bestätigt):** in allen 6 Berührungen (Ort 2× iPhone, 1× iPad; Gesamtausgaben je 1×) öffnet die Tastatur beim
+  ersten Mal, kein Fokus verloren, Safari verschiebt **nie** (vt und scrollY 0 in jeder Zeile), Kopfzeile, Seitenleiste und Fenster still,
+  iPad-Fenster gleitet 77 → 10. Je Berührung **eine** Meldung ‚vv resize‘ – die Tastatur klappt beim neuen Fokus nicht zu und auf.
+- **Nicht ok – Art b (Gesamtausgaben, readonly):** im Bild, in dem die Tastatur erscheint, steht der Inhalt wieder auf dem Rollstand **vor**
+  dem Rollen (iPhone 172 → 628, zurück um genau 456; iPad 91 → 518, genau 427), ein Bild später setzt die App das Feld 16 px über die
+  Tastatur (376 bzw. 214). Das Feld springt also einmal unter die Tastatur und zurück. Art a (Ort, im Fenster) nie zurückgerollt
+  (159 bzw. 140 bleiben); V2 (Muster 5, Gesamtausgaben ohne neuen Fokus, ohne readonly) ebenfalls nicht (141 → 190, Safaris eigene 49 px).
+  → Vermutung: das Zurückrollen hängt an readonly (Art b), nicht am Inhalt – am Gerät zu bestätigen.
+- `auswerten.mjs` meldete den Sprung nicht (prüft das Feld nur am Ende der Handlung) – Lücke, wird geschlossen.
+
 ## 7. Grenzen
 
 - Was Safari zwischen zwei Bildern zeigt, kennt die Prüfung nur aus dem Modell – deshalb Muster und Messung am Gerät.

@@ -1,0 +1,51 @@
+# A-36 Muster 6 · Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.6.2 Safari/605.1.15 · Safari · 834×1194 · 2026-10-21T02:31:48.976Z
+# 2 Felder angetippt · virtualKeyboard: nein
+t vh vt sy ih ch kopf side dkopf dlinks kapsel sonde fokus ft fb v
+4127 702 0 0 702 702 0 0 - - 666 702 - - - v3 ! neu
+5728 702 0 0 702 702 0 0 - - 666 702 - - - v3 ! tippen fenster
+5741 702 0 0 702 702 0 0 - - 666 702 dlgX - - v3 ! focus dlgX
+5742 702 0 0 702 702 0 0 77 327 666 702 dlgX - - v3 ! fenster offen
+7573 702 0 0 702 702 0 0 77 327 666 702 - - - v3 ! blur dlgX
+7615 702 0 0 702 702 0 0 77 327 666 702 fPlace 477 521 v3 ! focus fPlace
+7615 702 0 0 702 702 0 0 77 327 666 702 fPlace 477 521 v3 ! vorbereitet fPlace 337
+7616 702 0 0 702 702 0 0 77 327 666 702 - - - v3 ! blur fPlace neu
+7618 702 0 0 702 702 0 0 77 327 666 702 fPlace 140 184 v3 ! focus fPlace neu
+7619 702 0 0 702 702 0 0 77 327 666 702 fPlace 140 184 v3 ! neu fokussiert fPlace a
+7621 702 0 0 702 702 0 0 77 327 666 702 fPlace 140 184 v3 ! klick unterdrückt dkoerper (Feld fPlace)
+7789 274 0 0 702 702 0 0 77 327 666 702 fPlace 140 184 v3 ! vv resize
+7820 274 0 0 702 702 0 0 69 327 258 702 fPlace 132 176 v3
+7834 274 0 0 702 702 0 0 61 327 258 702 fPlace 124 168 v3
+7850 274 0 0 702 702 0 0 51 327 258 702 fPlace 114 158 v3
+7867 274 0 0 702 702 0 0 42 327 258 702 fPlace 105 149 v3
+7884 274 0 0 702 702 0 0 34 327 258 702 fPlace 97 141 v3
+7900 274 0 0 702 702 0 0 28 327 258 702 fPlace 91 135 v3
+7917 274 0 0 702 702 0 0 23 327 258 702 fPlace 86 130 v3
+7934 274 0 0 702 702 0 0 19 327 258 702 fPlace 82 126 v3
+7950 274 0 0 702 702 0 0 16 327 258 702 fPlace 79 123 v3
+7967 274 0 0 702 702 0 0 14 327 258 702 fPlace 77 121 v3
+7984 274 0 0 702 702 0 0 12 327 258 702 fPlace 75 119 v3
+8000 274 0 0 702 702 0 0 11 327 258 702 fPlace 74 118 v3
+8017 274 0 0 702 702 0 0 10 327 258 702 fPlace 73 117 v3
+10889 274 0 0 702 702 0 0 10 327 258 702 - - - v3 ! blur fPlace
+10889 274 0 0 702 702 0 0 10 327 258 702 dlg - - v3 ! focus dlg
+10889 274 0 0 702 702 0 0 10 327 258 702 dlg - - v3 ! tippen dlgOk
+10889 274 0 0 702 702 0 0 10 327 258 702 - - - v3 ! blur dlg
+10891 274 0 0 702 702 0 0 - - 258 702 - - - v3
+10943 702 0 0 702 702 0 0 - - 258 702 - - - v3 ! vv resize
+10951 702 0 0 702 702 0 0 - - 666 702 - - - v3
+13148 702 0 0 702 702 0 0 - - 666 702 - - - v3 ! tippen runter
+14842 702 0 0 702 702 0 0 - - 666 702 - - - v3 ! readonly kosten
+14973 702 0 0 702 702 0 0 - - 666 702 kosten 518 562 v3 ! focus kosten
+14973 702 0 0 702 702 0 0 - - 666 702 kosten 518 562 v3 ! vorbereitet kosten 427
+14974 702 0 0 702 702 0 0 - - 666 702 - - - v3 ! blur kosten neu
+14978 702 0 0 702 702 0 0 - - 666 702 kosten 91 135 v3 ! focus kosten neu
+14978 702 0 0 702 702 0 0 - - 666 702 kosten 91 135 v3 ! neu fokussiert kosten b
+14981 702 0 0 702 702 0 0 - - 666 702 kosten 91 135 v3 ! klick unterdrückt rolle (Feld kosten)
+15138 274 0 0 702 702 0 0 - - 666 702 kosten 518 562 v3 ! vv resize
+15154 274 0 0 702 702 0 0 - - 258 702 kosten 214 258 v3
+23837 274 0 0 702 702 0 0 - - 258 702 - - - v3 ! blur kosten
+23838 274 0 0 702 702 0 0 - - 258 702 - - - v3 ! tippen hoch
+23862 702 0 0 702 702 0 0 - - 258 702 - - - v3 ! vv resize
+23873 702 0 0 702 702 0 0 - - 666 702 - - - v3
+25829 702 0 0 702 702 0 0 - - 666 702 - - - v3 ! tippen hoch
+27912 702 0 0 702 702 0 0 - - 666 702 - - - v3 ! tippen teilen
