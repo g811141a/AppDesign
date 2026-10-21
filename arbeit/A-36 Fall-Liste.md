@@ -389,6 +389,20 @@ Dateien `arbeit/A-36 Messungen/2026-10-21 02-30 Muster 6 iPhone.txt` (hoch, Home
 **Kurzer Versuch:** iPhone hoch und iPad, je: Titel ‚A-36 · 7‘ → Fenster öffnen → ‚Ort‘ einmal → ‚Fertig‘ → ↓ → ‚Gesamtausgaben‘
 einmal → teilen.
 
+## 6k. Siebter Versuch am Gerät (21.10.2026, Muster 7) – Nutzer: ‚Muster 7 ok‘; Auswertung aus den Rohdaten
+
+Dateien `arbeit/A-36 Messungen/2026-10-21 04-21 Muster 7 iPhone.txt` (hoch) und `… 04-22 Muster 7 iPad.txt` (quer, Home-Bildschirm).
+- **Gelöst (P-60, Leisten springen):** in allen 4 Berührungen Fokus beim ersten Mal, Safari verschiebt **nie**, Kopfzeile, Seitenleiste
+  und Fenster still, iPad-Fenster gleitet 127 → 10, je Berührung eine Meldung (kein Flackern). Zusammen mit 6i: 10 von 10.
+- **Rest (am Gerät nicht bemerkt):** Gesamtausgaben springt auch **ohne readonly** zurück (iPhone 172 → 628, +456, 1 Bild bis 376;
+  iPad 141 → 618, +477, ~4 Bilder bis 314). Die Vermutung aus 6i (readonly) ist **widerlegt**. Muster 5 (V2) zeigte dasselbe, verdeckt
+  von Safaris Verschiebung (618 − 428 = 190). Ort im Fenster nie (7 von 7). → **Modell S-9 korrigiert:** Feld im Inhalt (Rollbereich
+  außerhalb eines Fensters) – beim Erscheinen der Tastatur steht der Rollbereich wieder auf dem Stand beim ersten Fokus. Muster 7 ist
+  damit im Modell rot wie am Gerät (alle vier Lagen, nur Gesamtausgaben). Ursache in WebKit unbekannt (vermutlich setzt Safari beim
+  Anzeigen der Tastatur den Rollstand des Inhalts aus seinem eigenen, älteren Stand; im Fenster war vorher nie gerollt).
+- **Abhilfe (Vorschlag):** die App stellt den Rollstand sofort zurück, wenn der Inhalt nach dem Rollen beim Fokus zurückspringt
+  (scroll-Ereignis des Rollbereichs, solange das Feld den Fokus hat) – bleibt höchstens ein Bild sichtbar; am Gerät zu bestätigen.
+
 ## 7. Grenzen
 
 - Was Safari zwischen zwei Bildern zeigt, kennt die Prüfung nur aus dem Modell – deshalb Muster und Messung am Gerät.

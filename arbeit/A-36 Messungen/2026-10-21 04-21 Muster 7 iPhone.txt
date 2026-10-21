@@ -1,0 +1,38 @@
+# A-36 Muster 7 · Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.6.2 Mobile/15E148 Safari/604.1 · Home-Bildschirm · 402×874 · 2026-10-21T04:21:19.768Z
+# 2 Felder angetippt · virtualKeyboard: nein
+t vh vt sy ih ch kopf side dkopf dlinks kapsel sonde fokus ft fb v
+13242 812 0 0 812 812 0 - - - 762 812 - - - v3 ! neu
+13973 812 0 0 812 812 0 - - - 762 812 - - - v3 ! tippen fenster
+13988 812 0 0 812 812 0 - - - 762 812 dlgX - - v3 ! focus dlgX
+13989 812 0 0 812 812 0 - 0 0 762 812 dlgX - - v3 ! fenster offen
+15339 812 0 0 812 812 0 - 0 0 762 812 - - - v3 ! blur dlgX
+15378 812 0 0 812 812 0 - 0 0 762 812 fPlace 400 444 v3 ! focus fPlace
+15378 812 0 0 812 812 0 - 0 0 762 812 fPlace 400 444 v3 ! vorbereitet fPlace 242
+15380 812 0 0 812 812 0 - 0 0 762 812 - - - v3 ! blur fPlace neu
+15381 812 0 0 812 812 0 - 0 0 762 812 fPlace 159 203 v3 ! focus fPlace neu
+15381 812 0 0 812 812 0 - 0 0 762 812 fPlace 159 203 v3 ! neu fokussiert fPlace a
+15382 812 0 0 812 812 0 - 0 0 762 812 fPlace 159 203 v3 ! klick unterdrückt dkoerper (Feld fPlace)
+15506 409 0 0 812 812 0 - 0 0 762 812 fPlace 159 203 v3 ! vv resize
+15521 409 0 0 812 812 0 - 0 0 393 812 fPlace 159 203 v3
+24580 409 0 0 812 812 0 - 0 0 393 812 - - - v3 ! blur fPlace
+24580 409 0 0 812 812 0 - 0 0 393 812 dlg - - v3 ! focus dlg
+24581 409 0 0 812 812 0 - 0 0 393 812 dlg - - v3 ! tippen dlgOk
+24581 409 0 0 812 812 0 - 0 0 393 812 - - - v3 ! blur dlg
+24585 409 0 0 812 812 0 - - - 393 812 - - - v3
+24640 812 0 0 812 812 0 - - - 393 812 - - - v3 ! vv resize
+24657 812 0 0 812 812 0 - - - 762 812 - - - v3
+27978 812 0 0 812 812 0 - - - 762 812 - - - v3 ! tippen runter
+29882 812 0 0 812 812 0 - - - 762 812 kosten 628 672 v3 ! focus kosten
+29882 812 0 0 812 812 0 - - - 762 812 kosten 628 672 v3 ! vorbereitet kosten 456
+29883 812 0 0 812 812 0 - - - 762 812 - - - v3 ! blur kosten neu
+29885 812 0 0 812 812 0 - - - 762 812 kosten 172 216 v3 ! focus kosten neu
+29885 812 0 0 812 812 0 - - - 762 812 kosten 172 216 v3 ! neu fokussiert kosten a
+29887 812 0 0 812 812 0 - - - 762 812 kosten 172 216 v3 ! klick unterdrückt rolle (Feld kosten)
+29961 436 0 0 812 812 0 - - - 762 812 kosten 628 672 v3 ! vv resize
+29983 436 0 0 812 812 0 - - - 420 812 kosten 376 420 v3
+40006 436 0 0 812 812 0 - - - 420 812 - - - v3 ! blur kosten
+40006 436 0 0 812 812 0 - - - 420 812 - - - v3 ! tippen hoch
+40043 812 0 0 812 812 0 - - - 420 812 - - - v3 ! vv resize
+40051 812 0 0 812 812 0 - - - 762 812 - - - v3
+41413 812 0 0 812 812 0 - - - 762 812 - - - v3 ! tippen hoch
+43128 812 0 0 812 812 0 - - - 762 812 - - - v3 ! tippen teilen

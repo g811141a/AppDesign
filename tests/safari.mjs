@@ -65,9 +65,9 @@
 // - S-8 (Muster 6, 6h) **Annahme, am Gerät zu bestätigen:** ein neuer Fokus (blur() + focus() noch im focusin) zählt wie ein eigener –
 //   Safari liest die Lage dann neu (window-focusin des neuen Fokus, S-7). Ein Feld mit readonly öffnet keine Tastatur und verschiebt
 //   nicht (mitTastatur). Hält die Annahme am Gerät nicht, wird sie hier korrigiert. Bestätigt am Gerät (6i, iPhone hoch, iPad).
-// - S-9 (Muster 6, 6i): war das Feld beim Fokus readonly (Muster 6, Art b), steht sein Rollbereich in dem Bild, in dem die Tastatur
-//   erscheint, wieder auf dem Rollstand beim Fokus – vor dem Rollen der App (iPhone hoch 456, iPad 427 px zurück). Felder ohne
-//   readonly (Art a, V2) nicht (6i, Muster 5). Ob es am readonly liegt, zeigt Muster 7 (Annahme).
+// - S-9 (Muster 5 bis 7, 6i, 6k): Feld im Inhalt (Rollbereich außerhalb eines Fensters) – sobald die Tastatur erscheint, steht der
+//   Rollbereich wieder auf dem Rollstand beim ersten Fokus, vor dem Rollen der App (Muster 6: 456 / 427, Muster 7 ohne readonly:
+//   456 / 477, Muster 5: 477, dort von Safaris Verschiebung verdeckt: 618 − 428 = 190). Felder im Fenster nie (Ort, 7 von 7).
 export const ABSTAND = 24, ABSTAND_FENSTER = 15;
 export const SAFARI = {
   'iPhone hoch': { tastatur: 403, ziffern: 376, fokusRollen: -120, fokusSchub: 0 },
@@ -134,7 +134,7 @@ export async function safariModell(p, ansicht, { leisten = { bar: '.nb, .pnav', 
         const a = document.activeElement;
         s.kb = auf && s.naechste ? s.naechste : auf && werte.ziffern && /^(decimal|numeric)$/.test(a?.getAttribute?.('inputmode') || '') ? werte.ziffern : werte.tastatur;
         if (auf) s.naechste = null;
-        // S-9: Feld war beim Fokus readonly – Rollbereich zurück auf den Stand beim Fokus
+        // S-9: Feld im Inhalt – Rollbereich zurück auf den Stand beim ersten Fokus
         if (auf && s.zurueck?.el === a) s.zurueck.c.scrollTop = s.zurueck.y;
         if (auf) s.zurueck = null;
         if (!auf) s.pan = 0;
@@ -191,8 +191,8 @@ export async function safariModell(p, ansicht, { leisten = { bar: '.nb, .pnav', 
     document.addEventListener('focusout', e => { if (e.target.matches?.('input, textarea')) s.blur = true; }, true);
     // S-7: window vor document – läuft vor jedem Fokus-Hörer der Seite
     window.addEventListener('focusin', e => { const r = e.target.getBoundingClientRect?.(); s.fokusLage = r ? { el: e.target, r: { top: r.top, bottom: r.bottom } } : null;
-      // S-9: Rollstand beim Fokus eines readonly-Felds merken
-      if (e.target.readOnly && e.target.matches?.('input, textarea')) {
+      // S-9: Rollstand beim ersten Fokus eines Felds im Inhalt merken (ein neuer Fokus desselben Felds ändert ihn nicht)
+      if (!s.offen && e.target.matches?.('input, textarea') && !e.target.closest('dialog') && s.zurueck?.el !== e.target) {
         let c = e.target.parentElement; while (c && c !== document.body && !/(auto|scroll)/.test(getComputedStyle(c).overflowY)) c = c.parentElement;
         s.zurueck = c && c !== document.body ? { el: e.target, c, y: c.scrollTop } : null;
       } }, true);
