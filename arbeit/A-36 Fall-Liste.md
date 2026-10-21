@@ -448,7 +448,7 @@ Dateien `arbeit/A-36 Messungen/2026-10-21 13-00 Muster 9 iPhone.txt` (hoch) und 
 - Was Safari zwischen zwei Bildern zeigt, kennt die Prüfung nur aus dem Modell – deshalb Muster und Messung am Gerät.
 - Drehen mit offener Tastatur, iPad hoch und Zifferntastatur hoch sind nicht gemessen → Muster bzw. Prüfliste.
 
-## 8. Fall-Liste für den Bau AppDesign 4.28.1 / Reiselogbuch 3.26.1 (Sitzung 0024, 21.10.2026) – wartet auf das Ja
+## 8. Fall-Liste für den Bau AppDesign 4.28.1 / Reiselogbuch 3.26.1 (Sitzung 0024, 21.10.2026) – Ja des Nutzers 21.10.2026, gebaut
 
 Grundlage: Muster 9 (6h bis 6n), am Gerät 10 von 10 still. Was gebaut wird, steht in `v4/ui.js` (Abschnitt ‚Tastatur und sichtbarer
 Bereich‘, ersetzt `fieldIntoView` und den 350-ms-Ausgleich im Fenster) und `v4/design.css`; die App ändert nur die Fassung (4.28.0 →
@@ -475,6 +475,7 @@ Bereich‘, ersetzt `fieldIntoView` und den 350-ms-Ausgleich im Fenster) und `v4
 | B-15 | Inhalt kürzer als der Bildschirm (1 Tag), Feld unten | Platz unten reicht zum Rollen in die obere Hälfte | wie B-1 | B-1 mit 1 Tag |
 | B-16 | **Messmodus** (15.21) zeichnet die neuen Schritte auf | Zeilen ‚neu fokussiert‘, ‚zurückgestellt‘, ‚klick unterdrückt‘, ‚platz weg‘ | Gerätemessung zeigt, was ui.js getan hat; ein Wert, der im selben ms zurückgestellt wird, zählt nicht als Sprung (6n, iPad) | `tests/messung.mjs` |
 | B-17 | Drehen bei offener Tastatur, Zifferntastatur iPad hoch | – | Leisten nach dem Drehen ± 1 | nur am Gerät (Prüfliste) |
+| B-18 | (beim Bau gefunden) Die App reagiert auf blur/focus – Reiselogbuch: `fTitle.onblur` setzt ‚Pflichtfeld‘, `kosten.onblur` formatiert | die Ereignisse des neuen Fokus gehen nicht an die App (auf `document` in der Einfangphase angehalten; Safari-Modell und Safari lesen die Lage vorher) | kein ‚Pflichtfeld‘ beim ersten Antippen | `checkTastaturStill`: kein blur am Feld, das den Fokus behält |
 
 **Dazu:**
 - `tests/safari.mjs`: S-8 als **bestätigt** (6i, 6k), S-9 mit Quelle; iPad hoch als Lage. Safari-Eigenheiten **S-6 bis S-9 mit Quelle in
@@ -483,3 +484,19 @@ Bereich‘, ersetzt `fieldIntoView` und den 350-ms-Ausgleich im Fenster) und `v4
   ‚↑ bei offener Tastatur‘, Tastatur-Taste, Wechsel); prüft dann gegen die Fassung 4.28.1. Das Muster bleibt als Werkzeug in `arbeit/`
   (Gegenproben G-1 bis G-6 am Muster).
 - Nur am Gerät (Prüfliste): Gefühl beim Antippen (Inhalt rollt einmal, wie in Apps von Apple), Tastatur flackert nicht, B-17.
+
+**Bau (Sitzung 0024):**
+- **Platz unter dem Inhalt** als `--platz` am Platzhalter `::after` statt als padding: ein Innenabstand machte `.dlg-body` (Flex-Element)
+  selbst höher – am iPhone ragte das Fenster über den Bildschirm, der Fensterkopf sprang beim Wechsel (im Muster nicht aufgefallen, dort
+  war der Inhalt höher). Dasselbe hatte A-33 für `.rolle` schon so gelöst.
+- **Feld kaum kleiner als der sichtbare Teil:** Ziel direkt am Rand (ohne 4 px), sonst verschob das Modell am iPhone quer 2 px.
+- **Prüfung, Wechsel:** wie am Gerät wird das andere Feld erst mit dem Finger sichtbar gewischt (Berührung beendet die Rückstellung);
+  Playwright rollte es sonst beim Antippen selbst. iPhone quer wechselt zu ‚Quartier‘ (gleiche Zeile wie Ort): ‚Programm‘ ist dort
+  96 px hoch bei 84 px sichtbarem Fensterinhalt – wie Safari dann verschiebt, ist nicht gemessen (Prüfliste, Grenze in 13).
+- **Ergebnis:** `ablauf-tastatur-still.mjs` gegen 3.26.0 rot (177 Fehler, alle Fälle außer ‚Suche oben‘, die schon vorher still war),
+  mit 3.26.1 grün in Chromium und WebKit; die drei Messungen (T-8) still.
+- **Klick-Unterdrückung** endet auch bei `pointerdown` (nicht nur bei einer Berührung): sonst verschluckte sie Klicks mit Maus bzw.
+  Trackpad (`ablauf-liste-still`, ‹ › bei offener Tastatur). `pointerdown` kommt vor dem Fokus – der eine Klick von Safari wird weiter
+  unterdrückt.
+- **Messung vom 19.10. (iPhone quer)** wurde mit 44-px-Leisten aufgenommen: `ablauf-abspielen.mjs` rechnet die Suchzeile 29 px höher
+  (R-2.4, `aufbau`); die Gegenprobe (20 px verschoben) bleibt rot.

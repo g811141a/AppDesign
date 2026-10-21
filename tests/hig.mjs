@@ -119,7 +119,8 @@ const found = new Map(), icons = new Map();
         // Seit 4.13.0: eine unsichtbare, absolut gesetzte Fläche (::after) gehört zur Antippfläche – so vergrößert iOS kurze Links.
         const af = getComputedStyle(e, '::after');
         if (af.content !== 'none' && af.position === 'absolute') { wd = Math.max(wd, parseFloat(af.width) || 0); h = Math.max(h, parseFloat(af.height) || 0); }
-        const inCap = e.closest('.cap, .grp, .navgrp') || (e.type === 'checkbox' && /switch|toggle/.test(e.className + e.parentElement.className)) || (e.type === 'checkbox' && b.width >= 51 && b.height >= 31);
+        // seit 4.28.1 (R-2.4): das Suchfeld der niedrigen Leiste (iPhone quer, 32 px) ist eine Kapsel
+        const inCap = e.closest('.cap, .grp, .navgrp') || e.closest('html.phone .pnav .searchbox') && matchMedia('(orientation: landscape) and (max-height: 500px)').matches || (e.type === 'checkbox' && /switch|toggle/.test(e.className + e.parentElement.className)) || (e.type === 'checkbox' && b.width >= 51 && b.height >= 31);
         const min = inCap ? 28 : 44;
         if (Math.min(wd, h) < min) res.target.push(`${e.tagName.toLowerCase()} ‚${label(e)}‘ ${Math.round(wd)}×${Math.round(h)} px (mind. ${min})`);
       });
@@ -176,6 +177,15 @@ const found = new Map(), icons = new Map();
       document.querySelectorAll('.nb, .pnav').forEach(b => { if (vis(b) && cs(b).position !== 'fixed' && (scroller(b) || cs(b.parentElement).position !== 'fixed'))
         R('R-2.1', `Leiste .${b.classList[0]} ist ${cs(b).position} ${scroller(b) ? 'im Rollbereich' : 'ohne festen Rahmen'} statt fest – sie federt mit`); });
       if (cs(document.documentElement).overscrollBehaviorY !== 'none') R('R-2.1', 'Seite federt am Rand nach');
+      // R-2.4 (seit 4.28.1, A-36): iPhone quer niedrige Leisten wie iOS – Knöpfe und Suchfeld in Kopfzeile und Fensterkopf 32 px hoch
+      // (die Kopfzeile damit 32 statt 44 px); hoch die gewohnten 44 px
+      if (phone) {
+        const quer = matchMedia('(orientation: landscape) and (max-height: 500px)').matches, soll = quer ? 32 : 44;
+        document.querySelectorAll('.pnav .grp, .pnav .navgrp, .pnav > span > .round, .pnav .searchbox input, #dlg[open] .dlg-head .grp, #dlg[open] .dlg-head .round').forEach(e => {
+          const h = e.getBoundingClientRect().height;
+          if (vis(e) && Math.abs(h - soll) > 1) R('R-2.4', `iPhone ${quer ? 'quer' : 'hoch'}: ${label(e) || '.' + e.classList[0]} in der Leiste ${Math.round(h)} statt ${soll} px hoch`);
+        });
+      }
       const side = document.getElementById('side');
       if (side && vis(side)) side.querySelectorAll('.side-head, .bhint').forEach(e => { if (scroller(e)) R('R-2.1', `.${e.classList[0]} liegt im Scrollbereich der Seitenleiste – federt mit`); });
       // R-5.1 Bezeichnung und Feld gehören zusammen

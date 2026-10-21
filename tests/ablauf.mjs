@@ -712,16 +712,24 @@ export async function checkFieldVisible(p, { field, vorher = null, where = '' } 
   return errors;
 }
 
-// R-4.5 Tastatur ohne Springen (seit 4.28.1, A-36, Fall-Liste arbeit/A-36 Fall-Liste.md T-1 bis T-7): Feld antippen, Tastatur
-// auf, Feld wechseln, Tastatur zu – in jedem Bild (Aufnahme des Safari-Modells) stehen Kopfzeile, Suchzeile, Seitenleiste und der
-// linke Rand eines Fensters still (± 1 px); der Fensterkopf darf sich nur auf seinen neuen Platz zu bewegen (iPad: in die Mitte über
-// der Tastatur), nie darüber hinaus. Danach steht das Feld ganz über der Tastatur und die Kapsel (wenn sichtbar) 10 px darüber.
+// R-4.5 Tastatur ohne Springen (seit 4.28.1, A-36, Fall-Liste arbeit/A-36 Fall-Liste.md T-1 bis T-7 und B-1 bis B-18): Feld antippen,
+// Tastatur auf, Feld wechseln, Tastatur zu – in jedem Bild (Aufnahme des Safari-Modells) stehen Kopfzeile, Suchzeile, Seitenleiste und
+// der linke Rand eines Fensters still (± 1 px); der Fensterkopf darf sich nur auf seinen neuen Platz zu bewegen (iPad: gleitet in die
+// Mitte über der Tastatur), nie darüber hinaus; das Feld mit Fokus springt nie (> 60 px zwischen zwei Bildern, B-4: Safari stellt den
+// Inhalt zurück, S-9). Danach steht das Feld ganz über der Tastatur und die Kapsel (wenn sichtbar) 10 px darüber. Dazu:
+// - B-3: nach dem Antippen öffnet sich nichts (Safaris Klick nach dem Rollen trifft dort etwas anderes);
+// - B-18: das Feld sieht die Ereignisse des neuen Fokus nicht (kein blur – sonst z. B. ‚Pflichtfeld‘ beim ersten Antippen);
+// - B-16: der Messmodus schreibt ‚neu fokussiert‘ (wenn die App ihn hat);
+// - taste (iPad, B-6): Tastatur-Taste schließt nur die Tastatur – das Feld gibt den Fokus ab, erneutes Antippen ist still;
+// - kapsel (Feld im Inhalt, B-7, B-8): ↑ bei offener Tastatur rollt mit einem Antippen ganz nach oben; danach ↓ endet am Ende des
+//   Inhalts, kein Platz bleibt darunter stehen;
+// - wischen (nur Chromium, B-14): Wischen über das Feld fokussiert nicht und rollt nichts vorab.
 // Gegen 4.28.0 rot: Safari verschiebt bei einem Feld unter der künftigen Tastatur den sichtbaren Bereich, ui.js gleicht erst 2 Bilder
 // später aus (P-60). Braucht safariModell(p, ansicht, { auto: true, leisten: STILL_LEISTEN, links: STILL_LINKS }).
 export const STILL_LEISTEN = { bar: '.nb, .pnav', box: '.searchbox', side: '#side', kopf: 'dialog[open] .dlg-head' };
 export const STILL_LINKS = { links: 'dialog[open]' };
 const STILL_NAME = { bar: 'Kopfzeile', box: 'Suchzeile', side: 'Seitenleiste', kopf: 'Fensterkopf', links: 'Fenster (linker Rand)' };
-export async function checkTastaturStill(p, { field, vorher = null, wechsel = null, fab = '.fab', where = '' } = {}) {
+export async function checkTastaturStill(p, { field, vorher = null, wechsel = null, fab = '.fab', taste = false, kapsel = null, wischen = false, where = '' } = {}) {
   const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}R-4.5 ${t}`);
   if (!await p.evaluate(() => !!window.__safari?.lage().hasOwnProperty('kopf'))) { E('Vorbereitung: Safari-Modell mit auto und STILL_LEISTEN fehlt'); return errors; }
   if (vorher) { await vorher(); await wait(p, 400); }
@@ -741,6 +749,13 @@ export async function checkTastaturStill(p, { field, vorher = null, wechsel = nu
         E(`${name}: ${STILL_NAME[k]} springt in ${aus.length} von ${bilder.length} Bildern bis ${w} px (vorher ${a[k]}, danach ${e[k]} px)`);
       } else if (still && Math.abs(e[k] - a[k]) > 1) E(`${name}: ${STILL_NAME[k]} danach bei ${e[k]} statt ${a[k]} px`);
     }
+    // B-4: das Feld mit Fokus springt nicht (dasselbe Feld in zwei aufeinanderfolgenden Bildern)
+    for (let i = 1; i < bilder.length; i++) {
+      const x = bilder[i - 1], y = bilder[i];
+      if (x.feld != null && y.feld != null && x.feldId === y.feldId && Math.abs(y.feld - x.feld) > 60) {
+        E(`${name}: Feld ${y.feldId} springt von ${x.feld} auf ${y.feld} px (B-4)`); break;
+      }
+    }
   };
   // Feld mit Fokus ganz über der Tastatur, Kapsel 10 px darüber (Bildschirm = Lage minus offsetTop, alle Rahmen sind fest)
   const ueber = async (name, sel) => {
@@ -757,14 +772,70 @@ export async function checkTastaturStill(p, { field, vorher = null, wechsel = nu
       E(`${name}: ${sel} nicht ganz über der Tastatur (${l.oben}–${l.unten} px, Rollbereich ab ${l.ct}, Tastatur ab ${l.kb} px)`);
     if (l.kapsel != null && l.kapsel > l.kb - 10 + 1) E(`${name}: Kapsel unten bei ${l.kapsel} px – unter oder an der Tastatur (ab ${l.kb} px), T-7`);
   };
+  // B-3, B-18, B-16: was die App beim Antippen sieht – geöffnete Fenster und Menüs, blur am Feld selbst, Zeilen des Messmodus
+  const vorAntippen = sel => p.evaluate(sel => {
+    const f = document.querySelector(sel); window.__b18 = 0; f.addEventListener('blur', () => window.__b18++, { once: true });
+    if (typeof messStart === 'function' && !(typeof mess !== 'undefined' && mess?.an)) messStart({ app: 'Prüfung' });
+    return { offen: document.querySelectorAll('dialog[open], .menu, .pop').length, y: f.closest('.dlg-body, #app > .rolle')?.scrollTop ?? 0, kb: __safari.offen };
+  }, sel);
+  const nachAntippen = async (name, sel, v) => {
+    const n = await p.evaluate(sel => {
+      const f = document.querySelector(sel), z = typeof mess !== 'undefined' && mess?.zeilen ? mess.zeilen.join('\n') : null;
+      return { offen: document.querySelectorAll('dialog[open], .menu, .pop').length, blur: window.__b18, y: f.closest('.dlg-body, #app > .rolle')?.scrollTop ?? 0,
+        neu: z == null ? null : new RegExp(`! neu fokussiert ${f.id || f.tagName.toLowerCase()}$`, 'm').test(z) };
+    }, sel);
+    if (n.offen !== v.offen) E(`${name}: nach dem Antippen von ${sel} hat sich etwas geöffnet (${v.offen} → ${n.offen} Fenster/Menüs) – Klick nach dem Rollen, B-3`);
+    if (n.blur && await p.evaluate(sel => document.activeElement === document.querySelector(sel), sel)) E(`${name}: ${sel} bekam beim Antippen ein blur, obwohl es den Fokus behält (neuer Fokus sichtbar für die App, B-18)`);
+    if (!v.kb && n.y !== v.y && n.neu === false) E(`${name}: ${sel} gerollt, aber im Messmodus keine Zeile ‚neu fokussiert‘ (B-16)`);
+  };
+  let v = await vorAntippen(field);
   await film('T-1/T-2 Feld antippen', () => p.tap(field));
   await ueber('T-1/T-2 Feld antippen', field);
+  await nachAntippen('T-1/T-2 Feld antippen', field, v);
+  if (taste) {
+    // B-6 (iPad): Tastatur-Taste – nur die Tastatur geht zu, das Feld gibt den Fokus ab; erneutes Antippen ist ein gewöhnliches
+    await film('B-6 Tastatur-Taste', () => p.evaluate(() => __safari.tastatur(false)));
+    if (await p.evaluate(sel => document.activeElement === document.querySelector(sel), field)) E(`B-6 nach der Tastatur-Taste hat ${field} noch den Fokus`);
+    v = await vorAntippen(field);
+    await film('B-6 erneut antippen', () => p.tap(field));
+    await ueber('B-6 erneut antippen', field);
+    await nachAntippen('B-6 erneut antippen', field, v);
+  }
   if (wechsel) {
+    // wie am Gerät: das andere Feld erst mit dem Finger in den sichtbaren Teil wischen (Playwright rollte es sonst beim Antippen selbst)
+    // (ein Wischen beginnt mit einer Berührung – sie beendet die Rückstellung, B-4)
+    await p.evaluate(sel => document.querySelector(sel).closest('.dlg-body, #app > .rolle')?.dispatchEvent(new Event('touchstart', { bubbles: true })), wechsel);
+    await p.locator(wechsel).scrollIntoViewIfNeeded(); await wait(p, 300);
     await film('T-5 Feld wechseln', () => p.tap(wechsel));
     await ueber('T-5 Feld wechseln', wechsel);
   }
-  await film('T-4 Tastatur schließen', () => p.evaluate(() => document.activeElement?.blur()));
+  if (kapsel) {
+    // B-8: ↑ bei offener Tastatur – ein Antippen genügt (das Antippen schließt die Tastatur, gerollt wird danach)
+    await film('B-8 ↑ bei offener Tastatur', () => p.tap(kapsel.hoch));
+    await wait(p, 500);
+    const r = await p.evaluate(() => ({ y: Math.round(document.querySelector('#app > .rolle').scrollTop), offen: __safari.offen }));
+    if (r.offen) E('B-8 nach ↑ ist die Tastatur noch offen');
+    if (r.y > 1) E(`B-8 ↑ bei offener Tastatur rollt nicht ganz nach oben (scrollTop ${r.y}) – zweites Antippen nötig`);
+    // B-7: danach ↓ – der Inhalt endet am Ende, kein Platz bleibt darunter
+    await p.tap(kapsel.ende); await wait(p, 1200);
+    const e = await p.evaluate(() => { const c = document.querySelector('#app > .rolle'), pl = parseFloat(c.style.getPropertyValue('--platz')) || 0;
+      return { y: Math.round(c.scrollTop), max: Math.round(c.scrollHeight - c.clientHeight - pl), platz: pl }; });
+    if (e.platz) E(`B-7 nach ↑ und ↓ steht noch ${e.platz} px Platz unter dem Inhalt`);
+    if (Math.abs(e.y - e.max) > 1) E(`B-7 ↓ endet bei ${e.y} statt am Ende des Inhalts (${e.max})`);
+  } else await film('T-4 Tastatur schließen', () => p.evaluate(() => document.activeElement?.blur()));
   if (await p.evaluate(() => __safari.offen)) E('T-4 die Tastatur ist nach dem Verlassen des Felds noch offen');
+  if (wischen && p.context().browser()?.browserType().name() === 'chromium') {
+    // B-14: Wischen über das Feld (Berührung bewegt sich) – kein Fokus, nichts vorab gerollt
+    const pt = await p.evaluate(sel => { const r = document.querySelector(sel).getBoundingClientRect(); return { x: Math.round(r.left + 20), y: Math.round(r.top + r.height / 2) }; }, field);
+    const cdp = await p.context().newCDPSession(p);
+    await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [pt] });
+    for (let i = 1; i <= 6; i++) await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: pt.x, y: pt.y - i * 15 }] });
+    await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+    await wait(p, 600);
+    const w = await p.evaluate(sel => ({ fokus: document.activeElement === document.querySelector(sel), platz: [...document.querySelectorAll('.dlg-body, #app > .rolle')].some(c => c.style.getPropertyValue('--platz')) }), field);
+    if (w.fokus) E(`B-14 Wischen über ${field} gibt ihm den Fokus`);
+    if (w.platz) E(`B-14 Wischen über ${field} rollt vorab (Platz unter dem Inhalt)`);
+  }
   return errors;
 }
 

@@ -1,6 +1,6 @@
 # AppDesign – Backlog (allgemeine Themen)
 
-**Stand 20.10.2026** · Aktuelle Version: AppDesign 4.28.0
+**Stand 21.10.2026** · Aktuelle Version: AppDesign 4.28.1
 
 Allgemeine Themen, die alle Apps betreffen. App-Themen stehen im Backlog der jeweiligen App.
 Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
@@ -17,13 +17,12 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| A-35 | 1 | **Feld im Inhalt über der Tastatur (R-4.5, 4.28.0):** P-60 **nicht ok** – das Feld steht über der Tastatur, aber Kopf- und Suchzeile (iPad auch Seitenleiste) springen beim Ein- und Ausblenden → A-36 | nicht ok – A-36 |
+| A-36 | 1 | **Tastatur ohne Springen (R-4.5, 4.28.1, aus P-60):** beim Antippen rollt das Feld in die obere Hälfte und bekommt einen neuen Fokus – Safari verschiebt nichts, Leisten still; Rückstellung, Platz unter dem Inhalt, Klick nach dem Rollen unterdrückt, Tastatur-Taste (iPad), ‚Nach oben‘ bei offener Tastatur mit einem Antippen, iPad-Fenster gleitet; **R-2.4 neu:** iPhone quer niedrige Leisten. Im Modell grün, **am Gerät zu bestätigen** (Reiselogbuch P-61, mit Messmodus); A-35 wird damit mitgeprüft | prüfen (P-61) |
 
 ## 2. Weitere Themen (in Klärung)
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| A-36 | 1 | **Korrektur aus P-60 (Nutzer 20.10.2026): Tastatur ohne Springen** – Safari verschiebt den sichtbaren Bereich um die ganze Tastaturhöhe, wenn das Feld unter der künftigen Tastatur liegt (Inhalt und Fenster, iPhone und iPad, gemessen 232/403/428 px), meldet es 2 Bilder später → Kopf-, Such- und Seitenleiste springen; dazu Kapsel unter der Tastatur bzw. am iPad weg (`--vv-bottom`), iPad-Fenster rutscht nach links. Ziel: Safari muss nie verschieben. `arbeit/A-36 Analyse P-60.md` | **zuerst** – Fall-Liste, Prüfungen rot, Muster am Gerät |
 | A-37 | 2 | **‚Nach oben / Ans Ende‘ verbessern (allgemeine Regel, Nutzer 20.10.2026):** z. B. wie in der Gemini-App für iOS – Apple-Abgleich und Muster | offen |
 | A-30 | 3 | Vorschläge von Claude (19.10.2026, Analyse Abschnitt 5): Rückgängig nach Löschen (‚Gelöscht · Widerrufen‘), einheitliche leere Zustände, ‚Ziehen zum Aktualisieren‘ bewusst aus – je einzeln entscheiden | Vorschlag |
 | A-32 | 3 | **‚Problem melden‘ (Vorschlag V9, Nutzer 19.10.2026):** Messung, Version und Gerät in einer Datei | später |
@@ -35,6 +34,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Thema | Version | Datum |
 |---|---|---|---|
+| E-65 | **A-36 gebaut:** Tastatur ohne Springen (V3 aus Muster 9) in `ui.js` – neuer Fokus nach dem Rollen, Rückstellung (S-9), `--platz`, Klick unterdrückt, Tastatur-Taste, `nachTastatur`, iPad-Fenster gleitet, `isPhone()`/Kapsel nach `innerHeight + scrollY`; R-2.4 niedrige Leisten iPhone quer; Safari-Eigenheiten S-1 bis S-9 in Designrichtlinie 13; `checkTastaturStill` erweitert (B-1 bis B-18), R-2.4 in `hig.mjs`; gegen 4.28.0 rot (177 Fehler), jetzt grün. Wartet auf P-61 | AppDesign 4.28.1 | 21.10.2026 |
 | E-64 | **A-31 gebaut:** Messung abspielen – `tests/abspielen.mjs` (`lies`, `ansicht`, `spieleAb`), Messdateien in `tests/messungen/`, Safari-Modell `__safari.setze`; im Reiselogbuch `ablauf-abspielen.mjs` mit Gegenprobe (M-1 bis M-6); Designrichtlinie 15.21 | AppDesign 4.28.0 | 20.10.2026 |
 | E-63 | **A-35 gebaut:** R-4.5 ergänzt – ein Feld mit Fokus steht immer ganz über der Tastatur, auch im Inhalt (`fieldIntoView` in ui.js, 16 px darüber bzw. direkt unter Kopf- oder Suchzeile); Safari-Modell: Feld unter der Tastatur verschiebt den sichtbaren Bereich (quer 232 px), Zifferntastatur 170 px; `checkFieldVisible` (gegen 4.27.1 rot); Designrichtlinie 7, 13. Wartet auf P-60 | AppDesign 4.28.0 | 20.10.2026 |
 | E-62 | **A-26 entfällt (Nutzer 20.10.2026):** C2 am iPad ok, aber nicht vollständig machbar – Safari meldet nur den Wert, daher bleiben G-1 bis G-3 (31. → letzter Tag eines anderen Monats, gleicher Tag, heute im leeren Feld) und die 400-ms-Annahme; Grundsatz des Nutzers: ‚Wenn nicht alles funktioniert, bauen wir es so nicht ein.‘ Datumsfelder bleiben wie heute, kein eigener Kalender. `arbeit/A-26 A-31 A-34 Fall-Liste.md` Abschnitte 9–13, `arbeit/A-26 Datumserfassung Apple und andere Apps.md` | – | 20.10.2026 |

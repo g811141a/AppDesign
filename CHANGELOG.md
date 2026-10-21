@@ -3,6 +3,47 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.28.1 – 21.10.2026
+
+AppDesign 4.28.1 · Designrichtlinie allgemein 4.28.1 · Zusammenarbeit allgemein 2.16.0 · geprüft mit Reiselogbuch 3.26.1
+
+Korrektur aus P-60 (A-36, dein Ja vom 21.10.2026 zur Fall-Liste Abschnitt 8): Beim Antippen eines Felds sprangen Kopfzeile,
+Suchzeile, Seitenleiste und Fenster um die ganze Tastaturhöhe. Gebaut ist die Lösung V3 aus Muster 9, die am Gerät 10 von 10 Mal
+still war. In der Nachbildung behoben, **am Gerät zu bestätigen** (Reiselogbuch P-61, mit Messmodus).
+
+- **R-4.5 ergänzt – Tastatur ohne Springen (ui.js, ersetzt `fieldIntoView`):** die Berührung bleibt bei Safari; sobald ein Feld den
+  Fokus hat, rollt sein Bereich (Inhalt bzw. Fenster) es in die obere Hälfte des künftig sichtbaren Bereichs und gibt ihm bei
+  geschlossener Tastatur sofort einen **neuen Fokus** (blur + focus, noch in der Berührung) – Safari liest die Lage neu und
+  verschiebt nichts. Die Ereignisse des neuen Fokus sieht die App nicht (sonst z. B. ‚Pflichtfeld‘ beim ersten Antippen, B-18).
+  Bei offener Tastatur (Feld wechseln) kein neuer Fokus.
+- **Klick nach dem Rollen:** Safaris Klick an derselben Stelle trifft dort jetzt etwas anderes – er wird unterdrückt (B-3).
+- **Rückstellung:** Safari setzt den Inhalt beim Erscheinen der Tastatur auf den Stand vor dem Rollen zurück (S-9) – ui.js rollt
+  ihn im scroll-Ereignis sofort wieder hin (≤ 1,5 s, Wischen beendet sie).
+- **Platz unter dem Inhalt (`--platz`):** verlängert den Platzhalter am Ende (`.rolle::after`, neu `.dlg-body::after`) statt eines
+  Innenabstands – ein Innenabstand machte das Fenster am iPhone höher als den Bildschirm. Nach dem Schließen der Tastatur
+  schrumpft er beim Rollen wieder; `rolle.ende()` zählt ihn nicht.
+- **Tastatur-Taste (iPad):** schließt die Tastatur, das Feld gibt den Fokus ab – erneutes Antippen ist ein gewöhnliches.
+- **‚Nach oben / Ans Ende‘ bei offener Tastatur:** ein Antippen genügt (gerollt wird nach dem Schließen, `nachTastatur`).
+- **iPad-Fenster:** gleitet mit der Tastatur (0,25 s) in die Mitte darüber und zurück; ganz sichtbar bleibt es stehen; seine Höhe
+  bleibt beim Antippen. `isPhone()` und die Kapsel (`--vv-bottom`) rechnen mit der Höhe ohne Tastatur (`innerHeight + scrollY`,
+  S-3) – das Fenster rutscht nicht mehr an den linken Rand.
+- **Tastaturhöhe:** vor dem ersten Öffnen geschätzt (am Gerät gemessen), danach je Gerät, Lage und Tastaturart gemerkt
+  (`localStorage` `appdesign.tastatur`).
+- **R-2.4 neu (allgemeine Regel, dein Ja 20.10.2026):** iPhone quer niedrige Leisten wie iOS – Kopfzeile, Suchzeile und
+  Fensterkopf 32 statt 44 px (Knöpfe in Kapseln 31 px, runde Knöpfe 32 × 32 mit Antippfläche 44 × 44); 15.3, 15.8, Regelkatalog.
+- **Messmodus (15.21):** neue Zeilen ‚neu fokussiert‘, ‚klick unterdrückt‘, ‚zurückgestellt‘, ‚platz weg‘.
+- **Designrichtlinie 13:** Safari-Eigenheiten S-1 bis S-9 mit Quellen (Muster A-36, Messungen `arbeit/A-36 Messungen/`); Abschnitte
+  7, 15.22.
+- **Prüfungen:** Safari-Modell zeichnet das Feld mit Fokus je Bild auf (S-8 bestätigt); `checkTastaturStill` (ablauf.mjs) prüft
+  zusätzlich ‚Feld springt‘, Klick nach dem Rollen, unsichtbaren neuen Fokus, Messmodus, Tastatur-Taste mit erneutem Antippen,
+  ‚Nach oben‘ bei offener Tastatur und danach ‚Ans Ende‘, Wischen über das Feld; `hig.mjs` prüft R-2.4. Im Reiselogbuch
+  `ablauf-tastatur-still.mjs` mit allen vier Lagen und kurzem Inhalt: gegen 3.26.0 **177 Fehler**, jetzt grün (Chromium und WebKit).
+- **Warum die Prüfung es übersehen hatte (4.28.0):** das Safari-Modell kannte das Verschieben bei Feldern in Fenstern und die
+  Lage beim Fokus nicht, und es wurde nur der Endzustand geprüft, nicht jedes Bild.
+- **Grenzen (Prüfliste):** iPhone quer mit offener Suchzeile bleibt für ein Feld im Inhalt zu wenig Platz – Safari verschiebt dort
+  weiter etwas; ein Feld, das höher ist als der sichtbare Teil (‚Programm‘ im Fenster am iPhone quer), ist nicht gemessen.
+- Fall-Liste `arbeit/A-36 Fall-Liste.md` (Abschnitt 8, B-1 bis B-18); feste Fassung `fassung/4.28.1/`.
+
 ## 4.28.0 – 20.10.2026
 
 AppDesign 4.28.0 · Designrichtlinie allgemein 4.28.0 · Zusammenarbeit allgemein 2.14.1 · geprüft mit Reiselogbuch 3.26.0
