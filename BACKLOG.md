@@ -1,9 +1,9 @@
 # AppDesign – Backlog (allgemeine Themen)
 
-**Stand 21.10.2026** · Aktuelle Version: AppDesign 4.28.1
+**Stand 21.10.2026** · Aktuelle Version: AppDesign 4.28.2
 
 Allgemeine Themen, die alle Apps betreffen. App-Themen stehen im Backlog der jeweiligen App.
-Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
+Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.4.
 
 ---
 
@@ -23,7 +23,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| A-39 | 1 | **Konsolidierung aller Regeln (Nutzer 21.10.2026):** Zusammenarbeit, Designrichtlinie allgemein (15–17), Designrichtlinie Reiselogbuch, PROMPT.md, CLAUDE.md, tests/README – kürzer, ohne Doppelungen und Widersprüche, Geschichte in die Versionsgeschichten, jede Regel an einer Stelle mit einer Prüfung, kein Code; Übergabe künftig ab ~150.000 Token. Auftrag: Starttext in UEBERGABE.md Abschnitt 7 | Sitzung 0026 |
+| A-40 | 3 | **Prüfungen für die Regeln ohne automatische Prüfung (aus A-39, Nutzer 21.10.2026):** G-1 bis G-19 im Regelkatalog (Designrichtlinie allgemein 17) – je Regel eine allgemeine Prüfung in `tests/` oder bewusst ‚Gerät/Sicht‘ lassen; Code, eigener Auftrag | offen |
 | A-38 | 1 | **Frameworks – Framework7 und Ionic (Nutzer 21.10.2026, gemeinsam durchgehen):** 1) Vergleich Framework7 / Ionic (Technik, iOS-Aussehen, Anpassbarkeit an AppDesign, Geschwindigkeit, Langfristigkeit, Capacitor für eine echte App – Empfehlung Claude: Framework7 für reines JS, Ionic bei App Store oder Vue/React); 2) Mischform: Framework7 als Unterbau, AppDesign als Regelschicht → AppDesign 5.0.0 (`v5/`), Reiselogbuch bleibt auf Fassung 4.x; Vorgabe ‚keine Frameworks‘ (Prompt 04.10.2026) wäre zu ersetzen; zuerst Muster einer Reiselogbuch-Ansicht mit unseren Prüfungen; 3) Verbesserungen aus Framework7 für AppDesign (`arbeit/A-38 Framework7 Auswertung.md`): V1 sichere Ränder prüfbar, V2 Rückmeldung beim Antippen, V3 Titel antippen = nach oben, V4 Glas-Optik, V5 ziehbarer Index (= A-37 C), V6 lange Listen; Kernbefund: die Tastatur löst Framework7 unter iOS nicht (kein `visualViewport`) | gemeinsam durchgehen |
 | A-37 | 2 | **‚Nach oben / Ans Ende‘ verbessern (allgemeine Regel, Nutzer 20.10.2026):** z. B. wie in der Gemini-App für iOS – Apple-Abgleich, Muster mit Varianten Heute/A/B/C und Fall-Liste: `arbeit/A-37 Fall-Liste.md`, `arbeit/A-37 Muster.html` | Muster online, wartet auf Wahl |
 | A-30 | 3 | Vorschläge von Claude (19.10.2026, Analyse Abschnitt 5): Rückgängig nach Löschen (‚Gelöscht · Widerrufen‘), einheitliche leere Zustände, ‚Ziehen zum Aktualisieren‘ bewusst aus – je einzeln entscheiden | Vorschlag |
@@ -36,6 +36,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, Abschnitt 4.
 
 | Nr. | Thema | Version | Datum |
 |---|---|---|---|
+| E-67 | **A-39 Konsolidierung aller Regeln:** Zusammenarbeit 2.17.0 (Abschnitt 0 = das eine Arbeitsmodell, Abschnitt 2 Einzelheiten und Formate, Übergabe ab etwa 150.000 Token), Designrichtlinie allgemein 4.28.2 (Regeln nur im Katalog, Liste G-1 bis G-19, HIG-Zuordnung), Reiselogbuch: App-Richtlinie nur Abweichungen, PROMPT.md als Funktionsbeschreibung; CLAUDE.md mit Arbeitsumgebung; Plan und Abgleichliste `arbeit/A-39 Konsolidierung Plan.md`, `arbeit/A-39 Abgleichliste.md` | AppDesign 4.28.2 · Reiselogbuch 3.26.2 | 21.10.2026 |
 | E-66 | Geprüft **P-61: alles ok** (Nutzer 21.10.2026, Messungen iPhone hoch, iPhone quer, iPad quer: Safari verschiebt nie, Leisten still, Rückstellung, ‚Nach oben‘ mit einem Antippen) – **A-35 und A-36 abgeschlossen** | AppDesign 4.28.1 | 21.10.2026 |
 | E-65 | **A-36 gebaut:** Tastatur ohne Springen (V3 aus Muster 9) in `ui.js` – neuer Fokus nach dem Rollen, Rückstellung (S-9), `--platz`, Klick unterdrückt, Tastatur-Taste, `nachTastatur`, iPad-Fenster gleitet, `isPhone()`/Kapsel nach `innerHeight + scrollY`; R-2.4 niedrige Leisten iPhone quer; Safari-Eigenheiten S-1 bis S-9 in Designrichtlinie 13; `checkTastaturStill` erweitert (B-1 bis B-18), R-2.4 in `hig.mjs`; gegen 4.28.0 rot (177 Fehler), jetzt grün. Wartet auf P-61 | AppDesign 4.28.1 | 21.10.2026 |
 | E-64 | **A-31 gebaut:** Messung abspielen – `tests/abspielen.mjs` (`lies`, `ansicht`, `spieleAb`), Messdateien in `tests/messungen/`, Safari-Modell `__safari.setze`; im Reiselogbuch `ablauf-abspielen.mjs` mit Gegenprobe (M-1 bis M-6); Designrichtlinie 15.21 | AppDesign 4.28.0 | 20.10.2026 |

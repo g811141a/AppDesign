@@ -1,365 +1,301 @@
 # Zusammenarbeit allgemein
 
-**Version 2.16.0** · Stand 21.10.2026
+**Version 2.17.0** · Stand 21.10.2026
 
-Regeln für die Zusammenarbeit mit Claude bei allen iPad-Web-Apps von g811141a.
-Diese Datei liegt im Design-Repo **AppDesign** (g811141a/AppDesign).
-App-spezifische Punkte stehen in der `CLAUDE.md` des jeweiligen App-Repos.
+Regeln für die Zusammenarbeit mit Claude bei allen iPad-Web-Apps von g811141a. Die Datei liegt im Design-Repo **AppDesign**
+(g811141a/AppDesign); App-Eigenes steht in der `CLAUDE.md` des App-Repos. **Abschnitt 0 ist das Arbeitsmodell**, Abschnitt 1
+die Sprache, Abschnitt 2 die Einzelheiten und Formate. Jede Regel nennt ihre Prüfung – eine automatische (Datei) oder
+**Selbstkontrolle** (Claude prüft vor dem Senden selbst).
 
-> **VERPFLICHTEND – nie ohne Freigabe bauen:** Claude entscheidet **nie selbst**, eine neue
-> Version zu bauen oder hochzuladen – auch nicht bei kleinen Korrekturen und auch nicht, wenn
-> die Bitte „korrigieren“, „verbessern“ oder „ausbessern“ lautet. Vorher wird **immer** gefragt:
-> „Soll ich Version X.Y.Z mit … erstellen? Ja/Nein“ – gebaut wird erst nach einem
-> ausdrücklichen „Ja“. Bis dahin: erklären, Vorschlag machen, ins Backlog eintragen.
->
-> **VERPFLICHTEND – Sammelversionen:** Geklärte Punkte werden **gesammelt** (Backlog-Abschnitt
-> „0. Nächste Version“) und gemeinsam in **einer** Version gebaut und getestet – nie eine
-> eigene Version für ein oder zwei Kleinigkeiten (Abschnitt 6).
->
-> **VERPFLICHTEND – erst prüfen, dann Neues:** Nach jeder neuen Version werden **unbedingt alle
-> Prüfpunkte** getestet und gefundene Fehler beseitigt, bevor neue Punkte umgesetzt werden. Claude
-> weist nach jeder Version **ausdrücklich** darauf hin. Ausnahme: Der Nutzer besteht nach diesem
-> Hinweis trotzdem darauf, zuerst Neues umzusetzen.
-
-> **Hinweis für Claude:** Diese Regeln gelten in jeder Sitzung, auch nach langer Pause.
-> Lies zu Beginn **`UEBERGABE.md`** (Stand der letzten Sitzung) und Abschnitt 0 dieser Datei, alles Weitere
-> gezielt (0 Nr. 15).
+> **Hinweis für Claude:** Diese Regeln gelten in jeder Sitzung, auch nach langer Pause. Zu Beginn nur `UEBERGABE.md` und die
+> Abschnitte 0 und 1 lesen, alles Weitere gezielt (Nr. 15).
 
 ---
 
-## 0. Arbeitsprozess 2.0 (seit 2.0.0 – hat Vorrang vor älteren Stellen dieser Datei)
+## 0. Arbeitsmodell
 
-Vereinbart am 14.10.2026 nach dem Brainstorming (A-04). Ziel: **nichts mehr vergessen**, Fehler finden, bevor der
-Nutzer sie findet, schneller und günstiger arbeiten.
+Ziel: nichts vergessen, Fehler finden, bevor der Nutzer sie findet, schnell und sparsam arbeiten. Die Nummern bleiben fest
+(Verweise in Code und Changelogs), neue Punkte bekommen die nächste freie Nummer. Einzelheiten und Formate: Abschnitt 2.
+
+**Pflichten**
+
+21. **Nie ohne ‚Ja‘ bauen:** Claude entscheidet nie selbst, eine Version zu bauen oder hochzuladen – auch nicht bei kleinen
+    Korrekturen oder wenn die Bitte ‚korrigieren‘, ‚verbessern‘, ‚ausbessern‘ lautet. Vorher immer ‚Soll ich Version X.Y.Z mit …
+    erstellen? Ja/Nein‘; gebaut wird erst nach einem ausdrücklichen ‚Ja‘ (eine Bitte um Korrektur ist keins). Bis dahin:
+    erklären, Vorschlag machen, ins Backlog eintragen. Prüfung: Selbstkontrolle.
+22. **Erst prüfen, dann Neues:** Nach jeder Version werden alle Prüfpunkte getestet und gefundene Fehler beseitigt, bevor Neues
+    umgesetzt wird; jeder Bericht endet mit dem Hinweis darauf (2.3). Ausnahme: Der Nutzer besteht nach dem Hinweis darauf, zuerst
+    Neues umzusetzen. Prüfung: Selbstkontrolle.
 
 **A. Testen und Qualität**
-1. **Fall-Liste vor jedem Bau:** Zu jeder Anforderung schreibt Claude **vor dem Bauen** eine kurze Liste der Fälle –
-   Gerät (iPad, iPhone) × Lage (quer, hoch) × Darstellung (hell, dunkel) × Handlung (drehen, wischen, Tastatur,
-   abgleichen, teilen …) × Daten (leer, lang, viele). Jeder Fall wird ein automatischer Test. Die Liste kommt mit dem
-   Muster, damit der Nutzer Lücken sieht. Was nur das echte Gerät zeigt (Teilen-Menü, iCloud, Drucken,
-   Silbentrennung, Gefühl beim Wischen), kommt in die Prüfliste.
-   **Rückmeldung ‚nicht ok‘ (seit 2.9.0):** Claude baut zuerst **genau den Ablauf des Nutzers** als feste Prüfung nach
-   (Ausgangszustand wie auf dem Gerät, z. B. Reiselogbuch mit Lücke öffnen; dieselben Handgriffe; Safari-Eigenheiten
-   einzeln und zusammen nachgebildet). Sie muss gegen den **veröffentlichten Stand rot** sein, bevor korrigiert wird, und
-   bleibt danach für immer im vollen Lauf. Gelingt das Nachstellen nicht, fragt Claude nach, statt zu raten.
-2. **Parallel arbeiten, sparsam:** Tests laufen parallel, die schnellsten zuerst, Abbruch beim ersten Fehler
-   (seit AppDesign 4.13.0: `node tests/alle.mjs` in der App, Werkzeug `AppDesign/tests/lauf.mjs`; jeder Test meldet Fehler
-   mit Rückgabewert, Gegenprobe mit `--gegenprobe`). **Ein voller Prüflauf je Version (seit 2.4.0):** während der Arbeit
-   laufen nur die betroffenen Prüfungen (einzelne Datei oder `--nur …`); alle Prüfungen – Chromium und WebKit, hell und
-   dunkel – laufen genau einmal, im Veröffentlichungs-Skript (`… los`), nicht zusätzlich vorher. Hilfsagenten nur für große, klar abgegrenzte Aufgaben mit wenig
-   Token-Verbrauch.
-3. **Regeln schlank halten:** Bei **jeder** neuen Regel prüft Claude, ob sie eine bestehende **ersetzt oder ergänzt**,
-   und fasst Regeln zum selben Thema zusammen (z. B. alle Tabellenregeln an einer Stelle). Je Regel **genau eine**
-   Prüfung. Der Regelkatalog ist nach Themen geordnet.
-4. **Allgemeine Regel immer erfragen:** Legt eine Eingabe des Nutzers eine Formatierung oder ein Verhalten fest, prüft
-   Claude (mit Recherche), ob daraus eine **allgemeine Regel** werden sollte, und fragt **verlässlich** im
-   Auswahlfenster: ‚Als allgemeine Regel festhalten? Ja/Nein‘. Grundsatz: Allgemeine Regeln sind die Grundlage jeder
-   App (gleiche Schaltflächen an gleichen Stellen, gleiche Formatierung); in der App steht nur, was anders ist.
-5. **Safari nachbilden:** Tests bilden Safari nach, wo Chrome anders arbeitet; seit AppDesign 4.13.0 läuft jeder Test
-   zusätzlich in WebKit (Installation im Setup-Skript der Umgebung ‚Standard‘).
+
+1. **Fall-Liste vor jedem Bau:** Gerät (iPad, iPhone) × Lage × Darstellung × Handlung (drehen, wischen, Tastatur, abgleichen,
+   teilen …) × Daten (leer, lang, viele); jeder Fall wird ein automatischer Test, nach jeder Handlung gelten die Grundregeln (z. B. nach dem Drehen
+   bleiben oberster Eintrag, Seitenleiste und Menüs). Die
+   Liste kommt mit dem Muster; was nur das Gerät zeigt (Teilen-Menü, iCloud, Drucken, Silbentrennung, Wischgefühl), kommt in die
+   Prüfliste. **‚Nicht ok‘ vom Gerät:** zuerst genau den Ablauf des Nutzers als feste Prüfung nachbauen (Ausgangszustand,
+   Handgriffe, Safari-Eigenheiten einzeln und zusammen) – rot gegen den veröffentlichten Stand, für immer im vollen Lauf; dann
+   beheben, dieselbe Lücke überall suchen, im Bericht sagen, warum die Prüfung sie übersah. Gelingt das Nachstellen nicht,
+   fragt Claude nach. Prüfung: Selbstkontrolle; Grundregeln nach jedem Schritt `pruefe.mjs`.
+2. **Prüfen parallel und sparsam:** `node tests/alle.mjs` in der App (Werkzeug `tests/lauf.mjs`: parallel, schnellste zuerst,
+   Abbruch beim ersten Fehler, Gegenprobe `--gegenprobe`). Während der Arbeit nur die betroffenen Prüfungen; **alle** (Chromium
+   und WebKit, alle Ansichten, alle automatisch prüfbaren Regeln des Katalogs) genau **einmal je Version** im
+   Veröffentlichungs-Skript, nicht zusätzlich vorher. Geräte-Regeln des Katalogs kommen in die Prüfliste, wenn die Version sie betrifft. Hilfsagenten nur
+   für große, klar abgegrenzte Aufgaben. Prüfung: `lauf.mjs` (Selbsttest `tests/lauf-selbsttest.mjs`).
+3. **Regeln schlank halten:** Jede Regel steht an genau einer Stelle und nennt genau eine Prüfung; eine neue Regel ersetzt
+   oder ergänzt eine bestehende, Regeln zum selben Thema werden zusammengefasst. Neue allgemeine Design-Regeln bekommen sofort
+   eine Nummer im Katalog (Designrichtlinie 17) und eine automatische Prüfung, sonst ‚Gerät‘. Im Regeltext steht nur, was heute
+   gilt; Geschichte steht in Versionsgeschichte und CHANGELOG. Prüfung: `doku.mjs` – `checkCatalog`, `checkCollab`.
+4. **Allgemeine Regel immer erfragen:** Legt eine Eingabe des Nutzers eine Formatierung oder ein Verhalten fest, prüft Claude
+   (mit Recherche), ob es eine allgemeine Regel werden sollte, und fragt bei jeder Design-Änderung ‚Als allgemeine Regel
+   festhalten? Ja/Nein‘. Allgemeine Regeln sind die Grundlage jeder App (gleiche Schaltflächen an gleichen
+   Stellen, gleiche Formatierung); in der App steht nur, was anders ist. Prüfung: Selbstkontrolle.
+5. **Safari nachbilden:** wo Chrome anders arbeitet (Designrichtlinie 13); jeder Test läuft zusätzlich in WebKit (Setup-Skript
+   der Umgebung ‚Standard‘). Prüfung: `pruefe.mjs`, Safari-Modell `safari.mjs`.
 
 **B. Muster und Entscheidungen**
-6. **Varianten nebeneinander:** Beim ersten Muster 2–3 Varianten, wo sinnvoll; bei kleinen Korrekturen eine.
-7. **Auswahlfenster nur für Ja/Nein und klare Auswahl.** Jedes Fenster hat die Option **‚Ich schreibe im Chat‘**;
-   wählt der Nutzer sie, beendet Claude die Antwort, damit der Nutzer im Chat schreiben kann. Längere Wünsche,
-   Einwände und Fragen immer im Chat (das Feld ‚Sonstiges‘ im Fenster schneidet lange Texte ab).
-   Erklärungen, die der Nutzer **vor** einer Entscheidung lesen muss, schickt Claude als Datei vor dem Fenster.
 
-**C. Bauen und Veröffentlichen**
-8. **Kleine Versionen:** 2–3 zusammengehörige Punkte, **höchstens 2 Themen** je Version; nicht kreuz und quer.
-   **Korrekturen sofort:** Fehler aus einer Prüfrunde kommen als eigene Korrekturversion, bevor Neues gebaut wird – auch
-   ohne Datenverlust (Abschnitt 6).
-9. **Veröffentlichungs-Skript:** erhöht alle Versionen, prüft, veröffentlicht AppDesign vor der App und wartet auf
-   Pages (seit AppDesign 4.14.0: `node werkzeug/veroeffentlichen.mjs vorbereiten …`, Texte schreiben, dann `… los`).
-10. **Feste Fassung der allgemeinen Regeln je App:** Jede AppDesign-Version liegt zusätzlich in einem eigenen,
-    unveränderlichen Ordner; jede App bindet **genau ihre** Fassung ein. Eine App wird nur auf eine neuere Fassung
-    gehoben, wenn Claude **vorher fragt** und der Nutzer zustimmt (seit AppDesign 4.14.0: `fassung/X.Y.Z/` mit
-    `design.css`, `ui.js` und `tests/`; das Veröffentlichungs-Skript nennt Apps auf älteren Fassungen, hebt aber nichts).
-11. **Bericht nach einer Version:** 3–5 Sätze, dazu eine **vollständige Aufzählung aller Änderungen**, dann die
-    Prüfpunkte Schritt für Schritt – **alle Prüfpunkte vollständig im Chat ausgeschrieben** (jeder Punkt mit
-    nummerierten Schritten und ‚Erwartet: …‘, wörtlich wie im CHANGELOG); ein Verweis auf das CHANGELOG oder eine
-    Kurzliste genügt **nie** (seit 2.10.1). **Seit 2.12.0 gilt das für jede Bitte, etwas am Gerät zu prüfen oder
-    auszuprobieren** (Muster, Versuch, Messung, Prüfpunkt): im Chat stehen immer der **vollständige Link** und **nummerierte
-    Schritte** mit ‚Erwartet: …‘ (Nutzer 19.10.2026 – in 0016 fehlten sie beim Muster). **Seit 2.16.0 stehen Link und Schritte zusätzlich im Auswahlfenster
-    selbst** (in der Frage, kurz: Link, nummerierte Schritte, ‚erwartet: …‘) – der Text vor dem Fenster kam beim Nutzer nicht an
-    (Nutzer 21.10.2026, Sitzung 0023, Muster 7 und 8). Reihenfolge immer: Bericht → Änderungen → Prüfpunkte im Chat → Auswahlfenster. Ist ein Fehler durchgerutscht, steht immer dabei, **warum** die Prüfung ihn
-    übersehen hat.
-    **Rückmeldung als Auswahlfenster (seit 2.10.0):** Der Bericht endet **immer** – direkt nach den ausgeschriebenen
-    Prüfpunkten – mit einem Auswahlfenster zur Rückmeldung
-    (z. B. ‚P-54: Wie ist die Prüfung ausgegangen?‘ – ‚Alles ok‘ · ‚Nicht ok – ich schreibe im Chat‘ · ‚Ich prüfe später‘ ·
-    ‚Ich schreibe im Chat‘), nie nur mit Text: nur ein Auswahlfenster löst auf dem iPad eine Push-Nachricht aus, so merkt der
-    Nutzer, dass die nächste Prüfung ansteht. Das gilt auch, wenn die Version im Hintergrund fertig wird.
+6. **Muster:** bei Gestaltungsfragen zuerst ein Muster – beim ersten 2–3 Varianten nebeneinander, bei kleinen Korrekturen eine;
+   zuerst nur hell und quer, dunkel und hoch erst, wenn hell passt; Bilder in Viererpaketen. Prüfung: Selbstkontrolle.
+7. **Auswahlfenster nur für Ja/Nein und klare Auswahl,** jedes mit ‚Ich schreibe im Chat‘ (gewählt → Claude beendet die
+   Antwort). Längeres immer im Chat; Erklärungen, die der Nutzer vorher lesen muss, als Datei oder Bild vor dem Fenster. Format
+   2.1. Prüfung: Selbstkontrolle; `checkCollab` (keine Antwortzeile ohne ‚mehr als 4 Fragen‘, keine Muster im Fragetext).
 
-**D. Sitzungen und Übergabe**
-12. **Ein Thema je Sitzung.** Eine Sitzung ist ein Chat in der Claude-Code-App. Lange Sitzungen fasst das System
-    automatisch zusammen – dabei gehen Einzelheiten verloren. Deshalb:
-13. **Claude startet die neue Sitzung selbst (seit 2.1.0):** Sobald ein Thema abgeschlossen ist, die Sitzung groß
-    wird (etwa ab 300.000 Token Kontext) oder bereits automatisch zusammengefasst wurde, schreibt Claude die Übergabe
-    (Nr. 14) und startet **selbstständig** eine neue Sitzung in derselben Umgebung (`create_session`): Repo AppDesign
-    angehängt, die App-Repos holt die neue Sitzung selbst dazu (`add_repo`), der Starttext ist ihre erste Nachricht.
-    **Name:** `<App> <Chatnummer>` mit vierstelliger, aufsteigender Nummer und kurzem Thema, z. B.
-    ‚Reiselogbuch 0001 – AppDesign 4.12.0‘; jede Sitzung, die die nächste startet, erhöht die Nummer um 1. Die
-    nächste Nummer steht in `UEBERGABE.md`. Braucht eine Sitzung eine Entscheidung des Nutzers, bleibt sie dort stehen
-    und startet keine neue. Claude nennt dem Nutzer den Namen der neuen Sitzung.
-    **Modell und Aufwand (seit 2.13.0, Nutzer 19.10.2026):** neue Sitzungen immer mit **Opus 5.5** (`create_session` mit
-    `model: claude-opus-5-5`) und Aufwand **hoch**. Den Aufwand kann `create_session` nicht setzen; er kommt aus der
-    Umgebungsvariablen `CLAUDE_CODE_EFFORT_LEVEL=high` der Umgebung (setzt der Nutzer: Umgebungsmenü in der Titelleiste →
-    Bearbeiten → Umgebungsvariablen) und gilt dann auch für Chats, die der Nutzer selbst öffnet.
-14. **Bei Ja schreibt Claude sofort die Übergabe** nach `UEBERGABE.md` im Repo AppDesign und veröffentlicht sie:
-    Versionen, offene Prüfpunkte, nächste Schritte, neue Vereinbarungen (die zusätzlich schon in den Richtlinien
-    stehen) und was zuerst zu lesen ist. Dazu gibt Claude einen **Starttext** zum Kopieren – **immer als Codeblock**
-    (```), damit er mit der Kopieren-Schaltfläche übernommen werden kann – und nennt, **wo auf GitHub** alles liegt
-    (Repo, Branch `main`, Dateien), damit die neue Sitzung es findet. **Abschluss (seit 2.3.0):** Am Ende der Antwort
-    mit der Übergabe steht in fetter Schrift **‚Die Sitzung (Chat) ist damit beendet!‘** – danach nur noch die Zeile mit
-    Zeit und Token.
-15. **Neue Sitzung:** Der Nutzer öffnet einen neuen Chat mit derselben Umgebung und fügt den Starttext ein. Claude
-    liest die Übergabe und die Richtlinien und gibt zuerst das **Lagebild** (Version, offene Prüfpunkte,
-    Backlog-Spitze), dann wird gearbeitet. **Gezielt lesen (seit 2.4.0):** zu Beginn nur `UEBERGABE.md`, **Abschnitte 0 und 1**
-    dieser Datei (Abschnitt 1 ‚Sprache und Ton‘ seit 2.14.0: per du, jede Meldung deutsch) und die Überschriften (Inhaltsverzeichnis) der Designrichtlinien; weitere Abschnitte, Regelkatalog,
-    Backlog, CHANGELOG und PROMPT.md nur, soweit die Aufgabe sie braucht. Alles Gelesene wird bei jedem weiteren Schritt
-    mitverarbeitet – weniger Lesestoff macht die ganze Sitzung schneller.
-    **Modell und Aufwand prüfen (seit 2.13.0):** Claude prüft zu Beginn Modell (`get_session`) und Aufwand (`echo
-    $CLAUDE_CODE_EFFORT_LEVEL` und – seit 2.14.1 maßgeblich – `"effort"` der Modell-Aufrufe in der Sitzungsdatei
-    `/root/.claude/projects/…/*.jsonl`) und nennt beides im Lagebild. Die Claude-App zeigt im Chat ggf. ‚mittel‘, obwohl die
-    Aufrufe mit ‚hoch‘ laufen (0019: alle Aufrufe ab dem ersten ‚high‘); zeigt sie ‚mittel‘, stellt der Nutzer sie zur Sicherheit auf ‚hoch‘. Ist es nicht Opus 5.5 bzw. nicht ‚hoch‘, weist Claude darauf hin:
-    für diese Sitzung `/model` bzw. `/effort high` im Chat, dauerhaft die Umgebungsvariable (Nr. 13).
-16. **Übergabe statt Gedächtnis:** Jede Vereinbarung kommt **sofort** in die Richtlinien, nicht erst am Ende. Was
-    nicht auf GitHub steht, gibt es in der nächsten Sitzung nicht.
-17. **Rückmeldung kurz:** Nummer, ‚nicht ok‘ und ein Stichwort genügen; bei Unklarem fragt Claude nach.
+**C. Apple, Backlog und Ablauf einer Änderung**
 
-**E. Widerspruch (seit 2.5.0)**
-18. **Massiv widersprechen bei Regelbruch:** Weicht eine Anforderung des Nutzers offensichtlich und grundlegend vom
-    Regelwerk ab (Zusammenarbeit, Designrichtlinien, Regelkatalog, HIG-Checkliste), widerspricht Claude **deutlich und
-    sofort** – welche Regel, was sie schützt, welche Folgen die Abweichung hat, was Claude stattdessen empfiehlt – und
-    trägt sie **nicht** ins Backlog ein und setzt sie **nicht** um. Umgesetzt wird erst, wenn der Nutzer **ausdrücklich
-    die Umsetzung anordnet** (‚Umsetzungspflicht‘, z. B. ‚Trotzdem umsetzen – Umsetzungspflicht‘); ein einfaches ‚Ja‘
-    oder die Wiederholung des Wunsches genügt nicht. Das Auswahlfenster dafür fragt ausdrücklich ‚Trotz Abweichung von
-    R-… umsetzen (Umsetzungspflicht)?‘. Kleine, begründete Abweichungen (z. B. eine bewusste Abweichung von der HIG)
-    bleiben wie bisher eine Rückfrage mit Empfehlung (Abschnitt 3).
+23. **Apple-like:** Aussehen, Aufbau und Bedienung wie die Apple-Apps auf iPad und iPhone. Bei jeder neuen Anforderung
+    recherchiert Claude, wie Apple es löst (eigene Apps und HIG), nennt es (‚So macht es Apple: …‘) und schlägt vor – auch
+    ungefragt, wenn eine Anforderung abweicht oder Apple es besser löst; was im Web nicht geht, wird nachgebaut und als Abweichung
+    genannt. **Vor jedem Muster** der Apple-Abgleich, **nach jeder Version** das Apple-Review (2.6). Prüfung: Selbstkontrolle;
+    messbare HIG-Punkte `hig.mjs`.
+24. **Backlog:** jedes Repo hat eine `BACKLOG.md` (Aufbau 2.4); Priorität 1 hoch · 2 mittel · 3 niedrig, die höchste zuerst.
+    Neue Themen schlägt Claude einzeln vor und fragt ‚Ins Backlog übernehmen?‘ und die Priorität – mit Empfehlung. Wünsche, Fragen
+    und Prüfpunkte trägt Claude sofort ein und erinnert an Offenes (2.4). Prüfung: Selbstkontrolle; `checkCollab`.
+25. **Ablauf einer Änderung:** nachfragen, bis alles geklärt ist → Muster (Nr. 6, 23) mit Fall-Liste (Nr. 1) → allgemein oder App
+    (Nr. 4) → in ‚0. Nächste Version‘ eintragen, nicht sofort bauen (auch kleine Fehler aus dem Testen) → bauen nur nach Nr. 8
+    und 21. Nur ändern, was besprochen wurde; Auffälliges nennen statt eigenmächtig ändern (offensichtliche Fehler beheben und
+    ausdrücklich erwähnen). Prüfung: Selbstkontrolle.
 
-**F. Start einer Sitzung (seit 2.6.0)**
-19. **Startfrage:** Beginnt eine Sitzung **ohne konkreten Auftrag** (z. B. ‚Start‘, ‚Hallo‘ oder nur angehängte Repos),
-    liest Claude gezielt (Nr. 15) `UEBERGABE.md` und die Backlog-Köpfe der angehängten Repos und zeigt **zuerst** das
-    Auswahlfenster ‚Was möchtest du als Nächstes tun?‘: je angehängtem Repo eine Möglichkeit mit Version und
-    Backlog-Spitze (offene Prüfpunkte zuerst), beim Repo **ReiseLogBuch-Import** ‚Reiselogbücher konvertieren‘, dazu
-    ‚Ich schreibe im Chat‘. Mehr als 3 Repos: die mit der höchsten Priorität, der Rest über ‚Ich schreibe im Chat‘. Eine
-    Sitzung beginnt erst mit einer Nachricht des Nutzers – ein Wort genügt. Hat die Sitzung einen Starttext mit Auftrag
-    (Nr. 13), gilt der Auftrag.
+**D. Bauen und Veröffentlichen**
 
-**G. Fehler am Gerät (seit 2.11.0)**
-20. **Erst messen, dann nachbilden:** Bei Bewegungsfehlern am Gerät (Zittern, Springen, Rollen) gibt es zuerst eine
-    **Messung am Gerät** (Messmodus, Designrichtlinie 15.21); die feste Prüfung muss genau das gemessene Muster rot zeigen
-    (Nr. 1). Für Safari gibt es **ein** Modell (`tests/safari.mjs`); jede Abweichung vom Gerät wird dort korrigiert, nie nur
-    in einer Prüfung. Im Bericht steht ehrlich **‚in der Nachbildung behoben, am Gerät zu bestätigen‘**, bis der Nutzer ok
-    meldet. Jede gefundene Safari-Eigenheit kommt mit Quelle in Designrichtlinie 13 und gilt damit für alle Apps.
-    **Muster mit Messung (seit 2.15.0, Nutzer 20.10.2026):** Ein Muster, das am Gerät misst, wird wie die App geprüft, **bevor**
-    der Nutzer es bekommt: es läuft automatisch im Safari-Modell (Chromium und WebKit), jeder Fall des Versuchs wird dabei
-    durchgespielt, und was das Muster aufzeichnet und auswertet, muss zu den Bildern des Modells passen; eine **Gegenprobe** mit
-    absichtlich eingebautem Sprung muss rot werden. Das Muster **führt durch den Versuch**: feste Liste der Fälle, oben ‚Nächster
-    Schritt: …‘, erledigte Fälle abgehakt, ‚Messung teilen‘ erst, wenn alle Fälle drin sind (oder ausdrücklich ‚trotzdem teilen‘).
-    Am Gerät zeigt es nur **‚aufgenommen‘** – bewertet wird ausschließlich aus den Rohdaten durch Claude, damit keine falsche
-    Anzeige den Nutzer in die Irre führt. (Anlass: A-36 – erste Fassung verlor die Messung beim Umschalten, zweite wertete ‚Tastatur
-    zu‘ 50 ms zu spät aus und ließ Fälle aus.)
+8. **Sammelversionen und kleine Versionen:** geklärte Punkte sammeln (‚0. Nächste Version‘) und gemeinsam in **einer** Version
+   bauen: 2–3 zusammengehörige Punkte, höchstens 2 Themen; keine eigene Version für eine einzelne Kleinigkeit. Claude fragt nach
+   einer Version, wenn ein Thema geklärt ist, 2–3 Punkte bereit sind oder der Nutzer ‚Version bauen‘ sagt – mit allen bereiten
+   Punkten. **Korrekturen sofort:** Fehler aus einer Prüfrunde als eigene Korrekturversion vor allem Neuen, auch ohne
+   Datenverlust (vorher fragen). Prüfung: Selbstkontrolle; `checkCollab`.
+9. **Veröffentlichen mit dem Skript** `werkzeug/veroeffentlichen.mjs` (Befehle: AppDesign-`CLAUDE.md`): `vorbereiten` erhöht alle
+   Versionen, Claude schreibt CHANGELOG mit Prüfliste (2.3), Backlog und Richtlinien, `los` prüft, veröffentlicht **erst
+   AppDesign, dann die App** und wartet auf Pages. ‚Fertig‘ erst, wenn beide Pages-Läufe erfolgreich sind und die Dateien die
+   neue Version enthalten (`APP_VERSION`, `AD_NEEDED`, `AD_VERSION`); vorher keine Aufforderung zum Testen. Prüfung: das Skript
+   (Selbsttest `werkzeug/veroeffentlichen-selbsttest.mjs`), `doku.mjs`.
+10. **Ablage und feste Fassung:** ein Repo pro App (Pages aus `main`); Allgemeines in AppDesign (Designrichtlinie 14),
+    App-Eigenes im App-Repo (`CLAUDE.md`, `PROMPT.md`, `CHANGELOG.md`, `BACKLOG.md`, App-Richtlinie) ohne Wiederholungen.
+    Gemeinsames wird in AppDesign geändert und mit jeder App getestet, die es nutzt. Jede App bindet genau ihre feste
+    AppDesign-Fassung ein und wird nur nach Rückfrage gehoben. Prüfung: `version.mjs` (R-10.3); Rückfrage: Selbstkontrolle.
+11. **Bericht** nach einer Version **und jede Bitte, am Gerät zu prüfen** (Muster, Versuch, Messung, Prüfpunkt): Bericht (3–5
+    Sätze) → vollständige Aufzählung aller Änderungen → alle offenen Prüfpunkte vollständig im Chat → Auswahlfenster zur
+    Rückmeldung; nie nur ein Verweis aufs CHANGELOG. Ist ein Fehler durchgerutscht, steht dabei, warum die Prüfung ihn übersah.
+    Einzelheiten 2.3. Prüfung: `doku.mjs` (Prüfliste); sonst Selbstkontrolle.
+
+**E. Sitzungen und Übergabe**
+
+12. **Ein Thema je Sitzung.** Lange Sitzungen werden langsam und automatisch zusammengefasst – dabei gehen Einzelheiten
+    verloren. Prüfung: Selbstkontrolle.
+13. **Neue Sitzung ab etwa 150.000 Token:** Ist ein Thema abgeschlossen, hat der Kontext etwa **150.000 Token** erreicht
+    (‚Kontext N‘ in der Zeitzeile) oder wurde die Sitzung schon zusammengefasst, schlägt Claude die Übergabe vor; bei ‚Ja‘ schreibt
+    Claude sie (Nr. 14) und startet die neue Sitzung selbst – Opus 5.5, Aufwand hoch, Name `<App> <Chatnummer> – <Thema>`
+    (2.5). Braucht eine Sitzung eine Entscheidung des Nutzers, bleibt sie stehen. Prüfung: Selbstkontrolle anhand der Zeitzeile.
+14. **Übergabe** sofort nach `UEBERGABE.md` im Repo AppDesign schreiben und veröffentlichen, mit Starttext (2.5); am Ende der
+    Antwort fett **‚Die Sitzung (Chat) ist damit beendet!‘**, danach nur die Zeitzeile. Prüfung: Selbstkontrolle.
+15. **Beginn einer Sitzung:** gezielt lesen – `UEBERGABE.md`, Abschnitte 0 und 1 dieser Datei, die Überschriften der
+    Designrichtlinien; alles Weitere (andere Abschnitte, Katalog, Backlog, CHANGELOG, PROMPT.md) nur, soweit die Aufgabe es
+    braucht. Dann das **Lagebild** (Versionen, offene Prüfpunkte, Backlog-Spitze, Modell und Aufwand – 2.5), dann die Arbeit.
+    Prüfung: `doku.mjs` (beide `CLAUDE.md` nennen zuerst `UEBERGABE.md`); sonst Selbstkontrolle.
+16. **Übergabe statt Gedächtnis:** jede Vereinbarung sofort an ihre Stelle in den Richtlinien (Nr. 3); was nicht auf GitHub
+    steht, gibt es in der nächsten Sitzung nicht. Prüfung: Selbstkontrolle.
+17. **Rückmeldung kurz:** Nummer, ‚nicht ok‘ und ein Stichwort genügen; bei Unklarem fragt Claude nach. Prüfung:
+    Selbstkontrolle.
+
+**F. Widerspruch**
+
+18. **Massiv widersprechen bei Regelbruch:** Weicht eine Anforderung offensichtlich und grundlegend vom Regelwerk ab, widerspricht
+    Claude deutlich und sofort (welche Regel, was sie schützt, Folgen, Empfehlung), trägt sie **nicht** ins Backlog ein und setzt
+    sie **nicht** um – erst wenn der Nutzer die Umsetzung ausdrücklich anordnet (‚Trotzdem umsetzen – Umsetzungspflicht‘; ein
+    ‚Ja‘ oder die Wiederholung genügt nicht). Das Auswahlfenster fragt ‚Trotz Abweichung von R-… umsetzen (Umsetzungspflicht)?‘.
+    Kleine, begründete Abweichungen (z. B. von der HIG) bleiben eine Rückfrage mit Empfehlung. Prüfung: Selbstkontrolle.
+
+**G. Start einer Sitzung**
+
+19. **Startfrage:** Beginnt eine Sitzung ohne konkreten Auftrag (‚Start‘, ‚Hallo‘ oder nur angehängte Repos), liest Claude
+    gezielt (Nr. 15) `UEBERGABE.md` und die Backlog-Köpfe und zeigt **zuerst** das Auswahlfenster ‚Was möchtest du als Nächstes
+    tun?‘: je angehängtem Repo eine Möglichkeit mit Version und Backlog-Spitze (offene Prüfpunkte zuerst), bei
+    **ReiseLogBuch-Import** ‚Reiselogbücher konvertieren‘, dazu ‚Ich schreibe im Chat‘; bei mehr als 3 Repos die mit der höchsten
+    Priorität, der Rest über ‚Ich schreibe im Chat‘. Eine Sitzung beginnt erst mit einer Nachricht des Nutzers (ein Wort genügt); hat sie einen Starttext mit Auftrag, gilt der Auftrag. Prüfung:
+    Selbstkontrolle.
+
+**H. Fehler am Gerät**
+
+20. **Erst messen, dann nachbilden:** Bei Bewegungsfehlern am Gerät (Zittern, Springen, Rollen) zuerst eine **Messung am Gerät**
+    (Messmodus, Designrichtlinie 15.21); die feste Prüfung muss genau das gemessene Muster rot zeigen (Nr. 1). Für Safari gibt es
+    **ein** Modell (`tests/safari.mjs`), jede Abweichung vom Gerät wird dort korrigiert; jede gefundene Safari-Eigenheit kommt
+    mit Quelle in Designrichtlinie 13. Bis der Nutzer ok meldet, heißt es im Bericht ‚in der Nachbildung behoben, am Gerät zu
+    bestätigen‘. Muster mit Messung: 2.7. Prüfung: `safari.mjs`, Messdateien nachspielen mit `abspielen.mjs`.
 
 ---
 
 ## 1. Sprache und Ton
 
 - Deutsch, kurz und klar.
-- **Per du (seit 2.5.0):** Claude spricht den Nutzer immer mit ‚du‘ an – nie ‚Sie‘ und nie ‚ihr‘, auch nicht in Dateien,
-  Prüflisten und Auswahlfenstern.
-- **Jede Meldung deutsch (seit 1.15.1):** auch kurze Zwischenmeldungen während der Arbeit, Statuszeilen,
-  Bildunterschriften zu Screenshots und Fragen im Auswahlfenster – nie englisch. Englisch bleiben nur Code,
-  Dateinamen und Fachbegriffe ohne gängiges deutsches Wort.
-- Schaltflächen im Chat mit ihren Lucide-Icon-Namen benennen (z. B. „pencil“, „trash“),
-  nicht mit Emojis.
+- **Per du:** Claude spricht den Nutzer immer mit ‚du‘ an – nie ‚Sie‘ und nie ‚ihr‘, auch nicht in Dateien, Prüflisten und
+  Auswahlfenstern.
+- **Jede Meldung deutsch:** auch kurze Zwischenmeldungen während der Arbeit, Statuszeilen, Bildunterschriften zu Screenshots
+  und Fragen im Auswahlfenster – nie englisch. Englisch bleiben nur Code, Dateinamen und Fachbegriffe ohne gängiges deutsches
+  Wort.
+- Schaltflächen im Chat mit ihren Lucide-Icon-Namen benennen (z. B. „pencil“, „trash“), nicht mit Emojis.
 
-## 2. Rückfragen – Antwortformat
+Prüfung: Selbstkontrolle.
 
-- Rückfragen so stellen, dass kurz geantwortet werden kann:
-  - **Ja/Nein- oder Ok-Fragen**, wo möglich.
-  - Bei mehreren Möglichkeiten eine **Aufzählung mit a, b, c, d …**
-  - Fragen nummerieren (1, 2, 3 …), damit die Antwort „1) a, 2) ja“ lauten kann.
-- Eigene Empfehlung jeweils kurz dazuschreiben.
-- **Auswahlfenster (0 Nr. 7):**
-  - Fragen kommen im **Auswahlfenster** (bis zu 4 Fragen, je 2–4 Möglichkeiten): nur eine **kurze Frage** und die
-    Schaltflächen, keine Erklärtexte, keine Zeitangaben. Die Empfehlung steht an erster Stelle mit „(Empfohlen)“;
-    jedes Fenster hat die Option **‚Ich schreibe im Chat‘**.
-  - Schließt der Nutzer das Auswahlfenster und antwortet im Text, gilt die Antwort; bei den
-    **nächsten** Fragen kommt **trotzdem wieder automatisch** das Auswahlfenster.
-  - Eine **Antwortzeile zum Kopieren** (z. B. `1 ja · 2 a · 3 ja`) gibt es nur noch bei mehr als 4 Fragen –
-    dann ist sie der einzige Weg.
-- **Zeit und Token (Pflicht):** Gemessen wird die **Arbeitszeit ab dem Eingang der Nachricht des
-  Nutzers** (Zeitpunkt aus den Sitzungsdaten, nicht erst ab Claudes erstem Schritt – das Nachdenken
-  davor zählt mit) bis zur Übergabe; Wartezeit in Auswahlfenstern zählt nicht. Die Gesamtzeit beginnt
-  mit **jeder neuen Nachricht** des Nutzers wieder bei 00:00. Die Token stammen aus den Sitzungsdaten
-  der **vorigen** Antwort (genaue Werte je Antwort; die laufende Antwort wird erst an ihrem Ende
-  gezählt). Ausgabe als **eine kompakte Zeile**, klein gesetzt:
-  `<sub>⏱ mm:ss · Token vorige Antwort: N neu · N aus Zwischenspeicher · N geschrieben · Kontext N</sub>`
+---
+
+## 2. Einzelheiten und Formate
+
+### 2.1 Rückfragen und Auswahlfenster
+
+- Rückfragen so, dass kurz geantwortet werden kann: Ja/Nein- oder Ok-Fragen, wo möglich; mehrere Möglichkeiten als
+  Aufzählung a, b, c …; Fragen nummeriert (1, 2, 3 …); die eigene Empfehlung kurz dazu.
+- **Auswahlfenster:** bis zu 4 Fragen, je 2–4 Möglichkeiten; die Empfehlung zuerst mit ‚(Empfohlen)‘, immer ‚Ich schreibe im
+  Chat‘. Im Fenster steht nur eine **kurze Frage** mit den Schaltflächen – keine Erklärtexte, keine Zeitangaben. **Ausnahme:** Bei
+  jeder Bitte, am Gerät zu prüfen oder auszuprobieren, stehen Link, nummerierte Schritte und ‚erwartet: …‘ kurz auch in der
+  Frage – der Text vor dem Fenster kommt beim Nutzer nicht an. Das Feld ‚Sonstiges‘ schneidet lange Texte ab.
+- Text vor einem Fenster und die Vorschau-Funktion sind in der App nicht zu sehen: Muster, Beispiele und Erklärungen, die der
+  Nutzer vor der Entscheidung lesen muss, kommen **als Datei oder Bild vor dem Fenster**.
+- Schließt der Nutzer das Fenster und antwortet im Text, gilt die Antwort; bei den nächsten Fragen kommt trotzdem wieder das
+  Auswahlfenster.
+- Eine **Antwortzeile zum Kopieren** (z. B. `1 ja · 2 a · 3 ja`) gibt es nur bei mehr als 4 Fragen – dann ist sie der einzige
+  Weg.
+- **Reihenfolge in einer Antwort:** erst die Arbeit, dann das Auswahlfenster, nach der Antwort die Zusammenfassung; die
+  Zeitzeile steht immer ganz am Ende, nach der letzten Antwort im Fenster. Solange ein Fenster offen ist, ist die Antwort nicht
+  fertig. Die laufende Zeitanzeige während der Bearbeitung kommt von der App.
+
+### 2.2 Zeit und Token (Pflicht, am Ende jeder Antwort)
+
+- Claude erzeugt die Zeile mit `node ../AppDesign/werkzeug/messung.mjs` (in AppDesign `node werkzeug/messung.mjs`) und übernimmt
+  sie unverändert – nie schätzen, nie weglassen; meldet das Werkzeug einen Fehler, steht der Fehler statt der Zeile da. Format,
+  klein gesetzt: `<sub>⏱ mm:ss · Token vorige Antwort: N neu · N aus Zwischenspeicher · N geschrieben · Kontext N</sub>`
   (ab 60 Minuten hh:mm:ss). Nutzung in Prozent und Rücksetzzeiten zeigt nur die Claude-App.
-  **Werkzeug (seit 2.7.0, A-12):** Claude erzeugt die Zeile am Ende jeder Antwort mit
-  `node ../AppDesign/werkzeug/messung.mjs` (in AppDesign `node werkzeug/messung.mjs`) und übernimmt sie unverändert –
-  nie schätzen, nie weglassen; meldet das Werkzeug einen Fehler, steht der Fehler statt der Zeile da. Es zieht die
-  Wartezeit in Auswahlfenstern ab, zählt Systemmeldungen nicht als Nachricht und jeden Modell-Aufruf nur einmal;
-  ‚neu‘ = Eingabe + Ausgabe. **Kontext (seit 2.8.0, A-20):** Größe der Sitzung = Eingabe + Zwischenspeicher + geschrieben
-  des letzten eigenen Modell-Aufrufs (nicht ‚Token vorige Antwort‘, das alle Aufrufe summiert). Ab 300.000 oder nach einer
-  automatischen Zusammenfassung steht ‚⚠ Übergabe fällig‘ dahinter – dann schlägt Claude die Übergabe vor (0 Nr. 13).
-- **Muster und Erklärungen vor dem Fenster (0 Nr. 7, seit 2.2.0):** Text vor einem Auswahlfenster und die
-  Vorschau-Funktion sind in der App nicht zu sehen. Muster, Beispiele und Erklärungen, die der Nutzer vor der
-  Entscheidung lesen muss, schickt Claude deshalb **als Datei oder Bild vor dem Fenster**; im Fenster steht nur die
-  kurze Frage.
-- **Reihenfolge in einer Antwort:** Erst die Arbeit, dann das Auswahlfenster, nach der Antwort die
-  Zusammenfassung – die Zeile mit Zeit und Token steht immer ganz am Ende, also **nach** der letzten
-  Antwort im Auswahlfenster. Solange ein Fenster offen ist, ist die Antwort noch nicht fertig.
-  Die laufende Zeitanzeige während der Bearbeitung kommt von der App, nicht von Claude.
+- **Zeit:** Arbeitszeit ab dem Eingang der Nachricht des Nutzers (Zeitpunkt aus den Sitzungsdaten – das Nachdenken davor zählt
+  mit) bis zur Übergabe, ohne Wartezeit in Auswahlfenstern; mit jeder neuen Nachricht des Nutzers wieder ab 00:00;
+  Systemmeldungen zählen nicht als Nachricht.
+- **Token:** aus den Sitzungsdaten der **vorigen** Antwort (genaue Werte; die laufende wird erst an ihrem Ende gezählt), jeder
+  Modell-Aufruf einmal; ‚neu‘ = Eingabe + Ausgabe.
+- **Kontext:** Größe der Sitzung = Eingabe + Zwischenspeicher + geschrieben des letzten eigenen Modell-Aufrufs. Ab 300.000 oder
+  nach einer automatischen Zusammenfassung hängt das Werkzeug ‚⚠ Übergabe fällig‘ an; die Übergabe schlägt Claude schon ab etwa
+  150.000 vor (0 Nr. 13).
+- Prüfung: `tests/messung.mjs` (Gegenprobe `--gegenprobe`).
 
-## 3. Apple-like entwickeln
+### 2.3 Bericht, Prüfpunkte und Rückmeldung
 
-- Alle Apps werden **Apple-like** entwickelt: Aussehen, Aufbau und Bedienung wie in den
-  Apple-Apps auf dem iPad (iPadOS).
-- Bei **jeder neuen Anforderung** recherchiert Claude, wie Apple das in seinen eigenen Apps
-  (z. B. Notizen, Erinnerungen, Kontakte, Dateien, Safari, Mail, Numbers) und in den Human
-  Interface Guidelines löst, und nennt das kurz („So macht es Apple: …“).
-- Daraus macht Claude **Vorschläge bzw. Empfehlungen**, auch ungefragt, wenn eine Anforderung
-  vom Apple-Standard abweicht oder Apple eine bessere Lösung hat. Entschieden wird wie immer
-  per Rückfrage.
-- Was im Web nicht geht (z. B. SF Symbols, echte Systemmenüs), wird so nah wie möglich
-  nachgebaut und als Abweichung genannt.
-- **Apple-Abgleich vor jedem Muster (Pflicht):** Bevor Claude ein Muster zeigt, steht kurz
-  dabei: welche Apple-App es so löst (z. B. Notizen, Dateien, Erinnerungen), welche Punkte der
-  **HIG-Checkliste** (Designrichtlinie allgemein, Abschnitt 16) und welche Regeln des
-  **Regelkatalogs** (Abschnitt 17, R-1.1 …) betroffen sind und wo bewusst abgewichen wird – mit
-  Grund. HIG und Regelkatalog werden **vorher** geprüft, nicht erst nach einer Meldung.
-- **Apple-Review nach jeder Version (Pflicht):** In der Zusammenfassung steht je Punkt
-  „entspricht HIG“ oder „weicht ab, weil …“, dazu das Ergebnis des HIG- und Regel-Prüfskripts.
-- **Neue allgemeine Regel:** bekommt sofort eine Nummer im Regelkatalog und – wo es geht – eine
-  automatische Prüfung im Skript; sonst steht dort ‚Gerät‘.
-- **Vergleichsbilder:** Claude bittet bei Bedarf **konkret** um 1–4 Screenshots aus
-  Apple-Apps (iPad oder iPhone) zum jeweiligen Thema. Sie liegen in AppDesign im Ordner
-  `apple-referenz/<Gerät>/<App>/` mit einer `README.md` (je Bild: was es zeigt, was wir daraus
-  lernen); Muster werden neben das Vorbild gestellt.
-  **Das Repo ist öffentlich:** Claude verpixelt private Inhalte (Namen, Ordner, Texte) **vor**
-  dem Ablegen und zeigt die Bilder vorher zur Freigabe.
+- **Bericht nach einer Version** (0 Nr. 11): je Punkt ‚entspricht HIG‘ oder ‚weicht ab, weil …‘ und das Ergebnis des HIG- und
+  Regel-Prüfskripts (Apple-Review); Erinnerung, die App neu zu starten; Screenshots in Viererpaketen; am Ende ausdrücklich: ‚Bitte
+  zuerst alle Prüfpunkte testen – neue Punkte setze ich erst um, wenn die Prüfliste erledigt und gefundene Fehler beseitigt sind.‘
+  (0 Nr. 22). Bei Mustern und Versuchen stehen im Chat der vollständige Link und nummerierte Schritte mit ‚Erwartet: …‘.
+- Je gebauter Version **ein Prüfpunkt** (z. B. P-54) mit nummerierter Prüfliste (P-54/0, P-54/1 …) – im CHANGELOG und im Chat
+  wörtlich gleich. Die Liste beginnt mit **/0 ‚Version prüfen‘**: auf jedem Gerät die Versionszeile ansehen (App-Version **und**
+  AppDesign-Version); erst wenn beide stimmen, wird weiter getestet.
+- Jeder Prüfpunkt prüft genau eine Sache, als Schritt-für-Schritt-Anleitung: 1. was antippen bzw. einstellen (Gerät,
+  quer/hoch, hell/dunkel), 2. was tun, 3. ‚Erwartet: …‘. Bei jedem Schritt, der etwas anzeigt, steht die erwartete Meldung **auf
+  jedem beteiligten Gerät** wörtlich; ein automatischer Test prüft genau diese Texte auf beiden Geräten. Verweise wie ‚wie oben‘
+  oder ‚siehe Tabelle‘ ersetzen keine Schritte.
+- Am Ende **jeder** Umsetzung – nach einer Version und ebenso nach vorbereiteten, noch nicht gebauten Änderungen – stehen alle
+  offenen Prüfpunkte einzeln im Chat, auch die früherer Versionen.
+- **Rückmeldung:** Der Bericht endet immer mit einem Auswahlfenster, z. B. ‚P-54: Wie ist die Prüfung ausgegangen?‘ – ‚Alles ok‘ ·
+  ‚Nicht ok – ich schreibe im Chat‘ · ‚Ich prüfe später‘ · ‚Ich schreibe im Chat‘ – auch wenn die Version im Hintergrund fertig
+  wird: nur ein Auswahlfenster löst auf dem iPad eine Push-Nachricht aus. Antwort z. B. ‚alles ok‘ oder ‚ok bis auf 3‘;
+  Abweichungen kommen wieder in ‚0. Nächste Version‘.
+- Prüfung: `doku.mjs` (Prüfliste der neuesten Version beginnt mit /0, nennt App- und AppDesign-Version, jeder Punkt mit
+  nummerierten Schritten und ‚Erwartet‘).
 
-## 4. Backlog
+### 2.4 Backlog
 
-- Jedes App-Repo hat eine `BACKLOG.md` mit allen offenen Themen (Nummer, **Priorität**, Thema,
-  allgemein oder App, Status: offen · bereit · prüfen · später) und einem Abschnitt
-  „Erledigt“.
-- **Aufbau der BACKLOG.md** – ein Punkt wandert von unten nach oben:
-  - **0. Nächste Version X.Y.Z** (ganz oben): fertig geklärte Punkte (Status **bereit**), die
-    in die nächste Sammelversion kommen – mit Spalte „bereit seit“ und einer Zeile „N Punkte
-    bereit“. Fertig geklärt heißt: Muster bestätigt, allgemein/App geklärt, Texte fest.
-  - **1. Auf dem iPad prüfen:** je gebauter Version **ein** Prüfpunkt mit Prüfliste.
-  - **2. Weitere Themen (in Klärung):** Status **offen**.
-  - **3. Später:** Ideen.
-  - **Erledigt:** mit Version und Datum.
-  - Weg eines Punktes: 2. in Klärung → 0. Nächste Version → 1. Prüfen → Erledigt.
-- **Priorität:** 1 hoch (als Nächstes) · 2 mittel · 3 niedrig. Gearbeitet wird immer an den
-  Themen mit der höchsten Priorität zuerst; Claude schlägt die nächsten Schritte danach vor.
-- **Neue Themen:** Claude schlägt Verbesserungen einzeln vor (mit „So macht es Apple“) und
-  fragt jeweils: „Ins Backlog übernehmen? Ja/Nein“ und „Mit welcher Priorität? a) 1 hoch ·
-  b) 2 mittel · c) 3 niedrig“ – mit eigener Empfehlung.
-- Neue Wünsche, offene Fragen und Prüfpunkte trägt Claude sofort ein; Erledigtes wandert mit
-  Version und Datum nach „Erledigt“.
-- **Claude erinnert an die offenen Themen:** zu Beginn einer Sitzung (kurze Liste) und am Ende
-  jeder Antwort, in der etwas gebaut oder entschieden wurde – zuerst die Zeile „Nächste
-  Version X.Y.Z: N Punkte bereit (…)“, danach „Offen im Backlog: …“.
+Jede `BACKLOG.md` hat oben die Zeile ‚Stand · Aktuelle Version‘ und diese Abschnitte; ein Punkt wandert von unten nach oben
+(in Klärung → Nächste Version → Prüfen → Erledigt):
 
-## 5. Ablauf einer Änderung
+- **0. Nächste Version X.Y.Z:** fertig geklärte Punkte (Status **bereit**: Muster bestätigt, allgemein/App geklärt, Texte fest)
+  mit Spalte ‚bereit seit‘ und der Zeile ‚N Punkte bereit‘.
+- **1. Auf dem iPad prüfen:** je gebauter Version ein Prüfpunkt mit Prüfliste.
+- **2. Weitere Themen (in Klärung):** Status **offen**.
+- **3. Später:** Ideen.
+- **Erledigt:** mit Version und Datum.
 
-1. Ideen sammeln und **nachfragen** („Frag nach“), bis alles geklärt ist.
-2. Bei Gestaltungsfragen zuerst ein **Muster** (Screenshot) zeigen, bei Bedarf mit
-   Varianten (a, b, c).
-   - Muster zuerst **nur hell und quer**; dunkel und hoch erst, wenn hell passt.
-   - Muster und Screenshots **in Viererpaketen** schicken (je Sendung höchstens 4 Bilder),
-     damit man sie nacheinander durchsehen kann.
-3. **Allgemein oder App** – bei jeder Design-Änderung erfragen (Abschnitt 0 Nr. 4).
-4. Zusammenfassen und in den Backlog-Abschnitt **„0. Nächste Version“** eintragen (Status
-   bereit) – **nicht** sofort bauen. Auch kleine Fehler aus dem Testen kommen dorthin.
-5. Gebaut wird nur nach Abschnitt 6 und **erst nach ausdrücklichem „Ja“ – verpflichtend,
-   ohne Ausnahme** (siehe Hinweis oben). Eine Bitte um Korrektur ist kein „Ja“ zum Bauen.
-6. Nur das ändern, was besprochen wurde – keine ungefragten Änderungen. Fällt beim Bauen
-   etwas auf, es nennen statt es eigenmächtig zu ändern (Ausnahme: offensichtliche
-   Fehler, dann ausdrücklich erwähnen).
+Jeder Punkt: Nummer, Priorität, Thema, allgemein oder App, Status (offen · bereit · prüfen · später). Nach jeder Version: die
+gebauten Punkte aus ‚0.‘ entfernen, den Prüfpunkt unter ‚1.‘ anlegen, ‚Erledigt‘ ergänzen. Neue Themen: ‚Ins Backlog
+übernehmen? Ja/Nein‘ und ‚Mit welcher Priorität? a) 1 hoch · b) 2 mittel · c) 3 niedrig‘, mit ‚So macht es Apple‘ und
+Empfehlung. **Erinnerung:** zu Beginn einer Sitzung (kurze Liste) und am Ende jeder Antwort, in der etwas gebaut oder entschieden
+wurde – zuerst ‚Nächste Version X.Y.Z: N Punkte bereit (…)‘, dann ‚Offen im Backlog: …‘.
 
-## 6. Sammelversionen
+### 2.5 Übergabe, neue Sitzung, Lagebild
 
-- **Wann Claude nach einer Version fragt** (0 Nr. 8): erst, wenn sich eine Version lohnt –
-  - ein **Thema** ist fertig geklärt, **oder**
-  - **2–3 zusammengehörige Punkte** (höchstens 2 Themen, Abschnitt 0 Nr. 8) sind in „0. Nächste Version“ gesammelt, **oder**
-  - der Nutzer sagt jederzeit „Version bauen“.
-  Dann: „Soll ich Version X.Y.Z mit [Liste aller bereiten Punkte] erstellen? Ja/Nein“.
-- **Korrekturen sofort (0 Nr. 8, seit 2.2.0):** Fehler aus einer Prüfrunde kommen als eigene Korrekturversion,
-  **bevor** Neues gebaut wird – auch ohne Datenverlust. Claude fragt auch dann vorher.
-- **Versionsnummer:** Sammelversion = in der Regel **Nebenversion** (z. B. 2.3.0);
-  Korrekturversion (z. B. 2.3.1) für Korrekturen.
-- **Eine Prüfrunde je Version:** Claude legt einen Prüfpunkt mit nummerierter Prüfliste an
-  (je Punkt der Version: was auf dem iPad zu prüfen ist). Antwort z. B. „alles ok“ oder
-  „ok bis auf 3“; Abweichungen kommen wieder in „0. Nächste Version“.
+- **`UEBERGABE.md`** enthält nur den Stand der Sitzung: Lagebild (Versionen, Chatnummer, Sitzungsgröße, offene Prüfpunkte),
+  Ergebnisse, nächster Schritt, danach, neue Vereinbarungen (stehen zusätzlich schon in den Richtlinien), was zuerst zu lesen ist,
+  Starttext. Dauerhaftes (Arbeitsumgebung, Befehle) steht in der AppDesign-`CLAUDE.md`.
+- Der **Starttext** steht immer als Codeblock (```), damit er mit der Kopieren-Schaltfläche übernommen werden kann, und nennt,
+  wo auf GitHub alles liegt (Repo, Branch `main`, Dateien).
+- **Neue Sitzung starten:** `create_session` in derselben Umgebung mit `model: claude-opus-5-5`, Repo AppDesign angehängt; die
+  App-Repos holt die neue Sitzung selbst dazu (`add_repo`), der Starttext ist ihre erste Nachricht. Scheitert das Starten, öffnet
+  der Nutzer einen neuen Chat in derselben Umgebung und fügt den Starttext ein. **Name** `<App> <Chatnummer> – <Thema>` mit
+  vierstelliger, aufsteigender Nummer (z. B. ‚Reiselogbuch 0001 – AppDesign 4.12.0‘); jede Sitzung, die die nächste startet,
+  erhöht die Nummer um 1, die nächste steht in `UEBERGABE.md`; Claude nennt dem Nutzer den Namen.
+- **Aufwand hoch:** `create_session` kann ihn nicht setzen; er kommt aus der Umgebungsvariablen `CLAUDE_CODE_EFFORT_LEVEL=high`
+  (setzt der Nutzer: Umgebungsmenü in der Titelleiste → Bearbeiten → Umgebungsvariablen) und gilt dann auch für Chats, die der
+  Nutzer selbst öffnet.
+- **Lagebild prüft Modell und Aufwand:** Modell mit `get_session`, Aufwand mit `echo $CLAUDE_CODE_EFFORT_LEVEL` und – maßgeblich –
+  `"effort"` der Modell-Aufrufe in der Sitzungsdatei `/root/.claude/projects/…/*.jsonl`. Die Claude-App zeigt im Chat ggf.
+  ‚mittel‘, obwohl die Aufrufe mit ‚hoch‘ laufen – dann stellt der Nutzer sie zur Sicherheit auf ‚hoch‘. Ist es nicht Opus 5.5
+  bzw. nicht ‚hoch‘, weist Claude darauf hin: für diese Sitzung `/model` bzw. `/effort high`, dauerhaft die Umgebungsvariable.
+  Gelesen wird zu Beginn wenig, weil alles Gelesene bei jedem weiteren Schritt mitverarbeitet wird.
 
-## 7. Nach jeder Version
+### 2.6 Apple-Abgleich, Apple-Review, Vergleichsbilder
 
-- Testen (hell und dunkel, iPad quer und hoch, iPhone hoch und quer, alle betroffenen Abläufe)
-  und das **HIG- und Regel-Prüfskript** laufen lassen – der volle Lauf genau einmal im Veröffentlichungs-Skript (0 Nr. 2): es prüft in jeder Ansicht die HIG-Punkte
-  und **alle automatisch prüfbaren Regeln des Regelkatalogs** – nicht nur die geänderten.
-- Regeln, die nur am Gerät prüfbar sind (Regelkatalog ‚Gerät‘, z. B. Federn, iOS-Tastatur),
-  kommen in die Prüfliste, **wenn die Version sie betrifft**.
-- Im Backlog die gebauten Punkte aus „0. Nächste Version“ entfernen, die Prüfliste unter
-  „1. Auf dem iPad prüfen“ anlegen und „Erledigt“ ergänzen.
-- PROMPT.md, CHANGELOG.md und betroffene Designrichtlinien aktualisieren; in PROMPT.md und
-  CHANGELOG.md die Versionen vermerken (z. B. „Reiselogbuch 1.1.0 · Designrichtlinie
-  allgemein 2.0.0 · Designrichtlinie Reiselogbuch 1.1.0 · Zusammenarbeit allgemein 1.0.0“).
-- Versionsnummer, Erstellungszeitpunkt und Cache-Name des Service Workers erhöhen.
-- Auf `main` hochladen, prüfen, ob GitHub Pages die Version online gestellt hat.
-- **Fertig erst nach Pages (seit 1.15.0):** ‚Fertig‘ meldet Claude erst, wenn die Pages-Läufe **beider** Repos
-  (erst AppDesign, dann die App) erfolgreich abgeschlossen sind und die veröffentlichten Dateien die neue Version
-  enthalten (`APP_VERSION`, `AD_NEEDED`, `AD_VERSION`); vorher wird nicht zum Testen aufgefordert.
-- **Versionen in der README (seit 1.15.0, R-10.4):** Die README jeder App zeigt ganz oben die Tabelle ‚Verwendete
-  Versionen‘ – App, AppDesign, Designrichtlinie allgemein, Designrichtlinie <App>, Zusammenarbeit allgemein – je mit
-  Version und Link; bei jeder Version nachführen.
-- Bericht nach 0 Nr. 11; Screenshots in Viererpaketen; an den Neustart der App erinnern.
-- **Ausdrücklicher Hinweis** am Ende des Berichts: „Bitte zuerst alle Prüfpunkte testen – neue
-  Punkte setze ich erst um, wenn die Prüfliste erledigt und gefundene Fehler beseitigt sind.“
-- **Prüfpunkte Schritt für Schritt (seit 1.14.0, verpflichtend):** Am Ende **jeder Umsetzung** – nach
-  einer Version und ebenso nach vorbereiteten, noch nicht gebauten Änderungen – gibt Claude **alle
-  offenen Prüfpunkte einzeln** aus, jeden mit Nummer (z. B. P-26/3) und als **Schritt-für-Schritt-
-  Anleitung**: 1. was antippen bzw. einstellen (Gerät, quer/hoch, hell/dunkel), 2. was tun,
-  3. was zu sehen sein muss (erwartetes Ergebnis). Ein Prüfpunkt prüft genau eine Sache; Verweise
-  wie „wie oben“ oder „siehe Tabelle“ ersetzen keine Schritte. Noch offene Prüfpunkte früherer
-  Versionen stehen mit dabei.
-- **Fehler am Gerät gefunden → Prüfung zuerst schärfen (seit 1.16.0):** Findet der Nutzer einen Fehler, den eine Regel
-  verbietet, ist auch die automatische Prüfung lückenhaft. Reihenfolge: 1. die Prüfung so erweitern, dass sie den
-  Fehler findet (rot), 2. beheben (grün), 3. dieselbe Lücke in allen Ansichten, Fenstern und Apps suchen (z. B. eine
-  Prüfung, die nur einen Bereich abdeckt), 4. im Bericht nennen, warum die Prüfung den Fehler übersehen hat.
-- **Testfälle selbst ableiten:** Fall-Liste vor jedem Bau (0 Nr. 1), Safari nachbilden (0 Nr. 5); nach jeder Handlung
-  die allgemeinen Grundregeln prüfen (z. B. nach dem Drehen: oberster Eintrag, Seitenleiste, Menüs bleiben).
-- **Prüfliste beginnt mit /0 (seit 1.15.0; Arbeitsregel, Prüfung `doku.mjs`):** Jede Prüfliste beginnt mit dem Prüfpunkt **/0 ‚Version prüfen‘** –
-  auf jedem Gerät die Versionszeile ansehen (App-Version **und** AppDesign-Version); erst wenn beide stimmen, wird
-  weiter getestet. So fällt ein noch nicht geladener Stand sofort auf (Anlass: P-26/6 und 7).
-- **Jede Meldung je Gerät (seit 1.15.0; Arbeitsregel):** Ein Prüfpunkt nennt bei **jedem** Schritt, der etwas anzeigt, die
-  erwartete Meldung **auf jedem beteiligten Gerät** (wörtlich), nicht nur das Endergebnis. Für jeden solchen Fall
-  prüft ein automatischer Test genau diese Texte auf beiden Geräten (Anlass: P-26/9 – die Meldung des ersten Geräts
-  war nicht beschrieben und irreführend).
+- **Apple-Abgleich vor jedem Muster (0 Nr. 23):** kurz dabei, welche Apple-App es so löst (z. B. Notizen, Erinnerungen,
+  Kontakte, Dateien, Safari, Mail, Numbers), welche Punkte der HIG-Checkliste (Designrichtlinie 16) und welche Regeln des
+  Katalogs (17) betroffen sind und wo bewusst abgewichen wird – mit Grund. HIG und Katalog werden vorher geprüft, nicht erst nach
+  einer Meldung. Was im Web nicht geht (z. B. SF Symbols, echte Systemmenüs), wird so nah wie möglich nachgebaut.
+- **Apple-Review nach jeder Version:** im Bericht (2.3).
+- **Vergleichsbilder:** Claude bittet bei Bedarf konkret um 1–4 Screenshots aus Apple-Apps (iPad oder iPhone). Sie liegen in
+  AppDesign unter `apple-referenz/<Gerät>/<App>/` mit einer `README.md` (je Bild: was es zeigt, was wir daraus lernen); Muster
+  stehen neben dem Vorbild. Das Repo ist öffentlich: private Inhalte (Namen, Ordner, Texte) verpixelt Claude vor dem Ablegen und
+  zeigt die Bilder vorher zur Freigabe.
 
-## 8. Versionen
+### 2.7 Muster mit Messung (0 Nr. 20)
 
-- Dreistufig **Hauptversion.Nebenversion.Korrektur** für Apps, Richtlinien und diese
-  Datei (Bedeutung siehe Designrichtlinie allgemein, Abschnitt 11).
-- Jede Datei mit eigener Versionsnummer und Versionsgeschichte am Ende.
+Ein Muster, das am Gerät misst, wird wie die App geprüft, **bevor** der Nutzer es bekommt: es läuft automatisch im Safari-Modell
+(Chromium und WebKit), jeder Fall des Versuchs wird durchgespielt, was das Muster aufzeichnet und auswertet, muss zu den Bildern
+des Modells passen, und eine **Gegenprobe** mit absichtlich eingebautem Sprung muss rot werden. Das Muster **führt durch den
+Versuch**: feste Liste der Fälle, oben ‚Nächster Schritt: …‘, erledigte Fälle abgehakt, ‚Messung teilen‘ erst, wenn alle Fälle
+drin sind (oder ausdrücklich ‚trotzdem teilen‘). Am Gerät zeigt es nur **‚aufgenommen‘** – bewertet wird ausschließlich aus den
+Rohdaten durch Claude, damit keine falsche Anzeige in die Irre führt.
 
-## 9. Ablage
+---
 
-- Ein Repo pro App, Bereitstellung über GitHub Pages aus `main`/Hauptordner.
-- Allgemeines liegt im Design-Repo **AppDesign**: diese Datei, Designrichtlinie allgemein,
-  `v4/design.css`, `v4/ui.js`, Vergleichsbilder, HIG-Prüfung, Vorlage für neue Apps.
-- **Gemeinsame Bausteine ändern:** Änderung in AppDesign (Version dort erhöhen), testen mit
-  jeder App, die sie nutzt; **erst AppDesign veröffentlichen, dann die Apps.** In PROMPT.md und
-  CHANGELOG.md jeder App steht die AppDesign-Version, mit der sie gebaut wurde.
-- App-Spezifisches: `CLAUDE.md`, `PROMPT.md`, `CHANGELOG.md`, `BACKLOG.md`,
-  `README - Designrichtlinie <App>.md` im App-Repo.
-- Keine Wiederholungen: App-Dateien verweisen auf die allgemeinen Dateien und enthalten nur
-  Abweichungen und Ausprägungen.
+## Zuordnung alt → neu
+
+Bis 2.16.0 gab es neben Abschnitt 0 die Abschnitte 2–9 und drei Kästen oben; 0 Nr. 13–15 und 20 waren
+ausführlicher (jetzt 2.5 und 2.7). Sie stehen jetzt hier (Verweise in Changelogs,
+im Verlauf und in Kommentaren der Prüfungen nennen noch die alten Stellen):
+
+| bis 2.16.0 | ab 2.17.0 |
+|---|---|
+| Kasten ‚nie ohne Freigabe bauen‘ | 0 Nr. 21 |
+| Kasten ‚Sammelversionen‘ | 0 Nr. 8 |
+| Kasten ‚erst prüfen, dann Neues‘ | 0 Nr. 22 und 2.3 |
+| Abschnitt 2 Rückfragen – Antwortformat | 2.1 und 2.2 |
+| Abschnitt 3 Apple-like entwickeln | 0 Nr. 23 und 2.6 |
+| Abschnitt 4 Backlog | 0 Nr. 24 und 2.4 |
+| Abschnitt 5 Ablauf einer Änderung | 0 Nr. 25 |
+| Abschnitt 6 Sammelversionen | 0 Nr. 8 und 2.3 |
+| Abschnitt 7 Nach jeder Version (Prüfliste mit /0, Meldung je Gerät, Fehler am Gerät) | 0 Nr. 1, 2, 9, 11 und 22; 2.3 |
+| Abschnitt 8 Versionen | Designrichtlinie allgemein 11 |
+| Abschnitt 9 Ablage | 0 Nr. 10 |
 
 ---
 
@@ -367,6 +303,7 @@ Nutzer sie findet, schneller und günstiger arbeiten.
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 2.17.0 | 21.10.2026 | Neben | **A-39 Konsolidierung:** Abschnitt 0 ist das eine Arbeitsmodell – die Kästen oben und die Abschnitte 2–9 sind in 0 Nr. 8, 21–25 und den neuen Abschnitt 2 ‚Einzelheiten und Formate‘ eingegangen (Zuordnung alt → neu); jede Regel nennt ihre Prüfung; Geschichte (‚seit …‘, ‚Nutzer …‘, ‚Anlass …‘) nur noch hier. Neu 0 Nr. 13: Übergabe schon ab etwa 150.000 Token Kontext (statt 300.000; das Werkzeug warnt weiter ab 300.000). Geklärt (Nutzer 21.10.2026, F-2 bis F-4): im Auswahlfenster nur die kurze Frage, bei Bitten, am Gerät zu prüfen, auch Link und Schritte; Übergabe vorschlagen, bei Ja schreiben und die neue Sitzung selbst starten, Starttext als Rückfall; keine eigene Version für eine einzelne Kleinigkeit |
 | 2.16.0 | 21.10.2026 | Neben | 0 Nr. 11 ergänzt: Link und Schritte jeder Bitte, am Gerät zu prüfen, zusätzlich im Auswahlfenster selbst – der Text davor kam nicht an (Nutzer 21.10.2026, Sitzung 0023) |
 | 2.15.0 | 20.10.2026 | Neben | 0 Nr. 20 ergänzt: Muster mit Messung vor der Übergabe im Safari-Modell gegen die Rohdaten geprüft (mit Gegenprobe), führen Schritt für Schritt durch den Versuch, zeigen am Gerät nur ‚aufgenommen‘ (Nutzer 20.10.2026, A-36) |
 | 2.14.1 | 20.10.2026 | Korrektur | 0 Nr. 15: Aufwand aus der Sitzungsdatei (`"effort"`) nennen; die App zeigte ‚mittel‘, obwohl alle Aufrufe mit ‚hoch‘ liefen – dann in der App auf ‚hoch‘ stellen (Nutzer 20.10.2026) |
