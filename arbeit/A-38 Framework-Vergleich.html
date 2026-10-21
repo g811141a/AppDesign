@@ -1,0 +1,108 @@
+<!doctype html><html lang="de"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>A-38 Framework-Vergleich</title>
+<style>
+/* A-38 Framework-Vergleich – Themen aus Framework7 und Ionic, die AppDesign übernehmen könnte (Sitzung Reiselogbuch 0027).
+   Spalten nach Wunsch des Nutzers (21.10.2026): Framework · Thema · So macht es Apple (Z1) · in AppDesign vorhanden · Aufwand (Z2) ·
+   Empfehlung. Die Empfehlung hängt nicht vom Aufwand ab. Auf schmalen Bildschirmen wird jede Zeile eine Karte. */
+:root { --bg: #f2f2f7; --card: #fff; --line: #d1d1d6; --txt: #000; --sub: #6e6e73; --blue: #007aff; --head: #f9f9fb;
+  --ja: #e3f6e8; --ja-t: #1b7f3b; --nein: #fde8e7; --nein-t: #c4291c; --spaet: #fff3d6; --spaet-t: #9a6400; color-scheme: light dark; }
+@media (prefers-color-scheme: dark) { :root { --bg: #000; --card: #1c1c1e; --line: #38383a; --txt: #fff; --sub: #98989d; --blue: #0a84ff;
+  --head: #2c2c2e; --ja: #173d22; --ja-t: #5fd37f; --nein: #4a1a17; --nein-t: #ff7b6e; --spaet: #3d2f0f; --spaet-t: #ffc94d; } }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--txt); font: 15px/1.45 -apple-system, system-ui, sans-serif;
+  padding: max(16px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(24px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left)); }
+main { max-width: 1400px; margin: 0 auto; }
+h1 { font-size: 28px; margin: 4px 0 2px; }
+h2 { font-size: 20px; margin: 28px 0 8px; }
+.stand { color: var(--sub); margin: 0 0 16px; }
+.box { background: var(--card); border-radius: 12px; padding: 12px 16px; margin: 0 0 16px; }
+.box p { margin: 6px 0; }
+.box ul { margin: 6px 0; padding-left: 20px; }
+code { font: 13px ui-monospace, Menlo, monospace; background: var(--head); padding: 1px 4px; border-radius: 4px; }
+table { width: 100%; border-collapse: separate; border-spacing: 0; background: var(--card); border-radius: 12px; overflow: hidden; }
+th, td { text-align: left; vertical-align: top; padding: 10px 12px; border-bottom: .5px solid var(--line); }
+th { background: var(--head); font-size: 13px; font-weight: 600; color: var(--sub); position: sticky; top: 0; }
+tr:last-child td { border-bottom: 0; }
+td.nr { font-weight: 600; white-space: nowrap; }
+td[data-l="Aufwand"] { min-width: 120px; }
+td b { font-weight: 600; }
+.fw { display: inline-block; font-size: 12px; font-weight: 600; border: .5px solid var(--line); border-radius: 10px; padding: 1px 8px; margin: 0 4px 4px 0; white-space: nowrap; }
+.tag { display: inline-block; font-size: 13px; font-weight: 600; border-radius: 10px; padding: 2px 10px; margin-bottom: 4px; white-space: nowrap; }
+.ja { background: var(--ja); color: var(--ja-t); }
+.nein { background: var(--nein); color: var(--nein-t); }
+.spaet { background: var(--spaet); color: var(--spaet-t); }
+.teil { background: var(--spaet); color: var(--spaet-t); }
+.klein { color: var(--sub); font-size: 13px; }
+@media (max-width: 760px) {
+  table, tbody, tr, td { display: block; }
+  thead { display: none; }
+  table { background: none; }
+  tr { background: var(--card); border-radius: 12px; margin: 0 0 12px; overflow: hidden; }
+  td { border-bottom: .5px solid var(--line); }
+  td::before { content: attr(data-l); display: block; font-size: 12px; font-weight: 600; color: var(--sub); margin-bottom: 2px; }
+}
+</style></head><body><main>
+<h1>A-38 Framework-Vergleich</h1>
+<p class="stand">Muster mit 2 Punkten · Stand 21.10.2026 · Sitzung ‚Reiselogbuch 0027‘ · Grundlage: Quelltext von Framework7 9.2.0 und Ionic 9.0.9 (npm), mit AppDesign 4.28.2 verglichen</p>
+
+<div class="box">
+  <p><b>So liest du die Tabelle:</b> Jede Zeile ist ein Thema, das wir ins allgemeine Regelwerk übernehmen könnten.</p>
+  <ul>
+    <li><b>Framework:</b> woher das Thema kommt (Framework7, Ionic oder beide).</li>
+    <li><b>So macht es Apple:</b> unser Maßstab (Zusammenarbeit 0 Nr. 23).</li>
+    <li><b>In AppDesign:</b> ja / teilweise / nein – bei ja die Abweichungen.</li>
+    <li><b>Aufwand:</b> klein / mittel / groß – nur zur Information; <b>die Empfehlung hängt nicht vom Aufwand ab.</b></li>
+    <li><b>Empfehlung:</b> übernehmen · nicht übernehmen · später – mit kurzer Begründung.</li>
+  </ul>
+</div>
+
+<h2>Themen</h2>
+<table>
+<thead><tr><th>Nr.</th><th>Framework</th><th>Thema</th><th>So macht es Apple</th><th>In AppDesign</th><th>Aufwand</th><th>Empfehlung</th></tr></thead>
+<tbody>
+<tr>
+  <td class="nr" data-l="Nr.">T-1</td>
+  <td data-l="Framework"><span class="fw">Framework7</span><span class="fw">Ionic</span></td>
+  <td data-l="Thema"><b>Sichere Ränder als Variablen.</b> Die Abstände zu Dynamic Island, Kamera-Aussparung und Home-Leiste werden einmal
+    aus <code>env(safe-area-inset-…)</code> in Variablen übernommen (Framework7 <code>--f7-safe-area-*</code>, Ionic
+    <code>--ion-safe-area-*</code>) und überall nur über diese Variablen genutzt.</td>
+  <td data-l="So macht es Apple">Bedienelemente und Text bleiben im sicheren Bereich; nur Hintergründe von Leisten reichen bis an den Rand.</td>
+  <td data-l="In AppDesign"><span class="tag teil">ja, mit Abweichung</span><br>42 × <code>env(safe-area-inset-…)</code> direkt in
+    <code>design.css</code>, keine Variablen. Die Prüfbrowser liefern immer 0 – ob etwas unter Dynamic Island oder Home-Leiste rutscht,
+    prüft heute keine Prüfung, nur du am Gerät.</td>
+  <td data-l="Aufwand">mittel<br><span class="klein">42 Stellen umstellen, Prüfungen mit iPhone-Werten hoch und quer</span></td>
+  <td data-l="Empfehlung"><span class="tag ja">übernehmen</span><br>Die Prüfung kann dann echte iPhone-Ränder einsetzen und findet
+    Überdeckungen selbst. Sichtbar ändert sich nichts. Beide Frameworks lösen es gleich – ein Zeichen, dass es der übliche Weg ist.</td>
+</tr>
+<tr>
+  <td class="nr" data-l="Nr.">T-2</td>
+  <td data-l="Framework"><span class="fw">Framework7</span><span class="fw">Ionic</span></td>
+  <td data-l="Thema"><b>Blatt mit Höhenstufen.</b> Ein Fenster gleitet von unten herein und rastet auf halber oder ganzer Höhe ein; oben
+    ein Griff; nach unten wischen schließt es (Framework7 <code>sheet</code> mit <code>breakpoints</code>, <code>swipeToClose</code>; Ionic
+    <code>ion-modal</code> mit <code>breakpoints</code>, <code>initialBreakpoint</code>, <code>handleBehavior</code>,
+    <code>canDismiss</code>).</td>
+  <td data-l="So macht es Apple">iPhone: Blätter mit den Stufen ‚mittel‘ und ‚groß‘ und Griff, nach unten wischen schließt (Karten, Wo ist?,
+    Teilen); bei ungesicherten Änderungen fragt das Blatt nach. iPad: Fenster in der Mitte.</td>
+  <td data-l="In AppDesign"><span class="tag teil">teilweise</span><br>Fenster (Designrichtlinie 7, 15.9): iPad in der Mitte wie Apple;
+    iPhone bildschirmfüllend, ohne Höhenstufen und ohne Griff. Schließen nur über x bzw. Häkchen, nicht durch Wischen nach unten.</td>
+  <td data-l="Aufwand">groß<br><span class="klein">Geste im Safari-Modell, Tastatur, ‚Liste steht still‘ (R-7.3), viele Prüfungen</span></td>
+  <td data-l="Empfehlung"><span class="tag ja">übernehmen (iPhone)</span><br>Nach unten wischen zum Schließen und der Griff sind auf dem
+    iPhone Standard und werden aus jeder Apple-App erwartet. Die Stufe ‚halb‘ nur für kurze Fenster (Meldung, Auswahl); Erfassung bleibt
+    ganz hoch. iPad bleibt wie heute.</td>
+</tr>
+</tbody>
+</table>
+
+<h2>Folgt in der vollständigen Fassung</h2>
+<div class="box">
+  <ul>
+    <li><b>Alle Themen</b> beider Frameworks in dieser Tabelle, nach Bereichen gruppiert (Leisten, Listen, Fenster, Menüs, Meldungen,
+      Eingaben, Suche, Gesten, Ränder und Tastatur, Rollen, Farben, Schrift, Bewegung, <b>Barrierefreiheit (Z6)</b>, Leistung, Prüfbarkeit).</li>
+    <li><b>Gesamtvergleich Framework7 / Ionic (Z3)</b> als eigene Tabelle.</li>
+    <li><b>Drei Wege (Z4):</b> eigener Code wie heute · Mischform (AppDesign 5) · echte App mit Capacitor – Nutzen, Aufwand, Kosten,
+      Risiken; Rückblick, was unser eigener Weg bisher gekostet hat.</li>
+    <li><b>Weitere Kandidaten (Z5):</b> z. B. Konsta UI, Onsen UI.</li>
+  </ul>
+</div>
+</main></body></html>

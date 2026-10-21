@@ -11,7 +11,9 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Prio | Thema | bereit seit |
 |---|---|---|---|
-| – | – | zurzeit nichts gesammelt | – |
+| A-41 | 1 | **Zusammenarbeit 2.18.0 (Nutzer 21.10.2026, Sitzung 0027):** 0 Nr. 13 Übergabe wieder erst ab etwa **300.000** Token Kontext (statt 150.000; gleiche Grenze wie das Werkzeug) – gilt ab sofort; 0 Nr. 2 Hilfsagenten bzw. gesonderte Sitzungen parallel einsetzen, **wenn möglich und sinnvoll** (statt ‚nur für große, klar abgegrenzte Aufgaben‘) | 21.10.2026 |
+
+**1 Punkt bereit** · gebaut wird erst nach ‚Ja‘
 
 ## 1. Auf iPad und iPhone prüfen
 
