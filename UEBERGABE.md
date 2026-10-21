@@ -1,6 +1,6 @@
 # Übergabe an die nächste Sitzung
 
-**Stand 21.10.2026** · geschrieben in der Sitzung ‚Reiselogbuch 0024‘ (Ende)
+**Stand 21.10.2026** · geschrieben in der Sitzung ‚Reiselogbuch 0025‘ (Ende)
 (Zusammenarbeit allgemein 2.16.0, Abschnitt 0 Nr. 14). **Claude liest diese Datei zu Beginn jeder Sitzung zuerst.**
 
 ## 1. Lagebild
@@ -12,34 +12,40 @@
 | ReiseLogBuch-Import (privat) | 1.2.1 (unverändert) | g811141a/ReiseLogBuch-Import |
 | Zusammenarbeit allgemein | **2.16.0** | `README - Zusammenarbeit allgemein.md` |
 
-- **Chatnummer:** die nächste Sitzung heißt **Reiselogbuch 0025**; die danach 0026.
-- **Sitzungsgröße:** 0024 endete bei ~480.000 Token Kontext (zu groß – früher übergeben).
-- **Modell und Aufwand:** Opus 5.5, Aufwand hoch (0024: alle Aufrufe ‚high‘, `CLAUDE_CODE_EFFORT_LEVEL=high`). Prüfen nach 0 Nr. 15.
+- **Chatnummer:** die nächste Sitzung heißt **Reiselogbuch 0026**; die danach 0027.
+- **Sitzungsgröße:** 0025 endete bei ~220.000 Token Kontext und wurde spürbar langsamer – **künftig ab ~150.000 Token übergeben**
+  (wird mit A-39 in Zusammenarbeit 0 Nr. 13 festgehalten).
+- **Modell und Aufwand:** Opus 5.5, Aufwand hoch (0025: alle Aufrufe ‚high‘, `CLAUDE_CODE_EFFORT_LEVEL=high`). Prüfen nach 0 Nr. 15.
 - **Per du!** Versuche **kurz** (3–6 Handgriffe je Gerät). **Link und Schritte immer auch im Auswahlfenster selbst** (2.16.0).
 - **Kein Mac** – nur Versuche des Nutzers am Gerät; Messungen (Messmodus) wertet Claude aus den Rohdaten aus.
-- **Offene Prüfpunkte:** keine. **P-60/P-61 erledigt** (A-35, A-36, T-97 abgeschlossen).
+- **Offene Prüfpunkte:** keine.
 - **Erinnerung:** ‚Backlog-Erinnerung (AppDesign und Reiselogbuch)‘ montags 8:58.
 
 ## 2. Ergebnisse
 
-**Sitzung ‚Reiselogbuch 0024‘ (21.10.2026):** Fall-Liste für den Bau (`arbeit/A-36 Fall-Liste.md` Abschnitt 8, B-1 bis B-18) – Ja.
-Gebaut und online: **AppDesign 4.28.1 / Reiselogbuch 3.26.1** – Tastatur ohne Springen (V3 in `ui.js`: neuer Fokus nach dem Rollen,
-Rückstellung, Platz unter dem Inhalt als `--platz` am Platzhalter `::after`, Klick nach dem Rollen unterdrückt, Tastatur-Taste,
-‚Nach oben‘ bei offener Tastatur mit einem Antippen, iPad-Fenster gleitet, `isPhone()`/Kapsel nach `innerHeight + scrollY`) und neue
-allgemeine Regel **R-2.4** (iPhone quer niedrige Leisten 32 px, Suchfeld als Kapsel). Safari-Eigenheiten S-1 bis S-9 in Designrichtlinie 13.
-Prüfung `ablauf-tastatur-still.mjs` gegen 3.26.0 rot (177 Fehler), voller Lauf 66 von 66 grün. **P-61 alles ok** (Nutzer, dazu drei
-Messungen: Safari verschiebt nie, Leisten still – Fall-Liste 8a). Beim Bau gefunden: B-18 (die App darf die Ereignisse des neuen
-Fokus nicht sehen – ‚Pflichtfeld‘), Klick-Unterdrückung endet bei `pointerdown`.
-**Grenzen (nicht gemessen):** iPhone quer mit offener Suchzeile ist für ein Feld im Inhalt zu wenig Platz; ein Feld höher als der
-sichtbare Teil (‚Programm‘ im Fenster iPhone quer).
+**Sitzung ‚Reiselogbuch 0025‘ (21.10.2026), nichts gebaut:**
+- **A-37** ‚Nach oben / Ans Ende‘: Apple-Abgleich, Muster mit Varianten Heute · A (wie Gemini, ein Knopf unten Mitte, Pfeil folgt der
+  Wischrichtung) · B (Kapsel zeigt nur wirksame Pfeile) · C (Griff mit Tages-Blase wie Apple Fotos) – in Chromium und WebKit geprüft
+  (`arbeit/A-37 Muster prüfen.mjs`, alles grün), online: https://g811141a.github.io/AppDesign/arbeit/A-37%20Muster.html;
+  Erklärung und Fall-Liste `arbeit/A-37 Fall-Liste.md`. **Wahl des Nutzers steht aus** (Link und Schritte noch nicht gegeben).
+- **A-38** Frameworks (Prio 1, gemeinsam durchgehen): Nutzer fragte nach Ionic und Framework7. Empfehlung Claude: Framework7 für reines JS
+  und eigene Regeln, Ionic bei App Store/Vue/React; Mischform = Framework7 als Unterbau, AppDesign als Regelschicht (AppDesign 5).
+  Quelltext Framework7 9.2.0 ausgewertet (`arbeit/A-38 Framework7 Auswertung.md`): **Tastatur unter iOS löst Framework7 nicht**
+  (kein `visualViewport`, Feld rollen nur unter Android); Vorschläge V1 sichere Ränder prüfbar (42 × `env()`, nie geprüft),
+  V2 Rückmeldung beim Antippen (kein `:active`), V3 Titel antippen = nach oben, V4 Glas-Optik, V5 = A-37 C, V6 lange Listen.
+  Selbstkritik an den Nutzer: die Vorgabe ‚keine Frameworks‘ (Prompt 04.10.2026) schließt ein fest abgelegtes Framework offline nicht aus –
+  das hätte Claude früher sagen sollen.
+- **A-39** Konsolidierung aller Regeln: Nutzer – ‚du wirst immer langsamer‘. Ursache vor allem die Sitzungsgröße; Konsolidierung bringt
+  Klarheit und weniger Fehler. Auftrag im Starttext (Abschnitt 7), Opus 5.5, Aufwand hoch.
 
 Frühere Sitzungen: siehe `VERLAUF.md` und Versionsgeschichten.
 
 ## 3. Nächster Schritt
 
-1. **A-37** (AppDesign-Backlog, Prio 2): ‚Nach oben / Ans Ende‘ verbessern, z. B. wie in der Gemini-App für iOS – allgemeine Regel;
-   zuerst Apple-Abgleich und Muster mit Varianten (0 Nr. 6), Fall-Liste, Ja des Nutzers.
-2. Startfrage nur, wenn kein Auftrag: Auswahlfenster mit den Repos (0 Nr. 19).
+1. **A-39** Konsolidierung (Prio 1) – genau nach dem Starttext in Abschnitt 7.
+2. Danach **A-38** Frameworks mit dem Nutzer durchgehen (Prio 1), dann **A-37** (Prio 2): Link und nummerierte Schritte zum Muster
+   im Chat und im Auswahlfenster, Wahl der Variante, Fall-Liste ergänzen, Ja.
+3. Startfrage nur, wenn kein Auftrag: Auswahlfenster mit den Repos (0 Nr. 19).
 
 ## 4. Danach
 
@@ -94,5 +100,24 @@ In der neuen Sitzung müssen **AppDesign** und **ReiseLogBuch** verfügbar sein,
 ## 7. Starttext für die neue Sitzung
 
 ```
-Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md und gezielt die Regeln (Zusammenarbeit Abschnitte 0 und 1), prüfe Modell und Aufwand (Sitzungsdatei), gib mir das Lagebild und arbeite dann Abschnitt 3 ab (A-37). Hole vorher die Repos g811141a/ReiseLogBuch und g811141a/ReiseLogBuch-Import (privat) dazu (add_repo, Zugriff push), wie in UEBERGABE.md Abschnitt 5.
+Reiselogbuch 0026 – A-39 Konsolidierung aller Regeln
+
+Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md und gezielt die Regeln (Zusammenarbeit Abschnitte 0 und 1), prüfe Modell und Aufwand (Sitzungsdatei) und hole die Repos g811141a/ReiseLogBuch und g811141a/ReiseLogBuch-Import (privat) dazu (add_repo, Zugriff push), wie in UEBERGABE.md Abschnitt 5. Dann Auftrag A-39:
+
+Ziel: Alle Regelwerke konsolidieren – kürzer, ohne Doppelungen und Widersprüche, jede Regel genau an einer Stelle mit genau einer Prüfung (Zusammenarbeit 0 Nr. 3). Inhaltlich geht keine Regel verloren und keine ändert sich ohne mein Ja.
+
+Umfang: AppDesign – README - Zusammenarbeit allgemein.md, README - Designrichtlinie allgemein.md (inkl. Komponenten 15, HIG-Checkliste 16, Regelkatalog 17), CLAUDE.md, UEBERGABE.md, tests/README.md; ReiseLogBuch – README - Designrichtlinie Reiselogbuch.md, PROMPT.md, CLAUDE.md, tests/README.md; ReiseLogBuch-Import – CLAUDE.md (nur Verweise prüfen). Kein Code: v4/, fassung/, index.html und die Prüfskripte bleiben unverändert.
+
+Grundsätze:
+1. Geschichte raus aus dem Regeltext: Vermerke wie „seit 4.27.1 (A-33)“, „Nutzer 19.10.2026“, „Anlass …“ wandern in die Versionsgeschichte bzw. ins CHANGELOG; im Regeltext steht nur, was heute gilt.
+2. Überholte Stellen (z. B. Zusammenarbeit Abschnitte 2–9 neben Abschnitt 0) zusammenführen oder streichen; Abschnitt 0 wird das eine Arbeitsmodell.
+3. Eine Regel, ein Ort: Doppelungen zwischen Designrichtlinie, Komponenten, Regelkatalog und App-Richtlinie auflösen; die App-Richtlinie enthält nur Abweichungen von den allgemeinen Regeln.
+4. Jede Regel behält ihre Nummer (R-x.y) oder bekommt einen Eintrag „Zuordnung alt → neu“; jede Regel nennt ihre Prüfung.
+5. Neu in Zusammenarbeit 0 Nr. 13: Übergabe und neue Sitzung schon ab etwa 150.000 Token Kontext (statt 300.000).
+
+Vorgehen:
+Schritt 1 (ohne Änderung): Bestandsaufnahme als Datei arbeit/A-39 Konsolidierung Plan.md – Größe jeder Datei (Zeichen), gefundene Doppelungen, Widersprüche, überholte Stellen, Regeln ohne Prüfung, Prüfungen ohne Regel, geplanter neuer Aufbau und geschätzte Größe danach. Widersprüche und inhaltliche Fragen einzeln im Auswahlfenster mit Empfehlung. Dann mein Ja abwarten.
+Schritt 2: Umsetzen. Danach eine Abgleichliste: jede Regel und jede Vereinbarung von vorher mit ihrer neuen Stelle – nichts darf fehlen. Größe vorher/nachher.
+Schritt 3: Veröffentlichen nach unseren Regeln (Versionen, Veröffentlichungs-Skript, ein voller Prüflauf); die Prüfungen müssen unverändert grün sein, weil kein Code geändert wurde.
+Schritt 4: Bericht nach Zusammenarbeit 0 Nr. 11 und Übergabe (offen bleiben A-38 Prio 1 und A-37 Prio 2).
 ```
