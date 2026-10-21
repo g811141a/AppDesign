@@ -1,0 +1,195 @@
+<!doctype html><html lang="de"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="A-37 Muster">
+<title>A-37 Muster</title>
+<style>
+/* A-37 ‚Nach oben / Ans Ende‘ verbessern – Muster zum Ausprobieren (Sitzung Reiselogbuch 0025). Vier Varianten über ?v=heute|a|b|c
+   (oben in der Kopfzeile umschaltbar). Wie die App seit 4.27.0: die Seite rollt nie, nur der Inhalt (#rolle, 15.22).
+   Heute = senkrechte Kapsel unten rechts, beide Pfeile, sichtbar, sobald es etwas zu rollen gibt (R-3.2).
+   A     = wie in der Gemini-App: ein runder Knopf unten in der Mitte; der Pfeil folgt der Richtung, in die zuletzt gewischt wurde
+           (↓ Ans Ende, ↑ Nach oben); er erscheint erst, wenn das Ziel mehr als eine halbe Bildschirmhöhe entfernt ist.
+   B     = Kapsel unten rechts wie heute, zeigt aber nur, was etwas bewirkt: oben nur ↓, am Ende nur ↑, dazwischen beide; ganz in der
+           Nähe eines Endes fehlt dessen Pfeil (halbe Bildschirmhöhe).
+   C     = Schnellroll-Griff wie in Apple Fotos/Kontakte: beim Wischen erscheint rechts ein Griff; ihn ziehen springt durch das ganze
+           Reiselogbuch, eine Blase zeigt den Tag. Nach 1,5 s ohne Bewegung blendet er aus. Ganz nach oben/unten ziehen = Anfang/Ende. */
+:root { --bg: #f2f2f7; --card: #fff; --line: #d1d1d6; --txt: #000; --sub: #6e6e73; --blue: #007aff; --btn: #f9f9f9; --btn-rim: #fff;
+  --float: 0 3px 28px rgba(0,0,0,.16); --vv-h: 100dvh; color-scheme: light dark; }
+@media (prefers-color-scheme: dark) { :root { --bg: #000; --card: #1c1c1e; --line: #38383a; --txt: #fff; --sub: #98989d; --blue: #0a84ff;
+  --btn: #3a3a3c; --btn-rim: rgba(255,255,255,.16); --float: 0 3px 28px rgba(0,0,0,.7); } }
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { margin: 0; height: 100%; overflow: hidden; background: var(--bg); color: var(--txt); font: 17px -apple-system, system-ui, sans-serif; }
+.frame { position: fixed; inset: 0 0 auto 0; height: var(--vv-h); display: grid; grid-template-rows: auto 1fr; }
+.bar { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px; min-height: 52px; padding: 0 max(12px, env(safe-area-inset-right)) 0 max(12px, env(safe-area-inset-left));
+  padding-top: env(safe-area-inset-top); background: var(--bg); border-bottom: .5px solid var(--line); }
+.bar h1 { font-size: 17px; font-weight: 600; margin: 0; grid-column: 2; text-align: center; white-space: nowrap; }
+.bar h1 small { display: block; font-size: 12px; font-weight: 400; color: var(--sub); }
+.cap { justify-self: end; grid-column: 3; display: inline-flex; background: var(--btn); border: .5px solid var(--btn-rim); box-shadow: var(--float);
+  border-radius: 20px; padding: 2px; }
+.cap button { border: 0; background: none; color: var(--blue); font: inherit; font-size: 15px; min-width: 40px; height: 36px; border-radius: 18px; padding: 0 8px; }
+.cap button.on { background: rgba(0,122,255,.15); font-weight: 600; }
+#rolle { overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; min-height: 0; position: relative; }
+#rolle::after { content: ''; display: block; height: 120px; }
+.wrap { max-width: 760px; margin: 0 auto; padding: 0 max(16px, env(safe-area-inset-right)) 0 max(16px, env(safe-area-inset-left)); }
+.intro { padding: 14px 2px 4px; color: var(--sub); font-size: 15px; line-height: 1.4; } .intro b { color: var(--txt); }
+.box { background: var(--card); border-radius: 12px; margin: 12px 0; padding: 4px 14px; }
+.box h2 { font-size: 17px; margin: 10px 0 6px; }
+.kv { display: flex; gap: 12px; padding: 7px 0; border-top: .5px solid var(--line); font-size: 15px; line-height: 1.35; }
+.kv .k { color: var(--sub); width: 92px; flex: none; font-weight: 600; } .kv .v { flex: 1; }
+.ende { text-align: center; color: var(--sub); font-size: 15px; padding: 20px 0 0; }
+svg.i { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; display: block; }
+.rund { background: var(--btn); border: .5px solid var(--btn-rim); box-shadow: var(--float); color: var(--blue); }
+.knopf { width: 44px; height: 44px; border-radius: 50%; padding: 0; display: grid; place-items: center; }
+/* Heute und B: senkrechte Kapsel unten rechts */
+.fab { position: fixed; right: max(16px, env(safe-area-inset-right)); bottom: calc(16px + env(safe-area-inset-bottom)); display: flex; flex-direction: column;
+  border-radius: 22px; z-index: 4; transition: opacity .2s; }
+.fab button { width: 44px; height: 48px; border: 0; background: none; color: var(--blue); padding: 0; display: grid; place-items: center; }
+.fab.aus { opacity: 0; pointer-events: none; }
+.fab button[hidden] { display: none; }
+/* A: ein runder Knopf unten in der Mitte */
+.einzel { position: fixed; left: 50%; bottom: calc(16px + env(safe-area-inset-bottom)); transform: translate(-50%, 0); z-index: 4;
+  transition: opacity .2s, transform .2s; }
+.einzel.aus { opacity: 0; transform: translate(-50%, 12px); pointer-events: none; }
+/* C: Schnellroll-Griff rechts */
+.spur { position: fixed; right: max(2px, env(safe-area-inset-right)); width: 44px; z-index: 4; pointer-events: none; }
+.griff { position: absolute; right: 2px; width: 34px; height: 48px; border-radius: 17px; display: grid; place-items: center; pointer-events: auto;
+  touch-action: none; transition: opacity .25s; }
+.griff svg { width: 18px; height: 18px; }
+.spur.aus .griff { opacity: 0; pointer-events: none; }
+.blase { position: absolute; right: 46px; white-space: nowrap; font-size: 15px; font-weight: 600; padding: 8px 12px; border-radius: 16px;
+  transform: translateY(-50%); opacity: 0; transition: opacity .15s; color: var(--txt); }
+.spur.zieht .blase { opacity: 1; }
+[hidden] { display: none !important; }
+</style></head><body>
+<div class="frame">
+  <div class="bar"><h1>Japan 2026<small>Muster A-37</small></h1>
+    <div class="cap" id="wahl"><button data-v="heute">Heute</button><button data-v="a">A</button><button data-v="b">B</button><button data-v="c">C</button></div></div>
+  <div id="rolle"><div class="wrap" id="inhalt"></div></div>
+</div>
+<div class="fab rund" id="fab" hidden><button id="toTop" aria-label="Nach oben"></button><button id="toEnd" aria-label="Ans Ende"></button></div>
+<button class="einzel rund knopf aus" id="einzel" aria-label="Ans Ende" hidden></button>
+<div class="spur aus" id="spur" hidden><div class="blase rund" id="blase"></div><div class="griff rund" id="griff" aria-label="Schnell rollen"></div></div>
+<script>
+const ICONS = {
+  'arrow-up-to-line': '<path d="M5 3h14"/><path d="m18 13-6-6-6 6"/><path d="M12 7v14"/>',
+  'arrow-down-to-line': '<path d="M12 17V3"/><path d="m6 11 6 6 6-6"/><path d="M19 21H5"/>',
+  'arrow-down': '<path d="M12 5v14"/><path d="m19 12-7 7-7-7"/>',
+  'arrow-up': '<path d="m5 12 7-7 7 7"/><path d="M12 19V5"/>',
+  'chevrons-up-down': '<path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/>'
+};
+const ic = n => `<svg class="i" viewBox="0 0 24 24">${ICONS[n]}</svg>`;
+const $ = id => document.getElementById(id);
+const V = ['heute', 'a', 'b', 'c'].includes(new URLSearchParams(location.search).get('v')) ? new URLSearchParams(location.search).get('v') : 'heute';
+const TEXT = {
+  heute: '<b>Heute:</b> Kapsel unten rechts mit ‚Nach oben‘ und ‚Ans Ende‘ – immer beide, sobald es etwas zu rollen gibt.',
+  a: '<b>Variante A (wie Gemini):</b> ein runder Knopf unten in der Mitte. Der Pfeil zeigt in die Richtung, in die du zuletzt gewischt hast. Ganz in der Nähe des Ziels verschwindet er.',
+  b: '<b>Variante B:</b> Kapsel unten rechts wie heute, aber nur mit dem Pfeil, der etwas bewirkt – oben nur ‚Ans Ende‘, am Ende nur ‚Nach oben‘.',
+  c: '<b>Variante C (wie Apple Fotos):</b> beim Wischen erscheint rechts ein Griff. Halte und ziehe ihn – die Blase zeigt den Tag. Nach 1,5 s Ruhe blendet er aus.'
+};
+// Inhalt: 40 Tageskästen wie im Reiselogbuch
+const ORTE = ['Tokio', 'Hakone', 'Kyoto', 'Nara', 'Osaka', 'Hiroshima', 'Miyajima', 'Kanazawa', 'Takayama', 'Nikko'];
+const WT = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'];
+const tage = [];
+let html = `<p class="intro">${TEXT[V]}</p>`;
+for (let i = 0; i < 40; i++) {
+  const d = new Date(2026, 2, 2 + i), ort = ORTE[Math.floor(i / 4) % ORTE.length];
+  const datum = `${WT[d.getDay()]} ${String(d.getDate()).padStart(2, '0')}.${String(d.getMonth() + 1).padStart(2, '0')}.`;
+  tage.push(`Tag ${i + 1} · ${datum}`);
+  html += `<div class="box" data-tag="${i}"><h2>Tag ${i + 1} · ${datum}2026</h2>
+    <div class="kv"><span class="k">Ort</span><span class="v">${ort}</span></div>
+    <div class="kv"><span class="k">Programm</span><span class="v">${i % 3 ? 'Spaziergang durch die Altstadt, Mittagessen in einer kleinen Nudelküche, am Abend Onsen.' : 'Anreise mit dem Shinkansen, Gepäck ins Quartier, erster Rundgang und Abendessen am Fluss. Unterwegs viele Fotos vom Fuji.'}</span></div>
+    <div class="kv"><span class="k">Ausgaben</span><span class="v">${(42 + i * 7.5).toFixed(2).replace('.', ',')} €</span></div></div>`;
+}
+html += '<p class="ende">Ende des Reiselogbuchs</p>';
+$('inhalt').innerHTML = html;
+for (const b of $('wahl').children) { b.classList.toggle('on', b.dataset.v === V); b.onclick = () => { location.search = '?v=' + b.dataset.v; }; }
+
+const rolle = $('rolle');
+const max = () => rolle.scrollHeight - rolle.clientHeight;
+const PLATZ = 120;                          // Platzhalter unter dem Inhalt (wie .rolle::after) zählt nicht zum Ende
+const ende = () => Math.max(0, max() - PLATZ);
+const nah = () => rolle.clientHeight / 2;   // A und B: Ziel näher als eine halbe Bildschirmhöhe → kein Pfeil dafür
+const zu = y => rolle.scrollTo({ top: y, behavior: 'smooth' });
+const vv = window.visualViewport;
+const setVv = () => document.documentElement.style.setProperty('--vv-h', (vv ? vv.height : innerHeight) + 'px');
+setVv(); vv?.addEventListener('resize', setVv); addEventListener('resize', setVv);
+
+// Heute und B
+const fab = $('fab');
+if (V === 'heute' || V === 'b') {
+  fab.hidden = false;
+  $('toTop').innerHTML = ic('arrow-up-to-line'); $('toEnd').innerHTML = ic('arrow-down-to-line');
+  $('toTop').onclick = () => zu(0); $('toEnd').onclick = () => zu(ende());
+}
+function fabZeigen() {
+  if (fab.hidden) return;
+  const y = rolle.scrollTop, roll = max() > 1;
+  if (V === 'heute') { fab.classList.toggle('aus', !roll); return; }
+  const oben = y > nah(), unten = ende() - y > nah();
+  $('toTop').hidden = !oben; $('toEnd').hidden = !unten;
+  fab.classList.toggle('aus', !roll || (!oben && !unten));
+}
+
+// A
+const ein = $('einzel');
+let richtung = 1, letztes = 0;              // 1 = nach unten (Ans Ende), −1 = nach oben
+if (V === 'a') { ein.hidden = false; ein.innerHTML = ic('arrow-down'); ein.onclick = () => zu(richtung > 0 ? ende() : 0); }
+function einzelZeigen() {
+  if (ein.hidden) return;
+  const y = rolle.scrollTop;
+  if (Math.abs(y - letztes) > 2) richtung = y > letztes ? 1 : -1;
+  letztes = y;
+  let r = richtung;
+  const weit = d => (d > 0 ? ende() - y : y) > nah();
+  if (!weit(r)) r = -r;                     // am Ziel angekommen: der Knopf zeigt in die andere Richtung, falls dort weit genug
+  const zeigen = max() > 1 && weit(r);
+  if (zeigen) richtung = r;
+  ein.classList.toggle('aus', !zeigen);
+  const icon = richtung < 0 ? 'arrow-up' : 'arrow-down';
+  if (ein.dataset.icon !== icon) { ein.dataset.icon = icon; ein.innerHTML = ic(icon); }
+  ein.setAttribute('aria-label', richtung < 0 ? 'Nach oben' : 'Ans Ende');
+}
+
+// C
+const spur = $('spur'), griff = $('griff'), blase = $('blase');
+let ruhe = 0, zieht = false;
+if (V === 'c') { spur.hidden = false; griff.innerHTML = ic('chevrons-up-down'); }
+function spurLage() {
+  const r = rolle.getBoundingClientRect();
+  spur.style.top = (r.top + 8) + 'px'; spur.style.height = Math.max(0, r.height - 16 - 34) + 'px';   // unten Abstand zur Home-Leiste
+}
+function griffZeigen() {
+  if (spur.hidden) return;
+  spurLage();
+  const h = spur.clientHeight - griff.offsetHeight, a = ende() ? Math.min(1, rolle.scrollTop / ende()) : 0;
+  griff.style.top = (a * h) + 'px';
+  blase.style.top = (a * h + griff.offsetHeight / 2) + 'px';
+  const tag = [...rolle.querySelectorAll('.box')].find(b => b.offsetTop + b.offsetHeight > rolle.scrollTop + 4);
+  blase.textContent = tag ? tage[tag.dataset.tag] : tage[0];
+  if (max() <= 1) { spur.classList.add('aus'); return; }
+  spur.classList.remove('aus');
+  clearTimeout(ruhe);
+  if (!zieht) ruhe = setTimeout(() => spur.classList.add('aus'), 1500);
+}
+let start = 0, startTop = 0;
+griff.addEventListener('pointerdown', e => {
+  zieht = true; spur.classList.add('zieht'); clearTimeout(ruhe);
+  griff.setPointerCapture(e.pointerId); start = e.clientY; startTop = parseFloat(griff.style.top) || 0; e.preventDefault();
+});
+griff.addEventListener('pointermove', e => {
+  if (!zieht) return;
+  const h = spur.clientHeight - griff.offsetHeight;
+  const t = Math.max(0, Math.min(h, startTop + e.clientY - start));
+  rolle.scrollTop = h ? t / h * ende() : 0;
+});
+const loslassen = () => { if (!zieht) return; zieht = false; spur.classList.remove('zieht'); griffZeigen(); };
+griff.addEventListener('pointerup', loslassen); griff.addEventListener('pointercancel', loslassen);
+
+function alles() { fabZeigen(); einzelZeigen(); griffZeigen(); }
+rolle.addEventListener('scroll', () => requestAnimationFrame(alles), { passive: true });
+addEventListener('resize', () => requestAnimationFrame(alles));
+alles();
+if (V === 'c') { spur.classList.remove('aus'); clearTimeout(ruhe); ruhe = setTimeout(() => spur.classList.add('aus'), 2500); }
+</script>
+</body></html>
