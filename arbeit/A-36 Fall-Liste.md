@@ -447,3 +447,39 @@ Dateien `arbeit/A-36 Messungen/2026-10-21 13-00 Muster 9 iPhone.txt` (hoch) und 
 
 - Was Safari zwischen zwei Bildern zeigt, kennt die Prüfung nur aus dem Modell – deshalb Muster und Messung am Gerät.
 - Drehen mit offener Tastatur, iPad hoch und Zifferntastatur hoch sind nicht gemessen → Muster bzw. Prüfliste.
+
+## 8. Fall-Liste für den Bau AppDesign 4.28.1 / Reiselogbuch 3.26.1 (Sitzung 0024, 21.10.2026) – wartet auf das Ja
+
+Grundlage: Muster 9 (6h bis 6n), am Gerät 10 von 10 still. Was gebaut wird, steht in `v4/ui.js` (Abschnitt ‚Tastatur und sichtbarer
+Bereich‘, ersetzt `fieldIntoView` und den 350-ms-Ausgleich im Fenster) und `v4/design.css`; die App ändert nur die Fassung (4.28.0 →
+4.28.1). Jede Prüfung läuft im Safari-Modell (S-1 bis S-9) in Chromium und WebKit und ist **gegen 3.26.0 rot** (P-60 nachgebaut,
+`--gegenprobe`). Lagen: iPhone hoch, iPhone quer, iPad quer, **iPad hoch (neu im Modell, Tastatur 340 px gemessen)**; hell und dunkel
+ändern die Lage nicht (voller Lauf wie immer). Daten: Reise mit 30 Tagen (lang) und mit 1 Tag (Inhalt kürzer als der Bildschirm).
+
+| Nr. | Fall | ui.js / design.css | Erwartet | Prüfung |
+|---|---|---|---|---|
+| B-1 | **Erstes Antippen** eines Felds unter der künftigen Tastatur, Tastatur zu – im Fenster (Ort, Programm) und im Inhalt (Gesamtausgaben, Ziffern) | im `focusin` das Feld in die obere Hälfte rollen (Platz unten reichlich, danach knapp), dann **synchron `blur()` + `focus({ preventScroll: true })`**, nur wenn gerollt wurde | Safari verschiebt nie (offsetTop 0), Kopfzeile, Suchzeile, Seitenleiste, Fensterkopf in **jedem Bild** ± 1; Fokus bleibt, Tastatur offen | `checkTastaturStill` (T-1, T-2), alle vier Lagen |
+| B-2 | Feld liegt schon in der oberen Hälfte (Suche oben, Feld oben im Fenster) | nichts – Berührung bleibt bei Safari, kein neuer Fokus | nichts bewegt sich | `checkTastaturStill` (T-3) |
+| B-3 | Safaris Klick nach dem Rollen trifft etwas anderes (z. B. eine Schaltfläche, die jetzt unter dem Finger liegt) | diesen einen Klick unterdrücken (≤ 1 s, nur wenn er nicht das Feld trifft) | Schaltfläche wird nicht ausgelöst | neu `checkKlickNachRollen` |
+| B-4 | **Rückstellung (S-9):** Feld im Inhalt, Safari setzt den Rollbereich beim Erscheinen der Tastatur zurück | im scroll-Ereignis des Rollbereichs sofort zurück (solange das Feld den Fokus hat, ≤ 1,5 s); eigenes Wischen und Fokus weg beenden sie, der eigene neue Fokus nicht | Feld springt in keinem Bild (> 60 px zwischen zwei Bildern) | `checkTastaturStill` (Feld in jedem Bild), Gesamtausgaben alle vier Lagen |
+| B-5 | **Feld wechseln** bei offener Tastatur (anderes Feld antippen, ∧ ∨) | in die obere Hälfte rollen, **kein** neuer Fokus (Tastatur flackert sonst) | Leisten ± 1, neues Feld über der Tastatur | `checkTastaturStill` (T-5) |
+| B-6 | **Tastatur-Taste (iPad)** schließt nur die Tastatur | beim Übergang offen → zu gibt das Feld den Fokus ab; erneutes Antippen ist ein erstes (B-1) | erneutes Antippen still (vorher 213 / 340 px) | neu Fall ‚Tastatur-Taste, erneut‘ (S-6c) |
+| B-7 | **Platz unter dem Inhalt** nach dem Schließen | bei geschlossener Tastatur und ohne Feld mit Fokus im Bereich schrumpft er beim Rollen auf das Nötige (nur padding, nie scrollTop) | ↑ dann ↓: Ende liegt wie beim 1. Mal | neu Fall ‚wieder ans Ende‘ (gegen Muster 8 rot) |
+| B-8 | **↑/↓ bei offener Tastatur** (6n) | beim Schließen den Rollstand nur halten, wenn kein Rollen der App läuft | **ein** Antippen genügt: Inhalt oben bzw. am Ende | neu Fall ‚↑ bei offener Tastatur‘ (gegen Muster 9 rot) |
+| B-9 | **iPad-Fenster** beim Öffnen und Schließen der Tastatur | gleitet (0,25 s) in die Mitte des sichtbaren Bereichs und zurück; bleibt oben, solange ein Feld darin den Fokus hat; Höhe wie vor dem Antippen | links/rechts ± 1 (mittig), Fensterkopf gleitet ohne Sprung | `checkTastaturStill` (T-6) |
+| B-10 | iPad mit offener Tastatur gilt nicht als iPhone | `isPhone()`: Höhe ohne Tastatur statt `innerHeight < 500` | iPad-Fenster rutscht nicht an den linken Rand (bisher 40 → 0 px) | T-6 (`dlinks`) |
+| B-11 | **Kapsel** (Nach oben / Ans Ende) bei offener Tastatur | `--vv-bottom = innerHeight + scrollY − offsetTop − height` (S-3) | Unterkante ≥ 10 px über der Tastatur | T-7 + `checkFab` |
+| B-12 | **iPhone quer: niedrige Leisten** (neue allgemeine Regel, Ja 0022) | Kopfzeile, Suchzeile und Fensterkopf 32 statt 44 px (wie iOS quer); Schaltflächen darin als Kapsel ≥ 28 px (R-3.1 erlaubt 28 in Kapseln) | Suche und Fensterfelder liegen in der oberen Hälfte über der Tastatur; hoch und iPad unverändert 44 | **eine** neue Prüfung in `hig.mjs` (Höhe quer 32, sonst 44); Regel in Designrichtlinie 15.3/15.8 und Regelkatalog Thema 2 |
+| B-13 | Erstes Antippen ohne gemerkte Tastaturhöhe (neues Gerät, neue Lage) | Schätzung je Gerät, Lage, Tastaturart (gemessen 403/376/276/232/428/340); nach dem ersten Öffnen gemerkt | Feld nicht unter der Tastatur | T-9, leerer Speicher |
+| B-14 | Wischen über ein Feld (kein Fokus) | nichts gerollt, nichts gemerkt | Inhalt folgt nur dem Finger | T-11 |
+| B-15 | Inhalt kürzer als der Bildschirm (1 Tag), Feld unten | Platz unten reicht zum Rollen in die obere Hälfte | wie B-1 | B-1 mit 1 Tag |
+| B-16 | **Messmodus** (15.21) zeichnet die neuen Schritte auf | Zeilen ‚neu fokussiert‘, ‚zurückgestellt‘, ‚klick unterdrückt‘, ‚platz weg‘ | Gerätemessung zeigt, was ui.js getan hat; ein Wert, der im selben ms zurückgestellt wird, zählt nicht als Sprung (6n, iPad) | `tests/messung.mjs` |
+| B-17 | Drehen bei offener Tastatur, Zifferntastatur iPad hoch | – | Leisten nach dem Drehen ± 1 | nur am Gerät (Prüfliste) |
+
+**Dazu:**
+- `tests/safari.mjs`: S-8 als **bestätigt** (6i, 6k), S-9 mit Quelle; iPad hoch als Lage. Safari-Eigenheiten **S-6 bis S-9 mit Quelle in
+  Designrichtlinie 13** (gelten für alle Apps); R-4.5 im Regelkatalog ergänzt (Feld still über der Tastatur, Leisten in jedem Bild still).
+- Reiselogbuch `tests/ablauf-tastatur-still.mjs`: die Fälle aus `A-36 Muster prüfen.mjs` übernommen (vier Lagen, ‚wieder ans Ende‘,
+  ‚↑ bei offener Tastatur‘, Tastatur-Taste, Wechsel); prüft dann gegen die Fassung 4.28.1. Das Muster bleibt als Werkzeug in `arbeit/`
+  (Gegenproben G-1 bis G-6 am Muster).
+- Nur am Gerät (Prüfliste): Gefühl beim Antippen (Inhalt rollt einmal, wie in Apps von Apple), Tastatur flackert nicht, B-17.
