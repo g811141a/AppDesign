@@ -1,6 +1,6 @@
 # AppDesign – Backlog (allgemeine Themen)
 
-**Stand 23.10.2026** · Aktuelle Version: AppDesign 4.30.1
+**Stand 23.10.2026** · Aktuelle Version: AppDesign 4.30.2
 
 Allgemeine Themen, die alle Apps betreffen. App-Themen stehen im Backlog der jeweiligen App.
 Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.4.
@@ -11,14 +11,14 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Prio | Thema | bereit seit |
 |---|---|---|---|
-| A-67 | 1 | **Korrektur P-64/5 / P-65 – Zurückwischen bricht ab (Messung 23.10.2026):** 22 von 25 Versuchen bricht Safari ab (`pointercancel`), über den Tageskästen **und** daneben – sobald der Finger 10–21 px senkrecht abweicht, beginnt Safari wegen `touch-action: pan-y` zu rollen. Die Prüfung übersah es (Maus; Safari-Modell ohne späten Abbruch). **Vorschlag Korrektur AppDesign 4.30.2 / Reiselogbuch 3.28.2** (Fall-Liste `arbeit/A-67 Fall-Liste.md` 3, K-1 bis K-7): Safari-Modell, feste Prüfung F-23 nach der Messung (rot gegen 3.28.1), ist die Geste aktiv, verhindert ui.js `touchmove`; Messung zeigt `touchmove`; dieselbe Lücke beim Griff und am iPad hoch. **Wartet auf Ja** | 23.10.2026 |
+| – | – | zurzeit nichts gesammelt | – |
 
 
 ## 1. Auf iPad und iPhone prüfen
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| – | – | zurzeit nichts zu prüfen | – |
+| A-67 | 1 | **Zurückwischen am Gerät bestätigen (P-66 im Reiselogbuch 3.28.2):** über einem Tageskasten, daneben, leicht schräg; senkrecht rollt weiter; Seitenleiste am iPad hoch. In der Nachbildung behoben (F-23), am Gerät zu bestätigen | prüfen |
 
 ## 2. Weitere Themen (in Klärung)
 
@@ -57,6 +57,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Thema | Version | Datum |
 |---|---|---|---|
+| E-75 | **A-67 Korrektur:** ist die Wischgeste entschieden, verhindert ui.js `touchmove` – Safari rollt nicht mehr dazwischen (Messung P-65: Abbruch ab 10 px senkrecht); Safari-Modell S-10 `safariWischen`, Prüfung `checkNavigation` F-23 (rot gegen 4.30.1); Messung zeigt `touchmove` | AppDesign 4.30.2 · Reiselogbuch 3.28.2 | 23.10.2026 |
 | E-74 | **A-67 Schritt 1 und A-66:** Messmodus zeichnet Berührungen (Zeiger, touchcancel mit Ziel) und die Entscheidungen der Gestenstelle auf (15.21, `checkNavigation` F-22); `checkNavigation` zeichnet bis zum Ende der Bewegung auf, unter Volllast belegen die Keyframes die Bewegung (A-66) | AppDesign 4.30.1 · Reiselogbuch 3.28.1 | 22.10.2026 |
 | E-73 | Geprüft **P-64 (Reiselogbuch 3.28.0): alles ok bis auf /5** (Nutzer 22.10.2026) – **A-37 abgeschlossen**; A-61 Teil 1 bis auf das Zurückwischen über einem Tageskasten (→ A-67) | AppDesign 4.30.0 · Reiselogbuch 3.28.0 | 22.10.2026 |
 | E-72 | **A-37 B+C und A-61 Teil 1 ‚Überall‘ gebaut** (Fall-Listen `arbeit/A-37 Fall-Liste.md`, `arbeit/A-61 Teil 1 Fall-Liste.md`): R-3.2 ergänzt, R-7.5 neu; **A-45** (ziehbarer Index am Rand) damit entschieden und erledigt – der Schnellroll-Griff ist dieser Index. Wartet auf P-64 | AppDesign 4.30.0 · Reiselogbuch 3.28.0 | 22.10.2026 |

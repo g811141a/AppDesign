@@ -4,6 +4,7 @@
 // Einbinden im Prüfskript der App:  import { checkSearch, checkDialogHead } from '../../AppDesign/tests/ablauf.mjs';
 //                                   fehler.push(...await checkSearch(page, { term: 'Sydney' }));
 import { ROLL, rolle, rollstand } from './pruefe.mjs';
+import { safariWischen } from './safari.mjs';
 const wait = (p, ms = 250) => p.waitForTimeout(ms);
 // R-2.3 (seit 4.25.1, A-24): beim Tippen bleibt das Suchfeld dasselbe Element und behält den Fokus – sonst schließt Safari am
 // iPhone die Tastatur kurz und Kopf- und Suchzeile zittern bei jedem Buchstaben. Tippt Buchstabe für Buchstabe (und löscht
@@ -1099,7 +1100,9 @@ export async function checkPrint(p, { print, mehr = 2, where = '' } = {}) {
 // zurück (F-4), kurz und schnell (F-5), aus der Mitte (F-6); senkrecht und schräg (F-7), im waagrecht rollenden Bereich (F-8), nach
 // links, auf Knöpfen und der Kapsel (F-9) kein Zurück; Wischen während ‚Ans Ende‘ weich rollt (F-10); Drehen beim Ziehen (F-14);
 // offenes Menü (F-15); Tastatur offen (F-16); langes Drücken, dann ziehen (F-17); Escape bzw. VoiceOver-‚Zurück‘ (F-20); je Bild nur
-// transform und opacity, keine langen Bildlücken (F-21); die Messung zeichnet Berührungen und Gesten-Entscheidungen auf (F-22, seit 4.30.1). iPad hoch (Start mit offenem Eintrag, Seitenleiste weg): vom Rand und aus der
+// transform und opacity, keine langen Bildlücken (F-21); die Messung zeichnet Berührungen und Gesten-Entscheidungen auf (F-22, seit 4.30.1);
+// mit Berührung nach Safari (S-10): Zurückwischen mit 10–14 px senkrechter Abweichung über einem antippbaren Kasten (kasten) und
+// daneben geht zurück, senkrecht rollt weiter (F-23, seit 4.30.2, A-67 – die gemessenen Züge aus P-65). iPad hoch (Start mit offenem Eintrag, Seitenleiste weg): vom Rand und aus der
 // Mitte herein, folgt dem Finger mit wachsender Abdunkelung (F-11), nach links auf Seitenleiste bzw. Abdunkelung, panel-left, Abdunkelung
 // antippen (F-12), Drehen (F-14), Menü (F-15), Escape. iPad quer: Wischen ändert nichts (F-13). ‚Bewegung reduzieren‘ (Seite mit
 // reducedMotion: 'reduce'): Überblenden statt Schieben (F-19). Mit der Maus nachgebildet (Playwright kennt kein Wischen mit dem Finger).
@@ -1107,7 +1110,7 @@ export async function checkPrint(p, { print, mehr = 2, where = '' } = {}) {
 // waagrecht: Bereich mit eigenem waagrechtem Rollen; knopf: Schaltfläche in der Leiste; menue: öffnet ein Menü; suche: öffnet die Suche
 // (Feld bekommt den Fokus); seitenKnopf: panel-left.
 export async function checkNavigation(p, { eintrag, titel, zurueck = '#back', waagrecht = null, knopf = null, menue = null, suche = null,
-  seitenKnopf = '[data-side-toggle]', where = '' } = {}) {
+  seitenKnopf = '[data-side-toggle]', kasten = null, where = '' } = {}) {
   const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}R-7.5 ${t}`);
   const lage = () => p.evaluate(() => {
     const H = document.documentElement, side = document.getElementById('side'), app = document.getElementById('app');
@@ -1298,6 +1301,43 @@ export async function checkNavigation(p, { eintrag, titel, zurueck = '#back', wa
     l = await lage();
     if (l.nav || l.liste === l.inhalt) E(`F-22 nach dem Abbruch halb (Liste ${l.liste}, Inhalt ${l.inhalt}, ${l.nav || 'keine Bewegung'})`);
     if (l.liste) await oeffne();
+    // F-23 (seit 4.30.2, A-67, Messung P-65): Berührung nach Safari (safari.mjs S-10) – ab 10 px senkrechter Abweichung rollt Safari
+    // und bricht die Berührung ab, wenn die Geste touchmove nicht verhindert. Die gemessenen Züge: waagrecht 136/217/289 px bei 14/14/13 px
+    // senkrecht in 180/130/250 ms, über einem Kasten und daneben (oben im Inhalt) – alle gehen zurück; senkrecht rollt Safari weiter.
+    const zug = (dx, dy, n, ms) => Array.from({ length: n }, (_, i) => [Math.round(dx * (i + 1) / n), Math.round(dy * (i + 1) / n), Math.round(ms / n)]);
+    const zuege = [['136/14 in 180 ms', zug(136, 14, 12, 180)], ['217/14 in 130 ms', zug(217, 14, 10, 130)], ['289/-13 in 250 ms', zug(289, -13, 11, 250)]];
+    // daneben: eine Stelle im oberen Teil des Inhalts außerhalb der Kästen, an der die Gestenstelle zuständig ist (gemessen: dt im Kopf)
+    const orte = [['neben den Kästen', async () => {
+      await p.evaluate(() => document.querySelector('#app > .rolle')?.scrollTo(0, 0)); await wait(p, 150);
+      const xy = await p.evaluate(([w, h, k]) => { for (let y = h * 0.15; y < h * 0.6; y += 12) for (let x = w * 0.08; x < w * 0.4; x += 12) {
+        const t = document.elementFromPoint(x, y); if (!t || (k && t.closest(k))) continue;
+        if (navKandidat({ button: 0, isPrimary: true, target: t })) return [x, y]; } return null; }, [w, h, kasten]);
+      if (!xy) E('F-23 Vorbereitung: keine Stelle neben den Kästen, an der zurückgewischt werden kann');
+      return xy;
+    }]];
+    if (kasten) orte.unshift([`über ${kasten}`, async () => {
+      await p.evaluate(s => document.querySelector(s)?.scrollIntoView({ block: 'center' }), kasten); await wait(p, 150);
+      const b = await box(kasten);
+      if (!b || b.b > h || b.t < 0) { E(`F-23 Vorbereitung: ${kasten} nicht sichtbar`); return null; }
+      return [Math.min(b.x, w * 0.4), b.y];
+    }]);
+    for (const [wo, ort] of orte) for (const [wie, schritte] of zuege) {
+      const xy = await ort(); if (!xy) break;
+      const r = await safariWischen(p, xy[0], xy[1], schritte); await ruhig(); await wait(p, 100);
+      await keinTippen(`F-23 ${wo} ${wie}`);
+      l = await lage();
+      if (!l.liste || l.inhalt) E(`F-23 Zurückwischen mit Berührung ${wo} (${wie}): ${r.abgebrochen ? 'Safari rollt und bricht ab (pointercancel)' : 'nicht zurück'} – die Seite federt zurück (Ziel ${r.ziel}, A-67)`);
+      if (l.liste) await oeffne();
+    }
+    // K-5: die Messung zeigt, ob Safari das Rollen noch erlaubt (‚touchmove verhindert‘ nach der Entscheidung)
+    { const xy = await orte.at(-1)[1](); if (xy) {
+      await p.evaluate(() => messStart({ app: 'Prüfung' })); await safariWischen(p, xy[0], xy[1], zuege[0][1]); await ruhig(); await wait(p, 100);
+      const mz = await p.evaluate(() => { messAus(); const z = mess.zeilen; mess = null; return z; });
+      if (!mz.some(x => x.endsWith('! touchmove verhindert'))) E('F-23 Messung ohne Zeile ‚touchmove verhindert‘ (A-67)');
+      if ((await lage()).liste) await oeffne(); } }
+    const senk = await safariWischen(p, w * 0.3, h * 0.7, zug(4, -120, 10, 160)); await ruhig(); await wait(p, 100);
+    if (!senk.abgebrochen || !senk.gerollt) E(`F-23 senkrecht mit Berührung rollt nicht (gerollt ${senk.gerollt} px) – vor der Entscheidung darf nichts das Rollen verhindern`);
+    await offen('F-23 senkrecht gewischt');
     // F-20: Escape (VoiceOver ‚Zurück‘) geht zurück
     await p.evaluate(() => document.activeElement?.blur?.());
     await p.keyboard.press('Escape'); await ruhig(); await wait(p, 100);
@@ -1357,6 +1397,12 @@ export async function checkNavigation(p, { eintrag, titel, zurueck = '#back', wa
   if (l.nav) E(`F-14 nach dem Drehen beim Ziehen läuft noch ${l.nav}`);
   await p.setViewportSize({ width: w, height: h }); await wait(p, 500);
   await da(false, 'F-14 Drehen beim Ziehen und zurück');
+  // F-23 (seit 4.30.2, A-67): Seitenleiste mit Berührung nach Safari hereinwischen, 14 px senkrechte Abweichung – sie kommt
+  { const r = await safariWischen(p, w * 0.35, h * 0.6, Array.from({ length: 12 }, (_, i) => [Math.round(400 * (i + 1) / 12), Math.round(14 * (i + 1) / 12), 15]));
+    await ruhig(); await wait(p, 100); await keinTippen('F-23 Seitenleiste mit Berührung');
+    l = await lage(); if (!l.seite) E(`F-23 Seitenleiste mit Berührung hereinwischen: ${r.abgebrochen ? 'Safari rollt und bricht ab' : 'kommt nicht'} (A-67)`);
+    if (l.seite) { await p.mouse.click(w - 40, h * 0.5); await ruhig(); await wait(p, 100); } }
+  await da(false, 'F-23 danach Abdunkelung antippen');
   // F-20: Escape schließt die darübergelegte Seitenleiste
   await ziehe(w * 0.35, h * 0.85, w * 0.95, h * 0.85);
   await p.keyboard.press('Escape'); await ruhig(); await wait(p, 100);

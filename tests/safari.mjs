@@ -212,3 +212,42 @@ export async function safariModell(p, ansicht, { leisten = { bar: '.nb, .pnav', 
     }, true);
   }, { werte, leisten, links, auto });
 }
+
+// S-10 (seit 4.30.2, A-67, Messung P-65 ‚messung-2026-10-23-0633.txt‘, iOS 26.6.2, Home-Bildschirm, 25 Züge): Berührung, wo der
+// Browser senkrecht rollen darf (touch-action auto, manipulation oder pan-y bis hinauf) – Safari beginnt zu rollen, sobald der Finger
+// seit dem Aufsetzen **10 px senkrecht** abweicht (gemessen 10–21, 20 von 22 bei 10–16), auch mitten in einer waagrechten Geste
+// (bis 289 px waagrecht), und nimmt der Seite den Finger: pointercancel (Lage 0 0), danach rollt der Bereich mit dem Finger;
+// touchmove kommt weiter, ist aber nicht mehr verhinderbar. Hat die Seite touchmove bis dahin verhindert, rollt Safari nicht.
+// Playwright kennt in WebKit keine Berührung mit Bewegung – die Ereignisse werden in der Seite nachgebildet (isTrusted false).
+// safariWischen(p, x, y, schritte): Finger bei x/y aufsetzen, schritte = [[dx, dy, ms], …] (Lage seit dem Aufsetzen, Zeit seit dem
+// vorigen Schritt), loslassen. Ergebnis { abgebrochen, gerollt } (gerollt = Änderung des Rollstands in px).
+export const WISCH_SCHWELLE = 10;
+export async function safariWischen(p, x, y, schritte, { schwelle = WISCH_SCHWELLE } = {}) {
+  return p.evaluate(async ({ x, y, schritte, schwelle }) => {
+    const warte = ms => new Promise(r => setTimeout(r, ms));
+    const t = document.elementFromPoint(x, y) || document.body;
+    const senkrecht = [];
+    for (let e = t; e; e = e.parentElement) senkrecht.push(getComputedStyle(e).touchAction);
+    const darf = senkrecht.every(a => /auto|manipulation|pan-y/.test(a));
+    let roll = t;
+    while (roll && roll !== document.documentElement && !(/(auto|scroll)/.test(getComputedStyle(roll).overflowY) && roll.scrollHeight > roll.clientHeight)) roll = roll.parentElement;
+    roll ||= document.scrollingElement;
+    const r0 = roll.scrollTop, id = 4067;
+    const zeiger = (typ, px, py) => t.dispatchEvent(new PointerEvent(typ, { pointerId: id, pointerType: 'touch', isPrimary: true, clientX: px, clientY: py,
+      buttons: typ === 'pointerup' || typ === 'pointercancel' ? 0 : 1, bubbles: true, cancelable: typ !== 'pointercancel', composed: true }));
+    const finger = (typ, cancelable) => { const e = new Event(typ, { bubbles: true, cancelable, composed: true }); t.dispatchEvent(e); return e; };
+    zeiger('pointerdown', x, y); finger('touchstart', true);
+    let rollt = false, ab = 0, letzt = [0, 0];
+    for (const [dx, dy, ms] of schritte) {
+      await warte(ms);
+      letzt = [dx, dy];
+      if (!rollt) zeiger('pointermove', x + dx, y + dy);
+      const tm = finger('touchmove', !rollt);
+      if (!rollt && darf && !tm.defaultPrevented && Math.abs(dy) >= schwelle) { rollt = true; ab = dy; zeiger('pointercancel', 0, 0); }
+      if (rollt) roll.scrollTop = r0 - (dy - ab);
+    }
+    finger('touchend', !rollt);
+    if (!rollt) zeiger('pointerup', x + letzt[0], y + letzt[1]);
+    return { abgebrochen: rollt, gerollt: Math.round(roll.scrollTop - r0), ziel: t.tagName.toLowerCase() + [...t.classList].map(c => '.' + c).join('') + (t.id ? '#' + t.id : '') };
+  }, { x, y, schritte, schwelle });
+}
