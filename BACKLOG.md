@@ -1,6 +1,6 @@
 # AppDesign – Backlog (allgemeine Themen)
 
-**Stand 22.10.2026** · Aktuelle Version: AppDesign 4.30.0
+**Stand 22.10.2026** · Aktuelle Version: AppDesign 4.30.1
 
 Allgemeine Themen, die alle Apps betreffen. App-Themen stehen im Backlog der jeweiligen App.
 Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.4.
@@ -11,21 +11,19 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Prio | Thema | bereit seit |
 |---|---|---|---|
-| A-67 | 1 | **Korrektur P-64/5 – Zurückwischen über einem Tageskasten federt zurück (Nutzer 22.10.2026):** am Gerät (iPhone, Home-Bildschirm-App) geht das Zurückwischen neben den Kästen, über einem Kasten federt die Seite zurück; in der Prüfung (`checkNavigation` F-6, Maus nachgebildet) geht es. Vermutung: Safari bricht die Berührung über dem antippbaren Kasten (`role=button`, `tabindex`, Maps-Links) ab – `pointercancel`, die Gestenstelle federt zurück. **Vorschlag (0 Nr. 1, 20):** Korrekturversion **AppDesign 4.30.1 / Reiselogbuch 3.28.1**: Messmodus zeichnet Zeiger- und Touch-Ereignisse (pointerdown/move/up/cancel, touchcancel mit Ziel) und die Entscheidungen der Gestenstelle auf; dazu A-66. Dann Messung am Gerät, Ablauf als feste Prüfung (rot), beheben in der nächsten Korrektur. **Ja des Nutzers 22.10.2026 – Bau in Sitzung ‚Reiselogbuch 0031‘** | 22.10.2026 |
-| A-66 | 1 | Prüfung ‚Bewegung reduzieren‘ unter Last (siehe 2.) – kommt mit A-67 | 22.10.2026 |
+| – | – | zurzeit nichts gesammelt | – |
 
 
 ## 1. Auf iPad und iPhone prüfen
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| – | – | zurzeit nichts zu prüfen | – |
+| A-67 | 1 | **Messung am Gerät (P-65 im Reiselogbuch 3.28.1):** Zurückwischen über einem Tageskasten mit laufender Messung, Datei teilen. Schritt 1 gebaut (4.30.1: Messmodus zeichnet Berührungen und Gesten-Entscheidungen auf, Fall-Liste `arbeit/A-67 Fall-Liste.md`). **Schritt 2:** mit der Messdatei den Ablauf als feste Prüfung nachbauen (rot gegen 3.28.1), beheben, Korrektur 4.30.2 / 3.28.2 nach Ja | wartet auf Messung |
 
 ## 2. Weitere Themen (in Klärung)
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| A-66 | 1 | **Prüfung ‚Bewegung reduzieren‘ unter Last (Fund beim Veröffentlichen von 4.30.0):** `checkNavigation` zeichnet Öffnen und Zurück 1 s lang auf; unter der Volllast des Gesamtlaufs beginnt die Überblendung in WebKit manchmal erst später – F-19 meldete zweimal ‚überblendet nicht‘ (viermal gleichzeitig einzeln: grün). Aufzeichnen, bis die Bewegung zu Ende ist (mindestens 0,6 s, höchstens 3 s). Nur die Prüfung, die App ist nicht betroffen; kommt in die nächste AppDesign-Version | bereit |
 | A-64 | 2 | **Doppelte Leerzeichen in Eingabefeldern (Nutzer 22.10.2026):** zwei Leerzeichen hintereinander werden zu einem – beim Tippen und Einfügen. So macht es Apple: mit dem Kurzbefehl ‚.‘ (Einstellungen → Allgemein → Tastatur) macht iOS aus zwei Leerzeichen ‚. ‘, bevor die App sie sieht – die Regel greift also bei ausgeschaltetem Kurzbefehl, beim Einfügen und mit externer Tastatur. Zu klären: mehrzeilige Felder, Zeilenanfang, Suchfeld; als Ergänzung von R-5.2 mit Prüfung | offen |
 | A-65 | 2 | **Automatische Großschreibung zurücknehmen (Nutzer 22.10.2026):** macht R-5.2 einen Buchstaben groß (z. B. nach einem Punkt) und der Nutzer ändert ihn in einen kleinen, bleibt er klein – die App schreibt ihn nicht wieder groß (wie iOS nach einer Korrektur von Hand). Vor dem Bau zuerst den Ablauf als feste Prüfung nachbauen (0 Nr. 1); vermutlich `autoCapital`/`capWanted` in ui.js | offen |
 | A-40 | 3 | **Prüfungen für die Regeln ohne automatische Prüfung (aus A-39, Nutzer 21.10.2026):** G-1 bis G-19 im Regelkatalog (Designrichtlinie allgemein 17) – je Regel eine allgemeine Prüfung in `tests/` oder bewusst ‚Gerät/Sicht‘ lassen; Code, eigener Auftrag | offen |
@@ -59,6 +57,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Thema | Version | Datum |
 |---|---|---|---|
+| E-74 | **A-67 Schritt 1 und A-66:** Messmodus zeichnet Berührungen (Zeiger, touchcancel mit Ziel) und die Entscheidungen der Gestenstelle auf (15.21, `checkNavigation` F-22); `checkNavigation` zeichnet bis zum Ende der Bewegung auf, unter Volllast belegen die Keyframes die Bewegung (A-66) | AppDesign 4.30.1 · Reiselogbuch 3.28.1 | 22.10.2026 |
 | E-73 | Geprüft **P-64 (Reiselogbuch 3.28.0): alles ok bis auf /5** (Nutzer 22.10.2026) – **A-37 abgeschlossen**; A-61 Teil 1 bis auf das Zurückwischen über einem Tageskasten (→ A-67) | AppDesign 4.30.0 · Reiselogbuch 3.28.0 | 22.10.2026 |
 | E-72 | **A-37 B+C und A-61 Teil 1 ‚Überall‘ gebaut** (Fall-Listen `arbeit/A-37 Fall-Liste.md`, `arbeit/A-61 Teil 1 Fall-Liste.md`): R-3.2 ergänzt, R-7.5 neu; **A-45** (ziehbarer Index am Rand) damit entschieden und erledigt – der Schnellroll-Griff ist dieser Index. Wartet auf P-64 | AppDesign 4.30.0 · Reiselogbuch 3.28.0 | 22.10.2026 |
 | E-71 | Geprüft **P-63 (Reiselogbuch 3.27.0): alles ok** (Nutzer 22.10.2026) – **A-63 Paket C abgeschlossen**; /9 echte Ränder iPhone 16/17 Pro vom Home-Bildschirm gemessen: hoch 0/34/0/0, quer 0/20/62/62 (`tests/messungen/2026-10-22 iPhone … Ränder.txt`) – wie die Prüfwerte, nur oben hoch 0 statt der strengen 62; die Prüfung bleibt streng | AppDesign 4.29.0 | 22.10.2026 |

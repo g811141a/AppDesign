@@ -3,6 +3,29 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.30.1 – 22.10.2026
+
+AppDesign 4.30.1 · Designrichtlinie allgemein 4.30.1 · Zusammenarbeit allgemein 2.18.0 · geprüft mit Reiselogbuch 3.28.1
+
+**Korrektur: A-67 Schritt 1 (Messung ‚Zurückwischen über einem Tageskasten‘, P-64/5) und A-66** (dein Ja vom 22.10.2026, Fall-Liste
+`arbeit/A-67 Fall-Liste.md`). Erst messen, dann nachbauen (0 Nr. 20): diese Version behebt den Fehler noch nicht, sie zeichnet ihn
+auf. Prüfpunkt im Reiselogbuch: P-65.
+
+- **15.21 Messmodus – Berührungen und Gesten (A-67):** die Messung zeichnet zusätzlich jede Berührung auf – ‚zeiger down/move/up/
+  cancel‘ mit Lage, Art (touch, mouse, pen) und Ziel, ‚touchcancel‘ mit der Zahl der Finger; das Ziel ohne Texte als id bzw.
+  `tag.klasse[rolle]`, dazu das antippbare Element darum (‚in …‘) und die nächste id (‚@…‘). Dazu die Entscheidungen der
+  Gestenstelle (R-7.5): ‚nav kandidat‘, ‚nav verworfen‘ (Richtung, gehalten, offen), ‚nav aktiv‘, ‚nav fertig‘, ‚nav zurück
+  gefedert‘, ‚nav abgebrochen‘ mit Weg und Tempo. Damit zeigt die Messung am Gerät, ob Safari die Berührung über dem Tageskasten
+  abbricht (`pointercancel`) oder die Geste aus einem anderen Grund zurückfedert. Aus, solange nicht gestartet, wie bisher.
+- **Prüfung `checkNavigation` F-22 (neu):** Zurückwischen, zurückfedern und ein nachgebildeter Abbruch (`pointercancel` und
+  `touchcancel`) während einer Messung – jede neue Zeile muss in der Datei stehen, der Titel nicht. Gegenprobe: ohne die neuen
+  Zeilen 24 Meldungen F-22 (Chromium).
+- **A-66 – ‚Bewegung reduzieren‘ unter Last:** `checkNavigation` zeichnet Öffnen, Zurück und panel-left bis zum Ende der Bewegung auf
+  (mindestens 0,6 s, höchstens 3 s) statt fest 1 s. **Beim Bau gefunden:** unter Volllast zeigte WebKit beim Öffnen gar kein Bild
+  mitten in der Bewegung (nur Anfang und Ziel, F-1 und F-19 rot) – jetzt belegen dann die Keyframes der Web-Animation das Schieben
+  bzw. Überblenden. Viermal gleichzeitig (3 × WebKit, 1 × Chromium) grün.
+- **Designrichtlinie allgemein 4.30.1:** 15.21 Berührungen und Gesten, Grenze beim Abspielen.
+
 ## 4.30.0 – 22.10.2026
 
 AppDesign 4.30.0 · Designrichtlinie allgemein 4.30.0 · Zusammenarbeit allgemein 2.18.0 · geprüft mit Reiselogbuch 3.28.0

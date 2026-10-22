@@ -1,6 +1,6 @@
 # Designrichtlinie allgemein
 
-**Version 4.30.0** · Stand 22.10.2026
+**Version 4.30.1** · Stand 22.10.2026
 
 Allgemeine Gestaltungs- und Bedienregeln für alle Web-Apps von g811141a auf iPad und iPhone. Die Datei liegt im Design-Repo
 **AppDesign** (g811141a/AppDesign); ihre Versionsnummer ist die des Repos. Die Komponenten sind dort einmal programmiert und
@@ -860,16 +860,24 @@ Regel). In AppDesign ist jede Komponente einmal programmiert (`v4/design.css`, `
   eigener Bereiche, Fokus (id), Lage. Ereignisse sofort mit den Werten im Augenblick: focus/blur, Eingabe (Länge), Tippen (id),
   scroll, resize, Drehen, `visualViewport` resize/scroll, Neuaufbau (`setHtml`), und was ui.js bei der Tastatur tut: ‚neu
   fokussiert <id>‘, ‚klick unterdrückt <id>‘, ‚zurückgestellt <id> alt → neu‘, ‚platz weg <id>‘.
+- **Berührungen und Gesten:** ‚zeiger down|move|up|cancel x y Art Ziel‘ (Lage in px, Art touch/mouse/pen, ‚neben‘ für einen
+  weiteren Finger; move nur bei gedrücktem Zeiger), ‚touchcancel Finger Ziel‘. Ziel ohne Texte: id bzw. Tag mit Klassen und Rolle,
+  ‚in …‘ das antippbare Element darum, ‚@…‘ die nächste id (z. B. ‚span in div.box.day[button] @app‘). Dazu die Entscheidungen der
+  Gestenstelle (R-7.5): ‚nav kandidat <art>‘ bzw. ‚nav kein kandidat [eigen]‘, ‚nav verworfen richtung|gehalten|offen dx dy‘,
+  ‚nav aktiv <art> dx dy‘, ‚nav fertig|zurück gefedert|abgebrochen weg W tempo T‘ (Weg als Anteil der Breite, Tempo in px/ms),
+  ‚nav abgebrochen vor der entscheidung‘, ‚nav abgebrochen drehen‘ – sie stehen vor der Zeigerzeile desselben Augenblicks.
 - **Grenzen:** aus, solange nicht gestartet (kein `requestAnimationFrame`, keine Hörer); keine Texte; nichts gespeichert (neu laden
   verwirft); Ende nach 5 Minuten oder 20 000 Zeilen.
 - **Technisch:** `ui.js` – `messungMenuItems({ app, teile, rollen })` ins Menü der Seitenleiste; `teile`/`rollen` = Spalte →
-  Selektor (erstes sichtbares Element). Prüfung `checkMessung` (Fall-Liste `arbeit/A-27 Fall-Liste.md`, F1–F12).
+  Selektor (erstes sichtbares Element). Prüfung `checkMessung` (Fall-Liste `arbeit/A-27 Fall-Liste.md`, F1–F12), Berührungen und
+  Gesten `checkNavigation` F-22 (`arbeit/A-67 Fall-Liste.md`).
 - **Abspielen:** Messdateien liegen in `tests/messungen/` (nur Zahlen, Längen und ids, keine Texte) und laufen in den Prüfungen
   der App mit: `tests/abspielen.mjs` – `lies(text)` (Kopf, Spalten, Zeilen; Fehler mit Zeilennummer), `ansicht(m)` (Größe und
   Darstellung des Geräts), `spieleAb(p, m, { ziele, woerter, bis, nachSchritt })` spielt Tippen, Eingaben und das Schließen der
   Tastatur nach, Safari meldet sichtbare Höhe und `offsetTop` genau wie gemessen (`__safari.setze`). Am Ende jedes Schritts:
   Kopf- und Suchzeile ± 1 px und Fokus wie gemessen; der Inhalt hängt an den eigenen Daten und wird nicht verglichen. Gegenprobe:
-  dieselbe Messung um 20 px verschoben wird rot. Grenze: Wischen zeichnet die Messung nicht auf – dafür bleibt das Safari-Modell.
+  dieselbe Messung um 20 px verschoben wird rot. Grenze: Berührungen und Gesten stehen in der Messung, nachgespielt werden sie nicht –
+  dafür bleibt das Safari-Modell.
   Fall-Liste `arbeit/A-26 A-31 A-34 Fall-Liste.md` (2.3, M-1 bis M-6).
 
 ### 15.22 Rahmen und Rollbereich
@@ -1091,6 +1099,7 @@ R-2.3 (15.2), R-4.4 (6, 15.8, HIG 9), R-5.3 (8), R-5.4 (15.12), R-5.5 (A-14), R-
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 4.30.1 | 22.10.2026 | Korrektur | **A-67 Schritt 1 und A-66:** 15.21 – der Messmodus zeichnet Berührungen (Zeiger, touchcancel mit Ziel) und die Entscheidungen der Gestenstelle (R-7.5) auf, für die Messung ‚Zurückwischen über einem Tageskasten‘ (P-64/5); Prüfung `checkNavigation` F-22, F-1/F-2/F-19 zeichnen bis zum Ende der Bewegung auf |
 | 4.30.0 | 22.10.2026 | Neben | **A-37 B+C und A-61 Teil 1 (Variante ‚Überall‘):** R-3.2 ergänzt – Kapsel ‚Nach oben / Ans Ende‘ nur mit wirksamen Pfeilen, unten fest, bei offenem Fenster und im Druck nicht zu sehen; neu der Schnellroll-Griff mit Blase und Marken `data-marke` (4, 15.1, 15.17, 15.22; A-45 damit entschieden); neu R-7.5 Navigation und Gesten – Seitenwechsel als Schieben, Zurückwischen von überall, Seitenleiste am iPad hoch per Wischen, Vorrang an einer Stelle (15.4, 15.17, 13 Wischgesten); Prüfungen `checkFab` mit `checkGriff`, neu `checkNavigation` |
 | 4.29.0 | 22.10.2026 | Neben | **A-63 Paket C und A-42:** neu R-1.7 sichere Ränder (Variablen `--safe-…`, Prüfung mit Gerätewerten; iPad-Fenster, Menüs und Sprechblasen halten Abstand), R-5.6 ⓧ in einzeiligen Feldern (15.11), R-5.7 Safaris eingebauter Schalter (15.15, G-18 ohne Schaltergröße); R-2.3 Suche ohne Akzente (15.2); 1 Grundsatz ‚kein UI-Framework‘; 13 sichere Ränder und Schalter; HIG-Checkliste 10–12 |
 | 4.28.2 | 21.10.2026 | Korrektur | **A-39 Konsolidierung (keine neue Regel):** Regeln nur noch im Katalog (17), die Abschnitte 1–16 verweisen darauf; Geschichte (‚seit …‘, A-/T-/P-Nummern, ‚Nutzer …‘, ‚vorher …‘) nur noch hier; Katalog mit Spalte ‚Bau‘ statt ‚ersetzt‘ (Inhalt unter ‚Zuordnung alt → neu‘), neu die Liste ‚Regeln ohne automatische Prüfung‘ G-1 bis G-19 (Prüfungen dafür: Backlog A-40); HIG-Checkliste 16 als Zuordnung HIG-Punkt → Regel, dazu die bewusste Abweichung ‚Nach oben / Ans Ende auch am iPhone‘ aus der App-Richtlinie; 11 nimmt die Versionsregeln der Zusammenarbeit (bisher §8) auf; 12: die App-Richtlinie enthält nur Abweichungen, alles andere App-Eigene steht in PROMPT.md (Nutzer 21.10.2026, F-5); 13 heißt ‚Safari und iPad – technische Erfahrungen‘ und nennt nur den heutigen Stand; überholte Stellen dem gebauten Stand angeglichen (F-7): Hinweise 14 px, Zusatzzeilen 13 px (3, HIG 2), Startliste mit [plus \| search \| ellipsis] (15.17) |
