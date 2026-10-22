@@ -122,7 +122,18 @@ function onLongPress(btn, onLong, onTap) {
 // die App (Reiselogbuch: das ganze Reiselogbuch; gezeigt werden dann die Tage mit mindestens einem Wort).
 // Seit 4.29.0 (A-63 C2) ohne Akzente wie Apple: ‚Zurich‘ findet ‚Zürich‘ und umgekehrt – verglichen wird ohne Akzentzeichen
 // (Unicode-Zerlegung, Zeichen der Klasse ‚Mark‘ entfernt); ß, ø, æ sind eigene Buchstaben und bleiben.
-const fold = t => String(t ?? '').toLocaleLowerCase('de').normalize('NFD').replace(/\p{M}/gu, '');
+// Gemerkt je Text: beim Tippen werden dieselben Texte bei jedem Buchstaben wieder verglichen (F-11: 30 Reiselogbücher unter 50 ms)
+const foldMerk = new Map();
+function fold(t) {
+  const s = String(t ?? '');
+  let f = foldMerk.get(s);
+  if (f === undefined) {
+    f = /^[\x00-\x7F]*$/.test(s) ? s.toLowerCase() : s.toLocaleLowerCase('de').normalize('NFD').replace(/\p{M}/gu, '');
+    if (foldMerk.size > 5000) foldMerk.clear();
+    foldMerk.set(s, f);
+  }
+  return f;
+}
 const QUOTES = /["„“”]/g;
 function searchWords(term) {
   const out = [];

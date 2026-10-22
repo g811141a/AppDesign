@@ -23,7 +23,8 @@ Regeln) **und die Regeln A-41, A-42.** Prüfpunkt im Reiselogbuch: P-63.
   (‚Ränder o/u/l/r‘, S-8); `abspielen.mjs` liest sie.
 - **R-2.3 Suche ohne Akzente:** ‚Zurich‘ findet ‚Zürich‘ und umgekehrt, ‚cafe creme‘ findet ‚Café Crème‘; markiert wird das ganze Wort
   wie im Text (auch mit Umbruchstellen, Emojis, Akzent als eigenes Zeichen); ß, ø, æ bleiben eigene Buchstaben (`fold`,
-  `mitAkzent` in ui.js; `checkSearchWords` A-1 bis A-8).
+  `mitAkzent` in ui.js, verglichene Texte werden gemerkt – die Liste mit 30 Reiselogbüchern bleibt unter 50 ms je Tastendruck;
+  `checkSearchWords` A-1 bis A-8).
 - **R-5.6 ⓧ in einzeiligen Feldern:** ein Baustein in ui.js/design.css (`.fclear`) für alle einzeiligen Textfelder – rechts im Feld,
   solange es den Fokus hat und etwas drinsteht; Antippen leert, Fokus und Tastatur bleiben, die App bekommt ein input-Ereignis; rollt
   mit, bleibt nach dem Drehen am Feld; `data-noclear` schaltet es ab (`checkClear` X-1 bis X-8).
