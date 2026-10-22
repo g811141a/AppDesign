@@ -1,6 +1,6 @@
 # Übergabe an die nächste Sitzung
 
-**Stand 22.10.2026** · geschrieben in der Sitzung ‚Reiselogbuch 0028‘ (Ende) – Aufbau nach Zusammenarbeit allgemein 2.5.
+**Stand 22.10.2026** · geschrieben in der Sitzung ‚Reiselogbuch 0029‘ (Ende) – Aufbau nach Zusammenarbeit allgemein 2.5.
 **Claude liest diese Datei zu Beginn jeder Sitzung zuerst** (0 Nr. 15); die Arbeitsumgebung steht in der AppDesign-`CLAUDE.md`.
 
 ## 1. Lagebild
@@ -12,42 +12,46 @@
 | Zusammenarbeit allgemein | **2.18.0** | `README - Zusammenarbeit allgemein.md` |
 | ReiseLogBuch-Import (privat) | 1.2.2 | g811141a/ReiseLogBuch-Import |
 
-- **Chatnummer:** die nächste Sitzung heißt **Reiselogbuch 0029**; die danach 0030.
-- **Sitzungsgröße:** Übergabe ab etwa **300.000** Token (0 Nr. 13, seit Zusammenarbeit 2.18.0); 0028 endete bei etwa 422.000.
-- **Modell und Aufwand:** Opus 5.5, Aufwand hoch (0028: alle Aufrufe ‚high‘, `CLAUDE_CODE_EFFORT_LEVEL=high`) – prüfen nach 0 Nr. 15.
-- **Offene Prüfpunkte:** keine (P-63 alles ok, 22.10.2026).
-- **AppDesign ‚0. Nächste Version‘:** nichts bereit.
+- **Chatnummer:** die nächste Sitzung heißt **Reiselogbuch 0030**; die danach 0031.
+- **Sitzungsgröße:** Übergabe ab etwa **300.000** Token (0 Nr. 13); 0029 endete bei etwa 230.000.
+- **Modell und Aufwand:** Opus 5.5, Aufwand hoch (0029: alle Aufrufe ‚high‘, `CLAUDE_CODE_EFFORT_LEVEL=high`) – prüfen nach 0 Nr. 15.
+- **Offene Prüfpunkte:** keine.
+- **‚0. Nächste Version‘:** **A-37** und **A-61/1** bereit – **Ja des Nutzers liegt vor** (22.10.2026): AppDesign 4.30.0 /
+  Reiselogbuch 3.28.0.
 - **Erinnerung:** ‚Backlog-Erinnerung (AppDesign und Reiselogbuch)‘ montags 8:58.
 
-## 2. Ergebnisse der Sitzung 0028 – A-63 Paket C, A-41, A-42
+## 2. Ergebnisse der Sitzung 0029 – A-37 und A-61 Teil 1 geklärt
 
-- **AppDesign 4.29.0 / Reiselogbuch 3.27.0** gebaut und veröffentlicht (66 Läufe grün), **P-63 alles ok**. Fall-Liste mit Ergebnis:
-  `arbeit/A-63 Fall-Liste.md`.
-- **R-1.7 sichere Ränder:** `env(safe-area-inset-…)` nur in `--safe-top/-bottom/-left/-right`; Prüfung `safe` (hig.mjs) in jeder
-  gemessenen Ansicht mit Gerätewerten. Gefunden und behoben: iPad-Fenster unter der Home-Leiste, Menü und Sprechblase am iPhone quer,
-  Abgleichbericht quer in Safari nicht ganz rollbar. Echte Ränder (iPhone 402 × 874, Home-Bildschirm): hoch 0/34/0/0, quer
-  0/20/62/62 (`tests/messungen/2026-10-22 …`); der Messmodus nennt sie im Kopf.
-- **R-2.3 Suche ohne Akzente**, **R-5.6 ⓧ in einzeiligen Feldern**, **R-5.7 Safaris Schalter** (Weg b: Safari zeichnet ihn, sonst
-  unser Schalter 51 × 31).
-- **A-41** Zusammenarbeit 2.18.0, **A-42** Designrichtlinie 1 ‚kein UI-Framework‘.
-- **Neue Safari-Eigenheiten in 13:** rechter Innenabstand eines seitlich rollenden Bereichs zählt nicht; eingebauter Schalter.
-- **Gelernt:** `los` brach zweimal ab, weil ich nicht alle betroffenen Prüfungen vorher einzeln laufen ließ (`ablauf-messung` prüft
-  den Kopf der Messung; F-11 in `ablauf-suche-liste` misst die Geschwindigkeit der Suche) – bei Änderungen an Suche oder Messmodus
-  diese beiden vorher einzeln laufen lassen.
+- **A-37 ‚Nach oben / Ans Ende‘: B+C gewählt, allgemeine Regel**, Muster am Gerät abgenommen (inkl. Prüfpunkt 6). Kapsel zeigt nur
+  wirksame Pfeile; dazu Schnellroll-Griff rechts wie Apple Fotos (ab drei Bildschirmhöhen, Bahn bis über die Kapsel, Blase mit
+  `data-marke`). Entscheidet A-45. Fall-Liste `arbeit/A-37 Fall-Liste.md` (F-1 bis F-22), Muster `?v=bc` (`&tage=N` wählbar).
+- **A-61 aufgeteilt:** Teil 1 Navigation (T-4, T-5, T-6, T-35, A-59), Teil 2 Blatt (T-15); **Wischaktionen T-10 erst mit A-30**
+  (Rückgängig; dann wie Apple: Durchwischen löscht sofort).
+- **A-61 Teil 1: Variante Überall gewählt, allgemeine Regel**, Muster abgenommen. Seitenwechsel als Schieben, Zurückwischen am
+  iPhone von überall im Inhalt (iOS 26), am iPad hoch holt Wischen nach rechts von überall die Seitenleiste (Festlegung des
+  Nutzers); nach der Auswahl schließt sie sich weiter (15.4, bestätigt). Fall-Liste `arbeit/A-61 Teil 1 Fall-Liste.md` (F-1 bis
+  F-22), Muster `arbeit/A-61 Teil 1 Muster.html?v=ueberall`.
+- **Gelernt:** Ein Prüfpunkt ist immer ein Handgriff mit erwartetem Ergebnis – keine Entscheidungsfrage (P 6 bei A-37 war nicht
+  prüfbar); jede Festlegung einer Variante ausdrücklich für iPhone **und** iPad nennen (P 9 bei A-61: ‚Überall‘ galt nur am iPhone).
+  github.io ist aus dem Container gesperrt – Pages-Läufe mit `mcp__github__actions_list` prüfen. Muster-Prüfskripte in `arbeit/`
+  laufen aus dem Notizordner mit Verweis `node_modules` → `ReiseLogBuch/tests/node_modules`.
 
 Frühere Sitzungen: `VERLAUF.md` und Versionsgeschichten.
 
 ## 3. Nächster Schritt
 
-1. **A-37** ‚Nach oben / Ans Ende‘ (Prio 2): Muster online https://g811141a.github.io/AppDesign/arbeit/A-37%20Muster.html, Fall-Liste
-   `arbeit/A-37 Fall-Liste.md` – der Nutzer wählt die Variante (Heute · A · B · C oder Kombination); A-45/A-46 und Paket B (A-62)
-   gehören thematisch dazu.
-2. Danach Prio 2: **A-61** Muster ‚Navigation und Gesten‘, **A-43** Barrierefreiheit.
+1. **Bauen: AppDesign 4.30.0 / Reiselogbuch 3.28.0** mit **A-37 B+C** und **A-61 Teil 1 Überall** (Ja liegt vor, 0 Nr. 21). Grundlage:
+   die beiden Fall-Listen (jeder Fall eine automatische Prüfung, Chromium und WebKit, hell und dunkel), Muster als Vorlage für
+   `ui.js`/`design.css`. Regeln: R-3.2 erweitern (`checkFab` für Kapsel und Griff), neue Regel für Navigation und Gesten mit
+   Prüfung; Designrichtlinie 4, 15.1, 15.4, 15.17, 15.22, 13. Im Reiselogbuch `data-marke` an Tageskästen und Abschnitten.
+   Ablauf nach AppDesign-`CLAUDE.md` ‚Veröffentlichen‘; vor `los` alle betroffenen Prüfungen einzeln (besonders `ablauf-iphone`,
+   `kapsel-iphone`, `ablauf-seitenleiste-*`, `ablauf-tastatur-still`, Messmodus). Danach Bericht mit Prüfliste (0 Nr. 11).
+2. Danach Prio 2: **A-61 Teil 2** Muster ‚Blatt‘ (T-15), **A-43** Barrierefreiheit.
 
 ## 4. Danach
 
-A-62 Paket B · A-30 (mit Paket D) · A-32 ‚Problem melden‘ · A-40 Prüfungen für G-1 bis G-19 · A-44 bis A-60 · T-06
-Ausschreibungstexte (Prio 3) · A-01 Startseite (später).
+A-62 Paket B · A-30 (mit Paket D und T-10 Wischaktionen) · A-32 ‚Problem melden‘ · A-40 Prüfungen für G-1 bis G-19 · A-44 bis
+A-60 · T-06 Ausschreibungstexte (Prio 3) · A-01 Startseite (später).
 
 ## 5. Starttext für die neue Sitzung
 
@@ -55,7 +59,7 @@ In der neuen Sitzung müssen **AppDesign** und **ReiseLogBuch** verfügbar sein 
 **ReiseLogBuch-Import** (privat).
 
 ```
-Reiselogbuch 0029 – A-37
+Reiselogbuch 0030 – AppDesign 4.30.0
 
-Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md, dann gezielt die Zusammenarbeit (Abschnitte 0 und 1) und die Überschriften der Designrichtlinien; prüfe Modell und Aufwand (Sitzungsdatei) und hole die Repos g811141a/ReiseLogBuch und g811141a/ReiseLogBuch-Import (privat) dazu, wie in der AppDesign-CLAUDE.md unter ‚Arbeitsumgebung‘. Gib das Lagebild. Dann A-37 ‚Nach oben / Ans Ende‘ (Prio 2) aus BACKLOG.md: Muster arbeit/A-37 Muster.html und Fall-Liste arbeit/A-37 Fall-Liste.md – frag nach der Variante. Danach A-61 und A-43.
+Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md, dann gezielt die Zusammenarbeit (Abschnitte 0 und 1) und die Überschriften der Designrichtlinien; prüfe Modell und Aufwand (Sitzungsdatei) und hole die Repos g811141a/ReiseLogBuch und g811141a/ReiseLogBuch-Import (privat) dazu, wie in der AppDesign-CLAUDE.md unter ‚Arbeitsumgebung‘. Gib das Lagebild. Dann baue AppDesign 4.30.0 / Reiselogbuch 3.28.0 mit A-37 B+C und A-61 Teil 1 Überall (Ja des Nutzers vom 22.10.2026 liegt vor) nach den Fall-Listen arbeit/A-37 Fall-Liste.md und arbeit/A-61 Teil 1 Fall-Liste.md und veröffentliche sie. Danach A-61 Teil 2 und A-43.
 ```

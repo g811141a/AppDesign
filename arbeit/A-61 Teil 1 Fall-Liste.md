@@ -1,6 +1,7 @@
 # A-61 Teil 1 ‚Navigation und Gesten‘ – Apple-Abgleich, Varianten, Fall-Liste
 
-**Stand 22.10.2026** · Sitzung ‚Reiselogbuch 0029‘ · Muster: `arbeit/A-61 Teil 1 Muster.html`
+**Stand 22.10.2026** · Sitzung ‚Reiselogbuch 0029‘ · **gewählt: Überall, allgemeine Regel, Ja zum Bau** (Nutzer 22.10.2026) ·
+Muster: `arbeit/A-61 Teil 1 Muster.html`
 (https://g811141a.github.io/AppDesign/arbeit/A-61%20Teil%201%20Muster.html), Prüfung `arbeit/A-61 Teil 1 Muster prüfen.mjs`
 
 Teil 1 umfasst T-4 Seitenwechsel als Schieben, T-5 Zurückwischen, T-6 Seitenleiste hereinwischen, T-35 Gesten mit Vorrang und
@@ -40,7 +41,11 @@ Gemeinsam: fertig nach halber Breite oder schnellem Wischen (über 0,3 px/ms in 
 und das Rollen haben Vorrang (Entscheidung nach 10 px: deutlich waagerecht – mehr als 1,2 × so weit wie senkrecht – in der
 richtigen Richtung); der Rollstand der Startliste bleibt; ‚Bewegung reduzieren‘ überblendet.
 
-## 4. Fall-Liste (für den Bau, nach der Wahl)
+**Gewählt: Überall** (Nutzer 22.10.2026, alle Prüfpunkte ok). Festlegungen dabei: am iPad hoch holt Wischen nach rechts von
+überall im Inhalt die Seitenleiste (Prüfpunkt 9); nach der Auswahl eines Eintrags schließt sie sich weiter wie heute und wie
+Apple (15.4, bestätigt).
+
+## 4. Fall-Liste Überall (für den Bau)
 
 Jeder Fall wird eine automatische Prüfung (Chromium und WebKit, hell und dunkel), Ausnahmen in der Prüfliste. Im Muster schon
 geprüft: F-1, F-2, F-3, F-4, F-5, F-6, F-7, F-8, F-9 (Teil), F-11, F-12.
@@ -74,4 +79,4 @@ geprüft: F-1, F-2, F-3, F-4, F-5, F-6, F-7, F-8, F-9 (Teil), F-11, F-12.
 
 Gewählte Variante → neue Regel im Katalog (Abschnitt 7 ‚Seitenleiste und Liste‘ bzw. 2) mit Prüfung, Designrichtlinie 15.4,
 15.17, 13 (Safari: Randgeste nur in der Home-Bildschirm-App); Baustein in `ui.js` (eine Gestenstelle für alle Gesten, T-35), dann
-Teil 2 (Blatt). Bau nach dem Ja des Nutzers, gesammelt mit A-37 (0 Nr. 8: höchstens 2 Themen).
+Teil 2 (Blatt). **Bau als AppDesign 4.30.0 / Reiselogbuch 3.28.0 zusammen mit A-37 B+C** (Ja des Nutzers 22.10.2026).
