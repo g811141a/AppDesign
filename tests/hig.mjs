@@ -248,7 +248,7 @@ const found = new Map(), icons = new Map();
       document.querySelectorAll('.side-head, .pnav-head').forEach(h => { if (vis(h) && !h.querySelector('small')) R('R-2.2', 'Anzahl unter dem Titel fehlt'); });
       // R-3.2 Schaltflächen und Suchfelder schweben (außer innerhalb von Kapseln, Menüs, Listen und als Link)
       document.querySelectorAll('button, .searchbox input').forEach(e => {
-        if (!vis(e) || !onTop(e) || e.closest('.grp, .navgrp, .cap, .menu, .pop .btns, #side .side-row, .irow, .fab, .smeta, .chips') || e.matches('.link, .mi, .side-row, .irow, .sclear, .fazit-box, [data-day]')) return;
+        if (!vis(e) || !onTop(e) || e.closest('.grp, .navgrp, .cap, .menu, .pop .btns, #side .side-row, .irow, .fab, .smeta, .chips') || e.matches('.link, .mi, .side-row, .irow, .sclear, .fclear, .fazit-box, [data-day]')) return;
         if (cs(e).boxShadow === 'none') R('R-3.2', `Schaltfläche ohne Schatten (schwebt nicht): ‚${label(e)}‘`);
       });
       // R-10.1 Keine englischen Systemtexte
@@ -370,6 +370,22 @@ const found = new Map(), icons = new Map();
       if (document.documentElement.scrollWidth > innerWidth + 1) R('R-6.3', 'Seite breiter als der Bildschirm');
       // R-2.1 (seit 4.27.0, A-28): Die Seite rollt nie, nur der Inhalt – nach jedem Schritt steht das Fenster bei 0.
       if (Math.round(scrollY) !== 0) R('R-2.1', `Die Seite rollt (scrollY ${Math.round(scrollY)}) – nur der Inhalt darf rollen (Rollbereich .rolle)`);
+      // R-5.7 (seit 4.29.0, A-63 C4): Schalter sind Safaris eingebauter Schalter (Attribut switch, role="switch" – VoiceOver sagt
+      // ‚Schalter‘). Kennt der Browser ihn nicht (alle Prüfbrowser), ist es unser Schalter 51 × 31; kennt er ihn (html.natsw, hier
+      // nachgebildet), zeichnet ihn Safari selbst (appearance nicht none) in Grün (accent-color = --sw-on).
+      document.querySelectorAll('.check.sw input').forEach(e => {
+        if (!vis(e)) return;
+        const name = label(e.closest('label') || e), root = document.documentElement, nat = root.classList.contains('natsw');
+        if (!e.hasAttribute('switch') || e.getAttribute('role') !== 'switch') R('R-5.7', `Schalter ‚${name}‘ ohne switch und role="switch"`);
+        const b = e.getBoundingClientRect();
+        if (!nat && (Math.round(b.width) !== 51 || Math.round(b.height) !== 31)) R('R-5.7', `Schalter ‚${name}‘ ${Math.round(b.width)} × ${Math.round(b.height)} statt 51 × 31`);
+        const gruen = document.createElement('span'); gruen.style.color = 'var(--sw-on)'; e.parentElement.append(gruen);
+        root.classList.add('natsw');
+        const x = cs(e), soll = cs(gruen).color, ap = x.appearance || x.webkitAppearance, ac = x.accentColor;
+        if (!nat) root.classList.remove('natsw');
+        gruen.remove();
+        if (e.hasAttribute('switch') && (ap === 'none' || ac !== soll)) R('R-5.7', `Schalter ‚${name}‘ mit Safaris Schalter nicht im Systemaussehen (appearance ${ap}, accent-color ${ac} statt ${soll})`);
+      });
       // R-10.1 (seit 4.12.0): gleiche Aktion = gleiches Icon – Bezeichnung und Icon jeder sichtbaren Schaltfläche, verglichen in report()
       res.icons = [...document.querySelectorAll('button[aria-label]')].filter(b => vis(b) && b.querySelector('svg.ic')).map(b => [b.getAttribute('aria-label'), b.querySelector('svg.ic').innerHTML.slice(0, 80)]);
       return res;
@@ -378,6 +394,7 @@ const found = new Map(), icons = new Map();
     delete r.icons;
     for (const [k, list] of Object.entries(r)) for (const x of list) note('Regel', { target: 'R-3.1 Antippfläche ', font: 'R-10.2 Schrift ', contrast: 'R-10.2 Kontrast ', quotes: 'R-10.1 Anführungszeichen ', menu: 'R-4.1 Menü: ', rules: '' }[k] + x, where);
     if (schnell) return;
+    await safe(p, where);
     // R-8.1 automatisch: einmal je Seite, wenn eine Seitenleiste da ist und nichts darüber offen ist (nur iPad).
     if (!rotating && !sideChecked.has(p) && await p.evaluate(() => !!document.getElementById('side') && !document.documentElement.classList.contains('phone') && !document.querySelector('.menu, .pop, dialog[open]'))) {
       rotating = true; try { await sideKeep(p, `${where} – Seitenleiste gedreht`); } finally { rotating = false; }
@@ -393,6 +410,66 @@ const found = new Map(), icons = new Map();
         return !a ? null : a.id ? '#' + CSS.escape(a.id) : a.dataset.id ? `.${a.classList[0]}[data-id="${CSS.escape(a.dataset.id)}"]` : null; });
       if (anchor) { rotating = true; try { await rotate(p, anchor, `${where} – gedreht`); } finally { rotating = false; } }
     }
+  }
+
+  // R-1.7 (seit 4.29.0, A-63 S-2 bis S-6): Die Prüfbrowser liefern für env(safe-area-inset-…) immer 0 – deshalb setzt die Prüfung
+  // echte Gerätewerte über die Variablen --safe-… (design.css) und prüft: nichts fest Stehendes (Knopf, Feld, Titel, Kachel) liegt
+  // unter Statusleiste bzw. Dynamic Island, Aussparung oder Home-Leiste; Fenster, Menüs und Sprechblasen (außer dem bildschirmfüllenden
+  // iPhone-Fenster) bleiben ganz innerhalb; Inhalt darf darunter rollen, sein Ende lässt sich aber bis über die Home-Leiste rollen.
+  // Werte: iPhone 16 Pro / 17 Pro (402 × 874) und iPad; oben 62 am iPhone hoch ist streng (vom Home-Bildschirm liegt die Statusleiste
+  // über der App, dann 0) – so bleibt auch Safari mit durchscheinender Statusleiste geprüft. Danach wieder die Werte des Browsers.
+  const SAFE = { 'iPhone hoch': { top: 62, bottom: 34, left: 0, right: 0 }, 'iPhone quer': { top: 0, bottom: 20, left: 62, right: 62 }, iPad: { top: 24, bottom: 20, left: 0, right: 0 } };
+  async function safe(p, where) {
+    const vp = p.viewportSize(), wert = Math.min(vp.width, vp.height) < 500 ? SAFE[vp.width > vp.height ? 'iPhone quer' : 'iPhone hoch'] : SAFE.iPad;
+    // Wie beim Drehen am Gerät: neue Ränder, dann meldet Safari den sichtbaren Bereich neu (Fenster werden neu platziert)
+    const setze = v => p.evaluate(v => { const r = document.documentElement.style;
+      for (const k of ['top', 'bottom', 'left', 'right']) v ? r.setProperty('--safe-' + k, v[k] + 'px') : r.removeProperty('--safe-' + k);
+      window.visualViewport?.dispatchEvent(new Event('resize')); }, v);
+    await setze(wert); await p.waitForTimeout(120); await ruhe(p);
+    const bad = await p.evaluate(s => {
+      const W = innerWidth, H = innerHeight, out = [], cs = e => getComputedStyle(e);
+      const vis = e => { const b = e.getBoundingClientRect(), c = cs(e); return b.width > 0 && b.height > 0 && c.visibility !== 'hidden' && c.display !== 'none' && +c.opacity > 0 && b.bottom > 0 && b.top < H && b.right > 0 && b.left < W; };
+      const label = e => Array.from(((e.id ? '#' + e.id + ' ' : '') + (e.getAttribute('aria-label') || e.textContent || e.placeholder || e.className || e.tagName.toLowerCase())).trim().replace(/\s+/g, ' ')).slice(0, 40).join('');
+      const zonen = [['oben (Statusleiste, Dynamic Island)', 0, 0, W, s.top], ['unten (Home-Leiste)', 0, H - s.bottom, W, H], ['links (Aussparung)', 0, 0, s.left, H], ['rechts (Aussparung)', W - s.right, 0, W, H]].filter(z => z[3] > z[1] && z[4] > z[2]);
+      const rollt = (e, achse) => { for (let a = e.parentElement; a && a !== document.documentElement; a = a.parentElement) { const c = cs(a);
+        if (achse === 'y' ? /auto|scroll/.test(c.overflowY) && a.scrollHeight > a.clientHeight + 1 : /auto|scroll/.test(c.overflowX) && a.scrollWidth > a.clientWidth + 1) return true; } return false; };
+      const gemeldet = new Set();
+      document.querySelectorAll('button, a[href], input:not([type=hidden]):not([type=file]), textarea, select, label, h1, h2, h3, small, .pnav-title, .side-row, .irow, .bnote, .bhint').forEach(e => {
+        if (!vis(e) || e.closest('#printout')) return;
+        const b = e.getBoundingClientRect();
+        for (const [n, x1, y1, x2, y2] of zonen) {
+          const ix1 = Math.max(b.left, x1), iy1 = Math.max(b.top, y1), ix2 = Math.min(b.right, x2), iy2 = Math.min(b.bottom, y2);
+          if (ix2 - ix1 < 1 || iy2 - iy1 < 1) continue;
+          const h = document.elementFromPoint((ix1 + ix2) / 2, (iy1 + iy2) / 2);
+          if (!h || !(h === e || e.contains(h) || h.contains(e))) continue;   // verdeckt (z. B. von der Leiste) – nicht zu sehen
+          if (rollt(e, /oben|unten/.test(n) ? 'y' : 'x')) continue;          // Inhalt darf darunter rollen
+          const k = label(e) + n; if (gemeldet.has(k)) continue; gemeldet.add(k);
+          out.push(`‚${label(e)}‘ liegt ${Math.round(/oben|unten/.test(n) ? iy2 - iy1 : ix2 - ix1)} px ${n}`);
+        }
+      });
+      // Fenster, Menüs, Sprechblasen ganz innerhalb (das iPhone-Fenster füllt den Bildschirm – sein Kopf und Inhalt halten Abstand)
+      document.querySelectorAll('dialog[open], .menu, .pop').forEach(d => {
+        if (!vis(d)) return;
+        const b = d.getBoundingClientRect();
+        if (d.matches('dialog') && b.width >= W - 2) return;
+        const name = d.matches('dialog') ? 'Fenster' : d.matches('.pop') ? 'Sprechblase' : 'Menü';
+        if (b.top < s.top - .5) out.push(`${name} reicht ${Math.round(s.top - b.top)} px unter die Statusleiste`);
+        if (b.bottom > H - s.bottom + .5) out.push(`${name} reicht ${Math.round(b.bottom - H + s.bottom)} px unter die Home-Leiste`);
+        if (b.left < s.left - .5 || b.right > W - s.right + .5) out.push(`${name} reicht in die Aussparung`);
+      });
+      // Inhalt, der unter die Home-Leiste reicht, lässt sich mit seinem Ende bis über sie rollen
+      if (s.bottom) document.querySelectorAll('*').forEach(c => {
+        const x = cs(c); if (!/auto|scroll/.test(x.overflowY) || c.scrollHeight <= c.clientHeight + 1 || !vis(c)) return;
+        const b = c.getBoundingClientRect(), ueber = b.bottom - (H - s.bottom); if (ueber < 1) return;
+        const kinder = [...c.children].filter(k => k.getBoundingClientRect().height > 0); if (!kinder.length) return;
+        const ende = Math.max(...kinder.map(k => k.getBoundingClientRect().bottom)) - b.top + c.scrollTop, rest = c.scrollHeight - ende;
+        if (rest + .5 < ueber) out.push(`Ende von ‚${c.id ? '#' + c.id : '.' + (c.classList[0] || c.tagName.toLowerCase())}‘ lässt sich nicht über die Home-Leiste rollen (${Math.round(ueber - rest)} px fehlen)`);
+      });
+      return out;
+    }, wert);
+    await setze(null); await p.waitForTimeout(120); await ruhe(p);
+    const lage = `${Math.min(vp.width, vp.height) < 500 ? 'iPhone' : 'iPad'}, Ränder ${wert.top}/${wert.bottom}/${wert.left}/${wert.right}`;
+    for (const x of bad) note('Regel', `R-1.7 ${x} (${lage})`, where);
   }
 
   // R-1.1 Gleiche Funktion = gleicher Baustein auf iPad und iPhone: Aufbau (Elemente, Klassen, Scrollbereiche,
@@ -474,5 +551,5 @@ const found = new Map(), icons = new Map();
     for (const [k, where] of found) console.log(`- ${k}\n    ${[...where].slice(0, 3).join(' · ')}${where.size > 3 ? ` · +${where.size - 3}` : ''}`);
     return 1;
   };
-  return { measure, stays, shape, barStill, rotate, sideKeep, note, report };
+  return { measure, stays, shape, barStill, rotate, sideKeep, safe, note, report };
 }

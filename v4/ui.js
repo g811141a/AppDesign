@@ -1,4 +1,4 @@
-// AppDesign 4.28.2 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
+// AppDesign 4.29.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
 // Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/fassung/X.Y.Z/ui.js"></script> (feste Fassung, R-10.3)
 // Seit 4.11.0 (R-10.3): ui.js und design.css immer mit ?v=<AppDesign-Version> einbinden (auch in sw.js) und beim Start
 // prüfen, ob genau diese Fassung geladen ist (AD_VERSION hier, --ad-version in design.css).
@@ -18,7 +18,7 @@
 
 'use strict';
 // Version der Bausteine (R-10.3): die App vergleicht sie beim Start mit der benötigten Fassung.
-const AD_VERSION = '4.28.2';
+const AD_VERSION = '4.29.0';
 /* ---------- Icons ---------- */
 
 // Schaltflächen-Icons aus Lucide (ISC-Lizenz), direkt eingebettet, damit die App offline funktioniert.
@@ -120,25 +120,56 @@ function onLongPress(btn, onLong, onTap) {
 // R-2.3 (seit 4.25.0, A-21): Suche mit mehreren Begriffen wie Mail und Notizen – Leerzeichen trennt Wörter, ein Eintrag passt,
 // wenn alle darin vorkommen (Reihenfolge und Groß/klein egal); „…“ sucht eine genaue Wortfolge. Was ‚ein Eintrag‘ ist, sagt
 // die App (Reiselogbuch: das ganze Reiselogbuch; gezeigt werden dann die Tage mit mindestens einem Wort).
+// Seit 4.29.0 (A-63 C2) ohne Akzente wie Apple: ‚Zurich‘ findet ‚Zürich‘ und umgekehrt – verglichen wird ohne Akzentzeichen
+// (Unicode-Zerlegung, Zeichen der Klasse ‚Mark‘ entfernt); ß, ø, æ sind eigene Buchstaben und bleiben.
+// Gemerkt je Text: beim Tippen werden dieselben Texte bei jedem Buchstaben wieder verglichen (F-11: 30 Reiselogbücher unter 50 ms)
+const foldMerk = new Map();
+function fold(t) {
+  const s = String(t ?? '');
+  let f = foldMerk.get(s);
+  if (f === undefined) {
+    f = /^[\x00-\x7F]*$/.test(s) ? s.toLowerCase() : s.toLocaleLowerCase('de').normalize('NFD').replace(/\p{M}/gu, '');
+    if (foldMerk.size > 5000) foldMerk.clear();
+    foldMerk.set(s, f);
+  }
+  return f;
+}
 const QUOTES = /["„“”]/g;
 function searchWords(term) {
   const out = [];
-  const rest = String(term ?? '').toLocaleLowerCase('de').replace(/["„“”]([^"„“”]*)["„“”]/g, (_, w) => {
+  const rest = fold(term).replace(/["„“”]([^"„“”]*)["„“”]/g, (_, w) => {
     if ((w = w.trim().replace(/\s+/g, ' '))) out.push(w);
     return ' ';
   });
   rest.replace(QUOTES, ' ').split(/\s+/).forEach(w => w && out.push(w));
   return [...new Set(out)];
 }
-const findsAll = (text, words) => words.length > 0 && words.every(w => String(text ?? '').toLocaleLowerCase('de').includes(w));
-const findsAny = (text, words) => words.some(w => String(text ?? '').toLocaleLowerCase('de').includes(w));
+const findsAll = (text, words) => { const t = fold(text); return words.length > 0 && words.every(w => t.includes(w)); };
+const findsAny = (text, words) => { const t = fold(text); return words.some(w => t.includes(w)); };
+// Buchstaben mit Akzent je Grundbuchstabe (lateinisch und griechisch), z. B. u → ùúûüũūŭůűųǔǖǘǚǜ… – für die Markierung
+let akzente = null;
+function mitAkzent(ch) {
+  if (!akzente) {
+    akzente = {};
+    for (const [a, b] of [[0xC0, 0x24F], [0x370, 0x3FF], [0x1E00, 0x1EFF], [0x1F00, 0x1FFF]]) for (let cp = a; cp <= b; cp++) {
+      const c = String.fromCodePoint(cp), f = fold(c);
+      if (f.length === 1 && f !== c.toLocaleLowerCase('de')) akzente[f] = (akzente[f] || '') + c;
+    }
+  }
+  return akzente[ch] || '';
+}
 // Alle Wörter im (bereits maskierten) Text gelb markieren, längere zuerst; aneinanderstoßende Stellen sind eine Markierung.
-// Zwischen den Zeichen darf eine unsichtbare Umbruchstelle stehen (lange Wörter, R-6.3).
+// Zwischen den Zeichen darf eine unsichtbare Umbruchstelle stehen (lange Wörter, R-6.3). Seit 4.29.0 trifft jeder Buchstabe
+// auch seine Formen mit Akzent (ü, ú …) und angehängte Zeichen (Akzent als eigenes Zeichen, Emoji-Variante) – markiert wird
+// das ganze Wort, wie es im Text steht.
 function markWords(html, words) {
   if (!words.length) return html;
   const pattern = [...words].sort((a, b) => b.length - a.length)
-    .map(w => (esc(w).match(/&[a-z0-9#]+;|./gsu) || []).map(ch => ch.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('\u200B?')).join('|');
-  return html.replace(new RegExp(pattern, 'gi'), m => `<mark>${m}</mark>`).replaceAll('</mark><mark>', '');
+    .map(w => (esc(w).match(/&[a-z0-9#]+;|./gsu) || []).map(ch => {
+      const v = ch.length === 1 && mitAkzent(ch);
+      return (v ? `[${ch}${v}]` : ch.replace(/[.*+?^${}()|[\]\\\/]/g, '\\$&')) + '\\p{M}*';
+    }).join('\u200B?')).join('|');
+  return html.replace(new RegExp(pattern, 'giu'), m => `<mark>${m}</mark>`).replaceAll('</mark><mark>', '');
 }
 
 // R-2.3 (seit 4.25.1, A-24): Seite neu aufbauen, ohne das Feld mit dem Fokus zu ersetzen. Die App ruft setHtml(el, html) statt
@@ -149,6 +180,8 @@ function markWords(html, words) {
 // bleibt der Rollstand beim Neuaufbau erhalten (wie früher der des Fensters), und ein laufender Schwung reißt nicht ab.
 function setHtml(el, html) {
   if (mess?.an) messEreignis('neuaufbau ' + (el.id || el.className || el.tagName.toLowerCase()));
+  // seit 4.29.0: das ⓧ im Feld (A-63 C3) steht nicht im neuen Inhalt – vorher heraus, danach wieder an das Feld mit Fokus
+  if (el.contains(fxBtn)) { fxBtn.remove(); queueMicrotask(fxZeigen); }
   const f = document.activeElement;
   const tpl = document.createElement('template');
   tpl.innerHTML = html;
@@ -188,6 +221,52 @@ function setHtml(el, html) {
   };
   kids(el, tpl.content);
 }
+
+// Komponente ⓧ in einzeiligen Feldern (seit 4.29.0, A-63 C3, R-5.6) wie Apple (UIKit ‚clearButtonMode = whileEditing‘):
+// solange ein einzeiliges Textfeld den Fokus hat und etwas drinsteht, steht rechts darin ein graues ⓧ (wie im Suchfeld, 44 × 44
+// Antippfläche). Antippen leert das Feld, Cursor und Tastatur bleiben; die App erfährt es über ein input-Ereignis (wie beim
+// Löschen per Taste). Ein Knopf für alle Felder, gleich hinter das Feld gesetzt (rollt mit); abschaltbar mit data-noclear.
+const FX = 'input:is([type=text], [type=email], [type=url], [type=tel]):not([readonly], [disabled], [data-noclear])';
+const fxBtn = document.createElement('button');
+fxBtn.type = 'button'; fxBtn.className = 'fclear'; fxBtn.tabIndex = -1; fxBtn.setAttribute('aria-label', 'Eingabe löschen');
+fxBtn.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="currentColor"/><path d="M15 9l-6 6M9 9l6 6" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>';
+let fxFeld = null, fxTippt = false, fxRahmen = null;
+function fxZeigen() {
+  const f = document.activeElement, an = f?.matches?.(FX) && f.value !== '' ? f : null;
+  if (fxFeld && fxFeld !== an) fxFeld.classList.remove('mitx');
+  // Bezugsrahmen ist das Element um das Feld (sonst läge er womöglich außerhalb des Rollbereichs und das ⓧ rollte nicht mit)
+  if (fxRahmen && fxRahmen !== an?.parentElement) { fxRahmen.style.position = ''; fxRahmen = null; }
+  fxFeld = an;
+  if (!an) { fxBtn.remove(); return; }
+  an.classList.add('mitx');
+  if (fxBtn.previousSibling !== an) an.after(fxBtn);
+  // jedes Mal neu setzen – ein Neuaufbau (setHtml) gleicht die Attribute des Rahmens an und nimmt es wieder weg
+  const pa = an.parentElement;
+  if (fxRahmen === pa || getComputedStyle(pa).position === 'static') { fxRahmen = pa; pa.style.position = 'relative'; }
+  // Lage über den Ursprung des Bezugsrahmens gemessen (gleich, wo das Feld steht – Fenster, Inhalt, Tabelle)
+  fxBtn.style.left = fxBtn.style.top = '0px';
+  const o = fxBtn.getBoundingClientRect(), r = an.getBoundingClientRect();
+  fxBtn.style.left = Math.round(r.right - 44 - o.left) + 'px';
+  fxBtn.style.top = Math.round(r.top + (r.height - 44) / 2 - o.top) + 'px';
+}
+// Antippen: den Fokus nicht abgeben (Tastatur bleibt), leeren, die App benachrichtigen
+fxBtn.addEventListener('pointerdown', e => { fxTippt = true; e.preventDefault(); });
+fxBtn.addEventListener('mousedown', e => e.preventDefault());
+fxBtn.addEventListener('click', e => {
+  e.preventDefault(); fxTippt = false;
+  const f = fxFeld; if (!f) return;
+  f.value = '';
+  if (document.activeElement !== f) f.focus();
+  f.dispatchEvent(new Event('input', { bubbles: true }));
+  fxZeigen();
+});
+document.addEventListener('focusin', fxZeigen);
+document.addEventListener('input', () => queueMicrotask(fxZeigen));
+document.addEventListener('focusout', () => setTimeout(() => { if (!fxTippt) fxZeigen(); }, 0));
+document.addEventListener('pointerup', () => setTimeout(() => { fxTippt = false; }, 400), true);
+window.addEventListener('resize', () => requestAnimationFrame(fxZeigen));
+// Größe des Feldes (Rahmen, nicht Innenraum – das ⓧ ändert den Innenabstand), im nächsten Bild: sonst meldet Safari eine Schleife
+if (window.ResizeObserver) { const ro = new ResizeObserver(() => fxFeld && requestAnimationFrame(fxZeigen)); document.addEventListener('focusin', e => { ro.disconnect(); if (e.target.matches?.(FX)) ro.observe(e.target, { box: 'border-box' }); }); }
 
 /* ---------- Darstellung ---------- */
 
@@ -297,21 +376,29 @@ function showModalQuiet(d) {
 }
 
 // Menü oder Sprechblase unter (bzw. über) der Schaltfläche, im Bildschirm gehalten.
+// R-1.7 (seit 4.29.0, A-63): Abstände von Menüs und Sprechblasen zum Rand – 12 px, mindestens die sicheren Ränder
+// (bei offener Tastatur liegt die Home-Leiste unter ihr)
+function rand12() {
+  const g = safeRand();
+  return { L: Math.max(12, g.left), R: Math.max(12, g.right), T: Math.max(12, g.top), B: Math.max(12, kbOffen() ? 0 : g.bottom) };
+}
 function placeAt(el, anchor, align) {
   // R-4.5/R-8.1: Menü und Sprechblase stehen unter ihrer Schaltfläche und passen immer ganz auf den Bildschirm.
   // Reicht der Platz darunter nicht, scrollt ihr Inhalt darin (erst bei weniger als 200 px Platz darunter
   // öffnen sie nach oben). 'beside': rechts neben dem Eintrag (Kontextmenü in der Seitenleiste), oben bündig.
   el.style.maxHeight = ''; el.style.overflowY = '';   // nach dem Drehen neu messen
+  // Seit 4.29.0 (R-1.7, A-63): Abstand 12 px vom Rand, mindestens aber die sicheren Ränder (Aussparung, Home-Leiste)
+  const { L, R, T, B } = rand12();
   let r = anchor.getBoundingClientRect();
   const fit = room => { if (el.scrollHeight > room) { el.style.maxHeight = room + 'px'; el.style.overflowY = 'auto'; el.style.overscrollBehavior = 'contain'; } };
   let top;
   // Seit 4.10.0: ist neben dem Eintrag kein Platz (iPhone: Kachel so breit wie der Bildschirm), steht das Menü
   // linksbündig unter der Kachel – ganz sichtbar über der Backup-Kachel; dafür wird die Liste nötigenfalls
   // etwas nach oben geschoben (R-4.2).
-  if (align === 'beside' && innerWidth - (r.right - 40) - 12 < el.offsetWidth) {
+  if (align === 'beside' && innerWidth - (r.right - 40) - R < el.offsetWidth) {
     const list = anchor.closest('.side-list'), tile = anchor.closest('#side')?.querySelector('.side-foot .bhint');
     const tr = tile?.getBoundingClientRect();
-    const limit = Math.min(innerHeight, tr && tr.height ? tr.top : innerHeight) - 12;
+    const limit = tr && tr.height ? Math.min(innerHeight - B, tr.top - 12) : innerHeight - B;
     const need = r.bottom + 8 + el.offsetHeight - limit;
     if (need > 0 && list) {
       // Reicht der Scrollweg nicht (wenige Einträge), bekommt die Liste unten so viel Platz, dass sie weit genug rückt.
@@ -327,29 +414,29 @@ function placeAt(el, anchor, align) {
     top = r.bottom + 8;
     // Seit 4.11.0: rückt die Liste trotzdem nicht weit genug (z. B. iOS hält die Liste fest, solange der Finger
     // noch liegt), steht das Menü linksbündig über der Kachel statt hinter der Backup-Kachel (wie Apple).
-    if (top + el.offsetHeight > limit + 2 && r.top - 8 - el.offsetHeight >= 12) top = r.top - 8 - el.offsetHeight;
+    if (top + el.offsetHeight > limit + 2 && r.top - 8 - el.offsetHeight >= T) top = r.top - 8 - el.offsetHeight;
     else fit(limit - top);
-    el.style.left = Math.max(12, Math.min(r.left, innerWidth - el.offsetWidth - 12)) + 'px';
-    el.style.top = Math.max(12, top) + 'px';
+    el.style.left = Math.max(L, Math.min(r.left, innerWidth - el.offsetWidth - R)) + 'px';
+    el.style.top = Math.max(T, top) + 'px';
     return;
   }
   if (align === 'beside') {
     // Neben der Kachel (iPad): nie über bzw. hinter die Backup-Kachel – unten endet das Menü über ihr (R-4.2).
     const tr = anchor.closest('#side')?.querySelector('.side-foot .bhint')?.getBoundingClientRect();
-    const left0 = Math.max(12, Math.min(r.right - 40, innerWidth - el.offsetWidth - 12));
-    const bottom = tr && tr.height && left0 < tr.right ? tr.top - 12 : innerHeight - 12;
-    fit(bottom - 12);
-    top = Math.max(12, Math.min(r.top, bottom - el.offsetHeight));
+    const left0 = Math.max(L, Math.min(r.right - 40, innerWidth - el.offsetWidth - R));
+    const bottom = tr && tr.height && left0 < tr.right ? tr.top - 12 : innerHeight - B;
+    fit(bottom - T);
+    top = Math.max(T, Math.min(r.top, bottom - el.offsetHeight));
   } else {
-    const below = innerHeight - r.bottom - 8 - 12, above = r.top - 8 - 12;
+    const below = innerHeight - r.bottom - 8 - B, above = r.top - 8 - T;
     if (el.scrollHeight <= below || below >= 200 || below >= above) { fit(below); top = r.bottom + 8; }
     else { fit(above); top = r.top - 8 - el.offsetHeight; }
   }
   const w = el.offsetWidth;
   let left = align === 'right' ? r.right - w : align === 'beside' ? r.right - 40 : r.left;
-  left = Math.max(12, Math.min(left, innerWidth - w - 12));
+  left = Math.max(L, Math.min(left, innerWidth - w - R));
   el.style.left = left + 'px';
-  el.style.top = Math.max(12, top) + 'px';
+  el.style.top = Math.max(T, top) + 'px';
 }
 
 // Einträge: { icon, label, sub, red, tick, disabled, act } (tick und icon zusammen: Häkchen vorne, dann Icon und Text) · { …, value, submenu: [Einträge] } (Untermenü ›, eine Ebene)
@@ -393,11 +480,11 @@ function openMenu(anchor, items, align = 'right') {
   const placeSub = () => {
     if (!subMenu) return;
     subMenu.style.maxHeight = ''; subMenu.style.overflowY = '';
-    const room = innerHeight - 24;
+    const { L, R, T, B } = rand12(), room = innerHeight - T - B;
     if (subMenu.scrollHeight > room) { subMenu.style.maxHeight = room + 'px'; subMenu.style.overflowY = 'auto'; }
     const mr = menu.getBoundingClientRect(), br = subItem.getBoundingClientRect(), w = subMenu.offsetWidth;
-    subMenu.style.left = Math.max(12, mr.left - w - 8 >= 12 ? mr.left - w - 8 : Math.min(mr.right + 8, innerWidth - w - 12)) + 'px';
-    subMenu.style.top = Math.max(12, Math.min(br.top, innerHeight - subMenu.offsetHeight - 12)) + 'px';
+    subMenu.style.left = Math.max(L, mr.left - w - 8 >= L ? mr.left - w - 8 : Math.min(mr.right + 8, innerWidth - w - R)) + 'px';
+    subMenu.style.top = Math.max(T, Math.min(br.top, innerHeight - subMenu.offsetHeight - B)) + 'px';
   };
   const place = () => {
     const a = liveAnchor(anchor);
@@ -469,7 +556,7 @@ function choosePop(anchor, html, buttons) {
       if (!visible) { pop.style.left = (innerWidth - pop.offsetWidth) / 2 + 'px'; return; }
       const a = liveAnchor(anchor);
       // Schaltfläche nicht mehr zu sehen: die Abfrage bleibt offen und steht mittig (eine Entscheidung geht nicht verloren).
-      if (!a) { pop.style.left = (innerWidth - pop.offsetWidth) / 2 + 'px'; pop.style.top = Math.max(12, (innerHeight - pop.offsetHeight) / 2) + 'px'; return; }
+      if (!a) { pop.style.left = (innerWidth - pop.offsetWidth) / 2 + 'px'; pop.style.top = Math.max(rand12().T, (innerHeight - pop.offsetHeight) / 2) + 'px'; return; }
       anchor = a;
       placeAt(pop, anchor, anchor.classList.contains('side-row') ? 'beside' : anchor.getBoundingClientRect().left > innerWidth / 2 ? 'right' : 'left');
     };
@@ -1117,6 +1204,9 @@ function deviceName() {
 }
 function applyLayout() { document.documentElement.classList.toggle('phone', isPhone()); }
 applyLayout();
+// Schalter (seit 4.29.0, A-63 C4, 15.15): kennt der Browser den eingebauten Schalter (Safari ab 17.4, <input type="checkbox" switch>),
+// zeichnet Safari ihn selbst – gleitet, ziehbar, Haptik, VoiceOver ‚Schalter‘, Aussehen der iOS-Version; sonst unser Schalter (design.css)
+document.documentElement.classList.toggle('natsw', 'switch' in HTMLInputElement.prototype);
 window.addEventListener('resize', applyLayout);
 
 // Großer Titel (iPhone): sobald er unter die Leiste geschoben ist, steht er klein in der Leiste (.pnav.titled).
@@ -1228,6 +1318,15 @@ function kbOffen() { return !!window.visualViewport && visualViewport.height < s
 // Felder, die eine Tastatur öffnen (Datum, Uhrzeit, Auswahl und Schalter öffnen keine)
 const FELD = 'textarea, input:not([type=date],[type=time],[type=datetime-local],[type=month],[type=checkbox],[type=radio],[type=button],[type=submit],[type=reset],[type=range],[type=color],[type=file],[type=hidden]):not([readonly])';
 let dlgFest = 0;   // seit 4.28.1: Höhe des iPad-Fensters vor dem Antippen – der Platz unter dem Inhalt macht es nicht höher
+// R-1.7 (seit 4.29.0, A-63): sichere Ränder in px – aus den Variablen --safe-… (design.css), über ein unsichtbares Element gelesen
+let safeEl = null;
+function safeRand() {
+  if (!safeEl) { safeEl = document.createElement('div'); safeEl.setAttribute('aria-hidden', 'true');
+    safeEl.style.cssText = 'position:fixed;left:0;top:0;width:0;height:0;visibility:hidden;pointer-events:none;padding:var(--safe-top) var(--safe-right) var(--safe-bottom) var(--safe-left)';
+    document.body.append(safeEl); }
+  const c = getComputedStyle(safeEl);
+  return { top: parseFloat(c.paddingTop) || 0, bottom: parseFloat(c.paddingBottom) || 0, left: parseFloat(c.paddingLeft) || 0, right: parseFloat(c.paddingRight) || 0 };
+}
 function placeDialogs() {
   const vv = window.visualViewport;
   const top = vv ? Math.max(0, vv.offsetTop) : 0;
@@ -1239,7 +1338,10 @@ function placeDialogs() {
   root.setProperty('--vv-h', Math.round(h) + 'px');
   // Abstand der Tastatur vom unteren Rand: die untere Leiste (iPhone) und die Kapsel bleiben darüber sichtbar.
   root.setProperty('--vv-bottom', Math.max(0, Math.round(seitenHoehe() - top - h)) + 'px');
-  const max = full ? h : h - 20;
+  // iPad-Fenster (seit 4.29.0, A-63 S-6): oben und unten mindestens 10 px, aber nie unter Statusleiste oder Home-Leiste
+  // (bei offener Tastatur liegt die Home-Leiste unter ihr)
+  const s = safeRand(), oben = Math.max(10, s.top), unten = Math.max(10, kbOffen() ? 0 : s.bottom);
+  const max = full ? h : h - oben - unten;
   root.setProperty('--dlg-max', Math.max(200, !full && dlgFest ? Math.min(max, dlgFest) : max) + 'px');
   [dlg, msg].forEach(d => {
     if (!d.open) return;
@@ -1249,9 +1351,9 @@ function placeDialogs() {
     // schon ganz, bleibt es stehen – auch nach dem Schließen der Tastatur, solange ein Feld darin den Fokus hat.
     d.style.margin = '0 auto';
     d.style.bottom = 'auto';
-    const jetzt = parseFloat(d.style.top), ganz = jetzt >= top + 9 && jetzt + d.offsetHeight <= top + h - 9;
+    const jetzt = parseFloat(d.style.top), ganz = jetzt >= top + oben - 1 && jetzt + d.offsetHeight <= top + h - unten + 1;
     if (ganz && (kbOffen() || d.contains(document.activeElement) && document.activeElement.matches(FELD))) return;
-    d.style.top = Math.round(top + Math.max(10, (h - d.offsetHeight) / 2)) + 'px';
+    d.style.top = Math.round(top + oben + Math.max(0, (h - oben - unten - d.offsetHeight) / 2)) + 'px';
   });
 }
 placeDialogs();   // --vv-h (Höhe des Rahmens, A-28) gleich beim Start
@@ -1442,6 +1544,8 @@ function messStart({ app = '', teile = {}, rollen = {} } = {}) {
   const st = matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
   mess = { an: true, start: performance.now(), beginn: new Date(), teile, rollen, zeilen: [], zuletzt: '', hoerer: [] };
   mess.zeilen.push(`# Messung · ${app} · AppDesign ${AD_VERSION} · ${navigator.userAgent} · ${st ? 'Home-Bildschirm' : 'Safari'} · ${screen.width}×${screen.height} @${devicePixelRatio} · ${
+    // seit 4.29.0 (A-63 S-8): die sicheren Ränder des Geräts (oben/unten/links/rechts) – so kennen die Prüfungen die echten Werte
+    (r => `Ränder ${r.top}/${r.bottom}/${r.left}/${r.right}`)(safeRand())} · ${
     matchMedia('(prefers-color-scheme: dark)').matches ? 'dunkel' : 'hell'} · ${mess.beginn.toISOString()}`);
   mess.zeilen.push(['t', ...Object.keys(messWerte())].map(v => v.padEnd(6)).join(' ').trimEnd());
   const hoere = (z, typ, text) => { if (!z) return; const fn = e => messEreignis(text(e)); z.addEventListener(typ, fn, true); mess.hoerer.push([z, typ, fn]); };

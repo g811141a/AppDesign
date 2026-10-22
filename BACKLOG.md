@@ -1,6 +1,6 @@
 # AppDesign – Backlog (allgemeine Themen)
 
-**Stand 21.10.2026** · Aktuelle Version: AppDesign 4.28.2
+**Stand 22.10.2026** · Aktuelle Version: AppDesign 4.29.0
 
 Allgemeine Themen, die alle Apps betreffen. App-Themen stehen im Backlog der jeweiligen App.
 Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.4.
@@ -11,16 +11,15 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Prio | Thema | bereit seit |
 |---|---|---|---|
-| A-41 | 1 | **Zusammenarbeit 2.18.0 (Nutzer 21.10.2026, Sitzung 0027):** 0 Nr. 13 Übergabe wieder erst ab etwa **300.000** Token Kontext (statt 150.000; gleiche Grenze wie das Werkzeug) – gilt ab sofort; 0 Nr. 2 Hilfsagenten bzw. gesonderte Sitzungen parallel einsetzen, **wenn möglich und sinnvoll** (statt ‚nur für große, klar abgegrenzte Aufgaben‘); 2.1 präzisiert (Sitzung 0027): Text **am Anfang** einer Antwort kommt vor dem Auswahlfenster an, Text **zwischen zwei Auswahlfenstern derselben Antwort** nicht – je Antwort nur ein Fenster mit Erklärung davor | 21.10.2026 |
-| A-42 | 1 | **Grundsatz ‚kein UI-Framework‘ festhalten (A-38 Weg a, Nutzer 22.10.2026):** Designrichtlinie allgemein 1 – reines HTML, CSS und JavaScript ohne Framework, Build-Werkzeug und CDN (bisher nur im ersten Prompt vom 04.10.2026); gute Ideen aus Frameworks werden einzeln in eigenen Code übernommen; Begründung und Vergleich: `arbeit/A-38 Framework-Vergleich.html` | 22.10.2026 |
+| – | – | zurzeit nichts gesammelt | – |
 
-**2 Punkte bereit** · gebaut wird erst nach ‚Ja‘
+**Kein Punkt bereit** · gebaut wird erst nach ‚Ja‘
 
 ## 1. Auf iPad und iPhone prüfen
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| – | – | zurzeit nichts zu prüfen | – |
+| A-63 | 1 | **Paket C gebaut (AppDesign 4.29.0, Reiselogbuch 3.27.0):** sichere Ränder als Variablen mit Prüfung (R-1.7; dabei behoben: iPad-Fenster unter der Home-Leiste, Menü und Sprechblase am iPhone quer), Suche ohne Akzente (R-2.3), ⓧ in einzeiligen Feldern (R-5.6), Safaris Schalter (R-5.7, Weg b) – **Prüfpunkt P-63** im Reiselogbuch; mit /9 kommen die echten Ränder deines iPhones in die Prüfung | prüfen |
 
 ## 2. Weitere Themen (in Klärung)
 
@@ -28,7 +27,6 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 |---|---|---|---|
 | A-40 | 3 | **Prüfungen für die Regeln ohne automatische Prüfung (aus A-39, Nutzer 21.10.2026):** G-1 bis G-19 im Regelkatalog (Designrichtlinie allgemein 17) – je Regel eine allgemeine Prüfung in `tests/` oder bewusst ‚Gerät/Sicht‘ lassen; Code, eigener Auftrag | offen |
 | A-38 | 1 | **Frameworks – Framework7 und Ionic (Nutzer 21.10.2026, gemeinsam durchgehen):** 1) Vergleich Framework7 / Ionic (Technik, iOS-Aussehen, Anpassbarkeit an AppDesign, Geschwindigkeit, Langfristigkeit, Capacitor für eine echte App – Empfehlung Claude: Framework7 für reines JS, Ionic bei App Store oder Vue/React); 2) Mischform: Framework7 als Unterbau, AppDesign als Regelschicht → AppDesign 5.0.0 (`v5/`), Reiselogbuch bleibt auf Fassung 4.x; Vorgabe ‚keine Frameworks‘ (Prompt 04.10.2026) wäre zu ersetzen; zuerst Muster einer Reiselogbuch-Ansicht mit unseren Prüfungen; 3) Verbesserungen aus Framework7 für AppDesign (`arbeit/A-38 Framework7 Auswertung.md`): V1 sichere Ränder prüfbar, V2 Rückmeldung beim Antippen, V3 Titel antippen = nach oben, V4 Glas-Optik, V5 ziehbarer Index (= A-37 C), V6 lange Listen; Kernbefund: die Tastatur löst Framework7 unter iOS nicht (kein `visualViewport`). **Vergleich Framework7 9.2.0 / Ionic 9.0.9:** `arbeit/A-38 Framework-Vergleich.html` (66 Themen, Gesamtvergleich, drei Wege, Kandidaten). **Entschieden (Nutzer 22.10.2026): Weg a) eigener Code, kein Framework** – Themen durchgehen. **Die 4 Entscheidungen (Nutzer 22.10.2026): je ein Muster** für T-10 Wischaktionen in Listen (statt 15.4 ‚Kein Wischen‘), T-15 Blatt auf dem iPhone mit ‚nach unten wischen schließt‘ (statt 15.17), T-21 Rückgängig statt Abfrage bei umkehrbaren Aktionen (statt G-13, mit A-30), T-37 Glas-Optik schwebender Knöpfe (neben A-37). **Barrierefreiheit (22.10.2026):** übernommen als A-43. **Pakete (Nutzer 22.10.2026):** A) ein gemeinsames Muster ‚Navigation und Gesten‘ – Seitenwechsel als Schieben, Zurückwischen vom linken Rand, Seitenleiste hereinwischen (iPad hoch), Gesten mit Vorrang, dazu T-10 Wischaktionen und T-15 Blatt (T-4, T-5, T-6, T-35); B) ‚Antippen, Bewegung, Rollen‘ zusammen mit A-37 – Rückmeldung beim Antippen, langes Drücken mit Anheben, Fenster/Menüs mit Bewegung, großer Titel rastet ein, Titel antippen = nach oben, Glas T-37 (T-33, T-34, T-16, T-1, T-43); C) ohne Muster übernehmen (Fall-Liste, dann Ja) – sichere Ränder als Variablen mit Prüfung (V1, T-39), Suche ohne Akzente (‚Zurich‘ findet ‚Zürich‘, T-31), ⓧ in einzeiligen Feldern (T-28), Safaris eingebauter Schalter (T-26); D) Kurzmeldung als Baustein und einheitliche leere Zustände (T-20, T-61) → A-30, mit dem Muster Rückgängig T-21; die 11 ‚später‘ → A-44 bis A-54 (Prio 3); die 12 ‚nicht übernehmen‘ einzeln neu bewertet (zukunftsfit): Ja → A-55 bis A-60 (T-3, T-30, T-32, T-50, T-58, T-65), Nein: T-2, T-22, T-36, T-38, T-63, T-64. Pakete eingetragen als A-61 (A, Prio 2), A-62 (B, Prio 3), A-63 (C, Prio 1) – **A-38 abgeschlossen** (Nutzer 22.10.2026) | erledigt |
-| A-63 | 1 | **Paket C aus A-38 – ohne Muster (Nutzer 22.10.2026):** sichere Ränder als Variablen `--safe-top/-bottom/-left/-right` mit Prüfung echter iPhone-Werte hoch und quer (V1, T-39; 42 Stellen in design.css, vorher rot gegen 4.28.2); Suche ohne Akzente – ‚Zurich‘ findet ‚Zürich‘ (T-31, ui.js:124-134); ⓧ zum Leeren in einzeiligen Feldern (T-28); Safaris eingebauter Schalter `<input type="checkbox" switch>` – gleitet, ziehbar, VoiceOver ‚Schalter‘, Haptik am Gerät prüfen (T-26) – Fall-Liste, dann Ja | offen |
 | A-61 | 2 | **Paket A aus A-38 – Muster ‚Navigation und Gesten‘ (Nutzer 22.10.2026):** Seitenwechsel als Schieben (T-4), Zurückwischen vom linken Rand (T-5), Seitenleiste hereinwischen am iPad hoch (T-6), Gesten mit Vorrang (T-35), Wischaktionen in Listen statt 15.4 ‚Kein Wischen‘ (T-10), Blatt auf dem iPhone mit Höhenstufen und ‚nach unten wischen schließt‘ statt 15.17 (T-15); dazu A-59 | offen |
 | A-62 | 3 | **Paket B aus A-38 – ‚Antippen, Bewegung, Rollen‘ (Nutzer 22.10.2026):** Rückmeldung beim Antippen (T-33, V2), langes Drücken mit Anheben (T-34), Fenster/Menüs/Sprechblasen mit Bewegung (T-16), großer Titel rastet ein (T-1), Titel antippen = nach oben (T-43, V3), Glas-Optik schwebender Knöpfe (T-37, V4); als Muster neben A-37 vorgesehen (A-37 selbst bleibt Prio 2); dazu A-58 | offen |
 | A-43 | 2 | **Barrierefreiheit (aus A-38, Nutzer 22.10.2026):** 1) VoiceOver-Grundlagen – Rollen und Namen (Fenstertitel verknüpft, Sprechblase, ‚öffnet Menü‘, ‚ausgewählt‘), Fokus ins Menü/Sprechblase und zurück, Hintergrund für VoiceOver gesperrt, Ansagen (Trefferzahl, ‚Automatisch gespeichert‘), Fehlermeldung hörbar (T-51–T-55); 2) Hardware-Tastatur am iPad – Esc und Pfeile in Menüs und Sprechblasen, Eingabe nie für die rote Aktion, Kurzbefehle (T-56); 3) ‚Kontrast erhöhen‘ und ‚Bewegung reduzieren‘ als allgemeine Regel (T-47, T-49); je eine Prüfung im Regelkatalog (T-59, T-60); 4) Schrift folgt der Textgröße (Dynamic Type, T-48) – zuerst Muster. Grundlage `arbeit/A-38 Framework-Vergleich.html` | offen |
@@ -60,6 +58,8 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Thema | Version | Datum |
 |---|---|---|---|
+| E-70 | **A-63 Paket C gebaut** (Fall-Liste `arbeit/A-63 Fall-Liste.md`, Weg b, als allgemeine Regeln R-1.7, R-5.6, R-5.7, R-2.3): neue Prüfungen `safe` (hig.mjs), `checkClear`, `checkSearchWords` A-1 bis A-8, doku.mjs R-1.7 – gegen 4.28.2 rot, jetzt grün. Wartet auf P-63 | AppDesign 4.29.0 | 22.10.2026 |
+| E-69 | **A-41 und A-42:** Zusammenarbeit 2.18.0 (Übergabe ab etwa 300.000 Token, Hilfsagenten parallel wenn möglich und sinnvoll, ein Auswahlfenster je Antwort); Designrichtlinie 1 Grundsatz ‚kein UI-Framework‘ | AppDesign 4.29.0 | 22.10.2026 |
 | E-68 | Geprüft **P-62 (Reiselogbuch 3.26.2): alles ok** (Nutzer 21.10.2026) – **A-39 abgeschlossen** | AppDesign 4.28.2 | 21.10.2026 |
 | E-67 | **A-39 Konsolidierung aller Regeln:** Zusammenarbeit 2.17.0 (Abschnitt 0 = das eine Arbeitsmodell, Abschnitt 2 Einzelheiten und Formate, Übergabe ab etwa 150.000 Token), Designrichtlinie allgemein 4.28.2 (Regeln nur im Katalog, Liste G-1 bis G-19, HIG-Zuordnung), Reiselogbuch: App-Richtlinie nur Abweichungen, PROMPT.md als Funktionsbeschreibung; CLAUDE.md mit Arbeitsumgebung; Plan und Abgleichliste `arbeit/A-39 Konsolidierung Plan.md`, `arbeit/A-39 Abgleichliste.md` | AppDesign 4.28.2 · Reiselogbuch 3.26.2 | 21.10.2026 |
 | E-66 | Geprüft **P-61: alles ok** (Nutzer 21.10.2026, Messungen iPhone hoch, iPhone quer, iPad quer: Safari verschiebt nie, Leisten still, Rückstellung, ‚Nach oben‘ mit einem Antippen) – **A-35 und A-36 abgeschlossen** | AppDesign 4.28.1 | 21.10.2026 |

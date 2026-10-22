@@ -42,6 +42,15 @@ export function checkDocs(appDir, app) {
         E(`R-10.4 README.md: ‚${name}‘ verlinkt ${decodeURIComponent(m[2])} statt aus fassung/${needed}/`);
     }
   }
+  // R-1.7 (seit 4.29.0, A-63 S-1): sichere Ränder nur über die Variablen --safe-… – env(safe-area-inset-…) steht nur bei ihrer
+  // Festlegung in design.css (je einmal), nirgends sonst und nicht in der App; so setzen die Prüfungen echte Gerätewerte
+  const css = adText(appDir, 'design.css', needed);
+  if (/--safe-top:/.test(css)) {
+    const env = [...css.matchAll(/env\(safe-area-inset-(top|bottom|left|right)[^)]*\)/g)];
+    const def = ['top', 'bottom', 'left', 'right'].every(k => new RegExp(`--safe-${k}: env\\(safe-area-inset-${k}, 0px\\);`).test(css));
+    if (env.length !== 4 || !def) E(`R-1.7 design.css: env(safe-area-inset-…) ${env.length}-mal statt nur viermal in der Festlegung von --safe-top/-bottom/-left/-right`);
+    if (/env\(safe-area-inset/.test(html)) E('R-1.7 index.html: env(safe-area-inset-…) direkt in der App – sichere Ränder nur über var(--safe-…)');
+  }
   // Zusammenarbeit 7: neueste Version im CHANGELOG
   const newest = changelog.split(/\n## /)[1] || '';
   const items = [...newest.matchAll(/\*\*(P-\d+\/\d+) – ([^*]+)\*\*\n([\s\S]*?)(?=\n\*\*P-\d+\/|\n## |$)/g)];

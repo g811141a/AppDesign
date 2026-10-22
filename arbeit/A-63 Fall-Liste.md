@@ -1,7 +1,8 @@
 # A-63 Paket C – sichere Ränder, Suche ohne Akzente, ⓧ in Feldern, Safaris Schalter
 
 **Stand 22.10.2026** · Sitzung ‚Reiselogbuch 0028‘ · aus A-38 (T-39/V1, T-31, T-28, T-26) · ohne Muster (Nutzer 22.10.2026)
-· Ziel: AppDesign 4.29.0 / Reiselogbuch 3.27.0, zusammen mit A-41 und A-42
+· gebaut in AppDesign 4.29.0 / Reiselogbuch 3.27.0 mit A-41 und A-42 (Nutzer 22.10.2026: Ja, Schalter Weg b, als allgemeine
+Regeln R-1.7, R-2.3, R-5.6, R-5.7) · Prüfpunkt P-63
 
 ## 1. Apple-Abgleich
 
@@ -38,13 +39,13 @@ Reiselogbuch, Suche, Fenster ‚Tag‘:
 
 | Nr. | Fall | Erwartet | Prüfung |
 |---|---|---|---|
-| S-1 | `design.css`: `:root { --safe-top: env(safe-area-inset-top, 0px); … }` – sonst nirgends `env(safe-area` (auch nicht in der App) | genau 4 Stellen | `doku.mjs` (neu `checkSafeVars`) |
-| S-2 | iPhone hoch, Prüfwerte oben 62 / unten 34 – Startliste, Reiselogbuch, Suche offen, Fenster ‚Tag‘, Einstellungen, Menü, Sprechblase | kein fest stehendes Bedienelement (Knopf, Feld, Titel, Kapsel, Kopfzeile) schneidet die Zonen; Inhalt darf darunter rollen | `hig.mjs` (neu `checkSafe`) in jeder Ansicht |
+| S-1 | `design.css`: `:root { --safe-top: env(safe-area-inset-top, 0px); … }` – sonst nirgends `env(safe-area` (auch nicht in der App) | genau 4 Stellen | `doku.mjs` (`checkDocs`, R-1.7) |
+| S-2 | iPhone hoch, Prüfwerte oben 62 / unten 34 – Startliste, Reiselogbuch, Suche offen, Fenster ‚Tag‘, Einstellungen, Menü, Sprechblase | kein fest stehendes Bedienelement (Knopf, Feld, Titel, Kapsel, Kopfzeile) schneidet die Zonen; Inhalt darf darunter rollen | `hig.mjs` (neu `safe`) in jeder Ansicht |
 | S-3 | iPhone quer, links/rechts 62 / unten 20 | Kopfzeile, Suchzeile, Fensterkopf, Kapsel ‚Nach oben‘, Backup-Kachel beginnen rechts/links der Aussparung | wie S-2 |
 | S-4 | iPad hoch und quer, oben 24 / unten 20; Seitenleiste angedockt und als Seite | wie S-2 | wie S-2 |
 | S-5 | Tastatur offen (Safari-Modell), iPhone hoch und quer | Kapsel und Leisten wie bisher (`--vv-bottom` statt Home-Leiste) | `kapsel-iphone.mjs`, `checkFab` |
-| S-6 | **iPad, Fenster** | oben und unten mindestens `max(10px, sicherer Rand)` Abstand – nichts unter der Home-Leiste | `checkSafe` (rot gegen 4.28.2) |
-| S-7 | Drehen hoch ↔ quer mit offenem Fenster und offener Suche | Ränder wechseln mit, Grundregeln (oberster Eintrag bleibt) | `checkSafe` nach dem Drehen |
+| S-6 | **iPad, Fenster** | oben und unten mindestens `max(10px, sicherer Rand)` Abstand – nichts unter der Home-Leiste | `safe` (rot gegen 4.28.2) |
+| S-7 | Drehen hoch ↔ quer mit offenem Fenster und offener Suche | Ränder wechseln mit, Grundregeln (oberster Eintrag bleibt) | `safe` in beiden Lagen jeder Ansicht (hig.mjs misst quer und hoch) |
 | S-8 | Messmodus: Kopfzeile nennt die vier Ränder (z. B. ‚Ränder 0/34/0/0‘) | Werte stehen im Kopf | `messung`-Prüfung im Ablauf |
 | S-9 | **Gegenprobe:** Prüfwerte über `--safe-*` gesetzt, 4.28.2 nutzt sie nicht | gegen 4.28.2 rot (Kopfzeile iPhone quer beginnt bei 16 statt 62 px, S-6) | `--gegenprobe` |
 | Gerät | Dynamic Island, Ecken, Home-Leiste am iPhone hoch/quer und iPad | nichts verdeckt | Prüfliste |
@@ -108,9 +109,24 @@ Kontrollkästchen) – Aussehen, Gleiten, Ziehen und Haptik zeigt nur das Gerät
   sinnvoll (0 Nr. 2), 2.1 präzisiert (ein Auswahlfenster je Antwort, Erklärung davor).
 - **A-42** Designrichtlinie 1: Grundsatz ‚kein UI-Framework‘ (reines HTML, CSS, JavaScript; Ideen einzeln übernehmen).
 
-## 5. Neue allgemeine Regeln (Katalog, 0 Nr. 3/4)
+## 5. Neue allgemeine Regeln (Katalog, 0 Nr. 3/4) – entschieden 22.10.2026
 
-- R-1.x **Sichere Ränder nur über `--safe-*`**, geprüft mit echten Werten (S-1, S-2).
-- R-2.3 ergänzt: **Suche ohne Akzente** (A-1 bis A-8).
-- R-5.x **ⓧ in einzeiligen Feldern** (X-1 bis X-5).
-- 15.15 / G-18: **Safaris Schalter**, sonst 51 × 31 (W-1 bis W-5).
+- R-1.7 **Sichere Ränder nur über `--safe-*`**, geprüft mit Gerätewerten (S-1 bis S-9).
+- R-2.3 ergänzt: **Suche ohne Akzente** (A-1 bis A-9).
+- R-5.6 **ⓧ in einzeiligen Feldern** (X-1 bis X-9).
+- R-5.7 **Safaris Schalter**, sonst 51 × 31 (W-1 bis W-5); G-18 ohne Schaltergröße.
+
+## 6. Beim Bau gefunden
+
+- Die Prüfung `safe` fand am iPhone quer zwei weitere Stellen: das Menü der Startliste lag rechts in der Aussparung, die
+  Sprechblase ‚Backup laden‘ 8 px unter der Home-Leiste. Behoben: Menüs, Untermenüs und Sprechblasen halten mindestens die sicheren
+  Ränder ein (`rand12` in ui.js).
+- Das ⓧ hing anfangs am Bezugsrahmen `#app` statt am Rahmen des Feldes und rollte nicht mit (gefunden von X-7/X-2 bei
+  ‚Gesamtausgaben‘); ein Neuaufbau (`setHtml`) nahm den Bezug wieder weg. Behoben: der Rahmen um das Feld wird bei jedem Zeigen
+  Bezugsrahmen.
+- In WebKit (wie Safari) ließ sich der Abgleichbericht am iPhone quer nicht ganz hervorrollen: Safari zählt den rechten
+  Innenabstand eines Rollbereichs nicht mit, die letzten 32 px blieben unter der Aussparung. Behoben: am iPhone trägt der Bericht
+  den rechten Rand selbst.
+- WebKit meldete eine ResizeObserver-Schleife (das ⓧ ändert den Innenabstand des Feldes) – behoben (Rahmengröße, nächstes Bild).
+- Gegenprobe: gegen 4.28.2 rot (iPad-Fenster 14 px unter Statusleiste und 10 px unter Home-Leiste bei Prüfwerten 24/20,
+  Schalter ohne `switch`, kein ⓧ, Suche mit Akzenten), gegen 4.29.0 grün.

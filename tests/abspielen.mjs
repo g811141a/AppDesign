@@ -25,15 +25,17 @@
 export const SPALTEN = ['t', 'sy', 'inh', 'sh', 'ih', 'vh', 'vt', 'vvtop', 'kopf', 'such', 'tag', 'lkopf', 'lsuch', 'lroll', 'fokus', 'lage'];
 const ZAHL = new Set(SPALTEN.filter(s => !['fokus', 'lage'].includes(s)));
 
-// M-1: Messdatei lesen. Kopf ‚# Messung · App · AppDesign · Gerät (UA) · Ort · B×H @n · hell|dunkel · Zeit‘, Spaltenzeile,
+// M-1: Messdatei lesen. Kopf ‚# Messung · App · AppDesign · Gerät (UA) · Ort · B×H @n · [Ränder o/u/l/r ·] hell|dunkel · Zeit‘
+// (die sicheren Ränder seit AppDesign 4.29.0, A-63 S-8), Spaltenzeile,
 // Zeilen mit je 16 Werten (‚-‘ = nicht vorhanden) und optional ‚! ereignis‘; ‚# Ende …‘ beendet.
 export function lies(text) {
   const zeilen = text.replace(/\r/g, '').split('\n'), fehler = (n, t) => { throw new Error(`Messdatei Zeile ${n}: ${t}`); };
-  const k = zeilen[0]?.match(/^# Messung · (.+?) · AppDesign (\S+) · (.+?) · (.+?) · (\d+)×(\d+) @\d+ · (hell|dunkel) · (\S+)$/);
+  const k = zeilen[0]?.match(/^# Messung · (.+?) · AppDesign (\S+) · (.+?) · (.+?) · (\d+)×(\d+) @\d+(?: · Ränder (\d+(?:\.\d+)?)\/(\d+(?:\.\d+)?)\/(\d+(?:\.\d+)?)\/(\d+(?:\.\d+)?))? · (hell|dunkel) · (\S+)$/);
   if (!k) fehler(1, 'kein Kopf ‚# Messung · App · AppDesign · Gerät · Ort · B×H @n · hell|dunkel · Zeit‘');
   const spalten = zeilen[1]?.trim().split(/\s+/);
   if (spalten?.join(' ') !== SPALTEN.join(' ')) fehler(2, `Spalten ‚${spalten?.join(' ')}‘ statt ‚${SPALTEN.join(' ')}‘`);
-  const m = { app: k[1], ad: k[2], ua: k[3], ort: k[4], breite: +k[5], hoehe: +k[6], darstellung: k[7], zeit: k[8],
+  const m = { app: k[1], ad: k[2], ua: k[3], ort: k[4], breite: +k[5], hoehe: +k[6], darstellung: k[11], zeit: k[12],
+    raender: k[7] == null ? null : { oben: +k[7], unten: +k[8], links: +k[9], rechts: +k[10] },
     geraet: /iPad|Macintosh/.test(k[3]) ? 'iPad' : 'iPhone', zeilen: [] };
   for (const [i, z] of zeilen.slice(2).entries()) {
     const n = i + 3;

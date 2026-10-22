@@ -1,6 +1,6 @@
 # Zusammenarbeit allgemein
 
-**Version 2.17.0** · Stand 21.10.2026
+**Version 2.18.0** · Stand 22.10.2026
 
 Regeln für die Zusammenarbeit mit Claude bei allen iPad-Web-Apps von g811141a. Die Datei liegt im Design-Repo **AppDesign**
 (g811141a/AppDesign); App-Eigenes steht in der `CLAUDE.md` des App-Repos. **Abschnitt 0 ist das Arbeitsmodell**, Abschnitt 1
@@ -40,8 +40,8 @@ Ziel: nichts vergessen, Fehler finden, bevor der Nutzer sie findet, schnell und 
 2. **Prüfen parallel und sparsam:** `node tests/alle.mjs` in der App (Werkzeug `tests/lauf.mjs`: parallel, schnellste zuerst,
    Abbruch beim ersten Fehler, Gegenprobe `--gegenprobe`). Während der Arbeit nur die betroffenen Prüfungen; **alle** (Chromium
    und WebKit, alle Ansichten, alle automatisch prüfbaren Regeln des Katalogs) genau **einmal je Version** im
-   Veröffentlichungs-Skript, nicht zusätzlich vorher. Geräte-Regeln des Katalogs kommen in die Prüfliste, wenn die Version sie betrifft. Hilfsagenten nur
-   für große, klar abgegrenzte Aufgaben. Prüfung: `lauf.mjs` (Selbsttest `tests/lauf-selbsttest.mjs`).
+   Veröffentlichungs-Skript, nicht zusätzlich vorher. Geräte-Regeln des Katalogs kommen in die Prüfliste, wenn die Version sie betrifft. Hilfsagenten bzw.
+   eigene Sitzungen arbeiten parallel, **wenn möglich und sinnvoll**. Prüfung: `lauf.mjs` (Selbsttest `tests/lauf-selbsttest.mjs`).
 3. **Regeln schlank halten:** Jede Regel steht an genau einer Stelle und nennt genau eine Prüfung; eine neue Regel ersetzt
    oder ergänzt eine bestehende, Regeln zum selben Thema werden zusammengefasst. Neue allgemeine Design-Regeln bekommen sofort
    eine Nummer im Katalog (Designrichtlinie 17) und eine automatische Prüfung, sonst ‚Gerät‘. Im Regeltext steht nur, was heute
@@ -101,7 +101,7 @@ Ziel: nichts vergessen, Fehler finden, bevor der Nutzer sie findet, schnell und 
 
 12. **Ein Thema je Sitzung.** Lange Sitzungen werden langsam und automatisch zusammengefasst – dabei gehen Einzelheiten
     verloren. Prüfung: Selbstkontrolle.
-13. **Neue Sitzung ab etwa 150.000 Token:** Ist ein Thema abgeschlossen, hat der Kontext etwa **150.000 Token** erreicht
+13. **Neue Sitzung ab etwa 300.000 Token:** Ist ein Thema abgeschlossen, hat der Kontext etwa **300.000 Token** erreicht
     (‚Kontext N‘ in der Zeitzeile) oder wurde die Sitzung schon zusammengefasst, schlägt Claude die Übergabe vor; bei ‚Ja‘ schreibt
     Claude sie (Nr. 14) und startet die neue Sitzung selbst – Opus 5.5, Aufwand hoch, Name `<App> <Chatnummer> – <Thema>`
     (2.5). Braucht eine Sitzung eine Entscheidung des Nutzers, bleibt sie stehen. Prüfung: Selbstkontrolle anhand der Zeitzeile.
@@ -166,9 +166,11 @@ Prüfung: Selbstkontrolle.
 - **Auswahlfenster:** bis zu 4 Fragen, je 2–4 Möglichkeiten; die Empfehlung zuerst mit ‚(Empfohlen)‘, immer ‚Ich schreibe im
   Chat‘. Im Fenster steht nur eine **kurze Frage** mit den Schaltflächen – keine Erklärtexte, keine Zeitangaben. **Ausnahme:** Bei
   jeder Bitte, am Gerät zu prüfen oder auszuprobieren, stehen Link, nummerierte Schritte und ‚erwartet: …‘ kurz auch in der
-  Frage – der Text vor dem Fenster kommt beim Nutzer nicht an. Das Feld ‚Sonstiges‘ schneidet lange Texte ab.
-- Text vor einem Fenster und die Vorschau-Funktion sind in der App nicht zu sehen: Muster, Beispiele und Erklärungen, die der
-  Nutzer vor der Entscheidung lesen muss, kommen **als Datei oder Bild vor dem Fenster**.
+  Frage. Das Feld ‚Sonstiges‘ schneidet lange Texte ab.
+- **Ein Fenster je Antwort, die Erklärung davor:** Text am Anfang einer Antwort kommt vor dem Auswahlfenster beim Nutzer an, Text
+  zwischen zwei Fenstern derselben Antwort und die Vorschau-Funktion nicht. Muster, Beispiele und längere Erklärungen, die der
+  Nutzer vor der Entscheidung lesen muss, kommen **als Datei oder Bild vor dem Fenster**. Mehrere Themen nacheinander: je Antwort
+  eines (ganze Zeile, Einschätzung, Kachel), der Nutzer schreibt ‚w‘ für das nächste.
 - Schließt der Nutzer das Fenster und antwortet im Text, gilt die Antwort; bei den nächsten Fragen kommt trotzdem wieder das
   Auswahlfenster.
 - Eine **Antwortzeile zum Kopieren** (z. B. `1 ja · 2 a · 3 ja`) gibt es nur bei mehr als 4 Fragen – dann ist sie der einzige
@@ -189,8 +191,8 @@ Prüfung: Selbstkontrolle.
 - **Token:** aus den Sitzungsdaten der **vorigen** Antwort (genaue Werte; die laufende wird erst an ihrem Ende gezählt), jeder
   Modell-Aufruf einmal; ‚neu‘ = Eingabe + Ausgabe.
 - **Kontext:** Größe der Sitzung = Eingabe + Zwischenspeicher + geschrieben des letzten eigenen Modell-Aufrufs. Ab 300.000 oder
-  nach einer automatischen Zusammenfassung hängt das Werkzeug ‚⚠ Übergabe fällig‘ an; die Übergabe schlägt Claude schon ab etwa
-  150.000 vor (0 Nr. 13).
+  nach einer automatischen Zusammenfassung hängt das Werkzeug ‚⚠ Übergabe fällig‘ an; dann schlägt Claude die Übergabe vor
+  (0 Nr. 13).
 - Prüfung: `tests/messung.mjs` (Gegenprobe `--gegenprobe`).
 
 ### 2.3 Bericht, Prüfpunkte und Rückmeldung
@@ -303,6 +305,7 @@ im Verlauf und in Kommentaren der Prüfungen nennen noch die alten Stellen):
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 2.18.0 | 22.10.2026 | Neben | **A-41:** 0 Nr. 13 Übergabe wieder erst ab etwa 300.000 Token (gleiche Grenze wie das Werkzeug, 2.2); 0 Nr. 2 Hilfsagenten bzw. eigene Sitzungen parallel, wenn möglich und sinnvoll; 2.1 ein Auswahlfenster je Antwort mit der Erklärung davor, Themen einzeln nacheinander (‚w‘) |
 | 2.17.0 | 21.10.2026 | Neben | **A-39 Konsolidierung:** Abschnitt 0 ist das eine Arbeitsmodell – die Kästen oben und die Abschnitte 2–9 sind in 0 Nr. 8, 21–25 und den neuen Abschnitt 2 ‚Einzelheiten und Formate‘ eingegangen (Zuordnung alt → neu); jede Regel nennt ihre Prüfung; Geschichte (‚seit …‘, ‚Nutzer …‘, ‚Anlass …‘) nur noch hier. Neu 0 Nr. 13: Übergabe schon ab etwa 150.000 Token Kontext (statt 300.000; das Werkzeug warnt weiter ab 300.000). Geklärt (Nutzer 21.10.2026, F-2 bis F-4): im Auswahlfenster nur die kurze Frage, bei Bitten, am Gerät zu prüfen, auch Link und Schritte; Übergabe vorschlagen, bei Ja schreiben und die neue Sitzung selbst starten, Starttext als Rückfall; keine eigene Version für eine einzelne Kleinigkeit |
 | 2.16.0 | 21.10.2026 | Neben | 0 Nr. 11 ergänzt: Link und Schritte jeder Bitte, am Gerät zu prüfen, zusätzlich im Auswahlfenster selbst – der Text davor kam nicht an (Nutzer 21.10.2026, Sitzung 0023) |
 | 2.15.0 | 20.10.2026 | Neben | 0 Nr. 20 ergänzt: Muster mit Messung vor der Übergabe im Safari-Modell gegen die Rohdaten geprüft (mit Gegenprobe), führen Schritt für Schritt durch den Versuch, zeigen am Gerät nur ‚aufgenommen‘ (Nutzer 20.10.2026, A-36) |

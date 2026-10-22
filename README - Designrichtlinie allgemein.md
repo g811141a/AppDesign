@@ -1,6 +1,6 @@
 # Designrichtlinie allgemein
 
-**Version 4.28.2** · Stand 21.10.2026
+**Version 4.29.0** · Stand 22.10.2026
 
 Allgemeine Gestaltungs- und Bedienregeln für alle Web-Apps von g811141a auf iPad und iPhone. Die Datei liegt im Design-Repo
 **AppDesign** (g811141a/AppDesign); ihre Versionsnummer ist die des Repos. Die Komponenten sind dort einmal programmiert und
@@ -29,6 +29,9 @@ Gestaltung und Bauteile und verweisen auf die Regel (R-x.y); was dort ohne autom
   damit Safari die Daten nicht von selbst löscht; Sicherung über eine Backup-Datei (15.19).
 - Oberfläche Deutsch, schlicht und klar.
 - Eine HTML-Datei (HTML + CSS + JS), dazu `sw.js`, `manifest.json`, Icons 180/512 px.
+- **Kein UI-Framework:** reines HTML, CSS und JavaScript – ohne Framework, Build-Werkzeug und CDN; die Bausteine sind einmal in
+  AppDesign programmiert (14). Gute Ideen aus Frameworks werden einzeln in eigenen Code übernommen (Vergleich und Begründung:
+  `arbeit/A-38 Framework-Vergleich.html`).
 - Keine Hilfeseite – die Oberfläche ist selbsterklärend; Hinweise bei Bedarf hinter einem Info-Icon (15.14).
 - Alle Aktionen sind echte Schaltflächen; gleiche Aktion = gleiche Bezeichnung und gleiches Icon (R-10.1).
 - Keine Systemfenster – Abfragen als **Sprechblase** (15.7), Meldungen im kleinen Fenster (R-4.3).
@@ -336,7 +339,16 @@ heller).
 Gemessene bzw. belegte Eigenheiten mit Quelle; sie gelten für alle Apps, die Prüfungen bilden sie nach (Safari-Modell
 `tests/safari.mjs`, Zusammenarbeit 0 Nr. 5 und 20).
 
-- Safe-Area beachten (`env(safe-area-inset-*)`, `viewport-fit=cover`).
+- Sichere Ränder (Dynamic Island, Ecken, Home-Leiste) mit `viewport-fit=cover`; `env(safe-area-inset-*)` steht nur in den
+  Variablen `--safe-top/-bottom/-left/-right` (design.css), alles andere nutzt sie (R-1.7). Die Prüfbrowser liefern für `env()`
+  immer 0 – die Prüfung setzt die Variablen auf Gerätewerte. Vom Home-Bildschirm (Statusleiste ‚default‘) liegt die Statusleiste
+  über der App: Fensterhöhe am iPhone 16 Pro hoch 812 statt 874, am iPad Pro 11" quer 802 statt 834 (Messungen 19./20.10.2026).
+- Rollt ein Bereich seitlich, zählt Safari (WebKit) seinen rechten Innenabstand nicht zur Rollbreite (Chromium schon): breiter
+  Inhalt endet am Rand, ein Rand rechts muss am Inhalt selbst stehen (gemessen in WebKit 22.10.2026, Abgleichbericht am iPhone
+  quer, R-1.7).
+- Eingebauter Schalter `<input type="checkbox" switch>` seit Safari 17.4, Haptik seit Safari 18; mit `appearance: none` zeichnet
+  Safari ihn nicht mehr selbst. Die Prüfbrowser (Chromium, WebKit der Prüfumgebung) kennen ihn nicht und zeigen ein
+  Kontrollkästchen (R-5.7).
 - Speichern über `navigator.share` mit Dateien; Download-Links funktionieren in der Home-Bildschirm-App nicht zuverlässig.
 - Long-Press-Menü und Textauswahl auf Emoji-Schaltflächen abschalten (`-webkit-touch-callout: none`, `user-select: none`).
 - Beim Drucken nur den Ausgabe-Inhalt zeigen: Seitenleiste, Fenster und deren Abstände (z. B. `padding-left` für die
@@ -464,6 +476,8 @@ Regel). In AppDesign ist jede Komponente einmal programmiert (`v4/design.css`, `
 - **Mehrere Wörter:** Leerzeichen trennt Wörter; ein Eintrag passt, wenn **jedes** Wort darin vorkommt – Reihenfolge und
   Groß/klein egal (wie Mail, Notizen, Fotos); **„…“ sucht eine genaue Wortfolge** (‚„Opera House“ sydney‘). Markiert und gezählt
   werden alle Wörter, längere zuerst, aneinanderstoßende Stellen als eine Markierung. Was ‚ein Eintrag‘ ist, legt die App fest.
+- **Ohne Akzente** (wie Apple): ‚Zurich‘ findet ‚Zürich‘ und umgekehrt, ‚cafe‘ findet ‚Café‘; markiert wird das Wort, wie es im
+  Text steht. ß, ø, æ sind eigene Buchstaben (‚Strasse‘ findet ‚Straße‘ nicht).
 - **Verhalten:** Suche beim Tippen (Markierung sofort); jede Markierung ist ein Treffer; zum ersten wird erst nach einer kurzen
   Tipp-Pause (ca. 0,5 s) gesprungen. Der Treffer steht dann **direkt unter der Suchzeile** (und dem Tabellenkopf), nicht in der
   Bildmitte. Kopf- und Suchzeile bleiben fest oben, auch bei offener Tastatur. Treffer gelb (`--mark`), Treffer im Fokus
@@ -606,6 +620,10 @@ Regel). In AppDesign ist jede Komponente einmal programmiert (`v4/design.css`, `
 - Fläche weiß bzw. `--dlg-field`, Lichtkante `--btn-rim` und Schatten `--float` wie die schwebenden Schaltflächen (auch
   Zahlenfelder), Radius 10 px, 44 px hoch (Textfelder mehrzeilig), Schrift mindestens 16 px (R-1.3); Fehler: 1 px roter Rand und
   rote Meldung darunter (8, R-5.3). Textfelder wachsen mit dem Inhalt; Datumsfelder so breit wie das Datum.
+- **ⓧ zum Leeren** (R-5.6, wie Apple ‚whileEditing‘): einzeilige Textfelder zeigen rechts ein graues ⓧ (wie im Suchfeld, 44 × 44),
+  solange sie den Fokus haben und etwas drinsteht; Antippen leert, Cursor und Tastatur bleiben, die App erfährt es wie beim
+  Löschen per Taste. Nicht in mehrzeiligen Feldern, Datums- und Suchfeldern. **Technisch:** ein Knopf `.fclear` für alle Felder
+  (ui.js), abschaltbar mit `data-noclear`.
 
 ### 15.12 Smiley-Leiste und Auswahl-Kapsel
 - **Apple:** [HIG – Collections](https://developer.apple.com/design/human-interface-guidelines/collections)
@@ -629,7 +647,9 @@ Regel). In AppDesign ist jede Komponente einmal programmiert (`v4/design.css`, `
 ### 15.15 Schalter (Einstellungen ein/aus)
 - **Apple:** [HIG – Toggles](https://developer.apple.com/design/human-interface-guidelines/toggles)
 - **Zweck:** Ein/Aus-Einstellungen, z. B. in Bearbeiten-Fenstern. **Technisch:** `.swlist`, `label.check.sw` mit
-  `input[type=checkbox]`.
+  `<input type="checkbox" switch role="switch">` (R-5.7). Kennt der Browser den eingebauten Schalter (Safari ab 17.4; ui.js setzt
+  `html.natsw`), zeichnet Safari ihn selbst – er gleitet, lässt sich ziehen, gibt Haptik, VoiceOver sagt ‚Schalter‘, und er hat das
+  Aussehen der iOS-Version; Grün über `accent-color: var(--sw-on)`. Sonst unser Schalter wie unten.
 - **Aufbau:** Zeile mit Text links und Apple-Schalter rechts; Zeilen 52 px hoch, dazwischen Haarlinie; Schalter 51 × 31 px,
   weißer Knopf.
 - **Zustände:** ein = `--sw-on` (Apple-Grün), Knopf rechts; aus = `--sw-off`, Knopf links; gesperrt 40 % Deckkraft (Text und
@@ -851,6 +871,9 @@ steht in der Spalte ‚außerdem‘ (ohne automatische Prüfung: G-19).
 | 7 | **Abfragen:** Schaltfläche heißt wie die Aktion (‚Löschen‘), ‚Abbrechen‘ ist immer da | R-4.3 | Löschen und Verwerfen immer bestätigen (10) |
 | 8 | **Texte** ([Writing](https://developer.apple.com/design/human-interface-guidelines/writing)): deutsch, Anführungszeichen ‚…‘ | R-10.1 | einfach, ohne Fachbegriffe, so kurz wie möglich; kein ‚wir‘; ‚tippen‘ statt ‚klicken‘; Fehlermeldungen sagen, **was zu tun ist** – ohne Vorwurf, direkt beim Problem; ein leerer Bildschirm nennt den nächsten Schritt; ein Schalter beschreibt, was er eingeschaltet tut |
 | 9 | **Fenster:** links x (Abbrechen), rechts Häkchen (Fertig), hervorgehoben, sobald etwas geändert wurde; Schließen mit Änderungen fragt nach | R-4.4 | – |
+| 10 | **Sichere Ränder** ([Layout](https://developer.apple.com/design/human-interface-guidelines/layout)): nichts Bedienbares unter Dynamic Island, Ecken oder Home-Leiste; Inhalt darf darunter rollen | R-1.7 | – |
+| 11 | **Textfelder** ([Text fields](https://developer.apple.com/design/human-interface-guidelines/text-fields)): ⓧ zum Leeren beim Bearbeiten; Suche ohne Akzente | R-5.6, R-2.3 | – |
+| 12 | **Schalter** ([Toggles](https://developer.apple.com/design/human-interface-guidelines/toggles)): gleitet, ziehbar, Haptik, VoiceOver ‚Schalter‘ | R-5.7 | Haptik und Ziehen nur am Gerät |
 
 **Bewusste Abweichungen** (entschieden, werden vom HIG-Prüfskript nicht als Fehler gezählt):
 
@@ -885,6 +908,7 @@ die Prüfliste, wenn eine Version es betrifft.
 | R-1.4 | **Nur der Vordergrund reagiert:** offenes Fenster sperrt die Seite, Menü und Sprechblase fangen Wischen ab, daneben tippen schließt | hig.mjs | – | 1 |
 | R-1.5 | **Offline nutzbar und erkennbar:** die App startet ohne Netz aus dem Speicher – auch unter anderer Adresse und bei hängendem Netz nach höchstens 3 s, nie eine weiße Seite; arbeitet sie offline, steht unter der Backup-Kachel grau ‚Offline – alles bleibt auf diesem Gerät‘, beim Wechsel und beim Start ohne Netz kurz die Meldung ‚Du bist offline‘ bzw. ‚Wieder online‘ | offline.mjs | Gerät (Flugmodus) | 11, 15.20 |
 | R-1.6 | **Messmodus:** im Mehr-Menü der Seitenleiste bzw. Startliste ‚Messung starten‘ (grau ‚Für Claude: Bewegungen aufzeichnen‘) und ‚Messung beenden und teilen‘ (grau ‚läuft · m:ss · N Zeilen‘); aus, solange nicht gestartet; je Bild eine Zeile nur bei Änderung, dazu jedes Ereignis; keine Texte (nur Längen und ids); endet nach 5 min bzw. 20 000 Zeilen; Datei `messung-JJJJ-MM-TT-hhmm.txt` über das Teilen-Menü; neu laden verwirft | ablauf.mjs – `checkMessung` | Gerät (Messung, Teilen) | 15.21 |
+| R-1.7 | **Sichere Ränder:** nichts fest Stehendes (Knopf, Feld, Titel, Kachel, Leiste) liegt unter Statusleiste bzw. Dynamic Island, Aussparung oder Home-Leiste; Fenster, Menüs und Sprechblasen bleiben ganz innerhalb (am iPad mindestens 10 px bzw. der sichere Rand, das iPhone-Fenster füllt den Bildschirm); Inhalt darf darunter rollen, sein Ende lässt sich bis über die Home-Leiste rollen. `env(safe-area-inset-*)` nur in `--safe-top/-bottom/-left/-right` | hig.mjs – `safe` in jeder gemessenen Ansicht mit Gerätewerten (iPhone hoch 62/34, quer 62 links und rechts/20 unten, iPad 24/20); doku.mjs – nur die vier Festlegungen | Dynamic Island, Home-Leiste | 13 |
 
 ### 2. Leisten, Suche, Rollen
 
@@ -892,7 +916,7 @@ die Prüfliste, wenn eine Version es betrifft.
 |---|---|---|---|---|
 | R-2.1 | **Leisten stehen fest – keinen Millimeter:** Kopfzeile, Seitenkopf, Seitenleisten-Kopf, mit und ohne Suchzeile, beim Wischen, am Rand, bei offener und beim Schließen der Tastatur; nichts federt; erstes Wischen bei offener Tastatur schließt nur die Tastatur. **Die Seite rollt nie, nur der Inhalt** – Rahmen mit festen Zeilen und Rollbereich, so hoch wie der sichtbare Bereich | hig.mjs – `barStill`: Lage der Leiste beim Rollen des Inhalts gemessen, auch mit nachgebildeter Tastatur; Grundregel ‚Seite rollt nie‘ (`scrollY` bleibt 0) | Federn, Tastatur, Wischgefühl | 13, 15.22 |
 | R-2.2 | **Titel in der Leiste:** Titel einer Inhaltsseite steht in der Leiste; unter dem Titel der Seitenleiste bzw. Startliste klein und grau die Anzahl | hig.mjs | – | 15.4, 15.17 |
-| R-2.3 | **Suche:** Suchzeile unter der Leiste über die volle Breite; Treffer ‚3 von 57‘ bzw. ‚0‘; nach kurzer Pause steht der Treffer direkt unter der Suchzeile; Pfeile ohne Umlauf; gefiltert auf Einträge mit Treffern; gleich auf iPad und iPhone; beim Tippen bleibt das Suchfeld dasselbe Feld mit Fokus; **mehrere Wörter** (alle müssen vorkommen, Reihenfolge egal, „…“ = genaue Folge, alle markiert; die Einheit legt die App fest); **Lupe am Ende der Kapsel**, dahinter nur ellipsis; **auch in der zentralen Liste** (Lupe im Kopf): filtert die Einträge, Kachel ‚N Treffer‘ je Fundstelle wie ‚1 von N‘, Öffnen mit gefüllter Suche, beide Suchfelder offen = 1:1, ‚Keine Treffer‘; **Suche öffnen und ⓧ rollen den Inhalt ganz nach oben**, der Fokus bleibt im Feld | ablauf.mjs – `checkSearch`, `checkListSearch`, `checkSearchWords`, `checkSearchPlace`, Feld bleibt beim Tippen, `checkSearchTop` | – | 15.2, 15.4, 15.5 |
+| R-2.3 | **Suche:** Suchzeile unter der Leiste über die volle Breite; Treffer ‚3 von 57‘ bzw. ‚0‘; nach kurzer Pause steht der Treffer direkt unter der Suchzeile; Pfeile ohne Umlauf; gefiltert auf Einträge mit Treffern; gleich auf iPad und iPhone; beim Tippen bleibt das Suchfeld dasselbe Feld mit Fokus; **mehrere Wörter** (alle müssen vorkommen, Reihenfolge egal, „…“ = genaue Folge, alle markiert; die Einheit legt die App fest); **Lupe am Ende der Kapsel**, dahinter nur ellipsis; **auch in der zentralen Liste** (Lupe im Kopf): filtert die Einträge, Kachel ‚N Treffer‘ je Fundstelle wie ‚1 von N‘, Öffnen mit gefüllter Suche, beide Suchfelder offen = 1:1, ‚Keine Treffer‘; **Suche öffnen und ⓧ rollen den Inhalt ganz nach oben**, der Fokus bleibt im Feld; **ohne Akzente** (‚Zurich‘ findet ‚Zürich‘ und umgekehrt, markiert wird das Wort wie im Text; ß, ø, æ sind eigene Buchstaben) | ablauf.mjs – `checkSearch`, `checkListSearch`, `checkSearchWords`, `checkSearchPlace`, Feld bleibt beim Tippen, `checkSearchTop` | – | 15.2, 15.4, 15.5 |
 | R-2.4 | **iPhone quer: niedrige Leisten** (wie iOS quer): Kopfzeile, Suchzeile und Fensterkopf 32 statt 44 px hoch – Knöpfe in Kapseln 31 px, runde Knöpfe 32 × 32 mit Antippfläche 44 × 44, das Suchfeld als Kapsel 32 px (R-3.1: Kapseln ab 28); damit liegen Suche und Felder darunter bei offener Tastatur in der oberen Hälfte (R-4.5). Hoch und am iPad 44 px | hig.mjs – Höhe der Knöpfe und des Suchfelds in Kopfzeile und Fensterkopf (iPhone quer 32, hoch 44) | – | 15.3, 15.8 |
 
 ### 3. Schaltflächen
@@ -923,6 +947,8 @@ die Prüfliste, wenn eine Version es betrifft.
 | R-5.3 | **Fehlermeldungen:** rot direkt unter dem Feld (Feld rot umrandet), erst nach einer Eingabe bzw. beim Häkchen; Pflichtfelder werden nicht gekennzeichnet | ablauf.mjs – `checkFieldErrors` | – | 8, 15.11 |
 | R-5.4 | **Auswahl-Kapsel:** mehrere Auswahl-Schaltflächen in einer Kapsel, seitlich wischbar mit Verlauf am Rand; Markierung als eigene Form innen, Breite ändert sich nicht | hig.mjs – Verlauf am Rand, Breite beim Wählen | Wischen | 15.12 |
 | R-5.5 | **Eingabetaste:** einzeilige Felder – ‚Fertig‘, die Eingabetaste schließt die Tastatur, ein Fenster bleibt offen; mehrzeilige Felder – Zeilenumbruch; Suchfeld – ‚Suchen‘ | ablauf.mjs – `checkEnterDone` | iOS-Tastatur (Beschriftung, iPhone-Ziffernfeld) | 8 |
+| R-5.6 | **ⓧ in einzeiligen Feldern:** solange ein einzeiliges Textfeld den Fokus hat und etwas drinsteht, rechts darin ein graues ⓧ (44 × 44, Text läuft nicht darunter); Antippen leert, Cursor und Tastatur bleiben, die App erfährt es; rollt mit, bleibt nach dem Drehen am Feld; nicht in mehrzeiligen, Datums- und Suchfeldern | ablauf.mjs – `checkClear` | Antippen, Tastatur bleibt | 15.11 |
+| R-5.7 | **Schalter:** Safaris eingebauter Schalter (`switch`, `role="switch"` – VoiceOver ‚Schalter‘), von Safari gezeichnet in Grün; ohne ihn unser Schalter 51 × 31 | hig.mjs – Attribute, Größe ohne, Systemaussehen und Grün mit eingebautem Schalter (nachgebildet) | Aussehen, Gleiten, Ziehen, Haptik, VoiceOver | 15.15 |
 
 ### 6. Tabellen, Kästen, Ausgabe
 
@@ -991,7 +1017,7 @@ Diese Gestaltungsregeln stehen an ihrer Stelle in 1–16 und haben (noch) keine 
 | G-15 | `[hidden]`-Regel bei Elementen mit `display`; Emoji-Varianten gleich behandeln | 13 | Sicht |
 | G-16 | Filter beim Öffnen und beim Start auf ‚Alle‘ | 15.3 | Abläufe der App |
 | G-17 | Menü 340 px, Einträge 46 px; Untermenü höchstens etwa 5 Punkte | 15.6 | Sicht |
-| G-18 | Info-Icon; Schalter 51 × 31 px, Zeilen 52 px; Options-Kapsel Schrift 15 px | 15.14–15.16 | Sicht |
+| G-18 | Info-Icon; Schalterzeilen 52 px; Options-Kapsel Schrift 15 px | 15.14–15.16 | Sicht |
 | G-19 | HIG ‚außerdem‘: Farbe nie einziges Merkmal; kein ‚…‘ am Menüende, Icons einer Gruppe alle oder keine; im Kontextmenü Unverfügbares ausblenden, höchstens etwa 3 Gruppen; Texte ohne ‚wir‘, ‚tippen‘ statt ‚klicken‘, ein leerer Bildschirm nennt den nächsten Schritt | 16 | Sicht |
 
 **Aus dem Katalog genommen:** R-50 (Prüfliste mit /0, Meldung je Gerät) ist Arbeitsregel der Zusammenarbeit (2.3); Prüfung
@@ -1025,6 +1051,7 @@ R-2.3 (15.2), R-4.4 (6, 15.8, HIG 9), R-5.3 (8), R-5.4 (15.12), R-5.5 (A-14), R-
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 4.29.0 | 22.10.2026 | Neben | **A-63 Paket C und A-42:** neu R-1.7 sichere Ränder (Variablen `--safe-…`, Prüfung mit Gerätewerten; iPad-Fenster, Menüs und Sprechblasen halten Abstand), R-5.6 ⓧ in einzeiligen Feldern (15.11), R-5.7 Safaris eingebauter Schalter (15.15, G-18 ohne Schaltergröße); R-2.3 Suche ohne Akzente (15.2); 1 Grundsatz ‚kein UI-Framework‘; 13 sichere Ränder und Schalter; HIG-Checkliste 10–12 |
 | 4.28.2 | 21.10.2026 | Korrektur | **A-39 Konsolidierung (keine neue Regel):** Regeln nur noch im Katalog (17), die Abschnitte 1–16 verweisen darauf; Geschichte (‚seit …‘, A-/T-/P-Nummern, ‚Nutzer …‘, ‚vorher …‘) nur noch hier; Katalog mit Spalte ‚Bau‘ statt ‚ersetzt‘ (Inhalt unter ‚Zuordnung alt → neu‘), neu die Liste ‚Regeln ohne automatische Prüfung‘ G-1 bis G-19 (Prüfungen dafür: Backlog A-40); HIG-Checkliste 16 als Zuordnung HIG-Punkt → Regel, dazu die bewusste Abweichung ‚Nach oben / Ans Ende auch am iPhone‘ aus der App-Richtlinie; 11 nimmt die Versionsregeln der Zusammenarbeit (bisher §8) auf; 12: die App-Richtlinie enthält nur Abweichungen, alles andere App-Eigene steht in PROMPT.md (Nutzer 21.10.2026, F-5); 13 heißt ‚Safari und iPad – technische Erfahrungen‘ und nennt nur den heutigen Stand; überholte Stellen dem gebauten Stand angeglichen (F-7): Hinweise 14 px, Zusatzzeilen 13 px (3, HIG 2), Startliste mit [plus \| search \| ellipsis] (15.17) |
 | 4.28.1 | 21.10.2026 | Korrektur | **A-36 (P-60): Tastatur ohne Springen** – R-4.5 ergänzt: beim Antippen rollt das Feld in die obere Hälfte und bekommt einen neuen Fokus, Safari verschiebt nichts; Rückstellung, Platz unter dem Inhalt (`--platz`), Klick nach dem Rollen unterdrückt, Tastatur-Taste (iPad) gibt den Fokus ab, ‚Nach oben / Ans Ende‘ bei offener Tastatur mit einem Antippen, iPad-Fenster gleitet, `isPhone()` und Kapsel nach der Höhe ohne Tastatur (Abschnitte 7, 13 mit S-1 bis S-9, 15.21, 15.22); **R-2.4 neu:** iPhone quer niedrige Leisten 32 px (15.3, 15.8); Prüfungen `checkTastaturStill` erweitert, R-2.4 in `hig.mjs` |
 | 4.28.0 | 20.10.2026 | Neben | **A-35:** R-4.5 ergänzt – ein Feld mit Fokus steht immer ganz über der Tastatur, auch im Inhalt (16 px darüber, sonst direkt unter Kopf- bzw. Suchzeile; `fieldIntoView`, Abschnitt 7); neue Safari-Eigenheit in 13 (Feld unter der Tastatur: Safari verschiebt nur den sichtbaren Bereich, quer 232 px; Zifferntastatur 170 px sichtbar); `checkFieldVisible`, Safari-Modell erweitert. **A-31:** Messung abspielen (15.21, `tests/abspielen.mjs`, Messdateien in `tests/messungen/`). A-26 entfällt (Datumsfelder bleiben) |
