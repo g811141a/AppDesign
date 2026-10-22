@@ -1,6 +1,6 @@
 # AppDesign – Backlog (allgemeine Themen)
 
-**Stand 22.10.2026** · Aktuelle Version: AppDesign 4.30.1
+**Stand 23.10.2026** · Aktuelle Version: AppDesign 4.30.1
 
 Allgemeine Themen, die alle Apps betreffen. App-Themen stehen im Backlog der jeweiligen App.
 Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.4.
@@ -11,14 +11,14 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Prio | Thema | bereit seit |
 |---|---|---|---|
-| – | – | zurzeit nichts gesammelt | – |
+| A-67 | 1 | **Korrektur P-64/5 / P-65 – Zurückwischen bricht ab (Messung 23.10.2026):** 22 von 25 Versuchen bricht Safari ab (`pointercancel`), über den Tageskästen **und** daneben – sobald der Finger 10–21 px senkrecht abweicht, beginnt Safari wegen `touch-action: pan-y` zu rollen. Die Prüfung übersah es (Maus; Safari-Modell ohne späten Abbruch). **Vorschlag Korrektur AppDesign 4.30.2 / Reiselogbuch 3.28.2** (Fall-Liste `arbeit/A-67 Fall-Liste.md` 3, K-1 bis K-7): Safari-Modell, feste Prüfung F-23 nach der Messung (rot gegen 3.28.1), ist die Geste aktiv, verhindert ui.js `touchmove`; Messung zeigt `touchmove`; dieselbe Lücke beim Griff und am iPad hoch. **Wartet auf Ja** | 23.10.2026 |
 
 
 ## 1. Auf iPad und iPhone prüfen
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| A-67 | 1 | **Messung am Gerät (P-65 im Reiselogbuch 3.28.1):** Zurückwischen über einem Tageskasten mit laufender Messung, Datei teilen. Schritt 1 gebaut (4.30.1: Messmodus zeichnet Berührungen und Gesten-Entscheidungen auf, Fall-Liste `arbeit/A-67 Fall-Liste.md`). **Schritt 2:** mit der Messdatei den Ablauf als feste Prüfung nachbauen (rot gegen 3.28.1), beheben, Korrektur 4.30.2 / 3.28.2 nach Ja | wartet auf Messung |
+| – | – | zurzeit nichts zu prüfen | – |
 
 ## 2. Weitere Themen (in Klärung)
 

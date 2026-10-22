@@ -31,10 +31,33 @@ federt zurück. Nach 0 Nr. 20 zuerst messen, dann nachbauen.
 Grenzen: Zeilen der Gestenstelle stehen vor der Zeigerzeile desselben Augenblicks (sie hört zuerst). Abgespielt werden Berührungen
 nicht (`abspielen.mjs`).
 
-## 3. Schritt 2 (nach der Messung)
+## 3. Ergebnis der Messung (P-65, Nutzer 23.10.2026) und Schritt 2
 
-Mit der Messdatei den Ablauf als feste Prüfung nachbauen (rot gegen 3.28.1, Safari-Modell `safari.mjs`), beheben, dieselbe Lücke
-überall suchen – Korrektur 4.30.2 / 3.28.2 nach Ja.
+**Messung** `messung-2026-10-23-0633.txt` (iPhone, iOS 26.6.2, Home-Bildschirm, 95 s): 25 Zurückwisch-Versuche, **22 von Safari
+abgebrochen** (`pointercancel`, Lage 0 0), 3 fertig. Danach rollt Safari den Inhalt selbst (`scroll rolle`).
+
+- **Nicht der Tageskasten:** abgebrochen wird über den Kästen (`div.box.day`) **und** daneben (`dt @rolle`, Kopf des Reiselogbuchs).
+- **Auslöser ist die senkrechte Abweichung des Fingers:** Safari bricht ab, sobald sich der Finger seit dem Aufsetzen **10–21 px
+  senkrecht** bewegt hat (in 20 von 22 Fällen 10–16 px) – egal wie weit er schon waagrecht ist (bis 289 px, Weg 0,72 der Breite).
+  Mit `touch-action: pan-y` gehört das senkrechte Rollen dem Browser; ab etwa 10 px senkrecht beginnt Safari zu rollen und nimmt der
+  Seite den Finger weg. Die Gestenstelle wertet das als Abbruch und federt zurück (‚die Startliste federt zurück und verschwindet‘).
+  `preventDefault` auf `pointermove` hält Safari nicht auf – nur auf `touchmove`.
+- **Fertig** wurde es, wenn der Finger unter 10 px senkrecht blieb (dy 5) bzw. zweimal mit dy 25/35 (über `dd.swipe` bzw. einem
+  langen, langsamen Zug) – Safari bricht also nicht ausnahmslos ab.
+- **Warum die Prüfung es übersah:** Playwright wischt mit der Maus; Chromium und WebKit der Prüfung entscheiden bei `pan-y` nach
+  der ersten Bewegung und rollen danach nie mehr – das Safari-Modell kennt den späten Abbruch nicht.
+
+**Vorschlag Korrektur 4.30.2 / 3.28.2:**
+
+| Nr. | Fall | Prüfung |
+|---|---|---|
+| K-1 | Safari-Modell (`safari.mjs`): bei `pan-y` und Berührung beginnt Safari ab 10 px senkrecht zu rollen und schickt `pointercancel`, wenn `touchmove` nicht verhindert wurde (Designrichtlinie 13 mit der Messung als Quelle) | Modell-Selbsttest |
+| K-2 | Feste Prüfung nach der Messung: Wischen mit Berührung über einem Tageskasten und über dem Kopf, dx 136 / dy 14 in 12 Schritten (180 ms) sowie dy 10, 13, 21 – **rot gegen 3.28.1** | `checkNavigation` F-23 (Chromium und WebKit mit Berührung) |
+| K-3 | Behebung: ist die Geste aktiv, verhindert ui.js `touchmove` (nicht passiver Hörer) – Safari rollt nicht, kein Abbruch; die Seite folgt nur dem Finger waagrecht | F-23 grün; F-7 senkrecht rollt weiter |
+| K-4 | Vor der Entscheidung (unter 10 px) nichts verhindern – senkrechtes Rollen bleibt wie bisher | F-7, F-8, F-17 |
+| K-5 | Messung: `touchmove` mit ‚verhindert‘ bzw. ‚nicht verhinderbar‘ in der Zeile (zur Bestätigung am Gerät) | F-22 |
+| K-6 | Dieselbe Lücke überall: Schnellroll-Griff (`.schnell`), Seitenleiste am iPad hoch – gleiche Stelle | `checkGriff`, F-11/F-12 mit Berührung |
+| K-7 | Am Gerät (P-66): über Kasten, daneben, schräg, mit laufender Messung | Prüfliste |
 
 ## 4. A-66 (dazu)
 
