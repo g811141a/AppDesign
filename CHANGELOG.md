@@ -3,6 +3,30 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.30.2 – 23.10.2026
+
+AppDesign 4.30.2 · Designrichtlinie allgemein 4.30.2 · Zusammenarbeit allgemein 2.18.0 · geprüft mit Reiselogbuch 3.28.2
+
+**Korrektur A-67 – Zurückwischen bricht ab** (dein Ja vom 23.10.2026, Messung P-65, Fall-Liste `arbeit/A-67 Fall-Liste.md` 3,
+K-1 bis K-7). Prüfpunkt im Reiselogbuch: P-66.
+
+- **Ursache (gemessen):** Safari beginnt auch mit `touch-action: pan-y` zu rollen, sobald der Finger seit dem Aufsetzen 10 px
+  senkrecht abweicht – mitten im Zurückwischen – und nimmt der Seite den Finger (`pointercancel`); die Geste federte zurück. 22 von
+  25 Zügen, über den Tageskästen und daneben – nicht der Kasten war schuld (Vermutung aus P-64 widerlegt).
+- **Behebung (R-7.5, 15.17):** ist die Geste entschieden, verhindert ui.js `touchmove` (nicht passiver Hörer) – nur das hält Safari
+  auf. Vorher wird nichts verhindert: senkrecht rollt weiter der Browser, Bereiche mit eigenem waagrechtem Rollen behalten ihr
+  Wischen. Gilt an der einen Gestenstelle, also auch für die Seitenleiste am iPad hoch. Der Schnellroll-Griff (`touch-action:
+  none`) ist nicht betroffen. Entspricht HIG: wie in iOS rastet eine Wischgeste in ihrer Richtung ein.
+- **Safari-Modell S-10 (`safariWischen` in `safari.mjs`):** Berührung mit spätem Abbruch ab 10 px senkrecht, wenn `touchmove` nicht
+  verhindert ist – mit der Messung als Quelle (Designrichtlinie 13).
+- **Prüfung `checkNavigation` F-23 (neu):** die gemessenen Züge (136/217/289 px waagrecht bei 13–14 px senkrecht in 130–250 ms)
+  über einem Kasten (`kasten`) und daneben, senkrecht rollt weiter, Seitenleiste am iPad hoch; die Messung zeigt
+  ‚touchmove verhindert‘. **Rot gegen den Stand 4.30.1** (27 Meldungen, nur F-23 – wie am Gerät), grün mit der Behebung.
+- **Warum die Prüfung es übersah:** sie wischte mit der Maus; Chromium und WebKit der Prüfung rollen nach der ersten Bewegung nie
+  mehr, das Safari-Modell kannte den späten Abbruch nicht. Ab jetzt spielt F-23 Berührungen nach Safari nach.
+- **Messmodus (15.21):** neue Zeile ‚touchmove frei|verhindert|fest‘ beim Wechsel.
+- **Designrichtlinie allgemein 4.30.2:** 13 Wischgesten (später Abbruch, Quelle), 15.17, 15.21.
+
 ## 4.30.1 – 22.10.2026
 
 AppDesign 4.30.1 · Designrichtlinie allgemein 4.30.1 · Zusammenarbeit allgemein 2.18.0 · geprüft mit Reiselogbuch 3.28.1

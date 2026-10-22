@@ -47,7 +47,7 @@ abgebrochen** (`pointercancel`, Lage 0 0), 3 fertig. Danach rollt Safari den Inh
 - **Warum die Prüfung es übersah:** Playwright wischt mit der Maus; Chromium und WebKit der Prüfung entscheiden bei `pan-y` nach
   der ersten Bewegung und rollen danach nie mehr – das Safari-Modell kennt den späten Abbruch nicht.
 
-**Vorschlag Korrektur 4.30.2 / 3.28.2:**
+**Korrektur 4.30.2 / 3.28.2** (Ja des Nutzers 23.10.2026, gebaut – F-23 rot gegen 4.30.1 mit 27 Meldungen, grün mit der Behebung; Prüfliste P-66):
 
 | Nr. | Fall | Prüfung |
 |---|---|---|

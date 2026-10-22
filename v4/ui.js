@@ -1,4 +1,4 @@
-// AppDesign 4.30.1 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
+// AppDesign 4.30.2 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
 // Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/fassung/X.Y.Z/ui.js"></script> (feste Fassung, R-10.3)
 // Seit 4.11.0 (R-10.3): ui.js und design.css immer mit ?v=<AppDesign-Version> einbinden (auch in sw.js) und beim Start
 // prüfen, ob genau diese Fassung geladen ist (AD_VERSION hier, --ad-version in design.css).
@@ -19,7 +19,7 @@
 
 'use strict';
 // Version der Bausteine (R-10.3): die App vergleicht sie beim Start mit der benötigten Fassung.
-const AD_VERSION = '4.30.1';
+const AD_VERSION = '4.30.2';
 /* ---------- Icons ---------- */
 
 // Schaltflächen-Icons aus Lucide (ISC-Lizenz), direkt eingebettet, damit die App offline funktioniert.
@@ -1620,6 +1620,10 @@ function navLoslassen(e, abbruch) {
   } else if (z.nach === 1) navFahre('seite', p, geschafft ? 1 : 0, z.w, geschafft ? null : () => navApp.seite.zeigen(false));
   else navFahre('seite', p, geschafft ? 0 : 1, z.w, geschafft ? () => navApp.seite.zeigen(false) : null);
 }
+// A-67 (Messung P-65): wo der Browser senkrecht rollen darf, beginnt Safari ab 10 px senkrechter Abweichung zu rollen und nimmt der
+// Seite den Finger (pointercancel) – auch mitten im Zurückwischen. Ist die Geste entschieden, verhindert touchmove das; nur touchmove
+// hält Safari auf (nicht pointermove). Vorher bleibt alles frei – senkrecht rollt der Browser wie bisher.
+window.addEventListener('touchmove', e => { if (navZug?.aktiv && e.cancelable) e.preventDefault(); }, { capture: true, passive: false });
 window.addEventListener('pointerup', e => navLoslassen(e, false), true);
 window.addEventListener('pointercancel', e => navLoslassen(e, true), true);
 // Nach einer Wischgeste kein Antippen dessen, worauf sie begann
@@ -1917,6 +1921,10 @@ function messStart({ app = '', teile = {}, rollen = {} } = {}) {
   hoere(document, 'pointerup', e => zeiger('up', e));
   hoere(document, 'pointercancel', e => zeiger('cancel', e));
   hoere(document, 'touchcancel', e => `touchcancel ${e.changedTouches?.length ?? 0} ${messZiel(e.target)}`);
+  // seit 4.30.2 (A-67): ob Safari das Rollen noch erlaubt – ‚touchmove frei‘, ‚verhindert‘ (die Geste hält den Finger) bzw. ‚fest‘
+  // (nicht mehr verhinderbar, Safari rollt); nur beim Wechsel, jede Berührung beginnt neu
+  hoere(document, 'pointerdown', () => { mess.tm = ''; return ''; });
+  hoere(document, 'touchmove', e => { const z = e.cancelable ? e.defaultPrevented ? 'verhindert' : 'frei' : 'fest'; if (z === mess.tm) return ''; mess.tm = z; return 'touchmove ' + z; });
   messZeile('start');
   mess.bild = requestAnimationFrame(messBild);
 }

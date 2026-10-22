@@ -1,6 +1,6 @@
 # Designrichtlinie allgemein
 
-**Version 4.30.1** · Stand 22.10.2026
+**Version 4.30.2** · Stand 23.10.2026
 
 Allgemeine Gestaltungs- und Bedienregeln für alle Web-Apps von g811141a auf iPad und iPhone. Die Datei liegt im Design-Repo
 **AppDesign** (g811141a/AppDesign); ihre Versionsnummer ist die des Repos. Die Komponenten sind dort einmal programmiert und
@@ -411,6 +411,11 @@ Gemessene bzw. belegte Eigenheiten mit Quelle; sie gelten für alle Apps, die Pr
   (eine Seite zurück im Verlauf). Damit waagrechtes Wischen bei der App ankommt, braucht der Bereich `touch-action: pan-y` (sonst
   übernimmt Safari die Berührung mit `pointercancel`); Bereiche mit eigenem waagrechtem Rollen sind selbst Rollbereiche und behalten
   ihr Wischen. Ein Antippen nach einer Bewegung über 10 px unterdrückt ui.js (Maus und Zeichenstift lösen es sonst aus).
+  **Später Abbruch:** auch mit `pan-y` beginnt Safari zu rollen, sobald der Finger seit dem Aufsetzen 10 px senkrecht abweicht –
+  mitten in einer waagrechten Geste – und nimmt der Seite den Finger (`pointercancel`, Lage 0 0); `preventDefault` auf
+  `pointermove` hält Safari nicht auf, nur auf `touchmove` (solange es `cancelable` ist). ui.js verhindert `touchmove`, sobald die
+  Geste entschieden ist (nicht passiver Hörer); vorher nie, damit senkrecht weiter der Browser rollt. Nachgebildet in `safari.mjs`
+  (S-10, `safariWischen`). Quelle: Messung P-65 (iOS 26.6.2, Home-Bildschirm): 22 von 25 Zügen bei 10–21 px senkrecht abgebrochen.
   Quelle: [Apple-Forum – iOS 26 swipe to navigate back](https://developer.apple.com/forums/thread/791605), Muster A-61 am Gerät.
 - **Weiches Rollen anhalten:** WebKit hält ein laufendes `scrollTo({ behavior: 'smooth' })` bei einem neuen `scrollTo` ohne
   Bewegung nicht an (gemessen im Prüf-WebKit beim Bau von 4.30.0, am Gerät nicht gemessen); es endet, wenn der Rollbereich kurz
@@ -718,7 +723,8 @@ Regel). In AppDesign ist jede Komponente einmal programmiert (`v4/design.css`, `
   Der Rollstand der Startliste bleibt, der zuletzt geöffnete Eintrag ist blau (R-7.2). ‚Bewegung reduzieren‘: Überblenden statt
   Schieben, auch beim Wischen. VoiceOver: Zurück-Knopf, ‚Zurück‘-Geste (Escape). Wischen tippt nie an, worauf es begann.
   **Technisch:** `navAnmelden({ zurueck, seite })` meldet die App an, `navVor(change)`, `navZurueck()`, `navSeite(an)` (ui.js); je
-  Bild nur `transform` und `opacity` (Web-Animation), wo gewischt werden kann `touch-action: pan-y pinch-zoom` (`html.wischt`).
+  Bild nur `transform` und `opacity` (Web-Animation), wo gewischt werden kann `touch-action: pan-y pinch-zoom` (`html.wischt`);
+  ist die Geste entschieden, verhindert ui.js `touchmove` – Safari rollt dann nicht mehr dazwischen (13 Wischgesten).
 - **Titel einer Inhaltsseite** steht wie am iPad **immer in der Leiste** (`.pnav-title`, ohne großen Titel darüber, R-2.2);
   darunter die Angaben mit Bezeichnung, auf dem iPhone mit Umbruch nach dem Doppelpunkt.
 - **Großer Titel** (`.ltitle`, 34 pt fett, nur bei Bedarf) mit grauer Zeile darunter (`.lcount`). Wie Notizen: wird er
@@ -861,7 +867,8 @@ Regel). In AppDesign ist jede Komponente einmal programmiert (`v4/design.css`, `
   scroll, resize, Drehen, `visualViewport` resize/scroll, Neuaufbau (`setHtml`), und was ui.js bei der Tastatur tut: ‚neu
   fokussiert <id>‘, ‚klick unterdrückt <id>‘, ‚zurückgestellt <id> alt → neu‘, ‚platz weg <id>‘.
 - **Berührungen und Gesten:** ‚zeiger down|move|up|cancel x y Art Ziel‘ (Lage in px, Art touch/mouse/pen, ‚neben‘ für einen
-  weiteren Finger; move nur bei gedrücktem Zeiger), ‚touchcancel Finger Ziel‘. Ziel ohne Texte: id bzw. Tag mit Klassen und Rolle,
+  weiteren Finger; move nur bei gedrücktem Zeiger), ‚touchcancel Finger Ziel‘, ‚touchmove frei|verhindert|fest‘ (beim Wechsel:
+  Safari darf noch rollen, die Geste hält den Finger, Safari rollt schon). Ziel ohne Texte: id bzw. Tag mit Klassen und Rolle,
   ‚in …‘ das antippbare Element darum, ‚@…‘ die nächste id (z. B. ‚span in div.box.day[button] @app‘). Dazu die Entscheidungen der
   Gestenstelle (R-7.5): ‚nav kandidat <art>‘ bzw. ‚nav kein kandidat [eigen]‘, ‚nav verworfen richtung|gehalten|offen dx dy‘,
   ‚nav aktiv <art> dx dy‘, ‚nav fertig|zurück gefedert|abgebrochen weg W tempo T‘ (Weg als Anteil der Breite, Tempo in px/ms),
@@ -870,7 +877,7 @@ Regel). In AppDesign ist jede Komponente einmal programmiert (`v4/design.css`, `
   verwirft); Ende nach 5 Minuten oder 20 000 Zeilen.
 - **Technisch:** `ui.js` – `messungMenuItems({ app, teile, rollen })` ins Menü der Seitenleiste; `teile`/`rollen` = Spalte →
   Selektor (erstes sichtbares Element). Prüfung `checkMessung` (Fall-Liste `arbeit/A-27 Fall-Liste.md`, F1–F12), Berührungen und
-  Gesten `checkNavigation` F-22 (`arbeit/A-67 Fall-Liste.md`).
+  Gesten `checkNavigation` F-22 und F-23 (`arbeit/A-67 Fall-Liste.md`).
 - **Abspielen:** Messdateien liegen in `tests/messungen/` (nur Zahlen, Längen und ids, keine Texte) und laufen in den Prüfungen
   der App mit: `tests/abspielen.mjs` – `lies(text)` (Kopf, Spalten, Zeilen; Fehler mit Zeilennummer), `ansicht(m)` (Größe und
   Darstellung des Geräts), `spieleAb(p, m, { ziele, woerter, bis, nachSchritt })` spielt Tippen, Eingaben und das Schließen der
@@ -1099,6 +1106,7 @@ R-2.3 (15.2), R-4.4 (6, 15.8, HIG 9), R-5.3 (8), R-5.4 (15.12), R-5.5 (A-14), R-
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 4.30.2 | 23.10.2026 | Korrektur | **A-67 (Messung P-65):** 13 Wischgesten – Safari bricht auch mit `pan-y` ab 10 px senkrechter Abweichung ab, ist die Geste entschieden, verhindert ui.js `touchmove` (15.17); 15.21 Zeile ‚touchmove‘; Safari-Modell S-10 (`safariWischen`), Prüfung `checkNavigation` F-23 |
 | 4.30.1 | 22.10.2026 | Korrektur | **A-67 Schritt 1 und A-66:** 15.21 – der Messmodus zeichnet Berührungen (Zeiger, touchcancel mit Ziel) und die Entscheidungen der Gestenstelle (R-7.5) auf, für die Messung ‚Zurückwischen über einem Tageskasten‘ (P-64/5); Prüfung `checkNavigation` F-22, F-1/F-2/F-19 zeichnen bis zum Ende der Bewegung auf |
 | 4.30.0 | 22.10.2026 | Neben | **A-37 B+C und A-61 Teil 1 (Variante ‚Überall‘):** R-3.2 ergänzt – Kapsel ‚Nach oben / Ans Ende‘ nur mit wirksamen Pfeilen, unten fest, bei offenem Fenster und im Druck nicht zu sehen; neu der Schnellroll-Griff mit Blase und Marken `data-marke` (4, 15.1, 15.17, 15.22; A-45 damit entschieden); neu R-7.5 Navigation und Gesten – Seitenwechsel als Schieben, Zurückwischen von überall, Seitenleiste am iPad hoch per Wischen, Vorrang an einer Stelle (15.4, 15.17, 13 Wischgesten); Prüfungen `checkFab` mit `checkGriff`, neu `checkNavigation` |
 | 4.29.0 | 22.10.2026 | Neben | **A-63 Paket C und A-42:** neu R-1.7 sichere Ränder (Variablen `--safe-…`, Prüfung mit Gerätewerten; iPad-Fenster, Menüs und Sprechblasen halten Abstand), R-5.6 ⓧ in einzeiligen Feldern (15.11), R-5.7 Safaris eingebauter Schalter (15.15, G-18 ohne Schaltergröße); R-2.3 Suche ohne Akzente (15.2); 1 Grundsatz ‚kein UI-Framework‘; 13 sichere Ränder und Schalter; HIG-Checkliste 10–12 |
