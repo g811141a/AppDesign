@@ -1,52 +1,57 @@
 # Übergabe an die nächste Sitzung
 
-**Stand 22.10.2026** · geschrieben in der Sitzung ‚Reiselogbuch 0029‘ (Ende) – Aufbau nach Zusammenarbeit allgemein 2.5.
+**Stand 22.10.2026** · geschrieben in der Sitzung ‚Reiselogbuch 0030‘ (Ende) – Aufbau nach Zusammenarbeit allgemein 2.5.
 **Claude liest diese Datei zu Beginn jeder Sitzung zuerst** (0 Nr. 15); die Arbeitsumgebung steht in der AppDesign-`CLAUDE.md`.
 
 ## 1. Lagebild
 
 | Teil | Version | Datei |
 |---|---|---|
-| Reiselogbuch | **3.27.0** online (Fassung 4.29.0) | g811141a/ReiseLogBuch – `CHANGELOG.md`, `BACKLOG.md`, `PROMPT.md` |
-| AppDesign | **4.29.0** online | g811141a/AppDesign – `CHANGELOG.md`, `BACKLOG.md` |
+| Reiselogbuch | **3.28.0** online (Fassung 4.30.0) | g811141a/ReiseLogBuch – `CHANGELOG.md`, `BACKLOG.md`, `PROMPT.md` |
+| AppDesign | **4.30.0** online | g811141a/AppDesign – `CHANGELOG.md`, `BACKLOG.md` |
 | Zusammenarbeit allgemein | **2.18.0** | `README - Zusammenarbeit allgemein.md` |
 | ReiseLogBuch-Import (privat) | 1.2.2 | g811141a/ReiseLogBuch-Import |
 
-- **Chatnummer:** die nächste Sitzung heißt **Reiselogbuch 0030**; die danach 0031.
-- **Sitzungsgröße:** Übergabe ab etwa **300.000** Token (0 Nr. 13); 0029 endete bei etwa 230.000.
-- **Modell und Aufwand:** Opus 5.5, Aufwand hoch (0029: alle Aufrufe ‚high‘, `CLAUDE_CODE_EFFORT_LEVEL=high`) – prüfen nach 0 Nr. 15.
-- **Offene Prüfpunkte:** keine.
-- **‚0. Nächste Version‘:** **A-37** und **A-61/1** bereit – **Ja des Nutzers liegt vor** (22.10.2026): AppDesign 4.30.0 /
-  Reiselogbuch 3.28.0.
+- **Chatnummer:** die nächste Sitzung heißt **Reiselogbuch 0031**; die danach 0032.
+- **Sitzungsgröße:** Übergabe ab etwa **300.000** Token (0 Nr. 13); 0030 endete bei etwa 490.000 (lange Prüf- und Veröffentlichungsläufe).
+- **Modell und Aufwand:** Opus 5.5, Aufwand hoch – prüfen nach 0 Nr. 15.
+- **Prüfpunkt P-64 (3.28.0):** alles ok **bis auf /5** – Zurückwischen über einem Tageskasten federt zurück (→ A-67).
+- **‚0. Nächste Version‘ (AppDesign):** **A-67** und **A-66** – **Ja des Nutzers liegt vor** (22.10.2026): AppDesign **4.30.1** /
+  Reiselogbuch **3.28.1**.
 - **Erinnerung:** ‚Backlog-Erinnerung (AppDesign und Reiselogbuch)‘ montags 8:58.
 
-## 2. Ergebnisse der Sitzung 0029 – A-37 und A-61 Teil 1 geklärt
+## 2. Ergebnisse der Sitzung 0030 – A-37 B+C und A-61 Teil 1 gebaut
 
-- **A-37 ‚Nach oben / Ans Ende‘: B+C gewählt, allgemeine Regel**, Muster am Gerät abgenommen (inkl. Prüfpunkt 6). Kapsel zeigt nur
-  wirksame Pfeile; dazu Schnellroll-Griff rechts wie Apple Fotos (ab drei Bildschirmhöhen, Bahn bis über die Kapsel, Blase mit
-  `data-marke`). Entscheidet A-45. Fall-Liste `arbeit/A-37 Fall-Liste.md` (F-1 bis F-22), Muster `?v=bc` (`&tage=N` wählbar).
-- **A-61 aufgeteilt:** Teil 1 Navigation (T-4, T-5, T-6, T-35, A-59), Teil 2 Blatt (T-15); **Wischaktionen T-10 erst mit A-30**
-  (Rückgängig; dann wie Apple: Durchwischen löscht sofort).
-- **A-61 Teil 1: Variante Überall gewählt, allgemeine Regel**, Muster abgenommen. Seitenwechsel als Schieben, Zurückwischen am
-  iPhone von überall im Inhalt (iOS 26), am iPad hoch holt Wischen nach rechts von überall die Seitenleiste (Festlegung des
-  Nutzers); nach der Auswahl schließt sie sich weiter (15.4, bestätigt). Fall-Liste `arbeit/A-61 Teil 1 Fall-Liste.md` (F-1 bis
-  F-22), Muster `arbeit/A-61 Teil 1 Muster.html?v=ueberall`.
-- **Gelernt:** Ein Prüfpunkt ist immer ein Handgriff mit erwartetem Ergebnis – keine Entscheidungsfrage (P 6 bei A-37 war nicht
-  prüfbar); jede Festlegung einer Variante ausdrücklich für iPhone **und** iPad nennen (P 9 bei A-61: ‚Überall‘ galt nur am iPhone).
-  github.io ist aus dem Container gesperrt – Pages-Läufe mit `mcp__github__actions_list` prüfen. Muster-Prüfskripte in `arbeit/`
-  laufen aus dem Notizordner mit Verweis `node_modules` → `ReiseLogBuch/tests/node_modules`.
+- **Gebaut und veröffentlicht:** AppDesign 4.30.0 / Reiselogbuch 3.28.0 – Kapsel nur mit wirksamen Pfeilen, Schnellroll-Griff mit Blase
+  und Marken `data-marke` (R-3.2, A-45 erledigt), neu **R-7.5 Navigation und Gesten** (`navAnmelden`, `navVor`, `navZurueck`,
+  `navSeite` in ui.js; nicht `navigation` – so heißt die Navigation-API des Browsers). Prüfungen `checkFab` mit `checkGriff`, neu
+  `checkNavigation`, `navFertig` (pruefe.mjs); im Reiselogbuch neu `tests/ablauf-navigation.mjs`.
+- **Beim Bau gefunden:** Wischen tippte mit Maus/Stift an (Klick nach Bewegung > 10 px jetzt unterdrückt); WebKit hält weiches Rollen bei
+  `scrollTo` nicht an (`rolle.halt()`, Designrichtlinie 13); Blase zählte Zeilen unter dem haftenden Tabellenkopf mit (erst auf den
+  Bildern gesehen); `ablauf-abspielen.mjs` war seit dem Ablegen der Ränder-Messungen (nach 3.27.0) rot.
+- **A-66:** `checkNavigation` F-19 (‚Bewegung reduzieren‘) war unter der Volllast des Gesamtlaufs in WebKit zweimal rot (Aufzeichnung 1 s
+  zu kurz, viermal parallel einzeln grün) – in der Fassung 4.30.0 nicht mehr änderbar, kommt in 4.30.1 (aufzeichnen bis zum Ende der
+  Bewegung, mindestens 0,6 s, höchstens 3 s).
+- **A-67 (P-64/5):** am Gerät federt das Zurückwischen über einem Tageskasten zurück, daneben geht es; die Prüfung (Maus) geht. Vermutung:
+  Safari bricht die Berührung über dem antippbaren Kasten ab (`pointercancel` → Gestenstelle federt zurück).
+- **Neu im AppDesign-Backlog (Nutzer):** A-64 doppelte Leerzeichen in Feldern, A-65 automatische Großschreibung zurücknehmen (Prio 2).
+- **Gelernt:** Nie während eines laufenden Prüflaufs Namen umbenennen bzw. die Fassung neu anlegen (Lauf wird scheinbar rot). Nach
+  `los` ist die Fassung unveränderlich – auch ihre Prüfungen; Nachbesserungen nur mit neuer Version. Pages-Läufe brauchten diesmal bis
+  11 min (Skript wartet 10) – dann mit `gh run list -R g811141a/<Repo>` prüfen und `los --nur-app`. Ein Prüfpunkt mit Gesten: die
+  Mausnachbildung findet Safari-Abbrüche nicht – Messung am Gerät.
 
 Frühere Sitzungen: `VERLAUF.md` und Versionsgeschichten.
 
 ## 3. Nächster Schritt
 
-1. **Bauen: AppDesign 4.30.0 / Reiselogbuch 3.28.0** mit **A-37 B+C** und **A-61 Teil 1 Überall** (Ja liegt vor, 0 Nr. 21). Grundlage:
-   die beiden Fall-Listen (jeder Fall eine automatische Prüfung, Chromium und WebKit, hell und dunkel), Muster als Vorlage für
-   `ui.js`/`design.css`. Regeln: R-3.2 erweitern (`checkFab` für Kapsel und Griff), neue Regel für Navigation und Gesten mit
-   Prüfung; Designrichtlinie 4, 15.1, 15.4, 15.17, 15.22, 13. Im Reiselogbuch `data-marke` an Tageskästen und Abschnitten.
-   Ablauf nach AppDesign-`CLAUDE.md` ‚Veröffentlichen‘; vor `los` alle betroffenen Prüfungen einzeln (besonders `ablauf-iphone`,
-   `kapsel-iphone`, `ablauf-seitenleiste-*`, `ablauf-tastatur-still`, Messmodus). Danach Bericht mit Prüfliste (0 Nr. 11).
-2. Danach Prio 2: **A-61 Teil 2** Muster ‚Blatt‘ (T-15), **A-43** Barrierefreiheit.
+1. **Bauen: AppDesign 4.30.1 / Reiselogbuch 3.28.1** (Ja liegt vor, 0 Nr. 21) mit **A-67 Schritt 1** und **A-66**:
+   - Messmodus (15.21, R-1.6, `checkMessung`): zusätzlich `pointerdown/move/up/cancel` und `touchcancel` mit Ziel-id (nur Längen und
+     ids, keine Texte) und die Entscheidungen der Gestenstelle (‚nav aktiv‘, ‚nav fertig‘, ‚nav zurück gefedert‘, ‚nav abgebrochen‘).
+   - A-66: `checkNavigation` zeichnet bis zum Ende der Bewegung auf.
+   - Danach Bericht mit Prüfliste P-65: /0 Version, /1 Messung starten, im Reiselogbuch über einem Tageskasten zurückwischen,
+     Messung teilen.
+2. Mit der Messdatei: Ablauf als feste Prüfung nachbauen (rot gegen 3.28.1), beheben, Korrektur 4.30.2 / 3.28.2 (nach Ja).
+3. Danach Prio 2: **A-61 Teil 2** Muster ‚Blatt‘ (T-15), **A-43** Barrierefreiheit, A-64, A-65.
 
 ## 4. Danach
 
@@ -59,7 +64,7 @@ In der neuen Sitzung müssen **AppDesign** und **ReiseLogBuch** verfügbar sein 
 **ReiseLogBuch-Import** (privat).
 
 ```
-Reiselogbuch 0030 – AppDesign 4.30.0
+Reiselogbuch 0031 – AppDesign 4.30.1
 
-Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md, dann gezielt die Zusammenarbeit (Abschnitte 0 und 1) und die Überschriften der Designrichtlinien; prüfe Modell und Aufwand (Sitzungsdatei) und hole die Repos g811141a/ReiseLogBuch und g811141a/ReiseLogBuch-Import (privat) dazu, wie in der AppDesign-CLAUDE.md unter ‚Arbeitsumgebung‘. Gib das Lagebild. Dann baue AppDesign 4.30.0 / Reiselogbuch 3.28.0 mit A-37 B+C und A-61 Teil 1 Überall (Ja des Nutzers vom 22.10.2026 liegt vor) nach den Fall-Listen arbeit/A-37 Fall-Liste.md und arbeit/A-61 Teil 1 Fall-Liste.md und veröffentliche sie. Danach A-61 Teil 2 und A-43.
+Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md, dann gezielt die Zusammenarbeit (Abschnitte 0 und 1) und die Überschriften der Designrichtlinien; prüfe Modell und Aufwand (Sitzungsdatei) und hole die Repos g811141a/ReiseLogBuch und g811141a/ReiseLogBuch-Import (privat) dazu, wie in der AppDesign-CLAUDE.md unter ‚Arbeitsumgebung‘. Gib das Lagebild. Dann baue AppDesign 4.30.1 / Reiselogbuch 3.28.1 mit A-67 Schritt 1 (Messmodus zeichnet Berührungen und Gesten-Entscheidungen auf) und A-66 (Ja des Nutzers vom 22.10.2026 liegt vor) und veröffentliche sie; danach Bericht mit Prüfliste P-65 (Messung: Zurückwischen über einem Tageskasten).
 ```
