@@ -43,7 +43,7 @@
   --side-w: 0px;
   --vv-top: 0px;
   --vv-bottom: 0px;
-  /* R-1.6 (seit 4.29.0, A-63): sichere Ränder (Dynamic Island, Ecken, Home-Leiste) nur hier aus env() – überall sonst
+  /* R-1.7 (seit 4.29.0, A-63): sichere Ränder (Dynamic Island, Ecken, Home-Leiste) nur hier aus env() – überall sonst
      var(--safe-…); die Prüfungen setzen damit echte Gerätewerte (hig.mjs checkSafe), die Prüfbrowser liefern für env() immer 0 */
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
@@ -116,6 +116,12 @@ button.primary .ic.red { color: inherit; }
 /* Antippfläche 44 px (unsichtbar), das Zeichen bleibt so groß und am selben Platz wie bisher */
 .searchbox .sclear { width: 44px; height: 44px; margin: -6px; min-height: 0; min-width: 0; padding: 0; border: none; box-shadow: none; background: none; color: #a1a1a6; border-radius: 50%; }
 .searchbox .sclear svg { width: 20px; height: 20px; }
+/* Komponente ⓧ in einzeiligen Feldern (seit 4.29.0, A-63 C3, R-5.6): wie im Suchfeld – rechts im Feld, solange es den Fokus
+   hat und etwas drinsteht (ui.js setzt den Knopf hinter das Feld); der Text läuft nicht darunter */
+.fclear { position: absolute; z-index: 2; display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; margin: 0;
+  min-width: 0; min-height: 0; padding: 0; border: none; box-shadow: none; background: none; color: #a1a1a6; border-radius: 50%; touch-action: manipulation; }
+.fclear svg { width: 20px; height: 20px; }
+input.mitx:is([type=text], [type=email], [type=url], [type=tel]) { padding-right: 36px; }
 /* Komponente Kapsel: mehrere Schaltflächen in einer schwebenden Kapsel */
 .grp, .navgrp { display: inline-flex; flex: none; height: 44px; border-radius: 22px; background: var(--btn); border: .5px solid var(--btn-rim); box-shadow: var(--float); }
 /* Alle Kapseln gleich gebaut: Schaltflächen genau so hoch wie der Innenraum (44 px minus Rand); die Markierung
@@ -409,6 +415,9 @@ dialog input[type=text], dialog input[type=date], dialog textarea { background: 
   background: radial-gradient(circle at 15.5px 50%, #fff 13.5px, transparent 14px), var(--sw-off); transition: background .2s; }
 .check.sw input:checked { background: radial-gradient(circle at calc(100% - 15.5px) 50%, #fff 13.5px, transparent 14px), var(--sw-on); }
 .check.sw:has(input:disabled) { opacity: .4; cursor: default; }
+/* Seit 4.29.0 (A-63 C4): Safaris eingebauter Schalter (html.natsw, setzt ui.js) – Safari zeichnet ihn selbst, Grün über accent-color */
+html.natsw .check.sw input[switch] { -webkit-appearance: auto; appearance: auto; width: auto; height: auto; border-radius: 0; background: none;
+  accent-color: var(--sw-on); transition: none; }
 /* Komponente Options-Kapsel (Optionen beim Erfassen): wie eine Auswahl-Schaltfläche, eingeschaltet mit Häkchen */
 .check.chip { display: inline-flex; gap: 8px; height: 44px; min-height: 44px; margin: 0; padding: 0 16px; border-radius: 22px; font-size: 15px;
   background: var(--btn); border: .5px solid var(--btn-rim); box-shadow: var(--float); -webkit-user-select: none; user-select: none; }

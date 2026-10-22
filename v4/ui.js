@@ -120,25 +120,45 @@ function onLongPress(btn, onLong, onTap) {
 // R-2.3 (seit 4.25.0, A-21): Suche mit mehreren Begriffen wie Mail und Notizen – Leerzeichen trennt Wörter, ein Eintrag passt,
 // wenn alle darin vorkommen (Reihenfolge und Groß/klein egal); „…“ sucht eine genaue Wortfolge. Was ‚ein Eintrag‘ ist, sagt
 // die App (Reiselogbuch: das ganze Reiselogbuch; gezeigt werden dann die Tage mit mindestens einem Wort).
+// Seit 4.29.0 (A-63 C2) ohne Akzente wie Apple: ‚Zurich‘ findet ‚Zürich‘ und umgekehrt – verglichen wird ohne Akzentzeichen
+// (Unicode-Zerlegung, Zeichen der Klasse ‚Mark‘ entfernt); ß, ø, æ sind eigene Buchstaben und bleiben.
+const fold = t => String(t ?? '').toLocaleLowerCase('de').normalize('NFD').replace(/\p{M}/gu, '');
 const QUOTES = /["„“”]/g;
 function searchWords(term) {
   const out = [];
-  const rest = String(term ?? '').toLocaleLowerCase('de').replace(/["„“”]([^"„“”]*)["„“”]/g, (_, w) => {
+  const rest = fold(term).replace(/["„“”]([^"„“”]*)["„“”]/g, (_, w) => {
     if ((w = w.trim().replace(/\s+/g, ' '))) out.push(w);
     return ' ';
   });
   rest.replace(QUOTES, ' ').split(/\s+/).forEach(w => w && out.push(w));
   return [...new Set(out)];
 }
-const findsAll = (text, words) => words.length > 0 && words.every(w => String(text ?? '').toLocaleLowerCase('de').includes(w));
-const findsAny = (text, words) => words.some(w => String(text ?? '').toLocaleLowerCase('de').includes(w));
+const findsAll = (text, words) => { const t = fold(text); return words.length > 0 && words.every(w => t.includes(w)); };
+const findsAny = (text, words) => { const t = fold(text); return words.some(w => t.includes(w)); };
+// Buchstaben mit Akzent je Grundbuchstabe (lateinisch und griechisch), z. B. u → ùúûüũūŭůűųǔǖǘǚǜ… – für die Markierung
+let akzente = null;
+function mitAkzent(ch) {
+  if (!akzente) {
+    akzente = {};
+    for (const [a, b] of [[0xC0, 0x24F], [0x370, 0x3FF], [0x1E00, 0x1EFF], [0x1F00, 0x1FFF]]) for (let cp = a; cp <= b; cp++) {
+      const c = String.fromCodePoint(cp), f = fold(c);
+      if (f.length === 1 && f !== c.toLocaleLowerCase('de')) akzente[f] = (akzente[f] || '') + c;
+    }
+  }
+  return akzente[ch] || '';
+}
 // Alle Wörter im (bereits maskierten) Text gelb markieren, längere zuerst; aneinanderstoßende Stellen sind eine Markierung.
-// Zwischen den Zeichen darf eine unsichtbare Umbruchstelle stehen (lange Wörter, R-6.3).
+// Zwischen den Zeichen darf eine unsichtbare Umbruchstelle stehen (lange Wörter, R-6.3). Seit 4.29.0 trifft jeder Buchstabe
+// auch seine Formen mit Akzent (ü, ú …) und angehängte Zeichen (Akzent als eigenes Zeichen, Emoji-Variante) – markiert wird
+// das ganze Wort, wie es im Text steht.
 function markWords(html, words) {
   if (!words.length) return html;
   const pattern = [...words].sort((a, b) => b.length - a.length)
-    .map(w => (esc(w).match(/&[a-z0-9#]+;|./gsu) || []).map(ch => ch.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('\u200B?')).join('|');
-  return html.replace(new RegExp(pattern, 'gi'), m => `<mark>${m}</mark>`).replaceAll('</mark><mark>', '');
+    .map(w => (esc(w).match(/&[a-z0-9#]+;|./gsu) || []).map(ch => {
+      const v = ch.length === 1 && mitAkzent(ch);
+      return (v ? `[${ch}${v}]` : ch.replace(/[.*+?^${}()|[\]\\\/]/g, '\\$&')) + '\\p{M}*';
+    }).join('\u200B?')).join('|');
+  return html.replace(new RegExp(pattern, 'giu'), m => `<mark>${m}</mark>`).replaceAll('</mark><mark>', '');
 }
 
 // R-2.3 (seit 4.25.1, A-24): Seite neu aufbauen, ohne das Feld mit dem Fokus zu ersetzen. Die App ruft setHtml(el, html) statt
@@ -149,6 +169,8 @@ function markWords(html, words) {
 // bleibt der Rollstand beim Neuaufbau erhalten (wie früher der des Fensters), und ein laufender Schwung reißt nicht ab.
 function setHtml(el, html) {
   if (mess?.an) messEreignis('neuaufbau ' + (el.id || el.className || el.tagName.toLowerCase()));
+  // seit 4.29.0: das ⓧ im Feld (A-63 C3) steht nicht im neuen Inhalt – vorher heraus, danach wieder an das Feld mit Fokus
+  if (el.contains(fxBtn)) { fxBtn.remove(); queueMicrotask(fxZeigen); }
   const f = document.activeElement;
   const tpl = document.createElement('template');
   tpl.innerHTML = html;
@@ -188,6 +210,51 @@ function setHtml(el, html) {
   };
   kids(el, tpl.content);
 }
+
+// Komponente ⓧ in einzeiligen Feldern (seit 4.29.0, A-63 C3, R-5.6) wie Apple (UIKit ‚clearButtonMode = whileEditing‘):
+// solange ein einzeiliges Textfeld den Fokus hat und etwas drinsteht, steht rechts darin ein graues ⓧ (wie im Suchfeld, 44 × 44
+// Antippfläche). Antippen leert das Feld, Cursor und Tastatur bleiben; die App erfährt es über ein input-Ereignis (wie beim
+// Löschen per Taste). Ein Knopf für alle Felder, gleich hinter das Feld gesetzt (rollt mit); abschaltbar mit data-noclear.
+const FX = 'input:is([type=text], [type=email], [type=url], [type=tel]):not([readonly], [disabled], [data-noclear])';
+const fxBtn = document.createElement('button');
+fxBtn.type = 'button'; fxBtn.className = 'fclear'; fxBtn.tabIndex = -1; fxBtn.setAttribute('aria-label', 'Eingabe löschen');
+fxBtn.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="currentColor"/><path d="M15 9l-6 6M9 9l6 6" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>';
+let fxFeld = null, fxTippt = false, fxRahmen = null;
+function fxZeigen() {
+  const f = document.activeElement, an = f?.matches?.(FX) && f.value !== '' ? f : null;
+  if (fxFeld && fxFeld !== an) fxFeld.classList.remove('mitx');
+  // Bezugsrahmen ist das Element um das Feld (sonst läge er womöglich außerhalb des Rollbereichs und das ⓧ rollte nicht mit)
+  if (fxRahmen && fxRahmen !== an?.parentElement) { fxRahmen.style.position = ''; fxRahmen = null; }
+  fxFeld = an;
+  if (!an) { fxBtn.remove(); return; }
+  an.classList.add('mitx');
+  if (fxBtn.previousSibling !== an) an.after(fxBtn);
+  // jedes Mal neu setzen – ein Neuaufbau (setHtml) gleicht die Attribute des Rahmens an und nimmt es wieder weg
+  const pa = an.parentElement;
+  if (fxRahmen === pa || getComputedStyle(pa).position === 'static') { fxRahmen = pa; pa.style.position = 'relative'; }
+  // Lage über den Ursprung des Bezugsrahmens gemessen (gleich, wo das Feld steht – Fenster, Inhalt, Tabelle)
+  fxBtn.style.left = fxBtn.style.top = '0px';
+  const o = fxBtn.getBoundingClientRect(), r = an.getBoundingClientRect();
+  fxBtn.style.left = Math.round(r.right - 44 - o.left) + 'px';
+  fxBtn.style.top = Math.round(r.top + (r.height - 44) / 2 - o.top) + 'px';
+}
+// Antippen: den Fokus nicht abgeben (Tastatur bleibt), leeren, die App benachrichtigen
+fxBtn.addEventListener('pointerdown', e => { fxTippt = true; e.preventDefault(); });
+fxBtn.addEventListener('mousedown', e => e.preventDefault());
+fxBtn.addEventListener('click', e => {
+  e.preventDefault(); fxTippt = false;
+  const f = fxFeld; if (!f) return;
+  f.value = '';
+  if (document.activeElement !== f) f.focus();
+  f.dispatchEvent(new Event('input', { bubbles: true }));
+  fxZeigen();
+});
+document.addEventListener('focusin', fxZeigen);
+document.addEventListener('input', () => queueMicrotask(fxZeigen));
+document.addEventListener('focusout', () => setTimeout(() => { if (!fxTippt) fxZeigen(); }, 0));
+document.addEventListener('pointerup', () => setTimeout(() => { fxTippt = false; }, 400), true);
+window.addEventListener('resize', () => requestAnimationFrame(fxZeigen));
+if (window.ResizeObserver) { const ro = new ResizeObserver(() => fxFeld && fxZeigen()); document.addEventListener('focusin', e => { ro.disconnect(); if (e.target.matches?.(FX)) ro.observe(e.target); }); }
 
 /* ---------- Darstellung ---------- */
 
@@ -297,7 +364,7 @@ function showModalQuiet(d) {
 }
 
 // Menü oder Sprechblase unter (bzw. über) der Schaltfläche, im Bildschirm gehalten.
-// R-1.6 (seit 4.29.0, A-63): Abstände von Menüs und Sprechblasen zum Rand – 12 px, mindestens die sicheren Ränder
+// R-1.7 (seit 4.29.0, A-63): Abstände von Menüs und Sprechblasen zum Rand – 12 px, mindestens die sicheren Ränder
 // (bei offener Tastatur liegt die Home-Leiste unter ihr)
 function rand12() {
   const g = safeRand();
@@ -308,7 +375,7 @@ function placeAt(el, anchor, align) {
   // Reicht der Platz darunter nicht, scrollt ihr Inhalt darin (erst bei weniger als 200 px Platz darunter
   // öffnen sie nach oben). 'beside': rechts neben dem Eintrag (Kontextmenü in der Seitenleiste), oben bündig.
   el.style.maxHeight = ''; el.style.overflowY = '';   // nach dem Drehen neu messen
-  // Seit 4.29.0 (R-1.6, A-63): Abstand 12 px vom Rand, mindestens aber die sicheren Ränder (Aussparung, Home-Leiste)
+  // Seit 4.29.0 (R-1.7, A-63): Abstand 12 px vom Rand, mindestens aber die sicheren Ränder (Aussparung, Home-Leiste)
   const { L, R, T, B } = rand12();
   let r = anchor.getBoundingClientRect();
   const fit = room => { if (el.scrollHeight > room) { el.style.maxHeight = room + 'px'; el.style.overflowY = 'auto'; el.style.overscrollBehavior = 'contain'; } };
@@ -1125,6 +1192,9 @@ function deviceName() {
 }
 function applyLayout() { document.documentElement.classList.toggle('phone', isPhone()); }
 applyLayout();
+// Schalter (seit 4.29.0, A-63 C4, 15.15): kennt der Browser den eingebauten Schalter (Safari ab 17.4, <input type="checkbox" switch>),
+// zeichnet Safari ihn selbst – gleitet, ziehbar, Haptik, VoiceOver ‚Schalter‘, Aussehen der iOS-Version; sonst unser Schalter (design.css)
+document.documentElement.classList.toggle('natsw', 'switch' in HTMLInputElement.prototype);
 window.addEventListener('resize', applyLayout);
 
 // Großer Titel (iPhone): sobald er unter die Leiste geschoben ist, steht er klein in der Leiste (.pnav.titled).
@@ -1236,7 +1306,7 @@ function kbOffen() { return !!window.visualViewport && visualViewport.height < s
 // Felder, die eine Tastatur öffnen (Datum, Uhrzeit, Auswahl und Schalter öffnen keine)
 const FELD = 'textarea, input:not([type=date],[type=time],[type=datetime-local],[type=month],[type=checkbox],[type=radio],[type=button],[type=submit],[type=reset],[type=range],[type=color],[type=file],[type=hidden]):not([readonly])';
 let dlgFest = 0;   // seit 4.28.1: Höhe des iPad-Fensters vor dem Antippen – der Platz unter dem Inhalt macht es nicht höher
-// R-1.6 (seit 4.29.0, A-63): sichere Ränder in px – aus den Variablen --safe-… (design.css), über ein unsichtbares Element gelesen
+// R-1.7 (seit 4.29.0, A-63): sichere Ränder in px – aus den Variablen --safe-… (design.css), über ein unsichtbares Element gelesen
 let safeEl = null;
 function safeRand() {
   if (!safeEl) { safeEl = document.createElement('div'); safeEl.setAttribute('aria-hidden', 'true');

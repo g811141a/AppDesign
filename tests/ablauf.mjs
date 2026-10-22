@@ -1,5 +1,5 @@
 // AppDesign 4.12.0 · Ablauf-Prüfungen für Regeln, die eine Handlung brauchen (Designrichtlinie allgemein, Abschnitt 17):
-// R-1.6 Messmodus (seit 4.26.0) · R-4.5 Feld über der Tastatur (seit 4.28.0), Tastatur ohne Springen (seit 4.28.1) · R-2.3 Suche (seit 4.23.0 auch in der zentralen Liste, seit 4.25.0 mehrere Wörter und „…“, seit 4.25.1 Suchfeld bleibt beim Tippen) · A-22 Lupe am Ende der Kapsel · R-4.4 Fenster-Kopfzeile · R-5.2 Texteingabe · R-5.3 Fehlermeldungen · R-5.5 Eingabetaste (seit 4.19.0) · R-6.4 Ausgabe und Vorschau · R-7.3 Liste steht still (seit 4.18.0) · R-7.4 Position beim Öffnen und R-8.1 Seitenleiste ein/aus (seit 4.21.0).
+// R-1.6 Messmodus (seit 4.26.0) · R-4.5 Feld über der Tastatur (seit 4.28.0), Tastatur ohne Springen (seit 4.28.1) · R-2.3 Suche (seit 4.23.0 auch in der zentralen Liste, seit 4.25.0 mehrere Wörter und „…“, seit 4.25.1 Suchfeld bleibt beim Tippen) · A-22 Lupe am Ende der Kapsel · R-4.4 Fenster-Kopfzeile · R-5.2 Texteingabe · R-5.3 Fehlermeldungen · R-5.5 Eingabetaste (seit 4.19.0) · R-5.6 ⓧ in Feldern (seit 4.29.0) · R-6.4 Ausgabe und Vorschau · R-7.3 Liste steht still (seit 4.18.0) · R-7.4 Position beim Öffnen und R-8.1 Seitenleiste ein/aus (seit 4.21.0).
 // Jede Funktion bekommt eine Playwright-Seite und gibt eine Liste von Fehlern zurück (leer = in Ordnung), je mit Regelnummer.
 // Einbinden im Prüfskript der App:  import { checkSearch, checkDialogHead } from '../../AppDesign/tests/ablauf.mjs';
 //                                   fehler.push(...await checkSearch(page, { term: 'Sydney' }));
@@ -216,6 +216,63 @@ export async function checkEnterDone(p, { open, fields = [], multi = '', where =
     if (!r.v.includes('\n') || !r.fokus) E(`${multi}: Eingabetaste macht keinen Zeilenumbruch (‚${r.v.replace(/\n/g, '⏎')}‘${r.fokus ? '' : ', Fokus weg'})`);
   }
   if (wasOpen) { await p.evaluate(() => document.getElementById('dlg').close()); await wait(p); }
+  return errors;
+}
+
+// R-5.6 ⓧ in einzeiligen Feldern (seit 4.29.0, A-63 C3, Fall-Liste arbeit/A-63 Fall-Liste.md X-1 bis X-8): open() öffnet Fenster
+// bzw. Ansicht (optional); fields: [{ sel, text, warn }] – warn: Pflichtfeld, nach dem Leeren mit ⓧ steht die Fehlermeldung (X-4).
+// Geprüft: leer bzw. ohne Fokus kein ⓧ; mit Text rechts im Feld, 44 × 44, Text läuft nicht darunter; Antippen leert, Fokus bleibt,
+// die App bekommt ein input-Ereignis; das ⓧ rollt mit (X-7) und bleibt nach dem Drehen am Feld (X-8).
+export async function checkClear(p, { open, fields = [], where = '' } = {}) {
+  const errors = [], E = (sel, t) => errors.push(`${where ? where + ': ' : ''}R-5.6 ${sel}: ${t}`);
+  if (open) { await open(); await wait(p, 350); }
+  const lage = sel => p.evaluate(sel => {
+    const f = document.querySelector(sel), x = [...document.querySelectorAll('.fclear')].find(b => b.getClientRects().length && getComputedStyle(b).visibility !== 'hidden');
+    if (!x) return { x: false, fokus: document.activeElement === f, wert: f.value };
+    const fr = f.getBoundingClientRect(), xr = x.getBoundingClientRect(), cs = getComputedStyle(f);
+    return { x: true, fokus: document.activeElement === f, wert: f.value, w: Math.round(xr.width), h: Math.round(xr.height), rechts: Math.round(fr.right - xr.right),
+      mitte: Math.round((xr.top + xr.bottom) / 2 - (fr.top + fr.bottom) / 2), platz: parseFloat(cs.paddingRight), farbe: getComputedStyle(x).color };
+  }, sel);
+  const amFeld = (sel, l, wann) => {
+    if (!l.x) { E(sel, `kein ⓧ ${wann}`); return; }
+    if (l.w < 44 || l.h < 44) E(sel, `ⓧ ${wann}: Antippfläche ${l.w} × ${l.h} statt 44 × 44`);
+    if (Math.abs(l.rechts) > 2 || Math.abs(l.mitte) > 2) E(sel, `ⓧ ${wann} nicht rechts im Feld (Abstand rechts ${l.rechts} px, senkrecht ${l.mitte} px versetzt)`);
+    if (l.platz < 32) E(sel, `ⓧ ${wann}: Text läuft unter das ⓧ (Abstand rechts ${l.platz} px)`);
+  };
+  for (const { sel, text = 'Abc', warn = false } of fields) {
+    await p.locator(sel).scrollIntoViewIfNeeded(); await p.locator(sel).fill(''); await p.locator(sel).focus(); await wait(p, 100);
+    if ((await lage(sel)).x) E(sel, 'ⓧ im leeren Feld (X-3)');
+    await p.keyboard.type(text); await wait(p, 150);
+    amFeld(sel, await lage(sel), 'mit Text (X-1)');
+    // X-7: im Rollbereich des Feldes rollen – das ⓧ bleibt am Feld
+    const gerollt = await p.evaluate(sel => { for (let a = document.querySelector(sel).parentElement; a; a = a.parentElement) {
+      if (/auto|scroll/.test(getComputedStyle(a).overflowY) && a.scrollHeight > a.clientHeight + 20) { const y = a.scrollTop; a.scrollTop = y > 10 ? y - 10 : y + 10; return true; } } return false; }, sel);
+    if (gerollt) { await wait(p, 150); amFeld(sel, await lage(sel), 'nach dem Rollen (X-7)'); }
+    // X-8: drehen und zurück
+    const vp = p.viewportSize();
+    await p.setViewportSize({ width: vp.height, height: vp.width }); await wait(p, 400);
+    if ((await lage(sel)).fokus) amFeld(sel, await lage(sel), 'nach dem Drehen (X-8)');
+    await p.setViewportSize(vp); await wait(p, 400);
+    if (!(await lage(sel)).fokus) await p.locator(sel).focus();
+    await p.locator(sel).scrollIntoViewIfNeeded(); await wait(p, 100);   // nach dem Drehen steht oben derselbe Eintrag (R-8.1) – Feld ins Bild
+    // X-2: Antippen leert, Fokus bleibt, die App erfährt es
+    await p.evaluate(sel => { window.__fxInput = 0; document.querySelector(sel).addEventListener('input', () => window.__fxInput++, { once: true }); }, sel);
+    const ziel = await p.evaluate(() => { const r = document.querySelector('.fclear')?.getBoundingClientRect(); return r && r.width ? { x: r.left + r.width / 2, y: r.top + r.height / 2 } : null; });
+    if (!ziel || ziel.y < 0 || ziel.y > p.viewportSize().height) { E(sel, `ⓧ nicht zu sehen (${JSON.stringify(ziel)}) (X-2)`); await p.locator(sel).blur(); continue; }
+    await p.mouse.click(ziel.x, ziel.y); await wait(p, 150);
+    const l = await lage(sel), gemeldet = await p.evaluate(() => window.__fxInput);
+    if (l.wert !== '') E(sel, `ⓧ leert das Feld nicht (‚${l.wert}‘) (X-2)`);
+    if (!l.fokus) E(sel, 'nach dem ⓧ hat das Feld keinen Fokus mehr – die Tastatur schließt (X-2)');
+    if (l.x) E(sel, 'ⓧ bleibt im leeren Feld (X-2)');
+    if (!gemeldet) E(sel, 'die App erfährt das Leeren nicht (kein input-Ereignis) (X-2)');
+    if (warn) {
+      await p.locator(sel).blur(); await wait(p);
+      if (!await p.evaluate(() => [...document.querySelectorAll('.warn')].some(w => !w.hidden && w.getClientRects().length && w.textContent.trim()))) E(sel, 'nach dem Leeren mit ⓧ keine Fehlermeldung (X-4, R-5.3)');
+    }
+    // X-3: ohne Fokus kein ⓧ
+    await p.locator(sel).fill(text); await p.locator(sel).blur(); await wait(p, 100);
+    if ((await lage(sel)).x) E(sel, 'ⓧ ohne Fokus (X-3)');
+  }
   return errors;
 }
 
@@ -444,6 +501,11 @@ export async function checkSearchWords(p, { where = '' } = {}) {
       S10: M('Opera di Roma', 'oper opera'), S10b: M('Sydney', 'syd ney'), S2m: M('Freetour Sydney, Opera House', 'opera sydney'),
       S14m: M('Opera House und Opera', '„opera house“'), S16: M('Würzburg (Main) 3.5 * x', '( würzburg 3.5 *'),
       S17: M('Sehr​lange​Wörter', 'langewörter'), empty: M('Sydney', '   '),
+      // A-63 C2 (seit 4.29.0): ohne Akzente wie Apple
+      A1: [findsAll('Ankunft in Zürich', W('zurich')), M('Ankunft in Zürich', 'Zurich')], A2: [findsAll('Zurich', W('Zürich')), findsAll('ZÜRICH', W('zürich')), M('ZURICH', 'Zürich')],
+      A3: [findsAll('São Paulo', W('Sao Paulo')), M('Café Crème', 'cafe creme')], A4: [findsAll('São Paulo', W('„Sao Paulo“')), findsAll('Paulo in São', W('„Sao Paulo“')), M('in São Paulo', '„sao paulo“')],
+      A6: M('Sehr​lange​Grüße', 'langegruße'), A7: [M('Sonne ☀️ und A &amp; B', '☀️ & b'), findsAll('Sonne ☀️', W('☀️'))], A7b: M('Zu\u0308rich', 'zurich'),
+      A8: [findsAll('Straße', W('strasse')), findsAll('Øresund', W('oresund')), findsAll('Straße', W('straße'))],
     };
   });
   if (!r) { E('Bausteine searchWords/markWords fehlen in ui.js'); return errors; }
@@ -463,6 +525,16 @@ export async function checkSearchWords(p, { where = '' } = {}) {
   if (r.S16 !== '<mark>Würzburg</mark> <mark>(</mark>Main) <mark>3.5</mark> <mark>*</mark> x') E(`Sonderzeichen und Umlaute: ${r.S16}`);
   if (!/^Sehr​<mark>lange​Wörter<\/mark>$/.test(r.S17)) E(`unsichtbare Umbruchstellen (R-6.3): ${JSON.stringify(r.S17)}`);
   if (r.empty !== 'Sydney') E(`leere Suche markiert etwas: ${r.empty}`);
+  // A-63 C2 (seit 4.29.0): Suche ohne Akzente – ‚Zurich‘ findet ‚Zürich‘ und umgekehrt, markiert wird das Wort, wie es dasteht
+  const A = (nr, t) => E(`ohne Akzente ${nr}: ${t}`);
+  if (!r.A1[0] || r.A1[1] !== 'Ankunft in <mark>Zürich</mark>') A('A-1', `‚zurich‘ findet ‚Zürich‘ nicht ganz (${r.A1})`);
+  if (!r.A2[0] || !r.A2[1] || r.A2[2] !== '<mark>ZURICH</mark>') A('A-2', `‚Zürich‘ findet ‚Zurich‘/‚ZÜRICH‘ nicht (${r.A2})`);
+  if (!r.A3[0] || r.A3[1] !== '<mark>Café</mark> <mark>Crème</mark>') A('A-3', `‚Sao Paulo‘ bzw. ‚cafe creme‘ (${r.A3})`);
+  if (!r.A4[0] || r.A4[1] || r.A4[2] !== 'in <mark>São Paulo</mark>') A('A-4', `„Sao Paulo“ als genaue Folge (${r.A4})`);
+  if (!/^Sehr​<mark>lange​Grüße<\/mark>$/.test(r.A6)) A('A-6', `Umbruchstellen und Akzent: ${JSON.stringify(r.A6)}`);
+  if (r.A7[0] !== 'Sonne <mark>☀️</mark> und A <mark>&amp;</mark> <mark>B</mark>' || !r.A7[1]) A('A-7', `Emoji und Sonderzeichen: ${r.A7}`);
+  if (r.A7b !== '<mark>Zu\u0308rich</mark>') A('A-7', `Akzent als eigenes Zeichen: ${JSON.stringify(r.A7b)}`);
+  if (r.A8[0] || r.A8[1] || !r.A8[2]) A('A-8', `ß und ø sind eigene Buchstaben (${r.A8})`);
   return errors;
 }
 

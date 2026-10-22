@@ -248,7 +248,7 @@ const found = new Map(), icons = new Map();
       document.querySelectorAll('.side-head, .pnav-head').forEach(h => { if (vis(h) && !h.querySelector('small')) R('R-2.2', 'Anzahl unter dem Titel fehlt'); });
       // R-3.2 Schaltflächen und Suchfelder schweben (außer innerhalb von Kapseln, Menüs, Listen und als Link)
       document.querySelectorAll('button, .searchbox input').forEach(e => {
-        if (!vis(e) || !onTop(e) || e.closest('.grp, .navgrp, .cap, .menu, .pop .btns, #side .side-row, .irow, .fab, .smeta, .chips') || e.matches('.link, .mi, .side-row, .irow, .sclear, .fazit-box, [data-day]')) return;
+        if (!vis(e) || !onTop(e) || e.closest('.grp, .navgrp, .cap, .menu, .pop .btns, #side .side-row, .irow, .fab, .smeta, .chips') || e.matches('.link, .mi, .side-row, .irow, .sclear, .fclear, .fazit-box, [data-day]')) return;
         if (cs(e).boxShadow === 'none') R('R-3.2', `Schaltfläche ohne Schatten (schwebt nicht): ‚${label(e)}‘`);
       });
       // R-10.1 Keine englischen Systemtexte
@@ -370,6 +370,22 @@ const found = new Map(), icons = new Map();
       if (document.documentElement.scrollWidth > innerWidth + 1) R('R-6.3', 'Seite breiter als der Bildschirm');
       // R-2.1 (seit 4.27.0, A-28): Die Seite rollt nie, nur der Inhalt – nach jedem Schritt steht das Fenster bei 0.
       if (Math.round(scrollY) !== 0) R('R-2.1', `Die Seite rollt (scrollY ${Math.round(scrollY)}) – nur der Inhalt darf rollen (Rollbereich .rolle)`);
+      // R-5.7 (seit 4.29.0, A-63 C4): Schalter sind Safaris eingebauter Schalter (Attribut switch, role="switch" – VoiceOver sagt
+      // ‚Schalter‘). Kennt der Browser ihn nicht (alle Prüfbrowser), ist es unser Schalter 51 × 31; kennt er ihn (html.natsw, hier
+      // nachgebildet), zeichnet ihn Safari selbst (appearance nicht none) in Grün (accent-color = --sw-on).
+      document.querySelectorAll('.check.sw input').forEach(e => {
+        if (!vis(e)) return;
+        const name = label(e.closest('label') || e), root = document.documentElement, nat = root.classList.contains('natsw');
+        if (!e.hasAttribute('switch') || e.getAttribute('role') !== 'switch') R('R-5.7', `Schalter ‚${name}‘ ohne switch und role="switch"`);
+        const b = e.getBoundingClientRect();
+        if (!nat && (Math.round(b.width) !== 51 || Math.round(b.height) !== 31)) R('R-5.7', `Schalter ‚${name}‘ ${Math.round(b.width)} × ${Math.round(b.height)} statt 51 × 31`);
+        const gruen = document.createElement('span'); gruen.style.color = 'var(--sw-on)'; e.parentElement.append(gruen);
+        root.classList.add('natsw');
+        const x = cs(e), soll = cs(gruen).color, ap = x.appearance || x.webkitAppearance, ac = x.accentColor;
+        if (!nat) root.classList.remove('natsw');
+        gruen.remove();
+        if (e.hasAttribute('switch') && (ap === 'none' || ac !== soll)) R('R-5.7', `Schalter ‚${name}‘ mit Safaris Schalter nicht im Systemaussehen (appearance ${ap}, accent-color ${ac} statt ${soll})`);
+      });
       // R-10.1 (seit 4.12.0): gleiche Aktion = gleiches Icon – Bezeichnung und Icon jeder sichtbaren Schaltfläche, verglichen in report()
       res.icons = [...document.querySelectorAll('button[aria-label]')].filter(b => vis(b) && b.querySelector('svg.ic')).map(b => [b.getAttribute('aria-label'), b.querySelector('svg.ic').innerHTML.slice(0, 80)]);
       return res;
@@ -396,7 +412,7 @@ const found = new Map(), icons = new Map();
     }
   }
 
-  // R-1.6 (seit 4.29.0, A-63 S-2 bis S-6): Die Prüfbrowser liefern für env(safe-area-inset-…) immer 0 – deshalb setzt die Prüfung
+  // R-1.7 (seit 4.29.0, A-63 S-2 bis S-6): Die Prüfbrowser liefern für env(safe-area-inset-…) immer 0 – deshalb setzt die Prüfung
   // echte Gerätewerte über die Variablen --safe-… (design.css) und prüft: nichts fest Stehendes (Knopf, Feld, Titel, Kachel) liegt
   // unter Statusleiste bzw. Dynamic Island, Aussparung oder Home-Leiste; Fenster, Menüs und Sprechblasen (außer dem bildschirmfüllenden
   // iPhone-Fenster) bleiben ganz innerhalb; Inhalt darf darunter rollen, sein Ende lässt sich aber bis über die Home-Leiste rollen.
@@ -453,7 +469,7 @@ const found = new Map(), icons = new Map();
     }, wert);
     await setze(null); await p.waitForTimeout(120); await ruhe(p);
     const lage = `${Math.min(vp.width, vp.height) < 500 ? 'iPhone' : 'iPad'}, Ränder ${wert.top}/${wert.bottom}/${wert.left}/${wert.right}`;
-    for (const x of bad) note('Regel', `R-1.6 ${x} (${lage})`, where);
+    for (const x of bad) note('Regel', `R-1.7 ${x} (${lage})`, where);
   }
 
   // R-1.1 Gleiche Funktion = gleicher Baustein auf iPad und iPhone: Aufbau (Elemente, Klassen, Scrollbereiche,
