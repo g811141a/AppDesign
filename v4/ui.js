@@ -1,4 +1,4 @@
-// AppDesign 4.29.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
+// AppDesign 4.30.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
 // Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/fassung/X.Y.Z/ui.js"></script> (feste Fassung, R-10.3)
 // Seit 4.11.0 (R-10.3): ui.js und design.css immer mit ?v=<AppDesign-Version> einbinden (auch in sw.js) und beim Start
 // prüfen, ob genau diese Fassung geladen ist (AD_VERSION hier, --ad-version in design.css).
@@ -13,12 +13,13 @@
 // (applyTheme, setAppearance) · Menüs (openMenu mit Untermenü) · Sprechblase (confirmPop) ·
 // gedrückte Schaltflächen (hold, release, setOpener) · Meldung (inform) · Fenster (openDialog, dlgHead) ·
 // Auswahl-Kapsel (capHtml, mountCap) · Tastatur/sichtbarer Bereich (placeDialogs) · iPhone (isPhone, applyLayout) ·
-// Messmodus (messungMenuItems, seit 4.26.0)
+// Messmodus (messungMenuItems, seit 4.26.0) · Schnellroll-Griff (seit 4.30.0) · Navigation und Gesten (navAnmelden, navVor,
+// navZurueck, navSeite, seit 4.30.0)
 // Regeln dazu: README - Designrichtlinie allgemein.md
 
 'use strict';
 // Version der Bausteine (R-10.3): die App vergleicht sie beim Start mit der benötigten Fassung.
-const AD_VERSION = '4.29.0';
+const AD_VERSION = '4.30.0';
 /* ---------- Icons ---------- */
 
 // Schaltflächen-Icons aus Lucide (ISC-Lizenz), direkt eingebettet, damit die App offline funktioniert.
@@ -33,6 +34,7 @@ const ICONS = {
   'share': '<path d="M12 2v13"/><path d="m16 6-4-4-4 4"/><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>',
   'search': '<path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/>',
   'arrow-up-to-line': '<path d="M5 3h14"/><path d="m18 13-6-6-6 6"/><path d="M12 7v14"/>',
+  'chevrons-up-down': '<path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/>',   // seit 4.30.0: Schnellroll-Griff (A-37)
   'arrow-down-to-line': '<path d="M12 17V3"/><path d="m6 11 6 6 6-6"/><path d="M19 21H5"/>',
   'check': '<path d="M20 6 9 17l-5-5"/>',
   'sun-moon': '<path d="M12 8a2.83 2.83 0 0 0 4 4 4 4 0 1 1-4-4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.9 4.9 1.4 1.4"/><path d="m17.7 17.7 1.4 1.4"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.3 17.7-1.4 1.4"/><path d="m19.1 4.9-1.4 1.4"/>',
@@ -106,7 +108,7 @@ function onLongPress(btn, onLong, onTap) {
   let fired = false;
   btn.addEventListener('pointerdown', () => {
     fired = false;
-    timer = setTimeout(() => { fired = true; onLong(); }, 600);
+    timer = setTimeout(() => { if (navZug?.aktiv) return; fired = true; onLong(); }, 600);   // seit 4.30.0: nicht während einer Wischgeste (A-61)
   });
   ['pointerup', 'pointerleave', 'pointercancel'].forEach(ev => btn.addEventListener(ev, () => clearTimeout(timer)));
   btn.addEventListener('contextmenu', e => e.preventDefault());
@@ -303,6 +305,9 @@ const rolle = {
   by(d) { if (Math.round(d)) rolle.to(rolle.y + d); },
   // seit 4.28.1 (A-36): bis zum Ende des Inhalts – Platz, der nach dem Schließen der Tastatur noch darunter steht, zählt nicht
   ende(smooth = false) { rolle.to(rolle.max - platzVon(rolle.el), smooth); },
+  // seit 4.30.0 (A-37 F-5, A-61 F-10): ein weiches Rollen (‚Nach oben / Ans Ende‘) sofort anhalten – WebKit hält es bei scrollTo
+  // nicht an, wohl aber, wenn der Bereich kurz nicht rollen darf
+  halt() { const e = rolle.el; if (!e) return; const y = e.scrollTop; e.style.overflowY = 'hidden'; e.scrollTop = y; void e.offsetHeight; e.style.overflowY = ''; e.scrollTop = y; },
 };
 // Rollen hören (Fenster und Rollbereich): scroll-Ereignisse von Elementen steigen nicht auf – deshalb in der Einfangphase.
 const onRoll = fn => window.addEventListener('scroll', e => { if (e.target === document || e.target === rolle.el) fn(e); }, { capture: true, passive: true });
@@ -1102,20 +1107,125 @@ function autoCapital(e) {
 // Seit 4.27.1 (A-33): die Kapsel überdeckt nie Kopf- oder Suchzeile – passt sie nicht mit 16 px Abstand oben und unten in den
 // sichtbaren Teil des Rollbereichs (iPhone quer mit offener Tastatur: 126 px sichtbar, davon gut 100 px Leisten), ist sie
 // ausgeblendet; neu geprüft, sobald sich der sichtbare Bereich ändert (Tastatur auf und zu).
+// Seit 4.30.0 (A-37 B): nur die Pfeile, die etwas bewirken – ganz oben nur ‚Ans Ende‘, am Ende nur ‚Nach oben‘, dazwischen beide;
+// näher als eine halbe Höhe des Rollbereichs an einem Ende fehlt dessen Pfeil. Die Kapsel steht unten fest (ihr unterer Rand
+// bleibt, sie wird nur niedriger); gemessen wird mit ihrer vollen Höhe, damit sie nicht zwischen da und weg springt.
 let fabH = 0;
+const fabKnoepfe = f => [f.querySelector('button:first-of-type'), f.querySelector('button:last-of-type')];
 function updateFab() {
   const f = document.querySelector('.fab');
-  if (!f) return;
-  if (f.offsetHeight) fabH = f.offsetHeight;   // ausgeblendet hat sie keine Höhe – dann die zuletzt gemessene
-  const e = rolle.el, vv = window.visualViewport;
+  if (!f) return navKlassen();
+  const [oben, unten] = fabKnoepfe(f), e = rolle.el, vv = window.visualViewport;
+  const nah = (e ? e.clientHeight : innerHeight) / 2, ende = rolle.max - platzVon(e);
+  oben.hidden = !(rolle.y > nah);
+  unten.hidden = !(ende - rolle.y > nah);
+  const knopf = [oben, unten].find(b => b.offsetHeight)?.offsetHeight;
+  if (knopf) fabH = 2 * knopf + 1;   // volle Höhe (zwei Pfeile und Rand); ausgeblendet hat sie keine Höhe – dann die zuletzt gemessene
   const raum = e ? Math.min(e.getBoundingClientRect().bottom, vv ? vv.offsetTop + vv.height : innerHeight) - e.getBoundingClientRect().top : Infinity;
-  f.classList.toggle('still', rolle.max <= 1 || raum < (fabH || 96) + 32);
+  f.classList.toggle('still', rolle.max <= 1 || (oben.hidden && unten.hidden) || raum < (fabH || 97) + 32);
+  schnellZeigen(false);
+  navKlassen();   // nach jedem Aufbau: wo gewischt werden kann, hängt auch vom Inhalt ab (z. B. erst ein offener Eintrag)
 }
 const fabTop = () => nachTastatur(() => rolle.to(0, true));
 const fabEnd = () => nachTastatur(() => rolle.ende(true));
 if (window.ResizeObserver) new ResizeObserver(() => requestAnimationFrame(updateFab)).observe(document.body);
 window.addEventListener('resize', () => requestAnimationFrame(updateFab));
 window.visualViewport?.addEventListener('resize', () => requestAnimationFrame(updateFab));
+
+// R-3.2 (seit 4.30.0, A-37 C): Schnellroll-Griff wie in Apple Fotos – beim Rollen erscheint rechts ein Griff; ihn halten und ziehen
+// springt durch den ganzen Inhalt, eine Blase links daneben zeigt die Marke des Abschnitts oben im Bild (die App setzt data-marke an
+// Tage und Abschnitte, ohne Marken keine Blase). Nach 1,5 s ohne Rollen blendet er aus (nur Deckkraft, auch bei ‚Bewegung
+// reduzieren‘). Da ist er nur zusammen mit der Kapsel (Inhaltsansicht, nicht bei offener Tastatur oder offenem Fenster) und erst ab
+// drei Höhen des Rollbereichs Inhalt. Seine Bahn beginnt 8 px unter der Kopf- bzw. Suchzeile und endet über der Kapsel in voller
+// Höhe (zwei Pfeile und 8 px Abstand) – sie springt nicht, wenn ein Pfeil wegfällt. Ganz oben bzw. unten (auch darüber hinaus)
+// gezogen = Anfang bzw. Ende. VoiceOver: Regler ‚Schnell rollen‘ (Wert = Marke), Wischen nach oben/unten springt einen Abschnitt.
+const SCHNELL_AB = 3, SCHNELL_RUHE = 1500, SCHNELL_KAPSEL = 2 * 48 + 8;
+const schnell = document.createElement('div');
+schnell.className = 'schnell aus';
+schnell.hidden = true;
+schnell.innerHTML = `<div class="blase" aria-hidden="true"></div><div class="griff" role="slider" tabindex="-1" aria-label="Schnell rollen"
+  aria-orientation="vertical" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span>${ic('chevrons-up-down')}</span></div>`;
+document.body.append(schnell);
+const schnellGriff = schnell.querySelector('.griff'), schnellBlase = schnell.querySelector('.blase');
+let schnellZieht = null, schnellRuhe = 0, schnellH = 0;
+const schnellEnde = () => Math.max(0, rolle.max - platzVon(rolle.el));
+function schnellMoeglich() {
+  const f = document.querySelector('.fab'), e = rolle.el;
+  return !!f && !!e && !f.hidden && !f.classList.contains('still') && f.getClientRects().length > 0 && !kbOffen()
+    && !document.documentElement.classList.contains('locked') && e.scrollHeight >= SCHNELL_AB * e.clientHeight;
+}
+// Marken in der Reihenfolge des Inhalts (Tage, Überschriften der Abschnitte); es gilt die letzte, die oben schon begonnen hat –
+// davor (Kopf des Inhalts) die erste. Steht oben eine Tabelle mit haftendem Kopf, zählt die Kante unter dem Kopf.
+const schnellMarken = () => [...rolle.el.querySelectorAll('[data-marke]')];
+function schnellKante(marken) {
+  let kante = rolle.el.getBoundingClientRect().top + 4;
+  const tab = marken.find(m => m.closest('table'))?.closest('table'), th = tab?.tHead?.querySelector('th');
+  if (th && getComputedStyle(th).position === 'sticky' && tab.getBoundingClientRect().bottom > kante + th.offsetHeight) kante += th.offsetHeight;
+  return kante;
+}
+function schnellMarke(marken = schnellMarken()) {
+  if (!marken.length) return -1;
+  const kante = schnellKante(marken);
+  let lo = 0, hi = marken.length - 1;
+  while (lo < hi) { const m = (lo + hi + 1) >> 1; if (marken[m].getBoundingClientRect().top <= kante) lo = m; else hi = m - 1; }
+  return lo;
+}
+// rollt: der Inhalt hat sich bewegt – Griff einblenden und nach 1,5 s Ruhe wieder aus
+function schnellZeigen(rollt) {
+  if (!schnellMoeglich()) { schnell.hidden = true; schnell.classList.add('aus'); return; }
+  schnell.hidden = false;
+  const r = rolle.el.getBoundingClientRect(), f = document.querySelector('.fab').getBoundingClientRect();
+  const oben = r.top + 8, h = Math.max(0, f.bottom - SCHNELL_KAPSEL - oben);
+  schnell.style.top = oben + 'px'; schnell.style.height = h + 'px';
+  schnellH = Math.max(0, h - schnellGriff.offsetHeight);
+  const ende = schnellEnde(), a = ende ? Math.min(1, Math.max(0, rolle.y / ende)) : 0;
+  schnellGriff.style.transform = `translateY(${Math.round(a * schnellH)}px)`;
+  const marken = schnellMarken(), i = schnellMarke(marken), marke = i < 0 ? '' : marken[i].dataset.marke;
+  schnellGriff.setAttribute('aria-valuenow', Math.round(a * 100));
+  if (marke) schnellGriff.setAttribute('aria-valuetext', marke); else schnellGriff.removeAttribute('aria-valuetext');
+  if (schnellBlase.textContent !== marke) schnellBlase.textContent = marke;
+  schnellBlase.style.transform = `translateY(${Math.round(a * schnellH + schnellGriff.offsetHeight / 2)}px) translateY(-50%)`;
+  if (!rollt) return;
+  schnell.classList.remove('aus');
+  clearTimeout(schnellRuhe);
+  if (!schnellZieht) schnellRuhe = setTimeout(() => schnell.classList.add('aus'), SCHNELL_RUHE);
+}
+onRoll(() => { if (!keepBusy) schnellZeigen(true); });
+schnellGriff.addEventListener('pointerdown', e => {
+  if (e.button > 0 || schnell.classList.contains('aus')) return;
+  e.preventDefault(); e.stopPropagation();
+  rolle.halt();   // ein laufendes weiches Rollen (‚Ans Ende‘) endet, der Griff folgt dem Finger (F-5)
+  try { schnellGriff.setPointerCapture(e.pointerId); } catch {}
+  schnellZieht = { id: e.pointerId, y: e.clientY, a: schnellEnde() ? rolle.y / schnellEnde() : 0 };
+  schnell.classList.add('zieht'); clearTimeout(schnellRuhe);
+});
+schnellGriff.addEventListener('pointermove', e => {
+  if (schnellZieht?.id !== e.pointerId) return;
+  e.preventDefault();
+  const a = schnellH ? Math.min(1, Math.max(0, schnellZieht.a + (e.clientY - schnellZieht.y) / schnellH)) : 0;
+  rolle.to(a * schnellEnde());
+}, { passive: false });
+const schnellLos = e => {
+  if (schnellZieht?.id !== e.pointerId) return;
+  schnellZieht = null; schnell.classList.remove('zieht'); schnellZeigen(true);
+};
+schnellGriff.addEventListener('pointerup', schnellLos);
+schnellGriff.addEventListener('pointercancel', schnellLos);
+schnellGriff.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); });
+// VoiceOver (Wischen nach oben/unten) und Tastatur: einen Abschnitt weiter bzw. zurück, ohne Marken eine Höhe des Rollbereichs
+schnellGriff.addEventListener('keydown', e => {
+  const d = { ArrowUp: -1, ArrowLeft: -1, PageUp: -1, ArrowDown: 1, ArrowRight: 1, PageDown: 1 }[e.key];
+  if (e.key === 'Home' || e.key === 'End') { e.preventDefault(); rolle.to(e.key === 'Home' ? 0 : schnellEnde()); return; }
+  if (!d) return;
+  e.preventDefault();
+  const marken = schnellMarken(), i = schnellMarke(marken), top = schnellKante(marken) - 4;
+  if (i < 0) return rolle.to(Math.min(schnellEnde(), rolle.y + d * rolle.el.clientHeight));
+  // zurück: steht der Anfang der aktuellen Marke über dem Rand, zuerst an ihren Anfang
+  const j = d > 0 ? i + 1 : marken[i].getBoundingClientRect().top < top - 4 ? i : i - 1;
+  const ziel = marken[Math.max(0, Math.min(marken.length - 1, j))];
+  rolle.to(Math.min(schnellEnde(), rolle.y + ziel.getBoundingClientRect().top - top));
+});
+
 // R-5.5 (seit 4.19.0, A-14): in einzeiligen Feldern bestätigt die Eingabetaste und schließt die Tastatur (‚Fertig‘, HIG);
 // mehrzeilige Felder machen einen Zeilenumbruch. Das Suchfeld (type=search) behält ‚Suchen‘ und seine eigene Eingabetaste.
 const SINGLE_LINE = 'input:not([type]), input[type=text], input[type=number], input[type=email], input[type=tel], input[type=url], input[type=password]';
@@ -1305,6 +1415,228 @@ document.addEventListener('touchmove', e => {
   if (e.cancelable) e.preventDefault();
   a.blur();
 }, { passive: false });
+
+/* ---------- Navigation und Gesten (seit 4.30.0, A-61 Teil 1, R-7.5) ---------- */
+
+// Wie iOS 26 (Variante ‚Überall‘, Nutzer 22.10.2026): Im iPhone-Aufbau schiebt sich der Inhalt beim Öffnen von rechts über die
+// Startliste, die Liste weicht ein Drittel nach links und dunkelt leicht ab; zurück umgekehrt – mit dem Zurück-Knopf oder durch
+// Wischen nach rechts von überall im Inhalt; die Seite folgt dem Finger. Am iPad hoch holt Wischen nach rechts von überall im
+// Inhalt die darübergelegte Seitenleiste herein, Wischen nach links auf ihr oder der Abdunkelung schiebt sie weg; panel-left und
+// die Abdunkelung bewegen sie genauso. iPad quer (feste Seitenleiste): keine Geste. Fertig nach halber Breite oder schnellem
+// Wischen (über 0,3 px/ms in den letzten 100 ms), sonst federt die Seite zurück. ‚Bewegung reduzieren‘: Überblenden statt Schieben.
+// Vorrang (T-35) an dieser einen Stelle: senkrecht rollt der Browser (touch-action pan-y), Bereiche mit eigenem waagrechtem Rollen,
+// Felder, Knöpfe, Kapseln, Kapsel ‚Nach oben / Ans Ende‘ und Schnellroll-Griff behalten ihre Geste; entschieden wird nach 10 px –
+// deutlich waagrecht (1,2 × so weit wie senkrecht) in der richtigen Richtung, sonst nichts; wer erst hält (langes Drücken), wischt
+// nicht. Kein Wischen bei offenem Fenster, Menü oder offener Sprechblase. Drehen bricht ein Ziehen ab (Zustand wie vorher, R-8.1),
+// eine laufende Bewegung springt an ihr Ziel. Je Bild nur transform und opacity (A-59), die Bewegung als Web-Animation.
+// Die App meldet sich an (Startliste bzw. Seitenleiste ist #side, der Inhalt #app, die Abdunkelung am iPad .side-shade):
+//   navAnmelden({ zurueck: { offen, darunter, los }, seite: { moeglich, offen, zeigen } })   (nicht ‚navigation‘ – so heißt die Navigation-API des Browsers)
+//     zurueck.offen()     – iPhone-Aufbau: ein Eintrag ist offen (Zurück möglich)
+//     zurueck.darunter(an) – die Startliste unter dem Inhalt aufbauen (true) bzw. wieder verbergen (false), ohne den Zustand zu ändern
+//     zurueck.los()       – zurück zur Startliste (Zustand ändern und neu aufbauen)
+//     seite.moeglich()    – Seitenleiste wird darübergelegt (iPad hoch), seite.offen() – sie ist sichtbar
+//     seite.zeigen(an)    – Seitenleiste ein- bzw. ausblenden (Zustand ändern, nur die Seitenleiste neu aufbauen)
+// Aufrufe der App: navVor(change) beim Öffnen eines Eintrags aus der Startliste, navZurueck() für den Zurück-Knopf,
+// navSeite(an) für panel-left und die Abdunkelung am iPad hoch.
+const NAV_DAUER = 350, NAV_ENTSCHEID = 10, NAV_WAAGRECHT = 1.2, NAV_TEMPO = 0.3, NAV_HALTEN = 500, NAV_DUNKEL = 0.1;
+const NAV_EIGEN = 'input, textarea, select, [contenteditable], .cap, .fab, .schnell, .searchbox, [data-eigene-geste], button:not(.side-row)';
+const navRuhig = window.matchMedia?.('(prefers-reduced-motion: reduce)');
+const navSchleier = document.createElement('div');
+navSchleier.className = 'nav-schleier';
+document.body.append(navSchleier);
+let navApp = null, navZug = null, navLauf = null, navKlickWeg = false;
+function navAnmelden(app) { navApp = app; navKlassen(); }
+// touch-action: pan-y nur, wo gewischt werden kann (iPhone-Aufbau, iPad hoch) – sonst bleibt alles wie bisher
+function navKlassen() {
+  document.documentElement.classList.toggle('wischt', !!navApp && (isPhone() || !!navApp.seite?.moeglich()));
+}
+window.addEventListener('resize', navKlassen);
+const navTeile = art => art === 'phone'
+  ? [document.getElementById('app'), document.querySelector('.fab'), document.getElementById('side'), navSchleier].filter(Boolean)
+  : [document.getElementById('side'), document.querySelector('.side-shade')].filter(Boolean);
+// Lage aller Ebenen zum Anteil p: iPhone 0 = Startliste, 1 = Inhalt; iPad 0 = Seitenleiste weg, 1 = Seitenleiste da
+function navBild(art, el, p, w) {
+  const ruhig = navRuhig?.matches;
+  if (art === 'phone') {
+    if (el.id === 'side') return { transform: ruhig ? 'none' : `translate3d(${Math.round(-0.3 * w * p)}px,0,0)`, opacity: 1 };
+    if (el === navSchleier) return { transform: 'none', opacity: ruhig ? 0 : NAV_DUNKEL * p };
+    return ruhig ? { transform: 'none', opacity: p } : { transform: `translate3d(${Math.round((1 - p) * w)}px,0,0)`, opacity: 1 };
+  }
+  if (el.id === 'side') return ruhig ? { transform: 'none', opacity: p } : { transform: `translate3d(${Math.round((p - 1) * w)}px,0,0)`, opacity: 1 };
+  return { transform: 'none', opacity: p };
+}
+const navBreite = art => art === 'phone' ? innerWidth : (document.getElementById('side')?.getBoundingClientRect().right || 360) + 10;
+function navSetze(art, p, w) {
+  for (const el of navTeile(art)) { const b = navBild(art, el, p, w); el.style.transform = b.transform; el.style.opacity = b.opacity; }
+}
+function navAnfang(art) {
+  navSofort();
+  const H = document.documentElement;
+  H.classList.add(art === 'phone' ? 'nav-schiebt' : 'nav-seite');
+  return navBreite(art);
+}
+function navAufraeumen(art) {
+  for (const el of [...navTeile('phone'), ...navTeile('seite')]) {
+    el.getAnimations?.().forEach(a => { if (a.id === 'nav') a.cancel(); });
+    el.style.transform = ''; el.style.opacity = '';
+  }
+  document.documentElement.classList.remove('nav-schiebt', 'nav-seite', 'nav-zieht', 'nav-faehrt');
+}
+// Bewegung von p = von nach p = nach (Web-Animation, damit die Prüfungen auf ihr Ende warten); fertig() danach.
+function navFahre(art, von, nach, w, fertig) {
+  const H = document.documentElement;
+  H.classList.remove('nav-zieht');
+  const ende = () => { navLauf = null; fertig?.(); navAufraeumen(art); updateFab(); };
+  if (von === nach) return ende();
+  H.classList.add('nav-faehrt');
+  const dauer = navRuhig?.matches ? 200 : Math.max(150, NAV_DAUER * Math.abs(nach - von));
+  const anims = navTeile(art).map(el => {
+    const a = el.animate([navBild(art, el, von, w), navBild(art, el, nach, w)], { duration: dauer, easing: 'cubic-bezier(.2,.8,.2,1)', fill: 'forwards' });
+    a.id = 'nav';
+    return a;
+  });
+  navLauf = { ende, anims };
+  anims[0].onfinish = () => { if (navLauf?.anims === anims) ende(); };
+}
+// laufende Bewegung sofort an ihr Ziel (neue Bewegung, Drehen)
+function navSofort() { if (navLauf) navLauf.ende(); }
+// Öffnen aus der Startliste (iPhone-Aufbau): change() baut den Inhalt auf, er schiebt sich über die Liste
+function navVor(change) {
+  navSofort();
+  change();
+  if (!navApp?.zurueck || !isPhone() || !navApp.zurueck.offen()) return;
+  const w = navAnfang('phone');
+  navApp.zurueck.darunter(true);
+  navSetze('phone', 0, w);
+  navFahre('phone', 0, 1, w, () => navApp.zurueck.darunter(false));
+}
+// Zurück-Knopf (iPhone-Aufbau): bei offener Tastatur erst sie schließen (A-36), dann schiebt sich der Inhalt hinaus
+function navZurueck() {
+  const z = navApp?.zurueck;
+  if (!z || !isPhone() || !z.offen()) return z?.los();
+  if (kbOffen()) document.activeElement?.blur?.();
+  nachTastatur(() => {
+    if (!z.offen()) return;
+    const w = navAnfang('phone');
+    z.darunter(true);
+    navSetze('phone', 1, w);
+    navFahre('phone', 1, 0, w, () => z.los());
+  });
+}
+// panel-left und Abdunkelung am iPad hoch: die Seitenleiste gleitet herein bzw. hinaus
+function navSeite(an) {
+  const s = navApp?.seite;
+  if (!s) return;
+  if (!s.moeglich() || an === s.offen()) return s.zeigen(an);
+  if (an) { s.zeigen(true); const w = navAnfang('seite'); navSetze('seite', 0, w); navFahre('seite', 0, 1, w); }
+  else { const w = navAnfang('seite'); navFahre('seite', 1, 0, w, () => s.zeigen(false)); }
+}
+// Hat das Element (oder ein Vorfahr bis zur Seite) einen eigenen waagrechten Rollbereich, gehört ihm das Wischen.
+function navEigenesRollen(t, bis) {
+  for (let e = t; e && e !== bis && e !== document.body; e = e.parentElement) {
+    if (e.scrollWidth > e.clientWidth + 1 && /auto|scroll/.test(getComputedStyle(e).overflowX)) return true;
+  }
+  return false;
+}
+function navKandidat(e) {
+  if (!navApp || e.button > 0 || !e.isPrimary || navLauf) return null;
+  const t = e.target;
+  if (!(t instanceof Element) || dlg.open || msg.open || document.querySelector('.menu, .pop, .layer') || t.closest(NAV_EIGEN)) return null;
+  const app = document.getElementById('app'), side = document.getElementById('side');
+  if (isPhone()) {
+    if (!navApp.zurueck?.offen() || !app?.contains(t) || navEigenesRollen(t, app)) return null;
+    return { art: 'phone', richtung: 1, von: 1, nach: 0 };
+  }
+  const s = navApp.seite;
+  if (!s?.moeglich()) return null;
+  if (!s.offen() && app?.contains(t) && !navEigenesRollen(t, app)) return { art: 'seite', richtung: 1, von: 0, nach: 1 };
+  if (s.offen() && (side?.contains(t) || t.closest('.side-shade')) && !navEigenesRollen(t, side)) return { art: 'seite', richtung: -1, von: 1, nach: 0 };
+  return null;
+}
+// Wischen tippt nie an: ein Zeiger, der sich zwischen Drücken und Loslassen mehr als 10 px bewegt hat, löst kein Antippen aus (am Gerät
+// erkennt iOS so kein Tippen; mit Maus und Zeichenstift schon) – außer in Feldern (Text markieren).
+let navStart = null;
+window.addEventListener('pointerdown', e => { navStart = e.isPrimary ? { x: e.clientX, y: e.clientY, id: e.pointerId } : navStart; }, true);
+window.addEventListener('pointerup', e => {
+  const a = navStart; navStart = null;
+  if (!a || a.id !== e.pointerId || Math.hypot(e.clientX - a.x, e.clientY - a.y) <= NAV_ENTSCHEID || e.target.closest?.('input, textarea, select, [contenteditable]')) return;
+  navKlickWeg = true; setTimeout(() => { navKlickWeg = false; });
+}, true);
+window.addEventListener('pointerdown', e => {
+  const k = navKandidat(e);
+  navZug = k && { ...k, x0: e.clientX, y0: e.clientY, t0: e.timeStamp, id: e.pointerId, aktiv: false, spur: [[e.timeStamp, e.clientX]],
+    breite: innerWidth, hoehe: innerHeight };
+}, true);
+function navAktiv(z, e) {
+  z.aktiv = true;
+  navKlickWeg = true;
+  if (kbOffen()) document.activeElement?.blur?.();   // F-16: die Tastatur schließt, zurück geht es danach
+  rolle.halt();                                         // F-10: ein weiches Rollen endet, das Wischen gilt
+  try { e.target.setPointerCapture?.(e.pointerId); } catch {}
+  z.w = navAnfang(z.art);
+  if (z.art === 'phone') navApp.zurueck.darunter(true);
+  else if (z.nach === 1) { navApp.seite.zeigen(true); z.w = navBreite('seite'); }
+  document.documentElement.classList.add('nav-zieht');
+  navSetze(z.art, z.von, z.w);
+}
+window.addEventListener('pointermove', e => {
+  const z = navZug;
+  if (!z || e.pointerId !== z.id) return;
+  const dx = e.clientX - z.x0, dy = e.clientY - z.y0;
+  if (!z.aktiv) {
+    if (Math.abs(dx) < NAV_ENTSCHEID && Math.abs(dy) < NAV_ENTSCHEID) return;
+    const waagrecht = Math.abs(dx) > Math.abs(dy) * NAV_WAAGRECHT && Math.sign(dx) === z.richtung;
+    if (!waagrecht || e.timeStamp - z.t0 > NAV_HALTEN || document.querySelector('.menu, .pop, .layer') || dlg.open) { navZug = null; return; }
+    navAktiv(z, e);
+  }
+  if (e.cancelable) e.preventDefault();
+  z.spur.push([e.timeStamp, e.clientX]); if (z.spur.length > 8) z.spur.shift();
+  z.p = Math.max(0, Math.min(1, z.von + (z.nach - z.von) * Math.abs(dx) / z.w));
+  navSetze(z.art, z.p, z.w);
+}, { capture: true, passive: false });
+function navLoslassen(e, abbruch) {
+  const z = navZug;
+  if (!z || e.pointerId !== z.id) return;
+  navZug = null;
+  if (!z.aktiv) return;
+  setTimeout(() => { navKlickWeg = false; });
+  const spur = z.spur.filter(([t]) => t >= e.timeStamp - 100);
+  const tempo = spur.length > 1 && spur.at(-1)[0] > spur[0][0] ? (spur.at(-1)[1] - spur[0][1]) / (spur.at(-1)[0] - spur[0][0]) * z.richtung : 0;
+  const weg = Math.abs((z.p ?? z.von) - z.von);
+  const geschafft = !abbruch && (weg > 0.5 || (tempo > NAV_TEMPO && weg > 0.05));
+  const p = z.p ?? z.von;
+  if (z.art === 'phone') {
+    if (geschafft) navFahre('phone', p, 0, z.w, () => navApp.zurueck.los());
+    else navFahre('phone', p, 1, z.w, () => navApp.zurueck.darunter(false));
+  } else if (z.nach === 1) navFahre('seite', p, geschafft ? 1 : 0, z.w, geschafft ? null : () => navApp.seite.zeigen(false));
+  else navFahre('seite', p, geschafft ? 0 : 1, z.w, geschafft ? () => navApp.seite.zeigen(false) : null);
+}
+window.addEventListener('pointerup', e => navLoslassen(e, false), true);
+window.addEventListener('pointercancel', e => navLoslassen(e, true), true);
+// Nach einer Wischgeste kein Antippen dessen, worauf sie begann
+window.addEventListener('click', e => { if (navKlickWeg) { e.preventDefault(); e.stopPropagation(); } }, true);
+// F-14 (R-8.1): Drehen bricht ein Ziehen ab – Zustand wie vor dem Ziehen; eine laufende Bewegung springt an ihr Ziel
+window.addEventListener('resize', () => {
+  const z = navZug;
+  if (z?.aktiv && (innerWidth !== z.breite || Math.abs(innerHeight - z.hoehe) > 150)) {
+    navZug = null;
+    // das Loslassen danach tippt nichts an
+    const los = () => setTimeout(() => { navKlickWeg = false; });
+    window.addEventListener('pointerup', los, { capture: true, once: true });
+    window.addEventListener('pointercancel', los, { capture: true, once: true });
+    if (z.art === 'phone') navApp.zurueck.darunter(false);
+    else if (z.nach === 1) navApp.seite.zeigen(false);
+    navAufraeumen(z.art);
+  }
+  navSofort();
+});
+// F-20 (VoiceOver): die ‚Zurück‘-Geste (Z) bzw. Escape geht zurück bzw. schließt die darübergelegte Seitenleiste
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Escape' || e.defaultPrevented || !navApp || dlg.open || msg.open || document.querySelector('.menu, .pop')) return;
+  if (e.target.closest?.('input, textarea, select, [contenteditable]')) return;
+  if (isPhone() && navApp.zurueck?.offen()) { e.preventDefault(); navZurueck(); }
+  else if (!isPhone() && navApp.seite?.moeglich() && navApp.seite.offen()) { e.preventDefault(); navSeite(false); }
+});
 
 /* ---------- Tastatur und sichtbarer Bereich ---------- */
 

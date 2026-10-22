@@ -3,6 +3,37 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.30.0 – 22.10.2026
+
+AppDesign 4.30.0 · Designrichtlinie allgemein 4.30.0 · Zusammenarbeit allgemein 2.18.0 · geprüft mit Reiselogbuch 3.28.0
+
+**A-37 B+C ‚Nach oben / Ans Ende‘ und A-61 Teil 1 ‚Navigation und Gesten‘, Variante ‚Überall‘** (dein Ja vom 22.10.2026, Fall-Listen
+`arbeit/A-37 Fall-Liste.md` und `arbeit/A-61 Teil 1 Fall-Liste.md`, beide als allgemeine Regeln). Prüfpunkt im Reiselogbuch: P-64.
+
+- **R-3.2 Kapsel mit wirksamen Pfeilen (A-37 B):** ganz oben nur ‚Ans Ende‘, am Ende nur ‚Nach oben‘, dazwischen beide; näher als eine
+  halbe Höhe des Rollbereichs an einem Ende fehlt dessen Pfeil (`updateFab`). Die Kapsel steht unten fest und wird nur niedriger; ob
+  sie bei offener Tastatur passt, entscheidet ihre volle Höhe (sie springt nicht zwischen da und weg). Bei offenem Fenster und im
+  Druck nicht zu sehen.
+- **R-3.2 Schnellroll-Griff (A-37 C, wie Apple Fotos):** ab drei Höhen des Rollbereichs erscheint beim Rollen rechts ein Griff
+  (`.schnell`, legt ui.js an), blendet nach 1,5 s Ruhe aus (nur Deckkraft); Ziehen springt verhältnisgleich durch den Inhalt, über
+  die Bahn hinaus = Anfang bzw. Ende; die Bahn endet über der Kapsel in voller Höhe. Die Blase zeigt die Marke des Abschnitts oben im
+  Bild – die App setzt `data-marke`; ohne Marken keine Blase. VoiceOver: Regler ‚Schnell rollen‘, Wischen nach oben/unten springt einen
+  Abschnitt. Damit ist **A-45** (ziehbarer Index) erledigt.
+- **R-7.5 Navigation und Gesten (A-61 Teil 1, neu):** ein Baustein in ui.js (`navAnmelden`, `navVor`, `navZurueck`, `navSeite`) –
+  im iPhone-Aufbau schiebt sich der Inhalt beim Öffnen herein und beim Zurück hinaus (T-4), Zurückwischen von überall im Inhalt mit
+  Folgen und Federn (T-5), am iPad hoch holt Wischen nach rechts von überall die Seitenleiste, nach links geht sie, panel-left und
+  Abdunkelung lassen sie gleiten (T-6); Vorrang an einer Stelle (T-35: senkrechtes Rollen, eigenes waagrechtes Rollen, Felder, Knöpfe,
+  Kapseln, Griff, langes Drücken, offenes Fenster/Menü); je Bild nur transform und opacity als Web-Animation (A-59); Drehen beim
+  Ziehen bricht ab; ‚Bewegung reduzieren‘ überblendet; Escape (VoiceOver ‚Zurück‘) geht zurück. **Wischen tippt nie an:** ein Zeiger,
+  der sich mehr als 10 px bewegt hat, löst kein Antippen aus (gefunden beim Bau: mit Maus bzw. Zeichenstift öffnete Wischen über einen
+  Tag dessen Fenster). `onLongPress` löst während einer Wischgeste nicht aus. **`rolle.halt()`** hält ein weiches Rollen sofort an
+  (Griff greifen, Wischen) – gefunden beim Bau: WebKit hält ein laufendes weiches Rollen bei `scrollTo` nicht an.
+- **Prüfungen:** `checkFab` prüft die Pfeile in fünf Rollständen, unteren Rand, Fenster, Drucken und ruft `checkGriff` (F-4, F-5,
+  F-11, F-14 bis F-21); neu `checkNavigation` (A-61 F-1 bis F-21, iPhone, iPad hoch und quer, ‚Bewegung reduzieren‘ über
+  `reducedMotion`); `navFertig` (pruefe.mjs) wartet auf das Ende eines Seitenwechsels.
+- **Designrichtlinie allgemein 4.30.0:** R-3.2 ergänzt, R-7.5 neu; 4, 13 (Wischgesten), 15.1 (Schnellroll-Griff), 15.4 (Gesten im
+  Hochformat), 15.17 (Seitenwechsel und Zurückwischen), 15.22, HIG-Abweichung ‚Nach oben / Ans Ende‘.
+
 ## 4.29.0 – 22.10.2026
 
 AppDesign 4.29.0 · Designrichtlinie allgemein 4.29.0 · Zusammenarbeit allgemein 2.18.0 · geprüft mit Reiselogbuch 3.27.0

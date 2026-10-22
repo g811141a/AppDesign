@@ -1,6 +1,6 @@
 # A-37 ‚Nach oben / Ans Ende‘ verbessern – Apple-Abgleich, Varianten, Fall-Liste
 
-**Stand 22.10.2026** · Sitzung ‚Reiselogbuch 0025‘, **gewählt: B+C** (Nutzer 22.10.2026, Sitzung ‚Reiselogbuch 0029‘) ·
+**Stand 22.10.2026** · Sitzung ‚Reiselogbuch 0025‘, **gewählt: B+C** (Nutzer 22.10.2026, Sitzung ‚Reiselogbuch 0029‘), **gebaut in AppDesign 4.30.0 / Reiselogbuch 3.28.0** (R-3.2, `checkFab` mit `checkGriff`, Prüfliste P-64) ·
 Muster: `arbeit/A-37 Muster.html` (Umschalter ‚B+C‘)
 (https://g811141a.github.io/AppDesign/arbeit/A-37%20Muster.html)
 

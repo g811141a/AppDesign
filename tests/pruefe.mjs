@@ -51,6 +51,9 @@ export const rollstand = p => p.evaluate(R => { const r = eval(R), m = Math.roun
 
 // Wartet, bis die Seite nach einer Handlung zur Ruhe gekommen ist (zwei Bildwechsel, keine laufende Animation, Lage stabil) –
 // sonst messen die Grundregeln Zwischenzustände (WebKit setzt manches einige Millisekunden später als Chromium).
+// Seit 4.30.0 (A-61, R-7.5): wartet, bis ein Seitenwechsel bzw. die Bewegung der Seitenleiste fertig ist (höchstens 3 s) – der
+// Zustand der App ändert sich erst am Ende der Bewegung (Zurück, Wischen).
+export const navFertig = p => p.waitForFunction(() => !/(^|\s)nav-/.test(document.documentElement.className), null, { timeout: 3000 }).catch(() => {});
 export async function ruhe(p) {
   // Ruhig = keine laufende Animation, Fenster, Menüs, Sprechblasen und Scroll-Lage dreimal hintereinander gleich (je 100 ms)
   // und ein offenes Fenster ganz auf dem Bildschirm – höchstens 2 s; bleibt es danach falsch, meldet die Regel es (R-4.5).

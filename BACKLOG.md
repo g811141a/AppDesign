@@ -1,6 +1,6 @@
 # AppDesign – Backlog (allgemeine Themen)
 
-**Stand 22.10.2026** · Aktuelle Version: AppDesign 4.29.0
+**Stand 22.10.2026** · Aktuelle Version: AppDesign 4.30.0
 
 Allgemeine Themen, die alle Apps betreffen. App-Themen stehen im Backlog der jeweiligen App.
 Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.4.
@@ -11,16 +11,15 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Prio | Thema | bereit seit |
 |---|---|---|---|
-| A-37 | 2 | **‚Nach oben / Ans Ende‘ – B+C als allgemeine Regel (Nutzer 22.10.2026, Muster abgenommen inkl. Prüfpunkt 6):** Kapsel unten rechts zeigt nur wirksame Pfeile (oben nur ↓, am Ende nur ↑, knapp vor einem Ende fehlt dessen Pfeil; halbe Bildschirmhöhe); dazu Schnellroll-Griff rechts wie Apple Fotos – erscheint beim Wischen ab drei Bildschirmhöhen Inhalt, blendet nach 1,5 s aus, Bahn von unter der Kopfzeile bis über die Kapsel in voller Höhe, Blase mit der Marke des Abschnitts (`data-marke`, liefert die App). R-3.2 erweitern (`checkFab` deckt Kapsel und Griff), Designrichtlinie 4, 15.1, 15.17, 15.22; entscheidet A-45. Fall-Liste F-1 bis F-22: `arbeit/A-37 Fall-Liste.md`, Muster `arbeit/A-37 Muster.html?v=bc` | 22.10.2026 |
-| A-61/1 | 2 | **Navigation und Gesten Teil 1 – Variante Überall als allgemeine Regel (Nutzer 22.10.2026, Muster abgenommen):** Seitenwechsel als Schieben (T-4, alte Seite weicht ein Drittel nach links, ~0,35 s), Zurückwischen am iPhone von überall im Inhalt (T-5, iOS 26), am iPad hoch holt Wischen nach rechts von überall die Seitenleiste, nach links wischen schiebt sie weg (T-6; nach der Auswahl schließt sie sich wie heute); fertig nach halber Breite oder schnellem Wischen; eine Gestenstelle mit Vorrang (T-35: Rollen, waagerecht rollende Bereiche, Griff A-37 vor dem Wischen); ‚Bewegung reduzieren‘ überblendet; ohne Ruckeln (A-59, nur transform/opacity). Neue Regel im Katalog mit Prüfung, Designrichtlinie 15.4, 15.17, 13 (Randgeste nur in der Home-Bildschirm-App). Fall-Liste F-1 bis F-22: `arbeit/A-61 Teil 1 Fall-Liste.md`, Muster `arbeit/A-61 Teil 1 Muster.html?v=ueberall` | 22.10.2026 |
+| – | – | zurzeit nichts gesammelt | – |
 
-**2 Punkte bereit (2 Themen)** · **Ja des Nutzers 22.10.2026:** AppDesign 4.30.0 / Reiselogbuch 3.28.0 mit A-37 und A-61 Teil 1 – Bau in Sitzung ‚Reiselogbuch 0030‘
 
 ## 1. Auf iPad und iPhone prüfen
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| – | – | zurzeit nichts zu prüfen | – |
+| A-37 | 2 | **‚Nach oben / Ans Ende‘ B+C gebaut (4.30.0):** Kapsel nur mit wirksamen Pfeilen, Schnellroll-Griff mit Blase und Marken (R-3.2, `checkFab` mit `checkGriff`); A-45 damit erledigt | prüfen – P-64/1 bis /3, /10 im Reiselogbuch |
+| A-61/1 | 2 | **Navigation und Gesten Teil 1 ‚Überall‘ gebaut (4.30.0):** Seitenwechsel als Schieben, Zurückwischen von überall, Seitenleiste am iPad hoch per Wischen, Vorrang an einer Stelle, nur transform/opacity (R-7.5 neu, `checkNavigation`) | prüfen – P-64/4 bis /10 im Reiselogbuch |
 
 ## 2. Weitere Themen (in Klärung)
 
@@ -33,7 +32,6 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 | A-43 | 2 | **Barrierefreiheit (aus A-38, Nutzer 22.10.2026):** 1) VoiceOver-Grundlagen – Rollen und Namen (Fenstertitel verknüpft, Sprechblase, ‚öffnet Menü‘, ‚ausgewählt‘), Fokus ins Menü/Sprechblase und zurück, Hintergrund für VoiceOver gesperrt, Ansagen (Trefferzahl, ‚Automatisch gespeichert‘), Fehlermeldung hörbar (T-51–T-55); 2) Hardware-Tastatur am iPad – Esc und Pfeile in Menüs und Sprechblasen, Eingabe nie für die rote Aktion, Kurzbefehle (T-56); 3) ‚Kontrast erhöhen‘ und ‚Bewegung reduzieren‘ als allgemeine Regel (T-47, T-49); je eine Prüfung im Regelkatalog (T-59, T-60); 4) Schrift folgt der Textgröße (Dynamic Type, T-48) – zuerst Muster. Grundlage `arbeit/A-38 Framework-Vergleich.html` | offen |
 | A-30 | 3 | Vorschläge von Claude (19.10.2026, Analyse Abschnitt 5) – **ergänzt aus A-38 (Nutzer 22.10.2026):** Kurzmeldung als allgemeiner Baustein (T-20), einheitliche leere Zustände mit Symbol, Titel, Satz und Aktion (T-61), Muster ‚Rückgängig statt Abfrage‘ (T-21); Rückgängig nach Löschen (‚Gelöscht · Widerrufen‘), einheitliche leere Zustände, ‚Ziehen zum Aktualisieren‘ bewusst aus – je einzeln entscheiden; **dazu Wischaktionen in Listen (T-10 aus A-61, Nutzer 22.10.2026):** erst mit Rückgängig, dann wie Apple – Durchwischen löscht sofort, ‚Widerrufen‘ | Vorschlag |
 | A-44 | 3 | **Tab-Leiste für Hauptbereiche (aus A-38 T-9, Nutzer 22.10.2026):** Eine Leiste unten wechselt zwischen gleichrangigen Bereichen der App; jeder Bereich behält seinen Zustand. Warum später: Apple nutzt sie nur bei gleichrangigen Bereichen, die unsere Apps nicht haben. Neu bewerten, sobald eine App solche Bereiche bekommt. | später |
-| A-45 | 3 | **Ziehbarer Index am Rand (aus A-38 T-11, Nutzer 22.10.2026):** Eine schmale Leiste am rechten Rand; mit dem Finger darüber ziehen springt in der Liste, eine Blase zeigt die Stelle. Warum später: Wird in A-37 entschieden; näher an Apple wäre ein Monats-Index ohne Blase. **Entschieden mit A-37 B+C** (Nutzer 22.10.2026): Griff mit Blase statt Index-Leiste – wird mit A-37 erledigt | mit A-37 |
 | A-46 | 3 | **Haftende Abschnittsköpfe (aus A-38 T-12, Nutzer 22.10.2026):** Lange Listen sind in Gruppen geteilt; der Kopf der aktuellen Gruppe bleibt beim Rollen oben stehen. Warum später: Erst bei vielen Einträgen sinnvoll (z. B. Reiselogbücher nach Jahr); mit A-37 zusammen entscheiden. | später |
 | A-47 | 3 | **Aufklappbare Abschnitte (aus A-38 T-13, Nutzer 22.10.2026):** Abschnitte lassen sich mit einem Pfeil auf- und zuklappen, einzeln oder mehrere. Warum später: Erst bei langen Einstellungsfenstern oder gruppierten Seitenleisten nötig. | später |
 | A-48 | 3 | **Umsortieren per Ziehen (aus A-38 T-14, Nutzer 22.10.2026):** Zeilen am Griff ziehen; die anderen weichen aus, die Liste rollt am Rand mit. Warum später: Erst nötig, wenn eine App eine frei wählbare Reihenfolge braucht. | später |
@@ -47,7 +45,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 | A-56 | 3 | **Format beim Tippen als allgemeiner Baustein (aus A-38 T-30, Nutzer 22.10.2026):** heute formatiert das Reiselogbuch Beträge selbst (index.html:784-793); als Baustein in ui.js für alle Apps (Beträge, Telefon, Uhrzeit, IBAN) | später |
 | A-57 | 3 | **Suche nach iOS 26 – unten auf dem iPhone (aus A-38 T-32, Nutzer 22.10.2026):** prüfen, ob die Suchzeile auf dem iPhone wie in iOS 26 unten in Daumennähe stehen soll; ‚Abbrechen‘ selbst nicht (Schließen über die Lupe bleibt) | später |
 | A-58 | 3 | **Gemeinsame Bewegungswerte (aus A-38 T-50, Nutzer 22.10.2026):** Dauer und Kurven aller Bewegungen an einer Stelle (Variablen), ‚Bewegung reduzieren‘ zentral – **mit Paket B (A-37) bauen** | später |
-| A-59 | 3 | **Regel ‚ohne Ruckeln‘ mit Prüfung (aus A-38 T-58, Nutzer 22.10.2026):** Gesten und Bewegungen laufen flüssig (auch 120 Hz), gemessen in der Prüfung; Messen und Ändern je Bild bündeln – **mit Paket A** | später |
+| A-59 | 3 | **Regel ‚ohne Ruckeln‘ mit Prüfung (aus A-38 T-58, Nutzer 22.10.2026):** Gesten und Bewegungen laufen flüssig (auch 120 Hz), gemessen in der Prüfung; Messen und Ändern je Bild bündeln – **mit Paket A**. Für die Navigation umgesetzt (4.30.0, R-7.5: nur transform/opacity, Bildlücken gemessen); offen die allgemeine Regel für alle Bewegungen | später |
 | A-60 | 3 | **Fotos ansehen und wischen (aus A-38 T-65, Nutzer 22.10.2026):** Bildansicht nach Apple Fotos (wischen, zoomen, nach unten wischen schließt), Bilder laden erst bei Sicht; Speicher IndexedDB statt localStorage, Backup und Abgleich mit Bildern – planen, sobald eine App Fotos bekommt | später |
 | A-32 | 3 | **‚Problem melden‘ (Vorschlag V9, Nutzer 19.10.2026):** Messung, Version und Gerät in einer Datei | später |
 | A-01 | 3 | Startseite g811141a.github.io mit allen Apps (früher S-03) | später |
@@ -58,6 +56,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Thema | Version | Datum |
 |---|---|---|---|
+| E-72 | **A-37 B+C und A-61 Teil 1 ‚Überall‘ gebaut** (Fall-Listen `arbeit/A-37 Fall-Liste.md`, `arbeit/A-61 Teil 1 Fall-Liste.md`): R-3.2 ergänzt, R-7.5 neu; **A-45** (ziehbarer Index am Rand) damit entschieden und erledigt – der Schnellroll-Griff ist dieser Index. Wartet auf P-64 | AppDesign 4.30.0 · Reiselogbuch 3.28.0 | 22.10.2026 |
 | E-71 | Geprüft **P-63 (Reiselogbuch 3.27.0): alles ok** (Nutzer 22.10.2026) – **A-63 Paket C abgeschlossen**; /9 echte Ränder iPhone 16/17 Pro vom Home-Bildschirm gemessen: hoch 0/34/0/0, quer 0/20/62/62 (`tests/messungen/2026-10-22 iPhone … Ränder.txt`) – wie die Prüfwerte, nur oben hoch 0 statt der strengen 62; die Prüfung bleibt streng | AppDesign 4.29.0 | 22.10.2026 |
 | E-70 | **A-63 Paket C gebaut** (Fall-Liste `arbeit/A-63 Fall-Liste.md`, Weg b, als allgemeine Regeln R-1.7, R-5.6, R-5.7, R-2.3): neue Prüfungen `safe` (hig.mjs), `checkClear`, `checkSearchWords` A-1 bis A-8, doku.mjs R-1.7 – gegen 4.28.2 rot, jetzt grün. Wartet auf P-63 | AppDesign 4.29.0 | 22.10.2026 |
 | E-69 | **A-41 und A-42:** Zusammenarbeit 2.18.0 (Übergabe ab etwa 300.000 Token, Hilfsagenten parallel wenn möglich und sinnvoll, ein Auswahlfenster je Antwort); Designrichtlinie 1 Grundsatz ‚kein UI-Framework‘ | AppDesign 4.29.0 | 22.10.2026 |
