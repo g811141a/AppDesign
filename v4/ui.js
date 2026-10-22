@@ -1,4 +1,4 @@
-// AppDesign 4.28.2 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
+// AppDesign 4.29.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
 // Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/fassung/X.Y.Z/ui.js"></script> (feste Fassung, R-10.3)
 // Seit 4.11.0 (R-10.3): ui.js und design.css immer mit ?v=<AppDesign-Version> einbinden (auch in sw.js) und beim Start
 // prüfen, ob genau diese Fassung geladen ist (AD_VERSION hier, --ad-version in design.css).
@@ -18,7 +18,7 @@
 
 'use strict';
 // Version der Bausteine (R-10.3): die App vergleicht sie beim Start mit der benötigten Fassung.
-const AD_VERSION = '4.28.2';
+const AD_VERSION = '4.29.0';
 /* ---------- Icons ---------- */
 
 // Schaltflächen-Icons aus Lucide (ISC-Lizenz), direkt eingebettet, damit die App offline funktioniert.
@@ -297,21 +297,29 @@ function showModalQuiet(d) {
 }
 
 // Menü oder Sprechblase unter (bzw. über) der Schaltfläche, im Bildschirm gehalten.
+// R-1.6 (seit 4.29.0, A-63): Abstände von Menüs und Sprechblasen zum Rand – 12 px, mindestens die sicheren Ränder
+// (bei offener Tastatur liegt die Home-Leiste unter ihr)
+function rand12() {
+  const g = safeRand();
+  return { L: Math.max(12, g.left), R: Math.max(12, g.right), T: Math.max(12, g.top), B: Math.max(12, kbOffen() ? 0 : g.bottom) };
+}
 function placeAt(el, anchor, align) {
   // R-4.5/R-8.1: Menü und Sprechblase stehen unter ihrer Schaltfläche und passen immer ganz auf den Bildschirm.
   // Reicht der Platz darunter nicht, scrollt ihr Inhalt darin (erst bei weniger als 200 px Platz darunter
   // öffnen sie nach oben). 'beside': rechts neben dem Eintrag (Kontextmenü in der Seitenleiste), oben bündig.
   el.style.maxHeight = ''; el.style.overflowY = '';   // nach dem Drehen neu messen
+  // Seit 4.29.0 (R-1.6, A-63): Abstand 12 px vom Rand, mindestens aber die sicheren Ränder (Aussparung, Home-Leiste)
+  const { L, R, T, B } = rand12();
   let r = anchor.getBoundingClientRect();
   const fit = room => { if (el.scrollHeight > room) { el.style.maxHeight = room + 'px'; el.style.overflowY = 'auto'; el.style.overscrollBehavior = 'contain'; } };
   let top;
   // Seit 4.10.0: ist neben dem Eintrag kein Platz (iPhone: Kachel so breit wie der Bildschirm), steht das Menü
   // linksbündig unter der Kachel – ganz sichtbar über der Backup-Kachel; dafür wird die Liste nötigenfalls
   // etwas nach oben geschoben (R-4.2).
-  if (align === 'beside' && innerWidth - (r.right - 40) - 12 < el.offsetWidth) {
+  if (align === 'beside' && innerWidth - (r.right - 40) - R < el.offsetWidth) {
     const list = anchor.closest('.side-list'), tile = anchor.closest('#side')?.querySelector('.side-foot .bhint');
     const tr = tile?.getBoundingClientRect();
-    const limit = Math.min(innerHeight, tr && tr.height ? tr.top : innerHeight) - 12;
+    const limit = tr && tr.height ? Math.min(innerHeight - B, tr.top - 12) : innerHeight - B;
     const need = r.bottom + 8 + el.offsetHeight - limit;
     if (need > 0 && list) {
       // Reicht der Scrollweg nicht (wenige Einträge), bekommt die Liste unten so viel Platz, dass sie weit genug rückt.
@@ -327,29 +335,29 @@ function placeAt(el, anchor, align) {
     top = r.bottom + 8;
     // Seit 4.11.0: rückt die Liste trotzdem nicht weit genug (z. B. iOS hält die Liste fest, solange der Finger
     // noch liegt), steht das Menü linksbündig über der Kachel statt hinter der Backup-Kachel (wie Apple).
-    if (top + el.offsetHeight > limit + 2 && r.top - 8 - el.offsetHeight >= 12) top = r.top - 8 - el.offsetHeight;
+    if (top + el.offsetHeight > limit + 2 && r.top - 8 - el.offsetHeight >= T) top = r.top - 8 - el.offsetHeight;
     else fit(limit - top);
-    el.style.left = Math.max(12, Math.min(r.left, innerWidth - el.offsetWidth - 12)) + 'px';
-    el.style.top = Math.max(12, top) + 'px';
+    el.style.left = Math.max(L, Math.min(r.left, innerWidth - el.offsetWidth - R)) + 'px';
+    el.style.top = Math.max(T, top) + 'px';
     return;
   }
   if (align === 'beside') {
     // Neben der Kachel (iPad): nie über bzw. hinter die Backup-Kachel – unten endet das Menü über ihr (R-4.2).
     const tr = anchor.closest('#side')?.querySelector('.side-foot .bhint')?.getBoundingClientRect();
-    const left0 = Math.max(12, Math.min(r.right - 40, innerWidth - el.offsetWidth - 12));
-    const bottom = tr && tr.height && left0 < tr.right ? tr.top - 12 : innerHeight - 12;
-    fit(bottom - 12);
-    top = Math.max(12, Math.min(r.top, bottom - el.offsetHeight));
+    const left0 = Math.max(L, Math.min(r.right - 40, innerWidth - el.offsetWidth - R));
+    const bottom = tr && tr.height && left0 < tr.right ? tr.top - 12 : innerHeight - B;
+    fit(bottom - T);
+    top = Math.max(T, Math.min(r.top, bottom - el.offsetHeight));
   } else {
-    const below = innerHeight - r.bottom - 8 - 12, above = r.top - 8 - 12;
+    const below = innerHeight - r.bottom - 8 - B, above = r.top - 8 - T;
     if (el.scrollHeight <= below || below >= 200 || below >= above) { fit(below); top = r.bottom + 8; }
     else { fit(above); top = r.top - 8 - el.offsetHeight; }
   }
   const w = el.offsetWidth;
   let left = align === 'right' ? r.right - w : align === 'beside' ? r.right - 40 : r.left;
-  left = Math.max(12, Math.min(left, innerWidth - w - 12));
+  left = Math.max(L, Math.min(left, innerWidth - w - R));
   el.style.left = left + 'px';
-  el.style.top = Math.max(12, top) + 'px';
+  el.style.top = Math.max(T, top) + 'px';
 }
 
 // Einträge: { icon, label, sub, red, tick, disabled, act } (tick und icon zusammen: Häkchen vorne, dann Icon und Text) · { …, value, submenu: [Einträge] } (Untermenü ›, eine Ebene)
@@ -393,11 +401,11 @@ function openMenu(anchor, items, align = 'right') {
   const placeSub = () => {
     if (!subMenu) return;
     subMenu.style.maxHeight = ''; subMenu.style.overflowY = '';
-    const room = innerHeight - 24;
+    const { L, R, T, B } = rand12(), room = innerHeight - T - B;
     if (subMenu.scrollHeight > room) { subMenu.style.maxHeight = room + 'px'; subMenu.style.overflowY = 'auto'; }
     const mr = menu.getBoundingClientRect(), br = subItem.getBoundingClientRect(), w = subMenu.offsetWidth;
-    subMenu.style.left = Math.max(12, mr.left - w - 8 >= 12 ? mr.left - w - 8 : Math.min(mr.right + 8, innerWidth - w - 12)) + 'px';
-    subMenu.style.top = Math.max(12, Math.min(br.top, innerHeight - subMenu.offsetHeight - 12)) + 'px';
+    subMenu.style.left = Math.max(L, mr.left - w - 8 >= L ? mr.left - w - 8 : Math.min(mr.right + 8, innerWidth - w - R)) + 'px';
+    subMenu.style.top = Math.max(T, Math.min(br.top, innerHeight - subMenu.offsetHeight - B)) + 'px';
   };
   const place = () => {
     const a = liveAnchor(anchor);
@@ -469,7 +477,7 @@ function choosePop(anchor, html, buttons) {
       if (!visible) { pop.style.left = (innerWidth - pop.offsetWidth) / 2 + 'px'; return; }
       const a = liveAnchor(anchor);
       // Schaltfläche nicht mehr zu sehen: die Abfrage bleibt offen und steht mittig (eine Entscheidung geht nicht verloren).
-      if (!a) { pop.style.left = (innerWidth - pop.offsetWidth) / 2 + 'px'; pop.style.top = Math.max(12, (innerHeight - pop.offsetHeight) / 2) + 'px'; return; }
+      if (!a) { pop.style.left = (innerWidth - pop.offsetWidth) / 2 + 'px'; pop.style.top = Math.max(rand12().T, (innerHeight - pop.offsetHeight) / 2) + 'px'; return; }
       anchor = a;
       placeAt(pop, anchor, anchor.classList.contains('side-row') ? 'beside' : anchor.getBoundingClientRect().left > innerWidth / 2 ? 'right' : 'left');
     };
@@ -1228,6 +1236,15 @@ function kbOffen() { return !!window.visualViewport && visualViewport.height < s
 // Felder, die eine Tastatur öffnen (Datum, Uhrzeit, Auswahl und Schalter öffnen keine)
 const FELD = 'textarea, input:not([type=date],[type=time],[type=datetime-local],[type=month],[type=checkbox],[type=radio],[type=button],[type=submit],[type=reset],[type=range],[type=color],[type=file],[type=hidden]):not([readonly])';
 let dlgFest = 0;   // seit 4.28.1: Höhe des iPad-Fensters vor dem Antippen – der Platz unter dem Inhalt macht es nicht höher
+// R-1.6 (seit 4.29.0, A-63): sichere Ränder in px – aus den Variablen --safe-… (design.css), über ein unsichtbares Element gelesen
+let safeEl = null;
+function safeRand() {
+  if (!safeEl) { safeEl = document.createElement('div'); safeEl.setAttribute('aria-hidden', 'true');
+    safeEl.style.cssText = 'position:fixed;left:0;top:0;width:0;height:0;visibility:hidden;pointer-events:none;padding:var(--safe-top) var(--safe-right) var(--safe-bottom) var(--safe-left)';
+    document.body.append(safeEl); }
+  const c = getComputedStyle(safeEl);
+  return { top: parseFloat(c.paddingTop) || 0, bottom: parseFloat(c.paddingBottom) || 0, left: parseFloat(c.paddingLeft) || 0, right: parseFloat(c.paddingRight) || 0 };
+}
 function placeDialogs() {
   const vv = window.visualViewport;
   const top = vv ? Math.max(0, vv.offsetTop) : 0;
@@ -1239,7 +1256,10 @@ function placeDialogs() {
   root.setProperty('--vv-h', Math.round(h) + 'px');
   // Abstand der Tastatur vom unteren Rand: die untere Leiste (iPhone) und die Kapsel bleiben darüber sichtbar.
   root.setProperty('--vv-bottom', Math.max(0, Math.round(seitenHoehe() - top - h)) + 'px');
-  const max = full ? h : h - 20;
+  // iPad-Fenster (seit 4.29.0, A-63 S-6): oben und unten mindestens 10 px, aber nie unter Statusleiste oder Home-Leiste
+  // (bei offener Tastatur liegt die Home-Leiste unter ihr)
+  const s = safeRand(), oben = Math.max(10, s.top), unten = Math.max(10, kbOffen() ? 0 : s.bottom);
+  const max = full ? h : h - oben - unten;
   root.setProperty('--dlg-max', Math.max(200, !full && dlgFest ? Math.min(max, dlgFest) : max) + 'px');
   [dlg, msg].forEach(d => {
     if (!d.open) return;
@@ -1249,9 +1269,9 @@ function placeDialogs() {
     // schon ganz, bleibt es stehen – auch nach dem Schließen der Tastatur, solange ein Feld darin den Fokus hat.
     d.style.margin = '0 auto';
     d.style.bottom = 'auto';
-    const jetzt = parseFloat(d.style.top), ganz = jetzt >= top + 9 && jetzt + d.offsetHeight <= top + h - 9;
+    const jetzt = parseFloat(d.style.top), ganz = jetzt >= top + oben - 1 && jetzt + d.offsetHeight <= top + h - unten + 1;
     if (ganz && (kbOffen() || d.contains(document.activeElement) && document.activeElement.matches(FELD))) return;
-    d.style.top = Math.round(top + Math.max(10, (h - d.offsetHeight) / 2)) + 'px';
+    d.style.top = Math.round(top + oben + Math.max(0, (h - oben - unten - d.offsetHeight) / 2)) + 'px';
   });
 }
 placeDialogs();   // --vv-h (Höhe des Rahmens, A-28) gleich beim Start
@@ -1442,6 +1462,8 @@ function messStart({ app = '', teile = {}, rollen = {} } = {}) {
   const st = matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
   mess = { an: true, start: performance.now(), beginn: new Date(), teile, rollen, zeilen: [], zuletzt: '', hoerer: [] };
   mess.zeilen.push(`# Messung · ${app} · AppDesign ${AD_VERSION} · ${navigator.userAgent} · ${st ? 'Home-Bildschirm' : 'Safari'} · ${screen.width}×${screen.height} @${devicePixelRatio} · ${
+    // seit 4.29.0 (A-63 S-8): die sicheren Ränder des Geräts (oben/unten/links/rechts) – so kennen die Prüfungen die echten Werte
+    (r => `Ränder ${r.top}/${r.bottom}/${r.left}/${r.right}`)(safeRand())} · ${
     matchMedia('(prefers-color-scheme: dark)').matches ? 'dunkel' : 'hell'} · ${mess.beginn.toISOString()}`);
   mess.zeilen.push(['t', ...Object.keys(messWerte())].map(v => v.padEnd(6)).join(' ').trimEnd());
   const hoere = (z, typ, text) => { if (!z) return; const fn = e => messEreignis(text(e)); z.addEventListener(typ, fn, true); mess.hoerer.push([z, typ, fn]); };

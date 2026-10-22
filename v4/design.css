@@ -1,4 +1,4 @@
-/* AppDesign 4.28.2 · design.css – gemeinsame Gestaltung der iPad-Web-Apps von g811141a (Apple-like)
+/* AppDesign 4.29.0 · design.css – gemeinsame Gestaltung der iPad-Web-Apps von g811141a (Apple-like)
    Einbinden im <head> vor dem eigenen <style> der App:  <link rel="stylesheet" href="../AppDesign/fassung/X.Y.Z/design.css"> (feste Fassung, R-10.3)
    Farben als Variablen auf :root, Dunkelmodus über data-theme="dark" (setzt ui.js / applyTheme).
    Komponenten: Schaltflächen, Suchfeld, Kapsel, Eingabefelder, Datumsfelder, Kopfzeile, Seitenleiste,
@@ -6,7 +6,7 @@
    Options-Kapsel; seit 4.1.0 iPhone-Ansicht (html.phone: Seitenkopf, großer Titel, Liste, Kasten, untere Leiste). Regeln dazu: README - Designrichtlinie allgemein.md */
 /* Farben im Apple-Look: Hintergrund Hellgrau, Kästen weiß ohne Rand, schwebende Schaltflächen */
 :root {
-  --ad-version: "4.28.2";   /* R-10.3: Version der Bausteine, die App prüft sie beim Start */
+  --ad-version: "4.29.0";   /* R-10.3: Version der Bausteine, die App prüft sie beim Start */
   --bg: #f2f2f7;
   --card: #ffffff;
   --ink: #1c1c1e;
@@ -43,6 +43,12 @@
   --side-w: 0px;
   --vv-top: 0px;
   --vv-bottom: 0px;
+  /* R-1.6 (seit 4.29.0, A-63): sichere Ränder (Dynamic Island, Ecken, Home-Leiste) nur hier aus env() – überall sonst
+     var(--safe-…); die Prüfungen setzen damit echte Gerätewerte (hig.mjs checkSafe), die Prüfbrowser liefern für env() immer 0 */
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
   color-scheme: light;
 }
 :root[data-theme="dark"] {
@@ -66,7 +72,7 @@ html, body { margin: 0; background: var(--bg); color: var(--ink); }
 html, body { overscroll-behavior: none; }
 body {
   font: 17px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  padding: 0 max(16px, env(safe-area-inset-right)) 100px max(16px, env(safe-area-inset-left));
+  padding: 0 max(16px, var(--safe-right)) 100px max(16px, var(--safe-left));
   -webkit-text-size-adjust: 100%;
 }
 h1 { font-size: 28px; margin: 12px 0 6px; }
@@ -168,8 +174,8 @@ label { display: block; font-weight: 600; margin: 0 0 6px; }
 /* Seit 4.5.1 fest positioniert (nicht sticky), damit sie auch beim Nachfedern der Seite stehen bleibt;
    neben der festen Seitenleiste beginnt sie rechts davon. Der Inhalt beginnt unter ihr (--bar-h). */
 .nb { position: fixed; top: var(--vv-top); left: 0; right: 0; z-index: 6; background: var(--bg); margin: 0;
-  padding: calc(env(safe-area-inset-top) + 10px) max(16px, env(safe-area-inset-right)) 10px max(16px, env(safe-area-inset-left)); border-bottom: .5px solid transparent; }
-body.docked .nb { left: calc(var(--side-w) + max(10px, env(safe-area-inset-left)) + 4px); padding-left: 16px; }
+  padding: calc(var(--safe-top) + 10px) max(16px, var(--safe-right)) 10px max(16px, var(--safe-left)); border-bottom: .5px solid transparent; }
+body.docked .nb { left: calc(var(--side-w) + max(10px, var(--safe-left)) + 4px); padding-left: 16px; }
 #app:has(> .nb) { padding-top: var(--bar-h); }
 .nb.line { border-bottom-color: var(--line); }
 .nb1 { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 12px; min-height: 44px; }
@@ -186,10 +192,10 @@ body.docked .nb { left: calc(var(--side-w) + max(10px, env(safe-area-inset-left)
 html:has(#app > .rolle), html:has(#app > .rolle) body { height: 100%; overflow: hidden; }
 body:has(> #app > .rolle) { padding: 0; }
 #app:has(> .rolle) { position: fixed; top: var(--vv-top); left: 0; right: 0; height: var(--vv-h, 100dvh); display: flex; flex-direction: column; padding: 0; }
-body.docked #app:has(> .rolle) { left: calc(var(--side-w) + max(10px, env(safe-area-inset-left)) + 4px); }
+body.docked #app:has(> .rolle) { left: calc(var(--side-w) + max(10px, var(--safe-left)) + 4px); }
 #app > .rolle ~ .nb, #app > .nb:has(~ .rolle), #app > .pnav:has(~ .rolle) { position: relative; top: 0; left: 0; flex: none; }
 .rolle { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch;
-  padding: 0 max(16px, env(safe-area-inset-right)) 0 max(16px, env(safe-area-inset-left)); }
+  padding: 0 max(16px, var(--safe-right)) 0 max(16px, var(--safe-left)); }
 /* Seit 4.27.1 (A-33): der Abstand unter dem Inhalt (100 px, Platz für die Kapsel) als Platzhalter am Ende statt als Innenabstand –
    so wird der Rollbereich auch bei sehr niedrigem sichtbarem Bereich (iPhone quer mit Tastatur) nicht höher als sein Platz. */
 .rolle::after { content: ''; display: block; height: calc(100px + var(--platz, 0px)); }
@@ -202,8 +208,8 @@ body.docked .rolle { padding-left: 16px; }
 
 /* Komponente Seitenleiste: quer fest links neben dem Inhalt, im Hochformat über den Inhalt gelegt */
 /* Schwebend wie in Safari: runde Ecken, Lichtkante und Schatten wie die Schaltflächen, Abstand zum Rand */
-body.docked { padding-left: calc(var(--side-w) + max(10px, env(safe-area-inset-left)) + 20px); }
-#side { position: fixed; z-index: 7; top: calc(env(safe-area-inset-top) + 10px); bottom: calc(env(safe-area-inset-bottom) + 4px); left: max(10px, env(safe-area-inset-left));
+body.docked { padding-left: calc(var(--side-w) + max(10px, var(--safe-left)) + 20px); }
+#side { position: fixed; z-index: 7; top: calc(var(--safe-top) + 10px); bottom: calc(var(--safe-bottom) + 4px); left: max(10px, var(--safe-left));
   width: max-content; min-width: 340px; max-width: 420px; overflow: hidden;
   background: var(--bg); border: .5px solid var(--btn-rim); border-radius: 22px; box-shadow: var(--float);
   display: flex; flex-direction: column; padding: 10px 12px 14px; }
@@ -214,8 +220,8 @@ body.docked { padding-left: calc(var(--side-w) + max(10px, env(safe-area-inset-l
 #side.over { z-index: 25; }
 /* Seit 4.7.0: Auf dem iPhone ist die Seitenleiste die Startliste – derselbe Baustein, nur bildschirmfüllend (R-1.1) */
 #side.page { inset: 0; width: auto; min-width: 0; max-width: none; border: none; border-radius: 0; box-shadow: none; z-index: 5;
-  padding: calc(env(safe-area-inset-top) + 8px) max(16px, env(safe-area-inset-right)) 0 max(16px, env(safe-area-inset-left)); }
-#side.page .side-head { margin: -8px -16px 0; padding: calc(env(safe-area-inset-top) + 8px) 16px 8px 20px; }
+  padding: calc(var(--safe-top) + 8px) max(16px, var(--safe-right)) 0 max(16px, var(--safe-left)); }
+#side.page .side-head { margin: -8px -16px 0; padding: calc(var(--safe-top) + 8px) 16px 8px 20px; }
 #side.page #sideHide { display: none; }
 #side.page .side-list { margin: 0 -16px; padding: 6px 16px 160px; }
 .side-shade { position: fixed; inset: 0; z-index: 24; background: rgba(0,0,0,.25); }
@@ -228,7 +234,7 @@ body.docked { padding-left: calc(var(--side-w) + max(10px, env(safe-area-inset-l
 /* Seit 4.7.0: Die Backup-Kachel liegt fest über dem unteren Ende der Liste; die Kacheln laufen dahinter aus (wie auf dem iPhone) */
 #side .side-foot { position: absolute; left: 0; right: 0; bottom: 0; z-index: 2; padding: 30px 12px 14px;
   background: linear-gradient(to bottom, transparent, var(--bg) 40px); pointer-events: none; }
-#side.page .side-foot { padding: 30px max(16px, env(safe-area-inset-right)) calc(10px + env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left)); }
+#side.page .side-foot { padding: 30px max(16px, var(--safe-right)) calc(10px + var(--safe-bottom)) max(16px, var(--safe-left)); }
 #side .side-foot > * { pointer-events: auto; }
 .side-head h2 { margin: 0 4px 0 0; flex: 1; font-size: 20px; white-space: nowrap; }
 #side .side-row { display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; border: none; background: var(--card); border-radius: 22px;
@@ -304,7 +310,7 @@ body.docked { padding-left: calc(var(--side-w) + max(10px, env(safe-area-inset-l
 .msg-text { padding: 8px 2px; }
 
 /* Seit 4.3.0: Nach oben / Ans Ende in einer senkrechten Kapsel */
-.fab { position: fixed; right: max(16px, env(safe-area-inset-right)); bottom: calc(16px + max(var(--vv-bottom), env(safe-area-inset-bottom))); display: flex; flex-direction: column; z-index: 4;
+.fab { position: fixed; right: max(16px, var(--safe-right)); bottom: calc(16px + max(var(--vv-bottom), var(--safe-bottom))); display: flex; flex-direction: column; z-index: 4;
   border-radius: 22px; background: var(--btn); border: .5px solid var(--btn-rim); box-shadow: var(--float); }
 .fab button { padding: 0; font-size: 20px; background: none; border: none; box-shadow: none; height: 48px; }
 .fab[hidden] { display: none; }
@@ -423,16 +429,16 @@ dialog input[type=text], dialog input[type=date], dialog textarea { background: 
    html.phone (setzt ui.js / applyLayout): iPhone hoch und quer sowie sehr schmale Fenster (unter 700 px breit
    oder unter 500 px hoch). Wie Apple (Notizen, iOS 26): eine Seite nach der anderen mit großem Titel,
    runder Zurück-Knopf ohne Text, Suche unten, Fenster bildschirmfüllend, Abfragen als Sprechblase am Knopf. */
-html.phone body { padding-bottom: calc(env(safe-area-inset-bottom) + 120px); }
-html.phone body:has(.bnote) { padding-bottom: calc(env(safe-area-inset-bottom) + 150px); }
-html.phone .rolle::after { height: calc(env(safe-area-inset-bottom) + 120px + var(--platz, 0px)); }   /* seit 4.27.1 Platzhalter statt Innenabstand (A-33) */
-html.phone body:has(.bnote) .rolle::after { height: calc(env(safe-area-inset-bottom) + 150px + var(--platz, 0px)); }
+html.phone body { padding-bottom: calc(var(--safe-bottom) + 120px); }
+html.phone body:has(.bnote) { padding-bottom: calc(var(--safe-bottom) + 150px); }
+html.phone .rolle::after { height: calc(var(--safe-bottom) + 120px + var(--platz, 0px)); }   /* seit 4.27.1 Platzhalter statt Innenabstand (A-33) */
+html.phone body:has(.bnote) .rolle::after { height: calc(var(--safe-bottom) + 150px + var(--platz, 0px)); }
 html.phone #side:not(.page), html.phone .side-shade { display: none !important; }
 /* Seit 4.20.0 (A-15): Kapsel ‚Nach oben / Ans Ende‘ auch im iPhone-Aufbau; ausgeblendet, wenn es nichts zu scrollen gibt (R-3.2) */
 .fab.still { display: none; }
 /* Komponente Seitenkopf (iPhone): links rund zurück, rechts Kapsel oder runder Knopf; scrollt nicht mit */
 .pnav { position: fixed; left: 0; right: 0; top: var(--vv-top); z-index: 6; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px; min-height: 44px;
-  padding: calc(env(safe-area-inset-top) + 8px) max(16px, env(safe-area-inset-right)) 8px max(16px, env(safe-area-inset-left)); background: var(--bg); border-bottom: .5px solid transparent; }
+  padding: calc(var(--safe-top) + 8px) max(16px, var(--safe-right)) 8px max(16px, var(--safe-left)); background: var(--bg); border-bottom: .5px solid transparent; }
 /* Die Leiste steht fest (seit 4.5.0); der Inhalt beginnt unter ihr (Höhe setzt updateBar) */
 html.phone body { padding-top: var(--pnav-h, 60px); }
 .pnav.line { border-bottom-color: var(--line); }
@@ -477,9 +483,9 @@ html.phone body { padding-top: var(--pnav-h, 60px); }
 .box .kv .k.word { font-size: 17px; font-weight: 600; color: var(--ink); padding-top: 7px; }
 .box.on { background: var(--sel-bg); }
 /* Komponente untere Leiste (iPhone): Suchfeld und runde Knöpfe unten; wandert mit der Tastatur nach oben */
-.bbar { position: fixed; z-index: 8; left: max(16px, env(safe-area-inset-left)); right: max(16px, env(safe-area-inset-right));
-  bottom: calc(max(var(--vv-bottom), env(safe-area-inset-bottom)) + 10px); display: flex; gap: 10px; align-items: center; justify-content: flex-end; }
-.bbar::before { content: ''; position: fixed; left: 0; right: 0; bottom: 0; height: calc(max(var(--vv-bottom), env(safe-area-inset-bottom)) + 90px); z-index: -1;
+.bbar { position: fixed; z-index: 8; left: max(16px, var(--safe-left)); right: max(16px, var(--safe-right));
+  bottom: calc(max(var(--vv-bottom), var(--safe-bottom)) + 10px); display: flex; gap: 10px; align-items: center; justify-content: flex-end; }
+.bbar::before { content: ''; position: fixed; left: 0; right: 0; bottom: 0; height: calc(max(var(--vv-bottom), var(--safe-bottom)) + 90px); z-index: -1;
   background: linear-gradient(to bottom, transparent, var(--bg) 55%); pointer-events: none; }
 .bbar .searchbox { flex: 1 1 auto; }
 /* Seit 4.2.0: fester Hinweis unten (z. B. Backup) als Karte in der unteren Leiste */
@@ -492,12 +498,12 @@ html.phone dialog#dlg { width: 100%; max-width: none; min-width: 0; height: var(
 html.phone dialog#dlg form { height: 100%; }
 html.phone #msg { width: min(360px, calc(100vw - 32px)); }
 html.phone #msg.wide { width: min(600px, calc(100vw - 24px)); }
-html.phone #dlg .dlg-head { gap: 8px; padding: calc(env(safe-area-inset-top) + 8px) max(12px, env(safe-area-inset-right)) 8px max(12px, env(safe-area-inset-left)); }
+html.phone #dlg .dlg-head { gap: 8px; padding: calc(var(--safe-top) + 8px) max(12px, var(--safe-right)) 8px max(12px, var(--safe-left)); }
 html.phone #dlg .dlg-head .hl, html.phone #dlg .dlg-head .hr { flex: none; gap: 8px; }
 html.phone #dlg .dlg-head .mid { flex: 1; max-width: none; min-width: 0; }
 html.phone #dlg .dlg-head h3 { font-size: 17px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 html.phone #dlg .dlg-head .grp button:not(.txt) { width: 44px; min-width: 44px; }
-html.phone #dlg .dlg-body { padding: 4px max(12px, env(safe-area-inset-right)) calc(20px + env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left)); }
+html.phone #dlg .dlg-body { padding: 4px max(12px, var(--safe-right)) calc(20px + var(--safe-bottom)) max(12px, var(--safe-left)); }
 html.phone .step-head { flex-wrap: wrap; row-gap: 8px; }
 /* Kasten-Kopf: Titel und Mikrofon in der ersten Zeile, Options-Kapseln darunter */
 html.phone .step-head > label:first-child { white-space: nowrap; flex: 1 0 60%; }
@@ -510,7 +516,7 @@ html.phone .step-head .head-checks { order: 3; margin-left: 0; justify-content: 
 #side .side-foot .offl .ic { width: 15px; height: 15px; flex: none; }
 /* Die Liste läuft auch hinter der Zeile durch, der letzte Eintrag bleibt erreichbar */
 #side:has(.offl:not([hidden])) .side-list { padding-bottom: 176px; }
-.nettoast { position: fixed; z-index: 40; inset: auto auto calc(max(var(--vv-bottom), env(safe-area-inset-bottom)) + var(--toast-lift, 0px) + 28px) var(--toast-x, 50%);
+.nettoast { position: fixed; z-index: 40; inset: auto auto calc(max(var(--vv-bottom), var(--safe-bottom)) + var(--toast-lift, 0px) + 28px) var(--toast-x, 50%);
   transform: translateX(-50%); margin: 0; border: 0; display: flex; align-items: center; gap: 10px; padding: 12px 18px; border-radius: 22px;
   background: var(--card); color: var(--ink); font-size: 15px; box-shadow: var(--float); width: max-content; max-width: min(420px, var(--toast-w, calc(100vw - 32px)));
   overflow: visible; -webkit-user-select: none; user-select: none; }
@@ -528,9 +534,9 @@ dialog.gleitet { transition: top .25s ease; }
    Safari nichts (R-4.5). Knöpfe in Kapseln 31 px (R-3.1: ab 28), Markierung 25 × 25; runde Knöpfe 32 × 32 mit einer unsichtbaren
    Antippfläche von 44 × 44, das Suchfeld als Kapsel 32 px (R-3.1: Kapseln ab 28). */
 @media (orientation: landscape) and (max-height: 500px) {
-  html.phone .pnav { min-height: 32px; padding-top: env(safe-area-inset-top); padding-bottom: 0; }
+  html.phone .pnav { min-height: 32px; padding-top: var(--safe-top); padding-bottom: 0; }
   html.phone .pnav .nb2 { margin: 0 0 3px; }
-  html.phone #dlg .dlg-head { padding-top: env(safe-area-inset-top); padding-bottom: 0; min-height: 32px; }
+  html.phone #dlg .dlg-head { padding-top: var(--safe-top); padding-bottom: 0; min-height: 32px; }
   html.phone :is(.pnav, #dlg .dlg-head) :is(.grp, .navgrp) { height: 32px; border-radius: 16px; }
   html.phone :is(.pnav, #dlg .dlg-head) :is(.grp, .navgrp) button { border-radius: 16px; }
   html.phone :is(.pnav, #dlg .dlg-head) :is(.grp, .navgrp) button:not(.txt):is(.on, .fill)::before { width: 25px; height: 25px; }
