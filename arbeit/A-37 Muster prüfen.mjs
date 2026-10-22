@@ -16,7 +16,7 @@ for (const [bn, browser] of [['chromium', chromium], ['webkit', webkit]]) {
   for (const [gn, [w, h]] of Object.entries(GERAETE)) for (const schema of ['light', 'dark']) {
     const p = await b.newPage({ viewport: { width: w, height: h }, colorScheme: schema, hasTouch: true });
     const t = `${bn} ${gn} ${schema}`;
-    for (const v of ['heute', 'a', 'b', 'c']) {
+    for (const v of ['heute', 'a', 'b', 'c', 'bc']) {
       await p.goto(datei + '?v=' + v); await p.waitForTimeout(150);
       ok(await p.evaluate(() => scrollY) === 0, `${t} ${v}: Seite rollt`);
       const ende = await p.evaluate(() => { const r = document.getElementById('rolle'); return r.scrollHeight - r.clientHeight - 120; });
@@ -26,7 +26,7 @@ for (const [bn, browser] of [['chromium', chromium], ['webkit', webkit]]) {
         await p.click('#toEnd'); await warte(p); ok(Math.abs(await y(p) - ende) < 2, `${t} heute: Ans Ende`);
         await p.click('#toTop'); await warte(p); ok(await y(p) === 0, `${t} heute: Nach oben`);
       }
-      if (v === 'b') {
+      if (v === 'b' || v === 'bc') {
         ok(!(await sicht(p, '#toTop')) && await sicht(p, '#toEnd'), `${t} b oben: nur Ans Ende`);
         await roll(p, ende / 2);
         ok(await sicht(p, '#toTop') && await sicht(p, '#toEnd'), `${t} b Mitte: beide`);
@@ -49,7 +49,7 @@ for (const [bn, browser] of [['chromium', chromium], ['webkit', webkit]]) {
         await roll(p, 30);
         ok(!(await sicht(p, '#einzel')) || await p.getAttribute('#einzel', 'aria-label') === 'Ans Ende', `${t} a nahe oben: kein ↑`);
       }
-      if (v === 'c') {
+      if (v === 'c' || v === 'bc') {
         await roll(p, 10); ok(await sicht(p, '#griff'), `${t} c: Griff beim Wischen`);
         const g = await p.locator('#griff').boundingBox();
         const s = await p.locator('#spur').boundingBox();
@@ -66,6 +66,11 @@ for (const [bn, browser] of [['chromium', chromium], ['webkit', webkit]]) {
         // Griff schneidet keine Leiste
         const bar = await p.locator('.bar').boundingBox();
         ok(s.y >= bar.y + bar.height, `${t} c: Spur unter der Kopfzeile`);
+        // B+C: der Griff läuft nie über die Kapsel – auch nicht, wenn sie beide Pfeile zeigt (Platz für die volle Höhe)
+        if (v === 'bc') {
+          const f = await p.locator('#fab').boundingBox();
+          ok(s.y + s.height <= f.y + f.height - 96 - 4, `${t} bc: Spur reicht in die Kapsel (${s.y + s.height} > ${f.y + f.height - 96})`);
+        }
       }
       // Kapsel/Knopf schneidet keine Leiste und liegt im Bild
       for (const sel of ['#fab', '#einzel']) if (await sicht(p, sel)) {

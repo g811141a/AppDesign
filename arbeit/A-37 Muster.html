@@ -13,7 +13,10 @@
    B     = Kapsel unten rechts wie heute, zeigt aber nur, was etwas bewirkt: oben nur ↓, am Ende nur ↑, dazwischen beide; ganz in der
            Nähe eines Endes fehlt dessen Pfeil (halbe Bildschirmhöhe).
    C     = Schnellroll-Griff wie in Apple Fotos/Kontakte: beim Wischen erscheint rechts ein Griff; ihn ziehen springt durch das ganze
-           Reiselogbuch, eine Blase zeigt den Tag. Nach 1,5 s ohne Bewegung blendet er aus. Ganz nach oben/unten ziehen = Anfang/Ende. */
+           Reiselogbuch, eine Blase zeigt den Tag. Nach 1,5 s ohne Bewegung blendet er aus. Ganz nach oben/unten ziehen = Anfang/Ende.
+   B+C   = gewählt (Nutzer 22.10.2026, Sitzung Reiselogbuch 0029): Kapsel wie B, dazu der Griff wie C. Der Griff läuft nur bis über die
+           Kapsel (Platz für ihre volle Höhe, damit er nicht springt, wenn ein Pfeil wegfällt) und erscheint erst, wenn der Inhalt
+           mindestens drei Bildschirmhöhen lang ist – darunter genügt die Kapsel. */
 :root { --bg: #f2f2f7; --card: #fff; --line: #d1d1d6; --txt: #000; --sub: #6e6e73; --blue: #007aff; --btn: #f9f9f9; --btn-rim: #fff;
   --float: 0 3px 28px rgba(0,0,0,.16); --vv-h: 100dvh; color-scheme: light dark; }
 @media (prefers-color-scheme: dark) { :root { --bg: #000; --card: #1c1c1e; --line: #38383a; --txt: #fff; --sub: #98989d; --blue: #0a84ff;
@@ -64,7 +67,7 @@ svg.i { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-widt
 </style></head><body>
 <div class="frame">
   <div class="bar"><h1>Japan 2026<small>Muster A-37</small></h1>
-    <div class="cap" id="wahl"><button data-v="heute">Heute</button><button data-v="a">A</button><button data-v="b">B</button><button data-v="c">C</button></div></div>
+    <div class="cap" id="wahl"><button data-v="heute">Heute</button><button data-v="a">A</button><button data-v="b">B</button><button data-v="c">C</button><button data-v="bc">B+C</button></div></div>
   <div id="rolle"><div class="wrap" id="inhalt"></div></div>
 </div>
 <div class="fab rund" id="fab" hidden><button id="toTop" aria-label="Nach oben"></button><button id="toEnd" aria-label="Ans Ende"></button></div>
@@ -80,13 +83,15 @@ const ICONS = {
 };
 const ic = n => `<svg class="i" viewBox="0 0 24 24">${ICONS[n]}</svg>`;
 const $ = id => document.getElementById(id);
-const V = ['heute', 'a', 'b', 'c'].includes(new URLSearchParams(location.search).get('v')) ? new URLSearchParams(location.search).get('v') : 'heute';
+const V = ['heute', 'a', 'b', 'c', 'bc'].includes(new URLSearchParams(location.search).get('v')) ? new URLSearchParams(location.search).get('v') : 'heute';
 const TEXT = {
   heute: '<b>Heute:</b> Kapsel unten rechts mit ‚Nach oben‘ und ‚Ans Ende‘ – immer beide, sobald es etwas zu rollen gibt.',
   a: '<b>Variante A (wie Gemini):</b> ein runder Knopf unten in der Mitte. Der Pfeil zeigt in die Richtung, in die du zuletzt gewischt hast. Ganz in der Nähe des Ziels verschwindet er.',
   b: '<b>Variante B:</b> Kapsel unten rechts wie heute, aber nur mit dem Pfeil, der etwas bewirkt – oben nur ‚Ans Ende‘, am Ende nur ‚Nach oben‘.',
-  c: '<b>Variante C (wie Apple Fotos):</b> beim Wischen erscheint rechts ein Griff. Halte und ziehe ihn – die Blase zeigt den Tag. Nach 1,5 s Ruhe blendet er aus.'
+  c: '<b>Variante C (wie Apple Fotos):</b> beim Wischen erscheint rechts ein Griff. Halte und ziehe ihn – die Blase zeigt den Tag. Nach 1,5 s Ruhe blendet er aus.',
+  bc: '<b>B+C (gewählt):</b> Kapsel unten rechts nur mit dem Pfeil, der etwas bewirkt. Beim Wischen erscheint darüber rechts der Griff – halte und ziehe ihn, die Blase zeigt den Tag.'
 };
+const B = V === 'b' || V === 'bc', C = V === 'c' || V === 'bc';
 // Inhalt: 40 Tageskästen wie im Reiselogbuch
 const ORTE = ['Tokio', 'Hakone', 'Kyoto', 'Nara', 'Osaka', 'Hiroshima', 'Miyajima', 'Kanazawa', 'Takayama', 'Nikko'];
 const WT = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'];
@@ -117,7 +122,7 @@ setVv(); vv?.addEventListener('resize', setVv); addEventListener('resize', setVv
 
 // Heute und B
 const fab = $('fab');
-if (V === 'heute' || V === 'b') {
+if (V === 'heute' || B) {
   fab.hidden = false;
   $('toTop').innerHTML = ic('arrow-up-to-line'); $('toEnd').innerHTML = ic('arrow-down-to-line');
   $('toTop').onclick = () => zu(0); $('toEnd').onclick = () => zu(ende());
@@ -154,10 +159,14 @@ function einzelZeigen() {
 // C
 const spur = $('spur'), griff = $('griff'), blase = $('blase');
 let ruhe = 0, zieht = false;
-if (V === 'c') { spur.hidden = false; griff.innerHTML = ic('chevrons-up-down'); }
+const KAPSEL = 96 + 8;                      // B+C: volle Höhe der Kapsel (2 × 48) und Abstand – der Griff endet darüber
+const lang = () => V !== 'bc' || rolle.scrollHeight >= 3 * rolle.clientHeight;
+if (C) { spur.hidden = false; griff.innerHTML = ic('chevrons-up-down'); }
 function spurLage() {
   const r = rolle.getBoundingClientRect();
-  spur.style.top = (r.top + 8) + 'px'; spur.style.height = Math.max(0, r.height - 16 - 34) + 'px';   // unten Abstand zur Home-Leiste
+  // unten Abstand zur Home-Leiste; B+C: Ende über der Kapsel in voller Höhe (sie steht unten fest, ihr unterer Rand bleibt)
+  const bis = V === 'bc' ? fab.getBoundingClientRect().bottom - KAPSEL : r.bottom - 8 - 34;
+  spur.style.top = (r.top + 8) + 'px'; spur.style.height = Math.max(0, bis - r.top - 8) + 'px';
 }
 function griffZeigen() {
   if (spur.hidden) return;
@@ -167,7 +176,7 @@ function griffZeigen() {
   blase.style.top = (a * h + griff.offsetHeight / 2) + 'px';
   const tag = [...rolle.querySelectorAll('.box')].find(b => b.offsetTop + b.offsetHeight > rolle.scrollTop + 4);
   blase.textContent = tag ? tage[tag.dataset.tag] : tage[0];
-  if (max() <= 1) { spur.classList.add('aus'); return; }
+  if (max() <= 1 || !lang()) { spur.classList.add('aus'); return; }
   spur.classList.remove('aus');
   clearTimeout(ruhe);
   if (!zieht) ruhe = setTimeout(() => spur.classList.add('aus'), 1500);
@@ -190,6 +199,6 @@ function alles() { fabZeigen(); einzelZeigen(); griffZeigen(); }
 rolle.addEventListener('scroll', () => requestAnimationFrame(alles), { passive: true });
 addEventListener('resize', () => requestAnimationFrame(alles));
 alles();
-if (V === 'c') { spur.classList.remove('aus'); clearTimeout(ruhe); ruhe = setTimeout(() => spur.classList.add('aus'), 2500); }
+if (C && lang()) { spur.classList.remove('aus'); clearTimeout(ruhe); ruhe = setTimeout(() => spur.classList.add('aus'), 2500); }
 </script>
 </body></html>
