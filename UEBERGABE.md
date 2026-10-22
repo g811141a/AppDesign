@@ -1,51 +1,48 @@
 # Übergabe an die nächste Sitzung
 
-**Stand 22.10.2026** · geschrieben in der Sitzung ‚Reiselogbuch 0027‘ (Ende) – Aufbau nach Zusammenarbeit allgemein 2.5.
+**Stand 22.10.2026** · geschrieben in der Sitzung ‚Reiselogbuch 0028‘ (Ende) – Aufbau nach Zusammenarbeit allgemein 2.5.
 **Claude liest diese Datei zu Beginn jeder Sitzung zuerst** (0 Nr. 15); die Arbeitsumgebung steht in der AppDesign-`CLAUDE.md`.
 
 ## 1. Lagebild
 
 | Teil | Version | Datei |
 |---|---|---|
-| Reiselogbuch | **3.26.2** online (Fassung 4.28.2) | g811141a/ReiseLogBuch – `CHANGELOG.md`, `BACKLOG.md`, `PROMPT.md` |
-| AppDesign | **4.28.2** online | g811141a/AppDesign – `CHANGELOG.md`, `BACKLOG.md` |
-| Zusammenarbeit allgemein | **2.17.0** (2.18.0 bereit als A-41) | `README - Zusammenarbeit allgemein.md` |
+| Reiselogbuch | **3.27.0** online (Fassung 4.29.0) | g811141a/ReiseLogBuch – `CHANGELOG.md`, `BACKLOG.md`, `PROMPT.md` |
+| AppDesign | **4.29.0** online | g811141a/AppDesign – `CHANGELOG.md`, `BACKLOG.md` |
+| Zusammenarbeit allgemein | **2.18.0** | `README - Zusammenarbeit allgemein.md` |
 | ReiseLogBuch-Import (privat) | 1.2.2 | g811141a/ReiseLogBuch-Import |
 
-- **Chatnummer:** die nächste Sitzung heißt **Reiselogbuch 0028**; die danach 0029.
-- **Sitzungsgröße:** Übergabe wieder erst ab etwa **300.000** Token (Nutzer 22.10.2026, steht als A-41 bereit – gilt ab sofort);
-  0027 endete bei etwa 280.000.
-- **Modell und Aufwand:** Opus 5.5, Aufwand hoch (0027: alle Aufrufe ‚high‘) – prüfen nach 0 Nr. 15.
-- **Offene Prüfpunkte:** keine.
-- **AppDesign ‚0. Nächste Version‘ – 2 Punkte bereit:** A-41 Zusammenarbeit 2.18.0 (Übergabe ab 300.000; Hilfsagenten bzw.
-  eigene Sitzungen parallel, wenn möglich und sinnvoll; 2.1 präzisiert) · A-42 Grundsatz ‚kein UI-Framework‘ in Designrichtlinie 1.
-  Gebaut wird mit der nächsten Version (Nutzer: keine eigene Version dafür).
+- **Chatnummer:** die nächste Sitzung heißt **Reiselogbuch 0029**; die danach 0030.
+- **Sitzungsgröße:** Übergabe ab etwa **300.000** Token (0 Nr. 13, seit Zusammenarbeit 2.18.0); 0028 endete bei etwa 422.000.
+- **Modell und Aufwand:** Opus 5.5, Aufwand hoch (0028: alle Aufrufe ‚high‘, `CLAUDE_CODE_EFFORT_LEVEL=high`) – prüfen nach 0 Nr. 15.
+- **Offene Prüfpunkte:** keine (P-63 alles ok, 22.10.2026).
+- **AppDesign ‚0. Nächste Version‘:** nichts bereit.
 - **Erinnerung:** ‚Backlog-Erinnerung (AppDesign und Reiselogbuch)‘ montags 8:58.
 
-## 2. Ergebnisse der Sitzung 0027 – A-38 Frameworks abgeschlossen
+## 2. Ergebnisse der Sitzung 0028 – A-63 Paket C, A-41, A-42
 
-- **Vergleich** Framework7 9.2.0 / Ionic 9.0.9 (Quelltext aus npm, drei Hilfsagenten parallel, ein vierter führte zusammen):
-  https://g811141a.github.io/AppDesign/arbeit/A-38%20Framework-Vergleich.html – 66 Themen mit Apple, AppDesign-Fundstelle,
-  Aufwand, Empfehlung (unabhängig vom Aufwand), dazu Gesamtvergleich (Z3), drei Wege mit Rückblick (Z4), weitere Kandidaten (Z5).
-- **Grundsatz entschieden: Weg a) eigener Code**, kein Framework (A-42). Mischform verworfen; Capacitor (echte App) nur bei Bedarf.
-- **Ins Backlog (AppDesign):** A-43 Barrierefreiheit (Prio 2) · **A-63 Paket C (Prio 1):** sichere Ränder als Variablen mit
-  Prüfung (V1), Suche ohne Akzente, ⓧ in Feldern, Safaris Schalter · **A-61 Paket A (Prio 2):** Muster ‚Navigation und Gesten‘
-  (inkl. Wischaktionen statt 15.4 und Blatt auf dem iPhone statt 15.17) · **A-62 Paket B (Prio 3):** ‚Antippen, Bewegung,
-  Rollen‘ inkl. Glas · Paket D (Kurzmeldung, leere Zustände, Rückgängig statt Abfrage) → A-30 · A-44 bis A-54 (‚später‘, Prio 3)
-  · A-55 bis A-60 (Neubewertung ‚zukunftsfit‘, Prio 3).
-- **Gelernt zur App (in A-41):** Text am Anfang einer Antwort kommt vor dem Auswahlfenster an, Text zwischen zwei Fenstern
-  derselben Antwort nicht – je Antwort ein Fenster mit Erklärung davor. Der Nutzer will Themen **einzeln**: ganze Zeile,
-  Einschätzung, Kachel; mehrere Themen nacheinander → je Antwort eines, der Nutzer schreibt ‚w‘.
+- **AppDesign 4.29.0 / Reiselogbuch 3.27.0** gebaut und veröffentlicht (66 Läufe grün), **P-63 alles ok**. Fall-Liste mit Ergebnis:
+  `arbeit/A-63 Fall-Liste.md`.
+- **R-1.7 sichere Ränder:** `env(safe-area-inset-…)` nur in `--safe-top/-bottom/-left/-right`; Prüfung `safe` (hig.mjs) in jeder
+  gemessenen Ansicht mit Gerätewerten. Gefunden und behoben: iPad-Fenster unter der Home-Leiste, Menü und Sprechblase am iPhone quer,
+  Abgleichbericht quer in Safari nicht ganz rollbar. Echte Ränder (iPhone 402 × 874, Home-Bildschirm): hoch 0/34/0/0, quer
+  0/20/62/62 (`tests/messungen/2026-10-22 …`); der Messmodus nennt sie im Kopf.
+- **R-2.3 Suche ohne Akzente**, **R-5.6 ⓧ in einzeiligen Feldern**, **R-5.7 Safaris Schalter** (Weg b: Safari zeichnet ihn, sonst
+  unser Schalter 51 × 31).
+- **A-41** Zusammenarbeit 2.18.0, **A-42** Designrichtlinie 1 ‚kein UI-Framework‘.
+- **Neue Safari-Eigenheiten in 13:** rechter Innenabstand eines seitlich rollenden Bereichs zählt nicht; eingebauter Schalter.
+- **Gelernt:** `los` brach zweimal ab, weil ich nicht alle betroffenen Prüfungen vorher einzeln laufen ließ (`ablauf-messung` prüft
+  den Kopf der Messung; F-11 in `ablauf-suche-liste` misst die Geschwindigkeit der Suche) – bei Änderungen an Suche oder Messmodus
+  diese beiden vorher einzeln laufen lassen.
 
 Frühere Sitzungen: `VERLAUF.md` und Versionsgeschichten.
 
 ## 3. Nächster Schritt
 
-1. **A-63 Paket C** (Prio 1): Apple-Abgleich, Fall-Liste (0 Nr. 1); V1 zuerst als Prüfung rot gegen 4.28.2 (iPhone-Werte hoch
-   oben 59 / unten 34 px, quer links und rechts 59 / unten 21 px). Dann Frage nach der Version: AppDesign 4.29.0 / Reiselogbuch
-   3.27.0 mit A-63 und den bereiten A-41, A-42 (höchstens 2 Themen: Regeln + Paket C).
-2. Danach Prio 2: **A-37** ‚Nach oben / Ans Ende‘ (Muster online: https://g811141a.github.io/AppDesign/arbeit/A-37%20Muster.html,
-   Fall-Liste `arbeit/A-37 Fall-Liste.md` – Wahl der Variante), **A-61** Muster ‚Navigation und Gesten‘, **A-43** Barrierefreiheit.
+1. **A-37** ‚Nach oben / Ans Ende‘ (Prio 2): Muster online https://g811141a.github.io/AppDesign/arbeit/A-37%20Muster.html, Fall-Liste
+   `arbeit/A-37 Fall-Liste.md` – der Nutzer wählt die Variante (Heute · A · B · C oder Kombination); A-45/A-46 und Paket B (A-62)
+   gehören thematisch dazu.
+2. Danach Prio 2: **A-61** Muster ‚Navigation und Gesten‘, **A-43** Barrierefreiheit.
 
 ## 4. Danach
 
@@ -58,7 +55,7 @@ In der neuen Sitzung müssen **AppDesign** und **ReiseLogBuch** verfügbar sein 
 **ReiseLogBuch-Import** (privat).
 
 ```
-Reiselogbuch 0028 – A-63 Paket C
+Reiselogbuch 0029 – A-37
 
-Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md, dann gezielt die Zusammenarbeit (Abschnitte 0 und 1) und die Überschriften der Designrichtlinien; prüfe Modell und Aufwand (Sitzungsdatei) und hole die Repos g811141a/ReiseLogBuch und g811141a/ReiseLogBuch-Import (privat) dazu, wie in der AppDesign-CLAUDE.md unter ‚Arbeitsumgebung‘. Gib das Lagebild. Dann A-63 Paket C (Prio 1) aus BACKLOG.md: sichere Ränder als Variablen mit Prüfung (V1), Suche ohne Akzente, ⓧ in einzeiligen Feldern, Safaris Schalter – Apple-Abgleich, Fall-Liste, dann Frage nach der Version mit A-41 und A-42. Danach A-37 (Prio 2).
+Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md, dann gezielt die Zusammenarbeit (Abschnitte 0 und 1) und die Überschriften der Designrichtlinien; prüfe Modell und Aufwand (Sitzungsdatei) und hole die Repos g811141a/ReiseLogBuch und g811141a/ReiseLogBuch-Import (privat) dazu, wie in der AppDesign-CLAUDE.md unter ‚Arbeitsumgebung‘. Gib das Lagebild. Dann A-37 ‚Nach oben / Ans Ende‘ (Prio 2) aus BACKLOG.md: Muster arbeit/A-37 Muster.html und Fall-Liste arbeit/A-37 Fall-Liste.md – frag nach der Variante. Danach A-61 und A-43.
 ```
