@@ -1,6 +1,6 @@
 # A-61 Teil 1 ‚Navigation und Gesten‘ – Apple-Abgleich, Varianten, Fall-Liste
 
-**Stand 22.10.2026** · Sitzung ‚Reiselogbuch 0029‘ · **gewählt: Überall, allgemeine Regel, Ja zum Bau** (Nutzer 22.10.2026) ·
+**Stand 22.10.2026** · Sitzung ‚Reiselogbuch 0029‘ · **gewählt: Überall, allgemeine Regel, Ja zum Bau** (Nutzer 22.10.2026), **gebaut in AppDesign 4.30.0 / Reiselogbuch 3.28.0** (R-7.5, `checkNavigation`, Prüfliste P-64) ·
 Muster: `arbeit/A-61 Teil 1 Muster.html`
 (https://g811141a.github.io/AppDesign/arbeit/A-61%20Teil%201%20Muster.html), Prüfung `arbeit/A-61 Teil 1 Muster prüfen.mjs`
 

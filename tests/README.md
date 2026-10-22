@@ -26,7 +26,8 @@ Gemeinsamer Baustein für jedes Prüfskript einer App: Sollwerte statt ausgegebe
 Skriptfehlern der Seite), Browser nach `PRUEF_BROWSER` (chromium | webkit), gemeinsame Ansichten (`ANSICHTEN`: iPad quer und hoch,
 iPhone hoch und quer, je hell oder dunkel) und die **Grundregeln nach jedem Schritt**: `schritt()` führt eine Handlung aus und misst
 danach mit `hig.measure(…, { schnell: true })` – dieselben Prüfungen wie `hig.mjs`, ohne Drehen, erst wenn die Seite ruht (`ruhe`:
-keine Animation, Fenster und Menüs bewegen sich nicht mehr).
+keine Animation, Fenster und Menüs bewegen sich nicht mehr). `navFertig(p)` wartet, bis ein Seitenwechsel fertig ist (der Zustand der
+App ändert sich erst am Ende der Bewegung).
 
 ```js
 import * as pw from 'playwright';
@@ -69,7 +70,7 @@ Selbsttest mit Schein-Tests: `node tests/lauf-selbsttest.mjs` (Zusammenarbeit 0 
 
 | Datei | Regeln | Prüft |
 |---|---|---|
-| `ablauf.mjs` | R-1.6, R-2.3, R-3.2, R-4.4, R-4.5, R-5.2, R-5.3, R-5.5, R-5.6, R-6.4, R-7.3, R-7.4, R-8.1 | Abläufe mit Handlung: Messmodus (`checkMessung`), Suche (`checkSearch`, `checkSearchWords` mit und ohne Akzente, `checkSearchPlace`, Suche öffnen und ⓧ nach oben `checkSearchTop`), Suche in der Liste (`checkListSearch`), Nach oben / Ans Ende im Rollbereich und über der Tastatur, die Kapsel schneidet keine Leiste (`checkFab` mit `sichtbar` und `suche`), Fenster-Kopfzeile (`checkDialogHead`), Feld über der Tastatur (`checkFieldVisible`, mit Safari-Modell) und ohne Springen (`checkTastaturStill`), Großbuchstaben (`checkCapital`), Fehlermeldungen (`checkFieldErrors`), Eingabetaste (`checkEnterDone`), ⓧ in einzeiligen Feldern (`checkClear`), Vorschau (`checkPreview`), Drucken der ganzen Ausgabe (`checkPrint`), Liste steht still (`checkListStill`), Position beim Öffnen (`checkOpenAt`), Seitenleiste ein/aus (`checkSideToggle`) |
+| `ablauf.mjs` | R-1.6, R-2.3, R-3.2, R-4.4, R-4.5, R-5.2, R-5.3, R-5.5, R-5.6, R-6.4, R-7.3, R-7.4, R-7.5, R-8.1 | Abläufe mit Handlung: Messmodus (`checkMessung`), Suche (`checkSearch`, `checkSearchWords` mit und ohne Akzente, `checkSearchPlace`, Suche öffnen und ⓧ nach oben `checkSearchTop`), Suche in der Liste (`checkListSearch`), Nach oben / Ans Ende im Rollbereich und über der Tastatur, die Kapsel schneidet keine Leiste, nur wirksame Pfeile je Rollstand, Fenster und Drucken (`checkFab` mit `sichtbar`, `suche`, `fenster`), Schnellroll-Griff (`checkGriff`, aus `checkFab`), Navigation und Gesten (`checkNavigation`: Seitenwechsel, Zurückwischen, Seitenleiste am iPad hoch, Vorrang, Drehen, ‚Bewegung reduzieren‘ – mit der Maus nachgebildet), Fenster-Kopfzeile (`checkDialogHead`), Feld über der Tastatur (`checkFieldVisible`, mit Safari-Modell) und ohne Springen (`checkTastaturStill`), Großbuchstaben (`checkCapital`), Fehlermeldungen (`checkFieldErrors`), Eingabetaste (`checkEnterDone`), ⓧ in einzeiligen Feldern (`checkClear`), Vorschau (`checkPreview`), Drucken der ganzen Ausgabe (`checkPrint`), Liste steht still (`checkListStill`), Position beim Öffnen (`checkOpenAt`), Seitenleiste ein/aus (`checkSideToggle`) |
 | `abspielen.mjs` | Werkzeug (für R-2.1, R-4.5) | Messdatei des Messmodus nachspielen: `lies(text)`, `ansicht(m)`, `spieleAb(p, m, { ziele, woerter, bis, nachSchritt, verschiebe })` – Tippen, Eingaben, Tastatur schließen; Safari meldet Höhe und `offsetTop` wie gemessen (`__safari.setze`); je Schritt Kopf- und Suchzeile ± 1 px und Fokus wie gemessen. Messdateien in `tests/messungen/` (Designrichtlinie 15.21) |
 | `abgleich.mjs` | R-9.2 bis R-9.4 | alle Fälle des Abgleichs in beide Richtungen, kurzes Fenster und Abgleichbericht |
 | `backup.mjs` | R-9.1, R-9.2 | Backup erstellen und laden (Menü, Abfrage mit Kacheln, Abbrechen, unlesbare Datei) |

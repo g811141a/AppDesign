@@ -1,5 +1,5 @@
 // AppDesign 4.12.0 · Ablauf-Prüfungen für Regeln, die eine Handlung brauchen (Designrichtlinie allgemein, Abschnitt 17):
-// R-1.6 Messmodus (seit 4.26.0) · R-4.5 Feld über der Tastatur (seit 4.28.0), Tastatur ohne Springen (seit 4.28.1) · R-2.3 Suche (seit 4.23.0 auch in der zentralen Liste, seit 4.25.0 mehrere Wörter und „…“, seit 4.25.1 Suchfeld bleibt beim Tippen) · A-22 Lupe am Ende der Kapsel · R-4.4 Fenster-Kopfzeile · R-5.2 Texteingabe · R-5.3 Fehlermeldungen · R-5.5 Eingabetaste (seit 4.19.0) · R-5.6 ⓧ in Feldern (seit 4.29.0) · R-6.4 Ausgabe und Vorschau · R-7.3 Liste steht still (seit 4.18.0) · R-7.4 Position beim Öffnen und R-8.1 Seitenleiste ein/aus (seit 4.21.0).
+// R-1.6 Messmodus (seit 4.26.0) · R-4.5 Feld über der Tastatur (seit 4.28.0), Tastatur ohne Springen (seit 4.28.1) · R-2.3 Suche (seit 4.23.0 auch in der zentralen Liste, seit 4.25.0 mehrere Wörter und „…“, seit 4.25.1 Suchfeld bleibt beim Tippen) · A-22 Lupe am Ende der Kapsel · R-4.4 Fenster-Kopfzeile · R-5.2 Texteingabe · R-5.3 Fehlermeldungen · R-5.5 Eingabetaste (seit 4.19.0) · R-5.6 ⓧ in Feldern (seit 4.29.0) · R-6.4 Ausgabe und Vorschau · R-7.3 Liste steht still (seit 4.18.0) · R-7.4 Position beim Öffnen und R-8.1 Seitenleiste ein/aus (seit 4.21.0) · R-3.2 Kapsel nur mit wirksamen Pfeilen und Schnellroll-Griff, R-7.5 Navigation und Gesten (seit 4.30.0).
 // Jede Funktion bekommt eine Playwright-Seite und gibt eine Liste von Fehlern zurück (leer = in Ordnung), je mit Regelnummer.
 // Einbinden im Prüfskript der App:  import { checkSearch, checkDialogHead } from '../../AppDesign/tests/ablauf.mjs';
 //                                   fehler.push(...await checkSearch(page, { term: 'Sydney' }));
@@ -670,14 +670,36 @@ export async function checkSearchTop(p, { term, open = '#searchBtn', input = '#s
 // 16 px Abstand oben und unten, sonst ist sie ausgeblendet; die Schaltflächen der Leisten bleiben frei antippbar; nach dem Schließen
 // der Tastatur ist sie wieder da. sichtbar: Höhe des sichtbaren Bereichs bei offener Tastatur (gemessen A-27: iPhone hoch 409,
 // quer 126 px; ohne Angabe innerHeight − 300); suche: Schaltfläche, die die Suche öffnet – dann auch mit offener Suche gemessen.
-export async function checkFab(p, { top = '.fab button:first-child', end = '.fab button:last-child', kurz = null, sichtbar = null, suche = null, where = '' } = {}) {
+// Seit 4.30.0 (A-37 B+C, Fall-Liste arbeit/A-37 Fall-Liste.md): die Kapsel zeigt nur die Pfeile, die etwas bewirken – ganz oben nur
+// ‚Ans Ende‘, am Ende nur ‚Nach oben‘, dazwischen beide, näher als eine halbe Höhe des Rollbereichs an einem Ende fehlt dessen Pfeil;
+// ihr unterer Rand bleibt (F-3). Dazu der Schnellroll-Griff (checkGriff, ab drei Höhen des Rollbereichs), bei offener Tastatur und
+// offenem Fenster weder Kapsel noch Griff (F-6, F-9), beim Drucken ausgeblendet (F-13). fenster: öffnet ein Fenster (danach wird es
+// mit Escape geschlossen); griff: false prüft nur die Kapsel.
+export async function checkFab(p, { top = '.fab button:first-child', end = '.fab button:last-child', kurz = null, sichtbar = null, suche = null, fenster = null, griff = true, where = '' } = {}) {
   const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}R-3.2 ${t}`);
   const sicht = () => p.evaluate(() => { const f = document.querySelector('.fab'); return !!f && getComputedStyle(f).display !== 'none' && !f.hidden && f.getClientRects().length > 0; });
   const st = await rollstand(p);
   if (st.max <= 1) { E('Vorbereitung: der Inhalt ist zu kurz zum Rollen'); return errors; }
   if (!await sicht()) { E(`Kapsel fehlt, obwohl es ${st.max} px zu rollen gibt`); return errors; }
-  const fabH = await p.evaluate(() => Math.round(document.querySelector('.fab').getBoundingClientRect().height));
-  await rolle(p, '30%'); await wait(p, 200);
+  // F-3: Pfeile je Rollstand; nah = halbe Höhe des Rollbereichs, ende = Rollweg ohne den Platz unter dem Inhalt
+  const pfeile = () => p.evaluate(([R, top, end]) => { const r = eval(R), f = document.querySelector('.fab'), z = s => { const b = document.querySelector(s); return !!b && !b.hidden && b.getClientRects().length > 0; };
+    const platz = parseFloat(r.el?.style.getPropertyValue('--platz')) || 0;
+    return { oben: z(top), unten: z(end), y: Math.round(r.y), nah: Math.round(r.h / 2), ende: Math.round(r.max - platz), boden: Math.round(f.getBoundingClientRect().bottom), kapsel: getComputedStyle(f).display !== 'none' && f.getClientRects().length > 0 }; }, [ROLL, top, end]);
+  const soll = s => ({ oben: s.y > s.nah, unten: s.ende - s.y > s.nah });
+  let boden = null;
+  for (const [wo, y] of [['ganz oben', 0], ['knapp unter dem Anfang', 'nahOben'], ['Mitte', 'mitte'], ['knapp vor dem Ende', 'nahEnde'], ['ganz am Ende', 'ende']]) {
+    const a = await pfeile();
+    await p.evaluate(([R, y, a]) => { const r = eval(R);
+      r.to(y === 'nahOben' ? a.nah / 2 : y === 'mitte' ? a.ende / 2 : y === 'nahEnde' ? a.ende - a.nah / 2 : y === 'ende' ? a.ende : y); }, [ROLL, y, a]);
+    await wait(p, 120);
+    const s = await pfeile(), w = soll(s);
+    if (s.oben !== w.oben || s.unten !== w.unten) E(`${wo} (${s.y} von ${s.ende} px, halbe Höhe ${s.nah}): Pfeile ${[s.oben && '‚Nach oben‘', s.unten && '‚Ans Ende‘'].filter(Boolean).join(' und ') || 'keine'}, soll ${[w.oben && '‚Nach oben‘', w.unten && '‚Ans Ende‘'].filter(Boolean).join(' und ') || 'keine'} (A-37 B)`);
+    if (s.kapsel && boden !== null && Math.abs(s.boden - boden) > 1) E(`${wo}: unterer Rand der Kapsel ${s.boden} px statt ${boden} px – sie steht unten fest (A-37 B)`);
+    if (s.kapsel) boden ??= s.boden;
+  }
+  const fabH = await p.evaluate(() => { const b = [...document.querySelectorAll('.fab button')].find(x => x.offsetHeight); return b ? 2 * b.offsetHeight + 1 : 97; });
+  await rolle(p, 0); await wait(p, 200);
+  if (!await p.locator(end).isVisible()) { E('Vorbereitung: ganz oben fehlt ‚Ans Ende‘ (Inhalt zu kurz für die Prüfung)'); return errors; }
   await p.click(end); await wait(p, 1200);
   let s = await rollstand(p);
   if (s.rest > 1) E(`‚Ans Ende‘ rollt den Inhalt nicht ganz nach unten (${s.rest} px vor dem Ende)`);
@@ -704,7 +726,8 @@ export async function checkFab(p, { top = '.fab button:first-child', end = '.fab
       if (y < 0 || y > h) return false;
       const t = document.elementFromPoint(x, y); return !t || (t !== b && !b.contains(t));
     }).map(b => b.getAttribute('aria-label') || b.id || b.textContent.trim().slice(0, 12));
-    const out = { h, fv, fab: fv ? { top: Math.round(f.top), bottom: Math.round(f.bottom) } : null, rolle: r ? { top: Math.round(r.top), bottom: Math.round(r.bottom) } : null,
+    const g = document.querySelector('.schnell'), gv = !!g && !g.hidden && getComputedStyle(g).display !== 'none';
+    const out = { h, fv, gv, fab: fv ? { top: Math.round(f.top), bottom: Math.round(f.bottom) } : null, rolle: r ? { top: Math.round(r.top), bottom: Math.round(r.bottom) } : null,
       raum: r ? Math.round(Math.min(r.bottom, h) - r.top) : null, max: re ? Math.round(re.scrollHeight - re.clientHeight) : null, schneidet, verdeckt };
     delete vv.height; vv.dispatchEvent(new Event('resize')); await frame(); await frame();
     return out;
@@ -717,6 +740,7 @@ export async function checkFab(p, { top = '.fab button:first-child', end = '.fab
     if (kb.fab && kb.rolle && (kb.fab.top < kb.rolle.top + 16 - 1 || kb.fab.bottom > Math.min(kb.rolle.bottom, kb.h) - 16 + 1))
       E(`${w} passt die Kapsel (${kb.fab.top}–${kb.fab.bottom} px) nicht mit 16 px Abstand in den Inhalt (${kb.rolle.top}–${Math.min(kb.rolle.bottom, kb.h)} px, A-33)`);
     if (kb.verdeckt.length) E(`${w} sind Schaltflächen der Leisten verdeckt: ${kb.verdeckt.join(', ')} (A-33)`);
+    if (kb.gv) E(`${w} ist der Schnellroll-Griff da – bei offener Tastatur ausgeblendet (A-37 F-6)`);
     if (!kb.fv && kb.max > 1 && kb.raum >= fabH + 32) E(`${w} fehlt die Kapsel, obwohl sie in den Inhalt passt (${kb.raum} px Platz, Kapsel ${fabH} px + 2 × 16)`);
   });
   await mitTastatur('');
@@ -727,12 +751,132 @@ export async function checkFab(p, { top = '.fab button:first-child', end = '.fab
     if (!await sicht()) E('nach dem Schließen der Tastatur (Suche offen) ist die Kapsel nicht wieder da (K-5)');
     await p.click(suche); await wait(p, 400);
   }
+  // F-9: offenes Fenster – Kapsel und Griff nicht zu sehen und nicht bedienbar
+  if (fenster) {
+    await rolle(p, '50%'); await wait(p, 150);
+    await fenster(); await wait(p, 500);
+    const zu = await p.evaluate(() => ['.fab', '.schnell'].map(s => document.querySelector(s)).filter(Boolean)
+      .filter(e => !e.hidden && getComputedStyle(e).display !== 'none' && getComputedStyle(e).visibility !== 'hidden' && e.getClientRects().length).map(e => e.className.split(' ')[0]));
+    if (zu.length) E(`bei offenem Fenster zu sehen: ${zu.join(', ')} (A-37 F-9)`);
+    await p.keyboard.press('Escape'); await wait(p, 400);
+    if (await p.evaluate(() => !!document.querySelector('dialog[open]'))) { await p.keyboard.press('Escape'); await wait(p, 400); }
+  }
+  // F-13: Drucken
+  await p.emulateMedia({ media: 'print' });
+  const druck = await p.evaluate(() => ['.fab', '.schnell'].map(s => document.querySelector(s)).filter(e => e && getComputedStyle(e).display !== 'none').map(e => e.className.split(' ')[0]));
+  await p.emulateMedia({ media: 'screen' });
+  if (druck.length) E(`beim Drucken zu sehen: ${druck.join(', ')} (A-37 F-13)`);
+  if (griff) errors.push(...await checkGriff(p, { where }));
   if (kurz) {
     await kurz(); await wait(p, 400);
     const k = await rollstand(p);
     if (k.max <= 1 && await sicht()) E('Kapsel ist da, obwohl es nichts zu rollen gibt');
     if (k.max > 1) E(`Vorbereitung: kurz() macht den Inhalt nicht kurz genug (${k.max} px zu rollen)`);
+    if (await p.evaluate(() => !document.querySelector('.schnell')?.hidden)) E('Schnellroll-Griff ist da, obwohl es nichts zu rollen gibt (A-37 F-2)');
   }
+  return errors;
+}
+
+// R-3.2 Schnellroll-Griff (seit 4.30.0, A-37 C, Fall-Liste arbeit/A-37 Fall-Liste.md F-4, F-5, F-11, F-14 bis F-21): erscheint beim
+// Rollen, blendet nach 1,5 s Ruhe aus (nur Deckkraft), erst ab drei Höhen des Rollbereichs; Bahn unter Kopf- bzw. Suchzeile bis über
+// die Kapsel in voller Höhe, im sicheren Bereich; Ziehen rollt verhältnisgleich, darüber hinaus = Anfang bzw. Ende, der Inhalt rollt
+// nicht zusätzlich und nichts darunter wird angetippt; die Blase links daneben zeigt die Marke des Abschnitts oben im Bild (data-marke),
+// ganz im Bild; ziehen während ‚Ans Ende‘ weich rollt; Regler für VoiceOver (Pfeiltaste = ein Abschnitt); keine Meldung überdeckt ihn.
+// Ruft checkFab auf; zeit: höchstens so viele ms bis ‚Ans Ende‘ ankommt (F-11, sehr langer Inhalt).
+export async function checkGriff(p, { zeit = 2000, where = '' } = {}) {
+  const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}R-3.2 Schnellroll-Griff: ${t}`);
+  const g = () => p.evaluate(R => {
+    const r = eval(R), s = document.querySelector('.schnell'), gr = s?.querySelector('.griff'), bl = s?.querySelector('.blase'), f = document.querySelector('.fab');
+    const box = e => { const b = e.getBoundingClientRect(); return { top: Math.round(b.top), bottom: Math.round(b.bottom), left: Math.round(b.left), right: Math.round(b.right) }; };
+    const kante = r.el.getBoundingClientRect().top + 4, marken = [...r.el.querySelectorAll('[data-marke]')];
+    const marke = marken.length ? (marken.filter(m => m.getBoundingClientRect().top <= kante).at(-1) || marken[0]).dataset.marke : '';
+    const safeR = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--safe-right')) || 0;
+    return { da: !!s && !s.hidden && getComputedStyle(s).display !== 'none', sicht: !!gr && !s.hidden && +getComputedStyle(gr).opacity > 0.5 && getComputedStyle(gr).pointerEvents !== 'none',
+      lang: r.el.scrollHeight / r.el.clientHeight, y: Math.round(r.y), ende: Math.round(r.max - (parseFloat(r.el.style.getPropertyValue('--platz')) || 0)),
+      bahn: s && !s.hidden ? box(s) : null, griff: gr && !s.hidden ? box(gr) : null, blase: bl && getComputedStyle(bl).display !== 'none' ? { ...box(bl), text: bl.textContent, sicht: +getComputedStyle(bl).opacity > 0.5 } : null,
+      rolle: box(r.el), kapsel: f && f.getClientRects().length ? box(f) : null, marke, w: innerWidth, ih: innerHeight, safeR,
+      rolle_oben: Math.round(r.el.getBoundingClientRect().top), uebergaenge: gr ? [getComputedStyle(gr).transitionProperty, bl ? getComputedStyle(bl).transitionProperty : 'opacity'] : [],
+      aria: gr ? { role: gr.getAttribute('role'), label: gr.getAttribute('aria-label'), wert: gr.getAttribute('aria-valuetext') } : null, dialog: !!document.querySelector('dialog[open]'),
+      nav: /nav-/.test(document.documentElement.className) };
+  }, ROLL);
+  await rolle(p, 0); await wait(p, 1800);
+  let s = await g();
+  if (s.sicht) E('ohne Rollen sichtbar (F-4)');
+  await rolle(p, 40); await wait(p, 150);
+  s = await g();
+  if (s.lang < 3) { if (s.sicht || s.da) E(`bei ${s.lang.toFixed(1)} Höhen Inhalt da – erst ab drei (F-18)`); return errors; }
+  if (!s.sicht) { E(`erscheint beim Rollen nicht (${s.lang.toFixed(1)} Höhen Inhalt, F-4)`); return errors; }
+  // F-17: Bahn unter Kopf- bzw. Suchzeile, endet über der Kapsel in voller Höhe (zwei Pfeile + 8 px), im sicheren Bereich
+  if (s.bahn.top < s.rolle_oben) E(`Bahn beginnt bei ${s.bahn.top} px über dem Inhalt (${s.rolle_oben} px) – unter Kopf- bzw. Suchzeile (F-17)`);
+  if (s.kapsel && s.bahn.bottom > s.kapsel.bottom - 104 + 1) E(`Bahn endet bei ${s.bahn.bottom} px, soll über der Kapsel in voller Höhe (${s.kapsel.bottom - 104} px, F-17)`);
+  if (s.griff.right > s.w - s.safeR + 0.5) E(`Griff rechts ${s.griff.right} px über dem sicheren Rand (${s.w - s.safeR} px, F-17)`);
+  if (s.uebergaenge.some(t => t.split(',').some(x => !['opacity', 'all'].includes(x.trim()) && x.trim() !== 'none'))) E(`Ein- und Ausblenden nicht nur über die Deckkraft (${s.uebergaenge.join(' / ')}, F-21)`);
+  if (s.aria?.role !== 'slider' || s.aria?.label !== 'Schnell rollen') E(`VoiceOver: Rolle ${s.aria?.role}, Name ${s.aria?.label} – soll Regler ‚Schnell rollen‘ (F-15)`);
+  await wait(p, 1800);
+  s = await g();
+  if (s.sicht) E('blendet nach 1,5 s Ruhe nicht aus (F-4)');
+  // Ziehen: Mitte, darüber hinaus (Ende, Anfang); Blase; kein Antippen, keine Geste
+  await rolle(p, 80); await wait(p, 150);
+  s = await g();
+  const x = (s.griff.left + s.griff.right) / 2, h = s.bahn.bottom - s.bahn.top;
+  await p.mouse.move(x, (s.griff.top + s.griff.bottom) / 2); await p.mouse.down();
+  await p.mouse.move(x, s.bahn.top + h / 2, { steps: 6 }); await wait(p, 200);
+  let z = await g();
+  if (Math.abs(z.y - z.ende / 2) > z.ende * 0.08) E(`in die Mitte gezogen: ${z.y} px statt etwa ${Math.round(z.ende / 2)} px`);
+  if (z.marke && (!z.blase?.sicht || z.blase.text !== z.marke)) E(`Blase beim Ziehen ${z.blase?.sicht ? `‚${z.blase.text}‘` : 'nicht zu sehen'}, soll ‚${z.marke}‘ (F-19)`);
+  if (!z.marke && z.blase?.sicht) E('Blase ohne Marken (F-19)');
+  if (z.blase?.sicht && (z.blase.right > z.griff.left + 1 || z.blase.left < 0 || z.blase.top < 0 || z.blase.bottom > z.ih)) E(`Blase nicht links neben dem Griff bzw. abgeschnitten (${JSON.stringify(z.blase)}, F-19)`);
+  if (!z.sicht) E('beim Ziehen ausgeblendet (F-4)');
+  await p.mouse.move(x, s.bahn.bottom + 200, { steps: 6 }); await wait(p, 150);
+  z = await g();
+  if (Math.abs(z.y - z.ende) > 2) E(`über das Ende der Bahn gezogen: ${z.y} px statt Ende ${z.ende} px (F-16)`);
+  await p.mouse.move(x, s.bahn.top - 200, { steps: 6 }); await wait(p, 150);
+  z = await g();
+  if (z.y > 1) E(`über den Anfang der Bahn gezogen: ${z.y} px statt 0 (F-16)`);
+  if (z.nav) E('Ziehen am Griff löst eine Wischgeste aus (F-20)');
+  await p.mouse.up(); await wait(p, 400);
+  z = await g();
+  if (z.dialog) E('nach dem Ziehen ist ein Fenster offen – darunter wurde angetippt (F-20)');
+  if (z.y > 1) E(`nach dem Loslassen weitergerollt (${z.y} px, F-20)`);
+  // F-5: ziehen, während ‚Ans Ende‘ weich rollt – der Griff folgt dem Finger
+  await p.click('.fab button:last-of-type');
+  await wait(p, 60);
+  s = await g();
+  if (s.sicht) {
+    await p.mouse.move(x, (s.griff.top + s.griff.bottom) / 2); await p.mouse.down();
+    await p.mouse.move(x, s.bahn.top + h / 4, { steps: 4 }); await wait(p, 500);
+    z = await g();
+    if (Math.abs(z.y - z.ende / 4) > z.ende * 0.1) E(`während ‚Ans Ende‘ gezogen: ${z.y} px statt etwa ${Math.round(z.ende / 4)} px – das weiche Rollen läuft weiter (F-5)`);
+    await p.mouse.up(); await wait(p, 300);
+  }
+  // F-11: ‚Ans Ende‘ kommt schnell an
+  await rolle(p, 0); await wait(p, 200);
+  const t1 = Date.now();
+  await p.click('.fab button:last-of-type');
+  let an = false;
+  for (let i = 0; i < 40 && !an; i++) { await wait(p, 100); const a = await g(); an = Math.abs(a.ende - a.y) <= 2; }
+  if (!an || Date.now() - t1 > zeit + 300) E(`‚Ans Ende‘ braucht ${Date.now() - t1} ms (höchstens ${zeit}, F-11)`);
+  // F-15: Pfeiltaste springt einen Abschnitt (VoiceOver: Wischen nach oben/unten)
+  await rolle(p, 0); await wait(p, 150);
+  const sprung = await p.evaluate(R => { const r = eval(R), gr = document.querySelector('.schnell .griff'), m = [...r.el.querySelectorAll('[data-marke]')];
+    if (m.length < 3) return null;
+    gr.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true, cancelable: true }));
+    gr.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true, cancelable: true }));
+    const top = r.el.getBoundingClientRect().top;
+    return { soll: m[2].dataset.marke, ab: Math.round(m[2].getBoundingClientRect().top - top) }; }, ROLL);
+  if (sprung && Math.abs(sprung.ab) > 2) E(`zweimal Pfeil nach unten: ‚${sprung.soll}‘ steht ${sprung.ab} px unter dem Rand statt oben (F-15)`);
+  // F-14: eine Meldung überdeckt Griff und Kapsel nicht
+  await rolle(p, '50%'); await wait(p, 150);
+  const meldung = await p.evaluate(async () => {
+    if (typeof showNetToast !== 'function') return null;
+    showNetToast('an'); await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+    const t = document.querySelector('.nettoast')?.getBoundingClientRect(), teile = ['.fab', '.schnell .griff'].map(s => document.querySelector(s)).filter(e => e && e.getClientRects().length);
+    const ueber = t ? teile.filter(e => { const b = e.getBoundingClientRect(); return t.left < b.right && t.right > b.left && t.top < b.bottom && t.bottom > b.top; }).map(e => e.className.split(' ')[0]) : [];
+    document.querySelector('.nettoast')?.click();
+    return ueber;
+  });
+  if (meldung?.length) E(`die Meldung überdeckt ${meldung.join(', ')} (F-14)`);
+  await rolle(p, 0); await wait(p, 200);
   return errors;
 }
 
@@ -933,5 +1077,243 @@ export async function checkPrint(p, { print, mehr = 2, where = '' } = {}) {
     if (seiten < mehr) E(`das PDF hat ${seiten} Seite(n) statt mindestens ${mehr} – es druckt nur einen Bildschirm`);
   }
   await p.emulateMedia({ media: 'screen' });
+  return errors;
+}
+
+// R-7.5 Navigation und Gesten (seit 4.30.0, A-61 Teil 1, Variante ‚Überall‘, Fall-Liste arbeit/A-61 Teil 1 Fall-Liste.md F-1 bis F-21).
+// iPhone-Aufbau (Start in der Startliste): Öffnen schiebt den Inhalt herein (F-1), Zurück-Knopf hinaus, zuletzt geöffneter Eintrag blau,
+// Rollstand der Liste bleibt (F-2); Zurückwischen vom Rand langsam über die halbe Breite (F-3), halb ziehen folgt dem Finger und federt
+// zurück (F-4), kurz und schnell (F-5), aus der Mitte (F-6); senkrecht und schräg (F-7), im waagrecht rollenden Bereich (F-8), nach
+// links, auf Knöpfen und der Kapsel (F-9) kein Zurück; Wischen während ‚Ans Ende‘ weich rollt (F-10); Drehen beim Ziehen (F-14);
+// offenes Menü (F-15); Tastatur offen (F-16); langes Drücken, dann ziehen (F-17); Escape bzw. VoiceOver-‚Zurück‘ (F-20); je Bild nur
+// transform und opacity, keine langen Bildlücken (F-21). iPad hoch (Start mit offenem Eintrag, Seitenleiste weg): vom Rand und aus der
+// Mitte herein, folgt dem Finger mit wachsender Abdunkelung (F-11), nach links auf Seitenleiste bzw. Abdunkelung, panel-left, Abdunkelung
+// antippen (F-12), Drehen (F-14), Menü (F-15), Escape. iPad quer: Wischen ändert nichts (F-13). ‚Bewegung reduzieren‘ (Seite mit
+// reducedMotion: 'reduce'): Überblenden statt Schieben (F-19). Mit der Maus nachgebildet (Playwright kennt kein Wischen mit dem Finger).
+// eintrag: Zeile der Startliste bzw. Seitenleiste, die geöffnet wird; titel: ihr Titel (steht danach in der Leiste); zurueck: Zurück-Knopf;
+// waagrecht: Bereich mit eigenem waagrechtem Rollen; knopf: Schaltfläche in der Leiste; menue: öffnet ein Menü; suche: öffnet die Suche
+// (Feld bekommt den Fokus); seitenKnopf: panel-left.
+export async function checkNavigation(p, { eintrag, titel, zurueck = '#back', waagrecht = null, knopf = null, menue = null, suche = null,
+  seitenKnopf = '[data-side-toggle]', where = '' } = {}) {
+  const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}R-7.5 ${t}`);
+  const lage = () => p.evaluate(() => {
+    const H = document.documentElement, side = document.getElementById('side'), app = document.getElementById('app');
+    const sicht = e => !!e && !e.hidden && getComputedStyle(e).display !== 'none' && getComputedStyle(e).visibility !== 'hidden' && e.getClientRects().length > 0;
+    const shade = document.querySelector('.side-shade');
+    return { phone: H.classList.contains('phone'), liste: sicht(side) && side.classList.contains('page'), seite: sicht(side) && !side.classList.contains('page') && side.getBoundingClientRect().right > 0,
+      inhalt: !!app?.querySelector(':scope > .rolle') && sicht(app), appX: Math.round(app.getBoundingClientRect().left), sideX: Math.round(side.getBoundingClientRect().left),
+      sideW: Math.round(side.getBoundingClientRect().width), appO: +getComputedStyle(app).opacity, sideO: +getComputedStyle(side).opacity, appT: getComputedStyle(app).transform,
+      schatten: shade ? +getComputedStyle(shade).opacity : null, nav: (H.className.match(/nav-\w+/g) || []).join(' '), w: innerWidth, h: innerHeight,
+      titel: document.querySelector('#app .pnav-title, #app .nb-title')?.textContent || '', fokus: document.activeElement?.matches?.('input, textarea') || false,
+      ruhig: matchMedia('(prefers-reduced-motion: reduce)').matches, menue: !!document.querySelector('.menu'),
+      ta: (e => e ? getComputedStyle(e).touchAction : null)(document.querySelector('#app > .rolle')) };
+  });
+  // zeichnet 450 ms lang je Bild Lage und Deckkraft von Inhalt und Liste auf (Einzelproben hängen unter Last vom Zeitpunkt ab)
+  const aufzeichnen = () => p.evaluate(() => { window.__bilder = []; const t0 = performance.now(), app = document.getElementById('app'), side = document.getElementById('side');
+    const bild = () => { const s = getComputedStyle(side); window.__bilder.push({ appX: app.getBoundingClientRect().left, sideX: side.getBoundingClientRect().left, appO: +getComputedStyle(app).opacity,
+      appT: getComputedStyle(app).transform, liste: !side.hidden && s.display !== 'none' && side.classList.contains('page') }); if (performance.now() - t0 < 450) requestAnimationFrame(bild); };
+    requestAnimationFrame(bild); });
+  const bilder = async () => { await wait(p, 500); return p.evaluate(() => window.__bilder); };
+  const geschoben = (b, w) => b.some(x => x.appX > 1 && x.appX < w - 1 && x.liste);
+  const ueberblendet = b => b.some(x => x.appT === 'none' && x.appO > 0.02 && x.appO < 0.98) && b.every(x => x.appT === 'none');
+  const ruhig = async () => { for (let i = 0; i < 30; i++) { await wait(p, 100); if (!(await lage()).nav) return; } };
+  const ziehe = async (x0, y0, x1, y1, { schnell = false, los = true, halten = 0 } = {}) => {
+    await p.mouse.move(x0, y0); await p.mouse.down();
+    if (halten) await wait(p, halten);
+    const n = schnell ? 4 : Math.max(6, Math.round(Math.hypot(x1 - x0, y1 - y0) / 12));
+    for (let i = 1; i <= n; i++) { await p.mouse.move(x0 + (x1 - x0) * i / n, y0 + (y1 - y0) * i / n); await wait(p, schnell ? 8 : 16); }
+    if (!los) return;
+    if (!schnell) await wait(p, 150);
+    await p.mouse.up(); await ruhig(); await wait(p, 100);
+    await keinTippen(`Wischen von ${Math.round(x0)}/${Math.round(y0)} nach ${Math.round(x1)}/${Math.round(y1)}`);
+  };
+  // Wischen tippt nie an, worauf es begann (kein Fenster geht auf)
+  const keinTippen = async wo => {
+    if (!await p.evaluate(() => !!document.querySelector('dialog[open]'))) return;
+    E(`${wo}: danach ist ein Fenster offen – das Wischen hat angetippt`);
+    await p.keyboard.press('Escape'); await wait(p, 400);
+  };
+  const box = sel => p.evaluate(s => { const e = [...document.querySelectorAll(s)].find(x => x.getClientRects().length && getComputedStyle(x).visibility !== 'hidden');
+    if (!e) return null; const b = e.getBoundingClientRect(); return { x: b.left + b.width / 2, y: b.top + b.height / 2, l: b.left, r: b.right, t: b.top, b: b.bottom }; }, sel);
+  let l = await lage();
+  const { w, h } = l;
+  if (l.phone) {
+    if (!l.liste) { E('Vorbereitung: Start nicht in der Startliste'); return errors; }
+    const offen = async wo => { l = await lage(); if (!l.inhalt || l.liste || Math.abs(l.appX) > 1) { E(`${wo}: Inhalt nicht offen (Liste ${l.liste}, Inhalt bei ${l.appX} px)`); return false; } return true; };
+    const zu = async wo => { l = await lage(); if (!l.liste || l.inhalt) { E(`${wo}: nicht zurück in der Startliste (Liste ${l.liste}, Inhalt ${l.inhalt})`); return false; } return true; };
+    const oeffne = async () => { await p.locator(eintrag).first().click(); await ruhig(); await wait(p, 100); };
+    // F-1: Öffnen – der Inhalt schiebt sich herein, die Liste weicht nach links (‚Bewegung reduzieren‘: überblenden)
+    // Rollstand so, dass der Eintrag im oberen Drittel steht (der gewählte Eintrag bleibt sichtbar, R-7.1)
+    let listeRoll = await p.evaluate(s => { const e = document.querySelector('#side .side-list'), r = document.querySelector(s); if (!e || !r || e.scrollHeight <= e.clientHeight + 40) return null;
+      e.scrollTop = e.scrollTop + r.getBoundingClientRect().top - e.getBoundingClientRect().top - e.clientHeight / 3; return e.scrollTop; }, eintrag);
+    await wait(p, 150);
+    if (listeRoll !== null) listeRoll = await p.evaluate(() => document.querySelector('#side .side-list').scrollTop);
+    await aufzeichnen(); await p.locator(eintrag).first().click();
+    let bf = await bilder();
+    if (l.ruhig) { if (!ueberblendet(bf)) E(`F-19 Öffnen mit ‚Bewegung reduzieren‘ überblendet nicht (${bf.length} Bilder, Deckkraft ${[...new Set(bf.map(x => x.appO.toFixed(2)))].join(' ')})`); }
+    else if (!geschoben(bf, w) || !bf.some(x => x.sideX < -1)) E(`F-1 Öffnen: kein Schieben (${bf.length} Bilder, Inhalt bei ${[...new Set(bf.map(x => Math.round(x.appX)))].join(' ')} px)`);
+    await ruhig(); await wait(p, 100);
+    if (!await offen('F-1 Öffnen')) return errors;
+    if (!/pan-y/.test(l.ta) || /pan-x|manipulation|auto/.test(l.ta)) E(`F-6 touch-action des Inhalts ‚${l.ta}‘ – waagrecht muss das Wischen bei der App ankommen (pan-y, 13)`);
+    if (titel && !l.titel.includes(titel)) E(`F-1 Titel ‚${l.titel}‘ statt ‚${titel}‘`);
+    // F-2: Zurück-Knopf
+    await aufzeichnen(); await p.click(zurueck);
+    bf = await bilder();
+    if (l.ruhig) { if (!ueberblendet(bf)) E(`F-19 Zurück mit ‚Bewegung reduzieren‘ überblendet nicht (${bf.length} Bilder, Deckkraft ${[...new Set(bf.map(x => x.appO.toFixed(2)))].join(' ')})`); }
+    else if (!geschoben(bf, w)) E(`F-2 Zurück-Knopf: kein Schieben (${bf.length} Bilder, Inhalt bei ${[...new Set(bf.map(x => Math.round(x.appX)))].join(' ')} px)`);
+    await ruhig(); await wait(p, 100);
+    if (await zu('F-2 Zurück-Knopf')) {
+      const blau = await p.evaluate(() => [...document.querySelectorAll('#side .side-row.current')].map(r => r.textContent));
+      if (titel && (blau.length !== 1 || !blau[0].includes(titel))) E(`F-2 zuletzt geöffneter Eintrag nicht blau (blau: ${JSON.stringify(blau)}, R-7.2)`);
+      const roll = await p.evaluate(() => document.querySelector('#side .side-list')?.scrollTop);
+      if (listeRoll !== null && Math.abs(roll - listeRoll) > 1) E(`F-2 Rollstand der Startliste ${roll} px statt ${listeRoll} px (T-7)`);
+    }
+    // F-3: vom Rand langsam über die halbe Breite
+    await oeffne();
+    await ziehe(4, h * 0.6, w * 0.7, h * 0.6 + 6); await zu('F-3 vom Rand über die halbe Breite');
+    // F-4: halb ziehen, innehalten – folgt dem Finger, beide Seiten sichtbar; loslassen federt zurück
+    await oeffne();
+    await ziehe(4, h * 0.6, w * 0.35, h * 0.6, { los: false }); await wait(p, 60);
+    l = await lage();
+    if (!l.ruhig && Math.abs(l.appX - (w * 0.35 - 4)) > w * 0.06) E(`F-4 die Seite folgt dem Finger nicht (Inhalt bei ${l.appX} px, Finger ${Math.round(w * 0.35 - 4)} px)`);
+    if (!l.liste) E('F-4 beim Ziehen ist die Startliste darunter nicht zu sehen');
+    if (l.ruhig && !(l.appO > 0.3 && l.appO < 0.9)) E(`F-19 Ziehen mit ‚Bewegung reduzieren‘: Deckkraft ${l.appO} – soll dem Finger folgen`);
+    await wait(p, 150); await p.mouse.up(); await ruhig(); await wait(p, 100);
+    await offen('F-4 unter der Hälfte losgelassen');
+    // F-5: kurz und schnell vom Rand
+    await ziehe(4, h * 0.6, 110, h * 0.6, { schnell: true }); await zu('F-5 schnelles Wischen vom Rand');
+    // F-6: aus der Mitte (Überall)
+    await oeffne();
+    await ziehe(w * 0.3, h * 0.7, w * 0.95, h * 0.7); await zu('F-6 aus der Mitte nach rechts');
+    // F-7: senkrecht, schräg (mehr senkrecht)
+    await oeffne();
+    await ziehe(w * 0.3, h * 0.75, w * 0.3 + 4, h * 0.35); await offen('F-7 senkrecht gewischt');
+    await ziehe(w * 0.5, h * 0.6, w * 0.5 + 30, h * 0.6 - 60); await offen('F-7 schräg (mehr senkrecht) gewischt');
+    // F-8: Bereich mit eigenem waagrechtem Rollen
+    if (waagrecht) {
+      const b = await box(waagrecht);
+      const eigen = b && await p.evaluate(s => { const e = document.querySelector(s); return e.scrollWidth > e.clientWidth + 1; }, waagrecht);
+      if (!b || !eigen || b.b > h - 10 || b.t < 0) E(`F-8 Vorbereitung: ${waagrecht} nicht sichtbar oder ohne waagrechtes Rollen`);
+      else { await ziehe(b.l + 10, b.y, Math.min(w - 4, b.l + 10 + w * 0.6), b.y); await offen('F-8 im waagrecht rollenden Bereich gewischt'); }
+    }
+    // F-9: nach links; auf Knopf und Kapsel
+    await ziehe(w * 0.8, h * 0.6, w * 0.1, h * 0.6); await offen('F-9 nach links gewischt');
+    for (const sel of [knopf, '.fab button:not([hidden])'].filter(Boolean)) {
+      const b = await box(sel);
+      if (b && b.r < w * 0.7) { await ziehe(b.x, b.y, b.x + w * 0.6, b.y); await offen(`F-9 auf ${sel} gewischt`); }
+      if (await p.evaluate(() => !!document.querySelector('dialog[open], .menu'))) { await p.keyboard.press('Escape'); await wait(p, 300); await p.evaluate(() => document.querySelector('.layer')?.click()); await wait(p, 200); }
+    }
+    // F-10: Wischen, während ‚Ans Ende‘ weich rollt
+    if (await box('.fab button:last-of-type:not([hidden])')) {
+      await p.click('.fab button:last-of-type'); await wait(p, 40);
+      await ziehe(w * 0.3, h * 0.6, w * 0.95, h * 0.6); await zu('F-10 Wischen während des weichen Rollens');
+      await oeffne();
+    }
+    // F-15: offenes Menü – kein Zurück
+    if (menue) {
+      await p.click(menue); await wait(p, 300);
+      if (!(await lage()).menue) E(`F-15 Vorbereitung: ${menue} öffnet kein Menü`);
+      await ziehe(w * 0.2, h * 0.7, w * 0.9, h * 0.7); await offen('F-15 Wischen bei offenem Menü');
+      if ((await lage()).menue) { await p.evaluate(() => document.querySelector('.layer')?.click()); await wait(p, 200); }
+    }
+    // F-17: erst halten, dann ziehen – kein Zurück
+    await ziehe(w * 0.3, h * 0.7, w * 0.9, h * 0.7, { halten: 700 }); await offen('F-17 nach langem Drücken gezogen');
+    if ((await lage()).menue) { await p.evaluate(() => document.querySelector('.layer')?.click()); await wait(p, 200); }
+    // F-21: je Bild nur transform und opacity; keine langen Bildlücken beim Ziehen
+    await p.evaluate(() => {
+      const els = [document.getElementById('app'), document.getElementById('side'), document.querySelector('.fab'), document.querySelector('.nav-schleier')].filter(Boolean);
+      const props = e => new Set([...e.style].map(String));
+      window.__nav = { vor: els.map(props), els, mehr: new Set(), bilder: [], an: true };
+      window.__nav.mo = new MutationObserver(ms => ms.forEach(m => { const i = els.indexOf(m.target); if (i >= 0) props(m.target).forEach(x => { if (!window.__nav.vor[i].has(x)) window.__nav.mehr.add(x); }); }));
+      els.forEach(e => window.__nav.mo.observe(e, { attributes: true, attributeFilter: ['style'] }));
+      const bild = t => { if (!window.__nav.an) return; window.__nav.bilder.push(t); requestAnimationFrame(bild); }; requestAnimationFrame(bild);
+    });
+    await ziehe(w * 0.2, h * 0.6, w * 0.45, h * 0.6);
+    const f21 = await p.evaluate(() => { const n = window.__nav; n.an = false; n.mo.disconnect(); const b = n.bilder; let luecke = 0; for (let i = 1; i < b.length; i++) luecke = Math.max(luecke, b[i] - b[i - 1]);
+      return { mehr: [...n.mehr].filter(x => !['transform', 'opacity'].includes(x)), luecke: Math.round(luecke), bilder: b.length }; });
+    if (f21.mehr.length) E(`F-21 beim Ziehen ändern sich ${f21.mehr.join(', ')} – nur transform und opacity (A-59)`);
+    if (f21.luecke > 250) E(`F-21 beim Ziehen ${f21.luecke} ms ohne Bild (A-59)`);
+    await offen('F-21 unter der Hälfte losgelassen');
+    // F-14: Drehen während des Ziehens – Zustand wie vorher
+    await ziehe(w * 0.2, h * 0.6, w * 0.5, h * 0.6, { los: false });
+    await p.setViewportSize({ width: h, height: w }); await wait(p, 400);
+    await p.mouse.up(); await ruhig(); await wait(p, 300);
+    await keinTippen('F-14 Loslassen nach dem Drehen');
+    l = await lage();
+    if (!l.inhalt || l.liste || Math.abs(l.appX) > 1 || l.nav) E(`F-14 nach dem Drehen beim Ziehen: Liste ${l.liste}, Inhalt bei ${l.appX} px, ${l.nav || 'keine Bewegung'} – soll wie vor dem Ziehen`);
+    await p.setViewportSize({ width: w, height: h }); await wait(p, 400);
+    // F-16: Tastatur offen (Suche) – Wischen schließt sie und geht zurück
+    if (suche) {
+      await p.click(suche); await wait(p, 300);
+      await p.evaluate(() => document.querySelector('#app input[type=search], #app .searchbox input')?.focus());
+      await ziehe(w * 0.3, h * 0.7, w * 0.95, h * 0.7);
+      l = await lage();
+      if (l.fokus) E('F-16 nach dem Zurückwischen hat das Suchfeld noch den Fokus (Tastatur offen)');
+      await zu('F-16 Zurückwischen bei offener Tastatur');
+      await oeffne();
+    }
+    // F-20: Escape (VoiceOver ‚Zurück‘) geht zurück
+    await p.evaluate(() => document.activeElement?.blur?.());
+    await p.keyboard.press('Escape'); await ruhig(); await wait(p, 100);
+    await zu('F-20 Escape bzw. VoiceOver-‚Zurück‘');
+    return errors;
+  }
+  // iPad
+  const hoch = h > w;
+  if (!hoch) {
+    // F-13: quer steht die Seitenleiste fest – Wischen ändert nichts; der Inhalt behält sein touch-action
+    const vor = await lage();
+    if (vor.ta && vor.ta !== 'manipulation') E(`F-13 iPad quer: touch-action des Inhalts ‚${vor.ta}‘ statt ‚manipulation‘`);
+    await ziehe(w * 0.5, h * 0.7, w * 0.9, h * 0.7);
+    if (vor.seite) await ziehe(vor.sideX + vor.sideW * 0.8, h * 0.7, 10, h * 0.7);
+    l = await lage();
+    if (l.seite !== vor.seite || Math.abs(l.sideX - vor.sideX) > 1 || l.nav) E(`F-13 iPad quer: Wischen ändert die Seitenleiste (vorher ${vor.seite ? 'da' : 'weg'}, nachher ${l.seite ? 'da' : 'weg'})`);
+    return errors;
+  }
+  let bf;
+  const da = async (soll, wo) => { l = await lage(); if (l.seite !== soll || (soll && l.sideX < 0)) E(`${wo}: Seitenleiste ${l.seite ? `da (bei ${l.sideX} px)` : 'weg'}, soll ${soll ? 'da' : 'weg'}`); };
+  if ((await lage()).seite) { E('Vorbereitung: Seitenleiste am iPad hoch ist offen'); return errors; }
+  l = await lage();
+  if (!/pan-y/.test(l.ta) || /pan-x|manipulation|auto/.test(l.ta)) E(`F-12 touch-action des Inhalts ‚${l.ta}‘ – waagrecht muss das Wischen bei der App ankommen (pan-y, 13)`);
+  // F-11: vom Rand herein – folgt dem Finger, die Abdunkelung wächst mit
+  await ziehe(4, h * 0.6, 200, h * 0.6, { los: false }); await wait(p, 60);
+  l = await lage();
+  if (!l.seite) E('F-11 beim Ziehen vom Rand kommt die Seitenleiste nicht');
+  else if (!l.ruhig && !(l.sideX < 0 && l.sideX > -l.sideW)) E(`F-11 die Seitenleiste folgt dem Finger nicht (bei ${l.sideX} px, Breite ${l.sideW})`);
+  if (l.schatten !== null && !(l.schatten > 0.05 && l.schatten < 0.95)) E(`F-11 die Abdunkelung wächst nicht mit (Deckkraft ${l.schatten})`);
+  await p.mouse.move(460, h * 0.6, { steps: 6 }); await wait(p, 150); await p.mouse.up(); await ruhig(); await wait(p, 100);
+  await da(true, 'F-11 vom Rand über die halbe Breite');
+  // F-12: nach links auf der Seitenleiste, aus der Mitte des Inhalts herein, nach links auf der Abdunkelung, panel-left, antippen
+  l = await lage();
+  await ziehe(l.sideX + l.sideW * 0.8, h * 0.7, 20, h * 0.7); await da(false, 'F-12 nach links auf der Seitenleiste');
+  await ziehe(w * 0.35, h * 0.85, w * 0.95, h * 0.85); await da(true, 'F-12 aus der Mitte des Inhalts nach rechts');
+  await ziehe(w - 40, h * 0.5, w - 420, h * 0.5); await da(false, 'F-12 nach links auf der Abdunkelung');
+  const k = await box(seitenKnopf);
+  if (k) {
+    await aufzeichnen(); await p.mouse.click(k.x, k.y);
+    bf = await bilder();
+    if (!l.ruhig && !bf.some(x => x.sideX < -1 && x.sideX > -400)) E(`F-12 panel-left: die Seitenleiste gleitet nicht herein (bei ${[...new Set(bf.map(x => Math.round(x.sideX)))].join(' ')} px)`);
+    await ruhig(); await wait(p, 100); await da(true, 'F-12 panel-left');
+    await p.mouse.click(w - 40, h * 0.5); await ruhig(); await wait(p, 100); await da(false, 'F-12 Abdunkelung antippen');
+  } else E(`F-12 Vorbereitung: ${seitenKnopf} fehlt`);
+  // F-15: offenes Menü – keine Geste
+  if (menue) {
+    await p.click(menue); await wait(p, 300);
+    await ziehe(w * 0.3, h * 0.85, w * 0.95, h * 0.85); await da(false, 'F-15 Wischen bei offenem Menü');
+    if ((await lage()).menue) { await p.evaluate(() => document.querySelector('.layer')?.click()); await wait(p, 200); }
+  }
+  // F-14: Drehen während des Ziehens – Zustand wie vorher (weg)
+  await ziehe(4, h * 0.6, 220, h * 0.6, { los: false });
+  await p.setViewportSize({ width: h, height: w }); await wait(p, 400);
+  await p.mouse.up(); await ruhig(); await wait(p, 300);
+  await keinTippen('F-14 Loslassen nach dem Drehen');
+  l = await lage();
+  if (l.nav) E(`F-14 nach dem Drehen beim Ziehen läuft noch ${l.nav}`);
+  await p.setViewportSize({ width: w, height: h }); await wait(p, 500);
+  await da(false, 'F-14 Drehen beim Ziehen und zurück');
+  // F-20: Escape schließt die darübergelegte Seitenleiste
+  await ziehe(w * 0.35, h * 0.85, w * 0.95, h * 0.85);
+  await p.keyboard.press('Escape'); await ruhig(); await wait(p, 100);
+  await da(false, 'F-20 Escape');
   return errors;
 }

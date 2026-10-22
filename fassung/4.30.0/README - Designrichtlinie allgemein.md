@@ -134,8 +134,8 @@ heller).
 - Gesperrte Schaltflächen: ausgegraut (Deckkraft 40 %).
 - Keine Hover-Farbe auf dem iPad – Hover nur in `@media (hover: hover)` (sie bliebe nach dem Antippen hängen).
 - **Nach oben / Ans Ende** unten rechts: zusammen in einer **senkrechten Kapsel** (`.fab`), auch im iPhone-Aufbau in der
-  Inhaltsansicht (nicht in der Startliste); ausgeblendet, wenn es nichts zu rollen gibt (R-3.2) – bewusste Abweichung von Apple
-  (16).
+  Inhaltsansicht (nicht in der Startliste); sie zeigt nur die Pfeile, die etwas bewirken, und ist ausgeblendet, wenn es nichts zu
+  rollen gibt (R-3.2) – bewusste Abweichung von Apple (16). Bei langem Inhalt kommt der **Schnellroll-Griff** dazu (15.1).
 
 ## 5. Icons
 
@@ -407,6 +407,11 @@ Gemessene bzw. belegte Eigenheiten mit Quelle; sie gelten für alle Apps, die Pr
     16 px über der Tastatur steht – reicht der Platz nicht, direkt unter Kopf- bzw. Suchzeile (`feldZeigen`).
   - **Grenzen:** iPhone quer mit offener Suchzeile bleibt für ein Feld im Inhalt zu wenig Platz (59 px) – dort verschiebt Safari
     weiter etwas; ein Feld, das höher ist als der sichtbare Teil (z. B. ‚Programm‘ im Fenster iPhone quer), ist nicht gemessen.
+- **Wischgesten** (R-7.5): Sauber nur in der Home-Bildschirm-App – in Safari selbst gehört das Wischen vom linken Rand Safari
+  (eine Seite zurück im Verlauf). Damit waagrechtes Wischen bei der App ankommt, braucht der Bereich `touch-action: pan-y` (sonst
+  übernimmt Safari die Berührung mit `pointercancel`); Bereiche mit eigenem waagrechtem Rollen sind selbst Rollbereiche und behalten
+  ihr Wischen. Ein Antippen nach einer Bewegung über 10 px unterdrückt ui.js (Maus und Zeichenstift lösen es sonst aus).
+  Quelle: [Apple-Forum – iOS 26 swipe to navigate back](https://developer.apple.com/forums/thread/791605), Muster A-61 am Gerät.
 - **Neustart ist nicht erkennbar** (R-7.2): Safari meldet nicht, **warum** eine Seite neu lädt. Als Neustart zählt jedes
   Neuladen: App im App-Umschalter weggewischt, **von iOS im Hintergrund beendet** (Speicher – auch nach kurzer Zeit in einer
   anderen App) oder neue Version geladen. Bleibt die Seite im Speicher, kommen nur `visibilitychange` und `pageshow` (aus dem
@@ -456,8 +461,23 @@ Regel). In AppDesign ist jede Komponente einmal programmiert (`v4/design.css`, `
   gesperrt 40 % Deckkraft. Regeln R-3.1 bis R-3.3.
 - **Nach oben / Ans Ende** (`.fab`): senkrechte Kapsel unten rechts (4), rollt den Rollbereich (15.22) und steht bei offener
   Tastatur über ihr; passt sie nicht mit 16 px Abstand oben und unten in den sichtbaren Teil des Rollbereichs (z. B. iPhone quer
-  mit offener Tastatur), ist sie ausgeblendet (`updateFab`). Im iPhone-Aufbau unten 120 px Platz, damit der letzte Inhalt nicht
-  verdeckt wird. Regel R-3.2.
+  mit offener Tastatur), ist sie ausgeblendet (`updateFab`). **Nur wirksame Pfeile:** ganz oben nur `arrow-down-to-line`, am Ende
+  nur `arrow-up-to-line`, dazwischen beide; näher als eine halbe Höhe des Rollbereichs an einem Ende fehlt dessen Pfeil. Die Kapsel
+  steht unten fest (ihr unterer Rand bleibt, sie wird nur niedriger); ob sie passt, entscheidet ihre volle Höhe. Solange ein
+  Fenster offen ist, ist sie nicht zu sehen. Im iPhone-Aufbau unten 120 px Platz, damit der letzte Inhalt nicht verdeckt wird.
+  VoiceOver nennt nur die sichtbaren Pfeile (‚Nach oben‘, ‚Ans Ende‘). Regel R-3.2.
+- **Schnellroll-Griff** (`.schnell` mit `.griff` und `.blase`, legt ui.js an) – Vorbild Apple Fotos und Kontakte (Rollbalken
+  ziehen): ab **drei Höhen des Rollbereichs** Inhalt erscheint beim Rollen rechts ein schwebender Griff (34 × 48 px,
+  `chevrons-up-down`, Antippfläche 44 × 48) und blendet nach **1,5 s** ohne Rollen wieder aus – nur über die Deckkraft, auch bei
+  ‚Bewegung reduzieren‘. Ihn halten und ziehen springt verhältnisgleich durch den ganzen Inhalt; ganz oben bzw. unten (auch über
+  die Bahn hinaus) = Anfang bzw. Ende; der Inhalt rollt dabei nicht zusätzlich, nichts darunter wird angetippt, ein weiches Rollen
+  (‚Ans Ende‘) endet. Die **Bahn** beginnt 8 px unter Kopf- bzw. Suchzeile und endet über der Kapsel in deren voller Höhe (2 × 48 px
+  und 8 px Abstand), rechts im sicheren Bereich (`--safe-right`, mindestens 2 px). Beim Ziehen zeigt eine **Blase** links daneben
+  (15 px halbfett, schwebend wie eine Schaltfläche, nie abgeschnitten) die **Marke** des Abschnitts oben im Bild: die App setzt
+  `data-marke` an Tage bzw. Abschnitte (z. B. ‚Tag 19 · Fr 20.03.‘, ‚Fazit‘), es gilt die letzte Marke, die oben schon begonnen
+  hat; ohne Marken keine Blase. Wie die Kapsel nur in der Inhaltsansicht, nicht bei offener Tastatur, offenem Fenster und im
+  Druck. VoiceOver: Regler ‚Schnell rollen‘ mit der Marke als Wert; Wischen nach oben bzw. unten (Pfeiltasten) springt einen
+  Abschnitt. Regel R-3.2.
 
 ### 15.2 Suchfeld
 - **Apple:** [HIG – Search fields](https://developer.apple.com/design/human-interface-guidelines/search-fields)
@@ -531,9 +551,14 @@ Regel). In AppDesign ist jede Komponente einmal programmiert (`v4/design.css`, `
   (im iPhone-Aufbau stattdessen die Startliste ohne blauen Eintrag, R-7.2); quer fest links neben dem Inhalt, mit panel-left aus-
   und einblendbar (bis zum nächsten Start); im Hochformat über den Inhalt gelegt (abgedunkelt dahinter), schließt sich nach der
   Auswahl. Bei offener Tastatur folgt sie dem sichtbaren Bereich (`--vv-top`).
+- **Gesten im Hochformat** (R-7.5): Wischen nach rechts **von überall im Inhalt** (auch vom linken Rand) holt die Seitenleiste
+  herein – sie folgt dem Finger, die Abdunkelung wächst mit; Wischen nach links auf der Seitenleiste oder der Abdunkelung schiebt
+  sie weg; fertig nach halber Breite oder schnellem Wischen, sonst federt sie zurück. panel-left und Antippen der Abdunkelung
+  bewegen sie genauso (gleiten, ~0,35 s). Quer (fest) ändert Wischen nichts.
 - **Drehen** (R-8.1): die Seitenleiste behält ihren Zustand – sichtbar bleibt sichtbar (quer fest, hoch darübergelegt),
-  ausgeblendet bleibt ausgeblendet; technisch **ein einziger Zustand** für quer und hoch, den nur Tippen ändert (Knopf panel-left,
-  Abdunkelung, Auswahl im Hochformat) – nie das Drehen und keine Zwischengrößen, die iOS beim Drehen meldet.
+  ausgeblendet bleibt ausgeblendet; technisch **ein einziger Zustand** für quer und hoch, den nur Tippen bzw. ein fertiges Wischen
+  ändert (Knopf panel-left, Abdunkelung, Auswahl im Hochformat, R-7.5) – nie das Drehen und keine Zwischengrößen, die iOS beim
+  Drehen meldet; Drehen während des Ziehens bricht es ab.
 - **Mehr-Menü der Seitenleiste:** Backup erstellen (darunter grau „Letztes Backup erstellt am …“) · Backup laden · Abstand ·
   Messung starten (15.21) · durchgehender Strich · darunter ohne Leerzeilen grau die Versionszeile „<App> · Version X.Y.Z ·
   erstellt am …“ (mit ‚AppDesign X.Y.Z‘, 11) und ein verständlicher Satz zum Speicher: „Die Daten bleiben in Safari gespeichert,
@@ -680,6 +705,17 @@ Regel). In AppDesign ist jede Komponente einmal programmiert (`v4/design.css`, `
   Seitenleiste zeigt.
 - **Seitenkopf** (`.pnav`): bleibt fest oben stehen; links runder Zurück-Knopf mit `chevron-left` **ohne Text**, rechts
   **dieselbe Kapsel wie am iPad** (z. B. [`share` | `search` | `ellipsis`] im Inhalt).
+- **Seitenwechsel und Zurückwischen** (R-7.5, wie iOS 26): Öffnen aus der Startliste schiebt den Inhalt von rechts herein, die
+  Liste weicht ein Drittel nach links und dunkelt leicht ab; der Zurück-Knopf schiebt ihn wieder hinaus (~0,35 s). Zurück geht es
+  auch durch **Wischen nach rechts von überall im Inhalt** – die Seite folgt dem Finger, die Startliste ist darunter zu sehen;
+  fertig nach halber Breite oder schnellem Wischen (über 0,3 px/ms in den letzten 100 ms), sonst federt sie zurück. Vorrang haben
+  das senkrechte Rollen, Bereiche mit eigenem waagrechtem Rollen, Felder, Knöpfe, Kapseln, Kapsel und Schnellroll-Griff; entschieden
+  wird nach 10 px (deutlich waagrecht, 1,2 × so weit wie senkrecht, nach rechts); wer erst hält (langes Drücken), wischt nicht.
+  Kein Wischen bei offenem Fenster, Menü oder offener Sprechblase. Bei offener Tastatur schließt das Wischen sie und geht zurück.
+  Der Rollstand der Startliste bleibt, der zuletzt geöffnete Eintrag ist blau (R-7.2). ‚Bewegung reduzieren‘: Überblenden statt
+  Schieben, auch beim Wischen. VoiceOver: Zurück-Knopf, ‚Zurück‘-Geste (Escape). Wischen tippt nie an, worauf es begann.
+  **Technisch:** `navAnmelden({ zurueck, seite })` meldet die App an, `navVor(change)`, `navZurueck()`, `navSeite(an)` (ui.js); je
+  Bild nur `transform` und `opacity` (Web-Animation), wo gewischt werden kann `touch-action: pan-y pinch-zoom` (`html.wischt`).
 - **Titel einer Inhaltsseite** steht wie am iPad **immer in der Leiste** (`.pnav-title`, ohne großen Titel darüber, R-2.2);
   darunter die Angaben mit Bezeichnung, auf dem iPhone mit Umbruch nach dem Doppelpunkt.
 - **Großer Titel** (`.ltitle`, 34 pt fett, nur bei Bedarf) mit grauer Zeile darunter (`.lcount`). Wie Notizen: wird er
@@ -689,8 +725,8 @@ Regel). In AppDesign ist jede Komponente einmal programmiert (`v4/design.css`, `
   `chevron-right`; Haarlinie links eingerückt. Tippen öffnet, lange drücken zeigt das Kontextmenü; markierte Zeile `--sel-bg`.
 - **Kasten** (`.box` mit Zeilen `.kv` = graue Bezeichnung `.k` links, Wert `.v` rechts): ein Eintrag als Karte, z. B. ein Tag
   statt einer Tabellenzeile (15.10).
-- **Nach oben / Ans Ende:** in einer Inhaltsseite dieselbe senkrechte Kapsel unten rechts wie am iPad, nicht in der Startliste
-  (15.1, R-3.2).
+- **Nach oben / Ans Ende:** in einer Inhaltsseite dieselbe senkrechte Kapsel unten rechts wie am iPad, nicht in der Startliste,
+  dazu bei langem Inhalt der Schnellroll-Griff (15.1, R-3.2).
 - **Tastatur der Suche:** wischt man den Inhalt, während die Tastatur der Suche offen ist, schließt sie sich (wie bei Apple) –
   sonst verschiebt iOS den sichtbaren Bereich und die Leisten zittern (R-2.1).
 - **Suche** wie am iPad (15.2): `search` in der Kapsel öffnet unter der Leiste die Suchzeile mit ‚1 von 4‘, ⓧ und ⌃ ⌄.
@@ -845,8 +881,8 @@ Regel). In AppDesign ist jede Komponente einmal programmiert (`v4/design.css`, `
   15.1). Der Platz unter dem Inhalt ist ein Platzhalter am Ende (`.rolle::after`), kein Innenabstand – so wird der Rollbereich nie
   höher als sein Platz. Beim Antippen eines Felds verlängert ui.js ihn um `--platz` (ebenso `.dlg-body::after` im Fenster), damit
   das Feld in die obere Hälfte rollen kann (13); `rolle.ende()` zählt diesen Platz nicht.
-- **Verhalten:** Treffer, Nach oben / Ans Ende, Öffnen (R-7.4), Drehen (R-8.1), Liste steht still (R-7.3) und der Messmodus rollen
-  bzw. messen nur den Rollbereich. Beim Neuaufbau bleibt der Rollbereich dasselbe Element (`setHtml`), der Rollstand bleibt.
+- **Verhalten:** Treffer, Nach oben / Ans Ende, Schnellroll-Griff, Öffnen (R-7.4), Drehen (R-8.1), Liste steht still (R-7.3) und
+  der Messmodus rollen bzw. messen nur den Rollbereich. Beim Neuaufbau bleibt der Rollbereich dasselbe Element (`setHtml`), der Rollstand bleibt.
   Solange ein Fenster offen ist, steht er still (`html.locked`). Im Druck ist nichts auf Bildschirmhöhe begrenzt (R-6.4).
 - **Technisch:** `design.css` (`#app:has(> .rolle)`, `.rolle`), `ui.js` – `rolle` (`rolle.y`, `rolle.max`, `rolle.rest`,
   `rolle.to(y, weich)`, `rolle.by(d)`, `rolle.ende()`), `onRoll(fn)`, `fabTop()`/`fabEnd()`. Die App ruft **nie**
@@ -881,7 +917,7 @@ steht in der Spalte ‚außerdem‘ (ohne automatische Prüfung: G-19).
 |---|---|---|---|
 | Weiße Schrift auf Systemblau (`--accent`): gewählte Zeile, ‚heute‘, Schrittnummern, Häkchen | 4,0 : 1 hell · 3,7 : 1 dunkel | Apple-Systemblau wie in allen Apple-Apps | 09.10.2026 |
 | Orange `--warn` (z. B. ‚fehlt‘) | 3,1–3,5 : 1 | bleibt wie es ist | 09.10.2026 |
-| Kapsel ‚Nach oben / Ans Ende‘ auch auf dem iPhone (Apple: Statusleiste antippen bzw. Scroll-Leiste ziehen) | – | der Apple-Weg war dem Nutzer zu schwerfällig (R-3.2) | 17.10.2026 |
+| Kapsel ‚Nach oben / Ans Ende‘ auch auf dem iPhone (Apple: Statusleiste antippen bzw. Scroll-Leiste ziehen) | – | der Apple-Weg war dem Nutzer zu schwerfällig (R-3.2); das Ziehen der Scroll-Leiste gibt es dazu als Schnellroll-Griff | 17.10.2026 |
 
 ## 17. Regelkatalog
 
@@ -924,7 +960,7 @@ die Prüfliste, wenn eine Version es betrifft.
 | Nr. | Regel | Prüfung | Gerät | Bau |
 |---|---|---|---|---|
 | R-3.1 | **Antippflächen** 44 pt, in Kapseln und Schaltern mindestens 28 pt; reine Icon-Schaltflächen quadratisch; **rund ist ein Kreis** – runde Schaltflächen und die Markierung bei Icons in Kapseln (36 × 36) haben gleiche Breite und Höhe | hig.mjs | – | 4, 15.5 |
-| R-3.2 | **Schweben und Kapseln:** alle Schaltflächen und Suchfelder schweben (Lichtkante, zierlicher Schatten); mehrere nebeneinander stehen in einer Kapsel; Nach oben / Ans Ende in einer senkrechten Kapsel unten rechts – am iPad und am iPhone in der Inhaltsansicht, nur wenn es etwas zu rollen gibt; sie rollt den Inhalt, steht bei offener Tastatur über ihr und überdeckt **nie Kopf- oder Suchzeile** – passt sie nicht ganz in den Inhalt (Kapsel + 2 × 16 px), ist sie ausgeblendet | hig.mjs (Grundregel ‚Kapsel schneidet keine Leiste‘), ablauf.mjs – `checkFab` (auch mit Tastatur quer und Suche) | – | 4, 15.1, 15.5 |
+| R-3.2 | **Schweben und Kapseln:** alle Schaltflächen und Suchfelder schweben (Lichtkante, zierlicher Schatten); mehrere nebeneinander stehen in einer Kapsel; Nach oben / Ans Ende in einer senkrechten Kapsel unten rechts – am iPad und am iPhone in der Inhaltsansicht, nur wenn es etwas zu rollen gibt, **nur mit den Pfeilen, die etwas bewirken** (nah an einem Ende – halbe Höhe des Rollbereichs – fehlt dessen Pfeil; unten fest); sie rollt den Inhalt, steht bei offener Tastatur über ihr und überdeckt **nie Kopf- oder Suchzeile** – passt sie nicht ganz in den Inhalt (volle Kapsel + 2 × 16 px), ist sie ausgeblendet; bei offenem Fenster und im Druck nicht zu sehen. **Schnellroll-Griff** ab drei Höhen Inhalt: erscheint beim Rollen, blendet nach 1,5 s aus (nur Deckkraft), Bahn unter Kopf- bzw. Suchzeile bis über die volle Kapsel, Ziehen springt verhältnisgleich (darüber hinaus = Anfang/Ende), Blase mit der Marke des Abschnitts oben (`data-marke`), Regler für VoiceOver; nicht bei offener Tastatur | hig.mjs (Grundregel ‚Kapsel schneidet keine Leiste‘), ablauf.mjs – `checkFab` (Pfeile je Rollstand, Tastatur quer und Suche, Fenster, Drucken) mit `checkGriff` | Gefühl beim Ziehen, Daumen | 4, 15.1, 15.5 |
 | R-3.3 | **Jede Farbe hat eine Bedeutung:** blau gefüllt nur die Hauptaktion im Fenster (höchstens eine); Gewähltes bleibt blau getönt, solange sein Menü, Fenster oder seine Abfrage offen ist; Grün nur für eingeschaltete Schalter; Rot nur für Löschen | hig.mjs – höchstens eine blaue Hauptaktion, `stays` | – | 4 |
 | R-3.4 | **Kein Fokus-Rahmen** beim Antippen, beim Öffnen eines Fensters und im Suchfeld | hig.mjs | – | 1, 15.2 |
 
@@ -967,6 +1003,7 @@ die Prüfliste, wenn eine Version es betrifft.
 | R-7.2 | **Start im iPhone-Aufbau in der Startliste:** jedes Neuladen zeigt im iPhone-Aufbau (auch iPad im schmalen Fenster) die Startliste ganz oben ohne blauen Eintrag; der iPad-Aufbau öffnet den aktuellen Eintrag; Rückkehr aus dem Hintergrund ändert nichts | start.mjs | Gerät (App neu öffnen) | 13, 15.17 |
 | R-7.3 | **Liste steht still:** solange ein Fenster aus einer Zeile (bzw. einem Kasten) offen ist, bewegt sich die Liste dahinter nicht – auch wenn Safari beim Schreiben die Seite für die Tastatur schiebt; nach dem Schließen (Häkchen oder x) steht sie genau wie vorher – die oberste Zeile an derselben Stelle, auch wenn die Tastatur offen war –, die Zeile wird 2 s blau hinterlegt und blendet in 1 s aus (‚Bewegung reduzieren‘: 2 s ohne Ausblenden; endet, sobald das nächste Fenster aufgeht); auch nach ‹ › im Fenster steht die Liste wie beim Öffnen; iPad und iPhone gleich | ablauf.mjs – `checkListStill` (Start z. B. mit dem ersten fehlenden Tag oben; Zeile oben, 3 tiefer, untere Hälfte, 2 px unter dem Kopf, nach 5× ‹ ›; Häkchen und x; Safari-Tastatur einzeln und zusammen: sichtbarer Bereich, Fensterhöhe, Nachrollen beim Zugehen) | Gerät (echte Tastatur, Diktieren) | 7, 15.9 |
 | R-7.4 | **Position beim Öffnen:** ein Eintrag öffnet ganz oben; ein ‚nächster offener‘ Eintrag (von der App bestimmt) steht hervorgehoben direkt unter dem Kopf bzw. Tabellenkopf, nie in der Mitte | ablauf.mjs – `checkOpenAt` | – | 13 |
+| R-7.5 | **Navigation und Gesten** (wie iOS 26): im iPhone-Aufbau schiebt sich der Inhalt beim Öffnen herein und beim Zurück hinaus; **Zurückwischen von überall im Inhalt** folgt dem Finger, fertig nach halber Breite oder schnellem Wischen, sonst federt es zurück; am iPad hoch holt Wischen nach rechts von überall die Seitenleiste, nach links auf ihr bzw. der Abdunkelung geht sie, panel-left und Abdunkelung lassen sie gleiten; quer keine Geste. Vorrang an einer Stelle: senkrechtes Rollen, eigenes waagrechtes Rollen, Felder, Knöpfe, Kapseln, Schnellroll-Griff; nicht nach langem Drücken und nicht bei offenem Fenster, Menü oder offener Sprechblase; Tastatur schließt zuerst; Drehen beim Ziehen = Zustand wie vorher; Wischen tippt nie an; ‚Bewegung reduzieren‘ überblendet; je Bild nur transform und opacity | ablauf.mjs – `checkNavigation` | Wischgefühl, Rand mit dem Daumen, versehentliches Zurück, Home-Bildschirm-App, VoiceOver | 13, 15.4, 15.17 |
 
 ### 8. Drehen
 
@@ -1051,6 +1088,7 @@ R-2.3 (15.2), R-4.4 (6, 15.8, HIG 9), R-5.3 (8), R-5.4 (15.12), R-5.5 (A-14), R-
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 4.30.0 | 22.10.2026 | Neben | **A-37 B+C und A-61 Teil 1 (Variante ‚Überall‘):** R-3.2 ergänzt – Kapsel ‚Nach oben / Ans Ende‘ nur mit wirksamen Pfeilen, unten fest, bei offenem Fenster und im Druck nicht zu sehen; neu der Schnellroll-Griff mit Blase und Marken `data-marke` (4, 15.1, 15.17, 15.22; A-45 damit entschieden); neu R-7.5 Navigation und Gesten – Seitenwechsel als Schieben, Zurückwischen von überall, Seitenleiste am iPad hoch per Wischen, Vorrang an einer Stelle (15.4, 15.17, 13 Wischgesten); Prüfungen `checkFab` mit `checkGriff`, neu `checkNavigation` |
 | 4.29.0 | 22.10.2026 | Neben | **A-63 Paket C und A-42:** neu R-1.7 sichere Ränder (Variablen `--safe-…`, Prüfung mit Gerätewerten; iPad-Fenster, Menüs und Sprechblasen halten Abstand), R-5.6 ⓧ in einzeiligen Feldern (15.11), R-5.7 Safaris eingebauter Schalter (15.15, G-18 ohne Schaltergröße); R-2.3 Suche ohne Akzente (15.2); 1 Grundsatz ‚kein UI-Framework‘; 13 sichere Ränder und Schalter; HIG-Checkliste 10–12 |
 | 4.28.2 | 21.10.2026 | Korrektur | **A-39 Konsolidierung (keine neue Regel):** Regeln nur noch im Katalog (17), die Abschnitte 1–16 verweisen darauf; Geschichte (‚seit …‘, A-/T-/P-Nummern, ‚Nutzer …‘, ‚vorher …‘) nur noch hier; Katalog mit Spalte ‚Bau‘ statt ‚ersetzt‘ (Inhalt unter ‚Zuordnung alt → neu‘), neu die Liste ‚Regeln ohne automatische Prüfung‘ G-1 bis G-19 (Prüfungen dafür: Backlog A-40); HIG-Checkliste 16 als Zuordnung HIG-Punkt → Regel, dazu die bewusste Abweichung ‚Nach oben / Ans Ende auch am iPhone‘ aus der App-Richtlinie; 11 nimmt die Versionsregeln der Zusammenarbeit (bisher §8) auf; 12: die App-Richtlinie enthält nur Abweichungen, alles andere App-Eigene steht in PROMPT.md (Nutzer 21.10.2026, F-5); 13 heißt ‚Safari und iPad – technische Erfahrungen‘ und nennt nur den heutigen Stand; überholte Stellen dem gebauten Stand angeglichen (F-7): Hinweise 14 px, Zusatzzeilen 13 px (3, HIG 2), Startliste mit [plus \| search \| ellipsis] (15.17) |
 | 4.28.1 | 21.10.2026 | Korrektur | **A-36 (P-60): Tastatur ohne Springen** – R-4.5 ergänzt: beim Antippen rollt das Feld in die obere Hälfte und bekommt einen neuen Fokus, Safari verschiebt nichts; Rückstellung, Platz unter dem Inhalt (`--platz`), Klick nach dem Rollen unterdrückt, Tastatur-Taste (iPad) gibt den Fokus ab, ‚Nach oben / Ans Ende‘ bei offener Tastatur mit einem Antippen, iPad-Fenster gleitet, `isPhone()` und Kapsel nach der Höhe ohne Tastatur (Abschnitte 7, 13 mit S-1 bis S-9, 15.21, 15.22); **R-2.4 neu:** iPhone quer niedrige Leisten 32 px (15.3, 15.8); Prüfungen `checkTastaturStill` erweitert, R-2.4 in `hig.mjs` |
