@@ -343,6 +343,9 @@ Gemessene bzw. belegte Eigenheiten mit Quelle; sie gelten für alle Apps, die Pr
   Variablen `--safe-top/-bottom/-left/-right` (design.css), alles andere nutzt sie (R-1.7). Die Prüfbrowser liefern für `env()`
   immer 0 – die Prüfung setzt die Variablen auf Gerätewerte. Vom Home-Bildschirm (Statusleiste ‚default‘) liegt die Statusleiste
   über der App: Fensterhöhe am iPhone 16 Pro hoch 812 statt 874, am iPad Pro 11" quer 802 statt 834 (Messungen 19./20.10.2026).
+- Rollt ein Bereich seitlich, zählt Safari (WebKit) seinen rechten Innenabstand nicht zur Rollbreite (Chromium schon): breiter
+  Inhalt endet am Rand, ein Rand rechts muss am Inhalt selbst stehen (gemessen in WebKit 22.10.2026, Abgleichbericht am iPhone
+  quer, R-1.7).
 - Eingebauter Schalter `<input type="checkbox" switch>` seit Safari 17.4, Haptik seit Safari 18; mit `appearance: none` zeichnet
   Safari ihn nicht mehr selbst. Die Prüfbrowser (Chromium, WebKit der Prüfumgebung) kennen ihn nicht und zeigen ein
   Kontrollkästchen (R-5.7).

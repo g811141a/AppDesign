@@ -352,6 +352,10 @@ dialog form { display: flex; flex-direction: column; max-height: var(--dlg-max, 
 .dlg-body.sync-preview { margin: 0; padding: 24px; background: #fff; color: #000; color-scheme: light; overflow: auto; }
 .dlg-body.sync-preview .sync-report { min-width: 760px; }
 html.phone .dlg-body.sync-preview { padding: 16px; }
+/* Seit 4.29.0 (R-1.7, A-63): am iPhone trägt der Bericht selbst den rechten Rand – Safari zählt den rechten Innenabstand eines
+   Rollbereichs nicht mit, sonst blieben quer die letzten Pixel unter der Aussparung und ließen sich nicht hervorrollen */
+html.phone #dlg .dlg-body.sync-preview { padding-right: 0; }
+html.phone #dlg .dlg-body.sync-preview .sync-report { box-sizing: content-box; padding-right: max(16px, var(--safe-right)); }
 /* Seit 4.11.2: Drucken (PDF) – nur der Inhalt von #printout, alles andere ausgeblendet (z. B. Abgleichbericht). */
 #printout { display: none; }
 @media print {

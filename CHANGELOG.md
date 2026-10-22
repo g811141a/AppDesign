@@ -17,7 +17,9 @@ Regeln) **und die Regeln A-41, A-42.** Prüfpunkt im Reiselogbuch: P-63.
   Ende sich nicht über die Home-Leiste rollen lässt; doku.mjs prüft, dass `env()` nur in den vier Festlegungen steht. **Gefunden und
   behoben:** am iPad reichte ein Fenster unten 10 px unter die Home-Leiste (S-6); am iPhone quer lag das Menü der Startliste rechts in
   der Aussparung und die Sprechblase ‚Backup laden‘ 8 px unter der Home-Leiste – Fenster, Menüs, Untermenüs und Sprechblasen halten
-  jetzt mindestens den sicheren Rand ein (sonst 10 bzw. 12 px wie bisher). Der Messmodus nennt im Kopf die Ränder des Geräts
+  jetzt mindestens den sicheren Rand ein (sonst 10 bzw. 12 px wie bisher); in WebKit (wie Safari) ließ sich der Abgleichbericht am
+  iPhone quer nicht ganz hervorrollen – die letzten 32 px blieben unter der Aussparung (Safari zählt den rechten Innenabstand eines
+  Rollbereichs nicht mit), jetzt trägt der Bericht den Rand selbst. Der Messmodus nennt im Kopf die Ränder des Geräts
   (‚Ränder o/u/l/r‘, S-8); `abspielen.mjs` liest sie.
 - **R-2.3 Suche ohne Akzente:** ‚Zurich‘ findet ‚Zürich‘ und umgekehrt, ‚cafe creme‘ findet ‚Café Crème‘; markiert wird das ganze Wort
   wie im Text (auch mit Umbruchstellen, Emojis, Akzent als eigenes Zeichen); ß, ø, æ bleiben eigene Buchstaben (`fold`,

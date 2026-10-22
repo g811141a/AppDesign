@@ -124,6 +124,9 @@ Kontrollkästchen) – Aussehen, Gleiten, Ziehen und Haptik zeigt nur das Gerät
 - Das ⓧ hing anfangs am Bezugsrahmen `#app` statt am Rahmen des Feldes und rollte nicht mit (gefunden von X-7/X-2 bei
   ‚Gesamtausgaben‘); ein Neuaufbau (`setHtml`) nahm den Bezug wieder weg. Behoben: der Rahmen um das Feld wird bei jedem Zeigen
   Bezugsrahmen.
+- In WebKit (wie Safari) ließ sich der Abgleichbericht am iPhone quer nicht ganz hervorrollen: Safari zählt den rechten
+  Innenabstand eines Rollbereichs nicht mit, die letzten 32 px blieben unter der Aussparung. Behoben: am iPhone trägt der Bericht
+  den rechten Rand selbst.
 - WebKit meldete eine ResizeObserver-Schleife (das ⓧ ändert den Innenabstand des Feldes) – behoben (Rahmengröße, nächstes Bild).
 - Gegenprobe: gegen 4.28.2 rot (iPad-Fenster 14 px unter Statusleiste und 10 px unter Home-Leiste bei Prüfwerten 24/20,
   Schalter ohne `switch`, kein ⓧ, Suche mit Akzenten), gegen 4.29.0 grün.
