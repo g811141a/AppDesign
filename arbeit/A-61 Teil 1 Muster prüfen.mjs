@@ -100,11 +100,11 @@ for (const [bn, browser] of [['chromium', chromium], ['webkit', webkit]]) {
         // nach links wegwischen (auf der Seitenleiste)
         await ziehe(p, 300, h / 2, 20, h / 2);
         ok(await links(p, '#liste') === null, `${t}: Seitenleiste nach links wegwischen`);
-        // aus der Mitte des Inhalts holt Wischen die Seitenleiste nicht (auch bei Überall nur vom Rand)
-        await ziehe(p, 300, h / 2, 700, h / 2);
-        ok(await links(p, '#liste') === null, `${t}: Wischen aus der Mitte holt die Seitenleiste`);
+        // aus der Mitte des Inhalts: Rand nichts, Überall holt die Seitenleiste (Nutzer 22.10.2026, Prüfpunkt 9)
+        await ziehe(p, 300, h * 0.85, 760, h * 0.85);
+        ok(await links(p, '#liste') === (v === 'rand' ? null : 10), `${t}: Wischen aus der Mitte`);
         // Abdunkelung antippen schließt
-        await p.click('#seitenknopf'); await ruhe(p);
+        if (await links(p, '#liste') === null) { await p.click('#seitenknopf'); await ruhe(p); }
         await p.mouse.click(w - 40, h / 2); await ruhe(p);
         ok(await links(p, '#liste') === null, `${t}: Abdunkelung antippen schließt nicht`);
       }

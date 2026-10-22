@@ -11,7 +11,8 @@
    Heute    = wie die App heute: Seitenwechsel ohne Übergang, zurück nur mit dem Knopf, Seitenleiste nur mit dem Knopf.
    Rand     = T-4 Seitenwechsel als Schieben, T-5 Zurückwischen vom linken Rand (24 px), T-6 Seitenleiste am iPad hoch vom linken Rand
               hereinwischen und nach links wegwischen, T-35 Vorrang: Rollen und der Bilderstreifen gewinnen gegen das Wischen.
-   Überall  = wie Rand, aber Zurückwischen von überall im Inhalt (iOS 26, interactiveContentPopGestureRecognizer).
+   Überall  = wie Rand, aber Zurückwischen von überall im Inhalt (iOS 26, interactiveContentPopGestureRecognizer); am iPad hoch holt
+              Wischen nach rechts aus der Mitte auch die Seitenleiste (Nutzer 22.10.2026: am iPad ist sie die Liste).
    Fertig nach halber Breite oder schnellem Wischen, sonst zurück. ‚Bewegung reduzieren‘: Überblenden statt Schieben. Nur hell (0 Nr. 6). */
 :root { --bg: #f2f2f7; --card: #fff; --line: #d1d1d6; --txt: #000; --sub: #6e6e73; --blue: #007aff; --btn: #f9f9f9; --btn-rim: #fff;
   --float: 0 3px 28px rgba(0,0,0,.16); --sl: env(safe-area-inset-left); --sr: env(safe-area-inset-right); --st: env(safe-area-inset-top);
@@ -88,7 +89,7 @@ const NAMEN = { heute: 'Heute', rand: 'Rand', ueberall: 'Überall' };
 const TEXT = {
   heute: '<b>Heute:</b> Die Seite wechselt ohne Übergang. Zurück geht es nur mit dem Knopf, die Seitenleiste kommt nur mit dem Knopf.',
   rand: '<b>Variante Rand:</b> Die Seite schiebt sich herein. <b>Zurück:</b> vom linken Rand nach rechts wischen – die Seite folgt dem Finger. Am iPad hoch holt dasselbe Wischen die Seitenleiste herein, nach links wischen schiebt sie weg. Der Bilderstreifen und das Rollen haben Vorrang.',
-  ueberall: '<b>Variante Überall (iOS 26):</b> wie Rand, aber <b>zurück von überall im Inhalt</b> nach rechts wischen – nicht nur vom Rand. Der Bilderstreifen und das Rollen haben Vorrang.'
+  ueberall: '<b>Variante Überall (iOS 26):</b> wie Rand, aber <b>von überall im Inhalt</b> nach rechts wischen – nicht nur vom Rand: am iPhone zurück, am iPad hoch kommt die Seitenleiste. Der Bilderstreifen und das Rollen haben Vorrang.'
 };
 const BEWEGT = V !== 'heute';
 const ruhig = matchMedia('(prefers-reduced-motion: reduce)');
@@ -188,7 +189,7 @@ function kandidat(e) {
     return null;
   }
   if (H.classList.contains('quer')) return null;
-  if (!seite && amRand) return { art: 'seite-auf', richtung: 1, von: 0, nach: 1 };
+  if (!seite && (V === 'ueberall' || amRand)) return { art: 'seite-auf', richtung: 1, von: 0, nach: 1 };
   if (seite && e.target.closest('#liste, #schleier')) return { art: 'seite-zu', richtung: -1, von: 1, nach: 0 };
   return null;
 }
