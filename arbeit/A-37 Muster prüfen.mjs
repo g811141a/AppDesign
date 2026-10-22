@@ -72,6 +72,15 @@ for (const [bn, browser] of [['chromium', chromium], ['webkit', webkit]]) {
           ok(s.y + s.height <= f.y + f.height - 96 - 4, `${t} bc: Spur reicht in die Kapsel (${s.y + s.height} > ${f.y + f.height - 96})`);
         }
       }
+      // B+C, Prüfpunkt 6: kurzer Inhalt (unter drei Bildschirmhöhen) → nur die Kapsel, kein Griff
+      if (v === 'bc') {
+        await p.goto(datei + '?v=bc&tage=4'); await p.waitForTimeout(150);
+        const x = await p.evaluate(() => { const r = document.getElementById('rolle'); return r.scrollHeight / r.clientHeight; });
+        await roll(p, 40); await p.waitForTimeout(100);
+        ok(x >= 3 || !(await sicht(p, '#griff')), `${t} bc kurz (${x.toFixed(1)} Höhen): Griff sichtbar`);
+        ok(/nein/.test(await p.textContent('#laenge')) === x < 3, `${t} bc kurz: Längenzeile`);
+        await p.goto(datei + '?v=bc'); await p.waitForTimeout(150);
+      }
       // Kapsel/Knopf schneidet keine Leiste und liegt im Bild
       for (const sel of ['#fab', '#einzel']) if (await sicht(p, sel)) {
         const r = await p.locator(sel).boundingBox(), bar = await p.locator('.bar').boundingBox();

@@ -16,7 +16,8 @@
            Reiselogbuch, eine Blase zeigt den Tag. Nach 1,5 s ohne Bewegung blendet er aus. Ganz nach oben/unten ziehen = Anfang/Ende.
    B+C   = gewählt (Nutzer 22.10.2026, Sitzung Reiselogbuch 0029): Kapsel wie B, dazu der Griff wie C. Der Griff läuft nur bis über die
            Kapsel (Platz für ihre volle Höhe, damit er nicht springt, wenn ein Pfeil wegfällt) und erscheint erst, wenn der Inhalt
-           mindestens drei Bildschirmhöhen lang ist – darunter genügt die Kapsel. */
+           mindestens drei Bildschirmhöhen lang ist – darunter genügt die Kapsel.
+   ?tage=N (1–365, Standard 40) legt die Länge fest; die Zeile über den Tagen nennt die Länge in Bildschirmhöhen (Prüfpunkt 6). */
 :root { --bg: #f2f2f7; --card: #fff; --line: #d1d1d6; --txt: #000; --sub: #6e6e73; --blue: #007aff; --btn: #f9f9f9; --btn-rim: #fff;
   --float: 0 3px 28px rgba(0,0,0,.16); --vv-h: 100dvh; color-scheme: light dark; }
 @media (prefers-color-scheme: dark) { :root { --bg: #000; --card: #1c1c1e; --line: #38383a; --txt: #fff; --sub: #98989d; --blue: #0a84ff;
@@ -83,7 +84,9 @@ const ICONS = {
 };
 const ic = n => `<svg class="i" viewBox="0 0 24 24">${ICONS[n]}</svg>`;
 const $ = id => document.getElementById(id);
-const V = ['heute', 'a', 'b', 'c', 'bc'].includes(new URLSearchParams(location.search).get('v')) ? new URLSearchParams(location.search).get('v') : 'heute';
+const Q = new URLSearchParams(location.search);
+const V = ['heute', 'a', 'b', 'c', 'bc'].includes(Q.get('v')) ? Q.get('v') : 'heute';
+const N = Math.max(1, Math.min(365, parseInt(Q.get('tage'), 10) || 40));
 const TEXT = {
   heute: '<b>Heute:</b> Kapsel unten rechts mit ‚Nach oben‘ und ‚Ans Ende‘ – immer beide, sobald es etwas zu rollen gibt.',
   a: '<b>Variante A (wie Gemini):</b> ein runder Knopf unten in der Mitte. Der Pfeil zeigt in die Richtung, in die du zuletzt gewischt hast. Ganz in der Nähe des Ziels verschwindet er.',
@@ -96,8 +99,8 @@ const B = V === 'b' || V === 'bc', C = V === 'c' || V === 'bc';
 const ORTE = ['Tokio', 'Hakone', 'Kyoto', 'Nara', 'Osaka', 'Hiroshima', 'Miyajima', 'Kanazawa', 'Takayama', 'Nikko'];
 const WT = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'];
 const tage = [];
-let html = `<p class="intro">${TEXT[V]}</p>`;
-for (let i = 0; i < 40; i++) {
+let html = `<p class="intro">${TEXT[V]}</p><p class="intro" id="laenge"></p>`;
+for (let i = 0; i < N; i++) {
   const d = new Date(2026, 2, 2 + i), ort = ORTE[Math.floor(i / 4) % ORTE.length];
   const datum = `${WT[d.getDay()]} ${String(d.getDate()).padStart(2, '0')}.${String(d.getMonth() + 1).padStart(2, '0')}.`;
   tage.push(`Tag ${i + 1} · ${datum}`);
@@ -108,7 +111,7 @@ for (let i = 0; i < 40; i++) {
 }
 html += '<p class="ende">Ende des Reiselogbuchs</p>';
 $('inhalt').innerHTML = html;
-for (const b of $('wahl').children) { b.classList.toggle('on', b.dataset.v === V); b.onclick = () => { location.search = '?v=' + b.dataset.v; }; }
+for (const b of $('wahl').children) { b.classList.toggle('on', b.dataset.v === V); b.onclick = () => { location.search = '?v=' + b.dataset.v + (Q.has('tage') ? '&tage=' + N : ''); }; }
 
 const rolle = $('rolle');
 const max = () => rolle.scrollHeight - rolle.clientHeight;
@@ -195,7 +198,12 @@ griff.addEventListener('pointermove', e => {
 const loslassen = () => { if (!zieht) return; zieht = false; spur.classList.remove('zieht'); griffZeigen(); };
 griff.addEventListener('pointerup', loslassen); griff.addEventListener('pointercancel', loslassen);
 
-function alles() { fabZeigen(); einzelZeigen(); griffZeigen(); }
+// Prüfpunkt 6: Länge des Inhalts in Bildschirmhöhen, ab 3 kommt bei B+C der Griff
+function laenge() {
+  const x = (rolle.scrollHeight / rolle.clientHeight).toLocaleString('de', { maximumFractionDigits: 1 });
+  $('laenge').innerHTML = `<b>${N} Tage = ${x} Bildschirmhöhen.</b>` + (V === 'bc' ? ` Griff beim Wischen: <b>${lang() ? 'ja' : 'nein'}</b> (ab 3).` : '');
+}
+function alles() { laenge(); fabZeigen(); einzelZeigen(); griffZeigen(); }
 rolle.addEventListener('scroll', () => requestAnimationFrame(alles), { passive: true });
 addEventListener('resize', () => requestAnimationFrame(alles));
 alles();
