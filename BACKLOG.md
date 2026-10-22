@@ -57,6 +57,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Thema | Version | Datum |
 |---|---|---|---|
+| E-76 | **Automatische Übergabe (Nutzer 23.10.2026):** 0 Nr. 13 – bei ‚⚠ Übergabe fällig‘ übergibt Claude ohne Rückfrage, sobald der laufende Schritt abgeschlossen ist, und startet die neue Sitzung selbst (2.2) | Zusammenarbeit 2.19.0 | 23.10.2026 |
 | E-75 | **A-67 Korrektur:** ist die Wischgeste entschieden, verhindert ui.js `touchmove` – Safari rollt nicht mehr dazwischen (Messung P-65: Abbruch ab 10 px senkrecht); Safari-Modell S-10 `safariWischen`, Prüfung `checkNavigation` F-23 (rot gegen 4.30.1); Messung zeigt `touchmove` | AppDesign 4.30.2 · Reiselogbuch 3.28.2 | 23.10.2026 |
 | E-74 | **A-67 Schritt 1 und A-66:** Messmodus zeichnet Berührungen (Zeiger, touchcancel mit Ziel) und die Entscheidungen der Gestenstelle auf (15.21, `checkNavigation` F-22); `checkNavigation` zeichnet bis zum Ende der Bewegung auf, unter Volllast belegen die Keyframes die Bewegung (A-66) | AppDesign 4.30.1 · Reiselogbuch 3.28.1 | 22.10.2026 |
 | E-73 | Geprüft **P-64 (Reiselogbuch 3.28.0): alles ok bis auf /5** (Nutzer 22.10.2026) – **A-37 abgeschlossen**; A-61 Teil 1 bis auf das Zurückwischen über einem Tageskasten (→ A-67) | AppDesign 4.30.0 · Reiselogbuch 3.28.0 | 22.10.2026 |

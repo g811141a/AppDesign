@@ -1,6 +1,6 @@
 # Zusammenarbeit allgemein
 
-**Version 2.18.0** · Stand 22.10.2026
+**Version 2.19.0** · Stand 23.10.2026
 
 Regeln für die Zusammenarbeit mit Claude bei allen iPad-Web-Apps von g811141a. Die Datei liegt im Design-Repo **AppDesign**
 (g811141a/AppDesign); App-Eigenes steht in der `CLAUDE.md` des App-Repos. **Abschnitt 0 ist das Arbeitsmodell**, Abschnitt 1
@@ -101,10 +101,13 @@ Ziel: nichts vergessen, Fehler finden, bevor der Nutzer sie findet, schnell und 
 
 12. **Ein Thema je Sitzung.** Lange Sitzungen werden langsam und automatisch zusammengefasst – dabei gehen Einzelheiten
     verloren. Prüfung: Selbstkontrolle.
-13. **Neue Sitzung ab etwa 300.000 Token:** Ist ein Thema abgeschlossen, hat der Kontext etwa **300.000 Token** erreicht
-    (‚Kontext N‘ in der Zeitzeile) oder wurde die Sitzung schon zusammengefasst, schlägt Claude die Übergabe vor; bei ‚Ja‘ schreibt
-    Claude sie (Nr. 14) und startet die neue Sitzung selbst – Opus 5.5, Aufwand hoch, Name `<App> <Chatnummer> – <Thema>`
-    (2.5). Braucht eine Sitzung eine Entscheidung des Nutzers, bleibt sie stehen. Prüfung: Selbstkontrolle anhand der Zeitzeile.
+13. **Automatische Übergabe ab etwa 300.000 Token:** Hat der Kontext etwa **300.000 Token** erreicht (‚⚠ Übergabe fällig‘ in
+    der Zeitzeile) oder wurde die Sitzung schon zusammengefasst, übergibt Claude **ohne Rückfrage**, sobald der laufende Schritt
+    abgeschlossen ist (Version veröffentlicht und Bericht gegeben bzw. Auswertung eingetragen) – nie mitten in einem Bau oder
+    Prüflauf: Übergabe schreiben (Nr. 14) und die neue Sitzung selbst starten – Opus 5.5, Aufwand hoch, Name
+    `<App> <Chatnummer> – <Thema>` (2.5). Eine offene Frage an den Nutzer (z. B. Rückmeldung zu Prüfpunkten) geht mit in die
+    Übergabe und wird in der neuen Sitzung gestellt. Ist ein Thema vorher abgeschlossen, schlägt Claude die Übergabe vor. Prüfung:
+    Selbstkontrolle anhand der Zeitzeile.
 14. **Übergabe** sofort nach `UEBERGABE.md` im Repo AppDesign schreiben und veröffentlichen, mit Starttext (2.5); am Ende der
     Antwort fett **‚Die Sitzung (Chat) ist damit beendet!‘**, danach nur die Zeitzeile. Prüfung: Selbstkontrolle.
 15. **Beginn einer Sitzung:** gezielt lesen – `UEBERGABE.md`, Abschnitte 0 und 1 dieser Datei, die Überschriften der
@@ -191,8 +194,8 @@ Prüfung: Selbstkontrolle.
 - **Token:** aus den Sitzungsdaten der **vorigen** Antwort (genaue Werte; die laufende wird erst an ihrem Ende gezählt), jeder
   Modell-Aufruf einmal; ‚neu‘ = Eingabe + Ausgabe.
 - **Kontext:** Größe der Sitzung = Eingabe + Zwischenspeicher + geschrieben des letzten eigenen Modell-Aufrufs. Ab 300.000 oder
-  nach einer automatischen Zusammenfassung hängt das Werkzeug ‚⚠ Übergabe fällig‘ an; dann schlägt Claude die Übergabe vor
-  (0 Nr. 13).
+  nach einer automatischen Zusammenfassung hängt das Werkzeug ‚⚠ Übergabe fällig‘ an; dann übergibt Claude nach dem laufenden
+  Schritt von selbst (0 Nr. 13).
 - Prüfung: `tests/messung.mjs` (Gegenprobe `--gegenprobe`).
 
 ### 2.3 Bericht, Prüfpunkte und Rückmeldung
@@ -305,6 +308,7 @@ im Verlauf und in Kommentaren der Prüfungen nennen noch die alten Stellen):
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 2.19.0 | 23.10.2026 | Neben | **0 Nr. 13 automatische Übergabe (Nutzer 23.10.2026):** bei ‚⚠ Übergabe fällig‘ übergibt Claude ohne Rückfrage, sobald der laufende Schritt abgeschlossen ist, und startet die neue Sitzung selbst; offene Fragen gehen mit in die Übergabe (2.2) |
 | 2.18.0 | 22.10.2026 | Neben | **A-41:** 0 Nr. 13 Übergabe wieder erst ab etwa 300.000 Token (gleiche Grenze wie das Werkzeug, 2.2); 0 Nr. 2 Hilfsagenten bzw. eigene Sitzungen parallel, wenn möglich und sinnvoll; 2.1 ein Auswahlfenster je Antwort mit der Erklärung davor, Themen einzeln nacheinander (‚w‘) |
 | 2.17.0 | 21.10.2026 | Neben | **A-39 Konsolidierung:** Abschnitt 0 ist das eine Arbeitsmodell – die Kästen oben und die Abschnitte 2–9 sind in 0 Nr. 8, 21–25 und den neuen Abschnitt 2 ‚Einzelheiten und Formate‘ eingegangen (Zuordnung alt → neu); jede Regel nennt ihre Prüfung; Geschichte (‚seit …‘, ‚Nutzer …‘, ‚Anlass …‘) nur noch hier. Neu 0 Nr. 13: Übergabe schon ab etwa 150.000 Token Kontext (statt 300.000; das Werkzeug warnt weiter ab 300.000). Geklärt (Nutzer 21.10.2026, F-2 bis F-4): im Auswahlfenster nur die kurze Frage, bei Bitten, am Gerät zu prüfen, auch Link und Schritte; Übergabe vorschlagen, bei Ja schreiben und die neue Sitzung selbst starten, Starttext als Rückfall; keine eigene Version für eine einzelne Kleinigkeit |
 | 2.16.0 | 21.10.2026 | Neben | 0 Nr. 11 ergänzt: Link und Schritte jeder Bitte, am Gerät zu prüfen, zusätzlich im Auswahlfenster selbst – der Text davor kam nicht an (Nutzer 21.10.2026, Sitzung 0023) |
