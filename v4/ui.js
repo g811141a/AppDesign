@@ -254,7 +254,8 @@ document.addEventListener('input', () => queueMicrotask(fxZeigen));
 document.addEventListener('focusout', () => setTimeout(() => { if (!fxTippt) fxZeigen(); }, 0));
 document.addEventListener('pointerup', () => setTimeout(() => { fxTippt = false; }, 400), true);
 window.addEventListener('resize', () => requestAnimationFrame(fxZeigen));
-if (window.ResizeObserver) { const ro = new ResizeObserver(() => fxFeld && fxZeigen()); document.addEventListener('focusin', e => { ro.disconnect(); if (e.target.matches?.(FX)) ro.observe(e.target); }); }
+// Größe des Feldes (Rahmen, nicht Innenraum – das ⓧ ändert den Innenabstand), im nächsten Bild: sonst meldet Safari eine Schleife
+if (window.ResizeObserver) { const ro = new ResizeObserver(() => fxFeld && requestAnimationFrame(fxZeigen)); document.addEventListener('focusin', e => { ro.disconnect(); if (e.target.matches?.(FX)) ro.observe(e.target, { box: 'border-box' }); }); }
 
 /* ---------- Darstellung ---------- */
 

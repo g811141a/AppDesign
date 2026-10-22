@@ -3,6 +3,36 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.29.0 – 22.10.2026
+
+AppDesign 4.29.0 · Designrichtlinie allgemein 4.29.0 · Zusammenarbeit allgemein 2.18.0 · geprüft mit Reiselogbuch 3.27.0
+
+**A-63 Paket C aus A-38** (dein Ja vom 22.10.2026 zur Fall-Liste `arbeit/A-63 Fall-Liste.md`, Schalter Weg b, als allgemeine
+Regeln) **und die Regeln A-41, A-42.** Prüfpunkt im Reiselogbuch: P-63.
+
+- **R-1.7 Sichere Ränder (V1):** `env(safe-area-inset-…)` steht nur noch in den vier Variablen `--safe-top/-bottom/-left/-right`
+  (design.css), die 42 Stellen nutzen sie. Die neue Prüfung `safe` (hig.mjs, in jeder gemessenen Ansicht) setzt Gerätewerte
+  (iPhone 16 Pro hoch oben 62 / unten 34, quer links und rechts 62 / unten 20, iPad oben 24 / unten 20) und meldet alles fest
+  Stehende unter Statusleiste, Aussparung oder Home-Leiste, Fenster, Menüs und Sprechblasen, die hineinreichen, und Inhalt, dessen
+  Ende sich nicht über die Home-Leiste rollen lässt; doku.mjs prüft, dass `env()` nur in den vier Festlegungen steht. **Gefunden und
+  behoben:** am iPad reichte ein Fenster unten 10 px unter die Home-Leiste (S-6); am iPhone quer lag das Menü der Startliste rechts in
+  der Aussparung und die Sprechblase ‚Backup laden‘ 8 px unter der Home-Leiste – Fenster, Menüs, Untermenüs und Sprechblasen halten
+  jetzt mindestens den sicheren Rand ein (sonst 10 bzw. 12 px wie bisher). Der Messmodus nennt im Kopf die Ränder des Geräts
+  (‚Ränder o/u/l/r‘, S-8); `abspielen.mjs` liest sie.
+- **R-2.3 Suche ohne Akzente:** ‚Zurich‘ findet ‚Zürich‘ und umgekehrt, ‚cafe creme‘ findet ‚Café Crème‘; markiert wird das ganze Wort
+  wie im Text (auch mit Umbruchstellen, Emojis, Akzent als eigenes Zeichen); ß, ø, æ bleiben eigene Buchstaben (`fold`,
+  `mitAkzent` in ui.js; `checkSearchWords` A-1 bis A-8).
+- **R-5.6 ⓧ in einzeiligen Feldern:** ein Baustein in ui.js/design.css (`.fclear`) für alle einzeiligen Textfelder – rechts im Feld,
+  solange es den Fokus hat und etwas drinsteht; Antippen leert, Fokus und Tastatur bleiben, die App bekommt ein input-Ereignis; rollt
+  mit, bleibt nach dem Drehen am Feld; `data-noclear` schaltet es ab (`checkClear` X-1 bis X-8).
+- **R-5.7 Safaris eingebauter Schalter:** `<input type="checkbox" switch role="switch">`; kennt der Browser ihn (ui.js setzt
+  `html.natsw`), zeichnet Safari ihn selbst (gleitet, ziehbar, Haptik, VoiceOver ‚Schalter‘, Aussehen der iOS-Version) in Grün,
+  sonst unser Schalter 51 × 31 wie bisher. Die Prüfbrowser kennen ihn nicht – Aussehen und Gefühl nur am Gerät (P-63).
+- **Designrichtlinie allgemein 4.29.0:** neue Regeln R-1.7, R-5.6, R-5.7, R-2.3 ergänzt, 1 Grundsatz **‚kein UI-Framework‘**
+  (A-42), 13 sichere Ränder und Schalter, 15.2, 15.11, 15.15, HIG-Checkliste 10–12, G-18 ohne Schaltergröße.
+- **Zusammenarbeit 2.18.0 (A-41):** Übergabe wieder erst ab etwa 300.000 Token (0 Nr. 13, 2.2); Hilfsagenten bzw. eigene Sitzungen
+  parallel, wenn möglich und sinnvoll (0 Nr. 2); 2.1 ein Auswahlfenster je Antwort mit der Erklärung davor, Themen einzeln (‚w‘).
+
 ## 4.28.2 – 21.10.2026
 
 AppDesign 4.28.2 · Designrichtlinie allgemein 4.28.2 · Zusammenarbeit allgemein 2.17.0 · geprüft mit Reiselogbuch 3.26.2
