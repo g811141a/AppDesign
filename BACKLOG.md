@@ -11,15 +11,15 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Prio | Thema | bereit seit |
 |---|---|---|---|
-| – | – | zurzeit nichts gesammelt | – |
+| A-67 | 1 | **Korrektur P-64/5 – Zurückwischen über einem Tageskasten federt zurück (Nutzer 22.10.2026):** am Gerät (iPhone, Home-Bildschirm-App) geht das Zurückwischen neben den Kästen, über einem Kasten federt die Seite zurück; in der Prüfung (`checkNavigation` F-6, Maus nachgebildet) geht es. Vermutung: Safari bricht die Berührung über dem antippbaren Kasten (`role=button`, `tabindex`, Maps-Links) ab – `pointercancel`, die Gestenstelle federt zurück. **Vorschlag (0 Nr. 1, 20):** Korrekturversion **AppDesign 4.30.1 / Reiselogbuch 3.28.1**: Messmodus zeichnet Zeiger- und Touch-Ereignisse (pointerdown/move/up/cancel, touchcancel mit Ziel) und die Entscheidungen der Gestenstelle auf; dazu A-66. Dann Messung am Gerät, Ablauf als feste Prüfung (rot), beheben in der nächsten Korrektur. **Wartet auf Ja** | 22.10.2026 |
+| A-66 | 1 | Prüfung ‚Bewegung reduzieren‘ unter Last (siehe 2.) – kommt mit A-67 | 22.10.2026 |
 
 
 ## 1. Auf iPad und iPhone prüfen
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| A-37 | 2 | **‚Nach oben / Ans Ende‘ B+C gebaut (4.30.0):** Kapsel nur mit wirksamen Pfeilen, Schnellroll-Griff mit Blase und Marken (R-3.2, `checkFab` mit `checkGriff`); A-45 damit erledigt | prüfen – P-64/1 bis /3, /10 im Reiselogbuch |
-| A-61/1 | 2 | **Navigation und Gesten Teil 1 ‚Überall‘ gebaut (4.30.0):** Seitenwechsel als Schieben, Zurückwischen von überall, Seitenleiste am iPad hoch per Wischen, Vorrang an einer Stelle, nur transform/opacity (R-7.5 neu, `checkNavigation`) | prüfen – P-64/4 bis /10 im Reiselogbuch |
+| – | – | zurzeit nichts zu prüfen | – |
 
 ## 2. Weitere Themen (in Klärung)
 
@@ -59,6 +59,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Thema | Version | Datum |
 |---|---|---|---|
+| E-73 | Geprüft **P-64 (Reiselogbuch 3.28.0): alles ok bis auf /5** (Nutzer 22.10.2026) – **A-37 abgeschlossen**; A-61 Teil 1 bis auf das Zurückwischen über einem Tageskasten (→ A-67) | AppDesign 4.30.0 · Reiselogbuch 3.28.0 | 22.10.2026 |
 | E-72 | **A-37 B+C und A-61 Teil 1 ‚Überall‘ gebaut** (Fall-Listen `arbeit/A-37 Fall-Liste.md`, `arbeit/A-61 Teil 1 Fall-Liste.md`): R-3.2 ergänzt, R-7.5 neu; **A-45** (ziehbarer Index am Rand) damit entschieden und erledigt – der Schnellroll-Griff ist dieser Index. Wartet auf P-64 | AppDesign 4.30.0 · Reiselogbuch 3.28.0 | 22.10.2026 |
 | E-71 | Geprüft **P-63 (Reiselogbuch 3.27.0): alles ok** (Nutzer 22.10.2026) – **A-63 Paket C abgeschlossen**; /9 echte Ränder iPhone 16/17 Pro vom Home-Bildschirm gemessen: hoch 0/34/0/0, quer 0/20/62/62 (`tests/messungen/2026-10-22 iPhone … Ränder.txt`) – wie die Prüfwerte, nur oben hoch 0 statt der strengen 62; die Prüfung bleibt streng | AppDesign 4.29.0 | 22.10.2026 |
 | E-70 | **A-63 Paket C gebaut** (Fall-Liste `arbeit/A-63 Fall-Liste.md`, Weg b, als allgemeine Regeln R-1.7, R-5.6, R-5.7, R-2.3): neue Prüfungen `safe` (hig.mjs), `checkClear`, `checkSearchWords` A-1 bis A-8, doku.mjs R-1.7 – gegen 4.28.2 rot, jetzt grün. Wartet auf P-63 | AppDesign 4.29.0 | 22.10.2026 |
