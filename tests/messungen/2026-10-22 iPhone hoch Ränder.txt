@@ -1,0 +1,6 @@
+# Messung · Reiselogbuch 3.27.0 · AppDesign 4.29.0 · Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.6.2 Mobile/15E148 Safari/604.1 · Home-Bildschirm · 402×874 @3 · Ränder 0/34/0/0 · hell · 2026-10-22T09:48:59.531Z
+t      sy     inh    sh     ih     vh     vt     vvtop  kopf   such   tag    lkopf  lsuch  lroll  fokus  lage
+2      0      -      812    812    812    0      0      -      -      -      0      -      0      -      hoch   ! start
+7132   0      -      812    812    812    0      0      -      -      -      0      -      0      -      hoch   ! tippen sideMore
+8378   0      -      812    812    812    0      0      -      -      -      0      -      0      -      hoch   ! tippen button
+# Ende nach 8 s

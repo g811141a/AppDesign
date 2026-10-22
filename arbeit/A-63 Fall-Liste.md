@@ -130,3 +130,9 @@ Kontrollkästchen) – Aussehen, Gleiten, Ziehen und Haptik zeigt nur das Gerät
 - WebKit meldete eine ResizeObserver-Schleife (das ⓧ ändert den Innenabstand des Feldes) – behoben (Rahmengröße, nächstes Bild).
 - Gegenprobe: gegen 4.28.2 rot (iPad-Fenster 14 px unter Statusleiste und 10 px unter Home-Leiste bei Prüfwerten 24/20,
   Schalter ohne `switch`, kein ⓧ, Suche mit Akzenten), gegen 4.29.0 grün.
+
+## 7. Ergebnis am Gerät (P-63, 22.10.2026)
+
+Alles ok. Echte Ränder (P-63/9, iPhone 402 × 874, Home-Bildschirm): hoch **0/34/0/0**, quer **0/20/62/62** – wie vermutet
+(Statusleiste über der App). Die Prüfung rechnet hoch weiter streng mit oben 62 (deckt auch eine durchscheinende Statusleiste
+ab); alle anderen Werte stimmen genau.
