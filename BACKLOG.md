@@ -19,7 +19,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| A-63 | 1 | **Paket C gebaut (AppDesign 4.29.0, Reiselogbuch 3.27.0):** sichere Ränder als Variablen mit Prüfung (R-1.7; dabei behoben: iPad-Fenster unter der Home-Leiste, Menü und Sprechblase am iPhone quer), Suche ohne Akzente (R-2.3), ⓧ in einzeiligen Feldern (R-5.6), Safaris Schalter (R-5.7, Weg b) – **Prüfpunkt P-63** im Reiselogbuch; mit /9 kommen die echten Ränder deines iPhones in die Prüfung | prüfen |
+| – | – | zurzeit nichts zu prüfen | – |
 
 ## 2. Weitere Themen (in Klärung)
 
@@ -58,6 +58,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Thema | Version | Datum |
 |---|---|---|---|
+| E-71 | Geprüft **P-63 (Reiselogbuch 3.27.0): alles ok** (Nutzer 22.10.2026) – **A-63 Paket C abgeschlossen**; die Messdateien aus /9 (echte Ränder) stehen noch aus | AppDesign 4.29.0 | 22.10.2026 |
 | E-70 | **A-63 Paket C gebaut** (Fall-Liste `arbeit/A-63 Fall-Liste.md`, Weg b, als allgemeine Regeln R-1.7, R-5.6, R-5.7, R-2.3): neue Prüfungen `safe` (hig.mjs), `checkClear`, `checkSearchWords` A-1 bis A-8, doku.mjs R-1.7 – gegen 4.28.2 rot, jetzt grün. Wartet auf P-63 | AppDesign 4.29.0 | 22.10.2026 |
 | E-69 | **A-41 und A-42:** Zusammenarbeit 2.18.0 (Übergabe ab etwa 300.000 Token, Hilfsagenten parallel wenn möglich und sinnvoll, ein Auswahlfenster je Antwort); Designrichtlinie 1 Grundsatz ‚kein UI-Framework‘ | AppDesign 4.29.0 | 22.10.2026 |
 | E-68 | Geprüft **P-62 (Reiselogbuch 3.26.2): alles ok** (Nutzer 21.10.2026) – **A-39 abgeschlossen** | AppDesign 4.28.2 | 21.10.2026 |
