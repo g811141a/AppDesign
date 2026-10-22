@@ -838,17 +838,26 @@ export async function checkGriff(p, { zeit = 2000, where = '' } = {}) {
   z = await g();
   if (z.dialog) E('nach dem Ziehen ist ein Fenster offen – darunter wurde angetippt (F-20)');
   if (z.y > 1) E(`nach dem Loslassen weitergerollt (${z.y} px, F-20)`);
-  // F-5: ziehen, während ‚Ans Ende‘ weich rollt – der Griff folgt dem Finger
-  await p.click('.fab button:last-of-type');
-  await wait(p, 60);
-  s = await g();
-  if (s.sicht) {
-    await p.mouse.move(x, (s.griff.top + s.griff.bottom) / 2); await p.mouse.down();
-    await p.mouse.move(x, s.bahn.top + h / 4, { steps: 4 }); await wait(p, 500);
-    z = await g();
-    if (Math.abs(z.y - z.ende / 4) > z.ende * 0.1) E(`während ‚Ans Ende‘ gezogen: ${z.y} px statt etwa ${Math.round(z.ende / 4)} px – das weiche Rollen läuft weiter (F-5)`);
-    await p.mouse.up(); await wait(p, 300);
-  }
+  // F-5: greifen, während ‚Ans Ende‘ weich rollt – das Rollen endet, der Griff folgt dem Finger. Der Griff wandert dabei schnell
+  // (WebKit: über 2000 px in 60 ms); mit Playwright (bewegen, dann drücken) trifft der Druck ihn nicht sicher – deshalb greifen und
+  // ziehen die Zeigerereignisse in der Seite, im selben Augenblick, in dem seine Lage gemessen wird.
+  await rolle(p, 0); await wait(p, 200);
+  const f5 = await p.evaluate(async R => {
+    const r = eval(R), gr = document.querySelector('.schnell .griff'), w = ms => new Promise(x => setTimeout(x, ms));
+    document.querySelector('.fab button:last-of-type').click(); await w(60);
+    const b = gr.getBoundingClientRect(), x = b.left + b.width / 2, y = b.top + b.height / 2, bahn = document.querySelector('.schnell').getBoundingClientRect();
+    const ev = (t, cy) => gr.dispatchEvent(new PointerEvent(t, { pointerId: 7, isPrimary: true, pointerType: 'touch', clientX: x, clientY: cy, bubbles: true, cancelable: true }));
+    ev('pointerdown', y);
+    const zieht = document.querySelector('.schnell').classList.contains('zieht');
+    const ziel = bahn.top + (bahn.height - b.height) / 4 + b.height / 2;
+    for (let i = 1; i <= 4; i++) { ev('pointermove', y + (ziel - y) * i / 4); await w(16); }
+    await w(500);
+    const yy = r.y; ev('pointerup', ziel); await w(100);
+    return { zieht, y: Math.round(yy), ende: Math.round(r.max - (parseFloat(r.el.style.getPropertyValue('--platz')) || 0)) };
+  }, ROLL);
+  if (!f5.zieht) E('während ‚Ans Ende‘ lässt sich der Griff nicht greifen (F-5)');
+  else if (Math.abs(f5.y - f5.ende / 4) > f5.ende * 0.1) E(`während ‚Ans Ende‘ gezogen: ${f5.y} px statt etwa ${Math.round(f5.ende / 4)} px – das weiche Rollen läuft weiter (F-5)`);
+  await p.evaluate(() => rolle.halt()); await wait(p, 300);
   // F-11: ‚Ans Ende‘ kommt schnell an
   await rolle(p, 0); await wait(p, 200);
   const t1 = Date.now();

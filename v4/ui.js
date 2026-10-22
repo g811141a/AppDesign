@@ -305,6 +305,9 @@ const rolle = {
   by(d) { if (Math.round(d)) rolle.to(rolle.y + d); },
   // seit 4.28.1 (A-36): bis zum Ende des Inhalts – Platz, der nach dem Schließen der Tastatur noch darunter steht, zählt nicht
   ende(smooth = false) { rolle.to(rolle.max - platzVon(rolle.el), smooth); },
+  // seit 4.30.0 (A-37 F-5, A-61 F-10): ein weiches Rollen (‚Nach oben / Ans Ende‘) sofort anhalten – WebKit hält es bei scrollTo
+  // nicht an, wohl aber, wenn der Bereich kurz nicht rollen darf
+  halt() { const e = rolle.el; if (!e) return; const y = e.scrollTop; e.style.overflowY = 'hidden'; e.scrollTop = y; void e.offsetHeight; e.style.overflowY = ''; e.scrollTop = y; },
 };
 // Rollen hören (Fenster und Rollbereich): scroll-Ereignisse von Elementen steigen nicht auf – deshalb in der Einfangphase.
 const onRoll = fn => window.addEventListener('scroll', e => { if (e.target === document || e.target === rolle.el) fn(e); }, { capture: true, passive: true });
@@ -1185,7 +1188,7 @@ onRoll(() => { if (!keepBusy) schnellZeigen(true); });
 schnellGriff.addEventListener('pointerdown', e => {
   if (e.button > 0 || schnell.classList.contains('aus')) return;
   e.preventDefault(); e.stopPropagation();
-  rolle.to(rolle.y);   // ein laufendes weiches Rollen (‚Ans Ende‘) endet, der Griff folgt dem Finger (F-5)
+  rolle.halt();   // ein laufendes weiches Rollen (‚Ans Ende‘) endet, der Griff folgt dem Finger (F-5)
   try { schnellGriff.setPointerCapture(e.pointerId); } catch {}
   schnellZieht = { id: e.pointerId, y: e.clientY, a: schnellEnde() ? rolle.y / schnellEnde() : 0 };
   schnell.classList.add('zieht'); clearTimeout(schnellRuhe);
@@ -1562,7 +1565,7 @@ function navAktiv(z, e) {
   z.aktiv = true;
   navKlickWeg = true;
   if (kbOffen()) document.activeElement?.blur?.();   // F-16: die Tastatur schließt, zurück geht es danach
-  if (rolle.el) rolle.to(rolle.y);                      // F-10: ein weiches Rollen endet, das Wischen gilt
+  rolle.halt();                                         // F-10: ein weiches Rollen endet, das Wischen gilt
   try { e.target.setPointerCapture?.(e.pointerId); } catch {}
   z.w = navAnfang(z.art);
   if (z.art === 'phone') navApp.zurueck.darunter(true);

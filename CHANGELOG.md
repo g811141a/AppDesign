@@ -26,7 +26,8 @@ AppDesign 4.30.0 · Designrichtlinie allgemein 4.30.0 · Zusammenarbeit allgemei
   Kapseln, Griff, langes Drücken, offenes Fenster/Menü); je Bild nur transform und opacity als Web-Animation (A-59); Drehen beim
   Ziehen bricht ab; ‚Bewegung reduzieren‘ überblendet; Escape (VoiceOver ‚Zurück‘) geht zurück. **Wischen tippt nie an:** ein Zeiger,
   der sich mehr als 10 px bewegt hat, löst kein Antippen aus (gefunden beim Bau: mit Maus bzw. Zeichenstift öffnete Wischen über einen
-  Tag dessen Fenster). `onLongPress` löst während einer Wischgeste nicht aus.
+  Tag dessen Fenster). `onLongPress` löst während einer Wischgeste nicht aus. **`rolle.halt()`** hält ein weiches Rollen sofort an
+  (Griff greifen, Wischen) – gefunden beim Bau: WebKit hält ein laufendes weiches Rollen bei `scrollTo` nicht an.
 - **Prüfungen:** `checkFab` prüft die Pfeile in fünf Rollständen, unteren Rand, Fenster, Drucken und ruft `checkGriff` (F-4, F-5,
   F-11, F-14 bis F-21); neu `checkNavigation` (A-61 F-1 bis F-21, iPhone, iPad hoch und quer, ‚Bewegung reduzieren‘ über
   `reducedMotion`); `navFertig` (pruefe.mjs) wartet auf das Ende eines Seitenwechsels.
