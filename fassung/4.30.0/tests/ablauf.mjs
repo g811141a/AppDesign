@@ -1121,12 +1121,12 @@ export async function checkNavigation(p, { eintrag, titel, zurueck = '#back', wa
       ruhig: matchMedia('(prefers-reduced-motion: reduce)').matches, menue: !!document.querySelector('.menu'),
       ta: (e => e ? getComputedStyle(e).touchAction : null)(document.querySelector('#app > .rolle')) };
   });
-  // zeichnet 450 ms lang je Bild Lage und Deckkraft von Inhalt und Liste auf (Einzelproben hängen unter Last vom Zeitpunkt ab)
+  // zeichnet 1 s lang je Bild Lage und Deckkraft von Inhalt und Liste auf (Einzelproben hängen unter Last vom Zeitpunkt ab; unter Volllast beginnt die Bewegung in WebKit erst nach über 450 ms)
   const aufzeichnen = () => p.evaluate(() => { window.__bilder = []; const t0 = performance.now(), app = document.getElementById('app'), side = document.getElementById('side');
     const bild = () => { const s = getComputedStyle(side); window.__bilder.push({ appX: app.getBoundingClientRect().left, sideX: side.getBoundingClientRect().left, appO: +getComputedStyle(app).opacity,
-      appT: getComputedStyle(app).transform, liste: !side.hidden && s.display !== 'none' && side.classList.contains('page') }); if (performance.now() - t0 < 450) requestAnimationFrame(bild); };
+      appT: getComputedStyle(app).transform, liste: !side.hidden && s.display !== 'none' && side.classList.contains('page') }); if (performance.now() - t0 < 1000) requestAnimationFrame(bild); };
     requestAnimationFrame(bild); });
-  const bilder = async () => { await wait(p, 500); return p.evaluate(() => window.__bilder); };
+  const bilder = async () => { await wait(p, 1050); return p.evaluate(() => window.__bilder); };
   const geschoben = (b, w) => b.some(x => x.appX > 1 && x.appX < w - 1 && x.liste);
   const ueberblendet = b => b.some(x => x.appT === 'none' && x.appO > 0.02 && x.appO < 0.98) && b.every(x => x.appT === 'none');
   const ruhig = async () => { for (let i = 0; i < 30; i++) { await wait(p, 100); if (!(await lage()).nav) return; } };
