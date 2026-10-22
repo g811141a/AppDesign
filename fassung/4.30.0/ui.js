@@ -1155,11 +1155,17 @@ function schnellMoeglich() {
     && !document.documentElement.classList.contains('locked') && e.scrollHeight >= SCHNELL_AB * e.clientHeight;
 }
 // Marken in der Reihenfolge des Inhalts (Tage, Überschriften der Abschnitte); es gilt die letzte, die oben schon begonnen hat –
-// davor (Kopf des Inhalts) die erste.
+// davor (Kopf des Inhalts) die erste. Steht oben eine Tabelle mit haftendem Kopf, zählt die Kante unter dem Kopf.
 const schnellMarken = () => [...rolle.el.querySelectorAll('[data-marke]')];
+function schnellKante(marken) {
+  let kante = rolle.el.getBoundingClientRect().top + 4;
+  const tab = marken.find(m => m.closest('table'))?.closest('table'), th = tab?.tHead?.querySelector('th');
+  if (th && getComputedStyle(th).position === 'sticky' && tab.getBoundingClientRect().bottom > kante + th.offsetHeight) kante += th.offsetHeight;
+  return kante;
+}
 function schnellMarke(marken = schnellMarken()) {
   if (!marken.length) return -1;
-  const kante = rolle.el.getBoundingClientRect().top + 4;
+  const kante = schnellKante(marken);
   let lo = 0, hi = marken.length - 1;
   while (lo < hi) { const m = (lo + hi + 1) >> 1; if (marken[m].getBoundingClientRect().top <= kante) lo = m; else hi = m - 1; }
   return lo;
@@ -1212,7 +1218,7 @@ schnellGriff.addEventListener('keydown', e => {
   if (e.key === 'Home' || e.key === 'End') { e.preventDefault(); rolle.to(e.key === 'Home' ? 0 : schnellEnde()); return; }
   if (!d) return;
   e.preventDefault();
-  const marken = schnellMarken(), i = schnellMarke(marken), top = rolle.el.getBoundingClientRect().top;
+  const marken = schnellMarken(), i = schnellMarke(marken), top = schnellKante(marken) - 4;
   if (i < 0) return rolle.to(Math.min(schnellEnde(), rolle.y + d * rolle.el.clientHeight));
   // zurück: steht der Anfang der aktuellen Marke über dem Rand, zuerst an ihren Anfang
   const j = d > 0 ? i + 1 : marken[i].getBoundingClientRect().top < top - 4 ? i : i - 1;

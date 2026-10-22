@@ -788,7 +788,10 @@ export async function checkGriff(p, { zeit = 2000, where = '' } = {}) {
   const g = () => p.evaluate(R => {
     const r = eval(R), s = document.querySelector('.schnell'), gr = s?.querySelector('.griff'), bl = s?.querySelector('.blase'), f = document.querySelector('.fab');
     const box = e => { const b = e.getBoundingClientRect(); return { top: Math.round(b.top), bottom: Math.round(b.bottom), left: Math.round(b.left), right: Math.round(b.right) }; };
-    const kante = r.el.getBoundingClientRect().top + 4, marken = [...r.el.querySelectorAll('[data-marke]')];
+    // Kante: Oberkante des Inhalts, bei einer Tabelle mit haftendem Kopf darunter (der Kopf verdeckt die Zeilen dahinter)
+    const marken = [...r.el.querySelectorAll('[data-marke]')], tab = marken.find(m => m.closest('table'))?.closest('table'), th = tab?.tHead?.querySelector('th');
+    let kante = r.el.getBoundingClientRect().top + 4;
+    if (th && getComputedStyle(th).position === 'sticky' && tab.getBoundingClientRect().bottom > kante + th.getBoundingClientRect().height) kante += th.getBoundingClientRect().height;
     const marke = marken.length ? (marken.filter(m => m.getBoundingClientRect().top <= kante).at(-1) || marken[0]).dataset.marke : '';
     const safeR = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--safe-right')) || 0;
     return { da: !!s && !s.hidden && getComputedStyle(s).display !== 'none', sicht: !!gr && !s.hidden && +getComputedStyle(gr).opacity > 0.5 && getComputedStyle(gr).pointerEvents !== 'none',
@@ -871,7 +874,8 @@ export async function checkGriff(p, { zeit = 2000, where = '' } = {}) {
     if (m.length < 3) return null;
     gr.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true, cancelable: true }));
     gr.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true, cancelable: true }));
-    const top = r.el.getBoundingClientRect().top;
+    const tab = m[2].closest('table'), th = tab?.tHead?.querySelector('th');
+    const top = r.el.getBoundingClientRect().top + (th && getComputedStyle(th).position === 'sticky' ? th.getBoundingClientRect().height : 0);
     return { soll: m[2].dataset.marke, ab: Math.round(m[2].getBoundingClientRect().top - top) }; }, ROLL);
   if (sprung && Math.abs(sprung.ab) > 2) E(`zweimal Pfeil nach unten: ‚${sprung.soll}‘ steht ${sprung.ab} px unter dem Rand statt oben (F-15)`);
   // F-14: eine Meldung überdeckt Griff und Kapsel nicht

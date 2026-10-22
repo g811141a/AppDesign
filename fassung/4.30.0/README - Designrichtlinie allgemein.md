@@ -412,6 +412,9 @@ Gemessene bzw. belegte Eigenheiten mit Quelle; sie gelten für alle Apps, die Pr
   übernimmt Safari die Berührung mit `pointercancel`); Bereiche mit eigenem waagrechtem Rollen sind selbst Rollbereiche und behalten
   ihr Wischen. Ein Antippen nach einer Bewegung über 10 px unterdrückt ui.js (Maus und Zeichenstift lösen es sonst aus).
   Quelle: [Apple-Forum – iOS 26 swipe to navigate back](https://developer.apple.com/forums/thread/791605), Muster A-61 am Gerät.
+- **Weiches Rollen anhalten:** WebKit hält ein laufendes `scrollTo({ behavior: 'smooth' })` bei einem neuen `scrollTo` ohne
+  Bewegung nicht an (gemessen im Prüf-WebKit beim Bau von 4.30.0, am Gerät nicht gemessen); es endet, wenn der Rollbereich kurz
+  `overflow: hidden` bekommt – `rolle.halt()` (ui.js).
 - **Neustart ist nicht erkennbar** (R-7.2): Safari meldet nicht, **warum** eine Seite neu lädt. Als Neustart zählt jedes
   Neuladen: App im App-Umschalter weggewischt, **von iOS im Hintergrund beendet** (Speicher – auch nach kurzer Zeit in einer
   anderen App) oder neue Version geladen. Bleibt die Seite im Speicher, kommen nur `visibilitychange` und `pageshow` (aus dem
@@ -885,7 +888,7 @@ Regel). In AppDesign ist jede Komponente einmal programmiert (`v4/design.css`, `
   der Messmodus rollen bzw. messen nur den Rollbereich. Beim Neuaufbau bleibt der Rollbereich dasselbe Element (`setHtml`), der Rollstand bleibt.
   Solange ein Fenster offen ist, steht er still (`html.locked`). Im Druck ist nichts auf Bildschirmhöhe begrenzt (R-6.4).
 - **Technisch:** `design.css` (`#app:has(> .rolle)`, `.rolle`), `ui.js` – `rolle` (`rolle.y`, `rolle.max`, `rolle.rest`,
-  `rolle.to(y, weich)`, `rolle.by(d)`, `rolle.ende()`), `onRoll(fn)`, `fabTop()`/`fabEnd()`. Die App ruft **nie**
+  `rolle.to(y, weich)`, `rolle.by(d)`, `rolle.ende()`, `rolle.halt()`), `onRoll(fn)`, `fabTop()`/`fabEnd()`. Die App ruft **nie**
   `window.scrollTo`. Ohne Rollbereich rollt wie bisher das Fenster (ältere Apps). In Prüfungen rollen und messen `rolle(p, y)` und
   `rollstand(p)` (`pruefe.mjs`); die Regeln dazu prüft der Katalog (R-2.1, R-2.3, R-3.2, R-4.5, R-6.4). Fall-Liste und Muster:
   `arbeit/A-28 Fall-Liste.md`, `arbeit/A-28 Muster.html`.
