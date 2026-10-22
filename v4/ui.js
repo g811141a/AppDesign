@@ -1,4 +1,4 @@
-// AppDesign 4.30.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
+// AppDesign 4.30.1 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
 // Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/fassung/X.Y.Z/ui.js"></script> (feste Fassung, R-10.3)
 // Seit 4.11.0 (R-10.3): ui.js und design.css immer mit ?v=<AppDesign-Version> einbinden (auch in sw.js) und beim Start
 // prüfen, ob genau diese Fassung geladen ist (AD_VERSION hier, --ad-version in design.css).
@@ -19,7 +19,7 @@
 
 'use strict';
 // Version der Bausteine (R-10.3): die App vergleicht sie beim Start mit der benötigten Fassung.
-const AD_VERSION = '4.30.0';
+const AD_VERSION = '4.30.1';
 /* ---------- Icons ---------- */
 
 // Schaltflächen-Icons aus Lucide (ISC-Lizenz), direkt eingebettet, damit die App offline funktioniert.
@@ -1445,6 +1445,9 @@ const navSchleier = document.createElement('div');
 navSchleier.className = 'nav-schleier';
 document.body.append(navSchleier);
 let navApp = null, navZug = null, navLauf = null, navKlickWeg = false;
+// seit 4.30.1 (A-67): die Entscheidungen der Gestenstelle stehen in der Messung (15.21) – ‚nav kandidat‘, ‚nav verworfen‘, ‚nav aktiv‘,
+// ‚nav fertig‘, ‚nav zurück gefedert‘, ‚nav abgebrochen‘ mit Weg (Anteil der Breite) und Tempo (px/ms)
+const navMess = t => { if (mess?.an) messEreignis('nav ' + t); };
 function navAnmelden(app) { navApp = app; navKlassen(); }
 // touch-action: pan-y nur, wo gewischt werden kann (iPhone-Aufbau, iPad hoch) – sonst bleibt alles wie bisher
 function navKlassen() {
@@ -1566,10 +1569,12 @@ window.addEventListener('pointerdown', e => {
   const k = navKandidat(e);
   navZug = k && { ...k, x0: e.clientX, y0: e.clientY, t0: e.timeStamp, id: e.pointerId, aktiv: false, spur: [[e.timeStamp, e.clientX]],
     breite: innerWidth, hoehe: innerHeight };
+  if (navApp) navMess(k ? `kandidat ${k.art}` : `kein kandidat${e.target.closest?.(NAV_EIGEN) ? ' eigen' : ''}`);
 }, true);
 function navAktiv(z, e) {
   z.aktiv = true;
   navKlickWeg = true;
+  navMess(`aktiv ${z.art} ${Math.round(e.clientX - z.x0)} ${Math.round(e.clientY - z.y0)}`);
   if (kbOffen()) document.activeElement?.blur?.();   // F-16: die Tastatur schließt, zurück geht es danach
   rolle.halt();                                         // F-10: ein weiches Rollen endet, das Wischen gilt
   try { e.target.setPointerCapture?.(e.pointerId); } catch {}
@@ -1586,7 +1591,10 @@ window.addEventListener('pointermove', e => {
   if (!z.aktiv) {
     if (Math.abs(dx) < NAV_ENTSCHEID && Math.abs(dy) < NAV_ENTSCHEID) return;
     const waagrecht = Math.abs(dx) > Math.abs(dy) * NAV_WAAGRECHT && Math.sign(dx) === z.richtung;
-    if (!waagrecht || e.timeStamp - z.t0 > NAV_HALTEN || document.querySelector('.menu, .pop, .layer') || dlg.open) { navZug = null; return; }
+    if (!waagrecht || e.timeStamp - z.t0 > NAV_HALTEN || document.querySelector('.menu, .pop, .layer') || dlg.open) {
+      navMess(`verworfen ${!waagrecht ? 'richtung' : e.timeStamp - z.t0 > NAV_HALTEN ? 'gehalten' : 'offen'} ${Math.round(dx)} ${Math.round(dy)}`);
+      navZug = null; return;
+    }
     navAktiv(z, e);
   }
   if (e.cancelable) e.preventDefault();
@@ -1598,13 +1606,14 @@ function navLoslassen(e, abbruch) {
   const z = navZug;
   if (!z || e.pointerId !== z.id) return;
   navZug = null;
-  if (!z.aktiv) return;
+  if (!z.aktiv) { if (abbruch) navMess('abgebrochen vor der entscheidung'); return; }
   setTimeout(() => { navKlickWeg = false; });
   const spur = z.spur.filter(([t]) => t >= e.timeStamp - 100);
   const tempo = spur.length > 1 && spur.at(-1)[0] > spur[0][0] ? (spur.at(-1)[1] - spur[0][1]) / (spur.at(-1)[0] - spur[0][0]) * z.richtung : 0;
   const weg = Math.abs((z.p ?? z.von) - z.von);
   const geschafft = !abbruch && (weg > 0.5 || (tempo > NAV_TEMPO && weg > 0.05));
   const p = z.p ?? z.von;
+  navMess(`${abbruch ? 'abgebrochen' : geschafft ? 'fertig' : 'zurück gefedert'} weg ${weg.toFixed(2)} tempo ${tempo.toFixed(2)}`);
   if (z.art === 'phone') {
     if (geschafft) navFahre('phone', p, 0, z.w, () => navApp.zurueck.los());
     else navFahre('phone', p, 1, z.w, () => navApp.zurueck.darunter(false));
@@ -1620,6 +1629,7 @@ window.addEventListener('resize', () => {
   const z = navZug;
   if (z?.aktiv && (innerWidth !== z.breite || Math.abs(innerHeight - z.hoehe) > 150)) {
     navZug = null;
+    navMess('abgebrochen drehen');
     // das Loslassen danach tippt nichts an
     const los = () => setTimeout(() => { navKlickWeg = false; });
     window.addEventListener('pointerup', los, { capture: true, once: true });
@@ -1844,6 +1854,15 @@ const MESS_MAX_MS = 5 * 60e3, MESS_MAX_ZEILEN = 20000;
 let mess = null;
 const messSicht = sel => [...document.querySelectorAll(sel)].find(e => e.getClientRects().length);
 const messId = e => !e || e === document.body ? '-' : e.id || e.tagName.toLowerCase();
+// seit 4.30.1 (A-67): Ziel einer Berührung ohne Texte – id bzw. Tag mit Klassen und Rolle, dazu das antippbare Element darum
+// (‚in …‘) und die nächste id (‚@…‘), z. B. ‚span in div.box.day[button] @app‘
+const messKurz = e => e.id || e.tagName.toLowerCase() + [...e.classList].slice(0, 3).map(c => '.' + c).join('') + (e.getAttribute('role') ? `[${e.getAttribute('role')}]` : '');
+function messZiel(t) {
+  if (!(t instanceof Element)) return '-';
+  const tipp = t.closest('button, a, input, textarea, select, label, [role=button], [role=menuitem], [tabindex]'), aussen = tipp || t;
+  const id = !aussen.id && aussen.parentElement?.closest('[id]');
+  return messKurz(t) + (tipp && tipp !== t ? ' in ' + messKurz(tipp) : '') + (id ? ' @' + id.id : '');
+}
 function messWerte() {
   const vv = window.visualViewport, r = Math.round, w = {
     sy: r(scrollY), inh: rolle.el ? r(rolle.el.scrollTop) : '-', sh: document.documentElement.scrollHeight, ih: innerHeight, vh: vv ? r(vv.height) : '-', vt: vv ? r(vv.offsetTop) : '-',
@@ -1880,7 +1899,7 @@ function messStart({ app = '', teile = {}, rollen = {} } = {}) {
     (r => `Ränder ${r.top}/${r.bottom}/${r.left}/${r.right}`)(safeRand())} · ${
     matchMedia('(prefers-color-scheme: dark)').matches ? 'dunkel' : 'hell'} · ${mess.beginn.toISOString()}`);
   mess.zeilen.push(['t', ...Object.keys(messWerte())].map(v => v.padEnd(6)).join(' ').trimEnd());
-  const hoere = (z, typ, text) => { if (!z) return; const fn = e => messEreignis(text(e)); z.addEventListener(typ, fn, true); mess.hoerer.push([z, typ, fn]); };
+  const hoere = (z, typ, text) => { if (!z) return; const fn = e => { const t = text(e); if (t) messEreignis(t); }; z.addEventListener(typ, fn, true); mess.hoerer.push([z, typ, fn]); };
   hoere(document, 'focusin', e => 'focus ' + messId(e.target));   // seit 4.28.1: der neue Fokus (R-4.5) steht als ‚neu fokussiert‘ da
   hoere(document, 'focusout', e => 'blur ' + messId(e.target));
   hoere(document, 'input', e => 'eingabe ' + (e.target.value?.length ?? 0));
@@ -1890,6 +1909,14 @@ function messStart({ app = '', teile = {}, rollen = {} } = {}) {
   hoere(window, 'resize', () => 'resize');
   hoere(window.visualViewport, 'resize', () => 'vv resize');
   hoere(window.visualViewport, 'scroll', () => 'vv scroll');
+  // seit 4.30.1 (A-67): Berührungen – Zeiger mit Lage (px), Art und Ziel, Bewegung nur bei gedrücktem Zeiger; touchcancel mit der
+  // Zahl der Finger. Die Entscheidungen der Gestenstelle (‚nav …‘) stehen im selben Augenblick davor (sie hört zuerst).
+  const zeiger = (art, e) => `zeiger ${art} ${Math.round(e.clientX)} ${Math.round(e.clientY)} ${e.pointerType || '-'}${e.isPrimary ? '' : ' neben'} ${messZiel(e.target)}`;
+  hoere(document, 'pointerdown', e => zeiger('down', e));
+  hoere(document, 'pointermove', e => e.buttons ? zeiger('move', e) : '');
+  hoere(document, 'pointerup', e => zeiger('up', e));
+  hoere(document, 'pointercancel', e => zeiger('cancel', e));
+  hoere(document, 'touchcancel', e => `touchcancel ${e.changedTouches?.length ?? 0} ${messZiel(e.target)}`);
   messZeile('start');
   mess.bild = requestAnimationFrame(messBild);
 }

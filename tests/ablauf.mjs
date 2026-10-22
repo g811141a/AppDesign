@@ -1099,7 +1099,7 @@ export async function checkPrint(p, { print, mehr = 2, where = '' } = {}) {
 // zurück (F-4), kurz und schnell (F-5), aus der Mitte (F-6); senkrecht und schräg (F-7), im waagrecht rollenden Bereich (F-8), nach
 // links, auf Knöpfen und der Kapsel (F-9) kein Zurück; Wischen während ‚Ans Ende‘ weich rollt (F-10); Drehen beim Ziehen (F-14);
 // offenes Menü (F-15); Tastatur offen (F-16); langes Drücken, dann ziehen (F-17); Escape bzw. VoiceOver-‚Zurück‘ (F-20); je Bild nur
-// transform und opacity, keine langen Bildlücken (F-21). iPad hoch (Start mit offenem Eintrag, Seitenleiste weg): vom Rand und aus der
+// transform und opacity, keine langen Bildlücken (F-21); die Messung zeichnet Berührungen und Gesten-Entscheidungen auf (F-22, seit 4.30.1). iPad hoch (Start mit offenem Eintrag, Seitenleiste weg): vom Rand und aus der
 // Mitte herein, folgt dem Finger mit wachsender Abdunkelung (F-11), nach links auf Seitenleiste bzw. Abdunkelung, panel-left, Abdunkelung
 // antippen (F-12), Drehen (F-14), Menü (F-15), Escape. iPad quer: Wischen ändert nichts (F-13). ‚Bewegung reduzieren‘ (Seite mit
 // reducedMotion: 'reduce'): Überblenden statt Schieben (F-19). Mit der Maus nachgebildet (Playwright kennt kein Wischen mit dem Finger).
@@ -1121,14 +1121,25 @@ export async function checkNavigation(p, { eintrag, titel, zurueck = '#back', wa
       ruhig: matchMedia('(prefers-reduced-motion: reduce)').matches, menue: !!document.querySelector('.menu'),
       ta: (e => e ? getComputedStyle(e).touchAction : null)(document.querySelector('#app > .rolle')) };
   });
-  // zeichnet 1 s lang je Bild Lage und Deckkraft von Inhalt und Liste auf (Einzelproben hängen unter Last vom Zeitpunkt ab; unter Volllast beginnt die Bewegung in WebKit erst nach über 450 ms)
-  const aufzeichnen = () => p.evaluate(() => { window.__bilder = []; const t0 = performance.now(), app = document.getElementById('app'), side = document.getElementById('side');
-    const bild = () => { const s = getComputedStyle(side); window.__bilder.push({ appX: app.getBoundingClientRect().left, sideX: side.getBoundingClientRect().left, appO: +getComputedStyle(app).opacity,
-      appT: getComputedStyle(app).transform, liste: !side.hidden && s.display !== 'none' && side.classList.contains('page') }); if (performance.now() - t0 < 1000) requestAnimationFrame(bild); };
+  // zeichnet je Bild Lage und Deckkraft von Inhalt und Liste auf (Einzelproben hängen unter Last vom Zeitpunkt ab) – seit 4.30.1 (A-66) bis
+  // zum Ende der Bewegung (nav-Klasse erst gesehen, dann weg), mindestens 0,6 s, höchstens 3 s: unter Volllast begann die Überblendung
+  // in WebKit erst nach über 1 s; dazu Anfang und Ziel der Web-Animation (‚nav‘) von Inhalt und Liste – unter Volllast zeigt WebKit
+  // manchmal kein Bild mitten in der Bewegung, dann belegen die Keyframes das Schieben bzw. Überblenden
+  const aufzeichnen = () => p.evaluate(() => { window.__bilder = []; window.__bilderFertig = false; let gesehen = false;
+    const t0 = performance.now(), H = document.documentElement, app = document.getElementById('app'), side = document.getElementById('side');
+    const anim = e => { const a = e.getAnimations?.().find(x => x.id === 'nav'), k = a?.effect?.getKeyframes?.();
+      return k?.length ? { t: [k[0].transform, k.at(-1).transform].map(String), o: [k[0].opacity, k.at(-1).opacity].map(Number) } : null; };
+    const bild = () => { const s = getComputedStyle(side), nav = /\bnav-/.test(H.className), dt = performance.now() - t0; gesehen ||= nav;
+      window.__bilder.push({ appX: app.getBoundingClientRect().left, sideX: side.getBoundingClientRect().left, appO: +getComputedStyle(app).opacity,
+        appT: getComputedStyle(app).transform, liste: !side.hidden && s.display !== 'none' && side.classList.contains('page'), appA: anim(app), sideA: anim(side) });
+      if (dt < 3000 && (dt < 600 || !gesehen || nav)) requestAnimationFrame(bild); else window.__bilderFertig = true; };
     requestAnimationFrame(bild); });
-  const bilder = async () => { await wait(p, 1050); return p.evaluate(() => window.__bilder); };
-  const geschoben = (b, w) => b.some(x => x.appX > 1 && x.appX < w - 1 && x.liste);
-  const ueberblendet = b => b.some(x => x.appT === 'none' && x.appO > 0.02 && x.appO < 0.98) && b.every(x => x.appT === 'none');
+  const bilder = async () => { await p.waitForFunction(() => window.__bilderFertig, null, { timeout: 5000 }).catch(() => {}); return p.evaluate(() => window.__bilder); };
+  const schiebt = a => !!a && a.t[0] !== a.t[1] && /translate/.test(a.t.join(' '));
+  const geschoben = (b, w) => b.some(x => x.appX > 1 && x.appX < w - 1 && x.liste) || b.some(x => x.liste && schiebt(x.appA));
+  const listeWeicht = b => b.some(x => x.sideX < -1) || b.some(x => schiebt(x.sideA));
+  const ueberblendet = b => (b.some(x => x.appT === 'none' && x.appO > 0.02 && x.appO < 0.98) || b.some(x => x.appA && x.appA.o[0] !== x.appA.o[1] && x.appA.t.every(t => t === 'none')))
+    && b.every(x => x.appT === 'none');
   const ruhig = async () => { for (let i = 0; i < 30; i++) { await wait(p, 100); if (!(await lage()).nav) return; } };
   const ziehe = async (x0, y0, x1, y1, { schnell = false, los = true, halten = 0 } = {}) => {
     await p.mouse.move(x0, y0); await p.mouse.down();
@@ -1164,7 +1175,7 @@ export async function checkNavigation(p, { eintrag, titel, zurueck = '#back', wa
     await aufzeichnen(); await p.locator(eintrag).first().click();
     let bf = await bilder();
     if (l.ruhig) { if (!ueberblendet(bf)) E(`F-19 Öffnen mit ‚Bewegung reduzieren‘ überblendet nicht (${bf.length} Bilder, Deckkraft ${[...new Set(bf.map(x => x.appO.toFixed(2)))].join(' ')})`); }
-    else if (!geschoben(bf, w) || !bf.some(x => x.sideX < -1)) E(`F-1 Öffnen: kein Schieben (${bf.length} Bilder, Inhalt bei ${[...new Set(bf.map(x => Math.round(x.appX)))].join(' ')} px)`);
+    else if (!geschoben(bf, w) || !listeWeicht(bf)) E(`F-1 Öffnen: kein Schieben (${bf.length} Bilder, Inhalt bei ${[...new Set(bf.map(x => Math.round(x.appX)))].join(' ')} px)`);
     await ruhig(); await wait(p, 100);
     if (!await offen('F-1 Öffnen')) return errors;
     if (!/pan-y/.test(l.ta) || /pan-x|manipulation|auto/.test(l.ta)) E(`F-6 touch-action des Inhalts ‚${l.ta}‘ – waagrecht muss das Wischen bei der App ankommen (pan-y, 13)`);
@@ -1265,6 +1276,28 @@ export async function checkNavigation(p, { eintrag, titel, zurueck = '#back', wa
       await zu('F-16 Zurückwischen bei offener Tastatur');
       await oeffne();
     }
+    // F-22 (seit 4.30.1, A-67 Schritt 1): die Messung zeichnet Berührungen (Zeiger mit Lage, Art und Ziel, touchcancel) und die
+    // Entscheidungen der Gestenstelle auf – fertig, zurück gefedert und abgebrochen (pointercancel und touchcancel nachgebildet, wie
+    // Safari sie vermutlich über einem antippbaren Kasten schickt); keine Texte
+    await p.evaluate(() => { messStart({ app: 'Prüfung' }); addEventListener('pointerdown', e => { window.__zid = e.pointerId; }, true); });
+    await ziehe(w * 0.3, h * 0.7, w * 0.95, h * 0.7); await zu('F-22 Zurückwischen während der Messung');
+    await oeffne();
+    await ziehe(w * 0.2, h * 0.6, w * 0.4, h * 0.6); await offen('F-22 unter der Hälfte losgelassen während der Messung');
+    await ziehe(w * 0.2, h * 0.6, w * 0.4, h * 0.6, { los: false });
+    await p.evaluate(([x, y]) => { const t = document.elementFromPoint(x, y) || document.body;
+      t.dispatchEvent(new PointerEvent('pointercancel', { pointerId: window.__zid, isPrimary: true, pointerType: 'touch', clientX: x, clientY: y, bubbles: true }));
+      t.dispatchEvent(new Event('touchcancel', { bubbles: true })); }, [w * 0.4, h * 0.6]);
+    await p.mouse.up(); await ruhig(); await wait(p, 100);
+    await keinTippen('F-22 Loslassen nach dem Abbruch');
+    const mz = await p.evaluate(() => { messAus(); const z = mess.zeilen; mess = null; return z; });
+    for (const [re, was] of [[/! zeiger down \d+ \d+ mouse \S/, '‚zeiger down‘ mit Lage, Art und Ziel'], [/! zeiger move \d+ \d+ mouse /, '‚zeiger move‘'], [/! zeiger up \d+ \d+ mouse /, '‚zeiger up‘'],
+      [/! zeiger cancel \d+ \d+ touch /, '‚zeiger cancel‘'], [/! touchcancel \d+ \S/, '‚touchcancel‘'], [/! nav kandidat phone$/, '‚nav kandidat‘'], [/! nav aktiv phone -?\d+ -?\d+$/, '‚nav aktiv‘ mit Weg'],
+      [/! nav fertig weg [\d.]+ tempo -?[\d.]+$/, '‚nav fertig‘'], [/! nav zurück gefedert weg [\d.]+ tempo -?[\d.]+$/, '‚nav zurück gefedert‘'], [/! nav abgebrochen weg [\d.]+ tempo -?[\d.]+$/, '‚nav abgebrochen‘']])
+      if (!mz.some(x => re.test(x))) E(`F-22 Messung ohne Zeile ${was} (A-67)`);
+    if (titel && mz.some(x => x.includes(titel))) E(`F-22 Messung enthält den Text ‚${titel}‘ (nur Längen und ids)`);
+    l = await lage();
+    if (l.nav || l.liste === l.inhalt) E(`F-22 nach dem Abbruch halb (Liste ${l.liste}, Inhalt ${l.inhalt}, ${l.nav || 'keine Bewegung'})`);
+    if (l.liste) await oeffne();
     // F-20: Escape (VoiceOver ‚Zurück‘) geht zurück
     await p.evaluate(() => document.activeElement?.blur?.());
     await p.keyboard.press('Escape'); await ruhig(); await wait(p, 100);
@@ -1305,7 +1338,7 @@ export async function checkNavigation(p, { eintrag, titel, zurueck = '#back', wa
   if (k) {
     await aufzeichnen(); await p.mouse.click(k.x, k.y);
     bf = await bilder();
-    if (!l.ruhig && !bf.some(x => x.sideX < -1 && x.sideX > -400)) E(`F-12 panel-left: die Seitenleiste gleitet nicht herein (bei ${[...new Set(bf.map(x => Math.round(x.sideX)))].join(' ')} px)`);
+    if (!l.ruhig && !bf.some(x => (x.sideX < -1 && x.sideX > -400) || schiebt(x.sideA))) E(`F-12 panel-left: die Seitenleiste gleitet nicht herein (bei ${[...new Set(bf.map(x => Math.round(x.sideX)))].join(' ')} px)`);
     await ruhig(); await wait(p, 100); await da(true, 'F-12 panel-left');
     await p.mouse.click(w - 40, h * 0.5); await ruhig(); await wait(p, 100); await da(false, 'F-12 Abdunkelung antippen');
   } else E(`F-12 Vorbereitung: ${seitenKnopf} fehlt`);
