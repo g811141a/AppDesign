@@ -67,8 +67,8 @@ das Ziehen folgt weiter dem Finger. Je Bild nur `transform` und `opacity` (Web-A
 | B16 | B: aus mittel nach unten | schließt | ja |
 | B17 | iPhone quer | volle Höhe, keine Stufen, Seite bleibt; Ziehen wie B2–B12 | ja |
 | B18 | iPad hoch und quer | Fenster in der Mitte, Wischen schließt nicht, x schließt | ja (hoch) |
-| B19 | Tastatur offen, nach unten ziehen | Tastatur zu und Blatt zu (bzw. Rückfrage) | Gerät |
-| B20 | Tastatur offen | Blatt endet über der Tastatur, Kopf bleibt sichtbar, Feld über der Tastatur (R-4.5) | Gerät, beim Bau `checkKeyboard` |
+| B19 | Tastatur offen, nach unten ziehen – am Kopf, auf einem Feld, im gerollten Inhalt | Tastatur zu; am Kopf bzw. Inhalt ganz oben auch das Blatt (bzw. Rückfrage), im gerollten Inhalt rollt er weiter | ja (Safari-Modell), Gerät |
+| B20 | Feld unten antippen (Reisemittel), hoch und quer, A und B | Blatt endet über der Tastatur, Kopf bleibt sichtbar, Feld über der Tastatur (R-4.5); B springt auf groß | ja (Safari-Modell mit Sicherheitsabständen), Gerät |
 | B21 | Drehen mit offenem Blatt | bleibt offen in der passenden Form (quer immer groß) | beim Bau |
 | B22 | ‚Bewegung reduzieren‘ | Überblenden, Ziehen folgt dem Finger | beim Bau |
 | B23 | Liste dahinter (R-7.3) | steht still, nach dem Schließen an derselben Stelle | beim Bau (`checkListStill`) |
@@ -76,3 +76,19 @@ das Ziehen folgt weiter dem Finger. Je Bild nur `transform` und `opacity` (Web-A
 
 **Nur am Gerät (Prüfliste):** Wischgefühl, Glas und Lesbarkeit von ‚mittel‘, Tastatur (B19, B20), Rollen im Inhalt gegen Ziehen
 (Safari entscheidet selbst, `touchmove` wird verhindert, sobald das Blatt gezogen wird – 13).
+
+## 5. Rückmeldung am Gerät (Nutzer 23.10.2026) und Korrektur des Musters
+
+- **A: alles ok bis auf 6;** B 7.6 und quer 8.6 ebenso: Reisemittel antippen – nach dem Aufgehen der Tastatur war das Feld nicht
+  mehr zu sehen; nach unten ziehen schloss die Tastatur nicht.
+- **Ursache:** Safari verschob den sichtbaren Bereich zum Feld (13 S-1), das Blatt folgte dem Bereich (`offsetTop`) – das Feld lag
+  wieder unter der Tastatur. Ein Zug, der auf einem Feld begann, zählte nicht; ein Zug im gerollten Inhalt schloss die Tastatur
+  nicht.
+- **Warum die Prüfung es übersah:** sie lief ohne Tastatur (kein Safari-Modell) und ohne die Sicherheitsabstände des iPhones –
+  ohne sie lag Reisemittel zufällig knapp über der Tastatur.
+- **Nachgebaut:** Prüfung mit `safariModell` (Tastatur auf, S-1 bis S-9) und Sicherheitsabständen; rot gegen das erste Muster
+  (Feld 445–469, sichtbar bis 441, Safari verschob um 237 px).
+- **Behoben:** das Blatt ist ein `<dialog>` mit `showModal` wie in der App (Safari rollt Felder im Fenster nicht zurück, S-9);
+  beim Fokus rollt es das Feld in die obere Hälfte und gibt ihm einen neuen Fokus (S-8, wie ui.js), B springt dabei auf groß;
+  ein Zug nach unten schließt die Tastatur, auch auf einem Feld; iPhone quer mit niedrigem Fensterkopf (R-2.4).
+- **7.1 und 7.2 (B):** halb hoch öffnen, beim Feld ganz nach oben und auf halbe Höhe zurückfedern ist das vorgesehene Verhalten von B.

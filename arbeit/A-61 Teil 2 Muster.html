@@ -49,6 +49,10 @@ svg.i { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-widt
   background: var(--bg); border-radius: 26px 26px 0 0; box-shadow: 0 -1px 18px rgba(0,0,0,.12); visibility: hidden; will-change: transform;
   overflow: hidden; transition: left .25s, right .25s, border-radius .25s, background-color .25s; }
 #blatt.offen { visibility: visible; }
+/* <dialog> mit showModal wie in der App (ui.js): Felder im Fenster rollt Safari beim Öffnen der Tastatur nicht zurück (13 S-9) */
+#blatt { margin: 0; padding: 0; border: 0; max-width: none; max-height: none; width: auto; height: auto; color: inherit; }
+#blatt:not([open]) { display: none; } #blatt::backdrop, #popdlg::backdrop { background: transparent; }
+#popdlg { position: fixed; inset: 0; margin: 0; padding: 0; border: 0; width: 100%; height: 100%; max-width: none; max-height: none; background: transparent; overflow: visible; }
 #blatt.mittel { left: 8px; right: 8px; top: auto; bottom: calc(8px + var(--sb)); height: var(--M); border-radius: 32px;
   background: rgba(242,242,247,.86); -webkit-backdrop-filter: blur(30px) saturate(1.8); backdrop-filter: blur(30px) saturate(1.8);
   box-shadow: 0 4px 30px rgba(0,0,0,.18); }
@@ -62,9 +66,15 @@ html.v-b.phone:not(.quer) .griff { display: block; }
 .bkopf { display: grid; grid-template-columns: 44px 1fr 44px; align-items: center; gap: 8px; padding: 10px 12px 8px; touch-action: none;
   -webkit-user-select: none; user-select: none; }
 html.v-heute .bkopf { padding-top: calc(10px + var(--st)); }
+/* iPhone quer: niedriger Fensterkopf mit einzeiligem Titel (R-2.4, 15.17) – sonst passt das Feld nicht über die Tastatur */
+html.quer .bkopf { grid-template-columns: 32px 1fr 32px; padding: 4px max(12px, var(--sr)) 4px max(12px, var(--sl)); }
+html.quer .bkopf .knopf { width: 32px; height: 32px; } html.quer .bkopf .knopf svg.i { width: 18px; height: 18px; }
+html.quer .bkopf h2 { font-size: 17px; } html.quer .bkopf h2 small { display: none; } html.quer .feld { margin: 6px 0; }
 .bkopf h2 { margin: 0; font-size: 19px; font-weight: 600; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .bkopf h2 small { display: block; font-size: 13px; font-weight: 400; color: var(--sub); }
 .bkopf .fertig { color: #8e8e93; } .bkopf .fertig.blau { background: var(--blue); color: #fff; border-color: var(--blue); }
+/* Platz unter dem Inhalt, solange ein Feld die Tastatur braucht – so lässt es sich in die obere Hälfte rollen (13) */
+.binhalt::after { content: ''; display: block; height: var(--platz, 0px); }
 .binhalt { overflow-y: auto; min-height: 0; overscroll-behavior: none; -webkit-overflow-scrolling: touch; touch-action: pan-y;
   padding: 0 max(16px, var(--sr)) calc(28px + var(--sb)) max(16px, var(--sl)); }
 .feld { background: var(--card); border-radius: 12px; padding: 8px 14px 10px; margin: 10px 0; }
@@ -76,28 +86,28 @@ html.v-heute .bkopf { padding-top: calc(10px + var(--st)); }
 .blattseite h3 { margin: 0 0 12px; font-size: 20px; }
 .blattseite table { border-collapse: collapse; width: 100%; } .blattseite td, .blattseite th { border-bottom: .5px solid #ccc; padding: 5px 6px; text-align: left; vertical-align: top; }
 /* Sprechblase (15.7, R-4.3): an der Schaltfläche x */
-#pop { position: fixed; z-index: 20; width: min(320px, calc(100vw - 24px)); background: rgba(255,255,255,.97); border-radius: 20px; padding: 14px;
+#pop { position: fixed; z-index: 2; width: min(320px, calc(100vw - 24px)); background: rgba(255,255,255,.97); border-radius: 20px; padding: 14px;
   box-shadow: 0 8px 40px rgba(0,0,0,.25); display: none; text-align: center; }
 #pop.an { display: block; }
 #pop p { margin: 2px 4px 12px; color: var(--sub); font-size: 15px; line-height: 1.35; }
 #pop button { display: block; width: 100%; height: 46px; border-radius: 23px; border: 0; font: inherit; margin-top: 6px; background: none; color: var(--blue); }
 #pop button.rot { background: var(--red); color: #fff; font-weight: 600; }
-#popfang { position: fixed; inset: 0; z-index: 19; display: none; } #popfang.an { display: block; }
+#popfang { position: fixed; inset: 0; z-index: 1; display: none; } #popfang.an { display: block; }
 </style></head><body>
 <section id="seite">
   <div class="kopf"><span></span><h1>Japan 2026</h1><span class="cap rund wahl" id="wahl"></span></div>
   <div class="rolle" id="seiteRolle"><div class="wrap" id="inhalt"></div></div>
 </section>
 <div id="schleier"></div>
-<section id="blatt" role="dialog" aria-modal="true" aria-labelledby="btitel">
+<dialog id="blatt" aria-labelledby="btitel">
   <div class="griffzone"><div class="griff"></div></div>
   <div class="bkopf"><button class="knopf rund" id="bx" aria-label="Abbrechen"></button><h2 id="btitel"></h2>
     <button class="knopf rund fertig" id="bok" aria-label="Fertig"></button></div>
   <div class="binhalt" id="binhalt"></div>
-</section>
-<div id="popfang"></div>
-<div id="pop" role="dialog" aria-label="Änderungen verwerfen"><p>Deine Änderungen sind noch nicht gesichert.</p>
-  <button class="rot" id="verwerfen">Änderungen verwerfen</button><button id="weiter">Weiter bearbeiten</button></div>
+</dialog>
+<dialog id="popdlg" aria-label="Änderungen verwerfen"><div id="popfang"></div>
+<div id="pop"><p>Deine Änderungen sind noch nicht gesichert.</p>
+  <button class="rot" id="verwerfen">Änderungen verwerfen</button><button id="weiter">Weiter bearbeiten</button></div></dialog>
 <script>
 const ICONS = {
   'x': '<path d="M18 6 6 18"/><path d="m6 6 12 12"/>',
@@ -157,7 +167,7 @@ function fuellen(a, tag) {
       Array.from({ length: 16 }, (_, i) => `<tr><td>${tagName(i)}</td><td>${PROG(i).replace(/\n/g, '<br>')}</td><td>Hotel ${ORTE[Math.floor(i / 3) % 8]}</td></tr>`).join('') +
       '</table></div></div>';
   }
-  B.scrollTop = 0; B.scrollLeft = 0;
+  B.scrollTop = 0; B.scrollLeft = 0; B.style.removeProperty('--platz');
 }
 $('binhalt').addEventListener('input', () => {
   geaendert = true; $('bok').classList.add('blau');
@@ -236,6 +246,7 @@ function oeffne(a, tag) {
   if (offen) return;
   masse(); fuellen(a, tag); offen = true;
   const B = $('blatt'); B.classList.add('offen'); $('schleier').classList.add('an');
+  B.tabIndex = -1; B.showModal(); B.focus({ preventScroll: true });   // ohne Fokus-Rahmen und ohne Tastatur (wie showModalQuiet)
   B.style.opacity = 1;
   if (!M.phone) { B.style.transform = ''; blende(true); return; }
   setzeForm(M.stufen ? 'mittel' : 'gross');
@@ -245,7 +256,7 @@ function oeffne(a, tag) {
 function schliesse() {
   if (!offen) return;
   document.activeElement?.blur?.(); zeigePop(false); offen = false;
-  const ende = () => { const B = $('blatt'); B.classList.remove('offen'); B.style.opacity = 1; setzeForm('gross');
+  const ende = () => { const B = $('blatt'); B.classList.remove('offen'); B.close(); B.style.opacity = 1; setzeForm('gross');
     $('schleier').classList.remove('an'); $('schleier').style.opacity = 0; $('seite').style.transform = ''; $('seite').classList.remove('zurueck'); };
   if (!M.phone || V === 'heute' || ruhig.matches) { blende(false, () => { if (M.phone) setze(M.vh); ende(); }); return; }
   fahre(M.vh, ende);
@@ -259,7 +270,9 @@ function zuStufe(f) {
 function abbrechen() { if (geschuetzt()) zeigePop(true); else schliesse(); }
 function zeigePop(an) {
   $('pop').classList.toggle('an', an); $('popfang').classList.toggle('an', an);
-  if (!an) return;
+  const d = $('popdlg');
+  if (!an) { if (d.open) d.close(); return; }
+  if (!d.open) { d.tabIndex = -1; d.showModal(); d.focus({ preventScroll: true }); }
   const r = $('bx').getBoundingClientRect(), p = $('pop');
   p.style.left = Math.max(12, Math.min(innerWidth - p.offsetWidth - 12, r.left)) + 'px'; p.style.top = (r.bottom + 8) + 'px';
 }
@@ -268,19 +281,41 @@ $('bok').onclick = () => { if (!unterdruecke) schliesse(); };
 $('verwerfen').onclick = () => schliesse();
 $('weiter').onclick = () => zeigePop(false);
 $('popfang').onclick = () => zeigePop(false);
-$('schleier').onclick = () => { if (offen && M.phone && V !== 'heute') abbrechen(); };
+// Abdunkelung antippen (bei showModal trifft es das Fenster außerhalb seines Rahmens) wie x
+const draussen = e => { const r = $('blatt').getBoundingClientRect(); return e.target === $('blatt') && (e.clientY < r.top || e.clientY > r.bottom || e.clientX < r.left || e.clientX > r.right); };
+$('blatt').addEventListener('click', e => { if (draussen(e) && offen && M.phone && V !== 'heute' && !unterdruecke) abbrechen(); });
+for (const d of ['blatt', 'popdlg']) $(d).addEventListener('cancel', e => e.preventDefault());   // Escape: siehe keydown
 addEventListener('keydown', e => { if (e.key !== 'Escape' || !offen) return; if ($('pop').classList.contains('an')) zeigePop(false); else abbrechen(); });
 $('inhalt').addEventListener('click', e => { const k = e.target.closest('[data-art]'); if (k) oeffne(k.dataset.art, +(k.dataset.tag || 0)); });
-// Variante B: ein Feld antippen → groß (die Tastatur braucht Platz)
-$('binhalt').addEventListener('focusin', e => { if (form === 'mittel' && e.target.matches('input, textarea')) zuStufe('gross'); });
+// Tastatur (R-4.5, 13 S-1 bis S-8; Nutzer 23.10.2026: Reisemittel lag unter der Tastatur). Safari liest beim Fokus, wo das Feld
+// steht, und verschiebt den sichtbaren Bereich, wenn es unter der künftigen Tastatur liegt – das Blatt ginge mit und das Feld wieder
+// darunter. Deshalb rollt das Blatt das Feld vorher in die obere Hälfte (B: sofort ‚groß‘) und gibt ihm einen neuen Fokus, damit
+// Safari die Lage neu liest (S-8) – wie ui.js.
+const TASTATUR = { hoch: 403, quer: 276 };   // S-2, bis zum ersten Öffnen geschätzt
+const feldOffen = () => !!document.activeElement?.matches?.('#binhalt input, #binhalt textarea');
+let refokus = false;
+function feldZeigen(el) {
+  const B = $('binhalt'), kb = M.kb > 0 ? M.kb : M.quer ? TASTATUR.quer : TASTATUR.hoch;
+  B.style.setProperty('--platz', kb + 'px');
+  const oben = B.getBoundingClientRect().top + 8, unten = innerHeight - kb;   // sichtbar bis zur (künftigen) Tastatur
+  const r = el.getBoundingClientRect(), mitte = (oben + unten) / 2 - 24, m = (r.top + r.bottom) / 2;
+  const d = m > mitte ? Math.min(m - mitte, r.top - oben) : r.top < oben ? r.top - oben : 0;
+  if (d) B.scrollTop += d;
+}
+$('blatt').addEventListener('focusin', e => {
+  if (refokus || !M.phone || !e.target.matches('input, textarea')) return;
+  if (form === 'mittel') { stoppe(); setzeForm('gross'); setze(M.T); }   // B: ein Feld antippen → groß
+  feldZeigen(e.target);
+  if (M.kb > 0) return;   // Tastatur schon offen (Feld gewechselt): kein neuer Fokus nötig
+  refokus = true; e.target.blur(); e.target.focus({ preventScroll: true }); refokus = false;
+});
 // Ziehen: am Kopf und Griff immer, im Inhalt nur nach unten, wenn er ganz oben steht; B mittel: nach oben → groß.
 // Entschieden nach 8 px, deutlich senkrecht (1,2 × so weit wie waagerecht). Ist es entschieden, verhindert touchmove das Rollen (13).
 let g = null, unterdruecke = false;
 const kann = () => offen && M.phone && V !== 'heute' && !$('pop').classList.contains('an');
 $('blatt').addEventListener('pointerdown', e => {
-  if (!e.isPrimary || e.button > 0 || !kann()) { g = null; return; }
-  const kopf = !!e.target.closest('.bkopf, .griffzone');
-  if (!kopf && e.target.closest('input, textarea')) { g = null; return; }
+  if (!e.isPrimary || e.button > 0 || !kann() || draussen(e)) { g = null; return; }
+  const kopf = !!e.target.closest('.bkopf, .griffzone');   // auch auf einem Feld darf der Zug beginnen (Nutzer 23.10.2026)
   g = { id: e.pointerId, x0: e.clientX, y0: e.clientY, y: Y, kopf, aktiv: false, spur: [[e.timeStamp, e.clientY]] };
 });
 function erlaubt(dx, dy) {
@@ -290,14 +325,16 @@ function erlaubt(dx, dy) {
 }
 $('blatt').addEventListener('touchmove', e => {
   if (!g) return;
-  const t = e.touches[0], dx = t.clientX - g.x0, dy = t.clientY - g.y0;
+  const t = e.touches?.[0], dx = (t ? t.clientX : g.lx ?? g.x0) - g.x0, dy = (t ? t.clientY : g.ly ?? g.y0) - g.y0;
   if (g.aktiv || (Math.abs(dy) > 1 && erlaubt(dx, dy))) e.preventDefault();
 }, { passive: false });
 addEventListener('pointermove', e => {
   if (!g || e.pointerId !== g.id) return;
-  const dx = e.clientX - g.x0, dy = e.clientY - g.y0;
+  const dx = e.clientX - g.x0, dy = e.clientY - g.y0; g.lx = e.clientX; g.ly = e.clientY;
   if (!g.aktiv) {
     if (Math.abs(dx) < 8 && Math.abs(dy) < 8) return;
+    // nach unten ziehen schließt die Tastatur (wie iOS) – im gerollten Inhalt rollt er weiter, am Kopf bzw. ganz oben folgt das Blatt
+    if (dy > Math.abs(dx) * 1.2 && feldOffen()) document.activeElement.blur();
     if (!erlaubt(dx, dy)) { g = null; return; }
     g.aktiv = true; stoppe(); g.y = Y;
     try { $('blatt').setPointerCapture(e.pointerId); } catch {}
@@ -339,6 +376,7 @@ function neu() {
   if (!M.phone) return;
   if (form === 'mittel' && !M.stufen) setzeForm('gross');
   if (!lauf.an && !g) setze(zielY(form));
+  if (feldOffen() && M.vt > 0 && !g) feldZeigen(document.activeElement);   // hat Safari doch verschoben: Feld im Blatt nachrollen
 }
 addEventListener('resize', neu);
 visualViewport?.addEventListener('resize', neu); visualViewport?.addEventListener('scroll', neu);
