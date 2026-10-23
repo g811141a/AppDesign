@@ -104,3 +104,4 @@ gelten die Grundregeln (`pruefe.mjs`).
 - **V4** nicht übernommen: Häkchen in Menüs bleiben ohne `aria-checked` (Untermenü-Einträge sind über V3 abgedeckt).
 - **V5** übernommen: Fokus ins Menü (erster wählbarer Eintrag, Untermenü ebenso) und zurück zum Knopf ohne Rollen (`preventScroll`, R-7.3); fehlt der Knopf → Kopfzeile; `checkFokus` in ablauf.mjs.
 - **V6** übernommen: Sprechblase `role="alertdialog"`, `aria-labelledby` auf den Text, `aria-modal`; Fokus auf die Blase (ohne Rahmen), danach zurück zum Knopf bzw. zur Kopfzeile, ohne Rollen; `checkFokus`.
+- **V7** übernommen: bei offenem Menü und offener Sprechblase alles außerhalb `inert` (Seite bzw. übriger Fensterinhalt), Aufheben bei jedem Schließen (auch R-8.1); R-1.4 „auch für VoiceOver und Tastatur“; Prüfung hig.mjs mit Gegenprobe.
