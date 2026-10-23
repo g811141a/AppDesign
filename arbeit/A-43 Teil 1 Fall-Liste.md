@@ -40,7 +40,7 @@ gelten die Grundregeln (`pruefe.mjs`).
 | V8 | Fenster offen | Seite unerreichbar (eingebautes modales Fenster), Menü und Sprechblase im Fenster wie V7 | ja |
 | V9 | Suche: tippen, Treffer wechseln, keine Treffer | ‚3 von 57‘ bzw. ‚Keine Treffer‘ wird nach einer kurzen Pause angesagt (höflich, unterbricht nicht) | ja (Ansage-Bereich) |
 | V10 | Fehlermeldung erscheint (nach Eingabe bzw. beim Häkchen), verschwindet | Feld ‚ungültig‘ (`aria-invalid`), Meldung mit dem Feld verknüpft (`aria-describedby`) und einmal angesagt | ja |
-| V11 | ‚Automatisch gespeichert um …‘ | siehe offene Frage 3.1 | – |
+| V11 | ‚Automatisch gespeichert um …‘ | wird **nicht** angesagt, nur im Fensterkopf lesbar (Nutzer 23.10.2026, wie Notizen) | ja (kein Ansage-Bereich) |
 | V12 | iPhone: Seite vor (Eintrag öffnen) und zurück | Fokus auf dem Titel der neuen Seite; zurück auf der Zeile, von der man kam | ja |
 | V13 | Offline-Meldung | wird angesagt (heute schon `role="status"`) | ja |
 | V14 | Daten leer, lang, viele (lange Menüs mit Rollen, leere Liste) | Namen und Rollen wie V1–V4, leere Liste mit lesbarem Hinweis | ja |
@@ -87,15 +87,11 @@ gelten die Grundregeln (`pruefe.mjs`).
 | P1 | Grundregeln zusätzlich mit ‚Kontrast erhöhen‘ und ‚Bewegung reduzieren‘ (Playwright `contrast: 'more'`, `reducedMotion: 'reduce'`) | alle Ansichten grün (T-60) |
 | P2 | Gegenprobe | ohne Namen, ohne `inert`, mit Eingabe = rot, ohne Farbtabelle bzw. mit Bewegung trotz ‚reduzieren‘ wird die Prüfung rot |
 
-**Nur am Gerät (Prüfliste):** VoiceOver hören (Namen, ‚öffnet Menü‘, ‚ausgewählt‘, Ansagen, Fehlermeldung) am iPad und iPhone;
-Zurück-Geste von VoiceOver; Hardware-Tastatur am iPad (Esc, ⌘., Pfeile, Eingabe); Aussehen mit ‚Kontrast erhöhen‘; Gefühl mit
+**Nur am Gerät (Prüfliste):** Hardware-Tastatur am iPad (Esc, ⌘., Pfeile, Eingabe); Aussehen mit ‚Kontrast erhöhen‘; Gefühl mit
 ‚Bewegung reduzieren‘.
 
-## 3. Offene Fragen
+## 3. Antworten (Nutzer 23.10.2026)
 
-1. **‚Automatisch gespeichert um …‘ ansagen?** a) nein – die Zeile ist im Fensterkopf lesbar, angesagt wird nichts (wie Notizen,
-   stört beim Diktieren und Schreiben nicht) **(Empfehlung)**; b) einmal je Fenster bei der ersten Speicherung; c) bei jeder Änderung
-   der Uhrzeit.
-2. **Prüfung am Gerät mit VoiceOver:** am iPad (und iPhone) VoiceOver einschalten und die Prüfliste durchgehen – geht das für dich?
-3. **Version:** in ‚0. Nächste Version‘ stehen schon zwei Themen (A-61/2 Blatt, A-69 Startposition) – höchstens 2 Themen je Version
-   (0 Nr. 8). Teil 1 käme daher in die Version danach.
+1. ‚Automatisch gespeichert um …‘ wird **nicht** angesagt (V11).
+2. **Keine Prüfung mit VoiceOver am Gerät** – VoiceOver wird nur automatisch geprüft (Rollen, Namen, Fokus, Sperre, Ansage-Bereiche).
+3. Fall-Liste: **nicht ok** – Rückmeldung im Chat folgt.
