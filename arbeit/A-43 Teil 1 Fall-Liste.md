@@ -116,3 +116,4 @@ gelten die Grundregeln (`pruefe.mjs`).
 - **K2** übernommen: ↑/↓ mit Umlauf (ausgegraute, Striche, Zusatzzeilen übersprungen), Pos1/Ende, Eingabe/Leertaste wählt, Tab wie ↓ im Menü, Markierung hinterlegt ohne Rahmen, langes Menü rollt mit; `checkFokus`.
 - **K3** übernommen: → bzw. Eingabe/Leertaste öffnet das Untermenü (Fokus auf den ersten Eintrag), ← bzw. Esc schließt es (Fokus zurück auf den ›-Eintrag), feste Richtung wie auf dem Mac; `aria-expanded` wechselt; `checkFokus`.
 - **K4** übernommen: Eingabe = blauer Weg bzw. Abbrechen (nie Rot), Esc/⌘. = Abbrechen (verbraucht, Fenster bleibt), Tab/Pfeile markieren mit Umlauf, Leertaste drückt den markierten (auch Rot); `checkFokus` mit Gegenprobe.
+- **K5** übernommen: ⌘. wie Esc in Fenster, Meldung, Blatt (auch aus einem Feld), Esc wie heute; `checkFokus`: ohne/mit Änderung, Tab und Umschalt+Tab nur im Fenster.
