@@ -108,3 +108,5 @@ gelten die Grundregeln (`pruefe.mjs`).
 - **V8** übernommen: nur Prüfung (hig.mjs) – jedes Fenster, Meldung, Blatt modal, Seite unerreichbar; Menü/Sprechblase im Fenster wie V7; Gegenprobe nicht modal.
 - **V9** übernommen: Baustein `ansagen(text)` in ui.js (höflicher Ansage-Bereich); Suche sagt nach ca. 0,7 s Pause „3 Treffer“/„Keine Treffer“, mit ‹ › „Treffer 2 von 3“, Seitenleiste „2 von 5 Reiselogbüchern“ (App).
 - **V10** übernommen: Baustein `feldFehler(felder, zeile, text)` – roter Rand, `aria-invalid`, `aria-describedby`, einmal ansagen beim Erscheinen bzw. neuem Text; beim Häkchen Fokus aufs erste fehlerhafte Feld; Reiselogbuch nutzt ihn; `checkFieldErrors` erweitert, R-5.3 „auch hörbar“.
+- **V11** entschieden (3.1): nicht ansagen.
+- **V12** übernommen: `navVor` → Fokus auf den Seitentitel (`.pnav`), `navZurueck` → auf die blaue Zeile bzw. den Titel der Startliste; ohne Rollen; iPad unverändert; `checkFokus`.
