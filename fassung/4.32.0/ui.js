@@ -1900,6 +1900,7 @@ window.addEventListener('pointermove', e => {
     try { dlg.setPointerCapture(e.pointerId); } catch {}
   }
   if (e.cancelable) e.preventDefault();
+  blattFeld()?.blur();                              // während des Ziehens bekommt kein Feld den Fokus (WebKit mit Maus)
   z.spur.push([e.timeStamp, e.clientY]);
   if (z.spur.length > 8) z.spur.shift();
   let o = z.o + dy;
@@ -1914,6 +1915,7 @@ function blattLos(e, abbruch) {
   blattZug = null;
   if (!z.aktiv) return;
   document.documentElement.classList.remove('blatt-zieht');
+  blattFeld()?.blur();
   blattKlickWeg = true; setTimeout(() => { blattKlickWeg = false; });
   const spur = z.spur.filter(([t]) => t >= e.timeStamp - 100);
   const tempo = spur.length > 1 && spur.at(-1)[0] > spur[0][0] ? (spur.at(-1)[1] - spur[0][1]) / (spur.at(-1)[0] - spur[0][0]) : 0;   // px/ms nach unten

@@ -124,7 +124,7 @@ export async function checkDialogHead(p, { open, change, where = '' } = {}) {
     const h = d.querySelector('.dlg-head').getBoundingClientRect(), xr = x?.getBoundingClientRect(), or = ok?.getBoundingClientRect();
     return { open: d.open, x: !!x, ok: !!ok, blue: !!ok?.classList.contains('primary'),
       xLeft: xr ? xr.left - h.left < h.width / 3 : false, okRight: or ? h.right - or.right < h.width / 3 : false }; });
-  await open(); await wait(p, 350);
+  await open(); await wait(p, 350); await navFertig(p);   // seit 4.32.0: bis das Blatt ruht (R-4.6)
   let h = await head();
   if (!h.x || !h.xLeft) E('x steht nicht links in der Kopfzeile');
   if (!h.ok || !h.okRight) E('Häkchen steht nicht rechts in der Kopfzeile');
@@ -132,7 +132,7 @@ export async function checkDialogHead(p, { open, change, where = '' } = {}) {
   await p.click('#dlgX'); await wait(p);
   if (await p.locator('.pop').count()) { E('x ohne Änderung fragt nach'); await p.locator('.pop button').last().click(); await wait(p); }
   if ((await head()).open) { E('x ohne Änderung schließt das Fenster nicht'); await p.evaluate(() => document.getElementById('dlg').close()); }
-  await open(); await wait(p, 350);
+  await open(); await wait(p, 350); await navFertig(p);
   await change(); await wait(p);
   if (!(await head()).blue) E('Häkchen wird nach einer Änderung nicht blau');
   await p.click('#dlgX'); await wait(p);
