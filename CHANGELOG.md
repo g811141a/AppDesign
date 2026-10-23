@@ -3,6 +3,36 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.32.0 – 23.10.2026
+
+AppDesign 4.32.0 · Designrichtlinie allgemein 4.32.0 · Zusammenarbeit allgemein 2.19.0 · geprüft mit Reiselogbuch 3.30.0
+
+**Sammelversion A-61 Teil 2 und A-69** (dein Ja vom 23.10.2026, allgemeine Regeln). Prüfpunkt im Reiselogbuch: P-68.
+
+- **A-61 Teil 2 – Blatt auf dem iPhone (neu R-4.6; 7, 13, 15.17; Muster `arbeit/A-61 Teil 2 Muster.html` Variante A, Fall-Liste
+  `arbeit/A-61 Teil 2 Fall-Liste.md` B1–B24):** im iPhone-Aufbau ist jedes Fenster außer Meldungen ein Blatt ‚nur groß‘ wie
+  ‚Neuer Termin‘ – es gleitet von unten bis 10 px unter die Statusleiste (quer 8 px), oben runde Ecken; die Seite dahinter weicht
+  verkleinert vor Schwarz zurück und dunkelt ab (quer bleibt sie). Nach unten ziehen folgt dem Finger: am Kopf immer, im Inhalt, wenn
+  er ganz oben steht; weit oder schnell nach unten schließt es wie das x, ein Stück federt zurück; waagerecht und im gerollten Inhalt
+  bleibt es. Mit Änderungen seit dem Öffnen (auch beim Erfassen) zieht es sich zäh, federt zurück und fragt am x ‚Änderungen
+  verwerfen‘ / ‚Weiter bearbeiten‘. Ein Zug nach unten schließt zuerst die Tastatur, auch auf einem Feld. Abdunkelung antippen und
+  Escape wie x; Drehen lässt es offen; ‚Bewegung reduzieren‘: Überblenden. Am iPad bleibt das Fenster in der Mitte.
+  Technisch in ui.js (`blattAuf`, `blattOben`, Ziehen mit `touchmove` erst nach der Entscheidung) und design.css; bewegt wird mit
+  `translate` und `scale`, damit die Lagen der Navigation (`transform`) unberührt bleiben. `dlg.close()` und das Häkchen schließen
+  weiter sofort – hinaus gleitet ein Abbild des Blatts (`.blatt-geist`). Die App braucht nichts zu ändern.
+- **A-69 – R-7.4 erweitert (13):** legt die App statt des nächsten offenen einen aktuellen Eintrag fest (z. B. heute), steht er
+  ebenso direkt unter dem Kopf, aber ohne Hervorhebung – hervorgehoben wird nur Offenes, nie Künftiges.
+- **Prüfungen:** neu `checkSheet` (B1–B12, B17, B18, B21, B22, B24; B8–B10 je Fenster mit Eingaben, B23 über `checkListStill`;
+  das schnelle Wischen B4 als Zeigerereignisse in einem Zug, damit Last das Tempo nicht verfälscht); `checkDialogHead` wartet, bis
+  das Blatt ruht;
+  `checkOpenAt` mit `markiert` (`null` = oben, nichts hervorgehoben; Gegenprobe A3 im Reiselogbuch). Die Grundregel R-2.4 misst
+  die Knopfhöhe ohne Verkleinerung (`offsetHeight`) – hinter dem Blatt ist die Leiste um 7 % kleiner; `navFertig` wartet auch auf
+  das Blatt. **Rot gegen 4.31.0 / Reiselogbuch 3.29.0** bei der Startposition F5–F11 (84 Meldungen), grün mit dem Bau.
+  Neu `rollRuht` (`pruefe.mjs`): `checkFab` wartet nach ‚Nach oben / Ans Ende‘, bis das Rollen ruht, statt fest 1,2 s – die
+  Prüfumgebung bringt jetzt Chrome 153, das lange Wege in gut 1,2 s rollt und unter Last zeitweise anhält; auch Reiselogbuch 3.29.0
+  war damit rot (die App rollt richtig bis ans Ende).
+- **Designrichtlinie allgemein 4.32.0:** 7, 13 (Position beim Öffnen, Blatt ziehen), 15.17, Katalog R-4.5, R-4.6 und R-7.4.
+
 ## 4.31.0 – 23.10.2026
 
 AppDesign 4.31.0 · Designrichtlinie allgemein 4.31.0 · Zusammenarbeit allgemein 2.19.0 · geprüft mit Reiselogbuch 3.29.0

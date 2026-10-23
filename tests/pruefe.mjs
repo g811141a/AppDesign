@@ -46,6 +46,13 @@ export async function rolle(p, y) {
       : 'um' in y ? r.y + y.um : r.max - y.vorEnde); }, [ROLL, y]);
 }
 // rollstand(p): { y, max, rest, h } des Rollbereichs, dazu fenster = scrollY (muss 0 bleiben).
+// rollRuht(p) (seit 4.32.0): wartet, bis ein weiches Rollen (‚Nach oben / Ans Ende‘) zu Ende ist – Rollstand fünfmal hintereinander
+// (je 100 ms) gleich, höchstens 4 s; unter Last steht das Rollen in Chrome zeitweise bis zu 300 ms still. Chrome 153 rollt lange Wege in gut 1,2 s statt unter 0,9 s; feste Wartezeiten maßen mitten im Rollen.
+export async function rollRuht(p, { max = 4000 } = {}) {
+  const y = () => p.evaluate(R => Math.round(eval(R).y), ROLL).catch(() => null);
+  let alt = await y(), gleich = 0;
+  for (let t = 0; t < max && gleich < 5; t += 100) { await p.waitForTimeout(100); const n = await y(); gleich = n === alt ? gleich + 1 : 0; alt = n; }
+}
 export const rollstand = p => p.evaluate(R => { const r = eval(R), m = Math.round;
   return { y: m(r.y), max: m(r.max), rest: m(r.rest), h: m(r.h), fenster: m(scrollY), bereich: !!r.el }; }, ROLL);
 
@@ -53,7 +60,8 @@ export const rollstand = p => p.evaluate(R => { const r = eval(R), m = Math.roun
 // sonst messen die Grundregeln Zwischenzustände (WebKit setzt manches einige Millisekunden später als Chromium).
 // Seit 4.30.0 (A-61, R-7.5): wartet, bis ein Seitenwechsel bzw. die Bewegung der Seitenleiste fertig ist (höchstens 3 s) – der
 // Zustand der App ändert sich erst am Ende der Bewegung (Zurück, Wischen).
-export const navFertig = p => p.waitForFunction(() => !/(^|\s)nav-/.test(document.documentElement.className), null, { timeout: 3000 }).catch(() => {});
+// seit 4.32.0 (R-4.6): auch bis das Blatt auf dem iPhone ruht
+export const navFertig = p => p.waitForFunction(() => !/(^|\s)(nav-|blatt-faehrt|blatt-zieht)/.test(document.documentElement.className), null, { timeout: 3000 }).catch(() => {});
 export async function ruhe(p) {
   // Ruhig = keine laufende Animation, Fenster, Menüs, Sprechblasen und Scroll-Lage dreimal hintereinander gleich (je 100 ms)
   // und ein offenes Fenster ganz auf dem Bildschirm – höchstens 2 s; bleibt es danach falsch, meldet die Regel es (R-4.5).

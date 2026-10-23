@@ -1,6 +1,6 @@
 # Designrichtlinie allgemein
 
-**Version 4.31.0** · Stand 23.10.2026
+**Version 4.32.0** · Stand 23.10.2026
 
 Allgemeine Gestaltungs- und Bedienregeln für alle Web-Apps von g811141a auf iPad und iPhone. Die Datei liegt im Design-Repo
 **AppDesign** (g811141a/AppDesign); ihre Versionsnummer ist die des Repos. Die Komponenten sind dort einmal programmiert und
@@ -188,9 +188,13 @@ heller).
 
 - Aufbau: Kopfzeile (15.8) · Inhalt (rollbar).
 - Breite passt sich dem Inhalt an: höchstens 90 % der Bildschirmbreite, Mindestbreite 480 px. Erfassungs- und
-  Vorschaufenster fast bildschirmbreit (bis 1100 px); auf dem iPhone bildschirmfüllend (15.17).
+  Vorschaufenster fast bildschirmbreit (bis 1100 px); auf dem iPhone ein **Blatt** von unten (R-4.6, 15.17).
 - Hintergrund `--dlg-bg`, Kästen darin `--dlg-card`, Radius 18 px, Schatten, abgedunkelter Hintergrund dahinter.
 - Escape wirkt wie das x.
+- **iPhone: Blatt** (R-4.6, wie ‚Neuer Termin‘): gleitet von unten bis knapp unter die Statusleiste, die Seite dahinter weicht
+  verkleinert und abgedunkelt zurück (quer volle Höhe, die Seite bleibt); nach unten ziehen schließt wie das x – mit Änderungen
+  federt es zurück und fragt; Antippen der Abdunkelung wie x. Am iPad bleibt das Fenster in der Mitte und schließt nur mit x,
+  Häkchen oder Escape.
 - Solange ein Fenster offen ist, steht die Liste dahinter still (R-7.3, Technik 15.9).
 - **Bei sichtbarer Tastatur** passt sich jedes Fenster dem sichtbaren Bereich über der Tastatur an: die Kopfzeile bleibt immer
   sichtbar, nur der Inhalt rollt, und das Feld mit Fokus steht ganz über der Tastatur, ohne Springen (R-4.5; ebenso für Kopf- und
@@ -367,8 +371,9 @@ Gemessene bzw. belegte Eigenheiten mit Quelle; sie gelten für alle Apps, die Pr
   dieselbe Stelle. Steht oben kein Eintrag (Ende der Seite: Fazit, Statistik), bleibt der Abstand zum Ende gleich; ganz oben
   bleibt ganz oben, ganz unten bleibt ganz unten. Tests bilden das nach (`overflow-anchor: none`), sonst verdeckt Chrome den
   Fehler (R-8.1).
-- **Position beim Öffnen:** `openAt(element | null)` in ui.js (R-7.4) – ein ‚nächster offener‘ Eintrag steht unter der Leiste
-  und einem haftenden Tabellenkopf; ist die Seite nicht so weit rollbar, ganz unten.
+- **Position beim Öffnen:** `openAt(element | null)` in ui.js (R-7.4) – ein ‚nächster offener‘ bzw. aktueller Eintrag steht unter
+  der Leiste und einem haftenden Tabellenkopf; ist die Seite nicht so weit rollbar, ganz unten. Ob er hervorgehoben ist, legt die App
+  mit ihrer Klasse fest (nur Offenes).
 - **Zwei Bereiche – nur der Inhalt rollt:** Safari am iPhone unterscheidet den **Layout-Bereich** (an ihm hängen feste Leisten,
   Höhe `innerHeight`) und den **sichtbaren Bereich** (`visualViewport`). Die Tastatur verkleinert nur den sichtbaren Bereich
   (gemessen hoch 409 statt 812 px, quer 126 statt 402 px); `innerHeight` bleibt (quer schrumpft es je Fokus um 19 px). Rollt das
@@ -423,6 +428,12 @@ Gemessene bzw. belegte Eigenheiten mit Quelle; sie gelten für alle Apps, die Pr
   Geste entschieden ist (nicht passiver Hörer); vorher nie, damit senkrecht weiter der Browser rollt. Nachgebildet in `safari.mjs`
   (S-10, `safariWischen`). Quelle: Messung P-65 (iOS 26.6.2, Home-Bildschirm): 22 von 25 Zügen bei 10–21 px senkrecht abgebrochen.
   Quelle: [Apple-Forum – iOS 26 swipe to navigate back](https://developer.apple.com/forums/thread/791605), Muster A-61 am Gerät.
+  **Blatt ziehen** (R-4.6, seit 4.32.0): dieselbe Technik senkrecht – ui.js verhindert `touchmove` erst, wenn der Zug nach unten
+  entschieden ist (am Kopf oder im Inhalt ganz oben); im gerollten Inhalt rollt Safari weiter. Das Blatt ist `<dialog>` mit
+  `showModal` (S-9), bewegt wird es mit `translate` statt `transform`, die Seite dahinter mit `translate` und `scale` – so bleiben
+  die Lagen der Navigation (`transform`) unberührt. `dlg.close()` bleibt sofort (die App baut gleich danach neu auf); was beim
+  Schließen hinausgleitet, ist ein Abbild des Blatts (`.blatt-geist`, ohne ids). Muster A-61 Teil 2 am Gerät (Rückmeldungen
+  23.10.2026: Feld bei offener Tastatur, Ziehen auf einem Feld, Erfassen mit Änderung).
 - **Weiches Rollen anhalten:** WebKit hält ein laufendes `scrollTo({ behavior: 'smooth' })` bei einem neuen `scrollTo` ohne
   Bewegung nicht an (gemessen im Prüf-WebKit beim Bau von 4.30.0, am Gerät nicht gemessen); es endet, wenn der Rollbereich kurz
   `overflow: hidden` bekommt – `rolle.halt()` (ui.js).
@@ -753,8 +764,18 @@ Regel). In AppDesign ist jede Komponente einmal programmiert (`v4/design.css`, `
 - **Fester Hinweis unten** (`.bbar` mit `.bnote`): z. B. der Backup-Hinweis – gelb getönte Karte (`--focus`) mit blau gefülltem
   Knopf, fest am unteren Rand; die Liste läuft dahinter durch (Verlauf), bei offener Tastatur wandert die Leiste über die Tastatur
   (`--vv-bottom`). Am iPad steht derselbe Hinweis ebenso gelb fest am unteren Rand der Seitenleiste.
-- **Fenster** bildschirmfüllend (bei offener Tastatur bis zur Tastatur, R-4.5); Kopfzeile kompakt mit einzeiligem Titel (kurze
+- **Fenster als Blatt** (R-4.6, Variante A ‚nur groß‘ wie ‚Neuer Termin‘): von 10 px unter der Statusleiste (quer 8 px) bis zum
+  unteren Rand bzw. zur Tastatur (R-4.5), oben runde Ecken (26 px, quer 18 px), gleitet von unten herein; die Seite dahinter weicht
+  hoch um 7 % verkleinert mit runden Ecken vor Schwarz zurück, abgedunkelt wird mit 30 % Schwarz; quer bleibt die Seite. Nach unten
+  ziehen am Kopf (immer) oder im Inhalt (wenn er ganz oben steht) folgt dem Finger: entschieden nach 8 px, deutlich senkrecht (1,2 ×
+  so weit wie waagerecht); beim Loslassen zählt der Punkt, an dem das Blatt mit dem Tempo der letzten 100 ms auslaufen würde
+  (Tempo × 400 ms) – liegt er näher am unteren Rand, schließt es wie das x, sonst federt es zurück; über ‚groß‘ hinaus Gummiband.
+  Mit Änderungen seit dem Öffnen (`dlgDirty`, auch beim Erfassen) zieht es sich zäh (30 %), federt zurück und fragt am x (R-4.4).
+  Ein Zug nach unten schließt zuerst die Tastatur, auch auf einem Feld. Antippen der Abdunkelung und Escape wie x; Drehen lässt es
+  offen. ‚Bewegung reduzieren‘: Überblenden, das Ziehen folgt weiter dem Finger. Kopfzeile kompakt mit einzeiligem Titel (kurze
   Form, z. B. ‚Di, 25.08.2026‘); Options-Kapseln stehen unter dem Kasten-Titel. Meldungen bleiben kleine Fenster in der Mitte.
+  **Technisch:** `blattAuf()` aus `openDialog`, Lage `blattOben()` in `placeDialogs`, Klassen `html.blatt`, `.blatt-zurueck`,
+  `.blatt-faehrt`, `.blatt-zieht`, an den zurückweichenden Elementen `.blatt-seite`; die App braucht nichts weiter (Schließen über x bzw. `dlg.close()` wie bisher).
 - **Abfragen** wie auf dem iPad als Sprechblase an der angetippten Schaltfläche (iOS 26 zeigt Abfragen ebenfalls an der
   Schaltfläche). Menüs, Kapseln und Schaltflächen wie auf dem iPad (44 pt).
 
@@ -1001,7 +1022,8 @@ die Prüfliste, wenn eine Version es betrifft.
 | R-4.2 | **Kontextmenü** einer Kachel: daneben bzw. (iPhone) darunter, immer vollständig und ganz über der Backup-Kachel; die Liste rückt dafür; ohne ‚Öffnen‘ | kontextmenue.mjs | – | 15.4 |
 | R-4.3 | **Abfragen und Meldungen:** keine Systemfenster; Abfrage als Sprechblase an der Schaltfläche, rote Schaltfläche mit dem Verb, ‚Abbrechen‘ zuletzt; mehrere Wege: empfohlener blau zuerst, zerstörender rot; Meldung im kleinen Fenster mit höchstens einer Schaltfläche zu den Einzelheiten | hig.mjs | – | 6, 10, 15.7 |
 | R-4.4 | **Fenster-Kopfzeile:** x links, Häkchen rechts – grau, nach einer Änderung blau; x mit Änderungen fragt ‚Änderungen verwerfen‘ / ‚Weiter bearbeiten‘ | ablauf.mjs – `checkDialogHead` | – | 6, 15.8 |
-| R-4.5 | **Passt immer auf den Bildschirm:** Menü, Sprechblase und Fenster ganz sichtbar (auch iPhone quer), zu hoher Inhalt rollt darin; Fenster auf dem iPhone bildschirmfüllend. Ein Feld mit Fokus steht immer ganz über der Tastatur – in Fenstern und im Inhalt, 16 px darüber (reicht der Platz nicht, direkt unter Kopf- bzw. Suchzeile) – und zwar **ohne Springen**: beim Antippen rollt das Feld in die obere Hälfte, Safari verschiebt nichts; Kopfzeile, Suchzeile, Seitenleiste und Fensterkopf stehen in jedem Bild still, das Feld springt nicht, das iPad-Fenster gleitet mit der Tastatur | hig.mjs, ablauf.mjs – `checkFieldVisible` (Safari-Modell: Feld unter der Tastatur antippen), `checkTastaturStill` (jedes Bild) | – | 7, 13, 15.7 |
+| R-4.5 | **Passt immer auf den Bildschirm:** Menü, Sprechblase und Fenster ganz sichtbar (auch iPhone quer), zu hoher Inhalt rollt darin; Fenster auf dem iPhone als Blatt bis zum unteren Rand bzw. zur Tastatur (R-4.6). Ein Feld mit Fokus steht immer ganz über der Tastatur – in Fenstern und im Inhalt, 16 px darüber (reicht der Platz nicht, direkt unter Kopf- bzw. Suchzeile) – und zwar **ohne Springen**: beim Antippen rollt das Feld in die obere Hälfte, Safari verschiebt nichts; Kopfzeile, Suchzeile, Seitenleiste und Fensterkopf stehen in jedem Bild still, das Feld springt nicht, das iPad-Fenster gleitet mit der Tastatur | hig.mjs, ablauf.mjs – `checkFieldVisible` (Safari-Modell: Feld unter der Tastatur antippen), `checkTastaturStill` (jedes Bild) | – | 7, 13, 15.7 |
+| R-4.6 | **Blatt auf dem iPhone:** im iPhone-Aufbau (hoch und quer) ist jedes Fenster außer Meldungen ein Blatt ‚nur groß‘ wie ‚Neuer Termin‘ – gleitet von unten bis knapp unter die Statusleiste, oben runde Ecken, die Seite dahinter weicht verkleinert und abgedunkelt zurück (quer volle Höhe, die Seite bleibt); nach unten ziehen schließt wie x – am Kopf immer, im Inhalt, wenn er ganz oben steht, auch kurz und schnell gewischt; waagerecht und im gerollten Inhalt bleibt es; mit Änderungen seit dem Öffnen zieht es sich zäh, federt zurück und fragt am x (R-4.4); ein Zug nach unten schließt zuerst die Tastatur; Abdunkelung antippen und Escape wie x; Drehen lässt es offen; ‚Bewegung reduzieren‘: Überblenden. Am iPad bleibt das Fenster in der Mitte und schließt nur mit x, Häkchen oder Escape | ablauf.mjs – `checkSheet` | Gerät (Wischgefühl, Tastatur) | 7, 13, 15.17 |
 
 ### 5. Eingaben
 
@@ -1031,7 +1053,7 @@ die Prüfliste, wenn eine Version es betrifft.
 | R-7.1 | **Zentrale Liste als Kacheln:** höchstens ein Eintrag blau; je Kachel ‚geändert am … · Gerät‘; Kacheln laufen unter dem Kopf und hinter der Backup-Kachel durch; Position bleibt beim Neuaufbau, der gewählte Eintrag bleibt sichtbar | hig.mjs | – | 15.4 |
 | R-7.2 | **Start im iPhone-Aufbau in der Startliste:** jedes Neuladen zeigt im iPhone-Aufbau (auch iPad im schmalen Fenster) die Startliste ganz oben ohne blauen Eintrag; der iPad-Aufbau öffnet den aktuellen Eintrag; Rückkehr aus dem Hintergrund ändert nichts | start.mjs | Gerät (App neu öffnen) | 13, 15.17 |
 | R-7.3 | **Liste steht still:** solange ein Fenster aus einer Zeile (bzw. einem Kasten) offen ist, bewegt sich die Liste dahinter nicht – auch wenn Safari beim Schreiben die Seite für die Tastatur schiebt; nach dem Schließen (Häkchen oder x) steht sie genau wie vorher – die oberste Zeile an derselben Stelle, auch wenn die Tastatur offen war –, die Zeile wird 2 s blau hinterlegt und blendet in 1 s aus (‚Bewegung reduzieren‘: 2 s ohne Ausblenden; endet, sobald das nächste Fenster aufgeht); auch nach ‹ › im Fenster steht die Liste wie beim Öffnen; iPad und iPhone gleich | ablauf.mjs – `checkListStill` (Start z. B. mit dem ersten fehlenden Tag oben; Zeile oben, 3 tiefer, untere Hälfte, 2 px unter dem Kopf, nach 5× ‹ ›; Häkchen und x; Safari-Tastatur einzeln und zusammen: sichtbarer Bereich, Fensterhöhe, Nachrollen beim Zugehen) | Gerät (echte Tastatur, Diktieren) | 7, 15.9 |
-| R-7.4 | **Position beim Öffnen:** ein Eintrag öffnet ganz oben; ein ‚nächster offener‘ Eintrag (von der App bestimmt) steht hervorgehoben direkt unter dem Kopf bzw. Tabellenkopf, nie in der Mitte | ablauf.mjs – `checkOpenAt` | – | 13 |
+| R-7.4 | **Position beim Öffnen:** ein Eintrag öffnet ganz oben; ein ‚nächster offener‘ Eintrag (von der App bestimmt) steht hervorgehoben direkt unter dem Kopf bzw. Tabellenkopf, nie in der Mitte; legt die App stattdessen einen aktuellen Eintrag fest (z. B. heute), steht er ebenso direkt unter dem Kopf, aber ohne Hervorhebung – hervorgehoben wird nur Offenes, nie Künftiges | ablauf.mjs – `checkOpenAt` (mit `markiert`) | – | 13 |
 | R-7.5 | **Navigation und Gesten** (wie iOS 26): im iPhone-Aufbau schiebt sich der Inhalt beim Öffnen herein und beim Zurück hinaus; **Zurückwischen von überall im Inhalt** folgt dem Finger, fertig nach halber Breite oder schnellem Wischen, sonst federt es zurück; am iPad hoch holt Wischen nach rechts von überall die Seitenleiste, nach links auf ihr bzw. der Abdunkelung geht sie, panel-left und Abdunkelung lassen sie gleiten; quer holt Wischen nach rechts die ausgeblendete Seitenleiste herein, der Inhalt rückt mit und wird beim Einrasten schmaler, ausblenden quer nur mit panel-left (gleitet). Vorrang an einer Stelle: senkrechtes Rollen, eigenes waagrechtes Rollen, Felder, Knöpfe, Kapseln, Schnellroll-Griff; nicht nach langem Drücken und nicht bei offenem Fenster, Menü oder offener Sprechblase; Tastatur schließt zuerst; Drehen beim Ziehen = Zustand wie vorher; Wischen tippt nie an; ‚Bewegung reduzieren‘ überblendet; je Bild nur transform und opacity | ablauf.mjs – `checkNavigation` | Wischgefühl, Rand mit dem Daumen, versehentliches Zurück, Home-Bildschirm-App, VoiceOver | 13, 15.4, 15.17 |
 
 ### 8. Drehen
@@ -1117,6 +1139,7 @@ R-2.3 (15.2), R-4.4 (6, 15.8, HIG 9), R-5.3 (8), R-5.4 (15.12), R-5.5 (A-14), R-
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 4.32.0 | 23.10.2026 | Neben | **A-61 Teil 2 (Variante A):** neu R-4.6 Blatt auf dem iPhone – jedes Fenster außer Meldungen gleitet als Blatt von unten, die Seite weicht zurück, nach unten ziehen schließt wie x, mit Änderungen federt es zurück und fragt (7, 13 Wischgesten, 15.17; R-4.5 angepasst); Prüfung `checkSheet` (B1–B24). **A-69:** R-7.4 erweitert – ein aktueller Eintrag (z. B. heute) steht oben ohne Hervorhebung, hervorgehoben wird nur Offenes (13); `checkOpenAt` mit `markiert` |
 | 4.31.0 | 23.10.2026 | Neben | **A-68:** R-7.5 und 15.4 – am iPad quer holt Wischen nach rechts die ausgeblendete Seitenleiste herein, der Inhalt rückt mit (Variante B ‚Mitschieben‘) und wird beim Einrasten schmaler; panel-left gleitet auch quer; ausblenden quer nur mit panel-left; Prüfung `checkNavigation` Q-1 bis Q-12. **A-64, A-65:** R-5.2 und 8 – keine doppelten Leerzeichen (neu `checkSpaces`), keine erzwungene Großschreibung nach einer Korrektur von Hand (`checkCapital`) |
 | 4.30.2 | 23.10.2026 | Korrektur | **A-67 (Messung P-65):** 13 Wischgesten – Safari bricht auch mit `pan-y` ab 10 px senkrechter Abweichung ab, ist die Geste entschieden, verhindert ui.js `touchmove` (15.17); 15.21 Zeile ‚touchmove‘; Safari-Modell S-10 (`safariWischen`), Prüfung `checkNavigation` F-23 |
 | 4.30.1 | 22.10.2026 | Korrektur | **A-67 Schritt 1 und A-66:** 15.21 – der Messmodus zeichnet Berührungen (Zeiger, touchcancel mit Ziel) und die Entscheidungen der Gestenstelle (R-7.5) auf, für die Messung ‚Zurückwischen über einem Tageskasten‘ (P-64/5); Prüfung `checkNavigation` F-22, F-1/F-2/F-19 zeichnen bis zum Ende der Bewegung auf |

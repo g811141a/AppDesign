@@ -181,8 +181,9 @@ const found = new Map(), icons = new Map();
       // (die Kopfzeile damit 32 statt 44 px); hoch die gewohnten 44 px
       if (phone) {
         const quer = matchMedia('(orientation: landscape) and (max-height: 500px)').matches, soll = quer ? 32 : 44;
+        // seit 4.32.0 (R-4.6): Höhe ohne Verkleinerung – hinter dem Blatt weicht die Seite verkleinert zurück
         document.querySelectorAll('.pnav .grp, .pnav .navgrp, .pnav > span > .round, .pnav .searchbox input, #dlg[open] .dlg-head .grp, #dlg[open] .dlg-head .round').forEach(e => {
-          const h = e.getBoundingClientRect().height;
+          const h = e.offsetHeight;
           if (vis(e) && Math.abs(h - soll) > 1) R('R-2.4', `iPhone ${quer ? 'quer' : 'hoch'}: ${label(e) || '.' + e.classList[0]} in der Leiste ${Math.round(h)} statt ${soll} px hoch`);
         });
       }
@@ -214,9 +215,9 @@ const found = new Map(), icons = new Map();
       // R-9.1 Backup-Kachel immer da, sobald es Einträge gibt
       if (side && vis(side) && side.querySelector('.side-row') && !side.querySelector('.bhint')) R('R-9.1', 'Backup-Kachel fehlt in der Seitenleiste');
       if (document.querySelector('.pnav-head') && document.querySelector('.irow') && !document.querySelector('.bnote')) R('R-9.1', 'Backup-Kachel fehlt in der Startliste');
-      // R-4.5 Fenster auf dem iPhone bildschirmfüllend
+      // R-4.5 Fenster auf dem iPhone bildschirmbreit (seit 4.32.0 als Blatt, R-4.6 – Lage und Höhe prüft checkSheet)
       const dl = document.getElementById('dlg');
-      if (phone && dl?.open && Math.abs(dl.getBoundingClientRect().width - innerWidth) > 2) R('R-4.5', 'Fenster nicht bildschirmfüllend');
+      if (phone && dl?.open && Math.abs(dl.getBoundingClientRect().width - innerWidth) > 2) R('R-4.5', 'Fenster nicht bildschirmbreit');
       // R-3.2 Nach oben / Ans Ende in einer senkrechten Kapsel
       document.querySelectorAll('.fab').forEach(f => { if (vis(f) && parseFloat(cs(f).borderTopLeftRadius) < 10) R('R-3.2', 'Nach oben / Ans Ende nicht in einer Kapsel'); });
       // R-3.2 (seit 4.27.1, A-33): die Kapsel überdeckt nie Kopf- oder Suchzeile (Leisten und feste Zeilen des Rahmens)

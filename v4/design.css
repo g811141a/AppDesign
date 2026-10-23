@@ -1,4 +1,4 @@
-/* AppDesign 4.31.0 · design.css – gemeinsame Gestaltung der iPad-Web-Apps von g811141a (Apple-like)
+/* AppDesign 4.32.0 · design.css – gemeinsame Gestaltung der iPad-Web-Apps von g811141a (Apple-like)
    Einbinden im <head> vor dem eigenen <style> der App:  <link rel="stylesheet" href="../AppDesign/fassung/X.Y.Z/design.css"> (feste Fassung, R-10.3)
    Farben als Variablen auf :root, Dunkelmodus über data-theme="dark" (setzt ui.js / applyTheme).
    Komponenten: Schaltflächen, Suchfeld, Kapsel, Eingabefelder, Datumsfelder, Kopfzeile, Seitenleiste,
@@ -6,7 +6,7 @@
    Options-Kapsel; seit 4.1.0 iPhone-Ansicht (html.phone: Seitenkopf, großer Titel, Liste, Kasten, untere Leiste). Regeln dazu: README - Designrichtlinie allgemein.md */
 /* Farben im Apple-Look: Hintergrund Hellgrau, Kästen weiß ohne Rand, schwebende Schaltflächen */
 :root {
-  --ad-version: "4.31.0";   /* R-10.3: Version der Bausteine, die App prüft sie beim Start */
+  --ad-version: "4.32.0";   /* R-10.3: Version der Bausteine, die App prüft sie beim Start */
   --bg: #f2f2f7;
   --card: #ffffff;
   --ink: #1c1c1e;
@@ -400,8 +400,8 @@ dialog form { display: flex; flex-direction: column; max-height: var(--dlg-max, 
 html.phone .dlg-body.sync-preview { padding: 16px; }
 /* Seit 4.29.0 (R-1.7, A-63): am iPhone trägt der Bericht selbst den rechten Rand – Safari zählt den rechten Innenabstand eines
    Rollbereichs nicht mit, sonst blieben quer die letzten Pixel unter der Aussparung und ließen sich nicht hervorrollen */
-html.phone #dlg .dlg-body.sync-preview { padding-right: 0; }
-html.phone #dlg .dlg-body.sync-preview .sync-report { box-sizing: content-box; padding-right: max(16px, var(--safe-right)); }
+html.phone :is(#dlg, .blatt-geist) .dlg-body.sync-preview { padding-right: 0; }
+html.phone :is(#dlg, .blatt-geist) .dlg-body.sync-preview .sync-report { box-sizing: content-box; padding-right: max(16px, var(--safe-right)); }
 /* Seit 4.11.2: Drucken (PDF) – nur der Inhalt von #printout, alles andere ausgeblendet (z. B. Abgleichbericht). */
 #printout { display: none; }
 @media print {
@@ -487,7 +487,7 @@ html.natsw .check.sw input[switch] { -webkit-appearance: auto; appearance: auto;
 /* ---------- iPhone (kompakte Breite) – seit 4.1.0 ----------
    html.phone (setzt ui.js / applyLayout): iPhone hoch und quer sowie sehr schmale Fenster (unter 700 px breit
    oder unter 500 px hoch). Wie Apple (Notizen, iOS 26): eine Seite nach der anderen mit großem Titel,
-   runder Zurück-Knopf ohne Text, Suche unten, Fenster bildschirmfüllend, Abfragen als Sprechblase am Knopf. */
+   runder Zurück-Knopf ohne Text, Suche unten, Fenster als Blatt (seit 4.32.0, R-4.6), Abfragen als Sprechblase am Knopf. */
 html.phone body { padding-bottom: calc(var(--safe-bottom) + 120px); }
 html.phone body:has(.bnote) { padding-bottom: calc(var(--safe-bottom) + 150px); }
 html.phone .rolle::after { height: calc(var(--safe-bottom) + 120px + var(--platz, 0px)); }   /* seit 4.27.1 Platzhalter statt Innenabstand (A-33) */
@@ -552,17 +552,31 @@ html.phone body { padding-top: var(--pnav-h, 60px); }
   background: var(--focus); box-shadow: var(--float); font-size: 13px; color: var(--ink); }
 .bbar .bnote > div { flex: 1 1 160px; }
 .bbar .bnote button { font-size: 17px; }
-/* Fenster auf dem iPhone bildschirmfüllend; Kopfzeile kompakt, Titel einzeilig */
-html.phone dialog#dlg { width: 100%; max-width: none; min-width: 0; height: var(--dlg-max); border-radius: 0; box-shadow: none; }
-html.phone dialog#dlg form { height: 100%; }
+/* Fenster auf dem iPhone als Blatt (R-4.6); Kopfzeile kompakt, Titel einzeilig */
+/* R-4.6 (seit 4.32.0, A-61 Teil 2): das Fenster ist ein Blatt – von knapp unter der Statusleiste (ui.js blattOben) bis zum unteren Rand
+   bzw. zur Tastatur, oben runde Ecken; die Seite dahinter weicht verkleinert zurück (html.blatt-zurueck), abgedunkelt wird mit
+   .blatt-schleier statt ::backdrop (damit Ziehen und Abdunkeln zusammen laufen). .blatt-geist = Abbild beim Schließen. */
+html.phone dialog:is(#dlg, .blatt-geist) { width: 100%; max-width: none; min-width: 0; height: var(--dlg-max); border-radius: 26px 26px 0 0;
+  box-shadow: 0 -1px 18px rgba(0,0,0,.12); }
+html.phone dialog:is(#dlg, .blatt-geist) form { height: 100%; }
+html.phone.blatt #dlg::backdrop { background: transparent; }
+.blatt-schleier { position: fixed; inset: 0; z-index: 45; background: #000; opacity: 0; pointer-events: none; display: none; }
+html.blatt .blatt-schleier { display: block; }
+.blatt-geist { z-index: 46; pointer-events: none; overflow: hidden; }
+html.blatt-zurueck { background: #000; }
+html.blatt-zurueck body { background: transparent; }
+html.blatt-zurueck .blatt-seite { transform-origin: 50% 0; border-radius: 12px; overflow: hidden; background: var(--bg); }
+html.blatt-zieht, html.blatt-zieht * { -webkit-user-select: none; user-select: none; }
+html.phone #dlg .dlg-head { touch-action: none; }
+html.phone #dlg .dlg-body { overscroll-behavior: none; }
 html.phone #msg { width: min(360px, calc(100vw - 32px)); }
 html.phone #msg.wide { width: min(600px, calc(100vw - 24px)); }
-html.phone #dlg .dlg-head { gap: 8px; padding: calc(var(--safe-top) + 8px) max(12px, var(--safe-right)) 8px max(12px, var(--safe-left)); }
-html.phone #dlg .dlg-head .hl, html.phone #dlg .dlg-head .hr { flex: none; gap: 8px; }
-html.phone #dlg .dlg-head .mid { flex: 1; max-width: none; min-width: 0; }
-html.phone #dlg .dlg-head h3 { font-size: 17px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-html.phone #dlg .dlg-head .grp button:not(.txt) { width: 44px; min-width: 44px; }
-html.phone #dlg .dlg-body { padding: 4px max(12px, var(--safe-right)) calc(20px + var(--safe-bottom)) max(12px, var(--safe-left)); }
+html.phone :is(#dlg, .blatt-geist) .dlg-head { gap: 8px; padding: 10px max(12px, var(--safe-right)) 8px max(12px, var(--safe-left)); }
+html.phone :is(#dlg, .blatt-geist) .dlg-head .hl, html.phone :is(#dlg, .blatt-geist) .dlg-head .hr { flex: none; gap: 8px; }
+html.phone :is(#dlg, .blatt-geist) .dlg-head .mid { flex: 1; max-width: none; min-width: 0; }
+html.phone :is(#dlg, .blatt-geist) .dlg-head h3 { font-size: 17px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+html.phone :is(#dlg, .blatt-geist) .dlg-head .grp button:not(.txt) { width: 44px; min-width: 44px; }
+html.phone :is(#dlg, .blatt-geist) .dlg-body { padding: 4px max(12px, var(--safe-right)) calc(20px + var(--safe-bottom)) max(12px, var(--safe-left)); }
 html.phone .step-head { flex-wrap: wrap; row-gap: 8px; }
 /* Kasten-Kopf: Titel und Mikrofon in der ersten Zeile, Options-Kapseln darunter */
 html.phone .step-head > label:first-child { white-space: nowrap; flex: 1 0 60%; }
@@ -595,14 +609,15 @@ dialog.gleitet { transition: top .25s ease; }
 @media (orientation: landscape) and (max-height: 500px) {
   html.phone .pnav { min-height: 32px; padding-top: var(--safe-top); padding-bottom: 0; }
   html.phone .pnav .nb2 { margin: 0 0 3px; }
-  html.phone #dlg .dlg-head { padding-top: var(--safe-top); padding-bottom: 0; min-height: 32px; }
-  html.phone :is(.pnav, #dlg .dlg-head) :is(.grp, .navgrp) { height: 32px; border-radius: 16px; }
-  html.phone :is(.pnav, #dlg .dlg-head) :is(.grp, .navgrp) button { border-radius: 16px; }
-  html.phone :is(.pnav, #dlg .dlg-head) :is(.grp, .navgrp) button:not(.txt):is(.on, .fill)::before { width: 25px; height: 25px; }
-  html.phone :is(.pnav, #dlg .dlg-head) .round, html.phone #dlg .dlg-head .grp button:not(.txt) { min-height: 0; }
-  html.phone :is(.pnav, #dlg .dlg-head) .round { width: 32px; min-width: 32px; height: 32px; position: relative; }
-  html.phone :is(.pnav, #dlg .dlg-head) .round::after { content: ''; position: absolute; left: 50%; top: 50%; width: 44px; height: 44px; transform: translate(-50%, -50%); }
+  html.phone :is(#dlg, .blatt-geist) .dlg-head { padding-top: 0; padding-bottom: 0; min-height: 32px; }
+  html.phone dialog:is(#dlg, .blatt-geist) { border-radius: 18px 18px 0 0; }
+  html.phone :is(.pnav, :is(#dlg, .blatt-geist) .dlg-head) :is(.grp, .navgrp) { height: 32px; border-radius: 16px; }
+  html.phone :is(.pnav, :is(#dlg, .blatt-geist) .dlg-head) :is(.grp, .navgrp) button { border-radius: 16px; }
+  html.phone :is(.pnav, :is(#dlg, .blatt-geist) .dlg-head) :is(.grp, .navgrp) button:not(.txt):is(.on, .fill)::before { width: 25px; height: 25px; }
+  html.phone :is(.pnav, :is(#dlg, .blatt-geist) .dlg-head) .round, html.phone :is(#dlg, .blatt-geist) .dlg-head .grp button:not(.txt) { min-height: 0; }
+  html.phone :is(.pnav, :is(#dlg, .blatt-geist) .dlg-head) .round { width: 32px; min-width: 32px; height: 32px; position: relative; }
+  html.phone :is(.pnav, :is(#dlg, .blatt-geist) .dlg-head) .round::after { content: ''; position: absolute; left: 50%; top: 50%; width: 44px; height: 44px; transform: translate(-50%, -50%); }
   html.phone .pnav .searchbox input[type=search] { height: 32px; min-height: 0; border-radius: 16px; }
   html.phone .pnav { row-gap: 0; }
-  html.phone #dlg .dlg-head h3 { min-height: 0; }
+  html.phone :is(#dlg, .blatt-geist) .dlg-head h3 { min-height: 0; }
 }
