@@ -121,3 +121,4 @@ gelten die Grundregeln (`pruefe.mjs`).
 - **K7** übernommen: Esc auf der Seite wie heute (F-20), kein ⌘.; `checkNavigation` prüft zusätzlich den Fokus (Zeile bzw. panel-left).
 - **K8** übernommen: R-5.5 bleibt; `checkFokus` mit Hardware-Tastatur (einzeilig: Feld fertig, Fenster offen, kein Häkchen; Suche behält Treffer; mehrzeilig Zeilenumbruch; Tab nächstes Feld); kein ⌘Eingabe.
 - **H1** übernommen: `@media (prefers-contrast: more)` hell – Akzent #0040DD, Rot gefüllt #D70015, Rot Text #B3261E, Grün #248A3D, Orange #C93400, Grau Text #3C3C43, Text #000000, Linien #8E8E93, Glas fast deckend mit Haarlinie; nur Variablen; R-1.9.
+- **H2** übernommen: dunkel mit „Kontrast erhöhen“ (Gerät oder App dunkel) – Akzent #409CFF, Rot Text #FF6961, Rot gefüllt #D70015, Grün #30DB5B, Orange #FFB340, Grau Text #C7C7CC, Linien #636366, Glas wie H1; gefüllte blaue Knöpfe → H3.
