@@ -101,3 +101,4 @@ gelten die Grundregeln (`pruefe.mjs`).
 - **V1** übernommen: R-1.8, `checkNamen` in hig.mjs (heute alle benannt, Prüfung fehlt).
 - **V2** übernommen: Fenster, Meldung und Blatt mit `aria-labelledby` (Titel) und `aria-describedby` (Zusatzzeile); heute nur „Dialog“ ohne Namen.
 - **V3** übernommen: Menüknöpfe und Untermenü-Einträge `aria-haspopup="menu"`, `aria-expanded` zentral in `openMenu` (heute nirgends).
+- **V4** nicht übernommen: Häkchen in Menüs bleiben ohne `aria-checked` (Untermenü-Einträge sind über V3 abgedeckt).
