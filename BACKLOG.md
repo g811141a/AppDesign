@@ -18,9 +18,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| A-68 | 2 | **Seitenleiste am iPad quer hereinwischen am Gerät bestätigen (P-67/1, /2 im Reiselogbuch 3.29.0):** Variante B Mitschieben, panel-left gleitet, Vorrang. Gebaut in 4.31.0 | prüfen |
-| A-64 | 2 | **Keine doppelten Leerzeichen am Gerät bestätigen (P-67/3):** Tippen, Einfügen, Suchfeld, Kurzbefehl ‚.‘. Gebaut in 4.31.0 | prüfen |
-| A-65 | 2 | **Großschreibung zurücknehmen am Gerät bestätigen (P-67/4).** Gebaut in 4.31.0 | prüfen |
+| – | – | zurzeit nichts zu prüfen | – |
 
 ## 2. Weitere Themen (in Klärung)
 
@@ -57,6 +55,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Thema | Version | Datum |
 |---|---|---|---|
+| E-79 | **A-68, A-64, A-65 am Gerät bestätigt (P-67, Nutzer 23.10.2026):** Seitenleiste am iPad quer hereinwischen (Mitschieben, Einrasten, Zurückfedern, Vorrang, panel-left gleitet), keine doppelten Leerzeichen, Großschreibung zurücknehmen – alles ok | 4.31.0 | 23.10.2026 |
 | E-78 | **A-68, A-64, A-65 gebaut (Sammelversion, Ja 23.10.2026):** Seitenleiste am iPad quer per Wischen (Variante B, `checkNavigation` Q-1 bis Q-12), keine doppelten Leerzeichen (`checkSpaces`), keine erzwungene Großschreibung nach einer Korrektur von Hand (`checkCapital`) – rot gegen 4.30.2, grün mit dem Bau. Wartet auf P-67 | 4.31.0 | 23.10.2026 |
 | E-77 | **A-67 am Gerät bestätigt (P-66, Nutzer 23.10.2026):** Zurückwischen über und neben den Tageskästen, auch schräg, Rollen bleibt, Seitenleiste am iPad hoch – alles ok | 4.30.2 | 23.10.2026 |
 | E-76 | **Automatische Übergabe (Nutzer 23.10.2026):** 0 Nr. 13 – bei ‚⚠ Übergabe fällig‘ übergibt Claude ohne Rückfrage, sobald der laufende Schritt abgeschlossen ist, und startet die neue Sitzung selbst (2.2) | Zusammenarbeit 2.19.0 | 23.10.2026 |
