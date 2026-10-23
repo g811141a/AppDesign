@@ -125,3 +125,4 @@ gelten die Grundregeln (`pruefe.mjs`).
 - **H3** übernommen: mit „Kontrast erhöhen“ 4,5 : 1 für jeden Text und jedes Icon ohne Ausnahmen (hig.mjs); neue Variable `--accent-fill`, dunkel mit Kontrast #0060DF (Weiß 5,6), Schrift/Icons #409CFF; Gegenprobe #409CFF als Fläche → rot. Gemessen: hell Weiß/#0040DD 7,6, Weiß/#C93400 5,3.
 - **H4** übernommen: Ausgabe und Vorschau-Inhalt unverändert hell (R-6.2), Rahmen der Vorschau folgt H1/H2; Prüfung: Ausgabe mit/ohne Kontrast, hell/dunkel identisch.
 - **H5** übernommen: reines CSS (`prefers-contrast: more` mit `data-theme`), wechselt sofort ohne Neuaufbau; Messmodus notiert den Kontrast-Zustand; Prüfung: Umschalten mit offenem Fenster, Eingabe, gerollter Liste.
+- **M1** übernommen: Seitenwechsel, Zurückwischen, Seitenleiste, gleitendes Fenster, Hervorheben bleiben wie heute, unter R-1.9 mit `checkRuhig` (nur Deckkraft, keine Lage).
