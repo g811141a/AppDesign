@@ -1,6 +1,6 @@
 # A-43 Teil 2 ‚Textgröße (Dynamic Type)‘ – Fall-Liste
 
-**Stand 23.10.2026** · Sitzung Reiselogbuch 0036 (angelegt, Durchsprache Fall für Fall) · Klärung und Apple-Abgleich:
+**Stand 23.10.2026** · Sitzung Reiselogbuch 0036 (angelegt, Fälle 1–31 durchgesprochen, alle übernommen; P1–P4 offen; Aufbereitung aller Fälle: `arbeit/A-43 Teil 2 Aufbereitung.md`) · Klärung und Apple-Abgleich:
 `arbeit/A-43 Teil 2 Klärung.md` · Muster: `arbeit/A-43 Teil 2 Muster.html` (Variante A ok, hell und dunkel, iPad und iPhone)
 
 **Entschieden (Nutzer 23.10.2026, Sitzung 0035):** Variante **A wie Apple** – alles wächst bis **AX5 (53 pt)**, Leisten nur bis
@@ -135,3 +135,4 @@ Textgrößen 14, 17, 23, 33 und 53 px (P1); nach jedem Fall gelten die Grundrege
 - **W2** übernommen: beim Drehen folgt der Umbau der neuen Lage (iPhone hoch ab 21, quer ab 28 pt), oberster Eintrag bleibt, Menüs und Sprechblasen neu ausgerichtet (R-8.1); Drehprüfung in hig.mjs zusätzlich bei 23, 33 und 53 px (P1).
 - **W3** übernommen: Ausgabe (`outputCss` in pt), Vorschau-Inhalt, Abgleichbericht und Druck unverändert (R-6.2, R-6.4); nur der Rahmen der Vorschau (Fensterkopf) folgt L1; Prüfung: Ausgabe und Vorschau bei 17 und 53 px identisch.
 - **W4** übernommen: Kopfzeile der Messung (`messStart`) nennt ‚Text <Stufe> <px>‘ (z. B. ‚Text ax2 33‘), ein Wechsel während der Messung wird als Ereignis notiert (‚text l → ax2‘); `abspielen.mjs` stellt beim Nachspielen dieselbe Größe ein (über P1); Prüfung `checkMessung`.
+- **W5** übernommen: keine eigene Textgröße in der App (immer vom Gerät); Mac und Chromium Standard 17 px (G1; HIG: Body auf dem Mac 13 pt); am Gerät prüfen, ob ‚Bedienungshilfen → Einstellungen pro App → Safari → Textgröße‘ auch auf die Web-App wirkt (Prüfliste).

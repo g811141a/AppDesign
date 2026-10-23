@@ -1,8 +1,8 @@
 # Übergabe an die nächste Sitzung
 
-**Stand 23.10.2026** · geschrieben in der Sitzung ‚Reiselogbuch 0035‘ (Ende, Übergabe bei etwa 250.000 Token auf Wunsch, vor der
-Fall-Liste Teil 2) – Aufbau nach Zusammenarbeit allgemein 2.5. **Claude liest diese Datei zu Beginn jeder Sitzung zuerst** (0 Nr. 15);
-die Arbeitsumgebung steht in der AppDesign-`CLAUDE.md`.
+**Stand 23.10.2026** · geschrieben in der Sitzung ‚Reiselogbuch 0036‘ (Ende, automatische Übergabe bei etwa 293.000 Token, 0 Nr. 13 – nach
+Fall 31 von 35 der Fall-Liste Teil 2) – Aufbau nach Zusammenarbeit allgemein 2.5. **Claude liest diese Datei zu Beginn jeder Sitzung zuerst**
+(0 Nr. 15); die Arbeitsumgebung steht in der AppDesign-`CLAUDE.md`.
 
 ## 1. Lagebild
 
@@ -13,57 +13,45 @@ die Arbeitsumgebung steht in der AppDesign-`CLAUDE.md`.
 | Zusammenarbeit allgemein | **2.19.0** | `README - Zusammenarbeit allgemein.md` |
 | ReiseLogBuch-Import (privat) | 1.2.2 | g811141a/ReiseLogBuch-Import |
 
-- **Chatnummer:** die nächste Sitzung heißt **Reiselogbuch 0036**; die danach 0037.
-- **Modell und Aufwand:** Opus 5.5, Aufwand hoch – prüfen nach 0 Nr. 15 (in 0035 beides richtig).
+- **Chatnummer:** die nächste Sitzung heißt **Reiselogbuch 0037**; die danach 0038.
+- **Modell und Aufwand:** Opus 5.5, Aufwand hoch – prüfen nach 0 Nr. 15 (in 0036 beides richtig).
 - **Offene Prüfpunkte:** keine.
 - **‚0. Nächste Version‘ (voll, Nutzer sagte zum Bau ‚Nein‘):** AppDesign **A-61/2** + Reiselogbuch **T-99** (Blatt auf dem iPhone) und
   AppDesign **A-69** + Reiselogbuch **T-98** (Startposition) – als AppDesign 4.32.0 / Reiselogbuch 3.30.0.
 - **Bereit für die Version danach:** AppDesign **A-43 Teil 1** + Reiselogbuch **T-100** (Barrierefreiheit: VoiceOver, Tastatur, Kontrast,
-  Bewegung) – voraussichtlich 4.33.0 / 3.31.0, Nebenversion (kein 5.0.0, Designrichtlinie 11; Nutzer fragte 0035 danach).
-- **In Arbeit:** **A-43 Teil 2 Textgröße** – Muster A ok, als allgemeine Regel: Ja; als Nächstes die Fall-Liste (siehe 3).
+  Bewegung) – voraussichtlich 4.33.0 / 3.31.0.
+- **In Arbeit:** **A-43 Teil 2 Textgröße** – Fall-Liste `arbeit/A-43 Teil 2 Fall-Liste.md`: Fälle **1–31 übernommen** (alle wie
+  empfohlen), offen **P1–P4** (Fälle 32–35).
 - **Erinnerung:** ‚Backlog-Erinnerung (AppDesign und Reiselogbuch)‘ montags 8:58.
 
-## 2. Ergebnisse der Sitzung 0035
+## 2. Ergebnisse der Sitzung 0036
 
-- **A-43 Teil 1 abgeschlossen:** M7 (Bewegungswächter in `pruefe.mjs`), P1 (Schalter `PRUEF_BEDIENUNG=beide`), P2
-  (`--gegenprobe bedienung`) übernommen; Abschnitte 1 und 2 der Fall-Liste `arbeit/A-43 Teil 1 Fall-Liste.md` an Abschnitt 4
-  angeglichen; **Fall-Liste ok** → A-43 im AppDesign-Backlog ‚Teil 1 bereit‘, Reiselogbuch **T-100** neu (App-Teil). Fundstelle:
-  Reiselogbuch `index.html:1323` rollt beim Häkchen mit Fehler sanft (wird mit V10/M7 behoben).
-- **Nebenbefund Umgebung:** Chromium von Playwright 1.56.1 startet in der Cloud nur mit `executablePath: '/opt/pw-browsers/chromium'`
-  (Abbild bringt Shell 1243, Playwright erwartet 1194) – vor dem nächsten vollen Prüflauf klären (in Fall-Liste Teil 1, P1, notiert).
-- **A-70 Mehrsprachfähigkeit** ins AppDesign-Backlog (Prio 3, Nutzer).
-- **Fragen des Nutzers beantwortet:** Barrierefreiheit kommt zentral über ui.js/design.css in jede App mit der neuen Fassung (nach
-  Rückfrage gehoben, nie ohne Ja gebaut); künftige Apps haben sie von Anfang an, die Prüfungen erzwingen es. Fassungen und
-  Einstellung der App (Reiselogbuch lädt 4.31.0).
-- **A-43 Teil 2 Textgröße:** Apple-Abgleich `arbeit/A-43 Teil 2 Klärung.md` (Apple: 12 Stufen, Body 14–23 pt, AX1–AX5 28–53 pt; App
-  Store ‚Größerer Text‘ ab 200 %; Leisten wachsen nicht, dafür Großanzeige – im Web nicht vorhanden). Muster
-  `arbeit/A-43 Teil 2 Muster.html` (Prüfskript `… Muster prüfen.mjs`, Bilder `arbeit/bilder/A-43 T2 …`). **Entschieden:** Variante
-  **A wie Apple**, **bis 53 pt**; Versuch am Gerät: `-apple-system-body` meldet die Stufe bis AX5 und **wechselt bei offener App**,
-  auch auf dem Home-Bildschirm; Muster A dunkel und hochkant **ok**; **allgemeine Regel: Ja**.
-- **Gelernt:** Linear skalierte Überschriften werden bei AX5 riesig (106 px) – Apples Textstile wachsen unterschiedlich (Large Title 34 →
-  60, Body 17 → 53); im Muster mit `--u`/`--k` nachgebildet. Die eigene Prüfung des Musters fand die zu breite Tabelle am iPhone hoch.
+- **Fall-Liste Teil 2 angelegt** (35 Fälle in 8 Gruppen R, G, A, L, U, B, W, P) und **alle Fälle vorab aufbereitet** (Wunsch des Nutzers, damit
+  er nicht zwischen den Fällen warten muss): `arbeit/A-43 Teil 2 Aufbereitung.md` – je Fall Worum es geht, Aktuell, Apple-Standard, Meine
+  Idee, Empfehlung, Alternative; dazu **Apples Tabelle wörtlich** (HIG Typography, 12 Stufen × 11 Stile mit Zeilenabstand).
+- **Übernommen (Abschnitt 4 der Fall-Liste):** R1 neue Regel **R-1.10** ‚Textgröße folgt dem Gerät‘; G1–G6 (Grundgröße an `html` mit
+  `-apple-system-body` nur bei Touch, Apples Tabelle wörtlich als Variablen je Stufe, `textStufe()` mit `ResizeObserver`, Zuordnung jeder
+  Größe zu einem Stil – Standard sieht aus wie heute, kleine Stufen mit Feldern ≥ 16 px, keine Zeilenhöhe in px + Silbentrennung); A1–A3; L1–L4
+  (Leisten bis 23 pt, iPhone quer fest 32 px, Titel einzeilig mit …, Großanzeige nicht nachgebaut); U1–U5 (Umbau ab 28 pt, iPhone hoch ab
+  21; Tabellen als Kästen `.box`, Reiselogbuch-Tage am iPad ab AX1 als Kästen wie am iPhone); B1–B7; W1–W5.
+- **Funde im Code** (in der Aufbereitung oben): `button { line-height: 20px }` (überlappt), feste Kapselhöhen 44, Platzhalter unter der Liste
+  fest 100/120/150 px, feste Breiten (Menü 340, Sprechblase 320, Betragsfeld 130), `nowrap` ohne Kürzen (Seitenleisten-Titel, Datum der Kachel,
+  Kasten-Titel am iPhone).
+- **Gemessen:** Chromium und WebKit der Prüfumgebung kennen `-apple-system-body` nicht (Rückfall 17 px greift).
+- **Gelernt (Format):** Der Fall muss **ganz am Anfang** der Antwort stehen – vor jedem Befehl; sonst sieht der Nutzer das Auswahlfenster vor
+  dem Text (2.1). Ablauf je Fall: Nutzer schreibt **w** → Fall-Text → Auswahlfenster → eintragen, committen, Zeitzeile, ‚Schreib **w**‘.
 
 Frühere Sitzungen: `VERLAUF.md` und Versionsgeschichten.
 
 ## 3. Nächster Schritt
 
-1. **Fall-Liste A-43 Teil 2** anlegen (`arbeit/A-43 Teil 2 Fall-Liste.md`) und **Fall für Fall** durchgehen – Format wie Teil 1: je
-   Antwort **ein** Fall, Überschrift ‚Fall X von N: …‘, **Worum es geht**, **Aktuell** (im Code nachgesehen), **Apple-Standard**,
-   **Meine Idee**, **Meine Empfehlung**, Auswahlfenster (Übernehmen (Empfohlen) · Alternative · Nicht übernehmen · Ich schreibe im
-   Chat); Antwort in Abschnitt 4 eintragen, committen, Zeitzeile, ‚Schreib **w** …‘. Grundlage: Klärung Abschnitte 3–5 und das
-   Muster. Vorgesehene Fälle (Vorschlag):
-   - **Regel:** neue Katalog-Regel (z. B. R-1.10 bzw. R-3.x) ‚Schrift folgt der Textgröße des Geräts‘ mit Prüfung.
-   - **Grundgröße:** `html { font: -apple-system-body }` mit Systemschrift-Familie dahinter, Rückfall 17 px (Mac, Chromium).
-   - **Textstile:** alle 45 px-Größen in `design.css` (und 6 im Reiselogbuch) auf Apples Stile mit Standard → AX5 (Tabelle in Apples
-     HIG nachschlagen, nicht nur annähern).
-   - **Abstände, Höhen, Icons:** feste px-Höhen (44, 32, 36 …) wachsen mit bzw. Mindesthöhen; Icons im Inhalt wachsen mit.
-   - **Leisten** (Kopf, Kapsel, Suche, schwebende Knöpfe, Fensterkopf) wachsen nur bis 23 pt.
-   - **Umbau ab 28 pt** (Datum unter Titel, Tabelle als Karten, Menü-Zusatzinfos) und **iPhone hoch** schon ab 21 pt; Tabelle der
-     Tage am iPhone hoch immer Karten (Reiselogbuch – mit dem heutigen Aufbau abgleichen).
-   - **Menüs, Sprechblasen, Seitenleiste** (Breite am iPad, Zeilenhöhe), **Fenster** (Notizfeld wächst mit), **Eingabefelder ≥ 16 px**.
-   - **Wechsel bei offener App** (sofort, oberster Eintrag bleibt), **Ausgabe HTML/PDF** unverändert (R-6.2), Messmodus notiert die Stufe.
-   - **Prüfungen:** Grundregeln in 14, 17, 23, 33, 53 px (Schalter wie `PRUEF_BEDIENUNG`), Gegenprobe; Prüfliste am Gerät.
-2. Danach ‚Fall-Liste Teil 2 ok?‘ → A-43/2 bereit; Version erst nach Ja (0 Nr. 21), höchstens 2 Themen (0 Nr. 8).
+1. **Fall-Liste Teil 2 zu Ende:** Fälle **32–35 (P1–P4)** wie in 0036 – Text je Fall aus `arbeit/A-43 Teil 2 Aufbereitung.md` (Abschnitte
+   ‚Fall 32 von 35‘ bis ‚Fall 35 von 35‘) **am Anfang der Antwort**, dann Auswahlfenster (Übernehmen (Empfohlen) · Alternative · Nicht
+   übernehmen · Ich schreibe im Chat), Antwort in Abschnitt 4 eintragen, committen, Zeitzeile, ‚Schreib **w** …‘. Mit dem ersten Fall gleich
+   beginnen (nach dem Lagebild), nicht erst ‚w‘ abwarten.
+2. Danach Abschnitte 1 und 2 der Fall-Liste an Abschnitt 4 angleichen (Spalte ‚Erwartet‘ statt ‚Vorschlag‘, Regeltext R-1.10 aus R1) und
+   ‚Fall-Liste Teil 2 ok?‘ → A-43/2 im AppDesign-Backlog ‚bereit‘, App-Teil im Reiselogbuch-Backlog (U4, B5, B6, G4: 6 Größen) als neuer T-Punkt;
+   Version erst nach Ja (0 Nr. 21), höchstens 2 Themen (0 Nr. 8).
 
 ## 4. Danach
 
@@ -76,7 +64,7 @@ In der neuen Sitzung müssen **AppDesign** und **ReiseLogBuch** verfügbar sein 
 **ReiseLogBuch-Import** (privat).
 
 ```
-Reiselogbuch 0036 – A-43 Barrierefreiheit Teil 2 Textgröße: Fall-Liste Fall für Fall
+Reiselogbuch 0037 – A-43 Barrierefreiheit Teil 2 Textgröße: Fall-Liste P1–P4 und Abschluss
 
-Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md, dann gezielt die Zusammenarbeit (Abschnitte 0 und 1) und die Überschriften der Designrichtlinien; prüfe Modell und Aufwand (Sitzungsdatei) und hole die Repos g811141a/ReiseLogBuch und g811141a/ReiseLogBuch-Import (privat) dazu, wie in der AppDesign-CLAUDE.md unter ‚Arbeitsumgebung‘. Gib das Lagebild und mach mit A-43 Teil 2 weiter: Fall-Liste arbeit/A-43 Teil 2 Fall-Liste.md anlegen (Grundlage arbeit/A-43 Teil 2 Klärung.md und Muster) und Fall für Fall im Format von UEBERGABE.md Abschnitt 3 durchgehen (Worum es geht, Aktuell, Apple-Standard, Meine Idee, Meine Empfehlung, Auswahlfenster), je Antwort ein Fall.
+Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md, dann gezielt die Zusammenarbeit (Abschnitte 0 und 1) und die Überschriften der Designrichtlinien; prüfe Modell und Aufwand (Sitzungsdatei) und hole die Repos g811141a/ReiseLogBuch und g811141a/ReiseLogBuch-Import (privat) dazu, wie in der AppDesign-CLAUDE.md unter ‚Arbeitsumgebung‘. Gib das Lagebild und mach mit A-43 Teil 2 weiter: Fälle 32–35 (P1–P4) der Fall-Liste arbeit/A-43 Teil 2 Fall-Liste.md, Text je Fall aus arbeit/A-43 Teil 2 Aufbereitung.md, je Antwort ein Fall – der Fall-Text steht ganz am Anfang der Antwort vor jedem Befehl, dann das Auswahlfenster; danach Abschnitte 1 und 2 angleichen und ‚Fall-Liste Teil 2 ok?‘.
 ```
