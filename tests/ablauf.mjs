@@ -860,12 +860,15 @@ export async function checkGriff(p, { zeit = 2000, where = '' } = {}) {
   s = await g();
   if (s.sicht) E('blendet nach 1,5 s Ruhe nicht aus (F-4)');
   // Ziehen: Mitte, darüber hinaus (Ende, Anfang); Blase; kein Antippen, keine Geste
+  // seit 4.31.0: Griff und Blase blenden über die Deckkraft ein – bis zu 1 s darauf warten (unter voller Last in WebKit nach festen
+  // 150 bzw. 200 ms noch nicht über 0,5; voller Prüflauf 4.31.0, iPad schmal)
+  const bis = async ok => { let z = await g(); for (let i = 0; i < 9 && !ok(z); i++) { await wait(p, 100); z = await g(); } return z; };
   await rolle(p, 80); await wait(p, 150);
-  s = await g();
+  s = await bis(z => z.sicht);
   const x = (s.griff.left + s.griff.right) / 2, h = s.bahn.bottom - s.bahn.top;
   await p.mouse.move(x, (s.griff.top + s.griff.bottom) / 2); await p.mouse.down();
   await p.mouse.move(x, s.bahn.top + h / 2, { steps: 6 }); await wait(p, 200);
-  let z = await g();
+  let z = await bis(z => !z.marke || z.blase?.sicht);
   if (Math.abs(z.y - z.ende / 2) > z.ende * 0.08) E(`in die Mitte gezogen: ${z.y} px statt etwa ${Math.round(z.ende / 2)} px`);
   if (z.marke && (!z.blase?.sicht || z.blase.text !== z.marke)) E(`Blase beim Ziehen ${z.blase?.sicht ? `‚${z.blase.text}‘` : 'nicht zu sehen'}, soll ‚${z.marke}‘ (F-19)`);
   if (!z.marke && z.blase?.sicht) E('Blase ohne Marken (F-19)');
