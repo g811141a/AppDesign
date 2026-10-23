@@ -48,6 +48,8 @@
 - **B – nur Inhalt:** Listen, Fenster-Inhalte und Tabellen wachsen bis AX5; Leisten, Menüs und Knöpfe bleiben fest.
 - **C – begrenzt:** alles wächst, aber nur bis 23 pt (135 %), kein Umbau des Aufbaus – erfüllt Apples 200 % nicht.
 
-## 5. Antworten
+## 5. Antworten (Nutzer 23.10.2026, Sitzung 0035)
 
-(folgt)
+1. Muster zeigt **A, B und C nebeneinander** (A empfohlen), zuerst hell und quer.
+2. Höchstgröße **bis 53 pt** (AX5, alle Stufen wie Apple).
+3. Nächster Schritt: Muster in den Größen 17, 23, 33 und 53 pt mit kleinem Versuch am Gerät (Home-Bildschirm, AX-Stufen, Wechsel bei offener App).
