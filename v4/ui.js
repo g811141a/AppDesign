@@ -1,4 +1,4 @@
-// AppDesign 4.31.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
+// AppDesign 4.32.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
 // Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/fassung/X.Y.Z/ui.js"></script> (feste Fassung, R-10.3)
 // Seit 4.11.0 (R-10.3): ui.js und design.css immer mit ?v=<AppDesign-Version> einbinden (auch in sw.js) und beim Start
 // prüfen, ob genau diese Fassung geladen ist (AD_VERSION hier, --ad-version in design.css).
@@ -19,7 +19,7 @@
 
 'use strict';
 // Version der Bausteine (R-10.3): die App vergleicht sie beim Start mit der benötigten Fassung.
-const AD_VERSION = '4.31.0';
+const AD_VERSION = '4.32.0';
 /* ---------- Icons ---------- */
 
 // Schaltflächen-Icons aus Lucide (ISC-Lizenz), direkt eingebettet, damit die App offline funktioniert.
@@ -1040,8 +1040,10 @@ function openDialog(html, wide = false) {
   dlg.innerHTML = html;
   dlgFest = 0;
   dlg.returnValue = '';
-  if (!dlg.open) showModalQuiet(dlg);
+  const neu = !dlg.open;
+  if (neu) showModalQuiet(dlg);
   placeDialogs();
+  if (neu) blattAuf();   // R-4.6 (seit 4.32.0): im iPhone-Aufbau gleitet das Blatt von unten herein
   dlg.querySelector('.dlg-body')?.scrollTo(0, 0);
   const x = dlg.querySelector('#dlgX');
   // x schließt; wurde etwas geändert, fragt eine Sprechblase, ob die Änderungen verworfen werden sollen.
@@ -1339,7 +1341,7 @@ function mountCap(root) {
 /* ---------- iPhone ---------- */
 
 // Wie Apple: auf dem iPhone (hoch und quer) und in sehr schmalen Fenstern gilt die kompakte Ansicht –
-// eine Seite nach der anderen, Fenster bildschirmfüllend. <html> bekommt dann die Klasse 'phone'.
+// eine Seite nach der anderen, Fenster als Blatt (seit 4.32.0, R-4.6). <html> bekommt dann die Klasse 'phone'.
 // Die App fragt isPhone() und baut ihre Seiten danach; bei einem Wechsel ruft ihr resize-Handler render().
 // Seit 4.28.1 (A-36): die Höhe ohne Tastatur zählt (S-3: verschiebt Safari den sichtbaren Bereich, wird innerHeight kleiner – das
 // iPad galt mit offener Tastatur als iPhone, das Fenster sprang an den linken Rand).
@@ -1711,6 +1713,218 @@ document.addEventListener('keydown', e => {
   else if (!isPhone() && navApp.seite?.moeglich() && navApp.seite.offen()) { e.preventDefault(); navSeite(false); }
 });
 
+/* ---------- Blatt auf dem iPhone (seit 4.32.0, A-61 Teil 2, R-4.6) ---------- */
+
+// Wie iOS 26 (‚Neuer Termin‘, Variante A ‚nur groß‘, Nutzer 23.10.2026; Fall-Liste arbeit/A-61 Teil 2 Fall-Liste.md): im iPhone-Aufbau ist
+// jedes Fenster (#dlg) ein Blatt – es gleitet von unten bis knapp unter die Statusleiste, die Seite dahinter weicht verkleinert und
+// abgedunkelt zurück (quer: volle Höhe, die Seite bleibt). Nach unten ziehen schließt wie das x: am Kopf immer, im Inhalt, wenn er ganz
+// oben steht, ein schnelles Wischen genügt; mit Änderungen seit dem Öffnen (dlgDirty) zieht es sich zäh, federt zurück und fragt am x
+// (R-4.4). Bei offener Tastatur schließt der Zug nach unten zuerst die Tastatur. Antippen der Abdunkelung wirkt wie x. Meldungen (#msg)
+// bleiben kleine Fenster in der Mitte, am iPad bleibt das Fenster in der Mitte. Entschieden nach 8 px, deutlich senkrecht (1,2 × so weit
+// wie waagerecht); waagerecht rollende Bereiche behalten ihr Rollen. Beim Loslassen zählt, wo das Blatt mit dem Tempo auslaufen würde.
+// Je Bild nur translate, scale und opacity (Web-Animation, damit die Prüfungen auf ihr Ende warten); ‚Bewegung reduzieren‘: Überblenden,
+// das Ziehen folgt weiter dem Finger. Das Schließen bleibt sofort (dlg.close, Häkchen): ein Abbild des Blatts gleitet hinaus.
+const BLATT_ENTSCHEID = 8, BLATT_SENKRECHT = 1.2, BLATT_ZAEH = 0.3, BLATT_DUNKEL = 0.3, BLATT_KLEINER = 0.07, BLATT_AUSLAUF = 400;
+const BLATT_KURVE = 'cubic-bezier(.32,.72,0,1)';
+const blattSchleier = document.createElement('div');
+blattSchleier.className = 'blatt-schleier';
+blattSchleier.setAttribute('aria-hidden', 'true');
+document.body.append(blattSchleier);
+let blattY = 0, blattZug = null, blattLauf = null, blattGeistEl = null, blattKlickWeg = false;
+const blattQuer = () => window.matchMedia?.('(orientation: landscape) and (max-height: 500px)').matches;
+// Oberkante des Blatts im sichtbaren Bereich: hoch 10 px unter der Statusleiste, quer 8 px
+const blattOben = () => !isPhone() ? 0 : blattQuer() ? 8 : Math.round(safeRand().top + 10);
+const blattZu = () => Math.max(innerHeight, seitenHoehe()) - blattOben();
+// die Seite dahinter: was fest steht und zu sehen ist (Inhalt bzw. Startliste)
+const blattSeite = () => [document.getElementById('app'), document.getElementById('side')]
+  .filter(e => e && e.getClientRects().length && getComputedStyle(e).position === 'fixed');
+// Bild zum Versatz o (0 = offen, blattZu() = unten hinaus): Blatt, Abdunkeln und die Seite – sie weicht nur hoch zurück
+function blattBild(o) {
+  const zu = blattZu(), q = Math.max(0, Math.min(1, 1 - o / zu)), s = blattQuer() ? 0 : q;
+  return { blatt: `0 ${Math.round(o)}px`, schleier: +(BLATT_DUNKEL * q).toFixed(3), s,
+    seite: { translate: `0px ${(s * Math.max(0, blattOben() - 12)).toFixed(1)}px`, scale: (1 - BLATT_KLEINER * s).toFixed(4) } };
+}
+function blattSetze(o) {
+  blattY = o;
+  const b = blattBild(o), H = document.documentElement;
+  dlg.style.translate = o ? b.blatt : '';
+  blattSchleier.style.opacity = b.schleier;
+  const seite = blattSeite();
+  for (const e of seite) { e.style.translate = b.s ? b.seite.translate : ''; e.style.scale = b.s ? b.seite.scale : ''; e.classList.toggle('blatt-seite', b.s > 0); }
+  H.classList.toggle('blatt-zurueck', b.s > 0 && seite.length > 0);
+}
+// laufende Bewegung an der Stelle anhalten, an der sie gerade ist (Anfassen mitten im Gleiten)
+function blattStopp() {
+  if (!blattLauf) return;
+  const l = blattLauf; blattLauf = null;
+  const t = getComputedStyle(dlg).translate, o = t && t !== 'none' ? parseFloat(t.split(' ')[1]) || 0 : 0;
+  l.anims.forEach(a => a.cancel());
+  document.documentElement.classList.remove('blatt-faehrt');
+  if (dlg.open && isPhone()) blattSetze(o);
+}
+function blattAnimiere(teile, dauer, easing, fertig) {
+  const H = document.documentElement;
+  H.classList.add('blatt-faehrt');
+  const anims = teile.map(([el, von, nach]) => el.animate([von, nach], { duration: dauer, easing, fill: 'forwards' }));
+  const l = { anims };
+  blattLauf = l;
+  anims[0].onfinish = () => {
+    if (blattLauf !== l) return;
+    blattLauf = null;
+    fertig?.();
+    anims.forEach(a => a.cancel());
+    H.classList.remove('blatt-faehrt');
+  };
+}
+// weich zum Versatz nach – Kurve wie iOS (schnell los, lang auslaufend), Dauer nach dem Weg
+function blattFahre(nach, fertig, dauer) {
+  blattStopp();
+  const von = blattY;
+  if (Math.abs(von - nach) < 1) { blattSetze(nach); fertig?.(); return; }
+  dauer = dauer || Math.max(220, Math.min(480, Math.abs(nach - von) * 0.9));
+  const a = blattBild(von), b = blattBild(nach);
+  blattSetze(Math.min(von, nach));   // die Seite weicht schon während der Bewegung zurück (runde Ecken, Hintergrund)
+  blattAnimiere([[dlg, { translate: a.blatt }, { translate: b.blatt }], [blattSchleier, { opacity: a.schleier }, { opacity: b.schleier }],
+    ...blattSeite().map(e => [e, a.seite, b.seite])], dauer, BLATT_KURVE, () => { blattSetze(nach); fertig?.(); });
+}
+// Öffnen (openDialog): von unten herein; ‚Bewegung reduzieren‘: überblenden
+function blattAuf() {
+  blattStopp();
+  if (!dlg.open || !isPhone()) return;
+  document.documentElement.classList.add('blatt');
+  if (navRuhig?.matches) {
+    blattSetze(0);
+    blattAnimiere([[dlg, { opacity: 0 }, { opacity: 1 }], [blattSchleier, { opacity: 0 }, { opacity: blattBild(0).schleier }]], 200, 'ease-out');
+    return;
+  }
+  blattSetze(blattZu());
+  blattFahre(0);
+}
+// iPad-Aufbau (Drehen, breiteres Fenster) oder geschlossen: alles zurück
+function blattAus() {
+  blattStopp();
+  blattY = 0;
+  dlg.style.translate = '';
+  blattSchleier.style.opacity = 0;
+  for (const e of [document.getElementById('app'), document.getElementById('side')]) if (e) { e.style.translate = ''; e.style.scale = ''; e.classList.remove('blatt-seite'); }
+  document.documentElement.classList.remove('blatt', 'blatt-zurueck', 'blatt-zieht');
+}
+// Abbild des Blatts beim Schließen: dlg.close() bleibt sofort (die App baut danach neu auf), das Abbild gleitet hinaus
+function blattGeist() {
+  if (blattGeistEl || !dlg.open || !isPhone() || !document.documentElement.classList.contains('blatt')) return;
+  const r = dlg.getBoundingClientRect();
+  if (r.top >= innerHeight - 1) return;
+  const g = document.createElement('dialog');
+  g.className = `${dlg.className} blatt-geist`;
+  g.setAttribute('aria-hidden', 'true');
+  g.inert = true;
+  for (const n of dlg.childNodes) g.append(n.cloneNode(true));
+  g.querySelectorAll('[id], [name]').forEach(e => { e.removeAttribute('id'); e.removeAttribute('name'); });
+  g.style.cssText = `display:block;position:fixed;inset:auto;margin:0;left:${r.left}px;top:${parseFloat(dlg.style.top) || 0}px;width:${r.width}px;height:${dlg.offsetHeight}px;max-height:none;translate:0 ${Math.round(blattY)}px`;
+  document.body.append(g);
+  const alt = [...dlg.querySelectorAll('*')], neu = [...g.querySelectorAll('*')];
+  alt.forEach((e, i) => { if ((e.scrollTop || e.scrollLeft) && neu[i]) { neu[i].scrollTop = e.scrollTop; neu[i].scrollLeft = e.scrollLeft; } });
+  blattGeistEl = g;
+  const weg = () => { g.remove(); if (blattGeistEl === g) blattGeistEl = null; };
+  const a = navRuhig?.matches ? g.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 200, easing: 'ease-out', fill: 'forwards' })
+    : g.animate([{ translate: `0 ${Math.round(blattY)}px` }, { translate: `0 ${Math.round(blattZu())}px` }], { duration: Math.max(220, Math.min(420, (blattZu() - blattY) * 0.5)), easing: BLATT_KURVE, fill: 'forwards' });
+  a.onfinish = weg; a.oncancel = weg;
+}
+// geschlossen: Abdunkelung und Seite zurück, gleichzeitig mit dem Abbild
+function blattWeg() {
+  const H = document.documentElement;
+  if (!H.classList.contains('blatt')) return;
+  blattZug = null;
+  blattStopp();
+  const von = blattBild(blattY), nach = blattBild(blattZu());
+  H.classList.remove('blatt-zieht');
+  if (!blattSeite().length && !von.schleier) return blattAus();
+  blattAnimiere([[blattSchleier, { opacity: von.schleier }, { opacity: 0 }], ...blattSeite().map(e => [e, von.seite, nach.seite])],
+    navRuhig?.matches ? 200 : 380, navRuhig?.matches ? 'ease-out' : BLATT_KURVE, blattAus);
+}
+const dlgSchliessen = dlg.close.bind(dlg);
+dlg.close = v => { blattGeist(); dlgSchliessen(v); };
+// Häkchen in <form method="dialog">: der Browser schließt nach dem submit-Ereignis
+dlg.addEventListener('submit', e => { if (!e.defaultPrevented && e.target.getAttribute?.('method') === 'dialog') blattGeist(); });
+dlg.addEventListener('close', () => { if (!dlg.open) blattWeg(); });
+// Drehen bzw. anderer Aufbau mit offenem Blatt: bleibt offen in der passenden Form (quer immer volle Höhe), am iPad wieder in der Mitte
+window.addEventListener('resize', () => {
+  if (!dlg.open) return;
+  if (!isPhone()) return blattAus();
+  document.documentElement.classList.add('blatt');
+  if (!blattLauf && !blattZug?.aktiv) blattSetze(blattY);
+});
+const blattX = () => dlg.querySelector('#dlgX');
+// wie das x (Escape, Abdunkelung, Ziehen): mit Änderungen fragt die Sprechblase am x
+function blattWieX() { const x = blattX(); if (x) x.click(); else dlg.close('cancel'); }
+const blattDraussen = e => { if (e.target !== dlg) return false; const r = dlg.getBoundingClientRect();
+  return e.clientY < r.top || e.clientY > r.bottom || e.clientX < r.left || e.clientX > r.right; };
+dlg.addEventListener('click', e => { if (blattDraussen(e) && isPhone() && !blattKlickWeg && !document.querySelector('.pop, .menu')) blattWieX(); });
+window.addEventListener('click', e => { if (blattKlickWeg) { e.preventDefault(); e.stopPropagation(); } }, true);
+// steht der Inhalt unter dem Finger schon ganz oben? (auch Bereiche mit eigenem senkrechten Rollen)
+function blattGanzOben(t) {
+  for (let e = t; e && e !== dlg; e = e.parentElement) if (e.scrollTop > 0 && e.scrollHeight > e.clientHeight + 1) return false;
+  return true;
+}
+const blattFeld = () => { const a = document.activeElement; return dlg.contains(a) && a.matches?.(FELD) ? a : null; };
+dlg.addEventListener('pointerdown', e => {
+  blattZug = null;
+  if (!dlg.open || !isPhone() || !e.isPrimary || e.button > 0 || blattDraussen(e) || document.querySelector('.pop, .menu')) return;
+  if (e.target.closest?.('[data-eigene-geste], input[type=range], .pop, .menu')) return;
+  blattZug = { id: e.pointerId, x0: e.clientX, y0: e.clientY, o: blattY, kopf: !!e.target.closest('.dlg-head'), t: e.target, aktiv: false,
+    spur: [[e.timeStamp, e.clientY]] };
+});
+function blattErlaubt(z, dx, dy) {
+  if (dy <= 0 || Math.abs(dy) <= Math.abs(dx) * BLATT_SENKRECHT) return false;
+  return z.kopf || blattGanzOben(z.t);
+}
+// Ist der Zug entschieden, verhindert touchmove das Rollen (Safari entscheidet sonst selbst, 13)
+dlg.addEventListener('touchmove', e => {
+  const z = blattZug, t = e.touches?.[0];
+  if (!z || !t) return;
+  if (e.cancelable && (z.aktiv || (Math.abs(t.clientY - z.y0) > 1 && blattErlaubt(z, t.clientX - z.x0, t.clientY - z.y0)))) e.preventDefault();
+}, { passive: false });
+window.addEventListener('pointermove', e => {
+  const z = blattZug;
+  if (!z || e.pointerId !== z.id) return;
+  const dx = e.clientX - z.x0, dy = e.clientY - z.y0;
+  if (!z.aktiv) {
+    if (Math.abs(dx) < BLATT_ENTSCHEID && Math.abs(dy) < BLATT_ENTSCHEID) return;
+    // nach unten ziehen schließt die Tastatur (wie iOS) – im gerollten Inhalt rollt er weiter, am Kopf bzw. ganz oben folgt das Blatt
+    if (dy > Math.abs(dx) * BLATT_SENKRECHT) blattFeld()?.blur();
+    if (!blattErlaubt(z, dx, dy)) { blattZug = null; return; }
+    z.aktiv = true;
+    blattStopp();
+    z.o = blattY;
+    document.documentElement.classList.add('blatt-zieht');
+    try { dlg.setPointerCapture(e.pointerId); } catch {}
+  }
+  if (e.cancelable) e.preventDefault();
+  z.spur.push([e.timeStamp, e.clientY]);
+  if (z.spur.length > 8) z.spur.shift();
+  let o = z.o + dy;
+  if (o < 0) o = -Math.pow(-o, 0.7);               // über ‚groß‘ hinaus: Gummiband
+  z.roh = o;                                        // ungebremst – danach wird entschieden
+  if (o > 0 && dlgDirty?.()) o *= BLATT_ZAEH;       // mit Änderungen zäh: es schließt nicht
+  blattSetze(o);
+}, { passive: false });
+function blattLos(e, abbruch) {
+  const z = blattZug;
+  if (!z || e.pointerId !== z.id) return;
+  blattZug = null;
+  if (!z.aktiv) return;
+  document.documentElement.classList.remove('blatt-zieht');
+  blattKlickWeg = true; setTimeout(() => { blattKlickWeg = false; });
+  const spur = z.spur.filter(([t]) => t >= e.timeStamp - 100);
+  const tempo = spur.length > 1 && spur.at(-1)[0] > spur[0][0] ? (spur.at(-1)[1] - spur[0][1]) / (spur.at(-1)[0] - spur[0][0]) : 0;   // px/ms nach unten
+  const wohin = (z.roh ?? blattY) + tempo * BLATT_AUSLAUF, zu = blattZu();
+  if (abbruch || Math.abs(wohin) <= Math.abs(zu - wohin)) { blattFahre(0); return; }
+  if (dlgDirty?.()) { blattFahre(0); setTimeout(() => { if (dlg.open) blattWieX(); }, 260); return; }
+  blattFahre(zu, () => { blattWieX(); if (dlg.open) blattFahre(0); }, Math.max(180, Math.min(360, (zu - blattY) * 0.5)));
+}
+window.addEventListener('pointerup', e => blattLos(e, false), true);
+window.addEventListener('pointercancel', e => blattLos(e, true), true);
+
 /* ---------- Tastatur und sichtbarer Bereich ---------- */
 
 // Bei offener Tastatur verkleinert und verschiebt Safari den sichtbaren Bereich. Kopfzeile, Tabellenkopf
@@ -1746,12 +1960,14 @@ function placeDialogs() {
   // iPad-Fenster (seit 4.29.0, A-63 S-6): oben und unten mindestens 10 px, aber nie unter Statusleiste oder Home-Leiste
   // (bei offener Tastatur liegt die Home-Leiste unter ihr)
   const s = safeRand(), oben = Math.max(10, s.top), unten = Math.max(10, kbOffen() ? 0 : s.bottom);
-  const max = full ? h : h - oben - unten;
+  // R-4.6 (seit 4.32.0): im iPhone-Aufbau ist das Fenster ein Blatt – es beginnt knapp unter der Statusleiste (blattOben)
+  const blatt = full ? blattOben() : 0;
+  const max = full ? h - blatt : h - oben - unten;
   root.setProperty('--dlg-max', Math.max(200, !full && dlgFest ? Math.min(max, dlgFest) : max) + 'px');
   [dlg, msg].forEach(d => {
     if (!d.open) return;
-    // iPhone: das Fenster füllt den sichtbaren Bereich (bei offener Tastatur bis zur Tastatur).
-    if (full && d === dlg) { d.style.margin = '0'; d.style.bottom = 'auto'; d.style.top = Math.round(top) + 'px'; return; }
+    // iPhone: das Blatt reicht bis zum unteren Rand des sichtbaren Bereichs (bei offener Tastatur bis zur Tastatur, R-4.5).
+    if (full && d === dlg) { d.style.margin = '0'; d.style.bottom = 'auto'; d.style.top = Math.round(top + blatt) + 'px'; return; }
     // Fenster im sichtbaren Bereich zentrieren (bei offener Tastatur oberhalb der Tastatur). Seit 4.28.1 (A-36): steht es dort
     // schon ganz, bleibt es stehen – auch nach dem Schließen der Tastatur, solange ein Feld darin den Fokus hat.
     d.style.margin = '0 auto';
