@@ -11,7 +11,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Prio | Thema | bereit seit |
 |---|---|---|---|
-| – | – | zurzeit nichts gesammelt | – |
+| A-69 | 1 | **R-7.4 erweitert – aktueller Eintrag oben (Nutzer 23.10.2026, aus Reiselogbuch T-98):** legt die App statt des nächsten offenen einen aktuellen Eintrag fest (z. B. heute), steht er direkt unter dem Kopf, aber ohne Hervorhebung – hervorgehoben wird nur Offenes, nie Künftiges. `checkOpenAt` mit `markiert` (Vorgabe = `want`, `null` = nichts hervorgehoben). So macht es Apple: Kalender öffnet bei heute, ohne Flächenfarbe; Erinnerungen hebt nur Überfälliges hervor. Fall-Liste `arbeit/A-69 T-98 Fall-Liste.md` | 23.10.2026 |
 
 
 ## 1. Auf iPad und iPhone prüfen
