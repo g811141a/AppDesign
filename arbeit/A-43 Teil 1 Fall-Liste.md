@@ -95,3 +95,7 @@ gelten die Grundregeln (`pruefe.mjs`).
 1. ‚Automatisch gespeichert um …‘ wird **nicht** angesagt (V11).
 2. **Keine Prüfung mit VoiceOver am Gerät** – VoiceOver wird nur automatisch geprüft (Rollen, Namen, Fokus, Sperre, Ansage-Bereiche).
 3. Fall-Liste: **nicht ok** – Rückmeldung im Chat folgt.
+
+## 4. Durchsprache Fall für Fall (Nutzer 23.10.2026)
+
+- **V1** übernommen: R-1.8, `checkNamen` in hig.mjs (heute alle benannt, Prüfung fehlt).
