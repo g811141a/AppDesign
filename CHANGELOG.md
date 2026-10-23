@@ -27,6 +27,8 @@ AppDesign 4.31.0 · Designrichtlinie allgemein 4.31.0 · Zusammenarbeit allgemei
   (S-10); `checkCapital` ergänzt (Korrektur von Hand); neu `checkSpaces` (Tippen, Einfügen, Suchfeld). **Rot gegen 4.30.2**
   (41 bzw. 6 Meldungen), grün mit dem Bau. `checkSideToggle` wartet auf das Ende der Bewegung; `ziehe` in `checkNavigation` hebt vor
   jedem Zug eine Textmarkierung auf (WebKit begann sonst mit der Maus ein Ziehen-und-Ablegen).
+  `checkGriff` wartet bis zu 1 s auf das Einblenden des Schnellroll-Griffs (unter voller Last in WebKit lag die Deckkraft nach
+  festen 150 ms noch unter 0,5 – voller Prüflauf, iPad schmal und quer; einzeln immer grün).
 - **Designrichtlinie allgemein 4.31.0:** 8, 15.4, Katalog R-5.2 und R-7.5.
 
 ## 4.30.2 – 23.10.2026

@@ -843,8 +843,11 @@ export async function checkGriff(p, { zeit = 2000, where = '' } = {}) {
   await rolle(p, 0); await wait(p, 1800);
   let s = await g();
   if (s.sicht) E('ohne Rollen sichtbar (F-4)');
+  // seit 4.31.0: bis zu 1 s auf das Einblenden warten (Übergang der Deckkraft) – unter voller Last in WebKit war der Griff nach festen
+  // 150 ms noch nicht über 0,5 Deckkraft (voller Prüflauf 4.31.0, iPad schmal und quer), einzeln immer
   await rolle(p, 40); await wait(p, 150);
   s = await g();
+  for (let i = 0; i < 9 && !s.sicht && s.lang >= 3; i++) { await wait(p, 100); s = await g(); }
   if (s.lang < 3) { if (s.sicht || s.da) E(`bei ${s.lang.toFixed(1)} Höhen Inhalt da – erst ab drei (F-18)`); return errors; }
   if (!s.sicht) { E(`erscheint beim Rollen nicht (${s.lang.toFixed(1)} Höhen Inhalt, F-4)`); return errors; }
   // F-17: Bahn unter Kopf- bzw. Suchzeile, endet über der Kapsel in voller Höhe (zwei Pfeile + 8 px), im sicheren Bereich
