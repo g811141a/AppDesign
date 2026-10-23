@@ -105,4 +105,4 @@ Textgrößen 14, 17, 23, 33 und 53 px (P1); nach jedem Fall gelten die Grundrege
 
 ## 4. Durchsprache Fall für Fall
 
-(folgt)
+- **R1** übernommen (Sitzung 0036): neue Regel **R-1.10** ‚Textgröße folgt dem Gerät‘ in Thema 1 (neben R-1.8, R-1.9) – Schrift nach der Einstellung ‚Textgröße‘ (14–53 pt), alle Textstile nach Apples Tabelle, Leisten nur bis 23 pt, ab 28 pt (iPhone hoch ab 21 pt) Nebeneinanderliegendes untereinander, nichts ragt hinaus oder überlappt, Wechsel sofort ohne Neuladen, Ausgabe unverändert (R-6.2); Prüfung hig.mjs – `checkText` in 14, 17, 23, 33, 53 px; Gerät: Aussehen in mehreren Stufen, Wechsel bei offener App. Werte-Tabelle (Stile × Stufen) in Designrichtlinie Abschnitt 3 (Spalte ‚Bau‘); R-10.2 und R-1.3 bleiben als Untergrenzen.
