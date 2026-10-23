@@ -1,9 +1,9 @@
 // AppDesign 4.12.0 · Ablauf-Prüfungen für Regeln, die eine Handlung brauchen (Designrichtlinie allgemein, Abschnitt 17):
-// R-1.6 Messmodus (seit 4.26.0) · R-4.5 Feld über der Tastatur (seit 4.28.0), Tastatur ohne Springen (seit 4.28.1) · R-2.3 Suche (seit 4.23.0 auch in der zentralen Liste, seit 4.25.0 mehrere Wörter und „…“, seit 4.25.1 Suchfeld bleibt beim Tippen) · A-22 Lupe am Ende der Kapsel · R-4.4 Fenster-Kopfzeile · R-5.2 Texteingabe · R-5.3 Fehlermeldungen · R-5.5 Eingabetaste (seit 4.19.0) · R-5.6 ⓧ in Feldern (seit 4.29.0) · R-6.4 Ausgabe und Vorschau · R-7.3 Liste steht still (seit 4.18.0) · R-7.4 Position beim Öffnen und R-8.1 Seitenleiste ein/aus (seit 4.21.0) · R-3.2 Kapsel nur mit wirksamen Pfeilen und Schnellroll-Griff, R-7.5 Navigation und Gesten (seit 4.30.0).
+// R-1.6 Messmodus (seit 4.26.0) · R-4.5 Feld über der Tastatur (seit 4.28.0), Tastatur ohne Springen (seit 4.28.1) · R-2.3 Suche (seit 4.23.0 auch in der zentralen Liste, seit 4.25.0 mehrere Wörter und „…“, seit 4.25.1 Suchfeld bleibt beim Tippen) · A-22 Lupe am Ende der Kapsel · R-4.4 Fenster-Kopfzeile · R-4.6 Blatt auf dem iPhone (seit 4.32.0) · R-5.2 Texteingabe · R-5.3 Fehlermeldungen · R-5.5 Eingabetaste (seit 4.19.0) · R-5.6 ⓧ in Feldern (seit 4.29.0) · R-6.4 Ausgabe und Vorschau · R-7.3 Liste steht still (seit 4.18.0) · R-7.4 Position beim Öffnen und R-8.1 Seitenleiste ein/aus (seit 4.21.0) · R-3.2 Kapsel nur mit wirksamen Pfeilen und Schnellroll-Griff, R-7.5 Navigation und Gesten (seit 4.30.0).
 // Jede Funktion bekommt eine Playwright-Seite und gibt eine Liste von Fehlern zurück (leer = in Ordnung), je mit Regelnummer.
 // Einbinden im Prüfskript der App:  import { checkSearch, checkDialogHead } from '../../AppDesign/tests/ablauf.mjs';
 //                                   fehler.push(...await checkSearch(page, { term: 'Sydney' }));
-import { ROLL, rolle, rollstand, navFertig } from './pruefe.mjs';
+import { ROLL, rolle, rollstand, navFertig, rollRuht } from './pruefe.mjs';
 import { safariWischen } from './safari.mjs';
 const wait = (p, ms = 250) => p.waitForTimeout(ms);
 // R-2.3 (seit 4.25.1, A-24): beim Tippen bleibt das Suchfeld dasselbe Element und behält den Fokus – sonst schließt Safari am
@@ -740,11 +740,11 @@ export async function checkFab(p, { top = '.fab button:first-child', end = '.fab
   const fabH = await p.evaluate(() => { const b = [...document.querySelectorAll('.fab button')].find(x => x.offsetHeight); return b ? 2 * b.offsetHeight + 1 : 97; });
   await rolle(p, 0); await wait(p, 200);
   if (!await p.locator(end).isVisible()) { E('Vorbereitung: ganz oben fehlt ‚Ans Ende‘ (Inhalt zu kurz für die Prüfung)'); return errors; }
-  await p.click(end); await wait(p, 1200);
+  await p.click(end); await wait(p, 300); await rollRuht(p);
   let s = await rollstand(p);
   if (s.rest > 1) E(`‚Ans Ende‘ rollt den Inhalt nicht ganz nach unten (${s.rest} px vor dem Ende)`);
   if (s.fenster) E(`‚Ans Ende‘ rollt die Seite (scrollY ${s.fenster}) statt des Inhalts`);
-  await p.click(top); await wait(p, 1200);
+  await p.click(top); await wait(p, 300); await rollRuht(p);
   s = await rollstand(p);
   if (s.y > 1) E(`‚Nach oben‘ rollt den Inhalt nicht ganz nach oben (${s.y} px)`);
   if (s.fenster) E(`‚Nach oben‘ rollt die Seite (scrollY ${s.fenster}) statt des Inhalts`);
@@ -1092,7 +1092,7 @@ export async function checkTastaturStill(p, { field, vorher = null, wechsel = nu
     if (r.offen) E('B-8 nach ↑ ist die Tastatur noch offen');
     if (r.y > 1) E(`B-8 ↑ bei offener Tastatur rollt nicht ganz nach oben (scrollTop ${r.y}) – zweites Antippen nötig`);
     // B-7: danach ↓ – der Inhalt endet am Ende, kein Platz bleibt darunter
-    await p.tap(kapsel.ende); await wait(p, 1200);
+    await p.tap(kapsel.ende); await wait(p, 300); await rollRuht(p);
     const e = await p.evaluate(() => { const c = document.querySelector('#app > .rolle'), pl = parseFloat(c.style.getPropertyValue('--platz')) || 0;
       return { y: Math.round(c.scrollTop), max: Math.round(c.scrollHeight - c.clientHeight - pl), platz: pl }; });
     if (e.platz) E(`B-7 nach ↑ und ↓ steht noch ${e.platz} px Platz unter dem Inhalt`);

@@ -1341,7 +1341,7 @@ function mountCap(root) {
 /* ---------- iPhone ---------- */
 
 // Wie Apple: auf dem iPhone (hoch und quer) und in sehr schmalen Fenstern gilt die kompakte Ansicht –
-// eine Seite nach der anderen, Fenster bildschirmfüllend. <html> bekommt dann die Klasse 'phone'.
+// eine Seite nach der anderen, Fenster als Blatt (seit 4.32.0, R-4.6). <html> bekommt dann die Klasse 'phone'.
 // Die App fragt isPhone() und baut ihre Seiten danach; bei einem Wechsel ruft ihr resize-Handler render().
 // Seit 4.28.1 (A-36): die Höhe ohne Tastatur zählt (S-3: verschiebt Safari den sichtbaren Bereich, wird innerHeight kleiner – das
 // iPad galt mit offener Tastatur als iPhone, das Fenster sprang an den linken Rand).
@@ -1749,8 +1749,9 @@ function blattSetze(o) {
   const b = blattBild(o), H = document.documentElement;
   dlg.style.translate = o ? b.blatt : '';
   blattSchleier.style.opacity = b.schleier;
-  for (const e of blattSeite()) { e.style.translate = b.s ? b.seite.translate : ''; e.style.scale = b.s ? b.seite.scale : ''; }
-  H.classList.toggle('blatt-zurueck', b.s > 0);
+  const seite = blattSeite();
+  for (const e of seite) { e.style.translate = b.s ? b.seite.translate : ''; e.style.scale = b.s ? b.seite.scale : ''; e.classList.toggle('blatt-seite', b.s > 0); }
+  H.classList.toggle('blatt-zurueck', b.s > 0 && seite.length > 0);
 }
 // laufende Bewegung an der Stelle anhalten, an der sie gerade ist (Anfassen mitten im Gleiten)
 function blattStopp() {
@@ -1805,7 +1806,7 @@ function blattAus() {
   blattY = 0;
   dlg.style.translate = '';
   blattSchleier.style.opacity = 0;
-  for (const e of [document.getElementById('app'), document.getElementById('side')]) if (e) { e.style.translate = ''; e.style.scale = ''; }
+  for (const e of [document.getElementById('app'), document.getElementById('side')]) if (e) { e.style.translate = ''; e.style.scale = ''; e.classList.remove('blatt-seite'); }
   document.documentElement.classList.remove('blatt', 'blatt-zurueck', 'blatt-zieht');
 }
 // Abbild des Blatts beim Schließen: dlg.close() bleibt sofort (die App baut danach neu auf), das Abbild gleitet hinaus

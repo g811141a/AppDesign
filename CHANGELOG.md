@@ -26,6 +26,9 @@ AppDesign 4.32.0 · Designrichtlinie allgemein 4.32.0 · Zusammenarbeit allgemei
   `checkOpenAt` mit `markiert` (`null` = oben, nichts hervorgehoben; Gegenprobe A3 im Reiselogbuch). Die Grundregel R-2.4 misst
   die Knopfhöhe ohne Verkleinerung (`offsetHeight`) – hinter dem Blatt ist die Leiste um 7 % kleiner; `navFertig` wartet auch auf
   das Blatt. **Rot gegen 4.31.0 / Reiselogbuch 3.29.0** bei der Startposition F5–F11 (84 Meldungen), grün mit dem Bau.
+  Neu `rollRuht` (`pruefe.mjs`): `checkFab` wartet nach ‚Nach oben / Ans Ende‘, bis das Rollen ruht, statt fest 1,2 s – die
+  Prüfumgebung bringt jetzt Chrome 153, das lange Wege in gut 1,2 s rollt und unter Last zeitweise anhält; auch Reiselogbuch 3.29.0
+  war damit rot (die App rollt richtig bis ans Ende).
 - **Designrichtlinie allgemein 4.32.0:** 7, 13 (Position beim Öffnen, Blatt ziehen), 15.17, Katalog R-4.5, R-4.6 und R-7.4.
 
 ## 4.31.0 – 23.10.2026

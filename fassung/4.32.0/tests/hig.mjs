@@ -215,9 +215,9 @@ const found = new Map(), icons = new Map();
       // R-9.1 Backup-Kachel immer da, sobald es Einträge gibt
       if (side && vis(side) && side.querySelector('.side-row') && !side.querySelector('.bhint')) R('R-9.1', 'Backup-Kachel fehlt in der Seitenleiste');
       if (document.querySelector('.pnav-head') && document.querySelector('.irow') && !document.querySelector('.bnote')) R('R-9.1', 'Backup-Kachel fehlt in der Startliste');
-      // R-4.5 Fenster auf dem iPhone bildschirmfüllend
+      // R-4.5 Fenster auf dem iPhone bildschirmbreit (seit 4.32.0 als Blatt, R-4.6 – Lage und Höhe prüft checkSheet)
       const dl = document.getElementById('dlg');
-      if (phone && dl?.open && Math.abs(dl.getBoundingClientRect().width - innerWidth) > 2) R('R-4.5', 'Fenster nicht bildschirmfüllend');
+      if (phone && dl?.open && Math.abs(dl.getBoundingClientRect().width - innerWidth) > 2) R('R-4.5', 'Fenster nicht bildschirmbreit');
       // R-3.2 Nach oben / Ans Ende in einer senkrechten Kapsel
       document.querySelectorAll('.fab').forEach(f => { if (vis(f) && parseFloat(cs(f).borderTopLeftRadius) < 10) R('R-3.2', 'Nach oben / Ans Ende nicht in einer Kapsel'); });
       // R-3.2 (seit 4.27.1, A-33): die Kapsel überdeckt nie Kopf- oder Suchzeile (Leisten und feste Zeilen des Rahmens)

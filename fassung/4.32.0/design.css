@@ -487,7 +487,7 @@ html.natsw .check.sw input[switch] { -webkit-appearance: auto; appearance: auto;
 /* ---------- iPhone (kompakte Breite) – seit 4.1.0 ----------
    html.phone (setzt ui.js / applyLayout): iPhone hoch und quer sowie sehr schmale Fenster (unter 700 px breit
    oder unter 500 px hoch). Wie Apple (Notizen, iOS 26): eine Seite nach der anderen mit großem Titel,
-   runder Zurück-Knopf ohne Text, Suche unten, Fenster bildschirmfüllend, Abfragen als Sprechblase am Knopf. */
+   runder Zurück-Knopf ohne Text, Suche unten, Fenster als Blatt (seit 4.32.0, R-4.6), Abfragen als Sprechblase am Knopf. */
 html.phone body { padding-bottom: calc(var(--safe-bottom) + 120px); }
 html.phone body:has(.bnote) { padding-bottom: calc(var(--safe-bottom) + 150px); }
 html.phone .rolle::after { height: calc(var(--safe-bottom) + 120px + var(--platz, 0px)); }   /* seit 4.27.1 Platzhalter statt Innenabstand (A-33) */
@@ -552,7 +552,7 @@ html.phone body { padding-top: var(--pnav-h, 60px); }
   background: var(--focus); box-shadow: var(--float); font-size: 13px; color: var(--ink); }
 .bbar .bnote > div { flex: 1 1 160px; }
 .bbar .bnote button { font-size: 17px; }
-/* Fenster auf dem iPhone bildschirmfüllend; Kopfzeile kompakt, Titel einzeilig */
+/* Fenster auf dem iPhone als Blatt (R-4.6); Kopfzeile kompakt, Titel einzeilig */
 /* R-4.6 (seit 4.32.0, A-61 Teil 2): das Fenster ist ein Blatt – von knapp unter der Statusleiste (ui.js blattOben) bis zum unteren Rand
    bzw. zur Tastatur, oben runde Ecken; die Seite dahinter weicht verkleinert zurück (html.blatt-zurueck), abgedunkelt wird mit
    .blatt-schleier statt ::backdrop (damit Ziehen und Abdunkeln zusammen laufen). .blatt-geist = Abbild beim Schließen. */
@@ -565,7 +565,7 @@ html.blatt .blatt-schleier { display: block; }
 .blatt-geist { z-index: 46; pointer-events: none; overflow: hidden; }
 html.blatt-zurueck { background: #000; }
 html.blatt-zurueck body { background: transparent; }
-html.blatt-zurueck :is(#app, #side) { transform-origin: 50% 0; border-radius: 12px; overflow: hidden; background: var(--bg); }
+html.blatt-zurueck .blatt-seite { transform-origin: 50% 0; border-radius: 12px; overflow: hidden; background: var(--bg); }
 html.blatt-zieht, html.blatt-zieht * { -webkit-user-select: none; user-select: none; }
 html.phone #dlg .dlg-head { touch-action: none; }
 html.phone #dlg .dlg-body { overscroll-behavior: none; }
