@@ -58,7 +58,7 @@ das Ziehen folgt weiter dem Finger. Je Bild nur `transform` und `opacity` (Web-A
 | B7 | Waagerecht ziehen (auch in der Vorschau) | Blatt bleibt | ja |
 | B8 | Bearbeiten mit Änderung: weit nach unten ziehen | zäh, federt zurück, Sprechblase ‚Änderungen verwerfen‘ / ‚Weiter bearbeiten‘ | ja |
 | B9 | Bearbeiten mit Änderung: x | Sprechblase; ‚Änderungen verwerfen‘ schließt, ‚Weiter bearbeiten‘ bleibt | ja |
-| B10 | Erfassen mit Änderung: ziehen | schließt (automatisch gespeichert) | ja (B3/B6) |
+| B10 | Erfassen mit Änderung: ziehen (auch auf einem Feld bei offener Tastatur) | wie B8: Tastatur zu, federt zurück, Sprechblase – automatisch gespeichert wird trotzdem, ‚Änderungen verwerfen‘ stellt den Zustand beim Öffnen her (R-4.4, G-7) | ja (Safari-Modell) |
 | B11 | Abdunkelung oben antippen | wie x | ja |
 | B12 | Escape | wie x | ja |
 | B13 | B: am Griff nach oben | groß, Seite weicht zurück | ja |
@@ -92,3 +92,18 @@ das Ziehen folgt weiter dem Finger. Je Bild nur `transform` und `opacity` (Web-A
   beim Fokus rollt es das Feld in die obere Hälfte und gibt ihm einen neuen Fokus (S-8, wie ui.js), B springt dabei auf groß;
   ein Zug nach unten schließt die Tastatur, auch auf einem Feld; iPhone quer mit niedrigem Fensterkopf (R-2.4).
 - **7.1 und 7.2 (B):** halb hoch öffnen, beim Feld ganz nach oben und auf halbe Höhe zurückfedern ist das vorgesehene Verhalten von B.
+
+## 6. Rückmeldung 2 am Gerät (Nutzer 23.10.2026, Sitzung 0034) und Nachbesserung
+
+- **A: alles ok bis auf 3;** **B: alles ok.** **Gewählt: A** (Empfehlung Claude), nach der Nachbesserung.
+- **A 3 nicht ok:** ‚Tag erfassen‘, etwas ändern, auf einem Feld nach unten ziehen – Tastatur und Blatt gingen zu, ohne die Rückfrage
+  ‚Änderungen verwerfen‘.
+- **Ursache:** Das Muster schützte nur ‚Reiselogbuch bearbeiten‘ (B10 nahm an, Erfassen schließe wegen des automatischen Speicherns
+  sofort). In der App fragt x aber auch beim Erfassen (R-4.4, G-7: ‚Änderungen verwerfen‘ stellt den Zustand beim Öffnen her) – Ziehen
+  muss sich wie x verhalten. So macht es Apple: ‚Neuer Termin‘ mit Änderung federt beim Ziehen zurück und fragt.
+- **Warum die Prüfung es übersah:** sie prüfte Ziehen mit Änderung nur in ‚Bearbeiten‘ und übernahm B10 ungeprüft aus der Annahme.
+- **Nachgebaut:** Prüfung ‚Tastatur Erfassen mit Änderung‘ (Feld antippen, tippen, auf dem Feld nach unten ziehen; dann x) – rot
+  gegen das Muster von 0033 (A, B, hoch und quer, Chromium und WebKit), grün jetzt.
+- **Behoben:** jedes Fenster mit Änderungen seit dem Öffnen ist geschützt (nur die Vorschau nicht) – Ziehen federt zurück und fragt.
+- **Dieselbe Lücke anderswo:** beim Bau muss `checkSheet` B8 bis B10 für jedes Fenster mit Eingaben prüfen (Erfassen, Bearbeiten,
+  Neues Reiselogbuch …), nicht nur für eines.

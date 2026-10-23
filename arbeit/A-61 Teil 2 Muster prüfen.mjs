@@ -145,6 +145,29 @@ for (const [bn, browser] of [['chromium', chromium], ['webkit', webkit]]) {
           feld: r && [Math.round(r.top - vv.offsetTop), Math.round(r.bottom - vv.offsetTop)], offen: document.getElementById('blatt').classList.contains('offen'),
           rolle: document.getElementById('binhalt').scrollTop };
       });
+      // Rückmeldung 2 (Nutzer 23.10.2026, A Schritt 3): Tag erfassen, Feld antippen, tippen, auf dem Feld nach unten ziehen – Tastatur
+      // zu, das Blatt federt zurück und fragt wie x (R-4.4: ‚Änderungen verwerfen‘ stellt den Zustand beim Öffnen her, auch beim Erfassen)
+      {
+        const tz = `${t} Tastatur Erfassen mit Änderung`;
+        await oeffne('erfassen');
+        await p.locator('#binhalt input').first().click(); await p.waitForTimeout(500);
+        await p.keyboard.type(' 🌧'); await p.waitForTimeout(100);
+        let k = await sicht();
+        ok(k.tastatur, `${tz}: Tastatur geht nicht auf`);
+        await p.evaluate(() => { document.getElementById('binhalt').scrollTop = 0; });
+        const f = await p.locator('#binhalt input').first().boundingBox();
+        await ziehe(p, w / 2, f.y + f.height / 2, w / 2, h - 10); await p.waitForTimeout(300);
+        k = await sicht(); s = await zustand(p);
+        ok(!k.tastatur, `${tz}: auf dem Feld nach unten – Tastatur bleibt offen`);
+        ok(k.offen && s.pop, `${tz}: auf dem Feld nach unten – Blatt ${k.offen ? 'offen' : 'zu'}, Rückfrage ${s.pop ? 'da' : 'fehlt'}`);
+        if (k.offen && s.pop) { await p.click('#weiter'); await ruhe(p); }
+        if ((await zustand(p)).offen) {
+          await p.click('#bx'); await ruhe(p);
+          ok((await zustand(p)).pop, `${tz}: x mit Änderung fragt nicht`);
+          await p.click('#verwerfen'); await ruhe(p);
+        }
+        ok(await zu(p), `${tz}: ‚Änderungen verwerfen‘ schließt nicht`);
+      }
       for (const zug of ['kopf', 'inhalt']) {
         const tz = `${t} Tastatur ${zug}`;
         await oeffne('bearbeiten');

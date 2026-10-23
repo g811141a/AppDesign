@@ -12,7 +12,8 @@
    A     = nur ‚groß‘ (wie ‚Neuer Termin‘): Blatt von unten mit runden Ecken, die Seite weicht verkleinert zurück. Nach unten ziehen
            schließt – am Kopf oder im Inhalt, wenn er ganz oben steht. Mit ungesicherten Änderungen federt es zurück und fragt (R-4.4).
    B     = ‚mittel‘ und ‚groß‘ mit Griff: öffnet halb hoch als Glas; nach oben ziehen oder ein Feld antippen → groß; nach unten → mittel
-           bzw. zu. Erfassen speichert automatisch und schließt beim Ziehen sofort.
+           bzw. zu. Mit Änderungen federt es zurück und fragt – auch beim Erfassen (speichert automatisch, ‚Änderungen verwerfen‘ stellt
+           den Zustand beim Öffnen her).
    iPhone quer (unter 500 px hoch): wie Apple immer volle Höhe, keine Stufen. Je Bild nur transform und opacity (A-59). Nur hell (0 Nr. 6). */
 :root { --bg: #f2f2f7; --card: #fff; --line: #d1d1d6; --txt: #000; --sub: #6e6e73; --blue: #007aff; --red: #ff3b30; --btn: #f9f9f9;
   --btn-rim: #fff; --float: 0 3px 28px rgba(0,0,0,.16); --sl: env(safe-area-inset-left); --sr: env(safe-area-inset-right);
@@ -125,7 +126,7 @@ const V = ['heute', 'a', 'b'].includes(Q.get('v')) ? Q.get('v') : 'a';
 const NAMEN = { heute: 'Heute', a: 'A', b: 'B' };
 const TEXT = {
   heute: '<b>Heute (15.17):</b> Auf dem iPhone füllt das Fenster den ganzen Bildschirm. Schließen nur mit x, Häkchen oder Escape.',
-  a: '<b>Variante A – nur ‚groß‘ (wie ‚Neuer Termin‘):</b> Das Fenster kommt als Blatt von unten, die Seite weicht verkleinert zurück. <b>Nach unten ziehen schließt</b> – am Kopf oder im Inhalt, wenn er ganz oben steht. Mit Änderungen (‚Reiselogbuch bearbeiten‘) federt es zurück und fragt.',
+  a: '<b>Variante A – nur ‚groß‘ (wie ‚Neuer Termin‘):</b> Das Fenster kommt als Blatt von unten, die Seite weicht verkleinert zurück. <b>Nach unten ziehen schließt</b> – am Kopf oder im Inhalt, wenn er ganz oben steht. Mit Änderungen (Erfassen und Bearbeiten) federt es zurück und fragt wie x.',
   b: '<b>Variante B – ‚mittel‘ und ‚groß‘ mit Griff:</b> Das Blatt öffnet halb hoch als Glas. <b>Nach oben ziehen</b> oder ein Feld antippen → groß; <b>nach unten ziehen</b> → halb bzw. zu. Mit Änderungen federt es zurück und fragt.'
 };
 H.classList.add('v-' + V);
@@ -137,7 +138,7 @@ const tagName = (i, lang) => { const d = new Date(2026, 2, 2 + i); return `${WT[
 const PROG = i => `${ORTE[Math.floor(i / 3) % ORTE.length]}: Spaziergang durch die Altstadt\nMittagessen in einer kleinen Nudelküche\nAm Abend Onsen`;
 function seiteBauen() {
   let h = `<p class="hinweis">${TEXT[V]}</p>
-    <div class="kachel" data-art="erfassen" data-tag="0" role="button">${ic('calendar-plus').replace('class="i"', 'class="i vorn"')}<div><b>Tag erfassen</b><small>Erfassungsfenster – speichert automatisch</small></div>${ic('chevron-right')}</div>
+    <div class="kachel" data-art="erfassen" data-tag="0" role="button">${ic('calendar-plus').replace('class="i"', 'class="i vorn"')}<div><b>Tag erfassen</b><small>Erfassungsfenster – mit Änderungen fragt es</small></div>${ic('chevron-right')}</div>
     <div class="kachel" data-art="bearbeiten" role="button">${ic('pencil').replace('class="i"', 'class="i vorn"')}<div><b>Reiselogbuch bearbeiten</b><small>Bearbeiten – mit Änderungen fragt es</small></div>${ic('chevron-right')}</div>
     <div class="kachel" data-art="vorschau" role="button">${ic('share').replace('class="i"', 'class="i vorn"')}<div><b>Vorschau</b><small>breiter Inhalt, seitlich rollen</small></div>${ic('chevron-right')}</div>`;
   for (let i = 0; i < 16; i++) h += `<div class="box" data-art="erfassen" data-tag="${i}" role="button"><h2>Tag ${i + 1} · ${tagName(i, true)}</h2>
@@ -173,8 +174,9 @@ $('binhalt').addEventListener('input', () => {
   geaendert = true; $('bok').classList.add('blau');
   if (art === 'erfassen') { const d = new Date(); $('gespeichert').textContent = `Automatisch gespeichert um ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`; }
 });
-// geschützt: ungesicherte Änderungen – Wischen schließt nicht, sondern federt zurück und fragt (Erfassen speichert automatisch)
-const geschuetzt = () => art === 'bearbeiten' && geaendert;
+// geschützt: Änderungen seit dem Öffnen – Wischen schließt nicht, sondern federt zurück und fragt wie x (R-4.4), auch beim Erfassen:
+// dort wird automatisch gespeichert, ‚Änderungen verwerfen‘ stellt aber den Zustand beim Öffnen her (Rückmeldung 2, 23.10.2026)
+const geschuetzt = () => art !== 'vorschau' && geaendert;
 // Maße (15.17): iPhone unter 700 px Breite oder 500 px Höhe; quer = iPhone unter 500 px Höhe (immer volle Höhe)
 const istPhone = () => innerWidth < 700 || innerHeight < 500;
 let M = { vh: 0, T: 0, mT: 0, st: 0, kb: 0, vt: 0 };
