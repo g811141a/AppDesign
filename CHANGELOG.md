@@ -22,7 +22,9 @@ AppDesign 4.32.0 · Designrichtlinie allgemein 4.32.0 · Zusammenarbeit allgemei
   weiter sofort – hinaus gleitet ein Abbild des Blatts (`.blatt-geist`). Die App braucht nichts zu ändern.
 - **A-69 – R-7.4 erweitert (13):** legt die App statt des nächsten offenen einen aktuellen Eintrag fest (z. B. heute), steht er
   ebenso direkt unter dem Kopf, aber ohne Hervorhebung – hervorgehoben wird nur Offenes, nie Künftiges.
-- **Prüfungen:** neu `checkSheet` (B1–B12, B17, B18, B21, B22, B24; B8–B10 je Fenster mit Eingaben, B23 über `checkListStill`);
+- **Prüfungen:** neu `checkSheet` (B1–B12, B17, B18, B21, B22, B24; B8–B10 je Fenster mit Eingaben, B23 über `checkListStill`;
+  das schnelle Wischen B4 als Zeigerereignisse in einem Zug, damit Last das Tempo nicht verfälscht); `checkDialogHead` wartet, bis
+  das Blatt ruht;
   `checkOpenAt` mit `markiert` (`null` = oben, nichts hervorgehoben; Gegenprobe A3 im Reiselogbuch). Die Grundregel R-2.4 misst
   die Knopfhöhe ohne Verkleinerung (`offsetHeight`) – hinter dem Blatt ist die Leiste um 7 % kleiner; `navFertig` wartet auch auf
   das Blatt. **Rot gegen 4.31.0 / Reiselogbuch 3.29.0** bei der Startposition F5–F11 (84 Meldungen), grün mit dem Bau.

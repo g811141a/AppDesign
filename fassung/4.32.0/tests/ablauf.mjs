@@ -1574,7 +1574,21 @@ export async function checkSheet(p, { open, change = null, field = null, where =
   // Ziehen mit dem Zeiger: langsam (danach still, Tempo 0) oder schnell (kurz und ohne Pause)
   const zieh = async ({ x, y }, dx, dy, schnell = false) => {
     await p.mouse.move(x, y); await p.mouse.down();
-    if (schnell) { await p.mouse.move(x + dx / 3, y + dy / 3); await p.mouse.move(x + dx, y + dy); }
+    if (schnell) {
+      // in einem Zug in der Seite (je 8 ms): unter Last kamen Mausbewegungen so verzögert an, dass beim Loslassen kein Tempo mehr blieb
+      await p.mouse.up();
+      const mitten = await p.evaluate(({ x, y, dx, dy }) => {
+        const d = document.getElementById('dlg'), el = document.elementFromPoint(x, y), opt = (cx, cy) => ({ bubbles: true, cancelable: true, composed: true, isPrimary: true, pointerId: 77, pointerType: 'touch', button: 0, clientX: cx, clientY: cy });
+        const warte = ms => { const t = performance.now(); while (performance.now() - t < ms); };
+        el.dispatchEvent(new PointerEvent('pointerdown', opt(x, y)));
+        for (let i = 1; i <= 4; i++) { warte(8); el.dispatchEvent(new PointerEvent('pointermove', opt(x + dx * i / 4, y + dy * i / 4))); }
+        const t = getComputedStyle(d).translate, m = t && t !== 'none' ? Math.round(parseFloat(t.split(' ')[1]) || 0) : 0;
+        warte(8); el.dispatchEvent(new PointerEvent('pointerup', opt(x + dx, y + dy)));
+        return m;
+      }, { x, y, dx, dy });
+      await ruhig();
+      return { ...(await lage()), t: mitten };
+    }
     else { await p.mouse.move(x + dx * 0.1, y + dy * 0.1, { steps: 3 }); await p.mouse.move(x + dx, y + dy, { steps: 10 }); await wait(p, 160); }
     const mitten = await lage();
     await p.mouse.up();
