@@ -1,6 +1,6 @@
 # A-68 ‚Seitenleiste am iPad quer hereinwischen‘ – Apple-Abgleich, Varianten, Fall-Liste
 
-**Stand 23.10.2026** · Sitzung ‚Reiselogbuch 0032‘ · Muster: `arbeit/A-68 Muster.html`
+**Stand 23.10.2026** · Sitzung ‚Reiselogbuch 0032‘ · **gewählt: B Mitschieben** (Nutzer 23.10.2026) · Muster: `arbeit/A-68 Muster.html`
 (https://g811141a.github.io/AppDesign/arbeit/A-68%20Muster.html), Prüfung `arbeit/A-68 Muster prüfen.mjs` (Chromium und WebKit, grün)
 
 Anlass: P-66/4 (Nutzer 23.10.2026) – das iPad stand quer; dort holt Wischen die ausgeblendete Seitenleiste heute nicht herein
@@ -22,7 +22,7 @@ Anlass: P-66/4 (Nutzer 23.10.2026) – das iPad stand quer; dort holt Wischen di
 |---|---|---|---|---|
 | **Heute** | – (Wischen ändert quer nichts) | panel-left blendet sofort ein/aus | bekannt | quer anders als hoch |
 | **A Darüber, dann daneben** | Seitenleiste gleitet über den Inhalt, Inhalt bleibt stehen | rastet links ein, Inhalt wird einmal schmaler | ruhig, nur `transform` beim Ziehen | der Inhalt springt am Ende einmal auf die neue Breite |
-| **B Mitschieben** | Inhalt rückt mit dem Finger nach rechts | Inhalt wird schmaler | näher an Apples Schieben | rechter Teil des Inhalts läuft beim Ziehen aus dem Bild |
+| **B Mitschieben** (gewählt) | Inhalt rückt mit dem Finger nach rechts | Inhalt wird schmaler | näher an Apples Schieben | rechter Teil des Inhalts läuft beim Ziehen aus dem Bild |
 
 Gemeinsam (A und B): fertig nach halber Breite oder schnellem Wischen (über 0,3 px/ms in den letzten 100 ms), sonst federt sie
 zurück; entschieden nach 10 px (deutlich waagerecht, mehr als 1,2 × senkrecht, nach rechts); Rollen und der Bilderstreifen haben
