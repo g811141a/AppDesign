@@ -99,3 +99,4 @@ gelten die Grundregeln (`pruefe.mjs`).
 ## 4. Durchsprache Fall für Fall (Nutzer 23.10.2026)
 
 - **V1** übernommen: R-1.8, `checkNamen` in hig.mjs (heute alle benannt, Prüfung fehlt).
+- **V2** übernommen: Fenster, Meldung und Blatt mit `aria-labelledby` (Titel) und `aria-describedby` (Zusatzzeile); heute nur „Dialog“ ohne Namen.
