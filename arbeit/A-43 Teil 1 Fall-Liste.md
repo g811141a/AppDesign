@@ -110,3 +110,4 @@ gelten die Grundregeln (`pruefe.mjs`).
 - **V10** übernommen: Baustein `feldFehler(felder, zeile, text)` – roter Rand, `aria-invalid`, `aria-describedby`, einmal ansagen beim Erscheinen bzw. neuem Text; beim Häkchen Fokus aufs erste fehlerhafte Feld; Reiselogbuch nutzt ihn; `checkFieldErrors` erweitert, R-5.3 „auch hörbar“.
 - **V11** entschieden (3.1): nicht ansagen.
 - **V12** übernommen: `navVor` → Fokus auf den Seitentitel (`.pnav`), `navZurueck` → auf die blaue Zeile bzw. den Titel der Startliste; ohne Rollen; iPad unverändert; `checkFokus`.
+- **V13** übernommen: Offline/Wieder online über `ansagen` (Meldung ohne `role="status"`); `ansagen` legt den Ansage-Bereich ins offene Fenster/Blatt, sonst auf die Seite (gilt für alle Ansagen); Prüfung mit und ohne Fenster.
