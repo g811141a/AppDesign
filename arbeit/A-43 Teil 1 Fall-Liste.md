@@ -130,3 +130,4 @@ gelten die Grundregeln (`pruefe.mjs`).
 - **M3** so übernommen: kein Umbau – unser Schalter springt schon (Verlauf wird nicht überblendet), der eingebaute (`natsw`) folgt dem System; in `checkRuhig` erlaubte kleine Bewegung (unter 30 px, unter 0,3 s).
 - **M4** übernommen: mit „Bewegung reduzieren“ kein Pulsieren (`.mic[aria-pressed=true]` ohne Animation, ruhig gedrückt), sonst wie heute; `checkRuhig`.
 - **M5** übernommen: Blatt wie A-61 Teil 2 B22 (Überblenden, Seite ohne Verkleinerung, Ziehen folgt dem Finger, ohne Nachfedern), unter R-1.9; zuerst `checkSheet`, mit Teil 1 in `checkRuhig`.
+- **M6** übernommen: Grenze in R-1.9 – erlaubt Überblenden (nur Deckkraft, bis 0,3 s), kleine Rückmeldungen unter 30 px, Bewegung direkt mit dem Finger; nicht erlaubt selbstständige Lageänderung über 30 px, Zoomen/Verkleinern, Federn, sanftes Rollen durch die App, Dauerblinken.
