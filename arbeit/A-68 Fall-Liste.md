@@ -1,6 +1,6 @@
 # A-68 ‚Seitenleiste am iPad quer hereinwischen‘ – Apple-Abgleich, Varianten, Fall-Liste
 
-**Stand 23.10.2026** · Sitzung ‚Reiselogbuch 0032‘ · **gewählt: B Mitschieben** (Nutzer 23.10.2026) · Muster: `arbeit/A-68 Muster.html`
+**Stand 23.10.2026** · Sitzung ‚Reiselogbuch 0032‘ · **gewählt: B Mitschieben** (Nutzer 23.10.2026), allgemeine Regel, **gebaut in AppDesign 4.31.0 / Reiselogbuch 3.29.0** (R-7.5, `checkNavigation` Q-1 bis Q-12, Prüfliste P-67) · Muster: `arbeit/A-68 Muster.html`
 (https://g811141a.github.io/AppDesign/arbeit/A-68%20Muster.html), Prüfung `arbeit/A-68 Muster prüfen.mjs` (Chromium und WebKit, grün)
 
 Anlass: P-66/4 (Nutzer 23.10.2026) – das iPad stand quer; dort holt Wischen die ausgeblendete Seitenleiste heute nicht herein

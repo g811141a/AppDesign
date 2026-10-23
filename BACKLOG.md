@@ -1,6 +1,6 @@
 # AppDesign – Backlog (allgemeine Themen)
 
-**Stand 23.10.2026** · Aktuelle Version: AppDesign 4.30.2
+**Stand 23.10.2026** · Aktuelle Version: AppDesign 4.31.0
 
 Allgemeine Themen, die alle Apps betreffen. App-Themen stehen im Backlog der jeweiligen App.
 Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.4.
@@ -11,16 +11,16 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Prio | Thema | bereit seit |
 |---|---|---|---|
-| A-68 | 2 | **Seitenleiste am iPad quer hereinwischen (Nutzer 23.10.2026, aus P-66):** wie hoch (15.4, R-7.5) holt Wischen nach rechts im Inhalt die ausgeblendete Seitenleiste herein – am Ende fest links (Inhalt wird schmaler, oberster Eintrag bleibt); Ausblenden quer weiter nur mit panel-left, damit die Kacheln für Wischaktionen (T-10) frei bleiben; Gesten mit Vorrang (T-35) wie bei ‚Reisemittel‘. Apple: Split View `presentsWithGesture` (quer am Gerät in Mail/Notizen nachsehen). Apple löst es je nach App unterschiedlich (Nutzer 23.10.2026) – Festlegung wie hoch. **Muster** `arbeit/A-68 Muster.html` (Varianten A Darüber, B Mitschieben) mit Fall-Liste `arbeit/A-68 Fall-Liste.md` – **gewählt: B Mitschieben, allgemeine Regel** (Nutzer 23.10.2026; Version erst mit weiteren Punkten): beim Ziehen rückt der Inhalt mit dem Finger nach rechts, am Ende wird er schmaler | 23.10.2026 |
-| A-64 | 2 | **Doppelte Leerzeichen in Eingabefeldern (Nutzer 22.10.2026):** zwei Leerzeichen hintereinander werden zu einem – beim Tippen und Einfügen. So macht es Apple: mit dem Kurzbefehl ‚.‘ (Einstellungen → Allgemein → Tastatur) macht iOS aus zwei Leerzeichen ‚. ‘, bevor die App sie sieht – die Regel greift also bei ausgeschaltetem Kurzbefehl, beim Einfügen und mit externer Tastatur. **Geklärt (Nutzer 23.10.2026):** alle Textfelder ein- und mehrzeilig, auch das Suchfeld; beim Tippen wird ein zweites Leerzeichen direkt nach einem Leerzeichen nicht eingefügt, beim Einfügen werden mehrere Leerzeichen oder Tabs zu einem, Zeilenumbrüche bleiben; Zeilenanfang unverändert; Ergänzung von R-5.2 mit Prüfung; Gerät: Kurzbefehl ‚.‘ geht weiter | 23.10.2026 |
-| A-65 | 2 | **Automatische Großschreibung zurücknehmen (Nutzer 22.10.2026):** macht R-5.2 einen Buchstaben groß (z. B. nach einem Punkt) und der Nutzer ändert ihn in einen kleinen, bleibt er klein – die App schreibt ihn nicht wieder groß (wie iOS nach einer Korrektur von Hand). **Geklärt (Nutzer 23.10.2026):** wird ein Großbuchstabe gelöscht oder ersetzt (Rücktaste, markieren und überschreiben), erzwingt die App an dieser Stelle keine Großschreibung mehr – die Tastatur entscheidet (wie iOS); sonst R-5.2 unverändert. Vor dem Bau den Ablauf als feste Prüfung nachbauen (0 Nr. 1), rot gegen 4.30.2; `capBefore`/`autoCapital`/`capWanted` in ui.js | 23.10.2026 |
+| – | – | zurzeit nichts gesammelt | – |
 
 
 ## 1. Auf iPad und iPhone prüfen
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| – | – | zurzeit nichts zu prüfen | – |
+| A-68 | 2 | **Seitenleiste am iPad quer hereinwischen am Gerät bestätigen (P-67/1, /2 im Reiselogbuch 3.29.0):** Variante B Mitschieben, panel-left gleitet, Vorrang. Gebaut in 4.31.0 | prüfen |
+| A-64 | 2 | **Keine doppelten Leerzeichen am Gerät bestätigen (P-67/3):** Tippen, Einfügen, Suchfeld, Kurzbefehl ‚.‘. Gebaut in 4.31.0 | prüfen |
+| A-65 | 2 | **Großschreibung zurücknehmen am Gerät bestätigen (P-67/4).** Gebaut in 4.31.0 | prüfen |
 
 ## 2. Weitere Themen (in Klärung)
 
@@ -57,6 +57,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Thema | Version | Datum |
 |---|---|---|---|
+| E-78 | **A-68, A-64, A-65 gebaut (Sammelversion, Ja 23.10.2026):** Seitenleiste am iPad quer per Wischen (Variante B, `checkNavigation` Q-1 bis Q-12), keine doppelten Leerzeichen (`checkSpaces`), keine erzwungene Großschreibung nach einer Korrektur von Hand (`checkCapital`) – rot gegen 4.30.2, grün mit dem Bau. Wartet auf P-67 | 4.31.0 | 23.10.2026 |
 | E-77 | **A-67 am Gerät bestätigt (P-66, Nutzer 23.10.2026):** Zurückwischen über und neben den Tageskästen, auch schräg, Rollen bleibt, Seitenleiste am iPad hoch – alles ok | 4.30.2 | 23.10.2026 |
 | E-76 | **Automatische Übergabe (Nutzer 23.10.2026):** 0 Nr. 13 – bei ‚⚠ Übergabe fällig‘ übergibt Claude ohne Rückfrage, sobald der laufende Schritt abgeschlossen ist, und startet die neue Sitzung selbst (2.2) | Zusammenarbeit 2.19.0 | 23.10.2026 |
 | E-75 | **A-67 Korrektur:** ist die Wischgeste entschieden, verhindert ui.js `touchmove` – Safari rollt nicht mehr dazwischen (Messung P-65: Abbruch ab 10 px senkrecht); Safari-Modell S-10 `safariWischen`, Prüfung `checkNavigation` F-23 (rot gegen 4.30.1); Messung zeigt `touchmove` | AppDesign 4.30.2 · Reiselogbuch 3.28.2 | 23.10.2026 |

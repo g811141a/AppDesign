@@ -1,4 +1,4 @@
-/* AppDesign 4.30.2 · design.css – gemeinsame Gestaltung der iPad-Web-Apps von g811141a (Apple-like)
+/* AppDesign 4.31.0 · design.css – gemeinsame Gestaltung der iPad-Web-Apps von g811141a (Apple-like)
    Einbinden im <head> vor dem eigenen <style> der App:  <link rel="stylesheet" href="../AppDesign/fassung/X.Y.Z/design.css"> (feste Fassung, R-10.3)
    Farben als Variablen auf :root, Dunkelmodus über data-theme="dark" (setzt ui.js / applyTheme).
    Komponenten: Schaltflächen, Suchfeld, Kapsel, Eingabefelder, Datumsfelder, Kopfzeile, Seitenleiste,
@@ -6,7 +6,7 @@
    Options-Kapsel; seit 4.1.0 iPhone-Ansicht (html.phone: Seitenkopf, großer Titel, Liste, Kasten, untere Leiste). Regeln dazu: README - Designrichtlinie allgemein.md */
 /* Farben im Apple-Look: Hintergrund Hellgrau, Kästen weiß ohne Rand, schwebende Schaltflächen */
 :root {
-  --ad-version: "4.30.2";   /* R-10.3: Version der Bausteine, die App prüft sie beim Start */
+  --ad-version: "4.31.0";   /* R-10.3: Version der Bausteine, die App prüft sie beim Start */
   --bg: #f2f2f7;
   --card: #ffffff;
   --ink: #1c1c1e;
@@ -342,7 +342,7 @@ html.locked .fab, html.locked .schnell { visibility: hidden; }
 .schnell .blase:empty { display: none; }
 .schnell.zieht .blase { opacity: 1; }
 /* Seit 4.30.0 (A-61 Teil 1, R-7.5, 15.4, 15.17): Navigation und Gesten. Wo gewischt werden kann (html.wischt: iPhone-Aufbau,
-   iPad hoch), rollt der Browser nur senkrecht – waagrecht gehört das Wischen der Gestenstelle in ui.js; Bereiche mit eigenem
+   iPad hoch, seit 4.31.0 iPad quer), rollt der Browser nur senkrecht – waagrecht gehört das Wischen der Gestenstelle in ui.js; Bereiche mit eigenem
    waagrechtem Rollen behalten ihr Wischen (sie sind selbst Rollbereiche). Während des Seitenwechsels liegt der Inhalt über der
    Startliste (Schatten an seiner linken Kante, die Liste dunkelt leicht ab); bewegt werden nur transform und opacity. */
 html.wischt #app, html.wischt #app > .rolle, html.wischt #side:not(.page), html.wischt #side:not(.page) .side-list,
@@ -355,6 +355,14 @@ html.nav-schiebt #app { z-index: 7; background: var(--bg); box-shadow: -6px 0 24
 html.nav-schiebt .fab { z-index: 8; }
 html.nav-schiebt .schnell, html.nav-seite .schnell { display: none; }
 html.nav-seite #side, html.nav-seite .side-shade { will-change: transform, opacity; }
+/* Seit 4.31.0 (A-68, Variante B): iPad quer – beim Hereinwischen und Gleiten behält der Inhalt seine volle Breite und rückt mit
+   (transform, ui.js navBild); erst beim Einrasten wird er schmaler (body.docked ohne html.nav-fest) */
+html.nav-fest, html.nav-fest body { overflow: hidden; }
+html.nav-fest body.docked { padding-left: 0; }
+html.nav-fest body.docked .nb { left: 0; padding-left: max(16px, var(--safe-left)); }
+html.nav-fest body.docked #app:has(> .rolle) { left: 0; }
+html.nav-fest body.docked .rolle { padding-left: max(16px, var(--safe-left)); }
+html.nav-fest #app, html.nav-fest .fab { will-change: transform; }
 html.nav-zieht, html.nav-zieht * { -webkit-user-select: none; user-select: none; }
 html.nav-faehrt #app, html.nav-faehrt #side, html.nav-faehrt .side-shade { pointer-events: none; }
 @media print { .schnell, .nav-schleier { display: none !important; } }

@@ -3,7 +3,7 @@
 // Jede Funktion bekommt eine Playwright-Seite und gibt eine Liste von Fehlern zurück (leer = in Ordnung), je mit Regelnummer.
 // Einbinden im Prüfskript der App:  import { checkSearch, checkDialogHead } from '../../AppDesign/tests/ablauf.mjs';
 //                                   fehler.push(...await checkSearch(page, { term: 'Sydney' }));
-import { ROLL, rolle, rollstand } from './pruefe.mjs';
+import { ROLL, rolle, rollstand, navFertig } from './pruefe.mjs';
 import { safariWischen } from './safari.mjs';
 const wait = (p, ms = 250) => p.waitForTimeout(ms);
 // R-2.3 (seit 4.25.1, A-24): beim Tippen bleibt das Suchfeld dasselbe Element und behält den Fokus – sonst schließt Safari am
@@ -186,8 +186,44 @@ export async function checkCapital(p, { open, field, where = '' } = {}) {
   await p.keyboard.type('hallo welt. neu'); await p.keyboard.press('Enter'); await p.keyboard.type('zweite');
   const v = await p.locator(field).inputValue();
   if (v !== 'Hallo welt. Neu\nZweite') E(`Großbuchstaben fehlen: ‚${v.replace(/\n/g, '⏎')}‘ statt ‚Hallo welt. Neu⏎Zweite‘`);
+  // seit 4.31.0 (A-65): einen Großbuchstaben von Hand ersetzen (markieren und überschreiben) bzw. löschen und klein neu tippen –
+  // er bleibt klein (wie iOS); danach schreibt die App am nächsten Zeilenanfang wieder groß
+  const setze = (a, b = a) => p.locator(field).evaluate((f, [a, b]) => f.setSelectionRange(a, b), [a, b]);
+  await setze(0, 1); await p.keyboard.type('h');
+  await setze(13); await p.keyboard.press('Backspace'); await p.keyboard.type('n');
+  await p.locator(field).evaluate(f => f.setSelectionRange(f.value.length, f.value.length)); await p.keyboard.press('Enter'); await p.keyboard.type('dritte');
+  const v2 = await p.locator(field).inputValue();
+  if (v2 !== 'hallo welt. neu\nZweite\nDritte') E(`Großbuchstabe von Hand ersetzt bzw. gelöscht und klein getippt: ‚${v2.replace(/\n/g, '⏎')}‘ statt ‚hallo welt. neu⏎Zweite⏎Dritte‘ (A-65)`);
   if (await p.evaluate(() => [...document.querySelectorAll('#dlg button')].some(b => /diktier|mikrofon/i.test(b.getAttribute('aria-label') + b.textContent)))) E('eigener Knopf zum Diktieren');
   await p.evaluate(() => document.getElementById('dlg').close()); await wait(p);
+  return errors;
+}
+
+// R-5.2 doppelte Leerzeichen (seit 4.31.0, A-64): in allen Textfeldern (ein- und mehrzeilig, auch im Suchfeld) wird ein Leerzeichen
+// direkt neben einem Leerzeichen nicht eingefügt; beim Einfügen werden mehrere Leerzeichen oder Tabs zu einem, Zeilenumbrüche bleiben;
+// ein einzelnes Leerzeichen am Zeilenanfang bleibt. open(): öffnet das Fenster mit field (mehrzeilig); search: ein Suchfeld (optional,
+// wird mit openSearch() geöffnet).
+export async function checkSpaces(p, { open, field, search = '', openSearch = null, where = '' } = {}) {
+  const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}R-5.2 ${t}`);
+  const einfuegen = (sel, text) => p.locator(sel).evaluate((f, t) => { const d = new DataTransfer(); d.setData('text/plain', t);
+    f.dispatchEvent(new ClipboardEvent('paste', { clipboardData: d, bubbles: true, cancelable: true })); }, text);
+  await open(); await wait(p, 350);
+  await p.locator(field).fill(''); await p.locator(field).focus();
+  await p.keyboard.type('Eins  zwei'); await p.keyboard.press('Enter'); await p.keyboard.type(' drei   vier');
+  await p.locator(field).evaluate(f => f.setSelectionRange(4, 4)); await p.keyboard.type(' ');
+  await p.locator(field).evaluate(f => f.setSelectionRange(f.value.length, f.value.length));
+  await einfuegen(field, ' fünf  \t sechs\nsieben');
+  const v = await p.locator(field).inputValue(), soll = 'Eins zwei\n Drei vier fünf sechs\nsieben';
+  if (v !== soll) E(`doppelte Leerzeichen: ‚${v.replace(/\n/g, '⏎').replace(/\t/g, '⇥')}‘ statt ‚${soll.replace(/\n/g, '⏎')}‘ (A-64)`);
+  await p.evaluate(() => document.getElementById('dlg').close()); await wait(p);
+  if (search) {
+    if (openSearch) { await openSearch(); await wait(p, 300); }
+    await p.locator(search).fill(''); await p.locator(search).focus();
+    await p.keyboard.type('a  b'); await einfuegen(search, '  c');
+    const s = await p.locator(search).inputValue();
+    if (s !== 'a b c') E(`Suchfeld: ‚${s}‘ statt ‚a b c‘ (A-64)`);
+    await p.locator(search).fill(''); await p.evaluate(() => document.activeElement?.blur?.()); await wait(p);
+  }
   return errors;
 }
 
@@ -317,7 +353,8 @@ export async function checkSideToggle(p, { toggle = '[data-side-toggle]', at = 0
     return { id: e ? e.dataset.day || e.dataset.keep : null, top: e ? Math.round(e.getBoundingClientRect().top) : null, y: Math.round(roll.y),
       rest: Math.round(roll.rest) };
   }, ROLL);
-  const press = async () => { await p.locator(toggle).filter({ visible: true }).first().click(); await wait(p, 350); };
+  // seit 4.31.0 (A-68): die Seitenleiste gleitet auch quer – nach dem Klick bis zum Ende der Bewegung warten
+  const press = async () => { await p.locator(toggle).filter({ visible: true }).first().click(); await wait(p, 350); await navFertig(p); };
   await rolle(p, `${at * 100}%`); await wait(p, 300);
   const vor = await top();
   for (let i = 1; i <= times * 2; i++) {
@@ -1144,7 +1181,10 @@ export async function checkNavigation(p, { eintrag, titel, zurueck = '#back', wa
   const ueberblendet = b => (b.some(x => x.appT === 'none' && x.appO > 0.02 && x.appO < 0.98) || b.some(x => x.appA && x.appA.o[0] !== x.appA.o[1] && x.appA.t.every(t => t === 'none')))
     && b.every(x => x.appT === 'none');
   const ruhig = async () => { for (let i = 0; i < 30; i++) { await wait(p, 100); if (!(await lage()).nav) return; } };
+  // seit 4.31.0: vorher keine Textmarkierung – ein senkrechter Mauszug markiert in WebKit Text, der nächste Zug darauf würde ein
+  // Ziehen-und-Ablegen beginnen und WebKit verschluckt die Mausereignisse (am Gerät mit dem Finger gibt es das nicht)
   const ziehe = async (x0, y0, x1, y1, { schnell = false, los = true, halten = 0 } = {}) => {
+    await p.evaluate(() => getSelection()?.removeAllRanges());
     await p.mouse.move(x0, y0); await p.mouse.down();
     if (halten) await wait(p, halten);
     const n = schnell ? 4 : Math.max(6, Math.round(Math.hypot(x1 - x0, y1 - y0) / 12));
@@ -1347,13 +1387,102 @@ export async function checkNavigation(p, { eintrag, titel, zurueck = '#back', wa
   // iPad
   const hoch = h > w;
   if (!hoch) {
-    // F-13: quer steht die Seitenleiste fest – Wischen ändert nichts; der Inhalt behält sein touch-action
-    const vor = await lage();
-    if (vor.ta && vor.ta !== 'manipulation') E(`F-13 iPad quer: touch-action des Inhalts ‚${vor.ta}‘ statt ‚manipulation‘`);
-    await ziehe(w * 0.5, h * 0.7, w * 0.9, h * 0.7);
-    if (vor.seite) await ziehe(vor.sideX + vor.sideW * 0.8, h * 0.7, 10, h * 0.7);
+    // Q-1 bis Q-12 (seit 4.31.0, A-68 Variante B ‚Mitschieben‘, Fall-Liste arbeit/A-68 Fall-Liste.md): quer steht die Seitenleiste fest
+    // links; ausgeblendet holt Wischen nach rechts von überall im Inhalt sie herein – der Inhalt rückt mit dem Finger nach rechts, fertig
+    // nach halber Breite oder schnellem Wischen, dann rastet sie ein und der Inhalt wird schmaler (oberster Kasten bleibt); sonst federt
+    // sie zurück. Ausblenden quer nur mit panel-left (gleitet); nach links wischen ändert nichts (Kacheln frei für Wischaktionen, T-10).
+    const fest = l => l.seite && l.sideX >= 0 && Math.abs(l.appX - (l.sideX + l.sideW + 4)) <= 2;
+    const da = async (soll, wo) => { l = await lage();
+      if (soll ? !fest(l) : (l.seite || Math.abs(l.appX) > 1)) E(`${wo}: Seitenleiste ${l.seite ? `da (bei ${l.sideX} px, Inhalt bei ${l.appX} px)` : `weg (Inhalt bei ${l.appX} px)`}, soll ${soll ? 'fest da' : 'weg, Inhalt ganz breit'}`); };
+    // oberster sichtbarer Kasten im Rollbereich (Nummer und Abstand zum oberen Rand) – bleibt beim Ein- und Ausblenden (R-8.1)
+    const oben = () => p.evaluate(k => { const r = document.querySelector('#app > .rolle'); if (!r) return null; const top = r.getBoundingClientRect().top;
+      const alle = [...r.querySelectorAll(k || '.box')]; const i = alle.findIndex(b => b.getBoundingClientRect().bottom > top + 1);
+      return i < 0 ? null : { i, ab: Math.round(alle[i].getBoundingClientRect().top - top) }; }, kasten);
+    const gleich = (a, b) => !a || !b || (a.i === b.i && Math.abs(a.ab - b.ab) <= 3);
+    const zu = async wo => { const z = await box('#sideHide'); if (!z) { E(`${wo}: panel-left in der Seitenleiste fehlt`); return; } await p.mouse.click(z.x, z.y); await ruhig(); await wait(p, 100); };
+    await da(true, 'Q-1 Start quer');
+    if (!/pan-y/.test(l.ta) || /pan-x|manipulation|auto/.test(l.ta)) E(`Q-1 touch-action des Inhalts ‚${l.ta}‘ – waagrecht muss das Wischen bei der App ankommen (pan-y, 13)`);
+    // Q-2: nach links auf der festen Seitenleiste – sie bleibt
+    // schnell, damit es kein langes Drücken auf einer Kachel wird (Kontextmenü)
+    await ziehe(l.sideX + l.sideW * 0.8, h * 0.7, 10, h * 0.7, { schnell: true });
+    if ((await lage()).menue) { await p.evaluate(() => document.querySelector('.layer')?.click()); await wait(p, 200); }
+    await da(true, 'Q-2 nach links auf der Seitenleiste');
+    // Q-3: panel-left blendet aus – sie gleitet hinaus, der Inhalt wird ganz breit, der oberste Kasten bleibt
+    await p.evaluate(() => { const r = document.querySelector('#app > .rolle'); r?.scrollTo(0, Math.min(900, r.scrollHeight / 3)); }); await wait(p, 150);
+    let vorher = await oben();
+    { const z = await box('#sideHide');
+      if (z) { await aufzeichnen(); await p.mouse.click(z.x, z.y); const bf = await bilder();
+        if (!l.ruhig && !bf.some(x => (x.sideX < -1 && x.sideX > -400) || schiebt(x.sideA))) E(`Q-3 panel-left: die Seitenleiste gleitet nicht hinaus (bei ${[...new Set(bf.map(x => Math.round(x.sideX)))].join(' ')} px)`);
+        await ruhig(); await wait(p, 100); } }
+    await da(false, 'Q-3 panel-left in der Seitenleiste');
+    let nachher = await oben();
+    if (!gleich(vorher, nachher)) E(`Q-3 beim Ausblenden springt der Inhalt (oberster Kasten ${vorher?.i}/${vorher?.ab} px → ${nachher?.i}/${nachher?.ab} px)`);
+    // Q-4: halb ziehen – Seitenleiste folgt dem Finger, der Inhalt rückt mit; unter der Hälfte langsam losgelassen → federt zurück
+    await ziehe(w * 0.45, h * 0.75, w * 0.45 + 140, h * 0.75, { los: false }); await wait(p, 60);
     l = await lage();
-    if (l.seite !== vor.seite || Math.abs(l.sideX - vor.sideX) > 1 || l.nav) E(`F-13 iPad quer: Wischen ändert die Seitenleiste (vorher ${vor.seite ? 'da' : 'weg'}, nachher ${l.seite ? 'da' : 'weg'})`);
+    if (!l.seite) E('Q-4 beim Ziehen kommt die Seitenleiste nicht');
+    else if (!l.ruhig && !(l.sideX < 0 && l.sideX > -l.sideW)) E(`Q-4 die Seitenleiste folgt dem Finger nicht (bei ${l.sideX} px, Breite ${l.sideW})`);
+    if (!l.ruhig && Math.abs(l.appX - 140) > 30) E(`Q-4 der Inhalt rückt nicht mit dem Finger (bei ${l.appX} px statt etwa 140)`);
+    await wait(p, 150); await p.mouse.up(); await ruhig(); await wait(p, 100);
+    await da(false, 'Q-4 unter der Hälfte losgelassen');
+    // Q-5: über die halbe Breite – rastet ein, Inhalt schmaler, oberster Kasten bleibt
+    vorher = await oben();
+    await ziehe(w * 0.4, h * 0.75, w * 0.4 + 330, h * 0.78);
+    await da(true, 'Q-5 aus der Mitte über die halbe Breite');
+    l = await lage();
+    if (l.seite && Math.abs((w - l.appX) - (await p.evaluate(() => document.getElementById('app').getBoundingClientRect().width))) > 2) E('Q-5 der Inhalt wird nicht schmaler (reicht über den rechten Rand)');
+    nachher = await oben();
+    if (!gleich(vorher, nachher)) E(`Q-5 beim Einrasten springt der Inhalt (oberster Kasten ${vorher?.i}/${vorher?.ab} px → ${nachher?.i}/${nachher?.ab} px)`);
+    if (await box(seitenKnopf)) E(`Q-5 nach dem Einrasten steht noch ${seitenKnopf} im Kopf`);
+    // Q-6: kurz und schnell
+    await zu('Q-6 Vorbereitung');
+    await ziehe(w * 0.5, h * 0.75, w * 0.5 + 110, h * 0.75, { schnell: true }); await da(true, 'Q-6 kurz und schnell nach rechts');
+    // Q-7: Vorrang – senkrecht, schräg (mehr senkrecht), nach links: nichts
+    await zu('Q-7 Vorbereitung');
+    await ziehe(w * 0.6, h * 0.75, w * 0.6 + 4, h * 0.35); await da(false, 'Q-7 senkrecht');
+    await ziehe(w * 0.5, h * 0.6, w * 0.5 + 40, h * 0.6 - 90); await da(false, 'Q-7 schräg (mehr senkrecht)');
+    await ziehe(w * 0.8, h * 0.6, w * 0.3, h * 0.6); await da(false, 'Q-7 nach links');
+    // Q-8: offenes Menü – keine Geste
+    if (menue) {
+      await p.click(menue); await wait(p, 300);
+      await ziehe(w * 0.4, h * 0.85, w * 0.95, h * 0.85); await da(false, 'Q-8 Wischen bei offenem Menü');
+      if ((await lage()).menue) { await p.evaluate(() => document.querySelector('.layer')?.click()); await wait(p, 200); }
+    }
+    // Q-9: Berührung nach Safari (S-10), 14 px senkrecht – Safari bricht nicht ab, die Seitenleiste kommt; senkrecht rollt Safari
+    const zug = (dx, dy, n, ms) => Array.from({ length: n }, (_, i) => [Math.round(dx * (i + 1) / n), Math.round(dy * (i + 1) / n), Math.round(ms / n)]);
+    { const r = await safariWischen(p, w * 0.45, h * 0.6, zug(320, 14, 14, 250)); await ruhig(); await wait(p, 100);
+      await keinTippen('Q-9 Berührung');
+      if (r.abgebrochen) E('Q-9 Hereinwischen mit Berührung: Safari rollt und bricht ab (pointercancel, A-67)');
+      await da(true, 'Q-9 Berührung leicht schräg'); }
+    await zu('Q-9 Vorbereitung senkrecht');
+    { const r = await safariWischen(p, w * 0.6, h * 0.7, zug(4, -120, 10, 160)); await ruhig(); await wait(p, 100);
+      if (!r.abgebrochen || !r.gerollt) E(`Q-9 senkrecht mit Berührung rollt nicht (gerollt ${r.gerollt} px)`);
+      await da(false, 'Q-9 senkrecht mit Berührung'); }
+    // Q-10: Messung – ‚nav kandidat fest‘ … ‚nav fertig‘
+    await p.evaluate(() => messStart({ app: 'Prüfung' }));
+    await ziehe(w * 0.4, h * 0.75, w * 0.4 + 330, h * 0.75);
+    { const mz = await p.evaluate(() => { messAus(); const z = mess.zeilen; mess = null; return z; });
+      if (!mz.some(x => x.endsWith('! nav kandidat fest')) || !mz.some(x => /! nav fertig/.test(x))) E('Q-10 Messung ohne ‚nav kandidat fest‘ bzw. ‚nav fertig‘'); }
+    await da(true, 'Q-10 Wischen mit Messung');
+    // Q-11: Drehen während des Ziehens – bricht ab, Zustand bleibt (weg), auch nach dem Zurückdrehen
+    await zu('Q-11 Vorbereitung');
+    await ziehe(w * 0.45, h * 0.75, w * 0.45 + 160, h * 0.75, { los: false });
+    await p.setViewportSize({ width: h, height: w }); await wait(p, 400);
+    await p.mouse.up(); await ruhig(); await wait(p, 300);
+    await keinTippen('Q-11 Loslassen nach dem Drehen');
+    l = await lage();
+    if (l.nav) E(`Q-11 nach dem Drehen beim Ziehen läuft noch ${l.nav}`);
+    if (l.seite) E('Q-11 nach dem Drehen beim Ziehen ist die Seitenleiste da');
+    await p.setViewportSize({ width: w, height: h }); await wait(p, 500);
+    await da(false, 'Q-11 Drehen beim Ziehen und zurück');
+    // Q-12: panel-left im Kopf blendet ein – sie gleitet herein (Ende: fest da, wie beim Start)
+    const k = await box(seitenKnopf);
+    if (k) {
+      await aufzeichnen(); await p.mouse.click(k.x, k.y); const bf = await bilder();
+      if (!l.ruhig && !bf.some(x => (x.sideX < -1 && x.sideX > -400) || schiebt(x.sideA))) E(`Q-12 panel-left: die Seitenleiste gleitet nicht herein (bei ${[...new Set(bf.map(x => Math.round(x.sideX)))].join(' ')} px)`);
+      await ruhig(); await wait(p, 100);
+    } else E(`Q-12 Vorbereitung: ${seitenKnopf} fehlt`);
+    await da(true, 'Q-12 panel-left im Kopf');
     return errors;
   }
   let bf;
