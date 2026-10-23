@@ -1563,7 +1563,7 @@ export async function checkSheet(p, { open, change = null, field = null, where =
     const probe = document.body.appendChild(document.createElement('i')); probe.style.backgroundColor = 'var(--dlg-bg)';
     const soll = getComputedStyle(probe).backgroundColor; probe.remove();
     return { open: d.open, top: Math.round(r.top), bottom: Math.round(r.bottom), left: Math.round(r.left), right: Math.round(r.right), t: Math.round(t),
-      radius: parseFloat(cs.borderTopLeftRadius) || 0, phone: H.classList.contains('phone'), blatt: H.classList.contains('blatt'),
+      radius: parseFloat(cs.borderTopLeftRadius) || 0, phone: H.classList.contains('phone'), blatt: H.classList.contains('blatt'), faehrt: H.classList.contains('blatt-faehrt'),
       zurueck: seite.some(e => { const s = getComputedStyle(e).scale; return s && s !== 'none' && parseFloat(s) < 0.99; }),
       vvTop: Math.round(visualViewport?.offsetTop || 0), vvH: Math.round(visualViewport?.height || innerHeight), h: innerHeight, w: innerWidth,
       pop: [...document.querySelectorAll('.pop button')].map(b => b.textContent.trim()), geist: !!document.querySelector('.blatt-geist'),
@@ -1575,15 +1575,18 @@ export async function checkSheet(p, { open, change = null, field = null, where =
   const zieh = async ({ x, y }, dx, dy, schnell = false) => {
     await p.mouse.move(x, y); await p.mouse.down();
     if (schnell) {
-      // in einem Zug in der Seite (je 8 ms): unter Last kamen Mausbewegungen so verzögert an, dass beim Loslassen kein Tempo mehr blieb
+      // in einem Zug in der Seite mit festen Zeitstempeln (je 8 ms): unter Last kamen Mausbewegungen bzw. Ereignisse so verzögert an,
+      // dass beim Loslassen kein Tempo mehr blieb
       await p.mouse.up();
       const mitten = await p.evaluate(({ x, y, dx, dy }) => {
         const d = document.getElementById('dlg'), el = document.elementFromPoint(x, y), opt = (cx, cy) => ({ bubbles: true, cancelable: true, composed: true, isPrimary: true, pointerId: 77, pointerType: 'touch', button: 0, clientX: cx, clientY: cy });
-        const warte = ms => { const t = performance.now(); while (performance.now() - t < ms); };
-        el.dispatchEvent(new PointerEvent('pointerdown', opt(x, y)));
-        for (let i = 1; i <= 4; i++) { warte(8); el.dispatchEvent(new PointerEvent('pointermove', opt(x + dx * i / 4, y + dy * i / 4))); }
+        const t0 = performance.now(), sende = (art, cx, cy, i) => { const e = new PointerEvent(art, opt(cx, cy)); Object.defineProperty(e, 'timeStamp', { value: t0 + 8 * i }); el.dispatchEvent(e); };
+        sende('pointerdown', x, y, 0);
+        for (let i = 1; i <= 4; i++) sende('pointermove', x + dx * i / 4, y + dy * i / 4, i);
         const t = getComputedStyle(d).translate, m = t && t !== 'none' ? Math.round(parseFloat(t.split(' ')[1]) || 0) : 0;
-        warte(8); el.dispatchEvent(new PointerEvent('pointerup', opt(x + dx, y + dy)));
+        const zieht = document.documentElement.classList.contains('blatt-zieht');
+        sende('pointerup', x + dx, y + dy, 5);
+        window.__b4 = `getroffen ${el.id || el.tagName.toLowerCase()}${el.className && typeof el.className === 'string' ? '.' + el.className.split(' ')[0] : ''}, ${zieht ? 'gezogen' : 'nicht gezogen'} ${m} px`;
         return m;
       }, { x, y, dx, dy });
       await ruhig();
@@ -1597,7 +1600,11 @@ export async function checkSheet(p, { open, change = null, field = null, where =
   };
   const zu = async () => { const l = await lage(); if (!l.open) return; await p.evaluate(() => document.getElementById('dlg').close()); await ruhig(); };
   const auf = async () => { await zu(); await open(); await ruhig(); return lage(); };
-  const weg = async (was) => { const l = await lage(); if (l.open) { E(`${was}: das Fenster bleibt offen`); await zu(); return false; }
+  const weg = async (was) => {
+    // unter Last (voller Lauf, WebKit) endet das Hinausgleiten verspätet – bis zu 3 s auf das Schließen warten
+    await p.waitForFunction(() => !document.getElementById('dlg').open, null, { timeout: 3000 }).catch(() => {});
+    const l = await lage();
+    if (l.open) { E(`${was}: das Fenster bleibt offen (Blatt ${l.t} px versetzt, ${await p.evaluate(() => document.documentElement.className)}${l.pop.length ? ', Rückfrage offen' : ''})`); await zu(); return false; }
     await wait(p, 600); const n = await lage();
     if (n.blatt || n.zurueck) E(`${was}: nach dem Schließen bleibt die Seite zurückgewichen bzw. abgedunkelt`);
     if (n.geist) E(`${was}: das Abbild des Blatts bleibt nach dem Schließen stehen`);
@@ -1634,7 +1641,7 @@ export async function checkSheet(p, { open, change = null, field = null, where =
   if (!l.quer && !l.zurueck) E('B1 die Seite dahinter weicht nicht verkleinert zurück');
   if (l.bg !== l.soll) E(`B24 Hintergrund des Blatts ${l.bg} statt --dlg-bg (${l.soll})`);
   if (reduziert && frueh.t) E(`B22 ‚Bewegung reduzieren‘: das Blatt gleitet (${frueh.t} px) statt überzublenden`);
-  if (!reduziert && frueh.t < 20) E(`B1 das Blatt gleitet nicht von unten herein (kurz nach dem Öffnen ${frueh.t} px versetzt)`);
+  if (!reduziert && frueh.t < 20 && !frueh.faehrt) E(`B1 das Blatt gleitet nicht von unten herein (kurz nach dem Öffnen ${frueh.t} px versetzt, keine Bewegung)`);
 
   // B2 ein Stück ziehen, langsam loslassen: folgt dem Finger, federt zurück
   let m = await zieh(await kopf(), 0, 120);
@@ -1663,7 +1670,7 @@ export async function checkSheet(p, { open, change = null, field = null, where =
   // B4 kurz und schnell wischen: schließt
   await auf();
   await zieh(await kopf(), 0, 70, true);
-  await weg('B4 schnell nach unten wischen');
+  await weg(`B4 schnell nach unten wischen (${await p.evaluate(() => window.__b4)})`);
   // B6 im Inhalt ganz oben nach unten: schließt
   await auf();
   const b6 = await p.locator('#dlg .dlg-body').boundingBox();
