@@ -106,3 +106,4 @@ gelten die Grundregeln (`pruefe.mjs`).
 - **V6** übernommen: Sprechblase `role="alertdialog"`, `aria-labelledby` auf den Text, `aria-modal`; Fokus auf die Blase (ohne Rahmen), danach zurück zum Knopf bzw. zur Kopfzeile, ohne Rollen; `checkFokus`.
 - **V7** übernommen: bei offenem Menü und offener Sprechblase alles außerhalb `inert` (Seite bzw. übriger Fensterinhalt), Aufheben bei jedem Schließen (auch R-8.1); R-1.4 „auch für VoiceOver und Tastatur“; Prüfung hig.mjs mit Gegenprobe.
 - **V8** übernommen: nur Prüfung (hig.mjs) – jedes Fenster, Meldung, Blatt modal, Seite unerreichbar; Menü/Sprechblase im Fenster wie V7; Gegenprobe nicht modal.
+- **V9** übernommen: Baustein `ansagen(text)` in ui.js (höflicher Ansage-Bereich); Suche sagt nach ca. 0,7 s Pause „3 Treffer“/„Keine Treffer“, mit ‹ › „Treffer 2 von 3“, Seitenleiste „2 von 5 Reiselogbüchern“ (App).
