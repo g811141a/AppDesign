@@ -1,6 +1,6 @@
 # AppDesign – Backlog (allgemeine Themen)
 
-**Stand 23.10.2026** · Aktuelle Version: AppDesign 4.32.0
+**Stand 24.10.2026** · Aktuelle Version: AppDesign 4.32.1
 
 Allgemeine Themen, die alle Apps betreffen. App-Themen stehen im Backlog der jeweiligen App.
 Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.4.
@@ -11,7 +11,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Prio | Thema | bereit seit |
 |---|---|---|---|
-| A-71 | 1 | **Korrektur R-4.6 – Ziehen auf einem Feld bei offener Tastatur (P-68/2.3, Nutzer 23.10.2026):** am Gerät schloss der Zug auf dem Feld nur die Tastatur, das Blatt blieb; erst ein zweiter Zug zog es und fragte ‚Änderungen verwerfen‘ (vorgesehen: ein Zug – Tastatur zu, federt zurück, fragt; Fall-Liste A-61 Teil 2 B10). **Ursache (Analyse Claude):** bei offener Tastatur rollt R-4.5 das Feld in die obere Hälfte – der Inhalt steht nicht mehr ganz oben, der Zug zählt als ‚gerollter Inhalt‘ (B19) und schließt nur die Tastatur; `checkSheet` B10 lief ohne Tastatur (kein Safari-Modell). **Vorschlag:** ein Zug, der bei offener Tastatur auf einem Feld beginnt, zieht das Blatt wie am Kopf (mit Änderungen: zäh, federt zurück, fragt); im gerollten Inhalt außerhalb eines Feldes bleibt B19. Prüfung B10 mit `safariModell` (Tastatur auf, Feld gerollt), zuerst rot gegen 4.32.0 (0 Nr. 1). Korrekturversion **4.32.1 / Reiselogbuch 3.30.1** – **Ja fehlt** (0 Nr. 21) | 23.10.2026 |
+| – | – | zurzeit nichts gesammelt | – |
 
 
 ## 1. Auf iPad und iPhone prüfen
@@ -47,6 +47,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 | A-60 | 3 | **Fotos ansehen und wischen (aus A-38 T-65, Nutzer 22.10.2026):** Bildansicht nach Apple Fotos (wischen, zoomen, nach unten wischen schließt), Bilder laden erst bei Sicht; Speicher IndexedDB statt localStorage, Backup und Abgleich mit Bildern – planen, sobald eine App Fotos bekommt | später |
 | A-32 | 3 | **‚Problem melden‘ (Vorschlag V9, Nutzer 19.10.2026):** Messung, Version und Gerät in einer Datei | später |
 | A-01 | 3 | Startseite g811141a.github.io mit allen Apps (früher S-03) | später |
+| A-72 | 2 | **iPad: Fenster per Ziehen nach unten schließen (Frage P-68/5.2, Nutzer 24.10.2026):** wie die Formblätter in iPadOS – ein Fenster in der Mitte lässt sich am Kopf (bzw. im Inhalt ganz oben) nach unten wegziehen, mit Änderungen federt es zurück und fragt am x (R-4.4); heute schließt es am iPad nur mit x, Häkchen oder Escape (R-4.6 letzter Satz, Fall-Liste A-61 Teil 2 B18). So macht es Apple: iPadOS lässt Formblätter in der Mitte nach unten wegziehen. Vorher klären: Muster, Fall-Liste; nach A-43 | offen |
 | A-70 | 3 | **Mehrsprachfähigkeit (Nutzer 23.10.2026):** Apps und AppDesign-Bausteine in mehreren Sprachen – Sprache folgt dem Gerät (wie Apple: Systemsprache, je App übersteuerbar), alle Texte aus einer Texttabelle je Sprache statt fest im Code, `lang` der Seite, Datum, Zahl und Sortierung über `Intl`, Ansagen und Namen (A-43) mit übersetzt; Ausgabe HTML/PDF in der gewählten Sprache. Vorher klären: welche Sprachen, Daten der Nutzer bleiben unübersetzt, Prüfung (jeder Text in jeder Sprache vorhanden, lange Wörter passen). Apple-Abgleich vor dem Muster | offen |
 
 ---
@@ -55,6 +56,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Thema | Version | Datum |
 |---|---|---|---|
+| E-82 | **A-71 gebaut (Korrektur, Ja 24.10.2026):** R-4.6 – ein Zug, der bei offener Tastatur auf einem Feld beginnt, zieht das Blatt wie am Kopf (auch wenn R-4.5 den Inhalt gerollt hat), im gerollten Inhalt daneben schließt er nur die Tastatur; `checkSheet` B10 und B19 mit dem Safari-Modell (rot gegen 4.32.0, 16 Meldungen), `__safari.aus()`. Wartet auf P-69 | 4.32.1 | 24.10.2026 |
 | E-81 | Geprüft **P-68 (Reiselogbuch 3.30.0): alles ok bis auf /2.3** (Nutzer 23.10.2026) – Blatt auf dem iPhone, Vorschau, Drehen, iPad unverändert und Startposition ok (**A-69 abgeschlossen**); Ziehen auf einem Feld bei offener Tastatur schließt nur die Tastatur (→ A-71). Frage 5.2: warum Ziehen am iPad nicht schließt – Entscheidung 23.10.2026 (R-4.6, B18); Apple lässt auch iPad-Formblätter wegziehen → Frage ‚Ins Backlog?‘ offen | 4.32.0 | 23.10.2026 |
 | E-80 | **A-61 Teil 2 und A-69 gebaut (Sammelversion, Ja 23.10.2026):** neu R-4.6 Blatt auf dem iPhone (Variante A ‚nur groß‘) – jedes Fenster außer Meldungen gleitet als Blatt von unten, die Seite weicht zurück, nach unten ziehen schließt wie x, mit Änderungen federt es zurück und fragt, auch auf einem Feld bei offener Tastatur; Prüfung `checkSheet` (B1–B24, B8–B10 für jedes Fenster mit Eingaben). R-7.4 erweitert – ein aktueller Eintrag steht oben ohne Hervorhebung, `checkOpenAt` mit `markiert` (rot gegen 4.31.0 / Reiselogbuch 3.29.0 bei F5–F11). **A-61 damit ganz gebaut** (Wischaktionen T-10 bleiben bei A-30). Wartet auf P-68 | 4.32.0 | 23.10.2026 |
 | E-79 | **A-68, A-64, A-65 am Gerät bestätigt (P-67, Nutzer 23.10.2026):** Seitenleiste am iPad quer hereinwischen (Mitschieben, Einrasten, Zurückfedern, Vorrang, panel-left gleitet), keine doppelten Leerzeichen, Großschreibung zurücknehmen – alles ok | 4.31.0 | 23.10.2026 |

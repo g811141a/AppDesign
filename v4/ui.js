@@ -1,4 +1,4 @@
-// AppDesign 4.32.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
+// AppDesign 4.32.1 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
 // Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/fassung/X.Y.Z/ui.js"></script> (feste Fassung, R-10.3)
 // Seit 4.11.0 (R-10.3): ui.js und design.css immer mit ?v=<AppDesign-Version> einbinden (auch in sw.js) und beim Start
 // prüfen, ob genau diese Fassung geladen ist (AD_VERSION hier, --ad-version in design.css).
@@ -19,7 +19,7 @@
 
 'use strict';
 // Version der Bausteine (R-10.3): die App vergleicht sie beim Start mit der benötigten Fassung.
-const AD_VERSION = '4.32.0';
+const AD_VERSION = '4.32.1';
 /* ---------- Icons ---------- */
 
 // Schaltflächen-Icons aus Lucide (ISC-Lizenz), direkt eingebettet, damit die App offline funktioniert.
@@ -1719,7 +1719,9 @@ document.addEventListener('keydown', e => {
 // jedes Fenster (#dlg) ein Blatt – es gleitet von unten bis knapp unter die Statusleiste, die Seite dahinter weicht verkleinert und
 // abgedunkelt zurück (quer: volle Höhe, die Seite bleibt). Nach unten ziehen schließt wie das x: am Kopf immer, im Inhalt, wenn er ganz
 // oben steht, ein schnelles Wischen genügt; mit Änderungen seit dem Öffnen (dlgDirty) zieht es sich zäh, federt zurück und fragt am x
-// (R-4.4). Bei offener Tastatur schließt der Zug nach unten zuerst die Tastatur. Antippen der Abdunkelung wirkt wie x. Meldungen (#msg)
+// (R-4.4). Bei offener Tastatur schließt der Zug nach unten zuerst die Tastatur; beginnt er auf einem Feld, zieht er im selben Zug das
+// Blatt wie am Kopf (seit 4.32.1, A-71: R-4.5 hat den Inhalt gerollt, nicht der Nutzer – ein Feld, das selbst gerollt ist, rollt
+// weiter); im gerollten Inhalt daneben rollt er weiter. Antippen der Abdunkelung wirkt wie x. Meldungen (#msg)
 // bleiben kleine Fenster in der Mitte, am iPad bleibt das Fenster in der Mitte. Entschieden nach 8 px, deutlich senkrecht (1,2 × so weit
 // wie waagerecht); waagerecht rollende Bereiche behalten ihr Rollen. Beim Loslassen zählt, wo das Blatt mit dem Tempo auslaufen würde.
 // Je Bild nur translate, scale und opacity (Web-Animation, damit die Prüfungen auf ihr Ende warten); ‚Bewegung reduzieren‘: Überblenden,
@@ -1872,10 +1874,11 @@ dlg.addEventListener('pointerdown', e => {
   if (!dlg.open || !isPhone() || !e.isPrimary || e.button > 0 || blattDraussen(e) || document.querySelector('.pop, .menu')) return;
   if (e.target.closest?.('[data-eigene-geste], input[type=range], .pop, .menu')) return;
   blattZug = { id: e.pointerId, x0: e.clientX, y0: e.clientY, o: blattY, kopf: !!e.target.closest('.dlg-head'), t: e.target, aktiv: false,
-    spur: [[e.timeStamp, e.clientY]] };
+    feld: blattFeld() ? e.target.closest?.(FELD) : null, spur: [[e.timeStamp, e.clientY]] };
 });
 function blattErlaubt(z, dx, dy) {
   if (dy <= 0 || Math.abs(dy) <= Math.abs(dx) * BLATT_SENKRECHT) return false;
+  if (z.feld) return !(z.feld.scrollTop > 0 && z.feld.scrollHeight > z.feld.clientHeight + 1);   // A-71: Feld bei offener Tastatur
   return z.kopf || blattGanzOben(z.t);
 }
 // Ist der Zug entschieden, verhindert touchmove das Rollen (Safari entscheidet sonst selbst, 13)
@@ -1890,7 +1893,8 @@ window.addEventListener('pointermove', e => {
   const dx = e.clientX - z.x0, dy = e.clientY - z.y0;
   if (!z.aktiv) {
     if (Math.abs(dx) < BLATT_ENTSCHEID && Math.abs(dy) < BLATT_ENTSCHEID) return;
-    // nach unten ziehen schließt die Tastatur (wie iOS) – im gerollten Inhalt rollt er weiter, am Kopf bzw. ganz oben folgt das Blatt
+    // nach unten ziehen schließt die Tastatur (wie iOS) – im gerollten Inhalt rollt er weiter, am Kopf, auf einem Feld bzw. ganz oben
+    // folgt das Blatt
     if (dy > Math.abs(dx) * BLATT_SENKRECHT) blattFeld()?.blur();
     if (!blattErlaubt(z, dx, dy)) { blattZug = null; return; }
     z.aktiv = true;

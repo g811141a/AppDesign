@@ -68,6 +68,8 @@
 // - S-9 (Muster 5 bis 7, 6i, 6k): Feld im Inhalt (Rollbereich außerhalb eines Fensters) – sobald die Tastatur erscheint, steht der
 //   Rollbereich wieder auf dem Rollstand beim ersten Fokus, vor dem Rollen der App (Muster 6: 456 / 427, Muster 7 ohne readonly:
 //   456 / 477, Muster 5: 477, dort von Safaris Verschiebung verdeckt: 618 − 428 = 190). Felder im Fenster nie (Ort, 7 von 7).
+// Seit 4.32.1 (A-71): __safari.aus() nimmt das Modell wieder heraus (echte Werte, keine Tastatur) – für Prüfungen, die es nur für einen
+// Fall brauchen und danach in derselben Seite weiterprüfen (checkSheet B10, B19).
 export const ABSTAND = 24, ABSTAND_FENSTER = 15;
 export const SAFARI = {
   'iPhone hoch': { tastatur: 403, ziffern: 376, fokusRollen: -120, fokusSchub: 0 },
@@ -113,7 +115,7 @@ export async function safariModell(p, ansicht, { leisten = { bar: '.nb, .pnav', 
       },
       // Safari meldet 2 Bilder später, was es zeigt
       melde() {
-        if (s.warte) return;
+        if (s.weg || s.warte) return;
         let n = 2;
         const go = () => { if (--n > 0) return requestAnimationFrame(go);
           s.warte = null;
@@ -130,6 +132,7 @@ export async function safariModell(p, ansicht, { leisten = { bar: '.nb, .pnav', 
       // 4.27.0 nicht mehr, Safari verschiebt trotzdem: Messung 19.10. Zeile 11, Kopfzeile −21)
       schub() { const raum = H() - s.hoehe(); s.top(); s.pan = Math.min(raum - (Y() - s.L), s.pan + werte.fokusSchub); },
       tastatur(auf, art = 'auf') {
+        if (s.weg) return;
         // A-35: Felder mit Ziffern bekommen die niedrigere Zifferntastatur (quer 232, hoch 376 – beide gemessen)
         const a = document.activeElement;
         s.kb = auf && s.naechste ? s.naechste : auf && werte.ziffern && /^(decimal|numeric)$/.test(a?.getAttribute?.('inputmode') || '') ? werte.ziffern : werte.tastatur;
@@ -169,6 +172,16 @@ export async function safariModell(p, ansicht, { leisten = { bar: '.nb, .pnav', 
         requestAnimationFrame(bild);
       },
     };
+    // aus(): echte Werte zurück, das Modell schweigt (seine Hörer bleiben, tun aber nichts mehr)
+    const echteWerte = [[vv, 'offsetTop'], [vv, 'height'], [window, 'scrollY'], [window, 'pageYOffset'], [window, 'innerHeight']]
+      .map(([o, n]) => [o, n, Object.getOwnPropertyDescriptor(o, n)]);
+    s.aus = () => {
+      s.weg = true; s.offen = false; s.pan = 0;
+      if (s.warte) cancelAnimationFrame(s.warte);
+      for (const [o, n, d] of echteWerte) { if (d) Object.defineProperty(o, n, d); else delete o[n]; }
+      delete window.__safari;
+      vv.dispatchEvent(new Event('resize')); vv.dispatchEvent(new Event('scroll'));
+    };
     Object.defineProperty(vv, 'offsetTop', { configurable: true, get: () => s.gemeldet.top });
     Object.defineProperty(vv, 'height', { configurable: true, get: () => s.gemeldet.h });
     // S-3: Safari rollt die Seite um die Verschiebung, innerHeight schrumpft um sie (ab der Meldung)
@@ -185,7 +198,7 @@ export async function safariModell(p, ansicht, { leisten = { bar: '.nb, .pnav', 
       document.addEventListener('touchend', e => { if (s.erneut === e.target) requestAnimationFrame(() => { if (!s.offen && s.erneut === document.activeElement) s.tastatur(true, 'erneut'); }); }, true);
     }
     // jede Bewegung (App oder Safari) zeigt sich sofort und wird 2 Bilder später gemeldet
-    addEventListener('scroll', () => { s.top(); s.melde(); }, { capture: true, passive: true });
+    addEventListener('scroll', () => { if (!s.weg) { s.top(); s.melde(); } }, { capture: true, passive: true });
     // Antippen einer Schaltfläche nimmt dem Feld den Fokus (Chromium behält ihn); die App setzt ihn danach neu
     document.addEventListener('mousedown', e => {
       const a = document.activeElement;
@@ -200,7 +213,7 @@ export async function safariModell(p, ansicht, { leisten = { bar: '.nb, .pnav', 
         s.zurueck = c && c !== document.body ? { el: e.target, c, y: c.scrollTop } : null;
       } }, true);
     document.addEventListener('focusin', e => {
-      if (!s.offen || !s.blur || !e.target.matches?.('input, textarea')) return;
+      if (s.weg || !s.offen || !s.blur || !e.target.matches?.('input, textarea')) return;
       s.blur = false;
       // neuer Fokus bei offener Tastatur: Safari rollt bzw. schiebt nach dem Fokus (im nächsten Bild)
       requestAnimationFrame(() => {

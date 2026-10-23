@@ -3,6 +3,30 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.32.1 – 24.10.2026
+
+AppDesign 4.32.1 · Designrichtlinie allgemein 4.32.1 · Zusammenarbeit allgemein 2.19.0 · geprüft mit Reiselogbuch 3.30.1
+
+**Korrektur A-71 – Ziehen auf einem Feld bei offener Tastatur** (dein Ja vom 24.10.2026, P-68/2.3, Fall-Liste
+`arbeit/A-61 Teil 2 Fall-Liste.md` B10, B19). Prüfpunkt im Reiselogbuch: P-69.
+
+- **Ursache:** bei offener Tastatur rollt R-4.5 das Feld in die obere Hälfte – der Inhalt steht dann nicht mehr ganz oben, und ein
+  Zug nach unten zählte als Zug im gerollten Inhalt: er schloss nur die Tastatur, erst der zweite Zug zog das Blatt und fragte.
+- **Behebung (R-4.6, 13, 15.17):** beginnt der Zug bei offener Tastatur auf einem Feld, zieht er im selben Zug das Blatt wie am
+  Kopf – die Tastatur geht zu, ohne Änderungen schließt es, mit Änderungen zieht es sich zäh, federt zurück und fragt am x. Ein
+  Feld, das selbst gerollt ist (langer Text), rollt weiter; im gerollten Inhalt neben dem Feld schließt der Zug weiter nur die
+  Tastatur. Technisch in ui.js: `blattZug.feld` beim Aufsetzen, `blattErlaubt` lässt es wie den Kopf zu. Die App braucht nichts
+  zu ändern.
+- **Prüfung `checkSheet`:** B10 und neu B19 laufen mit dem Safari-Modell (für diese Fälle eingesetzt und danach mit dem neuen
+  `__safari.aus()` wieder herausgenommen): Feld antippen, Tastatur auf, R-4.5 rollt; dann der Zug auf dem Feld (B10: ein Zug –
+  Tastatur zu, das Blatt folgt, Rückfrage) bzw. im gerollten Inhalt daneben (B19: nur die Tastatur geht zu). **Rot gegen 4.32.0**
+  (16 Meldungen – Erfassen hoch und quer, Fazit, quer auch Einstellungen und Neues Reiselogbuch: ‚zieht das Blatt nicht (0 px)‘,
+  ‚fragt nicht‘, wie am Gerät), grün mit der Behebung.
+- **Warum die Prüfung es übersah:** B10 setzte nur den Fokus, ohne Tastatur – R-4.5 rollte nichts, der Inhalt stand ganz oben.
+  Dieselbe Lücke anderswo: die übrigen Gesten (Zurückwischen, Seitenleiste) fragen nicht, ob der Inhalt ganz oben steht – nur das
+  Blatt war betroffen.
+- **Designrichtlinie allgemein 4.32.1:** R-4.6, 13 Blatt ziehen, 15.17.
+
 ## 4.32.0 – 23.10.2026
 
 AppDesign 4.32.0 · Designrichtlinie allgemein 4.32.0 · Zusammenarbeit allgemein 2.19.0 · geprüft mit Reiselogbuch 3.30.0
