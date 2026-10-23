@@ -18,7 +18,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| A-67 | 1 | **Zurückwischen am Gerät bestätigen (P-66 im Reiselogbuch 3.28.2):** über einem Tageskasten, daneben, leicht schräg; senkrecht rollt weiter; Seitenleiste am iPad hoch. In der Nachbildung behoben (F-23), am Gerät zu bestätigen | prüfen |
+| – | – | zurzeit nichts zu prüfen | – |
 
 ## 2. Weitere Themen (in Klärung)
 
@@ -57,6 +57,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Thema | Version | Datum |
 |---|---|---|---|
+| E-77 | **A-67 am Gerät bestätigt (P-66, Nutzer 23.10.2026):** Zurückwischen über und neben den Tageskästen, auch schräg, Rollen bleibt, Seitenleiste am iPad hoch – alles ok | 4.30.2 | 23.10.2026 |
 | E-76 | **Automatische Übergabe (Nutzer 23.10.2026):** 0 Nr. 13 – bei ‚⚠ Übergabe fällig‘ übergibt Claude ohne Rückfrage, sobald der laufende Schritt abgeschlossen ist, und startet die neue Sitzung selbst (2.2) | Zusammenarbeit 2.19.0 | 23.10.2026 |
 | E-75 | **A-67 Korrektur:** ist die Wischgeste entschieden, verhindert ui.js `touchmove` – Safari rollt nicht mehr dazwischen (Messung P-65: Abbruch ab 10 px senkrecht); Safari-Modell S-10 `safariWischen`, Prüfung `checkNavigation` F-23 (rot gegen 4.30.1); Messung zeigt `touchmove` | AppDesign 4.30.2 · Reiselogbuch 3.28.2 | 23.10.2026 |
 | E-74 | **A-67 Schritt 1 und A-66:** Messmodus zeichnet Berührungen (Zeiger, touchcancel mit Ziel) und die Entscheidungen der Gestenstelle auf (15.21, `checkNavigation` F-22); `checkNavigation` zeichnet bis zum Ende der Bewegung auf, unter Volllast belegen die Keyframes die Bewegung (A-66) | AppDesign 4.30.1 · Reiselogbuch 3.28.1 | 22.10.2026 |
