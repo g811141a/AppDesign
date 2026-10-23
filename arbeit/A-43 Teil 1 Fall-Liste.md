@@ -112,3 +112,4 @@ gelten die Grundregeln (`pruefe.mjs`).
 - **V12** übernommen: `navVor` → Fokus auf den Seitentitel (`.pnav`), `navZurueck` → auf die blaue Zeile bzw. den Titel der Startliste; ohne Rollen; iPad unverändert; `checkFokus`.
 - **V13** übernommen: Offline/Wieder online über `ansagen` (Meldung ohne `role="status"`); `ansagen` legt den Ansage-Bereich ins offene Fenster/Blatt, sonst auf die Seite (gilt für alle Ansagen); Prüfung mit und ohne Fenster.
 - **V14** übernommen: Prüfungen aus V1–V13 zusätzlich in den Daten-Fällen leer, lang, viele (leerer Hinweis lesbar, langes Menü vollständig benannt, Griff mit Name und Wert).
+- **K1** übernommen: Esc und ⌘. schließen das oberste Menü (offenes Untermenü zuerst), Taste verbraucht (kein Fenster-x, kein Seitenwechsel); `checkFokus`; Gerät: gibt Safari ⌘. weiter?
