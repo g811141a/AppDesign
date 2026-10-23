@@ -1,6 +1,6 @@
 # A-43 Teil 1 ‚VoiceOver, Tastatur, Kontrast, Bewegung‘ – Fall-Liste
 
-**Stand 23.10.2026** · Sitzung Reiselogbuch 0034 · Klärung und Apple-Abgleich: `arbeit/A-43 Klärung.md`
+**Stand 23.10.2026** · Sitzungen Reiselogbuch 0034 und 0035 (alle 36 Fälle durchgesprochen, Abschnitte 1 und 2 angeglichen) · Klärung und Apple-Abgleich: `arbeit/A-43 Klärung.md`
 
 **Entschieden (Nutzer 23.10.2026):** zwei Teile – **Teil 1** (diese Liste) ohne Muster, nur Fall-Liste, Prüfungen und Ja;
 **Teil 2** Textgröße nach der Einstellung des Geräts mit Muster. Tastatur: **nur Grundlagen** (keine Kurzbefehle). ‚Kontrast
@@ -11,84 +11,93 @@ Fehlermeldung, Trefferzeile), wo sie nicht über ui.js laufen.
 
 ## 1. Vorgesehene Regeln (Katalog, Designrichtlinie 17)
 
-| Regel | Inhalt | Prüfung |
-|---|---|---|
-| R-1.4 erweitert | Nur der Vordergrund reagiert – **auch für VoiceOver und Tastatur**: bei offenem Menü und offener Sprechblase ist alles andere unerreichbar | hig.mjs |
-| **R-1.8 neu** | **VoiceOver:** jedes Bedienelement hat Namen, Rolle und Zustand; Fenster und Sprechblasen mit Titel; der Fokus geht hinein und zurück; Ergebnisse werden angesagt | hig.mjs – `checkNamen`, ablauf.mjs – `checkFokus` |
-| **R-1.9 neu** | **Bedienungshilfen des Geräts:** ‚Kontrast erhöhen‘ schaltet auf die zweite Farbtabelle; ‚Bewegung reduzieren‘ ersetzt jede Bewegung durch Überblenden bzw. Springen | hig.mjs (Kontrast), ablauf.mjs – `checkRuhig` |
-| **R-4.7 neu** | **Hardware-Tastatur:** Esc und ⌘. schließen Menü, Sprechblase und Fenster (wie x bzw. Abbrechen); Pfeile in Menüs; Eingabe löst die empfohlene, nie die rote Aktion; Tab bleibt im Vordergrund | ablauf.mjs – `checkFokus` |
-| R-5.3 erweitert | Fehlermeldung **auch hörbar**: mit dem Feld verknüpft und beim Erscheinen angesagt | ablauf.mjs – `checkFieldErrors` |
+Angeglichen an Abschnitt 4 (Sitzung 0035); maßgeblich bleibt bei Einzelheiten Abschnitt 4.
 
+| Regel | Inhalt | Prüfung | Gerät |
+|---|---|---|---|
+| R-1.4 erweitert | Nur der Vordergrund reagiert – **auch für VoiceOver und Tastatur**: bei offenem Menü und offener Sprechblase ist alles außerhalb `inert` (Seite bzw. übriger Fensterinhalt), aufgehoben bei jedem Schließen; Fenster, Meldung und Blatt sind modal | hig.mjs (V7, V8) | – |
+| **R-1.8 neu** | **VoiceOver:** jedes Bedienelement hat Namen, Rolle und Zustand (Icons `aria-hidden`; Menüknöpfe ‚öffnet Menü‘ mit offen/zu; Häkchen ‚ausgewählt‘); Fenster, Meldung, Blatt und Sprechblase mit Titel; der Fokus geht hinein und ohne Rollen zurück (auch Seitenwechsel am iPhone); Ergebnisse werden über `ansagen()` höflich angesagt, ‚Automatisch gespeichert‘ nicht | hig.mjs – `checkNamen`; ablauf.mjs – `checkFokus`, Ansage-Bereich | – (keine VoiceOver-Prüfung am Gerät) |
+| **R-1.9 neu** | **Bedienungshilfen des Geräts:** ‚Kontrast erhöhen‘ schaltet auf die zweite Farbtabelle (hell und dunkel, jeder Text und jedes Icon mindestens 4,5 : 1, Ausgabe unverändert hell), sofort ohne Neuladen; ‚Bewegung reduzieren‘ – erlaubt Überblenden (nur Deckkraft bzw. Farbe, bis 0,3 s), kleine Rückmeldungen unter 30 px, Bewegung direkt mit dem Finger; nicht erlaubt selbstständige Lageänderung über 30 px, Zoomen, Federn, sanftes Rollen durch die App, Dauerschleifen | hig.mjs (Kontrast); ablauf.mjs – `checkRuhig`; Bewegungswächter in pruefe.mjs | Aussehen mit ‚Kontrast erhöhen‘, Gefühl mit ‚Bewegung reduzieren‘ |
+| **R-4.7 neu** | **Hardware-Tastatur (Grundlagen):** Esc und ⌘. schließen das oberste Menü, die Sprechblase (= Abbrechen) und das Fenster (wie x, mit Änderungen die Rückfrage); Pfeile, Pos1/Ende in Menüs und Untermenüs; Eingabe löst die empfohlene bzw. ‚Abbrechen‘, **nie die rote** Aktion; Tab bleibt im Vordergrund und folgt der sichtbaren Reihenfolge; Fokusring nur bei der Tastatur (`:focus-visible`, R-3.4 bleibt) | ablauf.mjs – `checkFokus` | Esc, ⌘., Pfeile, Eingabe, Tab (Tastatursteuerung) |
+| R-5.3 erweitert | Fehlermeldung **auch hörbar**: Feld `aria-invalid`, Meldung mit dem Feld verknüpft (`aria-describedby`) und einmal angesagt; beim Häkchen Fokus aufs erste fehlerhafte Feld (Baustein `feldFehler`) | ablauf.mjs – `checkFieldErrors` | – |
+
+**Prüfwerkzeug:** Schalter `PRUEF_BEDIENUNG=beide` (P1) und Gegenprobe `--gegenprobe bedienung` (P2), beide in pruefe.mjs bzw. lauf.mjs.
 (R-4.6 ist für das Blatt auf dem iPhone vorgesehen, A-61/2.)
+
+**Neue Bausteine in ui.js:** `ansagen(text)` (Ansage-Bereich im offenen Fenster bzw. Blatt, sonst auf der Seite), `feldFehler(felder,
+zeile, text)`, `--accent-fill`. **Reiselogbuch:** Felder mit Fehlermeldung über `feldFehler`; Ansagen der Suche und der Seitenleiste;
+sanftes Rollen zum Fehler beim Häkchen (index.html:1323) springt mit ‚Bewegung reduzieren‘.
 
 ## 2. Fall-Liste
 
-Gerät × Lage × Darstellung: iPad quer und hoch, iPhone hoch und quer, je hell und dunkel, Chromium und WebKit; nach jedem Fall
-gelten die Grundregeln (`pruefe.mjs`).
+Gerät × Lage × Darstellung: iPad quer und hoch, iPhone hoch und quer, je hell und dunkel, Chromium und WebKit; zusätzlich mit
+‚Kontrast erhöhen‘ und ‚Bewegung reduzieren‘ (P1); nach jedem Fall gelten die Grundregeln (`pruefe.mjs`).
 
 ### V – VoiceOver (Namen, Rollen, Fokus, Sperre, Ansagen)
 
 | Nr. | Fall | Erwartet | Automatisch |
 |---|---|---|---|
-| V1 | Jede Ansicht: alle sichtbaren Schaltflächen, Felder, Schalter, Kapseln | jedes hat einen Namen (Icon-Knöpfe `aria-label`, Felder über ihr `label`); Icons selbst `aria-hidden` | ja (`checkNamen`) |
-| V2 | Fenster, Meldung, Blatt öffnen | Rolle Fenster, Name = Fenstertitel (`aria-labelledby`), Zusatzzeile als Beschreibung | ja |
-| V3 | Knopf, der ein Menü öffnet (ellipsis, Sortieren, Kontextmenü …) | ‚öffnet Menü‘ (`aria-haspopup="menu"`), offen/zu (`aria-expanded`) | ja |
-| V4 | Menüpunkt mit Häkchen, Untermenü, deaktiviert | ‚ausgewählt‘ (`menuitemradio`/`menuitemcheckbox` mit `aria-checked`); Untermenü ‚öffnet Menü‘; deaktiviert wird angesagt | ja |
-| V5 | Menü öffnen; dann wählen, daneben tippen oder Esc | Fokus auf dem ersten Eintrag; danach zurück auf dem Knopf | ja (`checkFokus`) |
-| V6 | Sprechblase öffnen (Löschen, Ersetzen, Änderungen verwerfen, drei Wege) | Rolle Abfrage (`alertdialog`), der Text wird gelesen; Fokus in der Blase, danach zurück auf dem Knopf | ja |
-| V7 | Menü bzw. Sprechblase offen (auf der Seite und im Fenster) | alles außerhalb ist unerreichbar (`inert`), nach dem Schließen wieder erreichbar | ja |
-| V8 | Fenster offen | Seite unerreichbar (eingebautes modales Fenster), Menü und Sprechblase im Fenster wie V7 | ja |
-| V9 | Suche: tippen, Treffer wechseln, keine Treffer | ‚3 von 57‘ bzw. ‚Keine Treffer‘ wird nach einer kurzen Pause angesagt (höflich, unterbricht nicht) | ja (Ansage-Bereich) |
-| V10 | Fehlermeldung erscheint (nach Eingabe bzw. beim Häkchen), verschwindet | Feld ‚ungültig‘ (`aria-invalid`), Meldung mit dem Feld verknüpft (`aria-describedby`) und einmal angesagt | ja |
-| V11 | ‚Automatisch gespeichert um …‘ | wird **nicht** angesagt, nur im Fensterkopf lesbar (Nutzer 23.10.2026, wie Notizen) | ja (kein Ansage-Bereich) |
-| V12 | iPhone: Seite vor (Eintrag öffnen) und zurück | Fokus auf dem Titel der neuen Seite; zurück auf der Zeile, von der man kam | ja |
-| V13 | Offline-Meldung | wird angesagt (heute schon `role="status"`) | ja |
-| V14 | Daten leer, lang, viele (lange Menüs mit Rollen, leere Liste) | Namen und Rollen wie V1–V4, leere Liste mit lesbarem Hinweis | ja |
+| V1 | Jede Ansicht: alle sichtbaren Schaltflächen, Felder, Schalter, Kapseln | jedes hat einen Namen (Icon-Knöpfe `aria-label`, Felder über ihr `label`); Icons `aria-hidden` | ja (`checkNamen`) |
+| V2 | Fenster, Meldung, Blatt öffnen | Rolle Fenster, Name = Titel (`aria-labelledby`), Zusatzzeile als Beschreibung (`aria-describedby`) | ja (`checkNamen`) |
+| V3 | Knopf, der ein Menü öffnet, und Untermenü-Eintrag | `aria-haspopup="menu"`, `aria-expanded` zentral in `openMenu` | ja (`checkNamen`) |
+| V4 | Menüpunkt mit Häkchen-Spalte, Untermenü, deaktiviert | `menuitemcheckbox` mit `aria-checked` zentral in `menuHtml` („Hell, ausgewählt“); Untermenü wie V3; deaktiviert angesagt | ja (`checkNamen`: Häkchen sichtbar = `aria-checked`) |
+| V5 | Menü öffnen; wählen, daneben tippen oder Esc | Fokus auf dem ersten wählbaren Eintrag (Untermenü ebenso); danach zurück auf dem Knopf ohne Rollen (`preventScroll`, R-7.3), fehlt er → Kopfzeile | ja (`checkFokus`) |
+| V6 | Sprechblase öffnen (Löschen, Ersetzen, Änderungen verwerfen, drei Wege) | `role="alertdialog"`, `aria-labelledby` auf den Text, `aria-modal`; Fokus auf die Blase (ohne Rahmen), danach zurück auf den Knopf bzw. die Kopfzeile, ohne Rollen | ja (`checkFokus`) |
+| V7 | Menü bzw. Sprechblase offen (auf der Seite und im Fenster) | alles außerhalb `inert`, nach jedem Schließen (auch R-8.1) wieder erreichbar | ja (hig.mjs) |
+| V8 | Fenster, Meldung, Blatt offen | modal, Seite unerreichbar; Menü und Sprechblase im Fenster wie V7 | ja (hig.mjs) |
+| V9 | Suche: tippen, Treffer wechseln, keine Treffer; Seitenleiste filtern | nach ca. 0,7 s Pause „3 Treffer“ bzw. „Keine Treffer“, mit ‹ › „Treffer 2 von 3“, Seitenleiste „2 von 5 Reiselogbüchern“ (App) – höflich über `ansagen` | ja (Ansage-Bereich) |
+| V10 | Fehlermeldung erscheint (nach Eingabe bzw. beim Häkchen), ändert sich, verschwindet | `feldFehler`: roter Rand, `aria-invalid`, `aria-describedby`, einmal angesagt beim Erscheinen bzw. neuem Text; beim Häkchen Fokus aufs erste fehlerhafte Feld | ja (`checkFieldErrors`) |
+| V11 | ‚Automatisch gespeichert um …‘ | wird **nicht** angesagt, nur im Fensterkopf lesbar | ja (kein Ansage-Bereich) |
+| V12 | iPhone: Seite vor (Eintrag öffnen) und zurück | `navVor` → Fokus auf den Seitentitel (`.pnav`), `navZurueck` → auf die blaue Zeile bzw. den Titel der Startliste; ohne Rollen; iPad unverändert | ja (`checkFokus`) |
+| V13 | Offline bzw. wieder online, mit und ohne offenes Fenster | über `ansagen` angesagt (Meldung ohne `role="status"`) | ja |
+| V14 | Daten leer, lang, viele | Prüfungen aus V1–V13 auch hier: leerer Hinweis lesbar, langes Menü vollständig benannt, Griff mit Name und Wert | ja |
 
 ### K – Hardware-Tastatur am iPad (nur Grundlagen)
 
 | Nr. | Fall | Erwartet | Automatisch |
 |---|---|---|---|
-| K1 | Menü offen: Esc bzw. ⌘. | schließt, Fokus zurück auf dem Knopf | ja |
-| K2 | Menü offen: Pfeil ab/auf, Pos1/Ende, Eingabe bzw. Leertaste | wandert durch die Einträge (deaktivierte und Zwischenzeilen übersprungen), Eingabe wählt | ja |
-| K3 | Untermenü: Pfeil rechts bzw. Eingabe am Eintrag, Pfeil links bzw. Esc | öffnet das Untermenü mit Fokus auf dem ersten Eintrag; schließt es, Fokus zurück auf dem Eintrag | ja |
-| K4 | Sprechblase: Eingabe, Esc bzw. ⌘., Tab bzw. Pfeile | Eingabe = empfohlene Aktion (blau) bzw. ‚Abbrechen‘, **nie die rote**; Esc = Abbrechen; Tab bleibt in der Blase | ja |
-| K5 | Fenster: Esc bzw. ⌘. | wie x (mit Änderungen die Rückfrage, R-4.4); Tab bleibt im Fenster | ja |
-| K6 | Tab durch eine Seite | alle Bedienelemente in sichtbarer Reihenfolge; Fokusrahmen nur bei der Tastatur, nie beim Antippen (R-3.4) | ja |
-| K7 | Esc auf der Seite (iPhone-Aufbau bzw. darübergelegte Seitenleiste) | zurück bzw. Seitenleiste zu (heute schon, F-20) | ja |
-| K8 | Eingabe in einem einzeiligen Feld | beendet das Feld (R-5.5), löst kein Häkchen aus | ja |
+| K1 | Menü offen: Esc bzw. ⌘. | schließt das oberste Menü (offenes Untermenü zuerst), Taste verbraucht (kein Fenster-x, kein Seitenwechsel), Fokus zurück auf dem Knopf | ja (`checkFokus`) |
+| K2 | Menü offen: ↑/↓, Pos1/Ende, Eingabe bzw. Leertaste, Tab | wandert mit Umlauf (ausgegraute, Striche, Zusatzzeilen übersprungen), Tab wie ↓, Markierung hinterlegt ohne Rahmen, langes Menü rollt mit; Eingabe/Leertaste wählt | ja (`checkFokus`) |
+| K3 | Untermenü: → bzw. Eingabe/Leertaste am Eintrag, ← bzw. Esc | öffnet mit Fokus auf dem ersten Eintrag; schließt, Fokus zurück auf dem ›-Eintrag; feste Richtung wie am Mac; `aria-expanded` wechselt | ja (`checkFokus`) |
+| K4 | Sprechblase: Eingabe, Esc bzw. ⌘., Tab bzw. Pfeile, Leertaste | Eingabe = blauer Weg bzw. Abbrechen, **nie Rot**; Esc/⌘. = Abbrechen (verbraucht, Fenster bleibt); Tab/Pfeile markieren mit Umlauf; Leertaste drückt den markierten (auch Rot) | ja (`checkFokus`) |
+| K5 | Fenster, Meldung, Blatt: Esc bzw. ⌘. (auch aus einem Feld), Tab und Umschalt+Tab | wie x (ohne Änderung schließt, mit Änderung die Rückfrage, R-4.4); Tab bleibt im Fenster | ja (`checkFokus`) |
+| K6 | Tab durch eine Seite | Reihenfolge Leiste → Suche → Inhalt → schwebende Knöpfe, nur Sichtbares; eigener Fokusring nur bei `:focus-visible` (Akzentfarbe, Abstand, folgt dem Radius, auch Suchfeld); nie beim Antippen (R-3.4) | ja (`checkFokus`) |
+| K7 | Esc auf der Seite (iPhone-Aufbau bzw. darübergelegte Seitenleiste) | zurück bzw. Seitenleiste zu (F-20), kein ⌘.; Fokus auf der Zeile bzw. panel-left | ja (`checkNavigation`) |
+| K8 | Eingabe in Feldern | einzeilig: Feld fertig, Fenster offen, kein Häkchen (R-5.5); Suche behält Treffer; mehrzeilig Zeilenumbruch; Tab nächstes Feld; kein ⌘Eingabe | ja (`checkFokus`) |
 
 ### H – ‚Kontrast erhöhen‘ (zweite Farbtabelle)
 
 | Nr. | Fall | Erwartet | Automatisch |
 |---|---|---|---|
-| H1 | Hell mit ‚Kontrast erhöhen‘ | Apples kontrastreiche Farben (z. B. Blau #0040DD, Rot #D70015, Grün #248A3D, Orange #C93400), graue Texte dunkler, Linien dunkler, Glas undurchsichtiger | ja (Farbwerte, Kontrast) |
-| H2 | Dunkel mit ‚Kontrast erhöhen‘ | z. B. Blau #409CFF, Rot #FF6961, Grün #30DB5B, Orange #FFB340; graue Texte heller, Linien heller | ja |
-| H3 | Kontrast aller Texte | mindestens 4,5 : 1 – auch Weiß auf Blau und Orange (ohne ‚Kontrast erhöhen‘ bleiben die bewussten Ausnahmen) | ja (hig.mjs) |
-| H4 | Ausgabe HTML/PDF | unverändert hell (R-6.2) | ja |
-| H5 | Einstellung bei offener App umschalten | Farben wechseln sofort, ohne Neuladen | ja |
+| H1 | Hell mit ‚Kontrast erhöhen‘ | `@media (prefers-contrast: more)`: Akzent #0040DD, Rot gefüllt #D70015, Rot Text #B3261E, Grün #248A3D, Orange #C93400, Grau Text #3C3C43, Text #000000, Linien #8E8E93, Glas fast deckend mit Haarlinie; nur Variablen | ja (Farbwerte) |
+| H2 | Dunkel mit ‚Kontrast erhöhen‘ (Gerät oder App dunkel) | Akzent #409CFF, Rot Text #FF6961, Rot gefüllt #D70015, Grün #30DB5B, Orange #FFB340, Grau Text #C7C7CC, Linien #636366, Glas wie H1 | ja (Farbwerte) |
+| H3 | Kontrast aller Texte und Icons mit ‚Kontrast erhöhen‘ | mindestens 4,5 : 1 ohne Ausnahmen; gefüllte blaue Knöpfe über `--accent-fill` (dunkel #0060DF, Weiß 5,6), Schrift/Icons #409CFF | ja (hig.mjs) |
+| H4 | Ausgabe HTML/PDF und Vorschau | Inhalt unverändert hell (R-6.2), Rahmen der Vorschau folgt H1/H2; mit/ohne Kontrast, hell/dunkel identisch | ja |
+| H5 | Einstellung bei offener App umschalten (offenes Fenster, Eingabe, gerollte Liste) | reines CSS, wechselt sofort ohne Neuaufbau; Messmodus notiert den Kontrast-Zustand | ja |
 
 ### M – ‚Bewegung reduzieren‘
 
 | Nr. | Fall | Erwartet | Automatisch |
 |---|---|---|---|
-| M1 | Seitenwechsel, Zurückwischen, Seitenleiste, Fenster gleitet, Hervorheben | wie heute: Überblenden bzw. ohne Bewegung | ja (heute schon) |
-| M2 | ‚Nach oben‘ / ‚Ans Ende‘ | springt statt sanft zu rollen | ja |
-| M3 | Schalter umlegen | ohne Gleiten | ja |
-| M4 | Mikrofon beim Diktieren | pulsiert nicht, bleibt sichtbar aktiv | ja |
-| M5 | Blatt auf dem iPhone (A-61/2) | Überblenden, Ziehen folgt dem Finger (Fall B22) | beim Bau von A-61/2 |
-| M6 | Überblenden (opacity) | bleibt erlaubt (wie Apple) | – |
-| M7 | Jede neue Bewegung | fragt `prefers-reduced-motion` ab – Prüfung sucht Bewegungen, die es nicht tun | ja (`checkRuhig`) |
+| M1 | Seitenwechsel, Zurückwischen, Seitenleiste, gleitendes Fenster, Hervorheben | wie heute: nur Deckkraft, keine Lage | ja (`checkRuhig`) |
+| M2 | ‚Nach oben‘ / ‚Ans Ende‘ / Titel antippen | springt direkt (Überblenden ca. 0,15 s), sonst sanft wie heute; Abweichung von Apples Statusleiste begründet (WCAG 2.3.3) | ja (`checkRuhig`: ein Rollschritt) |
+| M3 | Schalter umlegen | kein Umbau: eigener Schalter springt, eingebauter (`natsw`) folgt dem System; erlaubte kleine Bewegung | ja (`checkRuhig`) |
+| M4 | Mikrofon beim Diktieren | kein Pulsieren, ruhig gedrückt (`.mic[aria-pressed=true]` ohne Animation) | ja (`checkRuhig`) |
+| M5 | Blatt auf dem iPhone (A-61/2) | Überblenden, Seite ohne Verkleinerung, Ziehen folgt dem Finger, ohne Nachfedern (B22) | `checkSheet`, mit Teil 1 in `checkRuhig` |
+| M6 | Grenze | erlaubt Überblenden (bis 0,3 s), unter 30 px, mit dem Finger; nicht erlaubt Lage über 30 px, Zoomen, Federn, sanftes Rollen, Dauerblinken (R-1.9) | – (Regeltext) |
+| M7 | Jede Bewegung, auch künftige und in der App | Bewegungswächter in pruefe.mjs erfasst bei ‚reduzieren‘ CSS-Übergänge und -Animationen, `el.animate` und sanftes Rollen und misst an M6; Meldung mit Element, Eigenschaft, Ansicht; Fundstelle index.html:1323 springt | ja (Wächter, `checkRuhig`) |
 
 ### P – Prüfungen
 
 | Nr. | Fall | Erwartet |
 |---|---|---|
-| P1 | Grundregeln zusätzlich mit ‚Kontrast erhöhen‘ und ‚Bewegung reduzieren‘ (Playwright `contrast: 'more'`, `reducedMotion: 'reduce'`) | alle Ansichten grün (T-60) |
-| P2 | Gegenprobe | ohne Namen, ohne `inert`, mit Eingabe = rot, ohne Farbtabelle bzw. mit Bewegung trotz ‚reduzieren‘ wird die Prüfung rot |
+| P1 | Grundregeln mit beiden Bedienungshilfen: `PRUEF_BEDIENUNG=beide` (`contrast: 'more'`, `reducedMotion: 'reduce'` in `t.seite`) | im vollen Lauf `hig` zusätzlich ‚hell/dunkel Bedienungshilfen‘ (alle vier Ansichten) und die Abläufe mit Bewegung (Navigation, Fenster, iPhone, Suche in der Liste, Seitenleiste); alle grün; Mehrzeit beim Bau messen |
+| P2 | Gegenprobe `--gegenprobe bedienung` | je Lauf ein eingeschleuster Fehler (Liste in Abschnitt 4), genau die passende Meldung wird rot; beim Bau und bei Änderung dieser Prüfungen, nicht in jedem `los` |
 
-**Nur am Gerät (Prüfliste):** Hardware-Tastatur am iPad (Esc, ⌘., Pfeile, Eingabe); Aussehen mit ‚Kontrast erhöhen‘; Gefühl mit
-‚Bewegung reduzieren‘.
+**Nur am Gerät (Prüfliste, ohne VoiceOver):**
+1. Hardware-Tastatur am iPad: Esc, ⌘. (gibt Safari es weiter?), Pfeile und Eingabe in Menü und Sprechblase, Tab (erreicht es Knöpfe – Einstellung Tastatursteuerung?).
+2. Aussehen mit ‚Kontrast erhöhen‘ hell und dunkel; Umschalten bei offener App.
+3. Gefühl mit ‚Bewegung reduzieren‘: Seitenwechsel, ‚Nach oben‘ springt, Mikrofon ruhig.
 
 ## 3. Antworten (Nutzer 23.10.2026)
 
