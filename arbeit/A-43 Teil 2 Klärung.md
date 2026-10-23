@@ -56,3 +56,7 @@
 4. Muster (`arbeit/A-43 Teil 2 Muster.html`, Bilder `arbeit/bilder/A-43 T2 …`): **Variante A wie Apple** gewählt.
 5. Versuch am Gerät: `-apple-system-body` meldet die eingestellte Stufe bis AX5 (53 px) und **wechselt bei offener App** ohne Neuladen; auf dem Home-Bildschirm gleich.
 6. Nächster Schritt: Muster A dunkel und hoch (iPhone hoch und quer, iPad hoch), dann Fall-Liste Teil 2.
+7. Muster A dunkel, iPhone hoch und quer, iPad hoch (Textstile nach Apples Tabelle: Überschriften wachsen langsamer, Large Title 34 → 60;
+   iPhone hoch Tabelle immer als Karten, Datum ab 21 pt unter dem Titel; Fenster auf dem iPhone bildschirmfüllend; Notizfeld wächst mit): **ok** am Gerät.
+8. **Als allgemeine Regel: Ja** – neue Regel im Katalog (Textgröße nach dem Gerät, Variante A) mit Prüfung in mehreren Größen.
+9. Nächster Schritt: Fall-Liste Teil 2 (Format wie Teil 1, je Antwort ein Fall).
