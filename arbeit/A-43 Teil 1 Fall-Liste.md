@@ -126,3 +126,4 @@ gelten die Grundregeln (`pruefe.mjs`).
 - **H4** übernommen: Ausgabe und Vorschau-Inhalt unverändert hell (R-6.2), Rahmen der Vorschau folgt H1/H2; Prüfung: Ausgabe mit/ohne Kontrast, hell/dunkel identisch.
 - **H5** übernommen: reines CSS (`prefers-contrast: more` mit `data-theme`), wechselt sofort ohne Neuaufbau; Messmodus notiert den Kontrast-Zustand; Prüfung: Umschalten mit offenem Fenster, Eingabe, gerollter Liste.
 - **M1** übernommen: Seitenwechsel, Zurückwischen, Seitenleiste, gleitendes Fenster, Hervorheben bleiben wie heute, unter R-1.9 mit `checkRuhig` (nur Deckkraft, keine Lage).
+- **M2** übernommen: mit „Bewegung reduzieren“ springen „Nach oben“/„Ans Ende“/Titel antippen direkt (Überblenden ca. 0,15 s), sonst sanft wie heute; Abweichung von Apples Statusleiste (rollt) begründet (WCAG 2.3.3); `checkRuhig`: ein Rollschritt.
