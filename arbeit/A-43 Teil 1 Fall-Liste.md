@@ -101,7 +101,7 @@ gelten die Grundregeln (`pruefe.mjs`).
 - **V1** übernommen: R-1.8, `checkNamen` in hig.mjs (heute alle benannt, Prüfung fehlt).
 - **V2** übernommen: Fenster, Meldung und Blatt mit `aria-labelledby` (Titel) und `aria-describedby` (Zusatzzeile); heute nur „Dialog“ ohne Namen.
 - **V3** übernommen: Menüknöpfe und Untermenü-Einträge `aria-haspopup="menu"`, `aria-expanded` zentral in `openMenu` (heute nirgends).
-- **V4** nicht übernommen: Häkchen in Menüs bleiben ohne `aria-checked` (Untermenü-Einträge sind über V3 abgedeckt).
+- **V4** übernommen (Korrektur des Nutzers nach erstem ‚Nein‘): Einträge mit Häkchen-Spalte `menuitemcheckbox` mit `aria-checked` zentral in `menuHtml` („Hell, ausgewählt“), Untermenü-Einträge `aria-haspopup`/`aria-expanded` (V3); Prüfung in `checkNamen` (Häkchen sichtbar = `aria-checked`).
 - **V5** übernommen: Fokus ins Menü (erster wählbarer Eintrag, Untermenü ebenso) und zurück zum Knopf ohne Rollen (`preventScroll`, R-7.3); fehlt der Knopf → Kopfzeile; `checkFokus` in ablauf.mjs.
 - **V6** übernommen: Sprechblase `role="alertdialog"`, `aria-labelledby` auf den Text, `aria-modal`; Fokus auf die Blase (ohne Rahmen), danach zurück zum Knopf bzw. zur Kopfzeile, ohne Rollen; `checkFokus`.
 - **V7** übernommen: bei offenem Menü und offener Sprechblase alles außerhalb `inert` (Seite bzw. übriger Fensterinhalt), Aufheben bei jedem Schließen (auch R-8.1); R-1.4 „auch für VoiceOver und Tastatur“; Prüfung hig.mjs mit Gegenprobe.
