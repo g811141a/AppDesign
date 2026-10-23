@@ -49,6 +49,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 | A-60 | 3 | **Fotos ansehen und wischen (aus A-38 T-65, Nutzer 22.10.2026):** Bildansicht nach Apple Fotos (wischen, zoomen, nach unten wischen schließt), Bilder laden erst bei Sicht; Speicher IndexedDB statt localStorage, Backup und Abgleich mit Bildern – planen, sobald eine App Fotos bekommt | später |
 | A-32 | 3 | **‚Problem melden‘ (Vorschlag V9, Nutzer 19.10.2026):** Messung, Version und Gerät in einer Datei | später |
 | A-01 | 3 | Startseite g811141a.github.io mit allen Apps (früher S-03) | später |
+| A-70 | 3 | **Mehrsprachfähigkeit (Nutzer 23.10.2026):** Apps und AppDesign-Bausteine in mehreren Sprachen – Sprache folgt dem Gerät (wie Apple: Systemsprache, je App übersteuerbar), alle Texte aus einer Texttabelle je Sprache statt fest im Code, `lang` der Seite, Datum, Zahl und Sortierung über `Intl`, Ansagen und Namen (A-43) mit übersetzt; Ausgabe HTML/PDF in der gewählten Sprache. Vorher klären: welche Sprachen, Daten der Nutzer bleiben unübersetzt, Prüfung (jeder Text in jeder Sprache vorhanden, lange Wörter passen). Apple-Abgleich vor dem Muster | offen |
 
 ---
 
