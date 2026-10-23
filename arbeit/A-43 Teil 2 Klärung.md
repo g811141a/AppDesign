@@ -53,3 +53,6 @@
 1. Muster zeigt **A, B und C nebeneinander** (A empfohlen), zuerst hell und quer.
 2. Höchstgröße **bis 53 pt** (AX5, alle Stufen wie Apple).
 3. Nächster Schritt: Muster in den Größen 17, 23, 33 und 53 pt mit kleinem Versuch am Gerät (Home-Bildschirm, AX-Stufen, Wechsel bei offener App).
+4. Muster (`arbeit/A-43 Teil 2 Muster.html`, Bilder `arbeit/bilder/A-43 T2 …`): **Variante A wie Apple** gewählt.
+5. Versuch am Gerät: `-apple-system-body` meldet die eingestellte Stufe bis AX5 (53 px) und **wechselt bei offener App** ohne Neuladen; auf dem Home-Bildschirm gleich.
+6. Nächster Schritt: Muster A dunkel und hoch (iPhone hoch und quer, iPad hoch), dann Fall-Liste Teil 2.
