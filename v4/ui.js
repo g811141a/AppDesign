@@ -1,4 +1,4 @@
-// AppDesign 4.30.2 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
+// AppDesign 4.31.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
 // Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/fassung/X.Y.Z/ui.js"></script> (feste Fassung, R-10.3)
 // Seit 4.11.0 (R-10.3): ui.js und design.css immer mit ?v=<AppDesign-Version> einbinden (auch in sw.js) und beim Start
 // prüfen, ob genau diese Fassung geladen ist (AD_VERSION hier, --ad-version in design.css).
@@ -19,7 +19,7 @@
 
 'use strict';
 // Version der Bausteine (R-10.3): die App vergleicht sie beim Start mit der benötigten Fassung.
-const AD_VERSION = '4.30.2';
+const AD_VERSION = '4.31.0';
 /* ---------- Icons ---------- */
 
 // Schaltflächen-Icons aus Lucide (ISC-Lizenz), direkt eingebettet, damit die App offline funktioniert.
@@ -1081,11 +1081,27 @@ function capWanted(f, pos) {
   const before = f.value.slice(f.value.lastIndexOf('\n', pos - 1) + 1, pos);
   return !/[\p{L}\p{N}]/u.test(before) || /[.!?]\s+$/.test(before);
 }
+// Seit 4.31.0 (A-65): löscht oder ersetzt der Nutzer einen Großbuchstaben (Rücktaste, markieren und überschreiben), erzwingt die App an
+// dieser Stelle keine Großschreibung mehr – die Tastatur entscheidet (wie iOS nach einer Korrektur von Hand); data-cap-frei = Stelle.
+// Nur für genau einen Buchstaben: wer ein ganzes Wort oder Feld löscht, bekommt danach wieder Großschreibung.
+function capFrei(f, von, bis) {
+  if (/^\p{Lu}$/u.test(f.value.slice(von, bis))) f.dataset.capFrei = String(von); else delete f.dataset.capFrei;   // genau ein Großbuchstabe
+}
 function capBefore(e) {
   const f = e.target;
-  if (e.inputType !== 'insertText' || !e.data || !/^\p{Ll}/u.test(e.data) || !f.matches?.('textarea, input[type=text]')) return;
+  if (!f.matches?.('textarea, input[type=text]')) return;
   const start = f.selectionStart, end = f.selectionEnd;
-  if (!capWanted(f, start)) return;
+  if (/^delete(ContentBackward|ContentForward)$/.test(e.inputType)) {
+    if (start !== end) capFrei(f, start, end);
+    else if (e.inputType === 'deleteContentBackward') capFrei(f, Math.max(0, start - 1), start);
+    else capFrei(f, start, start + 1);
+    return;
+  }
+  if (e.inputType !== 'insertText') return;
+  if (start !== end) capFrei(f, start, end);
+  else if (f.dataset.capFrei !== undefined && +f.dataset.capFrei !== start) delete f.dataset.capFrei;
+  if (!e.data || !/^\p{Ll}/u.test(e.data)) return;
+  if (f.dataset.capFrei !== undefined || !capWanted(f, start)) return;
   e.preventDefault();
   delete f.dataset.capNext;
   f.setRangeText(e.data.charAt(0).toLocaleUpperCase('de') + e.data.slice(1), start, end, 'end');
@@ -1098,6 +1114,7 @@ function autoCapital(e) {
   const pos = f.selectionStart;
   const ch = f.value.charAt(pos - 1);
   if (!/^\p{Ll}$/u.test(ch)) { if (/\p{L}/u.test(ch)) delete f.dataset.capNext; return; }
+  if (f.dataset.capFrei !== undefined && +f.dataset.capFrei === pos - 1) { delete f.dataset.capFrei; return; }   // A-65
   if (!capWanted(f, pos - 1)) return;
   delete f.dataset.capNext;
   f.setRangeText(ch.toLocaleUpperCase('de'), pos - 1, pos, 'end');
@@ -1244,6 +1261,28 @@ document.addEventListener('keydown', e => {
 });
 dlg.addEventListener('beforeinput', capBefore);
 dlg.addEventListener('input', autoCapital);
+// Seit 4.31.0 (A-64, R-5.2): keine doppelten Leerzeichen in Textfeldern (ein- und mehrzeilig, auch im Suchfeld) – ein Leerzeichen direkt
+// neben einem Leerzeichen wird nicht eingefügt; beim Einfügen werden mehrere Leerzeichen oder Tabs zu einem (Zeilenumbrüche bleiben,
+// einzeilige Felder machen aus ihnen ein Leerzeichen). Der iOS-Kurzbefehl ‚.‘ (zweimal Leertaste) ersetzt das erste Leerzeichen selbst.
+const LEER_FELD = 'textarea, input[type=text], input[type=search], input:not([type])';
+const leer = c => c === ' ' || c === '\t';
+document.addEventListener('beforeinput', e => {
+  const f = e.target;
+  if (e.inputType !== 'insertText' || e.data !== ' ' || !f.matches?.(LEER_FELD) || f.selectionStart == null) return;
+  if (leer(f.value.charAt(f.selectionStart - 1)) || leer(f.value.charAt(f.selectionEnd))) e.preventDefault();
+}, true);
+document.addEventListener('paste', e => {
+  const f = e.target, t = e.clipboardData?.getData('text/plain');
+  if (t == null || !f.matches?.(LEER_FELD) || f.selectionStart == null) return;
+  const a = f.selectionStart, b = f.selectionEnd;
+  let x = (f.matches('textarea') ? t : t.replace(/\r?\n/g, ' ')).replace(/[ \t]+/g, ' ');
+  if (x.startsWith(' ') && (a === 0 ? false : leer(f.value.charAt(a - 1)))) x = x.slice(1);
+  if (x.endsWith(' ') && leer(f.value.charAt(b))) x = x.slice(0, -1);
+  if (x === t) return;
+  e.preventDefault();
+  f.setRangeText(x, a, b, 'end');
+  f.dispatchEvent(new Event('input', { bubbles: true }));
+}, true);
 dlg.addEventListener('input', refreshOk);
 dlg.addEventListener('change', refreshOk);
 dlg.addEventListener('click', () => setTimeout(refreshOk));
@@ -1436,8 +1475,9 @@ document.addEventListener('touchmove', e => {
 //     zurueck.los()       – zurück zur Startliste (Zustand ändern und neu aufbauen)
 //     seite.moeglich()    – Seitenleiste wird darübergelegt (iPad hoch), seite.offen() – sie ist sichtbar
 //     seite.zeigen(an)    – Seitenleiste ein- bzw. ausblenden (Zustand ändern, nur die Seitenleiste neu aufbauen)
+//     seite.fest()        – seit 4.31.0 (A-68): Seitenleiste steht fest links (iPad quer); seite.neu() – alles neu aufbauen
 // Aufrufe der App: navVor(change) beim Öffnen eines Eintrags aus der Startliste, navZurueck() für den Zurück-Knopf,
-// navSeite(an) für panel-left und die Abdunkelung am iPad hoch.
+// navSeite(an) für panel-left (iPad hoch und quer) und die Abdunkelung am iPad hoch.
 const NAV_DAUER = 350, NAV_ENTSCHEID = 10, NAV_WAAGRECHT = 1.2, NAV_TEMPO = 0.3, NAV_HALTEN = 500, NAV_DUNKEL = 0.1;
 const NAV_EIGEN = 'input, textarea, select, [contenteditable], .cap, .fab, .schnell, .searchbox, [data-eigene-geste], button:not(.side-row)';
 const navRuhig = window.matchMedia?.('(prefers-reduced-motion: reduce)');
@@ -1449,15 +1489,18 @@ let navApp = null, navZug = null, navLauf = null, navKlickWeg = false;
 // ‚nav fertig‘, ‚nav zurück gefedert‘, ‚nav abgebrochen‘ mit Weg (Anteil der Breite) und Tempo (px/ms)
 const navMess = t => { if (mess?.an) messEreignis('nav ' + t); };
 function navAnmelden(app) { navApp = app; navKlassen(); }
-// touch-action: pan-y nur, wo gewischt werden kann (iPhone-Aufbau, iPad hoch) – sonst bleibt alles wie bisher
+// touch-action: pan-y nur, wo gewischt werden kann (iPhone-Aufbau, iPad hoch, seit 4.31.0 iPad quer) – sonst bleibt alles wie bisher
 function navKlassen() {
-  document.documentElement.classList.toggle('wischt', !!navApp && (isPhone() || !!navApp.seite?.moeglich()));
+  document.documentElement.classList.toggle('wischt', !!navApp && (isPhone() || !!navApp.seite?.moeglich() || !!navApp.seite?.fest?.()));
 }
 window.addEventListener('resize', navKlassen);
 const navTeile = art => art === 'phone'
   ? [document.getElementById('app'), document.querySelector('.fab'), document.getElementById('side'), navSchleier].filter(Boolean)
+  : art === 'fest' ? [document.getElementById('side'), document.getElementById('app'), document.querySelector('.fab')].filter(Boolean)
   : [document.getElementById('side'), document.querySelector('.side-shade')].filter(Boolean);
-// Lage aller Ebenen zum Anteil p: iPhone 0 = Startliste, 1 = Inhalt; iPad 0 = Seitenleiste weg, 1 = Seitenleiste da
+// Lage aller Ebenen zum Anteil p: iPhone 0 = Startliste, 1 = Inhalt; iPad 0 = Seitenleiste weg, 1 = Seitenleiste da.
+// Seit 4.31.0 (A-68, Variante B ‚Mitschieben‘): iPad quer (art ‚fest‘) rückt der Inhalt mit – bei p = 1 steht er dort, wo er neben der
+// festen Seitenleiste beginnt (ihr rechter Rand + 4 px = w − 6), und behält bis zum Einrasten seine volle Breite (html.nav-fest).
 function navBild(art, el, p, w) {
   const ruhig = navRuhig?.matches;
   if (art === 'phone') {
@@ -1466,6 +1509,7 @@ function navBild(art, el, p, w) {
     return ruhig ? { transform: 'none', opacity: p } : { transform: `translate3d(${Math.round((1 - p) * w)}px,0,0)`, opacity: 1 };
   }
   if (el.id === 'side') return ruhig ? { transform: 'none', opacity: p } : { transform: `translate3d(${Math.round((p - 1) * w)}px,0,0)`, opacity: 1 };
+  if (art === 'fest') return { transform: ruhig ? 'none' : `translate3d(${Math.round(p * (w - 6))}px,0,0)`, opacity: 1 };
   return { transform: 'none', opacity: p };
 }
 const navBreite = art => art === 'phone' ? innerWidth : (document.getElementById('side')?.getBoundingClientRect().right || 360) + 10;
@@ -1475,7 +1519,7 @@ function navSetze(art, p, w) {
 function navAnfang(art) {
   navSofort();
   const H = document.documentElement;
-  H.classList.add(art === 'phone' ? 'nav-schiebt' : 'nav-seite');
+  H.classList.add(...art === 'phone' ? ['nav-schiebt'] : art === 'fest' ? ['nav-seite', 'nav-fest'] : ['nav-seite']);
   return navBreite(art);
 }
 function navAufraeumen(art) {
@@ -1483,7 +1527,7 @@ function navAufraeumen(art) {
     el.getAnimations?.().forEach(a => { if (a.id === 'nav') a.cancel(); });
     el.style.transform = ''; el.style.opacity = '';
   }
-  document.documentElement.classList.remove('nav-schiebt', 'nav-seite', 'nav-zieht', 'nav-faehrt');
+  document.documentElement.classList.remove('nav-schiebt', 'nav-seite', 'nav-fest', 'nav-zieht', 'nav-faehrt');
 }
 // Bewegung von p = von nach p = nach (Web-Animation, damit die Prüfungen auf ihr Ende warten); fertig() danach.
 function navFahre(art, von, nach, w, fertig) {
@@ -1530,9 +1574,21 @@ function navZurueck() {
 function navSeite(an) {
   const s = navApp?.seite;
   if (!s) return;
+  if (s.fest?.() && an !== s.offen()) return navFest(an);
   if (!s.moeglich() || an === s.offen()) return s.zeigen(an);
   if (an) { s.zeigen(true); const w = navAnfang('seite'); navSetze('seite', 0, w); navFahre('seite', 0, 1, w); }
   else { const w = navAnfang('seite'); navFahre('seite', 1, 0, w, () => s.zeigen(false)); }
+}
+// Seit 4.31.0 (A-68): iPad quer gleitet die feste Seitenleiste herein und der Inhalt rückt mit; am Ende rastet sie ein – der Inhalt wird
+// schmaler, der oberste Eintrag bleibt (keepPlace, R-8.1). Hinaus: erst wird der Inhalt wieder ganz breit (unter der Seitenleiste,
+// oberster Eintrag bleibt), dann gleiten beide nach links.
+function navEinrasten() { keepPlace(() => { navAufraeumen('fest'); navApp.seite.neu(); }); }
+function navFest(an) {
+  const s = navApp.seite;
+  if (an) { navAnfang('fest'); s.zeigen(true); const w = navBreite('seite'); navSetze('fest', 0, w); navFahre('fest', 0, 1, w, navEinrasten); return; }
+  let w;
+  keepPlace(() => { w = navAnfang('fest'); navSetze('fest', 1, w); });
+  navFahre('fest', 1, 0, w, () => keepPlace(() => { navAufraeumen('fest'); s.zeigen(false); s.neu(); }));
 }
 // Hat das Element (oder ein Vorfahr bis zur Seite) einen eigenen waagrechten Rollbereich, gehört ihm das Wischen.
 function navEigenesRollen(t, bis) {
@@ -1551,6 +1607,8 @@ function navKandidat(e) {
     return { art: 'phone', richtung: 1, von: 1, nach: 0 };
   }
   const s = navApp.seite;
+  // seit 4.31.0 (A-68): iPad quer nur herein – ausblenden nur mit panel-left (die Kacheln bleiben frei für Wischaktionen, T-10)
+  if (s?.fest?.()) return !s.offen() && app?.contains(t) && !navEigenesRollen(t, app) ? { art: 'fest', richtung: 1, von: 0, nach: 1 } : null;
   if (!s?.moeglich()) return null;
   if (!s.offen() && app?.contains(t) && !navEigenesRollen(t, app)) return { art: 'seite', richtung: 1, von: 0, nach: 1 };
   if (s.offen() && (side?.contains(t) || t.closest('.side-shade')) && !navEigenesRollen(t, side)) return { art: 'seite', richtung: -1, von: 1, nach: 0 };
@@ -1617,7 +1675,8 @@ function navLoslassen(e, abbruch) {
   if (z.art === 'phone') {
     if (geschafft) navFahre('phone', p, 0, z.w, () => navApp.zurueck.los());
     else navFahre('phone', p, 1, z.w, () => navApp.zurueck.darunter(false));
-  } else if (z.nach === 1) navFahre('seite', p, geschafft ? 1 : 0, z.w, geschafft ? null : () => navApp.seite.zeigen(false));
+  } else if (z.art === 'fest') navFahre('fest', p, geschafft ? 1 : 0, z.w, geschafft ? navEinrasten : () => navApp.seite.zeigen(false));
+  else if (z.nach === 1) navFahre('seite', p, geschafft ? 1 : 0, z.w, geschafft ? null : () => navApp.seite.zeigen(false));
   else navFahre('seite', p, geschafft ? 0 : 1, z.w, geschafft ? () => navApp.seite.zeigen(false) : null);
 }
 // A-67 (Messung P-65): wo der Browser senkrecht rollen darf, beginnt Safari ab 10 px senkrechter Abweichung zu rollen und nimmt der

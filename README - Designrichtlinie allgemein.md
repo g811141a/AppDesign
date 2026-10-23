@@ -1,6 +1,6 @@
 # Designrichtlinie allgemein
 
-**Version 4.30.2** · Stand 23.10.2026
+**Version 4.31.0** · Stand 23.10.2026
 
 Allgemeine Gestaltungs- und Bedienregeln für alle Web-Apps von g811141a auf iPad und iPhone. Die Datei liegt im Design-Repo
 **AppDesign** (g811141a/AppDesign); ihre Versionsnummer ist die des Repos. Die Komponenten sind dort einmal programmiert und
@@ -234,7 +234,13 @@ heller).
   um (z. B. auf dem iPhone ‚Bis‘ mit Datum unter ‚Von‘), nie zwischen Bezeichnung und Feld.
 - **Großbuchstabe am Zeilenanfang** (R-5.2): Die App setzt den ersten Buchstaben jeder Zeile und nach ‚.‘, ‚!‘, ‚?‘ selbst groß –
   auch nach einem Smiley am Zeilenanfang (iOS macht das nicht zuverlässig); schon vor der Eingabe (`beforeinput`). Nach einem
-  Vorschlag (z. B. ‚Freetour …‘) beginnt auch das nächste Wort groß (`capNext`).
+  Vorschlag (z. B. ‚Freetour …‘) beginnt auch das nächste Wort groß (`capNext`). Ersetzt oder löscht der Nutzer einen Großbuchstaben
+  von Hand (markieren und überschreiben, Rücktaste), erzwingt die App an dieser Stelle keine Großschreibung mehr – die Tastatur
+  entscheidet, wie iOS nach einer Korrektur (seit 4.31.0, A-65).
+- **Keine doppelten Leerzeichen** (R-5.2, seit 4.31.0, A-64): in allen Textfeldern (ein- und mehrzeilig, auch im Suchfeld) wird ein
+  Leerzeichen direkt neben einem Leerzeichen nicht eingefügt; beim Einfügen werden mehrere Leerzeichen oder Tabs zu einem,
+  Zeilenumbrüche bleiben; ein einzelnes Leerzeichen am Zeilenanfang bleibt. Der iOS-Kurzbefehl ‚.‘ (zweimal Leertaste) wirkt
+  weiter.
 - **Beträge** wie bei Apple (Region Deutschland, R-5.1): immer zwei Nachkommastellen, Tausenderpunkt schon beim Tippen, Währung
   **hinter** dem Betrag mit Leerzeichen – „4.850,00 €“. Im Eingabefeld steht das € rechts neben dem Feld; fehlen beim Verlassen
   die Nachkommastellen, ergänzt die App „,00“. **Zahlen- und Betragsfelder sind rechtsbündig** und dynamisch breit: mindestens so
@@ -557,12 +563,17 @@ Regel). In AppDesign ist jede Komponente einmal programmiert (`v4/design.css`, `
   abheben).
 - **Verhalten:** beim Start immer eingeblendet (quer fest links, hoch über den Inhalt gelegt) mit dem aktuellen Eintrag geöffnet
   (im iPhone-Aufbau stattdessen die Startliste ohne blauen Eintrag, R-7.2); quer fest links neben dem Inhalt, mit panel-left aus-
-  und einblendbar (bis zum nächsten Start); im Hochformat über den Inhalt gelegt (abgedunkelt dahinter), schließt sich nach der
+  und einblendbar (gleitet, bis zum nächsten Start); im Hochformat über den Inhalt gelegt (abgedunkelt dahinter), schließt sich nach der
   Auswahl. Bei offener Tastatur folgt sie dem sichtbaren Bereich (`--vv-top`).
-- **Gesten im Hochformat** (R-7.5): Wischen nach rechts **von überall im Inhalt** (auch vom linken Rand) holt die Seitenleiste
+- **Gesten** (R-7.5): **Hochformat** – Wischen nach rechts **von überall im Inhalt** (auch vom linken Rand) holt die Seitenleiste
   herein – sie folgt dem Finger, die Abdunkelung wächst mit; Wischen nach links auf der Seitenleiste oder der Abdunkelung schiebt
   sie weg; fertig nach halber Breite oder schnellem Wischen, sonst federt sie zurück. panel-left und Antippen der Abdunkelung
-  bewegen sie genauso (gleiten, ~0,35 s). Quer (fest) ändert Wischen nichts.
+  bewegen sie genauso (gleiten, ~0,35 s). **Querformat** (seit 4.31.0, A-68): ist sie ausgeblendet, holt Wischen nach rechts von
+  überall im Inhalt sie herein – sie folgt dem Finger und der Inhalt **rückt mit** (Variante ‚Mitschieben‘); fertig wie hoch, dann
+  rastet sie fest links ein und der Inhalt wird schmaler (der oberste Eintrag bleibt), sonst federt sie zurück. Ausblenden quer
+  **nur mit panel-left** (gleitet ebenso) – nach links wischen ändert nichts, damit die Kacheln für Wischaktionen frei bleiben.
+  Apple löst das Hereinwischen quer je nach App unterschiedlich; Vorbild ist das Hochformat, am Ende liegt sie wie bei Apple quer
+  neben dem Inhalt.
 - **Drehen** (R-8.1): die Seitenleiste behält ihren Zustand – sichtbar bleibt sichtbar (quer fest, hoch darübergelegt),
   ausgeblendet bleibt ausgeblendet; technisch **ein einziger Zustand** für quer und hoch, den nur Tippen bzw. ein fertiges Wischen
   ändert (Knopf panel-left, Abdunkelung, Auswahl im Hochformat, R-7.5) – nie das Drehen und keine Zwischengrößen, die iOS beim
@@ -997,7 +1008,7 @@ die Prüfliste, wenn eine Version es betrifft.
 | Nr. | Regel | Prüfung | Gerät | Bau |
 |---|---|---|---|---|
 | R-5.1 | **Felder:** Bezeichnung und Feld gehören zusammen (Umbruch nur davor); Schaltflächen im Schrittkopf bleiben als Gruppe zusammen und stehen neben dem Titel, wenn alles in eine Zeile passt; Datumsfelder so breit wie das Datum mit Kalender-Icon; Betragsfelder rechtsbündig, ‚4.850,00 €‘ | hig.mjs | – | 8, 15.10 |
-| R-5.2 | **Texteingabe:** Großbuchstabe am Zeilenanfang und nach einem Vorschlag; Textfelder wachsen mit; Diktieren nur über die Mikrofon-Taste der Tastatur (kein eigener Knopf) | ablauf.mjs – `checkCapital` | iOS-Tastatur | 8 |
+| R-5.2 | **Texteingabe:** Großbuchstabe am Zeilenanfang und nach einem Vorschlag, nicht nach einer Korrektur von Hand; keine doppelten Leerzeichen (Tippen und Einfügen, alle Textfelder); Textfelder wachsen mit; Diktieren nur über die Mikrofon-Taste der Tastatur (kein eigener Knopf) | ablauf.mjs – `checkCapital`, `checkSpaces` | iOS-Tastatur, Kurzbefehl ‚.‘ | 8 |
 | R-5.3 | **Fehlermeldungen:** rot direkt unter dem Feld (Feld rot umrandet), erst nach einer Eingabe bzw. beim Häkchen; Pflichtfelder werden nicht gekennzeichnet | ablauf.mjs – `checkFieldErrors` | – | 8, 15.11 |
 | R-5.4 | **Auswahl-Kapsel:** mehrere Auswahl-Schaltflächen in einer Kapsel, seitlich wischbar mit Verlauf am Rand; Markierung als eigene Form innen, Breite ändert sich nicht | hig.mjs – Verlauf am Rand, Breite beim Wählen | Wischen | 15.12 |
 | R-5.5 | **Eingabetaste:** einzeilige Felder – ‚Fertig‘, die Eingabetaste schließt die Tastatur, ein Fenster bleibt offen; mehrzeilige Felder – Zeilenumbruch; Suchfeld – ‚Suchen‘ | ablauf.mjs – `checkEnterDone` | iOS-Tastatur (Beschriftung, iPhone-Ziffernfeld) | 8 |
@@ -1021,7 +1032,7 @@ die Prüfliste, wenn eine Version es betrifft.
 | R-7.2 | **Start im iPhone-Aufbau in der Startliste:** jedes Neuladen zeigt im iPhone-Aufbau (auch iPad im schmalen Fenster) die Startliste ganz oben ohne blauen Eintrag; der iPad-Aufbau öffnet den aktuellen Eintrag; Rückkehr aus dem Hintergrund ändert nichts | start.mjs | Gerät (App neu öffnen) | 13, 15.17 |
 | R-7.3 | **Liste steht still:** solange ein Fenster aus einer Zeile (bzw. einem Kasten) offen ist, bewegt sich die Liste dahinter nicht – auch wenn Safari beim Schreiben die Seite für die Tastatur schiebt; nach dem Schließen (Häkchen oder x) steht sie genau wie vorher – die oberste Zeile an derselben Stelle, auch wenn die Tastatur offen war –, die Zeile wird 2 s blau hinterlegt und blendet in 1 s aus (‚Bewegung reduzieren‘: 2 s ohne Ausblenden; endet, sobald das nächste Fenster aufgeht); auch nach ‹ › im Fenster steht die Liste wie beim Öffnen; iPad und iPhone gleich | ablauf.mjs – `checkListStill` (Start z. B. mit dem ersten fehlenden Tag oben; Zeile oben, 3 tiefer, untere Hälfte, 2 px unter dem Kopf, nach 5× ‹ ›; Häkchen und x; Safari-Tastatur einzeln und zusammen: sichtbarer Bereich, Fensterhöhe, Nachrollen beim Zugehen) | Gerät (echte Tastatur, Diktieren) | 7, 15.9 |
 | R-7.4 | **Position beim Öffnen:** ein Eintrag öffnet ganz oben; ein ‚nächster offener‘ Eintrag (von der App bestimmt) steht hervorgehoben direkt unter dem Kopf bzw. Tabellenkopf, nie in der Mitte | ablauf.mjs – `checkOpenAt` | – | 13 |
-| R-7.5 | **Navigation und Gesten** (wie iOS 26): im iPhone-Aufbau schiebt sich der Inhalt beim Öffnen herein und beim Zurück hinaus; **Zurückwischen von überall im Inhalt** folgt dem Finger, fertig nach halber Breite oder schnellem Wischen, sonst federt es zurück; am iPad hoch holt Wischen nach rechts von überall die Seitenleiste, nach links auf ihr bzw. der Abdunkelung geht sie, panel-left und Abdunkelung lassen sie gleiten; quer keine Geste. Vorrang an einer Stelle: senkrechtes Rollen, eigenes waagrechtes Rollen, Felder, Knöpfe, Kapseln, Schnellroll-Griff; nicht nach langem Drücken und nicht bei offenem Fenster, Menü oder offener Sprechblase; Tastatur schließt zuerst; Drehen beim Ziehen = Zustand wie vorher; Wischen tippt nie an; ‚Bewegung reduzieren‘ überblendet; je Bild nur transform und opacity | ablauf.mjs – `checkNavigation` | Wischgefühl, Rand mit dem Daumen, versehentliches Zurück, Home-Bildschirm-App, VoiceOver | 13, 15.4, 15.17 |
+| R-7.5 | **Navigation und Gesten** (wie iOS 26): im iPhone-Aufbau schiebt sich der Inhalt beim Öffnen herein und beim Zurück hinaus; **Zurückwischen von überall im Inhalt** folgt dem Finger, fertig nach halber Breite oder schnellem Wischen, sonst federt es zurück; am iPad hoch holt Wischen nach rechts von überall die Seitenleiste, nach links auf ihr bzw. der Abdunkelung geht sie, panel-left und Abdunkelung lassen sie gleiten; quer holt Wischen nach rechts die ausgeblendete Seitenleiste herein, der Inhalt rückt mit und wird beim Einrasten schmaler, ausblenden quer nur mit panel-left (gleitet). Vorrang an einer Stelle: senkrechtes Rollen, eigenes waagrechtes Rollen, Felder, Knöpfe, Kapseln, Schnellroll-Griff; nicht nach langem Drücken und nicht bei offenem Fenster, Menü oder offener Sprechblase; Tastatur schließt zuerst; Drehen beim Ziehen = Zustand wie vorher; Wischen tippt nie an; ‚Bewegung reduzieren‘ überblendet; je Bild nur transform und opacity | ablauf.mjs – `checkNavigation` | Wischgefühl, Rand mit dem Daumen, versehentliches Zurück, Home-Bildschirm-App, VoiceOver | 13, 15.4, 15.17 |
 
 ### 8. Drehen
 
@@ -1106,6 +1117,7 @@ R-2.3 (15.2), R-4.4 (6, 15.8, HIG 9), R-5.3 (8), R-5.4 (15.12), R-5.5 (A-14), R-
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 4.31.0 | 23.10.2026 | Neben | **A-68:** R-7.5 und 15.4 – am iPad quer holt Wischen nach rechts die ausgeblendete Seitenleiste herein, der Inhalt rückt mit (Variante B ‚Mitschieben‘) und wird beim Einrasten schmaler; panel-left gleitet auch quer; ausblenden quer nur mit panel-left; Prüfung `checkNavigation` Q-1 bis Q-12. **A-64, A-65:** R-5.2 und 8 – keine doppelten Leerzeichen (neu `checkSpaces`), keine erzwungene Großschreibung nach einer Korrektur von Hand (`checkCapital`) |
 | 4.30.2 | 23.10.2026 | Korrektur | **A-67 (Messung P-65):** 13 Wischgesten – Safari bricht auch mit `pan-y` ab 10 px senkrechter Abweichung ab, ist die Geste entschieden, verhindert ui.js `touchmove` (15.17); 15.21 Zeile ‚touchmove‘; Safari-Modell S-10 (`safariWischen`), Prüfung `checkNavigation` F-23 |
 | 4.30.1 | 22.10.2026 | Korrektur | **A-67 Schritt 1 und A-66:** 15.21 – der Messmodus zeichnet Berührungen (Zeiger, touchcancel mit Ziel) und die Entscheidungen der Gestenstelle (R-7.5) auf, für die Messung ‚Zurückwischen über einem Tageskasten‘ (P-64/5); Prüfung `checkNavigation` F-22, F-1/F-2/F-19 zeichnen bis zum Ende der Bewegung auf |
 | 4.30.0 | 22.10.2026 | Neben | **A-37 B+C und A-61 Teil 1 (Variante ‚Überall‘):** R-3.2 ergänzt – Kapsel ‚Nach oben / Ans Ende‘ nur mit wirksamen Pfeilen, unten fest, bei offenem Fenster und im Druck nicht zu sehen; neu der Schnellroll-Griff mit Blase und Marken `data-marke` (4, 15.1, 15.17, 15.22; A-45 damit entschieden); neu R-7.5 Navigation und Gesten – Seitenwechsel als Schieben, Zurückwischen von überall, Seitenleiste am iPad hoch per Wischen, Vorrang an einer Stelle (15.4, 15.17, 13 Wischgesten); Prüfungen `checkFab` mit `checkGriff`, neu `checkNavigation` |

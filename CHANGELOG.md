@@ -3,6 +3,34 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.31.0 – 23.10.2026
+
+AppDesign 4.31.0 · Designrichtlinie allgemein 4.31.0 · Zusammenarbeit allgemein 2.19.0 · geprüft mit Reiselogbuch 3.29.0
+
+**Sammelversion A-68, A-64, A-65** (dein Ja vom 23.10.2026, allgemeine Regeln). Prüfpunkt im Reiselogbuch: P-67.
+
+- **A-68 – Seitenleiste am iPad quer hereinwischen (R-7.5, 15.4; Muster `arbeit/A-68 Muster.html`, Variante B ‚Mitschieben‘,
+  Fall-Liste `arbeit/A-68 Fall-Liste.md`):** ist die Seitenleiste quer ausgeblendet, holt Wischen nach rechts von überall im Inhalt
+  sie herein – sie folgt dem Finger und der Inhalt rückt mit; fertig nach halber Breite oder schnellem Wischen, dann rastet sie fest
+  links ein und der Inhalt wird schmaler (der oberste Eintrag bleibt), sonst federt sie zurück. panel-left lässt sie quer jetzt
+  ebenso gleiten (herein und hinaus). Ausblenden quer nur mit panel-left – nach links wischen ändert nichts, damit die Kacheln für
+  Wischaktionen frei bleiben (T-10). Vorrang, `touchmove` nach der Entscheidung (A-67), Drehen und ‚Bewegung reduzieren‘ wie hoch.
+  Technisch: neue Gestenart ‚fest‘ in ui.js (`navFest`, `navEinrasten`, `html.nav-fest` hält den Inhalt bis zum Einrasten breit),
+  Schnittstelle `seite.fest()` und `seite.neu()`; der Inhalt hat quer `touch-action: pan-y`.
+- **A-65 – Großschreibung zurücknehmen (R-5.2, 8):** ersetzt oder löscht der Nutzer einen einzelnen Großbuchstaben von Hand
+  (markieren und überschreiben, Rücktaste), erzwingt die App an dieser Stelle keine Großschreibung mehr – die Tastatur entscheidet,
+  wie iOS. Ein ganzes Wort oder Feld löschen zählt nicht.
+- **A-64 – keine doppelten Leerzeichen (R-5.2, 8):** in allen Textfeldern (ein- und mehrzeilig, auch im Suchfeld) wird ein
+  Leerzeichen direkt neben einem Leerzeichen nicht eingefügt; beim Einfügen werden mehrere Leerzeichen oder Tabs zu einem,
+  Zeilenumbrüche bleiben; ein einzelnes Leerzeichen am Zeilenanfang bleibt.
+- **Prüfungen:** `checkNavigation` quer neu Q-1 bis Q-12 (statt F-13 ‚quer keine Geste‘), mit Maus und Berührung nach Safari
+  (S-10); `checkCapital` ergänzt (Korrektur von Hand); neu `checkSpaces` (Tippen, Einfügen, Suchfeld). **Rot gegen 4.30.2**
+  (41 bzw. 6 Meldungen), grün mit dem Bau. `checkSideToggle` wartet auf das Ende der Bewegung; `ziehe` in `checkNavigation` hebt vor
+  jedem Zug eine Textmarkierung auf (WebKit begann sonst mit der Maus ein Ziehen-und-Ablegen).
+  `checkGriff` wartet bis zu 1 s auf das Einblenden von Schnellroll-Griff und Blase (unter voller Last in WebKit lag die Deckkraft
+  nach festen 150 bzw. 200 ms noch unter 0,5 – voller Prüflauf, iPad schmal und quer; einzeln immer grün).
+- **Designrichtlinie allgemein 4.31.0:** 8, 15.4, Katalog R-5.2 und R-7.5.
+
 ## 4.30.2 – 23.10.2026
 
 AppDesign 4.30.2 · Designrichtlinie allgemein 4.30.2 · Zusammenarbeit allgemein 2.18.0 · geprüft mit Reiselogbuch 3.28.2
