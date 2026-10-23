@@ -127,3 +127,4 @@ gelten die Grundregeln (`pruefe.mjs`).
 - **H5** übernommen: reines CSS (`prefers-contrast: more` mit `data-theme`), wechselt sofort ohne Neuaufbau; Messmodus notiert den Kontrast-Zustand; Prüfung: Umschalten mit offenem Fenster, Eingabe, gerollter Liste.
 - **M1** übernommen: Seitenwechsel, Zurückwischen, Seitenleiste, gleitendes Fenster, Hervorheben bleiben wie heute, unter R-1.9 mit `checkRuhig` (nur Deckkraft, keine Lage).
 - **M2** übernommen: mit „Bewegung reduzieren“ springen „Nach oben“/„Ans Ende“/Titel antippen direkt (Überblenden ca. 0,15 s), sonst sanft wie heute; Abweichung von Apples Statusleiste (rollt) begründet (WCAG 2.3.3); `checkRuhig`: ein Rollschritt.
+- **M3** so übernommen: kein Umbau – unser Schalter springt schon (Verlauf wird nicht überblendet), der eingebaute (`natsw`) folgt dem System; in `checkRuhig` erlaubte kleine Bewegung (unter 30 px, unter 0,3 s).
