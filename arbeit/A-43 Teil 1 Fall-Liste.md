@@ -118,3 +118,4 @@ gelten die Grundregeln (`pruefe.mjs`).
 - **K4** übernommen: Eingabe = blauer Weg bzw. Abbrechen (nie Rot), Esc/⌘. = Abbrechen (verbraucht, Fenster bleibt), Tab/Pfeile markieren mit Umlauf, Leertaste drückt den markierten (auch Rot); `checkFokus` mit Gegenprobe.
 - **K5** übernommen: ⌘. wie Esc in Fenster, Meldung, Blatt (auch aus einem Feld), Esc wie heute; `checkFokus`: ohne/mit Änderung, Tab und Umschalt+Tab nur im Fenster.
 - **K6** übernommen: eigener Fokusring nur bei `:focus-visible` (Akzentfarbe, Abstand, folgt dem Radius; auch Suchfeld), R-3.4 bleibt; Tab-Reihenfolge Leiste → Suche → Inhalt → schwebende Knöpfe, nur Sichtbares; `checkFokus`; Gerät: erreicht Tab Knöpfe (Tastatursteuerung)?
+- **K7** übernommen: Esc auf der Seite wie heute (F-20), kein ⌘.; `checkNavigation` prüft zusätzlich den Fokus (Zeile bzw. panel-left).
