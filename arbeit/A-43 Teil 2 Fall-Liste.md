@@ -1,6 +1,6 @@
 # A-43 Teil 2 ‚Textgröße (Dynamic Type)‘ – Fall-Liste
 
-**Stand 23.10.2026** · Sitzungen Reiselogbuch 0036 (angelegt, Fälle 1–31 durchgesprochen, alle übernommen) und 0037 (P1–P4; Aufbereitung aller Fälle: `arbeit/A-43 Teil 2 Aufbereitung.md`) · Klärung und Apple-Abgleich:
+**Stand 23.10.2026** · Sitzungen Reiselogbuch 0036 (angelegt, Fälle 1–31 durchgesprochen, alle übernommen) und 0037 (P1–P4 übernommen, Abschnitte 1–3 angeglichen; Aufbereitung aller Fälle: `arbeit/A-43 Teil 2 Aufbereitung.md`) · Klärung und Apple-Abgleich:
 `arbeit/A-43 Teil 2 Klärung.md` · Muster: `arbeit/A-43 Teil 2 Muster.html` (Variante A ok, hell und dunkel, iPad und iPhone)
 
 **Entschieden (Nutzer 23.10.2026, Sitzung 0035):** Variante **A wie Apple** – alles wächst bis **AX5 (53 pt)**, Leisten nur bis
@@ -11,97 +11,99 @@ AX5, wechselt bei offener App, auch auf dem Home-Bildschirm.
 Alles ist allgemein (AppDesign `design.css`, `ui.js`, Prüfungen in `tests/`); die App ändert nur eigene Größen und Bausteine
 (Reiselogbuch: 6 Schriftgrößen, Tabelle der Tage, Kästen am iPhone).
 
-## 1. Vorgesehene Regeln (Katalog, Designrichtlinie 17)
+## 1. Regeln (Katalog, Designrichtlinie 17)
 
-Vorschlag – wird nach der Durchsprache (Abschnitt 4) angeglichen.
+Angeglichen an Abschnitt 4 (Sitzung 0037).
 
 | Regel | Inhalt | Prüfung | Gerät |
 |---|---|---|---|
-| **R-1.10 neu** | **Textgröße folgt dem Gerät** (Variante A): Grundgröße aus der Einstellung ‚Textgröße‘ (14–53 pt), alle Textstile nach Apples Tabelle, Leisten bis 23 pt, Umbau ab 28 pt (iPhone hoch ab 21 pt), Wechsel sofort; Ausgabe unverändert | hig.mjs – `checkText` in mehreren Größen (P1, P2) | Aussehen in mehreren Stufen, Wechsel bei offener App |
+| **R-1.10 neu** (Thema 1, neben R-1.8, R-1.9) | **Textgröße folgt dem Gerät:** Schrift nach der Einstellung ‚Textgröße‘ (14–53 pt), alle Textstile nach Apples Tabelle, Leisten nur bis 23 pt, ab 28 pt (iPhone hoch ab 21 pt) Nebeneinanderliegendes untereinander, nichts ragt hinaus oder überlappt, Wechsel sofort ohne Neuladen, Ausgabe unverändert (R-6.2). Werte-Tabelle (Stile × Stufen) in Designrichtlinie Abschnitt 3; Abweichung: keine Großanzeige (L4). R-10.2 (mindestens 11 pt) und R-1.3 (Felder mindestens 16 px) bleiben als Untergrenzen | hig.mjs – `checkText` in 14, 17, 23, 33, 53 px (P1, P2); Gegenprobe `--gegenprobe text` (P3) | Aussehen in mehreren Stufen, Wechsel bei offener App (P4) |
+| **Grundregel neu** | **Nichts überlappt:** Textzeilen und Knöpfe schneiden sich nicht (P2 Punkt 5) | `pruefe.mjs` (in jeder Größe) | – |
 
 ## 2. Fall-Liste
 
 Gerät × Lage × Darstellung: iPad quer und hoch, iPhone hoch und quer, je hell und dunkel, Chromium und WebKit; zusätzlich in den
-Textgrößen 14, 17, 23, 33 und 53 px (P1); nach jedem Fall gelten die Grundregeln (`pruefe.mjs`).
+Textgrößen 14, 23, 33 und 53 px über `PRUEF_TEXT` (P1); nach jedem Fall gelten die Grundregeln (`pruefe.mjs`). Einzelheiten je Fall:
+Abschnitt 4.
 
 ### R – Regel
 
-| Nr. | Fall | Erwartet (Vorschlag) | Automatisch |
+| Nr. | Fall | Erwartet | Automatisch |
 |---|---|---|---|
-| R1 | Neue Katalog-Regel | R-1.10 ‚Textgröße folgt dem Gerät‘ (Abschnitt 1); R-10.2 (mindestens 11 pt) und R-1.3 (Felder mindestens 16 px) bleiben | ja (`checkCatalog`, `checkText`) |
+| R1 | Neue Katalog-Regel | R-1.10 ‚Textgröße folgt dem Gerät‘ (Abschnitt 1); R-10.2 und R-1.3 bleiben | ja (`checkCatalog`, `checkText`) |
 
 ### G – Grundgröße und Textstile
 
-| Nr. | Fall | Erwartet (Vorschlag) | Automatisch |
+| Nr. | Fall | Erwartet | Automatisch |
 |---|---|---|---|
-| G1 | Grundgröße | `html { font: -apple-system-body }` mit Systemschrift-Familie dahinter; Mac und Chromium 17 px (Rückfall) | ja |
-| G2 | Textstile | 11 Stile (Large Title … Caption 2) mit Apples Werten je Stufe (12 Stufen), Rangfolge bleibt | ja |
-| G3 | Umsetzung | Stufe aus der Grundgröße, Stile als Variablen; Wechsel ohne Neuladen | ja |
-| G4 | Zuordnung | jede der 45 px-Größen in `design.css` und 6 im Reiselogbuch einem Stil zugeordnet; keine Schrift mehr in px (außer Ausgabe) | ja |
-| G5 | Kleine Stufen 14–16 pt | Text wird kleiner, nie unter 11 pt (R-10.2); Felder mindestens 16 px (R-1.3) | ja |
-| G6 | Zeilenhöhe, Umbruch | Zeilenhöhe als Faktor; Text bricht um statt abgeschnitten (R-6.3), Silbentrennung im Inhalt | ja |
+| G1 | Grundgröße | Rückfall `html { font: 17px/1.45 -apple-system, … }`, nur bei `pointer: coarse` `-apple-system-body`; Mac und Chromium 17 px; `body { font-size: 1rem }` | ja |
+| G2 | Textstile | wörtlich nach Apples Tabelle (12 Stufen × 11 Stile, Größe und Zeilenabstand) als Blöcke `html[data-ts]` mit `--t-…` und Faktor `--f-…`; ohne Stufe wie heute | ja |
+| G3 | Umsetzung | `textStufe()` in ui.js (Probe mit `ResizeObserver` und `visibilitychange`) → `html[data-ts]`, `ts-gross` ab 21, `ts-ax` ab 28; Wechsel ohne Neuladen | ja |
+| G4 | Zuordnung | jede feste Größe einem Stil zugeordnet (45 in design.css, 6 im Reiselogbuch); Standard sieht aus wie heute; keine Schrift in px außer Ausgabe und Druck | ja |
+| G5 | Kleine Stufen 14–16 pt | wie Apple kleiner, nie unter 11 pt (R-10.2); Feldtext `max(16px, Body)` (R-1.3, Abweichung bei xS) | ja |
+| G6 | Zeilenhöhe, Umbruch | keine Zeilenhöhe in px (Knöpfe, Griff, Fenstertitel → 1.2); Text 1.45, große Stufen enger nach Apple; Silbentrennung im Inhalt (R-6.3) | ja |
 
 ### A – Höhen, Abstände, Icons
 
-| Nr. | Fall | Erwartet (Vorschlag) | Automatisch |
+| Nr. | Fall | Erwartet | Automatisch |
 |---|---|---|---|
-| A1 | Feste Höhen (44, 32, 36, 48, 60 px) | im Inhalt Mindesthöhen, die mit dem Text wachsen; 44 px bleibt Untergrenze (R-3.1) | ja |
-| A2 | Abstände | Innenabstände senkrecht wachsen mit, seitliche Ränder bleiben | ja |
-| A3 | Icons | im Inhalt wachsen sie mit dem Text, in Leisten bis 23 pt | ja |
+| A1 | Feste Höhen | im Inhalt Mindesthöhen, die mit dem Text wachsen; Untergrenzen bleiben (R-3.1); Kreise bleiben Kreise | ja |
+| A2 | Abstände | senkrechte Innenabstände wachsen mit dem Body-Faktor, seitliche und sichere Ränder fest | ja |
+| A3 | Icons | im Inhalt mit dem Body-Faktor (20 → 62 px bei AX5), in Leisten bis 23 pt | ja |
 
 ### L – Leisten
 
-| Nr. | Fall | Erwartet (Vorschlag) | Automatisch |
+| Nr. | Fall | Erwartet | Automatisch |
 |---|---|---|---|
-| L1 | Kopfzeile, Kapsel, Suchzeile, schwebende Knöpfe, Fensterkopf | wachsen nur bis 23 pt (Faktor 23/17), darüber fest | ja |
-| L2 | iPhone quer (R-2.4, 32 px) | niedrige Leisten bleiben niedrig | ja |
-| L3 | Langer Titel in der Leiste | wird mit … gekürzt, Anzahl darunter bleibt | ja |
-| L4 | Großanzeige (Apple: langes Drücken) | gibt es im Web nicht – Abweichung, dafür wachsen Leisten bis 23 pt | – |
+| L1 | Kopfzeile, Suchzeile, Seitenleisten-Kopf, Fensterkopf, untere Leiste, Kapsel Nach oben/Ans Ende, Schnellroll-Griff | wachsen bis 23 pt (Texte bis 23, Knöpfe höchstens 60 px, Icons etwa 27 px), ab AX1 fest; Suchfeld mindestens 16 px | ja |
+| L2 | iPhone quer (R-2.4, 32 px) | Leisten wachsen nicht (32 px, Titel 17, Icons 20); Inhalt wächst | ja |
+| L3 | Langer Titel in der Leiste | Titel und Anzahl einzeilig mit … (auch Seitenleiste, Fensterkopf iPad); `.ltitle` im Inhalt bricht um | ja |
+| L4 | Großanzeige (Apple: langes Drücken) | wird nicht nachgebaut – Abweichung bei R-1.10; Ausgleich L1 und VoiceOver (R-1.8) | – |
 
 ### U – Umbau bei großen Größen
 
-| Nr. | Fall | Erwartet (Vorschlag) | Automatisch |
+| Nr. | Fall | Erwartet | Automatisch |
 |---|---|---|---|
-| U1 | Ab AX1 (28 pt) | Nebeneinanderliegendes steht untereinander (Kachel: Datum unter dem Titel) | ja |
-| U2 | iPhone hoch | Umbau schon ab 21 pt | ja |
-| U3 | Tabellen (R-6.1) | ab AX1 bzw. iPhone hoch als Karten (Spaltenname über dem Wert), Zebra bleibt | ja |
-| U4 | Tabelle der Tage (Reiselogbuch) | mit dem heutigen Aufbau abgleichen (Kästen am iPhone) | ja |
-| U5 | Kapseln mit Text, Schrittkopf | brechen um bzw. wischbar (R-5.4); Knöpfe im Schrittkopf unter den Titel (R-5.1) | ja |
+| U1 | Ab AX1 (28 pt, `ts-ax`) | untereinander: Datum der Kachel unter dem Titel, Menü-Wert unter dem Text, Kasten-Bezeichnung über dem Wert, Reisedaten; Pfeil › bleibt rechts oben | ja |
+| U2 | iPhone hoch | Umbau aus U1 schon ab 21 pt (`ts-gross`) | ja |
+| U3 | Tabellen (R-6.1) | ab AX1 (iPhone hoch immer) Zeilen als Kästen (`.box`/`.kv`); Vorschau und Ausgabe bleiben Tabellen | ja |
+| U4 | Tabelle der Tage (Reiselogbuch) | iPad ab AX1 dieselben Kästen wie das iPhone (`.box.day`), derselbe Tag bleibt oben | ja |
+| U5 | Kapseln, Schrittkopf | Mindesthöhe statt fest; Auswahl einzeilig wischbar (R-5.4), Options-Kapseln brechen um; Kasten-Titel bricht um; ab AX1 Knöpfe unter dem Titel (R-5.1) | ja |
 
 ### B – Bausteine
 
-| Nr. | Fall | Erwartet (Vorschlag) | Automatisch |
+| Nr. | Fall | Erwartet | Automatisch |
 |---|---|---|---|
-| B1 | Menüs | Text wächst, Breite wächst mit (bis Bildschirm), Zusatzinfos ab AX1 unter dem Text; passt immer (R-4.5) | ja |
-| B2 | Sprechblasen | Text und Knöpfe wachsen, Knöpfe untereinander ab AX1 | ja |
-| B3 | Seitenleiste am iPad | Breite und Zeilenhöhe wachsen begrenzt | ja |
-| B4 | Fenster | iPad-Fenster breiter bis Bildschirm, iPhone bildschirmfüllend; Notizfeld wächst mit | ja |
-| B5 | Eingabefelder | mindestens 16 px, Datums- und Betragsfelder so breit wie ihr Inhalt | ja |
-| B6 | Schalter, Smiley-Leiste, Auswahl-Kapsel | Schalter fest (wie Apple), Smileys und Auswahl wachsen | ja |
-| B7 | Backup-Kachel, Meldungen, Kapsel unten, Schnellroll-Griff | wachsen mit bzw. bis 23 pt; überdecken nie Leisten (R-3.2) | ja |
+| B1 | Menüs | Breite wächst mit dem Body-Faktor bis Bildschirm minus Rand; Einträge brechen um, Wert ab AX1 darunter; jedes Menü rollt, wenn zu hoch (R-4.5) | ja |
+| B2 | Sprechblasen | wachsen wie B1; ab AX1 Knöpfe und Kacheln untereinander; zu hoch → rollt | ja |
+| B3 | Seitenleiste am iPad | mindestens 340, höchstens 420 × Body-Faktor und 40 % quer bzw. 70 % hoch | ja |
+| B4 | Fenster | iPad-Fenster und Meldung wachsen bis 90 % der Breite, iPhone bildschirmfüllend; Notizfeld mindestens etwa 4 Zeilen | ja |
+| B5 | Eingabefelder | Feldtext mindestens 16 px; Betragsfeld in Zeichenbreite (`ch`); ⓧ und Kalender wachsen, Antippfläche mindestens 44 | ja |
+| B6 | Schalter, Smileys, Wetter, Markierung | Schalter fest (R-5.7); Smileys, Wetter, Markierung und Häkchen wachsen; passt es nicht → seitlich wischen (R-5.4) | ja |
+| B7 | Backup-Kachel, Meldungen, Kapsel unten, Schnellroll-Griff | wie Leisten bis 23 pt; Platzhalter unter der Liste aus der gemessenen Höhe, letzter Eintrag erreichbar (R-7.1); überdecken nie Leisten (R-3.2) | ja |
 
 ### W – Wechsel und Sonstiges
 
-| Nr. | Fall | Erwartet (Vorschlag) | Automatisch |
+| Nr. | Fall | Erwartet | Automatisch |
 |---|---|---|---|
-| W1 | Einstellung bei offener App ändern | Wechsel sofort, oberster Eintrag bleibt (wie R-8.1), offene Menüs neu ausgerichtet | ja |
-| W2 | Drehen bei großer Stufe | Umbau folgt der neuen Breite, oberster Eintrag bleibt | ja |
-| W3 | Ausgabe HTML/PDF und Vorschau | unverändert (R-6.2) | ja |
-| W4 | Messmodus | notiert die Stufe | ja |
-| W5 | Mac, Chromium, eigene Einstellung | 17 px; keine eigene Textgröße in der App | ja |
+| W1 | Einstellung bei offener App ändern | wie nach dem Drehen (R-8.1): oberster Eintrag bleibt, offenes Fenster bleibt offen, Menüs neu ausgerichtet; Reiselogbuch Tabelle ↔ Kästen mit demselben Tag oben | ja (ablauf.mjs) |
+| W2 | Drehen bei großer Stufe | Umbau folgt der neuen Lage, oberster Eintrag bleibt; Drehprüfung bei 23, 33, 53 px | ja |
+| W3 | Ausgabe HTML/PDF und Vorschau | unverändert (R-6.2, R-6.4), nur der Fensterkopf folgt L1; bei 17 und 53 px identisch | ja |
+| W4 | Messmodus | Kopfzeile ‚Text <Stufe> <px>‘, Wechsel als Ereignis; `abspielen.mjs` stellt die Größe ein | ja (`checkMessung`) |
+| W5 | Mac, Chromium, eigene Einstellung | keine eigene Textgröße in der App; Mac und Chromium 17 px; ‚Einstellungen pro App → Safari‘ am Gerät | ja |
 
 ### P – Prüfungen
 
-| Nr. | Fall | Erwartet (Vorschlag) |
+| Nr. | Fall | Erwartet |
 |---|---|---|
-| P1 | Schalter `PRUEF_TEXT` (wie `PRUEF_BEDIENUNG`) | Grundregeln in 14, 17, 23, 33, 53 px |
-| P2 | Prüfung `checkText` (hig.mjs) | keine Schrift in px, Rangfolge, Leisten bis 23, Umbau ab 28, nichts ragt hinaus, nichts überlappt |
-| P3 | Gegenprobe `--gegenprobe text` | je eingeschleustem Fehler genau die passende Meldung rot |
-| P4 | Prüfliste am Gerät | Aussehen in mehreren Stufen, Wechsel bei offener App |
+| P1 | Schalter `PRUEF_TEXT=<px>` (wie `PRUEF_BEDIENUNG`) | `t.seite()` setzt die Grundgröße vor dem Laden (‚· Text 53‘); voller Lauf: hig bei 14, 23, 33, 53 (vier Ansichten, mit Drehen), Bewegungsabläufe bei 53; Mehrzeit beim Bau messen |
+| P2 | Prüfung `checkText` (hig.mjs) | keine Schrift in px, bei 53 Apples Wert je Stil (±1), Leisten bis 23-pt-Maß (iPhone quer 32), bei AX keine Tabelle und untereinander, neue Grundregel ‚nichts überlappt‘; bestehende Prüfungen in jeder Größe |
+| P3 | Gegenprobe `--gegenprobe text` | je eingeschleustem Fehler (px-Schrift, Leiste ungedeckelt, Tabelle bei AX, Zeilenhöhe 20 px, Feld 14 px, Ausgabe wächst, Platzhalter fest) genau die passende Meldung rot |
+| P4 | Prüfliste am Gerät | /0 Versionszeile; iPhone hoch und iPad in xS, Standard, XXXL, AX2, AX5; Wechsel über das Kontrollzentrum; Tagestabelle iPad ab AX1; Notiz bei AX5; ‚Einstellungen pro App → Safari‘; Mac 17 px |
 
 ## 3. Antworten (Nutzer)
 
-(noch keine)
+Alle 35 Fälle wie empfohlen übernommen (Sitzungen 0036 und 0037); Einzelheiten in Abschnitt 4.
 
 ## 4. Durchsprache Fall für Fall
 
