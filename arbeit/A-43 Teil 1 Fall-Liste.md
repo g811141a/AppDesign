@@ -114,3 +114,4 @@ gelten die Grundregeln (`pruefe.mjs`).
 - **V14** übernommen: Prüfungen aus V1–V13 zusätzlich in den Daten-Fällen leer, lang, viele (leerer Hinweis lesbar, langes Menü vollständig benannt, Griff mit Name und Wert).
 - **K1** übernommen: Esc und ⌘. schließen das oberste Menü (offenes Untermenü zuerst), Taste verbraucht (kein Fenster-x, kein Seitenwechsel); `checkFokus`; Gerät: gibt Safari ⌘. weiter?
 - **K2** übernommen: ↑/↓ mit Umlauf (ausgegraute, Striche, Zusatzzeilen übersprungen), Pos1/Ende, Eingabe/Leertaste wählt, Tab wie ↓ im Menü, Markierung hinterlegt ohne Rahmen, langes Menü rollt mit; `checkFokus`.
+- **K3** übernommen: → bzw. Eingabe/Leertaste öffnet das Untermenü (Fokus auf den ersten Eintrag), ← bzw. Esc schließt es (Fokus zurück auf den ›-Eintrag), feste Richtung wie auf dem Mac; `aria-expanded` wechselt; `checkFokus`.
