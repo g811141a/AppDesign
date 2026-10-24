@@ -1,7 +1,7 @@
 # A-75 ‚Auswahl-Kapsel erkennbar wischbar‘ (Reiselogbuch T-106) – Apple-Abgleich, Muster, Fall-Liste
 
 **Stand 24.10.2026** · Sitzung ‚Reiselogbuch 0041‘ · Muster: `arbeit/A-75 Muster.html`
-(https://g811141a.github.io/AppDesign/arbeit/A-75%20Muster.html, oben umschalten: Heute · A 80 px · B 112 px) – im Muster geprüft
+(https://g811141a.github.io/AppDesign/arbeit/A-75%20Muster.html, oben umschalten: Heute · 55 · 65 · 80 · 112) – im Muster geprüft
 in Chromium und WebKit (iPhone hoch und quer, Anfang, Mitte, Ende: Pfeile wie erwartet, keine Fehler)
 
 **Vorgabe (Nutzer 24.10.2026):** die ersten Muster (Anschnitt, Rollbalken kurz zeigen) sind verworfen. Das bestehende Verhalten
@@ -32,12 +32,15 @@ für ein Ziel von 44 pt (R-3.x), Antippen geht an den Eintrag darunter wie heute
 | | Verlauf | Pfeile |
 |---|---|---|
 | **Heute** | 48 px | keine |
-| **A** | 80 px; die äußeren 28 px ganz frei | chevron-left/-right 14 px, grau (`--muted`), 9 px vom Rand, im freien Rand |
-| **B** | 112 px; die äußeren 28 px ganz frei | wie A |
+| **A** | 55 px; die äußeren 28 px ganz frei | chevron-left/-right 14 px, grau (`--muted`), 9 px vom Rand, im freien Rand |
+| **B** | 65 px; ebenso | wie A |
+| **C** | 80 px; ebenso | wie A |
+| **D** | 112 px; ebenso | wie A |
 
 Ein Pfeil steht nur, solange es auf seiner Seite weitergeht (wie der Verlauf: mehr als 2 px Rest); am Ende blendet er in 0,2 s aus.
-Passt alles, gibt es weder Verlauf noch Pfeile. Empfehlung Claude: **A** – deutlich länger als heute, bei schmalen Kapseln (iPhone
-hoch, 300 px) bleibt in der Mitte genug klar lesbar; B verblasst hoch auf beiden Seiten fast drei Einträge.
+Passt alles, gibt es weder Verlauf noch Pfeile. A 55 und B 65 px auf Wunsch des Nutzers ergänzt (24.10.2026). Empfehlung Claude: **C 80 px** – deutlich länger als heute, bei
+schmalen Kapseln (iPhone hoch, 300 px) bleibt in der Mitte genug klar lesbar; D verblasst hoch auf beiden Seiten fast je einen
+Eintrag; bei A und B ist der Verlauf neben dem freien Rand für den Pfeil (28 px) nur 27 bzw. 37 px lang.
 
 ## 4. Fall-Liste (wird beim Bau eine Prüfung in `hig.mjs` bzw. `ablauf.mjs`)
 
