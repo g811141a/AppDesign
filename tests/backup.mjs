@@ -1,6 +1,7 @@
-// AppDesign 4.10.1 · Prüfung von ‚Backup erstellen‘ und ‚Backup laden‘ (Regeln R-9.1, R-9.2; Designrichtlinie allgemein 15.19).
+// AppDesign 4.34.0 · Prüfung von ‚Backup erstellen‘ und ‚Backup laden‘ (Regeln R-9.1, R-9.2; Designrichtlinie allgemein 15.19).
 // Bedient die App wie ein Mensch: Mehr-Menü der Seitenleiste → Backup erstellen → Meldung; Backup laden → Abfrage mit Kacheln →
-// Abbrechen; unlesbare Datei → Meldung. Einbinden im Prüfskript der App:
+// Abbrechen; unlesbare Datei → Meldung. Seit 4.34.0 (A-74): die Backup-Kachel steht nur, solange heute kein Backup erstellt wurde –
+// nach dem Backup ist sie weg, ‚Letztes Backup …‘ steht mit heutigem Datum im Mehr-Menü. Einbinden im Prüfskript der App:
 //   import { checkBackup } from '../../AppDesign/tests/backup.mjs';
 //   const fehler = await checkBackup(page, { menu: '#sideMore', list: 'trips', where: 'iPad' });   // [] = alles richtig
 import { readFileSync } from 'node:fs';
@@ -17,7 +18,7 @@ export async function checkBackup(page, { menu = '#sideMore', list, where = '' }
     if (!/Backup erstellen(Letztes Backup erstellt am \d\d\.\d\d\.\d{4} um \d\d:\d\d|Noch kein Backup erstellt\.)/.test(items[iSave].text)) E(`R-9.1 graue Zeile unter ‚Backup erstellen‘ fehlt oder falsch: ‚${items[iSave].text}‘`);
     if (!items[iSave].icon || !items[iLoad].icon) E('R-9.1 Icons vor ‚Backup erstellen‘/‚Backup laden‘ fehlen');
   }
-  // 2. Backup erstellen → Datei ‚Ω Backup <App> JJJJ.MM.TT hh.mm.json‘ mit Zeitpunkt und Gerät, Meldung ‚Backup‘, Kachel nicht mehr gelb
+  // 2. Backup erstellen → Datei ‚Ω Backup <App> JJJJ.MM.TT hh.mm.json‘ mit Zeitpunkt und Gerät, Meldung ‚Backup‘, Kachel weg (A-74)
   // Dateiname direkt beim Weitergeben mitlesen (der Testbrowser meldet ihn bei Downloads aus lokalen Dateien nicht).
   await page.evaluate(() => { window.__shared = []; const orig = shareFiles; shareFiles = files => { window.__shared.push(...files.map(f => f.name)); return orig(files); }; });
   const [download] = await Promise.all([page.waitForEvent('download', { timeout: 5000 }).catch(() => null), page.locator('.menu .mi', { hasText: 'Backup erstellen' }).click()]);
@@ -34,8 +35,15 @@ export async function checkBackup(page, { menu = '#sideMore', list, where = '' }
   const msg = await page.locator('#msg[open]').count() ? await page.locator('#msg').evaluate(m => ({ title: m.querySelector('h3')?.textContent, text: m.querySelector('.msg-text')?.textContent })) : null;
   if (!msg || msg.title !== 'Backup' || !msg.text.startsWith('✅')) E('R-9.1 nach dem Backup fehlt das kleine Fenster ‚Backup‘ mit ✅');
   await closeMsg();
-  const tile = await page.locator('#side .bhint').first().evaluate(t => ({ ok: t.classList.contains('ok'), text: t.textContent })).catch(() => null);
-  if (!tile || !tile.ok || !/Letztes Backup erstellt am/.test(tile.text)) E('R-9.1 Backup-Kachel nach dem Backup nicht weiß bzw. ohne ‚Letztes Backup erstellt am …‘');
+  if (download) {
+    if (await page.locator('#side .bhint').count()) E('R-9.1 Backup-Kachel steht nach dem Backup noch da (soll verschwinden, A-74)');
+    await openMenu();
+    const heute = await page.evaluate(() => { const d = new Date(), two = n => String(n).padStart(2, '0'); return `${two(d.getDate())}.${two(d.getMonth() + 1)}.${d.getFullYear()}`; });
+    const sub = await page.locator('.menu .mi', { hasText: 'Backup erstellen' }).evaluate(e => e.nextElementSibling?.classList.contains('sub') ? e.nextElementSibling.textContent.trim() : '').catch(() => '');
+    if (!sub.includes(`Letztes Backup erstellt am ${heute} um`)) E(`R-9.1 Mehr-Menü nach dem Backup: ‚Letztes Backup erstellt am ${heute} um …‘ fehlt (gesehen: ‚${sub}‘)`);
+    await page.keyboard.press('Escape'); await page.waitForTimeout(200);
+    if (await page.locator('.menu').count()) { await page.mouse.click(5, 5); await page.waitForTimeout(200); }
+  }
   // 3. Backup laden → Abfrage: Text ‚Backup vom …‘, je eine Kachel Abgleichen/Ersetzen mit Erklärung in gleicher Schrift, darunter Abbrechen (R-9.2)
   const before = await page.evaluate(() => JSON.stringify(localStorage));
   const load = async (name, buffer) => { await openMenu(); const [ch] = await Promise.all([page.waitForEvent('filechooser'), page.locator('.menu .mi', { hasText: 'Backup laden' }).click()]);
@@ -68,8 +76,13 @@ export async function checkBackup(page, { menu = '#sideMore', list, where = '' }
   const bad = await page.locator('#msg[open]').count() ? await page.locator('#msg').evaluate(m => ({ title: m.querySelector('h3')?.textContent, text: m.querySelector('.msg-text')?.textContent })) : null;
   if (!bad || bad.title !== 'Backup laden' || !bad.text.startsWith('⚠️') || !/konnte nicht gelesen werden/.test(bad.text)) E('R-9.2 unlesbare Datei: kein kleines Fenster ‚Backup laden‘ mit ⚠️ und Grund');
   await closeMsg();
-  // 5. Backup-Kachel gelb, solange heute noch kein Backup erstellt wurde
-  const tiles = await page.evaluate(() => [backupTileHtml(0).includes('bhint ok'), backupTileHtml(Date.now()).includes('bhint ok')]);
-  if (tiles[0] || !tiles[1]) E('R-9.1 Backup-Kachel: gelb ohne Backup heute, weiß nach einem Backup heute');
+  // 5. Backup-Kachel nur, solange heute noch kein Backup erstellt wurde und es Einträge gibt; die Offline-Zeile steht immer im Fuß (A-74)
+  const f = await page.evaluate(() => { const gestern = new Date(); gestern.setDate(gestern.getDate() - 1);
+    return [backupTileHtml(0), backupTileHtml(gestern.getTime()), backupTileHtml(Date.now()), backupTileHtml(0, true)].map(h => ({ kachel: h.includes('class="bhint"'), zeile: h.includes('class="offl"') })); });
+  if (!f[0].kachel || !f[1].kachel) E('R-9.1 Backup-Kachel fehlt, obwohl heute noch kein Backup erstellt wurde');
+  if (f[2].kachel) E('R-9.1 Backup-Kachel steht, obwohl heute schon ein Backup erstellt wurde');
+  if (f[3].kachel) E('R-9.1 Backup-Kachel steht bei leerer Liste');
+  if (f.some(x => !x.zeile)) E('R-1.5 Offline-Zeile fehlt im Fuß (auch ohne Kachel und bei leerer Liste)');
+  if (await page.evaluate(() => typeof onNeuerTag !== 'function')) E('R-9.1 onNeuerTag fehlt (Kachel kommt um 0:00 nicht wieder)');
   return errors;
 }

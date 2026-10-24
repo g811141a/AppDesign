@@ -1,13 +1,14 @@
-// AppDesign 4.11.0 · Prüfung der Kontextmenüs in der Seitenleiste bzw. Startliste (Regel R-4.2, Designrichtlinie allgemein 15.4).
+// AppDesign 4.34.0 · Prüfung der Kontextmenüs in der Seitenleiste bzw. Startliste (Regel R-4.2, Designrichtlinie allgemein 15.4).
 // Drückt lange auf jede sichtbare Kachel und prüft: Menü ganz sichtbar und nicht abgeschnitten, nicht über bzw. hinter der
-// Backup-Kachel, die Kachel bleibt sichtbar; ohne Platz daneben (iPhone) linksbündig unter der Kachel.
+// Backup-Kachel (ohne Kachel, seit 4.34.0: nicht über der Offline-Zeile), die Kachel bleibt sichtbar; ohne Platz daneben (iPhone)
+// linksbündig unter der Kachel.
 // Einbinden im Prüfskript der App (Seite mit sichtbarer Seitenleiste bzw. Startliste):
 //   import { checkContextMenus } from '../../AppDesign/tests/kontextmenue.mjs';
 //   const fehler = await checkContextMenus(page, 'iPhone hoch, 8 Einträge');   // [] = alles richtig
 export async function checkContextMenus(page, where = '') {
   const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}R-4.2 ${t}`);
-  const ids = await page.evaluate(() => { const foot = document.querySelector('#side .bhint')?.getBoundingClientRect(), lt = document.querySelector('#side .side-list').getBoundingClientRect().top;
-    return [...document.querySelectorAll('#side .side-row')].filter(r => { const b = r.getBoundingClientRect(); return b.height && b.top >= lt - 1 && (!foot || b.bottom <= foot.top); }).map(r => r.dataset.id); });
+  const ids = await page.evaluate(() => { const foot = document.querySelector('#side .side-foot .bhint, #side .side-foot .offl:not([hidden])')?.getBoundingClientRect(), lr = document.querySelector('#side .side-list').getBoundingClientRect(), lt = lr.top, unten = Math.min(innerHeight, lr.bottom);
+    return [...document.querySelectorAll('#side .side-row')].filter(r => { const b = r.getBoundingClientRect(); return b.height && b.top >= lt - 1 && b.bottom <= unten + 1 && (!foot || b.bottom <= foot.top); }).map(r => r.dataset.id); });
   // Seit 4.11.0: zuletzt auch der letzte Eintrag bei ganz nach unten gewischter Liste (direkt über der Backup-Kachel).
   const lastId = await page.evaluate(() => [...document.querySelectorAll('#side .side-row')].pop()?.dataset.id);
   if (lastId) ids.push('ende:' + lastId);
@@ -18,7 +19,7 @@ export async function checkContextMenus(page, where = '') {
     const g = await page.evaluate(id => {
       const m = document.querySelector('.menu'); if (!m) return null;
       const r = document.querySelector(`#side .side-row[data-id="${id}"]`).getBoundingClientRect(), mr = m.getBoundingClientRect();
-      const t = document.querySelector('#side .bhint')?.getBoundingClientRect(), l = document.querySelector('#side .side-list').getBoundingClientRect();
+      const t = document.querySelector('#side .side-foot .bhint, #side .side-foot .offl:not([hidden])')?.getBoundingClientRect(), l = document.querySelector('#side .side-list').getBoundingClientRect();
       const beside = mr.left >= r.right - 60;
       return { beside, below: mr.top >= r.bottom - 1, above: mr.bottom <= r.top + 1, left: Math.abs(mr.left - r.left) < 2, clipped: m.scrollHeight > m.clientHeight + 1,
         inside: mr.top >= 0 && mr.left >= 0 && mr.bottom <= innerHeight + 1 && mr.right <= innerWidth + 1,

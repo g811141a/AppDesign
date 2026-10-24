@@ -1,6 +1,6 @@
 # Designrichtlinie allgemein
 
-**Version 4.33.0** · Stand 24.10.2026
+**Version 4.34.0** · Stand 24.10.2026
 
 Allgemeine Gestaltungs- und Bedienregeln für alle Web-Apps von g811141a auf iPad und iPhone. Die Datei liegt im Design-Repo
 **AppDesign** (g811141a/AppDesign); ihre Versionsnummer ist die des Repos. Die Komponenten sind dort einmal programmiert und
@@ -301,8 +301,8 @@ heller).
 - **Meldung mit Weiterweg:** ein kleines Fenster darf unter dem Text **eine** blaue Schaltfläche haben, die zu den Einzelheiten
   führt (`inform(titel, text, { action: { label, icon, run } })`, z. B. ‚Abgleichbericht anzeigen‘); sie schließt das Fenster und
   öffnet die Einzelheiten. Ohne Einzelheiten keine Schaltfläche (R-4.3).
-- **Backup einmal am Tag:** Backup-Kachel und ‚Backup erstellen‘ (R-9.1, 15.19); nach einer Ausgabe erinnert das Ergebnisfenster
-  daran.
+- **Backup einmal am Tag:** Backup-Kachel (nur, solange heute keines erstellt wurde) und ‚Backup erstellen‘ (R-9.1, 15.19); nach
+  einer Ausgabe erinnert das Ergebnisfenster daran.
 
 ## 11. Versionen und Aktualisierung
 
@@ -568,8 +568,9 @@ Regel). In AppDesign ist jede Komponente einmal programmiert (`v4/design.css`, `
   Status, rechts ›; gewählter Eintrag blau gefüllt; reichen sie über den Rand, wischt man sie nach oben – sie laufen unter dem Kopf
   und **hinter der Backup-Kachel durch** (keine starre Begrenzung); nur `.side-list` rollt, Kopf und Backup-Kachel nie. Die Liste
   behält beim Neuaufbau ihre Position; der gewählte Eintrag bleibt sichtbar, auch wenn er erst durch Wischen sichtbar wurde. Unten
-  fest **immer** die Backup-Kachel (15.19, auch während der Suche); darunter, solange die App offline arbeitet, die Zeile
-  ‚Offline – alles bleibt auf diesem Gerät‘ (15.20).
+  fest die Backup-Kachel, **solange heute noch kein Backup erstellt wurde** (15.19, auch während der Suche); darunter, solange die
+  App offline arbeitet, die Zeile ‚Offline – alles bleibt auf diesem Gerät‘ (15.20) – auch ohne Kachel und bei leerer Liste. Ohne
+  Kachel läuft die Liste bis an den unteren Rand bzw. bis über die Zeile.
 - **Geändert am:** jede Kachel zeigt als dritte Zeile klein und grau (13 px) ‚geändert am TT.MM.JJJJ um hh:mm · iPad‘ bzw.
   ‚· iPhone‘ (`small.chg`); das Gerät liefert `deviceName()`. Ohne bekannte Änderung entfällt die Zeile.
 - **Suche in der Liste** (Regel R-2.3): search im Kopf blendet darunter eine Suchzeile ein (wie 15.2, Platzhalter ‚In allen
@@ -607,7 +608,7 @@ Regel). In AppDesign ist jede Komponente einmal programmiert (`v4/design.css`, `
 - **Kontextmenü** (R-4.2): Langes Drücken (ca. 0,6 s) auf einen Eintrag öffnet rechts daneben ein Menü (15.6) – ist daneben kein
   Platz (iPhone), linksbündig unter der Kachel; immer vollständig und ganz oberhalb der Backup-Kachel, nie über oder hinter ihr
   (die Liste rückt dafür nach oben und bekommt bei wenigen Einträgen unten Platz; am iPad endet das Menü daneben ebenfalls über
-  der Backup-Kachel). Inhalt: Einstellungen (settings) · … löschen (rot, Sprechblase) – **ohne ‚Öffnen‘**, weil Tippen öffnet
+  der Backup-Kachel); ohne Kachel ebenso über der Offline-Zeile bzw. dem unteren Rand (`sideFootRect()`). Inhalt: Einstellungen (settings) · … löschen (rot, Sprechblase) – **ohne ‚Öffnen‘**, weil Tippen öffnet
   (wie Notizen); der Eintrag ist dabei blau getönt. Kein Wischen, kein Hinweistext.
   [HIG – Context menus](https://developer.apple.com/design/human-interface-guidelines/context-menus)
 
@@ -862,14 +863,16 @@ Regel). In AppDesign ist jede Komponente einmal programmiert (`v4/design.css`, `
   `backupLastText()`, `backupToday()`, `backupTileHtml()`, `backupMenuEntries()`, `readBackup()`; für den Abgleich `createSync()`
   (15.18). Jede App mit Backup nutzt sie – keine eigene Umsetzung (R-1.1). Regeln R-9.1, R-9.2.
 - **Backup erstellen:**
-  - **Wo:** Backup-Kachel unten in der Seitenleiste bzw. Startliste (‚Letztes Backup erstellt am …‘ bzw. ‚Noch kein Backup
-    erstellt.‘ und der Knopf ‚Backup erstellen‘ – gelb mit blauem Knopf, solange heute noch kein Backup erstellt wurde, sonst weiß
-    mit normalem Knopf, `.ok`) und im Mehr-Menü der Seitenleiste: ‚Backup erstellen‘ (Icon `save`, darunter grau ‚Letztes Backup
+  - **Wo:** Backup-Kachel unten in der Seitenleiste bzw. Startliste – **nur, solange heute auf diesem Gerät noch kein Backup
+    erstellt wurde** und es Einträge gibt: gelb, ‚Letztes Backup erstellt am …‘ bzw. ‚Noch kein Backup erstellt.‘ und der blaue
+    Knopf ‚Backup erstellen‘; danach verschwindet sie (wie die Hinweise ‚iPhone nicht gesichert‘ in den Einstellungen), um 0:00
+    und bei der Rückkehr am nächsten Tag kommt sie von selbst wieder (`onNeuerTag()`). Immer im Mehr-Menü der Seitenleiste: ‚Backup erstellen‘ (Icon `save`, darunter grau ‚Letztes Backup
     erstellt am …‘), direkt darunter ‚Backup laden‘ (Icon `folder-open`).
   - **Ablauf:** Teilen-Menü (iOS) → ‚In Dateien sichern‘ (z. B. iCloud Drive). Datei ‚Ω Backup <App> JJJJ.MM.TT hh.mm.json‘ mit
     allen Daten, Zeitpunkt und Gerät.
   - **Danach:** kleines Fenster ‚Backup‘ mit ✅ und Ort der Datei bzw. ⚠️ bei Abbruch; ‚Letztes Backup‘ zählt nur, wenn das Teilen
-    abgeschlossen wurde, und gilt je Gerät; die Backup-Kachel wird weiß.
+    abgeschlossen wurde, und gilt je Gerät (ein Backup des anderen Geräts, Abgleich und ‚Backup laden‘ zählen nicht); die
+    Backup-Kachel verschwindet ohne Bewegung, der Fokus geht auf ‚Mehr‘. Muster und Fall-Liste: `arbeit/A-74 Fall-Liste.md`.
 - **Backup laden:**
   - **Ablauf:** Mehr-Menü → ‚Backup laden‘ → Dateiauswahl (z. B. iCloud Drive) → Abfrage → Ergebnis (15.18).
   - **Abfrage** (Sprechblase an der Schaltfläche, 400 px breit, R-4.3): oben grau ‚Backup vom **…** (Gerät) mit n …‘ und ‚Es ist
@@ -886,12 +889,13 @@ Regel). In AppDesign ist jede Komponente einmal programmiert (`v4/design.css`, `
 - **Apple:** Vorbild Mail (Zustand klein und grau unten in der Liste) und Musik (‚Du bist offline‘); HIG *Feedback* und *Writing* –
   Zustand ruhig zeigen, sagen, was weiter geht. Muster und Fall-Liste: `arbeit/A-06 Muster und Fall-Liste.md`. Regel R-1.5.
 - **Start:** der Service Worker wartet höchstens 3 s auf das Netz, dann aus dem Speicher (11).
-- **Zeile:** solange die App offline arbeitet, unter der Backup-Kachel (Seitenleiste iPad, Startliste iPhone) grau, 13 pt, Icon
-  `wifi-off`: ‚Offline – alles bleibt auf diesem Gerät‘ (`.offl` in `backupTileHtml()`); die Liste läuft auch hinter der Zeile
-  durch.
+- **Zeile:** solange die App offline arbeitet, unten in Seitenleiste (iPad) bzw. Startliste (iPhone) – unter der Backup-Kachel
+  bzw., ohne Kachel und bei leerer Liste, allein am unteren Rand – grau, 13 pt, Icon `wifi-off`: ‚Offline – alles bleibt auf
+  diesem Gerät‘ (`.offl` im Fuß aus `backupTileHtml()`, den die App immer setzt); die Liste läuft auch hinter der Zeile durch,
+  der letzte Eintrag endet darüber.
 - **Meldung beim Wechsel und beim Start ohne Netz:** weiße Karte unten (`.nettoast`), Icon grau, ‚Du bist offline‘ und darunter
   grau ‚Die App arbeitet weiter; alles bleibt auf diesem Gerät.‘ bzw. ‚Wieder online‘ (`wifi`); mittig im freien Bereich neben
-  einer sichtbaren Seitenleiste, mit Abstand zu ‚Nach oben / Ans Ende‘, auf dem iPhone über der Backup-Kachel, bei offener
+  einer sichtbaren Seitenleiste, mit Abstand zu ‚Nach oben / Ans Ende‘, auf dem iPhone über der Backup-Kachel bzw. der Zeile, bei offener
   Tastatur darüber; verschwindet nach 4 s, Antippen schließt sie; höchstens eine zugleich; sie ist kein Fenster (R-4.3), sperrt
   nichts und steht in der obersten Ebene auch über einem offenen Fenster.
 - **Technisch:** `ui.js` – `setNet()`, `isOffline()`, `netLineHtml()`; ‚Netz aus‘ meldet Safari (`offline`/`online`), ‚Netz
@@ -1012,7 +1016,7 @@ die Prüfliste, wenn eine Version es betrifft.
 | R-1.2 | **Darstellung** folgt dem Gerät (‚Automatisch‘), im Mehr-Menü übersteuerbar (Automatisch · Hell · Dunkel) | hig.mjs | – | 2 |
 | R-1.3 | **Nie ungewollt vergrößern:** Doppeltippen vergrößert nicht; Eingabefelder mindestens 16 px (sonst vergrößert iOS beim Antippen) | hig.mjs | iOS-Tastatur | 1, 15.11 |
 | R-1.4 | **Nur der Vordergrund reagiert:** offenes Fenster sperrt die Seite, Menü und Sprechblase fangen Wischen ab, daneben tippen schließt | hig.mjs | – | 1 |
-| R-1.5 | **Offline nutzbar und erkennbar:** die App startet ohne Netz aus dem Speicher – auch unter anderer Adresse und bei hängendem Netz nach höchstens 3 s, nie eine weiße Seite; arbeitet sie offline, steht unter der Backup-Kachel grau ‚Offline – alles bleibt auf diesem Gerät‘, beim Wechsel und beim Start ohne Netz kurz die Meldung ‚Du bist offline‘ bzw. ‚Wieder online‘ | offline.mjs | Gerät (Flugmodus) | 11, 15.20 |
+| R-1.5 | **Offline nutzbar und erkennbar:** die App startet ohne Netz aus dem Speicher – auch unter anderer Adresse und bei hängendem Netz nach höchstens 3 s, nie eine weiße Seite; arbeitet sie offline, steht unten in Seitenleiste bzw. Startliste (unter der Backup-Kachel bzw. ohne sie) grau ‚Offline – alles bleibt auf diesem Gerät‘, beim Wechsel und beim Start ohne Netz kurz die Meldung ‚Du bist offline‘ bzw. ‚Wieder online‘ | offline.mjs | Gerät (Flugmodus) | 11, 15.20 |
 | R-1.6 | **Messmodus:** im Mehr-Menü der Seitenleiste bzw. Startliste ‚Messung starten‘ (grau ‚Für Claude: Bewegungen aufzeichnen‘) und ‚Messung beenden und teilen‘ (grau ‚läuft · m:ss · N Zeilen‘); aus, solange nicht gestartet; je Bild eine Zeile nur bei Änderung, dazu jedes Ereignis; keine Texte (nur Längen und ids); endet nach 5 min bzw. 20 000 Zeilen; Datei `messung-JJJJ-MM-TT-hhmm.txt` über das Teilen-Menü; neu laden verwirft | ablauf.mjs – `checkMessung` | Gerät (Messung, Teilen) | 15.21 |
 | R-1.7 | **Sichere Ränder:** nichts fest Stehendes (Knopf, Feld, Titel, Kachel, Leiste) liegt unter Statusleiste bzw. Dynamic Island, Aussparung oder Home-Leiste; Fenster, Menüs und Sprechblasen bleiben ganz innerhalb (am iPad mindestens 10 px bzw. der sichere Rand, das iPhone-Fenster füllt den Bildschirm); Inhalt darf darunter rollen, sein Ende lässt sich bis über die Home-Leiste rollen. `env(safe-area-inset-*)` nur in `--safe-top/-bottom/-left/-right` | hig.mjs – `safe` in jeder gemessenen Ansicht mit Gerätewerten (iPhone hoch 62/34, quer 62 links und rechts/20 unten, iPad 24/20); doku.mjs – nur die vier Festlegungen | Dynamic Island, Home-Leiste | 13 |
 
@@ -1040,7 +1044,7 @@ die Prüfliste, wenn eine Version es betrifft.
 | Nr. | Regel | Prüfung | Gerät | Bau |
 |---|---|---|---|---|
 | R-4.1 | **Menüs:** Icon vor dem Text, keine Linien zwischen einzelnen Punkten, Gruppen durch eingerückten Strich, ‚… löschen‘ rot am Ende, graue Zusatzinfos unten nach dem Strich, Untermenü eine Ebene | hig.mjs | – | 15.6 |
-| R-4.2 | **Kontextmenü** einer Kachel: daneben bzw. (iPhone) darunter, immer vollständig und ganz über der Backup-Kachel; die Liste rückt dafür; ohne ‚Öffnen‘ | kontextmenue.mjs | – | 15.4 |
+| R-4.2 | **Kontextmenü** einer Kachel: daneben bzw. (iPhone) darunter, immer vollständig und ganz über der Backup-Kachel (ohne Kachel über der Offline-Zeile bzw. dem Rand); die Liste rückt dafür; ohne ‚Öffnen‘ | kontextmenue.mjs | – | 15.4 |
 | R-4.3 | **Abfragen und Meldungen:** keine Systemfenster; Abfrage als Sprechblase an der Schaltfläche, rote Schaltfläche mit dem Verb, ‚Abbrechen‘ zuletzt; mehrere Wege: empfohlener blau zuerst, zerstörender rot; Meldung im kleinen Fenster mit höchstens einer Schaltfläche zu den Einzelheiten | hig.mjs | – | 6, 10, 15.7 |
 | R-4.4 | **Fenster-Kopfzeile:** x links, Häkchen rechts – grau, nach einer Änderung blau; x mit Änderungen fragt ‚Änderungen verwerfen‘ / ‚Weiter bearbeiten‘ | ablauf.mjs – `checkDialogHead` | – | 6, 15.8 |
 | R-4.5 | **Passt immer auf den Bildschirm:** Menü, Sprechblase und Fenster ganz sichtbar (auch iPhone quer), zu hoher Inhalt rollt darin; Fenster auf dem iPhone als Blatt bis zum unteren Rand bzw. zur Tastatur (R-4.6). Ein Feld mit Fokus steht immer ganz über der Tastatur – in Fenstern und im Inhalt, 16 px darüber (reicht der Platz nicht, oben unter Kopf- bzw. Suchzeile, mit Platz für Fokus-Umrandung und Schatten) – und zwar **ohne Springen**: beim Antippen rollt das Feld in die obere Hälfte, Safari verschiebt nichts; Kopfzeile, Suchzeile, Seitenleiste und Fensterkopf stehen in jedem Bild still, das Feld springt nicht, das iPad-Fenster gleitet mit der Tastatur | hig.mjs, ablauf.mjs – `checkFieldVisible` (Safari-Modell: Feld unter der Tastatur antippen), `checkTastaturStill` (jedes Bild), `checkSheet` B10 (Abstand über dem Feld ≥ `RING`) | – | 7, 13, 15.7 |
@@ -1087,7 +1091,7 @@ die Prüfliste, wenn eine Version es betrifft.
 
 | Nr. | Regel | Prüfung | Gerät | Bau |
 |---|---|---|---|---|
-| R-9.1 | **Backup erstellen:** Backup-Kachel immer da (gelb, solange heute keines), Mehr-Menü; Teilen-Menü; Dateiname; Fenster ✅/⚠️; zählt nur abgeschlossen, je Gerät | backup.mjs | iCloud, Teilen | 15.19 |
+| R-9.1 | **Backup erstellen:** Backup-Kachel nur, solange heute auf diesem Gerät keines erstellt wurde und es Einträge gibt (kommt um 0:00 wieder), Mehr-Menü mit ‚Letztes Backup …‘; Teilen-Menü; Dateiname; Fenster ✅/⚠️; zählt nur abgeschlossen, je Gerät | backup.mjs | iCloud, Teilen | 15.19 |
 | R-9.2 | **Backup laden:** Abfrage mit Zeitpunkt, Gerät und ‚neuer/älter‘; Kacheln Abgleichen (blau) und Ersetzen (rot) mit Erklärung; unlesbare Datei ⚠️; Abbrechen ändert nichts | backup.mjs | – | 15.19 |
 | R-9.3 | **Abgleichen:** je Feld gilt das Neuere; leere Felder überschreiben nichts; Gelöschtes bleibt gelöscht, solange danach nicht geändert (Hinweis nennt die Geräte); Zähler: größerer Wert; Einstellungen je Gerät | abgleich.mjs (Fälle 1–20) | – | 15.18 |
 | R-9.4 | **Ergebnis:** kleines Fenster ohne Einzelheiten, Schaltfläche ‚Abgleichbericht anzeigen‘ nur bei Inhalt; Bericht als Vorschau wie die Ausgabe | abgleich.mjs | – | 15.18 |
@@ -1160,6 +1164,7 @@ R-2.3 (15.2), R-4.4 (6, 15.8, HIG 9), R-5.3 (8), R-5.4 (15.12), R-5.5 (A-14), R-
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 4.34.0 | 24.10.2026 | Neben | **A-74:** R-9.1 und 15.19 – die Backup-Kachel steht nur noch, solange heute auf diesem Gerät kein Backup erstellt wurde (und es Einträge gibt); danach verschwindet sie statt weiß zu werden, um 0:00 bzw. bei der Rückkehr am nächsten Tag kommt sie wieder (`onNeuerTag`); ‚Letztes Backup …‘ im Mehr-Menü; R-1.5 / 15.20 – die Offline-Zeile steht auch ohne Kachel und bei leerer Liste unten; R-4.2 und 15.4 – ohne Kachel über der Zeile bzw. dem Rand; Prüfungen `backup.mjs`, `hig.mjs`, `kontextmenue.mjs` (nur sichtbare Einträge), `offline.mjs` (F-16 ohne Kachel) |
 | 4.33.0 | 24.10.2026 | Neben | **A-75:** R-5.4 und 15.12 – wo die Auswahl-Kapsel weitergeht, steht im freien Rand (28 px) des Verlaufs (48 px) ein kleiner Pfeil `chevron-left`/`-right` (14 px, `--muted`, nur Anzeige), der am jeweiligen Ende in 0,2 s ausblendet; bewusste Abweichung von Apple (am iPhone keine Pfeile); Prüfungen `hig.mjs` (Pfeil genau dann, wenn es weitergeht) und `checkKapsel`. **A-76:** neu R-3.5 langes Drücken – Ziehen über 10 px oder Rollen bricht ab (8, 13, 15.12); Prüfung `checkLangDruecken` |
 | 4.32.2 | 24.10.2026 | Korrektur | **A-73 (P-69/3):** R-4.6 – ein Zug, der zuerst nach oben (oder waagerecht) geht und das Blatt nicht zieht, schließt die Tastatur, sobald der Finger danach 8 px unter seinen höchsten Punkt geht (13 Blatt ziehen, neue Safari-Eigenheit: Zeigerbewegungen kommen beim Rollen weiter); R-4.5 – reicht der Platz nicht, steht das Feld mit Platz für Fokus-Umrandung und Schatten unter Kopf- bzw. Suchzeile statt direkt am Rand (13) |
 | 4.32.1 | 24.10.2026 | Korrektur | **A-71 (P-68/2.3):** R-4.6 – ein Zug, der bei offener Tastatur auf einem Feld beginnt, zieht das Blatt im selben Zug wie am Kopf, auch wenn R-4.5 den Inhalt gerollt hat; im gerollten Inhalt daneben schließt er nur die Tastatur (13, 15.17); Prüfung `checkSheet` B10 und B19 mit dem Safari-Modell |

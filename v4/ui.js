@@ -1,4 +1,4 @@
-// AppDesign 4.33.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
+// AppDesign 4.34.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
 // Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/fassung/X.Y.Z/ui.js"></script> (feste Fassung, R-10.3)
 // Seit 4.11.0 (R-10.3): ui.js und design.css immer mit ?v=<AppDesign-Version> einbinden (auch in sw.js) und beim Start
 // prüfen, ob genau diese Fassung geladen ist (AD_VERSION hier, --ad-version in design.css).
@@ -19,7 +19,7 @@
 
 'use strict';
 // Version der Bausteine (R-10.3): die App vergleicht sie beim Start mit der benötigten Fassung.
-const AD_VERSION = '4.33.0';
+const AD_VERSION = '4.34.0';
 /* ---------- Icons ---------- */
 
 // Schaltflächen-Icons aus Lucide (ISC-Lizenz), direkt eingebettet, damit die App offline funktioniert.
@@ -410,8 +410,8 @@ function placeAt(el, anchor, align) {
   // linksbündig unter der Kachel – ganz sichtbar über der Backup-Kachel; dafür wird die Liste nötigenfalls
   // etwas nach oben geschoben (R-4.2).
   if (align === 'beside' && innerWidth - (r.right - 40) - R < el.offsetWidth) {
-    const list = anchor.closest('.side-list'), tile = anchor.closest('#side')?.querySelector('.side-foot .bhint');
-    const tr = tile?.getBoundingClientRect();
+    // seit 4.34.0 (A-74): ohne Backup-Kachel über der Offline-Zeile bzw. dem unteren Rand
+    const list = anchor.closest('.side-list'), tr = sideFootRect(anchor.closest('#side'));
     const limit = tr && tr.height ? Math.min(innerHeight - B, tr.top - 12) : innerHeight - B;
     const need = r.bottom + 8 + el.offsetHeight - limit;
     if (need > 0 && list) {
@@ -436,7 +436,7 @@ function placeAt(el, anchor, align) {
   }
   if (align === 'beside') {
     // Neben der Kachel (iPad): nie über bzw. hinter die Backup-Kachel – unten endet das Menü über ihr (R-4.2).
-    const tr = anchor.closest('#side')?.querySelector('.side-foot .bhint')?.getBoundingClientRect();
+    const tr = sideFootRect(anchor.closest('#side'));
     const left0 = Math.max(L, Math.min(r.right - 40, innerWidth - el.offsetWidth - R));
     const bottom = tr && tr.height && left0 < tr.right ? tr.top - 12 : innerHeight - B;
     fit(bottom - T);
@@ -655,7 +655,7 @@ function downloadFile(name, content, type) {
   a.remove();
   setTimeout(() => URL.revokeObjectURL(a.href), 5000);
 }
-// ‚Letztes Backup erstellt am …‘ (je Gerät) und ob heute schon eins erstellt wurde (sonst ist die Backup-Kachel gelb).
+// ‚Letztes Backup erstellt am …‘ (je Gerät) und ob heute schon eins erstellt wurde (sonst steht die Backup-Kachel da).
 const backupLastText = ms => ms ? `Letztes Backup erstellt am ${whenText(ms)}` : 'Noch kein Backup erstellt.';
 const backupToday = ms => Boolean(ms) && new Date(ms).toDateString() === new Date().toDateString();
 // Backup-Datei: ‚Ω Backup <App> JJJJ.MM.TT hh.mm.json‘, mit Zeitpunkt und Gerät (für den Abgleich, R-9.2).
@@ -664,10 +664,24 @@ function backupFileOf(app, data) {
   return { name: `Ω Backup ${app} ${n.getFullYear()}.${two(n.getMonth() + 1)}.${two(n.getDate())} ${two(n.getHours())}.${two(n.getMinutes())}.json`, type: 'json',
     content: JSON.stringify({ ...data, savedAt: Date.now(), savedOn: deviceName() }, null, 2) };
 }
-// Backup-Kachel unten in der Seitenleiste bzw. Startliste: gelb, solange heute noch kein Backup erstellt wurde.
-// Seit 4.15.0 (R-1.5): darunter grau die Zeile ‚Offline – …‘, solange die App offline arbeitet.
-const backupTileHtml = ms => `<div class="side-foot"><div class="bhint ${backupToday(ms) ? 'ok' : ''}"><div>${backupLastText(ms)}</div>
-      <button type="button" id="hintBackup">${ic('save')}Backup erstellen</button></div>${netLineHtml()}</div>`;
+// Fuß der Seitenleiste bzw. Startliste. Seit 4.34.0 (R-9.1, A-74): die gelbe Backup-Kachel steht nur, solange heute auf diesem
+// Gerät noch kein Backup erstellt wurde und es etwas zu sichern gibt (leer = keine Einträge); danach verschwindet sie (wie die
+// Hinweise in den Einstellungen) – ‚Backup erstellen‘ und ‚Letztes Backup …‘ bleiben im Mehr-Menü. Um 0:00 kommt sie wieder
+// (onNeuerTag). Seit 4.15.0 (R-1.5): darunter grau die Zeile ‚Offline – …‘, solange die App offline arbeitet – seit 4.34.0 auch
+// ohne Kachel; die App setzt den Fuß deshalb immer, auch bei leerer Liste.
+const backupTileHtml = (ms, leer = false) => `<div class="side-foot">${leer || backupToday(ms) ? '' : `<div class="bhint"><div>${backupLastText(ms)}</div>
+      <button type="button" id="hintBackup">${ic('save')}Backup erstellen</button></div>`}${netLineHtml()}</div>`;
+// Oberstes sichtbares Element im Fuß (Backup-Kachel, sonst Offline-Zeile): Menüs und die Meldung ‚Du bist offline‘ bleiben darüber.
+const sideFootRect = side => side?.querySelector('.side-foot .bhint, .side-foot .offl:not([hidden])')?.getBoundingClientRect();
+// Seit 4.34.0 (A-74): fn läuft, sobald ein neuer Kalendertag beginnt – um 0:00 und bei der Rückkehr in die App (im Hintergrund
+// hält Safari Zeitgeber an). Die App zeichnet damit die Liste neu (Backup-Kachel kommt wieder).
+function onNeuerTag(fn) {
+  let tag = new Date().toDateString(), timer = null;
+  const plane = () => { clearTimeout(timer); const n = new Date(); n.setHours(24, 0, 1, 0); timer = setTimeout(pruefe, n - Date.now()); };
+  const pruefe = () => { const t = new Date().toDateString(); if (t !== tag) { tag = t; fn(); } plane(); };
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') pruefe(); });
+  plane();
+}
 
 /* ---------- Offline-Hinweis (seit 4.15.0, R-1.5, A-06 Variante c) ---------- */
 // Solange die App offline arbeitet, steht unter der Backup-Kachel (Seitenleiste bzw. Startliste) grau ‚Offline – alles
@@ -691,9 +705,9 @@ function placeNetToast() {
   const fab = document.querySelector('.fab:not([hidden]):not(.still)');
   t.style.setProperty('--toast-w', Math.max(200, Math.round(innerWidth - left - (fab || left || innerWidth >= 700 ? 144 : 32))) + 'px');
   // Über einer festen unteren Leiste (iPhone, .bbar), sonst am unteren Rand
-  // iPhone-Startliste: über der Backup-Kachel (die Meldung verdeckt sie nicht)
+  // iPhone-Startliste: über der Backup-Kachel bzw. (ohne Kachel, seit 4.34.0) über der Offline-Zeile – die Meldung verdeckt sie nicht
   const bar = document.querySelector('.bbar')?.getBoundingClientRect();
-  const tile = !left && side && !side.hidden ? side.querySelector('.side-foot .bhint')?.getBoundingClientRect() : null;
+  const tile = !left && side && !side.hidden ? sideFootRect(side) : null;
   const lift = Math.max(bar && bar.height ? innerHeight - bar.top : 0, tile && tile.height ? innerHeight - tile.top - 28 + 10 : 0);
   t.style.setProperty('--toast-lift', Math.round(lift) + 'px');
 }
