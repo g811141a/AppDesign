@@ -43,6 +43,9 @@ Passt alles, gibt es weder Verlauf noch Pfeile. A 55, B 65 und E 48 px auf Wunsc
 schmalen Kapseln (iPhone hoch, 300 px) bleibt in der Mitte genug klar lesbar; D verblasst hoch auf beiden Seiten fast je einen
 Eintrag; bei A und B ist der Verlauf neben dem freien Rand für den Pfeil (28 px) nur 27 bzw. 37 px lang.
 
+**Gewählt (Nutzer 24.10.2026): E – Verlauf 48 px wie heute, dazu die Pfeile.** Länge des Verlaufs bleibt; die äußeren 28 px
+bleiben frei für den Pfeil.
+
 ## 4. Fall-Liste (wird beim Bau eine Prüfung in `hig.mjs` bzw. `ablauf.mjs`)
 
 | Nr. | Fall | Erwartung | Muster |
