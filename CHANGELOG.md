@@ -3,6 +3,36 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.32.2 – 24.10.2026
+
+AppDesign 4.32.2 · Designrichtlinie allgemein 4.32.2 · Zusammenarbeit allgemein 2.19.0 · geprüft mit Reiselogbuch 3.30.2
+
+**Korrektur A-73 – Tastatur beim Zug erst nach oben, Fokusring quer** (dein Ja vom 24.10.2026, P-69/3, Messung
+`tests/messungen/2026-10-24 iPhone hoch Blatt Zug am Rand.txt`). Prüfpunkt im Reiselogbuch: P-70.
+
+- **Ursache 1 (Tastatur):** am Rand neben dem Feld ging der Finger zuerst nach oben (gemessen 244 → 76 → 302 und 219 → 205 → 400);
+  ui.js entschied nach 8 px ‚nach oben‘ und gab den Zug auf – der spätere Zug nach unten zählte nicht. Safari schickt die
+  Zeigerbewegungen beim Rollen des Inhalts weiter (kein `pointercancel`).
+- **Behebung 1 (R-4.6, 13, 15.17):** ein Zug, der das Blatt nicht zieht (zuerst nach oben oder waagerecht), bleibt bei offener
+  Tastatur beobachtet (`blattZug.nurTastatur`, höchster Punkt); geht der Finger danach mindestens 8 px darunter, deutlich senkrecht,
+  gibt das Feld den Fokus ab und die Tastatur schließt. Der Inhalt rollt dabei weiter, `touchmove` wird für solche Züge nie verhindert.
+- **Ursache 2 (Fokusring quer):** passt ein Feld nicht zweimal in den sichtbaren Teil (iPhone quer: ‚Verlauf‘, ‚Fazit‘), stellte
+  R-4.5 es direkt an den oberen Rand des Inhalts – der Rollbereich schnitt Umrandung (Safari 5 px) und Schatten (25 px) oben ab;
+  sonst standen Felder bis 4 px bzw. 16 px unter dem Rand.
+- **Behebung 2 (R-4.5, 13):** neu `fokusRand(f)` – wie weit Fokus-Umrandung und Schatten über die Oberkante reichen (aus dem
+  berechneten Stil); `noetig` und `feldZeigen` halten mindestens so viel Abstand zum oberen Rand des Bereichs. Die App braucht
+  nichts zu ändern.
+- **Prüfungen:** `checkSheet` B19 zusätzlich ‚erst nach oben (20 px), dann nach unten (200 px)‘, beide Züge jetzt als Berührung
+  (Zeigerereignisse in der Seite, je 16 ms); B10 prüft den Abstand über dem Feld mit Fokus (≥ `RING`, neu in `pruefe.mjs`).
+  `checkFieldVisible` F-1a und `checkTastaturStill` erwarten im engen Fall den Abstand `RING` statt ‚direkt am Rand‘. **Rot gegen
+  4.32.1** (15 Meldungen – B19 ‚erst nach oben‘ in Erfassen und Fazit hoch, dunkel und mit ‚Bewegung reduzieren‘ sowie in allen vier
+  Fenstern quer; Abstand 0 px bzw. 16–18 px statt 25 px), grün mit der Behebung (Chromium und WebKit).
+- **Warum die Prüfung es übersah:** B19 zog mit der Maus – in Chromium nimmt schon das Drücken auf den Inhalt dem Feld den Fokus,
+  der Fall war damit immer grün, und gezogen wurde nur gerade nach unten; den Abstand über dem Feld maß keine Prüfung (F-1a erwartete
+  sogar ‚direkt am Rand‘). Dieselbe Lücke anderswo: nur das Blatt schließt die Tastatur durch Ziehen; das Zurückwischen ist waagerecht
+  und schließt sie beim Beginn.
+- **Designrichtlinie allgemein 4.32.2:** R-4.5, R-4.6, 13 (Tastatur, Blatt ziehen), 15.17.
+
 ## 4.32.1 – 24.10.2026
 
 AppDesign 4.32.1 · Designrichtlinie allgemein 4.32.1 · Zusammenarbeit allgemein 2.19.0 · geprüft mit Reiselogbuch 3.30.1

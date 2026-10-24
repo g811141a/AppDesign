@@ -1,4 +1,4 @@
-// AppDesign 4.32.1 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
+// AppDesign 4.32.2 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
 // Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/fassung/X.Y.Z/ui.js"></script> (feste Fassung, R-10.3)
 // Seit 4.11.0 (R-10.3): ui.js und design.css immer mit ?v=<AppDesign-Version> einbinden (auch in sw.js) und beim Start
 // prüfen, ob genau diese Fassung geladen ist (AD_VERSION hier, --ad-version in design.css).
@@ -19,7 +19,7 @@
 
 'use strict';
 // Version der Bausteine (R-10.3): die App vergleicht sie beim Start mit der benötigten Fassung.
-const AD_VERSION = '4.32.1';
+const AD_VERSION = '4.32.2';
 /* ---------- Icons ---------- */
 
 // Schaltflächen-Icons aus Lucide (ISC-Lizenz), direkt eingebettet, damit die App offline funktioniert.
@@ -1884,19 +1884,28 @@ function blattErlaubt(z, dx, dy) {
 // Ist der Zug entschieden, verhindert touchmove das Rollen (Safari entscheidet sonst selbst, 13)
 dlg.addEventListener('touchmove', e => {
   const z = blattZug, t = e.touches?.[0];
-  if (!z || !t) return;
+  if (!z || !t || z.nurTastatur) return;
   if (e.cancelable && (z.aktiv || (Math.abs(t.clientY - z.y0) > 1 && blattErlaubt(z, t.clientX - z.x0, t.clientY - z.y0)))) e.preventDefault();
 }, { passive: false });
 window.addEventListener('pointermove', e => {
   const z = blattZug;
   if (!z || e.pointerId !== z.id) return;
+  // seit 4.32.2 (A-73, P-69/3): ein Zug, der das Blatt nicht zieht (zuerst nach oben oder waagerecht), bleibt bei offener Tastatur
+  // beobachtet – geht der Finger danach mindestens 8 px unter seinen höchsten Punkt, deutlich senkrecht, schließt die Tastatur (wie iOS);
+  // der Inhalt rollt dabei weiter (touchmove bleibt frei). Gemessen am Rand: 244 → 76 → 302, entschieden war nach 8 px ‚nach oben‘.
+  if (z.nurTastatur) {
+    if (e.clientY < z.hy) { z.hx = e.clientX; z.hy = e.clientY; }
+    const hx = e.clientX - z.hx, hy = e.clientY - z.hy;
+    if (hy >= BLATT_ENTSCHEID && hy > Math.abs(hx) * BLATT_SENKRECHT) { blattFeld()?.blur(); blattZug = null; }
+    return;
+  }
   const dx = e.clientX - z.x0, dy = e.clientY - z.y0;
   if (!z.aktiv) {
     if (Math.abs(dx) < BLATT_ENTSCHEID && Math.abs(dy) < BLATT_ENTSCHEID) return;
     // nach unten ziehen schließt die Tastatur (wie iOS) – im gerollten Inhalt rollt er weiter, am Kopf, auf einem Feld bzw. ganz oben
     // folgt das Blatt
     if (dy > Math.abs(dx) * BLATT_SENKRECHT) blattFeld()?.blur();
-    if (!blattErlaubt(z, dx, dy)) { blattZug = null; return; }
+    if (!blattErlaubt(z, dx, dy)) { blattZug = blattFeld() ? Object.assign(z, { nurTastatur: true, hx: e.clientX, hy: Math.min(e.clientY, z.y0) }) : null; return; }
     z.aktiv = true;
     blattStopp();
     z.o = blattY;
@@ -2034,14 +2043,27 @@ function rollen(c, d) {
   if (fehlt > 0) platz(c, platzVon(c) + fehlt);
   c.scrollTop += d;
 }
-// wie weit das Feld rollen muss, damit seine Mitte höchstens 24 px über der Mitte des künftig sichtbaren Bereichs steht, nie über dem
-// oberen Rand seines Bereichs (+4 px; passt es nicht zweimal in den sichtbaren Teil, direkt an den Rand wie R-4.5); ≤ 0: nichts
+// seit 4.32.2 (A-73, P-69/3 quer): wie weit Fokus-Umrandung und Schatten des Felds über seine Oberkante reichen (berechneter Stil) –
+// so viel Abstand hält es zum oberen Rand seines Bereichs, sonst schneidet der Rollbereich sie ab (Reiselogbuch: Schatten 25 px)
+function fokusRand(f) {
+  const c = getComputedStyle(f);
+  let n = c.outlineStyle !== 'none' ? (parseFloat(c.outlineWidth) || 0) + (parseFloat(c.outlineOffset) || 0) : 0;
+  for (const s of c.boxShadow === 'none' ? [] : c.boxShadow.replace(/\([^)]*\)/g, '').split(',')) {
+    if (/inset/.test(s)) continue;
+    const [, y = 0, blur = 0, spread = 0] = (s.match(/-?[\d.]+px/g) || []).map(parseFloat);
+    n = Math.max(n, blur + spread - y);
+  }
+  return Math.ceil(n);
+}
+// wie weit das Feld rollen muss, damit seine Mitte höchstens 24 px über der Mitte des künftig sichtbaren Bereichs steht, nie näher am
+// oberen Rand seines Bereichs als Umrandung und Schatten (fokusRand, mindestens 4 px); ≤ 0: nichts
 function noetig(f, c) {
   const kb = kbOffen() ? seitenHoehe() - visualViewport.height : kbHoehe(f), sichtbar = seitenHoehe() - kb;
-  const r = f.getBoundingClientRect(), b = c.getBoundingClientRect(), oben = 2 * r.height > sichtbar - b.top ? b.top : b.top + 4;
+  const r = f.getBoundingClientRect(), b = c.getBoundingClientRect(), oben = b.top + Math.max(4, fokusRand(f));
   return (r.top + r.bottom) / 2 - Math.max(oben + r.height / 2, sichtbar / 2 - 24);
 }
-// Feld ganz über der Tastatur (R-4.5, seit 4.28.0): 16 px darüber; reicht der Platz nicht, direkt unter Kopf- bzw. Suchzeile.
+// Feld ganz über der Tastatur (R-4.5, seit 4.28.0): 16 px darüber; reicht der Platz nicht, oben unter Kopf- bzw. Suchzeile mit Platz für
+// Umrandung und Schatten (seit 4.32.2, fokusRand).
 // Rahmen und Fenster enden über der Tastatur – Feld und Bereich werden gegeneinander gemessen (Safari wie Chromium). Gleitet das
 // iPad-Fenster noch, zählt seine neue Lage.
 function feldZeigen(f) {
@@ -2049,9 +2071,10 @@ function feldZeigen(f) {
   if (!c) return;
   const d = f.closest('dialog'), dy = d && !isPhone() ? (parseFloat(d.style.top) || 0) - d.getBoundingClientRect().top : 0;
   const r = f.getBoundingClientRect(), b = c.getBoundingClientRect(), oben = b.top + dy, unten = b.bottom + dy - 16, ro = r.top + dy, ru = r.bottom + dy;
-  if (r.height > unten - oben) { if (Math.abs(ro - oben) > 1) rollen(c, ro - oben); }
+  const rand = fokusRand(f);
+  if (r.height > unten - oben - rand) { if (Math.abs(ro - oben - rand) > 1) rollen(c, ro - oben - rand); }
   else if (ru > unten) rollen(c, ru - unten);
-  else if (ro < oben) rollen(c, ro - oben - 16);
+  else if (ro < oben + rand) rollen(c, ro - oben - Math.max(16, rand));
 }
 let neuFokus = false, beruehrt = -1e9, gerollt = null, halten = null, kbWar = false, nachKb = null;
 // die Ereignisse des neuen Fokus nicht an die App weitergeben (Safari-Modell und Safari selbst lesen die Lage vorher, auf window)

@@ -39,6 +39,16 @@ export const ROLL = `(() => { const e = document.querySelector('#app > .rolle');
     get max() { return Math.max(0, (e ? e.scrollHeight : document.documentElement.scrollHeight) - r.h); }, get rest() { return r.max - r.y; },
     to(y) { (e || window).scrollTo({ top: Math.max(0, Math.round(y)), behavior: 'instant' }); }, by(d) { r.to(r.y + d); } };
   return r; })()`;
+// R-4.5 (seit 4.32.2, A-73): wie weit Fokus-Umrandung und Schatten eines Felds über seine Oberkante reichen (berechneter Stil, px) –
+// so viel Abstand braucht es zum oberen Rand seines Bereichs. In der Seite: eval(RING)(feld)
+export const RING = `(f => { const c = getComputedStyle(f);
+  let n = c.outlineStyle !== 'none' ? (parseFloat(c.outlineWidth) || 0) + (parseFloat(c.outlineOffset) || 0) : 0;
+  for (const s of c.boxShadow === 'none' ? [] : c.boxShadow.replace(/\\([^)]*\\)/g, '').split(',')) {
+    if (/inset/.test(s)) continue;
+    const [, y = 0, b = 0, sp = 0] = (s.match(/-?[\\d.]+px/g) || []).map(parseFloat);
+    n = Math.max(n, b + sp - y);
+  }
+  return Math.ceil(n); })`;
 // rolle(p, y): y in px, 'ende', 'N%' (Anteil des Rollwegs), { um: d } (relativ) oder { vorEnde: d } (d px vor dem Ende).
 export async function rolle(p, y) {
   await p.evaluate(([R, y]) => { const r = eval(R);

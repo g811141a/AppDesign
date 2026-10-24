@@ -3,7 +3,7 @@
 // Jede Funktion bekommt eine Playwright-Seite und gibt eine Liste von Fehlern zurück (leer = in Ordnung), je mit Regelnummer.
 // Einbinden im Prüfskript der App:  import { checkSearch, checkDialogHead } from '../../AppDesign/tests/ablauf.mjs';
 //                                   fehler.push(...await checkSearch(page, { term: 'Sydney' }));
-import { ROLL, rolle, rollstand, navFertig, rollRuht } from './pruefe.mjs';
+import { ROLL, RING, rolle, rollstand, navFertig, rollRuht } from './pruefe.mjs';
 import { safariWischen, safariModell } from './safari.mjs';
 const wait = (p, ms = 250) => p.waitForTimeout(ms);
 // R-2.3 (seit 4.25.1, A-24): beim Tippen bleibt das Suchfeld dasselbe Element und behält den Fokus – sonst schließt Safari am
@@ -951,13 +951,13 @@ export async function checkFieldVisible(p, { field, vorher = null, where = '' } 
   if (!await p.evaluate(() => !!window.__safari)) { E('Vorbereitung: Safari-Modell fehlt (safariModell)'); return errors; }
   if (vorher) { await vorher(); await wait(p, 400); }
   // Bildschirm = Lage im Fenster minus offsetTop (Safari misst gegen den sichtbaren Bereich, Chromium gegen das Fenster)
-  const lage = () => p.evaluate(({ field, R }) => {
-    const vv = visualViewport, o = vv.offsetTop, f = document.querySelector(field)?.getBoundingClientRect();
+  const lage = () => p.evaluate(({ field, R, RI }) => {
+    const vv = visualViewport, o = vv.offsetTop, fe = document.querySelector(field), f = fe?.getBoundingClientRect();
     const re = document.querySelector('#app > .rolle')?.getBoundingClientRect(), k = document.querySelector('.nb, .pnav')?.getBoundingClientRect();
     const m = x => x == null ? null : Math.round(x - o);
     return { oben: m(f?.top), unten: m(f?.bottom), rolle: m(re?.top), kopf: m(k?.top), kb: Math.round(vv.height), y: Math.round(eval(R).y), fenster: Math.round(scrollY),
-      fokus: document.activeElement === document.querySelector(field) };
-  }, { field, R: ROLL });
+      fokus: document.activeElement === fe, ring: fe ? eval(RI)(fe) : 0 };
+  }, { field, R: ROLL, RI: RING });
   const vorTastatur = await lage();
   if (vorTastatur.unten == null) { E(`Vorbereitung: ${field} fehlt`); return errors; }
   if (vorTastatur.unten > vorTastatur.kb || vorTastatur.oben < (vorTastatur.rolle ?? 0)) { E(`Vorbereitung: ${field} ist vor dem Antippen nicht sichtbar (${vorTastatur.oben}–${vorTastatur.unten} px)`); return errors; }
@@ -965,10 +965,13 @@ export async function checkFieldVisible(p, { field, vorher = null, where = '' } 
   await p.evaluate(() => __safari.tastatur(true)); await wait(p, 500);
   let l = await lage();
   const w = `mit Tastatur (sichtbar ${l.kb} px)`;
-  // reicht der Platz nicht für 16 px Abstand (iPhone quer mit Suchzeile), steht das Feld direkt unter Kopf- bzw. Suchzeile
-  const eng = l.unten - l.oben > l.kb - 16 - (l.rolle ?? 0);
-  if (eng ? l.unten > l.kb || Math.abs(l.oben - (l.rolle ?? 0)) > 1 : l.unten > l.kb - 16 + 1)
-    E(`F-1 ${field} ${w} nicht ganz über der Tastatur: ${l.oben}–${l.unten} px, Inhalt ab ${l.rolle} px, Tastatur ab ${l.kb} px (${eng ? 'zu wenig Platz: direkt unter der Kopf- bzw. Suchzeile' : 'mindestens 16 px Abstand'})`);
+  // reicht der Platz nicht für 16 px Abstand (iPhone quer mit Suchzeile), steht das Feld unter Kopf- bzw. Suchzeile – seit 4.32.2 (A-73,
+  // P-69/3) mit so viel Abstand, wie Fokus-Umrandung und Schatten brauchen (RING), bis 4.32.1 direkt am Rand (oben abgeschnitten)
+  const eng = l.unten - l.oben > l.kb - 16 - (l.rolle ?? 0) - l.ring;
+  if (eng && Math.abs(l.oben - (l.rolle ?? 0) - l.ring) > 1)
+    E(`F-1a ${field} ${w} steht ${l.oben - (l.rolle ?? 0)} px unter Kopf- bzw. Suchzeile statt ${l.ring} px – Fokus-Umrandung und Schatten oben abgeschnitten bzw. Platz verschenkt (Inhalt ab ${l.rolle} px)`);
+  else if (!eng && l.unten > l.kb - 16 + 1)
+    E(`F-1 ${field} ${w} nicht ganz über der Tastatur: ${l.oben}–${l.unten} px, Inhalt ab ${l.rolle} px, Tastatur ab ${l.kb} px (mindestens 16 px Abstand)`);
   if (l.oben < (l.rolle ?? 0) - 1) E(`F-1 ${field} ${w} oben unter der Kopf- bzw. Suchzeile (${l.oben} px, Inhalt ab ${l.rolle} px)`);
   if (Math.abs(l.kopf ?? 0) > 1) E(`F-1 ${w}: Kopfzeile verschoben (${l.kopf} px statt 0, R-2.1)`);
   if (!l.fokus) E(`F-1 ${field} ${w} hat den Fokus verloren`);
@@ -1034,16 +1037,18 @@ export async function checkTastaturStill(p, { field, vorher = null, wechsel = nu
   };
   // Feld mit Fokus ganz über der Tastatur, Kapsel 10 px darüber (Bildschirm = Lage minus offsetTop, alle Rahmen sind fest)
   const ueber = async (name, sel) => {
-    const l = await p.evaluate(({ sel, fab }) => {
+    const l = await p.evaluate(({ sel, fab, RI }) => {
       const o = __safari.top(), f = document.querySelector(sel), r = f.getBoundingClientRect(), k = document.querySelector(fab);
       const ks = k && getComputedStyle(k).display !== 'none' && !k.hidden && k.getClientRects().length ? Math.round(k.getBoundingClientRect().bottom - o) : null;
       const c = f.closest('.dlg-body, #app > .rolle'), ct = c ? Math.round(c.getBoundingClientRect().top - o) : 0;
-      return { oben: Math.round(r.top - o), unten: Math.round(r.bottom - o), ct, kb: __safari.hoehe(), offen: __safari.offen, fokus: document.activeElement === f, kapsel: ks };
-    }, { sel, fab });
+      return { oben: Math.round(r.top - o), unten: Math.round(r.bottom - o), ct, kb: __safari.hoehe(), offen: __safari.offen, fokus: document.activeElement === f, kapsel: ks,
+        ring: eval(RI)(f) };
+    }, { sel, fab, RI: RING });
     if (!l.fokus) E(`${name}: ${sel} hat nach dem Antippen keinen Fokus`);
     if (!l.offen) E(`${name}: die Tastatur ist nicht offen`);
-    // reicht der Platz nicht (iPhone quer: 117 px sichtbar), steht das Feld oben im Rollbereich (wie checkFieldVisible F-1a)
-    if (l.unten - l.oben > l.kb - Math.max(0, l.ct) ? Math.abs(l.oben - l.ct) > 1 : l.unten > l.kb + 1 || l.oben < l.ct - 1)
+    // reicht der Platz nicht (iPhone quer: 117 px sichtbar), steht das Feld oben im Rollbereich, so weit unter dem Rand wie Fokus-Umrandung
+    // und Schatten reichen (wie checkFieldVisible F-1a)
+    if (l.unten - l.oben > l.kb - 16 - Math.max(0, l.ct) - l.ring ? Math.abs(l.oben - l.ct - l.ring) > 1 : l.unten > l.kb + 1 || l.oben < l.ct - 1)
       E(`${name}: ${sel} nicht ganz über der Tastatur (${l.oben}–${l.unten} px, Rollbereich ab ${l.ct}, Tastatur ab ${l.kb} px)`);
     if (l.kapsel != null && l.kapsel > l.kb - 10 + 1) E(`${name}: Kapsel unten bei ${l.kapsel} px – unter oder an der Tastatur (ab ${l.kb} px), T-7`);
   };
@@ -1728,27 +1733,45 @@ export async function checkSheet(p, { open, change = null, field = null, where =
       // ein Mauszug wählt Text aus, Chromium fokussiert beim Antippen einer Auswahl nicht (der Finger am Gerät wählt nichts aus)
       await p.evaluate(() => getSelection().removeAllRanges());
       await p.locator(field).first().tap(); await wait(p, 600);
-      return p.evaluate(sel => {
+      return p.evaluate(({ sel, RI }) => {
         const f = document.querySelector(`#dlg ${sel}`) || document.querySelector(sel), b = f.closest('.dlg-body'), r = f.getBoundingClientRect(), br = b.getBoundingClientRect();
         const x = Math.round(br.left + 4), y = Math.round((r.top + r.bottom) / 2), t = document.elementFromPoint(x, y);
-        return { gerollt: Math.round(b.scrollTop), tastatur: !!window.__safari?.offen, fokus: document.activeElement === f,
+        return { gerollt: Math.round(b.scrollTop), tastatur: !!window.__safari?.offen, fokus: document.activeElement === f, abstand: Math.round(r.top - br.top), ring: eval(RI)(f),
           feld: { x: Math.round(r.left + Math.min(40, r.width / 2)), y: Math.round(r.top + Math.min(14, r.height / 2)) },
           daneben: t && !t.closest('input, textarea, select, button') && b.contains(t) ? { x, y } : null };
-      }, field);
+      }, { sel: field, RI: RING });
     };
     const tastaturZu = async () => { await wait(p, 300); await p.evaluate(() => { if (window.__safari?.offen) __safari.tastatur(false); }); await wait(p, 300); };
-    // B19 im gerollten Inhalt neben dem Feld nach unten ziehen: nur die Tastatur schließt, das Blatt bleibt, keine Rückfrage
-    let g = await tippen();
-    if (!g.fokus || !g.tastatur) E(`B10 Vorbereitung: nach dem Antippen von ${field} ${g.fokus ? '' : 'kein Fokus '}${g.tastatur ? '' : 'keine Tastatur'}`);
-    else if (g.gerollt > 0 && g.daneben) {
-      m = await zieh(g.daneben, 0, 200);
-      l = await lage();
-      if (l.fokus) E('B19 im gerollten Inhalt nach unten ziehen schließt die Tastatur nicht');
-      if (m.t) E(`B19 im gerollten Inhalt bei offener Tastatur folgt das Blatt dem Finger (${m.t} px)`);
-      if (!l.open) { E('B19 im gerollten Inhalt bei offener Tastatur schließt Ziehen das Fenster'); await auf(); await change(); await wait(p); }
-      else if (l.pop.length) { E(`B19 im gerollten Inhalt bei offener Tastatur fragt Ziehen (${l.pop.join(' · ')})`); await p.locator('.pop button', { hasText: 'Weiter bearbeiten' }).click(); await ruhig(); }
+    // B19 im gerollten Inhalt neben dem Feld nach unten ziehen: nur die Tastatur schließt, das Blatt bleibt, keine Rückfrage. Seit 4.32.2
+    // (A-73, P-69/3) auch, wenn der Finger zuerst nach oben geht (gemessen am Rand: 244 → 231 → 76 → 302, entschieden war nach 8 px)
+    let g;
+    for (const [art, wege] of [['nach unten ziehen', [[0, 200]]], ['erst nach oben, dann nach unten ziehen', [[0, -20], [0, 200]]]]) {
+      g = await tippen();
+      if (!g.fokus || !g.tastatur) { E(`B10 Vorbereitung: nach dem Antippen von ${field} ${g.fokus ? '' : 'kein Fokus '}${g.tastatur ? '' : 'keine Tastatur'}`); break; }
+      // R-4.5 (seit 4.32.2, A-73, P-69/3 quer): über dem Feld bleibt Platz für Fokus-Umrandung und Schatten
+      if (art === 'nach unten ziehen' && g.abstand < g.ring - 1) E(`B10 ${field} mit Fokus steht ${g.abstand} px unter dem oberen Rand des Inhalts – Fokus-Umrandung und Schatten (${g.ring} px) oben abgeschnitten`);
+      if (g.gerollt > 0 && g.daneben) {
+        // als Berührung (Zeigerereignisse in der Seite, je 16 ms wie gemessen): ein Mausklick auf den Inhalt nimmt dem Feld in Chromium
+        // schon beim Drücken den Fokus – am Gerät nicht, sonst wäre der Fall nie rot
+        await p.evaluate(({ x, y, wege }) => {
+          const el = document.elementFromPoint(x, y), t0 = performance.now();
+          const sende = (art, cx, cy, i) => { const e = new PointerEvent(art, { bubbles: true, cancelable: true, composed: true, isPrimary: true, pointerId: 78,
+            pointerType: 'touch', button: 0, clientX: cx, clientY: cy }); Object.defineProperty(e, 'timeStamp', { value: t0 + 16 * i }); el.dispatchEvent(e); };
+          let i = 0, cy = y;
+          sende('pointerdown', x, y, i);
+          for (const [, dy] of wege) { const von = cy; for (let s = 1; s <= 10; s++) sende('pointermove', x, (cy = von + (y + dy - von) * s / 10), ++i); }
+          window.__b19 = sende;
+        }, { ...g.daneben, wege });
+        await wait(p, 160); m = await lage();
+        await p.evaluate(({ x, y, wege }) => { window.__b19('pointerup', x, y + wege.at(-1)[1], 99); delete window.__b19; }, { ...g.daneben, wege }); await ruhig();
+        l = await lage();
+        if (l.fokus) E(`B19 im gerollten Inhalt ${art} schließt die Tastatur nicht`);
+        if (m.t) E(`B19 im gerollten Inhalt bei offener Tastatur (${art}) folgt das Blatt dem Finger (${m.t} px)`);
+        if (!l.open) { E(`B19 im gerollten Inhalt bei offener Tastatur (${art}) schließt Ziehen das Fenster`); await auf(); await change(); await wait(p); }
+        else if (l.pop.length) { E(`B19 im gerollten Inhalt bei offener Tastatur (${art}) fragt Ziehen (${l.pop.join(' · ')})`); await p.locator('.pop button', { hasText: 'Weiter bearbeiten' }).click(); await ruhig(); }
+      }
+      await tastaturZu();
     }
-    await tastaturZu();
     // B10 mit Änderung auf einem Feld nach unten ziehen: ein Zug – Tastatur zu, das Blatt folgt zäh, federt zurück und fragt
     g = await tippen();
     const w = `bei offener Tastatur${g.gerollt ? ` (Inhalt um ${g.gerollt} px gerollt)` : ''}`;
