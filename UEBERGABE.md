@@ -1,66 +1,60 @@
 # Übergabe an die nächste Sitzung
 
-**Stand 24.10.2026** · geschrieben in der Sitzung ‚Reiselogbuch 0039‘ (Ende, automatische Übergabe ab 300.000 Token, 0 Nr. 13) –
+**Stand 24.10.2026** · geschrieben in der Sitzung ‚Reiselogbuch 0040‘ (Ende, automatische Übergabe ab 300.000 Token, 0 Nr. 13) –
 Aufbau nach Zusammenarbeit allgemein 2.5. **Claude liest diese Datei zu Beginn jeder Sitzung zuerst** (0 Nr. 15); die Arbeitsumgebung steht in
-der AppDesign-`CLAUDE.md` (seit 2.7.0 mit den Chromium-Verweisen für Chrome 153 unter ‚Tests einrichten‘).
+der AppDesign-`CLAUDE.md` (mit den Chromium-Verweisen für Chrome 153 unter ‚Tests einrichten‘).
 
 ## 1. Lagebild
 
 | Teil | Version | Datei |
 |---|---|---|
-| Reiselogbuch | **3.30.1** online (Fassung 4.32.1) | g811141a/ReiseLogBuch – `CHANGELOG.md`, `BACKLOG.md`, `PROMPT.md` |
-| AppDesign | **4.32.1** online (feste Fassungen 4.14.0–4.32.1) | g811141a/AppDesign – `CHANGELOG.md`, `BACKLOG.md` |
+| Reiselogbuch | **3.30.2** online (Fassung 4.32.2) | g811141a/ReiseLogBuch – `CHANGELOG.md`, `BACKLOG.md`, `PROMPT.md` |
+| AppDesign | **4.32.2** online (feste Fassungen 4.14.0–4.32.2) | g811141a/AppDesign – `CHANGELOG.md`, `BACKLOG.md` |
 | Zusammenarbeit allgemein | **2.19.0** | `README - Zusammenarbeit allgemein.md` |
 | ReiseLogBuch-Import (privat) | 1.2.2 | g811141a/ReiseLogBuch-Import |
 
-- **Chatnummer:** die nächste Sitzung heißt **Reiselogbuch 0040**; die danach 0041.
-- **Modell und Aufwand:** Opus 5.5, Aufwand hoch – prüfen nach 0 Nr. 15 (in 0039 beides richtig, Sitzungsdatei `"effort":"high"`).
-- **Sitzungsgröße 0039:** etwa 295.000 Token (Übergabe fällig).
-- **Offene Prüfpunkte:** P-69 ausgewertet – /0–/2 ok (**A-71 / T-102 abgeschlossen**), **/3 nicht ok** (→ A-73 / T-104).
-- **‚0. Nächste Version‘:** AppDesign **A-73** + Reiselogbuch **T-104** als Korrektur **4.32.2 / 3.30.2** – **Ja des Nutzers vom
-  24.10.2026 liegt vor** (gebaut wird in 0040).
+- **Chatnummer:** die nächste Sitzung heißt **Reiselogbuch 0041**; die danach 0042.
+- **Modell und Aufwand:** Opus 5.5, Aufwand hoch – prüfen nach 0 Nr. 15 (in 0040 beides richtig, Sitzungsdatei `"effort":"high"`).
+- **Sitzungsgröße 0040:** etwa 280.000 Token (Übergabe fällig).
+- **Offene Prüfpunkte:** **P-70** (Reiselogbuch 3.30.2, Prüfliste oben im CHANGELOG des Reiselogbuchs) – **Rückmeldung des Nutzers
+  fehlt noch**: zu Beginn von 0041 die Prüfliste vollständig im Chat zeigen und mit dem Auswahlfenster nach der Rückmeldung fragen (0 Nr. 11).
+- **‚0. Nächste Version‘:** leer.
+- **Backlog neu (Prio 1, offen):** AppDesign **A-75** + Reiselogbuch **T-106** – Auswahl-Kapsel (Reisemittel) erkennbar wischbar,
+  **Muster A + B** gewählt (Anschnitt wie Apple ‚Peek‘, Rollbalken kurz zeigen wie `flashScrollIndicators`); AppDesign **A-74** +
+  Reiselogbuch **T-105** – Backup-Kachel nur, solange heute noch kein Backup erstellt wurde (allgemeine Regel, Ja zur Regel 24.10.2026;
+  Muster und Fall-Liste fehlen).
 - **Bereit danach:** A-43 Teil 1 + T-100 (VoiceOver, Tastatur, Kontrast, Bewegung), dann A-43 Teil 2 + T-101 (Textgröße).
 - **Erinnerung:** ‚Backlog-Erinnerung (AppDesign und Reiselogbuch)‘ montags 8:58.
 
-## 2. Ergebnisse der Sitzung 0039
+## 2. Ergebnisse der Sitzung 0040
 
-- **Gebaut und veröffentlicht: AppDesign 4.32.1 / Reiselogbuch 3.30.1** (Ja des Nutzers): **A-71 + T-102** – ein Zug, der bei offener
-  Tastatur auf einem Feld beginnt, zieht das Blatt wie am Kopf (`blattZug.feld`, `blattErlaubt`); `checkSheet` B10 und neu B19 mit dem
-  Safari-Modell (für die Fälle eingesetzt, danach `__safari.aus()`), rot gegen 4.32.0 (16 Meldungen). Voller Lauf 70 von 70 grün.
-  Eigenheit der Prüfung: ein Mauszug wählt Text aus, Chromium fokussiert beim Antippen einer Auswahl nicht – `checkSheet` hebt die
-  Auswahl vor dem Antippen auf.
-- **P-69 (Nutzer):** /0–/2 ok; **/3 nicht ok:** 1) iPhone quer: Feld mit Fokus ganz oben an der Titelleiste, Umrandung und Schatten
-  oben abgeschnitten; 2) iPhone: Tastatur geht beim Zug am linken Rand neben dem Feld nicht zu (in der Mitte schon). Am iPad schließt
-  Ziehen nach R-4.6 nichts – Wunsch des Nutzers: auch dort die Tastatur schließen → bei **A-72**.
-- **Messung** `AppDesign/tests/messungen/2026-10-24 iPhone hoch Blatt Zug am Rand.txt`: der Finger geht am Rand zuerst nach oben
-  (244 → 76 → 302, 219 → 205 → 400), ui.js entscheidet nach 8 px ‚nach oben‘ und gibt den Zug auf; Safari schickt die Bewegungen weiter
-  (kein pointercancel). Analyse und Vorschlag in **A-73**.
-- **Backlog neu:** A-72 (Prio 2) iPad – Fenster per Ziehen nach unten schließen und Tastatur schließen; A-73 (Prio 1) Korrektur;
-  Reiselogbuch T-103 (Prio 2) `ablauf-tastatur-still.mjs` reparieren und in den vollen Lauf aufnehmen (steht nicht in `alle.mjs`,
-  bricht bei der Messung ‚Ränder‘ ab – auch mit 4.32.0), T-104 (Prio 1, mit A-73).
+- **Gebaut und veröffentlicht: AppDesign 4.32.2 / Reiselogbuch 3.30.2** (Ja vom 24.10.2026): **A-73 + T-104** – ein Zug im Blatt, der
+  zuerst nach oben (oder waagerecht) geht, bleibt bei offener Tastatur beobachtet (`blattZug.nurTastatur`); 8 px unter dem höchsten Punkt
+  schließt die Tastatur. Neu `fokusRand(f)` (ui.js) bzw. `RING` (pruefe.mjs): Abstand über dem Feld mit Fokus für Umrandung (Safari 5 px)
+  und Schatten (25 px) – quer stand das Feld bisher direkt am Rand. `checkSheet` B19 ‚erst nach oben‘ als Zeigerereignisse (mit der Maus
+  nahm Chromium dem Feld schon beim Drücken den Fokus – B19 war deshalb immer grün), B10 Abstand ≥ `RING`; rot gegen 4.32.1 (15 Meldungen).
+- **Voller Lauf:** viermal an Lastfehlern abgebrochen (einzeln grün): behoben `ablauf-abspielen` (Gesten-Messung ‚Blatt Zug am Rand‘
+  ausgelassen – nicht nachspielbar) und `oeffnen-position` D2 (wartet mit `navFertig`, bis die Seitenleiste ausgeglitten ist); zweimal
+  WebKit unter Volllast (Netzprozess abgestürzt, Zeitüberschreitung). Mit `alle.mjs --alle --jobs 2` alle 70 grün, danach `los` grün.
+  Hinweis für später: unter 4 Jobs schwankt WebKit; ein weiterer Kandidat fürs Backlog ist `--jobs` im Veröffentlichungs-Skript.
+- **Aufgefallen, noch nicht gefragt:** Safari zeichnet um Textfelder mit Fokus eine blaue Umrandung (`outline: auto 5px`), R-3.4 sagt
+  ‚kein Fokus-Rahmen‘ (Designrichtlinie 1 und 15.2) – in 0041 fragen, ob das ins Backlog soll (Empfehlung Claude: Prio 2, bei A-43 Teil 1).
 
 Frühere Sitzungen: `VERLAUF.md` und Versionsgeschichten.
 
 ## 3. Nächster Schritt
 
-1. Lagebild, dann **ohne weitere Rückfrage bauen** – das Ja zu 4.32.2 / 3.30.2 mit A-73 + T-104 liegt vor (24.10.2026). Vorher A-73
-   lesen. Ablauf (0 Nr. 1): zuerst die Prüfungen, rot gegen 4.32.1 / 3.30.1:
-   a. `checkSheet` B19 (Safari-Modell): Feld antippen, Tastatur auf, im gerollten Inhalt neben dem Feld (am Rand) erst ~20 px nach oben,
-      dann ~200 px nach unten – erwartet: das Feld gibt den Fokus ab (Tastatur zu), das Blatt bleibt, keine Rückfrage. Am besten die
-      Messung mit `spieleAb` nachspielen oder die gemessene Spur (x 25, 244 → 231 → 76 → 302) als Zeigerbewegung.
-   b. iPhone quer: Feld mit Fokus, das nicht zweimal in den sichtbaren Teil passt – Umrandung und Schatten über dem Feld sichtbar
-      (Abstand zum oberen Rand des Inhalts ≥ ihre Breite; Fokusstil des Felds im Reiselogbuch bzw. Safari messen). Betroffen:
-      `noetig` (`oben = … ? b.top : b.top + 4`) und `feldZeigen` (`ro - oben`) in ui.js, Prüfung `checkFieldVisible` bzw. `checkSheet`.
-2. Beheben: im `pointermove` des Blatts einen Zug, der das Blatt nicht zieht, weiter beobachten (z. B. `z.nurTastatur`, höchster Punkt
-   merken); geht der Finger mindestens 8 px darunter und deutlich senkrecht, `blattFeld()?.blur()`. `touchmove` nie verhindern für
-   solche Züge. Dieselbe Lücke suchen (andere Gesten, die nach der ersten Richtung aufgeben). Dann veröffentlichen nach
-   AppDesign-`CLAUDE.md`, Bericht mit Prüfliste P-70 (0 Nr. 11; /3 ausdrücklich ‚iPhone‘).
+1. Lagebild, dann **Prüfliste P-70 vollständig im Chat** und Auswahlfenster zur Rückmeldung (0 Nr. 11, 22); ‚nicht ok‘ → zuerst
+   Korrektur (0 Nr. 1, 8).
+2. Frage zum Fokus-Rahmen (Abschnitt 2, letzter Punkt): ‚Ins Backlog übernehmen?‘ mit Priorität.
+3. Danach **Muster A-75** (Varianten A und B nebeneinander, iPhone hell quer zuerst, 0 Nr. 6; Apple-Abgleich steht in A-75) mit
+   Fall-Liste; bauen erst nach Ja (0 Nr. 21).
 
 ## 4. Danach
 
-A-43 Teil 1 + T-100 bauen · A-43 Teil 2 + T-101 bauen · A-72 iPad (Muster, Fall-Liste) · T-103 Prüfung tastatur-still · A-62 Paket B ·
-A-30 (mit Paket D und T-10 Wischaktionen) · A-32 ‚Problem melden‘ · A-40 Prüfungen für G-1 bis G-19 · A-44 bis A-60 · A-70
-Mehrsprachfähigkeit · T-06 Ausschreibungstexte (Prio 3) · A-01 Startseite (später).
+A-74 / T-105 Muster und Fall-Liste · A-43 Teil 1 + T-100 bauen · A-43 Teil 2 + T-101 bauen · A-72 iPad (Muster, Fall-Liste) ·
+T-103 Prüfung tastatur-still · A-62 Paket B · A-30 (mit Paket D und T-10 Wischaktionen) · A-32 ‚Problem melden‘ · A-40 Prüfungen für
+G-1 bis G-19 · A-44 bis A-60 · A-70 Mehrsprachfähigkeit · T-06 Ausschreibungstexte (Prio 3) · A-01 Startseite (später).
 
 ## 5. Starttext für die neue Sitzung
 
@@ -68,7 +62,7 @@ In der neuen Sitzung müssen **AppDesign** und **ReiseLogBuch** verfügbar sein 
 **ReiseLogBuch-Import** (privat).
 
 ```
-Reiselogbuch 0040 – Korrektur AppDesign 4.32.2 / Reiselogbuch 3.30.2 (A-73: Tastatur beim Zug erst nach oben, Fokusring quer)
+Reiselogbuch 0041 – Rückmeldung P-70, dann Muster A-75 (Auswahl-Kapsel erkennbar wischbar)
 
-Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md, dann gezielt die Zusammenarbeit (Abschnitte 0 und 1) und die Überschriften der Designrichtlinien; prüfe Modell und Aufwand (Sitzungsdatei) und hole die Repos g811141a/ReiseLogBuch und g811141a/ReiseLogBuch-Import (privat) dazu, wie in der AppDesign-CLAUDE.md unter ‚Arbeitsumgebung‘ (mit den Chromium-Verweisen unter ‚Tests einrichten‘). Gib das Lagebild und baue dann die Korrektur nach UEBERGABE.md 3 – das Ja des Nutzers vom 24.10.2026 liegt vor.
+Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md, dann gezielt die Zusammenarbeit (Abschnitte 0 und 1) und die Überschriften der Designrichtlinien; prüfe Modell und Aufwand (Sitzungsdatei) und hole die Repos g811141a/ReiseLogBuch und g811141a/ReiseLogBuch-Import (privat) dazu, wie in der AppDesign-CLAUDE.md unter ‚Arbeitsumgebung‘ (mit den Chromium-Verweisen unter ‚Tests einrichten‘). Gib das Lagebild, zeig die Prüfliste P-70 und frag nach der Rückmeldung; dann weiter nach UEBERGABE.md 3.
 ```
