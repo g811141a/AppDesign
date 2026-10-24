@@ -1,4 +1,4 @@
-/* AppDesign 4.33.0 · design.css – gemeinsame Gestaltung der iPad-Web-Apps von g811141a (Apple-like)
+/* AppDesign 4.34.0 · design.css – gemeinsame Gestaltung der iPad-Web-Apps von g811141a (Apple-like)
    Einbinden im <head> vor dem eigenen <style> der App:  <link rel="stylesheet" href="../AppDesign/fassung/X.Y.Z/design.css"> (feste Fassung, R-10.3)
    Farben als Variablen auf :root, Dunkelmodus über data-theme="dark" (setzt ui.js / applyTheme).
    Komponenten: Schaltflächen, Suchfeld, Kapsel, Eingabefelder, Datumsfelder, Kopfzeile, Seitenleiste,
@@ -6,7 +6,7 @@
    Options-Kapsel; seit 4.1.0 iPhone-Ansicht (html.phone: Seitenkopf, großer Titel, Liste, Kasten, untere Leiste). Regeln dazu: README - Designrichtlinie allgemein.md */
 /* Farben im Apple-Look: Hintergrund Hellgrau, Kästen weiß ohne Rand, schwebende Schaltflächen */
 :root {
-  --ad-version: "4.33.0";   /* R-10.3: Version der Bausteine, die App prüft sie beim Start */
+  --ad-version: "4.34.0";   /* R-10.3: Version der Bausteine, die App prüft sie beim Start */
   --bg: #f2f2f7;
   --card: #ffffff;
   --ink: #1c1c1e;
@@ -266,9 +266,9 @@ body.docked { padding-left: calc(var(--side-w) + max(10px, var(--safe-left)) + 2
 
 /* Backup-Hinweis gelb getönt mit blau gefülltem Knopf, damit man die Funktion sofort erkennt (iPad und iPhone) */
 #side .bhint button, .bbar .bnote button { background: var(--accent); color: var(--accent-ink); border: .5px solid var(--rim-color); box-shadow: var(--glow-accent); }
-/* Seit 4.4.0: Die Backup-Kachel steht immer da; gelb nur, solange heute noch kein Backup erstellt wurde (.ok = erledigt) */
-#side .bhint.ok, .bbar .bnote.ok { background: var(--card); color: var(--muted); }
-#side .bhint.ok button, .bbar .bnote.ok button { background: var(--btn); color: var(--ink); border-color: var(--btn-rim); box-shadow: var(--float); }
+/* Seit 4.34.0 (R-9.1, A-74): die Backup-Kachel steht nur, solange heute noch kein Backup erstellt wurde – der weiße Zustand entfällt */
+.bbar .bnote.ok { background: var(--card); color: var(--muted); }
+.bbar .bnote.ok button { background: var(--btn); color: var(--ink); border-color: var(--btn-rim); box-shadow: var(--float); }
 /* Seit 4.4.0: Anzahl der Einträge klein und grau unter dem Titel (Seitenleiste und iPhone-Startliste) */
 .side-head .ttl { flex: 1; min-width: 0; }
 .side-head .ttl h2 { margin: 0; }
@@ -597,6 +597,14 @@ html.phone .step-head .head-checks { order: 3; margin-left: 0; justify-content: 
 #side .side-foot .offl .ic { width: 15px; height: 15px; flex: none; }
 /* Die Liste läuft auch hinter der Zeile durch, der letzte Eintrag bleibt erreichbar */
 #side:has(.offl:not([hidden])) .side-list { padding-bottom: 176px; }
+/* Seit 4.34.0 (R-9.1, A-74): ohne Backup-Kachel nur so viel Platz unten, dass der letzte Eintrag über dem Rand bzw. über der
+   Offline-Zeile endet; der Fuß hat dann einen kurzen, deckenden Verlauf – die Zeile steht nie über einer Kachel */
+#side:not(:has(.side-foot .bhint)) .side-list { padding-bottom: 24px; }
+#side.page:not(:has(.side-foot .bhint)) .side-list { padding-bottom: calc(24px + var(--safe-bottom)); }
+#side:not(:has(.side-foot .bhint)):has(.offl:not([hidden])) .side-list { padding-bottom: 72px; }
+#side.page:not(:has(.side-foot .bhint)):has(.offl:not([hidden])) .side-list { padding-bottom: calc(72px + var(--safe-bottom)); }
+#side:not(:has(.side-foot .bhint)) .side-foot { padding-top: 26px; background: linear-gradient(to bottom, transparent, var(--bg) 22px); }
+#side .side-foot .offl:first-child { margin-top: 0; }
 .nettoast { position: fixed; z-index: 40; inset: auto auto calc(max(var(--vv-bottom), var(--safe-bottom)) + var(--toast-lift, 0px) + 28px) var(--toast-x, 50%);
   transform: translateX(-50%); margin: 0; border: 0; display: flex; align-items: center; gap: 10px; padding: 12px 18px; border-radius: 22px;
   background: var(--card); color: var(--ink); font-size: 15px; box-shadow: var(--float); width: max-content; max-width: min(420px, var(--toast-w, calc(100vw - 32px)));

@@ -95,9 +95,15 @@ export async function checkOffline(appDir, browser, { ansichten, grenze = 4500, 
       if (!h?.fuss) E(`${name}: Startliste ohne Backup-Kachel – Zeile nicht prüfbar`);
       pruefeAus(name, 'Startliste, offline', h, { toast: !!h?.toast });
     }
-    // F-16: Backup-Kachel weiß (.ok) – Zeile unverändert
-    const okZeile = await p.evaluate(() => { const b = document.querySelector('#side .bhint'); if (!b) return null; b.classList.toggle('ok'); const l = document.querySelector('#side .offl'); const v = !!l && !l.hidden && l.getBoundingClientRect().height > 0; b.classList.toggle('ok'); return v; });
-    if (okZeile === false) E(`${name}: graue Zeile fehlt bei weißer Backup-Kachel`);
+    // F-16 (seit 4.34.0, A-74): ohne Backup-Kachel (heute schon gesichert) steht die Zeile allein unten; der letzte Eintrag lässt sich
+    // ganz über die Zeile wischen
+    const ohne = await p.evaluate(() => { const b = document.querySelector('#side .bhint'); if (!b) return null; const platz = b.nextSibling, eltern = b.parentElement; b.remove();
+      const l = document.querySelector('#side .offl'), liste = document.querySelector('#side .side-list'), rows = liste?.querySelectorAll('.side-row');
+      const zeile = !!l && !l.hidden && l.getBoundingClientRect().height > 0; let frei = null;
+      if (zeile && rows?.length && liste.scrollHeight > liste.clientHeight) { const alt = liste.scrollTop; liste.scrollTop = liste.scrollHeight; frei = rows[rows.length - 1].getBoundingClientRect().bottom <= l.getBoundingClientRect().top + 1; liste.scrollTop = alt; }
+      eltern.insertBefore(b, platz); return { zeile, frei }; });
+    if (ohne && !ohne.zeile) E(`${name}: graue Zeile fehlt ohne Backup-Kachel`);
+    if (ohne && ohne.frei === false) E(`${name}: ohne Backup-Kachel bleibt der letzte Eintrag hinter der grauen Zeile`);
     // F-13: lange Liste – der letzte Eintrag lässt sich ganz über die Backup-Kachel wischen
     const unten = await p.evaluate(() => { const l = document.querySelector('#side .side-list'), b = document.querySelector('#side .bhint'); const rows = l?.querySelectorAll('.side-row'); if (!l || !b || !rows?.length || l.scrollHeight <= l.clientHeight) return null;
       const alt = l.scrollTop; l.scrollTop = l.scrollHeight; const ok = rows[rows.length - 1].getBoundingClientRect().bottom <= b.getBoundingClientRect().top + 1; l.scrollTop = alt; return ok; });

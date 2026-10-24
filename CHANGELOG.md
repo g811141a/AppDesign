@@ -3,6 +3,33 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.34.0 – 24.10.2026
+
+AppDesign 4.34.0 · Designrichtlinie allgemein 4.34.0 · Zusammenarbeit allgemein 2.19.0 · geprüft mit Reiselogbuch 3.32.0
+
+**A-74 Backup-Kachel nur, solange heute noch kein Backup erstellt wurde** (dein Ja vom 24.10.2026; Muster `arbeit/A-74 Muster.html`
+Variante A, Fall-Liste `arbeit/A-74 Fall-Liste.md` B1–B28). Prüfpunkt im Reiselogbuch: P-72.
+
+- **Regel (R-9.1, 15.19, 15.4):** die gelbe Backup-Kachel steht nur, solange heute auf diesem Gerät noch kein Backup erstellt wurde
+  und es Einträge gibt; danach verschwindet sie ohne Bewegung (der weiße Zustand `.ok` entfällt), ‚Letztes Backup erstellt am …‘
+  bleibt grau im Mehr-Menü. So macht es Apple: Hinweise wie ‚iPhone nicht gesichert‘ in den Einstellungen stehen nur, solange es
+  etwas zu tun gibt. Um 0:00 und bei der Rückkehr in die App am neuen Tag kommt sie wieder. Ein Backup des anderen Geräts, Abgleich
+  und ‚Backup laden‘ zählen nicht (je Gerät).
+- **Offline-Zeile (R-1.5, 15.20):** steht jetzt auch ohne Kachel und bei leerer Liste unten. **Lücke von vorher:** bei leerer Liste
+  setzte die App gar keinen Fuß, die Zeile fehlte offline.
+- **Technik:** `backupTileHtml(ms, leer)` liefert den Fuß immer, die Kachel nur, wenn fällig und `leer` falsch; neu `onNeuerTag(fn)`
+  (Zeitgeber auf 0:00 und `visibilitychange`) und `sideFootRect()` (Kachel, sonst sichtbare Offline-Zeile) – Kontextmenü (R-4.2) und
+  Meldung ‚Du bist offline‘ auf dem iPhone bleiben darüber. design.css: ohne Kachel unten nur 24 px (mit Offline-Zeile 72 px, plus
+  sicherer Rand auf dem iPhone) Platz in der Liste, kurzer deckender Verlauf unter der Zeile. Die App setzt den Fuß immer
+  (`backupTileHtml(last, !liste.length)`) und zeichnet mit `onNeuerTag` neu.
+- **Prüfungen:** `backup.mjs` (Kachel nach dem Backup weg, Menü mit heutigem Datum, Kachel genau dann, wenn fällig und Einträge da,
+  Offline-Zeile immer im Fuß, `onNeuerTag`), `hig.mjs` R-9.1 neu (Kachel nicht bei Backup heute, nicht bei leerer Liste; Fuß da;
+  offline Zeile sichtbar), `kontextmenue.mjs` (ohne Kachel über der Offline-Zeile; nur sichtbare Einträge – ohne Kachel nahm sie
+  sonst auch Einträge unter dem Bildrand), `offline.mjs` F-16 neu (ohne Kachel: Zeile allein, letzter Eintrag darüber). Im
+  Reiselogbuch neu `ablauf-backup-kachel.mjs` mit gestellter Uhr (Mitternacht, Rückkehr am nächsten Tag) – gegen 3.31.0 rot, ohne
+  den Mitternachts-Haken rot, jetzt grün.
+- **Designrichtlinie allgemein 4.34.0:** R-9.1, R-1.5, R-4.2, 10 (Backup einmal am Tag), 15.4, 15.19, 15.20.
+
 ## 4.33.0 – 24.10.2026
 
 AppDesign 4.33.0 · Designrichtlinie allgemein 4.33.0 · Zusammenarbeit allgemein 2.19.0 · geprüft mit Reiselogbuch 3.31.0

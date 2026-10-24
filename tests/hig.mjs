@@ -212,8 +212,14 @@ const found = new Map(), icons = new Map();
       document.querySelectorAll('tr, .box, .irow, .side-row').forEach(e => { if (vis(e) && same(rgb(cs(e).backgroundColor), focus) && /inset/.test(cs(e).boxShadow)) R('R-6.1', 'gelbe Markierung mit blauem Rand'); });
       // R-2.2 Titel steht in der Leiste (ohne großen Titel)
       document.querySelectorAll('.pnav-title').forEach(t => { if (vis(t.parentElement) && !document.querySelector('.ltitle') && cs(t).opacity !== '1') R('R-2.2', 'Titel nicht in der Leiste'); });
-      // R-9.1 Backup-Kachel immer da, sobald es Einträge gibt
-      if (side && vis(side) && side.querySelector('.side-row') && !side.querySelector('.bhint')) R('R-9.1', 'Backup-Kachel fehlt in der Seitenleiste');
+      // R-9.1 (seit 4.34.0, A-74): Backup-Kachel nur, solange heute kein Backup erstellt wurde und es Einträge gibt; der Fuß steht immer da
+      if (side && vis(side)) {
+        const bh = side.querySelector('.bhint'), two = n => String(n).padStart(2, '0'), d = new Date(), heute = `${two(d.getDate())}.${two(d.getMonth() + 1)}.${d.getFullYear()}`;
+        if (bh && bh.textContent.includes(`Letztes Backup erstellt am ${heute}`)) R('R-9.1', 'Backup-Kachel steht, obwohl heute schon ein Backup erstellt wurde');
+        if (bh && !side.querySelector('.side-row') && !side.querySelector('.side-search')) R('R-9.1', 'Backup-Kachel steht bei leerer Liste');
+        if (!side.querySelector('.side-foot')) R('R-1.5', 'Fuß der Seitenleiste fehlt (Offline-Zeile nicht möglich)');
+        if (typeof isOffline === 'function' && isOffline() && !vis(side.querySelector('.side-foot .offl'))) R('R-1.5', 'offline, aber die Zeile ‚Offline – …‘ fehlt unten');
+      }
       if (document.querySelector('.pnav-head') && document.querySelector('.irow') && !document.querySelector('.bnote')) R('R-9.1', 'Backup-Kachel fehlt in der Startliste');
       // R-4.5 Fenster auf dem iPhone bildschirmbreit (seit 4.32.0 als Blatt, R-4.6 – Lage und Höhe prüft checkSheet)
       const dl = document.getElementById('dlg');
