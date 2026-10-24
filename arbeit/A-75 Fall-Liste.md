@@ -1,66 +1,72 @@
-# A-75 ‚Auswahl-Kapsel erkennbar wischbar‘ (Reiselogbuch T-106) – Apple-Abgleich, Varianten, Fall-Liste
+# A-75 ‚Auswahl-Kapsel erkennbar wischbar‘ (Reiselogbuch T-106) – Apple-Abgleich, Muster, Fall-Liste
 
 **Stand 24.10.2026** · Sitzung ‚Reiselogbuch 0041‘ · Muster: `arbeit/A-75 Muster.html`
-(https://g811141a.github.io/AppDesign/arbeit/A-75%20Muster.html, oben umschalten: Heute · A · B · A + B) – im Muster geprüft
-in Chromium und WebKit (iPhone hoch, drehen nach quer, wischen: Breite und Rollbalken wie erwartet, keine Fehler)
+(https://g811141a.github.io/AppDesign/arbeit/A-75%20Muster.html, oben umschalten: Heute · A 80 px · B 112 px) – im Muster geprüft
+in Chromium und WebKit (iPhone hoch und quer, Anfang, Mitte, Ende: Pfeile wie erwartet, keine Fehler)
+
+**Vorgabe (Nutzer 24.10.2026):** die ersten Muster (Anschnitt, Rollbalken kurz zeigen) sind verworfen. Das bestehende Verhalten
+wird verbessert: **längerer Verlauf** zum Rand und **kleine Pfeile** (‹ ›) am Rand, die verschwinden, sobald das jeweilige Ende
+erreicht ist.
 
 ## 1. Heute (15.12, R-5.4)
 
 - Reicht der Platz nicht, lässt sich der Inhalt der Auswahl-Kapsel seitlich wischen; ein weicher Verlauf (48 px) am Rand zeigt,
   wo es weitergeht (`.fl`/`.fr`, `mountCap`).
-- Am iPhone wirkt der Verlauf wie das Ende der Zeile (Nutzer 24.10.2026): quer verschwindet ‚Fuß‘ ganz im Verlauf, hoch ist von
-  ‚Flugzeug‘ nur ein blasses Symbol zu sehen, bei den Smileys kaum etwas.
+- Am iPhone wirkt der Verlauf wie das Ende der Zeile.
 
 ## 2. Apple-Abgleich (iOS 26)
 
 | Was | So macht es Apple | Für uns |
 |---|---|---|
-| Wischbare Reihen | Kapsel- und Kartenreihen (Karten-Kategorien, App Store, Musik, Fotos-Sammlungen) schneiden das letzte sichtbare Element hart an (‚Peek‘), ohne Verlauf | A |
-| Rollbalken | Eine Rollfläche blendet beim Erscheinen kurz ihren Rollbalken ein (`flashScrollIndicators`), sonst nur beim Rollen; dünn, halbdunkel, mit Abstand zum Rand | B |
-| Bewegung reduzieren | Rollbalken erscheint trotzdem, nur ohne Überblenden | B |
+| Wischbare Reihen am iPhone | kein Pfeil; das letzte Element ist angeschnitten (Karten-Kategorien, App Store, Musik) | Verlauf bleibt, länger |
+| Pfeile am Rand | bei Reihen auf dem Mac und am iPad mit Zeiger (App Store, Musik, TV: Pfeil-Knöpfe am Rand, beim Ende ausgeblendet) | Pfeile als Anzeige, am Ende ausgeblendet |
+| Bewegung reduzieren | Ein- und Ausblenden ohne Bewegung | Pfeile ohne Überblenden |
 
 Quellen: [HIG – Collections](https://developer.apple.com/design/human-interface-guidelines/collections),
-[HIG – Scroll views](https://developer.apple.com/design/human-interface-guidelines/scroll-views) (‚show scroll indicators when
-it helps people know there is more content‘), [UIScrollView.flashScrollIndicators](https://developer.apple.com/documentation/uikit/uiscrollview/flashscrollindicators()).
-**Abweichungen:** Safari zeigt in einer Web-App den Rollbalken der Kapsel nicht von selbst an (er ist ausgeblendet, damit er
-nicht über die Einträge läuft) – B baut ihn nach. Apple passt beim Anschnitt die Breite nicht an; bei uns wird die Kapsel bei
-Bedarf etwas schmaler, damit nie nur ein Rest oder ein fast ganzer Eintrag zu sehen ist (Einträge sind verschieden breit).
+[HIG – Scroll views](https://developer.apple.com/design/human-interface-guidelines/scroll-views).
+**Abweichung (bewusst, Vorgabe des Nutzers):** am iPhone zeigt Apple keine Pfeile. Die Pfeile sind bei uns nur Anzeige – zu klein
+für ein Ziel von 44 pt (R-3.x), Antippen geht an den Eintrag darunter wie heute.
 
-## 3. Varianten im Muster
+## 3. Muster
 
-| | Wie | Vorteil | Nachteil |
-|---|---|---|---|
-| **Heute** | Verlauf 48 px | ruhig | wirkt wie das Ende der Zeile |
-| **A Anschnitt** | kein Verlauf; vom angeschnittenen Eintrag sind 30–80 % von Symbol und Text zu sehen, sonst wird die Kapsel so schmal, dass 60 % zu sehen sind | wie Apple, immer sichtbar, ohne Bewegung | Kapsel ist manchmal schmaler als der Platz (hoch Reisemittel 226 statt 301 px); harter Schnitt durch einen gewählten Eintrag |
-| **B Rollbalken kurz** | Verlauf bleibt; beim Öffnen, Drehen und wenn der Platz knapp wird ~1 s ein Balken unten in der Kapsel (3 px, Länge = sichtbarer Anteil), ebenso beim Wischen | zeigt, wie viel noch kommt | nur einen Moment zu sehen; Verlauf wirkt danach wieder wie das Ende |
-| **A + B** | beides | Hinweis dauerhaft und beim Öffnen deutlich | zwei Mittel für einen Zweck |
+| | Verlauf | Pfeile |
+|---|---|---|
+| **Heute** | 48 px | keine |
+| **A** | 80 px; die äußeren 28 px ganz frei | chevron-left/-right 14 px, grau (`--muted`), 9 px vom Rand, im freien Rand |
+| **B** | 112 px; die äußeren 28 px ganz frei | wie A |
 
-Empfehlung Claude: **A + B** – A trägt dauerhaft (auch nach einer Sekunde), B macht das Öffnen deutlich, beides wie Apple.
+Ein Pfeil steht nur, solange es auf seiner Seite weitergeht (wie der Verlauf: mehr als 2 px Rest); am Ende blendet er in 0,2 s aus.
+Passt alles, gibt es weder Verlauf noch Pfeile. Empfehlung Claude: **A** – deutlich länger als heute, bei schmalen Kapseln (iPhone
+hoch, 300 px) bleibt in der Mitte genug klar lesbar; B verblasst hoch auf beiden Seiten fast drei Einträge.
 
 ## 4. Fall-Liste (wird beim Bau eine Prüfung in `hig.mjs` bzw. `ablauf.mjs`)
 
 | Nr. | Fall | Erwartung | Muster |
 |---|---|---|---|
-| K1 | iPhone hoch: Reise bearbeiten, Reisemittel | A: angeschnittener Eintrag 30–80 % sichtbar; B: Balken ~1 s, dann weg | ja |
-| K2 | iPhone quer: dasselbe | wie K1 | ja |
-| K3 | Alles passt (Wetter, Smileys quer, iPad) | kein Anschnitt, kein Balken, Kapsel so breit wie ihr Inhalt | ja |
-| K4 | Wischen bis zum Ende und zurück | A: am Ende schließt der letzte Eintrag bündig ab, links wird angeschnitten; B: Balken folgt dem Wischen, verschwindet 0,6 s danach | ja |
-| K5 | Drehen hoch ↔ quer mit offenem Blatt | Breite und Anschnitt neu, Balken einmal kurz; Rollstand bleibt | ja |
-| K6 | Platz wird knapp (Fenster schmaler, iPad geteilt) | Anschnitt neu; Balken einmal | ja |
-| K7 | Smiley-Leiste mit rotate-ccw | Anschnitt nur in der Kapsel, rotate-ccw bleibt rechts | ja |
-| K8 | Gewählter Eintrag außerhalb (Wohnmobil) | Kapsel beginnt links wie heute; Anschnitt bzw. Balken zeigen, dass es weitergeht | ja |
-| K9 | Wählen und Abwählen | Breite der Kapsel und Anschnitt ändern sich nicht (R-5.4) | ja |
-| K10 | Smileys ausblenden/zurücksetzen (Zahl ändert sich) | Anschnitt neu, Rollstand bleibt | beim Bau |
-| K11 | ‚Bewegung reduzieren‘ | Balken ohne Überblenden; Blatt ohne Gleiten | ja |
-| K12 | Dunkel | Balken hell (weiß 35 %) statt dunkel | beim Bau |
-| K13 | Größere Textgröße (A-43 Teil 2) | Anschnitt mit den neuen Breiten | beim Bau |
-| K14 | Grundregeln nach jedem Schritt (`pruefe.mjs`) | nichts überlappt, nichts springt | beim Bau |
+| K1 | iPhone hoch: Reise bearbeiten, Reisemittel, Anfang | Verlauf rechts, Pfeil › rechts, links nichts | ja |
+| K2 | Bis zur Mitte wischen | Verlauf und Pfeil auf beiden Seiten | ja |
+| K3 | Bis ans Ende wischen | Pfeil › verschwindet, ‹ bleibt; zurück ganz an den Anfang: ‹ verschwindet | ja |
+| K4 | iPhone quer: dasselbe | wie K1–K3 | ja |
+| K5 | Alles passt (Wetter, Smileys quer, iPad) | kein Verlauf, keine Pfeile | ja |
+| K6 | Drehen hoch ↔ quer mit offenem Blatt | Verlauf und Pfeile neu; passt dann alles, verschwinden beide; Rollstand bleibt | ja |
+| K7 | Platz wird knapp (Fenster schmaler, iPad geteilt) | Verlauf und Pfeile erscheinen | ja |
+| K8 | Smiley-Leiste mit rotate-ccw | Pfeile innerhalb der Kapsel, rotate-ccw bleibt rechts daneben | ja |
+| K9 | Antippen am Rand (unter dem Pfeil) | wählt den Eintrag darunter wie heute; der Pfeil fängt nichts ab | ja |
+| K10 | Wählen und Abwählen | Breite der Kapsel ändert sich nicht (R-5.4), Pfeile bleiben | ja |
+| K11 | Smileys ausblenden/zurücksetzen (Zahl ändert sich) | Verlauf und Pfeile neu, Rollstand bleibt | beim Bau |
+| K12 | ‚Bewegung reduzieren‘ | Pfeile ohne Überblenden | ja |
+| K13 | Dunkel | Pfeile in `--muted` der dunklen Farbtabelle, gut sichtbar | beim Bau |
+| K14 | Größere Textgröße (A-43 Teil 2) | Verlauf und Pfeile nach den neuen Breiten | beim Bau |
+| K15 | VoiceOver | Pfeile werden nicht vorgelesen (`aria-hidden`) | beim Bau |
+| K16 | Grundregeln nach jedem Schritt (`pruefe.mjs`) | nichts überlappt, nichts springt | beim Bau |
 
-Geräte-Prüfliste: Wischgefühl, ob der Balken auffällt und nicht stört, ob der Anschnitt am iPhone als ‚geht weiter‘ gelesen wird.
+Geräte-Prüfliste: Wischgefühl, ob Verlauf und Pfeile am iPhone als ‚geht weiter‘ gelesen werden, ob die Pfeile stören.
 
 ## 5. Regeln
 
-- **15.12 / R-5.4** neu gefasst: ‚seitlich wischbar; passt nicht alles, schneidet die Kapsel den nächsten Eintrag sichtbar an
-  (A) und zeigt beim Erscheinen kurz den Rollbalken (B)‘ – je nach Wahl. Prüfung `hig.mjs` statt ‚Verlauf am Rand‘: Anteil des
-  angeschnittenen Eintrags 30–80 %, Balken beim Öffnen sichtbar und nach 1,5 s weg.
-- Im Reiselogbuch (T-106) nichts Eigenes außer der bewussten Abweichung ‚Wetter 40 px‘ (bleibt).
+- **15.12 / R-5.4** neu gefasst: ‚seitlich wischbar; ein Verlauf von 80 px (bzw. der gewählten Länge) und ein kleiner Pfeil
+  (chevron-left/-right) am Rand zeigen, wo es weitergeht; am jeweiligen Ende verschwinden beide‘. Prüfung `hig.mjs` erweitert:
+  Pfeil sichtbar genau dann, wenn es auf seiner Seite weitergeht; Länge des Verlaufs.
+- Umsetzung in `design.css` (Maske mit `--fade`) und `ui.js` (`capHtml` mit Pfeilen, `mountCap` schaltet sie); die App ändert
+  nichts. Im Reiselogbuch (T-106) nichts Eigenes außer der bewussten Abweichung ‚Wetter 40 px‘ (bleibt).
+- Mit **A-76** (Ziehen der Smiley-Leiste ist kein langes Drücken) in einer Version – gleiche Komponente.

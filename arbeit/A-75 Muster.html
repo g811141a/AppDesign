@@ -6,44 +6,44 @@
 <title>A-75 Muster</title>
 <link rel="stylesheet" href="../fassung/4.32.2/design.css">
 <style>
-/* A-75 ‚Auswahl-Kapsel erkennbar wischbar‘ – Muster zum Ausprobieren (Sitzung Reiselogbuch 0041). Vier Stände über
-   ?v=heute|a|b|ab (oben umschaltbar). Echte Auswahl-Kapsel aus der Fassung 4.32.2 (15.12, `.cap` > `.scroll`), Inhalt wie im
+/* A-75 ‚Auswahl-Kapsel erkennbar wischbar‘ – Muster 2 (Sitzung Reiselogbuch 0041, Vorgabe Nutzer 24.10.2026: bestehendes Verhalten
+   verbessern – längerer Verlauf zum Rand, dazu kleine Pfeile, die am jeweiligen Ende verschwinden). Drei Stände über
+   ?v=heute|a|b (oben umschaltbar). Echte Auswahl-Kapsel aus der Fassung 4.32.2 (15.12, `.cap` > `.scroll`), Inhalt wie im
    Reiselogbuch (Reisemittel, Wetter, Smileys).
-   Heute = weicher Verlauf am Rand (48 px), sonst nichts.
-   A     = Anschnitt (‚Peek‘ wie Karten, App Store): passt nicht alles, schneidet die Kapsel den nächsten Eintrag sichtbar an
-           (30–80 % von Symbol und Text zu sehen, sonst wird sie so schmal, dass 60 % zu sehen sind); kein Verlauf, die runde Ecke schneidet hart.
-   B     = Rollbalken kurz zeigen (wie iOS `flashScrollIndicators`): beim Erscheinen der Kapsel (Öffnen, Drehen, Platz wird knapp)
-           zeigt ein dünner Balken unten in der Kapsel ~1 s lang Länge und Lage, ebenso beim Wischen; Verlauf wie heute.
-   A + B = beides.
-   ‚Bewegung reduzieren‘: der Balken erscheint und verschwindet ohne Überblenden. Nur hell (0 Nr. 6). */
+   Heute = Verlauf 48 px.
+   A     = Verlauf 80 px (die äußeren 28 px ganz frei), dazu chevron-left/-right (14 px, grau) in diesem freien Rand; ein Pfeil blendet aus, sobald das Ende auf
+           seiner Seite erreicht ist.
+   B     = wie A, Verlauf 112 px.
+   Die Pfeile sind nur Anzeige (nicht antippbar, zu klein für 44 pt); Antippen geht an den Eintrag darunter wie heute.
+   ‚Bewegung reduzieren‘: Pfeile ohne Überblenden. Nur hell (0 Nr. 6). */
 html, body { margin: 0; background: var(--dlg-bg); }
 #kopf { position: sticky; top: 0; z-index: 2; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px;
   padding: calc(8px + env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) 8px max(16px, env(safe-area-inset-left));
   background: var(--dlg-bg); }
 #kopf h1 { font-size: 17px; margin: 0; flex: 1; white-space: nowrap; }
-#wahl button { font-size: 15px; padding: 0 12px; white-space: nowrap; }
-#neu { font-size: 15px; padding: 0 14px; min-height: 44px; }
+#wahl button { font-size: 15px; padding: 0 14px; white-space: nowrap; width: auto; }
 #blatt { padding: 0 max(16px, env(safe-area-inset-right)) calc(24px + env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left)); }
-#blatt.auf { animation: auf .3s ease-out; }
-@keyframes auf { from { transform: translateY(40px); opacity: 0; } }
 .hinweis { color: var(--muted); font-size: 15px; line-height: 1.4; margin: 6px 2px 0; }
 .hinweis b { color: var(--ink); }
 #wx button { width: 40px; min-width: 40px; }
-/* Rollbalken in der Kapsel (B): wie der iOS-Rollbalken 3 px dick, halbdunkel, unten mit Abstand zu den runden Ecken */
+/* Längerer Verlauf: Länge über --fade (heute 48 px); die äußeren 28 px bleiben ganz frei – dort steht der Pfeil */
+html.neu .cap .scroll.fr { -webkit-mask-image: linear-gradient(to left, transparent 28px, #000 var(--fade)); mask-image: linear-gradient(to left, transparent 28px, #000 var(--fade)); }
+html.neu .cap .scroll.fl { -webkit-mask-image: linear-gradient(to right, transparent 28px, #000 var(--fade)); mask-image: linear-gradient(to right, transparent 28px, #000 var(--fade)); }
+html.neu .cap .scroll.fl.fr { -webkit-mask-image: linear-gradient(to right, transparent 28px, #000 var(--fade), #000 calc(100% - var(--fade)), transparent calc(100% - 28px)); mask-image: linear-gradient(to right, transparent 28px, #000 var(--fade), #000 calc(100% - var(--fade)), transparent calc(100% - 28px)); }
+/* Pfeile im verblassten Rand, nur Anzeige */
 .cap { position: relative; }
-.cap .rb { position: absolute; left: 0; bottom: 3px; height: 3px; border-radius: 2px; background: rgba(0,0,0,.35);
-  opacity: 0; pointer-events: none; transition: opacity .25s; }
-.cap .rb.an { opacity: 1; transition: opacity .1s; }
-@media (prefers-reduced-motion: reduce) { .cap .rb, .cap .rb.an { transition: none; } #blatt.auf { animation: none; } }
-/* A: kein Verlauf – der Anschnitt zeigt, dass es weitergeht */
-html.va .cap .scroll.fl, html.va .cap .scroll.fr { -webkit-mask-image: none; mask-image: none; }
+.cap .pf { position: absolute; top: 50%; width: 14px; height: 14px; margin-top: -7px; color: var(--muted); pointer-events: none;
+  opacity: 0; transition: opacity .2s; }
+.cap .pf.l { left: 9px; } .cap .pf.r { right: 9px; }
+.cap .pf.an { opacity: 1; }
+.cap .pf svg { display: block; width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+@media (prefers-reduced-motion: reduce) { .cap .pf { transition: none; } }
 </style></head><body>
 <div id="kopf">
   <h1>A-75 Muster</h1>
-  <div class="grp cap" id="wahl" style="height:44px"><div class="scroll">
-    <button type="button" data-v="heute">Heute</button><button type="button" data-v="a">A</button>
-    <button type="button" data-v="b">B</button><button type="button" data-v="ab">A + B</button></div></div>
-  <button type="button" id="neu">Blatt neu öffnen</button>
+  <div class="cap" id="wahl"><div class="scroll">
+    <button type="button" data-v="heute">Heute</button><button type="button" data-v="a">A · 80 px</button>
+    <button type="button" data-v="b">B · 112 px</button></div></div>
 </div>
 <div id="blatt">
   <p class="hinweis" id="txt"></p>
@@ -63,94 +63,52 @@ html.va .cap .scroll.fl, html.va .cap .scroll.fr { -webkit-mask-image: none; mas
 const TRANSPORT = [['🚗','PKW'],['🚆','Zug'],['🚲','Fahrrad'],['✈️','Flugzeug'],['🚙','Leihwagen'],['🚢','Schiff'],['🚐','Wohnmobil'],['🚶','Fuß']];
 const WEATHER = ['☀️', '🌤', '🌦', '🌧', '☁️', '⛈', '❄️'];
 const MOODS = ['🙂', '😊', '😉', '👍', '😋', '😌', '😏', '😳', '🤪', '🥶', '🤷🏻‍♂️', '☹️', '🤮'];
+const FADE = { a: 80, b: 112 };
 const TEXT = {
-  heute: '<b>Heute:</b> weicher Verlauf am Rand, wo es weitergeht.',
-  a: '<b>A – Anschnitt:</b> die Kapsel schneidet den nächsten Eintrag sichtbar an (30–80 % von Symbol und Text, wie Karten, App Store); kein Verlauf.',
-  b: '<b>B – Rollbalken kurz zeigen:</b> beim Öffnen und Drehen zeigt ein Balken unten kurz, wie viel noch kommt; Verlauf wie heute.',
-  ab: '<b>A + B:</b> Anschnitt und Rollbalken kurz zeigen.' };
-const v = new URLSearchParams(location.search).get('v') || 'heute';
-const A = v === 'a' || v === 'ab', B = v === 'b' || v === 'ab';
-document.documentElement.classList.toggle('va', A);
+  heute: '<b>Heute:</b> Verlauf 48 px am Rand, wo es weitergeht.',
+  a: '<b>A:</b> Verlauf 80 px, dazu kleine Pfeile; ein Pfeil verschwindet, sobald das Ende auf seiner Seite erreicht ist.',
+  b: '<b>B:</b> wie A, Verlauf 112 px.' };
+const v = FADE[new URLSearchParams(location.search).get('v')] ? new URLSearchParams(location.search).get('v') : 'heute';
+const NEU = v !== 'heute';
+document.documentElement.classList.toggle('neu', NEU);
+if (NEU) document.documentElement.style.setProperty('--fade', FADE[v] + 'px');
 document.documentElement.classList.toggle('phone', innerWidth < 700 || innerHeight < 500);
-document.getElementById('txt').innerHTML = TEXT[v] + ' Wischen: Kapsel seitlich ziehen. ‚Blatt neu öffnen‘ zeigt das Erscheinen noch einmal.';
+document.getElementById('txt').innerHTML = TEXT[v] + ' Zum Ausprobieren die Kapseln seitlich wischen.';
 document.querySelectorAll('#wahl button').forEach(b => {
   b.setAttribute('aria-pressed', b.dataset.v === v);
   b.onclick = () => { location.search = '?v=' + b.dataset.v; };
 });
 
-const capHtml = (buttons, id = '') => `<div class="cap"><div class="scroll" ${id ? `id="${id}"` : ''}>${buttons}</div><div class="rb"></div></div>`;
-function draw() {
-  document.getElementById('tr').innerHTML = capHtml(TRANSPORT.map(([i, n]) =>
-    `<button type="button" aria-pressed="${n === 'Wohnmobil'}">${i} ${n}</button>`).join(''), 'transport');
-  document.getElementById('wxrow').innerHTML = capHtml(WEATHER.map(w => `<button type="button" aria-pressed="${w === '🌤'}">${w}</button>`).join(''), 'wx');
-  document.getElementById('mood').innerHTML = capHtml(MOODS.map(m => `<button type="button">${m}</button>`).join(''))
-    + '<button type="button" class="reset" aria-label="Standard-Smileys wiederherstellen"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></button>';
-  document.querySelectorAll('.cap .scroll button').forEach(b => {
-    if (b.closest('#wahl')) return;
-    b.onclick = () => b.setAttribute('aria-pressed', b.getAttribute('aria-pressed') !== 'true');
+const PF = { l: '<path d="m15 18-6-6 6-6"/>', r: '<path d="m9 18 6-6-6-6"/>' };
+const pfeil = s => NEU ? `<span class="pf ${s}" aria-hidden="true"><svg viewBox="0 0 24 24">${PF[s]}</svg></span>` : '';
+const capHtml = (buttons, id = '') => `<div class="cap"><div class="scroll" ${id ? `id="${id}"` : ''}>${buttons}</div>${pfeil('l')}${pfeil('r')}</div>`;
+// wie mountCap (ui.js), dazu die Pfeile: sichtbar, solange es auf ihrer Seite weitergeht
+function mountCap(root) {
+  root.querySelectorAll('.cap .scroll').forEach(strip => {
+    const cap = strip.parentElement;
+    const fade = () => {
+      const l = strip.scrollLeft > 2, r = strip.scrollLeft + strip.clientWidth < strip.scrollWidth - 2;
+      strip.classList.toggle('fl', l); strip.classList.toggle('fr', r);
+      cap.querySelector('.pf.l')?.classList.toggle('an', l);
+      cap.querySelector('.pf.r')?.classList.toggle('an', r);
+    };
+    strip.addEventListener('scroll', fade, { passive: true });
+    strip._fade = fade;
+    requestAnimationFrame(fade);
   });
-  document.querySelectorAll('#blatt .cap').forEach(mount);
 }
-
-// A: die Kapsel schneidet einen Eintrag an. Zählt nur, was von Symbol und Text zu sehen ist (nicht der Innenabstand): liegt der
-// Rand bei 30–80 % davon, bleibt alles, wie es ist; sonst wird die Kapsel so schmal, dass 60 % dieses Inhalts (bei unter 30 % der
-// des vorigen Eintrags) zu sehen sind – nie nur ein Rest, nie ein fast ganzer.
-function anschnitt(cap) {
-  const strip = cap.querySelector('.scroll');
-  cap.style.maxWidth = '';
-  if (!A || strip.scrollWidth <= strip.clientWidth + 1) return;   // passt alles: nichts anschneiden
-  const links = strip.getBoundingClientRect().left + strip.clientLeft, rand = cap.getBoundingClientRect().width - strip.clientWidth;
-  const inhalt = b => { const r = document.createRange(); r.selectNodeContents(b); const q = r.getBoundingClientRect();
-    return { l: q.left - links, w: q.width }; };
-  const kn = [...strip.children], k = kn.findIndex(b => b.offsetLeft + b.offsetWidth > strip.clientWidth);
-  const ik = inhalt(kn[k]), f = (strip.clientWidth - ik.l) / ik.w;
-  if (f >= .3 && f <= .8) return;
-  const z = f > .8 ? ik : inhalt(kn[Math.max(0, k - 1)]);
-  cap.style.maxWidth = Math.floor(z.l + z.w * .6 + rand) + 'px';
-}
-// Verlauf (heute, B) und Rollbalken (B)
-function mount(cap) {
-  const strip = cap.querySelector('.scroll'), rb = cap.querySelector('.rb');
-  let warte = 0, ueber = false;
-  const lage = () => {
-    const c = strip.clientWidth, s = strip.scrollWidth, innen = 14;
-    const bahn = c - 2 * innen, lang = Math.max(24, bahn * c / s);
-    rb.style.width = lang + 'px';
-    rb.style.transform = `translateX(${innen + (bahn - lang) * (strip.scrollLeft / Math.max(1, s - c))}px)`;
-  };
-  const zeigen = ms => {
-    if (!B || strip.scrollWidth <= strip.clientWidth + 1) return;
-    lage(); rb.classList.add('an'); clearTimeout(warte);
-    warte = setTimeout(() => rb.classList.remove('an'), ms);
-  };
-  const fade = () => {
-    strip.classList.toggle('fl', strip.scrollLeft > 2);
-    strip.classList.toggle('fr', strip.scrollLeft + strip.clientWidth < strip.scrollWidth - 2);
-  };
-  const pruefen = erst => {
-    anschnitt(cap); fade();
-    const jetzt = strip.scrollWidth > strip.clientWidth + 1;
-    if (jetzt && (erst || !ueber)) zeigen(1000);            // erscheint oder wird knapp: einmal kurz zeigen
-    ueber = jetzt;
-  };
-  strip.addEventListener('scroll', () => { fade(); zeigen(600); }, { passive: true });
-  cap._pruefen = pruefen;
-  requestAnimationFrame(() => pruefen(true));
-}
-function oeffnen() {
-  const blatt = document.getElementById('blatt');
-  blatt.classList.remove('auf'); void blatt.offsetWidth; blatt.classList.add('auf');
-  draw();
-}
-document.getElementById('neu').onclick = oeffnen;
-// Drehen (Breite ändert sich): wie beim Erscheinen einmal zeigen – iOS blendet den Balken nach dem Drehen ebenfalls ein;
-// sonst nur, wenn der Platz knapp wird
-let breite = innerWidth;
+document.getElementById('tr').innerHTML = capHtml(TRANSPORT.map(([i, n]) =>
+  `<button type="button" aria-pressed="${n === 'Wohnmobil'}">${i} ${n}</button>`).join(''), 'transport');
+document.getElementById('wxrow').innerHTML = capHtml(WEATHER.map(w => `<button type="button" aria-pressed="${w === '🌤'}">${w}</button>`).join(''), 'wx');
+document.getElementById('mood').innerHTML = capHtml(MOODS.map(m => `<button type="button">${m}</button>`).join(''))
+  + '<button type="button" class="reset" aria-label="Standard-Smileys wiederherstellen"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></button>';
+document.querySelectorAll('#blatt .cap .scroll button').forEach(b =>
+  b.onclick = () => b.setAttribute('aria-pressed', b.getAttribute('aria-pressed') !== 'true'));
+mountCap(document.getElementById('blatt'));
+// Drehen und Fenstergröße: Verlauf und Pfeile neu (passt dann alles, verschwinden beide)
 addEventListener('resize', () => {
   document.documentElement.classList.toggle('phone', innerWidth < 700 || innerHeight < 500);
-  const dreh = Math.abs(innerWidth - breite) > 40; breite = innerWidth;
-  document.querySelectorAll('#blatt .cap').forEach(c => c._pruefen && c._pruefen(dreh));
+  document.querySelectorAll('#blatt .cap .scroll').forEach(s => s._fade());
 });
-oeffnen();
 </script>
 </body></html>
