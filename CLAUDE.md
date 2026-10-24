@@ -1,6 +1,6 @@
 # AppDesign – Hinweise für Claude
 
-**Version 2.6.0** · Stand 21.10.2026
+**Version 2.7.0** · Stand 24.10.2026
 
 ## Zuerst lesen (gezielt, Zusammenarbeit 0 Nr. 15)
 
@@ -44,6 +44,11 @@ nie ohne ‚Ja‘ bauen (0 Nr. 21), Fall-Liste vor jedem Bau (0 Nr. 1), erst Pr�
   `PRUEF_BROWSER=webkit node tests/<datei>.mjs`; AppDesign-Selbsttest `node tests/lauf-selbsttest.mjs`. Es laufen höchstens so
   viele Browser wie Kerne, erst Chromium, dann WebKit; `offline.mjs` erkennt den Absturz des WebKit-Netzprozesses der
   Prüfumgebung und prüft die Ansicht einmal neu.
+  Bringt die Umgebung einen neueren Chromium als die Revision zu Playwright 1.56.1 (1194; zurzeit Chrome 153 = 1243), danach Verweise
+  anlegen, sonst meldet die Prüfung ‚chromium fehlt‘: `mkdir -p /opt/pw-browsers/chromium-1194 /opt/pw-browsers/chromium_headless_shell-1194 &&
+  ln -sfn /opt/pw-browsers/chromium-1243/chrome-linux64 /opt/pw-browsers/chromium-1194/chrome-linux &&
+  ln -sfn /opt/pw-browsers/chromium_headless_shell-1243/chrome-headless-shell-linux64 /opt/pw-browsers/chromium_headless_shell-1194/chrome-linux &&
+  ln -sfn chrome-headless-shell /opt/pw-browsers/chromium_headless_shell-1243/chrome-headless-shell-linux64/headless_shell`.
 - **Veröffentlichen** (Zusammenarbeit 0 Nr. 9): Vorbereitungs-Zweige `vorbereitung-X.Y.Z` in beiden Repos;
   `node werkzeug/veroeffentlichen.mjs vorbereiten --ad X.Y.Z --app reiselogbuch=X.Y.Z` (ohne `--ad`, wenn nur die App); Texte
   schreiben (CHANGELOG mit Prüfliste, Backlog, Versionsgeschichten); nach Änderungen an `v4/` oder `tests/` bzw. an Designrichtlinie
@@ -59,6 +64,7 @@ nie ohne ‚Ja‘ bauen (0 Nr. 21), Fall-Liste vor jedem Bau (0 Nr. 1), erst Pr�
 
 | Version | Datum | Inhalt |
 |---|---|---|
+| 2.7.0 | 24.10.2026 | Tests einrichten: Chromium-Verweise für einen neueren Chromium der Umgebung (Chrome 153) dauerhaft hier statt in UEBERGABE.md (Nutzer 24.10.2026) |
 | 2.6.0 | 21.10.2026 | A-39 Konsolidierung: Arbeitsumgebung (klonen, Verweise, Tests einrichten, Veröffentlichen) dauerhaft hier statt in UEBERGABE.md (F-9); Verweise auf Zusammenarbeit 2.17.0 (0 Nr. 21, 22, Abschnitt 2.2) |
 | 2.5.0 | 20.10.2026 | Zu Beginn Abschnitte 0 und 1 der Zusammenarbeit (Sprache und Ton: per du) – Zusammenarbeit 2.14.0 |
 | 2.4.0 | 16.10.2026 | Zeile Zeit und Token mit `werkzeug/messung.mjs` (A-12) |
