@@ -1,0 +1,115 @@
+<!doctype html><html lang="de"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="A-74 Muster">
+<title>A-74 Muster</title>
+<link rel="stylesheet" href="../fassung/4.33.0/design.css">
+<style>
+/* A-74 ‚Backup-Kachel nur, solange heute noch kein Backup erstellt wurde‘ (Reiselogbuch T-105) – Muster 1 (Sitzung Reiselogbuch 0043).
+   Echte Seitenleiste bzw. iPhone-Startliste aus der Fassung 4.33.0 (#side, .side-list, .side-foot, .bhint, .offl), Einträge erfunden.
+   Zwei Varianten über ?v=a|b, vier Zustände über &z=faellig|erstellt|offline|leer (oben umschaltbar):
+   A = nach dem Backup verschwindet die Kachel ganz; die Liste läuft bis an den unteren Rand.
+   B = statt der Kachel eine kleine graue Zeile ‚Backup heute um hh:mm erstellt‘ (wie ‚Gerade aktualisiert‘ in Mail).
+   Die Offline-Zeile steht in beiden Varianten auch ohne Kachel unten (heute fehlt sie bei leerer Liste).
+   ‚Backup erstellen‘ in der Kachel spielt das Backup nach (ohne Teilen-Menü). Nur hell (0 Nr. 6). */
+html, body { margin: 0; }
+#main { padding: calc(var(--safe-top) + 20px) max(20px, var(--safe-right)) 24px 0; }
+#main h1 { font-size: 28px; margin: 6px 0 12px; }
+.hinweis { color: var(--muted); font-size: 15px; line-height: 1.45; margin: 8px 2px 0; max-width: 640px; }
+.hinweis b { color: var(--ink); }
+.wahl { display: flex; flex-wrap: wrap; gap: 10px; margin: 0 0 6px; }
+.wahl .cap .scroll button { font-size: 15px; padding: 0 14px; white-space: nowrap; }
+/* iPhone: die Startliste füllt den Bildschirm – die Umschalter stehen oben in der Liste */
+html.phone #main { display: none; }
+#side .wahl-p { display: none; }
+html.phone #side .wahl-p { display: block; margin-bottom: 12px; }
+html.phone #side .wahl-p .hinweis { font-size: 13px; }
+/* Muster: neue Bausteine */
+/* ohne Kachel: unten nur so viel Platz wie nötig (Liste läuft bis an den Rand) */
+#side.ohne .side-list { padding-bottom: 24px; }
+#side.ohne:has(.side-foot > *) .side-list { padding-bottom: 72px; }
+#side.ohne:has(.bok + .offl) .side-list { padding-bottom: 94px; }
+#side.page.ohne .side-list { padding-bottom: calc(24px + var(--safe-bottom)); }
+#side.page.ohne:has(.side-foot > *) .side-list { padding-bottom: calc(72px + var(--safe-bottom)); }
+#side.page.ohne:has(.bok + .offl) .side-list { padding-bottom: calc(94px + var(--safe-bottom)); }
+/* ohne Kachel: kurzer, deckender Verlauf – die Zeile steht nie über einer Kachel */
+#side.ohne .side-foot { padding-top: 26px; background: linear-gradient(to bottom, transparent, var(--bg) 22px); }
+/* Variante B: Statuszeile wie die Offline-Zeile (13 pt, grau, mittig) */
+#side .side-foot .bok { display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 13px; color: var(--muted); }
+#side .side-foot .bok .ic { width: 15px; height: 15px; flex: none; }
+#side .side-foot .bok + .offl { margin-top: 4px; }
+#side.ohne .side-foot .offl:first-child { margin-top: 0; }
+</style></head><body>
+<aside id="side"></aside>
+<main id="main"><div id="wahl-q"></div></main>
+<script>
+'use strict';
+const ICONS = {"save":"<path d=\"M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z\"/><path d=\"M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7\"/><path d=\"M7 3v4a1 1 0 0 0 1 1h7\"/>","wifi-off":"<path d=\"M12 20h.01\"/><path d=\"M8.5 16.429a5 5 0 0 1 7 0\"/><path d=\"M5 12.859a10 10 0 0 1 5.17-2.69\"/><path d=\"M19 12.859a10 10 0 0 0-2.007-1.523\"/><path d=\"M2 8.82a15 15 0 0 1 4.177-2.643\"/><path d=\"M22 8.82a15 15 0 0 0-11.288-3.764\"/><path d=\"m2 2 20 20\"/>","plus":"<path d=\"M5 12h14\"/><path d=\"M12 5v14\"/>","search":"<path d=\"m21 21-4.34-4.34\"/><circle cx=\"11\" cy=\"11\" r=\"8\"/>","ellipsis":"<circle cx=\"12\" cy=\"12\" r=\"1.3\"/><circle cx=\"19\" cy=\"12\" r=\"1.3\"/><circle cx=\"5\" cy=\"12\" r=\"1.3\"/>","panel-left":"<rect width=\"18\" height=\"18\" x=\"3\" y=\"3\" rx=\"2\"/><path d=\"M9 3v18\"/>","chevron-right":"<path d=\"m9 18 6-6-6-6\"/>","check":"<path d=\"M20 6 9 17l-5-5\"/>","folder-open":"<path d=\"m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2\"/>"};
+const ic = n => '<svg class="ic" viewBox="0 0 24 24" aria-hidden="true">' + ICONS[n] + '</svg>';
+const TRIPS = [
+  ['Herbst an der Ostsee', '18.10.2026 - 25.10.2026', 'läuft gerade', 'geändert heute um 09:12 · iPhone'],
+  ['Wochenende Dresden', '26.09.2026 - 28.09.2026', 'beendet', 'geändert am 29.09.2026 · iPad'],
+  ['Allgäu mit dem Rad', '01.08.2026 - 14.08.2026', 'beendet', 'geändert am 16.08.2026 · iPad'],
+  ['Pfingsten am Gardasee', '22.05.2026 - 31.05.2026', 'beendet', 'geändert am 02.06.2026 · iPhone'],
+  ['Ostern in Wien', '03.04.2026 - 07.04.2026', 'beendet', 'geändert am 08.04.2026 · iPad'],
+  ['Skiwoche Tirol', '14.02.2026 - 21.02.2026', 'beendet', 'geändert am 22.02.2026 · iPad'],
+  ['Silvester in Hamburg', '29.12.2025 - 02.01.2026', 'beendet', 'geändert am 03.01.2026 · iPhone'],
+  ['Herbst im Elsass', '10.10.2025 - 17.10.2025', 'beendet', 'geändert am 18.10.2025 · iPad'],
+  ['Sommer in der Bretagne', '02.08.2025 - 23.08.2025', 'beendet', 'geändert am 25.08.2025 · iPad']];
+const TEXT = {
+  a: '<b>Variante A:</b> Nach dem Backup verschwindet die Kachel ganz; die Liste läuft bis an den unteren Rand. ‚Letztes Backup erstellt am …‘ steht weiter grau im Mehr-Menü (ellipsis) unter ‚Backup erstellen‘.',
+  b: '<b>Variante B:</b> Nach dem Backup verschwindet die Kachel; an ihrer Stelle steht klein und grau ‚Backup heute um … erstellt‘ (wie ‚Gerade aktualisiert‘ in Mail). Im Mehr-Menü wie heute.' };
+const ZTEXT = {
+  faellig: '<b>Heute fällig</b> (auch nach Mitternacht): gelbe Kachel mit blauem Knopf wie heute. Zum Ausprobieren ‚Backup erstellen‘ antippen.',
+  erstellt: '<b>Nach dem Backup</b> (heute schon eines erstellt).',
+  offline: '<b>Offline, Backup heute erstellt:</b> die Offline-Zeile steht allein unten.',
+  leer: '<b>Leere Liste:</b> nichts zu sichern – keine Kachel; ‚Backup erstellen‘ im Mehr-Menü ist grau (wie heute).' };
+const q = new URLSearchParams(location.search);
+let v = q.get('v') === 'b' ? 'b' : 'a';
+let z = ZTEXT[q.get('z')] ? q.get('z') : 'faellig';
+const zeit = '14:32';
+const capHtml = (name, items, cur) => '<div class="cap"><div class="scroll">' + items.map(([k, t]) =>
+  '<button type="button" data-' + name + '="' + k + '" aria-pressed="' + (k === cur) + '">' + t + '</button>').join('') + '</div></div>';
+function wahlHtml() {
+  return '<div class="wahl">' + capHtml('v', [['a', 'A'], ['b', 'B']], v)
+    + capHtml('z', [['faellig', 'Heute fällig'], ['erstellt', 'Nach dem Backup'], ['offline', 'Offline'], ['leer', 'Leere Liste']], z) + '</div>'
+    + '<p class="hinweis">' + TEXT[v] + '</p><p class="hinweis">' + ZTEXT[z] + '</p>';
+}
+function footHtml() {
+  const leer = z === 'leer', faellig = z === 'faellig', off = z === 'offline';
+  const offl = off ? '<div class="offl">' + ic('wifi-off') + 'Offline – alles bleibt auf diesem Gerät</div>' : '';
+  if (faellig) return '<div class="side-foot"><div class="bhint"><div>Letztes Backup erstellt am 23.10.2026 um 21:05</div>'
+    + '<button type="button" id="hintBackup">' + ic('save') + 'Backup erstellen</button></div>' + offl + '</div>';
+  const bok = v === 'b' && !leer ? '<div class="bok">' + ic('check') + 'Backup heute um ' + zeit + ' erstellt</div>' : '';
+  return '<div class="side-foot">' + bok + offl + '</div>';
+}
+function render() {
+  const phone = innerWidth < 700 || innerHeight < 500;
+  document.documentElement.classList.toggle('phone', phone);
+  const side = document.getElementById('side');
+  side.classList.toggle('page', phone);
+  side.classList.toggle('ohne', z !== 'faellig');
+  document.body.classList.toggle('docked', !phone);
+  const leer = z === 'leer';
+  side.innerHTML = '<div class="side-head"><div class="ttl"><h2>Reiselogbücher</h2><small>' + (leer ? 'Keine Einträge' : TRIPS.length + ' Reiselogbücher') + '</small></div>'
+    + '<span class="grp"><button type="button" aria-label="Neues Reiselogbuch">' + ic('plus') + '</button>'
+    + (leer ? '' : '<button type="button" aria-label="Suchen">' + ic('search') + '</button>')
+    + '<button type="button" aria-label="Mehr">' + ic('ellipsis') + '</button></span>'
+    + '<button type="button" class="round" id="sideHide" aria-label="Seitenleiste ausblenden">' + ic('panel-left') + '</button></div>'
+    + '<div class="side-list"><div class="wahl-p">' + wahlHtml() + '</div>'
+    + (leer ? '<div class="side-empty">Noch kein Reiselogbuch angelegt.</div>' : TRIPS.map((t, i) =>
+      '<button type="button" class="side-row' + (i === 0 && !phone ? ' current' : '') + '"><span class="t"><b>' + t[0] + '</b><small>' + t[1] + ' · ' + t[2]
+      + '</small><small class="chg">' + t[3] + '</small></span>' + ic('chevron-right') + '</button>').join('')) + '</div>' + footHtml();
+  document.getElementById('wahl-q').innerHTML = '<h1>A-74 Muster</h1>' + wahlHtml();
+  document.documentElement.style.setProperty('--side-w', side.offsetWidth + 'px');
+  document.querySelectorAll('[data-v]').forEach(b => b.onclick = () => { v = b.dataset.v; geh(); });
+  document.querySelectorAll('[data-z]').forEach(b => b.onclick = () => { z = b.dataset.z; geh(); });
+  const hb = document.getElementById('hintBackup');
+  if (hb) hb.onclick = () => { z = 'erstellt'; geh(); };
+}
+function geh() { history.replaceState(null, '', '?v=' + v + '&z=' + z); render(); }
+render();
+addEventListener('resize', render);
+</script>
+</body></html>
