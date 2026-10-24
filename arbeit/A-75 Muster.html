@@ -7,13 +7,13 @@
 <link rel="stylesheet" href="../fassung/4.32.2/design.css">
 <style>
 /* A-75 ‚Auswahl-Kapsel erkennbar wischbar‘ – Muster 2 (Sitzung Reiselogbuch 0041, Vorgabe Nutzer 24.10.2026: bestehendes Verhalten
-   verbessern – längerer Verlauf zum Rand, dazu kleine Pfeile, die am jeweiligen Ende verschwinden). Fünf Stände über
-   ?v=heute|a|b|c|d (oben umschaltbar). Echte Auswahl-Kapsel aus der Fassung 4.32.2 (15.12, `.cap` > `.scroll`), Inhalt wie im
+   verbessern – längerer Verlauf zum Rand, dazu kleine Pfeile, die am jeweiligen Ende verschwinden). Sechs Stände über
+   ?v=heute|e|a|b|c|d (oben umschaltbar). Echte Auswahl-Kapsel aus der Fassung 4.32.2 (15.12, `.cap` > `.scroll`), Inhalt wie im
    Reiselogbuch (Reisemittel, Wetter, Smileys).
    Heute = Verlauf 48 px.
-   A–D   = Verlauf 55 / 65 / 80 / 112 px (die äußeren 28 px ganz frei), dazu chevron-left/-right (14 px, grau) in diesem freien Rand; ein Pfeil blendet aus, sobald das Ende auf
+   E, A–D = Verlauf 48 / 55 / 65 / 80 / 112 px (die äußeren 28 px ganz frei), dazu chevron-left/-right (14 px, grau) in diesem freien Rand; ein Pfeil blendet aus, sobald das Ende auf
            seiner Seite erreicht ist.
-   (A 55 und B 65 px auf Wunsch des Nutzers ergänzt, 24.10.2026.)
+   (A 55, B 65 und E 48 px – Länge wie heute, nur mit Pfeilen – auf Wunsch des Nutzers ergänzt, 24.10.2026.)
    Die Pfeile sind nur Anzeige (nicht antippbar, zu klein für 44 pt); Antippen geht an den Eintrag darunter wie heute.
    ‚Bewegung reduzieren‘: Pfeile ohne Überblenden. Nur hell (0 Nr. 6). */
 html, body { margin: 0; background: var(--dlg-bg); }
@@ -42,7 +42,7 @@ html.neu .cap .scroll.fl.fr { -webkit-mask-image: linear-gradient(to right, tran
 <div id="kopf">
   <h1>A-75 Muster</h1>
   <div class="cap" id="wahl"><div class="scroll">
-    <button type="button" data-v="heute">Heute</button><button type="button" data-v="a">55</button><button type="button" data-v="b">65</button>
+    <button type="button" data-v="heute">Heute</button><button type="button" data-v="e">48</button><button type="button" data-v="a">55</button><button type="button" data-v="b">65</button>
     <button type="button" data-v="c">80</button><button type="button" data-v="d">112</button></div></div>
 </div>
 <div id="blatt">
@@ -63,9 +63,10 @@ html.neu .cap .scroll.fl.fr { -webkit-mask-image: linear-gradient(to right, tran
 const TRANSPORT = [['🚗','PKW'],['🚆','Zug'],['🚲','Fahrrad'],['✈️','Flugzeug'],['🚙','Leihwagen'],['🚢','Schiff'],['🚐','Wohnmobil'],['🚶','Fuß']];
 const WEATHER = ['☀️', '🌤', '🌦', '🌧', '☁️', '⛈', '❄️'];
 const MOODS = ['🙂', '😊', '😉', '👍', '😋', '😌', '😏', '😳', '🤪', '🥶', '🤷🏻‍♂️', '☹️', '🤮'];
-const FADE = { a: 55, b: 65, c: 80, d: 112 };
+const FADE = { e: 48, a: 55, b: 65, c: 80, d: 112 };
 const TEXT = {
   heute: '<b>Heute:</b> Verlauf 48 px am Rand, wo es weitergeht.',
+  e: '<b>E · 48 px:</b> Verlauf wie heute (48 px), dazu kleine Pfeile; ein Pfeil verschwindet, sobald das Ende auf seiner Seite erreicht ist.',
   a: '<b>A · 55 px:</b> Verlauf 55 px, dazu kleine Pfeile; ein Pfeil verschwindet, sobald das Ende auf seiner Seite erreicht ist.',
   b: '<b>B · 65 px:</b> wie A, Verlauf 65 px.',
   c: '<b>C · 80 px:</b> wie A, Verlauf 80 px.',
