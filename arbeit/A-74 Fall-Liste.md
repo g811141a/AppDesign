@@ -1,6 +1,6 @@
 # A-74 ‚Backup-Kachel nur, solange heute noch kein Backup erstellt wurde‘ (Reiselogbuch T-105) – Apple-Abgleich, Muster, Fall-Liste
 
-**Stand 24.10.2026** · Sitzung ‚Reiselogbuch 0043‘ · Muster: `arbeit/A-74 Muster.html`
+**Stand 24.10.2026** · Sitzung ‚Reiselogbuch 0043‘ · **geklärt: Variante A, Empfehlungen 2–5, Fall-Liste vollständig (Nutzer 24.10.2026)** · Muster: `arbeit/A-74 Muster.html`
 (https://g811141a.github.io/AppDesign/arbeit/A-74%20Muster.html, oben umschalten: A · B und Heute fällig · Nach dem Backup · Offline ·
 Leere Liste) – im Muster geprüft in Chromium (iPad quer 1180 × 820, iPhone quer 844 × 390: letzte Kachel endet über Kachel bzw.
 Zeile, keine Fehler)
@@ -48,6 +48,8 @@ Platz, dass der letzte Eintrag über der Zeile bzw. am Rand endet (statt 150 px 
 
 **Empfehlung Claude: A** – genau die Vorgabe, wie die Einstellungen; die Uhrzeit steht im Mehr-Menü. B wiederholt dauerhaft eine
 Information, die man selten braucht, und nimmt der Liste unten eine Zeile.
+
+**Gewählt (Nutzer 24.10.2026): A – die Kachel verschwindet ganz.** Die Empfehlungen zu 2–5 gelten; die Fall-Liste ist vollständig.
 
 ## 4. Zu klären (Fragen ans Muster)
 
