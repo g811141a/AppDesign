@@ -1,0 +1,156 @@
+<!doctype html><html lang="de"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="A-75 Muster">
+<title>A-75 Muster</title>
+<link rel="stylesheet" href="../fassung/4.32.2/design.css">
+<style>
+/* A-75 ‚Auswahl-Kapsel erkennbar wischbar‘ – Muster zum Ausprobieren (Sitzung Reiselogbuch 0041). Vier Stände über
+   ?v=heute|a|b|ab (oben umschaltbar). Echte Auswahl-Kapsel aus der Fassung 4.32.2 (15.12, `.cap` > `.scroll`), Inhalt wie im
+   Reiselogbuch (Reisemittel, Wetter, Smileys).
+   Heute = weicher Verlauf am Rand (48 px), sonst nichts.
+   A     = Anschnitt (‚Peek‘ wie Karten, App Store): passt nicht alles, schneidet die Kapsel den nächsten Eintrag sichtbar an
+           (30–80 % von Symbol und Text zu sehen, sonst wird sie so schmal, dass 60 % zu sehen sind); kein Verlauf, die runde Ecke schneidet hart.
+   B     = Rollbalken kurz zeigen (wie iOS `flashScrollIndicators`): beim Erscheinen der Kapsel (Öffnen, Drehen, Platz wird knapp)
+           zeigt ein dünner Balken unten in der Kapsel ~1 s lang Länge und Lage, ebenso beim Wischen; Verlauf wie heute.
+   A + B = beides.
+   ‚Bewegung reduzieren‘: der Balken erscheint und verschwindet ohne Überblenden. Nur hell (0 Nr. 6). */
+html, body { margin: 0; background: var(--dlg-bg); }
+#kopf { position: sticky; top: 0; z-index: 2; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px;
+  padding: calc(8px + env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) 8px max(16px, env(safe-area-inset-left));
+  background: var(--dlg-bg); }
+#kopf h1 { font-size: 17px; margin: 0; flex: 1; white-space: nowrap; }
+#wahl button { font-size: 15px; padding: 0 12px; white-space: nowrap; }
+#neu { font-size: 15px; padding: 0 14px; min-height: 44px; }
+#blatt { padding: 0 max(16px, env(safe-area-inset-right)) calc(24px + env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left)); }
+#blatt.auf { animation: auf .3s ease-out; }
+@keyframes auf { from { transform: translateY(40px); opacity: 0; } }
+.hinweis { color: var(--muted); font-size: 15px; line-height: 1.4; margin: 6px 2px 0; }
+.hinweis b { color: var(--ink); }
+#wx button { width: 40px; min-width: 40px; }
+/* Rollbalken in der Kapsel (B): wie der iOS-Rollbalken 3 px dick, halbdunkel, unten mit Abstand zu den runden Ecken */
+.cap { position: relative; }
+.cap .rb { position: absolute; left: 0; bottom: 3px; height: 3px; border-radius: 2px; background: rgba(0,0,0,.35);
+  opacity: 0; pointer-events: none; transition: opacity .25s; }
+.cap .rb.an { opacity: 1; transition: opacity .1s; }
+@media (prefers-reduced-motion: reduce) { .cap .rb, .cap .rb.an { transition: none; } #blatt.auf { animation: none; } }
+/* A: kein Verlauf – der Anschnitt zeigt, dass es weitergeht */
+html.va .cap .scroll.fl, html.va .cap .scroll.fr { -webkit-mask-image: none; mask-image: none; }
+</style></head><body>
+<div id="kopf">
+  <h1>A-75 Muster</h1>
+  <div class="grp cap" id="wahl" style="height:44px"><div class="scroll">
+    <button type="button" data-v="heute">Heute</button><button type="button" data-v="a">A</button>
+    <button type="button" data-v="b">B</button><button type="button" data-v="ab">A + B</button></div></div>
+  <button type="button" id="neu">Blatt neu öffnen</button>
+</div>
+<div id="blatt">
+  <p class="hinweis" id="txt"></p>
+  <div class="step"><label>Reisemittel</label>
+    <div class="chips" id="tr"></div>
+  </div>
+  <div class="step">
+    <div class="step-head"><label><span class="step-num">1</span>Wetter</label></div>
+    <div class="emoji-row strip" id="wxrow"></div>
+  </div>
+  <div class="step">
+    <div class="step-head"><label><span class="step-num">2</span>Wie war der Tag?</label></div>
+    <div class="emoji-row strip" id="mood"></div>
+  </div>
+</div>
+<script>
+const TRANSPORT = [['🚗','PKW'],['🚆','Zug'],['🚲','Fahrrad'],['✈️','Flugzeug'],['🚙','Leihwagen'],['🚢','Schiff'],['🚐','Wohnmobil'],['🚶','Fuß']];
+const WEATHER = ['☀️', '🌤', '🌦', '🌧', '☁️', '⛈', '❄️'];
+const MOODS = ['🙂', '😊', '😉', '👍', '😋', '😌', '😏', '😳', '🤪', '🥶', '🤷🏻‍♂️', '☹️', '🤮'];
+const TEXT = {
+  heute: '<b>Heute:</b> weicher Verlauf am Rand, wo es weitergeht.',
+  a: '<b>A – Anschnitt:</b> die Kapsel schneidet den nächsten Eintrag sichtbar an (30–80 % von Symbol und Text, wie Karten, App Store); kein Verlauf.',
+  b: '<b>B – Rollbalken kurz zeigen:</b> beim Öffnen und Drehen zeigt ein Balken unten kurz, wie viel noch kommt; Verlauf wie heute.',
+  ab: '<b>A + B:</b> Anschnitt und Rollbalken kurz zeigen.' };
+const v = new URLSearchParams(location.search).get('v') || 'heute';
+const A = v === 'a' || v === 'ab', B = v === 'b' || v === 'ab';
+document.documentElement.classList.toggle('va', A);
+document.documentElement.classList.toggle('phone', innerWidth < 700 || innerHeight < 500);
+document.getElementById('txt').innerHTML = TEXT[v] + ' Wischen: Kapsel seitlich ziehen. ‚Blatt neu öffnen‘ zeigt das Erscheinen noch einmal.';
+document.querySelectorAll('#wahl button').forEach(b => {
+  b.setAttribute('aria-pressed', b.dataset.v === v);
+  b.onclick = () => { location.search = '?v=' + b.dataset.v; };
+});
+
+const capHtml = (buttons, id = '') => `<div class="cap"><div class="scroll" ${id ? `id="${id}"` : ''}>${buttons}</div><div class="rb"></div></div>`;
+function draw() {
+  document.getElementById('tr').innerHTML = capHtml(TRANSPORT.map(([i, n]) =>
+    `<button type="button" aria-pressed="${n === 'Wohnmobil'}">${i} ${n}</button>`).join(''), 'transport');
+  document.getElementById('wxrow').innerHTML = capHtml(WEATHER.map(w => `<button type="button" aria-pressed="${w === '🌤'}">${w}</button>`).join(''), 'wx');
+  document.getElementById('mood').innerHTML = capHtml(MOODS.map(m => `<button type="button">${m}</button>`).join(''))
+    + '<button type="button" class="reset" aria-label="Standard-Smileys wiederherstellen"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></button>';
+  document.querySelectorAll('.cap .scroll button').forEach(b => {
+    if (b.closest('#wahl')) return;
+    b.onclick = () => b.setAttribute('aria-pressed', b.getAttribute('aria-pressed') !== 'true');
+  });
+  document.querySelectorAll('#blatt .cap').forEach(mount);
+}
+
+// A: die Kapsel schneidet einen Eintrag an. Zählt nur, was von Symbol und Text zu sehen ist (nicht der Innenabstand): liegt der
+// Rand bei 30–80 % davon, bleibt alles, wie es ist; sonst wird die Kapsel so schmal, dass 60 % dieses Inhalts (bei unter 30 % der
+// des vorigen Eintrags) zu sehen sind – nie nur ein Rest, nie ein fast ganzer.
+function anschnitt(cap) {
+  const strip = cap.querySelector('.scroll');
+  cap.style.maxWidth = '';
+  if (!A || strip.scrollWidth <= strip.clientWidth + 1) return;   // passt alles: nichts anschneiden
+  const links = strip.getBoundingClientRect().left + strip.clientLeft, rand = cap.getBoundingClientRect().width - strip.clientWidth;
+  const inhalt = b => { const r = document.createRange(); r.selectNodeContents(b); const q = r.getBoundingClientRect();
+    return { l: q.left - links, w: q.width }; };
+  const kn = [...strip.children], k = kn.findIndex(b => b.offsetLeft + b.offsetWidth > strip.clientWidth);
+  const ik = inhalt(kn[k]), f = (strip.clientWidth - ik.l) / ik.w;
+  if (f >= .3 && f <= .8) return;
+  const z = f > .8 ? ik : inhalt(kn[Math.max(0, k - 1)]);
+  cap.style.maxWidth = Math.floor(z.l + z.w * .6 + rand) + 'px';
+}
+// Verlauf (heute, B) und Rollbalken (B)
+function mount(cap) {
+  const strip = cap.querySelector('.scroll'), rb = cap.querySelector('.rb');
+  let warte = 0, ueber = false;
+  const lage = () => {
+    const c = strip.clientWidth, s = strip.scrollWidth, innen = 14;
+    const bahn = c - 2 * innen, lang = Math.max(24, bahn * c / s);
+    rb.style.width = lang + 'px';
+    rb.style.transform = `translateX(${innen + (bahn - lang) * (strip.scrollLeft / Math.max(1, s - c))}px)`;
+  };
+  const zeigen = ms => {
+    if (!B || strip.scrollWidth <= strip.clientWidth + 1) return;
+    lage(); rb.classList.add('an'); clearTimeout(warte);
+    warte = setTimeout(() => rb.classList.remove('an'), ms);
+  };
+  const fade = () => {
+    strip.classList.toggle('fl', strip.scrollLeft > 2);
+    strip.classList.toggle('fr', strip.scrollLeft + strip.clientWidth < strip.scrollWidth - 2);
+  };
+  const pruefen = erst => {
+    anschnitt(cap); fade();
+    const jetzt = strip.scrollWidth > strip.clientWidth + 1;
+    if (jetzt && (erst || !ueber)) zeigen(1000);            // erscheint oder wird knapp: einmal kurz zeigen
+    ueber = jetzt;
+  };
+  strip.addEventListener('scroll', () => { fade(); zeigen(600); }, { passive: true });
+  cap._pruefen = pruefen;
+  requestAnimationFrame(() => pruefen(true));
+}
+function oeffnen() {
+  const blatt = document.getElementById('blatt');
+  blatt.classList.remove('auf'); void blatt.offsetWidth; blatt.classList.add('auf');
+  draw();
+}
+document.getElementById('neu').onclick = oeffnen;
+// Drehen (Breite ändert sich): wie beim Erscheinen einmal zeigen – iOS blendet den Balken nach dem Drehen ebenfalls ein;
+// sonst nur, wenn der Platz knapp wird
+let breite = innerWidth;
+addEventListener('resize', () => {
+  document.documentElement.classList.toggle('phone', innerWidth < 700 || innerHeight < 500);
+  const dreh = Math.abs(innerWidth - breite) > 40; breite = innerWidth;
+  document.querySelectorAll('#blatt .cap').forEach(c => c._pruefen && c._pruefen(dreh));
+});
+oeffnen();
+</script>
+</body></html>
