@@ -1,6 +1,6 @@
 # AppDesign – Backlog (allgemeine Themen)
 
-**Stand 24.10.2026** · Aktuelle Version: AppDesign 4.32.1
+**Stand 24.10.2026** · Aktuelle Version: AppDesign 4.32.2
 
 Allgemeine Themen, die alle Apps betreffen. App-Themen stehen im Backlog der jeweiligen App.
 Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.4.
@@ -11,7 +11,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Prio | Thema | bereit seit |
 |---|---|---|---|
-| A-73 | 1 | **Korrektur aus P-69/3 (Nutzer 24.10.2026):** 1) **iPhone quer:** ein Feld mit Fokus steht ganz oben an der Titelleiste, die blaue Umrandung und der Schatten oben sind nicht sichtbar (seitlich und unten ok) – Vermutung Claude: R-4.5 stellt ein Feld, das nicht zweimal in den sichtbaren Teil passt, direkt an den oberen Rand des Inhalts (`noetig`, `feldZeigen`), der Rollbereich schneidet den Rand außen ab; wohl schon vor 4.32.1. 2) **iPhone: Tastatur geht beim Zug am linken Rand neben dem Feld nicht zu** – mitten im Inhalt geht sie zu (Nutzer 24.10.2026). **Gemessen** (`tests/messungen/2026-10-24 iPhone hoch Blatt Zug am Rand.txt`, P-69/3): bei beiden Zügen am Rand (x 23–25) geht der Finger zuerst 10–170 px **nach oben**, dann nach unten (244 → 76 → 302, 219 → 205 → 400); entschieden wird nach 8 px – die Richtung ist ‚nach oben‘, ui.js gibt den Zug auf (`blattZug = null`), der spätere Zug nach unten zählt nicht. In der Mitte ging der Finger gleich nach unten (137 → 173: blur, Tastatur zu). Safari schickt die Zeigerbewegungen weiter (kein pointercancel, ‚touchmove fest‘). **Vorschlag:** ein Zug, der nicht das Blatt zieht, bleibt beobachtet; geht der Finger danach mindestens 8 px unter seinen höchsten Punkt (deutlich senkrecht), schließt die Tastatur – wie iOS. Zu 1): über dem Feld mindestens so viel Abstand, wie Umrandung und Schatten brauchen (beim Bau messen). Prüfung: `checkSheet` B19 mit Zug erst nach oben, dann nach unten (Safari-Modell), quer der Abstand über dem Feld – zuerst rot gegen 4.32.1. Korrekturversion **4.32.2 / Reiselogbuch 3.30.2** – **Ja vom 24.10.2026**, Bau in Sitzung 0040 | 24.10.2026 |
+| – | – | zurzeit nichts gesammelt | – |
 
 
 ## 1. Auf iPad und iPhone prüfen
@@ -56,6 +56,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Thema | Version | Datum |
 |---|---|---|---|
+| E-84 | **A-73 gebaut (Korrektur, Ja 24.10.2026):** R-4.6 – ein Zug, der zuerst nach oben (oder waagerecht) geht, schließt die Tastatur, sobald der Finger danach 8 px unter seinen höchsten Punkt geht (`blattZug.nurTastatur`); R-4.5 – Abstand über dem Feld mit Fokus für Umrandung und Schatten (`fokusRand`, quer bisher direkt am Rand); `checkSheet` B19 ‚erst nach oben‘ als Berührung, B10 Abstand ≥ `RING` (rot gegen 4.32.1, 15 Meldungen). Wartet auf P-70 | 4.32.2 | 24.10.2026 |
 | E-83 | Geprüft **P-69 (Reiselogbuch 3.30.1): /0–/2 ok, /3 nicht ok** (Nutzer 24.10.2026) – ein Zug auf einem Feld bei offener Tastatur zieht das Blatt (**A-71 abgeschlossen**); /3: Fokusring quer oben abgeschnitten, Tastatur geht beim Zug am linken Rand neben dem Feld nicht zu (→ A-73); iPad: Ziehen schließt die Tastatur nicht – wie entschieden (R-4.6), neu als Wunsch bei A-72 | 4.32.1 | 24.10.2026 |
 | E-82 | **A-71 gebaut (Korrektur, Ja 24.10.2026):** R-4.6 – ein Zug, der bei offener Tastatur auf einem Feld beginnt, zieht das Blatt wie am Kopf (auch wenn R-4.5 den Inhalt gerollt hat), im gerollten Inhalt daneben schließt er nur die Tastatur; `checkSheet` B10 und B19 mit dem Safari-Modell (rot gegen 4.32.0, 16 Meldungen), `__safari.aus()`. Wartet auf P-69 | 4.32.1 | 24.10.2026 |
 | E-81 | Geprüft **P-68 (Reiselogbuch 3.30.0): alles ok bis auf /2.3** (Nutzer 23.10.2026) – Blatt auf dem iPhone, Vorschau, Drehen, iPad unverändert und Startposition ok (**A-69 abgeschlossen**); Ziehen auf einem Feld bei offener Tastatur schließt nur die Tastatur (→ A-71). Frage 5.2: warum Ziehen am iPad nicht schließt – Entscheidung 23.10.2026 (R-4.6, B18); Apple lässt auch iPad-Formblätter wegziehen → Frage ‚Ins Backlog?‘ offen | 4.32.0 | 23.10.2026 |
