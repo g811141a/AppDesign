@@ -1,0 +1,925 @@
+# Messung · Reiselogbuch 3.30.1 · AppDesign 4.32.1 · Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.6.2 Mobile/15E148 Safari/604.1 · Home-Bildschirm · 402×874 @3 · Ränder 0/34/0/0 · hell · 2026-10-24T00:47:51.146Z
+t      sy     inh    sh     ih     vh     vt     vvtop  kopf   such   tag    lkopf  lsuch  lroll  fokus  lage
+1      0      -      812    812    812    0      0      -      -      -      0      -      0      -      hoch   ! start
+917    0      -      812    812    812    0      0      -      -      -      0      -      0      -      hoch   ! nav kein kandidat
+918    0      -      812    812    812    0      0      -      -      -      0      -      0      -      hoch   ! zeiger down 105 342 touch b in button.side-row @side
+996    0      -      812    812    812    0      0      -      -      -      0      -      0      -      hoch   ! zeiger up 105 342 touch b in button.side-row @side
+999    0      -      812    812    812    0      0      -      -      -      0      -      0      -      hoch   ! tippen button
+1002   0      -      812    812    812    0      0      -      -      -      -      -      -      -      hoch   ! neuaufbau app
+1020   0      402    812    812    812    0      0      0      -      -140   0      -      0      -      hoch   ! neuaufbau side
+1027   0      402    812    812    812    0      0      0      -      -140   0      -      0      -      hoch   ! scroll rolle
+1386   0      402    812    812    812    0      0      0      -      -140   -      -      -      -      hoch
+3433   0      402    812    812    812    0      0      0      -      -140   -      -      -      -      hoch   ! nav kandidat phone
+3433   0      402    812    812    812    0      0      0      -      -140   -      -      -      -      hoch   ! zeiger down 302 518 touch span.v in div.box.day[button] @pdays
+3513   0      402    812    812    812    0      0      0      -      -140   -      -      -      -      hoch   ! zeiger up 302 518 touch span.v in div.box.day[button] @pdays
+3517   0      402    812    812    812    0      0      0      -      -140   -      -      -      div    hoch   ! focus div
+3518   0      402    812    812    812    0      0      0      -      -140   -      -      -      div    hoch   ! tippen -
+3522   0      402    812    812    812    0      0      0      -      -140   -      -      -      dlgX   hoch   ! blur div
+3536   0      402    812    812    812    0      0      0      -      -140   -      -      -      dlgX   hoch   ! focus dlgX
+3536   0      402    812    812    812    0      0      0      -      -140   -      -      -      -      hoch   ! blur dlgX
+3537   0      402    812    812    812    0      0      0      -      -140   -      -      -      dlg    hoch   ! focus dlg
+3548   0      402    812    812    812    0      0      0      -      -139   -      -      -      dlg    hoch
+3591   0      402    812    812    812    0      0      0      -      -137   -      -      -      dlg    hoch
+3611   0      402    812    812    812    0      0      0      -      -135   -      -      -      dlg    hoch
+3627   0      402    812    812    812    0      0      0      -      -134   -      -      -      dlg    hoch
+3644   0      402    812    812    812    0      0      0      -      -133   -      -      -      dlg    hoch
+3661   0      402    812    812    812    0      0      0      -      -132   -      -      -      dlg    hoch
+3694   0      402    812    812    812    0      0      0      -      -131   -      -      -      dlg    hoch
+3761   0      402    812    812    812    0      0      0      -      -130   -      -      -      dlg    hoch
+4769   0      402    812    812    812    0      0      0      -      -130   -      -      -      dlg    hoch   ! nav kein kandidat eigen
+4769   0      402    812    812    812    0      0      0      -      -130   -      -      -      dlg    hoch   ! zeiger down 257 519 touch fProgram
+4847   0      402    812    812    812    0      0      0      -      -130   -      -      -      dlg    hoch   ! zeiger up 257 519 touch fProgram
+4850   0      402    812    812    812    0      0      0      -      -130   -      -      -      -      hoch   ! blur dlg
+4857   0      402    812    812    812    0      0      0      -      -130   -      -      -      fProgram hoch   ! neu fokussiert fProgram
+4858   0      402    812    812    812    0      0      0      -      -130   -      -      -      fProgram hoch   ! focus fProgram
+4858   0      402    812    812    812    0      0      0      -      -130   -      -      -      fProgram hoch   ! klick unterdrückt div (Feld fProgram)
+4859   0      402    812    812    812    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+4978   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! vv resize
+7432   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! nav kein kandidat
+7432   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger down 25 244 touch div.step in dlg
+7458   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 28 240 touch div.step in dlg
+7458   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! touchmove frei
+7459   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 28 240 touch div.step in dlg
+7474   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 33 231 touch div.step in dlg
+7491   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 33 230 touch div.step in dlg
+7491   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 33 225 touch div.step in dlg
+7508   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 33 218 touch div.step in dlg
+7525   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 33 209 touch div.step in dlg
+7541   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 33 198 touch div.step in dlg
+7558   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 33 187 touch div.step in dlg
+7558   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! touchmove fest
+7559   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+7566   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 33 182 touch div.step in dlg
+7579   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 32 174 touch div.step in dlg
+7579   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+7587   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 31 169 touch div.step in dlg
+7595   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 30 164 touch div.step in dlg
+7604   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 29 159 touch div.step in dlg
+7606   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+7612   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 28 155 touch div.step in dlg
+7614   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+7620   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 27 151 touch div.step in dlg
+7629   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 27 146 touch div.step in dlg
+7630   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+7637   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 26 143 touch div.step in dlg
+7645   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 26 139 touch div.step in dlg
+7647   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+7654   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 136 touch div.step in dlg
+7662   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 133 touch div.step in dlg
+7664   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+7670   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 130 touch div.step in dlg
+7679   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 128 touch div.step in dlg
+7681   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+7687   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 125 touch div.step in dlg
+7696   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 122 touch div.step in dlg
+7697   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+7704   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 119 touch div.step in dlg
+7712   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 117 touch div.step in dlg
+7714   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+7720   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 115 touch div.step in dlg
+7733   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 112 touch div.step in dlg
+7746   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 110 touch div.step in dlg
+7747   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+7758   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 109 touch div.step in dlg
+7771   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 107 touch div.step in dlg
+7772   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+7783   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 106 touch div.step in dlg
+7800   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 105 touch div.step in dlg
+7800   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+7817   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 103 touch div.step in dlg
+7817   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+7833   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 101 touch div.step in dlg
+7834   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+7849   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 100 touch div.step in dlg
+7850   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+7866   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 98 touch div.step in dlg
+7867   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+7883   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 96 touch div.step in dlg
+7884   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+7899   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 94 touch div.step in dlg
+7900   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+7916   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 92 touch div.step in dlg
+7917   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+7933   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 90 touch div.step in dlg
+7934   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+7950   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 88 touch div.step in dlg
+7951   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+7966   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 86 touch div.step in dlg
+7967   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+7983   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 84 touch div.step in dlg
+7984   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+8000   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 82 touch div.step in dlg
+8000   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+8016   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 80 touch div.step in dlg
+8017   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+8033   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 78 touch div.step in dlg
+8034   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+8050   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 77 touch div.step in dlg
+8050   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+8066   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 77 touch div.step in dlg
+8067   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+8083   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 76 touch div.step in dlg
+8133   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 77 touch div.step in dlg
+8150   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 79 touch div.step in dlg
+8151   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+8166   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 84 touch div.step in dlg
+8167   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+8174   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 89 touch div.step in dlg
+8178   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+8183   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 94 touch div.step in dlg
+8191   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 101 touch div.step in dlg
+8192   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+8199   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 107 touch div.step in dlg
+8210   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 114 touch div.step in dlg
+8211   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+8217   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 122 touch div.step in dlg
+8226   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 130 touch div.step in dlg
+8227   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+8234   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 138 touch div.step in dlg
+8241   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 146 touch div.step in dlg
+8242   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+8250   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 154 touch div.step in dlg
+8259   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 163 touch div.step in dlg
+8259   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+8266   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 171 touch div.step in dlg
+8275   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 179 touch div.step in dlg
+8276   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+8283   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 188 touch div.step in dlg
+8291   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 196 touch div.step in dlg
+8292   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+8299   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 204 touch div.step in dlg
+8308   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 212 touch div.step in dlg
+8309   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+8316   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 220 touch div.step in dlg
+8325   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 227 touch div.step in dlg
+8326   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+8333   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 235 touch div.step in dlg
+8341   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 242 touch div.step in dlg
+8342   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+8350   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 250 touch div.step in dlg
+8358   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 257 touch div.step in dlg
+8359   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+8366   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 264 touch div.step in dlg
+8375   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 270 touch div.step in dlg
+8376   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+8383   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 277 touch div.step in dlg
+8391   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 283 touch div.step in dlg
+8392   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+8399   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 289 touch div.step in dlg
+8408   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 294 touch div.step in dlg
+8409   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+8417   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 299 touch div.step in dlg
+8425   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 304 touch div.step in dlg
+8425   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+8433   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 309 touch div.step in dlg
+8441   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 314 touch div.step in dlg
+8442   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+8449   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 318 touch div.step in dlg
+8458   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 322 touch div.step in dlg
+8459   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+8466   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 327 touch div.step in dlg
+8474   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 330 touch div.step in dlg
+8475   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+8483   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 334 touch div.step in dlg
+8491   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 337 touch div.step in dlg
+8492   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+8500   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 341 touch div.step in dlg
+8508   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 344 touch div.step in dlg
+8509   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+8516   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 347 touch div.step in dlg
+8526   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 351 touch div.step in dlg
+8527   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+8533   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 353 touch div.step in dlg
+8541   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 356 touch div.step in dlg
+8543   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+8550   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 26 359 touch div.step in dlg
+8558   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 26 361 touch div.step in dlg
+8559   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+8566   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 26 363 touch div.step in dlg
+8575   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 26 365 touch div.step in dlg
+8576   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+8587   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 27 367 touch div.step in dlg
+8600   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 27 368 touch div.step in dlg
+8616   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 27 368 touch div.step in dlg
+8617   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+8633   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 27 368 touch div.step in dlg
+8650   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 27 368 touch div.step in dlg
+8666   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 28 368 touch div.step in dlg
+8683   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 28 365 touch div.step in dlg
+8684   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+8700   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 30 360 touch div.step in dlg
+8700   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+8708   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 30 356 touch div.step in dlg
+8715   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+8716   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 31 352 touch div.step in dlg
+8724   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 31 348 touch div.step in dlg
+8725   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+8733   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 32 343 touch div.step in dlg
+8742   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 32 338 touch div.step in dlg
+8742   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+8750   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 33 332 touch div.step in dlg
+8759   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 33 326 touch div.step in dlg
+8760   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+8767   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 34 320 touch div.step in dlg
+8775   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 34 314 touch div.step in dlg
+8776   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+8783   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 34 307 touch div.step in dlg
+8791   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 34 300 touch div.step in dlg
+8792   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+8799   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 34 292 touch div.step in dlg
+8808   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 34 284 touch div.step in dlg
+8809   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+8816   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 34 276 touch div.step in dlg
+8824   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 34 268 touch div.step in dlg
+8825   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+8833   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 34 259 touch div.step in dlg
+8841   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 34 251 touch div.step in dlg
+8843   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+8849   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 34 242 touch div.step in dlg
+8859   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 34 233 touch div.step in dlg
+8860   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+8866   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 34 224 touch div.step in dlg
+8875   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 34 215 touch div.step in dlg
+8876   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+8883   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 34 206 touch div.step in dlg
+8891   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 34 197 touch div.step in dlg
+8892   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+8900   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 34 188 touch div.step in dlg
+8908   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 34 178 touch div.step in dlg
+8909   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+8916   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 34 169 touch div.step in dlg
+8925   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 34 161 touch div.step in dlg
+8926   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+8933   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 34 152 touch div.step in dlg
+8941   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 34 144 touch div.step in dlg
+8942   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+8950   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 34 136 touch div.step in dlg
+8958   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 34 129 touch div.step in dlg
+8959   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+8966   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 34 123 touch div.step in dlg
+8975   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 34 116 touch div.step in dlg
+8976   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+8983   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 34 110 touch div.step in dlg
+8991   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 33 105 touch div.step in dlg
+8992   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+9000   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 33 100 touch div.step in dlg
+9009   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 33 96 touch div.step in dlg
+9010   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+9017   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 32 91 touch div.step in dlg
+9025   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 32 88 touch div.step in dlg
+9026   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+9033   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 32 84 touch div.step in dlg
+9042   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 32 81 touch div.step in dlg
+9043   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+9050   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 32 78 touch div.step in dlg
+9058   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 32 75 touch div.step in dlg
+9059   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+9067   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 32 72 touch div.step in dlg
+9075   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 32 69 touch div.step in dlg
+9076   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+9083   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 32 67 touch div.step in dlg
+9092   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 32 65 touch div.step in dlg
+9093   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+9104   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 32 63 touch div.step in dlg
+9116   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 31 62 touch div.step in dlg
+9133   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 31 61 touch div.step in dlg
+9134   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+9200   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 31 62 touch div.step in dlg
+9200   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+9217   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 31 64 touch div.step in dlg
+9218   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+9233   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 31 68 touch div.step in dlg
+9234   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+9246   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 31 73 touch div.step in dlg
+9246   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+9254   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 31 77 touch div.step in dlg
+9262   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 30 81 touch div.step in dlg
+9271   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 30 86 touch div.step in dlg
+9272   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+9279   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 30 92 touch div.step in dlg
+9280   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+9287   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 30 99 touch div.step in dlg
+9296   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 30 106 touch div.step in dlg
+9297   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+9304   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 30 113 touch div.step in dlg
+9312   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 30 122 touch div.step in dlg
+9314   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+9321   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 30 130 touch div.step in dlg
+9329   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 29 139 touch div.step in dlg
+9331   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+9337   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 29 149 touch div.step in dlg
+9346   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 29 159 touch div.step in dlg
+9349   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+9354   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 28 168 touch div.step in dlg
+9362   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 28 179 touch div.step in dlg
+9364   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+9370   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 27 189 touch div.step in dlg
+9379   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 27 199 touch div.step in dlg
+9380   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+9387   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 27 209 touch div.step in dlg
+9396   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 27 219 touch div.step in dlg
+9397   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+9404   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 27 230 touch div.step in dlg
+9412   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 26 240 touch div.step in dlg
+9413   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+9421   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 26 251 touch div.step in dlg
+9429   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 26 261 touch div.step in dlg
+9430   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+9437   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 26 271 touch div.step in dlg
+9446   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 26 281 touch div.step in dlg
+9447   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+9454   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 26 291 touch div.step in dlg
+9462   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 26 300 touch div.step in dlg
+9464   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+9470   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 26 309 touch div.step in dlg
+9479   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 26 318 touch div.step in dlg
+9481   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+9487   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 26 326 touch div.step in dlg
+9495   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 26 333 touch div.step in dlg
+9497   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+9504   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 26 339 touch div.step in dlg
+9512   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 26 345 touch div.step in dlg
+9514   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+9521   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 27 350 touch div.step in dlg
+9529   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 27 353 touch div.step in dlg
+9530   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+9537   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 27 356 touch div.step in dlg
+9546   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 27 358 touch div.step in dlg
+9547   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+9558   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 27 360 touch div.step in dlg
+9571   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 27 361 touch div.step in dlg
+9588   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 27 361 touch div.step in dlg
+9589   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+9604   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 27 362 touch div.step in dlg
+9671   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 27 361 touch div.step in dlg
+9672   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+9688   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 27 357 touch div.step in dlg
+9689   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+9700   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 27 353 touch div.step in dlg
+9700   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+9712   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 27 348 touch div.step in dlg
+9721   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 27 344 touch div.step in dlg
+9721   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+9729   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 27 338 touch div.step in dlg
+9730   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+9737   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 27 331 touch div.step in dlg
+9746   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 28 324 touch div.step in dlg
+9747   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+9754   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 28 317 touch div.step in dlg
+9762   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 28 309 touch div.step in dlg
+9764   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+9771   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 29 301 touch div.step in dlg
+9779   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 29 293 touch div.step in dlg
+9780   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+9788   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 29 284 touch div.step in dlg
+9795   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 29 275 touch div.step in dlg
+9796   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+9805   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 29 267 touch div.step in dlg
+9812   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 29 257 touch div.step in dlg
+9813   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+9821   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 29 248 touch div.step in dlg
+9829   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 29 239 touch div.step in dlg
+9830   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+9837   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 29 230 touch div.step in dlg
+9846   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 29 221 touch div.step in dlg
+9847   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+9854   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 29 212 touch div.step in dlg
+9862   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 29 203 touch div.step in dlg
+9864   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+9871   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 29 195 touch div.step in dlg
+9879   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 29 187 touch div.step in dlg
+9881   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+9887   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 29 179 touch div.step in dlg
+9896   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 28 172 touch div.step in dlg
+9897   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+9904   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 28 165 touch div.step in dlg
+9912   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 27 159 touch div.step in dlg
+9913   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+9921   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 27 152 touch div.step in dlg
+9929   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 27 146 touch div.step in dlg
+9930   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+9937   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 26 141 touch div.step in dlg
+9946   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 26 136 touch div.step in dlg
+9947   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+9954   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 26 132 touch div.step in dlg
+9962   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 26 128 touch div.step in dlg
+9964   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+9971   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 26 125 touch div.step in dlg
+9979   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 26 121 touch div.step in dlg
+9981   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+9987   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 26 119 touch div.step in dlg
+9995   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 26 117 touch div.step in dlg
+9996   0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+10004  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 26 115 touch div.step in dlg
+10017  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 26 113 touch div.step in dlg
+10017  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+10029  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 26 112 touch div.step in dlg
+10046  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 26 112 touch div.step in dlg
+10047  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+10121  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 26 112 touch div.step in dlg
+10122  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+10129  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 26 114 touch div.step in dlg
+10146  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 26 121 touch div.step in dlg
+10147  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+10154  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 26 125 touch div.step in dlg
+10155  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+10162  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 26 130 touch div.step in dlg
+10171  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 26 135 touch div.step in dlg
+10171  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+10179  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 26 140 touch div.step in dlg
+10187  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 26 146 touch div.step in dlg
+10189  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+10196  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 26 152 touch div.step in dlg
+10204  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 26 158 touch div.step in dlg
+10206  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+10212  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 26 164 touch div.step in dlg
+10221  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 26 170 touch div.step in dlg
+10222  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+10229  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 26 176 touch div.step in dlg
+10237  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 26 183 touch div.step in dlg
+10239  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+10246  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 26 190 touch div.step in dlg
+10254  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 26 196 touch div.step in dlg
+10255  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+10263  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 26 204 touch div.step in dlg
+10271  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 26 211 touch div.step in dlg
+10272  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+10279  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 26 219 touch div.step in dlg
+10287  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 26 227 touch div.step in dlg
+10289  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+10296  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 26 235 touch div.step in dlg
+10304  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 244 touch div.step in dlg
+10305  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+10312  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 252 touch div.step in dlg
+10321  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 260 touch div.step in dlg
+10322  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+10329  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 268 touch div.step in dlg
+10338  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 276 touch div.step in dlg
+10339  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+10346  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 284 touch div.step in dlg
+10354  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 24 292 touch div.step in dlg
+10356  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+10362  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 24 300 touch div.step in dlg
+10371  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger up 22 302 touch div.step in dlg
+10374  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+10387  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+10404  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+10420  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+10437  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+10454  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+10470  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+10487  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+10504  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+10520  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+10537  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+10554  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+10570  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+10587  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+10604  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+10620  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+10637  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+10654  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+10670  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+13146  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! nav kein kandidat
+13146  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger down 94 246 touch label @dlg
+13207  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger up 94 246 touch label @dlg
+13243  0      402    812    812    409    0      0      0      -      -130   -      -      -      -      hoch   ! blur fProgram
+13244  0      402    812    812    409    0      0      0      -      -130   -      -      -      dlg    hoch   ! focus dlg
+13245  0      402    812    812    409    0      0      0      -      -130   -      -      -      dlg    hoch   ! tippen -
+13245  0      402    812    812    409    0      0      0      -      -130   -      -      -      dlg    hoch   ! tippen -
+13246  0      402    812    812    409    0      0      0      -      -130   -      -      -      -      hoch   ! blur dlg
+13250  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! focus fProgram
+13266  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+13344  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! nav kein kandidat eigen
+13344  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger down 102 238 touch fProgram
+13371  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 102 245 touch fProgram
+13371  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! touchmove frei
+13372  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 102 245 touch fProgram
+13388  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 102 257 touch fProgram
+13388  0      402    812    812    409    0      0      0      -      -130   -      -      -      -      hoch   ! blur fProgram
+13424  0      402    812    812    409    0      0      0      -      -130   -      -      -      -      hoch   ! zeiger move 102 274 touch fProgram
+13426  0      402    812    812    812    0      0      0      -      -130   -      -      -      -      hoch   ! zeiger move 101 302 touch dlg
+13438  0      402    812    812    812    0      0      0      -      -131   -      -      -      -      hoch   ! vv resize
+13447  0      402    812    812    812    0      0      0      -      -131   -      -      -      -      hoch   ! zeiger move 100 344 touch dlg
+13454  0      402    812    812    812    0      0      0      -      -131   -      -      -      -      hoch   ! zeiger move 99 400 touch dlg
+13469  0      402    812    812    812    0      0      0      -      -132   -      -      -      -      hoch
+13471  0      402    812    812    812    0      0      0      -      -132   -      -      -      -      hoch   ! zeiger move 95 466 touch dlg
+13471  0      402    812    812    812    0      0      0      -      -133   -      -      -      -      hoch
+13487  0      402    812    812    812    0      0      0      -      -133   -      -      -      -      hoch   ! zeiger move 93 493 touch dlg
+13491  0      402    812    812    812    0      0      0      -      -133   -      -      -      -      hoch   ! zeiger up 91 495 touch dlg
+13514  0      402    812    812    812    0      0      0      -      -134   -      -      -      -      hoch
+13521  0      402    812    812    812    0      0      0      -      -135   -      -      -      -      hoch
+13537  0      402    812    812    812    0      0      0      -      -137   -      -      -      -      hoch
+13554  0      402    812    812    812    0      0      0      -      -138   -      -      -      -      hoch
+13571  0      402    812    812    812    0      0      0      -      -139   -      -      -      -      hoch
+13654  0      402    812    812    812    0      0      0      -      -140   -      -      -      -      hoch
+13773  0      402    812    812    812    0      0      0      -      -140   -      -      -      -      hoch   ! tippen dlgX
+13782  0      402    812    812    812    0      0      0      -      -140   -      -      -      div    hoch   ! focus div
+13791  0      402    812    812    812    0      0      0      -      -140   -      -      -      div    hoch   ! neuaufbau app
+13804  0      402    812    812    812    0      0      0      -      -140   -      -      -      -      hoch
+24147  0      402    812    812    812    0      0      0      -      -140   -      -      -      -      hoch   ! nav kandidat phone
+24147  0      402    812    812    812    0      0      0      -      -140   -      -      -      -      hoch   ! zeiger down 260 416 touch div.ln in div.box.day[button] @pdays
+24241  0      402    812    812    812    0      0      0      -      -140   -      -      -      -      hoch   ! zeiger up 260 416 touch div.ln in div.box.day[button] @pdays
+24245  0      402    812    812    812    0      0      0      -      -140   -      -      -      div    hoch   ! focus div
+24245  0      402    812    812    812    0      0      0      -      -140   -      -      -      div    hoch   ! tippen -
+24247  0      402    812    812    812    0      0      0      -      -140   -      -      -      dlgX   hoch   ! blur div
+24254  0      402    812    812    812    0      0      0      -      -140   -      -      -      dlgX   hoch   ! focus dlgX
+24254  0      402    812    812    812    0      0      0      -      -140   -      -      -      -      hoch   ! blur dlgX
+24255  0      402    812    812    812    0      0      0      -      -140   -      -      -      dlg    hoch   ! focus dlg
+24261  0      402    812    812    812    0      0      0      -      -139   -      -      -      dlg    hoch
+24308  0      402    812    812    812    0      0      0      -      -136   -      -      -      dlg    hoch
+24323  0      402    812    812    812    0      0      0      -      -135   -      -      -      dlg    hoch
+24339  0      402    812    812    812    0      0      0      -      -133   -      -      -      dlg    hoch
+24356  0      402    812    812    812    0      0      0      -      -132   -      -      -      dlg    hoch
+24389  0      402    812    812    812    0      0      0      -      -131   -      -      -      dlg    hoch
+24473  0      402    812    812    812    0      0      0      -      -130   -      -      -      dlg    hoch
+25347  0      402    812    812    812    0      0      0      -      -130   -      -      -      dlg    hoch   ! nav kein kandidat eigen
+25347  0      402    812    812    812    0      0      0      -      -130   -      -      -      dlg    hoch   ! zeiger down 251 518 touch fProgram
+25409  0      402    812    812    812    0      0      0      -      -130   -      -      -      dlg    hoch   ! zeiger up 251 518 touch fProgram
+25413  0      402    812    812    812    0      0      0      -      -130   -      -      -      -      hoch   ! blur dlg
+25419  0      402    812    812    812    0      0      0      -      -130   -      -      -      fProgram hoch   ! neu fokussiert fProgram
+25420  0      402    812    812    812    0      0      0      -      -130   -      -      -      fProgram hoch   ! focus fProgram
+25420  0      402    812    812    812    0      0      0      -      -130   -      -      -      fProgram hoch   ! klick unterdrückt div (Feld fProgram)
+25421  0      402    812    812    812    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+25539  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! vv resize
+26710  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! nav kein kandidat
+26710  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger down 23 219 touch div.step in dlg
+26736  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 24 215 touch div.step in dlg
+26736  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! touchmove frei
+26737  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 24 215 touch div.step in dlg
+26752  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 26 205 touch div.step in dlg
+26769  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 26 203 touch div.step in dlg
+26769  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 26 197 touch div.step in dlg
+26786  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 26 189 touch div.step in dlg
+26803  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 24 180 touch div.step in dlg
+26819  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 23 170 touch div.step in dlg
+26819  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! touchmove fest
+26820  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+26828  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 23 165 touch div.step in dlg
+26836  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 22 160 touch div.step in dlg
+26837  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+26844  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 22 155 touch div.step in dlg
+26853  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 22 150 touch div.step in dlg
+26854  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+26861  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 22 145 touch div.step in dlg
+26869  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 22 141 touch div.step in dlg
+26871  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+26878  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 22 136 touch div.step in dlg
+26887  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 22 132 touch div.step in dlg
+26887  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+26894  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 22 128 touch div.step in dlg
+26903  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 22 124 touch div.step in dlg
+26904  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+26911  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 22 121 touch div.step in dlg
+26920  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 22 118 touch div.step in dlg
+26921  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+26928  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 23 115 touch div.step in dlg
+26937  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 23 113 touch div.step in dlg
+26937  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+26944  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 23 111 touch div.step in dlg
+26953  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 23 109 touch div.step in dlg
+26954  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+26965  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 23 105 touch div.step in dlg
+26978  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 23 103 touch div.step in dlg
+26990  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 23 99 touch div.step in dlg
+26991  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+27003  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 23 97 touch div.step in dlg
+27015  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 24 94 touch div.step in dlg
+27016  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+27028  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 24 91 touch div.step in dlg
+27040  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 24 89 touch div.step in dlg
+27041  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+27053  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 87 touch div.step in dlg
+27065  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 85 touch div.step in dlg
+27066  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+27078  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 83 touch div.step in dlg
+27090  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 82 touch div.step in dlg
+27091  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+27107  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 81 touch div.step in dlg
+27124  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 81 touch div.step in dlg
+27125  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+27174  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 84 touch div.step in dlg
+27175  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+27190  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 91 touch div.step in dlg
+27191  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+27199  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 96 touch div.step in dlg
+27200  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+27207  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 101 touch div.step in dlg
+27215  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 106 touch div.step in dlg
+27217  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+27224  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 111 touch div.step in dlg
+27232  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 117 touch div.step in dlg
+27233  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+27240  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 123 touch div.step in dlg
+27249  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 129 touch div.step in dlg
+27250  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+27257  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 135 touch div.step in dlg
+27265  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 141 touch div.step in dlg
+27267  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+27274  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 148 touch div.step in dlg
+27282  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 155 touch div.step in dlg
+27283  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+27290  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 162 touch div.step in dlg
+27299  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 169 touch div.step in dlg
+27300  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+27307  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 176 touch div.step in dlg
+27315  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 184 touch div.step in dlg
+27317  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+27324  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 25 191 touch div.step in dlg
+27332  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 26 198 touch div.step in dlg
+27333  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+27340  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 26 206 touch div.step in dlg
+27349  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 27 213 touch div.step in dlg
+27350  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+27357  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 27 220 touch div.step in dlg
+27365  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 28 226 touch div.step in dlg
+27367  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+27374  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 29 233 touch div.step in dlg
+27382  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 29 239 touch div.step in dlg
+27384  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+27390  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 30 244 touch div.step in dlg
+27398  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 30 250 touch div.step in dlg
+27399  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+27407  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 31 255 touch div.step in dlg
+27415  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 31 259 touch div.step in dlg
+27416  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+27423  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 32 264 touch div.step in dlg
+27432  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 32 267 touch div.step in dlg
+27433  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+27440  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 33 270 touch div.step in dlg
+27448  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 33 273 touch div.step in dlg
+27449  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+27457  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 34 275 touch div.step in dlg
+27470  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 34 277 touch div.step in dlg
+27471  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+27482  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 35 278 touch div.step in dlg
+27499  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 35 278 touch div.step in dlg
+27499  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+27565  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 35 275 touch div.step in dlg
+27566  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+27578  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 35 272 touch div.step in dlg
+27590  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 35 267 touch div.step in dlg
+27593  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+27599  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 35 263 touch div.step in dlg
+27607  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 35 258 touch div.step in dlg
+27615  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 35 253 touch div.step in dlg
+27616  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+27623  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 35 248 touch div.step in dlg
+27632  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 34 243 touch div.step in dlg
+27633  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+27640  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 34 237 touch div.step in dlg
+27648  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 34 231 touch div.step in dlg
+27649  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+27657  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 34 226 touch div.step in dlg
+27665  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 34 220 touch div.step in dlg
+27667  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+27673  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 34 214 touch div.step in dlg
+27682  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 34 209 touch div.step in dlg
+27684  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+27690  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 33 203 touch div.step in dlg
+27699  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 33 197 touch div.step in dlg
+27700  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+27707  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 32 192 touch div.step in dlg
+27715  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 32 186 touch div.step in dlg
+27717  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+27724  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 31 180 touch div.step in dlg
+27732  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 31 175 touch div.step in dlg
+27733  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+27740  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 30 169 touch div.step in dlg
+27749  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 30 163 touch div.step in dlg
+27750  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+27757  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 29 157 touch div.step in dlg
+27765  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 29 152 touch div.step in dlg
+27767  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+27774  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 29 146 touch div.step in dlg
+27782  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 28 140 touch div.step in dlg
+27784  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+27790  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 28 135 touch div.step in dlg
+27799  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 28 130 touch div.step in dlg
+27800  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+27807  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 28 125 touch div.step in dlg
+27815  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 28 121 touch div.step in dlg
+27816  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+27824  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 28 117 touch div.step in dlg
+27832  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 28 113 touch div.step in dlg
+27834  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+27840  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 28 111 touch div.step in dlg
+27849  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 28 108 touch div.step in dlg
+27850  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+27857  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 28 106 touch div.step in dlg
+27869  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 28 104 touch div.step in dlg
+27882  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 28 102 touch div.step in dlg
+27883  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+27894  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 28 100 touch div.step in dlg
+27907  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 28 98 touch div.step in dlg
+27908  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+27919  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 28 96 touch div.step in dlg
+27932  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 28 94 touch div.step in dlg
+27933  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+27945  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 28 93 touch div.step in dlg
+27961  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 28 92 touch div.step in dlg
+27962  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+27978  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 28 92 touch div.step in dlg
+28012  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 28 93 touch div.step in dlg
+28012  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+28028  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 28 99 touch div.step in dlg
+28029  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+28036  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 28 103 touch div.step in dlg
+28037  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+28045  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 28 107 touch div.step in dlg
+28054  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 28 111 touch div.step in dlg
+28055  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+28061  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 28 115 touch div.step in dlg
+28070  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 28 121 touch div.step in dlg
+28071  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+28078  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 28 126 touch div.step in dlg
+28087  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 28 132 touch div.step in dlg
+28088  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+28095  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 28 138 touch div.step in dlg
+28104  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 28 144 touch div.step in dlg
+28104  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+28111  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 28 151 touch div.step in dlg
+28121  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 28 158 touch div.step in dlg
+28122  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+28128  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 28 165 touch div.step in dlg
+28136  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 28 171 touch div.step in dlg
+28137  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+28144  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 29 179 touch div.step in dlg
+28153  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 30 185 touch div.step in dlg
+28154  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+28161  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 30 192 touch div.step in dlg
+28169  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 31 199 touch div.step in dlg
+28170  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+28178  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 32 205 touch div.step in dlg
+28186  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 33 212 touch div.step in dlg
+28187  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+28194  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 34 218 touch div.step in dlg
+28203  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 34 224 touch div.step in dlg
+28204  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+28211  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 35 230 touch div.step in dlg
+28219  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 35 236 touch div.step in dlg
+28220  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+28228  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 36 241 touch div.step in dlg
+28237  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 36 246 touch div.step in dlg
+28237  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+28244  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 36 252 touch div.step in dlg
+28253  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 37 257 touch div.step in dlg
+28254  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+28261  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 37 261 touch div.step in dlg
+28270  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 37 266 touch div.step in dlg
+28270  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+28278  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 38 270 touch div.step in dlg
+28286  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 39 275 touch div.step in dlg
+28287  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+28294  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 39 279 touch div.step in dlg
+28303  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 40 283 touch div.step in dlg
+28304  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+28311  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 41 286 touch div.step in dlg
+28319  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 41 290 touch div.step in dlg
+28320  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+28328  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 42 293 touch div.step in dlg
+28336  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 43 297 touch div.step in dlg
+28337  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+28344  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 44 300 touch div.step in dlg
+28353  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 44 303 touch div.step in dlg
+28354  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+28361  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 45 306 touch div.step in dlg
+28370  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 46 309 touch div.step in dlg
+28371  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+28378  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 47 312 touch div.step in dlg
+28386  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 48 314 touch div.step in dlg
+28387  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+28394  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 48 317 touch div.step in dlg
+28403  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 49 319 touch div.step in dlg
+28404  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+28416  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 50 322 touch div.step in dlg
+28428  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 51 324 touch div.step in dlg
+28440  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 52 326 touch div.step in dlg
+28442  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+28453  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 53 328 touch div.step in dlg
+28465  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 54 329 touch div.step in dlg
+28467  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+28483  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 55 331 touch div.step in dlg
+28499  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 55 333 touch div.step in dlg
+28500  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+28516  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 56 333 touch div.step in dlg
+28517  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+28533  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 56 334 touch div.step in dlg
+28566  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 56 334 touch div.step in dlg
+28567  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+28583  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 56 335 touch div.step in dlg
+28599  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 56 335 touch div.step in dlg
+28616  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 56 336 touch div.step in dlg
+28617  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+28632  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 56 337 touch div.step in dlg
+28634  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+28649  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 56 338 touch div.step in dlg
+28650  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+28666  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 56 340 touch div.step in dlg
+28667  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+28682  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 56 344 touch div.step in dlg
+28683  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+28695  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 56 347 touch div.step in dlg
+28707  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 56 352 touch div.step in dlg
+28708  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+28715  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 56 354 touch div.step in dlg
+28724  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 56 357 touch div.step in dlg
+28732  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 56 359 touch div.step in dlg
+28733  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+28740  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 56 361 touch div.step in dlg
+28753  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 56 364 touch div.step in dlg
+28754  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+28766  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 56 367 touch div.step in dlg
+28778  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 56 369 touch div.step in dlg
+28779  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+28790  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 56 371 touch div.step in dlg
+28803  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 56 373 touch div.step in dlg
+28804  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+28816  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 56 375 touch div.step in dlg
+28832  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 56 376 touch div.step in dlg
+28833  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+28849  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 56 378 touch div.step in dlg
+28850  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+28866  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 56 379 touch div.step in dlg
+28867  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+28882  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 56 381 touch div.step in dlg
+28883  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+28899  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 56 382 touch div.step in dlg
+28900  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+28916  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 56 383 touch div.step in dlg
+28917  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+28932  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 56 385 touch div.step in dlg
+28933  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+28949  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 56 387 touch div.step in dlg
+28950  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+28966  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 56 388 touch div.step in dlg
+28967  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+28982  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 56 390 touch div.step in dlg
+28983  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+28999  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 57 392 touch div.step in dlg
+29000  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+29016  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 57 393 touch div.step in dlg
+29017  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+29032  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 57 395 touch div.step in dlg
+29033  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+29049  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 57 396 touch div.step in dlg
+29050  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+29066  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 57 398 touch div.step in dlg
+29066  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+29082  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 57 399 touch div.step in dlg
+29083  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! scroll div
+29099  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 57 399 touch div.step in dlg
+29133  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger up 57 400 touch div.step in dlg
+30264  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! nav kein kandidat
+30265  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger down 99 137 touch div.step in dlg
+30291  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 101 142 touch div.step in dlg
+30291  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! touchmove frei
+30292  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 101 142 touch div.step in dlg
+30307  0      402    812    812    409    0      0      0      -      -130   -      -      -      fProgram hoch   ! zeiger move 101 173 touch div.step in dlg
+30307  0      402    812    812    409    0      0      0      -      -130   -      -      -      -      hoch   ! blur fProgram
+30341  0      402    812    812    409    0      0      0      -      -130   -      -      -      -      hoch   ! zeiger move 101 229 touch div.step in dlg
+30342  0      402    812    812    812    0      0      0      -      -130   -      -      -      -      hoch   ! vv resize
+30351  0      402    812    812    812    0      0      0      -      -130   -      -      -      -      hoch   ! zeiger move 99 354 touch div.step in dlg
+30351  0      402    812    812    812    0      0      0      -      -130   -      -      -      -      hoch   ! touchmove fest
+30361  0      402    812    812    812    0      0      0      -      -130   -      -      -      -      hoch   ! zeiger up 97 356 touch div.step in dlg
+30372  0      402    812    812    812    0      0      0      -      -130   -      -      -      -      hoch   ! platz weg div
+30373  0      402    812    812    812    0      0      0      -      -130   -      -      -      -      hoch   ! scroll div
+36307  0      402    812    812    812    0      0      0      -      -130   -      -      -      -      hoch   ! nav kein kandidat eigen
+36307  0      402    812    812    812    0      0      0      -      -130   -      -      -      -      hoch   ! zeiger down 33 51 touch svg.ic in dlgX
+36417  0      402    812    812    812    0      0      0      -      -130   -      -      -      -      hoch   ! zeiger up 33 51 touch svg.ic in dlgX
+36420  0      402    812    812    812    0      0      0      -      -130   -      -      -      dlg    hoch   ! focus dlg
+36420  0      402    812    812    812    0      0      0      -      -130   -      -      -      dlg    hoch   ! tippen dlgX
+36432  0      402    812    812    812    0      0      0      -      -130   -      -      -      -      hoch   ! blur dlg
+36432  0      402    812    812    812    0      0      0      -      -130   -      -      -      div    hoch   ! focus div
+36437  0      402    812    812    812    0      0      0      -      -130   -      -      -      div    hoch   ! neuaufbau app
+36448  0      402    812    812    812    0      0      0      -      -130   -      -      -      -      hoch
+36489  0      402    812    812    812    0      0      0      -      -133   -      -      -      -      hoch
+36500  0      402    812    812    812    0      0      0      -      -134   -      -      -      -      hoch
+36516  0      402    812    812    812    0      0      0      -      -136   -      -      -      -      hoch
+36533  0      402    812    812    812    0      0      0      -      -137   -      -      -      -      hoch
+36550  0      402    812    812    812    0      0      0      -      -138   -      -      -      -      hoch
+36583  0      402    812    812    812    0      0      0      -      -139   -      -      -      -      hoch
+36700  0      402    812    812    812    0      0      0      -      -140   -      -      -      -      hoch
+38323  0      402    812    812    812    0      0      0      -      -140   -      -      -      -      hoch   ! nav kein kandidat eigen
+38323  0      402    812    812    812    0      0      0      -      -140   -      -      -      -      hoch   ! zeiger down 342 38 touch mainMore
+38384  0      402    812    812    812    0      0      0      -      -140   -      -      -      -      hoch   ! zeiger up 342 38 touch mainMore
+38387  0      402    812    812    812    0      0      0      -      -140   -      -      -      -      hoch   ! tippen mainMore
+41773  0      402    812    812    812    0      0      0      -      -140   -      -      -      -      hoch   ! nav kein kandidat
+41774  0      402    812    812    812    0      0      0      -      -140   -      -      -      -      hoch   ! zeiger down 40 34 touch div.layer
+41851  0      402    812    812    812    0      0      0      -      -140   -      -      -      -      hoch   ! zeiger up 40 34 touch div.layer
+41886  0      402    812    812    812    0      0      0      -      -140   -      -      -      -      hoch   ! tippen -
+42423  0      402    812    812    812    0      0      0      -      -140   -      -      -      -      hoch   ! nav kein kandidat eigen
+42423  0      402    812    812    812    0      0      0      -      -140   -      -      -      -      hoch   ! zeiger down 36 31 touch path in back
+42485  0      402    812    812    812    0      0      0      -      -140   -      -      -      -      hoch   ! zeiger up 36 31 touch path in back
+42488  0      402    812    812    812    0      0      0      -      -140   -      -      -      -      hoch   ! tippen back
+42490  0      402    812    812    812    0      0      0      -      -140   0      -      0      -      hoch   ! neuaufbau side
+42855  0      -      812    812    812    0      0      -      -      -      0      -      0      -      hoch   ! neuaufbau side
+43224  0      -      812    812    812    0      0      -      -      -      0      -      0      -      hoch   ! nav kein kandidat eigen
+43224  0      -      812    812    812    0      0      -      -      -      0      -      0      -      hoch   ! zeiger down 361 34 touch svg.ic in sideMore
+43286  0      -      812    812    812    0      0      -      -      -      0      -      0      -      hoch   ! zeiger up 361 34 touch svg.ic in sideMore
+43288  0      -      812    812    812    0      0      -      -      -      0      -      0      -      hoch   ! tippen sideMore
+44426  0      -      812    812    812    0      0      -      -      -      0      -      0      -      hoch   ! nav kein kandidat eigen
+44426  0      -      812    812    812    0      0      -      -      -      0      -      0      -      hoch   ! zeiger down 154 231 touch button.mi.has-sub[menuitem]
+44502  0      -      812    812    812    0      0      -      -      -      0      -      0      -      hoch   ! zeiger up 154 231 touch button.mi.has-sub[menuitem]
+44505  0      -      812    812    812    0      0      -      -      -      0      -      0      -      hoch   ! tippen button
+# Ende nach 45 s
