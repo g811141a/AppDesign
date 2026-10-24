@@ -1,6 +1,6 @@
 # A-76 ‚Smiley-Leiste: Ziehen ist kein langes Drücken‘ – Fall-Liste
 
-**Stand 24.10.2026** · Sitzung ‚Reiselogbuch 0041‘ · Fehler am Gerät (Nutzer 24.10.2026): wer die Smiley-Leiste mit dem Finger auf
+**Stand 24.10.2026** · Sitzung ‚Reiselogbuch 0041‘ · **gebaut in AppDesign 4.33.0 (Sitzung 0042), Prüfung `checkLangDruecken`, R-3.5** · Fehler am Gerät (Nutzer 24.10.2026): wer die Smiley-Leiste mit dem Finger auf
 einem Smiley seitlich zieht, bekommt nach 0,6 s die Abfrage, ob dieses Smiley gelöscht werden soll.
 
 **Ursache:** `onLongPress` (ui.js) bricht den Zeitgeber nur bei `pointerup`/`pointerleave`/`pointercancel` und während einer

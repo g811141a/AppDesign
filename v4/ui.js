@@ -1,4 +1,4 @@
-// AppDesign 4.32.2 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
+// AppDesign 4.33.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
 // Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/fassung/X.Y.Z/ui.js"></script> (feste Fassung, R-10.3)
 // Seit 4.11.0 (R-10.3): ui.js und design.css immer mit ?v=<AppDesign-Version> einbinden (auch in sw.js) und beim Start
 // prüfen, ob genau diese Fassung geladen ist (AD_VERSION hier, --ad-version in design.css).
@@ -19,7 +19,7 @@
 
 'use strict';
 // Version der Bausteine (R-10.3): die App vergleicht sie beim Start mit der benötigten Fassung.
-const AD_VERSION = '4.32.2';
+const AD_VERSION = '4.33.0';
 /* ---------- Icons ---------- */
 
 // Schaltflächen-Icons aus Lucide (ISC-Lizenz), direkt eingebettet, damit die App offline funktioniert.
@@ -103,14 +103,23 @@ function autoGrow(ta) {
 }
 const growAll = () => dlg.querySelectorAll('textarea').forEach(autoGrow);
 
+// R-3.5 (seit 4.33.0, A-76): langes Drücken gilt nur, solange der Finger still steht – wandert er mehr als LANG_WEG oder rollt die
+// Fläche um ihn herum (Smiley-Leiste seitlich ziehen), ist es abgebrochen (wie Apple). Safari meldet beim Ziehen der Leiste kein
+// pointercancel – vorher fragte die Leiste nach 0,6 s, ob das Smiley unter dem Finger entfernt werden soll.
+const LANG_WEG = 10;
 function onLongPress(btn, onLong, onTap) {
   let timer = null;
-  let fired = false;
-  btn.addEventListener('pointerdown', () => {
-    fired = false;
-    timer = setTimeout(() => { if (navZug?.aktiv) return; fired = true; onLong(); }, 600);   // seit 4.30.0: nicht während einer Wischgeste (A-61)
+  let fired = false, x0 = 0, y0 = 0;
+  const rollt = e => { if (e.target.contains?.(btn)) stop(); };
+  const stop = () => { clearTimeout(timer); timer = null; removeEventListener('scroll', rollt, true); };
+  btn.addEventListener('pointerdown', e => {
+    stop();
+    fired = false; x0 = e.clientX; y0 = e.clientY;
+    addEventListener('scroll', rollt, { capture: true, passive: true });
+    timer = setTimeout(() => { stop(); if (navZug?.aktiv) return; fired = true; onLong(); }, 600);   // seit 4.30.0: nicht während einer Wischgeste (A-61)
   });
-  ['pointerup', 'pointerleave', 'pointercancel'].forEach(ev => btn.addEventListener(ev, () => clearTimeout(timer)));
+  btn.addEventListener('pointermove', e => { if (timer && Math.hypot(e.clientX - x0, e.clientY - y0) > LANG_WEG) stop(); });
+  ['pointerup', 'pointerleave', 'pointercancel'].forEach(ev => btn.addEventListener(ev, stop));
   btn.addEventListener('contextmenu', e => e.preventDefault());
   btn.addEventListener('click', e => {
     e.preventDefault();
@@ -1324,16 +1333,25 @@ function revealRow(sel) {
       { duration: REVEAL_HOLD + REVEAL_FADE });
 }
 
-// Auswahl-Kapsel: Schaltflächen in einer Kapsel; ist sie zu schmal, lässt sich der Inhalt wischen,
-// ein Verlauf am Rand zeigt, wo es weitergeht.
-const capHtml = (buttons, id = '') => `<div class="cap"><div class="scroll" ${id ? `id="${id}"` : ''}>${buttons}</div></div>`;
+// Auswahl-Kapsel (R-5.4): Schaltflächen in einer Kapsel; ist sie zu schmal, lässt sich der Inhalt wischen,
+// ein Verlauf am Rand zeigt, wo es weitergeht. Seit 4.33.0 (A-75) steht im freien Rand dazu ein kleiner Pfeil (nur Anzeige,
+// aria-hidden) – nur, solange es auf seiner Seite weitergeht; Drehen und andere Größenänderungen stellen beides neu.
+const capHtml = (buttons, id = '') => `<div class="cap"><div class="scroll" ${id ? `id="${id}"` : ''}>${buttons}</div>${ic('chevron-left', 'pf l')}${ic('chevron-right', 'pf r')}</div>`;
+const capFertig = new WeakSet();
 function mountCap(root) {
   root.querySelectorAll('.cap .scroll').forEach(strip => {
+    if (capFertig.has(strip)) return;
+    capFertig.add(strip);
+    const cap = strip.parentElement;
     const fade = () => {
-      strip.classList.toggle('fl', strip.scrollLeft > 2);
-      strip.classList.toggle('fr', strip.scrollLeft + strip.clientWidth < strip.scrollWidth - 2);
+      const l = strip.scrollLeft > 2, r = strip.scrollLeft + strip.clientWidth < strip.scrollWidth - 2;
+      strip.classList.toggle('fl', l);
+      strip.classList.toggle('fr', r);
+      cap.querySelector(':scope > .pf.l')?.classList.toggle('an', l);
+      cap.querySelector(':scope > .pf.r')?.classList.toggle('an', r);
     };
     strip.addEventListener('scroll', fade, { passive: true });
+    new ResizeObserver(fade).observe(strip);
     requestAnimationFrame(fade);
   });
 }

@@ -1791,3 +1791,112 @@ export async function checkSheet(p, { open, change = null, field = null, where =
   await zu();
   return errors;
 }
+
+// R-3.5 (seit 4.33.0, A-76; Fall-Liste arbeit/A-76 Fall-Liste.md L1–L4, L8): langes Drücken gilt nur, solange der Finger still steht –
+// wandert er mehr als 10 px oder rollt die Fläche um ihn herum, ist es abgebrochen (wie Apple: Tapback, Home-Bildschirm). Nachgebaut
+// ist der Ablauf vom Gerät (24.10.2026): auf einem Smiley aufsetzen und die Leiste seitlich ziehen – Safari meldet dabei kein
+// pointercancel (sonst wäre der Fehler nicht aufgetreten), die Leiste rollt mit dem Finger. Je Fall frisch aufgesetzt; die Ereignisse
+// werden in der Seite nachgebildet (Playwright kennt in WebKit keine Berührung mit Bewegung). sel: Schaltfläche mit langem Drücken;
+// frage: was langes Drücken öffnet (Abfrage bzw. Kontextmenü). Gibt Fehler zurück; Grundregeln danach ruft die App (t.schritt).
+export async function checkLangDruecken(p, { sel, frage = '.pop, .menu', where = '' } = {}) {
+  const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}R-3.5 ${t}`);
+  // schritte: [[dx, dy, ms, rollt]] – Lage seit dem Aufsetzen, Zeit seit dem vorigen Schritt; rollt: die Fläche rollt um dx mit
+  // (ohne pointermove, wenn zeiger false – Safari kann den Finger zum Rollen übernehmen, ohne der Seite Bewegungen zu melden).
+  const geste = (art, schritte, { zeiger = true, ende = 900 } = {}) => p.evaluate(async ({ sel, frage, art, schritte, zeiger, ende }) => {
+    const warte = ms => new Promise(r => setTimeout(r, ms));
+    const b = document.querySelector(sel), roll = b.closest('.scroll') || b.parentElement;
+    roll.scrollLeft = 0; await warte(50);
+    const r = b.getBoundingClientRect(), x = r.left + r.width / 2, y = r.top + r.height / 2, s0 = roll.scrollLeft;
+    const ev = (typ, dx, dy) => b.dispatchEvent(new PointerEvent(typ, { pointerId: 4076, pointerType: art, isPrimary: true, clientX: x + dx, clientY: y + dy,
+      button: 0, buttons: typ === 'pointerup' ? 0 : 1, bubbles: true, cancelable: true, composed: true }));
+    const t0 = performance.now();
+    ev('pointerdown', 0, 0);
+    for (const [dx, dy, ms, rollt] of schritte) {
+      await warte(ms);
+      if (zeiger) ev('pointermove', dx, dy);
+      if (rollt) roll.scrollLeft = s0 - dx;
+    }
+    await warte(Math.max(0, ende - (performance.now() - t0)));
+    const offen = !!document.querySelector(frage), gerollt = Math.round(roll.scrollLeft - s0);
+    ev('pointerup', schritte.at(-1)?.[0] || 0, schritte.at(-1)?.[1] || 0);
+    return { offen, gerollt, kann: roll.scrollWidth > roll.clientWidth + 2 };
+  }, { sel, frage, art, schritte, zeiger, ende });
+  const zu = async () => { await wait(p, 100);
+    await p.evaluate(frage => { const f = document.querySelector(frage); if (!f) return;
+      const k = [...f.querySelectorAll('.btns button, button')].at(-1); if (f.matches('.pop') && k) k.click(); else document.querySelector('.layer')?.click(); }, frage);
+    await wait(p, 250); };
+  const zug = (von, bis, n, ms, rollt) => Array.from({ length: n }, (_, i) => [Math.round(von + (bis - von) * (i + 1) / n), 0, ms, rollt]);
+  for (const art of ['touch', 'mouse']) {
+    const wer = art === 'touch' ? 'Finger' : 'Maus', rollt = art === 'touch';   // mit der Maus rollt die Leiste beim Ziehen nicht
+    // L1 (L2): aufsetzen, gleich seitlich ziehen – die Leiste rollt mit –, danach stehen lassen; zusammen länger als 0,6 s
+    let r = await geste(art, zug(0, -90, 12, 30, rollt));
+    if (r.offen) E(`L1 ${wer}: seitlich gezogen (${-r.gerollt} px gerollt), trotzdem fragt langes Drücken – Ziehen ist kein langes Drücken`);
+    await zu();
+    if (art === 'touch' && r.kann) {   // Safari übernimmt den Finger zum Rollen und meldet der Seite keine Bewegung mehr
+      r = await geste(art, zug(0, -90, 12, 30, true), { zeiger: false });
+      if (r.offen) E(`L1 ${wer}: Leiste rollt unter dem Finger (${-r.gerollt} px), trotzdem fragt langes Drücken`);
+      await zu();
+    }
+    // L3: erst 0,4 s still, dann ziehen (vor 0,6 s)
+    r = await geste(art, [[0, 0, 400, false], ...zug(0, -60, 6, 30, rollt)]);
+    if (r.offen) E(`L3 ${wer}: nach 0,4 s gezogen, trotzdem fragt langes Drücken`);
+    await zu();
+    // L4: still halten, der Finger wackelt höchstens 10 px – fragt wie bisher
+    r = await geste(art, [[3, 2, 150, false], [-4, 6, 150, false], [6, -3, 150, false], [8, 4, 150, false]]);
+    if (!r.offen) E(`L4 ${wer}: still gehalten (höchstens 10 px gewackelt), langes Drücken fragt nicht`);
+    await zu();
+  }
+  return errors;
+}
+
+// R-5.4 (seit 4.33.0, A-75; Fall-Liste arbeit/A-75 Fall-Liste.md K1–K3, K6, K7, K9, K10, K12): Auswahl-Kapsel mit Pfeilen am Rand –
+// am Anfang nur ›, in der Mitte beide, am Ende nur ‹ (und zurück am Anfang wieder nur ›); ein Pfeil blendet in 0,2 s aus (‚Bewegung
+// reduzieren‘: sofort); Antippen unter dem Pfeil wählt den Eintrag darunter (der Pfeil fängt nichts ab), Wählen ändert weder Breite
+// noch Pfeile; Drehen bzw. ein schmaleres Fenster stellt Verlauf und Pfeile neu, der Rollstand bleibt. sel: die Rollfläche (.cap .scroll);
+// drehen: true dreht die Ansicht hin und zurück; schmaler: Breite in px für K7 (Fenster schmaler, iPad geteilt). Gibt Fehler zurück.
+export async function checkKapsel(p, { sel, drehen = false, schmaler = null, where = '' } = {}) {
+  const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}R-5.4 ${t}`);
+  const lage = () => p.evaluate(sel => { const s = document.querySelector(sel), cap = s.parentElement, pf = x => cap.querySelector(`:scope > .pf.${x}`);
+    return { sl: Math.round(s.scrollLeft), max: Math.round(s.scrollWidth - s.clientWidth), l: pf('l')?.classList.contains('an'), r: pf('r')?.classList.contains('an'),
+      ol: +getComputedStyle(pf('l')).opacity, or: +getComputedStyle(pf('r')).opacity, dauer: getComputedStyle(pf('r')).transitionDuration, breite: Math.round(cap.getBoundingClientRect().width) }; }, sel);
+  const rolle = async x => { await p.evaluate(([sel, x]) => { const s = document.querySelector(sel); s.scrollLeft = x === 'ende' ? s.scrollWidth : x === 'mitte' ? (s.scrollWidth - s.clientWidth) / 2 : x; }, [sel, x]); await wait(p, 300); return lage(); };
+  const soll = (k, x, l, r) => { if (x.l !== l || x.r !== r) E(`${k}: Pfeile ${x.l ? '‹' : '–'} ${x.r ? '›' : '–'} statt ${l ? '‹' : '–'} ${r ? '›' : '–'} (Rollstand ${x.sl} von ${x.max} px)`);
+    if (Math.round(x.ol) !== +l || Math.round(x.or) !== +r) E(`${k}: Pfeil nach 0,3 s nicht ein- bzw. ausgeblendet (Deckkraft ‹ ${x.ol} › ${x.or})`); };
+  let x = await rolle(0);
+  const ruhig = await p.evaluate(() => matchMedia('(prefers-reduced-motion: reduce)').matches);
+  if (x.dauer !== (ruhig ? '0s' : '0.2s')) E(`K12: Pfeil blendet in ${x.dauer} aus, soll ${ruhig ? 'ohne Überblenden (Bewegung reduzieren)' : '0,2 s'}`);
+  if (x.max <= 2) { soll('K5 alles passt', x, false, false); }
+  else {
+    soll('K1 Anfang', x, false, true);
+    soll('K2 Mitte', await rolle('mitte'), true, true);
+    soll('K3 Ende', await rolle('ende'), true, false);
+    soll('K3 zurück am Anfang', await rolle(0), false, true);
+    // K9 + K10: Antippen unter dem Pfeil › wählt den Eintrag darunter; Breite und Pfeile bleiben
+    const ziel = await p.evaluate(sel => { const s = document.querySelector(sel), f = s.parentElement.querySelector(':scope > .pf.r').getBoundingClientRect();
+      const x = (f.left + f.right) / 2, y = (f.top + f.bottom) / 2, e = document.elementFromPoint(x, y)?.closest('button');
+      return { x, y, im: !!e && s.contains(e), druck: e?.getAttribute('aria-pressed') ?? null }; }, sel);
+    if (!ziel.im) E('K9: unter dem Pfeil › liegt kein Eintrag der Kapsel – der Pfeil fängt das Antippen ab');
+    else if (ziel.druck !== null) {
+      await p.mouse.click(ziel.x, ziel.y); await wait(p, 300);
+      const y = await lage(), jetzt = await p.evaluate(([x, y]) => document.elementFromPoint(x, y)?.closest('button')?.getAttribute('aria-pressed'), [ziel.x, ziel.y]);
+      if (jetzt === ziel.druck) E('K9: Antippen unter dem Pfeil › wählt den Eintrag darunter nicht');
+      if (y.breite !== x.breite) E(`K10: Wählen ändert die Breite der Kapsel (${x.breite} → ${y.breite} px)`);
+      soll('K10 nach dem Wählen', y, y.sl > 2, y.sl < y.max - 2);
+      await p.mouse.click(ziel.x, ziel.y); await wait(p, 300);
+    }
+  }
+  // K6 / K7: Drehen bzw. schmaler – Verlauf und Pfeile neu, Rollstand bleibt (soweit möglich)
+  const vp = p.viewportSize();
+  for (const [k, gr] of [drehen && ['K6 gedreht', { width: vp.height, height: vp.width }], schmaler && ['K7 schmaler', { width: schmaler, height: vp.height }]].filter(Boolean)) {
+    const vor = await rolle(x.max > 2 ? 'mitte' : 0);
+    await p.setViewportSize(gr); await wait(p, 500);
+    let n = await lage();
+    soll(k, n, n.sl > 2, n.sl < n.max - 2);
+    if (Math.abs(n.sl - Math.min(vor.sl, n.max)) > 2) E(`${k}: Rollstand der Kapsel ${vor.sl} → ${n.sl} px (Ende ${n.max}) – soll bleiben`);
+    await p.setViewportSize(vp); await wait(p, 500);
+    n = await lage();
+    soll(`${k} und zurück`, n, n.sl > 2, n.sl < n.max - 2);
+  }
+  await rolle(0);
+  return errors;
+}

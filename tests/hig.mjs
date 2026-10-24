@@ -294,9 +294,21 @@ const found = new Map(), icons = new Map();
       document.querySelectorAll('dialog[open], .pop').forEach(d => { const n = [...d.querySelectorAll('button.primary')].filter(vis).length;
         if (n > 1) R('R-3.3', `${n} blau gefüllte Schaltflächen in einem ${d.tagName === 'DIALOG' ? 'Fenster' : 'Abfrage'} – höchstens eine Hauptaktion`); });
       // R-5.4 (seit 4.12.0): Auswahl-Kapsel – wischbar mit Verlauf am Rand; die Markierung ändert die Breite nicht.
+      // Seit 4.33.0 (A-75 K1–K5, K8, K15): im freien Rand ein kleiner Pfeil (chevron, 14 px, --muted, 9 px vom Rand, nur Anzeige,
+      // aria-hidden) genau dann, wenn es auf seiner Seite weitergeht – passt alles, weder Verlauf noch Pfeil.
       document.querySelectorAll('.cap .scroll').forEach(s => { if (!vis(s) || !onTop(s)) return;
         const more = s.scrollLeft + s.clientWidth < s.scrollWidth - 2, mask = (cs(s).maskImage || cs(s).webkitMaskImage || 'none');
         if (more && mask === 'none') R('R-5.4', 'Auswahl-Kapsel geht rechts weiter, aber ohne Verlauf am Rand');
+        const cap = s.parentElement, kr = cap.getBoundingClientRect(), weiter = { l: s.scrollLeft > 2, r: more };
+        if (!weiter.l && !weiter.r && mask !== 'none') R('R-5.4', 'Auswahl-Kapsel passt ganz, hat aber einen Verlauf am Rand');
+        for (const seite of ['l', 'r']) { const f = cap.querySelector(`:scope > .pf.${seite}`), wo = seite === 'l' ? 'links' : 'rechts';
+          if (!f) { R('R-5.4', `Auswahl-Kapsel ohne Pfeil ${wo}`); continue; }
+          if (f.classList.contains('an') !== weiter[seite]) R('R-5.4', `Pfeil ${wo} ${weiter[seite] ? 'fehlt, obwohl es weitergeht' : 'steht, obwohl dort das Ende erreicht ist'}`);
+          const fr = f.getBoundingClientRect(), rand = seite === 'l' ? fr.left - kr.left : kr.right - fr.right;
+          if (Math.abs(fr.width - 14) > 0.5 || Math.abs(rand - 9) > 1 || Math.abs((fr.top + fr.bottom) / 2 - (kr.top + kr.bottom) / 2) > 1) R('R-5.4', `Pfeil ${wo} nicht 14 px groß, 9 px vom Rand, mittig (${Math.round(fr.width)} px, Rand ${Math.round(rand)} px)`);
+          if (cs(f).pointerEvents !== 'none' || f.getAttribute('aria-hidden') !== 'true') R('R-5.4', `Pfeil ${wo} ist nicht nur Anzeige (pointer-events ${cs(f).pointerEvents}, aria-hidden ${f.getAttribute('aria-hidden')})`);
+          const muted = (() => { const x = document.createElement('i'); x.style.color = 'var(--muted)'; cap.append(x); const c = cs(x).color; x.remove(); return c; })();
+          if (cs(f).color !== muted) R('R-5.4', `Pfeil ${wo} nicht in --muted (${cs(f).color} statt ${muted})`); }
         s.querySelectorAll('button[aria-pressed]').forEach(b => { const was = b.getAttribute('aria-pressed'), w0 = b.getBoundingClientRect().width;
           b.setAttribute('aria-pressed', was === 'true' ? 'false' : 'true'); const w1 = b.getBoundingClientRect().width; b.setAttribute('aria-pressed', was);
           if (Math.abs(w1 - w0) > 0.5) R('R-5.4', `Auswahl ‚${label(b)}‘ ändert beim Wählen ihre Breite (${Math.round(w0)} → ${Math.round(w1)} px)`); }); });

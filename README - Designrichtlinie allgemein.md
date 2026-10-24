@@ -1,6 +1,6 @@
 # Designrichtlinie allgemein
 
-**Version 4.32.2** · Stand 24.10.2026
+**Version 4.33.0** · Stand 24.10.2026
 
 Allgemeine Gestaltungs- und Bedienregeln für alle Web-Apps von g811141a auf iPad und iPhone. Die Datei liegt im Design-Repo
 **AppDesign** (g811141a/AppDesign); ihre Versionsnummer ist die des Repos. Die Komponenten sind dort einmal programmiert und
@@ -251,8 +251,8 @@ heller).
   breit, dass „100.000,00“ vollständig passt; längere Beträge lassen das Feld beim Tippen mitwachsen.
 - **Smiley-Leisten** (Schnellauswahl über einem Textfeld, Bau 15.12): nur einzeilig, mit dem Finger nach links/rechts wischen,
   Verlauf am Rand als Hinweis auf weitere Smileys, Zurücksetzen (rotate-ccw) fest rechts daneben. Sortiert nach Häufigkeit
-  (meistbenutzte vorne), nie benutzte in Standardreihenfolge dahinter. Langes Drücken entfernt einen Smiley (Sprechblase
-  „Entfernen“, rot); wird er wieder verwendet, kommt er zurück. Zurücksetzen stellt die Standard-Smileys her und setzt die
+  (meistbenutzte vorne), nie benutzte in Standardreihenfolge dahinter. Langes Drücken auf derselben Stelle entfernt einen Smiley
+  (Sprechblase „Entfernen“, rot; Ziehen der Leiste nicht, R-3.5); wird er wieder verwendet, kommt er zurück. Zurücksetzen stellt die Standard-Smileys her und setzt die
   Zähler auf null (Sprechblase „Zurücksetzen“, rot). Ein angetippter Smiley wird angehängt, wenn der Cursor in einer leeren Zeile
   oder hinter Smileys steht, sonst beginnt eine neue Zeile.
 - **Diktieren** nur über die Mikrofon-Taste der Tastatur (Hinweis im Fenster); keine eigene mic-Schaltfläche – iOS liefert
@@ -424,6 +424,10 @@ Gemessene bzw. belegte Eigenheiten mit Quelle; sie gelten für alle Apps, die Pr
   (eine Seite zurück im Verlauf). Damit waagrechtes Wischen bei der App ankommt, braucht der Bereich `touch-action: pan-y` (sonst
   übernimmt Safari die Berührung mit `pointercancel`); Bereiche mit eigenem waagrechtem Rollen sind selbst Rollbereiche und behalten
   ihr Wischen. Ein Antippen nach einer Bewegung über 10 px unterdrückt ui.js (Maus und Zeichenstift lösen es sonst aus).
+  **Langes Drücken in einem waagrechten Rollbereich** (R-3.5): zieht der Finger die Smiley-Leiste seitlich, meldet Safari der Seite
+  kein `pointercancel` – ein Zeitgeber für langes Drücken lief weiter und fragte nach 0,6 s (Fehler am Gerät, 24.10.2026, A-76).
+  `onLongPress` bricht deshalb selbst ab: bei mehr als 10 px Weg (`pointermove`) und beim `scroll` einer Fläche, die die Schaltfläche
+  enthält (Hörer in der Einfangphase, nur solange der Zeitgeber läuft).
   **Später Abbruch:** auch mit `pan-y` beginnt Safari zu rollen, sobald der Finger seit dem Aufsetzen 10 px senkrecht abweicht –
   mitten in einer waagrechten Geste – und nimmt der Seite den Finger (`pointercancel`, Lage 0 0); `preventDefault` auf
   `pointermove` hält Safari nicht auf, nur auf `touchmove` (solange es `cancelable` ist). ui.js verhindert `touchmove`, sobald die
@@ -691,11 +695,18 @@ Regel). In AppDesign ist jede Komponente einmal programmiert (`v4/design.css`, `
 - Smiley-Leiste: Verhalten siehe 8; Smileys als runde schwebende 44 × 44-Schaltflächen, Abstand 12 px.
 - **Auswahl-Kapsel** (R-5.4): Mehrere Auswahl-Schaltflächen (Smileys, Wetter, Reisemittel …) stehen in **einer** schwebenden
   Kapsel (44 px hoch, Lichtkante, Schatten, keine Ränder dazwischen). Reicht der Platz nicht, lässt sich der Inhalt nach
-  links/rechts wischen; ein weicher Verlauf am Rand zeigt, wo es weitergeht. Gewählte Einträge sind blau getönt (Haarlinie
+  links/rechts wischen; am Rand, wo es weitergeht, ein weicher Verlauf (48 px, die äußeren 28 px ganz frei) und darin ein kleiner
+  Pfeil (`chevron-left`/`-right`, 14 px, `--muted`, 9 px vom Rand, nur Anzeige: fängt kein Antippen ab, `aria-hidden`). Ein Pfeil
+  steht nur, solange es auf seiner Seite weitergeht; am Ende blendet er in 0,2 s aus (‚Bewegung reduzieren‘: ohne Überblenden).
+  Passt alles, gibt es weder Verlauf noch Pfeil; Drehen und andere Größenänderungen stellen beides neu. Bewusste Abweichung von
+  Apple: am iPhone zeigt Apple bei wischbaren Reihen keine Pfeile (nur Mac und iPad mit Zeiger) – die Pfeile machen das Wischen
+  erkennbar. Gewählte Einträge sind blau getönt (Haarlinie
   `--accent`), und zwar als eigene Form **innerhalb** der Schaltfläche mit Luft rundherum (wie Tapback): bei Emojis ein Kreis von
   36 px, bei Text eine Kapsel mit 3 px Abstand nach innen – markierte Nachbarn stoßen nie aneinander. Schaltflächen füllen genau
   den Innenraum der Kapsel. Zurücksetzen (rotate-ccw) steht als eigene runde Schaltfläche rechts daneben. Vorbild: Tapback-Leiste
-  in Nachrichten. Technisch `.cap` > `.scroll`.
+  in Nachrichten. Technisch `.cap` > `.scroll` + `.pf` (`capHtml`, `mountCap`).
+- **Langes Drücken** (R-3.5) auf einem Smiley entfernt ihn (8) – Ziehen ist kein langes Drücken: wandert der Finger mehr als 10 px
+  oder rollt die Leiste, ist es abgebrochen (`onLongPress`).
 
 ### 15.13 Tabelle
 - **Apple:** [HIG – Lists and tables](https://developer.apple.com/design/human-interface-guidelines/lists-and-tables)
@@ -1022,6 +1033,7 @@ die Prüfliste, wenn eine Version es betrifft.
 | R-3.2 | **Schweben und Kapseln:** alle Schaltflächen und Suchfelder schweben (Lichtkante, zierlicher Schatten); mehrere nebeneinander stehen in einer Kapsel; Nach oben / Ans Ende in einer senkrechten Kapsel unten rechts – am iPad und am iPhone in der Inhaltsansicht, nur wenn es etwas zu rollen gibt, **nur mit den Pfeilen, die etwas bewirken** (nah an einem Ende – halbe Höhe des Rollbereichs – fehlt dessen Pfeil; unten fest); sie rollt den Inhalt, steht bei offener Tastatur über ihr und überdeckt **nie Kopf- oder Suchzeile** – passt sie nicht ganz in den Inhalt (volle Kapsel + 2 × 16 px), ist sie ausgeblendet; bei offenem Fenster und im Druck nicht zu sehen. **Schnellroll-Griff** ab drei Höhen Inhalt: erscheint beim Rollen, blendet nach 1,5 s aus (nur Deckkraft), Bahn unter Kopf- bzw. Suchzeile bis über die volle Kapsel, Ziehen springt verhältnisgleich (darüber hinaus = Anfang/Ende), Blase mit der Marke des Abschnitts oben (`data-marke`), Regler für VoiceOver; nicht bei offener Tastatur | hig.mjs (Grundregel ‚Kapsel schneidet keine Leiste‘), ablauf.mjs – `checkFab` (Pfeile je Rollstand, Tastatur quer und Suche, Fenster, Drucken) mit `checkGriff` | Gefühl beim Ziehen, Daumen | 4, 15.1, 15.5 |
 | R-3.3 | **Jede Farbe hat eine Bedeutung:** blau gefüllt nur die Hauptaktion im Fenster (höchstens eine); Gewähltes bleibt blau getönt, solange sein Menü, Fenster oder seine Abfrage offen ist; Grün nur für eingeschaltete Schalter; Rot nur für Löschen | hig.mjs – höchstens eine blaue Hauptaktion, `stays` | – | 4 |
 | R-3.4 | **Kein Fokus-Rahmen** beim Antippen, beim Öffnen eines Fensters und im Suchfeld | hig.mjs | – | 1, 15.2 |
+| R-3.5 | **Langes Drücken** (0,6 s) gilt nur, solange der Finger still steht: wandert er mehr als 10 px oder rollt die Fläche um ihn herum (Leiste seitlich ziehen), ist es abgebrochen – Finger und Maus; kurz antippen bleibt Antippen | ablauf.mjs – `checkLangDruecken` | Smiley-Leiste ziehen | 8, 13, 15.12 |
 
 ### 4. Menüs, Abfragen, Fenster
 
@@ -1041,7 +1053,7 @@ die Prüfliste, wenn eine Version es betrifft.
 | R-5.1 | **Felder:** Bezeichnung und Feld gehören zusammen (Umbruch nur davor); Schaltflächen im Schrittkopf bleiben als Gruppe zusammen und stehen neben dem Titel, wenn alles in eine Zeile passt; Datumsfelder so breit wie das Datum mit Kalender-Icon; Betragsfelder rechtsbündig, ‚4.850,00 €‘ | hig.mjs | – | 8, 15.10 |
 | R-5.2 | **Texteingabe:** Großbuchstabe am Zeilenanfang und nach einem Vorschlag, nicht nach einer Korrektur von Hand; keine doppelten Leerzeichen (Tippen und Einfügen, alle Textfelder); Textfelder wachsen mit; Diktieren nur über die Mikrofon-Taste der Tastatur (kein eigener Knopf) | ablauf.mjs – `checkCapital`, `checkSpaces` | iOS-Tastatur, Kurzbefehl ‚.‘ | 8 |
 | R-5.3 | **Fehlermeldungen:** rot direkt unter dem Feld (Feld rot umrandet), erst nach einer Eingabe bzw. beim Häkchen; Pflichtfelder werden nicht gekennzeichnet | ablauf.mjs – `checkFieldErrors` | – | 8, 15.11 |
-| R-5.4 | **Auswahl-Kapsel:** mehrere Auswahl-Schaltflächen in einer Kapsel, seitlich wischbar mit Verlauf am Rand; Markierung als eigene Form innen, Breite ändert sich nicht | hig.mjs – Verlauf am Rand, Breite beim Wählen | Wischen | 15.12 |
+| R-5.4 | **Auswahl-Kapsel:** mehrere Auswahl-Schaltflächen in einer Kapsel, seitlich wischbar; wo es weitergeht, Verlauf und kleiner Pfeil am Rand (nur Anzeige), am jeweiligen Ende verschwinden beide; Markierung als eigene Form innen, Breite ändert sich nicht | hig.mjs – Verlauf und Pfeile am Rand, Breite beim Wählen (Ablauf: `checkKapsel`) | Wischen, Pfeile verständlich | 15.12 |
 | R-5.5 | **Eingabetaste:** einzeilige Felder – ‚Fertig‘, die Eingabetaste schließt die Tastatur, ein Fenster bleibt offen; mehrzeilige Felder – Zeilenumbruch; Suchfeld – ‚Suchen‘ | ablauf.mjs – `checkEnterDone` | iOS-Tastatur (Beschriftung, iPhone-Ziffernfeld) | 8 |
 | R-5.6 | **ⓧ in einzeiligen Feldern:** solange ein einzeiliges Textfeld den Fokus hat und etwas drinsteht, rechts darin ein graues ⓧ (44 × 44, Text läuft nicht darunter); Antippen leert, Cursor und Tastatur bleiben, die App erfährt es; rollt mit, bleibt nach dem Drehen am Feld; nicht in mehrzeiligen, Datums- und Suchfeldern | ablauf.mjs – `checkClear` | Antippen, Tastatur bleibt | 15.11 |
 | R-5.7 | **Schalter:** Safaris eingebauter Schalter (`switch`, `role="switch"` – VoiceOver ‚Schalter‘), von Safari gezeichnet in Grün; ohne ihn unser Schalter 51 × 31 | hig.mjs – Attribute, Größe ohne, Systemaussehen und Grün mit eingebautem Schalter (nachgebildet) | Aussehen, Gleiten, Ziehen, Haptik, VoiceOver | 15.15 |
@@ -1148,6 +1160,7 @@ R-2.3 (15.2), R-4.4 (6, 15.8, HIG 9), R-5.3 (8), R-5.4 (15.12), R-5.5 (A-14), R-
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 4.33.0 | 24.10.2026 | Neben | **A-75:** R-5.4 und 15.12 – wo die Auswahl-Kapsel weitergeht, steht im freien Rand (28 px) des Verlaufs (48 px) ein kleiner Pfeil `chevron-left`/`-right` (14 px, `--muted`, nur Anzeige), der am jeweiligen Ende in 0,2 s ausblendet; bewusste Abweichung von Apple (am iPhone keine Pfeile); Prüfungen `hig.mjs` (Pfeil genau dann, wenn es weitergeht) und `checkKapsel`. **A-76:** neu R-3.5 langes Drücken – Ziehen über 10 px oder Rollen bricht ab (8, 13, 15.12); Prüfung `checkLangDruecken` |
 | 4.32.2 | 24.10.2026 | Korrektur | **A-73 (P-69/3):** R-4.6 – ein Zug, der zuerst nach oben (oder waagerecht) geht und das Blatt nicht zieht, schließt die Tastatur, sobald der Finger danach 8 px unter seinen höchsten Punkt geht (13 Blatt ziehen, neue Safari-Eigenheit: Zeigerbewegungen kommen beim Rollen weiter); R-4.5 – reicht der Platz nicht, steht das Feld mit Platz für Fokus-Umrandung und Schatten unter Kopf- bzw. Suchzeile statt direkt am Rand (13) |
 | 4.32.1 | 24.10.2026 | Korrektur | **A-71 (P-68/2.3):** R-4.6 – ein Zug, der bei offener Tastatur auf einem Feld beginnt, zieht das Blatt im selben Zug wie am Kopf, auch wenn R-4.5 den Inhalt gerollt hat; im gerollten Inhalt daneben schließt er nur die Tastatur (13, 15.17); Prüfung `checkSheet` B10 und B19 mit dem Safari-Modell |
 | 4.32.0 | 23.10.2026 | Neben | **A-61 Teil 2 (Variante A):** neu R-4.6 Blatt auf dem iPhone – jedes Fenster außer Meldungen gleitet als Blatt von unten, die Seite weicht zurück, nach unten ziehen schließt wie x, mit Änderungen federt es zurück und fragt (7, 13 Wischgesten, 15.17; R-4.5 angepasst); Prüfung `checkSheet` (B1–B24). **A-69:** R-7.4 erweitert – ein aktueller Eintrag (z. B. heute) steht oben ohne Hervorhebung, hervorgehoben wird nur Offenes (13); `checkOpenAt` mit `markiert` |
