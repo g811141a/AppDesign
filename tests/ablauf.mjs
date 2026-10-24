@@ -4,7 +4,7 @@
 // Einbinden im Prüfskript der App:  import { checkSearch, checkDialogHead } from '../../AppDesign/tests/ablauf.mjs';
 //                                   fehler.push(...await checkSearch(page, { term: 'Sydney' }));
 import { ROLL, rolle, rollstand, navFertig, rollRuht } from './pruefe.mjs';
-import { safariWischen } from './safari.mjs';
+import { safariWischen, safariModell } from './safari.mjs';
 const wait = (p, ms = 250) => p.waitForTimeout(ms);
 // R-2.3 (seit 4.25.1, A-24): beim Tippen bleibt das Suchfeld dasselbe Element und behält den Fokus – sonst schließt Safari am
 // iPhone die Tastatur kurz und Kopf- und Suchzeile zittern bei jedem Buchstaben. Tippt Buchstabe für Buchstabe (und löscht
@@ -1549,6 +1549,9 @@ export async function checkNavigation(p, { eintrag, titel, zurueck = '#back', wa
 
 // R-4.6 Blatt auf dem iPhone (seit 4.32.0, A-61 Teil 2; Fall-Liste arbeit/A-61 Teil 2 Fall-Liste.md B1–B24): open() öffnet ein Fenster,
 // change() ändert darin etwas (fehlt es, ist das Fenster ohne Eingaben, z. B. die Vorschau), field = ein Feld darin (Tastatur, B10).
+// Seit 4.32.1 (A-71, P-68/2.3): B10 und B19 mit dem Safari-Modell (tests/safari.mjs, für diese Fälle eingesetzt und wieder
+// herausgenommen) – Feld antippen, Tastatur auf, R-4.5 rollt das Feld in die obere Hälfte; der Zug auf dem Feld zieht trotzdem das
+// Blatt (wie am Kopf), im gerollten Inhalt neben dem Feld schließt er nur die Tastatur.
 // iPhone-Aufbau: ein Blatt von knapp unter der Statusleiste bis unten, gleitet von unten herein (‚Bewegung reduzieren‘: überblendet), die
 // Seite weicht hoch verkleinert zurück, quer nicht; Ziehen am Kopf folgt dem Finger und federt zurück, weit oder schnell schließt, im
 // gerollten Inhalt bleibt es, waagerecht bleibt es; mit Änderungen federt es zurück und fragt am x; Abdunkelung und Escape wie x; Drehen
@@ -1716,20 +1719,51 @@ export async function checkSheet(p, { open, change = null, field = null, where =
       if (!(await lage()).open) E('B8 ‚Weiter bearbeiten‘ schließt das Fenster');
     }
   }
-  // B10 mit Änderung auf einem Feld nach unten ziehen: Feld gibt den Fokus ab (Tastatur zu), federt zurück und fragt
+  // B19 und B10 bei offener Tastatur (Safari-Modell): Feld antippen – R-4.5 rollt es in die obere Hälfte, der Inhalt steht nicht mehr
+  // ganz oben (am Gerät P-68/2.3: der Zug auf dem Feld schloss nur die Tastatur, erst der zweite zog das Blatt)
   if (field && (await lage()).open) {
-    await p.locator(field).first().focus(); await wait(p, 150);
-    const f = await p.locator(field).first().boundingBox();
-    m = await zieh({ x: f.x + Math.min(40, f.width / 2), y: f.y + Math.min(14, f.height / 2) }, 0, Math.round(l.h * 0.5));
-    await wait(p, 300);
+    const eigen = !await p.evaluate(() => !!window.__safari);
+    if (eigen) await safariModell(p, l.quer ? 'iPhone quer' : 'iPhone hoch', { auto: true });
+    const tippen = async () => {
+      // ein Mauszug wählt Text aus, Chromium fokussiert beim Antippen einer Auswahl nicht (der Finger am Gerät wählt nichts aus)
+      await p.evaluate(() => getSelection().removeAllRanges());
+      await p.locator(field).first().tap(); await wait(p, 600);
+      return p.evaluate(sel => {
+        const f = document.querySelector(`#dlg ${sel}`) || document.querySelector(sel), b = f.closest('.dlg-body'), r = f.getBoundingClientRect(), br = b.getBoundingClientRect();
+        const x = Math.round(br.left + 4), y = Math.round((r.top + r.bottom) / 2), t = document.elementFromPoint(x, y);
+        return { gerollt: Math.round(b.scrollTop), tastatur: !!window.__safari?.offen, fokus: document.activeElement === f,
+          feld: { x: Math.round(r.left + Math.min(40, r.width / 2)), y: Math.round(r.top + Math.min(14, r.height / 2)) },
+          daneben: t && !t.closest('input, textarea, select, button') && b.contains(t) ? { x, y } : null };
+      }, field);
+    };
+    const tastaturZu = async () => { await wait(p, 300); await p.evaluate(() => { if (window.__safari?.offen) __safari.tastatur(false); }); await wait(p, 300); };
+    // B19 im gerollten Inhalt neben dem Feld nach unten ziehen: nur die Tastatur schließt, das Blatt bleibt, keine Rückfrage
+    let g = await tippen();
+    if (!g.fokus || !g.tastatur) E(`B10 Vorbereitung: nach dem Antippen von ${field} ${g.fokus ? '' : 'kein Fokus '}${g.tastatur ? '' : 'keine Tastatur'}`);
+    else if (g.gerollt > 0 && g.daneben) {
+      m = await zieh(g.daneben, 0, 200);
+      l = await lage();
+      if (l.fokus) E('B19 im gerollten Inhalt nach unten ziehen schließt die Tastatur nicht');
+      if (m.t) E(`B19 im gerollten Inhalt bei offener Tastatur folgt das Blatt dem Finger (${m.t} px)`);
+      if (!l.open) { E('B19 im gerollten Inhalt bei offener Tastatur schließt Ziehen das Fenster'); await auf(); await change(); await wait(p); }
+      else if (l.pop.length) { E(`B19 im gerollten Inhalt bei offener Tastatur fragt Ziehen (${l.pop.join(' · ')})`); await p.locator('.pop button', { hasText: 'Weiter bearbeiten' }).click(); await ruhig(); }
+    }
+    await tastaturZu();
+    // B10 mit Änderung auf einem Feld nach unten ziehen: ein Zug – Tastatur zu, das Blatt folgt zäh, federt zurück und fragt
+    g = await tippen();
+    const w = `bei offener Tastatur${g.gerollt ? ` (Inhalt um ${g.gerollt} px gerollt)` : ''}`;
+    m = await zieh(g.feld, 0, Math.round(l.h * 0.5));
+    await tastaturZu();
     l = await lage();
-    if (l.fokus) E('B10 nach unten ziehen auf einem Feld schließt die Tastatur nicht (Feld behält den Fokus)');
-    if (!l.open) E('B10 mit Änderungen schließt Ziehen auf einem Feld das Fenster ohne Rückfrage');
-    else if (!l.pop.some(t => /Änderungen verwerfen/.test(t))) E('B10 mit Änderungen fragt Ziehen auf einem Feld nicht ‚Änderungen verwerfen‘');
+    if (l.fokus) E(`B10 nach unten ziehen auf einem Feld ${w} schließt die Tastatur nicht (Feld behält den Fokus)`);
+    if (m.t < 20) E(`B10 ein Zug auf einem Feld ${w} zieht das Blatt nicht (${m.t} px) – wie am Kopf erwartet`);
+    if (!l.open) E(`B10 mit Änderungen schließt Ziehen auf einem Feld ${w} das Fenster ohne Rückfrage`);
+    else if (!l.pop.some(t => /Änderungen verwerfen/.test(t))) E(`B10 mit Änderungen fragt ein Zug auf einem Feld ${w} nicht ‚Änderungen verwerfen‘${l.pop.length ? ` (${l.pop.join(' · ')})` : ''}`);
     else {   // B9: ‚Änderungen verwerfen‘ schließt
       await p.locator('.pop button', { hasText: 'Änderungen verwerfen' }).click(); await ruhig();
       await weg('B9 ‚Änderungen verwerfen‘');
     }
+    if (eigen) { await p.evaluate(() => window.__safari?.aus()); await wait(p, 300); }
   }
   await zu();
   return errors;
