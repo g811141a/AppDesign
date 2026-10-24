@@ -1,6 +1,6 @@
 # AppDesign – Backlog (allgemeine Themen)
 
-**Stand 24.10.2026** · Aktuelle Version: AppDesign 4.32.2
+**Stand 24.10.2026** · Aktuelle Version: AppDesign 4.33.0
 
 Allgemeine Themen, die alle Apps betreffen. App-Themen stehen im Backlog der jeweiligen App.
 Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.4.
@@ -11,8 +11,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Prio | Thema | bereit seit |
 |---|---|---|---|
-| A-75 | 1 | **Auswahl-Kapsel: erkennbar, dass es seitlich weitergeht (Nutzer 24.10.2026, allgemein):** auf dem iPhone sind in der Reisemittel-Kapsel nicht alle Einträge sichtbar; der weiche Verlauf am Rand (15.12, `.fr`/`.fl`, 48 px) wirkt wie das Ende der Zeile. So macht es Apple: wischbare Kapselreihen (Karten-Kategorien, App Store, Musik) schneiden das letzte sichtbare Element an (‚Peek‘), iOS blendet beim Erscheinen einer Rollfläche kurz den Rollbalken ein (`flashScrollIndicators`). Vorgeschlagen A Anschnitt, B Rollbalken kurz zeigen, C kurz anrollen, D Verlauf + `chevron-right`, E Umbruch; Muster A + B gebaut (0041) – **verworfen (Nutzer 24.10.2026)**. **Vorgabe neu (Nutzer 24.10.2026):** bestehendes Verhalten verbessern – längerer Verlauf zum Rand und kleine Pfeile (‹ ›) am Rand, die am jeweiligen Ende verschwinden (Abweichung von Apple am iPhone, bewusst). Muster 2 (Heute · 48 · 55 · 65 · 80 · 112 px, jeweils mit Pfeilen): **gewählt 48 px wie heute mit Pfeilen** (Nutzer 24.10.2026); Fall-Liste K1–K16 `arbeit/A-75 Fall-Liste.md` ok (Nutzer 24.10.2026) – **bereit**; Regel 15.12 / R-5.4; mit A-76 in einer Version. Im Reiselogbuch: T-106 · **Ja zur Version AppDesign 4.33.0 / Reiselogbuch 3.31.0 (Nutzer 24.10.2026)** | 24.10.2026 |
-| A-76 | 1 | **Smiley-Leiste: Ziehen ist kein langes Drücken (Nutzer 24.10.2026, Fehler am Gerät, allgemein):** wer die Smiley-Leiste mit dem Finger auf einem Smiley seitlich zieht, bekommt nach 0,6 s die Abfrage, ob dieses Smiley gelöscht werden soll – falsch. Beim Ziehen darf keine Abfrage kommen; nur langes Drücken **auf derselben Stelle** löscht. Ursache (ui.js `onLongPress`): der Zeitgeber wird nur bei `pointerup`/`pointerleave`/`pointercancel` und während einer Wischgeste der Navigation (`navZug`) abgebrochen, nicht wenn der Finger sich bewegt bzw. die Kapsel rollt. So macht es Apple: langes Drücken (`UILongPressGestureRecognizer`) gilt nur, solange der Finger höchstens etwa 10 pt wandert; beginnt das Rollen, ist es abgebrochen (Tapback, Home-Bildschirm). Vorschlag: abbrechen bei Bewegung über 10 px und beim `scroll` der umgebenden Rollfläche; gilt für alle Nutzer von `onLongPress`. Fall-Liste L1–L9 `arbeit/A-76 Fall-Liste.md` ok (Nutzer 24.10.2026) (zuerst nachgebauter Ablauf, 0 Nr. 1, rot gegen 4.32.2), mit A-75 in einer Version (gleiche Komponente). Im Reiselogbuch über die Fassung (mit T-106) · **Ja zur Version AppDesign 4.33.0 / Reiselogbuch 3.31.0 (Nutzer 24.10.2026)** | 24.10.2026 |
+| – | – | zurzeit nichts gesammelt | – |
 
 
 ## 1. Auf iPad und iPhone prüfen
@@ -58,6 +57,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Thema | Version | Datum |
 |---|---|---|---|
+| E-86 | **A-75 und A-76 gebaut (Ja 24.10.2026):** R-5.4 / 15.12 – wo die Auswahl-Kapsel weitergeht, im freien Rand (28 px) des Verlaufs (48 px) ein kleiner Pfeil `chevron-left`/`-right` (14 px, `--muted`, nur Anzeige, `aria-hidden`), am Ende in 0,2 s ausgeblendet, ‚Bewegung reduzieren‘ ohne Überblenden; `mountCap` stellt Verlauf und Pfeile auch nach Drehen und Größenänderung neu (ResizeObserver). Neu R-3.5 – `onLongPress` bricht bei mehr als 10 px Weg und beim Rollen der umgebenden Fläche ab (Safari meldet beim Ziehen der Leiste kein `pointercancel`). Prüfungen `hig.mjs` (Pfeile), `checkKapsel` (K1–K12), `checkLangDruecken` (L1–L4, L8; L1 rot gegen 4.32.2). Wartet auf P-71 (Reiselogbuch) | 4.33.0 | 24.10.2026 |
 | E-85 | Geprüft **P-70 (Reiselogbuch 3.30.2): alles ok** (Nutzer 24.10.2026) – ein Zug erst nach oben, dann nach unten schließt die Tastatur, Umrandung und Schatten quer ganz sichtbar, sonst unverändert (**A-73 abgeschlossen**) | 4.32.2 | 24.10.2026 |
 | E-84 | **A-73 gebaut (Korrektur, Ja 24.10.2026):** R-4.6 – ein Zug, der zuerst nach oben (oder waagerecht) geht, schließt die Tastatur, sobald der Finger danach 8 px unter seinen höchsten Punkt geht (`blattZug.nurTastatur`); R-4.5 – Abstand über dem Feld mit Fokus für Umrandung und Schatten (`fokusRand`, quer bisher direkt am Rand); `checkSheet` B19 ‚erst nach oben‘ als Berührung, B10 Abstand ≥ `RING` (rot gegen 4.32.1, 15 Meldungen). Wartet auf P-70 | 4.32.2 | 24.10.2026 |
 | E-83 | Geprüft **P-69 (Reiselogbuch 3.30.1): /0–/2 ok, /3 nicht ok** (Nutzer 24.10.2026) – ein Zug auf einem Feld bei offener Tastatur zieht das Blatt (**A-71 abgeschlossen**); /3: Fokusring quer oben abgeschnitten, Tastatur geht beim Zug am linken Rand neben dem Feld nicht zu (→ A-73); iPad: Ziehen schließt die Tastatur nicht – wie entschieden (R-4.6), neu als Wunsch bei A-72 | 4.32.1 | 24.10.2026 |

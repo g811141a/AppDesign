@@ -3,6 +3,40 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.33.0 – 24.10.2026
+
+AppDesign 4.33.0 · Designrichtlinie allgemein 4.33.0 · Zusammenarbeit allgemein 2.19.0 · geprüft mit Reiselogbuch 3.31.0
+
+**A-75 Pfeile an der Auswahl-Kapsel, A-76 Ziehen ist kein langes Drücken** (dein Ja vom 24.10.2026; Muster `arbeit/A-75 Muster.html`
+Variante ‚48‘, Fall-Listen `arbeit/A-75 Fall-Liste.md` K1–K16 und `arbeit/A-76 Fall-Liste.md` L1–L9). Prüfpunkt im Reiselogbuch: P-71.
+
+- **A-75 – Pfeile (R-5.4, 15.12):** wo die Auswahl-Kapsel weitergeht, bleibt der Verlauf 48 px lang, die äußeren 28 px sind ganz
+  frei, darin steht ein kleiner Pfeil `chevron-left` bzw. `chevron-right` (14 px, `--muted`, 9 px vom Rand). Er ist nur Anzeige
+  (`pointer-events: none`, `aria-hidden`) – Antippen trifft den Eintrag darunter wie bisher. Ein Pfeil steht nur, solange es auf
+  seiner Seite weitergeht (mehr als 2 px, wie der Verlauf), und blendet am Ende in 0,2 s aus; ‚Bewegung reduzieren‘: ohne
+  Überblenden. Bewusste Abweichung von Apple (am iPhone keine Pfeile) – deine Vorgabe.
+- **Technik:** `capHtml` setzt die beiden Pfeile in die Kapsel (`.cap > .pf.l`, `.pf.r`), `mountCap` schaltet sie mit dem Verlauf
+  (Klasse `an`) und stellt beides jetzt auch nach Drehen und jeder Größenänderung neu (`ResizeObserver` – vorher nur beim Rollen
+  und Aufbauen); eine Kapsel wird nur einmal eingerichtet, auch wenn `mountCap` sie zweimal sieht. Maske mit `--fade` (48 px) in
+  design.css. Die App braucht nichts zu ändern.
+- **A-76 – langes Drücken (neu R-3.5, 8, 13, 15.12):** `onLongPress` bricht jetzt ab, wenn der Finger (oder die Maus) mehr als
+  10 px wandert (`LANG_WEG`) oder eine Fläche rollt, die die Schaltfläche enthält (`scroll` in der Einfangphase, nur solange der
+  Zeitgeber läuft). **Ursache:** beim Ziehen der Smiley-Leiste meldet Safari kein `pointercancel` (wie beim Rollen des Inhalts,
+  13) – der Zeitgeber lief weiter und fragte nach 0,6 s ‚… aus der Schnellauswahl entfernen?‘. Gilt für alle Nutzer von
+  `onLongPress` (Smiley-Leisten, Kontextmenü der Kacheln).
+- **Prüfungen:** neu `checkLangDruecken` (`ablauf.mjs`, R-3.5): mit Finger und Maus aufsetzen und gleich ziehen (die Leiste rollt
+  mit, auch ohne gemeldete Bewegung), nach 0,4 s ziehen, still halten mit bis zu 10 px Wackeln. **Rot gegen 4.32.2** (40 Meldungen
+  in Erfassen – Smileys und Essen – und Fazit, iPhone hoch und quer, iPad: ‚Leiste gezogen, trotzdem fragt langes Drücken‘), grün
+  mit der Behebung (Chromium und WebKit). Neu `checkKapsel` (R-5.4): Pfeile am Anfang, in der Mitte, am Ende und zurück, Deckkraft
+  nach dem Ausblenden, Dauer 0,2 s bzw. sofort, Antippen unter dem Pfeil wählt den Eintrag, Wählen ändert weder Breite noch Pfeile,
+  Drehen und schmaleres Fenster stellen sie neu, Rollstand bleibt. `hig.mjs` R-5.4 erweitert: in jeder Ansicht jeder App Pfeil
+  genau dann, wenn es auf seiner Seite weitergeht, Größe, Lage, Farbe `--muted`, nur Anzeige; passt alles, kein Verlauf. Gegenprobe:
+  Pfeil › immer an → `hig.mjs` und `checkKapsel` rot (K3, K5, K6).
+- **Warum die Prüfung A-76 übersah:** langes Drücken wurde nur still gehalten (Kontextmenü der Kacheln) – ein Ziehen auf einer
+  Schaltfläche mit langem Drücken prüfte keine Prüfung. Dieselbe Lücke anderswo: `onLongPress` ist der einzige Zeitgeber für langes
+  Drücken; das Kontextmenü der Kacheln bricht jetzt ebenso beim Ziehen und Rollen der Liste ab (`kontextmenue-regeln` grün).
+- **Designrichtlinie allgemein 4.33.0:** R-3.5 neu, R-5.4, 8, 13 (Wischgesten), 15.12.
+
 ## 4.32.2 – 24.10.2026
 
 AppDesign 4.32.2 · Designrichtlinie allgemein 4.32.2 · Zusammenarbeit allgemein 2.19.0 · geprüft mit Reiselogbuch 3.30.2

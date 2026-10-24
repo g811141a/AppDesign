@@ -1,4 +1,4 @@
-/* AppDesign 4.32.2 · design.css – gemeinsame Gestaltung der iPad-Web-Apps von g811141a (Apple-like)
+/* AppDesign 4.33.0 · design.css – gemeinsame Gestaltung der iPad-Web-Apps von g811141a (Apple-like)
    Einbinden im <head> vor dem eigenen <style> der App:  <link rel="stylesheet" href="../AppDesign/fassung/X.Y.Z/design.css"> (feste Fassung, R-10.3)
    Farben als Variablen auf :root, Dunkelmodus über data-theme="dark" (setzt ui.js / applyTheme).
    Komponenten: Schaltflächen, Suchfeld, Kapsel, Eingabefelder, Datumsfelder, Kopfzeile, Seitenleiste,
@@ -6,7 +6,7 @@
    Options-Kapsel; seit 4.1.0 iPhone-Ansicht (html.phone: Seitenkopf, großer Titel, Liste, Kasten, untere Leiste). Regeln dazu: README - Designrichtlinie allgemein.md */
 /* Farben im Apple-Look: Hintergrund Hellgrau, Kästen weiß ohne Rand, schwebende Schaltflächen */
 :root {
-  --ad-version: "4.32.2";   /* R-10.3: Version der Bausteine, die App prüft sie beim Start */
+  --ad-version: "4.33.0";   /* R-10.3: Version der Bausteine, die App prüft sie beim Start */
   --bg: #f2f2f7;
   --card: #ffffff;
   --ink: #1c1c1e;
@@ -447,9 +447,17 @@ dialog input[type=text], dialog input[type=date], dialog textarea { background: 
 .emoji-row .cap .scroll button { width: 48px; min-width: 48px; }
 .chips .cap .scroll button { padding: 0 14px; white-space: nowrap; }
 .strip > .reset { margin-left: auto; }
-.cap .scroll.fr { -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 48px), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 48px), transparent); }
-.cap .scroll.fl { -webkit-mask-image: linear-gradient(to left, #000 calc(100% - 48px), transparent); mask-image: linear-gradient(to left, #000 calc(100% - 48px), transparent); }
-.cap .scroll.fl.fr { -webkit-mask-image: linear-gradient(to right, transparent, #000 48px, #000 calc(100% - 48px), transparent); mask-image: linear-gradient(to right, transparent, #000 48px, #000 calc(100% - 48px), transparent); }
+/* Verlauf am Rand, wo es weitergeht (R-5.4): --fade lang, die äußeren 28 px ganz frei – dort steht der Pfeil (seit 4.33.0, A-75) */
+.cap { position: relative; --fade: 48px; }
+.cap .scroll.fr { -webkit-mask-image: linear-gradient(to left, transparent 28px, #000 var(--fade)); mask-image: linear-gradient(to left, transparent 28px, #000 var(--fade)); }
+.cap .scroll.fl { -webkit-mask-image: linear-gradient(to right, transparent 28px, #000 var(--fade)); mask-image: linear-gradient(to right, transparent 28px, #000 var(--fade)); }
+.cap .scroll.fl.fr { -webkit-mask-image: linear-gradient(to right, transparent 28px, #000 var(--fade), #000 calc(100% - var(--fade)), transparent calc(100% - 28px)); mask-image: linear-gradient(to right, transparent 28px, #000 var(--fade), #000 calc(100% - var(--fade)), transparent calc(100% - 28px)); }
+/* Pfeil im freien Rand: nur Anzeige (fängt nichts ab), blendet am Ende in 0,2 s aus; ‚Bewegung reduzieren‘ ohne Überblenden */
+.cap > .pf { position: absolute; top: 50%; width: 14px; height: 14px; margin-top: -7px; color: var(--muted); stroke-width: 2.5; pointer-events: none;
+  opacity: 0; transition: opacity .2s; }
+.cap > .pf.l { left: 9px; } .cap > .pf.r { right: 9px; }
+.cap > .pf.an { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .cap > .pf { transition: none; } }
 .mic { font-size: 18px; padding: 0; min-height: 44px; }
 .mic[aria-pressed="true"] { animation: pulse 1s infinite; }
 @keyframes pulse { 50% { opacity: .5; } }

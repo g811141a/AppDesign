@@ -1,6 +1,6 @@
 # A-75 ‚Auswahl-Kapsel erkennbar wischbar‘ (Reiselogbuch T-106) – Apple-Abgleich, Muster, Fall-Liste
 
-**Stand 24.10.2026** · Sitzung ‚Reiselogbuch 0041‘ · Muster: `arbeit/A-75 Muster.html`
+**Stand 24.10.2026** · Sitzung ‚Reiselogbuch 0041‘ · **gebaut in AppDesign 4.33.0 (Sitzung 0042), Prüfungen `hig.mjs` und `checkKapsel`** · Muster: `arbeit/A-75 Muster.html`
 (https://g811141a.github.io/AppDesign/arbeit/A-75%20Muster.html, oben umschalten: Heute · 48 · 55 · 65 · 80 · 112) – im Muster geprüft
 in Chromium und WebKit (iPhone hoch und quer, Anfang, Mitte, Ende: Pfeile wie erwartet, keine Fehler)
 
