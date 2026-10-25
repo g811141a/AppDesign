@@ -132,12 +132,12 @@ const found = new Map(), icons = new Map();
       const accent = rgb(root.getPropertyValue('--accent').trim().replace(/^#(..)(..)(..)$/, (m, a, b, c) => `rgb(${parseInt(a, 16)},${parseInt(b, 16)},${parseInt(c, 16)})`));
       const warn = rgb(root.getPropertyValue('--warn').trim().replace(/^#(..)(..)(..)$/, (m, a, b, c) => `rgb(${parseInt(a, 16)},${parseInt(b, 16)},${parseInt(c, 16)})`));
       const same = (a, b) => a.slice(0, 3).every((v, i) => Math.abs(v - b[i]) < 3);
-      const seen = new Set();
+      const seen = new Set(), mehr = matchMedia('(prefers-contrast: more)').matches;
       const w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
       for (let t; (t = w.nextNode());) {
         const e = t.parentElement, txt = t.textContent.trim().replace(/\s+/g, ' ');
         if (!e || !txt || seen.has(e)) continue; seen.add(e);
-        if (!vis(e) || !onTop(e) || e.closest('#printout, .rt, script, style, [disabled]')) continue;
+        if (!vis(e) || !onTop(e) || e.closest('#printout, .rt, script, style, [disabled], .ansage')) continue;
         if (/[„“]/.test(txt)) res.quotes.push(`‚${txt.slice(0, 40)}‘`);
         if (/^\p{Extended_Pictographic}/u.test(txt)) continue;
         const s = getComputedStyle(e), fs = parseFloat(s.fontSize);
@@ -145,11 +145,21 @@ const found = new Map(), icons = new Map();
         const fg = rgb(s.color), bg = bgOf(e), a = fg[3] ?? 1;
         const mix = [0, 1, 2].map(i => fg[i] * a + bg[i] * (1 - a));
         const L1 = lum(mix), L2 = lum(bg), cr = (Math.max(L1, L2) + .05) / (Math.min(L1, L2) + .05);
-        const need = fs >= 18 || parseInt(s.fontWeight) >= 700 ? 3 : 4.5;
+        // R-1.9 (seit 4.35.0, A-43 H3): mit ‚Kontrast erhöhen‘ jeder Text mindestens 4,5 : 1, ohne Ausnahmen
+        const need = mehr ? 4.5 : fs >= 18 || parseInt(s.fontWeight) >= 700 ? 3 : 4.5;
         // Bewusste Abweichungen: Weiß auf Systemblau, Orange --warn
-        if (same(bg, accent) || same(mix, accent) || same(mix, warn)) continue;
+        if (!mehr && (same(bg, accent) || same(mix, accent) || same(mix, warn))) continue;
         if (cr < need) res.contrast.push(`${cr.toFixed(2)} : 1 (mind. ${need}) ${fs} px ‚${txt.slice(0, 30)}‘`);
       }
+      // R-1.9 (seit 4.35.0, A-43 H3): mit ‚Kontrast erhöhen‘ auch jedes Icon mindestens 4,5 : 1 zu seinem Hintergrund (gefüllte Flächen
+      // aus ::before zählen mit – Knöpfe in Kapseln)
+      if (mehr) document.querySelectorAll('svg.ic').forEach(i => {
+        if (!vis(i) || !onTop(i) || i.closest('#printout, .rt, [disabled], .pf:not(.an)')) return;
+        const b = i.closest('button'), vor = b && getComputedStyle(b, '::before'), fl = vor && vor.content !== 'none' && rgb(vor.backgroundColor);
+        const fg = rgb(getComputedStyle(i).color), bg = fl && (fl[3] ?? 1) > .5 ? fl : bgOf(i), a = fg[3] ?? 1;
+        const mix = [0, 1, 2].map(k => fg[k] * a + bg[k] * (1 - a)), L1 = lum(mix), L2 = lum(bg), cr = (Math.max(L1, L2) + .05) / (Math.min(L1, L2) + .05);
+        if (cr < 4.5) res.contrast.push(`${cr.toFixed(2)} : 1 (mind. 4.5, Icon) ‚${label(b || i.parentElement)}‘`);
+      });
       // Menüs: Löschen (rot) steht am Ende
       document.querySelectorAll('.menu').forEach(m => {
         const items = [...m.querySelectorAll('.mi')]; const i = items.findIndex(x => x.classList.contains('red'));
@@ -166,9 +176,48 @@ const found = new Map(), icons = new Map();
       // R-1.4 Nur der Vordergrund reagiert
       if (openDlg && !document.documentElement.classList.contains('locked')) R('R-1.4', 'Seite hinter dem Fenster nicht gesperrt');
       document.querySelectorAll('.layer').forEach(l => { if (cs(l).touchAction !== 'none') R('R-1.4', 'Ebene hinter Menü/Sprechblase fängt Wischen nicht ab'); });
-      // R-3.4 Kein Fokus-Rahmen beim Öffnen eines Fensters
-      if (openDlg && document.activeElement?.id === 'dlgX') R('R-3.4', 'x hat beim Öffnen den Fokus (blauer Rahmen)');
-      document.querySelectorAll('.searchbox input').forEach(e => { if (e === document.activeElement && cs(e).outlineStyle !== 'none') R('R-3.4', 'Suchfeld mit Fokus-Rahmen'); });
+      // R-3.4 Kein Fokus-Rahmen: Textfelder nie (seit 4.35.0, A-43 K9 – auch nicht Safaris outline: auto), anderes nur bei Bedienung
+      // mit der Tastatur (html.tastatur); ob ein Fenster ohne vorausgewählte Schaltfläche öffnet, prüft checkFokus
+      { const a = document.activeElement, feld = a?.matches?.('input:not([type=checkbox]):not([type=radio]):not([type=range]), textarea, [contenteditable]');
+        if (a && a !== document.body && cs(a).outlineStyle !== 'none' && parseFloat(cs(a).outlineWidth) > 0 && (feld || !document.documentElement.classList.contains('tastatur')))
+          R('R-3.4', `${feld ? 'Textfeld' : 'Schaltfläche'} ‚${label(a)}‘ mit Fokus-Rahmen${feld ? '' : ' ohne Tastatur'} (${cs(a).outlineStyle} ${cs(a).outlineWidth})`); }
+      // R-1.8 (seit 4.35.0, A-43 V1–V4, V6, V11, V13, checkNamen): jedes Bedienelement hat einen Namen, Icons sind aria-hidden;
+      // Fenster mit Titel und Zusatzzeile, Menüknopf ‚öffnet Menü‘ mit offen/zu, Häkchen = ausgewählt, Sprechblase als alertdialog
+      { const text = id => (document.getElementById(id)?.textContent || '').trim();
+        const name = e => (e.getAttribute('aria-label') || '').trim() || (e.getAttribute('aria-labelledby') || '').split(/\s+/).map(text).join(' ').trim()
+          || (e.matches('input, textarea, select') ? [...(e.labels || [])].map(l => l.textContent.trim()).join(' ') || (e.type === 'search' ? e.placeholder : '')
+            : [...e.childNodes].filter(n => n.nodeType === 3 || !n.closest?.('[aria-hidden="true"]')).map(n => n.textContent).join('').trim()) || (e.getAttribute('title') || '').trim();
+        document.querySelectorAll('button, a[href], input:not([type=hidden]):not([type=file]), textarea, select, [role=menuitem], [role=menuitemcheckbox], [role=slider], [role=switch]').forEach(e => {
+          if (!vis(e) || !onTop(e) || e.closest('#printout, .rt, .blatt-geist')) return;
+          if (!name(e)) R('R-1.8', `${e.tagName.toLowerCase()}${e.id ? '#' + e.id : e.classList[0] ? '.' + e.classList[0] : ''} ohne Namen für VoiceOver`);
+          e.querySelectorAll('svg').forEach(g => { if (g.getAttribute('aria-hidden') !== 'true' && !g.querySelector('title')) R('R-1.8', `Icon in ‚${label(e)}‘ nicht aria-hidden (VoiceOver liest es)`); });
+        });
+        document.querySelectorAll('dialog[open]').forEach(d => {
+          if (d.classList.contains('blatt-geist')) return;
+          const n = (d.getAttribute('aria-labelledby') || '').split(/\s+/).map(text).join(' ').trim() || (d.getAttribute('aria-label') || '').trim();
+          if (!n) R('R-1.8', `Fenster #${d.id} ohne Titel für VoiceOver (aria-labelledby)`);
+          const sub = d.querySelector('.dlg-head .sub, .msg-text');
+          if (sub && !(d.getAttribute('aria-describedby') || '').split(/\s+/).includes(sub.id)) R('R-1.8', `Fenster #${d.id}: Zusatzzeile nicht als Beschreibung verknüpft (aria-describedby)`);
+          if (!d.matches(':modal')) R('R-1.4', `Fenster #${d.id} nicht modal – die Seite dahinter ist für VoiceOver und Tastatur erreichbar`);
+        });
+        document.querySelectorAll('.menu').forEach(m => {
+          if (m.getAttribute('role') !== 'menu') R('R-1.8', 'Menü ohne role="menu"');
+          m.querySelectorAll('.mi').forEach(i => {
+            const tick = i.querySelector('.tick');
+            if (tick && (i.getAttribute('role') !== 'menuitemcheckbox' || (i.getAttribute('aria-checked') === 'true') !== !!tick.querySelector('svg'))) R('R-1.8', `Menüpunkt ‚${label(i)}‘: Häkchen und ‚ausgewählt‘ (aria-checked) stimmen nicht überein`);
+            if (i.querySelector('.chev') && (i.getAttribute('aria-haspopup') !== 'menu' || !i.hasAttribute('aria-expanded'))) R('R-1.8', `Menüpunkt ‚${label(i)}‘ mit Untermenü ohne aria-haspopup/aria-expanded`);
+          });
+        });
+        if (document.querySelector('.menu:not(.submenu)') && !document.querySelector('[aria-haspopup="menu"][aria-expanded="true"]:not(.mi)')) R('R-1.8', 'Knopf des offenen Menüs ohne aria-haspopup="menu" und aria-expanded="true"');
+        document.querySelectorAll('.pop').forEach(b => { if (b.getAttribute('role') !== 'alertdialog' || b.getAttribute('aria-modal') !== 'true' || !text(b.getAttribute('aria-labelledby') || '-')) R('R-1.8', 'Sprechblase nicht als alertdialog mit Text als Name (aria-labelledby, aria-modal)'); });
+        // V11: ‚Automatisch gespeichert‘ wird nicht angesagt; V13: die Offline-Meldung ohne role="status" (sie sagt der Ansage-Bereich an)
+        document.querySelectorAll('[aria-live], [role=status], [role=alert]').forEach(l => { if (/gespeichert um/i.test(l.textContent)) R('R-1.8', '‚Automatisch gespeichert‘ wird angesagt (aria-live) – es ist nur im Fensterkopf lesbar'); });
+        if (document.querySelector('.nettoast[role]')) R('R-1.8', 'Offline-Meldung mit eigener Rolle – sie wird über den Ansage-Bereich angesagt');
+        // R-1.4 (V7): bei offenem Menü bzw. offener Sprechblase ist alles daneben gesperrt (inert), nach dem Schließen wieder frei
+        const oben = document.querySelector('.pop') || document.querySelector('.menu');
+        if (oben) [...oben.parentElement.children].forEach(c => { if (!c.matches('.menu, .pop, .layer, .ansage, script, style') && !c.closest('[inert]') && c.getClientRects().length) R('R-1.4', `bei offenem ${oben.matches('.pop') ? 'Abfrage' : 'Menü'} ist ${c.id ? '#' + c.id : c.tagName.toLowerCase() + (c.classList[0] ? '.' + c.classList[0] : '')} nicht gesperrt (inert) – VoiceOver und Tastatur erreichen es`); });
+        else document.querySelectorAll('[inert]').forEach(c => { if (!c.closest('.blatt-geist')) R('R-1.4', `${c.id ? '#' + c.id : c.tagName.toLowerCase()} bleibt nach dem Schließen gesperrt (inert)`); });
+      }
       // R-1.3 Doppeltippen vergrößert nie
       if ([...document.querySelectorAll('button, a[href], input, textarea, [role=button]')].some(e => vis(e) && !['manipulation', 'none'].includes(cs(e).touchAction))) R('R-1.3', 'Doppeltippen kann die Ansicht vergrößern');
       // R-2.1 Leisten bewegen sich nie

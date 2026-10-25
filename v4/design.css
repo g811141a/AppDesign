@@ -1,4 +1,4 @@
-/* AppDesign 4.34.0 · design.css – gemeinsame Gestaltung der iPad-Web-Apps von g811141a (Apple-like)
+/* AppDesign 4.35.0 · design.css – gemeinsame Gestaltung der iPad-Web-Apps von g811141a (Apple-like)
    Einbinden im <head> vor dem eigenen <style> der App:  <link rel="stylesheet" href="../AppDesign/fassung/X.Y.Z/design.css"> (feste Fassung, R-10.3)
    Farben als Variablen auf :root, Dunkelmodus über data-theme="dark" (setzt ui.js / applyTheme).
    Komponenten: Schaltflächen, Suchfeld, Kapsel, Eingabefelder, Datumsfelder, Kopfzeile, Seitenleiste,
@@ -6,13 +6,14 @@
    Options-Kapsel; seit 4.1.0 iPhone-Ansicht (html.phone: Seitenkopf, großer Titel, Liste, Kasten, untere Leiste). Regeln dazu: README - Designrichtlinie allgemein.md */
 /* Farben im Apple-Look: Hintergrund Hellgrau, Kästen weiß ohne Rand, schwebende Schaltflächen */
 :root {
-  --ad-version: "4.34.0";   /* R-10.3: Version der Bausteine, die App prüft sie beim Start */
+  --ad-version: "4.35.0";   /* R-10.3: Version der Bausteine, die App prüft sie beim Start */
   --bg: #f2f2f7;
   --card: #ffffff;
   --ink: #1c1c1e;
   --muted: #6e6e73;
   --line: #d1d1d6;
   --accent: #007aff;
+  --accent-fill: var(--accent);   /* seit 4.35.0 (A-43 H3): gefüllte blaue Flächen – mit ‚Kontrast erhöhen‘ dunkel eigener Wert */
   --accent-ink: #ffffff;
   --sw-on: #34c759;
   --sw-off: #e9e9eb;
@@ -66,6 +67,18 @@
   --rim-color: rgba(255,255,255,.4);
   color-scheme: dark;
 }
+/* R-1.9 (seit 4.35.0, A-43 H1–H3, H5): ‚Kontrast erhöhen‘ des Geräts – zweite Farbtabelle nach Apple (hell und dunkel), jeder Text und
+   jedes Icon mindestens 4,5 : 1; nur Variablen, deshalb wechselt sie sofort ohne Neuaufbau. Die Ausgabe (HTML/PDF) bleibt hell (R-6.2). */
+@media (prefers-contrast: more) {
+  :root { --accent: #0040dd; --accent-fill: #0040dd; --danger: #b3261e; --danger-fill: #d70015; --sw-on: #248a3d; --warn: #c93400;
+    --muted: #3c3c43; --ink: #000000; --line: #8e8e93; --th-line: #8e8e93; --field-line: #8e8e93;
+    --btn-rim: rgba(0,0,0,.45); --rim-color: rgba(0,0,0,.25); }
+  :root[data-theme="dark"] { --accent: #409cff; --accent-fill: #0060df; --danger: #ff6961; --danger-fill: #d70015; --sw-on: #30db5b; --warn: #ffb340;
+    --muted: #c7c7cc; --ink: #ffffff; --line: #636366; --th-line: #636366; --field-line: #636366;
+    --btn-rim: rgba(255,255,255,.5); --rim-color: rgba(255,255,255,.5); }
+  /* Icons, die sonst nur Linienfarbe haben (› in Listen, ⓧ in Feldern), in Grau Text */
+  #side .side-row > .ic, .irow > .ic, .searchbox .sclear, .fclear { color: var(--muted); }
+}
 * { box-sizing: border-box; }
 html, body { margin: 0; background: var(--bg); color: var(--ink); }
 /* Seit 4.5.0: Leisten bewegen sich nie – die Seite federt am Rand nicht nach (iPad und iPhone) */
@@ -92,8 +105,16 @@ button[hidden] { display: none; }
 td, th, .ln .t, dd, .box .kv .v, .irow .t, .side-row .t, .fazit-box, .bhint, .bnote, .msg-text, .pop p { overflow-wrap: anywhere; }
 /* Seit 4.3.0: Doppeltippen vergrößert nie die Ansicht (Zoomen mit zwei Fingern bleibt möglich) */
 * { touch-action: manipulation; }
-/* Seit 4.2.0: kein Fokus-Rahmen beim Antippen oder Öffnen eines Fensters (nur bei Tastatur-Bedienung) */
-button:focus:not(:focus-visible), dialog:focus { outline: none; }
+/* R-3.4 (seit 4.35.0, A-43 K6, K9): kein Fokus-Rahmen beim Antippen und beim Öffnen eines Fensters, in Textfeldern nie – auch nicht
+   Safaris blaue Umrandung (outline: auto 5px); der Cursor zeigt den Fokus (wie Apple). Bei Bedienung mit der Tastatur (html.tastatur,
+   setzt ui.js) ein eigener Ring in der Akzentfarbe mit 2 px Abstand – er folgt dem Radius; im Menü ist der Eintrag hinterlegt. */
+:focus { outline: none; }
+html.tastatur :is(button, a[href], summary, [role=slider], [role=switch], input[type=checkbox], input[type=radio], [tabindex]:not([tabindex="-1"])):focus-visible {
+  outline: 2px solid var(--accent); outline-offset: 2px; }
+html.tastatur .check.chip:has(input:focus-visible) { outline: 2px solid var(--accent); outline-offset: 2px; }
+html.tastatur .menu .mi:focus-visible { outline: none; background: var(--sel-bg); }
+/* R-1.8 (seit 4.35.0): Ansage-Bereich für VoiceOver (ui.js ansagen) – unsichtbar, aber vorgelesen */
+.ansage { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; border: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 /* Seit 4.2.0: Was im Vordergrund ist, bekommt jedes Wischen – die Seite dahinter bewegt sich nicht */
 html.locked, html.locked body { overflow: hidden; }
 html.locked .rolle { overflow: hidden; }   /* seit 4.27.0 (A-28): auch der Rollbereich steht still, solange ein Fenster offen ist */
@@ -130,7 +151,7 @@ input.mitx:is([type=text], [type=email], [type=url], [type=tel]) { padding-right
   height: 100%; min-height: 0; position: relative; isolation: isolate; }
 .grp button.txt { width: auto; padding: 0 14px; }
 .grp button.fill { background: none; color: var(--accent-ink); }
-.grp button.fill::before { content: ''; position: absolute; z-index: -1; inset: 3px; border-radius: 999px; background: var(--accent); }
+.grp button.fill::before { content: ''; position: absolute; z-index: -1; inset: 3px; border-radius: 999px; background: var(--accent-fill); }
 .grp button:disabled, .navgrp button:disabled { opacity: .3; }
 /* Gedrückt: Die Schaltfläche, von der ein offenes Menü, eine Sprechblase oder ein Fenster kommt, ist blau hinterlegt. */
 button.on { background: var(--sel-bg); border-color: var(--accent); }
@@ -143,7 +164,7 @@ button.on { background: var(--sel-bg); border-color: var(--accent); }
   inset: 50% auto auto 50%; width: 36px; height: 36px; transform: translate(-50%, -50%); }
 .round { width: 44px; min-width: 44px; height: 44px; padding: 0; border-radius: 50%; flex: none; }
 /* Grün gefüllt = Hauptaktion; grün getönt mit Rand = eingeschaltet; rot gefüllt = Löschen (jeweils mit farbigem Schein) */
-button.primary { background: var(--accent); color: var(--accent-ink); border: .5px solid var(--rim-color); box-shadow: var(--glow-accent); }
+button.primary { background: var(--accent-fill); color: var(--accent-ink); border: .5px solid var(--rim-color); box-shadow: var(--glow-accent); }
 button.link { border: none; background: none; box-shadow: none; color: var(--accent); padding: 6px 8px; }
 button.danger { background: var(--danger-fill); color: #fff; border: .5px solid var(--rim-color); box-shadow: var(--glow-danger); }
 button.danger .ic.red { color: inherit; }
@@ -256,7 +277,7 @@ body.docked { padding-left: calc(var(--side-w) + max(10px, var(--safe-left)) + 2
 .side-row small { display: block; color: var(--muted); font-size: 15px; white-space: nowrap; }
 /* Seit 4.9.0: dritte Zeile der Kachel – ‚geändert am … · Gerät‘ */
 .side-row small.chg { font-size: 13px; margin-top: 2px; }
-#side .side-row.current { background: var(--accent); color: var(--accent-ink); box-shadow: var(--glow-accent); }
+#side .side-row.current { background: var(--accent-fill); color: var(--accent-ink); box-shadow: var(--glow-accent); }
 .side-row.current small { color: rgba(255,255,255,.85); }
 .side-empty { color: var(--muted); padding: 8px 12px; }
 .bhint { margin-top: auto; padding: 16px 12px 0; font-size: 13px; color: var(--muted); display: flex; flex-direction: column; gap: 10px; align-items: flex-start; }
@@ -265,7 +286,7 @@ body.docked { padding-left: calc(var(--side-w) + max(10px, var(--safe-left)) + 2
   box-shadow: var(--float); }
 
 /* Backup-Hinweis gelb getönt mit blau gefülltem Knopf, damit man die Funktion sofort erkennt (iPad und iPhone) */
-#side .bhint button, .bbar .bnote button { background: var(--accent); color: var(--accent-ink); border: .5px solid var(--rim-color); box-shadow: var(--glow-accent); }
+#side .bhint button, .bbar .bnote button { background: var(--accent-fill); color: var(--accent-ink); border: .5px solid var(--rim-color); box-shadow: var(--glow-accent); }
 /* Seit 4.34.0 (R-9.1, A-74): die Backup-Kachel steht nur, solange heute noch kein Backup erstellt wurde – der weiße Zustand entfällt */
 .bbar .bnote.ok { background: var(--card); color: var(--muted); }
 .bbar .bnote.ok button { background: var(--btn); color: var(--ink); border-color: var(--btn-rim); box-shadow: var(--float); }
@@ -416,7 +437,7 @@ dialog input[type=text], dialog input[type=date], dialog textarea { background: 
 .step-head { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
 .step-head label { margin: 0; flex: 1; }
 .step-num {
-  display: inline-flex; width: 26px; height: 26px; border-radius: 50%; background: var(--accent); color: var(--accent-ink);
+  display: inline-flex; width: 26px; height: 26px; border-radius: 50%; background: var(--accent-fill); color: var(--accent-ink);
   align-items: center; justify-content: center; font-size: 14px; margin-right: 8px;
 }
 .chips { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 10px; }
@@ -461,6 +482,8 @@ dialog input[type=text], dialog input[type=date], dialog textarea { background: 
 .mic { font-size: 18px; padding: 0; min-height: 44px; }
 .mic[aria-pressed="true"] { animation: pulse 1s infinite; }
 @keyframes pulse { 50% { opacity: .5; } }
+/* R-1.9 (seit 4.35.0, M4): ‚Bewegung reduzieren‘ – das Mikrofon pulsiert nicht, es bleibt ruhig gedrückt */
+@media (prefers-reduced-motion: reduce) { .mic[aria-pressed="true"] { animation: none; } }
 .hint { font-size: 14px; color: var(--muted); margin-top: 6px; }
 .warn { font-size: 15px; color: var(--danger); margin-top: 10px; }
 .check { display: flex; align-items: center; gap: 10px; font-weight: 400; margin: 0 0 10px; min-height: 44px; cursor: pointer; }
@@ -536,7 +559,7 @@ html.phone body { padding-top: var(--pnav-h, 60px); }
 .tiles .irow { background: var(--card); border-radius: 22px; box-shadow: var(--table-shadow); margin-top: 10px; }
 .tiles .irow:first-child { margin-top: 0; }
 .tiles .irow + .irow::before { display: none; }
-.irow.current { background: var(--accent); color: var(--accent-ink); box-shadow: var(--glow-accent); }
+.irow.current { background: var(--accent-fill); color: var(--accent-ink); box-shadow: var(--glow-accent); }
 .irow.current small, .irow.current > .ic { color: rgba(255,255,255,.85); }
 /* Komponente Kasten (iPhone): ein Eintrag als Karte; Zeilen mit grauer Bezeichnung links */
 .box { background: var(--card); border-radius: 22px; padding: 12px 16px; margin-top: 10px; box-shadow: var(--table-shadow); }
