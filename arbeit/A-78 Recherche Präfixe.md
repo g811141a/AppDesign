@@ -113,7 +113,8 @@ Erledigt werden Status des Themas, die Prüfliste hängt an der Version. Alte Nu
 alt → neu). Sehr sauber, aber großer Umbau und neue Gewohnheit.
 
 **c) Mittelweg (Empfehlung zur Diskussion)**
-- **Themen:** A- (AppDesign), T- (Reiselogbuch), ein neuer Buchstabe für ReiseLogBuch-Import (I- ist in T-05 schon belegt, also z. B. K- oder ein anderer freier), je weitere App ein eigener Buchstabe – wie heute.
+- **Themen:** A- (AppDesign), T- (Reiselogbuch), ein noch freier Buchstabe für
+  ReiseLogBuch-Import (I- und K- sind schon belegt), je weitere App ein eigener Buchstabe – wie heute.
 - **E- entfällt künftig:** ein erledigtes Thema behält seine Nummer und wandert mit Status ‚erledigt‘ in den Abschnitt Erledigt
   (G3); alte E-Nummern bleiben stehen.
 - **P- bleibt gemeinsam** (eine Version = ein Prüfpunkt über beide Repos), Unterpunkte `P-73/1`.
