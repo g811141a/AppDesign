@@ -1618,11 +1618,11 @@ window.addEventListener('resize', updateBar);
 // Kapsel Nach oben/Ans Ende bzw. untere Leiste (iPhone) und Backup-Kachel der Seitenleiste; sie wachsen mit der Textgröße (L1), der
 // letzte Eintrag bleibt erreichbar (R-7.1). Ohne Messung gelten die Werte von früher (design.css).
 function untenMessen() {
-  const r = document.documentElement, bb = document.querySelector('.bbar'), fab = document.querySelector('.fab');
+  const r = document.documentElement, bb = document.querySelector('.bbar');
   const fb = parseFloat(getComputedStyle(r).getPropertyValue('--fb')) || 1;
   const unten = r.classList.contains('phone')
     ? Math.max((bb?.querySelector('.bnote') ? 150 : 120) * fb, bb ? bb.offsetHeight + 30 : 0)
-    : Math.max(100 * fb, fab?.getClientRects().length ? fab.offsetHeight + 12 : 0);
+    : 100 * fb;   // die volle Kapsel (2 × 44 × --fb + 12) – nicht die gerade sichtbaren Pfeile, sonst wandert das Ende beim Rollen
   r.style.setProperty('--unten-h', Math.round(unten) + 'px');
   const fuss = document.querySelector('#side .side-foot');
   if (!fuss) return;
