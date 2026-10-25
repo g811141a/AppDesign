@@ -606,6 +606,8 @@ function openMenu(anchor, items, align = 'right') {
     const a = liveAnchor(anchor);
     if (!a) return close();
     anchor = a;
+    anchor.setAttribute('aria-haspopup', 'menu');   // baut die App die Leiste neu auf (Drehen), trägt der neue Knopf den Zustand
+    anchor.setAttribute('aria-expanded', 'true');
     placeAt(menu, anchor, align);
     placeSub();
   };
@@ -2027,7 +2029,9 @@ function blattFahre(nach, fertig, dauer) {
   blattStopp();
   const von = blattY;
   // R-1.9 (seit 4.35.0, M5): mit ‚Bewegung reduzieren‘ gleitet das Blatt nach dem Loslassen nicht (kein Nachfedern) – es steht sofort am Ziel
-  if (Math.abs(von - nach) < 1 || navRuhig?.matches) { blattSetze(nach); fertig?.(); return; }
+  if (Math.abs(von - nach) < 1) { blattSetze(nach); fertig?.(); return; }
+  // erst nach dem Loslassen: das Unterdrücken des Klicks (blattKlickWeg) endet im nächsten Durchlauf, sonst käme das x nicht an
+  if (navRuhig?.matches) { blattSetze(nach); setTimeout(() => fertig?.()); return; }
   dauer = dauer || Math.max(220, Math.min(480, Math.abs(nach - von) * 0.9));
   const a = blattBild(von), b = blattBild(nach);
   blattSetze(Math.min(von, nach));   // die Seite weicht schon während der Bewegung zurück (runde Ecken, Hintergrund)

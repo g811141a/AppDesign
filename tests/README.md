@@ -11,7 +11,10 @@ Misst jede Ansicht gegen die HIG-Checkliste (Abschnitt 16) und alle Regeln mit �
 Schrift und Kontrast hell und dunkel (R-10.2), Anführungszeichen (R-10.1), Menüs (R-4.1), gedrückte Schaltfläche bleibt blau
 (R-3.3), Schalter (R-5.7) usw.; dazu automatisch beim Drehen (R-8.1), Leisten beim Wischen (`barStill`, R-2.1), der Gerätevergleich
 iPad ↔ iPhone (`shape`, R-1.1) und in jeder Ansicht die sicheren Ränder mit Gerätewerten (`safe`, R-1.7 – die Prüfbrowser liefern
-für `env()` immer 0, deshalb setzt `safe` die Variablen `--safe-…`).
+für `env()` immer 0, deshalb setzt `safe` die Variablen `--safe-…`). Seit 4.35.0 (A-43) in jeder Ansicht auch Namen, Rollen und Zustände für
+VoiceOver (R-1.8: Knöpfe und Felder benannt, Icons `aria-hidden`, Fenster mit Titel und Beschreibung, Menüknopf, Häkchen,
+Sprechblase), Sperre und modale Fenster (R-1.4), Fokus-Rahmen nur mit Tastatur, Textfelder nie (R-3.4) und mit ‚Kontrast erhöhen‘
+4,5 : 1 für jeden Text und jedes Icon ohne Ausnahmen (R-1.9).
 
 ```js
 import { createCheck } from '../../AppDesign/tests/hig.mjs';
@@ -44,7 +47,14 @@ await t.ende(b);
 Meldung: `✗ R-4.1 webkit · iPad quer dunkel · Mehr-Menü: … – ist …, soll …`. Safari nachgebildet: kein Fokus beim Antippen einer
 Schaltfläche (Chromium und das Linux-WebKit setzen ihn). **Gegenprobe:** `PRUEF_GEGENPROBE=1` macht den ersten Vergleich absichtlich
 falsch, `PRUEF_GEGENPROBE=grundregeln` legt beim ersten Schritt zu breiten Text in den Vordergrund (R-6.3) – der Test muss rot
-werden.
+werden; `PRUEF_GEGENPROBE=bedienung:<fall>` schleust einen benannten Fehler der Bedienungshilfen ein (`GEGENPROBEN_BEDIENUNG`, seit
+4.35.0).
+
+**Bedienungshilfen** (seit 4.35.0, A-43 Teil 1, R-1.8, R-1.9, R-4.7): `PRUEF_BEDIENUNG=beide` öffnet jede Seite von `t.seite` mit
+‚Kontrast erhöhen‘ und ‚Bewegung reduzieren‘ (Ort mit Zusatz ‚· Kontrast · ruhig‘). In jeder Seite läuft der **Bewegungswächter**
+(`bewegungsWaechter`): gilt ‚Bewegung reduzieren‘, misst er jede Web-Animation, jeden CSS-Übergang und jede CSS-Animation sowie jedes
+sanfte Rollen an der Grenze von R-1.9 (Lage über 30 px, Zoomen, Federn, Dauerschleife, Überblenden über 0,3 s, `smooth`);
+`schritt()` meldet die Funde (R-1.9), `t.ruhig(p)` holt sie zwischendurch ab, `t.ende` zum Schluss.
 
 **Rollbereich** (Designrichtlinie 15.22): Die Seite rollt nie, nur der Inhalt (`#app > .rolle`). Prüfungen rollen und messen nur
 über `rolle(p, y)` (y in px, `'ende'`, `'50%'`, `{ um: d }`, `{ vorEnde: d }`) und `rollstand(p)` (`{ y, max, rest, h, fenster }`);
@@ -60,7 +70,10 @@ quer (170 px sichtbar); ein Feld im Rollbereich unter der Tastatur antippen vers
 
 Startet alle Prüfskripte parallel, die schnellsten zuerst (gemessene Dauer in `tests/out/dauer.json` der App), in Chromium und WebKit;
 beim ersten roten Test werden die übrigen beendet und seine Fehlerzeilen gezeigt. Aufruf über `tests/alle.mjs` der App:
-`node tests/alle.mjs [--alle] [--browser chromium] [--nur hig] [--abdeckung] [--gegenprobe [grundregeln]] [--jobs N] [--zeit S]`.
+`node tests/alle.mjs [--alle] [--browser chromium] [--nur hig] [--abdeckung] [--gegenprobe [grundregeln | bedienung]] [--jobs N] [--zeit S]`.
+`--gegenprobe bedienung` (seit 4.35.0) läuft die Prüfung der Bedienungshilfen der App (`ablauf-bedienung`) je eingeschleustem Fehler
+einmal; rot zählt nur mit genau der passenden Meldung – beim Bau von A-43/1 und wenn sich eine dieser Prüfungen ändert, nicht in jedem
+`los`.
 Gleichzeitig laufen standardmäßig so viele Browser, wie der Rechner Kerne hat (mit doppelt so vielen schwankte WebKit unter
 Volllast); erst alle Prüfungen in Chromium, dann alle in WebKit – nie beide gleichzeitig. Fehlt WebKit, bricht der Lauf mit Hinweis
 ab (Rückgabewert 2) – nie stillschweigend nur Chromium. Lange Prüfungen lassen sich teilen (`teile`, z. B. hig nach Darstellung).
@@ -70,7 +83,7 @@ Selbsttest mit Schein-Tests: `node tests/lauf-selbsttest.mjs` (Zusammenarbeit 0 
 
 | Datei | Regeln | Prüft |
 |---|---|---|
-| `ablauf.mjs` | R-1.6, R-2.3, R-3.2, R-3.5, R-4.4, R-4.5, R-4.6, R-5.2, R-5.3, R-5.4, R-5.5, R-5.6, R-6.4, R-7.3, R-7.4, R-7.5, R-8.1 | Abläufe mit Handlung: Messmodus (`checkMessung`), Suche (`checkSearch`, `checkSearchWords` mit und ohne Akzente, `checkSearchPlace`, Suche öffnen und ⓧ nach oben `checkSearchTop`), Suche in der Liste (`checkListSearch`), Nach oben / Ans Ende im Rollbereich und über der Tastatur, die Kapsel schneidet keine Leiste, nur wirksame Pfeile je Rollstand, Fenster und Drucken (`checkFab` mit `sichtbar`, `suche`, `fenster`), Schnellroll-Griff (`checkGriff`, aus `checkFab`), Navigation und Gesten (`checkNavigation`: Seitenwechsel, Zurückwischen, Seitenleiste am iPad hoch und quer, Vorrang, Drehen, ‚Bewegung reduzieren‘ – mit der Maus und mit Berührung nach Safari nachgebildet), Fenster-Kopfzeile (`checkDialogHead`), Blatt auf dem iPhone (`checkSheet`: Form, Ziehen, schnelles Wischen, gerollter Inhalt, mit Änderungen Rückfrage auch auf einem Feld, Abdunkelung, Escape, Drehen, iPad unverändert), Feld über der Tastatur (`checkFieldVisible`, mit Safari-Modell) und ohne Springen (`checkTastaturStill`), Großbuchstaben auch nach einer Korrektur von Hand (`checkCapital`), keine doppelten Leerzeichen (`checkSpaces`), Fehlermeldungen (`checkFieldErrors`), Eingabetaste (`checkEnterDone`), ⓧ in einzeiligen Feldern (`checkClear`), Vorschau (`checkPreview`), Drucken der ganzen Ausgabe (`checkPrint`), Liste steht still (`checkListStill`), Position beim Öffnen (`checkOpenAt`, aktueller Eintrag ohne Hervorhebung mit `markiert: null`), Seitenleiste ein/aus (`checkSideToggle`), langes Drücken – Ziehen und Rollen brechen ab, Finger und Maus (`checkLangDruecken`), Auswahl-Kapsel mit Pfeilen am Anfang, in der Mitte und am Ende, Antippen unter dem Pfeil, Drehen und schmaler (`checkKapsel`) |
+| `ablauf.mjs` | R-1.6, R-1.8, R-1.9, R-2.3, R-3.2, R-3.4, R-3.5, R-4.4, R-4.5, R-4.6, R-4.7, R-5.2, R-5.3, R-5.4, R-5.5, R-5.6, R-6.4, R-7.3, R-7.4, R-7.5, R-8.1 | Abläufe mit Handlung: Bedienungshilfen (seit 4.35.0: `checkFokus` – Fokus in Menü, Untermenü, Sprechblase und Fenster und zurück, Esc und ⌘., Pfeile mit Umlauf, Pos1/Ende, Eingabe nie rot, Tab bleibt im Fenster, Tab-Reihenfolge der Seite, Fokusring nur mit Tastatur, Textfelder nie; `checkKontrast` – zweite Farbtabelle hell und dunkel, Ausgabe unverändert, Umschalten ohne Neuaufbau; `checkRuhig` – ‚Nach oben / Ans Ende‘ springen, Mikrofon ruhig, Blatt ohne Verkleinern; `ansage(p)` – Text im Ansage-Bereich), Messmodus (`checkMessung`), Suche (`checkSearch`, `checkSearchWords` mit und ohne Akzente, `checkSearchPlace`, Suche öffnen und ⓧ nach oben `checkSearchTop`), Suche in der Liste (`checkListSearch`), Nach oben / Ans Ende im Rollbereich und über der Tastatur, die Kapsel schneidet keine Leiste, nur wirksame Pfeile je Rollstand, Fenster und Drucken (`checkFab` mit `sichtbar`, `suche`, `fenster`), Schnellroll-Griff (`checkGriff`, aus `checkFab`), Navigation und Gesten (`checkNavigation`: Seitenwechsel, Zurückwischen, Seitenleiste am iPad hoch und quer, Vorrang, Drehen, ‚Bewegung reduzieren‘ – mit der Maus und mit Berührung nach Safari nachgebildet), Fenster-Kopfzeile (`checkDialogHead`), Blatt auf dem iPhone (`checkSheet`: Form, Ziehen, schnelles Wischen, gerollter Inhalt, mit Änderungen Rückfrage auch auf einem Feld, Abdunkelung, Escape, Drehen, iPad unverändert), Feld über der Tastatur (`checkFieldVisible`, mit Safari-Modell) und ohne Springen (`checkTastaturStill`), Großbuchstaben auch nach einer Korrektur von Hand (`checkCapital`), keine doppelten Leerzeichen (`checkSpaces`), Fehlermeldungen (`checkFieldErrors`), Eingabetaste (`checkEnterDone`), ⓧ in einzeiligen Feldern (`checkClear`), Vorschau (`checkPreview`), Drucken der ganzen Ausgabe (`checkPrint`), Liste steht still (`checkListStill`), Position beim Öffnen (`checkOpenAt`, aktueller Eintrag ohne Hervorhebung mit `markiert: null`), Seitenleiste ein/aus (`checkSideToggle`), langes Drücken – Ziehen und Rollen brechen ab, Finger und Maus (`checkLangDruecken`), Auswahl-Kapsel mit Pfeilen am Anfang, in der Mitte und am Ende, Antippen unter dem Pfeil, Drehen und schmaler (`checkKapsel`) |
 | `abspielen.mjs` | Werkzeug (für R-2.1, R-4.5) | Messdatei des Messmodus nachspielen: `lies(text)`, `ansicht(m)`, `spieleAb(p, m, { ziele, woerter, bis, nachSchritt, verschiebe })` – Tippen, Eingaben, Tastatur schließen; Safari meldet Höhe und `offsetTop` wie gemessen (`__safari.setze`); je Schritt Kopf- und Suchzeile ± 1 px und Fokus wie gemessen. Messdateien in `tests/messungen/` (Designrichtlinie 15.21) |
 | `abgleich.mjs` | R-9.2 bis R-9.4 | alle Fälle des Abgleichs in beide Richtungen, kurzes Fenster und Abgleichbericht |
 | `backup.mjs` | R-9.1, R-9.2 | Backup erstellen und laden (Menü, Abfrage mit Kacheln, Abbrechen, unlesbare Datei); seit 4.34.0: Backup-Kachel nach dem Backup weg, ‚Letztes Backup …‘ mit heutigem Datum im Menü, Kachel nur ohne Backup heute und mit Einträgen, Offline-Zeile immer im Fuß |

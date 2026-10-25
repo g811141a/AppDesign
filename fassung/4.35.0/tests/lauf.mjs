@@ -7,18 +7,21 @@
 //   import { lauf } from '../../AppDesign/tests/lauf.mjs';
 //   process.exit(await lauf({ dir: new URL('..', import.meta.url), pw, tests: ['ablauf-fenster', { name: 'hig', teile: { hell: { PRUEF_DARSTELLUNG: 'light' } } }] }));
 // Schalter: --alle (trotz Fehler weiter, am Ende alle roten) · --browser chromium,webkit · --nur name,name ·
-// --gegenprobe [grundregeln] (jeder Test muss rot werden; zusammen mit --alle) · --jobs N (Standard seit 4.16.1: so viele wie Kerne – A-10, unter Volllast mit 2 × Kernen schwankte WebKit) · --zeit S (Zeitgrenze je Test, Standard 300) · --abdeckung (Test × Ansicht ausgeben).
+// --gegenprobe [grundregeln | bedienung] (jeder Test muss rot werden; zusammen mit --alle; bedienung seit 4.35.0: je eingeschleustem
+// Fehler der Bedienungshilfen ein Lauf der Prüfung ‚bedienung‘ der App, genau die passende Meldung muss rot werden, A-43 P2) · --jobs N (Standard seit 4.16.1: so viele wie Kerne – A-10, unter Volllast mit 2 × Kernen schwankte WebKit) · --zeit S (Zeitgrenze je Test, Standard 300) · --abdeckung (Test × Ansicht ausgeben).
 // Rückgabewert: 0 alles grün, 1 mindestens ein Test rot, 2 Browser fehlt (B-8).
 import { spawn } from 'node:child_process';
 import { existsSync, readFileSync, writeFileSync, mkdirSync, readdirSync } from 'node:fs';
 import { cpus } from 'node:os';
 import { fileURLToPath } from 'node:url';
+import { GEGENPROBEN_BEDIENUNG } from './pruefe.mjs';
 
 const mmss = ms => { const s = Math.round(ms / 1000); return `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`; };
 
-export async function lauf({ dir, pw, tests, argv = process.argv.slice(2) }) {
+export async function lauf({ dir, pw, tests, bedienung = 'ablauf-bedienung', argv = process.argv.slice(2) }) {
   const arg = (n, d) => { const i = argv.indexOf(n); return i < 0 ? d : argv[i + 1]; };
-  const alle = argv.includes('--alle'), abdeckung = argv.includes('--abdeckung'), gegenprobe = argv.includes('--gegenprobe') ? (argv[argv.indexOf('--gegenprobe') + 1] === 'grundregeln' ? 'grundregeln' : '1') : '';
+  const art = argv[argv.indexOf('--gegenprobe') + 1];
+  const alle = argv.includes('--alle'), abdeckung = argv.includes('--abdeckung'), gegenprobe = argv.includes('--gegenprobe') ? (['grundregeln', 'bedienung'].includes(art) ? art : '1') : '';
   const alleLaufen = alle || !!gegenprobe;   // die Gegenprobe läuft immer ganz durch
   const browsers = arg('--browser', 'chromium,webkit').split(',');
   const nur = arg('--nur', '') ? arg('--nur', '').split(',') : null;
@@ -38,7 +41,11 @@ export async function lauf({ dir, pw, tests, argv = process.argv.slice(2) }) {
 
   let dauer = {}; try { dauer = JSON.parse(readFileSync(dauerDatei, 'utf8')); } catch {}
   const liste = [];
-  for (const t of tests) {
+  if (gegenprobe === 'bedienung') {
+    // je Fall ein Lauf der Prüfung der Bedienungshilfen mit genau diesem eingeschleusten Fehler
+    for (const br of browsers) for (const [fall, g] of Object.entries(GEGENPROBEN_BEDIENUNG)) if (!nur || nur.includes(fall))
+      liste.push({ name: bedienung, teil: fall, br, env: { PRUEF_GEGENPROBE: 'bedienung:' + fall }, zeichen: g.zeichen, key: `${bedienung}:${fall}|${br}`, label: `${bedienung} (${fall}: ${g.was}) · ${br}` });
+  } else for (const t of tests) {
     const name = typeof t === 'string' ? t : t.name;
     if (nur && !nur.includes(name)) continue;
     const teile = (typeof t === 'object' && t.teile) || { '': {} };
@@ -59,7 +66,7 @@ export async function lauf({ dir, pw, tests, argv = process.argv.slice(2) }) {
         // A-11: der nächste Browser beginnt erst, wenn alle Läufe des vorigen fertig sind.
         if (laufend.size && next > 0 && liste[next].br !== liste[next - 1].br) break;
         const j = liste[next++], t0 = Date.now(); let text = '';
-        const c = spawn(process.execPath, [`tests/${j.name}.mjs`], { cwd: root, detached: true, env: { ...process.env, ...j.env, PRUEF_BROWSER: j.br, ...(gegenprobe ? { PRUEF_GEGENPROBE: gegenprobe } : {}) } });
+        const c = spawn(process.execPath, [`tests/${j.name}.mjs`], { cwd: root, detached: true, env: { ...process.env, PRUEF_BROWSER: j.br, ...(gegenprobe ? { PRUEF_GEGENPROBE: gegenprobe } : {}), ...j.env } });
         laufend.add(c);
         c.stdout.on('data', d => text += d); c.stderr.on('data', d => text += d);
         const uhr = setTimeout(() => { text += `\n✗ Zeitgrenze ${zeit / 1000} s überschritten – Test abgebrochen`; beende(c); }, zeit);
@@ -96,8 +103,8 @@ export async function lauf({ dir, pw, tests, argv = process.argv.slice(2) }) {
     const pruefbar = gegenprobe === 'grundregeln' ? liste.filter(j => !/^(doku|version|abgleich|kontextmenue)-regeln$|^ablauf-abgleich-faelle$|^hig$/.test(j.name)) : liste;
     // Rot zählt nur, wenn genau die Gegenprobe gemeldet wurde (nicht ein anderer Fehler).
     const zeichen = gegenprobe === 'grundregeln' ? /R-6\.3 Text ragt über div\.msg-text hinaus: ‚#gegenprobe a/ : /Gegenprobe/;
-    const gruen = pruefbar.filter(j => !rot.some(r => r.j === j && zeichen.test(r.text)));
-    console.log(gruen.length ? `\n✗ Gegenprobe: ${gruen.length} Test(s) meldeten die Gegenprobe nicht – sie prüfen nichts: ${gruen.map(j => j.label).join(', ')}` : `\nGegenprobe${gegenprobe === 'grundregeln' ? ' der Grundregeln' : ''}: alle ${pruefbar.length} Läufe wurden rot – jeder meldet Fehler.`);
+    const gruen = pruefbar.filter(j => !rot.some(r => r.j === j && (j.zeichen || zeichen).test(r.text)));
+    console.log(gruen.length ? `\n✗ Gegenprobe: ${gruen.length} Test(s) meldeten die Gegenprobe nicht – sie prüfen nichts: ${gruen.map(j => j.label).join(', ')}` : `\nGegenprobe${gegenprobe === 'grundregeln' ? ' der Grundregeln' : gegenprobe === 'bedienung' ? ' der Bedienungshilfen' : ''}: alle ${pruefbar.length} Läufe wurden rot – jeder mit der passenden Meldung.`);
     return gruen.length ? 1 : 0;
   }
   if (rot.length) {

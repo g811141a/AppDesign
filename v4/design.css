@@ -76,8 +76,6 @@
   :root[data-theme="dark"] { --accent: #409cff; --accent-fill: #0060df; --danger: #ff6961; --danger-fill: #d70015; --sw-on: #30db5b; --warn: #ffb340;
     --muted: #c7c7cc; --ink: #ffffff; --line: #636366; --th-line: #636366; --field-line: #636366;
     --btn-rim: rgba(255,255,255,.5); --rim-color: rgba(255,255,255,.5); }
-  /* Icons, die sonst nur Linienfarbe haben (› in Listen, ⓧ in Feldern), in Grau Text */
-  #side .side-row > .ic, .irow > .ic, .searchbox .sclear, .fclear { color: var(--muted); }
 }
 * { box-sizing: border-box; }
 html, body { margin: 0; background: var(--bg); color: var(--ink); }
@@ -659,4 +657,12 @@ dialog.gleitet { transition: top .25s ease; }
   html.phone .pnav .searchbox input[type=search] { height: 32px; min-height: 0; border-radius: 16px; }
   html.phone .pnav { row-gap: 0; }
   html.phone :is(#dlg, .blatt-geist) .dlg-head h3 { min-height: 0; }
+}
+/* R-1.9 (seit 4.35.0, A-43 H3): mit ‚Kontrast erhöhen‘ stehen Icons, die sonst nur Linienfarbe haben (› in Listen, ⓧ in Feldern und
+   im Suchfeld), in Grau Text – am Ende, damit es die Farben der Bauteile übersteuert */
+@media (prefers-contrast: more) {
+  #side .side-row > .ic, .irow > .ic, .searchbox .sclear, .fclear { color: var(--muted); }
+  /* auf der gewählten Kachel ganz weiß (sonst 4,49 : 1 auf dem dunklen Blau), der Schnellroll-Griff in Textfarbe */
+  #side .side-row.current small, #side .side-row.current > .ic, .irow.current small, .irow.current > .ic { color: #ffffff; }
+  .schnell .griff > span { color: var(--ink); }
 }
