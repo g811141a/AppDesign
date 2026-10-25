@@ -15,6 +15,7 @@ Arbeitsumgebung steht in der AppDesign-`CLAUDE.md` (mit den Chromium-Verweisen f
 
 - **Chatnummer:** die nächste Sitzung heißt **Reiselogbuch 0047**; die danach 0048.
 - **Modell und Aufwand:** Opus 5.5, Aufwand hoch – in 0046 beides richtig (Sitzungsdatei `"effort":"high"`, `CLAUDE_CODE_EFFORT_LEVEL=high`).
+- **Sitzungsgröße 0046:** etwa 530.000 Token – automatische Übergabe nach 0 Nr. 13.
 - **Offene Usertests:** **P-74** (Reiselogbuch 3.34.0 · AppDesign 4.36.0) – Testfälle P-74/0 bis /3 im CHANGELOG des Reiselogbuchs:
   Version, Backlog AppDesign mit den neuen Nummern, Tabelle ‚Nummern und Präfixe‘ (Zusammenarbeit 2.4), Uhrzeitzeile.
 - **‚0. Nächste Version‘:** in beiden Repos leer.
@@ -35,6 +36,9 @@ Arbeitsumgebung steht in der AppDesign-`CLAUDE.md` (mit den Chromium-Verweisen f
   `node tests/alle.mjs --gegenprobe schema`. Die Protokolle `arbeit/APD-78 Recherche Präfixe.md` und
   `arbeit/APD-78 Testfall-Liste.md` bleiben im alten Schema (oben gekennzeichnet) und sind wie `ZUORDNUNG.md` ausgenommen.
 - **APD-79 Uhrzeitzeile** steht als Pflicht in Zusammenarbeit 0 Nr. 26 und 2.2.
+- **Veröffentlicht:** AppDesign 4.36.0 (4c36717) und Reiselogbuch 3.34.0 (dd7f739), Pages ‚success‘; Import 1.3.0 auf `main`. Der
+  erste `los`-Lauf war rot (Zeitüberschreitung beim Klick in `ablauf-navigation (Bedienungshilfen)`, Chromium, unter Last), einzeln
+  und im zweiten vollen Lauf grün (92 Läufe in 35:32) – beobachten; tritt es wieder auf, als Thema ins Backlog.
 
 ## 3. Nächster Schritt
 
