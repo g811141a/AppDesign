@@ -18,7 +18,8 @@ Klärung und Apple-Abgleich `arbeit/APD-43 Teil 2 Klärung.md`, Muster A). Usert
   (Zeilenhöhe, große Stufen enger), Leisten `--tb-<Stil>` und `--fb` bis XXXL; ohne Stufe Standard.
 - **`textStufe()` (G3, ui.js):** unsichtbare Probe mit 1rem, `ResizeObserver` und `visibilitychange` → `html[data-ts]`, `ts-gross`
   (ab 21), `ts-ax` (ab 28), `ts-um` (Umbau: ab 28, iPhone hoch ab 21); ein Wechsel wirkt wie das Drehen (W1: oberster Eintrag aus
-  dem letzten Rollen, alle Größen-Hörer, die App baut über ihren resize-Hörer neu auf).
+  dem letzten Rollen, alle Größen-Hörer, die App baut über ihren resize-Hörer neu auf). Rollt jemand, während die App selbst rollt
+  (`keepFrei`), gilt danach sein Stand fürs nächste Drehen (R-8.1; unter Last stand sonst ein alter Eintrag oben).
 - **design.css (G4–G6, A1–A3, L1–L3, U1–U5, B1–B7):** alle 45 Schriftgrößen als Stil oder mit Faktor, keine Zeilenhöhe in px
   (Knöpfe, Griff-Blase, Fenstertitel 1.2); Icons mit `--k` (Inhalt Body-Faktor, Leisten `--fb`); Kapseln, Smileys, Markierung,
   Häkchen, ⓧ und Schrittnummer wachsen, Untergrenze 44; Leisten bis XXXL, iPhone quer fest (L2); Titel in Leisten einzeilig mit …;

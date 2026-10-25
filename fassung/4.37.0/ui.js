@@ -1662,7 +1662,7 @@ function restoreTop() {
   if ('rest' in keepTop) {
     keepBusy = true;
     rolle.to(rolle.y + scrollRest() - keepTop.rest);
-    requestAnimationFrame(() => { keepBusy = false; });
+    keepFrei();
     return;
   }
   const e = [...document.querySelectorAll(KEEP_SEL.split(', ').map(s => `${s.split(' ')[0]} ${keepTop.sel}`).join(', '))].find(x => x.getClientRects().length);
@@ -1670,9 +1670,15 @@ function restoreTop() {
   keepBusy = true;
   const r = e.getBoundingClientRect();
   rolle.by(r.top - keepEdge() - keepTop.part * r.height);
-  requestAnimationFrame(() => { keepBusy = false; });
+  keepFrei();
 }
 onRoll(() => { if (!keepBusy) rememberTop(); });
+// Ende einer eigenen Rollbewegung im nächsten Bild; hat inzwischen jemand anderes gerollt (Finger, unter Last auch die Prüfung), gilt
+// sein Stand fürs nächste Drehen – sonst bliebe das Gedächtnis beim alten Eintrag (seit 4.37.0)
+function keepFrei() {
+  const ziel = rolle.y;
+  requestAnimationFrame(() => { keepBusy = false; if (Math.abs(rolle.y - ziel) > 2) rememberTop(); });
+}
 
 // R-8.1 (seit 4.21.0, APD-17): Ändert die App die Anordnung selbst (z. B. Seitenleiste ein/aus – die Breite des Inhalts und
 // damit die Zeilenhöhen ändern sich, das Fenster nicht), bleibt oben derselbe Eintrag: keepPlace(() => { …; render(); }).
@@ -1683,7 +1689,7 @@ function keepPlace(change) {
   if (anchor) return restoreTop();
   keepBusy = true;
   if (rolle.y) rolle.to(0);
-  requestAnimationFrame(() => { keepBusy = false; });
+  keepFrei();
 }
 
 // R-7.4 (seit 4.21.0, APD-16): Position beim Öffnen eines Eintrags – ganz oben; gibt die App einen ‚nächsten offenen‘ Eintrag
@@ -1698,7 +1704,7 @@ function openAt(el) {
   keepBusy = true;
   rolle.to(top);
   keepTop = topAnchor();
-  requestAnimationFrame(() => { keepBusy = false; });
+  keepFrei();
 }
 // Seit 4.23.2: bei offenem bzw. gerade geschlossenem Fenster ändert nur die Tastatur die Höhe – das ist kein Drehen (R-7.3).
 window.addEventListener('resize', () => { if ((lockY !== null || holdTop) && innerWidth === keepWidth) { keepHeight = innerHeight; return; } if (!keepTurned()) return; requestAnimationFrame(() => requestAnimationFrame(restoreTop)); setTimeout(restoreTop, 350); });
