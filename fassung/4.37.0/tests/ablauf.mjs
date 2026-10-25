@@ -1902,7 +1902,10 @@ export async function checkKapsel(p, { sel, drehen = false, schmaler = null, whe
   const lage = () => p.evaluate(sel => { const s = document.querySelector(sel), cap = s.parentElement, pf = x => cap.querySelector(`:scope > .pf.${x}`);
     return { sl: Math.round(s.scrollLeft), max: Math.round(s.scrollWidth - s.clientWidth), l: pf('l')?.classList.contains('an'), r: pf('r')?.classList.contains('an'),
       ol: +getComputedStyle(pf('l')).opacity, or: +getComputedStyle(pf('r')).opacity, dauer: getComputedStyle(pf('r')).transitionDuration, breite: Math.round(cap.getBoundingClientRect().width) }; }, sel);
-  const rolle = async x => { await p.evaluate(([sel, x]) => { const s = document.querySelector(sel); s.scrollLeft = x === 'ende' ? s.scrollWidth : x === 'mitte' ? (s.scrollWidth - s.clientWidth) / 2 : x; }, [sel, x]); await wait(p, 300); return lage(); };
+  const rolle = async x => { await p.evaluate(([sel, x]) => { const s = document.querySelector(sel); s.scrollLeft = x === 'ende' ? s.scrollWidth : x === 'mitte' ? (s.scrollWidth - s.clientWidth) / 2 : x; }, [sel, x]); await wait(p, 300);
+    // seit 4.37.0: unter Last läuft das Überblenden (0,2 s, geprüft über ‚dauer‘) später zu Ende – auf sein Ende warten, dann messen
+    await p.evaluate(sel => Promise.all([...document.querySelector(sel).parentElement.querySelectorAll(':scope > .pf')].flatMap(e => e.getAnimations()).map(a => a.finished.catch(() => {}))), sel);
+    return lage(); };
   const soll = (k, x, l, r) => { if (x.l !== l || x.r !== r) E(`${k}: Pfeile ${x.l ? '‹' : '–'} ${x.r ? '›' : '–'} statt ${l ? '‹' : '–'} ${r ? '›' : '–'} (Rollstand ${x.sl} von ${x.max} px)`);
     if (Math.round(x.ol) !== +l || Math.round(x.or) !== +r) E(`${k}: Pfeil nach 0,3 s nicht ein- bzw. ausgeblendet (Deckkraft ‹ ${x.ol} › ${x.or})`); };
   let x = await rolle(0);
