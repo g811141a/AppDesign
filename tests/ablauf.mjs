@@ -888,7 +888,7 @@ export async function checkGriff(p, { zeit = 2000, where = '' } = {}) {
   const x = (s.griff.left + s.griff.right) / 2, h = s.bahn.bottom - s.bahn.top;
   await p.mouse.move(x, (s.griff.top + s.griff.bottom) / 2); await p.mouse.down();
   await p.mouse.move(x, s.bahn.top + h / 2, { steps: 6 }); await wait(p, 200);
-  let z = await bis(z => !z.marke || z.blase?.sicht);
+  let z = await bis(z => !z.marke || (z.blase?.sicht && z.blase.text === z.marke));   // seit 4.37.0: unter Last kommt der Text der Blase etwas später
   if (Math.abs(z.y - z.ende / 2) > z.ende * 0.08) E(`in die Mitte gezogen: ${z.y} px statt etwa ${Math.round(z.ende / 2)} px`);
   if (z.marke && (!z.blase?.sicht || z.blase.text !== z.marke)) E(`Blase beim Ziehen ${z.blase?.sicht ? `‚${z.blase.text}‘` : 'nicht zu sehen'}, soll ‚${z.marke}‘ (APD-37/F-19)`);
   if (!z.marke && z.blase?.sicht) E('Blase ohne Marken (APD-37/F-19)');
