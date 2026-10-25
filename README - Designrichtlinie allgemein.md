@@ -122,7 +122,8 @@ heller).
   nicht (R-2.4). Im Inhalt wachsen Icons (`--k`), senkrechte Innenabstände und Mindesthöhen mit dem Body-Faktor; 44 px bleibt
   die Untergrenze, Kreise bleiben Kreise, seitliche Ränder bleiben fest.
 - **Umbau bei großer Schrift** (`html.ts-um`: ab AX1, auf dem iPhone hoch ab XXL): Nebeneinanderliegendes steht untereinander –
-  Datum der Kachel, Menü-Wert unter dem Text, Kasten-Bezeichnung über dem Wert, Knöpfe des Schrittkopfs unter dem Titel; ab AX1
+  Datum der Kachel, Menü-Wert unter dem Text, Kasten-Bezeichnung über dem Wert, Knöpfe des Schrittkopfs unter dem Titel; ab XXL
+  Silbentrennung im Inhalt, lange Wörter brechen im Rollbereich um; ab AX1
   (`html.ts-ax`) Tabellen im Inhalt als Kästen (15.13), Sprechblasen-Knöpfe untereinander.
 
 | Stil (pt) | xS | S | M | **L** | XL | XXL | XXXL | AX1 | AX2 | AX3 | AX4 | AX5 | im Bau |

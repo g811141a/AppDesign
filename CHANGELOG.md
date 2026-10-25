@@ -22,6 +22,7 @@ Klärung und Apple-Abgleich `arbeit/APD-43 Teil 2 Klärung.md`, Muster A). Usert
 - **design.css (G4–G6, A1–A3, L1–L3, U1–U5, B1–B7):** alle 45 Schriftgrößen als Stil oder mit Faktor, keine Zeilenhöhe in px
   (Knöpfe, Griff-Blase, Fenstertitel 1.2); Icons mit `--k` (Inhalt Body-Faktor, Leisten `--fb`); Kapseln, Smileys, Markierung,
   Häkchen, ⓧ und Schrittnummer wachsen, Untergrenze 44; Leisten bis XXXL, iPhone quer fest (L2); Titel in Leisten einzeilig mit …;
+  Silbentrennung ab XXL (bei Standard unverändert);
   Menü, Untermenü, Sprechblase, Fenster, Meldung und Seitenleiste wachsen bis Bildschirm minus Rand bzw. 40 %/70 %; Umbau mit
   `html.ts-um`; Silbentrennung im Inhalt; Notizfeld mindestens 96 px × Faktor.
 - **Platz unter der Liste gemessen (B7):** `untenMessen()` setzt `--unten-h` (Kapsel bzw. untere Leiste) und `--fuss-h`
@@ -32,7 +33,8 @@ Klärung und Apple-Abgleich `arbeit/APD-43 Teil 2 Klärung.md`, Muster A). Usert
   letzter Eintrag nicht verdeckt); in jeder Messung Stile ohne px und die Grundregel ‚nichts überlappt‘ (Zeilen, Knöpfe); R-2.4
   und R-6.1 kennen die wachsenden Leisten und den Umbau, R-5.1 (Datumsfeld, Schrittkopf) die große Schrift, R-8.1 beim Drehen vergleicht
   die Kennung des Eintrags (Tabellenzeile ↔ Kasten); `textSeite(p)` für Prüfskripte, die Seiten selbst öffnen; Gegenprobe
-  `--gegenprobe text` (lauf.mjs, 7 Fälle).
+  `--gegenprobe text` (lauf.mjs, 7 Fälle); `checkTurnEnd` rollt zweimal ans Ende (unter Last stellte eine gerade endende Bewegung
+  sonst den alten Rollstand wieder her – 58 px vor dem Ende, 3 von 12 Läufen).
 - **Meldung am iPhone (#msg):** eigene Höchsthöhe `--msg-max` (nie unter Status- oder Home-Leiste), bei großer Schrift rollt ihr Inhalt –
   vorher galt die Höhe des Blatts. Der gemessene Platz unter der Liste folgt auch geänderten sicheren Rändern; die Backup-Kachel wird
   erst gemessen, wenn sie zu sehen ist (ResizeObserver). Lange Wörter brechen im Rollbereich im Wort um (`overflow-wrap: break-word`),

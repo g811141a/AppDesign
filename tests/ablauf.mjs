@@ -396,7 +396,10 @@ export async function checkTurnEnd(p, { back = 0, where = '' } = {}) {
     const e = [...document.querySelectorAll('#app [data-day], #app [data-keep]')].find(x => x.getClientRects().length && x.getBoundingClientRect().bottom > edge + 1);
     return { tag: e ? e.dataset.day || e.dataset.keep : null, rest: Math.round(roll.rest), y: Math.round(roll.y) };
   }, ROLL);
+  // zweimal: endet unter Last gerade noch eine Bewegung (Seitenleiste gleitet aus, keepPlace), stellt sie sonst den alten Rollstand
+  // wieder her bzw. das Gedächtnis für das Drehen (keepTop) bleibt beim alten Stand – der zweite Rollschritt gilt (seit 4.37.0)
   await rolle(p, { vorEnde: back }); await wait(p, 400);
+  await rolle(p, { vorEnde: back }); await wait(p, 200);
   const vor = await lage(), v = p.viewportSize();
   if (vor.tag) { E(`Vorbereitung: oben steht noch ${vor.tag} – kein Fall ‚Ende der Seite‘ (Abstand ${back} zu groß)`); return errors; }
   for (const [w, h, name] of [[v.height, v.width, 'gedreht'], [v.width, v.height, 'zurückgedreht']]) {
