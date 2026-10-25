@@ -18,7 +18,6 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| P-74 | 2 | **APD-78 Nummernschema und APD-79 Uhrzeitzeile (4.36.0, Reiselogbuch 3.34.0):** Version, Backlog mit APD-Nummern und ohne E-Nummern, Tabelle ‚Nummern und Präfixe‘ (Zusammenarbeit 2.4), Uhrzeitzeile – Testfälle P-74/0 bis /3 im CHANGELOG des Reiselogbuchs | prüfen |
 
 ## 2. Weitere Themen (in Klärung)
 
@@ -59,6 +58,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Thema | Version | Datum |
 |---|---|---|---|
+| P-74 | Geprüft **P-74 (Reiselogbuch 3.34.0): alles ok** (Nutzer 25.10.2026, Sitzung 0047) – Version, Backlog mit APD-Nummern und ohne E-Nummern, Tabelle ‚Nummern und Präfixe‘, Uhrzeitzeile (**APD-78 und APD-79 abgeschlossen**); Präfix P- für Usertests bleibt (T- ist als altes Präfix belegt, Nutzer 25.10.2026) | 4.36.0 | 25.10.2026 |
 | APD-78, APD-79 | **APD-78 Nummernschema gebaut (Ja 25.10.2026):** Themen APD-n und RLB-n, RLI-n reserviert, Import-Regeln I-n, Erledigt ohne eigene Nummer, lokale Nummern mit Elternnummer, Begriffe Usertest / Testfälle P-n / Testfall-Liste – rückwirkend in allen lebenden Dateien der drei Repos (`werkzeug/umbenennen.mjs` nach `ZUORDNUNG.md`), Prüfung `checkSchema` APD-78/S-1 bis S-10 mit Gegenprobe; **APD-79** Uhrzeitzeile (Zusammenarbeit 0 Nr. 26, 2.2) | AppDesign 4.36.0 · Zusammenarbeit allgemein 2.20.0 | 25.10.2026 |
 | P-73 | Geprüft **P-73 (Reiselogbuch 3.33.0): alles ok** (Nutzer 25.10.2026) – kein blauer Rahmen in Textfeldern, Antippen wie bisher, Hardware-Tastatur, Fehlermeldung beim Häkchen, ‚Kontrast erhöhen‘, ‚Bewegung reduzieren‘ (**APD-43 Teil 1 abgeschlossen**); neue Wünsche daraus: APD-80 Kontrast dunkel, APD-81 ⓧ in mehrzeiligen Feldern | 4.35.0 | 25.10.2026 |
 | APD-43 | **APD-43 Teil 1 (Barrierefreiheit) mit Fokus-Rahmen:** R-1.8 VoiceOver (Namen, Rollen, Fokus, `ansagen`), R-1.9 ‚Kontrast erhöhen‘ (zweite Farbtabelle, `--accent-fill`) und ‚Bewegung reduzieren‘, R-4.7 Hardware-Tastatur, R-1.4 `inert`, R-5.3 `feldFehler`, R-3.4 Fokus-Rahmen nur mit Tastatur, Textfelder nie (K9, Variante a); Prüfungen `checkFokus`, `checkKontrast`, `checkRuhig`, Bewegungswächter, `PRUEF_BEDIENUNG`, Gegenprobe `bedienung`; Usertest P-73 | 4.35.0 | 25.10.2026 |
