@@ -14,6 +14,9 @@
 // Gegenprobe: PRUEF_GEGENPROBE=1 macht den ersten Vergleich absichtlich falsch, PRUEF_GEGENPROBE=grundregeln legt beim
 // ersten Schritt zu breiten Inhalt in die Seite (lauf.mjs --gegenprobe bzw. --gegenprobe grundregeln für alle Tests).
 // Jede Fehlermeldung: ‚✗ <Regel> <Browser> · <Ansicht> · <Schritt>: <was> – ist …, soll …‘ (Fall-Liste A-05, A-4).
+// Seit 4.35.0 (A-43 P1, M7, P2): PRUEF_BEDIENUNG=beide öffnet jede Seite mit ‚Kontrast erhöhen‘ und ‚Bewegung reduzieren‘ (Ort mit
+// Zusatz ‚· Kontrast · ruhig‘); bei ‚Bewegung reduzieren‘ läuft der Bewegungswächter mit und meldet nach jedem Schritt (R-1.9).
+// PRUEF_GEGENPROBE=bedienung:<fall> schleust einen benannten Fehler der Bedienungshilfen ein (GEGENPROBEN_BEDIENUNG, lauf.mjs).
 import { writeFileSync, mkdirSync } from 'node:fs';
 
 // Gemeinsame Ansichten (C-2): iPad quer und hoch, iPhone hoch und quer – je hell oder dunkel über die Option theme.
@@ -96,10 +99,121 @@ export async function ruhe(p) {
   }
 }
 
+// R-1.9 (seit 4.35.0, A-43 M6, M7): Bewegungswächter – läuft mit ‚Bewegung reduzieren‘ in der Seite und misst jede Bewegung an der
+// Grenze: erlaubt sind Überblenden (nur Deckkraft bzw. Farbe, bis 0,3 s), Lageänderungen bis 30 px und alles, was direkt dem Finger
+// folgt (keine Animation); gemeldet werden Lage über 30 px, Zoomen (scale), Federn (Kurve über das Ziel hinaus), Dauerschleifen,
+// längeres Überblenden und sanftes Rollen (scrollTo/scrollBy/scrollIntoView mit smooth). Erfasst werden Web-Animationen (el.animate)
+// sowie CSS-Übergänge und -Animationen (getAnimations beim Start). Funde: window.__ruhigFunde, abgeholt mit ruhigFunde(p).
+export function bewegungsWaechter() {
+  if (window.__ruhigFunde) return;
+  const funde = window.__ruhigFunde = [], gesehen = new WeakSet();
+  const ruhig = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const wo = e => !e || !e.tagName ? '-' : e.id ? '#' + e.id : e.tagName.toLowerCase() + (e.classList?.[0] ? '.' + e.classList[0] : '');
+  const melde = t => { if (funde.length < 50 && !funde.includes(t)) funde.push(t); };
+  const LAGE = ['top', 'left', 'right', 'bottom', 'marginTop', 'marginLeft', 'marginRight', 'marginBottom', 'inset'];
+  const werte = (k, v) => {
+    v = String(v ?? '');
+    if (k === 'transform') { try { const m = new DOMMatrixReadOnly(v === 'none' || !v ? undefined : v); return { x: m.m41, y: m.m42, s: Math.hypot(m.a, m.b) }; } catch { return null; } }
+    if (k === 'translate') { const [x = 0, y = 0] = v === 'none' ? [] : v.split(/\s+/).map(parseFloat); return { x: x || 0, y: y || 0, s: 1 }; }
+    if (k === 'scale') return { x: 0, y: 0, s: v === 'none' || !v ? 1 : parseFloat(v) };
+    if (LAGE.includes(k)) return { x: 0, y: parseFloat(v) || 0, s: 1 };
+    return null;
+  };
+  const pruefe = (a, el) => {
+    if (!a || gesehen.has(a) || !ruhig()) return;
+    gesehen.add(a);
+    const fx = a.effect, t = fx?.getComputedTiming?.() || {}, kf = fx?.getKeyframes?.() || [];
+    el = el || fx?.target;
+    if (t.iterations === Infinity) melde(`Dauerschleife ${wo(el)}`);
+    const props = new Set(kf.flatMap(k => Object.keys(k)).filter(k => !['offset', 'computedOffset', 'easing', 'composite'].includes(k)));
+    let bewegt = false;
+    for (const k of props) {
+      const vs = kf.map(f => f[k]).filter(v => v !== undefined);
+      if (new Set(vs.map(String)).size < 2) continue;
+      const w = vs.map(v => werte(k, v));
+      if (w[0]) {
+        bewegt = true;
+        const d = Math.max(...w.map(x => Math.hypot(x.x - w[0].x, x.y - w[0].y)));
+        if (d > 30) melde(`Lage über 30 px ${wo(el)} ${k} (${Math.round(d)} px)`);
+        if (w.some(x => Math.abs(x.s - w[0].s) > 0.001)) melde(`Zoomen ${wo(el)} ${k}`);
+      } else if ((t.duration || 0) > 300) melde(`Überblenden länger als 0,3 s ${wo(el)} ${k} (${Math.round(t.duration)} ms)`);
+    }
+    const kurven = [t.easing, ...kf.map(f => f.easing)].filter(Boolean).join(' ');
+    if (bewegt && [...kurven.matchAll(/cubic-bezier\(([^)]+)\)/g)].some(m => { const n = m[1].split(',').map(Number); return n[1] > 1 || n[3] > 1 || n[1] < 0 || n[3] < 0; })) melde(`Federn ${wo(el)}`);
+  };
+  const animate = Element.prototype.animate;
+  Element.prototype.animate = function (...args) { const a = animate.apply(this, args); pruefe(a, this); return a; };
+  for (const typ of ['animationstart', 'transitionrun']) document.addEventListener(typ, e => e.target.getAnimations?.().forEach(a => pruefe(a, e.target)), true);
+  const sanft = (wer, o) => { if (o && typeof o === 'object' && o.behavior === 'smooth' && ruhig()) melde(`sanftes Rollen ${wer}`); };
+  for (const [ziel, namen] of [[Element.prototype, ['scrollTo', 'scrollBy', 'scrollIntoView']], [window, ['scrollTo', 'scrollBy']]]) for (const n of namen) {
+    const alt = ziel[n];
+    ziel[n] = function (...args) { sanft(`${n} ${wo(this === window ? null : this) === '-' ? 'Fenster' : wo(this)}`, args[0]); return alt.apply(this, args); };
+  }
+}
+export const ruhigFunde = p => p.evaluate(() => (window.__ruhigFunde || []).splice(0)).catch(() => []);
+
+// Gegenprobe der Bedienungshilfen (seit 4.35.0, A-43 P2): je Fall ein eingeschleuster Fehler (Init-Skript der Seite), die passende
+// Meldung (zeichen) muss rot werden. lauf.mjs --gegenprobe bedienung läuft jeden Fall einmal mit der Prüfung der Bedienungshilfen.
+export const GEGENPROBEN_BEDIENUNG = {
+  name: { zeichen: /R-1\.8 .*ohne Namen/, was: 'Icon-Knopf ohne Namen (V1)' },
+  titel: { zeichen: /R-1\.8 Fenster .*ohne Titel/, was: 'Fenster ohne Titelbezug (V2)' },
+  menueknopf: { zeichen: /R-1\.8 Knopf des offenen Menüs/, was: 'Menüknopf ohne aria-haspopup/aria-expanded (V3)' },
+  haekchen: { zeichen: /R-1\.8 Menüpunkt .*aria-checked/, was: 'Häkchen ohne aria-checked (V4)' },
+  zurueck: { zeichen: /R-4\.7 .*Fokus nicht zurück/, was: 'Fokus nicht zurück auf den Knopf (V5, V6)' },
+  inert: { zeichen: /R-1\.4 .*nicht gesperrt \(inert\)/, was: 'ohne inert (V7)' },
+  modal: { zeichen: /R-1\.4 Fenster .*nicht modal/, was: 'Fenster nicht modal (V8)' },
+  ansage: { zeichen: /R-1\.8 .*Ansage/, was: 'kein Ansage-Bereich (V9)' },
+  beschreibung: { zeichen: /R-5\.3 .*aria-describedby/, was: 'Fehlermeldung ohne aria-describedby (V10)' },
+  gespeichert: { zeichen: /R-1\.8 ‚Automatisch gespeichert‘ wird angesagt/, was: '‚Automatisch gespeichert‘ angesagt (V11)' },
+  esc: { zeichen: /R-4\.7 Esc schließt das Menü nicht/, was: 'Esc schließt Menü nicht (K1)' },
+  rot: { zeichen: /R-4\.7 Eingabe .*rot/, was: 'Eingabe löst Rot (K4)' },
+  tab: { zeichen: /R-4\.7 Tab verlässt/, was: 'Tab verlässt Fenster (K5)' },
+  ring: { zeichen: /R-3\.4 .*Fokus-Rahmen.*(ohne Tastatur|nach dem Antippen)/, was: 'Fokusring beim Antippen (K6)' },
+  feldrahmen: { zeichen: /R-3\.4 Textfeld .*Fokus-Rahmen/, was: 'Textfeld mit Fokus-Rahmen (K9)' },
+  farben: { zeichen: /R-1\.9 Farbtabelle/, was: 'Farbtabelle ‚Kontrast erhöhen‘ fehlt (H1, H2)' },
+  flaeche: { zeichen: /R-1[0][.]2 Kontrast .*mind[.] 4[.]5/, was: '#409CFF als Fläche (H3)' },
+  ausgabe: { zeichen: /R-6\.2 .*Kontrast/, was: 'Ausgabe mit ‚Kontrast erhöhen‘ dunkel (H4)' },
+  verschiebung: { zeichen: /R-1\.9 .*Bewegung: Lage über 30 px/, was: 'Verschiebung über 30 px trotz ‚reduzieren‘ (M7)' },
+  sanft: { zeichen: /R-1\.9 .*Bewegung: sanftes Rollen/, was: 'sanftes Rollen trotz ‚reduzieren‘ (M2, M7)' },
+  pulsieren: { zeichen: /R-1\.9 .*(Dauerschleife|pulsiert)/, was: 'Pulsieren trotz ‚reduzieren‘ (M4)' },
+};
+// Die eingeschleusten Fehler (laufen in der Seite vor ihren Skripten)
+function gegenprobeBedienung(fall) {
+  const beob = fn => new MutationObserver(() => fn()).observe(document, { subtree: true, childList: true, attributes: true });
+  const stil = css => document.addEventListener('DOMContentLoaded', () => { const s = document.createElement('style'); s.textContent = css; document.head.append(s); });
+  const f = {
+    name: () => beob(() => document.querySelectorAll('button[aria-label]').forEach(b => { if (b.querySelector('svg') && !b.textContent.trim()) b.removeAttribute('aria-label'); })),
+    titel: () => beob(() => document.querySelectorAll('dialog[aria-labelledby]').forEach(d => d.removeAttribute('aria-labelledby'))),
+    menueknopf: () => beob(() => document.querySelectorAll('[aria-haspopup]:not(.mi)').forEach(b => { b.removeAttribute('aria-haspopup'); b.removeAttribute('aria-expanded'); })),
+    haekchen: () => beob(() => document.querySelectorAll('[aria-checked]').forEach(b => b.removeAttribute('aria-checked'))),
+    zurueck: () => { const alt = HTMLElement.prototype.focus; HTMLElement.prototype.focus = function (o) { if (this.closest('.menu, .pop') || this.matches('dialog, input, textarea, select')) return alt.call(this, o); }; },
+    inert: () => beob(() => document.querySelectorAll('[inert]').forEach(e => { if (!e.closest('.blatt-geist')) e.inert = false; })),
+    modal: () => { HTMLDialogElement.prototype.showModal = HTMLDialogElement.prototype.show; },
+    ansage: () => beob(() => document.querySelectorAll('[aria-live]').forEach(e => e.remove())),
+    beschreibung: () => beob(() => document.querySelectorAll('[aria-describedby][aria-invalid]').forEach(e => e.removeAttribute('aria-describedby'))),
+    gespeichert: () => beob(() => document.querySelectorAll('.dlg-head .sub:not([aria-live]), .saved:not([aria-live])').forEach(e => e.setAttribute('aria-live', 'polite'))),
+    esc: () => addEventListener('keydown', e => { if (e.key === 'Escape' && document.querySelector('.menu')) e.stopImmediatePropagation(); }, true),
+    rot: () => addEventListener('keydown', e => { const r = document.querySelector('.pop button.danger, .pop button.danger-text'); if (e.key === 'Enter' && r) { e.stopImmediatePropagation(); e.preventDefault(); r.click(); } }, true),
+    tab: () => addEventListener('keydown', e => { if (e.key === 'Tab' && document.querySelector('dialog[open]')) { e.stopImmediatePropagation(); e.preventDefault(); document.activeElement?.blur(); } }, true),
+    ring: () => stil('button:focus { outline: 3px solid red !important; }'),
+    feldrahmen: () => stil('input:focus, textarea:focus { outline: auto 5px !important; }'),
+    farben: () => stil('@media (prefers-contrast: more) { :root, :root[data-theme] { --accent: #007aff !important; --muted: #6e6e73 !important; --line: #d1d1d6 !important; } }'),
+    flaeche: () => stil(':root[data-theme] { --accent-fill: #409cff !important; }'),
+    ausgabe: () => stil('@media (prefers-contrast: more) { .rt, .rt * { color: #fff !important; background: #1c1c1e !important; } }'),
+    verschiebung: () => addEventListener('load', () => setTimeout(() => document.body.animate([{ transform: 'translateY(0)' }, { transform: 'translateY(100px)' }], 200), 200)),
+    sanft: () => addEventListener('load', () => setTimeout(() => (document.querySelector('#app > .rolle') || document.scrollingElement).scrollTo({ top: 1, behavior: 'smooth' }), 200)),
+    pulsieren: () => stil('.mic[aria-pressed="true"] { animation: pulse 1s infinite !important; }'),
+  }[fall];
+  if (!f) throw new Error('Unbekannter Fall der Gegenprobe: ' + fall);
+  f();
+}
+
 export function pruefung(name, pw, { hig = null, out = null } = {}) {
   const browserName = process.env.PRUEF_BROWSER || 'chromium';
   const fehler = [], ansichten = new Set();
   let ort = '', gegenprobe = process.env.PRUEF_GEGENPROBE === '1', gegenprobeGrund = process.env.PRUEF_GEGENPROBE === 'grundregeln';
+  const bedienung = process.env.PRUEF_BEDIENUNG === 'beide', gpBedienung = (process.env.PRUEF_GEGENPROBE || '').match(/^bedienung:(.+)$/)?.[1];
+  const seiten = new Set();
   const wo = schritt => [browserName, ort, schritt].filter(Boolean).join(' · ');
   const melde = (regel, was, schritt = '') => fehler.push(`✗ ${regel ? regel + ' ' : ''}${wo(schritt)}: ${was}`);
 
@@ -125,8 +239,13 @@ export function pruefung(name, pw, { hig = null, out = null } = {}) {
     async seite(b, ansicht = 'iPad quer', { theme, ...opts } = {}) {
       const a = typeof ansicht === 'string' ? ANSICHTEN[ansicht] : ansicht;
       if (!a) throw new Error(`Unbekannte Ansicht ‚${ansicht}‘`);
-      const p = await b.newPage({ hasTouch: true, ...a, ...(theme ? { colorScheme: theme } : {}), ...opts });
-      if (typeof ansicht === 'string') t.ort = ansicht + (theme ? ` ${theme === 'dark' ? 'dunkel' : 'hell'}` : '');
+      const hilfen = bedienung ? { contrast: 'more', reducedMotion: 'reduce' } : {};
+      const p = await b.newPage({ hasTouch: true, ...a, ...(theme ? { colorScheme: theme } : {}), ...hilfen, ...opts });
+      if (typeof ansicht === 'string') t.ort = ansicht + (theme ? ` ${theme === 'dark' ? 'dunkel' : 'hell'}` : '') + (bedienung ? ' · Kontrast · ruhig' : '');
+      // R-1.9 (M7): der Bewegungswächter misst jede Bewegung, sobald ‚Bewegung reduzieren‘ gilt (auch später per emulateMedia)
+      await p.addInitScript(bewegungsWaechter);
+      seiten.add(p);
+      if (gpBedienung) await p.addInitScript(gegenprobeBedienung, gpBedienung);
       p.on('pageerror', e => melde('', `Skriptfehler der Seite: ${e.message.split('\n')[0]}`));
       // Safari nachgebildet (Zusammenarbeit 0 Nr. 5): Safari auf iPad und iPhone setzt beim Antippen einer Schaltfläche keinen
       // Fokus, Chromium und das WebKit von Playwright (Linux) schon – sonst meldet R-3.4 einen Fokus am x, den es am Gerät nicht gibt.
@@ -160,10 +279,14 @@ export function pruefung(name, pw, { hig = null, out = null } = {}) {
         (document.querySelector('dialog[open]') || document.body).append(d); }); }
       if (hig) await hig.measure(p, wo(name), { schnell: true });   // measure wartet selbst, bis die Seite ruht
       await p.evaluate(() => document.getElementById('gegenprobe')?.remove()).catch(() => {});
+      await t.ruhig(p, name);
     },
+    // R-1.9 (seit 4.35.0, M7): Funde des Bewegungswächters seit dem letzten Abholen melden
+    async ruhig(p, schritt = '') { for (const f of await ruhigFunde(p)) melde('R-1.9', `Bewegung: ${f} trotz ‚Bewegung reduzieren‘`, schritt); },
     get anzahl() { return fehler.length; },
     // Ende: Grundregeln und Fehler ausgeben, Abdeckung festhalten, Rückgabewert setzen.
     async ende(b) {
+      for (const p of seiten) if (!p.isClosed()) await t.ruhig(p, 'Ende');
       if (b) await b.close().catch(() => {});
       const higRc = hig ? hig.report({ still: true }) : 0;
       if (out) {

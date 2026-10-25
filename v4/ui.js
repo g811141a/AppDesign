@@ -1,4 +1,4 @@
-// AppDesign 4.34.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
+// AppDesign 4.35.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
 // Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/fassung/X.Y.Z/ui.js"></script> (feste Fassung, R-10.3)
 // Seit 4.11.0 (R-10.3): ui.js und design.css immer mit ?v=<AppDesign-Version> einbinden (auch in sw.js) und beim Start
 // prüfen, ob genau diese Fassung geladen ist (AD_VERSION hier, --ad-version in design.css).
@@ -14,12 +14,13 @@
 // gedrückte Schaltflächen (hold, release, setOpener) · Meldung (inform) · Fenster (openDialog, dlgHead) ·
 // Auswahl-Kapsel (capHtml, mountCap) · Tastatur/sichtbarer Bereich (placeDialogs) · iPhone (isPhone, applyLayout) ·
 // Messmodus (messungMenuItems, seit 4.26.0) · Schnellroll-Griff (seit 4.30.0) · Navigation und Gesten (navAnmelden, navVor,
-// navZurueck, navSeite, seit 4.30.0)
+// navZurueck, navSeite, seit 4.30.0) · Bedienungshilfen (ansagen, feldFehler, ersterFehler, Fokus und Tasten in Menüs, Sprechblasen
+// und Fenstern, seit 4.35.0)
 // Regeln dazu: README - Designrichtlinie allgemein.md
 
 'use strict';
 // Version der Bausteine (R-10.3): die App vergleicht sie beim Start mit der benötigten Fassung.
-const AD_VERSION = '4.34.0';
+const AD_VERSION = '4.35.0';
 /* ---------- Icons ---------- */
 
 // Schaltflächen-Icons aus Lucide (ISC-Lizenz), direkt eingebettet, damit die App offline funktioniert.
@@ -279,6 +280,93 @@ window.addEventListener('resize', () => requestAnimationFrame(fxZeigen));
 // Größe des Feldes (Rahmen, nicht Innenraum – das ⓧ ändert den Innenabstand), im nächsten Bild: sonst meldet Safari eine Schleife
 if (window.ResizeObserver) { const ro = new ResizeObserver(() => fxFeld && requestAnimationFrame(fxZeigen)); document.addEventListener('focusin', e => { ro.disconnect(); if (e.target.matches?.(FX)) ro.observe(e.target, { box: 'border-box' }); }); }
 
+/* ---------- Bedienungshilfen (seit 4.35.0, A-43 Teil 1: R-1.8 VoiceOver, R-4.7 Hardware-Tastatur, R-5.3, R-3.4) ---------- */
+
+// R-1.8 (V9, V13): Ergebnisse höflich ansagen – VoiceOver liest sie, sobald es fertig gesprochen hat. Der Ansage-Bereich liegt im
+// obersten offenen Fenster (Meldung, Fenster bzw. Blatt – außerhalb eines modalen Fensters hört VoiceOver nichts), sonst auf der
+// Seite. warten (ms): erst nach einer Pause (Suche beim Tippen: 700); eine neue Ansage ersetzt eine wartende. Gleicher Text noch
+// einmal: der Bereich wird erst geleert, damit VoiceOver ihn wieder liest. ‚Automatisch gespeichert‘ wird nie angesagt (V11).
+let ansageUhr = 0;
+function ansageBereich() {
+  const host = msg.open ? msg : dlg.open ? dlg : document.body;
+  let a = host.querySelector(':scope > .ansage');
+  if (!a) { a = document.createElement('div'); a.className = 'ansage'; a.setAttribute('aria-live', 'polite'); a.setAttribute('aria-atomic', 'true'); host.append(a); }
+  return a;
+}
+function ansagen(text, { warten = 0 } = {}) {
+  clearTimeout(ansageUhr);
+  ansageUhr = setTimeout(() => {
+    const a = ansageBereich();
+    a.textContent = '';
+    ansageUhr = setTimeout(() => { ansageBereich().textContent = text; }, 50);
+  }, warten);
+}
+
+// R-5.3 (V10): Fehlermeldung eines oder mehrerer Felder (felder: Feld oder Liste, zeile: Element der Meldung). Mit Text: roter Rand,
+// aria-invalid, die Meldung mit den Feldern verknüpft (aria-describedby) und einmal angesagt – beim Erscheinen und bei neuem Text.
+// Ohne Text: alles weg. Ergebnis: true, solange ein Fehler steht.
+let fehlerNr = 0;
+function feldFehler(felder, zeile, text = '') {
+  felder = [felder].flat().filter(Boolean);
+  const alt = zeile.hidden ? '' : zeile.textContent;
+  zeile.textContent = text;
+  zeile.hidden = !text;
+  if (!zeile.id) zeile.id = 'feldFehler' + ++fehlerNr;
+  for (const f of felder) {
+    f.classList.toggle('invalid', !!text);
+    if (text) f.setAttribute('aria-invalid', 'true'); else f.removeAttribute('aria-invalid');
+    const ids = (f.getAttribute('aria-describedby') || '').split(/\s+/).filter(x => x && x !== zeile.id);
+    if (text) ids.push(zeile.id);
+    if (ids.length) f.setAttribute('aria-describedby', ids.join(' ')); else f.removeAttribute('aria-describedby');
+  }
+  if (text && text !== alt) ansagen(text);
+  return !!text;
+}
+// Häkchen mit Fehler: der Abschnitt des ersten fehlerhaften Felds rollt in die Mitte (‚Bewegung reduzieren‘: springt, R-1.9),
+// danach hat das Feld den Fokus. Ergebnis: false, wenn kein Feld fehlerhaft ist.
+function ersterFehler(root = dlg) {
+  const f = root.querySelector('[aria-invalid="true"]');
+  if (!f) return false;
+  const ruhig = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  (f.closest('.step') || f).scrollIntoView({ behavior: ruhig ? 'instant' : 'smooth', block: 'center' });
+  setTimeout(() => f.focus({ preventScroll: true }), ruhig ? 0 : 350);
+  return true;
+}
+
+// R-3.4 / R-4.7 (K6, K9): der Fokusring steht nur bei Bedienung mit der Tastatur – html.tastatur ab einer Taste zum Bewegen
+// (Tab, Pfeile, Esc, Eingabe, Leertaste …), weg bei jeder Berührung bzw. jedem Klick. Textfelder haben nie einen Ring (design.css):
+// `:focus-visible` trifft bei ihnen auch beim Antippen zu (gemessen in WebKit und Chromium), der Cursor zeigt den Fokus.
+const BEWEG_TASTEN = /^(Tab|Escape|Enter|ArrowUp|ArrowDown|ArrowLeft|ArrowRight|Home|End|PageUp|PageDown| )$/;
+addEventListener('keydown', e => { if (BEWEG_TASTEN.test(e.key) && !(e.key === ' ' && e.target.matches?.('input, textarea'))) document.documentElement.classList.add('tastatur'); }, true);
+addEventListener('pointerdown', () => document.documentElement.classList.remove('tastatur'), true);
+// Fokus ohne Rollen (R-7.3); Ziele, die sonst keinen Fokus nehmen (Kopfzeile, Titel), bekommen tabindex -1 (nicht mit Tab erreichbar)
+const FOKUSBAR = 'button:not(:disabled), a[href], input:not(:disabled):not([type=hidden]), textarea:not(:disabled), select:not(:disabled), [tabindex]:not([tabindex="-1"])';
+function fokus(el) {
+  if (!el?.isConnected || !el.getClientRects().length || el.closest('[inert]')) return false;
+  if (!el.matches('button, a[href], input, textarea, select, [tabindex]')) el.tabIndex = -1;
+  el.focus({ preventScroll: true });
+  return document.activeElement === el;
+}
+// V5, V6: nach Menü bzw. Sprechblase zurück auf ihren Knopf; gibt es ihn nicht mehr, auf die Kopfzeile (Fenster bzw. Seite)
+function fokusZurueck(anchor, host) {
+  const a = anchor && liveAnchor(anchor);
+  if (a && fokus(a)) return;
+  if (host?.matches?.('dialog[open]')) fokus(host.querySelector('.dlg-head h3') || host);
+  else fokus(document.querySelector('#app .pnav, #app .nb, .pnav, .nb'));
+}
+// R-1.4 (V7): bei offenem Menü und offener Sprechblase ist alles außerhalb für VoiceOver und Tastatur gesperrt (inert) – die übrigen
+// Teile des Fensters bzw. der Seite; frei bleiben genau die übergebenen Teile und alles, was danach dazukommt (Untermenü).
+function sperreAusser(host, frei) {
+  const gesperrt = [...host.children].filter(c => !frei.includes(c) && !c.inert && c.tagName !== 'SCRIPT' && c.tagName !== 'STYLE');
+  gesperrt.forEach(c => { c.inert = true; });
+  return () => gesperrt.forEach(c => { c.inert = false; });
+}
+// R-4.7: Tasten für das oberste Menü bzw. die oberste Sprechblase – solange eins offen ist, bekommt es jede Taste zuerst
+const tastenStapel = [];
+document.addEventListener('keydown', e => { const h = tastenStapel.at(-1); if (h && !e.defaultPrevented) h(e); }, true);
+const verbrauchen = e => { e.preventDefault(); e.stopImmediatePropagation(); };
+const istAbbruch = e => e.key === 'Escape' || (e.metaKey && e.key === '.');
+
 /* ---------- Darstellung ---------- */
 
 // Wie Apple: die App folgt der Darstellung des iPads; im Mehr-Menü lässt sie sich übersteuern.
@@ -455,12 +543,16 @@ function placeAt(el, anchor, align) {
 
 // Einträge: { icon, label, sub, red, tick, disabled, act } (tick und icon zusammen: Häkchen vorne, dann Icon und Text) · { …, value, submenu: [Einträge] } (Untermenü ›, eine Ebene)
 // · 'sep' (Abstand) · 'line' (Strich) · { note } (graue Zeile).
-const menuHtml = items => items.map((it, i) => it === 'sep' ? '<div class="sep"></div>' : it === 'line' ? '<div class="line"></div>'
-  : it.note ? `<div class="note">${esc(it.note)}</div>`
-  : `<button type="button" class="mi ${it.red ? 'red' : ''} ${it.sub ? 'has-sub' : ''}" data-i="${i}" ${it.disabled ? 'disabled' : ''} role="menuitem">${
+// Seit 4.35.0 (R-1.8, V3, V4): Einträge mit Häkchen-Spalte sind menuitemcheckbox mit aria-checked (‚Hell, ausgewählt‘), Einträge mit
+// Untermenü haben aria-haspopup und aria-expanded, die graue Zeile darunter ist ihre Beschreibung.
+let menuNr = 0;
+const menuHtml = items => { const nr = ++menuNr; return items.map((it, i) => it === 'sep' ? '<div class="sep" role="separator"></div>' : it === 'line' ? '<div class="line" role="separator"></div>'
+  : it.note ? `<div class="note" role="presentation">${esc(it.note)}</div>`
+  : `<button type="button" class="mi ${it.red ? 'red' : ''} ${it.sub ? 'has-sub' : ''}" data-i="${i}" ${it.disabled ? 'disabled' : ''} role="${'tick' in it ? 'menuitemcheckbox' : 'menuitem'}"${
+      'tick' in it ? ` aria-checked="${it.tick ? 'true' : 'false'}"` : ''}${it.submenu ? ' aria-haspopup="menu" aria-expanded="false"' : ''}${it.sub ? ` aria-describedby="mi${nr}-${i}"` : ''}>${
       'tick' in it ? `<span class="tick">${it.tick ? ic('check') : ''}</span>` : ''}${it.icon ? ic(it.icon) : ''}${esc(it.label)}${
       it.value ? `<span class="val">${esc(it.value)}</span>` : ''}${it.submenu ? ic('chevron-right', 'chev') : ''}</button>${
-      it.sub ? `<div class="sub">${esc(it.sub)}</div>` : ''}`).join('');
+      it.sub ? `<div class="sub" id="mi${nr}-${i}">${esc(it.sub)}</div>` : ''}`).join(''); };
 // Seit 4.10.0 (R-8.1): Menüs, Untermenüs und Sprechblasen bleiben beim Drehen (quer ↔ hoch) und bei jeder
 // Größenänderung an ihrer Schaltfläche – neu ausgerichtet, ganz sichtbar. Baut die App die Leiste dabei neu
 // auf, wird die Schaltfläche über ihre id wiedergefunden; gibt es sie nicht mehr, schließt sich das Menü.
@@ -487,9 +579,19 @@ function openMenu(anchor, items, align = 'right') {
   menu.className = 'menu';
   menu.setAttribute('role', 'menu');
   menu.innerHTML = menuHtml(items);
+  // R-1.8 (seit 4.35.0, V3): das Menü trägt den Namen seines Knopfs; der Knopf sagt ‚öffnet Menü‘ und ob es offen ist
+  const name = anchor.getAttribute('aria-label') || anchor.textContent.trim();
+  if (name) menu.setAttribute('aria-label', name);
   let subMenu = null, subItem = null;
-  const closeSub = () => { subMenu?.remove(); subMenu = null; subItem = null; menu.querySelector('.mi.on')?.classList.remove('on'); };
+  const closeSub = (zurueck = false) => {
+    subMenu?.remove(); subMenu = null;
+    const it = subItem; subItem = null;
+    menu.querySelector('.mi.on')?.classList.remove('on');
+    if (it) { it.setAttribute('aria-expanded', 'false'); if (zurueck) fokus(it); }
+  };
   anchor.classList.add('on');
+  anchor.setAttribute('aria-haspopup', 'menu');
+  anchor.setAttribute('aria-expanded', 'true');
   // Untermenü neben dem Menü, oben bündig mit seinem Eintrag; passt es links nicht hin, rechts daneben.
   const placeSub = () => {
     if (!subMenu) return;
@@ -504,13 +606,19 @@ function openMenu(anchor, items, align = 'right') {
     const a = liveAnchor(anchor);
     if (!a) return close();
     anchor = a;
+    anchor.setAttribute('aria-haspopup', 'menu');   // baut die App die Leiste neu auf (Drehen), trägt der neue Knopf den Zustand
+    anchor.setAttribute('aria-expanded', 'true');
     placeAt(menu, anchor, align);
     placeSub();
   };
+  let entsperren = null;
   const close = () => {
-    closeSub(); layer.remove(); menu.remove(); anchor.classList.remove('on'); floating.delete(place);
+    if (!menu.isConnected) return;
+    closeSub(); layer.remove(); menu.remove(); anchor.classList.remove('on'); anchor.setAttribute('aria-expanded', 'false'); floating.delete(place);
+    entsperren?.(); tastenStapel.splice(tastenStapel.indexOf(tasten) >>> 0, 1);
     // Seit 4.11.0: den für das Kontextmenü dazugegebenen Platz unter der Liste wieder entfernen.
     document.querySelectorAll('.side-list[data-padded]').forEach(l => { l.style.paddingBottom = ''; delete l.dataset.padded; });
+    fokusZurueck(anchor, host);   // V5: zurück auf den Knopf, ohne Rollen
   };
   layer.onclick = close;
   menu.querySelectorAll('[data-i]').forEach(b => b.onclick = () => {
@@ -518,21 +626,50 @@ function openMenu(anchor, items, align = 'right') {
     if (!it.submenu) { close(); it.act(); return; }
     // Untermenü neben dem Menü, oben bündig mit dem Eintrag; der Eintrag bleibt blau.
     const again = b.classList.contains('on');
-    closeSub();
+    closeSub(again);
     if (again) return;
     b.classList.add('on');
+    b.setAttribute('aria-expanded', 'true');
     subMenu = document.createElement('div');
     subMenu.className = 'menu submenu';
     subMenu.setAttribute('role', 'menu');
+    subMenu.setAttribute('aria-label', it.label);
     subMenu.innerHTML = menuHtml(it.submenu);
     subMenu.querySelectorAll('[data-i]').forEach(sb => sb.onclick = () => { close(); it.submenu[sb.dataset.i].act(); });
     host.append(subMenu);
     subItem = b;
     placeSub();
+    fokus(subMenu.querySelector('.mi:not(:disabled)'));   // K3: Fokus auf den ersten Eintrag des Untermenüs
   });
+  // R-4.7 (K1–K3): Esc bzw. ⌘. schließt das oberste (Untermenü zuerst), ↑ ↓ Tab wandern mit Umlauf (Ausgegrautes, Striche und
+  // graue Zeilen übersprungen), Pos1/Ende, Eingabe bzw. Leertaste wählt; → öffnet das Untermenü, ← schließt es (wie am Mac)
+  const tasten = e => {
+    if (istAbbruch(e)) { verbrauchen(e); if (subMenu) closeSub(true); else close(); return; }
+    const liste = subMenu || menu, mis = [...liste.querySelectorAll('.mi:not(:disabled)')];
+    if (!mis.length) return;
+    const i = mis.indexOf(document.activeElement);
+    const geh = j => {
+      verbrauchen(e);
+      const m = mis[(j + mis.length) % mis.length];
+      fokus(m);
+      if (m.offsetTop < liste.scrollTop) liste.scrollTop = m.offsetTop;   // langes Menü rollt mit
+      else if (m.offsetTop + m.offsetHeight > liste.scrollTop + liste.clientHeight) liste.scrollTop = m.offsetTop + m.offsetHeight - liste.clientHeight;
+    };
+    const k = e.key;
+    if (k === 'ArrowDown' || (k === 'Tab' && !e.shiftKey)) return geh(i + 1);
+    if (k === 'ArrowUp' || (k === 'Tab' && e.shiftKey)) return geh(i < 0 ? -1 : i - 1);
+    if (k === 'Home') return geh(0);
+    if (k === 'End') return geh(-1);
+    if (k === 'ArrowLeft' && subMenu) { verbrauchen(e); closeSub(true); return; }
+    if (i < 0) return;
+    if ((k === 'ArrowRight' && !subMenu && mis[i].getAttribute('aria-haspopup')) || k === 'Enter' || k === ' ') { verbrauchen(e); mis[i].click(); }
+  };
   host.append(layer, menu);
   placeAt(menu, anchor, align);
   floating.add(place);
+  entsperren = sperreAusser(host, [layer, menu]);
+  tastenStapel.push(tasten);
+  fokus(menu.querySelector('.mi:not(:disabled)'));   // V5: Fokus auf den ersten wählbaren Eintrag
   // Seit 4.11.0: Kontextmenü (lange drücken) – nach dem Loslassen noch einmal ausrichten; erst dann lässt iOS
   // die Liste sicher rücken (R-4.2).
   if (align === 'beside') {
@@ -563,7 +700,13 @@ function choosePop(anchor, html, buttons) {
     // Wege ohne Erklärung (z. B. Abbrechen) darunter wie bisher.
     const btn = (b, i) => `<button type="button" class="${b.cls || ''}" data-i="${i}">${esc(b.label)}</button>`;
     const tiles = buttons.map((b, i) => b.desc ? `<div class="tile"><p>${b.desc}</p>${btn(b, i)}</div>` : '').join('');
-    pop.innerHTML = `<p>${html}</p>${tiles ? `<div class="tiles">${tiles}</div>` : ''}<div class="btns">${buttons.map((b, i) => b.desc ? '' : btn(b, i)).join('')}</div>`;
+    // R-1.8 (seit 4.35.0, V6): Abfrage für VoiceOver – alertdialog mit dem Text als Name, modal; der Fokus liegt auf der Blase
+    const pid = 'pop' + ++popNr;
+    pop.innerHTML = `<p id="${pid}">${html}</p>${tiles ? `<div class="tiles">${tiles}</div>` : ''}<div class="btns">${buttons.map((b, i) => b.desc ? '' : btn(b, i)).join('')}</div>`;
+    pop.setAttribute('role', 'alertdialog');
+    pop.setAttribute('aria-modal', 'true');
+    pop.setAttribute('aria-labelledby', pid);
+    pop.tabIndex = -1;
     if (tiles) pop.classList.add('wide');
     if (visible) anchor.classList.add('on');
     const place = () => {
@@ -575,14 +718,43 @@ function choosePop(anchor, html, buttons) {
       placeAt(pop, anchor, anchor.classList.contains('side-row') ? 'beside' : anchor.getBoundingClientRect().left > innerWidth / 2 ? 'right' : 'left');
     };
     floating.add(place);
-    const done = v => { floating.delete(place); layer.remove(); pop.remove(); if (visible) anchor.classList.remove('on'); resolve(v); };
+    let entsperren = null;
+    const done = v => {
+      if (!pop.isConnected) return;
+      floating.delete(place); layer.remove(); pop.remove(); if (visible) anchor.classList.remove('on');
+      entsperren?.(); tastenStapel.splice(tastenStapel.indexOf(tasten) >>> 0, 1);
+      fokusZurueck(visible ? anchor : null, host);   // V6: zurück auf den Knopf bzw. die Kopfzeile, ohne Rollen
+      resolve(v);
+    };
     layer.onclick = () => done(null);
     pop.querySelectorAll('[data-i]').forEach(b => b.onclick = () => done(buttons[b.dataset.i].value));
+    // R-4.7 (K4): Eingabe = der blaue Weg, sonst der Weg zurück – nie die rote Aktion; Esc bzw. ⌘. = Abbrechen (das Fenster bleibt);
+    // Tab und Pfeile markieren mit Umlauf, die Leertaste drückt den markierten Knopf (auch den roten)
+    const tasten = e => {
+      const bs = [...pop.querySelectorAll('[data-i]')];
+      if (istAbbruch(e)) { verbrauchen(e); done(null); return; }
+      if (e.key === 'Enter') {
+        verbrauchen(e);
+        const blau = buttons.findIndex(b => b.cls === 'primary'), zurueck = buttons.findLastIndex(b => !b.cls || !/danger/.test(b.cls));
+        const i = blau >= 0 ? blau : zurueck;
+        done(i >= 0 ? buttons[i].value : null);
+        return;
+      }
+      const d = { Tab: e.shiftKey ? -1 : 1, ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 }[e.key];
+      if (!d) return;
+      verbrauchen(e);
+      const i = bs.indexOf(document.activeElement);
+      fokus(bs[i < 0 ? (d > 0 ? 0 : bs.length - 1) : (i + d + bs.length) % bs.length]);
+    };
     host.append(layer, pop);
     if (visible) placeAt(pop, anchor, anchor.classList.contains('side-row') ? 'beside' : anchor.getBoundingClientRect().left > innerWidth / 2 ? 'right' : 'left');
     else { pop.style.left = (innerWidth - pop.offsetWidth) / 2 + 'px'; pop.style.top = '120px'; }
+    entsperren = sperreAusser(host, [layer, pop]);
+    tastenStapel.push(tasten);
+    fokus(pop);
   });
 }
+let popNr = 0;
 
 // Schaltflächen, von denen eine noch laufende Aktion kommt (Teilen-Menü, Meldung, Dateiauswahl), bleiben blau.
 const held = new Set();
@@ -717,7 +889,6 @@ function showNetToast(state) {
   clearTimeout(netTimer);
   const t = document.createElement('div');
   t.className = 'nettoast';
-  t.setAttribute('role', 'status');
   t.innerHTML = state === 'aus'
     ? `${ic('wifi-off')}<div><b>Du bist offline</b><small>Die App arbeitet weiter; alles bleibt auf diesem Gerät.</small></div>`
     : `${ic('wifi')}<div><b>Wieder online</b></div>`;
@@ -732,6 +903,8 @@ function showNetToast(state) {
   const weg = netClose = () => { watch.disconnect(); t.remove(); netClose = null; };
   t.onclick = weg;
   netTimer = setTimeout(weg, 4000);
+  // R-1.8 (seit 4.35.0, V13): angesagt über den Ansage-Bereich (auch bei offenem Fenster), die Meldung selbst ohne role="status"
+  ansagen(state === 'aus' ? 'Du bist offline. Die App arbeitet weiter; alles bleibt auf diesem Gerät.' : 'Wieder online');
 }
 function setNet(state) {
   if (state !== 'aus' && state !== 'an') return;
@@ -1040,13 +1213,15 @@ function inform(title, html, { wide = false, action = null } = {}) {
     msg.innerHTML = `
       <form method="dialog">
         <div class="dlg-head"><div class="hl"><button type="button" class="round" data-x aria-label="Schließen">${ic('x')}</button></div>
-          <div class="mid"><h3>${esc(title)}</h3></div><div class="hr"></div></div>
-        <div class="dlg-body"><div class="msg-text">${html}</div>${action ? `<div class="msg-btns"><button type="button" class="primary" data-act>${action.icon ? ic(action.icon) : ''}${esc(action.label)}</button></div>` : ''}</div>
+          <div class="mid"><h3 id="msgTitel">${esc(title)}</h3></div><div class="hr"></div></div>
+        <div class="dlg-body"><div class="msg-text" id="msgText">${html}</div>${action ? `<div class="msg-btns"><button type="button" class="primary" data-act>${action.icon ? ic(action.icon) : ''}${esc(action.label)}</button></div>` : ''}</div>
       </form>`;
     const done = () => { if (msg.open) msg.close(); resolve(); };
     if (action) msg.querySelector('[data-act]').onclick = () => { done(); action.run(); };
     msg.querySelector('[data-x]').onclick = done;
     msg.oncancel = e => { e.preventDefault(); done(); };
+    msg.setAttribute('aria-labelledby', 'msgTitel');   // R-1.8 (V2): Name = Titel, Beschreibung = Text
+    msg.setAttribute('aria-describedby', 'msgText');
     showModalQuiet(msg);
     placeDialogs();
   });
@@ -1061,6 +1236,7 @@ function openDialog(html, wide = false) {
   dlg.onclose = null;
   dlgDirty = null;
   dlg.innerHTML = html;
+  fensterName(dlg);
   dlgFest = 0;
   dlg.returnValue = '';
   const neu = !dlg.open;
@@ -1079,6 +1255,13 @@ function openDialog(html, wide = false) {
   mountCap(dlg);
   growAll();
   requestAnimationFrame(growAll);
+}
+
+// R-1.8 (seit 4.35.0, V2): Fenster und Blatt heißen wie ihr Titel (aria-labelledby), die graue Zusatzzeile ist die Beschreibung.
+function fensterName(d) {
+  const h = d.querySelector('.dlg-head h3'), s = d.querySelector('.dlg-head .sub');
+  if (h) { h.id ||= d.id + 'Titel'; d.setAttribute('aria-labelledby', h.id); } else d.removeAttribute('aria-labelledby');
+  if (s) { s.id ||= d.id + 'Zusatz'; d.setAttribute('aria-describedby', s.id); } else d.removeAttribute('aria-describedby');
 }
 
 // Kopfzeile der Fenster: rundes x links, Titel (mit grauer Zusatzzeile) in der Mitte,
@@ -1168,8 +1351,16 @@ function updateFab() {
   schnellZeigen(false);
   navKlassen();   // nach jedem Aufbau: wo gewischt werden kann, hängt auch vom Inhalt ab (z. B. erst ein offener Eintrag)
 }
-const fabTop = () => nachTastatur(() => rolle.to(0, true));
-const fabEnd = () => nachTastatur(() => rolle.ende(true));
+// R-1.9 (seit 4.35.0, M2): mit ‚Bewegung reduzieren‘ springen ‚Nach oben / Ans Ende‘ direkt, der Inhalt blendet in 0,15 s über
+// (WCAG 2.3.3; Apple rollt beim Antippen der Statusleiste auch dann) – sonst rollen sie sanft
+const ruhigQuery = window.matchMedia?.('(prefers-reduced-motion: reduce)');
+function rolleSpringt(fn) {
+  if (!ruhigQuery?.matches) return fn(true);
+  fn(false);
+  rolle.el?.animate?.([{ opacity: 0.4 }, { opacity: 1 }], { duration: 150, easing: 'ease-out' });
+}
+const fabTop = () => nachTastatur(() => rolleSpringt(weich => rolle.to(0, weich)));
+const fabEnd = () => nachTastatur(() => rolleSpringt(weich => rolle.ende(weich)));
 if (window.ResizeObserver) new ResizeObserver(() => requestAnimationFrame(updateFab)).observe(document.body);
 window.addEventListener('resize', () => requestAnimationFrame(updateFab));
 window.visualViewport?.addEventListener('resize', () => requestAnimationFrame(updateFab));
@@ -1313,6 +1504,19 @@ dlg.addEventListener('change', refreshOk);
 dlg.addEventListener('click', () => setTimeout(refreshOk));
 // Escape wirkt wie das x.
 dlg.addEventListener('cancel', e => { e.preventDefault(); dlg.querySelector('#dlgX')?.click(); });
+// R-4.7 (seit 4.35.0, K5): ⌘. wie Esc – in Fenster, Meldung und Blatt (auch aus einem Feld); Tab und Umschalt+Tab bleiben im obersten
+// Fenster (mit Umlauf)
+document.addEventListener('keydown', e => {
+  if (e.defaultPrevented || tastenStapel.length) return;
+  const d = msg.open ? msg : dlg.open ? dlg : null;
+  if (!d) return;
+  if (e.metaKey && e.key === '.') { verbrauchen(e); if (d === msg) msg.querySelector('[data-x]')?.click(); else if (dlg.querySelector('#dlgX')) dlg.querySelector('#dlgX').click(); else dlg.close('cancel'); return; }
+  if (e.key !== 'Tab') return;
+  const z = [...d.querySelectorAll(FOKUSBAR)].filter(x => x.getClientRects().length && !x.closest('[inert]') && x.tabIndex >= 0);
+  if (!z.length) return;
+  const i = z.indexOf(document.activeElement), j = i < 0 ? (e.shiftKey ? z.length - 1 : 0) : i + (e.shiftKey ? -1 : 1);
+  if (i < 0 || j < 0 || j >= z.length) { e.preventDefault(); fokus(z[(j + z.length) % z.length]); }
+});
 msg.addEventListener('close', unlockPage);
 dlg.addEventListener('close', () => {
   dlgFest = 0;
@@ -1586,6 +1790,7 @@ function navVor(change) {
   navSofort();
   change();
   if (!navApp?.zurueck || !isPhone() || !navApp.zurueck.offen()) return;
+  fokus(document.querySelector('#app .pnav'));   // R-1.8 (seit 4.35.0, V12): VoiceOver beginnt mit dem Seitentitel, ohne Rollen
   const w = navAnfang('phone');
   navApp.zurueck.darunter(true);
   navSetze('phone', 0, w);
@@ -1601,8 +1806,12 @@ function navZurueck() {
     const w = navAnfang('phone');
     z.darunter(true);
     navSetze('phone', 1, w);
-    navFahre('phone', 1, 0, w, () => z.los());
+    navFahre('phone', 1, 0, w, () => { z.los(); navZurueckFokus(); });
   });
+}
+// R-1.8 (seit 4.35.0, V12): zurück in der Startliste liegt der Fokus auf der blauen Zeile, sonst auf ihrem Titel – ohne Rollen
+function navZurueckFokus() {
+  fokus(document.querySelector('#side .current')) || fokus(document.querySelector('#side .side-head h2, #side .pnav-head, .pnav-head'));
 }
 // panel-left und Abdunkelung am iPad hoch: die Seitenleiste gleitet herein bzw. hinaus
 function navSeite(an) {
@@ -1707,7 +1916,7 @@ function navLoslassen(e, abbruch) {
   const p = z.p ?? z.von;
   navMess(`${abbruch ? 'abgebrochen' : geschafft ? 'fertig' : 'zurück gefedert'} weg ${weg.toFixed(2)} tempo ${tempo.toFixed(2)}`);
   if (z.art === 'phone') {
-    if (geschafft) navFahre('phone', p, 0, z.w, () => navApp.zurueck.los());
+    if (geschafft) navFahre('phone', p, 0, z.w, () => { navApp.zurueck.los(); navZurueckFokus(); });
     else navFahre('phone', p, 1, z.w, () => navApp.zurueck.darunter(false));
   } else if (z.art === 'fest') navFahre('fest', p, geschafft ? 1 : 0, z.w, geschafft ? navEinrasten : () => navApp.seite.zeigen(false));
   else if (z.nach === 1) navFahre('seite', p, geschafft ? 1 : 0, z.w, geschafft ? null : () => navApp.seite.zeigen(false));
@@ -1742,7 +1951,11 @@ document.addEventListener('keydown', e => {
   if (e.key !== 'Escape' || e.defaultPrevented || !navApp || dlg.open || msg.open || document.querySelector('.menu, .pop')) return;
   if (e.target.closest?.('input, textarea, select, [contenteditable]')) return;
   if (isPhone() && navApp.zurueck?.offen()) { e.preventDefault(); navZurueck(); }
-  else if (!isPhone() && navApp.seite?.moeglich() && navApp.seite.offen()) { e.preventDefault(); navSeite(false); }
+  else if (!isPhone() && navApp.seite?.moeglich() && navApp.seite.offen()) {
+    e.preventDefault(); navSeite(false);
+    // R-4.7 (seit 4.35.0, K7): der Fokus geht auf panel-left (die Seitenleiste ist weg)
+    fokus([...document.querySelectorAll('[data-side-toggle]')].find(b => b.getClientRects().length && !b.closest('#side')));
+  }
 });
 
 /* ---------- Blatt auf dem iPhone (seit 4.32.0, A-61 Teil 2, R-4.6) ---------- */
@@ -1774,7 +1987,8 @@ const blattSeite = () => [document.getElementById('app'), document.getElementByI
   .filter(e => e && e.getClientRects().length && getComputedStyle(e).position === 'fixed');
 // Bild zum Versatz o (0 = offen, blattZu() = unten hinaus): Blatt, Abdunkeln und die Seite – sie weicht nur hoch zurück
 function blattBild(o) {
-  const zu = blattZu(), q = Math.max(0, Math.min(1, 1 - o / zu)), s = blattQuer() ? 0 : q;
+  // R-1.9 (seit 4.35.0, M5): mit ‚Bewegung reduzieren‘ weicht die Seite nicht verkleinert zurück (kein Zoomen), sie dunkelt nur ab
+  const zu = blattZu(), q = Math.max(0, Math.min(1, 1 - o / zu)), s = blattQuer() || navRuhig?.matches ? 0 : q;
   return { blatt: `0 ${Math.round(o)}px`, schleier: +(BLATT_DUNKEL * q).toFixed(3), s,
     seite: { translate: `0px ${(s * Math.max(0, blattOben() - 12)).toFixed(1)}px`, scale: (1 - BLATT_KLEINER * s).toFixed(4) } };
 }
@@ -1814,7 +2028,10 @@ function blattAnimiere(teile, dauer, easing, fertig) {
 function blattFahre(nach, fertig, dauer) {
   blattStopp();
   const von = blattY;
+  // R-1.9 (seit 4.35.0, M5): mit ‚Bewegung reduzieren‘ gleitet das Blatt nach dem Loslassen nicht (kein Nachfedern) – es steht sofort am Ziel
   if (Math.abs(von - nach) < 1) { blattSetze(nach); fertig?.(); return; }
+  // erst nach dem Loslassen: das Unterdrücken des Klicks (blattKlickWeg) endet im nächsten Durchlauf, sonst käme das x nicht an
+  if (navRuhig?.matches) { blattSetze(nach); setTimeout(() => fertig?.()); return; }
   dauer = dauer || Math.max(220, Math.min(480, Math.abs(nach - von) * 0.9));
   const a = blattBild(von), b = blattBild(nach);
   blattSetze(Math.min(von, nach));   // die Seite weicht schon während der Bewegung zurück (runde Ecken, Hintergrund)
@@ -2237,7 +2454,9 @@ function messStart({ app = '', teile = {}, rollen = {} } = {}) {
   mess.zeilen.push(`# Messung · ${app} · AppDesign ${AD_VERSION} · ${navigator.userAgent} · ${st ? 'Home-Bildschirm' : 'Safari'} · ${screen.width}×${screen.height} @${devicePixelRatio} · ${
     // seit 4.29.0 (A-63 S-8): die sicheren Ränder des Geräts (oben/unten/links/rechts) – so kennen die Prüfungen die echten Werte
     (r => `Ränder ${r.top}/${r.bottom}/${r.left}/${r.right}`)(safeRand())} · ${
-    matchMedia('(prefers-color-scheme: dark)').matches ? 'dunkel' : 'hell'} · ${mess.beginn.toISOString()}`);
+    matchMedia('(prefers-color-scheme: dark)').matches ? 'dunkel' : 'hell'} · ${mess.beginn.toISOString()} · ${
+    // seit 4.35.0 (A-43 H5): die Bedienungshilfen des Geräts
+    matchMedia('(prefers-contrast: more)').matches ? 'Kontrast erhöht' : 'Kontrast normal'} · ${matchMedia('(prefers-reduced-motion: reduce)').matches ? 'Bewegung reduziert' : 'Bewegung normal'}`);
   mess.zeilen.push(['t', ...Object.keys(messWerte())].map(v => v.padEnd(6)).join(' ').trimEnd());
   const hoere = (z, typ, text) => { if (!z) return; const fn = e => { const t = text(e); if (t) messEreignis(t); }; z.addEventListener(typ, fn, true); mess.hoerer.push([z, typ, fn]); };
   hoere(document, 'focusin', e => 'focus ' + messId(e.target));   // seit 4.28.1: der neue Fokus (R-4.5) steht als ‚neu fokussiert‘ da

@@ -3,6 +3,49 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.35.0 – 25.10.2026
+
+AppDesign 4.35.0 · Designrichtlinie allgemein 4.35.0 · Zusammenarbeit allgemein 2.19.0 · geprüft mit Reiselogbuch 3.33.0
+
+**A-43 Teil 1 Barrierefreiheit – VoiceOver, Hardware-Tastatur, ‚Kontrast erhöhen‘, ‚Bewegung reduzieren‘, Fokus-Rahmen** (dein Ja
+vom 24.10.2026; Fall-Liste `arbeit/A-43 Teil 1 Fall-Liste.md` V1–V14, K1–K9, H1–H5, M1–M7, P1–P2; K9 Fokus-Rahmen in Textfeldern
+Variante a vom 24.10.2026). Prüfpunkt im Reiselogbuch: P-73.
+
+- **Fokus-Rahmen (R-3.4, K6, K9):** Textfelder haben nie mehr einen Rahmen – auch nicht Safaris blaue Umrandung (`outline: auto
+  5px`); der Cursor zeigt den Fokus (wie Apple ohne ‚Tastatursteuerung‘). Gemessen: `:focus-visible` trifft bei Textfeldern auch
+  beim Antippen zu (WebKit und Chromium) – deshalb steht der eigene Ring (Akzentfarbe, 2 px Abstand, folgt dem Radius) nur bei
+  Bedienung mit der Tastatur (`html.tastatur`, gesetzt von einer Taste zum Bewegen, weg bei jeder Berührung); im Menü ist der Eintrag
+  hinterlegt. Neu in Designrichtlinie 13.
+- **VoiceOver (neu R-1.8, V1–V14):** Menüs tragen den Namen ihres Knopfs, der Knopf `aria-haspopup`/`aria-expanded`; Einträge mit
+  Häkchen `menuitemcheckbox` mit `aria-checked` (‚Hell, ausgewählt‘), Untermenü-Einträge wie Menüknöpfe, graue Zeilen als
+  Beschreibung; Fenster, Meldung und Blatt heißen wie ihr Titel (`aria-labelledby`), die Zusatzzeile ist die Beschreibung; die
+  Sprechblase ist `alertdialog` (modal, Text als Name). Fokus ins Menü (erster Eintrag), in die Sprechblase (die Blase) und zurück
+  auf den Knopf bzw. die Kopfzeile, ohne Rollen; iPhone: Eintrag öffnen → Seitentitel, zurück → blaue Zeile. Neuer Baustein
+  `ansagen(text, { warten })` (höflicher Ansage-Bereich im obersten Fenster, sonst auf der Seite); die Offline-Meldung sagt er an
+  (ohne `role="status"`); ‚Automatisch gespeichert‘ nie.
+- **Sperre (R-1.4 erweitert, V7, V8):** bei offenem Menü und offener Sprechblase ist alles daneben `inert` (Seite bzw. übriger
+  Fensterinhalt), nach jedem Schließen wieder frei. Folge: ein Textfeld im Fenster gibt beim Öffnen einer Sprechblase bzw. eines
+  Menüs den Fokus ab – die Tastatur geht zu (Prüfliste).
+- **Hardware-Tastatur (neu R-4.7, K1–K8):** Esc und ⌘. schließen das oberste Menü (Untermenü zuerst), die Sprechblase (= Abbrechen,
+  das Fenster bleibt) und das Fenster (wie x); ↑ ↓ Tab mit Umlauf, Pos1/Ende, → öffnet und ← schließt das Untermenü, Eingabe bzw.
+  Leertaste wählt; in der Sprechblase löst Eingabe den blauen Weg bzw. den Weg zurück – **nie Rot**; Tab bleibt im Fenster (Umlauf);
+  Esc auf der Seite schließt die darübergelegte Seitenleiste mit Fokus auf panel-left. Keine Kurzbefehle.
+- **Fehlermeldungen hörbar (R-5.3, V10):** neu `feldFehler(felder, zeile, text)` – roter Rand, `aria-invalid`, Meldung verknüpft
+  (`aria-describedby`) und einmal angesagt; `ersterFehler(fenster)` beim Häkchen (Abschnitt rollt in die Mitte, dann Fokus ins Feld).
+- **‚Kontrast erhöhen‘ (neu R-1.9, H1–H5):** zweite Farbtabelle hell und dunkel nach Apple (Designrichtlinie 2), neu `--accent-fill`
+  für gefüllte blaue Flächen (dunkel mit Kontrast `#0060df`, Weiß 5,6 : 1); › in Listen und ⓧ in Grau Text; nur Variablen – wechselt
+  sofort ohne Neuaufbau; Ausgabe unverändert hell. Der Messmodus schreibt den Zustand beider Bedienungshilfen in den Kopf.
+- **‚Bewegung reduzieren‘ (R-1.9, M1–M7):** ‚Nach oben / Ans Ende‘ springen (Überblenden 0,15 s), das Blatt auf dem iPhone blendet
+  über, die Seite dahinter bleibt groß, nach dem Loslassen steht es sofort am Ziel; das Mikrofon pulsiert nicht (design.css).
+- **Prüfungen:** `hig.mjs` in jeder Ansicht neu Namen, Rollen und Zustände (R-1.8), Sperre und modal (R-1.4), Fokus-Rahmen nur mit
+  Tastatur und nie in Textfeldern (R-3.4), mit ‚Kontrast erhöhen‘ 4,5 : 1 für Texte und Icons ohne Ausnahmen; `ablauf.mjs` neu
+  `checkFokus`, `checkKontrast`, `checkRuhig`, `ansage`, `checkFieldErrors` erweitert, `checkSheet` mit ‚Bewegung reduzieren‘ ohne
+  Verkleinern; `pruefe.mjs` neu Bewegungswächter (jede Bewegung an der Grenze von R-1.9), `PRUEF_BEDIENUNG=beide`, Gegenprobe
+  `PRUEF_GEGENPROBE=bedienung:<fall>` mit 21 Fällen (`GEGENPROBEN_BEDIENUNG`); `lauf.mjs --gegenprobe bedienung`;
+  `abspielen.mjs` vergleicht beim Fokus nur noch Textfelder, wo ältere Messungen keinen Fokus kannten. Gegenprobe ‚bedienung‘:
+  alle 21 Fälle rot mit genau ihrer Meldung (Chromium und WebKit).
+- **Designrichtlinie allgemein 4.35.0:** R-1.4, R-1.8 neu, R-1.9 neu, R-3.4, R-4.6, R-4.7 neu, R-5.3; Abschnitte 1, 2, 13, 15.11.
+
 ## 4.34.0 – 24.10.2026
 
 AppDesign 4.34.0 · Designrichtlinie allgemein 4.34.0 · Zusammenarbeit allgemein 2.19.0 · geprüft mit Reiselogbuch 3.32.0

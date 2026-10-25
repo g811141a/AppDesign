@@ -9,6 +9,11 @@ erhöhen‘ mit **zweiter Farbtabelle** hell und dunkel nach Apple.
 Alles ist allgemein (AppDesign `ui.js`, `design.css`, Prüfungen in `tests/`); die App ändert nur eigene Bausteine (z. B. Felder mit
 Fehlermeldung, Trefferzeile), wo sie nicht über ui.js laufen.
 
+**Gebaut in AppDesign 4.35.0 / Reiselogbuch 3.33.0 (Sitzung 0044, Prüfpunkt P-73).** Abweichungen beim Bau: der Fokusring hängt an
+`html.tastatur` (Taste zum Bewegen) statt an `:focus-visible` allein (K6, K9 – Safari-Eigenheit in Designrichtlinie 13); ein Textfeld
+im Fenster gibt beim Öffnen einer Sprechblase bzw. eines Menüs den Fokus ab (Folge von `inert`, V7) – im Prüfpunkt; der
+Mikrofon-Knopf (M4) gilt für design.css, das Reiselogbuch hat keinen; ‚Titel antippen = nach oben‘ (M2) gibt es noch nicht (A-62).
+
 ## 1. Vorgesehene Regeln (Katalog, Designrichtlinie 17)
 
 Angeglichen an Abschnitt 4 (Sitzung 0035); maßgeblich bleibt bei Einzelheiten Abschnitt 4.

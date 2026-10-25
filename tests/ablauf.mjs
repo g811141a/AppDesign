@@ -173,6 +173,21 @@ export async function checkFieldErrors(p, { open, field, where = '' } = {}) {
     const same = (a, b) => rgbOf(a).every((v, i) => Math.abs(v - rgbOf(b)[i]) < 3);
     if (!same(r.color, r.red)) E(`Fehlermeldung nicht rot (${r.color})`);
     if (!same(r.border, r.red)) E(`Feld nicht rot umrandet (${r.border})`);
+    // seit 4.35.0 (A-43 V10, Baustein feldFehler): auch hörbar – aria-invalid, Meldung verknüpft (aria-describedby), einmal angesagt;
+    // beim Häkchen hat das erste fehlerhafte Feld den Fokus
+    await wait(p, 300);
+    const a = await p.evaluate(sel => { const f = document.querySelector(sel), d = document.getElementById('dlg');
+      const w = [...d.querySelectorAll('.warn')].find(x => !x.hidden && x.textContent.trim());
+      return { invalid: f.getAttribute('aria-invalid'), verknuepft: !!w?.id && (f.getAttribute('aria-describedby') || '').split(/\s+/).includes(w.id),
+        text: w?.textContent.trim(), ansage: d.querySelector(':scope > .ansage')?.textContent.trim() || '' }; }, field);
+    if (a.invalid !== 'true') E('fehlerhaftes Feld ohne aria-invalid="true" (VoiceOver: ‚ungültig‘)');
+    if (!a.verknuepft) E('Fehlermeldung nicht mit dem Feld verknüpft (aria-describedby)');
+    if (a.ansage !== a.text) E(`Fehlermeldung nicht angesagt (Ansage-Bereich: ‚${a.ansage}‘)`);
+    if (await p.locator('#dlgOk').count()) {
+      await p.locator(field).blur(); await p.click('#dlgOk'); await wait(p, 600);
+      const fokus = await p.evaluate(sel => document.activeElement === document.querySelector(sel), field);
+      if (!fokus) E('Häkchen mit Fehler: das fehlerhafte Feld hat nicht den Fokus');
+    }
   }
   await p.evaluate(() => document.getElementById('dlg').close()); await wait(p);
   return errors;
@@ -1646,7 +1661,9 @@ export async function checkSheet(p, { open, change = null, field = null, where =
   if (l.radius < 12) E(`B1 das Blatt hat oben keine runden Ecken (${l.radius} px)`);
   if (l.t) E(`B1 das Blatt ruht nicht an seinem Platz (${l.t} px versetzt)`);
   if (l.quer && l.zurueck) E('B17 quer: die Seite weicht zurück');
-  if (!l.quer && !l.zurueck) E('B1 die Seite dahinter weicht nicht verkleinert zurück');
+  if (!l.quer && !l.zurueck && !reduziert) E('B1 die Seite dahinter weicht nicht verkleinert zurück');
+  // seit 4.35.0 (A-43 M5, R-1.9): mit ‚Bewegung reduzieren‘ weicht die Seite nicht verkleinert zurück (kein Zoomen)
+  if (reduziert && l.zurueck) E('M5 ‚Bewegung reduzieren‘: die Seite dahinter weicht verkleinert zurück');
   if (l.bg !== l.soll) E(`B24 Hintergrund des Blatts ${l.bg} statt --dlg-bg (${l.soll})`);
   if (reduziert && frueh.t) E(`B22 ‚Bewegung reduzieren‘: das Blatt gleitet (${frueh.t} px) statt überzublenden`);
   if (!reduziert && frueh.t < 20 && !frueh.faehrt) E(`B1 das Blatt gleitet nicht von unten herein (kurz nach dem Öffnen ${frueh.t} px versetzt, keine Bewegung)`);
@@ -1898,5 +1915,254 @@ export async function checkKapsel(p, { sel, drehen = false, schmaler = null, whe
     soll(`${k} und zurück`, n, n.sl > 2, n.sl < n.max - 2);
   }
   await rolle(0);
+  return errors;
+}
+
+/* ---------- Bedienungshilfen (seit 4.35.0, A-43 Teil 1: R-1.8, R-4.7, R-1.9, R-3.4; Fall-Liste arbeit/A-43 Teil 1 Fall-Liste.md) ---------- */
+
+// Text im Ansage-Bereich (oberstes offenes Fenster, sonst Seite) – nach warten ms
+export async function ansage(p, warten = 0) {
+  if (warten) await wait(p, warten);
+  return p.evaluate(() => { const h = document.querySelector('#msg[open]') || document.querySelector('#dlg[open]') || document.body;
+    return h.querySelector(':scope > .ansage')?.textContent.trim() ?? null; });
+}
+const aktiv = p => p.evaluate(() => { const a = document.activeElement; if (!a || a === document.body) return { id: '', tag: 'body' };
+  const c = getComputedStyle(a);
+  return { id: a.id, tag: a.tagName.toLowerCase(), cls: a.className?.baseVal ?? a.className, rolle: a.getAttribute('role') || '', text: (a.getAttribute('aria-label') || a.textContent || '').trim().slice(0, 30),
+    inMenu: !!a.closest('.menu'), inSub: !!a.closest('.submenu'), inPop: !!a.closest('.pop'), istPop: a.matches('.pop'), inDlg: a.closest('dialog[open]')?.id || '', ring: c.outlineStyle !== 'none' && parseFloat(c.outlineWidth) > 0 }; });
+const taste = async (p, k, n = 1) => { for (let i = 0; i < n; i++) { await p.keyboard.press(k); await wait(p, 60); } await wait(p, 120); };
+
+// R-4.7, R-1.8 (V5, V6, K1–K6, K9): Fokus und Hardware-Tastatur.
+//   menue: Knopf eines Menüs (Selektor) · untermenue: Beschriftung eines Eintrags mit Untermenü in diesem Menü
+//   fenster: { open, change, feld } – Fenster öffnen, etwas ändern, ein Textfeld darin · felder: Textfelder der Seite (antippen)
+//   tab: Tab-Reihenfolge der Seite prüfen (Leiste → Suche → Inhalt → Kapsel ‚Nach oben / Ans Ende‘)
+export async function checkFokus(p, { menue = null, untermenue = null, fenster = null, felder = [], tab = true, where = '' } = {}) {
+  const errors = [], E = (r, t) => errors.push(`${where ? where + ': ' : ''}${r} ${t}`);
+  const offen = () => p.evaluate(() => ({ menu: !!document.querySelector('.menu:not(.submenu)'), sub: !!document.querySelector('.menu.submenu'), pop: !!document.querySelector('.pop'), dlg: document.getElementById('dlg')?.open, msg: document.getElementById('msg')?.open }));
+  const istKnopf = async sel => p.evaluate(sel => document.activeElement === document.querySelector(sel), sel);
+  if (menue) {
+    // V5, K1, K2: antippen öffnet mit Fokus auf dem ersten wählbaren Eintrag; Pfeile mit Umlauf; Esc schließt, Fokus zurück, ohne Ring
+    await p.click(menue); await wait(p, 200);
+    let a = await aktiv(p);
+    if (!a.inMenu) E('R-4.7', `Menü offen, Fokus nicht auf dem ersten Eintrag (auf ${a.tag}${a.id ? '#' + a.id : ''})`);
+    const eintraege = await p.evaluate(() => [...document.querySelector('.menu').querySelectorAll('.mi:not(:disabled)')].map(m => m.textContent.trim()));
+    const ist = async () => (await aktiv(p)).text;
+    if (eintraege.length > 1) {
+      await taste(p, 'ArrowDown'); if (await ist() !== eintraege[1].slice(0, 30)) E('R-4.7', `↓ wandert nicht zum nächsten Eintrag (${await ist()})`);
+      await taste(p, 'End'); if (await ist() !== eintraege.at(-1).slice(0, 30)) E('R-4.7', 'Ende springt nicht zum letzten Eintrag');
+      await taste(p, 'ArrowDown'); if (await ist() !== eintraege[0].slice(0, 30)) E('R-4.7', '↓ am letzten Eintrag läuft nicht zum ersten um');
+      await taste(p, 'ArrowUp'); if (await ist() !== eintraege.at(-1).slice(0, 30)) E('R-4.7', '↑ am ersten Eintrag läuft nicht zum letzten um');
+      await taste(p, 'Home'); await taste(p, 'Tab'); if (await ist() !== eintraege[1].slice(0, 30)) E('R-4.7', 'Tab wandert im Menü nicht wie ↓');
+      const mark = await p.evaluate(() => { const a = document.activeElement, c = getComputedStyle(a); return { ring: c.outlineStyle !== 'none' && parseFloat(c.outlineWidth) > 0, bg: c.backgroundColor }; });
+      if (mark.ring || /rgba\(0, 0, 0, 0\)|transparent/.test(mark.bg)) E('R-4.7', `Markierung im Menü nicht hinterlegt ohne Rahmen (Ring ${mark.ring}, Hintergrund ${mark.bg})`);
+    }
+    await taste(p, 'Escape');
+    let o = await offen();
+    if (o.menu) { E('R-4.7', 'Esc schließt das Menü nicht'); await p.evaluate(() => document.querySelector('.layer')?.click()); await wait(p); }
+    else if (o.dlg && !where.includes('Fenster')) E('R-4.7', 'Esc schließt mit dem Menü auch das Fenster (Taste nicht verbraucht)');
+    if (!await istKnopf(menue)) E('R-4.7', `Esc: Fokus nicht zurück auf dem Knopf ${menue} (V5)`);
+    if (!(await aktiv(p)).ring) E('R-3.4', 'Tastatur: kein Fokusring am Knopf (K6 – bei Bedienung mit der Tastatur sichtbar)');
+    // ⌘. wie Esc
+    await p.click(menue); await wait(p, 200); await taste(p, 'Meta+Period');
+    if ((await offen()).menu) { E('R-4.7', '⌘. schließt das Menü nicht'); await p.evaluate(() => document.querySelector('.layer')?.click()); await wait(p); }
+    // daneben tippen: Fokus zurück, ohne Ring (Antippen, R-3.4)
+    await p.click(menue); await wait(p, 200);
+    await p.evaluate(() => document.querySelector('.layer')?.click()); await wait(p, 200);
+    if (!await istKnopf(menue)) E('R-4.7', `daneben tippen: Fokus nicht zurück auf dem Knopf ${menue} (V5)`);
+    await p.mouse.click(2, 2); await wait(p, 100);   // Antippen beendet die Tastaturbedienung
+    await p.click(menue); await wait(p, 200); await p.evaluate(() => document.querySelector('.layer')?.click()); await wait(p, 200);
+    if ((await aktiv(p)).ring) E('R-3.4', 'Fokus-Rahmen am Knopf nach dem Antippen (K6: nie beim Antippen)');
+    if (untermenue) {
+      // K3: → öffnet, Fokus auf dem ersten Eintrag; ← schließt, Fokus zurück auf dem ›-Eintrag; Esc schließt zuerst das Untermenü
+      await p.click(menue); await wait(p, 200);
+      const n = eintraege.findIndex(x => x.includes(untermenue));
+      if (n < 0) E('R-4.7', `Eintrag ‚${untermenue}‘ nicht im Menü`);
+      else {
+        await taste(p, 'ArrowDown', n);
+        await taste(p, 'ArrowRight');
+        a = await aktiv(p);
+        const exp = () => p.evaluate(t => [...document.querySelectorAll('.menu:not(.submenu) .mi')].find(m => m.textContent.includes(t))?.getAttribute('aria-expanded'), untermenue);
+        if (!(await offen()).sub || !a.inSub) E('R-4.7', '→ öffnet das Untermenü nicht mit Fokus auf seinem ersten Eintrag');
+        if (await exp() !== 'true') E('R-1.8', 'Untermenü offen, aria-expanded nicht true');
+        await taste(p, 'ArrowLeft');
+        a = await aktiv(p);
+        if ((await offen()).sub || !a.inMenu || !a.text.includes(untermenue.slice(0, 20))) E('R-4.7', '← schließt das Untermenü nicht bzw. Fokus nicht zurück auf dem ›-Eintrag');
+        if (await exp() !== 'false') E('R-1.8', 'Untermenü zu, aria-expanded nicht false');
+        await taste(p, 'Enter'); await taste(p, 'Escape');
+        const o2 = await offen();
+        if (o2.sub || !o2.menu) E('R-4.7', 'Esc im Untermenü schließt nicht nur das Untermenü');
+        await taste(p, 'Escape');
+      }
+      if ((await offen()).menu) await p.evaluate(() => document.querySelector('.layer')?.click());
+      await wait(p);
+    }
+  }
+  if (fenster) {
+    const { open, change, feld } = fenster;
+    // K5: Fenster öffnet ohne vorausgewählte Schaltfläche; Esc und ⌘. (auch aus einem Feld) wie x; Tab bleibt im Fenster
+    await open(); await wait(p, 400); await navFertig(p);
+    let a = await aktiv(p);
+    if (a.inDlg !== 'dlg' || a.tag !== 'dialog') E('R-3.4', `Fenster öffnet mit Fokus auf ${a.tag}${a.id ? '#' + a.id : ''} statt auf dem Fenster (vorausgewählte Schaltfläche)`);
+    const n = await p.evaluate(() => [...document.getElementById('dlg').querySelectorAll('button:not(:disabled), input:not([type=hidden]), textarea, select, [tabindex]:not([tabindex="-1"])')].filter(x => x.getClientRects().length && x.tabIndex >= 0).length);
+    for (const k of ['Tab', 'Shift+Tab']) {
+      for (let i = 0; i < n + 2; i++) { await p.keyboard.press(k); await wait(p, 30); if ((await aktiv(p)).inDlg !== 'dlg') { E('R-4.7', `${k === 'Tab' ? 'Tab' : 'Umschalt+Tab'} verlässt das Fenster (nach ${i + 1}×)`); break; } }
+    }
+    await taste(p, 'Escape'); await navFertig(p);
+    if ((await offen()).dlg) { E('R-4.7', 'Esc ohne Änderung schließt das Fenster nicht'); await p.evaluate(() => dlg.close()); }
+    await open(); await wait(p, 400); await navFertig(p);
+    if (feld) { await p.locator(feld).focus(); await wait(p, 100); }
+    await taste(p, 'Meta+Period'); await navFertig(p);
+    if ((await offen()).dlg) { E('R-4.7', `⌘. ${feld ? 'aus einem Feld ' : ''}schließt das Fenster nicht`); await p.evaluate(() => dlg.close()); }
+    // K4, V6: x mit Änderung → Sprechblase mit Fokus (ohne Rahmen); Eingabe nie die rote Aktion; Esc = Abbrechen, Fenster bleibt
+    if (change) {
+      await open(); await wait(p, 400); await navFertig(p); await change(); await wait(p);
+      await p.locator('#dlgX').click(); await wait(p, 250);
+      a = await aktiv(p);
+      if (!(await offen()).pop) E('R-4.4', 'x mit Änderung zeigt keine Sprechblase');
+      else {
+        if (!a.istPop) E('R-1.8', `Sprechblase offen, Fokus nicht auf der Blase (auf ${a.tag}${a.id ? '#' + a.id : ''})`);
+        if (a.ring) E('R-3.4', 'Sprechblase mit Fokus-Rahmen');
+        await taste(p, 'Enter');
+        let o = await offen();
+        if (!o.dlg) E('R-4.7', 'Eingabe in der Sprechblase hat die rote Aktion ausgelöst (Fenster zu) – Eingabe nie rot');
+        else {
+          if (o.pop) E('R-4.7', 'Eingabe schließt die Sprechblase nicht (Weg zurück)');
+          if (!await istKnopf('#dlgX')) E('R-4.7', 'nach der Sprechblase Fokus nicht zurück auf dem x (V6)');
+          await p.locator('#dlgX').click(); await wait(p, 250);
+          await taste(p, 'Escape');
+          o = await offen();
+          if (o.pop) E('R-4.7', 'Esc schließt die Sprechblase nicht');
+          if (!o.dlg) E('R-4.7', 'Esc in der Sprechblase schließt auch das Fenster (Taste nicht verbraucht)');
+          // Tab markiert, Leertaste drückt den markierten – auch Rot
+          await p.locator('#dlgX').click(); await wait(p, 250);
+          await taste(p, 'Tab');
+          a = await aktiv(p);
+          if (!a.inPop) E('R-4.7', 'Tab markiert keinen Knopf der Sprechblase');
+          else if (!(await aktiv(p)).ring) E('R-3.4', 'Tab in der Sprechblase: kein Fokusring am markierten Knopf');
+          await taste(p, ' ');
+          if ((await offen()).dlg) E('R-4.7', 'Leertaste auf ‚Änderungen verwerfen‘ schließt das Fenster nicht');
+        }
+      }
+      await p.evaluate(() => { document.querySelector('.layer')?.click(); if (dlg.open) dlg.close(); }); await wait(p);
+    }
+  }
+  // K9, R-3.4: Textfelder nie mit Fokus-Rahmen – antippen und mit Tab erreichen
+  for (const f of felder) {
+    if (!await p.locator(f).first().isVisible().catch(() => false)) continue;
+    await p.locator(f).first().tap(); await wait(p, 150);
+    const r = await p.evaluate(sel => { const e = document.querySelector(sel), c = getComputedStyle(e); return document.activeElement === e && c.outlineStyle !== 'none' && parseFloat(c.outlineWidth) > 0 ? `${c.outlineStyle} ${c.outlineWidth}` : ''; }, f);
+    if (r) E('R-3.4', `Textfeld ${f} mit Fokus-Rahmen nach dem Antippen (${r})`);
+    await p.evaluate(() => document.activeElement?.blur());
+  }
+  if (tab) {
+    // K6: Reihenfolge Leiste → Suche → Inhalt → Kapsel, nur Sichtbares; Textfelder ohne, Knöpfe mit Ring
+    await p.mouse.click(2, 2); await p.evaluate(() => document.activeElement?.blur()); await wait(p, 100);
+    const folge = [];
+    for (let i = 0; i < 40; i++) {
+      await p.keyboard.press('Tab'); await wait(p, 40);
+      const x = await p.evaluate(() => { const a = document.activeElement; if (!a || a === document.body) return null;
+        const c = getComputedStyle(a), r = a.getBoundingClientRect();
+        const teil = a.closest('.fab') ? 3 : a.closest('.searchbox, .nb2') ? 1 : a.closest('.nb, .pnav') ? 0 : a.closest('#app > .rolle') ? 2 : a.closest('#side') ? -1 : 9;
+        return { teil, sichtbar: r.width > 0 && r.height > 0 && c.visibility !== 'hidden', feld: a.matches('input:not([type=checkbox]), textarea'), ring: c.outlineStyle !== 'none' && parseFloat(c.outlineWidth) > 0,
+          wer: a.id ? '#' + a.id : a.tagName.toLowerCase() + (a.classList[0] ? '.' + a.classList[0] : '') }; });
+      if (!x || folge.some(y => y.wer === x.wer && y.teil === x.teil) && folge.length > 3) break;
+      folge.push(x);
+    }
+    folge.filter(x => !x.sichtbar).forEach(x => E('R-4.7', `Tab erreicht Unsichtbares (${x.wer})`));
+    folge.filter(x => x.feld && x.ring).forEach(x => E('R-3.4', `Textfeld ${x.wer} mit Fokus-Rahmen (Tab, K9)`));
+    folge.filter(x => !x.feld && !x.ring && x.teil !== 9).slice(0, 1).forEach(x => E('R-3.4', `Tab: ${x.wer} ohne Fokusring (K6)`));
+    const app = folge.filter(x => x.teil >= 0 && x.teil < 9);
+    for (let i = 1; i < app.length; i++) if (app[i].teil < app[i - 1].teil) { E('R-4.7', `Tab-Reihenfolge nicht Leiste → Suche → Inhalt → Kapsel: ${app[i - 1].wer} vor ${app[i].wer}`); break; }
+    await p.mouse.click(2, 2); await p.evaluate(() => document.activeElement?.blur());
+  }
+  return errors;
+}
+
+// R-1.9 (A-43 H1–H5): ‚Kontrast erhöhen‘ – zweite Farbtabelle hell und dunkel, sofort ohne Neuaufbau, Ausgabe unverändert hell.
+//   vorschau: öffnet die Vorschau der Ausgabe (Fenster mit .rt) · fenster: { open, feld } – für das Umschalten bei offenem Fenster (H5)
+export const KONTRAST = {
+  hell: { '--accent': '#0040dd', '--danger-fill': '#d70015', '--danger': '#b3261e', '--sw-on': '#248a3d', '--warn': '#c93400', '--muted': '#3c3c43', '--ink': '#000000', '--line': '#8e8e93' },
+  dunkel: { '--accent': '#409cff', '--accent-fill': '#0060df', '--danger': '#ff6961', '--danger-fill': '#d70015', '--sw-on': '#30db5b', '--warn': '#ffb340', '--muted': '#c7c7cc', '--line': '#636366' },
+};
+export async function checkKontrast(p, { vorschau = null, fenster = null, where = '' } = {}) {
+  const errors = [], E = (r, t) => errors.push(`${where ? where + ': ' : ''}${r} ${t}`);
+  const anfang = await p.evaluate(() => ({ c: matchMedia('(prefers-contrast: more)').matches ? 'more' : 'no-preference', s: matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light' }));
+  const vars = () => p.evaluate(ks => { const c = getComputedStyle(document.documentElement); return Object.fromEntries(ks.map(k => [k, c.getPropertyValue(k).trim().toLowerCase()])); }, [...new Set([...Object.keys(KONTRAST.hell), ...Object.keys(KONTRAST.dunkel)])]);
+  const thema = () => p.evaluate(() => document.documentElement.dataset.theme);
+  const setze = async (contrast, colorScheme) => { await p.emulateMedia({ contrast, colorScheme }); await wait(p, 150); };
+  for (const [name, scheme] of [['hell', 'light'], ['dunkel', 'dark']]) {
+    await setze('more', scheme);
+    const v = await vars(), soll = KONTRAST[name];
+    if (await thema() !== (scheme === 'light' ? 'light' : 'dark')) continue;   // Darstellung der App übersteuert
+    const falsch = Object.entries(soll).filter(([k, w]) => v[k] !== w);
+    if (falsch.length) E('R-1.9', `Farbtabelle ‚Kontrast erhöhen‘ ${name} fehlt oder weicht ab: ${falsch.map(([k, w]) => `${k} ${v[k] || '–'} statt ${w}`).join(', ')}`);
+  }
+  // H4: Ausgabe und Vorschau-Inhalt mit und ohne Kontrast, hell und dunkel identisch
+  if (vorschau) {
+    const bild = () => p.evaluate(() => [...document.querySelectorAll('#dlg .rt, #dlg .rt *')].slice(0, 60).map(e => { const c = getComputedStyle(e); return `${c.color}|${c.backgroundColor}|${c.borderTopColor}`; }).join(';'));
+    await setze('no-preference', 'light'); await vorschau(); await wait(p, 400); await navFertig(p);
+    const basis = await bild();
+    for (const [c, sch] of [['more', 'light'], ['more', 'dark'], ['no-preference', 'dark']]) {
+      await setze(c, sch);
+      if (await bild() !== basis) { E('R-6.2', `Ausgabe in der Vorschau mit ${c === 'more' ? '‚Kontrast erhöhen‘' : 'ohne Kontrast'} ${sch === 'dark' ? 'dunkel' : 'hell'} anders als hell – sie bleibt unverändert hell (H4, Kontrast)`); break; }
+    }
+    await p.evaluate(() => dlg.open && dlg.close()); await wait(p);
+  }
+  // H5: Umschalten bei offenem Fenster mit Eingabe und gerollter Liste – kein Neuaufbau, alles bleibt
+  if (fenster) {
+    await setze('no-preference', 'light');
+    await rolle(p, '50%'); await wait(p, 150);
+    const y0 = (await rollstand(p)).y;
+    await fenster.open(); await wait(p, 400); await navFertig(p);
+    await p.locator(fenster.feld).focus(); await p.keyboard.type('Kontrast'); await wait(p, 100);
+    await p.evaluate(() => { window.__kontrastMarke = 1; });
+    const vor = await vars();
+    await setze('more', 'light');
+    const r = await p.evaluate(sel => ({ marke: window.__kontrastMarke, offen: document.getElementById('dlg').open, fokus: document.activeElement === document.querySelector(sel), wert: document.querySelector(sel)?.value || '' }), fenster.feld);
+    const nach = await vars();
+    if (r.marke !== 1) E('R-1.9', '‚Kontrast erhöhen‘ umschalten lädt die Seite neu');
+    if (!r.offen || !r.fokus || !/Kontrast/.test(r.wert)) E('R-1.9', `‚Kontrast erhöhen‘ umschalten: Fenster, Fokus bzw. Eingabe verloren (offen ${r.offen}, Fokus ${r.fokus})`);
+    if (nach['--accent'] === vor['--accent']) E('R-1.9', 'Farbtabelle wechselt nicht sofort beim Umschalten');
+    await p.evaluate(() => dlg.close()); await wait(p, 300); await navFertig(p);
+    const y1 = (await rollstand(p)).y;
+    if (Math.abs(y1 - y0) > 2) E('R-1.9', `Liste nach dem Umschalten verrückt (${y0} → ${y1} px)`);
+  }
+  await setze(anfang.c, anfang.s);
+  return errors;
+}
+
+// R-1.9 (A-43 M1–M5): ‚Bewegung reduzieren‘ gezielt – die Seite muss mit dem Bewegungswächter geöffnet sein (pruefe.mjs t.seite).
+//   fab: ‚Nach oben / Ans Ende‘ springen in einem Schritt · mic: Selektor eines Mikrofon-Knopfs bzw. true (pulsiert nicht)
+//   fenster: öffnet ein Fenster (iPhone: Blatt ohne Verkleinerung der Seite, M5). Die Funde des Wächters meldet t.ruhig bzw. t.schritt.
+export async function checkRuhig(p, { fab = true, mic = null, fenster = null, where = '' } = {}) {
+  const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}R-1.9 ${t}`);
+  const vorher = await p.evaluate(() => matchMedia('(prefers-reduced-motion: reduce)').matches);
+  await p.emulateMedia({ reducedMotion: 'reduce' }); await wait(p, 100);
+  if (fab && await p.locator('.fab:not(.still) button:not([hidden])').count()) {
+    await rolle(p, '50%'); await wait(p, 200);
+    for (const [knopf, ziel] of [['.fab button:first-of-type', 'oben'], ['.fab button:last-of-type', 'ende']]) {
+      if (!await p.locator(knopf).isVisible().catch(() => false)) { await rolle(p, ziel === 'oben' ? '60%' : '40%'); await wait(p, 150); }
+      if (!await p.locator(knopf).isVisible().catch(() => false)) continue;
+      await p.click(knopf); await wait(p, 60);
+      const s = await rollstand(p);
+      if (ziel === 'oben' ? s.y > 1 : s.rest > 130) E(`‚${ziel === 'oben' ? 'Nach oben' : 'Ans Ende'}‘ springt nicht direkt (nach 60 ms bei ${s.y} von ${s.max} px – rollt sanft, M2)`);
+      await rollRuht(p); await rolle(p, '50%'); await wait(p, 150);
+    }
+  }
+  if (mic) {
+    // ohne Selektor: ein Mikrofon-Knopf wird kurz eingesetzt (Regel aus design.css)
+    const r = await p.evaluate(sel => { const neu = sel === true && Object.assign(document.createElement('button'), { className: 'mic', type: 'button' });
+      if (neu) document.body.append(neu);
+      const m = neu || document.querySelector(sel); if (!m) return null; const alt = m.getAttribute('aria-pressed'); m.setAttribute('aria-pressed', 'true');
+      const n = m.getAnimations().length; if (alt === null) m.removeAttribute('aria-pressed'); else m.setAttribute('aria-pressed', alt); neu?.remove(); return n; }, mic);
+    if (r) E(`Mikrofon pulsiert trotz ‚Bewegung reduzieren‘ (${r} Animation, M4)`);
+  }
+  if (fenster) {
+    await fenster(); await wait(p, 300); await navFertig(p);
+    const z = await p.evaluate(() => ({ zurueck: document.documentElement.classList.contains('blatt-zurueck'), scale: [...document.querySelectorAll('#app, #side')].map(e => getComputedStyle(e).scale).filter(s => s !== 'none' && s !== '1') }));
+    if (z.zurueck || z.scale.length) E(`Blatt: die Seite dahinter weicht verkleinert zurück (Zoomen, M5) – ${z.scale.join(' ')}`);
+    await p.evaluate(() => dlg.open && dlg.close()); await wait(p, 300); await navFertig(p);
+  }
+  await p.emulateMedia({ reducedMotion: vorher ? 'reduce' : 'no-preference' });
   return errors;
 }

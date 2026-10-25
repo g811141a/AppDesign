@@ -143,13 +143,15 @@ export async function spieleAb(p, m, { ziele = {}, woerter = {}, bis = Infinity,
     const ist = await p.evaluate(() => {
       const o = __safari.fest ? visualViewport.offsetTop : __safari.top(), top = sel => { const e = [...document.querySelectorAll(sel)].find(x => x.getClientRects().length); return e ? Math.round(e.getBoundingClientRect().top - o) : null; };
       const a = document.activeElement, fokus = !a || a === document.body ? null : a.id || a.tagName.toLowerCase();
-      return { kopf: top('#app .nb, #app .pnav'), such: top('#app .searchbox'), fokus };
+      // seit 4.35.0 (A-43 R-1.8): der Fokus geht nach Menü, Sprechblase und Seitenwechsel auf Knopf bzw. Kopfzeile – das zeichneten
+      // ältere Messungen nicht auf (dort ‚–‘); verglichen wird dann nur, ob ein Textfeld den Fokus hat
+      return { kopf: top('#app .nb, #app .pnav'), such: top('#app .searchbox'), fokus, feld: !!a?.matches?.('input, textarea') };
     });
     for (const k of ['kopf', 'such']) {
       if ((soll[k] == null) !== (ist[k] == null)) E(soll, `${k === 'kopf' ? 'Kopfzeile' : 'Suchzeile'} ${soll[k] == null ? 'gemessen nicht da, nachgespielt bei ' + ist[k] + ' px' : 'gemessen bei ' + soll[k] + ' px, nachgespielt nicht da'}`);
       else if (soll[k] != null && Math.abs(soll[k] - ist[k]) > toleranz) E(soll, `${k === 'kopf' ? 'Kopfzeile' : 'Suchzeile'} bei ${ist[k]} px statt ${soll[k]} px wie gemessen`);
     }
-    if ((soll.fokus ?? null) !== ist.fokus) E(soll, `Fokus ${ist.fokus ?? '–'} statt ${soll.fokus ?? '–'} wie gemessen`);
+    if ((soll.fokus ?? null) !== ist.fokus && !(soll.fokus == null && !ist.feld)) E(soll, `Fokus ${ist.fokus ?? '–'} statt ${soll.fokus ?? '–'} wie gemessen`);
     if (nachSchritt) for (const x of (await nachSchritt(s)) || []) E(z, x);
   }
   return errors;
