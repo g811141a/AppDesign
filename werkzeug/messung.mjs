@@ -1,13 +1,13 @@
-// AppDesign 4.22.0 · Zeile ‚Zeit und Token‘ aus den Sitzungsdaten (A-12, Fall-Liste arbeit/A-12 Fall-Liste.md M-1 bis M-14;
+// AppDesign 4.22.0 · Zeile ‚Zeit und Token‘ aus den Sitzungsdaten (APD-12, Testfall-Liste arbeit/APD-12 Testfall-Liste.md APD-12/M-1 bis APD-12/M-14;
 // Zusammenarbeit allgemein §2). Claude ruft es am Ende jeder Antwort auf und übernimmt die Zeile unverändert – nie schätzen.
 //   node werkzeug/messung.mjs [--datei <sitzung.jsonl>] [--jetzt <ISO-Zeit>]
-// Zeit: ab der letzten Nachricht des Nutzers bis jetzt, ohne Wartezeit in Auswahlfenstern (M-1 bis M-4).
-// Token: alle Modell-Aufrufe zwischen der vorletzten und der letzten Nachricht des Nutzers, je Aufruf einmal (M-5, Fund 2);
+// Zeit: ab der letzten Nachricht des Nutzers bis jetzt, ohne Wartezeit in Auswahlfenstern (APD-12/M-1 bis APD-12/M-4).
+// Token: alle Modell-Aufrufe zwischen der vorletzten und der letzten Nachricht des Nutzers, je Aufruf einmal (APD-12/M-5, Fund 2);
 // ‚neu‘ = Eingabe + Ausgabe, ‚aus Zwischenspeicher‘ = gelesen, ‚geschrieben‘ = in den Zwischenspeicher geschrieben.
-// Kontext (seit 4.22.0, A-20, Fall-Liste arbeit/A-20 Fall-Liste.md K-1 bis K-12): Größe der Sitzung = Eingabe + gelesen +
+// Kontext (seit 4.22.0, APD-20, Testfall-Liste arbeit/APD-20 Testfall-Liste.md APD-20/H-1 bis APD-20/H-12): Größe der Sitzung = Eingabe + gelesen +
 // geschrieben des letzten eigenen Modell-Aufrufs (nicht die Summe der Antwort, nicht die Hilfsagenten); ab GRENZE oder nach einer
 // automatischen Zusammenfassung ‚⚠ Übergabe fällig‘ (Zusammenarbeit 0 Nr. 13).
-// Rückgabewert 0 = Zeile ausgegeben, 1 = keine Sitzungsdaten (M-9).
+// Rückgabewert 0 = Zeile ausgegeben, 1 = keine Sitzungsdaten (APD-12/M-9).
 import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -15,7 +15,7 @@ import { fileURLToPath } from 'node:url';
 const PROJEKTE = '/root/.claude/projects';
 export const GRENZE = 300000;
 
-// M-7/M-8: Datei der Sitzung – bei mehreren Ordnern (Neustart) die zuletzt geänderte; ohne Kennung die neueste überhaupt.
+// APD-20/M-7/M-8: Datei der Sitzung – bei mehreren Ordnern (Neustart) die zuletzt geänderte; ohne Kennung die neueste überhaupt.
 export function sitzungsdatei(kennung = process.env.CLAUDE_CODE_SESSION_ID, wurzel = PROJEKTE) {
   if (!existsSync(wurzel)) return null;
   const alle = readdirSync(wurzel).flatMap(o => {
@@ -35,7 +35,7 @@ function lies(datei) {
   return { zeilen, kaputt };
 }
 
-// M-12: Nebenstränge der Hilfsagenten liegen im Ordner <kennung>/subagents/
+// APD-12/M-12: Nebenstränge der Hilfsagenten liegen im Ordner <kennung>/subagents/
 function nebenstraenge(datei) {
   const ordner = join(datei.replace(/\.jsonl$/, ''), 'subagents');
   if (!existsSync(ordner)) return [];
@@ -43,7 +43,7 @@ function nebenstraenge(datei) {
 }
 
 const inhalt = z => z.message?.content;
-// M-3/M-4: echte Nachricht des Nutzers – Text, kein Werkzeug-Ergebnis, keine Systemmeldung (Neustart, Hintergrund, Start)
+// APD-12/M-3/M-4: echte Nachricht des Nutzers – Text, kein Werkzeug-Ergebnis, keine Systemmeldung (Neustart, Hintergrund, Start)
 function istNachricht(z) {
   if (z.type !== 'user' || z.isMeta || z.isSidechain || z.isCompactSummary) return false;
   if (z.origin && !['human', 'user'].includes(z.origin.kind)) return false;
@@ -56,12 +56,12 @@ const zeit = z => Date.parse(z.timestamp);
 export function messe(zeilen, jetzt = Date.now()) {
   const nutzer = zeilen.filter(z => z.type === 'user' && z.timestamp);
   const nachrichten = nutzer.filter(istNachricht);
-  // M-3: Sitzung von einer anderen Sitzung gestartet – dann zählt der Starttext (erster Eintrag) als erste Nachricht
+  // APD-12/M-3: Sitzung von einer anderen Sitzung gestartet – dann zählt der Starttext (erster Eintrag) als erste Nachricht
   if (nutzer.length && nachrichten[0] !== nutzer[0]) nachrichten.unshift(nutzer[0]);
   if (!nachrichten.length) return null;
   const letzte = zeit(nachrichten.at(-1)), vorletzte = nachrichten.length > 1 ? zeit(nachrichten.at(-2)) : null;
 
-  // M-2: Wartezeit in Auswahlfenstern (AskUserQuestion gezeigt → Antwort als Werkzeug-Ergebnis)
+  // APD-12/M-2: Wartezeit in Auswahlfenstern (AskUserQuestion gezeigt → Antwort als Werkzeug-Ergebnis)
   const frage = new Map();
   for (const z of zeilen) if (z.type === 'assistant' && Array.isArray(inhalt(z)))
     for (const b of inhalt(z)) if (b.type === 'tool_use' && b.name === 'AskUserQuestion') frage.set(b.id, zeit(z));
@@ -72,7 +72,7 @@ export function messe(zeilen, jetzt = Date.now()) {
   }
   const ms = Math.max(0, jetzt - letzte - warten);
 
-  // M-5: Token der vorigen Antwort, je Modell-Aufruf (message.id) einmal; M-6: keine vorige Antwort
+  // APD-12/M-5: Token der vorigen Antwort, je Modell-Aufruf (message.id) einmal; APD-12/M-6: keine vorige Antwort
   let token = null;
   if (vorletzte !== null) {
     const gesehen = new Set();
@@ -87,7 +87,7 @@ export function messe(zeilen, jetzt = Date.now()) {
       token.geschrieben += u.cache_creation_input_tokens || 0;
     }
   }
-  // K-4/K-6/K-8: Kontext des letzten eigenen Modell-Aufrufs; K-7: nach einer Zusammenfassung immer Übergabe fällig
+  // APD-20/H-4/K-6/K-8: Kontext des letzten eigenen Modell-Aufrufs; APD-20/H-7: nach einer Zusammenfassung immer Übergabe fällig
   const aufruf = zeilen.findLast(z => z.type === 'assistant' && !z.isSidechain && z.message?.usage && (!z.timestamp || zeit(z) <= jetzt));
   const u = aufruf?.message.usage;
   const kontext = u ? (u.input_tokens || 0) + (u.cache_read_input_tokens || 0) + (u.cache_creation_input_tokens || 0) : null;
@@ -95,7 +95,7 @@ export function messe(zeilen, jetzt = Date.now()) {
   return { ms, token, kontext, faellig, ab: nachrichten.at(-1).timestamp };
 }
 
-// M-10: ab 60 Minuten hh:mm:ss; M-11: Tausenderpunkt
+// APD-12/M-10: ab 60 Minuten hh:mm:ss; APD-12/M-11: Tausenderpunkt
 export const dauer = ms => {
   const s = Math.floor(ms / 1000), h = Math.floor(s / 3600), z = n => String(n).padStart(2, '0');
   return h ? `${z(h)}:${z(Math.floor(s / 60) % 60)}:${z(s % 60)}` : `${z(Math.floor(s / 60))}:${z(s % 60)}`;

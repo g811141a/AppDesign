@@ -1,4 +1,4 @@
-// AppDesign 4.16.0 · Prüfung ‚Start‘ (Regel R-7.2, seit 4.16.0, A-09 aus Reiselogbuch T-84).
+// AppDesign 4.16.0 · Prüfung ‚Start‘ (Regel R-7.2, seit 4.16.0, APD-9 aus Reiselogbuch RLB-84).
 // Nach jedem Neuladen zeigt der iPhone-Aufbau (html.phone – iPhone hoch und quer, auch iPad im schmalen Fenster) die
 // Startliste: die Seitenleiste als ganze Seite (#side.page), ganz oben, ohne blauen Eintrag (nichts ist geöffnet, HIG 4),
 // kein Inhalt daneben. Der iPad-Aufbau öffnet wie bisher den aktuellen Eintrag: Seitenleiste sichtbar, genau ein Eintrag

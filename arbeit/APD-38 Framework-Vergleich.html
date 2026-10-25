@@ -1,0 +1,806 @@
+<!doctype html><html lang="de"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>APD-38 Framework-Vergleich</title>
+<style>
+/* APD-38 Framework-Vergleich – Themen aus Framework7 und Ionic, die AppDesign übernehmen könnte (Sitzung Reiselogbuch 0027).
+   Spalten nach Wunsch des Nutzers (21.10.2026): Framework · Thema · So macht es Apple (Z1) · in AppDesign vorhanden · Aufwand (Z2) ·
+   Empfehlung. Die Empfehlung hängt nicht vom Aufwand ab. Auf schmalen Bildschirmen wird jede Zeile eine Karte. */
+:root { --bg: #f2f2f7; --card: #fff; --line: #d1d1d6; --txt: #000; --sub: #6e6e73; --blue: #007aff; --head: #f9f9fb;
+  --ja: #e3f6e8; --ja-t: #1b7f3b; --nein: #fde8e7; --nein-t: #c4291c; --spaet: #fff3d6; --spaet-t: #9a6400; color-scheme: light dark; }
+@media (prefers-color-scheme: dark) { :root { --bg: #000; --card: #1c1c1e; --line: #38383a; --txt: #fff; --sub: #98989d; --blue: #0a84ff;
+  --head: #2c2c2e; --ja: #173d22; --ja-t: #5fd37f; --nein: #4a1a17; --nein-t: #ff7b6e; --spaet: #3d2f0f; --spaet-t: #ffc94d; } }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--txt); font: 15px/1.45 -apple-system, system-ui, sans-serif;
+  padding: max(16px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(24px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left)); }
+main { max-width: 1400px; margin: 0 auto; }
+h1 { font-size: 28px; margin: 4px 0 2px; }
+h2 { font-size: 20px; margin: 28px 0 8px; }
+.stand { color: var(--sub); margin: 0 0 16px; }
+.box { background: var(--card); border-radius: 12px; padding: 12px 16px; margin: 0 0 16px; }
+.box p { margin: 6px 0; }
+.box ul { margin: 6px 0; padding-left: 20px; }
+code { overflow-wrap: anywhere; font: 13px ui-monospace, Menlo, monospace; background: var(--head); padding: 1px 4px; border-radius: 4px; }
+table { width: 100%; border-collapse: separate; border-spacing: 0; background: var(--card); border-radius: 12px; overflow: hidden; }
+th, td { text-align: left; vertical-align: top; padding: 10px 12px; border-bottom: .5px solid var(--line); }
+th { background: var(--head); font-size: 13px; font-weight: 600; color: var(--sub); position: sticky; top: 0; }
+tr:last-child td { border-bottom: 0; }
+td.nr { font-weight: 600; white-space: nowrap; }
+td[data-l="Aufwand"] { min-width: 120px; }
+td b { font-weight: 600; }
+.fw { display: inline-block; font-size: 12px; font-weight: 600; border: .5px solid var(--line); border-radius: 10px; padding: 1px 8px; margin: 0 4px 4px 0; white-space: nowrap; }
+.tag { display: inline-block; font-size: 13px; font-weight: 600; border-radius: 10px; padding: 2px 10px; margin-bottom: 4px; white-space: nowrap; }
+.ja { background: var(--ja); color: var(--ja-t); }
+.nein { background: var(--nein); color: var(--nein-t); }
+.spaet { background: var(--spaet); color: var(--spaet-t); }
+.teil { background: var(--spaet); color: var(--spaet-t); }
+.klein { color: var(--sub); font-size: 13px; }
+@media (max-width: 760px) {
+  table, tbody, tr, td { display: block; }
+  thead { display: none; }
+  table { background: none; }
+  tr { background: var(--card); border-radius: 12px; margin: 0 0 12px; overflow: hidden; }
+  td { border-bottom: .5px solid var(--line); }
+  td::before { content: attr(data-l); display: block; font-size: 12px; font-weight: 600; color: var(--sub); margin-bottom: 2px; }
+}
+
+tr.gruppe td { background: var(--head); font-weight: 600; font-size: 15px; padding: 8px 12px; }
+.tag.vorh { background: var(--head); color: var(--sub); border: .5px solid var(--line); }
+.konflikt { display: block; margin-top: 6px; font-size: 13px; color: var(--nein-t); }
+.zahlen { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0; }
+.filter { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 12px; }
+.filter button { font: inherit; font-size: 14px; border: .5px solid var(--line); background: var(--card); color: var(--txt); border-radius: 16px; padding: 5px 12px; }
+.filter button.on { background: var(--blue); color: #fff; border-color: var(--blue); }
+.md table { margin: 8px 0 16px; } .md td, .md th { font-size: 14px; }
+.md h3 { font-size: 17px; margin: 20px 0 6px; }
+@media (max-width: 760px) { tr.gruppe td::before { content: none; } .md table, .md tbody, .md tr, .md td { display: revert; } .md table { display: block; overflow-x: auto; } }
+</style></head><body><main>
+</head><body><main>
+<h1>APD-38 Framework-Vergleich</h1>
+<p class="stand">Stand 21.10.2026 · Sitzung ‚Reiselogbuch 0027‘ · Grundlage: Quelltext von Framework7 9.2.0 und Ionic 9.0.9 (npm), mit AppDesign 4.28.2 verglichen</p>
+
+<div class="box">
+  <p><b>So liest du die Tabelle:</b> Jede Zeile ist ein Thema, das wir ins allgemeine Regelwerk übernehmen könnten.</p>
+  <ul>
+    <li><b>Framework:</b> woher das Thema kommt (Framework7, Ionic oder beide).</li>
+    <li><b>So macht es Apple:</b> unser Maßstab (Zusammenarbeit 0 Nr. 23).</li>
+    <li><b>In AppDesign:</b> ja / teilweise / nein – mit den Abweichungen und der Fundstelle.</li>
+    <li><b>Aufwand:</b> klein / mittel / groß – nur zur Information; <b>die Empfehlung hängt nicht vom Aufwand ab.</b></li>
+    <li><b>Empfehlung:</b> übernehmen · später · nicht übernehmen · schon vorhanden (AppDesign kann es bereits, oft besser) – mit kurzer Begründung; <span class="konflikt" style="display:inline">rot</span> = steht gegen eine bisherige Festlegung, du entscheidest.</li>
+  </ul>
+  <div class="zahlen"><span class="tag ja">30 übernehmen</span><span class="tag spaet">11 später</span><span class="tag nein">12 nicht übernehmen</span><span class="tag vorh">13 schon vorhanden</span><span class="tag teil">4 mit Entscheidung</span></div>
+</div>
+
+<h2>Themen (66)</h2>
+<div class="filter" role="group" aria-label="Nach Empfehlung filtern">
+  <button class="on" data-f="">alle</button><button data-f="ja">übernehmen</button><button data-f="spaet">später</button><button data-f="nein">nicht übernehmen</button><button data-f="vorh">schon vorhanden</button><button data-f="konflikt">mit Entscheidung</button>
+</div>
+<table id="themen">
+<thead><tr><th>Nr.</th><th>Framework</th><th>Thema</th><th>So macht es Apple</th><th>In AppDesign</th><th>Aufwand</th><th>Empfehlung</th></tr></thead>
+<tbody>
+<tr class="gruppe"><td colspan="7">Leisten und Navigation</td></tr>
+<tr data-e="ja">
+  <td class="nr" data-l="Nr.">T-1</td>
+  <td data-l="Framework"><span class="fw">Framework7</span><span class="fw">Ionic</span></td>
+  <td data-l="Thema"><b>Großer Titel klappt ein und rastet.</b> Der große Titel über dem Inhalt wandert beim Rollen klein in die Leiste. Bleibt das Rollen auf halbem Weg stehen, rastet die Seite auf groß oder klein ein.<br><span class="klein">Framework7: components/navbar/navbar.js collapseLargeTitleOnScroll, snapPageScrollToLargeTitle · Ionic: ion-header collapse=„condense“</span></td>
+  <td data-l="So macht es Apple">Notizen und Mail klappen den großen Titel beim Rollen in die Leiste und rasten ein, damit er nie halb abgeschnitten steht.</td>
+  <td data-l="In AppDesign"><span class="tag teil">teilweise</span><br>Das Einklappen in die Leiste ist gebaut, wie in Notizen. Es fehlt das Einrasten; das leichte Wachsen am Rand fehlt bewusst, weil nichts federt.<br><span class="klein">v4/ui.js:1124-1133, v4/design.css:440-442, v4/design.css:447, README - Designrichtlinie allgemein.md:665</span></td>
+  <td data-l="Aufwand">mittel<br><span class="klein">Rollende erkennen, sanft nachrollen</span></td>
+  <td data-l="Empfehlung"><span class="tag ja">übernehmen</span><br>Ein halb abgeschnittener Titel wirkt unfertig; Apple rastet immer ein. Das Wachsen am Rand bleibt weg (R-2.1).</td>
+</tr>
+<tr data-e="nein">
+  <td class="nr" data-l="Nr.">T-2</td>
+  <td data-l="Framework"><span class="fw">Framework7</span></td>
+  <td data-l="Thema"><b>Leisten beim Rollen ausblenden.</b> Kopf- und Werkzeugleiste verschwinden beim Rollen nach unten und kommen beim Zurückrollen wieder.<br><span class="klein">Framework7: navbar.js hideOnPageScroll, components/toolbar/toolbar.js hideOnPageScroll · Ionic: nur collapse=„fade“</span></td>
+  <td data-l="So macht es Apple">Nur Safari blendet Leisten beim Rollen aus; Notizen, Mail und Einstellungen lassen sie stehen.</td>
+  <td data-l="In AppDesign"><span class="tag nein">nein</span><br>Bewusst nicht: Leisten stehen fest, keinen Millimeter.<br><span class="klein">README - Designrichtlinie allgemein.md:893, v4/design.css:65-66</span></td>
+  <td data-l="Aufwand">klein<br><span class="klein">Leiste beim Rollen verschieben</span></td>
+  <td data-l="Empfehlung"><span class="tag nein">nicht übernehmen</span><br>Feste Vorgabe R-2.1; die meisten Apple-Apps machen es ebenso.</td>
+</tr>
+<tr data-e="nein">
+  <td class="nr" data-l="Nr.">T-3</td>
+  <td data-l="Framework"><span class="fw">Framework7</span><span class="fw">Ionic</span></td>
+  <td data-l="Thema"><b>Inhalt unter durchscheinender Leiste.</b> Die Leiste ist aus Glas; der Inhalt läuft sichtbar und unscharf darunter durch.<br><span class="klein">Framework7: navbar.js snapPageScrollToTransparentNavbar, Glas-Variablen in framework7-bundle.css · Ionic: ion-header translucent, ion-content fullscreen</span></td>
+  <td data-l="So macht es Apple">iOS 26 lässt Inhalt unter die Glas-Leisten laufen und blendet ihn am Rand weich aus.</td>
+  <td data-l="In AppDesign"><span class="tag nein">nein</span><br>Bewusst nicht: deckende Leiste, Haarlinie erst nach dem Rollen, Glas-Leiste verworfen.<br><span class="klein">README - Designrichtlinie allgemein.md:45, README - Designrichtlinie allgemein.md:486, v4/design.css:170, v4/ui.js:1127</span></td>
+  <td data-l="Aufwand">mittel<br><span class="klein">alle Leisten und Prüfungen anpassen</span></td>
+  <td data-l="Empfehlung"><span class="tag nein">nicht übernehmen</span><br>Feste Vorgabe: kein Inhalt unter durchscheinenden Leisten.</td>
+</tr>
+<tr data-e="ja">
+  <td class="nr" data-l="Nr.">T-4</td>
+  <td data-l="Framework"><span class="fw">Framework7</span><span class="fw">Ionic</span></td>
+  <td data-l="Thema"><b>Seitenwechsel als Schieben.</b> Die neue Seite schiebt sich von rechts herein, die alte weicht etwas nach links; zurück geht es umgekehrt.<br><span class="klein">Framework7: modules/router/navigate.js, back.js, page-ios.less · Ionic: utils/transition/ios.transition.js, ion-nav, ion-router-outlet</span></td>
+  <td data-l="So macht es Apple">Jede Navigation im Stapel schiebt die Seite von rechts herein; mit ‚Bewegung reduzieren‘ wird überblendet.</td>
+  <td data-l="In AppDesign"><span class="tag nein">nein</span><br>Auf dem iPhone wechselt die App zwischen Startliste und Inhalt ohne jeden Übergang.<br><span class="klein">v4/ui.js:1110, v4/design.css:403, v4/design.css:441, v4/design.css:524, README - Designrichtlinie allgemein.md:645-684</span></td>
+  <td data-l="Aufwand">mittel<br><span class="klein">zwei Seiten kurz zugleich, Rollstand halten</span></td>
+  <td data-l="Empfehlung"><span class="tag ja">übernehmen</span><br>Zeigt die Richtung vor und zurück wie jede Apple-App und gehört zum Zurückwischen.</td>
+</tr>
+<tr data-e="ja">
+  <td class="nr" data-l="Nr.">T-5</td>
+  <td data-l="Framework"><span class="fw">Framework7</span><span class="fw">Ionic</span></td>
+  <td data-l="Thema"><b>Zurückwischen vom linken Rand.</b> Vom linken Rand wischen zieht die Seite mit dem Finger zur vorigen zurück; nach halber Breite oder schnellem Wischen geht sie, sonst springt sie zurück.<br><span class="klein">Framework7: components/view/view.js iosSwipeBack, iosSwipeBackActiveArea 30 · Ionic: utils/gesture/swipe-back.js (Rand 50 px), swipeBackEnabled</span></td>
+  <td data-l="So macht es Apple">In jeder Navigationsansicht geht Wischen vom linken Rand interaktiv zurück.</td>
+  <td data-l="In AppDesign"><span class="tag nein">nein</span><br>Es gibt nur den runden Zurück-Knopf. Die Home-Bildschirm-App hat keine Safari-Randgeste.<br><span class="klein">README - Designrichtlinie allgemein.md:661, v4/ui.js:1213-1218</span></td>
+  <td data-l="Aufwand">groß<br><span class="klein">Geste, vorige Seite sichtbar, Gerätetest</span></td>
+  <td data-l="Empfehlung"><span class="tag ja">übernehmen</span><br>Kerngeste von iOS; ohne sie wirkt die iPhone-Ansicht nicht wie eine Apple-App. Der Knopf bleibt als zweiter Weg.</td>
+</tr>
+<tr data-e="ja">
+  <td class="nr" data-l="Nr.">T-6</td>
+  <td data-l="Framework"><span class="fw">Framework7</span><span class="fw">Ionic</span></td>
+  <td data-l="Thema"><b>Seitenleiste hereinwischen.</b> Im Hochformat holt Wischen vom linken Rand die Seitenleiste herein, Wischen nach links schiebt sie weg.<br><span class="klein">Framework7: components/panel/panel.js swipe, swipeActiveArea · Ionic: ion-menu swipeGesture, maxEdgeStart, type</span></td>
+  <td data-l="So macht es Apple">iPad hoch: die Seitenleiste kommt per Wischen vom linken Rand und geht per Wischen wieder.</td>
+  <td data-l="In AppDesign"><span class="tag teil">teilweise</span><br>Seitenleiste quer fest, hoch über den Inhalt gelegt mit Abdunkelung – aber nur per Knopf, nicht per Wischen.<br><span class="klein">v4/design.css:203-221, README - Designrichtlinie allgemein.md:516-519</span></td>
+  <td data-l="Aufwand">mittel<br><span class="klein">gleiche Randgeste wie Zurückwischen</span></td>
+  <td data-l="Empfehlung"><span class="tag ja">übernehmen</span><br>Apple-Verhalten am iPad hoch; zusammen mit dem Zurückwischen in einem Muster bauen.</td>
+</tr>
+<tr data-e="vorh">
+  <td class="nr" data-l="Nr.">T-7</td>
+  <td data-l="Framework"><span class="fw">Framework7</span><span class="fw">Ionic</span></td>
+  <td data-l="Thema"><b>Rollstand beim Zurück behalten.</b> Geht man zurück, steht die vorige Seite wieder an derselben Stelle.<br><span class="klein">Framework7: view.js restoreScrollTopOnBack, modules/router/router-class.js · Ionic: Seiten bleiben im Stapel erhalten (ion-nav)</span></td>
+  <td data-l="So macht es Apple">Der Navigationsstapel behält die vorige Ansicht samt Rollstand.</td>
+  <td data-l="In AppDesign"><span class="tag ja">ja</span><br>Die Liste behält beim Neuaufbau ihre Stelle, der gewählte Eintrag bleibt sichtbar – auch beim Drehen.<br><span class="klein">README - Designrichtlinie allgemein.md:501, README - Designrichtlinie allgemein.md:940, v4/ui.js:150, v4/ui.js:1181</span></td>
+  <td data-l="Aufwand">klein<br><span class="klein">vorhanden</span></td>
+  <td data-l="Empfehlung"><span class="tag vorh">schon vorhanden</span><br>Schon gebaut und weiter als in beiden Frameworks (auch beim Drehen, R-8.1).</td>
+</tr>
+<tr data-e="vorh">
+  <td class="nr" data-l="Nr.">T-8</td>
+  <td data-l="Framework"><span class="fw">Framework7</span><span class="fw">Ionic</span></td>
+  <td data-l="Thema"><b>Seitenleiste je nach Breite.</b> Ab einer Breite steht die Seitenleiste fest daneben, darunter liegt sie über dem Inhalt oder wird zur Startseite.<br><span class="klein">Framework7: view.js masterDetailBreakpoint, panel.js visibleBreakpoint · Ionic: ion-split-pane when</span></td>
+  <td data-l="So macht es Apple">Geteilte Ansicht: quer daneben, hoch darübergelegt, auf dem iPhone als Stapel.</td>
+  <td data-l="In AppDesign"><span class="tag ja">ja</span><br>Quer fest, hoch darübergelegt, iPhone als Startliste; der Zustand bleibt beim Drehen.<br><span class="klein">v4/design.css:203-221, v4/ui.js:1110, README - Designrichtlinie allgemein.md:516-523</span></td>
+  <td data-l="Aufwand">klein<br><span class="klein">vorhanden</span></td>
+  <td data-l="Empfehlung"><span class="tag vorh">schon vorhanden</span><br>Vorhanden und genauer (Drehen, Tastatur).</td>
+</tr>
+<tr data-e="spaet">
+  <td class="nr" data-l="Nr.">T-9</td>
+  <td data-l="Framework"><span class="fw">Framework7</span><span class="fw">Ionic</span></td>
+  <td data-l="Thema"><b>Tab-Leiste für Hauptbereiche.</b> Eine Leiste unten wechselt zwischen gleichrangigen Bereichen der App; jeder Bereich behält seinen Zustand.<br><span class="klein">Framework7: components/toolbar (tabbar), components/tabs · Ionic: ion-tabs, ion-tab-bar, ion-tab-button</span></td>
+  <td data-l="So macht es Apple">Tab-Leiste für gleichrangige Hauptbereiche (Musik, Fotos), in iOS 26 schwebend; am iPad oben oder als Seitenleiste.</td>
+  <td data-l="In AppDesign"><span class="tag nein">nein</span><br>Die Apps haben eine zentrale Liste (Seitenleiste bzw. Startliste); unten stehen nur feste Hinweise.<br><span class="klein">README - Designrichtlinie allgemein.md:882, README - Designrichtlinie allgemein.md:654-655, v4/design.css:479-488</span></td>
+  <td data-l="Aufwand">mittel<br><span class="klein">neue Leiste, Zustand je Bereich</span></td>
+  <td data-l="Empfehlung"><span class="tag spaet">später</span><br>Apple nutzt sie nur bei gleichrangigen Bereichen, die unsere Apps nicht haben. Neu bewerten, sobald eine App solche Bereiche bekommt.</td>
+</tr>
+<tr class="gruppe"><td colspan="7">Listen</td></tr>
+<tr data-e="ja">
+  <td class="nr" data-l="Nr.">T-10</td>
+  <td data-l="Framework"><span class="fw">Framework7</span><span class="fw">Ionic</span></td>
+  <td data-l="Thema"><b>Wischaktionen in Zeilen.</b> Eine Zeile nach links wischen zeigt Aktionen wie ‚Löschen‘; ganz durchwischen löst die erste Aktion aus.<br><span class="klein">Framework7: components/swipeout/swipeout.js overswipeRatio 1.2 · Ionic: ion-item-sliding, ion-item-options, ion-item-option expandable</span></td>
+  <td data-l="So macht es Apple">Mail und Notizen: nach links wischen zeigt rotes ‚Löschen‘, Durchwischen löscht; alles geht auch über das Kontextmenü.</td>
+  <td data-l="In AppDesign"><span class="tag nein">nein</span><br>Ausdrücklich ‚Kein Wischen‘; gelöscht wird über das Kontextmenü (langes Drücken) mit Sprechblase.<br><span class="klein">README - Designrichtlinie allgemein.md:528-532, v4/ui.js:104-118</span></td>
+  <td data-l="Aufwand">groß<br><span class="klein">Geste gegen Rollen, Durchwischen, Rückfrage</span></td>
+  <td data-l="Empfehlung"><span class="tag ja">übernehmen</span><br>Apple-Standard in Listen; das Kontextmenü bleibt als zweiter Weg. Durchwischen öffnet die Sprechblase oder löscht mit ‚Widerrufen‘.<span class="konflikt">Entscheidung nötig: 15.4 ‚Kein Wischen‘ (README - Designrichtlinie allgemein.md:532).</span></td>
+</tr>
+<tr data-e="spaet">
+  <td class="nr" data-l="Nr.">T-11</td>
+  <td data-l="Framework"><span class="fw">Framework7</span></td>
+  <td data-l="Thema"><b>Ziehbarer Index am Rand.</b> Eine schmale Leiste am rechten Rand; mit dem Finger darüber ziehen springt in der Liste, eine Blase zeigt die Stelle.<br><span class="klein">Framework7: components/list-index/list-index-class.js indexes, label, scrollList · Ionic: nicht vorhanden</span></td>
+  <td data-l="So macht es Apple">Kontakte: Buchstabenleiste rechts, Ziehen springt, ohne Blase.</td>
+  <td data-l="In AppDesign"><span class="tag nein">nein</span><br>Es gibt nur die Kapsel ‚Nach oben / Ans Ende‘; ein Index ist Variante C im offenen Muster APD-37.<br><span class="klein">README - Designrichtlinie allgemein.md:903, BACKLOG.md:30</span></td>
+  <td data-l="Aufwand">mittel<br><span class="klein">Leiste, Sprungziele, Ziehen</span></td>
+  <td data-l="Empfehlung"><span class="tag spaet">später</span><br>Wird in APD-37 entschieden; näher an Apple wäre ein Monats-Index ohne Blase.</td>
+</tr>
+<tr data-e="spaet">
+  <td class="nr" data-l="Nr.">T-12</td>
+  <td data-l="Framework"><span class="fw">Framework7</span><span class="fw">Ionic</span></td>
+  <td data-l="Thema"><b>Haftende Abschnittsköpfe.</b> Lange Listen sind in Gruppen geteilt; der Kopf der aktuellen Gruppe bleibt beim Rollen oben stehen.<br><span class="klein">Framework7: components/list/list.less list-group-title (sticky) · Ionic: ion-item-group, ion-item-divider sticky, ion-list-header</span></td>
+  <td data-l="So macht es Apple">Kontakte und viele Listen haben haftende Abschnittsköpfe; Notizen gruppiert nach ‚Letzte 30 Tage‘ usw.</td>
+  <td data-l="In AppDesign"><span class="tag teil">teilweise</span><br>Nur der Tabellenkopf haftet; die zentrale Liste und die Kacheln haben keine Gruppen.<br><span class="klein">v4/design.css:182-185, v4/ui.js:1196-1198, README - Designrichtlinie allgemein.md:986</span></td>
+  <td data-l="Aufwand">mittel<br><span class="klein">Köpfe, Anker beim Drehen</span></td>
+  <td data-l="Empfehlung"><span class="tag spaet">später</span><br>Erst bei vielen Einträgen sinnvoll (z. B. Reiselogbücher nach Jahr); mit APD-37 zusammen entscheiden.</td>
+</tr>
+<tr data-e="spaet">
+  <td class="nr" data-l="Nr.">T-13</td>
+  <td data-l="Framework"><span class="fw">Framework7</span><span class="fw">Ionic</span></td>
+  <td data-l="Thema"><b>Aufklappbare Abschnitte.</b> Abschnitte lassen sich mit einem Pfeil auf- und zuklappen, einzeln oder mehrere.<br><span class="klein">Framework7: components/accordion · Ionic: ion-accordion-group multiple, ion-accordion</span></td>
+  <td data-l="So macht es Apple">Aufklappbare Gruppen mit Pfeil, z. B. Ordner in der Notizen-Seitenleiste.</td>
+  <td data-l="In AppDesign"><span class="tag teil">teilweise</span><br>Nur das Info-Icon blendet einen Hinweis ein und aus; kein Baustein für Abschnitte.<br><span class="klein">README - Designrichtlinie allgemein.md:625-627</span></td>
+  <td data-l="Aufwand">klein<br><span class="klein">Kopfzeile mit Pfeil, Bewegung</span></td>
+  <td data-l="Empfehlung"><span class="tag spaet">später</span><br>Erst bei langen Einstellungsfenstern oder gruppierten Seitenleisten nötig.</td>
+</tr>
+<tr data-e="spaet">
+  <td class="nr" data-l="Nr.">T-14</td>
+  <td data-l="Framework"><span class="fw">Framework7</span><span class="fw">Ionic</span></td>
+  <td data-l="Thema"><b>Umsortieren per Ziehen.</b> Zeilen am Griff ziehen; die anderen weichen aus, die Liste rollt am Rand mit.<br><span class="klein">Framework7: components/sortable/sortable.js · Ionic: ion-reorder-group, ion-reorder</span></td>
+  <td data-l="So macht es Apple">Bearbeiten-Modus mit Griff oder langes Drücken und Ziehen (Erinnerungen).</td>
+  <td data-l="In AppDesign"><span class="tag nein">nein</span><br>Kein Umsortieren; die Listen sind nach Datum geordnet.<br><span class="klein">v4/design.css, v4/ui.js (kein Treffer für draggable, sortable, reorder)</span></td>
+  <td data-l="Aufwand">groß<br><span class="klein">Ziehen, Ausweichen, Randrollen</span></td>
+  <td data-l="Empfehlung"><span class="tag spaet">später</span><br>Erst nötig, wenn eine App eine frei wählbare Reihenfolge braucht.</td>
+</tr>
+<tr class="gruppe"><td colspan="7">Fenster und Blätter</td></tr>
+<tr data-e="ja">
+  <td class="nr" data-l="Nr.">T-15</td>
+  <td data-l="Framework"><span class="fw">Framework7</span><span class="fw">Ionic</span></td>
+  <td data-l="Thema"><b>Blatt mit Höhenstufen, Wischen schließt.</b> Auf dem iPhone kommt ein Fenster als Blatt mit runden Ecken von unten; es rastet auf Stufen ein (halb, voll), die Seite dahinter rückt verkleinert zurück. Nach unten wischen schließt – mit ungesicherten Änderungen kommt erst die Rückfrage.<br><span class="klein">Framework7: components/sheet/sheet.js breakpoints, swipeToClose, swipeToStep; components/popup/popup.js swipeToClose, push · Ionic: ion-modal breakpoints, initialBreakpoint, handle, presentingElement, canDismiss; components/modal/gestures/swipe-to-close.js, sheet.js</span></td>
+  <td data-l="So macht es Apple">Neuer Termin, Neuer Kontakt: Blatt mit runden Ecken, Stufen ‚mittel‘ und ‚groß‘; nach unten ziehen schließt, mit Änderungen erscheint ‚Änderungen verwerfen‘.</td>
+  <td data-l="In AppDesign"><span class="tag nein">nein</span><br>iPhone-Fenster sind bildschirmfüllend ohne Ecken und schließen nur mit x, Häkchen oder Escape. Die Rückfrage beim x mit Änderungen gibt es schon.<br><span class="klein">v4/design.css:490-492, v4/ui.js:956-961, README - Designrichtlinie allgemein.md:680, README - Designrichtlinie allgemein.md:914</span></td>
+  <td data-l="Aufwand">groß<br><span class="klein">Geste, Stufen, Tastatur neu prüfen</span></td>
+  <td data-l="Empfehlung"><span class="tag ja">übernehmen</span><br>Auf dem iPhone ist das Blatt der Apple-Standard für Fenster; die Rückfrage (R-4.4) lässt sich direkt anhängen.<span class="konflikt">Entscheidung nötig: 15.17 – Fenster auf dem iPhone bildschirmfüllend (README - Designrichtlinie allgemein.md:680, R-4.5).</span></td>
+</tr>
+<tr data-e="ja">
+  <td class="nr" data-l="Nr.">T-16</td>
+  <td data-l="Framework"><span class="fw">Framework7</span><span class="fw">Ionic</span></td>
+  <td data-l="Thema"><b>Öffnen und Schließen mit Bewegung.</b> Fenster gleiten von unten herein, Menüs und Sprechblasen wachsen aus der Schaltfläche, die Seitenleiste gleitet; Schließen umgekehrt.<br><span class="klein">Framework7: modal-in/modal-out in components/dialog, popup, sheet, popover, actions, panel (*-ios.less) · Ionic: components/modal/animations/ios.enter.js (500 ms, cubic-bezier(.32,.72,0,1)), alert, action-sheet, popover</span></td>
+  <td data-l="So macht es Apple">Blätter gleiten hoch, Menüs und Popover wachsen aus der Schaltfläche (iOS 26), Abfragen blenden mit leichter Vergrößerung ein.</td>
+  <td data-l="In AppDesign"><span class="tag nein">nein</span><br>Fenster, Menüs und Sprechblasen erscheinen sofort; nur das iPad-Fenster gleitet mit der Tastatur.<br><span class="klein">v4/design.css:267-270, v4/design.css:312-320, v4/design.css:524, v4/ui.js:292-297</span></td>
+  <td data-l="Aufwand">mittel<br><span class="klein">Übergänge, Prüfungen warten aufs Ende</span></td>
+  <td data-l="Empfehlung"><span class="tag ja">übernehmen</span><br>Die sichtbare Herkunft gehört zur Apple-Bedienung; bei ‚Bewegung reduzieren‘ nur Überblenden.</td>
+</tr>
+<tr data-e="vorh">
+  <td class="nr" data-l="Nr.">T-17</td>
+  <td data-l="Framework"><span class="fw">Framework7</span><span class="fw">Ionic</span></td>
+  <td data-l="Thema"><b>Popover an der Schaltfläche.</b> Ein kleines Fenster erscheint an der auslösenden Schaltfläche, richtet sich bei Größenänderung neu aus und schließt beim Tippen daneben.<br><span class="klein">Framework7: components/popover/popover.js verticalPosition, closeByOutsideClick · Ionic: ion-popover side, alignment, size, dismissOnSelect</span></td>
+  <td data-l="So macht es Apple">Menüs und Popover sitzen an ihrer Quelle und bleiben beim Drehen dort.</td>
+  <td data-l="In AppDesign"><span class="tag ja">ja</span><br>Menü und Sprechblase stehen an der Schaltfläche, immer ganz sichtbar, rollen in sich und richten sich beim Drehen neu aus.<br><span class="klein">v4/ui.js:300, v4/ui.js:367, v4/ui.js:382-444, README - Designrichtlinie allgemein.md:911-915, README - Designrichtlinie allgemein.md:949</span></td>
+  <td data-l="Aufwand">klein<br><span class="klein">vorhanden</span></td>
+  <td data-l="Empfehlung"><span class="tag vorh">schon vorhanden</span><br>Vorhanden und weiter ausgebaut als in beiden Frameworks.</td>
+</tr>
+<tr class="gruppe"><td colspan="7">Menüs und Aktionsblätter</td></tr>
+<tr data-e="vorh">
+  <td class="nr" data-l="Nr.">T-18</td>
+  <td data-l="Framework"><span class="fw">Framework7</span><span class="fw">Ionic</span></td>
+  <td data-l="Thema"><b>Aktionsblatt an der Schaltfläche.</b> Eine Liste von Aktionen mit roter, zerstörender Aktion und abgesetztem ‚Abbrechen‘ – unten am Bildschirm oder als Popover.<br><span class="klein">Framework7: components/actions/actions-class.js convertToPopover · Ionic: ion-action-sheet buttons (role destructive/cancel)</span></td>
+  <td data-l="So macht es Apple">Bis iOS 18 unten am iPhone; iOS 26 zeigt Aktionsblätter und Abfragen an der auslösenden Schaltfläche.</td>
+  <td data-l="In AppDesign"><span class="tag ja">ja</span><br>Sprechblase an der Schaltfläche auf iPad und iPhone, rotes Verb, ‚Abbrechen‘ zuletzt.<br><span class="klein">v4/ui.js:446-487, README - Designrichtlinie allgemein.md:682, README - Designrichtlinie allgemein.md:913</span></td>
+  <td data-l="Aufwand">klein<br><span class="klein">vorhanden</span></td>
+  <td data-l="Empfehlung"><span class="tag vorh">schon vorhanden</span><br>AppDesign folgt bereits iOS 26.</td>
+</tr>
+<tr data-e="vorh">
+  <td class="nr" data-l="Nr.">T-19</td>
+  <td data-l="Framework"><span class="fw">Framework7</span><span class="fw">Ionic</span></td>
+  <td data-l="Thema"><b>Auswahl als Menü mit Häkchen.</b> Ein Auswahlfeld öffnet eine Liste zum Wählen – als Menü, Blatt, Popover oder eigene Seite, auch mit Suche.<br><span class="klein">Framework7: components/smart-select/smart-select.js openIn, searchbar · Ionic: ion-select interface, multiple</span></td>
+  <td data-l="So macht es Apple">Pop-up-Menü mit Häkchen an der Schaltfläche oder Liste mit Häkchen (Einstellungen).</td>
+  <td data-l="In AppDesign"><span class="tag ja">ja</span><br>Untermenü mit blauem Häkchen und grauem Wert (z. B. Darstellung). Lange Auswahllisten mit Suche gibt es nicht.<br><span class="klein">v4/ui.js:357-364, v4/design.css:274-279, README - Designrichtlinie allgemein.md:549-553</span></td>
+  <td data-l="Aufwand">klein<br><span class="klein">vorhanden</span></td>
+  <td data-l="Empfehlung"><span class="tag vorh">schon vorhanden</span><br>Entspricht dem Apple-Pop-up-Menü.</td>
+</tr>
+<tr class="gruppe"><td colspan="7">Meldungen</td></tr>
+<tr data-e="ja">
+  <td class="nr" data-l="Nr.">T-20</td>
+  <td data-l="Framework"><span class="fw">Framework7</span><span class="fw">Ionic</span></td>
+  <td data-l="Thema"><b>Kurzmeldung als Baustein.</b> Eine kleine Meldung unten, die nicht sperrt, nach einigen Sekunden verschwindet und einen Knopf haben kann.<br><span class="klein">Framework7: components/toast/toast.js position, closeTimeout, closeButton · Ionic: ion-toast duration, position, positionAnchor, buttons, swipeGesture</span></td>
+  <td data-l="So macht es Apple">Kurze Einblendungen wie ‚Kopiert‘ oder ‚Rückgängig‘ in Mail; Abfragen nicht nur zum Informieren verwenden.</td>
+  <td data-l="In AppDesign"><span class="tag teil">teilweise</span><br>Nur die Offline-Meldung (4 s, Antippen schließt, wird angesagt, über Fenstern); kein allgemeiner Baustein mit Knopf.<br><span class="klein">v4/ui.js:600-620, v4/design.css:513-519, BACKLOG.md:31</span></td>
+  <td data-l="Aufwand">klein<br><span class="klein">Offline-Meldung verallgemeinern, Knopf</span></td>
+  <td data-l="Empfehlung"><span class="tag ja">übernehmen</span><br>Nötig für ‚Gelöscht · Widerrufen‘ und reine Bestätigungen; Lage und Verhalten sind schon gelöst.</td>
+</tr>
+<tr data-e="ja">
+  <td class="nr" data-l="Nr.">T-21</td>
+  <td data-l="Framework"><span class="fw">Framework7</span><span class="fw">Ionic</span></td>
+  <td data-l="Thema"><b>Rückgängig statt Abfrage.</b> Nach einer umkehrbaren Aktion wie Löschen erscheint eine Kurzmeldung mit ‚Widerrufen‘ statt einer Rückfrage vorher.<br><span class="klein">Framework7: toast.js closeButton · Ionic: ion-toast buttons mit role und handler</span></td>
+  <td data-l="So macht es Apple">Mail und Notizen löschen ohne Rückfrage und bieten Rückgängig; die HIG rät, häufige, umkehrbare Aktionen nicht abzufragen.</td>
+  <td data-l="In AppDesign"><span class="tag nein">nein</span><br>Vor jeder Lösch-, Ersetz- oder Rücksetz-Aktion kommt eine Sprechblase; Rückgängig gibt es nicht.<br><span class="klein">README - Designrichtlinie allgemein.md:287, README - Designrichtlinie allgemein.md:989, BACKLOG.md:31</span></td>
+  <td data-l="Aufwand">mittel<br><span class="klein">Zwischenspeicher je Aktion, Kurzmeldung</span></td>
+  <td data-l="Empfehlung"><span class="tag ja">übernehmen</span><br>So macht es Apple bei umkehrbaren Aktionen; nicht umkehrbare (z. B. Backup laden) behalten die Abfrage.<span class="konflikt">Entscheidung nötig: G-13 / Abschnitt 10 – Sicherheitsabfrage vor jeder Lösch-, Ersetz- oder Rücksetz-Aktion (README - Designrichtlinie allgemein.md:287, :989).</span></td>
+</tr>
+<tr data-e="nein">
+  <td class="nr" data-l="Nr.">T-22</td>
+  <td data-l="Framework"><span class="fw">Framework7</span></td>
+  <td data-l="Thema"><b>Mitteilungs-Banner von oben.</b> Ein Banner fällt von oben herein, verschwindet nach Zeit und lässt sich wegwischen.<br><span class="klein">Framework7: components/notification/notification.js swipeToClose, closeTimeout · Ionic: nur ion-toast position top</span></td>
+  <td data-l="So macht es Apple">Banner von oben sind System-Mitteilungen; Apps zeigen keine eigenen.</td>
+  <td data-l="In AppDesign"><span class="tag nein">nein</span><br>Nicht vorhanden.<br><span class="klein">v4/ui.js, v4/design.css (kein Banner-Baustein)</span></td>
+  <td data-l="Aufwand">klein<br><span class="klein">Banner mit Wischen</span></td>
+  <td data-l="Empfehlung"><span class="tag nein">nicht übernehmen</span><br>Würde System-Mitteilungen nachahmen.</td>
+</tr>
+<tr data-e="spaet">
+  <td class="nr" data-l="Nr.">T-23</td>
+  <td data-l="Framework"><span class="fw">Framework7</span><span class="fw">Ionic</span></td>
+  <td data-l="Thema"><b>Lade- und Fortschrittsanzeige.</b> Ein Drehrad oder Balken zeigt, dass etwas dauert.<br><span class="klein">Framework7: components/preloader, components/progressbar, dialog.preloader() · Ionic: ion-spinner, ion-loading, ion-progress-bar</span></td>
+  <td data-l="So macht es Apple">Aktivitätsanzeige oder Fortschrittsbalken nur bei spürbarer Wartezeit, ohne die App zu sperren.</td>
+  <td data-l="In AppDesign"><span class="tag nein">nein</span><br>Keine Ladeanzeige; alle Vorgänge sind lokal und kurz.<br><span class="klein">v4/design.css, v4/ui.js (kein Treffer für spinner, progress)</span></td>
+  <td data-l="Aufwand">klein<br><span class="klein">Drehrad und Balken</span></td>
+  <td data-l="Empfehlung"><span class="tag spaet">später</span><br>Erst nötig, wenn Backup, PDF oder Abgleich spürbar dauern (über etwa 1 s).</td>
+</tr>
+<tr class="gruppe"><td colspan="7">Eingaben und Auswahlen</td></tr>
+<tr data-e="vorh">
+  <td class="nr" data-l="Nr.">T-24</td>
+  <td data-l="Framework"><span class="fw">Framework7</span><span class="fw">Ionic</span></td>
+  <td data-l="Thema"><b>Datum und Uhrzeit wählen.</b> Eigener Kalender oder Räder zum Wählen von Datum und Uhrzeit, mit markierten Tagen und Zeiträumen.<br><span class="klein">Framework7: components/calendar/calendar.js rangePicker, events; components/picker/picker.js · Ionic: ion-datetime presentation, preferWheel, highlightedDates, ion-datetime-button</span></td>
+  <td data-l="So macht es Apple">Der System-Datumswähler (kompakt mit Kalender, Räder für Uhrzeit); Safari öffnet ihn beim Datumsfeld.</td>
+  <td data-l="In AppDesign"><span class="tag ja">ja</span><br>Natives Datumsfeld, so breit wie das Datum, mit eigenem Kalender-Icon; öffnet keine Tastatur.<br><span class="klein">v4/design.css:151-162, v4/ui.js:1229, README - Designrichtlinie allgemein.md:228-229</span></td>
+  <td data-l="Aufwand">groß<br><span class="klein">eigener Kalender wäre viel Arbeit</span></td>
+  <td data-l="Empfehlung"><span class="tag vorh">schon vorhanden</span><br>Der native Wähler ist der Apple-Wähler. Eine eigene Monatsansicht nur, falls ‚Tage mit Eintrag‘ gezeigt werden sollen.</td>
+</tr>
+<tr data-e="spaet">
+  <td class="nr" data-l="Nr.">T-25</td>
+  <td data-l="Framework"><span class="fw">Framework7</span><span class="fw">Ionic</span></td>
+  <td data-l="Thema"><b>Segment-Steuerung.</b> Zwei bis fünf Möglichkeiten nebeneinander in einer Leiste; die Markierung gleitet zur Wahl und lässt sich ziehen.<br><span class="klein">Framework7: segmented-strong, .segmented-highlight (framework7-bundle.css), modules/touch/touch.js · Ionic: ion-segment, ion-segment-button, ion-segment-view</span></td>
+  <td data-l="So macht es Apple">Segmentierte Steuerung für Ansichten oder Filter (Kalender Tag/Woche/Monat); die Markierung gleitet.</td>
+  <td data-l="In AppDesign"><span class="tag nein">nein</span><br>Kein Segment-Baustein. Die Auswahl-Kapsel ist ähnlich, dient aber nur der Mehrfachwahl (Wetter, Reisemittel); der Filter ‚Nur erfasste Tage‘ ist ein Menüpunkt mit Häkchen.<br><span class="klein">v4/design.css:371-386, ReiseLogBuch/index.html:1118, ReiseLogBuch/index.html:1232, ReiseLogBuch/index.html:1381, README - Designrichtlinie allgemein.md:924</span></td>
+  <td data-l="Aufwand">klein<br><span class="klein">Leiste mit gleitender Markierung</span></td>
+  <td data-l="Empfehlung"><span class="tag spaet">später</span><br>Erst nötig, wenn eine App Ansichten umschaltet; der Filter als Menü mit Häkchen ist ebenfalls Apple-Art.</td>
+</tr>
+<tr data-e="ja">
+  <td class="nr" data-l="Nr.">T-26</td>
+  <td data-l="Framework"><span class="fw">Framework7</span><span class="fw">Ionic</span></td>
+  <td data-l="Thema"><b>Schalter gleitet, ziehbar, angesagt.</b> Der Knopf des Schalters gleitet beim Umschalten, lässt sich ziehen, und VoiceOver sagt ‚Schalter, ein‘.<br><span class="klein">Framework7: components/toggle/toggle-class.js (Ziehen) · Ionic: ion-toggle, components/toggle/toggle.js role=switch, enableOnOffLabels</span></td>
+  <td data-l="So macht es Apple">Der Schalter gleitet federnd, lässt sich ziehen, gibt Haptik; VoiceOver sagt ‚Schalter‘.</td>
+  <td data-l="In AppDesign"><span class="tag teil">teilweise</span><br>Apple-Größe 51 × 31 und Apple-Grün; der Knopf springt statt zu gleiten, lässt sich nicht ziehen, und VoiceOver hört ein Kontrollkästchen.<br><span class="klein">v4/design.css:398-404, README - Designrichtlinie allgemein.md:629-636</span></td>
+  <td data-l="Aufwand">klein<br><span class="klein">nativer Safari-Schalter, am Gerät prüfen</span></td>
+  <td data-l="Empfehlung"><span class="tag ja">übernehmen</span><br>Safaris eingebauter Schalter (seit Safari 17.4) bringt Gleiten, Ziehen, die richtige Ansage und Haptik auf einmal.</td>
+</tr>
+<tr data-e="spaet">
+  <td class="nr" data-l="Nr.">T-27</td>
+  <td data-l="Framework"><span class="fw">Framework7</span><span class="fw">Ionic</span></td>
+  <td data-l="Thema"><b>Stepper und Schieberegler.</b> Plus-Minus-Knöpfe, die beim Halten weiterzählen, und Regler zum Ziehen, auch mit zwei Knöpfen für einen Bereich.<br><span class="klein">Framework7: components/stepper/stepper-class.js autorepeat; components/range/range-class.js dual, scale · Ionic: ion-range pin, snaps, ticks, dualKnobs</span></td>
+  <td data-l="So macht es Apple">Stepper (− +, Halten wiederholt) und Schieberegler (Helligkeit, Lautstärke).</td>
+  <td data-l="In AppDesign"><span class="tag nein">nein</span><br>Keine Stepper und Regler; Beträge werden getippt.<br><span class="klein">v4/design.css, v4/ui.js (kein Treffer für stepper, range)</span></td>
+  <td data-l="Aufwand">mittel<br><span class="klein">zwei Bausteine im Apple-Aussehen</span></td>
+  <td data-l="Empfehlung"><span class="tag spaet">später</span><br>Kein Bedarf in den Apps; dann das native Regler-Feld im Apple-Aussehen.</td>
+</tr>
+<tr data-e="ja">
+  <td class="nr" data-l="Nr.">T-28</td>
+  <td data-l="Framework"><span class="fw">Framework7</span><span class="fw">Ionic</span></td>
+  <td data-l="Thema"><b>Löschen-Knopf in Textfeldern.</b> Ein ⓧ im einzeiligen Feld leert es mit einem Tipp; der Cursor bleibt im Feld.<br><span class="klein">Framework7: components/input/input.js .input-clear-button · Ionic: ion-input clearInput, clearOnEdit, counter</span></td>
+  <td data-l="So macht es Apple">Textfelder zeigen beim Bearbeiten ein ⓧ (Kontakte, Einstellungen).</td>
+  <td data-l="In AppDesign"><span class="tag teil">teilweise</span><br>Nur im Suchfeld (ⓧ mit 44-px-Fläche, Cursor bleibt); andere einzeilige Felder haben keins.<br><span class="klein">v4/design.css:110-112, README - Designrichtlinie allgemein.md:470-471</span></td>
+  <td data-l="Aufwand">klein<br><span class="klein">Suchfeld-ⓧ auf Felder übertragen</span></td>
+  <td data-l="Empfehlung"><span class="tag ja">übernehmen</span><br>iOS-üblich in einzeiligen Feldern; Baustein und Fokus-Verhalten gibt es schon. Einen Zeichenzähler braucht es nicht.</td>
+</tr>
+<tr data-e="vorh">
+  <td class="nr" data-l="Nr.">T-29</td>
+  <td data-l="Framework"><span class="fw">Framework7</span><span class="fw">Ionic</span></td>
+  <td data-l="Thema"><b>Fehlermeldung direkt am Feld.</b> Ein Feld wird geprüft; der Fehler steht rot darunter, erst nach einer Eingabe oder beim Speichern.<br><span class="klein">Framework7: components/input/input.js validate, data-error-message · Ionic: ion-input errorText, helperText, utils/forms/validity.js</span></td>
+  <td data-l="So macht es Apple">Hinweis direkt am Feld, der sagt, was zu tun ist.</td>
+  <td data-l="In AppDesign"><span class="tag ja">ja</span><br>Rot unter dem Feld, roter Rand, erst nach Eingabe bzw. beim Häkchen; das Häkchen zeigt alle und rollt zur ersten. Hilfetexte gibt es nicht.<br><span class="klein">v4/design.css:147, README - Designrichtlinie allgemein.md:218-221, README - Designrichtlinie allgemein.md:923</span></td>
+  <td data-l="Aufwand">klein<br><span class="klein">vorhanden</span></td>
+  <td data-l="Empfehlung"><span class="tag vorh">schon vorhanden</span><br>Vorhanden und weiter; nur VoiceOver hört den Fehler nicht (siehe Barrierefreiheit).</td>
+</tr>
+<tr data-e="nein">
+  <td class="nr" data-l="Nr.">T-30</td>
+  <td data-l="Framework"><span class="fw">Ionic</span></td>
+  <td data-l="Thema"><b>Format beim Tippen.</b> Felder formatieren die Eingabe schon beim Tippen, z. B. Telefonnummern oder Beträge.<br><span class="klein">Ionic: nicht im Kern, empfohlen wird die eigene Bibliothek Maskito · Framework7: nicht vorhanden</span></td>
+  <td data-l="So macht es Apple">Formatierte Felder (Telefon, Beträge) formatieren beim Tippen.</td>
+  <td data-l="In AppDesign"><span class="tag teil">teilweise</span><br>Beträge bekommen den Tausenderpunkt beim Tippen und ‚,00‘ beim Verlassen – das macht die App selbst, nicht der gemeinsame Baustein.<br><span class="klein">ReiseLogBuch/index.html:784-793, v4/ui.js:85-92, README - Designrichtlinie allgemein.md:235-238</span></td>
+  <td data-l="Aufwand">klein<br><span class="klein">für Beträge vorhanden</span></td>
+  <td data-l="Empfehlung"><span class="tag nein">nicht übernehmen</span><br>Für unsere Felder gelöst; keine weiteren formatierten Felder geplant.</td>
+</tr>
+<tr class="gruppe"><td colspan="7">Suche</td></tr>
+<tr data-e="ja">
+  <td class="nr" data-l="Nr.">T-31</td>
+  <td data-l="Framework"><span class="fw">Framework7</span></td>
+  <td data-l="Thema"><b>Suche ohne Akzente.</b> Die Suche übersieht Akzente: ‚Zurich‘ findet ‚Zürich‘, ‚Sao Paulo‘ findet ‚São Paulo‘.<br><span class="klein">Framework7: components/searchbar/searchbar-class.js removeDiacritics, remove-diacritics.js · Ionic: ion-searchbar filtert nicht selbst</span></td>
+  <td data-l="So macht es Apple">Die Suche in Notizen, Mail und Kontakte übersieht Groß/klein und Akzente.</td>
+  <td data-l="In AppDesign"><span class="tag teil">teilweise</span><br>Groß/klein egal, mehrere Wörter, genaue Wortfolge in „…“, Markieren und Zählen; Akzente zählen aber mit – ‚Zurich‘ findet ‚Zürich‘ nicht.<br><span class="klein">v4/ui.js:124-134, ReiseLogBuch/index.html:382-384, README - Designrichtlinie allgemein.md:895</span></td>
+  <td data-l="Aufwand">klein<br><span class="klein">Vergleich ohne Akzente, Markierung anpassen</span></td>
+  <td data-l="Empfehlung"><span class="tag ja">übernehmen</span><br>Apple-Verhalten; wichtig bei Ortsnamen auf Reisen.</td>
+</tr>
+<tr data-e="nein">
+  <td class="nr" data-l="Nr.">T-32</td>
+  <td data-l="Framework"><span class="fw">Framework7</span><span class="fw">Ionic</span></td>
+  <td data-l="Thema"><b>Suchfeld mit Abbrechen.</b> Beim Antippen des Suchfelds erscheint ‚Abbrechen‘, ⓧ leert das Feld, gesucht wird nach kurzer Tipp-Pause.<br><span class="klein">Framework7: components/searchbar disableButton · Ionic: ion-searchbar showCancelButton, showClearButton, debounce</span></td>
+  <td data-l="So macht es Apple">Bis iOS 18 ‚Abbrechen‘ rechts neben dem Suchfeld; iOS 26 zeigt die Suche oft unten mit Schließen-Knopf.</td>
+  <td data-l="In AppDesign"><span class="tag teil">teilweise</span><br>ⓧ leert (Cursor bleibt), die Lupe in der Kapsel öffnet und schließt die Suchzeile, dazu ‚3 von 57‘ und Pfeile; kein ‚Abbrechen‘.<br><span class="klein">v4/design.css:99-112, README - Designrichtlinie allgemein.md:450-478, README - Designrichtlinie allgemein.md:895</span></td>
+  <td data-l="Aufwand">klein<br><span class="klein">vorhanden</span></td>
+  <td data-l="Empfehlung"><span class="tag nein">nicht übernehmen</span><br>Unsere Suche ist weiter (Treffer, Pfeile, mehrere Wörter); das Schließen über die Lupe ist entschieden.</td>
+</tr>
+<tr class="gruppe"><td colspan="7">Antippen und Gesten</td></tr>
+<tr data-e="ja">
+  <td class="nr" data-l="Nr.">T-33</td>
+  <td data-l="Framework"><span class="fw">Framework7</span><span class="fw">Ionic</span></td>
+  <td data-l="Thema"><b>Rückmeldung beim Antippen.</b> Eine Schaltfläche hellt beim Berühren sichtbar auf – in Rolllisten kurz verzögert, damit beim Rollen nichts aufblitzt.<br><span class="klein">Framework7: modules/touch/touch.js activeState (80 ms, 5 px) · Ionic: utils/tap-click/index.js (100 ms Verzögerung, 150 ms Mindestdauer), ion-activatable</span></td>
+  <td data-l="So macht es Apple">Schaltflächen zeigen beim Berühren sofort den gedrückten Zustand, in Rolllisten leicht verzögert; keine Wellen wie bei Android.</td>
+  <td data-l="In AppDesign"><span class="tag nein">nein</span><br>Beim Antippen ändert sich nichts, bis die Aktion folgt; blau wird nur die Schaltfläche eines offenen Menüs oder Fensters. Die eigene HIG-Liste verlangt sichtbare Rückmeldung.<br><span class="klein">v4/design.css:123-127 (kein :active in v4/design.css), README - Designrichtlinie allgemein.md:848</span></td>
+  <td data-l="Aufwand">klein<br><span class="klein">Gedrückt-Stil plus Verzögerung</span></td>
+  <td data-l="Empfehlung"><span class="tag ja">übernehmen</span><br>Lücke zur eigenen HIG-Liste (Nr. 4); Ionics Werte sind gute Vorgaben. Wellen nicht übernehmen.</td>
+</tr>
+<tr data-e="ja">
+  <td class="nr" data-l="Nr.">T-34</td>
+  <td data-l="Framework"><span class="fw">Framework7</span></td>
+  <td data-l="Thema"><b>Langes Drücken mit Anheben.</b> Beim Halten hebt sich der Eintrag sichtbar an; kleine Bewegung bricht ab; danach öffnet das Kontextmenü.<br><span class="klein">Framework7: modules/touch/touch.js tapHold, tapHoldDelay 750, tapHoldPreventClicks · Ionic: kein eigener Baustein</span></td>
+  <td data-l="So macht es Apple">Nach etwa 0,5 s hebt sich der Eintrag an (wächst, Schatten, Haptik), dann das Kontextmenü; Bewegung bricht ab.</td>
+  <td data-l="In AppDesign"><span class="tag teil">teilweise</span><br>Nach 0,6 s öffnet das Menü und der Eintrag wird blau; während des Haltens keine Rückmeldung, kleine Bewegung bricht nicht ab.<br><span class="klein">v4/ui.js:104-118, v4/design.css:240-241, README - Designrichtlinie allgemein.md:528</span></td>
+  <td data-l="Aufwand">klein<br><span class="klein">Anheben und Bewegungsschwelle</span></td>
+  <td data-l="Empfehlung"><span class="tag ja">übernehmen</span><br>Anheben zeigt, dass gleich etwas passiert; die Schwelle verhindert Auslösen beim Rollen.</td>
+</tr>
+<tr data-e="ja">
+  <td class="nr" data-l="Nr.">T-35</td>
+  <td data-l="Framework"><span class="fw">Ionic</span></td>
+  <td data-l="Thema"><b>Gesten mit Vorrang.</b> Eine zentrale Stelle entscheidet, welche Geste gewinnt (z. B. Zurückwischen vor Rollen), und bricht die Antipp-Rückmeldung ab.<br><span class="klein">Ionic: utils/gesture/gesture-controller.js, utils/gesture/index.js createGesture, gesturePriority, threshold · Framework7: keine zentrale Regel</span></td>
+  <td data-l="So macht es Apple">Das System löst Gestenkonflikte: Zurückwischen vor Rollen, Blatt vor Inhalt.</td>
+  <td data-l="In AppDesign"><span class="tag nein">nein</span><br>Bisher gibt es nur langes Drücken und das Schließen der Tastatur beim Wischen – keine gemeinsame Regel.<br><span class="klein">v4/ui.js:104-118, v4/ui.js:1213-1218</span></td>
+  <td data-l="Aufwand">mittel<br><span class="klein">gemeinsamer Gesten-Baustein</span></td>
+  <td data-l="Empfehlung"><span class="tag ja">übernehmen</span><br>Voraussetzung für Zurückwischen, Wischaktionen und Blätter; sonst stören sich die Gesten.</td>
+</tr>
+<tr data-e="nein">
+  <td class="nr" data-l="Nr.">T-36</td>
+  <td data-l="Framework"><span class="fw">Framework7</span><span class="fw">Ionic</span></td>
+  <td data-l="Thema"><b>Ziehen zum Aktualisieren.</b> Inhalt über den oberen Rand ziehen lädt neu, mit Drehrad.<br><span class="klein">Framework7: components/pull-to-refresh · Ionic: ion-refresher pullMin, pullMax</span></td>
+  <td data-l="So macht es Apple">Mail, Nachrichten: nach unten ziehen lädt Daten vom Server neu.</td>
+  <td data-l="In AppDesign"><span class="tag nein">nein</span><br>Bewusst nicht: die Seite federt nicht, die Daten sind lokal.<br><span class="klein">v4/design.css:66, README - Designrichtlinie allgemein.md:893, BACKLOG.md:31</span></td>
+  <td data-l="Aufwand">mittel<br><span class="klein">Geste, Drehrad, Federn</span></td>
+  <td data-l="Empfehlung"><span class="tag nein">nicht übernehmen</span><br>Es gibt nichts nachzuladen; widerspräche ‚nichts federt‘ (R-2.1).</td>
+</tr>
+<tr data-e="ja">
+  <td class="nr" data-l="Nr.">T-37</td>
+  <td data-l="Framework"><span class="fw">Framework7</span><span class="fw">Ionic</span></td>
+  <td data-l="Thema"><b>Glas-Optik schwebender Knöpfe.</b> Schwebende Kapseln und Menüs sind aus Glas (unscharf, leicht durchscheinend); beim Drücken leuchten sie und wachsen leicht.<br><span class="klein">Framework7: framework7-bundle.css --f7-glass-bg-color, --f7-glass-shadow, components/touch-highlight/touch-highlight.js · Ionic: translucent mit backdrop-filter (Toolbar, Tab-Leiste, Toast)</span></td>
+  <td data-l="So macht es Apple">iOS 26 Liquid Glass: schwebende Bedienelemente aus Glas, beim Drücken Leuchten; ‚Transparenz reduzieren‘ macht sie deckend.</td>
+  <td data-l="In AppDesign"><span class="tag nein">nein</span><br>Deckende Kapseln mit Lichtkante und Schatten; verworfen wurde nur die Glas-Leiste.<br><span class="klein">v4/design.css:76-80, v4/design.css:31-32, README - Designrichtlinie allgemein.md:45</span></td>
+  <td data-l="Aufwand">mittel<br><span class="klein">Unschärfe, deckender Ersatz, iPad-Leistung</span></td>
+  <td data-l="Empfehlung"><span class="tag ja">übernehmen</span><br>Aktuelles Apple-Aussehen für schwebende Bedienelemente; sichtbar bei ‚Nach oben‘, unterer Leiste und Menüs. Leisten bleiben deckend.<span class="konflikt">Entscheidung nötig: ‚Glas-Leiste verworfen (schlechter lesbar)‘ (README - Designrichtlinie allgemein.md:45) – gilt bisher für Leisten, schwebende Kapseln wären neu.</span></td>
+</tr>
+<tr data-e="nein">
+  <td class="nr" data-l="Nr.">T-38</td>
+  <td data-l="Framework"><span class="fw">Ionic</span></td>
+  <td data-l="Thema"><b>Haptik.</b> Ein leichtes Klopfen bei Schaltern, Rädern, langem Drücken oder Durchwischen.<br><span class="klein">Ionic: utils/native/haptic.js (nur mit Capacitor-Haptics) · Framework7: kein navigator.vibrate</span></td>
+  <td data-l="So macht es Apple">Kurze Haptik bei Auswahl, Schaltern, Rädern und Kontextmenüs.</td>
+  <td data-l="In AppDesign"><span class="tag nein">nein</span><br>Keine Haptik; Safari auf dem iPhone bietet Web-Apps keine Vibration.<br><span class="klein">v4/ui.js, v4/design.css (kein Treffer für vibrate, haptic)</span></td>
+  <td data-l="Aufwand">klein<br><span class="klein">nur über nativen Schalter</span></td>
+  <td data-l="Empfehlung"><span class="tag nein">nicht übernehmen</span><br>Nur mit echter App. Einzige Ausnahme ist Safaris eingebauter Schalter (siehe ‚Schalter‘).</td>
+</tr>
+<tr class="gruppe"><td colspan="7">Sichere Ränder und Tastatur</td></tr>
+<tr data-e="ja">
+  <td class="nr" data-l="Nr.">T-39</td>
+  <td data-l="Framework"><span class="fw">Framework7</span><span class="fw">Ionic</span></td>
+  <td data-l="Thema"><b>Sichere Ränder als Variablen.</b> Die Abstände für Dynamic Island, Aussparung und Home-Leiste werden einmal als Variablen gesetzt und überall genutzt; Prüfungen können echte iPhone-Werte einsetzen.<br><span class="klein">Framework7: components/app/app-vars.less --f7-safe-area-top/-bottom/-left/-right · Ionic: css/core.css --ion-safe-area-* = var(--safe-area-inset-*, env(safe-area-inset-*))</span></td>
+  <td data-l="So macht es Apple">Inhalte halten sich an die sicheren Ränder; Dynamic Island und Home-Leiste werden nie überdeckt.</td>
+  <td data-l="In AppDesign"><span class="tag teil">teilweise</span><br>Die Ränder werden beachtet, aber direkt an 42 Stellen in 24 Zeilen; Prüfbrowser liefern dafür 0, keine Prüfung mit Aussparung und Home-Leiste.<br><span class="klein">v4/design.css:69, v4/design.css:171, v4/design.css:206, v4/design.css:307, v4/design.css:435, v4/design.css:480-482, v4/design.css:495, v4/design.css:513 (24 Zeilen insgesamt); tests/ (kein Treffer für safe-area)</span></td>
+  <td data-l="Aufwand">mittel<br><span class="klein">alle Stellen umstellen, Prüfwerte hoch/quer</span></td>
+  <td data-l="Empfehlung"><span class="tag ja">übernehmen</span><br>Überdeckungen durch Dynamic Island und Home-Leiste fände sonst nur das Gerät.</td>
+</tr>
+<tr data-e="vorh">
+  <td class="nr" data-l="Nr.">T-40</td>
+  <td data-l="Framework"><span class="fw">Framework7</span><span class="fw">Ionic</span></td>
+  <td data-l="Thema"><b>Feld über der Tastatur halten.</b> Beim Antippen eines Felds rollt der Inhalt so, dass das Feld über der Tastatur sichtbar bleibt.<br><span class="klein">Framework7: components/input/input.js scrollIntoViewOnFocus (nur Android) · Ionic: utils/input-shims/hacks/scroll-assist.js (Klon, feste Tastaturhöhe 290 px)</span></td>
+  <td data-l="So macht es Apple">Das System rollt das Feld über die Tastatur; die Leisten bleiben stehen.</td>
+  <td data-l="In AppDesign"><span class="tag ja">ja</span><br>Feld rollt in die obere Hälfte, neuer Fokus, Rückstellung nach Safaris Sprung; Tastaturhöhe je Gerät und Lage gemessen.<br><span class="klein">v4/ui.js:1262-1275, v4/ui.js:1276-1287, v4/ui.js:1318, README - Designrichtlinie allgemein.md:369-399, README - Designrichtlinie allgemein.md:915</span></td>
+  <td data-l="Aufwand">klein<br><span class="klein">vorhanden</span></td>
+  <td data-l="Empfehlung"><span class="tag vorh">schon vorhanden</span><br>AppDesign ist deutlich weiter als beide Frameworks; Ionics Klon-Idee höchstens als Vergleich in einem Muster.</td>
+</tr>
+<tr data-e="vorh">
+  <td class="nr" data-l="Nr.">T-41</td>
+  <td data-l="Framework"><span class="fw">Ionic</span></td>
+  <td data-l="Thema"><b>Platz unter dem Inhalt.</b> Bei offener Tastatur bekommt der Inhalt unten zusätzlichen Platz, damit auch das letzte Feld hochrollen kann.<br><span class="klein">Ionic: utils/input-shims/hacks/scroll-padding.js, --keyboard-offset (components/content/content.css) · Framework7: nicht vorhanden</span></td>
+  <td data-l="So macht es Apple">Rollbereiche bekommen unten Platz in Höhe der Tastatur.</td>
+  <td data-l="In AppDesign"><span class="tag ja">ja</span><br>Platz am Ende, genau so viel wie nötig; er schrumpft nach dem Schließen beim Rollen, ohne Sprung.<br><span class="klein">v4/design.css:192-197, v4/ui.js:1292-1301</span></td>
+  <td data-l="Aufwand">klein<br><span class="klein">vorhanden</span></td>
+  <td data-l="Empfehlung"><span class="tag vorh">schon vorhanden</span><br>Vorhanden und genauer als Ionic (dort geschätzt und mit Sprung).</td>
+</tr>
+<tr data-e="vorh">
+  <td class="nr" data-l="Nr.">T-42</td>
+  <td data-l="Framework"><span class="fw">Framework7</span><span class="fw">Ionic</span></td>
+  <td data-l="Thema"><b>Leisten über der Tastatur.</b> Die App erfährt, wann die Tastatur kommt und wie hoch sie ist; untere Leisten wandern mit oder blenden aus.<br><span class="klein">Ionic: utils/keyboard/keyboard.js, keyboard-controller.js (keyboardWillShow nur mit Capacitor), components/footer/footer.js · Framework7: nur mit Cordova</span></td>
+  <td data-l="So macht es Apple">Apps erhalten Tastatur-Meldungen; Leisten stehen über der Tastatur.</td>
+  <td data-l="In AppDesign"><span class="tag ja">ja</span><br>Tastatur wird über den sichtbaren Bereich erkannt, der Rahmen endet über ihr, die untere Leiste wandert mit.<br><span class="klein">v4/ui.js:1227, v4/ui.js:1231-1245, v4/ui.js:1378-1392, v4/design.css:480-481</span></td>
+  <td data-l="Aufwand">klein<br><span class="klein">vorhanden</span></td>
+  <td data-l="Empfehlung"><span class="tag vorh">schon vorhanden</span><br>Im Browser leistet AppDesign mehr; Ionics Rest geht nur mit echter App.</td>
+</tr>
+<tr class="gruppe"><td colspan="7">Rollen</td></tr>
+<tr data-e="ja">
+  <td class="nr" data-l="Nr.">T-43</td>
+  <td data-l="Framework"><span class="fw">Framework7</span><span class="fw">Ionic</span></td>
+  <td data-l="Thema"><b>Titel antippen rollt nach oben.</b> Ein Tipp auf den Titel der Leiste rollt den Inhalt sanft ganz nach oben.<br><span class="klein">Framework7: components/navbar/navbar.js scrollTopOnTitleClick; statusbar scrollTopOnClick (nur Cordova) · Ionic: ion-content scrollToTop, utils/status-tap.js (nur mit Capacitor)</span></td>
+  <td data-l="So macht es Apple">Statusleiste antippen rollt nach oben; in der Home-Bildschirm-App wirkt das für eigene Rollbereiche nicht.</td>
+  <td data-l="In AppDesign"><span class="tag nein">nein</span><br>Der Titel reagiert nicht. Ersatz ist die Kapsel ‚Nach oben / Ans Ende‘ (bewusste Abweichung); der Statusleisten-Tipp wirkt nachweislich nicht.<br><span class="klein">v4/ui.js:1027-1028, v4/design.css:307-310, README - Designrichtlinie allgemein.md:363-364, README - Designrichtlinie allgemein.md:861</span></td>
+  <td data-l="Aufwand">klein<br><span class="klein">Tipp am Titel, nach oben rollen</span></td>
+  <td data-l="Empfehlung"><span class="tag ja">übernehmen</span><br>Der Apple-Ort für ‚nach oben‘ ist oben; kostet keinen Platz. Der echte Statusleisten-Tipp geht nur mit echter App.</td>
+</tr>
+<tr data-e="vorh">
+  <td class="nr" data-l="Nr.">T-44</td>
+  <td data-l="Framework"><span class="fw">Framework7</span><span class="fw">Ionic</span></td>
+  <td data-l="Thema"><b>Federn im Rollbereich.</b> Nur der Inhalt federt am Rand nach; die Seite selbst und die Leisten bleiben stehen; Rollmeldungen nur, wenn nötig.<br><span class="klein">Ionic: ion-content scrollEvents, forceOverscroll · Framework7: page-content</span></td>
+  <td data-l="So macht es Apple">Rollansichten federn am Rand, Leisten bleiben stehen.</td>
+  <td data-l="In AppDesign"><span class="tag ja">ja</span><br>Seite federt nicht, Rollbereich rollt für sich; Rollhörer passiv.<br><span class="klein">v4/design.css:66, v4/design.css:191, v4/ui.js:229</span></td>
+  <td data-l="Aufwand">klein<br><span class="klein">vorhanden</span></td>
+  <td data-l="Empfehlung"><span class="tag vorh">schon vorhanden</span><br>Vorhanden; Leistung unauffällig.</td>
+</tr>
+<tr class="gruppe"><td colspan="7">Farben und Dunkelmodus</td></tr>
+<tr data-e="vorh">
+  <td class="nr" data-l="Nr.">T-45</td>
+  <td data-l="Framework"><span class="fw">Framework7</span><span class="fw">Ionic</span></td>
+  <td data-l="Thema"><b>Dunkelmodus nach System oder Wahl.</b> Die App folgt dem hellen oder dunklen Systemmodus oder bleibt auf Wunsch fest hell bzw. dunkel.<br><span class="klein">Framework7: components/app/app-class.js darkMode · Ionic: css/palettes/dark.always.css, dark.class.css, dark.system.css</span></td>
+  <td data-l="So macht es Apple">Die Darstellung folgt dem System.</td>
+  <td data-l="In AppDesign"><span class="tag ja">ja</span><br>Automatisch, Hell, Dunkel im Mehr-Menü; Farben nach Apple-Werten für beide Modi.<br><span class="klein">v4/ui.js:195-208, v4/design.css:48-62, README - Designrichtlinie allgemein.md:883</span></td>
+  <td data-l="Aufwand">klein<br><span class="klein">vorhanden</span></td>
+  <td data-l="Empfehlung"><span class="tag vorh">schon vorhanden</span><br>Vorhanden.</td>
+</tr>
+<tr data-e="vorh">
+  <td class="nr" data-l="Nr.">T-46</td>
+  <td data-l="Framework"><span class="fw">Framework7</span><span class="fw">Ionic</span></td>
+  <td data-l="Thema"><b>Farben als benannte Variablen.</b> Farben stehen als Variablen bereit; aus einer Grundfarbe werden Abstufungen erzeugt.<br><span class="klein">Framework7: app-class.js colors.primary (Schattierungen) · Ionic: --ion-color-* (shade, tint, contrast), --ion-color-step-50 … 950</span></td>
+  <td data-l="So macht es Apple">Benannte Systemfarben je Zweck (Text, Zweittext, Trennlinie, Fläche) statt Abstufungen.</td>
+  <td data-l="In AppDesign"><span class="tag ja">ja</span><br>Feste, benannte Farben je Zweck nach Apple-Werten, hell und dunkel, jede mit Bedeutung.<br><span class="klein">v4/design.css:8-62, README - Designrichtlinie allgemein.md:47-84</span></td>
+  <td data-l="Aufwand">klein<br><span class="klein">vorhanden</span></td>
+  <td data-l="Empfehlung"><span class="tag vorh">schon vorhanden</span><br>Unsere Namen je Zweck sind näher an Apple als erzeugte Abstufungen.</td>
+</tr>
+<tr data-e="ja">
+  <td class="nr" data-l="Nr.">T-47</td>
+  <td data-l="Framework"><span class="fw">Ionic</span></td>
+  <td data-l="Thema"><b>Kontrast erhöhen.</b> Ist auf dem Gerät ‚Kontrast erhöhen‘ an, nutzt die App kräftigere Farben und dunklere Linien.<br><span class="klein">Ionic: css/palettes/high-contrast.system.css, high-contrast-dark.system.css · Framework7: nicht vorhanden</span></td>
+  <td data-l="So macht es Apple">‚Kontrast erhöhen‘ schaltet alle Systemfarben auf kontrastreichere Varianten; Linien werden dunkler.</td>
+  <td data-l="In AppDesign"><span class="tag nein">nein</span><br>Kontrast wird geprüft, aber es gibt keine Stufe für ‚Kontrast erhöhen‘; Weiß auf Blau und Orange sind bewusst schwächer.<br><span class="klein">v4/design.css:8-62 (kein prefers-contrast), README - Designrichtlinie allgemein.md:859-860, README - Designrichtlinie allgemein.md:965, tests/hig.mjs:149-151</span></td>
+  <td data-l="Aufwand">klein<br><span class="klein">zweite Farbtabelle hell und dunkel</span></td>
+  <td data-l="Empfehlung"><span class="tag ja">übernehmen</span><br>Apple-Bedienungshilfe, die Safari meldet; behebt die bewussten Abweichungen für alle, die es brauchen.</td>
+</tr>
+<tr class="gruppe"><td colspan="7">Schrift</td></tr>
+<tr data-e="ja">
+  <td class="nr" data-l="Nr.">T-48</td>
+  <td data-l="Framework"><span class="fw">Ionic</span></td>
+  <td data-l="Thema"><b>Schrift folgt der Textgröße.</b> Alle Schriften wachsen mit der Einstellung ‚Textgröße‘ des Geräts; Leisten-Titel wachsen nur begrenzt.<br><span class="klein">Ionic: css/core.css --ion-dynamic-font: -apple-system-body, css/typography.css (rem), components/title/title.ios.css min(1.0625rem, 20.4px) · Framework7: feste px</span></td>
+  <td data-l="So macht es Apple">Dynamic Type: jede Schrift folgt ‚Größerer Text‘, Layouts passen sich an; Leisten begrenzen.</td>
+  <td data-l="In AppDesign"><span class="tag nein">nein</span><br>Feste Größen (17 px) und Textvergrößerung abgeschaltet; die Einstellung des Geräts wirkt nicht.<br><span class="klein">v4/design.css:68-70, README - Designrichtlinie allgemein.md:90</span></td>
+  <td data-l="Aufwand">groß<br><span class="klein">alle Größen relativ, Prüfungen mitwachsen</span></td>
+  <td data-l="Empfehlung"><span class="tag ja">übernehmen</span><br>Zentrale Apple-Bedienungshilfe; mit Obergrenzen in Leisten wie bei Ionic halten R-2.1 und R-2.4.</td>
+</tr>
+<tr class="gruppe"><td colspan="7">Bewegung</td></tr>
+<tr data-e="ja">
+  <td class="nr" data-l="Nr.">T-49</td>
+  <td data-l="Framework"><span class="fw">Ionic</span></td>
+  <td data-l="Thema"><b>Bewegung reduzieren überall.</b> Ist ‚Bewegung reduzieren‘ an, werden Schieben und Zoomen durch Überblenden ersetzt – bei jeder Bewegung der App.<br><span class="klein">Ionic: components/accordion/accordion.js, segment-button.ios.css (nur zwei Bausteine) · Framework7: nicht vorhanden</span></td>
+  <td data-l="So macht es Apple">‚Bewegung reduzieren‘ ersetzt Schieben und Zoomen durch Überblenden.</td>
+  <td data-l="In AppDesign"><span class="tag teil">teilweise</span><br>Hervorheben und gleitendes Fenster beachten es; ‚Nach oben / Ans Ende‘ rollt immer sanft, Schalter, kleiner Titel und das pulsierende Mikrofon fragen nicht ab. Keine allgemeine Regel.<br><span class="klein">v4/design.css:525, v4/ui.js:1082, v4/ui.js:1027-1028, v4/design.css:392-393, tests/ablauf.mjs:382</span></td>
+  <td data-l="Aufwand">klein<br><span class="klein">Regel plus Prüfung</span></td>
+  <td data-l="Empfehlung"><span class="tag ja">übernehmen</span><br>Als Regel mit Prüfung, bevor Seiten- und Fenster-Übergänge dazukommen; AppDesign ist hier schon weiter als beide Frameworks.</td>
+</tr>
+<tr data-e="nein">
+  <td class="nr" data-l="Nr.">T-50</td>
+  <td data-l="Framework"><span class="fw">Framework7</span><span class="fw">Ionic</span></td>
+  <td data-l="Thema"><b>Gemeinsame Bewegungswerte.</b> Ein Baustein für Animationen mit Apple-Kurven, an Gesten koppelbar, mit gleichen Werten für alle Fenster und Menüs.<br><span class="klein">Ionic: utils/animation/animation.js, cubic-bezier.js · Framework7: eigene Übergänge je Baustein (*-ios.less)</span></td>
+  <td data-l="So macht es Apple">Federnde, unterbrechbare Bewegungen mit einheitlichen Kurven.</td>
+  <td data-l="In AppDesign"><span class="tag teil">teilweise</span><br>Einzelne Bewegungen (Hervorheben, Schalter, Titel, Gleiten) mit je eigenen Werten.<br><span class="klein">v4/ui.js:1076-1088, v4/design.css:403, v4/design.css:441, v4/design.css:524</span></td>
+  <td data-l="Aufwand">klein<br><span class="klein">Werte festlegen</span></td>
+  <td data-l="Empfehlung"><span class="tag nein">nicht übernehmen</span><br>Kein eigener Baustein nötig; Ionics Kurven und Dauern fließen in ‚Öffnen und Schließen mit Bewegung‘ ein.</td>
+</tr>
+<tr class="gruppe"><td colspan="7">Barrierefreiheit</td></tr>
+<tr data-e="ja">
+  <td class="nr" data-l="Nr.">T-51</td>
+  <td data-l="Framework"><span class="fw">Ionic</span></td>
+  <td data-l="Thema"><b>Rollen und Namen für VoiceOver.</b> Jedes Element sagt VoiceOver, was es ist: Fenster mit Titel, Abfrage, Knopf ‚öffnet Menü‘, Punkt ‚ausgewählt‘.<br><span class="klein">Ionic: components/modal/modal.js (role dialog, aria-modal, aria-labelledby), action-sheet, alert; aria-haspopup, aria-expanded · Framework7: praktisch nichts (7 × aria-hidden)</span></td>
+  <td data-l="So macht es Apple">VoiceOver nennt Art und Titel (‚Neuer Termin, Blatt‘) und ob ein Knopf ein Menü öffnet.</td>
+  <td data-l="In AppDesign"><span class="tag teil">teilweise</span><br>Menüs und Menüpunkte haben ihre Rolle, x und Häkchen einen Namen, gedrückte Knöpfe ihren Zustand. Es fehlen: Fenstertitel mit dem Fenster verknüpft, Rolle der Sprechblase, ‚öffnet Menü‘ am Knopf, ‚ausgewählt‘ beim Häkchen.<br><span class="klein">v4/ui.js:359, v4/ui.js:387, v4/ui.js:425, v4/ui.js:969-973, v4/ui.js:454-470, v4/design.css:141</span></td>
+  <td data-l="Aufwand">mittel<br><span class="klein">Attribute in den gemeinsamen Bausteinen</span></td>
+  <td data-l="Empfehlung"><span class="tag ja">übernehmen</span><br>Wenige Angaben in den gemeinsamen Bausteinen machen alle Apps für VoiceOver verständlich.</td>
+</tr>
+<tr data-e="ja">
+  <td class="nr" data-l="Nr.">T-52</td>
+  <td data-l="Framework"><span class="fw">Ionic</span></td>
+  <td data-l="Thema"><b>Fokus ins Menü und zurück.</b> Öffnet ein Menü oder eine Abfrage, springt der Fokus hinein und bleibt darin; nach dem Schließen geht er zur Schaltfläche zurück.<br><span class="klein">Ionic: utils/overlays.js trapKeyboardFocus, restoreElementFocus, utils/focus-trap.js · Framework7: nur dialog autoFocus</span></td>
+  <td data-l="So macht es Apple">Der VoiceOver-Fokus springt ins Blatt bzw. Menü und danach zurück zur Quelle.</td>
+  <td data-l="In AppDesign"><span class="tag teil">teilweise</span><br>Fenster halten den Fokus (eingebautes modales Fenster). Menüs und Sprechblasen nicht – der Fokus bleibt draußen.<br><span class="klein">v4/ui.js:292-297, v4/ui.js:382-444, v4/ui.js:454-485</span></td>
+  <td data-l="Aufwand">mittel<br><span class="klein">Fokus führen ohne sichtbaren Rahmen</span></td>
+  <td data-l="Empfehlung"><span class="tag ja">übernehmen</span><br>Sonst ist ein offenes Menü für VoiceOver und Tastatur kaum erreichbar; der Rahmen bleibt unsichtbar (R-3.4).</td>
+</tr>
+<tr data-e="ja">
+  <td class="nr" data-l="Nr.">T-53</td>
+  <td data-l="Framework"><span class="fw">Ionic</span></td>
+  <td data-l="Thema"><b>Hintergrund für VoiceOver sperren.</b> Solange ein Fenster, Menü oder eine Abfrage offen ist, erreicht VoiceOver den Rest der App nicht.<br><span class="klein">Ionic: utils/overlays.js setRootAriaHidden · Framework7: div-Overlays ohne Sperre</span></td>
+  <td data-l="So macht es Apple">Eine modale Ansicht macht den Hintergrund für VoiceOver unerreichbar.</td>
+  <td data-l="In AppDesign"><span class="tag teil">teilweise</span><br>Fenster sperren die Seite ganz (eingebautes modales Fenster, Escape wie x). Bei Menü und Sprechblase fängt eine Ebene nur Berührungen ab; VoiceOver erreicht den Hintergrund.<br><span class="klein">v4/ui.js:234-239, v4/ui.js:292-297, v4/ui.js:1053-1054, README - Designrichtlinie allgemein.md:885</span></td>
+  <td data-l="Aufwand">klein<br><span class="klein">Hintergrund sperren oder Menü als Popover</span></td>
+  <td data-l="Empfehlung"><span class="tag ja">übernehmen</span><br>R-1.4 (‚nur der Vordergrund reagiert‘) gilt dann auch für VoiceOver; die Offline-Meldung nutzt schon das eingebaute Popover.</td>
+</tr>
+<tr data-e="ja">
+  <td class="nr" data-l="Nr.">T-54</td>
+  <td data-l="Framework"><span class="fw">Ionic</span></td>
+  <td data-l="Thema"><b>Ansagen für VoiceOver.</b> Wichtige Änderungen werden vorgelesen: Trefferzahl der Suche, ‚Gespeichert‘, Meldungen.<br><span class="klein">Ionic: components/toast/toast.js revealContentToScreenReader, aria-live in components/input/input.js · Framework7: kein aria-live</span></td>
+  <td data-l="So macht es Apple">Apps sagen Ergebnisse an, z. B. Suchergebnisse und Bestätigungen.</td>
+  <td data-l="In AppDesign"><span class="tag teil">teilweise</span><br>Nur die Offline-Meldung wird angesagt; ‚3 von 57‘ und ‚Automatisch gespeichert um …‘ nicht.<br><span class="klein">v4/ui.js:605, v4/design.css:109, README - Designrichtlinie allgemein.md:461-463</span></td>
+  <td data-l="Aufwand">klein<br><span class="klein">wenige Attribute</span></td>
+  <td data-l="Empfehlung"><span class="tag ja">übernehmen</span><br>Wenig Aufwand, großer Nutzen: sonst merkt ein VoiceOver-Nutzer nichts.</td>
+</tr>
+<tr data-e="ja">
+  <td class="nr" data-l="Nr.">T-55</td>
+  <td data-l="Framework"><span class="fw">Ionic</span></td>
+  <td data-l="Thema"><b>Fehlermeldung für VoiceOver.</b> Der Fehler unter einem Feld wird mit dem Feld verknüpft und beim Erscheinen vorgelesen.<br><span class="klein">Ionic: ion-input errorText (role alert), aria-invalid, aria-describedby; components/input/input.js · Framework7: validate setzt nur Klassen</span></td>
+  <td data-l="So macht es Apple">VoiceOver liest den Fehler zusammen mit dem Feld.</td>
+  <td data-l="In AppDesign"><span class="tag nein">nein</span><br>Nur roter Rand und rote Zeile; VoiceOver hört den Fehler nicht.<br><span class="klein">v4/design.css:147, README - Designrichtlinie allgemein.md:923</span></td>
+  <td data-l="Aufwand">klein<br><span class="klein">drei Attribute je Feld</span></td>
+  <td data-l="Empfehlung"><span class="tag ja">übernehmen</span><br>Gleiches Verhalten wie R-5.3, nur hörbar.</td>
+</tr>
+<tr data-e="ja">
+  <td class="nr" data-l="Nr.">T-56</td>
+  <td data-l="Framework"><span class="fw">Framework7</span><span class="fw">Ionic</span></td>
+  <td data-l="Thema"><b>Bedienung mit Hardware-Tastatur.</b> Mit iPad-Tastatur: Pfeiltasten im Menü, Esc schließt jedes Menü und jede Abfrage, Eingabetaste löst die empfohlene Aktion; dazu Kurzbefehle wie ⌘F.<br><span class="klein">Framework7: components/dialog/dialog.js keyboardActions (Enter, Esc) · Ionic: components/popover/utils.js (Pfeiltasten), utils/overlays.js (Escape), utils/focus-visible.js</span></td>
+  <td data-l="So macht es Apple">Pfeiltasten im Menü, Esc bzw. ⌘. bricht ab, Eingabe löst die empfohlene (nie die rote) Aktion; iPad-Apps haben Kurzbefehle, ⌘ halten zeigt sie.</td>
+  <td data-l="In AppDesign"><span class="tag teil">teilweise</span><br>Escape wirkt im Fenster wie x, Eingabetaste beendet ein Feld, Fokusrahmen nur bei Tastatur. Menüs und Sprechblasen kennen weder Esc noch Pfeile; keine Kurzbefehle.<br><span class="klein">v4/ui.js:1043-1047, v4/ui.js:1053-1054, v4/design.css:90, README - Designrichtlinie allgemein.md:190, README - Designrichtlinie allgemein.md:905</span></td>
+  <td data-l="Aufwand">klein<br><span class="klein">Tasten in Menü und Sprechblase</span></td>
+  <td data-l="Empfehlung"><span class="tag ja">übernehmen</span><br>iPad mit Magic Keyboard ist ein Apple-Standardfall; die rote Aktion bleibt von der Eingabetaste ausgenommen.</td>
+</tr>
+<tr class="gruppe"><td colspan="7">Leistung</td></tr>
+<tr data-e="spaet">
+  <td class="nr" data-l="Nr.">T-57</td>
+  <td data-l="Framework"><span class="fw">Framework7</span><span class="fw">Ionic</span></td>
+  <td data-l="Thema"><b>Lange Listen schonend bauen.</b> Nur die sichtbaren Zeilen werden gebaut; beim Rollen wird nachgeladen.<br><span class="klein">Framework7: components/virtual-list/virtual-list-class.js, components/infinite-scroll · Ionic: ion-infinite-scroll (keine virtuelle Liste mehr)</span></td>
+  <td data-l="So macht es Apple">Listen bauen nur sichtbare Zellen; App Store und News laden beim Rollen nach.</td>
+  <td data-l="In AppDesign"><span class="tag nein">nein</span><br>Alle Einträge werden gebaut; die Anker-Logik misst echte Höhen.<br><span class="klein">v4/ui.js:150, v4/ui.js:1150</span></td>
+  <td data-l="Aufwand">groß<br><span class="klein">stößt an Anker, Suche, Drehen</span></td>
+  <td data-l="Empfehlung"><span class="tag spaet">später</span><br>Erst ab mehreren hundert Einträgen spürbar; Nachladen entfällt, die Daten sind lokal.</td>
+</tr>
+<tr data-e="nein">
+  <td class="nr" data-l="Nr.">T-58</td>
+  <td data-l="Framework"><span class="fw">Ionic</span></td>
+  <td data-l="Thema"><b>Lesen und Schreiben bündeln.</b> Messen und Ändern der Seite werden je Bild gebündelt; Teile werden erst bei Bedarf geladen.<br><span class="klein">Ionic: Stencil readTask/writeTask, components/app/app.js (import() nach Leerlauf) · Framework7: teilweise</span></td>
+  <td data-l="So macht es Apple">Systemsache; flüssiges Rollen ohne Ruckeln.</td>
+  <td data-l="In AppDesign"><span class="tag teil">teilweise</span><br>Neuausrichtung je Bild, passive Hörer, Messmodus ohne Hörer, solange er aus ist.<br><span class="klein">v4/ui.js:377, v4/ui.js:229, v4/ui.js:1411-1440</span></td>
+  <td data-l="Aufwand">klein<br><span class="klein">bei Bedarf</span></td>
+  <td data-l="Empfehlung"><span class="tag nein">nicht übernehmen</span><br>Keine Leistungsprobleme bekannt; erst mit langen Listen wieder ein Thema.</td>
+</tr>
+<tr class="gruppe"><td colspan="7">Prüfbarkeit</td></tr>
+<tr data-e="ja">
+  <td class="nr" data-l="Nr.">T-59</td>
+  <td data-l="Framework"><span class="fw">Ionic</span></td>
+  <td data-l="Thema"><b>Barrierefreiheit automatisch prüfen.</b> Eine Prüfung verlangt je Ansicht: jede Schaltfläche hat einen Namen, Fenster haben Rolle und Titel, Schalter sind Schalter.<br><span class="klein">Ionic: utils/test/playwright/apply-keyboard-focus.js; axe-Prüfungen nur im Ionic-Repo · Framework7: keine Prüfungen</span></td>
+  <td data-l="So macht es Apple">Accessibility Inspector prüft Namen, Kontrast und Größen.</td>
+  <td data-l="In AppDesign"><span class="tag teil">teilweise</span><br>Die HIG-Prüfung misst Antippflächen, Schrift und Kontrast und sammelt Namen nur für den Icon-Vergleich – verlangt werden sie nicht.<br><span class="klein">tests/hig.mjs:109-151, tests/hig.mjs:374, README - Designrichtlinie allgemein.md:869-874</span></td>
+  <td data-l="Aufwand">mittel<br><span class="klein">Regel plus Prüfung in hig.mjs</span></td>
+  <td data-l="Empfehlung"><span class="tag ja">übernehmen</span><br>Passt zum Regelkatalog: eine neue Regel mit Prüfung sichert die Barrierefreiheits-Themen ab.</td>
+</tr>
+<tr data-e="ja">
+  <td class="nr" data-l="Nr.">T-60</td>
+  <td data-l="Framework"><span class="fw">Ionic</span></td>
+  <td data-l="Thema"><b>Prüfen in mehr Darstellungen.</b> Jede Prüfung läuft auch mit ‚Kontrast erhöhen‘, großer Schrift und auf mehreren Tablet-Größen, dazu Bildvergleiche.<br><span class="klein">Ionic: utils/test/playwright/generator.js (configs, palettes), viewports/index.js · Framework7: keine Prüfungen</span></td>
+  <td data-l="So macht es Apple">Xcode-Vorschauen und Tests für Textgrößen, Kontrast und Geräte.</td>
+  <td data-l="In AppDesign"><span class="tag teil">teilweise</span><br>Prüfungen hell und dunkel, in Chromium und WebKit; ohne hohen Kontrast, große Schrift und Bildvergleiche.<br><span class="klein">tests/pruefe.mjs:107, tests/hig.mjs:151, README - Designrichtlinie allgemein.md:871-874</span></td>
+  <td data-l="Aufwand">mittel<br><span class="klein">weitere Zustände in den Grundregeln</span></td>
+  <td data-l="Empfehlung"><span class="tag ja">übernehmen</span><br>Hoher Kontrast und große Schrift als weitere Zustände, sobald gebaut; Bildvergleiche später, weil sie zwischen Browsern leicht brechen.</td>
+</tr>
+<tr class="gruppe"><td colspan="7">Sonstiges</td></tr>
+<tr data-e="ja">
+  <td class="nr" data-l="Nr.">T-61</td>
+  <td data-l="Framework"><span class="fw">Framework7</span></td>
+  <td data-l="Thema"><b>Einheitliche leere Zustände.</b> Ist nichts da oder nichts gefunden, zeigt die App immer gleich: Symbol, kurzer Titel, Satz, ggf. eine Aktion.<br><span class="klein">Framework7: components/searchbar/searchbar-class.js .searchbar-not-found · Ionic: kein Baustein</span></td>
+  <td data-l="So macht es Apple">Leerer Zustand mit Symbol, Titel, kurzem Satz und Aktion; Suche: ‚Keine Ergebnisse für „…“‘.</td>
+  <td data-l="In AppDesign"><span class="tag teil">teilweise</span><br>Grauer Hinweis wie ‚Noch kein … angelegt.‘ oder ‚Keine Treffer.‘ – aber in drei verschiedenen Formen und ohne Symbol.<br><span class="klein">v4/design.css:180, ReiseLogBuch/index.html:42, ReiseLogBuch/index.html:686, ReiseLogBuch/index.html:1022, README - Designrichtlinie allgemein.md:982, README - Designrichtlinie allgemein.md:995, BACKLOG.md:31</span></td>
+  <td data-l="Aufwand">klein<br><span class="klein">ein Baustein für alle Fälle</span></td>
+  <td data-l="Empfehlung"><span class="tag ja">übernehmen</span><br>Einheitlich nach Apple-Vorbild; schon in APD-30 vorgeschlagen.</td>
+</tr>
+<tr data-e="spaet">
+  <td class="nr" data-l="Nr.">T-62</td>
+  <td data-l="Framework"><span class="fw">Framework7</span><span class="fw">Ionic</span></td>
+  <td data-l="Thema"><b>Zähler, Plaketten und Chips.</b> Kleine Zähler an Listenzeilen, farbige Plaketten und Kapseln mit Symbol und x.<br><span class="klein">Framework7: components/badge, components/chip · Ionic: ion-badge, ion-chip, ion-avatar</span></td>
+  <td data-l="So macht es Apple">Zähler grau rechts in Listenzeilen (Mail-Postfächer, Notizen-Ordner); rote Plaketten nur für Ungelesenes.</td>
+  <td data-l="In AppDesign"><span class="tag teil">teilweise</span><br>Anzahl grau unter dem Titel der Liste, ‚N Treffer‘ je Kachel bei der Suche, Vorschlags-Chips und Options-Kapseln.<br><span class="klein">v4/design.css:260-263, v4/design.css:360-361, v4/design.css:406-413, README - Designrichtlinie allgemein.md:894</span></td>
+  <td data-l="Aufwand">klein<br><span class="klein">Zähler je Kachel</span></td>
+  <td data-l="Empfehlung"><span class="tag spaet">später</span><br>Zähler je Eintrag erst bei Bedarf; rote Plaketten passen nicht, weil Rot Löschen bedeutet (R-3.3).</td>
+</tr>
+<tr data-e="nein">
+  <td class="nr" data-l="Nr.">T-63</td>
+  <td data-l="Framework"><span class="fw">Framework7</span><span class="fw">Ionic</span></td>
+  <td data-l="Thema"><b>Ladeplatzhalter.</b> Graue, schimmernde Balken stehen dort, bis der Inhalt geladen ist.<br><span class="klein">Framework7: components/skeleton · Ionic: ion-skeleton-text</span></td>
+  <td data-l="So macht es Apple">Platzhalter nur beim Laden aus dem Netz.</td>
+  <td data-l="In AppDesign"><span class="tag nein">nein</span><br>Nicht vorhanden; die Daten sind sofort da.<br><span class="klein">v4/design.css (kein Treffer für skeleton)</span></td>
+  <td data-l="Aufwand">klein<br><span class="klein">Balken mit Schimmer</span></td>
+  <td data-l="Empfehlung"><span class="tag nein">nicht übernehmen</span><br>Lokale Daten sind sofort da.</td>
+</tr>
+<tr data-e="nein">
+  <td class="nr" data-l="Nr.">T-64</td>
+  <td data-l="Framework"><span class="fw">Framework7</span><span class="fw">Ionic</span></td>
+  <td data-l="Thema"><b>Brotkrumen-Pfad.</b> Ein Pfad ‚A › B › C‘ zeigt, wo man ist; bei Platzmangel eingeklappt.<br><span class="klein">Framework7: components/breadcrumbs · Ionic: ion-breadcrumbs maxItems, itemsBeforeCollapse</span></td>
+  <td data-l="So macht es Apple">Auf iPad und iPhone nicht üblich (nur macOS-Finder).</td>
+  <td data-l="In AppDesign"><span class="tag nein">nein</span><br>Nicht vorhanden; die Apps haben nur zwei Ebenen.<br><span class="klein">v4/design.css, v4/ui.js (kein Treffer für breadcrumb)</span></td>
+  <td data-l="Aufwand">klein<br><span class="klein">Pfadzeile</span></td>
+  <td data-l="Empfehlung"><span class="tag nein">nicht übernehmen</span><br>Kein Apple-Muster auf iPad und iPhone.</td>
+</tr>
+<tr data-e="nein">
+  <td class="nr" data-l="Nr.">T-65</td>
+  <td data-l="Framework"><span class="fw">Framework7</span><span class="fw">Ionic</span></td>
+  <td data-l="Thema"><b>Fotos ansehen und wischen.</b> Bilder im Karussell wischen, groß ansehen, zoomen, nach unten wischen schließt; Bilder laden erst bei Sicht.<br><span class="klein">Framework7: components/swiper, components/photo-browser/photo-browser.js swipeToClose, zoom · Ionic: ion-img (lädt bei Sicht)</span></td>
+  <td data-l="So macht es Apple">Fotos: wischen, zoomen, nach unten wischen schließt.</td>
+  <td data-l="In AppDesign"><span class="tag nein">nein</span><br>Keine Bilder; die Daten liegen im Browser-Speicher.<br><span class="klein">README - Designrichtlinie allgemein.md:28-29</span></td>
+  <td data-l="Aufwand">groß<br><span class="klein">Speicher, Ansicht, Gesten</span></td>
+  <td data-l="Empfehlung"><span class="tag nein">nicht übernehmen</span><br>Erst neu bewerten, wenn eine App Fotos bekommt.</td>
+</tr>
+<tr data-e="spaet">
+  <td class="nr" data-l="Nr.">T-66</td>
+  <td data-l="Framework"><span class="fw">Ionic</span></td>
+  <td data-l="Thema"><b>Fremden Text bereinigen.</b> Texte in Meldungen werden vor dem Anzeigen von Code befreit; HTML nur, wenn ausdrücklich erlaubt.<br><span class="klein">Ionic: utils/sanitization/index.js, sanitizerEnabled, innerHTMLTemplatesEnabled · Framework7: nicht vorhanden</span></td>
+  <td data-l="So macht es Apple">Systemsache.</td>
+  <td data-l="In AppDesign"><span class="tag teil">teilweise</span><br>Nutzertexte werden maskiert (37 Aufrufe), aber Fenstertitel und Sprechblasen-Text werden bewusst als HTML eingesetzt, ohne Prüfung.<br><span class="klein">v4/ui.js:74-76, v4/ui.js:972, v4/ui.js:465</span></td>
+  <td data-l="Aufwand">klein<br><span class="klein">Regel plus Usertest</span></td>
+  <td data-l="Empfehlung"><span class="tag spaet">später</span><br>Die Daten stammen vom Nutzer selbst (auch Backups); als Usertest sinnvoll, kein akutes Risiko.</td>
+</tr>
+</tbody>
+</table>
+
+<div class="md">
+<p><b>Stand 21.10.2026</b> · Entscheidungsgrundlage zu APD-38 (Z3, Z4, Z5) · nichts geändert, nichts eingebaut</p>
+<p>Quellenkürzel stehen in eckigen Klammern und sind am Ende aufgelöst. Lokale Pakete wurden gelesen, nicht ausgeführt.</p>
+<p>Größen selbst gemessen (<code>wc -c</code> und <code>gzip -c | wc -c</code>, gzip-Standardstufe 6). Aufwandsangaben in Arbeitssitzungen sind</p>
+<p><b>Schätzungen</b> und als solche gekennzeichnet.</p>
+<p>---</p>
+<h2>Z3 – Gesamtvergleich Framework7 9.2.0 / Ionic 9.0.9</h2>
+<table><thead><tr><th>Kriterium</th><th>Framework7 9.2.0</th><th>Ionic (@ionic/core) 9.0.9</th><th>Bemerkung</th></tr></thead><tbody><tr><td><b>Technik</b></td><td>Klassisches DOM (eigene jQuery-artige Bibliothek Dom7), Klassen-API <code>new Framework7({…})</code>, eigenes Seiten-Routing und Komponentenmodell (<code>modules/router</code>, <code>modules/component</code>) [F7 <code>framework7.esm.js</code> Z. 1–40]. Keine Web Components – einzige Ausnahme Swiper-Element (<code>attachShadow</code> 2× im Bundle) [F7 <code>framework7-bundle.js</code> Z. 42403, 42600]</td><td>Web Components, gebaut mit Stencil; Komponenten werden einzeln nachgeladen (Lazy Loading, 96 Komponenten im Ladeverzeichnis) [ION <code>dist/ionic/ionic.esm.js</code>; Messskript M2]. Von 95 Komponenten nutzen <b>66 Shadow DOM</b>, 11 „scoped“, 18 keines [ION-C <code>components/*/*.js</code>, <code>get encapsulation()</code>]</td><td>Framework7 passt näher zu unserem Stil (reines DOM, Klassen, CSS-Variablen); Ionic ist eine eigene Komponentenwelt (<code>&lt;ion-…&gt;</code>-Elemente)</td></tr><tr><td><b>Abhängigkeiten</b></td><td>dom7, htm, path-to-regexp, skeleton-elements, ssr-window, swiper [F7 <code>package.json</code> Z. 467–474] – im UMD-Bundle enthalten</td><td>@stencil/core, ionicons, tslib [ION <code>package.json</code>, „dependencies“]</td><td>beide MIT; Ionic zieht die Stencil-Laufzeit mit</td></tr><tr><td><b>Größe ohne Build</b> (nötige Dateien)</td><td><code>framework7-bundle.min.js</code> 808 366 B (gzip 210 359) + <code>framework7-bundle.min.css</code> 485 794 B (gzip 72 141) = <b>1 294 160 B, gzip 282 500</b></td><td>typische Auswahl von 32 Komponenten (Kopf, Leisten, Liste, Felder, Fenster, Popover, Suche, Schalter, Meldungen, Datum, FAB …): 56 JS-Dateien 739 201 B (gzip 179 501) + <code>css/ionic.bundle.css</code> 38 657 B (gzip 6 151) = <b>777 858 B, gzip 185 652</b>; alle 97 JS-Dateien 1 134 721 B (gzip 277 850)</td><td>Messung M1, M2. Ionic-CSS der Komponenten steckt in den JS-Dateien</td></tr><tr><td><b>Größe mit Build</b> (zum Vergleich)</td><td>Lite-Kern + 12 Komponenten mit esbuild gebündelt: JS 358 257 B (gzip 95 677) + CSS 253 779 B (gzip 37 548) = 612 036 B, gzip 133 225</td><td>entfällt (Lazy Loading lädt nur Benutztes)</td><td>Messung M3; Build widerspricht unserer Arbeitsweise (ohne Build)</td></tr><tr><td><b>Zum Vergleich: AppDesign heute</b></td><td><code>v4/design.css</code> 44 284 B (gzip 11 892) + <code>v4/ui.js</code> 102 811 B (gzip 35 278) = <b>147 095 B, gzip 47 170</b>; mit <code>ReiseLogBuch/index.html</code> 95 110 B (gzip 30 194) zusammen <b>242 205 B, gzip 77 364</b></td><td></td><td>Messung M1. Framework7 allein wäre ohne Build etwa 6× so groß wie AppDesign + App (gzip), Ionic etwa 2,4×</td></tr><tr><td><b>iOS-Aussehen, iOS 26 „Liquid Glass“</b></td><td>iOS- und Material-Thema; seit 9.0.0 (25.11.2025) „All new iOS 26 styles across all components“ [F7WEB <code>CHANGELOG.md</code> Z. 93–98; <code>pug/docs/migration-from-v8-to-v9.pug</code>]. Glas-Variablen im CSS (<code>--f7-glass-bg-color</code>, <code>--f7-glass-shadow</code> …, 47 Vorkommen) [F7 <code>framework7-bundle.css</code>]</td><td>Modi <code>ios</code> und <code>md</code>; iOS-Leisten mit klassischer Unschärfe (<code>backdrop-filter: saturate(180%) blur(20px)</code>) [ION-C <code>components/header/header.ios.css</code>]. <b>Kein Liquid Glass</b>: 0 Treffer für „glass“/„liquid“ im Paket; Breaking Changes 9.x ohne neues iOS-Thema [ION; Git-Log ionic-framework; BREAKING.md „Version 9.x“]</td><td>Framework7 ist näher an iOS 26, Ionic zeigt den Stil bis iOS 18</td></tr><tr><td><b>Mit reinem JavaScript ohne Build nutzbar?</b></td><td><b>Ja</b>: UMD-Bundle per <code>&lt;script&gt;</code>, globales <code>Framework7</code> [F7WEB <code>pug/docs/package.pug</code> Z. 61–68, 116]</td><td><b>Ja, eingeschränkt</b>: <code>&lt;script type="module" src="…/ionic.esm.js"&gt;</code> + <code>ionic.bundle.css</code>; die Doku empfiehlt das „for quick prototyping“, der JavaScript-Quickstart nutzt Vite [IONDOCS <code>intro/cdn.mdx</code> Z. 107–116; <code>javascript/quickstart.mdx</code> Z. 17, 35–38]</td><td>Ionic offline: alle nachgeladenen Teildateien müssten in die Dateiliste von <code>sw.js</code></td></tr><tr><td><b>Lizenz</b></td><td>MIT [F7 <code>package.json</code>]</td><td>MIT [ION <code>package.json</code>]</td><td></td></tr><tr><td><b>Träger</b></td><td>Vladimir Kharlampidi (seit 2014, „Copyright 2014-2026“) [F7 <code>framework7-bundle.min.js</code> Kopf]; einziger npm-Maintainer <code>nolimits4web</code> [npm view framework7 maintainers]</td><td>Ionic, seit Nov. 2022 Teil von OutSystems; Open-Source-Projekte sollten unabhängig weiterlaufen [W2]. Seit 11.02.2025 verkauft Ionic keine kommerziellen Produkte mehr an Neukunden (u. a. Appflow) [W1]</td><td></td></tr><tr><td><b>Aktive Maintainer (12 Monate)</b></td><td>6 Autoren, 91 Commits; davon <b>85 von einer Person</b>, nur 1 Autor mit ≥ 10 Commits [Git-Log framework7io/framework7 seit 21.10.2025]</td><td>27 Autoren, 326 Commits; 5 Autoren mit ≥ 10 Commits [Git-Log ionic-team/ionic-framework seit 21.10.2025]</td><td>Bots herausgerechnet</td></tr><tr><td><b>Release-Takt (21.10.2025–21.10.2026)</b></td><td>11 stabile Releases (9.0.0 am 25.11.2025 bis 9.2.0 am 28.09.2026), etwa monatlich [npm view framework7 time]</td><td>41 stabile Releases (8.7.9 bis 9.0.9; seit 9.0.0 am 19.08.2026 <b>wöchentlich</b>) + 633 Vorab-Versionen [npm view @ionic/core time]</td><td>Ionic: hohes Tempo heißt auch häufiges Nachziehen</td></tr><tr><td><b>Zukunftssicherheit / Risiken</b></td><td>Ein-Personen-Projekt (Bus-Faktor 1); dafür seit 12 Jahren gepflegt und schnell bei iOS-Neuerungen (iOS 26 fünf Monate nach WWDC) [F7WEB CHANGELOG]</td><td>breitere Basis, aber Firmenstrategie wechselhaft: kommerzielle Produkte eingestellt, Appflow endet 31.12.2027 [W1, W13]; Major-Versionen mit Breaking Changes (Mindest-iOS 16) [IONDOCS <code>updating/9-0.mdx</code> Z. 514]</td><td>beides fremde Abhängigkeit, deren Updates wir mittragen</td></tr><tr><td><b>Tastatur unter iOS (Home-Bildschirm-PWA, ohne Capacitor)</b></td><td><b>Nicht gelöst</b>: Felder werden beim Fokus nur unter Android in den sichtbaren Bereich gerollt (<code>scrollIntoViewOnFocus = getDevice().android</code>) [F7 <code>components/input/input.js</code> Z. 281–282]; kein <code>visualViewport</code> im ganzen Paket (0 Treffer); Tastatur-Ereignisse nur aus Cordova/Capacitor (<code>keyboardDidShow</code>, <code>window.Keyboard</code>) [F7 <code>components/popover/popover-class.js</code> Z. 92; <code>sheet/sheet-class.js</code> Z. 101]</td><td><b>Teilweise behandelt</b>: auf iOS starten „input shims“ immer (<code>needInputShims</code>: iOS + mobil) [ION-C <code>components/app/app.js</code> Z. 21–27, 133–140]. Tastatur-Erkennung über <code>visualViewport.onresize</code> mit Schwelle 150 px → <code>ionKeyboardDidShow</code> [ION-C <code>utils/keyboard/keyboard.js</code> Z. 7, 20–45]. <b>Scroll Assist</b> setzt beim Fokus (<code>focusin</code>) sofort an: es versetzt das Feld unsichtbar an eine sichere Höhe (Klon + <code>transform</code>), rollt den Inhalt und setzt den Fokus neu (nachgeprüft in Sitzung 0027) – „to prevent mobile Safari from adjusting the viewport“ [ION-C <code>utils/input-shims/hacks/scroll-assist.js</code> Z. 100–120, 165–230; <code>common.js</code> Z. 5–81]. Aber: feste Tastaturhöhe <b>290 px</b> als Annahme [ION-C <code>utils/input-shims/input-shims.js</code> Z. 29], im Browser läuft Scroll Assist laut eigenem Kommentar nicht erneut, wenn sich die Tastatur ohne Größenänderung ändert [<code>scroll-assist.js</code> Z. 54–66]; Statusleiste antippen nur in der echten App (<code>statusTap</code> nur <code>isHybrid</code>) [ION-C <code>components/app/app.js</code> Z. 14–19]</td><td>Ionic nutzt dieselbe Grundidee wie unsere Lösung APD-36 (Fokus neu setzen wie S-8; verschoben wird aber erst beim Fokus, nicht davor wie bei uns nach S-7), aber mit fester Höhe; gemessen haben wir 276–428 px (S-2) [L-RL13]. Ob es in der Home-Bildschirm-App ohne Springen wirkt, ist nicht belegt</td></tr><tr><td><b>Prüfbarkeit mit unseren Playwright-Tests</b></td><td>Licht-DOM: unsere <code>querySelector</code>/<code>getBoundingClientRect</code>-Prüfungen bleiben technisch möglich; alle Prüfungen müssten auf die Framework7-Klassen umgestellt werden</td><td>Shadow DOM bei 66 Komponenten; der Rollbereich von <code>ion-content</code> liegt im Shadow Root (<code>div.inner-scroll</code>, <code>part="scroll"</code>) [ION-C <code>components/content/content.js</code> Z. 474–486]. Playwright-Locators durchdringen offenes Shadow DOM, XPath nicht [W12]; unsere Prüfungen arbeiten aber oft mit <code>document.querySelector</code> in <code>page.evaluate</code> (296 Stellen in AppDesign- und Reiselogbuch-Prüfungen), das nicht ins Shadow DOM reicht [L-TESTS]</td><td>bei Ionic müssten Safari-Modell (<code>tests/safari.mjs</code>, 214 Z.) und Abläufe neu geschrieben werden</td></tr><tr><td><b>Offline/PWA</b></td><td>Modul „service-worker“ (nur Registrieren) [F7 <code>modules/service-worker/service-worker.js</code> Z. 5–18]; ein Bundle → einfach in <code>sw.js</code> aufzunehmen</td><td>kein eigener Service Worker; viele Teildateien (56–97) für den Vorab-Speicher; CDN-Einbindung lädt zur Laufzeit nach</td><td>unser <code>sw.js</code> bliebe in beiden Fällen</td></tr><tr><td><b>Dokumentation</b></td><td>umfangreich (framework7.io/docs), aber von einer Person gepflegt; teils veraltet (nennt <code>framework7.min.js</code>, das im Paket 9.2.0 fehlt) [F7WEB <code>pug/docs/package.pug</code> Z. 25–55; F7 Dateiliste]</td><td>sehr umfangreich, versioniert, mit Migrationswerkzeug <code>npx @ionic/migrate</code> [IONDOCS <code>updating/9-0.mdx</code>]; Schwerpunkt Angular/React/Vue, reines JS über Vite</td><td></td></tr></tbody></table>
+<p><b>Kurz:</b> Framework7 hat das iOS-26-Aussehen und passt technisch zu uns, löst aber die Tastatur nicht. Ionic hat für die Tastatur</p>
+<p>mehr Code (Scroll Assist), aber kein iOS-26-Aussehen, Shadow DOM und ein schnelles Update-Tempo. Keines beseitigt die</p>
+<p>Safari-Eigenheiten der Home-Bildschirm-App ganz – das kann nur eine echte App (siehe Z4).</p>
+<p>---</p>
+<h2>Z4 – Drei Wege</h2>
+<table><thead><tr><th>Kriterium</th><th>a) eigener Code wie heute</th><th>b) Mischform: Framework als Unterbau, AppDesign als Regelschicht (AppDesign 5)</th><th>c) echte App mit Capacitor</th></tr></thead><tbody><tr><td><b>Nutzen für den Nutzer</b></td><td>keine neue Funktion; Tastatur seit 4.28.1 am Gerät bestätigt („Safari verschiebt nie, Leisten still“, P-61) [L-VERLAUF Z. 1888–1893]</td><td>keine neue Funktion; ggf. iOS-26-Optik (Framework7) und mehr eingebaute Barrierefreiheit</td><td>App vom Home-Bildschirm wird echte App: native Tastatursteuerung, Statusleiste antippen, Haptik, Dateien in der Dateien-App; Updates langsamer (über TestFlight/App Store)</td></tr><tr><td><b>iOS-Tastatur</b></td><td>gelöst mit eigenem Code (Abschnitt „Tastatur und sichtbarer Bereich“ ab <code>v4/ui.js</code> Z. 1219 bis Dateiende = 256 von 1 474 Zeilen) und Safari-Modell; jede iOS-Version kann es wieder ändern</td><td>Framework7: nicht gelöst (s. Z3), APD-36 bliebe nötig; Ionic: teilweise (Scroll Assist mit fester Höhe 290 px), APD-36 müsste auf <code>ion-content</code> übertragen werden</td><td>Keyboard-Plugin: Standard-Modus <b>native</b> verkleinert die ganze WebView (<code>[self.webView setFrame:…]</code>), weitere Modi <code>body</code>, <code>ionic</code>, <code>none</code>; <code>setScroll({isDisabled})</code> schaltet das Rollen der WebView ab (<code>scrollView.scrollEnabled = NO</code>); Ereignisse <code>keyboardWillShow/DidShow</code> mit <code>keyboardHeight</code>, <code>keyboardWillHide/DidHide</code>; Zubehörleiste über der Tastatur standardmäßig aus (<code>hideFormAccessoryBar = YES</code>); <code>resize</code>, <code>setResizeMode</code>, <code>setScroll</code>, <code>setStyle</code> nur iOS [CAPDOCS <code>apis/keyboard.md</code>; KB <code>ios/Sources/KeyboardPlugin/Keyboard.m</code> Z. 160–190, 340–360, 398–412]. Einschränkung: der iOS-26-Fehler „<code>visualViewport.offsetTop</code> setzt sich nicht zurück“ ist auch für WKWebView gemeldet [W8] – ruhig ist es erst nach Messung am Gerät</td></tr><tr><td><b>Statusleiste antippen</b></td><td>wirkt im eigenen Rollbereich nicht; Ersatz „Nach oben“ [L-RL13]</td><td>Framework7: Titel antippen = nach oben (<code>scrollTopOnTitleClick: true</code>) [F7 <code>components/navbar/navbar.js</code> Z. 439, 521]; Ionic: <code>statusTap</code> nur in echter App [ION-C <code>components/app/app.js</code> Z. 18]</td><td>Ereignis <code>statusTap</code> (nur iOS) [CAPDOCS <code>apis/status-bar.md</code> Z. 52–55]</td></tr><tr><td><b>Haptik</b></td><td><code>navigator.vibrate</code> wird unter iOS ignoriert; nur ein Umweg über <code>&lt;input type="checkbox" switch&gt;</code> (Safari 17.4+), laut Drittquelle seit iOS 26.5 gesperrt [W7]</td><td>wie a)</td><td>Plugin <code>@capacitor/haptics</code> (<code>impact</code>, <code>selectionStart/Changed/End</code>) [CAPDOCS <code>apis/haptics.md</code> Z. 25–47]</td></tr><tr><td><b>Teilen</b></td><td><code>navigator.share</code> mit Dateien, Download-Links unzuverlässig [L-RL13]</td><td>wie a)</td><td><code>@capacitor/share</code> (iOS, Android, Web) [CAPDOCS <code>apis/share.md</code> Z. 13]</td></tr><tr><td><b>Dateizugriff</b></td><td>nur über Teilen-Menü bzw. Dateiauswahl</td><td>wie a)</td><td><code>@capacitor/filesystem</code> mit <code>Directory.Documents</code>; sichtbar in der Dateien-App mit <code>UIFileSharingEnabled</code> und <code>LSSupportsOpeningDocumentsInPlace</code> [CAPDOCS <code>apis/filesystem.md</code> Z. 110–116]</td></tr><tr><td><b>iCloud</b></td><td>nur indirekt (Teilen → Dateien → iCloud Drive)</td><td>wie a)</td><td>kein offizielles Plugin; Drittanbieter z. B. <code>capacitor-icloud-sync</code> 0.2.0 (04.10.2026), <code>@capgo/capacitor-icloud-kv</code> 8.1.2 (Schlüssel-Wert-Speicher) [npm search „capacitor icloud“], sonst eigenes Swift-Plugin</td></tr><tr><td><b>Aufwand</b> (Schätzung)</td><td>offene Übernahmen aus APD-38 (V1 Sichere Ränder, V2–V4 mit APD-37): <b>2–4 Sitzungen</b>; danach je iOS-Version unbekannt</td><td><b>8–15 Sitzungen</b>: Bausteine aus Designrichtlinie 15.1–15.22 neu auf Framework-Basis, Prüfungen (≈ 5 100 Zeilen in <code>AppDesign/tests</code> und <code>ReiseLogBuch/tests</code>) [L-TESTS] neu ausrichten, Regelkonflikte abschalten (Leisten ausblenden, durchscheinende Leiste – APD-38 N1/N2) [L-A38]</td><td><b>5–10 Sitzungen</b>: Einrichtung 2–4 (<code>package.json</code>, Ordner mit <code>index.html</code>, <code>npx cap init/add ios</code>, Bau-Dienst, Signierung, erstes TestFlight-Build), Anpassung 3–6 (Tastatur auf native Ereignisse, Teilen/Dateien über Plugins, Datenablage). Dazu Wartezeit für das Apple-Konto</td></tr><tr><td><b>Laufende Kosten</b></td><td>0 € (GitHub Pages)</td><td>0 € Lizenz (MIT)</td><td><b>Apple Developer Program 99 USD/Jahr</b> (Landeswährung, regional verschieden) [W4]. Bau ohne Mac: <b>Codemagic</b> 500 macOS-M2-Minuten/Monat frei (nur persönliches Konto), danach 0,095 USD/min [W3]; <b>GitHub Actions</b> macOS-Runner für öffentliche Repos frei, bei privaten zählen macOS-Minuten 10-fach [W6]; <b>Xcode Cloud</b> 25 Std./Monat im Entwicklerprogramm enthalten, Einstieg über Xcode (Mac) [W5]; <b>Ionic Appflow</b> keine Option (keine Neukunden seit 11.02.2025, Ende 31.12.2027) [W1, W13]. Capacitor selbst: Mac mit Xcode 26.0+ nötig, ohne Mac nur Cloud-Bau [CAPDOCS <code>main/getting-started/environment-setup.md</code> Z. 26, 37; <code>faqs.md</code> Z. 60–62]</td></tr><tr><td><b>Verteilung</b></td><td>Home-Bildschirm, neue Version sofort über GitHub Pages und <code>sw.js</code>, keine Apple-Prüfung</td><td>wie a)</td><td><b>TestFlight</b>: intern bis 100 Tester ohne Prüfung, jedes Build 90 Tage gültig (danach neues Build nötig) [W10]; <b>App Store</b>: App-Review, Risiko Richtlinie 4.2 „Minimum Functionality“ für verpackte Webseiten (Wortlaut über Drittquelle) [W9]. Daten: neue Herkunft der WebView → Übernahme über das vorhandene Backup (15.19)</td></tr><tr><td><b>Risiken</b></td><td>Safari ändert sich mit iOS (Beleg: iOS-26-Fehler <code>offsetTop</code>, Designrichtlinie 13) [L-RL13]; Wissen steckt im eigenen Code</td><td>fremde Abhängigkeit (Framework7: 1 Haupt-Entwickler; Ionic: wöchentliche Releases, Firmenstrategie); Tastatur trotzdem offen; hoher Umbau ohne Nutzen für den Nutzer</td><td>Apple-Abhängigkeit (Konto, Zertifikate, Review, TestFlight-Ablauf); Bau-Dienst; jährliche Capacitor-Hauptversion (8.0.0 am 08.12.2025) [npm view @capacitor/core time]; <code>localStorage</code> gilt in der WebView als flüchtig („must be considered transient“) → Speicher umstellen [CAPDOCS <code>main/guides/storage.md</code> Z. 15–19]; Service Worker in WKWebView nur mit Zusatzkonfiguration (<code>limitsNavigationsToAppBoundDomains</code>) [CAPDOCS <code>main/reference/config.md</code> Z. 455–470] – offline kommt aus den eingebetteten Dateien</td></tr><tr><td><b>Abhängigkeiten</b></td><td>keine</td><td>Framework7 (6 Pakete) oder Ionic (Stencil, ionicons)</td><td><code>@capacitor/core</code>, <code>/cli</code>, <code>/ios</code> 8.5.3, Plugins (<code>keyboard</code> 8.0.6 …) [npm view]; Capacitor braucht laut Doku nur <code>package.json</code>, einen Ordner mit Web-Dateien und darin <code>index.html</code> – „designed to drop into any modern JavaScript web app“, <b>kein UI-Framework nötig</b> [CAPDOCS <code>main/getting-started/installation.md</code> Z. 9, 23–30, 54]</td></tr><tr><td><b>Was passiert mit unseren Prüfungen</b></td><td>bleiben (Chromium + WebKit, Safari-Modell)</td><td>Framework7: alle Selektoren und Abläufe neu; Ionic: zusätzlich Shadow DOM (296 <code>querySelector</code>-Stellen), Safari-Modell müsste Scroll Assist abbilden</td><td>Web-Teil bleibt mit Playwright prüfbar; die native Tastatur (WebView-Größe, Plugin-Ereignisse) lässt sich in Playwright nicht nachbilden; das Safari-Modell (S-1 bis S-9) würde größtenteils überflüssig; Gerätetests nur über TestFlight (kein Simulator ohne Mac)</td></tr></tbody></table>
+<h3>Capacitor verpackt auch reines HTML/JS – Beleg</h3>
+<ul><li>Die Capacitor-Doku (v8) nennt genau drei Voraussetzungen für eine bestehende Web-App: „A <code>package.json</code> file“, „A separate</li></ul>
+<p>  directory for built web assets such as <code>dist</code> or <code>www</code>“, „An <code>index.html</code> file at the root of your web assets directory“; der</p>
+<p>  Ordner wird über <code>webDir</code> eingestellt [CAPDOCS <code>main/getting-started/installation.md</code> Z. 23–30, 54]. Ein UI-Framework wird nicht</p>
+<p>  verlangt.</p>
+<ul><li>Das Keyboard-Plugin kennt den Modus <code>ionic</code> ausdrücklich nur für Ionic-Apps („Use it only for Ionic Framework apps“); <code>native</code>,</li></ul>
+<p>  <code>body</code> und <code>none</code> sind frameworkfrei [CAPDOCS <code>apis/keyboard.md</code>, Enum <code>KeyboardResize</code>].</p>
+<ul><li>Für das Reiselogbuch hieße das: <code>index.html</code>, <code>sw.js</code>, <code>manifest.json</code>, Icons und die AppDesign-Fassung in einen Ordner (z. B.</li></ul>
+<p>  <code>www/</code>) kopieren; Ionic oder Framework7 wären nicht nötig (so auch schon <code>arbeit/APD-38 Entscheidung.md</code> Abschnitt 1).</p>
+<h3>Rückblick: Was hat der eigene Weg für Tastatur, Rollen und Safari gekostet?</h3>
+<p><b>Sitzungen</b> (nummerierte Sitzungen „Reiselogbuch 0001“ bis „0027“, 14.–21.10.2026) [L-VERLAUF Z. 1748–1895; L-ARBEIT]:</p>
+<table><thead><tr><th>Art</th><th>Sitzungen</th><th>Anzahl</th></tr></thead><tbody><tr><td>Hauptthema Tastatur/Rollen/Safari</td><td>0010 (APD-18 Messungen, verworfen), 0014 (APD-24/APD-25, Entscheidung Umbau B), 0015 (APD-27 Messung P-57), 0016 (APD-28 Testfall-Liste), 0017 (Umbau B gebaut), 0018 (APD-33), 0020, 0021, 0022, 0023, 0024 (APD-36, Muster 1–9, Bau 4.28.1)</td><td><b>11 von 27 (41 %)</b></td></tr><tr><td>teilweise</td><td>0008 (APD-13 „Safari schiebt beim Öffnen der Tastatur die Seite“), 0009 (APD-15 Nach oben, APD-18 Tastatur zittert), 0013 (Rückmeldung APD-24), 0019 (APD-35)</td><td>4 – zusammen <b>15 von 27 (56 %)</b></td></tr><tr><td>Folgefrage</td><td>0025 und 0027 (Framework-Frage, APD-38) entstand aus diesem Aufwand</td><td>–</td></tr></tbody></table>
+<p>Vor den nummerierten Sitzungen (04.–13.10.) erwähnen 23 von 367 Nutzer-Nachrichten im Verlauf Tastatur, Rollen, Zittern oder</p>
+<p>Safari [L-VERLAUF, Zählung M4].</p>
+<p><b>Versionen:</b> AppDesign hat 49 Versionen (4.0.0 am 09.10. bis 4.28.2 am 21.10.2026) [L-ADCL]. Davon haben <b>16 (33 %)</b></p>
+<p>Tastatur, Rollen oder Safari als Hauptthema – 4.2.0, 4.5.0, 4.8.1, 4.12.1, 4.18.0, 4.20.0, 4.21.0, 4.21.1, 4.23.1, 4.23.2, 4.25.1,</p>
+<p>4.26.0, 4.27.0, 4.27.1, 4.28.0, 4.28.1 –, davon 8 Korrekturen; in 33 von 49 kommt mindestens eines der Wörter vor, in 19 „Tastatur“</p>
+<p>[L-ADCL, Zählung M5]. Im Reiselogbuch (64 Versionseinträge) nennen 42 diese Themen, 27 „Tastatur“ [L-RLCL, M5]. Gerätetests nur</p>
+<p>für dieses Thema: P-56 bis P-61, Muster APD-36 in 9 Fassungen, 21 Messdateien in <code>arbeit/APD-36 Messungen/</code> [L-VERLAUF; L-ARBEIT].</p>
+<p>Eigener Code und Prüfungen nur dafür: Tastatur-Abschnitt in <code>ui.js</code> 256 Zeilen, Prüfungen <code>tests/safari.mjs</code>, <code>abspielen.mjs</code>,</p>
+<p><code>messung.mjs</code> und sechs Reiselogbuch-Abläufe zusammen 804 Zeilen [L-TESTS].</p>
+<p><b>Safari-Eigenheiten aus Designrichtlinie 13 und was ein Framework bzw. Capacitor erspart hätte</b> [L-RL13; Bewertung aus Z3 und</p>
+<p>den genannten Quellstellen; „wahrscheinlich“ = aus dem Plugin-Code abgeleitet, nicht am Gerät gemessen]:</p>
+<table><thead><tr><th>Nr.</th><th>Eigenheit (Designrichtlinie 13)</th><th>Framework7</th><th>Ionic</th><th>Capacitor</th></tr></thead><tbody><tr><td>1</td><td>Sichere Ränder (<code>env(safe-area-inset-*)</code>)</td><td>ja (<code>--f7-safe-area-*</code>)</td><td>ja (<code>--ion-safe-area-*</code>)</td><td>nein</td></tr><tr><td>2</td><td>Download-Links unzuverlässig → <code>navigator.share</code></td><td>nein</td><td>nein</td><td>ja (Filesystem, Share)</td></tr><tr><td>3</td><td>Long-Press/Textauswahl auf Emoji-Schaltflächen</td><td>teilweise (<code>touch-callout: none</code> in <code>framework7.css</code>)</td><td>nein (in <code>core.css</code> nicht gefunden)</td><td>nein</td></tr><tr><td>4</td><td>Druck nur mit Ausgabe-Inhalt</td><td>nein</td><td>nein</td><td>nein</td></tr><tr><td>5</td><td>eigene <code>[hidden]</code>-Regel</td><td>nein</td><td>nein</td><td>nein</td></tr><tr><td>6</td><td>Emoji mit/ohne Variantenzeichen</td><td>nein</td><td>nein</td><td>nein</td></tr><tr><td>7</td><td>kein Scroll-Anker beim Drehen</td><td>nein</td><td>nein</td><td>nein (gleiche WebKit-Engine)</td></tr><tr><td>8</td><td>Position beim Öffnen (<code>openAt</code>)</td><td>nein (App-Logik)</td><td>nein</td><td>nein</td></tr><tr><td>9</td><td>zwei Bereiche, Leisten zittern, <code>offsetTop</code> iOS 26, Statusleiste</td><td>nein</td><td>teilweise (<code>ion-content</code> als eigener Rollbereich wie Umbau B; <code>statusTap</code> nur in echter App)</td><td>weitgehend (WebView wird verkleinert, <code>setScroll</code>, <code>statusTap</code>); <code>offsetTop</code>-Fehler auch in WKWebView gemeldet [W8]</td></tr><tr><td>10</td><td>Feld unter der Tastatur verschiebt sichtbaren Bereich</td><td>nein</td><td>teilweise (Scroll Assist)</td><td>wahrscheinlich</td></tr><tr><td>11</td><td>S-1 Verschieben bis zur Mitte</td><td>nein</td><td>teilweise</td><td>wahrscheinlich</td></tr><tr><td>12</td><td>S-2 Tastaturhöhen je Gerät/Lage</td><td>nein</td><td>nein (feste 290 px)</td><td>ja (<code>keyboardHeight</code> im Ereignis)</td></tr><tr><td>13</td><td>S-3 <code>scrollY</code>/<code>innerHeight</code> bei Verschiebung</td><td>nein</td><td>nein</td><td>wahrscheinlich (WebView echt kleiner)</td></tr><tr><td>14</td><td>S-5/S-6 Schwellen 24/15 px bzw. Mitte</td><td>nein</td><td>teilweise</td><td>wahrscheinlich</td></tr><tr><td>15</td><td>S-7 Safari liest die Lage beim Fokus</td><td>nein</td><td>ja, gleiche Idee (vor dem Fokus verschieben)</td><td>wahrscheinlich</td></tr><tr><td>16</td><td>S-8 neuer Fokus</td><td>nein</td><td>ähnlich (<code>setManualFocus</code> nach dem Rollen)</td><td>wahrscheinlich nicht nötig</td></tr><tr><td>17</td><td>S-9 Rückstellung des Rollbereichs</td><td>nein</td><td>nein (im Code nicht behandelt)</td><td>wahrscheinlich</td></tr><tr><td>18</td><td>Berührungen nie abfangen</td><td>– (Erkenntnis bleibt)</td><td>–</td><td>–</td></tr><tr><td>19</td><td>Neustart nicht erkennbar</td><td>nein</td><td>nein</td><td>teilweise (<code>appStateChange</code>, <code>appRestoredResult</code>) [CAPDOCS <code>apis/app.md</code> Z. 59–67]</td></tr></tbody></table>
+<p>(S-4 steht nicht in Abschnitt 13; es ist eine Option des Prüfmodells, nicht eine Safari-Eigenheit [L-A36 Z. 76].)</p>
+<p><b>Bilanz, ehrlich:</b></p>
+<ul><li><b>Framework7:</b> von 19 Punkten 1 ganz, 1 teilweise; von den 11 Tastatur-Sitzungen wäre <b>keine</b> entfallen.</li><li><b>Ionic:</b> 1 ganz, 7 teilweise oder mit gleicher Idee. Vermutlich hätte Ionic den Umbau B (nur der Inhalt rollt) und die</li></ul>
+<p>  Grundidee von APD-36 vorgegeben; die Messungen am Gerät (feste 290 px gegen 276–428 px, S-9, iOS-26-Fehler) wären trotzdem nötig</p>
+<p>  gewesen. Grobe Schätzung: ein Teil der 11 Sitzungen (höchstens die Hälfte) wäre kürzer geworden, entfallen wäre keine sicher.</p>
+<ul><li><b>Capacitor:</b> 2 ganz, 1 weitgehend, 7 wahrscheinlich, 1 teilweise – etwa die Hälfte aller 19 Punkte und fast alle</li></ul>
+<p>  Tastatur-Punkte (9–17). Geschätzt wären <b>8 bis 10 der 11 Tastatur-Sitzungen</b> entfallen; dafür kämen 5–10 Sitzungen für</p>
+<p>  Einrichtung, Bau und Signierung, und jeder Gerätetest liefe über ein TestFlight-Build. Punkte 3–8 (Druck, <code>[hidden]</code>, Emoji,</p>
+<p>  Scroll-Anker, Position) bleiben auf jedem Weg.</p>
+<p>---</p>
+<h2>Z5 – Weitere Kandidaten</h2>
+<table><thead><tr><th>Kandidat</th><th>Version · letzter Release · Lizenz</th><th>iOS-Aussehen</th><th>Eignung für uns</th><th>genauer prüfen?</th></tr></thead><tbody><tr><td><b>Konsta UI</b></td><td>5.5.0 · 28.09.2026 · MIT; 12 Releases in 12 Monaten; Autor wie Framework7 (45 von 54 Commits) [npm view konsta; Git-Log konstaui/konsta]</td><td>„updated iOS 26 … look and feel“ seit 5.0.0 (18.08.2025), Glass-Komponente [Konsta-CHANGELOG Z. 112–144]</td><td>„Mobile UI components made with Tailwind CSS“ für <b>React, Vue und Svelte</b> [Z5 <code>konsta-5.5.0/package/README.md</code>; Ordner <code>react/</code>, <code>vue/</code>, <code>svelte/</code>] – braucht Tailwind und ein JS-Framework, also Build</td><td><b>nein</b></td></tr><tr><td><b>Onsen UI</b></td><td>2.12.9 · 16.06.2026 · Apache-2.0; davor 2.12.8 am 27.12.2022 [npm view onsenui time]; 2 aktive Autoren in 12 Monaten [Git-Log OnsenUI/OnsenUI]</td><td>iOS- und Material-Stil älterer Generation, kein Glas (0 Treffer „backdrop-filter“/„glass“ im eigenen CSS) [Z5 <code>onsenui-2.12.9/package/css</code>]</td><td>Web Components in reinem JS, ohne Framework nutzbar [Onsen-README] – technisch passend, aber praktisch ruhend (3½ Jahre ohne Release)</td><td><b>nein</b></td></tr><tr><td><b>Shoelace / Web Awesome</b></td><td>Shoelace 2.20.1 · 11.03.2025 · MIT, laut Autor das letzte Shoelace-Release; Nachfolger Web Awesome 3.14.0 · 24.09.2026 · MIT (Pro-Teil kostenpflichtig), 16 Releases in 12 Monaten, 44 Autoren [npm view; W11; Git-Log shoelace-style/webawesome]</td><td>kein iOS-Aussehen (eigener, neutraler Stil)</td><td>Web Components mit Shadow DOM, ohne Build nutzbar; gute Formular-Bausteine, aber nicht Apple-nah und mit denselben Prüf-Hürden wie Ionic</td><td><b>nein</b></td></tr><tr><td><b>Ratchet</b> (twbs)</td><td>2.0.2 · letzter Commit 21.03.2016 · MIT [git ls-remote / git log github.com/twbs/ratchet]</td><td>iOS 7-Stil</td><td>aufgegeben</td><td><b>nein</b></td></tr><tr><td><b>Puppertino 2</b> („Dachshund“, @codedgar/puppertino)</td><td>2.0.0 · 06.10.2026 · MIT; 1 Maintainer [npm view @codedgar/puppertino]</td><td>folgt den HIG, iOS-/macOS-Bausteine, „Liquid Glass“ unter Materialien [Z5 <code>codedgar-puppertino-2.0.0/package/README.md</code> Z. 13–17, 100, 107]</td><td>reines CSS ohne Build, kleine optionale JS-Helfer; nur Aussehen, kein Verhalten (keine Tastatur, kein Rollen); Mobil-CSS 383 965 B (gzip ≈ 55 000) [Messung M1] – als <b>Vorlage für Glas-Optik (V4)</b> interessant, nicht als Unterbau</td><td><b>ja, nur als Muster für V4</b></td></tr><tr><td><b>Cupertino Pane</b></td><td>1.5.4 · 27.08.2025 · MIT [npm view cupertino-pane]</td><td>iOS-Blätter (Sheets) mit Höhenstufen</td><td>Einzelbaustein, kein UI-System; nur relevant, falls Fenster als Blätter kommen</td><td><b>nein</b> (später ggf.)</td></tr></tbody></table>
+<p>Mehr Apple-nahe Bibliotheken mit Pflege und reinem JS fanden sich nicht; <code>liquid-glass-react</code> (1.1.1) braucht React 19 [npm view</p>
+<p>liquid-glass-react].</p>
+<p>---</p>
+<h2>Empfehlung</h2>
+<p>Ich empfehle <b>Weg a)</b>: beim eigenen Code bleiben und die guten Ideen aus Framework7 übernehmen (V1 Sichere Ränder, V2–V4 mit</p>
+<p>APD-37). Framework7 hätte keine der 11 Tastatur-Sitzungen gespart. Ionic hätte die Grundidee von APD-36 mitgebracht, aber mit fester</p>
+<p>Tastaturhöhe, ohne iOS-26-Aussehen und mit Shadow DOM, das unsere Prüfungen entwertet. Weg b) kostet geschätzt 8–15 Sitzungen ohne</p>
+<p>neue Funktion für dich. Wirklich beseitigen würde die Safari-Eigenheiten nur <b>Weg c) Capacitor</b> – und dafür braucht es kein</p>
+<p>UI-Framework, unsere <code>index.html</code> lässt sich direkt verpacken. Weil die Tastatur seit 4.28.1 am Gerät ruhig ist (P-61), lohnt c)</p>
+<p>erst, wenn du Funktionen willst, die eine Web-App nicht kann (Haptik, Dateien-App, iCloud, Statusleiste) oder wenn eine neue</p>
+<p>iOS-Version die Tastatur wieder bricht. Dann zuerst ein kleiner Versuch in 1–2 Sitzungen (Codemagic-Freikontingent, Apple-Konto</p>
+<p>99 USD/Jahr, ein TestFlight-Build), der die Tastatur am Gerät misst, bevor wir umbauen.</p>
+<p>---</p>
+<h2>Quellen</h2>
+<p><b>Lokal (gelesen bzw. gemessen am 21.10.2026)</b></p>
+<ul><li>[F7] <code>npm-Paket framework7-9.2.0/package/</code></li><li>[ION] <code>npm-Paket ionic-core-9.0.9/package/</code>;</li></ul>
+<p>  [ION-C] = dessen <code>dist/collection/</code> (nicht verkleinerter Quelltext)</p>
+<ul><li>[KB] Capacitor Keyboard 8.0.6 aus npm: (npm-Paket, lokal gelesen)</li><li>[Z5] Pakete Konsta 5.5.0, Onsen UI 2.12.9, Puppertino 2.0.0, Cupertino Pane 1.5.4 aus npm:</li></ul>
+<p>  (npm-Paket, lokal gelesen)</p>
+<ul><li>[CAPDOCS] Capacitor-Doku v8 (= capacitorjs.com/docs), Klon von github.com/ionic-team/capacitor-docs:</li></ul>
+<p>  (npm-Paket, lokal gelesen)</p>
+<ul><li>[F7WEB] Framework7-Webseite (= framework7.io), Klon von github.com/framework7io/framework7-website:</li></ul>
+<p>  (npm-Paket, lokal gelesen)</p>
+<ul><li>[IONDOCS] Ionic-Doku (= ionicframework.com/docs), Klon von github.com/ionic-team/ionic-docs:</li></ul>
+<p>  (npm-Paket, lokal gelesen)</p>
+<ul><li>Git-Logs (Commits seit 21.10.2025, ohne Bots), flache Klone unter</li></ul>
+<p>  (npm-Paket, lokal gelesen) (framework7io/framework7,</p>
+<p>  ionic-team/ionic-framework inkl. <code>BREAKING.md</code>, ionic-team/capacitor, konstaui/konsta inkl. <code>CHANGELOG.md</code>, OnsenUI/OnsenUI,</p>
+<p>  shoelace-style/webawesome)</p>
+<ul><li>npm-Registry (<code>npm view &lt;paket&gt; version license maintainers time</code>), gespeichert als</li></ul>
+<p>  (npm-Paket, lokal gelesen)</p>
+<ul><li>[L-RL13] <code>AppDesign/README - Designrichtlinie allgemein.md</code>, Abschnitt 13 (Z. 334–402)</li><li>[L-VERLAUF] <code>AppDesign/VERLAUF.md</code></li><li>[L-ADCL] <code>AppDesign/CHANGELOG.md</code> · [L-RLCL] <code>ReiseLogBuch/CHANGELOG.md</code></li><li>[L-A38] <code>AppDesign/arbeit/APD-38 Framework7 Auswertung.md</code>, <code>AppDesign/arbeit/APD-38 Entscheidung.md</code></li><li>[L-A36] <code>AppDesign/arbeit/APD-36 Testfall-Liste.md</code></li><li>[L-ARBEIT] <code>AppDesign/arbeit/</code> (APD-27/APD-28 Sitzungen 0015/0016, <code>APD-36 Messungen/</code>)</li><li>[L-TESTS] <code>AppDesign/tests/*.mjs</code> (2 917 Zeilen), <code>ReiseLogBuch/tests/*.mjs</code> (2 204 Zeilen); <code>v4/ui.js</code></li></ul>
+<p><b>Messungen</b></p>
+<ul><li>M1: <code>wc -c</code> und <code>gzip -c | wc -c</code> je Datei (Framework7-Bundle, <code>ionic.bundle.css</code>, AppDesign, Puppertino).</li><li>M2: (npm-Paket, lokal gelesen) – liest die Komponentenliste aus</li></ul>
+<p>  <code>ionic.esm.js</code>, folgt den statischen Importen der 32 gewählten Komponenten, summiert roh und gzip (Stufe 6) je Datei.</p>
+<ul><li>M3: (npm-Paket, lokal gelesen) mit esbuild 0.25.10</li></ul>
+<p>  (<code>framework7/lite</code> + dialog, popup, popover, sheet, panel, searchbar, toggle, input, toast, actions, calendar, fab); CSS =</p>
+<p>  <code>framework7.min.css</code> + Komponenten-CSS.</p>
+<ul><li>M4: Zählung der Einträge in <code>VERLAUF.md</code> mit Stichwörtern (tastatur, keyboard, zitter, springt, rollen, scroll, safari …).</li><li>M5: (npm-Paket, lokal gelesen) (Stichwörter je Versionseintrag) und</li></ul>
+<p>  Durchsicht der Versionsköpfe von Hand (16 Hauptthema-Versionen).</p>
+<p><b>Web</b></p>
+<ul><li>[W1] Ionic-Blog, 11.02.2025 (Ende kommerzieller Produkte, Appflow bis 31.12.2027): https://ionic.io/blog/?p=6282</li><li>[W2] OutSystems übernimmt Ionic (Nov. 2022): https://www.outsystems.com/news/outsystems-acquires-ionic/</li><li>[W3] Codemagic-Preise: https://docs.codemagic.io/billing/pricing/</li><li>[W4] Apple Developer Program, Gebühr 99 USD: https://developer.apple.com/support/enrollment/</li><li>[W5] Xcode Cloud, 25 Std./Monat: https://developer.apple.com/xcode-cloud/get-started ·</li></ul>
+<p>  https://developer.apple.com/programs/whats-included/</p>
+<ul><li>[W6] GitHub Actions Abrechnung: https://docs.github.com/en/billing/concepts/product-billing/github-actions</li><li>[W7] Haptik in iOS Safari (Drittquelle): https://azukiazusa.dev/en/blog/ios-safari-web-haptics</li><li>[W8] iOS 26 <code>visualViewport.offsetTop</code> (Safari und WKWebView): https://developer.apple.com/forums/thread/800125</li><li>[W9] Richtlinie 4.2 (Drittquelle, Apple-Wortlaut zitiert): https://www.mobiloud.com/blog/app-store-review-guidelines-webview-wrapper</li><li>[W10] TestFlight 100 interne Tester, 90 Tage (Drittquellen):</li></ul>
+<p>  https://docs.thunkable.com/publishing-apps/publish-to-app-store-ios/testflight-overview ·</p>
+<p>  https://www.kodeco.com/10868372-testflight-essentials-quickstart-guide-for-ios-beta-testing</p>
+<ul><li>[W11] Web Awesome als Nachfolger von Shoelace: https://blog.fontawesome.com/introducing-web-awesome/</li><li>[W12] Playwright, CSS-Locators durchdringen offenes Shadow DOM: https://playwright.dev/java/docs/other-locators</li><li>[W13] Appflow-Ende 31.12.2027 (Drittquelle): https://capawesome.io/alternatives/ionic-appflow/</li></ul>
+<p>Hinweis: capacitorjs.com und framework7.io waren aus der Umgebung nicht direkt abrufbar; deren Inhalte stammen aus den</p>
+<p>Quell-Repos der Webseiten (CAPDOCS, F7WEB). Drittquellen sind als solche markiert.</p>
+</div>
+</main>
+<script>
+document.querySelector('.filter').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  document.querySelectorAll('.filter button').forEach(x => x.classList.toggle('on', x === b));
+  const f = b.dataset.f;
+  const zeilen = [...document.querySelectorAll('#themen tbody tr')];
+  zeilen.forEach(tr => { if (!tr.classList.contains('gruppe')) tr.hidden = f && (f === 'konflikt' ? !tr.querySelector('.konflikt') : tr.dataset.e !== f); });
+  zeilen.forEach((tr, i) => { if (!tr.classList.contains('gruppe')) return; let j = i + 1, sichtbar = false;
+    while (j < zeilen.length && !zeilen[j].classList.contains('gruppe')) { if (!zeilen[j].hidden) sichtbar = true; j++; } tr.hidden = !sichtbar; });
+});
+</script>
+</body></html>

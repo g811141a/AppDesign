@@ -5,7 +5,7 @@
 //   1. ohne Netz neu öffnen → App erscheint (Inhalt und AppDesign-Fassung geladen)
 //   2. ohne Netz unter anderer Adresse (index.html?…) → App erscheint
 //   3. Netz hängt → App erscheint nach höchstens 3 s aus dem Speicher (Grenze mit Spielraum: 4,5 s)
-// Seit 4.15.0 (A-06, Fall-Liste F-1 bis F-16 in arbeit/A-06 Muster und Fall-Liste.md) zusätzlich der Offline-Hinweis:
+// Seit 4.15.0 (APD-6, Testfall-Liste APD-6/F-1 bis APD-6/F-16 in arbeit/APD-6 Muster und Testfall-Liste.md) zusätzlich der Offline-Hinweis:
 //   in 1–3 erscheint die Meldung ‚Du bist offline‘ und – wo die Seitenleiste bzw. Startliste sichtbar ist – die graue Zeile;
 //   4. Wechsel (Safari meldet offline/online): Meldung, Zeile, Lage der Meldung (im Bild, neben der Seitenleiste, nicht über
 //      ‚Nach oben / Ans Ende‘ und der Zeile), Kontrast, verschwindet nach 4 s, ‚Wieder online‘, schnelles Hin und Her, Drehen,
@@ -78,7 +78,7 @@ export async function checkOffline(appDir, browser, { ansichten, grenze = 4500, 
     if (h.linieR && h.kLinie < 4.5) E(`${name}: ${fall} – Kontrast der grauen Zeile ${h.kLinie.toFixed(2)} : 1 (mindestens 4,5 : 1, R-10.2)`);
     if (h.anzahl > 1) E(`${name}: ${fall} – ${h.anzahl} Meldungen zugleich`);
   };
-  // F-1 bis F-6, F-9 bis F-16: Wechsel online ↔ offline in der laufenden App (Safari meldet offline/online)
+  // APD-6/F-1 bis APD-6/F-6, APD-6/F-9 bis APD-6/F-16: Wechsel online ↔ offline in der laufenden App (Safari meldet offline/online)
   async function wechsel(name, c, p) {
     // Neu öffnen, ohne auf ‚load‘ zu warten (WebKit: eine vorige Navigation bei hängendem Netz kann noch laufen)
     await p.evaluate(u => { window.__alteSeite = true; location.href = u; }, basis).catch(() => {});
@@ -88,14 +88,14 @@ export async function checkOffline(appDir, browser, { ansichten, grenze = 4500, 
     await c.setOffline(true);
     h = await bis(p, 2000, h => h.toast === TEXT_AUS && (!h.fuss || h.linie === LINIE));
     pruefeAus(name, 'online → offline', h);
-    // F-5, F-6: iPhone – vom Inhalt zurück in die Startliste: Zeile unter der Backup-Kachel, Meldung über der Kachel
+    // APD-6/F-5, APD-6/F-6: iPhone – vom Inhalt zurück in die Startliste: Zeile unter der Backup-Kachel, Meldung über der Kachel
     if (await p.evaluate(() => document.documentElement.classList.contains('phone') && !!document.getElementById('back'))) {
       await p.click('#back'); await p.waitForTimeout(300);
       h = await hinweis(p);
       if (!h?.fuss) E(`${name}: Startliste ohne Backup-Kachel – Zeile nicht prüfbar`);
       pruefeAus(name, 'Startliste, offline', h, { toast: !!h?.toast });
     }
-    // F-16 (seit 4.34.0, A-74): ohne Backup-Kachel (heute schon gesichert) steht die Zeile allein unten; der letzte Eintrag lässt sich
+    // APD-6/F-16 (seit 4.34.0, APD-74): ohne Backup-Kachel (heute schon gesichert) steht die Zeile allein unten; der letzte Eintrag lässt sich
     // ganz über die Zeile wischen
     const ohne = await p.evaluate(() => { const b = document.querySelector('#side .bhint'); if (!b) return null; const platz = b.nextSibling, eltern = b.parentElement; b.remove();
       const l = document.querySelector('#side .offl'), liste = document.querySelector('#side .side-list'), rows = liste?.querySelectorAll('.side-row');
@@ -104,29 +104,29 @@ export async function checkOffline(appDir, browser, { ansichten, grenze = 4500, 
       eltern.insertBefore(b, platz); return { zeile, frei }; });
     if (ohne && !ohne.zeile) E(`${name}: graue Zeile fehlt ohne Backup-Kachel`);
     if (ohne && ohne.frei === false) E(`${name}: ohne Backup-Kachel bleibt der letzte Eintrag hinter der grauen Zeile`);
-    // F-13: lange Liste – der letzte Eintrag lässt sich ganz über die Backup-Kachel wischen
+    // APD-6/F-13: lange Liste – der letzte Eintrag lässt sich ganz über die Backup-Kachel wischen
     const unten = await p.evaluate(() => { const l = document.querySelector('#side .side-list'), b = document.querySelector('#side .bhint'); const rows = l?.querySelectorAll('.side-row'); if (!l || !b || !rows?.length || l.scrollHeight <= l.clientHeight) return null;
       const alt = l.scrollTop; l.scrollTop = l.scrollHeight; const ok = rows[rows.length - 1].getBoundingClientRect().bottom <= b.getBoundingClientRect().top + 1; l.scrollTop = alt; return ok; });
     if (unten === false) E(`${name}: lange Liste offline – der letzte Eintrag bleibt hinter der Backup-Kachel (Liste zu kurz für Zeile)`);
-    // F-10: Drehen, während die Meldung steht
+    // APD-6/F-10: Drehen, während die Meldung steht
     const vp = p.viewportSize();
     await p.setViewportSize({ width: vp.height, height: vp.width }); await p.waitForTimeout(400);
     pruefeAus(name, 'offline, gedreht', await hinweis(p));
     await p.setViewportSize(vp); await p.waitForTimeout(400);
-    // F-1: nach 4 s ist die Meldung weg, die Zeile bleibt
+    // APD-6/F-1: nach 4 s ist die Meldung weg, die Zeile bleibt
     h = await bis(p, 5500, h => !h.toast);
     if (h?.toast) E(`${name}: Meldung ‚Du bist offline‘ verschwindet nicht nach 4 s`);
     if (h?.fuss && h.linie !== LINIE) E(`${name}: graue Zeile nach der Meldung verschwunden`);
-    // F-2: offline → online
+    // APD-6/F-2: offline → online
     await c.setOffline(false);
     h = await bis(p, 4000, h => h.toast === TEXT_AN && !h.linie);
     if (h?.toast !== TEXT_AN) E(`${name}: Meldung ‚Wieder online‘ fehlt (gesehen: ${h?.toast ?? 'keine'})`);
     if (h?.linie) E(`${name}: wieder online steht trotzdem die graue Zeile`);
-    // F-9: schnell hin und her – höchstens eine Meldung, der letzte Zustand gilt
+    // APD-6/F-9: schnell hin und her – höchstens eine Meldung, der letzte Zustand gilt
     await c.setOffline(true); await c.setOffline(false); await c.setOffline(true);
     h = await bis(p, 2000, h => h.toast === TEXT_AUS);
     pruefeAus(name, 'schnell hin und her', h);
-    // F-11: offenes Fenster – die Meldung steht darüber
+    // APD-6/F-11: offenes Fenster – die Meldung steht darüber
     await c.setOffline(false); await bis(p, 4000, h => h.toast === TEXT_AN);
     const fenster = await p.evaluate(() => { if (typeof inform !== 'function') return false; inform('Test', 'Fenster offen'); return true; });
     if (fenster) {
@@ -137,7 +137,7 @@ export async function checkOffline(appDir, browser, { ansichten, grenze = 4500, 
       await p.evaluate(() => document.getElementById('msg')?.close());
       await c.setOffline(false); await bis(p, 4000, h => h.toast === TEXT_AN);
     }
-    // F-12: Tastatur offen (nachgebildet über --vv-bottom) – die Meldung steht über der Tastatur
+    // APD-6/F-12: Tastatur offen (nachgebildet über --vv-bottom) – die Meldung steht über der Tastatur
     await p.evaluate(() => document.documentElement.style.setProperty('--vv-bottom', '320px'));
     await c.setOffline(true);
     h = await bis(p, 2000, h => h.toast === TEXT_AUS);
@@ -145,7 +145,7 @@ export async function checkOffline(appDir, browser, { ansichten, grenze = 4500, 
     await p.evaluate(() => document.documentElement.style.setProperty('--vv-bottom', '0px'));
     await c.setOffline(false); await bis(p, 4000, h => h.toast === TEXT_AN);
   }
-  // F-17 (seit 4.15.1, Fund P-39/1 und /2): Gerät ohne Safari-Meldung – wie das iPad als Home-Bildschirm-App
+  // APD-6/F-17 (seit 4.15.1, Fund P-39/1 und /2): Gerät ohne Safari-Meldung – wie das iPad als Home-Bildschirm-App
   async function ohneMeldung(name, c, p) {
     await p.addInitScript(() => {
       for (const ev of ['online', 'offline']) window.addEventListener(ev, e => e.stopImmediatePropagation(), true);
@@ -163,7 +163,7 @@ export async function checkOffline(appDir, browser, { ansichten, grenze = 4500, 
     if (h?.toast !== TEXT_AN) E(`${name}: ohne Safari-Meldung (iPad) – ‚Wieder online‘ fehlt nach 15 s (gesehen: ${h?.toast ?? 'keine'})`);
     if (h?.linie) E(`${name}: ohne Safari-Meldung (iPad) – wieder online steht trotzdem die graue Zeile`);
   }
-  // Seit 4.16.1 (A-11): Unter Last stürzt in der Prüfumgebung der Netzprozess von WebKit ab – der Speicher des Service
+  // Seit 4.16.1 (APD-11): Unter Last stürzt in der Prüfumgebung der Netzprozess von WebKit ab – der Speicher des Service
   // Workers (CacheStorage, bei Playwright nur im Arbeitsspeicher) ist danach leer, obwohl ihn niemand löscht, und die nächste
   // Seite wird gar nicht mehr angefragt. Gemessen 15.10.2026: nach der Installation 7 Dateien, nach dem Absturz keine. Das ist
   // kein Fehler der App (am Gerät liegt der Speicher dauerhaft). Erscheint die App nicht und ist der Speicher leer, wird die
@@ -195,7 +195,7 @@ export async function checkOffline(appDir, browser, { ansichten, grenze = 4500, 
           log(name, fall, ms);
           if (ms === null && await speicherWeg(p)) { verloren = true; netz = 'an'; for (const r of offen) r.destroy?.(); offen.clear(); break; }
           if (ms === null) E(`${name}: ${fall} – die App erscheint nicht${modus === 'haengt' ? ` innerhalb ${grenze / 1000} s` : ''} (weiße Seite)`);
-          // F-7, F-8: beim Start ohne Netz bzw. bei hängendem Netz Meldung und Zeile
+          // APD-6/F-7, APD-6/F-8: beim Start ohne Netz bzw. bei hängendem Netz Meldung und Zeile
           else pruefeAus(name, fall, await bis(p, 2500, h => h.toast === TEXT_AUS && (!h.fuss || h.linie === LINIE)));
           netz = 'an'; for (const r of offen) r.destroy?.(); offen.clear();
         }

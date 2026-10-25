@@ -1,4 +1,4 @@
-// AppDesign 4.35.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
+// AppDesign 4.36.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
 // Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/fassung/X.Y.Z/ui.js"></script> (feste Fassung, R-10.3)
 // Seit 4.11.0 (R-10.3): ui.js und design.css immer mit ?v=<AppDesign-Version> einbinden (auch in sw.js) und beim Start
 // prüfen, ob genau diese Fassung geladen ist (AD_VERSION hier, --ad-version in design.css).
@@ -20,7 +20,7 @@
 
 'use strict';
 // Version der Bausteine (R-10.3): die App vergleicht sie beim Start mit der benötigten Fassung.
-const AD_VERSION = '4.35.0';
+const AD_VERSION = '4.36.0';
 /* ---------- Icons ---------- */
 
 // Schaltflächen-Icons aus Lucide (ISC-Lizenz), direkt eingebettet, damit die App offline funktioniert.
@@ -35,7 +35,7 @@ const ICONS = {
   'share': '<path d="M12 2v13"/><path d="m16 6-4-4-4 4"/><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>',
   'search': '<path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/>',
   'arrow-up-to-line': '<path d="M5 3h14"/><path d="m18 13-6-6-6 6"/><path d="M12 7v14"/>',
-  'chevrons-up-down': '<path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/>',   // seit 4.30.0: Schnellroll-Griff (A-37)
+  'chevrons-up-down': '<path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/>',   // seit 4.30.0: Schnellroll-Griff (APD-37)
   'arrow-down-to-line': '<path d="M12 17V3"/><path d="m6 11 6 6 6-6"/><path d="M19 21H5"/>',
   'check': '<path d="M20 6 9 17l-5-5"/>',
   'sun-moon': '<path d="M12 8a2.83 2.83 0 0 0 4 4 4 4 0 1 1-4-4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.9 4.9 1.4 1.4"/><path d="m17.7 17.7 1.4 1.4"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.3 17.7-1.4 1.4"/><path d="m19.1 4.9-1.4 1.4"/>',
@@ -56,7 +56,7 @@ const ICONS = {
   'rotate-ccw': '<path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/>',
   'calendar': '<path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/>',
   'panel-left': '<rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 3v18"/>',
-  // Seit 4.15.0 (R-1.5, A-06): Offline-Hinweis
+  // Seit 4.15.0 (R-1.5, APD-6): Offline-Hinweis
   'wifi-off': '<path d="M12 20h.01"/><path d="M8.5 16.429a5 5 0 0 1 7 0"/><path d="M5 12.859a10 10 0 0 1 5.17-2.69"/><path d="M19 12.859a10 10 0 0 0-2.007-1.523"/><path d="M2 8.82a15 15 0 0 1 4.177-2.643"/><path d="M22 8.82a15 15 0 0 0-11.288-3.764"/><path d="m2 2 20 20"/>',
   'wifi': '<path d="M12 20h.01"/><path d="M2 8.82a15 15 0 0 1 20 0"/><path d="M5 12.859a10 10 0 0 1 14 0"/><path d="M8.5 16.429a5 5 0 0 1 7 0"/>',
   'activity': '<path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"/>',
@@ -104,7 +104,7 @@ function autoGrow(ta) {
 }
 const growAll = () => dlg.querySelectorAll('textarea').forEach(autoGrow);
 
-// R-3.5 (seit 4.33.0, A-76): langes Drücken gilt nur, solange der Finger still steht – wandert er mehr als LANG_WEG oder rollt die
+// R-3.5 (seit 4.33.0, APD-76): langes Drücken gilt nur, solange der Finger still steht – wandert er mehr als LANG_WEG oder rollt die
 // Fläche um ihn herum (Smiley-Leiste seitlich ziehen), ist es abgebrochen (wie Apple). Safari meldet beim Ziehen der Leiste kein
 // pointercancel – vorher fragte die Leiste nach 0,6 s, ob das Smiley unter dem Finger entfernt werden soll.
 const LANG_WEG = 10;
@@ -117,7 +117,7 @@ function onLongPress(btn, onLong, onTap) {
     stop();
     fired = false; x0 = e.clientX; y0 = e.clientY;
     addEventListener('scroll', rollt, { capture: true, passive: true });
-    timer = setTimeout(() => { stop(); if (navZug?.aktiv) return; fired = true; onLong(); }, 600);   // seit 4.30.0: nicht während einer Wischgeste (A-61)
+    timer = setTimeout(() => { stop(); if (navZug?.aktiv) return; fired = true; onLong(); }, 600);   // seit 4.30.0: nicht während einer Wischgeste (APD-61)
   });
   btn.addEventListener('pointermove', e => { if (timer && Math.hypot(e.clientX - x0, e.clientY - y0) > LANG_WEG) stop(); });
   ['pointerup', 'pointerleave', 'pointercancel'].forEach(ev => btn.addEventListener(ev, stop));
@@ -129,12 +129,12 @@ function onLongPress(btn, onLong, onTap) {
   });
 }
 
-// R-2.3 (seit 4.25.0, A-21): Suche mit mehreren Begriffen wie Mail und Notizen – Leerzeichen trennt Wörter, ein Eintrag passt,
+// R-2.3 (seit 4.25.0, APD-21): Suche mit mehreren Begriffen wie Mail und Notizen – Leerzeichen trennt Wörter, ein Eintrag passt,
 // wenn alle darin vorkommen (Reihenfolge und Groß/klein egal); „…“ sucht eine genaue Wortfolge. Was ‚ein Eintrag‘ ist, sagt
 // die App (Reiselogbuch: das ganze Reiselogbuch; gezeigt werden dann die Tage mit mindestens einem Wort).
-// Seit 4.29.0 (A-63 C2) ohne Akzente wie Apple: ‚Zurich‘ findet ‚Zürich‘ und umgekehrt – verglichen wird ohne Akzentzeichen
+// Seit 4.29.0 (APD-63 C2) ohne Akzente wie Apple: ‚Zurich‘ findet ‚Zürich‘ und umgekehrt – verglichen wird ohne Akzentzeichen
 // (Unicode-Zerlegung, Zeichen der Klasse ‚Mark‘ entfernt); ß, ø, æ sind eigene Buchstaben und bleiben.
-// Gemerkt je Text: beim Tippen werden dieselben Texte bei jedem Buchstaben wieder verglichen (F-11: 30 Reiselogbücher unter 50 ms)
+// Gemerkt je Text: beim Tippen werden dieselben Texte bei jedem Buchstaben wieder verglichen (APD-61/F-11: 30 Reiselogbücher unter 50 ms)
 const foldMerk = new Map();
 function fold(t) {
   const s = String(t ?? '');
@@ -184,15 +184,15 @@ function markWords(html, words) {
   return html.replace(new RegExp(pattern, 'giu'), m => `<mark>${m}</mark>`).replaceAll('</mark><mark>', '');
 }
 
-// R-2.3 (seit 4.25.1, A-24): Seite neu aufbauen, ohne das Feld mit dem Fokus zu ersetzen. Die App ruft setHtml(el, html) statt
+// R-2.3 (seit 4.25.1, APD-24): Seite neu aufbauen, ohne das Feld mit dem Fokus zu ersetzen. Die App ruft setHtml(el, html) statt
 // el.innerHTML = html. Liegt der Fokus in einem Eingabefeld darin (z. B. Suche beim Tippen), wird der neue Inhalt in den alten
 // eingearbeitet: das Feld und seine Vorfahren bleiben dieselben Elemente (Fokus, Cursor, Tastatur bleiben), alles andere wird
 // angeglichen. Sonst ersetzt Safari am iPhone mit dem Feld auch die Tastatur kurz – Kopf- und Suchzeile zittern bei jedem Buchstaben.
-// Seit 4.27.0 (A-28): der Rollbereich (.rolle mit id, direkt in el) bleibt dasselbe Element – nur sein Inhalt wird ersetzt. So
+// Seit 4.27.0 (APD-28): der Rollbereich (.rolle mit id, direkt in el) bleibt dasselbe Element – nur sein Inhalt wird ersetzt. So
 // bleibt der Rollstand beim Neuaufbau erhalten (wie früher der des Fensters), und ein laufender Schwung reißt nicht ab.
 function setHtml(el, html) {
   if (mess?.an) messEreignis('neuaufbau ' + (el.id || el.className || el.tagName.toLowerCase()));
-  // seit 4.29.0: das ⓧ im Feld (A-63 C3) steht nicht im neuen Inhalt – vorher heraus, danach wieder an das Feld mit Fokus
+  // seit 4.29.0: das ⓧ im Feld (APD-63 C3) steht nicht im neuen Inhalt – vorher heraus, danach wieder an das Feld mit Fokus
   if (el.contains(fxBtn)) { fxBtn.remove(); queueMicrotask(fxZeigen); }
   const f = document.activeElement;
   const tpl = document.createElement('template');
@@ -234,7 +234,7 @@ function setHtml(el, html) {
   kids(el, tpl.content);
 }
 
-// Komponente ⓧ in einzeiligen Feldern (seit 4.29.0, A-63 C3, R-5.6) wie Apple (UIKit ‚clearButtonMode = whileEditing‘):
+// Komponente ⓧ in einzeiligen Feldern (seit 4.29.0, APD-63 C3, R-5.6) wie Apple (UIKit ‚clearButtonMode = whileEditing‘):
 // solange ein einzeiliges Textfeld den Fokus hat und etwas drinsteht, steht rechts darin ein graues ⓧ (wie im Suchfeld, 44 × 44
 // Antippfläche). Antippen leert das Feld, Cursor und Tastatur bleiben; die App erfährt es über ein input-Ereignis (wie beim
 // Löschen per Taste). Ein Knopf für alle Felder, gleich hinter das Feld gesetzt (rollt mit); abschaltbar mit data-noclear.
@@ -280,7 +280,7 @@ window.addEventListener('resize', () => requestAnimationFrame(fxZeigen));
 // Größe des Feldes (Rahmen, nicht Innenraum – das ⓧ ändert den Innenabstand), im nächsten Bild: sonst meldet Safari eine Schleife
 if (window.ResizeObserver) { const ro = new ResizeObserver(() => fxFeld && requestAnimationFrame(fxZeigen)); document.addEventListener('focusin', e => { ro.disconnect(); if (e.target.matches?.(FX)) ro.observe(e.target, { box: 'border-box' }); }); }
 
-/* ---------- Bedienungshilfen (seit 4.35.0, A-43 Teil 1: R-1.8 VoiceOver, R-4.7 Hardware-Tastatur, R-5.3, R-3.4) ---------- */
+/* ---------- Bedienungshilfen (seit 4.35.0, APD-43 Teil 1: R-1.8 VoiceOver, R-4.7 Hardware-Tastatur, R-5.3, R-3.4) ---------- */
 
 // R-1.8 (V9, V13): Ergebnisse höflich ansagen – VoiceOver liest sie, sobald es fertig gesprochen hat. Der Ansage-Bereich liegt im
 // obersten offenen Fenster (Meldung, Fenster bzw. Blatt – außerhalb eines modalen Fensters hört VoiceOver nichts), sonst auf der
@@ -385,13 +385,13 @@ function setAppearance(a) {
 }
 const APPEARANCES = { auto: 'Automatisch', light: 'Hell', dark: 'Dunkel' };
 
-/* ---------- Rahmen und Rollbereich (seit 4.27.0, A-28, R-2.1) ---------- */
+/* ---------- Rahmen und Rollbereich (seit 4.27.0, APD-28, R-2.1) ---------- */
 
 // Die Seite rollt nie, nur der Inhalt. Die App baut #app als Rahmen aus festen Zeilen: oben die Kopfzeile (.nb bzw. .pnav, mit
 // Suchzeile), darunter der Rollbereich <div class="rolle" id="rolle">…Inhalt…</div>. Der Rahmen ist so hoch wie der sichtbare
 // Bereich (--vv-h, Variante B1) und endet über der Tastatur. Weil das Fenster nicht rollt, hat Safari beim Tippen nichts zu
-// verschieben (A-27: jedes Rollen des Fensters bei offener Tastatur verschob den sichtbaren Bereich, der Ausgleich kam 2 Bilder
-// zu spät; Muster A-28 und Versuch M-1 am iPhone: 0 px). Alle Bausteine (Leiste, R-3.2, R-7.3, R-7.4, R-8.1, Messmodus) rollen
+// verschieben (APD-27: jedes Rollen des Fensters bei offener Tastatur verschob den sichtbaren Bereich, der Ausgleich kam 2 Bilder
+// zu spät; Muster APD-28 und Versuch APD-28/M-1 am iPhone: 0 px). Alle Bausteine (Leiste, R-3.2, R-7.3, R-7.4, R-8.1, Messmodus) rollen
 // nur über rolle; die App ruft nie window.scrollTo. Ohne Rollbereich (App noch nicht umgebaut) rollt wie bisher das Fenster.
 const rolle = {
   get el() { return document.querySelector('#app > .rolle'); },
@@ -400,9 +400,9 @@ const rolle = {
   get rest() { return rolle.max - rolle.y; },
   to(y, smooth = false) { (rolle.el || window).scrollTo({ top: Math.max(0, Math.round(y)), behavior: smooth ? 'smooth' : 'instant' }); },
   by(d) { if (Math.round(d)) rolle.to(rolle.y + d); },
-  // seit 4.28.1 (A-36): bis zum Ende des Inhalts – Platz, der nach dem Schließen der Tastatur noch darunter steht, zählt nicht
+  // seit 4.28.1 (APD-36): bis zum Ende des Inhalts – Platz, der nach dem Schließen der Tastatur noch darunter steht, zählt nicht
   ende(smooth = false) { rolle.to(rolle.max - platzVon(rolle.el), smooth); },
-  // seit 4.30.0 (A-37 F-5, A-61 F-10): ein weiches Rollen (‚Nach oben / Ans Ende‘) sofort anhalten – WebKit hält es bei scrollTo
+  // seit 4.30.0 (7 APD-37/F-5, 1 APD-61/F-10): ein weiches Rollen (‚Nach oben / Ans Ende‘) sofort anhalten – WebKit hält es bei scrollTo
   // nicht an, wohl aber, wenn der Bereich kurz nicht rollen darf
   halt() { const e = rolle.el; if (!e) return; const y = e.scrollTop; e.style.overflowY = 'hidden'; e.scrollTop = y; void e.offsetHeight; e.style.overflowY = ''; e.scrollTop = y; },
 };
@@ -420,7 +420,7 @@ function blockingLayer() {
 }
 
 // Seite sperren, solange ein Fenster offen ist: Wischen wirkt nur im Fenster (seit 4.2.0).
-// R-7.3 (seit 4.18.0, A-13): Solange ein Fenster offen ist, steht die Seite dahinter still. Safari schiebt beim Öffnen der
+// R-7.3 (seit 4.18.0, APD-13): Solange ein Fenster offen ist, steht die Seite dahinter still. Safari schiebt beim Öffnen der
 // Tastatur trotz overflow: hidden die ganze Seite und schiebt sie nicht zurück – deshalb wird der Scrollstand beim Öffnen
 // gemerkt und beim Schließen genau wiederhergestellt (position: fixed ginge nicht: der Tabellenkopf ist sticky).
 // Seit 4.23.1 (P-51/5): zusätzlich die oberste Zeile unter der Leiste samt Abstand in px – nach dem Schließen und dem
@@ -478,7 +478,7 @@ function showModalQuiet(d) {
 }
 
 // Menü oder Sprechblase unter (bzw. über) der Schaltfläche, im Bildschirm gehalten.
-// R-1.7 (seit 4.29.0, A-63): Abstände von Menüs und Sprechblasen zum Rand – 12 px, mindestens die sicheren Ränder
+// R-1.7 (seit 4.29.0, APD-63): Abstände von Menüs und Sprechblasen zum Rand – 12 px, mindestens die sicheren Ränder
 // (bei offener Tastatur liegt die Home-Leiste unter ihr)
 function rand12() {
   const g = safeRand();
@@ -489,7 +489,7 @@ function placeAt(el, anchor, align) {
   // Reicht der Platz darunter nicht, scrollt ihr Inhalt darin (erst bei weniger als 200 px Platz darunter
   // öffnen sie nach oben). 'beside': rechts neben dem Eintrag (Kontextmenü in der Seitenleiste), oben bündig.
   el.style.maxHeight = ''; el.style.overflowY = '';   // nach dem Drehen neu messen
-  // Seit 4.29.0 (R-1.7, A-63): Abstand 12 px vom Rand, mindestens aber die sicheren Ränder (Aussparung, Home-Leiste)
+  // Seit 4.29.0 (R-1.7, APD-63): Abstand 12 px vom Rand, mindestens aber die sicheren Ränder (Aussparung, Home-Leiste)
   const { L, R, T, B } = rand12();
   let r = anchor.getBoundingClientRect();
   const fit = room => { if (el.scrollHeight > room) { el.style.maxHeight = room + 'px'; el.style.overflowY = 'auto'; el.style.overscrollBehavior = 'contain'; } };
@@ -498,7 +498,7 @@ function placeAt(el, anchor, align) {
   // linksbündig unter der Kachel – ganz sichtbar über der Backup-Kachel; dafür wird die Liste nötigenfalls
   // etwas nach oben geschoben (R-4.2).
   if (align === 'beside' && innerWidth - (r.right - 40) - R < el.offsetWidth) {
-    // seit 4.34.0 (A-74): ohne Backup-Kachel über der Offline-Zeile bzw. dem unteren Rand
+    // seit 4.34.0 (APD-74): ohne Backup-Kachel über der Offline-Zeile bzw. dem unteren Rand
     const list = anchor.closest('.side-list'), tr = sideFootRect(anchor.closest('#side'));
     const limit = tr && tr.height ? Math.min(innerHeight - B, tr.top - 12) : innerHeight - B;
     const need = r.bottom + 8 + el.offsetHeight - limit;
@@ -763,7 +763,7 @@ function release(sel) { if (!sel) return; held.delete(sel); document.querySelect
 
 // Die Schaltfläche oder Zeile, von der ein Fenster kommt, bleibt blau hinterlegt, solange es offen ist.
 function setOpener(sel) {
-  endReveal(); // A-23: eine laufende Hervorhebung endet, sobald das nächste Fenster aufgeht
+  endReveal(); // APD-23: eine laufende Hervorhebung endet, sobald das nächste Fenster aufgeht
   if (dlgOpener && dlgOpener !== sel) document.querySelector(dlgOpener)?.classList.remove('on');
   dlgOpener = sel;
   markOpener();
@@ -836,7 +836,7 @@ function backupFileOf(app, data) {
   return { name: `Ω Backup ${app} ${n.getFullYear()}.${two(n.getMonth() + 1)}.${two(n.getDate())} ${two(n.getHours())}.${two(n.getMinutes())}.json`, type: 'json',
     content: JSON.stringify({ ...data, savedAt: Date.now(), savedOn: deviceName() }, null, 2) };
 }
-// Fuß der Seitenleiste bzw. Startliste. Seit 4.34.0 (R-9.1, A-74): die gelbe Backup-Kachel steht nur, solange heute auf diesem
+// Fuß der Seitenleiste bzw. Startliste. Seit 4.34.0 (R-9.1, APD-74): die gelbe Backup-Kachel steht nur, solange heute auf diesem
 // Gerät noch kein Backup erstellt wurde und es etwas zu sichern gibt (leer = keine Einträge); danach verschwindet sie (wie die
 // Hinweise in den Einstellungen) – ‚Backup erstellen‘ und ‚Letztes Backup …‘ bleiben im Mehr-Menü. Um 0:00 kommt sie wieder
 // (onNeuerTag). Seit 4.15.0 (R-1.5): darunter grau die Zeile ‚Offline – …‘, solange die App offline arbeitet – seit 4.34.0 auch
@@ -845,7 +845,7 @@ const backupTileHtml = (ms, leer = false) => `<div class="side-foot">${leer || b
       <button type="button" id="hintBackup">${ic('save')}Backup erstellen</button></div>`}${netLineHtml()}</div>`;
 // Oberstes sichtbares Element im Fuß (Backup-Kachel, sonst Offline-Zeile): Menüs und die Meldung ‚Du bist offline‘ bleiben darüber.
 const sideFootRect = side => side?.querySelector('.side-foot .bhint, .side-foot .offl:not([hidden])')?.getBoundingClientRect();
-// Seit 4.34.0 (A-74): fn läuft, sobald ein neuer Kalendertag beginnt – um 0:00 und bei der Rückkehr in die App (im Hintergrund
+// Seit 4.34.0 (APD-74): fn läuft, sobald ein neuer Kalendertag beginnt – um 0:00 und bei der Rückkehr in die App (im Hintergrund
 // hält Safari Zeitgeber an). Die App zeichnet damit die Liste neu (Backup-Kachel kommt wieder).
 function onNeuerTag(fn) {
   let tag = new Date().toDateString(), timer = null;
@@ -855,7 +855,7 @@ function onNeuerTag(fn) {
   plane();
 }
 
-/* ---------- Offline-Hinweis (seit 4.15.0, R-1.5, A-06 Variante c) ---------- */
+/* ---------- Offline-Hinweis (seit 4.15.0, R-1.5, APD-6 Variante c) ---------- */
 // Solange die App offline arbeitet, steht unter der Backup-Kachel (Seitenleiste bzw. Startliste) grau ‚Offline – alles
 // bleibt auf diesem Gerät‘; beim Wechsel (und beim Start ohne Netz) erscheint unten kurz eine Meldung, mittig im freien
 // Bereich neben einer sichtbaren Seitenleiste – sie verschwindet nach 4 s, Antippen schließt sie, sie sperrt nichts.
@@ -1289,7 +1289,7 @@ function capWanted(f, pos) {
   const before = f.value.slice(f.value.lastIndexOf('\n', pos - 1) + 1, pos);
   return !/[\p{L}\p{N}]/u.test(before) || /[.!?]\s+$/.test(before);
 }
-// Seit 4.31.0 (A-65): löscht oder ersetzt der Nutzer einen Großbuchstaben (Rücktaste, markieren und überschreiben), erzwingt die App an
+// Seit 4.31.0 (APD-65): löscht oder ersetzt der Nutzer einen Großbuchstaben (Rücktaste, markieren und überschreiben), erzwingt die App an
 // dieser Stelle keine Großschreibung mehr – die Tastatur entscheidet (wie iOS nach einer Korrektur von Hand); data-cap-frei = Stelle.
 // Nur für genau einen Buchstaben: wer ein ganzes Wort oder Feld löscht, bekommt danach wieder Großschreibung.
 function capFrei(f, von, bis) {
@@ -1322,17 +1322,17 @@ function autoCapital(e) {
   const pos = f.selectionStart;
   const ch = f.value.charAt(pos - 1);
   if (!/^\p{Ll}$/u.test(ch)) { if (/\p{L}/u.test(ch)) delete f.dataset.capNext; return; }
-  if (f.dataset.capFrei !== undefined && +f.dataset.capFrei === pos - 1) { delete f.dataset.capFrei; return; }   // A-65
+  if (f.dataset.capFrei !== undefined && +f.dataset.capFrei === pos - 1) { delete f.dataset.capFrei; return; }   // APD-65
   if (!capWanted(f, pos - 1)) return;
   delete f.dataset.capNext;
   f.setRangeText(ch.toLocaleUpperCase('de'), pos - 1, pos, 'end');
 }
-// R-3.2 (seit 4.20.0, A-15): ‚Nach oben / Ans Ende‘ (.fab) nur, wenn es etwas zu scrollen gibt – iPad und iPhone.
-// Seit 4.27.0 (A-28) am Rollbereich gemessen; updateBar() ruft es nach jedem Aufbau der Seite. fabTop()/fabEnd() rollen den Inhalt.
-// Seit 4.27.1 (A-33): die Kapsel überdeckt nie Kopf- oder Suchzeile – passt sie nicht mit 16 px Abstand oben und unten in den
+// R-3.2 (seit 4.20.0, APD-15): ‚Nach oben / Ans Ende‘ (.fab) nur, wenn es etwas zu scrollen gibt – iPad und iPhone.
+// Seit 4.27.0 (APD-28) am Rollbereich gemessen; updateBar() ruft es nach jedem Aufbau der Seite. fabTop()/fabEnd() rollen den Inhalt.
+// Seit 4.27.1 (APD-33): die Kapsel überdeckt nie Kopf- oder Suchzeile – passt sie nicht mit 16 px Abstand oben und unten in den
 // sichtbaren Teil des Rollbereichs (iPhone quer mit offener Tastatur: 126 px sichtbar, davon gut 100 px Leisten), ist sie
 // ausgeblendet; neu geprüft, sobald sich der sichtbare Bereich ändert (Tastatur auf und zu).
-// Seit 4.30.0 (A-37 B): nur die Pfeile, die etwas bewirken – ganz oben nur ‚Ans Ende‘, am Ende nur ‚Nach oben‘, dazwischen beide;
+// Seit 4.30.0 (APD-37 B): nur die Pfeile, die etwas bewirken – ganz oben nur ‚Ans Ende‘, am Ende nur ‚Nach oben‘, dazwischen beide;
 // näher als eine halbe Höhe des Rollbereichs an einem Ende fehlt dessen Pfeil. Die Kapsel steht unten fest (ihr unterer Rand
 // bleibt, sie wird nur niedriger); gemessen wird mit ihrer vollen Höhe, damit sie nicht zwischen da und weg springt.
 let fabH = 0;
@@ -1365,7 +1365,7 @@ if (window.ResizeObserver) new ResizeObserver(() => requestAnimationFrame(update
 window.addEventListener('resize', () => requestAnimationFrame(updateFab));
 window.visualViewport?.addEventListener('resize', () => requestAnimationFrame(updateFab));
 
-// R-3.2 (seit 4.30.0, A-37 C): Schnellroll-Griff wie in Apple Fotos – beim Rollen erscheint rechts ein Griff; ihn halten und ziehen
+// R-3.2 (seit 4.30.0, APD-37 C): Schnellroll-Griff wie in Apple Fotos – beim Rollen erscheint rechts ein Griff; ihn halten und ziehen
 // springt durch den ganzen Inhalt, eine Blase links daneben zeigt die Marke des Abschnitts oben im Bild (die App setzt data-marke an
 // Tage und Abschnitte, ohne Marken keine Blase). Nach 1,5 s ohne Rollen blendet er aus (nur Deckkraft, auch bei ‚Bewegung
 // reduzieren‘). Da ist er nur zusammen mit der Kapsel (Inhaltsansicht, nicht bei offener Tastatur oder offenem Fenster) und erst ab
@@ -1427,7 +1427,7 @@ onRoll(() => { if (!keepBusy) schnellZeigen(true); });
 schnellGriff.addEventListener('pointerdown', e => {
   if (e.button > 0 || schnell.classList.contains('aus')) return;
   e.preventDefault(); e.stopPropagation();
-  rolle.halt();   // ein laufendes weiches Rollen (‚Ans Ende‘) endet, der Griff folgt dem Finger (F-5)
+  rolle.halt();   // ein laufendes weiches Rollen (‚Ans Ende‘) endet, der Griff folgt dem Finger (APD-37/F-5)
   try { schnellGriff.setPointerCapture(e.pointerId); } catch {}
   schnellZieht = { id: e.pointerId, y: e.clientY, a: schnellEnde() ? rolle.y / schnellEnde() : 0 };
   schnell.classList.add('zieht'); clearTimeout(schnellRuhe);
@@ -1459,7 +1459,7 @@ schnellGriff.addEventListener('keydown', e => {
   rolle.to(Math.min(schnellEnde(), rolle.y + ziel.getBoundingClientRect().top - top));
 });
 
-// R-5.5 (seit 4.19.0, A-14): in einzeiligen Feldern bestätigt die Eingabetaste und schließt die Tastatur (‚Fertig‘, HIG);
+// R-5.5 (seit 4.19.0, APD-14): in einzeiligen Feldern bestätigt die Eingabetaste und schließt die Tastatur (‚Fertig‘, HIG);
 // mehrzeilige Felder machen einen Zeilenumbruch. Das Suchfeld (type=search) behält ‚Suchen‘ und seine eigene Eingabetaste.
 const SINGLE_LINE = 'input:not([type]), input[type=text], input[type=number], input[type=email], input[type=tel], input[type=url], input[type=password]';
 function markEnterDone(n) {
@@ -1477,7 +1477,7 @@ document.addEventListener('keydown', e => {
 });
 dlg.addEventListener('beforeinput', capBefore);
 dlg.addEventListener('input', autoCapital);
-// Seit 4.31.0 (A-64, R-5.2): keine doppelten Leerzeichen in Textfeldern (ein- und mehrzeilig, auch im Suchfeld) – ein Leerzeichen direkt
+// Seit 4.31.0 (APD-64, R-5.2): keine doppelten Leerzeichen in Textfeldern (ein- und mehrzeilig, auch im Suchfeld) – ein Leerzeichen direkt
 // neben einem Leerzeichen wird nicht eingefügt; beim Einfügen werden mehrere Leerzeichen oder Tabs zu einem (Zeilenumbrüche bleiben,
 // einzeilige Felder machen aus ihnen ein Leerzeichen). Der iOS-Kurzbefehl ‚.‘ (zweimal Leertaste) ersetzt das erste Leerzeichen selbst.
 const LEER_FELD = 'textarea, input[type=text], input[type=search], input:not([type])';
@@ -1530,9 +1530,9 @@ dlg.addEventListener('close', () => {
   requestAnimationFrame(() => { holdAlign(); if (sel) revealRow(sel); });
 });
 
-// R-7.3 (seit 4.18.0, A-13): Zeile bzw. Kasten, aus dem ein Fenster kam, nach dem Schließen kurz hervorheben.
+// R-7.3 (seit 4.18.0, APD-13): Zeile bzw. Kasten, aus dem ein Fenster kam, nach dem Schließen kurz hervorheben.
 // Seit 4.23.2 rollt dafür nichts mehr (vorher: nach ‹ › bis die zuletzt gezeigte Zeile sichtbar war) – die Liste steht wie beim Öffnen.
-// Seit 4.24.0 (A-23): REVEAL_HOLD voll blau, dann in REVEAL_FADE ausblenden (vorher 1 s ausblenden);
+// Seit 4.24.0 (APD-23): REVEAL_HOLD voll blau, dann in REVEAL_FADE ausblenden (vorher 1 s ausblenden);
 // ‚Bewegung reduzieren‘: REVEAL_HOLD voll blau, dann ohne Ausblenden weg.
 // Schaltflächen sind keine Zeilen und werden nicht hervorgehoben.
 const REVEAL_HOLD = 2000, REVEAL_FADE = 1000;
@@ -1552,7 +1552,7 @@ function revealRow(sel) {
 }
 
 // Auswahl-Kapsel (R-5.4): Schaltflächen in einer Kapsel; ist sie zu schmal, lässt sich der Inhalt wischen,
-// ein Verlauf am Rand zeigt, wo es weitergeht. Seit 4.33.0 (A-75) steht im freien Rand dazu ein kleiner Pfeil (nur Anzeige,
+// ein Verlauf am Rand zeigt, wo es weitergeht. Seit 4.33.0 (APD-75) steht im freien Rand dazu ein kleiner Pfeil (nur Anzeige,
 // aria-hidden) – nur, solange es auf seiner Seite weitergeht; Drehen und andere Größenänderungen stellen beides neu.
 const capHtml = (buttons, id = '') => `<div class="cap"><div class="scroll" ${id ? `id="${id}"` : ''}>${buttons}</div>${ic('chevron-left', 'pf l')}${ic('chevron-right', 'pf r')}</div>`;
 const capFertig = new WeakSet();
@@ -1579,7 +1579,7 @@ function mountCap(root) {
 // Wie Apple: auf dem iPhone (hoch und quer) und in sehr schmalen Fenstern gilt die kompakte Ansicht –
 // eine Seite nach der anderen, Fenster als Blatt (seit 4.32.0, R-4.6). <html> bekommt dann die Klasse 'phone'.
 // Die App fragt isPhone() und baut ihre Seiten danach; bei einem Wechsel ruft ihr resize-Handler render().
-// Seit 4.28.1 (A-36): die Höhe ohne Tastatur zählt (S-3: verschiebt Safari den sichtbaren Bereich, wird innerHeight kleiner – das
+// Seit 4.28.1 (APD-36): die Höhe ohne Tastatur zählt (APD-36/S-3: verschiebt Safari den sichtbaren Bereich, wird innerHeight kleiner – das
 // iPad galt mit offener Tastatur als iPhone, das Fenster sprang an den linken Rand).
 const isPhone = () => innerWidth < 700 || seitenHoehe() < 500;
 // Seit 4.9.0: Name des Geräts für ‚geändert am … · iPad‘ und den Abgleich (iPadOS meldet sich als Mac mit Touch).
@@ -1591,7 +1591,7 @@ function deviceName() {
 }
 function applyLayout() { document.documentElement.classList.toggle('phone', isPhone()); }
 applyLayout();
-// Schalter (seit 4.29.0, A-63 C4, 15.15): kennt der Browser den eingebauten Schalter (Safari ab 17.4, <input type="checkbox" switch>),
+// Schalter (seit 4.29.0, APD-63 C4, 15.15): kennt der Browser den eingebauten Schalter (Safari ab 17.4, <input type="checkbox" switch>),
 // zeichnet Safari ihn selbst – gleitet, ziehbar, Haptik, VoiceOver ‚Schalter‘, Aussehen der iOS-Version; sonst unser Schalter (design.css)
 document.documentElement.classList.toggle('natsw', 'switch' in HTMLInputElement.prototype);
 window.addEventListener('resize', applyLayout);
@@ -1653,7 +1653,7 @@ function restoreTop() {
 }
 onRoll(() => { if (!keepBusy) rememberTop(); });
 
-// R-8.1 (seit 4.21.0, A-17): Ändert die App die Anordnung selbst (z. B. Seitenleiste ein/aus – die Breite des Inhalts und
+// R-8.1 (seit 4.21.0, APD-17): Ändert die App die Anordnung selbst (z. B. Seitenleiste ein/aus – die Breite des Inhalts und
 // damit die Zeilenhöhen ändern sich, das Fenster nicht), bleibt oben derselbe Eintrag: keepPlace(() => { …; render(); }).
 function keepPlace(change) {
   const anchor = topAnchor();
@@ -1665,7 +1665,7 @@ function keepPlace(change) {
   requestAnimationFrame(() => { keepBusy = false; });
 }
 
-// R-7.4 (seit 4.21.0, A-16): Position beim Öffnen eines Eintrags – ganz oben; gibt die App einen ‚nächsten offenen‘ Eintrag
+// R-7.4 (seit 4.21.0, APD-16): Position beim Öffnen eines Eintrags – ganz oben; gibt die App einen ‚nächsten offenen‘ Eintrag
 // an, steht er direkt unter dem Kopf (Leiste und haftender Tabellenkopf), nie in der Mitte. openAt(null) = ganz oben.
 function openAt(el) {
   let top = 0;
@@ -1693,7 +1693,7 @@ document.addEventListener('touchmove', e => {
   a.blur();
 }, { passive: false });
 
-/* ---------- Navigation und Gesten (seit 4.30.0, A-61 Teil 1, R-7.5) ---------- */
+/* ---------- Navigation und Gesten (seit 4.30.0, APD-61 Teil 1, R-7.5) ---------- */
 
 // Wie iOS 26 (Variante ‚Überall‘, Nutzer 22.10.2026): Im iPhone-Aufbau schiebt sich der Inhalt beim Öffnen von rechts über die
 // Startliste, die Liste weicht ein Drittel nach links und dunkelt leicht ab; zurück umgekehrt – mit dem Zurück-Knopf oder durch
@@ -1701,11 +1701,11 @@ document.addEventListener('touchmove', e => {
 // Inhalt die darübergelegte Seitenleiste herein, Wischen nach links auf ihr oder der Abdunkelung schiebt sie weg; panel-left und
 // die Abdunkelung bewegen sie genauso. iPad quer (feste Seitenleiste): keine Geste. Fertig nach halber Breite oder schnellem
 // Wischen (über 0,3 px/ms in den letzten 100 ms), sonst federt die Seite zurück. ‚Bewegung reduzieren‘: Überblenden statt Schieben.
-// Vorrang (T-35) an dieser einen Stelle: senkrecht rollt der Browser (touch-action pan-y), Bereiche mit eigenem waagrechtem Rollen,
+// Vorrang (APD-38/T-35) an dieser einen Stelle: senkrecht rollt der Browser (touch-action pan-y), Bereiche mit eigenem waagrechtem Rollen,
 // Felder, Knöpfe, Kapseln, Kapsel ‚Nach oben / Ans Ende‘ und Schnellroll-Griff behalten ihre Geste; entschieden wird nach 10 px –
 // deutlich waagrecht (1,2 × so weit wie senkrecht) in der richtigen Richtung, sonst nichts; wer erst hält (langes Drücken), wischt
 // nicht. Kein Wischen bei offenem Fenster, Menü oder offener Sprechblase. Drehen bricht ein Ziehen ab (Zustand wie vorher, R-8.1),
-// eine laufende Bewegung springt an ihr Ziel. Je Bild nur transform und opacity (A-59), die Bewegung als Web-Animation.
+// eine laufende Bewegung springt an ihr Ziel. Je Bild nur transform und opacity (APD-59), die Bewegung als Web-Animation.
 // Die App meldet sich an (Startliste bzw. Seitenleiste ist #side, der Inhalt #app, die Abdunkelung am iPad .side-shade):
 //   navAnmelden({ zurueck: { offen, darunter, los }, seite: { moeglich, offen, zeigen } })   (nicht ‚navigation‘ – so heißt die Navigation-API des Browsers)
 //     zurueck.offen()     – iPhone-Aufbau: ein Eintrag ist offen (Zurück möglich)
@@ -1713,7 +1713,7 @@ document.addEventListener('touchmove', e => {
 //     zurueck.los()       – zurück zur Startliste (Zustand ändern und neu aufbauen)
 //     seite.moeglich()    – Seitenleiste wird darübergelegt (iPad hoch), seite.offen() – sie ist sichtbar
 //     seite.zeigen(an)    – Seitenleiste ein- bzw. ausblenden (Zustand ändern, nur die Seitenleiste neu aufbauen)
-//     seite.fest()        – seit 4.31.0 (A-68): Seitenleiste steht fest links (iPad quer); seite.neu() – alles neu aufbauen
+//     seite.fest()        – seit 4.31.0 (APD-68): Seitenleiste steht fest links (iPad quer); seite.neu() – alles neu aufbauen
 // Aufrufe der App: navVor(change) beim Öffnen eines Eintrags aus der Startliste, navZurueck() für den Zurück-Knopf,
 // navSeite(an) für panel-left (iPad hoch und quer) und die Abdunkelung am iPad hoch.
 const NAV_DAUER = 350, NAV_ENTSCHEID = 10, NAV_WAAGRECHT = 1.2, NAV_TEMPO = 0.3, NAV_HALTEN = 500, NAV_DUNKEL = 0.1;
@@ -1723,7 +1723,7 @@ const navSchleier = document.createElement('div');
 navSchleier.className = 'nav-schleier';
 document.body.append(navSchleier);
 let navApp = null, navZug = null, navLauf = null, navKlickWeg = false;
-// seit 4.30.1 (A-67): die Entscheidungen der Gestenstelle stehen in der Messung (15.21) – ‚nav kandidat‘, ‚nav verworfen‘, ‚nav aktiv‘,
+// seit 4.30.1 (APD-67): die Entscheidungen der Gestenstelle stehen in der Messung (15.21) – ‚nav kandidat‘, ‚nav verworfen‘, ‚nav aktiv‘,
 // ‚nav fertig‘, ‚nav zurück gefedert‘, ‚nav abgebrochen‘ mit Weg (Anteil der Breite) und Tempo (px/ms)
 const navMess = t => { if (mess?.an) messEreignis('nav ' + t); };
 function navAnmelden(app) { navApp = app; navKlassen(); }
@@ -1737,7 +1737,7 @@ const navTeile = art => art === 'phone'
   : art === 'fest' ? [document.getElementById('side'), document.getElementById('app'), document.querySelector('.fab')].filter(Boolean)
   : [document.getElementById('side'), document.querySelector('.side-shade')].filter(Boolean);
 // Lage aller Ebenen zum Anteil p: iPhone 0 = Startliste, 1 = Inhalt; iPad 0 = Seitenleiste weg, 1 = Seitenleiste da.
-// Seit 4.31.0 (A-68, Variante B ‚Mitschieben‘): iPad quer (art ‚fest‘) rückt der Inhalt mit – bei p = 1 steht er dort, wo er neben der
+// Seit 4.31.0 (APD-68, Variante B ‚Mitschieben‘): iPad quer (art ‚fest‘) rückt der Inhalt mit – bei p = 1 steht er dort, wo er neben der
 // festen Seitenleiste beginnt (ihr rechter Rand + 4 px = w − 6), und behält bis zum Einrasten seine volle Breite (html.nav-fest).
 function navBild(art, el, p, w) {
   const ruhig = navRuhig?.matches;
@@ -1796,7 +1796,7 @@ function navVor(change) {
   navSetze('phone', 0, w);
   navFahre('phone', 0, 1, w, () => navApp.zurueck.darunter(false));
 }
-// Zurück-Knopf (iPhone-Aufbau): bei offener Tastatur erst sie schließen (A-36), dann schiebt sich der Inhalt hinaus
+// Zurück-Knopf (iPhone-Aufbau): bei offener Tastatur erst sie schließen (APD-36), dann schiebt sich der Inhalt hinaus
 function navZurueck() {
   const z = navApp?.zurueck;
   if (!z || !isPhone() || !z.offen()) return z?.los();
@@ -1822,7 +1822,7 @@ function navSeite(an) {
   if (an) { s.zeigen(true); const w = navAnfang('seite'); navSetze('seite', 0, w); navFahre('seite', 0, 1, w); }
   else { const w = navAnfang('seite'); navFahre('seite', 1, 0, w, () => s.zeigen(false)); }
 }
-// Seit 4.31.0 (A-68): iPad quer gleitet die feste Seitenleiste herein und der Inhalt rückt mit; am Ende rastet sie ein – der Inhalt wird
+// Seit 4.31.0 (APD-68): iPad quer gleitet die feste Seitenleiste herein und der Inhalt rückt mit; am Ende rastet sie ein – der Inhalt wird
 // schmaler, der oberste Eintrag bleibt (keepPlace, R-8.1). Hinaus: erst wird der Inhalt wieder ganz breit (unter der Seitenleiste,
 // oberster Eintrag bleibt), dann gleiten beide nach links.
 function navEinrasten() { keepPlace(() => { navAufraeumen('fest'); navApp.seite.neu(); }); }
@@ -1850,7 +1850,7 @@ function navKandidat(e) {
     return { art: 'phone', richtung: 1, von: 1, nach: 0 };
   }
   const s = navApp.seite;
-  // seit 4.31.0 (A-68): iPad quer nur herein – ausblenden nur mit panel-left (die Kacheln bleiben frei für Wischaktionen, T-10)
+  // seit 4.31.0 (APD-68): iPad quer nur herein – ausblenden nur mit panel-left (die Kacheln bleiben frei für Wischaktionen, APD-38/T-10)
   if (s?.fest?.()) return !s.offen() && app?.contains(t) && !navEigenesRollen(t, app) ? { art: 'fest', richtung: 1, von: 0, nach: 1 } : null;
   if (!s?.moeglich()) return null;
   if (!s.offen() && app?.contains(t) && !navEigenesRollen(t, app)) return { art: 'seite', richtung: 1, von: 0, nach: 1 };
@@ -1876,8 +1876,8 @@ function navAktiv(z, e) {
   z.aktiv = true;
   navKlickWeg = true;
   navMess(`aktiv ${z.art} ${Math.round(e.clientX - z.x0)} ${Math.round(e.clientY - z.y0)}`);
-  if (kbOffen()) document.activeElement?.blur?.();   // F-16: die Tastatur schließt, zurück geht es danach
-  rolle.halt();                                         // F-10: ein weiches Rollen endet, das Wischen gilt
+  if (kbOffen()) document.activeElement?.blur?.();   // APD-68/F-16: die Tastatur schließt, zurück geht es danach
+  rolle.halt();                                         // APD-68/F-10: ein weiches Rollen endet, das Wischen gilt
   try { e.target.setPointerCapture?.(e.pointerId); } catch {}
   z.w = navAnfang(z.art);
   if (z.art === 'phone') navApp.zurueck.darunter(true);
@@ -1922,7 +1922,7 @@ function navLoslassen(e, abbruch) {
   else if (z.nach === 1) navFahre('seite', p, geschafft ? 1 : 0, z.w, geschafft ? null : () => navApp.seite.zeigen(false));
   else navFahre('seite', p, geschafft ? 0 : 1, z.w, geschafft ? () => navApp.seite.zeigen(false) : null);
 }
-// A-67 (Messung P-65): wo der Browser senkrecht rollen darf, beginnt Safari ab 10 px senkrechter Abweichung zu rollen und nimmt der
+// APD-67 (Messung P-65): wo der Browser senkrecht rollen darf, beginnt Safari ab 10 px senkrechter Abweichung zu rollen und nimmt der
 // Seite den Finger (pointercancel) – auch mitten im Zurückwischen. Ist die Geste entschieden, verhindert touchmove das; nur touchmove
 // hält Safari auf (nicht pointermove). Vorher bleibt alles frei – senkrecht rollt der Browser wie bisher.
 window.addEventListener('touchmove', e => { if (navZug?.aktiv && e.cancelable) e.preventDefault(); }, { capture: true, passive: false });
@@ -1930,7 +1930,7 @@ window.addEventListener('pointerup', e => navLoslassen(e, false), true);
 window.addEventListener('pointercancel', e => navLoslassen(e, true), true);
 // Nach einer Wischgeste kein Antippen dessen, worauf sie begann
 window.addEventListener('click', e => { if (navKlickWeg) { e.preventDefault(); e.stopPropagation(); } }, true);
-// F-14 (R-8.1): Drehen bricht ein Ziehen ab – Zustand wie vor dem Ziehen; eine laufende Bewegung springt an ihr Ziel
+// APD-67/F-14 (R-8.1): Drehen bricht ein Ziehen ab – Zustand wie vor dem Ziehen; eine laufende Bewegung springt an ihr Ziel
 window.addEventListener('resize', () => {
   const z = navZug;
   if (z?.aktiv && (innerWidth !== z.breite || Math.abs(innerHeight - z.hoehe) > 150)) {
@@ -1946,7 +1946,7 @@ window.addEventListener('resize', () => {
   }
   navSofort();
 });
-// F-20 (VoiceOver): die ‚Zurück‘-Geste (Z) bzw. Escape geht zurück bzw. schließt die darübergelegte Seitenleiste
+// APD-61/F-20 (VoiceOver): die ‚Zurück‘-Geste (Z) bzw. Escape geht zurück bzw. schließt die darübergelegte Seitenleiste
 document.addEventListener('keydown', e => {
   if (e.key !== 'Escape' || e.defaultPrevented || !navApp || dlg.open || msg.open || document.querySelector('.menu, .pop')) return;
   if (e.target.closest?.('input, textarea, select, [contenteditable]')) return;
@@ -1958,14 +1958,14 @@ document.addEventListener('keydown', e => {
   }
 });
 
-/* ---------- Blatt auf dem iPhone (seit 4.32.0, A-61 Teil 2, R-4.6) ---------- */
+/* ---------- Blatt auf dem iPhone (seit 4.32.0, APD-61 Teil 2, R-4.6) ---------- */
 
-// Wie iOS 26 (‚Neuer Termin‘, Variante A ‚nur groß‘, Nutzer 23.10.2026; Fall-Liste arbeit/A-61 Teil 2 Fall-Liste.md): im iPhone-Aufbau ist
+// Wie iOS 26 (‚Neuer Termin‘, Variante A ‚nur groß‘, Nutzer 23.10.2026; Testfall-Liste arbeit/APD-61 Teil 2 Testfall-Liste.md): im iPhone-Aufbau ist
 // jedes Fenster (#dlg) ein Blatt – es gleitet von unten bis knapp unter die Statusleiste, die Seite dahinter weicht verkleinert und
 // abgedunkelt zurück (quer: volle Höhe, die Seite bleibt). Nach unten ziehen schließt wie das x: am Kopf immer, im Inhalt, wenn er ganz
 // oben steht, ein schnelles Wischen genügt; mit Änderungen seit dem Öffnen (dlgDirty) zieht es sich zäh, federt zurück und fragt am x
 // (R-4.4). Bei offener Tastatur schließt der Zug nach unten zuerst die Tastatur; beginnt er auf einem Feld, zieht er im selben Zug das
-// Blatt wie am Kopf (seit 4.32.1, A-71: R-4.5 hat den Inhalt gerollt, nicht der Nutzer – ein Feld, das selbst gerollt ist, rollt
+// Blatt wie am Kopf (seit 4.32.1, APD-71: R-4.5 hat den Inhalt gerollt, nicht der Nutzer – ein Feld, das selbst gerollt ist, rollt
 // weiter); im gerollten Inhalt daneben rollt er weiter. Antippen der Abdunkelung wirkt wie x. Meldungen (#msg)
 // bleiben kleine Fenster in der Mitte, am iPad bleibt das Fenster in der Mitte. Entschieden nach 8 px, deutlich senkrecht (1,2 × so weit
 // wie waagerecht); waagerecht rollende Bereiche behalten ihr Rollen. Beim Loslassen zählt, wo das Blatt mit dem Tempo auslaufen würde.
@@ -2127,7 +2127,7 @@ dlg.addEventListener('pointerdown', e => {
 });
 function blattErlaubt(z, dx, dy) {
   if (dy <= 0 || Math.abs(dy) <= Math.abs(dx) * BLATT_SENKRECHT) return false;
-  if (z.feld) return !(z.feld.scrollTop > 0 && z.feld.scrollHeight > z.feld.clientHeight + 1);   // A-71: Feld bei offener Tastatur
+  if (z.feld) return !(z.feld.scrollTop > 0 && z.feld.scrollHeight > z.feld.clientHeight + 1);   // APD-71: Feld bei offener Tastatur
   return z.kopf || blattGanzOben(z.t);
 }
 // Ist der Zug entschieden, verhindert touchmove das Rollen (Safari entscheidet sonst selbst, 13)
@@ -2139,7 +2139,7 @@ dlg.addEventListener('touchmove', e => {
 window.addEventListener('pointermove', e => {
   const z = blattZug;
   if (!z || e.pointerId !== z.id) return;
-  // seit 4.32.2 (A-73, P-69/3): ein Zug, der das Blatt nicht zieht (zuerst nach oben oder waagerecht), bleibt bei offener Tastatur
+  // seit 4.32.2 (APD-73, P-69/3): ein Zug, der das Blatt nicht zieht (zuerst nach oben oder waagerecht), bleibt bei offener Tastatur
   // beobachtet – geht der Finger danach mindestens 8 px unter seinen höchsten Punkt, deutlich senkrecht, schließt die Tastatur (wie iOS);
   // der Inhalt rollt dabei weiter (touchmove bleibt frei). Gemessen am Rand: 244 → 76 → 302, entschieden war nach 8 px ‚nach oben‘.
   if (z.nurTastatur) {
@@ -2193,7 +2193,7 @@ window.addEventListener('pointercancel', e => blattLos(e, true), true);
 
 // Bei offener Tastatur verkleinert und verschiebt Safari den sichtbaren Bereich. Kopfzeile, Tabellenkopf
 // und alle Fenster richten sich danach: die Kopfzeilen bleiben sichtbar, nur der Inhalt scrollt.
-// Seit 4.28.1 (A-36, Safari-Eigenheit S-3): Höhe der Seite ohne Tastatur = innerHeight + scrollY – verschiebt Safari den sichtbaren
+// Seit 4.28.1 (APD-36, Safari-Eigenheit APD-36/S-3): Höhe der Seite ohne Tastatur = innerHeight + scrollY – verschiebt Safari den sichtbaren
 // Bereich, wird innerHeight um genau so viel kleiner. Daraus der Abstand der Tastatur vom unteren Rand (Kapsel) und ob sie offen ist.
 // Mit Rollbereich rollt die Seite selbst nie – scrollY ist dann nur Safaris Verschiebung (ohne Rollbereich rollt das Fenster).
 function seitenHoehe() { return innerHeight + (rolle.el ? Math.max(0, scrollY) : 0); }
@@ -2201,7 +2201,7 @@ function kbOffen() { return !!window.visualViewport && visualViewport.height < s
 // Felder, die eine Tastatur öffnen (Datum, Uhrzeit, Auswahl und Schalter öffnen keine)
 const FELD = 'textarea, input:not([type=date],[type=time],[type=datetime-local],[type=month],[type=checkbox],[type=radio],[type=button],[type=submit],[type=reset],[type=range],[type=color],[type=file],[type=hidden]):not([readonly])';
 let dlgFest = 0;   // seit 4.28.1: Höhe des iPad-Fensters vor dem Antippen – der Platz unter dem Inhalt macht es nicht höher
-// R-1.7 (seit 4.29.0, A-63): sichere Ränder in px – aus den Variablen --safe-… (design.css), über ein unsichtbares Element gelesen
+// R-1.7 (seit 4.29.0, APD-63): sichere Ränder in px – aus den Variablen --safe-… (design.css), über ein unsichtbares Element gelesen
 let safeEl = null;
 function safeRand() {
   if (!safeEl) { safeEl = document.createElement('div'); safeEl.setAttribute('aria-hidden', 'true');
@@ -2217,11 +2217,11 @@ function placeDialogs() {
   const full = isPhone();
   const root = document.documentElement.style;
   root.setProperty('--vv-top', top + 'px');
-  // A-28 (B1): der Rahmen ist so hoch wie der sichtbare Bereich und endet über der Tastatur.
+  // APD-28 (B1): der Rahmen ist so hoch wie der sichtbare Bereich und endet über der Tastatur.
   root.setProperty('--vv-h', Math.round(h) + 'px');
   // Abstand der Tastatur vom unteren Rand: die untere Leiste (iPhone) und die Kapsel bleiben darüber sichtbar.
   root.setProperty('--vv-bottom', Math.max(0, Math.round(seitenHoehe() - top - h)) + 'px');
-  // iPad-Fenster (seit 4.29.0, A-63 S-6): oben und unten mindestens 10 px, aber nie unter Statusleiste oder Home-Leiste
+  // iPad-Fenster (seit 4.29.0, 3 APD-63/S-6): oben und unten mindestens 10 px, aber nie unter Statusleiste oder Home-Leiste
   // (bei offener Tastatur liegt die Home-Leiste unter ihr)
   const s = safeRand(), oben = Math.max(10, s.top), unten = Math.max(10, kbOffen() ? 0 : s.bottom);
   // R-4.6 (seit 4.32.0): im iPhone-Aufbau ist das Fenster ein Blatt – es beginnt knapp unter der Statusleiste (blattOben)
@@ -2232,7 +2232,7 @@ function placeDialogs() {
     if (!d.open) return;
     // iPhone: das Blatt reicht bis zum unteren Rand des sichtbaren Bereichs (bei offener Tastatur bis zur Tastatur, R-4.5).
     if (full && d === dlg) { d.style.margin = '0'; d.style.bottom = 'auto'; d.style.top = Math.round(top + blatt) + 'px'; return; }
-    // Fenster im sichtbaren Bereich zentrieren (bei offener Tastatur oberhalb der Tastatur). Seit 4.28.1 (A-36): steht es dort
+    // Fenster im sichtbaren Bereich zentrieren (bei offener Tastatur oberhalb der Tastatur). Seit 4.28.1 (APD-36): steht es dort
     // schon ganz, bleibt es stehen – auch nach dem Schließen der Tastatur, solange ein Feld darin den Fokus hat.
     d.style.margin = '0 auto';
     d.style.bottom = 'auto';
@@ -2241,20 +2241,20 @@ function placeDialogs() {
     d.style.top = Math.round(top + oben + Math.max(0, (h - oben - unten - d.offsetHeight) / 2)) + 'px';
   });
 }
-placeDialogs();   // --vv-h (Höhe des Rahmens, A-28) gleich beim Start
+placeDialogs();   // --vv-h (Höhe des Rahmens, APD-28) gleich beim Start
 // Seit 4.9.1 (R-4.5): wächst ein Fenster nach dem Öffnen (Inhalt, Textfelder), wird es neu platziert –
 // es ragt nie über den Bildschirm hinaus.
 if (window.ResizeObserver) [dlg, msg].forEach(d => new ResizeObserver(() => { if (d.open) placeDialogs(); }).observe(d));
 
-// R-4.5 Tastatur ohne Springen (seit 4.28.1, A-36, Fall-Liste arbeit/A-36 Fall-Liste.md Abschnitt 8, Muster 9 am Gerät 10 von 10 still).
+// R-4.5 Tastatur ohne Springen (seit 4.28.1, APD-36, Testfall-Liste arbeit/APD-36 Testfall-Liste.md Abschnitt 8, Muster 9 am Gerät 10 von 10 still).
 // Safari verschiebt den sichtbaren Bereich (und mit ihm alle Leisten), wenn das Feld beim Fokus unter der künftigen Tastatur liegt,
-// und liest diese Lage beim Fokus, bevor die App etwas tun kann (Designrichtlinie 13, S-1, S-7). Deshalb:
+// und liest diese Lage beim Fokus, bevor die App etwas tun kann (Designrichtlinie 13, APD-36/S-1, APD-36/S-7). Deshalb:
 // - Die Berührung bleibt bei Safari. Sobald ein Feld den Fokus hat (focusin), rollt sein Bereich (Inhalt bzw. Fenster) es in die obere
 //   Hälfte des künftig sichtbaren Bereichs; ist die Tastatur noch zu, bekommt es danach sofort einen neuen Fokus (blur + focus, noch
-//   in der Berührung) – Safari liest die Lage dann neu und verschiebt nichts (S-8). Bei offener Tastatur (Feld wechseln) kein neuer
+//   in der Berührung) – Safari liest die Lage dann neu und verschiebt nichts (APD-36/S-8). Bei offener Tastatur (Feld wechseln) kein neuer
 //   Fokus: die Tastatur würde flackern. Die Ereignisse des neuen Fokus sieht die App nicht (sonst z. B. ‚Pflichtfeld‘ beim ersten Antippen).
 // - Der Klick, den Safari danach an derselben Stelle auslöst, trifft dort jetzt etwas anderes – er wird unterdrückt.
-// - Safari stellt den Inhalt beim Erscheinen der Tastatur auf den Stand vor dem Rollen zurück (S-9, nur im Inhalt): die App rollt ihn
+// - Safari stellt den Inhalt beim Erscheinen der Tastatur auf den Stand vor dem Rollen zurück (APD-36/S-9, nur im Inhalt): die App rollt ihn
 //   im scroll-Ereignis sofort wieder hin (Rückstellung, solange das Feld den Fokus hat, höchstens 1,5 s; Wischen beendet sie).
 // - Platz unter dem Inhalt: beim Antippen so viel wie nötig, bei jeder Meldung von Safari genau so viel, dass der Rollstand bleibt;
 //   nach dem Schließen der Tastatur schrumpft er beim Rollen wieder (nur der Platz, nie scrollTop – das bräche das sanfte Rollen ab).
@@ -2275,7 +2275,7 @@ function kbMerken(f) {
 }
 const behaelter = f => f.closest('.dlg-body, #app > .rolle');
 // Platz unter dem Inhalt: --platz verlängert den Platzhalter am Ende (::after, design.css) – ein Innenabstand machte den Bereich selbst
-// höher als seinen Platz (A-33)
+// höher als seinen Platz (APD-33)
 const platzVon = c => parseFloat(c?.style.getPropertyValue('--platz')) || 0;
 const platz = (c, px) => { c.style.setProperty('--platz', Math.max(0, Math.ceil(px)) + 'px'); };
 // genau so viel Platz, dass der Rollstand bleibt
@@ -2292,7 +2292,7 @@ function rollen(c, d) {
   if (fehlt > 0) platz(c, platzVon(c) + fehlt);
   c.scrollTop += d;
 }
-// seit 4.32.2 (A-73, P-69/3 quer): wie weit Fokus-Umrandung und Schatten des Felds über seine Oberkante reichen (berechneter Stil) –
+// seit 4.32.2 (APD-73, P-69/3 quer): wie weit Fokus-Umrandung und Schatten des Felds über seine Oberkante reichen (berechneter Stil) –
 // so viel Abstand hält es zum oberen Rand seines Bereichs, sonst schneidet der Rollbereich sie ab (Reiselogbuch: Schatten 25 px)
 function fokusRand(f) {
   const c = getComputedStyle(f);
@@ -2358,7 +2358,7 @@ addEventListener('click', e => {
   e.preventDefault(); e.stopImmediatePropagation();
   messZeile(`klick unterdrückt ${messId(e.target)} (Feld ${messId(g.f)})`);
 }, true);
-// Rückstellung (S-9) und Platz schrumpft (nach dem Schließen der Tastatur, ohne Feld mit Fokus im Bereich)
+// Rückstellung (APD-36/S-9) und Platz schrumpft (nach dem Schließen der Tastatur, ohne Feld mit Fokus im Bereich)
 addEventListener('scroll', e => {
   const c = e.target, h = halten;
   if (h && c === h.c) {
@@ -2391,7 +2391,7 @@ function gemeldet() {
   kbWar = offen;
 }
 if (window.visualViewport) ['resize', 'scroll'].forEach(t => visualViewport.addEventListener(t, gemeldet));
-// Seit 4.28.1 (A-36, 6n): ‚Nach oben / Ans Ende‘ bei offener Tastatur – das Antippen schließt die Tastatur; gerollt wird erst danach
+// Seit 4.28.1 (APD-36, 6n): ‚Nach oben / Ans Ende‘ bei offener Tastatur – das Antippen schließt die Tastatur; gerollt wird erst danach
 // (sonst bricht der Ausgleich beim Schließen das sanfte Rollen ab und es braucht ein zweites Antippen), spätestens nach 600 ms.
 function nachTastatur(fn) {
   if (!kbOffen()) return fn();
@@ -2399,7 +2399,7 @@ function nachTastatur(fn) {
   setTimeout(() => { if (nachKb === fn) { nachKb = null; fn(); } }, 600);
 }
 
-/* ---------- Messmodus (seit 4.26.0, A-27, R-1.6) ---------- */
+/* ---------- Messmodus (seit 4.26.0, APD-27, R-1.6) ---------- */
 
 // Zeichnet am Gerät auf, was Safari beim Rollen und Tippen tut, damit Claude misst statt rät: je Bild eine Zeile, nur wenn
 // sich ein Wert geändert hat, dazu jedes Ereignis sofort mit den Werten in diesem Augenblick. Aus, solange nicht gestartet
@@ -2411,7 +2411,7 @@ const MESS_MAX_MS = 5 * 60e3, MESS_MAX_ZEILEN = 20000;
 let mess = null;
 const messSicht = sel => [...document.querySelectorAll(sel)].find(e => e.getClientRects().length);
 const messId = e => !e || e === document.body ? '-' : e.id || e.tagName.toLowerCase();
-// seit 4.30.1 (A-67): Ziel einer Berührung ohne Texte – id bzw. Tag mit Klassen und Rolle, dazu das antippbare Element darum
+// seit 4.30.1 (APD-67): Ziel einer Berührung ohne Texte – id bzw. Tag mit Klassen und Rolle, dazu das antippbare Element darum
 // (‚in …‘) und die nächste id (‚@…‘), z. B. ‚span in div.box.day[button] @app‘
 const messKurz = e => e.id || e.tagName.toLowerCase() + [...e.classList].slice(0, 3).map(c => '.' + c).join('') + (e.getAttribute('role') ? `[${e.getAttribute('role')}]` : '');
 function messZiel(t) {
@@ -2452,10 +2452,10 @@ function messStart({ app = '', teile = {}, rollen = {} } = {}) {
   const st = matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
   mess = { an: true, start: performance.now(), beginn: new Date(), teile, rollen, zeilen: [], zuletzt: '', hoerer: [] };
   mess.zeilen.push(`# Messung · ${app} · AppDesign ${AD_VERSION} · ${navigator.userAgent} · ${st ? 'Home-Bildschirm' : 'Safari'} · ${screen.width}×${screen.height} @${devicePixelRatio} · ${
-    // seit 4.29.0 (A-63 S-8): die sicheren Ränder des Geräts (oben/unten/links/rechts) – so kennen die Prüfungen die echten Werte
+    // seit 4.29.0 (3 APD-63/S-8): die sicheren Ränder des Geräts (oben/unten/links/rechts) – so kennen die Prüfungen die echten Werte
     (r => `Ränder ${r.top}/${r.bottom}/${r.left}/${r.right}`)(safeRand())} · ${
     matchMedia('(prefers-color-scheme: dark)').matches ? 'dunkel' : 'hell'} · ${mess.beginn.toISOString()} · ${
-    // seit 4.35.0 (A-43 H5): die Bedienungshilfen des Geräts
+    // seit 4.35.0 (APD-43 H5): die Bedienungshilfen des Geräts
     matchMedia('(prefers-contrast: more)').matches ? 'Kontrast erhöht' : 'Kontrast normal'} · ${matchMedia('(prefers-reduced-motion: reduce)').matches ? 'Bewegung reduziert' : 'Bewegung normal'}`);
   mess.zeilen.push(['t', ...Object.keys(messWerte())].map(v => v.padEnd(6)).join(' ').trimEnd());
   const hoere = (z, typ, text) => { if (!z) return; const fn = e => { const t = text(e); if (t) messEreignis(t); }; z.addEventListener(typ, fn, true); mess.hoerer.push([z, typ, fn]); };
@@ -2468,7 +2468,7 @@ function messStart({ app = '', teile = {}, rollen = {} } = {}) {
   hoere(window, 'resize', () => 'resize');
   hoere(window.visualViewport, 'resize', () => 'vv resize');
   hoere(window.visualViewport, 'scroll', () => 'vv scroll');
-  // seit 4.30.1 (A-67): Berührungen – Zeiger mit Lage (px), Art und Ziel, Bewegung nur bei gedrücktem Zeiger; touchcancel mit der
+  // seit 4.30.1 (APD-67): Berührungen – Zeiger mit Lage (px), Art und Ziel, Bewegung nur bei gedrücktem Zeiger; touchcancel mit der
   // Zahl der Finger. Die Entscheidungen der Gestenstelle (‚nav …‘) stehen im selben Augenblick davor (sie hört zuerst).
   const zeiger = (art, e) => `zeiger ${art} ${Math.round(e.clientX)} ${Math.round(e.clientY)} ${e.pointerType || '-'}${e.isPrimary ? '' : ' neben'} ${messZiel(e.target)}`;
   hoere(document, 'pointerdown', e => zeiger('down', e));
@@ -2476,7 +2476,7 @@ function messStart({ app = '', teile = {}, rollen = {} } = {}) {
   hoere(document, 'pointerup', e => zeiger('up', e));
   hoere(document, 'pointercancel', e => zeiger('cancel', e));
   hoere(document, 'touchcancel', e => `touchcancel ${e.changedTouches?.length ?? 0} ${messZiel(e.target)}`);
-  // seit 4.30.2 (A-67): ob Safari das Rollen noch erlaubt – ‚touchmove frei‘, ‚verhindert‘ (die Geste hält den Finger) bzw. ‚fest‘
+  // seit 4.30.2 (APD-67): ob Safari das Rollen noch erlaubt – ‚touchmove frei‘, ‚verhindert‘ (die Geste hält den Finger) bzw. ‚fest‘
   // (nicht mehr verhinderbar, Safari rollt); nur beim Wechsel, jede Berührung beginnt neu
   hoere(document, 'pointerdown', () => { mess.tm = ''; return ''; });
   hoere(document, 'touchmove', e => { const z = e.cancelable ? e.defaultPrevented ? 'verhindert' : 'frei' : 'fest'; if (z === mess.tm) return ''; mess.tm = z; return 'touchmove ' + z; });

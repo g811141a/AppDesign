@@ -1,7 +1,7 @@
 # Verlauf der Wünsche und Entscheidungen (04.10.–14.10.2026)
 
 Ausgezogen aus der Sitzung, damit in neuen Sitzungen nichts verloren geht (Zusammenarbeit allgemein 2.0.0, Abschnitt 0 Nr. 16).
-Enthält jede Nachricht des Nutzers und jede Entscheidung im Auswahlfenster, in zeitlicher Reihenfolge. Grundlage für A-02
+Enthält jede Nachricht des Nutzers und jede Entscheidung im Auswahlfenster, in zeitlicher Reihenfolge. Grundlage für APD-2
 (prüfen, ob alles Vereinbarte umgesetzt ist).
 
 **2026-10-04 11:06 · Nutzer:** So, machen wir mal Brainstorming. Ich würde gerne jetzt ein Tool bauen, mit dem ich äh, ganz ein einfaches Reisetagebuch pflegen kann. Die Idee ist, dass das Ganze auf einem iPad läuft.
@@ -241,7 +241,7 @@ Entwirf ein explizites JSON-Schema und zeige es mir, bevor du codest. Es muss ab
 9. Dateinamen: Die Zeichen / \ : * ? " < > | im Reisetitel werden durch "-" ersetzt. Der Ausgabezähler wird bei jedem Klick auf "Ausgabe" erhöht (Lücken sind ok), ein Zähler pro Reise für HTML und PDF, im Backup enthalten.  
 10. Import ersetzt alles. Vor der Bestätigung Vorher/Nachher anzeigen (Anzahl Reisen und erfasste Tage) und schemaVersion prüfen.  
 11. Kein Kurzbefehl. Speichern über navigator.share({files: [...]}), nur direkt im Klick-Handler aufgerufen, mit File-Objekten (korrekter MIME-Typ, vorgegebener Dateiname). HTML: ein Teilen-Aufruf mit zwei Dateien (Ausgabe + Backup), Speichern über "In Dateien sichern". Fehlt navigator.canShare für Dateien, Fallback auf `<a download>`. AbortError (Nutzer bricht ab) ist kein Fehler.  
-12. PDF wie gehabt über das Drucken-Menü: Zuerst Teilen-Aufruf mit dem Backup, danach ein Knopf "PDF drucken", der die Ausgabe in einer Druckansicht öffnet (z. B. verstecktes iframe mit der Ausgabe) und print() aufruft. Vorher document.title auf den Dateinamen ohne Endung setzen, damit iOS ihn vorschlägt. Sage klar, was du nicht sicher weißt (z. B. ob print() aus einem iframe im Standalone-Modus funktioniert, ob Maps-Links im PDF klickbar bleiben); prüfe es in der Prüfliste für das iPad.  
+12. PDF wie gehabt über das Drucken-Menü: Zuerst Teilen-Aufruf mit dem Backup, danach ein Knopf "PDF drucken", der die Ausgabe in einer Druckansicht öffnet (z. B. verstecktes iframe mit der Ausgabe) und print() aufruft. Vorher document.title auf den Dateinamen ohne Endung setzen, damit iOS ihn vorschlägt. Sage klar, was du nicht sicher weißt (z. B. ob print() aus einem iframe im Standalone-Modus funktioniert, ob Maps-Links im PDF klickbar bleiben); prüfe es in den Testfällen für das iPad.  
 13. Häufigkeiten in der Statistik (Wetter und Smileys) immer im Format "<Anzahl>×<Symbol>", ohne Leerzeichen, durch " · " getrennt, absteigend nach Anzahl sortiert (bei Gleichstand in der Standardreihenfolge der Symbole). Das Zeichen ist das Multiplikationszeichen × (U+00D7), kein Buchstabe x.  
 14. Die App meldet nur, dass das Teilen-Menü bzw. die Druckansicht geöffnet wurde. Ob wirklich gespeichert wurde, kann sie nicht prüfen.  
   
@@ -341,7 +341,7 @@ Automatisch prüfbar (tests.mjs, ohne Abhängigkeiten, auf reinen Logikfunktione
 3. Backup exportieren → Zustand leeren → importieren stellt alles identisch wieder her.  
 4. Überschneidungsprüfung, Nächteberechnung (Festlegung 8), Dateinamen (Festlegung 9), Statistik-Format (Festlegung 13), Smiley-Zähler ohne Doppelzählung durch Autosave (Festlegung 3).  
   
-Manuell auf dem iPad (liefere dafür eine Prüfliste):  
+Manuell auf dem iPad (liefere dafür Testfälle):  
 5. Nach einmaligem Laden startet die App im Flugmodus vollständig und ist bedienbar.  
 6. Ein Reload im Safari-Standalone-Modus verliert keine Daten.  
 7. Die HTML-Ausgabe lässt sich ohne Internetverbindung öffnen und korrekt drucken.  
@@ -1247,11 +1247,11 @@ Sregelung auf.
 
 **2026-10-08 19:16 · Nutzer:** 1) nein, vergiß es, es passt
 
-**2026-10-08 19:17 · Nutzer:** P-01 bis p-07 ist geprüft und ok
+**2026-10-08 19:17 · Nutzer:** P-1 bis p-07 ist geprüft und ok
 
 **2026-10-08 19:18 · Nutzer:** 1) ja
 
-**2026-10-08 19:23 · Nutzer:** P-08 ok
+**2026-10-08 19:23 · Nutzer:** P-8 ok
 
 **2026-10-09 10:08 · Nutzer:** Gehen wir nun t-01 an
 
@@ -1295,7 +1295,7 @@ Alle prüfthemen passen.
 
 **2026-10-09 11:28 · Nutzer:** 1ja 2a
 
-**2026-10-09 11:33 · Nutzer:** Prüfpunkt ok
+**2026-10-09 11:33 · Nutzer:** Usertest ok
 
 **2026-10-09 11:37 · Nutzer:** Wir müssen die Zusammenarbeit verbessern. Ich möchte nicht für zwei minipunkte, dass du eine version erstellst sondern dass wir umsetzungen gesammelt in einer neuen version einbauen und testen. Bitte um deinen virschlag wie wir das am besten machen und als allgemeine regel definieren. Weiters möchte ich wissen wie ich definierte und ausgearbeitete punkte welche in die nächste Version einfließen leicht im bakclog erkennen kann. Eventuell machst du dazu einen eigenen abschnitt zu beginn. Bitte um de8ne Empfehlungen
 
@@ -1341,7 +1341,7 @@ Nun zu deinen fragen:
   
 Als nächstes möchte ich das design-reo erstellen. Sollen wir zuvor noch eine version bauen?
 
-**2026-10-09 13:41 · Entscheidung:** Wie sollen meine Antwortvorschläge künftig kommen? → **Beides** · Soll ich vor dem Design-Repo noch Version 2.4.0 mit T-20 (Menüs ohne Linien zwischen den Punkten) und T-21 (Suchfeld ohne blauen Rahmen) erstellen? → **Ja (Empfohlen)**
+**2026-10-09 13:41 · Entscheidung:** Wie sollen meine Antwortvorschläge künftig kommen? → **Beides** · Soll ich vor dem Design-Repo noch Version 2.4.0 mit RLB-20 (Menüs ohne Linien zwischen den Punkten) und RLB-21 (Suchfeld ohne blauen Rahmen) erstellen? → **Ja (Empfohlen)**
 
 **2026-10-09 13:51 · Nutzer:** Alle prüfpunkte ok
 
@@ -1349,7 +1349,7 @@ Als nächstes möchte ich das design-reo erstellen. Sollen wir zuvor noch eine v
 Nach der erstellung einer neuen version sind unbedingt alle prüfpunkte zu trsten und etwaige fehler zu eliminieren. Weise darauf explizit hin. Eine ausnahme wäre wenn ich nach deinem hinweis trotzdem auf die Umsetzung neuer punkte vor der aabarbeitung der prüfpunkte bestehe.  
 So nun zu deinen fragen welche du mir wie zuvor vereinbarst in einem auswahlfenster stellst. Falls ich das auswahlfenster schließe und meine rückmeldung eingebe frage beim nächsten trotzdem automatisch mit eine, auswahlfenster nach. Schreib das auch uns regelwerk und halte dich daran
 
-**2026-10-09 14:08 · Entscheidung:** Wie soll das Design-Repo heißen? → **AppDesign** · Soll das Design-Repo öffentlich oder privat sein? → **Öffentlich (Empfohlen)** · Was soll in die erste Version des Design-Repos? → **S-01 und S-02** · Wer legt das Repo auf GitHub an? → **Ich lege es selbst an**
+**2026-10-09 14:08 · Entscheidung:** Wie soll das Design-Repo heißen? → **AppDesign** · Soll das Design-Repo öffentlich oder privat sein? → **Öffentlich (Empfohlen)** · Was soll in die erste Version des Design-Repos? → **APD 4.0.0/S-1 und S-2** · Wer legt das Repo auf GitHub an? → **Ich lege es selbst an**
 
 **2026-10-09 14:10 · Entscheidung:** Wie sollen die Apps design.css und ui.js einbinden? → **Aus AppDesign, versioniert (Empfohlen)** · Mit welcher Versionsnummer startet AppDesign? → **4.0.0 (Empfohlen)** · Wann soll das Reiselogbuch auf das gemeinsame design.css/ui.js umgestellt werden? → **Gleich mit, als Version 3.0.0 (Empfohlen)**
 
@@ -1413,23 +1413,23 @@ NICHT gesichert: meine 30 Testskripte (Bedienabläufe, Tastatur, Pixelvergleich)
 
 **2026-10-10 11:27 · Nutzer:** Was ist noch offen
 
-**2026-10-10 11:31 · Entscheidung:** Womit machen wir weiter? → **T-03 iCloud-Abgleich**
+**2026-10-10 11:31 · Entscheidung:** Womit machen wir weiter? → **RLB-3 iCloud-Abgleich**
 
 **2026-10-10 11:31 · Entscheidung:** 1) Weg für den Abgleich? → **a Datei in iCloud Drive (Empfohlen)** · 2) Mac vorhanden? → **Ja** · 3) Apple-Entwicklerkonto? → **Nein (Empfohlen)** · 4) Arbeitsweise? → **Abwechselnd (Empfohlen)**
 
-**2026-10-10 11:33 · Entscheidung:** 1) T-02 (iPhone-Ansicht) vor T-03 umsetzen? → **Ja (Empfohlen)** · 2) Gleicher Tag auf beiden Geräten geändert? → **a Neuere Änderung gilt (Empfohlen)** · 3) Gelöschte Reiselogbücher beim Abgleich auch löschen? → **Ja (Empfohlen)** · 4) Wo startet der Abgleich? → **a Backup laden › Abgleichen/Ersetzen (Empfohlen)**
+**2026-10-10 11:33 · Entscheidung:** 1) RLB-2 (iPhone-Ansicht) vor RLB-3 umsetzen? → **Ja (Empfohlen)** · 2) Gleicher Tag auf beiden Geräten geändert? → **a Neuere Änderung gilt (Empfohlen)** · 3) Gelöschte Reiselogbücher beim Abgleich auch löschen? → **Ja (Empfohlen)** · 4) Wo startet der Abgleich? → **a Backup laden › Abgleichen/Ersetzen (Empfohlen)**
 
-**2026-10-10 11:35 · Entscheidung:** 1) T-02: Bezeichnungen in den Tageskästen? → **a ‚Programm‘ als Wort, sonst Emoji (Empfohlen)** · 2) T-02: ‚Gespeichert um …‘ auf dem iPhone? → **Ja, wie auf dem iPad (Empfohlen)** · 3) T-02: Wetter-Symbole 40 px nur auf dem iPhone? → **Ja (Empfohlen)**
+**2026-10-10 11:35 · Entscheidung:** 1) RLB-2: Bezeichnungen in den Tageskästen? → **a ‚Programm‘ als Wort, sonst Emoji (Empfohlen)** · 2) RLB-2: ‚Gespeichert um …‘ auf dem iPhone? → **Ja, wie auf dem iPad (Empfohlen)** · 3) RLB-2: Wetter-Symbole 40 px nur auf dem iPhone? → **Ja (Empfohlen)**
 
-**2026-10-10 11:41 · Nutzer:** Bitte zeig mir die Muster für T-02
+**2026-10-10 11:41 · Nutzer:** Bitte zeig mir die Muster für RLB-2
 
 **2026-10-10 11:49 · Entscheidung:** 1) Zurück-Knopf auf dem iPhone? → **Rund, nur chevron-left (Empfohlen)** · 2) Suche auf dem iPhone? → **Unten wie Notizen (Empfohlen)** · 3) Löschen-Abfrage auf dem iPhone? → **a Am Knopf, Bild 4 (Empfohlen)** · 4) iPhone quer? → **Wie iPhone hoch (Empfohlen)**
 
-**2026-10-10 11:49 · Entscheidung:** 1) Muster T-02 so freigeben? → **Ja (Empfohlen)** · 2) iPhone-Ansicht gilt? → **Allgemein, in AppDesign (Empfohlen)**
+**2026-10-10 11:49 · Entscheidung:** 1) Muster RLB-2 so freigeben? → **Ja (Empfohlen)** · 2) iPhone-Ansicht gilt? → **Allgemein, in AppDesign (Empfohlen)**
 
-**2026-10-10 11:50 · Entscheidung:** Soll ich Version 3.1.0 mit T-24 und T-02 erstellen? → **Ja (Empfohlen)**
+**2026-10-10 11:50 · Entscheidung:** Soll ich Version 3.1.0 mit RLB-24 und RLB-2 erstellen? → **Ja (Empfohlen)**
 
-**2026-10-11 07:32 · Nutzer:** Bevor ich die ersten Prüfpunkte erledige gleich einmal ein paar punkte welche mir auf dem iphone auffallen und zu verbessern sind:  
+**2026-10-11 07:32 · Nutzer:** Bevor ich die ersten Usertests erledige gleich einmal ein paar punkte welche mir auf dem iphone auffallen und zu verbessern sind:  
 1) wenn man die startseite nach oben schiebt soll die symbolleiste mit den s haltflächen starr oben fixiert bleiben und die überschrift ‚Reiselogbücher‘ in der gleichen schriftgröße wie in notes in die symbolleiste wandern und dort bleiben  bis man die seite wieder nach unten zieht. Das ist eine allgemeine Regel.  
 2) im untermenü backup laden ist der fehlerhafte text Reiselogbuchern auf den text Reiselogbücher zu ändern. außerdem soll nach dem Fragezeichen einZeilenumbruch erfolgen. Gilt auch für ipad  
 3) Die schaltfläche +soll wie auf dem ipad erscheinen. In einer kapsel und in der symbolleoste oben. Das ist eine allgemeine regel.  
@@ -1452,7 +1452,7 @@ Die schaltfläche kapsel ist verstümmelt umd wird falsch angezeigt, im hoch und
 12) was heißt ‚die abfrage nennt ‚auf diesem iPhone‘‘?  
 Alle anderen prüfpunkte waren ok.
 
-**2026-10-11 07:36 · Entscheidung:** 1) Begriff statt ‚Programm‘? → **Weitere vorschläge wie Todo** · 2) Text in der Backup-Abfrage? → **‚mit 3 Reiselogbüchern‘ (Empfohlen)** · 3) Spracheingabe? → **b Fehlersuche, Knöpfe bleiben** · 4) Punkt 4 (welches Gerät hat zuletzt geändert) in T-03 aufnehmen? → **Ja, in T-03 (Empfohlen)**
+**2026-10-11 07:36 · Entscheidung:** 1) Begriff statt ‚Programm‘? → **Weitere vorschläge wie Todo** · 2) Text in der Backup-Abfrage? → **‚mit 3 Reiselogbüchern‘ (Empfohlen)** · 3) Spracheingabe? → **b Fehlersuche, Knöpfe bleiben** · 4) Punkt 4 (welches Gerät hat zuletzt geändert) in RLB-3 aufnehmen? → **Ja, in RLB-3 (Empfohlen)**
 
 **2026-10-11 07:39 · Entscheidung:** Begriff statt ‚Programm‘? → **Agenda und todo ist schon ganz gut trifft es aber nicht ganz weil es die Vergangenheit betrifft. Nächste Beispiele bitte**
 
@@ -1472,7 +1472,7 @@ Alle anderen prüfpunkte waren ok.
 
 **2026-10-11 08:01 · Entscheidung:** 1) Farbe der Backup-Kachel? → **a gelb, blauer Knopf (Empfohlen)** · 2) Tageskachel mit senkrechtem Strich (3b) so freigeben? → **Ja (Empfohlen)** · 3) Gilt die Backup-Farbe auch am iPad in der Seitenleiste? → **Ja (Empfohlen)**
 
-**2026-10-11 08:02 · Entscheidung:** Soll ich Version 3.2.0 mit T-25 bis T-36 erstellen? → **Ja (Empfohlen)**
+**2026-10-11 08:02 · Entscheidung:** Soll ich Version 3.2.0 mit RLB-25 bis RLB-36 erstellen? → **Ja (Empfohlen)**
 
 **2026-10-11 09:18 · Nutzer:** Nun zu den fehlern die mir gleich aufgefallen sind:  
 1) wenn ich auf dem ipad z.b. in den einstellungen doppelt auf eine reisemittelschaltfläche klicke vergrößert sich der screen d.h. Alle schriften und symbole werden riesig. Erst durch das zusammenziehen mit 2 finger bekomme ich wieder die normalansicht. Das gehört unterbunden. Falls es am iphone auch so ist auch dort verbessern. Dies ist eine allgemeine regel.  
@@ -1530,7 +1530,7 @@ Alle ander prüfpunkte ok
 
 **2026-10-11 14:24 · Nutzer:** Es scheint, dass du nicht mehr gegen alle allgemeine regel testest weild die fixierung der symbolleisten haben wir schon viele schritte vorher festgelegt
 
-**2026-10-11 14:25 · Entscheidung:** 1) Alle allgemeinen Regeln nummeriert als Regelkatalog in der Designrichtlinie führen? → **Ja (Empfohlen)** · 2) Prüfskript prüft jede automatisch prüfbare Regel in allen Ansichten? → **Ja (Empfohlen)** · 3) Regeln, die nur am Gerät prüfbar sind (z. B. Federn), in der Prüfliste? → **a Nur die von der Version betroffenen (Empfohlen)**
+**2026-10-11 14:25 · Entscheidung:** 1) Alle allgemeinen Regeln nummeriert als Regelkatalog in der Designrichtlinie führen? → **Ja (Empfohlen)** · 2) Prüfskript prüft jede automatisch prüfbare Regel in allen Ansichten? → **Ja (Empfohlen)** · 3) Regeln, die nur am Gerät prüfbar sind (z. B. Federn), in den Testfällen? → **a Nur die von der Version betroffenen (Empfohlen)**
 
 **2026-10-11 14:31 · Nutzer:** Kannst du nochmals den chart durchgehen und prüfen ob alle von mir gewünschten allgemeinen regeln auch auf github hinterlegt sind und daraus ableitend die automatische  prüfregeln da sind
 
@@ -1564,7 +1564,7 @@ Alle anderen prüfpunkte waren ok
 
 **2026-10-12 11:36 · Entscheidung:** Muster 3.8.0 so übernehmen? → **Ja (Empfohlen)** · Soll ich Version 3.8.0 (AppDesign 4.8.0) erstellen? → **Wurde das zittern am iphone auch behoben**
 
-**2026-10-12 11:37 · Entscheidung:** Ja, enthalten (T-59): Wischen bei offener Suche schließt die Tastatur wie bei Apple, die Leiste bleibt stehen. Am Gerät prüfst du das als Prüfpunkt. Soll ich Version 3.8.0 erstellen? → **Ja (Empfohlen)**
+**2026-10-12 11:37 · Entscheidung:** Ja, enthalten (RLB-59): Wischen bei offener Suche schließt die Tastatur wie bei Apple, die Leiste bleibt stehen. Am Gerät prüfst du das als Usertest. Soll ich Version 3.8.0 erstellen? → **Ja (Empfohlen)**
 
 **2026-10-12 11:41 · Nutzer:** Berücksichtige eine einfache allgemeine regel: eine symbollriste mit oder ohne suchleiste muss immer auf ihrem platz stehen und darf sich keinen milimeter beim wische  bewegen. Bitte regel u d prüfpunkt nachjustieren u d einhalten. Bzw, um eine begründung warum dies überhaupt noch passierte
 
@@ -1577,11 +1577,11 @@ Alle prüfpunkte in ordnung
 
 **2026-10-12 12:10 · Nutzer:** Alle prüfpunkte von p-23 sind ok
 
-**2026-10-12 12:28 · Entscheidung:** P-23 ist erledigt, es gibt nichts mehr zu prüfen. Womit machen wir weiter? → **T-03 Muster (Empfohlen)**
+**2026-10-12 12:28 · Entscheidung:** P-23 ist erledigt, es gibt nichts mehr zu prüfen. Womit machen wir weiter? → **RLB-3 Muster (Empfohlen)**
 
-**2026-10-12 12:39 · Entscheidung:** Muster T-03 (Abgleichen · Ersetzen · Abbrechen, Ergebnis-Fenster) so übernehmen? → **Ja (Empfohlen)** · Wo soll ‚geändert am … · Gerät‘ stehen? → **In jeder Kachel (Empfohlen)**
+**2026-10-12 12:39 · Entscheidung:** Muster RLB-3 (Abgleichen · Ersetzen · Abbrechen, Ergebnis-Fenster) so übernehmen? → **Ja (Empfohlen)** · Wo soll ‚geändert am … · Gerät‘ stehen? → **In jeder Kachel (Empfohlen)**
 
-**2026-10-12 12:51 · Entscheidung:** T-03 ist umgesetzt und getestet (Ablauf-Test mit zwei Geräten, alle Tests grün). Soll ich Version 3.9.0 (AppDesign 4.9.0) erstellen? → **Ja (Empfohlen)**
+**2026-10-12 12:51 · Entscheidung:** RLB-3 ist umgesetzt und getestet (Ablauf-Test mit zwei Geräten, alle Tests grün). Soll ich Version 3.9.0 (AppDesign 4.9.0) erstellen? → **Ja (Empfohlen)**
 
 **2026-10-12 13:10 · Entscheidung:** 3.9.0 ist online. Fehler danach gefunden: iPhone quer – Abfrage ‚Backup laden‘ zu hoch, iPad hoch – Fenster ‚Tag‘ 10 px zu tief. Korrektur mit Regel R-39 ist getestet. Soll ich Version 3.9.1 gleich erstellen? → **Ja (Empfohlen)**
 
@@ -1694,7 +1694,7 @@ zu 4: oben rechts in der kapsel erwarte ich wie im reiselogbuch die ausgabe als 
   
 Die festlichen pinkte in p-27 waren ok
 
-**2026-10-14 00:30 · Entscheidung:** Korrekturen sind fertig und geprüft: Tabellenzellen im Bericht, PDF im Bericht, oberster Tag beim Drehen (T-78), dazu Regeln R-37 überall und R-51 sowie Zusammenarbeit 1.16.0. Soll ich das als 3.11.2 / 4.11.2 veröffentlichen? → **Ja, veröffentlichen (Empfohlen)**
+**2026-10-14 00:30 · Entscheidung:** Korrekturen sind fertig und geprüft: Tabellenzellen im Bericht, PDF im Bericht, oberster Tag beim Drehen (RLB-78), dazu Regeln R-37 überall und R-51 sowie Zusammenarbeit 1.16.0. Soll ich das als 3.11.2 / 4.11.2 veröffentlichen? → **Ja, veröffentlichen (Empfohlen)**
 
 **2026-10-14 00:54 · Nutzer:** Ruckmeldung zu P-29:  
 3) die formatierung der rahmen ist fehlerhaft. Der rahmen zwischen den reiselogbüchern darf nicht stärker sein als die restlichen rahmen Formatierungen. Standard ist die tabelle bei der html reislogbuchausgabe  
@@ -1721,13 +1721,13 @@ Fehler schon vor den test gefunden: zusammengefasste zellen in der ersten spalte
 **2026-10-14 02:12 · Nutzer:** Rückmeldung zu p-31:  
 Alle punkte ok
 
-**2026-10-14 02:13 · Entscheidung:** Alle Prüfpunkte sind erledigt. Womit soll ich als Nächstes weitermachen? → **Sind die a-xx punkte aus dem Brainstorming weiter oben**
+**2026-10-14 02:13 · Entscheidung:** Alle Usertests sind erledigt. Womit soll ich als Nächstes weitermachen? → **Sind die a-xx punkte aus dem Brainstorming weiter oben**
 
-**2026-10-14 02:14 · Entscheidung:** Ja: A-04 (Arbeitsprozess) und A-05 (Prüfungen 2.0) stammen aus dem Brainstorming, A-02 (Richtlinien aufräumen) hast du dort mit gewählt. Teile davon laufen schon. Womit soll ich weitermachen? → **Ich möchte mich t**
+**2026-10-14 02:14 · Entscheidung:** Ja: APD-4 (Arbeitsprozess) und APD-5 (Prüfungen 2.0) stammen aus dem Brainstorming, APD-2 (Richtlinien aufräumen) hast du dort mit gewählt. Teile davon laufen schon. Womit soll ich weitermachen? → **Ich möchte mich t**
 
 **2026-10-14 02:15 · Nutzer:** Ich möchte mich zu allen brainstorming punkten zuerst mit dir interaktiv unterhalten und deine menung dazu hören
 
-**2026-10-14 02:27 · Nutzer:** So, jetzt gehe ich einmal alle Punkte deiner Antwort durch. A, zu Testen und Qualität. Ja, dein Vorschlag ist angenommen, also zu jeder Anforderung schreib vor dem Bau eine kurze Fallliste und so weiter und so fort. Dann Punkt 2, paralleles Arbeiten. Ja, dein Vorschlag ist in Ordnung. Gib nur das weiter, was wenig Token braucht. Ja, der Punkt, zu Punkt 3, dein Vorschlag. Ja, ist angenommen, also die Regeln kurz prüfen, ob man jetzt da bestehend ersetzt oder ergänzt. Und es soll in der Regel eine genaue Prüfung stattfinden. Außerdem sollte eine Zusammenfassung oder eine Neusortierung aller Regeln stattfinden, um nicht zum Beispiel bei der Regel 1 eine Ausgabetabelle zu testen und dann in der Regel 47 noch einmal eine Ausgabetabelle testen. Das müsste man schauen, dass man das zusammenfasst. Gehe mal alle Regeln durch und fasse die Regeln zusammen. Es müsste ja dann auch weniger Regeln werden. Und das sollte eigentlich jedes Mal stattfinden, wenn im Prinzip eine neue Regel entsteht. Und grundsätzlich ist auch hier festzuhalten, dass neue Regeln oder überhaupt Regeln, alle Eingaben, die dann irgendeine Formatierung bedeuten, dass du als KI auch hier recherchierst und hier nachdenkst, ob es nicht Sinn macht, dann, falls ich es nicht angegeben habe, aus einer Eingabe oder Regel eine allgemeine Regel zu machen. Und hier frage ab, ob du eine allgemeine Regel machen sollst oder nicht, und das verlässlich, damit man das nicht übersieht. Dann viertens, erfahre genaue Nachbildung. Ja, probier mal, ob du hier WebKit installieren kannst. Dann würde das wahrscheinlich einen Vorteil bringen. Dann B, Muster und Entscheidungen. Ja, die Abgleichstabelle brauchte 4 Runden mit 2 bis 3 Varianten. In der ersten Runde wäre es wohl 2 gewesen. Ja. Schau hier, was sinnvoll ist und mach das dann so. Sechstens, Beschreibungen im Chat. Ja, ich würde das auch so sehen, dass man hier bei der, beim Fenster Ja-Nein-Abfragen macht und damit eine klare Auswahl stattfinden kann, aber gib halt hier die Option an, dass ich zum Beispiel hier unter Sonstiges quasi nur, wenn ich sonstige Einwände hätte oder Fragen oder irgendwas aufzeigen möchte, dass ich hier nur mit Ja und Nein beantworten kann, damit und dann du automatisch in Folge auf das Chatfenster dann quasi verweist und ich dort, das Chatfenster sollte schon offen sein und ich dort im Chatfenster das dann eingeben kann. C, bauen und veröffentlichen, Veröffentlichungsskript. Ja, bau ein Veröffentlichungsskript. Was dann auch noch mir unklar ist bei diesen Versionierungen, wie passiert es dann, dass ich zum Beispiel sage, ich möchte jetzt da in einer Version von allgemeinen Regeln einmal stehen bleiben, damit ich dort, wenn ich dann mehrere Apps einmal habe, nicht zu Querschlägern, sprich Fehlern kommen, wenn ich in einer App vielleicht einmal eine allgemeine Regel ändere und in einer anderen App einmal arbeite, möchte ich nicht, dass ich dort in der anderen App immer automatisch hier die letzten allgemeinen Regeln oder Einstellungen habe. Da muss ja immer aktiv von dir nachgefragt werden, ob du die allgemeinen Regeln hochziehen sollst. Ist das sichergestellt? Dann achtens, kleinere Versionen. Ja, da bin ich auch bei deinem Vorschlag, dass man schon 2 bis 3 zusammengehörige Punkte je Version macht und dann die Korrekturen im Anschluss auch sofort durchführt, bevor wir dann zu den nächsten Punkten kommen. Es soll nicht dann kreuz und quer etwas verändert werden, sondern eben durch zusammengehörige Punkte einfach erledigt werden. Und mehr wie 2 Themen würde ich dann auch nicht in einer Version dann zusammenfassen, weil sonst wird das zu umfangreich. Dann neuntens, Richtlinien, zuerst aufräumen. Ja, vor neuen Funktionen ist okay. Ziel, ja, jede Regel einmal mit Prüfung ohne Widersprüche kürzer, das habe ich vorher schon erwähnt. Ich würde jetzt auch meinen, gehe jetzt noch einmal den ganzen Chat durch, vom Letztstand nach oben und schau, ob du im Prinzip hier dann auch alles bereits so umgesetzt hast, wie wir beide das vereinbart haben. Dann kürzere Berichte. Ja, meine Berichte sind lang geworden, schreibst du da. Ja, ich meine auch Bericht in 3 bis 5 Sätzen, aber natürlich alles, was wichtig ist, soll hier schon erwähnt werden und vielleicht auch taxativ. Aber es muss auch aus einer taxativen Aufstellung heraus oder hervorgehen, was wurde geändert. Und dann danach die Prüfpunkte, wie wir es schon hatten, mit einer Schritt-für-Schritt-Anleitung für das Testen. Ja, diese Erklärungen, warum ist das passiert, also wenn ein Fehler durchgerutscht ist, das möchte ich dann schon weiterhin haben. Dann D, Sitzungen und Rückmeldung. Ja, 11. ein Thema je Sitzung. Ja, würde ich auch meinen, also ein Thema je Sitzung, damit wir hier nicht in einen Overflow kommen und wir Wissen verlieren. Wir wollen doch, und das soll immer auch zwischengespeichert werden. Und ich vermute, das erklärt auch, warum manche Themen dann einfach durchgerutscht sind und von dir nicht umgesetzt worden sind, weil wir schon zu groß geworden sind. Also ich würde auch meinen, gib mir immer Rückmeldung, wenn eine neue Sitzung angebracht ist, damit wir hier billiger und zuverlässiger arbeiten können. Und was meinst du mit Sitzung? Ist eine Sitzung ein neuer Chat auf Codebasis? Oder kann ich auch hier in diesem Chat eine neue Sitzung von dir veranlassen, zum Beispiel indem ich sage, so, mache einmal eine Zusammenfassung des Chats, speichere alles ab, was du brauchst und mache dann ein Reset, damit wir hier in dieser Sitzung neu anfangen können. Ja, 12. ist okay. Zwölf, 13. Rückmeldung kurz ist auch okay. Ja, grundsätzlich können wir das alles einmal so durchnehmen, inklusive dem Fazit, was du meinst. inklusive dem Fazit, was du meinst, was hier einen Gewinn bringen würde, in der Selbstverständlichkeit das rein. Wenn dir noch jetzt während dem Recherchieren und dem Zusammenfassen noch dazu einfällt oder wenn du noch weitere Informationen hast, her damit bitte. So, nun fasse das zusammen und gib mir Feedback, was du davon hältst und dann frag noch einmal kurz nach, ob du dann im Prinzip das, was du dann als Feedback gemacht hast, oder wenn du noch Fragen hast, frag auch noch nach, damit wir hier dann zügig weiterkommen.
+**2026-10-14 02:27 · Nutzer:** So, jetzt gehe ich einmal alle Punkte deiner Antwort durch. A, zu Testen und Qualität. Ja, dein Vorschlag ist angenommen, also zu jeder Anforderung schreib vor dem Bau eine kurze Fallliste und so weiter und so fort. Dann Punkt 2, paralleles Arbeiten. Ja, dein Vorschlag ist in Ordnung. Gib nur das weiter, was wenig Token braucht. Ja, der Punkt, zu Punkt 3, dein Vorschlag. Ja, ist angenommen, also die Regeln kurz prüfen, ob man jetzt da bestehend ersetzt oder ergänzt. Und es soll in der Regel eine genaue Prüfung stattfinden. Außerdem sollte eine Zusammenfassung oder eine Neusortierung aller Regeln stattfinden, um nicht zum Beispiel bei der Regel 1 eine Ausgabetabelle zu testen und dann in der Regel 47 noch einmal eine Ausgabetabelle testen. Das müsste man schauen, dass man das zusammenfasst. Gehe mal alle Regeln durch und fasse die Regeln zusammen. Es müsste ja dann auch weniger Regeln werden. Und das sollte eigentlich jedes Mal stattfinden, wenn im Prinzip eine neue Regel entsteht. Und grundsätzlich ist auch hier festzuhalten, dass neue Regeln oder überhaupt Regeln, alle Eingaben, die dann irgendeine Formatierung bedeuten, dass du als KI auch hier recherchierst und hier nachdenkst, ob es nicht Sinn macht, dann, falls ich es nicht angegeben habe, aus einer Eingabe oder Regel eine allgemeine Regel zu machen. Und hier frage ab, ob du eine allgemeine Regel machen sollst oder nicht, und das verlässlich, damit man das nicht übersieht. Dann viertens, erfahre genaue Nachbildung. Ja, probier mal, ob du hier WebKit installieren kannst. Dann würde das wahrscheinlich einen Vorteil bringen. Dann B, Muster und Entscheidungen. Ja, die Abgleichstabelle brauchte 4 Runden mit 2 bis 3 Varianten. In der ersten Runde wäre es wohl 2 gewesen. Ja. Schau hier, was sinnvoll ist und mach das dann so. Sechstens, Beschreibungen im Chat. Ja, ich würde das auch so sehen, dass man hier bei der, beim Fenster Ja-Nein-Abfragen macht und damit eine klare Auswahl stattfinden kann, aber gib halt hier die Option an, dass ich zum Beispiel hier unter Sonstiges quasi nur, wenn ich sonstige Einwände hätte oder Fragen oder irgendwas aufzeigen möchte, dass ich hier nur mit Ja und Nein beantworten kann, damit und dann du automatisch in Folge auf das Chatfenster dann quasi verweist und ich dort, das Chatfenster sollte schon offen sein und ich dort im Chatfenster das dann eingeben kann. C, bauen und veröffentlichen, Veröffentlichungsskript. Ja, bau ein Veröffentlichungsskript. Was dann auch noch mir unklar ist bei diesen Versionierungen, wie passiert es dann, dass ich zum Beispiel sage, ich möchte jetzt da in einer Version von allgemeinen Regeln einmal stehen bleiben, damit ich dort, wenn ich dann mehrere Apps einmal habe, nicht zu Querschlägern, sprich Fehlern kommen, wenn ich in einer App vielleicht einmal eine allgemeine Regel ändere und in einer anderen App einmal arbeite, möchte ich nicht, dass ich dort in der anderen App immer automatisch hier die letzten allgemeinen Regeln oder Einstellungen habe. Da muss ja immer aktiv von dir nachgefragt werden, ob du die allgemeinen Regeln hochziehen sollst. Ist das sichergestellt? Dann achtens, kleinere Versionen. Ja, da bin ich auch bei deinem Vorschlag, dass man schon 2 bis 3 zusammengehörige Punkte je Version macht und dann die Korrekturen im Anschluss auch sofort durchführt, bevor wir dann zu den nächsten Punkten kommen. Es soll nicht dann kreuz und quer etwas verändert werden, sondern eben durch zusammengehörige Punkte einfach erledigt werden. Und mehr wie 2 Themen würde ich dann auch nicht in einer Version dann zusammenfassen, weil sonst wird das zu umfangreich. Dann neuntens, Richtlinien, zuerst aufräumen. Ja, vor neuen Funktionen ist okay. Ziel, ja, jede Regel einmal mit Prüfung ohne Widersprüche kürzer, das habe ich vorher schon erwähnt. Ich würde jetzt auch meinen, gehe jetzt noch einmal den ganzen Chat durch, vom Letztstand nach oben und schau, ob du im Prinzip hier dann auch alles bereits so umgesetzt hast, wie wir beide das vereinbart haben. Dann kürzere Berichte. Ja, meine Berichte sind lang geworden, schreibst du da. Ja, ich meine auch Bericht in 3 bis 5 Sätzen, aber natürlich alles, was wichtig ist, soll hier schon erwähnt werden und vielleicht auch taxativ. Aber es muss auch aus einer taxativen Aufstellung heraus oder hervorgehen, was wurde geändert. Und dann danach die Usertests, wie wir es schon hatten, mit einer Schritt-für-Schritt-Anleitung für das Testen. Ja, diese Erklärungen, warum ist das passiert, also wenn ein Fehler durchgerutscht ist, das möchte ich dann schon weiterhin haben. Dann D, Sitzungen und Rückmeldung. Ja, 11. ein Thema je Sitzung. Ja, würde ich auch meinen, also ein Thema je Sitzung, damit wir hier nicht in einen Overflow kommen und wir Wissen verlieren. Wir wollen doch, und das soll immer auch zwischengespeichert werden. Und ich vermute, das erklärt auch, warum manche Themen dann einfach durchgerutscht sind und von dir nicht umgesetzt worden sind, weil wir schon zu groß geworden sind. Also ich würde auch meinen, gib mir immer Rückmeldung, wenn eine neue Sitzung angebracht ist, damit wir hier billiger und zuverlässiger arbeiten können. Und was meinst du mit Sitzung? Ist eine Sitzung ein neuer Chat auf Codebasis? Oder kann ich auch hier in diesem Chat eine neue Sitzung von dir veranlassen, zum Beispiel indem ich sage, so, mache einmal eine Zusammenfassung des Chats, speichere alles ab, was du brauchst und mache dann ein Reset, damit wir hier in dieser Sitzung neu anfangen können. Ja, 12. ist okay. Zwölf, 13. Rückmeldung kurz ist auch okay. Ja, grundsätzlich können wir das alles einmal so durchnehmen, inklusive dem Fazit, was du meinst. inklusive dem Fazit, was du meinst, was hier einen Gewinn bringen würde, in der Selbstverständlichkeit das rein. Wenn dir noch jetzt während dem Recherchieren und dem Zusammenfassen noch dazu einfällt oder wenn du noch weitere Informationen hast, her damit bitte. So, nun fasse das zusammen und gib mir Feedback, was du davon hältst und dann frag noch einmal kurz nach, ob du dann im Prinzip das, was du dann als Feedback gemacht hast, oder wenn du noch Fragen hast, frag auch noch nach, damit wir hier dann zügig weiterkommen.
 
 **2026-10-14 02:33 · Entscheidung:** Passt die Zusammenfassung so, und soll ich in dieser Sitzung die Vereinbarung festschreiben (Zusammenarbeit allgemein 2.0.0) und die Übergabe-Datei anlegen? → **Ich schreibe im Chat** · Feste Fassung der allgemeinen Regeln je App (Punkt 7a): einverstanden? → **Ich schreibe im Chat**
 
@@ -1735,21 +1735,21 @@ Alle punkte ok
 
 **2026-10-14 02:40 · Entscheidung:** Soll ich jetzt alle Vereinbarungen in ‚Zusammenarbeit allgemein‘ 2.0.0 festschreiben, die Übergabe-Datei anlegen, beides veröffentlichen und dir danach den Starttext für die neue Sitzung geben? → **Ja, festschreiben (Empfohlen)**
 
-**2026-10-14 05:00 · Entscheidung (Sitzung A-02):** W-1 Korrekturen nach einer Prüfung sofort als eigene Korrekturversion, §6 anpassen? → **Ja (Empfohlen)** · W-2 Antwortzeile zum Kopieren weglassen (nur noch bei mehr als 4 Fragen)? → **Ja (Empfohlen)** · F-2 Montags-Erinnerung auf frische Sitzung umstellen, die UEBERGABE.md und beide Backlogs liest? → **Ja (Empfohlen)** · Weiter mit Schritt 2 (Entwurf Regelkatalog als Datei)? → **Ja (Empfohlen)**
+**2026-10-14 05:00 · Entscheidung (Sitzung APD-2):** APD-2/W-1 Korrekturen nach einer Prüfung sofort als eigene Korrekturversion, §6 anpassen? → **Ja (Empfohlen)** · W-2 Antwortzeile zum Kopieren weglassen (nur noch bei mehr als 4 Fragen)? → **Ja (Empfohlen)** · F-2 Montags-Erinnerung auf frische Sitzung umstellen, die UEBERGABE.md und beide Backlogs liest? → **Ja (Empfohlen)** · Weiter mit Schritt 2 (Entwurf Regelkatalog als Datei)? → **Ja (Empfohlen)**
 
-**2026-10-14 05:10 · Entscheidung (Sitzung A-02):** Gliederung in 10 Themen mit 34 Regeln (arbeit/A-02 Regelkatalog-Entwurf.md) so übernehmen? → **Ja (Empfohlen)** · Nummern nach Thema (R-2.1 statt R-05)? → **Ja, R-Thema.Nr (Empfohlen)** · Die 5 neuen Regeln (R-2.3, R-4.4, R-5.3, R-5.4, R-6.4) mit eigener Prüfung aufnehmen? → **Ja (Empfohlen)**
+**2026-10-14 05:10 · Entscheidung (Sitzung APD-2):** Gliederung in 10 Themen mit 34 Regeln (arbeit/APD-2 Regelkatalog-Entwurf.md) so übernehmen? → **Ja (Empfohlen)** · Nummern nach Thema (R-2.1 statt R-05)? → **Ja, R-Thema.Nr (Empfohlen)** · Die 5 neuen Regeln (R-2.3, R-4.4, R-5.3, R-5.4, R-6.4) mit eigener Prüfung aufnehmen? → **Ja (Empfohlen)**
 
-**2026-10-14 05:15 · Entscheidung (Sitzung A-02):** Soll ich Version AppDesign 4.12.0 mit dem neuen Regelkatalog (A-02a) erstellen? → **Ja (Empfohlen)** · Den Bau in einer neuen Sitzung beginnen? → **Ja, neue Sitzung (Empfohlen)**
+**2026-10-14 05:15 · Entscheidung (Sitzung APD-2):** Soll ich Version AppDesign 4.12.0 mit dem neuen Regelkatalog (APD-2a) erstellen? → **Ja (Empfohlen)** · Den Bau in einer neuen Sitzung beginnen? → **Ja, neue Sitzung (Empfohlen)**
 
 **2026-10-14 05:25 · Nutzer:** Starttext immer so ausgeben, dass er mit einer Schaltfläche kopiert werden kann; dazu angeben, wo alles auf GitHub abgelegt ist, damit die neue Sitzung die Daten übernehmen kann. → Zusammenarbeit 2.0.1 (Abschnitt 0 Nr. 14), UEBERGABE.md Abschnitte 6 und 7
 
 **2026-10-14 05:35 · Nutzer:** Claude startet die neue Sitzung selbst, sobald die Token-Grenze naht, und macht die Übergabe selbstständig; Name mit App und aufsteigender vierstelliger Chatnummer (erste 0001); braucht ein Chat eine Entscheidung, bleibt er stehen. → Zusammenarbeit 2.1.0 (Abschnitt 0 Nr. 13)
 
-**2026-10-14 08:45 · Entscheidung (Sitzung Reiselogbuch 0001):** Fall-Liste A-02a (`arbeit/A-02a Fall-Liste.md`) so übernehmen und AppDesign 4.12.0 danach bauen? → **Ja (Empfohlen)** · AD_VERSION auf 4.12.0 heben und Reiselogbuch 3.11.5 mit T-83? → **Ich schreibe im Chat**
+**2026-10-14 08:45 · Entscheidung (Sitzung Reiselogbuch 0001):** Testfall-Liste APD-2a (`arbeit/APD-2a Testfall-Liste.md`) so übernehmen und AppDesign 4.12.0 danach bauen? → **Ja (Empfohlen)** · AD_VERSION auf 4.12.0 heben und Reiselogbuch 3.11.5 mit RLB-83? → **Ich schreibe im Chat**
 
 **2026-10-14 · Nutzer (Sitzung Reiselogbuch 0001):** Erklär mir noch mal diese Frage mit AD_VERSION auf 4.12.0. Was bedeutet das, was bezwecken wir damit? Geht es darum, die Version vom allgemeinen Regelwerk auf der App-Seite einzufrieren?
 
-**2026-10-14 · Nutzer (Sitzung Reiselogbuch 0001):** Ja (Nummer heben, Reiselogbuch 3.11.5 mit T-83) – Einfrieren je App bleibt Thema von A-05.
+**2026-10-14 · Nutzer (Sitzung Reiselogbuch 0001):** Ja (Nummer heben, Reiselogbuch 3.11.5 mit RLB-83) – Einfrieren je App bleibt Thema von APD-5.
 
 **2026-10-14 · Nutzer (Sitzung Reiselogbuch 0001):** Rückmeldung zu P-32: 1) im Abgleichbericht sind die Reisemittel in Neu und Vorher kleingeschrieben – warum? In den Einstellungen richtig mit Großbuchstaben. 2) iPad: wenn nach der Eingabe auf den ersten Treffer weiter unten aufgesetzt wird, verschiebt sich die Seitenleiste etwas nach oben – warum? 4) Die Vorschau war schon einmal besser, die letzte Spalte wird zusammengequetscht; wenn es eng wird, sollen sich die letzten beiden Spalten gleichmäßig präsentieren – Vorschlag, wenn in allen Spalten viel Inhalt steht. Rest ok. Sonstiges: ‚Gesamtkosten‘ durch ‚Gesamtausgaben‘ ersetzen.
 
@@ -1757,143 +1757,143 @@ Alle punkte ok
 
 **2026-10-14 · Nutzer (Sitzung Reiselogbuch 0001):** Test zu P-33 alle ok.
 
-**2026-10-14 · Start (Sitzung Reiselogbuch 0002):** von Sitzung 0001 gestartet – Lagebild, dann A-02 Schritte 3 und 4, zuerst die Fall-Liste.
+**2026-10-14 · Start (Sitzung Reiselogbuch 0002):** von Sitzung 0001 gestartet – Lagebild, dann APD-2 Schritte 3 und 4, zuerst die Testfall-Liste.
 
-**2026-10-14 · Entscheidung (Sitzung Reiselogbuch 0002):** Fall-Liste A-02b → **Ja** · Schritt 3: Wiederholungen in der Designrichtlinie Reiselogbuch durch Verweise ersetzen → **Ja, alle** · Schritt 4: Abschnitt 0 bleibt vorne, Abschnitte 1–9 mit Verweisen (2.2.0) → **Ja** · Versionen AppDesign 4.12.2, Zusammenarbeit 2.2.0, Reiselogbuch 3.11.7 → **Ja** · Bauen → **Ja**.
+**2026-10-14 · Entscheidung (Sitzung Reiselogbuch 0002):** Testfall-Liste APD-2b → **Ja** · Schritt 3: Wiederholungen in der Designrichtlinie Reiselogbuch durch Verweise ersetzen → **Ja, alle** · Schritt 4: Abschnitt 0 bleibt vorne, Abschnitte 1–9 mit Verweisen (2.2.0) → **Ja** · Versionen AppDesign 4.12.2, Zusammenarbeit 2.2.0, Reiselogbuch 3.11.7 → **Ja** · Bauen → **Ja**.
 
 **2026-10-14 · Nutzer (Sitzung Reiselogbuch 0002):** P-34 alle Punkte ok.
 
 **2026-10-14 · Nutzer (Sitzung Reiselogbuch 0002):** Schreib nach der Übergabe am Ende in fetter Schrift: Die Sitzung (Chat) ist damit beendet! Dies ist eine allgemeine Regel. → Zusammenarbeit 2.3.0, Abschnitt 0 Nr. 14.
 
-**2026-10-14 · Start (Sitzung Reiselogbuch 0003):** von Sitzung 0002 gestartet – Lagebild, dann A-05 Prüfungen 2.0, zuerst die Fall-Liste (`arbeit/A-05 Fall-Liste.md`).
+**2026-10-14 · Start (Sitzung Reiselogbuch 0003):** von Sitzung 0002 gestartet – Lagebild, dann APD-5 Prüfungen 2.0, zuerst die Testfall-Liste (`arbeit/APD-5 Testfall-Liste.md`).
 
 **2026-10-14 · Nutzer (Sitzung Reiselogbuch 0003):** WebKit gemeinsam einrichten → die zwei Adressen unter Umgebung ‚Standard‘ → Netzwerkzugriff freigegeben (auf claude.ai/code in Safari; in der iPad-App war das Umgebungsmenü nicht zu finden), Setup-Skript mit `npx -y playwright@1.56.1 install webkit` und `install-deps webkit` eingetragen.
 
-**2026-10-14 · Entscheidung (Sitzung Reiselogbuch 0003):** WebKit in Version A → **Ja** · Setup-Skript → **Ja** · Fall-Liste A-05 → **Ja** · feste Fassung mit `design.css`, `ui.js` und `tests/` → **ok** · zwei Versionen (A: Tests, B: Fassung und Skript) → **Ja** · Version A bauen → **Ja** · Fund R-3.1 Quartier-Link → **a) unsichtbar 44 px, in Version A**.
+**2026-10-14 · Entscheidung (Sitzung Reiselogbuch 0003):** WebKit in Version A → **Ja** · Setup-Skript → **Ja** · Testfall-Liste APD-5 → **Ja** · feste Fassung mit `design.css`, `ui.js` und `tests/` → **ok** · zwei Versionen (A: Tests, B: Fassung und Skript) → **Ja** · Version A bauen → **Ja** · Fund R-3.1 Quartier-Link → **a) unsichtbar 44 px, in Version A**.
 
-**2026-10-14 · Nutzer (Sitzung Reiselogbuch 0003):** Neues Thema Prio 2: Beim Neustart soll das iPhone in der Startliste stehen, nicht im ersten offenen Tag einer Reise; das iPad bleibt, wie es ist. → Backlog Reiselogbuch T-84 · allgemeine Regel → **Nein, nur Reiselogbuch**.
+**2026-10-14 · Nutzer (Sitzung Reiselogbuch 0003):** Neues Thema Prio 2: Beim Neustart soll das iPhone in der Startliste stehen, nicht im ersten offenen Tag einer Reise; das iPad bleibt, wie es ist. → Backlog Reiselogbuch RLB-84 · allgemeine Regel → **Nein, nur Reiselogbuch**.
 
 **2026-10-14 · Nutzer (Sitzung Reiselogbuch 0003):** P-35 erfolgreich (alle Punkte ok).
 
-**2026-10-14 · Übergabe (Sitzung Reiselogbuch 0003):** Sitzung groß (rund 440.000 Token) → Übergabe geschrieben, neue Sitzung ‚Reiselogbuch 0004 – A-05 Version B‘ gestartet.
+**2026-10-14 · Übergabe (Sitzung Reiselogbuch 0003):** Sitzung groß (rund 440.000 Token) → Übergabe geschrieben, neue Sitzung ‚Reiselogbuch 0004 – APD-5 Version B‘ gestartet.
 
-**2026-10-14 · Entscheidung (Sitzung Reiselogbuch 0004):** Version AppDesign 4.14.0 / Reiselogbuch 3.13.0 mit fester Fassung (Teil D, mit W-4) und Veröffentlichungs-Skript (Teil E) erstellen → **Ja**. WebKit war über das Setup-Skript installiert (`webkit-2215`, WebKit 26.0 startet).
+**2026-10-14 · Entscheidung (Sitzung Reiselogbuch 0004):** Version AppDesign 4.14.0 / Reiselogbuch 3.13.0 mit fester Fassung (Teil D, mit APD-5/W-4) und Veröffentlichungs-Skript (Teil E) erstellen → **Ja**. WebKit war über das Setup-Skript installiert (`webkit-2215`, WebKit 26.0 startet).
 
 **2026-10-14 · Entscheidung (Sitzung Reiselogbuch 0004):** Fund: Git-Markierung `v4.14.0` aus der Cloud nicht hochladbar (HTTP 403). Weg → **a** (Text von Designrichtlinie und Zusammenarbeit in die Fassung, keine Markierung) · Korrekturversion AppDesign 4.14.1 / Reiselogbuch 3.13.1 → **Ja**.
 
 **2026-10-14 · Nutzer (Sitzung Reiselogbuch 0004):** P-37 ok bis auf 2 (iPhone quer: im Quartier-Kopf bricht ‚keinen Google-Maps Link‘ allein um, obwohl alles in die Zeile der Überschrift passt) und 3 (iPad startet offline – Flugmodus und ohne WLAN – nur mit weißer Seite; iPhone einwandfrei). Neuer Wunsch: ein kurzer Hinweis oder eine kleine, gut sichtbare Dauer-Anzeige, wenn die App offline arbeitet, z. B. ganz unten.
 
-**2026-10-14 · Entscheidung (Sitzung Reiselogbuch 0004):** Korrekturversion AppDesign 4.14.2 / Reiselogbuch 3.13.2 mit Schrittkopf (Muster) und robustem Offline-Start → **Ja** · Schrittkopf als allgemeine Regel → **Ja** (R-5.1 ergänzt) · Offline-Hinweis ins Backlog → **Prio 1** (A-06, zuerst Muster) · Offline-Hinweis als allgemeine Regel → **Ja**.
+**2026-10-14 · Entscheidung (Sitzung Reiselogbuch 0004):** Korrekturversion AppDesign 4.14.2 / Reiselogbuch 3.13.2 mit Schrittkopf (Muster) und robustem Offline-Start → **Ja** · Schrittkopf als allgemeine Regel → **Ja** (R-5.1 ergänzt) · Offline-Hinweis ins Backlog → **Prio 1** (APD-6, zuerst Muster) · Offline-Hinweis als allgemeine Regel → **Ja**.
 
-**2026-10-15 · Nutzer (Sitzung Reiselogbuch 0004):** P-38 alle Punkte ok. → A-05 abgeschlossen.
+**2026-10-15 · Nutzer (Sitzung Reiselogbuch 0004):** P-38 alle Punkte ok. → APD-5 abgeschlossen.
 
-**2026-10-15 · Übergabe (Sitzung Reiselogbuch 0004):** Thema A-05 abgeschlossen → Übergabe geschrieben, neue Sitzung ‚Reiselogbuch 0005 – A-06 Offline-Hinweis‘ gestartet.
+**2026-10-15 · Übergabe (Sitzung Reiselogbuch 0004):** Thema APD-5 abgeschlossen → Übergabe geschrieben, neue Sitzung ‚Reiselogbuch 0005 – APD-6 Offline-Hinweis‘ gestartet.
 
-**2026-10-15 · Muster (Sitzung Reiselogbuch 0005):** A-06 Offline-Hinweis – Apple-Abgleich (Musik: Band oben; Mail: Zustand unten in der Liste; Notizen: nichts) und drei Varianten (a: graue Zeile unter der Backup-Kachel, b: Kapsel oben im Inhalt, c: a + kurze Meldung beim Wechsel), Empfehlung c.
+**2026-10-15 · Muster (Sitzung Reiselogbuch 0005):** APD-6 Offline-Hinweis – Apple-Abgleich (Musik: Band oben; Mail: Zustand unten in der Liste; Notizen: nichts) und drei Varianten (a: graue Zeile unter der Backup-Kachel, b: Kapsel oben im Inhalt, c: a + kurze Meldung beim Wechsel), Empfehlung c.
 
-**2026-10-15 · Nutzer (Sitzung Reiselogbuch 0005):** Variante C aber als allgemeine regel → A-06 Variante c, allgemeine Regel (Ergänzung R-1.5); als Nächstes Muster dunkel/hoch/iPhone und Fall-Liste.
+**2026-10-15 · Nutzer (Sitzung Reiselogbuch 0005):** Variante C aber als allgemeine regel → APD-6 Variante c, allgemeine Regel (Ergänzung R-1.5); als Nächstes Muster dunkel/hoch/iPhone und Testfall-Liste.
 
-**2026-10-15 · Entscheidung (Sitzung Reiselogbuch 0005):** A-06 Muster Variante c (dunkel, hoch, iPhone) → **Ja** · Meldung ‚Du bist offline‘ auch beim Start ohne Netz → **Ja** · Meldung ‚Wieder online‘ → **Ja** · Fall-Liste F-1 bis F-16 vollständig → **Ja**. A-06 bereit für die nächste Version.
+**2026-10-15 · Entscheidung (Sitzung Reiselogbuch 0005):** APD-6 Muster Variante c (dunkel, hoch, iPhone) → **Ja** · Meldung ‚Du bist offline‘ auch beim Start ohne Netz → **Ja** · Meldung ‚Wieder online‘ → **Ja** · Testfall-Liste APD-6/F-1 bis F-16 vollständig → **Ja**. APD-6 bereit für die nächste Version.
 
-**2026-10-15 · Entscheidung (Sitzung Reiselogbuch 0005):** Version AppDesign 4.15.0 / Reiselogbuch 3.14.0 mit A-06 Offline-Hinweis (Variante c, R-1.5 ergänzt, Prüfung F-1 bis F-16) → **Ja**.
+**2026-10-15 · Entscheidung (Sitzung Reiselogbuch 0005):** Version AppDesign 4.15.0 / Reiselogbuch 3.14.0 mit APD-6 Offline-Hinweis (Variante c, R-1.5 ergänzt, Prüfung APD-6/F-1 bis F-16) → **Ja**.
 
 **2026-10-15 · Nutzer (Sitzung Reiselogbuch 0005):** Wie groß darf eine Sitzung maximal werden? → 1.000.000 Token Kontext (Sitzungsdaten), belegt 335.530; Grenze bleibt **300.000** (Nutzer: ‚Keine Änderung der Grenze‘).
 
-**2026-10-15 · Nutzer (Sitzung Reiselogbuch 0005):** Testrückmeldung zu P-39: 1) keine Meldung sichtbar, 2) keine Meldung sichtbar, die restlichen Punkte sind ok. → Auswertung `arbeit/P-39 Rückmeldung.md`, Korrektur K-07 bereit.
+**2026-10-15 · Nutzer (Sitzung Reiselogbuch 0005):** Testrückmeldung zu P-39: 1) keine Meldung sichtbar, 2) keine Meldung sichtbar, die restlichen Punkte sind ok. → Auswertung `arbeit/P-39 Rückmeldung.md`, Korrektur APD 4.15.1/K-7 bereit.
 
-**2026-10-15 · Entscheidung (Sitzung Reiselogbuch 0005):** Version AppDesign 4.15.1 / Reiselogbuch 3.14.1 mit K-07 → **Ja, hier bauen** (in dieser Sitzung, über 300.000 Token).
+**2026-10-15 · Entscheidung (Sitzung Reiselogbuch 0005):** Version AppDesign 4.15.1 / Reiselogbuch 3.14.1 mit APD 4.15.1/K-7 → **Ja, hier bauen** (in dieser Sitzung, über 300.000 Token).
 
-**2026-10-15 · Nutzer (Sitzung Reiselogbuch 0005):** P-40 alles ok → A-06 abgeschlossen.
+**2026-10-15 · Nutzer (Sitzung Reiselogbuch 0005):** P-40 alles ok → APD-6 abgeschlossen.
 
-**2026-10-15 · Übergabe (Sitzung Reiselogbuch 0005):** Thema A-06 abgeschlossen, Sitzung über 300.000 Token → Übergabe geschrieben, neue Sitzung ‚Reiselogbuch 0006 – T-84 iPhone-Start‘ gestartet.
+**2026-10-15 · Übergabe (Sitzung Reiselogbuch 0005):** Thema APD-6 abgeschlossen, Sitzung über 300.000 Token → Übergabe geschrieben, neue Sitzung ‚Reiselogbuch 0006 – RLB-84 iPhone-Start‘ gestartet.
 
-**2026-10-16 · Nutzer (Sitzung Reiselogbuch 0007):** T-05 – Übernahme alter Reiselogbücher soll nur eine Eingabedatei in eine Backup-Datei umformen; Anleitung (Prompt) einmal auf GitHub ablegen, eigenes Repo für die Einstellungen; **keine Daten in einem öffentlichen Repo**.
+**2026-10-16 · Nutzer (Sitzung Reiselogbuch 0007):** RLB-5 – Übernahme alter Reiselogbücher soll nur eine Eingabedatei in eine Backup-Datei umformen; Anleitung (Prompt) einmal auf GitHub ablegen, eigenes Repo für die Einstellungen; **keine Daten in einem öffentlichen Repo**.
 
 **2026-10-16 · Entscheidung (Sitzung Reiselogbuch 0007):** Privates Repo `ReiseLogBuch-Import` mit Anleitung (`PROMPT.md`), Prüfskript und `CLAUDE.md`; Originale und Ergebnisse nur im Chat (nie in einem Repo) → **Ja**. Wer das Repo anlegt: offen (Nutzer schreibt im Chat).
 
 **2026-10-16 · Entscheidung (Sitzung Reiselogbuch 0007):** Startfrage ‚Was möchtest du als Nächstes tun?‘ (Auswahlfenster je angehängtem Repo) als allgemeine Regel → **Ja** – Zusammenarbeit 2.6.0, 0 Nr. 19; CLAUDE.md AppDesign 2.3.0, Reiselogbuch 3.4.0.
 
-**2026-10-16 · Nutzer (Sitzung Reiselogbuch 0007):** Anforderungen N-1 bis N-10 an ‚Reiselogbücher konvertieren‘ (README versionsgetreu, Apps nie ändern, Erkenntnisse ablegen, Format jedes Mal frisch aus ReiseLogBuch lesen, so viel wie möglich übernehmen mit Kachelfragen, Konvertierungsprotokoll, Pflichtangaben Reisetitel/-teilnehmer/-zeitraum/-mittel, Quartierliste und Spalten bei Einträgen an, Bestätigung der Pflichtangaben vor der Ausgabe) – `arbeit/T-05 Anforderungen.md`.
+**2026-10-16 · Nutzer (Sitzung Reiselogbuch 0007):** Anforderungen I-1 bis I-10 an ‚Reiselogbücher konvertieren‘ (README versionsgetreu, Apps nie ändern, Erkenntnisse ablegen, Format jedes Mal frisch aus ReiseLogBuch lesen, so viel wie möglich übernehmen mit Kachelfragen, Konvertierungsprotokoll, Pflichtangaben Reisetitel/-teilnehmer/-zeitraum/-mittel, Quartierliste und Spalten bei Einträgen an, Bestätigung der Pflichtangaben vor der Ausgabe) – `arbeit/RLB-5 Anforderungen.md`.
 
-**2026-10-16 · Entscheidung (Sitzung Reiselogbuch 0007):** Ergänzungen E-1 bis E-11 einzeln per Kachelabfrage → alle **ja**, E-4 (Angaben ohne Feld) **immer Kachelfrage**. Ablegen im Import-Repo → **Nein** (noch nicht).
+**2026-10-16 · Entscheidung (Sitzung Reiselogbuch 0007):** Ergänzungen RLB-5/E-1 bis RLB-5/E-11 einzeln per Kachelabfrage → alle **ja**, RLB-5/E-4 (Angaben ohne Feld) **immer Kachelfrage**. Ablegen im Import-Repo → **Nein** (noch nicht).
 
-**2026-10-16 · Nutzer (Sitzung Reiselogbuch 0007):** Texte in Verlauf und ‚Wie war was?‘ grammatikalisch verbessern, ohne den Sinn zu verfälschen → **N-11**; Entscheidung: auch Fazit (Essen, Quartier nur Tippfehler), geänderte Zeilen im Protokoll vorher → nachher.
+**2026-10-16 · Nutzer (Sitzung Reiselogbuch 0007):** Texte in Verlauf und ‚Wie war was?‘ grammatikalisch verbessern, ohne den Sinn zu verfälschen → **I-11**; Entscheidung: auch Fazit (Essen, Quartier nur Tippfehler), geänderte Zeilen im Protokoll vorher → nachher.
 
-**2026-10-16 · Nutzer (Sitzung Reiselogbuch 0007):** ‚Jetzt alles im Import-Repo ablegen‘ → ReiseLogBuch-Import **1.0.0** (PROMPT.md, CLAUDE.md, ERKENNTNISSE.md, README mit Versionen, `werkzeug/pruefen.mjs` F-1 bis F-19, Selbsttest grün in Chromium und WebKit) und Korrektur **1.0.1** (F-18 las `git status` falsch – beim Hochladen von 1.0.0 übersehen, weil das Ergebnis des Selbsttests vor dem Hochladen nicht ausgewertet wurde). Apps unverändert.
+**2026-10-16 · Nutzer (Sitzung Reiselogbuch 0007):** ‚Jetzt alles im Import-Repo ablegen‘ → ReiseLogBuch-Import **1.0.0** (PROMPT.md, CLAUDE.md, ERKENNTNISSE.md, README mit Versionen, `werkzeug/pruefen.mjs` RLB-5/F-1 bis F-19, Selbsttest grün in Chromium und WebKit) und Korrektur **1.0.1** (F-18 las `git status` falsch – beim Hochladen von 1.0.0 übersehen, weil das Ergebnis des Selbsttests vor dem Hochladen nicht ausgewertet wurde). Apps unverändert.
 
-**2026-10-16 · Nutzer (Sitzung Reiselogbuch 0007):** Korrekturen nach der ersten Konvertierung: kein Wetter an heute/Zukunft, Uhrzeit im Dateinamen falsch (Ortszeit), Aufzählungszeichen im Verlauf (▫️ der App, vergessene erkennen), Smileys im Fazit → **N-12 bis N-15**, ReiseLogBuch-Import **1.2.0** (F-20 bis F-22), Konvertierung neu.
+**2026-10-16 · Nutzer (Sitzung Reiselogbuch 0007):** Korrekturen nach der ersten Konvertierung: kein Wetter an heute/Zukunft, Uhrzeit im Dateinamen falsch (Ortszeit), Aufzählungszeichen im Verlauf (▫️ der App, vergessene erkennen), Smileys im Fazit → **RLB-5/N-12 bis RLB-5/N-15**, ReiseLogBuch-Import **1.2.0** (F-20 bis F-22), Konvertierung neu.
 
 **2026-10-16 · Nutzer (Sitzung Reiselogbuch 0007):** Vorige Reise gelöscht, neue Import-Datei abgeglichen → nicht übernommen. Ursache: Löschung neuer als die Datei (gleiche Kennung) → K-12, Datei neu erstellt (19:52), ReiseLogBuch-Import 1.2.1.
 
-**2026-10-16 · Nutzer (Sitzung Reiselogbuch 0007):** Neue allgemeine Regel: nach dem Schließen des Fensters ‚Tag‘ steht die Zeile des bearbeiteten Tages ganz oben → **A-13** (AppDesign-Backlog, Prio 2, offen; Verweis im Reiselogbuch-Backlog).
+**2026-10-16 · Nutzer (Sitzung Reiselogbuch 0007):** Neue allgemeine Regel: nach dem Schließen des Fensters ‚Tag‘ steht die Zeile des bearbeiteten Tages ganz oben → **APD-13** (AppDesign-Backlog, Prio 2, offen; Verweis im Reiselogbuch-Backlog).
 
-**2026-10-16 · Übergabe (Sitzung Reiselogbuch 0007):** T-05-Werkzeug fertig, erste Konvertierung erledigt, Sitzung über 300.000 Token → Übergabe geschrieben, neue Sitzung ‚Reiselogbuch 0008 – T-05 Prüfung und A-12‘ gestartet.
+**2026-10-16 · Übergabe (Sitzung Reiselogbuch 0007):** RLB-5-Werkzeug fertig, erste Konvertierung erledigt, Sitzung über 300.000 Token → Übergabe geschrieben, neue Sitzung ‚Reiselogbuch 0008 – RLB-5 Prüfung und APD-12‘ gestartet.
 
-**2026-10-16 · Sitzung Reiselogbuch 0008:** T-05 geprüft – Import-Datei mit ‚Abgleichen‘ geladen, alles in Ordnung. A-12 gebaut (Fall-Liste M-1 bis M-14, Entscheidung ‚neu‘ = Eingabe + Ausgabe) → AppDesign 4.17.0 mit `werkzeug/messung.mjs`, Zusammenarbeit 2.7.0.
+**2026-10-16 · Sitzung Reiselogbuch 0008:** RLB-5 geprüft – Import-Datei mit ‚Abgleichen‘ geladen, alles in Ordnung. APD-12 gebaut (Testfall-Liste APD-12/M-1 bis M-14, Entscheidung ‚neu‘ = Eingabe + Ausgabe) → AppDesign 4.17.0 mit `werkzeug/messung.mjs`, Zusammenarbeit 2.7.0.
 
-**2026-10-16 · Sitzung Reiselogbuch 0008:** P-43 ok. A-13 geklärt: Wunsch ‚Tabelle eingefroren, bis man von der Tageserfassung zurück ist‘ statt ‚immer ganz oben‘; Ursache gefunden (Safari schiebt beim Öffnen der Tastatur die Seite); Nutzer: iPhone und iPad gleich, allgemein gültig → neue Regel R-7.3, AppDesign 4.18.0 und Reiselogbuch 3.16.0.
+**2026-10-16 · Sitzung Reiselogbuch 0008:** P-43 ok. APD-13 geklärt: Wunsch ‚Tabelle eingefroren, bis man von der Tageserfassung zurück ist‘ statt ‚immer ganz oben‘; Ursache gefunden (Safari schiebt beim Öffnen der Tastatur die Seite); Nutzer: iPhone und iPad gleich, allgemein gültig → neue Regel R-7.3, AppDesign 4.18.0 und Reiselogbuch 3.16.0.
 
-**2026-10-17 · Übergabe (Sitzung Reiselogbuch 0008):** T-05, A-12 und A-13 abgeschlossen (P-43, P-44 ok) → Übergabe geschrieben, neue Sitzung ‚Reiselogbuch 0009 – Startfrage‘ gestartet.
+**2026-10-17 · Übergabe (Sitzung Reiselogbuch 0008):** RLB-5, APD-12 und APD-13 abgeschlossen (P-43, P-44 ok) → Übergabe geschrieben, neue Sitzung ‚Reiselogbuch 0009 – Startfrage‘ gestartet.
 
-**2026-10-17 · Sitzung Reiselogbuch 0009:** Backlog T-85 bis T-88 aufgenommen. T-85 (Emoji-Taste statt Weltkugel) geschlossen – Web-App kann es nicht steuern. T-87 Eingabetaste ‚Fertig‘ als allgemeine Regel R-5.5 (A-14), in Fenstern ebenfalls ‚Fertig‘; dabei gefunden: die Eingabetaste schickte die Fenster ‚Tag‘ und ‚Einstellungen‘ ab. T-88 zuletzt verwendetes Reiselogbuch beim Start (iPad), iPhone-Startliste bleibt ohne Blau (R-7.2). → AppDesign 4.19.0, Reiselogbuch 3.17.0; P-45 ok (blaues ✓ über der Zifferntastatur nicht änderbar).
+**2026-10-17 · Sitzung Reiselogbuch 0009:** Backlog RLB-85 bis RLB-88 aufgenommen. RLB-85 (Emoji-Taste statt Weltkugel) geschlossen – Web-App kann es nicht steuern. RLB-87 Eingabetaste ‚Fertig‘ als allgemeine Regel R-5.5 (APD-14), in Fenstern ebenfalls ‚Fertig‘; dabei gefunden: die Eingabetaste schickte die Fenster ‚Tag‘ und ‚Einstellungen‘ ab. RLB-88 zuletzt verwendetes Reiselogbuch beim Start (iPad), iPhone-Startliste bleibt ohne Blau (R-7.2). → AppDesign 4.19.0, Reiselogbuch 3.17.0; P-45 ok (blaues ✓ über der Zifferntastatur nicht änderbar).
 
-**2026-10-17 · Sitzung Reiselogbuch 0009:** iPhone nach oben/unten: zunächst Apple-Weg (Statusleiste, Scroll-Leiste, E-33), dann Wunsch ‚zu schwerfällig‘ → Kapsel ‚Nach oben / Ans Ende‘ auch am iPhone, allgemein (R-3.2, A-15), nicht in der Startliste → AppDesign 4.20.0, Reiselogbuch 3.19.0; P-47 ok. T-86 Maps-Link nur über den Namen (Komma, Doppelpunkt, Klammer; nicht vor Ziffer; auch Quartier) → Reiselogbuch 3.18.0; P-46 ok.
+**2026-10-17 · Sitzung Reiselogbuch 0009:** iPhone nach oben/unten: zunächst Apple-Weg (Statusleiste, Scroll-Leiste, die Entscheidung aus P-45), dann Wunsch ‚zu schwerfällig‘ → Kapsel ‚Nach oben / Ans Ende‘ auch am iPhone, allgemein (R-3.2, APD-15), nicht in der Startliste → AppDesign 4.20.0, Reiselogbuch 3.19.0; P-47 ok. RLB-86 Maps-Link nur über den Namen (Komma, Doppelpunkt, Klammer; nicht vor Ziffer; auch Quartier) → Reiselogbuch 3.18.0; P-46 ok.
 
-**2026-10-17 · Sitzung Reiselogbuch 0009:** Ungereimtheiten: (1) Position beim Öffnen → neue Regel R-7.4 (A-16, T-89): ganz oben bzw. erster offener Tag direkt unter dem Kopf; (2) Seitenleiste ein/aus → R-8.1 erweitert (A-17, T-90); (3) Tastatur zittert → R-7.3 erweitern (A-18, T-91), Version B nach Messung am iPad. → AppDesign 4.21.0, Reiselogbuch 3.20.0; P-48/3 nicht ok (Drehen am Ende) → Korrektur 4.21.1/3.20.1, P-49 ok. T-92 Suche über alle Reiselogbücher: Variante C (Liste filtern, im Reiselogbuch weitersuchen), allgemein (A-19).
+**2026-10-17 · Sitzung Reiselogbuch 0009:** Ungereimtheiten: (1) Position beim Öffnen → neue Regel R-7.4 (APD-16, RLB-89): ganz oben bzw. erster offener Tag direkt unter dem Kopf; (2) Seitenleiste ein/aus → R-8.1 erweitert (APD-17, RLB-90); (3) Tastatur zittert → R-7.3 erweitern (APD-18, RLB-91), Version B nach Messung am iPad. → AppDesign 4.21.0, Reiselogbuch 3.20.0; P-48/3 nicht ok (Drehen am Ende) → Korrektur 4.21.1/3.20.1, P-49 ok. RLB-92 Suche über alle Reiselogbücher: Variante C (Liste filtern, im Reiselogbuch weitersuchen), allgemein (APD-19).
 
-**2026-10-17 · Übergabe (Sitzung Reiselogbuch 0009):** Nutzer fragt nach der 300.000-Grenze – Sitzung lag bei ~451.600 Token Kontext (unbemerkt: die Zeile ‚Token vorige Antwort‘ summiert alle Modell-Aufrufe, zeigt den Kontext nicht) → A-20 (Kontext und Warnung in der Zeile), Übergabe geschrieben, neue Sitzung ‚Reiselogbuch 0010 – A-20 Kontext in der Zeile‘ gestartet.
+**2026-10-17 · Übergabe (Sitzung Reiselogbuch 0009):** Nutzer fragt nach der 300.000-Grenze – Sitzung lag bei ~451.600 Token Kontext (unbemerkt: die Zeile ‚Token vorige Antwort‘ summiert alle Modell-Aufrufe, zeigt den Kontext nicht) → APD-20 (Kontext und Warnung in der Zeile), Übergabe geschrieben, neue Sitzung ‚Reiselogbuch 0010 – APD-20 Kontext in der Zeile‘ gestartet.
 
-**2026-10-17 · Sitzung Reiselogbuch 0010:** A-20 gebaut (AppDesign 4.22.0, Kontext in der Zeile Zeit und Token), P-50 ok. A-18 / T-91 (Tastatur im Fenster ‚Tag‘): Messungen am iPad (Messseite, Kopie der App, Versuche A–D) – Fenster und Tabelle fahren beim ersten Hochfahren mit, weil Safari die Seite unabhängig vom Feld rollt; Versuch D (Feld vorab nach oben) half nicht. **Nutzer: Thema vergessen, alle Messeinrichtungen zurücksetzen** → `messen/` und `arbeit/A-18 Messung.md` gelöscht, A-18 verworfen (E-42), T-91 verworfen (Reiselogbuch E-89); R-7.3 und der Code unverändert.
+**2026-10-17 · Sitzung Reiselogbuch 0010:** APD-20 gebaut (AppDesign 4.22.0, Kontext in der Zeile Zeit und Token), P-50 ok. APD-18 / RLB-91 (Tastatur im Fenster ‚Tag‘): Messungen am iPad (Messseite, Kopie der App, Versuche A–D) – Fenster und Tabelle fahren beim ersten Hochfahren mit, weil Safari die Seite unabhängig vom Feld rollt; Versuch D (Feld vorab nach oben) half nicht. **Nutzer: Thema vergessen, alle Messeinrichtungen zurücksetzen** → `messen/` und die Messseite `APD-18 Messung.md` in `arbeit/` gelöscht, APD-18 verworfen (Erledigt), RLB-91 verworfen (Reiselogbuch Erledigt); R-7.3 und der Code unverändert.
 
-**2026-10-18 · Sitzung Reiselogbuch 0013:** A-23 + T-94 gebaut (AppDesign 4.24.0 / Reiselogbuch 3.22.0: Hervorhebung 2 s + 1 s, Variante A; ‚Tour …‘, ‚Sonstiges …‘ – Nutzer: Leerzeile am Anfang statt am Ende), P-54 ok. Nutzer: Rückmeldung immer als Auswahlfenster (Push auf dem iPad) und alle Prüfpunkte Schritt für Schritt im Chat → Zusammenarbeit 2.10.0/2.10.1. A-21 + A-22 gebaut (4.25.0 / 3.23.0: mehrere Wörter, Einheit = Reiselogbuch (Variante B), „…“ als allgemeine Regel, Lupe V1 vor ‚…‘), P-55 ok. Neue Rückmeldungen → A-24 (iPhone Symbolleiste zittert beim Suchen), A-25 (runde Schaltflächen eiförmig), A-26 (Datumsfeld schließt nach Tag, allgemeine Regel). Übergabe an 0014 wegen Sitzungsgröße (~262.000).
+**2026-10-18 · Sitzung Reiselogbuch 0013:** APD-23 + RLB-94 gebaut (AppDesign 4.24.0 / Reiselogbuch 3.22.0: Hervorhebung 2 s + 1 s, Variante A; ‚Tour …‘, ‚Sonstiges …‘ – Nutzer: Leerzeile am Anfang statt am Ende), P-54 ok. Nutzer: Rückmeldung immer als Auswahlfenster (Push auf dem iPad) und alle Usertests Schritt für Schritt im Chat → Zusammenarbeit 2.10.0/2.10.1. APD-21 + APD-22 gebaut (4.25.0 / 3.23.0: mehrere Wörter, Einheit = Reiselogbuch (Variante B), „…“ als allgemeine Regel, Lupe V1 vor ‚…‘), P-55 ok. Neue Rückmeldungen → APD-24 (iPhone Symbolleiste zittert beim Suchen), APD-25 (runde Schaltflächen eiförmig), APD-26 (Datumsfeld schließt nach Tag, allgemeine Regel). Übergabe an 0014 wegen Sitzungsgröße (~262.000).
 
-**2026-10-18/19 · Sitzung Reiselogbuch 0014:** A-24 Ablauf als Prüfung nachgebaut (`ablauf-suche-iphone.mjs`, rot gegen 4.25.0), A-25 Ursache (Markierung 42 × 36 seit 4.0.0). Ja Variante A → **AppDesign 4.25.1 / Reiselogbuch 3.23.1** (Baustein `setHtml`, Markierung Kreis 36 × 36, Grundregel ‚rund ist ein Kreis‘). **P-56:** /0, /3, /4 ok (A-25 abgeschlossen); /1, /2 nicht ok – zittert nach einigen Buchstaben, nach ⓧ massiv, nur bei offener Tastatur, iPad ok; Nutzer: ‚schon unzählige Male gemeldet – warum kannst du das nicht sauber austesten?‘. Analyse `arbeit/A-24 Analyse nach P-56.md`: Safari verschiebt am iPhone den sichtbaren Bereich (enger Platz über der Tastatur, kurze Seite, iOS-26-Fehler bei Home-Bildschirm-Apps); meine Nachbildung verschob um eine feste Strecke statt aus der Geometrie. Wünsche: Suche öffnen/ⓧ → ganz nach oben (allgemein, A-29); weniger Wiederholungen (Vorschlag 0 Nr. 20: Messung am Gerät zuerst, ein Safari-Modell, ‚am Gerät zu bestätigen‘); mehr Vorschläge für AppDesign (A-30). Brainstorming (ohne Bau): iPad und iPhone sind gleich gebaut, der Unterschied ist Safari; Angaben: iPad Bildschirmtastatur, iPhone vom Home-Bildschirm, iOS 26. **Entscheidung: Suche bleibt oben, Umbau B (nur der Inhalt rollt) mit Messung vorher** (A-27, A-28).
+**2026-10-18/19 · Sitzung Reiselogbuch 0014:** APD-24 Ablauf als Prüfung nachgebaut (`ablauf-suche-iphone.mjs`, rot gegen 4.25.0), APD-25 Ursache (Markierung 42 × 36 seit 4.0.0). Ja Variante A → **AppDesign 4.25.1 / Reiselogbuch 3.23.1** (Baustein `setHtml`, Markierung Kreis 36 × 36, Grundregel ‚rund ist ein Kreis‘). **P-56:** /0, /3, /4 ok (APD-25 abgeschlossen); /1, /2 nicht ok – zittert nach einigen Buchstaben, nach ⓧ massiv, nur bei offener Tastatur, iPad ok; Nutzer: ‚schon unzählige Male gemeldet – warum kannst du das nicht sauber austesten?‘. Analyse `arbeit/APD-24 Analyse nach P-56.md`: Safari verschiebt am iPhone den sichtbaren Bereich (enger Platz über der Tastatur, kurze Seite, iOS-26-Fehler bei Home-Bildschirm-Apps); meine Nachbildung verschob um eine feste Strecke statt aus der Geometrie. Wünsche: Suche öffnen/ⓧ → ganz nach oben (allgemein, APD-29); weniger Wiederholungen (Vorschlag 0 Nr. 20: Messung am Gerät zuerst, ein Safari-Modell, ‚am Gerät zu bestätigen‘); mehr Vorschläge für AppDesign (APD-30). Brainstorming (ohne Bau): iPad und iPhone sind gleich gebaut, der Unterschied ist Safari; Angaben: iPad Bildschirmtastatur, iPhone vom Home-Bildschirm, iOS 26. **Entscheidung: Suche bleibt oben, Umbau B (nur der Inhalt rollt) mit Messung vorher** (APD-27, APD-28).
 
-**2026-10-19 · Sitzung Reiselogbuch 0017:** A-28 Umbau B (Variante B1) und A-29 gebaut (AppDesign 4.27.0 / Reiselogbuch 3.25.0): Rahmen mit festen Zeilen und Rollbereich `rolle` – die Seite rollt nie, nur der Inhalt; Suche öffnen und ⓧ rollen nach oben. `ablauf-suche-iphone.mjs` grün unter dem Safari-Modell (vorher rot gegen 3.24.0); neue Prüfungen `checkSearchTop`, `checkFab`, `checkPrint`, Grundregel ‚Seite rollt nie‘. Zusammenarbeit 2.12.0 (Link und Schritte bei jeder Bitte am Gerät). Prüfpunkte P-58.
-P-58 geprüft: Zittern am Gerät weg (Messung: Seite rollt nie, Leisten in jeder Zeile still); /2 nicht ok (Kapsel verdeckt quer mit Tastatur ⌄) → A-33, Weg A, R-3.2 ergänzt, Ja zum Bau 4.27.1 / 3.25.1 in Sitzung 0018.
+**2026-10-19 · Sitzung Reiselogbuch 0017:** APD-28 Umbau B (Variante B1) und APD-29 gebaut (AppDesign 4.27.0 / Reiselogbuch 3.25.0): Rahmen mit festen Zeilen und Rollbereich `rolle` – die Seite rollt nie, nur der Inhalt; Suche öffnen und ⓧ rollen nach oben. `ablauf-suche-iphone.mjs` grün unter dem Safari-Modell (vorher rot gegen 3.24.0); neue Prüfungen `checkSearchTop`, `checkFab`, `checkPrint`, Grundregel ‚Seite rollt nie‘. Zusammenarbeit 2.12.0 (Link und Schritte bei jeder Bitte am Gerät). Usertests P-58.
+P-58 geprüft: Zittern am Gerät weg (Messung: Seite rollt nie, Leisten in jeder Zeile still); /2 nicht ok (Kapsel verdeckt quer mit Tastatur ⌄) → APD-33, Weg A, R-3.2 ergänzt, Ja zum Bau 4.27.1 / 3.25.1 in Sitzung 0018.
 
-**2026-10-19 · Sitzung Reiselogbuch 0018:** A-33 gebaut (AppDesign 4.27.1 / Reiselogbuch 3.25.1, Weg A): die Kapsel ‚Nach oben / Ans Ende‘ überdeckt nie Kopf- oder Suchzeile, quer mit Tastatur ist sie ausgeblendet; R-3.2 ergänzt; dabei gefunden: der Rollbereich ragte quer mit Tastatur unter sie (Innenabstand → Platzhalter `.rolle::after`). Prüfung zuerst rot (18 Fehler), dann grün. P-59 offen.
+**2026-10-19 · Sitzung Reiselogbuch 0018:** APD-33 gebaut (AppDesign 4.27.1 / Reiselogbuch 3.25.1, Weg A): die Kapsel ‚Nach oben / Ans Ende‘ überdeckt nie Kopf- oder Suchzeile, quer mit Tastatur ist sie ausgeblendet; R-3.2 ergänzt; dabei gefunden: der Rollbereich ragte quer mit Tastatur unter sie (Innenabstand → Platzhalter `.rolle::after`). Prüfung zuerst rot (18 Fehler), dann grün. P-59 offen.
 
-P-59 geprüft: alles ok (A-33 abgeschlossen). Zusammenarbeit 2.13.0 (Opus 5.5, Aufwand hoch). Bündel 4.28.0 beschlossen: A-26 Datumsfeld (R-5.1 allgemeine Regel, Muster A → C → C2 nach Protokollen vom iPad), A-31 Messung abspielen (erste Messdatei iPhone quer), A-34 entschieden (`--vv-top` bleibt, quer offsetTop bis 232 px), neu A-35 Gesamtausgaben unter der Tastatur.
+P-59 geprüft: alles ok (APD-33 abgeschlossen). Zusammenarbeit 2.13.0 (Opus 5.5, Aufwand hoch). Bündel 4.28.0 beschlossen: APD-26 Datumsfeld (R-5.1 allgemeine Regel, Muster A → C → C2 nach Protokollen vom iPad), APD-31 Messung abspielen (erste Messdatei iPhone quer), APD-34 entschieden (`--vv-top` bleibt, quer offsetTop bis 232 px), neu APD-35 Gesamtausgaben unter der Tastatur.
 
-**2026-10-20 · Sitzung Reiselogbuch 0019:** Muster A-26 C2 am iPad ok; Fragen des Nutzers (Apple-Empfehlung, andere Apps, Zeitraum durch Ziehen) beantwortet (`arbeit/A-26 Datumserfassung Apple und andere Apps.md`); C2 kann drei Fälle nie (31. → letzter Tag eines anderen Monats, gleicher Tag, heute im leeren Feld) → **A-26 entfällt** (‚wenn nicht alles funktioniert, bauen wir es so nicht ein‘). Zusammenarbeit 2.14.0 (zu Beginn auch Abschnitt 1 – Claude hatte mit ‚Sie‘ angesprochen) und 2.14.1 (Aufwand aus der Sitzungsdatei; die App zeigte ‚mittel‘, alle Aufrufe liefen mit ‚hoch‘). A-35 als allgemeine Regel (R-4.5), Ja zum Bau: AppDesign 4.28.0 / Reiselogbuch 3.26.0 mit A-35 (`fieldIntoView`, Safari-Modell: Feld unter der Tastatur verschiebt den sichtbaren Bereich um 232 px) und A-31 (`tests/abspielen.mjs`, Messung nachgespielt; dabei gefunden: quer mit Suchzeile bleiben 55 px – Feld direkt unter der Suchzeile).
+**2026-10-20 · Sitzung Reiselogbuch 0019:** Muster APD-26 C2 am iPad ok; Fragen des Nutzers (Apple-Empfehlung, andere Apps, Zeitraum durch Ziehen) beantwortet (`arbeit/APD-26 Datumserfassung Apple und andere Apps.md`); C2 kann drei Fälle nie (31. → letzter Tag eines anderen Monats, gleicher Tag, heute im leeren Feld) → **APD-26 entfällt** (‚wenn nicht alles funktioniert, bauen wir es so nicht ein‘). Zusammenarbeit 2.14.0 (zu Beginn auch Abschnitt 1 – Claude hatte mit ‚Sie‘ angesprochen) und 2.14.1 (Aufwand aus der Sitzungsdatei; die App zeigte ‚mittel‘, alle Aufrufe liefen mit ‚hoch‘). APD-35 als allgemeine Regel (R-4.5), Ja zum Bau: AppDesign 4.28.0 / Reiselogbuch 3.26.0 mit APD-35 (`fieldIntoView`, Safari-Modell: Feld unter der Tastatur verschiebt den sichtbaren Bereich um 232 px) und APD-31 (`tests/abspielen.mjs`, Messung nachgespielt; dabei gefunden: quer mit Suchzeile bleiben 55 px – Feld direkt unter der Suchzeile).
 
-**2026-10-20 · Sitzung Reiselogbuch 0020:** A-36 Tastatur ohne Springen: Fall-Liste, Safari-Modell (S-1 bis S-5), Prüfungen
+**2026-10-20 · Sitzung Reiselogbuch 0020:** APD-36 Tastatur ohne Springen: Testfall-Liste, Safari-Modell (APD-36/S-1 bis S-5), Prüfungen
 `checkTastaturStill` und Nachspielen jedes Bilds – gegen 3.26.0 rot (−403, −428, −232, iPad-Fenster 40 → 0 px). Gefunden: `isPhone()`
 hält das iPad mit Tastatur für ein iPhone (Ursache P-60/5). Muster am Gerät: erster Versuch ‚springt in verschiedensten
 Konstellationen‘ – geteilt nur V3 (Muster verwarf beim Umschalten die Messung); V3 scheidet aus; Safari verschiebt bei zu wenig
 Abstand bis zur Mitte. Nutzer: ‚Bitte intensiv nachbessern.‘ → Muster 2. Fassung (V1 obere Hälfte, Lineal), Übergabe an 0021.
 
-**2026-10-20 · Sitzung Reiselogbuch 0021:** Muster A-36 (2. Fassung) am Gerät in allen vier Lagen gemessen: V1 still (auch iPhone
+**2026-10-20 · Sitzung Reiselogbuch 0021:** Muster APD-36 (2. Fassung) am Gerät in allen vier Lagen gemessen: V1 still (auch iPhone
 quer im Fenster, 15 px ohne Verschieben), ‚bis zur Mitte‘ viermal bestätigt, Modell `ABSTAND` 80 → 24. Fehler im Muster: Auswertung
 ‚Tastatur zu‘ 50 ms zu spät, Fälle fehlten. Nutzer: ‚Woran liegt es, dass du nicht einmal eine Messung sauber hinbekommst?‘ →
 Zusammenarbeit 2.15.0 (0 Nr. 20): Muster mit Messung vorher im Modell geprüft, führen durch den Versuch, zeigen nur ‚aufgenommen‘.
-Danach Muster 3. Fassung (geführt) am Gerät gescheitert (Anleitung weg-gescrollt, iPhone in ‚Heute‘, iPad vier V1-Fehler, Fall-Liste
+Danach Muster 3. Fassung (geführt) am Gerät gescheitert (Anleitung weg-gescrollt, iPhone in ‚Heute‘, iPad vier V1-Fehler, Testfall-Liste
 6c). Nutzer: ‚Warum kannst du den Test nicht selbst auf meinem iPad erledigen?‘ – kein Zugriff aufs Gerät; mit Mac und iOS-Simulator
 ginge es, **kein Mac**. Übergabe an 0022.
 
 **2026-10-20 · Sitzung Reiselogbuch 0022:** Lehren aus 0021 umgesetzt (Anleitung nur im Chat, nur V1, nichts Wegrollendes), Safari-Modell
-um 6c ergänzt (S-6). Muster 4 am Gerät: alle Bilder still, aber abgefangene Berührungen verlieren oft den Fokus (‚2× tippen‘, 13 von
+um 6c ergänzt (APD-36/S-6). Muster 4 am Gerät: alle Bilder still, aber abgefangene Berührungen verlieren oft den Fokus (‚2× tippen‘, 13 von
 ~40). Nutzer: niedrige Leisten quer am iPhone übernehmen, **als allgemeine Regel** (Ja). Nutzer: ‚V2 gleich hier‘ → Muster 5 (Safari
-tippen lassen, dann rollen): Fokus sicher, aber Safari liest die Lage beim Fokus und verschiebt (S-7). Vorschlag V3 (Fokus neu setzen)
+tippen lassen, dann rollen): Fokus sicher, aber Safari liest die Lage beim Fokus und verschiebt (APD-36/S-7). Vorschlag V3 (Fokus neu setzen)
 für 0023. Übergabe an 0023.
 
 **2026-10-21 · Sitzung Reiselogbuch 0023:** V3 (Fokus nach dem Rollen neu setzen) in Muster 6 und 7 am Gerät: Safari verschiebt nie,
 Fokus beim ersten Mal, Leisten still (10 von 10) – P-60 im Kern gelöst. Rest: Felder im Inhalt springen beim Erscheinen der Tastatur
-einmal zurück (Modell S-9); Muster 8 stellt den Rollstand sofort zurück. Nutzer: Link und Anleitung kamen nicht an (standen vor dem
+einmal zurück (Modell APD-36/S-9); Muster 8 stellt den Rollstand sofort zurück. Nutzer: Link und Anleitung kamen nicht an (standen vor dem
 Auswahlfenster) → Zusammenarbeit 2.16.0 (0 Nr. 11): Link und Schritte zusätzlich im Auswahlfenster selbst, **als allgemeine Regel** (Ja).
 Muster 8 und 9: Rückstellung wirkt; Platz unter dem Inhalt blieb stehen (2. Mal ↓ zu weit, Nutzer) → Muster 9 behoben; offen: ↑ bei
 offener Tastatur braucht zwei Antipper. Übergabe an 0024 (Bau 4.28.1 / 3.26.1).
 
-**2026-10-21 · Sitzung Reiselogbuch 0024:** Fall-Liste für den Bau (A-36 Abschnitt 8, B-1 bis B-17) – Ja des Nutzers. Gebaut: AppDesign
+**2026-10-21 · Sitzung Reiselogbuch 0024:** Testfall-Liste für den Bau (APD-36 Abschnitt 8, APD-36/B-1 bis B-17) – Ja des Nutzers. Gebaut: AppDesign
 4.28.1 / Reiselogbuch 3.26.1 – V3 in ui.js (neuer Fokus nach dem Rollen, Rückstellung, Platz unter dem Inhalt als `--platz` am
 Platzhalter, Klick unterdrückt, Tastatur-Taste, ‚Nach oben‘ bei offener Tastatur mit einem Antippen, iPad-Fenster gleitet) und die
-allgemeine Regel R-2.4 (iPhone quer niedrige Leisten, Suchfeld als Kapsel 32 px). Beim Bau gefunden: B-18 (die App darf die Ereignisse
+allgemeine Regel R-2.4 (iPhone quer niedrige Leisten, Suchfeld als Kapsel 32 px). Beim Bau gefunden: APD-36/B-18 (die App darf die Ereignisse
 des neuen Fokus nicht sehen – ‚Pflichtfeld‘). Prüfung gegen 3.26.0 rot (177 Fehler), jetzt grün; am Gerät zu bestätigen (P-61).
-P-61 am Gerät mit Messungen: **alles ok** (Safari verschiebt nie, Leisten still) – A-35/A-36 (T-97) abgeschlossen. Übergabe an 0025 (A-37).
+P-61 am Gerät mit Messungen: **alles ok** (Safari verschiebt nie, Leisten still) – APD-35/APD-36 (RLB-97) abgeschlossen. Übergabe an 0025 (APD-37).
 
-**2026-10-21 · Sitzung Reiselogbuch 0025:** A-37 Apple-Abgleich und Muster (Heute, A wie Gemini, B Kapsel mit wirksamen Pfeilen, C Griff wie Fotos), geprüft, online – Wahl offen. Nutzer fragte nach einem Open-Source-Framework: Empfehlung Ionic, auf Nachfrage Framework7 (reines JS, eigene Regeln) vs. Ionic (App Store, Vue/React); Frage ‚warum nicht von Anfang an?‘ – Vorgabe ‚keine Frameworks‘ aus dem Prompt vom 04.10.2026, Claude hätte auf fest abgelegte Frameworks hinweisen sollen. Mischform Framework7 + AppDesign möglich (AppDesign 5). Framework7 9.2.0 ausgewertet (A-38, Prio 1, gemeinsam durchgehen): Tastatur unter iOS nicht gelöst; Vorschläge V1–V6. Nutzer: ‚du wirst immer langsamer‘ → Ursache Sitzungsgröße (~220.000 Token); Konsolidierung aller Regeln als A-39 (Prio 1), Opus 5.5, Aufwand hoch, neue Sitzung 0026.
+**2026-10-21 · Sitzung Reiselogbuch 0025:** APD-37 Apple-Abgleich und Muster (Heute, A wie Gemini, B Kapsel mit wirksamen Pfeilen, C Griff wie Fotos), geprüft, online – Wahl offen. Nutzer fragte nach einem Open-Source-Framework: Empfehlung Ionic, auf Nachfrage Framework7 (reines JS, eigene Regeln) vs. Ionic (App Store, Vue/React); Frage ‚warum nicht von Anfang an?‘ – Vorgabe ‚keine Frameworks‘ aus dem Prompt vom 04.10.2026, Claude hätte auf fest abgelegte Frameworks hinweisen sollen. Mischform Framework7 + AppDesign möglich (AppDesign 5). Framework7 9.2.0 ausgewertet (APD-38, Prio 1, gemeinsam durchgehen): Tastatur unter iOS nicht gelöst; Vorschläge V1–V6. Nutzer: ‚du wirst immer langsamer‘ → Ursache Sitzungsgröße (~220.000 Token); Konsolidierung aller Regeln als APD-39 (Prio 1), Opus 5.5, Aufwand hoch, neue Sitzung 0026.
 
-**2026-10-21/22 · Sitzung Reiselogbuch 0027:** A-38 Frameworks mit dem Nutzer durchgegangen. Nutzer: ‚zu schnell, mehr Entscheidungsgrundlagen‘ → Analyse Framework7 9.2.0 und Ionic 9.0.9 aus dem Quelltext (drei Hilfsagenten parallel, ein vierter führte zusammen), HTML-Tabelle mit 66 Themen (Framework, Thema, So macht es Apple, In AppDesign mit Fundstelle, Aufwand, Empfehlung unabhängig vom Aufwand) plus Gesamtvergleich, drei Wege mit Rückblick (11 von 27 Sitzungen Tastatur/Rollen/Safari), weitere Kandidaten. Entschieden: Weg a) eigener Code (A-42), Barrierefreiheit A-43 (Prio 2), Pakete C (A-63, Prio 1), A (A-61, Prio 2), B (A-62, Prio 3), D → A-30, ‚später‘ → A-44–A-54, Neubewertung ‚zukunftsfit‘ → A-55–A-60. Übergabegrenze wieder 300.000, Hilfsagenten wenn sinnvoll (A-41). Gelernt: Text zwischen zwei Auswahlfenstern einer Antwort kommt nicht an – je Antwort ein Thema. Übergabe an 0028 (A-63).
+**2026-10-21/22 · Sitzung Reiselogbuch 0027:** APD-38 Frameworks mit dem Nutzer durchgegangen. Nutzer: ‚zu schnell, mehr Entscheidungsgrundlagen‘ → Analyse Framework7 9.2.0 und Ionic 9.0.9 aus dem Quelltext (drei Hilfsagenten parallel, ein vierter führte zusammen), HTML-Tabelle mit 66 Themen (Framework, Thema, So macht es Apple, In AppDesign mit Fundstelle, Aufwand, Empfehlung unabhängig vom Aufwand) plus Gesamtvergleich, drei Wege mit Rückblick (11 von 27 Sitzungen Tastatur/Rollen/Safari), weitere Kandidaten. Entschieden: Weg a) eigener Code (APD-42), Barrierefreiheit APD-43 (Prio 2), Pakete C (APD-63, Prio 1), A (APD-61, Prio 2), B (APD-62, Prio 3), D → APD-30, ‚später‘ → APD-44–APD-54, Neubewertung ‚zukunftsfit‘ → APD-55–APD-60. Übergabegrenze wieder 300.000, Hilfsagenten wenn sinnvoll (APD-41). Gelernt: Text zwischen zwei Auswahlfenstern einer Antwort kommt nicht an – je Antwort ein Thema. Übergabe an 0028 (APD-63).
 
-**2026-10-22 · Sitzung Reiselogbuch 0029:** A-37 ‚Nach oben / Ans Ende‘: Nutzer wählt B+C (Kapsel mit wirksamen Pfeilen und Schnellroll-Griff wie Apple Fotos); Muster um ‚B+C‘ und `&tage=N` ergänzt; Nutzer: P 6 ‚was soll da genau passieren? genaue Testanleitung‘ → Anleitung mit Längenzeile, dann ‚Test 6 alles ok‘, P 1–5 ok; allgemeine Regel Ja; zunächst ‚noch sammeln‘. A-61: zwei Muster (Teil 1 Navigation, Teil 2 Blatt), Wischaktionen T-10 erst mit A-30; Muster Teil 1 Heute/Rand/Überall; Nutzer: P 9 ‚Überall funktioniert nur vom Rand, nicht in der Mitte‘ → Überall holt die Seitenleiste am iPad hoch auch aus der Mitte; Nutzer: ‚beim Aufruf verschwindet die Seitenleiste‘ → bleibt wie Apple (schließt sich, Nutzer bestätigt); Überall gewählt, allgemeine Regel Ja, **Ja zum Bau AppDesign 4.30.0 / Reiselogbuch 3.28.0 mit A-37 und A-61 Teil 1** in der neuen Sitzung. Übergabe an 0030.
+**2026-10-22 · Sitzung Reiselogbuch 0029:** APD-37 ‚Nach oben / Ans Ende‘: Nutzer wählt B+C (Kapsel mit wirksamen Pfeilen und Schnellroll-Griff wie Apple Fotos); Muster um ‚B+C‘ und `&tage=N` ergänzt; Nutzer: P 6 ‚was soll da genau passieren? genaue Testanleitung‘ → Anleitung mit Längenzeile, dann ‚Test 6 alles ok‘, P 1–5 ok; allgemeine Regel Ja; zunächst ‚noch sammeln‘. APD-61: zwei Muster (Teil 1 Navigation, Teil 2 Blatt), Wischaktionen APD-38/T-10 erst mit APD-30; Muster Teil 1 Heute/Rand/Überall; Nutzer: P 9 ‚Überall funktioniert nur vom Rand, nicht in der Mitte‘ → Überall holt die Seitenleiste am iPad hoch auch aus der Mitte; Nutzer: ‚beim Aufruf verschwindet die Seitenleiste‘ → bleibt wie Apple (schließt sich, Nutzer bestätigt); Überall gewählt, allgemeine Regel Ja, **Ja zum Bau AppDesign 4.30.0 / Reiselogbuch 3.28.0 mit APD-37 und APD-61 Teil 1** in der neuen Sitzung. Übergabe an 0030.
