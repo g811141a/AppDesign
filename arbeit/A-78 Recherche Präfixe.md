@@ -144,7 +144,8 @@ alt → neu). Sehr sauber, aber großer Umbau und neue Gewohnheit.
 |---|---|---|
 | D1 | Zustand im Präfix (Frage 1) | **Ein Thema behält seine Nummer bis zum Schluss;** keine neue E-Nummer beim Erledigen (G3) |
 | D2 | Präfix je Repo (Frage 2) | **Sprechende Kürzel,** gemeinsam festgelegt: Claude macht 3 Vorschläge im Auswahlfenster, der Nutzer entscheidet |
-| D3 | Altbestand (Frage 6) | **Umbau auch rückwirkend** (Nutzer wünscht es; Grenzen und Bedingungen siehe Chat 0045) |
+| D4 | Kürzel (zu D2) | **APD** (AppDesign) · **RLB** (ReiseLogBuch) · **RLI** (ReiseLogBuch-Import) – immer 3 Buchstaben, weitere Apps ebenso; Wahl aus AD·RLB·RLI, AD·RL·RI, APD·RLB·RLI |
+| D3 | Altbestand (Frage 6) | **Umbau auch rückwirkend** – Grenzen: feste Fassungen `fassung/…` und Git-Commits bleiben unverändert, dafür Tabelle alt → neu (von `checkCollab` geprüft); lebende Dateien per Skript nach der Tabelle; alte E-Einträge ohne oder mit mehreren Themen einzeln mit dem Nutzer klären |
 
 ---
 
