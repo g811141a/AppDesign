@@ -258,8 +258,10 @@ function fxZeigen() {
   // Lage über den Ursprung des Bezugsrahmens gemessen (gleich, wo das Feld steht – Fenster, Inhalt, Tabelle)
   fxBtn.style.left = fxBtn.style.top = '0px';
   const o = fxBtn.getBoundingClientRect(), r = an.getBoundingClientRect();
-  fxBtn.style.left = Math.round(r.right - 44 - o.left) + 'px';
-  fxBtn.style.top = Math.round(r.top + (r.height - 44) / 2 - o.top) + 'px';
+  // seit 4.37.0 (APD-43 B5): mit der tatsächlichen Größe – das ⓧ wächst mit der Textgröße (R-1.10)
+  const w = fxBtn.offsetWidth || 44, h = fxBtn.offsetHeight || 44;
+  fxBtn.style.left = Math.round(r.right - w - o.left) + 'px';
+  fxBtn.style.top = Math.round(r.top + (r.height - h) / 2 - o.top) + 'px';
 }
 // Antippen: den Fokus nicht abgeben (Tastatur bleibt), leeren, die App benachrichtigen
 fxBtn.addEventListener('pointerdown', e => { fxTippt = true; e.preventDefault(); });
@@ -1603,6 +1605,7 @@ function updateBar() {
   if (!bar) return;
   bar.classList.toggle('line', rolle.y > 4);
   if (bar.classList.contains('pnav')) document.documentElement.style.setProperty('--pnav-h', bar.offsetHeight + 'px');
+  untenMessen();
   const big = document.querySelector('.ltitle');
   // Ohne großen Titel steht der Titel immer in der Leiste.
   if (bar.classList.contains('pnav')) bar.classList.toggle('titled', !big || big.getBoundingClientRect().bottom < bar.getBoundingClientRect().bottom);
@@ -1610,6 +1613,19 @@ function updateBar() {
 }
 onRoll(updateBar);
 window.addEventListener('resize', updateBar);
+// B7 (seit 4.37.0, APD-43 Teil 2): der Platz unter der Liste kommt aus der gemessenen Höhe dessen, was unten fest darüber liegt –
+// Kapsel Nach oben/Ans Ende bzw. untere Leiste (iPhone) und Backup-Kachel der Seitenleiste; sie wachsen mit der Textgröße (L1), der
+// letzte Eintrag bleibt erreichbar (R-7.1). Ohne Messung gelten die Werte von früher (design.css).
+function untenMessen() {
+  const r = document.documentElement, bb = document.querySelector('.bbar'), fab = document.querySelector('.fab');
+  const fb = parseFloat(getComputedStyle(r).getPropertyValue('--fb')) || 1;
+  const unten = r.classList.contains('phone')
+    ? Math.max((bb?.querySelector('.bnote') ? 150 : 120) * fb, bb ? bb.offsetHeight + 30 : 0)
+    : Math.max(100 * fb, fab?.getClientRects().length ? fab.offsetHeight + 12 : 0);
+  r.style.setProperty('--unten-h', Math.round(unten) + 'px');
+  const fuss = document.querySelector('#side .side-foot');
+  if (fuss?.querySelector('.bhint')) document.querySelector('#side')?.style.setProperty('--fuss-h', Math.round(fuss.offsetHeight) + 'px');
+}
 
 // R-8.1 (seit 4.11.2): Beim Drehen (und jeder anderen Größenänderung) bleibt oben derselbe Eintrag stehen. Safari kennt
 // keinen Scroll-Anker – ohne Hilfe springt die Seite, weil sich die Höhen beim Drehen ändern. Gemerkt wird beim Scrollen
@@ -1681,6 +1697,53 @@ function openAt(el) {
 }
 // Seit 4.23.2: bei offenem bzw. gerade geschlossenem Fenster ändert nur die Tastatur die Höhe – das ist kein Drehen (R-7.3).
 window.addEventListener('resize', () => { if ((lockY !== null || holdTop) && innerWidth === keepWidth) { keepHeight = innerHeight; return; } if (!keepTurned()) return; requestAnimationFrame(() => requestAnimationFrame(restoreTop)); setTimeout(restoreTop, 350); });
+
+/* ---------- Textgröße (seit 4.37.0, APD-43 Teil 2, R-1.10) ---------- */
+
+// G3: Safari meldet die Einstellung ‚Textgröße‘ als Grundgröße (html { font: -apple-system-body }, design.css). Eine unsichtbare Probe
+// mit 1rem zeigt jeden Wechsel – ResizeObserver meldet ihn sofort (auch über das Kontrollzentrum bei offener App), dazu beim Zurückkehren
+// in die App. Stufe = nächster der 12 Body-Werte von Apple → html[data-ts] (design.css: Textstile); ts-gross ab 21, ts-ax ab 28 pt,
+// ts-um (Umbau: untereinander, U1/U2) ab 28 pt, auf dem iPhone hoch schon ab 21 pt. Mac und Chromium: 17 px = Standard.
+const TEXT_STUFEN = { xs: 14, s: 15, m: 16, l: 17, xl: 19, xxl: 21, xxxl: 23, ax1: 28, ax2: 33, ax3: 40, ax4: 47, ax5: 53 };
+let textName = '';
+const textPx = () => TEXT_STUFEN[textName] || 17;
+function textUm() {
+  const r = document.documentElement, px = textPx();
+  r.classList.toggle('ts-um', px >= 28 || (px >= 21 && r.classList.contains('phone') && innerHeight > innerWidth));
+}
+function textStufe() {
+  const px = parseFloat(getComputedStyle(document.documentElement).fontSize) || 17;
+  const name = Object.keys(TEXT_STUFEN).reduce((a, k) => Math.abs(TEXT_STUFEN[k] - px) < Math.abs(TEXT_STUFEN[a] - px) ? k : a, 'l');
+  if (name === textName) return;
+  const erst = !textName, alt = textName;
+  const setzen = () => {
+    const r = document.documentElement;
+    textName = name; r.dataset.ts = name;
+    r.classList.toggle('ts-gross', TEXT_STUFEN[name] >= 21); r.classList.toggle('ts-ax', TEXT_STUFEN[name] >= 28); textUm();
+  };
+  if (erst) return setzen();
+  if (mess?.an) messEreignis(`text ${alt} → ${name}`);   // W4
+  textWechsel(setzen);
+}
+// W1: ein Wechsel bei offener App wirkt wie das Drehen (R-8.1) – oberster Eintrag bleibt, Leisten, Menüs, Sprechblasen und Fenster
+// richten sich neu aus (alle Größen-Hörer laufen), ein offenes Fenster bleibt offen; die App baut über ihren resize-Hörer neu auf.
+function textWechsel(setzen) {
+  // gemerkt beim letzten Rollen (rememberTop) – jetzt zu messen ginge nicht mehr: die Schrift ist schon größer, der Aufbau noch alt
+  const anchor = keepTop;
+  setzen();
+  window.dispatchEvent(new Event('resize'));
+  keepTop = anchor;
+  if (!anchor) return;
+  restoreTop(); requestAnimationFrame(() => requestAnimationFrame(restoreTop)); setTimeout(restoreTop, 350);
+}
+const textProbe = document.createElement('div');
+textProbe.className = 'textprobe'; textProbe.setAttribute('aria-hidden', 'true');
+textProbe.style.cssText = 'position:absolute;left:-9999px;top:0;width:1rem;height:1rem;visibility:hidden;pointer-events:none;';
+document.documentElement.appendChild(textProbe);
+textStufe();
+if (window.ResizeObserver) new ResizeObserver(() => textStufe()).observe(textProbe);
+document.addEventListener('visibilitychange', () => { if (!document.hidden) textStufe(); });
+window.addEventListener('resize', textUm);
 
 // R-2.1: Die Leiste (mit oder ohne Suchzeile) bewegt sich beim Wischen keinen Millimeter.
 // Bei offener Tastatur würde iOS beim Wischen den sichtbaren Bereich verschieben; die Leiste müsste ihm
@@ -2456,7 +2519,9 @@ function messStart({ app = '', teile = {}, rollen = {} } = {}) {
     (r => `Ränder ${r.top}/${r.bottom}/${r.left}/${r.right}`)(safeRand())} · ${
     matchMedia('(prefers-color-scheme: dark)').matches ? 'dunkel' : 'hell'} · ${mess.beginn.toISOString()} · ${
     // seit 4.35.0 (APD-43 H5): die Bedienungshilfen des Geräts
-    matchMedia('(prefers-contrast: more)').matches ? 'Kontrast erhöht' : 'Kontrast normal'} · ${matchMedia('(prefers-reduced-motion: reduce)').matches ? 'Bewegung reduziert' : 'Bewegung normal'}`);
+    matchMedia('(prefers-contrast: more)').matches ? 'Kontrast erhöht' : 'Kontrast normal'} · ${matchMedia('(prefers-reduced-motion: reduce)').matches ? 'Bewegung reduziert' : 'Bewegung normal'} · ${
+    // seit 4.37.0 (APD-43 W4): die Textgröße des Geräts (Stufe und Body in px)
+    `Text ${textName} ${textPx()}`}`);
   mess.zeilen.push(['t', ...Object.keys(messWerte())].map(v => v.padEnd(6)).join(' ').trimEnd());
   const hoere = (z, typ, text) => { if (!z) return; const fn = e => { const t = text(e); if (t) messEreignis(t); }; z.addEventListener(typ, fn, true); mess.hoerer.push([z, typ, fn]); };
   hoere(document, 'focusin', e => 'focus ' + messId(e.target));   // seit 4.28.1: der neue Fokus (R-4.5) steht als ‚neu fokussiert‘ da

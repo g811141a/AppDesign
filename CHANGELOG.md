@@ -3,6 +3,35 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.37.0 – 25.10.2026
+
+AppDesign 4.37.0 · Designrichtlinie allgemein 4.37.0 · Zusammenarbeit allgemein 2.20.0 · geprüft mit Reiselogbuch 3.35.0
+
+**APD-43 Teil 2 Textgröße folgt dem Gerät** (dein Ja vom 25.10.2026, Sitzung 0047; Testfall-Liste `arbeit/APD-43 Teil 2 Testfall-Liste.md`,
+Klärung und Apple-Abgleich `arbeit/APD-43 Teil 2 Klärung.md`, Muster A). Usertest im Reiselogbuch: P-75.
+
+- **Neue Regel R-1.10 ‚Textgröße folgt dem Gerät‘** mit Grundregel ‚nichts überlappt‘; Designrichtlinie 3 mit Apples Tabelle
+  der Textstile (12 Stufen × 11 Stile), 15.13 (Tabellen bei großer Schrift als Kästen), zwei bewusste Abweichungen (16: keine
+  Großanzeige, Feldtext bei xS bis M mindestens 16 px).
+- **Grundgröße (G1):** `html { font: 17px/1.45 … }`, auf Touch-Geräten `-apple-system-body` (die Einstellung ‚Textgröße‘); `body`
+  1rem. **Textstile (G2):** je Stufe `html[data-ts="xs" … "ax5"]` mit `--t-<Stil>` und `--f-<Stil>` wörtlich nach der HIG, `--lh`
+  (Zeilenhöhe, große Stufen enger), Leisten `--tb-<Stil>` und `--fb` bis XXXL; ohne Stufe Standard.
+- **`textStufe()` (G3, ui.js):** unsichtbare Probe mit 1rem, `ResizeObserver` und `visibilitychange` → `html[data-ts]`, `ts-gross`
+  (ab 21), `ts-ax` (ab 28), `ts-um` (Umbau: ab 28, iPhone hoch ab 21); ein Wechsel wirkt wie das Drehen (W1: oberster Eintrag aus
+  dem letzten Rollen, alle Größen-Hörer, die App baut über ihren resize-Hörer neu auf).
+- **design.css (G4–G6, A1–A3, L1–L3, U1–U5, B1–B7):** alle 45 Schriftgrößen als Stil oder mit Faktor, keine Zeilenhöhe in px
+  (Knöpfe, Griff-Blase, Fenstertitel 1.2); Icons mit `--k` (Inhalt Body-Faktor, Leisten `--fb`); Kapseln, Smileys, Markierung,
+  Häkchen, ⓧ und Schrittnummer wachsen, Untergrenze 44; Leisten bis XXXL, iPhone quer fest (L2); Titel in Leisten einzeilig mit …;
+  Menü, Untermenü, Sprechblase, Fenster, Meldung und Seitenleiste wachsen bis Bildschirm minus Rand bzw. 40 %/70 %; Umbau mit
+  `html.ts-um`; Silbentrennung im Inhalt; Notizfeld mindestens 96 px × Faktor.
+- **Platz unter der Liste gemessen (B7):** `untenMessen()` setzt `--unten-h` (Kapsel bzw. untere Leiste) und `--fuss-h`
+  (Backup-Kachel); ⓧ wird mit seiner tatsächlichen Größe ausgerichtet (B5). **Messmodus (W4):** Kopfzeile ‚Text <Stufe> <px>‘,
+  Wechsel als Ereignis ‚text l → ax2‘.
+- **Prüfungen (P1–P3):** `PRUEF_TEXT=<px>` (pruefe.mjs, Ort ‚· Text 53‘); `checkText` (hig.mjs: Wechsel auf 53 px bei offener Seite –
+  Apples Wert je Stil ±1, Leisten bis XXXL, iPhone quer 32, keine Tabelle bei AX, Bezeichnung über dem Wert, Ausgabe unverändert,
+  letzter Eintrag nicht verdeckt); in jeder Messung Stile ohne px und die Grundregel ‚nichts überlappt‘ (Zeilen, Knöpfe); R-2.4
+  und R-6.1 kennen die wachsenden Leisten und den Umbau; Gegenprobe `--gegenprobe text` (lauf.mjs, 7 Fälle).
+
 ## 4.36.0 – 25.10.2026
 
 AppDesign 4.36.0 · Designrichtlinie allgemein 4.36.0 · Zusammenarbeit allgemein 2.20.0 · geprüft mit Reiselogbuch 3.34.0
