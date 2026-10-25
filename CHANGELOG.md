@@ -36,6 +36,10 @@ Klärung und Apple-Abgleich `arbeit/APD-43 Teil 2 Klärung.md`, Muster A). Usert
   die Kennung des Eintrags (Tabellenzeile ↔ Kasten); `textSeite(p)` für Prüfskripte, die Seiten selbst öffnen; Gegenprobe
   `--gegenprobe text` (lauf.mjs, 7 Fälle); `checkTurnEnd` rollt zweimal ans Ende (unter Last stellte eine gerade endende Bewegung
   sonst den alten Rollstand wieder her – 58 px vor dem Ende, 3 von 12 Läufen).
+- **APD-82 (`ablauf-navigation` brach unter Last ab, dreimal im vollen Lauf):** Ursache gefunden – unter Last kam das Loslassen eines
+  schnellen Wischens mehr als 100 ms nach der letzten Bewegung an; die App wertet das wie Apple richtig als ‚nicht schnell‘. Die Prüfung
+  misst jetzt dasselbe Tempo wie die App (Spur der letzten 100 ms vor dem Loslassen) und wiederholt einen Zug, den die App nicht schnell
+  sah, bis zu dreimal (F-5, Q-6); unter Last 12 von 12 Läufen grün.
 - **Meldung am iPhone (#msg):** eigene Höchsthöhe `--msg-max` (nie unter Status- oder Home-Leiste), bei großer Schrift rollt ihr Inhalt –
   vorher galt die Höhe des Blatts. Der gemessene Platz unter der Liste folgt auch geänderten sicheren Rändern; die Backup-Kachel wird
   erst gemessen, wenn sie zu sehen ist (ResizeObserver). Lange Wörter brechen im Rollbereich im Wort um (`overflow-wrap: break-word`),
