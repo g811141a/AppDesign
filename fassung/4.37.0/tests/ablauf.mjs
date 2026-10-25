@@ -1214,17 +1214,30 @@ export async function checkNavigation(p, { eintrag, titel, zurueck = '#back', wa
   const ruhig = async () => { for (let i = 0; i < 30; i++) { await wait(p, 100); if (!(await lage()).nav) return; } };
   // seit 4.31.0: vorher keine Textmarkierung – ein senkrechter Mauszug markiert in WebKit Text, der nächste Zug darauf würde ein
   // Ziehen-und-Ablegen beginnen und WebKit verschluckt die Mausereignisse (am Gerät mit dem Finger gibt es das nicht)
+  // Tempo, das die App beim letzten schnellen Zug sah (px/ms in den letzten 100 ms, wie navEnde in ui.js)
+  let tempo = 0;
   const ziehe = async (x0, y0, x1, y1, { schnell = false, los = true, halten = 0 } = {}) => {
     await p.evaluate(() => getSelection()?.removeAllRanges());
+    if (schnell) await p.evaluate(() => { window.__spur = []; if (!window.__spurAn) { window.__spurAn = true;
+      for (const typ of ['pointerdown', 'pointermove']) addEventListener(typ, e => window.__spur?.push([e.timeStamp, e.clientX]), true);
+      addEventListener('pointerup', e => { window.__los = e.timeStamp; }, true); } });
     await p.mouse.move(x0, y0); await p.mouse.down();
     if (halten) await wait(p, halten);
     const n = schnell ? 4 : Math.max(6, Math.round(Math.hypot(x1 - x0, y1 - y0) / 12));
     for (let i = 1; i <= n; i++) { await p.mouse.move(x0 + (x1 - x0) * i / n, y0 + (y1 - y0) * i / n); await wait(p, schnell ? 8 : 16); }
     if (!los) return;
     if (!schnell) await wait(p, 150);
-    await p.mouse.up(); await ruhig(); await wait(p, 100);
+    await p.mouse.up();
+    // wie die App: die Spur der letzten 100 ms vor dem Loslassen (kommt das Loslassen unter Last spät an, war es kein schnelles Wischen)
+    if (schnell) tempo = await p.evaluate(() => { const s = (window.__spur || []).filter(x => x[0] >= (window.__los ?? Infinity) - 100), z = s.at(-1);
+      return s.length > 1 && z[0] > s[0][0] ? Math.abs(z[1] - s[0][1]) / (z[0] - s[0][0]) : 0; });
+    await ruhig(); await wait(p, 100);
     await keinTippen(`Wischen von ${Math.round(x0)}/${Math.round(y0)} nach ${Math.round(x1)}/${Math.round(y1)}`);
   };
+  // Schnelles Wischen (seit 4.37.0, APD-82): unter Last kommen die Bewegungen langsamer bei der Seite an, als sie geschickt werden – dann
+  // sah die App kein schnelles Wischen (dreimal im vollen Lauf). Es zählt nur ein Zug, den die App wirklich schnell sah (ab 0,3 px/ms);
+  // sonst bis zu dreimal neu. Geprüft wird danach wie bisher.
+  const schnellerZug = async (zug, geschafft) => { const t = []; for (let k = 0; k < 3; k++) { await zug(); t.push(tempo.toFixed(2)); if (tempo >= 0.3 || await geschafft()) break; } return ` (Tempo ${t.join('/')} px/ms)`; };
   // Wischen tippt nie an, worauf es begann (kein Fenster geht auf)
   const keinTippen = async wo => {
     if (!await p.evaluate(() => !!document.querySelector('dialog[open]'))) return;
@@ -1279,7 +1292,8 @@ export async function checkNavigation(p, { eintrag, titel, zurueck = '#back', wa
     await wait(p, 150); await p.mouse.up(); await ruhig(); await wait(p, 100);
     await offen('APD-61/F-4 unter der Hälfte losgelassen');
     // APD-61/F-5: kurz und schnell vom Rand
-    await ziehe(4, h * 0.6, 110, h * 0.6, { schnell: true }); await zu('APD-61/F-5 schnelles Wischen vom Rand');
+    const t5 = await schnellerZug(() => ziehe(4, h * 0.6, 110, h * 0.6, { schnell: true }), async () => { const x = await lage(); return x.liste && !x.inhalt; });
+    await zu('APD-61/F-5 schnelles Wischen vom Rand' + t5);
     // APD-67/F-6: aus der Mitte (Überall)
     await oeffne();
     await ziehe(w * 0.3, h * 0.7, w * 0.95, h * 0.7); await zu('APD-67/F-6 aus der Mitte nach rechts');
@@ -1468,7 +1482,8 @@ export async function checkNavigation(p, { eintrag, titel, zurueck = '#back', wa
     if (await box(seitenKnopf)) E(`APD-68/Q-5 nach dem Einrasten steht noch ${seitenKnopf} im Kopf`);
     // APD-68/Q-6: kurz und schnell
     await zu('APD-68/Q-6 Vorbereitung');
-    await ziehe(w * 0.5, h * 0.75, w * 0.5 + 110, h * 0.75, { schnell: true }); await da(true, 'APD-68/Q-6 kurz und schnell nach rechts');
+    const t6 = await schnellerZug(() => ziehe(w * 0.5, h * 0.75, w * 0.5 + 110, h * 0.75, { schnell: true }), async () => (await lage()).seite);
+    await da(true, 'APD-68/Q-6 kurz und schnell nach rechts' + t6);
     // APD-68/Q-7: Vorrang – senkrecht, schräg (mehr senkrecht), nach links: nichts
     await zu('APD-68/Q-7 Vorbereitung');
     await ziehe(w * 0.6, h * 0.75, w * 0.6 + 4, h * 0.35); await da(false, 'APD-68/Q-7 senkrecht');
