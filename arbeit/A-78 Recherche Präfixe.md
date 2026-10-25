@@ -149,6 +149,7 @@ alt → neu). Sehr sauber, aber großer Umbau und neue Gewohnheit.
 | D6 | Prüfpunkte (Frage 3) | **Usertest P-73** = alle Testfälle (User) einer Version, gemeinsamer Zähler über alle Repos; **Testfall P-73/1**; die Prüfliste heißt **‚Testfälle‘** |
 | D7 | Fälle (Frage 4) | **Testfall-Liste** statt Fall-Liste; ein Fall = **Testfall (automatisch)**, ein P-Punkt = **Testfall (User)**; außerhalb der Liste immer mit Elternnummer (`APD-74/B6`) |
 | D8 | Regeln (Frage 5) | **R- und G- bleiben wie heute** (R-Thema.Nr mit automatischer Prüfung, G-n ohne); **alle Präfixe in GitHub an ihrer Stelle beschreiben** (Entwurf Abschnitt 7) |
+| D9 | Import-Regeln (zum Entwurf) | Entwurf ok; **I-n statt N-n** für die Regeln einer Konvertierung (Import-`PROMPT.md`, Herkunft `arbeit/T-05 Anforderungen.md`); das heutige lokale I- in `arbeit/T-05 Brainstorming.md` wird außerhalb als RLB-5/I-n zitiert |
 | D3 | Altbestand (Frage 6) | **Umbau auch rückwirkend** – Grenzen: feste Fassungen `fassung/…` und Git-Commits bleiben unverändert, dafür Tabelle alt → neu (von `checkCollab` geprüft); lebende Dateien per Skript nach der Tabelle; alte E-Einträge ohne oder mit mehreren Themen einzeln mit dem Nutzer klären |
 
 ---
@@ -156,7 +157,7 @@ alt → neu). Sehr sauber, aber großer Umbau und neue Gewohnheit.
 ## 7. Entwurf: alle Präfixe (künftig Zusammenarbeit 2.4 ‚Nummern und Präfixe‘)
 
 Stelle (0 Nr. 3, eine Regel an einer Stelle): **Zusammenarbeit 2.4** bekommt den Unterabschnitt ‚Nummern und Präfixe‘ mit dieser
-Tabelle; Designrichtlinie 17 erklärt R- und G- wie heute und verweist darauf; die Import-`README.md` verweist für N- und K- darauf.
+Tabelle; Designrichtlinie 17 erklärt R- und G- wie heute und verweist darauf; die Import-`README.md` verweist für I- und K- darauf.
 Gilt erst mit dem Umbau (D3), vorher bleiben die alten Präfixe.
 
 **Grundsätze:** eine Nummer bezeichnet überall genau eine Sache · nie wiederverwenden, nie umnummerieren (Ersatz = neue Nummer mit
@@ -175,7 +176,7 @@ Großbuchstaben, Bindestrich, Nummer ohne führende Nullen · Unterpunkte mit Sc
 | **P-n/m** | **Testfall (User):** ein Schritt-für-Schritt-Test am Gerät, /0 = Version prüfen | CHANGELOG ‚Testfälle P-n‘ | P-73/1 | P-73/1 |
 | **R-t.n** | Regel mit automatischer Prüfung, Thema t, Regel n | Designrichtlinie 17 | R-5.6 | bleibt |
 | **G-n** | Gestaltungsregel ohne automatische Prüfung (Sicht, Gerät) | Designrichtlinie 17 | G-1 | bleibt |
-| **N-n** | Regel einer Konvertierung | ReiseLogBuch-Import `PROMPT.md` | N-3 | bleibt |
+| **I-n** | Regel einer Konvertierung (Import) | ReiseLogBuch-Import `PROMPT.md` | I-3 | N-3 |
 | **K-n** | Erkenntnis aus einer Konvertierung | ReiseLogBuch-Import `ERKENNTNISSE.md` | K-12 | bleibt |
 | *0 Nr. n, 2.x* | Abschnitte und Pflichten der Zusammenarbeit (kein Präfix) | Zusammenarbeit | 0 Nr. 21 | bleibt |
 
@@ -199,7 +200,7 @@ mit ihrer neuen; gilt für die festen Fassungen `fassung/…` und Git-Commits, d
 Tabelle und Schema.
 
 **Beim Umbau noch zu klären (Testfall-Liste des Umbaus):** alte E-Einträge ohne oder mit mehreren Themen; Testfall-Listen mit
-lokalen Präfixen, die oben schon belegt sind (K- in A-33 und A-02a, E- in T-05); Dateinamen in `arbeit/` (‚A-74 Fall-Liste.md‘ →
+lokalen Präfixen, die oben schon belegt sind (K- in A-33 und A-02a, E- in T-05, I- in T-05 Brainstorming); Dateinamen in `arbeit/` (‚A-74 Fall-Liste.md‘ →
 ‚APD-74 Testfall-Liste.md‘) samt Links; Regeltexte mit ‚Prüfpunkt‘, ‚Prüfliste‘, ‚Fall-Liste‘ (u. a. 0 Nr. 1, 11, 22; 2.3; 2.4;
 `doku.mjs`-Meldungen); Nummernfolge im Code (`v4/`, `tests/`, Werkzeuge).
 
