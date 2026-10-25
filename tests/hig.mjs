@@ -440,6 +440,8 @@ const found = new Map(), icons = new Map();
       });
       document.querySelectorAll('#app table').forEach(t => { if (vis(t) && !t.closest('.rt') && t.offsetWidth > t.parentElement.clientWidth + 1 && !/auto|scroll/.test(cs(t.parentElement).overflowX)) R('R-6.3', `Tabelle breiter als ihr Platz (${t.offsetWidth} statt ${t.parentElement.clientWidth} px)`); });
       if (document.documentElement.scrollWidth > innerWidth + 1) R('R-6.3', 'Seite breiter als der Bildschirm');
+      // seit 4.37.0 (R-1.10): auch der Rollbereich wird nie breiter – sonst gehört ihm das waagrechte Wischen (Navigation, R-7.5)
+      document.querySelectorAll('#app > .rolle, #side .side-list').forEach(r => { if (vis(r) && r.scrollWidth > r.clientWidth + 1) R('R-6.3', `Inhalt breiter als sein Rollbereich (${r.scrollWidth} statt ${r.clientWidth} px)`); });
       // R-1.10 (seit 4.37.0, APD-43 Teil 2, P2 Punkt 1, G4, G6): keine Schrift und keine Zeilenhöhe in px in den Stilen (außer Ausgabe .rt und
       // Druck; html trägt den Rückfall der Grundgröße) – jede Größe ist ein Textstil (--t-…) oder wächst mit seinem Faktor. Einmal je Seite.
       if (!window.__textStile) {

@@ -1625,8 +1625,12 @@ function untenMessen() {
     : Math.max(100 * fb, fab?.getClientRects().length ? fab.offsetHeight + 12 : 0);
   r.style.setProperty('--unten-h', Math.round(unten) + 'px');
   const fuss = document.querySelector('#side .side-foot');
-  if (fuss?.querySelector('.bhint')) document.querySelector('#side')?.style.setProperty('--fuss-h', Math.round(fuss.offsetHeight) + 'px');
+  if (!fuss) return;
+  // ein neu aufgebauter Fuß meldet sich selbst, sobald er Größe bekommt (Seitenleiste eingeblendet, Kachel neu, Textgröße)
+  if (!untenBeobachtet.has(fuss)) { untenBeobachtet.add(fuss); untenRO?.observe(fuss); }
+  if (fuss.querySelector('.bhint') && fuss.offsetHeight > 0) document.querySelector('#side')?.style.setProperty('--fuss-h', Math.round(fuss.offsetHeight) + 'px');
 }
+const untenBeobachtet = new WeakSet(), untenRO = window.ResizeObserver ? new ResizeObserver(() => untenMessen()) : null;
 
 // R-8.1 (seit 4.11.2): Beim Drehen (und jeder anderen Größenänderung) bleibt oben derselbe Eintrag stehen. Safari kennt
 // keinen Scroll-Anker – ohne Hilfe springt die Seite, weil sich die Höhen beim Drehen ändern. Gemerkt wird beim Scrollen

@@ -105,8 +105,10 @@ html.ts-um .box .kv .k { width: auto; margin: 0; padding: 0; border-right: none;
 html.ts-um .step-head { flex-wrap: wrap; row-gap: 8px; }
 html.ts-um .step-head > label:first-child { flex: 1 0 100%; }
 html.ts-um .step-head :is(.head-check, .head-checks) { order: 3; margin-left: 0; justify-content: flex-start; }
-/* G6: Silbentrennung im Inhalt (lang="de"); overflow-wrap: anywhere bleibt letzter Ausweg (R-6.3) */
-.side-row .t, .irow .t, .box, td, th, .dlg-body, .ltitle, .step, .pop p, .menu .mi { -webkit-hyphens: auto; hyphens: auto; }
+/* G6: Silbentrennung im Inhalt (lang="de"); overflow-wrap: anywhere bleibt letzter Ausweg (R-6.3). Ein einzelnes langes Wort
+   (‚Reiseteilnehmer:‘, ‚Gesamtausgaben‘) bricht bei großer Schrift im Wort um, statt den Rollbereich breiter zu machen. */
+.side-row .t, .irow .t, .box, td, th, .dlg-body, .ltitle, .step, .pop p, .menu .mi, .rolle, #side .side-list { -webkit-hyphens: auto; hyphens: auto; }
+.rolle, .dlg-body, #side .side-list { overflow-wrap: break-word; }
 * { box-sizing: border-box; }
 html, body { margin: 0; background: var(--bg); color: var(--ink); }
 /* Seit 4.5.0: Leisten bewegen sich nie – die Seite federt am Rand nicht nach (iPad und iPhone) */

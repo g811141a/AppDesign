@@ -1240,7 +1240,7 @@ export async function checkNavigation(p, { eintrag, titel, zurueck = '#back', wa
     // APD-67/F-1: Öffnen – der Inhalt schiebt sich herein, die Liste weicht nach links (‚Bewegung reduzieren‘: überblenden)
     // Rollstand so, dass der Eintrag im oberen Drittel steht (der gewählte Eintrag bleibt sichtbar, R-7.1)
     let listeRoll = await p.evaluate(s => { const e = document.querySelector('#side .side-list'), r = document.querySelector(s); if (!e || !r || e.scrollHeight <= e.clientHeight + 40) return null;
-      e.scrollTop = e.scrollTop + r.getBoundingClientRect().top - e.getBoundingClientRect().top - e.clientHeight / 3; return e.scrollTop; }, eintrag);
+      e.scrollTop = e.scrollTop + r.getBoundingClientRect().top - e.getBoundingClientRect().top - Math.max(6, Math.min(e.clientHeight / 3, e.clientHeight - r.getBoundingClientRect().height - 12)); return e.scrollTop; }, eintrag);   // ganz sichtbar, auch wenn die Kachel bei großer Schrift hoch ist
     await wait(p, 150);
     if (listeRoll !== null) listeRoll = await p.evaluate(() => document.querySelector('#side .side-list').scrollTop);
     await aufzeichnen(); await p.locator(eintrag).first().click();
@@ -1386,8 +1386,9 @@ export async function checkNavigation(p, { eintrag, titel, zurueck = '#back', wa
     if (kasten) orte.unshift([`über ${kasten}`, async () => {
       await p.evaluate(s => document.querySelector(s)?.scrollIntoView({ block: 'center' }), kasten); await wait(p, 150);
       const b = await box(kasten);
-      if (!b || b.b > h || b.t < 0) { E(`APD-67/F-23 Vorbereitung: ${kasten} nicht sichtbar`); return null; }
-      return [Math.min(b.x, w * 0.4), b.y];
+      // seit 4.37.0: bei großer Schrift kann ein Kasten höher als der Bildschirm sein – dann zählt sein sichtbarer Teil
+      if (!b || b.t > h - 20 || b.b < 20) { E(`APD-67/F-23 Vorbereitung: ${kasten} nicht sichtbar`); return null; }
+      return [Math.min(b.x, w * 0.4), Math.min(Math.max(b.y, b.t + 10, 20), b.b - 10, h - 20)];
     }]);
     for (const [wo, ort] of orte) for (const [wie, schritte] of zuege) {
       const xy = await ort(); if (!xy) break;
