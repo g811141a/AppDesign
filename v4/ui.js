@@ -1630,7 +1630,7 @@ function untenMessen() {
   if (!untenBeobachtet.has(fuss)) { untenBeobachtet.add(fuss); untenRO?.observe(fuss); }
   if (fuss.querySelector('.bhint') && fuss.offsetHeight > 0) document.querySelector('#side')?.style.setProperty('--fuss-h', Math.round(fuss.offsetHeight) + 'px');
 }
-const untenBeobachtet = new WeakSet(), untenRO = window.ResizeObserver ? new ResizeObserver(() => untenMessen()) : null;
+const untenBeobachtet = new WeakSet(), untenRO = window.ResizeObserver ? new ResizeObserver(() => requestAnimationFrame(untenMessen)) : null;
 
 // R-8.1 (seit 4.11.2): Beim Drehen (und jeder anderen Größenänderung) bleibt oben derselbe Eintrag stehen. Safari kennt
 // keinen Scroll-Anker – ohne Hilfe springt die Seite, weil sich die Höhen beim Drehen ändern. Gemerkt wird beim Scrollen
@@ -1746,7 +1746,8 @@ textProbe.className = 'textprobe'; textProbe.setAttribute('aria-hidden', 'true')
 textProbe.style.cssText = 'position:absolute;left:-9999px;top:0;width:1rem;height:1rem;visibility:hidden;pointer-events:none;';
 document.documentElement.appendChild(textProbe);
 textStufe();
-if (window.ResizeObserver) new ResizeObserver(() => textStufe()).observe(textProbe);
+// im nächsten Bild – im Rückruf selbst umgebaut, meldet Safari ‚ResizeObserver loop completed with undelivered notifications‘
+if (window.ResizeObserver) new ResizeObserver(() => requestAnimationFrame(textStufe)).observe(textProbe);
 document.addEventListener('visibilitychange', () => { if (!document.hidden) textStufe(); });
 window.addEventListener('resize', textUm);
 
