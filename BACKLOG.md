@@ -18,7 +18,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| P-75 | 2 | **APD-43 Teil 2 Textgröße (4.37.0, Reiselogbuch 3.35.0):** Version, Standard wie bisher, iPhone bis AX5, iPad Tage als Kästen ab AX1, Wechsel bei offenem Fenster, xS und Notiz bei AX5, Einstellung pro App, Mac – Testfälle P-75/0 bis /7 im CHANGELOG des Reiselogbuchs | prüfen |
+| – | – | zurzeit kein Usertest offen | – |
 
 ## 2. Weitere Themen (in Klärung)
 
@@ -58,6 +58,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Thema | Version | Datum |
 |---|---|---|---|
+| P-75 | Geprüft **P-75 (Reiselogbuch 3.35.0): alles ok** (Nutzer 25.10.2026, Sitzung 0048) – Version, Standard wie bisher, iPhone bis AX5, iPad Tage als Kästen ab AX1, Wechsel bei offenem Fenster, xS und Notiz bei AX5, Einstellung pro App, Mac (**APD-43 Teil 2 bestätigt**) | 4.37.0 | 25.10.2026 |
 | APD-82 | **`ablauf-navigation` unter Last:** das Loslassen eines schnellen Wischens kam unter Last mehr als 100 ms nach der letzten Bewegung an – die Prüfung misst jetzt das Tempo wie die App und wiederholt einen zu langsam angekommenen Zug bis zu dreimal (APD-61/F-5, APD-68/Q-6); 12 von 12 Läufen unter Last grün | 4.37.0 | 25.10.2026 |
 | APD-43 | **APD-43 Teil 2 Textgröße folgt dem Gerät (Ja 25.10.2026):** R-1.10 mit Grundregel ‚nichts überlappt‘, Apples Tabelle der Textstile (3), `textStufe` (ui.js), Leisten bis XXXL, Umbau `ts-um`, gemessener Platz unter der Liste; Prüfungen `checkText`, `PRUEF_TEXT`, Gegenprobe `--gegenprobe text` – **APD-43 abgeschlossen** (Teil 1 in 4.35.0) | 4.37.0 | 25.10.2026 |
 | P-74 | Geprüft **P-74 (Reiselogbuch 3.34.0): alles ok** (Nutzer 25.10.2026, Sitzung 0047) – Version, Backlog mit APD-Nummern und ohne E-Nummern, Tabelle ‚Nummern und Präfixe‘, Uhrzeitzeile (**APD-78 und APD-79 abgeschlossen**); Präfix P- für Usertests bleibt (T- ist als altes Präfix belegt, Nutzer 25.10.2026) | 4.36.0 | 25.10.2026 |
