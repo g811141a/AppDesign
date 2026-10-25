@@ -1,6 +1,6 @@
 # A-78 (künftig APD-78) Nummernschema – Klärpunkte und Testfall-Liste des Umbaus
 
-**Stand 25.10.2026** · Sitzung Reiselogbuch 0045 · **Entwurf, noch nicht geklärt** · Grundlage: Entscheidungen D1–D9 in
+**Stand 25.10.2026** · Sitzung Reiselogbuch 0045 · **geklärt: K1–K9 alle wie vorgeschlagen (Nutzer 25.10.2026)** · Grundlage: Entscheidungen D1–D9 in
 `arbeit/A-78 Recherche Präfixe.md` (Abschnitt 6) und der Entwurf der Präfix-Tabelle (Abschnitt 7). Gebaut wird erst nach einem
 Ja (Zusammenarbeit 0 Nr. 21), voraussichtlich in der nächsten Sitzung.
 
