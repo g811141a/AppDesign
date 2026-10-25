@@ -146,7 +146,62 @@ alt → neu). Sehr sauber, aber großer Umbau und neue Gewohnheit.
 | D2 | Präfix je Repo (Frage 2) | **Sprechende Kürzel,** gemeinsam festgelegt: Claude macht 3 Vorschläge im Auswahlfenster, der Nutzer entscheidet |
 | D4 | Kürzel (zu D2) | **APD** (AppDesign) · **RLB** (ReiseLogBuch) · **RLI** (ReiseLogBuch-Import) – immer 3 Buchstaben, weitere Apps ebenso; Wahl aus AD·RLB·RLI, AD·RL·RI, APD·RLB·RLI |
 | D5 | Prüfung (Frage 7) | **Ja:** `checkCollab` prüft das Schema – rot bei unbekanntem Präfix, alter Nummer außerhalb der Tabelle alt → neu, nacktem Fall außerhalb seiner Liste, führenden Nullen |
+| D6 | Prüfpunkte (Frage 3) | **Usertest P-73** = alle Testfälle (User) einer Version, gemeinsamer Zähler über alle Repos; **Testfall P-73/1**; die Prüfliste heißt **‚Testfälle‘** |
+| D7 | Fälle (Frage 4) | **Testfall-Liste** statt Fall-Liste; ein Fall = **Testfall (automatisch)**, ein P-Punkt = **Testfall (User)**; außerhalb der Liste immer mit Elternnummer (`APD-74/B6`) |
+| D8 | Regeln (Frage 5) | **R- und G- bleiben wie heute** (R-Thema.Nr mit automatischer Prüfung, G-n ohne); **alle Präfixe in GitHub an ihrer Stelle beschreiben** (Entwurf Abschnitt 7) |
 | D3 | Altbestand (Frage 6) | **Umbau auch rückwirkend** – Grenzen: feste Fassungen `fassung/…` und Git-Commits bleiben unverändert, dafür Tabelle alt → neu (von `checkCollab` geprüft); lebende Dateien per Skript nach der Tabelle; alte E-Einträge ohne oder mit mehreren Themen einzeln mit dem Nutzer klären |
+
+---
+
+## 7. Entwurf: alle Präfixe (künftig Zusammenarbeit 2.4 ‚Nummern und Präfixe‘)
+
+Stelle (0 Nr. 3, eine Regel an einer Stelle): **Zusammenarbeit 2.4** bekommt den Unterabschnitt ‚Nummern und Präfixe‘ mit dieser
+Tabelle; Designrichtlinie 17 erklärt R- und G- wie heute und verweist darauf; die Import-`README.md` verweist für N- und K- darauf.
+Gilt erst mit dem Umbau (D3), vorher bleiben die alten Präfixe.
+
+**Grundsätze:** eine Nummer bezeichnet überall genau eine Sache · nie wiederverwenden, nie umnummerieren (Ersatz = neue Nummer mit
+‚ersetzt …‘ / ‚ersetzt durch …‘) · das Präfix sagt Ort oder Art, nie den Zustand (Status, Priorität, Version sind Spalten) ·
+Großbuchstaben, Bindestrich, Nummer ohne führende Nullen · Unterpunkte mit Schrägstrich und Elternnummer.
+
+**Präfixe, die überall gelten**
+
+| Präfix | Bedeutung | Wo festgelegt | Beispiel | bisher |
+|---|---|---|---|---|
+| **APD-n** | Thema im Backlog von AppDesign – behält die Nummer bis ‚Erledigt‘ | AppDesign `BACKLOG.md` | APD-78 | A-78 |
+| **RLB-n** | Thema im Backlog des Reiselogbuchs | ReiseLogBuch `BACKLOG.md` | RLB-101 | T-101 |
+| **RLI-n** | Thema von ReiseLogBuch-Import (neu) | ReiseLogBuch-Import `README.md` | RLI-1 | – |
+| *weitere App* | drei Buchstaben, beim Anlegen der App hier eingetragen | Zusammenarbeit 2.4 | – | – |
+| **P-n** | **Usertest:** alle Testfälle (User) einer Version, ein Zähler über alle Repos | Backlog ‚Auf iPad und iPhone prüfen‘, CHANGELOG | P-73 | P-73 (Prüfpunkt) |
+| **P-n/m** | **Testfall (User):** ein Schritt-für-Schritt-Test am Gerät, /0 = Version prüfen | CHANGELOG ‚Testfälle P-n‘ | P-73/1 | P-73/1 |
+| **R-t.n** | Regel mit automatischer Prüfung, Thema t, Regel n | Designrichtlinie 17 | R-5.6 | bleibt |
+| **G-n** | Gestaltungsregel ohne automatische Prüfung (Sicht, Gerät) | Designrichtlinie 17 | G-1 | bleibt |
+| **N-n** | Regel einer Konvertierung | ReiseLogBuch-Import `PROMPT.md` | N-3 | bleibt |
+| **K-n** | Erkenntnis aus einer Konvertierung | ReiseLogBuch-Import `ERKENNTNISSE.md` | K-12 | bleibt |
+| *0 Nr. n, 2.x* | Abschnitte und Pflichten der Zusammenarbeit (kein Präfix) | Zusammenarbeit | 0 Nr. 21 | bleibt |
+
+**Präfixe, die nur in ihrer Datei gelten** – außerhalb immer mit der Nummer des Themas davor:
+
+| Art | Präfix | Wo | Zitiert als | bisher |
+|---|---|---|---|---|
+| **Testfall (automatisch)** | frei je Testfall-Liste (B-, X-, Q-, Z- …), nicht die Präfixe oben | `arbeit/APD-n Testfall-Liste.md` | APD-63/X-2, APD-74/B6 | X-2, B6 |
+| Entscheidung, Befund, Variante in einer Arbeitsdatei | frei (D-, W-, U-, V-, S- …) | `arbeit/APD-n …` | APD-5/D-4, APD-2/W-4 | D-4, W-4 |
+| Liste von Themen in einer Arbeitsdatei | frei (T- …) | z. B. `arbeit/APD-38 Framework-Vergleich.html` | APD-38/T-21 | T-21 |
+
+**Entfällt:** **E-** (Erledigt) – ein Thema behält seine Nummer und wandert mit Version und Datum nach ‚Erledigt‘; ein geprüfter
+Usertest steht dort mit seiner P-Nummer. **A-** und **T-** werden APD- und RLB-, **S-01/S-02** (alter Backlog) kommen in die Tabelle
+alt → neu.
+
+**Begriffe:** Usertest (statt Prüfpunkt) · Testfall (User) (statt Punkt der Prüfliste) · Testfälle P-n (statt Prüfliste) ·
+Testfall-Liste (statt Fall-Liste) · Testfall (automatisch) (statt Fall).
+
+**Tabelle alt → neu:** `ZUORDNUNG.md` in AppDesign – jede alte Nummer (A-, T-, E-, S-, nackte Fall- und Arbeitsnummern) genau einmal
+mit ihrer neuen; gilt für die festen Fassungen `fassung/…` und Git-Commits, die unverändert bleiben. `checkCollab` (D5) prüft
+Tabelle und Schema.
+
+**Beim Umbau noch zu klären (Testfall-Liste des Umbaus):** alte E-Einträge ohne oder mit mehreren Themen; Testfall-Listen mit
+lokalen Präfixen, die oben schon belegt sind (K- in A-33 und A-02a, E- in T-05); Dateinamen in `arbeit/` (‚A-74 Fall-Liste.md‘ →
+‚APD-74 Testfall-Liste.md‘) samt Links; Regeltexte mit ‚Prüfpunkt‘, ‚Prüfliste‘, ‚Fall-Liste‘ (u. a. 0 Nr. 1, 11, 22; 2.3; 2.4;
+`doku.mjs`-Meldungen); Nummernfolge im Code (`v4/`, `tests/`, Werkzeuge).
 
 ---
 
