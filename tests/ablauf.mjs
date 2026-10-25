@@ -1214,13 +1214,17 @@ export async function checkNavigation(p, { eintrag, titel, zurueck = '#back', wa
   const ruhig = async () => { for (let i = 0; i < 30; i++) { await wait(p, 100); if (!(await lage()).nav) return; } };
   // seit 4.31.0: vorher keine Textmarkierung – ein senkrechter Mauszug markiert in WebKit Text, der nächste Zug darauf würde ein
   // Ziehen-und-Ablegen beginnen und WebKit verschluckt die Mausereignisse (am Gerät mit dem Finger gibt es das nicht)
-  // Tempo, das die App beim letzten schnellen Zug sah (px/ms in den letzten 100 ms, wie navEnde in ui.js)
+  // Tempo, das die App beim letzten schnellen Zug sah – wie navEnde in ui.js: die Spur der letzten 100 ms vor dem Loslassen (kommt das
+  // Loslassen unter Last spät an, war es kein schnelles Wischen)
   let tempo = 0;
+  const spurStart = () => p.evaluate(() => { window.__spur = []; window.__los = undefined; if (!window.__spurAn) { window.__spurAn = true;
+    for (const typ of ['pointerdown', 'pointermove']) addEventListener(typ, e => window.__spur?.push([e.timeStamp, e.clientX]), true);
+    addEventListener('pointerup', e => { window.__los = e.timeStamp; }, true); } });
+  const spurTempo = () => p.evaluate(() => { const s = (window.__spur || []).filter(x => x[0] >= (window.__los ?? Infinity) - 100), z = s.at(-1);
+    return s.length > 1 && z[0] > s[0][0] ? Math.abs(z[1] - s[0][1]) / (z[0] - s[0][0]) : 0; });
   const ziehe = async (x0, y0, x1, y1, { schnell = false, los = true, halten = 0 } = {}) => {
     await p.evaluate(() => getSelection()?.removeAllRanges());
-    if (schnell) await p.evaluate(() => { window.__spur = []; if (!window.__spurAn) { window.__spurAn = true;
-      for (const typ of ['pointerdown', 'pointermove']) addEventListener(typ, e => window.__spur?.push([e.timeStamp, e.clientX]), true);
-      addEventListener('pointerup', e => { window.__los = e.timeStamp; }, true); } });
+    if (schnell) await spurStart();
     await p.mouse.move(x0, y0); await p.mouse.down();
     if (halten) await wait(p, halten);
     const n = schnell ? 4 : Math.max(6, Math.round(Math.hypot(x1 - x0, y1 - y0) / 12));
@@ -1228,9 +1232,7 @@ export async function checkNavigation(p, { eintrag, titel, zurueck = '#back', wa
     if (!los) return;
     if (!schnell) await wait(p, 150);
     await p.mouse.up();
-    // wie die App: die Spur der letzten 100 ms vor dem Loslassen (kommt das Loslassen unter Last spät an, war es kein schnelles Wischen)
-    if (schnell) tempo = await p.evaluate(() => { const s = (window.__spur || []).filter(x => x[0] >= (window.__los ?? Infinity) - 100), z = s.at(-1);
-      return s.length > 1 && z[0] > s[0][0] ? Math.abs(z[1] - s[0][1]) / (z[0] - s[0][0]) : 0; });
+    if (schnell) tempo = await spurTempo();
     await ruhig(); await wait(p, 100);
     await keinTippen(`Wischen von ${Math.round(x0)}/${Math.round(y0)} nach ${Math.round(x1)}/${Math.round(y1)}`);
   };
@@ -1409,10 +1411,15 @@ export async function checkNavigation(p, { eintrag, titel, zurueck = '#back', wa
     }]);
     for (const [wo, ort] of orte) for (const [wie, schritte] of zuege) {
       const xy = await ort(); if (!xy) break;
-      const r = await safariWischen(p, xy[0], xy[1], schritte); await ruhig(); await wait(p, 100);
-      await keinTippen(`APD-67/F-23 ${wo} ${wie}`);
-      l = await lage();
-      if (!l.liste || l.inhalt) E(`APD-67/F-23 Zurückwischen mit Berührung ${wo} (${wie}): ${r.abgebrochen ? 'Safari rollt und bricht ab (pointercancel)' : 'nicht zurück'} – die Seite federt zurück (Ziel ${r.ziel}, APD-67)`);
+      // APD-82: sah die App den Zug unter Last nicht schnell (Loslassen zu spät), bis zu dreimal neu
+      let r, t = [];
+      for (let k = 0; k < 3; k++) {
+        await spurStart(); r = await safariWischen(p, xy[0], xy[1], schritte); tempo = await spurTempo(); await ruhig(); await wait(p, 100);
+        await keinTippen(`APD-67/F-23 ${wo} ${wie}`);
+        l = await lage(); t.push(tempo.toFixed(2));
+        if ((l.liste && !l.inhalt) || tempo >= 0.3 || r.abgebrochen) break;
+      }
+      if (!l.liste || l.inhalt) E(`APD-67/F-23 Zurückwischen mit Berührung ${wo} (${wie}): ${r.abgebrochen ? 'Safari rollt und bricht ab (pointercancel)' : 'nicht zurück'} – die Seite federt zurück (Ziel ${r.ziel}, Tempo ${t.join('/')} px/ms, APD-67)`);
       if (l.liste) await oeffne();
     }
     // APD-67/H-5: die Messung zeigt, ob Safari das Rollen noch erlaubt (‚touchmove verhindert‘ nach der Entscheidung)
