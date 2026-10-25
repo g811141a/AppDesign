@@ -1,6 +1,6 @@
 # Übergabe an die nächste Sitzung
 
-**Stand 25.10.2026** · geschrieben in der Sitzung ‚Reiselogbuch 0046‘ (Version AppDesign 4.36.0 / Reiselogbuch 3.34.0 gebaut) –
+**Stand 25.10.2026** · geschrieben in der Sitzung ‚Reiselogbuch 0047‘ (Version AppDesign 4.37.0 / Reiselogbuch 3.35.0 gebaut) –
 Aufbau nach Zusammenarbeit allgemein 2.5. **Claude liest diese Datei zu Beginn jeder Sitzung zuerst** (0 Nr. 15); die
 Arbeitsumgebung steht in der AppDesign-`CLAUDE.md` (mit den Chromium-Verweisen für Chrome 153 unter ‚Tests einrichten‘).
 
@@ -8,56 +8,58 @@ Arbeitsumgebung steht in der AppDesign-`CLAUDE.md` (mit den Chromium-Verweisen f
 
 | Teil | Version | Datei |
 |---|---|---|
-| Reiselogbuch | **3.34.0** (Fassung 4.36.0) | g811141a/ReiseLogBuch – `CHANGELOG.md`, `BACKLOG.md`, `PROMPT.md` |
-| AppDesign | **4.36.0** (feste Fassungen 4.14.0–4.36.0) | g811141a/AppDesign – `CHANGELOG.md`, `BACKLOG.md`, `ZUORDNUNG.md` |
+| Reiselogbuch | **3.35.0** (Fassung 4.37.0) | g811141a/ReiseLogBuch – `CHANGELOG.md`, `BACKLOG.md`, `PROMPT.md` |
+| AppDesign | **4.37.0** (feste Fassungen 4.14.0–4.37.0) | g811141a/AppDesign – `CHANGELOG.md`, `BACKLOG.md`, `ZUORDNUNG.md` |
 | Zusammenarbeit allgemein | **2.20.0** | `README - Zusammenarbeit allgemein.md` |
 | ReiseLogBuch-Import (privat) | 1.3.0 | g811141a/ReiseLogBuch-Import |
 
-- **Chatnummer:** die nächste Sitzung heißt **Reiselogbuch 0047**; die danach 0048.
-- **Modell und Aufwand:** Opus 5.5, Aufwand hoch – in 0046 beides richtig (Sitzungsdatei `"effort":"high"`, `CLAUDE_CODE_EFFORT_LEVEL=high`).
-- **Sitzungsgröße 0046:** etwa 530.000 Token – automatische Übergabe nach 0 Nr. 13.
-- **Offene Usertests:** **P-74** (Reiselogbuch 3.34.0 · AppDesign 4.36.0) – Testfälle P-74/0 bis /3 im CHANGELOG des Reiselogbuchs:
-  Version, Backlog AppDesign mit den neuen Nummern, Tabelle ‚Nummern und Präfixe‘ (Zusammenarbeit 2.4), Uhrzeitzeile.
+- **Chatnummer:** die nächste Sitzung heißt **Reiselogbuch 0048**; die danach 0049.
+- **Modell und Aufwand:** Opus 5.5, Aufwand hoch – in 0047 beides richtig (Sitzungsdatei `"effort":"high"`, `CLAUDE_CODE_EFFORT_LEVEL=high`).
+- **Sitzungsgröße 0047:** etwa 560.000 Token – automatische Übergabe nach 0 Nr. 13 (der Bau war schon begonnen, als 300.000 erreicht
+  waren; der Nutzer wählte ‚hier weiter klären‘).
+- **Offene Usertests:** **P-75** (Reiselogbuch 3.35.0 · AppDesign 4.37.0) – Testfälle P-75/0 bis /7 im CHANGELOG des Reiselogbuchs:
+  Version, Standard wie bisher, iPhone bis AX5, iPad Tage als Kästen ab AX1, Wechsel bei offenem Fenster, xS und Notiz bei AX5,
+  Einstellung pro App (Auskunft), Mac.
 - **‚0. Nächste Version‘:** in beiden Repos leer.
-- **Backlog-Spitze danach:** APD-43 Teil 2 + RLB-101 (Textgröße, bereit – nächste Version nach P-74); APD-38 wartet auf den Nutzer;
-  APD-72, RLB-103, APD-77; APD-80 (Kontrast dunkel – gesonderter Austausch im Chat) und APD-81 (ⓧ in mehrzeiligen Feldern – vorher
-  klären).
+- **Backlog-Spitze danach:** APD-38 wartet auf den Nutzer; APD-72 iPad, RLB-103 tastatur-still, APD-77 Messung verstecken; APD-80
+  (Kontrast dunkel – gesonderter Austausch im Chat) und APD-81 (ⓧ in mehrzeiligen Feldern – vorher klären).
 - **Erinnerung:** ‚Backlog-Erinnerung (AppDesign und Reiselogbuch)‘ montags 8:58.
 
-## 2. Ergebnisse der Sitzung 0046
+## 2. Ergebnisse der Sitzung 0047
 
-- **Neues Nummernschema (APD-78), rückwirkend:** Themen **APD-n** (AppDesign) und **RLB-n** (Reiselogbuch), **RLI-n** reserviert,
-  Import-Regeln **I-n**; Erledigt ohne eigene Nummer (Spalte ‚Nr.‘ = Thema, Usertest oder Version); lokale Nummern außerhalb ihrer
-  Datei mit Elternnummer (APD-63/X-2, APD-36/S-9, APD-38/T-21); Begriffe **Usertest P-n**, **Testfall (User) P-n/m**,
-  **Testfälle P-n**, **Testfall-Liste**, **Testfall (automatisch)**. Alles steht in Zusammenarbeit 2.4 ‚Nummern und Präfixe‘.
-- **`ZUORDNUNG.md`** (AppDesign): Tabelle alt → neu für die festen Fassungen und die Git-Commits (die alten Nummern gelten dort
-  weiter). **`werkzeug/umbenennen.mjs`** hat umgestellt; ein zweiter Lauf ändert nichts.
-- **`checkSchema`** (`doku.mjs`, über `checkCollab`) prüft das Schema – APD-78/S-1 bis S-10, Gegenprobe
-  `node tests/alle.mjs --gegenprobe schema`. Die Protokolle `arbeit/APD-78 Recherche Präfixe.md` und
-  `arbeit/APD-78 Testfall-Liste.md` bleiben im alten Schema (oben gekennzeichnet) und sind wie `ZUORDNUNG.md` ausgenommen.
-- **APD-79 Uhrzeitzeile** steht als Pflicht in Zusammenarbeit 0 Nr. 26 und 2.2.
-- **Veröffentlicht:** AppDesign 4.36.0 (4c36717) und Reiselogbuch 3.34.0 (dd7f739), Pages ‚success‘; Import 1.3.0 auf `main`. Der
-  erste `los`-Lauf war rot (Zeitüberschreitung beim Klick in `ablauf-navigation (Bedienungshilfen)`, Chromium, unter Last), einzeln
-  und im zweiten vollen Lauf grün (92 Läufe in 35:32) – beobachten; tritt es wieder auf, als Thema ins Backlog.
+- **P-74 alles ok** (Nummernschema); das Präfix **P-** für Usertests bleibt – T- ist als altes Präfix der Reiselogbuch-Themen belegt
+  (`ZUORDNUNG.md`), ein Wechsel hätte gegen ‚nie wiederverwenden‘ verstoßen.
+- **Gebaut und veröffentlicht: APD-43 Teil 2 + RLB-101 Textgröße** (AppDesign 4.37.0, Commit 1693166; Reiselogbuch 3.35.0, Commit
+  29753e1; beide Pages ‚success‘). Neue Regel **R-1.10** mit Grundregel ‚nichts überlappt‘, Apples Tabelle der Textstile
+  (Designrichtlinie 3), `textStufe` in ui.js, Leisten bis XXXL, Umbau `html.ts-um`, iPad ab AX1 (bzw. wenn die Tabelle nicht passt)
+  Tage als Kästen. Prüfungen `checkText`, `PRUEF_TEXT` (hig bei 14/23/33/53, Abläufe mit Bewegung bei 53), neue App-Prüfung
+  `text-regeln.mjs`, Gegenprobe `--gegenprobe text` (14 von 14 rot). Voller Lauf: 112 Läufe grün in 47:47 (Zeitgrenze je Prüfung
+  im Reiselogbuch jetzt 600 s).
+- **APD-82 erledigt** (neu angelegt und gelöst): `ablauf-navigation` brach unter Last ab – das Loslassen eines schnellen Wischens
+  kam über 100 ms nach der letzten Bewegung an; die Prüfung misst jetzt das Tempo wie die App und wiederholt bis zu dreimal.
+- **Beim Bau gefunden und behoben** (Einzelheiten im CHANGELOG): oberster Tag sprang beim Wechsel der Textgröße (Safari),
+  Meldung am iPhone zu hoch, Backup-Kachel gemessen solange verborgen, lange Wörter machten den Rollbereich breiter (Zurückwischen
+  ging nicht), ResizeObserver-Schleife in Safari, Rollgedächtnis nach eigener Rollbewegung (`keepFrei`), mehrere Prüfungen robust
+  unter Last (`checkTurnEnd`, `checkKapsel`, Griff-Blase).
+- **Hinweis zur Uhrzeitzeile:** in 0047 dreimal eine Uhrzeit nicht abgelesen (korrigiert) – vor jeder Zeile `TZ=Europe/Berlin date +%H:%M`.
 
 ## 3. Nächster Schritt
 
-1. Lagebild (kurz), dann die Rückmeldung zu **P-74** abfragen (Auswahlfenster nach 2.3; die Testfälle stehen im CHANGELOG des
-   Reiselogbuchs unter 3.34.0).
-2. Danach – wenn P-74 ok – APD-43 Teil 2 + RLB-101 Textgröße als nächste Version vorschlagen (Ja nötig, 0 Nr. 21).
+1. Lagebild (kurz), dann die Rückmeldung zu **P-75** abfragen (Auswahlfenster nach 2.3; die Testfälle stehen im CHANGELOG des
+   Reiselogbuchs unter 3.35.0, im Chat vollständig wiederholen).
+2. Danach – wenn P-75 ok – mit dem Nutzer die nächste Version wählen (Backlog-Spitze; APD-38 und APD-80 brauchen einen Austausch).
 
 ## 4. Danach
 
-APD-43 Teil 2 + RLB-101 Textgröße (bereit) · APD-38 Frameworks (mit dem Nutzer) · APD-72 iPad · RLB-103 tastatur-still · APD-77
-Messung verstecken · APD-80 Kontrast dunkel (Austausch) · APD-81 ⓧ mehrzeilig · APD-62 Paket B · APD-30 · APD-32 · APD-40 ·
-APD-44 bis APD-60 · APD-70 · RLB-6 · APD-1.
+APD-38 Frameworks (mit dem Nutzer) · APD-72 iPad · RLB-103 tastatur-still · APD-77 Messung verstecken · APD-80 Kontrast dunkel
+(Austausch) · APD-81 ⓧ mehrzeilig · APD-62 Paket B · APD-30 · APD-32 · APD-40 · APD-44 bis APD-60 · APD-70 · RLB-6 · APD-1.
 
 ## 5. Starttext für die neue Sitzung
 
 In der neuen Sitzung müssen **AppDesign** und **ReiseLogBuch** verfügbar sein (alles auf Branch `main`).
 
 ```
-Reiselogbuch 0047 – Usertest P-74 (Nummernschema)
+Reiselogbuch 0048 – Usertest P-75 (Textgröße)
 
-Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md, dann gezielt die Zusammenarbeit (Abschnitte 0 und 1) und die Überschriften der Designrichtlinien; prüfe Modell und Aufwand (Sitzungsdatei) und hole das Repo g811141a/ReiseLogBuch dazu, wie in der AppDesign-CLAUDE.md unter ‚Arbeitsumgebung‘ (mit den Chromium-Verweisen unter ‚Tests einrichten‘). Gib kurz das Lagebild und frag dann die Rückmeldung zu P-74 ab (UEBERGABE.md 3).
+Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md, dann gezielt die Zusammenarbeit (Abschnitte 0 und 1) und die Überschriften der Designrichtlinien; prüfe Modell und Aufwand (Sitzungsdatei) und hole das Repo g811141a/ReiseLogBuch dazu, wie in der AppDesign-CLAUDE.md unter ‚Arbeitsumgebung‘ (mit den Chromium-Verweisen unter ‚Tests einrichten‘). Gib kurz das Lagebild und frag dann die Rückmeldung zu P-75 ab (UEBERGABE.md 3).
 ```
