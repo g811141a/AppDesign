@@ -138,6 +138,16 @@ alt → neu). Sehr sauber, aber großer Umbau und neue Gewohnheit.
 
 ---
 
+## 6. Entscheidungen im Austausch (Sitzung 0045)
+
+| Nr. | Frage | Entscheidung (Nutzer 25.10.2026) |
+|---|---|---|
+| D1 | Zustand im Präfix (Frage 1) | **Ein Thema behält seine Nummer bis zum Schluss;** keine neue E-Nummer beim Erledigen (G3) |
+| D2 | Präfix je Repo (Frage 2) | **Sprechende Kürzel,** gemeinsam festgelegt: Claude macht 3 Vorschläge im Auswahlfenster, der Nutzer entscheidet |
+| D3 | Altbestand (Frage 6) | **Umbau auch rückwirkend** (Nutzer wünscht es; Grenzen und Bedingungen siehe Chat 0045) |
+
+---
+
 ## Quellen
 
 - Atlassian: [Changing the project key format](https://confluence.atlassian.com/adminjiraserver/changing-the-project-key-format-938847081.html),
