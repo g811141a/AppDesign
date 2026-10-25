@@ -17,6 +17,8 @@
 // Seit 4.35.0 (APD-43 P1, M7, P2): PRUEF_BEDIENUNG=beide öffnet jede Seite mit ‚Kontrast erhöhen‘ und ‚Bewegung reduzieren‘ (Ort mit
 // Zusatz ‚· Kontrast · ruhig‘); bei ‚Bewegung reduzieren‘ läuft der Bewegungswächter mit und meldet nach jedem Schritt (R-1.9).
 // PRUEF_GEGENPROBE=bedienung:<fall> schleust einen benannten Fehler der Bedienungshilfen ein (GEGENPROBEN_BEDIENUNG, lauf.mjs).
+// Seit 4.37.0 (APD-43 Teil 2, P1, P3): PRUEF_TEXT=<px> öffnet jede Seite mit dieser Textgröße (Grundgröße vor dem Laden gesetzt, wie die
+// Einstellung ‚Textgröße‘ des Geräts; Ort mit Zusatz ‚· Text 53‘); PRUEF_GEGENPROBE=text:<fall> schleust einen Fehler der Textgröße ein.
 import { writeFileSync, mkdirSync } from 'node:fs';
 
 // Gemeinsame Ansichten (APD-5/C-2): iPad quer und hoch, iPhone hoch und quer – je hell oder dunkel über die Option theme.
@@ -177,6 +179,45 @@ export const GEGENPROBEN_BEDIENUNG = {
   sanft: { zeichen: /R-1\.9 .*Bewegung: sanftes Rollen/, was: 'sanftes Rollen trotz ‚reduzieren‘ (M2, M7)' },
   pulsieren: { zeichen: /R-1\.9 .*(Dauerschleife|pulsiert)/, was: 'Pulsieren trotz ‚reduzieren‘ (M4)' },
 };
+// Gegenprobe der Textgröße (seit 4.37.0, APD-43 Teil 2, P3): je Fall ein eingeschleuster Fehler, die passende Meldung muss rot werden
+// (lauf.mjs --gegenprobe text, Prüfung ‚text‘ der App mit checkText).
+export const GEGENPROBEN_TEXT = {
+  px: { zeichen: /R-1\.10 Schrift in px/, was: 'Schrift in px' },
+  leiste: { zeichen: /R-1\.10 Leiste/, was: 'Leiste wächst über XXXL' },
+  tabelle: { zeichen: /R-1\.10 Tabelle bei/, was: 'Tabelle bei AX' },
+  zeilen: { zeichen: /R-1\.10 .*überlappen/, was: 'Zeilenhöhe 20 px (Überlappen)' },
+  feld: { zeichen: /R-1\.3 /, was: 'Feld 14 px' },
+  ausgabe: { zeichen: /R-6\.2 Ausgabe wächst/, was: 'Ausgabe wächst mit' },
+  platz: { zeichen: /R-7\.1 .*verdeckt/, was: 'Platzhalter fest' },
+};
+function gegenprobeText(fall) {
+  const stil = css => document.addEventListener('DOMContentLoaded', () => { const s = document.createElement('style'); s.textContent = css; document.head.append(s); });
+  const f = {
+    px: () => stil('.side-row b { font-size: 17px !important; }'),
+    leiste: () => stil('.nb-title, .pnav-title, .side-head h2, .dlg-head h3 { font-size: var(--t-title3) !important; }'),
+    tabelle: () => { const alt = DOMTokenList.prototype.toggle; DOMTokenList.prototype.toggle = function (n, an) { return alt.call(this, n, n === 'ts-ax' ? false : an); }; },
+    zeilen: () => stil('button { line-height: 20px !important; }'),
+    feld: () => stil('input[type=text], textarea { font-size: 14px !important; }'),
+    ausgabe: () => stil('.rt, .rt * { font-size: var(--t-body) !important; }'),
+    platz: () => stil('.rolle::after { height: 100px !important; } #side .side-list, #side.page .side-list { padding-bottom: 150px !important; }'),
+  }[fall];
+  if (!f) throw new Error('Unbekannter Fall der Gegenprobe: ' + fall);
+  f();
+}
+// Textgröße des Geräts nachgebildet (P1): die Grundgröße steht fest, bevor ui.js sie misst
+function textGroesse(px) {
+  const setze = () => { const s = document.createElement('style'); s.id = 'pruef-text'; s.textContent = `html { font-size: ${px}px !important; }`; document.documentElement.prepend(s); };
+  if (document.documentElement) setze();
+  else new MutationObserver((m, o) => { if (document.documentElement) { o.disconnect(); setze(); } }).observe(document, { childList: true });
+}
+// Für Prüfskripte, die Seiten selbst öffnen (browser.newPage statt t.seite, z. B. hig): Textgröße aus PRUEF_TEXT und die
+// Gegenprobe der Textgröße anwenden; liefert den Zusatz für die Ortsangabe (‚ Text 53‘ bzw. leer).
+export async function textSeite(p) {
+  const px = Number(process.env.PRUEF_TEXT) || 0, gp = (process.env.PRUEF_GEGENPROBE || '').match(/^text:(.+)$/)?.[1];
+  if (px) await p.addInitScript(textGroesse, px);
+  if (gp) await p.addInitScript(gegenprobeText, gp);
+  return px ? ` Text ${px}` : '';
+}
 // Die eingeschleusten Fehler (laufen in der Seite vor ihren Skripten)
 function gegenprobeBedienung(fall) {
   const beob = fn => new MutationObserver(() => fn()).observe(document, { subtree: true, childList: true, attributes: true });
@@ -213,6 +254,7 @@ export function pruefung(name, pw, { hig = null, out = null } = {}) {
   const fehler = [], ansichten = new Set();
   let ort = '', gegenprobe = process.env.PRUEF_GEGENPROBE === '1', gegenprobeGrund = process.env.PRUEF_GEGENPROBE === 'grundregeln';
   const bedienung = process.env.PRUEF_BEDIENUNG === 'beide', gpBedienung = (process.env.PRUEF_GEGENPROBE || '').match(/^bedienung:(.+)$/)?.[1];
+  const textPx = Number(process.env.PRUEF_TEXT) || 0, gpText = (process.env.PRUEF_GEGENPROBE || '').match(/^text:(.+)$/)?.[1];
   const seiten = new Set();
   const wo = schritt => [browserName, ort, schritt].filter(Boolean).join(' · ');
   const melde = (regel, was, schritt = '') => fehler.push(`✗ ${regel ? regel + ' ' : ''}${wo(schritt)}: ${was}`);
@@ -241,11 +283,12 @@ export function pruefung(name, pw, { hig = null, out = null } = {}) {
       if (!a) throw new Error(`Unbekannte Ansicht ‚${ansicht}‘`);
       const hilfen = bedienung ? { contrast: 'more', reducedMotion: 'reduce' } : {};
       const p = await b.newPage({ hasTouch: true, ...a, ...(theme ? { colorScheme: theme } : {}), ...hilfen, ...opts });
-      if (typeof ansicht === 'string') t.ort = ansicht + (theme ? ` ${theme === 'dark' ? 'dunkel' : 'hell'}` : '') + (bedienung ? ' · Kontrast · ruhig' : '');
+      if (typeof ansicht === 'string') t.ort = ansicht + (theme ? ` ${theme === 'dark' ? 'dunkel' : 'hell'}` : '') + (bedienung ? ' · Kontrast · ruhig' : '') + (textPx ? ` · Text ${textPx}` : '');
       // R-1.9 (M7): der Bewegungswächter misst jede Bewegung, sobald ‚Bewegung reduzieren‘ gilt (auch später per emulateMedia)
       await p.addInitScript(bewegungsWaechter);
       seiten.add(p);
       if (gpBedienung) await p.addInitScript(gegenprobeBedienung, gpBedienung);
+      await textSeite(p);
       p.on('pageerror', e => melde('', `Skriptfehler der Seite: ${e.message.split('\n')[0]}`));
       // Safari nachgebildet (Zusammenarbeit 0 Nr. 5): Safari auf iPad und iPhone setzt beim Antippen einer Schaltfläche keinen
       // Fokus, Chromium und das WebKit von Playwright (Linux) schon – sonst meldet R-3.4 einen Fokus am x, den es am Gerät nicht gibt.

@@ -1,6 +1,6 @@
 # Designrichtlinie allgemein
 
-**Version 4.36.0** · Stand 25.10.2026
+**Version 4.37.0** · Stand 25.10.2026
 
 Allgemeine Gestaltungs- und Bedienregeln für alle Web-Apps von g811141a auf iPad und iPhone. Die Datei liegt im Design-Repo
 **AppDesign** (g811141a/AppDesign); ihre Versionsnummer ist die des Repos. Die Komponenten sind dort einmal programmiert und
@@ -109,9 +109,39 @@ heller).
 
 **Apple:** [HIG – Typography](https://developer.apple.com/design/human-interface-guidelines/typography) · [HIG – Layout](https://developer.apple.com/design/human-interface-guidelines/layout)
 
-- Systemschrift `-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`, 17 px, Zeilenhöhe 1,45.
-- h1 28 px, h2 20 px, Fenstertitel 19 px zentriert; Hinweise (`.hint`) 14 px, Zusatzzeilen und Notizen in Menüs und
-  Fensterköpfen 13 px, beide in `--muted`.
+- Systemschrift `-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`; Grundgröße an `html`: auf iPhone und iPad die
+  Einstellung **‚Textgröße‘ des Geräts** (`-apple-system-body`, R-1.10), auf dem Mac und in Chromium 17 px; Zeilenhöhe 1,45 bei Standard,
+  bei großen Stufen enger wie bei Apple (`--lh`).
+- **Textstile nach Apple** (Tabelle unten, `design.css`: `--t-<Stil>` Größe, `--f-<Stil>` Faktor = Größe ÷ Standard; ui.js `textStufe`
+  setzt `html[data-ts]`): h1 Title 1 (28), h2 Title 3 (20), Fenstertitel 19 zentriert (wächst wie Title 3), Text Body (17), fett
+  Headline (17), Werte und Datumszeilen Subhead (15), Hinweise (`.hint`) 14 (wächst wie Subhead), Zusatzzeilen und Notizen in Menüs
+  und Fensterköpfen Footnote (13), kleine Marken Caption 1 (12). **Keine Schriftgröße und keine Zeilenhöhe in px** (außer Ausgabe und
+  Druck); Größen ohne Apple-Stil wachsen mit dem Faktor des nächsten Stils (`calc(19px * var(--f-title3))`).
+- **Leisten** (Kopfzeile, Seitenkopf, Suchzeile, Seitenleisten-Kopf, Fensterkopf, untere Leiste, Backup-Kachel, Kapsel unten,
+  Meldung) wachsen nur bis XXXL (`--tb-<Stil>`, Faktor `--fb`: Text bis 23, Knöpfe 44 → 60 px, Icons bis 27 px); iPhone quer gar
+  nicht (R-2.4). Im Inhalt wachsen Icons (`--k`), senkrechte Innenabstände und Mindesthöhen mit dem Body-Faktor; 44 px bleibt
+  die Untergrenze, Kreise bleiben Kreise, seitliche Ränder bleiben fest.
+- **Umbau bei großer Schrift** (`html.ts-um`: ab AX1, auf dem iPhone hoch ab XXL): Nebeneinanderliegendes steht untereinander –
+  Datum der Kachel, Menü-Wert unter dem Text, Kasten-Bezeichnung über dem Wert, Knöpfe des Schrittkopfs unter dem Titel; ab XXL
+  Silbentrennung im Inhalt, lange Wörter brechen im Rollbereich um; ab AX1
+  (`html.ts-ax`) Tabellen im Inhalt als Kästen (15.13), Sprechblasen-Knöpfe untereinander.
+
+| Stil (pt) | xS | S | M | **L** | XL | XXL | XXXL | AX1 | AX2 | AX3 | AX4 | AX5 | im Bau |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| Large Title | 31 | 32 | 33 | **34** | 36 | 38 | 40 | 44 | 48 | 52 | 56 | 60 | `.ltitle` |
+| Title 1 | 25 | 26 | 27 | **28** | 30 | 32 | 34 | 38 | 43 | 48 | 53 | 58 | `h1` |
+| Title 2 | 19 | 20 | 21 | **22** | 24 | 26 | 28 | 34 | 39 | 44 | 50 | 56 | – |
+| Title 3 | 17 | 18 | 19 | **20** | 22 | 24 | 26 | 31 | 37 | 43 | 49 | 55 | `h2`, Seitenleisten-Titel, Fenstertitel (19) |
+| Headline | 14 | 15 | 16 | **17** | 19 | 21 | 23 | 28 | 33 | 40 | 47 | 53 | Titel von Kachel und Kasten, Tabellenkopf |
+| Body | 14 | 15 | 16 | **17** | 19 | 21 | 23 | 28 | 33 | 40 | 47 | 53 | Text, Menüeinträge, Felder (mind. 16 px) |
+| Callout | 13 | 14 | 15 | **16** | 18 | 20 | 22 | 26 | 32 | 38 | 44 | 51 | – |
+| Subhead | 12 | 13 | 14 | **15** | 17 | 19 | 21 | 25 | 30 | 36 | 42 | 49 | Datumszeile, Menü-Wert, Sprechblase, Hinweis (14) |
+| Footnote | 12 | 12 | 12 | **13** | 15 | 17 | 19 | 23 | 27 | 33 | 38 | 44 | Zusatzzeilen, Kasten-Bezeichnung |
+| Caption 1 | 11 | 11 | 11 | **12** | 14 | 16 | 18 | 22 | 26 | 32 | 37 | 43 | Marken (‚heute‘) |
+| Caption 2 | 11 | 11 | 11 | **11** | 13 | 15 | 17 | 20 | 24 | 29 | 34 | 40 | – |
+
+Body = Grundgröße der Stufe (14 … 53). Zeilenabstände und Werte wörtlich aus der HIG (Stand 16.12.2025); Herleitung und Zeilenabstände:
+`arbeit/APD-43 Teil 2 Aufbereitung.md`.
 - Seitenrand 16 px bzw. iPad-Safe-Area.
 - **Abstand zwischen Schaltflächen 12 px** (wie bei Apple), in Leisten, Reihen und Listen.
 - Radien: Schaltflächen und Suchfelder Kapsel (22 px), Icon-Schaltflächen rund, Listeneinträge und Kästen 14 px,
@@ -119,8 +149,8 @@ heller).
 - Trennlinien und Feldränder als Haarlinie (0,5 px); Kästen und Tabelle ohne Rand.
 - Keine klassischen Checkboxen: Ein/Aus-Einstellungen als **Schalter** (15.15), Optionen beim Erfassen als **Options-Kapsel**
   (15.16).
-- **Text steht in Schaltflächen in der Höhe genau mittig zum Icon** (Zeilenhöhe 20 px wie das Icon).
-- **Tabellenüberschriften** 17 px halbfett (600), gleich groß wie der Text der Zellen (Apple-Textstil „Headline“).
+- **Text steht in Schaltflächen in der Höhe genau mittig zum Icon** (Zeilenhöhe 1,2 – bei Standard 20 px wie das Icon).
+- **Tabellenüberschriften** Headline halbfett (600), gleich groß wie der Text der Zellen (Apple-Textstil „Headline“).
 
 ## 4. Schaltflächen
 
@@ -740,6 +770,8 @@ Regel). In AppDesign ist jede Komponente einmal programmiert (`v4/design.css`, `
 ### 15.13 Tabelle
 - **Apple:** [HIG – Lists and tables](https://developer.apple.com/design/human-interface-guidelines/lists-and-tables)
 - Siehe 9; Regeln R-6.1 bis R-6.3.
+- **Große Schrift** (seit 4.37.0, R-1.10): ab AX1 – auf dem iPhone hoch immer – zeigt jede Tabelle im Inhalt ihre Zeilen als
+  Kästen (15.17, `.box` mit `.kv`, Bezeichnung über dem Wert); Vorschau und Ausgabe bleiben Tabellen (R-6.2).
 
 ### 15.14 Info-Icon mit Hinweis
 - **Apple:** [HIG – Buttons](https://developer.apple.com/design/human-interface-guidelines/buttons)
@@ -1019,6 +1051,8 @@ steht in der Spalte ‚außerdem‘ (ohne automatische Prüfung: G-19).
 |---|---|---|---|
 | Weiße Schrift auf Systemblau (`--accent`): gewählte Zeile, ‚heute‘, Schrittnummern, Häkchen | 4,0 : 1 hell · 3,7 : 1 dunkel | Apple-Systemblau wie in allen Apple-Apps | 09.10.2026 |
 | Orange `--warn` (z. B. ‚fehlt‘) | 3,1–3,5 : 1 | bleibt wie es ist | 09.10.2026 |
+| Keine Großanzeige (Apple: langes Drücken auf einen Leisten-Knopf ab AX1 zeigt Icon und Name groß) | – | gibt es im Web nicht; dafür wachsen die Leisten bis XXXL (R-1.10), VoiceOver nennt jeden Knopf (R-1.8) | 23.10.2026 |
+| Feldtext bei xS bis M mindestens 16 px (Apple: 14–16) | – | sonst vergrößert Safari beim Antippen (R-1.3) | 23.10.2026 |
 | Kapsel ‚Nach oben / Ans Ende‘ auch auf dem iPhone (Apple: Statusleiste antippen bzw. Scroll-Leiste ziehen) | – | der Apple-Weg war dem Nutzer zu schwerfällig (R-3.2); das Ziehen der Scroll-Leiste gibt es dazu als Schnellroll-Griff | 17.10.2026 |
 
 ## 17. Regelkatalog
@@ -1048,6 +1082,7 @@ Testfall (User) in den Usertest, wenn eine Version es betrifft.
 | R-1.5 | **Offline nutzbar und erkennbar:** die App startet ohne Netz aus dem Speicher – auch unter anderer Adresse und bei hängendem Netz nach höchstens 3 s, nie eine weiße Seite; arbeitet sie offline, steht unten in Seitenleiste bzw. Startliste (unter der Backup-Kachel bzw. ohne sie) grau ‚Offline – alles bleibt auf diesem Gerät‘, beim Wechsel und beim Start ohne Netz kurz die Meldung ‚Du bist offline‘ bzw. ‚Wieder online‘ | offline.mjs | Gerät (Flugmodus) | 11, 15.20 |
 | R-1.6 | **Messmodus:** im Mehr-Menü der Seitenleiste bzw. Startliste ‚Messung starten‘ (grau ‚Für Claude: Bewegungen aufzeichnen‘) und ‚Messung beenden und teilen‘ (grau ‚läuft · m:ss · N Zeilen‘); aus, solange nicht gestartet; je Bild eine Zeile nur bei Änderung, dazu jedes Ereignis; keine Texte (nur Längen und ids); endet nach 5 min bzw. 20 000 Zeilen; Datei `messung-JJJJ-MM-TT-hhmm.txt` über das Teilen-Menü; neu laden verwirft | ablauf.mjs – `checkMessung` | Gerät (Messung, Teilen) | 15.21 |
 | R-1.8 | **VoiceOver:** jedes Bedienelement hat Namen, Rolle und Zustand – Icon-Knöpfe `aria-label`, Felder über ihr `label`, Icons `aria-hidden`; Menüknöpfe ‚öffnet Menü‘ mit offen/zu (`aria-haspopup`, `aria-expanded`), Einträge mit Häkchen ‚ausgewählt‘ (`menuitemcheckbox`, `aria-checked`), Untermenü-Einträge wie Menüknöpfe; Fenster, Meldung und Blatt heißen wie ihr Titel, die Zusatzzeile ist ihre Beschreibung; die Sprechblase ist eine modale Abfrage mit ihrem Text als Namen. **Fokus:** ins Menü auf den ersten wählbaren Eintrag, in die Sprechblase auf die Blase, ins Fenster auf das Fenster – danach zurück auf den Knopf (fehlt er: Kopfzeile), immer ohne Rollen; iPhone: Eintrag öffnen → Seitentitel, zurück → blaue Zeile bzw. Titel der Startliste. **Ansagen** höflich über `ansagen()` (im obersten Fenster, sonst auf der Seite): Treffer der Suche nach 0,7 s Pause, ‚Treffer 2 von 3‘, Filter der Liste, Fehlermeldungen (R-5.3), offline/online; ‚Automatisch gespeichert‘ nicht | hig.mjs – Namen, Rollen, Zustände in jeder Ansicht; ablauf.mjs – `checkFokus`, `ansage` (Ansage-Bereich), `checkFieldErrors` | – (keine VoiceOver-Prüfung am Gerät, Nutzer 23.10.2026) | 1, 15.6, 15.7, 15.9 |
+| R-1.10 | **Textgröße folgt dem Gerät:** die Schrift folgt der Einstellung ‚Textgröße‘ (14–53 pt) sofort und ohne Neuladen, alle Textstile nach Apples Tabelle (3), keine Schrift und keine Zeilenhöhe in px; Leisten wachsen nur bis XXXL (iPhone quer gar nicht); ab AX1 (iPhone hoch ab XXL) steht Nebeneinanderliegendes untereinander, Tabellen im Inhalt als Kästen; nichts ragt hinaus, **nichts überlappt** (Grundregel); der letzte Eintrag bleibt erreichbar; ein Wechsel wirkt wie das Drehen (R-8.1); Ausgabe und Vorschau unverändert (R-6.2). R-10.2 (mind. 11 pt) und R-1.3 (Felder mind. 16 px) bleiben Untergrenzen. Abweichung: keine Großanzeige (16) | hig.mjs – `checkText` (Wechsel 17 → 53 px: Apples Wert je Stil, Leisten, Tabellen, Umbau, Ausgabe, letzter Eintrag), Stile ohne px, Grundregel ‚nichts überlappt‘ in jeder Größe; `PRUEF_TEXT` (hig bei 14, 23, 33, 53, Abläufe mit Bewegung bei 53), Gegenprobe `--gegenprobe text` | Aussehen in mehreren Stufen, Wechsel über das Kontrollzentrum | 3, 13 |
 | R-1.9 | **Bedienungshilfen des Geräts:** ‚Kontrast erhöhen‘ schaltet sofort und ohne Neuladen auf die zweite Farbtabelle (2, hell und dunkel), jeder Text und jedes Icon mindestens 4,5 : 1, die Ausgabe bleibt unverändert hell. ‚Bewegung reduzieren‘: erlaubt sind Überblenden (nur Deckkraft bzw. Farbe, bis 0,3 s), kleine Rückmeldungen unter 30 px und Bewegung direkt mit dem Finger; nicht erlaubt sind selbstständige Lageänderungen über 30 px, Zoomen bzw. Verkleinern, Federn, sanftes Rollen durch die App und Dauerschleifen – ‚Nach oben / Ans Ende‘ springen (Überblenden 0,15 s; Apple rollt an der Statusleiste auch dann, WCAG 2.3.3), das Blatt blendet über und die Seite dahinter bleibt groß, das Mikrofon pulsiert nicht | hig.mjs (4,5 : 1 mit ‚Kontrast erhöhen‘, Teile ‚Bedienungshilfen‘); ablauf.mjs – `checkKontrast`, `checkRuhig`; Bewegungswächter in pruefe.mjs (`PRUEF_BEDIENUNG=beide`, Gegenprobe `--gegenprobe bedienung`) | Aussehen mit ‚Kontrast erhöhen‘, Gefühl mit ‚Bewegung reduzieren‘ | 2, 13 |
 | R-1.7 | **Sichere Ränder:** nichts fest Stehendes (Knopf, Feld, Titel, Kachel, Leiste) liegt unter Statusleiste bzw. Dynamic Island, Aussparung oder Home-Leiste; Fenster, Menüs und Sprechblasen bleiben ganz innerhalb (am iPad mindestens 10 px bzw. der sichere Rand, das iPhone-Fenster füllt den Bildschirm); Inhalt darf darunter rollen, sein Ende lässt sich bis über die Home-Leiste rollen. `env(safe-area-inset-*)` nur in `--safe-top/-bottom/-left/-right` | hig.mjs – `safe` in jeder gemessenen Ansicht mit Gerätewerten (iPhone hoch 62/34, quer 62 links und rechts/20 unten, iPad 24/20); doku.mjs – nur die vier Festlegungen | Dynamic Island, Home-Leiste | 13 |
 
@@ -1196,6 +1231,7 @@ R-2.3 (15.2), R-4.4 (6, 15.8, HIG 9), R-5.3 (8), R-5.4 (15.12), R-5.5 (APD-14), 
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 4.37.0 | 25.10.2026 | Neben | **APD-43 Teil 2 Textgröße:** neue Regel **R-1.10** ‚Textgröße folgt dem Gerät‘ mit Grundregel ‚nichts überlappt‘; 3 mit Apples Tabelle der Textstile (12 Stufen × 11 Stile), Leisten bis XXXL, Umbau bei großer Schrift; zwei bewusste Abweichungen (16: keine Großanzeige, Feldtext mind. 16 px); Prüfungen `checkText`, `PRUEF_TEXT`, Gegenprobe `--gegenprobe text` |
 | 4.36.0 | 25.10.2026 | Neben | **APD-78 Nummernschema:** alle Nummern und Begriffe rückwirkend umgestellt (APD-n, RLB-n, lokale Nummern mit Elternnummer wie APD-36/S-9, Usertest, Testfall-Liste); 17 verweist für alle Präfixe auf Zusammenarbeit 2.4; R- und G- unverändert |
 | 4.35.0 | 25.10.2026 | Neben | **APD-43 Teil 1 (Barrierefreiheit):** neue Regeln R-1.8 (VoiceOver: Namen, Rollen, Zustände, Fokus, Ansagen), R-1.9 (‚Kontrast erhöhen‘ mit zweiter Farbtabelle in 2, ‚Bewegung reduzieren‘ mit Grenze) und R-4.7 (Hardware-Tastatur, Grundlagen); R-1.4 auch für VoiceOver und Tastatur (`inert`, modal); R-5.3 auch hörbar (`feldFehler`, 15.11); R-3.4 Fokus-Rahmen nur mit Tastatur, Textfelder nie (Nutzer 24.10.2026, Variante a; Safari-Eigenheit in 13); R-4.6 Blatt mit ‚Bewegung reduzieren‘ ohne Verkleinern; neue Variable `--accent-fill`; Prüfungen `checkFokus`, `checkKontrast`, `checkRuhig`, Bewegungswächter, `PRUEF_BEDIENUNG`, Gegenprobe `bedienung` |
 | 4.34.0 | 24.10.2026 | Neben | **APD-74:** R-9.1 und 15.19 – die Backup-Kachel steht nur noch, solange heute auf diesem Gerät kein Backup erstellt wurde (und es Einträge gibt); danach verschwindet sie statt weiß zu werden, um 0:00 bzw. bei der Rückkehr am nächsten Tag kommt sie wieder (`onNeuerTag`); ‚Letztes Backup …‘ im Mehr-Menü; R-1.5 / 15.20 – die Offline-Zeile steht auch ohne Kachel und bei leerer Liste unten; R-4.2 und 15.4 – ohne Kachel über der Zeile bzw. dem Rand; Prüfungen `backup.mjs`, `hig.mjs`, `kontextmenue.mjs` (nur sichtbare Einträge), `offline.mjs` (APD-74/F-16 ohne Kachel) |

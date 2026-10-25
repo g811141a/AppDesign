@@ -81,7 +81,10 @@ const found = new Map(), icons = new Map();
   const topKeep = async (p, where) => {
     const vp = p.viewportSize(), turned = { width: vp.height, height: vp.width };
     const top = () => p.evaluate(() => { const edge = document.querySelector('.pnav, .nb')?.getBoundingClientRect().bottom || 0;
-      return [...document.querySelectorAll('#app [data-day], #app [data-keep]')].find(e => e.getClientRects().length && e.getBoundingClientRect().bottom > edge + 1)?.outerHTML.slice(0, 80); });
+      // seit 4.37.0: derselbe Eintrag = dieselbe Kennung (data-day/data-keep) – bei großer Schrift darf er beim Drehen von der Tabellenzeile
+      // zum Kasten werden (R-1.10)
+      const e = [...document.querySelectorAll('#app [data-day], #app [data-keep]')].find(e => e.getClientRects().length && e.getBoundingClientRect().bottom > edge + 1);
+      return e ? e.dataset.day || e.dataset.keep : undefined; });
     await p.addStyleTag({ content: '* { overflow-anchor: none !important; }' });
     const y0 = (await rollstand(p)).y;
     await rolle(p, '45%'); await p.waitForTimeout(300);
@@ -229,10 +232,11 @@ const found = new Map(), icons = new Map();
       // R-2.4 (seit 4.28.1, APD-36): iPhone quer niedrige Leisten wie iOS – Knöpfe und Suchfeld in Kopfzeile und Fensterkopf 32 px hoch
       // (die Kopfzeile damit 32 statt 44 px); hoch die gewohnten 44 px
       if (phone) {
-        const quer = matchMedia('(orientation: landscape) and (max-height: 500px)').matches, soll = quer ? 32 : 44;
+        const quer = matchMedia('(orientation: landscape) and (max-height: 500px)').matches;
         // seit 4.32.0 (R-4.6): Höhe ohne Verkleinerung – hinter dem Blatt weicht die Seite verkleinert zurück
         document.querySelectorAll('.pnav .grp, .pnav .navgrp, .pnav > span > .round, .pnav .searchbox input, #dlg[open] .dlg-head .grp, #dlg[open] .dlg-head .round').forEach(e => {
-          const h = e.offsetHeight;
+          // seit 4.37.0 (R-1.10, L1): hoch wachsen die Leisten mit der Textgröße bis XXXL (44 × --fb, höchstens 60 px), quer nie (L2)
+          const h = e.offsetHeight, soll = quer ? 32 : Math.round(44 * (parseFloat(cs(e).getPropertyValue('--fb')) || 1));
           if (vis(e) && Math.abs(h - soll) > 1) R('R-2.4', `iPhone ${quer ? 'quer' : 'hoch'}: ${label(e) || '.' + e.classList[0]} in der Leiste ${Math.round(h)} statt ${soll} px hoch`);
         });
       }
@@ -252,7 +256,7 @@ const found = new Map(), icons = new Map();
         const tops = chips.map(c => Math.round(c.getBoundingClientRect().top)), lr = lab.getBoundingClientRect();
         const zusammen = Math.max(...tops) - Math.min(...tops) < 4, inZeile = tops.every(t => t < lr.bottom - 4);
         const name = (lab.textContent || '').replace(/^\d+/, '').trim().slice(0, 20);
-        if (rg.getBoundingClientRect().width + gap + cw <= hw + 1 && !(zusammen && inZeile)) R('R-5.1', `Schrittkopf ‚${name}‘: Schaltflächen brechen um, obwohl alles in die Zeile der Überschrift passt`);
+        if (!document.documentElement.classList.contains('ts-um') && rg.getBoundingClientRect().width + gap + cw <= hw + 1 && !(zusammen && inZeile)) R('R-5.1', `Schrittkopf ‚${name}‘: Schaltflächen brechen um, obwohl alles in die Zeile der Überschrift passt`);
         else if (cw <= hw + 1 && !zusammen) R('R-5.1', `Schrittkopf ‚${name}‘: Schaltflächen nicht zusammen in einer Zeile`);
       });
       document.querySelectorAll('.dates .dl').forEach(d => { if (vis(d) && !d.parentElement.classList.contains('pair')) R('R-5.1', 'Bezeichnung nicht mit ihrem Feld verbunden'); });
@@ -314,7 +318,7 @@ const found = new Map(), icons = new Map();
       // R-6.1 Tabellen: Trennlinien zwischen allen Spalten (App-Tabellen)
       document.querySelectorAll('#app table td + td').forEach(td => { if (vis(td) && parseFloat(cs(td).borderLeftWidth) === 0) R('R-6.1', 'Tabelle ohne Trennlinie zwischen Spalten'); });
       // R-5.1 Datumsfelder so breit wie das Datum
-      document.querySelectorAll('input[type=date]').forEach(e => { if (vis(e) && e.getBoundingClientRect().width > 220) R('R-5.1', `Datumsfeld zu breit (${Math.round(e.getBoundingClientRect().width)} px)`); });
+      document.querySelectorAll('input[type=date]').forEach(e => { if (vis(e) && e.getBoundingClientRect().width > 220 * (parseFloat(cs(document.documentElement).getPropertyValue('--f-body')) || 1)) R('R-5.1', `Datumsfeld zu breit (${Math.round(e.getBoundingClientRect().width)} px)`); });
       // R-5.1 Betragsfelder rechtsbündig
       document.querySelectorAll('input[inputmode=decimal]').forEach(e => { if (vis(e) && !['right', 'end'].includes(cs(e).textAlign)) R('R-5.1', 'Betragsfeld nicht rechtsbündig'); });
       // R-6.3 Hängender Einzug
@@ -323,7 +327,7 @@ const found = new Map(), icons = new Map();
       document.querySelectorAll('.box .kv').forEach(kv => {
         if (!vis(kv)) return;
         if (kv.previousElementSibling?.classList.contains('kv') && parseFloat(cs(kv).borderTopWidth) === 0) R('R-6.1', 'keine waagrechte Linie zwischen den Feldern');
-        const k = kv.querySelector('.k'); if (k && parseFloat(cs(k).borderRightWidth) === 0) R('R-6.1', 'keine senkrechte Linie zwischen Bezeichnung und Inhalt');
+        const k = kv.querySelector('.k'); if (k && !document.documentElement.classList.contains('ts-um') && parseFloat(cs(k).borderRightWidth) === 0) R('R-6.1', 'keine senkrechte Linie zwischen Bezeichnung und Inhalt');
       });
       // R-7.1 Zentrale Liste als Kacheln, höchstens ein Eintrag blau
       document.querySelectorAll('#side .side-row, .ilist.tiles .irow').forEach(e => { if (vis(e) && parseFloat(cs(e).borderTopLeftRadius) < 12) R('R-7.1', 'Eintrag der Liste ist keine Kachel'); });
@@ -436,6 +440,44 @@ const found = new Map(), icons = new Map();
       });
       document.querySelectorAll('#app table').forEach(t => { if (vis(t) && !t.closest('.rt') && t.offsetWidth > t.parentElement.clientWidth + 1 && !/auto|scroll/.test(cs(t.parentElement).overflowX)) R('R-6.3', `Tabelle breiter als ihr Platz (${t.offsetWidth} statt ${t.parentElement.clientWidth} px)`); });
       if (document.documentElement.scrollWidth > innerWidth + 1) R('R-6.3', 'Seite breiter als der Bildschirm');
+      // seit 4.37.0 (R-1.10): auch der Rollbereich wird nie breiter – sonst gehört ihm das waagrechte Wischen (Navigation, R-7.5)
+      document.querySelectorAll('#app > .rolle, #side .side-list').forEach(r => { if (vis(r) && r.scrollWidth > r.clientWidth + 1) R('R-6.3', `Inhalt breiter als sein Rollbereich (${r.scrollWidth} statt ${r.clientWidth} px)`); });
+      // R-1.10 (seit 4.37.0, APD-43 Teil 2, P2 Punkt 1, G4, G6): keine Schrift und keine Zeilenhöhe in px in den Stilen (außer Ausgabe .rt und
+      // Druck; html trägt den Rückfall der Grundgröße) – jede Größe ist ein Textstil (--t-…) oder wächst mit seinem Faktor. Einmal je Seite.
+      if (!window.__textStile) {
+        window.__textStile = true;
+        const geh = (regeln, druck) => { for (const r of regeln) {
+          if (r.cssRules && !r.selectorText) { geh(r.cssRules, druck || /print/.test(r.media?.mediaText || r.conditionText || '')); continue; }
+          if (!r.style || druck || r.selectorText === 'html' || /\.rt\b|#printout/.test(r.selectorText || '')) continue;
+          for (const [eig, wort] of [['font-size', 'Schrift'], ['line-height', 'Zeilenhöhe'], ['font', 'Schrift']]) {
+            const v = r.style.getPropertyValue(eig); if (/\dpx/.test(v) && !/var\(/.test(v)) R('R-1.10', `${wort} in px: ${r.selectorText} { ${eig}: ${v} }`); }
+        } };
+        for (const sh of document.styleSheets) { try { geh(sh.cssRules, false); } catch {} }
+      }
+      // Grundregel ‚nichts überlappt‘ (seit 4.37.0, APD-43 Teil 2, P2 Punkt 5) in jeder Textgröße: die Zeilen eines Textes liegen nicht
+      // übereinander (Zeilenhöhe mindestens die Schriftgröße), Knöpfe derselben Ebene schneiden sich nicht (sichtbarer Teil gemessen).
+      const zeilenGemeldet = new Set();
+      document.querySelectorAll('button, label, h1, h2, h3, b, small, p, .t, td, th, .nb-title, .pnav-title').forEach(e => {
+        if (!vis(e) || !onTop(e) || !e.textContent.trim() || e.closest('#printout, .rt')) return;
+        const c = cs(e), lh = parseFloat(c.lineHeight), fs = parseFloat(c.fontSize), k = e.tagName + '.' + e.classList[0];
+        if (lh && lh < fs * .95 && !zeilenGemeldet.has(k)) { zeilenGemeldet.add(k); R('R-1.10', `Zeilen überlappen: ${e.tagName.toLowerCase()}${e.classList[0] ? '.' + e.classList[0] : ''} ‚${label(e)}‘ – Zeilenhöhe ${Math.round(lh)} px bei Schrift ${Math.round(fs)} px`); }
+      });
+      const ebene = e => { for (let x = e; x; x = x.parentElement) if (/fixed|sticky|absolute/.test(cs(x).position) || x.matches('dialog, .menu, .pop')) return x; return null; };
+      const sichtbar = e => { let b = e.getBoundingClientRect(), r = { l: b.left, t: b.top, rr: b.right, bb: b.bottom };
+        for (let x = e.parentElement; x && x !== document.documentElement; x = x.parentElement) { const c = cs(x);
+          if (/hidden|auto|scroll|clip/.test(c.overflowX + c.overflowY)) { const a = x.getBoundingClientRect(); r = { l: Math.max(r.l, a.left), t: Math.max(r.t, a.top), rr: Math.min(r.rr, a.right), bb: Math.min(r.bb, a.bottom) }; } }
+        return r; };
+      const knoepfe = [...document.querySelectorAll('button')].filter(b => vis(b) && onTop(b) && !b.matches('.fclear') && +cs(b).opacity > 0 && !b.closest('#printout'));
+      const kb = knoepfe.map(b => b.getBoundingClientRect());
+      for (let i = 0; i < knoepfe.length; i++) for (let j = i + 1; j < knoepfe.length; j++) {
+        const a = kb[i], b = kb[j];
+        if (Math.min(a.right, b.right) - Math.max(a.left, b.left) < 2 || Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top) < 2) continue;
+        const x = knoepfe[i], y = knoepfe[j];
+        if (x.contains(y) || y.contains(x) || ebene(x) !== ebene(y)) continue;
+        const sa = sichtbar(x), sb = sichtbar(y);
+        if (Math.min(sa.rr, sb.rr) - Math.max(sa.l, sb.l) < 2 || Math.min(sa.bb, sb.bb) - Math.max(sa.t, sb.t) < 2) continue;
+        R('R-1.10', `Knöpfe überlappen: ‚${label(x)}‘ und ‚${label(y)}‘`);
+      }
       // R-2.1 (seit 4.27.0, APD-28): Die Seite rollt nie, nur der Inhalt – nach jedem Schritt steht das Fenster bei 0.
       if (Math.round(scrollY) !== 0) R('R-2.1', `Die Seite rollt (scrollY ${Math.round(scrollY)}) – nur der Inhalt darf rollen (Rollbereich .rolle)`);
       // R-5.7 (seit 4.29.0, APD-63 C4): Schalter sind Safaris eingebauter Schalter (Attribut switch, role="switch" – VoiceOver sagt
@@ -540,6 +582,67 @@ const found = new Map(), icons = new Map();
     for (const x of bad) note('Regel', `R-1.7 ${x} (${lage})`, where);
   }
 
+  // R-1.10 (seit 4.37.0, APD-43 Teil 2, P2 Punkte 2–4, W3, B7): die Textgröße wechselt bei offener Seite von der aktuellen Größe
+  // (Standard 17) auf AX5 (53 px) und zurück – wie über das Kontrollzentrum (W1). Bei 53: kein Text kleiner als vorher, jeder Text eines
+  // Textstils genau Apples Wert (±1), Leisten höchstens im XXXL-Maß (Text bis 26, Knöpfe bis 60 px; iPhone quer 32 px wie bei Standard),
+  // keine Tabelle im Inhalt, Bezeichnung über dem Wert, die Ausgabe (.rt) unverändert, der letzte Eintrag nicht verdeckt (R-7.1).
+  const AX5 = { 34: 60, 28: 58, 22: 56, 20: 55, 17: 53, 16: 51, 15: 49, 13: 44, 12: 43, 11: 40 };
+  const textBild = p => p.evaluate(() => {
+    const vis = e => { const s = getComputedStyle(e), b = e.getBoundingClientRect(); return b.width > 0 && b.height > 0 && s.visibility !== 'hidden' && s.display !== 'none'; };
+    const pfad = e => { const t = []; for (let x = e; x && x !== document.body && t.length < 4; x = x.parentElement) t.unshift(x.tagName.toLowerCase() + (x.id ? '#' + x.id : '') + (x.classList[0] ? '.' + x.classList[0] : '')); return t.join('>'); };
+    const out = {}, zaehl = {};
+    // nur die oberste Ebene (Menü bzw. Sprechblase, sonst offenes Fenster, sonst Seite) – dahinter baut die App womöglich um
+    const oben = document.querySelector('.menu, .pop') ? '.menu, .pop' : document.querySelector('dialog[open]') ? 'dialog[open]' : 'body';
+    for (const e of document.querySelectorAll(oben === 'body' ? 'body *' : `:is(${oben}) *`)) {
+      if (!vis(e) || ![...e.childNodes].some(n => n.nodeType === 3 && n.textContent.trim())) continue;
+      const k0 = pfad(e) + '|' + e.textContent.trim().slice(0, 24), n = zaehl[k0] = (zaehl[k0] || 0) + 1;
+      out[k0 + '#' + n] = { fs: parseFloat(getComputedStyle(e).fontSize), leiste: !!e.closest('.nb, .pnav, .dlg-head, .side-head, .bbar, .fab, .schnell, .nettoast, #side .side-foot, #side .side-search'),
+        feld: e.matches('input, textarea, select'), rt: !!e.closest('.rt'), name: pfad(e).split('>').pop() + ' ‚' + e.textContent.trim().slice(0, 30) + '‘' };
+    }
+    return out;
+  });
+  const textSetze = async (p, px) => { await p.evaluate(px => { let s = document.getElementById('pruef-text-wechsel');
+    if (!px) { s?.remove(); return; } if (!s) { s = document.createElement('style'); s.id = 'pruef-text-wechsel'; document.head.append(s); }
+    s.textContent = `html { font-size: ${px}px !important; }`; }, px); await p.waitForTimeout(500); await ruhe(p); };
+  async function checkText(p, where) {
+    const vorher = await textBild(p);
+    await textSetze(p, 53);
+    const ist = await p.evaluate(() => document.documentElement.dataset.ts);
+    if (ist !== 'ax5') note('Regel', `R-1.10 Stufe bei 53 px ist ‚${ist}‘ statt ‚ax5‘ (textStufe, ResizeObserver)`, where);
+    const nachher = await textBild(p);
+    for (const [k, b] of Object.entries(nachher)) {
+      const a = vorher[k]; if (!a) continue;
+      if (b.rt) { if (Math.abs(b.fs - a.fs) > .5) note('Regel', `R-6.2 Ausgabe wächst mit der Textgröße: ${b.name} ${a.fs} → ${b.fs} px`, where); continue; }
+      if (b.fs < a.fs - .5) note('Regel', `R-1.10 Schrift wird bei 53 px kleiner: ${b.name} ${a.fs} → ${b.fs} px`, where);
+      else if (b.leiste) { if (b.fs > 26.5) note('Regel', `R-1.10 Leiste wächst über XXXL: ${b.name} ${b.fs} px (höchstens 26)`, where); }
+      else if (!b.feld && AX5[Math.round(a.fs)] && Math.abs(b.fs - AX5[Math.round(a.fs)]) > 1) note('Regel', `R-1.10 Schrift ${b.name}: ${b.fs} px bei 53 statt Apples ${AX5[Math.round(a.fs)]} (Stil mit ${Math.round(a.fs)} px bei Standard)`, where);
+    }
+    const bad = await p.evaluate(() => {
+      const out = [], vis = e => { const s = getComputedStyle(e), b = e.getBoundingClientRect(); return b.width > 0 && b.height > 0 && s.visibility !== 'hidden' && s.display !== 'none' && b.bottom > 0 && b.top < innerHeight; };
+      const quer = matchMedia('(orientation: landscape) and (max-height: 500px)').matches && document.documentElement.classList.contains('phone');
+      document.querySelectorAll(':is(.nb, .pnav, .dlg-head, .side-head, .bbar) :is(.grp, .navgrp, .round, .searchbox input)').forEach(e => {
+        if (!vis(e)) return; const h = e.getBoundingClientRect().height, max = quer && e.closest('.pnav, .dlg-head') ? 32.5 : 60.5;
+        if (h > max) out.push(`R-1.10 Leiste: ${e.className || e.tagName.toLowerCase()} ${Math.round(h)} px hoch (höchstens ${Math.floor(max)})`); });
+      document.querySelectorAll('#app table').forEach(t => { if (vis(t) && !t.closest('.rt, #printout')) out.push(`R-1.10 Tabelle bei AX5 im Inhalt (${t.className || 'table'}) – Zeilen als Kästen`); });
+      document.querySelectorAll('.box .kv').forEach(kv => { const k = kv.querySelector('.k'), v = kv.querySelector('.v'); if (k && v && vis(k) && vis(v) && k.getBoundingClientRect().bottom > v.getBoundingClientRect().top + 1) out.push('R-1.10 Kasten: Bezeichnung neben statt über dem Wert'); });
+      // R-7.1: ganz nach unten gerollt endet der letzte Eintrag über dem, was unten fest liegt (Kapsel, untere Leiste, Backup-Kachel)
+      const ende = (rolle, deckel) => { if (!rolle || !vis(rolle) || !deckel || !vis(deckel)) return;
+        rolle.scrollTop = rolle.scrollHeight; const kinder = [...rolle.children].filter(vis); if (!kinder.length) return;
+        const unten = Math.max(...kinder.map(k => k.getBoundingClientRect().bottom)), oben = deckel.getBoundingClientRect().top;
+        if (unten > oben + 1) out.push(`R-7.1 letzter Eintrag von ${rolle.className.split(' ')[0]} um ${Math.round(unten - oben)} px verdeckt (${deckel.className.split(' ')[0]})`);
+        rolle.scrollTop = 0; };
+      if (!document.querySelector('dialog[open], .menu, .pop')) {
+        const r = document.querySelector('#app > .rolle'); ende(r, document.documentElement.classList.contains('phone') ? document.querySelector('.bbar > *') : document.querySelector('.fab:not(.still)'));
+        ende(document.querySelector('#side .side-list'), document.querySelector('#side .side-foot .bhint'));
+      }
+      return [...new Set(out)];
+    });
+    for (const x of bad) note('Regel', x, where);
+    await textSetze(p, null);
+    const zurueck = await p.evaluate(() => document.documentElement.dataset.ts);
+    if (zurueck === 'ax5') note('Regel', 'R-1.10 Stufe bleibt nach dem Zurückstellen auf ax5', where);
+  }
+
   // R-1.1 Gleiche Funktion = gleicher Baustein auf iPad und iPhone: Aufbau (Elemente, Klassen, Scrollbereiche,
   // feste Teile) eines Bausteins je Gerät festhalten; report() vergleicht die Geräte. allow: bewusst nur auf einem Gerät.
   const shapes = new Map();
@@ -619,5 +722,5 @@ const found = new Map(), icons = new Map();
     for (const [k, where] of found) console.log(`- ${k}\n    ${[...where].slice(0, 3).join(' · ')}${where.size > 3 ? ` · +${where.size - 3}` : ''}`);
     return 1;
   };
-  return { measure, stays, shape, barStill, rotate, sideKeep, safe, note, report };
+  return { measure, stays, shape, barStill, rotate, sideKeep, safe, note, report, checkText };
 }

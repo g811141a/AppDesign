@@ -3,6 +3,48 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.37.0 – 25.10.2026
+
+AppDesign 4.37.0 · Designrichtlinie allgemein 4.37.0 · Zusammenarbeit allgemein 2.20.0 · geprüft mit Reiselogbuch 3.35.0
+
+**APD-43 Teil 2 Textgröße folgt dem Gerät** (dein Ja vom 25.10.2026, Sitzung 0047; Testfall-Liste `arbeit/APD-43 Teil 2 Testfall-Liste.md`,
+Klärung und Apple-Abgleich `arbeit/APD-43 Teil 2 Klärung.md`, Muster A). Usertest im Reiselogbuch: P-75.
+
+- **Neue Regel R-1.10 ‚Textgröße folgt dem Gerät‘** mit Grundregel ‚nichts überlappt‘; Designrichtlinie 3 mit Apples Tabelle
+  der Textstile (12 Stufen × 11 Stile), 15.13 (Tabellen bei großer Schrift als Kästen), zwei bewusste Abweichungen (16: keine
+  Großanzeige, Feldtext bei xS bis M mindestens 16 px).
+- **Grundgröße (G1):** `html { font: 17px/1.45 … }`, auf Touch-Geräten `-apple-system-body` (die Einstellung ‚Textgröße‘); `body`
+  1rem. **Textstile (G2):** je Stufe `html[data-ts="xs" … "ax5"]` mit `--t-<Stil>` und `--f-<Stil>` wörtlich nach der HIG, `--lh`
+  (Zeilenhöhe, große Stufen enger), Leisten `--tb-<Stil>` und `--fb` bis XXXL; ohne Stufe Standard.
+- **`textStufe()` (G3, ui.js):** unsichtbare Probe mit 1rem, `ResizeObserver` und `visibilitychange` → `html[data-ts]`, `ts-gross`
+  (ab 21), `ts-ax` (ab 28), `ts-um` (Umbau: ab 28, iPhone hoch ab 21); ein Wechsel wirkt wie das Drehen (W1: oberster Eintrag aus
+  dem letzten Rollen, alle Größen-Hörer, die App baut über ihren resize-Hörer neu auf). Rollt jemand, während die App selbst rollt
+  (`keepFrei`), gilt danach sein Stand fürs nächste Drehen (R-8.1; unter Last stand sonst ein alter Eintrag oben).
+- **design.css (G4–G6, A1–A3, L1–L3, U1–U5, B1–B7):** alle 45 Schriftgrößen als Stil oder mit Faktor, keine Zeilenhöhe in px
+  (Knöpfe, Griff-Blase, Fenstertitel 1.2); Icons mit `--k` (Inhalt Body-Faktor, Leisten `--fb`); Kapseln, Smileys, Markierung,
+  Häkchen, ⓧ und Schrittnummer wachsen, Untergrenze 44; Leisten bis XXXL, iPhone quer fest (L2); Titel in Leisten einzeilig mit …;
+  Silbentrennung ab XXL (bei Standard unverändert);
+  Menü, Untermenü, Sprechblase, Fenster, Meldung und Seitenleiste wachsen bis Bildschirm minus Rand bzw. 40 %/70 %; Umbau mit
+  `html.ts-um`; Silbentrennung im Inhalt; Notizfeld mindestens 96 px × Faktor.
+- **Platz unter der Liste gemessen (B7):** `untenMessen()` setzt `--unten-h` (Kapsel bzw. untere Leiste) und `--fuss-h`
+  (Backup-Kachel); ⓧ wird mit seiner tatsächlichen Größe ausgerichtet (B5). **Messmodus (W4):** Kopfzeile ‚Text <Stufe> <px>‘,
+  Wechsel als Ereignis ‚text l → ax2‘.
+- **Prüfungen (P1–P3):** `PRUEF_TEXT=<px>` (pruefe.mjs, Ort ‚· Text 53‘); `checkText` (hig.mjs: Wechsel auf 53 px bei offener Seite –
+  Apples Wert je Stil ±1, Leisten bis XXXL, iPhone quer 32, keine Tabelle bei AX, Bezeichnung über dem Wert, Ausgabe unverändert,
+  letzter Eintrag nicht verdeckt); in jeder Messung Stile ohne px und die Grundregel ‚nichts überlappt‘ (Zeilen, Knöpfe); R-2.4
+  und R-6.1 kennen die wachsenden Leisten und den Umbau, R-5.1 (Datumsfeld, Schrittkopf) die große Schrift, R-8.1 beim Drehen vergleicht
+  die Kennung des Eintrags (Tabellenzeile ↔ Kasten); `textSeite(p)` für Prüfskripte, die Seiten selbst öffnen; Gegenprobe
+  `--gegenprobe text` (lauf.mjs, 7 Fälle); `checkTurnEnd` rollt zweimal ans Ende (unter Last stellte eine gerade endende Bewegung
+  sonst den alten Rollstand wieder her – 58 px vor dem Ende, 3 von 12 Läufen).
+- **APD-82 (`ablauf-navigation` brach unter Last ab, dreimal im vollen Lauf):** Ursache gefunden – unter Last kam das Loslassen eines
+  schnellen Wischens mehr als 100 ms nach der letzten Bewegung an; die App wertet das wie Apple richtig als ‚nicht schnell‘. Die Prüfung
+  misst jetzt dasselbe Tempo wie die App (Spur der letzten 100 ms vor dem Loslassen) und wiederholt einen Zug, den die App nicht schnell
+  sah, bis zu dreimal (APD-61/F-5, APD-68/Q-6, APD-67/F-23); unter Last 12 von 12 Läufen grün.
+- **Meldung am iPhone (#msg):** eigene Höchsthöhe `--msg-max` (nie unter Status- oder Home-Leiste), bei großer Schrift rollt ihr Inhalt –
+  vorher galt die Höhe des Blatts. Der gemessene Platz unter der Liste folgt auch geänderten sicheren Rändern; die Backup-Kachel wird
+  erst gemessen, wenn sie zu sehen ist (ResizeObserver). Lange Wörter brechen im Rollbereich im Wort um (`overflow-wrap: break-word`),
+  hig meldet einen Rollbereich, der breiter als sein Platz ist (R-6.3); `checkNavigation` (auch APD-67/F-23) kennt hohe Kacheln und Kästen.
+
 ## 4.36.0 – 25.10.2026
 
 AppDesign 4.36.0 · Designrichtlinie allgemein 4.36.0 · Zusammenarbeit allgemein 2.20.0 · geprüft mit Reiselogbuch 3.34.0

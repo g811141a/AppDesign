@@ -50,6 +50,12 @@ falsch, `PRUEF_GEGENPROBE=grundregeln` legt beim ersten Schritt zu breiten Text 
 werden; `PRUEF_GEGENPROBE=bedienung:<fall>` schleust einen benannten Fehler der Bedienungshilfen ein (`GEGENPROBEN_BEDIENUNG`, seit
 4.35.0).
 
+**Textgröße** (seit 4.37.0, APD-43 Teil 2, R-1.10): `PRUEF_TEXT=<px>` öffnet jede Seite von `t.seite` mit dieser Grundgröße (wie die
+Einstellung ‚Textgröße‘, vor dem Laden gesetzt; Ort mit Zusatz ‚· Text 53‘). `hig.checkText(p, wo)` wechselt bei offener Seite auf 53 px
+und zurück und prüft Apples Wert je Textstil, Leisten bis XXXL, keine Tabelle bei AX, Bezeichnung über dem Wert, die Ausgabe
+unverändert und den letzten Eintrag; jede Messung prüft Stile ohne px und die Grundregel ‚nichts überlappt‘.
+`PRUEF_GEGENPROBE=text:<fall>` schleust einen Fehler der Textgröße ein (`GEGENPROBEN_TEXT`, 7 Fälle).
+
 **Bedienungshilfen** (seit 4.35.0, APD-43 Teil 1, R-1.8, R-1.9, R-4.7): `PRUEF_BEDIENUNG=beide` öffnet jede Seite von `t.seite` mit
 ‚Kontrast erhöhen‘ und ‚Bewegung reduzieren‘ (Ort mit Zusatz ‚· Kontrast · ruhig‘). In jeder Seite läuft der **Bewegungswächter**
 (`bewegungsWaechter`): gilt ‚Bewegung reduzieren‘, misst er jede Web-Animation, jeden CSS-Übergang und jede CSS-Animation sowie jedes
@@ -70,10 +76,11 @@ quer (170 px sichtbar); ein Feld im Rollbereich unter der Tastatur antippen vers
 
 Startet alle Prüfskripte parallel, die schnellsten zuerst (gemessene Dauer in `tests/out/dauer.json` der App), in Chromium und WebKit;
 beim ersten roten Test werden die übrigen beendet und seine Fehlerzeilen gezeigt. Aufruf über `tests/alle.mjs` der App:
-`node tests/alle.mjs [--alle] [--browser chromium] [--nur hig] [--abdeckung] [--gegenprobe [grundregeln | bedienung]] [--jobs N] [--zeit S]`.
+`node tests/alle.mjs [--alle] [--browser chromium] [--nur hig] [--abdeckung] [--gegenprobe [grundregeln | bedienung | text]] [--jobs N] [--zeit S]`.
 `--gegenprobe bedienung` (seit 4.35.0) läuft die Prüfung der Bedienungshilfen der App (`ablauf-bedienung`) je eingeschleustem Fehler
 einmal; rot zählt nur mit genau der passenden Meldung – beim Bau von APD-43/1 und wenn sich eine dieser Prüfungen ändert, nicht in jedem
 `los`.
+`--gegenprobe text` (seit 4.37.0) ebenso mit der Prüfung der Textgröße der App (`text-regeln`).
 Gleichzeitig laufen standardmäßig so viele Browser, wie der Rechner Kerne hat (mit doppelt so vielen schwankte WebKit unter
 Volllast); erst alle Prüfungen in Chromium, dann alle in WebKit – nie beide gleichzeitig. Fehlt WebKit, bricht der Lauf mit Hinweis
 ab (Rückgabewert 2) – nie stillschweigend nur Chromium. Lange Prüfungen lassen sich teilen (`teile`, z. B. hig nach Darstellung).

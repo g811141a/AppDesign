@@ -396,7 +396,10 @@ export async function checkTurnEnd(p, { back = 0, where = '' } = {}) {
     const e = [...document.querySelectorAll('#app [data-day], #app [data-keep]')].find(x => x.getClientRects().length && x.getBoundingClientRect().bottom > edge + 1);
     return { tag: e ? e.dataset.day || e.dataset.keep : null, rest: Math.round(roll.rest), y: Math.round(roll.y) };
   }, ROLL);
+  // zweimal: endet unter Last gerade noch eine Bewegung (Seitenleiste gleitet aus, keepPlace), stellt sie sonst den alten Rollstand
+  // wieder her bzw. das Gedächtnis für das Drehen (keepTop) bleibt beim alten Stand – der zweite Rollschritt gilt (seit 4.37.0)
   await rolle(p, { vorEnde: back }); await wait(p, 400);
+  await rolle(p, { vorEnde: back }); await wait(p, 200);
   const vor = await lage(), v = p.viewportSize();
   if (vor.tag) { E(`Vorbereitung: oben steht noch ${vor.tag} – kein Fall ‚Ende der Seite‘ (Abstand ${back} zu groß)`); return errors; }
   for (const [w, h, name] of [[v.height, v.width, 'gedreht'], [v.width, v.height, 'zurückgedreht']]) {
@@ -885,7 +888,7 @@ export async function checkGriff(p, { zeit = 2000, where = '' } = {}) {
   const x = (s.griff.left + s.griff.right) / 2, h = s.bahn.bottom - s.bahn.top;
   await p.mouse.move(x, (s.griff.top + s.griff.bottom) / 2); await p.mouse.down();
   await p.mouse.move(x, s.bahn.top + h / 2, { steps: 6 }); await wait(p, 200);
-  let z = await bis(z => !z.marke || z.blase?.sicht);
+  let z = await bis(z => !z.marke || (z.blase?.sicht && z.blase.text === z.marke));   // seit 4.37.0: unter Last kommt der Text der Blase etwas später
   if (Math.abs(z.y - z.ende / 2) > z.ende * 0.08) E(`in die Mitte gezogen: ${z.y} px statt etwa ${Math.round(z.ende / 2)} px`);
   if (z.marke && (!z.blase?.sicht || z.blase.text !== z.marke)) E(`Blase beim Ziehen ${z.blase?.sicht ? `‚${z.blase.text}‘` : 'nicht zu sehen'}, soll ‚${z.marke}‘ (APD-37/F-19)`);
   if (!z.marke && z.blase?.sicht) E('Blase ohne Marken (APD-37/F-19)');
@@ -1211,17 +1214,32 @@ export async function checkNavigation(p, { eintrag, titel, zurueck = '#back', wa
   const ruhig = async () => { for (let i = 0; i < 30; i++) { await wait(p, 100); if (!(await lage()).nav) return; } };
   // seit 4.31.0: vorher keine Textmarkierung – ein senkrechter Mauszug markiert in WebKit Text, der nächste Zug darauf würde ein
   // Ziehen-und-Ablegen beginnen und WebKit verschluckt die Mausereignisse (am Gerät mit dem Finger gibt es das nicht)
+  // Tempo, das die App beim letzten schnellen Zug sah – wie navEnde in ui.js: die Spur der letzten 100 ms vor dem Loslassen (kommt das
+  // Loslassen unter Last spät an, war es kein schnelles Wischen)
+  let tempo = 0;
+  const spurStart = () => p.evaluate(() => { window.__spur = []; window.__los = undefined; if (!window.__spurAn) { window.__spurAn = true;
+    for (const typ of ['pointerdown', 'pointermove']) addEventListener(typ, e => window.__spur?.push([e.timeStamp, e.clientX]), true);
+    addEventListener('pointerup', e => { window.__los = e.timeStamp; }, true); } });
+  const spurTempo = () => p.evaluate(() => { const s = (window.__spur || []).filter(x => x[0] >= (window.__los ?? Infinity) - 100), z = s.at(-1);
+    return s.length > 1 && z[0] > s[0][0] ? Math.abs(z[1] - s[0][1]) / (z[0] - s[0][0]) : 0; });
   const ziehe = async (x0, y0, x1, y1, { schnell = false, los = true, halten = 0 } = {}) => {
     await p.evaluate(() => getSelection()?.removeAllRanges());
+    if (schnell) await spurStart();
     await p.mouse.move(x0, y0); await p.mouse.down();
     if (halten) await wait(p, halten);
     const n = schnell ? 4 : Math.max(6, Math.round(Math.hypot(x1 - x0, y1 - y0) / 12));
     for (let i = 1; i <= n; i++) { await p.mouse.move(x0 + (x1 - x0) * i / n, y0 + (y1 - y0) * i / n); await wait(p, schnell ? 8 : 16); }
     if (!los) return;
     if (!schnell) await wait(p, 150);
-    await p.mouse.up(); await ruhig(); await wait(p, 100);
+    await p.mouse.up();
+    if (schnell) tempo = await spurTempo();
+    await ruhig(); await wait(p, 100);
     await keinTippen(`Wischen von ${Math.round(x0)}/${Math.round(y0)} nach ${Math.round(x1)}/${Math.round(y1)}`);
   };
+  // Schnelles Wischen (seit 4.37.0, APD-82): unter Last kommen die Bewegungen langsamer bei der Seite an, als sie geschickt werden – dann
+  // sah die App kein schnelles Wischen (dreimal im vollen Lauf). Es zählt nur ein Zug, den die App wirklich schnell sah (ab 0,3 px/ms);
+  // sonst bis zu dreimal neu. Geprüft wird danach wie bisher.
+  const schnellerZug = async (zug, geschafft) => { const t = []; for (let k = 0; k < 3; k++) { await zug(); t.push(tempo.toFixed(2)); if (tempo >= 0.3 || await geschafft()) break; } return ` (Tempo ${t.join('/')} px/ms)`; };
   // Wischen tippt nie an, worauf es begann (kein Fenster geht auf)
   const keinTippen = async wo => {
     if (!await p.evaluate(() => !!document.querySelector('dialog[open]'))) return;
@@ -1240,7 +1258,7 @@ export async function checkNavigation(p, { eintrag, titel, zurueck = '#back', wa
     // APD-67/F-1: Öffnen – der Inhalt schiebt sich herein, die Liste weicht nach links (‚Bewegung reduzieren‘: überblenden)
     // Rollstand so, dass der Eintrag im oberen Drittel steht (der gewählte Eintrag bleibt sichtbar, R-7.1)
     let listeRoll = await p.evaluate(s => { const e = document.querySelector('#side .side-list'), r = document.querySelector(s); if (!e || !r || e.scrollHeight <= e.clientHeight + 40) return null;
-      e.scrollTop = e.scrollTop + r.getBoundingClientRect().top - e.getBoundingClientRect().top - e.clientHeight / 3; return e.scrollTop; }, eintrag);
+      e.scrollTop = e.scrollTop + r.getBoundingClientRect().top - e.getBoundingClientRect().top - Math.max(6, Math.min(e.clientHeight / 3, e.clientHeight - r.getBoundingClientRect().height - 12)); return e.scrollTop; }, eintrag);   // ganz sichtbar, auch wenn die Kachel bei großer Schrift hoch ist
     await wait(p, 150);
     if (listeRoll !== null) listeRoll = await p.evaluate(() => document.querySelector('#side .side-list').scrollTop);
     await aufzeichnen(); await p.locator(eintrag).first().click();
@@ -1276,7 +1294,8 @@ export async function checkNavigation(p, { eintrag, titel, zurueck = '#back', wa
     await wait(p, 150); await p.mouse.up(); await ruhig(); await wait(p, 100);
     await offen('APD-61/F-4 unter der Hälfte losgelassen');
     // APD-61/F-5: kurz und schnell vom Rand
-    await ziehe(4, h * 0.6, 110, h * 0.6, { schnell: true }); await zu('APD-61/F-5 schnelles Wischen vom Rand');
+    const t5 = await schnellerZug(() => ziehe(4, h * 0.6, 110, h * 0.6, { schnell: true }), async () => { const x = await lage(); return x.liste && !x.inhalt; });
+    await zu('APD-61/F-5 schnelles Wischen vom Rand' + t5);
     // APD-67/F-6: aus der Mitte (Überall)
     await oeffne();
     await ziehe(w * 0.3, h * 0.7, w * 0.95, h * 0.7); await zu('APD-67/F-6 aus der Mitte nach rechts');
@@ -1386,15 +1405,21 @@ export async function checkNavigation(p, { eintrag, titel, zurueck = '#back', wa
     if (kasten) orte.unshift([`über ${kasten}`, async () => {
       await p.evaluate(s => document.querySelector(s)?.scrollIntoView({ block: 'center' }), kasten); await wait(p, 150);
       const b = await box(kasten);
-      if (!b || b.b > h || b.t < 0) { E(`APD-67/F-23 Vorbereitung: ${kasten} nicht sichtbar`); return null; }
-      return [Math.min(b.x, w * 0.4), b.y];
+      // seit 4.37.0: bei großer Schrift kann ein Kasten höher als der Bildschirm sein – dann zählt sein sichtbarer Teil
+      if (!b || b.t > h - 20 || b.b < 20) { E(`APD-67/F-23 Vorbereitung: ${kasten} nicht sichtbar`); return null; }
+      return [Math.min(b.x, w * 0.4), Math.min(Math.max(b.y, b.t + 10, 20), b.b - 10, h - 20)];
     }]);
     for (const [wo, ort] of orte) for (const [wie, schritte] of zuege) {
       const xy = await ort(); if (!xy) break;
-      const r = await safariWischen(p, xy[0], xy[1], schritte); await ruhig(); await wait(p, 100);
-      await keinTippen(`APD-67/F-23 ${wo} ${wie}`);
-      l = await lage();
-      if (!l.liste || l.inhalt) E(`APD-67/F-23 Zurückwischen mit Berührung ${wo} (${wie}): ${r.abgebrochen ? 'Safari rollt und bricht ab (pointercancel)' : 'nicht zurück'} – die Seite federt zurück (Ziel ${r.ziel}, APD-67)`);
+      // APD-82: sah die App den Zug unter Last nicht schnell (Loslassen zu spät), bis zu dreimal neu
+      let r, t = [];
+      for (let k = 0; k < 3; k++) {
+        await spurStart(); r = await safariWischen(p, xy[0], xy[1], schritte); tempo = await spurTempo(); await ruhig(); await wait(p, 100);
+        await keinTippen(`APD-67/F-23 ${wo} ${wie}`);
+        l = await lage(); t.push(tempo.toFixed(2));
+        if ((l.liste && !l.inhalt) || tempo >= 0.3 || r.abgebrochen) break;
+      }
+      if (!l.liste || l.inhalt) E(`APD-67/F-23 Zurückwischen mit Berührung ${wo} (${wie}): ${r.abgebrochen ? 'Safari rollt und bricht ab (pointercancel)' : 'nicht zurück'} – die Seite federt zurück (Ziel ${r.ziel}, Tempo ${t.join('/')} px/ms, APD-67)`);
       if (l.liste) await oeffne();
     }
     // APD-67/H-5: die Messung zeigt, ob Safari das Rollen noch erlaubt (‚touchmove verhindert‘ nach der Entscheidung)
@@ -1464,7 +1489,8 @@ export async function checkNavigation(p, { eintrag, titel, zurueck = '#back', wa
     if (await box(seitenKnopf)) E(`APD-68/Q-5 nach dem Einrasten steht noch ${seitenKnopf} im Kopf`);
     // APD-68/Q-6: kurz und schnell
     await zu('APD-68/Q-6 Vorbereitung');
-    await ziehe(w * 0.5, h * 0.75, w * 0.5 + 110, h * 0.75, { schnell: true }); await da(true, 'APD-68/Q-6 kurz und schnell nach rechts');
+    const t6 = await schnellerZug(() => ziehe(w * 0.5, h * 0.75, w * 0.5 + 110, h * 0.75, { schnell: true }), async () => (await lage()).seite);
+    await da(true, 'APD-68/Q-6 kurz und schnell nach rechts' + t6);
     // APD-68/Q-7: Vorrang – senkrecht, schräg (mehr senkrecht), nach links: nichts
     await zu('APD-68/Q-7 Vorbereitung');
     await ziehe(w * 0.6, h * 0.75, w * 0.6 + 4, h * 0.35); await da(false, 'APD-68/Q-7 senkrecht');
@@ -1876,7 +1902,10 @@ export async function checkKapsel(p, { sel, drehen = false, schmaler = null, whe
   const lage = () => p.evaluate(sel => { const s = document.querySelector(sel), cap = s.parentElement, pf = x => cap.querySelector(`:scope > .pf.${x}`);
     return { sl: Math.round(s.scrollLeft), max: Math.round(s.scrollWidth - s.clientWidth), l: pf('l')?.classList.contains('an'), r: pf('r')?.classList.contains('an'),
       ol: +getComputedStyle(pf('l')).opacity, or: +getComputedStyle(pf('r')).opacity, dauer: getComputedStyle(pf('r')).transitionDuration, breite: Math.round(cap.getBoundingClientRect().width) }; }, sel);
-  const rolle = async x => { await p.evaluate(([sel, x]) => { const s = document.querySelector(sel); s.scrollLeft = x === 'ende' ? s.scrollWidth : x === 'mitte' ? (s.scrollWidth - s.clientWidth) / 2 : x; }, [sel, x]); await wait(p, 300); return lage(); };
+  const rolle = async x => { await p.evaluate(([sel, x]) => { const s = document.querySelector(sel); s.scrollLeft = x === 'ende' ? s.scrollWidth : x === 'mitte' ? (s.scrollWidth - s.clientWidth) / 2 : x; }, [sel, x]); await wait(p, 300);
+    // seit 4.37.0: unter Last läuft das Überblenden (0,2 s, geprüft über ‚dauer‘) später zu Ende – auf sein Ende warten, dann messen
+    await p.evaluate(sel => Promise.all([...document.querySelector(sel).parentElement.querySelectorAll(':scope > .pf')].flatMap(e => e.getAnimations()).map(a => a.finished.catch(() => {}))), sel);
+    return lage(); };
   const soll = (k, x, l, r) => { if (x.l !== l || x.r !== r) E(`${k}: Pfeile ${x.l ? '‹' : '–'} ${x.r ? '›' : '–'} statt ${l ? '‹' : '–'} ${r ? '›' : '–'} (Rollstand ${x.sl} von ${x.max} px)`);
     if (Math.round(x.ol) !== +l || Math.round(x.or) !== +r) E(`${k}: Pfeil nach 0,3 s nicht ein- bzw. ausgeblendet (Deckkraft ‹ ${x.ol} › ${x.or})`); };
   let x = await rolle(0);
