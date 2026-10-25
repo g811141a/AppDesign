@@ -1600,6 +1600,7 @@ window.addEventListener('resize', applyLayout);
 
 // Großer Titel (iPhone): sobald er unter die Leiste geschoben ist, steht er klein in der Leiste (.pnav.titled).
 // Die Leiste bekommt beim Scrollen eine Haarlinie. Die App ruft updateBar() nach jedem Aufbau der Seite.
+window.visualViewport?.addEventListener('resize', () => untenMessen());   // B7: auch wenn sich die sicheren Ränder ändern
 function updateBar() {
   const bar = document.querySelector('.pnav, .nb');
   if (!bar) return;
@@ -2291,6 +2292,9 @@ function placeDialogs() {
   const blatt = full ? blattOben() : 0;
   const max = full ? h - blatt : h - oben - unten;
   root.setProperty('--dlg-max', Math.max(200, !full && dlgFest ? Math.min(max, dlgFest) : max) + 'px');
+  // seit 4.37.0 (R-1.10): die Meldung (#msg) ist auch im iPhone-Aufbau ein kleines Fenster – nie unter Statusleiste oder Home-Leiste;
+  // bei großer Schrift rollt ihr Inhalt
+  root.setProperty('--msg-max', Math.max(200, h - oben - unten) + 'px');
   [dlg, msg].forEach(d => {
     if (!d.open) return;
     // iPhone: das Blatt reicht bis zum unteren Rand des sichtbaren Bereichs (bei offener Tastatur bis zur Tastatur, R-4.5).

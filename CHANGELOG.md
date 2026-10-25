@@ -30,7 +30,11 @@ Klärung und Apple-Abgleich `arbeit/APD-43 Teil 2 Klärung.md`, Muster A). Usert
 - **Prüfungen (P1–P3):** `PRUEF_TEXT=<px>` (pruefe.mjs, Ort ‚· Text 53‘); `checkText` (hig.mjs: Wechsel auf 53 px bei offener Seite –
   Apples Wert je Stil ±1, Leisten bis XXXL, iPhone quer 32, keine Tabelle bei AX, Bezeichnung über dem Wert, Ausgabe unverändert,
   letzter Eintrag nicht verdeckt); in jeder Messung Stile ohne px und die Grundregel ‚nichts überlappt‘ (Zeilen, Knöpfe); R-2.4
-  und R-6.1 kennen die wachsenden Leisten und den Umbau; Gegenprobe `--gegenprobe text` (lauf.mjs, 7 Fälle).
+  und R-6.1 kennen die wachsenden Leisten und den Umbau, R-5.1 (Datumsfeld, Schrittkopf) die große Schrift, R-8.1 beim Drehen vergleicht
+  die Kennung des Eintrags (Tabellenzeile ↔ Kasten); `textSeite(p)` für Prüfskripte, die Seiten selbst öffnen; Gegenprobe
+  `--gegenprobe text` (lauf.mjs, 7 Fälle).
+- **Meldung am iPhone (#msg):** eigene Höchsthöhe `--msg-max` (nie unter Status- oder Home-Leiste), bei großer Schrift rollt ihr Inhalt –
+  vorher galt die Höhe des Blatts. Der gemessene Platz unter der Liste folgt auch geänderten sicheren Rändern.
 
 ## 4.36.0 – 25.10.2026
 

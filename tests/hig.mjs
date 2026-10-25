@@ -81,7 +81,10 @@ const found = new Map(), icons = new Map();
   const topKeep = async (p, where) => {
     const vp = p.viewportSize(), turned = { width: vp.height, height: vp.width };
     const top = () => p.evaluate(() => { const edge = document.querySelector('.pnav, .nb')?.getBoundingClientRect().bottom || 0;
-      return [...document.querySelectorAll('#app [data-day], #app [data-keep]')].find(e => e.getClientRects().length && e.getBoundingClientRect().bottom > edge + 1)?.outerHTML.slice(0, 80); });
+      // seit 4.37.0: derselbe Eintrag = dieselbe Kennung (data-day/data-keep) – bei großer Schrift darf er beim Drehen von der Tabellenzeile
+      // zum Kasten werden (R-1.10)
+      const e = [...document.querySelectorAll('#app [data-day], #app [data-keep]')].find(e => e.getClientRects().length && e.getBoundingClientRect().bottom > edge + 1);
+      return e ? e.dataset.day || e.dataset.keep : undefined; });
     await p.addStyleTag({ content: '* { overflow-anchor: none !important; }' });
     const y0 = (await rollstand(p)).y;
     await rolle(p, '45%'); await p.waitForTimeout(300);
@@ -253,7 +256,7 @@ const found = new Map(), icons = new Map();
         const tops = chips.map(c => Math.round(c.getBoundingClientRect().top)), lr = lab.getBoundingClientRect();
         const zusammen = Math.max(...tops) - Math.min(...tops) < 4, inZeile = tops.every(t => t < lr.bottom - 4);
         const name = (lab.textContent || '').replace(/^\d+/, '').trim().slice(0, 20);
-        if (rg.getBoundingClientRect().width + gap + cw <= hw + 1 && !(zusammen && inZeile)) R('R-5.1', `Schrittkopf ‚${name}‘: Schaltflächen brechen um, obwohl alles in die Zeile der Überschrift passt`);
+        if (!document.documentElement.classList.contains('ts-um') && rg.getBoundingClientRect().width + gap + cw <= hw + 1 && !(zusammen && inZeile)) R('R-5.1', `Schrittkopf ‚${name}‘: Schaltflächen brechen um, obwohl alles in die Zeile der Überschrift passt`);
         else if (cw <= hw + 1 && !zusammen) R('R-5.1', `Schrittkopf ‚${name}‘: Schaltflächen nicht zusammen in einer Zeile`);
       });
       document.querySelectorAll('.dates .dl').forEach(d => { if (vis(d) && !d.parentElement.classList.contains('pair')) R('R-5.1', 'Bezeichnung nicht mit ihrem Feld verbunden'); });
@@ -315,7 +318,7 @@ const found = new Map(), icons = new Map();
       // R-6.1 Tabellen: Trennlinien zwischen allen Spalten (App-Tabellen)
       document.querySelectorAll('#app table td + td').forEach(td => { if (vis(td) && parseFloat(cs(td).borderLeftWidth) === 0) R('R-6.1', 'Tabelle ohne Trennlinie zwischen Spalten'); });
       // R-5.1 Datumsfelder so breit wie das Datum
-      document.querySelectorAll('input[type=date]').forEach(e => { if (vis(e) && e.getBoundingClientRect().width > 220) R('R-5.1', `Datumsfeld zu breit (${Math.round(e.getBoundingClientRect().width)} px)`); });
+      document.querySelectorAll('input[type=date]').forEach(e => { if (vis(e) && e.getBoundingClientRect().width > 220 * (parseFloat(cs(document.documentElement).getPropertyValue('--f-body')) || 1)) R('R-5.1', `Datumsfeld zu breit (${Math.round(e.getBoundingClientRect().width)} px)`); });
       // R-5.1 Betragsfelder rechtsbündig
       document.querySelectorAll('input[inputmode=decimal]').forEach(e => { if (vis(e) && !['right', 'end'].includes(cs(e).textAlign)) R('R-5.1', 'Betragsfeld nicht rechtsbündig'); });
       // R-6.3 Hängender Einzug

@@ -446,6 +446,7 @@ dialog form { display: flex; flex-direction: column; max-height: var(--dlg-max, 
 .dlg-head .mid .sub { display: block; font-size: var(--tb-footnote); color: var(--muted); line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .dlg-head .mid .sub:empty { display: none; }
 #msg { width: min(max(360px, calc(360px * var(--f-body))), 90vw); min-width: 0; }
+#msg, #msg form { max-height: var(--msg-max, calc(100vh - 40px)); }
 #msg .dlg-head { border: none; }
 #msg .msg-text { text-align: center; padding: 0 4px 10px; }
 /* Seit 4.11.0 (R-9.4): kleines Fenster mit einer blauen Schaltfläche unter dem Text (z. B. ‚Abgleichbericht anzeigen‘) */
