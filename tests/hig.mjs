@@ -145,13 +145,13 @@ const found = new Map(), icons = new Map();
         const fg = rgb(s.color), bg = bgOf(e), a = fg[3] ?? 1;
         const mix = [0, 1, 2].map(i => fg[i] * a + bg[i] * (1 - a));
         const L1 = lum(mix), L2 = lum(bg), cr = (Math.max(L1, L2) + .05) / (Math.min(L1, L2) + .05);
-        // R-1.9 (seit 4.35.0, A-43 H3): mit ‚Kontrast erhöhen‘ jeder Text mindestens 4,5 : 1, ohne Ausnahmen
+        // R-1.9 (seit 4.35.0, APD-43 H3): mit ‚Kontrast erhöhen‘ jeder Text mindestens 4,5 : 1, ohne Ausnahmen
         const need = mehr ? 4.5 : fs >= 18 || parseInt(s.fontWeight) >= 700 ? 3 : 4.5;
         // Bewusste Abweichungen: Weiß auf Systemblau, Orange --warn
         if (!mehr && (same(bg, accent) || same(mix, accent) || same(mix, warn))) continue;
         if (cr < need) res.contrast.push(`${cr.toFixed(2)} : 1 (mind. ${need}) ${fs} px ‚${txt.slice(0, 30)}‘`);
       }
-      // R-1.9 (seit 4.35.0, A-43 H3): mit ‚Kontrast erhöhen‘ auch jedes Icon mindestens 4,5 : 1 zu seinem Hintergrund (gefüllte Flächen
+      // R-1.9 (seit 4.35.0, APD-43 H3): mit ‚Kontrast erhöhen‘ auch jedes Icon mindestens 4,5 : 1 zu seinem Hintergrund (gefüllte Flächen
       // aus ::before zählen mit – Knöpfe in Kapseln)
       if (mehr) document.querySelectorAll('svg.ic').forEach(i => {
         if (!vis(i) || !onTop(i) || i.closest('#printout, .rt, [disabled], .pf:not(.an)')) return;
@@ -176,12 +176,12 @@ const found = new Map(), icons = new Map();
       // R-1.4 Nur der Vordergrund reagiert
       if (openDlg && !document.documentElement.classList.contains('locked')) R('R-1.4', 'Seite hinter dem Fenster nicht gesperrt');
       document.querySelectorAll('.layer').forEach(l => { if (cs(l).touchAction !== 'none') R('R-1.4', 'Ebene hinter Menü/Sprechblase fängt Wischen nicht ab'); });
-      // R-3.4 Kein Fokus-Rahmen: Textfelder nie (seit 4.35.0, A-43 K9 – auch nicht Safaris outline: auto), anderes nur bei Bedienung
+      // R-3.4 Kein Fokus-Rahmen: Textfelder nie (seit 4.35.0, APD-43 K9 – auch nicht Safaris outline: auto), anderes nur bei Bedienung
       // mit der Tastatur (html.tastatur); ob ein Fenster ohne vorausgewählte Schaltfläche öffnet, prüft checkFokus
       { const a = document.activeElement, feld = a?.matches?.('input:not([type=checkbox]):not([type=radio]):not([type=range]), textarea, [contenteditable]');
         if (a && a !== document.body && cs(a).outlineStyle !== 'none' && parseFloat(cs(a).outlineWidth) > 0 && (feld || !document.documentElement.classList.contains('tastatur')))
           R('R-3.4', `${feld ? 'Textfeld' : 'Schaltfläche'} ‚${label(a)}‘ mit Fokus-Rahmen${feld ? '' : ' ohne Tastatur'} (${cs(a).outlineStyle} ${cs(a).outlineWidth})`); }
-      // R-1.8 (seit 4.35.0, A-43 V1–V4, V6, V11, V13, checkNamen): jedes Bedienelement hat einen Namen, Icons sind aria-hidden;
+      // R-1.8 (seit 4.35.0, APD-43 V1–V4, V6, V11, V13, checkNamen): jedes Bedienelement hat einen Namen, Icons sind aria-hidden;
       // Fenster mit Titel und Zusatzzeile, Menüknopf ‚öffnet Menü‘ mit offen/zu, Häkchen = ausgewählt, Sprechblase als alertdialog
       { const text = id => (document.getElementById(id)?.textContent || '').trim();
         const name = e => (e.getAttribute('aria-label') || '').trim() || (e.getAttribute('aria-labelledby') || '').split(/\s+/).map(text).join(' ').trim()
@@ -221,12 +221,12 @@ const found = new Map(), icons = new Map();
       // R-1.3 Doppeltippen vergrößert nie
       if ([...document.querySelectorAll('button, a[href], input, textarea, [role=button]')].some(e => vis(e) && !['manipulation', 'none'].includes(cs(e).touchAction))) R('R-1.3', 'Doppeltippen kann die Ansicht vergrößern');
       // R-2.1 Leisten bewegen sich nie
-      // Seit 4.27.0 (A-28): fest heißt position: fixed oder feste Zeile im festen Rahmen (#app fest, die Leiste nicht im Rollbereich).
+      // Seit 4.27.0 (APD-28): fest heißt position: fixed oder feste Zeile im festen Rahmen (#app fest, die Leiste nicht im Rollbereich).
       const scroller = e => { for (let x = e.parentElement; x && x !== document.body; x = x.parentElement) if (/auto|scroll/.test(cs(x).overflowY)) return x; return null; };
       document.querySelectorAll('.nb, .pnav').forEach(b => { if (vis(b) && cs(b).position !== 'fixed' && (scroller(b) || cs(b.parentElement).position !== 'fixed'))
         R('R-2.1', `Leiste .${b.classList[0]} ist ${cs(b).position} ${scroller(b) ? 'im Rollbereich' : 'ohne festen Rahmen'} statt fest – sie federt mit`); });
       if (cs(document.documentElement).overscrollBehaviorY !== 'none') R('R-2.1', 'Seite federt am Rand nach');
-      // R-2.4 (seit 4.28.1, A-36): iPhone quer niedrige Leisten wie iOS – Knöpfe und Suchfeld in Kopfzeile und Fensterkopf 32 px hoch
+      // R-2.4 (seit 4.28.1, APD-36): iPhone quer niedrige Leisten wie iOS – Knöpfe und Suchfeld in Kopfzeile und Fensterkopf 32 px hoch
       // (die Kopfzeile damit 32 statt 44 px); hoch die gewohnten 44 px
       if (phone) {
         const quer = matchMedia('(orientation: landscape) and (max-height: 500px)').matches, soll = quer ? 32 : 44;
@@ -261,7 +261,7 @@ const found = new Map(), icons = new Map();
       document.querySelectorAll('tr, .box, .irow, .side-row').forEach(e => { if (vis(e) && same(rgb(cs(e).backgroundColor), focus) && /inset/.test(cs(e).boxShadow)) R('R-6.1', 'gelbe Markierung mit blauem Rand'); });
       // R-2.2 Titel steht in der Leiste (ohne großen Titel)
       document.querySelectorAll('.pnav-title').forEach(t => { if (vis(t.parentElement) && !document.querySelector('.ltitle') && cs(t).opacity !== '1') R('R-2.2', 'Titel nicht in der Leiste'); });
-      // R-9.1 (seit 4.34.0, A-74): Backup-Kachel nur, solange heute kein Backup erstellt wurde und es Einträge gibt; der Fuß steht immer da
+      // R-9.1 (seit 4.34.0, APD-74): Backup-Kachel nur, solange heute kein Backup erstellt wurde und es Einträge gibt; der Fuß steht immer da
       if (side && vis(side)) {
         const bh = side.querySelector('.bhint'), two = n => String(n).padStart(2, '0'), d = new Date(), heute = `${two(d.getDate())}.${two(d.getMonth() + 1)}.${d.getFullYear()}`;
         if (bh && bh.textContent.includes(`Letztes Backup erstellt am ${heute}`)) R('R-9.1', 'Backup-Kachel steht, obwohl heute schon ein Backup erstellt wurde');
@@ -275,17 +275,17 @@ const found = new Map(), icons = new Map();
       if (phone && dl?.open && Math.abs(dl.getBoundingClientRect().width - innerWidth) > 2) R('R-4.5', 'Fenster nicht bildschirmbreit');
       // R-3.2 Nach oben / Ans Ende in einer senkrechten Kapsel
       document.querySelectorAll('.fab').forEach(f => { if (vis(f) && parseFloat(cs(f).borderTopLeftRadius) < 10) R('R-3.2', 'Nach oben / Ans Ende nicht in einer Kapsel'); });
-      // R-3.2 (seit 4.27.1, A-33): die Kapsel überdeckt nie Kopf- oder Suchzeile (Leisten und feste Zeilen des Rahmens)
+      // R-3.2 (seit 4.27.1, APD-33): die Kapsel überdeckt nie Kopf- oder Suchzeile (Leisten und feste Zeilen des Rahmens)
       document.querySelectorAll('.fab').forEach(f => {
         const k = f.getBoundingClientRect();
         if (cs(f).display === 'none' || f.hidden || !k.height) return;
         new Set([...document.querySelectorAll('.nb, .pnav, #app > :not(.rolle):not(.fab)')]).forEach(l => {
           const b = l.getBoundingClientRect();
           if (cs(l).display !== 'none' && b.height && k.top < b.bottom - .5 && k.bottom > b.top + .5 && k.left < b.right - .5 && k.right > b.left + .5)
-            R('R-3.2', `Kapsel Nach oben / Ans Ende überdeckt die Leiste ${l.id ? '#' + l.id : '.' + l.classList[0]} (A-33)`);
+            R('R-3.2', `Kapsel Nach oben / Ans Ende überdeckt die Leiste ${l.id ? '#' + l.id : '.' + l.classList[0]} (APD-33)`);
         });
       });
-      // R-3.1 (seit 4.25.1, A-25) Rund ist ein Kreis: runde Schaltflächen und die Markierung (gedrückt, blau gefüllt) bei Icons und
+      // R-3.1 (seit 4.25.1, APD-25) Rund ist ein Kreis: runde Schaltflächen und die Markierung (gedrückt, blau gefüllt) bei Icons und
       // Emojis in Kapseln haben gleiche Breite und Höhe; Text in Kapseln (.txt, Auswahl-Kapsel mit Text) bleibt eine Kapsel.
       document.querySelectorAll('button').forEach(e => {
         if (!vis(e)) return;
@@ -349,7 +349,7 @@ const found = new Map(), icons = new Map();
       document.querySelectorAll('dialog[open], .pop').forEach(d => { const n = [...d.querySelectorAll('button.primary')].filter(vis).length;
         if (n > 1) R('R-3.3', `${n} blau gefüllte Schaltflächen in einem ${d.tagName === 'DIALOG' ? 'Fenster' : 'Abfrage'} – höchstens eine Hauptaktion`); });
       // R-5.4 (seit 4.12.0): Auswahl-Kapsel – wischbar mit Verlauf am Rand; die Markierung ändert die Breite nicht.
-      // Seit 4.33.0 (A-75 K1–K5, K8, K15): im freien Rand ein kleiner Pfeil (chevron, 14 px, --muted, 9 px vom Rand, nur Anzeige,
+      // Seit 4.33.0 (APD-75 K1–K5, K8, K15): im freien Rand ein kleiner Pfeil (chevron, 14 px, --muted, 9 px vom Rand, nur Anzeige,
       // aria-hidden) genau dann, wenn es auf seiner Seite weitergeht – passt alles, weder Verlauf noch Pfeil.
       document.querySelectorAll('.cap .scroll').forEach(s => { if (!vis(s) || !onTop(s)) return;
         const more = s.scrollLeft + s.clientWidth < s.scrollWidth - 2, mask = (cs(s).maskImage || cs(s).webkitMaskImage || 'none');
@@ -436,9 +436,9 @@ const found = new Map(), icons = new Map();
       });
       document.querySelectorAll('#app table').forEach(t => { if (vis(t) && !t.closest('.rt') && t.offsetWidth > t.parentElement.clientWidth + 1 && !/auto|scroll/.test(cs(t.parentElement).overflowX)) R('R-6.3', `Tabelle breiter als ihr Platz (${t.offsetWidth} statt ${t.parentElement.clientWidth} px)`); });
       if (document.documentElement.scrollWidth > innerWidth + 1) R('R-6.3', 'Seite breiter als der Bildschirm');
-      // R-2.1 (seit 4.27.0, A-28): Die Seite rollt nie, nur der Inhalt – nach jedem Schritt steht das Fenster bei 0.
+      // R-2.1 (seit 4.27.0, APD-28): Die Seite rollt nie, nur der Inhalt – nach jedem Schritt steht das Fenster bei 0.
       if (Math.round(scrollY) !== 0) R('R-2.1', `Die Seite rollt (scrollY ${Math.round(scrollY)}) – nur der Inhalt darf rollen (Rollbereich .rolle)`);
-      // R-5.7 (seit 4.29.0, A-63 C4): Schalter sind Safaris eingebauter Schalter (Attribut switch, role="switch" – VoiceOver sagt
+      // R-5.7 (seit 4.29.0, APD-63 C4): Schalter sind Safaris eingebauter Schalter (Attribut switch, role="switch" – VoiceOver sagt
       // ‚Schalter‘). Kennt der Browser ihn nicht (alle Prüfbrowser), ist es unser Schalter 51 × 31; kennt er ihn (html.natsw, hier
       // nachgebildet), zeichnet ihn Safari selbst (appearance nicht none) in Grün (accent-color = --sw-on).
       document.querySelectorAll('.check.sw input').forEach(e => {
@@ -480,7 +480,7 @@ const found = new Map(), icons = new Map();
     }
   }
 
-  // R-1.7 (seit 4.29.0, A-63 S-2 bis S-6): Die Prüfbrowser liefern für env(safe-area-inset-…) immer 0 – deshalb setzt die Prüfung
+  // R-1.7 (seit 4.29.0, 3 APD-63/S-2 bis APD-63/S-6): Die Prüfbrowser liefern für env(safe-area-inset-…) immer 0 – deshalb setzt die Prüfung
   // echte Gerätewerte über die Variablen --safe-… (design.css) und prüft: nichts fest Stehendes (Knopf, Feld, Titel, Kachel) liegt
   // unter Statusleiste bzw. Dynamic Island, Aussparung oder Home-Leiste; Fenster, Menüs und Sprechblasen (außer dem bildschirmfüllenden
   // iPhone-Fenster) bleiben ganz innerhalb; Inhalt darf darunter rollen, sein Ende lässt sich aber bis über die Home-Leiste rollen.
@@ -589,7 +589,7 @@ const found = new Map(), icons = new Map();
         const d = v.map((x, i) => Math.abs(x - o[i])); if (Math.max(...d) >= 0.5) out.add(`Leiste ${name(e)} bewegt sich beim Wischen um ${Math.max(...d).toFixed(1)} px (${step})`); } };
       const max = roll.max;
       for (const y of [1, 40, 300, max / 2, max, max + 300, -100, 0]) { roll.to(y); await frame(); cmp('Inhalt'); }
-      // Seit 4.27.0 (A-28): auch ein Versuch, das Fenster zu rollen, bewegt nichts – die Seite rollt nie.
+      // Seit 4.27.0 (APD-28): auch ein Versuch, das Fenster zu rollen, bewegt nichts – die Seite rollt nie.
       if (roll.el) { scrollTo(0, 300); await frame(); if (Math.round(scrollY)) out.add(`Die Seite rollt (scrollY ${Math.round(scrollY)}) – nur der Inhalt darf rollen`); cmp('Fenster'); scrollTo(0, 0); }
       const list = document.querySelector('#side .side-list');
       if (list && list.getBoundingClientRect().height > 0) { const t0 = list.scrollTop; for (const y of [1, 200, list.scrollHeight, 0]) { list.scrollTop = y; await frame(); cmp('Seitenleiste'); } list.scrollTop = t0; }

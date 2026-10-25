@@ -62,4 +62,4 @@ Anteile ihrer Spalten fest.
 ## Version
 
 **AppDesign 4.12.1 und Reiselogbuch 3.11.6** (Korrektur nach Prüfung, Zusammenarbeit 0 Nr. 8). Darin: 1, 2 und 4 mit
-geschärften Prüfungen, dazu ‚Gesamtausgaben‘. Danach folgt die Prüfliste P-33.
+geschärften Prüfungen, dazu ‚Gesamtausgaben‘. Danach folgt die Testfälle P-33.

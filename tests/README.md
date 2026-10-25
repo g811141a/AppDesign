@@ -11,7 +11,7 @@ Misst jede Ansicht gegen die HIG-Checkliste (Abschnitt 16) und alle Regeln mit �
 Schrift und Kontrast hell und dunkel (R-10.2), Anführungszeichen (R-10.1), Menüs (R-4.1), gedrückte Schaltfläche bleibt blau
 (R-3.3), Schalter (R-5.7) usw.; dazu automatisch beim Drehen (R-8.1), Leisten beim Wischen (`barStill`, R-2.1), der Gerätevergleich
 iPad ↔ iPhone (`shape`, R-1.1) und in jeder Ansicht die sicheren Ränder mit Gerätewerten (`safe`, R-1.7 – die Prüfbrowser liefern
-für `env()` immer 0, deshalb setzt `safe` die Variablen `--safe-…`). Seit 4.35.0 (A-43) in jeder Ansicht auch Namen, Rollen und Zustände für
+für `env()` immer 0, deshalb setzt `safe` die Variablen `--safe-…`). Seit 4.35.0 (APD-43) in jeder Ansicht auch Namen, Rollen und Zustände für
 VoiceOver (R-1.8: Knöpfe und Felder benannt, Icons `aria-hidden`, Fenster mit Titel und Beschreibung, Menüknopf, Häkchen,
 Sprechblase), Sperre und modale Fenster (R-1.4), Fokus-Rahmen nur mit Tastatur, Textfelder nie (R-3.4) und mit ‚Kontrast erhöhen‘
 4,5 : 1 für jeden Text und jedes Icon ohne Ausnahmen (R-1.9).
@@ -50,7 +50,7 @@ falsch, `PRUEF_GEGENPROBE=grundregeln` legt beim ersten Schritt zu breiten Text 
 werden; `PRUEF_GEGENPROBE=bedienung:<fall>` schleust einen benannten Fehler der Bedienungshilfen ein (`GEGENPROBEN_BEDIENUNG`, seit
 4.35.0).
 
-**Bedienungshilfen** (seit 4.35.0, A-43 Teil 1, R-1.8, R-1.9, R-4.7): `PRUEF_BEDIENUNG=beide` öffnet jede Seite von `t.seite` mit
+**Bedienungshilfen** (seit 4.35.0, APD-43 Teil 1, R-1.8, R-1.9, R-4.7): `PRUEF_BEDIENUNG=beide` öffnet jede Seite von `t.seite` mit
 ‚Kontrast erhöhen‘ und ‚Bewegung reduzieren‘ (Ort mit Zusatz ‚· Kontrast · ruhig‘). In jeder Seite läuft der **Bewegungswächter**
 (`bewegungsWaechter`): gilt ‚Bewegung reduzieren‘, misst er jede Web-Animation, jeden CSS-Übergang und jede CSS-Animation sowie jedes
 sanfte Rollen an der Grenze von R-1.9 (Lage über 30 px, Zoomen, Federn, Dauerschleife, Überblenden über 0,3 s, `smooth`);
@@ -72,7 +72,7 @@ Startet alle Prüfskripte parallel, die schnellsten zuerst (gemessene Dauer in `
 beim ersten roten Test werden die übrigen beendet und seine Fehlerzeilen gezeigt. Aufruf über `tests/alle.mjs` der App:
 `node tests/alle.mjs [--alle] [--browser chromium] [--nur hig] [--abdeckung] [--gegenprobe [grundregeln | bedienung]] [--jobs N] [--zeit S]`.
 `--gegenprobe bedienung` (seit 4.35.0) läuft die Prüfung der Bedienungshilfen der App (`ablauf-bedienung`) je eingeschleustem Fehler
-einmal; rot zählt nur mit genau der passenden Meldung – beim Bau von A-43/1 und wenn sich eine dieser Prüfungen ändert, nicht in jedem
+einmal; rot zählt nur mit genau der passenden Meldung – beim Bau von APD-43/1 und wenn sich eine dieser Prüfungen ändert, nicht in jedem
 `los`.
 Gleichzeitig laufen standardmäßig so viele Browser, wie der Rechner Kerne hat (mit doppelt so vielen schwankte WebKit unter
 Volllast); erst alle Prüfungen in Chromium, dann alle in WebKit – nie beide gleichzeitig. Fehlt WebKit, bricht der Lauf mit Hinweis
@@ -88,9 +88,9 @@ Selbsttest mit Schein-Tests: `node tests/lauf-selbsttest.mjs` (Zusammenarbeit 0 
 | `abgleich.mjs` | R-9.2 bis R-9.4 | alle Fälle des Abgleichs in beide Richtungen, kurzes Fenster und Abgleichbericht |
 | `backup.mjs` | R-9.1, R-9.2 | Backup erstellen und laden (Menü, Abfrage mit Kacheln, Abbrechen, unlesbare Datei); seit 4.34.0: Backup-Kachel nach dem Backup weg, ‚Letztes Backup …‘ mit heutigem Datum im Menü, Kachel nur ohne Backup heute und mit Einträgen, Offline-Zeile immer im Fuß |
 | `kontextmenue.mjs` | R-4.2 | Kontextmenü jeder sichtbaren Kachel und des letzten Eintrags, ganz sichtbar, über der Backup-Kachel (ohne Kachel über der Offline-Zeile bzw. dem Rand) |
-| `doku.mjs` | R-10.4, R-10.1 (Feldnamen), R-1.7 (`env()` nur in `--safe-…`), Katalog; Zusammenarbeit 0 Nr. 3, 7, 8, 9, 11 und 15, 2.3 | `checkDocs`: README mit ‚Verwendete Versionen‘ (Links nach AppDesign auf `main`, Richtlinie, Zusammenarbeit und Bausteine aus `fassung/X.Y.Z/`; Richtlinien-Versionen aus der Fassung), Prüfliste der neuesten Version beginnt mit /0, Schritte und ‚Erwartet‘ (Meldungen nennen die Prüfliste noch ‚Zusammenarbeit 7‘ – heute 2.3); `checkCatalog`: jede Regel hat eine Prüfung, alte Nummern zugeordnet und nirgends mehr verwendet; `checkCollab`: keine veralteten Formulierungen (auch kein ‚gilt sofort für alle Apps‘, kein `?v=<Version>`), Verweise auf die Zusammenarbeit gültig, beide `CLAUDE.md` beginnen mit `UEBERGABE.md` und haben Version und Versionsgeschichte, PROMPT-Versionszeile, Feldnamen des Abgleichberichts |
+| `doku.mjs` | R-10.4, R-10.1 (Feldnamen), R-1.7 (`env()` nur in `--safe-…`), Katalog; Zusammenarbeit 0 Nr. 3, 7, 8, 9, 11 und 15, 2.3 | `checkDocs`: README mit ‚Verwendete Versionen‘ (Links nach AppDesign auf `main`, Richtlinie, Zusammenarbeit und Bausteine aus `fassung/X.Y.Z/`; Richtlinien-Versionen aus der Fassung), Testfälle der neuesten Version beginnen mit /0, Schritte und ‚Erwartet‘ (Meldungen nennen die Testfälle noch ‚Zusammenarbeit 7‘ – heute 2.3); `checkCatalog`: jede Regel hat eine Prüfung, alte Nummern zugeordnet und nirgends mehr verwendet; `checkCollab`: keine veralteten Formulierungen (auch kein ‚gilt sofort für alle Apps‘, kein `?v=<Version>`), Verweise auf die Zusammenarbeit gültig, beide `CLAUDE.md` beginnen mit `UEBERGABE.md` und haben Version und Versionsgeschichte, PROMPT-Versionszeile, Feldnamen des Abgleichberichts |
 | `start.mjs` | R-7.2 | `checkStart(page, { inhalt, leer })` nach dem Neuladen: iPhone-Aufbau in der Startliste (`#side.page`), ganz oben, kein Eintrag blau, kein Inhalt offen; iPad-Aufbau mit Seitenleiste und genau einem blauen, geöffneten Eintrag. `checkRueckkehr(page)`: `visibilitychange` und `pageshow` (aus dem Zwischenspeicher) ändern nichts |
-| `offline.mjs` | R-1.5 | eigener Webserver mit echtem Service Worker; ohne Netz, unter anderer Adresse und bei hängendem Netz (höchstens 3 s) erscheint die App – iPad und iPhone, Chromium und WebKit; der Offline-Hinweis (F-1 bis F-17): Meldung und Zeile beim Start ohne Netz, bei hängendem Netz und beim Wechsel (Safari meldet offline/online); Lage, Kontrast, 4 s, ‚Wieder online‘, schnelles Hin und Her, Drehen, offenes Fenster, Tastatur, lange Liste, Startliste (iPhone); Option `vorbereiten(page)` für Daten der App |
+| `offline.mjs` | R-1.5 | eigener Webserver mit echtem Service Worker; ohne Netz, unter anderer Adresse und bei hängendem Netz (höchstens 3 s) erscheint die App – iPad und iPhone, Chromium und WebKit; der Offline-Hinweis (APD-6/F-1 bis F-17): Meldung und Zeile beim Start ohne Netz, bei hängendem Netz und beim Wechsel (Safari meldet offline/online); Lage, Kontrast, 4 s, ‚Wieder online‘, schnelles Hin und Her, Drehen, offenes Fenster, Tastatur, lange Liste, Startliste (iPhone); Option `vorbereiten(page)` für Daten der App |
 | `version.mjs` | R-10.3 | feste Fassung: `index.html` und `sw.js` laden genau `fassung/<AD_NEEDED>/` (nichts aus `v4/`), Versionen der Fassung stimmen, Prüfsummen `fassung/PRUEFSUMMEN` (keine Datei geändert, fehlt oder dazu), `v4/` und `tests/` = neueste Fassung; Hinweis beim Start bei älterer Fassung; ein geänderter Arbeitsstand `v4/` erreicht die App nicht (kein Abruf) |
 | `messung.mjs` | Zusammenarbeit 2.2 | Werkzeug `werkzeug/messung.mjs` (Zeile Zeit und Token) mit künstlichen Sitzungsdaten; Gegenprobe `--gegenprobe` |
 | `lauf-selbsttest.mjs` | Zusammenarbeit 0 Nr. 2 | `lauf.mjs` mit Schein-Tests (Reihenfolge, Abbruch, Gegenprobe) |

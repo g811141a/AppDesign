@@ -1,6 +1,6 @@
 # AppDesign – Hinweise für Claude
 
-**Version 2.7.0** · Stand 24.10.2026
+**Version 2.8.0** · Stand 25.10.2026
 
 ## Zuerst lesen (gezielt, Zusammenarbeit 0 Nr. 15)
 
@@ -12,7 +12,7 @@
 ## Verpflichtend
 
 Alle Regeln stehen in der Zusammenarbeit allgemein (hier keine Wiederholung) – besonders Startfrage ohne Auftrag (0 Nr. 19),
-nie ohne ‚Ja‘ bauen (0 Nr. 21), Fall-Liste vor jedem Bau (0 Nr. 1), erst Prüfpunkte, dann Neues (0 Nr. 22), Auswahlfenster mit
+nie ohne ‚Ja‘ bauen (0 Nr. 21), Testfall-Liste vor jedem Bau (0 Nr. 1), erst Usertests, dann Neues (0 Nr. 22), Auswahlfenster mit
 ‚Ich schreibe im Chat‘ (0 Nr. 7) und die Zeile mit Zeit und Token am Ende jeder Antwort (`node werkzeug/messung.mjs`, 2.2).
 
 ## Technisch
@@ -51,7 +51,7 @@ nie ohne ‚Ja‘ bauen (0 Nr. 21), Fall-Liste vor jedem Bau (0 Nr. 1), erst Pr�
   ln -sfn chrome-headless-shell /opt/pw-browsers/chromium_headless_shell-1243/chrome-headless-shell-linux64/headless_shell`.
 - **Veröffentlichen** (Zusammenarbeit 0 Nr. 9): Vorbereitungs-Zweige `vorbereitung-X.Y.Z` in beiden Repos;
   `node werkzeug/veroeffentlichen.mjs vorbereiten --ad X.Y.Z --app reiselogbuch=X.Y.Z` (ohne `--ad`, wenn nur die App); Texte
-  schreiben (CHANGELOG mit Prüfliste, Backlog, Versionsgeschichten); nach Änderungen an `v4/` oder `tests/` bzw. an Designrichtlinie
+  schreiben (CHANGELOG mit Testfällen, Backlog, Versionsgeschichten); nach Änderungen an `v4/` oder `tests/` bzw. an Designrichtlinie
   oder Zusammenarbeit nach `vorbereiten`: `node werkzeug/veroeffentlichen.mjs fassung`; committen; dann
   `node werkzeug/veroeffentlichen.mjs los --app reiselogbuch` im Hintergrund (prüft, voller Prüflauf, erst AppDesign, dann die
   App, wartet auf Pages; ~8 min). **Nie `… fassung` für eine schon veröffentlichte Version** – erst `vorbereiten` (neue Version),
@@ -64,14 +64,15 @@ nie ohne ‚Ja‘ bauen (0 Nr. 21), Fall-Liste vor jedem Bau (0 Nr. 1), erst Pr�
 
 | Version | Datum | Inhalt |
 |---|---|---|
+| 2.8.0 | 25.10.2026 | APD-78 Nummernschema: Verweise mit den neuen Nummern (APD-n, RLB-n, Usertest, Testfall-Liste); Tabelle alt → neu in `ZUORDNUNG.md` |
 | 2.7.0 | 24.10.2026 | Tests einrichten: Chromium-Verweise für einen neueren Chromium der Umgebung (Chrome 153) dauerhaft hier statt in UEBERGABE.md (Nutzer 24.10.2026) |
-| 2.6.0 | 21.10.2026 | A-39 Konsolidierung: Arbeitsumgebung (klonen, Verweise, Tests einrichten, Veröffentlichen) dauerhaft hier statt in UEBERGABE.md (F-9); Verweise auf Zusammenarbeit 2.17.0 (0 Nr. 21, 22, Abschnitt 2.2) |
+| 2.6.0 | 21.10.2026 | APD-39 Konsolidierung: Arbeitsumgebung (klonen, Verweise, Tests einrichten, Veröffentlichen) dauerhaft hier statt in UEBERGABE.md (APD-39/F-9); Verweise auf Zusammenarbeit 2.17.0 (0 Nr. 21, 22, Abschnitt 2.2) |
 | 2.5.0 | 20.10.2026 | Zu Beginn Abschnitte 0 und 1 der Zusammenarbeit (Sprache und Ton: per du) – Zusammenarbeit 2.14.0 |
-| 2.4.0 | 16.10.2026 | Zeile Zeit und Token mit `werkzeug/messung.mjs` (A-12) |
+| 2.4.0 | 16.10.2026 | Zeile Zeit und Token mit `werkzeug/messung.mjs` (APD-12) |
 | 2.3.0 | 16.10.2026 | Startfrage zu Beginn einer Sitzung ohne Auftrag (Zusammenarbeit 0 Nr. 19) |
-| 2.2.0 | 15.10.2026 | Gezielt lesen (nur Abschnitt 0 und Überschriften), ein voller Prüflauf je Version (A-07) |
+| 2.2.0 | 15.10.2026 | Gezielt lesen (nur Abschnitt 0 und Überschriften), ein voller Prüflauf je Version (APD-7) |
 | 2.1.1 | 14.10.2026 | Fassung enthält Designrichtlinie und Zusammenarbeit statt Git-Markierung (aus der Cloud gesperrt) |
-| 2.1.0 | 14.10.2026 | Feste Fassung `fassung/X.Y.Z/` statt `v4/…?v=` (A-05 Version B, W-4), Veröffentlichungs-Skript |
-| 2.0.0 | 14.10.2026 | Neu gefasst (A-02 Schritt 4): zuerst UEBERGABE.md, Regeln nur noch als Verweis auf die Zusammenarbeit (ohne Antwortzeile), Prüfungen und Versionskopplung |
+| 2.1.0 | 14.10.2026 | Feste Fassung `fassung/X.Y.Z/` statt `v4/…?v=` (APD-5 Version B, APD-5/W-4), Veröffentlichungs-Skript |
+| 2.0.0 | 14.10.2026 | Neu gefasst (APD-2 Schritt 4): zuerst UEBERGABE.md, Regeln nur noch als Verweis auf die Zusammenarbeit (ohne Antwortzeile), Prüfungen und Versionskopplung |
 | 1.1.0 | 10.10.2026 | Zeitmessung |
 | 1.0.0 | 09.10.2026 | erste Fassung |

@@ -1,22 +1,22 @@
-// AppDesign 4.28.1 · Messung abspielen (A-31, Fall-Liste arbeit/A-26 A-31 A-34 Fall-Liste.md Abschnitt 2.3, M-1 bis M-6):
+// AppDesign 4.28.1 · Messung abspielen (APD-31, Testfall-Liste arbeit/APD-26 APD-31 APD-34 Testfall-Liste.md Abschnitt 2.3, APD-34/M-1 bis APD-34/M-6):
 // eine Messdatei des Messmodus (R-1.6, 15.21) wird in einer Prüfung nachgespielt – die Prüfung macht, was am Gerät geschah, und
 // Safari meldet dabei sichtbare Höhe und offsetTop genau wie gemessen (Safari-Modell tests/safari.mjs, __safari.setze).
 // Einbinden im Prüfskript der App:
 //   import { lies, ansicht, spieleAb } from '../../AppDesign/fassung/X.Y.Z/tests/abspielen.mjs';
-//   const m = lies(readFileSync(datei, 'utf8'));                 // M-1: Kopf, Spalten, Zeilen (Fehler mit Zeilennummer)
+//   const m = lies(readFileSync(datei, 'utf8'));                 // APD-34/M-1: Kopf, Spalten, Zeilen (Fehler mit Zeilennummer)
 //   const p = await t.seite(b, ansicht(m));                       // Größe, Gerät und Darstellung aus dem Kopf
 //   await safariModell(p, m.lage === 'quer' ? 'iPhone quer' : 'iPhone hoch');
-//   t.liste(await spieleAb(p, m, { ziele, woerter, bis }));      // M-2 bis M-4: Fehler (leer = wie gemessen)
-// Nachgespielt (M-2): ‚tippen <id>‘ (Schaltfläche anklicken, Feld antippen), ‚eingabe <Länge>‘ (Buchstaben eines Prüfworts tippen
-// bzw. löschen, bis die Länge stimmt), ‚blur‘ ohne Antippen (Tastatur schließen), ‚vv resize‘/‚vv scroll‘ (Safari meldet h und offsetTop, M-3), Wechsel der Spalte lage
+//   t.liste(await spieleAb(p, m, { ziele, woerter, bis }));      // APD-34/M-2 bis APD-34/M-4: Fehler (leer = wie gemessen)
+// Nachgespielt (APD-34/M-2): ‚tippen <id>‘ (Schaltfläche anklicken, Feld antippen), ‚eingabe <Länge>‘ (Buchstaben eines Prüfworts tippen
+// bzw. löschen, bis die Länge stimmt), ‚blur‘ ohne Antippen (Tastatur schließen), ‚vv resize‘/‚vv scroll‘ (Safari meldet h und offsetTop, APD-34/M-3), Wechsel der Spalte lage
 // (drehen). Folgen (focus, blur, neuaufbau, scroll) werden nicht ausgelöst, sondern verglichen.
-// Vergleich (M-4) am Ende jedes Schritts (vor der nächsten Handlung) mit der letzten Zeile des Schritts: Kopfzeile (kopf) und
+// Vergleich (APD-34/M-4) am Ende jedes Schritts (vor der nächsten Handlung) mit der letzten Zeile des Schritts: Kopfzeile (kopf) und
 // Suchzeile (such) auf dem Bildschirm ± toleranz px, Fokus (id bzw. Elementname). Der Inhalt (inh, tag) hängt an den eigenen
 // Daten und wird nicht verglichen; Wischen zeichnet die Messung nicht auf – dafür bleibt das Safari-Modell (Grenze).
 // Optionen: ziele = { name: Selektor | [Selektoren, der Reihe nach] | async p => … } für Ziele ohne id (‚button‘, ‚-‘);
 // woerter = { feld-id: Prüfwort }; bis = Zeit (ms) – Handlungen danach nicht mehr; nachSchritt(s) = zusätzliche Prüfung je Schritt
-// ({ ereignis, zeile } → Liste von Fehlern); verschiebe = { such: 20 } verschiebt die Messung (Gegenprobe M-5, muss rot werden).
-// Seit 4.28.1 (A-36, Fall-Liste arbeit/A-36 Fall-Liste.md T-8) modell: true – Safari wird nicht aus der Datei gesetzt, sondern
+// ({ ereignis, zeile } → Liste von Fehlern); verschiebe = { such: 20 } verschiebt die Messung (Gegenprobe APD-34/M-5, muss rot werden).
+// Seit 4.28.1 (APD-36, Testfall-Liste arbeit/APD-36 Testfall-Liste.md APD-36/T-8) modell: true – Safari wird nicht aus der Datei gesetzt, sondern
 // entscheidet nach dem Modell (safariModell mit auto: true): die Datei liefert nur die Handlungen und die Höhe der Tastatur (ih − vh der
 // Meldung), Felder werden angetippt (p.tap). Jedes Bild eines Schritts mit Tastatur (auf, zu, Feld wechseln) wird aufgenommen: Kopf-
 // und Suchzeile liegen in jedem Bild zwischen ihrer Lage vor und nach dem Schritt (± toleranz) – so wird ein Springen sichtbar,
@@ -25,8 +25,8 @@
 export const SPALTEN = ['t', 'sy', 'inh', 'sh', 'ih', 'vh', 'vt', 'vvtop', 'kopf', 'such', 'tag', 'lkopf', 'lsuch', 'lroll', 'fokus', 'lage'];
 const ZAHL = new Set(SPALTEN.filter(s => !['fokus', 'lage'].includes(s)));
 
-// M-1: Messdatei lesen. Kopf ‚# Messung · App · AppDesign · Gerät (UA) · Ort · B×H @n · [Ränder o/u/l/r ·] hell|dunkel · Zeit‘
-// (die sicheren Ränder seit AppDesign 4.29.0, A-63 S-8), Spaltenzeile,
+// APD-34/M-1: Messdatei lesen. Kopf ‚# Messung · App · AppDesign · Gerät (UA) · Ort · B×H @n · [Ränder o/u/l/r ·] hell|dunkel · Zeit‘
+// (die sicheren Ränder seit AppDesign 4.29.0, 3 APD-63/S-8), Spaltenzeile,
 // Zeilen mit je 16 Werten (‚-‘ = nicht vorhanden) und optional ‚! ereignis‘; ‚# Ende …‘ beendet.
 export function lies(text) {
   const zeilen = text.replace(/\r/g, '').split('\n'), fehler = (n, t) => { throw new Error(`Messdatei Zeile ${n}: ${t}`); };
@@ -85,15 +85,15 @@ function schritte(m, bis) {
 }
 
 export async function spieleAb(p, m, { ziele = {}, woerter = {}, bis = Infinity, nachSchritt = null, verschiebe = null, toleranz = 1, modell = false, where = '' } = {}) {
-  const errors = [], E = (z, t) => errors.push(`${where ? where + ': ' : ''}A-31 Messung Zeile ${z.nr} (${z.t} ms, ${z.ereignis || 'Folge'}): ${t}`);
-  if (!await p.evaluate(() => !!window.__safari)) { errors.push('A-31 Vorbereitung: Safari-Modell fehlt (safariModell)'); return errors; }
+  const errors = [], E = (z, t) => errors.push(`${where ? where + ': ' : ''}APD-31 Messung Zeile ${z.nr} (${z.t} ms, ${z.ereignis || 'Folge'}): ${t}`);
+  if (!await p.evaluate(() => !!window.__safari)) { errors.push('APD-31 Vorbereitung: Safari-Modell fehlt (safariModell)'); return errors; }
   const vorrat = Object.fromEntries(Object.entries(ziele).map(([k, v]) => [k, Array.isArray(v) ? [...v] : v]));
   let lage = m.lage;
   const lagen = () => p.evaluate(() => { const o = __safari.top(), top = sel => { const e = [...document.querySelectorAll(sel)].find(x => x.getClientRects().length); return e ? Math.round(e.getBoundingClientRect().top - o) : null; };
     return { kopf: top('#app .nb, #app .pnav'), such: top('#app .searchbox') }; });
   for (const s of schritte(m, bis)) {
     const z = s.zeile, [art, arg] = [s.ereignis.split(' ')[0], s.ereignis.split(' ').slice(1).join(' ')];
-    // T-8: Schritt mit Tastatur – Höhe aus der Meldung, jedes Bild aufnehmen
+    // APD-36/T-8: Schritt mit Tastatur – Höhe aus der Meldung, jedes Bild aufnehmen
     const kbZeile = [z, ...s.folgen].find(f => f.ereignis === 'vv resize'), film = modell && (!!kbZeile || art === 'tastatur');
     if (modell && kbZeile && kbZeile.vh < m.zeilen[0].ih - 40) await p.evaluate(kb => { __safari.naechste = kb; }, m.zeilen[0].ih - kbZeile.vh);
     const vorher = film ? await lagen() : null;
@@ -122,7 +122,7 @@ export async function spieleAb(p, m, { ziele = {}, woerter = {}, bis = Infinity,
         await p.waitForTimeout(20);
       }
     }
-    // M-3: was Safari danach meldete, genau so (modell: Safari entscheidet selbst)
+    // APD-31/M-3: was Safari danach meldete, genau so (modell: Safari entscheidet selbst)
     if (!modell) for (const f of [z, ...s.folgen].filter(f => /^vv (resize|scroll)$/.test(f.ereignis))) {
       await p.evaluate(v => __safari.setze(v), { h: f.vh, top: f.vt });
       await p.evaluate(() => new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r))));
@@ -134,16 +134,16 @@ export async function spieleAb(p, m, { ziele = {}, woerter = {}, bis = Infinity,
         if (vorher[k] == null || nachher[k] == null) continue;
         const lo = Math.min(vorher[k], nachher[k]) - toleranz, hi = Math.max(vorher[k], nachher[k]) + toleranz;
         const aus = bilder.map(b => b[k === 'kopf' ? 'bar' : 'box']).filter(v => v != null && (v < lo || v > hi));
-        if (aus.length) E(z, `T-8 ${k === 'kopf' ? 'Kopfzeile' : 'Suchzeile'} springt in ${aus.length} von ${bilder.length} Bildern bis ${aus.reduce((a, v) => Math.abs(v - vorher[k]) > Math.abs(a - vorher[k]) ? v : a)} px (vorher ${vorher[k]}, danach ${nachher[k]} px)`);
+        if (aus.length) E(z, `APD-36/T-8 ${k === 'kopf' ? 'Kopfzeile' : 'Suchzeile'} springt in ${aus.length} von ${bilder.length} Bildern bis ${aus.reduce((a, v) => Math.abs(v - vorher[k]) > Math.abs(a - vorher[k]) ? v : a)} px (vorher ${vorher[k]}, danach ${nachher[k]} px)`);
       }
     }
-    // M-4: Endzustand des Schritts wie die letzte Zeile
+    // APD-31/M-4: Endzustand des Schritts wie die letzte Zeile
     const soll = { ...(s.folgen.at(-1) || z) };
     for (const [k, d] of Object.entries(verschiebe || {})) if (soll[k] != null) soll[k] += d;
     const ist = await p.evaluate(() => {
       const o = __safari.fest ? visualViewport.offsetTop : __safari.top(), top = sel => { const e = [...document.querySelectorAll(sel)].find(x => x.getClientRects().length); return e ? Math.round(e.getBoundingClientRect().top - o) : null; };
       const a = document.activeElement, fokus = !a || a === document.body ? null : a.id || a.tagName.toLowerCase();
-      // seit 4.35.0 (A-43 R-1.8): der Fokus geht nach Menü, Sprechblase und Seitenwechsel auf Knopf bzw. Kopfzeile – das zeichneten
+      // seit 4.35.0 (APD-43 R-1.8): der Fokus geht nach Menü, Sprechblase und Seitenwechsel auf Knopf bzw. Kopfzeile – das zeichneten
       // ältere Messungen nicht auf (dort ‚–‘); verglichen wird dann nur, ob ein Textfeld den Fokus hat
       return { kopf: top('#app .nb, #app .pnav'), such: top('#app .searchbox'), fokus, feld: !!a?.matches?.('input, textarea') };
     });

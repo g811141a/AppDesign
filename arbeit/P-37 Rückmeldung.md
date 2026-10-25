@@ -1,4 +1,4 @@
-# P-37 – Rückmeldung und Fall-Liste der Korrektur
+# P-37 – Rückmeldung und Testfall-Liste der Korrektur
 
 **Stand 14.10.2026** · Sitzung ‚Reiselogbuch 0004‘ · AppDesign 4.14.1 · Reiselogbuch 3.13.1
 
@@ -35,7 +35,7 @@ Bilder: `arbeit/bilder/P-37 Quartier quer vorher.png` und `… Muster.png`.
      Home-Bildschirm), dann findet der Speicher nichts.
   3. Der neue Service Worker war auf dem iPad noch nicht fertig eingerichtet, als du offline gegangen bist.
 - **Warum keine Prüfung es fand:** Die Prüfungen laden die App als Datei – ohne Service Worker; ‚offline‘ wurde nie
-  automatisch geprüft (nur Prüfliste am Gerät, F-c).
+  automatisch geprüft (nur Testfälle am Gerät, F-c).
 - **Korrektur (robust gegen alle drei):**
   - Fassung (unveränderlich) **zuerst aus dem Speicher**, die App selbst aus dem Netz mit **höchstens 3 s Wartezeit**, dann
     aus dem Speicher.

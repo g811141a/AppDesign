@@ -1,0 +1,237 @@
+<!doctype html><html lang="de"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="APD-68 Muster">
+<title>APD-68 Muster</title>
+<style>
+/* APD-68 ‚Seitenleiste am iPad quer hereinwischen‘ – Muster zum Ausprobieren (Sitzung Reiselogbuch 0032). Drei Varianten über
+   ?v=heute|a|b (oben im Inhalt umschaltbar). Aufbau wie die App (15.4): iPad-Aufbau ab 700 px Breite und 500 px Höhe, quer fest neben
+   dem Inhalt, hoch darübergelegt (hoch in allen Varianten wie die App heute: Wischen von überall, R-7.5).
+   Heute = quer nur panel-left (sofort), Wischen ändert nichts.
+   A     = quer: Wischen nach rechts von überall im Inhalt holt die ausgeblendete Seitenleiste herein – sie gleitet über den Inhalt
+           und folgt dem Finger; fertig nach halber Breite oder schnellem Wischen, dann rastet sie fest links ein und der Inhalt wird
+           einmal schmaler (oberster Tag bleibt); sonst federt sie zurück. panel-left gleitet genauso.
+   B     = wie A, aber der Inhalt rückt beim Ziehen mit dem Finger nach rechts (Mitschieben) und wird am Ende schmaler.
+   Ausblenden quer nur mit panel-left (Kacheln bleiben frei für Wischaktionen, APD-38/T-10). Vorrang (APD-38/T-35): Rollen und Bilderstreifen.
+   Ist die Geste entschieden, verhindert touchmove das Rollen von Safari (APD-67). Nur hell (0 Nr. 6). */
+:root { --bg: #f2f2f7; --card: #fff; --line: #d1d1d6; --txt: #000; --sub: #6e6e73; --blue: #007aff; --btn: #f9f9f9; --btn-rim: #fff;
+  --float: 0 3px 28px rgba(0,0,0,.16); --sl: env(safe-area-inset-left); --sr: env(safe-area-inset-right); --st: env(safe-area-inset-top);
+  --sb: env(safe-area-inset-bottom); --seite-w: 360px; color-scheme: light; }
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { margin: 0; height: 100%; overflow: hidden; background: var(--bg); color: var(--txt); font: 17px -apple-system, system-ui, sans-serif;
+  -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+#app { position: fixed; inset: 0; overflow: hidden; }
+.seite { position: absolute; inset: 0; display: grid; grid-template-rows: auto 1fr; background: var(--bg); will-change: transform, opacity; }
+.kopf { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 8px; min-height: 56px;
+  padding: calc(6px + var(--st)) max(12px, var(--sr)) 6px max(12px, var(--sl)); }
+.kopf h1 { font-size: 17px; font-weight: 600; margin: 0; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.kopf h1.gross { font-size: 20px; font-weight: 700; text-align: left; }
+.kopf h1 small { display: block; font-size: 13px; font-weight: 400; color: var(--sub); }
+.rund { background: var(--btn); border: .5px solid var(--btn-rim); box-shadow: var(--float); color: var(--blue); }
+.knopf { width: 44px; height: 44px; border-radius: 50%; padding: 0; display: grid; place-items: center; }
+.cap { display: inline-flex; border-radius: 22px; padding: 2px; }
+.cap button { border: 0; background: none; color: var(--blue); font: inherit; font-size: 15px; height: 40px; border-radius: 20px; padding: 0 10px; white-space: nowrap; }
+.cap button.on { background: rgba(0,122,255,.15); font-weight: 600; }
+svg.i { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; display: block; }
+.rolle { overflow-y: auto; min-height: 0; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; touch-action: pan-y; }
+.wrap { max-width: 760px; margin: 0 auto; padding: 0 max(16px, var(--sr)) calc(24px + var(--sb)) max(16px, var(--sl)); }
+.kachel { display: flex; align-items: center; gap: 10px; background: var(--card); border-radius: 14px; padding: 12px 14px; margin: 8px 0; }
+.kachel div { flex: 1; } .kachel b { display: block; } .kachel small { color: var(--sub); font-size: 14px; }
+.kachel .i { color: #c4c4c7; width: 18px; height: 18px; }
+.kachel.sel { background: var(--blue); color: #fff; } .kachel.sel small, .kachel.sel .i { color: #e5f0ff; }
+.hinweis { color: var(--sub); font-size: 15px; line-height: 1.4; padding: 12px 2px 4px; } .hinweis b { color: var(--txt); }
+.box { background: var(--card); border-radius: 12px; margin: 12px 0; padding: 4px 14px; }
+.box h2 { font-size: 17px; margin: 10px 0 6px; }
+.kv { display: flex; gap: 12px; padding: 7px 0; border-top: .5px solid var(--line); font-size: 15px; line-height: 1.35; }
+.kv .k { color: var(--sub); width: 92px; flex: none; font-weight: 600; } .kv .v { flex: 1; }
+.streifen { display: flex; gap: 8px; overflow-x: auto; touch-action: pan-x pan-y; overscroll-behavior-x: contain; padding: 4px 0 10px; }
+.streifen span { flex: none; width: 120px; height: 80px; border-radius: 12px; display: grid; place-items: center; font-size: 14px; color: #123;
+  background: linear-gradient(135deg, #9ecbff, #c8b6ff); }
+#schleier { position: absolute; inset: 0; background: #000; opacity: 0; pointer-events: none; will-change: opacity; touch-action: none; }
+/* Seitenleiste schwebend (15.4); quer fest neben dem Inhalt (.mitseite), beim Hereinwischen darüber; hoch darübergelegt */
+#liste { inset: 10px auto 4px 10px; width: var(--seite-w); border-radius: 22px; border: .5px solid var(--btn-rim); box-shadow: var(--float);
+  overflow: hidden; z-index: 3; }
+#liste .kopf { padding-top: 6px; padding-left: 12px; }
+#liste .wrap { padding-left: 12px; padding-right: 12px; }
+html.quer.mitseite #inhalt { left: calc(var(--seite-w) + 20px); }
+#inhalt { z-index: 1; } #schleier { z-index: 2; }
+html.quer #schleier { display: none; }
+#inhalt .kopf .wahl { justify-self: end; }
+.unsichtbar { visibility: hidden; }
+.klein { display: grid; place-items: center; height: 100%; padding: 24px; text-align: center; color: var(--sub); }
+</style></head><body>
+<div id="app">
+  <section class="seite" id="liste">
+    <div class="kopf"><span></span><h1 class="gross">Reiselogbücher<small>6 Reiselogbücher</small></h1><button class="knopf rund" id="seiteZu" aria-label="Seitenleiste ausblenden"></button></div>
+    <div class="rolle" id="listeRolle"><div class="wrap" id="kacheln"></div></div>
+  </section>
+  <div id="schleier"></div>
+  <section class="seite" id="inhalt">
+    <div class="kopf"><span><button class="knopf rund" id="seitenknopf" aria-label="Seitenleiste"></button></span>
+      <h1 id="titel"></h1><span class="cap rund wahl"></span></div>
+    <div class="rolle" id="inhaltRolle"><div class="wrap" id="tage"></div></div>
+  </section>
+</div>
+<script>
+const ICONS = {
+  'chevron-right': '<path d="m9 18 6-6-6-6"/>',
+  'panel-left': '<rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 3v18"/>'
+};
+const ic = n => `<svg class="i" viewBox="0 0 24 24">${ICONS[n]}</svg>`;
+const $ = id => document.getElementById(id);
+const Q = new URLSearchParams(location.search);
+const V = ['heute', 'a', 'b'].includes(Q.get('v')) ? Q.get('v') : 'a';
+const NAMEN = { heute: 'Heute', a: 'A Darüber', b: 'B Mitschieben' };
+const TEXT = {
+  heute: '<b>Heute:</b> Quer blendet nur panel-left die Seitenleiste aus und ein (sofort). Wischen ändert quer nichts.',
+  a: '<b>Variante A – Darüber, dann daneben:</b> Seitenleiste mit panel-left ausblenden, dann <b>irgendwo im Inhalt nach rechts wischen</b> – sie gleitet über den Inhalt und folgt dem Finger. Nach halber Breite oder schnellem Wischen rastet sie links ein, der Inhalt wird einmal schmaler. Ausblenden nur mit panel-left.',
+  b: '<b>Variante B – Mitschieben:</b> wie A, aber der Inhalt rückt beim Ziehen mit dem Finger nach rechts und wird erst am Ende schmaler. Ausblenden nur mit panel-left.'
+};
+const BEWEGT = V !== 'heute';
+const ruhig = matchMedia('(prefers-reduced-motion: reduce)');
+const REISEN = [['Japan 2026', '02.03.–21.03.2026 · geplant'], ['Island 2025', '10.07.–24.07.2025 · erledigt'], ['Portugal 2025', '03.04.–17.04.2025 · erledigt'],
+  ['Kanada 2024', '01.09.–28.09.2024 · erledigt'], ['Norwegen 2024', '15.06.–29.06.2024 · erledigt'], ['Sizilien 2023', '05.10.–19.10.2023 · erledigt']];
+const ORTE = ['Tokio', 'Hakone', 'Kyoto', 'Nara', 'Osaka', 'Hiroshima', 'Miyajima', 'Kanazawa'];
+const WT = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'];
+let aktuell = 0;
+function kacheln() {
+  $('kacheln').innerHTML = REISEN.map(([t, z], i) =>
+    `<div class="kachel${i === aktuell ? ' sel' : ''}" data-i="${i}" role="button"><div><b>${t}</b><small>${z}</small></div>${ic('chevron-right')}</div>`).join('');
+}
+function tage(r) {
+  let h = `<p class="hinweis">${TEXT[V]}</p><div class="box"><h2>Bilder</h2><div class="streifen" id="streifen">` +
+    Array.from({ length: 10 }, (_, i) => `<span>Bild ${i + 1}</span>`).join('') + '</div></div>';
+  for (let i = 0; i < 20; i++) {
+    const d = new Date(2026, 2, 2 + i);
+    h += `<div class="box tag" data-tag="${i + 1}"><h2>Tag ${i + 1} · ${WT[d.getDay()]} ${String(d.getDate()).padStart(2, '0')}.03.2026</h2>
+      <div class="kv"><span class="k">Ort</span><span class="v">${ORTE[Math.floor(i / 3) % ORTE.length]}</span></div>
+      <div class="kv"><span class="k">Programm</span><span class="v">Spaziergang durch die Altstadt, Mittagessen in einer kleinen Nudelküche, am Abend Onsen und ein langer Blick über die Dächer der Stadt.</span></div></div>`;
+  }
+  $('tage').innerHTML = h; $('titel').textContent = REISEN[r][0]; $('inhaltRolle').scrollTop = 0;
+}
+for (const w of document.querySelectorAll('.wahl')) {
+  w.innerHTML = Object.entries(NAMEN).map(([k, n]) => `<button data-v="${k}" class="${k === V ? 'on' : ''}">${n}</button>`).join('');
+  w.onclick = e => { const b = e.target.closest('button'); if (b) location.search = '?v=' + b.dataset.v; };
+}
+$('seitenknopf').innerHTML = ic('panel-left'); $('seiteZu').innerHTML = ic('panel-left');
+const H = document.documentElement;
+const istPhone = () => innerWidth < 700 || innerHeight < 500;
+const istQuer = () => innerWidth > innerHeight;
+// Ein Zustand für quer und hoch (R-8.1): Seitenleiste sichtbar (1) oder nicht (0); p = 0…1 ist die Stellung beim Ziehen und Gleiten.
+let seite = 1, jetztP = 1, lauf = null;
+const breite = () => $('liste').offsetWidth + 20;
+// Oberster sichtbarer Tag – bleibt, wenn der Inhalt schmaler oder breiter wird (Grundregel wie beim Drehen)
+function oben() {
+  const r = $('inhaltRolle'), top = r.getBoundingClientRect().top;
+  for (const b of r.querySelectorAll('.tag')) { const q = b.getBoundingClientRect(); if (q.bottom > top + 1) return { b, ab: q.top - top }; }
+  return null;
+}
+function halte(o) { if (!o) return; const r = $('inhaltRolle'); r.scrollTop += o.b.getBoundingClientRect().top - r.getBoundingClientRect().top - o.ab; }
+function fest(an) {   // quer: fest links neben dem Inhalt ein/aus – der Inhalt ändert dafür einmal seine Breite
+  if (H.classList.contains('mitseite') === an) return;
+  const o = oben(); H.classList.toggle('mitseite', an); halte(o);
+}
+// nur transform und opacity während der Bewegung (APD-59); die Breite ändert sich nur in fest()
+function setze(p) {
+  const L = $('liste').style, I = $('inhalt').style, S = $('schleier').style, w = breite();
+  $('liste').classList.toggle('unsichtbar', p === 0);
+  if (H.classList.contains('quer')) {
+    S.opacity = 0;
+    if (H.classList.contains('mitseite')) { L.transform = 'none'; L.opacity = 1; I.transform = 'none'; return; }
+    if (ruhig.matches && BEWEGT) { L.transform = 'none'; L.opacity = p; I.transform = 'none'; return; }
+    L.transform = `translate3d(${(p - 1) * w}px,0,0)`; L.opacity = 1;
+    I.transform = V === 'b' ? `translate3d(${p * w}px,0,0)` : 'none';
+    return;
+  }
+  I.transform = 'none';
+  if (ruhig.matches) { L.transform = 'none'; L.opacity = p; } else { L.transform = `translate3d(${(p - 1) * w}px,0,0)`; L.opacity = 1; }
+  S.opacity = 0.25 * p; S.pointerEvents = p > 0 ? 'auto' : 'none';
+}
+// Weich zum Ziel; Dauer nach dem Rest des Weges, 0,15–0,35 s; quer rastet die Seitenleiste am Ende fest ein
+function fahre(von, nach) {
+  cancelAnimationFrame(lauf); lauf = null;
+  const ende = () => { jetztP = nach; if (H.classList.contains('quer') && nach === 1) fest(true); setze(nach); };
+  if ((!BEWEGT && H.classList.contains('quer')) || von === nach) { ende(); return; }
+  const dauer = Math.max(150, 350 * Math.abs(nach - von)), t0 = performance.now();
+  const kurve = t => 1 - Math.pow(1 - t, 3);
+  const schritt = jetzt => {
+    const t = Math.min(1, (jetzt - t0) / dauer);
+    jetztP = von + (nach - von) * kurve(t); setze(jetztP);
+    if (t < 1) lauf = requestAnimationFrame(schritt); else { lauf = null; ende(); }
+  };
+  lauf = requestAnimationFrame(schritt);
+}
+function zuSeite(z) {
+  if (z === seite) return;
+  seite = z;
+  if (H.classList.contains('quer') && !z) { fest(false); setze(jetztP); }   // ausblenden: erst lösen, dann gleiten
+  fahre(jetztP, z);
+}
+$('kacheln').addEventListener('click', e => {
+  if (unterdruecke) return; const k = e.target.closest('.kachel'); if (!k) return;
+  aktuell = +k.dataset.i; kacheln(); tage(aktuell);
+  if (!H.classList.contains('quer')) zuSeite(0);
+});
+$('seitenknopf').onclick = () => zuSeite(seite ? 0 : 1);
+$('seiteZu').onclick = () => zuSeite(0);
+$('schleier').addEventListener('click', () => { if (!unterdruecke) zuSeite(0); });
+function aufbau() {
+  if (istPhone()) { document.body.innerHTML = '<p class="klein">Das Muster APD-68 ist für das iPad – bitte am iPad öffnen.</p>'; return; }
+  const quer = istQuer();
+  if (H.classList.contains('quer') === quer && H.classList.contains('pad')) return;
+  cancelAnimationFrame(lauf); lauf = null; g = null;   // Drehen während des Ziehens bricht es ab (15.4)
+  H.classList.add('pad'); H.classList.toggle('quer', quer);
+  jetztP = seite; fest(quer && !!seite); setze(jetztP);
+}
+addEventListener('resize', aufbau);
+// Gesten mit Vorrang (APD-38/T-35): eine Stelle entscheidet nach 10 px – deutlich waagerecht (mehr als 1,2 × senkrecht) in der richtigen
+// Richtung → Geste, sonst rollt der Browser (touch-action: pan-y); der Bilderstreifen (pan-x) rollt immer selbst.
+let g = null, unterdruecke = false;
+function kandidat(e) {
+  if (e.button > 0 || lauf || e.target.closest('.streifen, .cap, button')) return null;
+  const quer = H.classList.contains('quer');
+  if (quer && !BEWEGT) return null;
+  if (!seite && e.target.closest('#inhalt')) return { richtung: 1, von: 0, nach: 1 };
+  if (seite && !quer && e.target.closest('#liste, #schleier')) return { richtung: -1, von: 1, nach: 0 };
+  return null;   // quer: Ausblenden nur mit panel-left
+}
+addEventListener('pointerdown', e => {
+  if (!e.isPrimary) return;
+  const k = kandidat(e);
+  g = k && { ...k, x0: e.clientX, y0: e.clientY, aktiv: false, id: e.pointerId, spur: [[e.timeStamp, e.clientX]] };
+}, true);
+addEventListener('pointermove', e => {
+  if (!g || e.pointerId !== g.id) return;
+  const dx = e.clientX - g.x0, dy = e.clientY - g.y0;
+  if (!g.aktiv) {
+    if (Math.abs(dx) < 10 && Math.abs(dy) < 10) return;
+    if (Math.abs(dx) > Math.abs(dy) * 1.2 && Math.sign(dx) === g.richtung) {
+      g.aktiv = true;
+      try { e.target.setPointerCapture(e.pointerId); } catch {}
+    } else { g = null; return; }
+  }
+  e.preventDefault();
+  g.spur.push([e.timeStamp, e.clientX]); if (g.spur.length > 6) g.spur.shift();
+  jetztP = Math.max(0, Math.min(1, g.von + (g.nach - g.von) * Math.abs(dx) / breite())); setze(jetztP);
+}, { capture: true, passive: false });
+// Safari bricht sonst ab etwa 10 px senkrechter Abweichung ab und rollt (pointercancel, Messung P-65) – ist die Geste entschieden, hält touchmove den Finger
+addEventListener('touchmove', e => { if (g?.aktiv && e.cancelable) e.preventDefault(); }, { capture: true, passive: false });
+function loslassen(e, abbruch) {
+  if (!g || e.pointerId !== g.id) return;
+  const z = g; g = null;
+  if (!z.aktiv) return;
+  unterdruecke = true; setTimeout(() => { unterdruecke = false; }, 0);
+  const spur = z.spur.filter(([t]) => t >= e.timeStamp - 100);   // Tempo aus den letzten 100 ms
+  const tempo = spur.length > 1 && spur.at(-1)[0] > spur[0][0] ? (spur.at(-1)[1] - spur[0][1]) / (spur.at(-1)[0] - spur[0][0]) * z.richtung : 0;
+  const weg = Math.abs(jetztP - z.von);
+  const ziel = !abbruch && (weg > 0.5 || (tempo > 0.3 && weg > 0.05)) ? z.nach : z.von;
+  seite = ziel; fahre(jetztP, ziel);
+}
+addEventListener('pointerup', e => loslassen(e, false), true);
+addEventListener('pointercancel', e => loslassen(e, true), true);
+// Start: erster Eintrag geöffnet, Seitenleiste sichtbar (15.4)
+kacheln(); tage(0);
+aufbau();
+</script>
+</body></html>

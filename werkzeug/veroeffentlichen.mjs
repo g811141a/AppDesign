@@ -1,8 +1,8 @@
-// AppDesign 4.14.1 · Veröffentlichungs-Skript (A-05 Version B, Fall-Liste Teil E; Zusammenarbeit allgemein 0 Nr. 9 und 10).
-// Zwei Schritte, damit Claude dazwischen die Texte (CHANGELOG, Prüfliste, Backlog) schreibt:
+// AppDesign 4.14.1 · Veröffentlichungs-Skript (APD-5 Version B, Testfall-Liste Teil E; Zusammenarbeit allgemein 0 Nr. 9 und 10).
+// Zwei Schritte, damit Claude dazwischen die Texte (CHANGELOG, Testfälle, Backlog) schreibt:
 //   node werkzeug/veroeffentlichen.mjs vorbereiten --ad 4.14.0 --app reiselogbuch=3.13.0
-//        erhöht alle Versionsnummern (AppDesign und App) und legt die feste Fassung fassung/4.14.0/ an (D-1);
-//        ohne --ad bleibt die App auf ihrer Fassung, ohne --app bleiben alle Apps unverändert (heben nur nach Rückfrage, D-4).
+//        erhöht alle Versionsnummern (AppDesign und App) und legt die feste Fassung fassung/4.14.0/ an (APD-5/D-1);
+//        ohne --ad bleibt die App auf ihrer Fassung, ohne --app bleiben alle Apps unverändert (heben nur nach Rückfrage, APD-5/D-4).
 //   node werkzeug/veroeffentlichen.mjs fassung
 //        legt die Fassung der aktuellen AppDesign-Version neu an (nach Änderungen an v4/ oder tests/, nur vor dem Veröffentlichen).
 //   node werkzeug/veroeffentlichen.mjs los [--app reiselogbuch] [--nur-app]
@@ -40,7 +40,7 @@ const appFassung = a => lies(a.dir, 'index.html').match(/const AD_NEEDED = '([\d
 const version = text => text.match(/\*\*Version (\d+\.\d+\.\d+)\*\*/)?.[1];
 const online = v => { gitOk(AD, 'fetch', '-q', 'origin', 'main'); return gitOk(AD, 'cat-file', '-e', `origin/main:fassung/${v}/ui.js`) !== null; };
 
-// Änderungen erst sammeln, dann alle zusammen schreiben – bei einem Fehler bleibt alles unverändert (E-2).
+// Änderungen erst sammeln, dann alle zusammen schreiben – bei einem Fehler bleibt alles unverändert (APD-5/E-2).
 function aenderungen() {
   const neu = new Map();
   return {
@@ -71,7 +71,7 @@ function legeFassungAn() {
   console.log(`✓ Fassung fassung/${v}/ angelegt (${Object.keys(fassungQuellen(AD)).length} Dateien) und fassung/PRUEFSUMMEN geschrieben`);
 }
 
-// D-4: Apps auf älteren Fassungen nennen, nichts heben.
+// APD-5/D-4: Apps auf älteren Fassungen nennen, nichts heben.
 function aeltereFassungen(neueste) {
   for (const a of APPS) if (existsSync(new URL('index.html', a.dir))) {
     const f = appFassung(a);
@@ -107,14 +107,14 @@ function vorbereiten() {
     ch.ersetze(a.dir, 'index.html', [[/const APP_VERSION = '[\d.]+';/, `const APP_VERSION = '${a.Y}';`], [/const APP_BUILT = '[^']*';/, `const APP_BUILT = '${jetzt()}';`],
       [/const AD_NEEDED = '[\d.]+';/, `const AD_NEEDED = '${F}';`], [ref, `../AppDesign/fassung/${F}/$1$2`, 2]]);
     ch.ersetze(a.dir, 'sw.js', [[new RegExp(`const CACHE = '${a.cache}-[\\d.]+';`), `const CACHE = '${a.cache}-${a.Y}';`], [ref, `../AppDesign/fassung/${F}/$1$2`, 2]]);
-    // Die App wird mit den Prüfungen ihrer Fassung geprüft (D-1).
+    // Die App wird mit den Prüfungen ihrer Fassung geprüft (APD-5/D-1).
     for (const f of execFileSync('git', ['-C', pfad(a.dir), 'ls-files', 'tests/*.mjs'], { encoding: 'utf8' }).split('\n').filter(Boolean)) {
       const t = lies(a.dir, f), r = /((?:from|import\()\s*)'\.\.\/\.\.\/AppDesign\/(?:tests|fassung\/[\d.]+\/tests)\//g;
       if (r.test(t)) ch.ersetze(a.dir, f, [[r, `$1'../../AppDesign/fassung/${F}/tests/`, 2]]);
     }
     const row = (name, v) => [new RegExp(`^(\\| ${name} \\| )[\\d.]+( \\|)`, 'm'), `$1${v}$2`];
     ch.ersetze(a.dir, 'README.md', [row(T, a.Y), row('AppDesign', F), row('Designrichtlinie allgemein', RA), row(`Designrichtlinie ${T}`, a.Y), row('Zusammenarbeit allgemein', zus),
-      // D-6 (seit 4.14.1): Richtlinien und Bausteine aus dem Ordner der benutzten Fassung auf main
+      // APD-5/D-6 (seit 4.14.1): Richtlinien und Bausteine aus dem Ordner der benutzten Fassung auf main
       [/(github\.com\/g811141a\/AppDesign\/blob\/)(?:main|v[\d.]+)\//g, '$1main/', 2],
       [/(AppDesign\/blob\/main\/)(?:v4\/|fassung\/[\d.]+\/)?(ui\.js|design\.css|README%20-%20(?:Designrichtlinie|Zusammenarbeit)%20allgemein\.md)\)/g, `$1fassung/${F}/$2)`, 2],
       [/\[(?:v4|fassung\/[\d.]+)\/(ui\.js|design\.css)\]/g, `[fassung/${F}/$1]`, 2]]);
@@ -128,7 +128,7 @@ function vorbereiten() {
   console.log(`✓ Versionen erhöht${X ? ` – AppDesign ${altX} → ${X}` : ''}${apps.map(a => ` – ${a.titel} → ${a.Y} (Fassung ${X || appFassung(a)})`).join('')}\n  ${geschrieben.length} Dateien geändert`);
   if (X) legeFassungAn();
   aeltereFassungen(X || altX);
-  console.log('Weiter: CHANGELOG, Prüfliste (/0), Backlog und Richtlinien-Versionsgeschichte schreiben, committen, dann ‚los‘.');
+  console.log('Weiter: CHANGELOG, Testfälle (/0), Backlog und Richtlinien-Versionsgeschichte schreiben, committen, dann ‚los‘.');
 }
 
 async function mitWiederholung(name, fn) {
@@ -140,7 +140,7 @@ async function mitWiederholung(name, fn) {
   }
 }
 
-// E-6: Pages-Lauf über die GitHub-Liste der Actions für genau diesen Commit (github.io ist aus der Cloud gesperrt, E-9).
+// APD-5/E-6: Pages-Lauf über die GitHub-Liste der Actions für genau diesen Commit (github.io ist aus der Cloud gesperrt, APD-5/E-9).
 async function warteAufPages(dir, sha, name) {
   // Nachbildung für den Selbsttest: VEROEFF_PAGES=success | failure | haengt, mehrere mit Komma (je Repo der Reihe nach).
   const scheine = process.env.VEROEFF_PAGES?.split(','), schein = scheine && (scheine[warteAufPages.n = (warteAufPages.n ?? -1) + 1] ?? scheine.at(-1));
@@ -193,7 +193,7 @@ async function los() {
   const X = adVersion(), apps = (namen.length ? namen.map(n => APPS.find(a => a.name === n) || abbruch(`App ‚${n}‘ steht nicht in werkzeug/apps.json`)) :
     // ohne --app: jede App, deren Version neuer ist als auf origin/main (also vorbereitet) – egal auf welchem Zweig sie steht
     APPS.filter(a => existsSync(new URL('index.html', a.dir)) && appVersion(a) !== (gitOk(a.dir, 'show', 'origin/main:index.html') || '').match(/const APP_VERSION = '([\d.]+)'/)?.[1]));
-  // E-3: vor dem Push – Zweig, offene Änderungen, Texte, Fassung
+  // APD-5/E-3: vor dem Push – Zweig, offene Änderungen, Texte, Fassung
   if (!nurApp && online(X)) abbruch(`AppDesign ${X} ist schon veröffentlicht (fassung/${X}/ auf main) – nur die App: los --nur-app`);
   const adBranch = nurApp ? null : pruefeRepo(AD, 'AppDesign', `vorbereitung-${X}`);
   if (nurApp) { if (!online(X)) abbruch(`--nur-app: AppDesign ${X} ist noch nicht veröffentlicht (fassung/${X}/ fehlt auf main)`); }
@@ -205,13 +205,14 @@ async function los() {
   const appBranches = apps.map(a => {
     const Y = appVersion(a), b = pruefeRepo(a.dir, a.titel, `vorbereitung-${Y}`), neu = lies(a.dir, 'CHANGELOG.md').split(/\n## /)[1] || '';
     if (!neu.startsWith(`${Y} `)) abbruch(`${a.titel} CHANGELOG.md: neuester Eintrag ist nicht ${Y}`);
-    if (!/\/0 – [^*]*Version/.test(neu)) abbruch(`${a.titel} CHANGELOG.md: Prüfliste mit /0 ‚Version prüfen‘ fehlt`);
+    if (!/\/0 – [^*]*Version/.test(neu)) abbruch(`${a.titel} CHANGELOG.md: Testfälle mit /0 ‚Version prüfen‘ fehlen`);
+    if (!/Testfälle P-\d+/.test(neu)) abbruch(`${a.titel} CHANGELOG.md: Zeile ‚Testfälle P-n‘ fehlt (APD-78/S-8)`);
     if (!fassungListe(AD).includes(appFassung(a))) abbruch(`${a.titel} braucht die Fassung ${appFassung(a)}, die es in AppDesign nicht gibt`);
     return b;
   });
   if (!apps.length && nurApp) abbruch('--nur-app, aber keine App ist vorbereitet (Version wie auf origin/main)');
   if (!apps.length) console.log(`ℹ Keine App vorbereitet – nur AppDesign ${X} (Apps bleiben auf ihrer Fassung)`);
-  // E-4: alle Tests jeder App – einer rot: nichts veröffentlichen
+  // APD-5/E-4: alle Tests jeder App – einer rot: nichts veröffentlichen
   for (const a of apps) {
     console.log(`\n— Prüfungen ${a.titel} (node tests/alle.mjs) —`);
     const r = spawnSync(process.execPath, ['tests/alle.mjs'], { cwd: pfad(a.dir), stdio: 'inherit' });
@@ -234,14 +235,14 @@ async function los() {
         if (!h.includes(`const APP_VERSION = '${Y}'`) || !h.includes(`const AD_NEEDED = '${F}'`)) abbruch(`${a.titel}: main enthält nicht ${Y} mit Fassung ${F}`);
       }));
     } catch (e) {
-      // E-8: dank fester Fassung kein Schaden – die App lädt weiter ihre alte Fassung.
+      // APD-5/E-8: dank fester Fassung kein Schaden – die App lädt weiter ihre alte Fassung.
       if (e instanceof Abbruch && !nurApp) e.message += `\n  AppDesign ${X} ist online; die App lädt weiter ihre bisherige Fassung. Nach der Behebung: node werkzeug/veroeffentlichen.mjs los --nur-app --app ${a.name}`;
       throw e;
     }
   }
   console.log('\n✓ Fertig – alle Pages-Läufe ‚success‘, main enthält die neuen Versionen:');
   for (const r of ergebnis) console.log(`  ${r.name}: Commit ${r.sha.slice(0, 7)}, Pages ${r.pages} s, zusammen ${r.dauer} s`);
-  console.log('  Die echte Seite (github.io) prüft der Nutzer mit /0 ‚Version prüfen‘ (E-9).');
+  console.log('  Die echte Seite (github.io) prüft der Nutzer mit /0 ‚Version prüfen‘ (APD-5/E-9).');
   aeltereFassungen(X);
 }
 

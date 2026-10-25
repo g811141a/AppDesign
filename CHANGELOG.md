@@ -3,13 +3,51 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.36.0 – 25.10.2026
+
+AppDesign 4.36.0 · Designrichtlinie allgemein 4.36.0 · Zusammenarbeit allgemein 2.20.0 · geprüft mit Reiselogbuch 3.34.0
+
+**APD-78 Nummernschema und APD-79 Uhrzeitzeile** (dein Ja vom 25.10.2026, Sitzung 0045; Entscheidungen D1–D9 und Klärpunkte K1–K9
+in `arbeit/APD-78 Recherche Präfixe.md` und `arbeit/APD-78 Testfall-Liste.md`). Usertest im Reiselogbuch: P-74.
+
+- **Neues Schema, rückwirkend (D1–D9):** Themen heißen **APD-n** (AppDesign, bisher A-) und **RLB-n** (Reiselogbuch, bisher T-),
+  ReiseLogBuch-Import bekommt **RLI-n**; ein Thema behält seine Nummer bis ‚Erledigt‘ – die Erledigt-Tabellen haben keine
+  eigene Nummer mehr (Spalte ‚Nr.‘ = Thema, Usertest oder Version, K1). Import-Regeln heißen **I-n**. Keine führenden
+  Nullen (APD-5, K6). R- und G- bleiben (D8).
+- **Lokale Nummern mit Elternnummer (D7, APD-78/U-5):** Testfälle (automatisch) und Entscheidungen einer Arbeitsdatei stehen außerhalb
+  ihrer Datei immer mit der Nummer des Themas davor – APD-63/X-2, APD-5/D-6, APD-36/S-9 (Safari-Befunde in 13), APD-38/T-21
+  (Framework-Themen). Lokale Buchstaben, die überall gelten, sind neu (K2): K → H (APD-2, APD-20, APD-33, APD-67), G → Y (APD-2,
+  APD-26/31/34, APD-36), P → L (APD-39, RLB-5 Testfall-Liste), I → J (RLB-5 Brainstorming). Frühe Nummern aus der Zeit vor den
+  Themen haben die Version als Elternnummer (RLB 2.1.3/F-8, APD 4.0.0/S-1).
+- **Begriffe (D6, D7, K5):** Usertest P-n, Testfall (User) P-n/m, Testfälle P-n (die Liste im CHANGELOG), Testfall-Liste und
+  Testfall (automatisch) – in allen Regeltexten, Backlogs, CHANGELOGs, im Verlauf und im Code.
+- **Zusammenarbeit 2.20.0:** 2.4 ‚Nummern und Präfixe‘ mit der Tabelle aller Präfixe (D8); **0 Nr. 26 und 2.2 neu: Uhrzeitzeile**
+  `<sub>Aktuelle Uhrzeit: hh:mm (Zeitabstand zu vorher: hh:mm)</sub>` als erste Zeile jeder Ausgabe (APD-79). Designrichtlinie 17
+  verweist für alle Präfixe auf 2.4.
+- **`ZUORDNUNG.md` (neu):** Tabelle alt → neu für die festen Fassungen 4.14.0–4.35.0 und die Git-Commits, die unverändert bleiben
+  (D3) – Regeln, Erledigt AppDesign (91 Zeilen) und Reiselogbuch (135), alle 182 Treffer der alten Reiselogbuch-Nummern bis 66
+  einzeln entschieden (K3, APD-78/U-4),
+  neue Buchstaben, Einzelstellen, frühe Nummern, nie vergebene Nummern (APD-8, RLB-22, RLB-61).
+- **`werkzeug/umbenennen.mjs` (neu):** stellt alle lebenden Dateien der drei Repos nach `ZUORDNUNG.md` um und benennt die Dateien in
+  `arbeit/` (z. B. ‚APD-74 Testfall-Liste.md‘, K4); ohne `--schreiben` nur Bericht. APD-78/U-1 zweiter Lauf ändert nichts, U-2
+  `fassung/` und `.git/` unberührt, APD-78/U-3 im Code nur Kommentare und Meldungstexte (ein Regex in `ablauf-tastatur-still.mjs` des
+  Reiselogbuchs von Hand nachgeführt), APD-78/U-4 kein Treffer geraten. Alte Pages-Links auf Muster in `arbeit/` gehen ins Leere (K4).
+- **Prüfung `checkSchema` (neu, `doku.mjs`, über `checkCollab`, D5):** APD-78/S-1 unbekanntes Präfix, S-2 alte Nummer, S-3 lokaler
+  Buchstabe, der überall gilt, APD-78/S-4 führende Null, S-5 `ZUORDNUNG.md`, S-6 Themennummern (doppelt, Lücke, nie vergeben), S-7 alte
+  Begriffe, APD-78/S-8 ‚Testfälle P-n‘ im CHANGELOG (`checkDocs`, `veroeffentlichen.mjs`), S-9 Verweise in `arbeit/`, S-10 Präfix-Tabelle.
+  Gegenprobe `node tests/alle.mjs --gegenprobe schema` (je Fall ein Lauf mit genau dieser Verletzung, alle 10 rot mit ihrer
+  Meldung). Gefunden und behoben: zwei tote Verweise (Framework-Vergleich als `.md` statt `.html`, gelöschte Messseite APD-18),
+  lokale P- in der Testfall-Liste RLB-5.
+- **Ausnahme:** `arbeit/APD-78 Recherche Präfixe.md` und `arbeit/APD-78 Testfall-Liste.md` bleiben als Protokoll der Entscheidung
+  im alten Schema (oben gekennzeichnet) und sind wie `ZUORDNUNG.md` von der Schema-Prüfung ausgenommen.
+
 ## 4.35.0 – 25.10.2026
 
 AppDesign 4.35.0 · Designrichtlinie allgemein 4.35.0 · Zusammenarbeit allgemein 2.19.0 · geprüft mit Reiselogbuch 3.33.0
 
-**A-43 Teil 1 Barrierefreiheit – VoiceOver, Hardware-Tastatur, ‚Kontrast erhöhen‘, ‚Bewegung reduzieren‘, Fokus-Rahmen** (dein Ja
-vom 24.10.2026; Fall-Liste `arbeit/A-43 Teil 1 Fall-Liste.md` V1–V14, K1–K9, H1–H5, M1–M7, P1–P2; K9 Fokus-Rahmen in Textfeldern
-Variante a vom 24.10.2026). Prüfpunkt im Reiselogbuch: P-73.
+**APD-43 Teil 1 Barrierefreiheit – VoiceOver, Hardware-Tastatur, ‚Kontrast erhöhen‘, ‚Bewegung reduzieren‘, Fokus-Rahmen** (dein Ja
+vom 24.10.2026; Testfall-Liste `arbeit/APD-43 Teil 1 Testfall-Liste.md` V1–V14, K1–K9, H1–H5, M1–M7, P1–P2; K9 Fokus-Rahmen in Textfeldern
+Variante a vom 24.10.2026). Usertest im Reiselogbuch: P-73.
 
 - **Fokus-Rahmen (R-3.4, K6, K9):** Textfelder haben nie mehr einen Rahmen – auch nicht Safaris blaue Umrandung (`outline: auto
   5px`); der Cursor zeigt den Fokus (wie Apple ohne ‚Tastatursteuerung‘). Gemessen: `:focus-visible` trifft bei Textfeldern auch
@@ -25,7 +63,7 @@ Variante a vom 24.10.2026). Prüfpunkt im Reiselogbuch: P-73.
   (ohne `role="status"`); ‚Automatisch gespeichert‘ nie.
 - **Sperre (R-1.4 erweitert, V7, V8):** bei offenem Menü und offener Sprechblase ist alles daneben `inert` (Seite bzw. übriger
   Fensterinhalt), nach jedem Schließen wieder frei. Folge: ein Textfeld im Fenster gibt beim Öffnen einer Sprechblase bzw. eines
-  Menüs den Fokus ab – die Tastatur geht zu (Prüfliste).
+  Menüs den Fokus ab – die Tastatur geht zu (Testfälle).
 - **Hardware-Tastatur (neu R-4.7, K1–K8):** Esc und ⌘. schließen das oberste Menü (Untermenü zuerst), die Sprechblase (= Abbrechen,
   das Fenster bleibt) und das Fenster (wie x); ↑ ↓ Tab mit Umlauf, Pos1/Ende, → öffnet und ← schließt das Untermenü, Eingabe bzw.
   Leertaste wählt; in der Sprechblase löst Eingabe den blauen Weg bzw. den Weg zurück – **nie Rot**; Tab bleibt im Fenster (Umlauf);
@@ -50,8 +88,8 @@ Variante a vom 24.10.2026). Prüfpunkt im Reiselogbuch: P-73.
 
 AppDesign 4.34.0 · Designrichtlinie allgemein 4.34.0 · Zusammenarbeit allgemein 2.19.0 · geprüft mit Reiselogbuch 3.32.0
 
-**A-74 Backup-Kachel nur, solange heute noch kein Backup erstellt wurde** (dein Ja vom 24.10.2026; Muster `arbeit/A-74 Muster.html`
-Variante A, Fall-Liste `arbeit/A-74 Fall-Liste.md` B1–B28). Prüfpunkt im Reiselogbuch: P-72.
+**APD-74 Backup-Kachel nur, solange heute noch kein Backup erstellt wurde** (dein Ja vom 24.10.2026; Muster `arbeit/APD-74 Muster.html`
+Variante A, Testfall-Liste `arbeit/APD-74 Testfall-Liste.md` B1–B28). Usertest im Reiselogbuch: P-72.
 
 - **Regel (R-9.1, 15.19, 15.4):** die gelbe Backup-Kachel steht nur, solange heute auf diesem Gerät noch kein Backup erstellt wurde
   und es Einträge gibt; danach verschwindet sie ohne Bewegung (der weiße Zustand `.ok` entfällt), ‚Letztes Backup erstellt am …‘
@@ -68,7 +106,7 @@ Variante A, Fall-Liste `arbeit/A-74 Fall-Liste.md` B1–B28). Prüfpunkt im Reis
 - **Prüfungen:** `backup.mjs` (Kachel nach dem Backup weg, Menü mit heutigem Datum, Kachel genau dann, wenn fällig und Einträge da,
   Offline-Zeile immer im Fuß, `onNeuerTag`), `hig.mjs` R-9.1 neu (Kachel nicht bei Backup heute, nicht bei leerer Liste; Fuß da;
   offline Zeile sichtbar), `kontextmenue.mjs` (ohne Kachel über der Offline-Zeile; nur sichtbare Einträge – ohne Kachel nahm sie
-  sonst auch Einträge unter dem Bildrand), `offline.mjs` F-16 neu (ohne Kachel: Zeile allein, letzter Eintrag darüber). Im
+  sonst auch Einträge unter dem Bildrand), `offline.mjs` APD-74/F-16 neu (ohne Kachel: Zeile allein, letzter Eintrag darüber). Im
   Reiselogbuch neu `ablauf-backup-kachel.mjs` mit gestellter Uhr (Mitternacht, Rückkehr am nächsten Tag) – gegen 3.31.0 rot, ohne
   den Mitternachts-Haken rot, jetzt grün.
 - **Designrichtlinie allgemein 4.34.0:** R-9.1, R-1.5, R-4.2, 10 (Backup einmal am Tag), 15.4, 15.19, 15.20.
@@ -77,10 +115,10 @@ Variante A, Fall-Liste `arbeit/A-74 Fall-Liste.md` B1–B28). Prüfpunkt im Reis
 
 AppDesign 4.33.0 · Designrichtlinie allgemein 4.33.0 · Zusammenarbeit allgemein 2.19.0 · geprüft mit Reiselogbuch 3.31.0
 
-**A-75 Pfeile an der Auswahl-Kapsel, A-76 Ziehen ist kein langes Drücken** (dein Ja vom 24.10.2026; Muster `arbeit/A-75 Muster.html`
-Variante ‚48‘, Fall-Listen `arbeit/A-75 Fall-Liste.md` K1–K16 und `arbeit/A-76 Fall-Liste.md` L1–L9). Prüfpunkt im Reiselogbuch: P-71.
+**APD-75 Pfeile an der Auswahl-Kapsel, APD-76 Ziehen ist kein langes Drücken** (dein Ja vom 24.10.2026; Muster `arbeit/APD-75 Muster.html`
+Variante ‚48‘, Testfall-Listen `arbeit/APD-75 Testfall-Liste.md` K1–K16 und `arbeit/APD-76 Testfall-Liste.md` L1–L9). Usertest im Reiselogbuch: P-71.
 
-- **A-75 – Pfeile (R-5.4, 15.12):** wo die Auswahl-Kapsel weitergeht, bleibt der Verlauf 48 px lang, die äußeren 28 px sind ganz
+- **APD-75 – Pfeile (R-5.4, 15.12):** wo die Auswahl-Kapsel weitergeht, bleibt der Verlauf 48 px lang, die äußeren 28 px sind ganz
   frei, darin steht ein kleiner Pfeil `chevron-left` bzw. `chevron-right` (14 px, `--muted`, 9 px vom Rand). Er ist nur Anzeige
   (`pointer-events: none`, `aria-hidden`) – Antippen trifft den Eintrag darunter wie bisher. Ein Pfeil steht nur, solange es auf
   seiner Seite weitergeht (mehr als 2 px, wie der Verlauf), und blendet am Ende in 0,2 s aus; ‚Bewegung reduzieren‘: ohne
@@ -89,7 +127,7 @@ Variante ‚48‘, Fall-Listen `arbeit/A-75 Fall-Liste.md` K1–K16 und `arbeit/
   (Klasse `an`) und stellt beides jetzt auch nach Drehen und jeder Größenänderung neu (`ResizeObserver` – vorher nur beim Rollen
   und Aufbauen); eine Kapsel wird nur einmal eingerichtet, auch wenn `mountCap` sie zweimal sieht. Maske mit `--fade` (48 px) in
   design.css. Die App braucht nichts zu ändern.
-- **A-76 – langes Drücken (neu R-3.5, 8, 13, 15.12):** `onLongPress` bricht jetzt ab, wenn der Finger (oder die Maus) mehr als
+- **APD-76 – langes Drücken (neu R-3.5, 8, 13, 15.12):** `onLongPress` bricht jetzt ab, wenn der Finger (oder die Maus) mehr als
   10 px wandert (`LANG_WEG`) oder eine Fläche rollt, die die Schaltfläche enthält (`scroll` in der Einfangphase, nur solange der
   Zeitgeber läuft). **Ursache:** beim Ziehen der Smiley-Leiste meldet Safari kein `pointercancel` (wie beim Rollen des Inhalts,
   13) – der Zeitgeber lief weiter und fragte nach 0,6 s ‚… aus der Schnellauswahl entfernen?‘. Gilt für alle Nutzer von
@@ -102,7 +140,7 @@ Variante ‚48‘, Fall-Listen `arbeit/A-75 Fall-Liste.md` K1–K16 und `arbeit/
   Drehen und schmaleres Fenster stellen sie neu, Rollstand bleibt. `hig.mjs` R-5.4 erweitert: in jeder Ansicht jeder App Pfeil
   genau dann, wenn es auf seiner Seite weitergeht, Größe, Lage, Farbe `--muted`, nur Anzeige; passt alles, kein Verlauf. Gegenprobe:
   Pfeil › immer an → `hig.mjs` und `checkKapsel` rot (K3, K5, K6).
-- **Warum die Prüfung A-76 übersah:** langes Drücken wurde nur still gehalten (Kontextmenü der Kacheln) – ein Ziehen auf einer
+- **Warum die Prüfung APD-76 übersah:** langes Drücken wurde nur still gehalten (Kontextmenü der Kacheln) – ein Ziehen auf einer
   Schaltfläche mit langem Drücken prüfte keine Prüfung. Dieselbe Lücke anderswo: `onLongPress` ist der einzige Zeitgeber für langes
   Drücken; das Kontextmenü der Kacheln bricht jetzt ebenso beim Ziehen und Rollen der Liste ab (`kontextmenue-regeln` grün).
 - **Designrichtlinie allgemein 4.33.0:** R-3.5 neu, R-5.4, 8, 13 (Wischgesten), 15.12.
@@ -111,8 +149,8 @@ Variante ‚48‘, Fall-Listen `arbeit/A-75 Fall-Liste.md` K1–K16 und `arbeit/
 
 AppDesign 4.32.2 · Designrichtlinie allgemein 4.32.2 · Zusammenarbeit allgemein 2.19.0 · geprüft mit Reiselogbuch 3.30.2
 
-**Korrektur A-73 – Tastatur beim Zug erst nach oben, Fokusring quer** (dein Ja vom 24.10.2026, P-69/3, Messung
-`tests/messungen/2026-10-24 iPhone hoch Blatt Zug am Rand.txt`). Prüfpunkt im Reiselogbuch: P-70.
+**Korrektur APD-73 – Tastatur beim Zug erst nach oben, Fokusring quer** (dein Ja vom 24.10.2026, P-69/3, Messung
+`tests/messungen/2026-10-24 iPhone hoch Blatt Zug am Rand.txt`). Usertest im Reiselogbuch: P-70.
 
 - **Ursache 1 (Tastatur):** am Rand neben dem Feld ging der Finger zuerst nach oben (gemessen 244 → 76 → 302 und 219 → 205 → 400);
   ui.js entschied nach 8 px ‚nach oben‘ und gab den Zug auf – der spätere Zug nach unten zählte nicht. Safari schickt die
@@ -128,11 +166,11 @@ AppDesign 4.32.2 · Designrichtlinie allgemein 4.32.2 · Zusammenarbeit allgemei
   nichts zu ändern.
 - **Prüfungen:** `checkSheet` B19 zusätzlich ‚erst nach oben (20 px), dann nach unten (200 px)‘, beide Züge jetzt als Berührung
   (Zeigerereignisse in der Seite, je 16 ms); B10 prüft den Abstand über dem Feld mit Fokus (≥ `RING`, neu in `pruefe.mjs`).
-  `checkFieldVisible` F-1a und `checkTastaturStill` erwarten im engen Fall den Abstand `RING` statt ‚direkt am Rand‘. **Rot gegen
+  `checkFieldVisible` APD-35/F-1 und `checkTastaturStill` erwarten im engen Fall den Abstand `RING` statt ‚direkt am Rand‘. **Rot gegen
   4.32.1** (15 Meldungen – B19 ‚erst nach oben‘ in Erfassen und Fazit hoch, dunkel und mit ‚Bewegung reduzieren‘ sowie in allen vier
   Fenstern quer; Abstand 0 px bzw. 16–18 px statt 25 px), grün mit der Behebung (Chromium und WebKit).
 - **Warum die Prüfung es übersah:** B19 zog mit der Maus – in Chromium nimmt schon das Drücken auf den Inhalt dem Feld den Fokus,
-  der Fall war damit immer grün, und gezogen wurde nur gerade nach unten; den Abstand über dem Feld maß keine Prüfung (F-1a erwartete
+  der Fall war damit immer grün, und gezogen wurde nur gerade nach unten; den Abstand über dem Feld maß keine Prüfung (APD-35/F-1 erwartete
   sogar ‚direkt am Rand‘). Dieselbe Lücke anderswo: nur das Blatt schließt die Tastatur durch Ziehen; das Zurückwischen ist waagerecht
   und schließt sie beim Beginn.
 - **Designrichtlinie allgemein 4.32.2:** R-4.5, R-4.6, 13 (Tastatur, Blatt ziehen), 15.17.
@@ -141,8 +179,8 @@ AppDesign 4.32.2 · Designrichtlinie allgemein 4.32.2 · Zusammenarbeit allgemei
 
 AppDesign 4.32.1 · Designrichtlinie allgemein 4.32.1 · Zusammenarbeit allgemein 2.19.0 · geprüft mit Reiselogbuch 3.30.1
 
-**Korrektur A-71 – Ziehen auf einem Feld bei offener Tastatur** (dein Ja vom 24.10.2026, P-68/2.3, Fall-Liste
-`arbeit/A-61 Teil 2 Fall-Liste.md` B10, B19). Prüfpunkt im Reiselogbuch: P-69.
+**Korrektur APD-71 – Ziehen auf einem Feld bei offener Tastatur** (dein Ja vom 24.10.2026, P-68/2.3, Testfall-Liste
+`arbeit/APD-61 Teil 2 Testfall-Liste.md` B10, B19). Usertest im Reiselogbuch: P-69.
 
 - **Ursache:** bei offener Tastatur rollt R-4.5 das Feld in die obere Hälfte – der Inhalt steht dann nicht mehr ganz oben, und ein
   Zug nach unten zählte als Zug im gerollten Inhalt: er schloss nur die Tastatur, erst der zweite Zug zog das Blatt und fragte.
@@ -165,10 +203,10 @@ AppDesign 4.32.1 · Designrichtlinie allgemein 4.32.1 · Zusammenarbeit allgemei
 
 AppDesign 4.32.0 · Designrichtlinie allgemein 4.32.0 · Zusammenarbeit allgemein 2.19.0 · geprüft mit Reiselogbuch 3.30.0
 
-**Sammelversion A-61 Teil 2 und A-69** (dein Ja vom 23.10.2026, allgemeine Regeln). Prüfpunkt im Reiselogbuch: P-68.
+**Sammelversion APD-61 Teil 2 und APD-69** (dein Ja vom 23.10.2026, allgemeine Regeln). Usertest im Reiselogbuch: P-68.
 
-- **A-61 Teil 2 – Blatt auf dem iPhone (neu R-4.6; 7, 13, 15.17; Muster `arbeit/A-61 Teil 2 Muster.html` Variante A, Fall-Liste
-  `arbeit/A-61 Teil 2 Fall-Liste.md` B1–B24):** im iPhone-Aufbau ist jedes Fenster außer Meldungen ein Blatt ‚nur groß‘ wie
+- **APD-61 Teil 2 – Blatt auf dem iPhone (neu R-4.6; 7, 13, 15.17; Muster `arbeit/APD-61 Teil 2 Muster.html` Variante A, Testfall-Liste
+  `arbeit/APD-61 Teil 2 Testfall-Liste.md` B1–B24):** im iPhone-Aufbau ist jedes Fenster außer Meldungen ein Blatt ‚nur groß‘ wie
   ‚Neuer Termin‘ – es gleitet von unten bis 10 px unter die Statusleiste (quer 8 px), oben runde Ecken; die Seite dahinter weicht
   verkleinert vor Schwarz zurück und dunkelt ab (quer bleibt sie). Nach unten ziehen folgt dem Finger: am Kopf immer, im Inhalt, wenn
   er ganz oben steht; weit oder schnell nach unten schließt es wie das x, ein Stück federt zurück; waagerecht und im gerollten Inhalt
@@ -178,7 +216,7 @@ AppDesign 4.32.0 · Designrichtlinie allgemein 4.32.0 · Zusammenarbeit allgemei
   Technisch in ui.js (`blattAuf`, `blattOben`, Ziehen mit `touchmove` erst nach der Entscheidung) und design.css; bewegt wird mit
   `translate` und `scale`, damit die Lagen der Navigation (`transform`) unberührt bleiben. `dlg.close()` und das Häkchen schließen
   weiter sofort – hinaus gleitet ein Abbild des Blatts (`.blatt-geist`). Die App braucht nichts zu ändern.
-- **A-69 – R-7.4 erweitert (13):** legt die App statt des nächsten offenen einen aktuellen Eintrag fest (z. B. heute), steht er
+- **APD-69 – R-7.4 erweitert (13):** legt die App statt des nächsten offenen einen aktuellen Eintrag fest (z. B. heute), steht er
   ebenso direkt unter dem Kopf, aber ohne Hervorhebung – hervorgehoben wird nur Offenes, nie Künftiges.
 - **Prüfungen:** neu `checkSheet` (B1–B12, B17, B18, B21, B22, B24; B8–B10 je Fenster mit Eingaben, B23 über `checkListStill`;
   das schnelle Wischen B4 als Zeigerereignisse in einem Zug, damit Last das Tempo nicht verfälscht); `checkDialogHead` wartet, bis
@@ -195,24 +233,24 @@ AppDesign 4.32.0 · Designrichtlinie allgemein 4.32.0 · Zusammenarbeit allgemei
 
 AppDesign 4.31.0 · Designrichtlinie allgemein 4.31.0 · Zusammenarbeit allgemein 2.19.0 · geprüft mit Reiselogbuch 3.29.0
 
-**Sammelversion A-68, A-64, A-65** (dein Ja vom 23.10.2026, allgemeine Regeln). Prüfpunkt im Reiselogbuch: P-67.
+**Sammelversion APD-68, APD-64, APD-65** (dein Ja vom 23.10.2026, allgemeine Regeln). Usertest im Reiselogbuch: P-67.
 
-- **A-68 – Seitenleiste am iPad quer hereinwischen (R-7.5, 15.4; Muster `arbeit/A-68 Muster.html`, Variante B ‚Mitschieben‘,
-  Fall-Liste `arbeit/A-68 Fall-Liste.md`):** ist die Seitenleiste quer ausgeblendet, holt Wischen nach rechts von überall im Inhalt
+- **APD-68 – Seitenleiste am iPad quer hereinwischen (R-7.5, 15.4; Muster `arbeit/APD-68 Muster.html`, Variante B ‚Mitschieben‘,
+  Testfall-Liste `arbeit/APD-68 Testfall-Liste.md`):** ist die Seitenleiste quer ausgeblendet, holt Wischen nach rechts von überall im Inhalt
   sie herein – sie folgt dem Finger und der Inhalt rückt mit; fertig nach halber Breite oder schnellem Wischen, dann rastet sie fest
   links ein und der Inhalt wird schmaler (der oberste Eintrag bleibt), sonst federt sie zurück. panel-left lässt sie quer jetzt
   ebenso gleiten (herein und hinaus). Ausblenden quer nur mit panel-left – nach links wischen ändert nichts, damit die Kacheln für
-  Wischaktionen frei bleiben (T-10). Vorrang, `touchmove` nach der Entscheidung (A-67), Drehen und ‚Bewegung reduzieren‘ wie hoch.
+  Wischaktionen frei bleiben (APD-38/T-10). Vorrang, `touchmove` nach der Entscheidung (APD-67), Drehen und ‚Bewegung reduzieren‘ wie hoch.
   Technisch: neue Gestenart ‚fest‘ in ui.js (`navFest`, `navEinrasten`, `html.nav-fest` hält den Inhalt bis zum Einrasten breit),
   Schnittstelle `seite.fest()` und `seite.neu()`; der Inhalt hat quer `touch-action: pan-y`.
-- **A-65 – Großschreibung zurücknehmen (R-5.2, 8):** ersetzt oder löscht der Nutzer einen einzelnen Großbuchstaben von Hand
+- **APD-65 – Großschreibung zurücknehmen (R-5.2, 8):** ersetzt oder löscht der Nutzer einen einzelnen Großbuchstaben von Hand
   (markieren und überschreiben, Rücktaste), erzwingt die App an dieser Stelle keine Großschreibung mehr – die Tastatur entscheidet,
   wie iOS. Ein ganzes Wort oder Feld löschen zählt nicht.
-- **A-64 – keine doppelten Leerzeichen (R-5.2, 8):** in allen Textfeldern (ein- und mehrzeilig, auch im Suchfeld) wird ein
+- **APD-64 – keine doppelten Leerzeichen (R-5.2, 8):** in allen Textfeldern (ein- und mehrzeilig, auch im Suchfeld) wird ein
   Leerzeichen direkt neben einem Leerzeichen nicht eingefügt; beim Einfügen werden mehrere Leerzeichen oder Tabs zu einem,
   Zeilenumbrüche bleiben; ein einzelnes Leerzeichen am Zeilenanfang bleibt.
-- **Prüfungen:** `checkNavigation` quer neu Q-1 bis Q-12 (statt F-13 ‚quer keine Geste‘), mit Maus und Berührung nach Safari
-  (S-10); `checkCapital` ergänzt (Korrektur von Hand); neu `checkSpaces` (Tippen, Einfügen, Suchfeld). **Rot gegen 4.30.2**
+- **Prüfungen:** `checkNavigation` quer neu APD-68/Q-1 bis Q-12 (statt F-13 ‚quer keine Geste‘), mit Maus und Berührung nach Safari
+  (APD-68/S-10); `checkCapital` ergänzt (Korrektur von Hand); neu `checkSpaces` (Tippen, Einfügen, Suchfeld). **Rot gegen 4.30.2**
   (41 bzw. 6 Meldungen), grün mit dem Bau. `checkSideToggle` wartet auf das Ende der Bewegung; `ziehe` in `checkNavigation` hebt vor
   jedem Zug eine Textmarkierung auf (WebKit begann sonst mit der Maus ein Ziehen-und-Ablegen).
   `checkGriff` wartet bis zu 1 s auf das Einblenden von Schnellroll-Griff und Blase (unter voller Last in WebKit lag die Deckkraft
@@ -223,8 +261,8 @@ AppDesign 4.31.0 · Designrichtlinie allgemein 4.31.0 · Zusammenarbeit allgemei
 
 AppDesign 4.30.2 · Designrichtlinie allgemein 4.30.2 · Zusammenarbeit allgemein 2.18.0 · geprüft mit Reiselogbuch 3.28.2
 
-**Korrektur A-67 – Zurückwischen bricht ab** (dein Ja vom 23.10.2026, Messung P-65, Fall-Liste `arbeit/A-67 Fall-Liste.md` 3,
-K-1 bis K-7). Prüfpunkt im Reiselogbuch: P-66.
+**Korrektur APD-67 – Zurückwischen bricht ab** (dein Ja vom 23.10.2026, Messung P-65, Testfall-Liste `arbeit/APD-67 Testfall-Liste.md` 3,
+APD-67/H-1 bis H-7). Usertest im Reiselogbuch: P-66.
 
 - **Ursache (gemessen):** Safari beginnt auch mit `touch-action: pan-y` zu rollen, sobald der Finger seit dem Aufsetzen 10 px
   senkrecht abweicht – mitten im Zurückwischen – und nimmt der Seite den Finger (`pointercancel`); die Geste federte zurück. 22 von
@@ -233,13 +271,13 @@ K-1 bis K-7). Prüfpunkt im Reiselogbuch: P-66.
   auf. Vorher wird nichts verhindert: senkrecht rollt weiter der Browser, Bereiche mit eigenem waagrechtem Rollen behalten ihr
   Wischen. Gilt an der einen Gestenstelle, also auch für die Seitenleiste am iPad hoch. Der Schnellroll-Griff (`touch-action:
   none`) ist nicht betroffen. Entspricht HIG: wie in iOS rastet eine Wischgeste in ihrer Richtung ein.
-- **Safari-Modell S-10 (`safariWischen` in `safari.mjs`):** Berührung mit spätem Abbruch ab 10 px senkrecht, wenn `touchmove` nicht
+- **Safari-Modell APD-67/S-10 (`safariWischen` in `safari.mjs`):** Berührung mit spätem Abbruch ab 10 px senkrecht, wenn `touchmove` nicht
   verhindert ist – mit der Messung als Quelle (Designrichtlinie 13).
-- **Prüfung `checkNavigation` F-23 (neu):** die gemessenen Züge (136/217/289 px waagrecht bei 13–14 px senkrecht in 130–250 ms)
+- **Prüfung `checkNavigation` APD-67/F-23 (neu):** die gemessenen Züge (136/217/289 px waagrecht bei 13–14 px senkrecht in 130–250 ms)
   über einem Kasten (`kasten`) und daneben, senkrecht rollt weiter, Seitenleiste am iPad hoch; die Messung zeigt
-  ‚touchmove verhindert‘. **Rot gegen den Stand 4.30.1** (27 Meldungen, nur F-23 – wie am Gerät), grün mit der Behebung.
+  ‚touchmove verhindert‘. **Rot gegen den Stand 4.30.1** (27 Meldungen, nur APD-67/F-23 – wie am Gerät), grün mit der Behebung.
 - **Warum die Prüfung es übersah:** sie wischte mit der Maus; Chromium und WebKit der Prüfung rollen nach der ersten Bewegung nie
-  mehr, das Safari-Modell kannte den späten Abbruch nicht. Ab jetzt spielt F-23 Berührungen nach Safari nach.
+  mehr, das Safari-Modell kannte den späten Abbruch nicht. Ab jetzt spielt APD-67/F-23 Berührungen nach Safari nach.
 - **Messmodus (15.21):** neue Zeile ‚touchmove frei|verhindert|fest‘ beim Wechsel.
 - **Designrichtlinie allgemein 4.30.2:** 13 Wischgesten (später Abbruch, Quelle), 15.17, 15.21.
 
@@ -247,22 +285,22 @@ K-1 bis K-7). Prüfpunkt im Reiselogbuch: P-66.
 
 AppDesign 4.30.1 · Designrichtlinie allgemein 4.30.1 · Zusammenarbeit allgemein 2.18.0 · geprüft mit Reiselogbuch 3.28.1
 
-**Korrektur: A-67 Schritt 1 (Messung ‚Zurückwischen über einem Tageskasten‘, P-64/5) und A-66** (dein Ja vom 22.10.2026, Fall-Liste
-`arbeit/A-67 Fall-Liste.md`). Erst messen, dann nachbauen (0 Nr. 20): diese Version behebt den Fehler noch nicht, sie zeichnet ihn
-auf. Prüfpunkt im Reiselogbuch: P-65.
+**Korrektur: APD-67 Schritt 1 (Messung ‚Zurückwischen über einem Tageskasten‘, P-64/5) und APD-66** (dein Ja vom 22.10.2026, Testfall-Liste
+`arbeit/APD-67 Testfall-Liste.md`). Erst messen, dann nachbauen (0 Nr. 20): diese Version behebt den Fehler noch nicht, sie zeichnet ihn
+auf. Usertest im Reiselogbuch: P-65.
 
-- **15.21 Messmodus – Berührungen und Gesten (A-67):** die Messung zeichnet zusätzlich jede Berührung auf – ‚zeiger down/move/up/
+- **15.21 Messmodus – Berührungen und Gesten (APD-67):** die Messung zeichnet zusätzlich jede Berührung auf – ‚zeiger down/move/up/
   cancel‘ mit Lage, Art (touch, mouse, pen) und Ziel, ‚touchcancel‘ mit der Zahl der Finger; das Ziel ohne Texte als id bzw.
   `tag.klasse[rolle]`, dazu das antippbare Element darum (‚in …‘) und die nächste id (‚@…‘). Dazu die Entscheidungen der
   Gestenstelle (R-7.5): ‚nav kandidat‘, ‚nav verworfen‘ (Richtung, gehalten, offen), ‚nav aktiv‘, ‚nav fertig‘, ‚nav zurück
   gefedert‘, ‚nav abgebrochen‘ mit Weg und Tempo. Damit zeigt die Messung am Gerät, ob Safari die Berührung über dem Tageskasten
   abbricht (`pointercancel`) oder die Geste aus einem anderen Grund zurückfedert. Aus, solange nicht gestartet, wie bisher.
-- **Prüfung `checkNavigation` F-22 (neu):** Zurückwischen, zurückfedern und ein nachgebildeter Abbruch (`pointercancel` und
+- **Prüfung `checkNavigation` APD-67/F-22 (neu):** Zurückwischen, zurückfedern und ein nachgebildeter Abbruch (`pointercancel` und
   `touchcancel`) während einer Messung – jede neue Zeile muss in der Datei stehen, der Titel nicht. Gegenprobe: ohne die neuen
-  Zeilen 24 Meldungen F-22 (Chromium).
-- **A-66 – ‚Bewegung reduzieren‘ unter Last:** `checkNavigation` zeichnet Öffnen, Zurück und panel-left bis zum Ende der Bewegung auf
+  Zeilen 24 Meldungen APD-67/F-22 (Chromium).
+- **APD-66 – ‚Bewegung reduzieren‘ unter Last:** `checkNavigation` zeichnet Öffnen, Zurück und panel-left bis zum Ende der Bewegung auf
   (mindestens 0,6 s, höchstens 3 s) statt fest 1 s. **Beim Bau gefunden:** unter Volllast zeigte WebKit beim Öffnen gar kein Bild
-  mitten in der Bewegung (nur Anfang und Ziel, F-1 und F-19 rot) – jetzt belegen dann die Keyframes der Web-Animation das Schieben
+  mitten in der Bewegung (nur Anfang und Ziel, APD-67/F-1 und F-19 rot) – jetzt belegen dann die Keyframes der Web-Animation das Schieben
   bzw. Überblenden. Viermal gleichzeitig (3 × WebKit, 1 × Chromium) grün.
 - **Designrichtlinie allgemein 4.30.1:** 15.21 Berührungen und Gesten, Grenze beim Abspielen.
 
@@ -270,29 +308,29 @@ auf. Prüfpunkt im Reiselogbuch: P-65.
 
 AppDesign 4.30.0 · Designrichtlinie allgemein 4.30.0 · Zusammenarbeit allgemein 2.18.0 · geprüft mit Reiselogbuch 3.28.0
 
-**A-37 B+C ‚Nach oben / Ans Ende‘ und A-61 Teil 1 ‚Navigation und Gesten‘, Variante ‚Überall‘** (dein Ja vom 22.10.2026, Fall-Listen
-`arbeit/A-37 Fall-Liste.md` und `arbeit/A-61 Teil 1 Fall-Liste.md`, beide als allgemeine Regeln). Prüfpunkt im Reiselogbuch: P-64.
+**APD-37 B+C ‚Nach oben / Ans Ende‘ und APD-61 Teil 1 ‚Navigation und Gesten‘, Variante ‚Überall‘** (dein Ja vom 22.10.2026, Testfall-Listen
+`arbeit/APD-37 Testfall-Liste.md` und `arbeit/APD-61 Teil 1 Testfall-Liste.md`, beide als allgemeine Regeln). Usertest im Reiselogbuch: P-64.
 
-- **R-3.2 Kapsel mit wirksamen Pfeilen (A-37 B):** ganz oben nur ‚Ans Ende‘, am Ende nur ‚Nach oben‘, dazwischen beide; näher als eine
+- **R-3.2 Kapsel mit wirksamen Pfeilen (APD-37 B):** ganz oben nur ‚Ans Ende‘, am Ende nur ‚Nach oben‘, dazwischen beide; näher als eine
   halbe Höhe des Rollbereichs an einem Ende fehlt dessen Pfeil (`updateFab`). Die Kapsel steht unten fest und wird nur niedriger; ob
   sie bei offener Tastatur passt, entscheidet ihre volle Höhe (sie springt nicht zwischen da und weg). Bei offenem Fenster und im
   Druck nicht zu sehen.
-- **R-3.2 Schnellroll-Griff (A-37 C, wie Apple Fotos):** ab drei Höhen des Rollbereichs erscheint beim Rollen rechts ein Griff
+- **R-3.2 Schnellroll-Griff (APD-37 C, wie Apple Fotos):** ab drei Höhen des Rollbereichs erscheint beim Rollen rechts ein Griff
   (`.schnell`, legt ui.js an), blendet nach 1,5 s Ruhe aus (nur Deckkraft); Ziehen springt verhältnisgleich durch den Inhalt, über
   die Bahn hinaus = Anfang bzw. Ende; die Bahn endet über der Kapsel in voller Höhe. Die Blase zeigt die Marke des Abschnitts oben im
   Bild – die App setzt `data-marke`; ohne Marken keine Blase. VoiceOver: Regler ‚Schnell rollen‘, Wischen nach oben/unten springt einen
-  Abschnitt. Damit ist **A-45** (ziehbarer Index) erledigt.
-- **R-7.5 Navigation und Gesten (A-61 Teil 1, neu):** ein Baustein in ui.js (`navAnmelden`, `navVor`, `navZurueck`, `navSeite`) –
-  im iPhone-Aufbau schiebt sich der Inhalt beim Öffnen herein und beim Zurück hinaus (T-4), Zurückwischen von überall im Inhalt mit
-  Folgen und Federn (T-5), am iPad hoch holt Wischen nach rechts von überall die Seitenleiste, nach links geht sie, panel-left und
-  Abdunkelung lassen sie gleiten (T-6); Vorrang an einer Stelle (T-35: senkrechtes Rollen, eigenes waagrechtes Rollen, Felder, Knöpfe,
-  Kapseln, Griff, langes Drücken, offenes Fenster/Menü); je Bild nur transform und opacity als Web-Animation (A-59); Drehen beim
+  Abschnitt. Damit ist **APD-45** (ziehbarer Index) erledigt.
+- **R-7.5 Navigation und Gesten (APD-61 Teil 1, neu):** ein Baustein in ui.js (`navAnmelden`, `navVor`, `navZurueck`, `navSeite`) –
+  im iPhone-Aufbau schiebt sich der Inhalt beim Öffnen herein und beim Zurück hinaus (APD-38/T-4), Zurückwischen von überall im Inhalt mit
+  Folgen und Federn (APD-38/T-5), am iPad hoch holt Wischen nach rechts von überall die Seitenleiste, nach links geht sie, panel-left und
+  Abdunkelung lassen sie gleiten (APD-38/T-6); Vorrang an einer Stelle (APD-38/T-35: senkrechtes Rollen, eigenes waagrechtes Rollen, Felder, Knöpfe,
+  Kapseln, Griff, langes Drücken, offenes Fenster/Menü); je Bild nur transform und opacity als Web-Animation (APD-59); Drehen beim
   Ziehen bricht ab; ‚Bewegung reduzieren‘ überblendet; Escape (VoiceOver ‚Zurück‘) geht zurück. **Wischen tippt nie an:** ein Zeiger,
   der sich mehr als 10 px bewegt hat, löst kein Antippen aus (gefunden beim Bau: mit Maus bzw. Zeichenstift öffnete Wischen über einen
   Tag dessen Fenster). `onLongPress` löst während einer Wischgeste nicht aus. **`rolle.halt()`** hält ein weiches Rollen sofort an
   (Griff greifen, Wischen) – gefunden beim Bau: WebKit hält ein laufendes weiches Rollen bei `scrollTo` nicht an.
-- **Prüfungen:** `checkFab` prüft die Pfeile in fünf Rollständen, unteren Rand, Fenster, Drucken und ruft `checkGriff` (F-4, F-5,
-  F-11, F-14 bis F-21); neu `checkNavigation` (A-61 F-1 bis F-21, iPhone, iPad hoch und quer, ‚Bewegung reduzieren‘ über
+- **Prüfungen:** `checkFab` prüft die Pfeile in fünf Rollständen, unteren Rand, Fenster, Drucken und ruft `checkGriff` (APD-61/F-4, F-5,
+  APD-61/F-11, F-14 bis F-21); neu `checkNavigation` (1 APD-61/F-1 bis F-21, iPhone, iPad hoch und quer, ‚Bewegung reduzieren‘ über
   `reducedMotion`); `navFertig` (pruefe.mjs) wartet auf das Ende eines Seitenwechsels.
 - **Designrichtlinie allgemein 4.30.0:** R-3.2 ergänzt, R-7.5 neu; 4, 13 (Wischgesten), 15.1 (Schnellroll-Griff), 15.4 (Gesten im
   Hochformat), 15.17 (Seitenwechsel und Zurückwischen), 15.22, HIG-Abweichung ‚Nach oben / Ans Ende‘.
@@ -301,57 +339,57 @@ AppDesign 4.30.0 · Designrichtlinie allgemein 4.30.0 · Zusammenarbeit allgemei
 
 AppDesign 4.29.0 · Designrichtlinie allgemein 4.29.0 · Zusammenarbeit allgemein 2.18.0 · geprüft mit Reiselogbuch 3.27.0
 
-**A-63 Paket C aus A-38** (dein Ja vom 22.10.2026 zur Fall-Liste `arbeit/A-63 Fall-Liste.md`, Schalter Weg b, als allgemeine
-Regeln) **und die Regeln A-41, A-42.** Prüfpunkt im Reiselogbuch: P-63.
+**APD-63 Paket C aus APD-38** (dein Ja vom 22.10.2026 zur Testfall-Liste `arbeit/APD-63 Testfall-Liste.md`, Schalter Weg b, als allgemeine
+Regeln) **und die Regeln APD-41, APD-42.** Usertest im Reiselogbuch: P-63.
 
 - **R-1.7 Sichere Ränder (V1):** `env(safe-area-inset-…)` steht nur noch in den vier Variablen `--safe-top/-bottom/-left/-right`
   (design.css), die 42 Stellen nutzen sie. Die neue Prüfung `safe` (hig.mjs, in jeder gemessenen Ansicht) setzt Gerätewerte
   (iPhone 16 Pro hoch oben 62 / unten 34, quer links und rechts 62 / unten 20, iPad oben 24 / unten 20) und meldet alles fest
   Stehende unter Statusleiste, Aussparung oder Home-Leiste, Fenster, Menüs und Sprechblasen, die hineinreichen, und Inhalt, dessen
   Ende sich nicht über die Home-Leiste rollen lässt; doku.mjs prüft, dass `env()` nur in den vier Festlegungen steht. **Gefunden und
-  behoben:** am iPad reichte ein Fenster unten 10 px unter die Home-Leiste (S-6); am iPhone quer lag das Menü der Startliste rechts in
+  behoben:** am iPad reichte ein Fenster unten 10 px unter die Home-Leiste (APD-63/S-6); am iPhone quer lag das Menü der Startliste rechts in
   der Aussparung und die Sprechblase ‚Backup laden‘ 8 px unter der Home-Leiste – Fenster, Menüs, Untermenüs und Sprechblasen halten
   jetzt mindestens den sicheren Rand ein (sonst 10 bzw. 12 px wie bisher); in WebKit (wie Safari) ließ sich der Abgleichbericht am
   iPhone quer nicht ganz hervorrollen – die letzten 32 px blieben unter der Aussparung (Safari zählt den rechten Innenabstand eines
   Rollbereichs nicht mit), jetzt trägt der Bericht den Rand selbst. Der Messmodus nennt im Kopf die Ränder des Geräts
-  (‚Ränder o/u/l/r‘, S-8); `abspielen.mjs` liest sie.
+  (‚Ränder o/u/l/r‘, APD-63/S-8); `abspielen.mjs` liest sie.
 - **R-2.3 Suche ohne Akzente:** ‚Zurich‘ findet ‚Zürich‘ und umgekehrt, ‚cafe creme‘ findet ‚Café Crème‘; markiert wird das ganze Wort
   wie im Text (auch mit Umbruchstellen, Emojis, Akzent als eigenes Zeichen); ß, ø, æ bleiben eigene Buchstaben (`fold`,
   `mitAkzent` in ui.js, verglichene Texte werden gemerkt – die Liste mit 30 Reiselogbüchern bleibt unter 50 ms je Tastendruck;
-  `checkSearchWords` A-1 bis A-8).
+  `checkSearchWords` APD-63/A-1 bis APD-63/A-8).
 - **R-5.6 ⓧ in einzeiligen Feldern:** ein Baustein in ui.js/design.css (`.fclear`) für alle einzeiligen Textfelder – rechts im Feld,
   solange es den Fokus hat und etwas drinsteht; Antippen leert, Fokus und Tastatur bleiben, die App bekommt ein input-Ereignis; rollt
-  mit, bleibt nach dem Drehen am Feld; `data-noclear` schaltet es ab (`checkClear` X-1 bis X-8).
+  mit, bleibt nach dem Drehen am Feld; `data-noclear` schaltet es ab (`checkClear` APD-63/X-1 bis X-8).
 - **R-5.7 Safaris eingebauter Schalter:** `<input type="checkbox" switch role="switch">`; kennt der Browser ihn (ui.js setzt
   `html.natsw`), zeichnet Safari ihn selbst (gleitet, ziehbar, Haptik, VoiceOver ‚Schalter‘, Aussehen der iOS-Version) in Grün,
   sonst unser Schalter 51 × 31 wie bisher. Die Prüfbrowser kennen ihn nicht – Aussehen und Gefühl nur am Gerät (P-63).
 - **Designrichtlinie allgemein 4.29.0:** neue Regeln R-1.7, R-5.6, R-5.7, R-2.3 ergänzt, 1 Grundsatz **‚kein UI-Framework‘**
-  (A-42), 13 sichere Ränder und Schalter, 15.2, 15.11, 15.15, HIG-Checkliste 10–12, G-18 ohne Schaltergröße.
-- **Zusammenarbeit 2.18.0 (A-41):** Übergabe wieder erst ab etwa 300.000 Token (0 Nr. 13, 2.2); Hilfsagenten bzw. eigene Sitzungen
+  (APD-42), 13 sichere Ränder und Schalter, 15.2, 15.11, 15.15, HIG-Checkliste 10–12, G-18 ohne Schaltergröße.
+- **Zusammenarbeit 2.18.0 (APD-41):** Übergabe wieder erst ab etwa 300.000 Token (0 Nr. 13, 2.2); Hilfsagenten bzw. eigene Sitzungen
   parallel, wenn möglich und sinnvoll (0 Nr. 2); 2.1 ein Auswahlfenster je Antwort mit der Erklärung davor, Themen einzeln (‚w‘).
 
 ## 4.28.2 – 21.10.2026
 
 AppDesign 4.28.2 · Designrichtlinie allgemein 4.28.2 · Zusammenarbeit allgemein 2.17.0 · geprüft mit Reiselogbuch 3.26.2
 
-**A-39 Konsolidierung aller Regeln** (dein Ja vom 21.10.2026 zum Plan `arbeit/A-39 Konsolidierung Plan.md`, Antworten F-1 bis
-F-10). Kein Code geändert – `v4/` nur in den Versionsnummern; die Prüfungen sind dieselben. Abgleich alt → neu:
-`arbeit/A-39 Abgleichliste.md`.
+**APD-39 Konsolidierung aller Regeln** (dein Ja vom 21.10.2026 zum Plan `arbeit/APD-39 Konsolidierung Plan.md`, Antworten APD-39/F-1 bis
+APD-39/F-10). Kein Code geändert – `v4/` nur in den Versionsnummern; die Prüfungen sind dieselben. Abgleich alt → neu:
+`arbeit/APD-39 Abgleichliste.md`.
 
 - **Zusammenarbeit 2.17.0:** Abschnitt 0 ist das eine Arbeitsmodell – die drei Kästen oben und die Abschnitte 2–9 sind in 0 Nr. 8
   und den neuen Nummern 21 (nie ohne Ja bauen), 22 (erst prüfen, dann Neues), 23 (Apple-like), 24 (Backlog), 25 (Ablauf einer
   Änderung) aufgegangen; Einzelheiten und Formate stehen im neuen Abschnitt 2 (2.1 Auswahlfenster, 2.2 Zeit und Token, 2.3 Bericht
-  und Prüfpunkte, 2.4 Backlog, 2.5 Übergabe und neue Sitzung, 2.6 Apple-Abgleich, 2.7 Muster mit Messung); Tabelle ‚Zuordnung
+  und Usertests, 2.4 Backlog, 2.5 Übergabe und neue Sitzung, 2.6 Apple-Abgleich, 2.7 Muster mit Messung); Tabelle ‚Zuordnung
   alt → neu‘. Jede Regel nennt ihre Prüfung. **Neu 0 Nr. 13: Übergabe schon ab etwa 150.000 Token** (das Werkzeug warnt weiter erst
-  ab 300.000 – F-1). Geklärt: im Auswahlfenster nur die kurze Frage, bei Bitten, am Gerät zu prüfen, auch Link und Schritte (F-2);
-  Übergabe vorschlagen, bei Ja schreiben und die neue Sitzung selbst starten, Starttext als Rückfall (F-3); keine eigene Version
-  für eine einzelne Kleinigkeit (F-4).
+  ab 300.000 – APD-39/F-1). Geklärt: im Auswahlfenster nur die kurze Frage, bei Bitten, am Gerät zu prüfen, auch Link und Schritte (F-2);
+  Übergabe vorschlagen, bei Ja schreiben und die neue Sitzung selbst starten, Starttext als Rückfall (APD-39/F-3); keine eigene Version
+  für eine einzelne Kleinigkeit (APD-39/F-4).
 - **Designrichtlinie allgemein 4.28.2:** Regeln nur noch im Katalog (17, neue Spalte ‚Bau‘ statt ‚ersetzt‘), die Abschnitte 1–16
-  verweisen darauf; neue Liste **‚Regeln ohne automatische Prüfung‘ G-1 bis G-19** (Prüfungen dafür: Backlog A-40); HIG-Checkliste
+  verweisen darauf; neue Liste **‚Regeln ohne automatische Prüfung‘ G-1 bis G-19** (Prüfungen dafür: Backlog APD-40); HIG-Checkliste
   16 als Zuordnung HIG-Punkt → Regel; 11 mit den Versionsregeln (bisher Zusammenarbeit §8); 12: App-Richtlinien enthalten nur
-  Abweichungen (F-5); 13 ‚Safari und iPad – technische Erfahrungen‘ ohne Geschichte; überholte Stellen angeglichen (F-7).
+  Abweichungen (APD-39/F-5); 13 ‚Safari und iPad – technische Erfahrungen‘ ohne Geschichte; überholte Stellen angeglichen (F-7).
 - **CLAUDE.md 2.6.0:** die Arbeitsumgebung (klonen, Verweise, Tests einrichten, Veröffentlichen) steht jetzt dort statt in der
-  Übergabe (F-9). `tests/README.md`: jede Prüfung mit ihrer Regel, ohne Geschichte.
+  Übergabe (APD-39/F-9). `tests/README.md`: jede Prüfung mit ihrer Regel, ohne Geschichte.
 - Größe: Regeltext aller Dateien im Umfang 202.400 → 173.400 Zeichen (−14 %), Lesestoff zu Beginn einer Sitzung 27.900 → etwa
   23.400 (−16 %).
 
@@ -359,17 +397,17 @@ F-10). Kein Code geändert – `v4/` nur in den Versionsnummern; die Prüfungen 
 
 AppDesign 4.28.1 · Designrichtlinie allgemein 4.28.1 · Zusammenarbeit allgemein 2.16.0 · geprüft mit Reiselogbuch 3.26.1
 
-Korrektur aus P-60 (A-36, dein Ja vom 21.10.2026 zur Fall-Liste Abschnitt 8): Beim Antippen eines Felds sprangen Kopfzeile,
+Korrektur aus P-60 (APD-36, dein Ja vom 21.10.2026 zur Testfall-Liste Abschnitt 8): Beim Antippen eines Felds sprangen Kopfzeile,
 Suchzeile, Seitenleiste und Fenster um die ganze Tastaturhöhe. Gebaut ist die Lösung V3 aus Muster 9, die am Gerät 10 von 10 Mal
 still war. In der Nachbildung behoben, **am Gerät zu bestätigen** (Reiselogbuch P-61, mit Messmodus).
 
 - **R-4.5 ergänzt – Tastatur ohne Springen (ui.js, ersetzt `fieldIntoView`):** die Berührung bleibt bei Safari; sobald ein Feld den
   Fokus hat, rollt sein Bereich (Inhalt bzw. Fenster) es in die obere Hälfte des künftig sichtbaren Bereichs und gibt ihm bei
   geschlossener Tastatur sofort einen **neuen Fokus** (blur + focus, noch in der Berührung) – Safari liest die Lage neu und
-  verschiebt nichts. Die Ereignisse des neuen Fokus sieht die App nicht (sonst z. B. ‚Pflichtfeld‘ beim ersten Antippen, B-18).
+  verschiebt nichts. Die Ereignisse des neuen Fokus sieht die App nicht (sonst z. B. ‚Pflichtfeld‘ beim ersten Antippen, APD-36/B-18).
   Bei offener Tastatur (Feld wechseln) kein neuer Fokus.
-- **Klick nach dem Rollen:** Safaris Klick an derselben Stelle trifft dort jetzt etwas anderes – er wird unterdrückt (B-3).
-- **Rückstellung:** Safari setzt den Inhalt beim Erscheinen der Tastatur auf den Stand vor dem Rollen zurück (S-9) – ui.js rollt
+- **Klick nach dem Rollen:** Safaris Klick an derselben Stelle trifft dort jetzt etwas anderes – er wird unterdrückt (APD-36/B-3).
+- **Rückstellung:** Safari setzt den Inhalt beim Erscheinen der Tastatur auf den Stand vor dem Rollen zurück (APD-36/S-9) – ui.js rollt
   ihn im scroll-Ereignis sofort wieder hin (≤ 1,5 s, Wischen beendet sie).
 - **Platz unter dem Inhalt (`--platz`):** verlängert den Platzhalter am Ende (`.rolle::after`, neu `.dlg-body::after`) statt eines
   Innenabstands – ein Innenabstand machte das Fenster am iPhone höher als den Bildschirm. Nach dem Schließen der Tastatur
@@ -378,33 +416,33 @@ still war. In der Nachbildung behoben, **am Gerät zu bestätigen** (Reiselogbuc
 - **‚Nach oben / Ans Ende‘ bei offener Tastatur:** ein Antippen genügt (gerollt wird nach dem Schließen, `nachTastatur`).
 - **iPad-Fenster:** gleitet mit der Tastatur (0,25 s) in die Mitte darüber und zurück; ganz sichtbar bleibt es stehen; seine Höhe
   bleibt beim Antippen. `isPhone()` und die Kapsel (`--vv-bottom`) rechnen mit der Höhe ohne Tastatur (`innerHeight + scrollY`,
-  S-3) – das Fenster rutscht nicht mehr an den linken Rand.
+  APD-36/S-3) – das Fenster rutscht nicht mehr an den linken Rand.
 - **Tastaturhöhe:** vor dem ersten Öffnen geschätzt (am Gerät gemessen), danach je Gerät, Lage und Tastaturart gemerkt
   (`localStorage` `appdesign.tastatur`).
 - **R-2.4 neu (allgemeine Regel, dein Ja 20.10.2026):** iPhone quer niedrige Leisten wie iOS – Kopfzeile, Suchzeile und
   Fensterkopf 32 statt 44 px (Knöpfe in Kapseln 31 px, runde Knöpfe 32 × 32 mit Antippfläche 44 × 44); 15.3, 15.8, Regelkatalog.
 - **Messmodus (15.21):** neue Zeilen ‚neu fokussiert‘, ‚klick unterdrückt‘, ‚zurückgestellt‘, ‚platz weg‘.
-- **Designrichtlinie 13:** Safari-Eigenheiten S-1 bis S-9 mit Quellen (Muster A-36, Messungen `arbeit/A-36 Messungen/`); Abschnitte
+- **Designrichtlinie 13:** Safari-Eigenheiten APD-36/S-1 bis S-9 mit Quellen (Muster APD-36, Messungen `arbeit/APD-36 Messungen/`); Abschnitte
   7, 15.22.
-- **Prüfungen:** Safari-Modell zeichnet das Feld mit Fokus je Bild auf (S-8 bestätigt); `checkTastaturStill` (ablauf.mjs) prüft
+- **Prüfungen:** Safari-Modell zeichnet das Feld mit Fokus je Bild auf (APD-36/S-8 bestätigt); `checkTastaturStill` (ablauf.mjs) prüft
   zusätzlich ‚Feld springt‘, Klick nach dem Rollen, unsichtbaren neuen Fokus, Messmodus, Tastatur-Taste mit erneutem Antippen,
   ‚Nach oben‘ bei offener Tastatur und danach ‚Ans Ende‘, Wischen über das Feld; `hig.mjs` prüft R-2.4. Im Reiselogbuch
   `ablauf-tastatur-still.mjs` mit allen vier Lagen und kurzem Inhalt: gegen 3.26.0 **177 Fehler**, jetzt grün (Chromium und WebKit).
 - **Warum die Prüfung es übersehen hatte (4.28.0):** das Safari-Modell kannte das Verschieben bei Feldern in Fenstern und die
   Lage beim Fokus nicht, und es wurde nur der Endzustand geprüft, nicht jedes Bild.
-- **Grenzen (Prüfliste):** iPhone quer mit offener Suchzeile bleibt für ein Feld im Inhalt zu wenig Platz – Safari verschiebt dort
+- **Grenzen (Testfälle):** iPhone quer mit offener Suchzeile bleibt für ein Feld im Inhalt zu wenig Platz – Safari verschiebt dort
   weiter etwas; ein Feld, das höher ist als der sichtbare Teil (‚Programm‘ im Fenster am iPhone quer), ist nicht gemessen.
-- Fall-Liste `arbeit/A-36 Fall-Liste.md` (Abschnitt 8, B-1 bis B-18); feste Fassung `fassung/4.28.1/`.
+- Testfall-Liste `arbeit/APD-36 Testfall-Liste.md` (Abschnitt 8, APD-36/B-1 bis B-18); feste Fassung `fassung/4.28.1/`.
 
 ## 4.28.0 – 20.10.2026
 
 AppDesign 4.28.0 · Designrichtlinie allgemein 4.28.0 · Zusammenarbeit allgemein 2.14.1 · geprüft mit Reiselogbuch 3.26.0
 
-Bündel aus der Messung iPhone quer vom 19.10.2026 (A-35 und A-31, dein Ja vom 20.10.2026; A-26 entfällt, A-34 war schon
+Bündel aus der Messung iPhone quer vom 19.10.2026 (APD-35 und APD-31, dein Ja vom 20.10.2026; APD-26 entfällt, APD-34 war schon
 entschieden). Ein Feld unten im Inhalt verschwand beim Antippen unter der Tastatur – jetzt rollt der Inhalt es darüber. Dazu läuft
 die Messung selbst als Prüfung mit. In der Nachbildung behoben, am Gerät zu bestätigen (Reiselogbuch P-60).
 
-- **R-4.5 ergänzt (allgemeine Regel, A-35):** Ein Feld mit Fokus steht immer ganz über der Tastatur – in Fenstern und im Inhalt,
+- **R-4.5 ergänzt (allgemeine Regel, APD-35):** Ein Feld mit Fokus steht immer ganz über der Tastatur – in Fenstern und im Inhalt,
   16 px darüber; reicht der Platz nicht (iPhone quer mit Suchzeile: 55 px Inhalt), direkt unter Kopf- bzw. Suchzeile (Abschnitt 7).
 - **ui.js – `fieldIntoView`:** sobald Safari die Tastatur meldet (`visualViewport` resize/scroll) und beim Wechsel des Felds rollt
   der Inhalt, bis das Feld mit Fokus ganz sichtbar ist; nie gegen das Wischen des Nutzers. Felder in Fenstern wie bisher.
@@ -413,25 +451,25 @@ die Messung selbst als Prüfung mit. In der Nachbildung behoben, am Gerät zu be
   Die Zifferntastatur lässt quer 170 statt 126 px sichtbar.
 - **Safari-Modell (`tests/safari.mjs`):** Zifferntastatur quer, Verschieben des sichtbaren Bereichs beim Antippen eines Felds unter
   der Tastatur, `__safari.setze({ h, top })` für das Abspielen.
-- **Messung abspielen (A-31, 15.21):** neu `tests/abspielen.mjs` – `lies` (Messdatei mit Fehlern samt Zeilennummer), `ansicht`
+- **Messung abspielen (APD-31, 15.21):** neu `tests/abspielen.mjs` – `lies` (Messdatei mit Fehlern samt Zeilennummer), `ansicht`
   (Größe und Darstellung des Geräts), `spieleAb` (Tippen, Eingaben, Tastatur schließen; Safari meldet Höhe und `offsetTop` wie
   gemessen; je Schritt Kopf- und Suchzeile ± 1 px und Fokus wie gemessen). Messdateien in `tests/messungen/`, die erste:
   `2026-10-19 iPhone quer Suche Fenster Gesamtausgaben.txt`.
-- **Prüfungen:** `checkFieldVisible` in `ablauf.mjs` (F-1 bis F-4: ganz über der Tastatur, schon sichtbar rollt nichts, nach dem
+- **Prüfungen:** `checkFieldVisible` in `ablauf.mjs` (APD-31/F-1 bis F-4: ganz über der Tastatur, schon sichtbar rollt nichts, nach dem
   Schließen sichtbar, Seite rollt nie). Im Reiselogbuch `ablauf-feld-tastatur.mjs` (Ablauf der Messung) und `ablauf-abspielen.mjs`
-  (Messung nachgespielt, F-11; Gegenprobe M-5: um 20 px verschoben wird rot).
+  (Messung nachgespielt, APD-31/F-11; Gegenprobe M-5: um 20 px verschoben wird rot).
 - **Warum die Prüfung es übersehen hat:** `checkEnterDone` tippt Gesamtausgaben an, misst aber nicht, ob das Feld über der Tastatur
   sichtbar ist; das Safari-Modell kannte das Verschieben des sichtbaren Bereichs zum angetippten Feld nicht.
 - **Gegenprobe:** ohne `fieldIntoView` sind `ablauf-feld-tastatur.mjs` (4 Fehler: Feld 781–828 px bzw. bis 369 px, Tastatur ab 449
   bzw. 161 px) und `ablauf-abspielen.mjs` (15 Fehler) rot, mit der Korrektur grün (Chromium und WebKit).
-- **A-26 entfällt (E-62):** Datumsfelder bleiben, wie sie sind (Safari meldet nur den Wert – nicht alles wäre machbar).
-- Fall-Liste `arbeit/A-26 A-31 A-34 Fall-Liste.md` (Abschnitte 2.3, 10–13); feste Fassung `fassung/4.28.0/`.
+- **APD-26 entfällt (Erledigt):** Datumsfelder bleiben, wie sie sind (Safari meldet nur den Wert – nicht alles wäre machbar).
+- Testfall-Liste `arbeit/APD-26 APD-31 APD-34 Testfall-Liste.md` (Abschnitte 2.3, 10–13); feste Fassung `fassung/4.28.0/`.
 
 ## 4.27.1 – 19.10.2026
 
 AppDesign 4.27.1 · Designrichtlinie allgemein 4.27.1 · Zusammenarbeit allgemein 2.12.0 · geprüft mit Reiselogbuch 3.25.1
 
-Korrektur aus P-58/2 (A-33, deine Entscheidung vom 19.10.2026 für Weg A): Am iPhone quer mit offener Tastatur verdeckte die Kapsel
+Korrektur aus P-58/2 (APD-33, deine Entscheidung vom 19.10.2026 für Weg A): Am iPhone quer mit offener Tastatur verdeckte die Kapsel
 ‚Nach oben / Ans Ende‘ die Suchzeile (⌄) und ‚…‘ der Kopfzeile. Jetzt ist sie dort ausgeblendet. In der Nachbildung behoben, am Gerät
 zu bestätigen (P-59).
 
@@ -445,19 +483,19 @@ zu bestätigen (P-59).
 - **Prüfungen:** `checkFab` misst bei offener Tastatur mit der gemessenen Höhe (Option `sichtbar`: iPhone hoch 409, quer 126 px)
   und mit offener Suche (Option `suche`), ob die Kapsel eine Leiste schneidet, mit 16 px Abstand in den Inhalt passt, ob jede
   Schaltfläche der Leisten frei antippbar ist, ob sie fehlt, obwohl sie passt, und ob sie nach dem Schließen der Tastatur wieder da
-  ist (K-1 bis K-5). Neue Grundregel in `hig.mjs` nach jedem Schritt: ‚Kapsel schneidet keine Leiste‘.
+  ist (APD-33/H-1 bis H-5). Neue Grundregel in `hig.mjs` nach jedem Schritt: ‚Kapsel schneidet keine Leiste‘.
 - **Warum die Prüfung es übersehen hat:** `checkFab` prüfte seit 4.27.0 nur, ob die Kapsel über der Tastatur endet, und das nur mit
   300 px Tastatur am iPhone hoch und am iPad, nie quer. Ob sie dabei Kopf- oder Suchzeile überdeckt, hat keine Prüfung gemessen.
-- **Gegenprobe (K-6):** die neuen Prüfungen gegen den Stand 4.27.0 – 18 Fehler in `kapsel-iphone.mjs` des Reiselogbuchs (Kapsel
+- **Gegenprobe (APD-33/H-6):** die neuen Prüfungen gegen den Stand 4.27.0 – 18 Fehler in `kapsel-iphone.mjs` des Reiselogbuchs (Kapsel
   20–110 px über der Kopfzeile 0–61 bzw. Suchzeile bis 115 px, ‚Mehr‘ und ‚Nächster Treffer‘ verdeckt, Inhalt unter der Tastatur).
-- Fall-Liste `arbeit/A-33 Fall-Liste.md`; feste Fassung `fassung/4.27.1/`.
+- Testfall-Liste `arbeit/APD-33 Testfall-Liste.md`; feste Fassung `fassung/4.27.1/`.
 
 ## 4.27.0 – 19.10.2026
 
 AppDesign 4.27.0 · Designrichtlinie allgemein 4.27.0 · Zusammenarbeit allgemein 2.12.0 · geprüft mit Reiselogbuch 3.25.0
 
-Umbau B (A-28, Variante B1) und Suche nach oben (A-29) – deine Entscheidungen vom 19.10.2026 nach der Messung P-57 und dem
-Versuch M-1. Die Seite rollt nie mehr, nur der Inhalt: Safari hat beim Tippen nichts zu verschieben. In der Nachbildung
+Umbau B (APD-28, Variante B1) und Suche nach oben (APD-29) – deine Entscheidungen vom 19.10.2026 nach der Messung P-57 und dem
+Versuch APD-28/M-1. Die Seite rollt nie mehr, nur der Inhalt: Safari hat beim Tippen nichts zu verschieben. In der Nachbildung
 (Safari-Modell) behoben, am Gerät zu bestätigen (P-58).
 
 - **R-2.1 ergänzt, neu 15.22 – Rahmen und Rollbereich:** `#app` ist ein Rahmen aus festen Zeilen (Kopfzeile mit Suchzeile),
@@ -471,11 +509,11 @@ Versuch M-1. Die Seite rollt nie mehr, nur der Inhalt: Safari hat beim Tippen ni
 - **`setHtml`:** der Rollbereich bleibt beim Neuaufbau dasselbe Element (nie aus dem Dokument genommen) – der Rollstand bleibt.
 - **Nach oben / Ans Ende:** steht bei offener Tastatur über ihr (`--vv-bottom`).
 - **Messmodus:** neue Spalte `inh` (Rollstand des Inhalts); scroll-Ereignisse des Rollbereichs mit id.
-- **R-2.3 ergänzt (A-29):** Suche öffnen und ⓧ rollen den Inhalt ganz nach oben, der Fokus bleibt im Feld (in der App).
+- **R-2.3 ergänzt (APD-29):** Suche öffnen und ⓧ rollen den Inhalt ganz nach oben, der Fokus bleibt im Feld (in der App).
 - **Prüfungen:** `pruefe.mjs` – `rolle(p, y)`, `rollstand(p)`, `ROLL` (alle Rollstellen der Prüfungen gehen darüber);
   `hig.mjs` – Grundregel ‚Seite rollt nie‘ (`scrollY` bleibt 0) nach jedem Schritt, `barStill` rollt den Inhalt und versucht,
-  das Fenster zu rollen, ‚Leiste fest‘ erkennt feste Zeilen im Rahmen; `ablauf.mjs` – neu `checkSearchTop` (F-3/F-4),
-  `checkFab` (F-12, auch mit Tastatur), `checkPrint` (F-16, PDF mit mehreren Seiten); `checkListStill` lässt Safari als
+  das Fenster zu rollen, ‚Leiste fest‘ erkennt feste Zeilen im Rahmen; `ablauf.mjs` – neu `checkSearchTop` (APD-28/F-3/F-4),
+  `checkFab` (APD-28/F-12, auch mit Tastatur), `checkPrint` (F-16, PDF mit mehreren Seiten); `checkListStill` lässt Safari als
   ungünstigsten Fall auch den Rollbereich rollen; `checkMessung` prüft die Spalte `inh`. **Safari-Modell `tests/safari.mjs`**
   (zwei Bereiche, Meldung 2 Bilder später, Rollen beim neuen Fokus). Gegenprobe: ohne Druckregel, ohne Rollen nach oben und mit
   Fenster statt Rollbereich werden die neuen Prüfungen rot.
@@ -483,14 +521,14 @@ Versuch M-1. Die Seite rollt nie mehr, nur der Inhalt: Safari hat beim Tippen ni
   nicht eine kurze Seite), 15.3, 15.21, 15.22, Regelkatalog R-2.1, R-2.3, R-3.2 (`checkFab`), R-6.4 (`checkPrint`).
 - **Zusammenarbeit 2.12.0:** 0 Nr. 11 – jede Bitte, etwas am Gerät zu prüfen oder auszuprobieren, enthält den vollständigen Link
   und nummerierte Schritte mit ‚Erwartet: …‘.
-- Vorlage `vorlage/index.html` mit Rollbereich. Fall-Liste und Muster: `arbeit/A-28 Fall-Liste.md`, `arbeit/A-28 Muster.html`;
+- Vorlage `vorlage/index.html` mit Rollbereich. Testfall-Liste und Muster: `arbeit/APD-28 Testfall-Liste.md`, `arbeit/APD-28 Muster.html`;
   feste Fassung `fassung/4.27.0/`.
 
 ## 4.26.0 – 19.10.2026
 
 AppDesign 4.26.0 · Designrichtlinie allgemein 4.26.0 · Zusammenarbeit allgemein 2.11.0 · geprüft mit Reiselogbuch 3.24.0
 
-Messmodus (A-27): bevor A-24 mit Umbau B (A-28) gelöst wird, misst die App am Gerät, was Safari tut. Dazu Zusammenarbeit 0 Nr. 20
+Messmodus (APD-27): bevor APD-24 mit Umbau B (APD-28) gelöst wird, misst die App am Gerät, was Safari tut. Dazu Zusammenarbeit 0 Nr. 20
 (zuerst messen) – beides deine Entscheidung vom 19.10.2026.
 
 - **R-1.6 neu, ui.js – Baustein `messungMenuItems({ app, teile, rollen })`:** Eintrag im Mehr-Menü der Seitenleiste bzw. Startliste:
@@ -500,64 +538,64 @@ Messmodus (A-27): bevor A-24 mit Umbau B (A-28) gelöst wird, misst die App am G
   Ereignis sofort (focus/blur, Eingabe-Länge, Tippen, scroll, resize, Drehen, `visualViewport` resize/scroll, Neuaufbau über
   `setHtml`). Keine Texte (nur Längen und ids), nichts gespeichert, Ende nach 5 min bzw. 20 000 Zeilen, Datei
   `messung-JJJJ-MM-TT-hhmm.txt` über `shareFiles` (MIME `txt` neu). Aus, solange nicht gestartet.
-- **Prüfung `checkMessung` (ablauf.mjs):** Fall-Liste F1–F12 (aus, Start, Menüzeile, Ruhe ohne Zeilen, Ereignisse, Spalten,
+- **Prüfung `checkMessung` (ablauf.mjs):** Testfall-Liste F1–F12 (aus, Start, Menüzeile, Ruhe ohne Zeilen, Ereignisse, Spalten,
   Werte wie auf der Seite, Drehen, Grenze, Datei mit Kopf, keine Texte, Neuladen verwirft, Leisten unverändert). Gegenprobe:
   mit Text statt Länge bzw. Zeilen in Ruhe rot.
 - **Designrichtlinie:** 15.21 Messmodus, Regelkatalog R-1.6, Abschnitt 13 ‚Safari schiebt den sichtbaren Bereich bei kurzer Seite‘
-  mit Quellen (Vermutung aus A-24, wird mit der Messung geklärt).
+  mit Quellen (Vermutung aus APD-24, wird mit der Messung geklärt).
 - **Zusammenarbeit 2.11.0:** 0 Nr. 20 – bei Bewegungsfehlern am Gerät zuerst messen, ein Safari-Modell, Bericht ‚in der
   Nachbildung behoben, am Gerät zu bestätigen‘, Safari-Eigenheiten mit Quelle in Abschnitt 13.
-- Backlog: V8 ‚Messung abspielen‘ (A-31) und V9 ‚Problem melden‘ (A-32) aufgenommen. Fall-Liste und Muster:
-  `arbeit/A-27 Fall-Liste.md`; feste Fassung `fassung/4.26.0/`.
+- Backlog: V8 ‚Messung abspielen‘ (APD-31) und V9 ‚Problem melden‘ (APD-32) aufgenommen. Testfall-Liste und Muster:
+  `arbeit/APD-27 Testfall-Liste.md`; feste Fassung `fassung/4.26.0/`.
 
 ## 4.25.1 – 19.10.2026 (Korrektur)
 
 AppDesign 4.25.1 · Designrichtlinie allgemein 4.25.1 · Zusammenarbeit allgemein 2.10.1 · geprüft mit Reiselogbuch 3.23.1
 
-Zwei Korrekturen aus deiner Rückmeldung vom 18.10.2026: Kopf- und Suchzeile zitterten am iPhone beim Tippen (A-24), die
-Markierung in den Kapseln war eiförmig (A-25).
+Zwei Korrekturen aus deiner Rückmeldung vom 18.10.2026: Kopf- und Suchzeile zitterten am iPhone beim Tippen (APD-24), die
+Markierung in den Kapseln war eiförmig (APD-25).
 
-- **A-24, R-2.3, ui.js – neuer Baustein `setHtml(el, html)`:** die App baut ihre Seite damit statt mit `innerHTML` auf. Liegt der
+- **APD-24, R-2.3, ui.js – neuer Baustein `setHtml(el, html)`:** die App baut ihre Seite damit statt mit `innerHTML` auf. Liegt der
   Fokus in einem Eingabefeld (Suche beim Tippen), wird der neue Inhalt in den alten eingearbeitet: das Feld und seine Vorfahren
   bleiben dieselben Elemente, Fokus, Cursor und Tastatur bleiben; alles andere wird angeglichen, andere Eingabefelder werden
   ersetzt. Vorher ersetzte jeder Buchstabe das Suchfeld – Safari schloss am iPhone die Tastatur kurz und verschob den sichtbaren
   Bereich, die feste Leiste rückte für 2 Bilder um bis zu 120 px mit.
-- **A-25, R-3.1, design.css:** die Markierung ‚gedrückt‘ bzw. ‚blau gefüllt‘ bei Icons in Kapseln ist ein **Kreis 36 × 36** wie
+- **APD-25, R-3.1, design.css:** die Markierung ‚gedrückt‘ bzw. ‚blau gefüllt‘ bei Icons in Kapseln ist ein **Kreis 36 × 36** wie
   bei Wetter und Smileys (vorher 42 × 36, seit 4.0.0); Text in Kapseln bleibt eine Kapsel. Einzelne runde Schaltflächen waren
   schon kreisrund (44 × 44).
 - **Prüfungen:** `checkSearch` und `checkListSearch` tippen Buchstabe für Buchstabe (auch Löschen) und melden, sobald das Suchfeld
   ersetzt wird oder den Fokus verliert; neue Grundregel R-3.1 ‚Rund ist ein Kreis‘ (runde Schaltflächen und Markierungen in
   Kapseln: Breite = Höhe). Gegenprobe: mit `innerHTML` bzw. der alten Markierung rot (‚Markierung von #searchBtn ist kein Kreis
   (42 × 36 px)‘).
-- **Warum die Prüfungen es übersehen haben:** A-24 – die Suche wurde nur mit fertigem Ergebnis geprüft, nicht Bild für Bild beim
+- **Warum die Prüfungen es übersehen haben:** APD-24 – die Suche wurde nur mit fertigem Ergebnis geprüft, nicht Bild für Bild beim
   Tippen, und Safari war nur einzeln nachgebildet (verschoben *oder* Fokusverlust); der Fehler zeigt sich erst zusammen.
-  A-25 – geprüft wurde nur, dass die Markierung innerhalb des Randes liegt, nicht ihre Form.
-- Fall-Liste und Muster: `arbeit/A-24 A-25 Fall-Liste.md`, `arbeit/A-25 Muster.html` (entschieden: Variante A).
+  APD-25 – geprüft wurde nur, dass die Markierung innerhalb des Randes liegt, nicht ihre Form.
+- Testfall-Liste und Muster: `arbeit/APD-24 APD-25 Testfall-Liste.md`, `arbeit/APD-25 Muster.html` (entschieden: Variante A).
 - Designrichtlinie 15.2, 15.5, Regelkatalog R-2.3, R-3.1; feste Fassung `fassung/4.25.1/`.
 
 ## 4.25.0 – 18.10.2026
 
 AppDesign 4.25.0 · Designrichtlinie allgemein 4.25.0 · Zusammenarbeit allgemein 2.10.1 · geprüft mit Reiselogbuch 3.23.0
 
-Suchen wie in Mail und Notizen (A-21) und die Lupe am Ende der Kapsel (A-22); beides allgemeine Regeln (Entscheidungen des
+Suchen wie in Mail und Notizen (APD-21) und die Lupe am Ende der Kapsel (APD-22); beides allgemeine Regeln (Entscheidungen des
 Nutzers 18.10.2026: Einheit Reiselogbuch, „…“ ja und allgemein, Lupe V1).
 
 - **R-2.3 mehrere Wörter, ui.js:** neue Bausteine `searchWords` (Leerzeichen trennt, „…“ = genaue Wortfolge, doppelte und
   leere fallen weg, einzelne Anführungszeichen werden übergangen), `findsAll` / `findsAny` (alle bzw. eines der Wörter,
   Groß/klein egal) und `markWords` (alle Wörter gelb, längere zuerst, aneinanderstoßende Stellen als eine Markierung,
   unsichtbare Umbruchstellen R-6.3). Was ‚ein Eintrag‘ ist, legt die App fest.
-- **A-22, 15.5:** die Lupe steht in jeder Kapsel am Ende, dahinter höchstens ‚…‘ – zentrale Liste [plus | search | ellipsis]
+- **APD-22, 15.5:** die Lupe steht in jeder Kapsel am Ende, dahinter höchstens ‚…‘ – zentrale Liste [plus | search | ellipsis]
   (vorher [search | plus | ellipsis]); im Eintrag war sie schon so.
-- **Prüfungen:** `checkSearchWords` (Bausteine in der Seite der App: S2–S17 der Fall-Liste), `checkSearchPlace` (Lupe am Ende
+- **Prüfungen:** `checkSearchWords` (Bausteine in der Seite der App: S2–S17 der Testfall-Liste), `checkSearchPlace` (Lupe am Ende
   jeder sichtbaren Kapsel). Gegenprobe mit Reiselogbuch 3.22.0: rot.
-- Fall-Liste und Muster: `arbeit/A-21 A-22 Fall-Liste.md`, `arbeit/A-21 A-22 Muster.html`.
+- Testfall-Liste und Muster: `arbeit/APD-21 APD-22 Testfall-Liste.md`, `arbeit/APD-21 APD-22 Muster.html`.
 - Designrichtlinie 15.2, 15.4, 15.5, Regelkatalog R-2.3; feste Fassung `fassung/4.25.0/`.
 
 ## 4.24.0 – 18.10.2026
 
 AppDesign 4.24.0 · Designrichtlinie allgemein 4.24.0 · Zusammenarbeit allgemein 2.9.0 · geprüft mit Reiselogbuch 3.22.0
 
-Die Zeile aus einem Fenster fällt nach dem Schließen deutlicher auf (A-23, Wunsch des Nutzers: ‚mindestens doppelt so lange‘).
+Die Zeile aus einem Fenster fällt nach dem Schließen deutlicher auf (APD-23, Wunsch des Nutzers: ‚mindestens doppelt so lange‘).
 
 - **R-7.3, ui.js (`revealRow`):** die Zeile bzw. der Kasten bleibt **2 s voll blau** (`--sel-bg`) und blendet dann in **1 s** aus
   (vorher: sofort 1 s ausblenden). ‚Bewegung reduzieren‘: 2 s voll blau, dann ohne Ausblenden weg. Geht während der
@@ -565,7 +603,7 @@ Die Zeile aus einem Fenster fällt nach dem Schließen deutlicher auf (A-23, Wun
 - **Prüfung `checkListStill` erweitert:** in jedem Fall Farbe kurz vor Ende des Haltens (1,95 s: voll `--sel-bg`) und
   Gesamtdauer (3 s); ein Fall mit ‚Bewegung reduzieren‘ (2 s); neuer Fall ‚nächstes Fenster während der Hervorhebung‘.
   Gegenprobe mit der alten Dauer: rot (‚dauert 1000 ms statt 3000 ms‘, ‚läuft weiter, obwohl das nächste Fenster offen ist‘).
-- Fall-Liste und Muster: `arbeit/A-23 T-94 Fall-Liste.md`, `arbeit/A-23 T-94 Muster.html` (entschieden: Variante A).
+- Testfall-Liste und Muster: `arbeit/APD-23 RLB-94 Testfall-Liste.md`, `arbeit/APD-23 RLB-94 Muster.html` (entschieden: Variante A).
 - Regelkatalog R-7.3, Abschnitt 7; feste Fassung `fassung/4.24.0/`.
 
 ## 4.23.2 – 18.10.2026 (Korrektur)
@@ -614,7 +652,7 @@ bei x, sobald die Tastatur offen war.
 
 AppDesign 4.23.0 · Designrichtlinie allgemein 4.23.0 · Zusammenarbeit allgemein 2.8.0 · geprüft mit Reiselogbuch 3.21.0
 
-A-19 (aus Reiselogbuch T-92, Variante C; Vorschläge `arbeit/T-92 Vorschläge.md`, Fall-Liste `arbeit/T-92 Fall-Liste.md`).
+APD-19 (aus Reiselogbuch RLB-92, Variante C; Vorschläge `arbeit/RLB-92 Vorschläge.md`, Testfall-Liste `arbeit/RLB-92 Testfall-Liste.md`).
 
 - **R-2.3 erweitert – Suche in der zentralen Liste:** Lupe im Kopf der Seitenleiste bzw. Startliste öffnet eine Suchzeile
   (wie 15.2, ohne Pfeile); nur Einträge mit Treffer, je Kachel ‚N Treffer‘ (je Fundstelle, gleich wie ‚1 von N‘ im
@@ -639,7 +677,7 @@ A-19 (aus Reiselogbuch T-92, Variante C; Vorschläge `arbeit/T-92 Vorschläge.md
 
 AppDesign 4.22.0 · Designrichtlinie allgemein 4.22.0 · Zusammenarbeit allgemein 2.8.0 · nur Werkzeug, Reiselogbuch bleibt auf Fassung 4.21.1
 
-A-20: Kontext in der Zeile Zeit und Token (Fall-Liste `arbeit/A-20 Fall-Liste.md`, K-1 bis K-12).
+APD-20: Kontext in der Zeile Zeit und Token (Testfall-Liste `arbeit/APD-20 Testfall-Liste.md`, APD-20/H-1 bis H-12).
 
 - **`werkzeug/messung.mjs`:** die Zeile endet mit ‚Kontext N‘ – Eingabe + aus Zwischenspeicher + geschrieben des **letzten**
   eigenen Modell-Aufrufs, also die Größe der Sitzung. Ab 300.000 (`GRENZE`) oder nach einer automatischen Zusammenfassung
@@ -647,7 +685,7 @@ A-20: Kontext in der Zeile Zeit und Token (Fall-Liste `arbeit/A-20 Fall-Liste.md
 - Hilfsagenten zählen nicht zum Kontext (eigener Kontext), weiter aber zu ‚Token vorige Antwort‘.
 - **Warum es nötig war:** ‚Token vorige Antwort‘ summiert alle Aufrufe einer Antwort und taugt nicht für die Grenze – Sitzung
   0009 lag unbemerkt bei ~451.600.
-- **Prüfung** `tests/messung.mjs` um K-1 bis K-11 erweitert (Grenze 299.999/300.000, letzter Aufruf statt Summe, Aufruf auf
+- **Prüfung** `tests/messung.mjs` um APD-20/H-1 bis H-11 erweitert (Grenze 299.999/300.000, letzter Aufruf statt Summe, Aufruf auf
   mehreren Zeilen, Hilfsagent, Zusammenfassung, kein Aufruf, Darstellung); Gegenprobe weiter rot.
 - Zusammenarbeit allgemein 2.8.0 (§2: Zeile mit Kontext); feste Fassung `fassung/4.22.0/`.
 
@@ -655,7 +693,7 @@ A-20: Kontext in der Zeile Zeit und Token (Fall-Liste `arbeit/A-20 Fall-Liste.md
 
 AppDesign 4.21.1 · Designrichtlinie allgemein 4.21.1 · Zusammenarbeit allgemein 2.7.0 · geprüft mit Reiselogbuch 3.20.1
 
-Korrektur aus P-48/3 (Fall-Liste `arbeit/A-17 Korrektur Fall-Liste.md`).
+Korrektur aus P-48/3 (Testfall-Liste `arbeit/APD-17 Korrektur Testfall-Liste.md`).
 
 - **Fehler:** Drehen am Ende der Seite – die Seite stand danach nicht mehr am Ende. `rememberTop` fand oben keinen Eintrag
   (`data-day`/`data-keep`) und merkte nichts; `restoreTop` tat nichts, Safari ließ die Seite irgendwo stehen.
@@ -669,7 +707,7 @@ Korrektur aus P-48/3 (Fall-Liste `arbeit/A-17 Korrektur Fall-Liste.md`).
 
 AppDesign 4.21.0 · Designrichtlinie allgemein 4.21.0 · Zusammenarbeit allgemein 2.7.0 · geprüft mit Reiselogbuch 3.20.0
 
-A-16 und A-17 (aus Reiselogbuch T-89 und T-90; Fall-Liste `arbeit/A-16 A-17 Fall-Liste.md`).
+APD-16 und APD-17 (aus Reiselogbuch RLB-89 und RLB-90; Testfall-Liste `arbeit/APD-16 APD-17 Testfall-Liste.md`).
 
 - **`openAt(element | null)` (R-7.4 neu):** Position beim Öffnen – ohne Element ganz oben, sonst steht das Element direkt
   unter der Leiste und einem haftenden Tabellenkopf (bisher rief die App `scrollIntoView({ block: 'center' })` – Mitte –
@@ -686,8 +724,8 @@ A-16 und A-17 (aus Reiselogbuch T-89 und T-90; Fall-Liste `arbeit/A-16 A-17 Fall
 
 AppDesign 4.20.0 · Designrichtlinie allgemein 4.20.0 · Zusammenarbeit allgemein 2.7.0 · geprüft mit Reiselogbuch 3.19.0
 
-A-15: Kapsel ‚Nach oben / Ans Ende‘ auch im iPhone-Aufbau (R-3.2 erweitert; Fall-Liste `arbeit/A-15 Fall-Liste.md`).
-Widerruft E-33 (Apple-Weg Statusleiste/Scroll-Leiste war dem Nutzer zu schwerfällig).
+APD-15: Kapsel ‚Nach oben / Ans Ende‘ auch im iPhone-Aufbau (R-3.2 erweitert; Testfall-Liste `arbeit/APD-15 Testfall-Liste.md`).
+Widerruft  (Apple-Weg Statusleiste/Scroll-Leiste war dem Nutzer zu schwerfällig).
 
 - **design.css:** `html.phone .fab` wird nicht mehr ausgeblendet; im iPhone-Aufbau unten 120 px Platz (statt 96 px), damit
   der letzte Inhalt nicht unter der Kapsel liegt. Ob die Kapsel in der Startliste erscheint, steuert die App (`hidden`).
@@ -699,8 +737,8 @@ Widerruft E-33 (Apple-Weg Statusleiste/Scroll-Leiste war dem Nutzer zu schwerfä
 
 AppDesign 4.19.0 · Designrichtlinie allgemein 4.19.0 · Zusammenarbeit allgemein 2.7.0 · geprüft mit Reiselogbuch 3.17.0
 
-A-14 (aus Reiselogbuch T-87): Eingabetaste in Eingabefeldern (neue Regel R-5.5, gilt für alle Apps; Fall-Liste
-`arbeit/A-14 T-88 Fall-Liste.md`).
+APD-14 (aus Reiselogbuch RLB-87): Eingabetaste in Eingabefeldern (neue Regel R-5.5, gilt für alle Apps; Testfall-Liste
+`arbeit/APD-14 RLB-88 Testfall-Liste.md`).
 
 - **Einzeilige Felder (ui.js):** bekommen von selbst `enterkeyhint="done"` (Taste ‚Fertig‘, auch für später eingefügte
   Felder über einen MutationObserver); die Eingabetaste bestätigt und schließt die Tastatur (`blur`). Ein Feld mit eigenem
@@ -717,7 +755,7 @@ A-14 (aus Reiselogbuch T-87): Eingabetaste in Eingabefeldern (neue Regel R-5.5, 
 
 AppDesign 4.18.0 · Designrichtlinie allgemein 4.18.0 · Zusammenarbeit allgemein 2.7.0 · geprüft mit Reiselogbuch 3.16.0
 
-A-13: Liste steht still, solange ein Fenster offen ist (neue Regel R-7.3, gilt für alle Apps, iPad und iPhone gleich).
+APD-13: Liste steht still, solange ein Fenster offen ist (neue Regel R-7.3, gilt für alle Apps, iPad und iPhone gleich).
 
 - **Ursache des Fehlers (Reiselogbuch, iPad quer):** Nach dem Erfassen eines Tages stand die Tabelle weiter unten, der
   erfasste Tag war nach oben verschwunden. Beim Schreiben im Fenster schiebt Safari für die Tastatur die **ganze Seite**;
@@ -736,7 +774,7 @@ A-13: Liste steht still, solange ein Fenster offen ist (neue Regel R-7.3, gilt f
 
 AppDesign 4.17.0 · Designrichtlinie allgemein 4.17.0 · Zusammenarbeit allgemein 2.7.0 · keine App gehoben (Reiselogbuch bleibt auf 4.16.1)
 
-A-12: Zeile Zeit und Token aus einem Werkzeug statt von Hand (Fall-Liste `arbeit/A-12 Fall-Liste.md`, M-1 bis M-14).
+APD-12: Zeile Zeit und Token aus einem Werkzeug statt von Hand (Testfall-Liste `arbeit/APD-12 Testfall-Liste.md`, APD-12/M-1 bis M-14).
 
 - **Werkzeug `werkzeug/messung.mjs`:** gibt `<sub>⏱ mm:ss · Token vorige Antwort: N neu · N aus Zwischenspeicher · N geschrieben</sub>`
   aus den Sitzungsdaten aus. Zeit ab der letzten Nachricht des Nutzers ohne Wartezeit in Auswahlfenstern; Systemmeldungen
@@ -748,7 +786,7 @@ A-12: Zeile Zeit und Token aus einem Werkzeug statt von Hand (Fall-Liste `arbeit
 - **Prüfung `tests/messung.mjs`** mit künstlichen Sitzungsdaten (alle 14 Fälle), Gegenprobe (mehrfach zählen) rot.
 - **Zusammenarbeit 2.7.0** (§2 Werkzeug), **CLAUDE.md 2.4.0**; feste Fassung `fassung/4.17.0/`.
 
-### Prüfliste (P-43)
+### Testfälle (P-43)
 
 1. In der nächsten Antwort steht am Ende die Zeile aus `messung.mjs`; die Zeit passt ungefähr zur Arbeitszeit ohne die Zeit,
    in der ein Auswahlfenster offen war.
@@ -758,16 +796,16 @@ A-12: Zeile Zeit und Token aus einem Werkzeug statt von Hand (Fall-Liste `arbeit
 
 AppDesign 4.16.1 · Designrichtlinie allgemein 4.16.1 · Zusammenarbeit allgemein 2.5.0 · geprüft mit Reiselogbuch 3.15.1
 
-A-10 und A-11 (Funde beim Veröffentlichen von 4.16.0 und 4.16.1).
+APD-10 und APD-11 (Funde beim Veröffentlichen von 4.16.0 und 4.16.1).
 
 - **Lauf-Werkzeug `tests/lauf.mjs`:** gleichzeitig laufen standardmäßig nur noch so viele Browser, wie der Rechner Kerne hat
   (Container: 4 statt 8); `--jobs N` überschreibt das weiter. **Anlass:** der volle Lauf für 4.16.0 war zweimal rot durch
   WebKit unter Volllast (`offline-regeln`, `hig` – Drehen am iPad), einzeln jeweils grün.
-- **Browser nacheinander (A-11):** `lauf.mjs` startet erst alle Prüfungen in Chromium, dann alle in WebKit – nie beide
+- **Browser nacheinander (APD-11):** `lauf.mjs` startet erst alle Prüfungen in Chromium, dann alle in WebKit – nie beide
   gleichzeitig. **Befund:** im gemeinsamen Lauf wurden vier von fünf Läufen rot, jedes Mal eine andere WebKit-Prüfung mit
   fester Zeitgrenze (Drehen, Tastatur, Netz-Wechsel); einzeln und im reinen WebKit-Lauf grün – auch beim Stand 3.14.1, die
   Schwankung bestand also schon vorher. Selbsttest um den Fall ‚Browser nacheinander‘ ergänzt (Gegenprobe rot).
-- **Ursache der ‚weißen Seite‘ in `offline.mjs` (A-11):** gemessen – nach der Installation 7 Dateien im Speicher des Service
+- **Ursache der ‚weißen Seite‘ in `offline.mjs` (APD-11):** gemessen – nach der Installation 7 Dateien im Speicher des Service
   Workers, nach dem Fund keine, ohne dass jemand löscht, und die nächste Seite wird gar nicht angefragt: der Netzprozess von
   WebKit stürzt in der Prüfumgebung unter Last ab (Playwright hält den Speicher nur im Arbeitsspeicher). Die Prüfung erkennt
   das (App erscheint nicht **und** Speicher leer) und prüft die Ansicht einmal in einem frischen Kontext neu; zweimal → rot.
@@ -781,14 +819,14 @@ A-10 und A-11 (Funde beim Veröffentlichen von 4.16.0 und 4.16.1).
 
 AppDesign 4.16.0 · Designrichtlinie allgemein 4.16.0 · Zusammenarbeit allgemein 2.4.0 · geprüft mit Reiselogbuch 3.15.0
 
-A-07 und A-09 (entschieden 15.10.2026).
+APD-7 und APD-9 (entschieden 15.10.2026).
 
-- **Neue Regel R-7.2 (A-09, aus Reiselogbuch T-84):** Jedes Neuladen beginnt im iPhone-Aufbau (auch iPad im schmalen
+- **Neue Regel R-7.2 (APD-9, aus Reiselogbuch RLB-84):** Jedes Neuladen beginnt im iPhone-Aufbau (auch iPad im schmalen
   Fenster) in der Startliste, ganz oben, ohne blauen Eintrag; der iPad-Aufbau öffnet wie bisher den aktuellen Eintrag;
   Rückkehr aus dem Hintergrund ändert nichts. Designrichtlinie 15.4, 15.17, Regelkatalog Thema 7.
 - **Neue Prüfung `tests/start.mjs`** (`checkStart`, `checkRueckkehr`) für jede App.
 - **Designrichtlinie 13:** Neustart ist in einer Web-App nicht erkennbar (iOS beendet Apps im Hintergrund).
-- **Zusammenarbeit 2.4.0 (A-07):** zu Beginn gezielt lesen (Abschnitt 0, Überschriften), nur ein voller Prüflauf je
+- **Zusammenarbeit 2.4.0 (APD-7):** zu Beginn gezielt lesen (Abschnitt 0, Überschriften), nur ein voller Prüflauf je
   Version im Veröffentlichungs-Skript; `CLAUDE.md` 2.2.0. Nicht übernommen: Versionsgeschichten auslagern, weniger
   Pflichtschritte bei kleinen Korrekturen; der Dunkelmodus bleibt in jedem Prüflauf.
 - **Feste Fassung `fassung/4.16.0/`.**
@@ -805,10 +843,10 @@ Korrektur zu P-39 (ok bis auf /1 und /2; Auswertung `arbeit/P-39 Rückmeldung.md
   `navigator.onLine` noch `false` sagte.
 - **Behoben (`ui.js`):** solange die App sichtbar ist, fragt sie alle 10 s den Service Worker (`pruefe`); Schutz gegen das
   schnelle Hin und Her über eine laufende Nummer der Frage statt über `navigator.onLine`.
-- **Prüfung geschärft (`offline.mjs`, F-17):** Gerät ohne Safari-Meldung – erst rot (10 Fehler in jedem Browser), dann grün;
+- **Prüfung geschärft (`offline.mjs`, APD-6/F-17):** Gerät ohne Safari-Meldung – erst rot (10 Fehler in jedem Browser), dann grün;
   Gegenprobe ohne die Nachfrage alle 10 s: 10 Fehler. **Warum übersehen:** die Prüfung schaltete mit `setOffline()`, das in
   Chromium und WebKit immer `offline`/`online` sendet und `navigator.onLine` sofort setzt – ein Gerät ohne diese Meldung war
-  nicht nachgebildet. Dabei gefunden: `setOffline()` erreicht in Chromium den Service Worker nicht – F-17 nimmt deshalb das
+  nicht nachgebildet. Dabei gefunden: `setOffline()` erreicht in Chromium den Service Worker nicht – APD-6/F-17 nimmt deshalb das
   Netz am Prüf-Webserver weg.
 - Designrichtlinie allgemein 4.15.1 (15.20); `tests/README.md`.
 
@@ -816,7 +854,7 @@ Korrektur zu P-39 (ok bis auf /1 und /2; Auswertung `arbeit/P-39 Rückmeldung.md
 
 AppDesign 4.15.0 · Designrichtlinie allgemein 4.15.0 · Zusammenarbeit allgemein 2.3.2 · geprüft mit Reiselogbuch 3.14.0
 
-A-06 Offline-Hinweis, Variante c als allgemeine Regel (Muster und Fall-Liste `arbeit/A-06 Muster und Fall-Liste.md`).
+APD-6 Offline-Hinweis, Variante c als allgemeine Regel (Muster und Testfall-Liste `arbeit/APD-6 Muster und Testfall-Liste.md`).
 
 - **R-1.5 ergänzt (keine neue Regel):** arbeitet die App offline, sieht man es.
 - **`ui.js`:** graue Zeile `.offl` (Icon `wifi-off`, ‚Offline – alles bleibt auf diesem Gerät‘) in `backupTileHtml()` – jede
@@ -827,7 +865,7 @@ A-06 Offline-Hinweis, Variante c als allgemeine Regel (Muster und Fall-Liste `ar
   neu aus. Erkennen: Safari `offline`/`online` und Nachrichten des Service Workers (`{ netz: '?' | 'pruefe' }` →
   `{ netz: 'aus' | 'an' }`); neue Icons `wifi-off`, `wifi`; `setNet()`, `isOffline()`, `netLineHtml()`.
 - **`design.css`:** Zeile, Meldung, Liste läuft auch hinter der Zeile durch (`padding-bottom` 176 px, solange offline), Druck ohne beides.
-- **`tests/offline.mjs`:** Fälle F-1 bis F-16 – Meldung und Zeile beim Start ohne Netz und bei hängendem Netz, Wechsel,
+- **`tests/offline.mjs`:** Fälle APD-6/F-1 bis F-16 – Meldung und Zeile beim Start ohne Netz und bei hängendem Netz, Wechsel,
   Lage (im Bild, nicht über Seitenleiste, ‚Nach oben / Ans Ende‘, Zeile und Backup-Kachel), Kontrast 4,5 : 1, 4 s,
   ‚Wieder online‘, schnelles Hin und Her, Drehen, offenes Fenster, Tastatur, lange Liste, Backup-Kachel gelb und weiß,
   iPhone-Startliste; neue Option `vorbereiten(page)`. Gegenprobe: ohne Meldung 32 Fehler. Beim Bauen gefunden (alle behoben):
@@ -839,7 +877,7 @@ A-06 Offline-Hinweis, Variante c als allgemeine Regel (Muster und Fall-Liste `ar
 
 AppDesign 4.14.2 · Designrichtlinie allgemein 4.14.2 · Zusammenarbeit allgemein 2.3.2 · geprüft mit Reiselogbuch 3.13.2
 
-Korrektur zu P-37 (Auswertung und Fall-Liste `arbeit/P-37 Rückmeldung.md`).
+Korrektur zu P-37 (Auswertung und Testfall-Liste `arbeit/P-37 Rückmeldung.md`).
 
 - **Schrittkopf (R-5.1 ergänzt, allgemeine Regel):** Options-Kapseln im Kopf eines Kastens stehen als Gruppe
   `.head-checks`; passt alles in eine Zeile, neben dem Titel (auch iPhone quer), sonst die ganze Gruppe darunter
@@ -849,20 +887,20 @@ Korrektur zu P-37 (Auswertung und Fall-Liste `arbeit/P-37 Rückmeldung.md`).
   anderer Adresse (Designrichtlinie 15.20). Neue Prüfung `tests/offline.mjs`: eigener Webserver mit echtem Service Worker,
   Netz ‚aus‘ und ‚hängt‘ nachgebildet, iPad und iPhone, Chromium und WebKit. Fand den Fehler (weiße Seite bei hängendem Netz)
   in beiden Browsern.
-- **Neu im Backlog:** A-06 Offline-Hinweis (Prio 1, allgemeine Regel, zuerst Muster).
+- **Neu im Backlog:** APD-6 Offline-Hinweis (Prio 1, allgemeine Regel, zuerst Muster).
 - Designrichtlinie allgemein 4.14.2 (15.10, 15.20, Regelkatalog: 35 Regeln).
 
 ## 4.14.1 – 14.10.2026 (Korrektur)
 
 AppDesign 4.14.1 · Designrichtlinie allgemein 4.14.1 · Zusammenarbeit allgemein 2.3.2 · geprüft mit Reiselogbuch 3.13.1
 
-Korrektur zu 4.14.0 (Fund `arbeit/A-05 Fund Markierung.md`, Entscheidung a). `v4/` nur Versionsnummer.
+Korrektur zu 4.14.0 (Fund `arbeit/APD-5 Fund Markierung.md`, Entscheidung a). `v4/` nur Versionsnummer.
 
 - **Fund:** Die Git-Markierung `v4.14.0` ließ sich nicht hochladen – der Git-Zugang der Cloud lehnt Markierungen ab (HTTP 403),
   die GitHub-Schnittstelle ebenso. `main` war schon oben, das Skript brach beim Push ab; die Links der App-README auf
   `blob/v4.14.0/…` führten zur Fehlerseite. Warum übersehen: der Selbsttest lud in ein lokales Schein-Repo, das Markierungen
   annimmt.
-- **Fassung mit Richtlinien-Text (D-6 neu):** `fassung/X.Y.Z/` enthält zusätzlich `README - Designrichtlinie allgemein.md` und
+- **Fassung mit Richtlinien-Text (APD-5/D-6 neu):** `fassung/X.Y.Z/` enthält zusätzlich `README - Designrichtlinie allgemein.md` und
   `README - Zusammenarbeit allgemein.md` (Prüfsummen); die App-README verlinkt `main/fassung/X.Y.Z/…`. `doku.mjs` liest die
   Richtlinien-Versionen aus der Fassung (geht auch in einer flachen Kopie) und prüft die Links; `version.mjs` vergleicht die
   Texte nicht mit dem Arbeitsstand (sie ändern sich auch zwischen Versionen).
@@ -874,29 +912,29 @@ Korrektur zu 4.14.0 (Fund `arbeit/A-05 Fund Markierung.md`, Entscheidung a). `v4
   (dreimal gleich nach je 100 ms) erfüllt war, bevor die App diese beiden Werte im nächsten Bild setzte. Jetzt wartet jede
   Ruhe-Messung auf einen echten Bildwechsel; ohne Bild innerhalb 2 s gilt die Seite nicht als ruhig. Die App war nicht falsch.
 - `fassung/4.14.0/` bleibt unverändert (ohne Texte); die lokale Markierung `v4.14.0` ist gelöscht.
-- Designrichtlinie allgemein 4.14.1 (Abschnitt 14), README, CLAUDE.md 2.1.1, `tests/README.md`, Fall-Liste D-6.
+- Designrichtlinie allgemein 4.14.1 (Abschnitt 14), README, CLAUDE.md 2.1.1, `tests/README.md`, Testfall-Liste APD-5/D-6.
 
 ## 4.14.0 – 14.10.2026 (Neben)
 
 AppDesign 4.14.0 · Designrichtlinie allgemein 4.14.0 · Zusammenarbeit allgemein 2.3.2 · geprüft mit Reiselogbuch 3.13.0
 
-A-05 Version B – feste Fassung und Veröffentlichungs-Skript (Fall-Liste `arbeit/A-05 Fall-Liste.md`, Teile D und E).
+APD-5 Version B – feste Fassung und Veröffentlichungs-Skript (Testfall-Liste `arbeit/APD-5 Testfall-Liste.md`, Teile D und E).
 `v4/` nur Versionsnummer und Kommentar zur Einbindung.
 
-- **Feste Fassung `fassung/4.14.0/` (D-1):** `design.css`, `ui.js` und `tests/` je Version unveränderlich, Prüfsummen in
+- **Feste Fassung `fassung/4.14.0/` (APD-5/D-1):** `design.css`, `ui.js` und `tests/` je Version unveränderlich, Prüfsummen in
   `fassung/PRUEFSUMMEN`, Git-Markierung `v4.14.0`. Apps laden genau ihre Fassung (`../AppDesign/fassung/X.Y.Z/…`, ohne
   `?v=`) und prüfen mit den Prüfungen dieser Fassung; gehoben wird nur nach Rückfrage. `v4/` bleibt Arbeitsstand und zeigt die
-  neueste Fassung (D-5). Ältere Versionen (bis 4.13.0) haben keine Fassung – die Apps waren bisher auf `v4/`.
+  neueste Fassung (APD-5/D-5). Ältere Versionen (bis 4.13.0) haben keine Fassung – die Apps waren bisher auf `v4/`.
 - **`tests/version.mjs` (R-10.3):** Fassungs-Pfad in `index.html` und `sw.js` = `AD_NEEDED`, nichts aus `v4/`; Versionen in
   der Fassung; `checkFassungen`: keine Datei geändert, fehlt oder dazu, `v4/` und `tests/` = neueste Fassung; ein geänderter
-  Arbeitsstand `v4/` (roter Knopf, Skriptfehler) erreicht die App nicht (D-3).
-- **`tests/doku.mjs`:** README der App verlinkt AppDesign über die Markierung der Fassung (D-6), Richtlinien-Versionen aus der
-  Markierung (`adText`); `checkCollab` meldet ‚gilt sofort für alle Apps‘ und `?v=` (D-7, W-4).
+  Arbeitsstand `v4/` (roter Knopf, Skriptfehler) erreicht die App nicht (APD-5/D-3).
+- **`tests/doku.mjs`:** README der App verlinkt AppDesign über die Markierung der Fassung (APD-5/D-6), Richtlinien-Versionen aus der
+  Markierung (`adText`); `checkCollab` meldet ‚gilt sofort für alle Apps‘ und `?v=` (APD-5/D-7, W-4).
 - **`werkzeug/veroeffentlichen.mjs` (neu, E):** `vorbereiten` erhöht alle Versionsnummern in AppDesign und App und legt die
   Fassung an; `fassung` legt sie nach Änderungen neu an (nur vor dem Veröffentlichen); `los` prüft Zweig, offene Änderungen,
-  Texte (CHANGELOG, Prüfliste /0), Fassung und **alle Tests der App**, dann AppDesign `--no-ff` nach `main` mit Markierung,
+  Texte (CHANGELOG, Testfälle /0), Fassung und **alle Tests der App**, dann AppDesign `--no-ff` nach `main` mit Markierung,
   Push (4 Wiederholungen), Pages-Lauf über die Actions-Liste abwarten (höchstens 10 min), dann die App genauso; nennt Apps auf
-  älteren Fassungen (D-4); `--nur-app`, wenn AppDesign schon online ist (E-8). Liste der Apps `werkzeug/apps.json`.
+  älteren Fassungen (APD-5/D-4); `--nur-app`, wenn AppDesign schon online ist (APD-5/E-8). Liste der Apps `werkzeug/apps.json`.
 - **Selbsttest `werkzeug/veroeffentlichen-selbsttest.mjs` (neu):** 20 Fälle in Kopien beider Repos mit Schein-Remotes und
   nachgebildetem Pages-Lauf (success, failure, hängt). **Gefunden:** ‚los‘ ließ eine App aus, die auf `main` stand, und
   veröffentlichte AppDesign allein – jetzt zählt jede App, deren Version neuer ist als auf `origin/main`.
@@ -907,7 +945,7 @@ A-05 Version B – feste Fassung und Veröffentlichungs-Skript (Fall-Liste `arbe
 
 AppDesign 4.13.0 · Designrichtlinie allgemein 4.13.0 · Zusammenarbeit allgemein 2.3.1 · geprüft mit Reiselogbuch 3.12.0
 
-A-05 Version A – Prüfungen 2.0 (Fall-Liste `arbeit/A-05 Fall-Liste.md`, Teile A, B, C). `v4/` nur Versionsnummer.
+APD-5 Version A – Prüfungen 2.0 (Testfall-Liste `arbeit/APD-5 Testfall-Liste.md`, Teile A, B, C). `v4/` nur Versionsnummer.
 
 - **`tests/pruefe.mjs` (neu, A):** Prüfskripte melden Fehler mit Sollwerten (Wert, RegExp, Funktion, Liste) und
   Rückgabewert 1, jede Meldung mit Regel, Browser, Ansicht und Schritt; Skriptfehler der Seite sind Fehler; Gegenprobe
@@ -933,12 +971,12 @@ A-05 Version A – Prüfungen 2.0 (Fall-Liste `arbeit/A-05 Fall-Liste.md`, Teile
 
 AppDesign 4.12.2 · Designrichtlinie allgemein 4.12.2 · Zusammenarbeit allgemein 2.2.0 · geprüft mit Reiselogbuch 3.11.7
 
-A-02 Schritte 3 und 4 (Fall-Liste `arbeit/A-02b Fall-Liste.md`) – nur Richtlinien, Zusammenarbeit und Prüfungen; `v4/` nur
+APD-2 Schritte 3 und 4 (Testfall-Liste `arbeit/APD-2b Testfall-Liste.md`) – nur Richtlinien, Zusammenarbeit und Prüfungen; `v4/` nur
 Versionsnummer.
 
-- **Designrichtlinie allgemein, Abschnitt 7 (F-4):** Vorschaufenster in voller Seitenbreite, seitlich wischen auf iPad und
+- **Designrichtlinie allgemein, Abschnitt 7 (APD-2/F-4):** Vorschaufenster in voller Seitenbreite, seitlich wischen auf iPad und
   iPhone (R-6.4) – stand bisher nur in der Designrichtlinie Reiselogbuch.
-- **Zusammenarbeit allgemein 2.2.0 (W-1 bis W-3):** Korrekturen sofort als Korrekturversion, auch ohne Datenverlust (§6);
+- **Zusammenarbeit allgemein 2.2.0 (APD-2/W-1 bis W-3):** Korrekturen sofort als Korrekturversion, auch ohne Datenverlust (§6);
   Antwortzeile nur noch bei mehr als 4 Fragen, jedes Fenster mit ‚Ich schreibe im Chat‘ (§2); Muster und Erklärungen als
   Datei vor dem Fenster (§2); Doppeltes in §5 und §7 durch Verweise auf Abschnitt 0 ersetzt.
 - **CLAUDE.md 2.0.0:** zuerst UEBERGABE.md, Regeln nur noch als Verweis.
@@ -968,7 +1006,7 @@ AppDesign 4.12.1 · Designrichtlinie allgemein 4.12.1 · Zusammenarbeit allgemei
 
 AppDesign 4.12.0 · Designrichtlinie allgemein 4.12.0 · Zusammenarbeit allgemein 2.1.1 · geprüft mit Reiselogbuch 3.11.5
 
-- **Regelkatalog neu (A-02a, Abschnitt 17):** 52 Regeln → **34 in 10 Themen**, Nummern `R-<Thema>.<Nr>` (z. B. R-6.2);
+- **Regelkatalog neu (APD-2a, Abschnitt 17):** 52 Regeln → **34 in 10 Themen**, Nummern `R-<Thema>.<Nr>` (z. B. R-6.2);
   je Regel genau eine Prüfung (Spalte ‚Prüfung‘), Spalte ‚ersetzt‘ und Zuordnung alt → neu. R-50 ist Arbeitsregel in
   Zusammenarbeit 7.
 - **5 neue Regeln mit Prüfung:** R-2.3 Suche, R-4.4 Fenster-Kopfzeile, R-5.3 Fehlermeldungen, R-5.4 Auswahl-Kapsel,
@@ -980,10 +1018,10 @@ AppDesign 4.12.0 · Designrichtlinie allgemein 4.12.0 · Zusammenarbeit allgemei
   (R-5.3), `checkPreview` (R-6.4). Neu `checkCatalog` in `doku.mjs`: jede Regel hat eine Prüfung, jede alte Nummer ist
   zugeordnet und wird nirgends mehr verwendet. Jede neue Prüfung schlug mit einem eingebauten Fehler an (erst rot).
 - **Richtlinie gekürzt:** Abschnitte 1, 9, 10, 11, 12, 14 verweisen auf die Regel statt sie zu wiederholen; Grundprinzipien
-  nennen iPad und iPhone und den Abgleich über das Backup (W-6).
+  nennen iPad und iPhone und den Abgleich über das Backup (APD-2/W-6).
 - `v4/`: nur die Versionsnummer (`AD_VERSION`, `--ad-version`) und Regelnummern in Kommentaren – keine Änderung der Bausteine.
 - **Lücke gefunden:** Viele Ablauf-Tests der App geben Werte nur aus und melden keine Fehler; die Regeln, die sie betreffen,
-  haben jetzt eigene Prüfungen mit Fehlermeldung. Der Rest kommt mit A-05.
+  haben jetzt eigene Prüfungen mit Fehlermeldung. Der Rest kommt mit APD-5.
 
 ## 4.11.4 – 14.10.2026 (Korrektur)
 
@@ -1029,7 +1067,7 @@ AppDesign 4.11.1 · Designrichtlinie allgemein 4.11.1 · Zusammenarbeit allgemei
 
 - **R-49 (neu):** Die README jeder App zeigt ganz oben ‚Verwendete Versionen‘ (App, AppDesign, Designrichtlinie allgemein,
   Designrichtlinie <App>, Zusammenarbeit allgemein – je Version und Link).
-- **R-50 (neu):** Jede Prüfliste beginnt mit /0 ‚Version prüfen‘; jeder Schritt nennt die Meldung je Gerät; jeder solche Fall
+- **R-50 (neu):** Jede Testfälle beginnen mit /0 ‚Version prüfen‘; jeder Schritt nennt die Meldung je Gerät; jeder solche Fall
   hat einen automatischen Test. Neue Prüfung `tests/doku.mjs` (R-49, R-50).
 - **Zusammenarbeit allgemein 1.15.0:** ‚Fertig‘ erst nach erfolgreichen Pages-Läufen beider Repos; R-49 und R-50 als
   Zusammenarbeitsregeln (Anlass: P-26/6, 7 und 9).
@@ -1067,7 +1105,7 @@ AppDesign 4.10.1 · Designrichtlinie allgemein 4.10.1 · Zusammenarbeit allgemei
 - **R-42 ergänzt:** Leere Felder gelten beim Abgleich als nicht vorhanden – ein Fenster, das alle Felder speichert,
   überschreibt nichts mehr mit ‚leer‘ (Fall 8b in `tests/abgleich.mjs`).
 - **R-43:** Die Hinweise nennen die Geräte beim Namen (‚Auf dem iPad gelöscht, auf diesem iPhone danach noch geändert‘).
-- **Zusammenarbeit allgemein 1.14.0:** am Ende jeder Umsetzung alle offenen Prüfpunkte einzeln Schritt für Schritt.
+- **Zusammenarbeit allgemein 1.14.0:** am Ende jeder Umsetzung alle offenen Usertests einzeln Schritt für Schritt.
 
 ## 4.10.0 – 12.10.2026 (Nebenversion)
 
@@ -1162,7 +1200,7 @@ AppDesign 4.6.0 · Designrichtlinie allgemein 4.6.0 · Zusammenarbeit allgemein 
   Kopf und Backup-Kachel liegen außerhalb.
 - **Zusammenarbeit allgemein 1.13.0:** Abgleich mit dem Regelkatalog vor jedem Muster, Prüfung aller
   automatisch prüfbaren Regeln nach jeder Version, neue Regeln sofort mit Nummer und Prüfung,
-  Geräte-Regeln in die Prüfliste, wenn betroffen.
+  Geräte-Regeln in die Testfälle, wenn betroffen.
 
 ## 4.5.0 – 11.10.2026 (Nebenversion)
 
@@ -1221,7 +1259,7 @@ AppDesign 4.1.0 · Designrichtlinie allgemein 4.1.0 · Zusammenarbeit allgemein 
 
 AppDesign 4.0.0 · Designrichtlinie allgemein 4.0.0 · Zusammenarbeit allgemein 1.10.0
 
-- Design-Repo angelegt (S-01, S-02): Designrichtlinie allgemein und Zusammenarbeit allgemein aus
+- Design-Repo angelegt (APD 4.0.0/S-1, S-2): Designrichtlinie allgemein und Zusammenarbeit allgemein aus
   ReiseLogBuch übernommen (Versionsgeschichte bis 3.6.1 bzw. 1.9.0 siehe dort in den Dateien).
 - `v4/design.css`: alle gemeinsamen Komponenten (aus Reiselogbuch 2.4.0, unverändert im Aussehen).
 - `v4/ui.js`: Icons, Menüs mit Untermenü, Sprechblase, gedrückte Schaltflächen, Meldung, Fenster,

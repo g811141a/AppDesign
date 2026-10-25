@@ -1,4 +1,4 @@
-/* AppDesign 4.35.0 · design.css – gemeinsame Gestaltung der iPad-Web-Apps von g811141a (Apple-like)
+/* AppDesign 4.36.0 · design.css – gemeinsame Gestaltung der iPad-Web-Apps von g811141a (Apple-like)
    Einbinden im <head> vor dem eigenen <style> der App:  <link rel="stylesheet" href="../AppDesign/fassung/X.Y.Z/design.css"> (feste Fassung, R-10.3)
    Farben als Variablen auf :root, Dunkelmodus über data-theme="dark" (setzt ui.js / applyTheme).
    Komponenten: Schaltflächen, Suchfeld, Kapsel, Eingabefelder, Datumsfelder, Kopfzeile, Seitenleiste,
@@ -6,14 +6,14 @@
    Options-Kapsel; seit 4.1.0 iPhone-Ansicht (html.phone: Seitenkopf, großer Titel, Liste, Kasten, untere Leiste). Regeln dazu: README - Designrichtlinie allgemein.md */
 /* Farben im Apple-Look: Hintergrund Hellgrau, Kästen weiß ohne Rand, schwebende Schaltflächen */
 :root {
-  --ad-version: "4.35.0";   /* R-10.3: Version der Bausteine, die App prüft sie beim Start */
+  --ad-version: "4.36.0";   /* R-10.3: Version der Bausteine, die App prüft sie beim Start */
   --bg: #f2f2f7;
   --card: #ffffff;
   --ink: #1c1c1e;
   --muted: #6e6e73;
   --line: #d1d1d6;
   --accent: #007aff;
-  --accent-fill: var(--accent);   /* seit 4.35.0 (A-43 H3): gefüllte blaue Flächen – mit ‚Kontrast erhöhen‘ dunkel eigener Wert */
+  --accent-fill: var(--accent);   /* seit 4.35.0 (APD-43 H3): gefüllte blaue Flächen – mit ‚Kontrast erhöhen‘ dunkel eigener Wert */
   --accent-ink: #ffffff;
   --sw-on: #34c759;
   --sw-off: #e9e9eb;
@@ -44,7 +44,7 @@
   --side-w: 0px;
   --vv-top: 0px;
   --vv-bottom: 0px;
-  /* R-1.7 (seit 4.29.0, A-63): sichere Ränder (Dynamic Island, Ecken, Home-Leiste) nur hier aus env() – überall sonst
+  /* R-1.7 (seit 4.29.0, APD-63): sichere Ränder (Dynamic Island, Ecken, Home-Leiste) nur hier aus env() – überall sonst
      var(--safe-…); die Prüfungen setzen damit echte Gerätewerte (hig.mjs checkSafe), die Prüfbrowser liefern für env() immer 0 */
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
@@ -67,7 +67,7 @@
   --rim-color: rgba(255,255,255,.4);
   color-scheme: dark;
 }
-/* R-1.9 (seit 4.35.0, A-43 H1–H3, H5): ‚Kontrast erhöhen‘ des Geräts – zweite Farbtabelle nach Apple (hell und dunkel), jeder Text und
+/* R-1.9 (seit 4.35.0, APD-43 H1–H3, H5): ‚Kontrast erhöhen‘ des Geräts – zweite Farbtabelle nach Apple (hell und dunkel), jeder Text und
    jedes Icon mindestens 4,5 : 1; nur Variablen, deshalb wechselt sie sofort ohne Neuaufbau. Die Ausgabe (HTML/PDF) bleibt hell (R-6.2). */
 @media (prefers-contrast: more) {
   :root { --accent: #0040dd; --accent-fill: #0040dd; --danger: #b3261e; --danger-fill: #d70015; --sw-on: #248a3d; --warn: #c93400;
@@ -103,7 +103,7 @@ button[hidden] { display: none; }
 td, th, .ln .t, dd, .box .kv .v, .irow .t, .side-row .t, .fazit-box, .bhint, .bnote, .msg-text, .pop p { overflow-wrap: anywhere; }
 /* Seit 4.3.0: Doppeltippen vergrößert nie die Ansicht (Zoomen mit zwei Fingern bleibt möglich) */
 * { touch-action: manipulation; }
-/* R-3.4 (seit 4.35.0, A-43 K6, K9): kein Fokus-Rahmen beim Antippen und beim Öffnen eines Fensters, in Textfeldern nie – auch nicht
+/* R-3.4 (seit 4.35.0, APD-43 K6, K9): kein Fokus-Rahmen beim Antippen und beim Öffnen eines Fensters, in Textfeldern nie – auch nicht
    Safaris blaue Umrandung (outline: auto 5px); der Cursor zeigt den Fokus (wie Apple). Bei Bedienung mit der Tastatur (html.tastatur,
    setzt ui.js) ein eigener Ring in der Akzentfarbe mit 2 px Abstand – er folgt dem Radius; im Menü ist der Eintrag hinterlegt. */
 :focus { outline: none; }
@@ -115,7 +115,7 @@ html.tastatur .menu .mi:focus-visible { outline: none; background: var(--sel-bg)
 .ansage { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; border: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 /* Seit 4.2.0: Was im Vordergrund ist, bekommt jedes Wischen – die Seite dahinter bewegt sich nicht */
 html.locked, html.locked body { overflow: hidden; }
-html.locked .rolle { overflow: hidden; }   /* seit 4.27.0 (A-28): auch der Rollbereich steht still, solange ein Fenster offen ist */
+html.locked .rolle { overflow: hidden; }   /* seit 4.27.0 (APD-28): auch der Rollbereich steht still, solange ein Fenster offen ist */
 dialog, .dlg-body, .menu, #side { overscroll-behavior: contain; }
 .layer { touch-action: none; }
 .ic { width: 20px; height: 20px; flex: none; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
@@ -135,7 +135,7 @@ button.primary .ic.red { color: inherit; }
 /* Antippfläche 44 px (unsichtbar), das Zeichen bleibt so groß und am selben Platz wie bisher */
 .searchbox .sclear { width: 44px; height: 44px; margin: -6px; min-height: 0; min-width: 0; padding: 0; border: none; box-shadow: none; background: none; color: #a1a1a6; border-radius: 50%; }
 .searchbox .sclear svg { width: 20px; height: 20px; }
-/* Komponente ⓧ in einzeiligen Feldern (seit 4.29.0, A-63 C3, R-5.6): wie im Suchfeld – rechts im Feld, solange es den Fokus
+/* Komponente ⓧ in einzeiligen Feldern (seit 4.29.0, APD-63 C3, R-5.6): wie im Suchfeld – rechts im Feld, solange es den Fokus
    hat und etwas drinsteht (ui.js setzt den Knopf hinter das Feld); der Text läuft nicht darunter */
 .fclear { position: absolute; z-index: 2; display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; margin: 0;
   min-width: 0; min-height: 0; padding: 0; border: none; box-shadow: none; background: none; color: #a1a1a6; border-radius: 50%; touch-action: manipulation; }
@@ -156,7 +156,7 @@ button.on { background: var(--sel-bg); border-color: var(--accent); }
 .grp button.on, .navgrp button.on { background: none; box-shadow: none; }
 .grp button.on::before, .navgrp button.on::before { content: ''; position: absolute; z-index: -1; inset: 3px; border-radius: 999px;
   background: var(--sel-bg); box-shadow: inset 0 0 0 .5px var(--accent); }
-/* Seit 4.25.1 (A-25): bei Icons ist die Markierung ein Kreis 36 × 36 wie bei Wetter und Smileys (Tapback), bei Text eine Kapsel –
+/* Seit 4.25.1 (APD-25): bei Icons ist die Markierung ein Kreis 36 × 36 wie bei Wetter und Smileys (Tapback), bei Text eine Kapsel –
    vorher 42 × 36 (eiförmig). */
 .grp button:not(.txt).on::before, .navgrp button:not(.txt).on::before, .grp button:not(.txt).fill::before {
   inset: 50% auto auto 50%; width: 36px; height: 36px; transform: translate(-50%, -50%); }
@@ -210,7 +210,7 @@ body.docked .nb { left: calc(var(--side-w) + max(10px, var(--safe-left)) + 4px);
 .nb2 .searchbox { flex: 1 1 auto; }
 .emptymain { margin-top: 120px; text-align: center; color: var(--muted); font-size: 19px; }
 
-/* Rahmen und Rollbereich (seit 4.27.0, A-28, R-2.1): Die Seite rollt nie, nur der Inhalt. #app ist ein Rahmen aus festen
+/* Rahmen und Rollbereich (seit 4.27.0, APD-28, R-2.1): Die Seite rollt nie, nur der Inhalt. #app ist ein Rahmen aus festen
    Zeilen – Kopfzeile (.nb bzw. .pnav, mit Suchzeile), darunter der Rollbereich .rolle. Der Rahmen ist so hoch wie der
    sichtbare Bereich (--vv-h, setzt ui.js) und endet bei offener Tastatur über ihr (B1). Neben der festen Seitenleiste beginnt
    er rechts davon. Tabellenköpfe haften im Rollbereich mit top: 0. */
@@ -221,10 +221,10 @@ body.docked #app:has(> .rolle) { left: calc(var(--side-w) + max(10px, var(--safe
 #app > .rolle ~ .nb, #app > .nb:has(~ .rolle), #app > .pnav:has(~ .rolle) { position: relative; top: 0; left: 0; flex: none; }
 .rolle { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch;
   padding: 0 max(16px, var(--safe-right)) 0 max(16px, var(--safe-left)); }
-/* Seit 4.27.1 (A-33): der Abstand unter dem Inhalt (100 px, Platz für die Kapsel) als Platzhalter am Ende statt als Innenabstand –
+/* Seit 4.27.1 (APD-33): der Abstand unter dem Inhalt (100 px, Platz für die Kapsel) als Platzhalter am Ende statt als Innenabstand –
    so wird der Rollbereich auch bei sehr niedrigem sichtbarem Bereich (iPhone quer mit Tastatur) nicht höher als sein Platz. */
 .rolle::after { content: ''; display: block; height: calc(100px + var(--platz, 0px)); }
-/* Seit 4.28.1 (A-36, R-4.5): --platz (setzt ui.js) = Platz unter dem Inhalt, damit ein Feld beim Antippen in die obere Hälfte rollen kann */
+/* Seit 4.28.1 (APD-36, R-4.5): --platz (setzt ui.js) = Platz unter dem Inhalt, damit ein Feld beim Antippen in die obere Hälfte rollen kann */
 .dlg-body::after { content: ''; display: block; height: var(--platz, 0px); }
 body.docked .rolle { padding-left: 16px; }
 @media print {
@@ -285,14 +285,14 @@ body.docked { padding-left: calc(var(--side-w) + max(10px, var(--safe-left)) + 2
 
 /* Backup-Hinweis gelb getönt mit blau gefülltem Knopf, damit man die Funktion sofort erkennt (iPad und iPhone) */
 #side .bhint button, .bbar .bnote button { background: var(--accent-fill); color: var(--accent-ink); border: .5px solid var(--rim-color); box-shadow: var(--glow-accent); }
-/* Seit 4.34.0 (R-9.1, A-74): die Backup-Kachel steht nur, solange heute noch kein Backup erstellt wurde – der weiße Zustand entfällt */
+/* Seit 4.34.0 (R-9.1, APD-74): die Backup-Kachel steht nur, solange heute noch kein Backup erstellt wurde – der weiße Zustand entfällt */
 .bbar .bnote.ok { background: var(--card); color: var(--muted); }
 .bbar .bnote.ok button { background: var(--btn); color: var(--ink); border-color: var(--btn-rim); box-shadow: var(--float); }
 /* Seit 4.4.0: Anzahl der Einträge klein und grau unter dem Titel (Seitenleiste und iPhone-Startliste) */
 .side-head .ttl { flex: 1; min-width: 0; }
 .side-head .ttl h2 { margin: 0; }
 .side-head small, .pnav-head small { display: block; font-size: 13px; font-weight: 400; color: var(--muted); line-height: 1.2; }
-/* Seit 4.23.0 (A-19, R-2.3): Suchzeile der zentralen Liste unter dem Kopf (wie 15.2, ohne Pfeile); bleibt stehen wie der Kopf */
+/* Seit 4.23.0 (APD-19, R-2.3): Suchzeile der zentralen Liste unter dem Kopf (wie 15.2, ohne Pfeile); bleibt stehen wie der Kopf */
 #side .side-search { flex: none; margin: 0 0 8px; }
 
 /* Komponente Menü: Karte mit Schatten wie die Schaltflächen, Icons vor dem Text; antippen daneben schließt */
@@ -339,11 +339,11 @@ body.docked { padding-left: calc(var(--side-w) + max(10px, var(--safe-left)) + 2
   border-radius: 22px; background: var(--btn); border: .5px solid var(--btn-rim); box-shadow: var(--float); }
 .fab button { padding: 0; font-size: 20px; background: none; border: none; box-shadow: none; height: 48px; }
 .fab[hidden] { display: none; }
-/* Seit 4.30.0 (A-37 B, R-3.2): nur die Pfeile, die etwas bewirken – die Kapsel steht unten fest und wird niedriger.
+/* Seit 4.30.0 (APD-37 B, R-3.2): nur die Pfeile, die etwas bewirken – die Kapsel steht unten fest und wird niedriger.
    Solange ein Fenster offen ist, sind Kapsel und Schnellroll-Griff nicht zu sehen. */
 .fab button[hidden] { display: none; }
 html.locked .fab, html.locked .schnell { visibility: hidden; }
-/* Seit 4.30.0 (A-37 C, R-3.2, 15.1): Schnellroll-Griff rechts über der Kapsel (ui.js setzt Bahn und Lage), Blase links daneben.
+/* Seit 4.30.0 (APD-37 C, R-3.2, 15.1): Schnellroll-Griff rechts über der Kapsel (ui.js setzt Bahn und Lage), Blase links daneben.
    Ein- und Ausblenden nur über die Deckkraft (auch bei ‚Bewegung reduzieren‘). */
 .schnell { position: fixed; right: max(2px, var(--safe-right)); width: 44px; z-index: 4; pointer-events: none; }
 .schnell[hidden] { display: none; }
@@ -360,7 +360,7 @@ html.locked .fab, html.locked .schnell { visibility: hidden; }
   opacity: 0; transition: opacity .15s; pointer-events: none; }
 .schnell .blase:empty { display: none; }
 .schnell.zieht .blase { opacity: 1; }
-/* Seit 4.30.0 (A-61 Teil 1, R-7.5, 15.4, 15.17): Navigation und Gesten. Wo gewischt werden kann (html.wischt: iPhone-Aufbau,
+/* Seit 4.30.0 (APD-61 Teil 1, R-7.5, 15.4, 15.17): Navigation und Gesten. Wo gewischt werden kann (html.wischt: iPhone-Aufbau,
    iPad hoch, seit 4.31.0 iPad quer), rollt der Browser nur senkrecht – waagrecht gehört das Wischen der Gestenstelle in ui.js; Bereiche mit eigenem
    waagrechtem Rollen behalten ihr Wischen (sie sind selbst Rollbereiche). Während des Seitenwechsels liegt der Inhalt über der
    Startliste (Schatten an seiner linken Kante, die Liste dunkelt leicht ab); bewegt werden nur transform und opacity. */
@@ -374,7 +374,7 @@ html.nav-schiebt #app { z-index: 7; background: var(--bg); box-shadow: -6px 0 24
 html.nav-schiebt .fab { z-index: 8; }
 html.nav-schiebt .schnell, html.nav-seite .schnell { display: none; }
 html.nav-seite #side, html.nav-seite .side-shade { will-change: transform, opacity; }
-/* Seit 4.31.0 (A-68, Variante B): iPad quer – beim Hereinwischen und Gleiten behält der Inhalt seine volle Breite und rückt mit
+/* Seit 4.31.0 (APD-68, Variante B): iPad quer – beim Hereinwischen und Gleiten behält der Inhalt seine volle Breite und rückt mit
    (transform, ui.js navBild); erst beim Einrasten wird er schmaler (body.docked ohne html.nav-fest) */
 html.nav-fest, html.nav-fest body { overflow: hidden; }
 html.nav-fest body.docked { padding-left: 0; }
@@ -417,7 +417,7 @@ dialog form { display: flex; flex-direction: column; max-height: var(--dlg-max, 
 .dlg-body.sync-preview { margin: 0; padding: 24px; background: #fff; color: #000; color-scheme: light; overflow: auto; }
 .dlg-body.sync-preview .sync-report { min-width: 760px; }
 html.phone .dlg-body.sync-preview { padding: 16px; }
-/* Seit 4.29.0 (R-1.7, A-63): am iPhone trägt der Bericht selbst den rechten Rand – Safari zählt den rechten Innenabstand eines
+/* Seit 4.29.0 (R-1.7, APD-63): am iPhone trägt der Bericht selbst den rechten Rand – Safari zählt den rechten Innenabstand eines
    Rollbereichs nicht mit, sonst blieben quer die letzten Pixel unter der Aussparung und ließen sich nicht hervorrollen */
 html.phone :is(#dlg, .blatt-geist) .dlg-body.sync-preview { padding-right: 0; }
 html.phone :is(#dlg, .blatt-geist) .dlg-body.sync-preview .sync-report { box-sizing: content-box; padding-right: max(16px, var(--safe-right)); }
@@ -466,7 +466,7 @@ dialog input[type=text], dialog input[type=date], dialog textarea { background: 
 .emoji-row .cap .scroll button { width: 48px; min-width: 48px; }
 .chips .cap .scroll button { padding: 0 14px; white-space: nowrap; }
 .strip > .reset { margin-left: auto; }
-/* Verlauf am Rand, wo es weitergeht (R-5.4): --fade lang, die äußeren 28 px ganz frei – dort steht der Pfeil (seit 4.33.0, A-75) */
+/* Verlauf am Rand, wo es weitergeht (R-5.4): --fade lang, die äußeren 28 px ganz frei – dort steht der Pfeil (seit 4.33.0, APD-75) */
 .cap { position: relative; --fade: 48px; }
 .cap .scroll.fr { -webkit-mask-image: linear-gradient(to left, transparent 28px, #000 var(--fade)); mask-image: linear-gradient(to left, transparent 28px, #000 var(--fade)); }
 .cap .scroll.fl { -webkit-mask-image: linear-gradient(to right, transparent 28px, #000 var(--fade)); mask-image: linear-gradient(to right, transparent 28px, #000 var(--fade)); }
@@ -494,7 +494,7 @@ dialog input[type=text], dialog input[type=date], dialog textarea { background: 
   background: radial-gradient(circle at 15.5px 50%, #fff 13.5px, transparent 14px), var(--sw-off); transition: background .2s; }
 .check.sw input:checked { background: radial-gradient(circle at calc(100% - 15.5px) 50%, #fff 13.5px, transparent 14px), var(--sw-on); }
 .check.sw:has(input:disabled) { opacity: .4; cursor: default; }
-/* Seit 4.29.0 (A-63 C4): Safaris eingebauter Schalter (html.natsw, setzt ui.js) – Safari zeichnet ihn selbst, Grün über accent-color */
+/* Seit 4.29.0 (APD-63 C4): Safaris eingebauter Schalter (html.natsw, setzt ui.js) – Safari zeichnet ihn selbst, Grün über accent-color */
 html.natsw .check.sw input[switch] { -webkit-appearance: auto; appearance: auto; width: auto; height: auto; border-radius: 0; background: none;
   accent-color: var(--sw-on); transition: none; }
 /* Komponente Options-Kapsel (Optionen beim Erfassen): wie eine Auswahl-Schaltfläche, eingeschaltet mit Häkchen */
@@ -519,10 +519,10 @@ html.natsw .check.sw input[switch] { -webkit-appearance: auto; appearance: auto;
    runder Zurück-Knopf ohne Text, Suche unten, Fenster als Blatt (seit 4.32.0, R-4.6), Abfragen als Sprechblase am Knopf. */
 html.phone body { padding-bottom: calc(var(--safe-bottom) + 120px); }
 html.phone body:has(.bnote) { padding-bottom: calc(var(--safe-bottom) + 150px); }
-html.phone .rolle::after { height: calc(var(--safe-bottom) + 120px + var(--platz, 0px)); }   /* seit 4.27.1 Platzhalter statt Innenabstand (A-33) */
+html.phone .rolle::after { height: calc(var(--safe-bottom) + 120px + var(--platz, 0px)); }   /* seit 4.27.1 Platzhalter statt Innenabstand (APD-33) */
 html.phone body:has(.bnote) .rolle::after { height: calc(var(--safe-bottom) + 150px + var(--platz, 0px)); }
 html.phone #side:not(.page), html.phone .side-shade { display: none !important; }
-/* Seit 4.20.0 (A-15): Kapsel ‚Nach oben / Ans Ende‘ auch im iPhone-Aufbau; ausgeblendet, wenn es nichts zu scrollen gibt (R-3.2) */
+/* Seit 4.20.0 (APD-15): Kapsel ‚Nach oben / Ans Ende‘ auch im iPhone-Aufbau; ausgeblendet, wenn es nichts zu scrollen gibt (R-3.2) */
 .fab.still { display: none; }
 /* Komponente Seitenkopf (iPhone): links rund zurück, rechts Kapsel oder runder Knopf; scrollt nicht mit */
 .pnav { position: fixed; left: 0; right: 0; top: var(--vv-top); z-index: 6; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px; min-height: 44px;
@@ -582,7 +582,7 @@ html.phone body { padding-top: var(--pnav-h, 60px); }
 .bbar .bnote > div { flex: 1 1 160px; }
 .bbar .bnote button { font-size: 17px; }
 /* Fenster auf dem iPhone als Blatt (R-4.6); Kopfzeile kompakt, Titel einzeilig */
-/* R-4.6 (seit 4.32.0, A-61 Teil 2): das Fenster ist ein Blatt – von knapp unter der Statusleiste (ui.js blattOben) bis zum unteren Rand
+/* R-4.6 (seit 4.32.0, APD-61 Teil 2): das Fenster ist ein Blatt – von knapp unter der Statusleiste (ui.js blattOben) bis zum unteren Rand
    bzw. zur Tastatur, oben runde Ecken; die Seite dahinter weicht verkleinert zurück (html.blatt-zurueck), abgedunkelt wird mit
    .blatt-schleier statt ::backdrop (damit Ziehen und Abdunkeln zusammen laufen). .blatt-geist = Abbild beim Schließen. */
 html.phone dialog:is(#dlg, .blatt-geist) { width: 100%; max-width: none; min-width: 0; height: var(--dlg-max); border-radius: 26px 26px 0 0;
@@ -612,13 +612,13 @@ html.phone .step-head > label:first-child { white-space: nowrap; flex: 1 0 60%; 
 html.phone .step-head .head-check { order: 3; margin-left: 0; }
 html.phone .step-head:has(.head-checks) > label:first-child { flex: 1 0 auto; }
 html.phone .step-head .head-checks { order: 3; margin-left: 0; justify-content: flex-start; }
-/* Seit 4.15.0 (R-1.5, A-06): Offline-Hinweis – graue Zeile unter der Backup-Kachel und kurze Meldung beim Wechsel */
+/* Seit 4.15.0 (R-1.5, APD-6): Offline-Hinweis – graue Zeile unter der Backup-Kachel und kurze Meldung beim Wechsel */
 #side .side-foot .offl { display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 8px; font-size: 13px; color: var(--muted); }
 #side .side-foot .offl[hidden] { display: none; }
 #side .side-foot .offl .ic { width: 15px; height: 15px; flex: none; }
 /* Die Liste läuft auch hinter der Zeile durch, der letzte Eintrag bleibt erreichbar */
 #side:has(.offl:not([hidden])) .side-list { padding-bottom: 176px; }
-/* Seit 4.34.0 (R-9.1, A-74): ohne Backup-Kachel nur so viel Platz unten, dass der letzte Eintrag über dem Rand bzw. über der
+/* Seit 4.34.0 (R-9.1, APD-74): ohne Backup-Kachel nur so viel Platz unten, dass der letzte Eintrag über dem Rand bzw. über der
    Offline-Zeile endet; der Fuß hat dann einen kurzen, deckenden Verlauf – die Zeile steht nie über einer Kachel */
 #side:not(:has(.side-foot .bhint)) .side-list { padding-bottom: 24px; }
 #side.page:not(:has(.side-foot .bhint)) .side-list { padding-bottom: calc(24px + var(--safe-bottom)); }
@@ -635,11 +635,11 @@ html.phone .step-head .head-checks { order: 3; margin-left: 0; justify-content: 
 .nettoast .ic { width: 22px; height: 22px; color: var(--muted); flex: none; }
 @media print { .nettoast, #side .side-foot .offl { display: none !important; } }
 
-/* R-4.5 (seit 4.28.1, A-36): das iPad-Fenster gleitet mit der Tastatur in die Mitte des sichtbaren Bereichs und zurück (wie die
+/* R-4.5 (seit 4.28.1, APD-36): das iPad-Fenster gleitet mit der Tastatur in die Mitte des sichtbaren Bereichs und zurück (wie die
    Formularblätter von iPadOS); ui.js setzt .gleitet bei jeder Meldung von Safari für 0,3 s. */
 dialog.gleitet { transition: top .25s ease; }
 @media (prefers-reduced-motion: reduce) { dialog.gleitet { transition: none; } }
-/* R-2.4 (seit 4.28.1, A-36): iPhone quer – niedrige Leisten wie iOS quer. Kopfzeile, Suchzeile und Fensterkopf 32 statt 44 px
+/* R-2.4 (seit 4.28.1, APD-36): iPhone quer – niedrige Leisten wie iOS quer. Kopfzeile, Suchzeile und Fensterkopf 32 statt 44 px
    hoch, damit Felder darunter und die Suche bei offener Tastatur in der oberen Hälfte des sichtbaren Bereichs liegen – dann verschiebt
    Safari nichts (R-4.5). Knöpfe in Kapseln 31 px (R-3.1: ab 28), Markierung 25 × 25; runde Knöpfe 32 × 32 mit einer unsichtbaren
    Antippfläche von 44 × 44, das Suchfeld als Kapsel 32 px (R-3.1: Kapseln ab 28). */
@@ -658,7 +658,7 @@ dialog.gleitet { transition: top .25s ease; }
   html.phone .pnav { row-gap: 0; }
   html.phone :is(#dlg, .blatt-geist) .dlg-head h3 { min-height: 0; }
 }
-/* R-1.9 (seit 4.35.0, A-43 H3): mit ‚Kontrast erhöhen‘ stehen Icons, die sonst nur Linienfarbe haben (› in Listen, ⓧ in Feldern und
+/* R-1.9 (seit 4.35.0, APD-43 H3): mit ‚Kontrast erhöhen‘ stehen Icons, die sonst nur Linienfarbe haben (› in Listen, ⓧ in Feldern und
    im Suchfeld), in Grau Text – am Ende, damit es die Farben der Bauteile übersteuert */
 @media (prefers-contrast: more) {
   #side .side-row > .ic, .irow > .ic, .searchbox .sclear, .fclear { color: var(--muted); }

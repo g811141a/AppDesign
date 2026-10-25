@@ -1,4 +1,4 @@
-// AppDesign 4.14.1 · Prüf-Baustein (A-05, seit 4.13.0): jedes Prüfskript einer App meldet Fehler statt nur Werte
+// AppDesign 4.14.1 · Prüf-Baustein (APD-5, seit 4.13.0): jedes Prüfskript einer App meldet Fehler statt nur Werte
 // auszugeben und endet bei einem Fehler mit Rückgabewert 1. Dazu Browserwahl (Chromium oder WebKit), die gemeinsamen
 // Ansichten und die Grundregeln nach jedem Schritt. Einbinden im Prüfskript der App:
 //   import * as pw from 'playwright';
@@ -13,13 +13,13 @@
 // Browser: Umgebungsvariable PRUEF_BROWSER (chromium | webkit, Standard chromium) – setzt das Lauf-Werkzeug (lauf.mjs).
 // Gegenprobe: PRUEF_GEGENPROBE=1 macht den ersten Vergleich absichtlich falsch, PRUEF_GEGENPROBE=grundregeln legt beim
 // ersten Schritt zu breiten Inhalt in die Seite (lauf.mjs --gegenprobe bzw. --gegenprobe grundregeln für alle Tests).
-// Jede Fehlermeldung: ‚✗ <Regel> <Browser> · <Ansicht> · <Schritt>: <was> – ist …, soll …‘ (Fall-Liste A-05, A-4).
-// Seit 4.35.0 (A-43 P1, M7, P2): PRUEF_BEDIENUNG=beide öffnet jede Seite mit ‚Kontrast erhöhen‘ und ‚Bewegung reduzieren‘ (Ort mit
+// Jede Fehlermeldung: ‚✗ <Regel> <Browser> · <Ansicht> · <Schritt>: <was> – ist …, soll …‘ (Testfall-Liste APD-5, APD-5/A-4).
+// Seit 4.35.0 (APD-43 P1, M7, P2): PRUEF_BEDIENUNG=beide öffnet jede Seite mit ‚Kontrast erhöhen‘ und ‚Bewegung reduzieren‘ (Ort mit
 // Zusatz ‚· Kontrast · ruhig‘); bei ‚Bewegung reduzieren‘ läuft der Bewegungswächter mit und meldet nach jedem Schritt (R-1.9).
 // PRUEF_GEGENPROBE=bedienung:<fall> schleust einen benannten Fehler der Bedienungshilfen ein (GEGENPROBEN_BEDIENUNG, lauf.mjs).
 import { writeFileSync, mkdirSync } from 'node:fs';
 
-// Gemeinsame Ansichten (C-2): iPad quer und hoch, iPhone hoch und quer – je hell oder dunkel über die Option theme.
+// Gemeinsame Ansichten (APD-5/C-2): iPad quer und hoch, iPhone hoch und quer – je hell oder dunkel über die Option theme.
 export const ANSICHTEN = {
   'iPad quer': { viewport: { width: 1180, height: 820 } },
   'iPad hoch': { viewport: { width: 820, height: 1180 } },
@@ -34,7 +34,7 @@ const passt = (ist, soll) => soll instanceof RegExp ? soll.test(String(ist)) : t
   : JSON.stringify(ist) === JSON.stringify(soll);
 const zeige = v => typeof v === 'string' ? `‚${v}‘` : JSON.stringify(v, (k, x) => x instanceof RegExp ? String(x) : x);
 
-// Rollbereich (seit 4.27.0, A-28): Die Seite rollt nie, nur der Inhalt (#app > .rolle). Alle Prüfungen rollen und messen
+// Rollbereich (seit 4.27.0, APD-28): Die Seite rollt nie, nur der Inhalt (#app > .rolle). Alle Prüfungen rollen und messen
 // darüber, damit keine aus Versehen das Fenster misst; ohne Rollbereich (App noch nicht umgebaut) gilt das Fenster.
 // In der Seite: const r = eval(ROLL) → r.y, r.h (sichtbare Höhe), r.max, r.rest, r.to(y), r.by(d), r.el (null = Fenster).
 export const ROLL = `(() => { const e = document.querySelector('#app > .rolle');
@@ -42,7 +42,7 @@ export const ROLL = `(() => { const e = document.querySelector('#app > .rolle');
     get max() { return Math.max(0, (e ? e.scrollHeight : document.documentElement.scrollHeight) - r.h); }, get rest() { return r.max - r.y; },
     to(y) { (e || window).scrollTo({ top: Math.max(0, Math.round(y)), behavior: 'instant' }); }, by(d) { r.to(r.y + d); } };
   return r; })()`;
-// R-4.5 (seit 4.32.2, A-73): wie weit Fokus-Umrandung und Schatten eines Felds über seine Oberkante reichen (berechneter Stil, px) –
+// R-4.5 (seit 4.32.2, APD-73): wie weit Fokus-Umrandung und Schatten eines Felds über seine Oberkante reichen (berechneter Stil, px) –
 // so viel Abstand braucht es zum oberen Rand seines Bereichs. In der Seite: eval(RING)(feld)
 export const RING = `(f => { const c = getComputedStyle(f);
   let n = c.outlineStyle !== 'none' ? (parseFloat(c.outlineWidth) || 0) + (parseFloat(c.outlineOffset) || 0) : 0;
@@ -71,7 +71,7 @@ export const rollstand = p => p.evaluate(R => { const r = eval(R), m = Math.roun
 
 // Wartet, bis die Seite nach einer Handlung zur Ruhe gekommen ist (zwei Bildwechsel, keine laufende Animation, Lage stabil) –
 // sonst messen die Grundregeln Zwischenzustände (WebKit setzt manches einige Millisekunden später als Chromium).
-// Seit 4.30.0 (A-61, R-7.5): wartet, bis ein Seitenwechsel bzw. die Bewegung der Seitenleiste fertig ist (höchstens 3 s) – der
+// Seit 4.30.0 (APD-61, R-7.5): wartet, bis ein Seitenwechsel bzw. die Bewegung der Seitenleiste fertig ist (höchstens 3 s) – der
 // Zustand der App ändert sich erst am Ende der Bewegung (Zurück, Wischen).
 // seit 4.32.0 (R-4.6): auch bis das Blatt auf dem iPhone ruht
 export const navFertig = p => p.waitForFunction(() => !/(^|\s)(nav-|blatt-faehrt|blatt-zieht)/.test(document.documentElement.className), null, { timeout: 3000 }).catch(() => {});
@@ -99,7 +99,7 @@ export async function ruhe(p) {
   }
 }
 
-// R-1.9 (seit 4.35.0, A-43 M6, M7): Bewegungswächter – läuft mit ‚Bewegung reduzieren‘ in der Seite und misst jede Bewegung an der
+// R-1.9 (seit 4.35.0, APD-43 M6, M7): Bewegungswächter – läuft mit ‚Bewegung reduzieren‘ in der Seite und misst jede Bewegung an der
 // Grenze: erlaubt sind Überblenden (nur Deckkraft bzw. Farbe, bis 0,3 s), Lageänderungen bis 30 px und alles, was direkt dem Finger
 // folgt (keine Animation); gemeldet werden Lage über 30 px, Zoomen (scale), Federn (Kurve über das Ziel hinaus), Dauerschleifen,
 // längeres Überblenden und sanftes Rollen (scrollTo/scrollBy/scrollIntoView mit smooth). Erfasst werden Web-Animationen (el.animate)
@@ -152,7 +152,7 @@ export function bewegungsWaechter() {
 }
 export const ruhigFunde = p => p.evaluate(() => (window.__ruhigFunde || []).splice(0)).catch(() => []);
 
-// Gegenprobe der Bedienungshilfen (seit 4.35.0, A-43 P2): je Fall ein eingeschleuster Fehler (Init-Skript der Seite), die passende
+// Gegenprobe der Bedienungshilfen (seit 4.35.0, APD-43 P2): je Fall ein eingeschleuster Fehler (Init-Skript der Seite), die passende
 // Meldung (zeichen) muss rot werden. lauf.mjs --gegenprobe bedienung läuft jeden Fall einmal mit der Prüfung der Bedienungshilfen.
 export const GEGENPROBEN_BEDIENUNG = {
   name: { zeichen: /R-1\.8 .*ohne Namen/, was: 'Icon-Knopf ohne Namen (V1)' },
@@ -221,7 +221,7 @@ export function pruefung(name, pw, { hig = null, out = null } = {}) {
     browserName,
     get ort() { return ort; },
     set ort(v) { ort = v; if (v) ansichten.add(v); },
-    // Startet den gewählten Browser. Fehlt WebKit, bricht der Test mit Hinweis ab (B-8) – nie stillschweigend nur Chromium.
+    // Startet den gewählten Browser. Fehlt WebKit, bricht der Test mit Hinweis ab (APD-5/B-8) – nie stillschweigend nur Chromium.
     async browser(opts = {}) {
       const typ = pw[browserName];
       if (!typ) throw new Error(`Unbekannter Browser ‚${browserName}‘ (PRUEF_BROWSER: chromium oder webkit)`);
@@ -229,7 +229,7 @@ export function pruefung(name, pw, { hig = null, out = null } = {}) {
       catch (e) {
         if (/Executable doesn't exist|install/i.test(e.message)) {
           console.error(`✗ ${browserName} fehlt – im Ordner tests der App: npx playwright install ${browserName}` +
-            (browserName === 'webkit' ? ' und npx playwright install-deps webkit (Setup-Skript der Umgebung, Fall-Liste A-05 B-8)' : ''));
+            (browserName === 'webkit' ? ' und npx playwright install-deps webkit (Setup-Skript der Umgebung, Testfall-Liste APD-5/B-8)' : ''));
           process.exit(2);
         }
         throw e;
@@ -254,7 +254,7 @@ export function pruefung(name, pw, { hig = null, out = null } = {}) {
     },
     // Sollwert: Wert (Vergleich als JSON), RegExp (auf den Text) oder Funktion (gibt true zurück, wenn in Ordnung).
     ist(was, ist, soll, regel = '') {
-      // Gegenprobe (Fall-Liste A-05, A-1): PRUEF_GEGENPROBE=1 setzt beim ersten Vergleich einen falschen Sollwert – der Test muss rot werden.
+      // Gegenprobe (Testfall-Liste APD-5, APD-5/A-1): PRUEF_GEGENPROBE=1 setzt beim ersten Vergleich einen falschen Sollwert – der Test muss rot werden.
       if (gegenprobe) { gegenprobe = false; soll = '‹Gegenprobe – absichtlich falscher Sollwert›'; }
       const ok = passt(ist, soll);
       if (!ok) melde(regel, `${was} – ist ${zeige(ist)}, soll ${typeof soll === 'function' ? (soll.text || 'Bedingung erfüllt') : zeige(soll)}`);
@@ -267,12 +267,12 @@ export function pruefung(name, pw, { hig = null, out = null } = {}) {
       for (const m of meldungen) melde('', m);
     },
     fehler: melde,
-    // Ein Schritt: Handlung ausführen, danach die Grundregeln (C-1) in der aktuellen Ansicht – dieselben Prüfungen wie
+    // Ein Schritt: Handlung ausführen, danach die Grundregeln (APD-5/C-1) in der aktuellen Ansicht – dieselben Prüfungen wie
     // hig.mjs (je Regel genau eine Prüfung), aber ohne Drehen, damit der Ablauf nicht verändert wird.
     async schritt(p, name, fn) {
       try { await fn(); }
       catch (e) { melde('', `Schritt bricht ab: ${e.message.split('\n')[0]}`, name); throw e; }
-      // Gegenprobe der Grundregeln (Fall-Liste A-05, C-1): PRUEF_GEGENPROBE=grundregeln legt beim ersten Schritt einen zu
+      // Gegenprobe der Grundregeln (Testfall-Liste APD-5, APD-5/C-1): PRUEF_GEGENPROBE=grundregeln legt beim ersten Schritt einen zu
       // breiten Text sichtbar in den Vordergrund (auch in ein offenes Fenster) – R-6.3 muss ihn melden.
       if (hig && gegenprobeGrund) { gegenprobeGrund = false; await p.evaluate(() => { const d = document.createElement('div'); d.id = 'gegenprobe'; d.className = 'msg-text';
         d.style.cssText = 'position:fixed;top:120px;left:20px;width:100px;white-space:nowrap;z-index:99999'; d.textContent = 'a'.repeat(100);
