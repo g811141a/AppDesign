@@ -36,7 +36,7 @@ Klärung und Apple-Abgleich `arbeit/APD-43 Teil 2 Klärung.md`, Muster A). Usert
 - **Meldung am iPhone (#msg):** eigene Höchsthöhe `--msg-max` (nie unter Status- oder Home-Leiste), bei großer Schrift rollt ihr Inhalt –
   vorher galt die Höhe des Blatts. Der gemessene Platz unter der Liste folgt auch geänderten sicheren Rändern; die Backup-Kachel wird
   erst gemessen, wenn sie zu sehen ist (ResizeObserver). Lange Wörter brechen im Rollbereich im Wort um (`overflow-wrap: break-word`),
-  hig meldet einen Rollbereich, der breiter als sein Platz ist (R-6.3); `checkNavigation` und F-23 kennen hohe Kacheln und Kästen.
+  hig meldet einen Rollbereich, der breiter als sein Platz ist (R-6.3); `checkNavigation` (auch APD-67/F-23) kennt hohe Kacheln und Kästen.
 
 ## 4.36.0 – 25.10.2026
 
