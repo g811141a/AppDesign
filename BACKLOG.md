@@ -12,16 +12,17 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 | Nr. | Prio | Thema | bereit seit |
 |---|---|---|---|
 | APD-77 | 3 | **‚Messung starten‘ verstecken (Frage des Nutzers 25.10.2026, Variante a):** der Messmodus (R-1.6) ist ein Werkzeug für Claude, für den Nutzer ohne Zweck – der Punkt steht nicht mehr ständig im Mehr-Menü der Seitenleiste bzw. Startliste, sondern erscheint erst nach langem Drücken auf die graue Versionszeile im Mehr-Menü und bleibt bis zum Neustart der App; die Funktion bleibt ganz (APD-72, RLB-103 brauchen sie evtl.). So macht es Apple: Diagnose versteckt (Einstellungen → Datenschutz → Analyse, Menü ‚Entwickler‘ erst nach Freischalten). **Entschieden (Nutzer 26.10.2026, Sitzung 0048):** langes Drücken (etwa 0,5 s) auf die Versionszeile, bleibt bis zum Neustart (neu laden versteckt wieder), das Menü bleibt offen und zeigt den Punkt sofort an der heutigen Stelle, allgemeine Regel (R-1.6 und 15.21 ändern, `checkMessung` anpassen); läuft eine Messung, bleibt ‚Messung beenden und teilen‘ immer sichtbar. Testfall-Liste `arbeit/APD-77 Testfall-Liste.md` 1–2, 5 | 26.10.2026 |
+| APD-83 | 1 | **Fensterbreite bleibt stehen (Rückmeldung P-76/4 Schritt 3, Nutzer 26.10.2026, Sitzung 0050):** am iPad wurde ‚Neues Reiselogbuch‘ mit dem ersten Buchstaben im Reisetitel breiter (876 → 968 px, 46 px nach links) – der Hinweis zum überschneidenden Zeitraum erschien, und das Fenster ist so breit wie sein breitester Inhalt (`width: fit-content`); das ⓧ ist nicht die Ursache. **Allgemeine Regel (Ja 26.10.2026):** ein offenes Fenster ändert Breite und Lage nicht, solange die Ansicht gleich bleibt; Fehlermeldungen brechen in der vorhandenen Breite um (R-4.6, Designrichtlinie 7). Vorschlag: `dialog .warn { contain: inline-size; }` in `design.css` (im Versuch grün in Chromium und WebKit), `checkSheet` prüft nach jeder Eingabe Breite und Lage am iPad; Reiselogbuch RLB-107 (`ablauf-fenster-breite`, rot gegen 4.38.0). Warum übersehen: keine Prüfung verglich die Fensterbreite vor und nach einer Eingabe, keine hatte eine überschneidende Reise mit langem Titel. Korrekturversion 4.38.1 abgelehnt (Nutzer 26.10.2026) – mit der nächsten Version | 26.10.2026 |
 | P-75/6 | 3 | **Designrichtlinie 13 ergänzen (Auskunft P-75/6, Nutzer 26.10.2026):** ‚Größerer Text‘ unter Einstellungen → Bedienungshilfen → Einstellungen pro App → Safari wirkt auch auf die Web-App vom Home-Bildschirm (`-apple-system-body`, R-1.10) – nur Text, keine Prüfung | 26.10.2026 |
 
-2 Punkte bereit (APD-77, P-75/6) für 4.39.0 – vor dem Bau fragen (erst Usertest P-76, 0 Nr. 22).
+3 Punkte bereit (APD-83, APD-77, P-75/6) für 4.39.0 – vor dem Bau fragen; APD-83 ist eine Korrektur aus P-76 (zuerst, 0 Nr. 8, 22).
 
 
 ## 1. Auf iPad und iPhone prüfen
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| P-76 | 2 | **APD-72 iPad: Fenster nach unten ziehen (4.38.0, Reiselogbuch 3.36.0):** Version, Hereingleiten und Ziehen am Kopf, weit ziehen schließt, im Inhalt wischen, mit Änderung und Tastatur, x / Häkchen / Abdunkelung, iPhone unverändert – Testfälle P-76/0 bis /6 im CHANGELOG des Reiselogbuchs | prüfen |
+| – | – | zurzeit nichts zu prüfen | – |
 
 ## 2. Weitere Themen (in Klärung)
 
@@ -59,6 +60,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Thema | Version | Datum |
 |---|---|---|---|
+| P-76 | Geprüft **P-76 (Reiselogbuch 3.36.0): nicht ok bei P-76/4 Schritt 3** (Nutzer 26.10.2026, Sitzung 0050) – mit dem ersten Buchstaben im Reisetitel wird das Fenster ‚Neues Reiselogbuch‘ am iPad breiter (→ APD-83); alle übrigen Testfälle ok – Hereingleiten und Ziehen am Kopf, weit ziehen schließt, im Inhalt wischen, Änderung und Tastatur, x / Häkchen / Abdunkelung, iPhone unverändert (**APD-72 bestätigt**) | 4.38.0 | 26.10.2026 |
 | APD-72 | **APD-72 iPad: Fenster nach unten ziehen (Variante B, Ja 26.10.2026):** R-4.6 auch am iPad – in der Mitte, Öffnen und Schließen von unten, Ziehen wie am iPhone (nur das Fenster fährt mit, Abdunkelung heller, Seite bleibt, Abdunkelung antippen schließt nicht); ui.js ohne `isPhone()` im Blatt, `.blatt-schleier` statt `::backdrop`; `checkSheet` APD-72/D-1 bis APD-72/D-15 (neu für beide Geräte APD-72/D-8, APD-72/D-11, APD-72/D-14); Designrichtlinie 7, 15.17. Dazu RLB-103 (Reiselogbuch): `abspielen.mjs` erkennt das Ende der Messung, Marke ‚messung beendet‘, Safari-Modell nach der Messung vom 26.10. (13) | 4.38.0 | 26.10.2026 |
 | P-75 | Geprüft **P-75 (Reiselogbuch 3.35.0): alles ok** (Nutzer 25.10.2026, Sitzung 0048) – Version, Standard wie bisher, iPhone bis AX5, iPad Tage als Kästen ab AX1, Wechsel bei offenem Fenster, xS und Notiz bei AX5, Einstellung pro App, Mac (**APD-43 Teil 2 bestätigt**); Auskunft P-75/6: ‚Größerer Text‘ nur für Safari (Einstellungen pro App) wirkt auch auf die App vom Home-Bildschirm | 4.37.0 | 25.10.2026 |
 | APD-82 | **`ablauf-navigation` unter Last:** das Loslassen eines schnellen Wischens kam unter Last mehr als 100 ms nach der letzten Bewegung an – die Prüfung misst jetzt das Tempo wie die App und wiederholt einen zu langsam angekommenen Zug bis zu dreimal (APD-61/F-5, APD-68/Q-6); 12 von 12 Läufen unter Last grün | 4.37.0 | 25.10.2026 |
