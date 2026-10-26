@@ -44,6 +44,10 @@ Usertest im Reiselogbuch: P-76.
   Ende-Erkennung (`ende: false`) bricht `ablauf-tastatur-still` wieder ab (APD-77/F-15); mit dem alten Safari-Modell 19 Fehler (APD-77/F-17,
   APD-77/F-18). Einmal (erster Lauf, Chromium) meldete `ablauf-tastatur-still` ‚iPhone hoch dunkel · Gesamtausgaben APD-36/B-8 ↑ rollt nicht
   ganz nach oben (scrollTop 3)‘; in den folgenden Läufen nicht wieder – beobachten.
+- **R-3.1 (hig.mjs) mit 0,05 px Spielraum:** der erste volle Lauf wurde rot (`ablauf-markierung-menues` · webkit, iPad hoch dunkel, ‚Tag
+  öffnen‘: x und Häkchen ‚44×44 px (mind. 44)‘). Ursache: WebKit misst ein gleitendes Fenster mit Gerätefaktor 2 mit Rundungsfehlern
+  (44 × 43,99998 px, nachgemessen in 41 Stufen des Hereingleitens); unter Volllast fiel die Messung in das neue Hereingleiten am iPad.
+  Allein lief die Prüfung zweimal grün; die Gegenprobe der Grundregeln bleibt rot.
 
 ## 4.37.0 – 25.10.2026
 

@@ -125,7 +125,9 @@ const found = new Map(), icons = new Map();
         // seit 4.28.1 (R-2.4): das Suchfeld der niedrigen Leiste (iPhone quer, 32 px) ist eine Kapsel
         const inCap = e.closest('.cap, .grp, .navgrp') || e.closest('html.phone .pnav .searchbox') && matchMedia('(orientation: landscape) and (max-height: 500px)').matches || (e.type === 'checkbox' && /switch|toggle/.test(e.className + e.parentElement.className)) || (e.type === 'checkbox' && b.width >= 51 && b.height >= 31);
         const min = inCap ? 28 : 44;
-        if (Math.min(wd, h) < min) res.target.push(`${e.tagName.toLowerCase()} ‚${label(e)}‘ ${Math.round(wd)}×${Math.round(h)} px (mind. ${min})`);
+        // seit 4.38.0 (APD-72): 0,05 px Spielraum – WebKit misst ein gleitendes Fenster (translate, Gerätefaktor 2) mit Rundungsfehlern
+        // (44 × 43,99998 px); unter Volllast fiel die Messung in das Hereingleiten am iPad (ablauf-markierung-menues · webkit, ‚Tag öffnen‘)
+        if (Math.min(wd, h) < min - 0.05) res.target.push(`${e.tagName.toLowerCase()} ‚${label(e)}‘ ${Math.round(wd)}×${Math.round(h)} px (mind. ${min})`);
       });
       // Schrift und Kontrast
       const rgb = c => (c.match(/[\d.]+/g) || [0, 0, 0, 0]).map(Number);
