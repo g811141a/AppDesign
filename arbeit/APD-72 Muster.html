@@ -1,0 +1,293 @@
+<!doctype html><html lang="de"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="APD-72 iPad">
+<title>APD-72 iPad-Fenster</title>
+<style>
+/* APD-72 ‚iPad: Fenster per Ziehen nach unten schließen‘ – Muster zum Ausprobieren (Sitzung Reiselogbuch 0048), Grundlage das Muster
+   APD-61 Teil 2. Entschieden (Nutzer 26.10.2026): Zug wie am iPhone (am Kopf immer, im Inhalt, wenn er ganz oben steht, auch kurz
+   gewischt), Aussehen wie iPadOS (nur das Fenster fährt mit, die Abdunkelung wird heller, die Seite bleibt, kein Griff), allgemeine
+   Regel (R-4.6), zuerst dieses Muster – iPad, hell, quer (0 Nr. 6). Drei Varianten über ?v=heute|a|b (oben umschaltbar):
+   Heute = wie die App heute (R-4.6 letzter Satz): das Fenster schließt nur mit x, Häkchen oder Escape; Öffnen und Schließen überblenden.
+   A     = nach unten ziehen schließt; mit Änderungen zäh, federt zurück und fragt am x (R-4.4); ein Zug nach unten schließt zuerst die
+           Tastatur. Öffnen und Schließen mit x, Häkchen und Escape überblenden wie heute, nur nach dem Zug gleitet es nach unten hinaus.
+   B     = wie A, dazu gleiten Öffnen und Schließen immer von unten – wie die Formblätter in iPadOS.
+   Abdunkelung antippen schließt am iPad nicht (wie iPadOS bei Formblättern). Je Bild nur transform und opacity (APD-59). Nur hell. */
+:root { --bg: #f2f2f7; --card: #fff; --line: #d1d1d6; --txt: #000; --sub: #6e6e73; --blue: #007aff; --red: #ff3b30; --btn: #f9f9f9;
+  --btn-rim: #fff; --float: 0 3px 28px rgba(0,0,0,.16); --sl: env(safe-area-inset-left); --sr: env(safe-area-inset-right);
+  --st: env(safe-area-inset-top); --sb: env(safe-area-inset-bottom); color-scheme: light; }
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { margin: 0; height: 100%; overflow: hidden; background: #000; color: var(--txt); font: 17px -apple-system, system-ui, sans-serif; }
+#seite { position: fixed; inset: 0; display: grid; grid-template-rows: auto 1fr; background: var(--bg); transform-origin: 50% 0;
+  will-change: transform; overflow: hidden; -webkit-user-select: none; user-select: none; }
+#seite.zurueck { border-radius: 12px; }
+.kopf { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px; min-height: 56px;
+  padding: calc(6px + var(--st)) max(12px, var(--sr)) 6px max(12px, var(--sl)); }
+.kopf h1 { font-size: 17px; font-weight: 600; margin: 0; text-align: center; white-space: nowrap; }
+.kopf .wahl { justify-self: end; }
+.rund { background: var(--btn); border: .5px solid var(--btn-rim); box-shadow: var(--float); color: var(--blue); }
+.knopf { width: 44px; height: 44px; border-radius: 50%; padding: 0; display: grid; place-items: center; font: inherit; }
+.cap { display: inline-flex; border-radius: 22px; padding: 2px; }
+.cap button { border: 0; background: none; color: var(--blue); font: inherit; font-size: 15px; height: 40px; border-radius: 20px; padding: 0 12px; }
+.cap button.on { background: rgba(0,122,255,.15); font-weight: 600; }
+svg.i { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; display: block; }
+.rolle { overflow-y: auto; min-height: 0; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
+.wrap { max-width: 760px; margin: 0 auto; padding: 0 max(16px, var(--sr)) calc(24px + var(--sb)) max(16px, var(--sl)); }
+.hinweis { color: var(--sub); font-size: 15px; line-height: 1.4; padding: 6px 2px 4px; } .hinweis b { color: var(--txt); }
+.kachel { display: flex; align-items: center; gap: 10px; background: var(--card); border-radius: 14px; padding: 12px 14px; margin: 8px 0; }
+.kachel div { flex: 1; } .kachel b { display: block; } .kachel small { color: var(--sub); font-size: 14px; }
+.kachel > .i { color: #c4c4c7; width: 18px; height: 18px; } .kachel .vorn { color: var(--blue); }
+.box { background: var(--card); border-radius: 12px; margin: 12px 0; padding: 4px 14px; }
+.box h2 { font-size: 17px; margin: 10px 0 6px; }
+.kv { display: flex; gap: 12px; padding: 7px 0; border-top: .5px solid var(--line); font-size: 15px; line-height: 1.35; }
+.kv .k { color: var(--sub); width: 80px; flex: none; font-weight: 600; } .kv .v { flex: 1; }
+#schleier { position: fixed; inset: 0; background: #000; opacity: 0; pointer-events: none; will-change: opacity; touch-action: none; }
+#schleier.an { pointer-events: auto; }
+/* Das Blatt: groß = von --T bis zur Tastatur; mittel = halb hoch, 8 px Abstand, Glas (Variante B) */
+/* iPad: Fenster in der Mitte wie ein Formblatt (15.9), 640 × 720 höchstens; --hub = Abstand nach oben bei offener Tastatur (R-4.5) */
+#blatt { position: fixed; left: 50%; top: 50%; width: min(640px, 90vw); height: min(720px, calc(86vh - var(--kb, 0px)));
+  translate: -50% calc(-50% - var(--hub, 0px)); display: grid; grid-template-rows: auto 1fr; background: var(--bg); border-radius: 18px;
+  box-shadow: 0 10px 40px rgba(0,0,0,.25); visibility: hidden; will-change: transform; overflow: hidden; }
+#blatt.offen { visibility: visible; }
+/* <dialog> mit showModal wie in der App (ui.js): Felder im Fenster rollt Safari beim Öffnen der Tastatur nicht zurück (13 S-9) */
+#blatt { margin: 0; padding: 0; border: 0; max-width: none; max-height: none; color: inherit; }
+#blatt:not([open]) { display: none; } #blatt::backdrop, #popdlg::backdrop { background: transparent; }
+#popdlg { position: fixed; inset: 0; margin: 0; padding: 0; border: 0; width: 100%; height: 100%; max-width: none; max-height: none; background: transparent; overflow: visible; }
+.bkopf { display: grid; grid-template-columns: 44px 1fr 44px; align-items: center; gap: 8px; padding: 10px 12px 8px; touch-action: none;
+  -webkit-user-select: none; user-select: none; }
+.bkopf h2 { margin: 0; font-size: 19px; font-weight: 600; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bkopf h2 small { display: block; font-size: 13px; font-weight: 400; color: var(--sub); }
+.bkopf .fertig { color: #8e8e93; } .bkopf .fertig.blau { background: var(--blue); color: #fff; border-color: var(--blue); }
+/* Platz unter dem Inhalt, solange ein Feld die Tastatur braucht – so lässt es sich in die obere Hälfte rollen (13) */
+.binhalt::after { content: ''; display: block; height: var(--platz, 0px); }
+.binhalt { overflow-y: auto; min-height: 0; overscroll-behavior: none; -webkit-overflow-scrolling: touch; touch-action: pan-y;
+  padding: 0 max(16px, var(--sr)) calc(28px + var(--sb)) max(16px, var(--sl)); }
+.feld { background: var(--card); border-radius: 12px; padding: 8px 14px 10px; margin: 10px 0; }
+.feld label { display: block; font-size: 13px; color: var(--sub); margin-bottom: 4px; }
+.feld input, .feld textarea { width: 100%; border: 0; outline: 0; font: 17px -apple-system, system-ui, sans-serif; background: none; padding: 2px 0;
+  resize: none; color: var(--txt); }
+.breit { overflow-x: auto; touch-action: pan-x pan-y; overscroll-behavior-x: contain; margin: 10px -4px; padding: 4px; }
+.blattseite { width: 760px; background: #fff; border-radius: 4px; box-shadow: 0 1px 6px rgba(0,0,0,.15); padding: 28px 32px; font-size: 13px; }
+.blattseite h3 { margin: 0 0 12px; font-size: 20px; }
+.blattseite table { border-collapse: collapse; width: 100%; } .blattseite td, .blattseite th { border-bottom: .5px solid #ccc; padding: 5px 6px; text-align: left; vertical-align: top; }
+/* Sprechblase (15.7, R-4.3): an der Schaltfläche x */
+#pop { position: fixed; z-index: 2; width: min(320px, calc(100vw - 24px)); background: rgba(255,255,255,.97); border-radius: 20px; padding: 14px;
+  box-shadow: 0 8px 40px rgba(0,0,0,.25); display: none; text-align: center; }
+#pop.an { display: block; }
+#pop p { margin: 2px 4px 12px; color: var(--sub); font-size: 15px; line-height: 1.35; }
+#pop button { display: block; width: 100%; height: 46px; border-radius: 23px; border: 0; font: inherit; margin-top: 6px; background: none; color: var(--blue); }
+#pop button.rot { background: var(--red); color: #fff; font-weight: 600; }
+#popfang { position: fixed; inset: 0; z-index: 1; display: none; } #popfang.an { display: block; }
+
+.nurpad { display: none; } html.klein .nurpad { display: block; }
+</style></head><body>
+<section id="seite">
+  <div class="kopf"><span></span><h1>Japan 2026</h1><span class="cap rund wahl" id="wahl"></span></div>
+  <div class="rolle" id="seiteRolle"><div class="wrap" id="inhalt"></div></div>
+</section>
+<div id="schleier"></div>
+<dialog id="blatt" aria-labelledby="btitel">
+  <div class="bkopf"><button class="knopf rund" id="bx" aria-label="Abbrechen"></button><h2 id="btitel"></h2>
+    <button class="knopf rund fertig" id="bok" aria-label="Fertig"></button></div>
+  <div class="binhalt" id="binhalt"></div>
+</dialog>
+<dialog id="popdlg" aria-label="Änderungen verwerfen"><div id="popfang"></div>
+<div id="pop"><p>Deine Änderungen sind noch nicht gesichert.</p>
+  <button class="rot" id="verwerfen">Änderungen verwerfen</button><button id="weiter">Weiter bearbeiten</button></div></dialog>
+<script>
+const ICONS = {
+  'x': '<path d="M18 6 6 18"/><path d="m6 6 12 12"/>',
+  'check': '<path d="M20 6 9 17l-5-5"/>',
+  'chevron-right': '<path d="m9 18 6-6-6-6"/>',
+  'pencil': '<path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/>',
+  'share': '<path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="m16 6-4-4-4 4"/><path d="M12 2v13"/>',
+  'calendar-plus': '<path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/><path d="M12 14v6"/><path d="M9 17h6"/>'
+};
+const ic = n => `<svg class="i" viewBox="0 0 24 24">${ICONS[n]}</svg>`;
+const $ = id => document.getElementById(id);
+const H = document.documentElement;
+const Q = new URLSearchParams(location.search);
+const V = ['heute', 'a', 'b'].includes(Q.get('v')) ? Q.get('v') : 'a';
+const NAMEN = { heute: 'Heute', a: 'A', b: 'B' };
+const TEXT = {
+  heute: '<b>Heute:</b> Am iPad steht das Fenster in der Mitte und schließt nur mit x, Häkchen oder Escape. Öffnen und Schließen überblenden.',
+  a: '<b>Variante A:</b> <b>Nach unten ziehen schließt</b> – am Kopf immer, im Inhalt, wenn er ganz oben steht, auch kurz und schnell gewischt. Nur das Fenster fährt mit, die Abdunkelung wird heller. Mit Änderungen zieht es sich zäh, federt zurück und fragt am x. Öffnen und Schließen mit x oder Häkchen überblenden wie heute.',
+  b: '<b>Variante B:</b> wie A, dazu <b>gleitet das Fenster beim Öffnen und Schließen immer von unten</b> – wie die Formblätter in iPadOS (z. B. ‚Neuer Kontakt‘).'
+};
+H.classList.add('v-' + V);
+const ruhig = matchMedia('(prefers-reduced-motion: reduce)');
+const ORTE = ['Tokio', 'Hakone', 'Kyoto', 'Nara', 'Osaka', 'Hiroshima', 'Miyajima', 'Kanazawa'];
+const WT = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'];
+const tagName = (i, lang) => { const d = new Date(2026, 2, 2 + i); return `${WT[d.getDay()]}, ${String(d.getDate()).padStart(2, '0')}.03.${lang ? '2026' : ''}`; };
+const PROG = i => `${ORTE[Math.floor(i / 3) % ORTE.length]}: Spaziergang durch die Altstadt\nMittagessen in einer kleinen Nudelküche\nAm Abend Onsen`;
+function seiteBauen() {
+  let h = `<p class="hinweis nurpad"><b>Dieses Muster ist fürs iPad</b> – bitte dort öffnen (quer).</p><p class="hinweis">${TEXT[V]}</p>
+    <div class="kachel" data-art="erfassen" data-tag="0" role="button">${ic('calendar-plus').replace('class="i"', 'class="i vorn"')}<div><b>Tag erfassen</b><small>Erfassungsfenster – mit Änderungen fragt es</small></div>${ic('chevron-right')}</div>
+    <div class="kachel" data-art="bearbeiten" role="button">${ic('pencil').replace('class="i"', 'class="i vorn"')}<div><b>Reiselogbuch bearbeiten</b><small>Bearbeiten – mit Änderungen fragt es</small></div>${ic('chevron-right')}</div>
+    <div class="kachel" data-art="vorschau" role="button">${ic('share').replace('class="i"', 'class="i vorn"')}<div><b>Vorschau</b><small>breiter Inhalt, seitlich rollen</small></div>${ic('chevron-right')}</div>`;
+  for (let i = 0; i < 16; i++) h += `<div class="box" data-art="erfassen" data-tag="${i}" role="button"><h2>Tag ${i + 1} · ${tagName(i, true)}</h2>
+    <div class="kv"><span class="k">Verlauf</span><span class="v">${PROG(i).replace(/\n/g, '<br>')}</span></div></div>`;
+  $('inhalt').innerHTML = h;
+}
+$('wahl').innerHTML = Object.entries(NAMEN).map(([k, n]) => `<button data-v="${k}" class="${k === V ? 'on' : ''}">${n}</button>`).join('');
+$('wahl').onclick = e => { const b = e.target.closest('button'); if (b) location.search = '?v=' + b.dataset.v; };
+$('bx').innerHTML = ic('x'); $('bok').innerHTML = ic('check');
+// Inhalt des Fensters (wie APD-61 Teil 2)
+let art = null, geaendert = false;
+const feld = (l, v, z) => `<div class="feld"><label>${l}</label>${z ? `<textarea rows="${z}">${v}</textarea>` : `<input value="${v}">`}</div>`;
+function fuellen(a, tag) {
+  art = a; geaendert = false; $('bok').classList.remove('blau');
+  const B = $('binhalt');
+  if (a === 'erfassen') {
+    $('btitel').innerHTML = `${tagName(tag, true)}<small id="gespeichert">Automatisch gespeichert</small>`;
+    B.innerHTML = feld('Wetter', '☀️') + feld('Verlauf', PROG(tag), 5) + feld('Wie war was?', '🙂 schöner Tag', 3) + feld('Essen', 'Ramen', 2)
+      + feld('Quartier', 'Hotel Sakura') + feld('Ausgaben', '') + feld('Notiz', '', 4);
+  } else if (a === 'bearbeiten') {
+    $('btitel').innerHTML = 'Reiselogbuch bearbeiten';
+    B.innerHTML = feld('Titel', 'Japan 2026') + feld('Reiseteilnehmer', 'Anna, Ben') + feld('Beginn', '02.03.2026') + feld('Ende', '21.03.2026')
+      + feld('Reisemittel', 'Flugzeug, Bahn') + feld('Fazit', '', 4);
+  } else {
+    $('btitel').innerHTML = 'Vorschau<small>Japan 2026.pdf</small>';
+    B.innerHTML = `<div class="breit"><div class="blattseite"><h3>Japan 2026</h3><table><tr><th>Tag</th><th>Verlauf</th><th>Quartier</th></tr>` +
+      Array.from({ length: 16 }, (_, i) => `<tr><td>${tagName(i)}</td><td>${PROG(i).replace(/\n/g, '<br>')}</td><td>Hotel ${ORTE[Math.floor(i / 3) % 8]}</td></tr>`).join('') +
+      '</table></div></div>';
+  }
+  B.scrollTop = 0; B.scrollLeft = 0;
+}
+$('binhalt').addEventListener('input', () => {
+  geaendert = true; $('bok').classList.add('blau');
+  if (art === 'erfassen') { const d = new Date(); $('gespeichert').textContent = `Automatisch gespeichert um ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`; }
+});
+const geschuetzt = () => art !== 'vorschau' && geaendert;   // Änderungen seit dem Öffnen (R-4.4)
+// Tastatur (R-4.5): das Fenster wird um die Tastatur niedriger und rückt in die Mitte des sichtbaren Bereichs
+function masse() {
+  H.classList.toggle('klein', innerWidth < 700 || innerHeight < 500);
+  const vv = window.visualViewport, kb = vv ? Math.max(0, Math.round(innerHeight - vv.height - vv.offsetTop)) : 0;
+  H.style.setProperty('--kb', kb + 'px'); H.style.setProperty('--hub', Math.round(kb / 2) + 'px');
+}
+// Zustand: d = Versatz nach unten (0 = in der Mitte); unten = Versatz, bei dem das Fenster ganz unten hinaus ist
+let D = 0, offen = false;
+const DUNKEL = 0.25;
+const unten = () => { const B = $('blatt'), r = B.getBoundingClientRect(); return Math.max(200, Math.round(innerHeight - (r.top - D) + 24)); };
+const bild = d => ({ blatt: `translate3d(0,${Math.round(d)}px,0)`, schleier: +(DUNKEL * Math.max(0, Math.min(1, 1 - d / unten()))).toFixed(3) });
+function setze(d) { D = d; const b = bild(d); $('blatt').style.transform = d ? b.blatt : ''; $('schleier').style.opacity = b.schleier; }
+let laeufe = [];
+function stoppe() {   // hält eine laufende Bewegung dort an, wo sie gerade ist (Anfassen mitten im Gleiten)
+  if (!laeufe.length) return;
+  const m = new DOMMatrix(getComputedStyle($('blatt')).transform), op = +getComputedStyle($('blatt')).opacity;
+  laeufe.forEach(a => a.cancel()); laeufe = [];
+  setze(m.m42); $('blatt').style.opacity = op;
+}
+function animiere(teile, dauer, easing, fertig) {
+  const opt = { duration: dauer, easing, fill: 'both' };
+  laeufe = teile.map(([el, von, nach]) => el.animate([von, nach], opt));
+  const meine = laeufe;
+  laeufe[0].onfinish = () => { if (laeufe !== meine) return; fertig(); meine.forEach(a => a.cancel()); laeufe = []; };
+}
+// weich zum Ziel – Kurve wie iOS (schnell los, lang auslaufend), Dauer nach dem Weg
+function fahre(nach, fertig, dauer) {
+  stoppe(); const von = D;
+  if (von === nach) { setze(nach); fertig?.(); return; }
+  dauer = dauer || Math.max(220, Math.min(480, Math.abs(nach - von) * 0.9));
+  const a = bild(von), b = bild(nach);
+  animiere([[$('blatt'), { transform: a.blatt }, { transform: b.blatt }], [$('schleier'), { opacity: a.schleier }, { opacity: b.schleier }]],
+    dauer, 'cubic-bezier(.32,.72,0,1)', () => { setze(nach); fertig?.(); });
+  D = nach;
+}
+function blende(an, fertig) {   // heute, A und ‚Bewegung reduzieren‘: überblenden
+  stoppe();
+  const B = $('blatt'), dunkel = an ? DUNKEL : +$('schleier').style.opacity || DUNKEL;
+  animiere([[B, { opacity: an ? 0 : 1, transform: `scale(${an ? 0.96 : 1})` }, { opacity: an ? 1 : 0, transform: `scale(${an ? 1 : 0.96})` }],
+    [$('schleier'), { opacity: an ? 0 : dunkel }, { opacity: an ? dunkel : 0 }]], 200, 'ease-out',
+    () => { B.style.opacity = an ? 1 : 0; B.style.transform = ''; $('schleier').style.opacity = an ? DUNKEL : 0; fertig?.(); });
+}
+const gleiten = () => V === 'b' && !ruhig.matches;
+function oeffne(a, tag) {
+  if (offen) return;
+  masse(); fuellen(a, tag); offen = true;
+  const B = $('blatt'); B.classList.add('offen'); $('schleier').classList.add('an');
+  B.tabIndex = -1; B.showModal(); B.focus({ preventScroll: true });   // ohne Fokus-Rahmen und ohne Tastatur (wie showModalQuiet)
+  B.style.opacity = 1; D = 0;
+  if (!gleiten()) { B.style.transform = ''; blende(true); return; }
+  setze(unten()); fahre(0, null, 420);
+}
+function schliesse(nachZug) {
+  if (!offen) return;
+  document.activeElement?.blur?.(); zeigePop(false); offen = false;
+  const ende = () => { const B = $('blatt'); B.classList.remove('offen'); B.close(); B.style.opacity = 1; B.style.transform = ''; D = 0;
+    $('schleier').classList.remove('an'); $('schleier').style.opacity = 0; };
+  if (ruhig.matches || (!gleiten() && !nachZug)) { blende(false, ende); return; }
+  fahre(unten(), ende, nachZug ? 300 : 380);
+}
+function abbrechen() { if (geschuetzt()) zeigePop(true); else schliesse(); }   // x und Escape (R-4.4)
+function zeigePop(an) {
+  $('pop').classList.toggle('an', an); $('popfang').classList.toggle('an', an);
+  const d = $('popdlg');
+  if (!an) { if (d.open) d.close(); return; }
+  if (!d.open) { d.tabIndex = -1; d.showModal(); d.focus({ preventScroll: true }); }
+  const r = $('bx').getBoundingClientRect(), p = $('pop');
+  p.style.left = Math.max(12, Math.min(innerWidth - p.offsetWidth - 12, r.left)) + 'px'; p.style.top = (r.bottom + 8) + 'px';
+}
+$('bx').onclick = () => { if (!unterdruecke) abbrechen(); };
+$('bok').onclick = () => { if (!unterdruecke) schliesse(); };
+$('verwerfen').onclick = () => schliesse();
+$('weiter').onclick = () => zeigePop(false);
+$('popfang').onclick = () => zeigePop(false);
+const draussen = e => { const r = $('blatt').getBoundingClientRect(); return e.target === $('blatt') && (e.clientY < r.top || e.clientY > r.bottom || e.clientX < r.left || e.clientX > r.right); };
+for (const d of ['blatt', 'popdlg']) $(d).addEventListener('cancel', e => e.preventDefault());   // Escape: siehe keydown
+addEventListener('keydown', e => { if (e.key !== 'Escape' || !offen) return; if ($('pop').classList.contains('an')) zeigePop(false); else abbrechen(); });
+$('inhalt').addEventListener('click', e => { const k = e.target.closest('[data-art]'); if (k) oeffne(k.dataset.art, +(k.dataset.tag || 0)); });
+// Ziehen (wie R-4.6): am Kopf immer, im Inhalt nur nach unten, wenn er ganz oben steht; entschieden nach 8 px, deutlich senkrecht
+// (1,2 × so weit wie waagerecht). Ist es entschieden, verhindert touchmove das Rollen. Ein Zug nach unten schließt zuerst die Tastatur.
+let g = null, unterdruecke = false;
+const feldOffen = () => !!document.activeElement?.matches?.('#binhalt input, #binhalt textarea');
+const kann = () => offen && V !== 'heute' && !$('pop').classList.contains('an');
+$('blatt').addEventListener('pointerdown', e => {
+  if (!e.isPrimary || e.button > 0 || !kann() || draussen(e)) { g = null; return; }
+  g = { id: e.pointerId, x0: e.clientX, y0: e.clientY, d: D, kopf: !!e.target.closest('.bkopf'), aktiv: false, spur: [[e.timeStamp, e.clientY]] };
+});
+const erlaubt = (dx, dy) => dy > Math.abs(dx) * 1.2 && (g.kopf || $('binhalt').scrollTop <= 0);
+$('blatt').addEventListener('touchmove', e => {
+  if (!g) return;
+  const t = e.touches?.[0], dx = (t ? t.clientX : g.x0) - g.x0, dy = (t ? t.clientY : g.y0) - g.y0;
+  if (g.aktiv || (Math.abs(dy) > 1 && erlaubt(dx, dy))) e.preventDefault();
+}, { passive: false });
+addEventListener('pointermove', e => {
+  if (!g || e.pointerId !== g.id) return;
+  const dx = e.clientX - g.x0, dy = e.clientY - g.y0;
+  if (!g.aktiv) {
+    if (Math.abs(dx) < 8 && Math.abs(dy) < 8) return;
+    if (dy > Math.abs(dx) * 1.2 && feldOffen()) document.activeElement.blur();
+    if (!erlaubt(dx, dy)) { g = null; return; }
+    g.aktiv = true; stoppe(); g.d = D;
+    try { $('blatt').setPointerCapture(e.pointerId); } catch {}
+  }
+  e.preventDefault();
+  g.spur.push([e.timeStamp, e.clientY]); if (g.spur.length > 8) g.spur.shift();
+  let d = g.d + dy;
+  if (d < 0) d = -Math.pow(-d, 0.7);              // nach oben: Gummiband
+  g.roh = d;
+  if (geschuetzt() && d > 0) d *= 0.3;            // mit Änderungen: zäh, schließt nicht
+  setze(d);
+}, { passive: false });
+function loslassen(e, abbruch) {
+  if (!g || e.pointerId !== g.id) return;
+  const z = g; g = null;
+  if (!z.aktiv) return;
+  unterdruecke = true; setTimeout(() => { unterdruecke = false; }, 0);
+  const spur = z.spur.filter(([t]) => t >= e.timeStamp - 100);
+  const tempo = spur.length > 1 && spur.at(-1)[0] > spur[0][0] ? (spur.at(-1)[1] - spur[0][1]) / (spur.at(-1)[0] - spur[0][0]) : 0;
+  const wohin = (z.roh ?? D) + tempo * 400;       // wo es mit diesem Tempo ausliefe (wie das Blatt am iPhone)
+  if (abbruch || wohin < $('blatt').offsetHeight / 2) { fahre(0); return; }
+  if (geschuetzt()) { fahre(0); setTimeout(() => zeigePop(true), 260); return; }
+  schliesse(true);
+}
+addEventListener('pointerup', e => loslassen(e, false), true);
+addEventListener('pointercancel', e => loslassen(e, true), true);
+function neu() { masse(); if (offen && !laeufe.length && !g) setze(0); }
+addEventListener('resize', neu);
+visualViewport?.addEventListener('resize', neu); visualViewport?.addEventListener('scroll', neu);
+seiteBauen(); masse();
+</script>
+</body></html>
