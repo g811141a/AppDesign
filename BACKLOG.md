@@ -15,7 +15,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 | APD-77 | 3 | **‚Messung starten‘ verstecken (Frage des Nutzers 25.10.2026, Variante a):** der Messmodus (R-1.6) ist ein Werkzeug für Claude, für den Nutzer ohne Zweck – der Punkt steht nicht mehr ständig im Mehr-Menü der Seitenleiste bzw. Startliste, sondern erscheint erst nach langem Drücken auf die graue Versionszeile im Mehr-Menü und bleibt bis zum Neustart der App; die Funktion bleibt ganz (APD-72, RLB-103 brauchen sie evtl.). So macht es Apple: Diagnose versteckt (Einstellungen → Datenschutz → Analyse, Menü ‚Entwickler‘ erst nach Freischalten). **Entschieden (Nutzer 26.10.2026, Sitzung 0048):** langes Drücken (etwa 0,5 s) auf die Versionszeile, bleibt bis zum Neustart (neu laden versteckt wieder), das Menü bleibt offen und zeigt den Punkt sofort an der heutigen Stelle, allgemeine Regel (R-1.6 und 15.21 ändern, `checkMessung` anpassen); läuft eine Messung, bleibt ‚Messung beenden und teilen‘ immer sichtbar. Testfall-Liste `arbeit/APD-77 Testfall-Liste.md` 1–2, 5 | 26.10.2026 |
 | P-75/6 | 3 | **Designrichtlinie 13 ergänzen (Auskunft P-75/6, Nutzer 26.10.2026):** ‚Größerer Text‘ unter Einstellungen → Bedienungshilfen → Einstellungen pro App → Safari wirkt auch auf die Web-App vom Home-Bildschirm (`-apple-system-body`, R-1.10) – nur Text, keine Prüfung | 26.10.2026 |
 
-3 Punkte bereit (APD-72, APD-77, P-75/6) – dazu RLB-103 im Reiselogbuch.
+3 Punkte bereit (APD-72, APD-77, P-75/6) – dazu RLB-103 im Reiselogbuch. **Ja (Nutzer 26.10.2026): 4.38.0 / Reiselogbuch 3.36.0 mit APD-72 und RLB-103** (Bau in Sitzung 0049); danach 4.39.0 mit APD-77 und P-75/6 (0 Nr. 8: höchstens 2 Themen).
 
 
 ## 1. Auf iPad und iPhone prüfen
