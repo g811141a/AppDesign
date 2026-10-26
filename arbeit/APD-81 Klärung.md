@@ -15,6 +15,10 @@ iPad-Tastatur, Schütteln oder Wischen mit drei Fingern. Das ⓧ ist bei Apple n
 
 Betroffen im Reiselogbuch: Programm, Kommentar (‚Wie war was?‘), Essen und Trinken, Fazit.
 
+## Entschieden (Nutzer 26.10.2026, Sitzung 0050)
+
+F-1 a, F-2 a, F-3 a, F-4 a – jeweils die Empfehlung. Status: bereit (Backlog ‚0. Nächste Version‘).
+
 ## Fragen (Empfehlung jeweils a)
 
 - **F-1 Platz des ⓧ:** a) **oben rechts**, auf Höhe der ersten Zeile, der Text läuft rechts in **allen** Zeilen nicht darunter (wie
