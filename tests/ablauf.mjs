@@ -1785,15 +1785,19 @@ export async function checkSheet(p, { open, change = null, field = null, ok = nu
     if (!(await lage()).open) await auf();
     if (was === 'x' && !await p.locator('#dlg #dlgX').count()) continue;
     await tu();
-    const g = await p.evaluate(async () => {
-      const lage = () => { const g = document.querySelector('.blatt-geist'); if (!g) return null; const c = getComputedStyle(g), t = c.translate;
-        return { t: Math.round(t && t !== 'none' ? parseFloat(t.split(' ')[1]) || 0 : 0), o: +c.opacity }; };
-      const a = lage(); await new Promise(r => setTimeout(r, 120)); return { a, b: lage(), offen: document.getElementById('dlg').open };
+    // unter Last kommt die Taste in WebKit verzögert an – bis zu 3 s auf das Schließen warten (wie weg)
+    await p.waitForFunction(() => !document.getElementById('dlg').open, null, { timeout: 3000 }).catch(() => {});
+    // die Bewegung des Abbilds selbst (Anfang und Ziel) – unter Last begann sie in WebKit erst nach über 120 ms (iPad hoch)
+    const g = await p.evaluate(() => {
+      const g = document.querySelector('.blatt-geist'), y = v => Math.round(parseFloat(String(v ?? '0 0').split(' ')[1]) || 0);
+      const k = g?.getAnimations()[0]?.effect.getKeyframes() || [];
+      return { da: !!g, offen: document.getElementById('dlg').open, von: y(k[0]?.translate), nach: y(k.at(-1)?.translate), aus: k.length > 1 && +k.at(-1).opacity === 0,
+        unten: g ? Math.round(innerHeight - g.getBoundingClientRect().top) : 0 };
     });
     if (g.offen) E(`${nr('B12', 'D-11')} ${was}: das Fenster bleibt offen`);
-    else if (!g.a) E(`${nr('B12', 'D-11')} ${was}: das Fenster verschwindet sofort (kein Abbild, das hinausgleitet)`);
-    else if (!reduziert && !(g.b && g.b.t > g.a.t)) E(`${nr('B12', 'D-11')} ${was}: das Abbild gleitet nicht nach unten (${g.a.t} → ${g.b?.t ?? 'weg'} px)`);
-    else if (reduziert && (g.b?.t || g.a.t) > 0) E(`${nr('B22', 'D-13')} ‚Bewegung reduzieren‘ ${was}: das Abbild gleitet statt auszublenden`);
+    else if (!g.da) E(`${nr('B12', 'D-11')} ${was}: das Fenster verschwindet sofort (kein Abbild, das hinausgleitet)`);
+    else if (!reduziert && !(g.nach > g.von && g.nach - g.von >= g.unten - 2)) E(`${nr('B12', 'D-11')} ${was}: das Abbild gleitet nicht nach unten hinaus (${g.von} → ${g.nach} px, bis unten ${g.unten} px)`);
+    else if (reduziert && (!g.aus || g.nach !== g.von)) E(`${nr('B22', 'D-13')} ‚Bewegung reduzieren‘ ${was}: das Abbild ${g.aus ? 'gleitet' : 'blendet nicht aus'}`);
     await ruhig();
     await weg(`${nr('B12', 'D-11')} ${was}`);
   }

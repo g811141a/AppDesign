@@ -52,6 +52,9 @@ Usertest im Reiselogbuch: P-76.
   webkit, iPad hoch, Fenster Ort: ‚Feld fPlace springt von 373 auf 311 px‘) – die Prüfung lief zum ersten Mal unter Volllast. Ursache:
   das iPad-Fenster gleitet mit der Tastatur (0,25 s); unter Volllast zeichnete WebKit so wenige Bilder, dass zwischen zweien 62–74 px
   lagen. Allein und viermal parallel grün.
+- **`checkSheet` APD-72/D-11 lastfest:** der dritte volle Lauf wurde rot (`ablauf-blatt` · webkit, iPad hoch: ‚das Abbild gleitet nicht nach
+  unten (0 → 0 px)‘) – unter Last begann die Bewegung des Abbilds erst nach über 120 ms, Escape kam verzögert an. Die Prüfung wartet jetzt
+  bis zu 3 s auf das Schließen und prüft die Bewegung selbst (von wo nach wo, bis unten hinaus bzw. Ausblenden). Viermal parallel grün.
 
 ## 4.37.0 – 25.10.2026
 
