@@ -55,7 +55,8 @@ App-Prüfungen, die heute ‚Messung starten‘ im Menü erwarten, werden angepa
     und Fensterkopf springen in 1–2 Bildern um 23–70 px und stehen danach wieder richtig (R-4.5, APD-36/T-1, APD-36/T-2, APD-36/T-4, APD-36/T-5);
   - Messung 19.10. iPhone quer (‚tippen fPlace‘, ‚tippen dlgOk‘): Kopf- und Suchzeile springen in 2 Bildern (APD-36/T-8);
   - Messung 24.10. Blatt: ein zweites ‚tippen -‘ (Ziel ohne id) hat keine Abbildung in `ziele`.
-  Offen: echter Fehler der App oder Abweichung des Safari-Modells – zuerst mit `fassung/` älterer Versionen eingrenzen, seit wann
+  **Am Gerät steht der Kopf still (Nutzer 26.10.2026)** → Abweichung des Safari-Modells; RLB-103 ist hinter APD-77 zurückgestellt.
+  Ursprünglich offen: echter Fehler der App oder Abweichung des Safari-Modells – zuerst mit `fassung/` älterer Versionen eingrenzen, seit wann
   es springt, und am Gerät fragen (iPhone quer, Tag öffnen, ‚Ort‘ antippen: springt der Kopf kurz?).
 
 ## 4. RLB-103 – Testfälle (automatisch)
