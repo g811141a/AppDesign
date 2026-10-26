@@ -48,6 +48,10 @@ Usertest im Reiselogbuch: P-76.
   öffnen‘: x und Häkchen ‚44×44 px (mind. 44)‘). Ursache: WebKit misst ein gleitendes Fenster mit Gerätefaktor 2 mit Rundungsfehlern
   (44 × 43,99998 px, nachgemessen in 41 Stufen des Hereingleitens); unter Volllast fiel die Messung in das neue Hereingleiten am iPad.
   Allein lief die Prüfung zweimal grün; die Gegenprobe der Grundregeln bleibt rot.
+- **`checkTastaturStill` APD-36/B-4 nur für Bilder höchstens 40 ms auseinander:** der zweite volle Lauf wurde rot (`ablauf-tastatur-still` ·
+  webkit, iPad hoch, Fenster Ort: ‚Feld fPlace springt von 373 auf 311 px‘) – die Prüfung lief zum ersten Mal unter Volllast. Ursache:
+  das iPad-Fenster gleitet mit der Tastatur (0,25 s); unter Volllast zeichnete WebKit so wenige Bilder, dass zwischen zweien 62–74 px
+  lagen. Allein und viermal parallel grün.
 
 ## 4.37.0 – 25.10.2026
 

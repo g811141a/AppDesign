@@ -1045,10 +1045,12 @@ export async function checkTastaturStill(p, { field, vorher = null, wechsel = nu
         E(`${name}: ${STILL_NAME[k]} springt in ${aus.length} von ${bilder.length} Bildern bis ${w} px (vorher ${a[k]}, danach ${e[k]} px)`);
       } else if (still && Math.abs(e[k] - a[k]) > 1) E(`${name}: ${STILL_NAME[k]} danach bei ${e[k]} statt ${a[k]} px`);
     }
-    // APD-36/B-4: das Feld mit Fokus springt nicht (dasselbe Feld in zwei aufeinanderfolgenden Bildern)
+    // APD-36/B-4: das Feld mit Fokus springt nicht (dasselbe Feld in zwei aufeinanderfolgenden Bildern). Seit 4.38.0 (RLB-103: die Prüfung
+    // läuft im vollen Lauf mit) nur Bilder höchstens 40 ms auseinander – unter Volllast zeichnete WebKit beim Gleiten des iPad-Fensters
+    // mit der Tastatur (0,25 s) so wenige Bilder, dass zwischen zweien 62–74 px lagen (iPad hoch, Fenster Ort; allein grün)
     for (let i = 1; i < bilder.length; i++) {
       const x = bilder[i - 1], y = bilder[i];
-      if (x.feld != null && y.feld != null && x.feldId === y.feldId && Math.abs(y.feld - x.feld) > 60) {
+      if (x.feld != null && y.feld != null && x.feldId === y.feldId && y.t - x.t <= 40 && Math.abs(y.feld - x.feld) > 60) {
         E(`${name}: Feld ${y.feldId} springt von ${x.feld} auf ${y.feld} px (APD-36/B-4)`); break;
       }
     }
