@@ -1,6 +1,6 @@
 # AppDesign – Backlog (allgemeine Themen)
 
-**Stand 25.10.2026** · Aktuelle Version: AppDesign 4.37.0
+**Stand 26.10.2026** · Aktuelle Version: AppDesign 4.38.0
 
 Allgemeine Themen, die alle Apps betreffen. App-Themen stehen im Backlog der jeweiligen App.
 Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.4.
@@ -11,18 +11,17 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Prio | Thema | bereit seit |
 |---|---|---|---|
-| APD-72 | 2 | **iPad: Fenster per Ziehen nach unten schließen (Frage P-68/5.2, Nutzer 24.10.2026):** wie die Formblätter in iPadOS – ein Fenster in der Mitte lässt sich am Kopf (bzw. im Inhalt ganz oben) nach unten wegziehen, mit Änderungen federt es zurück und fragt am x (R-4.4); heute schließt es am iPad nur mit x, Häkchen oder Escape (R-4.6 letzter Satz, Testfall-Liste APD-61 Teil 2 B18). So macht es Apple: iPadOS lässt Formblätter in der Mitte nach unten wegziehen. Dazu (Nutzer 24.10.2026): am iPad schließt ein Zug nach unten im Fenster auch die Tastatur, wie auf dem iPhone. **Entschieden (Nutzer 26.10.2026, Sitzung 0048):** Zug wie am iPhone (am Kopf immer, im Inhalt, wenn er ganz oben steht, auch kurz gewischt), Aussehen wie iPadOS (nur das Fenster fährt mit, die Abdunkelung wird heller, die Seite bleibt, kein Griff; Abdunkelung antippen schließt am iPad weiter nicht), allgemeine Regel (R-4.6, 15.17, `checkSheet` auch am iPad). **Muster** `arbeit/APD-72 Muster.html` (iPad quer, hell): Heute · A (Öffnen und Schließen mit x überblenden, nach dem Zug gleitet es hinaus) · B (Öffnen und Schließen immer von unten wie iPadOS) – **gewählt: B** (Nutzer 26.10.2026); Testfall-Liste `arbeit/APD-72 Testfall-Liste.md` (APD-72/D-1 bis D-20) | 26.10.2026 |
 | APD-77 | 3 | **‚Messung starten‘ verstecken (Frage des Nutzers 25.10.2026, Variante a):** der Messmodus (R-1.6) ist ein Werkzeug für Claude, für den Nutzer ohne Zweck – der Punkt steht nicht mehr ständig im Mehr-Menü der Seitenleiste bzw. Startliste, sondern erscheint erst nach langem Drücken auf die graue Versionszeile im Mehr-Menü und bleibt bis zum Neustart der App; die Funktion bleibt ganz (APD-72, RLB-103 brauchen sie evtl.). So macht es Apple: Diagnose versteckt (Einstellungen → Datenschutz → Analyse, Menü ‚Entwickler‘ erst nach Freischalten). **Entschieden (Nutzer 26.10.2026, Sitzung 0048):** langes Drücken (etwa 0,5 s) auf die Versionszeile, bleibt bis zum Neustart (neu laden versteckt wieder), das Menü bleibt offen und zeigt den Punkt sofort an der heutigen Stelle, allgemeine Regel (R-1.6 und 15.21 ändern, `checkMessung` anpassen); läuft eine Messung, bleibt ‚Messung beenden und teilen‘ immer sichtbar. Testfall-Liste `arbeit/APD-77 Testfall-Liste.md` 1–2, 5 | 26.10.2026 |
 | P-75/6 | 3 | **Designrichtlinie 13 ergänzen (Auskunft P-75/6, Nutzer 26.10.2026):** ‚Größerer Text‘ unter Einstellungen → Bedienungshilfen → Einstellungen pro App → Safari wirkt auch auf die Web-App vom Home-Bildschirm (`-apple-system-body`, R-1.10) – nur Text, keine Prüfung | 26.10.2026 |
 
-3 Punkte bereit (APD-72, APD-77, P-75/6) – dazu RLB-103 im Reiselogbuch. **Ja (Nutzer 26.10.2026): 4.38.0 / Reiselogbuch 3.36.0 mit APD-72 und RLB-103** (Bau in Sitzung 0049); danach 4.39.0 mit APD-77 und P-75/6 (0 Nr. 8: höchstens 2 Themen).
+2 Punkte bereit (APD-77, P-75/6) für 4.39.0 – vor dem Bau fragen (erst Usertest P-76, 0 Nr. 22).
 
 
 ## 1. Auf iPad und iPhone prüfen
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| – | – | zurzeit kein Usertest offen | – |
+| P-76 | 2 | **APD-72 iPad: Fenster nach unten ziehen (4.38.0, Reiselogbuch 3.36.0):** Version, Hereingleiten und Ziehen am Kopf, weit ziehen schließt, im Inhalt wischen, mit Änderung und Tastatur, x / Häkchen / Abdunkelung, iPhone unverändert – Testfälle P-76/0 bis /6 im CHANGELOG des Reiselogbuchs | prüfen |
 
 ## 2. Weitere Themen (in Klärung)
 
@@ -60,6 +59,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Thema | Version | Datum |
 |---|---|---|---|
+| APD-72 | **APD-72 iPad: Fenster nach unten ziehen (Variante B, Ja 26.10.2026):** R-4.6 auch am iPad – in der Mitte, Öffnen und Schließen von unten, Ziehen wie am iPhone (nur das Fenster fährt mit, Abdunkelung heller, Seite bleibt, Abdunkelung antippen schließt nicht); ui.js ohne `isPhone()` im Blatt, `.blatt-schleier` statt `::backdrop`; `checkSheet` APD-72/D-1 bis APD-72/D-15 (neu für beide Geräte APD-72/D-8, APD-72/D-11, APD-72/D-14); Designrichtlinie 7, 15.17. Dazu RLB-103 (Reiselogbuch): `abspielen.mjs` erkennt das Ende der Messung, Marke ‚messung beendet‘, Safari-Modell nach der Messung vom 26.10. (13) | 4.38.0 | 26.10.2026 |
 | P-75 | Geprüft **P-75 (Reiselogbuch 3.35.0): alles ok** (Nutzer 25.10.2026, Sitzung 0048) – Version, Standard wie bisher, iPhone bis AX5, iPad Tage als Kästen ab AX1, Wechsel bei offenem Fenster, xS und Notiz bei AX5, Einstellung pro App, Mac (**APD-43 Teil 2 bestätigt**); Auskunft P-75/6: ‚Größerer Text‘ nur für Safari (Einstellungen pro App) wirkt auch auf die App vom Home-Bildschirm | 4.37.0 | 25.10.2026 |
 | APD-82 | **`ablauf-navigation` unter Last:** das Loslassen eines schnellen Wischens kam unter Last mehr als 100 ms nach der letzten Bewegung an – die Prüfung misst jetzt das Tempo wie die App und wiederholt einen zu langsam angekommenen Zug bis zu dreimal (APD-61/F-5, APD-68/Q-6); 12 von 12 Läufen unter Last grün | 4.37.0 | 25.10.2026 |
 | APD-43 | **APD-43 Teil 2 Textgröße folgt dem Gerät (Ja 25.10.2026):** R-1.10 mit Grundregel ‚nichts überlappt‘, Apples Tabelle der Textstile (3), `textStufe` (ui.js), Leisten bis XXXL, Umbau `ts-um`, gemessener Platz unter der Liste; Prüfungen `checkText`, `PRUEF_TEXT`, Gegenprobe `--gegenprobe text` – **APD-43 abgeschlossen** (Teil 1 in 4.35.0) | 4.37.0 | 25.10.2026 |

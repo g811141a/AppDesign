@@ -1,6 +1,6 @@
 # Designrichtlinie allgemein
 
-**Version 4.37.0** · Stand 25.10.2026
+**Version 4.38.0** · Stand 26.10.2026
 
 Allgemeine Gestaltungs- und Bedienregeln für alle Web-Apps von g811141a auf iPad und iPhone. Die Datei liegt im Design-Repo
 **AppDesign** (g811141a/AppDesign); ihre Versionsnummer ist die des Repos. Die Komponenten sind dort einmal programmiert und
@@ -242,8 +242,10 @@ Body = Grundgröße der Stufe (14 … 53). Zeilenabstände und Werte wörtlich a
 - Escape wirkt wie das x.
 - **iPhone: Blatt** (R-4.6, wie ‚Neuer Termin‘): gleitet von unten bis knapp unter die Statusleiste, die Seite dahinter weicht
   verkleinert und abgedunkelt zurück (quer volle Höhe, die Seite bleibt); nach unten ziehen schließt wie das x – mit Änderungen
-  federt es zurück und fragt; Antippen der Abdunkelung wie x. Am iPad bleibt das Fenster in der Mitte und schließt nur mit x,
-  Häkchen oder Escape.
+  federt es zurück und fragt; Antippen der Abdunkelung wie x.
+- **iPad: Fenster nach unten ziehen** (R-4.6, wie ein Formblatt in iPadOS): das Fenster bleibt in der Mitte, gleitet beim Öffnen
+  und Schließen (x, Häkchen, Escape) von unten; nach unten ziehen wie am iPhone – dabei fährt nur das Fenster mit, die Abdunkelung
+  wird heller, die Seite bleibt; Antippen der Abdunkelung schließt nicht (15.17).
 - Solange ein Fenster offen ist, steht die Liste dahinter still (R-7.3, Technik 15.9).
 - **Bei sichtbarer Tastatur** passt sich jedes Fenster dem sichtbaren Bereich über der Tastatur an: die Kopfzeile bleibt immer
   sichtbar, nur der Inhalt rollt, und das Feld mit Fokus steht ganz über der Tastatur, ohne Springen (R-4.5; ebenso für Kopf- und
@@ -428,7 +430,9 @@ Gemessene bzw. belegte Eigenheiten mit Quelle; sie gelten für alle Apps, die Pr
   (gemessen hoch 409 statt 812 px, quer 126 statt 402 px); `innerHeight` bleibt (quer schrumpft es je Fokus um 19 px). Rollt das
   **Fenster** bei offener Tastatur, bewegt sich zuerst nur der sichtbare Bereich (`offsetTop` = Abstand der beiden), der
   Layout-Bereich folgt erst am Rand; Safari meldet die neue Lage **2 Bilder (33 ms) später** – jeder Ausgleich über `--vv-top`
-  kommt zu spät, feste Leisten zittern. Beim neuen Fokus (z. B. nach ⓧ) rollt Safari hoch um 120 px bzw. schiebt quer um 21 px.
+  kommt zu spät, feste Leisten zittern. Was Safari wegen der Tastatur verschiebt (Öffnen, Feld wechseln, Schließen), meldet es
+  dagegen **im selben Augenblick** – kein Bild dazwischen (RLB-103, `tests/messungen/2026-10-26 iPhone quer Blatt Ort Quartier.txt`
+  Zeilen 532 ff. und 541 ff., ebenso 20.10. iPhone hoch Zeilen 228–244). Beim neuen Fokus (z. B. nach ⓧ) rollt Safari hoch um 120 px bzw. schiebt quer um 21 px.
   Ursache ist jedes Rollen des Fensters bei offener Tastatur. Deshalb rollt die Seite nie, nur der Inhalt (R-2.1, 15.22): dann hat
   Safari beim Tippen nichts zu verschieben (Versuch APD-28/M-1 am iPhone: 0 px hoch und quer); Felder mit Fokus werden nie ersetzt
   (`setHtml`). Unter iOS 26 setzt sich `offsetTop` nach dem Schließen der Tastatur teils nicht auf 0 zurück – der Rahmen folgt
@@ -445,8 +449,8 @@ Gemessene bzw. belegte Eigenheiten mit Quelle; sie gelten für alle Apps, die Pr
     höchstens um den ganzen Raum. **APD-36/S-2** Tastatur iPad quer 428 px, hoch 340 px; iPhone hoch 403 (Ziffern 376), quer 276
     (Ziffern 232). **APD-36/S-3** Dabei rollt Safari die Seite selbst: `scrollY` = Verschiebung, `innerHeight` = Höhe − `scrollY` – die
     Höhe ohne Tastatur ist `innerHeight + scrollY` (sonst gilt ein iPad mit Tastatur als iPhone).
-  - **APD-36/S-5/S-6** Beim ersten Öffnen verschiebt Safari nur, wenn das Feld weniger als 24 px (im Fenster 15 px) über der Tastatur
-    endet; beim Wechsel bei offener Tastatur, außerhalb eines Rollbereichs (Suche) und beim erneuten Antippen nach der
+  - **APD-36/S-5/S-6** Beim ersten Öffnen verschiebt Safari nur, wenn das Feld weniger als 24 px über der Tastatur endet – im Fenster
+    bzw. Blatt nur, wenn es nicht ganz über ihr endet (RLB-103, Messung 26.10.2026: ‚Ort‘ knapp über der Tastatur, nichts verschoben); beim Wechsel bei offener Tastatur, außerhalb eines Rollbereichs (Suche) und beim erneuten Antippen nach der
     Tastatur-Taste (iPad) schon, wenn seine Mitte unter der Mitte des sichtbaren Bereichs liegt.
   - **APD-36/S-7** Safari liest die Lage **beim Fokus**, bevor die App etwas tun kann – Rollen im `focusin` allein hilft nicht.
   - **APD-36/S-8** Ein **neuer Fokus** (`blur()` + `focus({ preventScroll: true })` noch im `focusin`, also in der Berührung) lässt
@@ -855,7 +859,12 @@ Regel). In AppDesign ist jede Komponente einmal programmiert (`v4/design.css`, `
   (seit 4.32.2, APD-73). Antippen der Abdunkelung und Escape wie x; Drehen lässt es
   offen. ‚Bewegung reduzieren‘: Überblenden, das Ziehen folgt weiter dem Finger. Kopfzeile kompakt mit einzeiligem Titel (kurze
   Form, z. B. ‚Di, 25.08.2026‘); Options-Kapseln stehen unter dem Kasten-Titel. Meldungen bleiben kleine Fenster in der Mitte.
-  **Technisch:** `blattAuf()` aus `openDialog`, Lage `blattOben()` in `placeDialogs`, Klassen `html.blatt`, `.blatt-zurueck`,
+  **Am iPad** (seit 4.38.0, APD-72, Variante B wie ein Formblatt in iPadOS, z. B. ‚Neuer Kontakt‘): das Fenster bleibt in der Mitte
+  (7) und gleitet beim Öffnen und Schließen (x, Häkchen, Escape) von unten; das Ziehen beginnt und entscheidet wie am iPhone (Kopf,
+  Inhalt ganz oben, schnelles Wischen, mit Änderungen zäh und fragend, Tastatur zuerst zu); dabei fährt nur das Fenster mit, die
+  Abdunkelung (35 % Schwarz, statt `::backdrop`) wird heller, die Seite bleibt groß; Antippen der Abdunkelung schließt nicht (iPadOS
+  sperrt das bei Formblättern ebenso); Drehen lässt es offen in der Mitte; kein Griff (wie iPadOS).
+  **Technisch:** `blattAuf()` aus `openDialog` (iPhone und iPad), Lage `blattOben()` in `placeDialogs` (iPad 0: das Fenster steht, wo `placeDialogs` es hinstellt), Klassen `html.blatt`, `.blatt-zurueck`,
   `.blatt-faehrt`, `.blatt-zieht`, an den zurückweichenden Elementen `.blatt-seite`; die App braucht nichts weiter (Schließen über x bzw. `dlg.close()` wie bisher).
 - **Abfragen** wie auf dem iPad als Sprechblase an der angetippten Schaltfläche (iOS 26 zeigt Abfragen ebenfalls an der
   Schaltfläche). Menüs, Kapseln und Schaltflächen wie auf dem iPad (44 pt).
@@ -981,7 +990,8 @@ Regel). In AppDesign ist jede Komponente einmal programmiert (`v4/design.css`, `
   `visualViewport` Höhe und `offsetTop`, `--vv-top`, Oberkante der Teile der App (Kopf, Suchzeile, erster Inhalt …), Rollstand
   eigener Bereiche, Fokus (id), Lage. Ereignisse sofort mit den Werten im Augenblick: focus/blur, Eingabe (Länge), Tippen (id),
   scroll, resize, Drehen, `visualViewport` resize/scroll, Neuaufbau (`setHtml`), und was ui.js bei der Tastatur tut: ‚neu
-  fokussiert <id>‘, ‚klick unterdrückt <id>‘, ‚zurückgestellt <id> alt → neu‘, ‚platz weg <id>‘.
+  fokussiert <id>‘, ‚klick unterdrückt <id>‘, ‚zurückgestellt <id> alt → neu‘, ‚platz weg <id>‘; beim Beenden im Menü ‚messung
+  beendet‘ (seit 4.38.0, RLB-103).
 - **Berührungen und Gesten:** ‚zeiger down|move|up|cancel x y Art Ziel‘ (Lage in px, Art touch/mouse/pen, ‚neben‘ für einen
   weiteren Finger; move nur bei gedrücktem Zeiger), ‚touchcancel Finger Ziel‘, ‚touchmove frei|verhindert|fest‘ (beim Wechsel:
   Safari darf noch rollen, die Geste hält den Finger, Safari rollt schon). Ziel ohne Texte: id bzw. Tag mit Klassen und Rolle,
@@ -999,7 +1009,9 @@ Regel). In AppDesign ist jede Komponente einmal programmiert (`v4/design.css`, `
   Darstellung des Geräts), `spieleAb(p, m, { ziele, woerter, bis, nachSchritt })` spielt Tippen, Eingaben und das Schließen der
   Tastatur nach, Safari meldet sichtbare Höhe und `offsetTop` genau wie gemessen (`__safari.setze`). Am Ende jedes Schritts:
   Kopf- und Suchzeile ± 1 px und Fokus wie gemessen; der Inhalt hängt an den eigenen Daten und wird nicht verglichen. Gegenprobe:
-  dieselbe Messung um 20 px verschoben wird rot. Grenze: Berührungen und Gesten stehen in der Messung, nachgespielt werden sie nicht –
+  dieselbe Messung um 20 px verschoben wird rot. Das Beenden der Messung (die letzten beiden Handlungen ‚tippen <Mehr-Knopf>‘ und
+  ‚tippen button‘, vor ‚messung beendet‘) wird nicht nachgespielt; ‚klick unterdrückt … (Feld <id>)‘ zählt als Antippen des Felds
+  (seit 4.38.0, RLB-103). Grenze: Berührungen und Gesten stehen in der Messung, nachgespielt werden sie nicht –
   dafür bleibt das Safari-Modell.
   Testfall-Liste `arbeit/APD-26 APD-31 APD-34 Testfall-Liste.md` (2.3, APD-34/M-1 bis M-6).
 
@@ -1115,7 +1127,7 @@ Testfall (User) in den Usertest, wenn eine Version es betrifft.
 | R-4.4 | **Fenster-Kopfzeile:** x links, Häkchen rechts – grau, nach einer Änderung blau; x mit Änderungen fragt ‚Änderungen verwerfen‘ / ‚Weiter bearbeiten‘ | ablauf.mjs – `checkDialogHead` | – | 6, 15.8 |
 | R-4.5 | **Passt immer auf den Bildschirm:** Menü, Sprechblase und Fenster ganz sichtbar (auch iPhone quer), zu hoher Inhalt rollt darin; Fenster auf dem iPhone als Blatt bis zum unteren Rand bzw. zur Tastatur (R-4.6). Ein Feld mit Fokus steht immer ganz über der Tastatur – in Fenstern und im Inhalt, 16 px darüber (reicht der Platz nicht, oben unter Kopf- bzw. Suchzeile, mit Platz für Fokus-Umrandung und Schatten) – und zwar **ohne Springen**: beim Antippen rollt das Feld in die obere Hälfte, Safari verschiebt nichts; Kopfzeile, Suchzeile, Seitenleiste und Fensterkopf stehen in jedem Bild still, das Feld springt nicht, das iPad-Fenster gleitet mit der Tastatur | hig.mjs, ablauf.mjs – `checkFieldVisible` (Safari-Modell: Feld unter der Tastatur antippen), `checkTastaturStill` (jedes Bild), `checkSheet` B10 (Abstand über dem Feld ≥ `RING`) | – | 7, 13, 15.7 |
 | R-4.7 | **Hardware-Tastatur (Grundlagen):** Esc und ⌘. schließen das oberste Menü (offenes Untermenü zuerst), die Sprechblase (= Abbrechen) und das Fenster (wie x, mit Änderungen die Rückfrage) – die Taste ist damit verbraucht; ↑ ↓ (Tab wie ↓) mit Umlauf, Pos1/Ende in Menüs und Untermenüs, → öffnet und ← schließt das Untermenü, Eingabe bzw. Leertaste wählt; in der Sprechblase löst Eingabe den empfohlenen bzw. den Weg zurück – **nie die rote** Aktion, Tab und Pfeile markieren, die Leertaste drückt den markierten Knopf; Tab bleibt im Vordergrund (Fenster mit Umlauf) und folgt der sichtbaren Reihenfolge (Leiste → Suche → Inhalt → Kapsel); Esc auf der Seite geht zurück bzw. schließt die darübergelegte Seitenleiste (Fokus auf panel-left); keine Kurzbefehle | ablauf.mjs – `checkFokus` | Esc, ⌘. (gibt Safari es weiter?), Pfeile, Eingabe, Tab (Tastatursteuerung) | 15.6, 15.7, 15.9 |
-| R-4.6 | **Blatt auf dem iPhone:** im iPhone-Aufbau (hoch und quer) ist jedes Fenster außer Meldungen ein Blatt ‚nur groß‘ wie ‚Neuer Termin‘ – gleitet von unten bis knapp unter die Statusleiste, oben runde Ecken, die Seite dahinter weicht verkleinert und abgedunkelt zurück (quer volle Höhe, die Seite bleibt); nach unten ziehen schließt wie x – am Kopf immer, im Inhalt, wenn er ganz oben steht, auch kurz und schnell gewischt; waagerecht und im gerollten Inhalt bleibt es; mit Änderungen seit dem Öffnen zieht es sich zäh, federt zurück und fragt am x (R-4.4); ein Zug nach unten schließt zuerst die Tastatur, auch nach einem Stück nach oben – beginnt er auf einem Feld, zieht er im selben Zug das Blatt wie am Kopf (ein Feld, das selbst gerollt ist, rollt weiter), im gerollten Inhalt daneben rollt er weiter; Abdunkelung antippen und Escape wie x; Drehen lässt es offen; ‚Bewegung reduzieren‘: Überblenden, die Seite bleibt groß, nach dem Loslassen steht es sofort am Ziel (R-1.9). Am iPad bleibt das Fenster in der Mitte und schließt nur mit x, Häkchen oder Escape | ablauf.mjs – `checkSheet` | Gerät (Wischgefühl, Tastatur) | 7, 13, 15.17 |
+| R-4.6 | **Blatt auf dem iPhone, Fenster am iPad ziehen:** im iPhone-Aufbau (hoch und quer) ist jedes Fenster außer Meldungen ein Blatt ‚nur groß‘ wie ‚Neuer Termin‘ – gleitet von unten bis knapp unter die Statusleiste, oben runde Ecken, die Seite dahinter weicht verkleinert und abgedunkelt zurück (quer volle Höhe, die Seite bleibt); nach unten ziehen schließt wie x – am Kopf immer, im Inhalt, wenn er ganz oben steht, auch kurz und schnell gewischt; waagerecht und im gerollten Inhalt bleibt es; mit Änderungen seit dem Öffnen zieht es sich zäh, federt zurück und fragt am x (R-4.4); ein Zug nach unten schließt zuerst die Tastatur, auch nach einem Stück nach oben – beginnt er auf einem Feld, zieht er im selben Zug das Blatt wie am Kopf (ein Feld, das selbst gerollt ist, rollt weiter), im gerollten Inhalt daneben rollt er weiter; Abdunkelung antippen und Escape wie x; Drehen lässt es offen; ‚Bewegung reduzieren‘: Überblenden, die Seite bleibt groß, nach dem Loslassen steht es sofort am Ziel (R-1.9). Am iPad bleibt das Fenster in der Mitte, gleitet beim Öffnen und Schließen von unten und lässt sich ebenso nach unten ziehen – nur das Fenster fährt mit, die Abdunkelung wird heller, die Seite bleibt, Antippen der Abdunkelung schließt nicht (wie iPadOS) | ablauf.mjs – `checkSheet` (iPhone B1–B24, iPad APD-72/D-1 bis APD-72/D-15) | Gerät (Wischgefühl, Tastatur) | 7, 13, 15.17 |
 
 ### 5. Eingaben
 
@@ -1231,6 +1243,7 @@ R-2.3 (15.2), R-4.4 (6, 15.8, HIG 9), R-5.3 (8), R-5.4 (15.12), R-5.5 (APD-14), 
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 4.38.0 | 26.10.2026 | Neben | **APD-72 (Variante B):** R-4.6 auch am iPad – das Fenster bleibt in der Mitte, gleitet beim Öffnen und Schließen von unten und lässt sich nach unten ziehen wie am iPhone (nur das Fenster fährt mit, die Abdunkelung wird heller, die Seite bleibt, Abdunkelung antippen schließt nicht; 7, 15.17); Prüfung `checkSheet` APD-72/D-1 bis APD-72/D-15. **RLB-103:** 13 – Safari meldet Verschiebungen durch die Tastatur im selben Augenblick, im Fenster verschiebt es nur, wenn das Feld nicht ganz über der Tastatur endet (Messung 26.10.2026); 15.21 – Marke ‚messung beendet‘, das Nachspielen lässt das Beenden der Messung weg |
 | 4.37.0 | 25.10.2026 | Neben | **APD-43 Teil 2 Textgröße:** neue Regel **R-1.10** ‚Textgröße folgt dem Gerät‘ mit Grundregel ‚nichts überlappt‘; 3 mit Apples Tabelle der Textstile (12 Stufen × 11 Stile), Leisten bis XXXL, Umbau bei großer Schrift; zwei bewusste Abweichungen (16: keine Großanzeige, Feldtext mind. 16 px); Prüfungen `checkText`, `PRUEF_TEXT`, Gegenprobe `--gegenprobe text` |
 | 4.36.0 | 25.10.2026 | Neben | **APD-78 Nummernschema:** alle Nummern und Begriffe rückwirkend umgestellt (APD-n, RLB-n, lokale Nummern mit Elternnummer wie APD-36/S-9, Usertest, Testfall-Liste); 17 verweist für alle Präfixe auf Zusammenarbeit 2.4; R- und G- unverändert |
 | 4.35.0 | 25.10.2026 | Neben | **APD-43 Teil 1 (Barrierefreiheit):** neue Regeln R-1.8 (VoiceOver: Namen, Rollen, Zustände, Fokus, Ansagen), R-1.9 (‚Kontrast erhöhen‘ mit zweiter Farbtabelle in 2, ‚Bewegung reduzieren‘ mit Grenze) und R-4.7 (Hardware-Tastatur, Grundlagen); R-1.4 auch für VoiceOver und Tastatur (`inert`, modal); R-5.3 auch hörbar (`feldFehler`, 15.11); R-3.4 Fokus-Rahmen nur mit Tastatur, Textfelder nie (Nutzer 24.10.2026, Variante a; Safari-Eigenheit in 13); R-4.6 Blatt mit ‚Bewegung reduzieren‘ ohne Verkleinern; neue Variable `--accent-fill`; Prüfungen `checkFokus`, `checkKontrast`, `checkRuhig`, Bewegungswächter, `PRUEF_BEDIENUNG`, Gegenprobe `bedienung` |

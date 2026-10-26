@@ -70,7 +70,14 @@
 //   456 / 477, Muster 5: 477, dort von Safaris Verschiebung verdeckt: 618 − 428 = 190). Felder im Fenster nie (Ort, 7 von 7).
 // Seit 4.32.1 (APD-71): __safari.aus() nimmt das Modell wieder heraus (echte Werte, keine Tastatur) – für Prüfungen, die es nur für einen
 // Fall brauchen und danach in derselben Seite weiterprüfen (checkSheet B10, B19).
-export const ABSTAND = 24, ABSTAND_FENSTER = 15;
+// Seit 4.38.0 (RLB-103, Messung tests/messungen/2026-10-26 iPhone quer Blatt Ort Quartier.txt, Testfall-Liste arbeit/APD-77 Testfall-Liste.md
+// APD-77/F-17, APD-77/F-18):
+// - Feld in einem Fenster bzw. Blatt, das beim ersten Öffnen der Tastatur ganz über ihr endet: Safari verschiebt nichts (Zeile 520 ff.:
+//   ‚Ort‘ nach dem Rollen der App knapp über der Tastatur, offsetTop bleibt 0) – ABSTAND_FENSTER 0 statt 15.
+// - Was Safari wegen der Tastatur verschiebt (Öffnen, Feld wechseln, Schließen), meldet es im selben Augenblick (Zeile 532 ff.: ‚scroll‘
+//   und ‚vv scroll‘ bei 31711 ms, 167 px; Zeile 541 ff.: Schließen; ebenso die Messung vom 20.10. iPhone hoch, Zeilen 228–244). ‚2 Bilder
+//   später‘ (APD-27 2) gilt nur noch für das Rollen.
+export const ABSTAND = 24, ABSTAND_FENSTER = 0;
 export const SAFARI = {
   'iPhone hoch': { tastatur: 403, ziffern: 376, fokusRollen: -120, fokusSchub: 0 },
   'iPhone quer': { tastatur: 276, ziffern: 232, fokusRollen: 0, fokusSchub: 0 },
@@ -113,10 +120,12 @@ export async function safariModell(p, ansicht, { leisten = { bar: '.nb, .pnav', 
         const ab = art !== 'auf' || !rolle ? Infinity : a.closest('dialog[open]') ? werte.abstandFenster : werte.abstand;
         if (r.bottom - d > s.hoehe() - ab) s.pan = Math.min(H() - s.hoehe() - (Y() - s.L), s.pan + Math.max(0, Math.round((r.top + r.bottom) / 2 - d - s.hoehe() / 2)));
       },
-      // Safari meldet 2 Bilder später, was es zeigt
-      melde() {
-        if (s.weg || s.warte) return;
-        let n = 2;
+      // Safari meldet 2 Bilder später, was es zeigt (Rollen); sofort: im selben Augenblick (Tastatur, seit 4.38.0)
+      melde(sofort = false) {
+        if (s.weg) return;
+        if (sofort && s.warte) { cancelAnimationFrame(s.warte); s.warte = null; }
+        if (s.warte) return;
+        let n = sofort ? 0 : 2;
         const go = () => { if (--n > 0) return requestAnimationFrame(go);
           s.warte = null;
           if (s.fest) return;
@@ -126,7 +135,7 @@ export async function safariModell(p, ansicht, { leisten = { bar: '.nb, .pnav', 
           if (neu.h !== alt.h) vv.dispatchEvent(new Event('resize'));
           vv.dispatchEvent(new Event('scroll'));
         };
-        s.warte = requestAnimationFrame(go);
+        if (sofort) go(); else s.warte = requestAnimationFrame(go);
       },
       // quer schiebt Safari den sichtbaren Bereich beim Fokus um 21 px (APD-27 3) – seit APD-36 als Verschiebung (die Seite rollt seit
       // 4.27.0 nicht mehr, Safari verschiebt trotzdem: Messung 19.10. Zeile 11, Kopfzeile −21)
@@ -145,7 +154,7 @@ export async function safariModell(p, ansicht, { leisten = { bar: '.nb, .pnav', 
         if (auf) s.zumFeld(art);
         if (auf && werte.fokusSchub) s.schub();
         if (!auf) s.L = Y();
-        s.melde();
+        s.melde(true);
       },
       // Lage fester Leisten auf dem Bildschirm (Lage im Layout-Bereich minus offsetTop); links = linker Rand (Fenster mittig)
       lage() {
@@ -220,7 +229,7 @@ export async function safariModell(p, ansicht, { leisten = { bar: '.nb, .pnav', 
         s.zumFeld('wechsel');
         if (werte.fokusRollen) scrollTo(0, Math.max(0, Y() + werte.fokusRollen));
         if (werte.fokusSchub) s.schub();
-        s.top(); s.melde();
+        s.top(); s.melde(true);
       });
     }, true);
   }, { werte, leisten, links, auto });
