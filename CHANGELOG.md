@@ -55,6 +55,9 @@ Usertest im Reiselogbuch: P-76.
 - **`checkSheet` APD-72/D-11 lastfest:** der dritte volle Lauf wurde rot (`ablauf-blatt` · webkit, iPad hoch: ‚das Abbild gleitet nicht nach
   unten (0 → 0 px)‘) – unter Last begann die Bewegung des Abbilds erst nach über 120 ms, Escape kam verzögert an. Die Prüfung wartet jetzt
   bis zu 3 s auf das Schließen und prüft die Bewegung selbst (von wo nach wo, bis unten hinaus bzw. Ausblenden). Viermal parallel grün.
+- **Vierter voller Lauf rot – `ablauf-abgleich` · webkit (Reiselogbuch):** der Klick auf ‚PDF‘ im Abgleichbericht am iPhone traf das Formular.
+  Gemessen: Playwright berechnete den Klick, während WebKit das Hereingleiten des Blatts an seinem Anfang festhielt (y 832 statt 21–63);
+  schon mit 4.37.0 in 2 von 8 Läufen. Die Prüfung der App wartet jetzt mit `navFertig`, bis das Blatt ruht (0 von 12 rot).
 
 ## 4.37.0 – 25.10.2026
 
