@@ -56,8 +56,15 @@ App-Prüfungen, die heute ‚Messung starten‘ im Menü erwarten, werden angepa
   - Messung 19.10. iPhone quer (‚tippen fPlace‘, ‚tippen dlgOk‘): Kopf- und Suchzeile springen in 2 Bildern (APD-36/T-8);
   - Messung 24.10. Blatt: ein zweites ‚tippen -‘ (Ziel ohne id) hat keine Abbildung in `ziele`.
   **Am Gerät steht der Kopf still (Nutzer 26.10.2026)** → Abweichung des Safari-Modells; RLB-103 ist hinter APD-77 zurückgestellt.
-  Ursprünglich offen: echter Fehler der App oder Abweichung des Safari-Modells – zuerst mit `fassung/` älterer Versionen eingrenzen, seit wann
-  es springt, und am Gerät fragen (iPhone quer, Tag öffnen, ‚Ort‘ antippen: springt der Kopf kurz?).
+  **Eingrenzung (26.10.2026):** derselbe Fall allein (iPhone quer, hell, ‚Ort‘ → ‚Quartier‘ → Tastatur zu) in Chromium **und** WebKit
+  gleich rot (6 Fehler). Gegen ältere App-Stände mit den heutigen Prüfwerkzeugen: 3.26.2 bis 3.28.2 kein Springen (nur ‚Feld nicht
+  ganz über der Tastatur‘), **ab 3.30.0 (Blatt am iPhone, Usertest P-68) springt es** – P-68/3 (Tastatur im Blatt, auch quer) war am Gerät
+  ok, der Nutzer sieht auch heute nichts springen. Ursache im Modell (`safari.mjs`): Safari verschiebt den sichtbaren Bereich sofort
+  (quer `fokusSchub` 21 px plus `zumFeld`), meldet es aber erst 2 Bilder später (`melde`) – die App gleicht erst nach der Meldung
+  aus, dazwischen stehen Kopf und Fensterkopf 1–2 Bilder falsch. Die Messung vom 19.10. (quer, Fenster vor dem Blatt) zeigt Meldung
+  ‚vv resize‘ und ‚scroll‘ 2 ms nacheinander, ob Safari vorher schon verschoben zeichnet, sieht man in ihr nicht. Eine Messung des
+  Blatts quer gibt es nicht. **Vorschlag (0 Nr. 20):** zuerst eine Messung am Gerät (iPhone quer, Tag öffnen, ‚Ort‘, ‚Quartier‘,
+  Tastatur zu), dann das Modell danach ausrichten und die Messung in `tests/messungen/` aufnehmen.
 
 ## 4. RLB-103 – Testfälle (automatisch)
 
