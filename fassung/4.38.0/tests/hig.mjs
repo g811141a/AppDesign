@@ -70,6 +70,9 @@ const found = new Map(), icons = new Map();
       for (const [mid, size] of [[{ width: turned.width, height: vp.height }, turned], [{ width: vp.width, height: turned.height }, vp]]) {
         await p.setViewportSize(mid); await p.waitForTimeout(60);
         await p.setViewportSize(size); await p.waitForTimeout(500);
+        // seit 4.38.0: bis zu 2 s auf den alten Zustand warten – unter Volllast war die Seitenleiste nach 500 ms noch nicht zurück
+        // (hig Text 53 · chromium, iPad hoch dunkel; allein viermal grün); bleibt sie weg, ist es ein Fehler
+        for (let i = 0; i < 20 && await shown() !== before; i++) await p.waitForTimeout(100);
         if (await shown() !== before) note('Regel', `R-8.1 Seitenleiste ${before ? 'sichtbar' : 'ausgeblendet'} – nach dem Drehen auf ${size.width}×${size.height} ${before ? 'verschwunden' : 'erschienen'}`, where);
       }
       if (pass === 0 && !(await toggle())) break;   // zweiter Durchgang mit dem anderen Zustand

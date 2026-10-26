@@ -58,6 +58,9 @@ Usertest im Reiselogbuch: P-76.
 - **Vierter voller Lauf rot – `ablauf-abgleich` · webkit (Reiselogbuch):** der Klick auf ‚PDF‘ im Abgleichbericht am iPhone traf das Formular.
   Gemessen: Playwright berechnete den Klick, während WebKit das Hereingleiten des Blatts an seinem Anfang festhielt (y 832 statt 21–63);
   schon mit 4.37.0 in 2 von 8 Läufen. Die Prüfung der App wartet jetzt mit `navFertig`, bis das Blatt ruht (0 von 12 rot).
+- **Fünfter voller Lauf rot – `hig (Text 53)` · chromium:** R-8.1 ‚Seitenleiste sichtbar – nach dem Drehen verschwunden‘ (iPad hoch dunkel);
+  `sideKeep` maß fest 500 ms nach dem Drehen, unter Volllast war die Seitenleiste noch nicht zurück (allein viermal grün). Jetzt wartet es
+  bis zu 2 s auf den alten Zustand; bleibt die Seitenleiste weg, ist es weiter ein Fehler.
 
 ## 4.37.0 – 25.10.2026
 
