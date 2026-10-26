@@ -3,6 +3,65 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.38.0 – 26.10.2026
+
+AppDesign 4.38.0 · Designrichtlinie allgemein 4.38.0 · Zusammenarbeit allgemein 2.20.0 · geprüft mit Reiselogbuch 3.36.0
+
+**APD-72 iPad: Fenster nach unten ziehen** und **RLB-103 Messungen nachspielen, Safari-Modell nach der Messung** (dein Ja vom 26.10.2026,
+Sitzung 0048; Testfall-Listen `arbeit/APD-72 Testfall-Liste.md` APD-72/D-1 bis APD-72/D-20 und `arbeit/APD-77 Testfall-Liste.md` 3–4, APD-77/F-11 bis APD-77/F-18).
+Usertest im Reiselogbuch: P-76.
+
+- **APD-72 (Variante B, wie ein Formblatt in iPadOS):** R-4.6 gilt auch im iPad-Aufbau. Das Fenster bleibt in der Mitte und gleitet
+  beim Öffnen und beim Schließen (x, Häkchen, Escape) von unten; nach unten ziehen wie am iPhone – am Kopf immer, im Inhalt, wenn er
+  ganz oben steht, auch kurz gewischt, mit Änderungen zäh und mit Rückfrage am x, bei offener Tastatur zuerst die Tastatur zu. Dabei
+  fährt nur das Fenster mit, die Abdunkelung (35 % Schwarz wie bisher, jetzt `.blatt-schleier` statt `::backdrop`) wird heller, die
+  Seite bleibt. Antippen der Abdunkelung schließt am iPad nicht (APD-72/W-5). ‚Bewegung reduzieren‘: überblenden. Drehen lässt es offen in der
+  Mitte. **ui.js:** `blattAuf`, `blattGeist`, `blattStopp`, das Ziehen und der Drehen-Hörer ohne die Bedingung `isPhone()`; `blattZu`
+  am iPad vom Platz des Fensters aus, `blattDunkel()`, die Seite bewegt sich nur, wenn sie zurückweicht (`blattSeiteTeile` – am iPad
+  und quer keine Animation der Seite). **design.css:** `html.blatt #dlg::backdrop` durchsichtig, `#dlg .dlg-head { touch-action: none }`
+  und `#dlg .dlg-body { overscroll-behavior: none }` auch am iPad. Designrichtlinie 7, 15.17 und R-4.6.
+- **`checkSheet` am iPad (APD-72/D-1 bis APD-72/D-15):** bisher prüfte es dort nur ‚bleibt in der Mitte, Ziehen schließt nicht‘ (B18); jetzt dieselben
+  Fälle wie am iPhone mit den iPad-Erwartungen (Mitte, ganz sichtbar, Abdunkelung 0,35 und beim Ziehen heller, Seite bewegt sich nicht,
+  Abdunkelung antippen schließt nicht, nach dem Drehen in der Mitte). Neu für beide Geräte: APD-72/D-8 Gummiband nach oben, APD-72/D-11 x / Häkchen /
+  Escape – das Abbild gleitet nach unten hinaus (Option `ok`), APD-72/D-14 Anfassen mitten im Gleiten (die Bewegung wird dazu angehalten, damit
+  der Fall nicht von der Last abhängt). Die Tastatur-Fälle (B10, B19) laufen am iPad mit dem Safari-Modell ‚iPad quer/hoch‘.
+- **RLB-103 – Ursache:** jede Messung endet mit dem Beenden im Mehr-Menü (‚tippen sideMore‘, ‚tippen button‘); ohne feste Zeitgrenze
+  spielte `spieleAb` beides nach und tippte auf eine Reise unter dem offenen Menü (Abbruch nach 30 s). **`abspielen.mjs`:** `schritte`
+  lässt die letzten beiden Handlungen weg, wenn sie das Menü öffnen und ‚tippen button‘ sind – bei neuen Messungen vor der Marke
+  ‚! messung beendet‘ (ui.js `messTeilen`, 15.21); ‚klick unterdrückt … (Feld <id>)‘ zählt wie ‚tippen <id>‘ (seit 4.28.1 unterdrückt
+  die App den Klick nach dem Antippen eines Felds – Messungen ab dem 24.10. hatten deshalb kein Antippen der Felder); `lies` liest auch
+  den neueren Kopf mit Bedienungshilfen und Textgröße (`zusatz`). Option `ende: false` spielt das Beenden mit (Gegenprobe).
+- **RLB-103 – Safari-Modell nach der Messung vom 26.10.2026** (`tests/messungen/2026-10-26 iPhone quer Blatt Ort Quartier.txt`): ohne
+  den Abbruch zeigte die Prüfung 17 Fehler (Kopfzeile und Fensterkopf springen am iPhone quer im Blatt 1–2 Bilder um 23–70 px), am Gerät
+  steht alles still – eine Abweichung des Modells. Gemessen: ein Feld im Fenster, das beim ersten Öffnen ganz über der Tastatur endet,
+  verschiebt Safari nicht (`ABSTAND_FENSTER` 0 statt 15); was Safari wegen der Tastatur verschiebt (Öffnen, Feld wechseln, Schließen),
+  meldet es im selben Augenblick (`melde(true)`; ebenso die Messung vom 20.10.) – ‚2 Bilder später‘ gilt nur noch für das Rollen.
+  Designrichtlinie 13 (Zwei Bereiche, APD-36/S-5/S-6).
+- **Prüfungen:** `ablauf-tastatur-still` (Reiselogbuch) läuft jetzt im vollen Lauf mit und spielt alle 7 Messungen grün nach (Chromium
+  und WebKit), die neue Messung auch in `ablauf-abspielen`; Selbstprüfung der Ende-Erkennung dort (APD-77/F-12 bis APD-77/F-14). README der
+  Prüfungen ergänzt. **Gegenproben:** iPad mit dem alten Verhalten (Ziehen nur am iPhone) – 75 Fehler, darunter APD-72/D-2, APD-72/D-3, APD-72/D-4,
+  APD-72/D-6, APD-72/D-9 und APD-72/D-10 in jeder iPad-Ansicht; ohne Gleiten am iPad – 26 Fehler (APD-72/D-1, APD-72/D-11 mit x, Häkchen und Escape, APD-72/D-14); ohne
+  Ende-Erkennung (`ende: false`) bricht `ablauf-tastatur-still` wieder ab (APD-77/F-15); mit dem alten Safari-Modell 19 Fehler (APD-77/F-17,
+  APD-77/F-18). Einmal (erster Lauf, Chromium) meldete `ablauf-tastatur-still` ‚iPhone hoch dunkel · Gesamtausgaben APD-36/B-8 ↑ rollt nicht
+  ganz nach oben (scrollTop 3)‘; in den folgenden Läufen nicht wieder – beobachten.
+- **R-3.1 (hig.mjs) mit 0,05 px Spielraum:** der erste volle Lauf wurde rot (`ablauf-markierung-menues` · webkit, iPad hoch dunkel, ‚Tag
+  öffnen‘: x und Häkchen ‚44×44 px (mind. 44)‘). Ursache: WebKit misst ein gleitendes Fenster mit Gerätefaktor 2 mit Rundungsfehlern
+  (44 × 43,99998 px, nachgemessen in 41 Stufen des Hereingleitens); unter Volllast fiel die Messung in das neue Hereingleiten am iPad.
+  Allein lief die Prüfung zweimal grün; die Gegenprobe der Grundregeln bleibt rot.
+- **`checkTastaturStill` APD-36/B-4 nur für Bilder höchstens 40 ms auseinander:** der zweite volle Lauf wurde rot (`ablauf-tastatur-still` ·
+  webkit, iPad hoch, Fenster Ort: ‚Feld fPlace springt von 373 auf 311 px‘) – die Prüfung lief zum ersten Mal unter Volllast. Ursache:
+  das iPad-Fenster gleitet mit der Tastatur (0,25 s); unter Volllast zeichnete WebKit so wenige Bilder, dass zwischen zweien 62–74 px
+  lagen. Allein und viermal parallel grün.
+- **`checkSheet` APD-72/D-11 lastfest:** der dritte volle Lauf wurde rot (`ablauf-blatt` · webkit, iPad hoch: ‚das Abbild gleitet nicht nach
+  unten (0 → 0 px)‘) – unter Last begann die Bewegung des Abbilds erst nach über 120 ms, Escape kam verzögert an. Die Prüfung wartet jetzt
+  bis zu 3 s auf das Schließen und prüft die Bewegung selbst (von wo nach wo, bis unten hinaus bzw. Ausblenden). Viermal parallel grün.
+- **Vierter voller Lauf rot – `ablauf-abgleich` · webkit (Reiselogbuch):** der Klick auf ‚PDF‘ im Abgleichbericht am iPhone traf das Formular.
+  Gemessen: Playwright berechnete den Klick, während WebKit das Hereingleiten des Blatts an seinem Anfang festhielt (y 832 statt 21–63);
+  schon mit 4.37.0 in 2 von 8 Läufen. Die Prüfung der App wartet jetzt mit `navFertig`, bis das Blatt ruht (0 von 12 rot).
+- **Fünfter voller Lauf rot – `hig (Text 53)` · chromium:** R-8.1 ‚Seitenleiste sichtbar – nach dem Drehen verschwunden‘ (iPad hoch dunkel);
+  `sideKeep` maß fest 500 ms nach dem Drehen, unter Volllast war die Seitenleiste noch nicht zurück (allein viermal grün). Jetzt wartet es
+  bis zu 2 s auf den alten Zustand; bleibt die Seitenleiste weg, ist es weiter ein Fehler.
+
 ## 4.37.0 – 25.10.2026
 
 AppDesign 4.37.0 · Designrichtlinie allgemein 4.37.0 · Zusammenarbeit allgemein 2.20.0 · geprüft mit Reiselogbuch 3.35.0

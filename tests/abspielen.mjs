@@ -14,27 +14,30 @@
 // Suchzeile (such) auf dem Bildschirm ± toleranz px, Fokus (id bzw. Elementname). Der Inhalt (inh, tag) hängt an den eigenen
 // Daten und wird nicht verglichen; Wischen zeichnet die Messung nicht auf – dafür bleibt das Safari-Modell (Grenze).
 // Optionen: ziele = { name: Selektor | [Selektoren, der Reihe nach] | async p => … } für Ziele ohne id (‚button‘, ‚-‘);
-// woerter = { feld-id: Prüfwort }; bis = Zeit (ms) – Handlungen danach nicht mehr; nachSchritt(s) = zusätzliche Prüfung je Schritt
+// woerter = { feld-id: Prüfwort }; bis = Zeit (ms) – Handlungen danach nicht mehr (das Beenden der Messung fällt von selbst weg); nachSchritt(s) = zusätzliche Prüfung je Schritt
 // ({ ereignis, zeile } → Liste von Fehlern); verschiebe = { such: 20 } verschiebt die Messung (Gegenprobe APD-34/M-5, muss rot werden).
 // Seit 4.28.1 (APD-36, Testfall-Liste arbeit/APD-36 Testfall-Liste.md APD-36/T-8) modell: true – Safari wird nicht aus der Datei gesetzt, sondern
 // entscheidet nach dem Modell (safariModell mit auto: true): die Datei liefert nur die Handlungen und die Höhe der Tastatur (ih − vh der
 // Meldung), Felder werden angetippt (p.tap). Jedes Bild eines Schritts mit Tastatur (auf, zu, Feld wechseln) wird aufgenommen: Kopf-
 // und Suchzeile liegen in jedem Bild zwischen ihrer Lage vor und nach dem Schritt (± toleranz) – so wird ein Springen sichtbar,
 // das der Vergleich des Endzustands nicht sieht (P-60). Gegen 4.28.0 rot (−403, −428, −232).
+// Seit 4.38.0 (RLB-103, Testfall-Liste arbeit/APD-77 Testfall-Liste.md APD-77/F-11 bis APD-77/F-15): das Beenden der Messung im Mehr-Menü wird nicht
+// nachgespielt – die letzten beiden Handlungen ‚tippen <Mehr-Knopf>‘ und ‚tippen button‘ (die Zeile ‚Messung beenden und teilen‘), bei
+// neueren Messungen vor der Zeile ‚! messung beendet‘ (ui.js messTeilen). Option ende: false spielt sie mit (Gegenprobe APD-77/F-15).
 
 export const SPALTEN = ['t', 'sy', 'inh', 'sh', 'ih', 'vh', 'vt', 'vvtop', 'kopf', 'such', 'tag', 'lkopf', 'lsuch', 'lroll', 'fokus', 'lage'];
 const ZAHL = new Set(SPALTEN.filter(s => !['fokus', 'lage'].includes(s)));
 
 // APD-34/M-1: Messdatei lesen. Kopf ‚# Messung · App · AppDesign · Gerät (UA) · Ort · B×H @n · [Ränder o/u/l/r ·] hell|dunkel · Zeit‘
-// (die sicheren Ränder seit AppDesign 4.29.0, 3 APD-63/S-8), Spaltenzeile,
+// (die sicheren Ränder seit AppDesign 4.29.0, 3 APD-63/S-8; seit 4.38.0 auch mit den Angaben danach – Bedienungshilfen, Textgröße, RLB-103), Spaltenzeile,
 // Zeilen mit je 16 Werten (‚-‘ = nicht vorhanden) und optional ‚! ereignis‘; ‚# Ende …‘ beendet.
 export function lies(text) {
   const zeilen = text.replace(/\r/g, '').split('\n'), fehler = (n, t) => { throw new Error(`Messdatei Zeile ${n}: ${t}`); };
-  const k = zeilen[0]?.match(/^# Messung · (.+?) · AppDesign (\S+) · (.+?) · (.+?) · (\d+)×(\d+) @\d+(?: · Ränder (\d+(?:\.\d+)?)\/(\d+(?:\.\d+)?)\/(\d+(?:\.\d+)?)\/(\d+(?:\.\d+)?))? · (hell|dunkel) · (\S+)$/);
+  const k = zeilen[0]?.match(/^# Messung · (.+?) · AppDesign (\S+) · (.+?) · (.+?) · (\d+)×(\d+) @\d+(?: · Ränder (\d+(?:\.\d+)?)\/(\d+(?:\.\d+)?)\/(\d+(?:\.\d+)?)\/(\d+(?:\.\d+)?))? · (hell|dunkel) · (\S+)(?: · (.+))?$/);
   if (!k) fehler(1, 'kein Kopf ‚# Messung · App · AppDesign · Gerät · Ort · B×H @n · hell|dunkel · Zeit‘');
   const spalten = zeilen[1]?.trim().split(/\s+/);
   if (spalten?.join(' ') !== SPALTEN.join(' ')) fehler(2, `Spalten ‚${spalten?.join(' ')}‘ statt ‚${SPALTEN.join(' ')}‘`);
-  const m = { app: k[1], ad: k[2], ua: k[3], ort: k[4], breite: +k[5], hoehe: +k[6], darstellung: k[11], zeit: k[12],
+  const m = { app: k[1], ad: k[2], ua: k[3], ort: k[4], breite: +k[5], hoehe: +k[6], darstellung: k[11], zeit: k[12], zusatz: k[13] ?? null,
     raender: k[7] == null ? null : { oben: +k[7], unten: +k[8], links: +k[9], rechts: +k[10] },
     geraet: /iPad|Macintosh/.test(k[3]) ? 'iPad' : 'iPhone', zeilen: [] };
   for (const [i, z] of zeilen.slice(2).entries()) {
@@ -67,9 +70,12 @@ export function ansicht(m) {
 // Handlungen und die Zeilen danach bis zur nächsten Handlung. Safari meldet focus bzw. blur schon vor dem Antippen (1–2 ms):
 // solche Zeilen bis 50 ms vor einem ‚tippen‘ gehören zu diesem Schritt. Ein blur ohne ‚tippen‘ in 50 ms davor oder danach ist eine
 // eigene Handlung: der Nutzer schließt die Tastatur (Fertig, Wischen).
+// Seit 4.38.0 (RLB-103): seit 4.28.1 (R-4.5) unterdrückt die App den Klick nach dem Antippen eines Felds – die Messung zeigt dann
+// ‚klick unterdrückt … (Feld <id>)‘ statt ‚tippen <id>‘; das zählt wie ‚tippen <id>‘ (davor ‚neu fokussiert‘ wie focus).
 const HANDLUNG = /^(tippen|eingabe) /, NAH = 50;
-function schritte(m, bis) {
-  const z = m.zeilen, tippen = z.filter(x => x.ereignis.startsWith('tippen ')).map(x => x.t);
+const ereignis = x => { const k = x.ereignis.match(/^klick unterdrückt .* \(Feld (\S+)\)$/); return k ? `tippen ${k[1]}` : x.ereignis; };
+export function schritte(m, bis = Infinity, { ende = true } = {}) {
+  const z = m.zeilen.map(x => ({ ...x, ereignis: ereignis(x) })), tippen = z.filter(x => x.ereignis.startsWith('tippen ')).map(x => x.t);
   const nahe = (t, vor, nach) => tippen.some(x => x - t <= vor && x - t >= -nach);
   const out = [];
   for (const [i, x] of z.entries()) {
@@ -78,20 +84,25 @@ function schritte(m, bis) {
     if (!out.length) continue;
     // focus/blur kurz vor dem nächsten ‚tippen‘: zum nächsten Schritt (wird mit ihm verglichen, nicht mit diesem)
     const n = z.slice(i + 1).find(y => HANDLUNG.test(y.ereignis));
-    if (/^(focus|blur) /.test(x.ereignis) && n?.ereignis.startsWith('tippen ') && n.t - x.t <= NAH) continue;
+    if (/^(focus|blur|neu fokussiert) /.test(x.ereignis) && n?.ereignis.startsWith('tippen ') && n.t - x.t <= NAH) continue;
     out.at(-1).folgen.push(x);
   }
-  return out;
+  if (!ende) return out;
+  // RLB-103 (APD-77/F-12 bis APD-77/F-14): Ende der Messung – ab der Marke bzw. am Ende der Datei die zwei Handlungen, mit denen das Mehr-Menü sie beendete
+  const marke = z.find(x => x.ereignis === 'messung beendet'), vorMarke = marke ? out.filter(s => s.zeile.t <= marke.t) : out;
+  const [a, b] = vorMarke.slice(-2);
+  const n = a?.ereignis.startsWith('tippen ') && b?.ereignis === 'tippen button' ? vorMarke.length - 2 : vorMarke.length;
+  return out.slice(0, n);
 }
 
-export async function spieleAb(p, m, { ziele = {}, woerter = {}, bis = Infinity, nachSchritt = null, verschiebe = null, toleranz = 1, modell = false, where = '' } = {}) {
+export async function spieleAb(p, m, { ziele = {}, woerter = {}, bis = Infinity, nachSchritt = null, verschiebe = null, toleranz = 1, modell = false, ende = true, where = '' } = {}) {
   const errors = [], E = (z, t) => errors.push(`${where ? where + ': ' : ''}APD-31 Messung Zeile ${z.nr} (${z.t} ms, ${z.ereignis || 'Folge'}): ${t}`);
   if (!await p.evaluate(() => !!window.__safari)) { errors.push('APD-31 Vorbereitung: Safari-Modell fehlt (safariModell)'); return errors; }
   const vorrat = Object.fromEntries(Object.entries(ziele).map(([k, v]) => [k, Array.isArray(v) ? [...v] : v]));
   let lage = m.lage;
   const lagen = () => p.evaluate(() => { const o = __safari.top(), top = sel => { const e = [...document.querySelectorAll(sel)].find(x => x.getClientRects().length); return e ? Math.round(e.getBoundingClientRect().top - o) : null; };
     return { kopf: top('#app .nb, #app .pnav'), such: top('#app .searchbox') }; });
-  for (const s of schritte(m, bis)) {
+  for (const s of schritte(m, bis, { ende })) {
     const z = s.zeile, [art, arg] = [s.ereignis.split(' ')[0], s.ereignis.split(' ').slice(1).join(' ')];
     // APD-36/T-8: Schritt mit Tastatur – Höhe aus der Meldung, jedes Bild aufnehmen
     const kbZeile = [z, ...s.folgen].find(f => f.ereignis === 'vv resize'), film = modell && (!!kbZeile || art === 'tastatur');

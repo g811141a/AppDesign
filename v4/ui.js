@@ -1,4 +1,4 @@
-// AppDesign 4.37.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
+// AppDesign 4.38.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
 // Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/fassung/X.Y.Z/ui.js"></script> (feste Fassung, R-10.3)
 // Seit 4.11.0 (R-10.3): ui.js und design.css immer mit ?v=<AppDesign-Version> einbinden (auch in sw.js) und beim Start
 // prüfen, ob genau diese Fassung geladen ist (AD_VERSION hier, --ad-version in design.css).
@@ -20,7 +20,7 @@
 
 'use strict';
 // Version der Bausteine (R-10.3): die App vergleicht sie beim Start mit der benötigten Fassung.
-const AD_VERSION = '4.37.0';
+const AD_VERSION = '4.38.0';
 /* ---------- Icons ---------- */
 
 // Schaltflächen-Icons aus Lucide (ISC-Lizenz), direkt eingebettet, damit die App offline funktioniert.
@@ -1244,7 +1244,7 @@ function openDialog(html, wide = false) {
   const neu = !dlg.open;
   if (neu) showModalQuiet(dlg);
   placeDialogs();
-  if (neu) blattAuf();   // R-4.6 (seit 4.32.0): im iPhone-Aufbau gleitet das Blatt von unten herein
+  if (neu) blattAuf();   // R-4.6 (seit 4.32.0, am iPad seit 4.38.0, APD-72): das Blatt bzw. Fenster gleitet von unten herein
   dlg.querySelector('.dlg-body')?.scrollTo(0, 0);
   const x = dlg.querySelector('#dlgX');
   // x schließt; wurde etwas geändert, fragt eine Sprechblase, ob die Änderungen verworfen werden sollen.
@@ -2042,7 +2042,10 @@ document.addEventListener('keydown', e => {
 // (R-4.4). Bei offener Tastatur schließt der Zug nach unten zuerst die Tastatur; beginnt er auf einem Feld, zieht er im selben Zug das
 // Blatt wie am Kopf (seit 4.32.1, APD-71: R-4.5 hat den Inhalt gerollt, nicht der Nutzer – ein Feld, das selbst gerollt ist, rollt
 // weiter); im gerollten Inhalt daneben rollt er weiter. Antippen der Abdunkelung wirkt wie x. Meldungen (#msg)
-// bleiben kleine Fenster in der Mitte, am iPad bleibt das Fenster in der Mitte. Entschieden nach 8 px, deutlich senkrecht (1,2 × so weit
+// bleiben kleine Fenster in der Mitte. Seit 4.38.0 (APD-72, Variante B, Testfall-Liste arbeit/APD-72 Testfall-Liste.md APD-72/D-1 bis APD-72/D-20) gilt
+// der Zug auch im iPad-Aufbau wie in iPadOS: das Fenster bleibt in der Mitte, gleitet beim Öffnen und Schließen von unten, beim Ziehen
+// fährt nur das Fenster mit, die Abdunkelung wird heller, die Seite bleibt; Antippen der Abdunkelung schließt dort nicht (wie ein
+// Formblatt in iPadOS). Entschieden nach 8 px, deutlich senkrecht (1,2 × so weit
 // wie waagerecht); waagerecht rollende Bereiche behalten ihr Rollen. Beim Loslassen zählt, wo das Blatt mit dem Tempo auslaufen würde.
 // Je Bild nur translate, scale und opacity (Web-Animation, damit die Prüfungen auf ihr Ende warten); ‚Bewegung reduzieren‘: Überblenden,
 // das Ziehen folgt weiter dem Finger. Das Schließen bleibt sofort (dlg.close, Häkchen): ein Abbild des Blatts gleitet hinaus.
@@ -2056,15 +2059,18 @@ let blattY = 0, blattZug = null, blattLauf = null, blattGeistEl = null, blattKli
 const blattQuer = () => window.matchMedia?.('(orientation: landscape) and (max-height: 500px)').matches;
 // Oberkante des Blatts im sichtbaren Bereich: hoch 10 px unter der Statusleiste, quer 8 px
 const blattOben = () => !isPhone() ? 0 : blattQuer() ? 8 : Math.round(safeRand().top + 10);
-const blattZu = () => Math.max(innerHeight, seitenHoehe()) - blattOben();
+// Versatz, bei dem das Blatt bzw. Fenster unten ganz hinaus ist – am iPad (APD-72) vom Platz des Fensters in der Mitte aus
+const blattZu = () => Math.max(innerHeight, seitenHoehe()) - (isPhone() ? blattOben() : Math.min(innerHeight - 1, parseFloat(dlg.style.top) || 0));
+// Abdunkelung: am iPhone wie iOS, am iPad so dunkel wie bisher ::backdrop (design.css)
+const blattDunkel = () => isPhone() ? BLATT_DUNKEL : 0.35;
 // die Seite dahinter: was fest steht und zu sehen ist (Inhalt bzw. Startliste)
 const blattSeite = () => [document.getElementById('app'), document.getElementById('side')]
   .filter(e => e && e.getClientRects().length && getComputedStyle(e).position === 'fixed');
-// Bild zum Versatz o (0 = offen, blattZu() = unten hinaus): Blatt, Abdunkeln und die Seite – sie weicht nur hoch zurück
+// Bild zum Versatz o (0 = offen, blattZu() = unten hinaus): Blatt, Abdunkeln und die Seite – sie weicht nur am iPhone hoch zurück
 function blattBild(o) {
   // R-1.9 (seit 4.35.0, M5): mit ‚Bewegung reduzieren‘ weicht die Seite nicht verkleinert zurück (kein Zoomen), sie dunkelt nur ab
-  const zu = blattZu(), q = Math.max(0, Math.min(1, 1 - o / zu)), s = blattQuer() || navRuhig?.matches ? 0 : q;
-  return { blatt: `0 ${Math.round(o)}px`, schleier: +(BLATT_DUNKEL * q).toFixed(3), s,
+  const zu = blattZu(), q = Math.max(0, Math.min(1, 1 - o / zu)), s = !isPhone() || blattQuer() || navRuhig?.matches ? 0 : q;
+  return { blatt: `0 ${Math.round(o)}px`, schleier: +(blattDunkel() * q).toFixed(3), s,
     seite: { translate: `0px ${(s * Math.max(0, blattOben() - 12)).toFixed(1)}px`, scale: (1 - BLATT_KLEINER * s).toFixed(4) } };
 }
 function blattSetze(o) {
@@ -2083,7 +2089,7 @@ function blattStopp() {
   const t = getComputedStyle(dlg).translate, o = t && t !== 'none' ? parseFloat(t.split(' ')[1]) || 0 : 0;
   l.anims.forEach(a => a.cancel());
   document.documentElement.classList.remove('blatt-faehrt');
-  if (dlg.open && isPhone()) blattSetze(o);
+  if (dlg.open) blattSetze(o);
 }
 function blattAnimiere(teile, dauer, easing, fertig) {
   const H = document.documentElement;
@@ -2111,12 +2117,14 @@ function blattFahre(nach, fertig, dauer) {
   const a = blattBild(von), b = blattBild(nach);
   blattSetze(Math.min(von, nach));   // die Seite weicht schon während der Bewegung zurück (runde Ecken, Hintergrund)
   blattAnimiere([[dlg, { translate: a.blatt }, { translate: b.blatt }], [blattSchleier, { opacity: a.schleier }, { opacity: b.schleier }],
-    ...blattSeite().map(e => [e, a.seite, b.seite])], dauer, BLATT_KURVE, () => { blattSetze(nach); fertig?.(); });
+    ...blattSeiteTeile(a, b)], dauer, BLATT_KURVE, () => { blattSetze(nach); fertig?.(); });
 }
-// Öffnen (openDialog): von unten herein; ‚Bewegung reduzieren‘: überblenden
+// die Seite bewegt sich nur, wenn sie zurückweicht (iPhone hoch) – am iPad und quer bleibt sie ohne Animation (APD-72/D-2)
+const blattSeiteTeile = (a, b) => a.s || b.s ? blattSeite().map(e => [e, a.seite, b.seite]) : [];
+// Öffnen (openDialog): von unten herein (seit 4.38.0 auch am iPad, APD-72/D-1); ‚Bewegung reduzieren‘: überblenden
 function blattAuf() {
   blattStopp();
-  if (!dlg.open || !isPhone()) return;
+  if (!dlg.open) return;
   document.documentElement.classList.add('blatt');
   if (navRuhig?.matches) {
     blattSetze(0);
@@ -2126,7 +2134,7 @@ function blattAuf() {
   blattSetze(blattZu());
   blattFahre(0);
 }
-// iPad-Aufbau (Drehen, breiteres Fenster) oder geschlossen: alles zurück
+// geschlossen: alles zurück
 function blattAus() {
   blattStopp();
   blattY = 0;
@@ -2137,7 +2145,7 @@ function blattAus() {
 }
 // Abbild des Blatts beim Schließen: dlg.close() bleibt sofort (die App baut danach neu auf), das Abbild gleitet hinaus
 function blattGeist() {
-  if (blattGeistEl || !dlg.open || !isPhone() || !document.documentElement.classList.contains('blatt')) return;
+  if (blattGeistEl || !dlg.open || !document.documentElement.classList.contains('blatt')) return;
   const r = dlg.getBoundingClientRect();
   if (r.top >= innerHeight - 1) return;
   const g = document.createElement('dialog');
@@ -2165,7 +2173,7 @@ function blattWeg() {
   const von = blattBild(blattY), nach = blattBild(blattZu());
   H.classList.remove('blatt-zieht');
   if (!blattSeite().length && !von.schleier) return blattAus();
-  blattAnimiere([[blattSchleier, { opacity: von.schleier }, { opacity: 0 }], ...blattSeite().map(e => [e, von.seite, nach.seite])],
+  blattAnimiere([[blattSchleier, { opacity: von.schleier }, { opacity: 0 }], ...blattSeiteTeile(von, nach)],
     navRuhig?.matches ? 200 : 380, navRuhig?.matches ? 'ease-out' : BLATT_KURVE, blattAus);
 }
 const dlgSchliessen = dlg.close.bind(dlg);
@@ -2173,15 +2181,14 @@ dlg.close = v => { blattGeist(); dlgSchliessen(v); };
 // Häkchen in <form method="dialog">: der Browser schließt nach dem submit-Ereignis
 dlg.addEventListener('submit', e => { if (!e.defaultPrevented && e.target.getAttribute?.('method') === 'dialog') blattGeist(); });
 dlg.addEventListener('close', () => { if (!dlg.open) blattWeg(); });
-// Drehen bzw. anderer Aufbau mit offenem Blatt: bleibt offen in der passenden Form (quer immer volle Höhe), am iPad wieder in der Mitte
+// Drehen bzw. anderer Aufbau mit offenem Blatt: bleibt offen in der passenden Form (quer immer volle Höhe), am iPad in der Mitte (APD-72/D-15)
 window.addEventListener('resize', () => {
   if (!dlg.open) return;
-  if (!isPhone()) return blattAus();
   document.documentElement.classList.add('blatt');
   if (!blattLauf && !blattZug?.aktiv) blattSetze(blattY);
 });
 const blattX = () => dlg.querySelector('#dlgX');
-// wie das x (Escape, Abdunkelung, Ziehen): mit Änderungen fragt die Sprechblase am x
+// wie das x (Escape, Abdunkelung am iPhone, Ziehen): mit Änderungen fragt die Sprechblase am x
 function blattWieX() { const x = blattX(); if (x) x.click(); else dlg.close('cancel'); }
 const blattDraussen = e => { if (e.target !== dlg) return false; const r = dlg.getBoundingClientRect();
   return e.clientY < r.top || e.clientY > r.bottom || e.clientX < r.left || e.clientX > r.right; };
@@ -2195,7 +2202,7 @@ function blattGanzOben(t) {
 const blattFeld = () => { const a = document.activeElement; return dlg.contains(a) && a.matches?.(FELD) ? a : null; };
 dlg.addEventListener('pointerdown', e => {
   blattZug = null;
-  if (!dlg.open || !isPhone() || !e.isPrimary || e.button > 0 || blattDraussen(e) || document.querySelector('.pop, .menu')) return;
+  if (!dlg.open || !e.isPrimary || e.button > 0 || blattDraussen(e) || document.querySelector('.pop, .menu')) return;
   if (e.target.closest?.('[data-eigene-geste], input[type=range], .pop, .menu')) return;
   blattZug = { id: e.pointerId, x0: e.clientX, y0: e.clientY, o: blattY, kopf: !!e.target.closest('.dlg-head'), t: e.target, aktiv: false,
     feld: blattFeld() ? e.target.closest?.(FELD) : null, spur: [[e.timeStamp, e.clientY]] };
@@ -2567,6 +2574,7 @@ const messName = d => `messung-${d.getFullYear()}-${String(d.getMonth() + 1).pad
   String(d.getHours()).padStart(2, '0')}${String(d.getMinutes()).padStart(2, '0')}.txt`;
 // Beenden und teilen: bricht man das Teilen-Menü ab, bleibt die Messung und kann noch einmal geteilt werden.
 async function messTeilen() {
+  messZeile('messung beendet');   // seit 4.38.0 (RLB-103): das Ende ist eindeutig – das Nachspielen (abspielen.mjs) spielt das Beenden nicht nach
   messAus();
   const res = await shareFiles([{ name: messName(mess.beginn), content: mess.zeilen.join('\n') + '\n', type: 'txt' }]);
   if (res === 'shared' || res === 'downloaded') mess = null;

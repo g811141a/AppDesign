@@ -1,4 +1,4 @@
-/* AppDesign 4.37.0 · design.css – gemeinsame Gestaltung der iPad-Web-Apps von g811141a (Apple-like)
+/* AppDesign 4.38.0 · design.css – gemeinsame Gestaltung der iPad-Web-Apps von g811141a (Apple-like)
    Einbinden im <head> vor dem eigenen <style> der App:  <link rel="stylesheet" href="../AppDesign/fassung/X.Y.Z/design.css"> (feste Fassung, R-10.3)
    Farben als Variablen auf :root, Dunkelmodus über data-theme="dark" (setzt ui.js / applyTheme).
    Komponenten: Schaltflächen, Suchfeld, Kapsel, Eingabefelder, Datumsfelder, Kopfzeile, Seitenleiste,
@@ -6,7 +6,7 @@
    Options-Kapsel; seit 4.1.0 iPhone-Ansicht (html.phone: Seitenkopf, großer Titel, Liste, Kasten, untere Leiste). Regeln dazu: README - Designrichtlinie allgemein.md */
 /* Farben im Apple-Look: Hintergrund Hellgrau, Kästen weiß ohne Rand, schwebende Schaltflächen */
 :root {
-  --ad-version: "4.37.0";   /* R-10.3: Version der Bausteine, die App prüft sie beim Start */
+  --ad-version: "4.38.0";   /* R-10.3: Version der Bausteine, die App prüft sie beim Start */
   --bg: #f2f2f7;
   --card: #ffffff;
   --ink: #1c1c1e;
@@ -633,7 +633,7 @@ html.phone body { padding-top: var(--pnav-h, 60px); }
 html.phone dialog:is(#dlg, .blatt-geist) { width: 100%; max-width: none; min-width: 0; height: var(--dlg-max); border-radius: 26px 26px 0 0;
   box-shadow: 0 -1px 18px rgba(0,0,0,.12); }
 html.phone dialog:is(#dlg, .blatt-geist) form { height: 100%; }
-html.phone.blatt #dlg::backdrop { background: transparent; }
+html.blatt #dlg::backdrop { background: transparent; }   /* seit 4.38.0 auch am iPad (APD-72): die Abdunkelung wird beim Ziehen heller */
 .blatt-schleier { position: fixed; inset: 0; z-index: 45; background: #000; opacity: 0; pointer-events: none; display: none; }
 html.blatt .blatt-schleier { display: block; }
 .blatt-geist { z-index: 46; pointer-events: none; overflow: hidden; }
@@ -641,8 +641,8 @@ html.blatt-zurueck { background: #000; }
 html.blatt-zurueck body { background: transparent; }
 html.blatt-zurueck .blatt-seite { transform-origin: 50% 0; border-radius: 12px; overflow: hidden; background: var(--bg); }
 html.blatt-zieht, html.blatt-zieht * { -webkit-user-select: none; user-select: none; }
-html.phone #dlg .dlg-head { touch-action: none; }
-html.phone #dlg .dlg-body { overscroll-behavior: none; }
+#dlg .dlg-head { touch-action: none; }
+#dlg .dlg-body { overscroll-behavior: none; }
 html.phone #msg { width: min(360px, calc(100vw - 32px)); }
 html.phone #msg.wide { width: min(600px, calc(100vw - 24px)); }
 html.phone :is(#dlg, .blatt-geist) .dlg-head { gap: 8px; padding: 10px max(12px, var(--safe-right)) 8px max(12px, var(--safe-left)); }
