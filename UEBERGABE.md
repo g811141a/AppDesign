@@ -42,7 +42,7 @@ der AppDesign-`CLAUDE.md` (mit den Chromium-Verweisen für Chrome 153 unter ‚T
 
 1. Lagebild (kurz), dann **bauen** (Ja liegt vor): AppDesign 4.38.0 / Reiselogbuch 3.36.0 mit
    - **APD-72:** iPad-Fenster nach unten ziehen (R-4.6 letzten Satz ändern, 15.17, ui.js `blatt…` auch am iPad mit Fenster in der Mitte,
-     Öffnen/Schließen von unten, Abdunkelung antippen schließt nicht), `checkSheet` iPad (D-1 bis D-20), Gegenprobe;
+     Öffnen/Schließen von unten, Abdunkelung antippen schließt nicht), `checkSheet` iPad (APD-72/D-1 bis D-20), Gegenprobe;
    - **RLB-103:** `safari.mjs` nach der Messung (kein Schub im Blatt quer, Meldung im selben Bild), `abspielen.mjs` erkennt das Ende der
      Messung, Messung nach `tests/messungen/`, Zeitgrenzen `BIS` in `ablauf-tastatur-still.mjs` prüfen, Prüfung in `tests/alle.mjs`;
      alle Abläufe mit dem Modell bleiben grün.
