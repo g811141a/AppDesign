@@ -1,6 +1,6 @@
 # Übergabe an die nächste Sitzung
 
-**Stand 26.10.2026** · geschrieben in der Sitzung ‚Reiselogbuch 0048‘ (Usertest P-75, Klärung APD-77, RLB-103, APD-72) – Aufbau nach
+**Stand 26.10.2026** · geschrieben in der Sitzung ‚Reiselogbuch 0049‘ (Bau 4.38.0 / 3.36.0 mit APD-72 und RLB-103) – Aufbau nach
 Zusammenarbeit allgemein 2.5. **Claude liest diese Datei zu Beginn jeder Sitzung zuerst** (0 Nr. 15); die Arbeitsumgebung steht in
 der AppDesign-`CLAUDE.md` (mit den Chromium-Verweisen für Chrome 153 unter ‚Tests einrichten‘).
 
@@ -8,47 +8,43 @@ der AppDesign-`CLAUDE.md` (mit den Chromium-Verweisen für Chrome 153 unter ‚T
 
 | Teil | Version | Datei |
 |---|---|---|
-| Reiselogbuch | **3.35.0** (Fassung 4.37.0) | g811141a/ReiseLogBuch – `CHANGELOG.md`, `BACKLOG.md`, `PROMPT.md` |
-| AppDesign | **4.37.0** (feste Fassungen 4.14.0–4.37.0) | g811141a/AppDesign – `CHANGELOG.md`, `BACKLOG.md`, `ZUORDNUNG.md` |
+| Reiselogbuch | **3.36.0** (Fassung 4.38.0) | g811141a/ReiseLogBuch – `CHANGELOG.md`, `BACKLOG.md`, `PROMPT.md` |
+| AppDesign | **4.38.0** (feste Fassungen 4.14.0–4.38.0) | g811141a/AppDesign – `CHANGELOG.md`, `BACKLOG.md`, `ZUORDNUNG.md` |
 | Zusammenarbeit allgemein | **2.20.0** | `README - Zusammenarbeit allgemein.md` |
 | ReiseLogBuch-Import (privat) | 1.3.0 | g811141a/ReiseLogBuch-Import |
 
-- **Chatnummer:** die nächste Sitzung heißt **Reiselogbuch 0049**; die danach 0050.
-- **Modell und Aufwand:** Opus 5.5, Aufwand hoch – in 0048 beides richtig (Sitzungsdatei `"effort":"high"`, `CLAUDE_CODE_EFFORT_LEVEL=high`).
-- **Sitzungsgröße 0048:** etwa 280.000 Token – Übergabe nach 0 Nr. 13 (der Nutzer hat das Ja für die Version gegeben, gebaut wird in 0049).
-- **Offene Usertests:** keine (P-75 alles ok).
-- **Freigegeben (Ja, Nutzer 26.10.2026): AppDesign 4.38.0 / Reiselogbuch 3.36.0 mit APD-72 und RLB-103.**
-- **Danach bereit:** 4.39.0 mit APD-77 (‚Messung starten‘ verstecken) und P-75/6 (Satz für Designrichtlinie 13) – vor dem Bau fragen.
+- **Chatnummer:** die nächste Sitzung heißt **Reiselogbuch 0050**; die danach 0051.
+- **Modell und Aufwand:** Opus 5.5, Aufwand hoch – in 0049 beides richtig (Sitzungsdatei `"effort":"high"`, `CLAUDE_CODE_EFFORT_LEVEL=high`).
+- **Sitzungsgröße 0049:** über 400.000 Token (‚⚠ Übergabe fällig‘ während des vollen Laufs) – Übergabe nach 0 Nr. 13 nach der Veröffentlichung.
+- **Offener Usertest: P-76** (4.38.0 / 3.36.0, Testfälle P-76/0 bis /6 im CHANGELOG des Reiselogbuchs) – **zuerst die Rückmeldung
+  erfragen** (Auswahlfenster ‚P-76: Wie ist die Prüfung ausgegangen?‘ – ‚Alles ok‘ · ‚Nicht ok – ich schreibe im Chat‘ · ‚Ich prüfe
+  später‘ · ‚Ich schreibe im Chat‘), die Testfälle dazu vollständig im Chat.
+- **Danach bereit:** 4.39.0 mit APD-77 (‚Messung starten‘ verstecken) und P-75/6 (Satz für Designrichtlinie 13) – vor dem Bau fragen
+  (erst P-76, 0 Nr. 22).
 - **Backlog-Spitze danach:** APD-38 wartet auf den Nutzer; APD-80 (Kontrast dunkel – Austausch im Chat), APD-81 (ⓧ mehrzeilig – vorher klären).
 - **Erinnerung:** ‚Backlog-Erinnerung (AppDesign und Reiselogbuch)‘ montags 8:58.
 
-## 2. Ergebnisse der Sitzung 0048
+## 2. Ergebnisse der Sitzung 0049
 
-- **P-75 alles ok** (Textgröße, APD-43 Teil 2 / RLB-101 bestätigt). Auskunft P-75/6: ‚Größerer Text‘ nur für Safari (Einstellungen pro
-  App) wirkt auch auf die Web-App vom Home-Bildschirm – Satz für Designrichtlinie 13 steht in ‚0. Nächste Version‘.
-- **APD-77 geklärt** (lang drücken auf die Versionszeile, bis zum Neustart, Menü bleibt offen, allgemeine Regel) – Testfall-Liste
-  `arbeit/APD-77 Testfall-Liste.md` 1–2, 5.
-- **RLB-103 geklärt und gemessen:** Abbruch, weil jede Messung mit dem Beenden im Mehr-Menü endet (keine Zeitgrenze für die neuen
-  Messungen); ohne Abbruch 17 Fehler – Abweichung des Safari-Modells (Gerät: steht still). **Messung am Gerät 26.10. 08:57**
-  (`arbeit/RLB-103 Messung 2026-10-26 iPhone quer Blatt Ort Quartier.txt`): ‚Ort‘ antippen – Safari verschiebt nichts; Wechsel zu
-  ‚Quartier‘ – 167 px, gemeldet im selben Augenblick; Tastatur zu – ebenso, kein Bild springt. Auswertung und Testfälle
-  `arbeit/APD-77 Testfall-Liste.md` 3–4 (APD-77/F-11 bis F-18).
-- **APD-72 geklärt:** Zug wie am iPhone, Aussehen wie iPadOS, allgemeine Regel, Muster `arbeit/APD-72 Muster.html` – **Variante B**
-  (Öffnen und Schließen immer von unten) gewählt; Testfall-Liste `arbeit/APD-72 Testfall-Liste.md` (APD-72/D-1 bis D-20).
-- **Hinweise:** github.io ist aus der Cloud nicht erreichbar (Pages-Läufe über `mcp__github__actions_list` prüfen). Der Nutzer wünscht
-  am Ende jeder Antwort ein Auswahlfenster mit Empfehlung (0 Nr. 7, 2.3) – nicht nur Text.
+- **Veröffentlicht: AppDesign 4.38.0 / Reiselogbuch 3.36.0** (26.10.2026, 10:52; voller Lauf 114 von 114 grün, beide Pages-Läufe ‚success‘).
+- **APD-72 (Variante B):** R-4.6 auch am iPad – Fenster in der Mitte, Öffnen und Schließen von unten, Ziehen wie am iPhone (nur das
+  Fenster fährt mit, Abdunkelung heller, Seite bleibt, Abdunkelung antippen schließt nicht); `checkSheet` APD-72/D-1 bis APD-72/D-15
+  (neu für beide Geräte D-8, D-11, D-14); Gegenproben APD-72/D-19 rot wie erwartet.
+- **RLB-103:** `abspielen.mjs` spielt das Beenden der Messung nicht nach (Marke ‚messung beendet‘ in ui.js), ‚klick unterdrückt … (Feld x)‘
+  zählt als Antippen; Safari-Modell nach der Messung vom 26.10.: Tastatur-Verschiebungen meldet Safari im selben Augenblick,
+  `ABSTAND_FENSTER` 0; `ablauf-tastatur-still` im vollen Lauf (7 Messungen grün). Korrektur zur Testfall-Liste: die Messung vom 26.10.
+  endet doch mit ‚tippen sideMore‘ + ‚tippen button‘.
+- **Fünf volle Läufe waren rot** – jedes Mal maß eine Prüfung unter Volllast zu früh. Jeder Fall ist nachgemessen und behoben, Einzelheiten
+  stehen im CHANGELOG 4.38.0: R-3.1 Rundungsfehler beim Gleiten (WebKit), APD-36/B-4 bei wenigen Bildern, APD-72/D-11 Zeitprobe,
+  `ablauf-abgleich` Klick in ein noch gleitendes Blatt (schon mit 4.37.0 2 von 8 rot), R-8.1 `sideKeep` 500 ms. Beobachten: einmal
+  ‚APD-36/B-8 ↑ rollt nicht ganz nach oben (scrollTop 3)‘ (iPhone hoch dunkel, nicht wieder aufgetreten).
+- **Hinweis:** Ein voller Lauf dauert jetzt etwa 55 min (mit `ablauf-tastatur-still` und dem iPad in `ablauf-blatt`).
 
 ## 3. Nächster Schritt
 
-1. Lagebild (kurz), dann **bauen** (Ja liegt vor): AppDesign 4.38.0 / Reiselogbuch 3.36.0 mit
-   - **APD-72:** iPad-Fenster nach unten ziehen (R-4.6 letzten Satz ändern, 15.17, ui.js `blatt…` auch am iPad mit Fenster in der Mitte,
-     Öffnen/Schließen von unten, Abdunkelung antippen schließt nicht), `checkSheet` iPad (APD-72/D-1 bis D-20), Gegenprobe;
-   - **RLB-103:** `safari.mjs` nach der Messung (kein Schub im Blatt quer, Meldung im selben Bild), `abspielen.mjs` erkennt das Ende der
-     Messung, Messung nach `tests/messungen/`, Zeitgrenzen `BIS` in `ablauf-tastatur-still.mjs` prüfen, Prüfung in `tests/alle.mjs`;
-     alle Abläufe mit dem Modell bleiben grün.
-   Ablauf: `vorbereiten --ad 4.38.0 --app reiselogbuch=3.36.0`, bauen, betroffene Prüfungen, CHANGELOG mit Testfällen (P-76), `fassung`,
-   `los` (voller Lauf). Danach Bericht mit Usertest P-76 und Auswahlfenster.
-2. Danach 4.39.0 (APD-77, P-75/6) – nach Rückfrage.
+1. Lagebild (kurz), dann **Rückmeldung zu P-76 erfragen** (Testfälle vollständig im Chat, Auswahlfenster).
+2. Bei ‚nicht ok‘: zuerst den Ablauf als feste Prüfung nachbauen (0 Nr. 1), dann Korrekturversion nach Rückfrage.
+3. Danach 4.39.0 (APD-77, P-75/6) – nach Rückfrage ‚Soll ich Version 4.39.0 … erstellen?‘.
 
 ## 4. Danach
 
@@ -60,7 +56,7 @@ APD-40 · APD-44 bis APD-60 · APD-70 · RLB-6 · APD-1.
 In der neuen Sitzung müssen **AppDesign** und **ReiseLogBuch** verfügbar sein (alles auf Branch `main`).
 
 ```
-Reiselogbuch 0049 – Version 4.38.0 / 3.36.0 (APD-72, RLB-103)
+Reiselogbuch 0050 – Usertest P-76 (4.38.0 / 3.36.0)
 
-Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md, dann gezielt die Zusammenarbeit (Abschnitte 0 und 1) und die Überschriften der Designrichtlinien; prüfe Modell und Aufwand (Sitzungsdatei) und hole das Repo g811141a/ReiseLogBuch dazu, wie in der AppDesign-CLAUDE.md unter ‚Arbeitsumgebung‘ (mit den Chromium-Verweisen unter ‚Tests einrichten‘). Gib kurz das Lagebild und baue dann die freigegebene Version AppDesign 4.38.0 / Reiselogbuch 3.36.0 mit APD-72 und RLB-103 (UEBERGABE.md 3).
+Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md, dann gezielt die Zusammenarbeit (Abschnitte 0 und 1) und die Überschriften der Designrichtlinien; prüfe Modell und Aufwand (Sitzungsdatei) und hole das Repo g811141a/ReiseLogBuch dazu, wie in der AppDesign-CLAUDE.md unter ‚Arbeitsumgebung‘ (mit den Chromium-Verweisen unter ‚Tests einrichten‘). Gib kurz das Lagebild, zeige die Testfälle P-76 (CHANGELOG des Reiselogbuchs 3.36.0) vollständig im Chat und frage mit dem Auswahlfenster nach der Rückmeldung zu P-76 (UEBERGABE.md 3).
 ```
