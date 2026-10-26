@@ -1,0 +1,647 @@
+# Messung · Reiselogbuch 3.35.0 · AppDesign 4.37.0 · Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.6.2 Mobile/15E148 Safari/604.1 · Home-Bildschirm · 402×874 @3 · Ränder 0/20/62/62 · hell · 2026-10-26T00:57:48.061Z · Kontrast normal · Bewegung normal · Text l 17
+t      sy     inh    sh     ih     vh     vt     vvtop  kopf   such   tag    lkopf  lsuch  lroll  fokus  lage
+1      0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! start
+4017   0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! nav kein kandidat
+4017   0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! zeiger down 112 223 touch button.side-row @side
+4112   0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! zeiger move 113 221 touch button.side-row @side
+4113   0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! touchmove frei
+4113   0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! zeiger move 113 221 touch button.side-row @side
+4128   0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! zeiger move 115 216 touch button.side-row @side
+4144   0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! zeiger move 115 213 touch button.side-row @side
+4152   0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! zeiger move 115 211 touch button.side-row @side
+4152   0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! touchmove fest
+4169   0      -      402    402    402    0      0      -      -      -      0      -      2      sideMore quer   ! zeiger move 115 205 touch button.side-row @side
+4170   0      -      402    402    402    0      0      -      -      -      0      -      8      sideMore quer   ! scroll div
+4177   0      -      402    402    402    0      0      -      -      -      0      -      8      sideMore quer   ! zeiger move 114 202 touch button.side-row @side
+4178   0      -      402    402    402    0      0      -      -      -      0      -      11     sideMore quer   ! scroll div
+4186   0      -      402    402    402    0      0      -      -      -      0      -      11     sideMore quer   ! zeiger move 113 198 touch button.side-row @side
+4194   0      -      402    402    402    0      0      -      -      -      0      -      15     sideMore quer   ! zeiger move 112 194 touch button.side-row @side
+4194   0      -      402    402    402    0      0      -      -      -      0      -      19     sideMore quer   ! scroll div
+4202   0      -      402    402    402    0      0      -      -      -      0      -      19     sideMore quer   ! zeiger move 111 189 touch button.side-row @side
+4211   0      -      402    402    402    0      0      -      -      -      0      -      24     sideMore quer   ! zeiger move 109 184 touch button.side-row @side
+4211   0      -      402    402    402    0      0      -      -      -      0      -      29     sideMore quer   ! scroll div
+4219   0      -      402    402    402    0      0      -      -      -      0      -      29     sideMore quer   ! zeiger move 108 179 touch button.side-row @side
+4227   0      -      402    402    402    0      0      -      -      -      0      -      34     sideMore quer   ! zeiger move 107 174 touch button.side-row @side
+4228   0      -      402    402    402    0      0      -      -      -      0      -      39     sideMore quer   ! scroll div
+4236   0      -      402    402    402    0      0      -      -      -      0      -      39     sideMore quer   ! zeiger move 106 168 touch button.side-row @side
+4244   0      -      402    402    402    0      0      -      -      -      0      -      45     sideMore quer   ! zeiger move 105 163 touch button.side-row @side
+4245   0      -      402    402    402    0      0      -      -      -      0      -      50     sideMore quer   ! scroll div
+4253   0      -      402    402    402    0      0      -      -      -      0      -      50     sideMore quer   ! zeiger move 104 159 touch button.side-row @side
+4261   0      -      402    402    402    0      0      -      -      -      0      -      54     sideMore quer   ! zeiger move 102 154 touch button.side-row @side
+4262   0      -      402    402    402    0      0      -      -      -      0      -      59     sideMore quer   ! scroll div
+4269   0      -      402    402    402    0      0      -      -      -      0      -      59     sideMore quer   ! zeiger move 101 149 touch button.side-row @side
+4277   0      -      402    402    402    0      0      -      -      -      0      -      64     sideMore quer   ! zeiger move 100 144 touch button.side-row @side
+4278   0      -      402    402    402    0      0      -      -      -      0      -      69     sideMore quer   ! scroll div
+4286   0      -      402    402    402    0      0      -      -      -      0      -      69     sideMore quer   ! zeiger move 99 140 touch button.side-row @side
+4295   0      -      402    402    402    0      0      -      -      -      0      -      77     sideMore quer   ! zeiger move 98 136 touch button.side-row @side
+4296   0      -      402    402    402    0      0      -      -      -      0      -      77     sideMore quer   ! scroll div
+4302   0      -      402    402    402    0      0      -      -      -      0      -      77     sideMore quer   ! zeiger move 98 131 touch button.side-row @side
+4311   0      -      402    402    402    0      0      -      -      -      0      -      82     sideMore quer   ! zeiger move 97 127 touch button.side-row @side
+4312   0      -      402    402    402    0      0      -      -      -      0      -      86     sideMore quer   ! scroll div
+4319   0      -      402    402    402    0      0      -      -      -      0      -      86     sideMore quer   ! zeiger move 96 123 touch button.side-row @side
+4327   0      -      402    402    402    0      0      -      -      -      0      -      90     sideMore quer   ! zeiger move 95 119 touch button.side-row @side
+4328   0      -      402    402    402    0      0      -      -      -      0      -      94     sideMore quer   ! scroll div
+4336   0      -      402    402    402    0      0      -      -      -      0      -      94     sideMore quer   ! zeiger move 95 115 touch button.side-row @side
+4344   0      -      402    402    402    0      0      -      -      -      0      -      98     sideMore quer   ! zeiger move 94 111 touch button.side-row @side
+4345   0      -      402    402    402    0      0      -      -      -      0      -      102    sideMore quer   ! scroll div
+4352   0      -      402    402    402    0      0      -      -      -      0      -      102    sideMore quer   ! zeiger move 93 107 touch button.side-row @side
+4362   0      -      402    402    402    0      0      -      -      -      0      -      110    sideMore quer   ! zeiger move 92 103 touch button.side-row @side
+4362   0      -      402    402    402    0      0      -      -      -      0      -      110    sideMore quer   ! scroll div
+4370   0      -      402    402    402    0      0      -      -      -      0      -      114    sideMore quer   ! zeiger move 91 99 touch button.side-row @side
+4378   0      -      402    402    402    0      0      -      -      -      0      -      114    sideMore quer   ! zeiger move 91 96 touch button.side-row @side
+4378   0      -      402    402    402    0      0      -      -      -      0      -      117    sideMore quer   ! scroll div
+4386   0      -      402    402    402    0      0      -      -      -      0      -      117    sideMore quer   ! zeiger move 90 93 touch button.side-row @side
+4395   0      -      402    402    402    0      0      -      -      -      0      -      120    sideMore quer   ! zeiger move 90 90 touch button.side-row @side
+4396   0      -      402    402    402    0      0      -      -      -      0      -      123    sideMore quer   ! scroll div
+4403   0      -      402    402    402    0      0      -      -      -      0      -      123    sideMore quer   ! zeiger move 89 88 touch button.side-row @side
+4415   0      -      402    402    402    0      0      -      -      -      0      -      125    sideMore quer   ! zeiger move 89 84 touch button.side-row @side
+4428   0      -      402    402    402    0      0      -      -      -      0      -      129    sideMore quer   ! zeiger move 88 81 touch button.side-row @side
+4428   0      -      402    402    402    0      0      -      -      -      0      -      132    sideMore quer   ! scroll div
+4440   0      -      402    402    402    0      0      -      -      -      0      -      132    sideMore quer   ! zeiger move 86 78 touch button.side-row @side
+4453   0      -      402    402    402    0      0      -      -      -      0      -      135    sideMore quer   ! zeiger move 84 75 touch button.side-row @side
+4453   0      -      402    402    402    0      0      -      -      -      0      -      138    sideMore quer   ! scroll div
+4465   0      -      402    402    402    0      0      -      -      -      0      -      138    sideMore quer   ! zeiger move 82 72 touch button.side-row @side
+4477   0      -      402    402    402    0      0      -      -      -      0      -      141    sideMore quer   ! zeiger move 80 69 touch button.side-row @side
+4478   0      -      402    402    402    0      0      -      -      -      0      -      144    sideMore quer   ! scroll div
+4490   0      -      402    402    402    0      0      -      -      -      0      -      144    sideMore quer   ! zeiger move 78 66 touch button.side-row @side
+4502   0      -      402    402    402    0      0      -      -      -      0      -      147    sideMore quer   ! zeiger move 76 64 touch button.side-row @side
+4503   0      -      402    402    402    0      0      -      -      -      0      -      149    sideMore quer   ! scroll div
+4515   0      -      402    402    402    0      0      -      -      -      0      -      149    sideMore quer   ! zeiger move 75 63 touch button.side-row @side
+4532   0      -      402    402    402    0      0      -      -      -      0      -      150    sideMore quer   ! zeiger move 74 63 touch button.side-row @side
+4533   0      -      402    402    402    0      0      -      -      -      0      -      150    sideMore quer   ! scroll div
+4549   0      -      402    402    402    0      0      -      -      -      0      -      150    sideMore quer   ! zeiger up 72 62 touch button.side-row @side
+5713   0      -      402    402    402    0      0      -      -      -      0      -      150    sideMore quer   ! nav kein kandidat
+5713   0      -      402    402    402    0      0      -      -      -      0      -      150    sideMore quer   ! zeiger down 144 149 touch small.chg in button.side-row @side
+5841   0      -      402    402    402    0      0      -      -      -      0      -      150    sideMore quer   ! zeiger up 144 149 touch small.chg in button.side-row @side
+5843   0      -      402    402    402    0      0      -      -      -      0      -      150    -      quer   ! blur sideMore
+5843   0      -      402    402    402    0      0      -      -      -      0      -      150    -      quer   ! tippen button
+5849   0      -      402    402    402    0      0      -      -      -      -      -      -      -      quer   ! neuaufbau app
+5862   0      0      402    402    402    0      0      0      -      234    -      -      -      bar    quer   ! focus bar
+5863   0      0      402    402    402    0      0      0      -      234    0      -      150    bar    quer   ! neuaufbau side
+5870   0      0      402    402    402    0      0      0      -      234    0      -      150    bar    quer   ! scroll div
+6230   0      0      402    402    402    0      0      0      -      234    -      -      -      bar    quer
+9464   0      0      402    402    402    0      0      0      -      234    -      -      -      bar    quer   ! nav kandidat phone
+9464   0      0      402    402    402    0      0      0      -      234    -      -      -      bar    quer   ! zeiger down 135 336 touch span.k.word in div.box.day[button] @pdays
+9508   0      0      402    402    402    0      0      0      -      234    -      -      -      bar    quer   ! zeiger move 133 331 touch span.k.word in div.box.day[button] @pdays
+9508   0      0      402    402    402    0      0      0      -      234    -      -      -      bar    quer   ! touchmove frei
+9508   0      0      402    402    402    0      0      0      -      234    -      -      -      bar    quer   ! zeiger move 133 331 touch span.k.word in div.box.day[button] @pdays
+9526   0      0      402    402    402    0      0      0      -      234    -      -      -      bar    quer   ! nav verworfen richtung -2 -12
+9526   0      0      402    402    402    0      0      0      -      234    -      -      -      bar    quer   ! zeiger move 133 325 touch span.k.word in div.box.day[button] @pdays
+9541   0      0      402    402    402    0      0      0      -      234    -      -      -      bar    quer   ! zeiger move 129 317 touch span.k.word in div.box.day[button] @pdays
+9543   0      0      402    402    402    0      0      0      -      234    -      -      -      bar    quer   ! zeiger cancel 0 0 touch span.k.word in div.box.day[button] @pdays
+9557   0      0      402    402    402    0      0      0      -      234    -      -      -      bar    quer   ! touchmove fest
+9562   0      9      402    402    402    0      0      0      -      225    -      -      -      bar    quer   ! scroll rolle
+9580   0      21     402    402    402    0      0      0      -      213    -      -      -      bar    quer   ! scroll rolle
+9605   0      36     402    402    402    0      0      0      -      198    -      -      -      bar    quer   ! scroll rolle
+9621   0      45     402    402    402    0      0      0      -      189    -      -      -      bar    quer   ! scroll rolle
+9641   0      51     402    402    402    0      0      0      -      183    -      -      -      bar    quer   ! scroll rolle
+9666   0      62     402    402    402    0      0      0      -      172    -      -      -      bar    quer   ! scroll rolle
+9684   0      75     402    402    402    0      0      0      -      159    -      -      -      bar    quer   ! scroll rolle
+9700   0      79     402    402    402    0      0      0      -      155    -      -      -      bar    quer   ! scroll rolle
+9717   0      90     402    402    402    0      0      0      -      144    -      -      -      bar    quer   ! scroll rolle
+9733   0      94     402    402    402    0      0      0      -      140    -      -      -      bar    quer   ! scroll rolle
+9750   0      101    402    402    402    0      0      0      -      133    -      -      -      bar    quer   ! scroll rolle
+9767   0      108    402    402    402    0      0      0      -      126    -      -      -      bar    quer   ! scroll rolle
+9784   0      119    402    402    402    0      0      0      -      115    -      -      -      bar    quer   ! scroll rolle
+9800   0      122    402    402    402    0      0      0      -      112    -      -      -      bar    quer   ! scroll rolle
+9817   0      131    402    402    402    0      0      0      -      103    -      -      -      bar    quer   ! scroll rolle
+9833   0      134    402    402    402    0      0      0      -      100    -      -      -      bar    quer   ! scroll rolle
+9850   0      140    402    402    402    0      0      0      -      94     -      -      -      bar    quer   ! scroll rolle
+9867   0      146    402    402    402    0      0      0      -      88     -      -      -      bar    quer   ! scroll rolle
+9884   0      155    402    402    402    0      0      0      -      79     -      -      -      bar    quer   ! scroll rolle
+9900   0      157    402    402    402    0      0      0      -      77     -      -      -      bar    quer   ! scroll rolle
+9916   0      162    402    402    402    0      0      0      -      72     -      -      -      bar    quer   ! scroll rolle
+9933   0      168    402    402    402    0      0      0      -      66     -      -      -      bar    quer   ! scroll rolle
+9945   0      170    402    402    402    0      0      0      -      64     -      -      -      bar    quer   ! scroll rolle
+9971   0      177    402    402    402    0      0      0      -      57     -      -      -      bar    quer   ! scroll rolle
+9996   0      184    402    402    402    0      0      0      -      50     -      -      -      bar    quer   ! scroll rolle
+10021  0      190    402    402    402    0      0      0      -      44     -      -      -      bar    quer   ! scroll rolle
+10046  0      197    402    402    402    0      0      0      -      37     -      -      -      bar    quer   ! scroll rolle
+10071  0      202    402    402    402    0      0      0      -      32     -      -      -      bar    quer   ! scroll rolle
+10096  0      208    402    402    402    0      0      0      -      26     -      -      -      bar    quer   ! scroll rolle
+10121  0      213    402    402    402    0      0      0      -      21     -      -      -      bar    quer   ! scroll rolle
+10155  0      216    402    402    402    0      0      0      -      18     -      -      -      bar    quer   ! scroll rolle
+10189  0      227    402    402    402    0      0      0      -      7      -      -      -      bar    quer   ! scroll rolle
+10205  0      238    402    402    402    0      0      0      -      -4     -      -      -      bar    quer   ! scroll rolle
+10222  0      249    402    402    402    0      0      0      -      -15    -      -      -      bar    quer   ! scroll rolle
+10238  0      260    402    402    402    0      0      0      -      -26    -      -      -      bar    quer   ! scroll rolle
+10255  0      271    402    402    402    0      0      0      -      -37    -      -      -      bar    quer   ! scroll rolle
+10273  0      279    402    402    402    0      0      0      -      -45    -      -      -      bar    quer   ! scroll rolle
+10287  0      284    402    402    402    0      0      0      -      -50    -      -      -      bar    quer   ! scroll rolle
+10304  0      295    402    402    402    0      0      0      -      -61    -      -      -      bar    quer   ! scroll rolle
+10321  0      310    402    402    402    0      0      0      -      -76    -      -      -      bar    quer   ! scroll rolle
+10338  0      319    402    402    402    0      0      0      -      -85    -      -      -      bar    quer   ! scroll rolle
+10354  0      324    402    402    402    0      0      0      -      -90    -      -      -      bar    quer   ! scroll rolle
+10371  0      333    402    402    402    0      0      0      -      -99    -      -      -      bar    quer   ! scroll rolle
+10388  0      347    402    402    402    0      0      0      -      -113   -      -      -      bar    quer   ! scroll rolle
+10404  0      355    402    402    402    0      0      0      -      -121   -      -      -      bar    quer   ! scroll rolle
+10421  0      363    402    402    402    0      0      0      -      -129   -      -      -      bar    quer   ! scroll rolle
+10437  0      367    402    402    402    0      0      0      -      -133   -      -      -      bar    quer   ! scroll rolle
+10454  0      375    402    402    402    0      0      0      -      -141   -      -      -      bar    quer   ! scroll rolle
+10471  0      386    402    402    402    0      0      0      -      -152   -      -      -      bar    quer   ! scroll rolle
+10488  0      394    402    402    402    0      0      0      -      -160   -      -      -      bar    quer   ! scroll rolle
+10505  0      400    402    402    402    0      0      0      -      -166   -      -      -      bar    quer   ! scroll rolle
+10520  0      404    402    402    402    0      0      0      -      -170   -      -      -      bar    quer   ! scroll rolle
+10537  0      410    402    402    402    0      0      0      -      -176   -      -      -      bar    quer   ! scroll rolle
+10554  0      420    402    402    402    0      0      0      -      -186   -      -      -      bar    quer   ! scroll rolle
+10571  0      426    402    402    402    0      0      0      -      -192   -      -      -      bar    quer   ! scroll rolle
+10588  0      432    402    402    402    0      0      0      -      -198   -      -      -      bar    quer   ! scroll rolle
+10605  0      438    402    402    402    0      0      0      -      -204   -      -      -      bar    quer   ! scroll rolle
+10624  0      440    402    402    402    0      0      0      -      -206   -      -      -      bar    quer   ! scroll rolle
+10637  0      446    402    402    402    0      0      0      -      -212   -      -      -      bar    quer   ! scroll rolle
+10654  0      454    402    402    402    0      0      0      -      -220   -      -      -      bar    quer   ! scroll rolle
+10679  0      457    402    402    402    0      0      0      -      -223   -      -      -      bar    quer   ! scroll rolle
+10704  0      464    402    402    402    0      0      0      -      -230   -      -      -      bar    quer   ! scroll rolle
+10729  0      471    402    402    402    0      0      0      -      -237   -      -      -      bar    quer   ! scroll rolle
+10754  0      478    402    402    402    0      0      0      -      -244   -      -      -      bar    quer   ! scroll rolle
+10779  0      484    402    402    402    0      0      0      -      -250   -      -      -      bar    quer   ! scroll rolle
+10804  0      490    402    402    402    0      0      0      -      -256   -      -      -      bar    quer   ! scroll rolle
+10830  0      496    402    402    402    0      0      0      -      -262   -      -      -      bar    quer   ! scroll rolle
+10854  0      501    402    402    402    0      0      0      -      -267   -      -      -      bar    quer   ! scroll rolle
+10880  0      506    402    402    402    0      0      0      -      -272   -      -      -      bar    quer   ! scroll rolle
+10904  0      511    402    402    402    0      0      0      -      -277   -      -      -      bar    quer   ! scroll rolle
+10929  0      515    402    402    402    0      0      0      -      -281   -      -      -      bar    quer   ! scroll rolle
+10954  0      520    402    402    402    0      0      0      -      -286   -      -      -      bar    quer   ! scroll rolle
+10979  0      524    402    402    402    0      0      0      -      -290   -      -      -      bar    quer   ! scroll rolle
+11004  0      528    402    402    402    0      0      0      -      -294   -      -      -      bar    quer   ! scroll rolle
+11029  0      532    402    402    402    0      0      0      -      -298   -      -      -      bar    quer   ! scroll rolle
+11046  0      533    402    402    402    0      0      0      -      -299   -      -      -      bar    quer   ! scroll rolle
+11062  0      536    402    402    402    0      0      0      -      -302   -      -      -      bar    quer   ! scroll rolle
+11079  0      538    402    402    402    0      0      0      -      -304   -      -      -      bar    quer   ! scroll rolle
+11095  0      540    402    402    402    0      0      0      -      -306   -      -      -      bar    quer   ! scroll rolle
+11112  0      542    402    402    402    0      0      0      -      -308   -      -      -      bar    quer   ! scroll rolle
+11129  0      544    402    402    402    0      0      0      -      -310   -      -      -      bar    quer   ! scroll rolle
+11145  0      546    402    402    402    0      0      0      -      -312   -      -      -      bar    quer   ! scroll rolle
+11162  0      548    402    402    402    0      0      0      -      -314   -      -      -      bar    quer   ! scroll rolle
+11179  0      550    402    402    402    0      0      0      -      -316   -      -      -      bar    quer   ! scroll rolle
+11195  0      552    402    402    402    0      0      0      -      -318   -      -      -      bar    quer   ! scroll rolle
+11212  0      554    402    402    402    0      0      0      -      -320   -      -      -      bar    quer   ! scroll rolle
+11229  0      555    402    402    402    0      0      0      -      -321   -      -      -      bar    quer   ! scroll rolle
+11245  0      557    402    402    402    0      0      0      -      -323   -      -      -      bar    quer   ! scroll rolle
+11262  0      559    402    402    402    0      0      0      -      -325   -      -      -      bar    quer   ! scroll rolle
+11279  0      560    402    402    402    0      0      0      -      -326   -      -      -      bar    quer   ! scroll rolle
+11295  0      562    402    402    402    0      0      0      -      -328   -      -      -      bar    quer   ! scroll rolle
+11312  0      563    402    402    402    0      0      0      -      -329   -      -      -      bar    quer   ! scroll rolle
+11329  0      564    402    402    402    0      0      0      -      -330   -      -      -      bar    quer   ! scroll rolle
+11346  0      566    402    402    402    0      0      0      -      -332   -      -      -      bar    quer   ! scroll rolle
+11362  0      567    402    402    402    0      0      0      -      -333   -      -      -      bar    quer   ! scroll rolle
+11379  0      568    402    402    402    0      0      0      -      -334   -      -      -      bar    quer   ! scroll rolle
+11395  0      569    402    402    402    0      0      0      -      -335   -      -      -      bar    quer   ! scroll rolle
+11412  0      571    402    402    402    0      0      0      -      -337   -      -      -      bar    quer   ! scroll rolle
+11429  0      572    402    402    402    0      0      0      -      -338   -      -      -      bar    quer   ! scroll rolle
+11445  0      573    402    402    402    0      0      0      -      -339   -      -      -      bar    quer   ! scroll rolle
+11462  0      574    402    402    402    0      0      0      -      -340   -      -      -      bar    quer   ! scroll rolle
+11479  0      575    402    402    402    0      0      0      -      -341   -      -      -      bar    quer   ! scroll rolle
+11495  0      576    402    402    402    0      0      0      -      -342   -      -      -      bar    quer   ! scroll rolle
+11512  0      577    402    402    402    0      0      0      -      -343   -      -      -      bar    quer   ! scroll rolle
+11529  0      578    402    402    402    0      0      0      -      -344   -      -      -      bar    quer   ! scroll rolle
+11545  0      579    402    402    402    0      0      0      -      -345   -      -      -      bar    quer   ! scroll rolle
+11562  0      580    402    402    402    0      0      0      -      -346   -      -      -      bar    quer   ! scroll rolle
+11596  0      581    402    402    402    0      0      0      -      -347   -      -      -      bar    quer   ! scroll rolle
+11612  0      582    402    402    402    0      0      0      -      -348   -      -      -      bar    quer   ! scroll rolle
+11629  0      583    402    402    402    0      0      0      -      -349   -      -      -      bar    quer   ! scroll rolle
+11662  0      584    402    402    402    0      0      0      -      -350   -      -      -      bar    quer   ! scroll rolle
+11679  0      585    402    402    402    0      0      0      -      -351   -      -      -      bar    quer   ! scroll rolle
+11696  0      586    402    402    402    0      0      0      -      -352   -      -      -      bar    quer   ! scroll rolle
+11729  0      587    402    402    402    0      0      0      -      -353   -      -      -      bar    quer   ! scroll rolle
+11774  0      588    402    402    402    0      0      0      -      -354   -      -      -      bar    quer   ! scroll rolle
+11822  0      601    402    402    402    0      0      0      -      -367   -      -      -      bar    quer   ! scroll rolle
+11843  0      616    402    402    402    0      0      0      -      -382   -      -      -      bar    quer   ! scroll rolle
+11868  0      630    402    402    402    0      0      0      -      -396   -      -      -      bar    quer   ! scroll rolle
+11887  0      638    402    402    402    0      0      0      -      -404   -      -      -      bar    quer   ! scroll rolle
+11900  0      642    402    402    402    0      0      0      -      -408   -      -      -      bar    quer   ! scroll rolle
+11917  0      650    402    402    402    0      0      0      -      -416   -      -      -      bar    quer   ! scroll rolle
+11933  0      659    402    402    402    0      0      0      -      -425   -      -      -      bar    quer   ! scroll rolle
+11951  0      670    402    402    402    0      0      0      -      -436   -      -      -      bar    quer   ! scroll rolle
+11967  0      674    402    402    402    0      0      0      -      -440   -      -      -      bar    quer   ! scroll rolle
+11984  0      685    402    402    402    0      0      0      -      -451   -      -      -      bar    quer   ! scroll rolle
+12002  0      692    402    402    402    0      0      0      -      -458   -      -      -      bar    quer   ! scroll rolle
+12016  0      696    402    402    402    0      0      0      -      -462   -      -      -      bar    quer   ! scroll rolle
+12033  0      702    402    402    402    0      0      0      -      -468   -      -      -      bar    quer   ! scroll rolle
+12050  0      712    402    402    402    0      0      0      -      -478   -      -      -      bar    quer   ! scroll rolle
+12067  0      718    402    402    402    0      0      0      -      -484   -      -      -      bar    quer   ! scroll rolle
+12084  0      724    402    402    402    0      0      0      -      -490   -      -      -      bar    quer   ! scroll rolle
+12100  0      727    402    402    402    0      0      0      -      -493   -      -      -      bar    quer   ! scroll rolle
+12117  0      732    402    402    402    0      0      0      -      -498   -      -      -      bar    quer   ! scroll rolle
+12134  0      741    402    402    402    0      0      0      -      -507   -      -      -      bar    quer   ! scroll rolle
+12150  0      743    402    402    402    0      0      0      -      -509   -      -      -      bar    quer   ! scroll rolle
+12167  0      748    402    402    402    0      0      0      -      -514   -      -      -      bar    quer   ! scroll rolle
+12186  0      751    402    402    402    0      0      0      -      -517   -      -      -      bar    quer   ! scroll rolle
+12253  0      733    402    402    402    0      0      0      -      -499   -      -      -      bar    quer   ! scroll rolle
+12280  0      703    402    402    402    0      0      0      -      -469   -      -      -      bar    quer   ! scroll rolle
+12296  0      699    402    402    402    0      0      0      -      -465   -      -      -      bar    quer   ! scroll rolle
+12313  0      674    402    402    402    0      0      0      -      -440   -      -      -      bar    quer   ! scroll rolle
+12329  0      666    402    402    402    0      0      0      -      -432   -      -      -      bar    quer   ! scroll rolle
+12346  0      650    402    402    402    0      0      0      -      -416   -      -      -      bar    quer   ! scroll rolle
+12362  0      635    402    402    402    0      0      0      -      -401   -      -      -      bar    quer   ! scroll rolle
+12379  0      620    402    402    402    0      0      0      -      -386   -      -      -      bar    quer   ! scroll rolle
+12396  0      599    402    402    402    0      0      0      -      -365   -      -      -      bar    quer   ! scroll rolle
+12413  0      585    402    402    402    0      0      0      -      -351   -      -      -      bar    quer   ! scroll rolle
+12430  0      572    402    402    402    0      0      0      -      -338   -      -      -      bar    quer   ! scroll rolle
+12446  0      566    402    402    402    0      0      0      -      -332   -      -      -      bar    quer   ! scroll rolle
+12463  0      547    402    402    402    0      0      0      -      -313   -      -      -      bar    quer   ! scroll rolle
+12480  0      535    402    402    402    0      0      0      -      -301   -      -      -      bar    quer   ! scroll rolle
+12496  0      530    402    402    402    0      0      0      -      -296   -      -      -      bar    quer   ! scroll rolle
+12513  0      513    402    402    402    0      0      0      -      -279   -      -      -      bar    quer   ! scroll rolle
+12530  0      502    402    402    402    0      0      0      -      -268   -      -      -      bar    quer   ! scroll rolle
+12546  0      497    402    402    402    0      0      0      -      -263   -      -      -      bar    quer   ! scroll rolle
+12562  0      486    402    402    402    0      0      0      -      -252   -      -      -      bar    quer   ! scroll rolle
+12579  0      477    402    402    402    0      0      0      -      -243   -      -      -      bar    quer   ! scroll rolle
+12596  0      467    402    402    402    0      0      0      -      -233   -      -      -      bar    quer   ! scroll rolle
+12613  0      453    402    402    402    0      0      0      -      -219   -      -      -      bar    quer   ! scroll rolle
+12629  0      449    402    402    402    0      0      0      -      -215   -      -      -      bar    quer   ! scroll rolle
+12646  0      436    402    402    402    0      0      0      -      -202   -      -      -      bar    quer   ! scroll rolle
+12663  0      428    402    402    402    0      0      0      -      -194   -      -      -      bar    quer   ! scroll rolle
+12680  0      420    402    402    402    0      0      0      -      -186   -      -      -      bar    quer   ! scroll rolle
+12697  0      412    402    402    402    0      0      0      -      -178   -      -      -      bar    quer   ! scroll rolle
+12713  0      408    402    402    402    0      0      0      -      -174   -      -      -      bar    quer   ! scroll rolle
+12730  0      397    402    402    402    0      0      0      -      -163   -      -      -      bar    quer   ! scroll rolle
+12746  0      390    402    402    402    0      0      0      -      -156   -      -      -      bar    quer   ! scroll rolle
+12763  0      383    402    402    402    0      0      0      -      -149   -      -      -      bar    quer   ! scroll rolle
+12779  0      380    402    402    402    0      0      0      -      -146   -      -      -      bar    quer   ! scroll rolle
+12796  0      374    402    402    402    0      0      0      -      -140   -      -      -      bar    quer   ! scroll rolle
+12813  0      364    402    402    402    0      0      0      -      -130   -      -      -      bar    quer   ! scroll rolle
+12830  0      359    402    402    402    0      0      0      -      -125   -      -      -      bar    quer   ! scroll rolle
+12846  0      353    402    402    402    0      0      0      -      -119   -      -      -      bar    quer   ! scroll rolle
+12863  0      347    402    402    402    0      0      0      -      -113   -      -      -      bar    quer   ! scroll rolle
+12880  0      342    402    402    402    0      0      0      -      -108   -      -      -      bar    quer   ! scroll rolle
+12896  0      337    402    402    402    0      0      0      -      -103   -      -      -      bar    quer   ! scroll rolle
+12929  0      331    402    402    402    0      0      0      -      -97    -      -      -      bar    quer   ! scroll rolle
+12954  0      323    402    402    402    0      0      0      -      -89    -      -      -      bar    quer   ! scroll rolle
+12979  0      317    402    402    402    0      0      0      -      -83    -      -      -      bar    quer   ! scroll rolle
+13004  0      310    402    402    402    0      0      0      -      -76    -      -      -      bar    quer   ! scroll rolle
+13030  0      304    402    402    402    0      0      0      -      -70    -      -      -      bar    quer   ! scroll rolle
+13054  0      298    402    402    402    0      0      0      -      -64    -      -      -      bar    quer   ! scroll rolle
+13079  0      293    402    402    402    0      0      0      -      -59    -      -      -      bar    quer   ! scroll rolle
+13104  0      287    402    402    402    0      0      0      -      -53    -      -      -      bar    quer   ! scroll rolle
+13129  0      282    402    402    402    0      0      0      -      -48    -      -      -      bar    quer   ! scroll rolle
+13154  0      278    402    402    402    0      0      0      -      -44    -      -      -      bar    quer   ! scroll rolle
+13179  0      273    402    402    402    0      0      0      -      -39    -      -      -      bar    quer   ! scroll rolle
+13204  0      269    402    402    402    0      0      0      -      -35    -      -      -      bar    quer   ! scroll rolle
+13229  0      265    402    402    402    0      0      0      -      -31    -      -      -      bar    quer   ! scroll rolle
+13254  0      261    402    402    402    0      0      0      -      -27    -      -      -      bar    quer   ! scroll rolle
+13283  0      257    402    402    402    0      0      0      -      -23    -      -      -      bar    quer   ! scroll rolle
+13300  0      255    402    402    402    0      0      0      -      -21    -      -      -      bar    quer   ! scroll rolle
+13316  0      252    402    402    402    0      0      0      -      -18    -      -      -      bar    quer   ! scroll rolle
+13333  0      250    402    402    402    0      0      0      -      -16    -      -      -      bar    quer   ! scroll rolle
+13350  0      248    402    402    402    0      0      0      -      -14    -      -      -      bar    quer   ! scroll rolle
+13367  0      246    402    402    402    0      0      0      -      -12    -      -      -      bar    quer   ! scroll rolle
+13383  0      244    402    402    402    0      0      0      -      -10    -      -      -      bar    quer   ! scroll rolle
+13400  0      242    402    402    402    0      0      0      -      -8     -      -      -      bar    quer   ! scroll rolle
+13417  0      240    402    402    402    0      0      0      -      -6     -      -      -      bar    quer   ! scroll rolle
+13433  0      238    402    402    402    0      0      0      -      -4     -      -      -      bar    quer   ! scroll rolle
+13450  0      236    402    402    402    0      0      0      -      -2     -      -      -      bar    quer   ! scroll rolle
+13467  0      235    402    402    402    0      0      0      -      -1     -      -      -      bar    quer   ! scroll rolle
+13483  0      233    402    402    402    0      0      0      -      1      -      -      -      bar    quer   ! scroll rolle
+13500  0      231    402    402    402    0      0      0      -      3      -      -      -      bar    quer   ! scroll rolle
+13517  0      230    402    402    402    0      0      0      -      4      -      -      -      bar    quer   ! scroll rolle
+13533  0      228    402    402    402    0      0      0      -      6      -      -      -      bar    quer   ! scroll rolle
+13550  0      227    402    402    402    0      0      0      -      7      -      -      -      bar    quer   ! scroll rolle
+13566  0      226    402    402    402    0      0      0      -      8      -      -      -      bar    quer   ! scroll rolle
+13584  0      224    402    402    402    0      0      0      -      10     -      -      -      bar    quer   ! scroll rolle
+13600  0      223    402    402    402    0      0      0      -      11     -      -      -      bar    quer   ! scroll rolle
+13616  0      222    402    402    402    0      0      0      -      12     -      -      -      bar    quer   ! scroll rolle
+13633  0      220    402    402    402    0      0      0      -      14     -      -      -      bar    quer   ! scroll rolle
+13650  0      219    402    402    402    0      0      0      -      15     -      -      -      bar    quer   ! scroll rolle
+13679  0      218    402    402    402    0      0      0      -      16     -      -      -      bar    quer   ! scroll rolle
+13744  0      223    402    402    402    0      0      0      -      11     -      -      -      bar    quer   ! scroll rolle
+13759  0      228    402    402    402    0      0      0      -      6      -      -      -      bar    quer   ! scroll rolle
+13776  0      234    402    402    402    0      0      0      -      0      -      -      -      bar    quer   ! scroll rolle
+13794  0      240    402    402    402    0      0      0      -      -6     -      -      -      bar    quer   ! scroll rolle
+13809  0      247    402    402    402    0      0      0      -      -13    -      -      -      bar    quer   ! scroll rolle
+13826  0      255    402    402    402    0      0      0      -      -21    -      -      -      bar    quer   ! scroll rolle
+13843  0      262    402    402    402    0      0      0      -      -28    -      -      -      bar    quer   ! scroll rolle
+13860  0      269    402    402    402    0      0      0      -      -35    -      -      -      bar    quer   ! scroll rolle
+13876  0      275    402    402    402    0      0      0      -      -41    -      -      -      bar    quer   ! scroll rolle
+13894  0      279    402    402    402    0      0      0      -      -45    -      -      -      bar    quer   ! scroll rolle
+13938  0      280    402    402    402    0      0      0      -      -46    -      -      -      bar    quer   ! scroll rolle
+13956  0      273    402    402    402    0      0      0      -      -39    -      -      -      bar    quer   ! scroll rolle
+13963  0      268    402    402    402    0      0      0      -      -34    -      -      -      bar    quer   ! scroll rolle
+13981  0      256    402    402    402    0      0      0      -      -22    -      -      -      bar    quer   ! scroll rolle
+13997  0      244    402    402    402    0      0      0      -      -10    -      -      -      bar    quer   ! scroll rolle
+14014  0      232    402    402    402    0      0      0      -      2      -      -      -      bar    quer   ! scroll rolle
+14031  0      220    402    402    402    0      0      0      -      14     -      -      -      bar    quer   ! scroll rolle
+14047  0      209    402    402    402    0      0      0      -      25     -      -      -      bar    quer   ! scroll rolle
+14064  0      199    402    402    402    0      0      0      -      35     -      -      -      bar    quer   ! scroll rolle
+14081  0      192    402    402    402    0      0      0      -      42     -      -      -      bar    quer   ! scroll rolle
+14097  0      188    402    402    402    0      0      0      -      46     -      -      -      bar    quer   ! scroll rolle
+14156  0      189    402    402    402    0      0      0      -      45     -      -      -      bar    quer   ! scroll rolle
+14172  0      192    402    402    402    0      0      0      -      42     -      -      -      bar    quer   ! scroll rolle
+14189  0      194    402    402    402    0      0      0      -      40     -      -      -      bar    quer   ! scroll rolle
+14205  0      196    402    402    402    0      0      0      -      38     -      -      -      bar    quer   ! scroll rolle
+14222  0      197    402    402    402    0      0      0      -      37     -      -      -      bar    quer   ! scroll rolle
+14239  0      199    402    402    402    0      0      0      -      35     -      -      -      bar    quer   ! scroll rolle
+14255  0      200    402    402    402    0      0      0      -      34     -      -      -      bar    quer   ! scroll rolle
+14273  0      201    402    402    402    0      0      0      -      33     -      -      -      bar    quer   ! scroll rolle
+15052  0      201    402    402    402    0      0      0      -      33     -      -      -      bar    quer   ! nav kandidat phone
+15052  0      201    402    402    402    0      0      0      -      33     -      -      -      bar    quer   ! zeiger down 238 220 touch span.t in div.box.day[button] @pdays
+15097  0      201    402    402    402    0      0      0      -      33     -      -      -      bar    quer   ! zeiger up 238 220 touch span.t in div.box.day[button] @pdays
+15099  0      201    402    402    402    0      0      0      -      33     -      -      -      -      quer   ! blur bar
+15100  0      201    402    402    402    0      0      0      -      33     -      -      -      div    quer   ! focus div
+15101  0      201    402    402    402    0      0      0      -      33     -      -      -      div    quer   ! tippen -
+15105  0      201    402    402    402    0      0      0      -      33     -      -      -      dlgX   quer   ! blur div
+15118  0      201    402    402    402    0      0      0      -      33     -      -      -      dlgX   quer   ! focus dlgX
+15118  0      201    402    402    402    0      0      0      -      33     -      -      -      -      quer   ! blur dlgX
+15118  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! focus dlg
+16306  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! nav kein kandidat
+16306  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! zeiger down 228 321 touch suggest in dlg
+16347  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! zeiger move 230 313 touch suggest in dlg
+16347  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! touchmove frei
+16347  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! zeiger move 230 313 touch suggest in dlg
+16364  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! zeiger move 229 305 touch suggest in dlg
+16380  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! zeiger move 229 303 touch suggest in dlg
+16380  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! zeiger move 226 296 touch suggest in dlg
+16396  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! zeiger move 222 287 touch suggest in dlg
+16396  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! touchmove fest
+16398  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+16405  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! zeiger move 219 282 touch suggest in dlg
+16417  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! zeiger move 214 275 touch suggest in dlg
+16419  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+16425  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! zeiger move 211 268 touch suggest in dlg
+16434  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! zeiger move 207 262 touch suggest in dlg
+16442  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! zeiger move 203 256 touch suggest in dlg
+16445  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+16450  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! zeiger move 199 250 touch suggest in dlg
+16459  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! zeiger move 195 242 touch suggest in dlg
+16460  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+16467  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! zeiger move 192 236 touch suggest in dlg
+16476  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! zeiger up 190 234 touch suggest in dlg
+16478  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+16492  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+16508  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+16525  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+16542  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+16558  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+16575  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+16592  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+16608  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+16625  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+16642  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+16658  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+16675  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+16692  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+16708  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+16725  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+16742  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+16758  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+16775  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+16792  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+16808  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+16825  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+16842  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+16858  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+16875  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+16892  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+16908  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+16925  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+16942  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+16958  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+16983  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+17008  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+17033  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+17058  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+17083  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+17108  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+17133  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+17158  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+17183  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+17208  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+17233  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+17258  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+17283  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+17308  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+17325  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+17342  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+17358  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+17375  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+17392  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+17408  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+17425  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+17442  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+17458  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+17475  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+17492  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+17508  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+17525  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+17542  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+17558  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+17575  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+17592  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+17608  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+17625  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+17642  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+17658  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+17675  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+17692  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+17708  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+17725  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+17742  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+17758  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+17775  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+17792  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+17808  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+17825  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+17842  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+17858  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+17875  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+17892  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+17925  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+17942  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+17959  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+17992  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+18009  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+18042  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+18075  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+18109  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+18142  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+18175  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+18209  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+18242  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+18292  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+18342  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+18392  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+18442  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+18525  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+18592  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+20592  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! nav kein kandidat eigen
+20592  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! zeiger down 249 307 touch fComment
+20653  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! zeiger move 254 299 touch fComment
+20654  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! touchmove frei
+20654  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! zeiger move 254 299 touch fComment
+20668  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! zeiger move 254 289 touch fComment
+20684  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! zeiger move 251 272 touch fComment
+20701  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! zeiger move 245 249 touch fComment
+20701  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! touchmove fest
+20704  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+20709  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! zeiger move 243 237 touch fComment
+20722  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! zeiger move 240 227 touch fComment
+20724  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! zeiger up 238 225 touch fComment
+20725  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+20745  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+20755  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+20771  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+20788  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+20805  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+20822  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+20838  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+20855  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+20872  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+20888  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+20905  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+20922  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+20938  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+20955  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+20972  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+20988  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+21005  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+21022  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+21038  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+21055  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+21072  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+21088  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+21105  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+21122  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+21138  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+21156  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+21172  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+21188  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+21205  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+21222  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+21238  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+21255  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+21272  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+21288  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+21305  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+21322  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+21338  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! scroll div
+23282  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! nav kein kandidat eigen
+23282  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! zeiger down 542 282 touch fPlace
+23410  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! zeiger up 542 282 touch fPlace
+23412  0      201    402    402    402    0      0      0      -      33     -      -      -      -      quer   ! blur dlg
+23456  0      201    402    402    402    0      0      0      -      33     -      -      -      fPlace quer   ! neu fokussiert fPlace
+23457  0      201    402    402    402    0      0      0      -      33     -      -      -      fPlace quer   ! focus fPlace
+23458  0      201    402    402    402    0      0      0      -      33     -      -      -      fPlace quer   ! klick unterdrückt div (Feld fPlace)
+23458  0      201    402    402    402    0      0      0      -      33     -      -      -      fPlace quer   ! scroll div
+23565  0      201    402    402    126    0      0      0      -      33     -      -      -      fPlace quer   ! vv resize
+27897  0      201    402    402    126    0      0      0      -      33     -      -      -      fPlace quer   ! eingabe 1
+27922  0      201    402    402    126    0      0      0      -      33     -      -      -      fPlace quer   ! scroll div
+28189  0      201    402    402    126    0      0      0      -      33     -      -      -      fPlace quer   ! eingabe 2
+28193  0      201    402    402    126    0      0      0      -      33     -      -      -      fPlace quer   ! scroll div
+28488  0      201    402    402    126    0      0      0      -      33     -      -      -      fPlace quer   ! eingabe 3
+28494  0      201    402    402    126    0      0      0      -      33     -      -      -      fPlace quer   ! scroll div
+31457  0      201    402    402    126    0      0      0      -      33     -      -      -      fPlace quer   ! nav kein kandidat eigen
+31457  0      201    402    402    126    0      0      0      -      33     -      -      -      fPlace quer   ! zeiger down 116 125 touch fQuarter
+31596  0      201    402    402    126    0      0      0      -      33     -      -      -      fPlace quer   ! zeiger up 116 125 touch fQuarter
+31602  0      201    402    402    126    0      0      0      -      33     -      -      -      -      quer   ! blur fPlace
+31621  0      201    402    402    126    0      0      0      -      33     -      -      -      fQuarter quer   ! focus fQuarter
+31621  0      201    402    402    126    0      0      0      -      33     -      -      -      fQuarter quer   ! klick unterdrückt div (Feld fQuarter)
+31622  0      201    402    402    126    0      0      0      -      33     -      -      -      fQuarter quer   ! scroll div
+31711  167    201    402    235    126    167    0      -167   -      -134   -      -      -      fQuarter quer   ! scroll
+31711  167    201    402    235    126    167    0      -167   -      -134   -      -      -      fQuarter quer   ! vv scroll
+31714  167    201    402    235    126    167    167    0      -      33     -      -      -      fQuarter quer
+39178  167    201    402    235    126    167    167    0      -      33     -      -      -      -      quer   ! blur fQuarter
+39316  0      201    402    402    402    0      167    167    -      200    -      -      -      -      quer   ! vv resize
+39322  0      201    402    402    402    0      0      0      -      33     -      -      -      -      quer   ! scroll
+39322  0      201    402    402    402    0      0      0      -      33     -      -      -      -      quer   ! vv scroll
+46935  0      201    402    402    402    0      0      0      -      33     -      -      -      -      quer   ! nav kein kandidat eigen
+46935  0      201    402    402    402    0      0      0      -      33     -      -      -      -      quer   ! zeiger down 66 22 touch dlgX
+46944  0      201    402    402    402    0      0      0      -      33     -      -      -      -      quer   ! zeiger move 66 22 touch dlgX
+46944  0      201    402    402    402    0      0      0      -      33     -      -      -      -      quer   ! touchmove frei
+46944  0      201    402    402    402    0      0      0      -      33     -      -      -      -      quer   ! zeiger move 66 22 touch dlgX
+47094  0      201    402    402    402    0      0      0      -      33     -      -      -      -      quer   ! zeiger up 66 22 touch dlgX
+47095  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! focus dlg
+47096  0      201    402    402    402    0      0      0      -      33     -      -      -      dlg    quer   ! tippen dlgX
+47103  0      201    402    402    402    0      0      0      -      33     -      -      -      -      quer   ! blur dlg
+47103  0      201    402    402    402    0      0      0      -      33     -      -      -      div    quer   ! focus div
+47143  0      201    402    402    402    0      0      0      -      33     -      -      -      div    quer   ! scroll div
+49917  0      201    402    402    402    0      0      0      -      33     -      -      -      div    quer   ! nav kein kandidat eigen
+49917  0      201    402    402    402    0      0      0      -      33     -      -      -      div    quer   ! zeiger down 144 116 touch button.danger @dlg
+49928  0      201    402    402    402    0      0      0      -      33     -      -      -      div    quer   ! zeiger move 144 116 touch button.danger @dlg
+49928  0      201    402    402    402    0      0      0      -      33     -      -      -      div    quer   ! touchmove frei
+49928  0      201    402    402    402    0      0      0      -      33     -      -      -      div    quer   ! zeiger move 144 116 touch button.danger @dlg
+50061  0      201    402    402    402    0      0      0      -      33     -      -      -      div    quer   ! zeiger up 144 116 touch button.danger @dlg
+50062  0      201    402    402    402    0      0      0      -      33     -      -      -      div    quer   ! tippen button
+50067  0      201    402    402    402    0      0      0      -      33     -      -      -      dlgX   quer   ! focus dlgX
+50079  0      201    402    402    402    0      0      0      -      33     -      -      -      -      quer   ! blur dlgX
+50080  0      201    402    402    402    0      0      0      -      33     -      -      -      div    quer   ! focus div
+50085  0      201    402    402    402    0      0      0      -      33     -      -      -      div    quer   ! neuaufbau app
+50091  0      201    402    402    402    0      0      0      -      33     -      -      -      -      quer   ! scroll div
+52999  0      201    402    402    402    0      0      0      -      33     -      -      -      -      quer   ! nav kein kandidat eigen
+53000  0      201    402    402    402    0      0      0      -      33     -      -      -      -      quer   ! zeiger down 773 30 touch mainMore
+53004  0      201    402    402    402    0      0      0      -      33     -      -      -      -      quer   ! zeiger move 773 30 touch mainMore
+53005  0      201    402    402    402    0      0      0      -      33     -      -      -      -      quer   ! touchmove frei
+53005  0      201    402    402    402    0      0      0      -      33     -      -      -      -      quer   ! zeiger move 773 30 touch mainMore
+53111  0      201    402    402    402    0      0      0      -      33     -      -      -      -      quer   ! zeiger up 773 30 touch mainMore
+53114  0      201    402    402    402    0      0      0      -      33     -      -      -      -      quer   ! tippen mainMore
+53118  0      201    402    402    402    0      0      0      -      33     -      -      -      button quer   ! focus button
+67685  0      201    402    402    402    0      0      0      -      33     -      -      -      button quer   ! nav kein kandidat
+67685  0      201    402    402    402    0      0      0      -      33     -      -      -      button quer   ! zeiger down 77 23 touch div.layer
+67693  0      201    402    402    402    0      0      0      -      33     -      -      -      button quer   ! zeiger move 77 23 touch div.layer
+67693  0      201    402    402    402    0      0      0      -      33     -      -      -      button quer   ! touchmove frei
+67694  0      201    402    402    402    0      0      0      -      33     -      -      -      button quer   ! zeiger move 77 23 touch div.layer
+67780  0      201    402    402    402    0      0      0      -      33     -      -      -      button quer   ! zeiger up 77 23 touch div.layer
+69237  0      201    402    402    402    0      0      0      -      33     -      -      -      button quer   ! nav kein kandidat
+69237  0      201    402    402    402    0      0      0      -      33     -      -      -      button quer   ! zeiger down 235 36 touch div.layer
+69244  0      201    402    402    402    0      0      0      -      33     -      -      -      button quer   ! zeiger move 235 36 touch div.layer
+69244  0      201    402    402    402    0      0      0      -      33     -      -      -      button quer   ! touchmove frei
+69244  0      201    402    402    402    0      0      0      -      33     -      -      -      button quer   ! zeiger move 235 36 touch div.layer
+69297  0      201    402    402    402    0      0      0      -      33     -      -      -      button quer   ! zeiger up 235 36 touch div.layer
+70052  0      201    402    402    402    0      0      0      -      33     -      -      -      button quer   ! nav kein kandidat
+70053  0      201    402    402    402    0      0      0      -      33     -      -      -      button quer   ! zeiger down 288 76 touch div.layer
+70065  0      201    402    402    402    0      0      0      -      33     -      -      -      button quer   ! zeiger move 288 76 touch div.layer
+70065  0      201    402    402    402    0      0      0      -      33     -      -      -      button quer   ! touchmove frei
+70065  0      201    402    402    402    0      0      0      -      33     -      -      -      button quer   ! zeiger move 288 76 touch div.layer
+70097  0      201    402    402    402    0      0      0      -      33     -      -      -      button quer   ! zeiger up 288 76 touch div.layer
+70236  0      201    402    402    402    0      0      0      -      33     -      -      -      button quer   ! nav kein kandidat
+70236  0      201    402    402    402    0      0      0      -      33     -      -      -      button quer   ! zeiger down 271 74 touch div.layer
+70248  0      201    402    402    402    0      0      0      -      33     -      -      -      button quer   ! zeiger move 271 74 touch div.layer
+70248  0      201    402    402    402    0      0      0      -      33     -      -      -      button quer   ! touchmove frei
+70248  0      201    402    402    402    0      0      0      -      33     -      -      -      button quer   ! zeiger move 271 74 touch div.layer
+70316  0      201    402    402    402    0      0      0      -      33     -      -      -      button quer   ! zeiger up 271 74 touch div.layer
+70853  0      201    402    402    402    0      0      0      -      33     -      -      -      button quer   ! nav kein kandidat
+70853  0      201    402    402    402    0      0      0      -      33     -      -      -      button quer   ! zeiger down 263 77 touch div.layer
+70865  0      201    402    402    402    0      0      0      -      33     -      -      -      button quer   ! zeiger move 263 77 touch div.layer
+70865  0      201    402    402    402    0      0      0      -      33     -      -      -      button quer   ! touchmove frei
+70865  0      201    402    402    402    0      0      0      -      33     -      -      -      button quer   ! zeiger move 263 77 touch div.layer
+70932  0      201    402    402    402    0      0      0      -      33     -      -      -      button quer   ! zeiger up 263 77 touch div.layer
+71769  0      201    402    402    402    0      0      0      -      33     -      -      -      button quer   ! nav kein kandidat
+71769  0      201    402    402    402    0      0      0      -      33     -      -      -      button quer   ! zeiger down 397 110 touch div.layer
+71782  0      201    402    402    402    0      0      0      -      33     -      -      -      button quer   ! zeiger move 397 110 touch div.layer
+71782  0      201    402    402    402    0      0      0      -      33     -      -      -      button quer   ! touchmove frei
+71782  0      201    402    402    402    0      0      0      -      33     -      -      -      button quer   ! zeiger move 397 110 touch div.layer
+71864  0      201    402    402    402    0      0      0      -      33     -      -      -      button quer   ! zeiger up 397 110 touch div.layer
+72770  0      201    402    402    402    0      0      0      -      33     -      -      -      button quer   ! nav kein kandidat
+72770  0      201    402    402    402    0      0      0      -      33     -      -      -      button quer   ! zeiger down 402 174 touch div.layer
+72866  0      201    402    402    402    0      0      0      -      33     -      -      -      button quer   ! zeiger up 402 174 touch div.layer
+72901  0      201    402    402    402    0      0      0      -      33     -      -      -      -      quer   ! blur button
+72901  0      201    402    402    402    0      0      0      -      33     -      -      -      -      quer   ! tippen -
+72905  0      201    402    402    402    0      0      0      -      33     -      -      -      mainMore quer   ! focus mainMore
+73787  0      201    402    402    402    0      0      0      -      33     -      -      -      mainMore quer   ! nav kein kandidat eigen
+73787  0      201    402    402    402    0      0      0      -      33     -      -      -      mainMore quer   ! zeiger down 85 26 touch back
+73794  0      201    402    402    402    0      0      0      -      33     -      -      -      mainMore quer   ! zeiger move 85 26 touch back
+73794  0      201    402    402    402    0      0      0      -      33     -      -      -      mainMore quer   ! touchmove frei
+73794  0      201    402    402    402    0      0      0      -      33     -      -      -      mainMore quer   ! zeiger move 85 26 touch back
+73866  0      201    402    402    402    0      0      0      -      33     -      -      -      mainMore quer   ! zeiger up 85 26 touch back
+73868  0      201    402    402    402    0      0      0      -      33     -      -      -      -      quer   ! blur mainMore
+73868  0      201    402    402    402    0      0      0      -      33     -      -      -      -      quer   ! tippen back
+73870  0      201    402    402    402    0      0      0      -      33     0      -      150    -      quer   ! neuaufbau side
+73881  0      201    402    402    402    0      0      0      -      33     0      -      150    -      quer   ! scroll div
+74234  0      -      402    402    402    0      0      -      -      -      0      -      150    -      quer   ! neuaufbau side
+74243  0      -      402    402    402    0      0      -      -      -      0      -      150    button quer   ! focus button
+74280  0      -      402    402    402    0      0      -      -      -      0      -      150    button quer   ! scroll div
+75488  0      -      402    402    402    0      0      -      -      -      0      -      150    button quer   ! nav kein kandidat eigen
+75491  0      -      402    402    402    0      0      -      -      -      0      -      150    button quer   ! zeiger down 788 38 touch svg.ic in sideMore
+75497  0      -      402    402    402    0      0      -      -      -      0      -      150    button quer   ! zeiger move 788 38 touch svg.ic in sideMore
+75497  0      -      402    402    402    0      0      -      -      -      0      -      150    button quer   ! touchmove frei
+75497  0      -      402    402    402    0      0      -      -      -      0      -      150    button quer   ! zeiger move 788 38 touch svg.ic in sideMore
+75599  0      -      402    402    402    0      0      -      -      -      0      -      150    button quer   ! zeiger up 788 38 touch svg.ic in sideMore
+75602  0      -      402    402    402    0      0      -      -      -      0      -      150    -      quer   ! blur button
+75602  0      -      402    402    402    0      0      -      -      -      0      -      150    -      quer   ! tippen sideMore
+75626  0      -      402    402    402    0      0      -      -      -      0      -      150    button quer   ! focus button
+77472  0      -      402    402    402    0      0      -      -      -      0      -      150    button quer   ! nav kein kandidat eigen
+77472  0      -      402    402    402    0      0      -      -      -      0      -      150    button quer   ! zeiger down 590 235 touch button.mi.has-sub[menuitem]
+77583  0      -      402    402    402    0      0      -      -      -      0      -      150    button quer   ! zeiger up 590 235 touch button.mi.has-sub[menuitem]
+77588  0      -      402    402    402    0      0      -      -      -      0      -      150    -      quer   ! blur button
+77588  0      -      402    402    402    0      0      -      -      -      0      -      150    -      quer   ! tippen button
+77590  0      -      402    402    402    0      0      -      -      -      0      -      150    sideMore quer   ! focus sideMore
+# Ende nach 78 s

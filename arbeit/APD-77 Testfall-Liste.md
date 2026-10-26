@@ -66,6 +66,22 @@ App-Prüfungen, die heute ‚Messung starten‘ im Menü erwarten, werden angepa
   Blatts quer gibt es nicht. **Vorschlag (0 Nr. 20):** zuerst eine Messung am Gerät (iPhone quer, Tag öffnen, ‚Ort‘, ‚Quartier‘,
   Tastatur zu), dann das Modell danach ausrichten und die Messung in `tests/messungen/` aufnehmen.
 
+- **Messung am Gerät (26.10.2026, 08:57, iPhone quer, Blatt, Reiselogbuch 3.35.0 · AppDesign 4.37.0)** – abgelegt als
+  `arbeit/RLB-103 Messung 2026-10-26 iPhone quer Blatt Ort Quartier.txt`, kommt beim Bau nach `tests/messungen/`:
+  - **‚Ort‘ antippen** (Zeile 520 ff.): Tastatur auf (sichtbare Höhe 402 → 126), Safari **verschiebt nichts** (offsetTop 0, scrollY 0) –
+    das Modell schiebt quer um 21 px (`fokusSchub`) und mit `zumFeld` → Kopf −31 px. **Modell:** im Blatt (Feld über der Tastatur) kein Schub.
+  - **zu ‚Quartier‘ wechseln** (Zeile 532 ff.): das Feld lag unter der Tastatur (Antippen bei y = 125, Tastatur ab 126); Safari
+    verschiebt um 167 px und **meldet es im selben Augenblick** (‚scroll‘ und ‚vv scroll‘ bei 31711 ms); 3 ms später steht der Kopf
+    wieder bei 0 – kein Bild dazwischen. Das Modell meldet 2 Bilder später → Kopf 1–2 Bilder falsch. **Modell:** Meldung im selben Bild.
+  - **Tastatur zu** (Zeile 541 ff.): ‚vv resize‘ (Höhe 402, offsetTop noch 167), 6 ms später ‚scroll‘ und ‚vv scroll‘ (0) – kein Bild
+    dazwischen, nichts springt sichtbar. **Modell:** ebenso im selben Bild.
+  - Die Messung endet ohne ‚tippen sideMore‘ + ‚tippen button‘ (der Nutzer beendete sie über ‚…‘, die Zeile davor ist ‚focus sideMore‘):
+    die Erkennung des Endes darf sich nicht darauf verlassen – sie schneidet nur ab, was da ist; ab 4.38.0 eindeutig mit
+    ‚! messung beendet‘.
+  - **Folge:** Das Springen in der Prüfung ist eine Abweichung des Modells (Nutzer: am Gerät steht alles still). Änderung in
+    `safari.mjs` nach dieser Messung; die früheren Annahmen (‚2 Bilder später‘, Schub 21 px) gelten nur noch, wo eine Messung sie
+    zeigt (19.10., Fenster vor dem Blatt) – beim Bau prüfen, dass `ablauf-abspielen` und die übrigen Abläufe grün bleiben.
+
 ## 4. RLB-103 – Testfälle (automatisch)
 
 | Nr. | Fall | Erwartet |
@@ -75,6 +91,8 @@ App-Prüfungen, die heute ‚Messung starten‘ im Menü erwarten, werden angepa
 | F-13 | dasselbe mitten in der Messung (Menü öffnen, Backup erstellen, weiter) | wird nachgespielt (nur das Ende fällt weg) |
 | F-14 | Messung mit ‚! messung beendet‘ | Ende genau dort |
 | F-15 | Gegenprobe: Erkennung ausgeschaltet | F-11 rot (wie heute) |
+| F-17 | neue Messung 26.10. nachspielen (Safari meldet wie gemessen) | Kopf und Fensterkopf in jedem Bild still, Felder wie gemessen |
+| F-18 | Modell ohne die Messung: iPhone quer, Blatt, ‚Ort‘ → ‚Quartier‘ → Tastatur zu (hell und dunkel) | kein Springen, Feld ganz über der Tastatur |
 | F-16 | `node tests/alle.mjs` | `ablauf-tastatur-still` steht in der Liste und läuft im vollen Lauf mit |
 
 ## 5. Testfälle (User) – Vorschlag für den Usertest
