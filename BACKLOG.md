@@ -11,9 +11,9 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Prio | Thema | bereit seit |
 |---|---|---|---|
-| APD-81 | 3 | **ⓧ auch in mehrzeiligen Feldern (Rückmeldung P-73/1, geklärt mit dem Nutzer 26.10.2026, Sitzung 0050 – `arbeit/APD-81 Klärung.md`):** APD-81/F-1 oben rechts auf Höhe der ersten Zeile, der Text läuft rechts in allen Zeilen nicht darunter · F-2 eine Zeile leert sofort, bei mehr als einer Zeile zuerst die Sprechblase ‚Text löschen?‘ mit ‚Löschen‘ (rot) und ‚Abbrechen‘ (R-4.3) · F-3 alle mehrzeiligen Textfelder, je Feld abschaltbar (`data-noclear`) · F-4 allgemeine Regel: R-5.6 für ein- und mehrzeilige Felder, `checkClear` erweitert, bewusste Abweichung von Apple (UITextView ohne ⓧ) in 16. Vor dem Bau messen, ob Leeren über die Bearbeiten-Befehle die Undo-Taste der iPad-Tastatur erhält (Vermutung). Testfall-Liste mit dem Bau | 26.10.2026 |
+| APD-81 | 3 | **ⓧ auch in mehrzeiligen Feldern (Rückmeldung P-73/1, geklärt mit dem Nutzer 26.10.2026, Sitzung 0050 – `arbeit/APD-81 Klärung.md`):** APD-81/F-1 oben rechts auf Höhe der ersten Zeile, der Text läuft rechts in allen Zeilen nicht darunter · F-2 eine Zeile leert sofort, bei mehr als einer Zeile zuerst die Sprechblase ‚Text löschen?‘ mit ‚Löschen‘ (rot) und ‚Abbrechen‘ (R-4.3) · F-3 alle mehrzeiligen Textfelder, je Feld abschaltbar (`data-noclear`) · F-4 allgemeine Regel: R-5.6 für ein- und mehrzeilige Felder, `checkClear` erweitert, bewusste Abweichung von Apple (UITextView ohne ⓧ) in 16. **Gemessen am iPad (29.10.2026, Sitzung 0053, APD-81/M-1 bis M-4):** über den Bearbeiten-Befehl geleert, holen Undo-Taste und drei Finger den Text zurück, über den Wert nicht → **F-2 a bleibt, dazu leert das ⓧ über den Bearbeiten-Befehl; F-5 auch in einzeiligen Feldern** (Nutzer 29.10.2026). Testfall-Liste `arbeit/APD-81 Testfall-Liste.md` | 29.10.2026 |
 
-1 Punkt bereit (APD-81) – vor dem Bau die Messung am iPad (Undo-Taste nach dem Leeren), dann fragen; die Usertests P-77 und P-78 sind erledigt (29.10.2026).
+1 Punkt bereit (APD-81) – Messung erledigt, Testfall-Liste fertig; Version 4.41.0 erst nach deinem Ja.
 
 
 ## 1. Auf iPad und iPhone prüfen

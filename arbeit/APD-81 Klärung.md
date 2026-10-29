@@ -55,3 +55,13 @@ Messdatei `arbeit/APD-81 Messung 2026-10-29 iPad hoch Safari.txt` (iPad hoch, Sa
 - Der Fokus bleibt in allen Fällen, die Tastatur bleibt offen (`vv` 274 bis zum Antippen von ‚Fall fertig‘).
 - **Vermutung bestätigt (iPad, Safari):** über den Bearbeiten-Befehl geleert, ist das ⓧ mit der Undo-Taste und drei Fingern rückgängig zu
   machen. Nicht gemessen: App vom Home-Bildschirm, iPhone (dort Schütteln statt Undo-Taste).
+
+## Entschieden nach der Messung (Nutzer 29.10.2026, Sitzung 0053)
+
+- **F-2 bleibt a** (eine Zeile sofort, mehr als eine Zeile Sprechblase ‚Text löschen?‘) – **dazu** leert das ⓧ über den Bearbeiten-Befehl
+  (Text auswählen, `execCommand('delete')`), damit die Undo-Taste und drei Finger den Text zurückholen (M-2, M-3). Sicher, weil iPhone
+  und Home-Bildschirm nicht gemessen sind.
+- **F-5 (neu) einzeilige Felder:** auch das ⓧ der einzeiligen Felder (R-5.6) leert über den Bearbeiten-Befehl – heute holt die
+  Undo-Taste dort nichts zurück (M-1). Ein Verhalten für alle Felder. Ist der Befehl nicht verfügbar (`execCommand` liefert false),
+  leert es wie bisher über den Wert.
+- Testfall-Liste: `arbeit/APD-81 Testfall-Liste.md`.
