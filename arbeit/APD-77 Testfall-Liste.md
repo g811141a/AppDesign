@@ -38,6 +38,11 @@ Gegenprobe: `--gegenprobe` mit dem alten Menü (Punkt ständig da) → F-1 rot; 
 App-Prüfungen, die heute ‚Messung starten‘ im Menü erwarten, werden angepasst: `ablauf-gesamt.mjs` (Menü ohne den Punkt),
 `ablauf-messung.mjs` (erst freischalten, dann starten). Die Prüfungen, die `messStart()` direkt rufen, bleiben.
 
+**Gebaut 29.10.2026 (AppDesign 4.40.0, Reiselogbuch 3.38.0, Sitzung 0052):** wie oben; langes Drücken ist das gemeinsame von R-3.5
+(`onLongPress`, 0,6 s statt ‚etwa 0,5 s‘ – überall gleich lang), die Prüfung drückt 0,9 s. Die Freischaltung ist `messFrei` in ui.js;
+`messungMenuItems` liefert bis dahin einen Platzhalter `{ messPlatz }` (das Menü merkt sich so die Angaben der App); ein Abstand ohne
+Eintrag danach entfällt im Menü (`menuHtml`). Gegenprobe: `messFrei` von Anfang an an → F-1, F-2, F-4 rot.
+
 ## 3. RLB-103 – Ursache und Änderung
 
 - **Ursache (nachgestellt 26.10.2026):** `ablauf-tastatur-still` spielt alle Messungen aus `tests/messungen/` nach. Jede Messung endet

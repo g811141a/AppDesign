@@ -360,13 +360,21 @@ const found = new Map(), icons = new Map();
       // R-5.4 (seit 4.12.0): Auswahl-Kapsel – wischbar mit Verlauf am Rand; die Markierung ändert die Breite nicht.
       // Seit 4.33.0 (APD-75 K1–K5, K8, K15): im freien Rand ein kleiner Pfeil (chevron, 14 px, --muted, 9 px vom Rand, nur Anzeige,
       // aria-hidden) genau dann, wenn es auf seiner Seite weitergeht – passt alles, weder Verlauf noch Pfeil.
-      document.querySelectorAll('.cap .scroll').forEach(s => { if (!vis(s) || !onTop(s)) return;
+      // Seit 4.40.0 (APD-86, Testfall-Liste arbeit/APD-86 Testfall-Liste.md W10, W11): ebenso die Wischzeile .weiter (eine Zeile Text), und
+      // jeder andere sichtbare Bereich bis etwa zwei Zeilen Höhe, der seitlich überläuft und wischt, ist ein Fehler – er zeigt nicht, wo es
+      // weitergeht. Flächen (Vorschau, Tabellen) sind höher und bleiben frei; sie zeigen ihren Rand selbst.
+      const wisch = [...document.querySelectorAll('.cap .scroll, .weiter > .scroll')];
+      document.querySelectorAll('body *').forEach(e => { if (wisch.includes(e) || !/auto|scroll/.test(cs(e).overflowX) || e.scrollWidth <= e.clientWidth + 2) return;
+        if (!vis(e) || !onTop(e) || e.clientHeight > 2.5 * (parseFloat(cs(e).lineHeight) || 1.3 * parseFloat(cs(e).fontSize)) || e.matches('input, textarea, select')) return;
+        R('R-5.4', `seitlich wischbar ohne Verlauf und Pfeil am Rand (${e.tagName.toLowerCase()}${e.id ? '#' + e.id : ''}${e.classList[0] ? '.' + e.classList[0] : ''}: ‚${label(e)}‘) – Wischzeile .weiter bzw. Auswahl-Kapsel verwenden`); });
+      wisch.forEach(s => { if (!vis(s) || !onTop(s)) return;
+        const name = s.closest('.cap') ? 'Auswahl-Kapsel' : 'Wischzeile';
         const more = s.scrollLeft + s.clientWidth < s.scrollWidth - 2, mask = (cs(s).maskImage || cs(s).webkitMaskImage || 'none');
-        if (more && mask === 'none') R('R-5.4', 'Auswahl-Kapsel geht rechts weiter, aber ohne Verlauf am Rand');
+        if (more && mask === 'none') R('R-5.4', `${name} geht rechts weiter, aber ohne Verlauf am Rand`);
         const cap = s.parentElement, kr = cap.getBoundingClientRect(), weiter = { l: s.scrollLeft > 2, r: more };
-        if (!weiter.l && !weiter.r && mask !== 'none') R('R-5.4', 'Auswahl-Kapsel passt ganz, hat aber einen Verlauf am Rand');
+        if (!weiter.l && !weiter.r && mask !== 'none') R('R-5.4', `${name} passt ganz, hat aber einen Verlauf am Rand`);
         for (const seite of ['l', 'r']) { const f = cap.querySelector(`:scope > .pf.${seite}`), wo = seite === 'l' ? 'links' : 'rechts';
-          if (!f) { R('R-5.4', `Auswahl-Kapsel ohne Pfeil ${wo}`); continue; }
+          if (!f) { R('R-5.4', `${name} ohne Pfeil ${wo}`); continue; }
           if (f.classList.contains('an') !== weiter[seite]) R('R-5.4', `Pfeil ${wo} ${weiter[seite] ? 'fehlt, obwohl es weitergeht' : 'steht, obwohl dort das Ende erreicht ist'}`);
           const fr = f.getBoundingClientRect(), rand = seite === 'l' ? fr.left - kr.left : kr.right - fr.right;
           if (Math.abs(fr.width - 14) > 0.5 || Math.abs(rand - 9) > 1 || Math.abs((fr.top + fr.bottom) / 2 - (kr.top + kr.bottom) / 2) > 1) R('R-5.4', `Pfeil ${wo} nicht 14 px groß, 9 px vom Rand, mittig (${Math.round(fr.width)} px, Rand ${Math.round(rand)} px)`);

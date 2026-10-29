@@ -608,7 +608,8 @@ export async function checkSearchPlace(p, { search = 'button[aria-label="Suchen"
   return errors;
 }
 
-// R-1.6 Messmodus (seit 4.26.0, APD-27, Testfall-Liste arbeit/APD-27 Testfall-Liste.md F1–F12): Start und Ende im Mehr-Menü der Seitenleiste,
+// R-1.6 Messmodus (seit 4.26.0, APD-27, Testfall-Liste arbeit/APD-27 Testfall-Liste.md F1–F12): Start und Ende im Mehr-Menü der Seitenleiste
+// (seit 4.40.0, APD-77: ‚Messung starten‘ erst nach langem Drücken auf die graue Versionszeile, bis zum Neuladen),
 // eine Zeile je Bild nur bei Änderung, Ereignisse, keine Texte, Grenze, Datei, neu laden verwirft. menu: öffnet das Mehr-Menü;
 // search: öffnet die Suche und gibt den Selektor des Suchfelds zurück; secret: Texte, die nie in der Datei stehen dürfen.
 export async function checkMessung(p, { menu, search, secret = [], where = '' } = {}) {
@@ -621,7 +622,37 @@ export async function checkMessung(p, { menu, search, secret = [], where = '' } 
   if (await p.evaluate(() => mess !== null)) E('Messung läuft, ohne gestartet zu sein');
   const bar = () => p.evaluate(() => [...document.querySelectorAll('#bar, .side-head, .nb2')].filter(e => e.getClientRects().length).map(e => Math.round(e.getBoundingClientRect().top)).join(','));
   const vorher = await bar();
-  // F2: starten
+  // APD-77 (seit 4.40.0, Testfall-Liste arbeit/APD-77 Testfall-Liste.md F-1 bis F-6, F-8, F-9): ‚Messung starten‘ ist versteckt, bis langes
+  // Drücken auf die graue Versionszeile ihn freischaltet – das Menü bleibt offen; kurz tippen bzw. dabei wegziehen schaltet nicht frei.
+  if (await p.evaluate(() => messFrei)) E('F-1: Messmodus ist schon freigeschaltet, ohne dass jemand lange gedrückt hat');
+  await menu(); await wait(p, 200);
+  const menue = () => p.evaluate(() => { const m = document.querySelector('.menu'); if (!m) return null; const r = m.getBoundingClientRect();
+    return { mess: [...m.querySelectorAll('.mi')].some(e => /Messung/.test(e.textContent)), doppelt: [...m.querySelectorAll('.sep, .line')].some(e => /\b(sep|line)\b/.test(e.nextElementSibling?.className || '') || !e.nextElementSibling),
+      ganz: r.top >= -1 && r.left >= -1 && r.bottom <= innerHeight + 1 && r.right <= innerWidth + 1 }; });
+  const druecke = async (ms, weg = 0) => { const b = await p.locator('.menu .note.halten').first().boundingBox(); const x = b.x + b.width / 2, y = b.y + b.height / 2;
+    await p.mouse.move(x, y); await p.mouse.down(); await wait(p, 150); if (weg) await p.mouse.move(x + weg, y, { steps: 4 }); await wait(p, Math.max(0, ms - 150)); await p.mouse.up(); await wait(p, 300); };
+  const m0 = await menue();
+  if (!m0) { E('F-1: Mehr-Menü öffnet sich nicht'); return errors; }
+  if (m0.mess) E('F-1: Mehr-Menü zeigt ‚Messung …‘, ohne dass die Versionszeile lange gedrückt wurde');
+  if (m0.doppelt) E('F-1: Mehr-Menü mit doppeltem Abstand bzw. Strich (oder Strich am Ende) an der Stelle der Messung');
+  if (!await p.locator('.menu .note.halten').count()) { E('F-1: graue Versionszeile reagiert nicht auf langes Drücken ({ note, halten })'); await close(); return errors; }
+  // F-9: langes Drücken wählt keinen Text aus und zeigt kein Safari-Menü
+  const css = await p.evaluate(() => { const s = getComputedStyle(document.querySelector('.menu .note.halten')); return { sel: s.userSelect || s.webkitUserSelect, callout: s.webkitTouchCallout ?? 'none' }; });
+  if (css.sel !== 'none' || css.callout !== 'none') E(`F-9: Versionszeile lässt Textauswahl bzw. Safari-Menü zu (user-select ${css.sel}, touch-callout ${css.callout})`);
+  await druecke(100);
+  let m = await menue();
+  if (!m) { E('F-2: kurzes Tippen auf die Versionszeile schließt das Menü'); await menu(); await wait(p, 200); }
+  else if (m.mess) E('F-2: kurzes Tippen auf die Versionszeile schaltet den Messmodus frei');
+  await druecke(900, 20);
+  if ((await menue())?.mess) E('F-4: Drücken und dabei 20 px wegziehen schaltet den Messmodus frei (Bewegen bricht langes Drücken ab, R-3.5)');
+  await druecke(900);
+  m = await menue();
+  if (!m) { E('F-3: langes Drücken auf die Versionszeile schließt das Menü'); return errors; }
+  if (!m.mess) { E('F-3: nach langem Drücken auf die Versionszeile kein ‚Messung starten‘'); await close(); return errors; }
+  if (!m.ganz) E('F-3: Menü nach dem Freischalten nicht ganz sichtbar (R-8.1)');
+  if (await p.evaluate(() => getSelection().toString())) E(`F-9: langes Drücken hat Text ausgewählt (‚${await p.evaluate(() => getSelection().toString())}‘)`);
+  await close();
+  // F2: starten (F-5: nach Schließen und neu Öffnen weiter da)
   const l0 = await label();
   if (!/^Messung starten \| Für Claude: Bewegungen aufzeichnen$/.test(l0)) { E(`Mehr-Menü ohne ‚Messung starten‘ mit grauer Zeile (‚${l0}‘)`); await close(); return errors; }
   if (!await item().locator('svg').count()) E('‚Messung starten‘ ohne Icon (R-4.1)');
@@ -665,6 +696,12 @@ export async function checkMessung(p, { menu, search, secret = [], where = '' } 
   if (!/Grenze erreicht/.test(await p.evaluate(() => mess.zeilen.at(-1)))) E('Ende der Messung ohne Zeile ‚Grenze erreicht‘');
   const l2 = await label();
   if (!/^Messung beenden und teilen \| beendet · /.test(l2)) E(`Mehr-Menü nach der Grenze nicht ‚beendet‘ (‚${l2}‘)`);
+  await close();
+  // F-8 (APD-77): eine Messung, die noch nicht geteilt ist, steht auch ohne Freischaltung da
+  await p.evaluate(() => { messFrei = false; });
+  const l3 = await label();
+  if (!/^Messung beenden und teilen \| beendet · /.test(l3)) E(`F-8: ohne Freischaltung fehlt ‚Messung beenden und teilen‘ einer noch nicht geteilten Messung (‚${l3}‘)`);
+  await p.evaluate(() => { messFrei = true; });
   // F8/F9: beenden und teilen – Datei messung-JJJJ-MM-TT-hhmm.txt (geladen, wo es kein Teilen-Menü gibt)
   await p.evaluate(() => { window.__mess = []; const orig = shareFiles; shareFiles = files => { window.__mess.push(...files); return orig(files); }; });
   const [dl] = await Promise.all([p.waitForEvent('download', { timeout: 5000 }).catch(() => null), item().click()]);
@@ -681,6 +718,10 @@ export async function checkMessung(p, { menu, search, secret = [], where = '' } 
   await menu(); await wait(p, 200); await item().click(); await wait(p, 200);
   await p.reload(); await wait(p, 400);
   if (await p.evaluate(() => mess !== null)) E('nach dem Neuladen läuft noch eine Messung');
+  // F-6 (APD-77): neu laden versteckt ‚Messung starten‘ wieder
+  await menu(); await wait(p, 200);
+  if ((await menue())?.mess) E('F-6: nach dem Neuladen steht ‚Messung starten‘ noch im Mehr-Menü');
+  await close();
   await rolle(p, 0);
   return errors;
 }
@@ -1968,7 +2009,8 @@ export async function checkLangDruecken(p, { sel, frage = '.pop, .menu', where =
   return errors;
 }
 
-// R-5.4 (seit 4.33.0, APD-75; Testfall-Liste arbeit/APD-75 Testfall-Liste.md K1–K3, K6, K7, K9, K10, K12): Auswahl-Kapsel mit Pfeilen am Rand –
+// R-5.4 (seit 4.33.0, APD-75; Testfall-Liste arbeit/APD-75 Testfall-Liste.md K1–K3, K6, K7, K9, K10, K12): Auswahl-Kapsel mit Pfeilen am Rand,
+// seit 4.40.0 (APD-86) ebenso die Wischzeile .weiter (sel: ihre .scroll) –
 // am Anfang nur ›, in der Mitte beide, am Ende nur ‹ (und zurück am Anfang wieder nur ›); ein Pfeil blendet in 0,2 s aus (‚Bewegung
 // reduzieren‘: sofort); Antippen unter dem Pfeil wählt den Eintrag darunter (der Pfeil fängt nichts ab), Wählen ändert weder Breite
 // noch Pfeile; Drehen bzw. ein schmaleres Fenster stellt Verlauf und Pfeile neu, der Rollstand bleibt. sel: die Rollfläche (.cap .scroll);
@@ -1995,9 +2037,10 @@ export async function checkKapsel(p, { sel, drehen = false, schmaler = null, whe
     soll('K3 zurück am Anfang', await rolle(0), false, true);
     // K9 + K10: Antippen unter dem Pfeil › wählt den Eintrag darunter; Breite und Pfeile bleiben
     const ziel = await p.evaluate(sel => { const s = document.querySelector(sel), f = s.parentElement.querySelector(':scope > .pf.r').getBoundingClientRect();
-      const x = (f.left + f.right) / 2, y = (f.top + f.bottom) / 2, e = document.elementFromPoint(x, y)?.closest('button');
-      return { x, y, im: !!e && s.contains(e), druck: e?.getAttribute('aria-pressed') ?? null }; }, sel);
-    if (!ziel.im) E('K9: unter dem Pfeil › liegt kein Eintrag der Kapsel – der Pfeil fängt das Antippen ab');
+      // seit 4.40.0 (APD-86): in der Wischzeile (Text ohne Schaltflächen) genügt, dass die Rollfläche selbst unter dem Pfeil liegt
+      const x = (f.left + f.right) / 2, y = (f.top + f.bottom) / 2, u = document.elementFromPoint(x, y), e = u?.closest('button');
+      return { x, y, im: !!u && s.contains(u) && (!e || s.contains(e)), druck: e?.getAttribute('aria-pressed') ?? null }; }, sel);
+    if (!ziel.im) E('K9: unter dem Pfeil › liegt nicht die Kapsel bzw. Wischzeile – der Pfeil fängt das Antippen ab');
     else if (ziel.druck !== null) {
       await p.mouse.click(ziel.x, ziel.y); await wait(p, 300);
       const y = await lage(), jetzt = await p.evaluate(([x, y]) => document.elementFromPoint(x, y)?.closest('button')?.getAttribute('aria-pressed'), [ziel.x, ziel.y]);
