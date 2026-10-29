@@ -32,9 +32,9 @@ Arbeitsumgebung steht in der AppDesign-`CLAUDE.md` (mit den Chromium-Verweisen f
   (876 → 968 px, 46 px nach links); das ⓧ ist nicht die Ursache. Feste Prüfung **ReiseLogBuch `tests/ablauf-fenster-breite.mjs`**
   (RLB-107, im Repo, noch nicht in `tests/alle.mjs` und `tests/README.md`): rot gegen 3.36.0 (je 6 Fehler Chromium/WebKit), mit
   `dialog .warn { contain: inline-size; }` grün. Allgemeine Regel (Ja): ein offenes Fenster ändert Breite und Lage nicht → APD-83.
-- **APD-84 Regelwerk:** Analyse und Plan in `arbeit/APD-84 Konsolidierung Regelwerk Analyse und Plan.md` (M-1 bis M-7, Entwurf des
+- **APD-84 Regelwerk:** Analyse und Plan in `arbeit/APD-84 Konsolidierung Regelwerk Analyse und Plan.md` (APD-84/M-1 bis M-7, Entwurf des
   Kastens ‚Jede Antwort‘, Regelwächter als Hooks über das Setup-Skript der Umgebung). Das Prüfskript für den Wächter lag in 0050
-  nur als Probe im Notizordner (nicht im Repo) – neu schreiben nach Plan M-3.
+  nur als Probe im Notizordner (nicht im Repo) – neu schreiben nach Plan APD-84/M-3.
 - **APD-81 geklärt** (`arbeit/APD-81 Klärung.md`): ⓧ oben rechts, ab zwei Zeilen erst Sprechblase ‚Text löschen?‘, alle mehrzeiligen
   Felder, allgemeine Regel (R-5.6, Abweichung in 16).
 - **Selbstkritik 0050 (Anlass APD-84):** Fenster ohne ‚(Empfohlen)‘, Antworten ohne Fenster, Zeitzeile vor dem Fenster, Zwischenmeldungen
@@ -43,7 +43,7 @@ Arbeitsumgebung steht in der AppDesign-`CLAUDE.md` (mit den Chromium-Verweisen f
 
 ## 3. Nächster Schritt
 
-1. **Die ganze Zusammenarbeit lesen** (Plan APD-84 M-1, vom Nutzer bestätigt) und den Plan APD-84; Kasten ‚Jede Antwort‘ ab der
+1. **Die ganze Zusammenarbeit lesen** (Plan APD-84/M-1, vom Nutzer bestätigt) und den Plan APD-84; Kasten ‚Jede Antwort‘ ab der
    ersten Antwort einhalten.
 2. Lagebild (kurz), dann die offene Frage aus 1 im Auswahlfenster.
 3. Bei Ja: Testfall-Liste (0 Nr. 1) für APD-84 und APD-83, dann bauen und veröffentlichen (4.39.0 / 3.37.0); dem Nutzer den Text für

@@ -1825,8 +1825,11 @@ export async function checkSheet(p, { open, change = null, field = null, ok = nu
   await zu();
   if (!change) return errors;
   // B8 mit Änderung weit ziehen: zäh, federt zurück, Sprechblase am x; ‚Weiter bearbeiten‘ lässt es offen
-  await auf();
+  const vorher = await auf();
   await change(); await wait(p);
+  // APD-72/D-21 (seit 4.39.0, APD-83): am iPad ändert eine Eingabe Breite und Lage des Fensters nicht (P-76/4: die Meldung zum
+  // Zeitraum machte ‚Neues Reiselogbuch‘ breiter)
+  if (ipad) { const n = await lage(); if (Math.abs(n.left - vorher.left) > 1 || Math.abs(n.right - vorher.right) > 1) E(`APD-72/D-21 iPad: nach der Eingabe steht das Fenster bei ${n.left}–${n.right} px statt ${vorher.left}–${vorher.right} px (Breite und Lage bleiben)`); }
   m = await zieh(await kopf(), 0, Math.round(l.h * 0.6));
   if (m.t > l.h * 0.6 * 0.5) E(`${nr('B8', 'D-9')} mit Änderungen ist das Ziehen nicht zäh (${m.t} px bei ${Math.round(l.h * 0.6)} px)`);
   await wait(p, 300);

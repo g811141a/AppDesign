@@ -212,6 +212,12 @@ async function los() {
   });
   if (!apps.length && nurApp) abbruch('--nur-app, aber keine App ist vorbereitet (Version wie auf origin/main)');
   if (!apps.length) console.log(`ℹ Keine App vorbereitet – nur AppDesign ${X} (Apps bleiben auf ihrer Fassung)`);
+  // Seit 4.39.0 (APD-84): zuerst die Werkzeuge von AppDesign (Zeitzeile, Regelwächter) – sie laufen in keiner App mit
+  if (!nurApp) for (const t of ['messung', 'regelwaechter'].filter(t => existsSync(new URL(`tests/${t}.mjs`, AD)))) {
+    console.log(`\n— Prüfung AppDesign (node tests/${t}.mjs) —`);
+    const r = spawnSync(process.execPath, [`tests/${t}.mjs`], { cwd: pfad(AD), stdio: 'inherit' });
+    if (r.status !== 0) abbruch(`AppDesign tests/${t}.mjs rot – nichts veröffentlicht`);
+  }
   // APD-5/E-4: alle Tests jeder App – einer rot: nichts veröffentlichen
   for (const a of apps) {
     console.log(`\n— Prüfungen ${a.titel} (node tests/alle.mjs) —`);

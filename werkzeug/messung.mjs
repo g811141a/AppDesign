@@ -44,7 +44,7 @@ function nebenstraenge(datei) {
 
 const inhalt = z => z.message?.content;
 // APD-12/M-3/M-4: echte Nachricht des Nutzers – Text, kein Werkzeug-Ergebnis, keine Systemmeldung (Neustart, Hintergrund, Start)
-function istNachricht(z) {
+export function istNachricht(z) {
   if (z.type !== 'user' || z.isMeta || z.isSidechain || z.isCompactSummary) return false;
   if (z.origin && !['human', 'user'].includes(z.origin.kind)) return false;
   const c = inhalt(z);
