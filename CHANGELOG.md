@@ -29,7 +29,8 @@ Usertest im Reiselogbuch: P-77.
   Gegenprobe: jede der Prüfungen APD-84/W-1 bis W-7 abgeschaltet → rot). `doku.mjs` – `checkKasten` (APD-84/C-1 bis C-5, Gegenprobe über
   `--gegenprobe schema`); die Verweisprüfung liest ‚Zusammenarbeit allgemein 3.0.0‘ nicht mehr als Abschnitt 3 (sonst rot mit 3.0.0 –
   gefunden vom Selbsttest des Veröffentlichungs-Skripts). `veroeffentlichen.mjs los` prüft vor AppDesign `tests/messung.mjs` und
-  `tests/regelwaechter.mjs`.
+  `tests/regelwaechter.mjs`; neu `los --jobs N` (APD-85: drei volle Läufe brachen an je einem anderen WebKit-Wackler ab, allein
+  grün – veröffentlicht mit `--jobs 2`).
 - **APD-83 (allgemein, R-4.6, Designrichtlinie 7):** ein offenes Fenster ändert durch Eingaben weder Breite noch Lage; eine Meldung,
   die beim Tippen erscheint, bricht in der vorhandenen Breite um – `dialog .warn { contain: inline-size; }` (design.css). Ursache: das
   iPad-Fenster ist `width: fit-content`, der Satz zum überschneidenden Zeitraum machte es breiter (876 → 968 px). **`checkSheet`

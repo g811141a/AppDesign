@@ -5,9 +5,10 @@
 //        ohne --ad bleibt die App auf ihrer Fassung, ohne --app bleiben alle Apps unverändert (heben nur nach Rückfrage, APD-5/D-4).
 //   node werkzeug/veroeffentlichen.mjs fassung
 //        legt die Fassung der aktuellen AppDesign-Version neu an (nach Änderungen an v4/ oder tests/, nur vor dem Veröffentlichen).
-//   node werkzeug/veroeffentlichen.mjs los [--app reiselogbuch] [--nur-app]
+//   node werkzeug/veroeffentlichen.mjs los [--app reiselogbuch] [--nur-app] [--jobs N]
 //        prüft (Zweig, keine offenen Änderungen, Texte, Fassung, alle Tests der App) und veröffentlicht: erst AppDesign
 //        (--no-ff nach main, Push, Pages-Lauf abwarten), dann die App genauso. --nur-app: AppDesign ist schon online.
+//        --jobs N (seit 4.39.0, APD-85): so viele Prüfungen gleichzeitig (Standard: Kerne) – weniger Last für WebKit.
 // Seit 4.14.1 ohne Git-Markierung (aus der Cloud gesperrt): veröffentlicht = fassung/X.Y.Z/ liegt auf origin/main.
 // AppDesign und die Apps liegen nebeneinander (Liste werkzeug/apps.json). Rückgabewert 0 = fertig, 1 = abgebrochen.
 // Für den Selbsttest: --ad-dir <Ordner>, VEROEFF_PAGES=success|failure|haengt (Pages-Lauf nachgebildet), VEROEFF_PAGES_MAX_S,
@@ -221,7 +222,7 @@ async function los() {
   // APD-5/E-4: alle Tests jeder App – einer rot: nichts veröffentlichen
   for (const a of apps) {
     console.log(`\n— Prüfungen ${a.titel} (node tests/alle.mjs) —`);
-    const r = spawnSync(process.execPath, ['tests/alle.mjs'], { cwd: pfad(a.dir), stdio: 'inherit' });
+    const r = spawnSync(process.execPath, ['tests/alle.mjs', ...(opt('--jobs') ? ['--jobs', opt('--jobs')] : [])], { cwd: pfad(a.dir), stdio: 'inherit' });
     if (r.status !== 0) abbruch(`Prüfungen von ${a.titel} rot – nichts veröffentlicht`);
   }
   const ergebnis = [];
