@@ -13,15 +13,14 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 |---|---|---|---|
 | APD-81 | 3 | **ⓧ auch in mehrzeiligen Feldern (Rückmeldung P-73/1, geklärt mit dem Nutzer 26.10.2026, Sitzung 0050 – `arbeit/APD-81 Klärung.md`):** APD-81/F-1 oben rechts auf Höhe der ersten Zeile, der Text läuft rechts in allen Zeilen nicht darunter · F-2 eine Zeile leert sofort, bei mehr als einer Zeile zuerst die Sprechblase ‚Text löschen?‘ mit ‚Löschen‘ (rot) und ‚Abbrechen‘ (R-4.3) · F-3 alle mehrzeiligen Textfelder, je Feld abschaltbar (`data-noclear`) · F-4 allgemeine Regel: R-5.6 für ein- und mehrzeilige Felder, `checkClear` erweitert, bewusste Abweichung von Apple (UITextView ohne ⓧ) in 16. Vor dem Bau messen, ob Leeren über die Bearbeiten-Befehle die Undo-Taste der iPad-Tastatur erhält (Vermutung). Testfall-Liste mit dem Bau | 26.10.2026 |
 
-1 Punkt bereit (APD-81) – vor dem Bau die Messung am iPad (Undo-Taste nach dem Leeren), dann fragen; erst nach den Usertests P-77/3 und P-78 (0 Nr. 22).
+1 Punkt bereit (APD-81) – vor dem Bau die Messung am iPad (Undo-Taste nach dem Leeren), dann fragen; die Usertests P-77 und P-78 sind erledigt (29.10.2026).
 
 
 ## 1. Auf iPad und iPhone prüfen
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| P-78 | 1 | **Usertest Reiselogbuch 3.38.0 / AppDesign 4.40.0** – APD-86 Wischzeile ‚Reisemittel‘ (/1, /2), APD-77 ‚Messung starten‘ erst nach langem Drücken (/3, /4); Schritte im Reiselogbuch-CHANGELOG ‚Testfälle P-78‘; **/0–/4 ok (Nutzer 29.10.2026, Sitzung 0053)** | prüfen |
-| P-77 | 1 | **Usertest Reiselogbuch 3.37.0 / AppDesign 4.39.0** – APD-83 Fensterbreite (/1), APD-84 Regelwächter einrichten (/2) und in der nächsten Sitzung prüfen (/3); Schritte im Reiselogbuch-CHANGELOG ‚Testfälle P-77‘; **/0–/2 ok (Nutzer 29.10.2026, Sitzung 0052)**, /3 offen (erst in der Sitzung nach dem Eintrag ins Setup-Skript) | prüfen |
+| – | – | zurzeit kein offener Usertest | – |
 
 ## 2. Weitere Themen (in Klärung)
 
@@ -59,6 +58,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Thema | Version | Datum |
 |---|---|---|---|
+| P-78, P-77 | Geprüft **P-78 (Reiselogbuch 3.38.0): alles ok** (Nutzer 29.10.2026, Sitzung 0053) – **APD-86 und APD-77 bestätigt** · **P-77 (Reiselogbuch 3.37.0): alles ok** – /0–/2 in Sitzung 0052, /3 in Sitzung 0053: der Regelwächter lief über den Verweis `/home/user/appdesign`, lieferte die Uhrzeitzeile und wies eine Antwort ohne Auswahlfenster mit APD-84/W-4 zurück (**APD-84 bestätigt**) | 4.40.0 | 29.10.2026 |
 | APD-86, APD-77, P-75/6 | **APD-86 Wischzeile (deine Rückmeldung 29.10.2026, Prio 1, Ja 29.10.2026):** jeder seitlich wischbare Bereich bis etwa zwei Zeilen Höhe zeigt mit Verlauf und Pfeil, wo es weitergeht (R-5.4, 15.12, `wischHtml`, `hig.mjs`); im Reiselogbuch die Zeile ‚Reisemittel‘ am iPhone (`ablauf-reisemittel-zeile`, rot gegen 3.37.0) · **APD-77:** ‚Messung starten‘ erst nach langem Drücken auf die Versionszeile, bis zum Neustart (R-1.6, 15.21, `checkMessung` APD-77/F-1 bis F-9) · **P-75/6:** Designrichtlinie 13 ‚Textgröße pro App‘ | 4.40.0 | 29.10.2026 |
 | APD-84 | **APD-84 Regelwerk, Konsolidierung 2 (Plan bestätigt, Ja 26.10.2026):** Zusammenarbeit 3.0.0 – Kasten ‚Immer‘ und ‚Jede Antwort‘ oben in 0, neu 0 Nr. 27 ‚Nur Belegtes‘ und 0 Nr. 28 ‚Jede Frage im Fenster‘, Abgeschwächtes zurück (0 Nr. 4, 7, 20), zu Beginn die ganze Zusammenarbeit (0 Nr. 15, beide `CLAUDE.md`); **Regelwächter** `werkzeug/regelwaechter.mjs` (Hooks: Uhrzeitzeile liefern, Fenster vor dem Zeigen prüfen, Antwort am Ende prüfen, Modell-Rückfall melden; Einrichten über das Setup-Skript), Prüfung `tests/regelwaechter.mjs` mit echten Antworten aus 0050 und 0051; `checkKasten` (doku.mjs); Testfall-Liste `arbeit/APD-84 APD-83 Testfall-Liste.md` | 4.39.0 | 26.10.2026 |
 | APD-83 | **APD-83 Fensterbreite bleibt stehen (Korrektur aus P-76/4):** `dialog .warn { contain: inline-size; }`, R-4.6 und Designrichtlinie 7; `checkSheet` APD-72/D-21; Reiselogbuch RLB-107 `ablauf-fenster-breite` im vollen Lauf | 4.39.0 | 26.10.2026 |
