@@ -1,0 +1,72 @@
+# APD-81 Messung 1 · Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.6.3 Safari/605.1.15 · 2026-10-29T23:07:40.787Z
+# 4 von 4 Fällen aufgenommen
+188571 start safari 834x1194 vv 702 gegenprobe -
+188571 fall 1 wert laenge 103
+190283 vv 702
+191822 focus laenge 103
+191968 vv 274
+192989 input - laenge 0
+192989 leeren wert laenge 103 -> 0 befehl -
+195240 blur laenge 0
+195241 fertig 1 laenge 0
+195241 fall 2 befehl laenge 103
+195277 vv 702
+196424 focus laenge 103
+196561 vv 274
+197875 beforeinput deleteContentBackward laenge 103
+197876 input deleteContentBackward laenge 0
+197876 leeren befehl laenge 103 -> 0 befehl ja
+198996 beforeinput historyUndo laenge 0
+198996 input historyUndo laenge 103
+200468 blur laenge 103
+200468 fertig 2 laenge 103
+200468 fall 3 befehl laenge 103
+200504 vv 702
+208321 focus laenge 103
+208466 vv 274
+209511 beforeinput deleteContentBackward laenge 103
+209512 input deleteContentBackward laenge 0
+209513 leeren befehl laenge 103 -> 0 befehl ja
+213210 vv 273
+213226 vv 274
+216347 beforeinput historyUndo laenge 0
+216348 input historyUndo laenge 103
+218131 blur laenge 103
+218132 fertig 3 laenge 103
+218132 fall 4 befehl laenge 103
+218169 vv 702
+222484 focus laenge 103
+222630 vv 274
+223905 beforeinput insertText laenge 103
+223918 input insertText laenge 104
+224263 beforeinput insertText laenge 104
+224263 input insertText laenge 105
+224436 beforeinput insertText laenge 105
+224437 input insertText laenge 106
+224602 beforeinput insertText laenge 106
+224603 input insertText laenge 107
+224777 beforeinput insertText laenge 107
+224778 input insertText laenge 108
+238440 blur laenge 108
+238441 neu 4
+238441 fall 4 befehl laenge 103
+238463 vv 702
+243160 focus laenge 103
+243306 vv 274
+244335 beforeinput deleteContentBackward laenge 103
+244336 input deleteContentBackward laenge 0
+244336 leeren befehl laenge 103 -> 0 befehl ja
+245664 beforeinput insertText laenge 0
+245666 input insertText laenge 1
+246002 beforeinput insertText laenge 1
+246002 input insertText laenge 2
+249426 beforeinput historyUndo laenge 2
+249427 input historyUndo laenge 103
+254056 beforeinput deleteByCut laenge 103
+254057 input deleteByCut laenge 0
+256503 beforeinput historyUndo laenge 0
+256504 input historyUndo laenge 103
+264801 blur laenge 103
+264802 fertig 4 laenge 103
+264802 alle faelle
+264830 vv 702

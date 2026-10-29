@@ -37,3 +37,21 @@ F-1 a, F-2 a, F-3 a, F-4 a – jeweils die Empfehlung. Status: bereit (Backlog �
 
 Nach der Klärung: Status ‚bereit‘, Testfall-Liste (0 Nr. 1) mit dem Bau; Gerät × Lage × Darstellung × Handlung (Antippen,
 Tastatur, Drehen, Rollen im Feld, Abfrage) × Daten (eine Zeile, viele Zeilen, leer).
+
+## Messung am iPad (Nutzer 29.10.2026, Sitzung 0053)
+
+Muster `arbeit/APD-81 Muster.html` (vorher im Modell geprüft: `arbeit/APD-81 Muster prüfen.mjs`, Chromium und WebKit, Gegenprobe rot),
+Messdatei `arbeit/APD-81 Messung 2026-10-29 iPad hoch Safari.txt` (iPad hoch, Safari 26.6.3, Bildschirm 834 × 1194), ausgewertet mit
+`arbeit/APD-81 auswerten.mjs`.
+
+- **M-1 Leeren über den Wert (heute, `value = ''`):** die Undo-Taste tut nichts – kein `historyUndo`, das Feld bleibt leer (Zeilen 8–11).
+- **M-2 Leeren über den Bearbeiten-Befehl** (Text auswählen, `document.execCommand('delete')`, Ergebnis ‚ja‘): ein `beforeinput`/`input`
+  `deleteContentBackward` wie beim Löschen per Taste; die Undo-Taste holt den ganzen Text zurück – `input historyUndo`, Länge 0 → 103
+  (Zeilen 16–20). Die App erfährt es über das input-Ereignis, speichert also wie bei jeder Eingabe.
+- **M-3 Mit drei Fingern nach links wischen** holt ihn genauso zurück (Zeilen 27–33).
+- **M-4 Nach dem Leeren getippt:** ein einziges Rückgängig holt den ursprünglichen Text zurück – Safari fasst Leeren und Tippen zu einem
+  Schritt zusammen (Zeilen 56–64); danach Ausschneiden (`deleteByCut`) und Rückgängig ebenso (65–68). Das WebKit-Modell der Prüfung
+  verhielt sich genauso (Chromium braucht zwei Schritte).
+- Der Fokus bleibt in allen Fällen, die Tastatur bleibt offen (`vv` 274 bis zum Antippen von ‚Fall fertig‘).
+- **Vermutung bestätigt (iPad, Safari):** über den Bearbeiten-Befehl geleert, ist das ⓧ mit der Undo-Taste und drei Fingern rückgängig zu
+  machen. Nicht gemessen: App vom Home-Bildschirm, iPhone (dort Schütteln statt Undo-Taste).
