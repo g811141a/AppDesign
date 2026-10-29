@@ -39,7 +39,7 @@ async function lauf(browser, lage, { gegen = false } = {}) {
   const anzahl = await p.evaluate(() => a81.FAELLE.length);
   if (!gegen) {
     pruefe(await p.isDisabled('#teilen'), `${name}: ‚Messung teilen‘ vor dem ersten Fall nicht gesperrt`);
-    // F-1: ⓧ erst mit Fokus, oben rechts auf Höhe der ersten Zeile; der Text läuft nicht darunter
+    // APD-81/F-1: ⓧ erst mit Fokus, oben rechts auf Höhe der ersten Zeile; der Text läuft nicht darunter
     pruefe(!(await p.isVisible('#fx')), `${name}: ⓧ ohne Fokus sichtbar`);
     await p.tap('#feld');
     const lageX = await p.evaluate(() => {
