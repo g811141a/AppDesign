@@ -22,7 +22,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| P-77 | 1 | **Usertest Reiselogbuch 3.37.0 / AppDesign 4.39.0** – APD-83 Fensterbreite (/1), APD-84 Regelwächter einrichten (/2) und in der nächsten Sitzung prüfen (/3); Schritte im Reiselogbuch-CHANGELOG ‚Testfälle P-77‘ | prüfen |
+| P-77 | 1 | **Usertest Reiselogbuch 3.37.0 / AppDesign 4.39.0** – APD-83 Fensterbreite (/1), APD-84 Regelwächter einrichten (/2) und in der nächsten Sitzung prüfen (/3); Schritte im Reiselogbuch-CHANGELOG ‚Testfälle P-77‘; **/0–/2 ok (Nutzer 29.10.2026, Sitzung 0052)**, /3 offen (erst in der Sitzung nach dem Eintrag ins Setup-Skript) | prüfen |
 
 ## 2. Weitere Themen (in Klärung)
 
