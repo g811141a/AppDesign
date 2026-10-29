@@ -3,6 +3,35 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.40.0 – 29.10.2026
+
+AppDesign 4.40.0 · Designrichtlinie allgemein 4.40.0 · Zusammenarbeit allgemein 3.0.0 · geprüft mit Reiselogbuch 3.38.0
+
+**APD-86 Wischzeile** (deine Rückmeldung vom 29.10.2026, Priorität 1), **APD-77 ‚Messung starten‘ versteckt** und **P-75/6** – dein Ja vom
+29.10.2026, Sitzung 0052; Testfall-Listen `arbeit/APD-86 Testfall-Liste.md` W1–W11 und `arbeit/APD-77 Testfall-Liste.md` APD-77/F-1 bis F-10.
+Usertest im Reiselogbuch: P-78.
+
+- **APD-86 – R-5.4 für jeden seitlich wischbaren Bereich:** neu die **Wischzeile** `.weiter` > `.scroll` + `.pf` (`wischHtml(inhalt, id)`,
+  ui.js) – eine Zeile Text, seitlich wischbar, mit demselben Verlauf und denselben Pfeilen wie die Auswahl-Kapsel; `mountCap(root)` stellt
+  beide für Kapseln und Wischzeilen (die App ruft es nach dem Aufbau der Seite). Anlass: am iPhone hoch lief die Zeile ‚Reisemittel‘ im
+  Kopf eines Reiselogbuchs hart am Rand ab. Warum die Prüfung es übersah: R-5.4 und ihre Prüfung galten nur der Kapsel. Neu meldet
+  `hig.mjs` nach jedem Schritt jeder Prüfung jeden seitlich wischbaren Bereich bis etwa zwei Zeilen Höhe ohne Verlauf und Pfeil (Flächen
+  wie die Vorschau bleiben frei); `checkKapsel` prüft auch Wischzeilen (K9: unter dem Pfeil liegt die Rollfläche selbst).
+- **APD-77 – R-1.6:** ‚Messung starten‘ steht nicht mehr ständig im Mehr-Menü der Seitenleiste bzw. Startliste. Langes Drücken (R-3.5,
+  `onLongPress`, 0,6 s) auf die graue Versionszeile (`{ note, halten: true }`) schaltet ihn frei – das Menü bleibt offen und zeigt den
+  Punkt an seinem Platz; die Freischaltung (`messFrei`) gilt bis zum Neuladen, nichts wird gespeichert; eine laufende oder noch nicht
+  geteilte Messung steht immer da. Die Versionszeile wählt keinen Text aus und zeigt kein Safari-Menü. `messungMenuItems` liefert bis
+  dahin einen Platzhalter `{ messPlatz }`; ein Abstand im Menü ohne Eintrag danach entfällt (`menuHtml`).
+  `checkMessung` prüft APD-77/F-1 bis F-9 (Gegenprobe: freigeschaltet von Anfang an → rot).
+- **P-75/6 – Designrichtlinie 13:** ‚Größerer Text‘ unter Einstellungen → Bedienungshilfen → Einstellungen pro App → Safari wirkt auch auf
+  die Web-App vom Home-Bildschirm (deine Auskunft aus P-75/6).
+- **Korrektur Regelwächter (gefunden beim Veröffentlichen, `tests/regelwaechter.mjs` APD-84/W-13 rot):** `regelwaechter.mjs` und `messung.mjs`
+  liefen nicht, wenn man sie über den Verweis `/home/user/appdesign` aufrief (so legt es die `CLAUDE.md` an, und der Starter nimmt ihn
+  zuerst) – sie verglichen ihren Aufrufpfad ohne den Verweis aufzulösen und gaben nichts aus. Der Regelwächter hätte damit in jeder Sitzung
+  geschwiegen, sobald der Verweis da ist. Jetzt über den echten Pfad (`realpathSync`). In 0051 war die Prüfung grün, weil der Verweis dort
+  vermutlich anders lag (nicht mehr nachprüfbar).
+- **Abweichung von der Testfall-Liste APD-77:** langes Drücken dauert 0,6 s wie überall (R-3.5) statt ‚etwa 0,5 s‘.
+
 ## 4.39.0 – 26.10.2026
 
 AppDesign 4.39.0 · Designrichtlinie allgemein 4.39.0 · Zusammenarbeit allgemein 3.0.0 · geprüft mit Reiselogbuch 3.37.0

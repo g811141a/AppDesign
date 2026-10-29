@@ -1,6 +1,6 @@
 # AppDesign – Backlog (allgemeine Themen)
 
-**Stand 26.10.2026** · Aktuelle Version: AppDesign 4.39.0
+**Stand 29.10.2026** · Aktuelle Version: AppDesign 4.40.0
 
 Allgemeine Themen, die alle Apps betreffen. App-Themen stehen im Backlog der jeweiligen App.
 Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.4.
@@ -11,17 +11,16 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Prio | Thema | bereit seit |
 |---|---|---|---|
-| APD-77 | 3 | **‚Messung starten‘ verstecken (Frage des Nutzers 25.10.2026, Variante a):** der Messmodus (R-1.6) ist ein Werkzeug für Claude, für den Nutzer ohne Zweck – der Punkt steht nicht mehr ständig im Mehr-Menü der Seitenleiste bzw. Startliste, sondern erscheint erst nach langem Drücken auf die graue Versionszeile im Mehr-Menü und bleibt bis zum Neustart der App; die Funktion bleibt ganz (APD-72, RLB-103 brauchen sie evtl.). So macht es Apple: Diagnose versteckt (Einstellungen → Datenschutz → Analyse, Menü ‚Entwickler‘ erst nach Freischalten). **Entschieden (Nutzer 26.10.2026, Sitzung 0048):** langes Drücken (etwa 0,5 s) auf die Versionszeile, bleibt bis zum Neustart (neu laden versteckt wieder), das Menü bleibt offen und zeigt den Punkt sofort an der heutigen Stelle, allgemeine Regel (R-1.6 und 15.21 ändern, `checkMessung` anpassen); läuft eine Messung, bleibt ‚Messung beenden und teilen‘ immer sichtbar. Testfall-Liste `arbeit/APD-77 Testfall-Liste.md` 1–2, 5 | 26.10.2026 |
 | APD-81 | 3 | **ⓧ auch in mehrzeiligen Feldern (Rückmeldung P-73/1, geklärt mit dem Nutzer 26.10.2026, Sitzung 0050 – `arbeit/APD-81 Klärung.md`):** APD-81/F-1 oben rechts auf Höhe der ersten Zeile, der Text läuft rechts in allen Zeilen nicht darunter · F-2 eine Zeile leert sofort, bei mehr als einer Zeile zuerst die Sprechblase ‚Text löschen?‘ mit ‚Löschen‘ (rot) und ‚Abbrechen‘ (R-4.3) · F-3 alle mehrzeiligen Textfelder, je Feld abschaltbar (`data-noclear`) · F-4 allgemeine Regel: R-5.6 für ein- und mehrzeilige Felder, `checkClear` erweitert, bewusste Abweichung von Apple (UITextView ohne ⓧ) in 16. Vor dem Bau messen, ob Leeren über die Bearbeiten-Befehle die Undo-Taste der iPad-Tastatur erhält (Vermutung). Testfall-Liste mit dem Bau | 26.10.2026 |
-| P-75/6 | 3 | **Designrichtlinie 13 ergänzen (Auskunft P-75/6, Nutzer 26.10.2026):** ‚Größerer Text‘ unter Einstellungen → Bedienungshilfen → Einstellungen pro App → Safari wirkt auch auf die Web-App vom Home-Bildschirm (`-apple-system-body`, R-1.10) – nur Text, keine Prüfung | 26.10.2026 |
 
-3 Punkte bereit (APD-77, APD-81, P-75/6) – vor dem Bau fragen, erst nach dem Usertest P-77 (0 Nr. 22).
+1 Punkt bereit (APD-81) – vor dem Bau die Messung am iPad (Undo-Taste nach dem Leeren), dann fragen; erst nach den Usertests P-77/3 und P-78 (0 Nr. 22).
 
 
 ## 1. Auf iPad und iPhone prüfen
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
+| P-78 | 1 | **Usertest Reiselogbuch 3.38.0 / AppDesign 4.40.0** – APD-86 Wischzeile ‚Reisemittel‘ (/1, /2), APD-77 ‚Messung starten‘ erst nach langem Drücken (/3, /4); Schritte im Reiselogbuch-CHANGELOG ‚Testfälle P-78‘ | prüfen |
 | P-77 | 1 | **Usertest Reiselogbuch 3.37.0 / AppDesign 4.39.0** – APD-83 Fensterbreite (/1), APD-84 Regelwächter einrichten (/2) und in der nächsten Sitzung prüfen (/3); Schritte im Reiselogbuch-CHANGELOG ‚Testfälle P-77‘; **/0–/2 ok (Nutzer 29.10.2026, Sitzung 0052)**, /3 offen (erst in der Sitzung nach dem Eintrag ins Setup-Skript) | prüfen |
 
 ## 2. Weitere Themen (in Klärung)
@@ -60,6 +59,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Thema | Version | Datum |
 |---|---|---|---|
+| APD-86, APD-77, P-75/6 | **APD-86 Wischzeile (deine Rückmeldung 29.10.2026, Prio 1, Ja 29.10.2026):** jeder seitlich wischbare Bereich bis etwa zwei Zeilen Höhe zeigt mit Verlauf und Pfeil, wo es weitergeht (R-5.4, 15.12, `wischHtml`, `hig.mjs`); im Reiselogbuch die Zeile ‚Reisemittel‘ am iPhone (`ablauf-reisemittel-zeile`, rot gegen 3.37.0) · **APD-77:** ‚Messung starten‘ erst nach langem Drücken auf die Versionszeile, bis zum Neustart (R-1.6, 15.21, `checkMessung` APD-77/F-1 bis F-9) · **P-75/6:** Designrichtlinie 13 ‚Textgröße pro App‘ | 4.40.0 | 29.10.2026 |
 | APD-84 | **APD-84 Regelwerk, Konsolidierung 2 (Plan bestätigt, Ja 26.10.2026):** Zusammenarbeit 3.0.0 – Kasten ‚Immer‘ und ‚Jede Antwort‘ oben in 0, neu 0 Nr. 27 ‚Nur Belegtes‘ und 0 Nr. 28 ‚Jede Frage im Fenster‘, Abgeschwächtes zurück (0 Nr. 4, 7, 20), zu Beginn die ganze Zusammenarbeit (0 Nr. 15, beide `CLAUDE.md`); **Regelwächter** `werkzeug/regelwaechter.mjs` (Hooks: Uhrzeitzeile liefern, Fenster vor dem Zeigen prüfen, Antwort am Ende prüfen, Modell-Rückfall melden; Einrichten über das Setup-Skript), Prüfung `tests/regelwaechter.mjs` mit echten Antworten aus 0050 und 0051; `checkKasten` (doku.mjs); Testfall-Liste `arbeit/APD-84 APD-83 Testfall-Liste.md` | 4.39.0 | 26.10.2026 |
 | APD-83 | **APD-83 Fensterbreite bleibt stehen (Korrektur aus P-76/4):** `dialog .warn { contain: inline-size; }`, R-4.6 und Designrichtlinie 7; `checkSheet` APD-72/D-21; Reiselogbuch RLB-107 `ablauf-fenster-breite` im vollen Lauf | 4.39.0 | 26.10.2026 |
 | P-76 | Geprüft **P-76 (Reiselogbuch 3.36.0): nicht ok bei P-76/4 Schritt 3** (Nutzer 26.10.2026, Sitzung 0050) – mit dem ersten Buchstaben im Reisetitel wird das Fenster ‚Neues Reiselogbuch‘ am iPad breiter (→ APD-83); alle übrigen Testfälle ok – Hereingleiten und Ziehen am Kopf, weit ziehen schließt, im Inhalt wischen, Änderung und Tastatur, x / Häkchen / Abdunkelung, iPhone unverändert (**APD-72 bestätigt**) | 4.38.0 | 26.10.2026 |

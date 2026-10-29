@@ -8,7 +8,7 @@
 // geschrieben des letzten eigenen Modell-Aufrufs (nicht die Summe der Antwort, nicht die Hilfsagenten); ab GRENZE oder nach einer
 // automatischen Zusammenfassung ‚⚠ Übergabe fällig‘ (Zusammenarbeit 0 Nr. 13).
 // Rückgabewert 0 = Zeile ausgegeben, 1 = keine Sitzungsdaten (APD-12/M-9).
-import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs';
+import { readFileSync, readdirSync, statSync, existsSync, realpathSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -121,4 +121,5 @@ export function hauptprogramm(argv = process.argv.slice(2), env = process.env) {
   return 0;
 }
 
-if (process.argv[1] === fileURLToPath(import.meta.url)) process.exit(hauptprogramm());
+// seit 4.40.0: über den echten Pfad vergleichen – der Starter ruft über den Verweis /home/user/appdesign (CLAUDE.md), sonst liefe nichts
+if (process.argv[1] && realpathSync(process.argv[1]) === realpathSync(fileURLToPath(import.meta.url))) process.exit(hauptprogramm());

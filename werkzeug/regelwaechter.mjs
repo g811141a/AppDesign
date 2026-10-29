@@ -10,7 +10,7 @@
 //   setup    gibt den Text für das Setup-Skript aus (W-13)
 // Jeder Fehler (keine Sitzungsdatei, kaputtes JSON) lässt durch: Rückgabewert 0, keine Ausgabe (W-12) – nie eine Sitzung festhalten.
 // Für die Prüfung: REGELWAECHTER_ORDNER (Zustand), REGELWAECHTER_JETZT (ISO-Zeit), REGELWAECHTER_AUS (Gegenprobe: W-n abschalten).
-import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync, existsSync, realpathSync } from 'node:fs';
 import { join } from 'node:path';
 import { homedir } from 'node:os';
 import { fileURLToPath } from 'node:url';
@@ -213,4 +213,5 @@ export function hauptprogramm(argv = process.argv.slice(2), env = process.env) {
   return 0;
 }
 
-if (process.argv[1] === fileURLToPath(import.meta.url)) process.exit(hauptprogramm());
+// seit 4.40.0: über den echten Pfad vergleichen – der Starter ruft über den Verweis /home/user/appdesign (CLAUDE.md), sonst liefe nichts
+if (process.argv[1] && realpathSync(process.argv[1]) === realpathSync(fileURLToPath(import.meta.url))) process.exit(hauptprogramm());

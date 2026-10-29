@@ -1,4 +1,4 @@
-// AppDesign 4.39.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
+// AppDesign 4.40.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
 // Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/fassung/X.Y.Z/ui.js"></script> (feste Fassung, R-10.3)
 // Seit 4.11.0 (R-10.3): ui.js und design.css immer mit ?v=<AppDesign-Version> einbinden (auch in sw.js) und beim Start
 // prüfen, ob genau diese Fassung geladen ist (AD_VERSION hier, --ad-version in design.css).
@@ -20,7 +20,7 @@
 
 'use strict';
 // Version der Bausteine (R-10.3): die App vergleicht sie beim Start mit der benötigten Fassung.
-const AD_VERSION = '4.39.0';
+const AD_VERSION = '4.40.0';
 /* ---------- Icons ---------- */
 
 // Schaltflächen-Icons aus Lucide (ISC-Lizenz), direkt eingebettet, damit die App offline funktioniert.
@@ -544,12 +544,16 @@ function placeAt(el, anchor, align) {
 }
 
 // Einträge: { icon, label, sub, red, tick, disabled, act } (tick und icon zusammen: Häkchen vorne, dann Icon und Text) · { …, value, submenu: [Einträge] } (Untermenü ›, eine Ebene)
-// · 'sep' (Abstand) · 'line' (Strich) · { note } (graue Zeile).
+// · 'sep' (Abstand) · 'line' (Strich) · { note } (graue Zeile) · { note, halten: true } (graue Zeile, langes Drücken schaltet den Messmodus frei,
+// seit 4.40.0, APD-77) · { messPlatz } (Platz des versteckten Messmodus, zeigt nichts). Ein Abstand ohne Eintrag danach entfällt.
 // Seit 4.35.0 (R-1.8, V3, V4): Einträge mit Häkchen-Spalte sind menuitemcheckbox mit aria-checked (‚Hell, ausgewählt‘), Einträge mit
 // Untermenü haben aria-haspopup und aria-expanded, die graue Zeile darunter ist ihre Beschreibung.
 let menuNr = 0;
-const menuHtml = items => { const nr = ++menuNr; return items.map((it, i) => it === 'sep' ? '<div class="sep" role="separator"></div>' : it === 'line' ? '<div class="line" role="separator"></div>'
-  : it.note ? `<div class="note" role="presentation">${esc(it.note)}</div>`
+const menuDanach = (items, i) => items.slice(i + 1).find(x => !x?.messPlatz);
+const menuHtml = items => { const nr = ++menuNr; return items.map((it, i) => it?.messPlatz ? ''
+  : it === 'sep' ? (n => !n || n === 'sep' || n === 'line' ? '' : '<div class="sep" role="separator"></div>')(menuDanach(items, i))
+  : it === 'line' ? '<div class="line" role="separator"></div>'
+  : it.note ? `<div class="note${it.halten ? ' halten' : ''}" role="presentation">${esc(it.note)}</div>`
   : `<button type="button" class="mi ${it.red ? 'red' : ''} ${it.sub ? 'has-sub' : ''}" data-i="${i}" ${it.disabled ? 'disabled' : ''} role="${'tick' in it ? 'menuitemcheckbox' : 'menuitem'}"${
       'tick' in it ? ` aria-checked="${it.tick ? 'true' : 'false'}"` : ''}${it.submenu ? ' aria-haspopup="menu" aria-expanded="false"' : ''}${it.sub ? ` aria-describedby="mi${nr}-${i}"` : ''}>${
       'tick' in it ? `<span class="tick">${it.tick ? ic('check') : ''}</span>` : ''}${it.icon ? ic(it.icon) : ''}${esc(it.label)}${
@@ -623,7 +627,7 @@ function openMenu(anchor, items, align = 'right') {
     fokusZurueck(anchor, host);   // V5: zurück auf den Knopf, ohne Rollen
   };
   layer.onclick = close;
-  menu.querySelectorAll('[data-i]').forEach(b => b.onclick = () => {
+  const binde = () => menu.querySelectorAll('[data-i]').forEach(b => b.onclick = () => {
     const it = items[b.dataset.i];
     if (!it.submenu) { close(); it.act(); return; }
     // Untermenü neben dem Menü, oben bündig mit dem Eintrag; der Eintrag bleibt blau.
@@ -643,6 +647,15 @@ function openMenu(anchor, items, align = 'right') {
     placeSub();
     fokus(subMenu.querySelector('.mi:not(:disabled)'));   // K3: Fokus auf den ersten Eintrag des Untermenüs
   });
+  binde();
+  // R-1.6 (seit 4.40.0, APD-77): langes Drücken auf die graue Zeile mit der Version schaltet den Messmodus bis zum Neustart frei –
+  // das Menü bleibt offen und zeigt ‚Messung starten‘ an seinem Platz; kurzes Tippen tut nichts
+  menu.querySelectorAll('.note.halten').forEach(n => onLongPress(n, () => {
+    if (messFrei) return;
+    messFrei = true;
+    items = items.flatMap(it => it?.messPlatz ? messungMenuItems(it.messPlatz) : [it]);
+    menu.innerHTML = menuHtml(items); binde(); place();
+  }, () => {}));
   // R-4.7 (K1–K3): Esc bzw. ⌘. schließt das oberste (Untermenü zuerst), ↑ ↓ Tab wandern mit Umlauf (Ausgegrautes, Striche und
   // graue Zeilen übersprungen), Pos1/Ende, Eingabe bzw. Leertaste wählt; → öffnet das Untermenü, ← schließt es (wie am Mac)
   const tasten = e => {
@@ -1557,9 +1570,12 @@ function revealRow(sel) {
 // ein Verlauf am Rand zeigt, wo es weitergeht. Seit 4.33.0 (APD-75) steht im freien Rand dazu ein kleiner Pfeil (nur Anzeige,
 // aria-hidden) – nur, solange es auf seiner Seite weitergeht; Drehen und andere Größenänderungen stellen beides neu.
 const capHtml = (buttons, id = '') => `<div class="cap"><div class="scroll" ${id ? `id="${id}"` : ''}>${buttons}</div>${ic('chevron-left', 'pf l')}${ic('chevron-right', 'pf r')}</div>`;
+// Wischzeile (seit 4.40.0, APD-86, R-5.4): eine Zeile Text, die seitlich wischt (z. B. Reisemittel im Kopf am iPhone) – Verlauf und Pfeile
+// wie in der Auswahl-Kapsel, ohne Kapsel-Form; mountCap stellt beide, die App ruft es nach dem Aufbau der Seite.
+const wischHtml = (inhalt, id = '') => `<div class="weiter"><div class="scroll" ${id ? `id="${id}"` : ''}>${inhalt}</div>${ic('chevron-left', 'pf l')}${ic('chevron-right', 'pf r')}</div>`;
 const capFertig = new WeakSet();
 function mountCap(root) {
-  root.querySelectorAll('.cap .scroll').forEach(strip => {
+  root.querySelectorAll('.cap .scroll, .weiter > .scroll').forEach(strip => {
     if (capFertig.has(strip)) return;
     capFertig.add(strip);
     const cap = strip.parentElement;
@@ -2580,7 +2596,11 @@ async function messTeilen() {
   if (res === 'shared' || res === 'downloaded') mess = null;
   return res;
 }
+// R-1.6 (seit 4.40.0, APD-77): ‚Messung starten‘ ist versteckt, bis langes Drücken auf die Versionszeile ihn freischaltet (bis zum
+// Neustart, nichts gespeichert); bis dahin nur ein Platzhalter. Eine Messung, die läuft oder noch nicht geteilt ist, steht immer da.
+let messFrei = false;
 function messungMenuItems(opt) {
+  if (!mess && !messFrei) return [{ messPlatz: opt }];
   if (!mess) return [{ icon: 'activity', label: 'Messung starten', sub: 'Für Claude: Bewegungen aufzeichnen', act: () => messStart(opt) }];
   const s = Math.round((performance.now() - mess.start) / 1000), n = mess.zeilen.length - 2;
   return [{ icon: 'circle-stop', label: 'Messung beenden und teilen', act: messTeilen,
