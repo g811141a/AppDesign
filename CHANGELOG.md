@@ -25,7 +25,7 @@ Usertest im Reiselogbuch: P-78.
   `checkMessung` prüft APD-77/F-1 bis F-9 (Gegenprobe: freigeschaltet von Anfang an → rot).
 - **P-75/6 – Designrichtlinie 13:** ‚Größerer Text‘ unter Einstellungen → Bedienungshilfen → Einstellungen pro App → Safari wirkt auch auf
   die Web-App vom Home-Bildschirm (deine Auskunft aus P-75/6).
-- **Korrektur Regelwächter (gefunden beim Veröffentlichen, `tests/regelwaechter.mjs` W-13 rot):** `regelwaechter.mjs` und `messung.mjs`
+- **Korrektur Regelwächter (gefunden beim Veröffentlichen, `tests/regelwaechter.mjs` APD-84/W-13 rot):** `regelwaechter.mjs` und `messung.mjs`
   liefen nicht, wenn man sie über den Verweis `/home/user/appdesign` aufrief (so legt es die `CLAUDE.md` an, und der Starter nimmt ihn
   zuerst) – sie verglichen ihren Aufrufpfad ohne den Verweis aufzulösen und gaben nichts aus. Der Regelwächter hätte damit in jeder Sitzung
   geschwiegen, sobald der Verweis da ist. Jetzt über den echten Pfad (`realpathSync`). In 0051 war die Prüfung grün, weil der Verweis dort
