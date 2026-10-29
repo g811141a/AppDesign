@@ -140,7 +140,8 @@ export function checkCollab(appDir, app) {
     // Verweise auf die Zusammenarbeit zeigen auf vorhandene Stellen (Abschnitte 0–9, Abschnitt 0 Nr. 1–17)
     const sections = [...collab.matchAll(/^## (\d+)\. /gm)].map(m => +m[1]);
     const items = (collab.split(/\n## 0\. /)[1]?.split(/\n## /)[0].match(/^\d+\. /gm) || []).length;
-    for (const m of text.matchAll(/(?:Zusammenarbeit(?: allgemein)?,? (?:Abschnitt )?|§)(\d+)(?: Nr\. (\d+))?/g)) {
+    // seit 4.39.0: eine Versionsnummer (‚Zusammenarbeit allgemein 3.0.0‘) ist kein Verweis auf Abschnitt 3
+    for (const m of text.matchAll(/(?:Zusammenarbeit(?: allgemein)?,? (?:Abschnitt )?|§)(\d+)(?!\.\d+\.\d)(?: Nr\. (\d+))?/g)) {
       if (!sections.includes(+m[1])) E(`Zusammenarbeit: Verweis ‚${m[0]}‘ – Abschnitt ${m[1]} gibt es nicht (${name})`);
       else if (m[2] && (+m[1] !== 0 || +m[2] > items)) E(`Zusammenarbeit: Verweis ‚${m[0]}‘ zeigt ins Leere (${name})`);
     }
@@ -176,6 +177,40 @@ export function checkCollab(appDir, app) {
   }
   // Seit 4.36.0 (APD-78): das Nummernschema (Zusammenarbeit 2.4)
   errors.push(...checkSchema(appDir, app));
+  // Seit 4.39.0 (APD-84): der Kasten ‚Jede Antwort‘
+  errors.push(...checkKasten(appDir, app));
+  return errors;
+}
+
+// Seit 4.39.0 (APD-84/M-7, Testfall-Liste arbeit/APD-84 APD-83 Testfall-Liste.md APD-84/C-1 bis C-5): Abschnitt 0 der Zusammenarbeit
+// beginnt mit dem Kasten ‚Immer‘ und ‚Jede Antwort‘, der jede Pflicht jeder Antwort nennt; beide CLAUDE.md und 0 Nr. 15 lassen zu Beginn
+// die ganze Zusammenarbeit lesen; jede Pflicht in 0 nennt ihre Prüfung. Gegenprobe: PRUEF_GEGENPROBE=schema:APD-84/C-n.
+export const KASTEN_PFLICHTEN = ['Nr. 21', 'Nr. 22', 'Nr. 8', 'Nr. 27', 'Nr. 26', 'Nr. 28', 'Nr. 11', 'Nr. 13', '2.1', '2.2', '2.4', 'Abschnitt 1'];
+export function checkKasten(appDir, app, gp = (process.env.PRUEF_GEGENPROBE || '').match(/^schema:APD-84\/(C-\d+)$/)?.[1]) {
+  const errors = [], E = t => errors.push(t);
+  const ad = new URL('../AppDesign/', appDir);
+  const read = (base, f) => { try { return readFileSync(new URL(f, base), 'utf8'); } catch { return ''; } };
+  let collab = read(ad, 'README - Zusammenarbeit allgemein.md');
+  const claude = { 'AppDesign CLAUDE.md': read(ad, 'CLAUDE.md'), [`${app} CLAUDE.md`]: read(appDir, 'CLAUDE.md') };
+  if (gp === 'C-1') collab = collab.replace('> **Jede Antwort**', '> **Gegenprobe**');
+  if (gp === 'C-2') collab = collab.replace(/^> 5\. .*$/m, '> 5. Gegenprobe ohne Backlog-Erinnerung.');
+  if (gp === 'C-3') claude['AppDesign CLAUDE.md'] = claude['AppDesign CLAUDE.md'].replace('– die ganze Datei', '– nur Abschnitte 0 und 1 (Gegenprobe)');
+  if (gp === 'C-4') collab = collab.replace('**diese ganze Datei** (einmal je Sitzung', 'Abschnitte 0 und 1 (Gegenprobe, einmal je Sitzung');
+  if (gp === 'C-5') collab = collab.replace(/(\n28\. [\s\S]*?) Prüfung: Regelwächter\./, '$1 (Gegenprobe)');
+  const null0 = collab.split(/\n## 0\. [^\n]*\n/)[1]?.split(/\n## /)[0] || '';
+  const kasten = null0.trimStart().split('\n').filter((z, i, a) => a.slice(0, i + 1).every(x => x.startsWith('>'))).join('\n');
+  // APD-84/C-1 und C-2
+  if (!/^> \*\*Immer:\*\*/.test(kasten) || !/^> \*\*Jede Antwort\*\*/m.test(kasten)) E('APD-84/C-1 Zusammenarbeit: Abschnitt 0 beginnt nicht mit dem Kasten ‚Immer‘ und ‚Jede Antwort‘');
+  else for (const x of KASTEN_PFLICHTEN) if (!new RegExp(`(?<![\\d.])${x.replace('.', '\\.')}(?![\\d])`).test(kasten)) E(`APD-84/C-2 Zusammenarbeit: der Kasten ‚Jede Antwort‘ nennt ${x} nicht`);
+  // APD-84/C-3 und C-4
+  for (const [name, t] of Object.entries(claude)) {
+    const z = t.split(/\n## Zuerst lesen/)[1]?.split(/\n## /)[0].split(/\n(?=\d+\. )/).find(l => /Zusammenarbeit allgemein/.test(l)) || '';
+    if (!/die ganze Datei/.test(z) || /nur Abschnitte/.test(z)) E(`APD-84/C-3 ${name}: liest zu Beginn nicht die ganze Zusammenarbeit (‚die ganze Datei‘)`);
+  }
+  const nr = n => null0.match(new RegExp(`\\n${n}\\. ([\\s\\S]*?)(?=\\n\\d+\\. |\\n\\n)`))?.[1] || '';
+  if (!/diese ganze Datei/.test(nr(15))) E('APD-84/C-4 Zusammenarbeit 0 Nr. 15: zu Beginn nicht ‚diese ganze Datei‘');
+  // APD-84/C-5 jede Pflicht nennt ihre Prüfung
+  for (const m of null0.matchAll(/\n(\d+)\. /g)) if (!/Prüfung/.test(nr(m[1]))) E(`APD-84/C-5 Zusammenarbeit 0 Nr. ${m[1]} ohne ‚Prüfung:‘`);
   return errors;
 }
 
@@ -191,7 +226,11 @@ export const GEGENPROBEN_SCHEMA = Object.fromEntries([
   ['S-5', 'ZUORDNUNG doppelt', 'doppelt'], ['S-6', 'Themennummer doppelt', 'APD-80 doppelt'], ['S-7', 'alter Begriff', ALT[1]],
   ['S-8', 'CHANGELOG ohne Testfälle P-n', 'Testfälle P-n'], ['S-9', 'toter Verweis in arbeit/', 'APD-99 fehlt'],
   ['S-10', 'Präfix fehlt in der Tabelle', 'Präfix RLB-'],
-].map(([s, was, z]) => ['APD-78/' + s, { was, zeichen: new RegExp('APD-78/' + s + ' .*' + z.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')) }]));
+].map(([s, was, z]) => ['APD-78/' + s, { was, zeichen: new RegExp('APD-78/' + s + ' .*' + z.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')) }]).concat([
+  // seit 4.39.0 (APD-84/C-1 bis C-5): der Kasten ‚Jede Antwort‘ (checkKasten)
+  ['C-1', 'Kasten fehlt', 'Kasten'], ['C-2', 'Pflicht fehlt im Kasten', 'nennt 2.4 nicht'], ['C-3', 'CLAUDE.md liest nur 0 und 1', 'ganze Zusammenarbeit'],
+  ['C-4', '0 Nr. 15 ohne ganze Datei', 'ganze Datei'], ['C-5', 'Pflicht ohne Prüfung', 'Nr. 28 ohne'],
+].map(([c, was, z]) => ['APD-84/' + c, { was, zeichen: new RegExp('APD-84/' + c + ' .*' + z) }])));
 export function checkSchema(appDir, app, gp = (process.env.PRUEF_GEGENPROBE || '').match(/^schema:APD-78\/(S-\d+)$/)?.[1]) {
   const errors = [], E = t => errors.push(t);
   const ad = new URL('../AppDesign/', appDir);

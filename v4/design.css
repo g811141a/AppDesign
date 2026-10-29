@@ -1,4 +1,4 @@
-/* AppDesign 4.38.0 · design.css – gemeinsame Gestaltung der iPad-Web-Apps von g811141a (Apple-like)
+/* AppDesign 4.39.0 · design.css – gemeinsame Gestaltung der iPad-Web-Apps von g811141a (Apple-like)
    Einbinden im <head> vor dem eigenen <style> der App:  <link rel="stylesheet" href="../AppDesign/fassung/X.Y.Z/design.css"> (feste Fassung, R-10.3)
    Farben als Variablen auf :root, Dunkelmodus über data-theme="dark" (setzt ui.js / applyTheme).
    Komponenten: Schaltflächen, Suchfeld, Kapsel, Eingabefelder, Datumsfelder, Kopfzeile, Seitenleiste,
@@ -6,7 +6,7 @@
    Options-Kapsel; seit 4.1.0 iPhone-Ansicht (html.phone: Seitenkopf, großer Titel, Liste, Kasten, untere Leiste). Regeln dazu: README - Designrichtlinie allgemein.md */
 /* Farben im Apple-Look: Hintergrund Hellgrau, Kästen weiß ohne Rand, schwebende Schaltflächen */
 :root {
-  --ad-version: "4.38.0";   /* R-10.3: Version der Bausteine, die App prüft sie beim Start */
+  --ad-version: "4.39.0";   /* R-10.3: Version der Bausteine, die App prüft sie beim Start */
   --bg: #f2f2f7;
   --card: #ffffff;
   --ink: #1c1c1e;
@@ -529,6 +529,9 @@ dialog input[type=text], dialog input[type=date], dialog textarea { background: 
 @media (prefers-reduced-motion: reduce) { .mic[aria-pressed="true"] { animation: none; } }
 .hint { font-size: calc(14px * var(--f-subhead)); color: var(--muted); margin-top: 6px; }
 .warn { font-size: var(--t-subhead); color: var(--danger); margin-top: 10px; }
+/* R-4.6 (seit 4.39.0, APD-83): ein offenes Fenster ändert Breite und Lage nicht – eine Meldung, die beim Tippen erscheint, trägt nicht
+   zur Breite bei (width: fit-content) und bricht in der vorhandenen Breite um */
+dialog .warn { contain: inline-size; }
 .check { display: flex; align-items: center; gap: 10px; font-weight: 400; margin: 0 0 10px; min-height: 44px; cursor: pointer; }
 .check input { width: max(24px, calc(24px * var(--f-body))); height: max(24px, calc(24px * var(--f-body))); accent-color: var(--accent); }
 /* Komponente Schalter (Einstellungen): Zeile mit Text links, Apple-Schalter rechts, Haarlinie dazwischen */

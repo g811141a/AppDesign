@@ -1,18 +1,32 @@
 # Zusammenarbeit allgemein
 
-**Version 2.20.0** · Stand 25.10.2026
+**Version 3.0.0** · Stand 26.10.2026
 
 Regeln für die Zusammenarbeit mit Claude bei allen iPad-Web-Apps von g811141a. Die Datei liegt im Design-Repo **AppDesign**
-(g811141a/AppDesign); App-Eigenes steht in der `CLAUDE.md` des App-Repos. **Abschnitt 0 ist das Arbeitsmodell**, Abschnitt 1
-die Sprache, Abschnitt 2 die Einzelheiten und Formate. Jede Regel nennt ihre Prüfung – eine automatische (Datei) oder
-**Selbstkontrolle** (Claude prüft vor dem Senden selbst).
+(g811141a/AppDesign); App-Eigenes steht in der `CLAUDE.md` des App-Repos. **Abschnitt 0 ist das Arbeitsmodell** (oben der Kasten ‚Immer‘ und ‚Jede
+Antwort‘), Abschnitt 1 die Sprache, Abschnitt 2 die Einzelheiten und Formate. Jede Regel nennt ihre Prüfung – den
+**Regelwächter** (Hooks, 2.8), eine Prüfdatei oder **Selbstkontrolle** (Claude prüft vor dem Senden selbst).
 
-> **Hinweis für Claude:** Diese Regeln gelten in jeder Sitzung, auch nach langer Pause. Zu Beginn nur `UEBERGABE.md` und die
-> Abschnitte 0 und 1 lesen, alles Weitere gezielt (Nr. 15).
+> **Hinweis für Claude:** Diese Regeln gelten in jeder Sitzung, auch nach langer Pause. Zu Beginn `UEBERGABE.md` und **diese ganze
+> Datei** lesen, alles Weitere gezielt (Nr. 15).
 
 ---
 
 ## 0. Arbeitsmodell
+
+> **Immer:** nie ohne ‚Ja‘ bauen (Nr. 21) · erst Usertests, dann Neues (Nr. 22) · Sammelversionen (Nr. 8) · nur Belegtes (Nr. 27).
+>
+> **Jede Antwort** (was mit **W** markiert ist, prüft der Regelwächter, 2.8; der Rest ist Selbstkontrolle vor dem Senden):
+> 1. Erste Zeile jeder Ausgabe: die Uhrzeitzeile, die der Regelwächter liefert – nie selbst schätzen (Nr. 26, 2.2). **W**
+> 2. Per du, deutsch, kurz (Abschnitt 1).
+> 3. Nur Belegtes: jede Uhrzeit, Zahl, Version, jedes Prüfergebnis aus einem Werkzeug oder einer Datei dieser Sitzung (Nr. 27).
+> 4. Bericht oder Bitte, am Gerät zu prüfen: alle offenen Usertests vollständig im Chat (Nr. 11, 2.3).
+> 5. Wurde etwas gebaut oder entschieden: die Backlog-Erinnerung ‚Nächste Version …: N Punkte bereit (…) · Offen im Backlog: …‘ (2.4).
+> 6. Ende jeder Antwort: ein Auswahlfenster – jede Frage dort, nie ‚Sag Bescheid‘; die Empfehlung zuerst mit ‚(Empfohlen)‘ und
+>    Grund in der Beschreibung, immer ‚Ich schreibe im Chat‘; einzige Ausnahme die Übergabe (Nr. 28, 2.1). **W**
+> 7. Ganz am Ende, nach dem Fenster: die Zeitzeile von `messung.mjs`, unverändert (2.2). **W**
+> 8. Meldet der Regelwächter ‚⚠ Modell‘, steht es in der Antwort (2.5); steht ‚⚠ Übergabe fällig‘ in der Zeitzeile: nach dem
+>    laufenden Schritt übergeben (Nr. 13).
 
 Ziel: nichts vergessen, Fehler finden, bevor der Nutzer sie findet, schnell und sparsam arbeiten. Die Nummern bleiben fest
 (Verweise in Code und Changelogs), neue Punkte bekommen die nächste freie Nummer. Einzelheiten und Formate: Abschnitt 2.
@@ -28,7 +42,12 @@ Ziel: nichts vergessen, Fehler finden, bevor der Nutzer sie findet, schnell und 
     Neues umzusetzen. Prüfung: Selbstkontrolle.
 26. **Uhrzeit in der ersten Zeile:** Jede Ausgabe darüber, was das System tut (jede Antwort und jede Zwischenmeldung), beginnt
     mit der Uhrzeitzeile `<sub>Aktuelle Uhrzeit: hh:mm&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Zeitabstand zu vorher: hh:mm)</sub>` –
-    Format 2.2. Prüfung: Selbstkontrolle.
+    Format 2.2. Prüfung: Regelwächter (liefert die abgelesene Uhrzeit, prüft erste Zeile, Uhrzeit und Zeitabstand).
+27. **Nur Belegtes:** Uhrzeiten, Zahlen, Versionen, Prüfergebnisse, Dateiinhalte und ‚So macht es Apple‘ nur aus einem Werkzeug,
+    einer Datei oder einer Quelle **dieser** Sitzung; sonst ‚weiß ich nicht – ich prüfe es‘; Vermutungen heißen ‚Vermutung‘.
+    Prüfung: Uhrzeit und Zeitzeile Regelwächter; sonst Selbstkontrolle mit Quelle im Bericht.
+28. **Jede Frage im Fenster:** Jede Frage an den Nutzer kommt ins Auswahlfenster, und jede Antwort endet mit einem – nie ‚Sag
+    Bescheid …‘ oder eine offene Frage im Text; einzige Ausnahme die Übergabe (Nr. 14). Format 2.1. Prüfung: Regelwächter.
 
 **A. Testen und Qualität**
 
@@ -50,8 +69,8 @@ Ziel: nichts vergessen, Fehler finden, bevor der Nutzer sie findet, schnell und 
    eine Nummer im Katalog (Designrichtlinie 17) und eine automatische Prüfung, sonst ‚Gerät‘. Im Regeltext steht nur, was heute
    gilt; Geschichte steht in Versionsgeschichte und CHANGELOG. Prüfung: `doku.mjs` – `checkCatalog`, `checkCollab`.
 4. **Allgemeine Regel immer erfragen:** Legt eine Eingabe des Nutzers eine Formatierung oder ein Verhalten fest, prüft Claude
-   (mit Recherche), ob es eine allgemeine Regel werden sollte, und fragt bei jeder Design-Änderung ‚Als allgemeine Regel
-   festhalten? Ja/Nein‘. Allgemeine Regeln sind die Grundlage jeder App (gleiche Schaltflächen an gleichen
+   (mit Recherche), ob es eine allgemeine Regel werden sollte, und fragt bei jeder Design-Änderung verlässlich im Auswahlfenster
+   ‚Als allgemeine Regel festhalten? Ja/Nein‘. Allgemeine Regeln sind die Grundlage jeder App (gleiche Schaltflächen an gleichen
    Stellen, gleiche Formatierung); in der App steht nur, was anders ist. Prüfung: Selbstkontrolle.
 5. **Safari nachbilden:** wo Chrome anders arbeitet (Designrichtlinie 13); jeder Test läuft zusätzlich in WebKit (Setup-Skript
    der Umgebung ‚Standard‘). Prüfung: `pruefe.mjs`, Safari-Modell `safari.mjs`.
@@ -60,9 +79,10 @@ Ziel: nichts vergessen, Fehler finden, bevor der Nutzer sie findet, schnell und 
 
 6. **Muster:** bei Gestaltungsfragen zuerst ein Muster – beim ersten 2–3 Varianten nebeneinander, bei kleinen Korrekturen eine;
    zuerst nur hell und quer, dunkel und hoch erst, wenn hell passt; Bilder in Viererpaketen. Prüfung: Selbstkontrolle.
-7. **Auswahlfenster nur für Ja/Nein und klare Auswahl,** jedes mit ‚Ich schreibe im Chat‘ (gewählt → Claude beendet die
-   Antwort). Längeres immer im Chat; Erklärungen, die der Nutzer vorher lesen muss, als Datei oder Bild vor dem Fenster. Format
-   2.1. Prüfung: Selbstkontrolle; `checkCollab` (keine Antwortzeile ohne ‚mehr als 4 Fragen‘, keine Muster im Fragetext).
+7. **Auswahlfenster:** jede Frage als Ja/Nein oder klare Auswahl (Nr. 28), die Empfehlung zuerst, jedes Fenster mit ‚Ich schreibe
+   im Chat‘ (gewählt → Claude beendet die Antwort). Längeres immer im Chat; Erklärungen, die der Nutzer vorher lesen muss, als
+   Datei oder Bild vor dem Fenster. Format 2.1. Prüfung: Regelwächter (Empfehlung zuerst, ‚Ich schreibe im Chat‘ – schon vor dem
+   Zeigen); `checkCollab` (keine Antwortzeile ohne ‚mehr als 4 Fragen‘, keine Muster im Fragetext).
 
 **C. Apple, Backlog und Ablauf einer Änderung**
 
@@ -113,10 +133,10 @@ Ziel: nichts vergessen, Fehler finden, bevor der Nutzer sie findet, schnell und 
     Selbstkontrolle anhand der Zeitzeile.
 14. **Übergabe** sofort nach `UEBERGABE.md` im Repo AppDesign schreiben und veröffentlichen, mit Starttext (2.5); am Ende der
     Antwort fett **‚Die Sitzung (Chat) ist damit beendet!‘**, danach nur die Zeitzeile. Prüfung: Selbstkontrolle.
-15. **Beginn einer Sitzung:** gezielt lesen – `UEBERGABE.md`, Abschnitte 0 und 1 dieser Datei, die Überschriften der
-    Designrichtlinien; alles Weitere (andere Abschnitte, Katalog, Backlog, CHANGELOG, PROMPT.md) nur, soweit die Aufgabe es
-    braucht. Dann das **Lagebild** (Versionen, offene Usertests, Backlog-Spitze, Modell und Aufwand – 2.5), dann die Arbeit.
-    Prüfung: `doku.mjs` (beide `CLAUDE.md` nennen zuerst `UEBERGABE.md`); sonst Selbstkontrolle.
+15. **Beginn einer Sitzung:** lesen – `UEBERGABE.md`, **diese ganze Datei** (einmal je Sitzung, etwa 14.000 Token), die
+    Überschriften der Designrichtlinien; alles Weitere (Katalog, Backlog, CHANGELOG, PROMPT.md) nur, soweit die Aufgabe es braucht.
+    Dann das **Lagebild** (Versionen, offene Usertests, Backlog-Spitze, Modell und Aufwand – 2.5), dann die Arbeit. Prüfung:
+    `doku.mjs` (beide `CLAUDE.md` nennen zuerst `UEBERGABE.md`, dann die ganze Zusammenarbeit); sonst Selbstkontrolle.
 16. **Übergabe statt Gedächtnis:** jede Vereinbarung sofort an ihre Stelle in den Richtlinien (Nr. 3); was nicht auf GitHub
     steht, gibt es in der nächsten Sitzung nicht. Prüfung: Selbstkontrolle.
 17. **Rückmeldung kurz:** Nummer, ‚nicht ok‘ und ein Stichwort genügen; bei Unklarem fragt Claude nach. Prüfung:
@@ -135,7 +155,7 @@ Ziel: nichts vergessen, Fehler finden, bevor der Nutzer sie findet, schnell und 
 19. **Startfrage:** Beginnt eine Sitzung ohne konkreten Auftrag (‚Start‘, ‚Hallo‘ oder nur angehängte Repos), liest Claude
     gezielt (Nr. 15) `UEBERGABE.md` und die Backlog-Köpfe und zeigt **zuerst** das Auswahlfenster ‚Was möchtest du als Nächstes
     tun?‘: je angehängtem Repo eine Möglichkeit mit Version und Backlog-Spitze (offene Usertests zuerst), bei
-    **ReiseLogBuch-Import** ‚Reiselogbücher konvertieren‘, dazu ‚Ich schreibe im Chat‘; bei mehr als 3 Repos die mit der höchsten
+    **ReiseLogBuch-Import** ‚Reiselogbücher konvertieren‘, die Empfehlung zuerst mit ‚(Empfohlen)‘, dazu ‚Ich schreibe im Chat‘; bei mehr als 3 Repos die mit der höchsten
     Priorität, der Rest über ‚Ich schreibe im Chat‘. Eine Sitzung beginnt erst mit einer Nachricht des Nutzers (ein Wort genügt); hat sie einen Starttext mit Auftrag, gilt der Auftrag. Prüfung:
     Selbstkontrolle.
 
@@ -143,7 +163,8 @@ Ziel: nichts vergessen, Fehler finden, bevor der Nutzer sie findet, schnell und 
 
 20. **Erst messen, dann nachbilden:** Bei Bewegungsfehlern am Gerät (Zittern, Springen, Rollen) zuerst eine **Messung am Gerät**
     (Messmodus, Designrichtlinie 15.21); die feste Prüfung muss genau das gemessene Muster rot zeigen (Nr. 1). Für Safari gibt es
-    **ein** Modell (`tests/safari.mjs`), jede Abweichung vom Gerät wird dort korrigiert; jede gefundene Safari-Eigenheit kommt
+    **ein** Modell (`tests/safari.mjs`), jede Abweichung vom Gerät wird dort korrigiert, nie nur in einer Prüfung; jede gefundene
+    Safari-Eigenheit kommt
     mit Quelle in Designrichtlinie 13. Bis der Nutzer ok meldet, heißt es im Bericht ‚in der Nachbildung behoben, am Gerät zu
     bestätigen‘. Muster mit Messung: 2.7. Prüfung: `safari.mjs`, Messdateien nachspielen mit `abspielen.mjs`.
 
@@ -169,8 +190,9 @@ Prüfung: Selbstkontrolle.
 
 - Rückfragen so, dass kurz geantwortet werden kann: Ja/Nein- oder Ok-Fragen, wo möglich; mehrere Möglichkeiten als
   Aufzählung a, b, c …; Fragen nummeriert (1, 2, 3 …); die eigene Empfehlung kurz dazu.
-- **Auswahlfenster:** bis zu 4 Fragen, je 2–4 Möglichkeiten; die Empfehlung zuerst mit ‚(Empfohlen)‘, immer ‚Ich schreibe im
-  Chat‘. Im Fenster steht nur eine **kurze Frage** mit den Schaltflächen – keine Erklärtexte, keine Zeitangaben. **Ausnahme:** Bei
+- **Auswahlfenster:** bis zu 4 Fragen, je 2–4 Möglichkeiten; die Empfehlung zuerst mit ‚(Empfohlen)‘ (so geschrieben, nie
+  ‚(Empfehlung)‘) und ihrem Grund in der Beschreibung, immer ‚Ich schreibe im Chat‘ – ausgenommen nur die Empfehlung bei der
+  Rückmeldung zu einem Usertest (‚P-n: …‘, 2.3). Der Regelwächter lehnt ein Fenster ohne das schon vor dem Zeigen ab. Im Fenster steht nur eine **kurze Frage** mit den Schaltflächen – keine Erklärtexte, keine Zeitangaben. **Ausnahme:** Bei
   jeder Bitte, am Gerät zu prüfen oder auszuprobieren, stehen Link, nummerierte Schritte und ‚erwartet: …‘ kurz auch in der
   Frage. Das Feld ‚Sonstiges‘ schneidet lange Texte ab.
 - **Ein Fenster je Antwort, die Erklärung davor:** Text am Anfang einer Antwort kommt vor dem Auswahlfenster beim Nutzer an, Text
@@ -184,6 +206,7 @@ Prüfung: Selbstkontrolle.
 - **Reihenfolge in einer Antwort:** erst die Arbeit, dann das Auswahlfenster, nach der Antwort die Zusammenfassung; die
   Zeitzeile steht immer ganz am Ende, nach der letzten Antwort im Fenster. Solange ein Fenster offen ist, ist die Antwort nicht
   fertig. Die laufende Zeitanzeige während der Bearbeitung kommt von der App.
+- Prüfung: Regelwächter (Fenster, Empfehlung, ‚Ich schreibe im Chat‘, Zeitzeile nach dem letzten Fenster); sonst Selbstkontrolle.
 
 ### 2.2 Zeit und Token (Pflicht, am Ende jeder Antwort)
 
@@ -203,8 +226,9 @@ Prüfung: Selbstkontrolle.
 - **Uhrzeitzeile (0 Nr. 26, erste Zeile jeder Ausgabe):** `<sub>Aktuelle Uhrzeit: hh:mm&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Zeitabstand zu
   vorher: hh:mm)</sub>` – deutsche Zeit (Europe/Berlin), klein gesetzt wie die Zeitzeile, ein Leerzeichen nach ‚Uhrzeit:‘, fünf
   geschützte Leerzeichen vor der Klammer, ohne Leerzeile davor und danach; Zeitabstand = seit der letzten Uhrzeitzeile, bei der
-  ersten Ausgabe einer Sitzung ‚–‘. Die Uhrzeit liest Claude ab (`TZ=Europe/Berlin date +%H:%M`), nie geschätzt. Prüfung:
-  Selbstkontrolle.
+  ersten Ausgabe einer Sitzung ‚–‘. Die fertige Zeile liefert der Regelwächter nach jeder Nachricht des Nutzers und nach jedem
+  Werkzeug, sobald sich die Minute ändert (2.8); ohne Wächter liest Claude die Uhrzeit ab (`TZ=Europe/Berlin date +%H:%M`) –
+  nie geschätzt. Prüfung: Regelwächter.
 
 ### 2.3 Bericht, Usertests und Rückmeldung
 
@@ -298,6 +322,9 @@ Elternnummer.
   `"effort"` der Modell-Aufrufe in der Sitzungsdatei `/root/.claude/projects/…/*.jsonl`. Die Claude-App zeigt im Chat ggf.
   ‚mittel‘, obwohl die Aufrufe mit ‚hoch‘ laufen – dann stellt der Nutzer sie zur Sicherheit auf ‚hoch‘. Ist es nicht Opus 5.5
   bzw. nicht ‚hoch‘, weist Claude darauf hin: für diese Sitzung `/model` bzw. `/effort high`, dauerhaft die Umgebungsvariable.
+  Bei hoher Last weicht die Sitzung von selbst auf das nächste Modell aus (Eintrag `model_fallback` in der Sitzungsdatei, z. B.
+  ‚Switched to Opus 5 … due to high demand for Opus 5.5‘) – der Regelwächter meldet dann ‚⚠ Modell …‘ mit diesem Grund, Claude
+  nennt es in der nächsten Ausgabe (Kasten ‚Jede Antwort‘ 8).
   Gelesen wird zu Beginn wenig, weil alles Gelesene bei jedem weiteren Schritt mitverarbeitet wird.
 
 ### 2.6 Apple-Abgleich, Apple-Review, Vergleichsbilder
@@ -320,6 +347,21 @@ des Modells passen, und eine **Gegenprobe** mit absichtlich eingebautem Sprung m
 Versuch**: feste Liste der Fälle, oben ‚Nächster Schritt: …‘, erledigte Fälle abgehakt, ‚Messung teilen‘ erst, wenn alle Fälle
 drin sind (oder ausdrücklich ‚trotzdem teilen‘). Am Gerät zeigt es nur **‚aufgenommen‘** – bewertet wird ausschließlich aus den
 Rohdaten durch Claude, damit keine falsche Anzeige in die Irre führt.
+
+### 2.8 Regelwächter
+
+- `werkzeug/regelwaechter.mjs` läuft als Hook von Claude Code in jeder Sitzung der Umgebung (eingerichtet einmal über das
+  Setup-Skript, Text und Befehle: AppDesign-`CLAUDE.md`). Er sucht AppDesign unter `/home/user`; fehlt es, läuft er leer durch.
+- **Nach jeder Nachricht und jedem Werkzeug:** die fertige Uhrzeitzeile für die nächste Ausgabe (Zeitabstand ab der letzten
+  Uhrzeitzeile in der Sitzungsdatei) und ‚⚠ Modell …‘, wenn der letzte Aufruf nicht Opus 5.5 war.
+- **Vor jedem Auswahlfenster:** lehnt es ab, wenn eine Frage keine Empfehlung zuerst oder kein ‚Ich schreibe im Chat‘ hat.
+- **Am Ende jeder Antwort:** prüft die Antwort in der Sitzungsdatei – jede Ausgabe beginnt mit der Uhrzeitzeile und ihre Uhrzeit
+  ist abgelesen (± 1 min um ihren Anlass), der Zeitabstand passt, die Antwort hat ein Fenster (außer der Übergabe), die Zeitzeile
+  steht ganz am Ende nach dem letzten Fenster und kommt unverändert aus `messung.mjs`. Fehlt etwas, lässt er die Antwort nicht enden
+  und sagt, was nachzuholen ist – höchstens zweimal je Antwort; danach prüft er nur noch Neues.
+- **Grenze:** Ausgaben, die in derselben Nachricht nach einem Denkschritt stehen, speichert die Sitzungsdatei nicht wörtlich
+  (Befund 26.10.2026) – für sie bleibt die Uhrzeitzeile Selbstkontrolle.
+- Prüfung: `tests/regelwaechter.mjs` mit echten Antworten aus den Sitzungen 0050 und 0051 (Gegenprobe `--gegenprobe`).
 
 ---
 
@@ -349,6 +391,7 @@ im Verlauf und in Kommentaren der Prüfungen nennen noch die alten Stellen):
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 3.0.0 | 26.10.2026 | Haupt | **APD-84 Regelwerk, Konsolidierung 2 (Nutzer 26.10.2026, Plan bestätigt):** ganz oben in 0 der Kasten ‚Immer‘ und ‚Jede Antwort‘ (alle Pflichten jeder Antwort an einer Stelle, jede mit ihrer Prüfung); neu 0 Nr. 27 ‚Nur Belegtes‘ und 0 Nr. 28 ‚Jede Frage im Fenster, jede Antwort endet mit einem‘ (0 Nr. 7 war seit 2.17.0 zu ‚nur für Ja/Nein‘ abgeschwächt); 0 Nr. 4 wieder ‚im Auswahlfenster‘, 0 Nr. 20 wieder ‚nie nur in einer Prüfung‘; 0 Nr. 15 zu Beginn die ganze Datei; 0 Nr. 19 Startfrage mit Empfehlung; 2.1 Schreibweise ‚(Empfohlen)‘ mit Grund; neu 2.8 Regelwächter (Hooks: Uhrzeit liefern, Fenster vor dem Zeigen prüfen, Antwort am Ende prüfen; Prüfung `tests/regelwaechter.mjs`); 2.5 Rückfall des Modells bei hoher Last melden |
 | 2.20.0 | 25.10.2026 | Neben | **APD-78 Nummernschema (Nutzer 25.10.2026):** 2.4 ‚Nummern und Präfixe‘ neu (APD-, RLB-, RLI-, P-, R-, G-, I-, K-; lokale Nummern mit Elternnummer; Erledigt ohne eigene Nummer; Begriffe Usertest, Testfall (User), Testfälle P-n, Testfall-Liste, Testfall (automatisch); `ZUORDNUNG.md`, Prüfung `checkSchema`); alle Regeltexte rückwirkend umgestellt. **APD-79:** 0 Nr. 26 und 2.2 Uhrzeitzeile in der ersten Zeile jeder Ausgabe |
 | 2.19.0 | 23.10.2026 | Neben | **0 Nr. 13 automatische Übergabe (Nutzer 23.10.2026):** bei ‚⚠ Übergabe fällig‘ übergibt Claude ohne Rückfrage, sobald der laufende Schritt abgeschlossen ist, und startet die neue Sitzung selbst; offene Fragen gehen mit in die Übergabe (2.2) |
 | 2.18.0 | 22.10.2026 | Neben | **APD-41:** 0 Nr. 13 Übergabe wieder erst ab etwa 300.000 Token (gleiche Grenze wie das Werkzeug, 2.2); 0 Nr. 2 Hilfsagenten bzw. eigene Sitzungen parallel, wenn möglich und sinnvoll; 2.1 ein Auswahlfenster je Antwort mit der Erklärung davor, Themen einzeln nacheinander (‚w‘) |

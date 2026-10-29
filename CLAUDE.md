@@ -1,17 +1,18 @@
 # AppDesign – Hinweise für Claude
 
-**Version 2.8.0** · Stand 25.10.2026
+**Version 2.9.0** · Stand 26.10.2026
 
 ## Zuerst lesen (gezielt, Zusammenarbeit 0 Nr. 15)
 
 1. `UEBERGABE.md` – Stand der letzten Sitzung, nächster Schritt, Chatnummer
-2. `README - Zusammenarbeit allgemein.md` – nur Abschnitte 0 (Arbeitsmodell) und 1 (Sprache und Ton: per du)
+2. `README - Zusammenarbeit allgemein.md` – die ganze Datei; der Kasten ‚Immer‘ und ‚Jede Antwort‘ oben in Abschnitt 0 gilt ab
+   der ersten Antwort
 3. `README - Designrichtlinie allgemein.md` – nur die Überschriften (`grep -n '^##'`); einzelne Abschnitte, `README.md`,
    `CHANGELOG.md` und `BACKLOG.md` erst, wenn die Aufgabe sie braucht
 
 ## Verpflichtend
 
-Alle Regeln stehen in der Zusammenarbeit allgemein (hier keine Wiederholung) – besonders Startfrage ohne Auftrag (0 Nr. 19),
+Alle Regeln stehen in der Zusammenarbeit allgemein (hier keine Wiederholung) – zuerst der Kasten ‚Jede Antwort‘, dazu Startfrage ohne Auftrag (0 Nr. 19),
 nie ohne ‚Ja‘ bauen (0 Nr. 21), Testfall-Liste vor jedem Bau (0 Nr. 1), erst Usertests, dann Neues (0 Nr. 22), Auswahlfenster mit
 ‚Ich schreibe im Chat‘ (0 Nr. 7) und die Zeile mit Zeit und Token am Ende jeder Antwort (`node werkzeug/messung.mjs`, 2.2).
 
@@ -49,6 +50,10 @@ nie ohne ‚Ja‘ bauen (0 Nr. 21), Testfall-Liste vor jedem Bau (0 Nr. 1), erst
   ln -sfn /opt/pw-browsers/chromium-1243/chrome-linux64 /opt/pw-browsers/chromium-1194/chrome-linux &&
   ln -sfn /opt/pw-browsers/chromium_headless_shell-1243/chrome-headless-shell-linux64 /opt/pw-browsers/chromium_headless_shell-1194/chrome-linux &&
   ln -sfn chrome-headless-shell /opt/pw-browsers/chromium_headless_shell-1243/chrome-headless-shell-linux64/headless_shell`.
+- **Regelwächter** (Zusammenarbeit 2.8): einmal ins Setup-Skript der Umgebung (Umgebungsmenü → Bearbeiten → Setup-Skript) den
+  Text von `node werkzeug/regelwaechter.mjs setup` – er schreibt den Starter `~/.claude/regelwaechter.sh` und `~/.claude/settings.json`
+  mit den Hooks (UserPromptSubmit, PostToolUse, PreToolUse für das Auswahlfenster, Stop). Wirkt ab der nächsten Sitzung; Prüfung
+  `node tests/regelwaechter.mjs` (`--gegenprobe`).
 - **Veröffentlichen** (Zusammenarbeit 0 Nr. 9): Vorbereitungs-Zweige `vorbereitung-X.Y.Z` in beiden Repos;
   `node werkzeug/veroeffentlichen.mjs vorbereiten --ad X.Y.Z --app reiselogbuch=X.Y.Z` (ohne `--ad`, wenn nur die App); Texte
   schreiben (CHANGELOG mit Testfällen, Backlog, Versionsgeschichten); nach Änderungen an `v4/` oder `tests/` bzw. an Designrichtlinie
@@ -64,6 +69,7 @@ nie ohne ‚Ja‘ bauen (0 Nr. 21), Testfall-Liste vor jedem Bau (0 Nr. 1), erst
 
 | Version | Datum | Inhalt |
 |---|---|---|
+| 2.9.0 | 26.10.2026 | APD-84: zu Beginn die ganze Zusammenarbeit (Kasten ‚Jede Antwort‘); Regelwächter über das Setup-Skript einrichten |
 | 2.8.0 | 25.10.2026 | APD-78 Nummernschema: Verweise mit den neuen Nummern (APD-n, RLB-n, Usertest, Testfall-Liste); Tabelle alt → neu in `ZUORDNUNG.md` |
 | 2.7.0 | 24.10.2026 | Tests einrichten: Chromium-Verweise für einen neueren Chromium der Umgebung (Chrome 153) dauerhaft hier statt in UEBERGABE.md (Nutzer 24.10.2026) |
 | 2.6.0 | 21.10.2026 | APD-39 Konsolidierung: Arbeitsumgebung (klonen, Verweise, Tests einrichten, Veröffentlichen) dauerhaft hier statt in UEBERGABE.md (APD-39/F-9); Verweise auf Zusammenarbeit 2.17.0 (0 Nr. 21, 22, Abschnitt 2.2) |

@@ -3,6 +3,42 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.39.0 – 26.10.2026
+
+AppDesign 4.39.0 · Designrichtlinie allgemein 4.39.0 · Zusammenarbeit allgemein 3.0.0 · geprüft mit Reiselogbuch 3.37.0
+
+**APD-84 Regelwerk (Konsolidierung 2) mit Regelwächter** und **APD-83 Fensterbreite bleibt stehen** (Plan bestätigt, dein Ja vom
+26.10.2026, Sitzung 0051; Testfall-Liste `arbeit/APD-84 APD-83 Testfall-Liste.md` APD-84/W-1 bis W-13, C-1 bis C-5, F-1 bis F-7).
+Usertest im Reiselogbuch: P-77.
+
+- **Zusammenarbeit 3.0.0 (Hauptversion):** ganz oben in Abschnitt 0 der Kasten ‚Immer‘ (Nr. 21, 22, 8, 27) und ‚Jede Antwort‘ (acht
+  Pflichten jeder Antwort an einer Stelle, mit **W** markiert, was der Regelwächter prüft). Neu **0 Nr. 27 ‚Nur Belegtes‘** und
+  **0 Nr. 28 ‚Jede Frage im Fenster, jede Antwort endet mit einem‘** (seit 2.17.0 stand in 0 Nr. 7 ‚nur für Ja/Nein‘). Wieder wie vor
+  APD-39: 0 Nr. 4 ‚im Auswahlfenster‘, 0 Nr. 20 ‚nie nur in einer Prüfung‘. 0 Nr. 15 und beide `CLAUDE.md`: zu Beginn die ganze
+  Zusammenarbeit. 0 Nr. 19 Startfrage mit Empfehlung, 2.1 Schreibweise ‚(Empfohlen)‘ mit Grund, 2.5 Rückfall des Modells, neu 2.8.
+- **Regelwächter** `werkzeug/regelwaechter.mjs` (Hooks von Claude Code, eingerichtet über das Setup-Skript der Umgebung – Text:
+  `node werkzeug/regelwaechter.mjs setup`): nach jeder Nachricht und jedem Werkzeug die fertige Uhrzeitzeile (und ‚⚠ Modell …‘, wenn
+  die Sitzung nicht mit Opus 5.5 läuft); vor jedem Auswahlfenster Empfehlung zuerst und ‚Ich schreibe im Chat‘; am Ende jeder Antwort
+  Uhrzeitzeile, abgelesene Uhrzeit, Zeitabstand, Fenster, Zeitzeile am Ende und aus `messung.mjs` – sonst endet die Antwort nicht
+  (höchstens zwei Zurückweisungen). **Abweichungen vom Plan:** `.mjs` statt `.py` (nutzt `messung.mjs` mit, das dafür `istNachricht`
+  exportiert); zusätzlich die Prüfung des Fensters schon vor dem Zeigen (PreToolUse), weil ein gezeigtes Fenster nicht mehr zu ändern ist.
+  **Befund:** Ausgaben, die in derselben Nachricht nach einem Denkschritt stehen, speichert die Sitzungsdatei nicht wörtlich (nur
+  umformuliert, ohne Uhrzeitzeile) – der Wächter mahnt sie nicht an, dort bleibt Selbstkontrolle (2.8). Das erklärt auch die fehlenden
+  Einträge aus 0050.
+- **Prüfungen:** `tests/regelwaechter.mjs` (APD-84/W-1 bis W-13, mit 7 echten Antworten aus 0050 und 0051 in `tests/regelwaechter-faelle.json`;
+  Gegenprobe: jede der Prüfungen APD-84/W-1 bis W-7 abgeschaltet → rot). `doku.mjs` – `checkKasten` (APD-84/C-1 bis C-5, Gegenprobe über
+  `--gegenprobe schema`); die Verweisprüfung liest ‚Zusammenarbeit allgemein 3.0.0‘ nicht mehr als Abschnitt 3 (sonst rot mit 3.0.0 –
+  gefunden vom Selbsttest des Veröffentlichungs-Skripts). `veroeffentlichen.mjs los` prüft vor AppDesign `tests/messung.mjs` und
+  `tests/regelwaechter.mjs`; neu `los --jobs N` (APD-85: drei volle Läufe brachen an je einem anderen WebKit-Wackler ab, allein
+  grün – veröffentlicht mit `--jobs 2`).
+- **APD-83 (allgemein, R-4.6, Designrichtlinie 7):** ein offenes Fenster ändert durch Eingaben weder Breite noch Lage; eine Meldung,
+  die beim Tippen erscheint, bricht in der vorhandenen Breite um – `dialog .warn { contain: inline-size; }` (design.css). Ursache: das
+  iPad-Fenster ist `width: fit-content`, der Satz zum überschneidenden Zeitraum machte es breiter (876 → 968 px). **`checkSheet`
+  APD-72/D-21:** am iPad nach der Eingabe linker und rechter Rand wie beim Öffnen. Warum die Prüfung es übersah: keine verglich die
+  Breite vor und nach einer Eingabe, keine hatte eine überschneidende Reise.
+- **Nebenbei behoben:** in `BACKLOG.md` (APD-81) und `UEBERGABE.md` standen lokale Nummern ohne Elternnummer (APD-81/F-1, APD-84/M-1 ohne ‚APD-n/‘) – die
+  Nummernprüfung (APD-78/S-1) wäre im vollen Lauf rot geworden.
+
 ## 4.38.0 – 26.10.2026
 
 AppDesign 4.38.0 · Designrichtlinie allgemein 4.38.0 · Zusammenarbeit allgemein 2.20.0 · geprüft mit Reiselogbuch 3.36.0
