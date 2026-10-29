@@ -1,0 +1,151 @@
+<!doctype html><html lang="de"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="APD-81 Messung">
+<title>APD-81 Messung</title>
+<style>
+/* APD-81 ⓧ in mehrzeiligen Feldern – Muster mit Messung vor dem Bau (Sitzung Reiselogbuch 0053, Klärung arbeit/APD-81 Klärung.md APD-81/F-2;
+   Zusammenarbeit 0 Nr. 20 und 2.7: vorher im Safari-Modell geprüft – arbeit/APD-81 Muster prüfen.mjs –, zeigt am Gerät nur
+   ‚aufgenommen‘; bewertet wird aus den Rohdaten mit arbeit/APD-81 auswerten.mjs).
+   Frage (Vermutung aus APD-81/F-2): Holt die Undo-Taste der iPad-Tastatur den Text zurück, wenn das ⓧ das Feld über die Bearbeiten-Befehle
+   des Browsers leert (Text auswählen, document.execCommand('delete')) statt über den Wert (value = '', so leert ui.js heute)?
+   Vier feste Fälle (FAELLE); je Fall wird das Feld mit demselben Text neu gefüllt. Aufgezeichnet werden nur Zeiten, Längen,
+   inputType und Fokus – keine Texte. Nur hell (0 Nr. 6). */
+:root { --bg: #f2f2f7; --card: #fff; --line: #d1d1d6; --txt: #000; --sub: #6e6e73; --blue: #007aff; --ok: #248a3d; --muted: #8e8e93;
+  --sl: env(safe-area-inset-left); --sr: env(safe-area-inset-right); --st: env(safe-area-inset-top); --sb: env(safe-area-inset-bottom);
+  color-scheme: light; }
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { margin: 0; background: var(--bg); color: var(--txt); font: 17px -apple-system, system-ui, sans-serif; -webkit-text-size-adjust: 100%; }
+.wrap { max-width: 640px; margin: 0 auto; padding: calc(12px + var(--st)) max(16px, var(--sr)) calc(24px + var(--sb)) max(16px, var(--sl)); }
+h1 { font-size: 22px; margin: 8px 0 4px; } .sub { color: var(--sub); font-size: 15px; margin: 0 0 12px; }
+.box { background: var(--card); border-radius: 12px; padding: 12px 14px; margin: 12px 0; }
+#schritt { font-size: 17px; line-height: 1.4; } #schritt b { display: block; margin-bottom: 4px; }
+.rahmen { position: relative; }
+label { display: block; color: var(--sub); font-size: 13px; margin: 0 0 6px; }
+/* APD-81/F-1: ⓧ oben rechts auf Höhe der ersten Zeile, der Text läuft in allen Zeilen nicht darunter */
+textarea { display: block; width: 100%; min-height: 132px; resize: none; font: inherit; line-height: 1.35; color: var(--txt); background: var(--card);
+  border: .5px solid var(--line); border-radius: 10px; padding: 10px 12px; -webkit-appearance: none; }
+textarea.mitx { padding-right: 44px; }
+.fclear { position: absolute; right: 0; top: 0; width: 44px; height: 44px; display: none; align-items: center; justify-content: center;
+  border: 0; background: none; padding: 0; color: var(--muted); }
+.fclear.an { display: flex; } .fclear svg { width: 20px; height: 20px; }
+ol { list-style: none; margin: 0; padding: 0; } li { display: flex; gap: 10px; padding: 8px 0; border-top: .5px solid var(--line); font-size: 15px; }
+li:first-child { border-top: 0; } li .h { width: 20px; flex: none; color: var(--ok); font-weight: 700; } li.jetzt { font-weight: 600; }
+.knoepfe { display: flex; flex-wrap: wrap; gap: 10px; }
+.knoepfe button { font: inherit; font-size: 17px; min-height: 44px; padding: 0 16px; border-radius: 22px; border: 0; background: var(--blue); color: #fff; }
+.knoepfe button.grau { background: #e5e5ea; color: var(--blue); }
+.knoepfe button:disabled { opacity: .4; }
+#zaehler { color: var(--sub); font-size: 15px; margin-top: 8px; }
+</style></head><body><div class="wrap">
+<h1>APD-81 Messung</h1>
+<p class="sub">Rückgängig nach dem Leeren – am iPad, App vom Home-Bildschirm oder Safari</p>
+<div class="box" id="schritt"></div>
+<div class="box feld">
+  <label for="feld" id="feldname">Programm</label>
+  <div class="rahmen"><textarea id="feld" rows="4"></textarea>
+  <button type="button" class="fclear" id="fx" tabindex="-1" aria-label="Eingabe löschen"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="currentColor"/><path d="M15 9l-6 6M9 9l6 6" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></button></div>
+</div>
+<div class="knoepfe"><button type="button" id="fertig">Fall fertig</button><button type="button" class="grau" id="nochmal">Fall neu</button></div>
+<div class="box"><ol id="liste"></ol><div id="zaehler"></div></div>
+<div class="knoepfe"><button type="button" id="teilen">Messung teilen</button><button type="button" class="grau" id="trotzdem">trotzdem teilen</button><button type="button" class="grau" id="neu">neu beginnen</button></div>
+</div>
+<script>
+const $ = s => document.querySelector(s);
+const TEXT = 'Vormittag Altstadt und Markt\nMittag kleine Nudelküche am Fluss\nNachmittag Tempel und Garten\nAbend Onsen';
+// art: wie das ⓧ leert – 'wert' (value = '', heute in ui.js) oder 'befehl' (Text auswählen, execCommand('delete'))
+const FAELLE = [
+  { art: 'wert', titel: 'Heute: leeren über den Wert, dann Undo-Taste',
+    schritt: 'Ins Feld tippen, dann das graue ⓧ oben rechts antippen. Danach links über der Tastatur die Undo-Taste (Pfeil nach links) antippen. Dann ‚Fall fertig‘.' },
+  { art: 'befehl', titel: 'Neu: leeren über den Bearbeiten-Befehl, dann Undo-Taste',
+    schritt: 'Ins Feld tippen, dann das graue ⓧ antippen. Danach links über der Tastatur die Undo-Taste antippen. Dann ‚Fall fertig‘.' },
+  { art: 'befehl', titel: 'Neu, dann mit drei Fingern nach links wischen',
+    schritt: 'Ins Feld tippen, dann das graue ⓧ antippen. Danach mit drei Fingern auf dem Bildschirm nach links wischen (Widerrufen). Dann ‚Fall fertig‘.' },
+  { art: 'befehl', titel: 'Neu, dann ein Wort tippen und zweimal Undo-Taste',
+    schritt: 'Ins Feld tippen, das graue ⓧ antippen, dann ein kurzes Wort tippen. Danach die Undo-Taste zweimal antippen. Dann ‚Fall fertig‘.' }
+];
+// Gegenprobe im Safari-Modell: ?gegenprobe=wert lässt auch die Fälle ‚befehl‘ über den Wert leeren
+const GEGEN = new URLSearchParams(location.search).get('gegenprobe');
+const SPEICHER = 'a81.messung1';
+let zustand = { fall: 0, fertig: [], zeilen: [] };
+try { const s = JSON.parse(sessionStorage.getItem(SPEICHER)); if (s?.zeilen) zustand = s; } catch {}
+const t0 = performance.now();
+const ms = () => Math.round(performance.now() - t0);
+const sichere = () => { try { sessionStorage.setItem(SPEICHER, JSON.stringify(zustand)); } catch {} };
+function zeile(s) { if (zustand.zeilen.length < 5000) zustand.zeilen.push(`${ms()} ${s}`); sichere(); }
+const f = $('#feld'), fx = $('#fx');
+const vv = () => window.visualViewport ? Math.round(visualViewport.height) : innerHeight;
+
+// ---------- ⓧ wie ui.js (R-5.6): Fokus bleibt, die App erfährt es über input ----------
+function fxZeigen() { const an = document.activeElement === f && f.value !== ''; fx.classList.toggle('an', an); f.classList.toggle('mitx', an); }
+fx.addEventListener('pointerdown', e => e.preventDefault());
+fx.addEventListener('mousedown', e => e.preventDefault());
+fx.addEventListener('click', e => {
+  e.preventDefault();
+  const fall = FAELLE[zustand.fall]; if (!fall) return;
+  const art = GEGEN === 'wert' ? 'wert' : fall.art, vorher = f.value.length;
+  if (document.activeElement !== f) f.focus();
+  let ergebnis = '-';
+  if (art === 'wert') { f.value = ''; f.dispatchEvent(new Event('input', { bubbles: true })); }
+  else { f.setSelectionRange(0, f.value.length); ergebnis = document.execCommand('delete') ? 'ja' : 'nein'; }
+  zeile(`leeren ${fall.art} laenge ${vorher} -> ${f.value.length} befehl ${ergebnis}`);
+  fxZeigen();
+});
+f.addEventListener('beforeinput', e => zeile(`beforeinput ${e.inputType || '-'} laenge ${f.value.length}`));
+f.addEventListener('input', e => { zeile(`input ${e.inputType || '-'} laenge ${f.value.length}`); fxZeigen(); });
+f.addEventListener('focus', () => { zeile(`focus laenge ${f.value.length}`); fxZeigen(); });
+f.addEventListener('blur', () => { zeile(`blur laenge ${f.value.length}`); fxZeigen(); });
+if (window.visualViewport) visualViewport.addEventListener('resize', () => zeile(`vv ${vv()}`));
+// Tastenkürzel (Hardware-Tastatur ⌘Z) nur als Hinweis, welche Taste es war – keine Zeichen
+f.addEventListener('keydown', e => { if (e.metaKey || e.ctrlKey) zeile(`taste ${e.metaKey ? 'cmd' : 'ctrl'}-${e.key.length === 1 ? e.key.toLowerCase() : e.key}`); });
+
+// ---------- Ablauf: feste Fälle, ‚Nächster Schritt‘, abgehakt (2.7) ----------
+function fuelle() {
+  // ohne Bearbeiten-Befehl: der Fall beginnt mit leerem Rückgängig-Speicher des Felds
+  f.value = TEXT; f.blur(); fxZeigen();
+}
+function zeige() {
+  const n = zustand.fall, fall = FAELLE[n];
+  $('#schritt').innerHTML = fall ? `<b>Nächster Schritt: Fall ${n + 1} von ${FAELLE.length} – ${fall.titel}</b>${fall.schritt}`
+    : '<b>Nächster Schritt: ‚Messung teilen‘</b>Alle Fälle sind aufgenommen. Teile die Datei mit Claude.';
+  $('#liste').innerHTML = FAELLE.map((x, i) => `<li class="${i === n ? 'jetzt' : ''}"><span class="h">${zustand.fertig.includes(i) ? '✓' : ''}</span>Fall ${i + 1}: ${x.titel}</li>`).join('');
+  $('#zaehler').textContent = `${zustand.fertig.length} von ${FAELLE.length} aufgenommen`;
+  $('#fertig').disabled = $('#nochmal').disabled = !fall;
+  $('#teilen').disabled = zustand.fertig.length < FAELLE.length;
+  $('#trotzdem').style.display = zustand.fertig.length < FAELLE.length ? '' : 'none';
+}
+function starte(n) { zustand.fall = n; fuelle(); zeile(`fall ${n + 1} ${FAELLE[n]?.art ?? 'ende'} laenge ${f.value.length}`); zeige(); }
+$('#fertig').onclick = () => {
+  const n = zustand.fall; if (!FAELLE[n]) return;
+  zeile(`fertig ${n + 1} laenge ${f.value.length}`);
+  if (!zustand.fertig.includes(n)) zustand.fertig.push(n);
+  const weiter = FAELLE.findIndex((_, i) => !zustand.fertig.includes(i));
+  if (weiter < 0) { zustand.fall = FAELLE.length; f.value = ''; f.blur(); fxZeigen(); zeile('alle faelle'); zeige(); }
+  else starte(weiter);
+};
+$('#nochmal').onclick = () => { zeile(`neu ${zustand.fall + 1}`); starte(zustand.fall); };
+$('#neu').onclick = () => { if (!confirm('Messung löschen und neu beginnen?')) return;
+  zustand = { fall: 0, fertig: [], zeilen: [] }; try { sessionStorage.removeItem(SPEICHER); } catch {} kopf(); starte(0); };
+function kopf() {
+  const st = matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+  zeile(`start ${st ? 'home' : 'safari'} ${screen.width}x${screen.height} vv ${vv()} gegenprobe ${GEGEN || '-'}`);
+}
+function text() {
+  return `# APD-81 Messung 1 · ${navigator.userAgent} · ${new Date().toISOString()}\n` +
+    `# ${zustand.fertig.length} von ${FAELLE.length} Fällen aufgenommen\n` + zustand.zeilen.join('\n') + '\n';
+}
+async function teile() {
+  const name = `messung-APD-81-${new Date().toISOString().slice(0, 16).replace(/[:T]/g, '-')}.txt`;
+  try { await navigator.share({ files: [new File([text()], name, { type: 'text/plain' })] }); }
+  catch (e) {
+    if (e.name === 'AbortError') return;
+    const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([text()], { type: 'text/plain' })); a.download = name; a.click();
+  }
+}
+$('#teilen').onclick = teile;
+$('#trotzdem').onclick = () => { zeile('trotzdem teilen'); teile(); };
+window.a81 = { text, FAELLE };   // für die Prüfung im Safari-Modell
+if (!zustand.zeilen.length) { kopf(); starte(0); }
+else { zeile('neu geladen'); if (FAELLE[zustand.fall]) { f.value = TEXT; zeile(`fall ${zustand.fall + 1} ${FAELLE[zustand.fall].art} laenge ${f.value.length}`); } zeige(); }
+</script>
+</body></html>
