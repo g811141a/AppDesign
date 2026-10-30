@@ -1,0 +1,156 @@
+{
+ "hinweis": "Echte Antworten aus den Sitzungen Reiselogbuch 0050 und 0051 (wörtlich, Zeitpunkt aus der Sitzung) – Gegenprobe des Regelwächters (APD-84, Testfall-Liste arbeit/APD-84 APD-83 Testfall-Liste.md W-1 bis W-7). Jeder Fall muss mit den Nummern unter erwartet zurückgewiesen werden.",
+ "faelle": [
+  {
+   "name": "0050 · ‚Sag Bescheid …‘ – Antwort ohne Fenster",
+   "bausteine": [
+    {
+     "zeit": "2026-10-26T13:35:07.253181Z",
+     "text": "<sub>Aktuelle Uhrzeit: 14:34&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Zeitabstand zu vorher: 00:32)</sub>\nIch baue nichts, weder 4.38.1 noch 4.39.0. Deine Rückmeldung zu P-76 und die neue Regel sind in beiden Backlogs eingetragen und auf GitHub (`main`).\n\n- **AppDesign** (2eca47e):\n  - **APD-83** steht unter ‚0. Nächste Version‘, Prio 1: Ein offenes Fenster ändert Breite und Lage nicht, solange die Ansicht gleich bleibt. Fehlermeldungen brechen in der vorhandenen Breite um. Das ist jetzt eine allgemeine Regel (dein Ja); Ursache, Vorschlag zur Behebung und der Grund, warum die Prüfungen den Fehler übersahen, stehen dabei.\n  - **P-76** ist unter ‚Erledigt‘ eingetragen: nicht ok bei /4 Schritt 3, alles andere ok. Damit ist APD-72 am Gerät bestätigt.\n  - Bereit für die nächste Version sind jetzt drei Punkte: APD-83, APD-77 und P-75/6.\n- **Reiselogbuch** (9a90c73):\n  - **RLB-107:** Die Prüfung `tests/ablauf-fenster-breite.mjs` mit deinem Ablauf liegt jetzt im Repo. Sie ist gegen 3.36.0 rot und kommt erst mit der Korrektur in den vollen Lauf.\n  - Auch hier ist P-76 unter ‚Erledigt‘ eingetragen.\n\nOffen bleibt die Korrektur APD-83. Nach 0 Nr. 22 kommt sie vor allem Neuen, also vor APD-77 und P-75/6. Sag Bescheid, wann und in welcher Zusammenstellung ich bauen soll.\n\n<sub>⏱ 09:15 · Token vorige Antwort: 6.104 neu · 941.662 aus Zwischenspeicher · 89.836 geschrieben · Kontext 171.460</sub>"
+    }
+   ],
+   "erwartet": [
+    "W-4"
+   ]
+  },
+  {
+   "name": "0050 · Zeitzeile vor dem Fenster",
+   "bausteine": [
+    {
+     "zeit": "2026-10-26T13:38:01.739070Z",
+     "text": "<sub>Aktuelle Uhrzeit: 14:37&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Zeitabstand zu vorher: 00:03)</sub>\nDu hast recht, das ist mir in dieser Sitzung zweimal passiert. Die Frage zu 4.39.0 hatte keine Empfehlung, und meine letzte Antwort endete mit ‚Sag Bescheid …‘ statt mit einem Auswahlfenster.\n\n**Warum das immer wieder passiert:**\n1. **Die Regel steht an einer Stelle, die ich zu Beginn nicht lese.** Die Pflicht zur Empfehlung mit ‚(Empfohlen)‘ an erster Stelle steht nur in Abschnitt 2.1 der Zusammenarbeit. Zu Beginn einer Sitzung lese ich nach 0 Nr. 15 aber nur die Abschnitte 0 und 1. Abschnitt 2.1 habe ich in dieser Sitzung erst eben gelesen. Daher kamen auch die falsche Schreibweise ‚(Empfehlung)‘ und die Zeitzeile vor statt nach dem Fenster.\n2. **Es gibt keine Pflicht, mit einem Fenster zu enden.** In Abschnitt 0 steht nur, wofür ein Fenster gut ist (Nr. 7), nicht, dass jede Antwort mit einem endet. Wenn ich meine, es gebe gerade keine klare Auswahl, schreibe ich ‚Sag Bescheid‘.\n3. **Nichts prüft es.** Bei dieser Regel steht nur ‚Selbstkontrolle‘, und die hat mehrmals versagt. Zum Vergleich: Die Zeitzeile vergesse ich nie, weil ein Werkzeug sie erzeugt.\n\n**Vorschlag (APD-84, schon als Vorschlag im Backlog von AppDesign, 241de4f):**\n- **A) Neue Pflicht 0 Nr. 27 in Abschnitt 0, also in dem Teil, den ich zu Beginn lese:**\n  - Jede Antwort endet mit einem Auswahlfenster. Die einzige Ausnahme ist die Übergabe (‚Die Sitzung (Chat) ist damit beendet!‘).\n  - Ist nichts zu entscheiden, fragt das Fenster ‚Wie weiter?‘ mit dem empfohlenen nächsten Schritt.\n  - Die Empfehlung steht immer zuerst, mit ‚(Empfohlen)‘ und dem Grund in einem Halbsatz.\n  - Die Zeitzeile kommt erst nach dem Fenster.\n- **B) Automatische Prüfung im Werkzeug `messung.mjs`:**\n  - Ich rufe es ohnehin für die Zeitzeile auf, und zwar nach dem Fenster. Dabei sieht es in den Sitzungsdaten nach, ob die laufende Antwort ein Fenster mit ‚(Empfohlen)‘ und ‚Ich schreibe im Chat‘ hat.\n  - Fehlt etwas, steht in der Zeitzeile ‚⚠ Kachel fehlt‘ bzw. ‚⚠ Empfehlung fehlt‘. Dann muss ich das Fenster nachreichen, bevor die Antwort fertig ist.\n  - Dazu kommt eine Prüfung mit Gegenprobe in `tests/messung.mjs`.\n\nA allein bleibt Selbstkontrolle und kann wieder versagen. Erst B macht es so verlässlich wie die Zeitzeile. Ich empfehle A und B zusammen, und das gleich mit der Korrektur APD-83 als **AppDesign 4.38.1 / Reiselogbuch 3.36.1**. Das sind zwei Themen, wie es 0 Nr. 8 erlaubt. Die neue Regel gilt ab dann für jede Sitzung, und APD-83 kommt vor allem Neuen (0 Nr. 22). Bis die Version da ist, halte ich mich schon jetzt an A.\n\n<sub>⏱ 02:36 · Token vorige Antwort: 3.015 neu · 172.001 aus Zwischenspeicher · 1.268 geschrieben · Kontext 176.090</sub>"
+    },
+    {
+     "zeit": "2026-10-26T13:38:05.318960Z",
+     "frage": {
+      "questions": [
+       {
+        "header": "APD-84",
+        "multiSelect": false,
+        "options": [
+         {
+          "description": "Neue Pflicht in Abschnitt 0 und automatische Warnung in der Zeitzeile – sonst bleibt es Selbstkontrolle.",
+          "label": "A und B (Empfohlen)"
+         },
+         {
+          "description": "Nur die neue Pflicht 0 Nr. 27, ohne Werkzeug-Prüfung.",
+          "label": "Nur A"
+         },
+         {
+          "description": "Claude beendet die Antwort.",
+          "label": "Ich schreibe im Chat"
+         }
+        ],
+        "question": "APD-84: Wie soll ich das Zusammenarbeitsmodell verbessern?"
+       },
+       {
+        "header": "4.38.1",
+        "multiSelect": false,
+        "options": [
+         {
+          "description": "Korrektur aus P-76 zuerst, und die neue Regel gilt sofort für alle Sitzungen.",
+          "label": "Ja (Empfohlen)"
+         },
+         {
+          "description": "Nicht bauen, beides bleibt im Backlog.",
+          "label": "Nein"
+         },
+         {
+          "description": "Claude beendet die Antwort.",
+          "label": "Ich schreibe im Chat"
+         }
+        ],
+        "question": "Soll ich Version AppDesign 4.38.1 / Reiselogbuch 3.36.1 mit APD-83 (Fensterbreite) und APD-84 (Auswahlfenster mit Empfehlung) erstellen?"
+       }
+      ]
+     }
+    }
+   ],
+   "erwartet": [
+    "W-6"
+   ]
+  },
+  {
+   "name": "0050 · Fenster ‚Ja · Nein‘ ohne Empfehlung",
+   "bausteine": [
+    {
+     "zeit": "2026-10-26T13:25:09.566581Z",
+     "frage": {
+      "questions": [
+       {
+        "header": "4.39.0",
+        "multiSelect": false,
+        "options": [
+         {
+          "description": "Alle drei Punkte in einer Version bauen und veröffentlichen.",
+          "label": "Ja"
+         },
+         {
+          "description": "Nicht bauen, die Punkte bleiben gesammelt.",
+          "label": "Nein"
+         },
+         {
+          "description": "Claude beendet die Antwort.",
+          "label": "Ich schreibe im Chat"
+         }
+        ],
+        "question": "Soll ich Version 4.39.0 (Reiselogbuch 3.37.0) mit APD-83 (Fensterbreite), APD-77 (‚Messung starten‘ verstecken) und P-75/6 (Satz in Designrichtlinie 13) erstellen?"
+       }
+      ]
+     }
+    }
+   ],
+   "erwartet": [
+    "W-5"
+   ]
+  },
+  {
+   "name": "0050 · ‚Okay: Ich baue nichts …‘ ohne Uhrzeitzeile",
+   "bausteine": [
+    {
+     "zeit": "2026-10-26T13:39:38.712159Z",
+     "text": "Okay: Ich baue nichts. Zu APD-84 warte ich auf deine Nachricht im Chat.\n\n<sub>⏱ 01:02 · Token vorige Antwort: 25.511 neu · 4.657.690 aus Zwischenspeicher · 72.994 geschrieben · Kontext 181.755</sub>"
+    }
+   ],
+   "erwartet": [
+    "W-1"
+   ]
+  },
+  {
+   "name": "0050 · ‚Ich baue also nichts …‘ ohne Uhrzeitzeile",
+   "bausteine": [
+    {
+     "zeit": "2026-10-26T13:51:37.312990Z",
+     "text": "Ich baue also nichts, auch nicht 4.39.0. Analyse und Plan liegen als Vorschlag im Backlog von AppDesign (APD-84) und in der Datei `arbeit/APD-84 Konsolidierung Regelwerk Analyse und Plan.md`.\n\nDer Kontext steht bei etwa 265.000 Token, ab 300.000 übergebe ich (0 Nr. 13). Wenn du am Plan etwas ändern willst, schreib es einfach im Chat.\n\n<sub>⏱ 05:36 · Token vorige Antwort: 5.810 neu · 1.059.620 aus Zwischenspeicher · 10.209 geschrieben · Kontext 265.322</sub>"
+    }
+   ],
+   "erwartet": [
+    "W-1"
+   ]
+  },
+  {
+   "name": "0051 · englische Zwischenmeldung ohne Uhrzeitzeile",
+   "bausteine": [
+    {
+     "zeit": "2026-10-26T14:04:32.501Z",
+     "text": "I'll start by reading the handover and plan documents in the repo."
+    }
+   ],
+   "erwartet": [
+    "W-1"
+   ]
+  },
+  {
+   "name": "0051 · ‚Push-Zugriff … ist jetzt da‘ ohne Uhrzeitzeile",
+   "bausteine": [
+    {
+     "zeit": "2026-10-26T14:49:46.054Z",
+     "text": "Push-Zugriff für AppDesign ist jetzt da. Ich klone neu an den vorgesehenen Ort."
+    }
+   ],
+   "erwartet": [
+    "W-1"
+   ]
+  }
+ ]
+}

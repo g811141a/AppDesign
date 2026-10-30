@@ -1,4 +1,4 @@
-/* AppDesign 4.44.0 · design.css – gemeinsame Gestaltung der iPad-Web-Apps von g811141a (Apple-like)
+/* AppDesign 4.44.1 · design.css – gemeinsame Gestaltung der iPad-Web-Apps von g811141a (Apple-like)
    Einbinden im <head> vor dem eigenen <style> der App:  <link rel="stylesheet" href="../AppDesign/fassung/X.Y.Z/design.css"> (feste Fassung, R-10.3)
    Farben als Variablen auf :root, Dunkelmodus über data-theme="dark" (setzt ui.js / applyTheme).
    Komponenten: Schaltflächen, Suchfeld, Kapsel, Eingabefelder, Datumsfelder, Kopfzeile, Seitenleiste,
@@ -6,7 +6,7 @@
    Options-Kapsel; seit 4.1.0 iPhone-Ansicht (html.phone: Seitenkopf, großer Titel, Liste, Kasten, untere Leiste). Regeln dazu: README - Designrichtlinie allgemein.md */
 /* Farben im Apple-Look: Hintergrund Hellgrau, Kästen weiß ohne Rand, schwebende Schaltflächen */
 :root {
-  --ad-version: "4.44.0";   /* R-10.3: Version der Bausteine, die App prüft sie beim Start */
+  --ad-version: "4.44.1";   /* R-10.3: Version der Bausteine, die App prüft sie beim Start */
   --bg: #f2f2f7;
   --card: #ffffff;
   --ink: #1c1c1e;
@@ -102,6 +102,7 @@ html.ts-um .menu .mi { flex-wrap: wrap; padding-top: 6px; padding-bottom: 6px; }
 html.ts-um .menu .mi .val { order: 9; flex: 1 0 100%; margin-left: 0; padding-left: calc(10px + 20px * var(--k)); }
 html.ts-um .box .kv { flex-direction: column; gap: 2px; }
 html.ts-um .box .kv .k { width: auto; margin: 0; padding: 0; border-right: none; }
+html.ts-um .box .kv .k > .l { height: auto; }
 html.ts-um .step-head { flex-wrap: wrap; row-gap: 8px; }
 html.ts-um .step-head > label:first-child { flex: 1 0 100%; }
 html.ts-um .step-head :is(.head-check, .head-checks) { order: 3; margin-left: 0; justify-content: flex-start; }
@@ -634,9 +635,12 @@ html.phone body { padding-top: var(--pnav-h, 60px); }
 /* Seit 4.2.0: Felder im Kasten durch dünne Linien getrennt (wie die Trennlinie im Menü) – waagrecht zwischen
    den Feldern, senkrecht zwischen Bezeichnung und Inhalt */
 .box .kv + .kv { border-top: 1px solid var(--line); }
-.box .kv .k { flex: none; width: 74px; font-size: var(--t-footnote); color: var(--muted); margin: -7px 0; padding: 9px 8px 7px 0; border-right: 1px solid var(--line); }
+.box .kv .k { flex: none; display: flex; align-items: flex-start; width: 74px; font-size: var(--t-footnote); color: var(--muted); margin: -7px 0; padding: 7px 8px 7px 0; border-right: 1px solid var(--line); }
 .box .kv .v { flex: 1; min-width: 0; }
-.box .kv .k.word { font-size: var(--t-headline); font-weight: 600; color: var(--ink); padding-top: 7px; }
+/* Seit 4.44.1 (APD-98, R-6.5): Bezeichnung (.l, Emojis klein, Text .w bzw. ganz .k.word) mittig zur ersten Zeile des Werts; Text normal
+   in Textgröße und Textfarbe wie der Wert (R-5.8) */
+.box .kv .k > .l { display: flex; align-items: center; gap: 2px; height: calc(var(--t-body) * var(--lh, 1.45)); }
+.box .kv .k.word, .box .kv .k .w { font-size: var(--t-body); font-weight: 400; color: var(--ink); }
 .box.on { background: var(--sel-bg); }
 /* Komponente untere Leiste (iPhone): Suchfeld und runde Knöpfe unten; wandert mit der Tastatur nach oben */
 .bbar { position: fixed; z-index: 8; left: max(16px, var(--safe-left)); right: max(16px, var(--safe-right));

@@ -3,6 +3,22 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.44.1 – 30.10.2026
+
+AppDesign 4.44.1 · Designrichtlinie allgemein 4.44.1 · Zusammenarbeit allgemein 3.3.0 · geprüft mit Reiselogbuch 3.42.1
+
+**APD-98 Bezeichnung im Kasten mit Feldern** (aus deiner Rückmeldung zu P-82/3) und **APD-96 Kontextstand vor der Bau-Frage** – dein Ja vom
+30.10.2026, Sitzung 0059 (Wortlaut beider Regeln bestätigt, Muster Variante B1); Testfall-Liste `arbeit/RLB-112 Testfall-Liste.md`
+(RLB-112/U-2, U-5). Usertest im Reiselogbuch: P-83.
+
+- **APD-98 – Bezeichnung im Kasten mit Feldern (15.10, R-6.5):** Text in der ersten Spalte (`.k.word`, Buchstaben neben einem Emoji `.w`)
+  normal (400), in Textgröße und Textfarbe wie der Wert – Apple-Standard (UIKit valueCell) und R-5.8; bisher ein Wort halbfett in
+  Headline, neben einem Emoji klein grau. Emojis bleiben klein. Icon und Text (`.k > .l`) stehen mittig zur ersten Zeile des Werts, auch bei
+  mehrzeiligem Wert; bei großer Schrift (ts-um) weiter über dem Wert. Neue Prüfung `hig.mjs` – `kastenBezeichnung` (exportiert) nach jedem
+  Schritt; Gegenprobe im Reiselogbuch (`ablauf-preis-km`, RLB-112/U-5: halbfette, verschobene Bezeichnung wird gemeldet).
+- **APD-96 – Kontextstand vor der Bau-Frage (Zusammenarbeit 0 Nr. 21, Kasten ‚Jede Antwort‘ 9):** unmittelbar vor ‚Soll ich Version …
+  erstellen?‘ der Kontextstand als Satz mit ‚Kontext N‘ aus `messung.mjs`, abgelesen; die Zeitzeile steht nur ganz am Ende (sonst lehnt der Regelwächter die Antwort ab).
+
 ## 4.44.0 – 30.10.2026
 
 AppDesign 4.44.0 · Designrichtlinie allgemein 4.44.0 · Zusammenarbeit allgemein 3.2.0 · geprüft mit Reiselogbuch 3.42.0
