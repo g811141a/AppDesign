@@ -20,7 +20,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| P-82 | 1 | **Rückmeldung 30.10.2026: /1, /3, /5 nicht ok → RLB-112 (Reiselogbuch).** **Usertest P-82 (Reiselogbuch 3.42.0 · AppDesign 4.44.0):** APD-95 Bezeichnungen und Einheiten normal (R-5.8), schmales Zahlenfeld bündig rechts (mit Fokus Platz für das ⓧ); im Reiselogbuch RLB-111 – Testfälle P-82/0 bis P-82/7 im CHANGELOG des Reiselogbuchs | prüfen |
+| P-82 | 1 | **Rückmeldung 30.10.2026: /1, /3, /5 nicht ok → RLB-112 (Reiselogbuch); /0, /2, /4, /6, /7 ok (Nutzer 30.10.2026, Sitzung 0059).** **Usertest P-82 (Reiselogbuch 3.42.0 · AppDesign 4.44.0):** APD-95 Bezeichnungen und Einheiten normal (R-5.8), schmales Zahlenfeld bündig rechts (mit Fokus Platz für das ⓧ); im Reiselogbuch RLB-111 – Testfälle P-82/0 bis P-82/7 im CHANGELOG des Reiselogbuchs | prüfen |
 
 ## 2. Weitere Themen (in Klärung)
 
