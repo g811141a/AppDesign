@@ -22,7 +22,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| P-80 | 1 | **Usertest P-80 (Reiselogbuch 3.40.0 · AppDesign 4.42.0):** APD-87 Mehr-Knopf offen senkrecht und blau (iPad, iPhone, mit Untermenü), APD-90 Reisemittel brechen nur nach dem Komma (iPad hoch und quer, PDF) – Testfälle im CHANGELOG des Reiselogbuchs | prüfen |
+| – | – | zurzeit kein offener Usertest | – |
 
 ## 2. Weitere Themen (in Klärung)
 
@@ -62,6 +62,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Thema | Version | Datum |
 |---|---|---|---|
+| P-80 | Geprüft **P-80 (Reiselogbuch 3.40.0): alles ok** (Nutzer 30.10.2026, Sitzung 0056) – **APD-87 und APD-90 bestätigt:** Mehr-Knopf offen senkrecht und blau (iPad, iPhone, mit Untermenü), Reisemittel brechen nur nach dem Komma (iPad hoch und quer, PDF) | 4.42.0 | 30.10.2026 |
 | APD-85, APD-87, APD-90 | **APD-85 Teil 1:** `lauf.mjs` wiederholt rote Läufe am Ende einmal allein (‚⚠ wackelt‘, gilt als grün), Abbruch ab dem dritten roten Lauf, Wackler in der Zusammenfassung von `veroeffentlichen.mjs` (APD-85/W-1 bis APD-85/W-11), Zusammenarbeit 3.2.0 0 Nr. 2 · **APD-87:** Mehr-Knopf offen senkrecht (`ellipsis-vertical`) und blau, 15.6, R-4.1, `checkMehrKnopf` · **APD-90:** Icon und Text bleiben zusammen, Designrichtlinie 3, neue Regel R-10.5, `iconText`, `checkIconText` · Usertest P-80 | 4.42.0 | 30.10.2026 |
 | P-79 | Geprüft **P-79 (Reiselogbuch 3.39.0): alles ok** (Nutzer 30.10.2026, Sitzung 0054) – **APD-81 bestätigt:** ⓧ in mehrzeiligen Feldern (eine Zeile sofort, mehr als eine Sprechblase ‚Text löschen?‘), Rückgängig mit Undo-Taste, drei Fingern und Schütteln, auch im Reisetitel, kein Aufblitzen beim Leeren | 4.41.0 | 30.10.2026 |
 | APD-81, APD-89 | **APD-81 ⓧ auch in mehrzeiligen Feldern (Rückmeldung P-73/1, Ja 30.10.2026):** R-5.6 für ein- und mehrzeilige Felder – mehrzeilig oben rechts auf Höhe der ersten Zeile, mehr als eine Zeile erst nach der Sprechblase ‚Text löschen?‘; in allen Feldern geleert über den Bearbeiten-Befehl (Undo-Taste und drei Finger holen den Text zurück, APD-81/M-1 bis M-4); Designrichtlinie 13, 15.11, 16; `checkClear` APD-81/C1 bis C16 · **APD-89:** Zusammenarbeit 3.1.0, 0 Nr. 29 ‚Regeln nur mit Genehmigung‘ und im Kasten ‚Immer‘ · Usertest P-79 | 4.41.0 | 30.10.2026 |
