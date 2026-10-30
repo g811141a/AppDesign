@@ -1,6 +1,6 @@
 # AppDesign – Backlog (allgemeine Themen)
 
-**Stand 30.10.2026** · Aktuelle Version: AppDesign 4.44.0
+**Stand 30.10.2026** · Aktuelle Version: AppDesign 4.44.1
 
 Allgemeine Themen, die alle Apps betreffen. App-Themen stehen im Backlog der jeweiligen App.
 Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.4.
@@ -11,16 +11,15 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Prio | Thema | bereit seit |
 |---|---|---|---|
-| APD-96 | 1 | **Regel 0 Nr. 21 – Kontextstand vor der Bau-Frage (Nutzer 30.10.2026, Sitzung 0058, Wortlaut bestätigt):** Zusammenarbeit 0 Nr. 21 neu: „Vorher immer ‚Soll ich Version X.Y.Z mit … erstellen? Ja/Nein‘. **Unmittelbar davor steht im Chat der aktuelle Kontextstand: die Zeitzeile von `messung.mjs` mit Token und Kontext, abgelesen und nie geschätzt.** Gebaut wird erst nach einem ausdrücklichen ‚Ja‘ …“; dazu im Kasten ‚Jede Antwort‘ Punkt 9; Prüfung Selbstkontrolle. Anlass: in 0058 vor der Bau-Frage ‚etwa 240.000‘ geschätzt, tatsächlich danach 351.679 | 30.10.2026 |
 
-1 Punkt bereit.
+0 Punkte bereit.
 
 
 ## 1. Auf iPad und iPhone prüfen
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| P-82 | 1 | **Rückmeldung 30.10.2026: /1, /3, /5 nicht ok → RLB-112 (Reiselogbuch); /0, /2, /4, /6, /7 ok (Nutzer 30.10.2026, Sitzung 0059).** **Usertest P-82 (Reiselogbuch 3.42.0 · AppDesign 4.44.0):** APD-95 Bezeichnungen und Einheiten normal (R-5.8), schmales Zahlenfeld bündig rechts (mit Fokus Platz für das ⓧ); im Reiselogbuch RLB-111 – Testfälle P-82/0 bis P-82/7 im CHANGELOG des Reiselogbuchs | prüfen |
+| P-83 | 1 | **Usertest P-83 (Reiselogbuch 3.42.1 · AppDesign 4.44.1):** APD-98 Bezeichnung im Kasten mit Feldern normal, mittig zur ersten Zeile des Werts (R-6.5); im Reiselogbuch RLB-112 – Testfälle P-83/0 bis P-83/5 im CHANGELOG des Reiselogbuchs | prüfen |
 
 ## 2. Weitere Themen (in Klärung)
 
@@ -61,6 +60,9 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Thema | Version | Datum |
 |---|---|---|---|
+| APD-98 | **APD-98 (aus P-82/3):** Bezeichnung im Kasten mit Feldern in normaler Schrift, Textgröße und Textfarbe wie der Wert, Emojis klein, mittig zur ersten Zeile des Werts (15.10, R-6.5, Prüfung `hig.mjs` – `kastenBezeichnung`) | 4.44.1 | 30.10.2026 |
+| APD-96 | **APD-96:** Zusammenarbeit 0 Nr. 21 – vor der Bau-Frage der Kontextstand als Satz mit ‚Kontext N‘ aus `messung.mjs` (Zusammenarbeit 3.3.0) | 4.44.1 | 30.10.2026 |
+| P-82 | **Usertest P-82:** ok bis auf /1, /3, /5 → RLB-112, APD-98 | 4.44.1 | 30.10.2026 |
 | APD-95 | **APD-95:** Bezeichnungen von Feldern und Einheiten (‚€‘, ‚km‘) in normaler Schrift und Textgröße, halbfett nur Überschriften (8, R-5.8, Prüfung `hig.mjs` – `bezeichnungen`); schmales Zahlenfeld ohne Fokus bündig rechts, mit Fokus rückt die Zahl für das ⓧ nach links (8, APD-93 geändert) – Usertest P-82 | 4.44.0 | 30.10.2026 |
 | P-81 | Geprüft **P-81 (3.41.0 / 4.43.0): ok bis auf P-81/6 und P-81/7** (Nutzer 30.10.2026, Sitzung 0058) – Rückmeldungen als APD-95 und RLB-111 in 4.44.0 / 3.42.0 umgesetzt | 4.43.0 | 30.10.2026 |
 | APD-91, APD-92, APD-93 | **APD-91:** ‚Suchen‘ zuerst im Mehr-Menü mit Strich darunter, keine Lupe in der Kapsel, x ‚Suche beenden‘, ⌘F (`suchenMenuItems`, `sucheBeendenHtml`, `sucheAnmelden`; 15.2, 15.3, 15.4, R-2.3, R-4.7, 16; `checkSearchPlace`, `checkSucheBeenden`, `checkCmdF`) · **APD-92:** ‚Darstellung‘ im Mehr-Menü der Seitenleiste (`darstellungMenuItem`, 2, R-1.2, `hig.mjs`) · **APD-93:** schmale Zahlenfelder (`input.zahl-schmal`, 8) · Usertest P-81 | 4.43.0 | 30.10.2026 |

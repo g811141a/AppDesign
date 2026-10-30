@@ -1,6 +1,6 @@
 # Designrichtlinie allgemein
 
-**Version 4.44.0** · Stand 30.10.2026
+**Version 4.44.1** · Stand 30.10.2026
 
 Allgemeine Gestaltungs- und Bedienregeln für alle Web-Apps von g811141a auf iPad und iPhone. Die Datei liegt im Design-Repo
 **AppDesign** (g811141a/AppDesign); ihre Versionsnummer ist die des Repos. Die Komponenten sind dort einmal programmiert und
@@ -761,7 +761,10 @@ Regel). In AppDesign ist jede Komponente einmal programmiert (`v4/design.css`, `
   ganze Gruppe unter den Titel – nie eine Kapsel allein.
 - **Kasten mit Feldern** (`.box` mit `.kv`, iPhone statt Tabellenzeile, R-6.1): Felder durch dünne Linien getrennt (1 px
   `--line`, wie die Trennlinie im Menü) – waagrecht zwischen den Feldern, senkrecht zwischen Bezeichnung und Inhalt.
-  Bezeichnung als Wort in normaler Schrift (`.k.word`, 17 pt halbfett) oder als Emoji/klein grau.
+  Bezeichnung in der ersten Spalte (Wort, Emoji oder Emoji mit Wort, z. B. ‚Verlauf‘, ‚🚶🏽‍♂️ km‘): Text in normaler Schrift, Textgröße
+  und Textfarbe wie der Wert (R-5.8), Emojis bleiben klein; Icon und Text der Bezeichnung stehen waagrecht mittig zur ersten Zeile des
+  Werts, auch wenn der Wert mehrzeilig ist (R-6.5). **Technisch:** `<span class="k"><span class="l">…</span></span>`, ein Wort allein
+  `.k.word`, Buchstaben neben einem Emoji in `.w`.
 
 ### 15.11 Eingabefeld mit Fehlermeldung
 - **Apple:** [HIG – Text fields](https://developer.apple.com/design/human-interface-guidelines/text-fields)
@@ -1187,6 +1190,7 @@ Testfall (User) in den Usertest, wenn eine Version es betrifft.
 | R-6.2 | **Mustertabelle der Ausgabe** (`outputCss`): jede Tabelle in Ausgabe, Vorschau und Bericht, Zebra je Tabellenzeile, keine eigene Nachbildung | hig.mjs – Vergleich mit unsichtbarer Mustertabelle | – | 10, 15.18 |
 | R-6.3 | **Kein Text ragt hinaus:** zu lange Wörter und Smiley-Reihen brechen um, hängender Einzug (Folgezeilen unter dem Text) – überall, auch in Fenstern, Vorschauen, Berichten | hig.mjs – jede sichtbare Zelle, auch nach seitlichem Wischen (100 × ‚a‘) | – | 9 |
 | R-6.4 | **Ausgabe und Vorschau:** immer hell; Vorschau zeigt genau die Datei, in voller Seitenbreite, seitlich wischen (iPad und iPhone); Kapsel [PDF · Teilen]; Dateinamen nach Muster; das PDF druckt die ganze Ausgabe, nie nur einen Bildschirm | ablauf.mjs – `checkPreview`, `checkPrint` | Teilen, Drucken | 7, 10, 15.22 |
+| R-6.5 | **Bezeichnung im Kasten mit Feldern:** Text in der ersten Spalte normal (400), in Textgröße und Textfarbe; Icon und Text waagrecht mittig zur ersten Zeile des Werts | hig.mjs – `kastenBezeichnung` (nach jedem Schritt; Gegenprobe im Reiselogbuch `ablauf-preis-km`) | – | 15.10 |
 
 ### 7. Seitenleiste und Liste
 
@@ -1282,6 +1286,7 @@ R-2.3 (15.2), R-4.4 (6, 15.8, HIG 9), R-5.3 (8), R-5.4 (15.12), R-5.5 (APD-14), 
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 4.44.1 | 30.10.2026 | Korrektur | **APD-98 (Nutzer 30.10.2026, Sitzung 0059, Wortlaut bestätigt, aus P-82/3):** 15.10 Bezeichnung im Kasten mit Feldern normal in Textgröße und Textfarbe wie der Wert, Emojis klein, mittig zur ersten Zeile des Werts (Variante B1 – Apple-Standard statt halbfett); Katalog R-6.5 neu (Prüfung `hig.mjs` – `kastenBezeichnung`) |
 | 4.44.0 | 30.10.2026 | Neben | **APD-95 (Nutzer 30.10.2026, Wortlaut bestätigt, aus P-81/6):** 8 neu ‚Bezeichnungen in normaler Schrift‘ und Katalog R-5.8 (Prüfung `hig.mjs` – `bezeichnungen`); 8 ‚Zahlenfelder mit kleinem Höchstwert‘ ohne Fokus bündig am rechten Rand, mit Fokus rückt die Zahl für das ⓧ nach links (statt immer freiem Platz) |
 | 4.43.0 | 30.10.2026 | Neben | **APD-91 (Nutzer 30.10.2026, Wortlaut bestätigt):** 15.2, 15.3, 15.4, R-2.3, R-4.7 – die Suche öffnet ‚Suchen‘ als erster Punkt im Mehr-Menü (darunter ein Strich) oder ⌘F, beendet wird sie mit dem runden x ‚Suche beenden‘ rechts in der Suchzeile, keine Lupe in der Kapsel; 16 zwei bewusste Abweichungen (Suche der Liste im Mehr-Menü, Suchzeile am iPhone oben). **APD-92 (Wortlaut bestätigt):** 2 und R-1.2 – ‚Darstellung‘ im Mehr-Menü der Seitenleiste nach Backup, nie im Menü eines Eintrags. **APD-93 (Wortlaut bestätigt):** 8 – schmale Zahlenfelder mit kleinem Höchstwert, ⓧ-Platz immer frei. **Folgeänderungen (Nutzer 30.10.2026, Wortlaut bestätigt):** 1, Icon-Tabelle 5, 15.5 ‚Keine Lupe in der Kapsel‘ (ersetzt ‚Suche am Ende‘, APD-22), 15.17 Kapseln und Suche, 17 Prüfspalten R-2.3 und R-4.7 |
 | 4.42.0 | 30.10.2026 | Neben | **APD-87 (Nutzer 30.10.2026, Wortlaut bestätigt):** 15.6, Icon-Tabelle (5) und R-4.1 – der Mehr-Knopf zeigt bei offenem Menü drei senkrechte Punkte (`ellipsis-vertical`), Prüfung `checkMehrKnopf`. **APD-90 (Nutzer 30.10.2026, Wortlaut bestätigt):** 3 ‚Icon und Text bleiben zusammen‘ und neue Regel R-10.5, Baustein `iconText`, Prüfung `checkIconText`. **APD-85 Teil 1:** `lauf.mjs` wiederholt rote Läufe am Ende einmal allein (‚wackelt‘), Abbruch erst ab dem dritten roten Lauf |

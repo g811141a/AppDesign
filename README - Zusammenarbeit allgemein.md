@@ -1,6 +1,6 @@
 # Zusammenarbeit allgemein
 
-**Version 3.2.0** · Stand 30.10.2026
+**Version 3.3.0** · Stand 30.10.2026
 
 Regeln für die Zusammenarbeit mit Claude bei allen iPad-Web-Apps von g811141a. Die Datei liegt im Design-Repo **AppDesign**
 (g811141a/AppDesign); App-Eigenes steht in der `CLAUDE.md` des App-Repos. **Abschnitt 0 ist das Arbeitsmodell** (oben der Kasten ‚Immer‘ und ‚Jede
@@ -28,6 +28,7 @@ Antwort‘), Abschnitt 1 die Sprache, Abschnitt 2 die Einzelheiten und Formate. 
 > 7. Ganz am Ende, nach dem Fenster: die Zeitzeile von `messung.mjs`, unverändert (2.2). **W**
 > 8. Meldet der Regelwächter ‚⚠ Modell‘, steht es in der Antwort (2.5); steht ‚⚠ Übergabe fällig‘ in der Zeitzeile: nach dem
 >    laufenden Schritt übergeben (Nr. 13).
+> 9. Vor der Frage ‚Soll ich Version … erstellen?‘: der Kontextstand als Satz mit ‚Kontext N‘ aus `messung.mjs`, abgelesen (Nr. 21).
 
 Ziel: nichts vergessen, Fehler finden, bevor der Nutzer sie findet, schnell und sparsam arbeiten. Die Nummern bleiben fest
 (Verweise in Code und Changelogs), neue Punkte bekommen die nächste freie Nummer. Einzelheiten und Formate: Abschnitt 2.
@@ -36,7 +37,9 @@ Ziel: nichts vergessen, Fehler finden, bevor der Nutzer sie findet, schnell und 
 
 21. **Nie ohne ‚Ja‘ bauen:** Claude entscheidet nie selbst, eine Version zu bauen oder hochzuladen – auch nicht bei kleinen
     Korrekturen oder wenn die Bitte ‚korrigieren‘, ‚verbessern‘, ‚ausbessern‘ lautet. Vorher immer ‚Soll ich Version X.Y.Z mit …
-    erstellen? Ja/Nein‘; gebaut wird erst nach einem ausdrücklichen ‚Ja‘ (eine Bitte um Korrektur ist keins). Bis dahin:
+    erstellen? Ja/Nein‘. Unmittelbar davor steht im Chat der aktuelle Kontextstand als Satz mit der Zahl ‚Kontext N‘ aus
+    `messung.mjs` – abgelesen und nie geschätzt; die Zeitzeile selbst steht nur ganz am Ende. Gebaut wird erst nach einem
+    ausdrücklichen ‚Ja‘ (eine Bitte um Korrektur ist keins). Bis dahin:
     erklären, Vorschlag machen, ins Backlog eintragen. Prüfung: Selbstkontrolle.
 22. **Erst prüfen, dann Neues:** Nach jeder Version werden alle Testfälle (User) des Usertests geprüft und gefundene Fehler beseitigt, bevor Neues
     umgesetzt wird; jeder Bericht endet mit dem Hinweis darauf (2.3). Ausnahme: Der Nutzer besteht nach dem Hinweis darauf, zuerst
@@ -397,6 +400,7 @@ im Verlauf und in Kommentaren der Prüfungen nennen noch die alten Stellen):
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 3.3.0 | 30.10.2026 | Neben | **APD-96 (Nutzer 30.10.2026, Sitzungen 0058 und 0059, Wortlaut bestätigt):** 0 Nr. 21 – unmittelbar vor der Bau-Frage der Kontextstand als Satz mit ‚Kontext N‘ aus `messung.mjs`, abgelesen; dazu Kasten ‚Jede Antwort‘ Punkt 9 |
 | 3.2.0 | 30.10.2026 | Neben | **APD-85 Teil 1 (Nutzer 30.10.2026, Wortlaut bestätigt):** 0 Nr. 2 – `lauf.mjs` bricht erst ab dem dritten roten Lauf ab, jeder rote Lauf läuft am Ende einmal allein (grün = ‚wackelt‘, gemeldet) |
 | 3.1.0 | 30.10.2026 | Neben | **APD-89 (Nutzer 30.10.2026, Wortlaut bestätigt):** neu 0 Nr. 29 ‚Regeln nur mit Genehmigung‘ – keine Regel ohne ‚Ja‘ des Nutzers zum Wortlaut löschen, ändern oder ergänzen; dazu im Kasten ‚Immer‘ |
 | 3.0.0 | 26.10.2026 | Haupt | **APD-84 Regelwerk, Konsolidierung 2 (Nutzer 26.10.2026, Plan bestätigt):** ganz oben in 0 der Kasten ‚Immer‘ und ‚Jede Antwort‘ (alle Pflichten jeder Antwort an einer Stelle, jede mit ihrer Prüfung); neu 0 Nr. 27 ‚Nur Belegtes‘ und 0 Nr. 28 ‚Jede Frage im Fenster, jede Antwort endet mit einem‘ (0 Nr. 7 war seit 2.17.0 zu ‚nur für Ja/Nein‘ abgeschwächt); 0 Nr. 4 wieder ‚im Auswahlfenster‘, 0 Nr. 20 wieder ‚nie nur in einer Prüfung‘; 0 Nr. 15 zu Beginn die ganze Datei; 0 Nr. 19 Startfrage mit Empfehlung; 2.1 Schreibweise ‚(Empfohlen)‘ mit Grund; neu 2.8 Regelwächter (Hooks: Uhrzeit liefern, Fenster vor dem Zeigen prüfen, Antwort am Ende prüfen; Prüfung `tests/regelwaechter.mjs`); 2.5 Rückfall des Modells bei hoher Last melden |

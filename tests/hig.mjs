@@ -30,6 +30,32 @@ export function bezeichnungen() {
   return out;
 }
 
+// R-6.5 (seit 4.44.1, APD-98): Bezeichnung im Kasten mit Feldern (.box .kv .k) – jeder Text (Buchstaben) normal (400), so groß und in
+// derselben Farbe wie der Wert; Icon und Text mittig zur ersten Zeile des Werts (nicht bei großer Schrift, wo die Bezeichnung darüber steht).
+// Läuft in der Seite (p.evaluate(kastenBezeichnung)) – nach jedem Schritt in measure, einzeln für die Gegenprobe.
+export function kastenBezeichnung() {
+  const out = [], r = document.createRange();
+  document.querySelectorAll('.box .kv').forEach(kv => {
+    const k = kv.querySelector(':scope > .k'), v = kv.querySelector(':scope > .v'), kb = k?.getBoundingClientRect();
+    if (!k || !v || !kb.width || !kb.height) return;
+    const name = k.textContent.trim().slice(0, 20), cv = getComputedStyle(v);
+    const w = document.createTreeWalker(k, NodeFilter.SHOW_TEXT);
+    for (let n; (n = w.nextNode());) if (/\p{L}/u.test(n.data)) {
+      const c = getComputedStyle(n.parentElement);
+      if (+c.fontWeight !== 400) out.push(`Bezeichnung ‚${name}‘ ${c.fontWeight} statt normal (400)`);
+      if (Math.abs(parseFloat(c.fontSize) - parseFloat(cv.fontSize)) > 0.5) out.push(`Bezeichnung ‚${name}‘ ${c.fontSize} statt ${cv.fontSize} wie der Wert`);
+      if (c.color !== cv.color) out.push(`Bezeichnung ‚${name}‘ Farbe ${c.color} statt ${cv.color} wie der Wert`);
+    }
+    if (kb.bottom <= v.getBoundingClientRect().top + 1) return;   // große Schrift: Bezeichnung über dem Wert
+    const t = document.createTreeWalker(v, NodeFilter.SHOW_TEXT, { acceptNode: x => x.data.trim() ? 1 : 3 }).nextNode(), l = k.querySelector('.l') || k;
+    if (!t) return;
+    const i = t.data.search(/\S/); r.setStart(t, i); r.setEnd(t, i + 1);
+    const z = r.getClientRects()[0], lb = l.getClientRects()[0], mitte = b => (b.top + b.bottom) / 2, zm = z && mitte(z);
+    if (z && lb && Math.abs(mitte(lb) - zm) > 2) out.push(`Bezeichnung ‚${name}‘ ${Math.round(mitte(lb) - zm)} px neben der Mitte der ersten Zeile des Werts`);
+  });
+  return out;
+}
+
 export function createCheck({ skipTargets = [] } = {}) {
 const found = new Map(), icons = new Map();
   let rotating = false;
@@ -541,6 +567,7 @@ const found = new Map(), icons = new Map();
     delete r.icons;
     for (const [k, list] of Object.entries(r)) for (const x of list) note('Regel', { target: 'R-3.1 Antippfläche ', font: 'R-10.2 Schrift ', contrast: 'R-10.2 Kontrast ', quotes: 'R-10.1 Anführungszeichen ', menu: 'R-4.1 Menü: ', rules: '' }[k] + x, where);
     for (const x of await p.evaluate(bezeichnungen)) note('Regel', `R-5.8 ${x}`, where);
+    for (const x of await p.evaluate(kastenBezeichnung)) note('Regel', `R-6.5 ${x}`, where);
     if (schnell) return;
     await safe(p, where);
     // R-8.1 automatisch: einmal je Seite, wenn eine Seitenleiste da ist und nichts darüber offen ist (nur iPad).
