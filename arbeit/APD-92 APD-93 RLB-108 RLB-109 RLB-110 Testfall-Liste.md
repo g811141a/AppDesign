@@ -50,8 +50,10 @@ und Ø je Nacht; die neue, abschaltbare Spalte 🚶🏽‍♂️km nach ‚Wie w
 | L-6 | alle | Feldbreite | normal und große Schrift | Breite = ‚99‘ + Innenabstände + ⓧ-Platz (APD-93), wächst mit der Schrift (R-1.10) |
 | L-7 | alle | Spalte aus | Werte vorhanden | Schritt, Spalte und Statistikzeilen fehlen; Werte bleiben |
 | L-8 | alle | Statistik | 6, 14, 3 km und ein Tag ohne | ‚Gegangene Kilometer 23 km‘ · ‚Ø je Tag 8 km‘ (gerundet, nur Tage mit km); Summe mit Tausenderpunkt |
-| L-9 | iPhone | Tageskachel ansehen | 14 km | Vorschlag: Zeile ‚🚶🏽‍♂️ 14 km‘ nach ‚Wie war was?‘ |
-| L-10 | alle | Tag nur mit km | – | Vorschlag: zählt nicht als erfasst (wie Essen) |
+| L-9 | iPhone | Tageskachel ansehen | 14 km | Zeile ‚🚶🏽‍♂️ 14 km‘ nach ‚Wie war was?‘ (bestätigt) |
+| L-10 | alle | Tag nur mit km | – | zählt nicht als erfasst, wie Essen (bestätigt) |
 | L-11 | alle | Ausgabe HTML und PDF | alle Spalten an | Anteile Verlauf 28 · Wie war was? 28 · km 8 · Essen 22 · Quartier 22, Kopf in einer Zeile |
 | L-12 | iPad + iPhone | Backup laden / Abgleich | altes Backup | lädt fehlerfrei, `kmColumn` aus, km abgeglichen |
 | L-13 | alle | hell / dunkel, Drehen mit Fokus im Feld | – | Grundregeln, Feld bleibt sichtbar über der Tastatur |
+
+**Bestätigt 30.10.2026** (Nutzer, Sitzung 0055): Liste mit L-9 und L-10; Statistikzeile ‚Gegangene Kilometer‘; Version noch nicht bauen.
