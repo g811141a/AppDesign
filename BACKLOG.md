@@ -20,7 +20,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| P-79 | 1 | **Usertest P-79 (Reiselogbuch 3.39.0, AppDesign 4.41.0):** APD-81 – ⓧ in mehrzeiligen Feldern (eine Zeile sofort, mehr als eine Sprechblase ‚Text löschen?‘), Rückgängig mit Undo-Taste, drei Fingern und Schütteln, auch im Reisetitel; P-79/0 bis P-79/5 im CHANGELOG des Reiselogbuchs | prüfen |
+| – | – | zurzeit kein offener Usertest | – |
 
 ## 2. Weitere Themen (in Klärung)
 
@@ -63,6 +63,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Thema | Version | Datum |
 |---|---|---|---|
+| P-79 | Geprüft **P-79 (Reiselogbuch 3.39.0): alles ok** (Nutzer 30.10.2026, Sitzung 0054) – **APD-81 bestätigt:** ⓧ in mehrzeiligen Feldern (eine Zeile sofort, mehr als eine Sprechblase ‚Text löschen?‘), Rückgängig mit Undo-Taste, drei Fingern und Schütteln, auch im Reisetitel, kein Aufblitzen beim Leeren | 4.41.0 | 30.10.2026 |
 | APD-81, APD-89 | **APD-81 ⓧ auch in mehrzeiligen Feldern (Rückmeldung P-73/1, Ja 30.10.2026):** R-5.6 für ein- und mehrzeilige Felder – mehrzeilig oben rechts auf Höhe der ersten Zeile, mehr als eine Zeile erst nach der Sprechblase ‚Text löschen?‘; in allen Feldern geleert über den Bearbeiten-Befehl (Undo-Taste und drei Finger holen den Text zurück, APD-81/M-1 bis M-4); Designrichtlinie 13, 15.11, 16; `checkClear` APD-81/C1 bis C16 · **APD-89:** Zusammenarbeit 3.1.0, 0 Nr. 29 ‚Regeln nur mit Genehmigung‘ und im Kasten ‚Immer‘ · Usertest P-79 | 4.41.0 | 30.10.2026 |
 | P-78, P-77 | Geprüft **P-78 (Reiselogbuch 3.38.0): alles ok** (Nutzer 29.10.2026, Sitzung 0053) – **APD-86 und APD-77 bestätigt** · **P-77 (Reiselogbuch 3.37.0): alles ok** – /0–/2 in Sitzung 0052, /3 in Sitzung 0053: der Regelwächter lief über den Verweis `/home/user/appdesign`, lieferte die Uhrzeitzeile und wies eine Antwort ohne Auswahlfenster mit APD-84/W-4 zurück (**APD-84 bestätigt**) | 4.40.0 | 29.10.2026 |
 | APD-86, APD-77, P-75/6 | **APD-86 Wischzeile (deine Rückmeldung 29.10.2026, Prio 1, Ja 29.10.2026):** jeder seitlich wischbare Bereich bis etwa zwei Zeilen Höhe zeigt mit Verlauf und Pfeil, wo es weitergeht (R-5.4, 15.12, `wischHtml`, `hig.mjs`); im Reiselogbuch die Zeile ‚Reisemittel‘ am iPhone (`ablauf-reisemittel-zeile`, rot gegen 3.37.0) · **APD-77:** ‚Messung starten‘ erst nach langem Drücken auf die Versionszeile, bis zum Neustart (R-1.6, 15.21, `checkMessung` APD-77/F-1 bis F-9) · **P-75/6:** Designrichtlinie 13 ‚Textgröße pro App‘ | 4.40.0 | 29.10.2026 |
