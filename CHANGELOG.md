@@ -3,6 +3,21 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.44.0 – 30.10.2026
+
+AppDesign 4.44.0 · Designrichtlinie allgemein 4.44.0 · Zusammenarbeit allgemein 3.2.0 · geprüft mit Reiselogbuch 3.42.0
+
+**APD-95 Bezeichnungen normal statt fett** (aus deiner Rückmeldung zu P-81/6) – dein Ja vom 30.10.2026, Sitzung 0058 (Wortlaut der Regeln
+bestätigt); Testfall-Liste `arbeit/RLB-111 APD-95 Testfall-Liste.md` (APD-95/B-1 bis B-5, RLB-111/M-2). Usertest im Reiselogbuch: P-82.
+
+- **APD-95 – Bezeichnungen in normaler Schrift (8, R-5.8):** `label` in `design.css` normal (400) statt halbfett; halbfett bleiben nur
+  Überschriften (`.step-head label` – Schritt-Titel mit Nummer, `.step > label` – Kasten-Überschrift). Einheiten nach einem Feld (‚€‘, ‚km‘)
+  normal und so groß wie das Feld. Neue Prüfung `hig.mjs` – `bezeichnungen` (exportiert) nach jedem Schritt; Gegenprobe im Reiselogbuch
+  (`ablauf-preis-km`, APD-95/B-5: halbfette Bezeichnung und große Einheit werden gemeldet).
+- **Schmales Zahlenfeld (8, APD-93 geändert):** `input.zahl-schmal` steht ohne Fokus bündig am rechten Rand (Innenabstand 16 px wie das
+  Betragsfeld); mit Fokus (ⓧ, `.mitx`) rückt die Zahl für das ⓧ nach links – wie beim Betragsfeld und bei Apple (whileEditing). Kommazahlen
+  über `--ziffern` (z. B. 3.5 für ‚99,9‘).
+
 ## 4.43.0 – 30.10.2026
 
 AppDesign 4.43.0 · Designrichtlinie allgemein 4.43.0 · Zusammenarbeit allgemein 3.2.0 · geprüft mit Reiselogbuch 3.41.0

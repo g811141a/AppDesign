@@ -11,6 +11,25 @@
 // gedrückte Schaltfläche bleibt blau (R-3.3) und alle weiteren Regeln mit ‚hig.mjs‘ im Regelkatalog. Jede Meldung trägt
 // ihre Regelnummer (seit 4.12.0). Bewusste Abweichungen allgemein: Weiß auf Systemblau, Orange --warn.
 import { ruhe, ROLL, rolle, rollstand } from './pruefe.mjs';
+// R-5.8 (seit 4.44.0, APD-95): Bezeichnungen von Feldern in normaler Schrift (400), halbfett nur Überschriften (Schritt-Titel
+// .step-head label, Kasten-Überschrift .step > label); die Einheit nach einem Feld (‚€‘, ‚km‘: .kosten > span, .zahl-einheit > span) normal
+// und so groß wie das Feld. Läuft in der Seite (p.evaluate(bezeichnungen)) – nach jedem Schritt in measure, einzeln für die Gegenprobe.
+export function bezeichnungen() {
+  const vis = e => { const s = getComputedStyle(e), b = e.getBoundingClientRect(); return b.width > 0 && b.height > 0 && s.visibility !== 'hidden' && s.display !== 'none'; };
+  const name = e => (e.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 40), out = [];
+  document.querySelectorAll('label').forEach(l => {
+    if (!vis(l) || l.closest('#printout, .rt') || l.matches('.step-head label, .step > label')) return;
+    const w = +getComputedStyle(l).fontWeight; if (w > 400) out.push(`Bezeichnung ‚${name(l)}‘ ${w} statt normal (400)`);
+  });
+  document.querySelectorAll('.kosten > span, .zahl-einheit > span').forEach(u => {
+    const f = u.parentElement.querySelector('input'); if (!vis(u) || !f) return;
+    const cu = getComputedStyle(u), w = +cu.fontWeight, gu = parseFloat(cu.fontSize), gf = parseFloat(getComputedStyle(f).fontSize);
+    if (w > 400) out.push(`Einheit ‚${name(u)}‘ ${w} statt normal (400)`);
+    if (Math.abs(gu - gf) > 0.5) out.push(`Einheit ‚${name(u)}‘ ${gu} px statt ${gf} px wie das Feld`);
+  });
+  return out;
+}
+
 export function createCheck({ skipTargets = [] } = {}) {
 const found = new Map(), icons = new Map();
   let rotating = false;
@@ -521,6 +540,7 @@ const found = new Map(), icons = new Map();
     for (const [lbl, sig] of r.icons) { if (!icons.has(lbl)) icons.set(lbl, new Map()); if (!icons.get(lbl).has(sig)) icons.get(lbl).set(sig, where); }
     delete r.icons;
     for (const [k, list] of Object.entries(r)) for (const x of list) note('Regel', { target: 'R-3.1 Antippfläche ', font: 'R-10.2 Schrift ', contrast: 'R-10.2 Kontrast ', quotes: 'R-10.1 Anführungszeichen ', menu: 'R-4.1 Menü: ', rules: '' }[k] + x, where);
+    for (const x of await p.evaluate(bezeichnungen)) note('Regel', `R-5.8 ${x}`, where);
     if (schnell) return;
     await safe(p, where);
     // R-8.1 automatisch: einmal je Seite, wenn eine Seitenleiste da ist und nichts darüber offen ist (nur iPad).
