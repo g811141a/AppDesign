@@ -1,6 +1,6 @@
 # AppDesign – Backlog (allgemeine Themen)
 
-**Stand 29.10.2026** · Aktuelle Version: AppDesign 4.40.0
+**Stand 30.10.2026** · Aktuelle Version: AppDesign 4.41.0
 
 Allgemeine Themen, die alle Apps betreffen. App-Themen stehen im Backlog der jeweiligen App.
 Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.4.
@@ -11,17 +11,16 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Prio | Thema | bereit seit |
 |---|---|---|---|
-| APD-89 | 1 | **Regeln nur mit Genehmigung ändern (Nutzer 30.10.2026, Sitzung 0053, Wortlaut bestätigt 30.10.2026):** neue Pflicht 29 in Abschnitt 0 der Zusammenarbeit, dazu im Kasten ‚Immer‘: „**Regeln nur mit Genehmigung:** Claude löscht, ändert oder ergänzt keine Regel – Zusammenarbeit, Designrichtlinien mit Regelkatalog, App-Richtlinien, `CLAUDE.md` – ohne dein ausdrückliches ‚Ja‘ zum Wortlaut. Vorher stehen alter und neuer Text im Chat, die Frage im Auswahlfenster: ‚Regel … so ändern? Ja/Nein‘. Das gilt auch für Korrekturen und Zusammenfassungen (Nr. 3). Prüfung: Selbstkontrolle.“ Bis zum Eintrag hält Claude sich schon daran | 30.10.2026 |
-| APD-81 | 3 | **ⓧ auch in mehrzeiligen Feldern (Rückmeldung P-73/1, geklärt mit dem Nutzer 26.10.2026, Sitzung 0050 – `arbeit/APD-81 Klärung.md`):** APD-81/F-1 oben rechts auf Höhe der ersten Zeile, der Text läuft rechts in allen Zeilen nicht darunter · F-2 eine Zeile leert sofort, bei mehr als einer Zeile zuerst die Sprechblase ‚Text löschen?‘ mit ‚Löschen‘ (rot) und ‚Abbrechen‘ (R-4.3) · F-3 alle mehrzeiligen Textfelder, je Feld abschaltbar (`data-noclear`) · F-4 allgemeine Regel: R-5.6 für ein- und mehrzeilige Felder, `checkClear` erweitert, bewusste Abweichung von Apple (UITextView ohne ⓧ) in 16. **Gemessen am iPad (29.10.2026, Sitzung 0053, APD-81/M-1 bis M-4):** über den Bearbeiten-Befehl geleert, holen Undo-Taste und drei Finger den Text zurück, über den Wert nicht → **F-2 a bleibt, dazu leert das ⓧ über den Bearbeiten-Befehl; F-5 auch in einzeiligen Feldern** (Nutzer 29.10.2026). Testfall-Liste `arbeit/APD-81 Testfall-Liste.md` | 29.10.2026 |
+| – | – | zurzeit nichts gesammelt | – |
 
-2 Punkte bereit (APD-89, APD-81) – Version 4.41.0 erst nach deinem Ja.
+0 Punkte bereit.
 
 
 ## 1. Auf iPad und iPhone prüfen
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| – | – | zurzeit kein offener Usertest | – |
+| P-79 | 1 | **Usertest P-79 (Reiselogbuch 3.39.0, AppDesign 4.41.0):** APD-81 – ⓧ in mehrzeiligen Feldern (eine Zeile sofort, mehr als eine Sprechblase ‚Text löschen?‘), Rückgängig mit Undo-Taste, drei Fingern und Schütteln, auch im Reisetitel; P-79/0 bis P-79/5 im CHANGELOG des Reiselogbuchs | prüfen |
 
 ## 2. Weitere Themen (in Klärung)
 
@@ -64,6 +63,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Thema | Version | Datum |
 |---|---|---|---|
+| APD-81, APD-89 | **APD-81 ⓧ auch in mehrzeiligen Feldern (Rückmeldung P-73/1, Ja 30.10.2026):** R-5.6 für ein- und mehrzeilige Felder – mehrzeilig oben rechts auf Höhe der ersten Zeile, mehr als eine Zeile erst nach der Sprechblase ‚Text löschen?‘; in allen Feldern geleert über den Bearbeiten-Befehl (Undo-Taste und drei Finger holen den Text zurück, APD-81/M-1 bis M-4); Designrichtlinie 13, 15.11, 16; `checkClear` APD-81/C1 bis C16 · **APD-89:** Zusammenarbeit 3.1.0, 0 Nr. 29 ‚Regeln nur mit Genehmigung‘ und im Kasten ‚Immer‘ · Usertest P-79 | 4.41.0 | 30.10.2026 |
 | P-78, P-77 | Geprüft **P-78 (Reiselogbuch 3.38.0): alles ok** (Nutzer 29.10.2026, Sitzung 0053) – **APD-86 und APD-77 bestätigt** · **P-77 (Reiselogbuch 3.37.0): alles ok** – /0–/2 in Sitzung 0052, /3 in Sitzung 0053: der Regelwächter lief über den Verweis `/home/user/appdesign`, lieferte die Uhrzeitzeile und wies eine Antwort ohne Auswahlfenster mit APD-84/W-4 zurück (**APD-84 bestätigt**) | 4.40.0 | 29.10.2026 |
 | APD-86, APD-77, P-75/6 | **APD-86 Wischzeile (deine Rückmeldung 29.10.2026, Prio 1, Ja 29.10.2026):** jeder seitlich wischbare Bereich bis etwa zwei Zeilen Höhe zeigt mit Verlauf und Pfeil, wo es weitergeht (R-5.4, 15.12, `wischHtml`, `hig.mjs`); im Reiselogbuch die Zeile ‚Reisemittel‘ am iPhone (`ablauf-reisemittel-zeile`, rot gegen 3.37.0) · **APD-77:** ‚Messung starten‘ erst nach langem Drücken auf die Versionszeile, bis zum Neustart (R-1.6, 15.21, `checkMessung` APD-77/F-1 bis F-9) · **P-75/6:** Designrichtlinie 13 ‚Textgröße pro App‘ | 4.40.0 | 29.10.2026 |
 | APD-84 | **APD-84 Regelwerk, Konsolidierung 2 (Plan bestätigt, Ja 26.10.2026):** Zusammenarbeit 3.0.0 – Kasten ‚Immer‘ und ‚Jede Antwort‘ oben in 0, neu 0 Nr. 27 ‚Nur Belegtes‘ und 0 Nr. 28 ‚Jede Frage im Fenster‘, Abgeschwächtes zurück (0 Nr. 4, 7, 20), zu Beginn die ganze Zusammenarbeit (0 Nr. 15, beide `CLAUDE.md`); **Regelwächter** `werkzeug/regelwaechter.mjs` (Hooks: Uhrzeitzeile liefern, Fenster vor dem Zeigen prüfen, Antwort am Ende prüfen, Modell-Rückfall melden; Einrichten über das Setup-Skript), Prüfung `tests/regelwaechter.mjs` mit echten Antworten aus 0050 und 0051; `checkKasten` (doku.mjs); Testfall-Liste `arbeit/APD-84 APD-83 Testfall-Liste.md` | 4.39.0 | 26.10.2026 |

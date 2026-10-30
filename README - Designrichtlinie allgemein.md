@@ -1,6 +1,6 @@
 # Designrichtlinie allgemein
 
-**Version 4.40.0** · Stand 29.10.2026
+**Version 4.41.0** · Stand 30.10.2026
 
 Allgemeine Gestaltungs- und Bedienregeln für alle Web-Apps von g811141a auf iPad und iPhone. Die Datei liegt im Design-Repo
 **AppDesign** (g811141a/AppDesign); ihre Versionsnummer ist die des Repos. Die Komponenten sind dort einmal programmiert und
@@ -485,6 +485,12 @@ Gemessene bzw. belegte Eigenheiten mit Quelle; sie gelten für alle Apps, die Pr
   dann `outline: auto 5px` blau. Ein Ring ‚nur bei `:focus-visible`‘ ließe ihn also in jedem Textfeld stehen. Deshalb: `:focus`
   ohne Rahmen, der eigene Ring nur mit `html.tastatur` (ui.js: Taste zum Bewegen setzt, Berührung bzw. Klick nimmt es weg), Textfelder
   nie. Bewegt ein Skript den Fokus nach einem Textfeld weiter, gilt auch das neue Ziel als `:focus-visible` – auch deshalb die Klasse.
+- **Leeren und Rückgängig** (R-5.6, gemessen am iPad hoch, Safari 26.6.3, 29.10.2026, Sitzung 0053 – `arbeit/APD-81 Klärung.md`
+  APD-81/M-1 bis M-4): Wert leeren (`value = ''`) löscht das Rückgängig – die Undo-Taste holt nichts zurück (M-1). Über den
+  Bearbeiten-Befehl geleert (Text auswählen, `execCommand('delete')`) kommt ein input `deleteContentBackward` wie beim Löschen per
+  Taste, und die Undo-Taste (APD-81/M-2) bzw. drei Finger nach links (M-3) holen den ganzen Text zurück (input `historyUndo`). Nach dem Leeren
+  getippt, holt ein einziges Rückgängig den ursprünglichen Text zurück – Safari fasst Leeren und Tippen zu einem Schritt zusammen
+  (APD-81/M-4; WebKit der Prüfumgebung ebenso, Chromium braucht zwei Schritte). Nicht gemessen: App vom Home-Bildschirm, iPhone (Schütteln).
 - **Wischgesten** (R-7.5): Sauber nur in der Home-Bildschirm-App – in Safari selbst gehört das Wischen vom linken Rand Safari
   (eine Seite zurück im Verlauf). Damit waagrechtes Wischen bei der App ankommt, braucht der Bereich `touch-action: pan-y` (sonst
   übernimmt Safari die Berührung mit `pointercancel`); Bereiche mit eigenem waagrechtem Rollen sind selbst Rollbereiche und behalten
@@ -755,10 +761,13 @@ Regel). In AppDesign ist jede Komponente einmal programmiert (`v4/design.css`, `
 - **Technisch** (seit 4.35.0, R-5.3): `feldFehler(felder, zeile, text)` setzt Meldung, roten Rand, `aria-invalid` und
   `aria-describedby` und sagt eine neue Meldung einmal an (leerer Text nimmt alles weg); `ersterFehler(fenster)` beim Häkchen –
   der Abschnitt des ersten fehlerhaften Felds rollt in die Mitte (‚Bewegung reduzieren‘: springt), dann hat das Feld den Fokus.
-- **ⓧ zum Leeren** (R-5.6, wie Apple ‚whileEditing‘): einzeilige Textfelder zeigen rechts ein graues ⓧ (wie im Suchfeld, 44 × 44),
-  solange sie den Fokus haben und etwas drinsteht; Antippen leert, Cursor und Tastatur bleiben, die App erfährt es wie beim
-  Löschen per Taste. Nicht in mehrzeiligen Feldern, Datums- und Suchfeldern. **Technisch:** ein Knopf `.fclear` für alle Felder
-  (ui.js), abschaltbar mit `data-noclear`.
+- **ⓧ zum Leeren** (R-5.6, wie Apple ‚whileEditing‘): ein- und mehrzeilige Textfelder zeigen rechts ein graues ⓧ (wie im Suchfeld,
+  44 × 44), solange sie den Fokus haben und etwas drinsteht – mehrzeilig **oben rechts auf Höhe der ersten Zeile**, der Text läuft in
+  allen Zeilen nicht darunter; wächst das Feld oder rollt es in sich, bleibt das ⓧ oben rechts am Feld. Antippen: eine Zeile → sofort
+  leeren; mehr als eine Zeile → Sprechblase ‚Text löschen?‘ mit ‚Löschen‘ (rot) und ‚Abbrechen‘ (R-4.3). Fokus und Tastatur bleiben,
+  die App erfährt es wie beim Löschen per Taste. Nicht in Datums- und Suchfeldern. **Technisch:** ein Knopf `.fclear` für alle Felder
+  (ui.js), abschaltbar mit `data-noclear`; geleert wird über den Bearbeiten-Befehl (Text auswählen, `execCommand('delete')`) – die
+  Undo-Taste der iPad-Tastatur und drei Finger holen den Text zurück (13); liefert der Befehl false, leert es über den Wert.
 
 ### 15.12 Smiley-Leiste und Auswahl-Kapsel
 - **Apple:** [HIG – Collections](https://developer.apple.com/design/human-interface-guidelines/collections)
@@ -1079,6 +1088,7 @@ steht in der Spalte ‚außerdem‘ (ohne automatische Prüfung: G-19).
 | Orange `--warn` (z. B. ‚fehlt‘) | 3,1–3,5 : 1 | bleibt wie es ist | 09.10.2026 |
 | Keine Großanzeige (Apple: langes Drücken auf einen Leisten-Knopf ab AX1 zeigt Icon und Name groß) | – | gibt es im Web nicht; dafür wachsen die Leisten bis XXXL (R-1.10), VoiceOver nennt jeden Knopf (R-1.8) | 23.10.2026 |
 | Feldtext bei xS bis M mindestens 16 px (Apple: 14–16) | – | sonst vergrößert Safari beim Antippen (R-1.3) | 23.10.2026 |
+| ⓧ auch in mehrzeiligen Textfeldern (Apple: UITextView – Notizen, Mail, Notizfelder in Kalender, Erinnerungen, Kontakte – hat kein ⓧ; geleert wird mit Auswählen → ‚Ausschneiden‘ bzw. Löschtaste) | – | Wunsch des Nutzers (P-73/1, APD-81); mehr als eine Zeile erst nach der Sprechblase ‚Text löschen?‘, Rückgängig wie bei Apple über Undo-Taste, drei Finger, Schütteln (R-5.6) | 26.10.2026 |
 | Kapsel ‚Nach oben / Ans Ende‘ auch auf dem iPhone (Apple: Statusleiste antippen bzw. Scroll-Leiste ziehen) | – | der Apple-Weg war dem Nutzer zu schwerfällig (R-3.2); das Ziehen der Scroll-Leiste gibt es dazu als Schnellroll-Griff | 17.10.2026 |
 
 ## 17. Regelkatalog
@@ -1152,7 +1162,7 @@ Testfall (User) in den Usertest, wenn eine Version es betrifft.
 | R-5.3 | **Fehlermeldungen:** rot direkt unter dem Feld (Feld rot umrandet), erst nach einer Eingabe bzw. beim Häkchen; Pflichtfelder werden nicht gekennzeichnet; **auch hörbar** – Feld `aria-invalid`, Meldung mit dem Feld verknüpft (`aria-describedby`) und einmal angesagt; beim Häkchen hat das erste fehlerhafte Feld den Fokus (Baustein `feldFehler`, `ersterFehler`) | ablauf.mjs – `checkFieldErrors` | – | 8, 15.11 |
 | R-5.4 | **Auswahl-Kapsel und Wischzeile:** mehrere Auswahl-Schaltflächen in einer Kapsel, seitlich wischbar; jeder seitlich wischbare Bereich bis etwa zwei Zeilen Höhe (Kapsel oder Wischzeile) zeigt, wo es weitergeht, mit Verlauf und kleinem Pfeil am Rand (nur Anzeige), am jeweiligen Ende verschwinden beide; Markierung als eigene Form innen, Breite ändert sich nicht | hig.mjs – Verlauf und Pfeile am Rand, kein wischbarer Bereich ohne sie, Breite beim Wählen (Ablauf: `checkKapsel`) | Wischen, Pfeile verständlich | 15.12 |
 | R-5.5 | **Eingabetaste:** einzeilige Felder – ‚Fertig‘, die Eingabetaste schließt die Tastatur, ein Fenster bleibt offen; mehrzeilige Felder – Zeilenumbruch; Suchfeld – ‚Suchen‘ | ablauf.mjs – `checkEnterDone` | iOS-Tastatur (Beschriftung, iPhone-Ziffernfeld) | 8 |
-| R-5.6 | **ⓧ in einzeiligen Feldern:** solange ein einzeiliges Textfeld den Fokus hat und etwas drinsteht, rechts darin ein graues ⓧ (44 × 44, Text läuft nicht darunter); Antippen leert, Cursor und Tastatur bleiben, die App erfährt es; rollt mit, bleibt nach dem Drehen am Feld; nicht in mehrzeiligen, Datums- und Suchfeldern | ablauf.mjs – `checkClear` | Antippen, Tastatur bleibt | 15.11 |
+| R-5.6 | **ⓧ in Textfeldern (ein- und mehrzeilig):** solange ein Textfeld den Fokus hat und etwas drinsteht, rechts darin ein graues ⓧ (44 × 44, Text läuft nicht darunter) – mehrzeilig oben rechts auf Höhe der ersten Zeile, der Text läuft in allen Zeilen nicht darunter; Antippen: eine Zeile → sofort leeren; mehr als eine Zeile → Sprechblase ‚Text löschen?‘ mit ‚Löschen‘ (rot) und ‚Abbrechen‘ (R-4.3); Fokus und Tastatur bleiben, die App erfährt es; geleert über den Bearbeiten-Befehl, die Undo-Taste und drei Finger holen den Text zurück; rollt mit, bleibt nach dem Drehen am Feld; nicht in Datums- und Suchfeldern, je Feld abschaltbar (`data-noclear`) | ablauf.mjs – `checkClear` | Antippen, Tastatur bleibt, Rückgängig (Undo-Taste, drei Finger, iPhone schütteln) | 15.11 |
 | R-5.7 | **Schalter:** Safaris eingebauter Schalter (`switch`, `role="switch"` – VoiceOver ‚Schalter‘), von Safari gezeichnet in Grün; ohne ihn unser Schalter 51 × 31 | hig.mjs – Attribute, Größe ohne, Systemaussehen und Grün mit eingebautem Schalter (nachgebildet) | Aussehen, Gleiten, Ziehen, Haptik, VoiceOver | 15.15 |
 
 ### 6. Tabellen, Kästen, Ausgabe
@@ -1257,6 +1267,7 @@ R-2.3 (15.2), R-4.4 (6, 15.8, HIG 9), R-5.3 (8), R-5.4 (15.12), R-5.5 (APD-14), 
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 4.41.0 | 30.10.2026 | Neben | **APD-81 (Rückmeldung P-73/1, geklärt mit dem Nutzer 26. und 29.10.2026, Messung am iPad APD-81/M-1 bis M-4):** R-5.6 und 15.11 – das ⓧ auch in mehrzeiligen Textfeldern (oben rechts auf Höhe der ersten Zeile; mehr als eine Zeile erst nach der Sprechblase ‚Text löschen?‘); in allen Feldern geleert über den Bearbeiten-Befehl, damit Undo-Taste und drei Finger den Text zurückholen; 13 Safari-Eigenheit ‚Leeren und Rückgängig‘ mit Quelle; 16 bewusste Abweichung ‚ⓧ auch in mehrzeiligen Textfeldern‘; Prüfung `checkClear` erweitert (Testfall-Liste `arbeit/APD-81 Testfall-Liste.md`, APD-81/C1 bis C16) |
 | 4.40.0 | 29.10.2026 | Neben | **APD-86 (Rückmeldung des Nutzers 29.10.2026):** R-5.4 und 15.12 – jeder seitlich wischbare Bereich bis etwa zwei Zeilen Höhe zeigt mit Verlauf und Pfeil am Rand, wo es weitergeht; neu die Wischzeile `.weiter` (`wischHtml`), Prüfung `hig.mjs` meldet jeden wischbaren Bereich ohne sie. **APD-77:** R-1.6 und 15.21 – ‚Messung starten‘ erst nach langem Drücken auf die graue Versionszeile im Mehr-Menü (bis zum Neustart; `{ note, halten }`, `checkMessung` APD-77/F-1 bis F-9); ein Abstand ohne Eintrag danach entfällt im Menü. **P-75/6:** 13 – ‚Größerer Text‘ pro App für Safari wirkt auch auf die Web-App vom Home-Bildschirm |
 | 4.39.0 | 26.10.2026 | Neben | **APD-83 (Rückmeldung P-76/4):** 7 und R-4.6 – ein offenes Fenster ändert durch Eingaben weder Breite noch Lage, Meldungen brechen in der vorhandenen Breite um (`dialog .warn { contain: inline-size; }`); Prüfung `checkSheet` APD-72/D-21 |
 | 4.38.0 | 26.10.2026 | Neben | **APD-72 (Variante B):** R-4.6 auch am iPad – das Fenster bleibt in der Mitte, gleitet beim Öffnen und Schließen von unten und lässt sich nach unten ziehen wie am iPhone (nur das Fenster fährt mit, die Abdunkelung wird heller, die Seite bleibt, Abdunkelung antippen schließt nicht; 7, 15.17); Prüfung `checkSheet` APD-72/D-1 bis APD-72/D-15. **RLB-103:** 13 – Safari meldet Verschiebungen durch die Tastatur im selben Augenblick, im Fenster verschiebt es nur, wenn das Feld nicht ganz über der Tastatur endet (Messung 26.10.2026); 15.21 – Marke ‚messung beendet‘, das Nachspielen lässt das Beenden der Messung weg |

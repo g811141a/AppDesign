@@ -1,6 +1,6 @@
 # Zusammenarbeit allgemein
 
-**Version 3.0.0** · Stand 26.10.2026
+**Version 3.1.0** · Stand 30.10.2026
 
 Regeln für die Zusammenarbeit mit Claude bei allen iPad-Web-Apps von g811141a. Die Datei liegt im Design-Repo **AppDesign**
 (g811141a/AppDesign); App-Eigenes steht in der `CLAUDE.md` des App-Repos. **Abschnitt 0 ist das Arbeitsmodell** (oben der Kasten ‚Immer‘ und ‚Jede
@@ -14,7 +14,8 @@ Antwort‘), Abschnitt 1 die Sprache, Abschnitt 2 die Einzelheiten und Formate. 
 
 ## 0. Arbeitsmodell
 
-> **Immer:** nie ohne ‚Ja‘ bauen (Nr. 21) · erst Usertests, dann Neues (Nr. 22) · Sammelversionen (Nr. 8) · nur Belegtes (Nr. 27).
+> **Immer:** nie ohne ‚Ja‘ bauen (Nr. 21) · erst Usertests, dann Neues (Nr. 22) · Sammelversionen (Nr. 8) · nur Belegtes (Nr. 27) ·
+> Regeln nur mit Genehmigung (Nr. 29).
 >
 > **Jede Antwort** (was mit **W** markiert ist, prüft der Regelwächter, 2.8; der Rest ist Selbstkontrolle vor dem Senden):
 > 1. Erste Zeile jeder Ausgabe: die Uhrzeitzeile, die der Regelwächter liefert – nie selbst schätzen (Nr. 26, 2.2). **W**
@@ -48,6 +49,10 @@ Ziel: nichts vergessen, Fehler finden, bevor der Nutzer sie findet, schnell und 
     Prüfung: Uhrzeit und Zeitzeile Regelwächter; sonst Selbstkontrolle mit Quelle im Bericht.
 28. **Jede Frage im Fenster:** Jede Frage an den Nutzer kommt ins Auswahlfenster, und jede Antwort endet mit einem – nie ‚Sag
     Bescheid …‘ oder eine offene Frage im Text; einzige Ausnahme die Übergabe (Nr. 14). Format 2.1. Prüfung: Regelwächter.
+29. **Regeln nur mit Genehmigung:** Claude löscht, ändert oder ergänzt keine Regel – Zusammenarbeit, Designrichtlinien mit
+    Regelkatalog, App-Richtlinien, `CLAUDE.md` – ohne dein ausdrückliches ‚Ja‘ zum Wortlaut. Vorher stehen alter und neuer Text im
+    Chat, die Frage im Auswahlfenster: ‚Regel … so ändern? Ja/Nein‘. Das gilt auch für Korrekturen und Zusammenfassungen (Nr. 3).
+    Prüfung: Selbstkontrolle.
 
 **A. Testen und Qualität**
 
@@ -391,6 +396,7 @@ im Verlauf und in Kommentaren der Prüfungen nennen noch die alten Stellen):
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 3.1.0 | 30.10.2026 | Neben | **APD-89 (Nutzer 30.10.2026, Wortlaut bestätigt):** neu 0 Nr. 29 ‚Regeln nur mit Genehmigung‘ – keine Regel ohne ‚Ja‘ des Nutzers zum Wortlaut löschen, ändern oder ergänzen; dazu im Kasten ‚Immer‘ |
 | 3.0.0 | 26.10.2026 | Haupt | **APD-84 Regelwerk, Konsolidierung 2 (Nutzer 26.10.2026, Plan bestätigt):** ganz oben in 0 der Kasten ‚Immer‘ und ‚Jede Antwort‘ (alle Pflichten jeder Antwort an einer Stelle, jede mit ihrer Prüfung); neu 0 Nr. 27 ‚Nur Belegtes‘ und 0 Nr. 28 ‚Jede Frage im Fenster, jede Antwort endet mit einem‘ (0 Nr. 7 war seit 2.17.0 zu ‚nur für Ja/Nein‘ abgeschwächt); 0 Nr. 4 wieder ‚im Auswahlfenster‘, 0 Nr. 20 wieder ‚nie nur in einer Prüfung‘; 0 Nr. 15 zu Beginn die ganze Datei; 0 Nr. 19 Startfrage mit Empfehlung; 2.1 Schreibweise ‚(Empfohlen)‘ mit Grund; neu 2.8 Regelwächter (Hooks: Uhrzeit liefern, Fenster vor dem Zeigen prüfen, Antwort am Ende prüfen; Prüfung `tests/regelwaechter.mjs`); 2.5 Rückfall des Modells bei hoher Last melden |
 | 2.20.0 | 25.10.2026 | Neben | **APD-78 Nummernschema (Nutzer 25.10.2026):** 2.4 ‚Nummern und Präfixe‘ neu (APD-, RLB-, RLI-, P-, R-, G-, I-, K-; lokale Nummern mit Elternnummer; Erledigt ohne eigene Nummer; Begriffe Usertest, Testfall (User), Testfälle P-n, Testfall-Liste, Testfall (automatisch); `ZUORDNUNG.md`, Prüfung `checkSchema`); alle Regeltexte rückwirkend umgestellt. **APD-79:** 0 Nr. 26 und 2.2 Uhrzeitzeile in der ersten Zeile jeder Ausgabe |
 | 2.19.0 | 23.10.2026 | Neben | **0 Nr. 13 automatische Übergabe (Nutzer 23.10.2026):** bei ‚⚠ Übergabe fällig‘ übergibt Claude ohne Rückfrage, sobald der laufende Schritt abgeschlossen ist, und startet die neue Sitzung selbst; offene Fragen gehen mit in die Übergabe (2.2) |

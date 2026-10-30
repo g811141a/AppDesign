@@ -1,4 +1,4 @@
-/* AppDesign 4.40.0 · design.css – gemeinsame Gestaltung der iPad-Web-Apps von g811141a (Apple-like)
+/* AppDesign 4.41.0 · design.css – gemeinsame Gestaltung der iPad-Web-Apps von g811141a (Apple-like)
    Einbinden im <head> vor dem eigenen <style> der App:  <link rel="stylesheet" href="../AppDesign/fassung/X.Y.Z/design.css"> (feste Fassung, R-10.3)
    Farben als Variablen auf :root, Dunkelmodus über data-theme="dark" (setzt ui.js / applyTheme).
    Komponenten: Schaltflächen, Suchfeld, Kapsel, Eingabefelder, Datumsfelder, Kopfzeile, Seitenleiste,
@@ -6,7 +6,7 @@
    Options-Kapsel; seit 4.1.0 iPhone-Ansicht (html.phone: Seitenkopf, großer Titel, Liste, Kasten, untere Leiste). Regeln dazu: README - Designrichtlinie allgemein.md */
 /* Farben im Apple-Look: Hintergrund Hellgrau, Kästen weiß ohne Rand, schwebende Schaltflächen */
 :root {
-  --ad-version: "4.40.0";   /* R-10.3: Version der Bausteine, die App prüft sie beim Start */
+  --ad-version: "4.41.0";   /* R-10.3: Version der Bausteine, die App prüft sie beim Start */
   --bg: #f2f2f7;
   --card: #ffffff;
   --ink: #1c1c1e;
@@ -173,12 +173,13 @@ button.primary .ic.red { color: inherit; }
 /* Antippfläche 44 px (unsichtbar), das Zeichen bleibt so groß und am selben Platz wie bisher */
 .searchbox .sclear { width: calc(44px * var(--fb)); height: calc(44px * var(--fb)); margin: -6px; min-height: 0; min-width: 0; padding: 0; border: none; box-shadow: none; background: none; color: #a1a1a6; border-radius: 50%; }
 .searchbox .sclear svg { width: calc(20px * var(--k)); height: calc(20px * var(--k)); }
-/* Komponente ⓧ in einzeiligen Feldern (seit 4.29.0, APD-63 C3, R-5.6): wie im Suchfeld – rechts im Feld, solange es den Fokus
-   hat und etwas drinsteht (ui.js setzt den Knopf hinter das Feld); der Text läuft nicht darunter */
+/* Komponente ⓧ in Textfeldern (seit 4.29.0, APD-63 C3, R-5.6): wie im Suchfeld – rechts im Feld, solange es den Fokus
+   hat und etwas drinsteht (ui.js setzt den Knopf hinter das Feld); der Text läuft nicht darunter. Seit 4.41.0 (APD-81) auch in
+   mehrzeiligen Feldern, dort oben rechts auf Höhe der ersten Zeile; der Text läuft in allen Zeilen nicht darunter */
 .fclear { position: absolute; z-index: 2; display: flex; align-items: center; justify-content: center; width: max(44px, calc(20px * var(--k) + 24px)); height: max(44px, calc(20px * var(--k) + 24px)); margin: 0;
   min-width: 0; min-height: 0; padding: 0; border: none; box-shadow: none; background: none; color: #a1a1a6; border-radius: 50%; touch-action: manipulation; }
 .fclear svg { width: calc(20px * var(--k)); height: calc(20px * var(--k)); }
-input.mitx:is([type=text], [type=email], [type=url], [type=tel]) { padding-right: calc(16px + 20px * var(--k)); }
+input.mitx:is([type=text], [type=email], [type=url], [type=tel]), textarea.mitx { padding-right: calc(16px + 20px * var(--k)); }
 /* Komponente Kapsel: mehrere Schaltflächen in einer schwebenden Kapsel */
 .grp, .navgrp { display: inline-flex; flex: none; height: calc(44px * var(--fb)); border-radius: 999px; background: var(--btn); border: .5px solid var(--btn-rim); box-shadow: var(--float); }
 /* Alle Kapseln gleich gebaut: Schaltflächen genau so hoch wie der Innenraum (44 px minus Rand); die Markierung
