@@ -12,8 +12,9 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 | Nr. | Prio | Thema | bereit seit |
 |---|---|---|---|
 | APD-92 | 2 | **‚Darstellung‘ im Mehr-Menü der Seitenleiste – allgemeine Regel (aus Reiselogbuch RLB-108, Nutzer 30.10.2026, Sitzung 0053; Wortlaut bestätigt 30.10.2026, Sitzung 0055, APD-89):** Designrichtlinie allgemein 2 ‚Darstellung (R-1.2)‘ neu: „… im Mehr-Menü der Seitenleiste (iPhone: Startliste) übersteuerbar, nach Backup erstellen und Backup laden – nie im Menü eines Eintrags, denn sie gilt für die ganze App: Untermenü ‚Darstellung ›‘ (sun-moon, rechts grau der aktuelle Wert) mit Automatisch · Hell · Dunkel (Häkchen).“ – Regelkatalog R-1.2 neu: „Darstellung folgt dem Gerät (‚Automatisch‘), im Mehr-Menü der Seitenleiste übersteuerbar (Automatisch · Hell · Dunkel), nie im Menü eines Eintrags“; Prüfung `hig.mjs` prüft die Stelle. Ohne Muster (Nutzer 30.10.2026) | 30.10.2026 |
+| APD-93 | 2 | **Schmale Zahlenfelder mit kleinem Höchstwert – allgemeine Regel (aus Reiselogbuch RLB-110, Nutzer 30.10.2026, Sitzung 0055, Wortlaut bestätigt, APD-89):** Designrichtlinie allgemein 8 ‚Beträge‘ nach „… längere Beträge lassen das Feld beim Tippen mitwachsen.“ angehängt: „**Zahlenfelder mit kleinem Höchstwert** (z. B. höchstens 99) sind nur so breit wie die größte Zahl plus Platz für das ⓧ; dieser Platz bleibt immer frei, damit die Zahl beim Tippen nicht springt.“ Muster Variante A (eigene Zeile, Einheit rechts neben dem Feld wie €) | 30.10.2026 |
 
-1 Punkt bereit.
+2 Punkte bereit.
 
 
 ## 1. Auf iPad und iPhone prüfen
