@@ -19,7 +19,6 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| P-83 | 1 | **Usertest P-83 (Reiselogbuch 3.42.1 · AppDesign 4.44.1):** APD-98 Bezeichnung im Kasten mit Feldern normal, mittig zur ersten Zeile des Werts (R-6.5); im Reiselogbuch RLB-112 – Testfälle P-83/0 bis P-83/5 im CHANGELOG des Reiselogbuchs | prüfen |
 
 ## 2. Weitere Themen (in Klärung)
 
@@ -60,6 +59,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Thema | Version | Datum |
 |---|---|---|---|
+| P-83 | **Usertest P-83 (Reiselogbuch 3.42.1 · AppDesign 4.44.1):** alles ok (Nutzer 30.10.2026, Sitzung 0059) | 4.44.1 | 30.10.2026 |
 | APD-98 | **APD-98 (aus P-82/3):** Bezeichnung im Kasten mit Feldern in normaler Schrift, Textgröße und Textfarbe wie der Wert, Emojis klein, mittig zur ersten Zeile des Werts (15.10, R-6.5, Prüfung `hig.mjs` – `kastenBezeichnung`) | 4.44.1 | 30.10.2026 |
 | APD-96 | **APD-96:** Zusammenarbeit 0 Nr. 21 – vor der Bau-Frage der Kontextstand als Satz mit ‚Kontext N‘ aus `messung.mjs` (Zusammenarbeit 3.3.0) | 4.44.1 | 30.10.2026 |
 | P-82 | **Usertest P-82:** ok bis auf /1, /3, /5 → RLB-112, APD-98 | 4.44.1 | 30.10.2026 |
