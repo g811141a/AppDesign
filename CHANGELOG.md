@@ -12,7 +12,8 @@ bestätigt); Testfall-Liste `arbeit/RLB-111 APD-95 Testfall-Liste.md` (APD-95/B-
 
 - **APD-95 – Bezeichnungen in normaler Schrift (8, R-5.8):** `label` in `design.css` normal (400) statt halbfett; halbfett bleiben nur
   Überschriften (`.step-head label` – Schritt-Titel mit Nummer, `.step > label` – Kasten-Überschrift). Einheiten nach einem Feld (‚€‘, ‚km‘)
-  normal und so groß wie das Feld. Neue Prüfung `hig.mjs` – `bezeichnungen` (exportiert) nach jedem Schritt; Gegenprobe im Reiselogbuch
+  normal und so groß wie das Feld (`.kosten > span`, `.zahl-einheit > span`: mindestens 16 px wie der Feldtext, R-1.3 – im vollen
+  Lauf bei Textgröße 14 gefunden). Neue Prüfung `hig.mjs` – `bezeichnungen` (exportiert) nach jedem Schritt; Gegenprobe im Reiselogbuch
   (`ablauf-preis-km`, APD-95/B-5: halbfette Bezeichnung und große Einheit werden gemeldet).
 - **Schmales Zahlenfeld (8, APD-93 geändert):** `input.zahl-schmal` steht ohne Fokus bündig am rechten Rand (Innenabstand 16 px wie das
   Betragsfeld); mit Fokus (ⓧ, `.mitx`) rückt die Zahl für das ⓧ nach links – wie beim Betragsfeld und bei Apple (whileEditing). Kommazahlen
