@@ -1,4 +1,4 @@
-// AppDesign 4.40.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
+// AppDesign 4.41.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
 // Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/fassung/X.Y.Z/ui.js"></script> (feste Fassung, R-10.3)
 // Seit 4.11.0 (R-10.3): ui.js und design.css immer mit ?v=<AppDesign-Version> einbinden (auch in sw.js) und beim Start
 // prüfen, ob genau diese Fassung geladen ist (AD_VERSION hier, --ad-version in design.css).
@@ -20,7 +20,7 @@
 
 'use strict';
 // Version der Bausteine (R-10.3): die App vergleicht sie beim Start mit der benötigten Fassung.
-const AD_VERSION = '4.40.0';
+const AD_VERSION = '4.41.0';
 /* ---------- Icons ---------- */
 
 // Schaltflächen-Icons aus Lucide (ISC-Lizenz), direkt eingebettet, damit die App offline funktioniert.
@@ -234,23 +234,29 @@ function setHtml(el, html) {
   kids(el, tpl.content);
 }
 
-// Komponente ⓧ in einzeiligen Feldern (seit 4.29.0, APD-63 C3, R-5.6) wie Apple (UIKit ‚clearButtonMode = whileEditing‘):
-// solange ein einzeiliges Textfeld den Fokus hat und etwas drinsteht, steht rechts darin ein graues ⓧ (wie im Suchfeld, 44 × 44
-// Antippfläche). Antippen leert das Feld, Cursor und Tastatur bleiben; die App erfährt es über ein input-Ereignis (wie beim
-// Löschen per Taste). Ein Knopf für alle Felder, gleich hinter das Feld gesetzt (rollt mit); abschaltbar mit data-noclear.
-const FX = 'input:is([type=text], [type=email], [type=url], [type=tel]):not([readonly], [disabled], [data-noclear])';
+// Komponente ⓧ in Textfeldern (seit 4.29.0, APD-63 C3, R-5.6) wie Apple (UIKit ‚clearButtonMode = whileEditing‘): solange ein
+// Textfeld den Fokus hat und etwas drinsteht, steht rechts darin ein graues ⓧ (wie im Suchfeld, 44 × 44 Antippfläche). Antippen
+// leert das Feld, Cursor und Tastatur bleiben; die App erfährt es über ein input-Ereignis (wie beim Löschen per Taste). Ein Knopf
+// für alle Felder, gleich hinter das Feld gesetzt (rollt mit); abschaltbar mit data-noclear.
+// Seit 4.41.0 (APD-81, Testfall-Liste arbeit/APD-81 Testfall-Liste.md): auch in mehrzeiligen Feldern – oben rechts auf Höhe der
+// ersten Zeile (APD-81/F-1); mehr als eine Zeile: erst die Sprechblase ‚Text löschen?‘ (F-2). Geleert wird in allen Feldern über den
+// Bearbeiten-Befehl (Text auswählen, execCommand('delete')) – so holen Undo-Taste und drei Finger den Text zurück (F-5, gemessen
+// APD-81/M-1 bis M-4, Designrichtlinie 13); geht der Befehl nicht, über den Wert wie bisher.
+const FX = 'input:is([type=text], [type=email], [type=url], [type=tel]):not([readonly], [disabled], [data-noclear]), textarea:not([readonly], [disabled], [data-noclear])';
 const fxBtn = document.createElement('button');
 fxBtn.type = 'button'; fxBtn.className = 'fclear'; fxBtn.tabIndex = -1; fxBtn.setAttribute('aria-label', 'Eingabe löschen');
 fxBtn.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="currentColor"/><path d="M15 9l-6 6M9 9l6 6" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>';
-let fxFeld = null, fxTippt = false, fxRahmen = null;
+let fxFeld = null, fxTippt = false, fxRahmen = null, fxFrage = false;
 function fxZeigen() {
+  if (fxFrage) return;   // APD-81/F-2: solange die Sprechblase offen ist, bleibt das ⓧ (ihr Anker) stehen
   const f = document.activeElement, an = f?.matches?.(FX) && f.value !== '' ? f : null;
-  if (fxFeld && fxFeld !== an) fxFeld.classList.remove('mitx');
+  if (fxFeld && fxFeld !== an) { fxFeld.classList.remove('mitx'); if (fxFeld.tagName === 'TEXTAREA') autoGrow(fxFeld); }
   // Bezugsrahmen ist das Element um das Feld (sonst läge er womöglich außerhalb des Rollbereichs und das ⓧ rollte nicht mit)
   if (fxRahmen && fxRahmen !== an?.parentElement) { fxRahmen.style.position = ''; fxRahmen = null; }
   fxFeld = an;
   if (!an) { fxBtn.remove(); return; }
-  an.classList.add('mitx');
+  // mehrzeilig: der Innenabstand rechts ändert den Umbruch – das Feld wächst gleich mit (sonst wäre die letzte Zeile abgeschnitten)
+  if (!an.classList.contains('mitx')) { an.classList.add('mitx'); if (an.tagName === 'TEXTAREA') autoGrow(an); }
   if (fxBtn.previousSibling !== an) an.after(fxBtn);
   // jedes Mal neu setzen – ein Neuaufbau (setHtml) gleicht die Attribute des Rahmens an und nimmt es wieder weg
   const pa = an.parentElement;
@@ -261,17 +267,51 @@ function fxZeigen() {
   // seit 4.37.0 (APD-43 B5): mit der tatsächlichen Größe – das ⓧ wächst mit der Textgröße (R-1.10)
   const w = fxBtn.offsetWidth || 44, h = fxBtn.offsetHeight || 44;
   fxBtn.style.left = Math.round(r.right - w - o.left) + 'px';
-  fxBtn.style.top = Math.round(r.top + (r.height - h) / 2 - o.top) + 'px';
+  // einzeilig senkrecht in der Mitte; mehrzeilig mittig auf der ersten Zeile (APD-81/F-1) – bleibt stehen, wenn das Feld wächst
+  const mitte = an.tagName === 'TEXTAREA' ? r.top + fxErsteZeile(an) : r.top + r.height / 2;
+  fxBtn.style.top = Math.round(mitte - h / 2 - o.top) + 'px';
+}
+// Mitte der ersten Zeile, vom oberen Rand des Feldes gemessen
+function fxErsteZeile(ta) {
+  const cs = getComputedStyle(ta), lh = parseFloat(cs.lineHeight) || parseFloat(cs.fontSize) * 1.2;
+  return parseFloat(cs.borderTopWidth) + parseFloat(cs.paddingTop) + lh / 2;
+}
+// Zahl der Zeilen, wie sie im Feld zu sehen sind (auch umbrochene): Text in einer unsichtbaren Kopie mit gleicher Schrift und Breite
+function fxZeilen(ta) {
+  const cs = getComputedStyle(ta), d = document.createElement('div');
+  d.style.cssText = `position:absolute;visibility:hidden;left:-9999px;top:0;white-space:pre-wrap;overflow-wrap:break-word;box-sizing:content-box;
+    width:${ta.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight)}px;font:${cs.font};letter-spacing:${cs.letterSpacing};line-height:${cs.lineHeight}`;
+  d.textContent = 'x'; document.body.append(d);
+  const eine = d.offsetHeight;
+  d.textContent = ta.value.endsWith('\n') ? ta.value + ' ' : ta.value;
+  const n = Math.round(d.offsetHeight / (eine || 1));
+  d.remove();
+  return n;
+}
+// APD-81/F-5: über den Bearbeiten-Befehl leeren – Safari legt dafür einen Schritt zum Rückgängigmachen an, beim Setzen des Werts
+// nicht (M-1, M-2); das input-Ereignis kommt dann vom Browser. Liefert der Befehl false oder bleibt Text stehen: über den Wert.
+function fxLeeren(f) {
+  if (document.activeElement !== f) f.focus();
+  let ok = false;
+  try { f.select(); ok = document.execCommand('delete'); } catch {}
+  if (ok && f.value === '') return;
+  f.value = '';
+  f.dispatchEvent(new Event('input', { bubbles: true }));
 }
 // Antippen: den Fokus nicht abgeben (Tastatur bleibt), leeren, die App benachrichtigen
 fxBtn.addEventListener('pointerdown', e => { fxTippt = true; e.preventDefault(); });
 fxBtn.addEventListener('mousedown', e => e.preventDefault());
-fxBtn.addEventListener('click', e => {
+fxBtn.addEventListener('click', async e => {
   e.preventDefault(); fxTippt = false;
-  const f = fxFeld; if (!f) return;
-  f.value = '';
-  if (document.activeElement !== f) f.focus();
-  f.dispatchEvent(new Event('input', { bubbles: true }));
+  const f = fxFeld; if (!f || fxFrage) return;
+  // APD-81/F-2: mehr als eine Zeile – erst fragen; Fokus und Tastatur bleiben im Feld, solange die Sprechblase offen ist
+  if (f.tagName === 'TEXTAREA' && fxZeilen(f) > 1) {
+    fxFrage = true;
+    let ja = false;
+    try { ja = await confirmPop(fxBtn, 'Text löschen?', { label: 'Löschen' }, { label: 'Abbrechen' }, { feld: f }); } finally { fxFrage = false; }
+    if (document.activeElement !== f) f.focus({ preventScroll: true });
+    if (ja && f.isConnected) fxLeeren(f);
+  } else fxLeeren(f);
   fxZeigen();
 });
 document.addEventListener('focusin', fxZeigen);
@@ -696,15 +736,17 @@ function openMenu(anchor, items, align = 'right') {
 
 // Abfrage als Sprechblase an der angetippten Schaltfläche; daneben tippen bricht ab.
 // Schaltflächen ohne Icons wie in Apple-Abfragen: die Aktion rot gefüllt, darunter der Weg zurück in normaler Schrift.
-function confirmPop(anchor, html, act, back = { label: 'Abbrechen' }) {
-  return choosePop(anchor, html, [{ label: act.label, cls: act.cls || 'danger', value: true }, { label: back.label, value: false }])
+function confirmPop(anchor, html, act, back = { label: 'Abbrechen' }, opts) {
+  return choosePop(anchor, html, [{ label: act.label, cls: act.cls || 'danger', value: true }, { label: back.label, value: false }], opts)
     .then(v => v === true);
 }
 
 // Seit 4.9.0: Abfrage mit mehreren Wegen (wie eine Apple-Abfrage mit drei Knöpfen): die bevorzugte Aktion blau
 // gefüllt (cls 'primary'), eine zerstörende in roter Schrift (cls 'danger-text'), zuletzt der Weg zurück.
 // Ergebnis: value des gewählten Knopfs; daneben tippen ergibt null.
-function choosePop(anchor, html, buttons) {
+// Seit 4.41.0 (APD-81/F-2): feld – die Abfrage gehört zu diesem Textfeld (ⓧ); Fokus und Tastatur bleiben darin, solange sie offen ist
+// (nichts wird gesperrt oder fokussiert, Antippen der Blase und daneben nimmt dem Feld den Fokus nicht).
+function choosePop(anchor, html, buttons, { feld = null } = {}) {
   return new Promise(resolve => {
     const visible = anchor?.isConnected && anchor.getClientRects().length;
     const host = (visible && anchor.closest('dialog')) || (dlg.open ? dlg : document.body);
@@ -738,7 +780,7 @@ function choosePop(anchor, html, buttons) {
       if (!pop.isConnected) return;
       floating.delete(place); layer.remove(); pop.remove(); if (visible) anchor.classList.remove('on');
       entsperren?.(); tastenStapel.splice(tastenStapel.indexOf(tasten) >>> 0, 1);
-      fokusZurueck(visible ? anchor : null, host);   // V6: zurück auf den Knopf bzw. die Kopfzeile, ohne Rollen
+      if (!feld) fokusZurueck(visible ? anchor : null, host);   // V6: zurück auf den Knopf bzw. die Kopfzeile, ohne Rollen
       resolve(v);
     };
     layer.onclick = () => done(null);
@@ -764,8 +806,9 @@ function choosePop(anchor, html, buttons) {
     host.append(layer, pop);
     if (visible) placeAt(pop, anchor, anchor.classList.contains('side-row') ? 'beside' : anchor.getBoundingClientRect().left > innerWidth / 2 ? 'right' : 'left');
     else { pop.style.left = (innerWidth - pop.offsetWidth) / 2 + 'px'; pop.style.top = '120px'; }
-    entsperren = sperreAusser(host, [layer, pop]);
     tastenStapel.push(tasten);
+    if (feld) { for (const el of [layer, pop]) { el.addEventListener('pointerdown', e => e.preventDefault()); el.addEventListener('mousedown', e => e.preventDefault()); } return; }
+    entsperren = sperreAusser(host, [layer, pop]);
     fokus(pop);
   });
 }

@@ -3,6 +3,32 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.41.0 – 30.10.2026
+
+AppDesign 4.41.0 · Designrichtlinie allgemein 4.41.0 · Zusammenarbeit allgemein 3.1.0 · geprüft mit Reiselogbuch 3.39.0
+
+**APD-81 ⓧ auch in mehrzeiligen Feldern** (Rückmeldung P-73/1, geklärt 26. und 29.10.2026, Messung am iPad APD-81/M-1 bis M-4) und **APD-89
+Regeln nur mit Genehmigung** – dein Ja vom 30.10.2026, Sitzung 0053; Testfall-Liste `arbeit/APD-81 Testfall-Liste.md` APD-81/C1 bis C16.
+Usertest im Reiselogbuch: P-79.
+
+- **APD-81 – R-5.6 und 15.11:** das ⓧ (`.fclear`, ui.js) gilt auch für `textarea` (nicht `readonly`, `disabled`, `data-noclear`): oben
+  rechts mittig auf der ersten Zeile (`fxErsteZeile`), Innenabstand rechts in allen Zeilen (`textarea.mitx`), das Feld wächst beim
+  Einblenden gleich mit (`autoGrow`). Antippen: eine Zeile (wie sie im Feld zu sehen ist, auch umbrochen – `fxZeilen`) leert sofort, mehr
+  als eine erst nach der Sprechblase ‚Text löschen?‘ mit ‚Löschen‘ (rot) und ‚Abbrechen‘. Dafür hat `choosePop`/`confirmPop` die Option
+  `{ feld }`: Fokus und Tastatur bleiben im Feld, solange die Sprechblase offen ist (nichts wird gesperrt oder fokussiert, Antippen der
+  Blase nimmt dem Feld den Fokus nicht), danach kein Sprung des Fokus.
+- **APD-81/F-5 – Leeren über den Bearbeiten-Befehl in allen Feldern** (`fxLeeren`): Text auswählen, `execCommand('delete')` – Safari legt
+  dafür einen Schritt zum Rückgängigmachen an, die Undo-Taste und drei Finger holen den Text zurück (APD-81/M-2, M-3; über den Wert nicht, M-1).
+  Die App erfährt Leeren und Zurückholen über die input-Ereignisse des Browsers. Liefert der Befehl false, leert es über den Wert wie bisher.
+- **Designrichtlinie:** 13 neu ‚Leeren und Rückgängig‘ (Safari-Eigenheit mit Quelle APD-81/M-1 bis M-4), 16 bewusste Abweichung ‚ⓧ auch in
+  mehrzeiligen Textfeldern‘ (Apple: UITextView ohne ⓧ).
+- **Prüfung `checkClear`** (ablauf.mjs) erweitert: Lage auf der ersten Zeile (C1) auch nach dem Wachsen (C9), sofort leeren bei einer Zeile
+  (C2), Sprechblase mit Text und Knöpfen ganz auf dem Bildschirm, Fokus bleibt (C3, C11), Abbrechen (C4), Löschen (C5), Rückgängig mit
+  input `historyUndo` (C6, einzeilig C7), in WebKit nach dem Leeren getippt mit einem Schritt (C8), nach dem Drehen (C10), grau wie im
+  Suchfeld (C12), nicht fokussierbar mit ‚Eingabe löschen‘ (C15), Felder ohne ⓧ über `ohne` (C14). C13 (große Schrift):
+  einmal in dieser Sitzung mit Textgröße 33 und 53 px in Chromium und WebKit geprüft (grün), im vollen Lauf nicht eigens.
+- **APD-89 – Zusammenarbeit 3.1.0:** neu 0 Nr. 29 ‚Regeln nur mit Genehmigung‘ (Wortlaut wie bestätigt), dazu im Kasten ‚Immer‘.
+
 ## 4.40.0 – 29.10.2026
 
 AppDesign 4.40.0 · Designrichtlinie allgemein 4.40.0 · Zusammenarbeit allgemein 3.0.0 · geprüft mit Reiselogbuch 3.38.0

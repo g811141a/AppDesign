@@ -271,59 +271,141 @@ export async function checkEnterDone(p, { open, fields = [], multi = '', where =
   return errors;
 }
 
-// R-5.6 ⓧ in einzeiligen Feldern (seit 4.29.0, APD-63 C3, Testfall-Liste arbeit/APD-63 Testfall-Liste.md APD-63/X-1 bis APD-63/X-8): open() öffnet Fenster
+// R-5.6 ⓧ in Textfeldern (seit 4.29.0, APD-63 C3, Testfall-Liste arbeit/APD-63 Testfall-Liste.md APD-63/X-1 bis APD-63/X-8): open() öffnet Fenster
 // bzw. Ansicht (optional); fields: [{ sel, text, warn }] – warn: Pflichtfeld, nach dem Leeren mit ⓧ steht die Fehlermeldung (APD-63/X-4).
 // Geprüft: leer bzw. ohne Fokus kein ⓧ; mit Text rechts im Feld, 44 × 44, Text läuft nicht darunter; Antippen leert, Fokus bleibt,
 // die App bekommt ein input-Ereignis; das ⓧ rollt mit (APD-63/X-7) und bleibt nach dem Drehen am Feld (APD-63/X-8).
-export async function checkClear(p, { open, fields = [], where = '' } = {}) {
+// Seit 4.41.0 (APD-81, Testfall-Liste arbeit/APD-81 Testfall-Liste.md APD-81/C1 bis C16): auch mehrzeilige Felder (textarea) – ⓧ mittig
+// auf der ersten Zeile (C1), auch wenn das Feld wächst (C9); eine Zeile leert sofort (C2), mehr als eine erst nach der Sprechblase
+// ‚Text löschen?‘ mit ‚Löschen‘ (rot) und ‚Abbrechen‘ (C3–C5), Fokus bleibt im Feld; Rückgängig (Bearbeiten-Befehl ‚undo‘ wie die
+// Undo-Taste, M-2) holt den ganzen Text zurück, input ‚historyUndo‘ (C6, einzeilig C7); in WebKit nach dem Leeren getippt mit einem
+// Schritt (C8, M-4). Grau wie im Suchfeld (C12), nicht fokussierbar mit Bezeichnung ‚Eingabe löschen‘ (C15). ohne: Felder ohne ⓧ (C14).
+export async function checkClear(p, { open, fields = [], ohne = [], where = '' } = {}) {
   const errors = [], E = (sel, t) => errors.push(`${where ? where + ': ' : ''}R-5.6 ${sel}: ${t}`);
+  const webkit = p.context().browser()?.browserType().name() === 'webkit';
   if (open) { await open(); await wait(p, 350); }
   const lage = sel => p.evaluate(sel => {
     const f = document.querySelector(sel), x = [...document.querySelectorAll('.fclear')].find(b => b.getClientRects().length && getComputedStyle(b).visibility !== 'hidden');
     if (!x) return { x: false, fokus: document.activeElement === f, wert: f.value };
     const fr = f.getBoundingClientRect(), xr = x.getBoundingClientRect(), cs = getComputedStyle(f);
+    // mehrzeilig: Mitte der ersten Zeile (Rand + Innenabstand oben + halbe Zeilenhöhe)
+    const lh = parseFloat(cs.lineHeight) || parseFloat(cs.fontSize) * 1.2;
+    const soll = f.tagName === 'TEXTAREA' ? fr.top + parseFloat(cs.borderTopWidth) + parseFloat(cs.paddingTop) + lh / 2 : (fr.top + fr.bottom) / 2;
+    // grau wie das ⓧ im Suchfeld (15.2, mit ‚Kontrast erhöhen‘ --muted, R-1.9)
+    const m = document.createElement('div'); m.className = 'searchbox'; m.style.cssText = 'position:absolute;visibility:hidden'; m.innerHTML = '<button class="sclear"></button>';
+    document.body.append(m); const grau = getComputedStyle(m.firstChild).color; m.remove();
     return { x: true, fokus: document.activeElement === f, wert: f.value, w: Math.round(xr.width), h: Math.round(xr.height), rechts: Math.round(fr.right - xr.right),
-      mitte: Math.round((xr.top + xr.bottom) / 2 - (fr.top + fr.bottom) / 2), platz: parseFloat(cs.paddingRight), farbe: getComputedStyle(x).color };
+      mitte: Math.round((xr.top + xr.bottom) / 2 - soll), platz: parseFloat(cs.paddingRight), farbe: getComputedStyle(x).color, grau,
+      tab: x.tabIndex, name: x.getAttribute('aria-label') };
   }, sel);
-  const amFeld = (sel, l, wann) => {
+  const amFeld = (sel, l, wann, mehr) => {
     if (!l.x) { E(sel, `kein ⓧ ${wann}`); return; }
     if (l.w < 44 || l.h < 44) E(sel, `ⓧ ${wann}: Antippfläche ${l.w} × ${l.h} statt 44 × 44`);
-    if (Math.abs(l.rechts) > 2 || Math.abs(l.mitte) > 2) E(sel, `ⓧ ${wann} nicht rechts im Feld (Abstand rechts ${l.rechts} px, senkrecht ${l.mitte} px versetzt)`);
+    if (Math.abs(l.rechts) > 2 || Math.abs(l.mitte) > 2) E(sel, `ⓧ ${wann} nicht rechts ${mehr ? 'auf Höhe der ersten Zeile (APD-81/C1)' : 'im Feld'} (Abstand rechts ${l.rechts} px, senkrecht ${l.mitte} px versetzt)`);
     if (l.platz < 32) E(sel, `ⓧ ${wann}: Text läuft unter das ⓧ (Abstand rechts ${l.platz} px)`);
+    if (l.farbe !== l.grau) E(sel, `ⓧ ${wann}: Farbe ${l.farbe} statt ${l.grau} wie im Suchfeld (APD-81/C12)`);
+    if (l.tab !== -1 || l.name !== 'Eingabe löschen') E(sel, `ⓧ ${wann}: fokussierbar (tabIndex ${l.tab}) oder Bezeichnung ‚${l.name}‘ statt ‚Eingabe löschen‘ (APD-81/C15)`);
+  };
+  const tippeX = async sel => {
+    const ziel = await p.evaluate(() => { const r = document.querySelector('.fclear')?.getBoundingClientRect(); return r && r.width ? { x: r.left + r.width / 2, y: r.top + r.height / 2 } : null; });
+    if (!ziel || ziel.y < 0 || ziel.y > p.viewportSize().height) { E(sel, `ⓧ nicht zu sehen (${JSON.stringify(ziel)}) (APD-63/X-2)`); return false; }
+    await p.mouse.click(ziel.x, ziel.y); await wait(p, 150); return true;
+  };
+  const blase = () => p.evaluate(() => {
+    const b = [...document.querySelectorAll('.pop')].find(x => x.getClientRects().length); if (!b) return null;
+    const r = b.getBoundingClientRect(), vv = window.visualViewport;
+    return { text: b.querySelector('p')?.textContent.trim(), knoepfe: [...b.querySelectorAll('button')].map(k => k.textContent.trim() + (k.classList.contains('danger') ? ' (rot)' : '')),
+      ganz: r.left >= -1 && r.top >= -1 && r.right <= (vv?.width ?? innerWidth) + 1 && r.bottom <= (vv?.height ?? innerHeight) + 1 };
+  });
+  const knopf = async t => { await p.locator('.pop button', { hasText: t }).click(); await wait(p, 200); };
+  // Rückgängig wie die Undo-Taste (am Gerät gemessen gleich, APD-81/M-2); meldet die Art der input-Ereignisse
+  const undo = (sel, n = 1) => p.evaluate(({ sel, n }) => { const f = document.querySelector(sel), arten = [], h = e => arten.push(e.inputType);
+    f.addEventListener('input', h); for (let i = 0; i < n; i++) document.execCommand('undo'); f.removeEventListener('input', h); return { wert: f.value, arten, fokus: document.activeElement === f }; }, { sel, n });
+  const pruefeUndo = async (sel, vorher, nr) => {
+    const u = await undo(sel);
+    if (u.wert !== vorher) E(sel, `Rückgängig nach dem ⓧ holt den Text nicht zurück (‚${u.wert.slice(0, 30)}‘ statt ‚${vorher.slice(0, 30)}‘) – leert das ⓧ über den Wert? (APD-81/${nr})`);
+    else if (!u.arten.includes('historyUndo')) E(sel, `Rückgängig: die App erfährt es nicht (input ${u.arten.join(', ') || 'keins'} statt historyUndo) (APD-81/${nr})`);
   };
   for (const { sel, text = 'Abc', warn = false } of fields) {
+    const mehr = await p.locator(sel).evaluate(f => f.tagName === 'TEXTAREA');
     await p.locator(sel).scrollIntoViewIfNeeded(); await p.locator(sel).fill(''); await p.locator(sel).focus(); await wait(p, 100);
     if ((await lage(sel)).x) E(sel, 'ⓧ im leeren Feld (APD-63/X-3)');
     await p.keyboard.type(text); await wait(p, 150);
-    amFeld(sel, await lage(sel), 'mit Text (APD-63/X-1)');
+    amFeld(sel, await lage(sel), 'mit Text (APD-63/X-1)', mehr);
     // APD-63/X-7: im Rollbereich des Feldes rollen – das ⓧ bleibt am Feld
     const gerollt = await p.evaluate(sel => { for (let a = document.querySelector(sel).parentElement; a; a = a.parentElement) {
       if (/auto|scroll/.test(getComputedStyle(a).overflowY) && a.scrollHeight > a.clientHeight + 20) { const y = a.scrollTop; a.scrollTop = y > 10 ? y - 10 : y + 10; return true; } } return false; }, sel);
-    if (gerollt) { await wait(p, 150); amFeld(sel, await lage(sel), 'nach dem Rollen (APD-63/X-7)'); }
+    if (gerollt) { await wait(p, 150); amFeld(sel, await lage(sel), 'nach dem Rollen (APD-63/X-7)', mehr); }
     // APD-63/X-8: drehen und zurück
     const vp = p.viewportSize();
     await p.setViewportSize({ width: vp.height, height: vp.width }); await wait(p, 400);
-    if ((await lage(sel)).fokus) amFeld(sel, await lage(sel), 'nach dem Drehen (APD-63/X-8)');
+    if ((await lage(sel)).fokus) amFeld(sel, await lage(sel), 'nach dem Drehen (APD-63/X-8, APD-81/C10)', mehr);
     await p.setViewportSize(vp); await wait(p, 400);
     if (!(await lage(sel)).fokus) await p.locator(sel).focus();
     await p.locator(sel).scrollIntoViewIfNeeded(); await wait(p, 100);   // nach dem Drehen steht oben derselbe Eintrag (R-8.1) – Feld ins Bild
-    // APD-63/X-2: Antippen leert, Fokus bleibt, die App erfährt es
+    // APD-63/X-2, APD-81/C2: Antippen leert sofort (eine Zeile), Fokus bleibt, die App erfährt es
     await p.evaluate(sel => { window.__fxInput = 0; document.querySelector(sel).addEventListener('input', () => window.__fxInput++, { once: true }); }, sel);
-    const ziel = await p.evaluate(() => { const r = document.querySelector('.fclear')?.getBoundingClientRect(); return r && r.width ? { x: r.left + r.width / 2, y: r.top + r.height / 2 } : null; });
-    if (!ziel || ziel.y < 0 || ziel.y > p.viewportSize().height) { E(sel, `ⓧ nicht zu sehen (${JSON.stringify(ziel)}) (APD-63/X-2)`); await p.locator(sel).blur(); continue; }
-    await p.mouse.click(ziel.x, ziel.y); await wait(p, 150);
+    const vorher = await p.locator(sel).inputValue();
+    if (!await tippeX(sel)) { await p.locator(sel).blur(); continue; }
+    if (await blase()) { E(sel, 'eine Zeile: Sprechblase statt sofort leeren (APD-81/C2)'); await knopf('Abbrechen'); }
     const l = await lage(sel), gemeldet = await p.evaluate(() => window.__fxInput);
     if (l.wert !== '') E(sel, `ⓧ leert das Feld nicht (‚${l.wert}‘) (APD-63/X-2)`);
     if (!l.fokus) E(sel, 'nach dem ⓧ hat das Feld keinen Fokus mehr – die Tastatur schließt (APD-63/X-2)');
     if (l.x) E(sel, 'ⓧ bleibt im leeren Feld (APD-63/X-2)');
     if (!gemeldet) E(sel, 'die App erfährt das Leeren nicht (kein input-Ereignis) (APD-63/X-2)');
+    // APD-81/C6, C7: Rückgängig holt den Text zurück (Undo-Taste, drei Finger)
+    if (l.wert === '') { await pruefeUndo(sel, vorher, mehr ? 'C6' : 'C7'); await p.locator(sel).fill(''); }
     if (warn) {
       await p.locator(sel).blur(); await wait(p);
       if (!await p.evaluate(() => [...document.querySelectorAll('.warn')].some(w => !w.hidden && w.getClientRects().length && w.textContent.trim()))) E(sel, 'nach dem Leeren mit ⓧ keine Fehlermeldung (APD-63/X-4, R-5.3)');
     }
+    if (mehr) {
+      // APD-81/C3–C6, C8, C9: drei Zeilen – Sprechblase, Abbrechen, Löschen, Rückgängig, nach dem Leeren getippt
+      const drei = `${text} eins\nzwei\ndrei`;
+      await p.locator(sel).fill(drei); await p.locator(sel).focus(); await wait(p, 150);
+      amFeld(sel, await lage(sel), 'mit drei Zeilen (APD-81/C1)', true);
+      await p.keyboard.press('ControlOrMeta+End'); await p.keyboard.type('\nvier\nfünf'); await wait(p, 200);
+      amFeld(sel, await lage(sel), 'nachdem das Feld gewachsen ist (APD-81/C9)', true);
+      const voll = await p.locator(sel).inputValue();
+      if (!await tippeX(sel)) { await p.locator(sel).blur(); continue; }
+      const b = await blase(), f1 = await lage(sel);
+      if (!b) E(sel, 'mehr als eine Zeile: keine Sprechblase ‚Text löschen?‘ (APD-81/C3)');
+      else {
+        if (b.text !== 'Text löschen?' || b.knoepfe.join(' · ') !== 'Löschen (rot) · Abbrechen') E(sel, `Sprechblase ‚${b.text}‘ mit ${b.knoepfe.join(' · ')} statt ‚Text löschen?‘ mit Löschen (rot) · Abbrechen (APD-81/C3)`);
+        if (!b.ganz) E(sel, 'Sprechblase nicht ganz auf dem Bildschirm (APD-81/C11)');
+        if (f1.wert !== voll) E(sel, 'Text ändert sich schon vor der Antwort (APD-81/C3)');
+        if (!f1.fokus) E(sel, 'Sprechblase offen: das Feld hat keinen Fokus mehr – die Tastatur schließt (APD-81/F-2)');
+        await knopf('Abbrechen');
+        const f2 = await lage(sel);
+        if (f2.wert !== voll || !f2.fokus) E(sel, `‚Abbrechen‘: Text ${f2.wert === voll ? 'unverändert' : 'geändert'}, Fokus ${f2.fokus ? 'im Feld' : 'weg'} (APD-81/C4)`);
+        if (!await tippeX(sel)) continue;
+        if (!await blase()) E(sel, 'zweites Antippen: keine Sprechblase (APD-81/C3)');
+        else {
+          await knopf('Löschen');
+          const f3 = await lage(sel);
+          if (f3.wert !== '' || !f3.fokus) E(sel, `‚Löschen‘: ${f3.wert === '' ? 'leer' : `‚${f3.wert.slice(0, 20)}‘`}, Fokus ${f3.fokus ? 'im Feld' : 'weg'} (APD-81/C5)`);
+          if (f3.wert === '') {
+            await pruefeUndo(sel, voll, 'C6');
+            // APD-81/C8 (M-4): Safari fasst Leeren und Tippen zu einem Schritt zusammen – in WebKit genügt ein Rückgängig
+            await p.locator(sel).fill(voll); await p.locator(sel).focus(); await wait(p, 100);
+            await tippeX(sel); await knopf('Löschen'); await p.keyboard.type('Wort'); await wait(p, 100);
+            const u = await undo(sel, webkit ? 1 : 2);
+            if (u.wert !== voll) E(sel, `nach dem Leeren getippt: ${webkit ? 'ein' : 'zwei'}mal Rückgängig ergibt ‚${u.wert.slice(0, 20)}‘ statt des ganzen Textes (APD-81/C8)`);
+          }
+        }
+      }
+    }
     // APD-63/X-3: ohne Fokus kein ⓧ
     await p.locator(sel).fill(text); await p.locator(sel).blur(); await wait(p, 100);
     if ((await lage(sel)).x) E(sel, 'ⓧ ohne Fokus (APD-63/X-3)');
+  }
+  // APD-81/C14: Felder ohne ⓧ (readonly, data-noclear, Datum, Suche) – auch mit Inhalt
+  for (const sel of ohne) {
+    if (!await p.locator(sel).count()) { E(sel, 'Feld fehlt (APD-81/C14)'); continue; }
+    await p.locator(sel).focus(); await wait(p, 150);
+    const l = await lage(sel);
+    if (l.x) E(sel, `ⓧ in einem Feld, das keins haben darf (APD-81/C14)`);
+    await p.locator(sel).blur();
   }
   return errors;
 }

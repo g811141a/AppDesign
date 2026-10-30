@@ -1,8 +1,8 @@
 # APD-81 ⓧ auch in mehrzeiligen Feldern – Testfall-Liste
 
 **Stand 29.10.2026** · Sitzung Reiselogbuch 0053 · Anlass: Rückmeldung P-73/1 · geklärt in `arbeit/APD-81 Klärung.md` (APD-81/F-1 bis
-F-5, Messung M-1 bis M-4) · allgemeine Regel (R-5.6 erweitert), geplant für AppDesign 4.41.0 / Reiselogbuch 3.39.0 – gebaut erst nach
-deinem Ja.
+F-5, Messung M-1 bis M-4) · allgemeine Regel (R-5.6 erweitert), gebaut in AppDesign 4.41.0 / Reiselogbuch 3.39.0 (dein Ja vom
+30.10.2026, Sitzung 0054).
 
 ---
 
@@ -39,7 +39,7 @@ gleich, M-2, M-4).
 | C9 | iPad quer | 30 Zeilen | im Feld ans Ende rollen | ⓧ bleibt oben rechts am Feld; Feld wächst beim Tippen: ⓧ bleibt oben |
 | C10 | iPad quer → hoch | drei Zeilen | mit Fokus drehen | ⓧ bleibt oben rechts am Feld |
 | C11 | iPhone hoch und quer, Blatt | eine bzw. drei Zeilen | wie C1–C6 | ⓧ im Feld, Sprechblase ganz auf dem Bildschirm über der Tastatur |
-| C12 | iPad hoch, dunkel | drei Zeilen | wie C1, C3 | ⓧ in `--muted`, Sprechblase dunkel |
+| C12 | iPad hoch, dunkel | drei Zeilen | wie C1, C3 | ⓧ grau wie im Suchfeld (mit ‚Kontrast erhöhen‘ `--muted`, R-1.9), Sprechblase dunkel |
 | C13 | iPad quer, Textgröße groß | drei Zeilen | wie C1 | ⓧ wächst mit (R-1.10), Text läuft nicht darunter |
 | C14 | alle | leer; `readonly`; `data-noclear`; Datum, Suche | Fokus | kein ⓧ |
 | C15 | iPad quer, Hardware-Tastatur | drei Zeilen | Tab durch das Fenster | ⓧ nicht fokussierbar (`tabIndex -1`), Bezeichnung ‚Eingabe löschen‘ |
