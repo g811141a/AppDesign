@@ -510,7 +510,8 @@ const found = new Map(), icons = new Map();
         if (e.hasAttribute('switch') && (ap === 'none' || ac !== soll)) R('R-5.7', `Schalter ‚${name}‘ mit Safaris Schalter nicht im Systemaussehen (appearance ${ap}, accent-color ${ac} statt ${soll})`);
       });
       // R-10.1 (seit 4.12.0): gleiche Aktion = gleiches Icon – Bezeichnung und Icon jeder sichtbaren Schaltfläche, verglichen in report()
-      res.icons = [...document.querySelectorAll('button[aria-label]')].filter(b => vis(b) && b.querySelector('svg.ic')).map(b => [b.getAttribute('aria-label'), b.querySelector('svg.ic').innerHTML.slice(0, 80)]);
+      // seit 4.42.0 (APD-87): der Mehr-Knopf (data-mehr) zeigt offen senkrechte Punkte – das ist dasselbe Icon
+      res.icons = [...document.querySelectorAll('button[aria-label]')].filter(b => vis(b) && b.querySelector('svg.ic')).map(b => [b.getAttribute('aria-label'), b.querySelector('svg.ic').hasAttribute('data-mehr') ? 'ellipsis' : b.querySelector('svg.ic').innerHTML.slice(0, 80)]);
       return res;
     }, skipTargets);
     for (const [lbl, sig] of r.icons) { if (!icons.has(lbl)) icons.set(lbl, new Map()); if (!icons.get(lbl).has(sig)) icons.get(lbl).set(sig, where); }

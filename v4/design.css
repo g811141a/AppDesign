@@ -1,4 +1,4 @@
-/* AppDesign 4.41.0 · design.css – gemeinsame Gestaltung der iPad-Web-Apps von g811141a (Apple-like)
+/* AppDesign 4.42.0 · design.css – gemeinsame Gestaltung der iPad-Web-Apps von g811141a (Apple-like)
    Einbinden im <head> vor dem eigenen <style> der App:  <link rel="stylesheet" href="../AppDesign/fassung/X.Y.Z/design.css"> (feste Fassung, R-10.3)
    Farben als Variablen auf :root, Dunkelmodus über data-theme="dark" (setzt ui.js / applyTheme).
    Komponenten: Schaltflächen, Suchfeld, Kapsel, Eingabefelder, Datumsfelder, Kopfzeile, Seitenleiste,
@@ -6,7 +6,7 @@
    Options-Kapsel; seit 4.1.0 iPhone-Ansicht (html.phone: Seitenkopf, großer Titel, Liste, Kasten, untere Leiste). Regeln dazu: README - Designrichtlinie allgemein.md */
 /* Farben im Apple-Look: Hintergrund Hellgrau, Kästen weiß ohne Rand, schwebende Schaltflächen */
 :root {
-  --ad-version: "4.41.0";   /* R-10.3: Version der Bausteine, die App prüft sie beim Start */
+  --ad-version: "4.42.0";   /* R-10.3: Version der Bausteine, die App prüft sie beim Start */
   --bg: #f2f2f7;
   --card: #ffffff;
   --ink: #1c1c1e;
@@ -224,6 +224,8 @@ input[type=date]::-webkit-date-and-time-value { text-align: left; }
 dialog input[type=date] { flex: none; }
 .dates { display: flex; align-items: center; gap: 10px 24px; flex-wrap: wrap; }
 .dates .dl { color: var(--muted); min-width: 2.2em; }
+/* Seit 4.42.0 (APD-90, R-10.5): Icon und Text eines Eintrags bleiben zusammen – Umbruch nur zwischen den Einträgen (iconText) */
+.ict { display: inline-block; max-width: 100%; }
 /* Seit 4.3.0: Bezeichnung und Feld gehören zusammen (.pair) – reicht der Platz nicht, bricht die Zeile vor der Bezeichnung um */
 .dates .pair { display: inline-flex; align-items: center; gap: 10px; flex: none; }
 .datebox { position: relative; display: inline-flex; align-items: center; flex: none; }

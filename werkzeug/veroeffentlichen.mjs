@@ -16,6 +16,7 @@
 import { readFileSync, writeFileSync, existsSync, mkdirSync, rmSync, copyFileSync } from 'node:fs';
 import { execFileSync, spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
+import { join } from 'node:path';
 import { vergleiche, fassungQuellen, fassungListe, pruefsummen, checkFassungen } from '../tests/version.mjs';
 
 const argv = process.argv.slice(2), befehl = argv[0];
@@ -220,10 +221,15 @@ async function los() {
     if (r.status !== 0) abbruch(`AppDesign tests/${t}.mjs rot – nichts veröffentlicht`);
   }
   // APD-5/E-4: alle Tests jeder App – einer rot: nichts veröffentlichen
+  const wackler = [];
   for (const a of apps) {
     console.log(`\n— Prüfungen ${a.titel} (node tests/alle.mjs) —`);
+    const wDatei = join(pfad(a.dir), 'tests', 'out', 'wackelt.json');
+    rmSync(wDatei, { force: true });
     const r = spawnSync(process.execPath, ['tests/alle.mjs', ...(opt('--jobs') ? ['--jobs', opt('--jobs')] : [])], { cwd: pfad(a.dir), stdio: 'inherit' });
     if (r.status !== 0) abbruch(`Prüfungen von ${a.titel} rot – nichts veröffentlicht`);
+    // APD-85/W-11 (seit 4.42.0): Wackler (rot unter Last, allein grün) zählen als grün und stehen in der Zusammenfassung
+    try { for (const w of JSON.parse(readFileSync(wDatei, 'utf8'))) wackler.push(`${a.titel}: ${w}`); } catch {}
   }
   const ergebnis = [];
   if (!nurApp) try {
@@ -249,6 +255,7 @@ async function los() {
   }
   console.log('\n✓ Fertig – alle Pages-Läufe ‚success‘, main enthält die neuen Versionen:');
   for (const r of ergebnis) console.log(`  ${r.name}: Commit ${r.sha.slice(0, 7)}, Pages ${r.pages} s, zusammen ${r.dauer} s`);
+  if (wackler.length) console.log(`  ⚠ ${wackler.length} Prüfung${wackler.length > 1 ? 'en' : ''} wackelt (rot unter Last, allein grün – APD-85): ${wackler.join(' · ')}`);
   console.log('  Die echte Seite (github.io) prüft der Nutzer mit /0 ‚Version prüfen‘ (APD-5/E-9).');
   aeltereFassungen(X);
 }

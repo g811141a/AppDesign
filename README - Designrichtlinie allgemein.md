@@ -1,6 +1,6 @@
 # Designrichtlinie allgemein
 
-**Version 4.41.0** · Stand 30.10.2026
+**Version 4.42.0** · Stand 30.10.2026
 
 Allgemeine Gestaltungs- und Bedienregeln für alle Web-Apps von g811141a auf iPad und iPhone. Die Datei liegt im Design-Repo
 **AppDesign** (g811141a/AppDesign); ihre Versionsnummer ist die des Repos. Die Komponenten sind dort einmal programmiert und
@@ -117,6 +117,9 @@ heller).
   Headline (17), Werte und Datumszeilen Subhead (15), Hinweise (`.hint`) 14 (wächst wie Subhead), Zusatzzeilen und Notizen in Menüs
   und Fensterköpfen Footnote (13), kleine Marken Caption 1 (12). **Keine Schriftgröße und keine Zeilenhöhe in px** (außer Ausgabe und
   Druck); Größen ohne Apple-Stil wachsen mit dem Faktor des nächsten Stils (`calc(19px * var(--f-title3))`).
+- **Icon und Text bleiben zusammen** (R-10.5): In einer Reihe aus Einträgen mit Icon und Text (z. B. Reisemittel) bricht die Zeile nur
+  zwischen den Einträgen um, nie zwischen Icon und Text; ist ein Eintrag allein breiter als die Zeile, bricht er im Text um, nie direkt
+  nach dem Icon. **Technisch:** `iconText(icon, text)` (ui.js) – `.ict` (design.css, auch in `outputCss`).
 - **Leisten** (Kopfzeile, Seitenkopf, Suchzeile, Seitenleisten-Kopf, Fensterkopf, untere Leiste, Backup-Kachel, Kapsel unten,
   Meldung) wachsen nur bis XXXL (`--tb-<Stil>`, Faktor `--fb`: Text bis 23, Knöpfe 44 → 60 px, Icons bis 27 px); iPhone quer gar
   nicht (R-2.4). Im Inhalt wachsen Icons (`--k`), senkrechte Innenabstände und Mindesthöhen mit dem Body-Faktor; 44 px bleibt
@@ -200,7 +203,7 @@ Body = Grundgröße der Stufe (14 … 53). Zeilenabstände und Werte wörtlich a
 | Fertig (Fenster) | `check` | rund, nur Icon; grau, nach einer Änderung weiß auf Blau |
 | Abbrechen / Schließen (Fenster) | `x` | rund, nur Icon, links oben |
 | Seitenleiste aus-/einblenden | `panel-left` | rund, nur Icon |
-| Mehr-Menü | `ellipsis` | nur Icon, in einer Kapsel |
+| Mehr-Menü | `ellipsis`, offen `ellipsis-vertical` | nur Icon, in einer Kapsel |
 | Einstellungen | `settings` | im Mehr-Menü |
 | Neu anlegen | `plus` | nur Icon, in einer Kapsel |
 | Teilen / Ausgabe | `share` | **immer nur Icon, nie mit Text** |
@@ -705,7 +708,8 @@ Regel). In AppDesign ist jede Komponente einmal programmiert (`v4/design.css`, `
 - **Untermenü** (`submenu`, eine Ebene, höchstens etwa 5 Punkte): Eintrag mit grauem Wert und ›; öffnet neben dem Menü, oben
   bündig; der Eintrag bleibt blau, solange es offen ist.
 - **Verhalten:** erscheint unter der Schaltfläche (darf über die Seitenleiste hinausragen); die Schaltfläche ist so lange gedrückt
-  (blau getönt); daneben tippen schließt. Reicht der Platz darunter nicht, rollt das Menü in sich (erst unter 200 px Platz öffnet
+  (blau getönt); der Mehr-Knopf zeigt dabei drei senkrechte Punkte (`ellipsis-vertical`) statt der waagrechten – der Wechsel sofort,
+  ohne Bewegung, beim Schließen zurück; daneben tippen schließt. Reicht der Platz darunter nicht, rollt das Menü in sich (erst unter 200 px Platz öffnet
   es nach oben).
 - **Beim Drehen** (R-8.1): offenes Menü, Untermenü und Sprechblase werden neu ausgerichtet – das Menü unter der aufrufenden
   Schaltfläche, das Untermenü neben seinem Eintrag, ganz sichtbar. Liegt die Schaltfläche in der Seitenleiste, bleibt die
@@ -1145,7 +1149,7 @@ Testfall (User) in den Usertest, wenn eine Version es betrifft.
 
 | Nr. | Regel | Prüfung | Gerät | Bau |
 |---|---|---|---|---|
-| R-4.1 | **Menüs:** Icon vor dem Text, keine Linien zwischen einzelnen Punkten, Gruppen durch eingerückten Strich, ‚… löschen‘ rot am Ende, graue Zusatzinfos unten nach dem Strich, Untermenü eine Ebene | hig.mjs | – | 15.6 |
+| R-4.1 | **Menüs:** Icon vor dem Text, keine Linien zwischen einzelnen Punkten, Gruppen durch eingerückten Strich, ‚… löschen‘ rot am Ende, graue Zusatzinfos unten nach dem Strich, Untermenü eine Ebene; der Mehr-Knopf zeigt bei offenem Menü drei senkrechte Punkte | hig.mjs; ablauf.mjs – `checkMehrKnopf` | – | 15.6 |
 | R-4.2 | **Kontextmenü** einer Kachel: daneben bzw. (iPhone) darunter, immer vollständig und ganz über der Backup-Kachel (ohne Kachel über der Offline-Zeile bzw. dem Rand); die Liste rückt dafür; ohne ‚Öffnen‘ | kontextmenue.mjs | – | 15.4 |
 | R-4.3 | **Abfragen und Meldungen:** keine Systemfenster; Abfrage als Sprechblase an der Schaltfläche, rote Schaltfläche mit dem Verb, ‚Abbrechen‘ zuletzt; mehrere Wege: empfohlener blau zuerst, zerstörender rot; Meldung im kleinen Fenster mit höchstens einer Schaltfläche zu den Einzelheiten | hig.mjs | – | 6, 10, 15.7 |
 | R-4.4 | **Fenster-Kopfzeile:** x links, Häkchen rechts – grau, nach einer Änderung blau; x mit Änderungen fragt ‚Änderungen verwerfen‘ / ‚Weiter bearbeiten‘ | ablauf.mjs – `checkDialogHead` | – | 6, 15.8 |
@@ -1207,6 +1211,7 @@ Testfall (User) in den Usertest, wenn eine Version es betrifft.
 | R-10.2 | **Lesbarkeit:** Schrift mindestens 11 pt; Kontrast 4,5 : 1 bzw. 3 : 1, hell und dunkel | hig.mjs | – | 3, 16 |
 | R-10.3 | **Versionskopplung:** ui.js/design.css aus der festen Fassung `fassung/X.Y.Z/` (index.html, sw.js), Fassungen unverändert (Prüfsummen), `v4/` = neueste Fassung; Versionen stimmen überein, sonst Hinweis beim Start; Versionszeile nennt AppDesign | version.mjs | – | 11, 14 |
 | R-10.4 | **README ‚Verwendete Versionen‘** ganz oben, je Version und Link | doku.mjs – `checkDocs`; Katalog selbst: `checkCatalog` | – | 11 |
+| R-10.5 | **Icon und Text** eines Eintrags bleiben zusammen – Umbruch nur zwischen Einträgen | ablauf.mjs – `checkIconText` (Icon und erstes Wort auf derselben Zeile) | – | 3 |
 
 ### Regeln ohne automatische Prüfung
 
@@ -1267,6 +1272,7 @@ R-2.3 (15.2), R-4.4 (6, 15.8, HIG 9), R-5.3 (8), R-5.4 (15.12), R-5.5 (APD-14), 
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 4.42.0 | 30.10.2026 | Neben | **APD-87 (Nutzer 30.10.2026, Wortlaut bestätigt):** 15.6, Icon-Tabelle (5) und R-4.1 – der Mehr-Knopf zeigt bei offenem Menü drei senkrechte Punkte (`ellipsis-vertical`), Prüfung `checkMehrKnopf`. **APD-90 (Nutzer 30.10.2026, Wortlaut bestätigt):** 3 ‚Icon und Text bleiben zusammen‘ und neue Regel R-10.5, Baustein `iconText`, Prüfung `checkIconText`. **APD-85 Teil 1:** `lauf.mjs` wiederholt rote Läufe am Ende einmal allein (‚wackelt‘), Abbruch erst ab dem dritten roten Lauf |
 | 4.41.0 | 30.10.2026 | Neben | **APD-81 (Rückmeldung P-73/1, geklärt mit dem Nutzer 26. und 29.10.2026, Messung am iPad APD-81/M-1 bis M-4):** R-5.6 und 15.11 – das ⓧ auch in mehrzeiligen Textfeldern (oben rechts auf Höhe der ersten Zeile; mehr als eine Zeile erst nach der Sprechblase ‚Text löschen?‘); in allen Feldern geleert über den Bearbeiten-Befehl, damit Undo-Taste und drei Finger den Text zurückholen; 13 Safari-Eigenheit ‚Leeren und Rückgängig‘ mit Quelle; 16 bewusste Abweichung ‚ⓧ auch in mehrzeiligen Textfeldern‘; Prüfung `checkClear` erweitert (Testfall-Liste `arbeit/APD-81 Testfall-Liste.md`, APD-81/C1 bis C16) |
 | 4.40.0 | 29.10.2026 | Neben | **APD-86 (Rückmeldung des Nutzers 29.10.2026):** R-5.4 und 15.12 – jeder seitlich wischbare Bereich bis etwa zwei Zeilen Höhe zeigt mit Verlauf und Pfeil am Rand, wo es weitergeht; neu die Wischzeile `.weiter` (`wischHtml`), Prüfung `hig.mjs` meldet jeden wischbaren Bereich ohne sie. **APD-77:** R-1.6 und 15.21 – ‚Messung starten‘ erst nach langem Drücken auf die graue Versionszeile im Mehr-Menü (bis zum Neustart; `{ note, halten }`, `checkMessung` APD-77/F-1 bis F-9); ein Abstand ohne Eintrag danach entfällt im Menü. **P-75/6:** 13 – ‚Größerer Text‘ pro App für Safari wirkt auch auf die Web-App vom Home-Bildschirm |
 | 4.39.0 | 26.10.2026 | Neben | **APD-83 (Rückmeldung P-76/4):** 7 und R-4.6 – ein offenes Fenster ändert durch Eingaben weder Breite noch Lage, Meldungen brechen in der vorhandenen Breite um (`dialog .warn { contain: inline-size; }`); Prüfung `checkSheet` APD-72/D-21 |

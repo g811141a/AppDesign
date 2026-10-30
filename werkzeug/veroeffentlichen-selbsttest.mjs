@@ -43,7 +43,8 @@ const commitAlle = (k, t) => { for (const d of [k.ad, k.app]) { git(d, 'add', '-
 function texte(k, X, Y) {
   ersetze(k.ad, 'CHANGELOG.md', /\n## /, `\n## ${X} – 01.01.2030 (Neben)\n\nSelbsttest\n\n## `);
   ersetze(k.app, 'CHANGELOG.md', /\n## /, `\n## ${Y} – 01.01.2030 (Neben)\n\nTestfälle P-99\n\n**P-99/0 – Version prüfen**\n1. Versionszeile ansehen. Erwartet: Reiselogbuch ${Y} · AppDesign ${X}\n\n## `);
-  schreibe(k.app, 'tests/alle.mjs', 'process.exit(+(process.env.SCHEIN_ROT || 0));\n');
+  // seit 4.42.0 (APD-85/W-11): SCHEIN_WACKELT=1 → ein Wackler in tests/out/wackelt.json
+  schreibe(k.app, 'tests/alle.mjs', "import { mkdirSync, writeFileSync } from 'node:fs';\nmkdirSync('tests/out', { recursive: true });\nwriteFileSync('tests/out/wackelt.json', JSON.stringify(process.env.SCHEIN_WACKELT ? ['ablauf-blatt · webkit'] : []));\nprocess.exit(+(process.env.SCHEIN_ROT || 0));\n");
 }
 const X0 = lies(join(QUELLE, 'AppDesign'), 'v4/ui.js').match(/const AD_VERSION = '([\d.]+)'/)[1];
 const Y0 = lies(join(QUELLE, 'ReiseLogBuch'), 'index.html').match(/const APP_VERSION = '([\d.]+)'/)[1];
@@ -124,7 +125,8 @@ try {
   pruefe(r.code === 1 && /lädt weiter ihre bisherige Fassung/.test(r.text) && /los --nur-app/.test(r.text), 'APD-5/E-8 AppDesign online, App scheitert → Hinweis, die App lädt weiter ihre alte Fassung');
   k = kopie();
   skript(k, {}, 'vorbereiten', '--ad', X, '--app', `reiselogbuch=${Y}`); texte(k, X, Y); commitAlle(k, 'bereit');
-  r = skript(k, {}, 'los');
+  r = skript(k, { SCHEIN_WACKELT: '1' }, 'los');
+  pruefe(r.code === 0 && /⚠ 1 Prüfung wackelt \(rot unter Last, allein grün – APD-85\): Reiselogbuch: ablauf-blatt · webkit/.test(r.text), 'APD-85/W-11 Wackler in der Zusammenfassung, Version trotzdem veröffentlicht');
   pruefe(r.code === 0 && new RegExp(`AppDesign ${X.replace(/\./g, '\\.')}: Commit`).test(r.text) && new RegExp(`Reiselogbuch ${Y.replace(/\./g, '\\.')}: Commit`).test(r.text) &&
     r.text.indexOf(`✓ AppDesign ${X}: `) < r.text.indexOf(`✓ Reiselogbuch ${Y}: `) && r.text.indexOf(`✓ AppDesign ${X}: `) >= 0, 'APD-5/E-7 los: erst AppDesign, dann die App, ‚Fertig‘ mit Versionen, Commits und Pages-Läufen');
 } finally { rmSync(TMP, { recursive: true, force: true }); }
