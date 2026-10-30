@@ -22,6 +22,7 @@ Sitzung zuerst, dann die ganze Zusammenarbeit** (0 Nr. 15); die Arbeitsumgebung 
 - **Backlog ‚0. Nächste Version‘:** leer (0 Punkte bereit).
 - **Offen:** Prio 1 APD-38; Prio 2 APD-94 (Seitenleiste beim Drehen mit offenem Menü nicht gesperrt – in 0057 wieder gesehen, s. 2);
   Prio 3 APD-85 Teil 3, APD-57, APD-80, APD-88, APD-40, APD-62, APD-30, RLB-6 u. a.
+- **Vereinbarung (Nutzer 30.10.2026, Sitzung 0058):** Muster bis auf Weiteres **nur hell** (kein dunkel) – gilt, bis der Nutzer sie aufhebt; in jede Übergabe übernehmen.
 - **Erinnerung:** ‚Backlog-Erinnerung (AppDesign und Reiselogbuch)‘ montags 8:58.
 
 ## 2. Ergebnisse der Sitzung 0057
