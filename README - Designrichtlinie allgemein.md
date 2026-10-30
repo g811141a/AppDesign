@@ -1,6 +1,6 @@
 # Designrichtlinie allgemein
 
-**Version 4.42.0** · Stand 30.10.2026
+**Version 4.43.0** · Stand 30.10.2026
 
 Allgemeine Gestaltungs- und Bedienregeln für alle Web-Apps von g811141a auf iPad und iPhone. Die Datei liegt im Design-Repo
 **AppDesign** (g811141a/AppDesign); ihre Versionsnummer ist die des Repos. Die Komponenten sind dort einmal programmiert und
@@ -39,7 +39,7 @@ Gestaltung und Bauteile und verweisen auf die Regel (R-x.y); was dort ohne autom
 - **Aufbau wie Apple-Apps:** links eine **Seitenleiste** mit der zentralen Liste (15.4), rechts der Inhalt mit einer
   **Kopfzeile** (15.3): Titel in der Mitte, rechts eine Kapsel mit den wichtigsten Aktionen, Weiteres im **Mehr-Menü** ellipsis.
 - **Gleiche Bedienung auf iPad und iPhone** (R-1.1): gleiche Kapseln oben (z. B. [`plus` | `ellipsis`],
-  [`share` | `search` | `ellipsis`]), gleiche Suche, gleiche Menüs – das iPhone ordnet nur die Seiten anders an (15.17).
+  [`share` | `ellipsis`]), gleiche Suche, gleiche Menüs – das iPhone ordnet nur die Seiten anders an (15.17).
 - **Nur der Vordergrund reagiert** (R-1.4): Seite gesperrt (`html.locked`), `overscroll-behavior: contain`.
 - **Leisten stehen fest, die Seite rollt nie – nur der Inhalt** (R-2.1, Bau 15.22).
 - **Nie ungewollt vergrößern** (R-1.3): `touch-action: manipulation`; Zoomen mit zwei Fingern bleibt möglich.
@@ -102,8 +102,9 @@ heller).
   Icons, die sonst nur Linienfarbe haben (› in Listen, ⓧ in Feldern), stehen dann in `--muted`. Jeder Text und jedes Icon hat
   mindestens 4,5 : 1 – ohne die Ausnahmen ‚Weiß auf Systemblau‘ und ‚Orange‘.
 - **Darstellung** (R-1.2): folgt automatisch der Hell/Dunkel-Einstellung des Geräts (Voreinstellung ‚Automatisch‘, wechselt
-  sofort mit); im Mehr-Menü übersteuerbar: Untermenü ‚Darstellung ›‘ (sun-moon, rechts grau der aktuelle Wert) mit Automatisch ·
-  Hell · Dunkel (Häkchen). Gespeichert in `settings.appearance` (`auto` | `light` | `dark`).
+  sofort mit); im Mehr-Menü der Seitenleiste (iPhone: Startliste) übersteuerbar, nach Backup erstellen und Backup laden – nie im
+  Menü eines Eintrags, denn sie gilt für die ganze App: Untermenü ‚Darstellung ›‘ (sun-moon, rechts grau der aktuelle Wert) mit
+  Automatisch · Hell · Dunkel (Häkchen). Gespeichert in `settings.appearance` (`auto` | `light` | `dark`).
 
 ## 3. Schrift und Abstände
 
@@ -207,7 +208,7 @@ Body = Grundgröße der Stufe (14 … 53). Zeilenabstände und Werte wörtlich a
 | Einstellungen | `settings` | im Mehr-Menü |
 | Neu anlegen | `plus` | nur Icon, in einer Kapsel |
 | Teilen / Ausgabe | `share` | **immer nur Icon, nie mit Text** |
-| Suchen | `search` | in der Kapsel und im Suchfeld |
+| Suchen | `search` | als erster Punkt im Mehr-Menü und im Suchfeld |
 | Voriger / nächster Treffer | `chevron-up` / `chevron-down` | nur Icon, als Kapsel |
 | Zurück / Weiter (Blättern) | `chevron-left` / `chevron-right` | nur Icon, als Kapsel |
 | Löschen / Entfernen / Verwerfen | `trash` | weiß auf Rot (Sprechblase), rot (Menü) |
@@ -216,7 +217,7 @@ Body = Grundgröße der Stufe (14 … 53). Zeilenabstände und Werte wörtlich a
 | Vorschau | `eye` | Icon + Text |
 | HTML / PDF | `file-code` / `file-text` | Icon + Text |
 | Info / Hinweis ein-/ausblenden | `info` | nur Icon |
-| Darstellung | `sun-moon` | im Mehr-Menü, Untermenü Automatisch · Hell · Dunkel |
+| Darstellung | `sun-moon` | im Mehr-Menü der Seitenleiste, Untermenü Automatisch · Hell · Dunkel |
 | Nach oben / Ans Ende | `arrow-up-to-line` / `arrow-down-to-line` | nur Icon |
 | Zurücksetzen | `rotate-ccw` | nur Icon, gedämpft |
 | Messung starten / beenden | `activity` / `circle-stop` | im Mehr-Menü der Seitenleiste (15.21) |
@@ -305,7 +306,9 @@ Body = Grundgröße der Stufe (14 … 53). Zeilenabstände und Werte wörtlich a
 - **Beträge** wie bei Apple (Region Deutschland, R-5.1): immer zwei Nachkommastellen, Tausenderpunkt schon beim Tippen, Währung
   **hinter** dem Betrag mit Leerzeichen – „4.850,00 €“. Im Eingabefeld steht das € rechts neben dem Feld; fehlen beim Verlassen
   die Nachkommastellen, ergänzt die App „,00“. **Zahlen- und Betragsfelder sind rechtsbündig** und dynamisch breit: mindestens so
-  breit, dass „100.000,00“ vollständig passt; längere Beträge lassen das Feld beim Tippen mitwachsen.
+  breit, dass „100.000,00“ vollständig passt; längere Beträge lassen das Feld beim Tippen mitwachsen. **Zahlenfelder mit kleinem
+  Höchstwert** (z. B. höchstens 99) sind nur so breit wie die größte Zahl plus Platz für das ⓧ; dieser Platz bleibt immer frei,
+  damit die Zahl beim Tippen nicht springt.
 - **Smiley-Leisten** (Schnellauswahl über einem Textfeld, Bau 15.12): nur einzeilig, mit dem Finger nach links/rechts wischen,
   Verlauf am Rand als Hinweis auf weitere Smileys, Zurücksetzen (rotate-ccw) fest rechts daneben. Sortiert nach Häufigkeit
   (meistbenutzte vorne), nie benutzte in Standardreihenfolge dahinter. Langes Drücken auf derselben Stelle entfernt einen Smiley
@@ -593,7 +596,9 @@ Regel). In AppDesign ist jede Komponente einmal programmiert (`v4/design.css`, `
 - **Zweck:** Suchen in der aktuellen Ansicht und in der zentralen Liste (15.4). **Technisch:** `.searchbox`, `.navgrp`;
   `searchWords`, `findsAll`, `findsAny`, `markWords` (ui.js). Regel R-2.3.
 - **Aufbau:** Lupe (search) · Eingabe „Suchen“ · Trefferanzeige · x-Schaltfläche; rechts daneben Kapsel-Gruppe chevron-up /
-  chevron-down.
+  chevron-down, dann der runde Knopf x ‚Suche beenden‘ (schließt die Suchzeile). **Geöffnet** wird die Suche über ‚Suchen‘ (search)
+  als ersten Punkt im Mehr-Menü, darunter ein Strich (wie ‚Find in Note‘ in Notizen), oder mit ⌘F (R-4.7); eine eigene Lupe in der
+  Kapsel gibt es nicht. Der Mehr-Knopf bleibt bei offener Suche normal (blau getönt und senkrecht nur bei offenem Menü, 15.6).
 - **Maße:** 44 px hoch (iPhone quer 32 px, R-2.4), Kapsel; in der zweiten Zeile der Kopfzeile über die volle Breite,
   Treffer-Navigation immer am rechten Rand; Abstand 12 px.
 - **Aussehen:** wie die schwebende Schaltfläche; Lupe, Trefferanzeige grau; x als grauer Kreis mit weißem Kreuz.
@@ -623,8 +628,8 @@ Regel). In AppDesign ist jede Komponente einmal programmiert (`v4/design.css`, `
 - **Apple:** [HIG – Toolbars](https://developer.apple.com/design/human-interface-guidelines/toolbars)
 - **Zweck:** oberste Zeile des Inhalts. **Technisch:** `.nb`.
 - **Aufbau:** links panel-left (nur wenn die Seitenleiste ausgeblendet ist) · Titel in der Mitte (17 px, fett) · rechts eine
-  Kapsel mit den wichtigsten Aktionen, zuletzt ellipsis (Mehr-Menü). search in der Kapsel blendet eine **zweite Zeile** mit dem
-  Suchfeld über die volle Breite ein, Treffer-Navigation rechts.
+  Kapsel mit den wichtigsten Aktionen, zuletzt ellipsis (Mehr-Menü). ‚Suchen‘ im Mehr-Menü blendet eine **zweite Zeile** mit dem
+  Suchfeld über die volle Breite ein, Treffer-Navigation und x ‚Suche beenden‘ rechts – auf iPad und iPhone oben (R-4.5).
 - **Verhalten:** feste Zeile des Rahmens (15.22) – nur der Inhalt darunter rollt (Hintergrund `--bg`, sobald der Inhalt gerollt
   ist, Haarlinie unten); keine Glas-Leiste. Regel R-2.1.
 - **iPhone quer niedrig** (R-2.4, wie iOS quer): Kopfzeile, Suchzeile und Fensterkopf 32 statt 44 px hoch – Knöpfe in Kapseln
@@ -636,8 +641,8 @@ Regel). In AppDesign ist jede Komponente einmal programmiert (`v4/design.css`, `
 - **Apple:** [HIG – Sidebars](https://developer.apple.com/design/human-interface-guidelines/sidebars)
 - **Zweck:** zentrale Liste der App; im iPhone-Aufbau dieselbe als Startliste (15.17). **Technisch:** `#side`, Kacheln
   `.side-row` in `.side-list`, Backup-Kachel `.side-foot`. Regeln R-7.1, R-7.2, R-8.1.
-- **Aufbau:** Kopf: Überschrift (20 px, fett, linksbündig) · Kapsel [plus | search | ellipsis] (search nur, wenn es Einträge
-  gibt) · runde Schaltfläche panel-left (ausblenden); unter der Überschrift klein und grau die Anzahl (‚5 Reiselogbücher‘); der
+- **Aufbau:** Kopf: Überschrift (20 px, fett, linksbündig) · Kapsel [plus | ellipsis] – im Mehr-Menü zuerst ‚Suchen‘ (nur, wenn es
+  Einträge gibt), darunter ein Strich · runde Schaltfläche panel-left (ausblenden); unter der Überschrift klein und grau die Anzahl (‚5 Reiselogbücher‘); der
   Kopf bleibt oben stehen. Darunter die Einträge als **Kacheln** (wie auf dem iPhone): Titel fett, darunter grau Zeitraum ·
   Status, rechts ›; gewählter Eintrag blau gefüllt; reichen sie über den Rand, wischt man sie nach oben – sie laufen unter dem Kopf
   und **hinter der Backup-Kachel durch** (keine starre Begrenzung); nur `.side-list` rollt, Kopf und Backup-Kachel nie. Die Liste
@@ -647,12 +652,12 @@ Regel). In AppDesign ist jede Komponente einmal programmiert (`v4/design.css`, `
   Kachel läuft die Liste bis an den unteren Rand bzw. bis über die Zeile.
 - **Geändert am:** jede Kachel zeigt als dritte Zeile klein und grau (13 px) ‚geändert am TT.MM.JJJJ um hh:mm · iPad‘ bzw.
   ‚· iPhone‘ (`small.chg`); das Gerät liefert `deviceName()`. Ohne bekannte Änderung entfällt die Zeile.
-- **Suche in der Liste** (Regel R-2.3): search im Kopf blendet darunter eine Suchzeile ein (wie 15.2, Platzhalter ‚In allen
-  suchen‘, x, **ohne** Pfeile; `#side .side-search`), Fokus im Feld. Jede Kachel mit Treffer zeigt ‚N Treffer‘ statt ‚geändert am
-  …‘ (nur sichtbare Felder), unter der Überschrift ‚2 von 5 <Einträgen>‘. Gefiltert bleibt, bis x oder search die Suche beendet;
+- **Suche in der Liste** (Regel R-2.3): ‚Suchen‘ im Mehr-Menü der Seitenleiste blendet unter dem Kopf eine Suchzeile ein (wie 15.2,
+  Platzhalter ‚In allen suchen‘, ⓧ, **ohne** Pfeile, rechts x ‚Suche beenden‘; `#side .side-search`), Fokus im Feld. Jede Kachel mit Treffer zeigt ‚N Treffer‘ statt ‚geändert am
+  …‘ (nur sichtbare Felder), unter der Überschrift ‚2 von 5 <Einträgen>‘. Gefiltert bleibt, bis x ‚Suche beenden‘ die Suche beendet;
   Neuladen beginnt ohne Suche. Ein daneben offener Eintrag (iPad) bleibt unberührt, solange seine Suche zu ist; sind beide
   Suchfelder offen, wird jede Eingabe (auch x) übernommen. Die Eingabetaste ‚Suchen‘ schließt nur die Tastatur (R-5.5). Vorbild
-  Notizen (dort steht das Feld immer unter dem Titel; hier hinter der Lupe wie im Eintrag – Entscheidung des Nutzers).
+  Notizen (dort steht das Feld immer unter dem Titel; hier im Mehr-Menü wie im Eintrag – Entscheidung des Nutzers, Abweichung in 16).
 - **Maße und Aussehen:** schwebend wie in Safari – eigenes Rechteck mit 10 px Abstand oben und links und 4 px unten (der Schatten
   endet fast am unteren Bildschirmrand), Radius 22 px, Lichtkante `--btn-rim` und Schatten `--float` wie die Schaltflächen; so
   breit wie Kopf bzw. längster Titel, 340–420 px; Hintergrund `--bg` (wie die iPhone-Startliste, damit die weißen Kacheln sich
@@ -690,8 +695,7 @@ Regel). In AppDesign ist jede Komponente einmal programmiert (`v4/design.css`, `
 - **Apple:** [HIG – Toolbars](https://developer.apple.com/design/human-interface-guidelines/toolbars)
 - Mehrere Schaltflächen in einer schwebenden Kapsel (44 px hoch, je Icon 48 px breit); Text-Schaltflächen darin mit
   Innenabstand 14 px. Technisch `.grp` (`.navgrp`). Regel R-3.2.
-- **Suche am Ende:** die Lupe steht in jeder Kapsel am Ende, dahinter höchstens das Mehr-Menü (ellipsis) – wie Apple; z. B.
-  [plus | search | ellipsis], [share | search | ellipsis] (R-2.3).
+- **Keine Lupe in der Kapsel:** die Suche steht als ‚Suchen‘ im Mehr-Menü (15.2, R-2.3); z. B. [plus | ellipsis], [share | ellipsis].
 - **Alle Kapseln gleich gebaut** (Kopfzeile, Seitenleiste, Treffer-Pfeile, Blättern, Auswahl-Kapseln): Schaltflächen genau so
   hoch wie der Innenraum (44 px minus Rand); die Markierung (gedrückt bzw. blau gefüllt) ist eine eigene Form innerhalb des
   Randes: **bei Icons ein Kreis 36 × 36** wie bei Wetter und Smileys (R-3.1), bei Text eine Kapsel mit 3 px Luft.
@@ -832,7 +836,7 @@ Regel). In AppDesign ist jede Komponente einmal programmiert (`v4/design.css`, `
   ihr `resize`-Handler ruft bei einem Wechsel `render()`. Regel R-1.1: gleiche Bausteine und Bedienung wie am iPad, nur eine
   Seite nach der anderen statt Seitenleiste.
 - **Startliste = Seitenleiste:** die Startliste ist die Seitenleiste `#side` als ganze Seite (`#side.page`) – kein eigener
-  Nachbau. Kopf wie am iPad (Titel links, 20 pt fett, darunter klein und grau die Anzahl, rechts [`plus` | `search` |
+  Nachbau. Kopf wie am iPad (Titel links, 20 pt fett, darunter klein und grau die Anzahl, rechts [`plus` |
   `ellipsis`]; panel-left entfällt), Kacheln und Backup-Kachel wie 15.4. (`.ilist.tiles` bleibt als Liste für andere Seiten.)
 - **Start** (R-7.2): jedes Neuladen beginnt in der Startliste, ganz oben, **kein Eintrag blau** (nichts ist geöffnet, HIG 4);
   nach ‚Zurück‘ ist der zuletzt geöffnete blau. Es entscheidet der **Aufbau** (`isPhone()`), nicht das Gerät – auch ein iPad im
@@ -840,7 +844,7 @@ Regel). In AppDesign ist jede Komponente einmal programmiert (`v4/design.css`, `
   ohne Neuladen ändert nichts (13). Die App merkt sich den Start-Eintrag trotzdem, damit ein breiteres Fenster ihn mit der
   Seitenleiste zeigt.
 - **Seitenkopf** (`.pnav`): bleibt fest oben stehen; links runder Zurück-Knopf mit `chevron-left` **ohne Text**, rechts
-  **dieselbe Kapsel wie am iPad** (z. B. [`share` | `search` | `ellipsis`] im Inhalt).
+  **dieselbe Kapsel wie am iPad** (z. B. [`share` | `ellipsis`] im Inhalt).
 - **Seitenwechsel und Zurückwischen** (R-7.5, wie iOS 26): Öffnen aus der Startliste schiebt den Inhalt von rechts herein, die
   Liste weicht ein Drittel nach links und dunkelt leicht ab; der Zurück-Knopf schiebt ihn wieder hinaus (~0,35 s). Zurück geht es
   auch durch **Wischen nach rechts von überall im Inhalt** – die Seite folgt dem Finger, die Startliste ist darunter zu sehen;
@@ -866,7 +870,7 @@ Regel). In AppDesign ist jede Komponente einmal programmiert (`v4/design.css`, `
   dazu bei langem Inhalt der Schnellroll-Griff (15.1, R-3.2).
 - **Tastatur der Suche:** wischt man den Inhalt, während die Tastatur der Suche offen ist, schließt sie sich (wie bei Apple) –
   sonst verschiebt iOS den sichtbaren Bereich und die Leisten zittern (R-2.1).
-- **Suche** wie am iPad (15.2): `search` in der Kapsel öffnet unter der Leiste die Suchzeile mit ‚1 von 4‘, ⓧ und ⌃ ⌄.
+- **Suche** wie am iPad (15.2): ‚Suchen‘ im Mehr-Menü öffnet unter der Leiste die Suchzeile mit ‚1 von 4‘, ⓧ, ⌃ ⌄ und x ‚Suche beenden‘.
 - **Fester Hinweis unten** (`.bbar` mit `.bnote`): z. B. der Backup-Hinweis – gelb getönte Karte (`--focus`) mit blau gefülltem
   Knopf, fest am unteren Rand; die Liste läuft dahinter durch (Verlauf), bei offener Tastatur wandert die Leiste über die Tastatur
   (`--vv-bottom`). Am iPad steht derselbe Hinweis ebenso gelb fest am unteren Rand der Seitenleiste.
@@ -1094,6 +1098,8 @@ steht in der Spalte ‚außerdem‘ (ohne automatische Prüfung: G-19).
 | Feldtext bei xS bis M mindestens 16 px (Apple: 14–16) | – | sonst vergrößert Safari beim Antippen (R-1.3) | 23.10.2026 |
 | ⓧ auch in mehrzeiligen Textfeldern (Apple: UITextView – Notizen, Mail, Notizfelder in Kalender, Erinnerungen, Kontakte – hat kein ⓧ; geleert wird mit Auswählen → ‚Ausschneiden‘ bzw. Löschtaste) | – | Wunsch des Nutzers (P-73/1, APD-81); mehr als eine Zeile erst nach der Sprechblase ‚Text löschen?‘, Rückgängig wie bei Apple über Undo-Taste, drei Finger, Schütteln (R-5.6) | 26.10.2026 |
 | Kapsel ‚Nach oben / Ans Ende‘ auch auf dem iPhone (Apple: Statusleiste antippen bzw. Scroll-Leiste ziehen) | – | der Apple-Weg war dem Nutzer zu schwerfällig (R-3.2); das Ziehen der Scroll-Leiste gibt es dazu als Schnellroll-Griff | 17.10.2026 |
+| Suche in der Liste (Seitenleiste, iPhone-Startliste) im Mehr-Menü (Apple: Suchfeld in der Liste immer sichtbar, iPhone unten) | – | Wunsch des Nutzers (APD-91): gleich wie im Eintrag, ruhiger Kopf | 30.10.2026 |
+| Geöffnete Suchzeile am iPhone oben (Apple iOS 26: über der Tastatur) | – | oben ohne Springen gemessen (R-4.5, APD-36); in Safaris Leiste über der Tastatur kann eine Web-App nichts einbauen – unten erst mit einer App-Hülle (APD-38, APD-57) | 30.10.2026 |
 
 ## 17. Regelkatalog
 
@@ -1116,7 +1122,7 @@ Testfall (User) in den Usertest, wenn eine Version es betrifft.
 | Nr. | Regel | Prüfung | Gerät | Bau |
 |---|---|---|---|---|
 | R-1.1 | **Gleiche Funktion = gleicher Baustein, gleiche Bedienung** auf iPad und iPhone: eine Umsetzung, nur die Anordnung unterscheidet sich (Seitenleiste = Startliste); Aktionen und Suche oben in der Kapsel, unten nur feste Hinweise (Backup-Kachel) | hig.mjs – Gerätevergleich des Aufbaus | – | 1, 15.17 |
-| R-1.2 | **Darstellung** folgt dem Gerät (‚Automatisch‘), im Mehr-Menü übersteuerbar (Automatisch · Hell · Dunkel) | hig.mjs | – | 2 |
+| R-1.2 | **Darstellung** folgt dem Gerät (‚Automatisch‘), im Mehr-Menü der Seitenleiste übersteuerbar (Automatisch · Hell · Dunkel), nie im Menü eines Eintrags | hig.mjs | – | 2 |
 | R-1.3 | **Nie ungewollt vergrößern:** Doppeltippen vergrößert nicht; Eingabefelder mindestens 16 px (sonst vergrößert iOS beim Antippen) | hig.mjs | iOS-Tastatur | 1, 15.11 |
 | R-1.4 | **Nur der Vordergrund reagiert – auch für VoiceOver und Tastatur:** offenes Fenster sperrt die Seite (Fenster, Meldung und Blatt sind modal), Menü und Sprechblase fangen Wischen ab, daneben tippen schließt; bei offenem Menü und offener Sprechblase ist alles daneben gesperrt (`inert` – Seite bzw. übriger Fensterinhalt), nach jedem Schließen (auch beim Drehen, R-8.1) wieder frei | hig.mjs (Sperre, modal, nach dem Schließen frei) | – | 1 |
 | R-1.5 | **Offline nutzbar und erkennbar:** die App startet ohne Netz aus dem Speicher – auch unter anderer Adresse und bei hängendem Netz nach höchstens 3 s, nie eine weiße Seite; arbeitet sie offline, steht unten in Seitenleiste bzw. Startliste (unter der Backup-Kachel bzw. ohne sie) grau ‚Offline – alles bleibt auf diesem Gerät‘, beim Wechsel und beim Start ohne Netz kurz die Meldung ‚Du bist offline‘ bzw. ‚Wieder online‘ | offline.mjs | Gerät (Flugmodus) | 11, 15.20 |
@@ -1132,7 +1138,7 @@ Testfall (User) in den Usertest, wenn eine Version es betrifft.
 |---|---|---|---|---|
 | R-2.1 | **Leisten stehen fest – keinen Millimeter:** Kopfzeile, Seitenkopf, Seitenleisten-Kopf, mit und ohne Suchzeile, beim Wischen, am Rand, bei offener und beim Schließen der Tastatur; nichts federt; erstes Wischen bei offener Tastatur schließt nur die Tastatur. **Die Seite rollt nie, nur der Inhalt** – Rahmen mit festen Zeilen und Rollbereich, so hoch wie der sichtbare Bereich | hig.mjs – `barStill`: Lage der Leiste beim Rollen des Inhalts gemessen, auch mit nachgebildeter Tastatur; Grundregel ‚Seite rollt nie‘ (`scrollY` bleibt 0) | Federn, Tastatur, Wischgefühl | 13, 15.22 |
 | R-2.2 | **Titel in der Leiste:** Titel einer Inhaltsseite steht in der Leiste; unter dem Titel der Seitenleiste bzw. Startliste klein und grau die Anzahl | hig.mjs | – | 15.4, 15.17 |
-| R-2.3 | **Suche:** Suchzeile unter der Leiste über die volle Breite; Treffer ‚3 von 57‘ bzw. ‚0‘; nach kurzer Pause steht der Treffer direkt unter der Suchzeile; Pfeile ohne Umlauf; gefiltert auf Einträge mit Treffern; gleich auf iPad und iPhone; beim Tippen bleibt das Suchfeld dasselbe Feld mit Fokus; **mehrere Wörter** (alle müssen vorkommen, Reihenfolge egal, „…“ = genaue Folge, alle markiert; die Einheit legt die App fest); **Lupe am Ende der Kapsel**, dahinter nur ellipsis; **auch in der zentralen Liste** (Lupe im Kopf): filtert die Einträge, Kachel ‚N Treffer‘ je Fundstelle wie ‚1 von N‘, Öffnen mit gefüllter Suche, beide Suchfelder offen = 1:1, ‚Keine Treffer‘; **Suche öffnen und ⓧ rollen den Inhalt ganz nach oben**, der Fokus bleibt im Feld; **ohne Akzente** (‚Zurich‘ findet ‚Zürich‘ und umgekehrt, markiert wird das Wort wie im Text; ß, ø, æ sind eigene Buchstaben) | ablauf.mjs – `checkSearch`, `checkListSearch`, `checkSearchWords`, `checkSearchPlace`, Feld bleibt beim Tippen, `checkSearchTop` | – | 15.2, 15.4, 15.5 |
+| R-2.3 | **Suche:** Suchzeile unter der Leiste über die volle Breite; Treffer ‚3 von 57‘ bzw. ‚0‘; nach kurzer Pause steht der Treffer direkt unter der Suchzeile; Pfeile ohne Umlauf; gefiltert auf Einträge mit Treffern; gleich auf iPad und iPhone; beim Tippen bleibt das Suchfeld dasselbe Feld mit Fokus; **mehrere Wörter** (alle müssen vorkommen, Reihenfolge egal, „…“ = genaue Folge, alle markiert; die Einheit legt die App fest); **geöffnet über ‚Suchen‘ als ersten Punkt im Mehr-Menü** (darunter ein Strich) oder ⌘F, **beendet mit dem runden x rechts in der Suchzeile**, keine Lupe in der Kapsel; **auch in der zentralen Liste** (‚Suchen‘ im Mehr-Menü der Seitenleiste): filtert die Einträge, Kachel ‚N Treffer‘ je Fundstelle wie ‚1 von N‘, Öffnen mit gefüllter Suche, beide Suchfelder offen = 1:1, ‚Keine Treffer‘; **Suche öffnen und ⓧ rollen den Inhalt ganz nach oben**, der Fokus bleibt im Feld; **ohne Akzente** (‚Zurich‘ findet ‚Zürich‘ und umgekehrt, markiert wird das Wort wie im Text; ß, ø, æ sind eigene Buchstaben) | ablauf.mjs – `checkSearch`, `checkListSearch`, `checkSearchWords`, `checkSearchPlace`, Feld bleibt beim Tippen, `checkSearchTop`, `checkSucheBeenden`, `checkCmdF` | – | 15.2, 15.4, 15.5 |
 | R-2.4 | **iPhone quer: niedrige Leisten** (wie iOS quer): Kopfzeile, Suchzeile und Fensterkopf 32 statt 44 px hoch – Knöpfe in Kapseln 31 px, runde Knöpfe 32 × 32 mit Antippfläche 44 × 44, das Suchfeld als Kapsel 32 px (R-3.1: Kapseln ab 28); damit liegen Suche und Felder darunter bei offener Tastatur in der oberen Hälfte (R-4.5). Hoch und am iPad 44 px | hig.mjs – Höhe der Knöpfe und des Suchfelds in Kopfzeile und Fensterkopf (iPhone quer 32, hoch 44) | – | 15.3, 15.8 |
 
 ### 3. Schaltflächen
@@ -1154,7 +1160,7 @@ Testfall (User) in den Usertest, wenn eine Version es betrifft.
 | R-4.3 | **Abfragen und Meldungen:** keine Systemfenster; Abfrage als Sprechblase an der Schaltfläche, rote Schaltfläche mit dem Verb, ‚Abbrechen‘ zuletzt; mehrere Wege: empfohlener blau zuerst, zerstörender rot; Meldung im kleinen Fenster mit höchstens einer Schaltfläche zu den Einzelheiten | hig.mjs | – | 6, 10, 15.7 |
 | R-4.4 | **Fenster-Kopfzeile:** x links, Häkchen rechts – grau, nach einer Änderung blau; x mit Änderungen fragt ‚Änderungen verwerfen‘ / ‚Weiter bearbeiten‘ | ablauf.mjs – `checkDialogHead` | – | 6, 15.8 |
 | R-4.5 | **Passt immer auf den Bildschirm:** Menü, Sprechblase und Fenster ganz sichtbar (auch iPhone quer), zu hoher Inhalt rollt darin; Fenster auf dem iPhone als Blatt bis zum unteren Rand bzw. zur Tastatur (R-4.6). Ein Feld mit Fokus steht immer ganz über der Tastatur – in Fenstern und im Inhalt, 16 px darüber (reicht der Platz nicht, oben unter Kopf- bzw. Suchzeile, mit Platz für Fokus-Umrandung und Schatten) – und zwar **ohne Springen**: beim Antippen rollt das Feld in die obere Hälfte, Safari verschiebt nichts; Kopfzeile, Suchzeile, Seitenleiste und Fensterkopf stehen in jedem Bild still, das Feld springt nicht, das iPad-Fenster gleitet mit der Tastatur | hig.mjs, ablauf.mjs – `checkFieldVisible` (Safari-Modell: Feld unter der Tastatur antippen), `checkTastaturStill` (jedes Bild), `checkSheet` B10 (Abstand über dem Feld ≥ `RING`) | – | 7, 13, 15.7 |
-| R-4.7 | **Hardware-Tastatur (Grundlagen):** Esc und ⌘. schließen das oberste Menü (offenes Untermenü zuerst), die Sprechblase (= Abbrechen) und das Fenster (wie x, mit Änderungen die Rückfrage) – die Taste ist damit verbraucht; ↑ ↓ (Tab wie ↓) mit Umlauf, Pos1/Ende in Menüs und Untermenüs, → öffnet und ← schließt das Untermenü, Eingabe bzw. Leertaste wählt; in der Sprechblase löst Eingabe den empfohlenen bzw. den Weg zurück – **nie die rote** Aktion, Tab und Pfeile markieren, die Leertaste drückt den markierten Knopf; Tab bleibt im Vordergrund (Fenster mit Umlauf) und folgt der sichtbaren Reihenfolge (Leiste → Suche → Inhalt → Kapsel); Esc auf der Seite geht zurück bzw. schließt die darübergelegte Seitenleiste (Fokus auf panel-left); keine Kurzbefehle | ablauf.mjs – `checkFokus` | Esc, ⌘. (gibt Safari es weiter?), Pfeile, Eingabe, Tab (Tastatursteuerung) | 15.6, 15.7, 15.9 |
+| R-4.7 | **Hardware-Tastatur (Grundlagen):** Esc und ⌘. schließen das oberste Menü (offenes Untermenü zuerst), die Sprechblase (= Abbrechen) und das Fenster (wie x, mit Änderungen die Rückfrage) – die Taste ist damit verbraucht; ↑ ↓ (Tab wie ↓) mit Umlauf, Pos1/Ende in Menüs und Untermenüs, → öffnet und ← schließt das Untermenü, Eingabe bzw. Leertaste wählt; in der Sprechblase löst Eingabe den empfohlenen bzw. den Weg zurück – **nie die rote** Aktion, Tab und Pfeile markieren, die Leertaste drückt den markierten Knopf; Tab bleibt im Vordergrund (Fenster mit Umlauf) und folgt der sichtbaren Reihenfolge (Leiste → Suche → Inhalt → Kapsel); Esc auf der Seite geht zurück bzw. schließt die darübergelegte Seitenleiste (Fokus auf panel-left); **⌘F** öffnet die Suche im offenen Eintrag, ohne offenen Eintrag die Suche in allen; ist die Suche offen, setzt ⌘F nur den Cursor ins Feld; bei offenem Fenster oder Menü wirkt ⌘F nicht; sonst keine Kurzbefehle | ablauf.mjs – `checkFokus`, `checkCmdF` | Esc, ⌘. (gibt Safari es weiter?), Pfeile, Eingabe, Tab (Tastatursteuerung) | 15.6, 15.7, 15.9 |
 | R-4.6 | **Blatt auf dem iPhone, Fenster am iPad ziehen:** im iPhone-Aufbau (hoch und quer) ist jedes Fenster außer Meldungen ein Blatt ‚nur groß‘ wie ‚Neuer Termin‘ – gleitet von unten bis knapp unter die Statusleiste, oben runde Ecken, die Seite dahinter weicht verkleinert und abgedunkelt zurück (quer volle Höhe, die Seite bleibt); nach unten ziehen schließt wie x – am Kopf immer, im Inhalt, wenn er ganz oben steht, auch kurz und schnell gewischt; waagerecht und im gerollten Inhalt bleibt es; mit Änderungen seit dem Öffnen zieht es sich zäh, federt zurück und fragt am x (R-4.4); ein Zug nach unten schließt zuerst die Tastatur, auch nach einem Stück nach oben – beginnt er auf einem Feld, zieht er im selben Zug das Blatt wie am Kopf (ein Feld, das selbst gerollt ist, rollt weiter), im gerollten Inhalt daneben rollt er weiter; Abdunkelung antippen und Escape wie x; Drehen lässt es offen; ‚Bewegung reduzieren‘: Überblenden, die Seite bleibt groß, nach dem Loslassen steht es sofort am Ziel (R-1.9). Am iPad bleibt das Fenster in der Mitte, gleitet beim Öffnen und Schließen von unten und lässt sich ebenso nach unten ziehen – nur das Fenster fährt mit, die Abdunkelung wird heller, die Seite bleibt, Antippen der Abdunkelung schließt nicht (wie iPadOS); ein offenes Fenster ändert durch Eingaben weder Breite noch Lage, Meldungen brechen in der vorhandenen Breite um | ablauf.mjs – `checkSheet` (iPhone B1–B24, iPad APD-72/D-1 bis APD-72/D-15, APD-72/D-21 Breite und Lage nach einer Eingabe); App-Ablauf Buchstabe für Buchstabe (Reiselogbuch `ablauf-fenster-breite`) | Gerät (Wischgefühl, Tastatur) | 7, 13, 15.17 |
 
 ### 5. Eingaben
@@ -1272,6 +1278,7 @@ R-2.3 (15.2), R-4.4 (6, 15.8, HIG 9), R-5.3 (8), R-5.4 (15.12), R-5.5 (APD-14), 
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 4.43.0 | 30.10.2026 | Neben | **APD-91 (Nutzer 30.10.2026, Wortlaut bestätigt):** 15.2, 15.3, 15.4, R-2.3, R-4.7 – die Suche öffnet ‚Suchen‘ als erster Punkt im Mehr-Menü (darunter ein Strich) oder ⌘F, beendet wird sie mit dem runden x ‚Suche beenden‘ rechts in der Suchzeile, keine Lupe in der Kapsel; 16 zwei bewusste Abweichungen (Suche der Liste im Mehr-Menü, Suchzeile am iPhone oben). **APD-92 (Wortlaut bestätigt):** 2 und R-1.2 – ‚Darstellung‘ im Mehr-Menü der Seitenleiste nach Backup, nie im Menü eines Eintrags. **APD-93 (Wortlaut bestätigt):** 8 – schmale Zahlenfelder mit kleinem Höchstwert, ⓧ-Platz immer frei. **Folgeänderungen (Nutzer 30.10.2026, Wortlaut bestätigt):** 1, Icon-Tabelle 5, 15.5 ‚Keine Lupe in der Kapsel‘ (ersetzt ‚Suche am Ende‘, APD-22), 15.17 Kapseln und Suche, 17 Prüfspalten R-2.3 und R-4.7 |
 | 4.42.0 | 30.10.2026 | Neben | **APD-87 (Nutzer 30.10.2026, Wortlaut bestätigt):** 15.6, Icon-Tabelle (5) und R-4.1 – der Mehr-Knopf zeigt bei offenem Menü drei senkrechte Punkte (`ellipsis-vertical`), Prüfung `checkMehrKnopf`. **APD-90 (Nutzer 30.10.2026, Wortlaut bestätigt):** 3 ‚Icon und Text bleiben zusammen‘ und neue Regel R-10.5, Baustein `iconText`, Prüfung `checkIconText`. **APD-85 Teil 1:** `lauf.mjs` wiederholt rote Läufe am Ende einmal allein (‚wackelt‘), Abbruch erst ab dem dritten roten Lauf |
 | 4.41.0 | 30.10.2026 | Neben | **APD-81 (Rückmeldung P-73/1, geklärt mit dem Nutzer 26. und 29.10.2026, Messung am iPad APD-81/M-1 bis M-4):** R-5.6 und 15.11 – das ⓧ auch in mehrzeiligen Textfeldern (oben rechts auf Höhe der ersten Zeile; mehr als eine Zeile erst nach der Sprechblase ‚Text löschen?‘); in allen Feldern geleert über den Bearbeiten-Befehl, damit Undo-Taste und drei Finger den Text zurückholen; 13 Safari-Eigenheit ‚Leeren und Rückgängig‘ mit Quelle; 16 bewusste Abweichung ‚ⓧ auch in mehrzeiligen Textfeldern‘; Prüfung `checkClear` erweitert (Testfall-Liste `arbeit/APD-81 Testfall-Liste.md`, APD-81/C1 bis C16) |
 | 4.40.0 | 29.10.2026 | Neben | **APD-86 (Rückmeldung des Nutzers 29.10.2026):** R-5.4 und 15.12 – jeder seitlich wischbare Bereich bis etwa zwei Zeilen Höhe zeigt mit Verlauf und Pfeil am Rand, wo es weitergeht; neu die Wischzeile `.weiter` (`wischHtml`), Prüfung `hig.mjs` meldet jeden wischbaren Bereich ohne sie. **APD-77:** R-1.6 und 15.21 – ‚Messung starten‘ erst nach langem Drücken auf die graue Versionszeile im Mehr-Menü (bis zum Neustart; `{ note, halten }`, `checkMessung` APD-77/F-1 bis F-9); ein Abstand ohne Eintrag danach entfällt im Menü. **P-75/6:** 13 – ‚Größerer Text‘ pro App für Safari wirkt auch auf die Web-App vom Home-Bildschirm |

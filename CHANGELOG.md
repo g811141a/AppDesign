@@ -3,6 +3,32 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.43.0 – 30.10.2026
+
+AppDesign 4.43.0 · Designrichtlinie allgemein 4.43.0 · Zusammenarbeit allgemein 3.2.0 · geprüft mit Reiselogbuch 3.41.0
+
+**APD-91 Suche im Mehr-Menü**, **APD-92 ‚Darstellung‘ im Mehr-Menü der Seitenleiste** und **APD-93 schmale Zahlenfelder** – dein Ja vom
+30.10.2026, Sitzung 0057; Testfall-Listen `arbeit/APD-91 Testfall-Liste.md` (APD-91/S-1 bis S-18) und
+`arbeit/APD-92 APD-93 RLB-108 RLB-109 RLB-110 Testfall-Liste.md` (APD-92/D-1 bis D-8, APD-93/L-5, L-6). Usertest im Reiselogbuch: P-81.
+
+- **APD-91 – Suche im Mehr-Menü (15.2, 15.3, 15.4, R-2.3, R-4.7, 16):** `suchenMenuItems(act)` (ui.js) gibt ‚Suchen‘ (search) mit Strich
+  darunter als ersten Teil eines Mehr-Menüs; die Lupe in der Kapsel entfällt. `sucheBeendenHtml(id)` – runder Knopf x ‚Suche beenden‘ rechts
+  in der Suchzeile (Eintrag und Liste). ⌘F: `sucheAnmelden(fn)` – die App entscheidet, ob im offenen Eintrag oder in allen gesucht wird;
+  bei offenem Fenster, Meldung oder Menü wirkt ⌘F nicht. Zwei neue bewusste Abweichungen in 16 (Suche der Liste im Mehr-Menü, Suchzeile am
+  iPhone oben). Prüfungen (ablauf.mjs): `sucheAuf` (öffnet über das Menü), `checkSearchPlace` neu (‚Suchen‘ zuerst mit Strich, keine Lupe
+  in einer Kapsel; ersetzt APD-22 ‚Lupe am Ende der Kapsel‘), `checkSucheBeenden` (APD-91/S-4 bis S-6, S-15, S-18), `checkCmdF` (S-8 bis S-11);
+  `checkSearch`, `checkListSearch`, `checkSearchTop`, `checkFab` und `checkNavigation` öffnen die Suche über das Menü und beenden sie mit x.
+- **APD-92 – Darstellung (2, R-1.2):** `darstellungMenuItem()` (ui.js) – ‚Darstellung ›‘ für das Mehr-Menü der Seitenleiste (iPhone:
+  Startliste) nach Backup erstellen und Backup laden, nie im Menü eines Eintrags. `hig.mjs` prüft die Stelle (R-1.2: ein offenes Menü mit
+  ‚Darstellung‘ muss von einem Knopf in `#side` kommen).
+- **APD-93 – schmale Zahlenfelder (8, R-5.1):** Komponente `input.zahl-schmal` mit `.zahl-einheit` (design.css): rechtsbündig, so breit wie
+  `--ziffern` Ziffern (Voreinstellung 2) plus Innenabstand und ⓧ-Platz, der immer frei bleibt – die Zahl springt nicht, wenn das ⓧ
+  erscheint; wächst mit der Schrift.
+- **Gegenproben:** ‚Suchen‘ nicht zuerst, Lupe in der Kapsel, ⌘F aus und x ohne Wirkung (APD-91/S-17) sowie ‚Darstellung‘ im Menü eines
+  Eintrags (APD-92/D-8) werden rot (einmal in dieser Sitzung in Chromium geprüft).
+- **Auffällig, nicht behoben:** APD-94 (Seitenleiste beim Drehen quer → hoch mit offenem Menü nicht gesperrt) zeigte sich auch mit dem
+  Untermenü ‚Darstellung‘ in der Seitenleiste; die neue Prüfung dreht deshalb hoch → quer wie in 4.42.0.
+
 ## 4.42.0 – 30.10.2026
 
 AppDesign 4.42.0 · Designrichtlinie allgemein 4.42.0 · Zusammenarbeit allgemein 3.2.0 · geprüft mit Reiselogbuch 3.40.0
