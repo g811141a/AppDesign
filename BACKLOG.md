@@ -11,21 +11,22 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Prio | Thema | bereit seit |
 |---|---|---|---|
-| – | – | zurzeit nichts gesammelt | – |
+| APD-96 | 1 | **Regel 0 Nr. 21 – Kontextstand vor der Bau-Frage (Nutzer 30.10.2026, Sitzung 0058, Wortlaut bestätigt):** Zusammenarbeit 0 Nr. 21 neu: „Vorher immer ‚Soll ich Version X.Y.Z mit … erstellen? Ja/Nein‘. **Unmittelbar davor steht im Chat der aktuelle Kontextstand: die Zeitzeile von `messung.mjs` mit Token und Kontext, abgelesen und nie geschätzt.** Gebaut wird erst nach einem ausdrücklichen ‚Ja‘ …“; dazu im Kasten ‚Jede Antwort‘ Punkt 9; Prüfung Selbstkontrolle. Anlass: in 0058 vor der Bau-Frage ‚etwa 240.000‘ geschätzt, tatsächlich danach 351.679 | 30.10.2026 |
 
-0 Punkte bereit.
+1 Punkt bereit.
 
 
 ## 1. Auf iPad und iPhone prüfen
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| P-82 | 1 | **Usertest P-82 (Reiselogbuch 3.42.0 · AppDesign 4.44.0):** APD-95 Bezeichnungen und Einheiten normal (R-5.8), schmales Zahlenfeld bündig rechts (mit Fokus Platz für das ⓧ); im Reiselogbuch RLB-111 – Testfälle P-82/0 bis P-82/7 im CHANGELOG des Reiselogbuchs | prüfen |
+| P-82 | 1 | **Rückmeldung 30.10.2026: /1, /3, /5 nicht ok → RLB-112 (Reiselogbuch).** **Usertest P-82 (Reiselogbuch 3.42.0 · AppDesign 4.44.0):** APD-95 Bezeichnungen und Einheiten normal (R-5.8), schmales Zahlenfeld bündig rechts (mit Fokus Platz für das ⓧ); im Reiselogbuch RLB-111 – Testfälle P-82/0 bis P-82/7 im CHANGELOG des Reiselogbuchs | prüfen |
 
 ## 2. Weitere Themen (in Klärung)
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
+| APD-97 | ? | **iPad hoch mit eingeschalteter Seitenleiste: Tabelle als Kacheln wie am iPhone (Nutzer 30.10.2026, Sitzung 0058, aus P-82 ‚Sonstiges‘) – allgemeine Regel für alle Apps:** zu klären – Apple-Abgleich, Regelwortlaut (0 Nr. 29), Priorität, Muster (nur hell), Testfall-Liste | offen |
 | APD-94 | 2 | **Seitenleiste beim Drehen mit offenem Menü nicht gesperrt (gefunden von der neuen Prüfung in 4.42.0, Nutzer 30.10.2026, Sitzung 0056):** iPad mit offenem Mehr-Menü von quer auf hoch drehen – die darübergelegte Seitenleiste erscheint mit `.side-shade`, die nicht gesperrt ist (`inert` fehlt; hig.mjs: R-1.4 ‚nicht inert‘) – VoiceOver und Tastatur erreichen Elemente hinter dem Menü. Bestehend: R-1.4, R-8.1. Zu klären: beim Drehen das Menü schließen oder Neues sofort sperren; die Prüfung in `ablauf-markierung-menues` dreht bis dahin hoch → quer | offen |
 | APD-85 | 3 | **Teil 3 – Wackler beheben (aus APD-85 Teil 1, 4.42.0):** feste Pausen eines Tests durch Warten auf einen Zustand ersetzen – erst für einen Test, der wiederholt als ‚⚠ wackelt‘ gemeldet wird (Claude zählt jeden Wackler hier mit: bisher keiner) | später |
 | APD-40 | 3 | **Prüfungen für die Regeln ohne automatische Prüfung (aus APD-39, Nutzer 21.10.2026):** G-1 bis G-19 im Regelkatalog (Designrichtlinie allgemein 17) – je Regel eine allgemeine Prüfung in `tests/` oder bewusst ‚Gerät/Sicht‘ lassen; Code, eigener Auftrag | offen |
