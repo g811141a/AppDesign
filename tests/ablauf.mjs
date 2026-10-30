@@ -2396,3 +2396,91 @@ export async function checkRuhig(p, { fab = true, mic = null, fenster = null, wh
   await p.emulateMedia({ reducedMotion: vorher ? 'reduce' : 'no-preference' });
   return errors;
 }
+
+// Seit 4.42.0 (APD-87, R-4.1; Testfall-Liste arbeit/APD-87 Testfall-Liste.md APD-87/E-1 bis APD-87/E-11): der Mehr-Knopf zeigt bei offenem Menü drei
+// senkrechte Punkte und ist hervorgehoben, geschlossen wieder waagrecht – sofort, auch mit ‚Bewegung reduzieren‘; Untermenü öffnen und
+// schließen ändert nichts; Esc schließt (R-4.7); Name bleibt ‚Mehr‘, aria-expanded true/false. sel: der Mehr-Knopf; untermenue: Text eines
+// Menüpunkts mit Untermenü (optional).
+export async function checkMehrKnopf(p, { sel, untermenue = null, where = '' } = {}) {
+  const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}R-4.1 ${t}`);
+  const lage = () => p.evaluate(sel => {
+    const b = document.querySelector(sel), c = b ? [...b.querySelectorAll(':scope > svg circle')] : [];
+    const xs = new Set(c.map(k => k.getAttribute('cx'))), ys = new Set(c.map(k => k.getAttribute('cy')));
+    return b && { punkte: c.length, art: c.length === 3 && xs.size === 1 ? 'senkrecht' : c.length === 3 && ys.size === 1 ? 'waagrecht' : 'anders',
+      on: b.classList.contains('on'), exp: b.getAttribute('aria-expanded'), name: b.getAttribute('aria-label'), menue: !!document.querySelector('.menu:not(.submenu)') };
+  }, sel);
+  let x = await lage();
+  if (!x) { E(`Mehr-Knopf ${sel} fehlt`); return errors; }
+  if (x.art !== 'waagrecht') E(`APD-87/E-1: Mehr-Knopf geschlossen nicht mit drei waagrechten Punkten (${x.art})`);
+  await p.click(sel); await p.waitForTimeout(50);   // sofort – ohne Warten auf eine Bewegung
+  x = await lage();
+  if (!x.menue) E('APD-87/E-1: Mehr-Menü öffnet sich nicht');
+  if (x.art !== 'senkrecht') E(`APD-87/E-1: Mehr-Knopf bei offenem Menü nicht mit drei senkrechten Punkten (${x.art})`);
+  if (!x.on) E('APD-87/E-1: Mehr-Knopf bei offenem Menü nicht hervorgehoben');
+  if (x.name !== 'Mehr' || x.exp !== 'true') E(`APD-87/E-11: Bildschirmleser – Name ‚${x.name}‘, aria-expanded ${x.exp} (soll ‚Mehr‘, true)`);
+  if (untermenue) {
+    await p.locator('.menu:not(.submenu) .mi', { hasText: untermenue }).first().click(); await p.waitForTimeout(150);
+    if ((await lage()).art !== 'senkrecht') E('APD-87/E-6: mit offenem Untermenü nicht mehr senkrecht');
+    await p.keyboard.press('Escape'); await p.waitForTimeout(150);
+    if ((await lage()).art !== 'senkrecht') E('APD-87/E-6: nach dem Schließen des Untermenüs nicht mehr senkrecht');
+  }
+  await p.keyboard.press('Escape'); await p.waitForTimeout(150);
+  x = await lage();
+  if (x.menue) E('APD-87/E-5: Esc schließt das Mehr-Menü nicht');
+  if (x.art !== 'waagrecht') E(`APD-87/E-5: nach dem Schließen nicht wieder waagrecht (${x.art})`);
+  if (x.on || x.exp !== 'false') E(`APD-87/E-11: nach dem Schließen noch hervorgehoben bzw. aria-expanded ${x.exp}`);
+  return errors;
+}
+
+// Seit 4.42.0 (APD-90, R-10.5; Testfall-Liste arbeit/APD-90 Testfall-Liste.md U-1 bis U-7): in einer Reihe aus Einträgen mit Icon und Text
+// (sel, z. B. die Reisemittel) stehen Icon und erstes Wort jedes Eintrags auf derselben Zeile, und ein Eintrag, der in die Zeile passt,
+// bricht nicht in sich um (Umbruch nur zwischen den Einträgen). lang: zusätzlich ein zu langer Eintrag aus iconText in einer schmalen Spalte
+// (U-5) – er bricht im Text um, nie direkt nach dem Icon, und ragt nicht hinaus.
+export async function checkIconText(p, { sel, lang = false, where = '' } = {}) {
+  const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}R-10.5 ${t}`);
+  const funde = await p.evaluate(({ sel, lang }) => {
+    const root = document.querySelector(sel); if (!root) return null;
+    const ICON = /(\p{Extended_Pictographic}(?:️|‍\p{Extended_Pictographic}|[\u{1F3FB}-\u{1F3FF}])*)[\s ]+(\S+)/gu;
+    const zeilen = r => [...new Set([...r.getClientRects()].filter(q => q.width > 0).map(q => Math.round(q.top)))];
+    const rng = (n, a, b) => { const r = document.createRange(); r.setStart(n, a); r.setEnd(n, b); return r; };
+    const pruefe = (el, breite) => {
+      const out = [], w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+      for (let n; (n = w.nextNode());) {
+        for (const m of n.data.matchAll(ICON)) {
+          const i = rng(n, m.index, m.index + m[1].length), wort = rng(n, m.index + m[0].length - m[2].length, m.index + m[0].length);
+          const ti = zeilen(i).at(-1), tw = zeilen(wort)[0];
+          if (Math.abs(ti - tw) > 4) out.push(`Icon und Text getrennt: ‚${m[1]}‘ am Zeilenende, ‚${m[2]}‘ in der nächsten Zeile`);
+        }
+        // Einträge (durch Komma getrennt), die in die Zeile passen, brechen nicht in sich um
+        let pos = 0;
+        for (const teil of n.data.split(/(,\s*)/)) {
+          if (teil && !/^,\s*$/.test(teil) && teil.trim()) {
+            const a = pos + teil.search(/\S/), r = rng(n, a, pos + teil.trimEnd().length);
+            const z = zeilen(r), bw = r.getBoundingClientRect().width;
+            const einzeln = document.createElement('span'); einzeln.style.cssText = 'position:absolute;visibility:hidden;white-space:nowrap'; einzeln.textContent = teil.trim();
+            el.appendChild(einzeln); const voll = einzeln.getBoundingClientRect().width; einzeln.remove();
+            if (z.length > 1 && voll <= breite - 2) out.push(`Eintrag ‚${teil.trim()}‘ passt in die Zeile (${Math.round(voll)} von ${Math.round(breite)} px), bricht aber in sich um`);
+          }
+          pos += teil.length;
+        }
+      }
+      return out;
+    };
+    const res = pruefe(root, root.getBoundingClientRect().width);
+    if (lang) {
+      const box = document.createElement('div'); box.style.cssText = 'width:160px;position:absolute;left:0;top:0;visibility:hidden';
+      box.innerHTML = typeof iconText === 'function' ? iconText('🚐', 'Sehr langes Reisemittel mit vielen Wörtern') : '🚐 Sehr langes Reisemittel mit vielen Wörtern';
+      root.appendChild(box);
+      if (typeof iconText !== 'function') res.push('U-5: Baustein iconText fehlt in ui.js');
+      const ict = box.firstElementChild || box, br = box.getBoundingClientRect(), ir = ict.getBoundingClientRect();
+      if (ir.right > br.right + 1) res.push(`U-5: zu langer Eintrag ragt ${Math.round(ir.right - br.right)} px aus der Spalte`);
+      const n = [...box.querySelectorAll('*'), box].flatMap(e => [...e.childNodes]).find(t => t.nodeType === 3 && t.data.trim());
+      if (n && zeilen(rng(n, 0, n.data.length)).length < 2) res.push('U-5: zu langer Eintrag bricht nicht im Text um');
+      res.push(...pruefe(box, 160).map(t => 'U-5: ' + t));
+      box.remove();
+    }
+    return res;
+  }, { sel, lang });
+  if (!funde) E(`Reihe ${sel} fehlt`); else funde.forEach(f => E(f));
+  return errors;
+}

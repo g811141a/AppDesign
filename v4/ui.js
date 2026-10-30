@@ -1,4 +1,4 @@
-// AppDesign 4.41.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
+// AppDesign 4.42.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
 // Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/fassung/X.Y.Z/ui.js"></script> (feste Fassung, R-10.3)
 // Seit 4.11.0 (R-10.3): ui.js und design.css immer mit ?v=<AppDesign-Version> einbinden (auch in sw.js) und beim Start
 // prüfen, ob genau diese Fassung geladen ist (AD_VERSION hier, --ad-version in design.css).
@@ -20,7 +20,7 @@
 
 'use strict';
 // Version der Bausteine (R-10.3): die App vergleicht sie beim Start mit der benötigten Fassung.
-const AD_VERSION = '4.41.0';
+const AD_VERSION = '4.42.0';
 /* ---------- Icons ---------- */
 
 // Schaltflächen-Icons aus Lucide (ISC-Lizenz), direkt eingebettet, damit die App offline funktioniert.
@@ -62,9 +62,11 @@ const ICONS = {
   'activity': '<path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"/>',
   'circle-stop': '<circle cx="12" cy="12" r="10"/><rect x="9" y="9" width="6" height="6" rx="1"/>',
   'ellipsis': '<circle cx="12" cy="12" r="1.3"/><circle cx="19" cy="12" r="1.3"/><circle cx="5" cy="12" r="1.3"/>',
+  'ellipsis-vertical': '<circle cx="12" cy="12" r="1.3"/><circle cx="12" cy="5" r="1.3"/><circle cx="12" cy="19" r="1.3"/>',
   'settings': '<path d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915"/><circle cx="12" cy="12" r="3"/>'
 };
-const ic = (name, cls = '') => `<svg class="ic ${cls}" viewBox="0 0 24 24" aria-hidden="true">${ICONS[name]}</svg>`;
+// Seit 4.42.0 (APD-87, R-4.1): das Icon des Mehr-Knopfs trägt data-mehr – bei offenem Menü zeigt es senkrechte Punkte (mehrKippen).
+const ic = (name, cls = '') => `<svg class="ic ${cls}" viewBox="0 0 24 24" aria-hidden="true"${name === 'ellipsis' ? ' data-mehr' : ''}>${ICONS[name]}</svg>`;
 
 // Feste Elemente jeder App: <dialog id="dlg"> (Fenster) und <dialog id="msg"> (Meldungen).
 const dlg = document.getElementById('dlg');
@@ -84,6 +86,9 @@ const graphemeSeg = typeof Intl !== 'undefined' && Intl.Segmenter ? new Intl.Seg
 function breakable(text) {
   return String(text ?? '').replace(/\S{21,}/gu, w => (graphemeSeg ? Array.from(graphemeSeg.segment(w), s => s.segment) : Array.from(w)).join('\u200B'));
 }
+// Seit 4.42.0 (APD-90, R-10.5): Icon und Text eines Eintrags bleiben zusammen – ein Eintrag ist ein Block in der Zeile (.ict), die Zeile
+// bricht nur zwischen den Einträgen um; ist ein Eintrag allein zu lang, bricht er im Text, nie direkt nach dem Icon (festes Leerzeichen).
+const iconText = (icon, text) => `<span class="ict">${esc(icon)}\u00a0${esc(text)}</span>`;
 // Ganze Zahl mit Tausenderpunkt, z. B. 4850 → "4.850".
 function thousands(n) {
   return String(Math.round(Number(n) || 0)).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
@@ -618,6 +623,12 @@ window.addEventListener('resize', replaceSoon);
 window.addEventListener('orientationchange', replaceSoon);
 window.visualViewport?.addEventListener('resize', replaceSoon);
 
+// Seit 4.42.0 (APD-87, R-4.1): der Mehr-Knopf zeigt bei offenem Menü drei senkrechte Punkte (ellipsis-vertical), beim Schließen
+// wieder waagrechte – sofort, ohne Bewegung; andere Knöpfe (Kontextmenü, Auswahl) behalten ihr Icon.
+function mehrKippen(knopf, offen) {
+  const s = knopf?.querySelector?.(':scope > svg[data-mehr]');
+  if (s) s.innerHTML = ICONS[offen ? 'ellipsis-vertical' : 'ellipsis'];
+}
 function openMenu(anchor, items, align = 'right') {
   const host = anchor.closest('dialog') || document.body;
   const layer = blockingLayer();
@@ -636,6 +647,7 @@ function openMenu(anchor, items, align = 'right') {
     if (it) { it.setAttribute('aria-expanded', 'false'); if (zurueck) fokus(it); }
   };
   anchor.classList.add('on');
+  mehrKippen(anchor, true);
   anchor.setAttribute('aria-haspopup', 'menu');
   anchor.setAttribute('aria-expanded', 'true');
   // Untermenü neben dem Menü, oben bündig mit seinem Eintrag; passt es links nicht hin, rechts daneben.
@@ -652,6 +664,7 @@ function openMenu(anchor, items, align = 'right') {
     const a = liveAnchor(anchor);
     if (!a) return close();
     anchor = a;
+    mehrKippen(anchor, true);
     anchor.setAttribute('aria-haspopup', 'menu');   // baut die App die Leiste neu auf (Drehen), trägt der neue Knopf den Zustand
     anchor.setAttribute('aria-expanded', 'true');
     placeAt(menu, anchor, align);
@@ -660,7 +673,7 @@ function openMenu(anchor, items, align = 'right') {
   let entsperren = null;
   const close = () => {
     if (!menu.isConnected) return;
-    closeSub(); layer.remove(); menu.remove(); anchor.classList.remove('on'); anchor.setAttribute('aria-expanded', 'false'); floating.delete(place);
+    closeSub(); layer.remove(); menu.remove(); anchor.classList.remove('on'); mehrKippen(anchor, false); anchor.setAttribute('aria-expanded', 'false'); floating.delete(place);
     entsperren?.(); tastenStapel.splice(tastenStapel.indexOf(tasten) >>> 0, 1);
     // Seit 4.11.0: den für das Kontextmenü dazugegebenen Platz unter der Liste wieder entfernen.
     document.querySelectorAll('.side-list[data-padded]').forEach(l => { l.style.paddingBottom = ''; delete l.dataset.padded; });
@@ -852,6 +865,7 @@ const outputCss = scope => `
   ${scope} h1 { font-size: 20pt; margin: 0 0 8px; }
   ${scope} h2 { font-size: 14pt; margin: 20px 0 6px; break-after: avoid; page-break-after: avoid; }
   ${scope} table { border-collapse: collapse; }
+  ${scope} .ict { display: inline-block; max-width: 100%; }
   ${scope} .meta td { border: none; padding: 1px 16px 1px 0; vertical-align: top; }
   ${scope} table.grid { width: 100%; margin-top: 12px; table-layout: auto; }
   ${scope} table.grid.fit { width: auto; }

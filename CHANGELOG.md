@@ -3,6 +3,30 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.42.0 – 30.10.2026
+
+AppDesign 4.42.0 · Designrichtlinie allgemein 4.42.0 · Zusammenarbeit allgemein 3.2.0 · geprüft mit Reiselogbuch 3.40.0
+
+**APD-85 Teil 1 Prüflauf wackelt**, **APD-87 Mehr-Knopf zeigt, ob das Menü offen ist** und **APD-90 Icon und Text bleiben zusammen** –
+dein Ja vom 30.10.2026, Sitzung 0056; Testfall-Listen `arbeit/APD-85 Testfall-Liste.md` (APD-85/W-1 bis W-12),
+`arbeit/APD-87 Testfall-Liste.md` (APD-87/E-1 bis APD-87/E-12), `arbeit/APD-90 Testfall-Liste.md` (APD-90/U-1 bis U-7). Usertest im Reiselogbuch: P-80.
+
+- **APD-87 – Mehr-Knopf (15.6, Icon-Tabelle 5, R-4.1):** bei offenem Menü zeigt der Mehr-Knopf drei senkrechte Punkte (`ellipsis-vertical`)
+  und ist blau getönt, beim Schließen wieder waagrecht – sofort, ohne Bewegung (`mehrKippen` in `openMenu`; das Icon trägt `data-mehr`).
+  Auch nach dem Drehen mit offenem Menü (die neu gebaute Schaltfläche wird wiedergefunden); andere Knöpfe behalten ihr Icon. `hig.mjs`
+  zählt die offenen Punkte als dasselbe Icon (R-10.1). Prüfung `checkMehrKnopf` (ablauf.mjs).
+- **APD-90 – Icon und Text bleiben zusammen (3, neue Regel R-10.5):** Baustein `iconText(icon, text)` (ui.js) – jeder Eintrag ist ein
+  Block in der Zeile (`.ict`, design.css und `outputCss`), Icon und erstes Wort mit festem Leerzeichen; die Zeile bricht nur zwischen den
+  Einträgen, ein zu langer Eintrag im Text. Prüfung `checkIconText` (ablauf.mjs): Icon und erstes Wort auf derselben Zeile, kein
+  Eintrag, der passt, bricht in sich um, ein zu langer Eintrag bricht im Text und ragt nicht hinaus.
+- **APD-85 Teil 1 – `tests/lauf.mjs`:** ein roter Lauf bricht nicht mehr sofort ab, erst ab dem dritten roten Lauf; am Ende läuft jeder
+  rote Lauf einmal allein (nach allen anderen, einer nach dem anderen) – grün heißt ‚⚠ wackelt‘ (gilt als grün, steht in der Schlusszeile
+  und in `tests/out/wackelt.json`), wieder rot heißt Fehler; nicht in der Gegenprobe; die Dauer des Wiederholungslaufs ersetzt nicht die
+  unter Last. `veroeffentlichen.mjs los` nennt die Wackler in der Zusammenfassung. Selbsttests: `lauf-selbsttest.mjs` (APD-85/W-1 bis W-10),
+  `veroeffentlichen-selbsttest.mjs` (APD-85/W-11). Zusammenarbeit 3.2.0: 0 Nr. 2 (Wortlaut bestätigt).
+- **Gegenproben:** ohne `iconText` bzw. ohne Wechsel des Icons werden die Prüfungen rot (APD-90/U-7, APD-87/E-12; einmal in dieser
+  Sitzung in Chromium geprüft).
+
 ## 4.41.0 – 30.10.2026
 
 AppDesign 4.41.0 · Designrichtlinie allgemein 4.41.0 · Zusammenarbeit allgemein 3.1.0 · geprüft mit Reiselogbuch 3.39.0
