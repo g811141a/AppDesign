@@ -38,20 +38,20 @@ und Ø je Nacht; die neue, abschaltbare Spalte 🚶🏽‍♂️km nach ‚Wie w
 | Q-8 | iPad + iPhone | Backup laden / Abgleich | altes Backup ohne Preis | lädt fehlerfrei (`normalize`), Preis wird abgeglichen |
 | Q-9 | alle | hell / dunkel, große Schrift | – | Grundregeln, Feld und € bleiben zusammen (R-5.1) |
 
-## K – Gegangene Kilometer (RLB-110, APD-93)
+## L – Gegangene Kilometer (RLB-110, APD-93)
 
 | Nr. | Gerät / Lage | Handlung | Daten | Erwartet |
 |---|---|---|---|---|
-| K-1 | alle | Einstellungen eines Reiselogbuchs | neu und alt | Schalter ‚Spalte 🚶🏽‍♂️km ‚Gegangene Kilometer‘‘ nach ‚Wie war was?‘, Voreinstellung aus |
-| K-2 | iPad | Spalte ein, Tabelle ansehen | 3 Tage, einer ohne km | Spalte nach ‚Wie war was?‘, Kopf ‚🚶🏽‍♂️km‘, Zellen nur die Zahl, rechtsbündig; ohne Wert leer |
-| K-3 | alle | Tag erfassen | – | Schritt ‚Gegangene Kilometer‘ nach ‚Wie war was?‘, folgende Schritte +1; Feld in eigener Zeile, ‚km‘ rechts daneben (Variante A) |
-| K-4 | alle | Tippen | ‚123‘, ‚1,5‘, ‚a‘ | nur Ziffern, höchstens zwei (‚12‘); Ziffernblock (`inputmode="numeric"`) |
-| K-5 | alle | Fokus, ⓧ | ‚14‘ | ⓧ erscheint, die Ziffern bleiben an derselben Stelle (± 0,5 px); ⓧ leert, Fokus bleibt |
-| K-6 | alle | Feldbreite | normal und große Schrift | Breite = ‚99‘ + Innenabstände + ⓧ-Platz (APD-93), wächst mit der Schrift (R-1.10) |
-| K-7 | alle | Spalte aus | Werte vorhanden | Schritt, Spalte und Statistikzeilen fehlen; Werte bleiben |
-| K-8 | alle | Statistik | 6, 14, 3 km und ein Tag ohne | ‚Gegangene Kilometer 23 km‘ · ‚Ø je Tag 8 km‘ (gerundet, nur Tage mit km); Summe mit Tausenderpunkt |
-| K-9 | iPhone | Tageskachel ansehen | 14 km | Vorschlag: Zeile ‚🚶🏽‍♂️ 14 km‘ nach ‚Wie war was?‘ |
-| K-10 | alle | Tag nur mit km | – | Vorschlag: zählt nicht als erfasst (wie Essen) |
-| K-11 | alle | Ausgabe HTML und PDF | alle Spalten an | Anteile Verlauf 28 · Wie war was? 28 · km 8 · Essen 22 · Quartier 22, Kopf in einer Zeile |
-| K-12 | iPad + iPhone | Backup laden / Abgleich | altes Backup | lädt fehlerfrei, `kmColumn` aus, km abgeglichen |
-| K-13 | alle | hell / dunkel, Drehen mit Fokus im Feld | – | Grundregeln, Feld bleibt sichtbar über der Tastatur |
+| L-1 | alle | Einstellungen eines Reiselogbuchs | neu und alt | Schalter ‚Spalte 🚶🏽‍♂️km ‚Gegangene Kilometer‘‘ nach ‚Wie war was?‘, Voreinstellung aus |
+| L-2 | iPad | Spalte ein, Tabelle ansehen | 3 Tage, einer ohne km | Spalte nach ‚Wie war was?‘, Kopf ‚🚶🏽‍♂️km‘, Zellen nur die Zahl, rechtsbündig; ohne Wert leer |
+| L-3 | alle | Tag erfassen | – | Schritt ‚Gegangene Kilometer‘ nach ‚Wie war was?‘, folgende Schritte +1; Feld in eigener Zeile, ‚km‘ rechts daneben (Variante A) |
+| L-4 | alle | Tippen | ‚123‘, ‚1,5‘, ‚a‘ | nur Ziffern, höchstens zwei (‚12‘); Ziffernblock (`inputmode="numeric"`) |
+| L-5 | alle | Fokus, ⓧ | ‚14‘ | ⓧ erscheint, die Ziffern bleiben an derselben Stelle (± 0,5 px); ⓧ leert, Fokus bleibt |
+| L-6 | alle | Feldbreite | normal und große Schrift | Breite = ‚99‘ + Innenabstände + ⓧ-Platz (APD-93), wächst mit der Schrift (R-1.10) |
+| L-7 | alle | Spalte aus | Werte vorhanden | Schritt, Spalte und Statistikzeilen fehlen; Werte bleiben |
+| L-8 | alle | Statistik | 6, 14, 3 km und ein Tag ohne | ‚Gegangene Kilometer 23 km‘ · ‚Ø je Tag 8 km‘ (gerundet, nur Tage mit km); Summe mit Tausenderpunkt |
+| L-9 | iPhone | Tageskachel ansehen | 14 km | Vorschlag: Zeile ‚🚶🏽‍♂️ 14 km‘ nach ‚Wie war was?‘ |
+| L-10 | alle | Tag nur mit km | – | Vorschlag: zählt nicht als erfasst (wie Essen) |
+| L-11 | alle | Ausgabe HTML und PDF | alle Spalten an | Anteile Verlauf 28 · Wie war was? 28 · km 8 · Essen 22 · Quartier 22, Kopf in einer Zeile |
+| L-12 | iPad + iPhone | Backup laden / Abgleich | altes Backup | lädt fehlerfrei, `kmColumn` aus, km abgeglichen |
+| L-13 | alle | hell / dunkel, Drehen mit Fokus im Feld | – | Grundregeln, Feld bleibt sichtbar über der Tastatur |
