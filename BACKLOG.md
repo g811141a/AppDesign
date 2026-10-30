@@ -1,6 +1,6 @@
 # AppDesign – Backlog (allgemeine Themen)
 
-**Stand 30.10.2026** · Aktuelle Version: AppDesign 4.42.0
+**Stand 30.10.2026** · Aktuelle Version: AppDesign 4.43.0
 
 Allgemeine Themen, die alle Apps betreffen. App-Themen stehen im Backlog der jeweiligen App.
 Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.4.
@@ -11,18 +11,16 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Prio | Thema | bereit seit |
 |---|---|---|---|
-| APD-92 | 2 | **‚Darstellung‘ im Mehr-Menü der Seitenleiste – allgemeine Regel (aus Reiselogbuch RLB-108, Nutzer 30.10.2026, Sitzung 0053; Wortlaut bestätigt 30.10.2026, Sitzung 0055, APD-89):** Designrichtlinie allgemein 2 ‚Darstellung (R-1.2)‘ neu: „… im Mehr-Menü der Seitenleiste (iPhone: Startliste) übersteuerbar, nach Backup erstellen und Backup laden – nie im Menü eines Eintrags, denn sie gilt für die ganze App: Untermenü ‚Darstellung ›‘ (sun-moon, rechts grau der aktuelle Wert) mit Automatisch · Hell · Dunkel (Häkchen).“ – Regelkatalog R-1.2 neu: „Darstellung folgt dem Gerät (‚Automatisch‘), im Mehr-Menü der Seitenleiste übersteuerbar (Automatisch · Hell · Dunkel), nie im Menü eines Eintrags“; Prüfung `hig.mjs` prüft die Stelle. Ohne Muster (Nutzer 30.10.2026) | 30.10.2026 |
-| APD-93 | 2 | **Schmale Zahlenfelder mit kleinem Höchstwert – allgemeine Regel (aus Reiselogbuch RLB-110, Nutzer 30.10.2026, Sitzung 0055, Wortlaut bestätigt, APD-89):** Designrichtlinie allgemein 8 ‚Beträge‘ nach „… längere Beträge lassen das Feld beim Tippen mitwachsen.“ angehängt: „**Zahlenfelder mit kleinem Höchstwert** (z. B. höchstens 99) sind nur so breit wie die größte Zahl plus Platz für das ⓧ; dieser Platz bleibt immer frei, damit die Zahl beim Tippen nicht springt.“ Muster Variante A (eigene Zeile, Einheit rechts neben dem Feld wie €) | 30.10.2026 |
-| APD-91 | 2 | **Suche im Mehr-Menü (Nutzer 30.10.2026, Sitzung 0053):** in der Seitenleiste und auf der Seite eines Eintrags (Reiselogbuch) steht ‚Suche‘ mit Lupe (`search`) an erster Stelle im Mehr-Menü, durch einen Trennstrich von den übrigen Einträgen (Seitenleiste: Backup) getrennt; statt des eigenen Such-Knopfs. Bestehend: 15.2 Suchfeld, R-2.x; APD-57 (Suche unten auf dem iPhone) – zusammen klären. **Apple-Abgleich (Sitzung 0056):** Notizen zeigt die Suche in der Liste sichtbar (`apple-referenz/iphone/notizen/notizen-06`), in der Notiz als ‚Find in Note‘ erster Listenpunkt im ellipsis-Menü (`notizen-04`). **Entschieden (Nutzer 30.10.2026, Sitzung 0056):** in beiden ins Mehr-Menü – in der Seitenleiste bewusst abweichend von Apple (beim Bau in Designrichtlinie 16 ‚Bewusste Abweichungen‘, Wortlaut vorher bestätigen, APD-89). ⌘F gibt es heute nicht (ui.js, index.html). **⌘F entschieden (Nutzer 30.10.2026, Sitzung 0056, Variante B):** allgemein in ui.js nur ⌘F – sucht im offenen Eintrag, ohne offenen Eintrag in allen; ist die Suche offen, nur Cursor ins Feld; bei offenem Fenster oder Menü nichts; ob ⌘F in der Home-Bildschirm-App ankommt, als Testfall (User). **iPhone entschieden (Nutzer 30.10.2026, Sitzung 0056):** die geöffnete Suchzeile bleibt oben wie heute (R-4.5 gemessen) – bewusst abweichend von iOS 26 (Suche unten über der Tastatur); in Safaris Leiste über der Tastatur (⌃ ⌄ ✓) kann eine Web-App nichts einbauen (nur eine App-Hülle, APD-38). **Muster bestätigt (Nutzer 30.10.2026, Sitzung 0056):** Menüs, Suche in allen wie bisher, Beenden mit rundem x-Knopf rechts in der Suchzeile, Mehr-Knopf bei offener Suche normal; Testfall-Liste `arbeit/APD-91 Testfall-Liste.md` bestätigt. **Regeltexte bestätigt (Nutzer 30.10.2026, Sitzung 0056)** – wörtlich in der Testfall-Liste; mit 4.43.0 (APD-92, RLB-108: dasselbe Mehr-Menü) | 30.10.2026 |
+| – | – | zurzeit nichts gesammelt | – |
 
-3 Punkte bereit (4.43.0: APD-91, APD-92, APD-93 mit Reiselogbuch 3.41.0).
+0 Punkte bereit.
 
 
 ## 1. Auf iPad und iPhone prüfen
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| – | – | zurzeit kein offener Usertest | – |
+| P-81 | 1 | **Usertest P-81 (Reiselogbuch 3.41.0 · AppDesign 4.43.0):** APD-91 ‚Suchen‘ im Mehr-Menü (Seitenleiste, Reiselogbuch, iPhone), x ‚Suche beenden‘, ⌘F mit Hardware-Tastatur; APD-92 ‚Darstellung‘ im Mehr-Menü der Seitenleiste; APD-93 schmales Feld ‚Gegangene Kilometer‘ – Testfälle im CHANGELOG des Reiselogbuchs | prüfen |
 
 ## 2. Weitere Themen (in Klärung)
 
@@ -62,6 +60,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Thema | Version | Datum |
 |---|---|---|---|
+| APD-91, APD-92, APD-93 | **APD-91:** ‚Suchen‘ zuerst im Mehr-Menü mit Strich darunter, keine Lupe in der Kapsel, x ‚Suche beenden‘, ⌘F (`suchenMenuItems`, `sucheBeendenHtml`, `sucheAnmelden`; 15.2, 15.3, 15.4, R-2.3, R-4.7, 16; `checkSearchPlace`, `checkSucheBeenden`, `checkCmdF`) · **APD-92:** ‚Darstellung‘ im Mehr-Menü der Seitenleiste (`darstellungMenuItem`, 2, R-1.2, `hig.mjs`) · **APD-93:** schmale Zahlenfelder (`input.zahl-schmal`, 8) · Usertest P-81 | 4.43.0 | 30.10.2026 |
 | P-80 | Geprüft **P-80 (Reiselogbuch 3.40.0): alles ok** (Nutzer 30.10.2026, Sitzung 0056) – **APD-87 und APD-90 bestätigt:** Mehr-Knopf offen senkrecht und blau (iPad, iPhone, mit Untermenü), Reisemittel brechen nur nach dem Komma (iPad hoch und quer, PDF) | 4.42.0 | 30.10.2026 |
 | APD-85, APD-87, APD-90 | **APD-85 Teil 1:** `lauf.mjs` wiederholt rote Läufe am Ende einmal allein (‚⚠ wackelt‘, gilt als grün), Abbruch ab dem dritten roten Lauf, Wackler in der Zusammenfassung von `veroeffentlichen.mjs` (APD-85/W-1 bis APD-85/W-11), Zusammenarbeit 3.2.0 0 Nr. 2 · **APD-87:** Mehr-Knopf offen senkrecht (`ellipsis-vertical`) und blau, 15.6, R-4.1, `checkMehrKnopf` · **APD-90:** Icon und Text bleiben zusammen, Designrichtlinie 3, neue Regel R-10.5, `iconText`, `checkIconText` · Usertest P-80 | 4.42.0 | 30.10.2026 |
 | P-79 | Geprüft **P-79 (Reiselogbuch 3.39.0): alles ok** (Nutzer 30.10.2026, Sitzung 0054) – **APD-81 bestätigt:** ⓧ in mehrzeiligen Feldern (eine Zeile sofort, mehr als eine Sprechblase ‚Text löschen?‘), Rückgängig mit Undo-Taste, drei Fingern und Schütteln, auch im Reisetitel, kein Aufblitzen beim Leeren | 4.41.0 | 30.10.2026 |

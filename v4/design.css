@@ -1,4 +1,4 @@
-/* AppDesign 4.42.0 · design.css – gemeinsame Gestaltung der iPad-Web-Apps von g811141a (Apple-like)
+/* AppDesign 4.43.0 · design.css – gemeinsame Gestaltung der iPad-Web-Apps von g811141a (Apple-like)
    Einbinden im <head> vor dem eigenen <style> der App:  <link rel="stylesheet" href="../AppDesign/fassung/X.Y.Z/design.css"> (feste Fassung, R-10.3)
    Farben als Variablen auf :root, Dunkelmodus über data-theme="dark" (setzt ui.js / applyTheme).
    Komponenten: Schaltflächen, Suchfeld, Kapsel, Eingabefelder, Datumsfelder, Kopfzeile, Seitenleiste,
@@ -6,7 +6,7 @@
    Options-Kapsel; seit 4.1.0 iPhone-Ansicht (html.phone: Seitenkopf, großer Titel, Liste, Kasten, untere Leiste). Regeln dazu: README - Designrichtlinie allgemein.md */
 /* Farben im Apple-Look: Hintergrund Hellgrau, Kästen weiß ohne Rand, schwebende Schaltflächen */
 :root {
-  --ad-version: "4.42.0";   /* R-10.3: Version der Bausteine, die App prüft sie beim Start */
+  --ad-version: "4.43.0";   /* R-10.3: Version der Bausteine, die App prüft sie beim Start */
   --bg: #f2f2f7;
   --card: #ffffff;
   --ink: #1c1c1e;
@@ -180,6 +180,12 @@ button.primary .ic.red { color: inherit; }
   min-width: 0; min-height: 0; padding: 0; border: none; box-shadow: none; background: none; color: #a1a1a6; border-radius: 50%; touch-action: manipulation; }
 .fclear svg { width: calc(20px * var(--k)); height: calc(20px * var(--k)); }
 input.mitx:is([type=text], [type=email], [type=url], [type=tel]), textarea.mitx { padding-right: calc(16px + 20px * var(--k)); }
+/* Komponente schmales Zahlenfeld (seit 4.43.0, APD-93, R-5.1): Zahlen mit kleinem Höchstwert (z. B. höchstens 99) – rechtsbündig, nur so
+   breit wie die größte Zahl (--ziffern, Voreinstellung 2) plus Innenabstand und Platz für das ⓧ; der Platz bleibt immer frei, damit die
+   Zahl beim Erscheinen des ⓧ nicht springt (links 12 px Innenabstand und 4 px Luft für Rand und Rundung). Die Breite wächst mit der Schrift (ch, R-1.10); die Einheit steht rechts daneben wie das €. */
+input.zahl-schmal[type=text] { --ziffern: 2; width: calc(var(--ziffern) * 1ch + 16px + 16px + 20px * var(--k)); flex: none; text-align: right;
+  padding-right: calc(16px + 20px * var(--k)); font-variant-numeric: tabular-nums; }
+.zahl-einheit { display: flex; align-items: center; gap: 10px; }
 /* Komponente Kapsel: mehrere Schaltflächen in einer schwebenden Kapsel */
 .grp, .navgrp { display: inline-flex; flex: none; height: calc(44px * var(--fb)); border-radius: 999px; background: var(--btn); border: .5px solid var(--btn-rim); box-shadow: var(--float); }
 /* Alle Kapseln gleich gebaut: Schaltflächen genau so hoch wie der Innenraum (44 px minus Rand); die Markierung

@@ -1,4 +1,4 @@
-// AppDesign 4.42.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
+// AppDesign 4.43.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
 // Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/fassung/X.Y.Z/ui.js"></script> (feste Fassung, R-10.3)
 // Seit 4.11.0 (R-10.3): ui.js und design.css immer mit ?v=<AppDesign-Version> einbinden (auch in sw.js) und beim Start
 // prüfen, ob genau diese Fassung geladen ist (AD_VERSION hier, --ad-version in design.css).
@@ -20,7 +20,7 @@
 
 'use strict';
 // Version der Bausteine (R-10.3): die App vergleicht sie beim Start mit der benötigten Fassung.
-const AD_VERSION = '4.42.0';
+const AD_VERSION = '4.43.0';
 /* ---------- Icons ---------- */
 
 // Schaltflächen-Icons aus Lucide (ISC-Lizenz), direkt eingebettet, damit die App offline funktioniert.
@@ -431,6 +431,10 @@ function setAppearance(a) {
   render();
 }
 const APPEARANCES = { auto: 'Automatisch', light: 'Hell', dark: 'Dunkel' };
+// Seit 4.43.0 (APD-92, R-1.2): ‚Darstellung ›‘ steht im Mehr-Menü der Seitenleiste (iPhone: Startliste) nach Backup erstellen und
+// Backup laden – nie im Menü eines Eintrags, denn sie gilt für die ganze App; rechts grau der aktuelle Wert, Untermenü mit Häkchen.
+const darstellungMenuItem = () => ({ icon: 'sun-moon', label: 'Darstellung', value: APPEARANCES[db.settings.appearance],
+  submenu: Object.entries(APPEARANCES).map(([k, l]) => ({ tick: db.settings.appearance === k, label: l, act: () => setAppearance(k) })) });
 
 /* ---------- Rahmen und Rollbereich (seit 4.27.0, APD-28, R-2.1) ---------- */
 
@@ -2094,6 +2098,21 @@ window.addEventListener('resize', () => {
   }
   navSofort();
 });
+// Seit 4.43.0 (APD-91, R-2.3, R-4.7): die Suche öffnet ‚Suchen‘ als erster Punkt im Mehr-Menü (darunter ein Strich, wie ‚Find in
+// Note‘ in Notizen) oder ⌘F – im offenen Eintrag, ohne offenen Eintrag in allen; das entscheidet die App (sucheAnmelden). Ist die Suche
+// schon offen, setzt die App nur den Cursor ins Feld; bei offenem Fenster, Meldung oder Menü wirkt ⌘F nicht.
+const suchenMenuItems = act => [{ icon: 'search', label: 'Suchen', act }, 'line'];
+let sucheApp = null;
+const sucheAnmelden = fn => { sucheApp = fn; };
+document.addEventListener('keydown', e => {
+  if (!e.metaKey || e.altKey || e.ctrlKey || e.key?.toLowerCase() !== 'f' || !sucheApp) return;
+  e.preventDefault();
+  if (dlg.open || msg.open || document.querySelector('.menu, .pop')) return;
+  sucheApp();
+});
+// Runder Knopf x rechts in der Suchzeile (15.2): schließt die Suchzeile – Filter und Markierung weg, der Inhalt steht ganz oben.
+const sucheBeendenHtml = id => `<button type="button" class="round sclose" id="${id}" aria-label="Suche beenden">${ic('x')}</button>`;
+
 // APD-61/F-20 (VoiceOver): die ‚Zurück‘-Geste (Z) bzw. Escape geht zurück bzw. schließt die darübergelegte Seitenleiste
 document.addEventListener('keydown', e => {
   if (e.key !== 'Escape' || e.defaultPrevented || !navApp || dlg.open || msg.open || document.querySelector('.menu, .pop')) return;

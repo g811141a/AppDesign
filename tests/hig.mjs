@@ -341,6 +341,10 @@ const found = new Map(), icons = new Map();
       document.querySelectorAll('.bbar').forEach(b => { if (!vis(b)) return; if ([...b.querySelectorAll('button')].some(x => !x.closest('.bnote')) || b.querySelector('.searchbox')) R('R-1.1', 'Aktion oder Suche in der unteren Leiste statt oben in der Kapsel'); });
       // R-1.2 Darstellung folgt dem Gerät
       try { if (typeof db !== 'undefined' && db.settings?.appearance === 'auto') { const want = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'; if (document.documentElement.dataset.theme !== want) R('R-1.2', 'Darstellung folgt nicht dem Gerät'); } } catch (e) {}
+      // R-1.2 (seit 4.43.0, APD-92): ‚Darstellung‘ nur im Mehr-Menü der Seitenleiste (iPhone: Startliste), nie im Menü eines Eintrags
+      document.querySelectorAll('.menu:not(.submenu)').forEach(m => { if (!vis(m) || ![...m.querySelectorAll('.mi')].some(b => /^Darstellung/.test(b.textContent.trim()))) return;
+        const a = document.querySelector('button[aria-haspopup="menu"][aria-expanded="true"]');
+        if (!a?.closest('#side')) R('R-1.2', `‚Darstellung‘ im Menü ${a ? `‚${a.getAttribute('aria-label') || a.id}‘ ` : ''}außerhalb der Seitenleiste – gehört ins Mehr-Menü der Seitenleiste`); });
       // R-10.1 Teilen nur als Icon
       document.querySelectorAll('button').forEach(b => { if (vis(b) && b.querySelector('svg') && /teilen|share/i.test(b.getAttribute('aria-label') || '') && b.textContent.trim()) R('R-10.1', 'Teilen mit Text'); });
       // R-1.1 Gleiche Funktion = gleicher Baustein: die Kacheln laufen unter der Backup-Kachel durch (iPad wie iPhone)

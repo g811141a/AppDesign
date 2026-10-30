@@ -1,5 +1,5 @@
 // AppDesign 4.12.0 · Ablauf-Prüfungen für Regeln, die eine Handlung brauchen (Designrichtlinie allgemein, Abschnitt 17):
-// R-1.6 Messmodus (seit 4.26.0) · R-4.5 Feld über der Tastatur (seit 4.28.0), Tastatur ohne Springen (seit 4.28.1) · R-2.3 Suche (seit 4.23.0 auch in der zentralen Liste, seit 4.25.0 mehrere Wörter und „…“, seit 4.25.1 Suchfeld bleibt beim Tippen) · APD-22 Lupe am Ende der Kapsel · R-4.4 Fenster-Kopfzeile · R-4.6 Blatt auf dem iPhone (seit 4.32.0) · R-5.2 Texteingabe · R-5.3 Fehlermeldungen · R-5.5 Eingabetaste (seit 4.19.0) · R-5.6 ⓧ in Feldern (seit 4.29.0) · R-6.4 Ausgabe und Vorschau · R-7.3 Liste steht still (seit 4.18.0) · R-7.4 Position beim Öffnen und R-8.1 Seitenleiste ein/aus (seit 4.21.0) · R-3.2 Kapsel nur mit wirksamen Pfeilen und Schnellroll-Griff, R-7.5 Navigation und Gesten (seit 4.30.0).
+// R-1.6 Messmodus (seit 4.26.0) · R-4.5 Feld über der Tastatur (seit 4.28.0), Tastatur ohne Springen (seit 4.28.1) · R-2.3 Suche (seit 4.23.0 auch in der zentralen Liste, seit 4.25.0 mehrere Wörter und „…“, seit 4.25.1 Suchfeld bleibt beim Tippen) · APD-91 Suche im Mehr-Menü, x ‚Suche beenden‘, ⌘F (seit 4.43.0; ersetzt APD-22 Lupe am Ende der Kapsel) · R-4.4 Fenster-Kopfzeile · R-4.6 Blatt auf dem iPhone (seit 4.32.0) · R-5.2 Texteingabe · R-5.3 Fehlermeldungen · R-5.5 Eingabetaste (seit 4.19.0) · R-5.6 ⓧ in Feldern (seit 4.29.0) · R-6.4 Ausgabe und Vorschau · R-7.3 Liste steht still (seit 4.18.0) · R-7.4 Position beim Öffnen und R-8.1 Seitenleiste ein/aus (seit 4.21.0) · R-3.2 Kapsel nur mit wirksamen Pfeilen und Schnellroll-Griff, R-7.5 Navigation und Gesten (seit 4.30.0).
 // Jede Funktion bekommt eine Playwright-Seite und gibt eine Liste von Fehlern zurück (leer = in Ordnung), je mit Regelnummer.
 // Einbinden im Prüfskript der App:  import { checkSearch, checkDialogHead } from '../../AppDesign/tests/ablauf.mjs';
 //                                   fehler.push(...await checkSearch(page, { term: 'Sydney' }));
@@ -22,13 +22,110 @@ async function typeKeeps(p, input, text, E, back = false) {
 }
 const rgbOf = c => (c.match(/[\d.]+/g) || [0, 0, 0]).slice(0, 3).map(Number);
 
+// Seit 4.43.0 (APD-91, R-2.3): die Suche öffnet ‚Suchen‘ als erster Punkt im Mehr-Menü – mehr: der Mehr-Knopf (eine Funktion öffnet
+// selbst); beendet wird sie mit dem runden x rechts in der Suchzeile.
+export async function sucheAuf(p, mehr = '#mainMore') {
+  if (typeof mehr === 'function') return mehr();
+  await p.click(mehr); await wait(p, 250);
+  await p.locator('.menu:not(.submenu) .mi', { hasText: /^Suchen$/ }).first().click(); await wait(p, 150);
+}
+
+// Platz der Suche – seit 4.43.0 (APD-91 S-1 bis S-3, S-12; ersetzt APD-22 ‚Lupe am Ende der Kapsel‘, R-2.3): ‚Suchen‘ mit Lupe als erster
+// Punkt im Mehr-Menü, darunter ein Strich; keine eigene Lupe in einer Kapsel. ohne: es gibt keine Einträge – dann kein ‚Suchen‘.
+// kapsel: Selektor der Kapseln, in denen keine Lupe stehen darf (Voreinstellung alle).
+export async function checkSearchPlace(p, { mehr = '#mainMore', kapsel = null, ohne = false, where = '' } = {}) {
+  const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}R-2.3 ${t}`);
+  const lupe = await p.evaluate(k => [...document.querySelectorAll(k || '.grp')].flatMap(g => [...g.querySelectorAll('button')])
+    .filter(b => b.getClientRects().length && /^Suche/.test(b.getAttribute('aria-label') || '')).length, kapsel);
+  if (lupe) E(`APD-91/S-3: eigene Lupe in der Kapsel (${lupe}) – die Suche steht im Mehr-Menü`);
+  await p.click(mehr); await wait(p, 250);
+  const m = await p.evaluate(() => {
+    const menu = document.querySelector('.menu:not(.submenu)'), first = menu?.firstElementChild;
+    return menu && { items: [...menu.querySelectorAll('.mi')].map(b => b.textContent.trim()), first: first?.textContent.trim() ?? null,
+      icon: !!first?.querySelector('svg'), danach: first?.nextElementSibling?.className || '', suchen: [...menu.querySelectorAll('.mi')].filter(b => b.textContent.trim() === 'Suchen').length };
+  });
+  if (!m) { E('Mehr-Menü öffnet sich nicht'); return errors; }
+  if (ohne) { if (m.suchen) E('APD-91/S-12: ohne Einträge steht ‚Suchen‘ im Menü'); }
+  else {
+    if (m.first !== 'Suchen' || !m.icon) E(`APD-91/S-1: erster Punkt ist nicht ‚Suchen‘ mit Lupe (${m.first ?? 'nichts'})`);
+    if (m.danach !== 'line') E(`APD-91/S-1: unter ‚Suchen‘ kein Strich (${m.danach || 'nichts'})`);
+    if (m.suchen !== 1) E(`APD-91: ‚Suchen‘ ${m.suchen}-mal im Menü`);
+  }
+  await p.keyboard.press('Escape'); await wait(p, 150);
+  return errors;
+}
+
+// APD-91 S-4 bis S-6, S-15, S-18 (R-2.3): ‚Suchen‘ im Menü schließt das Menü und öffnet die Suchzeile mit dem Cursor im Feld; bei offener
+// Suche bleibt der Mehr-Knopf normal (waagrecht, nicht hervorgehoben); das runde x ‚Suche beenden‘ rechts in der Suchzeile schließt sie –
+// Filter und Markierung weg, der Inhalt (scroll: Rollbereich bzw. Liste) steht ganz oben. term: ein Begriff mit Treffern.
+export async function checkSucheBeenden(p, { mehr = '#mainMore', input = '#search', close = '#sclose', row = '#app .nb2', item = '#app [data-day]',
+  scroll = null, term, where = '' } = {}) {
+  const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}R-2.3 ${t}`);
+  const lage = () => p.evaluate(({ mehr, input, close, row, item, scroll, R }) => {
+    const b = document.querySelector(mehr), c = b ? [...b.querySelectorAll(':scope > svg circle')] : [], ys = new Set(c.map(k => k.getAttribute('cy')));
+    const x = document.querySelector(close), xr = x?.getBoundingClientRect(), rr = document.querySelector(row)?.getBoundingClientRect();
+    const sc = scroll ? document.querySelector(scroll)?.scrollTop ?? 0 : eval(R).y;
+    return { menue: !!document.querySelector('.menu'), feld: !!document.querySelector(input), fokus: document.activeElement === document.querySelector(input),
+      wert: document.querySelector(input)?.value ?? null, mehrOn: !!b?.classList.contains('on'), waagrecht: c.length === 3 && ys.size === 1,
+      x: !!x, xName: x?.getAttribute('aria-label') || '', xRechts: xr && rr ? rr.right - xr.right < 2 && xr.left > rr.left + rr.width / 2 : false,
+      marks: document.querySelectorAll(`${item} mark`).length, items: [...document.querySelectorAll(item)].filter(e => e.getClientRects().length).length, y: Math.round(sc) };
+  }, { mehr, input, close, row, item, scroll, R: ROLL });
+  const alle = (await lage()).items;
+  await sucheAuf(p, mehr);
+  let l = await lage();
+  if (l.menue) E('APD-91/S-4: ‚Suchen‘ schließt das Menü nicht');
+  if (!l.feld) { E('APD-91/S-4: ‚Suchen‘ im Menü öffnet keine Suchzeile'); return errors; }
+  if (!l.fokus) E('APD-91/S-4: nach ‚Suchen‘ steht der Cursor nicht im Suchfeld');
+  if (l.mehrOn || !l.waagrecht) E(`APD-91/S-18: bei offener Suche ist der Mehr-Knopf ${l.mehrOn ? 'hervorgehoben' : 'nicht waagrecht'} – nur bei offenem Menü`);
+  if (!l.x || l.xName !== 'Suche beenden') E(`APD-91/S-15: x ‚Suche beenden‘ fehlt (${l.x ? `heißt ‚${l.xName}‘` : 'kein Knopf'})`);
+  else if (!l.xRechts) E('APD-91/S-6: x ‚Suche beenden‘ steht nicht rechts in der Suchzeile');
+  await p.locator(input).fill(term); await p.locator(input).dispatchEvent('input'); await wait(p, 900);
+  l = await lage();
+  if (!l.marks && item.startsWith('#app')) E(`Vorbereitung: ‚${term}‘ markiert nichts`);
+  await p.click(close); await wait(p, 350);
+  l = await lage();
+  if (l.feld) E('APD-91/S-6: x ‚Suche beenden‘ schließt die Suchzeile nicht');
+  if (l.marks) E(`APD-91/S-6: nach ‚Suche beenden‘ noch ${l.marks} Markierungen`);
+  if (l.items !== alle) E(`APD-91/S-6: nach ‚Suche beenden‘ ${l.items} statt ${alle} Einträge – Filter nicht weg`);
+  if (l.y !== 0) E(`APD-91/S-6: nach ‚Suche beenden‘ steht der Inhalt nicht ganz oben (${l.y} px)`);
+  return errors;
+}
+
+// APD-91 S-8 bis S-11 (R-4.7): ⌘F öffnet die Suche (input: das Feld, das kommen soll) mit dem Cursor im Feld; bei offener Suche setzt ⌘F nur
+// den Cursor ins Feld, der Begriff bleibt; bei offenem Menü (mehr) wirkt ⌘F nicht. close: beendet die Suche.
+export async function checkCmdF(p, { input = '#search', close = '#sclose', mehr = '#mainMore', where = '' } = {}) {
+  const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}R-4.7 ${t}`);
+  const lage = () => p.evaluate(input => ({ feld: !!document.querySelector(input)?.getClientRects().length, fokus: document.activeElement === document.querySelector(input),
+    wert: document.querySelector(input)?.value ?? null, menue: !!document.querySelector('.menu') }), input);
+  if ((await lage()).feld) { await p.click(close); await wait(p, 250); }
+  await p.keyboard.press('Meta+f'); await wait(p, 300);
+  let l = await lage();
+  if (!l.feld) { E(`APD-91/S-8: ⌘F öffnet die Suche nicht (${input})`); return errors; }
+  if (!l.fokus) E('APD-91/S-8: nach ⌘F steht der Cursor nicht im Suchfeld');
+  await p.locator(input).pressSequentially('ab', { delay: 20 }); await wait(p, 200);
+  await p.evaluate(() => document.activeElement?.blur()); await wait(p, 100);
+  await p.keyboard.press('Meta+f'); await wait(p, 250);
+  l = await lage();
+  if (!l.feld || l.wert !== 'ab') E(`APD-91/S-10: ⌘F bei offener Suche ändert den Begriff (‚${l.wert}‘ statt ‚ab‘)`);
+  if (!l.fokus) E('APD-91/S-10: ⌘F bei offener Suche setzt den Cursor nicht ins Feld');
+  await p.click(close); await wait(p, 300);
+  await p.click(mehr); await wait(p, 250);
+  await p.keyboard.press('Meta+f'); await wait(p, 250);
+  l = await lage();
+  if (!l.menue) E('APD-91/S-11: ⌘F schließt das offene Menü');
+  if (l.feld) E('APD-91/S-11: ⌘F öffnet bei offenem Menü die Suche');
+  await p.keyboard.press('Escape'); await wait(p, 200);
+  if ((await lage()).feld) { await p.click(close); await wait(p, 250); }
+  return errors;
+}
+
 // R-2.3 Suche: Suchzeile unter der Leiste über die volle Breite; Treffer ‚3 von 57‘ bzw. ‚0‘; nach kurzer Pause steht der
 // Treffer direkt unter der Suchzeile; Pfeile ohne Umlauf; nur Einträge mit Treffern. term: ein Begriff, der weit unten steht.
-export async function checkSearch(p, { term, open = '#searchBtn', input = '#search', count = '#scount', prev = '#sprev', next = '#snext',
+export async function checkSearch(p, { term, open = '#mainMore', close = '#sclose', input = '#search', count = '#scount', prev = '#sprev', next = '#snext',
   bar = '#bar', row = '.nb2', item = '#app [data-day]', where = '' } = {}) {
   const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}R-2.3 ${t}`);
   await rolle(p, 0);
-  await p.click(open); await wait(p);
+  await sucheAuf(p, open); await wait(p);
   await typeKeeps(p, input, term, E); await wait(p, 900);
   const state = () => p.evaluate(({ count, bar, row, item }) => {
     const c = document.querySelector(count)?.textContent.trim() || '';
@@ -58,16 +155,16 @@ export async function checkSearch(p, { term, open = '#searchBtn', input = '#sear
   await p.locator(input).fill(''); await typeKeeps(p, input, 'zqxzqx', E, true); await typeKeeps(p, input, 'zqxzqx', E); await wait(p, 700);
   const z = await state();
   if (z.c !== '0') E(`ohne Treffer ‚${z.c}‘ statt ‚0‘`);
-  await p.click(open); await wait(p);
+  await p.click(close); await wait(p);
   return errors;
 }
 
-// R-2.3 Suche in der zentralen Liste (seit 4.23.0, APD-19): Lupe in der Kopfzeile der Liste öffnet die Suchzeile; beim Tippen
+// R-2.3 Suche in der zentralen Liste (seit 4.23.0, APD-19; seit 4.43.0 ‚Suchen‘ im Mehr-Menü der Liste, APD-91): öffnet die Suchzeile; beim Tippen
 // bleiben nur Einträge mit Treffer, jede Kachel zeigt ‚N Treffer‘ (je Fundstelle); Antippen öffnet den Eintrag mit gefüllter
 // Suche ‚1 von N‘ (gleiches N); sind beide Suchfelder offen, laufen sie 1:1 mit; zurück bleibt die Liste gefiltert; x zeigt
-// wieder alle; ohne Treffer ‚Keine Treffer‘. term: kommt in einigen, nicht allen Einträgen vor. back(): zurück zur Liste
+// wieder alle; ohne Treffer ‚Keine Treffer‘; x ‚Suche beenden‘ schließt sie. term: kommt in einigen, nicht allen Einträgen vor. back(): zurück zur Liste
 // (iPhone-Aufbau), sonst ist die Liste neben dem Eintrag sichtbar.
-export async function checkListSearch(p, { term, open = '#listSearchBtn', input = '#lsearch', clear = '#lsclear', row = '#side .side-row',
+export async function checkListSearch(p, { term, open = '#sideMore', close = '#lsclose', input = '#lsearch', clear = '#lsclear', row = '#side .side-row',
   hits = 'small.hits', inner = '#search', innerCount = '#scount', back = null, where = '' } = {}) {
   const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}R-2.3 Liste: ${t}`);
   const list = () => p.evaluate(({ row, hits, input }) => ({ value: document.querySelector(input)?.value ?? null,
@@ -75,10 +172,10 @@ export async function checkListSearch(p, { term, open = '#listSearchBtn', input 
       .map(e => ({ hits: e.querySelector(hits)?.textContent.trim() || '' })),
     empty: /Keine Treffer/.test(document.querySelector('#side')?.textContent || '') }), { row, hits, input });
   const all = (await list()).rows.length;
-  await p.click(open); await wait(p);
+  await sucheAuf(p, open); await wait(p);
   let l = await list();
-  if (l.value === null) E('Lupe öffnet keine Suchzeile');
-  else if (l.focus !== input.replace('#', '')) E('Suchzeile hat nach der Lupe keinen Fokus');
+  if (l.value === null) E('‚Suchen‘ öffnet keine Suchzeile');
+  else if (l.focus !== input.replace('#', '')) E('Suchzeile hat nach ‚Suchen‘ keinen Fokus');
   await typeKeeps(p, input, term, E); await wait(p, 400);
   l = await list();
   if (!l.rows.length) E(`‚${term}‘ findet keinen Eintrag`);
@@ -110,9 +207,9 @@ export async function checkListSearch(p, { term, open = '#listSearchBtn', input 
   await p.locator(input).pressSequentially('zqxzqx', { delay: 10 }); await wait(p, 300);
   l = await list();
   if (l.rows.length || !l.empty) E('ohne Treffer nicht ‚Keine Treffer‘');
-  await p.click(open); await wait(p);
+  await p.click(close); await wait(p);
   l = await list();
-  if (l.value !== null || l.rows.length !== all) E('Lupe schließt die Suchzeile nicht bzw. zeigt nicht wieder alle Einträge');
+  if (l.value !== null || l.rows.length !== all) E('x ‚Suche beenden‘ schließt die Suchzeile nicht bzw. zeigt nicht wieder alle Einträge');
   return errors;
 }
 
@@ -678,18 +775,6 @@ export async function checkSearchWords(p, { where = '' } = {}) {
   return errors;
 }
 
-// APD-22 (seit 4.25.0): die Lupe steht in jeder Kapsel am Ende, dahinter höchstens das Mehr-Menü (…) – wie Apple (15.5).
-export async function checkSearchPlace(p, { search = 'button[aria-label="Suchen"]', more = 'button[aria-label="Mehr"]', where = '' } = {}) {
-  const errors = [];
-  const r = await p.evaluate(({ search, more }) => [...document.querySelectorAll(`.grp ${search}`)].filter(b => b.getClientRects().length).map(b => {
-    const after = [...b.parentElement.children].slice([...b.parentElement.children].indexOf(b) + 1).filter(x => x.getClientRects().length);
-    return { id: b.id, ok: after.length === 0 || (after.length === 1 && after[0].matches(more)), after: after.map(x => x.getAttribute('aria-label') || x.id) };
-  }), { search, more });
-  if (!r.length) errors.push(`${where ? where + ': ' : ''}APD-22 keine Lupe in einer Kapsel gefunden`);
-  r.filter(x => !x.ok).forEach(x => errors.push(`${where ? where + ': ' : ''}APD-22 Lupe ${x.id} steht nicht am Ende der Kapsel – dahinter ${x.after.join(', ')}`));
-  return errors;
-}
-
 // R-1.6 Messmodus (seit 4.26.0, APD-27, Testfall-Liste arbeit/APD-27 Testfall-Liste.md F1–F12): Start und Ende im Mehr-Menü der Seitenleiste
 // (seit 4.40.0, APD-77: ‚Messung starten‘ erst nach langem Drücken auf die graue Versionszeile, bis zum Neuladen),
 // eine Zeile je Bild nur bei Änderung, Ereignisse, keine Texte, Grenze, Datei, neu laden verwirft. menu: öffnet das Mehr-Menü;
@@ -808,19 +893,19 @@ export async function checkMessung(p, { menu, search, secret = [], where = '' } 
   return errors;
 }
 
-// R-2.3 Suche nach oben (seit 4.27.0, APD-29, APD-28/F-3/F-4): Lupe antippen (Suche öffnen) rollt den Inhalt ganz nach oben; ⓧ leert die
+// R-2.3 Suche nach oben (seit 4.27.0, APD-29, APD-28/F-3/F-4): Suche öffnen (seit 4.43.0 ‚Suchen‘ im Mehr-Menü) rollt den Inhalt ganz nach oben; ⓧ leert die
 // Suche, rollt ganz nach oben und lässt den Fokus im Feld. Kopf- und Suchzeile bewegen sich dabei nicht, das Fenster rollt nie.
 // term: ein Begriff, der weit unten steht (der Treffer rollt den Inhalt nach unten).
-export async function checkSearchTop(p, { term, open = '#searchBtn', input = '#search', clear = '#sclear', bar = '#bar', where = '' } = {}) {
+export async function checkSearchTop(p, { term, open = '#mainMore', close = '#sclose', input = '#search', clear = '#sclear', bar = '#bar', where = '' } = {}) {
   const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}R-2.3 ${t}`);
   const lage = () => p.evaluate(([bar, input, R]) => { const r = eval(R), b = document.querySelector(bar)?.getBoundingClientRect();
     return { y: Math.round(r.y), fenster: Math.round(scrollY), bar: b ? Math.round(b.top) : null, fokus: document.activeElement === document.querySelector(input),
       wert: document.querySelector(input)?.value ?? null }; }, [bar, input, ROLL]);
-  if (await p.locator(input).count()) { await p.click(open); await wait(p); }   // Suche zu
+  if (await p.locator(input).count()) { await p.click(close); await wait(p); }   // Suche zu
   await rolle(p, '50%'); await wait(p, 300);
   const vor = await lage();
   if (vor.y < 50) { E(`Vorbereitung: Inhalt lässt sich nicht in die Mitte rollen (${vor.y} px)`); return errors; }
-  await p.click(open); await wait(p, 400);
+  await sucheAuf(p, open); await wait(p, 400);
   const auf = await lage();
   if (auf.y !== 0) E(`Suche öffnen rollt den Inhalt nicht ganz nach oben (${auf.y} px statt 0, APD-29)`);
   if (!auf.fokus) E('nach dem Öffnen der Suche liegt der Fokus nicht im Suchfeld');
@@ -839,7 +924,7 @@ export async function checkSearchTop(p, { term, open = '#searchBtn', input = '#s
   if (!zu.fokus) E('nach ⓧ liegt der Fokus nicht mehr im Suchfeld');
   if (zu.bar !== vor.bar) E(`Kopfzeile bewegt sich bei ⓧ (${vor.bar} → ${zu.bar} px)`);
   if ([vor, auf, treffer, zu].some(l => l.fenster)) E(`die Seite rollt (scrollY ${[vor, auf, treffer, zu].map(l => l.fenster).join(' → ')}) – nur der Inhalt darf rollen (R-2.1)`);
-  await p.click(open); await wait(p);
+  await p.click(close); await wait(p);
   return errors;
 }
 
@@ -850,13 +935,13 @@ export async function checkSearchTop(p, { term, open = '#searchBtn', input = '#s
 // Seit 4.27.1 (APD-33, Testfall-Liste APD-33/H-1 bis APD-33/H-5): die Kapsel überdeckt nie Kopf- oder Suchzeile – sie steht ganz im Rollbereich mit
 // 16 px Abstand oben und unten, sonst ist sie ausgeblendet; die Schaltflächen der Leisten bleiben frei antippbar; nach dem Schließen
 // der Tastatur ist sie wieder da. sichtbar: Höhe des sichtbaren Bereichs bei offener Tastatur (gemessen APD-27: iPhone hoch 409,
-// quer 126 px; ohne Angabe innerHeight − 300); suche: Schaltfläche, die die Suche öffnet – dann auch mit offener Suche gemessen.
+// quer 126 px; ohne Angabe innerHeight − 300); suche: Mehr-Knopf mit ‚Suchen‘ (seit 4.43.0, sucheAuf) – dann auch mit offener Suche gemessen; sucheZu beendet sie.
 // Seit 4.30.0 (APD-37 B+C, Testfall-Liste arbeit/APD-37 Testfall-Liste.md): die Kapsel zeigt nur die Pfeile, die etwas bewirken – ganz oben nur
 // ‚Ans Ende‘, am Ende nur ‚Nach oben‘, dazwischen beide, näher als eine halbe Höhe des Rollbereichs an einem Ende fehlt dessen Pfeil;
 // ihr unterer Rand bleibt (APD-37/F-3). Dazu der Schnellroll-Griff (checkGriff, ab drei Höhen des Rollbereichs), bei offener Tastatur und
 // offenem Fenster weder Kapsel noch Griff (APD-37/F-6, APD-37/F-9), beim Drucken ausgeblendet (APD-37/F-13). fenster: öffnet ein Fenster (danach wird es
 // mit Escape geschlossen); griff: false prüft nur die Kapsel.
-export async function checkFab(p, { top = '.fab button:first-child', end = '.fab button:last-child', kurz = null, sichtbar = null, suche = null, fenster = null, griff = true, where = '' } = {}) {
+export async function checkFab(p, { top = '.fab button:first-child', end = '.fab button:last-child', kurz = null, sichtbar = null, suche = null, sucheZu = '#sclose', fenster = null, griff = true, where = '' } = {}) {
   const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}R-3.2 ${t}`);
   const sicht = () => p.evaluate(() => { const f = document.querySelector('.fab'); return !!f && getComputedStyle(f).display !== 'none' && !f.hidden && f.getClientRects().length > 0; });
   const st = await rollstand(p);
@@ -927,10 +1012,10 @@ export async function checkFab(p, { top = '.fab button:first-child', end = '.fab
   await mitTastatur('');
   if (!await sicht()) E('nach dem Schließen der Tastatur ist die Kapsel nicht wieder da (APD-33/H-5)');
   if (suche) {
-    await p.click(suche); await wait(p, 400);
+    await sucheAuf(p, suche); await wait(p, 400);
     await mitTastatur(', Suche offen');
     if (!await sicht()) E('nach dem Schließen der Tastatur (Suche offen) ist die Kapsel nicht wieder da (APD-33/H-5)');
-    await p.click(suche); await wait(p, 400);
+    await p.click(sucheZu); await wait(p, 400);
   }
   // APD-37/F-9: offenes Fenster – Kapsel und Griff nicht zu sehen und nicht bedienbar
   if (fenster) {
@@ -1300,7 +1385,7 @@ export async function checkPrint(p, { print, mehr = 2, where = '' } = {}) {
 // antippen (APD-61/F-12), Drehen (APD-61/F-14), Menü (APD-61/F-15), Escape. iPad quer: Wischen ändert nichts (APD-61/F-13). ‚Bewegung reduzieren‘ (Seite mit
 // reducedMotion: 'reduce'): Überblenden statt Schieben (APD-61/F-19). Mit der Maus nachgebildet (Playwright kennt kein Wischen mit dem Finger).
 // eintrag: Zeile der Startliste bzw. Seitenleiste, die geöffnet wird; titel: ihr Titel (steht danach in der Leiste); zurueck: Zurück-Knopf;
-// waagrecht: Bereich mit eigenem waagrechtem Rollen; knopf: Schaltfläche in der Leiste; menue: öffnet ein Menü; suche: öffnet die Suche
+// waagrecht: Bereich mit eigenem waagrechtem Rollen; knopf: Schaltfläche in der Leiste; menue: öffnet ein Menü; suche: Mehr-Knopf mit ‚Suchen‘ (sucheAuf)
 // (Feld bekommt den Fokus); seitenKnopf: panel-left.
 export async function checkNavigation(p, { eintrag, titel, zurueck = '#back', waagrecht = null, knopf = null, menue = null, suche = null,
   seitenKnopf = '[data-side-toggle]', kasten = null, where = '' } = {}) {
@@ -1483,7 +1568,7 @@ export async function checkNavigation(p, { eintrag, titel, zurueck = '#back', wa
     await p.setViewportSize({ width: w, height: h }); await wait(p, 400);
     // APD-61/F-16: Tastatur offen (Suche) – Wischen schließt sie und geht zurück
     if (suche) {
-      await p.click(suche); await wait(p, 300);
+      await sucheAuf(p, suche); await wait(p, 300);
       await p.evaluate(() => document.querySelector('#app input[type=search], #app .searchbox input')?.focus());
       await ziehe(w * 0.3, h * 0.7, w * 0.95, h * 0.7);
       l = await lage();
