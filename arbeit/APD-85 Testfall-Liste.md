@@ -32,3 +32,5 @@ Ein roter Lauf bricht den Prüflauf nicht mehr sofort ab; am Ende läuft jeder r
 | W-10 | `dauer.json` | die Dauer eines Wiederholungslaufs ersetzt nicht die gemessene Dauer unter Last |
 | W-11 | `veroeffentlichen.mjs los` | Wackler stehen in der Zusammenfassung des Skripts; die Version wird trotzdem veröffentlicht |
 | W-12 | Bericht (Selbstkontrolle) | Claude nennt jeden Wackler im Bericht und zählt ihn in APD-85 mit; derselbe Test zum zweiten Mal → Teil 3 für diesen Test |
+
+**Bestätigt 30.10.2026** (Nutzer, Sitzung 0055): W-1 bis W-12, Abbruch ab dem dritten roten Lauf; Bau in der nächsten Sitzung.
