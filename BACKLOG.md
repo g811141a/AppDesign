@@ -1,6 +1,6 @@
 # AppDesign – Backlog (allgemeine Themen)
 
-**Stand 30.10.2026** · Aktuelle Version: AppDesign 4.43.0
+**Stand 30.10.2026** · Aktuelle Version: AppDesign 4.44.0
 
 Allgemeine Themen, die alle Apps betreffen. App-Themen stehen im Backlog der jeweiligen App.
 Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.4.
@@ -20,13 +20,12 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| P-81 | 1 | **Usertest P-81 (Reiselogbuch 3.41.0 · AppDesign 4.43.0):** APD-91 ‚Suchen‘ im Mehr-Menü (Seitenleiste, Reiselogbuch, iPhone), x ‚Suche beenden‘, ⌘F mit Hardware-Tastatur; APD-92 ‚Darstellung‘ im Mehr-Menü der Seitenleiste; APD-93 schmales Feld ‚Gegangene Kilometer‘ – Testfälle im CHANGELOG des Reiselogbuchs | prüfen |
+| P-82 | 1 | **Usertest P-82 (Reiselogbuch 3.42.0 · AppDesign 4.44.0):** APD-95 Bezeichnungen und Einheiten normal (R-5.8), schmales Zahlenfeld bündig rechts (mit Fokus Platz für das ⓧ); im Reiselogbuch RLB-111 – Testfälle P-82/0 bis P-82/7 im CHANGELOG des Reiselogbuchs | prüfen |
 
 ## 2. Weitere Themen (in Klärung)
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| APD-95 | 1 | **Feldbezeichnungen normal statt fett (Nutzer 30.10.2026, Sitzung 0058, aus P-81/6):** Labels immer in normaler Schrift (heute `label { font-weight: 600 }` in `design.css`); Einheit nach einem Feld (‚€‘, ‚km‘) ebenfalls normal – **Wortlaut bestätigt (Nutzer 30.10.2026, 0 Nr. 29):** Designrichtlinie 8 neu „**Bezeichnungen in normaler Schrift** (R-5.8): Bezeichnungen von Feldern (z. B. ‚Preis‘, ‚Von‘ · ‚Bis‘) und Einheiten nach einem Feld (‚€‘, ‚km‘) stehen in Textgröße (Body) und normaler Schrift, nie fett. Halbfett bleiben nur Überschriften: Schritt-Titel mit Nummer, Kasten-Überschriften, Tabellenköpfe und Titel.“; Katalog R-5.8 „**Bezeichnungen:** Feldbezeichnungen und Einheiten nach einem Feld in normaler Schrift (400) und Textgröße; halbfett nur Überschriften“ mit neuer automatischer Prüfung | offen |
 | APD-94 | 2 | **Seitenleiste beim Drehen mit offenem Menü nicht gesperrt (gefunden von der neuen Prüfung in 4.42.0, Nutzer 30.10.2026, Sitzung 0056):** iPad mit offenem Mehr-Menü von quer auf hoch drehen – die darübergelegte Seitenleiste erscheint mit `.side-shade`, die nicht gesperrt ist (`inert` fehlt; hig.mjs: R-1.4 ‚nicht inert‘) – VoiceOver und Tastatur erreichen Elemente hinter dem Menü. Bestehend: R-1.4, R-8.1. Zu klären: beim Drehen das Menü schließen oder Neues sofort sperren; die Prüfung in `ablauf-markierung-menues` dreht bis dahin hoch → quer | offen |
 | APD-85 | 3 | **Teil 3 – Wackler beheben (aus APD-85 Teil 1, 4.42.0):** feste Pausen eines Tests durch Warten auf einen Zustand ersetzen – erst für einen Test, der wiederholt als ‚⚠ wackelt‘ gemeldet wird (Claude zählt jeden Wackler hier mit: bisher keiner) | später |
 | APD-40 | 3 | **Prüfungen für die Regeln ohne automatische Prüfung (aus APD-39, Nutzer 21.10.2026):** G-1 bis G-19 im Regelkatalog (Designrichtlinie allgemein 17) – je Regel eine allgemeine Prüfung in `tests/` oder bewusst ‚Gerät/Sicht‘ lassen; Code, eigener Auftrag | offen |
@@ -61,6 +60,8 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Thema | Version | Datum |
 |---|---|---|---|
+| APD-95 | **APD-95:** Bezeichnungen von Feldern und Einheiten (‚€‘, ‚km‘) in normaler Schrift und Textgröße, halbfett nur Überschriften (8, R-5.8, Prüfung `hig.mjs` – `bezeichnungen`); schmales Zahlenfeld ohne Fokus bündig rechts, mit Fokus rückt die Zahl für das ⓧ nach links (8, APD-93 geändert) – Usertest P-82 | 4.44.0 | 30.10.2026 |
+| P-81 | Geprüft **P-81 (3.41.0 / 4.43.0): ok bis auf P-81/6 und P-81/7** (Nutzer 30.10.2026, Sitzung 0058) – Rückmeldungen als APD-95 und RLB-111 in 4.44.0 / 3.42.0 umgesetzt | 4.43.0 | 30.10.2026 |
 | APD-91, APD-92, APD-93 | **APD-91:** ‚Suchen‘ zuerst im Mehr-Menü mit Strich darunter, keine Lupe in der Kapsel, x ‚Suche beenden‘, ⌘F (`suchenMenuItems`, `sucheBeendenHtml`, `sucheAnmelden`; 15.2, 15.3, 15.4, R-2.3, R-4.7, 16; `checkSearchPlace`, `checkSucheBeenden`, `checkCmdF`) · **APD-92:** ‚Darstellung‘ im Mehr-Menü der Seitenleiste (`darstellungMenuItem`, 2, R-1.2, `hig.mjs`) · **APD-93:** schmale Zahlenfelder (`input.zahl-schmal`, 8) · Usertest P-81 | 4.43.0 | 30.10.2026 |
 | P-80 | Geprüft **P-80 (Reiselogbuch 3.40.0): alles ok** (Nutzer 30.10.2026, Sitzung 0056) – **APD-87 und APD-90 bestätigt:** Mehr-Knopf offen senkrecht und blau (iPad, iPhone, mit Untermenü), Reisemittel brechen nur nach dem Komma (iPad hoch und quer, PDF) | 4.42.0 | 30.10.2026 |
 | APD-85, APD-87, APD-90 | **APD-85 Teil 1:** `lauf.mjs` wiederholt rote Läufe am Ende einmal allein (‚⚠ wackelt‘, gilt als grün), Abbruch ab dem dritten roten Lauf, Wackler in der Zusammenfassung von `veroeffentlichen.mjs` (APD-85/W-1 bis APD-85/W-11), Zusammenarbeit 3.2.0 0 Nr. 2 · **APD-87:** Mehr-Knopf offen senkrecht (`ellipsis-vertical`) und blau, 15.6, R-4.1, `checkMehrKnopf` · **APD-90:** Icon und Text bleiben zusammen, Designrichtlinie 3, neue Regel R-10.5, `iconText`, `checkIconText` · Usertest P-80 | 4.42.0 | 30.10.2026 |

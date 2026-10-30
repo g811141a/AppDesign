@@ -1,6 +1,6 @@
 # Designrichtlinie allgemein
 
-**Version 4.43.0** · Stand 30.10.2026
+**Version 4.44.0** · Stand 30.10.2026
 
 Allgemeine Gestaltungs- und Bedienregeln für alle Web-Apps von g811141a auf iPad und iPhone. Die Datei liegt im Design-Repo
 **AppDesign** (g811141a/AppDesign); ihre Versionsnummer ist die des Repos. Die Komponenten sind dort einmal programmiert und
@@ -294,6 +294,9 @@ Body = Grundgröße der Stufe (14 … 53). Zeilenabstände und Werte wörtlich a
   gleich, kurzer Abstand zum Datum); zwei zusammengehörige Daten mit grauer Beschriftung „Von“ · „Bis“ in einer Zeile (R-5.1).
 - **Bezeichnung und Feld gehören zusammen** (`.pair`, R-5.1): reicht der Platz nicht, bricht die Zeile **vor** der Bezeichnung
   um (z. B. auf dem iPhone ‚Bis‘ mit Datum unter ‚Von‘), nie zwischen Bezeichnung und Feld.
+- **Bezeichnungen in normaler Schrift** (R-5.8): Bezeichnungen von Feldern (z. B. ‚Preis‘, ‚Von‘ · ‚Bis‘) und Einheiten nach einem
+  Feld (‚€‘, ‚km‘) stehen in Textgröße (Body) und normaler Schrift, nie fett. Halbfett bleiben nur Überschriften: Schritt-Titel mit
+  Nummer, Kasten-Überschriften, Tabellenköpfe und Titel.
 - **Großbuchstabe am Zeilenanfang** (R-5.2): Die App setzt den ersten Buchstaben jeder Zeile und nach ‚.‘, ‚!‘, ‚?‘ selbst groß –
   auch nach einem Smiley am Zeilenanfang (iOS macht das nicht zuverlässig); schon vor der Eingabe (`beforeinput`). Nach einem
   Vorschlag (z. B. ‚Freetour …‘) beginnt auch das nächste Wort groß (`capNext`). Ersetzt oder löscht der Nutzer einen Großbuchstaben
@@ -307,8 +310,8 @@ Body = Grundgröße der Stufe (14 … 53). Zeilenabstände und Werte wörtlich a
   **hinter** dem Betrag mit Leerzeichen – „4.850,00 €“. Im Eingabefeld steht das € rechts neben dem Feld; fehlen beim Verlassen
   die Nachkommastellen, ergänzt die App „,00“. **Zahlen- und Betragsfelder sind rechtsbündig** und dynamisch breit: mindestens so
   breit, dass „100.000,00“ vollständig passt; längere Beträge lassen das Feld beim Tippen mitwachsen. **Zahlenfelder mit kleinem
-  Höchstwert** (z. B. höchstens 99) sind nur so breit wie die größte Zahl plus Platz für das ⓧ; dieser Platz bleibt immer frei,
-  damit die Zahl beim Tippen nicht springt.
+  Höchstwert** (z. B. höchstens 99,9) sind nur so breit wie die größte Zahl plus Platz für das ⓧ; ohne Fokus steht die Zahl bündig
+  am rechten Rand, mit Fokus rückt sie für das ⓧ nach links (wie beim Betragsfeld und bei Apple).
 - **Smiley-Leisten** (Schnellauswahl über einem Textfeld, Bau 15.12): nur einzeilig, mit dem Finger nach links/rechts wischen,
   Verlauf am Rand als Hinweis auf weitere Smileys, Zurücksetzen (rotate-ccw) fest rechts daneben. Sortiert nach Häufigkeit
   (meistbenutzte vorne), nie benutzte in Standardreihenfolge dahinter. Langes Drücken auf derselben Stelle entfernt einen Smiley
@@ -1174,6 +1177,7 @@ Testfall (User) in den Usertest, wenn eine Version es betrifft.
 | R-5.5 | **Eingabetaste:** einzeilige Felder – ‚Fertig‘, die Eingabetaste schließt die Tastatur, ein Fenster bleibt offen; mehrzeilige Felder – Zeilenumbruch; Suchfeld – ‚Suchen‘ | ablauf.mjs – `checkEnterDone` | iOS-Tastatur (Beschriftung, iPhone-Ziffernfeld) | 8 |
 | R-5.6 | **ⓧ in Textfeldern (ein- und mehrzeilig):** solange ein Textfeld den Fokus hat und etwas drinsteht, rechts darin ein graues ⓧ (44 × 44, Text läuft nicht darunter) – mehrzeilig oben rechts auf Höhe der ersten Zeile, der Text läuft in allen Zeilen nicht darunter; Antippen: eine Zeile → sofort leeren; mehr als eine Zeile → Sprechblase ‚Text löschen?‘ mit ‚Löschen‘ (rot) und ‚Abbrechen‘ (R-4.3); Fokus und Tastatur bleiben, die App erfährt es; geleert über den Bearbeiten-Befehl, die Undo-Taste und drei Finger holen den Text zurück; rollt mit, bleibt nach dem Drehen am Feld; nicht in Datums- und Suchfeldern, je Feld abschaltbar (`data-noclear`) | ablauf.mjs – `checkClear` | Antippen, Tastatur bleibt, Rückgängig (Undo-Taste, drei Finger, iPhone schütteln) | 15.11 |
 | R-5.7 | **Schalter:** Safaris eingebauter Schalter (`switch`, `role="switch"` – VoiceOver ‚Schalter‘), von Safari gezeichnet in Grün; ohne ihn unser Schalter 51 × 31 | hig.mjs – Attribute, Größe ohne, Systemaussehen und Grün mit eingebautem Schalter (nachgebildet) | Aussehen, Gleiten, Ziehen, Haptik, VoiceOver | 15.15 |
+| R-5.8 | **Bezeichnungen:** Feldbezeichnungen und Einheiten nach einem Feld in normaler Schrift (400) und Textgröße; halbfett nur Überschriften | hig.mjs – `bezeichnungen` nach jedem Schritt (Bezeichnung 400 außer `.step-head label`, `.step > label`; Einheit 400 und so groß wie das Feld) | Sicht | 8 |
 
 ### 6. Tabellen, Kästen, Ausgabe
 
@@ -1278,6 +1282,7 @@ R-2.3 (15.2), R-4.4 (6, 15.8, HIG 9), R-5.3 (8), R-5.4 (15.12), R-5.5 (APD-14), 
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 4.44.0 | 30.10.2026 | Neben | **APD-95 (Nutzer 30.10.2026, Wortlaut bestätigt, aus P-81/6):** 8 neu ‚Bezeichnungen in normaler Schrift‘ und Katalog R-5.8 (Prüfung `hig.mjs` – `bezeichnungen`); 8 ‚Zahlenfelder mit kleinem Höchstwert‘ ohne Fokus bündig am rechten Rand, mit Fokus rückt die Zahl für das ⓧ nach links (statt immer freiem Platz) |
 | 4.43.0 | 30.10.2026 | Neben | **APD-91 (Nutzer 30.10.2026, Wortlaut bestätigt):** 15.2, 15.3, 15.4, R-2.3, R-4.7 – die Suche öffnet ‚Suchen‘ als erster Punkt im Mehr-Menü (darunter ein Strich) oder ⌘F, beendet wird sie mit dem runden x ‚Suche beenden‘ rechts in der Suchzeile, keine Lupe in der Kapsel; 16 zwei bewusste Abweichungen (Suche der Liste im Mehr-Menü, Suchzeile am iPhone oben). **APD-92 (Wortlaut bestätigt):** 2 und R-1.2 – ‚Darstellung‘ im Mehr-Menü der Seitenleiste nach Backup, nie im Menü eines Eintrags. **APD-93 (Wortlaut bestätigt):** 8 – schmale Zahlenfelder mit kleinem Höchstwert, ⓧ-Platz immer frei. **Folgeänderungen (Nutzer 30.10.2026, Wortlaut bestätigt):** 1, Icon-Tabelle 5, 15.5 ‚Keine Lupe in der Kapsel‘ (ersetzt ‚Suche am Ende‘, APD-22), 15.17 Kapseln und Suche, 17 Prüfspalten R-2.3 und R-4.7 |
 | 4.42.0 | 30.10.2026 | Neben | **APD-87 (Nutzer 30.10.2026, Wortlaut bestätigt):** 15.6, Icon-Tabelle (5) und R-4.1 – der Mehr-Knopf zeigt bei offenem Menü drei senkrechte Punkte (`ellipsis-vertical`), Prüfung `checkMehrKnopf`. **APD-90 (Nutzer 30.10.2026, Wortlaut bestätigt):** 3 ‚Icon und Text bleiben zusammen‘ und neue Regel R-10.5, Baustein `iconText`, Prüfung `checkIconText`. **APD-85 Teil 1:** `lauf.mjs` wiederholt rote Läufe am Ende einmal allein (‚wackelt‘), Abbruch erst ab dem dritten roten Lauf |
 | 4.41.0 | 30.10.2026 | Neben | **APD-81 (Rückmeldung P-73/1, geklärt mit dem Nutzer 26. und 29.10.2026, Messung am iPad APD-81/M-1 bis M-4):** R-5.6 und 15.11 – das ⓧ auch in mehrzeiligen Textfeldern (oben rechts auf Höhe der ersten Zeile; mehr als eine Zeile erst nach der Sprechblase ‚Text löschen?‘); in allen Feldern geleert über den Bearbeiten-Befehl, damit Undo-Taste und drei Finger den Text zurückholen; 13 Safari-Eigenheit ‚Leeren und Rückgängig‘ mit Quelle; 16 bewusste Abweichung ‚ⓧ auch in mehrzeiligen Textfeldern‘; Prüfung `checkClear` erweitert (Testfall-Liste `arbeit/APD-81 Testfall-Liste.md`, APD-81/C1 bis C16) |
