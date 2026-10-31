@@ -11,8 +11,9 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Prio | Thema | bereit seit |
 |---|---|---|---|
+| APD-97 | 1 | **iPad hoch: Seitenleiste neben dem Inhalt, Tabellen im schmalen Inhalt als Kästen (Nutzer 30./31.10.2026, Sitzungen 0058 und 0060, aus P-82 ‚Sonstiges‘) – allgemein:** hoch wie quer fest links (Apple `tile`), keine Abdunkelung, Gesten wie quer; Inhalt unter 700 px → Tabellen als Kästen wie am iPhone, sonst Tabelle; Wortlaut 15.4, 15.6, 15.13, R-6.6, R-7.5 bestätigt, Muster (`arbeit/bilder/APD-97 …`) und Testfall-Liste L-1 bis L-10, K-1 bis K-11 bestätigt (`arbeit/APD-97 Klärung.md`, `arbeit/APD-97 Testfall-Liste.md`); im Reiselogbuch `isWide`/`sideOver` und die Abdunkelung | 31.10.2026 |
 
-0 Punkte bereit.
+1 Punkt bereit.
 
 
 ## 1. Auf iPad und iPhone prüfen
@@ -24,7 +25,6 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| APD-97 | 1 | **iPad hoch mit eingeschalteter Seitenleiste: Tabelle als Kacheln wie am iPhone (Nutzer 30.10.2026, Sitzung 0058, aus P-82 ‚Sonstiges‘) – allgemeine Regel für alle Apps:** geklärt (Nutzer 31.10.2026, Sitzung 0060): die Seitenleiste steht hoch **neben** dem Inhalt wie quer (Apple `tile` statt `overlay`), der schmalere Inhalt zeigt Tabellen als Kacheln wie am iPhone, sobald er schmaler als 700 px ist (gleiche Grenze wie `isPhone()`, Apple `automatic` nach dem Platz); Gesten hoch wie quer; Regelwortlaut bestätigt (31.10.2026, `arbeit/APD-97 Klärung.md`); Vorbild: Einstellungen und Notizen hoch mit Seitenleiste daneben (`apple-referenz/ipad/`); offen: Muster (nur hell), Testfall-Liste | offen |
 | APD-99 | 1 | **Kontextstand vor jedem Auswahlfenster (Nutzer 31.10.2026, Sitzung 0060):** Wortlaut für Kasten 9, 0 Nr. 21 und 0 Nr. 28 bestätigt (`arbeit/APD-99 Wortlaut.md`); zu tun: Regelwächter prüft vor dem Fenster (W), Testfall-Liste | offen |
 | APD-94 | 2 | **Seitenleiste beim Drehen mit offenem Menü nicht gesperrt (gefunden von der neuen Prüfung in 4.42.0, Nutzer 30.10.2026, Sitzung 0056):** iPad mit offenem Mehr-Menü von quer auf hoch drehen – die darübergelegte Seitenleiste erscheint mit `.side-shade`, die nicht gesperrt ist (`inert` fehlt; hig.mjs: R-1.4 ‚nicht inert‘) – VoiceOver und Tastatur erreichen Elemente hinter dem Menü. Bestehend: R-1.4, R-8.1. Zu klären: beim Drehen das Menü schließen oder Neues sofort sperren; die Prüfung in `ablauf-markierung-menues` dreht bis dahin hoch → quer | offen |
 | APD-85 | 3 | **Teil 3 – Wackler beheben (aus APD-85 Teil 1, 4.42.0):** feste Pausen eines Tests durch Warten auf einen Zustand ersetzen – erst für einen Test, der wiederholt als ‚⚠ wackelt‘ gemeldet wird (Claude zählt jeden Wackler hier mit: bisher keiner) | später |
