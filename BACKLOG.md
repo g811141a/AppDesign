@@ -12,8 +12,9 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 | Nr. | Prio | Thema | bereit seit |
 |---|---|---|---|
 | APD-101 | 1 | **Gekürzter Titel – Sprechblase (aus RLB-113/E-6, Nutzer 31.10.2026, Sitzung 0065) – allgemein:** ein mit ‚…‘ gekürzter Titel in Kopfzeile (15.3) oder Fenster-Kopfzeile (15.8) zeigt beim langen Drücken den ganzen Titel in einer Sprechblase darunter, bis zum nächsten Tippen (das nur sie schließt), Rollen, Esc oder Drehen; neue Regel R-2.5; Abweichung von Apples Großanzeige in der Mitte (16). Muster `arbeit/bilder/APD-101 4` und `5` (Variante B), Testfall-Liste `arbeit/APD-101 Testfall-Liste.md` (APD-101/L-1 bis L-13) und Wortlaut `arbeit/APD-101 Wortlaut.md` bestätigt | 31.10.2026 |
+| APD-102 | 1 | **`veroeffentlichen.mjs los` bei neuerer `main` (aus Sitzung 0062, Nutzer 31.10.2026, Sitzung 0065) – Werkzeug:** Variante a) – vor dem Prüflauf holt `los` `origin/main` (beide Repos) und führt neuere Commits in den Vorbereitungs-Zweig zusammen, geprüft wird genau der veröffentlichte Stand; bei Konflikt Abbruch **vor** dem Prüflauf (Zusammenführung zurückgenommen, Dateien genannt). Testfall-Liste `arbeit/APD-102 Testfall-Liste.md` (APD-102/M-1 bis M-8, Selbsttest) und Wortlaut `CLAUDE.md` (`arbeit/APD-102 Wortlaut.md`) bestätigt | 31.10.2026 |
 
-1 Punkt bereit.
+2 Punkte bereit.
 
 
 ## 1. Auf iPad und iPhone prüfen
@@ -25,7 +26,6 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| APD-102 | 1 | **`veroeffentlichen.mjs los` bei neuerer `main` (aus Sitzung 0062, Nutzer 31.10.2026, Sitzung 0065):** ist `main` auf GitHub neuer als der Vorbereitungs-Zweig, merkt `los` das bisher erst nach dem vollen Prüflauf (rund 58 min). Vorschlag: `los` führt `main` vorher in den Vorbereitungs-Zweig zusammen bzw. bricht **vor** dem Prüflauf mit klarer Meldung ab; mit Fall im Selbsttest `werkzeug/veroeffentlichen-selbsttest.mjs` | offen |
 | APD-103 | 2 | **Regelwächter: Lücke bei APD-84/W-14 (Nutzer 31.10.2026, Sitzung 0065):** steht die Ausgabe vor einem Auswahlfenster nicht wörtlich in der Sitzungsdatei (2.8 ‚Grenze‘, nach einem Neustart des Arbeitsprozesses alle Ausgaben ab 14:23), lässt der Wächter das Fenster durch – in 0065 ging so ein Fenster ohne Satz ‚Kontext N‘ und ohne Erklärung durch. Vorschlag: dann ablehnen oder mindestens einen Aufruf von `messung.mjs` seit der letzten Nachricht bzw. dem letzten Fenster verlangen; mit Fall in `tests/regelwaechter.mjs` | offen |
 | APD-85 | 3 | **Teil 3 – Wackler beheben (aus APD-85 Teil 1, 4.42.0):** feste Pausen eines Tests durch Warten auf einen Zustand ersetzen – erst für einen Test, der wiederholt als ‚⚠ wackelt‘ gemeldet wird (Claude zählt jeden Wackler hier mit: bisher keiner) | später |
 | APD-40 | 3 | **Prüfungen für die Regeln ohne automatische Prüfung (aus APD-39, Nutzer 21.10.2026):** G-1 bis G-19 im Regelkatalog (Designrichtlinie allgemein 17) – je Regel eine allgemeine Prüfung in `tests/` oder bewusst ‚Gerät/Sicht‘ lassen; Code, eigener Auftrag | offen |
