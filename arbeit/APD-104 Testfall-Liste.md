@@ -21,17 +21,17 @@ Stand 31.10.2026, Sitzung 0067 · Entwurf zum Muster `arbeit/APD-104 Muster.html
 
 | Nr. | Fall | Erwartet |
 |---|---|---|
-| G-1 | Textgröße L, langes Drücken auf einen Leisten-Knopf | keine Anzeige; wirkt wie Antippen |
-| G-2 | L, Antippen | Knopf löst aus |
-| G-3 | AX1, Antippen | Knopf löst aus, keine Anzeige |
-| G-4 | AX1, 0,3 s halten | noch keine Anzeige |
-| G-5 | AX1, 0,6 s halten | Anzeige mit Icon und Namen |
-| G-6 | AX1, vor 0,6 s mehr als 10 px bewegen | keine Anzeige |
-| G-7 | A, C: gleiten zum Nachbarknopf | Anzeige wechselt |
-| G-8 | A: Loslassen über einem Knopf | Anzeige zu, Knopf löst aus |
-| G-9 | C: Loslassen | Anzeige zu, nichts ausgelöst |
-| G-10 | B: Loslassen | Blase bleibt; nächster Tipp schließt nur sie |
-| G-11 | B: Blase unter dem Knopf, ganz sichtbar; ‚Nach oben‘ unten rechts → Blase darüber | ganz auf dem Bildschirm |
+| L-1 | Textgröße L, langes Drücken auf einen Leisten-Knopf | keine Anzeige; wirkt wie Antippen |
+| L-2 | L, Antippen | Knopf löst aus |
+| L-3 | AX1, Antippen | Knopf löst aus, keine Anzeige |
+| L-4 | AX1, 0,3 s halten | noch keine Anzeige |
+| L-5 | AX1, 0,6 s halten | Anzeige mit Icon und Namen |
+| L-6 | AX1, vor 0,6 s mehr als 10 px bewegen | keine Anzeige |
+| L-7 | A, C: gleiten zum Nachbarknopf | Anzeige wechselt |
+| L-8 | A: Loslassen über einem Knopf | Anzeige zu, Knopf löst aus |
+| L-9 | C: Loslassen | Anzeige zu, nichts ausgelöst |
+| L-10 | B: Loslassen | Blase bleibt; nächster Tipp schließt nur sie |
+| L-11 | B: Blase unter dem Knopf, ganz sichtbar; ‚Nach oben‘ unten rechts → Blase darüber | ganz auf dem Bildschirm |
 
 ## Für den Bau dazu (nach der Wahl der Variante)
 
