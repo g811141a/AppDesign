@@ -11,8 +11,9 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Prio | Thema | bereit seit |
 |---|---|---|---|
+| APD-101 | 1 | **Gekürzter Titel – Sprechblase (aus RLB-113/E-6, Nutzer 31.10.2026, Sitzung 0065) – allgemein:** ein mit ‚…‘ gekürzter Titel in Kopfzeile (15.3) oder Fenster-Kopfzeile (15.8) zeigt beim langen Drücken den ganzen Titel in einer Sprechblase darunter, bis zum nächsten Tippen (das nur sie schließt), Rollen, Esc oder Drehen; neue Regel R-2.5; Abweichung von Apples Großanzeige in der Mitte (16). Muster `arbeit/bilder/APD-101 4` und `5` (Variante B), Testfall-Liste `arbeit/APD-101 Testfall-Liste.md` (APD-101/L-1 bis L-13) und Wortlaut `arbeit/APD-101 Wortlaut.md` bestätigt | 31.10.2026 |
 
-0 Punkte bereit.
+1 Punkt bereit.
 
 
 ## 1. Auf iPad und iPhone prüfen
@@ -25,7 +26,6 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
 | APD-102 | 1 | **`veroeffentlichen.mjs los` bei neuerer `main` (aus Sitzung 0062, Nutzer 31.10.2026, Sitzung 0065):** ist `main` auf GitHub neuer als der Vorbereitungs-Zweig, merkt `los` das bisher erst nach dem vollen Prüflauf (rund 58 min). Vorschlag: `los` führt `main` vorher in den Vorbereitungs-Zweig zusammen bzw. bricht **vor** dem Prüflauf mit klarer Meldung ab; mit Fall im Selbsttest `werkzeug/veroeffentlichen-selbsttest.mjs` | offen |
-| APD-101 | 1 | **Fenstertitel am iPhone bei großer Schrift (aus RLB-113/E-6, Nutzer 31.10.2026, Sitzung 0065):** ab XXXL kürzt das iPhone hoch lange Fenstertitel (Fensterkopf im Leisten-Maß 23 px), z. B. ‚Reiselogbuch eins…‘, ‚Neues Reiselogbuch‘ bei 375 px, Titel des Tages. So macht es Apple (laut Übergabe 0064, vor dem Muster neu zu belegen): die Navigationsleiste kürzt mit ‚…‘ und zeigt bei langem Drücken die Großanzeige. Möglichkeiten: a) so lassen · b) Titel zweizeilig · c) Großanzeige beim langen Drücken · d) kürzerer Titel. **Apple-Abgleich (Sitzung 0065, belegt):** Titel wachsen nur wenige Stufen und bleiben dann stehen; Ersatz ist die Großanzeige beim Drücken und Halten (Apple-Ingenieur, developer.apple.com/forums/thread/831754); Mitwachsen geht vor Großanzeige (WWDC 2019/261). **Entschieden (Nutzer 31.10.2026, Sitzung 0065):** c) den ganzen Titel zeigen – nur wenn er gekürzt ist, in Fenstertitel und Kopfzeile; Leisten-Knöpfe später als eigenes Thema; Muster (`arbeit/bilder/APD-101 1` bis `4`): **Variante B Sprechblase** unter dem Titel (statt Apples Großanzeige in der Mitte, Variante A – Abweichung). Bedienung, quer und Testfall-Liste in Klärung | offen |
 | APD-103 | 2 | **Regelwächter: Lücke bei APD-84/W-14 (Nutzer 31.10.2026, Sitzung 0065):** steht die Ausgabe vor einem Auswahlfenster nicht wörtlich in der Sitzungsdatei (2.8 ‚Grenze‘, nach einem Neustart des Arbeitsprozesses alle Ausgaben ab 14:23), lässt der Wächter das Fenster durch – in 0065 ging so ein Fenster ohne Satz ‚Kontext N‘ und ohne Erklärung durch. Vorschlag: dann ablehnen oder mindestens einen Aufruf von `messung.mjs` seit der letzten Nachricht bzw. dem letzten Fenster verlangen; mit Fall in `tests/regelwaechter.mjs` | offen |
 | APD-85 | 3 | **Teil 3 – Wackler beheben (aus APD-85 Teil 1, 4.42.0):** feste Pausen eines Tests durch Warten auf einen Zustand ersetzen – erst für einen Test, der wiederholt als ‚⚠ wackelt‘ gemeldet wird (Claude zählt jeden Wackler hier mit: bisher keiner) | später |
 | APD-40 | 3 | **Prüfungen für die Regeln ohne automatische Prüfung (aus APD-39, Nutzer 21.10.2026):** G-1 bis G-19 im Regelkatalog (Designrichtlinie allgemein 17) – je Regel eine allgemeine Prüfung in `tests/` oder bewusst ‚Gerät/Sicht‘ lassen; Code, eigener Auftrag | offen |
