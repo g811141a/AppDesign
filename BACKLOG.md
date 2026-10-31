@@ -11,8 +11,9 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Prio | Thema | bereit seit |
 |---|---|---|---|
+| APD-100 | 1 | **Abschnittsköpfe in der Liste (aus RLB-114, Nutzer 31.10.2026, Sitzung 0063) – allgemein:** über jeder Gruppe der zentralen Liste, auch der ersten, eine Überschrift wie die Überschrift des Kopfs (Title 3, fett, Textfarbe, wächst mit), rollt mit, Rolle heading, nicht antippbar, bei der Suche nur Gruppen mit Treffern; Baustein `.side-sec` in design.css, neue Regel R-7.6 mit Prüfung in hig.mjs; Wortlaut 15.4 und R-7.6 bestätigt (`arbeit/RLB-114 APD-100 Wortlaut.md`), Testfall-Liste `arbeit/RLB-114 Testfall-Liste.md` | 31.10.2026 |
 
-0 Punkte bereit.
+1 Punkt bereit.
 
 
 ## 1. Auf iPad und iPhone prüfen
