@@ -19,7 +19,6 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| P-85 | 1 | **Usertest im Reiselogbuch 3.44.0 (AppDesign 4.46.0, APD-100):** Abschnittsköpfe (Jahre) in der Liste – Testfälle P-85/5 bis P-85/9 im CHANGELOG des Reiselogbuchs | prüfen |
 
 ## 2. Weitere Themen (in Klärung)
 
@@ -58,6 +57,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Thema | Version | Datum |
 |---|---|---|---|
+| P-85 | **Usertest P-85 (Reiselogbuch 3.44.0 · AppDesign 4.46.0):** alles ok – APD-100 am Gerät bestätigt (Nutzer 31.10.2026, Sitzung 0065) | 4.46.0 | 31.10.2026 |
 | APD-100 | **APD-100 Abschnittsköpfe in der Liste:** Baustein `.side-sec` (15.4), neue Regel R-7.6 mit Prüfung in `hig.mjs` (Köpfe in `checkText` im Leisten-Maß); im Reiselogbuch als Jahre (RLB-114); Usertest P-85 | 4.46.0 | 31.10.2026 |
 | P-84 | **Usertest P-84 (Reiselogbuch 3.43.0 · AppDesign 4.45.0):** alles ok – APD-97 am Gerät bestätigt (Nutzer 31.10.2026, Sitzung 0063) | 4.45.0 | 31.10.2026 |
 | APD-99 | **APD-99 Kontextstand vor jedem Auswahlfenster:** Zusammenarbeit 3.4.0 (Kasten 9 mit **W**, 0 Nr. 28, 0 Nr. 21, 2.8; Wortlaut bestätigt 31.10.2026), Regelwächter APD-84/W-14 (`pruefeKontext`, vor dem Zeigen und beim Stop; Testfall-Liste `arbeit/APD-99 Testfall-Liste.md` APD-99/C-1 bis C-13, Gegenprobe) | AppDesign 4.45.0 | 31.10.2026 |
