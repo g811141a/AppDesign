@@ -893,7 +893,7 @@ be6989875256331a804fa3126467c119c07a49a895be7dd52522340ef54ffdde  4.44.1/tests/s
 3cdea0731591c81ac03a5174ebffc89e57ab49f4a6741ab0d764ccef0de17443  4.44.1/tests/version.mjs
 acdbea4c01da6dba6e0b3134527f8f6b656a2135ecc07adab00cc6312dee4af4  4.44.1/ui.js
 a04cf6aec8ba86c8930a533ce70c8d4d0c3cd261871feecc897e41c13317b95b  4.45.0/design.css
-e17de0dc19368d5c7fa3a7d85caf447af74ba9c0fe8aeba43bb0bed18cf853c5  4.45.0/README - Designrichtlinie allgemein.md
+3108b2d684c922e558efc48e8b370cbd0e36299dc61136dcb293e6da74c2b9cb  4.45.0/README - Designrichtlinie allgemein.md
 ddd5c74f8788e4cc3edf931913a001431dd63ebd848274b6edfb18c1925f03b9  4.45.0/README - Zusammenarbeit allgemein.md
 15a5a453dc394d8590ba319da7cea311acbcc50125b6a53fceb373258d7ca735  4.45.0/tests/abgleich.mjs
 f2bb7a06260674f2fbc6718bb1c63e32ac780ab6c1822e37b8ad4a5780686513  4.45.0/tests/ablauf.mjs
