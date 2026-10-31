@@ -11,8 +11,9 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Prio | Thema | bereit seit |
 |---|---|---|---|
+| APD-103 | 2 | **Regelwächter: Lücke bei APD-84/W-14 (Nutzer 31.10.2026, Sitzungen 0065 und 0067) – Werkzeug:** lässt sich der Satz ‚Kontext N‘ vor einem Fenster nicht prüfen (Ausgabe davor nicht wörtlich gespeichert, oder Fenster beim Zeigen noch nicht in der Sitzungsdatei), verlangt der Wächter einen Aufruf von `messung.mjs` mit Kontext seit der vorigen Nachricht bzw. dem vorigen Fenster, sonst lehnt er ab (bisher durch, APD-99/C-7, C-8). Testfall-Liste `arbeit/APD-103 Testfall-Liste.md` D-1 bis D-9 und Wortlaut Zusammenarbeit 2.8 (‚Vor jedem Auswahlfenster‘, ‚Grenze‘) bestätigt (Nutzer 31.10.2026, Sitzung 0067) | 31.10.2026 |
 
-0 Punkte bereit.
+1 Punkt bereit (APD-103).
 
 
 ## 1. Auf iPad und iPhone prüfen
@@ -24,7 +25,6 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| APD-103 | 2 | **Regelwächter: Lücke bei APD-84/W-14 (Nutzer 31.10.2026, Sitzung 0065):** steht die Ausgabe vor einem Auswahlfenster nicht wörtlich in der Sitzungsdatei (2.8 ‚Grenze‘, nach einem Neustart des Arbeitsprozesses alle Ausgaben ab 14:23), lässt der Wächter das Fenster durch – in 0065 ging so ein Fenster ohne Satz ‚Kontext N‘ und ohne Erklärung durch. Vorschlag: dann ablehnen oder mindestens einen Aufruf von `messung.mjs` seit der letzten Nachricht bzw. dem letzten Fenster verlangen; mit Fall in `tests/regelwaechter.mjs` | offen |
 | APD-85 | 3 | **Teil 3 – Wackler beheben (aus APD-85 Teil 1, 4.42.0):** feste Pausen eines Tests durch Warten auf einen Zustand ersetzen – erst für einen Test, der wiederholt als ‚⚠ wackelt‘ gemeldet wird (Claude zählt jeden Wackler hier mit: bisher keiner) | später |
 | APD-40 | 3 | **Prüfungen für die Regeln ohne automatische Prüfung (aus APD-39, Nutzer 21.10.2026):** G-1 bis G-19 im Regelkatalog (Designrichtlinie allgemein 17) – je Regel eine allgemeine Prüfung in `tests/` oder bewusst ‚Gerät/Sicht‘ lassen; Code, eigener Auftrag | offen |
 | APD-62 | 3 | **Paket B aus APD-38 – ‚Antippen, Bewegung, Rollen‘ (Nutzer 22.10.2026):** Rückmeldung beim Antippen (APD-38/T-33, V2), langes Drücken mit Anheben (APD-38/T-34), Fenster/Menüs/Sprechblasen mit Bewegung (APD-38/T-16), großer Titel rastet ein (APD-38/T-1), Titel antippen = nach oben (APD-38/T-43, V3), Glas-Optik schwebender Knöpfe (APD-38/T-37, V4); als Muster neben APD-37 vorgesehen (APD-37 selbst bleibt Prio 2); dazu APD-58 | offen |
