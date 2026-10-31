@@ -97,7 +97,6 @@ html[data-ts="ax5"] { --t-large: 60px; --f-large: 1.7647; --t-title1: 58px; --f-
 :root { --k: var(--f-body); }
 .nb, .pnav, .bbar, .dlg-head, .side-head, #side .side-search, #side .side-foot, .fab, .schnell, .nettoast { --k: var(--fb); font-size: var(--tb-body); }
 /* Umbau bei großer Schrift (U1, U2): html.ts-um ab AX1, auf dem iPhone hoch schon ab XXL – Nebeneinanderliegendes steht untereinander */
-html.ts-um .side-row small { white-space: normal; }
 html.ts-um .menu .mi { flex-wrap: wrap; padding-top: 6px; padding-bottom: 6px; }
 html.ts-um .menu .mi .val { order: 9; flex: 1 0 100%; margin-left: 0; padding-left: calc(10px + 20px * var(--k)); }
 html.ts-um .box .kv { flex-direction: column; gap: 2px; }
@@ -326,7 +325,9 @@ body.docked { padding-left: calc(var(--side-w) + max(10px, var(--safe-left)) + 2
 #side .side-row.on { background: var(--sel-bg); box-shadow: inset 0 0 0 .5px var(--accent); color: var(--ink); }
 #side .side-row.on small { color: var(--muted); }
 .side-row b { display: block; font-size: var(--t-headline); font-weight: 600; overflow-wrap: anywhere; }
-.side-row small { display: block; color: var(--muted); font-size: var(--t-subhead); white-space: nowrap; }
+/* Seit 4.45.0 (APD-97, R-6.3): die Zeile darf umbrechen – die Seitenleiste wird so breit wie die Zeile (max-content) bis zu ihrer
+   Höchstbreite; am iPad hoch steht sie fest daneben und ist schmaler als früher darübergelegt (bei XXL und XXXL ragte sie hinaus) */
+.side-row small { display: block; color: var(--muted); font-size: var(--t-subhead); }
 /* Seit 4.9.0: dritte Zeile der Kachel – ‚geändert am … · Gerät‘ */
 .side-row small.chg { font-size: var(--t-footnote); margin-top: 2px; }
 #side .side-row.current { background: var(--accent-fill); color: var(--accent-ink); box-shadow: var(--glow-accent); }

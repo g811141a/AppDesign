@@ -1729,9 +1729,10 @@ const scrollRest = () => rolle.rest;
 function topAnchor() {
   if (rolle.y < 4) return null;
   const edge = keepEdge();
-  const e = [...document.querySelectorAll(KEEP_SEL)].find(x => x.getClientRects().length && x.getBoundingClientRect().bottom > edge + 1);
+  const alle = [...document.querySelectorAll(KEEP_SEL)].filter(x => x.getClientRects().length);
+  const e = alle.find(x => x.getBoundingClientRect().bottom > edge + 1);
   // Abstand als Anteil der Höhe: nach dem Drehen ist der Eintrag anders hoch, der sichtbare Teil bleibt gleich.
-  return e ? { sel: keepKey(e), part: (e.getBoundingClientRect().top - edge) / (e.getBoundingClientRect().height || 1) } : { rest: scrollRest() };
+  return e ? { sel: keepKey(e), part: (e.getBoundingClientRect().top - edge) / (e.getBoundingClientRect().height || 1), ab: e.getBoundingClientRect().top - edge, erstes: e === alle[0] } : { rest: scrollRest() };
 }
 function rememberTop() {
   if (keepBusy || keepTurned() || lockY !== null) return;   // bei offenem Fenster (R-7.3) und während des Drehens nichts überschreiben
@@ -1750,7 +1751,10 @@ function restoreTop() {
   if (!e) return;
   keepBusy = true;
   const r = e.getBoundingClientRect();
-  rolle.by(r.top - keepEdge() - keepTop.part * r.height);
+  // Seit 4.45.0 (APD-97): ändert die App die Breite (keepPlace) und steht der erste Eintrag ganz unter der Kante (darüber der Kopf des
+  // Inhalts), bleibt sein Abstand in px – als Anteil seiner Höhe rückte er mit, wenn er schmaler bzw. breiter anders hoch wird (große
+  // Schrift, Seitenleiste am iPad hoch). Liegt ein Eintrag darüber, bleibt es beim Anteil – sonst schaute dessen Unterkante hervor.
+  rolle.by(r.top - keepEdge() - (keepTop.app && keepTop.erstes && keepTop.part > 0 ? keepTop.ab : keepTop.part * r.height));
   keepFrei();
 }
 onRoll(() => { if (!keepBusy) rememberTop(); });
@@ -1765,9 +1769,10 @@ function keepFrei() {
 // damit die Zeilenhöhen ändern sich, das Fenster nicht), bleibt oben derselbe Eintrag: keepPlace(() => { …; render(); }).
 function keepPlace(change) {
   const anchor = topAnchor();
+  if (anchor && 'sel' in anchor) anchor.app = true;
   change();
   keepTop = anchor;
-  if (anchor) return restoreTop();
+  if (anchor) { restoreTop(); delete anchor.app; return; }   // beim nächsten Drehen wieder als Anteil
   keepBusy = true;
   if (rolle.y) rolle.to(0);
   keepFrei();

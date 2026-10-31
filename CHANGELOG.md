@@ -18,6 +18,14 @@ dein Ja vom 31.10.2026, Sitzung 0060 (Wortlaut, Muster und Testfall-Liste bestä
   Tabelle als Kästen wie am iPhone; Ausgabe und Vorschau bleiben Tabellen. Neu in `ui.js`: `SCHMAL` und `inhaltSchmal(el)`. Neue Prüfung
   `hig.mjs` (R-6.6) nach jedem Schritt: im iPad-Aufbau keine Tabelle im Inhalt unter 700 px.
 - **Vergleichsbilder:** `apple-referenz/ipad/einstellungen/` und `apple-referenz/ipad/notizen/` (hoch und quer, verpixelt).
+- **Korrekturen vor der Veröffentlichung** (Sitzung 0061 – der volle Prüflauf in 0060 war rot, nur bei großer Schrift am iPad hoch):
+  - **Oberster Eintrag bleibt auf den Pixel (R-8.1, `ui.js` – `keepPlace`):** steht der erste Eintrag ganz unter der Kante (darüber der Kopf des Inhalts), bleibt beim Ein-
+    und Ausblenden der Seitenleiste sein Abstand in px; bisher als Anteil seiner Höhe – bei AX5 wurde der Kasten im breiteren Inhalt
+    niedriger und rückte um 30 px (APD-68/Q-3, Q-5). Beim Drehen bleibt es beim Anteil.
+  - **Zeile unter dem Titel der Seitenleiste bricht um (R-6.3, `design.css`):** ‚24.08.2026 - 05.09.2026 · läuft gerade‘ stand immer
+    einzeilig; hoch ist die feste Seitenleiste höchstens 420 px breit (darübergelegt waren es bis 70 %) – bei XXL und XXXL ragte die Zeile
+    hinaus. Jetzt bricht sie um, sobald die Seitenleiste ihre Höchstbreite erreicht.
+  - **Warum die Prüfung es vorher übersah:** vor `los` liefen die geänderten Prüfungen nicht mit großer Schrift (`PRUEF_TEXT`).
 
 ## 4.44.1 – 30.10.2026
 
