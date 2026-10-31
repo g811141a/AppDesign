@@ -1,6 +1,6 @@
 # APD-104 – Testfall-Liste: Großanzeige für Leisten-Knöpfe
 
-Stand 31.10.2026, Sitzung 0067 · Entwurf zum Muster `arbeit/APD-104 Muster.html` (Varianten A, B, C) · Variante noch offen.
+Stand 31.10.2026, Sitzung 0067 · Muster `arbeit/APD-104 Muster.html` · **Variante A gewählt** (Nutzer 31.10.2026: Mitte, Loslassen löst aus) – für den Bau gelten L-1 bis L-9; L-10 und L-11 (B) entfallen.
 
 ## Apple-Abgleich (0 Nr. 23, 2.6)
 

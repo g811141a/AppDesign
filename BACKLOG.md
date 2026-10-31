@@ -11,16 +11,16 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Prio | Thema | bereit seit |
 |---|---|---|---|
+| APD-104 | 1 | **Großanzeige für Leisten-Knöpfe (aus APD-101, Nutzer 31.10.2026, Sitzung 0067) – allgemein:** Variante A wie Apple (WWDC19 Session 261) – ab AX1 zeigt langes Drücken (R-3.5) auf einen Leisten-Knopf (Kopfzeile, Fenster-Kopfzeile, Seitenleiste, schwebende Knöpfe) Icon und Namen groß in der Mitte; Gleiten wechselt, Loslassen über einem Knopf löst ihn aus. Muster `arbeit/APD-104 Muster.html`, Testfall-Liste `arbeit/APD-104 Testfall-Liste.md` L-1 bis L-9, Wortlaut `arbeit/APD-104 Wortlaut.md` bestätigt (neu R-2.6, 15.3 ‚Großanzeige‘, Zeile in 16) | 31.10.2026 |
 | APD-103 | 2 | **Regelwächter: Lücke bei APD-84/W-14 (Nutzer 31.10.2026, Sitzungen 0065 und 0067) – Werkzeug:** lässt sich der Satz ‚Kontext N‘ vor einem Fenster nicht prüfen (Ausgabe davor nicht wörtlich gespeichert, oder Fenster beim Zeigen noch nicht in der Sitzungsdatei), verlangt der Wächter einen Aufruf von `messung.mjs` mit Kontext seit der vorigen Nachricht bzw. dem vorigen Fenster, sonst lehnt er ab (bisher durch, APD-99/C-7, C-8). Testfall-Liste `arbeit/APD-103 Testfall-Liste.md` D-1 bis D-9 und Wortlaut Zusammenarbeit 2.8 (‚Vor jedem Auswahlfenster‘, ‚Grenze‘) bestätigt (Nutzer 31.10.2026, Sitzung 0067) | 31.10.2026 |
 
-1 Punkt bereit (APD-103).
+2 Punkte bereit (APD-104, APD-103).
 
 
 ## 1. Auf iPad und iPhone prüfen
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| APD-104 | 1 | **Großanzeige für Leisten-Knöpfe (aus APD-101, Nutzer 31.10.2026, Sitzung 0067) – allgemein:** wie bei Apple zeigt ab der Textgröße AX1 langes Drücken auf einen Leisten-Knopf Icon und Namen groß (Designrichtlinie 16 ‚Keine Großanzeige‘ – heute Abweichung, Ersatz: Leisten bis XXXL, VoiceOver); Technik aus APD-101 (langes Drücken, `.titel-blase`) wiederverwenden; zuerst Apple-Abgleich und Muster (0 Nr. 6, 23) mit Testfall-Liste; danach 16 und R-1.10 anpassen (Wortlaut mit Ja, 0 Nr. 29) | offen |
 
 ## 2. Weitere Themen (in Klärung)
 
