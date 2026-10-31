@@ -20,6 +20,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
+| APD-104 | 1 | **Großanzeige für Leisten-Knöpfe (aus APD-101, Nutzer 31.10.2026, Sitzung 0067) – allgemein:** wie bei Apple zeigt ab der Textgröße AX1 langes Drücken auf einen Leisten-Knopf Icon und Namen groß (Designrichtlinie 16 ‚Keine Großanzeige‘ – heute Abweichung, Ersatz: Leisten bis XXXL, VoiceOver); Technik aus APD-101 (langes Drücken, `.titel-blase`) wiederverwenden; zuerst Apple-Abgleich und Muster (0 Nr. 6, 23) mit Testfall-Liste; danach 16 und R-1.10 anpassen (Wortlaut mit Ja, 0 Nr. 29) | offen |
 
 ## 2. Weitere Themen (in Klärung)
 
