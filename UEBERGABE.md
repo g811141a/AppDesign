@@ -1,88 +1,71 @@
 # Übergabe an die nächste Sitzung
 
-**Stand 31.10.2026** · geschrieben in der Sitzung ‚Reiselogbuch 0061‘ (die drei roten Läufe aus 0060 behoben; `los` erneut rot in **WebKit** –
-**noch nicht veröffentlicht**; Übergabe auf Wunsch des Nutzers bei Kontext etwa 250.000) – Aufbau nach Zusammenarbeit allgemein 2.5.
-**Claude liest diese Datei zu Beginn jeder Sitzung zuerst, dann die ganze Zusammenarbeit** (0 Nr. 15); die Arbeitsumgebung steht in der
-AppDesign-`CLAUDE.md`.
+**Stand 31.10.2026** · geschrieben in der Sitzung ‚Reiselogbuch 0062‘ (APD-97 und APD-99 veröffentlicht; automatische Übergabe bei
+Kontext 310.872, ‚⚠ Übergabe fällig‘) – Aufbau nach Zusammenarbeit allgemein 2.5. **Claude liest diese Datei zu Beginn jeder Sitzung
+zuerst, dann die ganze Zusammenarbeit** (0 Nr. 15); die Arbeitsumgebung steht in der AppDesign-`CLAUDE.md`.
 
 ## 1. Lagebild
 
 | Teil | Version | Datei |
 |---|---|---|
-| Reiselogbuch | **3.42.1** veröffentlicht (Fassung 4.44.1) – **3.43.0 vorbereitet** auf Zweig `vorbereitung-3.43.0` | g811141a/ReiseLogBuch |
-| AppDesign | **4.44.1** veröffentlicht – **4.45.0 vorbereitet** auf Zweig `vorbereitung-4.45.0` | g811141a/AppDesign |
-| Zusammenarbeit allgemein | **3.3.0** | `README - Zusammenarbeit allgemein.md` |
+| Reiselogbuch | **3.43.0** veröffentlicht (Fassung 4.45.0) | g811141a/ReiseLogBuch |
+| AppDesign | **4.45.0** veröffentlicht | g811141a/AppDesign |
+| Zusammenarbeit allgemein | **3.4.0** | `README - Zusammenarbeit allgemein.md` |
 | ReiseLogBuch-Import (privat) | 1.3.0 | g811141a/ReiseLogBuch-Import |
 
-- **Chatnummer:** die nächste Sitzung heißt **Reiselogbuch 0062**; die danach 0063.
-- **Modell und Aufwand:** Opus 5.5, Aufwand hoch – in 0061 alle Aufrufe so, kein `model_fallback`.
-- **Sitzungsgröße 0061:** etwa 250.000 Token.
-- **Regelwächter läuft** (`tests/regelwaechter.mjs` W-1 bis W-13 grün zu Beginn von 0061).
-- **Usertests:** P-84 (3.43.0, P-84/0 bis P-84/7) im CHANGELOG des Vorbereitungs-Zweigs, **noch nicht prüfbar** (nicht veröffentlicht).
-- **Backlog ‚0. Nächste Version‘:** AppDesign APD-97 – im Zweig `vorbereitung-4.45.0` schon als gebaut eingetragen.
-- **Offen:** APD-99 Kontextstand vor jedem Auswahlfenster (Prio 1, Wortlaut bestätigt, Regelwächter-Prüfung offen); Prio 1 APD-38; Prio 2
-  APD-94 (vermutlich hinfällig durch APD-97); Prio 3 APD-85 Teil 3, APD-57, APD-80, APD-88, APD-40, APD-62, APD-30, RLB-6 u. a.
+- **Chatnummer:** die nächste Sitzung heißt **Reiselogbuch 0063**; die danach 0064.
+- **Modell und Aufwand:** Opus 5.5, Aufwand hoch – in 0062 alle Aufrufe so, kein `model_fallback`.
+- **Sitzungsgröße 0062:** etwa 311.000 Token.
+- **Regelwächter läuft** (`tests/regelwaechter.mjs` jetzt W-1 bis W-14 grün, Gegenprobe grün); **neu W-14**: vor jedem Auswahlfenster ein
+  Satz mit ‚Kontext N‘ aus `messung.mjs` (APD-99) – ist die Ausgabe vor dem Fenster nach einem Denkschritt nicht wörtlich gespeichert,
+  lässt er durch (Selbstkontrolle).
+- **Usertests:** **P-84** (3.43.0, P-84/0 bis P-84/7, CHANGELOG Reiselogbuch) **jetzt prüfbar – Rückmeldung noch nicht erfragt**.
+- **Backlog ‚0. Nächste Version‘:** leer (beide Repos).
+- **Offen:** Prio 1 APD-38 (Frameworks, gemeinsam durchgehen); Prio 3 APD-85 Teil 3 (Wackler zählen: bisher einer, `ablauf-blatt` in 0061),
+  APD-57, APD-80, APD-88, APD-40, APD-62, APD-30, RLB-6 u. a.
 - **Vereinbarung (Nutzer 30.10.2026, Sitzung 0058):** Muster bis auf Weiteres **nur hell** (kein dunkel) – gilt, bis der Nutzer sie
   aufhebt; in jede Übergabe übernehmen.
-- **Neu (Nutzer 31.10.2026, APD-99, Wortlaut bestätigt, noch nicht in der Zusammenarbeit):** vor **jedem** Auswahlfenster der
-  Kontextstand als Satz mit ‚Kontext N‘ aus `messung.mjs` – bis zur Aufnahme Selbstkontrolle (`arbeit/APD-99 Wortlaut.md`).
 - **Erinnerung:** ‚Backlog-Erinnerung (AppDesign und Reiselogbuch)‘ montags 8:58.
 
-## 2. Ergebnisse der Sitzung 0061
+## 2. Ergebnisse der Sitzung 0062
 
-- **Die drei roten Läufe aus 0060 behoben** (je einzeln in Chromium grün, committet und gepusht auf beide Vorbereitungs-Zweige):
-  1. `ablauf-navigation (Text 53)` Q-3/Q-5: `ui.js` – `keepPlace` hält den **ersten** Eintrag unter dem Kopf des Inhalts in px statt als
-     Anteil seiner Höhe (Felder `ab`, `erstes`, `app` in `topAnchor`/`restoreTop`); liegt ein Eintrag darüber, bleibt es beim Anteil
-     (sonst schaut in der Tabelle die Unterkante des vorigen Tags hervor – `ablauf-seitenleiste-hoch` L-3, D-4, L-6).
-  2. `hig (Text 23)` R-6.3: `design.css` – `.side-row small` ohne `nowrap` (feste Seitenleiste hoch höchstens 420 px breit); die Regel
-     `html.ts-um .side-row small` entfiel.
-  3. `hig (Text 33)` R-3.3: Prüfung, nicht App – in der Mitte des Kastens lag hoch der Link ‚Fischmarkt‘; `hig` tippt den Tag jetzt oben
-     links an (`click({ position: { x: 12, y: 12 } })`).
-  - Dazu: `ablauf-seitenleiste-hoch` fehlte in `alle.mjs` (lief nie im vollen Lauf) – ergänzt, grün. CHANGELOGs 4.45.0 / 3.43.0 ergänzt
-    (‚Korrekturen vor der Veröffentlichung‘), neu **P-84/7 ‚Große Schrift hoch‘**, Backlog P-84/0 bis P-84/7.
-- **`los` nach 44:30 rot – nichts veröffentlicht.** Chromium ganz grün; rot nur **WebKit, iPad hoch**:
-  1. `ablauf-navigation` und `ablauf-navigation (Bedienungshilfen)`: **APD-68/Q-8** ‚Wischen bei offenem Menü: Seitenleiste da‘ und
-     **Q-9** ‚Hereinwischen mit Berührung: Safari rollt und bricht ab‘ – hell, dunkel, Bewegung reduzieren, Kontrast. **Allein ebenfalls rot**
-     (`PRUEF_BROWSER=webkit node tests/ablauf-navigation.mjs`, 6 Fehler).
-     Befund: nach den Zügen von Q-7 kommt `p.click('#mainMore')` in WebKit nicht an (kein pointerdown/click auf `#mainMore`, kein Menü,
-     `.layer` fehlt) – der Zug von Q-8 holt deshalb die Seitenleiste herein; Q-9 ist die Folge (Seitenleiste schon da). Allein (ohne Q-1
-     bis Q-7) öffnet das Menü und alles stimmt. Zuvor liefen die Q-Fälle hoch nie (vor APD-97 nur quer). **Vermutung:** hängt mit dem
-     Neuaufbau Tabelle ↔ Kästen beim Einrasten/Ausblenden hoch zusammen (der Inhalt wechselt die 700-px-Grenze) – ein Ereigniszustand
-     von WebKit bleibt hängen. Nächster Versuch: nach jedem Schritt Q-4 bis Q-7 prüfen, ob ein Klick auf `#mainMore` ankommt; Gegenstück
-     quer läuft grün.
-  2. `ablauf-blatt` (R-4.6 APD-72/D-11 ‚Escape: das Fenster verschwindet sofort‘, iPad hoch hell · Einstellungen): **allein grün** –
-     Wackler unter Last.
-- **Wortlaut-Rest (zu fragen, 0 Nr. 29):** Designrichtlinie 13 ‚Kein Scroll-Anker‘ nennt nur den ‚sichtbaren Anteil‘ – für den ersten
-  Eintrag unter dem Kopf gilt jetzt der Abstand in px (bei Änderungen der App, `keepPlace`); alt/neu vorlegen. Dazu weiter offen aus 0060:
-  15.4 ‚Drehen‘ nennt noch ‚Abdunkelung, Auswahl im Hochformat‘ als Auslöser.
-- **Selbstkritik 0061:** eine Zwischenmeldung mit geschätzter Uhrzeit (02:44 statt 02:42); `pkill -f "node tests/"` beendete auch den
-  eigenen Hintergrundlauf (Prozesse künftig über ein Skript starten und gezielt beenden).
+- **APD-68/Q-8 (rot in WebKit am iPad hoch) behoben – in der Prüfung, die App war richtig:** der Mauszug ‚nach links‘ (APD-68/Q-7) begann
+  auf einem Link im Kasten und startete Ziehen-und-Ablegen; WebKit schickte danach weder `pointerup` noch `pointercancel`, der nächste
+  Klick kam ohne `pointerdown` an. Neu `mausWieFinger` in `tests/safari.mjs` (verhindert `dragstart`), genutzt von `checkNavigation`.
+- **Regeltexte (Wortlaut bestätigt):** Designrichtlinie 13 ‚Kein Scroll-Anker‘ (erster Eintrag beim Umbau durch die App: Abstand in px),
+  15.4 ‚Drehen‘ (Auslöser nur panel-left bzw. Hereinwischen); Zusammenarbeit 3.4.0 mit APD-99 (Kasten 9 mit **W**, 0 Nr. 28, 0 Nr. 21, 2.8).
+- **APD-99 gebaut:** Regelwächter W-14 (`pruefeKontext`), Testfall-Liste `arbeit/APD-99 Testfall-Liste.md` (APD-99/C-1 bis C-13).
+- **APD-94 hinfällig durch APD-97** (Erledigt); `ablauf-markierung-menues` dreht mit offenem Menü in beide Richtungen.
+- **Veröffentlicht:** `los` – alle 124 Läufe grün in 51:01; danach brach das Skript beim Zusammenführen nach `main` ab (Konflikt in
+  `UEBERGABE.md`: auf `main` lag die Übergabe an 0062, im Zweig die ältere). Behoben von Hand: Fassung von `main` behalten, die übrigen
+  Schritte des Skripts einzeln (push, Pages-Läufe beider Repos ‚success‘, `AD_VERSION` 4.45.0 in `v4/ui.js` und `fassung/4.45.0/ui.js`,
+  `APP_VERSION` 3.43.0 und `AD_NEEDED` 4.45.0 auf `main`). Lokale Vorbereitungs-Zweige gelöscht.
+- **Selbstkritik 0062:** vier Zwischenmeldungen ohne Uhrzeitzeile (vom Wächter gemeldet), zwei Uhrzeiten eine Minute daneben (04:05 bzw.
+  04:15 statt 04:04 bzw. 04:14); vor den Fenstern zu Regel 13 und 15.4 fehlte der Kontextstand (Selbstkontrolle APD-99) – Fall 13 ist jetzt
+  echter Fall der Prüfung.
+- **Der erste `los` wurde von der Prüfung der Rechte gesperrt** (‚Production Deploy‘); der Nutzer hat ihn im Fenster bestätigt.
 
 ## 3. Nächster Schritt
 
-1. `UEBERGABE.md`, die ganze Zusammenarbeit, Überschriften der Designrichtlinien; Lagebild; Regelwächter; ReiseLogBuch dazuholen und
-   **beide Repos auf die Vorbereitungs-Zweige** setzen: `git fetch origin vorbereitung-4.45.0 && git checkout -b vorbereitung-4.45.0
-   origin/vorbereitung-4.45.0` (AppDesign) bzw. `git fetch origin && git checkout -b vorbereitung-3.43.0 origin/vorbereitung-3.43.0`
-   (ReiseLogBuch – ohne vorheriges `git fetch origin` fehlt der Zweig); Tests einrichten (CLAUDE.md).
-2. APD-68/Q-8 in WebKit am iPad hoch nachstellen (2. oben), Ursache finden, beheben (App oder Safari-Modell bzw. Prüfung – Zusammenarbeit
-   0 Nr. 20: eine Abweichung des Modells wird in `safari.mjs` korrigiert, nie nur in einer Prüfung); dann `ablauf-navigation` in WebKit
-   und Chromium, `ablauf-seitenleiste-hoch` und `ablauf-navigation` mit Text 53 einzeln. Danach `node werkzeug/veroeffentlichen.mjs
-   fassung` (4.45.0 ist **nicht** veröffentlicht, also erlaubt), CHANGELOG-Einträge 4.45.0 / 3.43.0 ergänzen, committen und `… los --app
-   reiselogbuch` erneut (~45 min).
-3. Nach ‚fertig‘: Bericht mit P-84/0 bis P-84/7 (CHANGELOG Reiselogbuch 3.43.0) und Rückmeldefenster; lokale Vorbereitungs-Zweige löschen.
+1. `UEBERGABE.md`, die ganze Zusammenarbeit, Überschriften der Designrichtlinien; Lagebild; Regelwächter; ReiseLogBuch dazuholen (beide
+   Repos auf `main`).
+2. **Rückmeldung zu P-84** erfragen: alle Testfälle P-84/0 bis P-84/7 wörtlich aus dem CHANGELOG Reiselogbuch 3.43.0 im Chat, dann das
+   Fenster ‚P-84: Wie ist die Prüfung ausgegangen?‘ (2.3). Bei ‚alles ok‘: Backlog P-84 nach Erledigt (APD-97 am Gerät bestätigt).
+3. **Vorschlag fragen (0 Nr. 24, noch nicht im Backlog):** `veroeffentlichen.mjs los` führt `main` vorher in den Vorbereitungs-Zweig
+  zusammen bzw. bricht **vor** dem vollen Prüflauf ab, wenn `main` neuer ist (z. B. eine Übergabe) – in 0062 lief der Prüflauf 51 min, dann
+  der Konflikt. Empfehlung Prio 2.
 
 ## 4. Danach
 
-APD-99 (Regelwächter) · Wortlaut-Reste (13 Scroll-Anker, 15.4 Drehen) · APD-38 · APD-94 prüfen (hinfällig?) · APD-80 · APD-88 ·
-APD-62 Paket B · APD-30 · APD-32 · APD-40 · APD-44 bis APD-60 · APD-70 · RLB-6 · APD-1.
+APD-38 · APD-85 Teil 3 (Wackler zählen) · APD-80 · APD-88 · APD-57 · APD-62 Paket B · APD-30 · APD-32 · APD-40 · APD-44 bis APD-60 · APD-70 ·
+RLB-6 · APD-1.
 
 ## 5. Starttext für die neue Sitzung
 
-In der neuen Sitzung müssen **AppDesign** und **ReiseLogBuch** verfügbar sein (Übergabe auf Branch `main`, Arbeit auf den Zweigen
-`vorbereitung-4.45.0` bzw. `vorbereitung-3.43.0`).
+In der neuen Sitzung müssen **AppDesign** und **ReiseLogBuch** verfügbar sein (alles auf Branch `main`).
 
 ```
-Reiselogbuch 0062 – APD-97 fertig veröffentlichen (4.45.0 / 3.43.0)
+Reiselogbuch 0063 – Rückmeldung P-84 (3.43.0 / 4.45.0)
 
-Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md, dann die GANZE Zusammenarbeit allgemein (Kasten ‚Immer‘ und ‚Jede Antwort‘ oben in Abschnitt 0 gilt ab der ersten Antwort) und die Überschriften der Designrichtlinien. Prüfe Modell und Aufwand (Sitzungsdatei, auch model_fallback), hole das Repo g811141a/ReiseLogBuch dazu, wie in der AppDesign-CLAUDE.md unter ‚Arbeitsumgebung‘, setze beide Repos auf die Vorbereitungs-Zweige (UEBERGABE.md 3) und prüfe, ob der Regelwächter läuft. Gib kurz das Lagebild und behebe dann den roten WebKit-Lauf APD-68/Q-8 aus UEBERGABE.md 2, bevor du erneut veröffentlichst.
+Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md, dann die GANZE Zusammenarbeit allgemein (Kasten ‚Immer‘ und ‚Jede Antwort‘ oben in Abschnitt 0 gilt ab der ersten Antwort) und die Überschriften der Designrichtlinien. Prüfe Modell und Aufwand (Sitzungsdatei, auch model_fallback), hole das Repo g811141a/ReiseLogBuch dazu, wie in der AppDesign-CLAUDE.md unter ‚Arbeitsumgebung‘, und prüfe, ob der Regelwächter läuft. Gib kurz das Lagebild, dann alle Testfälle P-84 im Chat und frage im Auswahlfenster nach der Rückmeldung (UEBERGABE.md 3).
 ```
