@@ -1,8 +1,8 @@
 # Übergabe an die nächste Sitzung
 
-**Stand 31.10.2026** · geschrieben in der Sitzung ‚Reiselogbuch 0064‘ (Version Reiselogbuch 3.44.0 mit AppDesign 4.46.0 gebaut und
-veröffentlicht; Übergabe automatisch bei Kontext über 300.000, 0 Nr. 13) – Aufbau nach Zusammenarbeit allgemein 2.5. **Claude liest diese
-Datei zu Beginn jeder Sitzung zuerst, dann die ganze Zusammenarbeit** (0 Nr. 15); die Arbeitsumgebung steht in der AppDesign-`CLAUDE.md`.
+**Stand 31.10.2026** · geschrieben in der Sitzung ‚Reiselogbuch 0065‘ (Usertest P-85 ok, APD-101 und APD-102 geklärt und bereit; Übergabe
+vor dem Bau, damit der Bau mit frischem Kontext läuft, 0 Nr. 13) – Aufbau nach Zusammenarbeit allgemein 2.5. **Claude liest diese Datei zu
+Beginn jeder Sitzung zuerst, dann die ganze Zusammenarbeit** (0 Nr. 15); die Arbeitsumgebung steht in der AppDesign-`CLAUDE.md`.
 
 ## 1. Lagebild
 
@@ -13,60 +13,64 @@ Datei zu Beginn jeder Sitzung zuerst, dann die ganze Zusammenarbeit** (0 Nr. 15)
 | Zusammenarbeit allgemein | **3.4.0** | `README - Zusammenarbeit allgemein.md` |
 | ReiseLogBuch-Import (privat) | 1.3.0 | g811141a/ReiseLogBuch-Import |
 
-- Alles liegt auf **`main`** (beide Repos); der Zweig `claude/rueckmeldung-p84-rlb113-rlb114-zl081m` ist darin aufgegangen.
-- **Chatnummer:** die nächste Sitzung heißt **Reiselogbuch 0065**; die danach 0066.
-- **Modell und Aufwand:** Opus 5.5, Aufwand hoch – in 0064 alle Aufrufe so, kein `model_fallback`.
-- **Sitzungsgröße 0064:** etwa 303.000 Token (Übergabe fällig); der Arbeitsprozess wurde einmal neu gestartet, `los` war da schon fertig.
-- **Regelwächter läuft.** In 0064 fehlte bei drei Zwischenmeldungen die Uhrzeitzeile (eine englisch: ‚Now the work files …‘) – vom
-  Wächter gemeldet, nachgeholt.
-- **Usertests offen:** **P-85** (Reiselogbuch 3.44.0 · AppDesign 4.46.0) – Testfälle P-85/0 bis P-85/9 im CHANGELOG des Reiselogbuchs, in
-  beiden Backlogs unter ‚1.‘.
-- **Backlog ‚0. Nächste Version‘:** leer in beiden Repos.
-- **Offen:** Prio 1 APD-38 (Frameworks, gemeinsam durchgehen); Prio 3 APD-85 Teil 3 (Wackler zählen: bisher einer, `ablauf-blatt` in 0061;
-  in 0064 keiner), APD-57, APD-80, APD-88, APD-40, APD-62, APD-30, RLB-6 u. a.
+- Alles liegt auf **`main`** (beide Repos).
+- **Chatnummer:** die nächste Sitzung heißt **Reiselogbuch 0066**; die danach 0067.
+- **Modell und Aufwand:** Opus 5.5, Aufwand hoch – in 0065 alle Aufrufe so, kein `model_fallback`.
+- **Sitzungsgröße 0065:** etwa 245.000 Token (Kontext 242.689 vor der Übergabe); der Arbeitsprozess wurde mehrmals neu gestartet.
+- **Regelwächter läuft.** Lücke gefunden: nach einem Neustart des Arbeitsprozesses stehen Ausgaben nicht wörtlich in der Sitzungsdatei –
+  ein Fenster ohne Satz ‚Kontext N‘ ging durch (jetzt APD-103).
+- **Usertests offen:** keine (P-85 alles ok, Nutzer 31.10.2026).
+- **Backlog ‚0. Nächste Version‘:** AppDesign **2 Punkte bereit** (APD-101, APD-102); Reiselogbuch **1 Punkt bereit** (APD-101).
+- **Offen:** Prio 1 APD-38 (Frameworks, gemeinsam durchgehen); Prio 2 APD-103 (Regelwächter-Lücke APD-84/W-14); Prio 3 APD-85 Teil 3 (Wackler
+  zählen: bisher einer, `ablauf-blatt` in 0061), APD-57, APD-80, APD-88, APD-40, APD-62, APD-30, RLB-6 u. a.
 - **Vereinbarung (Nutzer 30.10.2026, Sitzung 0058):** Muster bis auf Weiteres **nur hell** (kein dunkel) – gilt, bis der Nutzer sie
   aufhebt; in jede Übergabe übernehmen.
 - **Erinnerung:** ‚Backlog-Erinnerung (AppDesign und Reiselogbuch)‘ montags 8:58.
 
-## 2. Ergebnisse der Sitzung 0064
+## 2. Ergebnisse der Sitzung 0065
 
-- **Gebaut und veröffentlicht:** Reiselogbuch 3.44.0 (RLB-113 ‚Reiselogbuch einstellen‘ in beiden Menüs und als Fenstertitel, Abweichung 4;
-  RLB-114 Jahr des Reisebeginns als Kopf in Seitenleiste bzw. Startliste) mit AppDesign 4.46.0 (APD-100 Baustein `.side-sec`, 15.4, R-7.6 in
-  `hig.mjs`). Neue Prüfungen `ablauf-einstellen`, `ablauf-jahre` (rot gegen 3.43.0, Gegenproben `jahre:oben|ende|halbfett` rot); 13 Prüfungen
-  umgestellt. Voller Lauf: **alle 128 Läufe grün in 58:07**, beide Pages-Läufe ‚success‘ (AppDesign 72fce14, Reiselogbuch a1d46ea).
-- **Entschieden (Nutzer 31.10.2026, Sitzung 0064):** die Jahresköpfe wachsen bei großer Schrift **wie ‚Reiselogbücher‘** (Leisten-Maß, höchstens
-  26 px) und nicht wie Apples Inhalts-Title-3 (55 px bei AX5) – `checkText` (R-1.10) misst `.side-sec` deshalb wie die Leisten.
-- **Befund beim Bau (RLB-113/E-6):** ab XXXL kürzt das iPhone hoch den Fenstertitel zu ‚Reiselogbuch eins…‘ (Fensterkopf im Leisten-Maß 23 px;
-  ‚Neues Reiselogbuch‘ bei 375 px und der Titel des Tages wurden schon in 3.43.0 gekürzt). Die Prüfung verlangt bei großer Schrift Anfang,
-  ‚…‘ und keine Überlappung; im CHANGELOG und in P-85/4 beschrieben.
-- **Schreibweise:** die lokalen Nummern RLB-113/E-n kollidieren mit dem alten Präfix E- (`checkSchema`) – überall mit Elternnummer
-  geschrieben (‚RLB-113/E-1 bis RLB-113/E-4‘), auch in Abweichung 4 und im Wortlaut-Protokoll; Inhalt unverändert.
-- **Selbstkritik 0064:** drei Zwischenmeldungen ohne Uhrzeitzeile (eine englisch).
+- **P-85 alles ok** – in beiden Backlogs unter ‚Erledigt‘.
+- **APD-101 bereit** (aus RLB-113/E-6): ein mit ‚…‘ gekürzter Titel in Kopfzeile (15.3) oder Fenster-Kopfzeile (15.8) zeigt beim langen
+  Drücken den ganzen Titel in einer **Sprechblase darunter** (Variante B, Muster `arbeit/bilder/APD-101 4` und `5`) – nur wenn gekürzt,
+  bleibt bis Tippen (der Tipp schließt nur sie), Rollen, Esc oder Drehen; neue Regel **R-2.5**. Apple-Abgleich belegt (Apple-Ingenieur,
+  developer.apple.com/forums/thread/831754; WWDC 2019/261): Apple zeigt die Großanzeige in der Mitte – unsere Sprechblase ist eine
+  Abweichung (Wunsch des Nutzers, HIG-Checkliste 16). Testfall-Liste `arbeit/APD-101 Testfall-Liste.md` (APD-101/L-1 bis L-13), Wortlaut
+  `arbeit/APD-101 Wortlaut.md` (15.8, 15.3, R-2.5, Zeile ‚Keine Großanzeige‘ in 16) – beides bestätigt. Leisten-Knöpfe (Großanzeige mit
+  Icon) später als eigenes Thema vorschlagen.
+- **APD-102 bereit** (aus 0062): `veroeffentlichen.mjs los` holt vor dem Prüflauf `origin/main` und führt neuere Commits in die
+  Vorbereitungs-Zweige zusammen; bei Konflikt Abbruch **vor** dem Prüflauf. Testfall-Liste
+  `arbeit/APD-102 Testfall-Liste.md` (APD-102/M-1 bis M-8, im Selbsttest), Wortlaut `CLAUDE.md` in `arbeit/APD-102 Wortlaut.md` (auch ‚~60 min‘ statt ‚~8 min‘) – bestätigt.
+- **APD-103 neu** (Prio 2): Regelwächter lässt ein Fenster durch, wenn die Ausgabe davor nicht gespeichert ist.
+- **Selbstkritik 0065:** eine englische Zwischenmeldung ohne Uhrzeitzeile; ein Fenster (Vorschlag 1) ohne Erklärung und ohne Satz
+  ‚Kontext N‘ nach einem Neustart; eine geschätzte Uhrzeit (14:51 statt 14:48); ein Commit mit roter Doku-Prüfung (APD-84/W-14 ohne
+  Elternnummer, sofort korrigiert).
 
 ## 3. Nächster Schritt
 
-1. `UEBERGABE.md`, die ganze Zusammenarbeit, Überschriften der Designrichtlinien; Lagebild; Regelwächter; ReiseLogBuch dazuholen (`main`).
-2. Den offenen Usertest **P-85** vollständig im Chat zeigen (Testfälle P-85/0 bis P-85/9 wörtlich aus dem CHANGELOG des Reiselogbuchs) und
-   fragen: Fenster ‚P-85: Wie ist die Prüfung ausgegangen?‘ – ‚Alles ok‘ · ‚Nicht ok – ich schreibe im Chat‘ · ‚Ich prüfe später‘ · ‚Ich schreibe
-   im Chat‘.
-3. **Neue Themen vorschlagen (0 Nr. 24), je einzeln mit ‚Ins Backlog übernehmen?‘ und Priorität:**
-   a) **Fenstertitel am iPhone bei großer Schrift** (aus RLB-113/E-6): lange Titel werden ab XXXL gekürzt. So macht es Apple: die
-      Navigationsleiste kürzt den Titel mit ‚…‘ und zeigt bei langem Drücken die Großanzeige. Möglichkeiten: so lassen · Titel zweizeilig ·
-      Großanzeige beim langen Drücken. Empfehlung Prio 3.
-   b) **`veroeffentlichen.mjs los` und neuere `main`** (aus 0062): `los` führt `main` vorher in den Vorbereitungs-Zweig zusammen bzw. bricht
-      **vor** dem vollen Prüflauf ab, wenn `main` neuer ist. Empfehlung Prio 2.
+1. `UEBERGABE.md`, die ganze Zusammenarbeit, Überschriften der Designrichtlinien; Lagebild; Regelwächter; ReiseLogBuch dazuholen (`main`),
+   Tests einrichten (AppDesign-`CLAUDE.md`).
+2. **Version bauen – das Ja liegt vor** (Nutzer 31.10.2026, Sitzung 0065: ‚Soll ich Version AppDesign 4.47.0 mit Reiselogbuch 3.45.0 mit
+   APD-101 und APD-102 erstellen?‘ – ‚Ja – in Sitzung 0066‘). Nicht erneut fragen. Ablauf: Vorbereitungs-Zweige `vorbereitung-4.47.0` und
+   `vorbereitung-3.45.0`; `vorbereiten --ad 4.47.0 --app reiselogbuch=3.45.0`; APD-101: Baustein in `v4/ui.js`/`design.css` (Sprechblase am
+   gekürzten Titel von `.dlg-head h3`, `.nb-title`, `.pnav-title`; `onLongPress`, R-3.5), neue Prüfung `ablauf-titel-blase` im Reiselogbuch
+   (rot gegen 3.44.0, Gegenprobe), R-2.5 in `ablauf.mjs`; Wortlaut unverändert aus `arbeit/APD-101 Wortlaut.md`; APD-102: `los` nach
+   Testfall-Liste, Fälle APD-102/M-1 bis M-8 im Selbsttest, `CLAUDE.md` nach `arbeit/APD-102 Wortlaut.md`; Texte (CHANGELOG mit Testfällen P-86,
+   Backlog, Versionsgeschichten); `fassung`; committen; `los --app reiselogbuch` im Hintergrund. Mit APD-102 gebaut führt `los` eine
+   neuere `main` schon selbst zusammen.
+3. Bericht mit Usertest **P-86** vollständig im Chat (iPhone hoch, größte Schrift: Fenstertitel, Titel der Reise, Titel des Tages lange
+   drücken; bei normaler Schrift nichts).
 
 ## 4. Danach
 
-APD-38 · APD-85 Teil 3 (Wackler zählen) · APD-80 · APD-88 · APD-57 · APD-62 Paket B · APD-30 · APD-32 · APD-40 · APD-44 bis APD-60 · APD-70 ·
-RLB-6 · APD-1.
+APD-38 · APD-103 · Vorschlag ‚Großanzeige für Leisten-Knöpfe‘ (aus APD-101) · APD-85 Teil 3 (Wackler zählen) · APD-80 · APD-88 · APD-57 ·
+APD-62 Paket B · APD-30 · APD-32 · APD-40 · APD-44 bis APD-60 · APD-70 · RLB-6 · APD-1.
 
 ## 5. Starttext für die neue Sitzung
 
 In der neuen Sitzung müssen **AppDesign** und **ReiseLogBuch** verfügbar sein; alles liegt auf `main`.
 
 ```
-Reiselogbuch 0065 – Usertest P-85 (Reiselogbuch 3.44.0 · AppDesign 4.46.0)
+Reiselogbuch 0066 – Version bauen: AppDesign 4.47.0 · Reiselogbuch 3.45.0 (APD-101, APD-102)
 
-Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md, dann die GANZE Zusammenarbeit allgemein (Kasten ‚Immer‘ und ‚Jede Antwort‘ oben in Abschnitt 0 gilt ab der ersten Antwort) und die Überschriften der Designrichtlinien. Prüfe Modell und Aufwand (Sitzungsdatei, auch model_fallback), hole das Repo g811141a/ReiseLogBuch (Branch main) dazu, wie in der AppDesign-CLAUDE.md unter ‚Arbeitsumgebung‘, und prüfe, ob der Regelwächter läuft. Gib kurz das Lagebild, zeige dann den offenen Usertest P-85 vollständig und frage nach dem Ergebnis (UEBERGABE.md 3); danach die zwei Vorschläge aus UEBERGABE.md 3.3 einzeln.
+Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md, dann die GANZE Zusammenarbeit allgemein (Kasten ‚Immer‘ und ‚Jede Antwort‘ oben in Abschnitt 0 gilt ab der ersten Antwort) und die Überschriften der Designrichtlinien. Prüfe Modell und Aufwand (Sitzungsdatei, auch model_fallback), hole das Repo g811141a/ReiseLogBuch (Branch main) dazu, wie in der AppDesign-CLAUDE.md unter ‚Arbeitsumgebung‘, und prüfe, ob der Regelwächter läuft. Gib kurz das Lagebild und baue dann die Version AppDesign 4.47.0 mit Reiselogbuch 3.45.0 mit APD-101 und APD-102 – das Ja liegt vor (UEBERGABE.md 3.2), Wortlaut und Testfall-Listen in arbeit/APD-101 … und arbeit/APD-102 ….
 ```
