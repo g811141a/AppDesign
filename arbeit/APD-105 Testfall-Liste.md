@@ -1,6 +1,6 @@
 # APD-105 – Testfall-Liste: Antippen und langes Drücken
 
-Stand 31.10.2026, Sitzung 0067 · Entwurf zum Muster `arbeit/APD-105 Muster.html` (Varianten A, B, C) · Variante noch offen ·
+Stand 31.10.2026, Sitzung 0067 · Muster `arbeit/APD-105 Muster.html` · **Variante C gewählt** (Nutzer 31.10.2026: Knöpfe dimmen, Zeilen grau) ·
 aus APD-62 (APD-38/T-33, T-34).
 
 ## Apple-Abgleich (0 Nr. 23, 2.6)
