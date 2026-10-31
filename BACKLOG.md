@@ -19,7 +19,6 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| P-84 | 1 | **APD-97 in Reiselogbuch 3.43.0 (AppDesign 4.45.0):** iPad hoch Seitenleiste neben dem Inhalt, Tage als Kästen – Testfälle P-84 im CHANGELOG des Reiselogbuchs | prüfen |
 
 ## 2. Weitere Themen (in Klärung)
 
@@ -58,6 +57,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Thema | Version | Datum |
 |---|---|---|---|
+| P-84 | **Usertest P-84 (Reiselogbuch 3.43.0 · AppDesign 4.45.0):** alles ok – APD-97 am Gerät bestätigt (Nutzer 31.10.2026, Sitzung 0063) | 4.45.0 | 31.10.2026 |
 | APD-99 | **APD-99 Kontextstand vor jedem Auswahlfenster:** Zusammenarbeit 3.4.0 (Kasten 9 mit **W**, 0 Nr. 28, 0 Nr. 21, 2.8; Wortlaut bestätigt 31.10.2026), Regelwächter APD-84/W-14 (`pruefeKontext`, vor dem Zeigen und beim Stop; Testfall-Liste `arbeit/APD-99 Testfall-Liste.md` APD-99/C-1 bis C-13, Gegenprobe) | AppDesign 4.45.0 | 31.10.2026 |
 | APD-94 | **APD-94 hinfällig durch APD-97:** hoch gibt es keine Abdunkelung mehr; geprüft in `ablauf-seitenleiste-hoch` (APD-97/L-7) und `ablauf-markierung-menues` (dreht wieder auch quer → hoch, grün in Chromium und WebKit) | AppDesign 4.45.0 · Reiselogbuch 3.43.0 | 31.10.2026 |
 | APD-97 | iPad hoch: Seitenleiste fest neben dem Inhalt, Tabellen im schmalen Inhalt als Kästen (R-6.6, `inhaltSchmal`), `checkNavigation` hoch wie quer, hig R-6.6 | AppDesign 4.45.0 · Reiselogbuch 3.43.0 | 31.10.2026 |
