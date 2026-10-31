@@ -1,6 +1,6 @@
 # APD-104 – Wortlaut: Großanzeige für Leisten-Knöpfe (Variante A)
 
-Stand 31.10.2026, Sitzung 0067 · Variante **A** gewählt (Nutzer 31.10.2026: Mitte, Loslassen löst aus – wie Apple) · **Wortlaut bestätigt** (Nutzer 31.10.2026), vorher
+Stand 31.10.2026, Sitzung 0067 · Variante **A** gewählt (Nutzer 31.10.2026: Mitte, Loslassen löst aus – wie Apple) · **Wortlaut bestätigt** (Nutzer 31.10.2026) nach
 dein ‚Ja‘ (Zusammenarbeit 0 Nr. 29) · allgemeine Regel (0 Nr. 4) · Designrichtlinie allgemein.
 
 ## 1. Regelkatalog 17, Abschnitt 2 – neu nach R-2.5
