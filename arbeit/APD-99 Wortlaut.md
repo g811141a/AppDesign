@@ -18,3 +18,5 @@ Zusammenarbeit eingetragen. Bis dahin hält Claude ihn schon ein (Selbstkontroll
 - Regelwächter (`werkzeug/regelwaechter.mjs`, PreToolUse vor dem Auswahlfenster): lehnt ein Fenster ab, wenn davor in der Antwort
   kein Satz mit ‚Kontext N‘ steht; Prüfung in `tests/regelwaechter.mjs` mit Gegenprobe.
 - Testfall-Liste vor dem Bau (0 Nr. 1).
+- **2.8 ‚Vor jedem Auswahlfenster‘** (bestätigt 31.10.2026, Sitzung 0062) – neu: „lehnt es ab, wenn eine Frage keine Empfehlung zuerst
+  oder kein ‚Ich schreibe im Chat‘ hat oder wenn die Ausgabe davor keinen Satz mit ‚Kontext N‘ aus `messung.mjs` enthält.“
