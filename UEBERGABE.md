@@ -27,17 +27,17 @@ Beginn jeder Sitzung zuerst, dann die ganze Zusammenarbeit** (0 Nr. 15); die Arb
 
 ## 2. Ergebnisse der Sitzung 0059
 
-- **P-82** ausgewertet: ok bis auf /1, /3, /5 → RLB-112. Jeder Punkt zuerst als feste Prüfung nachgebaut (`ablauf-preis-km`, RLB-112/U-1
-  bis U-5), rot gegen 3.42.0 (28 Fehler), dann behoben: Schalter ‚Preis der Quartiere erfassen‘ fehlte im Vergleich `state()`; Ø mit einem
+- **P-82** ausgewertet: ok bis auf /1, /3, /5 → RLB-112. Jeder Punkt zuerst als feste Prüfung nachgebaut (`ablauf-preis-km`,
+  RLB-112/U-1 bis U-5), rot gegen 3.42.0 (28 Fehler), dann behoben: Schalter ‚Preis der Quartiere erfassen‘ fehlte im Vergleich `state()`; Ø mit einem
   Leerzeichen, Umbruch vor der Klammer, Ø linksbündig unter dem Wert (`statHtml` – U+200B bricht in WebKit nicht um).
 - **APD-98 neu und erledigt (Wortlaut bestätigt):** Bezeichnung im Kasten mit Feldern normal in Textgröße und Textfarbe, Emojis klein,
   mittig zur ersten Zeile des Werts (Muster A/B, entschieden **B1** = Apple-Standard); 15.10 und R-6.5, Prüfung `hig.mjs` – `kastenBezeichnung`.
 - **APD-96 erledigt (Wortlaut geändert und bestätigt):** vor der Bau-Frage der Kontextstand als **Satz** mit ‚Kontext N‘ aus `messung.mjs`
-  – nicht die Zeitzeile (die lehnt der Regelwächter vor einem Fenster ab, W-6).
+  – nicht die Zeitzeile (die lehnt der Regelwächter vor einem Fenster ab).
 - Gebaut und veröffentlicht (Ja des Nutzers 30.10.2026): **alle 122 Läufe grün in 50:49**, beide Pages-Läufe erfolgreich. **P-83 alles ok.**
 - Nicht als allgemeine Regel: Ø unter dem Gesamtwert (nur Reiselogbuch, Nutzer 30.10.2026).
 - **Selbstkritik 0059:** drei Zwischenmeldungen englisch und ohne Uhrzeitzeile; zwei Uhrzeiten geschätzt (17:47, 18:26); Zeitzeile als
-  Kontextstand vor dem Fenster (W-6); erster `los`-Lauf rot, weil README/PROMPT noch ‚Zusammenarbeit 3.2.0‘ nannten (vorher
+  Kontextstand vor dem Fenster; erster `los`-Lauf rot, weil README/PROMPT noch ‚Zusammenarbeit 3.2.0‘ nannten (vorher
   `doku-regeln` laufen lassen); ein `pkill -f` traf die eigene Shell.
 
 ## 3. Nächster Schritt

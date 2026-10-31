@@ -3,6 +3,22 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.45.0 – 31.10.2026
+
+AppDesign 4.45.0 · Designrichtlinie allgemein 4.45.0 · Zusammenarbeit allgemein 3.3.0 · geprüft mit Reiselogbuch 3.43.0
+
+**APD-97 iPad hoch: Seitenleiste neben dem Inhalt, Tabellen im schmalen Inhalt als Kästen** (aus deiner Rückmeldung zu P-82 ‚Sonstiges‘) –
+dein Ja vom 31.10.2026, Sitzung 0060 (Wortlaut, Muster und Testfall-Liste bestätigt; Vorbild Einstellungen und Notizen am iPad,
+`apple-referenz/ipad/`); Testfall-Liste `arbeit/APD-97 Testfall-Liste.md` (APD-97/L-1 bis L-10, D-1 bis D-11). Usertest im Reiselogbuch: P-84.
+
+- **Seitenleiste hoch fest (15.4, R-7.5):** am iPad steht die Seitenleiste quer und hoch fest links neben dem Inhalt (Apple `tile` statt
+  `overlay`) – keine Abdunkelung, die Auswahl lässt sie stehen, ausblenden nur mit panel-left, hereinwischen mit Mitschieben wie quer.
+  `tests/ablauf.mjs` – `checkNavigation` prüft am iPad hoch dieselben Gesten wie quer (APD-68/Q-1 bis Q-12).
+- **Schmaler Inhalt als Kästen (15.13, R-6.6 neu):** ist der Inhalt schmaler als 700 px (gleiche Grenze wie `isPhone()`), zeigt er jede
+  Tabelle als Kästen wie am iPhone; Ausgabe und Vorschau bleiben Tabellen. Neu in `ui.js`: `SCHMAL` und `inhaltSchmal(el)`. Neue Prüfung
+  `hig.mjs` (R-6.6) nach jedem Schritt: im iPad-Aufbau keine Tabelle im Inhalt unter 700 px.
+- **Vergleichsbilder:** `apple-referenz/ipad/einstellungen/` und `apple-referenz/ipad/notizen/` (hoch und quer, verpixelt).
+
 ## 4.44.1 – 30.10.2026
 
 AppDesign 4.44.1 · Designrichtlinie allgemein 4.44.1 · Zusammenarbeit allgemein 3.3.0 · geprüft mit Reiselogbuch 3.42.1

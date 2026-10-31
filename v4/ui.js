@@ -1,4 +1,4 @@
-// AppDesign 4.44.1 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
+// AppDesign 4.45.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
 // Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/fassung/X.Y.Z/ui.js"></script> (feste Fassung, R-10.3)
 // Seit 4.11.0 (R-10.3): ui.js und design.css immer mit ?v=<AppDesign-Version> einbinden (auch in sw.js) und beim Start
 // prüfen, ob genau diese Fassung geladen ist (AD_VERSION hier, --ad-version in design.css).
@@ -20,7 +20,7 @@
 
 'use strict';
 // Version der Bausteine (R-10.3): die App vergleicht sie beim Start mit der benötigten Fassung.
-const AD_VERSION = '4.44.1';
+const AD_VERSION = '4.45.0';
 /* ---------- Icons ---------- */
 
 // Schaltflächen-Icons aus Lucide (ISC-Lizenz), direkt eingebettet, damit die App offline funktioniert.
@@ -1660,7 +1660,11 @@ function mountCap(root) {
 // Die App fragt isPhone() und baut ihre Seiten danach; bei einem Wechsel ruft ihr resize-Handler render().
 // Seit 4.28.1 (APD-36): die Höhe ohne Tastatur zählt (APD-36/S-3: verschiebt Safari den sichtbaren Bereich, wird innerHeight kleiner – das
 // iPad galt mit offener Tastatur als iPhone, das Fenster sprang an den linken Rand).
-const isPhone = () => innerWidth < 700 || seitenHoehe() < 500;
+// Seit 4.45.0 (APD-97, R-6.6): dieselbe Grenze für den Inhalt – ist er schmaler (z. B. am iPad hoch neben der Seitenleiste), zeigt die App
+// jede Tabelle im Inhalt als Kästen wie am iPhone. Die App fragt inhaltSchmal(#app) beim Aufbau und baut bei einem Wechsel neu.
+const SCHMAL = 700;
+const isPhone = () => innerWidth < SCHMAL || seitenHoehe() < 500;
+const inhaltSchmal = el => !!el && el.clientWidth < SCHMAL;
 // Seit 4.9.0: Name des Geräts für ‚geändert am … · iPad‘ und den Abgleich (iPadOS meldet sich als Mac mit Touch).
 function deviceName() {
   const ua = navigator.userAgent;

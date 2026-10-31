@@ -502,6 +502,9 @@ const found = new Map(), icons = new Map();
       });
       document.querySelectorAll('#app table').forEach(t => { if (vis(t) && !t.closest('.rt') && t.offsetWidth > t.parentElement.clientWidth + 1 && !/auto|scroll/.test(cs(t.parentElement).overflowX)) R('R-6.3', `Tabelle breiter als ihr Platz (${t.offsetWidth} statt ${t.parentElement.clientWidth} px)`); });
       if (document.documentElement.scrollWidth > innerWidth + 1) R('R-6.3', 'Seite breiter als der Bildschirm');
+      // seit 4.45.0 (R-6.6, APD-97): im iPad-Aufbau zeigt ein Inhalt unter 700 px (z. B. hoch neben der Seitenleiste) keine Tabelle, sondern Kästen
+      { const a = document.querySelector('#app'); if (a && vis(a) && !document.documentElement.classList.contains('phone') && a.clientWidth < 700)
+        document.querySelectorAll('#app table').forEach(t => { if (vis(t) && !t.closest('.rt, dialog')) R('R-6.6', `Tabelle im schmalen Inhalt (${a.clientWidth} px) statt Kästen: ${t.tagName.toLowerCase()}${t.classList[0] ? '.' + t.classList[0] : ''}`); }); }
       // seit 4.37.0 (R-1.10): auch der Rollbereich wird nie breiter – sonst gehört ihm das waagrechte Wischen (Navigation, R-7.5)
       document.querySelectorAll('#app > .rolle, #side .side-list').forEach(r => { if (vis(r) && r.scrollWidth > r.clientWidth + 1) R('R-6.3', `Inhalt breiter als sein Rollbereich (${r.scrollWidth} statt ${r.clientWidth} px)`); });
       // R-1.10 (seit 4.37.0, APD-43 Teil 2, P2 Punkt 1, G4, G6): keine Schrift und keine Zeilenhöhe in px in den Stilen (außer Ausgabe .rt und
