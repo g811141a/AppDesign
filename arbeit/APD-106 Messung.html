@@ -1,0 +1,238 @@
+<!doctype html><html lang="de"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="APD-106 Messung">
+<title>APD-106 Messung</title>
+<link rel="stylesheet" href="../fassung/4.48.0/design.css">
+<style>
+/* APD-106 Korrektur aus P-87 – Muster mit Messung vor dem Bau (Sitzung Reiselogbuch 0069; Zusammenarbeit 0 Nr. 20 und 2.7: vorher im
+   Safari-Modell geprüft – arbeit/APD-106 Muster prüfen.mjs –, zeigt am Gerät nur ‚aufgenommen‘; bewertet wird aus den Rohdaten mit
+   arbeit/APD-106 auswerten.mjs). Die Seite lädt die unveränderte Fassung 4.48.0 (design.css, ui.js) – Großanzeige (R-2.6), Berühren
+   (R-3.6) und Anheben (R-3.5) laufen genau wie im Reiselogbuch 3.46.0. Aufgezeichnet werden nur Zeiten, Klassen, Lagen, Längen und ids –
+   keine Texte. Variante A = wie 4.48.0; Variante B = zusätzlich ohne Antipp-Markierung von Safari (-webkit-tap-highlight-color) und
+   die Tageszeile ohne Textauswahl (user-select, touch-callout). Nur hell (Vereinbarung 30.10.2026). */
+html { color-scheme: light; }
+/* Tabelle wie im Reiselogbuch (index.html: table.days) */
+table.days { border-collapse: separate; border-spacing: 0; width: 100%; }
+table.days th, table.days td { border-bottom: 1px solid var(--line); padding: 10px 12px; vertical-align: top; text-align: left; }
+table.days td + td { border-left: 1px solid var(--line); }
+table.days th { position: sticky; top: 0; background: var(--th-bg); font-weight: 600; z-index: 2; }
+table.days tbody tr { cursor: pointer; }
+.mess { max-width: 640px; margin: 0 auto; padding: 8px 16px 24px; }
+.mess .box2 { background: var(--card, #fff); border-radius: 12px; padding: 12px 14px; margin: 12px 0; border: .5px solid var(--line); }
+#schritt { line-height: 1.4; } #schritt b { display: block; margin-bottom: 4px; }
+#liste { list-style: none; margin: 0; padding: 0; } #liste li { display: flex; gap: 10px; padding: 8px 0; border-top: .5px solid var(--line); }
+#liste li:first-child { border-top: 0; } #liste .h { width: 20px; flex: none; color: #248a3d; font-weight: 700; } #liste li.jetzt { font-weight: 600; }
+.knoepfe { display: flex; flex-wrap: wrap; gap: 10px; }
+.knoepfe button { font: inherit; min-height: 44px; padding: 0 16px; border-radius: 22px; border: 0; background: #007aff; color: #fff; }
+.knoepfe button.grau { background: #e5e5ea; color: #007aff; }
+.knoepfe button:disabled { opacity: .4; }
+#zaehler { color: var(--sub, #6e6e73); margin-top: 8px; }
+.probe { margin: 16px auto; max-width: 640px; padding: 0 16px; }
+/* Variante B */
+html.b, html.b * { -webkit-tap-highlight-color: transparent; }
+html.b table.days tbody td { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+</style></head><body>
+<main id="app"></main>
+<dialog id="dlg"></dialog>
+<dialog id="msg"></dialog>
+<script src="../fassung/4.48.0/ui.js"></script>
+<script>
+const $ = s => document.querySelector(s);
+// Gegenprobe im Safari-Modell: ?gegenprobe=ohne-ax nimmt html.ts-ax immer wieder weg – die Großanzeige darf dann nie kommen
+const GEGEN = new URLSearchParams(location.search).get('gegenprobe');
+const SPEICHER = 'a106.messung1';
+// schrift: 'gross' = Einstellungen → Bedienungshilfen → Anzeige & Textgröße → Größerer Text ein, Regler ganz rechts; 'normal' = aus, Mitte
+const FAELLE = [
+  { v: 'A', schrift: 'gross', titel: 'Großanzeige ‚…‘ (größte Schrift)',
+    schritt: 'Größte Schrift einstellen (Bedienungshilfen → Anzeige & Textgröße → Größerer Text ein, Regler ganz rechts) und hierher zurück. Oben rechts auf ‚…‘ den Finger gut eine Sekunde liegen lassen, dann loslassen. Dann ‚Fall fertig‘.' },
+  { v: 'A', schrift: 'gross', titel: 'Großanzeige x im Fenster (größte Schrift)',
+    schritt: '‚Fenster öffnen‘ (unten) tippen. Im Fenster oben links auf x den Finger gut eine Sekunde liegen lassen, dann loslassen. Dann ‚Fall fertig‘.' },
+  { v: 'A', schrift: 'normal', titel: 'Berühren ‚…‘ – Variante A',
+    schritt: 'Schrift zurück auf normal (Größerer Text aus, Regler Mitte) und hierher zurück. Den Finger auf ‚…‘ oben rechts legen und eine Sekunde liegen lassen – merke dir: grau oder blass? Dann den Finger gut 1 cm wegziehen und loslassen. Dann ‚Fall fertig‘.' },
+  { v: 'B', schrift: 'normal', titel: 'Berühren ‚…‘ – Variante B',
+    schritt: 'Wie eben: den Finger auf ‚…‘ legen, eine Sekunde liegen lassen – grau oder blass? Wegziehen und loslassen. Dann ‚Fall fertig‘.' },
+  { v: 'A', schrift: 'normal', titel: 'Tageszeile halten – Variante A',
+    schritt: 'Den Finger auf das Wort ‚Verlauf‘ in der Tageszeile (unten) legen, gut eine Sekunde liegen lassen, dann loslassen – merke dir: wurde Text markiert, grau oder blass? Dann ‚Fall fertig‘.' },
+  { v: 'B', schrift: 'normal', titel: 'Tageszeile halten – Variante B',
+    schritt: 'Wie eben: auf ‚Verlauf‘ gut eine Sekunde halten, loslassen – Text markiert? Dann ‚Fall fertig‘.' },
+  { v: 'A', schrift: 'normal', titel: 'Smiley halten – Variante A',
+    schritt: '‚Fenster öffnen‘ tippen. Auf einem Smiley den Finger liegen lassen, bis die Frage ‚… entfernen?‘ kommt – merke dir: grau, größer, Schatten, wie schnell? In der Frage ‚Abbrechen‘, Fenster mit x schließen. Dann ‚Fall fertig‘.' },
+  { v: 'B', schrift: 'normal', titel: 'Smiley halten – Variante B',
+    schritt: 'Wie eben: ‚Fenster öffnen‘, Smiley halten bis zur Frage, ‚Abbrechen‘, Fenster mit x schließen. Dann ‚Fall fertig‘.' }
+];
+let zustand = { fall: 0, fertig: [], zeilen: [] };
+try { const s = JSON.parse(sessionStorage.getItem(SPEICHER)); if (s?.zeilen) zustand = s; } catch {}
+const t0 = performance.now();
+const ms = () => Math.round(performance.now() - t0);
+const sichere = () => { try { sessionStorage.setItem(SPEICHER, JSON.stringify(zustand)); } catch {} };
+function zeile(s) { if (zustand.zeilen.length < 20000) zustand.zeilen.push(`${ms()} ${s}`); sichere(); }
+const rnd = n => Math.round(n);
+
+// ---------- Aufbau mit den Bausteinen der Fassung 4.48.0 (wie Reiselogbuch 3.46.0) ----------
+$('#app').innerHTML = `
+  <div class="nb" id="bar"><div class="nb1"><span></span><span class="nb-title">APD-106 Messung</span>
+    <span class="r"><span class="grp"><button type="button" id="shareBtn" aria-label="Ausgabe">${ic('share')}</button><button type="button" id="mainMore" aria-label="Mehr">${ic('ellipsis')}</button></span></span></div></div>
+  <div class="rolle" id="rolle">
+    <div class="mess">
+      <p style="color:var(--sub,#6e6e73);margin:4px 0 0">Am iPhone hoch, hell – App vom Home-Bildschirm oder Safari</p>
+      <div class="box2" id="schritt"></div>
+    </div>
+    <div class="probe"><div class="knoepfe"><button type="button" id="fensterAuf">Fenster öffnen</button></div></div>
+    <div class="probe table-wrap"><table class="days"><thead><tr><th>Tag</th><th>Verlauf</th></tr></thead>
+      <tbody><tr data-day="2026-10-23" id="zeile"><td>Fr, 23.10.</td><td><div class="ln"><span class="t">Verlauf Altstadt und Markt</span></div></td></tr></tbody></table></div>
+    <div class="mess">
+      <div class="knoepfe"><button type="button" id="fertig">Fall fertig</button><button type="button" class="grau" id="nochmal">Fall neu</button></div>
+      <div class="box2"><ol id="liste"></ol><div id="zaehler"></div></div>
+      <div class="knoepfe"><button type="button" id="teilen">Messung teilen</button><button type="button" class="grau" id="trotzdem">trotzdem teilen</button><button type="button" class="grau" id="neu">neu beginnen</button></div>
+    </div>
+  </div>`;
+$('#mainMore').onclick = () => zeile('ausgeloest mainMore');
+$('#shareBtn').onclick = () => zeile('ausgeloest shareBtn');
+$('#zeile').onclick = () => zeile('ausgeloest zeile');
+$('#fensterAuf').onclick = () => {
+  openDialog(`<form method="dialog">${dlgHead('Tag', { check: false })}<div class="dlg-body"><div id="moods"></div></div></form>`);
+  const row = $('#moods');
+  row.classList.add('strip');
+  row.innerHTML = capHtml(['🙂', '😀', '😍', '😎', '🤩', '😴', '😢', '😡', '🥳', '🤔'].map((m, i) => `<button type="button" data-m="${i}">${m}</button>`).join(''));
+  mountCap(row);
+  row.querySelectorAll('[data-m]').forEach(b => onLongPress(b,
+    async () => { zeile(`frage smiley${b.dataset.m}`); const ja = await confirmPop(b, 'Aus der Schnellauswahl entfernen?', { label: 'Entfernen', icon: 'trash' }); zeile(`antwort ${ja ? 'entfernen' : 'abbrechen'}`); },
+    () => zeile(`ausgeloest smiley${b.dataset.m}`)));
+  $('#dlgX').onclick = () => { zeile('ausgeloest dlgX'); dlg.close(); };
+  zeile('fenster auf');
+};
+dlg.addEventListener('close', () => zeile('fenster zu'));
+
+// ---------- Aufzeichnung (nur außerhalb der Bedienfläche des Musters) ----------
+const imMuster = el => !!el?.closest?.('.mess, #fensterAuf');
+function ziel(el) {
+  if (!el || el.nodeType !== 1) el = el?.parentElement;
+  if (!el) return '-';
+  const k = el.closest('[data-m]'); if (k) return 'smiley' + k.dataset.m;
+  const b = el.closest('button[id], tr[id], dialog[id]'); if (b) return b.id + (b === el ? '' : '<' + el.tagName.toLowerCase());
+  return el.tagName.toLowerCase() + (el.classList.length ? '.' + [...el.classList].slice(0, 2).join('.') : '');
+}
+let druck = null;
+const sel = () => { const s = getSelection(); return s ? String(s).length : 0; };
+let auswahl = 0;
+for (const typ of ['touchstart', 'touchend', 'touchcancel']) addEventListener(typ, e => {
+  if (imMuster(e.target)) return;
+  zeile(`${typ} ${ziel(e.target)} finger ${e.touches.length}`);
+}, { capture: true, passive: true });
+for (const typ of ['pointerdown', 'pointerup', 'pointercancel']) addEventListener(typ, e => {
+  if (imMuster(e.target)) { if (typ === 'pointerdown') druck = null; return; }
+  if (typ === 'pointerdown') druck = { x: e.clientX, y: e.clientY, weg: 0 };
+  zeile(`zeiger ${typ.slice(7)} ${e.pointerType} ${ziel(e.target)} ${rnd(e.clientX)} ${rnd(e.clientY)}${typ !== 'pointerdown' && druck ? ' weg ' + rnd(druck.weg) : ''}`);
+  if (typ !== 'pointerdown') druck = null;
+}, true);
+addEventListener('pointermove', e => { if (druck) druck.weg = Math.max(druck.weg, Math.hypot(e.clientX - druck.x, e.clientY - druck.y)); }, true);
+for (const typ of ['contextmenu', 'selectstart', 'dragstart']) addEventListener(typ, e => {
+  if (imMuster(e.target)) return;
+  setTimeout(() => zeile(`${typ} ${ziel(e.target)} verhindert ${e.defaultPrevented ? 'ja' : 'nein'}`));
+}, true);
+document.addEventListener('selectionchange', () => { const n = sel(); if (n !== auswahl) { auswahl = n; zeile(`auswahl ${n}`); } });
+addEventListener('click', e => { if (!imMuster(e.target)) setTimeout(() => zeile(`klick ${ziel(e.target)} verhindert ${e.defaultPrevented ? 'ja' : 'nein'}`)); }, true);
+
+// Klassen und Anzeige: .beruehrt, .hebt, .grossanzeige, Frage, html.ts-ax – mit den berechneten Werten kurz danach
+const KL = ['beruehrt', 'beruehrt-aus', 'hebt'];
+const stil = el => { const c = getComputedStyle(el), cz = el.matches('tr') ? getComputedStyle(el.firstElementChild) : c;
+  return `opacity ${(+c.opacity).toFixed(2)} hg ${cz.backgroundColor.replace(/\s/g, '')} transform ${c.transform.replace(/\s/g, '')} filter ${c.filter.replace(/\s/g, '')}`; };
+function grossLage(g) {
+  const r = g.getBoundingClientRect(), c = getComputedStyle(g), vv = window.visualViewport;
+  return `lage ${rnd(r.left)} ${rnd(r.top)} ${rnd(r.width)} ${rnd(r.height)} innen ${innerWidth}x${innerHeight} vv ${vv ? rnd(vv.width) + 'x' + rnd(vv.height) + '+' + rnd(vv.offsetTop) : '-'} display ${c.display} sicht ${c.visibility} opacity ${(+c.opacity).toFixed(2)} z ${c.zIndex} svg ${g.querySelector('svg') ? 'ja' : 'nein'} textlaenge ${g.textContent.trim().length} eltern ${g.parentElement?.id || g.parentElement?.tagName.toLowerCase()}`;
+}
+const alt = new WeakMap();
+new MutationObserver(ms => {
+  for (const m of ms) {
+    if (m.type === 'attributes' && m.attributeName === 'class') {
+      const el = m.target;
+      if (el === document.documentElement) {
+        const ax = el.classList.contains('ts-ax'), war = alt.get(el);
+        if (war !== undefined && war !== ax) zeile(`text ts-ax ${ax ? 'an' : 'aus'} ${el.dataset.ts || '-'}`);
+        alt.set(el, ax);
+        if (GEGEN === 'ohne-ax' && ax) el.classList.remove('ts-ax');
+        continue;
+      }
+      if (imMuster(el)) continue;
+      const vor = (m.oldValue || '').split(/\s+/), jetzt = [...el.classList];
+      for (const k of KL) {
+        const a = vor.includes(k), b = jetzt.includes(k);
+        if (a === b) continue;
+        zeile(`klasse ${ziel(el)} ${b ? '+' : '-'}${k}`);
+        if (b && k !== 'beruehrt-aus') {
+          requestAnimationFrame(() => requestAnimationFrame(() => { if (el.classList.contains(k)) zeile(`stil ${ziel(el)} ${k} ${stil(el)}`); }));
+          if (k === 'hebt') setTimeout(() => { if (el.classList.contains('hebt')) zeile(`stil ${ziel(el)} hebt-0.4s ${stil(el)}`); }, 400);
+        }
+      }
+    }
+    for (const n of m.addedNodes || []) {
+      if (n.nodeType !== 1) continue;
+      if (n.matches('.grossanzeige')) { zeile('gross auf'); requestAnimationFrame(() => requestAnimationFrame(() => { if (n.isConnected) zeile(`gross ${grossLage(n)}`); })); }
+      if (n.matches('.pop, .menu')) zeile(`${n.matches('.pop') ? 'pop' : 'menu'} auf`);
+    }
+    for (const n of m.removedNodes || []) {
+      if (n.nodeType !== 1) continue;
+      if (n.matches('.grossanzeige')) zeile('gross zu');
+      if (n.matches('.pop, .menu')) zeile(`${n.matches('.pop') ? 'pop' : 'menu'} zu`);
+    }
+  }
+}).observe(document.documentElement, { subtree: true, childList: true, attributes: true, attributeFilter: ['class'], attributeOldValue: true });
+alt.set(document.documentElement, document.documentElement.classList.contains('ts-ax'));
+if (GEGEN === 'ohne-ax') document.documentElement.classList.remove('ts-ax');
+
+// ---------- Ablauf: feste Fälle, ‚Nächster Schritt‘, abgehakt (2.7) ----------
+function stand() {
+  const r = document.documentElement, rm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  return `ts ${r.dataset.ts || '-'} ax ${r.classList.contains('ts-ax') ? 1 : 0} px ${parseFloat(getComputedStyle(r).fontSize)} ruhig ${rm ? 1 : 0} innen ${innerWidth}x${innerHeight}`;
+}
+function zeige() {
+  const n = zustand.fall, fall = FAELLE[n];
+  $('#schritt').innerHTML = fall ? `<b>Nächster Schritt: Fall ${n + 1} von ${FAELLE.length} – ${fall.titel}</b>${fall.schritt}`
+    : '<b>Nächster Schritt: ‚Messung teilen‘</b>Alle Fälle sind aufgenommen. Teile die Datei mit Claude.';
+  $('#liste').innerHTML = FAELLE.map((x, i) => `<li class="${i === n ? 'jetzt' : ''}"><span class="h">${zustand.fertig.includes(i) ? '✓' : ''}</span>Fall ${i + 1}: ${x.titel}</li>`).join('');
+  $('#zaehler').textContent = `${zustand.fertig.length} von ${FAELLE.length} aufgenommen`;
+  $('#fertig').disabled = $('#nochmal').disabled = !fall;
+  $('#teilen').disabled = zustand.fertig.length < FAELLE.length;
+  $('#trotzdem').style.display = zustand.fertig.length < FAELLE.length ? '' : 'none';
+  document.documentElement.classList.toggle('b', fall?.v === 'B');
+}
+function starte(n) {
+  zustand.fall = n; getSelection()?.removeAllRanges();
+  zeile(`fall ${n + 1} ${FAELLE[n] ? FAELLE[n].v + ' ' + FAELLE[n].schrift : 'ende'} · ${stand()}`); zeige();
+}
+$('#fertig').onclick = () => {
+  const n = zustand.fall; if (!FAELLE[n]) return;
+  zeile(`fertig ${n + 1} · ${stand()}`);
+  if (!zustand.fertig.includes(n)) zustand.fertig.push(n);
+  const weiter = FAELLE.findIndex((_, i) => !zustand.fertig.includes(i));
+  if (weiter < 0) { zustand.fall = FAELLE.length; zeile('alle faelle'); zeige(); }
+  else starte(weiter);
+};
+$('#nochmal').onclick = () => { zeile(`neu ${zustand.fall + 1}`); starte(zustand.fall); };
+$('#neu').onclick = () => { if (!confirm('Messung löschen und neu beginnen?')) return;
+  zustand = { fall: 0, fertig: [], zeilen: [] }; try { sessionStorage.removeItem(SPEICHER); } catch {} kopf(); starte(0); };
+function kopf() {
+  const st = matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+  zeile(`start ${st ? 'home' : 'safari'} ${screen.width}x${screen.height} AppDesign ${typeof AD_VERSION !== 'undefined' ? AD_VERSION : '-'} gegenprobe ${GEGEN || '-'} · ${stand()}`);
+}
+function text() {
+  return `# APD-106 Messung 1 · ${navigator.userAgent} · ${new Date().toISOString()}\n` +
+    `# ${zustand.fertig.length} von ${FAELLE.length} Fällen aufgenommen\n` + zustand.zeilen.join('\n') + '\n';
+}
+async function teile() {
+  const name = `messung-APD-106-${new Date().toISOString().slice(0, 16).replace(/[:T]/g, '-')}.txt`;
+  try { await navigator.share({ files: [new File([text()], name, { type: 'text/plain' })] }); }
+  catch (e) {
+    if (e.name === 'AbortError') return;
+    const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([text()], { type: 'text/plain' })); a.download = name; a.click();
+  }
+}
+$('#teilen').onclick = teile;
+$('#trotzdem').onclick = () => { zeile('trotzdem teilen'); teile(); };
+window.a106 = { text, FAELLE };   // für die Prüfung im Safari-Modell
+if (!zustand.zeilen.length) { kopf(); starte(0); }
+else { zeile('neu geladen · ' + stand()); zeige(); }
+</script>
+</body></html>
