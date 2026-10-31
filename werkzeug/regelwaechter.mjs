@@ -1,10 +1,11 @@
-// AppDesign 4.39.0 · Regelwächter (APD-84/M-3, Testfall-Liste arbeit/APD-84 APD-83 Testfall-Liste.md APD-84/W-1 bis W-13; Zusammenarbeit
+// AppDesign 4.48.0 · Regelwächter (APD-84/M-3, Testfall-Liste arbeit/APD-84 APD-83 Testfall-Liste.md APD-84/W-1 bis W-13; Zusammenarbeit
 // allgemein 0, Kasten ‚Jede Antwort‘). Läuft als Hook von Claude Code – eingerichtet einmal über das Setup-Skript der Umgebung, den Text
 // gibt `node werkzeug/regelwaechter.mjs setup` aus. Befehle (das JSON des Hooks kommt auf stdin, `transcript_path` = Sitzungsdatei):
 //   uhrzeit  UserPromptSubmit und PostToolUse: gibt Claude die abgelesene Uhrzeitzeile für die nächste Ausgabe (0 Nr. 26 – nie schätzen)
 //            und meldet, wenn die Sitzung nicht mit Opus 5.5 läuft (2.5); nach einem Werkzeug nur, wenn sich etwas geändert hat (W-10)
 //   fenster  PreToolUse für AskUserQuestion: ein Fenster ohne ‚(Empfohlen)‘ zuerst bzw. ohne ‚Ich schreibe im Chat‘ wird gar nicht erst
-//            gezeigt (W-5, 2.1), ebenso ohne Satz mit ‚Kontext N‘ aus messung.mjs davor (W-14, 0 Nr. 28, seit 4.45.0)
+//            gezeigt (W-5, 2.1), ebenso ohne Satz mit ‚Kontext N‘ aus messung.mjs davor (W-14, 0 Nr. 28, seit 4.45.0) bzw. – ist er
+//            nicht prüfbar – ohne Aufruf von messung.mjs seit der vorigen Nachricht (Rückfall, seit 4.48.0, APD-103)
 //   stop     Stop: prüft die Antwort in der Sitzungsdatei (W-1 bis W-7, W-14) und lässt sie nicht enden, bis die Formpflichten stimmen –
 //            höchstens zweimal je Antwort (W-9); danach werden nur noch neue Ausgaben geprüft
 //   setup    gibt den Text für das Setup-Skript aus (W-13)
@@ -90,20 +91,34 @@ export function pruefeFenster(input, aus = []) {
 
 // W-14 (seit 4.45.0, APD-99, Testfall-Liste arbeit/APD-99 Testfall-Liste.md C-1 bis C-13): unmittelbar vor jedem Fenster der
 // Kontextstand als Satz mit ‚Kontext N‘ (außerhalb der Zeitzeile), N aus dem letzten Aufruf von messung.mjs seit der vorigen
-// Nachricht bzw. dem vorigen Fenster (abgelesen, 0 Nr. 28). Ist die Ausgabe davor nicht wörtlich gespeichert (‚unsicher‘), lässt er
-// durch (2.8 ‚Grenze‘). i: Stelle des Fensters im Verlauf.
+// Nachricht bzw. dem vorigen Fenster (abgelesen, 0 Nr. 28). i: Stelle des Fensters im Verlauf (-1: noch nicht in der Sitzungsdatei).
+// Seit 4.48.0 (APD-103, Testfall-Liste arbeit/APD-103 Testfall-Liste.md D-1 bis D-9) Rückfall statt Durchlassen: ist die Ausgabe davor
+// nicht wörtlich gespeichert (‚unsicher‘, 2.8 ‚Grenze‘) oder steht das Fenster beim Zeigen noch nicht in der Sitzungsdatei, muss seit der
+// vorigen Nachricht bzw. dem vorigen Fenster messung.mjs aufgerufen worden sein und einen Kontext gemeldet haben – sonst abgelehnt.
+// REGELWAECHTER_AUS=W-14-Rückfall schaltet nur den Rückfall ab (Gegenprobe D-9).
 const KONTEXT = /Kontext (\d{1,3}(?:\.\d{3})+|\d+)/;
 const zahl = s => Number(s.replace(/\./g, ''));
-export function pruefeKontext(ev, i, aus = []) {
+const RUECKFALL = 'W-14-Rückfall';
+// Kontext aus dem letzten Aufruf von messung.mjs in den Ereignissen davor (null: nicht aufgerufen, '': aufgerufen, ohne ‚Kontext N‘)
+function gemessenIn(davor) {
+  const aufrufe = new Set(davor.filter(e => e.art === 'werkzeug' && /messung\.mjs/.test(JSON.stringify(e.input))).map(e => e.id));
+  const ergebnisse = davor.filter(e => e.art === 'ergebnis' && aufrufe.has(e.id));
+  return ergebnisse.length ? ergebnisse.map(e => e.text.match(KONTEXT)?.[1]).filter(Boolean).at(-1) ?? '' : null;
+}
+export function pruefeKontext(ev, i, aus = [], frageText = null) {
   if (aus.includes('W-14')) return [];
-  let von = i - 1; while (von >= 0 && ev[von].art !== 'nachricht' && ev[von].art !== 'fenster') von--;
-  const davor = ev.slice(von + 1, i), aussage = davor.filter(e => e.art === 'text' || e.art === 'unsicher').at(-1);
-  const frage = `„${kurz(ev[i].input?.questions?.[0]?.question || '', 60)}“`;
-  if (aussage?.art === 'unsicher') return [];
+  const bis = i < 0 ? ev.length : i;
+  let von = bis - 1; while (von >= 0 && ev[von].art !== 'nachricht' && ev[von].art !== 'fenster') von--;
+  const davor = ev.slice(von + 1, bis), aussage = davor.filter(e => e.art === 'text' || e.art === 'unsicher').at(-1);
+  const frage = `„${kurz(frageText ?? ev[i]?.input?.questions?.[0]?.question ?? '', 60)}“`;
+  const gemessen = gemessenIn(davor);
+  if (i < 0 || aussage?.art === 'unsicher') {
+    if (aus.includes(RUECKFALL) || gemessen) return [];
+    const wo = i < 0 ? 'das Fenster steht noch nicht in der Sitzungsdatei' : 'die Ausgabe davor steht nicht wörtlich in der Sitzungsdatei';
+    return [`W-14 vor dem Fenster ${frage} ${gemessen === '' ? 'meldete messung.mjs keinen Kontext' : 'messung.mjs davor nicht aufgerufen'} – ${wo}, geprüft wird der Aufruf seit der vorigen Nachricht bzw. dem vorigen Fenster (2.8)`];
+  }
   const m = aussage?.text.replace(new RegExp(ZEIT.source, 'g'), '').match(KONTEXT);
   if (!m) return [`W-14 vor dem Fenster ${frage} kein Satz mit ‚Kontext N‘ aus messung.mjs (0 Nr. 28)`];
-  const aufrufe = new Set(davor.filter(e => e.art === 'werkzeug' && /messung\.mjs/.test(JSON.stringify(e.input))).map(e => e.id));
-  const gemessen = davor.filter(e => e.art === 'ergebnis' && aufrufe.has(e.id)).map(e => e.text.match(KONTEXT)?.[1]).filter(Boolean).at(-1);
   if (!gemessen || zahl(gemessen) !== zahl(m[1]))
     return [`W-14 vor dem Fenster ${frage} ‚Kontext ${m[1]}‘ nicht abgelesen – ${gemessen ? `messung.mjs meldete Kontext ${gemessen}` : 'messung.mjs davor nicht aufgerufen'} (nie schätzen, 0 Nr. 27)`];
   return [];
@@ -164,9 +179,10 @@ const letzteUhrzeit = ev => { for (let k = ev.length - 1; k >= 0; k--) { const m
 export function fuehreAus(befehl, eingabe, { env = process.env, jetzt = Date.now() } = {}) {
   const aus = (env.REGELWAECHTER_AUS || '').split(',').filter(Boolean);
   if (befehl === 'fenster') {
-    // W-14 nur, wenn das Fenster schon in der Sitzungsdatei steht – sonst ist die Ausgabe davor vielleicht noch nicht geschrieben (C-8)
+    // W-14: steht das Fenster noch nicht in der Sitzungsdatei, ist die Ausgabe davor vielleicht noch nicht geschrieben (C-8) – dann
+    // der Rückfall auf den Aufruf von messung.mjs (seit 4.48.0, APD-103/D-4, D-5); ohne Sitzungsdatei lässt er durch (W-12)
     const f = datei(eingabe), ev = f ? verlauf(lies(f)) : [], i = ev.findIndex(e => e.art === 'fenster' && e.id === eingabe.tool_use_id);
-    const fehler = [...pruefeFenster(eingabe.tool_input, aus), ...(i >= 0 ? pruefeKontext(ev, i, aus) : [])];
+    const fehler = [...pruefeFenster(eingabe.tool_input, aus), ...(f ? pruefeKontext(ev, i, aus, eingabe.tool_input?.questions?.[0]?.question || '') : [])];
     return fehler.length ? { hookSpecificOutput: { hookEventName: 'PreToolUse', permissionDecision: 'deny', permissionDecisionReason:
       `Regelwächter (Zusammenarbeit 0 Nr. 7, Nr. 28, 2.1) – Fenster so nicht zeigen:\n${fehler.map(f => '- ' + f).join('\n')}\nNeu stellen: die Empfehlung zuerst mit ‚(Empfohlen)‘ und Grund in der Beschreibung, immer ‚${CHAT}‘; davor \`node ${MESSUNG}\` aufrufen und den Kontextstand als Satz mit ‚Kontext N‘ ausgeben.` } } : null;
   }

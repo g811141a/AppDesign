@@ -2619,3 +2619,196 @@ export async function checkTitelBlase(p, { sel, daneben = [], rollen = null, esc
   await p.evaluate(() => document.querySelector('.titel-blase')?.remove());
   return { gekuerzt: true, errors };
 }
+
+// Nachgebildete Berührung (Finger) für R-2.6 und R-3.6: wie Safari bleibt das Ziel aller Zeiger-Ereignisse das Element unter dem Aufsetzen
+// (implizite Zeigerbindung), der Klick nach dem Loslassen geht an dieses Element. schritte: [art, wert …] – ['warte', ms], ['zu', dx, dy]
+// (Finger an die Stelle relativ zum Aufsetzpunkt), ['zuEl', sel] (Finger auf die Mitte eines anderen Elements), ['taste', key], ['rolle', sel, px],
+// ['merke', name] (Zustand festhalten: Großanzeige, Klassen der Elemente). Am Ende pointerup (ohne ['ab', false] nicht) und – wie der Browser –
+// ein Klick auf das Element (ausser ['ohneKlick']). Zurück: festgehaltene Zustände und die Knöpfe, deren Klick bis zum Dokument kam.
+export function finger(p, sel, schritte = [], { pointerType = 'touch', fangen = true } = {}) {
+  return p.evaluate(async ({ sel, schritte, pointerType, fangen }) => {
+    const warte = ms => new Promise(r => setTimeout(r, ms));
+    const el = document.querySelector(sel); if (!el) return { fehlt: sel };
+    const mitte = e => { const r = e.getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2]; };
+    const [x0, y0] = mitte(el); let x = x0, y = y0;
+    const ev = typ => el.dispatchEvent(new PointerEvent(typ, { pointerId: 4104, pointerType, isPrimary: true, clientX: x, clientY: y,
+      button: 0, buttons: typ === 'pointerup' ? 0 : 1, bubbles: true, cancelable: true, composed: true }));
+    const klicks = [], hoer = e => klicks.push(e.target.closest?.('button, [data-day], tr, .side-row')?.id || e.target.closest?.('[aria-label]')?.getAttribute('aria-label') || e.target.tagName);
+    // Klicks, die bis zum Dokument kommen (nach den Hörern von ui.js am Fenster), festhalten – und nicht weitergeben (keine Menüs, Fenster)
+    const fang = e => { hoer(e); if (fangen) { e.preventDefault(); e.stopImmediatePropagation(); } };
+    document.addEventListener('click', fang, true);
+    const stand = () => { const g = document.querySelector('.grossanzeige'), r = g?.getBoundingClientRect(), vv = window.visualViewport;
+      return { gross: g ? { text: g.textContent.trim(), svg: !!g.querySelector('svg'), hidden: g.getAttribute('aria-hidden'),
+        mitteX: Math.round(r.left + r.width / 2 - innerWidth / 2), mitteY: Math.round(r.top + r.height / 2 - (vv ? vv.offsetTop + vv.height / 2 : innerHeight / 2)),
+        drin: r.left >= -0.5 && r.top >= -0.5 && r.right <= innerWidth + 0.5 && r.bottom <= innerHeight + 0.5, schrift: parseFloat(getComputedStyle(g).fontSize),
+        icon: Math.round(g.querySelector('svg')?.getBoundingClientRect().width || 0) } : null,
+        beruehrt: el.classList.contains('beruehrt'), hebt: el.classList.contains('hebt'), opacity: +getComputedStyle(el).opacity,
+        hg: getComputedStyle(el.matches('tr') ? el.firstElementChild : el).backgroundColor, transform: getComputedStyle(el).transform,
+        frage: !!document.querySelector('.pop, .menu'), uebergang: getComputedStyle(el).transitionDuration, ms: Math.round(performance.now() - t0) }; };
+    const gemerkt = {};
+    let ab = true, klick = true;
+    const t0 = performance.now();
+    ev('pointerdown');
+    for (const [art, a, b] of schritte) {
+      if (art === 'warte') await warte(a);
+      else if (art === 'zu') { x = x0 + a; y = y0 + (b || 0); ev('pointermove'); }
+      else if (art === 'zuEl') { [x, y] = mitte(document.querySelector(a)); ev('pointermove'); }
+      else if (art === 'taste') document.dispatchEvent(new KeyboardEvent('keydown', { key: a, bubbles: true, cancelable: true }));
+      else if (art === 'rolle') { const f = document.querySelector(a) || document.scrollingElement; f.scrollTop += b; f.dispatchEvent(new Event('scroll')); await warte(30); }
+      else if (art === 'merke') gemerkt[a] = stand();
+      else if (art === 'ohneAb') ab = false;
+      else if (art === 'ohneKlick') klick = false;
+    }
+    if (ab) { ev('pointerup'); if (klick && el.isConnected) el.click(); }
+    await warte(20);
+    gemerkt.ende = stand();
+    await warte(450);
+    gemerkt.danach = stand();
+    document.removeEventListener('click', fang, true);
+    return { gemerkt, klicks };
+  }, { sel, schritte, pointerType, fangen });
+}
+
+// R-2.6 (seit 4.48.0, APD-104, Testfall-Liste arbeit/APD-104 Testfall-Liste.md L-1 bis L-9): Großanzeige für Leisten-Knöpfe. knoepfe: zwei
+// benachbarte Knöpfe derselben Leiste [a, b] (gleiten von a nach b); daneben: eine Stelle ohne Knopf (Titel), zu der der Finger gleitet;
+// ax: die Seite steht auf einer Textgröße ab AX1 (sonst prüft die Funktion nur L-1 und L-2: nichts davon). Gibt Fehler zurück.
+export async function checkGrossanzeige(p, { knoepfe, daneben = null, ax = true, where = '' } = {}) {
+  const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}R-2.6 ${t}`);
+  const [a, b] = knoepfe;
+  const name = s => p.evaluate(s => { const k = document.querySelector(s); return (k?.getAttribute('aria-label') || k?.textContent || '').trim(); }, s);
+  const na = await name(a), nb = b ? await name(b) : '';
+  const zu = async () => { await p.evaluate(() => { document.querySelector('.grossanzeige')?.remove(); }); await wait(p, 100); };
+  if (!ax) {
+    // L-1, L-2: unter AX1 – langes Drücken zeigt nichts und wirkt wie Antippen
+    let r = await finger(p, a, [['warte', 750], ['merke', 'lang']]);
+    if (r.gemerkt.lang.gross) E(`L-1 unter AX1 zeigt langes Drücken auf ${na} die Großanzeige`);
+    if (!r.klicks.includes(await p.evaluate(s => document.querySelector(s).id || document.querySelector(s).getAttribute('aria-label'), a))) E(`L-1 unter AX1 löst langes Drücken auf ${na} den Knopf nicht aus (wie Antippen)`);
+    r = await finger(p, a, [['warte', 80]]);
+    if (r.klicks.length !== 1) E(`L-2 Antippen von ${na} löst ${r.klicks.length}-mal aus`);
+    await zu();
+    return errors;
+  }
+  const id = s => p.evaluate(s => { const k = document.querySelector(s); return k.id || k.getAttribute('aria-label'); }, s);
+  const ia = await id(a), ib = b ? await id(b) : null;
+  // L-3: Antippen löst aus, keine Anzeige
+  let r = await finger(p, a, [['warte', 80], ['merke', 'tipp']]);
+  if (r.gemerkt.tipp.gross || r.gemerkt.ende.gross) E(`L-3 Antippen von ${na} zeigt die Großanzeige`);
+  if (r.klicks.length !== 1 || r.klicks[0] !== ia) E(`L-3 Antippen von ${na} löst nicht genau einmal aus (${r.klicks.join(', ') || 'gar nicht'})`);
+  // L-4, L-5: 0,3 s noch nichts, 0,6 s Anzeige mit Icon und Namen in der Mitte, ganz auf dem Bildschirm, mit der Textgröße; L-8 Loslassen löst aus
+  r = await finger(p, a, [['warte', 300], ['merke', 'kurz'], ['warte', 400], ['merke', 'lang']]);
+  if (r.gemerkt.kurz.gross) E(`L-4 nach 0,3 s zeigt ${na} schon die Großanzeige`);
+  const g = r.gemerkt.lang.gross;
+  if (!g) E(`L-5 0,6 s Halten auf ${na} zeigt keine Großanzeige`);
+  else {
+    if (g.text !== na) E(`L-5 die Großanzeige zeigt ‚${g.text}‘ statt ‚${na}‘`);
+    if (!g.svg || g.icon < 50) E(`L-5 die Großanzeige zeigt kein großes Icon (${g.icon} px)`);
+    if (Math.abs(g.mitteX) > 2 || Math.abs(g.mitteY) > 2) E(`L-5 die Großanzeige steht nicht in der Mitte (${g.mitteX}/${g.mitteY} px daneben)`);
+    if (!g.drin) E('L-5 die Großanzeige steht nicht ganz auf dem Bildschirm');
+    if (g.hidden !== 'true') E('L-5 die Großanzeige ist nicht nur zu sehen (aria-hidden fehlt) – VoiceOver nennt den Knopf selbst (R-1.8)');
+    if (g.schrift < 27.5) E(`L-5 die Schrift der Großanzeige ist kleiner als AX1 (${g.schrift} px)`);
+  }
+  if (r.gemerkt.ende.gross) E('L-8 nach dem Loslassen bleibt die Großanzeige offen');
+  if (g && (r.klicks.length !== 1 || r.klicks[0] !== ia)) E(`L-8 Loslassen über ${na} löst nicht genau einmal aus (${r.klicks.join(', ') || 'gar nicht'})`);
+  // L-6: vor 0,6 s mehr als 10 px bewegt – keine Anzeige, nichts ausgelöst
+  r = await finger(p, a, [['warte', 200], ['zu', 14, 0], ['warte', 600], ['merke', 'weg']]);
+  if (r.gemerkt.weg.gross) E(`L-6 der Finger wanderte vor 0,6 s 14 px, trotzdem zeigt ${na} die Großanzeige`);
+  if (r.klicks.length) E(`L-6 der Finger wanderte 14 px, trotzdem löst ${na} aus`);
+  // L-7: gleiten zum Nachbarknopf – die Anzeige wechselt; Loslassen dort löst ihn aus (L-8)
+  if (b) {
+    r = await finger(p, a, [['warte', 700], ['zuEl', b], ['warte', 50], ['merke', 'nachbar']]);
+    if (r.gemerkt.nachbar.gross?.text !== nb) E(`L-7 gleiten von ${na} zu ${nb}: die Anzeige zeigt ‚${r.gemerkt.nachbar.gross?.text ?? 'nichts'}‘`);
+    if (r.klicks.length !== 1 || r.klicks[0] !== ib) E(`L-8 Loslassen über ${nb} nach dem Gleiten löst nicht genau ${nb} aus (${r.klicks.join(', ') || 'nichts'})`);
+  }
+  // daneben loslassen: schließt nur
+  if (daneben) {
+    r = await finger(p, a, [['warte', 700], ['zuEl', daneben], ['warte', 50], ['merke', 'daneben']]);
+    if (!r.gemerkt.daneben.gross) E(`L-7 nach dem Gleiten auf ${daneben} ist die Großanzeige weg (sie zeigt den letzten Knopf weiter)`);
+    if (r.gemerkt.ende.gross) E('L-9 Loslassen daneben schließt die Großanzeige nicht');
+    if (r.klicks.length) E(`L-9 Loslassen neben den Knöpfen löst ${r.klicks.join(', ')} aus`);
+  }
+  // Esc schließt ohne Auslösen
+  r = await finger(p, a, [['warte', 700], ['taste', 'Escape'], ['merke', 'esc']]);
+  if (r.gemerkt.esc.gross) E('Esc schließt die Großanzeige nicht');
+  if (r.klicks.length) E(`nach Esc löst das Loslassen ${r.klicks.join(', ')} aus`);
+  await zu();
+  return errors;
+}
+
+// R-3.6 (seit 4.48.0, APD-105, Testfall-Liste arbeit/APD-105 Testfall-Liste.md B-1 bis B-4): Rückmeldung beim Berühren. knopf: Schaltfläche in einer
+// festen Leiste (sofort blass); zeile: Listen- oder Tabellenzeile in einem Rollbereich (nach 80 ms grau); rollen: deren Rollbereich (sel);
+// gesperrt: gesperrte Schaltfläche (zeigt nichts); kapsel: Knopf einer Kapsel (Rollbereich, nach 80 ms blass). Gibt Fehler zurück.
+export async function checkBeruehren(p, { knopf = null, zeile = null, rollen = null, gesperrt = null, kapsel = null, where = '' } = {}) {
+  const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}R-3.6 ${t}`);
+  const grau = await p.evaluate(() => { const d = document.createElement('div'); d.style.backgroundColor = 'var(--beruehrt)'; document.body.append(d);
+    const c = getComputedStyle(d).backgroundColor; d.remove(); return c; });
+  if (knopf) {
+    // B-1 sofort blass (35 %), B-2 Loslassen: blendet in 0,15 s aus, löst aus
+    const r = await finger(p, knopf, [['warte', 15], ['merke', 'sofort']]);
+    if (!r.gemerkt.sofort.beruehrt || Math.abs(r.gemerkt.sofort.opacity - 0.35) > 0.02) E(`B-1 ${knopf} wird beim Berühren nicht sofort blass (Deckkraft ${r.gemerkt.sofort.opacity})`);
+    if (r.gemerkt.ende.beruehrt) E(`B-2 ${knopf} bleibt nach dem Loslassen blass`);
+    if (!/0\.15s/.test(r.gemerkt.ende.uebergang)) E(`B-2 ${knopf} blendet nicht in 0,15 s aus (Übergang ${r.gemerkt.ende.uebergang})`);
+    if (r.gemerkt.danach.opacity !== 1) E(`B-2 ${knopf} ist 0,45 s nach dem Loslassen noch blass (${r.gemerkt.danach.opacity})`);
+    if (r.klicks.length !== 1) E(`B-2 Loslassen auf ${knopf} löst ${r.klicks.length}-mal aus`);
+    // B-4 nach dem Berühren 20 px wegziehen: Rückmeldung weg, nichts ausgelöst
+    const w = await finger(p, knopf, [['warte', 40], ['zu', 20, 0], ['merke', 'weg']]);
+    if (w.gemerkt.weg.beruehrt) E(`B-4 ${knopf}: 20 px weggezogen, die Rückmeldung bleibt`);
+    if (w.klicks.length) E(`B-4 ${knopf}: 20 px weggezogen, trotzdem ausgelöst`);
+  }
+  if (zeile) {
+    // B-3 in einem Rollbereich: nach 30 ms noch nichts, nach 80 ms grau
+    const r = await finger(p, zeile, [['warte', 30], ['merke', 'frueh'], ['warte', 90], ['merke', 'spaeter']]);
+    if (r.gemerkt.frueh.beruehrt && r.gemerkt.frueh.ms < 75) E(`B-3 ${zeile} wird schon nach ${r.gemerkt.frueh.ms} ms grau – im Rollbereich erst nach 80 ms`);
+    if (!r.gemerkt.spaeter.beruehrt || r.gemerkt.spaeter.hg !== grau) E(`B-3 ${zeile} wird nach 120 ms nicht grau (${r.gemerkt.spaeter.hg} statt ${grau})`);
+    if (r.gemerkt.spaeter.opacity !== 1) E(`B-3 ${zeile} wird blass statt grau (Deckkraft ${r.gemerkt.spaeter.opacity})`);
+    if (r.gemerkt.ende.beruehrt) E(`B-2 ${zeile} bleibt nach dem Loslassen grau`);
+    if (r.klicks.length !== 1) E(`B-2 Loslassen auf ${zeile} löst ${r.klicks.length}-mal aus`);
+    const w = await finger(p, zeile, [['warte', 120], ['zu', 0, 20], ['merke', 'weg']]);
+    if (w.gemerkt.weg.beruehrt) E(`B-4 ${zeile}: 20 px weggezogen, die Zeile bleibt grau`);
+    if (w.klicks.length) E(`B-4 ${zeile}: 20 px weggezogen, trotzdem ausgelöst`);
+    if (rollen) {   // Rollen hebt es auf, ohne auszulösen
+      const s = await finger(p, zeile, [['warte', 120], ['rolle', rollen, 30], ['merke', 'rollt']]);
+      if (s.gemerkt.rollt.beruehrt) E(`B-4 ${zeile}: der Bereich rollt, die Zeile bleibt grau`);
+      if (s.klicks.length) E(`B-4 ${zeile}: der Bereich rollte, trotzdem ausgelöst`);
+      await p.evaluate(sel => { const f = document.querySelector(sel); if (f) f.scrollTop = Math.max(0, f.scrollTop - 30); }, rollen); await wait(p, 100);
+    }
+  }
+  if (kapsel) {
+    const r = await finger(p, kapsel, [['warte', 30], ['merke', 'frueh'], ['warte', 90], ['merke', 'spaeter'], ['ohneKlick']]);
+    if (r.gemerkt.frueh.beruehrt && r.gemerkt.frueh.ms < 75) E(`B-3 ${kapsel} (Kapsel) wird schon nach ${r.gemerkt.frueh.ms} ms blass`);
+    if (!r.gemerkt.spaeter.beruehrt || Math.abs(r.gemerkt.spaeter.opacity - 0.35) > 0.02) E(`B-3 ${kapsel} (Kapsel) wird nach 120 ms nicht blass`);
+  }
+  if (gesperrt) {
+    const r = await finger(p, gesperrt, [['warte', 120], ['merke', 'g'], ['ohneKlick']]);
+    if (r.gemerkt.g.beruehrt) E(`gesperrte Schaltfläche ${gesperrt} zeigt beim Berühren eine Rückmeldung`);
+  }
+  return errors;
+}
+
+// R-3.5 Anheben (seit 4.48.0, APD-105/B-5, B-6, B-8): ein Eintrag mit eigener Aktion für langes Drücken (onLongPress) hebt sich ab 0,15 s an,
+// senkt sich bei Abbruch wieder; nach 0,6 s die Frage, das Loslassen löst kein Antippen aus. sel: der Eintrag; frage: was langes Drücken zeigt;
+// feld: Feld, das Antippen ändern würde (bleibt nach dem langen Drücken gleich).
+export async function checkAnheben(p, { sel, frage = '.pop, .menu', feld = null, where = '' } = {}) {
+  const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}R-3.5 ${t}`);
+  const skala = t => { const m = /matrix\(([-\d.e]+)/.exec(t || ''); return m ? +m[1] : 1; };
+  const ruhig = await p.evaluate(() => matchMedia('(prefers-reduced-motion: reduce)').matches);
+  // B-5: nach 0,06 s noch nicht (gemessen, unter 0,14 s), ab 0,15 s angehoben (größer, Schatten); B-8: nach 0,3 s weggezogen – senkt sich, keine Frage
+  let r = await finger(p, sel, [['warte', 60], ['merke', 'frueh'], ['warte', 390], ['merke', 'hebt'], ['zu', 24, 0], ['warte', 50], ['merke', 'weg'], ['warte', 500], ['merke', 'spaeter']]);
+  if (r.gemerkt.frueh.hebt && r.gemerkt.frueh.ms < 140) E(`B-5 ${sel} hebt sich schon nach ${r.gemerkt.frueh.ms} ms an – erst ab 0,15 s`);
+  if (!r.gemerkt.hebt.hebt) E(`B-5 ${sel} hebt sich nach 0,45 s Halten nicht an`);
+  else if (!ruhig && skala(r.gemerkt.hebt.transform) < 1.02) E(`B-5 ${sel} wächst beim Anheben nicht (${r.gemerkt.hebt.transform})`);
+  else if (ruhig && r.gemerkt.hebt.transform !== 'none') E(`B-5 ${sel}: ‚Bewegung reduzieren‘ – Anheben nur mit Schatten, trotzdem ${r.gemerkt.hebt.transform}`);
+  if (r.gemerkt.weg.hebt) E(`B-8 ${sel}: nach dem Wegziehen bleibt der Eintrag angehoben`);
+  if (r.gemerkt.spaeter.frage) E(`B-8 ${sel}: nach dem Wegziehen kommt trotzdem die Frage`);
+  if (r.klicks.length) E(`B-8 ${sel}: nach dem Wegziehen ausgelöst (${r.klicks.join(', ')})`);
+  // B-6: 0,6 s halten – die Frage kommt, der Eintrag senkt sich, Loslassen löst kein Antippen aus
+  const wert = () => feld ? p.evaluate(f => document.querySelector(f)?.value, feld) : null, vorher = await wert();
+  r = await finger(p, sel, [['warte', 750], ['merke', 'lang']], { fangen: false });
+  if (!r.gemerkt.lang.frage) E(`B-6 ${sel}: 0,75 s gehalten, keine Frage`);
+  if (r.gemerkt.lang.hebt) E(`B-6 ${sel}: mit der Frage bleibt der Eintrag angehoben`);
+  if (feld && await wert() !== vorher) E(`B-6 ${sel}: das Loslassen nach dem langen Drücken löst Antippen aus (${feld} geändert)`);
+  await wait(p, 100);
+  await p.evaluate(frage => { const f = document.querySelector(frage); if (!f) return;
+    const k = [...f.querySelectorAll('.btns button, button')].at(-1); if (f.matches('.pop') && k) k.click(); else document.querySelector('.layer')?.click(); }, frage);
+  await wait(p, 250);
+  return errors;
+}

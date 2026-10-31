@@ -1,4 +1,4 @@
-# APD-62 / T-43 – Titel antippen rollt nach oben: Testfall-Liste und Wortlaut
+# APD-62 / APD-38/T-43 – Titel antippen rollt nach oben: Testfall-Liste und Wortlaut
 
 Stand 31.10.2026, Sitzung 0067 · **bestätigt ohne Muster** (Nutzer 31.10.2026: Testfall-Liste und Wortlaut) · aus APD-62 (APD-38/T-43, V3) · allgemein (AppDesign) · für 4.49.0 neben APD-85 Teil 3.
 

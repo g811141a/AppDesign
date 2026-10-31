@@ -1,4 +1,4 @@
-// AppDesign 4.47.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
+// AppDesign 4.48.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
 // Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/fassung/X.Y.Z/ui.js"></script> (feste Fassung, R-10.3)
 // Seit 4.11.0 (R-10.3): ui.js und design.css immer mit ?v=<AppDesign-Version> einbinden (auch in sw.js) und beim Start
 // prüfen, ob genau diese Fassung geladen ist (AD_VERSION hier, --ad-version in design.css).
@@ -12,7 +12,7 @@
 // Inhalt: Icons (ic) · esc · Beträge (money, formatEuro) · autoGrow · onLongPress · Darstellung
 // (applyTheme, setAppearance) · Menüs (openMenu mit Untermenü) · Sprechblase (confirmPop) · gekürzter Titel (Sprechblase, seit 4.47.0) ·
 // gedrückte Schaltflächen (hold, release, setOpener) · Meldung (inform) · Fenster (openDialog, dlgHead) ·
-// Auswahl-Kapsel (capHtml, mountCap) · Tastatur/sichtbarer Bereich (placeDialogs) · iPhone (isPhone, applyLayout) ·
+// Berühren (R-3.6) und Großanzeige (R-2.6, seit 4.48.0) · Auswahl-Kapsel (capHtml, mountCap) · Tastatur/sichtbarer Bereich (placeDialogs) · iPhone (isPhone, applyLayout) ·
 // Messmodus (messungMenuItems, seit 4.26.0) · Schnellroll-Griff (seit 4.30.0) · Navigation und Gesten (navAnmelden, navVor,
 // navZurueck, navSeite, seit 4.30.0) · Bedienungshilfen (ansagen, feldFehler, ersterFehler, Fokus und Tasten in Menüs, Sprechblasen
 // und Fenstern, seit 4.35.0)
@@ -20,7 +20,7 @@
 
 'use strict';
 // Version der Bausteine (R-10.3): die App vergleicht sie beim Start mit der benötigten Fassung.
-const AD_VERSION = '4.47.0';
+const AD_VERSION = '4.48.0';
 /* ---------- Icons ---------- */
 
 // Schaltflächen-Icons aus Lucide (ISC-Lizenz), direkt eingebettet, damit die App offline funktioniert.
@@ -112,17 +112,20 @@ const growAll = () => dlg.querySelectorAll('textarea').forEach(autoGrow);
 // R-3.5 (seit 4.33.0, APD-76): langes Drücken gilt nur, solange der Finger still steht – wandert er mehr als LANG_WEG oder rollt die
 // Fläche um ihn herum (Smiley-Leiste seitlich ziehen), ist es abgebrochen (wie Apple). Safari meldet beim Ziehen der Leiste kein
 // pointercancel – vorher fragte die Leiste nach 0,6 s, ob das Smiley unter dem Finger entfernt werden soll.
-const LANG_WEG = 10;
+// Seit 4.48.0 (APD-105, R-3.5 ‚Anheben‘): ab LANG_HEBEN hebt sich der Eintrag an (Klasse .hebt: wächst, Schatten; ‚Bewegung reduzieren‘:
+// nur Schatten) und senkt sich bei Abbruch wieder; löst das lange Drücken aus, senkt er sich und die Rückmeldung beim Berühren endet.
+const LANG_WEG = 10, LANG_HEBEN = 150;
 function onLongPress(btn, onLong, onTap) {
-  let timer = null;
+  let timer = null, heben = null;
   let fired = false, x0 = 0, y0 = 0;
   const rollt = e => { if (e.target.contains?.(btn)) stop(); };
-  const stop = () => { clearTimeout(timer); timer = null; removeEventListener('scroll', rollt, true); };
+  const stop = () => { clearTimeout(timer); clearTimeout(heben); timer = heben = null; btn.classList.remove('hebt'); removeEventListener('scroll', rollt, true); };
   btn.addEventListener('pointerdown', e => {
     stop();
     fired = false; x0 = e.clientX; y0 = e.clientY;
     addEventListener('scroll', rollt, { capture: true, passive: true });
-    timer = setTimeout(() => { stop(); if (navZug?.aktiv) return; fired = true; onLong(); }, 600);   // seit 4.30.0: nicht während einer Wischgeste (APD-61)
+    heben = setTimeout(() => { heben = null; if (!navZug?.aktiv) btn.classList.add('hebt'); }, LANG_HEBEN);
+    timer = setTimeout(() => { stop(); if (navZug?.aktiv) return; fired = true; beruehrAus(true); onLong(); }, 600);   // seit 4.30.0: nicht während einer Wischgeste (APD-61)
   });
   btn.addEventListener('pointermove', e => { if (timer && Math.hypot(e.clientX - x0, e.clientY - y0) > LANG_WEG) stop(); });
   ['pointerup', 'pointerleave', 'pointercancel'].forEach(ev => btn.addEventListener(ev, stop));
@@ -892,6 +895,142 @@ addEventListener('pointermove', e => { if (titelDruck && Math.hypot(e.clientX - 
 addEventListener('mousedown', e => { if (performance.now() < titelKlickWeg) e.preventDefault(); }, true);
 addEventListener('click', e => { if (performance.now() < titelKlickWeg) { titelKlickWeg = 0; e.preventDefault(); e.stopImmediatePropagation(); } }, true);
 addEventListener('scroll', () => { titelDruckEnde(); titelBlaseZu(); }, { capture: true, passive: true });
+
+// R-3.6 (seit 4.48.0, APD-105 Variante C, Testfall-Liste arbeit/APD-105 Testfall-Liste.md B-1 bis B-8): Rückmeldung beim Berühren wie Apple –
+// solange der Finger liegt, wird eine Schaltfläche blass (Klasse .beruehrt: Icon und Text 35 %), eine Listen- oder Tabellenzeile grau
+// (BERUEHR_ZEILE; Zeilen ohne <button> zählen, wenn die App ihnen ein onclick gibt). Schaltflächen sofort, in Rollbereichen (Liste,
+// Smiley-Leiste, Kapsel – jede Fläche, die rollen kann) erst nach BERUEHR_VERZUG, damit beim Rollen nichts aufblitzt. Wandert der Finger
+// mehr als LANG_WEG oder rollt die Fläche, verschwindet sie, und der Klick danach löst nichts aus. Loslassen blendet in 0,15 s aus
+// (.beruehrt-aus). Gesperrte Schaltflächen zeigen nichts. ‚Blau getönt = gedrückt‘ (.on, offenes Menü) bleibt davon unberührt.
+const BERUEHR_VERZUG = 80;
+const BERUEHR_ZEILE = '.side-row, .irow, .menu .mi, tr, .box, li';
+const BERUEHR_NICHT = 'input, textarea, select, label, a, dialog, .layer, .side-shade, .nav-schleier, .menu .note';
+let beruehr = null, beruehrWeg = null;
+function beruehrZiel(t) {
+  for (let el = t?.nodeType === 1 ? t : t?.parentElement; el && el !== document.body; el = el.parentElement) {
+    if (el.matches('button')) return el.disabled || el.getAttribute('aria-disabled') === 'true' || el.closest('.menu .note') ? null : el;
+    if (el.matches(BERUEHR_NICHT)) return null;
+    if (typeof el.onclick === 'function' && el.matches(BERUEHR_ZEILE)) return el;
+  }
+  return null;
+}
+// Rollbereich: eine Fläche über dem Element ist zum Rollen gemacht (overflow auto/scroll – wie Apple auch, solange sie noch nicht voll
+// ist); eine feste oder haftende Leiste bzw. ein Fenster davor beendet die Suche (Leisten-Knöpfe: sofort)
+function imRollbereich(el) {
+  for (let p = el.parentElement; p && p !== document.body && p !== document.documentElement; p = p.parentElement) {
+    const c = getComputedStyle(p);
+    if (c.position === 'fixed' || c.position === 'sticky' || p.matches('dialog')) return false;
+    if (/auto|scroll/.test(c.overflowY + ' ' + c.overflowX)) return true;
+  }
+  const d = document.scrollingElement;
+  return !!d && d.scrollHeight > d.clientHeight + 1;
+}
+function beruehrAus(sofort = false) {
+  const b = beruehr; if (!b) return;
+  beruehr = null; clearTimeout(b.timer);
+  const el = b.el;
+  if (!el.classList.contains('beruehrt')) return;
+  if (!sofort) { el.classList.add('beruehrt-aus'); setTimeout(() => el.classList.remove('beruehrt-aus'), 200); }
+  el.classList.remove('beruehrt');
+}
+addEventListener('pointerdown', e => {
+  beruehrAus(true); beruehrWeg = null;
+  if (!e.isPrimary || e.button > 0) return;
+  const el = beruehrZiel(e.target); if (!el) return;
+  const an = () => { if (beruehr?.el === el && el.isConnected && !el.classList.contains('hebt')) { el.classList.remove('beruehrt-aus'); el.classList.add('beruehrt'); } };
+  beruehr = { el, x0: e.clientX, y0: e.clientY, timer: 0 };
+  if (imRollbereich(el)) beruehr.timer = setTimeout(an, BERUEHR_VERZUG); else an();
+}, true);
+addEventListener('pointermove', e => {
+  if (beruehr && Math.hypot(e.clientX - beruehr.x0, e.clientY - beruehr.y0) > LANG_WEG) beruehrAbbruch();
+}, true);
+addEventListener('pointerup', () => beruehrAus(), true);
+addEventListener('pointercancel', () => beruehrAbbruch(), true);
+addEventListener('scroll', e => { if (beruehr && (e.target === document || e.target.contains?.(beruehr.el))) beruehrAbbruch(); }, { capture: true, passive: true });
+// der Klick nach einem abgebrochenen Berühren (gewandert, gerollt) löst nichts aus – nur dieser eine, kurz danach (Tasten bleiben frei)
+function beruehrAbbruch() { if (!beruehr) return; beruehrWeg = { el: beruehr.el, bis: performance.now() + 600 }; beruehrAus(true); }
+addEventListener('click', e => {
+  const w = beruehrWeg; beruehrWeg = null;
+  if (w && performance.now() < w.bis && w.el.contains(e.target) && !grossSelbst) { e.preventDefault(); e.stopImmediatePropagation(); }
+}, true);
+
+// R-2.6 (seit 4.48.0, APD-104 Variante A, Testfall-Liste arbeit/APD-104 Testfall-Liste.md L-1 bis L-9): Großanzeige für Leisten-Knöpfe wie
+// Apple (WWDC19 Session 261) – ab der Textgröße AX1 (html.ts-ax) zeigt langes Drücken (R-3.5: still, 0,6 s) auf einen Knopf einer Leiste
+// (Kopfzeile, Fenster-Kopfzeile, Seitenleiste, schwebende Knöpfe) Icon und Namen groß in der Mitte des Bildschirms; gleitet der Finger über
+// die Knöpfe, wechselt die Anzeige; Loslassen über einem Knopf löst ihn aus, daneben schließt sie nur. Unter AX1 und bei kurzem Antippen
+// nichts davon. Esc und Drehen schließen sie ohne Auslösen. Die Anzeige ist nur zu sehen (aria-hidden) – VoiceOver nennt jeden Knopf (R-1.8).
+// Solange sie offen ist, rollt die Seite nicht mit (touchmove), damit Safari den Finger nicht übernimmt.
+const GROSS_SEL = ':is(.nb, .pnav, .bbar, .dlg-head, .side-head, .side-search, .fab) button';
+let gross = null, grossEl = null, grossKlickWeg = 0, grossSelbst = false;
+const grossName = k => (k.getAttribute('aria-label') || k.textContent || '').trim();
+function grossKnopfBei(x, y) {
+  const k = document.elementFromPoint(x, y)?.closest?.(GROSS_SEL);
+  return k && k.getClientRects().length && !k.closest('[inert]') ? k : null;
+}
+function grossAnzeigeZu() {
+  grossEl?.remove(); grossEl = null;
+  if (gross?.k) gross.k.classList.remove('beruehrt');
+}
+function grossZu() { if (!gross) return; clearTimeout(gross.timer); grossAnzeigeZu(); gross = null; }
+function grossZeige(k) {
+  if (gross.k && gross.k !== k) gross.k.classList.remove('beruehrt');
+  gross.k = k; k.classList.add('beruehrt');
+  const host = k.closest('dialog') || document.body;
+  if (!grossEl || grossEl.parentNode !== host) {
+    grossEl?.remove();
+    grossEl = document.createElement('div');
+    grossEl.className = 'grossanzeige';
+    grossEl.setAttribute('aria-hidden', 'true');
+    host.append(grossEl);
+  }
+  const svg = k.querySelector('svg');
+  grossEl.innerHTML = (svg ? svg.outerHTML : '') + `<span>${esc(grossName(k))}</span>`;
+  // in der Mitte des sichtbaren Bereichs – gemessen und nachgerückt, falls der Rahmen (Fenster) selbst verschoben ist
+  grossEl.style.left = grossEl.style.top = '0px';
+  const vv = window.visualViewport, h = vv ? vv.height : innerHeight, oben = vv ? vv.offsetTop : 0;
+  const r0 = grossEl.getBoundingClientRect();
+  grossEl.style.left = Math.round((innerWidth - r0.width) / 2 - r0.left) + 'px';
+  grossEl.style.top = Math.round(oben + Math.max(12, (h - r0.height) / 2) - r0.top) + 'px';
+}
+addEventListener('pointerdown', e => {
+  grossZu();
+  const k = e.target.closest?.(GROSS_SEL);
+  if (!k || !e.isPrimary || e.button > 0 || !document.documentElement.classList.contains('ts-ax')) return;
+  gross = { k: null, x0: e.clientX, y0: e.clientY, offen: false, timer: setTimeout(() => {
+    if (!gross || navZug?.aktiv || blattZug?.aktiv || !k.isConnected) { gross = null; return; }
+    gross.offen = true; grossKlickWeg = Infinity;   // der Klick nach dem Loslassen gehört der Großanzeige
+    if (beruehr) { clearTimeout(beruehr.timer); beruehr = null; }   // die Rückmeldung beim Berühren übernimmt die Großanzeige
+    grossZeige(k);
+  }, 600) };
+}, true);
+addEventListener('pointermove', e => {
+  if (!gross) return;
+  if (!gross.offen) { if (Math.hypot(e.clientX - gross.x0, e.clientY - gross.y0) > LANG_WEG) grossZu(); return; }
+  const k = grossKnopfBei(e.clientX, e.clientY);
+  if (k && k !== gross.k) grossZeige(k);
+}, true);
+function grossEnde(e) {
+  if (!gross) return;
+  clearTimeout(gross.timer);
+  const offen = gross.offen;
+  if (!offen) { gross = null; return; }
+  const k = e.type === 'pointerup' ? grossKnopfBei(e.clientX, e.clientY) : null;
+  grossAnzeigeZu(); gross = null;
+  grossKlickWeg = performance.now() + 400;
+  if (k && !k.disabled) { grossSelbst = true; try { k.click(); } finally { grossSelbst = false; } }
+}
+addEventListener('pointerup', grossEnde, true);
+addEventListener('pointercancel', grossEnde, true);
+addEventListener('click', e => {
+  if (grossSelbst || performance.now() >= grossKlickWeg) return;
+  grossKlickWeg = 0; e.preventDefault(); e.stopImmediatePropagation();
+}, true);
+addEventListener('touchmove', e => { if (gross?.offen && e.cancelable) e.preventDefault(); }, { passive: false, capture: true });
+addEventListener('contextmenu', e => { if (document.documentElement.classList.contains('ts-ax') && e.target.closest?.(GROSS_SEL)) e.preventDefault(); }, true);
+addEventListener('scroll', () => { if (gross && !gross.offen) grossZu(); }, { capture: true, passive: true });
+// Esc bei offener Anzeige schließt nur sie (am iPhone sonst auch ‚zurück‘)
+addEventListener('keydown', e => { if (!gross || !istAbbruch(e)) return; if (gross.offen) verbrauchen(e); grossZu(); grossKlickWeg = performance.now() + 400; }, true);
+{ let breite = innerWidth; addEventListener('resize', () => { if (innerWidth !== breite) grossZu(); breite = innerWidth; }); }
 
 // Schaltflächen, von denen eine noch laufende Aktion kommt (Teilen-Menü, Meldung, Dateiauswahl), bleiben blau.
 const held = new Set();

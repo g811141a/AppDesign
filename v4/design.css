@@ -1,4 +1,4 @@
-/* AppDesign 4.47.0 · design.css – gemeinsame Gestaltung der iPad-Web-Apps von g811141a (Apple-like)
+/* AppDesign 4.48.0 · design.css – gemeinsame Gestaltung der iPad-Web-Apps von g811141a (Apple-like)
    Einbinden im <head> vor dem eigenen <style> der App:  <link rel="stylesheet" href="../AppDesign/fassung/X.Y.Z/design.css"> (feste Fassung, R-10.3)
    Farben als Variablen auf :root, Dunkelmodus über data-theme="dark" (setzt ui.js / applyTheme).
    Komponenten: Schaltflächen, Suchfeld, Kapsel, Eingabefelder, Datumsfelder, Kopfzeile, Seitenleiste,
@@ -6,7 +6,7 @@
    Options-Kapsel; seit 4.1.0 iPhone-Ansicht (html.phone: Seitenkopf, großer Titel, Liste, Kasten, untere Leiste). Regeln dazu: README - Designrichtlinie allgemein.md */
 /* Farben im Apple-Look: Hintergrund Hellgrau, Kästen weiß ohne Rand, schwebende Schaltflächen */
 :root {
-  --ad-version: "4.47.0";   /* R-10.3: Version der Bausteine, die App prüft sie beim Start */
+  --ad-version: "4.48.0";   /* R-10.3: Version der Bausteine, die App prüft sie beim Start */
   --bg: #f2f2f7;
   --card: #ffffff;
   --ink: #1c1c1e;
@@ -32,6 +32,8 @@
   --btn: #f9f9f9;
   --btn-rim: #ffffff;
   --sel-bg: #dcebff;
+  --beruehrt: #e5e5ea;   /* seit 4.48.0 (R-3.6): Zeile beim Berühren */
+  --gross-bg: rgba(242,242,247,.94);   /* seit 4.48.0 (R-2.6): Großanzeige */
   --mark: #ffe45c;
   --mark-cur: #ffc46b;
   --mark-cur-ink: inherit;
@@ -59,6 +61,7 @@
   --th-bg: #2c2c2e; --th-line: #48484a; --zebra: #161618; --field-line: #48484a;
   --dlg-bg: #1c1c1e; --dlg-card: #2c2c2e; --dlg-field: #1c1c1e;
   --btn: #3a3a3c; --btn-rim: rgba(255,255,255,.16); --sel-bg: #10335c;
+  --beruehrt: #3a3a3c; --gross-bg: rgba(44,44,46,.94);
   --mark: #8a6d00; --mark-cur: #e08a1e; --mark-cur-ink: #000;
   --float: 0 3px 28px rgba(0,0,0,.7);
   --glow-accent: 0 2px 4px rgba(0,0,0,.5), 0 5px 18px rgba(10,132,255,.50);
@@ -409,6 +412,26 @@ html.ts-ax .pop .btns, html.ts-ax .pop .tiles { flex-direction: column; }
 :root[data-theme="dark"] .titel-blase { background: #2c2c2e; }
 /* langes Drücken auf den Titel: ohne Textauswahl, Lupe und Safari-Menü (wie .menu .note.halten) */
 :is(.dlg-head h3, .nb-title, .pnav-title) { -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
+/* R-3.6 (seit 4.48.0, APD-105 Variante C): Berühren – Schaltfläche blass (35 %), Listen- und Tabellenzeile grau (--beruehrt), sofort an,
+   beim Loslassen in 0,15 s aus (.beruehrt-aus setzt ui.js); gesperrte Schaltflächen zeigen nichts (ui.js) */
+button.beruehrt:not(:is(.side-row, .irow, .mi)) { opacity: .35; transition: none; }
+:is(.side-row, .irow, .menu .mi, .box).beruehrt:not(.current), tr.beruehrt > :is(td, th) { background-color: var(--beruehrt) !important; transition: none; }
+button.beruehrt-aus, :is(.side-row, .irow, .menu .mi, .box).beruehrt-aus, tr.beruehrt-aus > :is(td, th) { transition: opacity .15s, background-color .15s; }
+/* R-3.5 Anheben (seit 4.48.0, APD-105): ein Eintrag mit eigener Aktion für langes Drücken hebt sich ab 0,15 s an – wächst, Schatten;
+   in der Kapsel (Smiley) wächst das Zeichen und wirft Schatten, damit nichts am Rand der Kapsel abgeschnitten wird */
+.hebt { position: relative; z-index: 2; transform: scale(1.03); box-shadow: 0 6px 18px rgba(0,0,0,.22) !important; opacity: 1 !important;
+  transition: transform .45s ease-out, box-shadow .45s; }
+.cap .scroll button.hebt { transform: scale(1.25); box-shadow: none !important; filter: drop-shadow(0 3px 5px rgba(0,0,0,.35)); transition: transform .45s ease-out, filter .45s; }
+@media (prefers-reduced-motion: reduce) { .hebt, .cap .scroll button.hebt { transform: none; transition: none; } }
+/* R-2.6 (seit 4.48.0, APD-104 Variante A): Großanzeige ab AX1 – Icon und Name des Leisten-Knopfs groß in der Mitte (setzt ui.js), wächst
+   mit der Textgröße, bleibt ganz auf dem Bildschirm; nur zu sehen (aria-hidden) */
+.grossanzeige { position: fixed; z-index: 50; box-sizing: border-box; min-width: min(180px, calc(100vw - 48px)); max-width: calc(100vw - 48px);
+  max-height: calc(100vh - 24px); max-height: calc(100dvh - 24px); padding: .75em 1em .6em; border-radius: 22px; display: flex; flex-direction: column;
+  align-items: center; gap: .35em; text-align: center; color: var(--ink); background: var(--gross-bg); -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px); box-shadow: 0 8px 40px rgba(0,0,0,.25); pointer-events: none; font-size: 1rem; font-weight: 600; line-height: 1.2;
+  overflow-wrap: anywhere; -webkit-user-select: none; user-select: none; }
+.grossanzeige svg { flex: none; width: min(2.6em, 30vh); height: min(2.6em, 30vh); stroke-width: 1.6; color: var(--ink); }
+:is(.nb, .pnav, .bbar, .dlg-head, .side-head, .side-search, .fab) button { -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
 
 .msg-text { padding: 8px 2px; }
 
