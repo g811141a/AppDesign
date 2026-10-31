@@ -20,7 +20,10 @@ Wunsch des Nutzers aus P-82 ‚Sonstiges‘ (30.10.2026, Sitzung 0058); geklärt
 - `overlay`: „The sidebars are layered on top of the secondary view controller“ – https://developer.apple.com/documentation/uikit/uisplitviewcontroller/splitbehavior-swift.enum/overlay
 - `preferredSplitBehavior`, Voreinstellung `automatic`: wählt nach dem verfügbaren Platz – https://developer.apple.com/documentation/uikit/uisplitviewcontroller/preferredsplitbehavior
 - HIG Sidebars: Seitenleiste ausblendbar, nicht von vornherein ausgeblendet – https://developer.apple.com/design/human-interface-guidelines/sidebars
-- Offen: welche Apple-App hoch `tile` zeigt (Bild des Nutzers, E-6).
+- Bilder des Nutzers (31.10.2026, `apple-referenz/ipad/`): Einstellungen und Notizen zeigen hoch die Seitenleiste fest neben dem
+  Inhalt, ohne Abdunkelung; der Inhalt bleibt gleich aufgebaut und wird nur schmaler. Eine Tabelle zeigt keines der Bilder – das
+  Umschalten auf Kästen ist aus der iPhone-Ansicht abgeleitet, kein direktes Apple-Vorbild. Im Bild ‚Einstellungen hoch‘ (1668 px
+  breit) beginnt der Inhalt bei etwa 690 px, ist also etwa 975 px breit (bei 2-facher Auflösung etwa 490 pt – im Muster zu messen).
 
 ## Bestätigter Wortlaut (Designrichtlinie allgemein)
 
@@ -44,4 +47,4 @@ Wunsch des Nutzers aus P-82 ‚Sonstiges‘ (30.10.2026, Sitzung 0058); geklärt
 
 ## Noch offen
 
-Bild des Nutzers (E-6) → Muster (nur hell) mit gemessener Inhaltsbreite je iPad → Testfall-Liste (`APD-97 Testfall-Liste.md`).
+Muster (nur hell) mit gemessener Inhaltsbreite je iPad → Testfall-Liste (`APD-97 Testfall-Liste.md`).
