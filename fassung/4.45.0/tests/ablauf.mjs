@@ -4,7 +4,7 @@
 // Einbinden im Prüfskript der App:  import { checkSearch, checkDialogHead } from '../../AppDesign/tests/ablauf.mjs';
 //                                   fehler.push(...await checkSearch(page, { term: 'Sydney' }));
 import { ROLL, RING, rolle, rollstand, navFertig, rollRuht } from './pruefe.mjs';
-import { safariWischen, safariModell } from './safari.mjs';
+import { safariWischen, safariModell, mausWieFinger } from './safari.mjs';
 const wait = (p, ms = 250) => p.waitForTimeout(ms);
 // R-2.3 (seit 4.25.1, APD-24): beim Tippen bleibt das Suchfeld dasselbe Element und behält den Fokus – sonst schließt Safari am
 // iPhone die Tastatur kurz und Kopf- und Suchzeile zittern bei jedem Buchstaben. Tippt Buchstabe für Buchstabe (und löscht
@@ -1422,6 +1422,7 @@ export async function checkNavigation(p, { eintrag, titel, zurueck = '#back', wa
   const ueberblendet = b => (b.some(x => x.appT === 'none' && x.appO > 0.02 && x.appO < 0.98) || b.some(x => x.appA && x.appA.o[0] !== x.appA.o[1] && x.appA.t.every(t => t === 'none')))
     && b.every(x => x.appT === 'none');
   const ruhig = async () => { for (let i = 0; i < 30; i++) { await wait(p, 100); if (!(await lage()).nav) return; } };
+  // seit 4.45.0 (APD-68/Q-8): kein Ziehen-und-Ablegen, wenn ein Zug auf einem Link beginnt (safari.mjs mausWieFinger)
   // seit 4.31.0: vorher keine Textmarkierung – ein senkrechter Mauszug markiert in WebKit Text, der nächste Zug darauf würde ein
   // Ziehen-und-Ablegen beginnen und WebKit verschluckt die Mausereignisse (am Gerät mit dem Finger gibt es das nicht)
   // Tempo, das die App beim letzten schnellen Zug sah – wie navEnde in ui.js: die Spur der letzten 100 ms vor dem Loslassen (kommt das
@@ -1433,7 +1434,7 @@ export async function checkNavigation(p, { eintrag, titel, zurueck = '#back', wa
   const spurTempo = () => p.evaluate(() => { const s = (window.__spur || []).filter(x => x[0] >= (window.__los ?? Infinity) - 100), z = s.at(-1);
     return s.length > 1 && z[0] > s[0][0] ? Math.abs(z[1] - s[0][1]) / (z[0] - s[0][0]) : 0; });
   const ziehe = async (x0, y0, x1, y1, { schnell = false, los = true, halten = 0 } = {}) => {
-    await p.evaluate(() => getSelection()?.removeAllRanges());
+    await p.evaluate(() => getSelection()?.removeAllRanges()); await mausWieFinger(p);
     if (schnell) await spurStart();
     await p.mouse.move(x0, y0); await p.mouse.down();
     if (halten) await wait(p, halten);

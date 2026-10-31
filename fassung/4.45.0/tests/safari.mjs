@@ -273,3 +273,10 @@ export async function safariWischen(p, x, y, schritte, { schwelle = WISCH_SCHWEL
     return { abgebrochen: rollt, gerollt: Math.round(roll.scrollTop - r0), ziel: t.tagName.toLowerCase() + [...t.classList].map(c => '.' + c).join('') + (t.id ? '#' + t.id : '') };
   }, { x, y, schritte, schwelle });
 }
+
+// APD-68/Q-8 (seit 4.45.0): Wischen mit der Maus statt mit dem Finger. Ein Mauszug, der auf einem Link (oder Bild) beginnt, startet in
+// Chromium und WebKit Ziehen-und-Ablegen; am Gerät tut das ein kurzer Zug mit dem Finger nie (erst langes Drücken). WebKit schickt danach
+// weder pointerup noch pointercancel – der Zeiger gilt als gedrückt, der nächste Klick kommt ohne pointerdown an (Menüs öffnen nicht).
+// mausWieFinger(p) verhindert in der Seite dragstart; einmal je Seite, vor dem ersten Mauszug (neu laden entfernt es).
+export const mausWieFinger = p => p.evaluate(() => { if (window.__mausWieFinger) return; window.__mausWieFinger = true;
+  addEventListener('dragstart', e => e.preventDefault(), true); });

@@ -26,6 +26,13 @@ dein Ja vom 31.10.2026, Sitzung 0060 (Wortlaut, Muster und Testfall-Liste bestä
     einzeilig; hoch ist die feste Seitenleiste höchstens 420 px breit (darübergelegt waren es bis 70 %) – bei XXL und XXXL ragte die Zeile
     hinaus. Jetzt bricht sie um, sobald die Seitenleiste ihre Höchstbreite erreicht.
   - **Warum die Prüfung es vorher übersah:** vor `los` liefen die geänderten Prüfungen nicht mit großer Schrift (`PRUEF_TEXT`).
+- **Korrektur der Prüfung vor der Veröffentlichung** (Sitzung 0062 – `los` in 0061 rot, nur WebKit am iPad hoch, APD-68/Q-8 und Q-9):
+  - **Wischen mit der Maus wie mit dem Finger (`tests/safari.mjs` – neu `mausWieFinger`, genutzt von `checkNavigation`):** der Zug ‚nach
+    links‘ (APD-68/Q-7) begann hoch auf einem Link in einem Kasten; ein Mauszug startet dort Ziehen-und-Ablegen, WebKit schickte danach weder
+    `pointerup` noch `pointercancel`, der Klick auf das Menü kam ohne `pointerdown` an – das Menü ging nicht auf, der Zug von Q-8 holte die
+    Seitenleiste herein, Q-9 folgte daraus. Am Gerät beginnt ein kurzer Fingerzug nie Ziehen-und-Ablegen; die Prüfung verhindert es jetzt
+    (`dragstart`). Die App ist unverändert.
+  - **Warum die Prüfung es vorher übersah:** vor APD-97 liefen die Q-Fälle nur quer – dort liegt an dieser Stelle kein Link (Tabelle).
 
 ## 4.44.1 – 30.10.2026
 
