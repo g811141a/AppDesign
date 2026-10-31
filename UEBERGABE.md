@@ -20,7 +20,7 @@ zuerst, dann die ganze Zusammenarbeit** (0 Nr. 15); die Arbeitsumgebung steht in
   Satz mit ‚Kontext N‘ aus `messung.mjs` (APD-99) – ist die Ausgabe vor dem Fenster nach einem Denkschritt nicht wörtlich gespeichert,
   lässt er durch (Selbstkontrolle).
 - **Usertests:** **P-84** (3.43.0, P-84/0 bis P-84/7, CHANGELOG Reiselogbuch) **jetzt prüfbar – Rückmeldung noch nicht erfragt**.
-- **Backlog ‚0. Nächste Version‘:** leer (beide Repos).
+- **Backlog ‚0. Nächste Version‘:** leer (beide Repos). **Neu Prio 1 im Reiselogbuch: RLB-113, RLB-114** (zu besprechen, 3.).
 - **Offen:** Prio 1 APD-38 (Frameworks, gemeinsam durchgehen); Prio 3 APD-85 Teil 3 (Wackler zählen: bisher einer, `ablauf-blatt` in 0061),
   APD-57, APD-80, APD-88, APD-40, APD-62, APD-30, RLB-6 u. a.
 - **Vereinbarung (Nutzer 30.10.2026, Sitzung 0058):** Muster bis auf Weiteres **nur hell** (kein dunkel) – gilt, bis der Nutzer sie
@@ -51,7 +51,15 @@ zuerst, dann die ganze Zusammenarbeit** (0 Nr. 15); die Arbeitsumgebung steht in
    Repos auf `main`).
 2. **Rückmeldung zu P-84** erfragen: alle Testfälle P-84/0 bis P-84/7 wörtlich aus dem CHANGELOG Reiselogbuch 3.43.0 im Chat, dann das
    Fenster ‚P-84: Wie ist die Prüfung ausgegangen?‘ (2.3). Bei ‚alles ok‘: Backlog P-84 nach Erledigt (APD-97 am Gerät bestätigt).
-3. **Vorschlag fragen (0 Nr. 24, noch nicht im Backlog):** `veroeffentlichen.mjs los` führt `main` vorher in den Vorbereitungs-Zweig
+3. **Neu (Nutzer 31.10.2026, Ende 0062): RLB-113 und RLB-114** (Backlog Reiselogbuch, Prio 1, Status offen) **besprechen und danach
+   umsetzen** – der Nutzer hat beides schon mit Prio 1 aufgenommen haben wollen; besprechen nach 0 Nr. 25 (Apple-Abgleich, allgemein oder
+   App, Muster nur hell, Testfall-Liste, dann ‚Soll ich Version … erstellen?‘). Zuerst P-84 abschließen (0 Nr. 22, Hinweis geben; der Nutzer
+   darf ausdrücklich zuerst Neues wollen):
+   - **RLB-113:** im Mehr-Menü ‚Einstellungen‘ → ‚Reiselogbuch einstellen‘, Icon `settings` bleibt. Zu klären: auch im Kontextmenü der
+     Seitenleiste (index.html:1243) und im Fenstertitel (index.html:1348)?
+   - **RLB-114:** Seitenleiste – Zwischenüberschrift mit dem Jahr (z. B. ‚2026‘), wenn beim folgenden Reiselogbuch ein neues Jahr beginnt.
+     Zu klären: welches Jahr (Beginn der Reise), auch über dem ersten, Aussehen wie Apple-Abschnittsköpfe, allgemein (verwandt APD-46)?
+4. **Vorschlag fragen (0 Nr. 24, noch nicht im Backlog):** `veroeffentlichen.mjs los` führt `main` vorher in den Vorbereitungs-Zweig
   zusammen bzw. bricht **vor** dem vollen Prüflauf ab, wenn `main` neuer ist (z. B. eine Übergabe) – in 0062 lief der Prüflauf 51 min, dann
   der Konflikt. Empfehlung Prio 2.
 
@@ -67,5 +75,5 @@ In der neuen Sitzung müssen **AppDesign** und **ReiseLogBuch** verfügbar sein 
 ```
 Reiselogbuch 0063 – Rückmeldung P-84 (3.43.0 / 4.45.0)
 
-Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md, dann die GANZE Zusammenarbeit allgemein (Kasten ‚Immer‘ und ‚Jede Antwort‘ oben in Abschnitt 0 gilt ab der ersten Antwort) und die Überschriften der Designrichtlinien. Prüfe Modell und Aufwand (Sitzungsdatei, auch model_fallback), hole das Repo g811141a/ReiseLogBuch dazu, wie in der AppDesign-CLAUDE.md unter ‚Arbeitsumgebung‘, und prüfe, ob der Regelwächter läuft. Gib kurz das Lagebild, dann alle Testfälle P-84 im Chat und frage im Auswahlfenster nach der Rückmeldung (UEBERGABE.md 3).
+Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md, dann die GANZE Zusammenarbeit allgemein (Kasten ‚Immer‘ und ‚Jede Antwort‘ oben in Abschnitt 0 gilt ab der ersten Antwort) und die Überschriften der Designrichtlinien. Prüfe Modell und Aufwand (Sitzungsdatei, auch model_fallback), hole das Repo g811141a/ReiseLogBuch dazu, wie in der AppDesign-CLAUDE.md unter ‚Arbeitsumgebung‘, und prüfe, ob der Regelwächter läuft. Gib kurz das Lagebild, dann alle Testfälle P-84 im Chat und frage im Auswahlfenster nach der Rückmeldung (UEBERGABE.md 3); danach RLB-113 und RLB-114 besprechen (UEBERGABE.md 3.3).
 ```
