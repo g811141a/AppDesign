@@ -1,0 +1,203 @@
+<!doctype html><html lang="de"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="APD-104 Muster">
+<title>APD-104 Muster</title>
+<style>
+/* APD-104 ‚Großanzeige für Leisten-Knöpfe‘ – Muster 1 (Sitzung Reiselogbuch 0067, Testfall-Liste arbeit/APD-104 Testfall-Liste.md).
+   Apple (WWDC19 Session 261 ‚Large Content Viewer‘): ab den Textgrößen für Bedienungshilfen (AX1) zeigt langes Drücken auf einen
+   Leisten-Knopf Icon und Namen groß; mit dem Finger über die Leiste gleiten wechselt den Knopf, Loslassen löst den Knopf darunter aus.
+   Drei Varianten über ?v=a|b|c (oben umschaltbar):
+   A  Apple: Großanzeige in der Bildschirmmitte, gleiten wechselt, Loslassen löst aus.
+   B  Blase: wie die Titel-Sprechblase (R-2.5) direkt unter dem Knopf, bleibt bis zum nächsten Tipp, Loslassen löst nichts aus.
+   C  Mitte ohne Auslösen: wie A, aber Loslassen schließt nur.
+   Unter AX1 zeigt langes Drücken nichts (wie Apple; bis XXXL wachsen die Leisten mit, R-1.10). ‚AX1 nachbilden‘ schaltet die
+   Schrift auf 28 px, damit man das Muster auch ohne Umstellen der Textgröße sieht. Antippen löst den Knopf wie immer aus.
+   Langes Drücken: still, 0,6 s (R-3.5). Nur hell (0 Nr. 6). */
+:root { --bg: #f2f2f7; --card: #fff; --line: #d1d1d6; --ink: #1c1c1e; --muted: #6e6e73; --blue: #007aff; --btn: #f9f9f9;
+  --rim: #fff; --float: 0 3px 28px rgba(0,0,0,.16); color-scheme: light;
+  --sl: env(safe-area-inset-left); --sr: env(safe-area-inset-right); --st: env(safe-area-inset-top); --sb: env(safe-area-inset-bottom); }
+html { font: 17px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+@media (pointer: coarse) { html { font: -apple-system-body; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; line-height: 1.45; } }
+html.sim { font-size: 28px; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); -webkit-text-size-adjust: 100%; }
+/* Umschalter des Musters (gehört nicht zum Entwurf) */
+#wahl { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: calc(8px + var(--st)) max(16px, var(--sr)) 8px max(16px, var(--sl));
+  font-size: 15px; background: #e5e5ea; }
+#wahl b { margin-right: 4px; }
+#wahl button { font: inherit; height: 36px; padding: 0 14px; border-radius: 18px; border: .5px solid var(--line); background: var(--card); color: var(--ink); }
+#wahl button[aria-pressed="true"] { background: var(--blue); color: #fff; border-color: var(--blue); }
+#wahl label { display: flex; align-items: center; gap: 6px; margin-left: 4px; }
+#stufe { color: var(--muted); }
+/* Kopfzeile wie 15.3: Leiste wächst nur bis XXXL (23 px), Knöpfe 44 px */
+.nb { position: sticky; top: 0; z-index: 5; display: flex; align-items: center; gap: 12px; height: 56px;
+  padding: 6px max(12px, var(--sr)) 6px max(12px, var(--sl)); background: var(--bg); border-bottom: .5px solid var(--line);
+  font-size: min(1rem, 23px); touch-action: none; }
+.nb-title { flex: 1; min-width: 0; text-align: center; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rund, .cap button, .fab button { display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border: none; color: var(--blue);
+  background: none; -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent; }
+.rund { border-radius: 22px; background: var(--btn); box-shadow: inset 0 0 0 .5px var(--rim), var(--float); }
+.cap { display: flex; border-radius: 22px; background: var(--btn); box-shadow: inset 0 0 0 .5px var(--rim), var(--float); }
+.cap button { border-radius: 22px; }
+.gedrueckt { background: rgba(0,0,0,.08) !important; }
+svg.i { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; pointer-events: none; }
+/* Inhalt in der eingestellten Textgröße */
+main { padding: 16px max(16px, var(--sr)) calc(120px + var(--sb)) max(16px, var(--sl)); }
+.hinweis { background: var(--card); border-radius: 12px; padding: 12px 16px; margin: 0 0 16px; }
+.hinweis p { margin: 0 0 6px; } .hinweis p:last-child { margin: 0; }
+.zeile { background: var(--card); padding: 12px 16px; border-bottom: .5px solid var(--line); }
+.zeile:first-of-type { border-radius: 12px 12px 0 0; } .zeile:last-of-type { border-radius: 0 0 12px 12px; border: none; }
+.zeile small { display: block; color: var(--muted); font-size: .8em; }
+/* Nach oben (15.1, .fab) */
+.fab { position: fixed; right: max(16px, var(--sr)); bottom: calc(16px + var(--sb)); z-index: 5; display: flex; flex-direction: column;
+  border-radius: 22px; background: var(--btn); box-shadow: inset 0 0 0 .5px var(--rim), var(--float); touch-action: none; }
+/* A und C: Großanzeige in der Mitte (Apple) */
+.gross { position: fixed; z-index: 30; left: 50%; top: 50%; transform: translate(-50%, -50%); min-width: 180px; max-width: calc(100vw - 48px);
+  padding: 22px 26px 18px; border-radius: 22px; display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center;
+  color: var(--ink); background: rgba(242,242,247,.92); -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px);
+  box-shadow: 0 8px 40px rgba(0,0,0,.25); pointer-events: none; font-size: max(1rem, 28px); font-weight: 600; line-height: 1.2; }
+.gross svg.i { width: 72px; height: 72px; stroke-width: 1.6; color: var(--ink); }
+/* B: Sprechblase unter dem Knopf (wie .titel-blase, R-2.5) */
+.blase { position: fixed; z-index: 30; padding: 14px 20px 12px; border-radius: 14px; display: flex; flex-direction: column; align-items: center;
+  gap: 8px; text-align: center; color: var(--ink); background: var(--card); border: .5px solid var(--rim); box-shadow: var(--float);
+  pointer-events: none; font-size: 1rem; font-weight: 600; line-height: 1.2; max-width: calc(100vw - 24px); }
+.blase svg.i { width: 56px; height: 56px; stroke-width: 1.6; color: var(--ink); }
+.blase::before { content: ''; position: absolute; top: -7px; left: calc(var(--pfeil, 50%) - 7px); width: 14px; height: 14px;
+  background: inherit; border-left: .5px solid var(--rim); border-top: .5px solid var(--rim); transform: rotate(45deg); border-top-left-radius: 3px; }
+.blase.oben::before { top: auto; bottom: -7px; border: none; border-right: .5px solid var(--rim); border-bottom: .5px solid var(--rim); }
+/* Kurzmeldung: was ausgelöst wurde (nur im Muster) */
+#meldung { position: fixed; left: 50%; bottom: calc(24px + var(--sb)); transform: translateX(-50%); z-index: 40; padding: 10px 18px;
+  border-radius: 20px; background: rgba(28,28,30,.88); color: #fff; font-size: 15px; opacity: 0; transition: opacity .2s; pointer-events: none;
+  white-space: nowrap; }
+#meldung.an { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { #meldung { transition: none; } }
+</style></head><body>
+<div id="wahl"><b>APD-104</b>
+  <button data-v="a">A Mitte, Loslassen löst aus</button>
+  <button data-v="b">B Blase</button>
+  <button data-v="c">C Mitte, nur zeigen</button>
+  <label><input type="checkbox" id="sim"> AX1 nachbilden</label>
+  <span id="stufe"></span>
+</div>
+<header class="nb">
+  <button class="rund" data-gross="Seitenleiste" aria-label="Seitenleiste"><svg class="i" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 3v18"/></svg></button>
+  <div class="nb-title">Reisen</div>
+  <div class="cap">
+    <button data-gross="Karte" aria-label="Karte"><svg class="i" viewBox="0 0 24 24"><path d="M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.619v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.381V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0z"/><path d="M15 5.764v15"/><path d="M9 3.236v15"/></svg></button>
+    <button data-gross="Teilen" aria-label="Teilen"><svg class="i" viewBox="0 0 24 24"><path d="M12 2v13"/><path d="m16 6-4-4-4 4"/><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/></svg></button>
+    <button data-gross="Neue Reise" aria-label="Neue Reise"><svg class="i" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+    <button data-gross="Mehr" aria-label="Mehr"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
+  </div>
+</header>
+<main>
+  <div class="hinweis" id="erkl"></div>
+  <div class="zeile">Toskana<small>12.–26. Mai 2026 · Auto</small></div>
+  <div class="zeile">Lissabon<small>3.–9. März 2026 · Flug</small></div>
+  <div class="zeile">Wien<small>20.–23. Dezember 2025 · Bahn</small></div>
+  <div class="zeile">Bretagne<small>8.–24. August 2025 · Auto</small></div>
+  <div class="zeile">Kopenhagen<small>1.–5. Mai 2025 · Bahn</small></div>
+  <div class="zeile">Dolomiten<small>14.–28. Juli 2024 · Auto</small></div>
+</main>
+<div class="fab">
+  <button data-gross="Nach oben" aria-label="Nach oben"><svg class="i" viewBox="0 0 24 24"><path d="m5 12 7-7 7 7"/><path d="M12 19V5"/></svg></button>
+</div>
+<div id="meldung" role="status"></div>
+<script>
+const STUFEN = { xS: 14, S: 15, M: 16, L: 17, XL: 19, XXL: 21, XXXL: 23, AX1: 28, AX2: 33, AX3: 40, AX4: 47, AX5: 53 };
+const ERKL = {
+  a: ['<b>A – Mitte, Loslassen löst aus (wie Apple).</b>', 'Ab AX1 einen Knopf oben (oder ‚Nach oben‘ unten rechts) 0,6 s gedrückt halten: Icon und Name erscheinen groß in der Mitte.',
+      'Finger über die Leiste gleiten lassen: die Anzeige wechselt. Loslassen über einem Knopf löst ihn aus, daneben nichts.'],
+  b: ['<b>B – Blase unter dem Knopf (wie der gekürzte Titel, R-2.5).</b>', 'Ab AX1 einen Knopf 0,6 s gedrückt halten: Icon und Name erscheinen in einer Sprechblase am Knopf.',
+      'Sie bleibt nach dem Loslassen stehen; der nächste Tipp irgendwo schließt nur sie. Loslassen löst nichts aus.'],
+  c: ['<b>C – Mitte, nur zeigen.</b>', 'Wie A: groß in der Mitte, gleiten wechselt.', 'Loslassen schließt die Anzeige nur – der Knopf wird nicht ausgelöst.'],
+};
+const q = new URLSearchParams(location.search);
+let v = ['a', 'b', 'c'].includes(q.get('v')) ? q.get('v') : 'a';
+const html = document.documentElement, $ = s => document.querySelector(s);
+const pxJetzt = () => parseFloat(getComputedStyle(html).fontSize) || 17;
+const stufe = px => Object.keys(STUFEN).reduce((a, k) => Math.abs(STUFEN[k] - px) < Math.abs(STUFEN[a] - px) ? k : a, 'L');
+const istAX = () => pxJetzt() >= 27.5;
+function zeigeStand() {
+  document.querySelectorAll('#wahl [data-v]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.v === v)));
+  const px = pxJetzt();
+  $('#stufe').textContent = `Textgröße ${stufe(px)} (${Math.round(px)} px) – ${istAX() ? 'Großanzeige an' : 'Großanzeige erst ab AX1'}`;
+  $('#erkl').innerHTML = ERKL[v].map(t => `<p>${t}</p>`).join('');
+}
+document.querySelectorAll('#wahl [data-v]').forEach(b => b.addEventListener('click', () => {
+  v = b.dataset.v; history.replaceState(null, '', '?v=' + v); schliessen(); zeigeStand();
+}));
+$('#sim').addEventListener('change', e => { html.classList.toggle('sim', e.target.checked); schliessen(); zeigeStand(); });
+new ResizeObserver(zeigeStand).observe(html);
+let meldTimer;
+function melde(t) { const m = $('#meldung'); m.textContent = t; m.classList.add('an'); clearTimeout(meldTimer); meldTimer = setTimeout(() => m.classList.remove('an'), 1600); }
+
+// Langes Drücken (R-3.5: still, 0,6 s) auf einen Leisten-Knopf
+const LANG = 600, WEG = 10;
+let druck = null, anzeige = null, knopf = null, klickWeg = 0;
+const knopfBei = (x, y) => document.elementFromPoint(x, y)?.closest?.('[data-gross]') || null;
+function inhalt(k) { return k.querySelector('svg').outerHTML + `<span>${k.dataset.gross}</span>`; }
+function schliessen() {
+  if (anzeige) { anzeige.remove(); anzeige = null; }
+  if (knopf) { knopf.classList.remove('gedrueckt'); knopf = null; }
+}
+function zeige(k) {
+  if (knopf !== k) { knopf?.classList.remove('gedrueckt'); knopf = k; k.classList.add('gedrueckt'); }
+  if (v === 'b') {
+    if (!anzeige) { anzeige = document.createElement('div'); anzeige.className = 'blase'; anzeige.setAttribute('aria-hidden', 'true'); document.body.append(anzeige); }
+    anzeige.innerHTML = inhalt(k);
+    const r = k.getBoundingClientRect(), w = anzeige.offsetWidth, h = anzeige.offsetHeight, mitte = r.left + r.width / 2;
+    const left = Math.max(12, Math.min(mitte - w / 2, innerWidth - 12 - w));
+    const oben = r.bottom + 10 + h > innerHeight - 12;   // unten kein Platz (z. B. ‚Nach oben‘) → über dem Knopf
+    anzeige.classList.toggle('oben', oben);
+    anzeige.style.left = left + 'px';
+    anzeige.style.top = (oben ? r.top - 10 - h : r.bottom + 10) + 'px';
+    anzeige.style.setProperty('--pfeil', Math.max(16, Math.min(w - 16, mitte - left)) + 'px');
+  } else {
+    if (!anzeige) { anzeige = document.createElement('div'); anzeige.className = 'gross'; anzeige.setAttribute('aria-hidden', 'true'); document.body.append(anzeige); }
+    anzeige.innerHTML = inhalt(k);
+  }
+}
+addEventListener('pointerdown', e => {
+  if (v === 'b' && anzeige) { schliessen(); klickWeg = performance.now() + 1000; return; }   // der Tipp schließt nur die Blase
+  const k = e.target.closest?.('[data-gross]');
+  if (!k || !e.isPrimary || e.button > 0 || !istAX()) return;
+  druck = { k, x0: e.clientX, y0: e.clientY, timer: setTimeout(() => {
+    if (!druck) return;
+    druck.offen = true; klickWeg = performance.now() + 60000;   // der Klick nach dem Loslassen gehört der Großanzeige
+    zeige(k);
+  }, LANG) };
+}, true);
+addEventListener('pointermove', e => {
+  if (!druck) return;
+  if (!druck.offen) { if (Math.hypot(e.clientX - druck.x0, e.clientY - druck.y0) > WEG) { clearTimeout(druck.timer); druck = null; } return; }
+  if (v === 'b') return;   // B: kein Gleiten
+  const k = knopfBei(e.clientX, e.clientY);
+  if (k && k !== knopf) zeige(k);
+}, true);
+function ende(e) {
+  if (!druck) return;
+  clearTimeout(druck.timer);
+  const war = druck; druck = null;
+  if (!war.offen) return;
+  klickWeg = performance.now() + 400;
+  if (v === 'b') { knopf?.classList.remove('gedrueckt'); knopf = null; return; }   // Blase bleibt stehen
+  const k = e.type === 'pointerup' ? knopfBei(e.clientX, e.clientY) : null;
+  schliessen();
+  if (v === 'a' && k) melde(`${k.dataset.gross} ausgelöst`);
+}
+addEventListener('pointerup', ende, true);
+addEventListener('pointercancel', ende, true);
+addEventListener('click', e => {
+  if (performance.now() < klickWeg) { klickWeg = 0; e.preventDefault(); e.stopImmediatePropagation(); return; }
+  const k = e.target.closest?.('[data-gross]');
+  if (k) melde(`${k.dataset.gross} angetippt`);
+}, true);
+addEventListener('contextmenu', e => { if (e.target.closest?.('[data-gross]')) e.preventDefault(); }, true);
+addEventListener('keydown', e => { if (e.key === 'Escape') schliessen(); });
+addEventListener('scroll', () => { if (v === 'b') schliessen(); }, { passive: true });
+addEventListener('resize', () => { if (!druck) schliessen(); });
+zeigeStand();
+</script>
+</body></html>
