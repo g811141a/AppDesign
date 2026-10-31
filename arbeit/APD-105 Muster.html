@@ -1,0 +1,171 @@
+<!doctype html><html lang="de"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="APD-105 Muster">
+<title>APD-105 Muster</title>
+<style>
+/* APD-105 ‚Antippen und langes Drücken‘ – Muster 1 (Sitzung Reiselogbuch 0067, aus APD-62 = APD-38/T-33 und T-34).
+   1) Rückmeldung beim Antippen (T-33) – drei Varianten über ?v=a|b|c (oben umschaltbar):
+      A  dimmen: Icon und Text werden beim Berühren blass (wie UIButton ‚adjustsImageWhenHighlighted‘).
+      B  graue Fläche: hinter dem Knopf bzw. der Zeile erscheint eine graue Fläche.
+      C  gemischt: Knöpfe dimmen, Listenzeilen bekommen die graue Fläche.
+      Knöpfe sofort; in Rollbereichen (Liste, Smiley-Leiste) erst nach 80 ms, damit beim Rollen nichts aufblitzt; wandert der Finger
+      mehr als 10 px oder rollt die Fläche, verschwindet die Rückmeldung (R-3.5). Loslassen: 0,15 s ausblenden.
+   2) Langes Drücken mit Anheben (T-34) – Smiley-Leiste: ab 0,15 s hebt sich das Smiley (wächst auf 1,25, Schatten), nach 0,6 s
+      kommt die Sprechblase ‚Entfernen‘ (wie heute, 8); Bewegung bricht ab und senkt es wieder. ‚Bewegung reduzieren‘: nur Schatten.
+   Nur hell (0 Nr. 6). */
+:root { --bg: #f2f2f7; --card: #fff; --line: #d1d1d6; --ink: #1c1c1e; --muted: #6e6e73; --blue: #007aff; --btn: #f9f9f9; --red: #ff3b30;
+  --rim: #fff; --float: 0 3px 28px rgba(0,0,0,.16); --druck: rgba(0,0,0,.09); color-scheme: light;
+  --sl: env(safe-area-inset-left); --sr: env(safe-area-inset-right); --st: env(safe-area-inset-top); --sb: env(safe-area-inset-bottom); }
+html { font: 17px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+@media (pointer: coarse) { html { font: -apple-system-body; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; line-height: 1.45; } }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); -webkit-text-size-adjust: 100%; }
+#wahl { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: calc(8px + var(--st)) max(16px, var(--sr)) 8px max(16px, var(--sl));
+  font-size: 15px; background: #e5e5ea; }
+#wahl button { font: inherit; height: 36px; padding: 0 14px; border-radius: 18px; border: .5px solid var(--line); background: var(--card); color: var(--ink); }
+#wahl button[aria-pressed="true"] { background: var(--blue); color: #fff; border-color: var(--blue); }
+.nb { position: sticky; top: 0; z-index: 5; display: flex; align-items: center; gap: 12px; height: 56px;
+  padding: 6px max(12px, var(--sr)) 6px max(12px, var(--sl)); background: var(--bg); border-bottom: .5px solid var(--line); font-size: min(1rem, 23px); }
+.nb-title { flex: 1; text-align: center; font-weight: 600; }
+button.k { position: relative; display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border: none; color: var(--blue);
+  background: none; border-radius: 22px; font: inherit; -webkit-touch-callout: none; -webkit-user-select: none; user-select: none;
+  -webkit-tap-highlight-color: transparent; transition: opacity .15s, background-color .15s; }
+.rund, .cap { background: var(--btn); box-shadow: inset 0 0 0 .5px var(--rim), var(--float); border-radius: 22px; }
+.cap { display: flex; }
+button.txt { width: auto; padding: 0 18px; gap: 8px; grid-auto-flow: column; }
+svg.i { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; pointer-events: none; }
+main { padding: 16px max(16px, var(--sr)) calc(100px + var(--sb)) max(16px, var(--sl)); }
+.hinweis { background: var(--card); border-radius: 12px; padding: 12px 16px; margin: 0 0 16px; }
+.hinweis p { margin: 0 0 6px; } .hinweis p:last-child { margin: 0; }
+h2 { font-size: .8em; font-weight: 400; color: var(--muted); text-transform: uppercase; margin: 20px 16px 6px; }
+.liste { background: var(--card); border-radius: 12px; overflow: hidden; }
+.zeile { display: block; width: 100%; text-align: left; font: inherit; color: var(--ink); background: var(--card); border: none; padding: 12px 16px;
+  border-bottom: .5px solid var(--line); -webkit-tap-highlight-color: transparent; transition: opacity .15s, background-color .15s;
+  -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
+.zeile:last-child { border-bottom: none; }
+.zeile small { display: block; color: var(--muted); font-size: .8em; }
+.knoepfe { display: flex; flex-wrap: wrap; gap: 12px; }
+/* Smiley-Leiste (15.12) */
+.smileys { display: flex; gap: 4px; overflow-x: auto; padding: 10px 8px; background: var(--btn); border-radius: 32px;
+  box-shadow: inset 0 0 0 .5px var(--rim), var(--float); scrollbar-width: none; }
+.smileys::-webkit-scrollbar { display: none; }
+.smileys button.k { flex: none; font-size: 28px; width: 52px; height: 52px; border-radius: 26px; transition: opacity .15s, background-color .15s, transform .45s ease-out, box-shadow .45s; }
+/* Rückmeldung beim Antippen */
+html.v-a .gedrueckt, html.v-c button.k.gedrueckt { opacity: .35; transition: none; }
+html.v-b .gedrueckt, html.v-c .zeile.gedrueckt { background-color: var(--druck) !important; transition: none; }
+html.v-b .zeile.gedrueckt { background-color: #e5e5ea !important; }
+html.v-c .zeile.gedrueckt { background-color: #e5e5ea !important; }
+/* Anheben */
+.smileys button.k.hebt { transform: scale(1.25); box-shadow: 0 6px 18px rgba(0,0,0,.22); background: var(--card); opacity: 1 !important; z-index: 2; }
+@media (prefers-reduced-motion: reduce) { .smileys button.k { transition: none; } .smileys button.k.hebt { transform: none; } }
+.blase { position: fixed; z-index: 30; padding: 10px 18px; border-radius: 14px; background: var(--card); color: var(--red); font-weight: 600;
+  box-shadow: var(--float); border: .5px solid var(--rim); }
+.blase::before { content: ''; position: absolute; top: -7px; left: calc(50% - 7px); width: 14px; height: 14px; background: inherit;
+  border-left: .5px solid var(--rim); border-top: .5px solid var(--rim); transform: rotate(45deg); border-top-left-radius: 3px; }
+#meldung { position: fixed; left: 50%; bottom: calc(24px + var(--sb)); transform: translateX(-50%); z-index: 40; padding: 10px 18px;
+  border-radius: 20px; background: rgba(28,28,30,.88); color: #fff; font-size: 15px; opacity: 0; transition: opacity .2s; pointer-events: none; white-space: nowrap; }
+#meldung.an { opacity: 1; }
+</style></head><body>
+<div id="wahl"><b>APD-105</b>
+  <button data-v="a">A dimmen</button>
+  <button data-v="b">B graue Fläche</button>
+  <button data-v="c">C Knöpfe dimmen, Zeilen grau</button>
+</div>
+<header class="nb">
+  <button class="k rund" data-name="Seitenleiste" aria-label="Seitenleiste"><svg class="i" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 3v18"/></svg></button>
+  <div class="nb-title">Toskana</div>
+  <div class="cap">
+    <button class="k" data-name="Teilen" aria-label="Teilen"><svg class="i" viewBox="0 0 24 24"><path d="M12 2v13"/><path d="m16 6-4-4-4 4"/><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/></svg></button>
+    <button class="k" data-name="Neuer Tag" aria-label="Neuer Tag"><svg class="i" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+    <button class="k" data-name="Mehr" aria-label="Mehr"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
+  </div>
+</header>
+<main>
+  <div class="hinweis" id="erkl"></div>
+  <div class="knoepfe">
+    <button class="k rund txt" data-name="Bearbeiten"><svg class="i" viewBox="0 0 24 24"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/></svg>Bearbeiten</button>
+    <button class="k rund" data-name="Löschen" aria-label="Löschen" style="color: var(--red)"><svg class="i" viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg></button>
+  </div>
+  <h2>Stimmung (lange drücken: entfernen)</h2>
+  <div class="smileys" id="smileys"></div>
+  <h2>Tage</h2>
+  <div class="liste" id="liste"></div>
+</main>
+<div id="meldung" role="status"></div>
+<script>
+const ERKL = {
+  a: '<b>A – dimmen.</b> Beim Berühren werden Icon und Text blass (Knöpfe sofort, Liste und Smileys nach 80 ms).',
+  b: '<b>B – graue Fläche.</b> Beim Berühren erscheint hinter Knopf bzw. Zeile eine graue Fläche.',
+  c: '<b>C – gemischt.</b> Knöpfe dimmen, Listenzeilen werden grau.',
+};
+const ALLE = 'Ziehe nach dem Berühren mehr als 10 px weg oder rolle: die Rückmeldung verschwindet, nichts wird ausgelöst. '
+  + 'Smiley lange drücken: es hebt sich an, nach 0,6 s kommt ‚Entfernen‘ – wegziehen bricht ab.';
+const $ = s => document.querySelector(s), html = document.documentElement;
+let v = ['a', 'b', 'c'].includes(new URLSearchParams(location.search).get('v')) ? new URLSearchParams(location.search).get('v') : 'a';
+function stand() {
+  html.className = 'v-' + v;
+  document.querySelectorAll('#wahl [data-v]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.v === v)));
+  $('#erkl').innerHTML = `<p>${ERKL[v]}</p><p>${ALLE}</p>`;
+}
+document.querySelectorAll('#wahl [data-v]').forEach(b => b.addEventListener('click', () => { v = b.dataset.v; history.replaceState(null, '', '?v=' + v); stand(); }));
+$('#smileys').innerHTML = ['😀', '🙂', '😐', '🙁', '😢', '😍', '🤩', '😴', '🥵', '🥶', '🤒', '😎'].map(s => `<button class="k" data-name="${s}" data-lang="1">${s}</button>`).join('');
+$('#liste').innerHTML = ['Florenz', 'Siena', 'San Gimignano', 'Lucca', 'Pisa', 'Volterra', 'Montepulciano', 'Pienza'].map((o, i) =>
+  `<button class="zeile" data-name="Tag ${i + 1}">Tag ${i + 1} – ${o}<small>${12 + i}. Mai 2026</small></button>`).join('');
+let mt; function melde(t) { const m = $('#meldung'); m.textContent = t; m.classList.add('an'); clearTimeout(mt); mt = setTimeout(() => m.classList.remove('an'), 1400); }
+
+// Rückmeldung und langes Drücken
+const WEG = 10, VERZUG = 80, LANG = 600, HEBEN = 150;
+let d = null, blase = null;
+const imRoll = el => !!el.closest('#liste, #smileys');
+function aus(sofort) {
+  if (!d) return;
+  clearTimeout(d.t1); clearTimeout(d.t2); clearTimeout(d.t3);
+  d.el.classList.remove('gedrueckt', 'hebt');
+  d = null;
+}
+function blaseZu() { blase?.remove(); blase = null; }
+addEventListener('pointerdown', e => {
+  if (blase) { blaseZu(); e.preventDefault(); return; }
+  const el = e.target.closest?.('button.k, .zeile');
+  if (!el || el.closest('#wahl') || !e.isPrimary || e.button > 0) return;
+  aus();
+  d = { el, x0: e.clientX, y0: e.clientY, weg: false, lang: false };
+  const an = () => d?.el === el && el.classList.add('gedrueckt');
+  if (imRoll(el)) d.t1 = setTimeout(an, VERZUG); else an();
+  if (el.dataset.lang) {
+    d.t2 = setTimeout(() => d?.el === el && el.classList.add('hebt'), HEBEN);
+    d.t3 = setTimeout(() => {
+      if (d?.el !== el) return;
+      d.lang = true; el.classList.remove('gedrueckt');
+      const r = el.getBoundingClientRect();
+      blase = document.createElement('div'); blase.className = 'blase'; blase.textContent = 'Entfernen';
+      document.body.append(blase);
+      blase.style.left = Math.max(12, Math.min(r.left + r.width / 2 - blase.offsetWidth / 2, innerWidth - 12 - blase.offsetWidth)) + 'px';
+      blase.style.top = (r.bottom + 14) + 'px';
+      el.classList.remove('hebt');
+    }, LANG);
+  }
+}, true);
+addEventListener('pointermove', e => {
+  if (d && !d.lang && Math.hypot(e.clientX - d.x0, e.clientY - d.y0) > WEG) { d.weg = true; const x = d; aus(); d = null; x.abgebrochen = true; abgebrochen = x.el; }
+}, true);
+let abgebrochen = null;
+addEventListener('scroll', () => { if (d && !d.lang) { abgebrochen = d.el; aus(); } }, { capture: true, passive: true });
+['pointerup', 'pointercancel'].forEach(t => addEventListener(t, e => {
+  if (!d) return;
+  const war = d; aus();
+  if (war.lang) { abgebrochen = war.el; return; }   // der Klick nach dem langen Drücken löst nichts aus
+}, true));
+addEventListener('click', e => {
+  const el = e.target.closest?.('button.k, .zeile');
+  if (!el || el.closest('#wahl')) return;
+  if (abgebrochen === el) { abgebrochen = null; e.preventDefault(); return; }
+  abgebrochen = null;
+  melde(`${el.dataset.name} angetippt`);
+}, true);
+addEventListener('contextmenu', e => { if (e.target.closest?.('button.k, .zeile')) e.preventDefault(); }, true);
+stand();
+</script>
+</body></html>
