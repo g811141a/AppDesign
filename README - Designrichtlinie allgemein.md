@@ -1,6 +1,6 @@
 # Designrichtlinie allgemein
 
-**Version 4.45.0** · Stand 31.10.2026
+**Version 4.46.0** · Stand 31.10.2026
 
 Allgemeine Gestaltungs- und Bedienregeln für alle Web-Apps von g811141a auf iPad und iPhone. Die Datei liegt im Design-Repo
 **AppDesign** (g811141a/AppDesign); ihre Versionsnummer ist die des Repos. Die Komponenten sind dort einmal programmiert und
@@ -657,6 +657,11 @@ Regel). In AppDesign ist jede Komponente einmal programmiert (`v4/design.css`, `
   Kachel läuft die Liste bis an den unteren Rand bzw. bis über die Zeile.
 - **Geändert am:** jede Kachel zeigt als dritte Zeile klein und grau (13 px) ‚geändert am TT.MM.JJJJ um hh:mm · iPad‘ bzw.
   ‚· iPhone‘ (`small.chg`); das Gerät liefert `deviceName()`. Ohne bekannte Änderung entfällt die Zeile.
+- **Abschnittsköpfe** (R-7.6): Teilt die App die Liste in Gruppen (z. B. nach Jahr), steht über jeder Gruppe – auch über der
+  ersten – eine Überschrift, genau wie die Überschrift des Kopfs (Title 3 `--tb-title3`, fett, Textfarbe, wächst mit der
+  Textgröße), linksbündig über den Kacheln. Sie rollt mit (haftet nicht, APD-46), ist eine Überschrift (Rolle heading) und lässt
+  sich weder antippen noch lange drücken; bei der Suche stehen nur die Köpfe der Gruppen mit Treffern. Technisch `.side-sec` in
+  `.side-list`. Vorbild Notizen (Gruppen ‚Pinned‘, ‚Notes‘).
 - **Suche in der Liste** (Regel R-2.3): ‚Suchen‘ im Mehr-Menü der Seitenleiste blendet unter dem Kopf eine Suchzeile ein (wie 15.2,
   Platzhalter ‚In allen suchen‘, ⓧ, **ohne** Pfeile, rechts x ‚Suche beenden‘; `#side .side-search`), Fokus im Feld. Jede Kachel mit Treffer zeigt ‚N Treffer‘ statt ‚geändert am
   …‘ (nur sichtbare Felder), unter der Überschrift ‚2 von 5 <Einträgen>‘. Gefiltert bleibt, bis x ‚Suche beenden‘ die Suche beendet;
@@ -1202,6 +1207,7 @@ Testfall (User) in den Usertest, wenn eine Version es betrifft.
 | R-7.3 | **Liste steht still:** solange ein Fenster aus einer Zeile (bzw. einem Kasten) offen ist, bewegt sich die Liste dahinter nicht – auch wenn Safari beim Schreiben die Seite für die Tastatur schiebt; nach dem Schließen (Häkchen oder x) steht sie genau wie vorher – die oberste Zeile an derselben Stelle, auch wenn die Tastatur offen war –, die Zeile wird 2 s blau hinterlegt und blendet in 1 s aus (‚Bewegung reduzieren‘: 2 s ohne Ausblenden; endet, sobald das nächste Fenster aufgeht); auch nach ‹ › im Fenster steht die Liste wie beim Öffnen; iPad und iPhone gleich | ablauf.mjs – `checkListStill` (Start z. B. mit dem ersten fehlenden Tag oben; Zeile oben, 3 tiefer, untere Hälfte, 2 px unter dem Kopf, nach 5× ‹ ›; Häkchen und x; Safari-Tastatur einzeln und zusammen: sichtbarer Bereich, Fensterhöhe, Nachrollen beim Zugehen) | Gerät (echte Tastatur, Diktieren) | 7, 15.9 |
 | R-7.4 | **Position beim Öffnen:** ein Eintrag öffnet ganz oben; ein ‚nächster offener‘ Eintrag (von der App bestimmt) steht hervorgehoben direkt unter dem Kopf bzw. Tabellenkopf, nie in der Mitte; legt die App stattdessen einen aktuellen Eintrag fest (z. B. heute), steht er ebenso direkt unter dem Kopf, aber ohne Hervorhebung – hervorgehoben wird nur Offenes, nie Künftiges | ablauf.mjs – `checkOpenAt` (mit `markiert`) | – | 13 |
 | R-7.5 | **Navigation und Gesten** (wie iOS 26): im iPhone-Aufbau schiebt sich der Inhalt beim Öffnen herein und beim Zurück hinaus; **Zurückwischen von überall im Inhalt** folgt dem Finger, fertig nach halber Breite oder schnellem Wischen, sonst federt es zurück; am iPad hoch und quer holt Wischen nach rechts die ausgeblendete Seitenleiste herein, der Inhalt rückt mit und wird beim Einrasten schmaler, ausblenden quer nur mit panel-left (gleitet). Vorrang an einer Stelle: senkrechtes Rollen, eigenes waagrechtes Rollen, Felder, Knöpfe, Kapseln, Schnellroll-Griff; nicht nach langem Drücken und nicht bei offenem Fenster, Menü oder offener Sprechblase; Tastatur schließt zuerst; Drehen beim Ziehen = Zustand wie vorher; Wischen tippt nie an; ‚Bewegung reduzieren‘ überblendet; je Bild nur transform und opacity | ablauf.mjs – `checkNavigation` | Wischgefühl, Rand mit dem Daumen, versehentliches Zurück, Home-Bildschirm-App, VoiceOver | 13, 15.4, 15.17 |
+| R-7.6 | **Abschnittsköpfe in der Liste:** jede Gruppe hat eine Überschrift, auch die erste; Schrift wie die Überschrift des Kopfs (Größe, Stärke, Farbe, Schrift), wächst mit der Textgröße; rollt mit; Rolle heading, nicht antippbar; bei der Suche nur Gruppen mit Treffern | hig.mjs | – | 15.4 |
 
 ### 8. Drehen
 
@@ -1287,6 +1293,7 @@ R-2.3 (15.2), R-4.4 (6, 15.8, HIG 9), R-5.3 (8), R-5.4 (15.12), R-5.5 (APD-14), 
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 4.46.0 | 31.10.2026 | Neben | **APD-100 (Nutzer 31.10.2026, Sitzung 0063, Wortlaut bestätigt, aus RLB-114):** 15.4 neu ‚Abschnittsköpfe‘ – über jeder Gruppe der Liste, auch der ersten, eine Überschrift wie die Überschrift des Kopfs (Title 3, fett, Textfarbe, wächst mit), rollt mit, Rolle heading, nicht antippbar, bei der Suche nur Gruppen mit Treffern; Baustein `.side-sec`; Katalog R-7.6 (Prüfung `hig.mjs`) |
 | 4.45.0 | 31.10.2026 | Neben | **APD-97 (Nutzer 30./31.10.2026, Sitzungen 0058 und 0060, Wortlaut bestätigt, aus P-82 ‚Sonstiges‘):** 15.4 die Seitenleiste steht am iPad quer und hoch fest neben dem Inhalt (Apple `tile`, Vorbild Einstellungen und Notizen, `apple-referenz/ipad/`), keine Abdunkelung, Gesten hoch wie quer; 15.6 ohne ‚darübergelegt‘; 15.13 schmaler Inhalt unter 700 px zeigt Tabellen als Kästen (`inhaltSchmal` in `ui.js`); Katalog R-6.6 neu (Prüfung `hig.mjs`), R-7.5 hoch wie quer; 13 ‚Kein Scroll-Anker‘: ändert die App die Anordnung, bleibt beim ersten Eintrag ganz unter der Leiste der Abstand in px statt des Anteils (Nutzer 31.10.2026, Sitzung 0062, Wortlaut bestätigt); 15.4 ‚Drehen‘: Auslöser nur noch panel-left bzw. Hereinwischen (Nutzer 31.10.2026, Sitzung 0062, Wortlaut bestätigt) |
 | 4.44.1 | 30.10.2026 | Korrektur | **APD-98 (Nutzer 30.10.2026, Sitzung 0059, Wortlaut bestätigt, aus P-82/3):** 15.10 Bezeichnung im Kasten mit Feldern normal in Textgröße und Textfarbe wie der Wert, Emojis klein, mittig zur ersten Zeile des Werts (Variante B1 – Apple-Standard statt halbfett); Katalog R-6.5 neu (Prüfung `hig.mjs` – `kastenBezeichnung`) |
 | 4.44.0 | 30.10.2026 | Neben | **APD-95 (Nutzer 30.10.2026, Wortlaut bestätigt, aus P-81/6):** 8 neu ‚Bezeichnungen in normaler Schrift‘ und Katalog R-5.8 (Prüfung `hig.mjs` – `bezeichnungen`); 8 ‚Zahlenfelder mit kleinem Höchstwert‘ ohne Fokus bündig am rechten Rand, mit Fokus rückt die Zahl für das ⓧ nach links (statt immer freiem Platz) |

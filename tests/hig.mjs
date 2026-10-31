@@ -382,6 +382,23 @@ const found = new Map(), icons = new Map();
       // R-7.1 Zentrale Liste als Kacheln, höchstens ein Eintrag blau
       document.querySelectorAll('#side .side-row, .ilist.tiles .irow').forEach(e => { if (vis(e) && parseFloat(cs(e).borderTopLeftRadius) < 12) R('R-7.1', 'Eintrag der Liste ist keine Kachel'); });
       [document.getElementById('side'), document.querySelector('.ilist.tiles')].forEach(l => { if (l && l.querySelectorAll('.current').length > 1) R('R-7.1', 'mehr als ein Eintrag blau'); });
+      // R-7.6 (seit 4.46.0, APD-100) Abschnittsköpfe in der Liste: hat die Liste Köpfe, steht einer auch über der ersten Gruppe; jeder Kopf
+      // hat Einträge unter sich (bei der Suche nur Gruppen mit Treffern), Schrift wie die Überschrift des Kopfs, rollt mit, ist eine
+      // Überschrift und nicht antippbar
+      document.querySelectorAll('#side .side-list').forEach(l => {
+        const ks = [...l.querySelectorAll(':scope > .side-sec')]; if (!ks.length) return;
+        if (!l.firstElementChild?.matches('.side-sec')) R('R-7.6', 'über der ersten Gruppe der Liste fehlt der Kopf');
+        const h = l.closest('#side')?.querySelector('.side-head h2'), f = e => { const c = cs(e); return [c.fontSize, c.fontWeight, c.color, c.fontFamily].join(' | '); };
+        ks.forEach(k => {
+          const n = `‚${k.textContent.trim().slice(0, 20)}‘`;
+          if (!k.nextElementSibling || k.nextElementSibling.matches('.side-sec')) R('R-7.6', `Kopf ${n} ohne Einträge darunter`);
+          if (!vis(k)) return;
+          if (h && f(k) !== f(h)) R('R-7.6', `Kopf ${n} nicht wie die Überschrift des Kopfs (${f(k)} statt ${f(h)})`);
+          if (/sticky|fixed/.test(cs(k).position)) R('R-7.6', `Kopf ${n} haftet (rollt nicht mit)`);
+          if (!/^H[1-6]$/.test(k.tagName) && k.getAttribute('role') !== 'heading') R('R-7.6', `Kopf ${n} ist keine Überschrift`);
+          if (k.closest('button, a[href], [data-id]') || k.matches('[onclick], [tabindex]')) R('R-7.6', `Kopf ${n} ist antippbar`);
+        });
+      });
       // R-1.1 Aktionen und Suche oben – unten nur feste Hinweise
       document.querySelectorAll('.bbar').forEach(b => { if (!vis(b)) return; if ([...b.querySelectorAll('button')].some(x => !x.closest('.bnote')) || b.querySelector('.searchbox')) R('R-1.1', 'Aktion oder Suche in der unteren Leiste statt oben in der Kapsel'); });
       // R-1.2 Darstellung folgt dem Gerät
@@ -654,6 +671,7 @@ const found = new Map(), icons = new Map();
   // (Standard 17) auf AX5 (53 px) und zurück – wie über das Kontrollzentrum (W1). Bei 53: kein Text kleiner als vorher, jeder Text eines
   // Textstils genau Apples Wert (±1), Leisten höchstens im XXXL-Maß (Text bis 26, Knöpfe bis 60 px; iPhone quer 32 px wie bei Standard),
   // keine Tabelle im Inhalt, Bezeichnung über dem Wert, die Ausgabe (.rt) unverändert, der letzte Eintrag nicht verdeckt (R-7.1).
+  // Seit 4.46.0 (APD-100): Abschnittsköpfe der Liste (.side-sec) wachsen wie die Überschrift des Kopfs, also im Leisten-Maß (R-7.6).
   const AX5 = { 34: 60, 28: 58, 22: 56, 20: 55, 17: 53, 16: 51, 15: 49, 13: 44, 12: 43, 11: 40 };
   const textBild = p => p.evaluate(() => {
     const vis = e => { const s = getComputedStyle(e), b = e.getBoundingClientRect(); return b.width > 0 && b.height > 0 && s.visibility !== 'hidden' && s.display !== 'none'; };
@@ -664,7 +682,7 @@ const found = new Map(), icons = new Map();
     for (const e of document.querySelectorAll(oben === 'body' ? 'body *' : `:is(${oben}) *`)) {
       if (!vis(e) || ![...e.childNodes].some(n => n.nodeType === 3 && n.textContent.trim())) continue;
       const k0 = pfad(e) + '|' + e.textContent.trim().slice(0, 24), n = zaehl[k0] = (zaehl[k0] || 0) + 1;
-      out[k0 + '#' + n] = { fs: parseFloat(getComputedStyle(e).fontSize), leiste: !!e.closest('.nb, .pnav, .dlg-head, .side-head, .bbar, .fab, .schnell, .nettoast, #side .side-foot, #side .side-search'),
+      out[k0 + '#' + n] = { fs: parseFloat(getComputedStyle(e).fontSize), leiste: !!e.closest('.nb, .pnav, .dlg-head, .side-head, .bbar, .fab, .schnell, .nettoast, #side .side-foot, #side .side-search, #side .side-sec'),   // .side-sec: R-7.6, Schrift wie die Überschrift des Kopfs (seit 4.46.0)
         feld: e.matches('input, textarea, select'), rt: !!e.closest('.rt'), name: pfad(e).split('>').pop() + ' ‚' + e.textContent.trim().slice(0, 30) + '‘' };
     }
     return out;
