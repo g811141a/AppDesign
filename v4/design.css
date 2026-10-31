@@ -1,4 +1,4 @@
-/* AppDesign 4.46.0 · design.css – gemeinsame Gestaltung der iPad-Web-Apps von g811141a (Apple-like)
+/* AppDesign 4.47.0 · design.css – gemeinsame Gestaltung der iPad-Web-Apps von g811141a (Apple-like)
    Einbinden im <head> vor dem eigenen <style> der App:  <link rel="stylesheet" href="../AppDesign/fassung/X.Y.Z/design.css"> (feste Fassung, R-10.3)
    Farben als Variablen auf :root, Dunkelmodus über data-theme="dark" (setzt ui.js / applyTheme).
    Komponenten: Schaltflächen, Suchfeld, Kapsel, Eingabefelder, Datumsfelder, Kopfzeile, Seitenleiste,
@@ -6,7 +6,7 @@
    Options-Kapsel; seit 4.1.0 iPhone-Ansicht (html.phone: Seitenkopf, großer Titel, Liste, Kasten, untere Leiste). Regeln dazu: README - Designrichtlinie allgemein.md */
 /* Farben im Apple-Look: Hintergrund Hellgrau, Kästen weiß ohne Rand, schwebende Schaltflächen */
 :root {
-  --ad-version: "4.46.0";   /* R-10.3: Version der Bausteine, die App prüft sie beim Start */
+  --ad-version: "4.47.0";   /* R-10.3: Version der Bausteine, die App prüft sie beim Start */
   --bg: #f2f2f7;
   --card: #ffffff;
   --ink: #1c1c1e;
@@ -397,6 +397,18 @@ body.docked { padding-left: calc(var(--side-w) + max(10px, var(--safe-left)) + 2
 /* B2: ab AX1 stehen Knöpfe und Kacheln immer untereinander (auch iPhone quer) */
 html.ts-ax .pop .btns, html.ts-ax .pop .tiles { flex-direction: column; }
 :root[data-theme="dark"] .menu, :root[data-theme="dark"] .pop { background: #2c2c2e; }
+/* R-2.5 (seit 4.47.0, APD-101): gekürzter Titel – Sprechblase mit dem ganzen Titel direkt unter der Kopfzeile, Pfeil zur Titelmitte
+   (--pfeil), Schrift wie der Titel (setzt ui.js), bricht um; mindestens so breit wie eine Abfrage (.pop), nie breiter als der Bildschirm */
+.titel-blase { position: fixed; z-index: 31; box-sizing: border-box; width: max-content;
+  min-width: min(max(320px, calc(320px * var(--f-body))), calc(100vw - 24px - var(--safe-left) - var(--safe-right)));
+  max-width: calc(100vw - 24px - var(--safe-left) - var(--safe-right)); padding: 10px 16px; text-align: center; white-space: normal;
+  overflow-wrap: anywhere; color: var(--ink); background: var(--card); border-radius: 14px; border: .5px solid var(--btn-rim);
+  box-shadow: var(--float); pointer-events: none; -webkit-user-select: none; user-select: none; }
+.titel-blase::before { content: ''; position: absolute; top: -7px; left: calc(var(--pfeil, 50%) - 7px); width: 14px; height: 14px;
+  background: inherit; border-left: .5px solid var(--btn-rim); border-top: .5px solid var(--btn-rim); transform: rotate(45deg); border-top-left-radius: 3px; }
+:root[data-theme="dark"] .titel-blase { background: #2c2c2e; }
+/* langes Drücken auf den Titel: ohne Textauswahl, Lupe und Safari-Menü (wie .menu .note.halten) */
+:is(.dlg-head h3, .nb-title, .pnav-title) { -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
 
 .msg-text { padding: 8px 2px; }
 

@@ -1,6 +1,6 @@
 # Designrichtlinie allgemein
 
-**Version 4.46.0** · Stand 31.10.2026
+**Version 4.47.0** · Stand 31.10.2026
 
 Allgemeine Gestaltungs- und Bedienregeln für alle Web-Apps von g811141a auf iPad und iPhone. Die Datei liegt im Design-Repo
 **AppDesign** (g811141a/AppDesign); ihre Versionsnummer ist die des Repos. Die Komponenten sind dort einmal programmiert und
@@ -637,6 +637,7 @@ Regel). In AppDesign ist jede Komponente einmal programmiert (`v4/design.css`, `
   Suchfeld über die volle Breite ein, Treffer-Navigation und x ‚Suche beenden‘ rechts – auf iPad und iPhone oben (R-4.5).
 - **Verhalten:** feste Zeile des Rahmens (15.22) – nur der Inhalt darunter rollt (Hintergrund `--bg`, sobald der Inhalt gerollt
   ist, Haarlinie unten); keine Glas-Leiste. Regel R-2.1.
+- **Gekürzter Titel:** wie in der Fenster-Kopfzeile (15.8, R-2.5).
 - **iPhone quer niedrig** (R-2.4, wie iOS quer): Kopfzeile, Suchzeile und Fensterkopf 32 statt 44 px hoch – Knöpfe in Kapseln
   31 px, Markierung 25 × 25, runde Knöpfe 32 × 32 mit unsichtbarer Antippfläche 44 × 44, das Suchfeld als Kapsel 32 px (R-3.1
   erlaubt Kapseln ab 28) –, damit Suche und Felder darunter bei offener Tastatur in der oberen Hälfte liegen (R-4.5).
@@ -742,6 +743,11 @@ Regel). In AppDesign ist jede Komponente einmal programmiert (`v4/design.css`, `
 - **Aufbau:** links rundes x (44 × 44) · Mitte Titel (19 px) mit grauer Zusatzzeile (13 px) · rechts ggf. eine Kapsel und das
   runde Häkchen. Häkchen grau, nach einer Änderung blau gefüllt. iPhone quer 32 px (R-2.4, wie 15.3). Technisch `dlgHead()`.
   Regel R-4.4.
+- **Gekürzter Titel** (R-2.5): Passt der Titel nicht ganz zwischen die Knöpfe (z. B. iPhone hoch bei großer Schrift), endet er mit
+  ‚…‘; langes Drücken auf ihn zeigt den ganzen Titel in einer Sprechblase direkt darunter – Pfeil zur Mitte des Titels, Schrift wie
+  der Titel, bricht um, passt immer auf den Bildschirm (R-4.5). Sie bleibt stehen, bis man irgendwo tippt (dieser Tipp schließt nur
+  die Sprechblase), rollt, Esc drückt oder dreht. Ein ganz sichtbarer Titel und kurzes Antippen zeigen nichts. Apple zeigt hier die
+  Großanzeige in der Mitte des Bildschirms (Abweichung, 16).
 
 ### 15.9 Fenster
 - **Apple:** [HIG – Sheets](https://developer.apple.com/design/human-interface-guidelines/sheets)
@@ -1105,7 +1111,7 @@ steht in der Spalte ‚außerdem‘ (ohne automatische Prüfung: G-19).
 |---|---|---|---|
 | Weiße Schrift auf Systemblau (`--accent`): gewählte Zeile, ‚heute‘, Schrittnummern, Häkchen | 4,0 : 1 hell · 3,7 : 1 dunkel | Apple-Systemblau wie in allen Apple-Apps | 09.10.2026 |
 | Orange `--warn` (z. B. ‚fehlt‘) | 3,1–3,5 : 1 | bleibt wie es ist | 09.10.2026 |
-| Keine Großanzeige (Apple: langes Drücken auf einen Leisten-Knopf ab AX1 zeigt Icon und Name groß) | – | gibt es im Web nicht; dafür wachsen die Leisten bis XXXL (R-1.10), VoiceOver nennt jeden Knopf (R-1.8) | 23.10.2026 |
+| Keine Großanzeige (Apple: langes Drücken auf einen Leisten-Knopf ab AX1 zeigt Icon und Name groß) | – | gibt es im Web nicht; dafür wachsen die Leisten bis XXXL (R-1.10), VoiceOver nennt jeden Knopf (R-1.8); ein gekürzter Titel zeigt beim langen Drücken den ganzen Titel in einer Sprechblase darunter statt groß in der Mitte (R-2.5, Wunsch des Nutzers) | 23.10.2026 |
 | Feldtext bei xS bis M mindestens 16 px (Apple: 14–16) | – | sonst vergrößert Safari beim Antippen (R-1.3) | 23.10.2026 |
 | ⓧ auch in mehrzeiligen Textfeldern (Apple: UITextView – Notizen, Mail, Notizfelder in Kalender, Erinnerungen, Kontakte – hat kein ⓧ; geleert wird mit Auswählen → ‚Ausschneiden‘ bzw. Löschtaste) | – | Wunsch des Nutzers (P-73/1, APD-81); mehr als eine Zeile erst nach der Sprechblase ‚Text löschen?‘, Rückgängig wie bei Apple über Undo-Taste, drei Finger, Schütteln (R-5.6) | 26.10.2026 |
 | Kapsel ‚Nach oben / Ans Ende‘ auch auf dem iPhone (Apple: Statusleiste antippen bzw. Scroll-Leiste ziehen) | – | der Apple-Weg war dem Nutzer zu schwerfällig (R-3.2); das Ziehen der Scroll-Leiste gibt es dazu als Schnellroll-Griff | 17.10.2026 |
@@ -1151,6 +1157,7 @@ Testfall (User) in den Usertest, wenn eine Version es betrifft.
 | R-2.2 | **Titel in der Leiste:** Titel einer Inhaltsseite steht in der Leiste; unter dem Titel der Seitenleiste bzw. Startliste klein und grau die Anzahl | hig.mjs | – | 15.4, 15.17 |
 | R-2.3 | **Suche:** Suchzeile unter der Leiste über die volle Breite; Treffer ‚3 von 57‘ bzw. ‚0‘; nach kurzer Pause steht der Treffer direkt unter der Suchzeile; Pfeile ohne Umlauf; gefiltert auf Einträge mit Treffern; gleich auf iPad und iPhone; beim Tippen bleibt das Suchfeld dasselbe Feld mit Fokus; **mehrere Wörter** (alle müssen vorkommen, Reihenfolge egal, „…“ = genaue Folge, alle markiert; die Einheit legt die App fest); **geöffnet über ‚Suchen‘ als ersten Punkt im Mehr-Menü** (darunter ein Strich) oder ⌘F, **beendet mit dem runden x rechts in der Suchzeile**, keine Lupe in der Kapsel; **auch in der zentralen Liste** (‚Suchen‘ im Mehr-Menü der Seitenleiste): filtert die Einträge, Kachel ‚N Treffer‘ je Fundstelle wie ‚1 von N‘, Öffnen mit gefüllter Suche, beide Suchfelder offen = 1:1, ‚Keine Treffer‘; **Suche öffnen und ⓧ rollen den Inhalt ganz nach oben**, der Fokus bleibt im Feld; **ohne Akzente** (‚Zurich‘ findet ‚Zürich‘ und umgekehrt, markiert wird das Wort wie im Text; ß, ø, æ sind eigene Buchstaben) | ablauf.mjs – `checkSearch`, `checkListSearch`, `checkSearchWords`, `checkSearchPlace`, Feld bleibt beim Tippen, `checkSearchTop`, `checkSucheBeenden`, `checkCmdF` | – | 15.2, 15.4, 15.5 |
 | R-2.4 | **iPhone quer: niedrige Leisten** (wie iOS quer): Kopfzeile, Suchzeile und Fensterkopf 32 statt 44 px hoch – Knöpfe in Kapseln 31 px, runde Knöpfe 32 × 32 mit Antippfläche 44 × 44, das Suchfeld als Kapsel 32 px (R-3.1: Kapseln ab 28); damit liegen Suche und Felder darunter bei offener Tastatur in der oberen Hälfte (R-4.5). Hoch und am iPad 44 px | hig.mjs – Höhe der Knöpfe und des Suchfelds in Kopfzeile und Fensterkopf (iPhone quer 32, hoch 44) | – | 15.3, 15.8 |
+| R-2.5 | **Gekürzter Titel:** ein mit ‚…‘ gekürzter Titel in Kopfzeile oder Fenster-Kopfzeile zeigt beim langen Drücken den ganzen Titel in einer Sprechblase darunter – ganz sichtbar, bis zum nächsten Tippen (das nur sie schließt), Rollen, Esc oder Drehen; ein ganz sichtbarer Titel und kurzes Antippen zeigen nichts | ablauf.mjs | – | 15.3, 15.8 |
 
 ### 3. Schaltflächen
 
@@ -1293,6 +1300,7 @@ R-2.3 (15.2), R-4.4 (6, 15.8, HIG 9), R-5.3 (8), R-5.4 (15.12), R-5.5 (APD-14), 
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 4.47.0 | 31.10.2026 | Neben | **APD-101 (Nutzer 31.10.2026, Sitzung 0065, Wortlaut bestätigt, aus RLB-113/E-6):** 15.8 neu ‚Gekürzter Titel‘ – ein mit ‚…‘ gekürzter Titel zeigt beim langen Drücken den ganzen Titel in einer Sprechblase direkt darunter (Pfeil zur Titelmitte, Schrift wie der Titel, bleibt bis Tippen, Rollen, Esc oder Drehen); 15.3 ebenso; Katalog R-2.5 (Prüfung `ablauf.mjs` – `checkTitelBlase`); 16 Zeile ‚Keine Großanzeige‘ ergänzt (Abweichung: Sprechblase statt Großanzeige in der Mitte); Baustein `.titel-blase` |
 | 4.46.0 | 31.10.2026 | Neben | **APD-100 (Nutzer 31.10.2026, Sitzung 0063, Wortlaut bestätigt, aus RLB-114):** 15.4 neu ‚Abschnittsköpfe‘ – über jeder Gruppe der Liste, auch der ersten, eine Überschrift wie die Überschrift des Kopfs (Title 3, fett, Textfarbe, wächst mit), rollt mit, Rolle heading, nicht antippbar, bei der Suche nur Gruppen mit Treffern; Baustein `.side-sec`; Katalog R-7.6 (Prüfung `hig.mjs`) |
 | 4.45.0 | 31.10.2026 | Neben | **APD-97 (Nutzer 30./31.10.2026, Sitzungen 0058 und 0060, Wortlaut bestätigt, aus P-82 ‚Sonstiges‘):** 15.4 die Seitenleiste steht am iPad quer und hoch fest neben dem Inhalt (Apple `tile`, Vorbild Einstellungen und Notizen, `apple-referenz/ipad/`), keine Abdunkelung, Gesten hoch wie quer; 15.6 ohne ‚darübergelegt‘; 15.13 schmaler Inhalt unter 700 px zeigt Tabellen als Kästen (`inhaltSchmal` in `ui.js`); Katalog R-6.6 neu (Prüfung `hig.mjs`), R-7.5 hoch wie quer; 13 ‚Kein Scroll-Anker‘: ändert die App die Anordnung, bleibt beim ersten Eintrag ganz unter der Leiste der Abstand in px statt des Anteils (Nutzer 31.10.2026, Sitzung 0062, Wortlaut bestätigt); 15.4 ‚Drehen‘: Auslöser nur noch panel-left bzw. Hereinwischen (Nutzer 31.10.2026, Sitzung 0062, Wortlaut bestätigt) |
 | 4.44.1 | 30.10.2026 | Korrektur | **APD-98 (Nutzer 30.10.2026, Sitzung 0059, Wortlaut bestätigt, aus P-82/3):** 15.10 Bezeichnung im Kasten mit Feldern normal in Textgröße und Textfarbe wie der Wert, Emojis klein, mittig zur ersten Zeile des Werts (Variante B1 – Apple-Standard statt halbfett); Katalog R-6.5 neu (Prüfung `hig.mjs` – `kastenBezeichnung`) |

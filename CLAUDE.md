@@ -1,6 +1,6 @@
 # AppDesign – Hinweise für Claude
 
-**Version 2.9.0** · Stand 26.10.2026
+**Version 2.10.0** · Stand 31.10.2026
 
 ## Zuerst lesen (gezielt, Zusammenarbeit 0 Nr. 15)
 
@@ -58,8 +58,9 @@ nie ohne ‚Ja‘ bauen (0 Nr. 21), Testfall-Liste vor jedem Bau (0 Nr. 1), erst
   `node werkzeug/veroeffentlichen.mjs vorbereiten --ad X.Y.Z --app reiselogbuch=X.Y.Z` (ohne `--ad`, wenn nur die App); Texte
   schreiben (CHANGELOG mit Testfällen, Backlog, Versionsgeschichten); nach Änderungen an `v4/` oder `tests/` bzw. an Designrichtlinie
   oder Zusammenarbeit nach `vorbereiten`: `node werkzeug/veroeffentlichen.mjs fassung`; committen; dann
-  `node werkzeug/veroeffentlichen.mjs los --app reiselogbuch` im Hintergrund (prüft, voller Prüflauf, erst AppDesign, dann die
-  App, wartet auf Pages; ~8 min). **Nie `… fassung` für eine schon veröffentlichte Version** – erst `vorbereiten` (neue Version),
+  `node werkzeug/veroeffentlichen.mjs los --app reiselogbuch` im Hintergrund (prüft, führt eine neuere `main` vorher in die
+  Vorbereitungs-Zweige zusammen – bei Konflikt Abbruch vor dem Prüflauf –, voller Prüflauf, erst AppDesign, dann die App, wartet auf
+  Pages; ~60 min). **Nie `… fassung` für eine schon veröffentlichte Version** – erst `vorbereiten` (neue Version),
   dann ändern. Danach die lokalen Vorbereitungs-Zweige löschen (sonst meldet der Stop-Hook ‚unpushed‘). Zweige auf GitHub löschen
   geht aus der Cloud nicht (403) – alte Vorbereitungs-Zweige dort schaden nicht.
 
@@ -69,6 +70,7 @@ nie ohne ‚Ja‘ bauen (0 Nr. 21), Testfall-Liste vor jedem Bau (0 Nr. 1), erst
 
 | Version | Datum | Inhalt |
 |---|---|---|
+| 2.10.0 | 31.10.2026 | APD-102: `los` führt eine neuere `main` vor dem Prüflauf in die Vorbereitungs-Zweige zusammen (bei Konflikt Abbruch vorher), ~60 min (Wortlaut bestätigt 31.10.2026, Sitzung 0065) |
 | 2.9.0 | 26.10.2026 | APD-84: zu Beginn die ganze Zusammenarbeit (Kasten ‚Jede Antwort‘); Regelwächter über das Setup-Skript einrichten |
 | 2.8.0 | 25.10.2026 | APD-78 Nummernschema: Verweise mit den neuen Nummern (APD-n, RLB-n, Usertest, Testfall-Liste); Tabelle alt → neu in `ZUORDNUNG.md` |
 | 2.7.0 | 24.10.2026 | Tests einrichten: Chromium-Verweise für einen neueren Chromium der Umgebung (Chrome 153) dauerhaft hier statt in UEBERGABE.md (Nutzer 24.10.2026) |

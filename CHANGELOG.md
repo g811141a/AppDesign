@@ -3,6 +3,35 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.47.0 – 31.10.2026
+
+AppDesign 4.47.0 · Designrichtlinie allgemein 4.47.0 · Zusammenarbeit allgemein 3.4.0 · geprüft mit Reiselogbuch 3.45.0
+
+**APD-101 Gekürzter Titel – Sprechblase** (aus RLB-113/E-6) – dein Ja vom 31.10.2026, Sitzung 0065 (Variante B, Muster `arbeit/bilder/APD-101 4`
+und `5`; Wortlaut 15.8, 15.3, R-2.5 und 16 bestätigt in `arbeit/APD-101 Wortlaut.md`); Testfall-Liste `arbeit/APD-101 Testfall-Liste.md`
+(APD-101/L-1 bis L-13). **APD-102 `los` bei neuerer `main`** – dein Ja vom 31.10.2026, Sitzung 0065 (Variante a; Wortlaut `CLAUDE.md` bestätigt in
+`arbeit/APD-102 Wortlaut.md`); Testfall-Liste `arbeit/APD-102 Testfall-Liste.md` (APD-102/M-1 bis M-8). Usertest im Reiselogbuch: P-86.
+
+- **Gekürzter Titel (APD-101, 15.8, 15.3, `ui.js` und `design.css`):** ist der Titel der Kopfzeile (`.nb-title`, `.pnav-title`) oder der
+  Fenster-Kopfzeile (`.dlg-head h3`) mit ‚…‘ gekürzt, zeigt langes Drücken (0,6 s still, R-3.5) den ganzen Titel in einer Sprechblase
+  `.titel-blase` direkt unter der Zeile – Pfeil zur Mitte des Titels, Schrift wie der Titel, bricht um, mindestens so breit wie eine Abfrage,
+  ganz auf dem Bildschirm (R-4.5). Sie bleibt nach dem Loslassen stehen; der nächste Tipp irgendwo schließt **nur** sie (der Klick dahinter
+  und das Fokussieren eines Felds entfallen), ebenso Rollen, Esc und Drehen. Ein ganz sichtbarer Titel und kurzes Antippen zeigen nichts.
+  Für VoiceOver trägt der Titel selbst den ganzen Text (R-1.8), die Blase ist nur zu sehen. Titel ohne Textauswahl und Safari-Menü beim
+  langen Drücken. Abweichung von Apple (Großanzeige in der Mitte): Zeile ‚Keine Großanzeige‘ in 16.
+- **Neue Regel R-2.5 (Katalog 17) mit Prüfung `checkTitelBlase` in `tests/ablauf.mjs`:** Text gleich dem Titel, nicht gekürzt, ganz auf
+  dem Bildschirm, über keinem Knopf der Leiste, direkt unter der Zeile, Pfeil zur Titelmitte, Schrift wie der Titel; Antippen, Wandern
+  (32 px) und Rollen beim Drücken zeigen nichts; Tipp daneben schließt nur sie (Fenster bleibt, kein Menü, Inhalt unverändert); Rollen und
+  Esc schließen sie; ganz sichtbarer Titel zeigt nichts (APD-101/L-5).
+- **`los` führt eine neuere `main` vor dem Prüflauf zusammen (APD-102, `werkzeug/veroeffentlichen.mjs`):** vor allen Prüfungen holt `los`
+  `origin/main` beider Repos; ist `main` neuer als der Vorbereitungs-Zweig, führt es sie zusammen (‚Merge origin/main in vorbereitung-X.Y.Z‘,
+  Meldung ‚main ist neuer – in den Zweig zusammengeführt‘) und prüft genau diesen Stand. Bei einem Konflikt Abbruch **vor** dem Prüflauf:
+  Zusammenführung zurückgenommen, Zweig und Arbeitsordner unverändert, Dateien und Weg genannt, nichts gepusht – ein Konflikt in der App
+  hält auch AppDesign zurück. Ändert sich `main` während des Prüflaufs noch einmal: zusammengeführt beim Veröffentlichen mit Hinweis im
+  Ergebnis bzw. bei Konflikt Abbruch ohne Push mit Datei und Weg (vorher Programmfehler mit Stapel). Selbsttest: APD-102/M-1 bis M-8 (M-7 mit
+  nachgebildet scheiterndem `git fetch`; Gegenprobe APD-102/M-8 mit `VEROEFF_OHNE_VORHER=1`: APD-102/M-2 und APD-102/M-3 rot).
+- **`CLAUDE.md` 2.10.0:** Klammer zu `los` nach dem bestätigten Wortlaut (zusammenführen vor dem Prüflauf, ~60 min).
+
 ## 4.46.0 – 31.10.2026
 
 AppDesign 4.46.0 · Designrichtlinie allgemein 4.46.0 · Zusammenarbeit allgemein 3.4.0 · geprüft mit Reiselogbuch 3.44.0

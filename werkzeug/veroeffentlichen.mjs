@@ -9,10 +9,13 @@
 //        prüft (Zweig, keine offenen Änderungen, Texte, Fassung, alle Tests der App) und veröffentlicht: erst AppDesign
 //        (--no-ff nach main, Push, Pages-Lauf abwarten), dann die App genauso. --nur-app: AppDesign ist schon online.
 //        --jobs N (seit 4.39.0, APD-85): so viele Prüfungen gleichzeitig (Standard: Kerne) – weniger Last für WebKit.
+//        Seit 4.47.0 (APD-102): vor dem Prüflauf holt los origin/main; ist main neuer als der Vorbereitungs-Zweig, führt es main in den
+//        Zweig zusammen und prüft genau diesen Stand – bei einem Konflikt Abbruch vor dem Prüflauf (Zweig unverändert, nichts gepusht).
 // Seit 4.14.1 ohne Git-Markierung (aus der Cloud gesperrt): veröffentlicht = fassung/X.Y.Z/ liegt auf origin/main.
 // AppDesign und die Apps liegen nebeneinander (Liste werkzeug/apps.json). Rückgabewert 0 = fertig, 1 = abgebrochen.
 // Für den Selbsttest: --ad-dir <Ordner>, VEROEFF_PAGES=success|failure|haengt (Pages-Lauf nachgebildet), VEROEFF_PAGES_MAX_S,
-// VEROEFF_WARTE_MS (Grundzeit der Wiederholungen, Standard 1000 → 2, 4, 8, 16 s).
+// VEROEFF_WARTE_MS (Grundzeit der Wiederholungen, Standard 1000 → 2, 4, 8, 16 s); seit 4.47.0 (APD-102) VEROEFF_FETCH_FEHLT=n (die ersten
+// n git fetch scheitern, APD-102/M-7) und VEROEFF_OHNE_VORHER=1 (Gegenprobe APD-102/M-8: kein Zusammenführen vor dem Prüflauf).
 import { readFileSync, writeFileSync, existsSync, mkdirSync, rmSync, copyFileSync } from 'node:fs';
 import { execFileSync, spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
@@ -133,6 +136,34 @@ function vorbereiten() {
   console.log('Weiter: CHANGELOG, Testfälle (/0), Backlog und Richtlinien-Versionsgeschichte schreiben, committen, dann ‚los‘.');
 }
 
+let fetchFehlt = +(process.env.VEROEFF_FETCH_FEHLT || 0);
+const holeMain = async (dir, name) => mitWiederholung(`${name}: git fetch`, () => {
+  if (fetchFehlt > 0) { fetchFehlt--; throw new Error('git fetch nachgebildet gescheitert (Selbsttest)'); }
+  return git(dir, 'fetch', 'origin', 'main');
+});
+// APD-102 (seit 4.47.0): main in den Zweig zusammenführen; bei einem Konflikt die Zusammenführung zurücknehmen (Zweig und Arbeitsordner
+// wie vorher) und abbrechen – mit den Dateien und dem Weg. Gibt die Dateien des Konflikts zurück (leer = zusammengeführt).
+function fuehreZusammen(dir, von, nachricht) {
+  try { git(dir, 'merge', '-q', '--no-ff', '--no-edit', von, '-m', nachricht); return []; }
+  catch (e) {
+    const dateien = (gitOk(dir, 'diff', '--name-only', '--diff-filter=U') || '').split('\n').filter(Boolean);
+    gitOk(dir, 'merge', '--abort');
+    if (!dateien.length) abbruch(`git merge ${von} gescheitert: ${(e.stderr || e.message || '').toString().trim().split('\n').at(-1)}`);
+    return dateien;
+  }
+}
+const mainStand = new Map();   // je Repo: origin/main, wie er vor dem Prüflauf zusammengeführt bzw. geprüft wurde (APD-102/M-5)
+async function mainVorher(dir, name, branch) {
+  await holeMain(dir, name);
+  const m = git(dir, 'rev-parse', 'origin/main');
+  mainStand.set(pfad(dir), m);
+  if (process.env.VEROEFF_OHNE_VORHER || gitOk(dir, 'merge-base', '--is-ancestor', 'origin/main', 'HEAD') !== null) return;
+  const konflikt = fuehreZusammen(dir, 'origin/main', `Merge origin/main in ${branch}`);
+  if (konflikt.length) abbruch(`${name}: main ist neuer als ${branch} und lässt sich nicht konfliktfrei zusammenführen – ${konflikt.join(', ')}.\n` +
+    `  Zweig unverändert, nichts geprüft und nichts gepusht. Von Hand zusammenführen (git merge origin/main in ${branch}), committen, dann los.`);
+  console.log(`✓ ${name}: main ist neuer – in den Zweig zusammengeführt (${m.slice(0, 7)}), geprüft wird dieser Stand`);
+}
+
 async function mitWiederholung(name, fn) {
   for (let i = 0; ; i++) {
     try { return fn(); } catch (e) {
@@ -178,16 +209,24 @@ function pruefeRepo(dir, name, branchName) {
 
 async function veroeffentliche(dir, name, branch, pruefe) {
   const t0 = Date.now();
-  await mitWiederholung(`${name}: git fetch`, () => git(dir, 'fetch', 'origin', 'main'));
+  await holeMain(dir, name);
+  // APD-102/M-5, M-6: hat sich main während des Prüflaufs noch einmal geändert, wird wie bisher beim Veröffentlichen zusammengeführt
+  const geaendert = mainStand.has(pfad(dir)) && git(dir, 'rev-parse', 'origin/main') !== mainStand.get(pfad(dir));
+  if (geaendert) console.log(`⚠ ${name}: main hat sich während des Prüflaufs geändert – wird ohne neue Prüfung zusammengeführt`);
   git(dir, 'checkout', '-q', '-B', 'main', 'origin/main');
-  git(dir, 'merge', '-q', '--no-ff', branch, '-m', `Merge ${branch}: ${name}`);
+  const konflikt = fuehreZusammen(dir, branch, `Merge ${branch}: ${name}`);
+  if (konflikt.length) {
+    git(dir, 'checkout', '-q', branch);
+    abbruch(`${name}: main hat sich während des Prüflaufs geändert und lässt sich nicht konfliktfrei zusammenführen – ${konflikt.join(', ')}.\n` +
+      `  Nichts gepusht. Von Hand zusammenführen (git merge origin/main in ${branch}), committen, dann los.`);
+  }
   const sha = git(dir, 'rev-parse', 'HEAD');
   await mitWiederholung(`${name}: git push`, () => git(dir, 'push', '-q', 'origin', 'main'));
   console.log(`✓ ${name}: ${sha.slice(0, 7)} auf main`);
   const pages = await warteAufPages(dir, sha, name);
   await mitWiederholung(`${name}: git fetch`, () => git(dir, 'fetch', 'origin', 'main'));
   pruefe(f => git(dir, 'show', `origin/main:${f}`));
-  return { name, sha, pages, dauer: Math.round((Date.now() - t0) / 1000) };
+  return { name, sha, pages, dauer: Math.round((Date.now() - t0) / 1000), geaendert };
 }
 
 async function los() {
@@ -199,18 +238,21 @@ async function los() {
   if (!nurApp && online(X)) abbruch(`AppDesign ${X} ist schon veröffentlicht (fassung/${X}/ auf main) – nur die App: los --nur-app`);
   const adBranch = nurApp ? null : pruefeRepo(AD, 'AppDesign', `vorbereitung-${X}`);
   if (nurApp) { if (!online(X)) abbruch(`--nur-app: AppDesign ${X} ist noch nicht veröffentlicht (fassung/${X}/ fehlt auf main)`); }
-  else {
+  const appBranches = apps.map(a => pruefeRepo(a.dir, a.titel, `vorbereitung-${appVersion(a)}`));
+  // APD-102 (seit 4.47.0): vor allen Prüfungen main holen und – wenn neuer – in die Zweige zusammenführen; Konflikt in einem Repo: Abbruch vor allem
+  if (!nurApp) await mainVorher(AD, 'AppDesign', adBranch);
+  for (const [i, a] of apps.entries()) await mainVorher(a.dir, a.titel, appBranches[i]);
+  if (!nurApp) {
     if (!new RegExp(`^## ${X.replace(/\./g, '\\.')} – `, 'm').test(lies(AD, 'CHANGELOG.md'))) abbruch(`AppDesign CHANGELOG.md: Eintrag ‚## ${X} – …‘ fehlt`);
     if (!fassungListe(AD).includes(X)) abbruch(`fassung/${X}/ fehlt – node werkzeug/veroeffentlichen.mjs fassung`);
     const f = checkFassungen(AD); if (f.length) abbruch(`Fassung nicht in Ordnung:\n${f.map(e => '    ' + e).join('\n')}`);
   }
-  const appBranches = apps.map(a => {
-    const Y = appVersion(a), b = pruefeRepo(a.dir, a.titel, `vorbereitung-${Y}`), neu = lies(a.dir, 'CHANGELOG.md').split(/\n## /)[1] || '';
+  apps.forEach(a => {
+    const Y = appVersion(a), neu = lies(a.dir, 'CHANGELOG.md').split(/\n## /)[1] || '';
     if (!neu.startsWith(`${Y} `)) abbruch(`${a.titel} CHANGELOG.md: neuester Eintrag ist nicht ${Y}`);
     if (!/\/0 – [^*]*Version/.test(neu)) abbruch(`${a.titel} CHANGELOG.md: Testfälle mit /0 ‚Version prüfen‘ fehlen`);
     if (!/Testfälle P-\d+/.test(neu)) abbruch(`${a.titel} CHANGELOG.md: Zeile ‚Testfälle P-n‘ fehlt (APD-78/S-8)`);
     if (!fassungListe(AD).includes(appFassung(a))) abbruch(`${a.titel} braucht die Fassung ${appFassung(a)}, die es in AppDesign nicht gibt`);
-    return b;
   });
   if (!apps.length && nurApp) abbruch('--nur-app, aber keine App ist vorbereitet (Version wie auf origin/main)');
   if (!apps.length) console.log(`ℹ Keine App vorbereitet – nur AppDesign ${X} (Apps bleiben auf ihrer Fassung)`);
@@ -255,6 +297,7 @@ async function los() {
   }
   console.log('\n✓ Fertig – alle Pages-Läufe ‚success‘, main enthält die neuen Versionen:');
   for (const r of ergebnis) console.log(`  ${r.name}: Commit ${r.sha.slice(0, 7)}, Pages ${r.pages} s, zusammen ${r.dauer} s`);
+  for (const r of ergebnis) if (r.geaendert) console.log(`  ⚠ ${r.name}: main hat sich während des Prüflaufs geändert – zusammengeführt ohne neue Prüfung (APD-102)`);
   if (wackler.length) console.log(`  ⚠ ${wackler.length} Prüfung${wackler.length > 1 ? 'en' : ''} wackelt (rot unter Last, allein grün – APD-85): ${wackler.join(' · ')}`);
   console.log('  Die echte Seite (github.io) prüft der Nutzer mit /0 ‚Version prüfen‘ (APD-5/E-9).');
   aeltereFassungen(X);
