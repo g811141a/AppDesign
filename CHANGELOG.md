@@ -3,6 +3,44 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.48.0 – 31.10.2026
+
+AppDesign 4.48.0 · Designrichtlinie allgemein 4.48.0 · Zusammenarbeit allgemein 3.5.0 · geprüft mit Reiselogbuch 3.46.0
+
+**APD-104 Großanzeige für Leisten-Knöpfe** (aus APD-101) – dein Ja vom 31.10.2026, Sitzung 0068 (Variante A, Muster `arbeit/APD-104 Muster.html`;
+Wortlaut 15.3, R-2.6 und 16 bestätigt in `arbeit/APD-104 Wortlaut.md`); Testfall-Liste `arbeit/APD-104 Testfall-Liste.md` (APD-104/L-1 bis L-9).
+**APD-105 Antippen und langes Drücken** (aus APD-62, APD-38/T-33 und APD-38/T-34) – dein Ja vom 31.10.2026, Sitzung 0068 (Variante C, Muster
+`arbeit/APD-105 Muster.html`; Wortlaut 4, R-3.6, R-3.5 und 15.12 bestätigt in `arbeit/APD-105 Wortlaut.md`); Testfall-Liste
+`arbeit/APD-105 Testfall-Liste.md` (APD-105/B-1 bis B-8). **APD-103 Lücke im Regelwächter** – dein Ja vom 31.10.2026, Sitzung 0068 (Wortlaut
+Zusammenarbeit 2.8 und Testfall-Liste `arbeit/APD-103 Testfall-Liste.md` APD-103/D-1 bis D-9 bestätigt). Usertest im Reiselogbuch: P-87.
+
+- **Großanzeige (APD-104, 15.3, R-2.6, `ui.js` und `design.css`):** ab der Textgröße AX1 (`html.ts-ax`) zeigt langes Drücken (0,6 s still,
+  R-3.5) auf einen Knopf der Kopfzeile, Suchzeile, Fenster-Kopfzeile, Seitenleiste (Kopf und Suche) oder der schwebenden Knöpfe Icon und Namen
+  (`aria-label`) groß in der Mitte des sichtbaren Bereichs (`.grossanzeige`, Schrift 1rem = mit der Textgröße, Icon 2,6 em, Glas-Hintergrund,
+  ganz auf dem Bildschirm). Gleiten über die Knöpfe wechselt die Anzeige (verdeckte Knöpfe unter einem offenen Menü zählen nicht); Loslassen
+  über einem Knopf löst ihn genau einmal aus, daneben schließt sie nur. Esc schließt nur sie (am iPhone kein ‚zurück‘), Drehen schließt sie ohne
+  Auslösen. Solange sie offen ist, rollt die Seite nicht mit (der Finger bleibt bei der Anzeige). Unter AX1 und bei kurzem Antippen nichts
+  davon. Nur zu sehen (`aria-hidden`), VoiceOver nennt jeden Knopf wie bisher (R-1.8). Leisten-Knöpfe ohne Lupe und Safari-Menü.
+- **Berühren (APD-105, 4, R-3.6, `ui.js` und `design.css`):** solange der Finger liegt, wird eine Schaltfläche blass (`.beruehrt`, Deckkraft
+  35 %), eine Listen- oder Tabellenzeile grau (`--beruehrt`; Seitenleiste, Liste, Menüzeile, Tageszeile, Tageskasten – Zeilen ohne `<button>`
+  zählen, wenn die App ihnen ein `onclick` gibt). Schaltflächen in festen Leisten und Fenster-Köpfen sofort, in Rollbereichen (jede Fläche mit
+  `overflow` auto/scroll: Liste, Smiley-Leiste, Kapsel, Inhalt eines Fensters) erst nach 80 ms. Mehr als 10 px Wandern oder Rollen hebt die
+  Rückmeldung auf, der Klick danach löst nichts aus; Loslassen blendet in 0,15 s aus (`.beruehrt-aus`). Gesperrte Schaltflächen zeigen nichts;
+  ‚blau getönt = gedrückt‘ (`.on`) bleibt unberührt.
+- **Anheben (APD-105, R-3.5, `onLongPress`):** jeder Eintrag mit eigener Aktion für langes Drücken hebt sich ab 0,15 s an (`.hebt`: wächst,
+  Schatten) und senkt sich bei Abbruch und beim Auslösen wieder. In der Kapsel (Smiley) wächst das Zeichen auf das 1,25-Fache und wirft einen
+  Schatten, ohne Karte dahinter – sonst schnitte der Rand der Kapsel sie ab (Abweichung vom Muster, das eine weiße Karte zeigte); andere
+  Einträge (Zeile der Seitenleiste) wachsen um 3 %. ‚Bewegung reduzieren‘: nur Schatten.
+- **Neue bzw. ergänzte Regeln (Katalog 17) mit Prüfungen in `tests/ablauf.mjs`:** R-2.6 `checkGrossanzeige` (APD-104/L-1 bis L-9, Esc),
+  R-3.6 `checkBeruehren` (APD-105/B-1 bis B-4: sofort bzw. nach 80 ms gemessen, Deckkraft 35 % bzw. Grau, Ausblenden 0,15 s, Wegziehen und
+  Rollen ohne Auslösen, gesperrt), R-3.5 `checkAnheben` (APD-105/B-5, B-6, B-8); dazu `finger` (nachgebildete Berührung wie Safari: alle
+  Ereignisse am Element unter dem Aufsetzen, der Klick danach wie der Browser).
+- **Regelwächter APD-84/W-14 mit Rückfall (APD-103, `werkzeug/regelwaechter.mjs`, Zusammenarbeit 3.5.0 2.8):** lässt sich der Satz ‚Kontext N‘ vor
+  einem Fenster nicht prüfen – die Ausgabe davor steht nach einem Denkschritt nicht wörtlich in der Sitzungsdatei, oder das Fenster steht beim
+  Zeigen noch nicht darin –, verlangt der Wächter einen Aufruf von `messung.mjs` mit Kontext seit der vorigen Nachricht bzw. dem vorigen Fenster,
+  sonst lehnt er ab (bisher durch, APD-99/C-7, C-8). `tests/regelwaechter.mjs` APD-103/D-1 bis D-8 (D-7: der Ablauf aus 0065 – rot gegen 4.47.0,
+  grün jetzt); Gegenprobe APD-103/D-9 mit `REGELWAECHTER_AUS=W-14-Rückfall`: D-2, D-3, D-5, D-7 rot.
+
 ## 4.47.0 – 31.10.2026
 
 AppDesign 4.47.0 · Designrichtlinie allgemein 4.47.0 · Zusammenarbeit allgemein 3.4.0 · geprüft mit Reiselogbuch 3.45.0

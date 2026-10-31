@@ -1,4 +1,4 @@
-// AppDesign 4.39.0 · Prüfung des Regelwächters werkzeug/regelwaechter.mjs (APD-84/M-3, Testfall-Liste arbeit/APD-84 APD-83 Testfall-Liste.md
+// AppDesign 4.48.0 · Prüfung des Regelwächters werkzeug/regelwaechter.mjs (APD-84/M-3, Testfall-Liste arbeit/APD-84 APD-83 Testfall-Liste.md
 // APD-84/W-1 bis W-13) mit künstlichen Sitzungsdaten in einem Ordner auf Zeit und den echten Antworten aus 0050 und 0051
 // (tests/regelwaechter-faelle.json). Aufruf: node tests/regelwaechter.mjs (braucht kein Playwright).
 // Gegenprobe: node tests/regelwaechter.mjs --gegenprobe – je W-1 bis W-7 und W-14 wird genau diese Prüfung im Wächter abgeschaltet
@@ -10,6 +10,7 @@ import { execFileSync, spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { fuehreAus, uhrzeitzeile, uhr, setupText, SOLL_MODELL } from '../werkzeug/regelwaechter.mjs';
 // seit 4.45.0: W-14 Kontextstand vor jedem Fenster (APD-99, Testfall-Liste arbeit/APD-99 Testfall-Liste.md C-1 bis C-13)
+// seit 4.48.0: W-14 Rückfall, wenn der Satz nicht prüfbar ist (APD-103, Testfall-Liste arbeit/APD-103 Testfall-Liste.md D-1 bis D-9)
 
 const ordner = mkdtempSync(join(tmpdir(), 'regelwaechter-'));
 const WAECHTER = fileURLToPath(new URL('../werkzeug/regelwaechter.mjs', import.meta.url));
@@ -119,6 +120,33 @@ function lauf(env = {}) {
   pruefe(!stop(antwort({ ohneFenster: true, ohneMessungDavor: true, ohneKontext: true, zwischen: `${UZ('14:02', '14:00')}\n\nOhne Kontext.`, schluss: `${UZ('14:06', '14:02')}\n\nÜbergabe.\n\n**Die Sitzung (Chat) ist damit beendet!**\n\n${Z}` })).length, 'W-14 C-9 Übergabe ohne Fenster wird zurückgewiesen');
   pruefe(!vorher(antwort({ ohneKontext: true, zwischen: `${UZ('14:02', '14:00')}\n\nKontext 120000 ohne Punkte.` })), 'W-14 C-10 ‚Kontext 120000‘ ohne Tausenderpunkte wird abgelehnt');
 
+  // W-14 Rückfall (seit 4.48.0, APD-103/D-1 bis D-9): Satz nicht prüfbar → Aufruf von messung.mjs seit der vorigen Nachricht bzw. dem vorigen Fenster
+  const ohneSatz = o => { const a = antwort({ ohneKontext: true, zwischen: `${UZ('14:02', '14:00')}\n\nUnsicher.`, ...o });
+    a.splice(a.findIndex(z => z.message?.content?.[0]?.text?.includes('Unsicher.')), 1, bausteine(135, [{ type: 'thinking', thinking: 'umformuliert' }])); return a; };
+  const d1 = ohneSatz();
+  pruefe(!vorher(d1) && !stop(d1).some(x => x.startsWith('W-14')), 'W-14 D-1 Ausgabe unsicher, messung.mjs seit der Nachricht aufgerufen – wird abgelehnt');
+  const d2 = ohneSatz({ ohneMessungDavor: true });
+  pruefe(abgelehnt(vorher(d2)), 'W-14 D-2 Ausgabe unsicher, ohne messung.mjs – wird vor dem Zeigen nicht abgelehnt');
+  pruefe(stop(d2).some(x => x.startsWith('W-14') && /messung\.mjs davor nicht aufgerufen/.test(x)), 'W-14 D-2 Ausgabe unsicher, ohne messung.mjs – beim Stop keine Meldung W-14');
+  // D-3: messung.mjs nur vor dem vorigen Fenster derselben Antwort, dann unsicher und das zweite Fenster
+  const d3 = [...antwort(), bausteine(415, [{ type: 'thinking', thinking: 'umformuliert' }]), werkzeug(420, 'f2', 'AskUserQuestion', frage(GUT)), ergebnis(430, 'f2', 'Ja (Empfohlen)')];
+  d3.splice(d3.findIndex(z => z.message?.content?.[0]?.id === 'm1'), 2);   // die Messung nach dem ersten Fenster fehlt
+  pruefe(abgelehnt(vorher(d3, 'f2')), 'W-14 D-3 messung.mjs nur vor dem vorigen Fenster – wird nicht abgelehnt');
+  // D-4 und D-5: Fenster noch nicht in der Sitzungsdatei
+  const d4 = antwort({ ohneFenster: true }); d4.splice(-3);   // bis zur Ausgabe vor dem Fenster
+  pruefe(!vorher(d4, 'gibt-es-noch-nicht'), 'W-14 D-4 Fenster noch nicht gespeichert, messung.mjs aufgerufen – wird vor dem Zeigen abgelehnt');
+  const d5 = antwort({ ohneFenster: true, ohneMessungDavor: true }); d5.splice(-3);
+  pruefe(abgelehnt(vorher(d5, 'gibt-es-noch-nicht')), 'W-14 D-5 Fenster noch nicht gespeichert, ohne messung.mjs – wird vor dem Zeigen nicht abgelehnt');
+  // D-6: messung.mjs meldet einen Fehler statt ‚Kontext N‘
+  const d6 = ohneSatz(); d6[d6.findIndex(z => z.message?.content?.[0]?.tool_use_id === 'mk')].message.content[0].content = '✗ messung: keine Sitzungsdatei';
+  pruefe(abgelehnt(vorher(d6)), 'W-14 D-6 messung.mjs ohne ‚Kontext N‘ – wird nicht abgelehnt');
+  // D-7: Ablauf aus 0065 – voriges Fenster mit Messung, Neustart des Arbeitsprozesses (Systemzeile), neue Nachricht, Ausgabe unsicher,
+  // kein messung.mjs, Fenster beim Zeigen noch nicht gespeichert
+  const d7 = [...antwort(), { type: 'system', subtype: 'restart', timestamp: iso(500), content: 'Arbeitsprozess neu gestartet' },
+    nachricht(520, 'w'), werkzeug(530, 'b9', 'Bash', { command: 'git status' }), ergebnis(531, 'b9', 'sauber'), bausteine(540, [{ type: 'thinking', thinking: 'umformuliert' }])];
+  pruefe(abgelehnt(vorher(d7, 'gibt-es-noch-nicht')), 'W-14 D-7 Ablauf aus 0065 (nach Neustart, unsicher, ohne messung.mjs) – wird vor dem Zeigen nicht abgelehnt');
+  pruefe(abgelehnt(vorher([...d7, werkzeug(545, 'f9', 'AskUserQuestion', frage(GUT))], 'f9')), 'W-14 D-7 Ablauf aus 0065, Fenster schon gespeichert – wird nicht abgelehnt');
+
   // W-1 bis W-7 und W-14 echte Antworten aus 0050, 0051 und 0062
   const { faelle } = JSON.parse(readFileSync(new URL('regelwaechter-faelle.json', import.meta.url), 'utf8'));
   for (const f of faelle) {
@@ -198,7 +226,11 @@ if (!gegenprobe) {
     if (!f.some(x => x.startsWith(nr))) gruen.push(nr);
   }
   if (gruen.length) fehler.push(`Gegenprobe: ohne ${gruen.join(', ')} bleibt die Prüfung grün – sie prüft diese Fälle nicht`);
+  // D-9: nur der Rückfall abgeschaltet – D-2, D-3, D-5 und D-7 müssen rot werden
+  const r = lauf({ REGELWAECHTER_AUS: 'W-14-Rückfall' });
+  const fehlt = ['D-2', 'D-3', 'D-5', 'D-7'].filter(d => !r.some(x => x.startsWith(`W-14 ${d}`)));
+  if (fehlt.length) fehler.push(`Gegenprobe D-9: ohne Rückfall bleiben ${fehlt.join(', ')} grün`);
 }
 rmSync(ordner, { recursive: true, force: true });
 if (fehler.length) { console.log(`✗ regelwaechter${gegenprobe ? ' (Gegenprobe)' : ''}: ${fehler.length} Fehler\n${fehler.map(f => '  - ' + f).join('\n')}`); process.exit(1); }
-console.log(gegenprobe ? '✓ regelwaechter Gegenprobe: jede der Prüfungen W-1 bis W-7 und W-14 wird rot, wenn sie im Wächter fehlt' : '✓ regelwaechter: W-1 bis W-14 in Ordnung');
+console.log(gegenprobe ? '✓ regelwaechter Gegenprobe: jede der Prüfungen W-1 bis W-7 und W-14 (mit Rückfall D-2, D-3, D-5, D-7) wird rot, wenn sie im Wächter fehlt' : '✓ regelwaechter: W-1 bis W-14 in Ordnung');

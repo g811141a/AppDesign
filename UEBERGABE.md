@@ -23,9 +23,9 @@ Zusammenarbeit** (0 Nr. 15); die Arbeitsumgebung steht in der AppDesign-`CLAUDE.
 - **Backlog ‚0. Nächste Version 4.48.0‘: 3 Punkte bereit – voll** (0 Nr. 8: höchstens 3 Punkte, 2 Themen):
   APD-104 Großanzeige für Leisten-Knöpfe (Prio 1), APD-105 Antippen und langes Drücken (Prio 1), APD-103 Lücke im Regelwächter (Prio 2).
   Die Bau-Frage wurde zweimal mit ‚Nein, noch sammeln‘ beantwortet – sie ist in 0068 **wieder** zu stellen (mit dem Hinweis, dass 0. voll ist).
-- **Bereit für 4.49.0** (unter ‚2.‘): APD-85 Teil 3 (`ablauf-blatt` ohne feste Pausen, Baustein `warteBis`, Z-1 bis Z-6) und APD-62 Teil T-43
-  (Titel antippen = nach oben, R-2.7, H-1 bis H-10).
-- **Offen:** APD-62 (T-16, T-1, T-37), APD-88, APD-80, APD-57, APD-30, APD-40, APD-44 bis APD-60, RLB-6 u. a. (alle Prio 3).
+- **Bereit für 4.49.0** (unter ‚2.‘): APD-85 Teil 3 (`ablauf-blatt` ohne feste Pausen, Baustein `warteBis`, APD-85/Z-1 bis Z-6) und APD-62 Teil APD-38/T-43
+  (Titel antippen = nach oben, R-2.7, APD-62/H-1 bis H-10).
+- **Offen:** APD-62 (APD-38/T-16, APD-38/T-1, APD-38/T-37), APD-88, APD-80, APD-57, APD-30, APD-40, APD-44 bis APD-60, RLB-6 u. a. (alle Prio 3).
 - **Vereinbarung (Nutzer 30.10.2026, Sitzung 0058):** Muster bis auf Weiteres **nur hell** (kein dunkel) – gilt, bis der Nutzer sie
   aufhebt; in jede Übergabe übernehmen.
 - **Erinnerung:** ‚Backlog-Erinnerung (AppDesign und Reiselogbuch)‘ montags 8:58.
@@ -33,13 +33,13 @@ Zusammenarbeit** (0 Nr. 15); die Arbeitsumgebung steht in der AppDesign-`CLAUDE.
 ## 2. Ergebnisse der Sitzung 0067
 
 - **APD-38** nach ‚Erledigt‘ (war seit 22.10.2026 abgeschlossen, stand noch unter ‚in Klärung‘).
-- **APD-103** geklärt: `arbeit/APD-103 Testfall-Liste.md` D-1 bis D-9, Wortlaut Zusammenarbeit 2.8 bestätigt (Rückfall: ist der Satz
+- **APD-103** geklärt: `arbeit/APD-103 Testfall-Liste.md` APD-103/D-1 bis D-9, Wortlaut Zusammenarbeit 2.8 bestätigt (Rückfall: ist der Satz
   ‚Kontext N‘ nicht prüfbar, verlangt der Wächter einen Aufruf von `messung.mjs` seit der vorigen Nachricht bzw. dem vorigen Fenster).
 - **APD-104** neu und geklärt: Muster `arbeit/APD-104 Muster.html` (Variante **A**: Großanzeige in der Mitte ab AX1, gleiten wechselt,
-  Loslassen löst aus – wie Apple, WWDC19 Session 261), Testfall-Liste L-1 bis L-9, Wortlaut `arbeit/APD-104 Wortlaut.md` bestätigt
+  Loslassen löst aus – wie Apple, WWDC19 Session 261), Testfall-Liste APD-104/L-1 bis L-9, Wortlaut `arbeit/APD-104 Wortlaut.md` bestätigt
   (neu R-2.6, 15.3 ‚Großanzeige‘, Zeile ‚Keine Großanzeige‘ in 16 ersetzt).
 - **APD-105** aus APD-62 ausgegliedert und geklärt: Muster `arbeit/APD-105 Muster.html` (Variante **C**: Knöpfe dimmen 35 %, Zeilen grau,
-  in Rollbereichen nach 80 ms; Smiley hebt sich beim Halten an), Testfall-Liste K-1 bis K-8, Wortlaut `arbeit/APD-105 Wortlaut.md` bestätigt
+  in Rollbereichen nach 80 ms; Smiley hebt sich beim Halten an), Testfall-Liste APD-105/B-1 bis B-8, Wortlaut `arbeit/APD-105 Wortlaut.md` bestätigt
   (neu R-3.6, R-3.5 ergänzt, 4 ‚Berühren‘, 15.12).
 - **APD-85 Teil 3** und **APD-62/T-43** geklärt (siehe Lagebild); Wackler-Zählung im Backlog auf ‚bisher einer‘ berichtigt.
 - Muster vorher automatisch geprüft (Notizordner, Playwright 1.56.1): APD-104 68 grün, APD-105 78 grün (Chromium und WebKit).
@@ -56,7 +56,7 @@ Zusammenarbeit** (0 Nr. 15); die Arbeitsumgebung steht in der AppDesign-`CLAUDE.
 
 ## 4. Danach
 
-4.49.0: APD-85 Teil 3 · APD-62/T-43 · dann APD-62 (T-16, T-1, T-37) · APD-88 · APD-80 · APD-57 · APD-30 · APD-40 · APD-44 bis APD-60 ·
+4.49.0: APD-85 Teil 3 · APD-62/T-43 · dann APD-62 (APD-38/T-16, APD-38/T-1, APD-38/T-37) · APD-88 · APD-80 · APD-57 · APD-30 · APD-40 · APD-44 bis APD-60 ·
 APD-70 · RLB-6 · APD-1.
 
 ## 5. Starttext für die neue Sitzung

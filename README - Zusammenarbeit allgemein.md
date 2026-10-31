@@ -1,6 +1,6 @@
 # Zusammenarbeit allgemein
 
-**Version 3.4.0** · Stand 31.10.2026
+**Version 3.5.0** · Stand 31.10.2026
 
 Regeln für die Zusammenarbeit mit Claude bei allen iPad-Web-Apps von g811141a. Die Datei liegt im Design-Repo **AppDesign**
 (g811141a/AppDesign); App-Eigenes steht in der `CLAUDE.md` des App-Repos. **Abschnitt 0 ist das Arbeitsmodell** (oben der Kasten ‚Immer‘ und ‚Jede
@@ -365,13 +365,15 @@ Rohdaten durch Claude, damit keine falsche Anzeige in die Irre führt.
 - **Nach jeder Nachricht und jedem Werkzeug:** die fertige Uhrzeitzeile für die nächste Ausgabe (Zeitabstand ab der letzten
   Uhrzeitzeile in der Sitzungsdatei) und ‚⚠ Modell …‘, wenn der letzte Aufruf nicht Opus 5.5 war.
 - **Vor jedem Auswahlfenster:** lehnt es ab, wenn eine Frage keine Empfehlung zuerst oder kein ‚Ich schreibe im Chat‘ hat oder
-  wenn die Ausgabe davor keinen Satz mit ‚Kontext N‘ aus `messung.mjs` enthält.
+  wenn die Ausgabe davor keinen Satz mit ‚Kontext N‘ aus `messung.mjs` enthält; steht diese Ausgabe (noch) nicht wörtlich in der
+  Sitzungsdatei, lehnt er ab, wenn seit der vorigen Nachricht bzw. dem vorigen Fenster `messung.mjs` keinen Kontext gemeldet hat.
 - **Am Ende jeder Antwort:** prüft die Antwort in der Sitzungsdatei – jede Ausgabe beginnt mit der Uhrzeitzeile und ihre Uhrzeit
   ist abgelesen (± 1 min um ihren Anlass), der Zeitabstand passt, die Antwort hat ein Fenster (außer der Übergabe), die Zeitzeile
   steht ganz am Ende nach dem letzten Fenster und kommt unverändert aus `messung.mjs`. Fehlt etwas, lässt er die Antwort nicht enden
   und sagt, was nachzuholen ist – höchstens zweimal je Antwort; danach prüft er nur noch Neues.
 - **Grenze:** Ausgaben, die in derselben Nachricht nach einem Denkschritt stehen, speichert die Sitzungsdatei nicht wörtlich
-  (Befund 26.10.2026) – für sie bleibt die Uhrzeitzeile Selbstkontrolle.
+  (Befund 26.10.2026) – für sie bleiben die Uhrzeitzeile und der Satz ‚Kontext N‘ Selbstkontrolle; geprüft wird nur der Aufruf
+  von `messung.mjs`.
 - Prüfung: `tests/regelwaechter.mjs` mit echten Antworten aus den Sitzungen 0050 und 0051 (Gegenprobe `--gegenprobe`).
 
 ---
@@ -402,6 +404,7 @@ im Verlauf und in Kommentaren der Prüfungen nennen noch die alten Stellen):
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 3.5.0 | 31.10.2026 | Neben | **APD-103 (Nutzer 31.10.2026, Sitzungen 0065 und 0067, Wortlaut bestätigt):** 2.8 ‚Vor jedem Auswahlfenster‘ – ist die Ausgabe davor (noch) nicht wörtlich in der Sitzungsdatei, lehnt der Regelwächter ab, wenn seit der vorigen Nachricht bzw. dem vorigen Fenster `messung.mjs` keinen Kontext gemeldet hat (Rückfall statt Durchlassen, APD-103/D-1 bis D-9); 2.8 ‚Grenze‘ – Uhrzeitzeile und Satz ‚Kontext N‘ bleiben dort Selbstkontrolle |
 | 3.4.0 | 31.10.2026 | Neben | **APD-99 (Nutzer 31.10.2026, Sitzungen 0060 und 0062, Wortlaut bestätigt):** der Kontextstand als Satz mit ‚Kontext N‘ aus `messung.mjs` vor **jedem** Auswahlfenster – Kasten ‚Jede Antwort‘ Punkt 9 (jetzt **W**), 0 Nr. 28, 0 Nr. 21 verweist darauf; 2.8 der Regelwächter lehnt ein Fenster ohne diesen Satz ab (APD-84/W-14) |
 | 3.3.0 | 30.10.2026 | Neben | **APD-96 (Nutzer 30.10.2026, Sitzungen 0058 und 0059, Wortlaut bestätigt):** 0 Nr. 21 – unmittelbar vor der Bau-Frage der Kontextstand als Satz mit ‚Kontext N‘ aus `messung.mjs`, abgelesen; dazu Kasten ‚Jede Antwort‘ Punkt 9 |
 | 3.2.0 | 30.10.2026 | Neben | **APD-85 Teil 1 (Nutzer 30.10.2026, Wortlaut bestätigt):** 0 Nr. 2 – `lauf.mjs` bricht erst ab dem dritten roten Lauf ab, jeder rote Lauf läuft am Ende einmal allein (grün = ‚wackelt‘, gemeldet) |
