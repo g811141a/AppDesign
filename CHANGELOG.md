@@ -3,6 +3,24 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.46.0 – 31.10.2026
+
+AppDesign 4.46.0 · Designrichtlinie allgemein 4.46.0 · Zusammenarbeit allgemein 3.4.0 · geprüft mit Reiselogbuch 3.44.0
+
+**APD-100 Abschnittsköpfe in der Liste** (aus RLB-114) – dein Ja vom 31.10.2026, Sitzung 0063 (Wortlaut 15.4 und R-7.6 bestätigt in
+`arbeit/RLB-114 APD-100 Wortlaut.md`, Muster A2 hell, Vorbild Notizen); Testfall-Liste `arbeit/RLB-114 Testfall-Liste.md` (RLB-114/Y-1 bis Y-12).
+Usertest im Reiselogbuch: P-85.
+
+- **Baustein `.side-sec` (15.4, `design.css`):** Überschrift über jeder Gruppe der zentralen Liste, auch über der ersten – genau wie die
+  Überschrift des Kopfs (Title 3 `--tb-title3`, fett, Textfarbe, wächst mit der Textgröße wie sie), linksbündig über den Kacheln, rollt mit
+  (haftet nicht, APD-46 bleibt später), nicht antippbar; als `h3` eine Überschrift für VoiceOver.
+- **Neue Regel R-7.6 (Katalog 17, `hig.mjs`) nach jedem Schritt:** hat die Liste Köpfe, steht einer über der ersten Gruppe; jeder Kopf hat
+  Einträge unter sich (bei der Suche nur Gruppen mit Treffern); Größe, Stärke, Farbe und Schrift wie `.side-head h2`; nicht haftend; Rolle
+  heading; nicht in einer Schaltfläche. `checkText` (R-1.10) misst die Köpfe deshalb wie die Leisten (höchstens XXXL, 26 px) statt nach
+  Apples Inhaltswert für Title 3 (55 px bei AX5) – bei AX5 stünden sonst die Jahre doppelt so groß wie ‚Reiselogbücher‘ darüber (Frage im Bericht).
+- **Gegenproben:** im Reiselogbuch `ablauf-jahre` mit `PRUEF_GEGENPROBE=jahre:oben` (oberster Kopf fehlt – R-7.6 ‚über der ersten Gruppe
+  fehlt der Kopf‘), `jahre:halbfett` (R-7.6 ‚nicht wie die Überschrift des Kopfs‘), `jahre:ende` (Jahr des Endes) – alle rot.
+
 ## 4.45.0 – 31.10.2026
 
 AppDesign 4.45.0 · Designrichtlinie allgemein 4.45.0 · Zusammenarbeit allgemein 3.4.0 · geprüft mit Reiselogbuch 3.43.0

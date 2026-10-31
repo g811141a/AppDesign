@@ -32,6 +32,10 @@ Dazu: alle Prüfungen, die heute ‚Einstellungen‘ suchen oder erwarten (13 Da
 umstellen; in `PROMPT.md` die Stellen zum Menüpunkt und zum Fenster nachziehen (der Schalter ‚… in den Einstellungen‘ bei Zeile 198
 heißt dann ‚im Fenster Reiselogbuch einstellen‘).
 
+**Befund beim Bau (Sitzung 0064, 31.10.2026):** RLB-113/E-6 ‚Titel ganz sichtbar‘ gilt bei normaler Schrift; ab XXXL kürzt das iPhone hoch den Titel zu
+‚Reiselogbuch eins…‘ (Kopfzeile des Fensters im Leisten-Maß, 23 px; gekürzt wurden in 3.43.0 schon ‚Neues Reiselogbuch‘ bei 375 px und der Titel
+des Tages). Die Prüfung verlangt dann den Anfang ‚Reiselogbuch‘, Auslassungspunkte und keine Überlappung; Vorschlag als neues Thema.
+
 ## Testfälle (User), nur am Gerät
 
 - iPad und iPhone: beide Menüs ansehen und ‚Reiselogbuch einstellen‘ antippen; das Fenster heißt ebenso.

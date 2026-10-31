@@ -17,4 +17,4 @@ unverändert übernommen.
 
 ## 3. Designrichtlinie Reiselogbuch, Abweichungen – neue Zeile 4 (RLB-113)
 
-| 4 | Menüpunkt und Fenster ‚Reiselogbuch einstellen‘ statt ‚Einstellungen‘ – im Mehr-Menü und im Kontextmenü der Seitenleiste bzw. Startliste, Icon `settings` | Kontextmenü ‚Einstellungen (settings) · … löschen‘ (15.4) | passt zu ‚Reiselogbuch löschen‘ darunter; Verb und Gegenstand wie in Notizen (‚Share Folder‘, ‚Move This Folder‘) | `ablauf-seitenleiste-kontextmenue`, `ablauf-gesamt` (RLB-113/E-1 bis E-4) | 31.10.2026 |
+| 4 | Menüpunkt und Fenster ‚Reiselogbuch einstellen‘ statt ‚Einstellungen‘ – im Mehr-Menü und im Kontextmenü der Seitenleiste bzw. Startliste, Icon `settings` | Kontextmenü ‚Einstellungen (settings) · … löschen‘ (15.4) | passt zu ‚Reiselogbuch löschen‘ darunter; Verb und Gegenstand wie in Notizen (‚Share Folder‘, ‚Move This Folder‘) | `ablauf-seitenleiste-kontextmenue`, `ablauf-gesamt` (RLB-113/E-1 bis RLB-113/E-4) | 31.10.2026 |

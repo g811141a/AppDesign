@@ -36,7 +36,7 @@ zuerst, dann die ganze Zusammenarbeit** (0 Nr. 15); die Arbeitsumgebung steht in
 - **RLB-113 geklärt und bereit:** ‚Reiselogbuch einstellen‘ statt ‚Einstellungen‘ in **beiden** Menüs (Mehr-Menü `#mainMore`, Kontextmenü
   der Zeile in Seitenleiste bzw. Startliste, `index.html:1233` und `:1243`) und als **Fenstertitel** (`index.html:1348`; ‚Neues
   Reiselogbuch‘ bleibt), Icon `settings` bleibt, **nur App** → Abweichung 4 der App-Richtlinie (Wortlaut bestätigt). Testfall-Liste
-  `arbeit/RLB-113 Testfall-Liste.md` (RLB-113/E-1 bis E-7) bestätigt. 13 Prüfdateien suchen heute ‚Einstellungen‘; `PROMPT.md` nachziehen.
+  `arbeit/RLB-113 Testfall-Liste.md` (RLB-113/E-1 bis RLB-113/E-7) bestätigt. 13 Prüfdateien suchen heute ‚Einstellungen‘; `PROMPT.md` nachziehen.
 - **RLB-114 geklärt und bereit:** Jahr als Zwischenüberschrift in der Liste der Reiselogbücher – **Jahr des Reisebeginns**, **auch über
   dem obersten**, Suche **nur Jahre mit Treffern**, **rollt mit** (nicht haftend; APD-46 bleibt später). Aussehen **Variante A2** = genau wie
   die Leistenüberschrift ‚Reiselogbücher‘ (`.side-head h2`: `--tb-title3`, 700, Textfarbe, wächst mit). Muster `arbeit/bilder/RLB-114 4–6 …`
