@@ -1,6 +1,6 @@
 # AppDesign – Backlog (allgemeine Themen)
 
-**Stand 31.10.2026** · Aktuelle Version: AppDesign 4.46.0
+**Stand 31.10.2026** · Aktuelle Version: AppDesign 4.47.0
 
 Allgemeine Themen, die alle Apps betreffen. App-Themen stehen im Backlog der jeweiligen App.
 Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.4.
@@ -11,16 +11,15 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Prio | Thema | bereit seit |
 |---|---|---|---|
-| APD-101 | 1 | **Gekürzter Titel – Sprechblase (aus RLB-113/E-6, Nutzer 31.10.2026, Sitzung 0065) – allgemein:** ein mit ‚…‘ gekürzter Titel in Kopfzeile (15.3) oder Fenster-Kopfzeile (15.8) zeigt beim langen Drücken den ganzen Titel in einer Sprechblase darunter, bis zum nächsten Tippen (das nur sie schließt), Rollen, Esc oder Drehen; neue Regel R-2.5; Abweichung von Apples Großanzeige in der Mitte (16). Muster `arbeit/bilder/APD-101 4` und `5` (Variante B), Testfall-Liste `arbeit/APD-101 Testfall-Liste.md` (APD-101/L-1 bis L-13) und Wortlaut `arbeit/APD-101 Wortlaut.md` bestätigt | 31.10.2026 |
-| APD-102 | 1 | **`veroeffentlichen.mjs los` bei neuerer `main` (aus Sitzung 0062, Nutzer 31.10.2026, Sitzung 0065) – Werkzeug:** Variante a) – vor dem Prüflauf holt `los` `origin/main` (beide Repos) und führt neuere Commits in den Vorbereitungs-Zweig zusammen, geprüft wird genau der veröffentlichte Stand; bei Konflikt Abbruch **vor** dem Prüflauf (Zusammenführung zurückgenommen, Dateien genannt). Testfall-Liste `arbeit/APD-102 Testfall-Liste.md` (APD-102/M-1 bis M-8, Selbsttest) und Wortlaut `CLAUDE.md` (`arbeit/APD-102 Wortlaut.md`) bestätigt | 31.10.2026 |
 
-2 Punkte bereit.
+0 Punkte bereit.
 
 
 ## 1. Auf iPad und iPhone prüfen
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
+| P-86 | 1 | **Usertest im Reiselogbuch 3.45.0 (AppDesign 4.47.0, APD-101):** gekürzter Titel – Sprechblase beim langen Drücken (Fenstertitel, Titel der Reise, Titel des Tages; bei normaler Schrift nichts) – Testfälle P-86/1 bis P-86/5 im CHANGELOG des Reiselogbuchs | prüfen |
 
 ## 2. Weitere Themen (in Klärung)
 
@@ -60,6 +59,8 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Thema | Version | Datum |
 |---|---|---|---|
+| APD-101 | **APD-101 Gekürzter Titel – Sprechblase:** langes Drücken auf einen mit ‚…‘ gekürzten Titel (15.3, 15.8) zeigt den ganzen Titel in `.titel-blase` darunter; neue Regel R-2.5 mit `checkTitelBlase` (`ablauf.mjs`), 16 ‚Keine Großanzeige‘ ergänzt; im Reiselogbuch neue Prüfung `ablauf-titel-blase`; Usertest P-86 | 4.47.0 | 31.10.2026 |
+| APD-102 | **APD-102 `los` bei neuerer `main`:** vor dem Prüflauf zusammenführen, bei Konflikt Abbruch vor dem Prüflauf; Konflikt während des Prüflaufs mit klarer Meldung; Selbsttest APD-102/M-1 bis M-8; `CLAUDE.md` 2.10.0 | 4.47.0 | 31.10.2026 |
 | P-85 | **Usertest P-85 (Reiselogbuch 3.44.0 · AppDesign 4.46.0):** alles ok – APD-100 am Gerät bestätigt (Nutzer 31.10.2026, Sitzung 0065) | 4.46.0 | 31.10.2026 |
 | APD-100 | **APD-100 Abschnittsköpfe in der Liste:** Baustein `.side-sec` (15.4), neue Regel R-7.6 mit Prüfung in `hig.mjs` (Köpfe in `checkText` im Leisten-Maß); im Reiselogbuch als Jahre (RLB-114); Usertest P-85 | 4.46.0 | 31.10.2026 |
 | P-84 | **Usertest P-84 (Reiselogbuch 3.43.0 · AppDesign 4.45.0):** alles ok – APD-97 am Gerät bestätigt (Nutzer 31.10.2026, Sitzung 0063) | 4.45.0 | 31.10.2026 |

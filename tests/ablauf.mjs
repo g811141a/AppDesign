@@ -2518,3 +2518,104 @@ export async function checkIconText(p, { sel, lang = false, where = '' } = {}) {
   if (!funde) E(`Reihe ${sel} fehlt`); else funde.forEach(f => E(f));
   return errors;
 }
+
+// R-2.5 (seit 4.47.0, APD-101; Testfall-Liste arbeit/APD-101 Testfall-Liste.md L-1 bis L-10): gekürzter Titel – ein mit ‚…‘ gekürzter Titel
+// (sel: .dlg-head h3, .nb-title oder .pnav-title) zeigt beim langen Drücken den ganzen Titel in einer Sprechblase (.titel-blase) direkt unter
+// seiner Kopfzeile: genau der Text des Titels, nicht gekürzt, ganz auf dem Bildschirm (R-4.5), über keinem Knopf der Leiste, Pfeil zur
+// Titelmitte, Schrift wie der Titel; sie bleibt nach dem Loslassen stehen. Kurzes Antippen, Wandern des Fingers (mehr als 10 px) und
+// Rollen während des Drückens zeigen nichts (R-3.5). daneben: Knöpfe, deren Tipp nur die Blase schließen darf (Fenster bleibt offen,
+// kein Menü); rollen: Rollbereich, dessen Rollen sie schließt; esc: Esc schließt sie, das Fenster bleibt. Ein ganz sichtbarer Titel zeigt
+// nichts (L-5). Gibt { gekuerzt, errors } zurück; Grundregeln danach ruft die App (t.schritt), Drehen (L-11) prüft die App selbst.
+export async function titelLang(p, sel, ms = 750) {
+  const bx = await p.locator(sel).boundingBox();
+  await p.mouse.move(bx.x + bx.width / 2, bx.y + bx.height / 2); await p.mouse.down(); await wait(p, ms); await p.mouse.up(); await wait(p, 200);
+}
+export const titelBlaseOffen = p => p.evaluate(() => !!document.querySelector('.titel-blase'));
+export async function checkTitelBlase(p, { sel, daneben = [], rollen = null, esc = true, where = '' } = {}) {
+  const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}R-2.5 ${t}`);
+  const info = await p.evaluate(sel => { const t = document.querySelector(sel); if (!t || !t.getClientRects().length) return null;
+    return { gekuerzt: t.scrollWidth > t.clientWidth + 1, text: t.textContent.trim() }; }, sel);
+  if (!info) { E(`Titel ${sel} fehlt`); return { gekuerzt: false, errors }; }
+  const offen = () => titelBlaseOffen(p);
+  const fenster = () => p.evaluate(() => document.querySelectorAll('dialog[open]').length);
+  if (!info.gekuerzt) {   // L-5: ganz sichtbar – langes Drücken zeigt nichts
+    await titelLang(p, sel);
+    if (await offen()) E(`L-5 ‚${info.text}‘ ist ganz sichtbar, trotzdem zeigt langes Drücken eine Sprechblase`);
+    return { gekuerzt: false, errors };
+  }
+  // L-6: kurz antippen
+  const bx = await p.locator(sel).boundingBox();
+  await p.mouse.click(bx.x + bx.width / 2, bx.y + bx.height / 2); await wait(p, 900);
+  if (await offen()) E('L-6 kurzes Antippen des gekürzten Titels zeigt die Sprechblase');
+  // L-7: der Finger wandert (mehr als 10 px) bzw. der Inhalt rollt während des Drückens (nachgebildete Berührung wie checkLangDruecken)
+  for (const art of ['wandert', 'rollt']) {
+    const r = await p.evaluate(async ({ sel, art }) => {
+      const warte = ms => new Promise(r => setTimeout(r, ms)), t = document.querySelector(sel), b = t.getBoundingClientRect();
+      const x = b.left + b.width / 2, y = b.top + b.height / 2;
+      const ev = (typ, dx) => t.dispatchEvent(new PointerEvent(typ, { pointerId: 4101, pointerType: 'touch', isPrimary: true, clientX: x + dx, clientY: y,
+        button: 0, buttons: typ === 'pointerup' ? 0 : 1, bubbles: true, cancelable: true, composed: true }));
+      ev('pointerdown', 0);
+      for (let i = 1; i <= 8; i++) { await warte(30); if (art === 'wandert') ev('pointermove', i * 4);
+        else if (i === 3) { const f = t.closest('dialog')?.querySelector('.dlg-body') || document.querySelector('#app > .rolle') || document.scrollingElement;
+          f.dispatchEvent(new Event('scroll')); } }
+      await warte(700);
+      const o = !!document.querySelector('.titel-blase');
+      ev('pointerup', art === 'wandert' ? 32 : 0);
+      return o;
+    }, { sel, art });
+    if (r) E(`L-7 ${art === 'wandert' ? 'der Finger wandert 32 px' : 'der Inhalt rollt'} beim Drücken, trotzdem zeigt sich die Sprechblase (R-3.5)`);
+    await p.evaluate(() => document.querySelector('.titel-blase')?.remove());
+  }
+  // L-1 bis L-4: langes Drücken zeigt den ganzen Titel darunter
+  const zeige = async () => { await titelLang(p, sel); return offen(); };
+  if (!await zeige()) { E(`L-1 langes Drücken auf den gekürzten Titel ‚${info.text}‘ zeigt keine Sprechblase (oder sie bleibt nach dem Loslassen nicht stehen)`); return { gekuerzt: true, errors }; }
+  const m = await p.evaluate(sel => {
+    const t = document.querySelector(sel), b = document.querySelector('.titel-blase'), r = b.getBoundingClientRect(), tr = t.getBoundingClientRect();
+    const kopf = t.closest('.dlg-head') || t.closest('#bar, .nb, .pnav');
+    const knoepfe = [...kopf.querySelectorAll('button')].map(k => k.getBoundingClientRect()).filter(k => k.width && k.height);
+    const ueber = knoepfe.some(k => k.left < r.right - 1 && k.right > r.left + 1 && k.top < r.bottom - 1 && k.bottom > r.top + 1);
+    const zeile = Math.max(tr.bottom, ...knoepfe.filter(k => k.top < tr.bottom && k.bottom > tr.top).map(k => k.bottom));
+    const pfeil = r.left + parseFloat(b.style.getPropertyValue('--pfeil'));
+    return { text: b.textContent, ganz: b.scrollWidth <= b.clientWidth + 1 && b.scrollHeight <= b.clientHeight + 1,
+      drin: r.left >= -0.5 && r.top >= -0.5 && r.right <= innerWidth + 0.5 && r.bottom <= innerHeight + 0.5, ueber,
+      abstand: Math.round(r.top - zeile), pfeil: Math.round(Math.abs(pfeil - (tr.left + tr.width / 2))), rand: pfeil - r.left < 17 || r.right - pfeil < 17,
+      schrift: getComputedStyle(b).fontSize === getComputedStyle(t).fontSize && getComputedStyle(b).fontWeight === getComputedStyle(t).fontWeight,
+      zeilen: Math.round(r.height / parseFloat(getComputedStyle(b).lineHeight || 20)) };
+  }, sel);
+  if (m.text !== info.text) E(`L-1 die Sprechblase zeigt ‚${m.text}‘ statt des ganzen Titels ‚${info.text}‘`);
+  if (!m.ganz) E('L-1 der Text der Sprechblase ist gekürzt bzw. abgeschnitten');
+  if (!m.drin) E('L-1 die Sprechblase steht nicht ganz auf dem Bildschirm (R-4.5)');
+  if (m.ueber) E('L-4 die Sprechblase überlappt einen Knopf der Leiste');
+  if (m.abstand < 0 || m.abstand > 16) E(`L-1 die Sprechblase steht nicht direkt unter der Kopfzeile (Abstand ${m.abstand} px)`);
+  if (m.pfeil > 2 && !m.rand) E(`L-1 der Pfeil zeigt nicht zur Mitte des Titels (${m.pfeil} px daneben)`);
+  if (!m.schrift) E('L-1 die Sprechblase hat nicht die Schrift des Titels');
+  // L-8: ein Tipp daneben schließt nur die Sprechblase
+  for (const k of daneben) {
+    if (!await offen() && !await zeige()) { E(`L-8 Sprechblase lässt sich nicht wieder öffnen (vor ${k})`); break; }
+    const vorher = await fenster(), wert = await p.evaluate(() => typeof dlgDirty === 'function' ? !!dlgDirty() : null);
+    await p.locator(k).click(); await wait(p, 400);
+    if (await offen()) E(`L-8 Tipp auf ${k}: die Sprechblase bleibt offen`);
+    const nachher = await fenster(), menue = await p.evaluate(() => !!document.querySelector('.menu, .pop'));
+    if (nachher !== vorher) E(`L-8 Tipp auf ${k} schließt nicht nur die Sprechblase – ${vorher} Fenster vorher, ${nachher} nachher`);
+    if (menue) E(`L-8 Tipp auf ${k} öffnet ein Menü bzw. eine Abfrage – er darf nur die Sprechblase schließen`);
+    if (wert !== null && wert !== await p.evaluate(() => typeof dlgDirty === 'function' ? !!dlgDirty() : null)) E(`L-8 Tipp auf ${k} ändert den Inhalt des Fensters`);
+    await p.evaluate(() => document.querySelector('.menu, .pop') && document.querySelector('.layer')?.click()); await wait(p, 250);
+  }
+  // L-9: Rollen schließt sie
+  if (rollen) {
+    if (!await offen()) await zeige();
+    await p.evaluate(s => { const f = document.querySelector(s); f.scrollTop += 40; }, rollen); await wait(p, 300);
+    if (await offen()) E(`L-9 Rollen (${rollen}) schließt die Sprechblase nicht`);
+    await p.evaluate(s => { const f = document.querySelector(s); f.scrollTop = Math.max(0, f.scrollTop - 40); }, rollen); await wait(p, 300);
+  }
+  // L-10: Esc schließt sie, das Fenster bleibt
+  if (esc) {
+    if (!await offen()) await zeige();
+    const vorher = await fenster();
+    await p.keyboard.press('Escape'); await wait(p, 300);
+    if (await offen()) E('L-10 Esc schließt die Sprechblase nicht (R-4.7)');
+    if (await fenster() !== vorher) E('L-10 Esc schließt mit der Sprechblase auch das Fenster');
+  }
+  await p.evaluate(() => document.querySelector('.titel-blase')?.remove());
+  return { gekuerzt: true, errors };
+}

@@ -1,4 +1,4 @@
-// AppDesign 4.46.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
+// AppDesign 4.47.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
 // Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/fassung/X.Y.Z/ui.js"></script> (feste Fassung, R-10.3)
 // Seit 4.11.0 (R-10.3): ui.js und design.css immer mit ?v=<AppDesign-Version> einbinden (auch in sw.js) und beim Start
 // prüfen, ob genau diese Fassung geladen ist (AD_VERSION hier, --ad-version in design.css).
@@ -10,7 +10,7 @@
 //   optional: function onDialogOpen()                                       – wird bei jedem openDialog aufgerufen
 //
 // Inhalt: Icons (ic) · esc · Beträge (money, formatEuro) · autoGrow · onLongPress · Darstellung
-// (applyTheme, setAppearance) · Menüs (openMenu mit Untermenü) · Sprechblase (confirmPop) ·
+// (applyTheme, setAppearance) · Menüs (openMenu mit Untermenü) · Sprechblase (confirmPop) · gekürzter Titel (Sprechblase, seit 4.47.0) ·
 // gedrückte Schaltflächen (hold, release, setOpener) · Meldung (inform) · Fenster (openDialog, dlgHead) ·
 // Auswahl-Kapsel (capHtml, mountCap) · Tastatur/sichtbarer Bereich (placeDialogs) · iPhone (isPhone, applyLayout) ·
 // Messmodus (messungMenuItems, seit 4.26.0) · Schnellroll-Griff (seit 4.30.0) · Navigation und Gesten (navAnmelden, navVor,
@@ -20,7 +20,7 @@
 
 'use strict';
 // Version der Bausteine (R-10.3): die App vergleicht sie beim Start mit der benötigten Fassung.
-const AD_VERSION = '4.46.0';
+const AD_VERSION = '4.47.0';
 /* ---------- Icons ---------- */
 
 // Schaltflächen-Icons aus Lucide (ISC-Lizenz), direkt eingebettet, damit die App offline funktioniert.
@@ -830,6 +830,68 @@ function choosePop(anchor, html, buttons, { feld = null } = {}) {
   });
 }
 let popNr = 0;
+
+// R-2.5 (seit 4.47.0, APD-101): gekürzter Titel – ist der Titel der Kopfzeile (15.3) bzw. der Fenster-Kopfzeile (15.8) mit ‚…‘ gekürzt,
+// zeigt langes Drücken (R-3.5: still, 0,6 s) den ganzen Titel in einer Sprechblase direkt unter der Kopfzeile, Pfeil zur Mitte des Titels,
+// Schrift wie der Titel, umgebrochen, ganz auf dem Bildschirm (R-4.5). Sie bleibt, bis man irgendwo tippt (dieser Tipp schließt nur sie),
+// rollt, Esc drückt oder dreht. Ein ganz sichtbarer Titel und kurzes Antippen zeigen nichts. Apple zeigt hier die Großanzeige in der
+// Mitte (Abweichung, Designrichtlinie 16). Für VoiceOver trägt der Titel selbst den ganzen Text (R-1.8) – die Blase ist nur zu sehen.
+const TITEL_SEL = '.dlg-head h3, .nb-title, .pnav-title';
+const titelGekuerzt = t => t.scrollWidth > t.clientWidth + 1 && +getComputedStyle(t).opacity > 0.5;
+let titelDruck = null, titelBlase = null, titelKlickWeg = 0;
+function titelDruckEnde() { if (titelDruck) { clearTimeout(titelDruck.timer); titelDruck = null; } }
+function titelBlaseZu() {
+  const b = titelBlase; if (!b) return false;
+  titelBlase = null; b.el.remove();
+  removeEventListener('resize', b.dreh); tastenStapel.splice(tastenStapel.indexOf(b.tasten) >>> 0, 1);
+  return true;
+}
+function zeigeTitelBlase(t) {
+  titelBlaseZu();
+  const host = t.closest('dialog') || document.body;
+  const el = document.createElement('div');
+  el.className = 'titel-blase';
+  el.setAttribute('aria-hidden', 'true');
+  el.textContent = t.textContent.trim();
+  const c = getComputedStyle(t);
+  el.style.font = c.font;
+  host.append(el);
+  // unter der ganzen Zeile des Titels (Knöpfe daneben eingeschlossen), waagrecht mittig unter dem Titel, im Bildschirm gehalten
+  const r = t.getBoundingClientRect(), zeile = t.closest('.dlg-head') || t.parentElement;
+  const unten = Math.max(r.bottom, ...[...zeile.querySelectorAll('button')].map(k => k.getBoundingClientRect())
+    .filter(k => k.height && k.top < r.bottom && k.bottom > r.top).map(k => k.bottom));
+  const { L, R } = rand12(), w = el.offsetWidth, mitte = r.left + r.width / 2;
+  const left = Math.max(L, Math.min(mitte - w / 2, innerWidth - R - w));
+  el.style.left = left + 'px';
+  el.style.top = (unten + 10) + 'px';
+  el.style.setProperty('--pfeil', Math.max(16, Math.min(w - 16, mitte - left)) + 'px');
+  const tasten = e => { if (istAbbruch(e)) { verbrauchen(e); titelBlaseZu(); } };
+  const breite = innerWidth, dreh = () => { if (innerWidth !== breite) titelBlaseZu(); };
+  addEventListener('resize', dreh);
+  tastenStapel.push(tasten);
+  titelBlase = { el, t, tasten, dreh };
+}
+// Ein Tipp bei offener Blase schließt nur sie: pointerdown schließt, der Klick danach (und das Fokussieren eines Felds) entfällt.
+addEventListener('pointerdown', e => {
+  titelDruckEnde();
+  if (titelBlase) {
+    if (titelBlase.el.isConnected) { titelBlaseZu(); titelKlickWeg = performance.now() + 1000; return; }
+    titelBlaseZu();
+  }
+  const t = e.target.closest?.(TITEL_SEL);
+  if (!t || !e.isPrimary || e.button > 0 || document.querySelector('.menu, .pop')) return;
+  titelDruck = { t, x0: e.clientX, y0: e.clientY, timer: setTimeout(() => {
+    titelDruck = null;
+    if (navZug?.aktiv || blattZug?.aktiv || !t.isConnected || !titelGekuerzt(t)) return;
+    titelKlickWeg = performance.now() + 1000;   // das Loslassen danach löst nichts aus
+    zeigeTitelBlase(t);
+  }, 600) };
+}, true);
+addEventListener('pointermove', e => { if (titelDruck && Math.hypot(e.clientX - titelDruck.x0, e.clientY - titelDruck.y0) > LANG_WEG) titelDruckEnde(); }, true);
+['pointerup', 'pointercancel'].forEach(t => addEventListener(t, e => { titelDruckEnde(); if (e.type === 'pointercancel') titelKlickWeg = 0; }, true));
+addEventListener('mousedown', e => { if (performance.now() < titelKlickWeg) e.preventDefault(); }, true);
+addEventListener('click', e => { if (performance.now() < titelKlickWeg) { titelKlickWeg = 0; e.preventDefault(); e.stopImmediatePropagation(); } }, true);
+addEventListener('scroll', () => { titelDruckEnde(); titelBlaseZu(); }, { capture: true, passive: true });
 
 // Schaltflächen, von denen eine noch laufende Aktion kommt (Teilen-Menü, Meldung, Dateiauswahl), bleiben blau.
 const held = new Set();
