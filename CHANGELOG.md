@@ -3,6 +3,52 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.45.0 – 31.10.2026
+
+AppDesign 4.45.0 · Designrichtlinie allgemein 4.45.0 · Zusammenarbeit allgemein 3.4.0 · geprüft mit Reiselogbuch 3.43.0
+
+**APD-97 iPad hoch: Seitenleiste neben dem Inhalt, Tabellen im schmalen Inhalt als Kästen** (aus deiner Rückmeldung zu P-82 ‚Sonstiges‘) –
+dein Ja vom 31.10.2026, Sitzung 0060 (Wortlaut, Muster und Testfall-Liste bestätigt; Vorbild Einstellungen und Notizen am iPad,
+`apple-referenz/ipad/`); Testfall-Liste `arbeit/APD-97 Testfall-Liste.md` (APD-97/L-1 bis L-10, D-1 bis D-11). Usertest im Reiselogbuch: P-84.
+
+- **Seitenleiste hoch fest (15.4, R-7.5):** am iPad steht die Seitenleiste quer und hoch fest links neben dem Inhalt (Apple `tile` statt
+  `overlay`) – keine Abdunkelung, die Auswahl lässt sie stehen, ausblenden nur mit panel-left, hereinwischen mit Mitschieben wie quer.
+  `tests/ablauf.mjs` – `checkNavigation` prüft am iPad hoch dieselben Gesten wie quer (APD-68/Q-1 bis Q-12).
+- **Schmaler Inhalt als Kästen (15.13, R-6.6 neu):** ist der Inhalt schmaler als 700 px (gleiche Grenze wie `isPhone()`), zeigt er jede
+  Tabelle als Kästen wie am iPhone; Ausgabe und Vorschau bleiben Tabellen. Neu in `ui.js`: `SCHMAL` und `inhaltSchmal(el)`. Neue Prüfung
+  `hig.mjs` (R-6.6) nach jedem Schritt: im iPad-Aufbau keine Tabelle im Inhalt unter 700 px.
+- **Vergleichsbilder:** `apple-referenz/ipad/einstellungen/` und `apple-referenz/ipad/notizen/` (hoch und quer, verpixelt).
+- **Korrekturen vor der Veröffentlichung** (Sitzung 0061 – der volle Prüflauf in 0060 war rot, nur bei großer Schrift am iPad hoch):
+  - **Oberster Eintrag bleibt auf den Pixel (R-8.1, `ui.js` – `keepPlace`):** steht der erste Eintrag ganz unter der Kante (darüber der Kopf des Inhalts), bleibt beim Ein-
+    und Ausblenden der Seitenleiste sein Abstand in px; bisher als Anteil seiner Höhe – bei AX5 wurde der Kasten im breiteren Inhalt
+    niedriger und rückte um 30 px (APD-68/Q-3, Q-5). Beim Drehen bleibt es beim Anteil.
+  - **Zeile unter dem Titel der Seitenleiste bricht um (R-6.3, `design.css`):** ‚24.08.2026 - 05.09.2026 · läuft gerade‘ stand immer
+    einzeilig; hoch ist die feste Seitenleiste höchstens 420 px breit (darübergelegt waren es bis 70 %) – bei XXL und XXXL ragte die Zeile
+    hinaus. Jetzt bricht sie um, sobald die Seitenleiste ihre Höchstbreite erreicht.
+  - **Warum die Prüfung es vorher übersah:** vor `los` liefen die geänderten Prüfungen nicht mit großer Schrift (`PRUEF_TEXT`).
+- **Korrektur der Prüfung vor der Veröffentlichung** (Sitzung 0062 – `los` in 0061 rot, nur WebKit am iPad hoch, APD-68/Q-8 und Q-9):
+  - **Wischen mit der Maus wie mit dem Finger (`tests/safari.mjs` – neu `mausWieFinger`, genutzt von `checkNavigation`):** der Zug ‚nach
+    links‘ (APD-68/Q-7) begann hoch auf einem Link in einem Kasten; ein Mauszug startet dort Ziehen-und-Ablegen, WebKit schickte danach weder
+    `pointerup` noch `pointercancel`, der Klick auf das Menü kam ohne `pointerdown` an – das Menü ging nicht auf, der Zug von APD-68/Q-8 holte die
+    Seitenleiste herein, APD-68/Q-9 folgte daraus. Am Gerät beginnt ein kurzer Fingerzug nie Ziehen-und-Ablegen; die Prüfung verhindert es jetzt
+    (`dragstart`). Die App ist unverändert.
+  - **Warum die Prüfung es vorher übersah:** vor APD-97 liefen die Q-Fälle nur quer – dort liegt an dieser Stelle kein Link (Tabelle).
+- **Regeltexte zu APD-97** (dein Ja vom 31.10.2026, Sitzung 0062, Wortlaut bestätigt): Designrichtlinie 13 ‚Kein Scroll-Anker‘ – ändert
+  die App die Anordnung, bleibt beim ersten Eintrag ganz unter der Leiste der Abstand in px; 15.4 ‚Drehen‘ – Auslöser nur noch panel-left
+  bzw. Hereinwischen.
+- **APD-94 hinfällig durch APD-97:** hoch gibt es keine Abdunkelung mehr, die beim Drehen mit offenem Menü ungesperrt bliebe; das Reiselogbuch
+  prüft in `ablauf-markierung-menues` wieder auch quer → hoch (bisher nur hoch → quer).
+
+**APD-99 Kontextstand vor jedem Auswahlfenster** – dein Ja vom 31.10.2026, Sitzungen 0060 und 0062 (Wortlaut bestätigt); Testfall-Liste
+`arbeit/APD-99 Testfall-Liste.md` (APD-99/C-1 bis C-13).
+
+- **Zusammenarbeit 3.4.0:** Kasten ‚Jede Antwort‘ Punkt 9 – vor **jedem** Auswahlfenster der Kontextstand als Satz mit ‚Kontext N‘ aus
+  `messung.mjs` (jetzt **W**); 0 Nr. 28 ergänzt, 0 Nr. 21 verweist darauf; 2.8 beschreibt die neue Prüfung.
+- **Regelwächter APD-84/W-14 (`werkzeug/regelwaechter.mjs` – `pruefeKontext`):** vor dem Zeigen und beim Stop – die letzte Ausgabe vor dem Fenster
+  braucht außerhalb der Zeitzeile einen Satz mit ‚Kontext N‘, N wie im letzten Aufruf von `messung.mjs` davor; ist die Ausgabe nicht
+  wörtlich gespeichert (nach einem Denkschritt), lässt er durch. `tests/regelwaechter.mjs` APD-84/W-1 bis W-14 mit Gegenprobe, dazu eine echte
+  Antwort aus 0062 (Fenster zu Regel 13 ohne Kontextstand).
+
 ## 4.44.1 – 30.10.2026
 
 AppDesign 4.44.1 · Designrichtlinie allgemein 4.44.1 · Zusammenarbeit allgemein 3.3.0 · geprüft mit Reiselogbuch 3.42.1

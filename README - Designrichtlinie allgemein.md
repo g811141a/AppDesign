@@ -1,6 +1,6 @@
 # Designrichtlinie allgemein
 
-**Version 4.44.1** · Stand 30.10.2026
+**Version 4.45.0** · Stand 31.10.2026
 
 Allgemeine Gestaltungs- und Bedienregeln für alle Web-Apps von g811141a auf iPad und iPhone. Die Datei liegt im Design-Repo
 **AppDesign** (g811141a/AppDesign); ihre Versionsnummer ist die des Repos. Die Komponenten sind dort einmal programmiert und
@@ -435,7 +435,9 @@ Gemessene bzw. belegte Eigenheiten mit Quelle; sie gelten für alle Apps, die Pr
 - **Kein Scroll-Anker:** ändern sich beim Drehen die Höhen, springt die Seite. ui.js merkt sich beim Rollen den obersten
   sichtbaren Eintrag unter der Leiste (`data-day` bzw. `data-keep`) und den sichtbaren Anteil und rückt ihn nach dem Drehen und
   nach jeder Änderung der Anordnung durch die App (z. B. Seitenleiste ein/aus: `keepPlace(() => { …; render(); })`) wieder an
-  dieselbe Stelle. Steht oben kein Eintrag (Ende der Seite: Fazit, Statistik), bleibt der Abstand zum Ende gleich; ganz oben
+  dieselbe Stelle. Ändert die App die Anordnung und steht der erste Eintrag der Seite ganz unter der Leiste (darüber nur der Kopf
+  des Inhalts), bleibt statt des Anteils sein Abstand in px – sonst rückt er mit, wenn er schmaler oder breiter anders hoch wird.
+  Steht oben kein Eintrag (Ende der Seite: Fazit, Statistik), bleibt der Abstand zum Ende gleich; ganz oben
   bleibt ganz oben, ganz unten bleibt ganz unten. Tests bilden das nach (`overflow-anchor: none`), sonst verdeckt Chrome den
   Fehler (R-8.1).
 - **Position beim Öffnen:** `openAt(element | null)` in ui.js (R-7.4) – ein ‚nächster offener‘ bzw. aktueller Eintrag steht unter
@@ -665,22 +667,16 @@ Regel). In AppDesign ist jede Komponente einmal programmiert (`v4/design.css`, `
   endet fast am unteren Bildschirmrand), Radius 22 px, Lichtkante `--btn-rim` und Schatten `--float` wie die Schaltflächen; so
   breit wie Kopf bzw. längster Titel, 340–420 px; Hintergrund `--bg` (wie die iPhone-Startliste, damit die weißen Kacheln sich
   abheben).
-- **Verhalten:** beim Start immer eingeblendet (quer fest links, hoch über den Inhalt gelegt) mit dem aktuellen Eintrag geöffnet
-  (im iPhone-Aufbau stattdessen die Startliste ohne blauen Eintrag, R-7.2); quer fest links neben dem Inhalt, mit panel-left aus-
-  und einblendbar (gleitet, bis zum nächsten Start); im Hochformat über den Inhalt gelegt (abgedunkelt dahinter), schließt sich nach der
-  Auswahl. Bei offener Tastatur folgt sie dem sichtbaren Bereich (`--vv-top`).
-- **Gesten** (R-7.5): **Hochformat** – Wischen nach rechts **von überall im Inhalt** (auch vom linken Rand) holt die Seitenleiste
-  herein – sie folgt dem Finger, die Abdunkelung wächst mit; Wischen nach links auf der Seitenleiste oder der Abdunkelung schiebt
-  sie weg; fertig nach halber Breite oder schnellem Wischen, sonst federt sie zurück. panel-left und Antippen der Abdunkelung
-  bewegen sie genauso (gleiten, ~0,35 s). **Querformat** (seit 4.31.0, APD-68): ist sie ausgeblendet, holt Wischen nach rechts von
-  überall im Inhalt sie herein – sie folgt dem Finger und der Inhalt **rückt mit** (Variante ‚Mitschieben‘); fertig wie hoch, dann
-  rastet sie fest links ein und der Inhalt wird schmaler (der oberste Eintrag bleibt), sonst federt sie zurück. Ausblenden quer
-  **nur mit panel-left** (gleitet ebenso) – nach links wischen ändert nichts, damit die Kacheln für Wischaktionen frei bleiben.
-  Apple löst das Hereinwischen quer je nach App unterschiedlich; Vorbild ist das Hochformat, am Ende liegt sie wie bei Apple quer
-  neben dem Inhalt.
-- **Drehen** (R-8.1): die Seitenleiste behält ihren Zustand – sichtbar bleibt sichtbar (quer fest, hoch darübergelegt),
+- **Verhalten:** beim Start immer eingeblendet, **quer und hoch fest links neben dem Inhalt** (wie Apple `tile`), mit dem aktuellen Eintrag geöffnet
+  (im iPhone-Aufbau stattdessen die Startliste ohne blauen Eintrag, R-7.2); mit panel-left aus- und einblendbar (gleitet, bis zum
+  nächsten Start); keine Abdunkelung, die Auswahl lässt sie stehen. Bei offener Tastatur folgt sie dem sichtbaren Bereich (`--vv-top`).
+- **Gesten** (R-7.5): **Hoch wie quer:** ist sie ausgeblendet, holt Wischen nach rechts von überall im Inhalt sie herein – sie folgt
+  dem Finger und der Inhalt rückt mit; fertig nach halber Breite oder schnellem Wischen, dann rastet sie links ein und der Inhalt wird
+  schmaler (der oberste Eintrag bleibt), sonst federt sie zurück. Ausblenden nur mit panel-left (gleitet, ~0,35 s) – nach links wischen
+  ändert nichts, damit die Kacheln für Wischaktionen frei bleiben.
+- **Drehen** (R-8.1): die Seitenleiste behält ihren Zustand – sichtbar bleibt sichtbar (neben dem Inhalt),
   ausgeblendet bleibt ausgeblendet; technisch **ein einziger Zustand** für quer und hoch, den nur Tippen bzw. ein fertiges Wischen
-  ändert (Knopf panel-left, Abdunkelung, Auswahl im Hochformat, R-7.5) – nie das Drehen und keine Zwischengrößen, die iOS beim
+  ändert (Knopf panel-left bzw. Hereinwischen, R-7.5) – nie das Drehen und keine Zwischengrößen, die iOS beim
   Drehen meldet; Drehen während des Ziehens bricht es ab.
 - **Mehr-Menü der Seitenleiste:** Backup erstellen (darunter grau „Letztes Backup erstellt am …“) · Backup laden · Abstand ·
   Messung starten (15.21) · durchgehender Strich · darunter ohne Leerzeilen grau die Versionszeile „<App> · Version X.Y.Z ·
@@ -720,7 +716,7 @@ Regel). In AppDesign ist jede Komponente einmal programmiert (`v4/design.css`, `
   es nach oben).
 - **Beim Drehen** (R-8.1): offenes Menü, Untermenü und Sprechblase werden neu ausgerichtet – das Menü unter der aufrufenden
   Schaltfläche, das Untermenü neben seinem Eintrag, ganz sichtbar. Liegt die Schaltfläche in der Seitenleiste, bleibt die
-  Seitenleiste dabei sichtbar (iPad hoch: darübergelegt). Ist eine Schaltfläche danach nicht mehr da, schließt sich ihr Menü;
+  Seitenleiste dabei sichtbar. Ist eine Schaltfläche danach nicht mehr da, schließt sich ihr Menü;
   eine Sprechblase (offene Entscheidung) bleibt und steht mittig.
 
 ### 15.7 Sprechblase (Abfrage)
@@ -810,6 +806,10 @@ Regel). In AppDesign ist jede Komponente einmal programmiert (`v4/design.css`, `
 - Siehe 9; Regeln R-6.1 bis R-6.3.
 - **Große Schrift** (seit 4.37.0, R-1.10): ab AX1 – auf dem iPhone hoch immer – zeigt jede Tabelle im Inhalt ihre Zeilen als
   Kästen (15.17, `.box` mit `.kv`, Bezeichnung über dem Wert); Vorschau und Ausgabe bleiben Tabellen (R-6.2).
+- **Schmaler Inhalt** (seit 4.45.0, R-6.6): ist der Inhalt schmaler als 700 px (dieselbe Grenze wie `isPhone()`, z. B. am iPad hoch
+  neben der Seitenleiste), zeigt jede Tabelle im Inhalt ihre Zeilen als Kästen wie am iPhone (15.17, `.box` mit `.kv`); Vorschau und
+  Ausgabe bleiben Tabellen (R-6.2). Ein Wechsel (Drehen, Seitenleiste ein/aus) wirkt wie das Drehen (R-8.1). **Technisch:**
+  `inhaltSchmal(#app)` in `ui.js`.
 
 ### 15.14 Info-Icon mit Hinweis
 - **Apple:** [HIG – Buttons](https://developer.apple.com/design/human-interface-guidelines/buttons)
@@ -1191,6 +1191,7 @@ Testfall (User) in den Usertest, wenn eine Version es betrifft.
 | R-6.3 | **Kein Text ragt hinaus:** zu lange Wörter und Smiley-Reihen brechen um, hängender Einzug (Folgezeilen unter dem Text) – überall, auch in Fenstern, Vorschauen, Berichten | hig.mjs – jede sichtbare Zelle, auch nach seitlichem Wischen (100 × ‚a‘) | – | 9 |
 | R-6.4 | **Ausgabe und Vorschau:** immer hell; Vorschau zeigt genau die Datei, in voller Seitenbreite, seitlich wischen (iPad und iPhone); Kapsel [PDF · Teilen]; Dateinamen nach Muster; das PDF druckt die ganze Ausgabe, nie nur einen Bildschirm | ablauf.mjs – `checkPreview`, `checkPrint` | Teilen, Drucken | 7, 10, 15.22 |
 | R-6.5 | **Bezeichnung im Kasten mit Feldern:** Text in der ersten Spalte normal (400), in Textgröße und Textfarbe; Icon und Text waagrecht mittig zur ersten Zeile des Werts | hig.mjs – `kastenBezeichnung` (nach jedem Schritt; Gegenprobe im Reiselogbuch `ablauf-preis-km`) | – | 15.10 |
+| R-6.6 | **Tabelle im schmalen Inhalt als Kästen:** Inhalt unter 700 px breit → Tabellen im Inhalt als Kästen, sonst Tabelle; Ausgabe und Vorschau unverändert; oben bleibt derselbe Eintrag | hig.mjs (iPad hoch mit und ohne Leiste, quer) | – | 15.13 |
 
 ### 7. Seitenleiste und Liste
 
@@ -1200,7 +1201,7 @@ Testfall (User) in den Usertest, wenn eine Version es betrifft.
 | R-7.2 | **Start im iPhone-Aufbau in der Startliste:** jedes Neuladen zeigt im iPhone-Aufbau (auch iPad im schmalen Fenster) die Startliste ganz oben ohne blauen Eintrag; der iPad-Aufbau öffnet den aktuellen Eintrag; Rückkehr aus dem Hintergrund ändert nichts | start.mjs | Gerät (App neu öffnen) | 13, 15.17 |
 | R-7.3 | **Liste steht still:** solange ein Fenster aus einer Zeile (bzw. einem Kasten) offen ist, bewegt sich die Liste dahinter nicht – auch wenn Safari beim Schreiben die Seite für die Tastatur schiebt; nach dem Schließen (Häkchen oder x) steht sie genau wie vorher – die oberste Zeile an derselben Stelle, auch wenn die Tastatur offen war –, die Zeile wird 2 s blau hinterlegt und blendet in 1 s aus (‚Bewegung reduzieren‘: 2 s ohne Ausblenden; endet, sobald das nächste Fenster aufgeht); auch nach ‹ › im Fenster steht die Liste wie beim Öffnen; iPad und iPhone gleich | ablauf.mjs – `checkListStill` (Start z. B. mit dem ersten fehlenden Tag oben; Zeile oben, 3 tiefer, untere Hälfte, 2 px unter dem Kopf, nach 5× ‹ ›; Häkchen und x; Safari-Tastatur einzeln und zusammen: sichtbarer Bereich, Fensterhöhe, Nachrollen beim Zugehen) | Gerät (echte Tastatur, Diktieren) | 7, 15.9 |
 | R-7.4 | **Position beim Öffnen:** ein Eintrag öffnet ganz oben; ein ‚nächster offener‘ Eintrag (von der App bestimmt) steht hervorgehoben direkt unter dem Kopf bzw. Tabellenkopf, nie in der Mitte; legt die App stattdessen einen aktuellen Eintrag fest (z. B. heute), steht er ebenso direkt unter dem Kopf, aber ohne Hervorhebung – hervorgehoben wird nur Offenes, nie Künftiges | ablauf.mjs – `checkOpenAt` (mit `markiert`) | – | 13 |
-| R-7.5 | **Navigation und Gesten** (wie iOS 26): im iPhone-Aufbau schiebt sich der Inhalt beim Öffnen herein und beim Zurück hinaus; **Zurückwischen von überall im Inhalt** folgt dem Finger, fertig nach halber Breite oder schnellem Wischen, sonst federt es zurück; am iPad hoch holt Wischen nach rechts von überall die Seitenleiste, nach links auf ihr bzw. der Abdunkelung geht sie, panel-left und Abdunkelung lassen sie gleiten; quer holt Wischen nach rechts die ausgeblendete Seitenleiste herein, der Inhalt rückt mit und wird beim Einrasten schmaler, ausblenden quer nur mit panel-left (gleitet). Vorrang an einer Stelle: senkrechtes Rollen, eigenes waagrechtes Rollen, Felder, Knöpfe, Kapseln, Schnellroll-Griff; nicht nach langem Drücken und nicht bei offenem Fenster, Menü oder offener Sprechblase; Tastatur schließt zuerst; Drehen beim Ziehen = Zustand wie vorher; Wischen tippt nie an; ‚Bewegung reduzieren‘ überblendet; je Bild nur transform und opacity | ablauf.mjs – `checkNavigation` | Wischgefühl, Rand mit dem Daumen, versehentliches Zurück, Home-Bildschirm-App, VoiceOver | 13, 15.4, 15.17 |
+| R-7.5 | **Navigation und Gesten** (wie iOS 26): im iPhone-Aufbau schiebt sich der Inhalt beim Öffnen herein und beim Zurück hinaus; **Zurückwischen von überall im Inhalt** folgt dem Finger, fertig nach halber Breite oder schnellem Wischen, sonst federt es zurück; am iPad hoch und quer holt Wischen nach rechts die ausgeblendete Seitenleiste herein, der Inhalt rückt mit und wird beim Einrasten schmaler, ausblenden quer nur mit panel-left (gleitet). Vorrang an einer Stelle: senkrechtes Rollen, eigenes waagrechtes Rollen, Felder, Knöpfe, Kapseln, Schnellroll-Griff; nicht nach langem Drücken und nicht bei offenem Fenster, Menü oder offener Sprechblase; Tastatur schließt zuerst; Drehen beim Ziehen = Zustand wie vorher; Wischen tippt nie an; ‚Bewegung reduzieren‘ überblendet; je Bild nur transform und opacity | ablauf.mjs – `checkNavigation` | Wischgefühl, Rand mit dem Daumen, versehentliches Zurück, Home-Bildschirm-App, VoiceOver | 13, 15.4, 15.17 |
 
 ### 8. Drehen
 
@@ -1286,6 +1287,7 @@ R-2.3 (15.2), R-4.4 (6, 15.8, HIG 9), R-5.3 (8), R-5.4 (15.12), R-5.5 (APD-14), 
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 4.45.0 | 31.10.2026 | Neben | **APD-97 (Nutzer 30./31.10.2026, Sitzungen 0058 und 0060, Wortlaut bestätigt, aus P-82 ‚Sonstiges‘):** 15.4 die Seitenleiste steht am iPad quer und hoch fest neben dem Inhalt (Apple `tile`, Vorbild Einstellungen und Notizen, `apple-referenz/ipad/`), keine Abdunkelung, Gesten hoch wie quer; 15.6 ohne ‚darübergelegt‘; 15.13 schmaler Inhalt unter 700 px zeigt Tabellen als Kästen (`inhaltSchmal` in `ui.js`); Katalog R-6.6 neu (Prüfung `hig.mjs`), R-7.5 hoch wie quer; 13 ‚Kein Scroll-Anker‘: ändert die App die Anordnung, bleibt beim ersten Eintrag ganz unter der Leiste der Abstand in px statt des Anteils (Nutzer 31.10.2026, Sitzung 0062, Wortlaut bestätigt); 15.4 ‚Drehen‘: Auslöser nur noch panel-left bzw. Hereinwischen (Nutzer 31.10.2026, Sitzung 0062, Wortlaut bestätigt) |
 | 4.44.1 | 30.10.2026 | Korrektur | **APD-98 (Nutzer 30.10.2026, Sitzung 0059, Wortlaut bestätigt, aus P-82/3):** 15.10 Bezeichnung im Kasten mit Feldern normal in Textgröße und Textfarbe wie der Wert, Emojis klein, mittig zur ersten Zeile des Werts (Variante B1 – Apple-Standard statt halbfett); Katalog R-6.5 neu (Prüfung `hig.mjs` – `kastenBezeichnung`) |
 | 4.44.0 | 30.10.2026 | Neben | **APD-95 (Nutzer 30.10.2026, Wortlaut bestätigt, aus P-81/6):** 8 neu ‚Bezeichnungen in normaler Schrift‘ und Katalog R-5.8 (Prüfung `hig.mjs` – `bezeichnungen`); 8 ‚Zahlenfelder mit kleinem Höchstwert‘ ohne Fokus bündig am rechten Rand, mit Fokus rückt die Zahl für das ⓧ nach links (statt immer freiem Platz) |
 | 4.43.0 | 30.10.2026 | Neben | **APD-91 (Nutzer 30.10.2026, Wortlaut bestätigt):** 15.2, 15.3, 15.4, R-2.3, R-4.7 – die Suche öffnet ‚Suchen‘ als erster Punkt im Mehr-Menü (darunter ein Strich) oder ⌘F, beendet wird sie mit dem runden x ‚Suche beenden‘ rechts in der Suchzeile, keine Lupe in der Kapsel; 16 zwei bewusste Abweichungen (Suche der Liste im Mehr-Menü, Suchzeile am iPhone oben). **APD-92 (Wortlaut bestätigt):** 2 und R-1.2 – ‚Darstellung‘ im Mehr-Menü der Seitenleiste nach Backup, nie im Menü eines Eintrags. **APD-93 (Wortlaut bestätigt):** 8 – schmale Zahlenfelder mit kleinem Höchstwert, ⓧ-Platz immer frei. **Folgeänderungen (Nutzer 30.10.2026, Wortlaut bestätigt):** 1, Icon-Tabelle 5, 15.5 ‚Keine Lupe in der Kapsel‘ (ersetzt ‚Suche am Ende‘, APD-22), 15.17 Kapseln und Suche, 17 Prüfspalten R-2.3 und R-4.7 |

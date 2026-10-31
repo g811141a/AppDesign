@@ -1,4 +1,4 @@
-// AppDesign 4.44.1 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
+// AppDesign 4.45.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
 // Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/fassung/X.Y.Z/ui.js"></script> (feste Fassung, R-10.3)
 // Seit 4.11.0 (R-10.3): ui.js und design.css immer mit ?v=<AppDesign-Version> einbinden (auch in sw.js) und beim Start
 // prüfen, ob genau diese Fassung geladen ist (AD_VERSION hier, --ad-version in design.css).
@@ -20,7 +20,7 @@
 
 'use strict';
 // Version der Bausteine (R-10.3): die App vergleicht sie beim Start mit der benötigten Fassung.
-const AD_VERSION = '4.44.1';
+const AD_VERSION = '4.45.0';
 /* ---------- Icons ---------- */
 
 // Schaltflächen-Icons aus Lucide (ISC-Lizenz), direkt eingebettet, damit die App offline funktioniert.
@@ -1660,7 +1660,11 @@ function mountCap(root) {
 // Die App fragt isPhone() und baut ihre Seiten danach; bei einem Wechsel ruft ihr resize-Handler render().
 // Seit 4.28.1 (APD-36): die Höhe ohne Tastatur zählt (APD-36/S-3: verschiebt Safari den sichtbaren Bereich, wird innerHeight kleiner – das
 // iPad galt mit offener Tastatur als iPhone, das Fenster sprang an den linken Rand).
-const isPhone = () => innerWidth < 700 || seitenHoehe() < 500;
+// Seit 4.45.0 (APD-97, R-6.6): dieselbe Grenze für den Inhalt – ist er schmaler (z. B. am iPad hoch neben der Seitenleiste), zeigt die App
+// jede Tabelle im Inhalt als Kästen wie am iPhone. Die App fragt inhaltSchmal(#app) beim Aufbau und baut bei einem Wechsel neu.
+const SCHMAL = 700;
+const isPhone = () => innerWidth < SCHMAL || seitenHoehe() < 500;
+const inhaltSchmal = el => !!el && el.clientWidth < SCHMAL;
 // Seit 4.9.0: Name des Geräts für ‚geändert am … · iPad‘ und den Abgleich (iPadOS meldet sich als Mac mit Touch).
 function deviceName() {
   const ua = navigator.userAgent;
@@ -1725,9 +1729,10 @@ const scrollRest = () => rolle.rest;
 function topAnchor() {
   if (rolle.y < 4) return null;
   const edge = keepEdge();
-  const e = [...document.querySelectorAll(KEEP_SEL)].find(x => x.getClientRects().length && x.getBoundingClientRect().bottom > edge + 1);
+  const alle = [...document.querySelectorAll(KEEP_SEL)].filter(x => x.getClientRects().length);
+  const e = alle.find(x => x.getBoundingClientRect().bottom > edge + 1);
   // Abstand als Anteil der Höhe: nach dem Drehen ist der Eintrag anders hoch, der sichtbare Teil bleibt gleich.
-  return e ? { sel: keepKey(e), part: (e.getBoundingClientRect().top - edge) / (e.getBoundingClientRect().height || 1) } : { rest: scrollRest() };
+  return e ? { sel: keepKey(e), part: (e.getBoundingClientRect().top - edge) / (e.getBoundingClientRect().height || 1), ab: e.getBoundingClientRect().top - edge, erstes: e === alle[0] } : { rest: scrollRest() };
 }
 function rememberTop() {
   if (keepBusy || keepTurned() || lockY !== null) return;   // bei offenem Fenster (R-7.3) und während des Drehens nichts überschreiben
@@ -1746,7 +1751,10 @@ function restoreTop() {
   if (!e) return;
   keepBusy = true;
   const r = e.getBoundingClientRect();
-  rolle.by(r.top - keepEdge() - keepTop.part * r.height);
+  // Seit 4.45.0 (APD-97): ändert die App die Breite (keepPlace) und steht der erste Eintrag ganz unter der Kante (darüber der Kopf des
+  // Inhalts), bleibt sein Abstand in px – als Anteil seiner Höhe rückte er mit, wenn er schmaler bzw. breiter anders hoch wird (große
+  // Schrift, Seitenleiste am iPad hoch). Liegt ein Eintrag darüber, bleibt es beim Anteil – sonst schaute dessen Unterkante hervor.
+  rolle.by(r.top - keepEdge() - (keepTop.app && keepTop.erstes && keepTop.part > 0 ? keepTop.ab : keepTop.part * r.height));
   keepFrei();
 }
 onRoll(() => { if (!keepBusy) rememberTop(); });
@@ -1761,9 +1769,10 @@ function keepFrei() {
 // damit die Zeilenhöhen ändern sich, das Fenster nicht), bleibt oben derselbe Eintrag: keepPlace(() => { …; render(); }).
 function keepPlace(change) {
   const anchor = topAnchor();
+  if (anchor && 'sel' in anchor) anchor.app = true;
   change();
   keepTop = anchor;
-  if (anchor) return restoreTop();
+  if (anchor) { restoreTop(); delete anchor.app; return; }   // beim nächsten Drehen wieder als Anteil
   keepBusy = true;
   if (rolle.y) rolle.to(0);
   keepFrei();

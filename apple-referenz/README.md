@@ -21,3 +21,14 @@ Ablage: `apple-referenz/<Gerät>/<App>/<app>-<Nr>-<was>.png`
 | 7 | [notizen-07-ordner.png](iphone/notizen/notizen-07-ordner.png) | Ordnerliste | Zeilen mit Icon in Akzentfarbe, Name, **Anzahl grau und ›**; Unterordner eingerückt; oben runde Knöpfe (Neuer Ordner, Edit) |
 | 8 | [notizen-08-suche-leer.png](iphone/notizen/notizen-08-suche-leer.png) | Suche geöffnet | **Suchfeld wandert über die Tastatur**, daneben rundes x zum Beenden; Vorschläge als Karte |
 | 9 | [notizen-09-suche-treffer.png](iphone/notizen/notizen-09-suche-treffer.png) | Suchtreffer | Bereiche ‚Top Hits‘ und ‚Notes‘ mit **Anzahl rechts** (‚2 Found‘); Treffer im Text in der Akzentfarbe; im Suchfeld gefülltes ⓧ zum Leeren |
+
+## iPad · Einstellungen und Notizen (Seitenleiste hoch und quer) – 31.10.2026
+
+Bilder des Nutzers (1668 × 2388 px), Name, Fotos, WLAN-Name und geteilte Ordner verpixelt (Freigabe 31.10.2026, APD-97).
+
+| Nr. | Bild | Was es zeigt | Was wir daraus lernen |
+|---|---|---|---|
+| 1 | [einstellungen-01-hoch.png](ipad/einstellungen/einstellungen-01-hoch.png) | Einstellungen hoch, ‚Accessibility‘ gewählt | **Seitenleiste hoch fest neben dem Inhalt** (`tile`), schwebend mit runden Ecken, ohne Abdunkelung; der Inhalt bleibt bedienbar und wird nur schmaler (APD-97/E-1) |
+| 2 | [einstellungen-02-quer.png](ipad/einstellungen/einstellungen-02-quer.png) | Dasselbe quer | Seitenleiste gleich breit wie hoch; nur der Inhalt wird breiter, der Text bricht später um |
+| 3 | [notizen-01-hoch.png](ipad/notizen/notizen-01-hoch.png) | Notizen hoch, Ordnerliste und Notiz | Auch Notizen zeigt hoch Seitenleiste und Inhalt nebeneinander; der Text bricht im schmaleren Inhalt um |
+| 4 | [notizen-02-quer.png](ipad/notizen/notizen-02-quer.png) | Dasselbe quer | Gleiche Seitenleiste; die Werkzeugkapsel oben zeigt quer mehr Knöpfe (hoch »), weil mehr Platz ist |

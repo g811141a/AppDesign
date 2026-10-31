@@ -4,7 +4,7 @@
 // Einbinden im Prüfskript der App:  import { checkSearch, checkDialogHead } from '../../AppDesign/tests/ablauf.mjs';
 //                                   fehler.push(...await checkSearch(page, { term: 'Sydney' }));
 import { ROLL, RING, rolle, rollstand, navFertig, rollRuht } from './pruefe.mjs';
-import { safariWischen, safariModell } from './safari.mjs';
+import { safariWischen, safariModell, mausWieFinger } from './safari.mjs';
 const wait = (p, ms = 250) => p.waitForTimeout(ms);
 // R-2.3 (seit 4.25.1, APD-24): beim Tippen bleibt das Suchfeld dasselbe Element und behält den Fokus – sonst schließt Safari am
 // iPhone die Tastatur kurz und Kopf- und Suchzeile zittern bei jedem Buchstaben. Tippt Buchstabe für Buchstabe (und löscht
@@ -1422,6 +1422,7 @@ export async function checkNavigation(p, { eintrag, titel, zurueck = '#back', wa
   const ueberblendet = b => (b.some(x => x.appT === 'none' && x.appO > 0.02 && x.appO < 0.98) || b.some(x => x.appA && x.appA.o[0] !== x.appA.o[1] && x.appA.t.every(t => t === 'none')))
     && b.every(x => x.appT === 'none');
   const ruhig = async () => { for (let i = 0; i < 30; i++) { await wait(p, 100); if (!(await lage()).nav) return; } };
+  // seit 4.45.0 (APD-68/Q-8): kein Ziehen-und-Ablegen, wenn ein Zug auf einem Link beginnt (safari.mjs mausWieFinger)
   // seit 4.31.0: vorher keine Textmarkierung – ein senkrechter Mauszug markiert in WebKit Text, der nächste Zug darauf würde ein
   // Ziehen-und-Ablegen beginnen und WebKit verschluckt die Mausereignisse (am Gerät mit dem Finger gibt es das nicht)
   // Tempo, das die App beim letzten schnellen Zug sah – wie navEnde in ui.js: die Spur der letzten 100 ms vor dem Loslassen (kommt das
@@ -1433,7 +1434,7 @@ export async function checkNavigation(p, { eintrag, titel, zurueck = '#back', wa
   const spurTempo = () => p.evaluate(() => { const s = (window.__spur || []).filter(x => x[0] >= (window.__los ?? Infinity) - 100), z = s.at(-1);
     return s.length > 1 && z[0] > s[0][0] ? Math.abs(z[1] - s[0][1]) / (z[0] - s[0][0]) : 0; });
   const ziehe = async (x0, y0, x1, y1, { schnell = false, los = true, halten = 0 } = {}) => {
-    await p.evaluate(() => getSelection()?.removeAllRanges());
+    await p.evaluate(() => getSelection()?.removeAllRanges()); await mausWieFinger(p);
     if (schnell) await spurStart();
     await p.mouse.move(x0, y0); await p.mouse.down();
     if (halten) await wait(p, halten);
@@ -1647,9 +1648,8 @@ export async function checkNavigation(p, { eintrag, titel, zurueck = '#back', wa
     await zu('APD-61/F-20 Escape bzw. VoiceOver-‚Zurück‘');
     return errors;
   }
-  // iPad
-  const hoch = h > w;
-  if (!hoch) {
+  // iPad – seit 4.45.0 (APD-97, R-7.5) hoch wie quer: die Seitenleiste steht fest neben dem Inhalt, keine Abdunkelung mehr
+  {
     // APD-68/Q-1 bis APD-68/Q-12 (seit 4.31.0, APD-68 Variante B ‚Mitschieben‘, Testfall-Liste arbeit/APD-68 Testfall-Liste.md): quer steht die Seitenleiste fest
     // links; ausgeblendet holt Wischen nach rechts von überall im Inhalt sie herein – der Inhalt rückt mit dem Finger nach rechts, fertig
     // nach halber Breite oder schnellem Wischen, dann rastet sie ein und der Inhalt wird schmaler (oberster Kasten bleibt); sonst federt
@@ -1663,7 +1663,7 @@ export async function checkNavigation(p, { eintrag, titel, zurueck = '#back', wa
       return i < 0 ? null : { i, ab: Math.round(alle[i].getBoundingClientRect().top - top) }; }, kasten);
     const gleich = (a, b) => !a || !b || (a.i === b.i && Math.abs(a.ab - b.ab) <= 3);
     const zu = async wo => { const z = await box('#sideHide'); if (!z) { E(`${wo}: panel-left in der Seitenleiste fehlt`); return; } await p.mouse.click(z.x, z.y); await ruhig(); await wait(p, 100); };
-    await da(true, 'APD-68/Q-1 Start quer');
+    await da(true, 'APD-68/Q-1 Start (quer und hoch)');
     if (!/pan-y/.test(l.ta) || /pan-x|manipulation|auto/.test(l.ta)) E(`APD-68/Q-1 touch-action des Inhalts ‚${l.ta}‘ – waagrecht muss das Wischen bei der App ankommen (pan-y, 13)`);
     // APD-68/Q-2: nach links auf der festen Seitenleiste – sie bleibt
     // schnell, damit es kein langes Drücken auf einer Kachel wird (Kontextmenü)
@@ -1749,57 +1749,6 @@ export async function checkNavigation(p, { eintrag, titel, zurueck = '#back', wa
     await da(true, 'APD-68/Q-12 panel-left im Kopf');
     return errors;
   }
-  let bf;
-  const da = async (soll, wo) => { l = await lage(); if (l.seite !== soll || (soll && l.sideX < 0)) E(`${wo}: Seitenleiste ${l.seite ? `da (bei ${l.sideX} px)` : 'weg'}, soll ${soll ? 'da' : 'weg'}`); };
-  if ((await lage()).seite) { E('Vorbereitung: Seitenleiste am iPad hoch ist offen'); return errors; }
-  l = await lage();
-  if (!/pan-y/.test(l.ta) || /pan-x|manipulation|auto/.test(l.ta)) E(`APD-68/F-12 touch-action des Inhalts ‚${l.ta}‘ – waagrecht muss das Wischen bei der App ankommen (pan-y, 13)`);
-  // APD-67/F-11: vom Rand herein – folgt dem Finger, die Abdunkelung wächst mit
-  await ziehe(4, h * 0.6, 200, h * 0.6, { los: false }); await wait(p, 60);
-  l = await lage();
-  if (!l.seite) E('APD-67/F-11 beim Ziehen vom Rand kommt die Seitenleiste nicht');
-  else if (!l.ruhig && !(l.sideX < 0 && l.sideX > -l.sideW)) E(`APD-67/F-11 die Seitenleiste folgt dem Finger nicht (bei ${l.sideX} px, Breite ${l.sideW})`);
-  if (l.schatten !== null && !(l.schatten > 0.05 && l.schatten < 0.95)) E(`APD-67/F-11 die Abdunkelung wächst nicht mit (Deckkraft ${l.schatten})`);
-  await p.mouse.move(460, h * 0.6, { steps: 6 }); await wait(p, 150); await p.mouse.up(); await ruhig(); await wait(p, 100);
-  await da(true, 'APD-67/F-11 vom Rand über die halbe Breite');
-  // APD-68/F-12: nach links auf der Seitenleiste, aus der Mitte des Inhalts herein, nach links auf der Abdunkelung, panel-left, antippen
-  l = await lage();
-  await ziehe(l.sideX + l.sideW * 0.8, h * 0.7, 20, h * 0.7); await da(false, 'APD-68/F-12 nach links auf der Seitenleiste');
-  await ziehe(w * 0.35, h * 0.85, w * 0.95, h * 0.85); await da(true, 'APD-68/F-12 aus der Mitte des Inhalts nach rechts');
-  await ziehe(w - 40, h * 0.5, w - 420, h * 0.5); await da(false, 'APD-68/F-12 nach links auf der Abdunkelung');
-  const k = await box(seitenKnopf);
-  if (k) {
-    await aufzeichnen(); await p.mouse.click(k.x, k.y);
-    bf = await bilder();
-    if (!l.ruhig && !bf.some(x => (x.sideX < -1 && x.sideX > -400) || schiebt(x.sideA))) E(`APD-68/F-12 panel-left: die Seitenleiste gleitet nicht herein (bei ${[...new Set(bf.map(x => Math.round(x.sideX)))].join(' ')} px)`);
-    await ruhig(); await wait(p, 100); await da(true, 'APD-68/F-12 panel-left');
-    await p.mouse.click(w - 40, h * 0.5); await ruhig(); await wait(p, 100); await da(false, 'APD-68/F-12 Abdunkelung antippen');
-  } else E(`APD-68/F-12 Vorbereitung: ${seitenKnopf} fehlt`);
-  // APD-68/F-15: offenes Menü – keine Geste
-  if (menue) {
-    await p.click(menue); await wait(p, 300);
-    await ziehe(w * 0.3, h * 0.85, w * 0.95, h * 0.85); await da(false, 'APD-68/F-15 Wischen bei offenem Menü');
-    if ((await lage()).menue) { await p.evaluate(() => document.querySelector('.layer')?.click()); await wait(p, 200); }
-  }
-  // APD-67/F-14: Drehen während des Ziehens – Zustand wie vorher (weg)
-  await ziehe(4, h * 0.6, 220, h * 0.6, { los: false });
-  await p.setViewportSize({ width: h, height: w }); await wait(p, 400);
-  await p.mouse.up(); await ruhig(); await wait(p, 300);
-  await keinTippen('APD-67/F-14 Loslassen nach dem Drehen');
-  l = await lage();
-  if (l.nav) E(`APD-67/F-14 nach dem Drehen beim Ziehen läuft noch ${l.nav}`);
-  await p.setViewportSize({ width: w, height: h }); await wait(p, 500);
-  await da(false, 'APD-67/F-14 Drehen beim Ziehen und zurück');
-  // APD-67/F-23 (seit 4.30.2, APD-67): Seitenleiste mit Berührung nach Safari hereinwischen, 14 px senkrechte Abweichung – sie kommt
-  { const r = await safariWischen(p, w * 0.35, h * 0.6, Array.from({ length: 12 }, (_, i) => [Math.round(400 * (i + 1) / 12), Math.round(14 * (i + 1) / 12), 15]));
-    await ruhig(); await wait(p, 100); await keinTippen('APD-67/F-23 Seitenleiste mit Berührung');
-    l = await lage(); if (!l.seite) E(`APD-67/F-23 Seitenleiste mit Berührung hereinwischen: ${r.abgebrochen ? 'Safari rollt und bricht ab' : 'kommt nicht'} (APD-67)`);
-    if (l.seite) { await p.mouse.click(w - 40, h * 0.5); await ruhig(); await wait(p, 100); } }
-  await da(false, 'APD-67/F-23 danach Abdunkelung antippen');
-  // APD-61/F-20: Escape schließt die darübergelegte Seitenleiste
-  await ziehe(w * 0.35, h * 0.85, w * 0.95, h * 0.85);
-  await p.keyboard.press('Escape'); await ruhig(); await wait(p, 100);
-  await da(false, 'APD-61/F-20 Escape');
   return errors;
 }
 

@@ -1,5 +1,5 @@
 {
- "hinweis": "Echte Antworten aus den Sitzungen Reiselogbuch 0050 und 0051 (wörtlich, Zeitpunkt aus der Sitzung) – Gegenprobe des Regelwächters (APD-84, Testfall-Liste arbeit/APD-84 APD-83 Testfall-Liste.md W-1 bis W-7). Jeder Fall muss mit den Nummern unter erwartet zurückgewiesen werden.",
+ "hinweis": "Echte Antworten aus den Sitzungen Reiselogbuch 0050, 0051 und 0062 (wörtlich, Zeitpunkt aus der Sitzung) – Gegenprobe des Regelwächters (APD-84, Testfall-Liste arbeit/APD-84 APD-83 Testfall-Liste.md W-1 bis W-7; APD-99 Testfall-Liste C-13 für W-14). Jeder Fall muss mit den Nummern unter erwartet zurückgewiesen werden.",
  "faelle": [
   {
    "name": "0050 · ‚Sag Bescheid …‘ – Antwort ohne Fenster",
@@ -150,6 +150,44 @@
    ],
    "erwartet": [
     "W-1"
+   ]
+  },
+  {
+   "name": "0062 · Fenster zu Regel 13 ohne ‚Kontext N‘ davor",
+   "bausteine": [
+    {
+     "zeit": "2026-10-31T03:32:09.058Z",
+     "text": "<sub>Aktuelle Uhrzeit: 04:31&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Zeitabstand zu vorher: 00:09)</sub>\n\nIch gehe die Themen einzeln durch und fange mit Designrichtlinie 13 an. Danach kommt 15.4 ‚Drehen‘, wenn du ‚w‘ schreibst.\n\n**Designrichtlinie 13 ‚Kein Scroll-Anker‘.** Seit 4.45.0 macht `ui.js` in einem Fall etwas anderes (`restoreTop`, Bedingung `keepTop.app && keepTop.erstes && keepTop.part > 0`): Ändert die App selbst die Anordnung und steht der erste Eintrag der Seite ganz unter der Leiste, bleibt sein Abstand in px. Bisher blieb immer der Anteil an seiner Höhe.\n\n**Alt:**\n> - **Kein Scroll-Anker:** ändern sich beim Drehen die Höhen, springt die Seite. ui.js merkt sich beim Rollen den obersten sichtbaren Eintrag unter der Leiste (`data-day` bzw. `data-keep`) und den sichtbaren Anteil und rückt ihn nach dem Drehen und nach jeder Änderung der Anordnung durch die App (z. B. Seitenleiste ein/aus: `keepPlace(() => { …; render(); })`) wieder an dieselbe Stelle. Steht oben kein Eintrag (Ende der Seite: Fazit, Statistik), bleibt der Abstand zum Ende gleich; ganz oben bleibt ganz oben, ganz unten bleibt ganz unten. Tests bilden das nach (`overflow-anchor: none`), sonst verdeckt Chrome den Fehler (R-8.1).\n\n**Neu** (geändert ist nur der eingefügte Satz in der Mitte):\n> - **Kein Scroll-Anker:** ändern sich beim Drehen die Höhen, springt die Seite. ui.js merkt sich beim Rollen den obersten sichtbaren Eintrag unter der Leiste (`data-day` bzw. `data-keep`) und den sichtbaren Anteil und rückt ihn nach dem Drehen und nach jeder Änderung der Anordnung durch die App (z. B. Seitenleiste ein/aus: `keepPlace(() => { …; render(); })`) wieder an dieselbe Stelle. **Ändert die App die Anordnung und steht der erste Eintrag der Seite ganz unter der Leiste (darüber nur der Kopf des Inhalts), bleibt statt des Anteils sein Abstand in px – sonst rückt er mit, wenn er schmaler oder breiter anders hoch wird.** Steht oben kein Eintrag (Ende der Seite: Fazit, Statistik), bleibt der Abstand zum Ende gleich; ganz oben bleibt ganz oben, ganz unten bleibt ganz unten. Tests bilden das nach (`overflow-anchor: none`), sonst verdeckt Chrome den Fehler (R-8.1).\n\nWenn du zustimmst, kommt der Text in die Designrichtlinie für 4.45.0. Das ist noch erlaubt, weil 4.45.0 nicht veröffentlicht ist. Danach schreibe ich die Fassung mit `… fassung` neu und trage die Änderung in die Versionsgeschichte ein."
+    },
+    {
+     "zeit": "2026-10-31T03:32:11.295Z",
+     "frage": {
+      "questions": [
+       {
+        "question": "Regel Designrichtlinie 13 ‚Kein Scroll-Anker‘ so ändern (erster Eintrag beim Umbau durch die App: Abstand in px)?",
+        "header": "Regel 13",
+        "multiSelect": false,
+        "options": [
+         {
+          "label": "Ja (Empfohlen)",
+          "description": "Der Text beschreibt dann, was ui.js seit 4.45.0 wirklich tut; sonst stimmen Regel und Code nicht überein."
+         },
+         {
+          "label": "Nein",
+          "description": "Die Regel bleibt, wie sie ist."
+         },
+         {
+          "label": "Ich schreibe im Chat",
+          "description": "Du schreibst deine Antwort im Chat."
+         }
+        ]
+       }
+      ]
+     }
+    }
+   ],
+   "erwartet": [
+    "W-14"
    ]
   }
  ]
