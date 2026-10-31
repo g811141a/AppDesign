@@ -19,7 +19,6 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| P-86 | 1 | **Usertest im Reiselogbuch 3.45.0 (AppDesign 4.47.0, APD-101):** gekürzter Titel – Sprechblase beim langen Drücken (Fenstertitel, Titel der Reise, Titel des Tages; bei normaler Schrift nichts) – Testfälle P-86/1 bis P-86/5 im CHANGELOG des Reiselogbuchs | prüfen |
 
 ## 2. Weitere Themen (in Klärung)
 
@@ -59,6 +58,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Thema | Version | Datum |
 |---|---|---|---|
+| P-86 | **Usertest P-86 (Reiselogbuch 3.45.0 · AppDesign 4.47.0):** alles ok – APD-101 am Gerät bestätigt (Nutzer 31.10.2026, Sitzung 0066) | 4.47.0 | 31.10.2026 |
 | APD-101 | **APD-101 Gekürzter Titel – Sprechblase:** langes Drücken auf einen mit ‚…‘ gekürzten Titel (15.3, 15.8) zeigt den ganzen Titel in `.titel-blase` darunter; neue Regel R-2.5 mit `checkTitelBlase` (`ablauf.mjs`), 16 ‚Keine Großanzeige‘ ergänzt; im Reiselogbuch neue Prüfung `ablauf-titel-blase`; Usertest P-86 | 4.47.0 | 31.10.2026 |
 | APD-102 | **APD-102 `los` bei neuerer `main`:** vor dem Prüflauf zusammenführen, bei Konflikt Abbruch vor dem Prüflauf; Konflikt während des Prüflaufs mit klarer Meldung; Selbsttest APD-102/M-1 bis M-8; `CLAUDE.md` 2.10.0 | 4.47.0 | 31.10.2026 |
 | P-85 | **Usertest P-85 (Reiselogbuch 3.44.0 · AppDesign 4.46.0):** alles ok – APD-100 am Gerät bestätigt (Nutzer 31.10.2026, Sitzung 0065) | 4.46.0 | 31.10.2026 |
