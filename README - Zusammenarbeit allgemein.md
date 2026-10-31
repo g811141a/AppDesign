@@ -1,6 +1,6 @@
 # Zusammenarbeit allgemein
 
-**Version 3.3.0** · Stand 30.10.2026
+**Version 3.4.0** · Stand 31.10.2026
 
 Regeln für die Zusammenarbeit mit Claude bei allen iPad-Web-Apps von g811141a. Die Datei liegt im Design-Repo **AppDesign**
 (g811141a/AppDesign); App-Eigenes steht in der `CLAUDE.md` des App-Repos. **Abschnitt 0 ist das Arbeitsmodell** (oben der Kasten ‚Immer‘ und ‚Jede
@@ -28,7 +28,7 @@ Antwort‘), Abschnitt 1 die Sprache, Abschnitt 2 die Einzelheiten und Formate. 
 > 7. Ganz am Ende, nach dem Fenster: die Zeitzeile von `messung.mjs`, unverändert (2.2). **W**
 > 8. Meldet der Regelwächter ‚⚠ Modell‘, steht es in der Antwort (2.5); steht ‚⚠ Übergabe fällig‘ in der Zeitzeile: nach dem
 >    laufenden Schritt übergeben (Nr. 13).
-> 9. Vor der Frage ‚Soll ich Version … erstellen?‘: der Kontextstand als Satz mit ‚Kontext N‘ aus `messung.mjs`, abgelesen (Nr. 21).
+> 9. Vor **jedem Auswahlfenster**: der Kontextstand als Satz mit ‚Kontext N‘ aus `messung.mjs`, abgelesen (Nr. 28). **W**
 
 Ziel: nichts vergessen, Fehler finden, bevor der Nutzer sie findet, schnell und sparsam arbeiten. Die Nummern bleiben fest
 (Verweise in Code und Changelogs), neue Punkte bekommen die nächste freie Nummer. Einzelheiten und Formate: Abschnitt 2.
@@ -37,8 +37,7 @@ Ziel: nichts vergessen, Fehler finden, bevor der Nutzer sie findet, schnell und 
 
 21. **Nie ohne ‚Ja‘ bauen:** Claude entscheidet nie selbst, eine Version zu bauen oder hochzuladen – auch nicht bei kleinen
     Korrekturen oder wenn die Bitte ‚korrigieren‘, ‚verbessern‘, ‚ausbessern‘ lautet. Vorher immer ‚Soll ich Version X.Y.Z mit …
-    erstellen? Ja/Nein‘. Unmittelbar davor steht im Chat der aktuelle Kontextstand als Satz mit der Zahl ‚Kontext N‘ aus
-    `messung.mjs` – abgelesen und nie geschätzt; die Zeitzeile selbst steht nur ganz am Ende. Gebaut wird erst nach einem
+    erstellen? Ja/Nein‘ (Kontextstand davor: Nr. 28). Gebaut wird erst nach einem
     ausdrücklichen ‚Ja‘ (eine Bitte um Korrektur ist keins). Bis dahin:
     erklären, Vorschlag machen, ins Backlog eintragen. Prüfung: Selbstkontrolle.
 22. **Erst prüfen, dann Neues:** Nach jeder Version werden alle Testfälle (User) des Usertests geprüft und gefundene Fehler beseitigt, bevor Neues
@@ -51,7 +50,9 @@ Ziel: nichts vergessen, Fehler finden, bevor der Nutzer sie findet, schnell und 
     einer Datei oder einer Quelle **dieser** Sitzung; sonst ‚weiß ich nicht – ich prüfe es‘; Vermutungen heißen ‚Vermutung‘.
     Prüfung: Uhrzeit und Zeitzeile Regelwächter; sonst Selbstkontrolle mit Quelle im Bericht.
 28. **Jede Frage im Fenster:** Jede Frage an den Nutzer kommt ins Auswahlfenster, und jede Antwort endet mit einem – nie ‚Sag
-    Bescheid …‘ oder eine offene Frage im Text; einzige Ausnahme die Übergabe (Nr. 14). Format 2.1. Prüfung: Regelwächter.
+    Bescheid …‘ oder eine offene Frage im Text; einzige Ausnahme die Übergabe (Nr. 14). Unmittelbar vor jedem Fenster steht im Chat
+    der Kontextstand als Satz mit ‚Kontext N‘ aus `messung.mjs` – abgelesen, nie geschätzt; die Zeitzeile selbst steht nur ganz am
+    Ende. Format 2.1. Prüfung: Regelwächter.
 29. **Regeln nur mit Genehmigung:** Claude löscht, ändert oder ergänzt keine Regel – Zusammenarbeit, Designrichtlinien mit
     Regelkatalog, App-Richtlinien, `CLAUDE.md` – ohne dein ausdrückliches ‚Ja‘ zum Wortlaut. Vorher stehen alter und neuer Text im
     Chat, die Frage im Auswahlfenster: ‚Regel … so ändern? Ja/Nein‘. Das gilt auch für Korrekturen und Zusammenfassungen (Nr. 3).
@@ -363,7 +364,8 @@ Rohdaten durch Claude, damit keine falsche Anzeige in die Irre führt.
   Setup-Skript, Text und Befehle: AppDesign-`CLAUDE.md`). Er sucht AppDesign unter `/home/user`; fehlt es, läuft er leer durch.
 - **Nach jeder Nachricht und jedem Werkzeug:** die fertige Uhrzeitzeile für die nächste Ausgabe (Zeitabstand ab der letzten
   Uhrzeitzeile in der Sitzungsdatei) und ‚⚠ Modell …‘, wenn der letzte Aufruf nicht Opus 5.5 war.
-- **Vor jedem Auswahlfenster:** lehnt es ab, wenn eine Frage keine Empfehlung zuerst oder kein ‚Ich schreibe im Chat‘ hat.
+- **Vor jedem Auswahlfenster:** lehnt es ab, wenn eine Frage keine Empfehlung zuerst oder kein ‚Ich schreibe im Chat‘ hat oder
+  wenn die Ausgabe davor keinen Satz mit ‚Kontext N‘ aus `messung.mjs` enthält.
 - **Am Ende jeder Antwort:** prüft die Antwort in der Sitzungsdatei – jede Ausgabe beginnt mit der Uhrzeitzeile und ihre Uhrzeit
   ist abgelesen (± 1 min um ihren Anlass), der Zeitabstand passt, die Antwort hat ein Fenster (außer der Übergabe), die Zeitzeile
   steht ganz am Ende nach dem letzten Fenster und kommt unverändert aus `messung.mjs`. Fehlt etwas, lässt er die Antwort nicht enden
@@ -400,6 +402,7 @@ im Verlauf und in Kommentaren der Prüfungen nennen noch die alten Stellen):
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 3.4.0 | 31.10.2026 | Neben | **APD-99 (Nutzer 31.10.2026, Sitzungen 0060 und 0062, Wortlaut bestätigt):** der Kontextstand als Satz mit ‚Kontext N‘ aus `messung.mjs` vor **jedem** Auswahlfenster – Kasten ‚Jede Antwort‘ Punkt 9 (jetzt **W**), 0 Nr. 28, 0 Nr. 21 verweist darauf; 2.8 der Regelwächter lehnt ein Fenster ohne diesen Satz ab (APD-84/W-14) |
 | 3.3.0 | 30.10.2026 | Neben | **APD-96 (Nutzer 30.10.2026, Sitzungen 0058 und 0059, Wortlaut bestätigt):** 0 Nr. 21 – unmittelbar vor der Bau-Frage der Kontextstand als Satz mit ‚Kontext N‘ aus `messung.mjs`, abgelesen; dazu Kasten ‚Jede Antwort‘ Punkt 9 |
 | 3.2.0 | 30.10.2026 | Neben | **APD-85 Teil 1 (Nutzer 30.10.2026, Wortlaut bestätigt):** 0 Nr. 2 – `lauf.mjs` bricht erst ab dem dritten roten Lauf ab, jeder rote Lauf läuft am Ende einmal allein (grün = ‚wackelt‘, gemeldet) |
 | 3.1.0 | 30.10.2026 | Neben | **APD-89 (Nutzer 30.10.2026, Wortlaut bestätigt):** neu 0 Nr. 29 ‚Regeln nur mit Genehmigung‘ – keine Regel ohne ‚Ja‘ des Nutzers zum Wortlaut löschen, ändern oder ergänzen; dazu im Kasten ‚Immer‘ |

@@ -5,7 +5,7 @@ allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
 ## 4.45.0 – 31.10.2026
 
-AppDesign 4.45.0 · Designrichtlinie allgemein 4.45.0 · Zusammenarbeit allgemein 3.3.0 · geprüft mit Reiselogbuch 3.43.0
+AppDesign 4.45.0 · Designrichtlinie allgemein 4.45.0 · Zusammenarbeit allgemein 3.4.0 · geprüft mit Reiselogbuch 3.43.0
 
 **APD-97 iPad hoch: Seitenleiste neben dem Inhalt, Tabellen im schmalen Inhalt als Kästen** (aus deiner Rückmeldung zu P-82 ‚Sonstiges‘) –
 dein Ja vom 31.10.2026, Sitzung 0060 (Wortlaut, Muster und Testfall-Liste bestätigt; Vorbild Einstellungen und Notizen am iPad,
@@ -33,6 +33,21 @@ dein Ja vom 31.10.2026, Sitzung 0060 (Wortlaut, Muster und Testfall-Liste bestä
     Seitenleiste herein, APD-68/Q-9 folgte daraus. Am Gerät beginnt ein kurzer Fingerzug nie Ziehen-und-Ablegen; die Prüfung verhindert es jetzt
     (`dragstart`). Die App ist unverändert.
   - **Warum die Prüfung es vorher übersah:** vor APD-97 liefen die Q-Fälle nur quer – dort liegt an dieser Stelle kein Link (Tabelle).
+- **Regeltexte zu APD-97** (dein Ja vom 31.10.2026, Sitzung 0062, Wortlaut bestätigt): Designrichtlinie 13 ‚Kein Scroll-Anker‘ – ändert
+  die App die Anordnung, bleibt beim ersten Eintrag ganz unter der Leiste der Abstand in px; 15.4 ‚Drehen‘ – Auslöser nur noch panel-left
+  bzw. Hereinwischen.
+- **APD-94 hinfällig durch APD-97:** hoch gibt es keine Abdunkelung mehr, die beim Drehen mit offenem Menü ungesperrt bliebe; das Reiselogbuch
+  prüft in `ablauf-markierung-menues` wieder auch quer → hoch (bisher nur hoch → quer).
+
+**APD-99 Kontextstand vor jedem Auswahlfenster** – dein Ja vom 31.10.2026, Sitzungen 0060 und 0062 (Wortlaut bestätigt); Testfall-Liste
+`arbeit/APD-99 Testfall-Liste.md` (APD-99/C-1 bis C-13).
+
+- **Zusammenarbeit 3.4.0:** Kasten ‚Jede Antwort‘ Punkt 9 – vor **jedem** Auswahlfenster der Kontextstand als Satz mit ‚Kontext N‘ aus
+  `messung.mjs` (jetzt **W**); 0 Nr. 28 ergänzt, 0 Nr. 21 verweist darauf; 2.8 beschreibt die neue Prüfung.
+- **Regelwächter APD-84/W-14 (`werkzeug/regelwaechter.mjs` – `pruefeKontext`):** vor dem Zeigen und beim Stop – die letzte Ausgabe vor dem Fenster
+  braucht außerhalb der Zeitzeile einen Satz mit ‚Kontext N‘, N wie im letzten Aufruf von `messung.mjs` davor; ist die Ausgabe nicht
+  wörtlich gespeichert (nach einem Denkschritt), lässt er durch. `tests/regelwaechter.mjs` APD-84/W-1 bis W-14 mit Gegenprobe, dazu eine echte
+  Antwort aus 0062 (Fenster zu Regel 13 ohne Kontextstand).
 
 ## 4.44.1 – 30.10.2026
 
