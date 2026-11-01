@@ -1,4 +1,4 @@
-/* AppDesign 4.48.1 · design.css – gemeinsame Gestaltung der iPad-Web-Apps von g811141a (Apple-like)
+/* AppDesign 4.48.2 · design.css – gemeinsame Gestaltung der iPad-Web-Apps von g811141a (Apple-like)
    Einbinden im <head> vor dem eigenen <style> der App:  <link rel="stylesheet" href="../AppDesign/fassung/X.Y.Z/design.css"> (feste Fassung, R-10.3)
    Farben als Variablen auf :root, Dunkelmodus über data-theme="dark" (setzt ui.js / applyTheme).
    Komponenten: Schaltflächen, Suchfeld, Kapsel, Eingabefelder, Datumsfelder, Kopfzeile, Seitenleiste,
@@ -6,7 +6,7 @@
    Options-Kapsel; seit 4.1.0 iPhone-Ansicht (html.phone: Seitenkopf, großer Titel, Liste, Kasten, untere Leiste). Regeln dazu: README - Designrichtlinie allgemein.md */
 /* Farben im Apple-Look: Hintergrund Hellgrau, Kästen weiß ohne Rand, schwebende Schaltflächen */
 :root {
-  --ad-version: "4.48.1";   /* R-10.3: Version der Bausteine, die App prüft sie beim Start */
+  --ad-version: "4.48.2";   /* R-10.3: Version der Bausteine, die App prüft sie beim Start */
   --bg: #f2f2f7;
   --card: #ffffff;
   --ink: #1c1c1e;
@@ -33,6 +33,7 @@
   --btn-rim: #ffffff;
   --sel-bg: #dcebff;
   --beruehrt: #e5e5ea;   /* seit 4.48.0 (R-3.6): Zeile beim Berühren */
+  --heben: #ffffff;   /* seit 4.48.2 (R-3.6, APD-107): Leisten-Knopf beim Berühren */
   --gross-bg: rgba(242,242,247,.94);   /* seit 4.48.0 (R-2.6): Großanzeige */
   --mark: #ffe45c;
   --mark-cur: #ffc46b;
@@ -61,7 +62,7 @@
   --th-bg: #2c2c2e; --th-line: #48484a; --zebra: #161618; --field-line: #48484a;
   --dlg-bg: #1c1c1e; --dlg-card: #2c2c2e; --dlg-field: #1c1c1e;
   --btn: #3a3a3c; --btn-rim: rgba(255,255,255,.16); --sel-bg: #10335c;
-  --beruehrt: #3a3a3c; --gross-bg: rgba(44,44,46,.94);
+  --beruehrt: #3a3a3c; --gross-bg: rgba(44,44,46,.94); --heben: #636366;
   --mark: #8a6d00; --mark-cur: #e08a1e; --mark-cur-ink: #000;
   --float: 0 3px 28px rgba(0,0,0,.7);
   --glow-accent: 0 2px 4px rgba(0,0,0,.5), 0 5px 18px rgba(10,132,255,.50);
@@ -417,6 +418,15 @@ html.ts-ax .pop .btns, html.ts-ax .pop .tiles { flex-direction: column; }
 button.beruehrt:not(:is(.side-row, .irow, .mi)) { opacity: .35; transition: none; }
 :is(.side-row, .irow, .menu .mi, .box).beruehrt:not(.current), tr.beruehrt > :is(td, th) { background-color: var(--beruehrt) !important; transition: none; }
 button.beruehrt-aus, :is(.side-row, .irow, .menu .mi, .box).beruehrt-aus, tr.beruehrt-aus > :is(td, th) { transition: opacity .15s, background-color .15s; }
+/* Seit 4.48.2 (APD-107 Variante C, Muster arbeit/APD-107 Muster.html): ein Knopf einer Leiste (Kopfzeile, Fenster-Kopfzeile, Seitenleiste,
+   schwebende Knöpfe – GROSS_SEL in ui.js) hebt sich stattdessen als helle Fläche mit Schatten auf das 1,3-Fache über seine Kapsel, neben dem
+   Finger zu sehen wie Liquid Glass in iOS 26; das Icon bleibt kräftig (blass war am Gerät nicht zu sehen, P-88/1); senkt sich in 0,2 s */
+:is(.nb, .pnav, .bbar, .dlg-head, .side-head, .side-search, .fab) button.beruehrt { opacity: 1; position: relative; z-index: 3; transform: scale(1.3);
+  background: var(--heben); box-shadow: 0 6px 20px rgba(0,0,0,.22), 0 0 0 .5px rgba(0,0,0,.08);
+  transition: transform .25s cubic-bezier(.2,.9,.3,1.25), box-shadow .2s; }
+:is(.nb, .pnav, .bbar, .dlg-head, .side-head, .side-search, .fab) button.beruehrt-aus { position: relative; z-index: 3;
+  transition: transform .2s, box-shadow .2s, background-color .2s, opacity .15s; }
+@media (prefers-reduced-motion: reduce) { :is(.nb, .pnav, .bbar, .dlg-head, .side-head, .side-search, .fab) button.beruehrt { transform: none; transition: box-shadow .2s; } }
 /* R-3.5 Anheben (seit 4.48.0, APD-105): ein Eintrag mit eigener Aktion für langes Drücken hebt sich ab 0,15 s an – wächst, Schatten;
    in der Kapsel (Smiley) wächst das Zeichen und wirft Schatten, damit nichts am Rand der Kapsel abgeschnitten wird */
 .hebt { position: relative; z-index: 2; transform: scale(1.03); box-shadow: 0 6px 18px rgba(0,0,0,.22) !important; opacity: 1 !important;

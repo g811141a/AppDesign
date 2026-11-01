@@ -1,4 +1,4 @@
-// AppDesign 4.48.1 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
+// AppDesign 4.48.2 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
 // Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/fassung/X.Y.Z/ui.js"></script> (feste Fassung, R-10.3)
 // Seit 4.11.0 (R-10.3): ui.js und design.css immer mit ?v=<AppDesign-Version> einbinden (auch in sw.js) und beim Start
 // prüfen, ob genau diese Fassung geladen ist (AD_VERSION hier, --ad-version in design.css).
@@ -20,7 +20,7 @@
 
 'use strict';
 // Version der Bausteine (R-10.3): die App vergleicht sie beim Start mit der benötigten Fassung.
-const AD_VERSION = '4.48.1';
+const AD_VERSION = '4.48.2';
 /* ---------- Icons ---------- */
 
 // Schaltflächen-Icons aus Lucide (ISC-Lizenz), direkt eingebettet, damit die App offline funktioniert.
@@ -117,6 +117,8 @@ const growAll = () => dlg.querySelectorAll('textarea').forEach(autoGrow);
 // Seit 4.48.1 (APD-106 Variante C, R-3.5): { entfernen: true } – langes Drücken, das etwas entfernt (Smiley), löst erst nach LANG_ENTFERNEN aus
 // (Apple: Kontextmenü nach etwa 0,5 s; länger, weil Entfernen nicht rückgängig zu machen ist – Nutzer 01.11.2026). In der Kapsel hebt sich
 // das Zeichen auf einem hellen Kreis mit Schatten als eigene Ebene (.schwebt) über die Leiste – die Kapsel schneidet sonst ab.
+// Seit 4.48.2 (APD-107/S-7): der Kreis hängt im offenen Fenster (wie die Großanzeige) – an body lag er hinter dem modalen Fenster (P-88/4);
+// gemessen und nachgerückt, falls das Fenster selbst verschoben ist.
 const LANG_WEG = 10, LANG_HEBEN = 150, LANG_DAUER = 600, LANG_ENTFERNEN = 1000;
 function onLongPress(btn, onLong, onTap, { entfernen = false } = {}) {
   let timer = null, heben = null, ebene = null;
@@ -134,7 +136,9 @@ function onLongPress(btn, onLong, onTap, { entfernen = false } = {}) {
     ebene.className = 'schwebt'; ebene.setAttribute('aria-hidden', 'true');
     ebene.style.cssText = `left:${r.left + r.width / 2 - d / 2}px;top:${r.top + r.height / 2 - d / 2}px;width:${d}px;height:${d}px;font-size:${getComputedStyle(btn).fontSize}`;
     ebene.textContent = btn.textContent;
-    document.body.append(ebene);
+    (btn.closest('dialog') || document.body).append(ebene);
+    const r1 = ebene.getBoundingClientRect(), x1 = r.left + r.width / 2 - d / 2, y1 = r.top + r.height / 2 - d / 2;
+    if (Math.abs(r1.left - x1) > 0.5 || Math.abs(r1.top - y1) > 0.5) { ebene.style.left = `${2 * x1 - r1.left}px`; ebene.style.top = `${2 * y1 - r1.top}px`; }
     requestAnimationFrame(() => requestAnimationFrame(() => ebene?.classList.add('hoch')));
   };
   const stop = () => { clearTimeout(timer); clearTimeout(heben); timer = heben = null; senken(); removeEventListener('scroll', rollt, true); };
@@ -920,6 +924,10 @@ addEventListener('scroll', () => { titelDruckEnde(); titelBlaseZu(); }, { captur
 // Smiley-Leiste, Kapsel – jede Fläche, die rollen kann) erst nach BERUEHR_VERZUG, damit beim Rollen nichts aufblitzt. Wandert der Finger
 // mehr als LANG_WEG oder rollt die Fläche, verschwindet sie, und der Klick danach löst nichts aus. Loslassen blendet in 0,15 s aus
 // (.beruehrt-aus). Gesperrte Schaltflächen zeigen nichts. ‚Blau getönt = gedrückt‘ (.on, offenes Menü) bleibt davon unberührt.
+// Seit 4.48.2 (APD-107 Variante C, Testfall-Liste arbeit/APD-107 Testfall-Liste.md S-1 bis S-13): ein Knopf einer Leiste (GROSS_SEL) hebt sich
+// stattdessen als helle Fläche mit Schatten 1,3-fach über seine Kapsel (design.css); das Loslassen nach dem Abbruch ist gesperrt, wie lange
+// der Finger auch liegt – Safari meldet beim Wegziehen in einer Leiste kein pointercancel und schickt beim Loslassen den Klick (Messung P-88/1:
+// 843 ms nach dem Abbruch öffnete sich das Menü, die Sperre galt nur 600 ms).
 const BERUEHR_VERZUG = 80;
 const BERUEHR_ZEILE = '.side-row, .irow, .menu .mi, tr, .box, li';
 const BERUEHR_NICHT = 'input, textarea, select, label, a, dialog, .layer, .side-shade, .nav-schleier, .menu .note';
@@ -966,8 +974,11 @@ addEventListener('pointermove', e => {
 addEventListener('pointerup', () => beruehrAus(), true);
 addEventListener('pointercancel', () => beruehrAbbruch(), true);
 addEventListener('scroll', e => { if (beruehr && (e.target === document || e.target.contains?.(beruehr.el))) beruehrAbbruch(); }, { capture: true, passive: true });
-// der Klick nach einem abgebrochenen Berühren (gewandert, gerollt) löst nichts aus – nur dieser eine, kurz danach (Tasten bleiben frei)
-function beruehrAbbruch() { if (!beruehr) return; beruehrWeg = { el: beruehr.el, bis: performance.now() + 600 }; beruehrAus(true); }
+// der Klick nach einem abgebrochenen Berühren (gewandert, gerollt) löst nichts aus – nur dieser eine: gesperrt bis zum Loslassen, dann noch
+// 400 ms für den Klick, der ihm folgt (seit 4.48.2, APD-107/S-1, S-5); die Tastatur gibt sofort frei (S-6)
+function beruehrAbbruch() { if (!beruehr) return; beruehrWeg = { el: beruehr.el, bis: Infinity }; beruehrAus(true); }
+['pointerup', 'pointercancel'].forEach(t => addEventListener(t, () => { if (beruehrWeg?.bis === Infinity) beruehrWeg.bis = performance.now() + 400; }, true));
+addEventListener('keydown', () => { beruehrWeg = null; }, true);
 addEventListener('click', e => {
   const w = beruehrWeg; beruehrWeg = null;
   if (w && performance.now() < w.bis && w.el.contains(e.target) && !grossSelbst) { e.preventDefault(); e.stopImmediatePropagation(); }
