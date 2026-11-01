@@ -77,6 +77,24 @@ export const rollstand = p => p.evaluate(R => { const r = eval(R), m = Math.roun
 // Zustand der App ändert sich erst am Ende der Bewegung (Zurück, Wischen).
 // seit 4.32.0 (R-4.6): auch bis das Blatt auf dem iPhone ruht
 export const navFertig = p => p.waitForFunction(() => !/(^|\s)(nav-|blatt-faehrt|blatt-zieht)/.test(document.documentElement.className), null, { timeout: 3000 }).catch(() => {});
+// warteBis(p, bedingung, { was, max, arg }) (seit 4.49.0, APD-85 Teil 3, APD-85/Z-1, Z-2): wartet, bis `bedingung` (Funktion oder
+// Ausdruck, läuft in der Seite, bekommt `arg`) wahr ist – in jedem Bild geprüft, höchstens `max` ms. Ersetzt feste Pausen
+// (waitForTimeout), die unter Last zu kurz sind (Wackler). Rückgabe: null, wenn erreicht, sonst die Meldung mit `was` – nie ein
+// Hängen: die Seite bricht ihre Schleife nach `max` selbst ab, Node wartet höchstens 1 s länger (Uhr der Seite nachgebildet).
+export async function warteBis(p, bedingung, { was = 'Bedingung', max = 3000, arg } = {}) {
+  const src = typeof bedingung === 'function' ? bedingung.toString() : `() => (${bedingung})`;
+  let uhr;
+  const ok = await Promise.race([
+    p.evaluate(([src, arg, max]) => new Promise(r => {
+      const bed = (0, eval)(`(${src})`), bis = performance.now() + max;
+      const f = () => { let ja = false; try { ja = !!bed(arg); } catch {} if (ja) r(true); else if (performance.now() > bis) r(false); else requestAnimationFrame(f); };
+      f();
+    }), [src, arg, max]).catch(() => false),
+    new Promise(r => { uhr = setTimeout(() => r(false), max + 1000); }),
+  ]);
+  clearTimeout(uhr);
+  return ok ? null : `${was} – nach ${max} ms nicht erreicht`;
+}
 export async function ruhe(p) {
   // Ruhig = keine laufende Animation, Fenster, Menüs, Sprechblasen und Scroll-Lage dreimal hintereinander gleich (je 100 ms)
   // und ein offenes Fenster ganz auf dem Bildschirm – höchstens 2 s; bleibt es danach falsch, meldet die Regel es (R-4.5).
@@ -310,6 +328,8 @@ export function pruefung(name, pw, { hig = null, out = null } = {}) {
       for (const m of meldungen) melde('', m);
     },
     fehler: melde,
+    // warteBis mit Meldung (seit 4.49.0, APD-85 Teil 3): wartet auf einen Zustand statt einer festen Pause; nicht erreicht → Fehler.
+    async warte(p, bedingung, opts = {}) { const m = await warteBis(p, bedingung, opts); if (m) melde('', m, opts.schritt); return !m; },
     // Ein Schritt: Handlung ausführen, danach die Grundregeln (APD-5/C-1) in der aktuellen Ansicht – dieselben Prüfungen wie
     // hig.mjs (je Regel genau eine Prüfung), aber ohne Drehen, damit der Ablauf nicht verändert wird.
     async schritt(p, name, fn) {

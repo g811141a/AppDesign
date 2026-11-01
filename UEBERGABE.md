@@ -35,7 +35,7 @@ AppDesign-`CLAUDE.md`.
   `beruehrWeg`; bei Zielen ohne Rückmeldung beim Berühren bleibt die Lücke – **als neues Thema vorschlagen** (‚Ins Backlog übernehmen?‘ mit
   Priorität). Ein Eintrag in Designrichtlinie 13 (Safari-Eigenheit) braucht ein Ja zum Wortlaut (0 Nr. 29).
 - **Selbstkritik 0072:** fünf Zwischenmeldungen ohne Uhrzeitzeile und eine Zeitzeile aus einer Messung vor dem Fenster (vom Regelwächter
-  zurückgewiesen, W-1, W-7); `S-n` zuerst ohne Elternnummer (von `doku.mjs` gemeldet, behoben).
+  zurückgewiesen, APD-84/W-1, W-7); `S-n` zuerst ohne Elternnummer (von `doku.mjs` gemeldet, behoben).
 
 ## 3. Nächster Schritt
 

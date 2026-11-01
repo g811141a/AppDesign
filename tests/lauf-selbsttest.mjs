@@ -1,5 +1,5 @@
 // AppDesign 4.13.0 · Selbsttest des Lauf-Werkzeugs (lauf.mjs, Testfall-Liste APD-5/B-1 bis APD-5/B-4, APD-5/B-8, APD-5/A-5; seit 4.42.0 APD-85/W-1 bis
-// APD-85/W-10: rote Läufe einmal allein wiederholen, ‚wackelt‘, Abbruch ab dem dritten roten Lauf) mit Schein-Tests
+// APD-85/W-10: rote Läufe einmal allein wiederholen, ‚wackelt‘, Abbruch ab dem dritten roten Lauf; seit 4.49.0 APD-85/Z-1, Z-2, Z-6: warteBis) mit Schein-Tests
 // (schnell, langsam, rot, hängt) in einem Ordner auf Zeit. Aufruf: node tests/lauf-selbsttest.mjs (braucht kein Playwright).
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -83,6 +83,22 @@ pruefe(rc === 0 && folge === 'chromium,chromium,webkit,webkit' && /Browser nache
 // Zwei Browser: jeder Test je Browser (WebKit hier als vorhanden nachgebildet)
 [rc, out] = await mitschreiben(() => lauf({ dir: url, pw: { ...pw, webkit: pw.chromium }, tests: ['schnell'] }));
 pruefe(rc === 0 && /schnell · chromium/.test(out) && /schnell · webkit/.test(out), `APD-5/B-7 beide Browser\n${out}`);
+
+// APD-85 Teil 3 (seit 4.49.0, APD-85/Z-1, Z-2, Z-6): warteBis aus pruefe.mjs mit einer nachgebildeten Seite (evaluate läuft in Node,
+// ein Bild = 16 ms). Z-1: Bedingung nach 50 ms wahr → zurück nach höchstens einem Bild danach (Spielraum für Node 40 ms), Rückgabe null;
+// Z-2: nie wahr → nach max die Meldung mit ‚was‘, kein Hängen. Gegenprobe (Z-6): ein warteBis, das nicht wartet, muss Z-1 verletzen.
+globalThis.requestAnimationFrame ??= cb => setTimeout(cb, 16);
+const seite = { evaluate: (fn, a) => fn(a) };
+const z1 = async (warte) => { globalThis.__z1 = false; setTimeout(() => { globalThis.__z1 = true; }, 50);
+  const t0 = performance.now(), m = await warte(seite, () => globalThis.__z1, { was: 'Z-1', max: 2000 }); const ms = performance.now() - t0;
+  return { ok: m === null && ms >= 48 && ms <= 50 + 16 + 40, ms: Math.round(ms), m }; };
+const { warteBis } = await import('./pruefe.mjs');
+let z = await z1(warteBis);
+pruefe(z.ok, `APD-85/Z-1 warteBis kehrt ${z.ms} ms nach dem Start zurück (soll 50 bis 106 ms), Rückgabe ${z.m}`);
+const z2 = performance.now(), m2 = await warteBis(seite, () => false, { was: 'Z-2 Menü offen', max: 300 }), ms2 = performance.now() - z2;
+pruefe(/Z-2 Menü offen – nach 300 ms nicht erreicht/.test(m2 || '') && ms2 >= 290 && ms2 < 1000, `APD-85/Z-2 nie wahr: ${Math.round(ms2)} ms, Rückgabe ${m2}`);
+z = await z1(async () => null);
+pruefe(!z.ok, `APD-85/Z-6 Gegenprobe: ein warteBis, das nicht wartet, fällt in Z-1 nicht auf (${z.ms} ms)`);
 
 rmSync(dir, { recursive: true, force: true });
 for (const f of fehler) console.log('✗ ' + f);
