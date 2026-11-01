@@ -1,7 +1,7 @@
 # Übergabe an die nächste Sitzung
 
-**Stand 01.11.2026** · geschrieben in der Sitzung ‚Reiselogbuch 0072‘ (Bau und Veröffentlichung 4.48.2 / 3.46.2 mit APD-107, Usertest P-89
-alles ok; Übergabe nach abgeschlossenem Thema, Kontext etwa 267.000, 0 Nr. 13) – Aufbau nach Zusammenarbeit allgemein 2.5.
+**Stand 01.11.2026** · geschrieben in der Sitzung ‚Reiselogbuch 0073‘ (Bau und Veröffentlichung 4.49.0 / 3.47.0 mit APD-62/T-43 und APD-85
+Teil 3; automatische Übergabe, Kontext über 300.000, 0 Nr. 13) – Aufbau nach Zusammenarbeit allgemein 2.5.
 **Claude liest diese Datei zu Beginn jeder Sitzung zuerst, dann die ganze Zusammenarbeit** (0 Nr. 15); die Arbeitsumgebung steht in der
 AppDesign-`CLAUDE.md`.
 
@@ -9,40 +9,41 @@ AppDesign-`CLAUDE.md`.
 
 | Teil | Version | Datei |
 |---|---|---|
-| Reiselogbuch | **3.46.2** veröffentlicht (Fassung 4.48.2) | g811141a/ReiseLogBuch |
-| AppDesign | **4.48.2** veröffentlicht | g811141a/AppDesign |
+| Reiselogbuch | **3.47.0** veröffentlicht (Fassung 4.49.0) | g811141a/ReiseLogBuch |
+| AppDesign | **4.49.0** veröffentlicht | g811141a/AppDesign |
 | Zusammenarbeit allgemein | **3.5.0** | `README - Zusammenarbeit allgemein.md` |
 | AppDesign-`CLAUDE.md` | **2.10.0** | `CLAUDE.md` |
 | ReiseLogBuch-Import (privat) | 1.3.0 | g811141a/ReiseLogBuch-Import |
 
 - Alles liegt auf **`main`** (beide Repos); lokale Vorbereitungs-Zweige gelöscht.
-- **Chatnummer:** die nächste Sitzung heißt **Reiselogbuch 0073**; die danach 0074.
-- **Modell und Aufwand:** in 0072 Opus 5.5, Aufwand hoch, kein `model_fallback`; der Arbeitsprozess wurde einmal neu gestartet.
-- **Sitzungsgröße 0072:** Kontext etwa 267.000 vor der Übergabe.
+- **Chatnummer:** die nächste Sitzung heißt **Reiselogbuch 0074**; die danach 0075.
+- **Modell und Aufwand:** in 0073 Opus 5.5, Aufwand hoch, kein `model_fallback`; der Arbeitsprozess wurde einmal neu gestartet.
+- **Sitzungsgröße 0073:** Kontext etwa 305.000 vor der Übergabe.
 - **Regelwächter läuft.**
-- **Offene Usertests:** keine – **P-89 alles ok** (Nutzer 01.11.2026, Sitzung 0072), P-88 damit erledigt.
+- **Offener Usertest: P-90** (3.47.0, AppDesign 4.49.0) – Testfälle P-90/0 bis P-90/6 im CHANGELOG des Reiselogbuchs; **in der neuen Sitzung
+  zuerst die Rückmeldung erfragen** (Auswahlfenster ‚P-90: Wie ist die Prüfung ausgegangen?‘, 2.3), vorher alle Testfälle P-90 vollständig im Chat.
 - **Vereinbarung (Nutzer 30.10.2026, Sitzung 0058):** Muster bis auf Weiteres **nur hell** – in jede Übergabe übernehmen.
 - **Erinnerung:** ‚Backlog-Erinnerung (AppDesign und Reiselogbuch)‘ montags 8:58.
 
-## 2. Ergebnisse der Sitzung 0072
+## 2. Ergebnisse der Sitzung 0073
 
-- **4.48.2 / 3.46.2 (APD-107) veröffentlicht:** Leisten-Knopf hebt sich beim Berühren als helle Fläche (`--heben`) mit Schatten 1,3-fach über
-  die Kapsel (R-3.6, Variante C); Sperre `beruehrWeg` bis zum Loslassen plus 400 ms, Taste gibt frei; Smiley-Kreis `.schwebt` im offenen
-  Fenster. Prüfungen APD-107/S-1 bis S-13 (`checkBeruehren`, `checkAnheben`, `finger` mit `abbruch` und `klickNach`), rot gegen 4.48.1.
-  Voller Lauf: 134 grün in 57:39, davon 2 ‚wackelt‘ (`ablauf-jahre`, `ablauf-gesamt` WebKit – bei APD-85 Teil 3 mitgezählt, jetzt vier).
-- **Befund (Vermutung, passt zur Messung P-88/1):** Safari schickt den Klick nach dem Loslassen als eigene Aufgabe – die Sperre
-  ‚Wischen tippt nie an‘ (`navKlickWeg`, ui.js) löst sich mit `setTimeout 0` vorher und hält ihn nicht auf. Für APD-107 abgedeckt durch
-  `beruehrWeg`; bei Zielen ohne Rückmeldung beim Berühren bleibt die Lücke – **als neues Thema vorschlagen** (‚Ins Backlog übernehmen?‘ mit
-  Priorität). Ein Eintrag in Designrichtlinie 13 (Safari-Eigenheit) braucht ein Ja zum Wortlaut (0 Nr. 29).
-- **Selbstkritik 0072:** fünf Zwischenmeldungen ohne Uhrzeitzeile und eine Zeitzeile aus einer Messung vor dem Fenster (vom Regelwächter
-  zurückgewiesen, APD-84/W-1, W-7); `S-n` zuerst ohne Elternnummer (von `doku.mjs` gemeldet, behoben).
+- **4.49.0 / 3.47.0 veröffentlicht** (voller Lauf 136 grün in 65:59, davon 1 ‚wackelt‘: `ablauf-blatt` Chromium – Zeitgrenze 10:00 unter Last,
+  allein grün; WebKit 9:46):
+  - **APD-62/T-43 Titel antippen = nach oben (R-2.7):** Kopfzeile, Seitenleiste, Fenster-Kopfzeile; eigenes Rollen Bild für Bild (Chromium hält
+    `scrollTo` smooth unter Last nicht verlässlich an); ein Tipp hält an und löst nichts aus (beim Bau ergänzt, im Bericht genannt);
+    `checkTitelOben` H-1 bis H-8, `ablauf-titel-oben` in allen Ansichten, Gegenprobe gegen 3.46.2 rot (H-10).
+  - **APD-85 Teil 3:** `warteBis` in `tests/pruefe.mjs` (Selbsttest in `lauf-selbsttest.mjs`, Gegenprobe rot); `ablauf-blatt` ohne feste Pausen;
+    dazu (Ja des Nutzers) die 600 ms in `checkSheet`. Lastprobe Z-4 (zehnmal, vierfach langsam): alt 10/10 rot, neu 10/10 grün.
+    **Z-5 nicht erfüllt:** `ablauf-blatt` dauert unter Last länger (im vollen Lauf Zeitgrenze) – im Backlog APD-85 Teil 4.
+- **APD-108 (Prio 2) neu:** Wischen löst in Safari trotzdem einen Tipp aus (`navKlickWeg`).
+- **Selbstkritik 0073:** zwei Zwischenmeldungen mit geschätzter Uhrzeit (17:41, 17:51) statt der Zeile des Regelwächters (0 Nr. 26); Z-4 zuerst
+  so gebaut, dass alt und neu an einer anderen festen Pause scheiterten – erst die Lastprobe zeigte die Pause in `checkSheet`.
 
 ## 3. Nächster Schritt
 
 1. `UEBERGABE.md`, die ganze Zusammenarbeit, Überschriften der Designrichtlinien; Lagebild; Regelwächter; ReiseLogBuch dazuholen (`main`).
-2. **4.49.0:** bereit sind APD-85 Teil 3 (Wackler beheben, `warteBis`, Testfall-Liste `arbeit/APD-85 Teil 3 Testfall-Liste.md`) und
-   APD-62 Teil APD-38/T-43 (Titel antippen = nach oben). **Noch kein Ja zum Bau** – Kontextstand nennen, dann die Bau-Frage (0 Nr. 21).
-3. Das neue Thema `navKlickWeg` (oben 2.) vorschlagen.
+2. **Usertest P-90:** alle Testfälle vollständig im Chat, dann Rückmeldung im Auswahlfenster (0 Nr. 22).
+3. Danach nach Priorität: **APD-108** (Prio 2, Muster/Testfall-Liste), APD-85 Teil 4 (Laufzeit `ablauf-blatt`, übrige Wackler).
 
 ## 4. Danach
 
@@ -53,7 +54,7 @@ APD-62 (APD-38/T-16, APD-38/T-1, APD-38/T-37) · APD-88 · APD-80 · APD-57 · A
 In der neuen Sitzung müssen **AppDesign** und **ReiseLogBuch** verfügbar sein; alles liegt auf `main`.
 
 ```
-Reiselogbuch 0073 – AppDesign 4.49.0 (APD-85 Teil 3, APD-62/T-43)
+Reiselogbuch 0074 – Usertest P-90 (AppDesign 4.49.0)
 
-Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md, dann die GANZE Zusammenarbeit allgemein (Kasten ‚Immer‘ und ‚Jede Antwort‘ oben in Abschnitt 0 gilt ab der ersten Antwort) und die Überschriften der Designrichtlinien. Prüfe Modell und Aufwand (Sitzungsdatei, auch model_fallback), hole das Repo g811141a/ReiseLogBuch (Branch main) dazu, wie in der AppDesign-CLAUDE.md unter ‚Arbeitsumgebung‘, und prüfe, ob der Regelwächter läuft. Gib kurz das Lagebild. Dann frage nach dem Bau von 4.49.0 mit APD-85 Teil 3 und APD-62/T-43 (UEBERGABE.md 3.) und schlage das neue Thema navKlickWeg vor (UEBERGABE.md 2.).
+Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md, dann die GANZE Zusammenarbeit allgemein (Kasten ‚Immer‘ und ‚Jede Antwort‘ oben in Abschnitt 0 gilt ab der ersten Antwort) und die Überschriften der Designrichtlinien. Prüfe Modell und Aufwand (Sitzungsdatei, auch model_fallback), hole das Repo g811141a/ReiseLogBuch (Branch main) dazu, wie in der AppDesign-CLAUDE.md unter ‚Arbeitsumgebung‘, und prüfe, ob der Regelwächter läuft. Gib kurz das Lagebild. Dann zeige alle Testfälle P-90 vollständig im Chat und frage im Auswahlfenster nach der Rückmeldung (UEBERGABE.md 3.).
 ```
