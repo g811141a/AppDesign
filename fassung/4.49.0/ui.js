@@ -949,6 +949,7 @@ addEventListener('pointerdown', e => {
 }, true);
 addEventListener('wheel', titelRollHalt, { capture: true, passive: true });
 addEventListener('click', e => { if (titelHaltKlick) { titelHaltKlick = false; e.preventDefault(); e.stopImmediatePropagation(); } }, true);
+['pointercancel', 'keydown'].forEach(t => addEventListener(t, () => { titelHaltKlick = false; }, true));   // gewischt bzw. Taste: kein Klick, der zu sperren wäre
 addEventListener('click', e => {
   const start = titelTipp; titelTipp = null;
   if (start === null || performance.now() - start >= 600 || e.defaultPrevented) return;   // nur kurzes Antippen (R-2.5: lang = Blase)
