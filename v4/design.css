@@ -1,4 +1,4 @@
-/* AppDesign 4.48.0 · design.css – gemeinsame Gestaltung der iPad-Web-Apps von g811141a (Apple-like)
+/* AppDesign 4.48.1 · design.css – gemeinsame Gestaltung der iPad-Web-Apps von g811141a (Apple-like)
    Einbinden im <head> vor dem eigenen <style> der App:  <link rel="stylesheet" href="../AppDesign/fassung/X.Y.Z/design.css"> (feste Fassung, R-10.3)
    Farben als Variablen auf :root, Dunkelmodus über data-theme="dark" (setzt ui.js / applyTheme).
    Komponenten: Schaltflächen, Suchfeld, Kapsel, Eingabefelder, Datumsfelder, Kopfzeile, Seitenleiste,
@@ -6,7 +6,7 @@
    Options-Kapsel; seit 4.1.0 iPhone-Ansicht (html.phone: Seitenkopf, großer Titel, Liste, Kasten, untere Leiste). Regeln dazu: README - Designrichtlinie allgemein.md */
 /* Farben im Apple-Look: Hintergrund Hellgrau, Kästen weiß ohne Rand, schwebende Schaltflächen */
 :root {
-  --ad-version: "4.48.0";   /* R-10.3: Version der Bausteine, die App prüft sie beim Start */
+  --ad-version: "4.48.1";   /* R-10.3: Version der Bausteine, die App prüft sie beim Start */
   --bg: #f2f2f7;
   --card: #ffffff;
   --ink: #1c1c1e;
@@ -421,8 +421,21 @@ button.beruehrt-aus, :is(.side-row, .irow, .menu .mi, .box).beruehrt-aus, tr.ber
    in der Kapsel (Smiley) wächst das Zeichen und wirft Schatten, damit nichts am Rand der Kapsel abgeschnitten wird */
 .hebt { position: relative; z-index: 2; transform: scale(1.03); box-shadow: 0 6px 18px rgba(0,0,0,.22) !important; opacity: 1 !important;
   transition: transform .45s ease-out, box-shadow .45s; }
-.cap .scroll button.hebt { transform: scale(1.25); box-shadow: none !important; filter: drop-shadow(0 3px 5px rgba(0,0,0,.35)); transition: transform .45s ease-out, filter .45s; }
-@media (prefers-reduced-motion: reduce) { .hebt, .cap .scroll button.hebt { transform: none; transition: none; } }
+/* Seit 4.48.1 (APD-106 Variante C, Muster arbeit/APD-106 Smiley Muster.html): in der Kapsel (Smiley) hebt sich das Zeichen auf einem hellen
+   Kreis mit Schatten als eigene Ebene über die Leiste (.schwebt, setzt ui.js) – die Kapsel schneidet nichts ab; der drop-shadow am Emoji war
+   am Gerät nicht zu sehen (Messung 01.11.2026) */
+.cap .scroll button.hebt { transform: none; box-shadow: none !important; filter: none; }
+.schwebt { position: fixed; z-index: 60; pointer-events: none; display: grid; place-items: center; border-radius: 50%; background: #fff;
+  box-shadow: 0 8px 20px rgba(0,0,0,.25), 0 1px 3px rgba(0,0,0,.15), 0 0 0 .5px rgba(0,0,0,.06); transform: scale(1); opacity: 1;
+  transition: transform .35s cubic-bezier(.2,.9,.3,1.2), opacity .15s; -webkit-user-select: none; user-select: none; }
+.schwebt.hoch { transform: scale(1.3); }
+.schwebt.weg { opacity: 0; transform: scale(1); }
+@media (prefers-reduced-motion: reduce) { .hebt, .cap .scroll button.hebt, .schwebt, .schwebt.hoch { transform: none; transition: opacity .15s; } }
+/* R-3.6 (seit 4.48.1, APD-106): Safaris eigene Antipp-Markierung ist aus (das Grau beim Berühren war sie, Messung 01.11.2026); langes
+   Drücken auf antippbare Zeilen, Kacheln, Leisten und die Smiley-Leiste markiert keinen Text und zeigt keine Lupe (.tippziel setzt ui.js
+   beim Berühren jeder Zeile mit eigener Aktion) */
+html, html * { -webkit-tap-highlight-color: transparent; }
+:is(.side-row, .irow, .menu .mi, #app [data-day], .tippziel, .cap, .emoji-row, .chips, .weiter) { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
 /* R-2.6 (seit 4.48.0, APD-104 Variante A): Großanzeige ab AX1 – Icon und Name des Leisten-Knopfs groß in der Mitte (setzt ui.js), wächst
    mit der Textgröße, bleibt ganz auf dem Bildschirm; nur zu sehen (aria-hidden) */
 .grossanzeige { position: fixed; z-index: 50; box-sizing: border-box; min-width: min(180px, calc(100vw - 48px)); max-width: calc(100vw - 48px);

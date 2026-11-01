@@ -4,7 +4,7 @@
 // Einbinden im Prüfskript der App:  import { checkSearch, checkDialogHead } from '../../AppDesign/tests/ablauf.mjs';
 //                                   fehler.push(...await checkSearch(page, { term: 'Sydney' }));
 import { ROLL, RING, rolle, rollstand, navFertig, rollRuht } from './pruefe.mjs';
-import { safariWischen, safariModell, mausWieFinger } from './safari.mjs';
+import { safariWischen, safariModell, mausWieFinger, safariHalten } from './safari.mjs';
 const wait = (p, ms = 250) => p.waitForTimeout(ms);
 // R-2.3 (seit 4.25.1, APD-24): beim Tippen bleibt das Suchfeld dasselbe Element und behält den Fokus – sonst schließt Safari am
 // iPhone die Tastatur kurz und Kopf- und Suchzeile zittern bei jedem Buchstaben. Tippt Buchstabe für Buchstabe (und löscht
@@ -541,25 +541,31 @@ export async function checkOpenAt(p, { open, want = null, markiert = want, mark 
 // R-8.1 Seitenleiste ein/aus (seit 4.21.0, APD-17): der oberste sichtbare Eintrag bleibt derselbe; nach einer geraden Zahl von
 // Umschaltungen steht er auf ± 2 px an derselben Stelle (kein Wandern); ganz oben bleibt ganz oben; ohne Eintrag oben (Ende der
 // Seite) bleibt der Abstand zum Ende gleich – kein Sprung nach oben oder ans Ende. at: Anteil des Scrollwegs.
+// Seit 4.48.1 (RLB-115, Testfall-Liste arbeit/APD-106 Testfall-Liste.md APD-106/H-10 bis APD-106/H-12): stand der oberste Eintrag vorher ganz zu sehen (unter der
+// Leiste und einem haftenden Tabellenkopf), steht er es nach jedem Umschalten auch – vorher wurde nur geprüft, welcher Eintrag oben steht.
+// at: null – nicht rollen (wie nach dem Öffnen, R-7.4).
 export async function checkSideToggle(p, { toggle = '[data-side-toggle]', at = 0.5, times = 5, where = '' } = {}) {
   const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}R-8.1 ${t}`);
   const top = () => p.evaluate(R => {
     const roll = eval(R), edge = document.querySelector('.pnav, .nb')?.getBoundingClientRect().bottom || 0;
-    const e = [...document.querySelectorAll('#app [data-day], #app [data-keep]')].find(x => x.getClientRects().length && x.getBoundingClientRect().bottom > edge + 1);
+    const kopf = x => { const th = x.closest('table')?.tHead?.querySelector('th'); return th && getComputedStyle(th).position === 'sticky' ? th.getBoundingClientRect().bottom : edge; };
+    const e = [...document.querySelectorAll('#app [data-day], #app [data-keep]')].find(x => x.getClientRects().length && x.getBoundingClientRect().bottom > Math.max(edge, kopf(x)) + 1);
+    const kante = e ? Math.max(edge, kopf(e)) : edge;
     return { id: e ? e.dataset.day || e.dataset.keep : null, top: e ? Math.round(e.getBoundingClientRect().top) : null, y: Math.round(roll.y),
-      rest: Math.round(roll.rest) };
+      rest: Math.round(roll.rest), kante: Math.round(kante), ganz: !!e && e.getBoundingClientRect().top >= kante - 1 };
   }, ROLL);
   // seit 4.31.0 (APD-68): die Seitenleiste gleitet auch quer – nach dem Klick bis zum Ende der Bewegung warten
   const press = async () => { await p.locator(toggle).filter({ visible: true }).first().click(); await wait(p, 350); await navFertig(p); };
-  await rolle(p, `${at * 100}%`); await wait(p, 300);
+  if (at !== null) { await rolle(p, `${at * 100}%`); await wait(p, 300); }
   const vor = await top();
   for (let i = 1; i <= times * 2; i++) {
     await press();
     const n = await top();
+    if (vor.ganz && n.id === vor.id && !n.ganz) { E(`nach ${i}. Umschalten ist ${n.id} nicht ganz zu sehen: Oberkante ${n.top} px, Leiste und Tabellenkopf bis ${n.kante} px`); break; }
     if (at === 0 && n.y > 1) { E(`ganz oben: nach ${i}. Umschalten ${n.y} px gerollt`); break; }
-    if (at > 0 && !vor.id && Math.abs(n.rest - vor.rest) > 2) { E(`ohne Eintrag oben: nach ${i}. Umschalten ${n.rest} px statt ${vor.rest} px vor dem Ende (gerollt ${n.y} px)`); break; }
-    if (at > 0 && vor.id && n.id !== vor.id) { E(`nach ${i}. Umschalten oben ${n.id} statt ${vor.id} (gerollt ${n.y} px)`); break; }
-    if (at > 0 && i % 2 === 0 && Math.abs(n.top - vor.top) > 2) { E(`nach ${i}. Umschalten ${vor.id} bei ${n.top} px statt ${vor.top} px`); break; }
+    if ((at === null || at > 0) && !vor.id && Math.abs(n.rest - vor.rest) > 2) { E(`ohne Eintrag oben: nach ${i}. Umschalten ${n.rest} px statt ${vor.rest} px vor dem Ende (gerollt ${n.y} px)`); break; }
+    if ((at === null || at > 0) && vor.id && n.id !== vor.id) { E(`nach ${i}. Umschalten oben ${n.id} statt ${vor.id} (gerollt ${n.y} px)`); break; }
+    if ((at === null || at > 0) && i % 2 === 0 && Math.abs(n.top - vor.top) > 2) { E(`nach ${i}. Umschalten ${vor.id} bei ${n.top} px statt ${vor.top} px`); break; }
   }
   return errors;
 }
@@ -2644,7 +2650,15 @@ export function finger(p, sel, schritte = [], { pointerType = 'touch', fangen = 
         icon: Math.round(g.querySelector('svg')?.getBoundingClientRect().width || 0) } : null,
         beruehrt: el.classList.contains('beruehrt'), hebt: el.classList.contains('hebt'), opacity: +getComputedStyle(el).opacity,
         hg: getComputedStyle(el.matches('tr') ? el.firstElementChild : el).backgroundColor, transform: getComputedStyle(el).transform,
-        frage: !!document.querySelector('.pop, .menu'), uebergang: getComputedStyle(el).transitionDuration, ms: Math.round(performance.now() - t0) }; };
+        frage: !!document.querySelector('.pop, .menu'), uebergang: getComputedStyle(el).transitionDuration, ms: Math.round(performance.now() - t0),
+        // seit 4.48.1 (APD-106): Antipp-Markierung, Textauswahl, Callout des Elements und die schwebende Ebene beim Anheben in der Kapsel
+        tap: getComputedStyle(el).webkitTapHighlightColor, auswahl: getComputedStyle(el).webkitUserSelect || getComputedStyle(el).userSelect,
+        callout: getComputedStyle(el).webkitTouchCallout, gewaehlt: String(getSelection() || '').length, schwebt: schwebtStand() }; };
+    const schwebtStand = () => { const s = document.querySelector('.schwebt:not(.weg)'); if (!s) return null;
+      const c = getComputedStyle(s), r = s.getBoundingClientRect(), [ex, ey] = mitte(el);
+      return { schatten: c.boxShadow, transform: c.transform, hg: c.backgroundColor, zeiger: c.pointerEvents, hidden: s.getAttribute('aria-hidden'),
+        dx: Math.round(r.left + r.width / 2 - ex), dy: Math.round(r.top + r.height / 2 - ey), text: s.textContent,
+        drin: r.left >= -0.5 && r.top >= -0.5 && r.right <= innerWidth + 0.5 && r.bottom <= innerHeight + 0.5 }; };
     const gemerkt = {};
     let ab = true, klick = true;
     const t0 = performance.now();
@@ -2737,6 +2751,7 @@ export async function checkGrossanzeige(p, { knoepfe, daneben = null, ax = true,
 // R-3.6 (seit 4.48.0, APD-105, Testfall-Liste arbeit/APD-105 Testfall-Liste.md B-1 bis B-4): Rückmeldung beim Berühren. knopf: Schaltfläche in einer
 // festen Leiste (sofort blass); zeile: Listen- oder Tabellenzeile in einem Rollbereich (nach 80 ms grau); rollen: deren Rollbereich (sel);
 // gesperrt: gesperrte Schaltfläche (zeigt nichts); kapsel: Knopf einer Kapsel (Rollbereich, nach 80 ms blass). Gibt Fehler zurück.
+const durchsichtig = c => !c || /rgba\(0, 0, 0, 0\)|transparent/.test(c);
 export async function checkBeruehren(p, { knopf = null, zeile = null, rollen = null, gesperrt = null, kapsel = null, where = '' } = {}) {
   const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}R-3.6 ${t}`);
   const grau = await p.evaluate(() => { const d = document.createElement('div'); d.style.backgroundColor = 'var(--beruehrt)'; document.body.append(d);
@@ -2749,6 +2764,7 @@ export async function checkBeruehren(p, { knopf = null, zeile = null, rollen = n
     if (!/0\.15s/.test(r.gemerkt.ende.uebergang)) E(`B-2 ${knopf} blendet nicht in 0,15 s aus (Übergang ${r.gemerkt.ende.uebergang})`);
     if (r.gemerkt.danach.opacity !== 1) E(`B-2 ${knopf} ist 0,45 s nach dem Loslassen noch blass (${r.gemerkt.danach.opacity})`);
     if (r.klicks.length !== 1) E(`B-2 Loslassen auf ${knopf} löst ${r.klicks.length}-mal aus`);
+    if (!durchsichtig(r.gemerkt.sofort.tap)) E(`APD-106/H-1 ${knopf}: Safaris Antipp-Markierung ist an (${r.gemerkt.sofort.tap}) – das Grau beim Berühren (APD-106)`);
     // B-4 nach dem Berühren 20 px wegziehen: Rückmeldung weg, nichts ausgelöst
     const w = await finger(p, knopf, [['warte', 40], ['zu', 20, 0], ['merke', 'weg']]);
     if (w.gemerkt.weg.beruehrt) E(`B-4 ${knopf}: 20 px weggezogen, die Rückmeldung bleibt`);
@@ -2760,6 +2776,12 @@ export async function checkBeruehren(p, { knopf = null, zeile = null, rollen = n
     if (r.gemerkt.frueh.beruehrt && r.gemerkt.frueh.ms < 75) E(`B-3 ${zeile} wird schon nach ${r.gemerkt.frueh.ms} ms grau – im Rollbereich erst nach 80 ms`);
     if (!r.gemerkt.spaeter.beruehrt || r.gemerkt.spaeter.hg !== grau) E(`B-3 ${zeile} wird nach 120 ms nicht grau (${r.gemerkt.spaeter.hg} statt ${grau})`);
     if (r.gemerkt.spaeter.opacity !== 1) E(`B-3 ${zeile} wird blass statt grau (Deckkraft ${r.gemerkt.spaeter.opacity})`);
+    // APD-106/H-1, APD-106/H-2 (seit 4.48.1, APD-106): keine Antipp-Markierung; langes Halten markiert keinen Text und zeigt keine Lupe (Safari-Modell: safari.mjs)
+    if (!durchsichtig(r.gemerkt.spaeter.tap)) E(`APD-106/H-1 ${zeile}: Safaris Antipp-Markierung ist an (${r.gemerkt.spaeter.tap})`);
+    if (r.gemerkt.spaeter.auswahl !== 'none') E(`APD-106/H-2 ${zeile}: Text ist beim Halten wählbar (user-select ${r.gemerkt.spaeter.auswahl}) – Safari markiert ihn und zeigt die Lupe`);
+    if (r.gemerkt.spaeter.callout !== undefined && r.gemerkt.spaeter.callout !== 'none') E(`APD-106/H-2 ${zeile}: -webkit-touch-callout ${r.gemerkt.spaeter.callout}`);
+    const s = await safariHalten(p, zeile);   // Safari-Modell: Grau und Markierung, die nur das Gerät zeichnet
+    if (s.grau || s.markiert) E(`APD-106/H-2 ${zeile}: Safari würde beim Halten ${[s.grau && 'grau markieren', s.markiert && 'Text markieren und die Lupe zeigen'].filter(Boolean).join(' und ')}`);
     if (r.gemerkt.ende.beruehrt) E(`B-2 ${zeile} bleibt nach dem Loslassen grau`);
     if (r.klicks.length !== 1) E(`B-2 Loslassen auf ${zeile} löst ${r.klicks.length}-mal aus`);
     const w = await finger(p, zeile, [['warte', 120], ['zu', 0, 20], ['merke', 'weg']]);
@@ -2787,24 +2809,42 @@ export async function checkBeruehren(p, { knopf = null, zeile = null, rollen = n
 // R-3.5 Anheben (seit 4.48.0, APD-105/B-5, B-6, B-8): ein Eintrag mit eigener Aktion für langes Drücken (onLongPress) hebt sich ab 0,15 s an,
 // senkt sich bei Abbruch wieder; nach 0,6 s die Frage, das Loslassen löst kein Antippen aus. sel: der Eintrag; frage: was langes Drücken zeigt;
 // feld: Feld, das Antippen ändern würde (bleibt nach dem langen Drücken gleich).
-export async function checkAnheben(p, { sel, frage = '.pop, .menu', feld = null, where = '' } = {}) {
+// Seit 4.48.1 (APD-106 Variante C, Testfall-Liste arbeit/APD-106 Testfall-Liste.md APD-106/H-4 bis APD-106/H-6): entfernen – die Frage kommt erst nach 1 s
+// (nach 0,9 s noch nicht); in der Kapsel hebt sich das Zeichen auf einem hellen Kreis mit Schatten als eigene Ebene (.schwebt) über die Leiste.
+export async function checkAnheben(p, { sel, frage = '.pop, .menu', feld = null, entfernen = false, where = '' } = {}) {
   const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}R-3.5 ${t}`);
   const skala = t => { const m = /matrix\(([-\d.e]+)/.exec(t || ''); return m ? +m[1] : 1; };
   const ruhig = await p.evaluate(() => matchMedia('(prefers-reduced-motion: reduce)').matches);
   // B-5: nach 0,06 s noch nicht (gemessen, unter 0,14 s), ab 0,15 s angehoben (größer, Schatten); B-8: nach 0,3 s weggezogen – senkt sich, keine Frage
   let r = await finger(p, sel, [['warte', 60], ['merke', 'frueh'], ['warte', 390], ['merke', 'hebt'], ['zu', 24, 0], ['warte', 50], ['merke', 'weg'], ['warte', 500], ['merke', 'spaeter']]);
   if (r.gemerkt.frueh.hebt && r.gemerkt.frueh.ms < 140) E(`B-5 ${sel} hebt sich schon nach ${r.gemerkt.frueh.ms} ms an – erst ab 0,15 s`);
-  if (!r.gemerkt.hebt.hebt) E(`B-5 ${sel} hebt sich nach 0,45 s Halten nicht an`);
-  else if (!ruhig && skala(r.gemerkt.hebt.transform) < 1.02) E(`B-5 ${sel} wächst beim Anheben nicht (${r.gemerkt.hebt.transform})`);
-  else if (ruhig && r.gemerkt.hebt.transform !== 'none') E(`B-5 ${sel}: ‚Bewegung reduzieren‘ – Anheben nur mit Schatten, trotzdem ${r.gemerkt.hebt.transform}`);
+  const inKapsel = await p.evaluate(sel => !!document.querySelector(sel)?.closest('.cap'), sel);
+  const h = r.gemerkt.hebt, form = inKapsel ? h.schwebt?.transform : h.transform;
+  if (!h.hebt) E(`B-5 ${sel} hebt sich nach 0,45 s Halten nicht an`);
+  else if (inKapsel && !h.schwebt) E(`APD-106/H-4 ${sel}: in der Kapsel hebt sich kein Kreis über die Leiste (.schwebt fehlt) – ein Schatten am Emoji ist am Gerät nicht zu sehen`);
+  else if (!ruhig && skala(form) < 1.02) E(`B-5 ${sel} wächst beim Anheben nicht (${form})`);
+  else if (ruhig && form !== 'none') E(`B-5 ${sel}: ‚Bewegung reduzieren‘ – Anheben nur mit Schatten, trotzdem ${form}`);
+  if (inKapsel && h.schwebt) {
+    const s = h.schwebt;
+    if (!s.schatten || s.schatten === 'none') E(`APD-106/H-4 ${sel}: der Kreis wirft keinen Schatten`);
+    if (!/rgb\(255, 255, 255\)/.test(s.hg)) E(`APD-106/H-4 ${sel}: der Kreis ist nicht hell (${s.hg})`);
+    if (Math.abs(s.dx) > 2 || Math.abs(s.dy) > 2) E(`APD-106/H-4 ${sel}: der Kreis steht nicht mittig über dem Smiley (${s.dx}/${s.dy} px)`);
+    if (!s.drin) E(`APD-106/H-4 ${sel}: der Kreis ragt aus dem Fenster`);
+    if (s.zeiger !== 'none' || s.hidden !== 'true') E(`APD-106/H-4 ${sel}: der Kreis fängt Antippen ab oder ist für VoiceOver sichtbar`);
+    if (!durchsichtig(h.tap)) E(`APD-106/H-6 ${sel}: Safaris Antipp-Markierung ist an (${h.tap})`);
+    if (h.auswahl !== 'none') E(`APD-106/H-6 ${sel}: Text der Smiley-Leiste ist beim Halten wählbar (user-select ${h.auswahl}) – Safari markiert das Fenster und zeigt die Lupe`);
+  }
+  if (r.gemerkt.weg.schwebt) E(`B-8 ${sel}: nach dem Wegziehen bleibt der Kreis stehen`);
   if (r.gemerkt.weg.hebt) E(`B-8 ${sel}: nach dem Wegziehen bleibt der Eintrag angehoben`);
   if (r.gemerkt.spaeter.frage) E(`B-8 ${sel}: nach dem Wegziehen kommt trotzdem die Frage`);
   if (r.klicks.length) E(`B-8 ${sel}: nach dem Wegziehen ausgelöst (${r.klicks.join(', ')})`);
   // B-6: 0,6 s halten – die Frage kommt, der Eintrag senkt sich, Loslassen löst kein Antippen aus
   const wert = () => feld ? p.evaluate(f => document.querySelector(f)?.value, feld) : null, vorher = await wert();
-  r = await finger(p, sel, [['warte', 750], ['merke', 'lang']], { fangen: false });
-  if (!r.gemerkt.lang.frage) E(`B-6 ${sel}: 0,75 s gehalten, keine Frage`);
-  if (r.gemerkt.lang.hebt) E(`B-6 ${sel}: mit der Frage bleibt der Eintrag angehoben`);
+  r = await finger(p, sel, entfernen ? [['warte', 900], ['merke', 'frueh'], ['warte', 250], ['merke', 'lang']] : [['warte', 750], ['merke', 'lang']], { fangen: false });
+  if (entfernen && r.gemerkt.frueh.frage && r.gemerkt.frueh.ms < 980) E(`APD-106/H-5 ${sel}: die Frage kommt schon nach ${r.gemerkt.frueh.ms} ms – Entfernen erst nach 1 s`);
+  if (!r.gemerkt.lang.frage) E(`B-6 ${sel}: ${entfernen ? '1,15' : '0,75'} s gehalten, keine Frage`);
+  if (r.gemerkt.lang.hebt || r.gemerkt.lang.schwebt) E(`B-6 ${sel}: mit der Frage bleibt der Eintrag angehoben`);
+  if (r.gemerkt.lang.gewaehlt) E(`APD-106/H-6 ${sel}: mit der Frage ist Text markiert (${r.gemerkt.lang.gewaehlt} Zeichen)`);
   if (feld && await wert() !== vorher) E(`B-6 ${sel}: das Loslassen nach dem langen Drücken löst Antippen aus (${feld} geändert)`);
   await wait(p, 100);
   await p.evaluate(frage => { const f = document.querySelector(frage); if (!f) return;

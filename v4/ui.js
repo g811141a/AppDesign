@@ -1,4 +1,4 @@
-// AppDesign 4.48.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
+// AppDesign 4.48.1 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
 // Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/fassung/X.Y.Z/ui.js"></script> (feste Fassung, R-10.3)
 // Seit 4.11.0 (R-10.3): ui.js und design.css immer mit ?v=<AppDesign-Version> einbinden (auch in sw.js) und beim Start
 // prüfen, ob genau diese Fassung geladen ist (AD_VERSION hier, --ad-version in design.css).
@@ -20,7 +20,7 @@
 
 'use strict';
 // Version der Bausteine (R-10.3): die App vergleicht sie beim Start mit der benötigten Fassung.
-const AD_VERSION = '4.48.0';
+const AD_VERSION = '4.48.1';
 /* ---------- Icons ---------- */
 
 // Schaltflächen-Icons aus Lucide (ISC-Lizenz), direkt eingebettet, damit die App offline funktioniert.
@@ -114,18 +114,36 @@ const growAll = () => dlg.querySelectorAll('textarea').forEach(autoGrow);
 // pointercancel – vorher fragte die Leiste nach 0,6 s, ob das Smiley unter dem Finger entfernt werden soll.
 // Seit 4.48.0 (APD-105, R-3.5 ‚Anheben‘): ab LANG_HEBEN hebt sich der Eintrag an (Klasse .hebt: wächst, Schatten; ‚Bewegung reduzieren‘:
 // nur Schatten) und senkt sich bei Abbruch wieder; löst das lange Drücken aus, senkt er sich und die Rückmeldung beim Berühren endet.
-const LANG_WEG = 10, LANG_HEBEN = 150;
-function onLongPress(btn, onLong, onTap) {
-  let timer = null, heben = null;
+// Seit 4.48.1 (APD-106 Variante C, R-3.5): { entfernen: true } – langes Drücken, das etwas entfernt (Smiley), löst erst nach LANG_ENTFERNEN aus
+// (Apple: Kontextmenü nach etwa 0,5 s; länger, weil Entfernen nicht rückgängig zu machen ist – Nutzer 01.11.2026). In der Kapsel hebt sich
+// das Zeichen auf einem hellen Kreis mit Schatten als eigene Ebene (.schwebt) über die Leiste – die Kapsel schneidet sonst ab.
+const LANG_WEG = 10, LANG_HEBEN = 150, LANG_DAUER = 600, LANG_ENTFERNEN = 1000;
+function onLongPress(btn, onLong, onTap, { entfernen = false } = {}) {
+  let timer = null, heben = null, ebene = null;
   let fired = false, x0 = 0, y0 = 0;
   const rollt = e => { if (e.target.contains?.(btn)) stop(); };
-  const stop = () => { clearTimeout(timer); clearTimeout(heben); timer = heben = null; btn.classList.remove('hebt'); removeEventListener('scroll', rollt, true); };
+  const senken = () => {
+    btn.classList.remove('hebt');
+    if (ebene) { const e = ebene; ebene = null; e.classList.add('weg'); setTimeout(() => e.remove(), 200); }
+  };
+  const anheben = () => {
+    btn.classList.add('hebt');
+    if (!btn.closest('.cap')) return;
+    const r = btn.getBoundingClientRect(), d = Math.max(44, Math.min(r.width, r.height));
+    ebene = document.createElement('div');
+    ebene.className = 'schwebt'; ebene.setAttribute('aria-hidden', 'true');
+    ebene.style.cssText = `left:${r.left + r.width / 2 - d / 2}px;top:${r.top + r.height / 2 - d / 2}px;width:${d}px;height:${d}px;font-size:${getComputedStyle(btn).fontSize}`;
+    ebene.textContent = btn.textContent;
+    document.body.append(ebene);
+    requestAnimationFrame(() => requestAnimationFrame(() => ebene?.classList.add('hoch')));
+  };
+  const stop = () => { clearTimeout(timer); clearTimeout(heben); timer = heben = null; senken(); removeEventListener('scroll', rollt, true); };
   btn.addEventListener('pointerdown', e => {
     stop();
     fired = false; x0 = e.clientX; y0 = e.clientY;
     addEventListener('scroll', rollt, { capture: true, passive: true });
-    heben = setTimeout(() => { heben = null; if (!navZug?.aktiv) btn.classList.add('hebt'); }, LANG_HEBEN);
-    timer = setTimeout(() => { stop(); if (navZug?.aktiv) return; fired = true; beruehrAus(true); onLong(); }, 600);   // seit 4.30.0: nicht während einer Wischgeste (APD-61)
+    heben = setTimeout(() => { heben = null; if (!navZug?.aktiv) anheben(); }, LANG_HEBEN);
+    timer = setTimeout(() => { stop(); if (navZug?.aktiv) return; fired = true; beruehrAus(true); onLong(); }, entfernen ? LANG_ENTFERNEN : LANG_DAUER);   // seit 4.30.0: nicht während einer Wischgeste (APD-61)
   });
   btn.addEventListener('pointermove', e => { if (timer && Math.hypot(e.clientX - x0, e.clientY - y0) > LANG_WEG) stop(); });
   ['pointerup', 'pointerleave', 'pointercancel'].forEach(ev => btn.addEventListener(ev, stop));
@@ -937,6 +955,7 @@ addEventListener('pointerdown', e => {
   beruehrAus(true); beruehrWeg = null;
   if (!e.isPrimary || e.button > 0) return;
   const el = beruehrZiel(e.target); if (!el) return;
+  if (!el.matches('button')) el.classList.add('tippziel');   // R-3.6 (seit 4.48.1, APD-106): keine Textauswahl und Lupe beim Halten
   const an = () => { if (beruehr?.el === el && el.isConnected && !el.classList.contains('hebt')) { el.classList.remove('beruehrt-aus'); el.classList.add('beruehrt'); } };
   beruehr = { el, x0: e.clientX, y0: e.clientY, timer: 0 };
   if (imRollbereich(el)) beruehr.timer = setTimeout(an, BERUEHR_VERZUG); else an();
@@ -1923,15 +1942,20 @@ const KEEP_SEL = '#app [data-day], #app [data-keep]';
 let keepTop = null, keepWidth = innerWidth, keepHeight = innerHeight, keepBusy = false;
 const keepTurned = () => innerWidth !== keepWidth || Math.abs(innerHeight - keepHeight) > 150;
 const keepEdge = () => document.querySelector('.pnav, .nb')?.getBoundingClientRect().bottom || 0;
+// Seit 4.48.1 (RLB-115, R-8.1): Kante für einen Eintrag – unter der Leiste und, steht er in einer Tabelle mit haftendem Kopf, unter dem
+// Tabellenkopf; vorher zog nur openAt den Kopf ab, nach dem Aus- und Einblenden der Seitenleiste stand der oberste Tag halb darunter
+const kopfHoehe = el => { const th = el?.closest?.('table')?.tHead?.querySelector('th');
+  return th && !th.closest('thead')?.contains(el) && getComputedStyle(th).position === 'sticky' ? th.offsetHeight : 0; };
+const keepKante = el => keepEdge() + kopfHoehe(el);
 const keepKey = e => e.dataset.day ? `[data-day="${CSS.escape(e.dataset.day)}"]` : `[data-keep="${CSS.escape(e.dataset.keep)}"]`;
 // Oberster sichtbarer Eintrag unter der Leiste; ganz oben → null (ganz oben bleibt ganz oben). Steht oben kein Eintrag
 // (Ende der Seite, z. B. Fazit und Statistik), zählt der Abstand zum Ende – ganz unten bleibt ganz unten (seit 4.21.1).
 const scrollRest = () => rolle.rest;
 function topAnchor() {
   if (rolle.y < 4) return null;
-  const edge = keepEdge();
   const alle = [...document.querySelectorAll(KEEP_SEL)].filter(x => x.getClientRects().length);
-  const e = alle.find(x => x.getBoundingClientRect().bottom > edge + 1);
+  const e = alle.find(x => x.getBoundingClientRect().bottom > keepKante(x) + 1);
+  const edge = keepKante(e);
   // Abstand als Anteil der Höhe: nach dem Drehen ist der Eintrag anders hoch, der sichtbare Teil bleibt gleich.
   return e ? { sel: keepKey(e), part: (e.getBoundingClientRect().top - edge) / (e.getBoundingClientRect().height || 1), ab: e.getBoundingClientRect().top - edge, erstes: e === alle[0] } : { rest: scrollRest() };
 }
@@ -1955,7 +1979,7 @@ function restoreTop() {
   // Seit 4.45.0 (APD-97): ändert die App die Breite (keepPlace) und steht der erste Eintrag ganz unter der Kante (darüber der Kopf des
   // Inhalts), bleibt sein Abstand in px – als Anteil seiner Höhe rückte er mit, wenn er schmaler bzw. breiter anders hoch wird (große
   // Schrift, Seitenleiste am iPad hoch). Liegt ein Eintrag darüber, bleibt es beim Anteil – sonst schaute dessen Unterkante hervor.
-  rolle.by(r.top - keepEdge() - (keepTop.app && keepTop.erstes && keepTop.part > 0 ? keepTop.ab : keepTop.part * r.height));
+  rolle.by(r.top - keepKante(e) - (keepTop.app && keepTop.erstes && keepTop.part > 0 ? keepTop.ab : keepTop.part * r.height));
   keepFrei();
 }
 onRoll(() => { if (!keepBusy) rememberTop(); });
@@ -1984,9 +2008,7 @@ function keepPlace(change) {
 function openAt(el) {
   let top = 0;
   if (el) {
-    const th = el.closest('table')?.tHead?.querySelector('th');
-    const head = th && getComputedStyle(th).position === 'sticky' ? th.offsetHeight : 0;
-    top = Math.max(0, Math.round(rolle.y + el.getBoundingClientRect().top - keepEdge() - head));
+    top = Math.max(0, Math.round(rolle.y + el.getBoundingClientRect().top - keepKante(el)));
   }
   keepBusy = true;
   rolle.to(top);
