@@ -3,6 +3,34 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.49.0 – 01.11.2026
+
+AppDesign 4.49.0 · Designrichtlinie allgemein 4.49.0 · Zusammenarbeit allgemein 3.5.0 · geprüft mit Reiselogbuch 3.47.0
+
+**APD-62 Teil APD-38/T-43 und APD-85 Teil 3** – dein Ja vom 01.11.2026, Sitzung 0073; Testfall-Liste und Wortlaut R-2.7 bestätigt am 31.10.2026,
+Sitzung 0067 (`arbeit/APD-62 Titel antippen Testfall-Liste und Wortlaut.md`, APD-62/H-1 bis H-10), Testfall-Liste `arbeit/APD-85 Teil 3
+Testfall-Liste.md` (APD-85/Z-1 bis Z-6). Usertest im Reiselogbuch: P-90.
+
+- **Titel antippen = nach oben (R-2.7, 15.3, 16, `ui.js`):** kurzes Antippen des Titels der Kopfzeile (`.nb-title`, `.pnav-title`) rollt den
+  Inhalt sanft ganz nach oben, der Titel der Seitenleiste (`.side-head h2`) ihre Liste, der Titel der Fenster-Kopfzeile (`.dlg-head h3`) den
+  Inhalt des Fensters – Ersatz für das Antippen der Statusleiste bei Apple, das in der Home-Bildschirm-App für eigene Rollbereiche nicht wirkt
+  (Abweichung, 16). Schon oben: nichts. Gerollt wird Bild für Bild (Ausrollen, 0,3 bis 0,7 s je nach Weg) statt mit `scrollTo` smooth – das
+  hält Chromium unter Last nicht verlässlich an und WebKit gar nicht; so heißt Anhalten nur ‚kein weiteres Bild‘. Jeder Tipp bzw. jedes Wischen
+  hält das Rollen an und löst wie bei Apple sonst nichts aus (der Klick dieses Tipps entfällt – sonst öffnete er z. B. den Tag darunter; das
+  stand nicht in der Testfall-Liste und kam beim Bau dazu). ‚Bewegung reduzieren‘: sofort oben, der Inhalt blendet über wie bei ‚Nach oben‘
+  (R-1.9). Kein Rollen nach langem Drücken (R-2.5) und während eines Seitenwechsels bzw. Zurückwischens (R-7.5). Der Titel bleibt Überschrift (R-1.8).
+- **Prüfung `checkTitelOben` (`tests/ablauf.mjs`, R-2.7):** gerollt, Titel antippen → ganz oben, mit Zwischenständen (sanft), Leiste und
+  Fenster der Seite fest, die anderen Rollbereiche bleiben (APD-62/H-1 bis H-3); schon oben nichts (H-4); langes Drücken kein Rollen (H-5); ein Tipp
+  in den Inhalt hält das Rollen an und löst keinen Klick aus (APD-62/H-6); ‚Bewegung reduzieren‘ ohne Zwischenstand (H-7); während eines
+  Seitenwechsels nichts (APD-62/H-8). Im Reiselogbuch `ablauf-titel-oben` in allen vier Ansichten, Chromium und WebKit (H-9); Gegenprobe gegen 3.46.2:
+  APD-62/H-1 bis H-3 rot in allen Bereichen (H-10).
+- **Baustein `warteBis` (`tests/pruefe.mjs`, APD-85 Teil 3):** `warteBis(p, bedingung, { was, max, arg })` wartet, bis die Bedingung in der
+  Seite wahr ist (in jedem Bild geprüft), höchstens `max` ms, und gibt sonst die Meldung mit `was` zurück – nie ein Hängen; dazu `t.warte`
+  (meldet den Fehler). Ersetzt feste Pausen (`waitForTimeout`), die unter Last zu kurz sind. Selbsttest in `tests/lauf-selbsttest.mjs`:
+  kehrt 50 bis 106 ms nach dem Start zurück, wenn die Bedingung nach 50 ms wahr wird (APD-85/Z-1), meldet nach `max` ohne Hängen (Z-2), ein `warteBis`,
+  das nicht wartet, fällt auf (APD-85/Z-6, Gegenprobe rot).
+- **Wackler `ablauf-blatt` (Reiselogbuch, APD-85/Z-3 bis Z-5):** ‹Z-4›
+
 ## 4.48.2 – 01.11.2026
 
 AppDesign 4.48.2 · Designrichtlinie allgemein 4.48.2 · Zusammenarbeit allgemein 3.5.0 · geprüft mit Reiselogbuch 3.46.2

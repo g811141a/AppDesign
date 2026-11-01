@@ -1,6 +1,6 @@
 # AppDesign – Backlog (allgemeine Themen)
 
-**Stand 01.11.2026** · Aktuelle Version: AppDesign 4.48.2
+**Stand 01.11.2026** · Aktuelle Version: AppDesign 4.49.0
 
 Allgemeine Themen, die alle Apps betreffen. App-Themen stehen im Backlog der jeweiligen App.
 Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.4.
@@ -12,7 +12,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 | Nr. | Prio | Thema | bereit seit |
 |---|---|---|---|
 
-0 Punkte bereit für 4.48.x – für 4.49.0 bereit sind APD-85 Teil 3 und APD-62 Teil APD-38/T-43 (unter 2.).
+0 Punkte bereit.
 
 
 ## 1. Auf iPad und iPhone prüfen
@@ -24,9 +24,10 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| APD-85 | 3 | **Teil 3 – Wackler beheben (aus APD-85 Teil 1, 4.42.0):** feste Pausen eines Tests durch Warten auf einen Zustand ersetzen (Claude zählt jeden Wackler hier mit: bisher vier – `ablauf-blatt`, Sitzung 0061; `ablauf-titel-blase` Chromium, Sitzung 0068 beim Veröffentlichen von 4.48.0; `ablauf-jahre` und `ablauf-gesamt` WebKit, Sitzung 0072 beim Veröffentlichen von 4.48.2). **Umfang a) bestätigt (Nutzer 31.10.2026, Sitzung 0067):** `ablauf-blatt` ohne feste Pausen als Vorbild, neuer Baustein `warteBis` in `tests/pruefe.mjs`; Testfall-Liste `arbeit/APD-85 Teil 3 Testfall-Liste.md` APD-85/Z-1 bis Z-6 bestätigt – **bereit für 4.49.0** (4.48.0 mit drei Punkten voll, 0 Nr. 8) | bereit |
+| APD-108 | 2 | **Wischen löst in Safari trotzdem einen Tipp aus (`navKlickWeg`, Befund Sitzung 0072, ins Backlog Nutzer 01.11.2026, Sitzung 0073, Priorität 2):** die Sperre ‚Wischen tippt nie an‘ (`navKlickWeg`, ui.js) löst sich mit `setTimeout 0` – Safari schickt den Klick nach dem Loslassen vermutlich erst danach als eigene Aufgabe (passt zur Messung P-88/1). Für Leisten-Knöpfe abgedeckt durch `beruehrWeg` (APD-107); bei Zielen ohne Rückmeldung beim Berühren bleibt die Lücke. So macht es Apple: eine Rollbewegung bricht die Berührung eines Bedienelements ab, ein Wischen wird nie zum Tipp. Vorschlag: Sperre bis zum Loslassen plus Wartezeit wie `beruehrWeg`, feste Prüfung rot gegen 4.49.0; Eintrag in Designrichtlinie 13 erst mit Ja zum Wortlaut (0 Nr. 29) | offen |
+| APD-85 | 3 | **Teil 4 – übrige Wackler auf `warteBis` umstellen (aus APD-85 Teil 3, Testfall-Liste ‚Danach‘):** Teil 3 gebaut in 4.49.0 (`ablauf-blatt` ohne feste Pausen, Baustein `warteBis`); umzustellen, sobald sie wieder als ‚⚠ wackelt‘ gemeldet werden, sind `ablauf-titel-blase` (Chromium, Sitzung 0068), `ablauf-jahre` und `ablauf-gesamt` (WebKit, Sitzung 0072). Claude zählt jeden Wackler hier mit (bisher vier) | offen |
 | APD-40 | 3 | **Prüfungen für die Regeln ohne automatische Prüfung (aus APD-39, Nutzer 21.10.2026):** G-1 bis G-19 im Regelkatalog (Designrichtlinie allgemein 17) – je Regel eine allgemeine Prüfung in `tests/` oder bewusst ‚Gerät/Sicht‘ lassen; Code, eigener Auftrag | offen |
-| APD-62 | 3 | **Paket B aus APD-38 – ‚Antippen, Bewegung, Rollen‘ (Nutzer 22.10.2026):** Fenster/Menüs/Sprechblasen mit Bewegung (APD-38/T-16), großer Titel rastet ein (APD-38/T-1), Titel antippen = nach oben (APD-38/T-43, V3), Glas-Optik schwebender Knöpfe (APD-38/T-37, V4); als Muster neben APD-37 vorgesehen (APD-37 selbst bleibt Prio 2); dazu APD-58 – **APD-38/T-33 und APD-38/T-34 ausgegliedert nach APD-105** (Nutzer 31.10.2026, Sitzung 0067) – **Teil APD-38/T-43 ‚Titel antippen = nach oben‘ bereit für 4.49.0** (ohne Muster; Testfall-Liste APD-62/H-1 bis H-10 und Wortlaut R-2.7, 15.3, 16 in `arbeit/APD-62 Titel antippen Testfall-Liste und Wortlaut.md` bestätigt, Nutzer 31.10.2026, Sitzung 0067); offen bleiben APD-38/T-16, APD-38/T-1, APD-38/T-37 | offen |
+| APD-62 | 3 | **Paket B aus APD-38 – ‚Antippen, Bewegung, Rollen‘ (Nutzer 22.10.2026):** Fenster/Menüs/Sprechblasen mit Bewegung (APD-38/T-16), großer Titel rastet ein (APD-38/T-1), Titel antippen = nach oben (APD-38/T-43, V3), Glas-Optik schwebender Knöpfe (APD-38/T-37, V4); als Muster neben APD-37 vorgesehen (APD-37 selbst bleibt Prio 2); dazu APD-58 – **APD-38/T-33 und APD-38/T-34 ausgegliedert nach APD-105** (Nutzer 31.10.2026, Sitzung 0067) – **Teil APD-38/T-43 ‚Titel antippen = nach oben‘ gebaut in 4.49.0** (R-2.7); offen bleiben APD-38/T-16, APD-38/T-1, APD-38/T-37 | offen |
 | APD-30 | 3 | Vorschläge von Claude (19.10.2026, Analyse Abschnitt 5) – **ergänzt aus APD-38 (Nutzer 22.10.2026):** Kurzmeldung als allgemeiner Baustein (APD-38/T-20), einheitliche leere Zustände mit Symbol, Titel, Satz und Aktion (APD-38/T-61), Muster ‚Rückgängig statt Abfrage‘ (APD-38/T-21); Rückgängig nach Löschen (‚Gelöscht · Widerrufen‘), einheitliche leere Zustände, ‚Ziehen zum Aktualisieren‘ bewusst aus – je einzeln entscheiden; **dazu Wischaktionen in Listen (APD-38/T-10 aus APD-61, Nutzer 22.10.2026):** erst mit Rückgängig, dann wie Apple – Durchwischen löscht sofort, ‚Widerrufen‘; **Kollision klären (23.10.2026, APD-68):** im Hochformat schiebt Wischen nach links auf der Seitenleiste sie weg – mit APD-38/T-10 gelten auf den Kacheln die Wischaktionen, Wegwischen nur auf Abdunkelung und Kopf (Vorschlag) | Vorschlag |
 | APD-44 | 3 | **Tab-Leiste für Hauptbereiche (aus APD-38/T-9, Nutzer 22.10.2026):** Eine Leiste unten wechselt zwischen gleichrangigen Bereichen der App; jeder Bereich behält seinen Zustand. Warum später: Apple nutzt sie nur bei gleichrangigen Bereichen, die unsere Apps nicht haben. Neu bewerten, sobald eine App solche Bereiche bekommt. | später |
 | APD-46 | 3 | **Haftende Abschnittsköpfe (aus APD-38/T-12, Nutzer 22.10.2026):** Lange Listen sind in Gruppen geteilt; der Kopf der aktuellen Gruppe bleibt beim Rollen oben stehen. Warum später: Erst bei vielen Einträgen sinnvoll (z. B. Reiselogbücher nach Jahr); mit APD-37 zusammen entscheiden. | später |
@@ -55,6 +56,8 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 ## Erledigt
 
 | Nr. | Thema | Version | Datum |
+| APD-62 | **APD-62 Teil APD-38/T-43 ‚Titel antippen = nach oben‘ (R-2.7):** kurzes Antippen des Titels in Kopfzeile, Seitenleiste oder Fenster-Kopfzeile rollt den Bereich sanft ganz nach oben, ein Tipp hält an und löst nichts aus, ‚Bewegung reduzieren‘ sofort; Prüfung `checkTitelOben` (APD-62/H-1 bis H-10) – Usertest im Reiselogbuch P-90 | 4.49.0 | 01.11.2026 |
+| APD-85 | **APD-85 Teil 3 – Wackler beheben:** Baustein `warteBis` in `tests/pruefe.mjs` (APD-85/Z-1, Z-2, Selbsttest Z-6), `ablauf-blatt` ohne feste Pausen (Z-3 bis Z-5) | 4.49.0 | 01.11.2026 |
 | APD-107 | **APD-107 Korrektur aus P-88:** Leisten-Knopf hebt sich beim Berühren als helle Fläche mit Schatten 1,3-fach über die Kapsel (R-3.6, Variante C), Loslassen nach dem Wegziehen löst nichts aus, wie lange der Finger auch liegt (Messung P-88/1), Smiley-Kreis im modalen Fenster zuoberst (15.12); Prüfungen APD-107/S-1 bis S-13 – Usertest im Reiselogbuch P-89 | 4.48.2 | 01.11.2026 |
 | APD-106 | **APD-106 Korrektur aus P-87:** Safaris Antipp-Markierung aus, keine Textauswahl und Lupe beim Halten antippbarer Zeilen und der Smiley-Leiste (R-3.6), Smiley hebt sich auf einem hellen Kreis mit Schatten über die Leiste, Entfernen nach 1 s (R-3.5, Variante C), Großanzeige bleibt ab AX1; mit RLB-115 (`keepKante`, R-8.1); Prüfungen `checkBeruehren`, `checkAnheben`, `checkSideToggle`, Safari-Modell `safariHalten`; Usertest P-88 im Reiselogbuch | 4.48.1 | 01.11.2026 |
 |---|---|---|---|

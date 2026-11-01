@@ -1,4 +1,4 @@
-// AppDesign 4.48.2 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
+// AppDesign 4.49.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
 // Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/fassung/X.Y.Z/ui.js"></script> (feste Fassung, R-10.3)
 // Seit 4.11.0 (R-10.3): ui.js und design.css immer mit ?v=<AppDesign-Version> einbinden (auch in sw.js) und beim Start
 // prüfen, ob genau diese Fassung geladen ist (AD_VERSION hier, --ad-version in design.css).
@@ -20,7 +20,7 @@
 
 'use strict';
 // Version der Bausteine (R-10.3): die App vergleicht sie beim Start mit der benötigten Fassung.
-const AD_VERSION = '4.48.2';
+const AD_VERSION = '4.49.0';
 /* ---------- Icons ---------- */
 
 // Schaltflächen-Icons aus Lucide (ISC-Lizenz), direkt eingebettet, damit die App offline funktioniert.
@@ -917,6 +917,49 @@ addEventListener('pointermove', e => { if (titelDruck && Math.hypot(e.clientX - 
 addEventListener('mousedown', e => { if (performance.now() < titelKlickWeg) e.preventDefault(); }, true);
 addEventListener('click', e => { if (performance.now() < titelKlickWeg) { titelKlickWeg = 0; e.preventDefault(); e.stopImmediatePropagation(); } }, true);
 addEventListener('scroll', () => { titelDruckEnde(); titelBlaseZu(); }, { capture: true, passive: true });
+
+// R-2.7 (seit 4.49.0, APD-62 / APD-38/T-43, Testfall-Liste arbeit/APD-62 Titel antippen Testfall-Liste und Wortlaut.md H-1 bis H-10): Titel
+// antippen = nach oben – kurzes Antippen des Titels rollt den zugehörigen Bereich sanft ganz nach oben: Kopfzeile (15.3) den Inhalt,
+// Seitenleiste (15.4) ihre Liste, Fenster-Kopfzeile (15.8) den Inhalt des Fensters. Ersatz für das Antippen der Statusleiste bei Apple,
+// das in der Home-Bildschirm-App für eigene Rollbereiche nicht wirkt (Abweichung, Designrichtlinie 16). Schon oben: nichts. Ein Tipp oder
+// Wischen während des Rollens hält es an; ‚Bewegung reduzieren‘: sofort oben (Inhalt blendet über wie bei ‚Nach oben‘, R-1.9). Kein Rollen
+// nach langem Drücken (R-2.5) und während eines Seitenwechsels bzw. Zurückwischens (R-7.5). Der Titel bleibt Überschrift (R-1.8).
+const TITEL_OBEN = [['.nb-title, .pnav-title', () => rolle.el || document.scrollingElement],
+  ['.side-head .ttl, .side-head > h2', t => t.closest('#side')?.querySelector('.side-list')],
+  ['.dlg-head h3', t => t.closest('dialog')?.querySelector('.dlg-body')]];
+let titelTipp = null, titelRollt = null;
+// Eigenes Rollen Bild für Bild (Ausrollen, 0,3 bis 0,7 s je nach Weg) statt scrollTo smooth: Chromium hält ein weiches Rollen unter Last
+// nicht verlässlich an, WebKit gar nicht (rolle.halt) – hier heißt Anhalten nur ‚kein weiteres Bild‘, in beiden Browsern gleich (H-6).
+function titelRoll(el) {
+  const y0 = el.scrollTop, t0 = performance.now(), dauer = Math.min(700, 300 + y0 / 20), lauf = titelRollt = { el };
+  const f = jetzt => {
+    if (titelRollt !== lauf || !el.isConnected) return;
+    const k = Math.min(1, (jetzt - t0) / dauer);
+    el.scrollTop = y0 * Math.pow(1 - k, 3);
+    if (k < 1) requestAnimationFrame(f); else titelRollt = null;
+  };
+  requestAnimationFrame(f);
+}
+const titelRollHalt = () => { titelRollt = null; };
+// H-6: jeder Tipp bzw. jedes Wischen hält das Rollen an – und löst wie bei Apple sonst nichts aus (der Klick danach entfällt)
+let titelHaltKlick = false;
+addEventListener('pointerdown', e => {
+  titelHaltKlick = !!titelRollt; titelRollHalt();
+  titelTipp = e.isPrimary && e.button <= 0 && e.target.closest?.(TITEL_OBEN.map(([s]) => s).join(', ')) ? performance.now() : null;
+}, true);
+addEventListener('wheel', titelRollHalt, { capture: true, passive: true });
+addEventListener('click', e => { if (titelHaltKlick) { titelHaltKlick = false; e.preventDefault(); e.stopImmediatePropagation(); } }, true);
+addEventListener('click', e => {
+  const start = titelTipp; titelTipp = null;
+  if (start === null || performance.now() - start >= 600 || e.defaultPrevented) return;   // nur kurzes Antippen (R-2.5: lang = Blase)
+  if (navZug?.aktiv || blattZug?.aktiv || /(^|\s)(nav-|blatt-faehrt|blatt-zieht)/.test(document.documentElement.className)) return;
+  const treffer = TITEL_OBEN.find(([s]) => e.target.closest?.(s));
+  const el = treffer && treffer[1](e.target.closest(treffer[0]));
+  if (!el || el.scrollTop <= 0) return;   // H-4: schon oben
+  const los = weich => { if (weich) titelRoll(el); else el.scrollTo({ top: 0, behavior: 'instant' }); };
+  if (el === rolle.el || el === document.scrollingElement) nachTastatur(() => rolleSpringt(los));
+  else los(!ruhigQuery?.matches);
+});
 
 // R-3.6 (seit 4.48.0, APD-105 Variante C, Testfall-Liste arbeit/APD-105 Testfall-Liste.md B-1 bis B-8): Rückmeldung beim Berühren wie Apple –
 // solange der Finger liegt, wird eine Schaltfläche blass (Klasse .beruehrt: Icon und Text 35 %), eine Listen- oder Tabellenzeile grau

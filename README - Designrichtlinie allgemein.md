@@ -1,6 +1,6 @@
 # Designrichtlinie allgemein
 
-**Version 4.48.2** · Stand 01.11.2026
+**Version 4.49.0** · Stand 01.11.2026
 
 Allgemeine Gestaltungs- und Bedienregeln für alle Web-Apps von g811141a auf iPad und iPhone. Die Datei liegt im Design-Repo
 **AppDesign** (g811141a/AppDesign); ihre Versionsnummer ist die des Repos. Die Komponenten sind dort einmal programmiert und
@@ -651,6 +651,9 @@ Regel). In AppDesign ist jede Komponente einmal programmiert (`v4/design.css`, `
 - **Verhalten:** feste Zeile des Rahmens (15.22) – nur der Inhalt darunter rollt (Hintergrund `--bg`, sobald der Inhalt gerollt
   ist, Haarlinie unten); keine Glas-Leiste. Regel R-2.1.
 - **Gekürzter Titel:** wie in der Fenster-Kopfzeile (15.8, R-2.5).
+- **Titel antippen** (R-2.7): rollt den Inhalt sanft ganz nach oben – Ersatz für das Antippen der Statusleiste bei Apple, das in
+  der Home-Bildschirm-App für eigene Rollbereiche nicht wirkt (Abweichung, 16). Ebenso der Titel der Seitenleiste (15.4) und der
+  Fenster-Kopfzeile (15.8).
 - **Großanzeige** (R-2.6, wie Apple): Ab der Textgröße AX1 wachsen die Leisten nicht mehr mit (R-1.10). Langes Drücken auf einen
   Leisten-Knopf zeigt dann Icon und Namen groß in der Mitte des Bildschirms; gleitet der Finger zu einem anderen Knopf, wechselt
   die Anzeige; Loslassen über einem Knopf löst ihn aus, daneben schließt sie nur. Gilt ebenso in Fenster-Kopfzeile (15.8),
@@ -1130,6 +1133,7 @@ steht in der Spalte ‚außerdem‘ (ohne automatische Prüfung: G-19).
 | Weiße Schrift auf Systemblau (`--accent`): gewählte Zeile, ‚heute‘, Schrittnummern, Häkchen | 4,0 : 1 hell · 3,7 : 1 dunkel | Apple-Systemblau wie in allen Apple-Apps | 09.10.2026 |
 | Orange `--warn` (z. B. ‚fehlt‘) | 3,1–3,5 : 1 | bleibt wie es ist | 09.10.2026 |
 | Gekürzter Titel als Sprechblase (Apple: Großanzeige in der Mitte) | – | ein gekürzter Titel zeigt beim langen Drücken den ganzen Titel in einer Sprechblase darunter statt groß in der Mitte (R-2.5, Wunsch des Nutzers); Leisten-Knöpfe zeigen ab AX1 die Großanzeige wie Apple (R-2.6) | 31.10.2026 |
+| Titel antippen statt Statusleiste (Apple: Tipp auf die Statusleiste rollt nach oben) | – | wirkt in der Home-Bildschirm-App für eigene Rollbereiche nicht; Titel antippen rollt nach oben (R-2.7) | 31.10.2026 |
 | Feldtext bei xS bis M mindestens 16 px (Apple: 14–16) | – | sonst vergrößert Safari beim Antippen (R-1.3) | 23.10.2026 |
 | ⓧ auch in mehrzeiligen Textfeldern (Apple: UITextView – Notizen, Mail, Notizfelder in Kalender, Erinnerungen, Kontakte – hat kein ⓧ; geleert wird mit Auswählen → ‚Ausschneiden‘ bzw. Löschtaste) | – | Wunsch des Nutzers (P-73/1, APD-81); mehr als eine Zeile erst nach der Sprechblase ‚Text löschen?‘, Rückgängig wie bei Apple über Undo-Taste, drei Finger, Schütteln (R-5.6) | 26.10.2026 |
 | Kapsel ‚Nach oben / Ans Ende‘ auch auf dem iPhone (Apple: Statusleiste antippen bzw. Scroll-Leiste ziehen) | – | der Apple-Weg war dem Nutzer zu schwerfällig (R-3.2); das Ziehen der Scroll-Leiste gibt es dazu als Schnellroll-Griff | 17.10.2026 |
@@ -1177,6 +1181,7 @@ Testfall (User) in den Usertest, wenn eine Version es betrifft.
 | R-2.4 | **iPhone quer: niedrige Leisten** (wie iOS quer): Kopfzeile, Suchzeile und Fensterkopf 32 statt 44 px hoch – Knöpfe in Kapseln 31 px, runde Knöpfe 32 × 32 mit Antippfläche 44 × 44, das Suchfeld als Kapsel 32 px (R-3.1: Kapseln ab 28); damit liegen Suche und Felder darunter bei offener Tastatur in der oberen Hälfte (R-4.5). Hoch und am iPad 44 px | hig.mjs – Höhe der Knöpfe und des Suchfelds in Kopfzeile und Fensterkopf (iPhone quer 32, hoch 44) | – | 15.3, 15.8 |
 | R-2.5 | **Gekürzter Titel:** ein mit ‚…‘ gekürzter Titel in Kopfzeile oder Fenster-Kopfzeile zeigt beim langen Drücken den ganzen Titel in einer Sprechblase darunter – ganz sichtbar, bis zum nächsten Tippen (das nur sie schließt), Rollen, Esc oder Drehen; ein ganz sichtbarer Titel und kurzes Antippen zeigen nichts | ablauf.mjs | – | 15.3, 15.8 |
 | R-2.6 | **Großanzeige für Leisten-Knöpfe:** ab der Textgröße AX1 zeigt langes Drücken (R-3.5) auf einen Knopf einer Leiste (Kopfzeile, Fenster-Kopfzeile, Seitenleiste, schwebende Knöpfe) Icon und Namen groß in der Mitte des Bildschirms; Gleiten über die Knöpfe wechselt die Anzeige, Loslassen über einem Knopf löst ihn aus, daneben schließt sie nur; unter AX1 und bei kurzem Antippen nichts davon | ablauf.mjs | Gleiten, keine Lupe | 15.1, 15.3, 15.4, 15.8 |
+| R-2.7 | **Titel antippen = nach oben:** kurzes Antippen des Titels in Kopfzeile, Seitenleiste oder Fenster-Kopfzeile rollt den zugehörigen Bereich sanft ganz nach oben (‚Bewegung reduzieren‘: sofort); schon oben nichts; Tippen oder Wischen hält das Rollen an | ablauf.mjs | – | 15.3, 15.4, 15.8 |
 
 ### 3. Schaltflächen
 
@@ -1320,6 +1325,7 @@ R-2.3 (15.2), R-4.4 (6, 15.8, HIG 9), R-5.3 (8), R-5.4 (15.12), R-5.5 (APD-14), 
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 4.49.0 | 01.11.2026 | Neben | **APD-62 / APD-38/T-43 (Nutzer 31.10.2026, Sitzung 0067, Wortlaut bestätigt, ohne Muster):** Katalog R-2.7 ‚Titel antippen = nach oben‘ (Prüfung `ablauf.mjs` – `checkTitelOben`, APD-62/H-1 bis H-8); 15.3 Punkt ‚Titel antippen‘; 16 Zeile ‚Titel antippen statt Statusleiste‘. **APD-85 Teil 3** (Werkzeug, keine Regel): Baustein `warteBis` in `tests/pruefe.mjs` |
 | 4.48.2 | 01.11.2026 | Korrektur | **APD-107 (Korrektur aus P-88, Nutzer 01.11.2026, Sitzung 0071, Muster Variante C, Wortlaut bestätigt):** 4 ‚Berühren‘ und Katalog R-3.6 – ein Leisten-Knopf hebt sich als helle Fläche mit Schatten 1,3-fach über seine Kapsel (‚Bewegung reduzieren‘: ohne Wachsen), das Loslassen nach Wegziehen löst nichts aus, wie lange der Finger auch liegt (Messung P-88/1); 15.12 der helle Kreis des Smileys liegt auch im modalen Fenster über der Leiste (Korrektur ohne Regeländerung); Baustein `--heben`; Prüfungen `checkBeruehren` (APD-107/S-1 bis S-13), `checkAnheben` (APD-107/S-7), `finger` mit `abbruch` und `klickNach` |
 | 4.48.1 | 01.11.2026 | Korrektur | **APD-106 (Korrektur aus P-87, Nutzer 01.11.2026, Sitzung 0070, Muster Smiley Variante C, Wortlaut bestätigt):** R-3.5 Entfernen (z. B. Smiley) erst nach 1 s, ein Emoji hebt sich auf einem hellen Kreis mit Schatten über die Leiste (15.12); R-3.6 Safaris Antipp-Markierung aus, keine Textauswahl und Lupe beim Halten antippbarer Zeilen, Kacheln, Leisten und der Smiley-Leiste (4); 13 neu ‚Antipp-Markierung und Textauswahl‘ (Messung 01.11.2026). **RLB-115:** R-8.1 der oberste Eintrag steht ganz unter der Leiste und einem haftenden Tabellenkopf; Prüfungen `checkSideToggle`, `checkBeruehren`, `checkAnheben`, `safariHalten` |
 | 4.48.0 | 31.10.2026 | Neben | **APD-104 (Nutzer 31.10.2026, Sitzung 0067, Variante A, Wortlaut bestätigt):** 15.3 neu ‚Großanzeige‘ – ab AX1 zeigt langes Drücken auf einen Leisten-Knopf Icon und Namen groß in der Mitte, gleiten wechselt, Loslassen über einem Knopf löst ihn aus (wie Apple, WWDC19 Session 261); Katalog R-2.6 (Prüfung `ablauf.mjs` – `checkGrossanzeige`); 16 Zeile ‚Keine Großanzeige‘ ersetzt durch ‚Gekürzter Titel als Sprechblase‘; Baustein `.grossanzeige`. **APD-105 (Nutzer 31.10.2026, Sitzung 0067, Variante C, Wortlaut bestätigt):** 4 neu ‚Berühren‘ – Schaltflächen blass (35 %), Listen- und Tabellenzeilen grau, in Rollbereichen nach 80 ms; Katalog R-3.6 (Prüfung `ablauf.mjs` – `checkBeruehren`), R-3.5 ergänzt um ‚Anheben‘ (Prüfung `checkAnheben`); 15.12 Smiley hebt sich beim Halten an; Bausteine `.beruehrt`, `.hebt` |

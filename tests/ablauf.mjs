@@ -3,7 +3,7 @@
 // Jede Funktion bekommt eine Playwright-Seite und gibt eine Liste von Fehlern zurück (leer = in Ordnung), je mit Regelnummer.
 // Einbinden im Prüfskript der App:  import { checkSearch, checkDialogHead } from '../../AppDesign/tests/ablauf.mjs';
 //                                   fehler.push(...await checkSearch(page, { term: 'Sydney' }));
-import { ROLL, RING, rolle, rollstand, navFertig, rollRuht } from './pruefe.mjs';
+import { ROLL, RING, rolle, rollstand, navFertig, rollRuht, ruhe, warteBis } from './pruefe.mjs';
 import { safariWischen, safariModell, mausWieFinger, safariHalten } from './safari.mjs';
 const wait = (p, ms = 250) => p.waitForTimeout(ms);
 // R-2.3 (seit 4.25.1, APD-24): beim Tippen bleibt das Suchfeld dasselbe Element und behält den Fokus – sonst schließt Safari am
@@ -2906,5 +2906,77 @@ export async function checkAnheben(p, { sel, frage = '.pop, .menu', feld = null,
   await p.evaluate(frage => { const f = document.querySelector(frage); if (!f) return;
     const k = [...f.querySelectorAll('.btns button, button')].at(-1); if (f.matches('.pop') && k) k.click(); else document.querySelector('.layer')?.click(); }, frage);
   await wait(p, 250);
+  return errors;
+}
+
+// R-2.7 (seit 4.49.0, APD-62 / APD-38/T-43; Testfall-Liste arbeit/APD-62 Titel antippen Testfall-Liste und Wortlaut.md H-1 bis H-8): Titel antippen =
+// nach oben. titel: der Titel (Kopfzeile, Seitenleiste oder Fenster-Kopfzeile); rolle: sein Rollbereich; still: Rollbereiche, die stehen bleiben
+// (Seite hinter dem Fenster R-7.3, Inhalt neben der Seitenleiste); ruhig: ‚Bewegung reduzieren‘ gilt (H-7: sofort oben, kein Zwischenstand).
+// H-1 bis H-3: gerollt, kurz antippen → sanft (mindestens ein Zwischenstand) ganz nach oben, Leisten stehen fest (R-2.1), still bleibt;
+// H-4: schon oben → nichts rollt; H-5: langes Drücken → kein Rollen; H-6: ein Tipp in den Inhalt während des Rollens hält es an und löst nichts aus;
+// H-8: während eines Seitenwechsels (Klasse nav-…) kein Rollen. Gibt die Fehler zurück (leer = in Ordnung).
+export async function checkTitelOben(p, { titel, rolle: rsel, still = [], ruhig = false, where = '' } = {}) {
+  const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}R-2.7 ${t}`);
+  const lage = () => p.evaluate(({ rsel, still, titel }) => {
+    const r = document.querySelector(rsel), kopf = document.querySelector(titel)?.closest('.nb, .pnav, .side-head, .dlg-head, #bar');
+    return { y: r ? Math.round(r.scrollTop) : null, max: r ? r.scrollHeight - r.clientHeight : 0, fenster: Math.round(scrollY),
+      still: still.map(s => Math.round(document.querySelector(s)?.scrollTop ?? 0)), kopf: kopf ? Math.round(kopf.getBoundingClientRect().top) : null };
+  }, { rsel, still, titel });
+  // Rollstände in jedem Bild aufzeichnen (Zwischenstände = sanft), bis stop
+  const mitschreiben = () => p.evaluate(rsel => { const r = document.querySelector(rsel); window.__titelOben = [];
+    const f = () => { if (!window.__titelOben) return; window.__titelOben.push(Math.round(r.scrollTop)); requestAnimationFrame(f); }; f(); }, rsel);
+  const stopp = () => p.evaluate(() => { const v = window.__titelOben || []; window.__titelOben = null; return v; });
+  const setze = y => p.evaluate(([rsel, y]) => { const r = document.querySelector(rsel); r.scrollTo({ top: y === 'mitte' ? (r.scrollHeight - r.clientHeight) * 0.6 : y, behavior: 'instant' }); }, [rsel, y]);
+  const tippe = async () => { const b = await p.locator(titel).first().boundingBox(); await p.mouse.click(b.x + Math.min(b.width / 2, 40), b.y + b.height / 2); };
+  const v0 = await lage();
+  if (v0.y === null) { E(`Rollbereich ${rsel} fehlt`); return errors; }
+  if (v0.max < 200) { E(`Rollbereich ${rsel} ist zu kurz für die Prüfung (${v0.max} px Rollweg)`); return errors; }
+  // H-1 bis H-3, H-7
+  await setze('mitte'); await ruhe(p);
+  const vor = await lage();
+  await mitschreiben(); await tippe();
+  const m = await warteBis(p, rsel => document.querySelector(rsel).scrollTop <= 0, { arg: rsel, was: 'Rollbereich ganz oben', max: 10000 });
+  await wait(p, 150);
+  const spur = await stopp(), nach = await lage();
+  if (m || nach.y !== 0) E(`H-1 Titel antippen: der Bereich steht nicht ganz oben (${nach.y} px statt 0, vorher ${vor.y} px)`);
+  const zwischen = spur.filter(y => y > 0 && y < vor.y).length;
+  if (!ruhig && nach.y === 0 && !zwischen) E('H-1 der Bereich springt nach oben statt sanft zu rollen');
+  if (ruhig && zwischen) E(`H-7 ‚Bewegung reduzieren‘: ${zwischen} Zwischenstände – soll sofort oben stehen`);
+  if (nach.kopf !== vor.kopf) E(`H-1 die Leiste bewegt sich (${vor.kopf} → ${nach.kopf} px, R-2.1)`);
+  if (nach.fenster !== 0) E(`H-1 das Fenster der Seite rollt (${nach.fenster} px, R-2.1)`);
+  if (JSON.stringify(nach.still) !== JSON.stringify(vor.still)) E(`H-2/H-3 ein anderer Bereich rollt mit (${still.join(', ')}: ${vor.still} → ${nach.still})`);
+  // H-4: schon oben – nichts rollt
+  await mitschreiben(); await tippe(); await wait(p, 400);
+  if ((await stopp()).some(y => y !== 0)) E('H-4 schon oben: Titel antippen bewegt den Bereich');
+  // H-5: langes Drücken – kein Rollen
+  await setze('mitte'); await wait(p, 100);
+  const y5 = (await lage()).y;
+  await titelLang(p, titel); await wait(p, 300);
+  if ((await lage()).y !== y5) E(`H-5 langes Drücken auf den Titel rollt (${y5} → ${(await lage()).y} px)`);
+  await p.evaluate(() => document.querySelector('.titel-blase')?.remove());
+  // H-6: ein Tipp (pointerdown) in den Inhalt während des Rollens hält es an
+  if (!ruhig) {
+    await setze(v0.max); await wait(p, 100);
+    await tippe(); await wait(p, 120);
+    const halt = await p.evaluate(rsel => { const r = document.querySelector(rsel), b = r.getBoundingClientRect();
+      r.dispatchEvent(new PointerEvent('pointerdown', { pointerId: 4207, pointerType: 'touch', isPrimary: true, clientX: b.left + 20, clientY: b.top + b.height / 2, bubbles: true, cancelable: true, composed: true }));
+      r.dispatchEvent(new PointerEvent('pointerup', { pointerId: 4207, pointerType: 'touch', isPrimary: true, bubbles: true, composed: true }));
+      let klick = 0; const z = () => klick++; r.addEventListener('click', z); r.firstElementChild?.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, composed: true })); r.removeEventListener('click', z);
+      return { y: Math.round(r.scrollTop), klick }; }, rsel);
+    // ein schon angestoßenes Bild darf noch rollen (Chromium: gut 70 px), danach steht der Bereich
+    await p.evaluate(() => new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r))));
+    const y6a = (await lage()).y; await wait(p, 500); const y6 = (await lage()).y;
+    if (halt.klick) E('H-6 der Tipp, der das Rollen anhält, löst zugleich einen Klick im Inhalt aus');
+    if (halt.y <= 0 || halt.y >= v0.max - 1) E(`H-6 das Rollen ließ sich nicht mitten im Weg prüfen (Stand beim Tipp ${halt.y} px von ${v0.max})`);
+    else if (y6 !== y6a || y6 === 0 || halt.y - y6 > 200) E(`H-6 ein Tipp während des Rollens hält es nicht an (beim Tipp ${halt.y} px, zwei Bilder später ${y6a} px, danach ${y6} px)`);
+  }
+  // H-8: während eines Seitenwechsels kein Rollen
+  await setze('mitte'); await wait(p, 100);
+  const y8 = (await lage()).y;
+  await p.evaluate(() => document.documentElement.classList.add('nav-pruef'));
+  await tippe(); await wait(p, 400);
+  await p.evaluate(() => document.documentElement.classList.remove('nav-pruef'));
+  if ((await lage()).y !== y8) E(`H-8 Titel antippen während eines Seitenwechsels rollt (${y8} → ${(await lage()).y} px)`);
+  await setze(0); await wait(p, 100);
   return errors;
 }
