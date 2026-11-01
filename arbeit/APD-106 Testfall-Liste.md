@@ -5,7 +5,7 @@ Stand 01.11.2026 · Sitzung Reiselogbuch 0070 · Muster nur hell (Vereinbarung 3
 **Geklärt (Nutzer 01.11.2026, Sitzung 0070):** Am iPad war ‚Größere dynamische Schrift‘ aus (deshalb dort nur `xxxl`). Am iPhone kam
 mit dem Muster AX5 an, und die Großanzeige war zu sehen. Damit gibt es keinen Widerspruch mehr. Die Frage nach langem Drücken auf
 einen Smiley kommt nach **etwa 1 s**. Das Abheben zeigt ein **runder heller Hintergrund mit Schatten** hinter dem Smiley.
-**Offen:** Schwelle der Großanzeige (AX1 wie Apple oder XXXL) und der Wortlaut der Regeln (0 Nr. 29).
+**Geklärt danach (Sitzung 0070):** Großanzeige bleibt ab AX1; Wortlaut der Regeln bestätigt (Backlog APD-106); Muster Smiley Variante C (Kreis schwebt über der Leiste).
 
 ## Ablauf in einem Satz
 
@@ -33,7 +33,7 @@ Leiste und dem haftenden Tabellenkopf.
 | T-1 | iPad quer und hoch, iPhone hoch und quer; hell und dunkel | jede Ansicht laden | Beispielreise | `-webkit-tap-highlight-color` ist überall transparent (`html` und jede Schaltfläche, Zeile und Kachel) – AppDesign-Bausteine und die Ansichten der App |
 | T-2 | iPad quer, iPhone hoch | eine Tageszeile 1 s halten (Finger, still) | Beispielreise mit Tagen | kein `selectstart`, `getSelection()` leer, `user-select: none` und `-webkit-touch-callout: none` an der Zeile; Zeile grau (R-3.6) |
 | T-3 | iPad quer, iPhone hoch | Seitenleisten-Zeile, Kachel, Menüeintrag und Leisten-Knopf je 1 s halten | wie T-2 | wie T-2: keine Textauswahl, kein Callout |
-| T-4 | iPad quer, iPhone hoch | einen Smiley halten | Smiley-Leiste mit 8 Smileys | ab 0,15 s Klasse `.hebt`; heller runder Hintergrund mit `box-shadow` (berechnet ≠ none, Kreis um das Emoji), Smiley vergrößert; ‚Bewegung reduzieren‘: nur Kreis und Schatten, keine Vergrößerung |
+| T-4 | iPad quer, iPhone hoch | einen Smiley halten | Smiley-Leiste mit 8 Smileys | ab 0,15 s hebt sich über dem Smiley eine eigene Ebene (Variante C, Muster `arbeit/APD-106 Smiley Muster.html`): heller Kreis mit `box-shadow` (berechnet ≠ none), mittig über dem Smiley, ganz zu sehen (nicht von der Kapsel abgeschnitten), wächst auf 1,3, fängt kein Antippen ab, `aria-hidden`; verschwindet mit der Frage und bei Abbruch; ‚Bewegung reduzieren‘: nur Kreis und Schatten, keine Vergrößerung |
 | T-5 | iPad quer, iPhone hoch | Smiley halten, nach 0,6 s und nach 0,9 s nachsehen, dann weiter halten | wie T-4 | bei 0,6 s und 0,9 s keine Frage; nach etwa 1 s die Sprechblase ‚Entfernen‘, der Smiley senkt sich |
 | T-6 | iPad quer, iPhone hoch | Smiley halten, dabei die ganze Zeit Textauswahl prüfen; Frage erscheint | wie T-4 | kein `selectstart`, keine Auswahl im Fenster, kein Callout an der Smiley-Leiste (auch nicht nach dem Erscheinen der Frage) |
 | T-7 | iPad quer, iPhone hoch | Smiley halten und vor 1 s die Leiste seitlich ziehen bzw. 10 px wandern | wie T-4 | abgebrochen, keine Frage, der Smiley senkt sich (R-3.5 wie bisher) |
