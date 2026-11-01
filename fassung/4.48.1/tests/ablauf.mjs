@@ -2080,11 +2080,12 @@ export async function checkSheet(p, { open, change = null, field = null, ok = nu
 // pointercancel (sonst wäre der Fehler nicht aufgetreten), die Leiste rollt mit dem Finger. Je Fall frisch aufgesetzt; die Ereignisse
 // werden in der Seite nachgebildet (Playwright kennt in WebKit keine Berührung mit Bewegung). sel: Schaltfläche mit langem Drücken;
 // frage: was langes Drücken öffnet (Abfrage bzw. Kontextmenü). Gibt Fehler zurück; Grundregeln danach ruft die App (t.schritt).
-export async function checkLangDruecken(p, { sel, frage = '.pop, .menu', where = '' } = {}) {
+// dauer (seit 4.48.1, APD-106): Zeit bis zum Auslösen – 1000 bei Einträgen, deren langes Drücken etwas entfernt (Smiley, { entfernen: true })
+export async function checkLangDruecken(p, { sel, frage = '.pop, .menu', dauer = 600, where = '' } = {}) {
   const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}R-3.5 ${t}`);
   // schritte: [[dx, dy, ms, rollt]] – Lage seit dem Aufsetzen, Zeit seit dem vorigen Schritt; rollt: die Fläche rollt um dx mit
   // (ohne pointermove, wenn zeiger false – Safari kann den Finger zum Rollen übernehmen, ohne der Seite Bewegungen zu melden).
-  const geste = (art, schritte, { zeiger = true, ende = 900 } = {}) => p.evaluate(async ({ sel, frage, art, schritte, zeiger, ende }) => {
+  const geste = (art, schritte, { zeiger = true, ende = dauer + 300 } = {}) => p.evaluate(async ({ sel, frage, art, schritte, zeiger, ende }) => {
     const warte = ms => new Promise(r => setTimeout(r, ms));
     const b = document.querySelector(sel), roll = b.closest('.scroll') || b.parentElement;
     roll.scrollLeft = 0; await warte(50);
