@@ -1825,7 +1825,10 @@ export async function checkSheet(p, { open, change = null, field = null, ok = nu
     await p.waitForFunction(() => !document.getElementById('dlg').open, null, { timeout: 3000 }).catch(() => {});
     const l = await lage();
     if (l.open) { E(`${was}: das Fenster bleibt offen (Blatt ${l.t} px versetzt, ${await p.evaluate(() => document.documentElement.className)}${l.pop.length ? ', Rückfrage offen' : ''})`); await zu(); return false; }
-    await wait(p, 600); const n = await lage();
+    // seit 4.49.0 (APD-85 Teil 3, APD-85/Z-4): statt fester 600 ms warten, bis Blatt und Abbild weg sind und keine Bewegung mehr läuft (höchstens 5 s) –
+    // unter Last und bei langsamer Bewegung war die Seite nach 600 ms noch beim Zurückgleiten
+    await warteBis(p, () => !document.documentElement.classList.contains('blatt') && !document.querySelector('.blatt-geist') && !document.getAnimations().some(a => a.playState === 'running'), { max: 5000 });
+    const n = await lage();
     if (n.blatt || n.zurueck) E(`${was}: nach dem Schließen bleibt die Seite zurückgewichen bzw. abgedunkelt`);
     if (n.geist) E(`${was}: das Abbild des Blatts bleibt nach dem Schließen stehen`);
     return true; };

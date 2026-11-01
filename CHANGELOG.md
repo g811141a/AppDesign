@@ -29,7 +29,15 @@ Testfall-Liste.md` (APD-85/Z-1 bis Z-6). Usertest im Reiselogbuch: P-90.
   (meldet den Fehler). Ersetzt feste Pausen (`waitForTimeout`), die unter Last zu kurz sind. Selbsttest in `tests/lauf-selbsttest.mjs`:
   kehrt 50 bis 106 ms nach dem Start zurück, wenn die Bedingung nach 50 ms wahr wird (APD-85/Z-1), meldet nach `max` ohne Hängen (Z-2), ein `warteBis`,
   das nicht wartet, fällt auf (APD-85/Z-6, Gegenprobe rot).
-- **Wackler `ablauf-blatt` (Reiselogbuch, APD-85/Z-3 bis Z-5):** ‹Z-4›
+- **Wackler `ablauf-blatt` (Reiselogbuch, APD-85/Z-3 bis Z-5):** die vier festen Pausen (Menü ‚Teilen‘ 150 ms, Start 400 ms, Eintrag öffnen
+  600 ms, Blatt offen 700 ms) warten jetzt mit `warteBis` auf ihren Zustand, ebenso in `checkSheet` (`tests/ablauf.mjs`) die 600 ms nach dem
+  Schließen eines Blatts (bis Blatt und Abbild weg sind und keine Bewegung läuft, höchstens 5 s) – diese Pause kam beim Bau dazu (dein Ja vom
+  01.11.2026), weil die Lastprobe zeigte, dass die Fehler dort entstanden. Lastprobe APD-85/Z-4 (zehnmal gleichzeitig, Bewegungen vierfach
+  verlangsamt): alter Stand alle 10 Läufe rot (je 54 Fehler, dazu einmal der echte Wackler ‚Escape: Fenster verschwindet sofort‘), nur die vier
+  Pausen ersetzt noch 9 von 9 rot (54 Fehler, Ursache `checkSheet`), mit `checkSheet` zuerst 4 von 9 grün (Abbild noch nicht weg), am Ende
+  **alle 10 grün**. Laufzeit APD-85/Z-5: allein Chromium 8:45, WebKit 8:37; unter der verlangsamten Last 1365 bis 1367 s statt 1075 bis
+  1079 s – es wird jetzt bis zum wirklichen Ende der vierfach langsamen Bewegungen gewartet, statt nach fester Zeit weiterzumachen; in normaler
+  Geschwindigkeit misst es der volle Lauf. In zwei der drei Lastproben hing je ein Lauf (abgebrochen; im vollen Lauf greift die Zeitgrenze von `lauf.mjs`).
 
 ## 4.48.2 – 01.11.2026
 
