@@ -11,6 +11,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Prio | Thema | bereit seit |
 |---|---|---|---|
+| APD-107 | 1 | **Korrektur aus Usertest P-88 (Nutzer 01.11.2026, Sitzung 0071) – in Klärung:** P-88/1 – der Knopf ‚…‘ wird beim Berühren nicht blass, und nach 1 cm Wegziehen öffnet sich trotzdem das Mehr-Menü (iPad und iPhone); mit echter Touch-Eingabe in Chromium nicht nachgestellt, Messung am Gerät erbeten (0 Nr. 20). P-88/4 – der gehaltene Smiley bleibt unverändert: der Kreis `.schwebt` hängt an `body` und liegt hinter dem modalen Fenster (oberste Ebene) – belegt mit Bild in Chromium und WebKit; `checkAnheben` prüfte nur, ob es den Kreis gibt, nicht, ob er zu sehen ist | – |
 
 0 Punkte bereit – für 4.49.0 bereit sind APD-85 Teil 3 und APD-62 Teil APD-38/T-43 (unter 2.).
 
