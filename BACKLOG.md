@@ -1,6 +1,6 @@
 # AppDesign – Backlog (allgemeine Themen)
 
-**Stand 01.11.2026** · Aktuelle Version: AppDesign 4.48.1
+**Stand 01.11.2026** · Aktuelle Version: AppDesign 4.48.2
 
 Allgemeine Themen, die alle Apps betreffen. App-Themen stehen im Backlog der jeweiligen App.
 Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.4.
@@ -11,9 +11,8 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Prio | Thema | bereit seit |
 |---|---|---|---|
-| APD-107 | 1 | **Korrektur aus Usertest P-88 (Nutzer 01.11.2026, Sitzung 0071) – bereit, Bau 4.48.2: Ja (Nutzer 01.11.2026):** P-88/1 – der Knopf ‚…‘ wird beim Berühren nicht blass, und nach 1 cm Wegziehen öffnet sich trotzdem das Mehr-Menü (iPad und iPhone); Messung iPad quer (`messung-2026-11-01-1603.txt`, Safari 26.6.3): Safari meldet kein pointercancel, nur Bewegung und am Ende ‚tippen‘; die Sperre des Klicks nach dem Abbruch (`beruehrWeg`) gilt nur 600 ms ab dem Abbruch – Wegziehen 9 → 132 px, Loslassen 843 ms danach → Menü offen; 188 px, Loslassen 558 ms danach → gesperrt; `checkBeruehren` lässt sofort nach dem Wegziehen los. ‚Icon ändert sich gar nicht‘ (Nutzer 01.11.2026), obwohl Safari Deckkraft 0,35 berechnet (Messung APD-106) – Muster mit Varianten gewünscht. P-88/0, /2, /3, /5, /6 ok. Testfall-Liste `arbeit/APD-107 Testfall-Liste.md` S-1 bis S-9; Muster `arbeit/APD-107 Muster.html` (A heute, B grauer Kreis, C Glasfläche wächst; mit der Sperre nach dem Wegziehen) – **Variante C gewählt**, Wortlaut R-3.6 allgemein bestätigt (`arbeit/APD-107 Wortlaut.md`), Testfall-Liste S-1 bis S-13. P-88/4 – der gehaltene Smiley bleibt unverändert: der Kreis `.schwebt` hängt an `body` und liegt hinter dem modalen Fenster (oberste Ebene) – belegt mit Bild in Chromium und WebKit; `checkAnheben` prüfte nur, ob es den Kreis gibt, nicht, ob er zu sehen ist | 01.11.2026 |
 
-1 Punkt bereit (4.48.2: APD-107, drei Teile) – für 4.49.0 bereit sind APD-85 Teil 3 und APD-62 Teil APD-38/T-43 (unter 2.).
+0 Punkte bereit für 4.48.x – für 4.49.0 bereit sind APD-85 Teil 3 und APD-62 Teil APD-38/T-43 (unter 2.).
 
 
 ## 1. Auf iPad und iPhone prüfen
@@ -56,6 +55,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 ## Erledigt
 
 | Nr. | Thema | Version | Datum |
+| APD-107 | **APD-107 Korrektur aus P-88:** Leisten-Knopf hebt sich beim Berühren als helle Fläche mit Schatten 1,3-fach über die Kapsel (R-3.6, Variante C), Loslassen nach dem Wegziehen löst nichts aus, wie lange der Finger auch liegt (Messung P-88/1), Smiley-Kreis im modalen Fenster zuoberst (15.12); Prüfungen APD-107/S-1 bis S-13 – Usertest im Reiselogbuch P-89 | 4.48.2 | 01.11.2026 |
 | APD-106 | **APD-106 Korrektur aus P-87:** Safaris Antipp-Markierung aus, keine Textauswahl und Lupe beim Halten antippbarer Zeilen und der Smiley-Leiste (R-3.6), Smiley hebt sich auf einem hellen Kreis mit Schatten über die Leiste, Entfernen nach 1 s (R-3.5, Variante C), Großanzeige bleibt ab AX1; mit RLB-115 (`keepKante`, R-8.1); Prüfungen `checkBeruehren`, `checkAnheben`, `checkSideToggle`, Safari-Modell `safariHalten`; Usertest P-88 im Reiselogbuch | 4.48.1 | 01.11.2026 |
 |---|---|---|---|
 | APD-104 | **APD-104 Großanzeige für Leisten-Knöpfe:** ab AX1 zeigt langes Drücken auf einen Leisten-Knopf Icon und Namen groß in der Mitte (`.grossanzeige`), gleiten wechselt, Loslassen über einem Knopf löst aus; neue Regel R-2.6 mit `checkGrossanzeige` (`ablauf.mjs`), 15.3 neu, 16 ‚Keine Großanzeige‘ ersetzt; im Reiselogbuch neue Prüfung `ablauf-grossanzeige`; Usertest P-87 | 4.48.0 | 31.10.2026 |

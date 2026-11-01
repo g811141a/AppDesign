@@ -1,6 +1,6 @@
 # Designrichtlinie allgemein
 
-**Version 4.48.1** · Stand 01.11.2026
+**Version 4.48.2** · Stand 01.11.2026
 
 Allgemeine Gestaltungs- und Bedienregeln für alle Web-Apps von g811141a auf iPad und iPhone. Die Datei liegt im Design-Repo
 **AppDesign** (g811141a/AppDesign); ihre Versionsnummer ist die des Repos. Die Komponenten sind dort einmal programmiert und
@@ -179,9 +179,12 @@ Body = Grundgröße der Stufe (14 … 53). Zeilenabstände und Werte wörtlich a
     ist** – auch Listenzeilen (Eintrag der Seitenleiste, z. B. über das Kontextmenü → Einstellungen), Tabellenzeilen (Tag; beim
     Blättern wandert die Markierung mit) und Kästen (Fazit). Technisch `setOpener(selector)`.
     [HIG – Lists and tables](https://developer.apple.com/design/human-interface-guidelines/lists-and-tables)
-  - **Berühren** (R-3.6, wie Apple): Solange der Finger auf einer Schaltfläche liegt, wird sie blass (Icon und Text 35 %); eine
+  - **Berühren** (R-3.6, wie Apple): Solange der Finger auf einer Schaltfläche liegt, wird sie blass (Icon und Text 35 %); ein Knopf
+    einer Leiste (Kopfzeile, Fenster-Kopfzeile, Seitenleiste, schwebende Knöpfe) hebt sich stattdessen als helle Fläche mit Schatten auf
+    das 1,3-Fache über seine Kapsel – neben dem Finger zu sehen, wie Liquid Glass in iOS 26 (‚Bewegung reduzieren‘: ohne Wachsen); eine
     Listen- oder Tabellenzeile wird grau. Schaltflächen zeigen das sofort, in Rollbereichen erst nach 80 ms, damit beim Rollen nichts
-    aufblitzt; wandert der Finger mehr als 10 px oder rollt die Fläche, verschwindet es ohne Auslösen. Loslassen blendet in 0,15 s
+    aufblitzt; wandert der Finger mehr als 10 px oder rollt die Fläche, verschwindet es, und das Loslassen danach löst nichts aus – auch
+    wenn der Finger noch liegt. Loslassen blendet in 0,15 s
     aus. Gesperrte Schaltflächen zeigen nichts. ‚Blau getönt = gedrückt‘ (offenes Menü) bleibt davon unberührt. Safaris eigene
     Antipp-Markierung ist aus, und langes Drücken auf antippbare Zeilen, Kacheln, Leisten und die Smiley-Leiste markiert keinen Text
     und zeigt keine Lupe.
@@ -1184,7 +1187,7 @@ Testfall (User) in den Usertest, wenn eine Version es betrifft.
 | R-3.3 | **Jede Farbe hat eine Bedeutung:** blau gefüllt nur die Hauptaktion im Fenster (höchstens eine); Gewähltes bleibt blau getönt, solange sein Menü, Fenster oder seine Abfrage offen ist; Grün nur für eingeschaltete Schalter; Rot nur für Löschen | hig.mjs – höchstens eine blaue Hauptaktion, `stays` | – | 4 |
 | R-3.4 | **Kein Fokus-Rahmen** beim Antippen und beim Öffnen eines Fensters (keine vorausgewählte Schaltfläche); **Textfelder nie** (auch Suchfeld, auch mit Tab erreicht – der Cursor zeigt den Fokus, auch nicht Safaris `outline: auto`); bei Bedienung mit der Tastatur ein eigener Ring (Akzentfarbe, 2 px Abstand, folgt dem Radius), im Menü ist der Eintrag hinterlegt | hig.mjs (Feld bzw. Knopf mit Rahmen ohne Tastatur), ablauf.mjs – `checkFokus` (Antippen, Tab, Öffnen) | – | 1, 15.2 |
 | R-3.5 | **Langes Drücken** (0,6 s; Entfernen, z. B. eines Smileys, 1 s) gilt nur, solange der Finger still steht: wandert er mehr als 10 px oder rollt die Fläche um ihn herum (Leiste seitlich ziehen), ist es abgebrochen – Finger und Maus; kurz antippen bleibt Antippen; **Anheben:** ein Eintrag mit eigener Aktion für langes Drücken (z. B. Smiley) hebt sich ab 0,15 s an (wächst, Schatten – ein Emoji hebt sich auf einem hellen Kreis mit Schatten über die Leiste; ‚Bewegung reduzieren‘: nur Schatten) und senkt sich bei Abbruch wieder | ablauf.mjs – `checkLangDruecken` | Smiley-Leiste ziehen, Anheben | 8, 13, 15.12 |
-| R-3.6 | **Rückmeldung beim Berühren:** solange der Finger liegt, wird eine Schaltfläche blass (Icon und Text 35 %), eine Listen- oder Tabellenzeile grau – Schaltflächen sofort, in Rollbereichen (Liste, Smiley-Leiste, Kapsel) nach 80 ms; mehr als 10 px Bewegung oder Rollen hebt es auf, ohne auszulösen; Loslassen blendet in 0,15 s aus; gesperrte Schaltflächen zeigen nichts; Safaris eigene Antipp-Markierung ist aus, und langes Drücken auf antippbare Zeilen, Kacheln, Leisten und die Smiley-Leiste markiert keinen Text und zeigt keine Lupe | ablauf.mjs | Rollen ohne Aufblitzen | 4, 15.1, 15.4, 15.12 |
+| R-3.6 | **Rückmeldung beim Berühren:** solange der Finger liegt, wird eine Schaltfläche blass (Icon und Text 35 %), ein Leisten-Knopf hebt sich als helle Fläche mit Schatten (1,3-fach) über die Kapsel, eine Listen- oder Tabellenzeile grau – Schaltflächen sofort, in Rollbereichen (Liste, Smiley-Leiste, Kapsel) nach 80 ms; mehr als 10 px Bewegung oder Rollen hebt es auf, ohne auszulösen – das Loslassen danach löst nichts aus, wie lange der Finger auch liegt; Loslassen blendet in 0,15 s aus; gesperrte Schaltflächen zeigen nichts; Safaris eigene Antipp-Markierung ist aus, und langes Drücken auf antippbare Zeilen, Kacheln, Leisten und die Smiley-Leiste markiert keinen Text und zeigt keine Lupe | ablauf.mjs | Rollen ohne Aufblitzen | 4, 15.1, 15.4, 15.12 |
 
 ### 4. Menüs, Abfragen, Fenster
 
@@ -1317,6 +1320,7 @@ R-2.3 (15.2), R-4.4 (6, 15.8, HIG 9), R-5.3 (8), R-5.4 (15.12), R-5.5 (APD-14), 
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 4.48.2 | 01.11.2026 | Korrektur | **APD-107 (Korrektur aus P-88, Nutzer 01.11.2026, Sitzung 0071, Muster Variante C, Wortlaut bestätigt):** 4 ‚Berühren‘ und Katalog R-3.6 – ein Leisten-Knopf hebt sich als helle Fläche mit Schatten 1,3-fach über seine Kapsel (‚Bewegung reduzieren‘: ohne Wachsen), das Loslassen nach Wegziehen löst nichts aus, wie lange der Finger auch liegt (Messung P-88/1); 15.12 der helle Kreis des Smileys liegt auch im modalen Fenster über der Leiste (Korrektur ohne Regeländerung); Baustein `--heben`; Prüfungen `checkBeruehren` (APD-107/S-1 bis S-13), `checkAnheben` (APD-107/S-7), `finger` mit `abbruch` und `klickNach` |
 | 4.48.1 | 01.11.2026 | Korrektur | **APD-106 (Korrektur aus P-87, Nutzer 01.11.2026, Sitzung 0070, Muster Smiley Variante C, Wortlaut bestätigt):** R-3.5 Entfernen (z. B. Smiley) erst nach 1 s, ein Emoji hebt sich auf einem hellen Kreis mit Schatten über die Leiste (15.12); R-3.6 Safaris Antipp-Markierung aus, keine Textauswahl und Lupe beim Halten antippbarer Zeilen, Kacheln, Leisten und der Smiley-Leiste (4); 13 neu ‚Antipp-Markierung und Textauswahl‘ (Messung 01.11.2026). **RLB-115:** R-8.1 der oberste Eintrag steht ganz unter der Leiste und einem haftenden Tabellenkopf; Prüfungen `checkSideToggle`, `checkBeruehren`, `checkAnheben`, `safariHalten` |
 | 4.48.0 | 31.10.2026 | Neben | **APD-104 (Nutzer 31.10.2026, Sitzung 0067, Variante A, Wortlaut bestätigt):** 15.3 neu ‚Großanzeige‘ – ab AX1 zeigt langes Drücken auf einen Leisten-Knopf Icon und Namen groß in der Mitte, gleiten wechselt, Loslassen über einem Knopf löst ihn aus (wie Apple, WWDC19 Session 261); Katalog R-2.6 (Prüfung `ablauf.mjs` – `checkGrossanzeige`); 16 Zeile ‚Keine Großanzeige‘ ersetzt durch ‚Gekürzter Titel als Sprechblase‘; Baustein `.grossanzeige`. **APD-105 (Nutzer 31.10.2026, Sitzung 0067, Variante C, Wortlaut bestätigt):** 4 neu ‚Berühren‘ – Schaltflächen blass (35 %), Listen- und Tabellenzeilen grau, in Rollbereichen nach 80 ms; Katalog R-3.6 (Prüfung `ablauf.mjs` – `checkBeruehren`), R-3.5 ergänzt um ‚Anheben‘ (Prüfung `checkAnheben`); 15.12 Smiley hebt sich beim Halten an; Bausteine `.beruehrt`, `.hebt` |
 | 4.47.0 | 31.10.2026 | Neben | **APD-101 (Nutzer 31.10.2026, Sitzung 0065, Wortlaut bestätigt, aus RLB-113/E-6):** 15.8 neu ‚Gekürzter Titel‘ – ein mit ‚…‘ gekürzter Titel zeigt beim langen Drücken den ganzen Titel in einer Sprechblase direkt darunter (Pfeil zur Titelmitte, Schrift wie der Titel, bleibt bis Tippen, Rollen, Esc oder Drehen); 15.3 ebenso; Katalog R-2.5 (Prüfung `ablauf.mjs` – `checkTitelBlase`); 16 Zeile ‚Keine Großanzeige‘ ergänzt (Abweichung: Sprechblase statt Großanzeige in der Mitte); Baustein `.titel-blase` |

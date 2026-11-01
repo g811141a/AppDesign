@@ -2630,8 +2630,10 @@ export async function checkTitelBlase(p, { sel, daneben = [], rollen = null, esc
 // Nachgebildete Berührung (Finger) für R-2.6 und R-3.6: wie Safari bleibt das Ziel aller Zeiger-Ereignisse das Element unter dem Aufsetzen
 // (implizite Zeigerbindung), der Klick nach dem Loslassen geht an dieses Element. schritte: [art, wert …] – ['warte', ms], ['zu', dx, dy]
 // (Finger an die Stelle relativ zum Aufsetzpunkt), ['zuEl', sel] (Finger auf die Mitte eines anderen Elements), ['taste', key], ['rolle', sel, px],
-// ['merke', name] (Zustand festhalten: Großanzeige, Klassen der Elemente). Am Ende pointerup (ohne ['ab', false] nicht) und – wie der Browser –
-// ein Klick auf das Element (ausser ['ohneKlick']). Zurück: festgehaltene Zustände und die Knöpfe, deren Klick bis zum Dokument kam.
+// ['merke', name] (Zustand festhalten: Großanzeige, Klassen der Elemente), ['abbruch'] (pointercancel, danach kein Loslassen – seit 4.48.2,
+// APD-107/S-6), ['klickNach', ms] (der Klick kommt erst ms nach dem Loslassen als eigene Aufgabe wie in Safari – Vermutung aus der Messung P-88/1:
+// die Sperre ‚Wischen tippt nie an‘ endet mit setTimeout 0 und hielt den Klick am Gerät nicht auf, APD-107/S-1). Am Ende pointerup (ohne ['ab', false]
+// nicht) und – wie der Browser – ein Klick auf das Element (ausser ['ohneKlick']). Zurück: festgehaltene Zustände und die Knöpfe, deren Klick bis zum Dokument kam.
 export function finger(p, sel, schritte = [], { pointerType = 'touch', fangen = true } = {}) {
   return p.evaluate(async ({ sel, schritte, pointerType, fangen }) => {
     const warte = ms => new Promise(r => setTimeout(r, ms));
@@ -2654,14 +2656,21 @@ export function finger(p, sel, schritte = [], { pointerType = 'touch', fangen = 
         frage: !!document.querySelector('.pop, .menu'), uebergang: getComputedStyle(el).transitionDuration, ms: Math.round(performance.now() - t0),
         // seit 4.48.1 (APD-106): Antipp-Markierung, Textauswahl, Callout des Elements und die schwebende Ebene beim Anheben in der Kapsel
         tap: getComputedStyle(el).webkitTapHighlightColor, auswahl: getComputedStyle(el).webkitUserSelect || getComputedStyle(el).userSelect,
-        callout: getComputedStyle(el).webkitTouchCallout, gewaehlt: String(getSelection() || '').length, schwebt: schwebtStand() }; };
+        callout: getComputedStyle(el).webkitTouchCallout, gewaehlt: String(getSelection() || '').length, schwebt: schwebtStand(),
+        // seit 4.48.2 (APD-107/S-10): Schatten und ob das Element zuoberst liegt – an den vier Rändern (2 px innen) trifft das Antippen es selbst,
+        // also schneidet weder Kapsel noch Leiste es ab und kein Nachbar liegt darüber
+        schatten: getComputedStyle(el).boxShadow, oben: (() => { const r = el.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+          return [[r.left + 2, cy], [r.right - 2, cy], [cx, r.top + 2], [cx, r.bottom - 2]].every(([px, py]) => el.contains(document.elementFromPoint(px, py))); })() }; };
     const schwebtStand = () => { const s = document.querySelector('.schwebt:not(.weg)'); if (!s) return null;
       const c = getComputedStyle(s), r = s.getBoundingClientRect(), [ex, ey] = mitte(el);
       return { schatten: c.boxShadow, transform: c.transform, hg: c.backgroundColor, zeiger: c.pointerEvents, hidden: s.getAttribute('aria-hidden'),
         dx: Math.round(r.left + r.width / 2 - ex), dy: Math.round(r.top + r.height / 2 - ey), text: s.textContent,
-        drin: r.left >= -0.5 && r.top >= -0.5 && r.right <= innerWidth + 0.5 && r.bottom <= innerHeight + 0.5 }; };
+        drin: r.left >= -0.5 && r.top >= -0.5 && r.right <= innerWidth + 0.5 && r.bottom <= innerHeight + 0.5,
+        // seit 4.48.2 (APD-107/S-7): der Kreis hängt im offenen Fenster und ist an seiner Mitte das oberste Element (kurz antippbar gemacht)
+        imFenster: s.closest('dialog') === el.closest('dialog'), oben: (() => { s.style.pointerEvents = 'auto';
+          const t = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2); s.style.pointerEvents = ''; return s.contains(t); })() }; };
     const gemerkt = {};
-    let ab = true, klick = true;
+    let ab = true, klick = true, klickNach = 0;
     const t0 = performance.now();
     ev('pointerdown');
     for (const [art, a, b] of schritte) {
@@ -2672,9 +2681,11 @@ export function finger(p, sel, schritte = [], { pointerType = 'touch', fangen = 
       else if (art === 'rolle') { const f = document.querySelector(a) || document.scrollingElement; f.scrollTop += b; f.dispatchEvent(new Event('scroll')); await warte(30); }
       else if (art === 'merke') gemerkt[a] = stand();
       else if (art === 'ohneAb') ab = false;
+      else if (art === 'abbruch') { ev('pointercancel'); ab = false; }
+      else if (art === 'klickNach') klickNach = a;
       else if (art === 'ohneKlick') klick = false;
     }
-    if (ab) { ev('pointerup'); if (klick && el.isConnected) el.click(); }
+    if (ab) { ev('pointerup'); if (klickNach) await warte(klickNach); if (klick && el.isConnected) el.click(); }
     await warte(20);
     gemerkt.ende = stand();
     await warte(450);
@@ -2753,23 +2764,61 @@ export async function checkGrossanzeige(p, { knoepfe, daneben = null, ax = true,
 // festen Leiste (sofort blass); zeile: Listen- oder Tabellenzeile in einem Rollbereich (nach 80 ms grau); rollen: deren Rollbereich (sel);
 // gesperrt: gesperrte Schaltfläche (zeigt nichts); kapsel: Knopf einer Kapsel (Rollbereich, nach 80 ms blass). Gibt Fehler zurück.
 const durchsichtig = c => !c || /rgba\(0, 0, 0, 0\)|transparent/.test(c);
+//
+// Seit 4.48.2 (APD-107, Testfall-Liste arbeit/APD-107 Testfall-Liste.md S-1 bis S-13): ein Knopf einer Leiste (LEISTE_SEL wie GROSS_SEL in ui.js) hebt
+// sich als helle Fläche (--heben) mit Schatten auf das 1,3-Fache über seine Kapsel, zuoberst, das Icon bleibt kräftig (‚Bewegung reduzieren‘: ohne
+// Wachsen), und senkt sich beim Loslassen in 0,2 s; andere Schaltflächen werden blass wie bisher (S-11). Wegziehen und 1 s liegen lassen, dann
+// loslassen – wie Safari ohne pointercancel, mit Klick – löst nichts aus (S-1, S-2, S-4); danach löst Antippen genau einmal aus (S-5), nach einem
+// Abbruch die Tastatur sofort (S-6).
+const LEISTE_SEL = ':is(.nb, .pnav, .bbar, .dlg-head, .side-head, .side-search, .fab) button';
+const skalaVon = t => { const m = /matrix\(([-\d.e]+)/.exec(t || ''); return m ? +m[1] : 1; };
 export async function checkBeruehren(p, { knopf = null, zeile = null, rollen = null, gesperrt = null, kapsel = null, where = '' } = {}) {
   const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}R-3.6 ${t}`);
-  const grau = await p.evaluate(() => { const d = document.createElement('div'); d.style.backgroundColor = 'var(--beruehrt)'; document.body.append(d);
-    const c = getComputedStyle(d).backgroundColor; d.remove(); return c; });
+  const farbe = v => p.evaluate(v => { const d = document.createElement('div'); d.style.backgroundColor = `var(${v})`; document.body.append(d);
+    const c = getComputedStyle(d).backgroundColor; d.remove(); return c; }, v);
+  const grau = await farbe('--beruehrt'), hell = await farbe('--heben');
+  const ruhig = await p.evaluate(() => matchMedia('(prefers-reduced-motion: reduce)').matches);
   if (knopf) {
-    // B-1 sofort blass (35 %), B-2 Loslassen: blendet in 0,15 s aus, löst aus
-    const r = await finger(p, knopf, [['warte', 15], ['merke', 'sofort']]);
-    if (!r.gemerkt.sofort.beruehrt || Math.abs(r.gemerkt.sofort.opacity - 0.35) > 0.02) E(`B-1 ${knopf} wird beim Berühren nicht sofort blass (Deckkraft ${r.gemerkt.sofort.opacity})`);
-    if (r.gemerkt.ende.beruehrt) E(`B-2 ${knopf} bleibt nach dem Loslassen blass`);
-    if (!/0\.15s/.test(r.gemerkt.ende.uebergang)) E(`B-2 ${knopf} blendet nicht in 0,15 s aus (Übergang ${r.gemerkt.ende.uebergang})`);
+    const leiste = await p.evaluate(([s, l]) => !!document.querySelector(s)?.matches(l), [knopf, LEISTE_SEL]);
+    // B-1 sofort Rückmeldung: Leisten-Knopf hebt sich (S-10, S-12), sonst blass (35 %); B-2 Loslassen blendet aus (S-13: 0,2 s), löst genau einmal aus
+    const r = await finger(p, knopf, [['warte', 15], ['merke', 'sofort'], ['warte', 500], ['merke', 'gehoben']]);
+    const s = r.gemerkt.sofort, g = r.gemerkt.gehoben;
+    if (!s.beruehrt) E(`B-1 ${knopf} zeigt beim Berühren nicht sofort eine Rückmeldung`);
+    else if (leiste) {
+      if (s.opacity !== 1 || g.opacity !== 1) E(`APD-107/S-10 ${knopf}: der Leisten-Knopf wird blass (Deckkraft ${Math.min(s.opacity, g.opacity)}) – er hebt sich hell über die Kapsel, das Icon bleibt kräftig`);
+      if (s.hg !== hell) E(`APD-107/S-10 ${knopf}: keine helle Fläche beim Berühren (${s.hg} statt ${hell})`);
+      if (!g.schatten || g.schatten === 'none') E(`APD-107/S-10 ${knopf}: die Fläche wirft keinen Schatten`);
+      if (!ruhig && Math.abs(skalaVon(g.transform) - 1.3) > 0.02) E(`APD-107/S-10 ${knopf}: der Knopf wächst nicht auf das 1,3-Fache (${g.transform})`);
+      if (ruhig && g.transform !== 'none') E(`APD-107/S-12 ${knopf}: ‚Bewegung reduzieren‘ – Fläche und Schatten ohne Wachsen, trotzdem ${g.transform}`);
+      if (!g.oben) E(`APD-107/S-10 ${knopf}: die Fläche liegt nicht zuoberst (von Kapsel, Leiste oder Nachbar abgeschnitten)`);
+    } else if (Math.abs(s.opacity - 0.35) > 0.02) E(`B-1 ${knopf} wird beim Berühren nicht sofort blass (Deckkraft ${s.opacity})`);
+    if (r.gemerkt.ende.beruehrt) E(`B-2 ${knopf} bleibt nach dem Loslassen ${leiste ? 'angehoben' : 'blass'}`);
+    if (!(leiste ? /0\.2s/ : /0\.15s/).test(r.gemerkt.ende.uebergang)) E(`${leiste ? 'APD-107/S-13' : 'B-2'} ${knopf} blendet nicht in ${leiste ? '0,2' : '0,15'} s aus (Übergang ${r.gemerkt.ende.uebergang})`);
     if (r.gemerkt.danach.opacity !== 1) E(`B-2 ${knopf} ist 0,45 s nach dem Loslassen noch blass (${r.gemerkt.danach.opacity})`);
+    if (leiste && (r.gemerkt.danach.transform !== 'none' || r.gemerkt.danach.beruehrt)) E(`APD-107/S-13 ${knopf}: 0,45 s nach dem Loslassen noch angehoben (${r.gemerkt.danach.transform})`);
     if (r.klicks.length !== 1) E(`B-2 Loslassen auf ${knopf} löst ${r.klicks.length}-mal aus`);
-    if (!durchsichtig(r.gemerkt.sofort.tap)) E(`APD-106/H-1 ${knopf}: Safaris Antipp-Markierung ist an (${r.gemerkt.sofort.tap}) – das Grau beim Berühren (APD-106)`);
+    if (!durchsichtig(s.tap)) E(`APD-106/H-1 ${knopf}: Safaris Antipp-Markierung ist an (${s.tap}) – das Grau beim Berühren (APD-106)`);
     // B-4 nach dem Berühren 20 px wegziehen: Rückmeldung weg, nichts ausgelöst
     const w = await finger(p, knopf, [['warte', 40], ['zu', 20, 0], ['merke', 'weg']]);
     if (w.gemerkt.weg.beruehrt) E(`B-4 ${knopf}: 20 px weggezogen, die Rückmeldung bleibt`);
     if (w.klicks.length) E(`B-4 ${knopf}: 20 px weggezogen, trotzdem ausgelöst`);
+    // S-1 (S-2 Seitenleiste): wegziehen, 1 s liegen lassen, loslassen – Safari meldet kein pointercancel und schickt den Klick (Messung P-88/1)
+    const l = await finger(p, knopf, [['warte', 40], ['zu', 20, 0], ['warte', 1000], ['merke', 'liegen'], ['klickNach', 30]]);
+    if (l.gemerkt.liegen.beruehrt) E(`APD-107/S-1 ${knopf}: 20 px weggezogen und 1 s liegen gelassen – die Rückmeldung bleibt`);
+    if (l.klicks.length) E(`APD-107/S-1 ${knopf}: 20 px weggezogen, 1 s liegen gelassen, losgelassen – trotzdem ausgelöst (Safari ohne pointercancel)`);
+    // S-5: danach kurz antippen – löst genau einmal aus (die Sperre gilt nur für das eine Loslassen)
+    const t2 = await finger(p, knopf, [['warte', 60]]);
+    if (t2.klicks.length !== 1) E(`APD-107/S-5 ${knopf}: nach dem abgebrochenen Berühren löst Antippen ${t2.klicks.length}-mal aus`);
+    // S-6: nach einem Abbruch (pointercancel, kein Loslassen) löst die Tastatur (Leertaste) sofort aus
+    await finger(p, knopf, [['warte', 40], ['zu', 20, 0], ['abbruch']]);
+    const fokus = await p.evaluate(s => { const el = document.querySelector(s); window.__tk = 0;
+      const h = e => { if (el.contains(e.target)) { window.__tk++; e.preventDefault(); e.stopImmediatePropagation(); } };
+      document.addEventListener('click', h, true); window.__tkAus = () => document.removeEventListener('click', h, true);
+      el.focus(); return document.activeElement === el; }, knopf);
+    if (fokus) await p.keyboard.press('Space');
+    await wait(p, 80);
+    const tk = await p.evaluate(s => { window.__tkAus(); document.querySelector(s)?.blur(); return window.__tk; }, knopf);
+    if (fokus && tk !== 1) E(`APD-107/S-6 ${knopf}: nach dem abgebrochenen Berühren löst die Leertaste ${tk}-mal aus`);
   }
   if (zeile) {
     // B-3 in einem Rollbereich: nach 30 ms noch nichts, nach 80 ms grau
@@ -2788,6 +2837,9 @@ export async function checkBeruehren(p, { knopf = null, zeile = null, rollen = n
     const w = await finger(p, zeile, [['warte', 120], ['zu', 0, 20], ['merke', 'weg']]);
     if (w.gemerkt.weg.beruehrt) E(`B-4 ${zeile}: 20 px weggezogen, die Zeile bleibt grau`);
     if (w.klicks.length) E(`B-4 ${zeile}: 20 px weggezogen, trotzdem ausgelöst`);
+    // S-4: wegziehen, 1 s liegen lassen, loslassen (Safari ohne pointercancel, mit Klick) – kein Fenster des Tages
+    const l = await finger(p, zeile, [['warte', 120], ['zu', 0, 20], ['warte', 1000], ['merke', 'liegen'], ['klickNach', 30]]);
+    if (l.klicks.length) E(`APD-107/S-4 ${zeile}: 20 px weggezogen, 1 s liegen gelassen, losgelassen – trotzdem ausgelöst`);
     if (rollen) {   // Rollen hebt es auf, ohne auszulösen
       const s = await finger(p, zeile, [['warte', 120], ['rolle', rollen, 30], ['merke', 'rollt']]);
       if (s.gemerkt.rollt.beruehrt) E(`B-4 ${zeile}: der Bereich rollt, die Zeile bleibt grau`);
@@ -2799,6 +2851,7 @@ export async function checkBeruehren(p, { knopf = null, zeile = null, rollen = n
     const r = await finger(p, kapsel, [['warte', 30], ['merke', 'frueh'], ['warte', 90], ['merke', 'spaeter'], ['ohneKlick']]);
     if (r.gemerkt.frueh.beruehrt && r.gemerkt.frueh.ms < 75) E(`B-3 ${kapsel} (Kapsel) wird schon nach ${r.gemerkt.frueh.ms} ms blass`);
     if (!r.gemerkt.spaeter.beruehrt || Math.abs(r.gemerkt.spaeter.opacity - 0.35) > 0.02) E(`B-3 ${kapsel} (Kapsel) wird nach 120 ms nicht blass`);
+    if (r.gemerkt.spaeter.transform !== 'none' || !durchsichtig(hell) && r.gemerkt.spaeter.hg === hell) E(`APD-107/S-11 ${kapsel} (Kapsel, keine Leiste) hebt sich an statt blass zu werden (${r.gemerkt.spaeter.transform})`);
   }
   if (gesperrt) {
     const r = await finger(p, gesperrt, [['warte', 120], ['merke', 'g'], ['ohneKlick']]);
@@ -2831,6 +2884,8 @@ export async function checkAnheben(p, { sel, frage = '.pop, .menu', feld = null,
     if (!/rgb\(255, 255, 255\)/.test(s.hg)) E(`APD-106/H-4 ${sel}: der Kreis ist nicht hell (${s.hg})`);
     if (Math.abs(s.dx) > 2 || Math.abs(s.dy) > 2) E(`APD-106/H-4 ${sel}: der Kreis steht nicht mittig über dem Smiley (${s.dx}/${s.dy} px)`);
     if (!s.drin) E(`APD-106/H-4 ${sel}: der Kreis ragt aus dem Fenster`);
+    if (!s.imFenster) E(`APD-107/S-7 ${sel}: der Kreis hängt nicht im offenen Fenster – das modale Fenster liegt darüber`);
+    if (!s.oben) E(`APD-107/S-7 ${sel}: der Kreis liegt nicht zuoberst (an seiner Mitte liegt etwas anderes darüber)`);
     if (s.zeiger !== 'none' || s.hidden !== 'true') E(`APD-106/H-4 ${sel}: der Kreis fängt Antippen ab oder ist für VoiceOver sichtbar`);
     if (!durchsichtig(h.tap)) E(`APD-106/H-6 ${sel}: Safaris Antipp-Markierung ist an (${h.tap})`);
     if (h.auswahl !== 'none') E(`APD-106/H-6 ${sel}: Text der Smiley-Leiste ist beim Halten wählbar (user-select ${h.auswahl}) – Safari markiert das Fenster und zeigt die Lupe`);

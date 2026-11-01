@@ -23,7 +23,7 @@ AppDesign-`CLAUDE.md`.
 - **Usertest P-88 ausgewertet (Nutzer 01.11.2026):** /0, /2, /3, /5, /6 ok; **/1 und /4 nicht ok** → APD-107. P-88 bleibt unter ‚prüfen‘, bis
   4.48.2 veröffentlicht ist (dann P-89).
 - **Freigegeben (Nutzer 01.11.2026, Sitzung 0071): Bau AppDesign 4.48.2 · Reiselogbuch 3.46.2 mit APD-107 – ‚Ja‘** (0 Nr. 21), Wortlaut R-3.6
-  bestätigt und allgemein (0 Nr. 29, 0 Nr. 4) – `arbeit/APD-107 Wortlaut.md`; Testfall-Liste `arbeit/APD-107 Testfall-Liste.md` S-1 bis S-13.
+  bestätigt und allgemein (0 Nr. 29, 0 Nr. 4) – `arbeit/APD-107 Wortlaut.md`; Testfall-Liste `arbeit/APD-107 Testfall-Liste.md` APD-107/S-1 bis S-13.
 - **Vereinbarung (Nutzer 30.10.2026, Sitzung 0058):** Muster bis auf Weiteres **nur hell** – in jede Übergabe übernehmen.
 - **Erinnerung:** ‚Backlog-Erinnerung (AppDesign und Reiselogbuch)‘ montags 8:58.
 
@@ -41,14 +41,14 @@ AppDesign-`CLAUDE.md`.
   `checkAnheben` muss prüfen, dass der Kreis zuoberst liegt (z. B. Pixel an seiner Mitte bzw. `elementFromPoint` mit `pointer-events`
   kurz an).
 - **Pages hing einmal** (‚in progress deployment‘ von 9a02556; ein Neustart blieb in der Schlange) – ein neuer Commit löste es.
-- **Selbstkritik 0071:** ein Fenster ohne ‚(Empfohlen)‘ (vom Regelwächter abgelehnt, W-5); die Anleitung zur Messung zuerst ohne Link (2.3,
+- **Selbstkritik 0071:** ein Fenster ohne ‚(Empfohlen)‘ (vom Regelwächter abgelehnt, APD-84/W-5); die Anleitung zur Messung zuerst ohne Link (2.3,
   vom Nutzer bemerkt).
 
 ## 3. Nächster Schritt
 
 1. `UEBERGABE.md`, die ganze Zusammenarbeit, Überschriften der Designrichtlinien; Lagebild; Regelwächter; ReiseLogBuch dazuholen (`main`).
 2. **Bau 4.48.2 / 3.46.2 (APD-107) – das Ja liegt vor** (oben 1.), nicht noch einmal fragen: `arbeit/APD-107 Testfall-Liste.md` und
-   `arbeit/APD-107 Wortlaut.md` lesen; Prüfungen zuerst (rot gegen 4.48.1: S-1, S-2, S-4, S-7, S-10, S-12), dann ui.js/design.css in `v4/`,
+   `arbeit/APD-107 Wortlaut.md` lesen; Prüfungen zuerst (rot gegen 4.48.1: APD-107/S-1, S-2, S-4, S-7, S-10, S-12), dann ui.js/design.css in `v4/`,
    Regeltexte (Abschnitt 4, Katalog R-3.6), CHANGELOG mit Testfällen P-89 (Schritt für Schritt), Backlog; veröffentlichen nach der
    AppDesign-`CLAUDE.md`. **Lehre aus 0070:** vor `los` alle Prüfungen suchen, die dieselbe Sperre, Zeit oder Deckkraft messen (`grep` nach
    `beruehrWeg`, `opacity - 0.35`, `.schwebt`, `beruehrt`).

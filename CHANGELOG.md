@@ -3,6 +3,29 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.48.2 – 01.11.2026
+
+AppDesign 4.48.2 · Designrichtlinie allgemein 4.48.2 · Zusammenarbeit allgemein 3.5.0 · geprüft mit Reiselogbuch 3.46.2
+
+**APD-107 Korrektur aus P-88** – dein Ja vom 01.11.2026, Sitzung 0071 (Muster `arbeit/APD-107 Muster.html`, Variante C; Wortlaut R-3.6 und 4
+bestätigt, `arbeit/APD-107 Wortlaut.md`); Testfall-Liste `arbeit/APD-107 Testfall-Liste.md` (APD-107/S-1 bis S-13). Usertest im Reiselogbuch: P-89.
+
+- **Leisten-Knopf hebt sich (R-3.6, 4, `design.css`):** ein Knopf einer Leiste (Kopfzeile, Fenster-Kopfzeile, Seitenleiste, schwebende Knöpfe –
+  dieselbe Auswahl wie die Großanzeige, `GROSS_SEL`) wird beim Berühren nicht mehr blass, sondern hebt sich als helle Fläche (`--heben`: hell
+  `#ffffff`, dunkel `#636366`) mit Schatten auf das 1,3-Fache über seine Kapsel, zuoberst (`z-index`), das Icon bleibt kräftig; ‚Bewegung
+  reduzieren‘: Fläche und Schatten ohne Wachsen; Loslassen senkt ihn in 0,2 s. Andere Schaltflächen (Kapsel ‚Wetter‘, Knöpfe im Fenster) werden
+  blass wie bisher.
+- **Loslassen nach dem Wegziehen (R-3.6, `ui.js`):** die Sperre `beruehrWeg` gilt bis zum Loslassen (ohne Zeitgrenze) und dann noch 400 ms für
+  den Klick, der ihm folgt; ein neues Berühren oder eine Taste gibt sofort frei. Vorher galt sie 600 ms ab dem Abbruch – Safari meldet beim
+  Wegziehen in einer Leiste kein pointercancel und schickt beim Loslassen den Klick (Messung P-88/1: 843 ms danach öffnete sich das Menü).
+- **Smiley-Kreis im Fenster (15.12, `onLongPress`):** der helle Kreis `.schwebt` hängt im offenen Fenster (wie die Großanzeige), gemessen und
+  nachgerückt, falls das Fenster verschoben ist – an `body` lag er hinter dem modalen Fenster (P-88/4).
+- **Prüfungen (`tests/ablauf.mjs`):** `checkBeruehren` – Leisten-Knopf hell, Schatten, 1,3-fach, zuoberst (an allen vier Rändern antippbar),
+  ‚Bewegung reduzieren‘ ohne Wachsen, senkt sich in 0,2 s (APD-107/S-10, S-12, S-13); Wegziehen, 1 s liegen lassen, loslassen löst nichts aus
+  (APD-107/S-1, S-2, S-4), danach Antippen genau einmal (S-5), nach einem Abbruch die Leertaste sofort (S-6); Kapsel bleibt blass (S-11);
+  `checkAnheben` – Kreis im offenen Fenster und an seiner Mitte zuoberst (APD-107/S-7); `finger` neu mit `['abbruch']` und `['klickNach', ms]`.
+  Rot gegen 4.48.1 (APD-107/S-1, S-2, S-4, S-6, S-7, S-10, S-12, S-13), grün mit 4.48.2. **Warum die Prüfungen es übersahen:** `checkBeruehren` ließ sofort nach dem Wegziehen los (innerhalb der 600 ms) und schickte den Klick im selben Schritt wie das Loslassen – so sperrte zusätzlich ‚Wischen tippt nie an‘ (`navKlickWeg`), das sich mit `setTimeout 0` wieder löst. Safari schickt den Klick erst danach als eigene Aufgabe (Vermutung, passt zur Messung P-88/1); die Prüfung lässt jetzt 1 s liegen und schickt den Klick 30 ms später. `checkAnheben` prüfte nur, ob es den Kreis gibt, nicht, ob er zuoberst liegt. Dass ein blasses Icon unter dem Finger nicht zu sehen ist, zeigt nur das Gerät.
+
 ## 4.48.1 – 01.11.2026
 
 AppDesign 4.48.1 · Designrichtlinie allgemein 4.48.1 · Zusammenarbeit allgemein 3.5.0 · geprüft mit Reiselogbuch 3.46.1
