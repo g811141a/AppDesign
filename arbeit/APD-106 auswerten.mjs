@@ -3,6 +3,7 @@
 // Kontextmenü, Textauswahl, ausgelöste Knöpfe. Bewertet wird nur hier, nie auf dem Bildschirm des Musters.
 //   node "arbeit/APD-106 auswerten.mjs" <messung.txt>
 import { readFileSync } from 'node:fs';
+import { pathToFileURL } from 'node:url';
 
 export function lies(text) {
   const kopf = [], zeilen = [];
@@ -74,7 +75,7 @@ export function bericht(faelle) {
   }).join('\n');
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const m = lies(readFileSync(process.argv[2], 'utf8'));
   console.log(m.kopf.join('\n'));
   console.log(bericht(werteAus(m)));

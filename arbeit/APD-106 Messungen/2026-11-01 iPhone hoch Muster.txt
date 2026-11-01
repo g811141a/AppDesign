@@ -1,0 +1,1828 @@
+# APD-106 Messung 1 · Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.6.3 Mobile/15E148 Safari/604.1 · 2026-11-01T02:27:19.800Z
+# 8 von 8 Fällen aufgenommen
+381716 start home 402x874 AppDesign 4.48.0 gegenprobe - · ts xl ax 0 px 19 ruhig 0 innen 402x812
+381716 fall 1 A gross · ts xl ax 0 px 19 ruhig 0 innen 402x812
+388571 zeiger down touch div.rolle 195 800
+388571 touchstart div.rolle finger 1
+388664 zeiger cancel touch div.rolle 193 708 weg 91
+388664 touchcancel div.rolle finger 0
+398792 text ts-ax an ax5
+405448 klasse mainMore +beruehrt
+405448 klasse mainMore +beruehrt
+405449 zeiger down touch mainMore<svg 345 48
+405449 touchstart mainMore<svg finger 1
+405475 stil mainMore beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+405475 stil mainMore beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+406053 gross auf
+406071 gross lage 79 261 244 291 innen 402x812 vv 402x812+0 display flex sicht visible opacity 1.00 z 50 svg ja textlaenge 4 eltern body
+408544 ausgeloest mainMore
+408544 gross zu
+408544 klasse mainMore -beruehrt
+408545 zeiger up touch mainMore<svg 334 26 weg 22
+408545 touchend mainMore<svg finger 0
+408547 klick mainMore verhindert nein
+411665 zeiger down touch div.rolle 105 698
+411666 touchstart div.rolle finger 1
+411832 zeiger up touch div.rolle 87 553 weg 145
+411832 touchend div.rolle finger 0
+412208 zeiger down touch div.rolle 95 663
+412209 touchstart div.rolle finger 1
+412402 zeiger up touch div.rolle 73 546 weg 117
+412402 touchend div.rolle finger 0
+412600 zeiger down touch div.rolle 100 600
+412600 touchstart div.rolle finger 1
+412690 zeiger up touch div.rolle 119 739 weg 139
+412690 touchend div.rolle finger 0
+423008 fertig 1 · ts ax5 ax 1 px 53 ruhig 0 innen 402x812
+423008 fall 2 A gross · ts ax5 ax 1 px 53 ruhig 0 innen 402x812
+437030 fenster auf
+440796 klasse dlgX +beruehrt
+440796 klasse dlgX +beruehrt
+440796 zeiger down touch dlgX<svg 54 53
+440797 touchstart dlgX<svg finger 1
+440822 stil dlgX beruehrt opacity 0.35 hg rgb(249,249,249) transform none filter none
+440822 stil dlgX beruehrt opacity 0.35 hg rgb(249,249,249) transform none filter none
+441399 gross auf
+441422 gross lage 30 261 343 291 innen 402x812 vv 402x812+0 display flex sicht visible opacity 1.00 z 50 svg ja textlaenge 9 eltern dlg
+443087 ausgeloest dlgX
+443093 gross zu
+443093 klasse dlgX -beruehrt
+443094 zeiger up touch dlgX<svg 50 53 weg 3
+443094 touchend dlgX<svg finger 0
+443095 fenster zu
+443096 klick dlgX verhindert nein
+449712 fertig 2 · ts ax5 ax 1 px 53 ruhig 0 innen 402x812
+449712 fall 3 A normal · ts ax5 ax 1 px 53 ruhig 0 innen 402x812
+483364 text ts-ax aus xl
+488298 klasse mainMore +beruehrt
+488298 klasse mainMore +beruehrt
+488299 zeiger down touch mainMore<svg 347 37
+488299 touchstart mainMore<svg finger 1
+488322 stil mainMore beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+488322 stil mainMore beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+491424 klasse mainMore -beruehrt
+491424 klasse mainMore +beruehrt-aus
+491424 klasse mainMore -beruehrt
+491425 zeiger up touch mainMore<svg 344 36 weg 5
+491425 touchend mainMore<svg finger 0
+491428 ausgeloest mainMore
+491428 klick mainMore<svg verhindert nein
+491625 klasse mainMore -beruehrt-aus
+498912 klasse mainMore +beruehrt
+498913 klasse mainMore +beruehrt
+498913 zeiger down touch mainMore<svg 353 31
+498913 touchstart mainMore<svg finger 1
+498923 stil mainMore beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+498924 stil mainMore beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+499455 klasse mainMore -beruehrt
+505109 zeiger up touch mainMore<svg 342 184 weg 154
+505112 touchend mainMore<svg finger 0
+505113 ausgeloest mainMore
+505113 klick mainMore<svg verhindert nein
+508861 fertig 3 · ts xl ax 0 px 19 ruhig 0 innen 402x812
+508861 fall 4 B normal · ts xl ax 0 px 19 ruhig 0 innen 402x812
+517230 klasse mainMore +beruehrt
+517231 klasse mainMore +beruehrt
+517231 zeiger down touch mainMore<svg 355 44
+517231 touchstart mainMore<svg finger 1
+517243 stil mainMore beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+517243 stil mainMore beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+517941 klasse mainMore -beruehrt
+517941 klasse mainMore +beruehrt-aus
+517941 klasse mainMore -beruehrt
+517941 zeiger up touch mainMore<svg 356 39 weg 4
+517942 touchend mainMore<svg finger 0
+517944 ausgeloest mainMore
+517944 klick mainMore<svg verhindert nein
+518141 klasse mainMore -beruehrt-aus
+518579 klasse mainMore +beruehrt
+518579 klasse mainMore +beruehrt
+518579 zeiger down touch mainMore<svg 351 42
+518579 touchstart mainMore<svg finger 1
+518594 stil mainMore beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+518594 stil mainMore beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+519176 klasse mainMore -beruehrt
+519176 klasse mainMore +beruehrt-aus
+519176 klasse mainMore -beruehrt
+519176 zeiger up touch mainMore<svg 351 42 weg 0
+519177 touchend mainMore<svg finger 0
+519178 ausgeloest mainMore
+519179 klick mainMore<svg verhindert nein
+519377 klasse mainMore -beruehrt-aus
+521529 klasse mainMore +beruehrt
+521529 klasse mainMore +beruehrt
+521530 zeiger down touch mainMore 372 38
+521530 touchstart mainMore finger 1
+521544 stil mainMore beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+521544 stil mainMore beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+522176 klasse mainMore -beruehrt
+522176 klasse mainMore +beruehrt-aus
+522176 klasse mainMore -beruehrt
+522177 zeiger up touch mainMore 372 38 weg 0
+522177 touchend mainMore finger 0
+522179 ausgeloest mainMore
+522179 klick mainMore verhindert nein
+522377 klasse mainMore -beruehrt-aus
+522866 klasse mainMore +beruehrt
+522866 klasse mainMore +beruehrt
+522867 zeiger down touch mainMore<svg 370 45
+522867 touchstart mainMore<svg finger 1
+522878 stil mainMore beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+522878 stil mainMore beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+523426 klasse mainMore -beruehrt
+523426 klasse mainMore +beruehrt-aus
+523426 klasse mainMore -beruehrt
+523427 zeiger up touch mainMore<svg 370 45 weg 0
+523427 touchend mainMore<svg finger 0
+523429 ausgeloest mainMore
+523429 klick mainMore<svg verhindert nein
+523627 klasse mainMore -beruehrt-aus
+523863 klasse mainMore +beruehrt
+523863 klasse mainMore +beruehrt
+523863 zeiger down touch mainMore 372 44
+523863 touchstart mainMore finger 1
+523874 stil mainMore beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+523874 stil mainMore beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+524108 klasse mainMore -beruehrt
+524109 klasse mainMore +beruehrt-aus
+524109 klasse mainMore -beruehrt
+524109 zeiger up touch mainMore 372 44 weg 0
+524109 touchend mainMore finger 0
+524110 ausgeloest mainMore
+524110 klick mainMore verhindert nein
+524309 klasse mainMore -beruehrt-aus
+524446 klasse mainMore +beruehrt
+524446 klasse mainMore +beruehrt
+524446 zeiger down touch mainMore<svg 368 41
+524446 touchstart mainMore<svg finger 1
+524461 stil mainMore beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+524461 stil mainMore beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+524692 klasse mainMore -beruehrt
+524692 klasse mainMore +beruehrt-aus
+524692 klasse mainMore -beruehrt
+524692 zeiger up touch mainMore<svg 368 41 weg 0
+524692 touchend mainMore<svg finger 0
+524892 klasse mainMore -beruehrt-aus
+526882 klasse mainMore +beruehrt
+526882 klasse mainMore +beruehrt
+526882 zeiger down touch mainMore<circle 360 34
+526882 touchstart mainMore<circle finger 1
+526895 stil mainMore beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+526895 stil mainMore beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+527126 klasse mainMore -beruehrt
+527126 klasse mainMore +beruehrt-aus
+527126 klasse mainMore -beruehrt
+527126 zeiger up touch mainMore<circle 360 34 weg 0
+527126 touchend mainMore<circle finger 0
+527127 ausgeloest mainMore
+527127 klick mainMore<circle verhindert nein
+527326 klasse mainMore -beruehrt-aus
+527564 klasse mainMore +beruehrt
+527564 klasse mainMore +beruehrt
+527564 zeiger down touch mainMore<svg 356 45
+527564 touchstart mainMore<svg finger 1
+527578 stil mainMore beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+527579 stil mainMore beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+528044 klasse mainMore -beruehrt
+528044 klasse mainMore +beruehrt-aus
+528044 klasse mainMore -beruehrt
+528045 zeiger up touch mainMore<svg 356 45 weg 0
+528045 touchend mainMore<svg finger 0
+528047 ausgeloest mainMore
+528047 klick mainMore<svg verhindert nein
+528245 klasse mainMore -beruehrt-aus
+528533 klasse mainMore +beruehrt
+528533 klasse mainMore +beruehrt
+528534 zeiger down touch mainMore<svg 351 42
+528534 touchstart mainMore<svg finger 1
+528545 stil mainMore beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+528545 stil mainMore beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+528826 klasse mainMore -beruehrt
+528826 klasse mainMore +beruehrt-aus
+528827 klasse mainMore -beruehrt
+528827 zeiger up touch mainMore<svg 351 42 weg 0
+528827 touchend mainMore<svg finger 0
+528828 ausgeloest mainMore
+528828 klick mainMore<svg verhindert nein
+529027 klasse mainMore -beruehrt-aus
+529247 klasse mainMore +beruehrt
+529248 klasse mainMore +beruehrt
+529248 zeiger down touch mainMore<svg 358 39
+529248 touchstart mainMore<svg finger 1
+529262 stil mainMore beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+529262 stil mainMore beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+529526 klasse mainMore -beruehrt
+529526 klasse mainMore +beruehrt-aus
+529526 klasse mainMore -beruehrt
+529526 zeiger up touch mainMore<svg 358 39 weg 0
+529527 touchend mainMore<svg finger 0
+529528 ausgeloest mainMore
+529528 klick mainMore<svg verhindert nein
+529726 klasse mainMore -beruehrt-aus
+529814 klasse mainMore +beruehrt
+529814 klasse mainMore +beruehrt
+529814 zeiger down touch mainMore<svg 356 38
+529814 touchstart mainMore<svg finger 1
+529830 stil mainMore beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+529830 stil mainMore beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+529983 auswahl 2
+530080 klasse mainMore -beruehrt
+530080 klasse mainMore +beruehrt-aus
+530080 klasse mainMore -beruehrt
+530080 zeiger up touch mainMore<svg 356 38 weg 0
+530081 touchend mainMore<svg finger 0
+530281 klasse mainMore -beruehrt-aus
+530334 klasse mainMore +beruehrt
+530335 klasse mainMore +beruehrt
+530335 zeiger down touch mainMore<svg 358 40
+530335 touchstart mainMore<svg finger 1
+530346 stil mainMore beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+530346 stil mainMore beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+530606 klasse mainMore -beruehrt
+530606 klasse mainMore +beruehrt-aus
+530606 klasse mainMore -beruehrt
+530606 zeiger up touch mainMore<svg 358 40 weg 0
+530606 touchend mainMore<svg finger 0
+530608 ausgeloest mainMore
+530608 auswahl 0
+530608 klick mainMore<svg verhindert nein
+530793 klasse mainMore +beruehrt
+530794 klasse mainMore -beruehrt-aus
+530794 klasse mainMore +beruehrt
+530794 zeiger down touch mainMore<svg 359 43
+530794 touchstart mainMore<svg finger 1
+530805 stil mainMore beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+530805 stil mainMore beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+530957 auswahl 2
+530963 klasse mainMore -beruehrt
+530964 klasse mainMore +beruehrt-aus
+530964 klasse mainMore -beruehrt
+530964 zeiger up touch mainMore<svg 359 43 weg 0
+530964 touchend mainMore<svg finger 0
+531165 klasse mainMore -beruehrt-aus
+534478 klasse mainMore +beruehrt
+534479 klasse mainMore +beruehrt
+534479 zeiger down touch mainMore 342 44
+534479 touchstart mainMore finger 1
+534488 stil mainMore beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+534489 stil mainMore beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+534823 klasse mainMore -beruehrt
+534823 klasse mainMore +beruehrt-aus
+534823 klasse mainMore -beruehrt
+534823 zeiger up touch mainMore 344 41 weg 2
+534823 touchend mainMore finger 0
+534824 ausgeloest mainMore
+534824 auswahl 0
+534825 klick mainMore verhindert nein
+535023 klasse mainMore -beruehrt-aus
+535211 klasse mainMore +beruehrt
+535211 klasse mainMore +beruehrt
+535211 zeiger down touch mainMore<svg 352 44
+535211 touchstart mainMore<svg finger 1
+535222 stil mainMore beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+535222 stil mainMore beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+535607 klasse mainMore -beruehrt
+535607 klasse mainMore +beruehrt-aus
+535607 klasse mainMore -beruehrt
+535607 zeiger up touch mainMore<svg 352 44 weg 0
+535607 touchend mainMore<svg finger 0
+535608 ausgeloest mainMore
+535609 klick mainMore<svg verhindert nein
+535807 klasse mainMore -beruehrt-aus
+535961 klasse mainMore +beruehrt
+535961 klasse mainMore +beruehrt
+535961 zeiger down touch mainMore<svg 358 39
+535961 touchstart mainMore<svg finger 1
+535972 stil mainMore beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+535972 stil mainMore beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+536273 klasse mainMore -beruehrt
+536273 klasse mainMore +beruehrt-aus
+536273 klasse mainMore -beruehrt
+536273 zeiger up touch mainMore<svg 358 39 weg 0
+536273 touchend mainMore<svg finger 0
+536473 klasse mainMore -beruehrt-aus
+536578 klasse mainMore +beruehrt
+536578 klasse mainMore +beruehrt
+536578 zeiger down touch mainMore<circle 353 35
+536578 touchstart mainMore<circle finger 1
+536589 stil mainMore beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+536589 stil mainMore beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+536740 klasse mainMore -beruehrt
+536740 klasse mainMore +beruehrt-aus
+536740 klasse mainMore -beruehrt
+536740 zeiger up touch mainMore<circle 353 35 weg 0
+536740 touchend mainMore<circle finger 0
+536742 ausgeloest mainMore
+536742 klick mainMore<circle verhindert nein
+536940 klasse mainMore -beruehrt-aus
+537127 klasse mainMore +beruehrt
+537127 klasse mainMore +beruehrt
+537127 zeiger down touch mainMore<svg 355 38
+537127 touchstart mainMore<svg finger 1
+537139 stil mainMore beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+537139 stil mainMore beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+537556 klasse mainMore -beruehrt
+538290 zeiger up touch mainMore<svg 357 32 weg 38
+538290 touchend mainMore<svg finger 0
+538291 ausgeloest mainMore
+538292 klick mainMore<svg verhindert nein
+625242 fertig 4 · ts xl ax 0 px 19 ruhig 0 innen 402x812
+625243 fall 5 A normal · ts xl ax 0 px 19 ruhig 0 innen 402x812
+640045 auswahl 1
+640912 auswahl 0
+648376 zeiger down touch zeile<span 166 268
+648377 touchstart zeile<span finger 1
+648457 klasse zeile +beruehrt
+648457 klasse zeile +beruehrt
+648474 stil zeile beruehrt opacity 1.00 hg rgb(229,229,234) transform none filter none
+648474 stil zeile beruehrt opacity 1.00 hg rgb(229,229,234) transform none filter none
+649029 auswahl 7
+649575 klasse zeile -beruehrt
+649576 klasse zeile +beruehrt-aus
+649576 klasse zeile -beruehrt
+649576 zeiger up touch zeile<span 166 277 weg 8
+649576 touchend zeile<span finger 0
+649777 klasse zeile -beruehrt-aus
+650274 zeiger down touch zeile<span 244 285
+650274 touchstart zeile<span finger 1
+650355 klasse zeile +beruehrt
+650355 klasse zeile +beruehrt
+650366 stil zeile beruehrt opacity 1.00 hg rgb(229,229,234) transform none filter none
+650367 stil zeile beruehrt opacity 1.00 hg rgb(229,229,234) transform none filter none
+650385 klasse zeile -beruehrt
+650385 klasse zeile +beruehrt-aus
+650385 klasse zeile -beruehrt
+650385 zeiger up touch zeile<span 244 285 weg 0
+650385 touchend zeile<span finger 0
+650425 ausgeloest zeile
+650425 selectstart zeile<span verhindert nein
+650425 auswahl 0
+650426 klick zeile<span verhindert nein
+650586 klasse zeile -beruehrt-aus
+651239 zeiger down touch zeile<div 209 302
+651239 touchstart zeile<div finger 1
+651320 klasse zeile +beruehrt
+651320 klasse zeile +beruehrt
+651333 stil zeile beruehrt opacity 1.00 hg rgb(229,229,234) transform none filter none
+651333 stil zeile beruehrt opacity 1.00 hg rgb(229,229,234) transform none filter none
+651697 klasse zeile -beruehrt
+651697 klasse zeile +beruehrt-aus
+651697 klasse zeile -beruehrt
+651697 zeiger up touch zeile<div 209 302 weg 0
+651697 touchend zeile<div finger 0
+651730 ausgeloest zeile
+651730 selectstart zeile<div verhindert nein
+651731 klick zeile<div verhindert nein
+651898 klasse zeile -beruehrt-aus
+652289 zeiger down touch zeile<div 219 308
+652289 touchstart zeile<div finger 1
+652370 klasse zeile +beruehrt
+652370 klasse zeile +beruehrt
+652383 stil zeile beruehrt opacity 1.00 hg rgb(229,229,234) transform none filter none
+652383 stil zeile beruehrt opacity 1.00 hg rgb(229,229,234) transform none filter none
+652748 klasse zeile -beruehrt
+652748 klasse zeile +beruehrt-aus
+652748 klasse zeile -beruehrt
+652748 zeiger up touch zeile<div 219 308 weg 0
+652748 touchend zeile<div finger 0
+652784 ausgeloest zeile
+652784 selectstart zeile<div verhindert nein
+652784 klick zeile<div verhindert nein
+652949 klasse zeile -beruehrt-aus
+653386 zeiger down touch zeile<span 162 304
+653386 touchstart zeile<span finger 1
+653466 klasse zeile +beruehrt
+653467 klasse zeile +beruehrt
+653483 stil zeile beruehrt opacity 1.00 hg rgb(229,229,234) transform none filter none
+653483 stil zeile beruehrt opacity 1.00 hg rgb(229,229,234) transform none filter none
+653981 klasse zeile -beruehrt
+653981 klasse zeile +beruehrt-aus
+653981 klasse zeile -beruehrt
+653981 zeiger up touch zeile<span 170 303 weg 7
+653981 touchend zeile<span finger 0
+653985 auswahl 5
+654182 klasse zeile -beruehrt-aus
+654820 zeiger down touch zeile<div 231 304
+654820 touchstart zeile<div finger 1
+654900 klasse zeile +beruehrt
+654900 klasse zeile +beruehrt
+654915 klasse zeile -beruehrt
+654916 klasse zeile +beruehrt-aus
+654917 klasse zeile -beruehrt
+654917 zeiger up touch zeile<div 231 304 weg 0
+654917 touchend zeile<div finger 0
+654952 ausgeloest zeile
+654952 auswahl 0
+654952 klick zeile<div verhindert nein
+655116 klasse zeile -beruehrt-aus
+655423 zeiger down touch zeile<div 253 305
+655423 touchstart zeile<div finger 1
+655504 klasse zeile +beruehrt
+655504 klasse zeile +beruehrt
+655517 stil zeile beruehrt opacity 1.00 hg rgb(229,229,234) transform none filter none
+655517 stil zeile beruehrt opacity 1.00 hg rgb(229,229,234) transform none filter none
+655864 klasse zeile -beruehrt
+655864 klasse zeile +beruehrt-aus
+655864 klasse zeile -beruehrt
+655864 zeiger up touch zeile<div 253 305 weg 0
+655865 touchend zeile<div finger 0
+655897 ausgeloest zeile
+655898 selectstart zeile<div verhindert nein
+655898 klick zeile<div verhindert nein
+656065 klasse zeile -beruehrt-aus
+656356 zeiger down touch zeile<div 261 303
+656357 touchstart zeile<div finger 1
+656438 klasse zeile +beruehrt
+656438 klasse zeile +beruehrt
+656451 stil zeile beruehrt opacity 1.00 hg rgb(229,229,234) transform none filter none
+656451 stil zeile beruehrt opacity 1.00 hg rgb(229,229,234) transform none filter none
+656832 klasse zeile -beruehrt
+656832 klasse zeile +beruehrt-aus
+656833 klasse zeile -beruehrt
+656833 zeiger up touch zeile<div 261 303 weg 0
+656833 touchend zeile<div finger 0
+656868 ausgeloest zeile
+656868 selectstart zeile<div verhindert nein
+656868 klick zeile<div verhindert nein
+657033 klasse zeile -beruehrt-aus
+658136 zeiger down touch zeile<div 289 300
+658136 touchstart zeile<div finger 1
+658217 klasse zeile +beruehrt
+658217 klasse zeile +beruehrt
+658234 stil zeile beruehrt opacity 1.00 hg rgb(229,229,234) transform none filter none
+658234 stil zeile beruehrt opacity 1.00 hg rgb(229,229,234) transform none filter none
+658791 auswahl 5
+658806 klasse zeile -beruehrt
+658806 klasse zeile +beruehrt-aus
+658806 klasse zeile -beruehrt
+658806 zeiger up touch zeile<div 289 300 weg 0
+658806 touchend zeile<div finger 0
+659007 klasse zeile -beruehrt-aus
+659334 zeiger down touch zeile<div 293 301
+659334 touchstart zeile<div finger 1
+659415 klasse zeile +beruehrt
+659415 klasse zeile +beruehrt
+659426 stil zeile beruehrt opacity 1.00 hg rgb(229,229,234) transform none filter none
+659427 stil zeile beruehrt opacity 1.00 hg rgb(229,229,234) transform none filter none
+659477 klasse zeile -beruehrt
+659477 klasse zeile +beruehrt-aus
+659477 klasse zeile -beruehrt
+659478 zeiger up touch zeile<div 293 301 weg 0
+659478 touchend zeile<div finger 0
+659513 ausgeloest zeile
+659513 auswahl 0
+659513 klick zeile<div verhindert nein
+659678 klasse zeile -beruehrt-aus
+659938 zeiger down touch zeile<div 282 302
+659938 touchstart zeile<div finger 1
+660019 klasse zeile +beruehrt
+660019 klasse zeile +beruehrt
+660034 stil zeile beruehrt opacity 1.00 hg rgb(229,229,234) transform none filter none
+660034 stil zeile beruehrt opacity 1.00 hg rgb(229,229,234) transform none filter none
+660382 klasse zeile -beruehrt
+660382 klasse zeile +beruehrt-aus
+660383 klasse zeile -beruehrt
+660383 zeiger up touch zeile<div 282 302 weg 0
+660383 touchend zeile<div finger 0
+660416 ausgeloest zeile
+660416 selectstart zeile<div verhindert nein
+660417 klick zeile<div verhindert nein
+660583 klasse zeile -beruehrt-aus
+660920 zeiger down touch zeile<div 287 305
+660920 touchstart zeile<div finger 1
+661001 klasse zeile +beruehrt
+661001 klasse zeile +beruehrt
+661018 stil zeile beruehrt opacity 1.00 hg rgb(229,229,234) transform none filter none
+661018 stil zeile beruehrt opacity 1.00 hg rgb(229,229,234) transform none filter none
+661298 klasse zeile -beruehrt
+661298 klasse zeile +beruehrt-aus
+661298 klasse zeile -beruehrt
+661299 zeiger up touch zeile<div 287 305 weg 0
+661299 touchend zeile<div finger 0
+661331 ausgeloest zeile
+661331 selectstart zeile<div verhindert nein
+661332 klick zeile<div verhindert nein
+661500 klasse zeile -beruehrt-aus
+670405 zeiger down touch zeile<td 257 318
+670406 touchstart zeile<td finger 1
+670543 zeiger up touch zeile<td 245 293 weg 26
+670543 touchend zeile<td finger 0
+671122 zeiger down touch zeile<div 222 299
+671122 touchstart zeile<div finger 1
+671203 klasse zeile +beruehrt
+671203 klasse zeile +beruehrt
+671219 stil zeile beruehrt opacity 1.00 hg rgb(229,229,234) transform none filter none
+671220 stil zeile beruehrt opacity 1.00 hg rgb(229,229,234) transform none filter none
+671774 auswahl 5
+672738 klasse zeile -beruehrt
+672738 klasse zeile +beruehrt-aus
+672739 klasse zeile -beruehrt
+672739 zeiger up touch zeile<div 222 299 weg 0
+672739 touchend zeile<div finger 0
+672939 klasse zeile -beruehrt-aus
+673469 zeiger down touch zeile<span 228 281
+673469 touchstart zeile<span finger 1
+673550 klasse zeile +beruehrt
+673550 klasse zeile +beruehrt
+673562 stil zeile beruehrt opacity 1.00 hg rgb(229,229,234) transform none filter none
+673564 stil zeile beruehrt opacity 1.00 hg rgb(229,229,234) transform none filter none
+674122 auswahl 8
+675209 klasse zeile -beruehrt
+675210 klasse zeile +beruehrt-aus
+675210 klasse zeile -beruehrt
+675210 zeiger up touch zeile<span 228 281 weg 0
+675210 touchend zeile<span finger 0
+675410 klasse zeile -beruehrt-aus
+676128 zeiger down touch zeile<span 170 279
+676128 touchstart zeile<span finger 1
+676209 klasse zeile +beruehrt
+676211 klasse zeile +beruehrt
+676220 stil zeile beruehrt opacity 1.00 hg rgb(229,229,234) transform none filter none
+676221 stil zeile beruehrt opacity 1.00 hg rgb(229,229,234) transform none filter none
+676780 auswahl 0
+677669 klasse zeile -beruehrt
+677669 klasse zeile +beruehrt-aus
+677669 klasse zeile -beruehrt
+677669 zeiger up touch zeile<span 170 279 weg 0
+677669 touchend zeile<span finger 0
+677671 auswahl 8
+677869 klasse zeile -beruehrt-aus
+678449 zeiger down touch zeile<span 169 272
+678449 touchstart zeile<span finger 1
+678529 klasse zeile +beruehrt
+678529 klasse zeile +beruehrt
+678546 stil zeile beruehrt opacity 1.00 hg rgb(229,229,234) transform none filter none
+678546 stil zeile beruehrt opacity 1.00 hg rgb(229,229,234) transform none filter none
+679101 auswahl 0
+681127 klasse zeile -beruehrt
+681129 klasse zeile +beruehrt-aus
+681129 klasse zeile -beruehrt
+681129 zeiger up touch zeile<span 172 277 weg 5
+681129 touchend zeile<span finger 0
+681131 auswahl 8
+681328 klasse zeile -beruehrt-aus
+709758 zeiger cancel touch div.rolle 0 0
+720360 fertig 5 · ts xl ax 0 px 19 ruhig 0 innen 402x812
+720361 fall 6 B normal · ts xl ax 0 px 19 ruhig 0 innen 402x812
+720361 auswahl 0
+725698 zeiger down touch zeile<span 179 205
+725698 touchstart zeile<span finger 1
+725779 klasse zeile +beruehrt
+725779 klasse zeile +beruehrt
+725795 stil zeile beruehrt opacity 1.00 hg rgb(229,229,234) transform none filter none
+725795 stil zeile beruehrt opacity 1.00 hg rgb(229,229,234) transform none filter none
+727793 klasse zeile -beruehrt
+728329 zeiger up touch zeile<span 215 217 weg 36
+728330 touchend zeile<span finger 0
+728913 zeiger down touch zeile<div 214 216
+728913 touchstart zeile<div finger 1
+728993 klasse zeile +beruehrt
+728993 klasse zeile +beruehrt
+729013 stil zeile beruehrt opacity 1.00 hg rgb(229,229,234) transform none filter none
+729013 stil zeile beruehrt opacity 1.00 hg rgb(229,229,234) transform none filter none
+730344 klasse zeile -beruehrt
+730344 klasse zeile +beruehrt-aus
+730344 klasse zeile -beruehrt
+730344 zeiger up touch zeile<div 214 216 weg 0
+730344 touchend zeile<div finger 0
+730378 ausgeloest zeile
+730378 klick zeile<div verhindert nein
+730545 klasse zeile -beruehrt-aus
+731015 zeiger down touch zeile<div 199 218
+731015 touchstart zeile<div finger 1
+731096 klasse zeile +beruehrt
+731096 klasse zeile +beruehrt
+731113 stil zeile beruehrt opacity 1.00 hg rgb(229,229,234) transform none filter none
+731113 stil zeile beruehrt opacity 1.00 hg rgb(229,229,234) transform none filter none
+731860 klasse zeile -beruehrt
+731861 klasse zeile +beruehrt-aus
+731861 klasse zeile -beruehrt
+731861 zeiger up touch zeile<div 199 218 weg 0
+731861 touchend zeile<div finger 0
+731895 ausgeloest zeile
+731895 klick zeile<div verhindert nein
+732062 klasse zeile -beruehrt-aus
+732402 zeiger down touch zeile<div 200 218
+732404 touchstart zeile<div finger 1
+732484 klasse zeile +beruehrt
+732484 klasse zeile +beruehrt
+732497 stil zeile beruehrt opacity 1.00 hg rgb(229,229,234) transform none filter none
+732497 stil zeile beruehrt opacity 1.00 hg rgb(229,229,234) transform none filter none
+733060 klasse zeile -beruehrt
+733060 klasse zeile +beruehrt-aus
+733061 klasse zeile -beruehrt
+733061 zeiger up touch zeile<div 200 218 weg 0
+733061 touchend zeile<div finger 0
+733095 ausgeloest zeile
+733095 klick zeile<div verhindert nein
+733260 klasse zeile -beruehrt-aus
+778404 fertig 6 · ts xl ax 0 px 19 ruhig 0 innen 402x812
+778404 fall 7 A normal · ts xl ax 0 px 19 ruhig 0 innen 402x812
+786385 fenster auf
+792565 zeiger down touch smiley0 37 107
+792566 touchstart smiley0 finger 1
+792645 klasse smiley0 +beruehrt
+792674 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+792716 klasse smiley0 +hebt
+792728 stil smiley0 hebt opacity 1.00 hg rgba(0,0,0,0) transform matrix(1.007463,0,0,1.007463,0,0) filter drop-shadow(rgba(0,0,0,0.004)0px0px0px)
+793118 stil smiley0 hebt-0.4s opacity 1.00 hg rgba(0,0,0,0) transform matrix(1.244996,0,0,1.244996,0,0) filter drop-shadow(rgba(0,0,0,0.345)0px3px5px)
+793166 frage smiley0
+793174 klasse smiley0 -beruehrt
+793174 klasse smiley0 -hebt
+793174 klasse smiley0 -beruehrt
+793174 pop auf
+793226 auswahl 1
+794100 zeiger up touch smiley0 40 113 weg 5
+794100 touchend smiley0 finger 0
+802400 zeiger down touch dlg<div 169 490
+802400 touchstart dlg<div finger 1
+802457 zeiger up touch dlg<div 169 490 weg 0
+802457 touchend dlg<div finger 0
+802506 pop zu
+802506 antwort abbrechen
+802507 auswahl 0
+802507 klick div.layer verhindert nein
+803576 zeiger down touch smiley0 34 110
+803576 touchstart smiley0 finger 1
+803657 klasse smiley0 +beruehrt
+803657 klasse smiley0 +beruehrt
+803667 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+803667 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+803727 klasse smiley0 +hebt
+803734 stil smiley0 hebt opacity 1.00 hg rgba(0,0,0,0) transform matrix(1.006542,0,0,1.006542,0,0) filter drop-shadow(rgba(0,0,0,0.004)0px0px0px)
+804128 stil smiley0 hebt-0.4s opacity 1.00 hg rgba(0,0,0,0) transform matrix(1.244996,0,0,1.244996,0,0) filter drop-shadow(rgba(0,0,0,0.345)0px3px5px)
+804177 frage smiley0
+804180 klasse smiley0 -beruehrt
+804180 klasse smiley0 -hebt
+804181 klasse smiley0 -beruehrt
+804181 pop auf
+804229 auswahl 1
+804686 zeiger up touch smiley0 39 114 weg 6
+804686 touchend smiley0 finger 0
+805183 zeiger down touch dlg<div 174 477
+805183 touchstart dlg<div finger 1
+805310 zeiger up touch dlg<div 173 467 weg 11
+805310 touchend dlg<div finger 0
+806051 zeiger down touch dlg<div 163 506
+806051 touchstart dlg<div finger 1
+806128 zeiger up touch dlg<div 163 506 weg 0
+806128 touchend dlg<div finger 0
+806176 pop zu
+806176 antwort abbrechen
+806177 auswahl 0
+806177 klick div.layer verhindert nein
+807246 zeiger down touch smiley0 28 116
+807246 touchstart smiley0 finger 1
+807326 klasse smiley0 +beruehrt
+807326 klasse smiley0 +beruehrt
+807343 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+807343 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+807397 klasse smiley0 +hebt
+807410 stil smiley0 hebt opacity 1.00 hg rgba(0,0,0,0) transform matrix(1.011121,0,0,1.011121,0,0) filter drop-shadow(rgba(0,0,0,0.004)0px0px0px)
+807739 klasse smiley0 -beruehrt
+807740 klasse smiley0 -hebt
+808365 zeiger up touch smiley0 43 142 weg 28
+808366 touchend smiley0 finger 0
+808921 zeiger down touch smiley0 42 123
+808922 touchstart smiley0 finger 1
+809002 klasse smiley0 +beruehrt
+809002 klasse smiley0 +beruehrt
+809018 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+809018 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+809073 klasse smiley0 +hebt
+809085 stil smiley0 hebt opacity 1.00 hg rgba(0,0,0,0) transform matrix(1.011121,0,0,1.011121,0,0) filter drop-shadow(rgba(0,0,0,0.004)0px0px0px)
+809474 stil smiley0 hebt-0.4s opacity 1.00 hg rgba(0,0,0,0) transform matrix(1.244996,0,0,1.244996,0,0) filter drop-shadow(rgba(0,0,0,0.345)0px3px5px)
+809522 frage smiley0
+809525 klasse smiley0 -beruehrt
+809525 klasse smiley0 -hebt
+809526 klasse smiley0 -beruehrt
+809526 pop auf
+809575 auswahl 1
+810257 zeiger up touch smiley0 42 123 weg 0
+810258 touchend smiley0 finger 0
+815589 zeiger down touch dlg<div 189 513
+815591 touchstart dlg<div finger 1
+815650 zeiger up touch dlg<div 189 513 weg 0
+815650 touchend dlg<div finger 0
+815697 pop zu
+815697 antwort abbrechen
+815699 auswahl 0
+815699 klick div.layer verhindert nein
+816401 zeiger down touch smiley0 37 119
+816402 touchstart smiley0 finger 1
+816483 klasse smiley0 +beruehrt
+816483 klasse smiley0 +beruehrt
+816494 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+816495 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+816553 klasse smiley0 +hebt
+816561 stil smiley0 hebt opacity 1.00 hg rgba(0,0,0,0) transform matrix(1.007463,0,0,1.007463,0,0) filter drop-shadow(rgba(0,0,0,0.004)0px0px0px)
+816954 stil smiley0 hebt-0.4s opacity 1.00 hg rgba(0,0,0,0) transform matrix(1.244996,0,0,1.244996,0,0) filter drop-shadow(rgba(0,0,0,0.345)0px3px5px)
+817003 frage smiley0
+817006 klasse smiley0 -beruehrt
+817006 klasse smiley0 -hebt
+817006 klasse smiley0 -beruehrt
+817007 pop auf
+817712 zeiger up touch smiley0 37 124 weg 4
+817713 touchend smiley0 finger 0
+818317 zeiger down touch dlg<div 179 416
+818319 touchstart dlg<div finger 1
+818429 zeiger up touch dlg<div 179 416 weg 0
+818430 touchend dlg<div finger 0
+818466 pop zu
+818466 antwort abbrechen
+818466 selectstart div.layer verhindert nein
+818466 klick div.layer verhindert nein
+819069 zeiger down touch smiley0 34 110
+819069 touchstart smiley0 finger 1
+819150 klasse smiley0 +beruehrt
+819150 klasse smiley0 +beruehrt
+819162 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+819162 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+819219 klasse smiley0 +hebt
+819228 stil smiley0 hebt opacity 1.00 hg rgba(0,0,0,0) transform matrix(1.007463,0,0,1.007463,0,0) filter drop-shadow(rgba(0,0,0,0.004)0px0px0px)
+819621 stil smiley0 hebt-0.4s opacity 1.00 hg rgba(0,0,0,0) transform matrix(1.244996,0,0,1.244996,0,0) filter drop-shadow(rgba(0,0,0,0.345)0px3px5px)
+819670 frage smiley0
+819674 klasse smiley0 -beruehrt
+819674 klasse smiley0 -hebt
+819674 klasse smiley0 -beruehrt
+819674 pop auf
+819722 auswahl 1
+819929 zeiger up touch smiley0 43 114 weg 8
+819929 touchend smiley0 finger 0
+820624 zeiger down touch dlg<div 162 473
+820625 touchstart dlg<div finger 1
+820701 zeiger up touch dlg<div 162 473 weg 0
+820702 touchend dlg<div finger 0
+820750 pop zu
+820750 antwort abbrechen
+820750 auswahl 0
+820750 klick div.layer verhindert nein
+821236 zeiger down touch smiley0 25 110
+821236 touchstart smiley0 finger 1
+821317 klasse smiley0 +beruehrt
+821317 klasse smiley0 +beruehrt
+821329 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+821329 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+821387 klasse smiley0 +hebt
+821395 stil smiley0 hebt opacity 1.00 hg rgba(0,0,0,0) transform matrix(1.007463,0,0,1.007463,0,0) filter drop-shadow(rgba(0,0,0,0.004)0px0px0px)
+821531 klasse smiley0 -beruehrt
+821531 klasse smiley0 -hebt
+821946 zeiger up touch smiley0 41 127 weg 22
+821947 touchend smiley0 finger 0
+822360 zeiger down touch dlg<div 168 407
+822361 touchstart dlg<div finger 1
+822455 zeiger up touch dlg<div 168 407 weg 0
+822456 touchend dlg<div finger 0
+822491 selectstart dlg<div verhindert nein
+822491 klick dlg<div verhindert nein
+823078 zeiger down touch smiley0 36 123
+823078 touchstart smiley0 finger 1
+823159 klasse smiley0 +beruehrt
+823159 klasse smiley0 +beruehrt
+823170 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+823171 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+823229 klasse smiley0 +hebt
+823237 stil smiley0 hebt opacity 1.00 hg rgba(0,0,0,0) transform matrix(1.007463,0,0,1.007463,0,0) filter drop-shadow(rgba(0,0,0,0.004)0px0px0px)
+823630 stil smiley0 hebt-0.4s opacity 1.00 hg rgba(0,0,0,0) transform matrix(1.244996,0,0,1.244996,0,0) filter drop-shadow(rgba(0,0,0,0.345)0px3px5px)
+823679 frage smiley0
+823683 klasse smiley0 -beruehrt
+823683 klasse smiley0 -hebt
+823683 klasse smiley0 -beruehrt
+823683 pop auf
+823732 auswahl 1
+823973 zeiger up touch smiley0 36 123 weg 0
+823973 touchend smiley0 finger 0
+824503 zeiger down touch dlg<div 152 469
+824505 touchstart dlg<div finger 1
+824576 zeiger up touch dlg<div 148 458 weg 9
+824576 touchend dlg<div finger 0
+825370 zeiger down touch dlg<div 126 552
+825370 touchstart dlg<div finger 1
+825427 zeiger up touch dlg<div 126 552 weg 0
+825427 touchend dlg<div finger 0
+825476 pop zu
+825476 antwort abbrechen
+825476 auswahl 0
+825476 klick div.layer verhindert nein
+826324 zeiger down touch smiley0 32 123
+826324 touchstart smiley0 finger 1
+826405 klasse smiley0 +beruehrt
+826405 klasse smiley0 +beruehrt
+826421 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+826421 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+826475 klasse smiley0 +hebt
+826488 stil smiley0 hebt opacity 1.00 hg rgba(0,0,0,0) transform matrix(1.011121,0,0,1.011121,0,0) filter drop-shadow(rgba(0,0,0,0.004)0px0px0px)
+826551 klasse smiley0 -beruehrt
+826551 klasse smiley0 -hebt
+826940 zeiger up touch dlg 31 135 weg 13
+826940 touchend smiley0 finger 0
+827290 zeiger down touch dlg<div 83 283
+827290 touchstart dlg<div finger 1
+827402 zeiger up touch dlg<div 83 283 weg 0
+827402 touchend dlg<div finger 0
+827436 selectstart dlg<div verhindert nein
+827436 klick dlg<div verhindert nein
+828028 zeiger down touch smiley0 40 121
+828029 touchstart smiley0 finger 1
+828109 klasse smiley0 +beruehrt
+828110 klasse smiley0 +beruehrt
+828121 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+828121 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+828180 klasse smiley0 +hebt
+828188 stil smiley0 hebt opacity 1.00 hg rgba(0,0,0,0) transform matrix(1.007463,0,0,1.007463,0,0) filter drop-shadow(rgba(0,0,0,0.004)0px0px0px)
+828581 stil smiley0 hebt-0.4s opacity 1.00 hg rgba(0,0,0,0) transform matrix(1.244996,0,0,1.244996,0,0) filter drop-shadow(rgba(0,0,0,0.345)0px3px5px)
+828630 frage smiley0
+828633 klasse smiley0 -beruehrt
+828633 klasse smiley0 -hebt
+828633 klasse smiley0 -beruehrt
+828633 pop auf
+828902 zeiger up touch smiley0 37 126 weg 5
+828904 touchend smiley0 finger 0
+829394 zeiger down touch dlg<div 137 436
+829394 touchstart dlg<div finger 1
+829486 zeiger up touch dlg<div 137 436 weg 0
+829486 touchend dlg<div finger 0
+829522 pop zu
+829522 antwort abbrechen
+829523 selectstart div.layer verhindert nein
+829523 klick div.layer verhindert nein
+830044 zeiger down touch dlg<div 31 131
+830044 touchstart dlg<div finger 1
+830697 auswahl 2
+830961 zeiger up touch dlg<div 35 130 weg 3
+830961 touchend dlg<div finger 0
+831359 zeiger down touch dlg<div 94 313
+831360 touchstart dlg<div finger 1
+831436 zeiger up touch dlg<div 94 313 weg 0
+831437 touchend dlg<div finger 0
+831473 selectstart dlg<div verhindert nein
+831473 auswahl 0
+831473 klick dlg<div verhindert nein
+832038 zeiger down touch smiley0 29 120
+832038 touchstart smiley0 finger 1
+832119 klasse smiley0 +beruehrt
+832119 klasse smiley0 +beruehrt
+832130 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+832132 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+832189 klasse smiley0 +hebt
+832197 stil smiley0 hebt opacity 1.00 hg rgba(0,0,0,0) transform matrix(1.007463,0,0,1.007463,0,0) filter drop-shadow(rgba(0,0,0,0.004)0px0px0px)
+832590 stil smiley0 hebt-0.4s opacity 1.00 hg rgba(0,0,0,0) transform matrix(1.244996,0,0,1.244996,0,0) filter drop-shadow(rgba(0,0,0,0.345)0px3px5px)
+832639 frage smiley0
+832642 klasse smiley0 -beruehrt
+832642 klasse smiley0 -hebt
+832642 klasse smiley0 -beruehrt
+832643 pop auf
+832692 auswahl 1
+832981 zeiger up touch smiley0 35 124 weg 6
+832982 touchend smiley0 finger 0
+833450 zeiger down touch dlg<div 111 436
+833451 touchstart dlg<div finger 1
+833537 zeiger up touch dlg<div 111 436 weg 0
+833538 touchend dlg<div finger 0
+833585 pop zu
+833585 antwort abbrechen
+833586 auswahl 0
+833586 klick div.layer verhindert nein
+834122 zeiger down touch smiley0 31 127
+834123 touchstart smiley0 finger 1
+834203 klasse smiley0 +beruehrt
+834203 klasse smiley0 +beruehrt
+834214 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+834214 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+834274 klasse smiley0 +hebt
+834281 stil smiley0 hebt opacity 1.00 hg rgba(0,0,0,0) transform matrix(1.005618,0,0,1.005618,0,0) filter drop-shadow(rgba(0,0,0,0.004)0px0px0px)
+834548 klasse smiley0 -beruehrt
+834548 klasse smiley0 -hebt
+835032 zeiger up touch smiley0 40 126 weg 11
+835032 touchend smiley0 finger 0
+835935 zeiger down touch smiley0 28 120
+835935 touchstart smiley0 finger 1
+836016 klasse smiley0 +beruehrt
+836016 klasse smiley0 +beruehrt
+836031 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+836031 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+836086 klasse smiley0 +hebt
+836098 stil smiley0 hebt opacity 1.00 hg rgba(0,0,0,0) transform matrix(1.011121,0,0,1.011121,0,0) filter drop-shadow(rgba(0,0,0,0.004)0px0px0px)
+836488 stil smiley0 hebt-0.4s opacity 1.00 hg rgba(0,0,0,0) transform matrix(1.244996,0,0,1.244996,0,0) filter drop-shadow(rgba(0,0,0,0.345)0px3px5px)
+836537 frage smiley0
+836540 klasse smiley0 -beruehrt
+836540 klasse smiley0 -hebt
+836540 klasse smiley0 -beruehrt
+836540 pop auf
+836589 auswahl 1
+837770 zeiger up touch smiley0 28 120 weg 0
+837771 touchend smiley0 finger 0
+838584 zeiger down touch dlg<div 126 553
+838584 touchstart dlg<div finger 1
+838679 zeiger up touch dlg<div 126 553 weg 0
+838679 touchend dlg<div finger 0
+838727 pop zu
+838727 antwort abbrechen
+838727 auswahl 0
+838728 klick div.layer verhindert nein
+839330 zeiger down touch smiley0 36 119
+839330 touchstart smiley0 finger 1
+839411 klasse smiley0 +beruehrt
+839411 klasse smiley0 +beruehrt
+839423 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+839423 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+839481 klasse smiley0 +hebt
+839491 stil smiley0 hebt opacity 1.00 hg rgba(0,0,0,0) transform matrix(1.009297,0,0,1.009297,0,0) filter drop-shadow(rgba(0,0,0,0.004)0px0px0px)
+839883 stil smiley0 hebt-0.4s opacity 1.00 hg rgba(0,0,0,0) transform matrix(1.245188,0,0,1.245188,0,0) filter drop-shadow(rgba(0,0,0,0.345)0px3px5px)
+839931 frage smiley0
+839934 klasse smiley0 -beruehrt
+839935 klasse smiley0 -hebt
+839935 klasse smiley0 -beruehrt
+839935 pop auf
+839984 auswahl 1
+844179 zeiger up touch smiley0 30 121 weg 76
+844180 touchend smiley0 finger 0
+844811 zeiger down touch dlg<div 101 486
+844811 touchstart dlg<div finger 1
+844922 zeiger up touch dlg<div 101 486 weg 0
+844922 touchend dlg<div finger 0
+844970 pop zu
+844970 antwort abbrechen
+844970 auswahl 0
+844971 klick div.layer verhindert nein
+845273 zeiger down touch dlg<div 25 142
+845275 touchstart dlg<div finger 1
+845350 zeiger up touch dlg<div 30 122 weg 18
+845350 touchend dlg<div finger 0
+845723 zeiger down touch smiley0 38 106
+845723 touchstart smiley0 finger 1
+845804 klasse smiley0 +beruehrt
+845804 klasse smiley0 +beruehrt
+845816 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+845816 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+845874 klasse smiley0 +hebt
+845883 stil smiley0 hebt opacity 1.00 hg rgba(0,0,0,0) transform matrix(1.008381,0,0,1.008381,0,0) filter drop-shadow(rgba(0,0,0,0.004)0px0px0px)
+846275 stil smiley0 hebt-0.4s opacity 1.00 hg rgba(0,0,0,0) transform matrix(1.244996,0,0,1.244996,0,0) filter drop-shadow(rgba(0,0,0,0.345)0px3px5px)
+846324 frage smiley0
+846328 klasse smiley0 -beruehrt
+846328 klasse smiley0 -hebt
+846328 klasse smiley0 -beruehrt
+846328 pop auf
+846378 auswahl 1
+850223 zeiger up touch smiley0 30 121 weg 108
+850223 touchend smiley0 finger 0
+851258 zeiger down touch dlg<div 125 537
+851259 touchstart dlg<div finger 1
+851297 zeiger up touch dlg<div 125 537 weg 0
+851298 touchend dlg<div finger 0
+851345 pop zu
+851345 antwort abbrechen
+851346 auswahl 0
+851346 klick div.layer verhindert nein
+852383 zeiger down touch smiley0 39 104
+852383 touchstart smiley0 finger 1
+852464 klasse smiley0 +beruehrt
+852464 klasse smiley0 +beruehrt
+852475 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+852476 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+852534 klasse smiley0 +hebt
+852543 stil smiley0 hebt opacity 1.00 hg rgba(0,0,0,0) transform matrix(1.007463,0,0,1.007463,0,0) filter drop-shadow(rgba(0,0,0,0.004)0px0px0px)
+852936 stil smiley0 hebt-0.4s opacity 1.00 hg rgba(0,0,0,0) transform matrix(1.244996,0,0,1.244996,0,0) filter drop-shadow(rgba(0,0,0,0.345)0px3px5px)
+852985 frage smiley0
+852988 klasse smiley0 -beruehrt
+852989 klasse smiley0 -hebt
+852989 klasse smiley0 -beruehrt
+852989 pop auf
+853036 auswahl 1
+853973 zeiger up touch smiley0 39 104 weg 0
+853974 touchend smiley0 finger 0
+854725 zeiger down touch dlg<div 160 524
+854725 touchstart dlg<div finger 1
+854782 zeiger up touch dlg<div 160 524 weg 0
+854782 touchend dlg<div finger 0
+854830 pop zu
+854830 antwort abbrechen
+854832 auswahl 0
+854832 klick div.layer verhindert nein
+855485 zeiger down touch smiley0 36 106
+855486 touchstart smiley0 finger 1
+855566 klasse smiley0 +beruehrt
+855566 klasse smiley0 +beruehrt
+855576 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+855576 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+855636 klasse smiley0 +hebt
+855643 stil smiley0 hebt opacity 1.00 hg rgba(0,0,0,0) transform matrix(1.006542,0,0,1.006542,0,0) filter drop-shadow(rgba(0,0,0,0.004)0px0px0px)
+856037 stil smiley0 hebt-0.4s opacity 1.00 hg rgba(0,0,0,0) transform matrix(1.244996,0,0,1.244996,0,0) filter drop-shadow(rgba(0,0,0,0.345)0px3px5px)
+856087 frage smiley0
+856090 klasse smiley0 -beruehrt
+856090 klasse smiley0 -hebt
+856091 klasse smiley0 -beruehrt
+856091 pop auf
+856138 auswahl 1
+856840 zeiger up touch smiley0 36 106 weg 0
+856841 touchend smiley0 finger 0
+871028 zeiger down touch dlg<div 156 522
+871028 touchstart dlg<div finger 1
+871068 zeiger up touch dlg<div 156 522 weg 0
+871068 touchend dlg<div finger 0
+871115 pop zu
+871115 antwort abbrechen
+871117 auswahl 0
+871117 klick div.layer verhindert nein
+872253 zeiger down touch smiley0 43 120
+872254 touchstart smiley0 finger 1
+872334 klasse smiley0 +beruehrt
+872334 klasse smiley0 +beruehrt
+872346 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+872346 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+872405 klasse smiley0 +hebt
+872412 stil smiley0 hebt opacity 1.00 hg rgba(0,0,0,0) transform matrix(1.006542,0,0,1.006542,0,0) filter drop-shadow(rgba(0,0,0,0.004)0px0px0px)
+872806 stil smiley0 hebt-0.4s opacity 1.00 hg rgba(0,0,0,0) transform matrix(1.244996,0,0,1.244996,0,0) filter drop-shadow(rgba(0,0,0,0.345)0px3px5px)
+872856 frage smiley0
+872860 klasse smiley0 -beruehrt
+872860 klasse smiley0 -hebt
+872860 klasse smiley0 -beruehrt
+872860 pop auf
+872908 auswahl 1
+873472 zeiger up touch smiley0 38 122 weg 6
+873473 touchend smiley0 finger 0
+874137 zeiger down touch dlg<div 116 454
+874137 touchstart dlg<div finger 1
+874280 zeiger up touch dlg<div 116 454 weg 0
+874281 touchend dlg<div finger 0
+874316 pop zu
+874317 antwort abbrechen
+874317 auswahl 0
+874317 klick div.layer verhindert nein
+874953 zeiger down touch smiley0 38 110
+874953 touchstart smiley0 finger 1
+875034 klasse smiley0 +beruehrt
+875034 klasse smiley0 +beruehrt
+875046 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+875046 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+875104 klasse smiley0 +hebt
+875113 stil smiley0 hebt opacity 1.00 hg rgba(0,0,0,0) transform matrix(1.005618,0,0,1.005618,0,0) filter drop-shadow(rgba(0,0,0,0.004)0px0px0px)
+875508 stil smiley0 hebt-0.4s opacity 1.00 hg rgba(0,0,0,0) transform matrix(1.244996,0,0,1.244996,0,0) filter drop-shadow(rgba(0,0,0,0.345)0px3px5px)
+875554 frage smiley0
+875558 klasse smiley0 -beruehrt
+875558 klasse smiley0 -hebt
+875558 klasse smiley0 -beruehrt
+875558 pop auf
+875607 auswahl 1
+875919 zeiger up touch smiley0 38 110 weg 0
+875920 touchend smiley0 finger 0
+876500 zeiger down touch dlg<div 123 459
+876500 touchstart dlg<div finger 1
+876659 zeiger up touch dlg<div 123 459 weg 0
+876660 touchend dlg<div finger 0
+876695 pop zu
+876695 antwort abbrechen
+876696 auswahl 0
+876697 klick div.layer verhindert nein
+877313 zeiger down touch smiley0 33 115
+877314 touchstart smiley0 finger 1
+877394 klasse smiley0 +beruehrt
+877394 klasse smiley0 +beruehrt
+877405 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+877405 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+877465 klasse smiley0 +hebt
+877488 stil smiley0 hebt opacity 1.00 hg rgba(0,0,0,0) transform matrix(1.018332,0,0,1.018332,0,0) filter drop-shadow(rgba(0,0,0,0.008)0px0px0px)
+877706 klasse smiley0 -beruehrt
+877706 klasse smiley0 +beruehrt-aus
+877706 klasse smiley0 -beruehrt
+877706 zeiger up touch smiley0 33 115 weg 0
+877706 klasse smiley0 -hebt
+877706 touchend smiley0 finger 0
+877708 ausgeloest smiley0
+877708 klick smiley0 verhindert ja
+877906 klasse smiley0 -beruehrt-aus
+878478 zeiger down touch smiley0 34 113
+878479 touchstart smiley0 finger 1
+878559 klasse smiley0 +beruehrt
+878560 klasse smiley0 +beruehrt
+878572 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+878572 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+878630 klasse smiley0 +hebt
+878640 stil smiley0 hebt opacity 1.00 hg rgba(0,0,0,0) transform matrix(1.008381,0,0,1.008381,0,0) filter drop-shadow(rgba(0,0,0,0.004)0px0px0px)
+879031 stil smiley0 hebt-0.4s opacity 1.00 hg rgba(0,0,0,0) transform matrix(1.244996,0,0,1.244996,0,0) filter drop-shadow(rgba(0,0,0,0.345)0px3px5px)
+879057 klasse smiley0 -beruehrt
+879057 klasse smiley0 +beruehrt-aus
+879057 klasse smiley0 -beruehrt
+879057 zeiger up touch smiley0 34 113 weg 0
+879058 klasse smiley0 -hebt
+879058 touchend smiley0 finger 0
+879062 auswahl 2
+879258 klasse smiley0 -beruehrt-aus
+879911 zeiger down touch dlg<div 59 249
+879911 touchstart dlg<div finger 1
+879973 zeiger up touch dlg<div 59 249 weg 0
+879974 touchend dlg<div finger 0
+880008 auswahl 0
+880009 klick dlg<div verhindert nein
+880895 zeiger down touch smiley0 30 111
+880896 touchstart smiley0 finger 1
+880977 klasse smiley0 +beruehrt
+880977 klasse smiley0 +beruehrt
+880989 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+880989 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+881047 klasse smiley0 +hebt
+881055 stil smiley0 hebt opacity 1.00 hg rgba(0,0,0,0) transform matrix(1.007463,0,0,1.007463,0,0) filter drop-shadow(rgba(0,0,0,0.004)0px0px0px)
+881073 klasse smiley0 -beruehrt
+881073 klasse smiley0 +beruehrt-aus
+881073 klasse smiley0 -beruehrt
+881073 zeiger up touch smiley0 30 111 weg 0
+881073 klasse smiley0 -hebt
+881073 touchend smiley0 finger 0
+881076 ausgeloest smiley0
+881076 klick smiley0 verhindert ja
+881142 zeiger down touch smiley0 29 111
+881142 touchstart smiley0 finger 1
+881206 zeiger up touch smiley0 29 111 weg 0
+881206 touchend smiley0 finger 0
+881274 klasse smiley0 -beruehrt-aus
+881828 zeiger down touch dlg<div 43 204
+881828 touchstart dlg<div finger 1
+881956 zeiger up touch dlg<div 43 204 weg 0
+881956 touchend dlg<div finger 0
+881990 selectstart dlg<div verhindert nein
+881990 klick dlg<div verhindert nein
+882446 zeiger down touch smiley0 33 113
+882446 touchstart smiley0 finger 1
+882527 klasse smiley0 +beruehrt
+882527 klasse smiley0 +beruehrt
+882539 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+882539 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+882597 klasse smiley0 +hebt
+882606 stil smiley0 hebt opacity 1.00 hg rgba(0,0,0,0) transform matrix(1.008381,0,0,1.008381,0,0) filter drop-shadow(rgba(0,0,0,0.004)0px0px0px)
+882998 stil smiley0 hebt-0.4s opacity 1.00 hg rgba(0,0,0,0) transform matrix(1.244996,0,0,1.244996,0,0) filter drop-shadow(rgba(0,0,0,0.345)0px3px5px)
+883040 klasse smiley0 -beruehrt
+883041 klasse smiley0 +beruehrt-aus
+883041 klasse smiley0 -beruehrt
+883041 zeiger up touch smiley0 33 113 weg 0
+883041 klasse smiley0 -hebt
+883042 touchend smiley0 finger 0
+883044 auswahl 2
+883241 klasse smiley0 -beruehrt-aus
+883779 zeiger down touch dlg<div 49 215
+883779 touchstart dlg<div finger 1
+883857 zeiger up touch dlg<div 49 215 weg 0
+883858 touchend dlg<div finger 0
+883893 auswahl 0
+883893 klick dlg<div verhindert nein
+884395 zeiger down touch smiley0 28 117
+884396 touchstart smiley0 finger 1
+884476 klasse smiley0 +beruehrt
+884477 klasse smiley0 +beruehrt
+884489 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+884489 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+884547 klasse smiley0 +hebt
+884556 stil smiley0 hebt opacity 1.00 hg rgba(0,0,0,0) transform matrix(1.008381,0,0,1.008381,0,0) filter drop-shadow(rgba(0,0,0,0.004)0px0px0px)
+884948 stil smiley0 hebt-0.4s opacity 1.00 hg rgba(0,0,0,0) transform matrix(1.244996,0,0,1.244996,0,0) filter drop-shadow(rgba(0,0,0,0.345)0px3px5px)
+884997 frage smiley0
+885001 klasse smiley0 -beruehrt
+885001 klasse smiley0 -hebt
+885001 klasse smiley0 -beruehrt
+885001 pop auf
+885050 auswahl 1
+885179 zeiger up touch smiley0 28 117 weg 0
+885179 touchend smiley0 finger 0
+886558 zeiger down touch dlg<div 79 390
+886559 touchstart dlg<div finger 1
+886667 zeiger up touch dlg<div 79 390 weg 0
+886667 touchend dlg<div finger 0
+886703 pop zu
+886703 antwort abbrechen
+886703 auswahl 0
+886703 klick div.layer verhindert nein
+887303 zeiger down touch smiley0 31 123
+887304 touchstart smiley0 finger 1
+887384 klasse smiley0 +beruehrt
+887385 klasse smiley0 +beruehrt
+887398 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+887398 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+887454 klasse smiley0 +hebt
+887465 stil smiley0 hebt opacity 1.00 hg rgba(0,0,0,0) transform matrix(1.009297,0,0,1.009297,0,0) filter drop-shadow(rgba(0,0,0,0.004)0px0px0px)
+887856 stil smiley0 hebt-0.4s opacity 1.00 hg rgba(0,0,0,0) transform matrix(1.244996,0,0,1.244996,0,0) filter drop-shadow(rgba(0,0,0,0.345)0px3px5px)
+887904 frage smiley0
+887908 klasse smiley0 -beruehrt
+887908 klasse smiley0 -hebt
+887908 klasse smiley0 -beruehrt
+887909 pop auf
+887955 auswahl 1
+888132 zeiger up touch smiley0 30 130 weg 6
+888133 touchend smiley0 finger 0
+888573 zeiger down touch dlg<div 90 413
+888573 touchstart dlg<div finger 1
+888676 zeiger up touch dlg<div 90 413 weg 0
+888676 touchend dlg<div finger 0
+888721 pop zu
+888722 antwort abbrechen
+888722 auswahl 0
+888722 klick div.layer verhindert nein
+889359 zeiger down touch smiley0 24 126
+889361 touchstart smiley0 finger 1
+889440 klasse smiley0 +beruehrt
+889440 klasse smiley0 +beruehrt
+889457 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+889457 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+889512 klasse smiley0 +hebt
+889523 stil smiley0 hebt opacity 1.00 hg rgba(0,0,0,0) transform matrix(1.01021,0,0,1.01021,0,0) filter drop-shadow(rgba(0,0,0,0.004)0px0px0px)
+889913 stil smiley0 hebt-0.4s opacity 1.00 hg rgba(0,0,0,0) transform matrix(1.244996,0,0,1.244996,0,0) filter drop-shadow(rgba(0,0,0,0.345)0px3px5px)
+889954 klasse smiley0 -beruehrt
+889954 klasse smiley0 +beruehrt-aus
+889954 klasse smiley0 -beruehrt
+889955 zeiger up touch smiley0 24 126 weg 0
+889955 klasse smiley0 -hebt
+889955 touchend smiley0 finger 0
+889957 auswahl 2
+890155 klasse smiley0 -beruehrt-aus
+890464 zeiger down touch dlg<div 79 317
+890465 touchstart dlg<div finger 1
+890538 zeiger up touch dlg<div 79 317 weg 0
+890538 touchend dlg<div finger 0
+890574 selectstart dlg<div verhindert nein
+890574 auswahl 0
+890574 klick dlg<div verhindert nein
+891079 zeiger down touch smiley0 29 125
+891080 touchstart smiley0 finger 1
+891160 klasse smiley0 +beruehrt
+891161 klasse smiley0 +beruehrt
+891174 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+891174 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+891231 klasse smiley0 +hebt
+891241 stil smiley0 hebt opacity 1.00 hg rgba(0,0,0,0) transform matrix(1.009297,0,0,1.009297,0,0) filter drop-shadow(rgba(0,0,0,0.004)0px0px0px)
+891488 klasse smiley0 -beruehrt
+891488 klasse smiley0 +beruehrt-aus
+891488 klasse smiley0 -beruehrt
+891488 zeiger up touch smiley0 29 125 weg 0
+891488 klasse smiley0 -hebt
+891488 touchend smiley0 finger 0
+891492 ausgeloest smiley0
+891492 klick smiley0 verhindert ja
+891688 klasse smiley0 -beruehrt-aus
+892493 zeiger down touch dlg<div 22 126
+892494 touchstart dlg<div finger 1
+892904 zeiger up touch dlg<div 30 126 weg 8
+892904 touchend dlg<div finger 0
+892905 ausgeloest smiley0
+892905 klick smiley0 verhindert ja
+893698 zeiger down touch smiley0 31 123
+893699 touchstart smiley0 finger 1
+893780 klasse smiley0 +beruehrt
+893780 klasse smiley0 +beruehrt
+893791 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+893791 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+893850 klasse smiley0 +hebt
+893858 stil smiley0 hebt opacity 1.00 hg rgba(0,0,0,0) transform matrix(1.007463,0,0,1.007463,0,0) filter drop-shadow(rgba(0,0,0,0.004)0px0px0px)
+894122 klasse smiley0 -beruehrt
+894122 klasse smiley0 +beruehrt-aus
+894122 klasse smiley0 -beruehrt
+894122 zeiger up touch smiley0 31 123 weg 0
+894122 klasse smiley0 -hebt
+894123 touchend smiley0 finger 0
+894125 ausgeloest smiley0
+894125 klick smiley0 verhindert ja
+894323 klasse smiley0 -beruehrt-aus
+894794 zeiger down touch smiley0 33 123
+894794 touchstart smiley0 finger 1
+894874 klasse smiley0 +beruehrt
+894874 klasse smiley0 +beruehrt
+894891 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+894891 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+894945 klasse smiley0 +hebt
+894958 stil smiley0 hebt opacity 1.00 hg rgba(0,0,0,0) transform matrix(1.01021,0,0,1.01021,0,0) filter drop-shadow(rgba(0,0,0,0.004)0px0px0px)
+895290 klasse smiley0 -beruehrt
+895290 klasse smiley0 +beruehrt-aus
+895291 klasse smiley0 -beruehrt
+895291 zeiger up touch smiley0 33 123 weg 0
+895291 klasse smiley0 -hebt
+895291 touchend smiley0 finger 0
+895294 ausgeloest smiley0
+895294 klick smiley0 verhindert ja
+895491 klasse smiley0 -beruehrt-aus
+895981 zeiger down touch smiley0 29 124
+895981 touchstart smiley0 finger 1
+896062 klasse smiley0 +beruehrt
+896062 klasse smiley0 +beruehrt
+896074 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+896075 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+896133 klasse smiley0 +hebt
+896141 stil smiley0 hebt opacity 1.00 hg rgba(0,0,0,0) transform matrix(1.007463,0,0,1.007463,0,0) filter drop-shadow(rgba(0,0,0,0.004)0px0px0px)
+896388 klasse smiley0 -beruehrt
+896388 klasse smiley0 +beruehrt-aus
+896388 klasse smiley0 -beruehrt
+896388 zeiger up touch smiley0 29 124 weg 0
+896388 klasse smiley0 -hebt
+896388 touchend smiley0 finger 0
+896389 ausgeloest smiley0
+896389 klick smiley0 verhindert ja
+896588 klasse smiley0 -beruehrt-aus
+896994 zeiger down touch smiley0 31 125
+896995 touchstart smiley0 finger 1
+897074 klasse smiley0 +beruehrt
+897075 klasse smiley0 +beruehrt
+897091 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+897091 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+897146 klasse smiley0 +hebt
+897158 stil smiley0 hebt opacity 1.00 hg rgba(0,0,0,0) transform matrix(1.011121,0,0,1.011121,0,0) filter drop-shadow(rgba(0,0,0,0.004)0px0px0px)
+897547 stil smiley0 hebt-0.4s opacity 1.00 hg rgba(0,0,0,0) transform matrix(1.244996,0,0,1.244996,0,0) filter drop-shadow(rgba(0,0,0,0.345)0px3px5px)
+897556 klasse smiley0 -beruehrt
+897556 klasse smiley0 +beruehrt-aus
+897557 klasse smiley0 -beruehrt
+897557 zeiger up touch smiley0 33 128 weg 3
+897557 klasse smiley0 -hebt
+897557 touchend smiley0 finger 0
+897757 klasse smiley0 -beruehrt-aus
+898315 zeiger down touch smiley0 34 126
+898316 touchstart smiley0 finger 1
+898396 klasse smiley0 +beruehrt
+898396 klasse smiley0 +beruehrt
+898408 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+898408 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+898467 klasse smiley0 +hebt
+898475 stil smiley0 hebt opacity 1.00 hg rgba(0,0,0,0) transform matrix(1.006542,0,0,1.006542,0,0) filter drop-shadow(rgba(0,0,0,0.004)0px0px0px)
+898869 stil smiley0 hebt-0.4s opacity 1.00 hg rgba(0,0,0,0) transform matrix(1.244996,0,0,1.244996,0,0) filter drop-shadow(rgba(0,0,0,0.345)0px3px5px)
+898917 frage smiley0
+898921 klasse smiley0 -beruehrt
+898921 klasse smiley0 -hebt
+898921 klasse smiley0 -beruehrt
+898922 pop auf
+899177 zeiger up touch dlg 41 141 weg 13
+899178 touchend smiley0 finger 0
+899764 zeiger down touch dlg<div 83 387
+899764 touchstart dlg<div finger 1
+899856 zeiger up touch dlg<div 83 387 weg 0
+899856 touchend dlg<div finger 0
+899893 pop zu
+899893 antwort abbrechen
+899893 selectstart div.layer verhindert nein
+899893 klick div.layer verhindert nein
+949924 zeiger down touch smiley0 35 116
+949925 touchstart smiley0 finger 1
+950005 klasse smiley0 +beruehrt
+950006 klasse smiley0 +beruehrt
+950017 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+950017 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+950076 klasse smiley0 +hebt
+950084 stil smiley0 hebt opacity 1.00 hg rgba(0,0,0,0) transform matrix(1.007463,0,0,1.007463,0,0) filter drop-shadow(rgba(0,0,0,0.004)0px0px0px)
+950477 stil smiley0 hebt-0.4s opacity 1.00 hg rgba(0,0,0,0) transform matrix(1.244996,0,0,1.244996,0,0) filter drop-shadow(rgba(0,0,0,0.345)0px3px5px)
+950526 frage smiley0
+950530 klasse smiley0 -beruehrt
+950530 klasse smiley0 -hebt
+950530 klasse smiley0 -beruehrt
+950530 pop auf
+950579 auswahl 1
+950939 zeiger up touch smiley0 35 116 weg 0
+950940 touchend smiley0 finger 0
+951318 zeiger down touch dlg<div 121 448
+951319 touchstart dlg<div finger 1
+951424 zeiger up touch dlg<div 121 448 weg 0
+951424 touchend dlg<div finger 0
+951469 pop zu
+951469 antwort abbrechen
+951471 auswahl 0
+951471 klick div.layer verhindert nein
+952129 zeiger down touch smiley0 36 121
+952130 touchstart smiley0 finger 1
+952210 klasse smiley0 +beruehrt
+952211 klasse smiley0 +beruehrt
+952217 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+952218 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+952281 klasse smiley0 +hebt
+952301 stil smiley0 hebt opacity 1.00 hg rgba(0,0,0,0) transform matrix(1.018332,0,0,1.018332,0,0) filter drop-shadow(rgba(0,0,0,0.008)0px0px0px)
+952682 stil smiley0 hebt-0.4s opacity 1.00 hg rgba(0,0,0,0) transform matrix(1.244996,0,0,1.244996,0,0) filter drop-shadow(rgba(0,0,0,0.345)0px3px5px)
+952731 frage smiley0
+952734 klasse smiley0 -beruehrt
+952735 klasse smiley0 -hebt
+952735 klasse smiley0 -beruehrt
+952735 pop auf
+952779 auswahl 1
+953023 zeiger up touch smiley0 36 121 weg 0
+953024 touchend smiley0 finger 0
+953384 zeiger down touch dlg<div 121 395
+953385 touchstart dlg<div finger 1
+953462 zeiger up touch dlg<div 121 395 weg 0
+953462 touchend dlg<div finger 0
+953508 pop zu
+953509 antwort abbrechen
+953510 auswahl 0
+953510 klick div.layer verhindert nein
+954079 zeiger down touch smiley0 36 116
+954079 touchstart smiley0 finger 1
+954159 klasse smiley0 +beruehrt
+954159 klasse smiley0 +beruehrt
+954176 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+954176 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+954229 klasse smiley0 +hebt
+954243 stil smiley0 hebt opacity 1.00 hg rgba(0,0,0,0) transform matrix(1.01203,0,0,1.01203,0,0) filter drop-shadow(rgba(0,0,0,0.004)0px0px0px)
+954256 klasse smiley0 -beruehrt
+954256 klasse smiley0 +beruehrt-aus
+954257 klasse smiley0 -beruehrt
+954257 zeiger up touch smiley0 36 116 weg 0
+954257 klasse smiley0 -hebt
+954257 touchend smiley0 finger 0
+954259 ausgeloest smiley0
+954259 klick smiley0 verhindert ja
+954457 klasse smiley0 -beruehrt-aus
+954948 zeiger down touch smiley0 37 117
+954949 touchstart smiley0 finger 1
+955028 klasse smiley0 +beruehrt
+955029 klasse smiley0 +beruehrt
+955043 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+955043 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+955100 klasse smiley0 +hebt
+955106 klasse smiley0 -beruehrt
+955106 klasse smiley0 +beruehrt-aus
+955106 klasse smiley0 -beruehrt
+955107 zeiger up touch smiley0 37 117 weg 0
+955107 klasse smiley0 -hebt
+955107 touchend smiley0 finger 0
+955108 ausgeloest smiley0
+955108 klick smiley0 verhindert ja
+955307 klasse smiley0 -beruehrt-aus
+955546 zeiger down touch smiley0 40 117
+955546 touchstart smiley0 finger 1
+955627 klasse smiley0 +beruehrt
+955627 klasse smiley0 +beruehrt
+955643 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+955643 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+955697 klasse smiley0 +hebt
+955710 stil smiley0 hebt opacity 1.00 hg rgba(0,0,0,0) transform matrix(1.011121,0,0,1.011121,0,0) filter drop-shadow(rgba(0,0,0,0.004)0px0px0px)
+956099 stil smiley0 hebt-0.4s opacity 1.00 hg rgba(0,0,0,0) transform matrix(1.244996,0,0,1.244996,0,0) filter drop-shadow(rgba(0,0,0,0.345)0px3px5px)
+956147 frage smiley0
+956151 klasse smiley0 -beruehrt
+956151 klasse smiley0 -hebt
+956151 klasse smiley0 -beruehrt
+956151 pop auf
+956200 auswahl 1
+956777 zeiger up touch smiley0 108 122 weg 71
+956777 touchend smiley0 finger 0
+957201 zeiger down touch dlg<div 118 435
+957202 touchstart dlg<div finger 1
+957256 zeiger up touch dlg<div 122 433 weg 6
+957257 touchend dlg<div finger 0
+957843 zeiger down touch dlg<div 115 523
+957844 touchstart dlg<div finger 1
+957883 zeiger up touch dlg<div 115 523 weg 0
+957883 touchend dlg<div finger 0
+957929 pop zu
+957930 antwort abbrechen
+957930 auswahl 0
+957930 klick div.layer verhindert nein
+958550 zeiger down touch smiley0 42 117
+958551 touchstart smiley0 finger 1
+958631 klasse smiley0 +beruehrt
+958632 klasse smiley0 +beruehrt
+958644 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+958644 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+958702 klasse smiley0 +hebt
+958710 stil smiley0 hebt opacity 1.00 hg rgba(0,0,0,0) transform matrix(1.007463,0,0,1.007463,0,0) filter drop-shadow(rgba(0,0,0,0.004)0px0px0px)
+958877 klasse smiley0 -beruehrt
+958878 klasse smiley0 -hebt
+959532 zeiger up touch smiley0 81 123 weg 55
+959533 touchend smiley0 finger 0
+982923 zeiger down touch smiley1 77 125
+982923 touchstart smiley1 finger 1
+983070 zeiger up touch smiley1 161 147 weg 84
+983070 touchend smiley1 finger 0
+984063 zeiger down touch smiley0 36 111
+984063 touchstart smiley0 finger 1
+984143 klasse smiley0 +beruehrt
+984143 klasse smiley0 +beruehrt
+984156 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+984156 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+984214 klasse smiley0 +hebt
+984223 stil smiley0 hebt opacity 1.00 hg rgba(0,0,0,0) transform matrix(1.007463,0,0,1.007463,0,0) filter drop-shadow(rgba(0,0,0,0.004)0px0px0px)
+984616 stil smiley0 hebt-0.4s opacity 1.00 hg rgba(0,0,0,0) transform matrix(1.244996,0,0,1.244996,0,0) filter drop-shadow(rgba(0,0,0,0.345)0px3px5px)
+984664 frage smiley0
+984667 klasse smiley0 -beruehrt
+984668 klasse smiley0 -hebt
+984668 klasse smiley0 -beruehrt
+984668 pop auf
+984717 auswahl 1
+985107 zeiger up touch smiley0 36 115 weg 6
+985108 touchend smiley0 finger 0
+1032648 klasse dlg<button +beruehrt
+1032648 klasse dlg<button +beruehrt
+1032648 zeiger down touch dlg<button 134 266
+1032649 touchstart dlg<button finger 1
+1032673 stil dlg<button beruehrt opacity 0.35 hg rgb(249,249,249) transform none filter none
+1032674 stil dlg<button beruehrt opacity 0.35 hg rgb(249,249,249) transform none filter none
+1032725 klasse dlg<button -beruehrt
+1032726 klasse dlg<button +beruehrt-aus
+1032726 klasse dlg<button -beruehrt
+1032726 zeiger up touch dlg<button 134 266 weg 0
+1032726 touchend dlg<button finger 0
+1032739 pop zu
+1032739 antwort abbrechen
+1032740 auswahl 0
+1032740 klick button.beruehrt-aus verhindert nein
+1043078 klasse dlgX +beruehrt
+1043078 klasse dlgX +beruehrt
+1043078 zeiger down touch dlgX<svg 46 49
+1043079 touchstart dlgX<svg finger 1
+1043103 stil dlgX beruehrt opacity 0.35 hg rgb(249,249,249) transform none filter none
+1043104 stil dlgX beruehrt opacity 0.35 hg rgb(249,249,249) transform none filter none
+1043189 klasse dlgX -beruehrt
+1043189 klasse dlgX +beruehrt-aus
+1043190 klasse dlgX -beruehrt
+1043190 zeiger up touch dlgX<svg 46 49 weg 0
+1043190 touchend dlgX<svg finger 0
+1043193 ausgeloest dlgX
+1043201 fenster zu
+1043201 klick dlgX<svg verhindert nein
+1043390 klasse dlgX -beruehrt-aus
+1046510 fertig 7 · ts xl ax 0 px 19 ruhig 0 innen 402x812
+1046511 fall 8 B normal · ts xl ax 0 px 19 ruhig 0 innen 402x812
+1058548 fenster auf
+1060280 zeiger down touch smiley0 35 115
+1060281 touchstart smiley0 finger 1
+1060361 klasse smiley0 +beruehrt
+1060373 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+1060432 klasse smiley0 +hebt
+1060440 stil smiley0 hebt opacity 1.00 hg rgba(0,0,0,0) transform matrix(1.007463,0,0,1.007463,0,0) filter drop-shadow(rgba(0,0,0,0.004)0px0px0px)
+1060706 klasse smiley0 -hebt
+1060723 klasse smiley0 -beruehrt
+1060978 zeiger up touch dlg 33 124 weg 11
+1060978 touchend smiley0 finger 0
+1061598 zeiger down touch smiley0 37 110
+1061599 touchstart smiley0 finger 1
+1061679 klasse smiley0 +beruehrt
+1061680 klasse smiley0 +beruehrt
+1061690 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+1061690 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+1061752 klasse smiley0 +hebt
+1061758 stil smiley0 hebt opacity 1.00 hg rgba(0,0,0,0) transform matrix(1.005618,0,0,1.005618,0,0) filter drop-shadow(rgba(0,0,0,0.004)0px0px0px)
+1062153 stil smiley0 hebt-0.4s opacity 1.00 hg rgba(0,0,0,0) transform matrix(1.244996,0,0,1.244996,0,0) filter drop-shadow(rgba(0,0,0,0.345)0px3px5px)
+1062200 frage smiley0
+1062204 klasse smiley0 -beruehrt
+1062204 klasse smiley0 -hebt
+1062204 klasse smiley0 -beruehrt
+1062204 pop auf
+1062251 auswahl 1
+1062283 zeiger up touch smiley0 37 110 weg 0
+1062283 touchend smiley0 finger 0
+1062883 zeiger down touch dlg<div 40 117
+1062883 touchstart dlg<div finger 1
+1063008 zeiger up touch dlg<div 40 117 weg 0
+1063008 touchend dlg<div finger 0
+1063043 pop zu
+1063044 antwort abbrechen
+1063044 auswahl 0
+1063044 klick div.layer verhindert nein
+1063628 zeiger down touch smiley0 30 105
+1063628 touchstart smiley0 finger 1
+1063709 klasse smiley0 +beruehrt
+1063709 klasse smiley0 +beruehrt
+1063720 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+1063720 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+1063779 klasse smiley0 +hebt
+1063787 stil smiley0 hebt opacity 1.00 hg rgba(0,0,0,0) transform matrix(1.005618,0,0,1.005618,0,0) filter drop-shadow(rgba(0,0,0,0.004)0px0px0px)
+1064181 stil smiley0 hebt-0.4s opacity 1.00 hg rgba(0,0,0,0) transform matrix(1.244996,0,0,1.244996,0,0) filter drop-shadow(rgba(0,0,0,0.345)0px3px5px)
+1064229 frage smiley0
+1064233 klasse smiley0 -beruehrt
+1064233 klasse smiley0 -hebt
+1064233 klasse smiley0 -beruehrt
+1064234 pop auf
+1064281 auswahl 1
+1064534 zeiger up touch smiley0 30 105 weg 0
+1064534 touchend smiley0 finger 0
+1065243 zeiger down touch dlg<div 35 103
+1065243 touchstart dlg<div finger 1
+1065301 zeiger up touch dlg<div 35 103 weg 0
+1065302 touchend dlg<div finger 0
+1065348 pop zu
+1065348 antwort abbrechen
+1065350 auswahl 0
+1065350 klick div.layer verhindert nein
+1066068 zeiger down touch smiley0 30 102
+1066069 touchstart smiley0 finger 1
+1066150 klasse smiley0 +beruehrt
+1066150 klasse smiley0 +beruehrt
+1066162 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+1066162 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+1066180 klasse smiley0 -beruehrt
+1066180 klasse smiley0 +beruehrt-aus
+1066181 klasse smiley0 -beruehrt
+1066181 zeiger up touch smiley0 30 102 weg 0
+1066181 touchend smiley0 finger 0
+1066184 ausgeloest smiley0
+1066185 klick smiley0 verhindert ja
+1066381 klasse smiley0 -beruehrt-aus
+1066753 zeiger down touch smiley0 30 103
+1066753 touchstart smiley0 finger 1
+1066834 klasse smiley0 +beruehrt
+1066837 klasse smiley0 +beruehrt
+1066845 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+1066845 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+1066905 klasse smiley0 +hebt
+1066913 stil smiley0 hebt opacity 1.00 hg rgba(0,0,0,0) transform matrix(1.007463,0,0,1.007463,0,0) filter drop-shadow(rgba(0,0,0,0.004)0px0px0px)
+1067306 stil smiley0 hebt-0.4s opacity 1.00 hg rgba(0,0,0,0) transform matrix(1.244996,0,0,1.244996,0,0) filter drop-shadow(rgba(0,0,0,0.345)0px3px5px)
+1067355 frage smiley0
+1067358 klasse smiley0 -beruehrt
+1067359 klasse smiley0 -hebt
+1067359 klasse smiley0 -beruehrt
+1067359 pop auf
+1067406 auswahl 1
+1067666 zeiger up touch smiley0 30 103 weg 0
+1067667 touchend smiley0 finger 0
+1068266 zeiger down touch dlg<div 37 104
+1068267 touchstart dlg<div finger 1
+1068327 zeiger up touch dlg<div 37 104 weg 0
+1068327 touchend dlg<div finger 0
+1068375 pop zu
+1068375 antwort abbrechen
+1068375 auswahl 0
+1068376 klick div.layer verhindert nein
+1068860 zeiger down touch smiley0 40 101
+1068861 touchstart smiley0 finger 1
+1068941 klasse smiley0 +beruehrt
+1068942 klasse smiley0 +beruehrt
+1068954 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+1068956 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+1069011 klasse smiley0 +hebt
+1069021 stil smiley0 hebt opacity 1.00 hg rgba(0,0,0,0) transform matrix(1.008381,0,0,1.008381,0,0) filter drop-shadow(rgba(0,0,0,0.004)0px0px0px)
+1069413 stil smiley0 hebt-0.4s opacity 1.00 hg rgba(0,0,0,0) transform matrix(1.244996,0,0,1.244996,0,0) filter drop-shadow(rgba(0,0,0,0.345)0px3px5px)
+1069461 frage smiley0
+1069465 klasse smiley0 -beruehrt
+1069465 klasse smiley0 -hebt
+1069465 klasse smiley0 -beruehrt
+1069466 pop auf
+1069514 auswahl 1
+1069900 zeiger up touch smiley0 37 101 weg 4
+1069901 touchend smiley0 finger 0
+1070375 zeiger down touch dlg<div 37 101
+1070376 touchstart dlg<div finger 1
+1070461 zeiger up touch dlg<div 37 101 weg 0
+1070461 touchend dlg<div finger 0
+1070509 pop zu
+1070509 antwort abbrechen
+1070511 auswahl 0
+1070511 klick div.layer verhindert nein
+1071254 zeiger down touch smiley0 35 98
+1071255 touchstart smiley0 finger 1
+1071335 klasse smiley0 +beruehrt
+1071335 klasse smiley0 +beruehrt
+1071346 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+1071346 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+1071405 klasse smiley0 +hebt
+1071413 stil smiley0 hebt opacity 1.00 hg rgba(0,0,0,0) transform matrix(1.006542,0,0,1.006542,0,0) filter drop-shadow(rgba(0,0,0,0.004)0px0px0px)
+1071807 stil smiley0 hebt-0.4s opacity 1.00 hg rgba(0,0,0,0) transform matrix(1.2448,0,0,1.2448,0,0) filter drop-shadow(rgba(0,0,0,0.345)0px3px5px)
+1071856 frage smiley0
+1071859 klasse smiley0 -beruehrt
+1071859 klasse smiley0 -hebt
+1071859 klasse smiley0 -beruehrt
+1071860 pop auf
+1071907 auswahl 1
+1072177 zeiger up touch smiley0 35 98 weg 0
+1072177 touchend smiley0 finger 0
+1072805 zeiger down touch dlg<div 34 96
+1072806 touchstart dlg<div finger 1
+1072915 zeiger up touch dlg<div 34 96 weg 0
+1072915 touchend dlg<div finger 0
+1072961 pop zu
+1072962 antwort abbrechen
+1072964 auswahl 0
+1072964 klick div.layer verhindert nein
+1073566 zeiger down touch smiley0 36 102
+1073566 touchstart smiley0 finger 1
+1073647 klasse smiley0 +beruehrt
+1073647 klasse smiley0 +beruehrt
+1073659 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+1073659 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+1073717 klasse smiley0 +hebt
+1073725 stil smiley0 hebt opacity 1.00 hg rgba(0,0,0,0) transform matrix(1.007463,0,0,1.007463,0,0) filter drop-shadow(rgba(0,0,0,0.004)0px0px0px)
+1074118 stil smiley0 hebt-0.4s opacity 1.00 hg rgba(0,0,0,0) transform matrix(1.244996,0,0,1.244996,0,0) filter drop-shadow(rgba(0,0,0,0.345)0px3px5px)
+1074167 frage smiley0
+1074170 klasse smiley0 -beruehrt
+1074170 klasse smiley0 -hebt
+1074171 klasse smiley0 -beruehrt
+1074171 pop auf
+1074222 auswahl 1
+1074485 zeiger up touch smiley0 36 102 weg 0
+1074486 touchend smiley0 finger 0
+1075089 zeiger down touch dlg<div 33 94
+1075089 touchstart dlg<div finger 1
+1075149 zeiger up touch dlg<div 33 94 weg 0
+1075150 touchend dlg<div finger 0
+1075195 pop zu
+1075195 antwort abbrechen
+1075195 auswahl 0
+1075196 klick div.layer verhindert nein
+1075769 zeiger down touch smiley0 30 99
+1075769 touchstart smiley0 finger 1
+1075850 klasse smiley0 +beruehrt
+1075850 klasse smiley0 +beruehrt
+1075859 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+1075859 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+1075920 klasse smiley0 +hebt
+1075926 stil smiley0 hebt opacity 1.00 hg rgba(0,0,0,0) transform matrix(1.005618,0,0,1.005618,0,0) filter drop-shadow(rgba(0,0,0,0.004)0px0px0px)
+1076321 stil smiley0 hebt-0.4s opacity 1.00 hg rgba(0,0,0,0) transform matrix(1.244996,0,0,1.244996,0,0) filter drop-shadow(rgba(0,0,0,0.345)0px3px5px)
+1076370 frage smiley0
+1076373 klasse smiley0 -beruehrt
+1076373 klasse smiley0 -hebt
+1076374 klasse smiley0 -beruehrt
+1076374 pop auf
+1076420 auswahl 1
+1076831 zeiger up touch smiley0 30 99 weg 0
+1076832 touchend smiley0 finger 0
+1077464 zeiger down touch dlg<div 35 106
+1077465 touchstart dlg<div finger 1
+1077589 zeiger up touch dlg<div 35 106 weg 0
+1077590 touchend dlg<div finger 0
+1077625 pop zu
+1077625 antwort abbrechen
+1077625 auswahl 0
+1077625 klick div.layer verhindert nein
+1117665 zeiger down touch smiley0 39 112
+1117665 touchstart smiley0 finger 1
+1117747 klasse smiley0 +beruehrt
+1117747 klasse smiley0 +beruehrt
+1117774 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+1117774 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+1117816 klasse smiley0 +hebt
+1117824 stil smiley0 hebt opacity 1.00 hg rgba(0,0,0,0) transform matrix(1.006542,0,0,1.006542,0,0) filter drop-shadow(rgba(0,0,0,0.004)0px0px0px)
+1118218 stil smiley0 hebt-0.4s opacity 1.00 hg rgba(0,0,0,0) transform matrix(1.244996,0,0,1.244996,0,0) filter drop-shadow(rgba(0,0,0,0.345)0px3px5px)
+1118266 frage smiley0
+1118270 klasse smiley0 -beruehrt
+1118270 klasse smiley0 -hebt
+1118270 klasse smiley0 -beruehrt
+1118271 pop auf
+1118319 auswahl 1
+1119022 zeiger up touch smiley0 38 112 weg 10
+1119022 touchend smiley0 finger 0
+1119637 zeiger down touch dlg<div 40 112
+1119637 touchstart dlg<div finger 1
+1120389 dragstart dlg<div verhindert nein
+1120593 zeiger up touch dlg<div 40 112 weg 0
+1120593 touchend dlg<div finger 0
+1121198 zeiger down touch dlg<div 97 410
+1121198 touchstart dlg<div finger 1
+1121262 zeiger up touch dlg<div 97 410 weg 0
+1121262 touchend dlg<div finger 0
+1121298 pop zu
+1121298 antwort abbrechen
+1121298 auswahl 0
+1121298 klick div.layer verhindert nein
+1121982 zeiger down touch smiley0 37 116
+1121983 touchstart smiley0 finger 1
+1122063 klasse smiley0 +beruehrt
+1122064 klasse smiley0 +beruehrt
+1122075 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+1122075 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+1122134 klasse smiley0 +hebt
+1122142 stil smiley0 hebt opacity 1.00 hg rgba(0,0,0,0) transform matrix(1.007463,0,0,1.007463,0,0) filter drop-shadow(rgba(0,0,0,0.004)0px0px0px)
+1122536 stil smiley0 hebt-0.4s opacity 1.00 hg rgba(0,0,0,0) transform matrix(1.244996,0,0,1.244996,0,0) filter drop-shadow(rgba(0,0,0,0.345)0px3px5px)
+1122585 frage smiley0
+1122588 klasse smiley0 -beruehrt
+1122588 klasse smiley0 -hebt
+1122588 klasse smiley0 -beruehrt
+1122589 pop auf
+1122637 auswahl 1
+1123306 zeiger up touch smiley0 37 116 weg 0
+1123306 touchend smiley0 finger 0
+1124237 zeiger down touch dlg<div 103 502
+1124237 touchstart dlg<div finger 1
+1124349 zeiger up touch dlg<div 103 502 weg 0
+1124349 touchend dlg<div finger 0
+1124398 pop zu
+1124398 antwort abbrechen
+1124398 auswahl 0
+1124399 klick div.layer verhindert nein
+1124913 zeiger down touch smiley0 43 120
+1124913 touchstart smiley0 finger 1
+1124993 klasse smiley0 +beruehrt
+1124993 klasse smiley0 +beruehrt
+1125005 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+1125005 stil smiley0 beruehrt opacity 0.35 hg rgba(0,0,0,0) transform none filter none
+1125064 klasse smiley0 +hebt
+1125073 stil smiley0 hebt opacity 1.00 hg rgba(0,0,0,0) transform matrix(1.006542,0,0,1.006542,0,0) filter drop-shadow(rgba(0,0,0,0.004)0px0px0px)
+1125466 stil smiley0 hebt-0.4s opacity 1.00 hg rgba(0,0,0,0) transform matrix(1.244996,0,0,1.244996,0,0) filter drop-shadow(rgba(0,0,0,0.345)0px3px5px)
+1125514 frage smiley0
+1125517 klasse smiley0 -beruehrt
+1125518 klasse smiley0 -hebt
+1125518 klasse smiley0 -beruehrt
+1125518 pop auf
+1125567 auswahl 1
+1128886 zeiger up touch smiley0 30 126 weg 213
+1128887 touchend smiley0 finger 0
+1214248 zeiger down touch dlg<div 46 47
+1214249 touchstart dlg<div finger 1
+1214328 zeiger up touch dlg<div 46 47 weg 0
+1214329 touchend dlg<div finger 0
+1214375 pop zu
+1214375 antwort abbrechen
+1214377 auswahl 0
+1214377 klick div.layer verhindert nein
+1214856 klasse dlgX +beruehrt
+1214856 klasse dlgX +beruehrt
+1214856 zeiger down touch dlgX<path 32 49
+1214857 touchstart dlgX<path finger 1
+1214866 stil dlgX beruehrt opacity 0.35 hg rgb(249,249,249) transform none filter none
+1214866 stil dlgX beruehrt opacity 0.35 hg rgb(249,249,249) transform none filter none
+1214935 klasse dlgX -beruehrt
+1214935 klasse dlgX +beruehrt-aus
+1214935 klasse dlgX -beruehrt
+1214936 zeiger up touch dlgX<path 32 49 weg 0
+1214936 touchend dlgX<path finger 0
+1214939 ausgeloest dlgX
+1214945 fenster zu
+1214945 klick dlgX<path verhindert nein
+1215135 klasse dlgX -beruehrt-aus
+1216655 fertig 8 · ts xl ax 0 px 19 ruhig 0 innen 402x812
+1216656 alle faelle
