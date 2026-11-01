@@ -1,0 +1,108 @@
+<!doctype html><html lang="de"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="APD-106 Smiley">
+<title>APD-106 Smiley</title>
+<link rel="stylesheet" href="../fassung/4.48.0/design.css">
+<style>
+/* APD-106 Muster Smiley (Sitzung Reiselogbuch 0070, Nutzer 01.11.2026: Frage nach etwa 1 s, Abheben mit rundem hellem Hintergrund und
+   Schatten). Lädt die unveränderte Fassung 4.48.0. A = heute (4.48.0: drop-shadow, 0,6 s); B = Kreis mit Schatten in der Kapsel;
+   C = Kreis mit Schatten schwebt über der Kapsel (wie Apples Vorschau beim Halten, nichts wird am Rand der Kapsel abgeschnitten).
+   B und C: Frage nach 1 s, ohne Antipp-Markierung, ohne Textauswahl und Lupe. Nur hell (Vereinbarung 30.10.2026). */
+html { color-scheme: light; }
+.muster { max-width: 640px; margin: 0 auto; padding: 8px 16px 32px; }
+.muster .karte { background: var(--card, #fff); border-radius: 12px; padding: 12px 14px 14px; margin: 14px 0; border: .5px solid var(--line); }
+.muster h2 { font: inherit; font-weight: 600; margin: 0 0 2px; }
+.muster p { margin: 0 0 10px; color: var(--sub, #6e6e73); }
+.muster .hinweis { color: var(--sub, #6e6e73); margin: 6px 0 0; }
+/* B und C: ohne Antipp-Markierung, ohne Textauswahl und Lupe */
+:is(.var-b, .var-c), :is(.var-b, .var-c) * { -webkit-tap-highlight-color: transparent; }
+:is(.var-b, .var-c) .emoji-row { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+/* B: Kreis mit Schatten in der Kapsel (der Knopf hat isolation: isolate – der Kreis liegt hinter dem Zeichen) */
+.cap .scroll button.hebt-b { opacity: 1 !important; transform: scale(1.12); transition: transform .3s ease-out; }
+.cap .scroll button.hebt-b::after { content: ''; position: absolute; z-index: -1; left: 50%; top: 50%; width: max(36px, calc(36px * var(--f-body)));
+  height: max(36px, calc(36px * var(--f-body))); transform: translate(-50%, -50%); border-radius: 50%; background: #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,.28), 0 0 0 .5px rgba(0,0,0,.08); }
+/* C: Kreis mit Schatten schwebt über der Kapsel (eigene Ebene, fängt kein Antippen ab) */
+.schwebt { position: fixed; z-index: 50; pointer-events: none; display: grid; place-items: center; border-radius: 50%; background: #fff;
+  box-shadow: 0 8px 20px rgba(0,0,0,.25), 0 1px 3px rgba(0,0,0,.15), 0 0 0 .5px rgba(0,0,0,.06); transform: scale(1); opacity: 1;
+  transition: transform .35s cubic-bezier(.2,.9,.3,1.2), opacity .15s; }
+.schwebt.hoch { transform: scale(1.3); }
+.schwebt.weg { opacity: 0; transform: scale(1); }
+@media (prefers-reduced-motion: reduce) { .cap .scroll button.hebt-b, .schwebt, .schwebt.hoch { transform: none; transition: opacity .15s; } }
+</style></head><body>
+<main id="app"></main>
+<dialog id="dlg"></dialog>
+<dialog id="msg"></dialog>
+<script src="../fassung/4.48.0/ui.js"></script>
+<script>
+const $ = s => document.querySelector(s);
+const SMILEYS = ['🙂', '😀', '😍', '😎', '🤩', '😴', '😢', '😡', '🥳', '🤔'];
+const VARIANTEN = [
+  { k: 'a', titel: 'Variante A – heute (4.48.0)', text: 'Zeichen wächst mit drop-shadow, Frage nach 0,6 s.' },
+  { k: 'b', titel: 'Variante B – Kreis in der Leiste', text: 'Heller Kreis mit Schatten hinter dem Smiley, in der Leiste; Frage nach 1 s.' },
+  { k: 'c', titel: 'Variante C – Kreis schwebt (empfohlen)', text: 'Heller Kreis mit Schatten hebt sich über die Leiste; Frage nach 1 s.' }
+];
+$('#app').innerHTML = `
+  <div class="nb" id="bar"><div class="nb1"><span></span><span class="nb-title">APD-106 Smiley</span><span class="r"></span></div></div>
+  <div class="rolle" id="rolle"><div class="muster">
+    <p style="margin-top:6px">iPhone hoch, hell. Je Variante einen Smiley gedrückt halten, bis die Frage kommt, dann ‚Abbrechen‘.</p>
+    ${VARIANTEN.map(v => `<div class="karte var-${v.k}" id="var-${v.k}"><h2>${v.titel}</h2><p>${v.text}</p>
+      <div class="emoji-row" data-var="${v.k}"></div><div class="hinweis" aria-live="polite"></div></div>`).join('')}
+  </div></div>`;
+
+// B und C: langes Drücken wie onLongPress der Fassung 4.48.0 (R-3.5: 10 px, Rollen bricht ab, Anheben ab 0,15 s), Frage nach 1 s
+const HALTEN_ENTFERNEN = 1000;
+function haltenNeu(btn, art, onLong, onTap) {
+  let timer = null, heben = null, ebene = null, fired = false, x0 = 0, y0 = 0;
+  const rollt = e => { if (e.target.contains?.(btn)) stop(); };
+  const senken = () => {
+    btn.classList.remove('hebt-b');
+    if (ebene) { const e = ebene; ebene = null; e.classList.add('weg'); setTimeout(() => e.remove(), 200); }
+  };
+  const anheben = () => {
+    if (art === 'b') { btn.classList.add('hebt-b'); return; }
+    const r = btn.getBoundingClientRect(), d = Math.max(44, Math.min(r.width, r.height));
+    ebene = document.createElement('div');
+    ebene.className = 'schwebt'; ebene.setAttribute('aria-hidden', 'true');
+    ebene.style.cssText = `left:${r.left + r.width / 2 - d / 2}px;top:${r.top + r.height / 2 - d / 2}px;width:${d}px;height:${d}px;font-size:${getComputedStyle(btn).fontSize}`;
+    ebene.textContent = btn.textContent;
+    document.body.append(ebene);
+    requestAnimationFrame(() => requestAnimationFrame(() => ebene?.classList.add('hoch')));
+  };
+  const stop = () => { clearTimeout(timer); clearTimeout(heben); timer = heben = null; senken(); removeEventListener('scroll', rollt, true); };
+  btn.addEventListener('pointerdown', e => {
+    stop(); fired = false; x0 = e.clientX; y0 = e.clientY;
+    addEventListener('scroll', rollt, { capture: true, passive: true });
+    heben = setTimeout(() => { heben = null; if (!navZug?.aktiv) anheben(); }, LANG_HEBEN);
+    timer = setTimeout(() => { stop(); if (navZug?.aktiv) return; fired = true; beruehrAus(true); onLong(); }, HALTEN_ENTFERNEN);
+  });
+  btn.addEventListener('pointermove', e => { if (timer && Math.hypot(e.clientX - x0, e.clientY - y0) > LANG_WEG) stop(); });
+  ['pointerup', 'pointerleave', 'pointercancel'].forEach(ev => btn.addEventListener(ev, stop));
+  btn.addEventListener('contextmenu', e => e.preventDefault());
+  btn.addEventListener('click', e => { e.preventDefault(); if (fired) { fired = false; return; } onTap(); });
+}
+
+function baue(row) {
+  const art = row.dataset.var, hinweis = row.parentElement.querySelector('.hinweis');
+  row.classList.add('strip');
+  row.innerHTML = capHtml(SMILEYS.map(m => `<button type="button" data-m="${m}">${m}</button>`).join(''))
+    + `<button type="button" class="reset" aria-label="Standard-Smileys wiederherstellen">${ic('rotate-ccw')}</button>`;
+  mountCap(row);
+  let t0 = 0;
+  row.querySelectorAll('[data-m]').forEach(b => {
+    b.addEventListener('pointerdown', () => { t0 = performance.now(); });
+    const lang = async () => {
+      hinweis.textContent = `Frage nach ${Math.round(performance.now() - t0)} ms`;
+      if (await confirmPop(b, `${b.dataset.m} aus der Schnellauswahl entfernen?`, { label: 'Entfernen', icon: 'trash' })) b.remove();
+    };
+    const kurz = () => { hinweis.textContent = `${b.dataset.m} angetippt`; };
+    if (art === 'a') onLongPress(b, lang, kurz); else haltenNeu(b, art, lang, kurz);
+  });
+  row.querySelector('.reset').onclick = () => { hinweis.textContent = ''; baue(row); };
+}
+document.querySelectorAll('.emoji-row[data-var]').forEach(baue);
+window.a106smiley = { HALTEN_ENTFERNEN };   // für die Prüfung
+</script>
+</body></html>
