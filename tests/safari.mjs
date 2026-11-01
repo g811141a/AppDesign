@@ -280,3 +280,19 @@ export async function safariWischen(p, x, y, schritte, { schwelle = WISCH_SCHWEL
 // mausWieFinger(p) verhindert in der Seite dragstart; einmal je Seite, vor dem ersten Mauszug (neu laden entfernt es).
 export const mausWieFinger = p => p.evaluate(() => { if (window.__mausWieFinger) return; window.__mausWieFinger = true;
   addEventListener('dragstart', e => e.preventDefault(), true); });
+
+// Seit 4.48.1 (APD-106, Messung 01.11.2026 mit arbeit/APD-106 Messung.html, iPhone iOS 18.7, Fälle 3–8; Designrichtlinie 13):
+// - Antipp-Markierung: Safari legt beim Berühren ein eigenes Grau über das berührte antippbare Element, solange
+//   -webkit-tap-highlight-color (vererbt) nicht durchsichtig ist (Variante A grau, B mit transparent nicht). Chromium und WebKit der
+//   Prüfumgebung zeichnen es nicht – das Modell meldet es aus dem berechneten Stil.
+// - Textauswahl beim langen Drücken: Safari markiert ab etwa 0,5 s das Wort unter dem Finger und zeigt die Lupe, wenn user-select es
+//   zulässt (A: selectstart, 8 Zeichen markiert; B mit user-select: none und -webkit-touch-callout: none nicht); in der Smiley-Leiste
+//   markierte Safari mit der Frage das ganze Fenster. Nachgebildete Zeiger-Ereignisse lösen das nicht aus.
+// safariHalten(p, sel): was Safari beim Berühren und Halten von sel zeigen würde – { grau, markiert, callout }.
+export const safariHalten = (p, sel) => p.evaluate(sel => {
+  const el = document.querySelector(sel); if (!el) return { fehlt: sel };
+  const c = getComputedStyle(el), tap = c.webkitTapHighlightColor || '';
+  const textEl = [...el.querySelectorAll('*')].find(x => [...x.childNodes].some(n => n.nodeType === 3 && n.textContent.trim())) || el;
+  const t = getComputedStyle(textEl), wahl = t.webkitUserSelect || t.userSelect;
+  return { grau: !!tap && !/rgba\(0, 0, 0, 0\)|transparent/.test(tap), markiert: wahl !== 'none', callout: (c.webkitTouchCallout ?? 'none') !== 'none' };
+}, sel);

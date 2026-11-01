@@ -3,6 +3,34 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.48.1 – 01.11.2026
+
+AppDesign 4.48.1 · Designrichtlinie allgemein 4.48.1 · Zusammenarbeit allgemein 3.5.0 · geprüft mit Reiselogbuch 3.46.1
+
+**APD-106 Korrektur aus P-87** – dein Ja vom 01.11.2026, Sitzung 0070 (Muster Smiley Variante C `arbeit/APD-106 Smiley Muster.html`; Wortlaut
+R-3.5, R-3.6, R-8.1, 4, 13 und 15.12 bestätigt, Backlog APD-106); Testfall-Liste `arbeit/APD-106 Testfall-Liste.md` (APD-106/H-1 bis H-14), mit
+**RLB-115** aus dem Reiselogbuch. Usertest im Reiselogbuch: P-88.
+
+- **Antipp-Markierung aus (R-3.6, 4, `design.css`):** `-webkit-tap-highlight-color: transparent` für alle Elemente – das Grau beim Berühren am
+  Gerät war Safaris Antipp-Markierung (Messung 01.11.2026: Variante A grau, B mit transparent nicht).
+- **Keine Textauswahl und Lupe (R-3.6, `design.css`, `ui.js`):** `user-select: none` und `-webkit-touch-callout: none` für `.side-row`, `.irow`,
+  Menüzeilen, `#app [data-day]`, Kapsel, Smiley-Leiste, `.chips`, `.weiter` und jede Zeile mit eigener Aktion (`.tippziel`, setzt ui.js beim
+  Berühren).
+- **Smiley halten (R-3.5, 15.12, `onLongPress`):** neue Option `{ entfernen: true }` – langes Drücken löst erst nach 1 s aus (`LANG_ENTFERNEN`;
+  sonst 0,6 s, `LANG_DAUER`). In der Kapsel hebt sich das Zeichen auf einem hellen Kreis mit Schatten als eigene Ebene über die Leiste
+  (`.schwebt`, `position: fixed`, `aria-hidden`, fängt kein Antippen ab, wächst auf 1,3; ‚Bewegung reduzieren‘: ohne Wachsen) – der
+  `drop-shadow` am Emoji war am Gerät nicht zu sehen, und die Kapsel schnitte einen Kreis darin ab.
+- **Kante beim Halten der Lage (RLB-115, R-8.1, `ui.js`):** `keepKante` = Leiste plus haftender Tabellenkopf des Eintrags; `topAnchor`,
+  `restoreTop` und `openAt` rechnen damit – nach dem Aus- und Einblenden der Seitenleiste stand der oberste Tag vorher halb unter dem
+  Tabellenkopf (nur `openAt` zog ihn ab).
+- **Prüfungen (`tests/ablauf.mjs`, `tests/safari.mjs`):** `checkSideToggle` prüft nach jedem Umschalten, dass der vorher ganz sichtbare Eintrag
+  ganz unter Leiste und Tabellenkopf steht (neu `at: null` = nicht rollen); `checkBeruehren` APD-106/H-1, APD-106/H-2 (Antipp-Markierung, Textauswahl);
+  `checkAnheben` mit `entfernen` APD-106/H-4 bis APD-106/H-6 (Kreis über der Leiste, mittig, Schatten, Frage nicht vor 1 s, nichts markiert); `finger` meldet
+  dazu Antipp-Markierung, Textauswahl und die schwebende Ebene; Safari-Modell `safariHalten` (Grau und Textauswahl aus dem berechneten Stil,
+  Designrichtlinie 13). Rot gegen 4.48.0, grün mit 4.48.1 (Chromium und WebKit). **Warum die Prüfungen es übersahen:** nachgebildete
+  Zeiger-Ereignisse lösen Antipp-Markierung, Textauswahl und Lupe nicht aus, und der Schatten wurde nur berechnet, nicht gesehen;
+  `checkSideToggle` prüfte nur, welcher Eintrag oben steht.
+
 ## 4.48.0 – 31.10.2026
 
 AppDesign 4.48.0 · Designrichtlinie allgemein 4.48.0 · Zusammenarbeit allgemein 3.5.0 · geprüft mit Reiselogbuch 3.46.0
