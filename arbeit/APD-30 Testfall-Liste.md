@@ -41,7 +41,7 @@ Varianten: **A** Symbol · Titel · Satz · Knopf getönt · **B** wie A, Knopf 
 | Nr. | Gerät / Lage | Handlung | Daten | Erwartet |
 |---|---|---|---|---|
 | L-1 | iPad quer, hell und dunkel | App ohne Daten starten, ‚Neues Reiselogbuch‘ mit x schließen | 0 Reiselogbücher | Inhalt S-1 mittig im freien Bereich unter der Leiste; Seitenleiste S-2; kein Text ‚Noch kein Reiselogbuch angelegt.‘ mehr |
-| L-2 | iPhone hoch und quer | wie L-1 | 0 Reiselogbücher | Startliste zeigt S-2 bzw. S-1 (iPhone-Aufbau ohne Inhalt rechts), nichts unter Statusleiste oder Home-Leiste (R-1.7) |
+| L-2 | iPhone hoch und quer | wie L-1 | 0 Reiselogbücher | Startliste zeigt S-1 vollständig mit Knopf (iPhone-Aufbau ohne Inhalt rechts), nichts unter Statusleiste oder Home-Leiste (R-1.7) |
 | L-3 | alle | Knopf ‚Neues Reiselogbuch‘ (A/B) | 0 Reiselogbücher | öffnet dasselbe Fenster wie ‚plus‘; nach x geht der Fokus zurück auf den Knopf (R-1.8) |
 | L-4 | alle | erstes Reiselogbuch anlegen | 0 → 1 | leerer Zustand verschwindet in Seitenleiste und Inhalt ohne Springen |
 | L-5 | alle | letztes Reiselogbuch löschen | 1 → 0 | S-1 und S-2 erscheinen wieder |
@@ -69,5 +69,5 @@ Varianten: **A** Symbol · Titel · Satz · Knopf getönt · **B** wie A, Knopf 
 ## Offen bis zur Entscheidung im Muster
 
 1. ~~Variante A, B oder C.~~ **Entschieden: Variante A** – Symbol, Titel, Satz, Knopf getönt (Nutzer 02.11.2026, Sitzung 0076).
-2. Texte S-1 bis S-5 so?
-3. Seitenleiste bei S-2 ohne Satz (der Satz steht schon im Inhalt) – so?
+2. ~~Texte S-1 bis S-5 so?~~ **Entschieden: ja, so** (Nutzer 02.11.2026, Sitzung 0076).
+3. ~~Seitenleiste bei S-2 ohne Satz?~~ **Entschieden: ja, ohne Satz** (Nutzer 02.11.2026, Sitzung 0076) – nur neben dem Inhalt (iPad-Aufbau); im iPhone-Aufbau zeigt die Startliste S-1 vollständig.
