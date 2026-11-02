@@ -68,6 +68,6 @@ Varianten: **A** Symbol · Titel · Satz · Knopf getönt · **B** wie A, Knopf 
 
 ## Offen bis zur Entscheidung im Muster
 
-1. Variante A, B oder C.
+1. ~~Variante A, B oder C.~~ **Entschieden: Variante A** – Symbol, Titel, Satz, Knopf getönt (Nutzer 02.11.2026, Sitzung 0076).
 2. Texte S-1 bis S-5 so?
 3. Seitenleiste bei S-2 ohne Satz (der Satz steht schon im Inhalt) – so?
