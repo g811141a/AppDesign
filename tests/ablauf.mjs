@@ -1398,6 +1398,9 @@ export async function checkPrint(p, { print, mehr = 2, where = '' } = {}) {
 export async function checkNavigation(p, { eintrag, titel, zurueck = '#back', waagrecht = null, knopf = null, menue = null, suche = null,
   seitenKnopf = '[data-side-toggle]', kasten = null, where = '' } = {}) {
   const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}R-7.5 ${t}`);
+  // seit 4.50.0 (APD-108): Abdunkelung des Menüs antippen wie mit dem Finger – erst aufsetzen (gibt die Sperre ‚Wischen tippt nie an‘ frei), dann der Klick
+  const tippeLayer = () => p.evaluate(() => { const l = document.querySelector('.layer'); if (!l) return;
+    l.dispatchEvent(new PointerEvent('pointerdown', { pointerId: 4110, pointerType: 'touch', isPrimary: true, bubbles: true, cancelable: true, composed: true })); l.click(); });
   const lage = () => p.evaluate(() => {
     const H = document.documentElement, side = document.getElementById('side'), app = document.getElementById('app');
     const sicht = e => !!e && !e.hidden && getComputedStyle(e).display !== 'none' && getComputedStyle(e).visibility !== 'hidden' && e.getClientRects().length > 0;
@@ -1536,7 +1539,7 @@ export async function checkNavigation(p, { eintrag, titel, zurueck = '#back', wa
     for (const sel of [knopf, '.fab button:not([hidden])'].filter(Boolean)) {
       const b = await box(sel);
       if (b && b.r < w * 0.7) { await ziehe(b.x, b.y, b.x + w * 0.6, b.y); await offen(`APD-61/F-9 auf ${sel} gewischt`); }
-      if (await p.evaluate(() => !!document.querySelector('dialog[open], .menu'))) { await p.keyboard.press('Escape'); await wait(p, 300); await p.evaluate(() => document.querySelector('.layer')?.click()); await wait(p, 200); }
+      if (await p.evaluate(() => !!document.querySelector('dialog[open], .menu'))) { await p.keyboard.press('Escape'); await wait(p, 300); await tippeLayer(); await wait(p, 200); }
     }
     // APD-61/F-10: Wischen, während ‚Ans Ende‘ weich rollt
     if (await box('.fab button:last-of-type:not([hidden])')) {
@@ -1549,11 +1552,11 @@ export async function checkNavigation(p, { eintrag, titel, zurueck = '#back', wa
       await p.click(menue); await wait(p, 300);
       if (!(await lage()).menue) E(`APD-61/F-15 Vorbereitung: ${menue} öffnet kein Menü`);
       await ziehe(w * 0.2, h * 0.7, w * 0.9, h * 0.7); await offen('APD-61/F-15 Wischen bei offenem Menü');
-      if ((await lage()).menue) { await p.evaluate(() => document.querySelector('.layer')?.click()); await wait(p, 200); }
+      if ((await lage()).menue) { await tippeLayer(); await wait(p, 200); }
     }
     // APD-67/F-17: erst halten, dann ziehen – kein Zurück
     await ziehe(w * 0.3, h * 0.7, w * 0.9, h * 0.7, { halten: 700 }); await offen('APD-67/F-17 nach langem Drücken gezogen');
-    if ((await lage()).menue) { await p.evaluate(() => document.querySelector('.layer')?.click()); await wait(p, 200); }
+    if ((await lage()).menue) { await tippeLayer(); await wait(p, 200); }
     // APD-61/F-21: je Bild nur transform und opacity; keine langen Bildlücken beim Ziehen
     await p.evaluate(() => {
       const els = [document.getElementById('app'), document.getElementById('side'), document.querySelector('.fab'), document.querySelector('.nav-schleier')].filter(Boolean);
@@ -1678,7 +1681,7 @@ export async function checkNavigation(p, { eintrag, titel, zurueck = '#back', wa
     // APD-68/Q-2: nach links auf der festen Seitenleiste – sie bleibt
     // schnell, damit es kein langes Drücken auf einer Kachel wird (Kontextmenü)
     await ziehe(l.sideX + l.sideW * 0.8, h * 0.7, 10, h * 0.7, { schnell: true });
-    if ((await lage()).menue) { await p.evaluate(() => document.querySelector('.layer')?.click()); await wait(p, 200); }
+    if ((await lage()).menue) { await tippeLayer(); await wait(p, 200); }
     await da(true, 'APD-68/Q-2 nach links auf der Seitenleiste');
     // APD-68/Q-3: panel-left blendet aus – sie gleitet hinaus, der Inhalt wird ganz breit, der oberste Kasten bleibt
     await p.evaluate(() => { const r = document.querySelector('#app > .rolle'); r?.scrollTo(0, Math.min(900, r.scrollHeight / 3)); }); await wait(p, 150);
@@ -1720,7 +1723,7 @@ export async function checkNavigation(p, { eintrag, titel, zurueck = '#back', wa
     if (menue) {
       await p.click(menue); await wait(p, 300);
       await ziehe(w * 0.4, h * 0.85, w * 0.95, h * 0.85); await da(false, 'APD-68/Q-8 Wischen bei offenem Menü');
-      if ((await lage()).menue) { await p.evaluate(() => document.querySelector('.layer')?.click()); await wait(p, 200); }
+      if ((await lage()).menue) { await tippeLayer(); await wait(p, 200); }
     }
     // APD-68/Q-9: Berührung nach Safari (APD-67/S-10), 14 px senkrecht – Safari bricht nicht ab, die Seitenleiste kommt; senkrecht rollt Safari
     const zug = (dx, dy, n, ms) => Array.from({ length: n }, (_, i) => [Math.round(dx * (i + 1) / n), Math.round(dy * (i + 1) / n), Math.round(ms / n)]);

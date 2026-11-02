@@ -45,6 +45,9 @@ Nebenversion wegen des neuen Bausteins). Testfall-Listen `arbeit/APD-108 Testfal
 - **Beim ersten `los` (abgebrochen, nichts veröffentlicht):** `ablauf-grossanzeige` (Chromium) rot – die Großanzeige (R-2.6) löst ihren Knopf beim
   Loslassen selbst per Klick aus; weil der Finger über die Knöpfe glitt, sperrte die neue Sperre diesen Klick. Er zählt jetzt wie das x des Blatts
   als eigener Klick (`klickEigen`); `ablauf-grossanzeige` wieder grün. Warum es vorher nicht auffiel: die Prüfung lief während des Baus nicht mit.
+- **Beim zweiten `los` (abgebrochen, nichts veröffentlicht):** `ablauf-navigation (Text 53)` rot – `checkNavigation` schloss ein offenes Menü
+  direkt nach einem Wischen mit einem Skript-Klick auf die Abdunkelung ohne Aufsetzen; die Sperre nahm ihn als ‚den einen Klick nach dem
+  Wischen‘. Am Gerät gibt jedes neue Aufsetzen die Sperre frei – die Prüfung setzt jetzt wie ein Finger auf (`tippeLayer`); allein grün.
 
 ## 4.49.1 – 02.11.2026
 
