@@ -1,4 +1,4 @@
-// AppDesign 4.49.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
+// AppDesign 4.49.1 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
 // Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/fassung/X.Y.Z/ui.js"></script> (feste Fassung, R-10.3)
 // Seit 4.11.0 (R-10.3): ui.js und design.css immer mit ?v=<AppDesign-Version> einbinden (auch in sw.js) und beim Start
 // prüfen, ob genau diese Fassung geladen ist (AD_VERSION hier, --ad-version in design.css).
@@ -20,7 +20,7 @@
 
 'use strict';
 // Version der Bausteine (R-10.3): die App vergleicht sie beim Start mit der benötigten Fassung.
-const AD_VERSION = '4.49.0';
+const AD_VERSION = '4.49.1';
 /* ---------- Icons ---------- */
 
 // Schaltflächen-Icons aus Lucide (ISC-Lizenz), direkt eingebettet, damit die App offline funktioniert.
@@ -950,7 +950,10 @@ addEventListener('pointerdown', e => {
 addEventListener('wheel', titelRollHalt, { capture: true, passive: true });
 addEventListener('click', e => { if (titelHaltKlick) { titelHaltKlick = false; e.preventDefault(); e.stopImmediatePropagation(); } }, true);
 ['pointercancel', 'keydown'].forEach(t => addEventListener(t, () => { titelHaltKlick = false; }, true));   // gewischt bzw. Taste: kein Klick, der zu sperren wäre
-addEventListener('click', e => {
+// Seit 4.49.1 (APD-109, Usertest P-90, Messung tests/messungen/2026-11-02 iPad quer Titel antippen Messmodus.txt; Designrichtlinie 13): am
+// document, nicht am window – Safari schickt den Klick auf den Titel (kein antippbares Element) nur, wenn er, ein Element darüber oder das
+// document einen Hörer hat; am iPad kam er sonst nie an (Kopfzeile, Seitenleiste), am iPhone nur, weil die Kopfzeile tabindex hat (R-1.8).
+document.addEventListener('click', e => {
   const start = titelTipp; titelTipp = null;
   if (start === null || performance.now() - start >= 600 || e.defaultPrevented) return;   // nur kurzes Antippen (R-2.5: lang = Blase)
   if (navZug?.aktiv || blattZug?.aktiv || /(^|\s)(nav-|blatt-faehrt|blatt-zieht)/.test(document.documentElement.className)) return;

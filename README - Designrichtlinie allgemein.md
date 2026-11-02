@@ -1,6 +1,6 @@
 # Designrichtlinie allgemein
 
-**Version 4.49.0** · Stand 01.11.2026
+**Version 4.49.1** · Stand 02.11.2026
 
 Allgemeine Gestaltungs- und Bedienregeln für alle Web-Apps von g811141a auf iPad und iPhone. Die Datei liegt im Design-Repo
 **AppDesign** (g811141a/AppDesign); ihre Versionsnummer ist die des Repos. Die Komponenten sind dort einmal programmiert und
@@ -542,6 +542,11 @@ Gemessene bzw. belegte Eigenheiten mit Quelle; sie gelten für alle Apps, die Pr
 - **Weiches Rollen anhalten:** WebKit hält ein laufendes `scrollTo({ behavior: 'smooth' })` bei einem neuen `scrollTo` ohne
   Bewegung nicht an (gemessen im Prüf-WebKit beim Bau von 4.30.0, am Gerät nicht gemessen); es endet, wenn der Rollbereich kurz
   `overflow: hidden` bekommt – `rolle.halt()` (ui.js).
+- **Klick nur mit Hörer (seit 4.49.1, APD-109, Messung P-90 vom 02.11.2026):** Safari auf iPad und iPhone schickt nach einem Tipp auf ein
+  nicht antippbares Element (Text, Überschrift) nur dann `click`, wenn das Element, eines darüber oder das `document` einen Hörer hat; ein
+  Hörer am `window` genügt nicht – gemessen: mit den Hörern des Messmodus am `document` kam der Klick, ohne nicht. `pointerdown`/`pointerup`
+  kommen immer. Vermutung: ein `tabindex` genügt ebenfalls. Gemeinsame Klick-Hörer für Text-Elemente daher am `document`. Quellen: Messung
+  `tests/messungen/2026-11-02 iPad quer Titel antippen Messmodus.txt`, shdon.com (2013), WebKit Bug 151933; Modell `safari.mjs`.
 - **Neustart ist nicht erkennbar** (R-7.2): Safari meldet nicht, **warum** eine Seite neu lädt. Als Neustart zählt jedes
   Neuladen: App im App-Umschalter weggewischt, **von iOS im Hintergrund beendet** (Speicher – auch nach kurzer Zeit in einer
   anderen App) oder neue Version geladen. Bleibt die Seite im Speicher, kommen nur `visibilitychange` und `pageshow` (aus dem
@@ -1325,6 +1330,7 @@ R-2.3 (15.2), R-4.4 (6, 15.8, HIG 9), R-5.3 (8), R-5.4 (15.12), R-5.5 (APD-14), 
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 4.49.1 | 02.11.2026 | Korrektur | **APD-109 (Usertest P-90, Nutzer 02.11.2026, Sitzung 0074, Wortlaut bestätigt):** 13 neu ‚Klick nur mit Hörer‘ – Safari schickt den Klick auf ein nicht antippbares Element nur mit Hörer am Element, darüber oder am `document` (Messung am iPad); R-2.7 hört deshalb am `document`; Safari-Modell `safariKlick` in jeder Prüfung |
 | 4.49.0 | 01.11.2026 | Neben | **APD-62 / APD-38/T-43 (Nutzer 31.10.2026, Sitzung 0067, Wortlaut bestätigt, ohne Muster):** Katalog R-2.7 ‚Titel antippen = nach oben‘ (Prüfung `ablauf.mjs` – `checkTitelOben`, APD-62/H-1 bis H-8); 15.3 Punkt ‚Titel antippen‘; 16 Zeile ‚Titel antippen statt Statusleiste‘. **APD-85 Teil 3** (Werkzeug, keine Regel): Baustein `warteBis` in `tests/pruefe.mjs` |
 | 4.48.2 | 01.11.2026 | Korrektur | **APD-107 (Korrektur aus P-88, Nutzer 01.11.2026, Sitzung 0071, Muster Variante C, Wortlaut bestätigt):** 4 ‚Berühren‘ und Katalog R-3.6 – ein Leisten-Knopf hebt sich als helle Fläche mit Schatten 1,3-fach über seine Kapsel (‚Bewegung reduzieren‘: ohne Wachsen), das Loslassen nach Wegziehen löst nichts aus, wie lange der Finger auch liegt (Messung P-88/1); 15.12 der helle Kreis des Smileys liegt auch im modalen Fenster über der Leiste (Korrektur ohne Regeländerung); Baustein `--heben`; Prüfungen `checkBeruehren` (APD-107/S-1 bis S-13), `checkAnheben` (APD-107/S-7), `finger` mit `abbruch` und `klickNach` |
 | 4.48.1 | 01.11.2026 | Korrektur | **APD-106 (Korrektur aus P-87, Nutzer 01.11.2026, Sitzung 0070, Muster Smiley Variante C, Wortlaut bestätigt):** R-3.5 Entfernen (z. B. Smiley) erst nach 1 s, ein Emoji hebt sich auf einem hellen Kreis mit Schatten über die Leiste (15.12); R-3.6 Safaris Antipp-Markierung aus, keine Textauswahl und Lupe beim Halten antippbarer Zeilen, Kacheln, Leisten und der Smiley-Leiste (4); 13 neu ‚Antipp-Markierung und Textauswahl‘ (Messung 01.11.2026). **RLB-115:** R-8.1 der oberste Eintrag steht ganz unter der Leiste und einem haftenden Tabellenkopf; Prüfungen `checkSideToggle`, `checkBeruehren`, `checkAnheben`, `safariHalten` |

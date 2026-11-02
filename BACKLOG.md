@@ -1,6 +1,6 @@
 # AppDesign – Backlog (allgemeine Themen)
 
-**Stand 01.11.2026** · Aktuelle Version: AppDesign 4.49.0
+**Stand 02.11.2026** · Aktuelle Version: AppDesign 4.49.1
 
 Allgemeine Themen, die alle Apps betreffen. App-Themen stehen im Backlog der jeweiligen App.
 Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.4.
@@ -56,6 +56,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 ## Erledigt
 
 | Nr. | Thema | Version | Datum |
+| APD-109 | **Titel antippen am iPad und in der Seitenleiste (Usertest P-90):** Messung am iPad – Safari schickt den Klick auf den Titel nur mit Hörer am `document`; R-2.7 hört dort; Designrichtlinie 13 ‚Klick nur mit Hörer‘; Safari-Modell `safariKlick` in jeder Prüfung (APD-109/C-1 bis C-9) | 4.49.1 | 02.11.2026 |
 | APD-62 | **APD-62 Teil APD-38/T-43 ‚Titel antippen = nach oben‘ (R-2.7):** kurzes Antippen des Titels in Kopfzeile, Seitenleiste oder Fenster-Kopfzeile rollt den Bereich sanft ganz nach oben, ein Tipp hält an und löst nichts aus, ‚Bewegung reduzieren‘ sofort; Prüfung `checkTitelOben` (APD-62/H-1 bis H-10) – Usertest im Reiselogbuch P-90 | 4.49.0 | 01.11.2026 |
 | APD-85 | **APD-85 Teil 3 – Wackler beheben:** Baustein `warteBis` in `tests/pruefe.mjs` (APD-85/Z-1, Z-2, Selbsttest Z-6), `ablauf-blatt` ohne feste Pausen (Z-3 bis Z-5) | 4.49.0 | 01.11.2026 |
 | APD-107 | **APD-107 Korrektur aus P-88:** Leisten-Knopf hebt sich beim Berühren als helle Fläche mit Schatten 1,3-fach über die Kapsel (R-3.6, Variante C), Loslassen nach dem Wegziehen löst nichts aus, wie lange der Finger auch liegt (Messung P-88/1), Smiley-Kreis im modalen Fenster zuoberst (15.12); Prüfungen APD-107/S-1 bis S-13 – Usertest im Reiselogbuch P-89 | 4.48.2 | 01.11.2026 |

@@ -1326,7 +1326,9 @@ export async function checkTastaturStill(p, { field, vorher = null, wechsel = nu
   if (kapsel) {
     // APD-36/B-8: ↑ bei offener Tastatur – ein Antippen genügt (das Antippen schließt die Tastatur, gerollt wird danach)
     await film('APD-36/B-8 ↑ bei offener Tastatur', () => p.tap(kapsel.hoch));
-    await wait(p, 500);
+    // seit 4.49.1: wartet, bis der Inhalt oben steht und die Tastatur zu ist (höchstens 3 s), statt fest 500 ms – die feste Pause war unter Last
+    // zu kurz (scrollTop 3 bei noch laufendem Rollen); ein zweites Antippen gibt es hier nicht, also bleibt ‚ein Antippen genügt‘ geprüft
+    await warteBis(p, () => document.querySelector('#app > .rolle').scrollTop <= 1 && !__safari.offen, { was: 'oben und Tastatur zu', max: 3000 });
     const r = await p.evaluate(() => ({ y: Math.round(document.querySelector('#app > .rolle').scrollTop), offen: __safari.offen }));
     if (r.offen) E('APD-36/B-8 nach ↑ ist die Tastatur noch offen');
     if (r.y > 1) E(`APD-36/B-8 ↑ bei offener Tastatur rollt nicht ganz nach oben (scrollTop ${r.y}) – zweites Antippen nötig`);
@@ -2981,5 +2983,36 @@ export async function checkTitelOben(p, { titel, rolle: rsel, still = [], ruhig 
   await p.evaluate(() => document.documentElement.classList.remove('nav-pruef'));
   if ((await lage()).y !== y8) E(`H-8 Titel antippen während eines Seitenwechsels rollt (${y8} → ${(await lage()).y} px)`);
   await setze(0); await wait(p, 100);
+  return errors;
+}
+
+// APD-109/C-1, C-2 (seit 4.49.1, Testfall-Liste arbeit/APD-109 Testfall-Liste.md): Selbsttest des Safari-Modells ‚Klick nur mit Hörer‘
+// (safari.mjs, safariKlick). Ein echter Tipp auf einen Text ohne Hörer an ihm, darüber oder am document – nur am window – kommt nicht an
+// (C-1); mit Hörer am document, an einem Element darüber, mit tabindex, mit cursor: pointer oder auf einem Knopf kommt er an (C-2).
+// Hört die App selbst am document (seit 4.49.1 R-2.7), ist dort jedes Element antippbar – wie am Gerät; der Selbsttest schaltet das document
+// darum außer im Fall ‚document‘ ab (__safariKlick.docZaehlt). Legt eigene Elemente an und entfernt sie wieder. Gibt die Fehler zurück (leer = in Ordnung).
+export async function checkSafariKlick(p, { where = '' } = {}) {
+  const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}APD-109 Safari-Modell ${t}`);
+  if (!await p.evaluate(() => !!window.__safariKlick)) { E('fehlt in der Seite (pruefe.mjs setzt safariKlick als Init-Skript)'); return errors; }
+  const FAELLE = [['C-1 nur window', {}, false], ['C-2 document', { doc: true }, true], ['C-2 Element darüber', { oben: true }, true],
+    ['C-2 tabindex', { tab: true }, true], ['C-2 cursor: pointer', { zeiger: true }, true], ['C-2 Knopf', { knopf: true }, true]];
+  for (const [name, f, soll] of FAELLE) {
+    await p.evaluate(f => {
+      const box = document.createElement('div'); box.id = 'safari-klick';
+      box.style.cssText = 'position:fixed;left:40px;top:120px;width:200px;height:60px;z-index:2147483647;background:#fff';
+      const t = document.createElement(f.knopf ? 'button' : 'span'); t.textContent = 'Text'; t.style.cssText = 'display:block;width:200px;height:60px';
+      if (f.tab) t.tabIndex = -1; if (f.zeiger) t.style.cursor = 'pointer';
+      box.append(t); document.body.append(box);
+      window.__safariKlick.docZaehlt = !!f.doc;
+      window.__klickKam = 0; window.__klickZaehler = () => { window.__klickKam++; };
+      addEventListener('click', window.__klickZaehler, true);
+      window.__klickDoc = () => {}; if (f.doc) document.addEventListener('click', window.__klickDoc);
+      if (f.oben) box.addEventListener('mouseup', window.__klickDoc);
+    }, f);
+    await p.mouse.click(140, 150);
+    const kam = await p.evaluate(() => { const k = window.__klickKam; window.__safariKlick.docZaehlt = true; removeEventListener('click', window.__klickZaehler, true);
+      document.removeEventListener('click', window.__klickDoc); document.getElementById('safari-klick')?.remove(); return k; });
+    if (!!kam !== soll) E(`${name}: Klick ${kam ? 'kam an' : 'kam nicht an'}, erwartet ${soll ? 'kommt an' : 'kommt nicht an'}`);
+  }
   return errors;
 }

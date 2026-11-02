@@ -3,6 +3,36 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.49.1 – 02.11.2026
+
+AppDesign 4.49.1 · Designrichtlinie allgemein 4.49.1 · Zusammenarbeit allgemein 3.5.0 · geprüft mit Reiselogbuch 3.47.1
+
+**Korrektur APD-109 (Usertest P-90: P-90/1, /2, /4 nicht ok)** – dein Ja vom 02.11.2026, Sitzung 0074 (Variante a ‚am document‘, Wortlaut
+Designrichtlinie 13 bestätigt); Testfall-Liste `arbeit/APD-109 Testfall-Liste.md` (APD-109/C-1 bis C-9). Usertest im Reiselogbuch: P-91.
+
+- **Befund (gemessen):** Am iPad wirkte das Antippen des Titels nie (Kopfzeile, Seitenleiste), am iPhone nur in der Kopfzeile und in Fenstern.
+  Messung am iPad (`tests/messungen/2026-11-02 iPad quer Titel antippen Messmodus.txt`): mit laufendem Messmodus kommt nach dem Loslassen auf
+  `span.nb-title` der Klick und der Inhalt rollt; ohne Messung nicht (Nutzer). Der Messmodus hört am `document`, R-2.7 hörte nur am `window`.
+- **Behoben (`ui.js`, R-2.7):** der Klick-Hörer von ‚Titel antippen‘ hängt am `document`. Die Sperren am `window` (Tipp hält das Rollen an,
+  Wischen, langes Drücken) laufen weiterhin vorher.
+- **Designrichtlinie 13 neu ‚Klick nur mit Hörer‘** (Wortlaut bestätigt; der Pfad der Messung ist der tatsächliche Dateiname in
+  `tests/messungen/` statt `messung-2026-11-02-0846.txt`).
+- **Safari-Modell `safariKlick` (`tests/safari.mjs`, APD-109/C-1, C-2):** nimmt echte Klicks (und mousedown/mouseup) auf nicht antippbare Elemente
+  weg, wenn weder Element noch Elemente darüber noch `document` einen Hörer haben (click, mousedown, mouseup, onclick …); antippbar sind auch Links,
+  Formular-Elemente, `tabindex` und `cursor: pointer`; Hörer am `window` zählen nicht, ebenso wenig die der Prüfumgebung. `pruefe.mjs` setzt es
+  als erstes Init-Skript in **jede** Seite (alle Ansichten, Chromium und WebKit). Selbsttest `checkSafariKlick` (`tests/ablauf.mjs`) im
+  Reiselogbuch-Ablauf `ablauf-titel-oben`.
+- **Gegenprobe (APD-109/C-3 bis C-5, C-9):** `ablauf-titel-oben` im neuen Modell gegen 3.47.0 (R-2.7 am `window`) rot: iPad quer und hoch
+  Kopfzeile, iPad Seitenleiste, iPhone Startliste (14 Fehler, Chromium); grün blieben iPhone-Kopfzeile, alle Fenster und ‚Bewegung reduzieren‘
+  am iPhone – genau wie am Gerät. Mit 4.49.1 grün in Chromium und WebKit.
+- **Warum die Prüfung es übersah:** Chromium und WebKit der Prüfumgebung schicken jeden Klick; das Safari-Modell bildete die Regel nicht nach.
+- **Beim ersten `los` (abgebrochen, nichts veröffentlicht):** der Selbsttest APD-109/C-1 war in der App-Seite rot – nach der Korrektur hört die App selbst am
+  `document`, dort ist (wie am Gerät) jedes Element antippbar; der Selbsttest schaltet das `document` jetzt außer im Fall ‚document‘ ab
+  (`__safariKlick.docZaehlt`). `ablauf-tastatur-still` spielte die neue Messung nach (ohne Tastatur) – jetzt ausgenommen wie in `ablauf-abspielen`.
+  Dabei aufgefallen: `ablauf-tastatur-still` APD-36/B-8 (‚↑ bei offener Tastatur‘, feste Pause 500 ms) wackelt – allein dreimal rot (scrollTop 3),
+  ohne Safari-Modell ebenso, mit gemessenem Stand nach 500 ms 0 bis 1 px grün; im zweiten `los` wieder rot – die Pause wartet jetzt mit
+  `warteBis`, bis der Inhalt oben steht und die Tastatur zu ist (höchstens 3 s; offensichtlicher Prüffehler, ohne eigene Rückfrage behoben).
+
 ## 4.49.0 – 01.11.2026
 
 AppDesign 4.49.0 · Designrichtlinie allgemein 4.49.0 · Zusammenarbeit allgemein 3.5.0 · geprüft mit Reiselogbuch 3.47.0

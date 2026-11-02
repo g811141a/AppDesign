@@ -1,0 +1,296 @@
+# Messung · Reiselogbuch 3.47.0 · AppDesign 4.49.0 · Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.6.3 Safari/605.1.15 · Home-Bildschirm · 834×1194 @2 · Ränder 0/20/0/0 · hell · 2026-11-02T01:46:15.975Z · Kontrast normal · Bewegung normal · Text l 17
+t      sy     inh    sh     ih     vh     vt     vvtop  kopf   such   tag    lkopf  lsuch  lroll  fokus  lage
+1      0      1751   802    802    802    0      0      0      -      -1568  11     -      0      sideMore quer   ! start
+5361   0      1751   802    802    802    0      0      0      -      -1568  11     -      0      sideMore quer   ! nav kein kandidat
+5362   0      1751   802    802    802    0      0      0      -      -1568  11     -      0      sideMore quer   ! zeiger down 276 576 touch b in button.side-row.current @side
+5540   0      1751   802    802    802    0      0      0      -      -1568  11     -      0      sideMore quer   ! zeiger up 276 576 touch b in button.side-row.current.hebt @side
+5541   0      1751   802    802    802    0      0      0      -      -1568  11     -      0      -      quer   ! blur sideMore
+5542   0      1751   802    802    802    0      0      0      -      -1568  11     -      0      -      quer   ! tippen button
+5542   0      1751   802    802    802    0      0      0      -      -1568  11     -      0      -      quer   ! neuaufbau side
+5549   0      1751   802    802    802    0      0      0      -      -1568  11     -      0      -      quer   ! neuaufbau app
+5561   0      1751   802    802    802    0      0      0      -      -1523  11     -      0      -      quer   ! neuaufbau side
+5567   0      1751   802    802    802    0      0      0      -      -1523  11     -      0      -      quer   ! neuaufbau app
+5578   0      319    802    802    802    0      0      0      -      -136   11     -      0      -      quer   ! scroll rolle
+6454   0      319    802    802    802    0      0      0      -      -136   11     -      0      -      quer   ! nav kein kandidat
+6454   0      319    802    802    802    0      0      0      -      -136   11     -      0      -      quer   ! zeiger down 1079 585 touch div.ln in div.box.day.tippziel[button] @pdays
+6532   0      319    802    802    802    0      0      0      -      -136   11     -      0      -      quer   ! zeiger move 1076 583 touch div.ln in div.box.day.tippziel[button] @pdays
+6532   0      319    802    802    802    0      0      0      -      -136   11     -      0      -      quer   ! touchmove frei
+6532   0      319    802    802    802    0      0      0      -      -136   11     -      0      -      quer   ! zeiger move 1076 583 touch div.ln in div.box.day.tippziel[button] @pdays
+6540   0      319    802    802    802    0      0      0      -      -136   11     -      0      -      quer   ! zeiger move 1076 579 touch div.ln in div.box.day.tippziel[button] @pdays
+6549   0      319    802    802    802    0      0      0      -      -136   11     -      0      -      quer   ! zeiger move 1076 571 touch div.ln in div.box.day.tippziel[button] @pdays
+6556   0      319    802    802    802    0      0      0      -      -136   11     -      0      -      quer   ! zeiger move 1076 558 touch div.ln in div.box.day.tippziel[button] @pdays
+6557   0      319    802    802    802    0      0      0      -      -136   11     -      0      -      quer   ! zeiger cancel 0 0 touch div.ln in div.box.day.tippziel[button] @pdays
+6573   0      319    802    802    802    0      0      0      -      -136   11     -      0      -      quer   ! touchmove fest
+6585   0      347    802    802    802    0      0      0      -      -164   11     -      0      -      quer   ! scroll rolle
+6598   0      357    802    802    802    0      0      0      -      -174   11     -      0      -      quer   ! scroll rolle
+6616   0      377    802    802    802    0      0      0      -      -194   11     -      0      -      quer   ! scroll rolle
+6632   0      404    802    802    802    0      0      0      -      -221   11     -      0      -      quer   ! scroll rolle
+6649   0      413    802    802    802    0      0      0      -      -230   11     -      0      -      quer   ! scroll rolle
+6666   0      431    802    802    802    0      0      0      -      -248   11     -      0      -      quer   ! scroll rolle
+6683   0      456    802    802    802    0      0      0      -      -273   11     -      0      -      quer   ! scroll rolle
+6699   0      464    802    802    802    0      0      0      -      -281   11     -      0      -      quer   ! scroll rolle
+6716   0      487    802    802    802    0      0      0      -      -304   11     -      0      -      quer   ! scroll rolle
+6732   0      495    802    802    802    0      0      0      -      -312   11     -      0      -      quer   ! scroll rolle
+6749   0      510    802    802    802    0      0      0      -      -327   11     -      0      -      quer   ! scroll rolle
+6766   0      524    802    802    802    0      0      0      -      -341   11     -      0      -      quer   ! scroll rolle
+6782   0      538    802    802    802    0      0      0      -      -355   11     -      0      -      quer   ! scroll rolle
+6799   0      551    802    802    802    0      0      0      -      -368   11     -      0      -      quer   ! scroll rolle
+6815   0      571    802    802    802    0      0      0      -      -388   11     -      0      -      quer   ! scroll rolle
+6832   0      577    802    802    802    0      0      0      -      -394   11     -      0      -      quer   ! scroll rolle
+6849   0      589    802    802    802    0      0      0      -      -406   11     -      0      -      quer   ! scroll rolle
+6865   0      601    802    802    802    0      0      0      -      -418   11     -      0      -      quer   ! scroll rolle
+6882   0      612    802    802    802    0      0      0      -      -429   11     -      0      -      quer   ! scroll rolle
+6899   0      623    802    802    802    0      0      0      -      -440   11     -      0      -      quer   ! scroll rolle
+6915   0      633    802    802    802    0      0      0      -      -450   11     -      0      -      quer   ! scroll rolle
+6932   0      644    802    802    802    0      0      0      -      -461   11     -      0      -      quer   ! scroll rolle
+6950   0      658    802    802    802    0      0      0      -      -475   11     -      0      -      quer   ! scroll rolle
+6965   0      663    802    802    802    0      0      0      -      -480   11     -      0      -      quer   ! scroll rolle
+6982   0      672    802    802    802    0      0      0      -      -489   11     -      0      -      quer   ! scroll rolle
+6999   0      681    802    802    802    0      0      0      -      -498   11     -      0      -      quer   ! scroll rolle
+7016   0      694    802    802    802    0      0      0      -      -511   11     -      0      -      quer   ! scroll rolle
+7033   0      703    802    802    802    0      0      0      -      -520   11     -      0      -      quer   ! scroll rolle
+7049   0      711    802    802    802    0      0      0      -      -528   11     -      0      -      quer   ! scroll rolle
+7065   0      714    802    802    802    0      0      0      -      -531   11     -      0      -      quer   ! scroll rolle
+7082   0      722    802    802    802    0      0      0      -      -539   11     -      0      -      quer   ! scroll rolle
+7100   0      733    802    802    802    0      0      0      -      -550   11     -      0      -      quer   ! scroll rolle
+7116   0      736    802    802    802    0      0      0      -      -553   11     -      0      -      quer   ! scroll rolle
+7133   0      747    802    802    802    0      0      0      -      -564   11     -      0      -      quer   ! scroll rolle
+7148   0      750    802    802    802    0      0      0      -      -567   11     -      0      -      quer   ! scroll rolle
+7166   0      756    802    802    802    0      0      0      -      -573   11     -      0      -      quer   ! scroll rolle
+7183   0      766    802    802    802    0      0      0      -      -583   11     -      0      -      quer   ! scroll rolle
+7199   0      769    802    802    802    0      0      0      -      -586   11     -      0      -      quer   ! scroll rolle
+7216   0      777    802    802    802    0      0      0      -      -594   11     -      0      -      quer   ! scroll rolle
+7232   0      780    802    802    802    0      0      0      -      -597   11     -      0      -      quer   ! scroll rolle
+7250   0      788    802    802    802    0      0      0      -      -605   11     -      0      -      quer   ! scroll rolle
+7265   0      791    802    802    802    0      0      0      -      -608   11     -      0      -      quer   ! scroll rolle
+7282   0      796    802    802    802    0      0      0      -      -613   11     -      0      -      quer   ! scroll rolle
+7300   0      803    802    802    802    0      0      0      -      -620   11     -      0      -      quer   ! scroll rolle
+7315   0      805    802    802    802    0      0      0      -      -622   11     -      0      -      quer   ! scroll rolle
+7333   0      810    802    802    802    0      0      0      -      -627   11     -      0      -      quer   ! scroll rolle
+7349   0      815    802    802    802    0      0      0      -      -632   11     -      0      -      quer   ! scroll rolle
+7367   0      821    802    802    802    0      0      0      -      -638   11     -      0      -      quer   ! scroll rolle
+7382   0      823    802    802    802    0      0      0      -      -640   11     -      0      -      quer   ! scroll rolle
+7399   0      827    802    802    802    0      0      0      -      -644   11     -      0      -      quer   ! scroll rolle
+7415   0      831    802    802    802    0      0      0      -      -648   11     -      0      -      quer   ! scroll rolle
+7433   0      835    802    802    802    0      0      0      -      -652   11     -      0      -      quer   ! scroll rolle
+7449   0      838    802    802    802    0      0      0      -      -655   11     -      0      -      quer   ! scroll rolle
+7465   0      842    802    802    802    0      0      0      -      -659   11     -      0      -      quer   ! scroll rolle
+7482   0      845    802    802    802    0      0      0      -      -662   11     -      0      -      quer   ! scroll rolle
+7500   0      850    802    802    802    0      0      0      -      -667   11     -      0      -      quer   ! scroll rolle
+7515   0      852    802    802    802    0      0      0      -      -669   11     -      0      -      quer   ! scroll rolle
+7533   0      855    802    802    802    0      0      0      -      -672   11     -      0      -      quer   ! scroll rolle
+7550   0      859    802    802    802    0      0      0      -      -676   11     -      0      -      quer   ! scroll rolle
+7566   0      861    802    802    802    0      0      0      -      -678   11     -      0      -      quer   ! scroll rolle
+7583   0      865    802    802    802    0      0      0      -      -682   11     -      0      -      quer   ! scroll rolle
+7600   0      867    802    802    802    0      0      0      -      -684   11     -      0      -      quer   ! scroll rolle
+7615   0      869    802    802    802    0      0      0      -      -686   11     -      0      -      quer   ! scroll rolle
+7632   0      871    802    802    802    0      0      0      -      -688   11     -      0      -      quer   ! scroll rolle
+7650   0      874    802    802    802    0      0      0      -      -691   11     -      0      -      quer   ! scroll rolle
+7665   0      876    802    802    802    0      0      0      -      -693   11     -      0      -      quer   ! scroll rolle
+7683   0      878    802    802    802    0      0      0      -      -695   11     -      0      -      quer   ! scroll rolle
+7699   0      881    802    802    802    0      0      0      -      -698   11     -      0      -      quer   ! scroll rolle
+7715   0      883    802    802    802    0      0      0      -      -700   11     -      0      -      quer   ! scroll rolle
+7733   0      885    802    802    802    0      0      0      -      -702   11     -      0      -      quer   ! scroll rolle
+7748   0      887    802    802    802    0      0      0      -      -704   11     -      0      -      quer   ! scroll rolle
+7765   0      889    802    802    802    0      0      0      -      -706   11     -      0      -      quer   ! scroll rolle
+7783   0      890    802    802    802    0      0      0      -      -707   11     -      0      -      quer   ! scroll rolle
+7799   0      892    802    802    802    0      0      0      -      -709   11     -      0      -      quer   ! scroll rolle
+7815   0      894    802    802    802    0      0      0      -      -711   11     -      0      -      quer   ! scroll rolle
+7833   0      896    802    802    802    0      0      0      -      -713   11     -      0      -      quer   ! scroll rolle
+7849   0      897    802    802    802    0      0      0      -      -714   11     -      0      -      quer   ! scroll rolle
+7865   0      899    802    802    802    0      0      0      -      -716   11     -      0      -      quer   ! scroll rolle
+7882   0      900    802    802    802    0      0      0      -      -717   11     -      0      -      quer   ! scroll rolle
+7900   0      901    802    802    802    0      0      0      -      -718   11     -      0      -      quer   ! scroll rolle
+7915   0      903    802    802    802    0      0      0      -      -720   11     -      0      -      quer   ! scroll rolle
+7932   0      904    802    802    802    0      0      0      -      -721   11     -      0      -      quer   ! scroll rolle
+7949   0      905    802    802    802    0      0      0      -      -722   11     -      0      -      quer   ! scroll rolle
+7966   0      907    802    802    802    0      0      0      -      -724   11     -      0      -      quer   ! scroll rolle
+7982   0      908    802    802    802    0      0      0      -      -725   11     -      0      -      quer   ! scroll rolle
+7999   0      909    802    802    802    0      0      0      -      -726   11     -      0      -      quer   ! scroll rolle
+8016   0      910    802    802    802    0      0      0      -      -727   11     -      0      -      quer   ! scroll rolle
+8033   0      912    802    802    802    0      0      0      -      -729   11     -      0      -      quer   ! scroll rolle
+8051   0      914    802    802    802    0      0      0      -      -731   11     -      0      -      quer   ! scroll rolle
+8082   0      915    802    802    802    0      0      0      -      -732   11     -      0      -      quer   ! scroll rolle
+8099   0      916    802    802    802    0      0      0      -      -733   11     -      0      -      quer   ! scroll rolle
+8116   0      917    802    802    802    0      0      0      -      -734   11     -      0      -      quer   ! scroll rolle
+8133   0      918    802    802    802    0      0      0      -      -735   11     -      0      -      quer   ! scroll rolle
+8149   0      919    802    802    802    0      0      0      -      -736   11     -      0      -      quer   ! scroll rolle
+8166   0      920    802    802    802    0      0      0      -      -737   11     -      0      -      quer   ! scroll rolle
+8184   0      921    802    802    802    0      0      0      -      -738   11     -      0      -      quer   ! scroll rolle
+8216   0      922    802    802    802    0      0      0      -      -739   11     -      0      -      quer   ! scroll rolle
+8234   0      924    802    802    802    0      0      0      -      -741   11     -      0      -      quer   ! scroll rolle
+8283   0      925    802    802    802    0      0      0      -      -742   11     -      0      -      quer   ! scroll rolle
+8301   0      926    802    802    802    0      0      0      -      -743   11     -      0      -      quer   ! scroll rolle
+8333   0      927    802    802    802    0      0      0      -      -744   11     -      0      -      quer   ! scroll rolle
+8351   0      928    802    802    802    0      0      0      -      -745   11     -      0      -      quer   ! scroll rolle
+8383   0      929    802    802    802    0      0      0      -      -746   11     -      0      -      quer   ! scroll rolle
+8401   0      930    802    802    802    0      0      0      -      -747   11     -      0      -      quer   ! scroll rolle
+8449   0      931    802    802    802    0      0      0      -      -748   11     -      0      -      quer   ! scroll rolle
+8467   0      932    802    802    802    0      0      0      -      -749   11     -      0      -      quer   ! scroll rolle
+8518   0      933    802    802    802    0      0      0      -      -750   11     -      0      -      quer   ! scroll rolle
+8549   0      934    802    802    802    0      0      0      -      -751   11     -      0      -      quer   ! scroll rolle
+8600   0      935    802    802    802    0      0      0      -      -752   11     -      0      -      quer   ! scroll rolle
+8619   0      935    802    802    802    0      0      0      -      -752   11     -      0      -      quer   ! nav kein kandidat
+8619   0      935    802    802    802    0      0      0      -      -752   11     -      0      -      quer   ! zeiger down 910 34 touch span.nb-title @bar
+8649   0      936    802    802    802    0      0      0      -      -753   11     -      0      -      quer   ! scroll rolle
+8699   0      937    802    802    802    0      0      0      -      -754   11     -      0      -      quer   ! scroll rolle
+8734   0      937    802    802    802    0      0      0      -      -754   11     -      0      -      quer   ! zeiger up 910 34 touch span.nb-title @bar
+8749   0      938    802    802    802    0      0      0      -      -755   11     -      0      -      quer   ! scroll rolle
+8768   0      938    802    802    802    0      0      0      -      -755   11     -      0      -      quer   ! tippen -
+8801   0      836    802    802    802    0      0      0      -      -653   11     -      0      -      quer   ! scroll rolle
+8816   0      721    802    802    802    0      0      0      -      -538   11     -      0      -      quer   ! scroll rolle
+8833   0      612    802    802    802    0      0      0      -      -429   11     -      0      -      quer   ! scroll rolle
+8851   0      514    802    802    802    0      0      0      -      -331   11     -      0      -      quer   ! scroll rolle
+8867   0      432    802    802    802    0      0      0      -      -249   11     -      0      -      quer   ! scroll rolle
+8883   0      354    802    802    802    0      0      0      -      -171   11     -      0      -      quer   ! scroll rolle
+8900   0      287    802    802    802    0      0      0      -      -104   11     -      0      -      quer   ! scroll rolle
+8917   0      232    802    802    802    0      0      0      -      -49    11     -      0      -      quer   ! scroll rolle
+8934   0      179    802    802    802    0      0      0      -      4      11     -      0      -      quer   ! scroll rolle
+8949   0      139    802    802    802    0      0      0      -      44     11     -      0      -      quer   ! scroll rolle
+8966   0      106    802    802    802    0      0      0      -      77     11     -      0      -      quer   ! scroll rolle
+8983   0      77     802    802    802    0      0      0      -      106    11     -      0      -      quer   ! scroll rolle
+8999   0      53     802    802    802    0      0      0      -      130    11     -      0      -      quer   ! scroll rolle
+9016   0      36     802    802    802    0      0      0      -      147    11     -      0      -      quer   ! scroll rolle
+9033   0      23     802    802    802    0      0      0      -      160    11     -      0      -      quer   ! scroll rolle
+9051   0      13     802    802    802    0      0      0      -      170    11     -      0      -      quer   ! scroll rolle
+9066   0      6      802    802    802    0      0      0      -      177    11     -      0      -      quer   ! scroll rolle
+9083   0      2      802    802    802    0      0      0      -      181    11     -      0      -      quer   ! scroll rolle
+9099   0      0      802    802    802    0      0      0      -      183    11     -      0      -      quer   ! scroll rolle
+10463  0      0      802    802    802    0      0      0      -      183    11     -      0      -      quer   ! nav kein kandidat
+10463  0      0      802    802    802    0      0      0      -      183    11     -      0      -      quer   ! zeiger down 1017 572 touch div.ln in div.box.day.tippziel[button] @pdays
+10485  0      0      802    802    802    0      0      0      -      183    11     -      0      -      quer   ! zeiger move 1015 544 touch div.ln in div.box.day.tippziel[button] @pdays
+10485  0      0      802    802    802    0      0      0      -      183    11     -      0      -      quer   ! touchmove frei
+10485  0      0      802    802    802    0      0      0      -      183    11     -      0      -      quer   ! zeiger move 1015 544 touch div.ln in div.box.day.tippziel[button] @pdays
+10489  0      0      802    802    802    0      0      0      -      183    11     -      0      -      quer   ! zeiger cancel 0 0 touch div.ln in div.box.day.tippziel[button] @pdays
+10491  0      0      802    802    802    0      0      0      -      183    11     -      0      -      quer   ! touchmove fest
+10500  0      49     802    802    802    0      0      0      -      134    11     -      0      -      quer   ! scroll rolle
+10517  0      112    802    802    802    0      0      0      -      71     11     -      0      -      quer   ! scroll rolle
+10533  0      188    802    802    802    0      0      0      -      -5     11     -      0      -      quer   ! scroll rolle
+10550  0      253    802    802    802    0      0      0      -      -70    11     -      0      -      quer   ! scroll rolle
+10566  0      290    802    802    802    0      0      0      -      -107   11     -      0      -      quer   ! scroll rolle
+10583  0      356    802    802    802    0      0      0      -      -173   11     -      0      -      quer   ! scroll rolle
+10600  0      426    802    802    802    0      0      0      -      -243   11     -      0      -      quer   ! scroll rolle
+10617  0      494    802    802    802    0      0      0      -      -311   11     -      0      -      quer   ! scroll rolle
+10633  0      559    802    802    802    0      0      0      -      -376   11     -      0      -      quer   ! scroll rolle
+10650  0      623    802    802    802    0      0      0      -      -440   11     -      0      -      quer   ! scroll rolle
+10667  0      714    802    802    802    0      0      0      -      -531   11     -      0      -      quer   ! scroll rolle
+10684  0      743    802    802    802    0      0      0      -      -560   11     -      0      -      quer   ! scroll rolle
+10700  0      800    802    802    802    0      0      0      -      -617   11     -      0      -      quer   ! scroll rolle
+10718  0      883    802    802    802    0      0      0      -      -700   11     -      0      -      quer   ! scroll rolle
+10734  0      909    802    802    802    0      0      0      -      -726   11     -      0      -      quer   ! scroll rolle
+10754  0      986    802    802    802    0      0      0      -      -803   11     -      0      -      quer   ! scroll rolle
+10767  0      1011   802    802    802    0      0      0      -      -828   11     -      0      -      quer   ! scroll rolle
+10784  0      1083   802    802    802    0      0      0      -      -900   11     -      0      -      quer   ! scroll rolle
+10800  0      1107   802    802    802    0      0      0      -      -924   11     -      0      -      quer   ! scroll rolle
+10817  0      1174   802    802    802    0      0      0      -      -991   11     -      0      -      quer   ! scroll rolle
+10833  0      1217   802    802    802    0      0      0      -      -1034  11     -      0      -      quer   ! scroll rolle
+10850  0      1259   802    802    802    0      0      0      -      -1076  11     -      0      -      quer   ! scroll rolle
+10867  0      1279   802    802    802    0      0      0      -      -1096  11     -      0      -      quer   ! scroll rolle
+10884  0      1338   802    802    802    0      0      0      -      -1155  11     -      0      -      quer   ! scroll rolle
+10901  0      1357   802    802    802    0      0      0      -      -1174  11     -      0      -      quer   ! scroll rolle
+10917  0      1394   802    802    802    0      0      0      -      -1211  11     -      0      -      quer   ! scroll rolle
+10934  0      1430   802    802    802    0      0      0      -      -1247  11     -      0      -      quer   ! scroll rolle
+10952  0      1482   802    802    802    0      0      0      -      -1299  11     -      0      -      quer   ! scroll rolle
+10967  0      1515   802    802    802    0      0      0      -      -1332  11     -      0      -      quer   ! scroll rolle
+10984  0      1531   802    802    802    0      0      0      -      -1348  11     -      0      -      quer   ! scroll rolle
+11001  0      1578   802    802    802    0      0      0      -      -1395  11     -      0      -      quer   ! scroll rolle
+11017  0      1608   802    802    802    0      0      0      -      -1425  11     -      0      -      quer   ! scroll rolle
+11033  0      1622   802    802    802    0      0      0      -      -1439  11     -      0      -      quer   ! scroll rolle
+11051  0      1651   802    802    802    0      0      0      -      -1468  11     -      0      -      quer   ! scroll rolle
+11067  0      1678   802    802    802    0      0      0      -      -1495  11     -      0      -      quer   ! scroll rolle
+11084  0      1705   802    802    802    0      0      0      -      -1522  11     -      0      -      quer   ! scroll rolle
+11100  0      1730   802    802    802    0      0      0      -      -1547  11     -      0      -      quer   ! scroll rolle
+11117  0      1755   802    802    802    0      0      0      -      -1572  11     -      0      -      quer   ! scroll rolle
+11134  0      1779   802    802    802    0      0      0      -      -1596  11     -      0      -      quer   ! scroll rolle
+11151  0      1803   802    802    802    0      0      0      -      -1620  11     -      0      -      quer   ! scroll rolle
+11168  0      1836   802    802    802    0      0      0      -      -1653  11     -      0      -      quer   ! scroll rolle
+11184  0      1847   802    802    802    0      0      0      -      -1664  11     -      0      -      quer   ! scroll rolle
+11201  0      1878   802    802    802    0      0      0      -      -1695  11     -      0      -      quer   ! scroll rolle
+11217  0      1888   802    802    802    0      0      0      -      -1705  11     -      0      -      quer   ! scroll rolle
+11235  0      1918   802    802    802    0      0      0      -      -1735  11     -      0      -      quer   ! scroll rolle
+11250  0      1927   802    802    802    0      0      0      -      -1744  11     -      0      -      quer   ! scroll rolle
+11268  0      1945   802    802    802    0      0      0      -      -1762  11     -      0      -      quer   ! scroll rolle
+11285  0      1972   802    802    802    0      0      0      -      -1789  11     -      0      -      quer   ! scroll rolle
+11301  0      1980   802    802    802    0      0      0      -      -1797  11     -      0      -      quer   ! scroll rolle
+11317  0      1997   802    802    802    0      0      0      -      -1814  11     -      0      -      quer   ! scroll rolle
+11334  0      2013   802    802    802    0      0      0      -      -1830  11     -      0      -      quer   ! scroll rolle
+11351  0      2036   802    802    802    0      0      0      -      -1853  11     -      0      -      quer   ! scroll rolle
+11367  0      2044   802    802    802    0      0      0      -      -1861  11     -      0      -      quer   ! scroll rolle
+11385  0      2066   802    802    802    0      0      0      -      -1883  11     -      0      -      quer   ! scroll rolle
+11401  0      2073   802    802    802    0      0      0      -      -1890  11     -      0      -      quer   ! scroll rolle
+11418  0      2093   802    802    802    0      0      0      -      -1910  11     -      0      -      quer   ! scroll rolle
+11434  0      2106   802    802    802    0      0      0      -      -1923  11     -      0      -      quer   ! scroll rolle
+11450  0      2118   802    802    802    0      0      0      -      -1935  11     -      0      -      quer   ! scroll rolle
+11468  0      2124   802    802    802    0      0      0      -      -1941  11     -      0      -      quer   ! scroll rolle
+11484  0      2142   802    802    802    0      0      0      -      -1959  11     -      0      -      quer   ! scroll rolle
+11501  0      2148   802    802    802    0      0      0      -      -1965  11     -      0      -      quer   ! scroll rolle
+11518  0      2164   802    802    802    0      0      0      -      -1981  11     -      0      -      quer   ! scroll rolle
+11534  0      2170   802    802    802    0      0      0      -      -1987  11     -      0      -      quer   ! scroll rolle
+11551  0      2185   802    802    802    0      0      0      -      -2002  11     -      0      -      quer   ! scroll rolle
+11567  0      2190   802    802    802    0      0      0      -      -2007  11     -      0      -      quer   ! scroll rolle
+11584  0      2200   802    802    802    0      0      0      -      -2017  11     -      0      -      quer   ! scroll rolle
+11602  0      2214   802    802    802    0      0      0      -      -2031  11     -      0      -      quer   ! scroll rolle
+11617  0      2219   802    802    802    0      0      0      -      -2036  11     -      0      -      quer   ! scroll rolle
+11634  0      2228   802    802    802    0      0      0      -      -2045  11     -      0      -      quer   ! scroll rolle
+11651  0      2236   802    802    802    0      0      0      -      -2053  11     -      0      -      quer   ! scroll rolle
+11668  0      2248   802    802    802    0      0      0      -      -2065  11     -      0      -      quer   ! scroll rolle
+11683  0      2252   802    802    802    0      0      0      -      -2069  11     -      0      -      quer   ! scroll rolle
+11701  0      2260   802    802    802    0      0      0      -      -2077  11     -      0      -      quer   ! scroll rolle
+11718  0      2268   802    802    802    0      0      0      -      -2085  11     -      0      -      quer   ! scroll rolle
+11734  0      2275   802    802    802    0      0      0      -      -2092  11     -      0      -      quer   ! scroll rolle
+11751  0      2282   802    802    802    0      0      0      -      -2099  11     -      0      -      quer   ! scroll rolle
+11768  0      2292   802    802    802    0      0      0      -      -2109  11     -      0      -      quer   ! scroll rolle
+11785  0      2298   802    802    802    0      0      0      -      -2115  11     -      0      -      quer   ! scroll rolle
+11795  0      2298   802    802    802    0      0      0      -      -2115  11     -      0      -      quer   ! nav kein kandidat
+11795  0      2298   802    802    802    0      0      0      -      -2115  11     -      0      -      quer   ! zeiger down 922 26 touch span.nb-title @bar
+11800  0      2301   802    802    802    0      0      0      -      -2118  11     -      0      -      quer   ! scroll rolle
+11817  0      2308   802    802    802    0      0      0      -      -2125  11     -      0      -      quer   ! scroll rolle
+11834  0      2313   802    802    802    0      0      0      -      -2130  11     -      0      -      quer   ! scroll rolle
+11850  0      2319   802    802    802    0      0      0      -      -2136  11     -      0      -      quer   ! scroll rolle
+11867  0      2325   802    802    802    0      0      0      -      -2142  11     -      0      -      quer   ! scroll rolle
+11884  0      2330   802    802    802    0      0      0      -      -2147  11     -      0      -      quer   ! scroll rolle
+11901  0      2335   802    802    802    0      0      0      -      -2152  11     -      0      -      quer   ! scroll rolle
+11918  0      2343   802    802    802    0      0      0      -      -2160  11     -      0      -      quer   ! scroll rolle
+11935  0      2345   802    802    802    0      0      0      -      -2162  11     -      0      -      quer   ! zeiger up 922 26 touch span.nb-title @bar
+11938  0      2347   802    802    802    0      0      0      -      -2164  11     -      0      -      quer   ! scroll rolle
+11950  0      2350   802    802    802    0      0      0      -      -2167  11     -      0      -      quer   ! scroll rolle
+11968  0      2354   802    802    802    0      0      0      -      -2171  11     -      0      -      quer   ! scroll rolle
+11970  0      2357   802    802    802    0      0      0      -      -2174  11     -      0      -      quer   ! tippen -
+11985  0      2361   802    802    802    0      0      0      -      -2178  11     -      0      -      quer   ! scroll rolle
+12000  0      2127   802    802    802    0      0      0      -      -1944  11     -      0      -      quer   ! scroll rolle
+12018  0      1884   802    802    802    0      0      0      -      -1701  11     -      0      -      quer   ! scroll rolle
+12034  0      1661   802    802    802    0      0      0      -      -1478  11     -      0      -      quer   ! scroll rolle
+12051  0      1443   802    802    802    0      0      0      -      -1260  11     -      0      -      quer   ! scroll rolle
+12067  0      1245   802    802    802    0      0      0      -      -1062  11     -      0      -      quer   ! scroll rolle
+12084  0      1077   802    802    802    0      0      0      -      -894   11     -      0      -      quer   ! scroll rolle
+12101  0      915    802    802    802    0      0      0      -      -732   11     -      0      -      quer   ! scroll rolle
+12118  0      770    802    802    802    0      0      0      -      -587   11     -      0      -      quer   ! scroll rolle
+12134  0      641    802    802    802    0      0      0      -      -458   11     -      0      -      quer   ! scroll rolle
+12150  0      534    802    802    802    0      0      0      -      -351   11     -      0      -      quer   ! scroll rolle
+12168  0      434    802    802    802    0      0      0      -      -251   11     -      0      -      quer   ! scroll rolle
+12184  0      352    802    802    802    0      0      0      -      -169   11     -      0      -      quer   ! scroll rolle
+12201  0      277    802    802    802    0      0      0      -      -94    11     -      0      -      quer   ! scroll rolle
+12218  0      214    802    802    802    0      0      0      -      -31    11     -      0      -      quer   ! scroll rolle
+12234  0      163    802    802    802    0      0      0      -      20     11     -      0      -      quer   ! scroll rolle
+12251  0      119    802    802    802    0      0      0      -      64     11     -      0      -      quer   ! scroll rolle
+12267  0      84     802    802    802    0      0      0      -      99     11     -      0      -      quer   ! scroll rolle
+12284  0      58     802    802    802    0      0      0      -      125    11     -      0      -      quer   ! scroll rolle
+12301  0      37     802    802    802    0      0      0      -      146    11     -      0      -      quer   ! scroll rolle
+12317  0      21     802    802    802    0      0      0      -      162    11     -      0      -      quer   ! scroll rolle
+12334  0      11     802    802    802    0      0      0      -      172    11     -      0      -      quer   ! scroll rolle
+12351  0      5      802    802    802    0      0      0      -      178    11     -      0      -      quer   ! scroll rolle
+12368  0      1      802    802    802    0      0      0      -      182    11     -      0      -      quer   ! scroll rolle
+12385  0      0      802    802    802    0      0      0      -      183    11     -      0      -      quer   ! scroll rolle
+15140  0      0      802    802    802    0      0      0      -      183    11     -      0      -      quer   ! nav kein kandidat eigen
+15142  0      0      802    802    802    0      0      0      -      183    11     -      0      -      quer   ! zeiger down 333 38 touch svg.ic in sideMore
+15220  0      0      802    802    802    0      0      0      -      183    11     -      0      -      quer   ! zeiger up 333 38 touch svg.ic in sideMore
+15222  0      0      802    802    802    0      0      0      -      183    11     -      0      -      quer   ! tippen sideMore
+15255  0      0      802    802    802    0      0      0      -      183    11     -      0      button quer   ! focus button
+16324  0      0      802    802    802    0      0      0      -      183    11     -      0      button quer   ! nav kein kandidat eigen
+16325  0      0      802    802    802    0      0      0      -      183    11     -      0      button quer   ! zeiger down 426 373 touch button.mi.has-sub.beruehrt[menuitem]
+16430  0      0      802    802    802    0      0      0      -      183    11     -      0      button quer   ! zeiger up 426 373 touch button.mi.has-sub.beruehrt-aus[menuitem]
+16434  0      0      802    802    802    0      0      0      -      183    11     -      0      -      quer   ! blur button
+16434  0      0      802    802    802    0      0      0      -      183    11     -      0      -      quer   ! tippen button
+16440  0      0      802    802    802    0      0      0      -      183    11     -      0      sideMore quer   ! focus sideMore
+16441  0      0      802    802    802    0      0      0      -      183    11     -      0      sideMore quer   ! messung beendet
+# Ende nach 16 s

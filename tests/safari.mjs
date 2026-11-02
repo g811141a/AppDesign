@@ -296,3 +296,48 @@ export const safariHalten = (p, sel) => p.evaluate(sel => {
   const t = getComputedStyle(textEl), wahl = t.webkitUserSelect || t.userSelect;
   return { grau: !!tap && !/rgba\(0, 0, 0, 0\)|transparent/.test(tap), markiert: wahl !== 'none', callout: (c.webkitTouchCallout ?? 'none') !== 'none' };
 }, sel);
+
+// Seit 4.49.1 (APD-109, Messung tests/messungen/2026-11-02 iPad quer Titel antippen Messmodus.txt, Usertest P-90; Testfall-Liste
+// arbeit/APD-109 Testfall-Liste.md APD-109/C-1, C-2; Designrichtlinie 13): Klick nur mit Hörer. Safari auf iPad und iPhone schickt nach einem
+// Tipp auf ein nicht antippbares Element (Text, Überschrift) weder mousedown/mouseup noch click, wenn weder das Element noch eines darüber
+// noch das document einen Hörer dafür hat (click, mousedown, mouseup bzw. onclick …) – ein Hörer am window genügt nicht. Antippbar sind
+// Links, Formular-Elemente, label, summary, fokussierbare Elemente (tabindex – Vermutung: iPhone-Kopfzeile nach dem Fokus R-1.8) und
+// Elemente mit cursor: pointer. pointerdown/pointerup kommen immer. Gemessen: mit den Hörern des Messmodus am document kam der Klick
+// auf span.nb-title (iPad quer, Zeilen 134–139 und 245–258), ohne Messung nicht (Nutzer 02.11.2026). Chromium und WebKit der
+// Prüfumgebung schicken jeden Klick – das Modell nimmt ihn weg. Init-Skript (vor allen anderen): pruefe.mjs setzt es in jede Seite.
+// Nur echte Klicks (isTrusted, Maus oder Finger der Prüfung); el.click() aus dem Skript kommt wie am Gerät immer an. Hörer, die die
+// Prüfumgebung selbst setzt, zählen nicht: window.__safariKlick.ohne(() => document.addEventListener(…)).
+export function safariKlick() {
+  if (window.__safariKlick) return;
+  const TYPEN = new Set(['click', 'mousedown', 'mouseup']), hoerer = new WeakMap();
+  let ohne = 0;
+  const orig = EventTarget.prototype.addEventListener, origWeg = EventTarget.prototype.removeEventListener;
+  EventTarget.prototype.addEventListener = function (typ, fn, o) {
+    if (!ohne && TYPEN.has(typ) && fn && this !== window) { const m = hoerer.get(this) || new Map(); m.set(fn, (m.get(fn) || 0) + 1); hoerer.set(this, m); }
+    return orig.call(this, typ, fn, o);
+  };
+  EventTarget.prototype.removeEventListener = function (typ, fn, o) {
+    const m = TYPEN.has(typ) && hoerer.get(this); if (m && m.has(fn)) { const n = m.get(fn) - 1; if (n > 0) m.set(fn, n); else m.delete(fn); }
+    return origWeg.call(this, typ, fn, o);
+  };
+  const ANTIPPBAR = 'a[href], area[href], button, input, select, textarea, label, summary, [tabindex], [contenteditable]:not([contenteditable="false"]), video[controls], audio[controls]';
+  const hat = n => (hoerer.get(n)?.size > 0) || typeof n.onclick === 'function' || typeof n.onmousedown === 'function' || typeof n.onmouseup === 'function';
+  const antippbar = t => {
+    for (let n = t?.nodeType === 1 ? t : t?.parentElement; n; n = n.parentElement) {
+      if (n.matches(ANTIPPBAR) || hat(n)) return true;
+      if (getComputedStyle(n).cursor === 'pointer') return true;
+    }
+    return window.__safariKlick.docZaehlt && hat(document);   // docZaehlt: nur für den Selbsttest (checkSafariKlick) abschaltbar
+  };
+  let weg = false;
+  const pruefe = e => {
+    if (!e.isTrusted) return;
+    if (e.type === 'mousedown') weg = !antippbar(e.target);
+    if (!weg) return;
+    if (e.type === 'click') weg = false;
+    e.stopImmediatePropagation(); e.preventDefault();
+    window.__safariKlick.weg++;
+  };
+  window.__safariKlick = { weg: 0, docZaehlt: true, antippbar, ohne(fn) { ohne++; try { return fn(); } finally { ohne--; } } };
+  for (const typ of TYPEN) orig.call(window, typ, pruefe, true);
+}
