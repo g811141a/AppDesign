@@ -1,7 +1,7 @@
 # Übergabe an die nächste Sitzung
 
-**Stand 02.11.2026** · geschrieben in der Sitzung ‚Reiselogbuch 0076‘ (Muster APD-30 entschieden, APD-110 neu, Ja zum Bau 4.50.0 / 3.48.0;
-Übergabe vor dem Bau wegen Kontext etwa 219.000, 0 Nr. 13) – Aufbau nach Zusammenarbeit allgemein 2.5.
+**Stand 02.11.2026** · geschrieben in der Sitzung ‚Reiselogbuch 0077‘ (Version AppDesign 4.50.0 / Reiselogbuch 3.48.0 gebaut und
+veröffentlicht; Übergabe wegen Kontext über 300.000, 0 Nr. 13) – Aufbau nach Zusammenarbeit allgemein 2.5.
 **Claude liest diese Datei zu Beginn jeder Sitzung zuerst, dann die ganze Zusammenarbeit** (0 Nr. 15); die Arbeitsumgebung steht in der
 AppDesign-`CLAUDE.md`.
 
@@ -9,43 +9,46 @@ AppDesign-`CLAUDE.md`.
 
 | Teil | Version | Datei |
 |---|---|---|
-| Reiselogbuch | **3.47.1** veröffentlicht (Fassung 4.49.1) | g811141a/ReiseLogBuch |
-| AppDesign | **4.49.1** veröffentlicht | g811141a/AppDesign |
-| Zusammenarbeit allgemein | **3.5.0** (3.6.0 kommt mit APD-110) | `README - Zusammenarbeit allgemein.md` |
+| Reiselogbuch | **3.48.0** veröffentlicht (Fassung 4.50.0) | g811141a/ReiseLogBuch |
+| AppDesign | **4.50.0** veröffentlicht | g811141a/AppDesign |
+| Zusammenarbeit allgemein | **3.6.0** | `README - Zusammenarbeit allgemein.md` |
 | AppDesign-`CLAUDE.md` | **2.10.0** | `CLAUDE.md` |
 | ReiseLogBuch-Import (privat) | 1.3.0 | g811141a/ReiseLogBuch-Import |
 
-- Alles liegt auf **`main`** (beide Repos); es gibt keine Vorbereitungs-Zweige.
-- **Chatnummer:** die nächste Sitzung heißt **Reiselogbuch 0077**; die danach 0078.
-- **Modell und Aufwand:** in 0076 Opus 5.5, Aufwand hoch (alle Aufrufe `"effort":"high"`), kein `model_fallback`; der Arbeitsprozess wurde einmal neu gestartet.
-- **Sitzungsgröße 0076:** Kontext etwa 219.000 vor der Übergabe.
-- **Regelwächter läuft** (Hooks in `~/.claude/settings.json`).
-- **Offene Usertests: keine.**
-- **Nächste Version 4.50.0 / 3.48.0: 4 Punkte bereit, dein Ja liegt vor (02.11.2026, Sitzung 0076: ‚Ja, in neuer Sitzung 0077‘)** –
-  APD-108, APD-85 Teil 4, APD-110, APD-30 leere Zustände (Backlog AppDesign ‚0.‘). 4 Punkte bewusst über 0 Nr. 8 hinaus (Nutzer);
-  Nebenversion wegen des neuen Bausteins.
+- Alles liegt auf **`main`** (beide Repos); die Vorbereitungs-Zweige sind lokal gelöscht.
+- **Chatnummer:** die nächste Sitzung heißt **Reiselogbuch 0078**; die danach 0079.
+- **Modell und Aufwand:** in 0077 Opus 5.5, Aufwand hoch (alle Aufrufe `"effort":"high"`), kein `model_fallback`.
+- **Sitzungsgröße 0077:** Kontext über 440.000 (‚⚠ Übergabe fällig‘ ab 18:37, Bau vorher zu Ende gebracht).
+- **Regelwächter läuft** (Hooks in `~/.claude/settings.json`); neu APD-84/W-15 (APD-110).
+- **Offener Usertest: P-92** (Reiselogbuch 3.48.0, AppDesign 4.50.0) – Testfälle P-92/0 bis P-92/6 im CHANGELOG des Reiselogbuchs; die
+  Rückmeldung ist die erste Frage der neuen Sitzung (Auswahlfenster ‚P-92: Wie ist die Prüfung ausgegangen?‘).
+- **Nächste Version:** 0 Punkte bereit.
 - **Vereinbarung (Nutzer 30.10.2026, Sitzung 0058):** Muster bis auf Weiteres **nur hell** – in jede Übergabe übernehmen.
 - **Erinnerung:** ‚Backlog-Erinnerung (AppDesign und Reiselogbuch)‘ montags 8:58.
 
-## 2. Ergebnisse der Sitzung 0076
+## 2. Ergebnisse der Sitzung 0077
 
-- **APD-30 leere Zustände bereit:** Muster `arbeit/APD-30 Muster.html` **Variante A** (Symbol, Titel, Satz, Knopf getönt), Texte APD-30/S-1 bis
-  APD-30/S-5, Seitenleiste neben dem Inhalt ohne Satz (iPhone-Startliste voll), Testfall-Liste APD-30/L-1 bis L-20, **Wortlaut 15.23, R-7.7 und
-  Abschnitt 7 bestätigt** – alles in `arbeit/APD-30 Testfall-Liste.md`.
-- **APD-110 neu, Prio 1, bereit:** Link und nummerierte Schritte mit ‚Erwartet: …‘ im Chat vor dem Fenster, nie nur im Fenster.
-  **Wortlaut Kasten ‚Jede Antwort‘ Punkt 4 und 2.8 bestätigt**, Regelwächter APD-84/W-15 (APD-110/L-1 bis L-13) – `arbeit/APD-110 Testfall-Liste.md`.
-  Anlass: in 0076 standen Link und Schritte zum Muster nur im Fenster (‚Schon wieder‘, Nutzer). Bis zum Bau Selbstkontrolle.
-- **APD-108 und APD-85 Teil 4** unverändert bereit (Testfall-Listen aus 0075).
-- **Selbstkritik 0076:** eine Zwischenmeldung ohne Uhrzeitzeile (Regelwächter APD-84/W-1); Link und Schritte zum Muster nur im Fenster, danach nur
-  der Link (0 Nr. 11, 2.3 – daraus APD-110).
+- **Gebaut und veröffentlicht 4.50.0 / 3.48.0:** APD-108 (gemeinsame Klicksperre bis Loslassen plus 400 ms für genau einen Klick, größter Weg;
+  Safari-Modell `KLICK_NACH = 4`, `finger()` spät, `mausKlickSpaet`), APD-85 Teil 4 (Schalter an `[switch]`/`role="switch"`), APD-110 (Zusammenarbeit
+  3.6.0, Regelwächter APD-84/W-15), APD-30 leere Zustände (`leerHtml`, `.leer`, 15.23, R-7.7, neue Prüfung `ablauf-leer`). Einzelheiten:
+  CHANGELOG beider Repos.
+- **Rot gegen 4.49.1:** APD-108/W-2, W-5 bis W-7, W-9; APD-85/V-1, V-3; APD-110/L-1 bis L-4, L-8, L-11, L-13. **Nicht rot:** APD-108/W-11 und W-12
+  (`ablauf-navigation`) – im Modell trifft der späte Klick dort ein neu aufgebautes Element (Vermutung).
+- **Vier `los`-Läufe, erst der vierte veröffentlicht:** 1. `ablauf-grossanzeige` rot – der eigene Klick der Großanzeige lief in die neue Sperre
+  (behoben, `klickEigen`); 2. `ablauf-navigation (Text 53)` rot – die Prüfung schloss ein Menü mit einem Skript-Klick ohne Aufsetzen (behoben,
+  `tippeLayer`); 3. `ablauf-blatt` lief in Chromium und WebKit in die Zeitgrenze 10:00 (jetzt nach Gerät geteilt, `PRUEF_BLATT`); 4. alle 140 grün,
+  wackelt: `ablauf-gesamt` und `offline-regeln` in WebKit (allein grün, APD-85 Teil 5).
+- **Auffällig (noch nicht im Backlog, Nutzer fragen):** nach dem Schließen eines Fensters liegt der Fokus nie wieder auf dem Knopf, der es
+  öffnete (R-1.8) – nur der Knopf eines leeren Zustands hat das jetzt (APD-30/L-3). Vorschlag: für alle Fenster wie Apple.
+- **Selbstkritik 0077:** zwei Zwischenmeldungen mit geschätzter statt abgelesener Uhrzeit (17:34, 17:38 – Regelwächter APD-84/W-2); daraus der
+  verdrehte Zeitabstand 23:58.
 
 ## 3. Nächster Schritt
 
 1. `UEBERGABE.md`, die ganze Zusammenarbeit, Überschriften der Designrichtlinien; Lagebild; Regelwächter; ReiseLogBuch dazuholen (`main`).
-2. **Bauen – das Ja liegt vor:** Version **AppDesign 4.50.0 / Reiselogbuch 3.48.0** mit APD-108, APD-85 Teil 4, APD-110 und APD-30 nach den
-   vier Testfall-Listen (Prüfungen rot gegen 4.49.1 zuerst); Wortlaute einsetzen: Designrichtlinie 13 ‚Klick nach dem Wischen‘ (APD-108),
-   15.23 / R-7.7 / Abschnitt 7 (APD-30), Zusammenarbeit 3.6.0 Kasten Punkt 4 und 2.8 (APD-110). Usertest P-92 (APD-108 iPad, APD-30 am iPad
-   und iPhone). Dann Bericht mit Link und Schritten im Chat (APD-110).
+2. **Usertest P-92:** alle Testfälle P-92/0 bis P-92/6 vollständig im Chat (Link und Schritte, Kasten ‚Jede Antwort‘ 4), dann das Fenster
+   ‚P-92: Wie ist die Prüfung ausgegangen?‘. Abweichungen kommen in ‚0. Nächste Version‘ (Korrektur zuerst, 0 Nr. 8, 22).
+3. Danach fragen: ‚Fokus nach dem Schließen eines Fensters zurück auf den Knopf (R-1.8) ins Backlog übernehmen?‘ mit Priorität (Empfehlung 2).
 
 ## 4. Danach
 
@@ -57,7 +60,7 @@ APD-44 bis APD-60 · APD-70 · RLB-6 · APD-1.
 In der neuen Sitzung müssen **AppDesign** und **ReiseLogBuch** verfügbar sein; alles liegt auf `main`.
 
 ```
-Reiselogbuch 0077 – AppDesign 4.50.0 (APD-108, APD-85 Teil 4, APD-110, APD-30)
+Reiselogbuch 0078 – Usertest P-92 (AppDesign 4.50.0 / Reiselogbuch 3.48.0)
 
-Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md, dann die GANZE Zusammenarbeit allgemein (Kasten ‚Immer‘ und ‚Jede Antwort‘ oben in Abschnitt 0 gilt ab der ersten Antwort) und die Überschriften der Designrichtlinien. Prüfe Modell und Aufwand (Sitzungsdatei, auch model_fallback), hole das Repo g811141a/ReiseLogBuch (Branch main) dazu, wie in der AppDesign-CLAUDE.md unter ‚Arbeitsumgebung‘, und prüfe, ob der Regelwächter läuft. Gib kurz das Lagebild. Dann baue Version AppDesign 4.50.0 / Reiselogbuch 3.48.0 mit APD-108, APD-85 Teil 4, APD-110 und APD-30 (leere Zustände) – das Ja des Nutzers liegt vor (Sitzung 0076, UEBERGABE.md 3.).
+Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md, dann die GANZE Zusammenarbeit allgemein (Kasten ‚Immer‘ und ‚Jede Antwort‘ oben in Abschnitt 0 gilt ab der ersten Antwort) und die Überschriften der Designrichtlinien. Prüfe Modell und Aufwand (Sitzungsdatei, auch model_fallback), hole das Repo g811141a/ReiseLogBuch (Branch main) dazu, wie in der AppDesign-CLAUDE.md unter ‚Arbeitsumgebung‘, und prüfe, ob der Regelwächter läuft. Gib kurz das Lagebild. Dann zeige den offenen Usertest P-92 vollständig im Chat (Testfälle P-92/0 bis P-92/6 aus dem CHANGELOG des Reiselogbuchs) und frage im Auswahlfenster nach dem Ergebnis (UEBERGABE.md 3.).
 ```
