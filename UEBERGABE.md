@@ -31,12 +31,12 @@ AppDesign-`CLAUDE.md`.
   allein grün; WebKit 9:46):
   - **APD-62/T-43 Titel antippen = nach oben (R-2.7):** Kopfzeile, Seitenleiste, Fenster-Kopfzeile; eigenes Rollen Bild für Bild (Chromium hält
     `scrollTo` smooth unter Last nicht verlässlich an); ein Tipp hält an und löst nichts aus (beim Bau ergänzt, im Bericht genannt);
-    `checkTitelOben` H-1 bis H-8, `ablauf-titel-oben` in allen Ansichten, Gegenprobe gegen 3.46.2 rot (H-10).
+    `checkTitelOben` APD-62/H-1 bis H-8, `ablauf-titel-oben` in allen Ansichten, Gegenprobe gegen 3.46.2 rot (APD-62/H-10).
   - **APD-85 Teil 3:** `warteBis` in `tests/pruefe.mjs` (Selbsttest in `lauf-selbsttest.mjs`, Gegenprobe rot); `ablauf-blatt` ohne feste Pausen;
-    dazu (Ja des Nutzers) die 600 ms in `checkSheet`. Lastprobe Z-4 (zehnmal, vierfach langsam): alt 10/10 rot, neu 10/10 grün.
-    **Z-5 nicht erfüllt:** `ablauf-blatt` dauert unter Last länger (im vollen Lauf Zeitgrenze) – im Backlog APD-85 Teil 4.
+    dazu (Ja des Nutzers) die 600 ms in `checkSheet`. Lastprobe APD-85/Z-4 (zehnmal, vierfach langsam): alt 10/10 rot, neu 10/10 grün.
+    **APD-85/Z-5 nicht erfüllt:** `ablauf-blatt` dauert unter Last länger (im vollen Lauf Zeitgrenze) – im Backlog APD-85 Teil 4.
 - **APD-108 (Prio 2) neu:** Wischen löst in Safari trotzdem einen Tipp aus (`navKlickWeg`).
-- **Selbstkritik 0073:** zwei Zwischenmeldungen mit geschätzter Uhrzeit (17:41, 17:51) statt der Zeile des Regelwächters (0 Nr. 26); Z-4 zuerst
+- **Selbstkritik 0073:** zwei Zwischenmeldungen mit geschätzter Uhrzeit (17:41, 17:51) statt der Zeile des Regelwächters (0 Nr. 26); APD-85/Z-4 zuerst
   so gebaut, dass alt und neu an einer anderen festen Pause scheiterten – erst die Lastprobe zeigte die Pause in `checkSheet`.
 
 ## 3. Nächster Schritt

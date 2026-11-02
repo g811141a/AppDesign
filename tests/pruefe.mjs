@@ -20,6 +20,7 @@
 // Seit 4.37.0 (APD-43 Teil 2, P1, P3): PRUEF_TEXT=<px> öffnet jede Seite mit dieser Textgröße (Grundgröße vor dem Laden gesetzt, wie die
 // Einstellung ‚Textgröße‘ des Geräts; Ort mit Zusatz ‚· Text 53‘); PRUEF_GEGENPROBE=text:<fall> schleust einen Fehler der Textgröße ein.
 import { writeFileSync, mkdirSync } from 'node:fs';
+import { safariKlick } from './safari.mjs';
 
 // Gemeinsame Ansichten (APD-5/C-2): iPad quer und hoch, iPhone hoch und quer – je hell oder dunkel über die Option theme.
 export const ANSICHTEN = {
@@ -302,6 +303,9 @@ export function pruefung(name, pw, { hig = null, out = null } = {}) {
       const hilfen = bedienung ? { contrast: 'more', reducedMotion: 'reduce' } : {};
       const p = await b.newPage({ hasTouch: true, ...a, ...(theme ? { colorScheme: theme } : {}), ...hilfen, ...opts });
       if (typeof ansicht === 'string') t.ort = ansicht + (theme ? ` ${theme === 'dark' ? 'dunkel' : 'hell'}` : '') + (bedienung ? ' · Kontrast · ruhig' : '') + (textPx ? ` · Text ${textPx}` : '');
+      // APD-109 (seit 4.49.1): Safari schickt den Klick auf ein nicht antippbares Element nur mit Hörer am Element, darüber oder am document
+      // (safari.mjs, safariKlick) – als erstes Init-Skript, damit es jeden Hörer der Seite sieht
+      await p.addInitScript(safariKlick);
       // R-1.9 (M7): der Bewegungswächter misst jede Bewegung, sobald ‚Bewegung reduzieren‘ gilt (auch später per emulateMedia)
       await p.addInitScript(bewegungsWaechter);
       seiten.add(p);
@@ -310,7 +314,7 @@ export function pruefung(name, pw, { hig = null, out = null } = {}) {
       p.on('pageerror', e => melde('', `Skriptfehler der Seite: ${e.message.split('\n')[0]}`));
       // Safari nachgebildet (Zusammenarbeit 0 Nr. 5): Safari auf iPad und iPhone setzt beim Antippen einer Schaltfläche keinen
       // Fokus, Chromium und das WebKit von Playwright (Linux) schon – sonst meldet R-3.4 einen Fokus am x, den es am Gerät nicht gibt.
-      await p.addInitScript(() => document.addEventListener('mousedown', e => { if (e.target.closest?.('button')) e.preventDefault(); }, true));
+      await p.addInitScript(() => (window.__safariKlick?.ohne || (f => f()))(() => document.addEventListener('mousedown', e => { if (e.target.closest?.('button')) e.preventDefault(); }, true)));
       return p;
     },
     // Sollwert: Wert (Vergleich als JSON), RegExp (auf den Text) oder Funktion (gibt true zurück, wenn in Ordnung).
