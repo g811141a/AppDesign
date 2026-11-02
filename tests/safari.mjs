@@ -327,7 +327,7 @@ export function safariKlick() {
       if (n.matches(ANTIPPBAR) || hat(n)) return true;
       if (getComputedStyle(n).cursor === 'pointer') return true;
     }
-    return hat(document);
+    return window.__safariKlick.docZaehlt && hat(document);   // docZaehlt: nur für den Selbsttest (checkSafariKlick) abschaltbar
   };
   let weg = false;
   const pruefe = e => {
@@ -338,6 +338,6 @@ export function safariKlick() {
     e.stopImmediatePropagation(); e.preventDefault();
     window.__safariKlick.weg++;
   };
-  window.__safariKlick = { weg: 0, antippbar, ohne(fn) { ohne++; try { return fn(); } finally { ohne--; } } };
+  window.__safariKlick = { weg: 0, docZaehlt: true, antippbar, ohne(fn) { ohne++; try { return fn(); } finally { ohne--; } } };
   for (const typ of TYPEN) orig.call(window, typ, pruefe, true);
 }
