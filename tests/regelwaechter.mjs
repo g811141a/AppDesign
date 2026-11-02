@@ -11,6 +11,8 @@ import { fileURLToPath } from 'node:url';
 import { fuehreAus, uhrzeitzeile, uhr, setupText, SOLL_MODELL } from '../werkzeug/regelwaechter.mjs';
 // seit 4.45.0: W-14 Kontextstand vor jedem Fenster (APD-99, Testfall-Liste arbeit/APD-99 Testfall-Liste.md C-1 bis C-13)
 // seit 4.48.0: W-14 Rückfall, wenn der Satz nicht prüfbar ist (APD-103, Testfall-Liste arbeit/APD-103 Testfall-Liste.md D-1 bis D-9)
+// seit 4.50.0: W-15 Link und Schritte im Chat vor einem Fenster mit Link (APD-110, Testfall-Liste arbeit/APD-110 Testfall-Liste.md L-1 bis L-13;
+// L-1 nach der Antwort aus Sitzung 0076, 17:14, nachgebaut – die Sitzungsdatei liegt nicht im Repo)
 
 const ordner = mkdtempSync(join(tmpdir(), 'regelwaechter-'));
 const WAECHTER = fileURLToPath(new URL('../werkzeug/regelwaechter.mjs', import.meta.url));
@@ -147,6 +149,37 @@ function lauf(env = {}) {
   pruefe(abgelehnt(vorher(d7, 'gibt-es-noch-nicht')), 'W-14 D-7 Ablauf aus 0065 (nach Neustart, unsicher, ohne messung.mjs) – wird vor dem Zeigen nicht abgelehnt');
   pruefe(abgelehnt(vorher([...d7, werkzeug(545, 'f9', 'AskUserQuestion', frage(GUT))], 'f9')), 'W-14 D-7 Ablauf aus 0065, Fenster schon gespeichert – wird nicht abgelehnt');
 
+  // W-15 Link und Schritte im Chat vor dem Fenster (seit 4.50.0, APD-110, Testfall-Liste arbeit/APD-110 Testfall-Liste.md L-1 bis L-13)
+  { const M = 'https://g811141a.github.io/AppDesign/arbeit/APD-30%20Muster.html', ML = 'https://g811141a.github.io/AppDesign/arbeit/APD-30 Muster.html';
+    const lf = (link = M, opts = GUT.map(option)) => ({ questions: [{ question: `Muster APD-30 ${link} – 1. öffnen 2. ansehen, erwartet: mittig. Welche Variante passt?`, header: 'Muster', multiSelect: false, options: opts }] });
+    const SCHR = (link = M) => `Das Muster: ${link}\n\n1. Öffne den Link am iPad quer.\n2. Sieh dir die Varianten A, B und C an.\nErwartet: Symbol, Titel, Satz und Knopf stehen mittig.`;
+    const fall = (chat, fenster = lf()) => antwort({ zwischen: `${UZ('14:02', '14:00')}\n\n${chat}`, fenster });
+    const zeige = (zeilen, fenster = lf(), id = 'f1') => hook('fenster', zeilen, { env, eingabe: { tool_name: 'AskUserQuestion', tool_use_id: id, tool_input: fenster } });
+    const w15 = r => r?.hookSpecificOutput?.permissionDecision === 'deny' && /W-15/.test(r.hookSpecificOutput.permissionDecisionReason) ? r.hookSpecificOutput.permissionDecisionReason : '';
+    const beide = (zeilen, fenster, nr, text, muster = /W-15/) => { const a = w15(zeige(zeilen, fenster)), b = stop(zeilen).filter(x => x.startsWith('W-15'));
+      pruefe(muster.test(a) && b.some(x => muster.test(x)), `W-15 ${nr} ${text} (beim Zeigen: ${a ? 'abgelehnt' : 'gezeigt'}, beim Stop: ${b.join(' | ') || 'durchgelassen'})`); };
+    const frei = (zeilen, fenster, nr, text) => { const a = w15(zeige(zeilen, fenster)), b = stop(zeilen).filter(x => x.startsWith('W-15'));
+      pruefe(!a && !b.length, `W-15 ${nr} ${text} wird abgelehnt: ${a || b.join(' | ')}`); };
+    // L-1: wie Sitzung 0076, 17:14 – Link und Schritte nur im Fenster, im Chat nur eine Zusammenfassung
+    const l1 = fall('Das Muster ist fertig: drei Varianten des leeren Zustands nebeneinander, nur hell.');
+    beide(l1, lf(), 'L-1', 'Fenster mit Link, im Chat ohne Link – nicht abgelehnt', /APD-30 Muster\.html/);
+    beide(fall(`Das Muster: ${M}\nErwartet: mittig.`), lf(), 'L-2', 'Link ohne nummerierte Schritte – nicht abgelehnt', /Schritte fehlen/);
+    beide(fall(`Das Muster: ${M}\n1. Öffne den Link.\n2. Sieh dir die Varianten an.`), lf(), 'L-3', 'Link und Schritte ohne ‚Erwartet:‘ – nicht abgelehnt', /Erwartet fehlt/);
+    beide(fall(SCHR('https://g811141a.github.io/AppDesign/arbeit/APD-28%20Muster.html')), lf(), 'L-4', 'anderer Link im Chat als im Fenster – nicht abgelehnt');
+    frei(fall(SCHR()), lf(), 'L-5', 'Link, zwei Schritte und ‚Erwartet:‘');
+    frei(fall(SCHR()), frage(GUT, 'Passt Variante A?'), 'L-6', 'Link und Schritte im Chat, Fenster ohne Link');
+    frei(antwort(), frage(GUT), 'L-7', 'Fenster ohne Link (Bau-Frage)');
+    const l8 = { questions: [{ question: 'Welche Variante passt?', header: 'Muster', multiSelect: false, options: [{ label: 'A (Empfohlen)', description: `wie Apple – ${M}` }, option('B'), option('Ich schreibe im Chat')] }] };
+    beide(fall('Das Muster ist fertig.', l8), l8, 'L-8', 'Link nur in der Beschreibung einer Möglichkeit – nicht abgelehnt');
+    frei(fall(SCHR(ML)), lf(M), 'L-9', 'Link im Chat mit Leerzeichen, im Fenster mit %20');
+    frei(fall(SCHR(M)), lf(ML), 'L-9', 'Link im Chat mit %20, im Fenster mit Leerzeichen');
+    const l10 = fall('Das Muster ist fertig.'); l10.splice(l10.findIndex(z => z.message?.content?.[0]?.text?.includes('Das Muster ist fertig')), 1, bausteine(135, [{ type: 'thinking', thinking: 'umformuliert' }]));
+    frei(l10, lf(), 'L-10', 'Ausgabe davor nicht wörtlich gespeichert (Selbstkontrolle)');
+    // L-11: Stop ohne Fenster-Hook – Zurückweisung mit W-15 und Anleitung zum Nachholen
+    const r11 = hook('stop', l1, { env });
+    pruefe(r11?.decision === 'block' && /- W-15/.test(r11.reason) && /Link und nummerierte Schritte mit ‚Erwartet: …‘ \(W-15\)/.test(r11.reason) && /Auswahlfenster/.test(r11.reason), `W-15 L-11 Stop: keine Anleitung zum Nachholen (${r11?.reason?.slice(0, 160) || 'durchgelassen'})`);
+    beide(fall(`Siehe \`${M}\`\n\n1. Öffne den Link.\n2. Sieh hin.\nErwartet: mittig.\n\n<sub>⏱ 01:00 · ${M}</sub>`), lf(), 'L-13', 'Link nur in Code bzw. Zeitzeile – nicht abgelehnt'); }
+
   // W-1 bis W-7 und W-14 echte Antworten aus 0050, 0051 und 0062
   const { faelle } = JSON.parse(readFileSync(new URL('regelwaechter-faelle.json', import.meta.url), 'utf8'));
   for (const f of faelle) {
@@ -221,7 +254,7 @@ if (!gegenprobe) {
 } else {
   // Gegenprobe: jede Prüfung des Wächters einzeln abgeschaltet – die Prüfung muss sie vermissen
   const gruen = [];
-  for (const nr of ['W-1', 'W-2', 'W-3', 'W-4', 'W-5', 'W-6', 'W-7', 'W-14']) {
+  for (const nr of ['W-1', 'W-2', 'W-3', 'W-4', 'W-5', 'W-6', 'W-7', 'W-14', 'W-15']) {
     const f = lauf({ REGELWAECHTER_AUS: nr });
     if (!f.some(x => x.startsWith(nr))) gruen.push(nr);
   }
@@ -233,4 +266,4 @@ if (!gegenprobe) {
 }
 rmSync(ordner, { recursive: true, force: true });
 if (fehler.length) { console.log(`✗ regelwaechter${gegenprobe ? ' (Gegenprobe)' : ''}: ${fehler.length} Fehler\n${fehler.map(f => '  - ' + f).join('\n')}`); process.exit(1); }
-console.log(gegenprobe ? '✓ regelwaechter Gegenprobe: jede der Prüfungen W-1 bis W-7 und W-14 (mit Rückfall D-2, D-3, D-5, D-7) wird rot, wenn sie im Wächter fehlt' : '✓ regelwaechter: W-1 bis W-14 in Ordnung');
+console.log(gegenprobe ? '✓ regelwaechter Gegenprobe: jede der Prüfungen W-1 bis W-7, W-14 (mit Rückfall D-2, D-3, D-5, D-7) und W-15 wird rot, wenn sie im Wächter fehlt' : '✓ regelwaechter: W-1 bis W-15 in Ordnung');

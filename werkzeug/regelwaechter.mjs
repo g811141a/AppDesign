@@ -1,12 +1,13 @@
-// AppDesign 4.48.0 · Regelwächter (APD-84/M-3, Testfall-Liste arbeit/APD-84 APD-83 Testfall-Liste.md APD-84/W-1 bis W-13; Zusammenarbeit
+// AppDesign 4.50.0 · Regelwächter (APD-84/M-3, Testfall-Liste arbeit/APD-84 APD-83 Testfall-Liste.md APD-84/W-1 bis W-13; Zusammenarbeit
 // allgemein 0, Kasten ‚Jede Antwort‘). Läuft als Hook von Claude Code – eingerichtet einmal über das Setup-Skript der Umgebung, den Text
 // gibt `node werkzeug/regelwaechter.mjs setup` aus. Befehle (das JSON des Hooks kommt auf stdin, `transcript_path` = Sitzungsdatei):
 //   uhrzeit  UserPromptSubmit und PostToolUse: gibt Claude die abgelesene Uhrzeitzeile für die nächste Ausgabe (0 Nr. 26 – nie schätzen)
 //            und meldet, wenn die Sitzung nicht mit Opus 5.5 läuft (2.5); nach einem Werkzeug nur, wenn sich etwas geändert hat (W-10)
 //   fenster  PreToolUse für AskUserQuestion: ein Fenster ohne ‚(Empfohlen)‘ zuerst bzw. ohne ‚Ich schreibe im Chat‘ wird gar nicht erst
 //            gezeigt (W-5, 2.1), ebenso ohne Satz mit ‚Kontext N‘ aus messung.mjs davor (W-14, 0 Nr. 28, seit 4.45.0) bzw. – ist er
-//            nicht prüfbar – ohne Aufruf von messung.mjs seit der vorigen Nachricht (Rückfall, seit 4.48.0, APD-103)
-//   stop     Stop: prüft die Antwort in der Sitzungsdatei (W-1 bis W-7, W-14) und lässt sie nicht enden, bis die Formpflichten stimmen –
+//            nicht prüfbar – ohne Aufruf von messung.mjs seit der vorigen Nachricht (Rückfall, seit 4.48.0, APD-103); seit 4.50.0 (APD-110)
+//            ein Fenster mit Link zum Prüfen am Gerät ohne denselben Link und nummerierte Schritte mit ‚Erwartet: …‘ davor im Chat (W-15)
+//   stop     Stop: prüft die Antwort in der Sitzungsdatei (W-1 bis W-7, W-14, W-15) und lässt sie nicht enden, bis die Formpflichten stimmen –
 //            höchstens zweimal je Antwort (W-9); danach werden nur noch neue Ausgaben geprüft
 //   setup    gibt den Text für das Setup-Skript aus (W-13)
 // Jeder Fehler (keine Sitzungsdatei, kaputtes JSON) lässt durch: Rückgabewert 0, keine Ausgabe (W-12) – nie eine Sitzung festhalten.
@@ -124,7 +125,35 @@ export function pruefeKontext(ev, i, aus = [], frageText = null) {
   return [];
 }
 
-// Prüft die laufende Antwort (W-1 bis W-7, W-14). seit: Ausgaben und Fenster bis zu diesem Zeitpunkt wurden schon gemeldet (W-9).
+// W-15 (seit 4.50.0, APD-110, Testfall-Liste arbeit/APD-110 Testfall-Liste.md L-1 bis L-13): enthält das Fenster (Frage, Beschriftung oder
+// Beschreibung einer Möglichkeit) einen Link zum Prüfen am Gerät, muss die Ausgabe unmittelbar davor (seit der vorigen Nachricht bzw. dem
+// vorigen Fenster) denselben Link (dekodiert verglichen, %20 = Leerzeichen) und nummerierte Schritte mit ‚Erwartet: …‘ enthalten – nie nur
+// im Fenster (Kasten ‚Jede Antwort‘ 4, 0 Nr. 11, 2.3). Links in der Zeitzeile und in Code (`…`, ```…```) zählen nicht. Ist die Ausgabe davor
+// nicht wörtlich gespeichert (‚unsicher‘, 2.8 ‚Grenze‘) oder noch nicht geschrieben (Fenster beim Zeigen), bleibt es Selbstkontrolle.
+const LINK = /https?:\/\/[^\s<>"'`)\]‘’“”]+/g;
+const dekodiert = l => { const x = l.replace(/[.,;:!?]+$/, ''); try { return decodeURI(x); } catch { return x; } };
+export function pruefeLink(ev, i, aus = [], input = null) {
+  if (aus.includes('W-15')) return [];
+  const fragen = (input ?? ev[i]?.input)?.questions || [];
+  const imFenster = [...new Set(fragen.flatMap(q => [q.question, ...(q.options || []).flatMap(o => [o.label, o.description])])
+    .flatMap(t => String(t || '').match(LINK) || []).map(dekodiert))];
+  if (!imFenster.length) return [];
+  const bis = i < 0 ? ev.length : i;
+  let von = bis - 1; while (von >= 0 && ev[von].art !== 'nachricht' && ev[von].art !== 'fenster') von--;
+  const aussage = ev.slice(von + 1, bis).filter(e => e.art === 'text' || e.art === 'unsicher').at(-1);
+  if (aussage?.art === 'unsicher' || (!aussage && i < 0)) return [];
+  const frage = `„${kurz(fragen[0]?.question || '', 60)}“`;
+  const chat = (aussage?.text || '').replace(/```[\s\S]*?```/g, '').replace(/`[^`\n]*`/g, '').replace(new RegExp(ZEIT.source, 'g'), '');
+  const imChat = new Set((chat.match(LINK) || []).map(dekodiert)), dek = (() => { try { return decodeURI(chat); } catch { return chat; } })();
+  const fehlt = imFenster.filter(l => !imChat.has(l) && !dek.includes(l));
+  if (fehlt.length) return [`W-15 vor dem Fenster ${frage} steht der Link ${fehlt.join(', ')} nicht im Chat – Link und nummerierte Schritte mit ‚Erwartet: …‘ unmittelbar vor dem Fenster, nie nur im Fenster (Kasten ‚Jede Antwort‘ 4, 0 Nr. 11)`];
+  const schritte = chat.split('\n').filter(z => /^\s*(?:[-*>]\s*)?\d+\.\s+\S/.test(z)).length;
+  if (schritte < 2) return [`W-15 vor dem Fenster ${frage}: Schritte fehlen – im Chat nummerierte Schritte (1., 2. …) zum Link (Kasten ‚Jede Antwort‘ 4, 2.3)`];
+  if (!/erwartet:/i.test(chat)) return [`W-15 vor dem Fenster ${frage}: Erwartet fehlt – im Chat ‚Erwartet: …‘ zu den Schritten (Kasten ‚Jede Antwort‘ 4, 2.3)`];
+  return [];
+}
+
+// Prüft die laufende Antwort (W-1 bis W-7, W-14, W-15). seit: Ausgaben und Fenster bis zu diesem Zeitpunkt wurden schon gemeldet (W-9).
 export function pruefe(zeilen, { seit = null, aus = [] } = {}) {
   const ev = verlauf(zeilen), antwort = ev.slice(beginn(ev) + 1);
   const fehler = [], F = (nr, t) => { if (!aus.includes(nr)) fehler.push(`${nr} ${t}`); };
@@ -151,6 +180,8 @@ export function pruefe(zeilen, { seit = null, aus = [] } = {}) {
   for (const e of fenster.filter(neu)) fehler.push(...pruefeFenster(e.input, aus));
   // W-14 Kontextstand vor jedem Fenster (wie beim Zeigen)
   for (const e of fenster.filter(neu)) fehler.push(...pruefeKontext(ev, pos(e), aus));
+  // W-15 Link und Schritte im Chat vor einem Fenster mit Link (wie beim Zeigen, falls der Hook ‚fenster‘ fehlte)
+  for (const e of fenster.filter(neu)) fehler.push(...pruefeLink(ev, pos(e), aus));
   // W-6: die Zeitzeile steht ganz am Ende, nach dem letzten Fenster (2.1, 2.2)
   const letztes = fenster.at(-1), schluss = antwort.filter(e => e.art === 'text' || e.art === 'unsicher').at(-1);
   if (schluss?.art === 'unsicher' && (!letztes || pos(schluss) > pos(letztes))) return fehler;   // Schluss nicht wörtlich gespeichert
@@ -182,9 +213,10 @@ export function fuehreAus(befehl, eingabe, { env = process.env, jetzt = Date.now
     // W-14: steht das Fenster noch nicht in der Sitzungsdatei, ist die Ausgabe davor vielleicht noch nicht geschrieben (C-8) – dann
     // der Rückfall auf den Aufruf von messung.mjs (seit 4.48.0, APD-103/D-4, D-5); ohne Sitzungsdatei lässt er durch (W-12)
     const f = datei(eingabe), ev = f ? verlauf(lies(f)) : [], i = ev.findIndex(e => e.art === 'fenster' && e.id === eingabe.tool_use_id);
-    const fehler = [...pruefeFenster(eingabe.tool_input, aus), ...(f ? pruefeKontext(ev, i, aus, eingabe.tool_input?.questions?.[0]?.question || '') : [])];
+    const fehler = [...pruefeFenster(eingabe.tool_input, aus), ...(f ? pruefeKontext(ev, i, aus, eingabe.tool_input?.questions?.[0]?.question || '') : []),
+      ...(f ? pruefeLink(ev, i, aus, eingabe.tool_input) : [])];
     return fehler.length ? { hookSpecificOutput: { hookEventName: 'PreToolUse', permissionDecision: 'deny', permissionDecisionReason:
-      `Regelwächter (Zusammenarbeit 0 Nr. 7, Nr. 28, 2.1) – Fenster so nicht zeigen:\n${fehler.map(f => '- ' + f).join('\n')}\nNeu stellen: die Empfehlung zuerst mit ‚(Empfohlen)‘ und Grund in der Beschreibung, immer ‚${CHAT}‘; davor \`node ${MESSUNG}\` aufrufen und den Kontextstand als Satz mit ‚Kontext N‘ ausgeben.` } } : null;
+      `Regelwächter (Zusammenarbeit 0 Nr. 7, Nr. 28, 2.1) – Fenster so nicht zeigen:\n${fehler.map(f => '- ' + f).join('\n')}\nNeu stellen: die Empfehlung zuerst mit ‚(Empfohlen)‘ und Grund in der Beschreibung, immer ‚${CHAT}‘; davor \`node ${MESSUNG}\` aufrufen und den Kontextstand als Satz mit ‚Kontext N‘ ausgeben${fehler.some(x => x.startsWith('W-15')) ? '; bei einem Link zum Prüfen am Gerät davor im Chat der vollständige Link und nummerierte Schritte mit ‚Erwartet: …‘' : ''}.` } } : null;
   }
   const f = datei(eingabe);
   const zeilen = f ? lies(f) : [];
@@ -208,9 +240,10 @@ export function fuehreAus(befehl, eingabe, { env = process.env, jetzt = Date.now
     const fehler = pruefe(zeilen, { seit: z.seit, aus });
     if (!fehler.length) return null;
     speichere(zd, { ...z, abweisungen: z.abweisungen + 1, seit: z.seit ?? jetzt });
-    const fenster = fehler.some(x => x.startsWith('W-4'));
+    const fenster = fehler.some(x => x.startsWith('W-4') || x.startsWith('W-15'));
     return { decision: 'block', reason: `Regelwächter (Zusammenarbeit 0, Kasten ‚Jede Antwort‘) – Zurückweisung ${z.abweisungen + 1} von ${MAX_ABWEISUNGEN}, die Antwort ist noch nicht fertig:\n${fehler.map(x => '- ' + x).join('\n')}\n` +
       `Hole jetzt nach, in dieser Reihenfolge: (1) eine neue Ausgabe, erste Zeile die Uhrzeitzeile ${zeile} (Zeitabstand ab der letzten Uhrzeitzeile, die du ausgegeben hast) – nenne darin kurz den Regelbruch (schon Gesendetes lässt sich nicht ändern)` +
+      `${fehler.some(x => x.startsWith('W-15')) ? ' – darin der vollständige Link und nummerierte Schritte mit ‚Erwartet: …‘ (W-15)' : ''}` +
       `${fenster ? `; (2) das Auswahlfenster: kurze Frage, die Empfehlung zuerst mit ‚(Empfohlen)‘, immer ‚${CHAT}‘` : ''}; (${fenster ? 3 : 2}) zuletzt \`node ${MESSUNG}\` aufrufen und die Zeitzeile unverändert ans Ende setzen.` };
   }
   return null;

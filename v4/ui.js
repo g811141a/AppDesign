@@ -1,4 +1,4 @@
-// AppDesign 4.49.1 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
+// AppDesign 4.50.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
 // Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/fassung/X.Y.Z/ui.js"></script> (feste Fassung, R-10.3)
 // Seit 4.11.0 (R-10.3): ui.js und design.css immer mit ?v=<AppDesign-Version> einbinden (auch in sw.js) und beim Start
 // prüfen, ob genau diese Fassung geladen ist (AD_VERSION hier, --ad-version in design.css).
@@ -20,7 +20,7 @@
 
 'use strict';
 // Version der Bausteine (R-10.3): die App vergleicht sie beim Start mit der benötigten Fassung.
-const AD_VERSION = '4.49.1';
+const AD_VERSION = '4.50.0';
 /* ---------- Icons ---------- */
 
 // Schaltflächen-Icons aus Lucide (ISC-Lizenz), direkt eingebettet, damit die App offline funktioniert.
@@ -67,6 +67,15 @@ const ICONS = {
 };
 // Seit 4.42.0 (APD-87, R-4.1): das Icon des Mehr-Knopfs trägt data-mehr – bei offenem Menü zeigt es senkrechte Punkte (mehrKippen).
 const ic = (name, cls = '') => `<svg class="ic ${cls}" viewBox="0 0 24 24" aria-hidden="true"${name === 'ellipsis' ? ' data-mehr' : ''}>${ICONS[name]}</svg>`;
+// R-7.7 (seit 4.50.0, APD-30, Designrichtlinie 15.23; Testfall-Liste arbeit/APD-30 Testfall-Liste.md L-1 bis L-20): leerer Zustand wie Apple
+// ContentUnavailableView – Symbol (für VoiceOver verborgen), Titel als Überschrift, Satz, optional ein getönter Knopf { id, label }, der dasselbe
+// auslöst wie der Knopf oder Menüpunkt, für den er steht (die App setzt seinen onclick). klein: Seitenleiste neben dem Inhalt (nur Symbol und
+// Titel, ohne satz und aktion aufrufen); suche: ‚Keine Treffer für ‚…‘‘ – titel und satz werden hier maskiert (Begriff als Text, nie HTML).
+function leerHtml({ icon, titel, satz = '', aktion = null, klein = false, suche = false } = {}) {
+  return `<div class="leer${klein ? ' klein' : ''}${suche ? ' suche' : ''}">${ic(icon, 'sym')}<h3>${esc(titel)}</h3>${satz ? `<p>${esc(satz)}</p>` : ''}`
+    + `${aktion ? `<button type="button" class="leer-knopf" id="${esc(aktion.id)}">${esc(aktion.label)}</button>` : ''}</div>`;
+}
+const leerSuche = (begriff, klein = false) => leerHtml({ icon: 'search', titel: `Keine Treffer für ‚${begriff}‘`, satz: 'Schreibweise prüfen oder nach etwas anderem suchen.', klein, suche: true });
 
 // Feste Elemente jeder App: <dialog id="dlg"> (Fenster) und <dialog id="msg"> (Meldungen).
 const dlg = document.getElementById('dlg');
@@ -1030,6 +1039,21 @@ addEventListener('click', e => {
   const w = beruehrWeg; beruehrWeg = null;
   if (w && performance.now() < w.bis && w.el.contains(e.target) && !grossSelbst) { e.preventDefault(); e.stopImmediatePropagation(); }
 }, true);
+// Seit 4.50.0 (APD-108, Testfall-Liste arbeit/APD-108 Testfall-Liste.md W-1 bis W-13; Designrichtlinie 13 ‚Klick nach dem Wischen‘): Safari
+// schickt nach dem Loslassen einen Klick an das Element unter dem Aufsetzen, auch nach weitem Weg, als eigene Aufgabe 1–4 ms nach pointerup –
+// nach einem setTimeout 0 (Messung APD-106, Fall 3). Eine Sperre ‚Wischen tippt nie an‘ gilt darum wie beruehrWeg: an() bis zum Loslassen,
+// los() danach noch 400 ms für genau einen Klick (der erste verbraucht sie); das nächste Aufsetzen (frei()) und jede Taste geben frei.
+// Klicks, die ui.js selbst auslöst (eigenKlick, z. B. das x nach dem Ziehen des Blatts), sperrt sie nicht.
+let klickEigen = false;
+function eigenKlick(el) { klickEigen = true; try { el.click(); } finally { klickEigen = false; } }
+function klickSperre() {
+  let bis = 0;
+  const s = { an() { bis = Infinity; }, los() { if (bis === Infinity) bis = performance.now() + 400; }, frei() { bis = 0; },
+    aktiv: () => performance.now() < bis,
+    nimm() { if (klickEigen || performance.now() >= bis) return false; bis = 0; return true; } };
+  addEventListener('keydown', s.frei, true);
+  return s;
+}
 
 // R-2.6 (seit 4.48.0, APD-104 Variante A, Testfall-Liste arbeit/APD-104 Testfall-Liste.md L-1 bis L-9): Großanzeige für Leisten-Knöpfe wie
 // Apple (WWDC19 Session 261) – ab der Textgröße AX1 (html.ts-ax) zeigt langes Drücken (R-3.5: still, 0,6 s) auf einen Knopf einer Leiste
@@ -1094,7 +1118,8 @@ function grossEnde(e) {
   const k = e.type === 'pointerup' ? grossKnopfBei(e.clientX, e.clientY) : null;
   grossAnzeigeZu(); gross = null;
   grossKlickWeg = performance.now() + 400;
-  if (k && !k.disabled) { grossSelbst = true; try { k.click(); } finally { grossSelbst = false; } }
+  // seit 4.50.0 (APD-108): eigener Klick – die Sperre ‚Wischen tippt nie an‘ (klickSperre) gilt für ihn nicht, der Finger glitt über die Knöpfe
+  if (k && !k.disabled) { grossSelbst = true; klickEigen = true; try { k.click(); } finally { grossSelbst = false; klickEigen = false; } }
 }
 addEventListener('pointerup', grossEnde, true);
 addEventListener('pointercancel', grossEnde, true);
@@ -1882,6 +1907,10 @@ dlg.addEventListener('close', () => {
   // R-7.3: nach dem Neuaufbau durch die App die oberste Zeile zurück an ihren Platz, die Zeile aus dem Fenster kurz hervorheben
   // (seit 4.23.2 rollt nichts mehr – auch nach ‹ › nicht)
   requestAnimationFrame(() => { holdAlign(); if (sel) revealRow(sel); });
+  // R-1.8 (seit 4.50.0, APD-30/L-3): kam das Fenster vom Knopf eines leeren Zustands (15.23), liegt der Fokus danach wieder auf ihm, ohne Rollen
+  // (nach dem Neuaufbau durch die App: der Knopf kann ein neues Element mit derselben Kennung sein)
+  if (sel && document.querySelector(sel)?.matches('.leer-knopf')) requestAnimationFrame(() => requestAnimationFrame(() => {
+    const k = document.querySelector(sel); if (k?.matches('.leer-knopf') && !dlg.open) k.focus({ preventScroll: true }); }));
 });
 
 // R-7.3 (seit 4.18.0, APD-13): Zeile bzw. Kasten, aus dem ein Fenster kam, nach dem Schließen kurz hervorheben.
@@ -2164,7 +2193,8 @@ const navRuhig = window.matchMedia?.('(prefers-reduced-motion: reduce)');
 const navSchleier = document.createElement('div');
 navSchleier.className = 'nav-schleier';
 document.body.append(navSchleier);
-let navApp = null, navZug = null, navLauf = null, navKlickWeg = false;
+let navApp = null, navZug = null, navLauf = null;
+const navSperre = klickSperre();   // seit 4.50.0 (APD-108) statt navKlickWeg
 // seit 4.30.1 (APD-67): die Entscheidungen der Gestenstelle stehen in der Messung (15.21) – ‚nav kandidat‘, ‚nav verworfen‘, ‚nav aktiv‘,
 // ‚nav fertig‘, ‚nav zurück gefedert‘, ‚nav abgebrochen‘ mit Weg (Anteil der Breite) und Tempo (px/ms)
 const navMess = t => { if (mess?.an) messEreignis('nav ' + t); };
@@ -2300,14 +2330,24 @@ function navKandidat(e) {
   return null;
 }
 // Wischen tippt nie an: ein Zeiger, der sich zwischen Drücken und Loslassen mehr als 10 px bewegt hat, löst kein Antippen aus (am Gerät
-// erkennt iOS so kein Tippen; mit Maus und Zeichenstift schon) – außer in Feldern (Text markieren).
+// erkennt iOS so kein Tippen; mit Maus und Zeichenstift schon) – außer in Feldern (Text markieren). Seit 4.50.0 (APD-108/W-B) zählt der größte
+// Weg seit dem Aufsetzen (38 px weg und zurück auf 6 px ist ein Wischen), die Sperre gilt bis zum Loslassen plus 400 ms (navSperre).
 let navStart = null;
-window.addEventListener('pointerdown', e => { navStart = e.isPrimary ? { x: e.clientX, y: e.clientY, id: e.pointerId } : navStart; }, true);
-window.addEventListener('pointerup', e => {
-  const a = navStart; navStart = null;
-  if (!a || a.id !== e.pointerId || Math.hypot(e.clientX - a.x, e.clientY - a.y) <= NAV_ENTSCHEID || e.target.closest?.('input, textarea, select, [contenteditable]')) return;
-  navKlickWeg = true; setTimeout(() => { navKlickWeg = false; });
+window.addEventListener('pointerdown', e => {
+  if (!e.isPrimary) return;
+  navSperre.frei();
+  navStart = { x: e.clientX, y: e.clientY, id: e.pointerId, feld: !!e.target.closest?.('input, textarea, select, [contenteditable]') };
 }, true);
+const navWeit = (a, e) => !!a && a.id === e.pointerId && !a.feld && !e.target.closest?.('input, textarea, select, [contenteditable]')
+  && Math.hypot(e.clientX - a.x, e.clientY - a.y) > NAV_ENTSCHEID;
+window.addEventListener('pointermove', e => { if (navWeit(navStart, e)) navSperre.an(); }, true);
+['pointerup', 'pointercancel'].forEach(t => window.addEventListener(t, e => {
+  const a = navStart;
+  if (!a || a.id !== e.pointerId) return;
+  navStart = null;
+  if (t === 'pointerup' && navWeit(a, e)) navSperre.an();
+  navSperre.los();
+}, true));
 window.addEventListener('pointerdown', e => {
   const k = navKandidat(e);
   navZug = k && { ...k, x0: e.clientX, y0: e.clientY, t0: e.timeStamp, id: e.pointerId, aktiv: false, spur: [[e.timeStamp, e.clientX]],
@@ -2316,7 +2356,7 @@ window.addEventListener('pointerdown', e => {
 }, true);
 function navAktiv(z, e) {
   z.aktiv = true;
-  navKlickWeg = true;
+  navSperre.an();
   navMess(`aktiv ${z.art} ${Math.round(e.clientX - z.x0)} ${Math.round(e.clientY - z.y0)}`);
   if (kbOffen()) document.activeElement?.blur?.();   // APD-68/F-16: die Tastatur schließt, zurück geht es danach
   rolle.halt();                                         // APD-68/F-10: ein weiches Rollen endet, das Wischen gilt
@@ -2350,7 +2390,7 @@ function navLoslassen(e, abbruch) {
   if (!z || e.pointerId !== z.id) return;
   navZug = null;
   if (!z.aktiv) { if (abbruch) navMess('abgebrochen vor der entscheidung'); return; }
-  setTimeout(() => { navKlickWeg = false; });
+  navSperre.los();
   const spur = z.spur.filter(([t]) => t >= e.timeStamp - 100);
   const tempo = spur.length > 1 && spur.at(-1)[0] > spur[0][0] ? (spur.at(-1)[1] - spur[0][1]) / (spur.at(-1)[0] - spur[0][0]) * z.richtung : 0;
   const weg = Math.abs((z.p ?? z.von) - z.von);
@@ -2371,17 +2411,14 @@ window.addEventListener('touchmove', e => { if (navZug?.aktiv && e.cancelable) e
 window.addEventListener('pointerup', e => navLoslassen(e, false), true);
 window.addEventListener('pointercancel', e => navLoslassen(e, true), true);
 // Nach einer Wischgeste kein Antippen dessen, worauf sie begann
-window.addEventListener('click', e => { if (navKlickWeg) { e.preventDefault(); e.stopPropagation(); } }, true);
+window.addEventListener('click', e => { if (navSperre.nimm()) { e.preventDefault(); e.stopPropagation(); } }, true);
 // APD-67/F-14 (R-8.1): Drehen bricht ein Ziehen ab – Zustand wie vor dem Ziehen; eine laufende Bewegung springt an ihr Ziel
 window.addEventListener('resize', () => {
   const z = navZug;
   if (z?.aktiv && (innerWidth !== z.breite || Math.abs(innerHeight - z.hoehe) > 150)) {
     navZug = null;
     navMess('abgebrochen drehen');
-    // das Loslassen danach tippt nichts an
-    const los = () => setTimeout(() => { navKlickWeg = false; });
-    window.addEventListener('pointerup', los, { capture: true, once: true });
-    window.addEventListener('pointercancel', los, { capture: true, once: true });
+    // das Loslassen danach tippt nichts an: navSperre bleibt bis zum Loslassen (navAktiv), dann noch 400 ms (APD-108/W-12)
     if (z.art === 'phone') navApp.zurueck.darunter(false);
     else if (z.nach === 1) navApp.seite.zeigen(false);
     navAufraeumen(z.art);
@@ -2437,7 +2474,8 @@ const blattSchleier = document.createElement('div');
 blattSchleier.className = 'blatt-schleier';
 blattSchleier.setAttribute('aria-hidden', 'true');
 document.body.append(blattSchleier);
-let blattY = 0, blattZug = null, blattLauf = null, blattGeistEl = null, blattKlickWeg = false;
+let blattY = 0, blattZug = null, blattLauf = null, blattGeistEl = null;
+const blattSperre = klickSperre();   // seit 4.50.0 (APD-108) statt blattKlickWeg
 const blattQuer = () => window.matchMedia?.('(orientation: landscape) and (max-height: 500px)').matches;
 // Oberkante des Blatts im sichtbaren Bereich: hoch 10 px unter der Statusleiste, quer 8 px
 const blattOben = () => !isPhone() ? 0 : blattQuer() ? 8 : Math.round(safeRand().top + 10);
@@ -2493,7 +2531,7 @@ function blattFahre(nach, fertig, dauer) {
   const von = blattY;
   // R-1.9 (seit 4.35.0, M5): mit ‚Bewegung reduzieren‘ gleitet das Blatt nach dem Loslassen nicht (kein Nachfedern) – es steht sofort am Ziel
   if (Math.abs(von - nach) < 1) { blattSetze(nach); fertig?.(); return; }
-  // erst nach dem Loslassen: das Unterdrücken des Klicks (blattKlickWeg) endet im nächsten Durchlauf, sonst käme das x nicht an
+  // erst nach dem Loslassen; das x kommt trotz blattSperre an (eigenKlick in blattWieX, APD-108)
   if (navRuhig?.matches) { blattSetze(nach); setTimeout(() => fertig?.()); return; }
   dauer = dauer || Math.max(220, Math.min(480, Math.abs(nach - von) * 0.9));
   const a = blattBild(von), b = blattBild(nach);
@@ -2571,11 +2609,12 @@ window.addEventListener('resize', () => {
 });
 const blattX = () => dlg.querySelector('#dlgX');
 // wie das x (Escape, Abdunkelung am iPhone, Ziehen): mit Änderungen fragt die Sprechblase am x
-function blattWieX() { const x = blattX(); if (x) x.click(); else dlg.close('cancel'); }
+function blattWieX() { const x = blattX(); if (x) eigenKlick(x); else dlg.close('cancel'); }
 const blattDraussen = e => { if (e.target !== dlg) return false; const r = dlg.getBoundingClientRect();
   return e.clientY < r.top || e.clientY > r.bottom || e.clientX < r.left || e.clientX > r.right; };
-dlg.addEventListener('click', e => { if (blattDraussen(e) && isPhone() && !blattKlickWeg && !document.querySelector('.pop, .menu')) blattWieX(); });
-window.addEventListener('click', e => { if (blattKlickWeg) { e.preventDefault(); e.stopPropagation(); } }, true);
+dlg.addEventListener('click', e => { if (blattDraussen(e) && isPhone() && !blattSperre.aktiv() && !document.querySelector('.pop, .menu')) blattWieX(); });
+window.addEventListener('click', e => { if (blattSperre.nimm()) { e.preventDefault(); e.stopPropagation(); } }, true);
+window.addEventListener('pointerdown', e => { if (e.isPrimary) blattSperre.frei(); }, true);
 // steht der Inhalt unter dem Finger schon ganz oben? (auch Bereiche mit eigenem senkrechten Rollen)
 function blattGanzOben(t) {
   for (let e = t; e && e !== dlg; e = e.parentElement) if (e.scrollTop > 0 && e.scrollHeight > e.clientHeight + 1) return false;
@@ -2620,6 +2659,7 @@ window.addEventListener('pointermove', e => {
     if (dy > Math.abs(dx) * BLATT_SENKRECHT) blattFeld()?.blur();
     if (!blattErlaubt(z, dx, dy)) { blattZug = blattFeld() ? Object.assign(z, { nurTastatur: true, hx: e.clientX, hy: Math.min(e.clientY, z.y0) }) : null; return; }
     z.aktiv = true;
+    blattSperre.an();
     blattStopp();
     z.o = blattY;
     document.documentElement.classList.add('blatt-zieht');
@@ -2642,7 +2682,7 @@ function blattLos(e, abbruch) {
   if (!z.aktiv) return;
   document.documentElement.classList.remove('blatt-zieht');
   blattFeld()?.blur();
-  blattKlickWeg = true; setTimeout(() => { blattKlickWeg = false; });
+  blattSperre.an(); blattSperre.los();   // APD-108: bis 400 ms nach dem Loslassen genau ein Klick
   const spur = z.spur.filter(([t]) => t >= e.timeStamp - 100);
   const tempo = spur.length > 1 && spur.at(-1)[0] > spur[0][0] ? (spur.at(-1)[1] - spur[0][1]) / (spur.at(-1)[0] - spur[0][0]) : 0;   // px/ms nach unten
   const wohin = (z.roh ?? blattY) + tempo * BLATT_AUSLAUF, zu = blattZu();

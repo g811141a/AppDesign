@@ -29,14 +29,14 @@ AppDesign-`CLAUDE.md`.
 
 ## 2. Ergebnisse der Sitzung 0076
 
-- **APD-30 leere Zustände bereit:** Muster `arbeit/APD-30 Muster.html` **Variante A** (Symbol, Titel, Satz, Knopf getönt), Texte S-1 bis
-  S-5, Seitenleiste neben dem Inhalt ohne Satz (iPhone-Startliste voll), Testfall-Liste L-1 bis L-20, **Wortlaut 15.23, R-7.7 und
+- **APD-30 leere Zustände bereit:** Muster `arbeit/APD-30 Muster.html` **Variante A** (Symbol, Titel, Satz, Knopf getönt), Texte APD-30/S-1 bis
+  APD-30/S-5, Seitenleiste neben dem Inhalt ohne Satz (iPhone-Startliste voll), Testfall-Liste APD-30/L-1 bis L-20, **Wortlaut 15.23, R-7.7 und
   Abschnitt 7 bestätigt** – alles in `arbeit/APD-30 Testfall-Liste.md`.
 - **APD-110 neu, Prio 1, bereit:** Link und nummerierte Schritte mit ‚Erwartet: …‘ im Chat vor dem Fenster, nie nur im Fenster.
-  **Wortlaut Kasten ‚Jede Antwort‘ Punkt 4 und 2.8 bestätigt**, Regelwächter W-15 (L-1 bis L-13) – `arbeit/APD-110 Testfall-Liste.md`.
+  **Wortlaut Kasten ‚Jede Antwort‘ Punkt 4 und 2.8 bestätigt**, Regelwächter APD-84/W-15 (APD-110/L-1 bis L-13) – `arbeit/APD-110 Testfall-Liste.md`.
   Anlass: in 0076 standen Link und Schritte zum Muster nur im Fenster (‚Schon wieder‘, Nutzer). Bis zum Bau Selbstkontrolle.
 - **APD-108 und APD-85 Teil 4** unverändert bereit (Testfall-Listen aus 0075).
-- **Selbstkritik 0076:** eine Zwischenmeldung ohne Uhrzeitzeile (Regelwächter W-1); Link und Schritte zum Muster nur im Fenster, danach nur
+- **Selbstkritik 0076:** eine Zwischenmeldung ohne Uhrzeitzeile (Regelwächter APD-84/W-1); Link und Schritte zum Muster nur im Fenster, danach nur
   der Link (0 Nr. 11, 2.3 – daraus APD-110).
 
 ## 3. Nächster Schritt

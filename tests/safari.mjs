@@ -242,10 +242,17 @@ export async function safariModell(p, ansicht, { leisten = { bar: '.nb, .pnav', 
 // touchmove kommt weiter, ist aber nicht mehr verhinderbar. Hat die Seite touchmove bis dahin verhindert, rollt Safari nicht.
 // Playwright kennt in WebKit keine Berührung mit Bewegung – die Ereignisse werden in der Seite nachgebildet (isTrusted false).
 // safariWischen(p, x, y, schritte): Finger bei x/y aufsetzen, schritte = [[dx, dy, ms], …] (Lage seit dem Aufsetzen, Zeit seit dem
-// vorigen Schritt), loslassen. Ergebnis { abgebrochen, gerollt } (gerollt = Änderung des Rollstands in px).
+// vorigen Schritt), loslassen. Ergebnis { abgebrochen, gerollt, klick } (gerollt = Änderung des Rollstands in px; klick: Safari schickte
+// den Klick nach dem Loslassen, KLICK_NACH).
 export const WISCH_SCHWELLE = 10;
+// Seit 4.50.0 (APD-108/W-A, Messung arbeit/APD-106 Messungen/2026-11-01 iPhone hoch Muster.txt, Fall 3, Zeilen 73–80; Designrichtlinie 13
+// ‚Klick nach dem Wischen‘): Safari schickt nach dem Loslassen einen click an das Element unter dem Aufsetzen, auch nach weitem Weg (gemessen
+// bis 154 px), solange nichts gerollt hat (kein pointercancel) – als eigene Aufgabe 1–4 ms nach pointerup, also nach einem setTimeout 0 der
+// Seite. Nur, wenn das Element antippbar ist (‚Klick nur mit Hörer‘, safariKlick). iPad: Vermutung (APD-108/W-E). Es gilt für safariWischen,
+// finger() (tests/ablauf.mjs) und den Mauszug wie mit dem Finger (mausKlickSpaet).
+export const KLICK_NACH = 4;
 export async function safariWischen(p, x, y, schritte, { schwelle = WISCH_SCHWELLE } = {}) {
-  return p.evaluate(async ({ x, y, schritte, schwelle }) => {
+  return p.evaluate(async ({ x, y, schritte, schwelle, KLICK_NACH }) => {
     const warte = ms => new Promise(r => setTimeout(r, ms));
     const t = document.elementFromPoint(x, y) || document.body;
     const senkrecht = [];
@@ -269,9 +276,17 @@ export async function safariWischen(p, x, y, schritte, { schwelle = WISCH_SCHWEL
       if (rollt) roll.scrollTop = r0 - (dy - ab);
     }
     finger('touchend', !rollt);
-    if (!rollt) zeiger('pointerup', x + letzt[0], y + letzt[1]);
-    return { abgebrochen: rollt, gerollt: Math.round(roll.scrollTop - r0), ziel: t.tagName.toLowerCase() + [...t.classList].map(c => '.' + c).join('') + (t.id ? '#' + t.id : '') };
-  }, { x, y, schritte, schwelle });
+    let klick = false;
+    if (!rollt) {
+      zeiger('pointerup', x + letzt[0], y + letzt[1]);
+      await warte(KLICK_NACH);
+      if (t.isConnected && (window.__safariKlick?.antippbar(t) ?? true)) {
+        klick = true;
+        t.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, composed: true, clientX: x + letzt[0], clientY: y + letzt[1], detail: 1 }));
+      }
+    }
+    return { abgebrochen: rollt, gerollt: Math.round(roll.scrollTop - r0), klick, ziel: t.tagName.toLowerCase() + [...t.classList].map(c => '.' + c).join('') + (t.id ? '#' + t.id : '') };
+  }, { x, y, schritte, schwelle, KLICK_NACH });
 }
 
 // APD-68/Q-8 (seit 4.45.0): Wischen mit der Maus statt mit dem Finger. Ein Mauszug, der auf einem Link (oder Bild) beginnt, startet in
@@ -280,6 +295,9 @@ export async function safariWischen(p, x, y, schritte, { schwelle = WISCH_SCHWEL
 // mausWieFinger(p) verhindert in der Seite dragstart; einmal je Seite, vor dem ersten Mauszug (neu laden entfernt es).
 export const mausWieFinger = p => p.evaluate(() => { if (window.__mausWieFinger) return; window.__mausWieFinger = true;
   addEventListener('dragstart', e => e.preventDefault(), true); });
+// Seit 4.50.0 (APD-108): Mauszug wie mit dem Finger auch beim Klick – solange an, nimmt das Modell (safariKlick) den Klick des Browsers nach
+// dem Loslassen weg und schickt ihn wie Safari KLICK_NACH ms nach pointerup an das Element unter dem Aufsetzen (nicht nach pointercancel).
+export const mausKlickSpaet = (p, an = true) => p.evaluate(ms => { if (window.__safariKlick) window.__safariKlick.spaet = ms; }, an ? KLICK_NACH : 0);
 
 // Seit 4.48.1 (APD-106, Messung 01.11.2026 mit arbeit/APD-106 Messung.html, iPhone iOS 18.7, Fälle 3–8; Designrichtlinie 13):
 // - Antipp-Markierung: Safari legt beim Berühren ein eigenes Grau über das berührte antippbare Element, solange
@@ -329,15 +347,25 @@ export function safariKlick() {
     }
     return window.__safariKlick.docZaehlt && hat(document);   // docZaehlt: nur für den Selbsttest (checkSafariKlick) abschaltbar
   };
-  let weg = false;
+  let weg = false, start = null, abgebrochen = false;
+  // mausKlickSpaet (APD-108): Klick nach dem Loslassen als eigene Aufgabe an das Element unter dem Aufsetzen, wie Safari
+  orig.call(window, 'pointerdown', e => { if (e.isTrusted && e.isPrimary) { start = e.target; abgebrochen = false; } }, true);
+  orig.call(window, 'pointercancel', e => { if (e.isTrusted) abgebrochen = true; }, true);
+  orig.call(window, 'pointerup', e => {
+    const ms = window.__safariKlick.spaet, t = start;
+    if (!e.isTrusted || !e.isPrimary || !ms || !t || abgebrochen) return;
+    const x = e.clientX, y = e.clientY;
+    setTimeout(() => { if (t.isConnected && antippbar(t)) t.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, composed: true, clientX: x, clientY: y, detail: 1 })); }, ms);
+  }, true);
   const pruefe = e => {
     if (!e.isTrusted) return;
+    if (e.type === 'click' && window.__safariKlick.spaet) { e.stopImmediatePropagation(); e.preventDefault(); return; }
     if (e.type === 'mousedown') weg = !antippbar(e.target);
     if (!weg) return;
     if (e.type === 'click') weg = false;
     e.stopImmediatePropagation(); e.preventDefault();
     window.__safariKlick.weg++;
   };
-  window.__safariKlick = { weg: 0, docZaehlt: true, antippbar, ohne(fn) { ohne++; try { return fn(); } finally { ohne--; } } };
+  window.__safariKlick = { weg: 0, docZaehlt: true, spaet: 0, antippbar, ohne(fn) { ohne++; try { return fn(); } finally { ohne--; } } };
   for (const typ of TYPEN) orig.call(window, typ, pruefe, true);
 }

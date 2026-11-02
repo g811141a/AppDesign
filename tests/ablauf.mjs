@@ -4,7 +4,7 @@
 // Einbinden im Prüfskript der App:  import { checkSearch, checkDialogHead } from '../../AppDesign/tests/ablauf.mjs';
 //                                   fehler.push(...await checkSearch(page, { term: 'Sydney' }));
 import { ROLL, RING, rolle, rollstand, navFertig, rollRuht, ruhe, warteBis } from './pruefe.mjs';
-import { safariWischen, safariModell, mausWieFinger, safariHalten } from './safari.mjs';
+import { safariWischen, safariModell, mausWieFinger, safariHalten, KLICK_NACH, mausKlickSpaet } from './safari.mjs';
 const wait = (p, ms = 250) => p.waitForTimeout(ms);
 // R-2.3 (seit 4.25.1, APD-24): beim Tippen bleibt das Suchfeld dasselbe Element und behält den Fokus – sonst schließt Safari am
 // iPhone die Tastatur kurz und Kopf- und Suchzeile zittern bei jedem Buchstaben. Tippt Buchstabe für Buchstabe (und löscht
@@ -1398,6 +1398,9 @@ export async function checkPrint(p, { print, mehr = 2, where = '' } = {}) {
 export async function checkNavigation(p, { eintrag, titel, zurueck = '#back', waagrecht = null, knopf = null, menue = null, suche = null,
   seitenKnopf = '[data-side-toggle]', kasten = null, where = '' } = {}) {
   const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}R-7.5 ${t}`);
+  // seit 4.50.0 (APD-108): Abdunkelung des Menüs antippen wie mit dem Finger – erst aufsetzen (gibt die Sperre ‚Wischen tippt nie an‘ frei), dann der Klick
+  const tippeLayer = () => p.evaluate(() => { const l = document.querySelector('.layer'); if (!l) return;
+    l.dispatchEvent(new PointerEvent('pointerdown', { pointerId: 4110, pointerType: 'touch', isPrimary: true, bubbles: true, cancelable: true, composed: true })); l.click(); });
   const lage = () => p.evaluate(() => {
     const H = document.documentElement, side = document.getElementById('side'), app = document.getElementById('app');
     const sicht = e => !!e && !e.hidden && getComputedStyle(e).display !== 'none' && getComputedStyle(e).visibility !== 'hidden' && e.getClientRects().length > 0;
@@ -1443,6 +1446,7 @@ export async function checkNavigation(p, { eintrag, titel, zurueck = '#back', wa
     return s.length > 1 && z[0] > s[0][0] ? Math.abs(z[1] - s[0][1]) / (z[0] - s[0][0]) : 0; });
   const ziehe = async (x0, y0, x1, y1, { schnell = false, los = true, halten = 0 } = {}) => {
     await p.evaluate(() => getSelection()?.removeAllRanges()); await mausWieFinger(p);
+    await mausKlickSpaet(p);   // seit 4.50.0 (APD-108/W-11, W-12): der Klick nach dem Loslassen kommt wie in Safari 4 ms später (bis keinTippen)
     if (schnell) await spurStart();
     await p.mouse.move(x0, y0); await p.mouse.down();
     if (halten) await wait(p, halten);
@@ -1461,6 +1465,7 @@ export async function checkNavigation(p, { eintrag, titel, zurueck = '#back', wa
   const schnellerZug = async (zug, geschafft) => { const t = []; for (let k = 0; k < 3; k++) { await zug(); t.push(tempo.toFixed(2)); if (tempo >= 0.3 || await geschafft()) break; } return ` (Tempo ${t.join('/')} px/ms)`; };
   // Wischen tippt nie an, worauf es begann (kein Fenster geht auf)
   const keinTippen = async wo => {
+    await wait(p, 30); await mausKlickSpaet(p, false);
     if (!await p.evaluate(() => !!document.querySelector('dialog[open]'))) return;
     E(`${wo}: danach ist ein Fenster offen – das Wischen hat angetippt`);
     await p.keyboard.press('Escape'); await wait(p, 400);
@@ -1534,7 +1539,7 @@ export async function checkNavigation(p, { eintrag, titel, zurueck = '#back', wa
     for (const sel of [knopf, '.fab button:not([hidden])'].filter(Boolean)) {
       const b = await box(sel);
       if (b && b.r < w * 0.7) { await ziehe(b.x, b.y, b.x + w * 0.6, b.y); await offen(`APD-61/F-9 auf ${sel} gewischt`); }
-      if (await p.evaluate(() => !!document.querySelector('dialog[open], .menu'))) { await p.keyboard.press('Escape'); await wait(p, 300); await p.evaluate(() => document.querySelector('.layer')?.click()); await wait(p, 200); }
+      if (await p.evaluate(() => !!document.querySelector('dialog[open], .menu'))) { await p.keyboard.press('Escape'); await wait(p, 300); await tippeLayer(); await wait(p, 200); }
     }
     // APD-61/F-10: Wischen, während ‚Ans Ende‘ weich rollt
     if (await box('.fab button:last-of-type:not([hidden])')) {
@@ -1547,11 +1552,11 @@ export async function checkNavigation(p, { eintrag, titel, zurueck = '#back', wa
       await p.click(menue); await wait(p, 300);
       if (!(await lage()).menue) E(`APD-61/F-15 Vorbereitung: ${menue} öffnet kein Menü`);
       await ziehe(w * 0.2, h * 0.7, w * 0.9, h * 0.7); await offen('APD-61/F-15 Wischen bei offenem Menü');
-      if ((await lage()).menue) { await p.evaluate(() => document.querySelector('.layer')?.click()); await wait(p, 200); }
+      if ((await lage()).menue) { await tippeLayer(); await wait(p, 200); }
     }
     // APD-67/F-17: erst halten, dann ziehen – kein Zurück
     await ziehe(w * 0.3, h * 0.7, w * 0.9, h * 0.7, { halten: 700 }); await offen('APD-67/F-17 nach langem Drücken gezogen');
-    if ((await lage()).menue) { await p.evaluate(() => document.querySelector('.layer')?.click()); await wait(p, 200); }
+    if ((await lage()).menue) { await tippeLayer(); await wait(p, 200); }
     // APD-61/F-21: je Bild nur transform und opacity; keine langen Bildlücken beim Ziehen
     await p.evaluate(() => {
       const els = [document.getElementById('app'), document.getElementById('side'), document.querySelector('.fab'), document.querySelector('.nav-schleier')].filter(Boolean);
@@ -1676,7 +1681,7 @@ export async function checkNavigation(p, { eintrag, titel, zurueck = '#back', wa
     // APD-68/Q-2: nach links auf der festen Seitenleiste – sie bleibt
     // schnell, damit es kein langes Drücken auf einer Kachel wird (Kontextmenü)
     await ziehe(l.sideX + l.sideW * 0.8, h * 0.7, 10, h * 0.7, { schnell: true });
-    if ((await lage()).menue) { await p.evaluate(() => document.querySelector('.layer')?.click()); await wait(p, 200); }
+    if ((await lage()).menue) { await tippeLayer(); await wait(p, 200); }
     await da(true, 'APD-68/Q-2 nach links auf der Seitenleiste');
     // APD-68/Q-3: panel-left blendet aus – sie gleitet hinaus, der Inhalt wird ganz breit, der oberste Kasten bleibt
     await p.evaluate(() => { const r = document.querySelector('#app > .rolle'); r?.scrollTo(0, Math.min(900, r.scrollHeight / 3)); }); await wait(p, 150);
@@ -1718,7 +1723,7 @@ export async function checkNavigation(p, { eintrag, titel, zurueck = '#back', wa
     if (menue) {
       await p.click(menue); await wait(p, 300);
       await ziehe(w * 0.4, h * 0.85, w * 0.95, h * 0.85); await da(false, 'APD-68/Q-8 Wischen bei offenem Menü');
-      if ((await lage()).menue) { await p.evaluate(() => document.querySelector('.layer')?.click()); await wait(p, 200); }
+      if ((await lage()).menue) { await tippeLayer(); await wait(p, 200); }
     }
     // APD-68/Q-9: Berührung nach Safari (APD-67/S-10), 14 px senkrecht – Safari bricht nicht ab, die Seitenleiste kommt; senkrecht rollt Safari
     const zug = (dx, dy, n, ms) => Array.from({ length: n }, (_, i) => [Math.round(dx * (i + 1) / n), Math.round(dy * (i + 1) / n), Math.round(ms / n)]);
@@ -1900,6 +1905,26 @@ export async function checkSheet(p, { open, change = null, field = null, ok = nu
   l = await lage();
   if (!l.open) { E(`${nr('B2', 'D-2')} ein Stück ziehen schließt das Fenster`); l = await auf(); }
   else if (l.t) E(`${nr('B2', 'D-2')} das Blatt federt nicht zurück (${l.t} px)`);
+  // APD-108/W-9 (seit 4.50.0, iPhone): das Blatt über einem Kästchen bzw. Schalter (label) 60 px ziehen und loslassen – es federt zurück; der
+  // Klick, den Safari KLICK_NACH ms nach dem Loslassen an das Element unter dem Aufsetzen schickt, schaltet nichts um (Wischen tippt nie an)
+  if (!ipad && l.open) {
+    const w9 = await p.evaluate(async KLICK_NACH => {
+      const warte = ms => new Promise(r => setTimeout(r, ms));
+      const lab = [...document.querySelectorAll('#dlg .dlg-body label')].find(x => x.control?.type === 'checkbox' && x.getClientRects().length);
+      if (!lab) return null;
+      const box = lab.control, vor = box.checked, r = lab.getBoundingClientRect(), x = r.left + r.width / 2, y = r.top + Math.min(r.height / 2, 20);
+      const ev = (typ, dy) => lab.dispatchEvent(new PointerEvent(typ, { pointerId: 4109, pointerType: 'touch', isPrimary: true, clientX: x, clientY: y + dy,
+        button: 0, buttons: typ === 'pointerup' ? 0 : 1, bubbles: true, cancelable: true, composed: true }));
+      ev('pointerdown', 0); for (let i = 1; i <= 6; i++) { await warte(20); ev('pointermove', 10 * i); }
+      await warte(160); ev('pointerup', 60); await warte(KLICK_NACH); if (lab.isConnected) lab.click(); await warte(30);
+      return { name: lab.textContent.trim().slice(0, 40), umgeschaltet: box.checked !== vor };
+    }, KLICK_NACH);
+    await ruhig();
+    if (w9?.umgeschaltet) E(`APD-108/W-9 Blatt über ‚${w9.name}‘ 60 px gezogen und losgelassen: der Klick danach schaltet um (Wischen tippt nie an)`);
+    l = await lage();
+    if (!l.open) E('APD-108/W-9 60 px ziehen schließt das Blatt');
+    if (!l.open || w9?.umgeschaltet) l = await auf();
+  }
   // B7 waagerecht ziehen: bleibt
   m = await zieh(await kopf(), 140, 10);
   if (m.t) E(`${nr('B7', 'D-7')} waagerecht ziehen bewegt das Blatt (${m.t} px)`);
@@ -2639,8 +2664,10 @@ export async function checkTitelBlase(p, { sel, daneben = [], rollen = null, esc
 // APD-107/S-6), ['klickNach', ms] (der Klick kommt erst ms nach dem Loslassen als eigene Aufgabe wie in Safari – Vermutung aus der Messung P-88/1:
 // die Sperre ‚Wischen tippt nie an‘ endet mit setTimeout 0 und hielt den Klick am Gerät nicht auf, APD-107/S-1). Am Ende pointerup (ohne ['ab', false]
 // nicht) und – wie der Browser – ein Klick auf das Element (ausser ['ohneKlick']). Zurück: festgehaltene Zustände und die Knöpfe, deren Klick bis zum Dokument kam.
+// Seit 4.50.0 (APD-108/W-A, belegt mit der Messung APD-106): der Klick kommt wie in Safari immer als eigene Aufgabe KLICK_NACH ms nach dem
+// Loslassen (safari.mjs), nicht mehr synchron; ['klickNach', ms] setzt eine andere Zeit. fangen: false lässt den Klick weiter (z. B. Titel, R-2.7).
 export function finger(p, sel, schritte = [], { pointerType = 'touch', fangen = true } = {}) {
-  return p.evaluate(async ({ sel, schritte, pointerType, fangen }) => {
+  return p.evaluate(async ({ sel, schritte, pointerType, fangen, KLICK_NACH }) => {
     const warte = ms => new Promise(r => setTimeout(r, ms));
     const el = document.querySelector(sel); if (!el) return { fehlt: sel };
     const mitte = e => { const r = e.getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2]; };
@@ -2675,7 +2702,7 @@ export function finger(p, sel, schritte = [], { pointerType = 'touch', fangen = 
         imFenster: s.closest('dialog') === el.closest('dialog'), oben: (() => { s.style.pointerEvents = 'auto';
           const t = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2); s.style.pointerEvents = ''; return s.contains(t); })() }; };
     const gemerkt = {};
-    let ab = true, klick = true, klickNach = 0;
+    let ab = true, klick = true, klickNach = KLICK_NACH;
     const t0 = performance.now();
     ev('pointerdown');
     for (const [art, a, b] of schritte) {
@@ -2697,7 +2724,7 @@ export function finger(p, sel, schritte = [], { pointerType = 'touch', fangen = 
     gemerkt.danach = stand();
     document.removeEventListener('click', fang, true);
     return { gemerkt, klicks };
-  }, { sel, schritte, pointerType, fangen });
+  }, { sel, schritte, pointerType, fangen, KLICK_NACH });
 }
 
 // R-2.6 (seit 4.48.0, APD-104, Testfall-Liste arbeit/APD-104 Testfall-Liste.md L-1 bis L-9): Großanzeige für Leisten-Knöpfe. knoepfe: zwei
@@ -2920,7 +2947,10 @@ export async function checkAnheben(p, { sel, frage = '.pop, .menu', feld = null,
 // H-1 bis H-3: gerollt, kurz antippen → sanft (mindestens ein Zwischenstand) ganz nach oben, Leisten stehen fest (R-2.1), still bleibt;
 // H-4: schon oben → nichts rollt; H-5: langes Drücken → kein Rollen; H-6: ein Tipp in den Inhalt während des Rollens hält es an und löst nichts aus;
 // H-8: während eines Seitenwechsels (Klasse nav-…) kein Rollen. Gibt die Fehler zurück (leer = in Ordnung).
-export async function checkTitelOben(p, { titel, rolle: rsel, still = [], ruhig = false, where = '' } = {}) {
+// Seit 4.50.0 (APD-108, Testfall-Liste arbeit/APD-108 Testfall-Liste.md W-2 bis W-4, W-6, W-7): wischen – über den Titel 40 px waagrecht
+// (nach links: keine Geste der Seite) bzw. 38 px weg und zurück auf 6 px, loslassen, der Klick kommt wie in Safari KLICK_NACH ms später: nichts
+// rollt; gleich danach kurz antippen rollt nach oben (die Sperre gilt nur für den einen Klick).
+export async function checkTitelOben(p, { titel, rolle: rsel, still = [], ruhig = false, wischen = true, where = '' } = {}) {
   const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}R-2.7 ${t}`);
   const lage = () => p.evaluate(({ rsel, still, titel }) => {
     const r = document.querySelector(rsel), kopf = document.querySelector(titel)?.closest('.nb, .pnav, .side-head, .dlg-head, #bar');
@@ -2950,7 +2980,20 @@ export async function checkTitelOben(p, { titel, rolle: rsel, still = [], ruhig 
   if (nach.kopf !== vor.kopf) E(`H-1 die Leiste bewegt sich (${vor.kopf} → ${nach.kopf} px, R-2.1)`);
   if (nach.fenster !== 0) E(`H-1 das Fenster der Seite rollt (${nach.fenster} px, R-2.1)`);
   if (JSON.stringify(nach.still) !== JSON.stringify(vor.still)) E(`H-2/H-3 ein anderer Bereich rollt mit (${still.join(', ')}: ${vor.still} → ${nach.still})`);
+  // APD-108/W-2 bis W-4, W-6 und W-7: Wischen über den Titel rollt nicht, Antippen gleich danach schon
+  if (wischen) for (const [nr, wege] of [['W-2', [[-12, 0], [-26, 0], [-40, 0]]], ['W-6', [[-20, 0], [-38, 0], [-20, 0], [-6, 0]]]]) {
+    await setze('mitte'); await ruhe(p);
+    const y0 = (await lage()).y;
+    const k = await wischKlick(p, titel, wege, { tipp: nr === 'W-6', rolle: rsel });
+    if (k.fehlt) { E(`APD-108/${nr} Vorbereitung: ${k.fehlt} fehlt`); break; }
+    if (k.yWisch !== y0) E(`APD-108/${nr} ${nr === 'W-2' ? '40 px über den Titel gewischt' : '38 px weg und zurück auf 6 px'}, losgelassen: der Bereich rollt (${y0} → ${k.yWisch} px) – Wischen tippt nie an`);
+    if (nr === 'W-6') {
+      const m7 = await warteBis(p, rsel => document.querySelector(rsel).scrollTop <= 0, { arg: rsel, was: 'Rollbereich ganz oben', max: 5000 });
+      if (m7) E(`APD-108/W-7 gleich nach dem Wischen kurz angetippt: der Bereich rollt nicht nach oben (${(await lage()).y} px)`);
+    }
+  }
   // H-4: schon oben – nichts rollt
+  await setze(0); await wait(p, 100);
   await mitschreiben(); await tippe(); await wait(p, 400);
   if ((await stopp()).some(y => y !== 0)) E('H-4 schon oben: Titel antippen bewegt den Bereich');
   // H-5: langes Drücken – kein Rollen
@@ -2983,6 +3026,56 @@ export async function checkTitelOben(p, { titel, rolle: rsel, still = [], ruhig 
   await p.evaluate(() => document.documentElement.classList.remove('nav-pruef'));
   if ((await lage()).y !== y8) E(`H-8 Titel antippen während eines Seitenwechsels rollt (${y8} → ${(await lage()).y} px)`);
   await setze(0); await wait(p, 100);
+  return errors;
+}
+
+// APD-108 (seit 4.50.0): Wischen mit dem Finger über sel – wege: [[dx, dy], …] relativ zum Aufsetzen (je 16 ms), loslassen; der Klick kommt wie
+// in Safari KLICK_NACH ms später an sel (safari.mjs). tipp: 40 ms danach noch einmal kurz antippen (Sperre nur für den einen Klick, W-7).
+// Gezählt werden die Klicks, die sel selbst erreichen; halten: dort verhindern (ein Link öffnet nicht). rolle: Rollstand 60 ms nach dem
+// Wischen (yWisch). Zurück { wisch, tipp, fenster (nach dem Wischen ist ein Fenster offen), yWisch }.
+export function wischKlick(p, sel, wege, { tipp = false, halten = false, rolle = null } = {}) {
+  return p.evaluate(async ({ sel, wege, tipp, halten, rolle, KLICK_NACH }) => {
+    const warte = ms => new Promise(r => setTimeout(r, ms));
+    const el = document.querySelector(sel); if (!el) return { fehlt: sel };
+    const r = el.getBoundingClientRect(), x0 = r.left + Math.min(r.width / 2, 40), y0 = r.top + r.height / 2;
+    let n = 0; const h = e => { n++; if (halten) e.preventDefault(); }; el.addEventListener('click', h);
+    const ev = (typ, x, y) => el.dispatchEvent(new PointerEvent(typ, { pointerId: 4108, pointerType: 'touch', isPrimary: true, clientX: x, clientY: y,
+      button: 0, buttons: typ === 'pointerup' ? 0 : 1, bubbles: true, cancelable: true, composed: true }));
+    const zug = async w => { ev('pointerdown', x0, y0); let x = x0, y = y0;
+      for (const [dx, dy] of w) { await warte(16); x = x0 + dx; y = y0 + dy; ev('pointermove', x, y); }
+      await warte(16); ev('pointerup', x, y); await warte(KLICK_NACH); if (el.isConnected) el.click(); };
+    await zug(wege); await warte(60);
+    const wisch = n, fenster = !!document.querySelector('dialog[open]'), yWisch = rolle ? Math.round(document.querySelector(rolle)?.scrollTop ?? -1) : null;
+    if (tipp) { await warte(40); await zug([]); await warte(20); }
+    el.removeEventListener('click', h);
+    return { wisch, tipp: n - wisch, fenster, yWisch };
+  }, { sel, wege, tipp, halten, rolle, KLICK_NACH });
+}
+
+// APD-108/W-1 (seit 4.50.0): Selbsttest des Safari-Modells ‚Klick nach dem Wischen‘ (safari.mjs, safariWischen) – 40 px waagrecht ohne Rollen,
+// loslassen: der Klick kommt an das Element unter dem Aufsetzen, als eigene Aufgabe nach einem setTimeout 0 der Seite; senkrecht mit Rollen
+// (pointercancel): kein Klick. Legt ein eigenes Element an und entfernt es wieder. Gibt die Fehler zurück (leer = in Ordnung).
+export async function checkSafariWischKlick(p, { where = '' } = {}) {
+  const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}APD-108/W-1 Safari-Modell ${t}`);
+  for (const [name, schritte, soll] of [['ohne Rollen', [[14, 0, 16], [28, 0, 16], [40, 0, 16]], true], ['mit Rollen', [[0, 6, 16], [0, 14, 16], [0, 30, 16]], false]]) {
+    await p.evaluate(() => {
+      const t = document.createElement('span'); t.id = 'wisch-klick'; t.tabIndex = -1; t.textContent = 'Text';
+      t.style.cssText = 'position:fixed;left:40px;top:200px;width:200px;height:60px;z-index:2147483647;background:#fff;display:block';
+      document.body.append(t);
+      const w = window.__wk = { klick: 0, nachTimeout: null, ziel: null, t: false };
+      window.__wkUp = () => { w.t = false; setTimeout(() => { w.t = true; }); };
+      window.__wkKlick = e => { if (e.target.id !== 'wisch-klick') return; w.klick++; w.nachTimeout = w.t; w.ziel = e.target.id; };
+      addEventListener('pointerup', window.__wkUp, true); addEventListener('click', window.__wkKlick, true);
+    });
+    const r = await safariWischen(p, 140, 230, schritte);
+    await wait(p, 40);
+    const k = await p.evaluate(() => { removeEventListener('pointerup', window.__wkUp, true); removeEventListener('click', window.__wkKlick, true);
+      document.getElementById('wisch-klick')?.remove(); return window.__wk; });
+    if (soll && (!r.klick || k.klick !== 1)) E(`${name}: ${k.klick} Klicks am Element unter dem Aufsetzen – erwartet genau einer`);
+    if (soll && k.klick && !k.nachTimeout) E(`${name}: der Klick kam vor dem setTimeout 0 der Seite – in Safari kommt er 1–4 ms nach pointerup, danach`);
+    if (!soll && !r.abgebrochen) E(`${name}: Safari rollt nicht (kein pointercancel)`);
+    if (!soll && k.klick) E(`${name}: nach dem Rollen (pointercancel) kam ein Klick`);
+  }
   return errors;
 }
 
