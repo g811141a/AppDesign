@@ -1,6 +1,6 @@
 # Designrichtlinie allgemein
 
-**Version 4.49.1** · Stand 02.11.2026
+**Version 4.50.0** · Stand 02.11.2026
 
 Allgemeine Gestaltungs- und Bedienregeln für alle Web-Apps von g811141a auf iPad und iPhone. Die Datei liegt im Design-Repo
 **AppDesign** (g811141a/AppDesign); ihre Versionsnummer ist die des Repos. Die Komponenten sind dort einmal programmiert und
@@ -267,8 +267,7 @@ Body = Grundgröße der Stufe (14 … 53). Zeilenabstände und Werte wörtlich a
   sichtbar, nur der Inhalt rollt, und das Feld mit Fokus steht ganz über der Tastatur, ohne Springen (R-4.5; ebenso für Kopf- und
   Suchzeile und Felder der Hauptansicht). Das iPad-Fenster gleitet mit der Tastatur (0,25 s) in die Mitte darüber und zurück; ist
   es ganz sichtbar, bleibt es stehen. Technik und Safari-Eigenheiten: 13.
-- Gibt es noch keinen Eintrag, öffnet sich „Neues …“ einmal von selbst; mit x bleibt die leere Seite mit grauem Hinweis „Noch
-  kein … angelegt.“.
+- Gibt es noch keinen Eintrag, öffnet sich „Neues …“ einmal von selbst; mit x bleibt die leere Seite mit dem leeren Zustand (15.23).
 - **Erfassungsfenster** (Einträge erfassen): fast bildschirmbreit; Kopfzeile x · Titel mit Zusatzzeile „Automatisch gespeichert
   um hh:mm“ · Kapsel [chevron-left | chevron-right] zum Blättern · Häkchen; automatisches Speichern (8).
 - **Vorschaufenster** (R-6.4): fast bildschirmbreit, Inhalt immer hell und genau wie die ausgegebene Datei, in voller
@@ -547,6 +546,10 @@ Gemessene bzw. belegte Eigenheiten mit Quelle; sie gelten für alle Apps, die Pr
   Hörer am `window` genügt nicht – gemessen: mit den Hörern des Messmodus am `document` kam der Klick, ohne nicht. `pointerdown`/`pointerup`
   kommen immer. Vermutung: ein `tabindex` genügt ebenfalls. Gemeinsame Klick-Hörer für Text-Elemente daher am `document`. Quellen: Messung
   `tests/messungen/2026-11-02 iPad quer Titel antippen Messmodus.txt`, shdon.com (2013), WebKit Bug 151933; Modell `safari.mjs`.
+- **Klick nach dem Wischen (seit 4.50.0, APD-108, Messung APD-106 vom 01.11.2026, iPhone):** Safari schickt nach dem Loslassen einen
+  `click` an das Element unter dem Aufsetzen, auch wenn der Finger weit gewandert ist (gemessen bis 154 px), solange nichts gerollt hat
+  (kein `pointercancel`) – als eigene Aufgabe 1–4 ms nach `pointerup`, also nach einem `setTimeout 0`. Eine Sperre ‚Wischen tippt nie an‘
+  gilt deshalb bis zum Loslassen und danach noch 400 ms für genau diesen einen Klick und zählt den größten Weg. iPad: Vermutung.
 - **Neustart ist nicht erkennbar** (R-7.2): Safari meldet nicht, **warum** eine Seite neu lädt. Als Neustart zählt jedes
   Neuladen: App im App-Umschalter weggewischt, **von iOS im Hintergrund beendet** (Speicher – auch nach kurzer Zeit in einer
   anderen App) oder neue Version geladen. Bleibt die Seite im Speicher, kommen nur `visibilitychange` und `pageshow` (aus dem
@@ -1110,6 +1113,19 @@ Regel). In AppDesign ist jede Komponente einmal programmiert (`v4/design.css`, `
   `rollstand(p)` (`pruefe.mjs`); die Regeln dazu prüft der Katalog (R-2.1, R-2.3, R-3.2, R-4.5, R-6.4). Testfall-Liste und Muster:
   `arbeit/APD-28 Testfall-Liste.md`, `arbeit/APD-28 Muster.html`.
 
+### 15.23 Leerer Zustand
+
+- **Apple:** SwiftUI `ContentUnavailableView` – Symbol, Titel, Beschreibung, optional Aktionen; für die Suche `.search(text:)`.
+- **Zweck:** Ein leerer Bereich (keine Einträge, keine Treffer, alles ausgeblendet) sagt, warum er leer ist und wie es weitergeht. Regel R-7.7.
+- **Aufbau:** `leerHtml({ icon, titel, satz, aktion })` in ui.js → `.leer`: Symbol (grau, 52 pt, `aria-hidden`), Titel fett 22 pt als
+  Überschrift, Satz grau 15 pt, optional ein getönter Knopf (Systemblau hell hinterlegt, 44 pt hoch). Mittig im freien Bereich unter
+  Kopf, Inhalt und Suchzeile; die Textstile wachsen mit der Textgröße. In der Seitenleiste klein (`.leer.klein`): Symbol 36 pt, Titel
+  17 pt halbfett.
+- **Suche ohne Treffer:** Lupe, ‚Keine Treffer für ‚Begriff‘‘, ‚Schreibweise prüfen oder nach etwas anderem suchen.‘, ohne Knopf.
+- **Seitenleiste neben dem Inhalt (iPad-Aufbau):** nur Symbol und Titel, Satz und Knopf stehen rechts. Im iPhone-Aufbau zeigt die
+  Startliste den vollen Zustand.
+- **Knopf** nur, wenn eine Aktion direkt weiterhilft. Er löst dasselbe aus wie der Knopf oder Menüpunkt, für den er steht.
+
 ## 16. HIG-Checkliste
 
 Jedes Muster und jede Version wird **vorher** an dieser Liste gemessen (Apple-Abgleich, Zusammenarbeit 0 Nr. 23); Abweichungen
@@ -1245,6 +1261,7 @@ Testfall (User) in den Usertest, wenn eine Version es betrifft.
 | R-7.4 | **Position beim Öffnen:** ein Eintrag öffnet ganz oben; ein ‚nächster offener‘ Eintrag (von der App bestimmt) steht hervorgehoben direkt unter dem Kopf bzw. Tabellenkopf, nie in der Mitte; legt die App stattdessen einen aktuellen Eintrag fest (z. B. heute), steht er ebenso direkt unter dem Kopf, aber ohne Hervorhebung – hervorgehoben wird nur Offenes, nie Künftiges | ablauf.mjs – `checkOpenAt` (mit `markiert`) | – | 13 |
 | R-7.5 | **Navigation und Gesten** (wie iOS 26): im iPhone-Aufbau schiebt sich der Inhalt beim Öffnen herein und beim Zurück hinaus; **Zurückwischen von überall im Inhalt** folgt dem Finger, fertig nach halber Breite oder schnellem Wischen, sonst federt es zurück; am iPad hoch und quer holt Wischen nach rechts die ausgeblendete Seitenleiste herein, der Inhalt rückt mit und wird beim Einrasten schmaler, ausblenden quer nur mit panel-left (gleitet). Vorrang an einer Stelle: senkrechtes Rollen, eigenes waagrechtes Rollen, Felder, Knöpfe, Kapseln, Schnellroll-Griff; nicht nach langem Drücken und nicht bei offenem Fenster, Menü oder offener Sprechblase; Tastatur schließt zuerst; Drehen beim Ziehen = Zustand wie vorher; Wischen tippt nie an; ‚Bewegung reduzieren‘ überblendet; je Bild nur transform und opacity | ablauf.mjs – `checkNavigation` | Wischgefühl, Rand mit dem Daumen, versehentliches Zurück, Home-Bildschirm-App, VoiceOver | 13, 15.4, 15.17 |
 | R-7.6 | **Abschnittsköpfe in der Liste:** jede Gruppe hat eine Überschrift, auch die erste; Schrift wie die Überschrift des Kopfs (Größe, Stärke, Farbe, Schrift), wächst mit der Textgröße; rollt mit; Rolle heading, nicht antippbar; bei der Suche nur Gruppen mit Treffern | hig.mjs | – | 15.4 |
+| R-7.7 | **Leerer Zustand:** jeder leere Bereich (keine Einträge, keine Treffer, alles ausgeblendet) zeigt den Baustein 15.23 – Symbol, Titel, Satz, optional ein getönter Knopf –, mittig im freien Bereich; bei der Suche ‚Keine Treffer für ‚…‘‘ mit dem Begriff; in der Seitenleiste neben dem Inhalt nur Symbol und Titel | hig.mjs | – | 15.23 |
 
 ### 8. Drehen
 
@@ -1330,6 +1347,7 @@ R-2.3 (15.2), R-4.4 (6, 15.8, HIG 9), R-5.3 (8), R-5.4 (15.12), R-5.5 (APD-14), 
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 4.50.0 | 02.11.2026 | Neben | **APD-30 leere Zustände (Muster Variante A, Nutzer 02.11.2026, Sitzung 0076, Wortlaut bestätigt):** neu 15.23 ‚Leerer Zustand‘ (`leerHtml`, `.leer`) und Katalog R-7.7 (Prüfung `hig.mjs`); Abschnitt 7 – nach x bleibt die leere Seite mit dem leeren Zustand. **APD-108 (Nutzer 02.11.2026, Sitzung 0075, Wortlaut bestätigt):** 13 neu ‚Klick nach dem Wischen‘ – Safari schickt den Klick 1–4 ms nach dem Loslassen; die Sperre ‚Wischen tippt nie an‘ gilt bis zum Loslassen plus 400 ms für genau einen Klick und zählt den größten Weg. **APD-85 Teil 4** (Werkzeug): R-3.1 erkennt Schalter an `[switch]`/`role="switch"` |
 | 4.49.1 | 02.11.2026 | Korrektur | **APD-109 (Usertest P-90, Nutzer 02.11.2026, Sitzung 0074, Wortlaut bestätigt):** 13 neu ‚Klick nur mit Hörer‘ – Safari schickt den Klick auf ein nicht antippbares Element nur mit Hörer am Element, darüber oder am `document` (Messung am iPad); R-2.7 hört deshalb am `document`; Safari-Modell `safariKlick` in jeder Prüfung |
 | 4.49.0 | 01.11.2026 | Neben | **APD-62 / APD-38/T-43 (Nutzer 31.10.2026, Sitzung 0067, Wortlaut bestätigt, ohne Muster):** Katalog R-2.7 ‚Titel antippen = nach oben‘ (Prüfung `ablauf.mjs` – `checkTitelOben`, APD-62/H-1 bis H-8); 15.3 Punkt ‚Titel antippen‘; 16 Zeile ‚Titel antippen statt Statusleiste‘. **APD-85 Teil 3** (Werkzeug, keine Regel): Baustein `warteBis` in `tests/pruefe.mjs` |
 | 4.48.2 | 01.11.2026 | Korrektur | **APD-107 (Korrektur aus P-88, Nutzer 01.11.2026, Sitzung 0071, Muster Variante C, Wortlaut bestätigt):** 4 ‚Berühren‘ und Katalog R-3.6 – ein Leisten-Knopf hebt sich als helle Fläche mit Schatten 1,3-fach über seine Kapsel (‚Bewegung reduzieren‘: ohne Wachsen), das Loslassen nach Wegziehen löst nichts aus, wie lange der Finger auch liegt (Messung P-88/1); 15.12 der helle Kreis des Smileys liegt auch im modalen Fenster über der Leiste (Korrektur ohne Regeländerung); Baustein `--heben`; Prüfungen `checkBeruehren` (APD-107/S-1 bis S-13), `checkAnheben` (APD-107/S-7), `finger` mit `abbruch` und `klickNach` |

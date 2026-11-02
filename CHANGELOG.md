@@ -3,6 +3,46 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.50.0 – 02.11.2026
+
+AppDesign 4.50.0 · Designrichtlinie allgemein 4.50.0 · Zusammenarbeit allgemein 3.6.0 · geprüft mit Reiselogbuch 3.48.0
+
+**APD-108, APD-85 Teil 4, APD-110 und APD-30 (leere Zustände)** – dein Ja vom 02.11.2026, Sitzung 0076 (4 Punkte, bewusst über 0 Nr. 8 hinaus;
+Nebenversion wegen des neuen Bausteins). Testfall-Listen `arbeit/APD-108 Testfall-Liste.md`, `arbeit/APD-85 Teil 4 Testfall-Liste.md`,
+`arbeit/APD-110 Testfall-Liste.md`, `arbeit/APD-30 Testfall-Liste.md`. Usertest im Reiselogbuch: P-92.
+
+- **APD-108 – Wischen tippt nie an (Korrektur, `ui.js`):** eine gemeinsame Sperre `klickSperre()` statt `navKlickWeg`/`blattKlickWeg` – sie gilt
+  ab mehr als 10 px **größtem** Weg seit dem Aufsetzen bis zum Loslassen und danach noch 400 ms für genau einen Klick; das nächste Aufsetzen und
+  jede Taste geben frei (Seitenwechsel, Zurückwischen, Drehen beim Ziehen, Blatt). Klicks, die `ui.js` selbst auslöst (das x nach dem Ziehen des
+  Blatts, `eigenKlick`), kommen weiter an. Vorher endete die Sperre mit `setTimeout 0` – Safari schickt den Klick aber erst 1–4 ms nach dem
+  Loslassen (Messung APD-106), er kam also durch.
+- **Safari-Modell (`tests/safari.mjs`, APD-108/W-1):** neu `KLICK_NACH = 4` – `safariWischen` schickt nach dem Loslassen ohne Rollen den Klick an
+  das Element unter dem Aufsetzen (nur, wenn es antippbar ist); `finger()` (`tests/ablauf.mjs`) klickt als Standard 4 ms nach dem Loslassen statt
+  synchron; `mausKlickSpaet` macht dasselbe für die Mauszüge der Navigation (`checkNavigation`). Selbsttest `checkSafariWischKlick`.
+- **Neue Prüfungen APD-108:** `checkTitelOben` wischt über jeden Titel (APD-108/W-2 bis APD-108/W-4, APD-108/W-6) und tippt gleich danach (APD-108/W-7); `wischKlick` für den
+  📍-Link (APD-108/W-5, Reiselogbuch `ablauf-beruehren`); `checkSheet` zieht das Blatt über einem Schalter (APD-108/W-9); Zurückwischen und Drehen beim Ziehen mit
+  spätem Klick (APD-108/W-11, APD-108/W-12). **Rot gegen 4.49.1** (mit dem neuen Modell): APD-108/W-2, APD-108/W-6, APD-108/W-7 (`ablauf-titel-oben`, 14 Fehler), APD-108/W-5 (`ablauf-beruehren`)
+  und APD-108/W-9 (`ablauf-blatt`, iPhone hoch und quer); APD-108/W-11 und W-12 (`ablauf-navigation`) blieben gegen 4.49.1 grün – im Modell trifft
+  der späte Klick dort ein Element, das beim Einrasten bzw. Drehen neu aufgebaut wurde (Vermutung). Mit 4.50.0 alle grün.
+- **Designrichtlinie 13 neu ‚Klick nach dem Wischen‘** (Wortlaut bestätigt; ‚seit 4.50.0‘ statt ‚seit 4.49.2‘, weil die Version mit APD-30 eine
+  Nebenversion wurde).
+- **Warum die Prüfung es übersah:** `finger()` klickte synchron nach `pointerup`, `safariWischen` schickte gar keinen Klick, die Mauszüge der
+  Navigation klickten in Chromium sofort – das Modell bildete den späten Klick nicht ab.
+- **APD-85 Teil 4 (`tests/hig.mjs`, R-3.1):** ein Schalter ist, was `[switch]` oder `role="switch"` hat – nicht mehr die Größe 51 × 31; neu
+  `createCheck().funde()`. Reiselogbuch `ablauf-markierung-menues` APD-85/V-1 bis APD-85/V-3: im Fenster auf 98 % kein Fund für `#fPriceOn`, Kästchen ohne switch
+  30 × 30 mit ‚mind. 44‘, Schalter 26 px hoch mit ‚mind. 28‘; rot gegen 4.49.1: APD-85/V-1, APD-85/V-3.
+- **APD-110 (Zusammenarbeit 3.6.0, Regelwächter APD-84/W-15):** Kasten ‚Jede Antwort‘ Punkt 4 und 2.8 (Wortlaut bestätigt) – ein Fenster mit Link zum
+  Prüfen am Gerät ohne denselben Link und nummerierte Schritte mit ‚Erwartet: …‘ davor im Chat lehnt der Wächter beim Zeigen und am Ende ab
+  (`pruefeLink`); `tests/regelwaechter.mjs` APD-110/L-1 bis APD-110/L-13 (APD-110/L-1 nachgebaut, die Sitzungsdatei 0076 liegt nicht im Repo), Gegenprobe mit APD-84/W-15;
+  gegen den Wächter 4.49.1 7 Fälle rot. `doku.mjs` – `checkCollab`: Punkt 4 nennt Link, ‚Erwartet‘ und **W**.
+- **APD-30 – leerer Zustand (Designrichtlinie 15.23, Katalog R-7.7):** Baustein `leerHtml({ icon, titel, satz, aktion, klein, suche })` und
+  `leerSuche(begriff)` in `ui.js`, `.leer` in `design.css` (Variante A: Symbol 52 pt grau, Titel 22 pt fett als Überschrift, Satz 15 pt grau,
+  getönter Knopf 44 pt; klein in der Seitenleiste; Suche oben im freien Bereich, damit sie über der Tastatur steht). `.emptymain` und `.side-empty`
+  entfallen. Nach dem Schließen eines Fensters, das vom Knopf eines leeren Zustands kam, liegt der Fokus wieder auf dem Knopf (R-1.8, APD-30/L-3).
+  Prüfung R-7.7 in `hig.mjs` (Symbol verborgen, Titel als Überschrift, höchstens ein Knopf, mittig, ‚Keine Treffer für ‚…‘‘, Seitenleiste neben
+  dem Inhalt nur Symbol und Titel, kein grauer Hinweis der alten Art); R-3.2: der getönte Knopf schwebt wie bei Apple nicht (Ausnahme in `hig.mjs`).
+  Abschnitt 7: nach x bleibt die leere Seite mit dem leeren Zustand.
+
 ## 4.49.1 – 02.11.2026
 
 AppDesign 4.49.1 · Designrichtlinie allgemein 4.49.1 · Zusammenarbeit allgemein 3.5.0 · geprüft mit Reiselogbuch 3.47.1

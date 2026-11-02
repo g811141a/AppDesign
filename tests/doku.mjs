@@ -121,6 +121,9 @@ export function checkCollab(appDir, app) {
   const files = { 'Zusammenarbeit allgemein': noHistory(collab), 'AppDesign CLAUDE.md': noHistory(read(ad, 'CLAUDE.md')),
     [`${app} CLAUDE.md`]: noHistory(read(appDir, 'CLAUDE.md')), 'AppDesign BACKLOG.md': noHistory(read(ad, 'BACKLOG.md')),
     [`${app} BACKLOG.md`]: noHistory(read(appDir, 'BACKLOG.md')), [`Designrichtlinie ${app}`]: guideApp, [`${app} PROMPT.md`]: prompt };
+  // seit 4.50.0 (APD-110, Testfall-Liste arbeit/APD-110 Testfall-Liste.md): Kasten ‚Jede Antwort‘ Punkt 4 nennt Link, ‚Erwartet‘ und **W** (W-15)
+  const punkt4 = collab.match(/\n> 4\. ([\s\S]*?)\n> 5\. /)?.[1] || '';
+  if (!/Link/.test(punkt4) || !/Erwartet/.test(punkt4) || !/\*\*W\*\*/.test(punkt4)) E('Zusammenarbeit 0 Kasten ‚Jede Antwort‘ Punkt 4 ohne Link, ‚Erwartet‘ und **W** (APD-110, Regelwächter W-15)');
   // Veraltete Stellen (Verlauf-Abgleich APD-2/W-1 bis W-3, W-5, W-7)
   const stale = [
     [/etwa 5 Punkte/, 'Zusammenarbeit 0 Nr. 8: ‚etwa 5 Punkte‘ – es gilt 2–3 Punkte, höchstens 2 Themen'],

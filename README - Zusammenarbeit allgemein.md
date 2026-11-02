@@ -1,6 +1,6 @@
 # Zusammenarbeit allgemein
 
-**Version 3.5.0** · Stand 31.10.2026
+**Version 3.6.0** · Stand 02.11.2026
 
 Regeln für die Zusammenarbeit mit Claude bei allen iPad-Web-Apps von g811141a. Die Datei liegt im Design-Repo **AppDesign**
 (g811141a/AppDesign); App-Eigenes steht in der `CLAUDE.md` des App-Repos. **Abschnitt 0 ist das Arbeitsmodell** (oben der Kasten ‚Immer‘ und ‚Jede
@@ -21,7 +21,9 @@ Antwort‘), Abschnitt 1 die Sprache, Abschnitt 2 die Einzelheiten und Formate. 
 > 1. Erste Zeile jeder Ausgabe: die Uhrzeitzeile, die der Regelwächter liefert – nie selbst schätzen (Nr. 26, 2.2). **W**
 > 2. Per du, deutsch, kurz (Abschnitt 1).
 > 3. Nur Belegtes: jede Uhrzeit, Zahl, Version, jedes Prüfergebnis aus einem Werkzeug oder einer Datei dieser Sitzung (Nr. 27).
-> 4. Bericht oder Bitte, am Gerät zu prüfen: alle offenen Usertests vollständig im Chat (Nr. 11, 2.3).
+> 4. Bericht oder Bitte, am Gerät zu prüfen (Muster, Versuch, Messung, Usertest): im Chat der vollständige Link und nummerierte
+>    Schritte mit ‚Erwartet: …‘ – unmittelbar vor dem Fenster, nie nur im Fenster, als Zusammenfassung oder als Verweis auf eine
+>    Datei –, dazu alle offenen Usertests vollständig (Nr. 11, 2.3). **W**
 > 5. Wurde etwas gebaut oder entschieden: die Backlog-Erinnerung ‚Nächste Version …: N Punkte bereit (…) · Offen im Backlog: …‘ (2.4).
 > 6. Ende jeder Antwort: ein Auswahlfenster – jede Frage dort, nie ‚Sag Bescheid‘; die Empfehlung zuerst mit ‚(Empfohlen)‘ und
 >    Grund in der Beschreibung, immer ‚Ich schreibe im Chat‘; einzige Ausnahme die Übergabe (Nr. 28, 2.1). **W**
@@ -367,6 +369,8 @@ Rohdaten durch Claude, damit keine falsche Anzeige in die Irre führt.
 - **Vor jedem Auswahlfenster:** lehnt es ab, wenn eine Frage keine Empfehlung zuerst oder kein ‚Ich schreibe im Chat‘ hat oder
   wenn die Ausgabe davor keinen Satz mit ‚Kontext N‘ aus `messung.mjs` enthält; steht diese Ausgabe (noch) nicht wörtlich in der
   Sitzungsdatei, lehnt er ab, wenn seit der vorigen Nachricht bzw. dem vorigen Fenster `messung.mjs` keinen Kontext gemeldet hat.
+  Enthält das Fenster einen Link zum Prüfen am Gerät, lehnt er ab, wenn die Ausgabe davor nicht denselben Link und nummerierte
+  Schritte mit ‚Erwartet: …‘ enthält.
 - **Am Ende jeder Antwort:** prüft die Antwort in der Sitzungsdatei – jede Ausgabe beginnt mit der Uhrzeitzeile und ihre Uhrzeit
   ist abgelesen (± 1 min um ihren Anlass), der Zeitabstand passt, die Antwort hat ein Fenster (außer der Übergabe), die Zeitzeile
   steht ganz am Ende nach dem letzten Fenster und kommt unverändert aus `messung.mjs`. Fehlt etwas, lässt er die Antwort nicht enden
@@ -404,6 +408,7 @@ im Verlauf und in Kommentaren der Prüfungen nennen noch die alten Stellen):
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 3.6.0 | 02.11.2026 | Neben | **APD-110 (Nutzer 02.11.2026, Sitzung 0076, Wortlaut bestätigt):** Kasten ‚Jede Antwort‘ Punkt 4 – bei jedem Bericht und jeder Bitte, am Gerät zu prüfen, im Chat der vollständige Link und nummerierte Schritte mit ‚Erwartet: …‘ unmittelbar vor dem Fenster, nie nur im Fenster (jetzt **W**); 2.8 ‚Vor jedem Auswahlfenster‘ – ein Fenster mit Link ohne denselben Link und Schritte davor lehnt der Regelwächter ab (APD-84/W-15). Anlass: in 0076 standen Link und Schritte zum Muster APD-30 nur im Fenster |
 | 3.5.0 | 31.10.2026 | Neben | **APD-103 (Nutzer 31.10.2026, Sitzungen 0065 und 0067, Wortlaut bestätigt):** 2.8 ‚Vor jedem Auswahlfenster‘ – ist die Ausgabe davor (noch) nicht wörtlich in der Sitzungsdatei, lehnt der Regelwächter ab, wenn seit der vorigen Nachricht bzw. dem vorigen Fenster `messung.mjs` keinen Kontext gemeldet hat (Rückfall statt Durchlassen, APD-103/D-1 bis D-9); 2.8 ‚Grenze‘ – Uhrzeitzeile und Satz ‚Kontext N‘ bleiben dort Selbstkontrolle |
 | 3.4.0 | 31.10.2026 | Neben | **APD-99 (Nutzer 31.10.2026, Sitzungen 0060 und 0062, Wortlaut bestätigt):** der Kontextstand als Satz mit ‚Kontext N‘ aus `messung.mjs` vor **jedem** Auswahlfenster – Kasten ‚Jede Antwort‘ Punkt 9 (jetzt **W**), 0 Nr. 28, 0 Nr. 21 verweist darauf; 2.8 der Regelwächter lehnt ein Fenster ohne diesen Satz ab (APD-84/W-14) |
 | 3.3.0 | 30.10.2026 | Neben | **APD-96 (Nutzer 30.10.2026, Sitzungen 0058 und 0059, Wortlaut bestätigt):** 0 Nr. 21 – unmittelbar vor der Bau-Frage der Kontextstand als Satz mit ‚Kontext N‘ aus `messung.mjs`, abgelesen; dazu Kasten ‚Jede Antwort‘ Punkt 9 |

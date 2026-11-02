@@ -171,7 +171,10 @@ const found = new Map(), icons = new Map();
         const af = getComputedStyle(e, '::after');
         if (af.content !== 'none' && af.position === 'absolute') { wd = Math.max(wd, parseFloat(af.width) || 0); h = Math.max(h, parseFloat(af.height) || 0); }
         // seit 4.28.1 (R-2.4): das Suchfeld der niedrigen Leiste (iPhone quer, 32 px) ist eine Kapsel
-        const inCap = e.closest('.cap, .grp, .navgrp') || e.closest('html.phone .pnav .searchbox') && matchMedia('(orientation: landscape) and (max-height: 500px)').matches || (e.type === 'checkbox' && /switch|toggle/.test(e.className + e.parentElement.className)) || (e.type === 'checkbox' && b.width >= 51 && b.height >= 31);
+        // seit 4.50.0 (APD-85 Teil 4, Testfall-Liste arbeit/APD-85 Teil 4 Testfall-Liste.md V-1 bis V-4): ein Schalter ist, was [switch] oder
+        // role="switch" hat (bzw. die Klasse switch/toggle) – nicht mehr die Größe 51 × 31: gleitet ein Fenster herein, maß ein Schalter knapp darunter
+        const schalter = e.type === 'checkbox' && (e.hasAttribute('switch') || e.getAttribute('role') === 'switch' || /switch|toggle/.test(e.className + e.parentElement.className));
+        const inCap = e.closest('.cap, .grp, .navgrp') || e.closest('html.phone .pnav .searchbox') && matchMedia('(orientation: landscape) and (max-height: 500px)').matches || schalter;
         const min = inCap ? 28 : 44;
         // seit 4.38.0 (APD-72): 0,05 px Spielraum – WebKit misst ein gleitendes Fenster (translate, Gerätefaktor 2) mit Rundungsfehlern
         // (44 × 43,99998 px); unter Volllast fiel die Messung in das Hereingleiten am iPad (ablauf-markierung-menues · webkit, ‚Tag öffnen‘)
@@ -356,9 +359,10 @@ const found = new Map(), icons = new Map();
       document.querySelectorAll('input:not([type=checkbox]):not([type=hidden]):not([type=file]), textarea').forEach(e => { if (vis(e) && parseFloat(cs(e).fontSize) < 16) R('R-1.3', `Eingabefeld ${e.id ? '#' + e.id : ''} unter 16 px – iOS vergrößert beim Antippen`); });
       // R-2.2 Anzahl unter dem Titel der Liste
       document.querySelectorAll('.side-head, .pnav-head').forEach(h => { if (vis(h) && !h.querySelector('small')) R('R-2.2', 'Anzahl unter dem Titel fehlt'); });
-      // R-3.2 Schaltflächen und Suchfelder schweben (außer innerhalb von Kapseln, Menüs, Listen und als Link)
+      // R-3.2 Schaltflächen und Suchfelder schweben (außer innerhalb von Kapseln, Menüs, Listen und als Link; seit 4.50.0 der getönte Knopf des leeren
+      // Zustands – wie Apple ohne Schatten, 15.23)
       document.querySelectorAll('button, .searchbox input').forEach(e => {
-        if (!vis(e) || !onTop(e) || e.closest('.grp, .navgrp, .cap, .menu, .pop .btns, #side .side-row, .irow, .fab, .smeta, .chips') || e.matches('.link, .mi, .side-row, .irow, .sclear, .fclear, .fazit-box, [data-day]')) return;
+        if (!vis(e) || !onTop(e) || e.closest('.grp, .navgrp, .cap, .menu, .pop .btns, #side .side-row, .irow, .fab, .smeta, .chips') || e.matches('.link, .mi, .side-row, .irow, .sclear, .fclear, .fazit-box, [data-day], .leer-knopf')) return;
         if (cs(e).boxShadow === 'none') R('R-3.2', `Schaltfläche ohne Schatten (schwebt nicht): ‚${label(e)}‘`);
       });
       // R-10.1 Keine englischen Systemtexte
@@ -399,6 +403,26 @@ const found = new Map(), icons = new Map();
           if (k.closest('button, a[href], [data-id]') || k.matches('[onclick], [tabindex]')) R('R-7.6', `Kopf ${n} ist antippbar`);
         });
       });
+      // R-7.7 (seit 4.50.0, APD-30, Designrichtlinie 15.23; Testfall-Liste arbeit/APD-30 Testfall-Liste.md): leerer Zustand – Symbol für VoiceOver
+      // verborgen, Titel als Überschrift, höchstens ein Knopf, mittig in seinem Bereich; bei der Suche ‚Keine Treffer für ‚…‘‘ mit dem Begriff; in der
+      // Seitenleiste neben dem Inhalt (iPad-Aufbau) nur Symbol und Titel (außer der Suche); kein Hinweis der alten Art mehr (.emptymain, .side-empty, .empty-note)
+      document.querySelectorAll('.leer').forEach(l => {
+        if (!vis(l)) return;
+        const h = l.querySelector(':scope > h1, :scope > h2, :scope > h3, :scope > h4'), n = `‚${(h?.textContent || l.textContent).trim().slice(0, 30)}‘`;
+        const sym = l.querySelector(':scope > svg');
+        if (!sym || sym.getAttribute('aria-hidden') !== 'true') R('R-7.7', `leerer Zustand ${n}: Symbol fehlt oder ist für VoiceOver nicht verborgen`);
+        if (!h) R('R-7.7', `leerer Zustand ${n}: der Titel ist keine Überschrift`);
+        if (l.querySelectorAll(':scope > button').length > 1) R('R-7.7', `leerer Zustand ${n}: mehr als ein Knopf`);
+        if (l.matches('.suche') && !/^Keine Treffer für ‚.+‘$/s.test(h?.textContent.trim() || '')) R('R-7.7', `leerer Zustand ${n}: bei der Suche ‚Keine Treffer für ‚Begriff‘‘`);
+        const lb = l.getBoundingClientRect(), pe = l.parentElement, pb = pe.getBoundingClientRect(), pc = cs(pe);
+        const mitte = (pb.left + parseFloat(pc.paddingLeft) + pb.right - parseFloat(pc.paddingRight)) / 2;
+        const sb = sym?.getBoundingClientRect();
+        if (Math.abs(lb.left + lb.width / 2 - mitte) > 4 || (sb && Math.abs(sb.left + sb.width / 2 - mitte) > 4) || cs(l).textAlign !== 'center')
+          R('R-7.7', `leerer Zustand ${n} steht nicht mittig in seinem Bereich`);
+        if (l.closest('#side') && !document.documentElement.classList.contains('phone') && !l.matches('.suche') && l.querySelector(':scope > p, :scope > button'))
+          R('R-7.7', `leerer Zustand ${n} in der Seitenleiste neben dem Inhalt: nur Symbol und Titel (Satz und Knopf stehen rechts)`);
+      });
+      document.querySelectorAll('.emptymain, .side-empty, .empty-note').forEach(e => { if (vis(e)) R('R-7.7', `leerer Bereich mit grauem Hinweis ‚${e.textContent.trim().slice(0, 30)}‘ statt des leeren Zustands (15.23)`); });
       // R-1.1 Aktionen und Suche oben – unten nur feste Hinweise
       document.querySelectorAll('.bbar').forEach(b => { if (!vis(b)) return; if ([...b.querySelectorAll('button')].some(x => !x.closest('.bnote')) || b.querySelector('.searchbox')) R('R-1.1', 'Aktion oder Suche in der unteren Leiste statt oben in der Kapsel'); });
       // R-1.2 Darstellung folgt dem Gerät
@@ -808,5 +832,7 @@ const found = new Map(), icons = new Map();
     for (const [k, where] of found) console.log(`- ${k}\n    ${[...where].slice(0, 3).join(' · ')}${where.size > 3 ? ` · +${where.size - 3}` : ''}`);
     return 1;
   };
-  return { measure, stays, shape, barStill, rotate, sideKeep, safe, note, report, checkText };
+  // seit 4.50.0 (APD-85 Teil 4): die bisherigen Funde als Liste (‚Art: Text‘) – für Prüfungen, die selbst messen und auswerten
+  const funde = () => [...found.keys()];
+  return { measure, stays, shape, barStill, rotate, sideKeep, safe, note, report, checkText, funde };
 }
