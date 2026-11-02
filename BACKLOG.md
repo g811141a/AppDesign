@@ -11,8 +11,9 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Prio | Thema | bereit seit |
 |---|---|---|---|
+| APD-108 | 2 | **Wischen tippt nie an – Klick nach dem Loslassen (Korrektur, Testfall-Liste `arbeit/APD-108 Testfall-Liste.md` APD-108/W-1 bis W-13, bestätigt Nutzer 02.11.2026, Sitzung 0075):** belegt mit der Messung APD-106 (iPhone, Fall 3): Safari schickt den Klick 1–4 ms nach dem Loslassen, nach `setTimeout 0`, auch nach 154 px Weg ohne Rollen; die Sperre misst nur Anfang–Ende (Fall 4). Änderung: Safari-Modell `KLICK_NACH = 4` (`finger()`, `safariWischen`), `navKlickWeg` und `blattKlickWeg` wie `beruehrWeg` (größter Weg, bis zum Loslassen plus 400 ms für genau einen Klick); Designrichtlinie 13 neu ‚Klick nach dem Wischen‘ (Wortlaut in der Testfall-Liste, bestätigt 02.11.2026). Usertest am iPad und iPhone (P-92) | 02.11.2026 |
 
-0 Punkte bereit.
+1 Punkt bereit.
 
 
 ## 1. Auf iPad und iPhone prüfen
@@ -24,7 +25,6 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| APD-108 | 2 | **Wischen löst in Safari trotzdem einen Tipp aus (`navKlickWeg`, Befund Sitzung 0072, ins Backlog Nutzer 01.11.2026, Sitzung 0073, Priorität 2):** die Sperre ‚Wischen tippt nie an‘ (`navKlickWeg`, ui.js) löst sich mit `setTimeout 0` – Safari schickt den Klick nach dem Loslassen vermutlich erst danach als eigene Aufgabe (passt zur Messung P-88/1). Für Leisten-Knöpfe abgedeckt durch `beruehrWeg` (APD-107); bei Zielen ohne Rückmeldung beim Berühren bleibt die Lücke. So macht es Apple: eine Rollbewegung bricht die Berührung eines Bedienelements ab, ein Wischen wird nie zum Tipp. Vorschlag: Sperre bis zum Loslassen plus Wartezeit wie `beruehrWeg`, feste Prüfung rot gegen 4.49.0; Eintrag in Designrichtlinie 13 erst mit Ja zum Wortlaut (0 Nr. 29) | offen |
 | APD-85 | 3 | **Teil 4 – übrige Wackler auf `warteBis` umstellen (aus APD-85 Teil 3, Testfall-Liste ‚Danach‘):** Teil 3 gebaut in 4.49.0 (`ablauf-blatt` ohne feste Pausen, Baustein `warteBis`); umzustellen, sobald sie wieder als ‚⚠ wackelt‘ gemeldet werden, sind `ablauf-titel-blase` (Chromium, Sitzung 0068), `ablauf-jahre` und `ablauf-gesamt` (WebKit, Sitzung 0072). **Dazu `ablauf-blatt` Chromium (Sitzung 0073, voller Lauf 4.49.0):** lief unter Last in die Zeitgrenze von 10:00, allein grün; WebKit 9:46 – die Laufzeit stieg mit dem Warten in `checkSheet` (APD-85/Z-5 damit nicht erfüllt; allein Chromium 8:45 vor dieser Änderung): Ursache messen, ggf. `ablauf-blatt` teilen oder die Zeitgrenze anpassen. Claude zählt jeden Wackler hier mit (bisher fünf) | offen |
 | APD-40 | 3 | **Prüfungen für die Regeln ohne automatische Prüfung (aus APD-39, Nutzer 21.10.2026):** G-1 bis G-19 im Regelkatalog (Designrichtlinie allgemein 17) – je Regel eine allgemeine Prüfung in `tests/` oder bewusst ‚Gerät/Sicht‘ lassen; Code, eigener Auftrag | offen |
 | APD-62 | 3 | **Paket B aus APD-38 – ‚Antippen, Bewegung, Rollen‘ (Nutzer 22.10.2026):** Fenster/Menüs/Sprechblasen mit Bewegung (APD-38/T-16), großer Titel rastet ein (APD-38/T-1), Titel antippen = nach oben (APD-38/T-43, V3), Glas-Optik schwebender Knöpfe (APD-38/T-37, V4); als Muster neben APD-37 vorgesehen (APD-37 selbst bleibt Prio 2); dazu APD-58 – **APD-38/T-33 und APD-38/T-34 ausgegliedert nach APD-105** (Nutzer 31.10.2026, Sitzung 0067) – **Teil APD-38/T-43 ‚Titel antippen = nach oben‘ gebaut in 4.49.0** (R-2.7); offen bleiben APD-38/T-16, APD-38/T-1, APD-38/T-37 | offen |
