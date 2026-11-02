@@ -71,3 +71,27 @@ Varianten: **A** Symbol · Titel · Satz · Knopf getönt · **B** wie A, Knopf 
 1. ~~Variante A, B oder C.~~ **Entschieden: Variante A** – Symbol, Titel, Satz, Knopf getönt (Nutzer 02.11.2026, Sitzung 0076).
 2. ~~Texte S-1 bis S-5 so?~~ **Entschieden: ja, so** (Nutzer 02.11.2026, Sitzung 0076).
 3. ~~Seitenleiste bei S-2 ohne Satz?~~ **Entschieden: ja, ohne Satz** (Nutzer 02.11.2026, Sitzung 0076) – nur neben dem Inhalt (iPad-Aufbau); im iPhone-Aufbau zeigt die Startliste S-1 vollständig.
+
+## Wortlaut (bestätigt Nutzer 02.11.2026, Sitzung 0076) – beim Bau einsetzen
+
+**Designrichtlinie, neu 15.23 Leerer Zustand:**
+- **Apple:** SwiftUI `ContentUnavailableView` – Symbol, Titel, Beschreibung, optional Aktionen; für die Suche `.search(text:)`.
+- **Zweck:** Ein leerer Bereich (keine Einträge, keine Treffer, alles ausgeblendet) sagt, warum er leer ist und wie es weitergeht. Regel R-7.7.
+- **Aufbau:** `leerHtml({ icon, titel, satz, aktion })` in ui.js → `.leer`: Symbol (grau, 52 pt, `aria-hidden`), Titel fett 22 pt als
+  Überschrift, Satz grau 15 pt, optional ein getönter Knopf (Systemblau hell hinterlegt, 44 pt hoch). Mittig im freien Bereich unter
+  Kopf, Inhalt und Suchzeile; die Textstile wachsen mit der Textgröße. In der Seitenleiste klein (`.leer.klein`): Symbol 36 pt, Titel
+  17 pt halbfett.
+- **Suche ohne Treffer:** Lupe, ‚Keine Treffer für ‚Begriff‘‘, ‚Schreibweise prüfen oder nach etwas anderem suchen.‘, ohne Knopf.
+- **Seitenleiste neben dem Inhalt (iPad-Aufbau):** nur Symbol und Titel, Satz und Knopf stehen rechts. Im iPhone-Aufbau zeigt die
+  Startliste den vollen Zustand.
+- **Knopf** nur, wenn eine Aktion direkt weiterhilft. Er löst dasselbe aus wie der Knopf oder Menüpunkt, für den er steht.
+
+**Regelkatalog, neu R-7.7:**
+| R-7.7 | **Leerer Zustand:** jeder leere Bereich (keine Einträge, keine Treffer, alles ausgeblendet) zeigt den Baustein 15.23 – Symbol, Titel, Satz, optional ein getönter Knopf –, mittig im freien Bereich; bei der Suche ‚Keine Treffer für ‚…‘‘ mit dem Begriff; in der Seitenleiste neben dem Inhalt nur Symbol und Titel | hig.mjs | – | 15.23 |
+
+**Abschnitt 7 Fenster** – alt: „Gibt es noch keinen Eintrag, öffnet sich „Neues …“ einmal von selbst; mit x bleibt die leere Seite mit
+grauem Hinweis „Noch kein … angelegt.“.“ – neu: „Gibt es noch keinen Eintrag, öffnet sich „Neues …“ einmal von selbst; mit x bleibt die
+leere Seite mit dem leeren Zustand (15.23).“
+
+**Version:** mit APD-108, APD-85 Teil 4 und APD-110 in einer Version (Nutzer 02.11.2026, bewusst über 0 Nr. 8 hinaus: 4 Punkte); neuer
+Baustein → Nebenversion 4.50.0 / Reiselogbuch 3.48.0.
