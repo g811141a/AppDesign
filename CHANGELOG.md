@@ -42,6 +42,9 @@ Nebenversion wegen des neuen Bausteins). Testfall-Listen `arbeit/APD-108 Testfal
   Prüfung R-7.7 in `hig.mjs` (Symbol verborgen, Titel als Überschrift, höchstens ein Knopf, mittig, ‚Keine Treffer für ‚…‘‘, Seitenleiste neben
   dem Inhalt nur Symbol und Titel, kein grauer Hinweis der alten Art); R-3.2: der getönte Knopf schwebt wie bei Apple nicht (Ausnahme in `hig.mjs`).
   Abschnitt 7: nach x bleibt die leere Seite mit dem leeren Zustand.
+- **Beim ersten `los` (abgebrochen, nichts veröffentlicht):** `ablauf-grossanzeige` (Chromium) rot – die Großanzeige (R-2.6) löst ihren Knopf beim
+  Loslassen selbst per Klick aus; weil der Finger über die Knöpfe glitt, sperrte die neue Sperre diesen Klick. Er zählt jetzt wie das x des Blatts
+  als eigener Klick (`klickEigen`); `ablauf-grossanzeige` wieder grün. Warum es vorher nicht auffiel: die Prüfung lief während des Baus nicht mit.
 
 ## 4.49.1 – 02.11.2026
 

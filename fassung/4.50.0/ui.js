@@ -1118,7 +1118,8 @@ function grossEnde(e) {
   const k = e.type === 'pointerup' ? grossKnopfBei(e.clientX, e.clientY) : null;
   grossAnzeigeZu(); gross = null;
   grossKlickWeg = performance.now() + 400;
-  if (k && !k.disabled) { grossSelbst = true; try { k.click(); } finally { grossSelbst = false; } }
+  // seit 4.50.0 (APD-108): eigener Klick – die Sperre ‚Wischen tippt nie an‘ (klickSperre) gilt für ihn nicht, der Finger glitt über die Knöpfe
+  if (k && !k.disabled) { grossSelbst = true; klickEigen = true; try { k.click(); } finally { grossSelbst = false; klickEigen = false; } }
 }
 addEventListener('pointerup', grossEnde, true);
 addEventListener('pointercancel', grossEnde, true);
