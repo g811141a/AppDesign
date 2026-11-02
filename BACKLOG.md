@@ -49,13 +49,13 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 | APD-1 | 3 | Startseite g811141a.github.io mit allen Apps | später |
 | APD-70 | 3 | **Mehrsprachfähigkeit (Nutzer 23.10.2026):** Apps und AppDesign-Bausteine in mehreren Sprachen – Sprache folgt dem Gerät (wie Apple: Systemsprache, je App übersteuerbar), alle Texte aus einer Texttabelle je Sprache statt fest im Code, `lang` der Seite, Datum, Zahl und Sortierung über `Intl`, Ansagen und Namen (APD-43) mit übersetzt; Ausgabe HTML/PDF in der gewählten Sprache. Vorher klären: welche Sprachen, Daten der Nutzer bleiben unübersetzt, Prüfung (jeder Text in jeder Sprache vorhanden, lange Wörter passen). Apple-Abgleich vor dem Muster | offen |
 | APD-80 | 3 | **Kontrast der normalen Darstellung dunkel (Rückmeldung P-73, Nutzer 25.10.2026, Sitzung 0045):** zwischen Kachel und Seite fast kein Unterschied, insgesamt fast kein Kontrast. Heute nach Apple: Seite `--bg` #000000, Kachel `--card` #1c1c1e (systemGroupedBackground / secondarySystemGroupedBackground), Linie `--line` #38383a; ‚Kontrast erhöhen‘ (R-1.9) hellt nur Linien und Grau auf. **Vorgehen (Nutzer):** gesonderter Austausch im Chat (Apple-Abgleich, Varianten, Muster dunkel), erst danach Umbau | offen |
-| APD-88 | 3 | **Bedienung für Linkshänder (Nutzer 30.10.2026, Sitzung 0053):** Best Practice recherchieren (Apple HIG, iOS-Einstellungen, andere Apps) und gemeinsam besprechen – z. B. Lage der schwebenden Knöpfe, Wischrichtungen, Daumenzonen am iPhone. Bestehend: keiner (APD-57 Suche unten auf dem iPhone betrifft Daumennähe) | offen |
 
 ---
 
 ## Erledigt
 
 | Nr. | Thema | Version | Datum |
+| APD-88 | **APD-88 Bedienung für Linkshänder entschieden: nichts ändern (Nutzer 02.11.2026, Sitzung 0075):** Apple-Standard ohne Seitenwahl – Apple spiegelt iPhone und iPad nicht (keine Regel in der HIG gefunden), eine Wahl der Seite gibt es nur bei Tastatur einhändig, Markup-Leiste am iPad und Apple Watch; vorgeschlagen waren a) Einstellung rechts/links für die schwebenden Elemente, b) Kapsel an eine Kante ziehen | – | 02.11.2026 |
 | APD-109 | **Titel antippen am iPad und in der Seitenleiste (Usertest P-90):** Messung am iPad – Safari schickt den Klick auf den Titel nur mit Hörer am `document`; R-2.7 hört dort; Designrichtlinie 13 ‚Klick nur mit Hörer‘; Safari-Modell `safariKlick` in jeder Prüfung (APD-109/C-1 bis C-9) | 4.49.1 | 02.11.2026 |
 | APD-62 | **APD-62 Teil APD-38/T-43 ‚Titel antippen = nach oben‘ (R-2.7):** kurzes Antippen des Titels in Kopfzeile, Seitenleiste oder Fenster-Kopfzeile rollt den Bereich sanft ganz nach oben, ein Tipp hält an und löst nichts aus, ‚Bewegung reduzieren‘ sofort; Prüfung `checkTitelOben` (APD-62/H-1 bis H-10) – Usertest im Reiselogbuch P-90 | 4.49.0 | 01.11.2026 |
 | APD-85 | **APD-85 Teil 3 – Wackler beheben:** Baustein `warteBis` in `tests/pruefe.mjs` (APD-85/Z-1, Z-2, Selbsttest Z-6), `ablauf-blatt` ohne feste Pausen (Z-3 bis Z-5) | 4.49.0 | 01.11.2026 |
