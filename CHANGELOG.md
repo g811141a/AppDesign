@@ -26,11 +26,12 @@ Designrichtlinie 13 bestätigt); Testfall-Liste `arbeit/APD-109 Testfall-Liste.m
   Kopfzeile, iPad Seitenleiste, iPhone Startliste (14 Fehler, Chromium); grün blieben iPhone-Kopfzeile, alle Fenster und ‚Bewegung reduzieren‘
   am iPhone – genau wie am Gerät. Mit 4.49.1 grün in Chromium und WebKit.
 - **Warum die Prüfung es übersah:** Chromium und WebKit der Prüfumgebung schicken jeden Klick; das Safari-Modell bildete die Regel nicht nach.
-- **Beim ersten `los` (abgebrochen, nichts veröffentlicht):** der Selbsttest C-1 war in der App-Seite rot – nach der Korrektur hört die App selbst am
+- **Beim ersten `los` (abgebrochen, nichts veröffentlicht):** der Selbsttest APD-109/C-1 war in der App-Seite rot – nach der Korrektur hört die App selbst am
   `document`, dort ist (wie am Gerät) jedes Element antippbar; der Selbsttest schaltet das `document` jetzt außer im Fall ‚document‘ ab
   (`__safariKlick.docZaehlt`). `ablauf-tastatur-still` spielte die neue Messung nach (ohne Tastatur) – jetzt ausgenommen wie in `ablauf-abspielen`.
   Dabei aufgefallen: `ablauf-tastatur-still` APD-36/B-8 (‚↑ bei offener Tastatur‘, feste Pause 500 ms) wackelt – allein dreimal rot (scrollTop 3),
-  ohne Safari-Modell ebenso, mit gemessenem Stand nach 500 ms 0 bis 1 px grün; für APD-85 Teil 4.
+  ohne Safari-Modell ebenso, mit gemessenem Stand nach 500 ms 0 bis 1 px grün; im zweiten `los` wieder rot – die Pause wartet jetzt mit
+  `warteBis`, bis der Inhalt oben steht und die Tastatur zu ist (höchstens 3 s; offensichtlicher Prüffehler, ohne eigene Rückfrage behoben).
 
 ## 4.49.0 – 01.11.2026
 

@@ -1326,7 +1326,9 @@ export async function checkTastaturStill(p, { field, vorher = null, wechsel = nu
   if (kapsel) {
     // APD-36/B-8: ↑ bei offener Tastatur – ein Antippen genügt (das Antippen schließt die Tastatur, gerollt wird danach)
     await film('APD-36/B-8 ↑ bei offener Tastatur', () => p.tap(kapsel.hoch));
-    await wait(p, 500);
+    // seit 4.49.1: wartet, bis der Inhalt oben steht und die Tastatur zu ist (höchstens 3 s), statt fest 500 ms – die feste Pause war unter Last
+    // zu kurz (scrollTop 3 bei noch laufendem Rollen); ein zweites Antippen gibt es hier nicht, also bleibt ‚ein Antippen genügt‘ geprüft
+    await warteBis(p, () => document.querySelector('#app > .rolle').scrollTop <= 1 && !__safari.offen, { was: 'oben und Tastatur zu', max: 3000 });
     const r = await p.evaluate(() => ({ y: Math.round(document.querySelector('#app > .rolle').scrollTop), offen: __safari.offen }));
     if (r.offen) E('APD-36/B-8 nach ↑ ist die Tastatur noch offen');
     if (r.y > 1) E(`APD-36/B-8 ↑ bei offener Tastatur rollt nicht ganz nach oben (scrollTop ${r.y}) – zweites Antippen nötig`);
