@@ -34,14 +34,14 @@ AppDesign-`CLAUDE.md`.
   halbfett), allgemeine Regel; **Wortlaut 15.23 ‚Aufbau‘ und R-7.7 bestätigt** (steht im Backlog); Muster `arbeit/APD-111 Muster.html` ‚Passt‘.
   Vor dem Bau: P-92/4 Schritt 2 und 4 sowie P-92/5 als feste Prüfung, rot gegen 3.48.0 (0 Nr. 1); dazu im CHANGELOG die neue Anleitung P-92/3.
 - **APD-112 (Prio 2, bereit ohne Muster):** Fokus nach dem Schließen eines Fensters zurück auf den Knopf (R-1.8 unverändert). Nachgeprüft:
-  `#newTrip` öffnen, Esc/x → Fokus auf `body`. Ursache, Lücke in `checkFokus`, Testfall-Liste F-1 bis F-13: `arbeit/APD-112 Testfall-Liste.md`.
+  `#newTrip` öffnen, Esc/x → Fokus auf `body`. Ursache, Lücke in `checkFokus`, Testfall-Liste APD-112/F-1 bis F-13: `arbeit/APD-112 Testfall-Liste.md`.
 - **APD-85 Teil 5 (Prio 3, bereit):** feste Pausen durch `warteBis` ersetzen – `ablauf-titel-blase` 9, `ablauf-jahre` 33, `ablauf-gesamt` 9;
   Ruhe-Prüfungen bleiben, Gegenprobe rot; `offline-regeln` ansehen. Werkzeug-Punkt.
 - **APD-40 Paket A (Prio 3, bereit, eigene Version nach 4.50.1):** neu R-1.11, R-3.7, R-3.8, R-4.8, R-4.9, R-5.9, R-6.7 statt G-1, G-2, G-5, G-17
-  und Teilen von G-10, G-15, G-18 – **Wortlaut bestätigt**; Testfall-Liste A-1 bis A-10: `arbeit/APD-40 Paket A.md`; Einordnung aller G-Regeln
+  und Teilen von G-10, G-15, G-18 – **Wortlaut bestätigt**; Testfall-Liste APD-40/A-1 bis APD-40/A-10: `arbeit/APD-40 Paket A.md`; Einordnung aller G-Regeln
   (Pakete B und C offen): `arbeit/APD-40 Einordnung.md`.
 - **Auffällig (nicht geändert):** mit APD-111 sind Titel und Knopf ‚Alle Tage zeigen‘ beide 17 pt halbfett.
-- **Selbstkritik 0078:** eine Zwischenmeldung ohne Uhrzeitzeile (W-1); dreimal hat der Regelwächter ein Fenster mit Link abgelehnt (W-15), weil
+- **Selbstkritik 0078:** eine Zwischenmeldung ohne Uhrzeitzeile (APD-84/W-1); dreimal hat der Regelwächter ein Fenster mit Link abgelehnt (APD-84/W-15), weil
   der Text davor beim Prüfen noch nicht in der Sitzungsdatei stand bzw. der Link fett gesetzt war – danach kurzer Text mit Link, Schritten und
   ‚Kontext N‘ direkt vor dem Fenster, dann ging es. Vermutung: der Stop-Hook zählt abgelehnte Fenster mit (Zurückweisung 2 von 2 für ein
   abgelehntes Fenster) – Fund zum Regelwächter, noch nicht im Backlog.

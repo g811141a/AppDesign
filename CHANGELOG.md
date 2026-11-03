@@ -27,7 +27,7 @@ AppDesign 4.50.1 · Designrichtlinie allgemein 4.50.1 · Zusammenarbeit allgemei
   Zustands (APD-30/L-3).
 - **Prüfung APD-112 (`tests/ablauf.mjs` – `checkFokusZurueck`):** öffnet und schließt je Fall und prüft, wo der Fokus liegt, den Ring und dass
   nichts rollt. Reiselogbuch `ablauf-bedienung`: APD-112/F-1 bis F-6, F-8, F-10 bis F-12 (iPad quer, F-12 gedreht) und F-7 (iPhone hoch, Blatt
-  ziehen). **Rot gegen 4.50.0** (Chromium): 10 Fälle, Fokus auf `body`. F-9 (Fenster über Fenster) prüft weiter `checkFokus` (V6). Gegenprobe F-13:
+  ziehen). **Rot gegen 4.50.0** (Chromium): 10 Fälle, Fokus auf `body`. APD-112/F-9 (Fenster über Fenster) prüft weiter `checkFokus` (V6). Gegenprobe APD-112/F-13:
   neuer Fall `schliessen` in `GEGENPROBEN_BEDIENUNG` (`tests/pruefe.mjs`, Fokus nach dem Schließen weggenommen) – alle 10 Fälle rot.
 - **Warum die Prüfung es übersah:** `checkFokus` prüfte beim Fenster Öffnen, Tab, Esc, ⌘. und die Sprechblase, aber nicht, wo der Fokus nach dem
   Schließen liegt (nur bei Menüs, V5).
