@@ -1,6 +1,6 @@
 # AppDesign – Backlog (allgemeine Themen)
 
-**Stand 02.11.2026** · Aktuelle Version: AppDesign 4.50.0
+**Stand 03.11.2026** · Aktuelle Version: AppDesign 4.50.0
 
 Allgemeine Themen, die alle Apps betreffen. App-Themen stehen im Backlog der jeweiligen App.
 Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.4.
@@ -24,6 +24,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
+| APD-111 | 1 | **Leerer Zustand einheitlich groß (Usertest P-92/4 und P-92/5 nicht ok, Nutzer 03.11.2026, Sitzung 0078):** Symbol und fetter Titel überall gleich groß wie die Suche in der Seitenleiste – Symbol 36 pt, Titel 17 pt halbfett (heute im Inhalt 52 pt und 22 pt fett); allgemeine Regel. **Wortlaut 15.23 ‚Aufbau‘ und R-7.7 bestätigt (Nutzer 03.11.2026):** ‚Symbol (grau, 36 pt, `aria-hidden`), Titel 17 pt halbfett … Symbol und Titel sind überall gleich groß – im Inhalt, in der Startliste und in der Seitenleiste … In der Seitenleiste (`.leer.klein`) nur kleinere Abstände‘; R-7.7 ‚…; Symbol (36 pt) und Titel (17 pt halbfett) überall gleich groß‘. Korrekturversion 4.50.1 / Reiselogbuch 3.48.1 mit der Anleitung P-92/3 neu; vorher Muster `arbeit/APD-111 Muster.html` (Nutzer: erst ein Muster) | offen |
 | APD-85 | 3 | **Teil 5 – übrige Wackler auf `warteBis` umstellen (aus 0., Teil 4 gebaut in 4.50.0):** umzustellen, sobald sie wieder als ‚⚠ wackelt‘ gemeldet werden: `ablauf-titel-blase` (Chromium, Sitzung 0068), `ablauf-jahre` und `ablauf-gesamt` (WebKit, Sitzung 0072); `ablauf-blatt` lief unter Last in die Zeitgrenze von 10:00 (Sitzung 0073, wieder 0077 mit APD-108/W-9 in Chromium und WebKit) – **in 3.48.0 nach Gerät geteilt** (`PRUEF_BLATT`); `ablauf-gesamt` WebKit in 0077 wieder einmal rot, allein grün. Claude zählt jeden Wackler hier mit (bisher sechs) | offen |
 | APD-40 | 3 | **Prüfungen für die Regeln ohne automatische Prüfung (aus APD-39, Nutzer 21.10.2026):** G-1 bis G-19 im Regelkatalog (Designrichtlinie allgemein 17) – je Regel eine allgemeine Prüfung in `tests/` oder bewusst ‚Gerät/Sicht‘ lassen; Code, eigener Auftrag | offen |
 | APD-62 | 3 | **Paket B aus APD-38 – ‚Antippen, Bewegung, Rollen‘ (Nutzer 22.10.2026):** Fenster/Menüs/Sprechblasen mit Bewegung (APD-38/T-16), großer Titel rastet ein (APD-38/T-1), Titel antippen = nach oben (APD-38/T-43, V3), Glas-Optik schwebender Knöpfe (APD-38/T-37, V4); als Muster neben APD-37 vorgesehen (APD-37 selbst bleibt Prio 2); dazu APD-58 – **APD-38/T-33 und APD-38/T-34 ausgegliedert nach APD-105** (Nutzer 31.10.2026, Sitzung 0067) – **Teil APD-38/T-43 ‚Titel antippen = nach oben‘ gebaut in 4.49.0** (R-2.7); offen bleiben APD-38/T-16, APD-38/T-1, APD-38/T-37 | offen |

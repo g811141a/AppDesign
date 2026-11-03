@@ -1,0 +1,117 @@
+<!doctype html><html lang="de"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="APD-111 Muster">
+<title>APD-111 Muster</title>
+<link rel="stylesheet" href="../fassung/4.50.0/design.css">
+<style>
+/* APD-111 Muster (Sitzung Reiselogbuch 0078, Usertest P-92/4 und P-92/5, Zusammenarbeit 0 Nr. 6): leerer Zustand – Symbol und fetter Titel
+   überall gleich groß wie die Suche in der Seitenleiste (36 pt, 17 pt halbfett). Baustein .leer aus der Fassung 4.50.0; ‚Neu‘ setzt nur Symbol
+   und Titel auf die Größe von .leer.klein. Nur hell und quer (Vereinbarung 30.10.2026). */
+html { color-scheme: light; }
+body { margin: 0; background: var(--bg); font: 17px/1.4 -apple-system, system-ui, sans-serif; color: var(--ink); -webkit-user-select: none; user-select: none; }
+.wahl { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; padding: max(12px, env(safe-area-inset-top)) 16px 10px; }
+.wahl h1 { font-size: 17px; font-weight: 600; margin: 0 8px 0 0; }
+.seg { display: inline-flex; background: rgba(118,118,128,.12); border-radius: 999px; padding: 3px; }
+.seg button { border: none; background: none; box-shadow: none; height: 38px; min-width: 44px; padding: 0 14px; border-radius: 999px; font: inherit; font-size: 15px; color: var(--ink); }
+.seg button.on { background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.15); font-weight: 600; }
+.erkl { margin: 0 16px 10px; color: var(--muted); font-size: 15px; }
+/* Nachbau iPad quer: Seitenleiste angedockt, rechts der Inhalt */
+.ipad { display: flex; gap: 0; margin: 0 16px 24px; height: calc(100vh - 150px); min-height: 520px; border-radius: 18px; overflow: hidden;
+  background: var(--bg); box-shadow: 0 0 0 .5px rgba(0,0,0,.15), 0 4px 18px rgba(0,0,0,.08); }
+.sb { width: 360px; flex: none; margin: 10px; border-radius: 22px; background: var(--card); box-shadow: var(--float); display: flex; flex-direction: column; padding: 10px 12px; }
+.kopf { display: flex; align-items: center; gap: 10px; min-height: 44px; }
+.kopf .ttl { flex: 1; min-width: 0; padding-left: 6px; overflow: hidden; }
+.kopf h2, .kopf small { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.kopf h2 { margin: 0; font-size: 20px; }
+.kopf small { display: block; font-size: 13px; color: var(--muted); }
+.kopf .grp button { display: inline-flex; align-items: center; justify-content: center; }
+.kopf .round { display: inline-flex; align-items: center; justify-content: center; background: var(--btn); border: .5px solid var(--btn-rim); box-shadow: var(--float); }
+.such { display: flex; align-items: center; gap: 8px; height: 40px; margin: 8px 0 4px; padding: 0 12px; border-radius: 999px; background: rgba(118,118,128,.12); color: var(--muted); font-size: 16px; }
+.such b { font-weight: 400; color: var(--ink); flex: 1; }
+.liste { flex: 1; min-height: 0; overflow: auto; display: flex; flex-direction: column; }
+.reihe { display: flex; align-items: center; gap: 8px; padding: 10px 12px; border-radius: 14px; margin-top: 4px; }
+.reihe.cur { background: var(--accent); color: #fff; }
+.reihe .t { flex: 1; } .reihe b { display: block; font-size: 17px; } .reihe small { display: block; font-size: 15px; opacity: .85; }
+.backup { margin-top: auto; padding: 10px 12px; border-radius: 14px; background: var(--bg); font-size: 13px; color: var(--muted); }
+.haupt { flex: 1; min-width: 0; display: flex; flex-direction: column; padding: 10px 16px 0 6px; }
+.leiste { display: flex; align-items: center; gap: 10px; min-height: 44px; margin-top: 10px; }
+.leiste .titel { flex: 1; text-align: center; font-weight: 600; }
+.inhalt { flex: 1; min-height: 0; overflow: auto; display: flex; flex-direction: column; padding: 8px 4px 16px; }
+dl.m { display: grid; grid-template-columns: auto 1fr; gap: 2px 10px; margin: 6px 0 4px; font-size: 15px; } dl.m dt { color: var(--muted); } dl.m dd { margin: 0; }
+.fort { color: var(--muted); font-size: 15px; margin: 4px 0 6px; }
+
+/* Neu (APD-111): Symbol und Titel überall wie .leer.klein – Satz und Knopf unverändert */
+.neu .leer > .sym { width: calc(36px * var(--f-headline)); height: calc(36px * var(--f-headline)); margin-bottom: 8px; }
+.neu .leer > h3 { font-size: var(--t-headline); font-weight: 600; }
+.gedrueckt { opacity: .35; }
+.meld { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); background: rgba(0,0,0,.78); color: #fff; padding: 10px 18px; border-radius: 999px; font-size: 15px; opacity: 0; transition: opacity .2s; pointer-events: none; }
+.meld.an { opacity: 1; }
+</style></head><body>
+<div class="wahl">
+  <h1>APD-111 Muster – leerer Zustand einheitlich groß</h1>
+  <span class="seg" id="segV" role="group" aria-label="Stand"><button type="button" data-v="jetzt">Jetzt (4.50.0)</button><button type="button" data-v="neu" class="on">Neu</button></span>
+  <span class="seg" id="segZ" role="group" aria-label="Zustand"><button type="button" data-z="3" class="on">Nur erfasste Tage</button><button type="button" data-z="4">Suche im Reiselogbuch</button><button type="button" data-z="2">Suche in der Seitenleiste</button></span>
+</div>
+<p class="erkl" id="erkl"></p>
+<div class="ipad" id="ipad"></div>
+<div class="meld" id="meld" role="status"></div>
+<script>
+const P = {
+  'book-open': '<path d="M12 5v16"/><path d="M20.001 19A2 2 0 0022 17V5a2 2 0 00-1.999-2L16 3.002A5 5 0 0012 5a5 5 0 00-4-2H4a2 2 0 00-2 2v12a2 2 0 001.999 2H8a5 5 0 014 2 5 5 0 014-2z"/>',
+  'fold-vertical': '<path d="M12 22v-6"/><path d="M12 8V2"/><path d="M4 12H2"/><path d="M10 12H8"/><path d="M16 12h-2"/><path d="M22 12h-2"/><path d="m15 19-3-3-3 3"/><path d="m15 5-3 3-3-3"/>',
+  share: '<path d="M12 2v13"/><path d="m16 6-4-4-4 4"/><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>',
+  search: '<path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/>',
+  x: '<path d="M18 6 6 18"/><path d="m6 6 12 12"/>',
+  plus: '<path d="M5 12h14"/><path d="M12 5v14"/>',
+  'chevron-right': '<path d="m9 18 6-6-6-6"/>',
+  calendar: '<path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/>',
+  'panel-left': '<rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 3v18"/>',
+  ellipsis: '<circle cx="12" cy="12" r="1.3"/><circle cx="19" cy="12" r="1.3"/><circle cx="5" cy="12" r="1.3"/>',
+};
+const ic = (n, cls = 'ic') => `<svg class="${cls}" viewBox="0 0 24 24" aria-hidden="true">${P[n]}</svg>`;
+// Baustein: leer({ icon, titel, satz, aktion, klein }) – Titel als Überschrift, Symbol für VoiceOver verborgen
+const leer = ({ icon, titel, satz, aktion, klein, suche }) => `<div class="leer${klein ? ' klein' : ''}${suche ? ' suche' : ''}">${ic(icon, 'ic sym')}<h3>${titel}</h3>${satz ? `<p>${satz}</p>` : ''}${aktion ? `<button type="button" class="leer-knopf">${aktion}</button>` : ''}</div>`;
+const sbKopf = (n) => `<div class="kopf"><div class="ttl"><h2>Reiselogbücher</h2><small>${n}</small></div>
+  <span class="grp"><button type="button" aria-label="Neues Reiselogbuch">${ic('plus')}</button><button type="button" aria-label="Mehr">${ic('ellipsis')}</button></span>
+  <button type="button" class="round" aria-label="Seitenleiste ausblenden">${ic('panel-left')}</button></div>`;
+const backup = '<div class="backup">Letztes Backup: 01.11.2026</div>';
+const reise = (cur) => `<div class="reihe ${cur ? 'cur' : ''}"><span class="t"><b>Andalusien</b><small>03.10.2026 - 17.10.2026 · beendet</small></span>${ic('chevron-right')}</div>`;
+const leiste = (titel) => `<div class="leiste"><span class="titel">${titel}</span><span class="grp"><button type="button" aria-label="Ausgabe">${ic('share')}</button><button type="button" aria-label="Mehr">${ic('ellipsis')}</button></span></div>`;
+const meta = `<dl class="m"><dt>Reiseteilnehmer:</dt><dd>Anna, Ben</dd><dt>Reisezeitraum:</dt><dd>03.10.2026 - 17.10.2026</dd></dl>`;
+const ZUST = {
+  2: { erkl: 'Suche in der Seitenleiste ohne Treffer – das Vorbild: Symbol 36 pt, Titel 17 pt halbfett (bleibt, wie es ist).',
+    sb: () => sbKopf('0 von 3 Reiselogbüchern') + `<div class="such">${ic('search')}<b>Rom</b>${ic('x')}</div><div class="liste">${leer({ icon: 'search', titel: 'Keine Treffer für ‚Rom‘', satz: 'Schreibweise prüfen oder nach etwas anderem suchen.', klein: true, suche: true })}</div>` + backup,
+    haupt: () => leiste('Andalusien') + `<div class="inhalt">${meta}<p class="fort">15 von 15 Tagen erfasst</p></div>` },
+  3: { erkl: '‚Nur erfasste Tage‘, noch kein Tag erfasst (P-92/4 Schritt 2).',
+    sb: () => sbKopf('1 Reiselogbuch') + `<div class="liste">${reise(true)}</div>` + backup,
+    haupt: () => leiste('Andalusien') + `<div class="inhalt">${meta}<p class="fort">0 von 15 Tagen erfasst</p>${leer({ icon: 'calendar', titel: 'Noch keine Tage erfasst', satz: 'Es werden nur erfasste Tage gezeigt.', aktion: 'Alle Tage zeigen' })}</div>` },
+  4: { erkl: 'Suche im Reiselogbuch ohne Treffer (P-92/4 Schritt 4).',
+    sb: () => sbKopf('1 Reiselogbuch') + `<div class="liste">${reise(true)}</div>` + backup,
+    haupt: () => leiste('Andalusien') + `<div class="such" style="margin:8px 4px 0">${ic('search')}<b>Paella</b>0 ${ic('x')}</div><div class="inhalt">${meta}<p class="fort">15 von 15 Tagen erfasst</p>${leer({ icon: 'search', titel: 'Keine Treffer für ‚Paella‘', satz: 'Schreibweise prüfen oder nach etwas anderem suchen.', suche: true })}</div>` },
+};
+const VAR = { jetzt: 'Jetzt (4.50.0) – im Inhalt Symbol 52 pt, Titel 22 pt fett', neu: 'Neu – überall Symbol 36 pt, Titel 17 pt halbfett' };
+let v = 'neu', z = '3';
+function zeige() {
+  const s = ZUST[z];
+  document.getElementById('erkl').textContent = `${VAR[v]} · ${s.erkl}`;
+  const ip = document.getElementById('ipad');
+  ip.className = 'ipad ' + v;
+  ip.innerHTML = `<aside class="sb">${s.sb()}</aside><main class="haupt">${s.haupt()}</main>`;
+  for (const b of document.querySelectorAll('#segV button')) b.classList.toggle('on', b.dataset.v === v);
+  for (const b of document.querySelectorAll('#segZ button')) b.classList.toggle('on', b.dataset.z === z);
+}
+document.getElementById('segV').onclick = e => { const b = e.target.closest('button'); if (b) { v = b.dataset.v; zeige(); } };
+document.getElementById('segZ').onclick = e => { const b = e.target.closest('button'); if (b) { z = b.dataset.z; zeige(); } };
+const meld = document.getElementById('meld');
+document.getElementById('ipad').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  meld.textContent = `‚${b.textContent.trim() || b.getAttribute('aria-label')}‘ ausgelöst (im Muster ohne Wirkung)`;
+  meld.classList.add('an'); clearTimeout(meld.t); meld.t = setTimeout(() => meld.classList.remove('an'), 1500);
+});
+addEventListener('pointerdown', e => { const b = e.target.closest('.ipad button'); if (b) b.classList.add('gedrueckt'); }, true);
+for (const t of ['pointerup', 'pointercancel']) addEventListener(t, () => document.querySelectorAll('.gedrueckt').forEach(b => b.classList.remove('gedrueckt')), true);
+zeige();
+</script>
+</body></html>
