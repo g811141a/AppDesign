@@ -1,6 +1,6 @@
 # Designrichtlinie allgemein
 
-**Version 4.50.0** · Stand 02.11.2026
+**Version 4.50.1** · Stand 03.11.2026
 
 Allgemeine Gestaltungs- und Bedienregeln für alle Web-Apps von g811141a auf iPad und iPhone. Die Datei liegt im Design-Repo
 **AppDesign** (g811141a/AppDesign); ihre Versionsnummer ist die des Repos. Die Komponenten sind dort einmal programmiert und
@@ -1117,10 +1117,10 @@ Regel). In AppDesign ist jede Komponente einmal programmiert (`v4/design.css`, `
 
 - **Apple:** SwiftUI `ContentUnavailableView` – Symbol, Titel, Beschreibung, optional Aktionen; für die Suche `.search(text:)`.
 - **Zweck:** Ein leerer Bereich (keine Einträge, keine Treffer, alles ausgeblendet) sagt, warum er leer ist und wie es weitergeht. Regel R-7.7.
-- **Aufbau:** `leerHtml({ icon, titel, satz, aktion })` in ui.js → `.leer`: Symbol (grau, 52 pt, `aria-hidden`), Titel fett 22 pt als
+- **Aufbau:** `leerHtml({ icon, titel, satz, aktion })` in ui.js → `.leer`: Symbol (grau, 36 pt, `aria-hidden`), Titel 17 pt halbfett als
   Überschrift, Satz grau 15 pt, optional ein getönter Knopf (Systemblau hell hinterlegt, 44 pt hoch). Mittig im freien Bereich unter
-  Kopf, Inhalt und Suchzeile; die Textstile wachsen mit der Textgröße. In der Seitenleiste klein (`.leer.klein`): Symbol 36 pt, Titel
-  17 pt halbfett.
+  Kopf, Inhalt und Suchzeile; die Textstile wachsen mit der Textgröße. Symbol und Titel sind überall gleich groß – im Inhalt, in der
+  Startliste und in der Seitenleiste. In der Seitenleiste (`.leer.klein`) nur kleinere Abstände.
 - **Suche ohne Treffer:** Lupe, ‚Keine Treffer für ‚Begriff‘‘, ‚Schreibweise prüfen oder nach etwas anderem suchen.‘, ohne Knopf.
 - **Seitenleiste neben dem Inhalt (iPad-Aufbau):** nur Symbol und Titel, Satz und Knopf stehen rechts. Im iPhone-Aufbau zeigt die
   Startliste den vollen Zustand.
@@ -1261,7 +1261,7 @@ Testfall (User) in den Usertest, wenn eine Version es betrifft.
 | R-7.4 | **Position beim Öffnen:** ein Eintrag öffnet ganz oben; ein ‚nächster offener‘ Eintrag (von der App bestimmt) steht hervorgehoben direkt unter dem Kopf bzw. Tabellenkopf, nie in der Mitte; legt die App stattdessen einen aktuellen Eintrag fest (z. B. heute), steht er ebenso direkt unter dem Kopf, aber ohne Hervorhebung – hervorgehoben wird nur Offenes, nie Künftiges | ablauf.mjs – `checkOpenAt` (mit `markiert`) | – | 13 |
 | R-7.5 | **Navigation und Gesten** (wie iOS 26): im iPhone-Aufbau schiebt sich der Inhalt beim Öffnen herein und beim Zurück hinaus; **Zurückwischen von überall im Inhalt** folgt dem Finger, fertig nach halber Breite oder schnellem Wischen, sonst federt es zurück; am iPad hoch und quer holt Wischen nach rechts die ausgeblendete Seitenleiste herein, der Inhalt rückt mit und wird beim Einrasten schmaler, ausblenden quer nur mit panel-left (gleitet). Vorrang an einer Stelle: senkrechtes Rollen, eigenes waagrechtes Rollen, Felder, Knöpfe, Kapseln, Schnellroll-Griff; nicht nach langem Drücken und nicht bei offenem Fenster, Menü oder offener Sprechblase; Tastatur schließt zuerst; Drehen beim Ziehen = Zustand wie vorher; Wischen tippt nie an; ‚Bewegung reduzieren‘ überblendet; je Bild nur transform und opacity | ablauf.mjs – `checkNavigation` | Wischgefühl, Rand mit dem Daumen, versehentliches Zurück, Home-Bildschirm-App, VoiceOver | 13, 15.4, 15.17 |
 | R-7.6 | **Abschnittsköpfe in der Liste:** jede Gruppe hat eine Überschrift, auch die erste; Schrift wie die Überschrift des Kopfs (Größe, Stärke, Farbe, Schrift), wächst mit der Textgröße; rollt mit; Rolle heading, nicht antippbar; bei der Suche nur Gruppen mit Treffern | hig.mjs | – | 15.4 |
-| R-7.7 | **Leerer Zustand:** jeder leere Bereich (keine Einträge, keine Treffer, alles ausgeblendet) zeigt den Baustein 15.23 – Symbol, Titel, Satz, optional ein getönter Knopf –, mittig im freien Bereich; bei der Suche ‚Keine Treffer für ‚…‘‘ mit dem Begriff; in der Seitenleiste neben dem Inhalt nur Symbol und Titel | hig.mjs | – | 15.23 |
+| R-7.7 | **Leerer Zustand:** jeder leere Bereich (keine Einträge, keine Treffer, alles ausgeblendet) zeigt den Baustein 15.23 – Symbol, Titel, Satz, optional ein getönter Knopf –, mittig im freien Bereich; bei der Suche ‚Keine Treffer für ‚…‘‘ mit dem Begriff; in der Seitenleiste neben dem Inhalt nur Symbol und Titel; Symbol (36 pt) und Titel (17 pt halbfett) überall gleich groß | hig.mjs | – | 15.23 |
 
 ### 8. Drehen
 
@@ -1347,6 +1347,7 @@ R-2.3 (15.2), R-4.4 (6, 15.8, HIG 9), R-5.3 (8), R-5.4 (15.12), R-5.5 (APD-14), 
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 4.50.1 | 03.11.2026 | Korrektur | **APD-111 (Usertest P-92/4 und P-92/5 nicht ok, Nutzer 03.11.2026, Sitzung 0078, Wortlaut bestätigt):** 15.23 ‚Aufbau‘ – Symbol 36 pt und Titel 17 pt halbfett überall gleich groß (im Inhalt, in der Startliste und in der Seitenleiste; vorher im Inhalt 52 pt und 22 pt fett), in der Seitenleiste nur kleinere Abstände; Katalog R-7.7 ergänzt (Prüfung `hig.mjs` misst Symbol und Titel in jeder Ansicht). **APD-112** (R-1.8 unverändert): ui.js gibt den Fokus nach dem Schließen eines Fensters, Blatts bzw. einer Meldung an den öffnenden Knopf zurück (Prüfung `checkFokusZurueck`). **APD-85 Teil 5** (Werkzeug): feste Pausen in `offline.mjs` durch `warteBis` ersetzt |
 | 4.50.0 | 02.11.2026 | Neben | **APD-30 leere Zustände (Muster Variante A, Nutzer 02.11.2026, Sitzung 0076, Wortlaut bestätigt):** neu 15.23 ‚Leerer Zustand‘ (`leerHtml`, `.leer`) und Katalog R-7.7 (Prüfung `hig.mjs`); Abschnitt 7 – nach x bleibt die leere Seite mit dem leeren Zustand. **APD-108 (Nutzer 02.11.2026, Sitzung 0075, Wortlaut bestätigt):** 13 neu ‚Klick nach dem Wischen‘ – Safari schickt den Klick 1–4 ms nach dem Loslassen; die Sperre ‚Wischen tippt nie an‘ gilt bis zum Loslassen plus 400 ms für genau einen Klick und zählt den größten Weg. **APD-85 Teil 4** (Werkzeug): R-3.1 erkennt Schalter an `[switch]`/`role="switch"` |
 | 4.49.1 | 02.11.2026 | Korrektur | **APD-109 (Usertest P-90, Nutzer 02.11.2026, Sitzung 0074, Wortlaut bestätigt):** 13 neu ‚Klick nur mit Hörer‘ – Safari schickt den Klick auf ein nicht antippbares Element nur mit Hörer am Element, darüber oder am `document` (Messung am iPad); R-2.7 hört deshalb am `document`; Safari-Modell `safariKlick` in jeder Prüfung |
 | 4.49.0 | 01.11.2026 | Neben | **APD-62 / APD-38/T-43 (Nutzer 31.10.2026, Sitzung 0067, Wortlaut bestätigt, ohne Muster):** Katalog R-2.7 ‚Titel antippen = nach oben‘ (Prüfung `ablauf.mjs` – `checkTitelOben`, APD-62/H-1 bis H-8); 15.3 Punkt ‚Titel antippen‘; 16 Zeile ‚Titel antippen statt Statusleiste‘. **APD-85 Teil 3** (Werkzeug, keine Regel): Baustein `warteBis` in `tests/pruefe.mjs` |

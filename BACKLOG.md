@@ -1,6 +1,6 @@
 # AppDesign – Backlog (allgemeine Themen)
 
-**Stand 03.11.2026** · Aktuelle Version: AppDesign 4.50.0
+**Stand 03.11.2026** · Aktuelle Version: AppDesign 4.50.1
 
 Allgemeine Themen, die alle Apps betreffen. App-Themen stehen im Backlog der jeweiligen App.
 Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.4.
@@ -11,12 +11,9 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Prio | Thema | bereit seit |
 |---|---|---|---|
-| APD-111 | 1 | **Leerer Zustand einheitlich groß (Usertest P-92/4 und P-92/5 nicht ok, Nutzer 03.11.2026, Sitzung 0078):** Symbol und fetter Titel überall gleich groß wie die Suche in der Seitenleiste – Symbol 36 pt, Titel 17 pt halbfett (heute im Inhalt 52 pt und 22 pt fett); allgemeine Regel. **Wortlaut 15.23 ‚Aufbau‘ und R-7.7 bestätigt (Nutzer 03.11.2026):** ‚Symbol (grau, 36 pt, `aria-hidden`), Titel 17 pt halbfett … Symbol und Titel sind überall gleich groß – im Inhalt, in der Startliste und in der Seitenleiste … In der Seitenleiste (`.leer.klein`) nur kleinere Abstände‘; R-7.7 ‚…; Symbol (36 pt) und Titel (17 pt halbfett) überall gleich groß‘. Korrekturversion 4.50.1 / Reiselogbuch 3.48.1 mit der Anleitung P-92/3 neu; Muster `arbeit/APD-111 Muster.html` bestätigt (Nutzer 03.11.2026: ‚Passt‘, noch nicht bauen) | 03.11.2026 |
-| APD-112 | 2 | **Fokus nach dem Schließen eines Fensters zurück auf den Knopf (R-1.8, Nutzer 03.11.2026, Sitzung 0078):** R-1.8 verlangt ‚ins Fenster auf das Fenster – danach zurück auf den Knopf (fehlt er: Kopfzeile)‘; laut Übergabe 0077 liegt der Fokus nach dem Schließen nie wieder auf dem öffnenden Knopf, nur beim Knopf eines leeren Zustands (APD-30/L-3) – erst nachprüfen und als feste Prüfung nachbauen (`checkFokus` sah es nicht), Apple-Abgleich, dann Muster; Lücke zwischen Regel und App, keine neue Regel · **Nachgeprüft (Sitzung 0078, Chromium):** `#newTrip` öffnen, Esc bzw. x → Fokus auf `body` (Knopf von der App neu aufgebaut); Ursache und Testfall-Liste F-1 bis F-13: `arbeit/APD-112 Testfall-Liste.md` · **bereit ohne Muster (Nutzer 03.11.2026)** – R-1.8 unverändert | 03.11.2026 |
-| APD-85 | 3 | **Teil 5 – übrige Wackler auf `warteBis` umstellen (aus 0., Teil 4 gebaut in 4.50.0):** umzustellen, sobald sie wieder als ‚⚠ wackelt‘ gemeldet werden: `ablauf-titel-blase` (Chromium, Sitzung 0068), `ablauf-jahre` und `ablauf-gesamt` (WebKit, Sitzung 0072); `ablauf-blatt` lief unter Last in die Zeitgrenze von 10:00 (Sitzung 0073, wieder 0077 mit APD-108/W-9 in Chromium und WebKit) – **in 3.48.0 nach Gerät geteilt** (`PRUEF_BLATT`); `ablauf-gesamt` WebKit in 0077 wieder einmal rot, allein grün. Claude zählt jeden Wackler hier mit (bisher sechs) · **bereit (Nutzer 03.11.2026, Sitzung 0078): alle drei jetzt** – feste Pausen durch `warteBis` auf den Zustand danach ersetzen: `ablauf-titel-blase` 9, `ablauf-jahre` 33, `ablauf-gesamt` 9 (gezählt 03.11.2026); Ruhe-Prüfungen (‚in X ms passiert nichts‘) bleiben; Gegenprobe muss rot bleiben; `offline-regeln` beim Bau ansehen; Werkzeug-Punkt der nächsten Version (App unverändert, kein Muster, kein Testfall (User)) | 03.11.2026 |
 | APD-40 | 3 | **Paket A – Maße und Stile automatisch prüfen (Nutzer 03.11.2026, Sitzung 0078, Wortlaut bestätigt):** neu R-1.11, R-3.7, R-3.8, R-4.8, R-4.9, R-5.9, R-6.7 statt G-1, G-2, G-5, G-17 und Teilen von G-10, G-15, G-18; Testfall-Liste A-1 bis A-10 mit Gegenprobe: `arbeit/APD-40 Paket A.md`; Werkzeug, App unverändert (Funde der neuen Prüfung vor jeder Änderung melden) – **eigene Version nach 4.50.1** (höchstens 2 Themen, 0 Nr. 8); Pakete B und C offen unter 2. | 03.11.2026 |
 
-4 Punkte bereit (3 für 4.50.1 / 3.48.1, APD-40 Paket A für die Version danach).
+1 Punkt bereit (APD-40 Paket A, eigene Version).
 
 
 ## 1. Auf iPad und iPhone prüfen
@@ -57,6 +54,9 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 ## Erledigt
 
 | Nr. | Thema | Version | Datum |
+| APD-111 | **Leerer Zustand einheitlich groß** (Korrektur aus Usertest P-92/4 und P-92/5): Symbol 36 pt und Titel 17 pt halbfett überall – im Inhalt, in der Startliste und in der Seitenleiste; 15.23 und R-7.7 (Wortlaut bestätigt); `hig.mjs` misst beide in jeder Ansicht (Usertest P-93) | 4.50.1 | 03.11.2026 |
+| APD-112 | **Fokus nach dem Schließen zurück auf den Knopf** (R-1.8 unverändert): ui.js `fokusNachFenster` nach Fenster, Blatt und Meldung – auch nach dem Neuaufbau durch die App (gleiche Kennung), sonst Kopfzeile, ohne Rollen; Prüfung `checkFokusZurueck` (APD-112/F-1 bis F-8, F-10 bis F-12) | 4.50.1 | 03.11.2026 |
+| APD-85 | **Teil 5 – übrige Wackler ohne feste Pausen:** `ablauf-titel-blase`, `ablauf-jahre`, `ablauf-gesamt` (Reiselogbuch) und `offline.mjs` warten mit `warteBis` auf den Zustand danach; fest bleiben nur das Halten beim langen Drücken und die Ruhe-Prüfungen | 4.50.1 | 03.11.2026 |
 | APD-108 | **Wischen tippt nie an – Klick nach dem Loslassen** (Korrektur): gemeinsame Sperre bis zum Loslassen plus 400 ms für genau einen Klick, größter Weg; Safari-Modell `KLICK_NACH`; Designrichtlinie 13 ‚Klick nach dem Wischen‘ (Usertest P-92) | 4.50.0 | 02.11.2026 |
 | APD-110 | **Link und Schritte im Chat vor dem Fenster:** Zusammenarbeit 3.6.0 Kasten Punkt 4 und 2.8, Regelwächter APD-84/W-15 | 4.50.0 | 02.11.2026 |
 | APD-85 | **Teil 4 – Schalter beim Hereingleiten:** R-3.1 erkennt Schalter an `[switch]`/`role="switch"` (Teil 5 offen unter 2.) | 4.50.0 | 02.11.2026 |

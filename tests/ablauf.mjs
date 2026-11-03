@@ -2379,6 +2379,41 @@ export async function checkFokus(p, { menue = null, untermenue = null, fenster =
   return errors;
 }
 
+// R-1.8 (seit 4.50.1, APD-112 F-1 bis F-12; Testfall-Liste arbeit/APD-112 Testfall-Liste.md): nach dem Schließen eines Fensters, Blatts bzw.
+// einer Meldung liegt der Fokus wieder auf dem Knopf bzw. der Zeile, die es öffnete – auch wenn die App sie neu aufgebaut hat (gleiche
+// Kennung); gibt es sie nicht mehr: auf der Kopfzeile der Seite; ohne Rollen; mit der Tastatur mit Fokusring, nach dem Antippen ohne.
+// checkFokus sah die Lücke nicht: es prüfte beim Fenster Öffnen, Tab, Esc, ⌘. und die Sprechblase, aber nicht, wo der Fokus danach liegt.
+//   faelle: [{ name, auf, zu, knopf (Selektor; null = Kopfzeile), tastatur (true: mit Ring, false: angetippt, ohne Ring), rolle (Rollbereich) }]
+export async function checkFokusZurueck(p, faelle, { where = '' } = {}) {
+  const errors = [], E = (r, t) => errors.push(`${where ? where + ': ' : ''}${r} ${t}`);
+  const zuAlles = () => p.evaluate(() => { document.querySelector('.layer')?.click(); for (const d of ['msg', 'dlg']) if (document.getElementById(d)?.open) document.getElementById(d).close(); });
+  for (const f of faelle) {
+    const y = () => f.rolle ? p.evaluate(s => Math.round(document.querySelector(s)?.scrollTop ?? 0), f.rolle) : 0;
+    try {
+      await f.auf(); await wait(p, 400); await navFertig(p);
+      if (!await p.evaluate(() => !!(document.getElementById('dlg')?.open || document.getElementById('msg')?.open))) { E('R-1.8', `${f.name}: Fenster öffnet nicht`); continue; }
+      const y0 = await y();
+      await f.zu(); await wait(p, 450); await navFertig(p); await wait(p, 100);
+      const r = await p.evaluate(knopf => {
+        const a = document.activeElement, c = a && getComputedStyle(a);
+        const ziel = knopf ? document.querySelector(knopf) : document.querySelector('#app .pnav, #app .nb, .pnav, .nb');
+        return { offen: !!(document.getElementById('dlg')?.open || document.getElementById('msg')?.open), ok: !!ziel && a === ziel,
+          auf: !a || a === document.body ? 'body' : a.tagName.toLowerCase() + (a.id ? '#' + a.id : '') + (a.dataset?.day ? `[data-day=${a.dataset.day}]` : '') + (a.dataset?.id ? `[data-id=${a.dataset.id}]` : ''),
+          ring: !!c && c.outlineStyle !== 'none' && parseFloat(c.outlineWidth) > 0, zeile: !!ziel && ziel.tabIndex < 0 };
+      }, f.knopf ?? null);
+      if (r.offen) { E('R-1.8', `${f.name}: Fenster schließt nicht (${await p.evaluate(() => [...document.querySelectorAll('dialog[open] h3')].map(h => h.textContent).join(', '))})`); await zuAlles(); continue; }
+      if (!r.ok) E('R-1.8', `${f.name}: nach dem Schließen Fokus auf ${r.auf} statt auf ${f.knopf || 'der Kopfzeile'} (zurück auf den Knopf)`);
+      // Zeilen und Kopfzeilen (tabindex -1) haben keinen Ring – die Zeile wird hervorgehoben (R-7.3)
+      else if (f.knopf && !r.zeile && f.tastatur !== false && !r.ring) E('R-3.4', `${f.name}: mit der Tastatur kein Fokusring am Knopf (K6)`);
+      else if (f.tastatur === false && r.ring) E('R-3.4', `${f.name}: nach dem Antippen Fokusring am Knopf (K6: nie beim Antippen)`);
+      const y1 = await y();
+      if (Math.abs(y1 - y0) > 2) E('R-7.3', `${f.name}: nach dem Schließen rollt der Inhalt (${y0} → ${y1} px, ohne Rollen)`);
+    } catch (e) { E('R-1.8', `${f.name}: Ablauf bricht ab (${e.message.split('\n')[0]})`); await zuAlles(); }
+    await p.mouse.click(2, 2); await p.evaluate(() => document.activeElement?.blur()); await wait(p, 100);
+  }
+  return errors;
+}
+
 // R-1.9 (APD-43 H1–H5): ‚Kontrast erhöhen‘ – zweite Farbtabelle hell und dunkel, sofort ohne Neuaufbau, Ausgabe unverändert hell.
 //   vorschau: öffnet die Vorschau der Ausgabe (Fenster mit .rt) · fenster: { open, feld } – für das Umschalten bei offenem Fenster (H5)
 export const KONTRAST = {
