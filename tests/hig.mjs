@@ -419,6 +419,12 @@ const found = new Map(), icons = new Map();
         const sb = sym?.getBoundingClientRect();
         if (Math.abs(lb.left + lb.width / 2 - mitte) > 4 || (sb && Math.abs(sb.left + sb.width / 2 - mitte) > 4) || cs(l).textAlign !== 'center')
           R('R-7.7', `leerer Zustand ${n} steht nicht mittig in seinem Bereich`);
+        // seit 4.50.1 (APD-111, Usertest P-92/4 und P-92/5): Symbol (36 pt) und Titel (17 pt halbfett) überall gleich groß – im Inhalt, in der
+        // Startliste und in der Seitenleiste; beide wachsen mit der Textgröße (--f-headline, --t-headline)
+        const rs = cs(document.documentElement), fH = parseFloat(rs.getPropertyValue('--f-headline')) || 1, tH = parseFloat(rs.getPropertyValue('--t-headline')) || 17;
+        const sw = sym ? parseFloat(cs(sym).width) : 0;   // berechnete Breite: das Blatt am iPhone verkleinert die Seite dahinter (R-4.6)
+        if (sym && Math.abs(sw - 36 * fH) > 1) R('R-7.7', `leerer Zustand ${n}: Symbol ${Math.round(sw)} px statt ${Math.round(36 * fH)} (36 pt, überall gleich groß)`);
+        if (h && (Math.abs(parseFloat(cs(h).fontSize) - tH) > 0.5 || +cs(h).fontWeight !== 600)) R('R-7.7', `leerer Zustand ${n}: Titel ${cs(h).fontSize} ${cs(h).fontWeight} statt ${tH}px 600 (17 pt halbfett, überall gleich groß)`);
         if (l.closest('#side') && !document.documentElement.classList.contains('phone') && !l.matches('.suche') && l.querySelector(':scope > p, :scope > button'))
           R('R-7.7', `leerer Zustand ${n} in der Seitenleiste neben dem Inhalt: nur Symbol und Titel (Satz und Knopf stehen rechts)`);
       });

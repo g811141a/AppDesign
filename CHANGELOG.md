@@ -3,6 +3,38 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.50.1 – 03.11.2026
+
+AppDesign 4.50.1 · Designrichtlinie allgemein 4.50.1 · Zusammenarbeit allgemein 3.6.0 · geprüft mit Reiselogbuch 3.48.1
+
+**APD-111, APD-112 und APD-85 Teil 5** – dein Ja vom 03.11.2026, Sitzung 0079 (Korrekturversion aus Usertest P-92). Muster
+`arbeit/APD-111 Muster.html`, Testfall-Liste `arbeit/APD-112 Testfall-Liste.md`. Usertest im Reiselogbuch: P-93.
+
+- **APD-111 – leerer Zustand einheitlich groß (Korrektur, `design.css`, 15.23, R-7.7):** Symbol 36 pt und Titel 17 pt halbfett jetzt überall –
+  im Inhalt, in der Startliste und in der Seitenleiste (vorher im Inhalt und in der iPhone-Startliste 52 pt und 22 pt fett); beide wachsen mit
+  der Textgröße (`--f-headline`, `--t-headline`). In der Seitenleiste (`.leer.klein`) nur kleinere Abstände. Satz und Knopf unverändert.
+  Wortlaut 15.23 ‚Aufbau‘ und R-7.7 bestätigt (Nutzer 03.11.2026).
+- **Prüfung APD-111 (`tests/hig.mjs`, R-7.7):** misst in jeder Ansicht jedes sichtbaren leeren Zustands die berechnete Breite des Symbols
+  (36 × `--f-headline`) sowie Größe und Gewicht des Titels (`--t-headline`, 600). **Rot gegen 4.50.0** (Reiselogbuch `ablauf-leer`, Chromium):
+  24 Abweichungen, darunter genau die Abläufe P-92/4 Schritt 2 und 4 und P-92/5 (ist 52/22/700, soll 36/17/600). Mit 4.50.1 grün.
+- **Warum die Prüfung es übersah:** R-7.7 prüfte Symbol, Überschrift, Knopf und Lage, aber keine Größen – die Größe des Inhalts war in 4.50.0
+  bewusst anders (Variante A) und erst am Gerät als unruhig aufgefallen.
+- **APD-112 – Fokus nach dem Schließen zurück auf den Knopf (Korrektur, `ui.js`, R-1.8 unverändert):** neu `fokusNachFenster` – nach dem
+  Schließen eines Fensters, Blatts bzw. einer Meldung liegt der Fokus wieder auf dem gemerkten Knopf bzw. der Zeile (`setOpener`), sonst auf dem
+  Element, das beim Öffnen den Fokus hatte (`dlgVorher`, `msgVorher`); hat die App es neu aufgebaut, auf dem neuen mit derselben Kennung (id,
+  `data-id`, `data-day`); gibt es keins: Kopfzeile des Fensters darunter bzw. der Seite. Ohne Rollen, Ring nur mit der Tastatur (K6). Setzt die
+  App den Fokus selbst oder ist ein Menü bzw. eine Sprechblase offen, bleibt er dort. Ersetzt die Sonderregel für den Knopf eines leeren
+  Zustands (APD-30/L-3).
+- **Prüfung APD-112 (`tests/ablauf.mjs` – `checkFokusZurueck`):** öffnet und schließt je Fall und prüft, wo der Fokus liegt, den Ring und dass
+  nichts rollt. Reiselogbuch `ablauf-bedienung`: APD-112/F-1 bis F-6, F-8, F-10 bis F-12 (iPad quer, F-12 gedreht) und F-7 (iPhone hoch, Blatt
+  ziehen). **Rot gegen 4.50.0** (Chromium): 10 Fälle, Fokus auf `body`. APD-112/F-9 (Fenster über Fenster) prüft weiter `checkFokus` (V6). Gegenprobe APD-112/F-13:
+  neuer Fall `schliessen` in `GEGENPROBEN_BEDIENUNG` (`tests/pruefe.mjs`, Fokus nach dem Schließen weggenommen) – alle 10 Fälle rot.
+- **Warum die Prüfung es übersah:** `checkFokus` prüfte beim Fenster Öffnen, Tab, Esc, ⌘. und die Sprechblase, aber nicht, wo der Fokus nach dem
+  Schließen liegt (nur bei Menüs, V5).
+- **APD-85 Teil 5 (Werkzeug):** `tests/offline.mjs` wartet nach ‚zurück‘ und beim Drehen mit `warteBis` auf den Zustand danach statt 300 bzw.
+  400 ms; im Reiselogbuch `ablauf-titel-blase`, `ablauf-jahre` und `ablauf-gesamt` ebenso (Ruhe = keine laufende Bewegung). Fest bleiben nur das
+  Halten beim langen Drücken (die Handlung selbst) und Ruhe-Prüfungen (‚danach geschieht nichts‘).
+
 ## 4.50.0 – 02.11.2026
 
 AppDesign 4.50.0 · Designrichtlinie allgemein 4.50.0 · Zusammenarbeit allgemein 3.6.0 · geprüft mit Reiselogbuch 3.48.0

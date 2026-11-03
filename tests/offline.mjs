@@ -20,6 +20,10 @@ import { createServer } from 'node:http';
 import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { basename, join, extname } from 'node:path';
+import { warteBis } from './pruefe.mjs';
+const RUHE = '!document.getAnimations().some(a => a.playState === "running")';
+// nach dem Drehen: neue Breite, keine Bewegung und mindestens drei Bilder seitdem (resize-Ereignis und das Platzieren im nächsten Bild sind durch)
+const GEDREHT = w => `innerWidth === ${w} && ${RUHE} && (window.__gedreht = (window.__gedreht || 0) + 1) > 3`;
 
 const TYP = { '.html': 'text/html', '.js': 'text/javascript', '.mjs': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.png': 'image/png', '.svg': 'image/svg+xml' };
 
@@ -90,7 +94,8 @@ export async function checkOffline(appDir, browser, { ansichten, grenze = 4500, 
     pruefeAus(name, 'online → offline', h);
     // APD-6/F-5, APD-6/F-6: iPhone – vom Inhalt zurück in die Startliste: Zeile unter der Backup-Kachel, Meldung über der Kachel
     if (await p.evaluate(() => document.documentElement.classList.contains('phone') && !!document.getElementById('back'))) {
-      await p.click('#back'); await p.waitForTimeout(300);
+      // seit 4.50.1 (APD-85 Teil 5): warten auf den Zustand danach statt fester Pausen – Startliste sichtbar, keine laufende Bewegung
+      await p.click('#back'); await warteBis(p, `!!document.querySelector('#side .side-list')?.getClientRects().length && ${RUHE}`, { max: 3000 });
       h = await hinweis(p);
       if (!h?.fuss) E(`${name}: Startliste ohne Backup-Kachel – Zeile nicht prüfbar`);
       pruefeAus(name, 'Startliste, offline', h, { toast: !!h?.toast });
@@ -110,9 +115,10 @@ export async function checkOffline(appDir, browser, { ansichten, grenze = 4500, 
     if (unten === false) E(`${name}: lange Liste offline – der letzte Eintrag bleibt hinter der Backup-Kachel (Liste zu kurz für Zeile)`);
     // APD-6/F-10: Drehen, während die Meldung steht
     const vp = p.viewportSize();
-    await p.setViewportSize({ width: vp.height, height: vp.width }); await p.waitForTimeout(400);
+    await p.evaluate(() => { window.__gedreht = 0; });
+    await p.setViewportSize({ width: vp.height, height: vp.width }); await warteBis(p, GEDREHT(vp.height), { max: 3000 });
     pruefeAus(name, 'offline, gedreht', await hinweis(p));
-    await p.setViewportSize(vp); await p.waitForTimeout(400);
+    await p.evaluate(() => { window.__gedreht = 0; }); await p.setViewportSize(vp); await warteBis(p, GEDREHT(vp.width), { max: 3000 });
     // APD-6/F-1: nach 4 s ist die Meldung weg, die Zeile bleibt
     h = await bis(p, 5500, h => !h.toast);
     if (h?.toast) E(`${name}: Meldung ‚Du bist offline‘ verschwindet nicht nach 4 s`);

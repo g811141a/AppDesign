@@ -1,4 +1,4 @@
-// AppDesign 4.50.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
+// AppDesign 4.50.1 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
 // Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/fassung/X.Y.Z/ui.js"></script> (feste Fassung, R-10.3)
 // Seit 4.11.0 (R-10.3): ui.js und design.css immer mit ?v=<AppDesign-Version> einbinden (auch in sw.js) und beim Start
 // prüfen, ob genau diese Fassung geladen ist (AD_VERSION hier, --ad-version in design.css).
@@ -20,7 +20,7 @@
 
 'use strict';
 // Version der Bausteine (R-10.3): die App vergleicht sie beim Start mit der benötigten Fassung.
-const AD_VERSION = '4.50.0';
+const AD_VERSION = '4.50.1';
 /* ---------- Icons ---------- */
 
 // Schaltflächen-Icons aus Lucide (ISC-Lizenz), direkt eingebettet, damit die App offline funktioniert.
@@ -429,6 +429,27 @@ function fokus(el) {
   return document.activeElement === el;
 }
 // V5, V6: nach Menü bzw. Sprechblase zurück auf ihren Knopf; gibt es ihn nicht mehr, auf die Kopfzeile (Fenster bzw. Seite)
+// R-1.8 (seit 4.50.1, APD-112): nach dem Schließen eines Fensters, Blatts bzw. einer Meldung zurück auf den Knopf bzw. die Zeile, die es
+// öffnete (sel: gemerkter Knopf, sonst das Element, das beim Öffnen den Fokus hatte) – baut die App neu auf, das neue Element mit derselben
+// Kennung; gibt es keins: die Kopfzeile des Fensters darunter bzw. der Seite. Hat die App bzw. der Browser den Fokus schon sinnvoll gesetzt
+// (ein Element außerhalb geschlossener Fenster) oder ist ein Menü bzw. eine Sprechblase offen, bleibt er dort. Ring nur mit der Tastatur (K6).
+let dlgVorher = null, msgVorher = null;
+function wiederFinden(el) {
+  if (!el || el === document.body) return null;
+  if (el.isConnected) return el.closest('dialog:not([open])') ? null : el;
+  const key = el.id ? '#' + CSS.escape(el.id) : el.dataset?.id ? `.${CSS.escape(el.classList[0] || '')}[data-id="${CSS.escape(el.dataset.id)}"]`
+    : el.dataset?.day ? `[data-day="${CSS.escape(el.dataset.day)}"]` : '';
+  return key ? document.querySelector(key) : null;
+}
+function fokusNachFenster(sel, vorher) {
+  const a = document.activeElement;
+  if (a && a !== document.body && a.isConnected && !a.closest('dialog:not([open])')) return;
+  if (document.querySelector('.menu, .pop')) return;
+  const k = (sel && document.querySelector(sel)) || wiederFinden(vorher);
+  if (k && fokus(k)) return;
+  if (dlg.open) fokus(dlg.querySelector('.dlg-head h3') || dlg);
+  else fokus(document.querySelector('#app .pnav, #app .nb, .pnav, .nb'));
+}
 function fokusZurueck(anchor, host) {
   const a = anchor && liveAnchor(anchor);
   if (a && fokus(a)) return;
@@ -1601,6 +1622,7 @@ function inform(title, html, { wide = false, action = null } = {}) {
     msg.oncancel = e => { e.preventDefault(); done(); };
     msg.setAttribute('aria-labelledby', 'msgTitel');   // R-1.8 (V2): Name = Titel, Beschreibung = Text
     msg.setAttribute('aria-describedby', 'msgText');
+    if (!msg.open) msgVorher = document.activeElement;   // R-1.8 (APD-112)
     showModalQuiet(msg);
     placeDialogs();
   });
@@ -1619,6 +1641,7 @@ function openDialog(html, wide = false) {
   dlgFest = 0;
   dlg.returnValue = '';
   const neu = !dlg.open;
+  if (neu) dlgVorher = document.activeElement;   // R-1.8 (APD-112): Rückgabe des Fokus, wenn kein Knopf gemerkt ist
   if (neu) showModalQuiet(dlg);
   placeDialogs();
   if (neu) blattAuf();   // R-4.6 (seit 4.32.0, am iPad seit 4.38.0, APD-72): das Blatt bzw. Fenster gleitet von unten herein
@@ -1907,11 +1930,13 @@ dlg.addEventListener('close', () => {
   // R-7.3: nach dem Neuaufbau durch die App die oberste Zeile zurück an ihren Platz, die Zeile aus dem Fenster kurz hervorheben
   // (seit 4.23.2 rollt nichts mehr – auch nach ‹ › nicht)
   requestAnimationFrame(() => { holdAlign(); if (sel) revealRow(sel); });
-  // R-1.8 (seit 4.50.0, APD-30/L-3): kam das Fenster vom Knopf eines leeren Zustands (15.23), liegt der Fokus danach wieder auf ihm, ohne Rollen
-  // (nach dem Neuaufbau durch die App: der Knopf kann ein neues Element mit derselben Kennung sein)
-  if (sel && document.querySelector(sel)?.matches('.leer-knopf')) requestAnimationFrame(() => requestAnimationFrame(() => {
-    const k = document.querySelector(sel); if (k?.matches('.leer-knopf') && !dlg.open) k.focus({ preventScroll: true }); }));
+  // R-1.8 (seit 4.50.1, APD-112; 4.50.0 nur beim Knopf eines leeren Zustands, APD-30/L-3): danach liegt der Fokus wieder auf dem Knopf bzw.
+  // der Zeile, die das Fenster öffnete, ohne Rollen
+  const vorher = dlgVorher; dlgVorher = null;
+  requestAnimationFrame(() => requestAnimationFrame(() => { if (!dlg.open) fokusNachFenster(sel, vorher); }));
 });
+msg.addEventListener('close', () => { const vorher = msgVorher; msgVorher = null;
+  requestAnimationFrame(() => requestAnimationFrame(() => { if (!msg.open) fokusNachFenster('', vorher); })); });
 
 // R-7.3 (seit 4.18.0, APD-13): Zeile bzw. Kasten, aus dem ein Fenster kam, nach dem Schließen kurz hervorheben.
 // Seit 4.23.2 rollt dafür nichts mehr (vorher: nach ‹ › bis die zuletzt gezeigte Zeile sichtbar war) – die Liste steht wie beim Öffnen.

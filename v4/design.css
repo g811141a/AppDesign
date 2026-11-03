@@ -1,4 +1,4 @@
-/* AppDesign 4.50.0 · design.css – gemeinsame Gestaltung der iPad-Web-Apps von g811141a (Apple-like)
+/* AppDesign 4.50.1 · design.css – gemeinsame Gestaltung der iPad-Web-Apps von g811141a (Apple-like)
    Einbinden im <head> vor dem eigenen <style> der App:  <link rel="stylesheet" href="../AppDesign/fassung/X.Y.Z/design.css"> (feste Fassung, R-10.3)
    Farben als Variablen auf :root, Dunkelmodus über data-theme="dark" (setzt ui.js / applyTheme).
    Komponenten: Schaltflächen, Suchfeld, Kapsel, Eingabefelder, Datumsfelder, Kopfzeile, Seitenleiste,
@@ -6,7 +6,7 @@
    Options-Kapsel; seit 4.1.0 iPhone-Ansicht (html.phone: Seitenkopf, großer Titel, Liste, Kasten, untere Leiste). Regeln dazu: README - Designrichtlinie allgemein.md */
 /* Farben im Apple-Look: Hintergrund Hellgrau, Kästen weiß ohne Rand, schwebende Schaltflächen */
 :root {
-  --ad-version: "4.50.0";   /* R-10.3: Version der Bausteine, die App prüft sie beim Start */
+  --ad-version: "4.50.1";   /* R-10.3: Version der Bausteine, die App prüft sie beim Start */
   --bg: #f2f2f7;
   --card: #ffffff;
   --ink: #1c1c1e;
@@ -265,13 +265,14 @@ body.docked .nb { left: calc(var(--side-w) + max(10px, var(--safe-left)) + 4px);
 .nb-title { font-weight: 600; font-size: var(--tb-body); text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .nb2 { display: flex; gap: 12px; align-items: center; margin-top: 10px; }
 .nb2 .searchbox { flex: 1 1 auto; }
-/* Leerer Zustand (seit 4.50.0, APD-30, Designrichtlinie 15.23, R-7.7) wie Apple ContentUnavailableView: Symbol (grau, 52 pt, aria-hidden), Titel
-   fett 22 pt als Überschrift, Satz grau 15 pt, optional ein getönter Knopf (Systemblau hell hinterlegt, 44 pt hoch) – mittig im freien Bereich;
-   die Textstile wachsen mit der Textgröße (R-1.10). In der Seitenleiste klein: Symbol 36 pt, Titel 17 pt halbfett. Ersetzt .emptymain und .side-empty. */
+/* Leerer Zustand (seit 4.50.0, APD-30, Designrichtlinie 15.23, R-7.7) wie Apple ContentUnavailableView: Symbol (grau, 36 pt, aria-hidden), Titel
+   17 pt halbfett als Überschrift, Satz grau 15 pt, optional ein getönter Knopf (Systemblau hell hinterlegt, 44 pt hoch) – mittig im freien Bereich;
+   die Textstile wachsen mit der Textgröße (R-1.10). Symbol und Titel überall gleich groß (seit 4.50.1, APD-111; vorher im Inhalt 52 pt und 22 pt
+   fett); in der Seitenleiste (.leer.klein) nur kleinere Abstände. Ersetzt .emptymain und .side-empty. */
 .leer { flex: 1 1 auto; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
   padding: 24px 20px; min-height: 0; }
-.leer > .sym { width: calc(52px * var(--f-title2)); height: calc(52px * var(--f-title2)); color: var(--muted); stroke-width: 1.5; margin-bottom: 12px; }
-.leer > h3 { margin: 0; font-size: var(--t-title2); font-weight: 700; line-height: 1.25; color: var(--ink); overflow-wrap: anywhere; max-width: 100%; }
+.leer > .sym { width: calc(36px * var(--f-headline)); height: calc(36px * var(--f-headline)); color: var(--muted); stroke-width: 1.5; margin-bottom: 8px; }
+.leer > h3 { margin: 0; font-size: var(--t-headline); font-weight: 600; line-height: 1.25; color: var(--ink); overflow-wrap: anywhere; max-width: 100%; }
 .leer > p { margin: 6px 0 0; max-width: 30em; font-size: var(--t-subhead); color: var(--muted); overflow-wrap: anywhere; }
 .leer > .leer-knopf { margin-top: 16px; min-height: calc(44px * var(--fb)); padding: 6px 18px; border-radius: 999px; border: none; box-shadow: none;
   background: rgba(0, 122, 255, .12); color: var(--accent); font: inherit; font-size: var(--t-body); font-weight: 600; max-width: 100%; }
@@ -279,8 +280,6 @@ body.docked .nb { left: calc(var(--side-w) + max(10px, var(--safe-left)) + 4px);
 .leer.klein { flex: 0 0 auto; padding: 32px 12px; }
 /* Suche: oben im freien Bereich, damit Titel und Satz auch bei offener Tastatur zu sehen sind (L-16) */
 .leer.suche { justify-content: flex-start; padding-top: 40px; }
-.leer.klein > .sym { width: calc(36px * var(--f-headline)); height: calc(36px * var(--f-headline)); margin-bottom: 8px; }
-.leer.klein > h3 { font-size: var(--t-headline); font-weight: 600; }
 /* allein im Rollbereich (Inhalt, Startliste): mittig im ganzen freien Bereich; unter anderem Inhalt (Kopf, Teilnehmer, Fortschritt) mittig in
    einem Bereich von etwa der halben Höhe, damit Folgendes (z. B. Fazit) erreichbar bleibt */
 .rolle:has(> .leer:only-child), .side-list:has(> .leer:only-child:not(.klein)) { display: flex; flex-direction: column; }
