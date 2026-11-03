@@ -1,6 +1,6 @@
 # APD-40 Paket A – Maße und Stile (Wortlaut und Testfall-Liste)
 
-Stand 03.11.2026 · Sitzung Reiselogbuch 0078 · Vorschlag, Wortlaut noch nicht bestätigt (Zusammenarbeit 0 Nr. 29). Einordnung:
+Stand 03.11.2026 · Sitzung Reiselogbuch 0078 · **Wortlaut bestätigt (Nutzer 03.11.2026, Sitzung 0078, 0 Nr. 29).** Einordnung:
 `arbeit/APD-40 Einordnung.md`.
 
 ## Wortlaut – neu im Regelkatalog (Designrichtlinie allgemein 17)
