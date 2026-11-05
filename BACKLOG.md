@@ -1,6 +1,6 @@
 # AppDesign – Backlog (allgemeine Themen)
 
-**Stand 03.11.2026** · Aktuelle Version: AppDesign 4.50.1
+**Stand 05.11.2026** · Aktuelle Version: AppDesign 4.50.1
 
 Allgemeine Themen, die alle Apps betreffen. App-Themen stehen im Backlog der jeweiligen App.
 Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.4.
@@ -53,6 +53,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 ## Erledigt
 
 | Nr. | Thema | Version | Datum |
+| P-93 | Geprüft **P-93 (Reiselogbuch 3.48.1): alles ok** (Nutzer 05.11.2026, Sitzung 0080) – leerer Zustand überall gleich groß (**APD-111 abgeschlossen**) | 4.50.1 | 05.11.2026 |
 | APD-111 | **Leerer Zustand einheitlich groß** (Korrektur aus Usertest P-92/4 und P-92/5): Symbol 36 pt und Titel 17 pt halbfett überall – im Inhalt, in der Startliste und in der Seitenleiste; 15.23 und R-7.7 (Wortlaut bestätigt); `hig.mjs` misst beide in jeder Ansicht (Usertest P-93) | 4.50.1 | 03.11.2026 |
 | APD-112 | **Fokus nach dem Schließen zurück auf den Knopf** (R-1.8 unverändert): ui.js `fokusNachFenster` nach Fenster, Blatt und Meldung – auch nach dem Neuaufbau durch die App (gleiche Kennung), sonst Kopfzeile, ohne Rollen; Prüfung `checkFokusZurueck` (APD-112/F-1 bis F-8, F-10 bis F-12) | 4.50.1 | 03.11.2026 |
 | APD-85 | **Teil 5 – übrige Wackler ohne feste Pausen:** `ablauf-titel-blase`, `ablauf-jahre`, `ablauf-gesamt` (Reiselogbuch) und `offline.mjs` warten mit `warteBis` auf den Zustand danach; fest bleiben nur das Halten beim langen Drücken und die Ruhe-Prüfungen | 4.50.1 | 03.11.2026 |
