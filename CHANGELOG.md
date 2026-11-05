@@ -3,6 +3,29 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.52.0 – 05.11.2026
+
+AppDesign 4.52.0 · Designrichtlinie allgemein 4.52.0 · Zusammenarbeit allgemein 3.7.0 · geprüft mit Reiselogbuch 3.50.0
+
+**APD-40 Pakete B und C – Texte und Abläufe automatisch prüfen** – dein Ja vom 05.11.2026, Sitzung 0081 (‚hier in dieser Sitzung‘). Wortlaut
+und Testfall-Listen `arbeit/APD-40 Paket B.md` und `arbeit/APD-40 Paket C.md`. Usertest im Reiselogbuch: P-95.
+
+- **Regelkatalog (Designrichtlinie 17):** neu R-4.10 (Menütexte: kein ‚…‘ am Ende, Icons einer Gruppe alle oder keine, Kontextmenü höchstens 3
+  Gruppen ohne gesperrte Punkte), R-4.11 (Menüpunkt und Fenster heißen gleich), R-4.12 (erst fragen, dann zerstören), R-5.10 (automatisch
+  speichern spätestens 10 s nach der Änderung, Verwerfen stellt den Stand beim Öffnen her), R-10.6 (Ansprache ohne ‚wir‘, ohne ‚klicken‘), R-10.7
+  (Datum und Dateinamen); G-4, G-7, G-12, G-13 ‚ersetzt durch R-…‘, G-19 gekürzt; Verweise in 6, 8 und 10 (in 8 ‚spätestens 10 Sekunden nach der
+  Änderung‘ wie R-5.10).
+- **Prüfungen:** `tests/hig.mjs` – `texteMenues` nach jedem Schritt (R-4.10, R-10.6, R-10.7) und `dateinameFehler`; `tests/kontextmenue.mjs` prüft
+  jedes Kontextmenü mit `texteMenues`; `tests/backup.mjs` den Dateinamen mit `dateinameFehler`; `tests/ablauf.mjs` – `checkMenueFenster` (R-4.11),
+  `checkAutoSpeichern` (R-5.10, Uhr mit `page.clock` vorgestellt), `checkErstFragen` (R-4.12). Gegenproben: `GEGENPROBEN_MASSE` um 12 Fälle erweitert
+  (APD-40/B-1 bis B-8, C-1, C-2, C-5, C-6), je Fall mit der Prüfung der App, die ihn melden muss (`test`, `tests/lauf.mjs`) – in Chromium 12 von 12 rot (WebKit nicht gelaufen).
+- **`ui.js`:** ein Kontextmenü (`openMenu(…, 'beside')`) trägt die Klasse `kontext`; **behoben:** der Abgleichbericht schrieb ‚Geändert am‘ mit
+  einstelligem Tag und Monat (‚5.11.2026 14:03‘) – jetzt ‚05.11.2026 14:03‘ (R-10.7, gefunden von `texteMenues`; vorher prüfte niemand das Format).
+- **Für die Abläufe der App:** `checkAutoSpeichern` vergleicht nach ‚Änderungen verwerfen‘ ohne die Zeitstempel des Abgleichs (`ohne`) und
+  behandelt leeren Text wie keinen Text. Befund: nach Zwischenspeichern und Verwerfen bleiben im Reiselogbuch die Zeitstempel des Abgleichs
+  (`dayAt`, `metaAt`, `changedAt`, `changedOn`) auf ‚geändert‘ stehen, obwohl der Inhalt wieder wie beim Öffnen ist – Vermutung: ein Abgleich
+  könnte dadurch den alten Stand für neuer halten als eine echte Änderung am anderen Gerät; nicht geändert, Vorschlag fürs Backlog.
+
 ## 4.51.0 – 05.11.2026
 
 AppDesign 4.51.0 · Designrichtlinie allgemein 4.51.0 · Zusammenarbeit allgemein 3.7.0 · geprüft mit Reiselogbuch 3.49.0

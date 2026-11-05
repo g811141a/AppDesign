@@ -5,6 +5,7 @@
 // Einbinden im Prüfskript der App (Seite mit sichtbarer Seitenleiste bzw. Startliste):
 //   import { checkContextMenus } from '../../AppDesign/tests/kontextmenue.mjs';
 //   const fehler = await checkContextMenus(page, 'iPhone hoch, 8 Einträge');   // [] = alles richtig
+import { texteMenues } from './hig.mjs';
 export async function checkContextMenus(page, where = '') {
   const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}R-4.2 ${t}`);
   const ids = await page.evaluate(() => { const foot = document.querySelector('#side .side-foot .bhint, #side .side-foot .offl:not([hidden])')?.getBoundingClientRect(), lr = document.querySelector('#side .side-list').getBoundingClientRect(), lt = lr.top, unten = Math.min(innerHeight, lr.bottom);
@@ -32,6 +33,8 @@ export async function checkContextMenus(page, where = '') {
     if (!g.inside) E(`Kontextmenü an Eintrag ${id} nicht ganz auf dem Bildschirm`);
     if (g.overTile) E(`Kontextmenü an Eintrag ${id} reicht über bzw. hinter die Backup-Kachel`);
     if (!g.rowVisible) E(`Eintrag ${id} nach dem Öffnen des Menüs nicht mehr sichtbar`);
+    // seit 4.52.0 (R-4.10, APD-40/B-3, B-4): Texte, Gruppen und gesperrte Punkte jedes Kontextmenüs
+    for (const x of await page.evaluate(texteMenues)) errors.push(`${where ? where + ': ' : ''}${x} (Eintrag ${id})`);
     await page.mouse.click(5, 5); await page.waitForTimeout(250);
   }
   return errors;

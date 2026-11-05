@@ -3144,3 +3144,112 @@ export async function checkSafariKlick(p, { where = '' } = {}) {
   }
   return errors;
 }
+
+// APD-40 Paket B und C (seit 4.52.0, Testfall-Liste arbeit/APD-40 Paket B.md B-5 und Paket C.md C-1 bis C-6): Abläufe, die bisher Sicht bzw. nur
+// Abläufe der App waren (G-4, G-7, G-13). Allgemein für jede App – die App nennt ihre Menüknöpfe, Erfassungsfenster und ihren Speicher.
+const speicher = (p, key) => p.evaluate(k => localStorage.getItem(k), key);
+const dlgOffen = p => p.evaluate(() => !!document.querySelector('dialog#dlg[open]'));
+const dlgZu = p => p.evaluate(() => { const d = document.getElementById('dlg'); if (d?.open) d.close(); document.querySelectorAll('.pop, .menu').forEach(x => x.remove()); });
+
+// R-4.11 Menüpunkt und Fenster heißen gleich (APD-40/B-5): jeden Menüpunkt (ohne Untermenü, nicht rot, nicht in ohne) antippen; öffnet er ein
+// Fenster, ist der Fenstertitel der Text des Menüpunkts. menues: Selektoren der Menüknöpfe; ohne: Texte von Punkten, die nichts öffnen sollen
+// (Teilen, Herunterladen, Seitenwechsel).
+export async function checkMenueFenster(p, { menues = ['#mainMore'], ohne = [], where = '' } = {}) {
+  const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}R-4.11 ${t}`);
+  try {
+  const text = mi => mi.evaluate(e => { const c = e.cloneNode(true); c.querySelectorAll('.val, .tick').forEach(x => x.remove()); return c.textContent.replace(/\s+/g, ' ').trim(); });
+  for (const knopf of menues) {
+    await p.click(knopf); await wait(p, 200);
+    const n = await p.locator('.menu:not(.submenu) .mi').count();
+    const namen = []; for (let i = 0; i < n; i++) namen.push(await text(p.locator('.menu:not(.submenu) .mi').nth(i)));
+    await p.keyboard.press('Escape'); await wait(p, 200);
+    for (let i = 0; i < n; i++) {
+      if (ohne.some(o => namen[i].includes(o))) continue;
+      await p.click(knopf); await wait(p, 200);
+      const mi = p.locator('.menu:not(.submenu) .mi').nth(i);
+      if (await mi.evaluate(e => e.classList.contains('red') || e.hasAttribute('aria-haspopup') || e.disabled)) { await p.keyboard.press('Escape'); await wait(p, 200); continue; }
+      await mi.click(); await wait(p, 450); await navFertig(p);
+      if (await dlgOffen(p)) {
+        const titel = await p.evaluate(() => document.querySelector('dialog#dlg[open] .dlg-head h3')?.textContent.replace(/\s+/g, ' ').trim() || '');
+        if (titel !== namen[i]) E(`Menüpunkt ‚${namen[i]}‘ (${knopf}) öffnet ein Fenster, das ‚${titel}‘ heißt`);
+      }
+      await dlgZu(p); if (await p.locator('.menu').count()) await p.keyboard.press('Escape'); await wait(p, 250);
+    }
+  }
+  } catch (e) { E(`Ablauf bricht ab: ${e.message.split('\n')[0]}`); await dlgZu(p).catch(() => {}); }   // Meldungen davor bleiben
+  return errors;
+}
+
+// R-5.10 Automatisch speichern (APD-40/C-1 bis C-4): open öffnet ein Erfassungsfenster, field ist ein Textfeld darin, key der Speicher der App
+// (localStorage). Die Uhr der Seite wird vorgestellt (page.clock) – deshalb auf einer eigenen Seite aufrufen, vor dem Öffnen.
+// ohne: Schlüssel, die beim Vergleich mit dem Stand beim Öffnen nicht zählen (Zeitstempel des Abgleichs, die kein Inhalt sind).
+export async function checkAutoSpeichern(p, { open, field, key, ohne = [], where = '' } = {}) {
+  const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}R-5.10 ${t}`);
+  try {
+  const marke = 'Zwischenspeicher' + Date.now().toString(36), schreibe = async () => { await p.locator(field).click(); await p.keyboard.type(' ' + marke); await wait(p, 150); };
+  await p.clock.install();
+  // C-1: nach 10 s gesichert, das Fenster bleibt offen
+  const s0 = await speicher(p, key);
+  await open(); await wait(p, 400); await navFertig(p); await schreibe();
+  await p.clock.fastForward(10500); await wait(p, 100);
+  if (!(await speicher(p, key) || '').includes(marke)) E('Eingabe nach 10 s nicht gesichert (Zwischenspeichern)');
+  if (!await dlgOffen(p)) E('Fenster nach dem Zwischenspeichern zu');
+  // C-2: x → ‚Änderungen verwerfen‘ stellt den Stand beim Öffnen wieder her
+  await p.click('#dlgX'); await wait(p, 250);
+  const verwerfen = p.locator('.pop button', { hasText: 'Änderungen verwerfen' });
+  if (await verwerfen.count()) { await verwerfen.click(); await wait(p, 300); } else { E('x nach einer Änderung fragt nicht ‚Änderungen verwerfen‘'); await dlgZu(p); }
+  const s1 = await speicher(p, key);
+  if ((s1 || '').includes(marke)) E('nach ‚Änderungen verwerfen‘ ist der Speicher nicht wie beim Öffnen (Eingabe noch gesichert)');
+  else { const ab = x => JSON.stringify(JSON.parse(x || 'null'), (k, v) => ohne.includes(k) || v === '' ? undefined : v);   // leerer Text = kein Text
+    if (ab(s1) !== ab(s0)) E('nach ‚Änderungen verwerfen‘ ist der Speicher nicht wie beim Öffnen'); }
+  // C-3: Zwischenspeichern, dann Häkchen – die Eingabe steht genau einmal im Speicher
+  await open(); await wait(p, 400); await navFertig(p); await schreibe();
+  await p.clock.fastForward(10500); await wait(p, 100);
+  await p.click('#dlgOk'); await wait(p, 300);
+  const s2 = await speicher(p, key) || '', mal = s2.split(marke).length - 1;
+  if (mal !== 1) E(`nach Zwischenspeichern und Häkchen steht die Eingabe ${mal}-mal im Speicher statt einmal`);
+  // C-4: ohne offenes Fenster speichert nichts mehr nach
+  await p.clock.fastForward(60000); await wait(p, 100);
+  if (await speicher(p, key) !== s2) E('der Zeitgeber speichert nach dem Schließen weiter');
+  } catch (e) { E(`Ablauf bricht ab: ${e.message.split('\n')[0]}`); await dlgZu(p).catch(() => {}); }   // Meldungen davor bleiben
+  return errors;
+}
+
+// R-4.12 Erst fragen, dann zerstören (APD-40/C-5, C-6): in jedem Zustand (zustaende: [{ name, open }]) jeden roten Menüpunkt der offenen
+// Menüs (menues: Selektoren bzw. Funktionen, die ein Menü öffnen) und jede sichtbare Schaltfläche mit ‚löschen‘, ‚entfernen‘, ‚ersetzen‘,
+// ‚zurücksetzen‘ oder ‚wiederherstellen‘ (Text bzw. aria-label, Entscheidung APD-40/C-F1) antippen: zuerst die Sprechblase mit roter Schaltfläche und
+// ‚Abbrechen‘, der Speicher bleibt; ‚Abbrechen‘ lässt alles, wie es war (verglichen wird der ganze localStorage).
+export async function checkErstFragen(p, { menues = [], zustaende = [], key, where = '' } = {}) {
+  const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}R-4.12 ${t}`);
+  try {
+  const alles = () => p.evaluate(() => JSON.stringify(Object.keys(localStorage).sort().map(k => [k, localStorage.getItem(k)])));
+  const frage = async (was, tippe) => {
+    const s0 = await alles();
+    await tippe(); await wait(p, 350);
+    const pop = await p.evaluate(() => { const q = document.querySelector('.pop'); if (!q) return null;
+      const b = [...q.querySelectorAll('button')]; return { rot: b.some(x => /danger/.test(x.className)), abbrechen: b.some(x => x.textContent.trim() === 'Abbrechen') }; });
+    if (!pop) { E(`‚${was}‘ ohne Sprechblase`); if (await alles() !== s0) E(`‚${was}‘ ändert den Speicher ohne Rückfrage`); await dlgZu(p); return; }
+    if (!pop.rot || !pop.abbrechen) E(`‚${was}‘: Sprechblase ohne rote Schaltfläche bzw. ohne ‚Abbrechen‘`);
+    if (await alles() !== s0) E(`‚${was}‘ ändert den Speicher vor der Bestätigung`);
+    await p.locator('.pop button', { hasText: 'Abbrechen' }).click(); await wait(p, 350);
+    if (await alles() !== s0) E(`‚${was}‘: ‚Abbrechen‘ ändert den Speicher`);
+  };
+  for (const m of menues) {
+    const auf = typeof m === 'function' ? m : async () => { await p.click(m); await wait(p, 200); };
+    await auf();
+    const rote = await p.locator('.menu .mi.red').allTextContents();
+    await p.keyboard.press('Escape'); await wait(p, 200); await dlgZu(p);
+    for (let i = 0; i < rote.length; i++) await frage(rote[i].trim(), async () => { await auf(); await p.locator('.menu .mi.red').nth(i).click(); });
+    await dlgZu(p); await wait(p, 200);
+  }
+  const zerst = /(löschen|entfernen|ersetzen|zurücksetzen|wiederherstellen)/i;
+  for (const z of zustaende) {
+    await z.open(); await wait(p, 400); await navFertig(p);
+    const ids = await p.evaluate(re => [...document.querySelectorAll('button')].filter(b => { const r = b.getBoundingClientRect(); return r.width && r.height && !b.closest('.pop, .menu')
+      && new RegExp(re, 'i').test((b.getAttribute('aria-label') || '') + ' ' + b.textContent); }).map((b, i) => { b.dataset.erstFragen = i; return [i, (b.getAttribute('aria-label') || b.textContent).trim()]; }), zerst.source);
+    for (const [i, name] of ids) await frage(`${name} (${z.name})`, () => p.click(`[data-erst-fragen="${i}"]`));
+    await dlgZu(p); await wait(p, 200);
+  }
+  } catch (e) { E(`Ablauf bricht ab: ${e.message.split('\n')[0]}`); await dlgZu(p).catch(() => {}); }   // Meldungen davor bleiben
+  return errors;
+}

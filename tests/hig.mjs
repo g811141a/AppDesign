@@ -122,6 +122,73 @@ export function masseStile() {
   return out;
 }
 
+// APD-40 Paket B (seit 4.52.0, Testfall-Liste arbeit/APD-40 Paket B.md, APD-40/B-1 bis B-4, B-6 bis B-8): Texte, die bisher nur Sicht waren
+// (G-12, Teile von G-19). Läuft in der Seite (p.evaluate(texteMenues)) nach jedem Schritt in measure und in jedem Kontextmenü (kontextmenue.mjs);
+// Gegenproben: lauf.mjs --gegenprobe masse (GEGENPROBEN_MASSE in pruefe.mjs). Jede Meldung beginnt mit der Regelnummer. Geprüft werden nur Texte
+// der App – keine Feldinhalte und keine Reisetexte (Tabelle, Kästen, Ausgabe).
+export function texteMenues() {
+  const out = [], R = (nr, t) => out.push(`${nr} ${t}`), cs = e => getComputedStyle(e);
+  const vis = e => { const s = cs(e), b = e.getBoundingClientRect(); return b.width > 0 && b.height > 0 && s.visibility !== 'hidden' && s.display !== 'none'; };
+  const kurz = t => t.replace(/\s+/g, ' ').trim().slice(0, 40);
+  const miText = mi => { const c = mi.cloneNode(true); c.querySelectorAll('.val, .tick').forEach(x => x.remove()); return c.textContent.replace(/\s+/g, ' ').trim(); };
+  const hatIcon = mi => [...mi.children].some(x => x.matches('svg.ic:not(.chev)'));
+  // R-4.10 Menütexte: kein ‚…‘ am Ende; in einer Gruppe alle Punkte mit Icon oder keiner; Kontextmenü höchstens 3 Gruppen, ohne gesperrte Punkte
+  document.querySelectorAll('.menu').forEach(m => {
+    if (!vis(m)) return;
+    const art = m.classList.contains('kontext') ? 'Kontextmenü' : m.classList.contains('submenu') ? 'Untermenü' : 'Menü';
+    const gruppen = [[]];
+    for (const x of m.children) { if (x.matches('.sep, .line')) gruppen.push([]); else if (x.matches('.mi') && vis(x)) gruppen.at(-1).push(x); }
+    const voll = gruppen.filter(g => g.length);
+    voll.flat().forEach(mi => { if (/(…|\.\.\.)$/.test(miText(mi))) R('R-4.10', `${art}: Punkt ‚${kurz(miText(mi))}‘ endet auf ‚…‘`); });
+    voll.forEach(g => { const n = g.filter(hatIcon).length; if (n && n < g.length) R('R-4.10', `${art}: Gruppe ‚${kurz(miText(g[0]))}‘ … – ${n} von ${g.length} Punkten mit Icon (alle oder keiner)`); });
+    if (art === 'Kontextmenü') {
+      if (voll.length > 3) R('R-4.10', `Kontextmenü mit ${voll.length} Gruppen statt höchstens 3`);
+      voll.flat().forEach(mi => { if (mi.disabled || mi.getAttribute('aria-disabled') === 'true') R('R-4.10', `Kontextmenü zeigt den gesperrten Punkt ‚${kurz(miText(mi))}‘ (ausblenden statt grau)`); });
+    }
+  });
+  // R-10.6 Ansprache: ohne ‚wir/uns/unser‘, ohne ‚klicken‘ – Schaltflächen, Beschriftungen, Menüs, Sprechblasen, Meldungen, Fenster-Kopfzeilen,
+  // Hinweise und die Attribute placeholder, aria-label, title (nicht in Tabellen, Kästen und der Ausgabe – dort stehen die Texte des Nutzers)
+  const fremd = e => e.closest('.rt, table, .days, [data-day], [data-keep], .side-row, .hl, #printout');
+  const wort = /(^|[^\p{L}])(wir|uns|unser\p{L}*|klick\p{L}*)(?=$|[^\p{L}])/iu;
+  const texte = [];
+  document.querySelectorAll('button, label, .menu, .pop, #msg[open], dialog[open] .dlg-head, .leer, .note, .sub, .hint, .bhint, small').forEach(e => { if (vis(e) && !fremd(e)) texte.push(e.textContent); });
+  document.querySelectorAll('[placeholder], [aria-label], [title]').forEach(e => { if (fremd(e)) return; for (const a of ['placeholder', 'aria-label', 'title']) if (e.hasAttribute(a)) texte.push(e.getAttribute(a)); });
+  for (const t of texte) { const m = t.match(wort); if (m) { R('R-10.6', `Text mit ‚${m[2]}‘: ‚${kurz(t)}‘`); break; } }
+  // R-10.7 Datum und Dateinamen: Datum in Texten TT.MM.JJJJ (kein JJJJ-MM-TT, keine einstellige Tages- oder Monatszahl mit Jahr), Uhrzeit hh:mm;
+  // jeder angezeigte ‚Dateiname: …‘ nach dem Muster der Ausgabe (Designrichtlinie 10)
+  const sicht = document.body.innerText;
+  const iso = sicht.match(/(^|[^\d.])(\d{4}-\d\d-\d\d)(?![\d])/), kurzDatum = sicht.match(/(^|[^\d.])(\d\.\d{1,2}\.\d{4}|\d{1,2}\.\d\.\d{4})(?![\d])/);
+  const umfeld = m => kurz(sicht.slice(Math.max(0, m.index - 30), m.index + m[0].length + 10));
+  if (iso) R('R-10.7', `Datum ‚${iso[2]}‘ statt TT.MM.JJJJ (in ‚${umfeld(iso)}‘)`);
+  if (kurzDatum) R('R-10.7', `Datum ‚${kurzDatum[2]}‘ statt TT.MM.JJJJ (zweistellig, in ‚${umfeld(kurzDatum)}‘)`);
+  for (const m of sicht.matchAll(/erstellt am (\S+) um (\S+)/g)) if (!/^\d\d\.\d\d\.\d{4}$/.test(m[1]) || !/^\d\d:\d\d$/.test(m[2].replace(/[^\d:]+$/, ''))) R('R-10.7', `‚erstellt am ${m[1]} um ${m[2]}‘ statt TT.MM.JJJJ und hh:mm`);
+  // Dateinamen aus dem Text selbst (innerText fasst Leerzeichen zusammen – zwei Leerzeichen wären dort nicht zu sehen)
+  const namen = new Set(); document.querySelectorAll('.note, .sub, small, .msg-text, p, b, div').forEach(e => { if (!vis(e)) return;
+    for (const n of e.childNodes) if (n.nodeType === 3) for (const m of n.data.matchAll(/Dateiname: ([^\n]+)/g)) namen.add(m[1].trim()); });
+  for (const n of namen) for (const f of dateinameFehler(n)) R('R-10.7', f);
+  return out;
+  // Muster der Dateinamen (Designrichtlinie 10) – auch für Prüfungen außerhalb der Seite (dateinameFehler unten, gleicher Text)
+  function dateinameFehler(n) {
+    const f = [], ende = n.replace(/\.(html|pdf|json)$/, '');
+    if (/ {2}/.test(n)) f.push(`Dateiname ‚${n}‘ mit zwei Leerzeichen`);
+    if (/\d{4}-\d\d-\d\d/.test(n)) f.push(`Dateiname ‚${n}‘ mit Datum JJJJ-MM-TT statt JJJJ.MM.TT`);
+    if (/^Ω Backup /.test(n)) { if (!/^Ω Backup \S.* \d{4}\.\d\d\.\d\d \d\d\.\d\d\.json$/.test(n)) f.push(`Dateiname ‚${n}‘ nicht ‚Ω Backup <App> JJJJ.MM.TT hh.mm.json‘`); }
+    else if (/^Abgleichbericht /.test(n)) { if (!/^Abgleichbericht \S.* \d{4}\.\d\d\.\d\d \d\d\.\d\d\.(html|pdf)$/.test(n)) f.push(`Dateiname ‚${n}‘ nicht ‚Abgleichbericht <App> JJJJ.MM.TT hh.mm.html‘`); }
+    else if (!/^\S+ .+ \d{4}\.\d\d\.\d\d-\d{4}\.\d\d\.\d\d V\d{3}$/.test(ende)) f.push(`Dateiname ‚${n}‘ nicht ‚<App> <Titel> JJJJ.MM.TT-JJJJ.MM.TT V001‘`);
+    return f;
+  }
+}
+// R-10.7 außerhalb der Seite (z. B. geteilte Dateien in backup.mjs): dieselben Muster wie in texteMenues
+export function dateinameFehler(n) {
+  const f = [], ende = n.replace(/\.(html|pdf|json)$/, '');
+  if (/ {2}/.test(n)) f.push(`Dateiname ‚${n}‘ mit zwei Leerzeichen`);
+  if (/\d{4}-\d\d-\d\d/.test(n)) f.push(`Dateiname ‚${n}‘ mit Datum JJJJ-MM-TT statt JJJJ.MM.TT`);
+  if (/^Ω Backup /.test(n)) { if (!/^Ω Backup \S.* \d{4}\.\d\d\.\d\d \d\d\.\d\d\.json$/.test(n)) f.push(`Dateiname ‚${n}‘ nicht ‚Ω Backup <App> JJJJ.MM.TT hh.mm.json‘`); }
+  else if (/^Abgleichbericht /.test(n)) { if (!/^Abgleichbericht \S.* \d{4}\.\d\d\.\d\d \d\d\.\d\d\.(html|pdf)$/.test(n)) f.push(`Dateiname ‚${n}‘ nicht ‚Abgleichbericht <App> JJJJ.MM.TT hh.mm.html‘`); }
+  else if (!/^\S+ .+ \d{4}\.\d\d\.\d\d-\d{4}\.\d\d\.\d\d V\d{3}$/.test(ende)) f.push(`Dateiname ‚${n}‘ nicht ‚<App> <Titel> JJJJ.MM.TT-JJJJ.MM.TT V001‘`);
+  return f.map(x => 'R-10.7 ' + x);
+}
+
 export function createCheck({ skipTargets = [] } = {}) {
 const found = new Map(), icons = new Map();
   let rotating = false;
@@ -685,6 +752,7 @@ const found = new Map(), icons = new Map();
     for (const x of await p.evaluate(bezeichnungen)) note('Regel', `R-5.8 ${x}`, where);
     for (const x of await p.evaluate(kastenBezeichnung)) note('Regel', `R-6.5 ${x}`, where);
     for (const x of await p.evaluate(masseStile)) note('Regel', x, where);   // APD-40 Paket A: R-1.11, R-3.7, R-3.8, R-4.8, R-4.9, R-5.9, R-6.7
+    for (const x of await p.evaluate(texteMenues)) note('Regel', x, where);  // APD-40 Paket B: R-4.10, R-10.6, R-10.7
     if (schnell) return;
     await safe(p, where);
     // R-8.1 automatisch: einmal je Seite, wenn eine Seitenleiste da ist und nichts darüber offen ist (nur iPad).

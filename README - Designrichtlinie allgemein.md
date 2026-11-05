@@ -1,6 +1,6 @@
 # Designrichtlinie allgemein
 
-**Version 4.51.0** · Stand 05.11.2026
+**Version 4.52.0** · Stand 05.11.2026
 
 Allgemeine Gestaltungs- und Bedienregeln für alle Web-Apps von g811141a auf iPad und iPhone. Die Datei liegt im Design-Repo
 **AppDesign** (g811141a/AppDesign); ihre Versionsnummer ist die des Repos. Die Komponenten sind dort einmal programmiert und
@@ -239,7 +239,7 @@ Body = Grundgröße der Stufe (14 … 53). Zeilenabstände und Werte wörtlich a
   „Weiter bearbeiten“ (die Eingaben bleiben dann erhalten) – so macht es auch Apple (z. B. Kontakte). R-4.4, 15.8.
 - Bestätigungen immer mit dem Verb der Aktion: „Löschen“, „Entfernen“, „Zurücksetzen“, „Ersetzen“, „Änderungen verwerfen“
   (R-4.3).
-- Menüpunkt und Fenster heißen gleich (z. B. „Einstellungen“).
+- Menüpunkt und Fenster heißen gleich (z. B. „Einstellungen“, R-4.11).
 - Systembeschriftungen (z. B. „Reset“ der iPad-Datumsauswahl) bleiben.
 - **Anführungszeichen:** In den Texten der Apps immer **einfache** Anführungszeichen ‚…‘ (z. B. ‚In Dateien sichern‘, Spalte
   ‚Wie war was?‘), **keine doppelten** „…“ (R-10.1).
@@ -328,7 +328,7 @@ Body = Grundgröße der Stufe (14 … 53). Zeilenabstände und Werte wörtlich a
   oder hinter Smileys steht, sonst beginnt eine neue Zeile.
 - **Diktieren** nur über die Mikrofon-Taste der Tastatur (Hinweis im Fenster); keine eigene mic-Schaltfläche – iOS liefert
   Web-Apps vom Home-Bildschirm keine Spracherkennung (R-5.2).
-- **Automatisches Speichern** alle 10 Sekunden in Erfassungsfenstern; „Änderungen verwerfen“ (über x) stellt den Zustand beim
+- **Automatisches Speichern** spätestens 10 Sekunden nach der Änderung in Erfassungsfenstern (R-5.10); „Änderungen verwerfen“ (über x) stellt den Zustand beim
   Öffnen wieder her.
 
 ## 9. Tabellen (App, HTML und PDF)
@@ -367,8 +367,8 @@ Body = Grundgröße der Stufe (14 … 53). Zeilenabstände und Werte wörtlich a
     enthalten), nie zwei Leerzeichen hintereinander.
   - Backup: „Ω Backup <App> JJJJ.MM.TT hh.mm.json“ (ohne Zähler).
   - Abgleichbericht: „Abgleichbericht <App> JJJJ.MM.TT hh.mm.html“.
-- Datumsformat in Texten TT.MM.JJJJ, in Dateinamen JJJJ.MM.TT, Uhrzeit hh:mm (im Dateinamen hh.mm).
-- Sicherheitsabfrage (Sprechblase) vor jeder Lösch-, Ersetz- oder Rücksetz-Aktion.
+- Datumsformat in Texten TT.MM.JJJJ, in Dateinamen JJJJ.MM.TT, Uhrzeit hh:mm (im Dateinamen hh.mm) – R-10.7.
+- Sicherheitsabfrage (Sprechblase) vor jeder Lösch-, Ersetz- oder Rücksetz-Aktion (R-4.12).
 - **Meldung mit Weiterweg:** ein kleines Fenster darf unter dem Text **eine** blaue Schaltfläche haben, die zu den Einzelheiten
   führt (`inform(titel, text, { action: { label, icon, run } })`, z. B. ‚Abgleichbericht anzeigen‘); sie schließt das Fenster und
   öffnet die Einzelheiten. Ohne Einzelheiten keine Schaltfläche (R-4.3).
@@ -1231,6 +1231,9 @@ Testfall (User) in den Usertest, wenn eine Version es betrifft.
 | R-4.6 | **Blatt auf dem iPhone, Fenster am iPad ziehen:** im iPhone-Aufbau (hoch und quer) ist jedes Fenster außer Meldungen ein Blatt ‚nur groß‘ wie ‚Neuer Termin‘ – gleitet von unten bis knapp unter die Statusleiste, oben runde Ecken, die Seite dahinter weicht verkleinert und abgedunkelt zurück (quer volle Höhe, die Seite bleibt); nach unten ziehen schließt wie x – am Kopf immer, im Inhalt, wenn er ganz oben steht, auch kurz und schnell gewischt; waagerecht und im gerollten Inhalt bleibt es; mit Änderungen seit dem Öffnen zieht es sich zäh, federt zurück und fragt am x (R-4.4); ein Zug nach unten schließt zuerst die Tastatur, auch nach einem Stück nach oben – beginnt er auf einem Feld, zieht er im selben Zug das Blatt wie am Kopf (ein Feld, das selbst gerollt ist, rollt weiter), im gerollten Inhalt daneben rollt er weiter; Abdunkelung antippen und Escape wie x; Drehen lässt es offen; ‚Bewegung reduzieren‘: Überblenden, die Seite bleibt groß, nach dem Loslassen steht es sofort am Ziel (R-1.9). Am iPad bleibt das Fenster in der Mitte, gleitet beim Öffnen und Schließen von unten und lässt sich ebenso nach unten ziehen – nur das Fenster fährt mit, die Abdunkelung wird heller, die Seite bleibt, Antippen der Abdunkelung schließt nicht (wie iPadOS); ein offenes Fenster ändert durch Eingaben weder Breite noch Lage, Meldungen brechen in der vorhandenen Breite um | ablauf.mjs – `checkSheet` (iPhone B1–B24, iPad APD-72/D-1 bis APD-72/D-15, APD-72/D-21 Breite und Lage nach einer Eingabe); App-Ablauf Buchstabe für Buchstabe (Reiselogbuch `ablauf-fenster-breite`) | Gerät (Wischgefühl, Tastatur) | 7, 13, 15.17 |
 | R-4.8 | **Fensterbreite:** ein Fenster (außer Meldungen, R-4.3) ist höchstens 90 % der Breite und mindestens 480 px breit (schmaler nur, wenn der Bildschirm es verlangt); Erfassung und Vorschau bis 1100 px | hig.mjs – `masseStile` (jedes Fenster nach jedem Schritt, iPad quer und hoch; im iPhone-Aufbau gilt das Blatt, R-4.6) | – | 7 |
 | R-4.9 | **Menümaße:** Menü 340 px breit, Einträge 46 px hoch; ein Untermenü hat höchstens 5 Einträge | hig.mjs – `masseStile` (jedes offene Menü und Untermenü, nach jedem Schritt der Abläufe) | – | 15.6 |
+| R-4.10 | **Menütexte:** kein ‚…‘ am Ende eines Menüpunkts; in einer Gruppe haben alle Punkte ein Icon oder keiner; ein Kontextmenü hat höchstens 3 Gruppen und zeigt keine gesperrten Punkte (ausblenden statt grau) | hig.mjs – `texteMenues` (jedes offene Menü und Untermenü nach jedem Schritt; jedes Kontextmenü in kontextmenue.mjs) | – | 15.6, 16 |
+| R-4.11 | **Menüpunkt und Fenster heißen gleich:** öffnet ein Menüpunkt ein Fenster, ist der Fenstertitel der Text des Menüpunkts; Systembeschriftungen bleiben | ablauf.mjs – `checkMenueFenster` (jeden Menüpunkt mit Fenster antippen) | – | 6 |
+| R-4.12 | **Erst fragen, dann zerstören:** jede Lösch-, Ersetz- oder Rücksetz-Aktion (roter Menüpunkt, Schaltfläche mit ‚Löschen‘, ‚Entfernen‘, ‚Ersetzen‘, ‚Zurücksetzen‘) zeigt zuerst die Sprechblase (R-4.3); bis zur Bestätigung ändert sich nichts, ‚Abbrechen‘ lässt alles, wie es war | ablauf.mjs – `checkErstFragen` (jede solche Aktion in jeder Ansicht antippen, Speicher vorher und nachher vergleichen; Menüpunkte an `red`, Schaltflächen an ihrem Text bzw. `aria-label`) | – | 10, 16 |
 
 ### 5. Eingaben
 
@@ -1245,6 +1248,7 @@ Testfall (User) in den Usertest, wenn eine Version es betrifft.
 | R-5.7 | **Schalter:** Safaris eingebauter Schalter (`switch`, `role="switch"` – VoiceOver ‚Schalter‘), von Safari gezeichnet in Grün; ohne ihn unser Schalter 51 × 31 | hig.mjs – Attribute, Größe ohne, Systemaussehen und Grün mit eingebautem Schalter (nachgebildet) | Aussehen, Gleiten, Ziehen, Haptik, VoiceOver | 15.15 |
 | R-5.8 | **Bezeichnungen:** Feldbezeichnungen und Einheiten nach einem Feld in normaler Schrift (400) und Textgröße; halbfett nur Überschriften | hig.mjs – `bezeichnungen` nach jedem Schritt (Bezeichnung 400 außer `.step-head label`, `.step > label`; Einheit 400 und so groß wie das Feld) | Sicht | 8 |
 | R-5.9 | **Schalterzeilen und Options-Kapsel:** Schalterzeilen 52 px hoch, Options-Kapsel 44 px hoch mit Schrift 15 px | hig.mjs – `masseStile` (jedes Fenster mit Schaltern bzw. Kapseln) | – | 15.15, 15.16 |
+| R-5.10 | **Automatisch speichern:** ein Erfassungsfenster sichert Eingaben spätestens 10 s nach der Änderung, ohne Häkchen; ‚Änderungen verwerfen‘ (x) stellt danach den Stand beim Öffnen wieder her | ablauf.mjs – `checkAutoSpeichern` (Uhr der Prüfung vorgestellt; die App nennt ihre Erfassungsfenster und ihren Speicher) | – | 8 |
 
 ### 6. Tabellen, Kästen, Ausgabe
 
@@ -1294,6 +1298,8 @@ Testfall (User) in den Usertest, wenn eine Version es betrifft.
 | R-10.3 | **Versionskopplung:** ui.js/design.css aus der festen Fassung `fassung/X.Y.Z/` (index.html, sw.js), Fassungen unverändert (Prüfsummen), `v4/` = neueste Fassung; Versionen stimmen überein, sonst Hinweis beim Start; Versionszeile nennt AppDesign | version.mjs | – | 11, 14 |
 | R-10.4 | **README ‚Verwendete Versionen‘** ganz oben, je Version und Link | doku.mjs – `checkDocs`; Katalog selbst: `checkCatalog` | – | 11 |
 | R-10.5 | **Icon und Text** eines Eintrags bleiben zusammen – Umbruch nur zwischen Einträgen | ablauf.mjs – `checkIconText` (Icon und erstes Wort auf derselben Zeile) | – | 3 |
+| R-10.6 | **Ansprache:** sichtbare Texte ohne ‚wir/uns/unser‘ und ohne ‚klicken‘ (‚tippen‘) | hig.mjs – `texteMenues` (Texte der App, `title`, `aria-label`, Platzhalter) | – | 16 |
+| R-10.7 | **Datum und Dateinamen:** Datum in Texten TT.MM.JJJJ, Uhrzeit hh:mm; Dateinamen nach den Mustern aus 10 (Ausgabe, Backup, Abgleichbericht; Datum JJJJ.MM.TT, Uhrzeit hh.mm, nie zwei Leerzeichen) | hig.mjs – `texteMenues` (Datumsangaben und angezeigte Dateinamen nach jedem Schritt); backup.mjs (`dateinameFehler`) | – | 10 |
 
 ### Regeln ohne automatische Prüfung
 
@@ -1306,22 +1312,22 @@ Diese Gestaltungsregeln stehen an ihrer Stelle in 1–16 und haben (noch) keine 
 | G-1 | ersetzt durch R-3.7 | – | – |
 | G-2 | ersetzt durch R-3.8 | – | – |
 | G-3 | Icon-Zuordnung der Tabelle (gleiche Bezeichnung = gleiches Icon prüft R-10.1) | 5 | Sicht |
-| G-4 | Menüpunkt und Fenster heißen gleich; Systembeschriftungen bleiben | 6 | Sicht |
+| G-4 | ersetzt durch R-4.11 | – | – |
 | G-5 | ersetzt durch R-4.8 | – | – |
 | G-6 | ‚Neues …‘ öffnet einmal von selbst, leere Seite mit grauem Hinweis | 7 | Abläufe der App |
-| G-7 | automatisches Speichern alle 10 s; ‚Änderungen verwerfen‘ stellt den Zustand beim Öffnen her | 8 | Sicht |
+| G-7 | ersetzt durch R-5.10 | – | – |
 | G-8 | Beträge: ‚,00‘ ergänzen, Tausenderpunkt beim Tippen | 8 | Abläufe der App |
 | G-9 | Smiley-Leiste: Häufigkeit, Entfernen, Zurücksetzen, Anhängen in der Zeile | 8, 15.12 | Abläufe der App (teilweise) |
 | G-10 | Statistik als Liste (Rest ersetzt durch R-6.7) | 9 | Sicht |
 | G-11 | Speichern über das Teilen-Menü, ehrliche Meldung über Teilen- und Drucken-Menü | 10 | Gerät |
-| G-12 | Dateinamen-, Datums- und Zeitformat | 10 | teilweise `checkPreview` (R-6.4) |
-| G-13 | Sicherheitsabfrage vor jeder Lösch-, Ersetz- oder Rücksetz-Aktion | 10, 16 | Abläufe der App (Löschen) |
+| G-12 | ersetzt durch R-10.7 | – | – |
+| G-13 | ersetzt durch R-4.12 | – | – |
 | G-14 | Service Worker ‚network first‘; Versionsnummer, Erstellungszeitpunkt und Cache-Name steigen mit jeder Version | 11 | teilweise `offline.mjs`, `version.mjs`; Veröffentlichungs-Skript |
 | G-15 | Emoji-Varianten gleich behandeln (Rest ersetzt durch R-1.11) | 13 | Sicht |
 | G-16 | Filter beim Öffnen und beim Start auf ‚Alle‘ | 15.3 | Abläufe der App |
 | G-17 | ersetzt durch R-4.9 | – | – |
 | G-18 | Info-Icon (Rest ersetzt durch R-5.9) | 15.14 | Sicht |
-| G-19 | HIG ‚außerdem‘: Farbe nie einziges Merkmal; kein ‚…‘ am Menüende, Icons einer Gruppe alle oder keine; im Kontextmenü Unverfügbares ausblenden, höchstens etwa 3 Gruppen; Texte ohne ‚wir‘, ‚tippen‘ statt ‚klicken‘, ein leerer Bildschirm nennt den nächsten Schritt | 16 | Sicht |
+| G-19 | HIG ‚außerdem‘: Farbe nie einziges Merkmal; ein leerer Bildschirm nennt den nächsten Schritt (Rest ersetzt durch R-4.10 und R-10.6) | 16 | Sicht |
 
 **Aus dem Katalog genommen:** R-50 (Testfälle mit /0, Meldung je Gerät) ist Arbeitsregel der Zusammenarbeit (2.3); Prüfung
 `doku.mjs`.
@@ -1354,6 +1360,7 @@ R-2.3 (15.2), R-4.4 (6, 15.8, HIG 9), R-5.3 (8), R-5.4 (15.12), R-5.5 (APD-14), 
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 4.52.0 | 05.11.2026 | Neben | **APD-40 Pakete B und C (Nutzer 05.11.2026, Sitzung 0081, Wortlaut bestätigt):** Regelkatalog 17 – neu R-4.10 ‚Menütexte‘ (Kontextmenü streng höchstens 3 Gruppen), R-4.11 ‚Menüpunkt und Fenster heißen gleich‘, R-4.12 ‚Erst fragen, dann zerstören‘, R-5.10 ‚Automatisch speichern‘ (spätestens 10 s nach der Änderung statt alle 10 s), R-10.6 ‚Ansprache‘, R-10.7 ‚Datum und Dateinamen‘; G-4, G-7, G-12, G-13 ersetzt, G-19 gekürzt; Verweise in 6, 8 und 10; Prüfungen `texteMenues` (hig.mjs, kontextmenue.mjs), `dateinameFehler`, `checkMenueFenster`, `checkAutoSpeichern`, `checkErstFragen` (ablauf.mjs), Gegenproben `--gegenprobe masse` |
 | 4.51.0 | 05.11.2026 | Neben | **APD-40 Paket A (Nutzer 03.11.2026, Sitzung 0078, Wortlaut bestätigt):** Regelkatalog 17 – neu R-1.11 ‚Verborgen heißt unsichtbar‘, R-3.7 ‚Keine Hover-Farbe‘, R-3.8 ‚Gesperrt und Abbrechen‘, R-4.8 ‚Fensterbreite‘, R-4.9 ‚Menümaße‘ (Untermenü höchstens 5 statt ‚etwa 5‘), R-5.9 ‚Schalterzeilen und Options-Kapsel‘, R-6.7 ‚Tabelle‘, alle mit automatischer Prüfung `masseStile` (hig.mjs, Testfall-Liste APD-40/A-1 bis APD-40/A-10); G-1, G-2, G-5, G-17 ersetzt, G-10, G-15, G-18 auf den Rest gekürzt |
 | 4.50.1 | 03.11.2026 | Korrektur | **APD-111 (Usertest P-92/4 und P-92/5 nicht ok, Nutzer 03.11.2026, Sitzung 0078, Wortlaut bestätigt):** 15.23 ‚Aufbau‘ – Symbol 36 pt und Titel 17 pt halbfett überall gleich groß (im Inhalt, in der Startliste und in der Seitenleiste; vorher im Inhalt 52 pt und 22 pt fett), in der Seitenleiste nur kleinere Abstände; Katalog R-7.7 ergänzt (Prüfung `hig.mjs` misst Symbol und Titel in jeder Ansicht). **APD-112** (R-1.8 unverändert): ui.js gibt den Fokus nach dem Schließen eines Fensters, Blatts bzw. einer Meldung an den öffnenden Knopf zurück (Prüfung `checkFokusZurueck`). **APD-85 Teil 5** (Werkzeug): feste Pausen in `offline.mjs` durch `warteBis` ersetzt |
 | 4.50.0 | 02.11.2026 | Neben | **APD-30 leere Zustände (Muster Variante A, Nutzer 02.11.2026, Sitzung 0076, Wortlaut bestätigt):** neu 15.23 ‚Leerer Zustand‘ (`leerHtml`, `.leer`) und Katalog R-7.7 (Prüfung `hig.mjs`); Abschnitt 7 – nach x bleibt die leere Seite mit dem leeren Zustand. **APD-108 (Nutzer 02.11.2026, Sitzung 0075, Wortlaut bestätigt):** 13 neu ‚Klick nach dem Wischen‘ – Safari schickt den Klick 1–4 ms nach dem Loslassen; die Sperre ‚Wischen tippt nie an‘ gilt bis zum Loslassen plus 400 ms für genau einen Klick und zählt den größten Weg. **APD-85 Teil 4** (Werkzeug): R-3.1 erkennt Schalter an `[switch]`/`role="switch"` |

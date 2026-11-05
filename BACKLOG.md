@@ -1,6 +1,6 @@
 # AppDesign – Backlog (allgemeine Themen)
 
-**Stand 05.11.2026** · Aktuelle Version: AppDesign 4.51.0
+**Stand 05.11.2026** · Aktuelle Version: AppDesign 4.52.0
 
 Allgemeine Themen, die alle Apps betreffen. App-Themen stehen im Backlog der jeweiligen App.
 Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.4.
@@ -11,9 +11,8 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Prio | Thema | bereit seit |
 |---|---|---|---|
-| APD-40 | 3 | **Pakete B und C – Texte und Abläufe automatisch prüfen** (Wortlaut bestätigt, Nutzer 05.11.2026, Sitzung 0081): **B** neu R-4.10, R-4.11, R-10.6, R-10.7 statt G-4, G-12 und Teilen von G-19, Kontextmenü streng höchstens 3 Gruppen, Testfall-Liste APD-40/B-1 bis B-9 (`arbeit/APD-40 Paket B.md`); **C** neu R-5.10, R-4.12 statt G-7, G-13, zerstörende Schaltflächen an ihrem Text erkannt, Menüpunkte an `red` (APD-40/C-F1), Testfall-Liste APD-40/C-1 bis C-7 (`arbeit/APD-40 Paket C.md`) | 05.11.2026 |
 
-1 Punkt bereit (APD-40 Pakete B und C, ein Thema).
+0 Punkte bereit.
 
 
 ## 1. Auf iPad und iPhone prüfen
@@ -55,6 +54,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 ## Erledigt
 
 | Nr. | Thema | Version | Datum |
+| APD-40 | **Pakete B und C – Texte und Abläufe automatisch prüfen:** R-4.10, R-4.11, R-4.12, R-5.10, R-10.6, R-10.7 statt G-4, G-7, G-12, G-13 und Teilen von G-19; Prüfungen `texteMenues`, `dateinameFehler` (hig.mjs, kontextmenue.mjs, backup.mjs), `checkMenueFenster`, `checkAutoSpeichern`, `checkErstFragen` (ablauf.mjs), Gegenproben APD-40/B-1 bis B-8, C-1, C-2, C-5, C-6 (Usertest P-95; **APD-40 damit abgeschlossen** – Paket D bleibt Sicht) | 4.52.0 | 05.11.2026 |
 | P-94 | Geprüft **P-94 (Reiselogbuch 3.49.0): alles ok** (Nutzer 05.11.2026, Sitzung 0081) – APD-40 Paket A am Gerät bestätigt (Kopf der Quartierliste haftet, R-6.7; gesperrte Knöpfe in Gruppen 40 %, R-3.8) | 4.51.0 | 05.11.2026 |
 | APD-114 | **Kontext in der Bau-Frage, ein Fenster je Antwort (Zusammenarbeit 3.7.0, Wortlaut bestätigt 05.11.2026):** 0 Nr. 21 ‚Soll ich Version … erstellen? (Kontext N)‘, Kasten Punkt 9, 2.8; Regelwächter APD-84/W-16 und W-17, Prüfung APD-114/B-1 bis B-12 und B-14 (`tests/regelwaechter.mjs`, Gegenprobe) | 4.51.0 | 05.11.2026 |
 | APD-40 | **Paket A – Maße und Stile automatisch prüfen:** R-1.11, R-3.7, R-3.8, R-4.8 (außer Meldungen), R-4.9, R-5.9, R-6.7 statt G-1, G-2, G-5, G-17 und Teilen von G-10, G-15, G-18; Prüfung `masseStile` (APD-40/A-1 bis APD-40/A-10, Gegenprobe `--gegenprobe masse`); `design.css` gesperrt in Gruppen 40 % (Usertest P-94; Pakete B und C offen) | 4.51.0 | 05.11.2026 |
