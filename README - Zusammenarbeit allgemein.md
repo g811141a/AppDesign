@@ -1,6 +1,6 @@
 # Zusammenarbeit allgemein
 
-**Version 3.6.0** · Stand 02.11.2026
+**Version 3.7.0** · Stand 05.11.2026
 
 Regeln für die Zusammenarbeit mit Claude bei allen iPad-Web-Apps von g811141a. Die Datei liegt im Design-Repo **AppDesign**
 (g811141a/AppDesign); App-Eigenes steht in der `CLAUDE.md` des App-Repos. **Abschnitt 0 ist das Arbeitsmodell** (oben der Kasten ‚Immer‘ und ‚Jede
@@ -30,7 +30,8 @@ Antwort‘), Abschnitt 1 die Sprache, Abschnitt 2 die Einzelheiten und Formate. 
 > 7. Ganz am Ende, nach dem Fenster: die Zeitzeile von `messung.mjs`, unverändert (2.2). **W**
 > 8. Meldet der Regelwächter ‚⚠ Modell‘, steht es in der Antwort (2.5); steht ‚⚠ Übergabe fällig‘ in der Zeitzeile: nach dem
 >    laufenden Schritt übergeben (Nr. 13).
-> 9. Vor **jedem Auswahlfenster**: der Kontextstand als Satz mit ‚Kontext N‘ aus `messung.mjs`, abgelesen (Nr. 28). **W**
+> 9. Vor **jedem Auswahlfenster**: der Kontextstand als Satz mit ‚Kontext N‘ aus `messung.mjs`, abgelesen (Nr. 28); bei der Bau-Frage
+>    zusätzlich in der Frage selbst (Nr. 21). **W**
 
 Ziel: nichts vergessen, Fehler finden, bevor der Nutzer sie findet, schnell und sparsam arbeiten. Die Nummern bleiben fest
 (Verweise in Code und Changelogs), neue Punkte bekommen die nächste freie Nummer. Einzelheiten und Formate: Abschnitt 2.
@@ -39,7 +40,8 @@ Ziel: nichts vergessen, Fehler finden, bevor der Nutzer sie findet, schnell und 
 
 21. **Nie ohne ‚Ja‘ bauen:** Claude entscheidet nie selbst, eine Version zu bauen oder hochzuladen – auch nicht bei kleinen
     Korrekturen oder wenn die Bitte ‚korrigieren‘, ‚verbessern‘, ‚ausbessern‘ lautet. Vorher immer ‚Soll ich Version X.Y.Z mit …
-    erstellen? Ja/Nein‘ (Kontextstand davor: Nr. 28). Gebaut wird erst nach einem
+    erstellen? (Kontext N) Ja/Nein‘ – der Kontextstand aus `messung.mjs` steht **in der Frage selbst** und davor im Chat (Nr. 28).
+    Gebaut wird erst nach einem
     ausdrücklichen ‚Ja‘ (eine Bitte um Korrektur ist keins). Bis dahin:
     erklären, Vorschlag machen, ins Backlog eintragen. Prüfung: Selbstkontrolle.
 22. **Erst prüfen, dann Neues:** Nach jeder Version werden alle Testfälle (User) des Usertests geprüft und gefundene Fehler beseitigt, bevor Neues
@@ -370,7 +372,8 @@ Rohdaten durch Claude, damit keine falsche Anzeige in die Irre führt.
   wenn die Ausgabe davor keinen Satz mit ‚Kontext N‘ aus `messung.mjs` enthält; steht diese Ausgabe (noch) nicht wörtlich in der
   Sitzungsdatei, lehnt er ab, wenn seit der vorigen Nachricht bzw. dem vorigen Fenster `messung.mjs` keinen Kontext gemeldet hat.
   Enthält das Fenster einen Link zum Prüfen am Gerät, lehnt er ab, wenn die Ausgabe davor nicht denselben Link und nummerierte
-  Schritte mit ‚Erwartet: …‘ enthält.
+  Schritte mit ‚Erwartet: …‘ enthält. Er lehnt eine Bau-Frage (‚Soll ich Version …‘) ohne ‚Kontext N‘ im Fragetext ab, ebenso ein
+  zweites Fenster in derselben Antwort.
 - **Am Ende jeder Antwort:** prüft die Antwort in der Sitzungsdatei – jede Ausgabe beginnt mit der Uhrzeitzeile und ihre Uhrzeit
   ist abgelesen (± 1 min um ihren Anlass), der Zeitabstand passt, die Antwort hat ein Fenster (außer der Übergabe), die Zeitzeile
   steht ganz am Ende nach dem letzten Fenster und kommt unverändert aus `messung.mjs`. Fehlt etwas, lässt er die Antwort nicht enden
@@ -408,6 +411,7 @@ im Verlauf und in Kommentaren der Prüfungen nennen noch die alten Stellen):
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 3.7.0 | 05.11.2026 | Neben | **APD-114 (Nutzer 05.11.2026, Sitzung 0080, Wortlaut bestätigt):** 0 Nr. 21 – ‚Soll ich Version X.Y.Z mit … erstellen? (Kontext N) Ja/Nein‘, der Kontextstand steht in der Frage selbst und davor im Chat; Kasten ‚Jede Antwort‘ Punkt 9 ergänzt; 2.8 ‚Vor jedem Auswahlfenster‘ – der Regelwächter lehnt eine Bau-Frage ohne ‚Kontext N‘ im Fragetext (APD-84/W-16) und ein zweites Fenster in derselben Antwort (APD-84/W-17) ab. Anlass: in 0080 stand der Satz mit dem Kontext vor der Bau-Frage, aber als drittes von vier Fenstern einer Antwort – er kam nicht an |
 | 3.6.0 | 02.11.2026 | Neben | **APD-110 (Nutzer 02.11.2026, Sitzung 0076, Wortlaut bestätigt):** Kasten ‚Jede Antwort‘ Punkt 4 – bei jedem Bericht und jeder Bitte, am Gerät zu prüfen, im Chat der vollständige Link und nummerierte Schritte mit ‚Erwartet: …‘ unmittelbar vor dem Fenster, nie nur im Fenster (jetzt **W**); 2.8 ‚Vor jedem Auswahlfenster‘ – ein Fenster mit Link ohne denselben Link und Schritte davor lehnt der Regelwächter ab (APD-84/W-15). Anlass: in 0076 standen Link und Schritte zum Muster APD-30 nur im Fenster |
 | 3.5.0 | 31.10.2026 | Neben | **APD-103 (Nutzer 31.10.2026, Sitzungen 0065 und 0067, Wortlaut bestätigt):** 2.8 ‚Vor jedem Auswahlfenster‘ – ist die Ausgabe davor (noch) nicht wörtlich in der Sitzungsdatei, lehnt der Regelwächter ab, wenn seit der vorigen Nachricht bzw. dem vorigen Fenster `messung.mjs` keinen Kontext gemeldet hat (Rückfall statt Durchlassen, APD-103/D-1 bis D-9); 2.8 ‚Grenze‘ – Uhrzeitzeile und Satz ‚Kontext N‘ bleiben dort Selbstkontrolle |
 | 3.4.0 | 31.10.2026 | Neben | **APD-99 (Nutzer 31.10.2026, Sitzungen 0060 und 0062, Wortlaut bestätigt):** der Kontextstand als Satz mit ‚Kontext N‘ aus `messung.mjs` vor **jedem** Auswahlfenster – Kasten ‚Jede Antwort‘ Punkt 9 (jetzt **W**), 0 Nr. 28, 0 Nr. 21 verweist darauf; 2.8 der Regelwächter lehnt ein Fenster ohne diesen Satz ab (APD-84/W-14) |

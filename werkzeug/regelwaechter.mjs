@@ -1,4 +1,4 @@
-// AppDesign 4.50.0 · Regelwächter (APD-84/M-3, Testfall-Liste arbeit/APD-84 APD-83 Testfall-Liste.md APD-84/W-1 bis W-13; Zusammenarbeit
+// AppDesign 4.51.0 · Regelwächter (APD-84/M-3, Testfall-Liste arbeit/APD-84 APD-83 Testfall-Liste.md APD-84/W-1 bis W-13; Zusammenarbeit
 // allgemein 0, Kasten ‚Jede Antwort‘). Läuft als Hook von Claude Code – eingerichtet einmal über das Setup-Skript der Umgebung, den Text
 // gibt `node werkzeug/regelwaechter.mjs setup` aus. Befehle (das JSON des Hooks kommt auf stdin, `transcript_path` = Sitzungsdatei):
 //   uhrzeit  UserPromptSubmit und PostToolUse: gibt Claude die abgelesene Uhrzeitzeile für die nächste Ausgabe (0 Nr. 26 – nie schätzen)
@@ -6,8 +6,10 @@
 //   fenster  PreToolUse für AskUserQuestion: ein Fenster ohne ‚(Empfohlen)‘ zuerst bzw. ohne ‚Ich schreibe im Chat‘ wird gar nicht erst
 //            gezeigt (W-5, 2.1), ebenso ohne Satz mit ‚Kontext N‘ aus messung.mjs davor (W-14, 0 Nr. 28, seit 4.45.0) bzw. – ist er
 //            nicht prüfbar – ohne Aufruf von messung.mjs seit der vorigen Nachricht (Rückfall, seit 4.48.0, APD-103); seit 4.50.0 (APD-110)
-//            ein Fenster mit Link zum Prüfen am Gerät ohne denselben Link und nummerierte Schritte mit ‚Erwartet: …‘ davor im Chat (W-15)
-//   stop     Stop: prüft die Antwort in der Sitzungsdatei (W-1 bis W-7, W-14, W-15) und lässt sie nicht enden, bis die Formpflichten stimmen –
+//            ein Fenster mit Link zum Prüfen am Gerät ohne denselben Link und nummerierte Schritte mit ‚Erwartet: …‘ davor im Chat (W-15);
+//            seit 4.51.0 (APD-114) eine Bau-Frage ohne abgelesenes ‚Kontext N‘ in der Frage selbst (W-16) und ein zweites Fenster in derselben
+//            Antwort (W-17)
+//   stop     Stop: prüft die Antwort in der Sitzungsdatei (W-1 bis W-7, W-14 bis W-17) und lässt sie nicht enden, bis die Formpflichten stimmen –
 //            höchstens zweimal je Antwort (W-9); danach werden nur noch neue Ausgaben geprüft
 //   setup    gibt den Text für das Setup-Skript aus (W-13)
 // Jeder Fehler (keine Sitzungsdatei, kaputtes JSON) lässt durch: Rückgabewert 0, keine Ausgabe (W-12) – nie eine Sitzung festhalten.
@@ -153,7 +155,42 @@ export function pruefeLink(ev, i, aus = [], input = null) {
   return [];
 }
 
-// Prüft die laufende Antwort (W-1 bis W-7, W-14, W-15). seit: Ausgaben und Fenster bis zu diesem Zeitpunkt wurden schon gemeldet (W-9).
+// W-16 (seit 4.51.0, APD-114, Testfall-Liste arbeit/APD-114 Testfall-Liste.md B-1 bis B-5): eine Bau-Frage (‚Soll ich Version …‘) nennt
+// den Kontextstand in der Frage selbst, abgelesen aus dem letzten Aufruf von messung.mjs seit der vorigen Nachricht bzw. dem vorigen Fenster
+// (0 Nr. 21) – Text vor dem Fenster kommt nicht immer an (2.1). Ohne Sitzungsdatei wird nur geprüft, dass ‚Kontext N‘ in der Frage steht.
+const BAUFRAGE = /\bSoll ich\b[^?]*\bVersion\b/i;
+export function pruefeBauFrage(ev, i, aus = [], input = null, mitDatei = true) {
+  if (aus.includes('W-16')) return [];
+  const fragen = ((input ?? ev[i]?.input)?.questions || []).filter(q => BAUFRAGE.test(q.question || ''));
+  if (!fragen.length) return [];
+  const bis = i < 0 ? ev.length : i;
+  let von = bis - 1; while (von >= 0 && ev[von].art !== 'nachricht' && ev[von].art !== 'fenster') von--;
+  const gemessen = mitDatei ? gemessenIn(ev.slice(von + 1, bis)) : null;
+  const fehler = [];
+  for (const q of fragen) {
+    const frage = `„${kurz(q.question || '', 60)}“`, m = (q.question || '').match(KONTEXT);
+    if (!m) fehler.push(`W-16 Bau-Frage ${frage} ohne ‚Kontext N‘ in der Frage – ‚Soll ich Version … erstellen? (Kontext N)‘ (0 Nr. 21)`);
+    else if (mitDatei && (!gemessen || zahl(gemessen) !== zahl(m[1])))
+      fehler.push(`W-16 Bau-Frage ${frage}: ‚Kontext ${m[1]}‘ nicht abgelesen – ${gemessen ? `messung.mjs meldete Kontext ${gemessen}` : 'messung.mjs davor nicht aufgerufen'} (nie schätzen, 0 Nr. 27)`);
+  }
+  return fehler;
+}
+
+// W-17 (seit 4.51.0, APD-114, Testfall-Liste arbeit/APD-114 Testfall-Liste.md B-6 bis B-11): ein Fenster je Antwort (2.1) – wurde in der
+// laufenden Antwort (seit der letzten Nachricht des Nutzers; Nachholen nach einer Zurückweisung des Stop-Hooks gehört dazu) schon ein
+// Fenster gezeigt, wird ein weiteres abgelehnt. Ein vom Wächter abgelehntes Fenster wurde nie gezeigt und zählt nicht.
+const ABGELEHNT = /Fenster so nicht zeigen/;
+const gezeigt = (ev, e) => ev.some(x => x.art === 'ergebnis' && x.id === e.id && !ABGELEHNT.test(x.text));
+export function pruefeEinFenster(ev, i, aus = [], frageText = null) {
+  if (aus.includes('W-17')) return [];
+  const bis = i < 0 ? ev.length : i, ab = beginn(ev.slice(0, bis));
+  const vorige = ev.slice(ab + 1, bis).filter(e => e.art === 'fenster' && gezeigt(ev, e));
+  if (!vorige.length) return [];
+  const frage = `„${kurz(frageText ?? ev[i]?.input?.questions?.[0]?.question ?? '', 60)}“`;
+  return [`W-17 Fenster ${frage}: in dieser Antwort wurde schon ein Fenster gezeigt – ein Fenster je Antwort (2.1); die Frage in der nächsten Antwort stellen, jetzt Zusammenfassung und Zeitzeile`];
+}
+
+// Prüft die laufende Antwort (W-1 bis W-7, W-14 bis W-17). seit: Ausgaben und Fenster bis zu diesem Zeitpunkt wurden schon gemeldet (W-9).
 export function pruefe(zeilen, { seit = null, aus = [] } = {}) {
   const ev = verlauf(zeilen), antwort = ev.slice(beginn(ev) + 1);
   const fehler = [], F = (nr, t) => { if (!aus.includes(nr)) fehler.push(`${nr} ${t}`); };
@@ -182,6 +219,9 @@ export function pruefe(zeilen, { seit = null, aus = [] } = {}) {
   for (const e of fenster.filter(neu)) fehler.push(...pruefeKontext(ev, pos(e), aus));
   // W-15 Link und Schritte im Chat vor einem Fenster mit Link (wie beim Zeigen, falls der Hook ‚fenster‘ fehlte)
   for (const e of fenster.filter(neu)) fehler.push(...pruefeLink(ev, pos(e), aus));
+  // W-16 Kontext in der Bau-Frage, W-17 ein Fenster je Antwort (wie beim Zeigen; abgelehnte Fenster wurden nie gezeigt)
+  for (const e of fenster.filter(neu)) fehler.push(...pruefeBauFrage(ev, pos(e), aus));
+  for (const e of fenster.filter(neu).filter(e => gezeigt(ev, e))) fehler.push(...pruefeEinFenster(ev, pos(e), aus));
   // W-6: die Zeitzeile steht ganz am Ende, nach dem letzten Fenster (2.1, 2.2)
   const letztes = fenster.at(-1), schluss = antwort.filter(e => e.art === 'text' || e.art === 'unsicher').at(-1);
   if (schluss?.art === 'unsicher' && (!letztes || pos(schluss) > pos(letztes))) return fehler;   // Schluss nicht wörtlich gespeichert
@@ -214,9 +254,10 @@ export function fuehreAus(befehl, eingabe, { env = process.env, jetzt = Date.now
     // der Rückfall auf den Aufruf von messung.mjs (seit 4.48.0, APD-103/D-4, D-5); ohne Sitzungsdatei lässt er durch (W-12)
     const f = datei(eingabe), ev = f ? verlauf(lies(f)) : [], i = ev.findIndex(e => e.art === 'fenster' && e.id === eingabe.tool_use_id);
     const fehler = [...pruefeFenster(eingabe.tool_input, aus), ...(f ? pruefeKontext(ev, i, aus, eingabe.tool_input?.questions?.[0]?.question || '') : []),
-      ...(f ? pruefeLink(ev, i, aus, eingabe.tool_input) : [])];
+      ...(f ? pruefeLink(ev, i, aus, eingabe.tool_input) : []), ...pruefeBauFrage(ev, i, aus, eingabe.tool_input, !!f),
+      ...(f ? pruefeEinFenster(ev, i, aus, eingabe.tool_input?.questions?.[0]?.question || '') : [])];
     return fehler.length ? { hookSpecificOutput: { hookEventName: 'PreToolUse', permissionDecision: 'deny', permissionDecisionReason:
-      `Regelwächter (Zusammenarbeit 0 Nr. 7, Nr. 28, 2.1) – Fenster so nicht zeigen:\n${fehler.map(f => '- ' + f).join('\n')}\nNeu stellen: die Empfehlung zuerst mit ‚(Empfohlen)‘ und Grund in der Beschreibung, immer ‚${CHAT}‘; davor \`node ${MESSUNG}\` aufrufen und den Kontextstand als Satz mit ‚Kontext N‘ ausgeben${fehler.some(x => x.startsWith('W-15')) ? '; bei einem Link zum Prüfen am Gerät davor im Chat der vollständige Link und nummerierte Schritte mit ‚Erwartet: …‘' : ''}.` } } : null;
+      `Regelwächter (Zusammenarbeit 0 Nr. 7, Nr. 28, 2.1) – Fenster so nicht zeigen:\n${fehler.map(f => '- ' + f).join('\n')}\nNeu stellen: die Empfehlung zuerst mit ‚(Empfohlen)‘ und Grund in der Beschreibung, immer ‚${CHAT}‘; davor \`node ${MESSUNG}\` aufrufen und den Kontextstand als Satz mit ‚Kontext N‘ ausgeben${fehler.some(x => x.startsWith('W-15')) ? '; bei einem Link zum Prüfen am Gerät davor im Chat der vollständige Link und nummerierte Schritte mit ‚Erwartet: …‘' : ''}${fehler.some(x => x.startsWith('W-16')) ? '; in der Bau-Frage selbst ‚(Kontext N)‘ aus messung.mjs' : ''}${fehler.some(x => x.startsWith('W-17')) ? '; W-17: kein zweites Fenster in dieser Antwort – die Frage kommt in die nächste Antwort' : ''}.` } } : null;
   }
   const f = datei(eingabe);
   const zeilen = f ? lies(f) : [];
