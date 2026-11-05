@@ -39,10 +39,10 @@ AppDesign-`CLAUDE.md`.
   - **APD-40 Paket A:** R-1.11, R-3.7, R-3.8, R-4.8 (deine Ergänzung ‚außer Meldungen, R-4.3‘), R-4.9, R-5.9, R-6.7; Prüfung `masseStile`
     (Gegenprobe `--gegenprobe masse`, in Chromium 12 von 12 rot; in WebKit nicht gelaufen); `design.css` gesperrt in Gruppen 40 %.
   - **Reiselogbuch:** Kopf der Quartierliste haftet (deine Entscheidung R-6.7 ohne Ausnahme).
-  - **APD-114:** Zusammenarbeit 3.7.0 (0 Nr. 21, Kasten Punkt 9, 2.8), Regelwächter W-16 und W-17, Prüfung APD-114/B-1 bis B-12 und B-14.
+  - **APD-114:** Zusammenarbeit 3.7.0 (0 Nr. 21, Kasten Punkt 9, 2.8), Regelwächter APD-84/W-16 und APD-84/W-17, Prüfung APD-114/B-1 bis B-12 und B-14.
 - **Selbstkritik 0080:** vier Fenster in einer Antwort (2.1 gebrochen – daher kam der Kontext vor der Bau-Frage nicht bei dir an; Anlass für
   APD-114); zweimal eine Uhrzeit geschätzt (12:29, 15:53); eine englische Zwischenmeldung ohne Uhrzeitzeile; in einer Erklärung einen alten
-  Kontext zitiert (W-14).
+  Kontext zitiert (APD-84/W-14).
 
 ## 3. Nächster Schritt
 
