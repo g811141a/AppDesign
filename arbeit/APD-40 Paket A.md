@@ -12,7 +12,7 @@ Spalten wie im Katalog: Nr. · Regel · Prüfung · Gerät · Bau. Maße bei Tex
 | R-1.11 | **Verborgen heißt unsichtbar:** jedes Element mit `hidden` ist nicht zu sehen – eine eigene `display`-Regel hebt `[hidden]` nie auf | hig.mjs (jede Ansicht, alle `[hidden]`) | – | 13 |
 | R-3.7 | **Keine Hover-Farbe:** auf iPad und iPhone ändert eine Schaltfläche beim Darüberfahren nichts; Stilregeln mit `:hover` stehen nur unter `@media (hover: hover)` | hig.mjs (Stilregeln) | – | 4 |
 | R-3.8 | **Gesperrt und Abbrechen:** gesperrte Schaltflächen, Schalter und Options-Kapseln 40 % Deckkraft; ‚Abbrechen‘ ohne Icon, normale Schrift | hig.mjs (jede Ansicht, jedes Fenster) | – | 4, 15.15, 15.16 |
-| R-4.8 | **Fensterbreite:** ein Fenster ist höchstens 90 % der Breite und mindestens 480 px breit (schmaler nur, wenn der Bildschirm es verlangt); Erfassung und Vorschau bis 1100 px | hig.mjs bzw. ablauf.mjs (jedes Fenster, iPad quer und hoch) | – | 7 |
+| R-4.8 | **Fensterbreite:** ein Fenster (außer Meldungen, R-4.3) ist höchstens 90 % der Breite und mindestens 480 px breit (schmaler nur, wenn der Bildschirm es verlangt); Erfassung und Vorschau bis 1100 px | hig.mjs bzw. ablauf.mjs (jedes Fenster, iPad quer und hoch) | – | 7 |
 | R-4.9 | **Menümaße:** Menü 340 px breit, Einträge 46 px hoch; ein Untermenü hat höchstens 5 Einträge | ablauf.mjs (jedes Menü öffnen) | – | 15.6 |
 | R-5.9 | **Schalterzeilen und Options-Kapsel:** Schalterzeilen 52 px hoch, Options-Kapsel 44 px hoch mit Schrift 15 px | hig.mjs (jedes Fenster mit Schaltern bzw. Kapseln) | – | 15.15, 15.16 |
 | R-6.7 | **Tabelle:** der Tabellenkopf haftet beim Rollen, Links ohne Unterstreichung, Zahlenspalten rechtsbündig | hig.mjs (jede Tabelle, App und Ausgabe) | – | 9 |
@@ -45,3 +45,5 @@ Inhaltliche Änderung: R-4.9 ‚höchstens 5‘ statt ‚höchstens etwa 5‘ (s
 | A-8 | R-6.7 | Tabellenkopf `position: sticky`, Links `text-decoration: none`, Zahlenspalten `text-align: right` | Kopf ohne `sticky`, Link unterstrichen |
 | A-9 | alle | Textgröße groß (R-1.10): Maße wachsen mit, keine Meldung | – |
 | A-10 | alle | nach dem Drehen (Grundregeln) dieselben Maße | – |
+
+Nachtrag 05.11.2026 (Sitzung 0080, Nutzer bestätigt): R-4.8 ‚ein Fenster (außer Meldungen, R-4.3) ist höchstens 90 % …‘; R-6.7 ohne Ausnahme – im Reiselogbuch haftet jetzt auch der Kopf der Quartierliste.

@@ -56,6 +56,72 @@ export function kastenBezeichnung() {
   return out;
 }
 
+// APD-40 Paket A (seit 4.51.0, Testfall-Liste arbeit/APD-40 Paket A.md, APD-40/A-1 bis APD-40/A-10): Maße und Stile, die bisher nur Sicht waren
+// (G-1, G-2, G-5, G-17, Teile von G-10, G-15, G-18). Maße bei Textgröße Standard; mit größerer Textgröße wachsen sie (R-1.10) – die Sollwerte
+// rechnen mit den Faktoren der Textgröße bzw. mit der Höhe, die der Inhalt selbst braucht. Läuft in der Seite (p.evaluate(masseStile)) – nach
+// jedem Schritt in measure (auch Text 53 und nach dem Drehen, APD-40/A-9, APD-40/A-10), Gegenproben: lauf.mjs --gegenprobe masse (GEGENPROBEN_MASSE in pruefe.mjs). Jede Meldung beginnt mit der Regelnummer.
+export function masseStile() {
+  const out = [], R = (nr, t) => out.push(`${nr} ${t}`), cs = e => getComputedStyle(e), root = document.documentElement, rs = cs(root);
+  const vis = e => { const s = cs(e), b = e.getBoundingClientRect(); return b.width > 0 && b.height > 0 && s.visibility !== 'hidden' && s.display !== 'none'; };
+  const name = e => (e.getAttribute('aria-label') || e.textContent || e.id || e.className || e.tagName).toString().replace(/\s+/g, ' ').trim().slice(0, 30);
+  const v = (n, d) => { const x = parseFloat(rs.getPropertyValue(n)); return Number.isFinite(x) ? x : d; };
+  const fBody = v('--f-body', 1), r1 = x => Math.round(x * 10) / 10;
+  // Höhe, die der Inhalt ohne Mindesthöhe braucht (kurz ohne min-height und feste Höhe gemessen, sofort zurückgesetzt)
+  const natur = e => { const a = e.style.minHeight, b = e.style.height; e.style.setProperty('min-height', '0px', 'important'); e.style.setProperty('height', 'auto', 'important');
+    const h = e.getBoundingClientRect().height; e.style.minHeight = a; e.style.height = b; return h; };
+  const hoehe = (nr, e, soll, was) => { const h = e.getBoundingClientRect().height, z = Math.max(natur(e), soll);
+    if (Math.abs(h - z) > 0.6) R(nr, `${was} ‚${name(e)}‘ ${r1(h)} px hoch statt ${r1(z)} (${soll === z ? r1(soll) + ' px' : 'so hoch wie der Inhalt'})`); };
+  // R-1.11 Verborgen heißt unsichtbar: jedes Element mit hidden hat display: none (eine eigene display-Regel hebt [hidden] nie auf)
+  document.querySelectorAll('[hidden]').forEach(e => { if (e.getAttribute('hidden') !== 'until-found' && cs(e).display !== 'none') R('R-1.11', `verborgenes Element ‚${name(e)}‘ (${e.tagName.toLowerCase()}${e.id ? '#' + e.id : ''}) ist zu sehen (display: ${cs(e).display})`); });
+  // R-3.7 Keine Hover-Farbe: Stilregeln mit :hover nur unter @media (hover: hover) – alle Stilblätter der Seite (design.css und App)
+  const hoverRegeln = (list, unterHover) => { for (const r of list) {
+    if (r.type === 4 || r.constructor?.name === 'CSSMediaRule') { hoverRegeln(r.cssRules, unterHover || /\(\s*hover\s*:\s*hover\s*\)/.test(r.conditionText || r.media?.mediaText || '')); continue; }
+    if (r.cssRules?.length && !r.selectorText) { hoverRegeln(r.cssRules, unterHover); continue; }
+    if (r.selectorText && /:hover\b/.test(r.selectorText) && !unterHover) R('R-3.7', `Stilregel ‚${r.selectorText.slice(0, 60)}‘ mit :hover ohne @media (hover: hover)`);
+  } };
+  for (const s of document.styleSheets) { let list; try { list = s.cssRules; } catch { continue; } hoverRegeln(list, false); }
+  // R-3.8 Gesperrt und Abbrechen: gesperrte Schaltflächen, Schalter und Options-Kapseln 40 % Deckkraft; ‚Abbrechen‘ ohne Icon, normale Schrift
+  document.querySelectorAll('button:disabled, button[aria-disabled="true"], .check.sw:has(input:disabled), .check.chip:has(input:disabled)').forEach(e => {
+    if (!vis(e) || e.closest('.check.sw, .check.chip') && e.tagName === 'BUTTON') return;
+    const o = +cs(e).opacity; if (Math.abs(o - 0.4) > 0.01) R('R-3.8', `gesperrt ‚${name(e)}‘ Deckkraft ${o} statt 0,4`);
+  });
+  document.querySelectorAll('button').forEach(e => { if (!vis(e) || e.textContent.replace(/\s+/g, ' ').trim() !== 'Abbrechen') return;
+    if (e.querySelector('svg')) R('R-3.8', '‚Abbrechen‘ mit Icon');
+    if (+cs(e).fontWeight !== 400) R('R-3.8', `‚Abbrechen‘ Schrift ${cs(e).fontWeight} statt normal (400)`); });
+  // R-4.8 Fensterbreite (iPad-Aufbau – html.blatt gilt auch dort, seit 4.38.0; im iPhone-Aufbau html.phone ist das Fenster ein Blatt, R-4.6): höchstens 90 % und mindestens 480 px (wächst mit der
+  // Textgröße, schmaler nur, wenn der Bildschirm es verlangt); Erfassung und Vorschau (dialog.wide) bis 1100 px. Meldungen (#msg) sind kleine Fenster (R-4.3).
+  if (!root.classList.contains('phone')) document.querySelectorAll('dialog[open]:not(#msg):not(.blatt-geist)').forEach(d => {
+    if (!vis(d)) return;
+    const w = d.getBoundingClientRect().width, W = innerWidth, min = Math.min(Math.max(480, 480 * fBody), 0.9 * W), wo = `Fenster ‚${name(d.querySelector('h3') || d)}‘`;
+    if (d.classList.contains('wide')) { if (w > 1100.5) R('R-4.8', `${wo} (Erfassung/Vorschau) ${r1(w)} px breit statt höchstens 1100`); }
+    else if (w > 0.9 * W + 0.6) R('R-4.8', `${wo} ${r1(w)} px breit statt höchstens 90 % (${r1(0.9 * W)})`);
+    if (w < min - 0.6) R('R-4.8', `${wo} ${r1(w)} px breit statt mindestens ${r1(min)}`);
+  });
+  // R-4.9 Menümaße: Menü 340 px breit (wächst mit der Textgröße, nie breiter als der Bildschirm), Einträge 46 px hoch, ein Untermenü höchstens 5 Einträge
+  document.querySelectorAll('.menu').forEach(m => {
+    if (!vis(m)) return;
+    if (!m.classList.contains('submenu')) {
+      const w = m.getBoundingClientRect().width, rand = v('--safe-left', 0) + v('--safe-right', 0), soll = Math.min(Math.max(340, 340 * fBody), innerWidth - 24 - rand);
+      if (Math.abs(w - soll) > 0.6) R('R-4.9', `Menü ${r1(w)} px breit statt ${r1(soll)} (340 px)`);
+    } else if (m.querySelectorAll('.mi').length > 5) R('R-4.9', `Untermenü mit ${m.querySelectorAll('.mi').length} Einträgen statt höchstens 5`);
+    m.querySelectorAll('.mi').forEach(e => { if (vis(e)) hoehe('R-4.9', e, 46, 'Menüeintrag'); });
+  });
+  // R-5.9 Schalterzeilen 52 px hoch, Options-Kapsel 44 px hoch (wächst mit der Textgröße) mit Schrift 15 px (Stil Subhead)
+  document.querySelectorAll('.swlist .check').forEach(e => { if (vis(e)) hoehe('R-5.9', e, 52, 'Schalterzeile'); });
+  document.querySelectorAll('.check.chip').forEach(e => { if (!vis(e)) return;
+    hoehe('R-5.9', e, Math.max(44, 44 * fBody), 'Options-Kapsel');
+    const f = parseFloat(cs(e).fontSize), soll = v('--t-subhead', 15); if (Math.abs(f - soll) > 0.5) R('R-5.9', `Options-Kapsel ‚${name(e)}‘ Schrift ${f} px statt ${soll} (15 px)`); });
+  // R-6.7 Tabelle: der Tabellenkopf haftet beim Rollen (App; die Ausgabe wird nicht gerollt), Links ohne Unterstreichung, Zahlenspalten (th/td.num) rechtsbündig
+  document.querySelectorAll('table').forEach(t => {
+    if (!vis(t)) return;
+    const aus = !!t.closest('.rt, #printout, .sync-report'), n = `Tabelle ${t.className ? '.' + t.className.trim().replace(/\s+/g, '.') : ''}`;
+    if (!aus) t.querySelectorAll(':scope > thead th').forEach(th => { if (vis(th) && cs(th).position !== 'sticky') R('R-6.7', `${n}: Kopf ‚${name(th)}‘ haftet nicht (position ${cs(th).position})`); });
+    t.querySelectorAll('a[href]').forEach(a => { if (vis(a) && cs(a).textDecorationLine !== 'none') R('R-6.7', `${n}: Link ‚${name(a)}‘ unterstrichen`); });
+    t.querySelectorAll('td.num, th.num').forEach(c => { if (vis(c) && !/right|end/.test(cs(c).textAlign)) R('R-6.7', `${n}: Zahlenspalte ‚${name(c)}‘ nicht rechtsbündig (${cs(c).textAlign})`); });
+  });
+  return out;
+}
+
 export function createCheck({ skipTargets = [] } = {}) {
 const found = new Map(), icons = new Map();
   let rotating = false;
@@ -618,6 +684,7 @@ const found = new Map(), icons = new Map();
     for (const [k, list] of Object.entries(r)) for (const x of list) note('Regel', { target: 'R-3.1 Antippfläche ', font: 'R-10.2 Schrift ', contrast: 'R-10.2 Kontrast ', quotes: 'R-10.1 Anführungszeichen ', menu: 'R-4.1 Menü: ', rules: '' }[k] + x, where);
     for (const x of await p.evaluate(bezeichnungen)) note('Regel', `R-5.8 ${x}`, where);
     for (const x of await p.evaluate(kastenBezeichnung)) note('Regel', `R-6.5 ${x}`, where);
+    for (const x of await p.evaluate(masseStile)) note('Regel', x, where);   // APD-40 Paket A: R-1.11, R-3.7, R-3.8, R-4.8, R-4.9, R-5.9, R-6.7
     if (schnell) return;
     await safe(p, where);
     // R-8.1 automatisch: einmal je Seite, wenn eine Seitenleiste da ist und nichts darüber offen ist (nur iPad).

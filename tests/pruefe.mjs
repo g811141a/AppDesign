@@ -224,6 +224,42 @@ function gegenprobeText(fall) {
   if (!f) throw new Error('Unbekannter Fall der Gegenprobe: ' + fall);
   f();
 }
+// Gegenprobe der Maße und Stile (seit 4.51.0, APD-40 Paket A, Testfall-Liste arbeit/APD-40 Paket A.md, APD-40/A-1 bis APD-40/A-8): je Fall
+// ein eingeschleuster Fehler, die passende Meldung von masseStile (hig.mjs) muss rot werden (lauf.mjs --gegenprobe masse, Prüfung ‚hig‘ der App).
+export const GEGENPROBEN_MASSE = {
+  verborgen: { zeichen: /R-1\.11 verborgenes Element/, was: '[hidden] mit display: flex (APD-40/A-1)' },
+  hover: { zeichen: /R-3\.7 Stilregel/, was: 'button:hover ohne Medienabfrage (APD-40/A-2)' },
+  gesperrt: { zeichen: /R-3\.8 gesperrt .*Deckkraft 0\.5/, was: 'gesperrt mit Deckkraft 0,5 (APD-40/A-3)' },
+  abbrechen: { zeichen: /R-3\.8 ‚Abbrechen‘ Schrift/, was: '‚Abbrechen‘ halbfett (APD-40/A-4)' },
+  fensterbreit: { zeichen: /R-4\.8 Fenster .*statt höchstens 90 %/, was: 'Fenster 95 % breit (APD-40/A-5)' },
+  fensterschmal: { zeichen: /R-4\.8 Fenster .*statt mindestens/, was: 'Fenster 400 px breit (APD-40/A-5)' },
+  menue: { zeichen: /R-4\.9 Menü 320 px/, was: 'Menü 320 px (APD-40/A-6)' },
+  untermenue: { zeichen: /R-4\.9 Untermenü mit 6 Einträgen/, was: 'sechs Einträge im Untermenü (APD-40/A-6)' },
+  schalter: { zeichen: /R-5\.9 Schalterzeile .*statt 52/, was: 'Schalterzeile 48 px (APD-40/A-7)' },
+  kapsel: { zeichen: /R-5\.9 Options-Kapsel .*Schrift 16 px/, was: 'Options-Kapsel Schrift 16 px (APD-40/A-7)' },
+  kopf: { zeichen: /R-6\.7 .*haftet nicht/, was: 'Tabellenkopf ohne sticky (APD-40/A-8)' },
+  link: { zeichen: /R-6\.7 .*unterstrichen/, was: 'Link in der Tabelle unterstrichen (APD-40/A-8)' },
+};
+function gegenprobeMasse(fall) {
+  const stil = css => document.addEventListener('DOMContentLoaded', () => { const s = document.createElement('style'); s.textContent = css; document.head.append(s); });
+  const f = {
+    verborgen: () => stil('[hidden]:not(dialog):not(#side) { display: flex !important; }'),
+    hover: () => stil('button:hover { background: #ff0000; }'),
+    gesperrt: () => stil('button:disabled, button[aria-disabled="true"], .check.sw:has(input:disabled), .check.chip:has(input:disabled) { opacity: .5 !important; }'),
+    abbrechen: () => stil('button { font-weight: 600 !important; }'),
+    fensterbreit: () => stil('#dlg:not(.wide) { width: 95vw !important; max-width: none !important; }'),
+    fensterschmal: () => stil('#dlg:not(.wide) { width: 400px !important; min-width: 0 !important; }'),
+    menue: () => stil('.menu:not(.submenu) { width: 320px !important; }'),
+    untermenue: () => new MutationObserver(() => document.querySelectorAll('.menu.submenu').forEach(m => { const mi = m.querySelector('.mi');
+      while (mi && m.querySelectorAll('.mi').length < 6) m.append(mi.cloneNode(true)); })).observe(document, { subtree: true, childList: true }),
+    schalter: () => stil('.swlist .check { min-height: 48px !important; }'),
+    kapsel: () => stil('.check.chip { font-size: 16px !important; }'),
+    kopf: () => stil('thead th { position: static !important; }'),
+    link: () => stil('table a[href] { text-decoration: underline !important; }'),
+  }[fall];
+  if (!f) throw new Error('Unbekannter Fall der Gegenprobe: ' + fall);
+  f();
+}
 // Textgröße des Geräts nachgebildet (P1): die Grundgröße steht fest, bevor ui.js sie misst
 function textGroesse(px) {
   const setze = () => { const s = document.createElement('style'); s.id = 'pruef-text'; s.textContent = `html { font-size: ${px}px !important; }`; document.documentElement.prepend(s); };
@@ -236,6 +272,8 @@ export async function textSeite(p) {
   const px = Number(process.env.PRUEF_TEXT) || 0, gp = (process.env.PRUEF_GEGENPROBE || '').match(/^text:(.+)$/)?.[1];
   if (px) await p.addInitScript(textGroesse, px);
   if (gp) await p.addInitScript(gegenprobeText, gp);
+  const gm = (process.env.PRUEF_GEGENPROBE || '').match(/^masse:(.+)$/)?.[1];   // seit 4.51.0 (APD-40 Paket A)
+  if (gm) await p.addInitScript(gegenprobeMasse, gm);
   return px ? ` Text ${px}` : '';
 }
 // Die eingeschleusten Fehler (laufen in der Seite vor ihren Skripten)
