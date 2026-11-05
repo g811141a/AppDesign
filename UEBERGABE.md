@@ -1,7 +1,8 @@
 # Übergabe an die nächste Sitzung
 
-**Stand 03.11.2026** · geschrieben in der Sitzung ‚Reiselogbuch 0079‘ (Version AppDesign 4.50.1 / Reiselogbuch 3.48.1 gebaut und veröffentlicht;
-automatische Übergabe bei Kontext etwa 321.000, 0 Nr. 13) – Aufbau nach Zusammenarbeit allgemein 2.5.
+**Stand 05.11.2026** · geschrieben in der Sitzung ‚Reiselogbuch 0080‘ (P-93 ausgewertet, Version AppDesign 4.51.0 / Reiselogbuch 3.49.0
+gebaut und veröffentlicht; automatische Übergabe bei Kontext etwa 310.000 nach einer Zusammenfassung, 0 Nr. 13) – Aufbau nach Zusammenarbeit
+allgemein 2.5.
 **Claude liest diese Datei zu Beginn jeder Sitzung zuerst, dann die ganze Zusammenarbeit** (0 Nr. 15); die Arbeitsumgebung steht in der
 AppDesign-`CLAUDE.md`.
 
@@ -9,61 +10,57 @@ AppDesign-`CLAUDE.md`.
 
 | Teil | Version | Datei |
 |---|---|---|
-| Reiselogbuch | **3.48.1** veröffentlicht (Fassung 4.50.1) | g811141a/ReiseLogBuch |
-| AppDesign | **4.50.1** veröffentlicht | g811141a/AppDesign |
-| Zusammenarbeit allgemein | **3.6.0** | `README - Zusammenarbeit allgemein.md` |
+| Reiselogbuch | **3.49.0** veröffentlicht (Fassung 4.51.0) | g811141a/ReiseLogBuch |
+| AppDesign | **4.51.0** veröffentlicht | g811141a/AppDesign |
+| Zusammenarbeit allgemein | **3.7.0** | `README - Zusammenarbeit allgemein.md` |
 | AppDesign-`CLAUDE.md` | **2.10.0** | `CLAUDE.md` |
 | ReiseLogBuch-Import (privat) | 1.3.0 | g811141a/ReiseLogBuch-Import |
 
-- Alles liegt auf **`main`** (beide Repos); keine lokalen Vorbereitungs-Zweige (auf GitHub bleiben `vorbereitung-4.50.1` und `vorbereitung-3.48.1`).
-- **Chatnummer:** die nächste Sitzung heißt **Reiselogbuch 0080**; die danach 0081.
-- **Modell und Aufwand:** in 0079 Opus 5.5 (`get_session`), alle Aufrufe `"effort":"high"`, kein `model_fallback`; der Arbeitsprozess wurde einmal
-  neu gestartet.
-- **Regelwächter läuft** (Hooks in `~/.claude/settings.json`).
-- **Offener Usertest: P-93** (3.48.1 / 4.50.1) – Testfälle P-93/0 bis P-93/2 im Reiselogbuch-CHANGELOG; Rückmeldung noch nicht erfragt.
-- **Nächste Version:** 1 Punkt bereit – APD-40 Paket A (eigene Version, erst nach P-93, 0 Nr. 22).
+- Alles liegt auf **`main`** (beide Repos); keine lokalen Vorbereitungs-Zweige (auf GitHub bleiben `vorbereitung-4.51.0` und `vorbereitung-3.49.0`).
+- **Chatnummer:** die nächste Sitzung heißt **Reiselogbuch 0081**; die danach 0082.
+- **Modell und Aufwand:** in 0080 Opus 5.5 (`get_session`), Aufrufe `"effort":"high"`, kein `model_fallback`; der Arbeitsprozess wurde zweimal
+  neu gestartet, die Sitzung einmal zusammengefasst.
+- **Regelwächter läuft** (Hooks in `~/.claude/settings.json`) – seit 4.51.0 mit APD-84/W-16 (Kontext in der Bau-Frage) und W-17 (ein Fenster je
+  Antwort; ein Zug nach der Meldung einer Hintergrundaufgabe ist eine neue Antwort, APD-114/B-14).
+- **Offener Usertest: P-94** (3.49.0 / 4.51.0) – Testfälle P-94/0 bis P-94/2 im Reiselogbuch-CHANGELOG; Rückmeldung noch nicht erfragt.
+- **Nächste Version:** 0 Punkte bereit.
 - **Vereinbarung (Nutzer 30.10.2026, Sitzung 0058):** Muster bis auf Weiteres **nur hell** – in jede Übergabe übernehmen.
 - **Erinnerung:** ‚Backlog-Erinnerung (AppDesign und Reiselogbuch)‘ montags 8:58.
 
-## 2. Ergebnisse der Sitzung 0079
+## 2. Ergebnisse der Sitzung 0080
 
-- **4.50.1 / 3.48.1 veröffentlicht** (dein Ja 03.11.2026): voller Prüflauf 140 Läufe grün in 57:10, Pages beider Repos ‚success‘
-  (AppDesign 2537ca4, Reiselogbuch b21275d).
-- **APD-111:** leerer Zustand – Symbol 36 pt und Titel 17 pt halbfett überall (`design.css`); 15.23 und R-7.7 mit dem bestätigten Wortlaut; `hig.mjs`
-  misst beide in jeder Ansicht; `ablauf-leer` mit P-92/4 Schritt 2, 4, 5 und P-92/5 – rot gegen 3.48.0 (24 Abweichungen), jetzt grün.
-- **APD-112:** ui.js `fokusNachFenster` – Fokus nach Fenster, Blatt und Meldung zurück auf den öffnenden Knopf bzw. die Zeile (auch neu aufgebaut),
-  sonst Kopfzeile; Prüfung `checkFokusZurueck` (APD-112/F-1 bis F-8, F-10 bis F-12) – rot gegen 3.48.0 (10 Fälle); Gegenprobe APD-112/F-13 als
-  Fall `schliessen` in `GEGENPROBEN_BEDIENUNG`.
-- **APD-85 Teil 5:** `ablauf-titel-blase`, `ablauf-jahre`, `ablauf-gesamt` und `offline.mjs` ohne feste Pausen (`warteBis`; nach dem Drehen
-  zusätzlich drei Bilder). Bei Zeitablauf nennt die Meldung jetzt, was offen ist und welche Bewegung läuft.
-- **Wackler im vollen Lauf:** `ablauf-gesamt` WebKit rot unter Last, allein grün (vorher schon einmal in 0077) – die Meldung des roten Laufs ist nicht
-  gespeichert; Vermutung: unter Last schließt das Fenster nicht in 10 s (wie einmal bei `ablauf-jahre` WebKit in dieser Sitzung). Siebter
-  gezählter Wackler (APD-85). **Noch nicht im Backlog** – fragen (3.).
-- **Nebenbei behoben (doku-regeln):** Nummern ohne Elternnummer (APD-112/F-…, APD-40/A-…, APD-84/W-…) und APD-40 doppelt im Backlog – die
-  Zeile ‚Gesamtthema‘ aus 2. steht jetzt in der Zeile von Paket A unter 0. (eine Zeile je Nummer, D1).
-- **Selbstkritik 0079:** nach dem Neustart des Arbeitsprozesses kam die Bau-Frage ohne Lagebild und ohne ‚Kontext N‘ davor; dreimal eine Uhrzeit
-  geschätzt statt die Zeile des Regelwächters zu nehmen; zwei Zwischenmeldungen ohne Uhrzeitzeile, eine Antwort ohne Zeitzeile (APD-84/W-1, W-6).
-  `los` lief beim ersten Mal in `doku-regeln` rot, weil ich die Nummernprüfung nicht vorher allein laufen ließ.
+- **P-93 alles ok** (Nutzer 05.11.2026) – APD-111 abgeschlossen; in beiden Backlogs unter ‚Erledigt‘.
+- **Neu im Backlog (deine Ja):** APD-85 Teil 6 (Wackler `ablauf-gesamt` WebKit, Prio 3), APD-113 (Regelwächter: abgelehnte Fenster beim Stop-Hook
+  mitgezählt, APD-84/W-15 bei nicht gespeichertem Text, APD-84/W-14 nimmt einen zitierten alten Kontext, Stop-Hook zählt Züge nach
+  Hintergrundaufgaben zur selben Antwort – Prio 3), APD-114 (Prio 2, gebaut).
+- **4.51.0 / 3.49.0 veröffentlicht** (dein Ja 05.11.2026, ‚hier in dieser Sitzung‘): zweiter `los` 140 Läufe grün in 62:05, Pages beider Repos
+  ‚success‘ (AppDesign 81b131e, Reiselogbuch 9130e87). Der erste `los` brach im Reiselogbuch ab – nur `ablauf-gesamt` WebKit rot, auch allein
+  (siehe APD-85 Teil 6); nichts war veröffentlicht.
+  - **APD-40 Paket A:** R-1.11, R-3.7, R-3.8, R-4.8 (deine Ergänzung ‚außer Meldungen, R-4.3‘), R-4.9, R-5.9, R-6.7; Prüfung `masseStile`
+    (Gegenprobe `--gegenprobe masse`, in Chromium 12 von 12 rot; in WebKit nicht gelaufen); `design.css` gesperrt in Gruppen 40 %.
+  - **Reiselogbuch:** Kopf der Quartierliste haftet (deine Entscheidung R-6.7 ohne Ausnahme).
+  - **APD-114:** Zusammenarbeit 3.7.0 (0 Nr. 21, Kasten Punkt 9, 2.8), Regelwächter W-16 und W-17, Prüfung APD-114/B-1 bis B-12 und B-14.
+- **Selbstkritik 0080:** vier Fenster in einer Antwort (2.1 gebrochen – daher kam der Kontext vor der Bau-Frage nicht bei dir an; Anlass für
+  APD-114); zweimal eine Uhrzeit geschätzt (12:29, 15:53); eine englische Zwischenmeldung ohne Uhrzeitzeile; in einer Erklärung einen alten
+  Kontext zitiert (W-14).
 
 ## 3. Nächster Schritt
 
 1. `UEBERGABE.md`, die ganze Zusammenarbeit, Überschriften der Designrichtlinien; Lagebild; Regelwächter; ReiseLogBuch dazuholen (`main`).
-2. Usertest P-93 vollständig im Chat zeigen (Link und Schritte aus dem Reiselogbuch-CHANGELOG, ‚Testfälle P-93‘), dann im Fenster:
-   ‚P-93: Wie ist die Prüfung ausgegangen?‘ – ‚Alles ok‘ · ‚Nicht ok – ich schreibe im Chat‘ · ‚Ich prüfe später‘ · ‚Ich schreibe im Chat‘.
-3. Danach je ein Fenster: ‚Wackler `ablauf-gesamt` WebKit (unter Last) ins Backlog übernehmen?‘ (Empfehlung: als APD-85 Teil 6, Prio 3) und
-   ‚Fund zum Regelwächter (abgelehnte Fenster beim Stop-Hook mitgezählt) ins Backlog übernehmen?‘ (Empfehlung Prio 3).
+2. Usertest P-94 vollständig im Chat zeigen (Link und Schritte aus dem Reiselogbuch-CHANGELOG, ‚Testfälle P-94‘), dann im Fenster:
+   ‚P-94: Wie ist die Prüfung ausgegangen?‘ – ‚Alles ok‘ · ‚Nicht ok – ich schreibe im Chat‘ · ‚Ich prüfe später‘ · ‚Ich schreibe im Chat‘.
 
 ## 4. Danach
 
-APD-40 Paket A (eigene Version) · APD-40 Pakete B und C · APD-62 (APD-38/T-16, APD-38/T-1, APD-38/T-37) · APD-80 · APD-30 übrige Teile (Kurzmeldung,
-Wischaktionen) · APD-57 · APD-44 bis APD-60 · APD-70 · RLB-6 · APD-1.
+APD-40 Pakete B und C · APD-113 (Regelwächter) · APD-85 Teil 6 · APD-62 (APD-38/T-16, APD-38/T-1, APD-38/T-37) · APD-80 · APD-30 übrige Teile
+(Kurzmeldung, Wischaktionen) · APD-57 · APD-44 bis APD-60 · APD-70 · RLB-6 · APD-1.
 
 ## 5. Starttext für die neue Sitzung
 
 In der neuen Sitzung müssen **AppDesign** und **ReiseLogBuch** verfügbar sein; alles liegt auf `main`.
 
 ```
-Reiselogbuch 0080 – Usertest P-93 (Version 4.50.1 / 3.48.1)
+Reiselogbuch 0081 – Usertest P-94 (Version 4.51.0 / 3.49.0)
 
-Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md, dann die GANZE Zusammenarbeit allgemein (Kasten ‚Immer‘ und ‚Jede Antwort‘ oben in Abschnitt 0 gilt ab der ersten Antwort) und die Überschriften der Designrichtlinien. Prüfe Modell und Aufwand (Sitzungsdatei, auch model_fallback), hole das Repo g811141a/ReiseLogBuch (Branch main) dazu, wie in der AppDesign-CLAUDE.md unter ‚Arbeitsumgebung‘, und prüfe, ob der Regelwächter läuft. Gib kurz das Lagebild. Dann zeige den Usertest P-93 vollständig (Reiselogbuch-CHANGELOG) und frage im Auswahlfenster nach der Rückmeldung (UEBERGABE.md 3.).
+Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md, dann die GANZE Zusammenarbeit allgemein (Kasten ‚Immer‘ und ‚Jede Antwort‘ oben in Abschnitt 0 gilt ab der ersten Antwort) und die Überschriften der Designrichtlinien. Prüfe Modell und Aufwand (Sitzungsdatei, auch model_fallback), hole das Repo g811141a/ReiseLogBuch (Branch main) dazu, wie in der AppDesign-CLAUDE.md unter ‚Arbeitsumgebung‘, und prüfe, ob der Regelwächter läuft. Gib kurz das Lagebild. Dann zeige den Usertest P-94 vollständig (Reiselogbuch-CHANGELOG) und frage im Auswahlfenster nach der Rückmeldung (UEBERGABE.md 3.).
 ```
