@@ -1,6 +1,6 @@
 # APD-40 Paket C – Abläufe (Vorschlag für Wortlaut und Testfall-Liste)
 
-Stand 05.11.2026 · Sitzung Reiselogbuch 0081 · **Vorschlag von Claude, noch nicht bestätigt** (Wortlaut braucht dein Ja, 0 Nr. 29).
+Stand 05.11.2026 · Sitzung Reiselogbuch 0081 · **Wortlaut bestätigt (Nutzer 05.11.2026, Sitzung 0081, 0 Nr. 29);** C-F1 und C-F2 wie empfohlen; mit Paket B bereit für die nächste Version.
 Einordnung: `arbeit/APD-40 Einordnung.md` (Paket C = G-7, G-13). Bau zusammen mit Paket B (`arbeit/APD-40 Paket B.md`, Nutzer 05.11.2026).
 
 ## So macht es Apple
@@ -36,12 +36,12 @@ Einordnung: `arbeit/APD-40 Einordnung.md` (Paket C = G-7, G-13). Bau zusammen mi
 
 Inhaltliche Änderung: ‚alle 10 s‘ wird ‚spätestens 10 s nach der Änderung‘ (prüfbar mit vorgestellter Uhr; die App darf früher sichern).
 
-## Offene Fragen
+## Fragen (geklärt)
 
 | Nr. | Frage | Befund | Empfehlung |
 |---|---|---|---|
-| C-F1 | Woran erkennt die Prüfung eine zerstörende Aktion? | Menüpunkte haben `red` (ui.js `mi red`); Schaltflächen in der App nicht einheitlich | Menüpunkte über `red`, Schaltflächen über ihren Text (‚löschen‘, ‚entfernen‘, ‚ersetzen‘, ‚zurücksetzen‘, ‚wiederherstellen‘) bzw. `aria-label` |
-| C-F2 | Gilt ‚Speicher vorher = nachher‘ auch für Zähler und Einstellungen? | ‚Abbrechen‘ in der Sprechblase darf nichts ändern | ja – verglichen wird der ganze localStorage der App |
+| C-F1 | Woran erkennt die Prüfung eine zerstörende Aktion? | Menüpunkte haben `red` (ui.js `mi red`); Schaltflächen in der App nicht einheitlich | **entschieden** (Nutzer 05.11.2026): Menüpunkte über `red`, Schaltflächen über ihren Text (‚löschen‘, ‚entfernen‘, ‚ersetzen‘, ‚zurücksetzen‘, ‚wiederherstellen‘) bzw. `aria-label` |
+| C-F2 | Gilt ‚Speicher vorher = nachher‘ auch für Zähler und Einstellungen? | ‚Abbrechen‘ in der Sprechblase darf nichts ändern | ja – verglichen wird der ganze localStorage der App (mit C-F1 bestätigt) |
 
 ## Testfälle (automatisch), Chromium und WebKit, alle Ansichten (iPad quer/hoch, iPhone), hell
 

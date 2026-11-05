@@ -1,6 +1,6 @@
 # APD-40 Paket B – Texte (Vorschlag für Wortlaut und Testfall-Liste)
 
-Stand 05.11.2026 · Sitzung Reiselogbuch 0081 · **Wortlaut bestätigt (Nutzer 05.11.2026, Sitzung 0081, 0 Nr. 29);** B-F2 streng 3 Gruppen; Bau zusammen mit Paket C (Nutzer 05.11.2026).
+Stand 05.11.2026 · Sitzung Reiselogbuch 0081 · **Wortlaut bestätigt (Nutzer 05.11.2026, Sitzung 0081, 0 Nr. 29);** B-F2 streng 3 Gruppen; Bau zusammen mit Paket C (Nutzer 05.11.2026); beide bereit für die nächste Version.
 Einordnung: `arbeit/APD-40 Einordnung.md` (Paket B = G-4, G-12, Teile von G-19). Vorbild: `arbeit/APD-40 Paket A.md`.
 
 ## So macht es Apple
