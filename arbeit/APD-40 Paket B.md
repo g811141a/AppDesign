@@ -1,6 +1,6 @@
 # APD-40 Paket B – Texte (Vorschlag für Wortlaut und Testfall-Liste)
 
-Stand 05.11.2026 · Sitzung Reiselogbuch 0081 · **Vorschlag von Claude, noch nicht bestätigt** (Wortlaut braucht dein Ja, 0 Nr. 29).
+Stand 05.11.2026 · Sitzung Reiselogbuch 0081 · **Wortlaut bestätigt (Nutzer 05.11.2026, Sitzung 0081, 0 Nr. 29);** B-F2 streng 3 Gruppen; Bau zusammen mit Paket C (Nutzer 05.11.2026).
 Einordnung: `arbeit/APD-40 Einordnung.md` (Paket B = G-4, G-12, Teile von G-19). Vorbild: `arbeit/APD-40 Paket A.md`.
 
 ## So macht es Apple
@@ -32,12 +32,12 @@ Einordnung: `arbeit/APD-40 Einordnung.md` (Paket B = G-4, G-12, Teile von G-19).
 
 Inhaltliche Änderung: R-4.10 ‚höchstens 3 Gruppen‘ statt ‚höchstens etwa 3‘ (sonst nicht prüfbar) – wie bei R-4.9 in Paket A.
 
-## Offene Fragen (vor dem Wortlaut zu klären)
+## Fragen (geklärt)
 
 | Nr. | Frage | Befund | Empfehlung |
 |---|---|---|---|
-| B-F1 | Textbausteine mit ‚…‘ | Das Reiselogbuch hat Vorschläge wie ‚Weiterfahrt nach …‘, ‚Rundgang durch …‘ (`PROGRAM_SUGGESTIONS`, `index.html` Zeile 184 ff.); dort heißt ‚…‘ ‚hier weiterschreiben‘ – das ist der ursprüngliche HIG-Sinn. Stehen sie in einem Menü, wird R-4.10 rot. | Ausnahme in R-4.10: ‚außer Textbausteinen, die einen angefangenen Satz einsetzen‘ – vorher am Code prüfen, ob sie überhaupt in einem Menü stehen |
-| B-F2 | ‚höchstens 3 Gruppen‘ streng | heutige Kontextmenüs (R-4.2) noch nicht gezählt | streng 3; zeigt die Messung mehr, entscheidest du je Menü |
+| B-F1 | Textbausteine mit ‚…‘ | Das Reiselogbuch hat Vorschläge wie ‚Weiterfahrt nach …‘, ‚Rundgang durch …‘ (`PROGRAM_SUGGESTIONS`, `index.html` Zeile 184 ff.). **Geklärt (0081):** sie stehen als Kapseln über dem Feld ‚Verlauf‘ (`#suggest`, Zeile 1539), nicht in einem Menü – R-4.10 betrifft sie nicht | keine Ausnahme nötig |
+| B-F2 | ‚höchstens 3 Gruppen‘ streng | heutige Kontextmenüs (R-4.2) noch nicht gezählt | **entschieden: streng 3** (Nutzer 05.11.2026); zeigt die Messung mehr, entscheidest du je Menü |
 | B-F3 | Datum in Texten | `index.html` misst die Breite des Datumsfelds auch mit `toLocaleDateString()` ohne Sprache (Zeile 627) – nur zum Messen, nicht sichtbar | R-10.7 prüft nur sichtbare Texte |
 
 ## Testfälle (automatisch), Chromium und WebKit, alle Ansichten (iPad quer/hoch, iPhone), hell
