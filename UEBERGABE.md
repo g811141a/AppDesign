@@ -30,7 +30,7 @@ AppDesign-`CLAUDE.md`.
 - **APD-40 Pakete B und C geklärt** (deine Ja zum Wortlaut, 05.11.2026): `arbeit/APD-40 Paket B.md`, `arbeit/APD-40 Paket C.md`; Kontextmenü streng
   höchstens 3 Gruppen; zerstörende Schaltflächen am Text erkannt, Menüpunkte an `red`; B und C zusammen gebaut.
 - **4.52.0 / 3.50.0 veröffentlicht** (dein Ja 05.11.2026, ‚hier in dieser Sitzung‘ – meine Empfehlung war eine neue Sitzung wegen des Kontexts):
-   142 Läufe grün in 59:21 (Chromium und WebKit), Pages beider Repos ‚success‘ (AppDesign 8a5d3d6, Reiselogbuch 112e0a8).
+  `los`: 142 Läufe grün in 59:21 (Chromium und WebKit), Pages beider Repos ‚success‘ (AppDesign 8a5d3d6, Reiselogbuch 112e0a8).
   - neu R-4.10, R-4.11, R-4.12, R-5.10, R-10.6, R-10.7 statt G-4, G-7, G-12, G-13 und Teilen von G-19; Prüfungen `texteMenues`, `dateinameFehler`,
     `checkMenueFenster`, `checkAutoSpeichern`, `checkErstFragen`; neue Prüfung im Reiselogbuch `ablauf-texte-ablaeufe`; 12 Gegenproben in
     Chromium alle rot (WebKit nicht gelaufen).
