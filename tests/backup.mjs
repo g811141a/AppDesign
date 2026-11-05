@@ -5,6 +5,7 @@
 //   import { checkBackup } from '../../AppDesign/tests/backup.mjs';
 //   const fehler = await checkBackup(page, { menu: '#sideMore', list: 'trips', where: 'iPad' });   // [] = alles richtig
 import { readFileSync } from 'node:fs';
+import { dateinameFehler } from './hig.mjs';
 export async function checkBackup(page, { menu = '#sideMore', list, where = '' }) {
   const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}${t}`);
   const openMenu = async () => { await page.click(menu); await page.waitForTimeout(200); };
@@ -28,6 +29,7 @@ export async function checkBackup(page, { menu = '#sideMore', list, where = '' }
   else {
     const name = (await page.evaluate(() => window.__shared))[0] || '';
     if (!/^Ω Backup .+ \d{4}\.\d\d\.\d\d \d\d\.\d\d\.json$/.test(name)) E(`R-9.1 Dateiname ‚${name}‘ nicht ‚Ω Backup <App> JJJJ.MM.TT hh.mm.json‘`);
+    dateinameFehler(name).forEach(E);   // seit 4.52.0 (R-10.7, APD-40/B-8)
     content = readFileSync(await download.path(), 'utf8');
     const d = JSON.parse(content);
     if (!d.savedAt || !d.savedOn || !Array.isArray(d[list])) E('R-9.1 Backup ohne Zeitpunkt, Gerät oder Daten');

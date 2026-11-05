@@ -1,4 +1,4 @@
-// AppDesign 4.51.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
+// AppDesign 4.52.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
 // Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/fassung/X.Y.Z/ui.js"></script> (feste Fassung, R-10.3)
 // Seit 4.11.0 (R-10.3): ui.js und design.css immer mit ?v=<AppDesign-Version> einbinden (auch in sw.js) und beim Start
 // prüfen, ob genau diese Fassung geladen ist (AD_VERSION hier, --ad-version in design.css).
@@ -20,7 +20,7 @@
 
 'use strict';
 // Version der Bausteine (R-10.3): die App vergleicht sie beim Start mit der benötigten Fassung.
-const AD_VERSION = '4.51.0';
+const AD_VERSION = '4.52.0';
 /* ---------- Icons ---------- */
 
 // Schaltflächen-Icons aus Lucide (ISC-Lizenz), direkt eingebettet, damit die App offline funktioniert.
@@ -693,6 +693,8 @@ function openMenu(anchor, items, align = 'right') {
   const layer = blockingLayer();
   const menu = document.createElement('div');
   menu.className = 'menu';
+  // seit 4.52.0 (R-4.10, APD-40 Paket B): ein Kontextmenü (neben einer Zeile bzw. Kachel) ist erkennbar – höchstens 3 Gruppen, nichts Gesperrtes
+  if (align === 'beside') menu.classList.add('kontext');
   menu.setAttribute('role', 'menu');
   menu.innerHTML = menuHtml(items);
   // R-1.8 (seit 4.35.0, V3): das Menü trägt den Namen seines Knopfs; der Knopf sagt ‚öffnet Menü‘ und ob es offen ist
@@ -1519,7 +1521,7 @@ function createSync({ list, sub, subAt, maxFields = [], nouns = ['Eintrag', 'Ein
     .sync-report .new { color: #0a5bd3; font-weight: 600; } .sync-report .del { color: #c0362c; font-weight: 600; }
     .sync-report .old { color: #555; }
     .sync-report p { margin: 8px 0; }`;
-  const atText = at => at ? (d => `${d.getDate()}.${d.getMonth() + 1}.${d.getFullYear()} ${two(d.getHours())}:${two(d.getMinutes())}`)(new Date(at)) : '–';
+  const atText = at => at ? (d => `${two(d.getDate())}.${two(d.getMonth() + 1)}.${d.getFullYear()} ${two(d.getHours())}:${two(d.getMinutes())}`)(new Date(at)) : '–';
   // Eine Gruppe je Eintrag; je Feld eine Zeile; Eintrag und Tag über ihre Zeilen zusammengefasst (rowspan).
   // Je Reiselogbuch (allgemein: Eintrag) eine Tabellenzeile: sein Name ist in der ersten Spalte über alle seine Feldzeilen
   // zusammengefasst, Tag, Gerät und Zeitpunkt je Tag. Zusammengefasste Zellen in der ersten Spalte gelten als eine

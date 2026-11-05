@@ -56,7 +56,7 @@ export async function lauf({ dir, pw, tests, bedienung = 'ablauf-bedienung', tex
   } else if (gegenprobe === 'masse') {
     // seit 4.51.0 (APD-40 Paket A, APD-40/A-1 bis APD-40/A-8): je eingeschleustem Fehler der Maße und Stile ein Lauf der Prüfung ‚hig‘ der App
     for (const br of browsers) for (const [fall, g] of Object.entries(GEGENPROBEN_MASSE)) if (!nur || nur.includes(fall))
-      liste.push({ name: masse, teil: fall, br, env: { PRUEF_GEGENPROBE: 'masse:' + fall }, zeichen: g.zeichen, key: `${masse}:${fall}|${br}`, label: `${masse} (${fall}: ${g.was}) · ${br}` });
+      liste.push({ name: g.test || masse, teil: fall, br, env: { PRUEF_GEGENPROBE: 'masse:' + fall }, zeichen: g.zeichen, key: `${g.test || masse}:${fall}|${br}`, label: `${g.test || masse} (${fall}: ${g.was}) · ${br}` });   // seit 4.52.0: g.test (APD-40 B, C)
   } else if (gegenprobe === 'schema') {
     // seit 4.36.0 (APD-78/S-1 bis APD-78/S-10): je Fall des Nummernschemas ein Lauf der Doku-Prüfung der App mit genau dieser Verletzung
     // (ohne Browser – nur im ersten)

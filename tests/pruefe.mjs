@@ -239,8 +239,22 @@ export const GEGENPROBEN_MASSE = {
   kapsel: { zeichen: /R-5\.9 Options-Kapsel .*Schrift 16 px/, was: 'Options-Kapsel Schrift 16 px (APD-40/A-7)' },
   kopf: { zeichen: /R-6\.7 .*haftet nicht/, was: 'Tabellenkopf ohne sticky (APD-40/A-8)' },
   link: { zeichen: /R-6\.7 .*unterstrichen/, was: 'Link in der Tabelle unterstrichen (APD-40/A-8)' },
+  // seit 4.52.0 (APD-40 Pakete B und C, arbeit/APD-40 Paket B.md und Paket C.md); test: die Prüfung der App, die den Fehler melden muss (sonst hig)
+  punkte: { zeichen: /R-4\.10 .*endet auf ‚…‘/, was: 'Menüpunkt ‚Umbenennen …‘ (APD-40/B-1)' },
+  icongruppe: { zeichen: /R-4\.10 .*mit Icon \(alle oder keiner\)/, was: 'einem Punkt der Gruppe fehlt das Icon (APD-40/B-2)' },
+  gruppen: { zeichen: /R-4\.10 Kontextmenü mit 4 Gruppen/, was: 'Kontextmenü mit 4 Gruppen (APD-40/B-3)', test: 'kontextmenue-regeln' },
+  kontextgesperrt: { zeichen: /R-4\.10 Kontextmenü zeigt den gesperrten/, was: 'gesperrter Punkt im Kontextmenü (APD-40/B-4)', test: 'kontextmenue-regeln' },
+  menuefenster: { zeichen: /R-4\.11 .*‚Optionen‘ heißt/, was: 'Fenstertitel ‚Optionen‘ zum Menüpunkt (APD-40/B-5)', test: 'ablauf-texte-ablaeufe' },
+  ansprache: { zeichen: /R-1[0]\.6 Text mit ‚Wir‘/, was: 'Hinweis ‚Wir haben …‘ (APD-40/B-6)' },
+  datum: { zeichen: /R-1[0]\.7 Datum ‚2026-11-05‘/, was: 'Datum 2026-11-05 im Text (APD-40/B-7)' },
+  dateiname: { zeichen: /R-1[0]\.7 Dateiname .*zwei Leerzeichen/, was: 'Dateiname mit zwei Leerzeichen (APD-40/B-8)' },
+  autoaus: { zeichen: /R-5\.10 .*nach 10 s nicht gesichert/, was: 'Zwischenspeichern aus (APD-40/C-1)', test: 'ablauf-texte-ablaeufe' },
+  verwerfen: { zeichen: /R-5\.10 .*nicht wie beim Öffnen/, was: 'Verwerfen stellt den Stand beim Öffnen nicht her (APD-40/C-2)', test: 'ablauf-texte-ablaeufe' },
+  sofort: { zeichen: /R-4\.12 .*ohne Sprechblase/, was: '‚Reiselogbuch löschen‘ löscht sofort (APD-40/C-5)', test: 'ablauf-texte-ablaeufe' },
+  abbrechen2: { zeichen: /R-4\.12 .*‚Abbrechen‘ ändert/, was: 'Abbrechen löscht trotzdem (APD-40/C-6)', test: 'ablauf-texte-ablaeufe' },
 };
 function gegenprobeMasse(fall) {
+  const beob = fn => new MutationObserver(() => fn()).observe(document, { subtree: true, childList: true });
   const stil = css => document.addEventListener('DOMContentLoaded', () => { const s = document.createElement('style'); s.textContent = css; document.head.append(s); });
   const f = {
     verborgen: () => stil('[hidden]:not(dialog):not(#side) { display: flex !important; }'),
@@ -256,6 +270,24 @@ function gegenprobeMasse(fall) {
     kapsel: () => stil('.check.chip { font-size: 16px !important; }'),
     kopf: () => stil('thead th { position: static !important; }'),
     link: () => stil('table a[href] { text-decoration: underline !important; }'),
+    punkte: () => beob(() => document.querySelectorAll('.menu .mi:first-of-type').forEach(mi => { if (!mi.dataset.gp) { mi.dataset.gp = 1; mi.append(' …'); } })),
+    icongruppe: () => beob(() => document.querySelectorAll('.menu').forEach(m => { const ic = x => x?.matches?.('.mi') && x.querySelector(':scope > svg.ic:not(.chev)');
+      const mi = [...m.querySelectorAll('.mi')].find(x => ic(x) && ic(x.nextElementSibling));   // ein Punkt in einer Gruppe mit mindestens zwei Icons
+      if (mi && !m.dataset.gp) { m.dataset.gp = 1; ic(mi).remove(); } })),
+    gruppen: () => beob(() => document.querySelectorAll('.menu.kontext').forEach(m => { if (m.dataset.gp) return; m.dataset.gp = 1; const mi = m.querySelector('.mi');
+      for (let i = 0; i < 2; i++) { const s = document.createElement('div'); s.className = 'sep'; m.append(s, mi.cloneNode(true)); } })),
+    kontextgesperrt: () => beob(() => document.querySelectorAll('.menu.kontext .mi:first-of-type').forEach(mi => { mi.disabled = true; })),
+    menuefenster: () => beob(() => document.querySelectorAll('dialog[open] .dlg-head h3').forEach(h => { if (h.textContent !== 'Optionen') h.textContent = 'Optionen'; })),
+    ansprache: () => document.addEventListener('DOMContentLoaded', () => { document.body.title = 'Wir haben alles gespeichert'; }),
+    datum: () => document.addEventListener('DOMContentLoaded', () => { const d = document.createElement('div'); d.textContent = 'Stand 2026-11-05';
+      d.style.cssText = 'position:fixed;left:0;bottom:0;font-size:11px;z-index:-1'; document.body.append(d); }),
+    dateiname: () => beob(() => document.querySelectorAll('.menu .note').forEach(n => { if (/Dateiname: \S+ \S/.test(n.textContent) && !/ {2}/.test(n.textContent)) n.textContent = n.textContent.replace('Dateiname: ', 'Dateiname: ').replace(/ (\S+)$/, '  $1'); })),
+    // C: Speichern im offenen Fenster gesperrt · nach ‚Änderungen verwerfen‘ nichts mehr gespeichert · Sprechblase übersprungen · ‚Abbrechen‘ wirkt wie die rote Schaltfläche
+    autoaus: () => { const alt = Storage.prototype.setItem; Storage.prototype.setItem = function (k, v) { if (document.querySelector('dialog#dlg[open]') && String(v).includes('Zwischenspeicher')) return; return alt.call(this, k, v); }; },   // nur die Eingabe der Prüfung
+    verwerfen: () => { let aus = false; const alt = Storage.prototype.setItem; Storage.prototype.setItem = function (k, v) { if (aus) return; return alt.call(this, k, v); };
+      document.addEventListener('click', e => { if (/Änderungen verwerfen/.test(e.target.closest('button')?.textContent || '')) aus = true; }, true); },
+    sofort: () => addEventListener('load', () => { confirmPop = async () => true; }),
+    abbrechen2: () => addEventListener('load', () => { const alt = confirmPop; confirmPop = async (...a) => { await alt(...a); return true; }; }),
   }[fall];
   if (!f) throw new Error('Unbekannter Fall der Gegenprobe: ' + fall);
   f();
