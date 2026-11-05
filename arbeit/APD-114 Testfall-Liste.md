@@ -18,4 +18,5 @@ Zeigen bzw. am Ende der Antwort), Gegenprobe `--gegenprobe` schaltet W-16 und W-
 | B-10 | Übergabe ohne Fenster | unverändert erlaubt (0 Nr. 14) |
 | B-11 | echte Antwort aus 0080 mit vier Fenstern nacheinander | das zweite bis vierte abgelehnt (Gegenbeleg) |
 | B-12 | echte Bau-Frage aus 0080 ohne Kontext im Fragetext | abgelehnt W-16 (Gegenbeleg) |
+| B-14 | nach dem beantworteten Fenster meldet sich eine Hintergrundaufgabe (neuer Zug ohne Nachricht des Nutzers), dann ein Fenster | durchgelassen – der Zug ist eine neue Antwort (Befund 0080, 14:15) |
 | B-13 | Doku: Zusammenarbeit 0 Nr. 21, Kasten Punkt 9 und 2.8 mit dem bestätigten Wortlaut | `doku.mjs` – `checkCollab` grün |

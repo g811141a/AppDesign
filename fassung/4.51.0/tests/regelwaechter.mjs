@@ -225,6 +225,10 @@ function lauf(env = {}) {
     // B-9: Nachholen nach einer Zurückweisung des Stop-Hooks gehört zur selben Antwort
     const b9 = zweites([{ type: 'user', uuid: 'sh9', timestamp: iso(412), isMeta: true, message: { role: 'user', content: 'Stop hook feedback:\nRegelwächter … Zurückweisung 1 von 2' } }]);
     pruefe(grund(zeige(b9, frage(GUT), 'gibt-es-noch-nicht'), 'W-17'), 'W-17 B-9 Fenster beim Nachholen nach dem Stop-Hook (schon ein Fenster gezeigt) wird nicht abgelehnt');
+    // B-14: wie Sitzung 0080, 14:15 – nach dem Fenster kam die Meldung einer Hintergrundaufgabe (neuer Zug ohne Nachricht des Nutzers)
+    const b14 = [...antwort(), { type: 'user', uuid: 'tn14', timestamp: iso(600), origin: { kind: 'task-notification' }, message: { role: 'user', content: '<task-notification>fertig</task-notification>' } },
+      werkzeug(605, 'k14', 'Bash', { command: 'node werkzeug/messung.mjs' }), ergebnis(606, 'k14', Z), ausgabe(610, `${UZ('14:10', '14:06')}\n\nDer Nebenstrang ist fertig.\n\n${KS}`)];
+    pruefe(!grund(zeige(b14, frage(GUT), 'gibt-es-noch-nicht'), 'W-17'), 'W-17 B-14 Fenster nach der Meldung einer Hintergrundaufgabe wird abgelehnt');
     // B-10: Übergabe ohne Fenster bleibt erlaubt
     pruefe(!stop(antwort({ ohneFenster: true, schluss: `${UZ('14:06', '14:02')}\n\nÜbergabe.\n\n**Die Sitzung (Chat) ist damit beendet!**\n\n${Z}` })).length, 'W-17 B-10 Übergabe ohne Fenster wird zurückgewiesen');
     // B-11: wie Sitzung 0080, 12:12 bis 12:15 – vier Fenster in einer Antwort (Backlog, Backlog, Bau-Frage, Nächstes)

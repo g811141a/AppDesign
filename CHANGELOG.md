@@ -3,6 +3,35 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.51.0 – 05.11.2026
+
+AppDesign 4.51.0 · Designrichtlinie allgemein 4.51.0 · Zusammenarbeit allgemein 3.7.0 · geprüft mit Reiselogbuch 3.49.0
+
+**APD-40 Paket A und APD-114** – dein Ja vom 05.11.2026, Sitzung 0080. Wortlaut und Testfall-Listen `arbeit/APD-40 Paket A.md`,
+`arbeit/APD-114 Wortlaut.md`, `arbeit/APD-114 Testfall-Liste.md`. Usertest im Reiselogbuch: P-94.
+
+- **APD-40 Paket A – Maße und Stile automatisch prüfen (Designrichtlinie 17):** neu R-1.11 (verborgen heißt unsichtbar), R-3.7 (keine
+  Hover-Farbe), R-3.8 (gesperrt 40 %, ‚Abbrechen‘ ohne Icon), R-4.8 (Fensterbreite; außer Meldungen, R-4.3 – Wortlaut ergänzt und bestätigt
+  05.11.2026), R-4.9 (Menümaße, Untermenü höchstens 5), R-5.9 (Schalterzeilen und Options-Kapsel), R-6.7 (Tabelle: Kopf haftet, Links ohne
+  Unterstreichung, Zahlen rechtsbündig); G-1, G-2, G-5 und G-17 ‚ersetzt durch R-…‘, G-10, G-15 und G-18 auf den Rest gekürzt.
+- **Prüfung APD-40 (`tests/hig.mjs` – `masseStile`):** nach jedem Schritt in jeder Ansicht (APD-40/A-1 bis APD-40/A-10); Gegenproben `GEGENPROBEN_MASSE`
+  (`tests/pruefe.mjs`, 12 Fälle) über `node tests/alle.mjs --gegenprobe masse` (`tests/lauf.mjs`) – in Chromium 12 von 12 rot. Fand im
+  Reiselogbuch die mitrollende Quartierliste (R-6.7, behoben in 3.49.0, deine Entscheidung).
+- **`design.css`:** gesperrte Knöpfe in Gruppen (`.grp`, `.navgrp`) 40 % statt 30 % Deckkraft (R-3.8) – sichtbar etwas kräftiger.
+- **APD-114 – Kontext in der Bau-Frage, ein Fenster je Antwort (Zusammenarbeit 3.7.0, Regelwächter):** 0 Nr. 21 – die Bau-Frage heißt
+  ‚Soll ich Version X.Y.Z mit … erstellen? (Kontext N) Ja/Nein‘, der Kontextstand aus `messung.mjs` steht in der Frage selbst und davor im
+  Chat; Kasten ‚Jede Antwort‘ Punkt 9 ergänzt; 2.8 – der Regelwächter lehnt eine Bau-Frage ohne abgelesenes ‚Kontext N‘ im Fragetext ab
+  (APD-84/W-16) und ebenso ein zweites Fenster in derselben Antwort (APD-84/W-17; ein vom Wächter abgelehntes Fenster zählt nicht, das
+  Nachholen nach einer Zurückweisung des Stop-Hooks gehört zur selben Antwort). Wortlaut bestätigt (Nutzer 05.11.2026, Sitzung 0080).
+- **Prüfung APD-114 (`tests/regelwaechter.mjs`):** APD-114/B-1 bis APD-114/B-12 nach der Testfall-Liste `arbeit/APD-114 Testfall-Liste.md`; APD-114/B-11 (vier
+  Fenster in einer Antwort) und APD-114/B-12 (Bau-Frage ohne Kontext in der Frage) nach der Antwort aus Sitzung 0080 nachgebaut – ohne APD-84/W-16 bzw. APD-84/W-17
+  (Stand 4.50.1) lässt der Wächter beide durch (Gegenprobe geprüft). Gegenprobe `--gegenprobe`: ohne APD-84/W-16 bzw. APD-84/W-17 wird die Prüfung rot. Angepasst: APD-99/C-5 ohne Bau-Frage, APD-99/C-8
+  ohne früheres Fenster derselben Antwort.
+- **Warum es durchrutschte:** APD-84/W-14 prüfte nur, dass der Satz mit dem Kontext vor dem Fenster in der Sitzungsdatei steht – nicht, dass er beim
+  Nutzer ankommt; Text zwischen zwei Fenstern derselben Antwort kommt nicht an (2.1), und ‚ein Fenster je Antwort‘ war nur Selbstkontrolle.
+- **Nachtrag APD-114/B-14:** meldet sich nach einem beantworteten Fenster eine Hintergrundaufgabe (neuer Zug ohne Nachricht des Nutzers),
+  beginnt für APD-84/W-17 eine neue Antwort – sonst käme die Frage danach nie im Fenster an (Befund beim Bau, Sitzung 0080).
+
 ## 4.50.1 – 03.11.2026
 
 AppDesign 4.50.1 · Designrichtlinie allgemein 4.50.1 · Zusammenarbeit allgemein 3.6.0 · geprüft mit Reiselogbuch 3.48.1

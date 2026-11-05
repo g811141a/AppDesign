@@ -55,6 +55,8 @@ export function verlauf(zeilen) {
     const c = z.message?.content;
     if (z.type === 'user') {
       if (istNachricht(z)) ev.push({ art: 'nachricht', t, z });
+      // eine Meldung einer Hintergrundaufgabe beginnt einen neuen Zug – für W-17 eine neue Antwort (APD-114/B-14)
+      else if (z.origin?.kind === 'task-notification' && !z.isMeta) ev.push({ art: 'anstoss', t, z });
       if (Array.isArray(c)) for (const b of c) if (b?.type === 'tool_result') ev.push({ art: 'ergebnis', t, id: b.tool_use_id, text: text(b.content) });
       if (!Number.isNaN(t)) anlass = t;
       continue;
@@ -177,13 +179,13 @@ export function pruefeBauFrage(ev, i, aus = [], input = null, mitDatei = true) {
 }
 
 // W-17 (seit 4.51.0, APD-114, Testfall-Liste arbeit/APD-114 Testfall-Liste.md B-6 bis B-11): ein Fenster je Antwort (2.1) – wurde in der
-// laufenden Antwort (seit der letzten Nachricht des Nutzers; Nachholen nach einer Zurückweisung des Stop-Hooks gehört dazu) schon ein
-// Fenster gezeigt, wird ein weiteres abgelehnt. Ein vom Wächter abgelehntes Fenster wurde nie gezeigt und zählt nicht.
+// laufenden Antwort (seit der letzten Nachricht des Nutzers bzw. der letzten Meldung einer Hintergrundaufgabe, B-14; Nachholen nach einer
+// Zurückweisung des Stop-Hooks gehört dazu) schon ein Fenster gezeigt, wird ein weiteres abgelehnt. Ein vom Wächter abgelehntes Fenster wurde nie gezeigt und zählt nicht.
 const ABGELEHNT = /Fenster so nicht zeigen/;
 const gezeigt = (ev, e) => ev.some(x => x.art === 'ergebnis' && x.id === e.id && !ABGELEHNT.test(x.text));
 export function pruefeEinFenster(ev, i, aus = [], frageText = null) {
   if (aus.includes('W-17')) return [];
-  const bis = i < 0 ? ev.length : i, ab = beginn(ev.slice(0, bis));
+  const bis = i < 0 ? ev.length : i, ab = ev.slice(0, bis).findLastIndex(e => e.art === 'nachricht' || e.art === 'anstoss');
   const vorige = ev.slice(ab + 1, bis).filter(e => e.art === 'fenster' && gezeigt(ev, e));
   if (!vorige.length) return [];
   const frage = `„${kurz(frageText ?? ev[i]?.input?.questions?.[0]?.question ?? '', 60)}“`;

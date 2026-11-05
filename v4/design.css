@@ -201,7 +201,7 @@ input.zahl-schmal.mitx[type=text] { padding-right: calc(16px + 20px * var(--k));
 .grp button.txt { width: auto; padding: 0 14px; }
 .grp button.fill { background: none; color: var(--accent-ink); }
 .grp button.fill::before { content: ''; position: absolute; z-index: -1; inset: 3px; border-radius: 999px; background: var(--accent-fill); }
-.grp button:disabled, .navgrp button:disabled { opacity: .3; }
+.grp button:disabled, .navgrp button:disabled { opacity: .4; }   /* R-3.8 (seit 4.51.0, APD-40 Paket A): gesperrt 40 % wie jede Schaltfläche */
 /* Gedrückt: Die Schaltfläche, von der ein offenes Menü, eine Sprechblase oder ein Fenster kommt, ist blau hinterlegt. */
 button.on { background: var(--sel-bg); border-color: var(--accent); }
 .grp button.on, .navgrp button.on { background: none; box-shadow: none; }

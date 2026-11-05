@@ -59,7 +59,7 @@ export function kastenBezeichnung() {
 // APD-40 Paket A (seit 4.51.0, Testfall-Liste arbeit/APD-40 Paket A.md, APD-40/A-1 bis APD-40/A-10): Maße und Stile, die bisher nur Sicht waren
 // (G-1, G-2, G-5, G-17, Teile von G-10, G-15, G-18). Maße bei Textgröße Standard; mit größerer Textgröße wachsen sie (R-1.10) – die Sollwerte
 // rechnen mit den Faktoren der Textgröße bzw. mit der Höhe, die der Inhalt selbst braucht. Läuft in der Seite (p.evaluate(masseStile)) – nach
-// jedem Schritt in measure (auch Text 53 und nach dem Drehen, APD-40/A-9, APD-40/A-10), einzeln für die Gegenproben. Jede Meldung beginnt mit der Regelnummer.
+// jedem Schritt in measure (auch Text 53 und nach dem Drehen, APD-40/A-9, APD-40/A-10), Gegenproben: lauf.mjs --gegenprobe masse (GEGENPROBEN_MASSE in pruefe.mjs). Jede Meldung beginnt mit der Regelnummer.
 export function masseStile() {
   const out = [], R = (nr, t) => out.push(`${nr} ${t}`), cs = e => getComputedStyle(e), root = document.documentElement, rs = cs(root);
   const vis = e => { const s = cs(e), b = e.getBoundingClientRect(); return b.width > 0 && b.height > 0 && s.visibility !== 'hidden' && s.display !== 'none'; };
@@ -88,9 +88,9 @@ export function masseStile() {
   document.querySelectorAll('button').forEach(e => { if (!vis(e) || e.textContent.replace(/\s+/g, ' ').trim() !== 'Abbrechen') return;
     if (e.querySelector('svg')) R('R-3.8', '‚Abbrechen‘ mit Icon');
     if (+cs(e).fontWeight !== 400) R('R-3.8', `‚Abbrechen‘ Schrift ${cs(e).fontWeight} statt normal (400)`); });
-  // R-4.8 Fensterbreite (iPad-Aufbau; im iPhone-Aufbau ist das Fenster ein Blatt, R-4.6): höchstens 90 % und mindestens 480 px (wächst mit der
+  // R-4.8 Fensterbreite (iPad-Aufbau – html.blatt gilt auch dort, seit 4.38.0; im iPhone-Aufbau html.phone ist das Fenster ein Blatt, R-4.6): höchstens 90 % und mindestens 480 px (wächst mit der
   // Textgröße, schmaler nur, wenn der Bildschirm es verlangt); Erfassung und Vorschau (dialog.wide) bis 1100 px. Meldungen (#msg) sind kleine Fenster (R-4.3).
-  if (!root.classList.contains('phone') && !root.classList.contains('blatt')) document.querySelectorAll('dialog[open]:not(#msg):not(.blatt-geist)').forEach(d => {
+  if (!root.classList.contains('phone')) document.querySelectorAll('dialog[open]:not(#msg):not(.blatt-geist)').forEach(d => {
     if (!vis(d)) return;
     const w = d.getBoundingClientRect().width, W = innerWidth, min = Math.min(Math.max(480, 480 * fBody), 0.9 * W), wo = `Fenster ‚${name(d.querySelector('h3') || d)}‘`;
     if (d.classList.contains('wide')) { if (w > 1100.5) R('R-4.8', `${wo} (Erfassung/Vorschau) ${r1(w)} px breit statt höchstens 1100`); }
