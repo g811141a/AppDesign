@@ -12,8 +12,9 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 | Nr. | Prio | Thema | bereit seit |
 |---|---|---|---|
 | APD-40 | 3 | **Paket A – Maße und Stile automatisch prüfen (Nutzer 03.11.2026, Sitzung 0078, Wortlaut bestätigt):** neu R-1.11, R-3.7, R-3.8, R-4.8, R-4.9, R-5.9, R-6.7 statt G-1, G-2, G-5, G-17 und Teilen von G-10, G-15, G-18; Testfall-Liste APD-40/A-1 bis APD-40/A-10 mit Gegenprobe: `arbeit/APD-40 Paket A.md`; Werkzeug, App unverändert (Funde der neuen Prüfung vor jeder Änderung melden) – **eigene Version nach 4.50.1** (höchstens 2 Themen, 0 Nr. 8); Pakete B und C offen unter 2. · **Gesamtthema (in Klärung, bisher unter 2.; eine Zeile je Nummer, D1):** **Prüfungen für die Regeln ohne automatische Prüfung (aus APD-39, Nutzer 21.10.2026):** G-1 bis G-19 im Regelkatalog (Designrichtlinie allgemein 17) – je Regel eine allgemeine Prüfung in `tests/` oder bewusst ‚Gerät/Sicht‘ lassen; Code, eigener Auftrag · **Einordnung bestätigt (Nutzer 03.11.2026, Sitzung 0078):** `arbeit/APD-40 Einordnung.md` – Paket A Maße und Stile (G-1, G-2, G-5, G-10, G-15, G-17, G-18) zuerst, dann B Texte (G-4, G-12, G-19 Teil) und C Abläufe (G-7, G-13) als eigene Schritte; D bleibt Sicht/Gerät/App; je Paket Testfall-Liste mit Gegenprobe und Wortlaut der neuen R-Nummern zur Genehmigung | 03.11.2026 |
+| APD-114 | 2 | **Kontext in der Bau-Frage, ein Fenster je Antwort (Nutzer 05.11.2026, Sitzung 0080, Wortlaut bestätigt):** 0 Nr. 21 ‚Soll ich Version … erstellen? (Kontext N) Ja/Nein‘ – Kontext in der Frage selbst; Kasten Punkt 9 ergänzt; 2.8 Regelwächter lehnt Bau-Frage ohne ‚Kontext N‘ im Fragetext und ein zweites Fenster in derselben Antwort ab. Wortlaut `arbeit/APD-114 Wortlaut.md`; Testfall-Liste vor dem Bau | 05.11.2026 |
 
-1 Punkt bereit (APD-40 Paket A, eigene Version).
+2 Punkte bereit (APD-40 Paket A, APD-114).
 
 
 ## 1. Auf iPad und iPhone prüfen
