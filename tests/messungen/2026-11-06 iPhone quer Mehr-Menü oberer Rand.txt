@@ -1,0 +1,91 @@
+# Messung · Reiselogbuch 3.51.0 · AppDesign 4.53.0 · Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.6.3 Mobile/15E148 Safari/604.1 · Home-Bildschirm · 402×874 @3 · Ränder 0/34/0/0 · hell · 2026-11-06T17:06:55.526Z · Kontrast normal · Bewegung normal · Text xl 19
+t      sy     inh    sh     ih     vh     vt     vvtop  kopf   such   tag    lkopf  lsuch  lroll  fokus  lage
+1      0      -      812    812    336    0      0      -      -      -      0      -      0      sideMore hoch   ! start
+30917  0      -      812    812    336    0      0      -      -      -      0      -      0      sideMore hoch   ! nav kein kandidat
+30918  0      -      812    812    336    0      0      -      -      -      0      -      0      sideMore hoch   ! zeiger down 91 622 touch small in button.side-row @side
+31034  0      -      812    812    336    0      0      -      -      -      0      -      0      sideMore hoch   ! zeiger up 91 622 touch small in button.side-row.beruehrt-aus @side
+31036  0      -      812    812    336    0      0      -      -      -      0      -      0      -      hoch   ! blur sideMore
+31036  0      -      812    812    336    0      0      -      -      -      0      -      0      -      hoch   ! tippen button
+31045  0      -      812    812    336    0      0      -      -      -      -      -      -      -      hoch   ! neuaufbau app
+31057  0      0      812    812    336    0      0      0      -      282    -      -      -      bar    hoch   ! focus bar
+31057  0      0      812    812    336    0      0      0      -      282    0      -      0      bar    hoch   ! neuaufbau side
+31064  0      0      812    812    336    0      0      0      -      282    0      -      7      bar    hoch   ! scroll div
+31421  0      0      812    812    336    0      0      0      -      282    -      -      -      bar    hoch
+32582  0      0      402    812    336    0      0      0      -      248    -      -      -      bar    hoch
+32596  0      0      402    402    398    0      0      0      -      248    -      -      -      bar    quer   ! resize
+32601  0      0      402    402    398    0      0      0      -      248    -      -      -      bar    quer   ! vv resize
+32603  0      0      402    402    398    0      0      0      -      248    -      -      -      bar    quer   ! vv scroll
+32903  0      0      402    402    398    0      0      0      -      248    -      -      -      bar    quer   ! drehen
+42585  0      0      402    402    398    0      0      0      -      248    -      -      -      bar    quer   ! nav kein kandidat eigen
+42586  0      0      402    402    398    0      0      0      -      248    -      -      -      bar    quer   ! zeiger down 782 26 touch mainMore
+42602  0      0      402    402    398    0      0      0      -      248    -      -      -      bar    quer   ! zeiger move 782 26 touch mainMore
+42602  0      0      402    402    398    0      0      0      -      248    -      -      -      bar    quer   ! touchmove frei
+42602  0      0      402    402    398    0      0      0      -      248    -      -      -      bar    quer   ! zeiger move 782 26 touch mainMore
+42731  0      0      402    402    398    0      0      0      -      248    -      -      -      bar    quer   ! zeiger up 782 26 touch mainMore
+42733  0      0      402    402    398    0      0      0      -      248    -      -      -      bar    quer   ! tippen mainMore
+42738  0      0      402    402    398    0      0      0      -      248    -      -      -      -      quer   ! blur bar
+42738  0      0      402    402    398    0      0      0      -      248    -      -      -      button quer   ! focus button
+43310  0      0      402    402    398    0      0      0      -      248    -      -      -      button quer   ! nav kein kandidat
+43311  0      0      402    402    398    0      0      0      -      248    -      -      -      button quer   ! zeiger down 790 20 touch div.layer
+43324  0      0      402    402    398    0      0      0      -      248    -      -      -      button quer   ! zeiger move 790 20 touch div.layer
+43325  0      0      402    402    398    0      0      0      -      248    -      -      -      button quer   ! touchmove frei
+43325  0      0      402    402    398    0      0      0      -      248    -      -      -      button quer   ! zeiger move 790 20 touch div.layer
+43422  0      0      402    402    398    0      0      0      -      248    -      -      -      button quer   ! zeiger up 790 20 touch div.layer
+44177  0      0      402    402    398    0      0      0      -      248    -      -      -      button quer   ! nav kein kandidat
+44178  0      0      402    402    398    0      0      0      -      248    -      -      -      button quer   ! zeiger down 792 20 touch div.layer
+44187  0      0      402    402    398    0      0      0      -      248    -      -      -      button quer   ! zeiger move 792 20 touch div.layer
+44187  0      0      402    402    398    0      0      0      -      248    -      -      -      button quer   ! touchmove frei
+44187  0      0      402    402    398    0      0      0      -      248    -      -      -      button quer   ! zeiger move 792 20 touch div.layer
+44256  0      0      402    402    398    0      0      0      -      248    -      -      -      button quer   ! zeiger move 797 20 touch div.layer
+44272  0      0      402    402    398    0      0      0      -      248    -      -      -      button quer   ! zeiger move 801 17 touch div.layer
+44289  0      0      402    402    398    0      0      0      -      248    -      -      -      button quer   ! zeiger move 802 15 touch div.layer
+44290  0      0      402    402    398    0      0      0      -      248    -      -      -      button quer   ! zeiger up 804 13 touch div.layer
+46545  0      0      402    402    398    0      0      0      -      248    -      -      -      button quer   ! nav kein kandidat
+46545  0      0      402    402    398    0      0      0      -      248    -      -      -      button quer   ! zeiger down 601 354 touch div.layer
+46657  0      0      402    402    398    0      0      0      -      248    -      -      -      button quer   ! zeiger up 601 354 touch div.layer
+46691  0      0      402    402    398    0      0      0      -      248    -      -      -      -      quer   ! blur button
+46691  0      0      402    402    398    0      0      0      -      248    -      -      -      -      quer   ! tippen -
+46734  0      0      402    402    398    0      0      0      -      248    -      -      -      mainMore quer   ! focus mainMore
+49513  0      0      812    402    398    0      0      0      -      282    -      -      -      mainMore quer
+49536  0      0      812    812    336    0      0      0      -      282    -      -      -      mainMore hoch   ! resize
+49540  0      0      812    812    336    0      0      0      -      282    -      -      -      mainMore hoch   ! vv resize
+49541  0      0      812    812    336    0      0      0      -      282    -      -      -      mainMore hoch   ! vv scroll
+49843  0      0      812    812    336    0      0      0      -      282    -      -      -      mainMore hoch   ! drehen
+51081  0      0      812    812    336    0      0      0      -      282    -      -      -      mainMore hoch   ! nav kein kandidat eigen
+51082  0      0      812    812    336    0      0      0      -      282    -      -      -      mainMore hoch   ! zeiger down 48 39 touch svg.ic in back
+51171  0      0      812    812    336    0      0      0      -      282    -      -      -      mainMore hoch   ! zeiger up 48 39 touch svg.ic in back
+51173  0      0      812    812    336    0      0      0      -      282    -      -      -      -      hoch   ! blur mainMore
+51174  0      0      812    812    336    0      0      0      -      282    -      -      -      bar    hoch   ! focus bar
+51174  0      0      812    812    336    0      0      0      -      282    -      -      -      bar    hoch   ! tippen back
+51174  0      0      812    812    336    0      0      0      -      282    -      -      -      -      hoch   ! blur bar
+51776  0      0      812    812    336    0      0      0      -      282    0      -      7      -      hoch   ! neuaufbau side
+51791  0      0      812    812    336    0      0      0      -      282    0      -      7      -      hoch   ! scroll div
+52155  0      -      812    812    336    0      0      -      -      -      0      -      7      -      hoch   ! neuaufbau side
+52163  0      -      812    812    336    0      0      -      -      -      0      -      7      button hoch   ! focus button
+52197  0      -      812    812    336    0      0      -      -      -      0      -      7      button hoch   ! scroll div
+52858  0      -      812    812    336    0      0      -      -      -      0      -      7      button hoch   ! nav kein kandidat eigen
+52859  0      -      812    812    336    0      0      -      -      -      0      -      7      button hoch   ! zeiger down 350 44 touch svg.ic in sideMore
+53023  0      -      812    812    336    0      0      -      -      -      0      -      7      button hoch   ! zeiger up 350 44 touch svg.ic in sideMore
+53024  0      -      812    812    336    0      0      -      -      -      0      -      7      -      hoch   ! blur button
+53024  0      -      812    812    336    0      0      -      -      -      0      -      7      -      hoch   ! tippen sideMore
+53044  0      -      812    812    336    0      0      -      -      -      0      -      7      button hoch   ! focus button
+54909  0      -      812    812    336    0      0      -      -      -      0      -      7      button hoch   ! nav kein kandidat eigen
+54910  0      -      812    812    336    0      0      -      -      -      0      -      7      button hoch   ! zeiger down 235 375 touch button.mi.has-sub.beruehrt[menuitem]
+54954  0      -      812    812    336    0      0      -      -      -      0      -      7      button hoch   ! zeiger move 230 371 touch button.mi.has-sub.beruehrt[menuitem]
+54954  0      -      812    812    336    0      0      -      -      -      0      -      7      button hoch   ! touchmove frei
+54954  0      -      812    812    336    0      0      -      -      -      0      -      7      button hoch   ! zeiger move 230 371 touch button.mi.has-sub.beruehrt[menuitem]
+54970  0      -      812    812    336    0      0      -      -      -      0      -      7      button hoch   ! zeiger move 227 369 touch button.mi.has-sub.beruehrt[menuitem]
+54988  0      -      812    812    336    0      0      -      -      -      0      -      7      button hoch   ! zeiger move 226 369 touch button.mi.has-sub[menuitem]
+55020  0      -      812    812    336    0      0      -      -      -      0      -      7      button hoch   ! zeiger move 226 369 touch button.mi.has-sub[menuitem]
+55037  0      -      812    812    336    0      0      -      -      -      0      -      7      button hoch   ! zeiger move 228 369 touch button.mi.has-sub[menuitem]
+55053  0      -      812    812    336    0      0      -      -      -      0      -      7      button hoch   ! zeiger move 228 368 touch button.mi.has-sub[menuitem]
+55070  0      -      812    812    336    0      0      -      -      -      0      -      7      button hoch   ! zeiger move 229 368 touch button.mi.has-sub[menuitem]
+55072  0      -      812    812    336    0      0      -      -      -      0      -      7      button hoch   ! zeiger up 231 366 touch button.mi.has-sub[menuitem]
+55073  0      -      812    812    336    0      0      -      -      -      0      -      7      -      hoch   ! blur button
+59809  0      -      812    812    336    0      0      -      -      -      0      -      7      -      hoch   ! nav kein kandidat eigen
+59810  0      -      812    812    336    0      0      -      -      -      0      -      7      -      hoch   ! zeiger down 123 372 touch button.mi.has-sub.beruehrt[menuitem]
+59938  0      -      812    812    336    0      0      -      -      -      0      -      7      -      hoch   ! zeiger up 123 372 touch button.mi.has-sub.beruehrt-aus[menuitem]
+59939  0      -      812    812    336    0      0      -      -      -      0      -      7      -      hoch   ! tippen button
+59979  0      -      812    812    336    0      0      -      -      -      0      -      7      sideMore hoch   ! focus sideMore
+59979  0      -      812    812    336    0      0      -      -      -      0      -      7      sideMore hoch   ! messung beendet
+# Ende nach 60 s
