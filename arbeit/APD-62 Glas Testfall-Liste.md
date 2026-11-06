@@ -16,7 +16,7 @@ Drücken (würde R-3.6 ändern), Glas-Leiste (Designrichtlinie 1).
 15.1 ‚… die Kapsel Nach oben / Ans Ende aus Glas (R-3.9)‘ · 15.6 ‚aus Glas, Lichtkante und Schatten wie die Schaltflächen (R-3.9)‘ · 15.17
 untere Leiste ‚Suchfeld und runde Knöpfe aus Glas (R-3.9)‘.
 
-## Testfall-Liste (Entwurf – vor dem Bau bestätigen, 0 Nr. 1)
+## Testfall-Liste (bestätigt, Nutzer 06.11.2026, Sitzung 0083, 0 Nr. 1)
 
 | Nr. | Fall | Erwartet |
 |---|---|---|
