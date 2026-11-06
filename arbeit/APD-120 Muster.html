@@ -1,0 +1,68 @@
+<!doctype html><html lang="de"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="APD-120 Glas">
+<title>APD-120 Glas</title>
+<link rel="stylesheet" href="../fassung/4.53.0/design.css">
+<style>
+/* APD-120 Muster ‚Glas abschalten‘ (Sitzung Reiselogbuch 0085, Nutzer 06.11.2026). Lädt die unveränderte Fassung 4.53.0.
+   A = Schalter ‚Glas‘ als eigene Gruppe im Untermenü ‚Darstellung‘; B = Schalter ‚Glas‘ direkt im Mehr-Menü unter ‚Darstellung‘.
+   Schalter aus = wie ‚Transparenz reduzieren‘ (R-3.9): Menü und Kapsel deckend. Nur hell (Vereinbarung 30.10.2026). */
+html { color-scheme: light; }
+.muster { max-width: 640px; margin: 0 auto; padding: 8px 16px 32px; }
+.muster .karte { background: var(--card, #fff); border-radius: 12px; padding: 12px 14px 14px; margin: 14px 0; border: .5px solid var(--line); }
+.muster h2 { font: inherit; font-weight: 600; margin: 0 0 2px; }
+.muster p { margin: 0 0 10px; color: var(--muted); }
+.buehne { position: relative; height: 330px; border-radius: 10px; overflow: hidden; background: var(--bg); }
+.buehne .zeilen { position: absolute; inset: 0; padding: 10px 12px; line-height: 1.45; }
+.buehne .kachel { background: var(--accent); color: #fff; border-radius: 10px; padding: 10px 12px; margin: 0 0 8px; width: 62%; }
+.buehne .menu { position: absolute; top: 44px; right: 10px; width: 260px; }
+.buehne .kapsel { position: absolute; right: 12px; bottom: 12px; }
+.muster .menu .check.sw { width: 100%; justify-content: space-between; margin: 0; cursor: pointer; }
+/* Schalter aus: deckend wie bei ‚Transparenz reduzieren‘ */
+.ohne-glas .menu, .ohne-glas .fab { -webkit-backdrop-filter: none; backdrop-filter: none; box-shadow: var(--float); }
+.ohne-glas .menu { background: var(--card); }
+.ohne-glas .fab { background: var(--btn); }
+</style></head><body>
+<div class="muster">
+  <h1 class="nb-title" style="font-size:var(--t-title2);margin:8px 0 4px">APD-120 · Glas abschalten</h1>
+  <p>Zwei Varianten, nur hell. Tippe auf den Schalter ‚Glas‘. Aus: Menü und Kapsel werden sofort deckend (wie ‚Transparenz reduzieren‘), ein: wieder leicht durchscheinend. Das Menü steht über der blauen Kachel und dem Text, damit du den Unterschied siehst.</p>
+
+  <div class="karte" id="a">
+    <h2>A · im Untermenü ‚Darstellung‘ (Empfehlung)</h2>
+    <p>Mehr → Darstellung: Automatisch / Hell / Dunkel, darunter als eigene Gruppe der Schalter ‚Glas‘ – alles, was das Aussehen betrifft, an einer Stelle (4 Einträge, R-4.9).</p>
+    <div class="buehne">
+      <div class="zeilen"><div class="kachel"><b>Australien</b><br>24.08. – 11.11.2026</div>Anreise nach Wien · Rundgang durch die Altstadt · Weiterfahrt nach Sydney · Freetour Sydney · Besichtigung Opera House · Blue Mountains · Hafenrundfahrt · Bondi Beach</div>
+      <div class="menu submenu" role="menu" aria-label="Darstellung">
+        <button class="mi" role="menuitemradio" aria-checked="true"><span class="tick">✓</span>Automatisch</button>
+        <button class="mi" role="menuitemradio" aria-checked="false"><span class="tick"></span>Hell</button>
+        <button class="mi" role="menuitemradio" aria-checked="false"><span class="tick"></span>Dunkel</button>
+        <div class="sep"></div>
+        <label class="mi check sw"><span><span class="tick"></span>Glas</span><input type="checkbox" switch checked data-ziel="a"></label>
+      </div>
+      <button class="fab kapsel" aria-label="Nach oben">↑ ↓</button>
+    </div>
+  </div>
+
+  <div class="karte" id="b">
+    <h2>B · direkt im Mehr-Menü</h2>
+    <p>Mehr: … Darstellung › · Glas mit Schalter – ohne Untermenü, aber ein Eintrag mehr im Mehr-Menü.</p>
+    <div class="buehne">
+      <div class="zeilen"><div class="kachel"><b>Australien</b><br>24.08. – 11.11.2026</div>Anreise nach Wien · Rundgang durch die Altstadt · Weiterfahrt nach Sydney · Freetour Sydney · Besichtigung Opera House · Blue Mountains · Hafenrundfahrt · Bondi Beach</div>
+      <div class="menu" role="menu" aria-label="Mehr" style="width:300px">
+        <button class="mi" role="menuitem">Backup erstellen</button>
+        <button class="mi" role="menuitem">Backup laden</button>
+        <div class="sep"></div>
+        <button class="mi" role="menuitem">Darstellung<span class="val">Automatisch</span><span class="chev">›</span></button>
+        <label class="mi check sw"><span>Glas</span><input type="checkbox" switch checked data-ziel="b"></label>
+      </div>
+      <button class="fab kapsel" aria-label="Nach oben">↑ ↓</button>
+    </div>
+  </div>
+  <p>Gespeichert wird die Wahl in den Einstellungen der App (wie ‚Darstellung‘), sie gilt dann auf diesem Gerät für Menüs, Untermenüs, Kontextmenüs und die Kapsel.</p>
+</div>
+<script>
+document.querySelectorAll('input[data-ziel]').forEach(i => i.addEventListener('change', () => document.getElementById(i.dataset.ziel).classList.toggle('ohne-glas', !i.checked)));
+</script>
+</body></html>
