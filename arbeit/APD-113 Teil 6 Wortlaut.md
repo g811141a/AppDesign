@@ -6,7 +6,7 @@ Stand 06.11.2026 · Sitzung Reiselogbuch 0086 · Nummern gelten nur in dieser Da
 Kachel lässt sich nichts kopieren. Als letzte Ausgabe ohne Fenster kam der Text an (19:22).
 **Entschieden (Nutzer 06.11.2026, 19:31):** Weg a – erst ein Fenster (bringt den Push), nach der Antwort Link und Schritte als letzte
 Ausgabe ohne Fenster; der Nutzer antwortet im Chat.
-**Wortlaut L-1 bis L-6 bestätigt** (Nutzer 06.11.2026, Sitzung 0086: ‚L-1 bis L-6 ja · offen ja‘). **Dazu (Nutzer, ebenda):** ‚offen ja‘ – Weg a gilt für alles, was der Nutzer vor einer Entscheidung lesen muss (L-7); ‚Es muss sichergestellt werden, dass jedes Mal, wenn ich etwas tun soll, ich eine Push-Nachricht bekomme‘ (L-8). L-7 und L-8 sind Entwurf.
+**Wortlaut L-1 bis L-6 bestätigt** (Nutzer 06.11.2026, Sitzung 0086: ‚L-1 bis L-6 ja · offen ja‘). **Dazu (Nutzer, ebenda):** ‚offen ja‘ – Weg a gilt für alles, was der Nutzer vor einer Entscheidung lesen muss (L-7); ‚Es muss sichergestellt werden, dass jedes Mal, wenn ich etwas tun soll, ich eine Push-Nachricht bekomme‘ (L-8). **Wortlaut L-7 und L-8 bestätigt** (Nutzer 06.11.2026, Sitzung 0086: ‚L-7 ja · L-8 ja‘). Testfall-Liste: `arbeit/APD-113 Teil 6 Testfall-Liste.md`.
 
 | Nr. | Stelle | alt | neu |
 |---|---|---|---|
