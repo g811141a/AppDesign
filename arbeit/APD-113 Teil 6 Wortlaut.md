@@ -1,4 +1,4 @@
-# APD-113 Teil (6) – Text nach dem Fenster statt davor (Entwurf zur Genehmigung)
+# APD-113 Teil (6) – Text nach dem Fenster statt davor
 
 Stand 06.11.2026 · Sitzung Reiselogbuch 0086 · Nummern gelten nur in dieser Datei (außerhalb: APD-113/L-n).
 
@@ -6,6 +6,7 @@ Stand 06.11.2026 · Sitzung Reiselogbuch 0086 · Nummern gelten nur in dieser Da
 Kachel lässt sich nichts kopieren. Als letzte Ausgabe ohne Fenster kam der Text an (19:22).
 **Entschieden (Nutzer 06.11.2026, 19:31):** Weg a – erst ein Fenster (bringt den Push), nach der Antwort Link und Schritte als letzte
 Ausgabe ohne Fenster; der Nutzer antwortet im Chat.
+**Wortlaut L-1 bis L-6 bestätigt** (Nutzer 06.11.2026, Sitzung 0086: ‚L-1 bis L-6 ja · offen ja‘). **Dazu (Nutzer, ebenda):** ‚offen ja‘ – Weg a gilt für alles, was der Nutzer vor einer Entscheidung lesen muss (L-7); ‚Es muss sichergestellt werden, dass jedes Mal, wenn ich etwas tun soll, ich eine Push-Nachricht bekomme‘ (L-8). L-7 und L-8 sind Entwurf.
 
 | Nr. | Stelle | alt | neu |
 |---|---|---|---|
@@ -16,5 +17,7 @@ Ausgabe ohne Fenster; der Nutzer antwortet im Chat.
 | L-5 | 2.3 Rückmeldung | Der Bericht endet immer mit einem Auswahlfenster, z. B. ‚P-54: Wie ist die Prüfung ausgegangen?‘ – … | Rückmeldung im Chat, z. B. ‚alles ok‘ oder ‚ok bis auf 3‘; den Push bringt das Fenster ‚… anzeigen?‘ davor (`PushNotification` kommt am iPad nicht an). |
 | L-6 | 2.8 W-15 | Enthält das Fenster einen Link zum Prüfen am Gerät, lehnt er ab, wenn die Ausgabe davor nicht denselben Link und nummerierte Schritte mit ‚Erwartet: …‘ enthält. | Enthält ein Fenster einen Link zum Prüfen am Gerät, lehnt er es ab. Endet eine Antwort ohne Fenster, lässt er sie nur durch, wenn in ihr ein Fenster ‚… anzeigen?‘ beantwortet wurde und die letzte Ausgabe einen Link und nummerierte Schritte mit ‚Erwartet: …‘ enthält. |
 
-Offen (nicht Teil dieses Wortlauts): ob dasselbe für alles gilt, was der Nutzer vor einer Entscheidung lesen muss (Wortlaut nach
-0 Nr. 29, Satz ‚Kontext N‘, Erklärungen) – Vermutung: die Kachel verdeckt auch diese Texte.
+| L-7 | 2.1 ‚Fenster nacheinander, die Erklärung davor‘ und 0 Nr. 29 | 2.1: Muster, Beispiele und längere Erklärungen, die der Nutzer vor der Entscheidung lesen muss, kommen **als Datei oder Bild vor dem Fenster**. – 0 Nr. 29: Vorher stehen alter und neuer Text im Chat, die Frage im Auswahlfenster: ‚Regel … so ändern? Ja/Nein‘. | 2.1 (Überschrift ‚Fenster nacheinander, der Text danach‘): Alles, was der Nutzer vor einer Entscheidung lesen muss – Link, Schritte, Bericht, Wortlaut (0 Nr. 29), Muster, Erklärungen –, steht **nie vor einem Fenster** (am iPad verdeckt die Kachel den Text davor, aus ihr lässt sich nichts kopieren): zuerst ein Fenster ‚… bereit – anzeigen?‘ (Push), danach der Text als letzte Ausgabe ohne Fenster; der Nutzer antwortet im Chat. – 0 Nr. 29: Alter und neuer Text stehen nach einem Fenster ‚Wortlaut … anzeigen?‘ als letzte Ausgabe, die Antwort ‚Ja/Nein‘ kommt im Chat (2.1). |
+| L-8 | Kasten Punkt 6 und 2.8 ‚Am Ende jeder Antwort‘ | Kasten 6: Ende jeder Antwort: ein Auswahlfenster – jede Frage dort, nie ‚Sag Bescheid‘; … einzige Ausnahme die Übergabe (Nr. 28, 2.1). **W** – 2.8: … die Antwort hat ein Fenster (außer der Übergabe) … höchstens zweimal je Antwort; danach prüft er nur noch Neues. | Kasten 6: **Push bei jeder Aufgabe:** jede Antwort, nach der der Nutzer etwas tun soll (entscheiden, lesen, prüfen, antworten), enthält ein Auswahlfenster – am Ende mit der kurzen Frage oder als ‚… anzeigen?‘ vor der letzten Ausgabe (Punkt 4, 2.1) –, denn nur das Fenster bringt am iPad den Push; das gilt auch nach einem Neustart des Arbeitsprozesses und nach der Meldung einer Hintergrundaufgabe oder einer anderen Sitzung; nie ‚Sag Bescheid‘; Empfehlung zuerst mit ‚(Empfohlen)‘ und Grund, immer ‚Ich schreibe im Chat‘; einzige Ausnahme die Übergabe (Nr. 28, 2.1). **W** – 2.8: … Eine Antwort ohne beantwortetes Fenster (außer der Übergabe) lässt er **nie** enden, auch nach einem Neustart und über die zwei Zurückweisungen hinaus; sonst höchstens zweimal je Antwort, danach prüft er nur noch Neues. |
+
+Der Satz ‚Kontext N‘ vor dem Fenster bleibt (Prüfung W-14); lesen muss der Nutzer ihn nicht – er steht ohnehin in jeder Frage.
