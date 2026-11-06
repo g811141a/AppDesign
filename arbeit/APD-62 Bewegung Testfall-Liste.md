@@ -11,7 +11,7 @@ Wortlaut R-4.13 bestätigt. **Befund:** Fenster und Blatt gleiten schon seit 4.3
 
 | R-4.13 | **Menüs und Sprechblasen wachsen aus der Schaltfläche:** Menü, Untermenü, Kontextmenü (aus der Kachel) und Sprechblase (R-4.3) wachsen beim Öffnen in 0,35 s aus ihrer Schaltfläche (von 20 % auf volle Größe, Kurve wie das Blatt `cubic-bezier(.32,.72,0,1)`) und schrumpfen beim Schließen in 0,25 s dorthin zurück; Schließen während des Öffnens beginnt an der aktuellen Stelle; ‚Bewegung reduzieren‘: nur Überblenden in 0,2 s; die Endlage ist dieselbe wie ohne Bewegung; Fenster und Blatt gleiten wie bisher (R-4.6) | ablauf.mjs – neue Prüfung (Herkunft, Dauer, Endlage, Schließen mitten im Öffnen, ‚Bewegung reduzieren‘) | Gefühl am Gerät | 15.6, 15.7 |
 
-## Testfall-Liste (Entwurf – vor dem Bau bestätigen, 0 Nr. 1)
+## Testfall-Liste (bestätigt, Nutzer 06.11.2026, Sitzung 0083 – mit M-11 dunkel, 0 Nr. 1)
 
 | Nr. | Fall | Erwartet |
 |---|---|---|
@@ -25,3 +25,4 @@ Wortlaut R-4.13 bestätigt. **Befund:** Fenster und Blatt gleiten schon seit 4.3
 | M-8 | Drehen bei offenem bzw. wachsendem Menü | Endzustand wie ohne Bewegung (R-8.1) |
 | M-9 | Großanzeige (R-2.6) bei offenem Menü | unverändert |
 | M-10 | Prüfungen | jede Prüfung wartet auf das Ende der Bewegung (`warteBis`), keine festen Pausen (APD-85) |
+| M-11 | Darstellung dunkel (iPad quer, iPhone hoch) | gleiche Bewegung wie hell, Endlage wie hell, Farben wie heute (0 Nr. 1 Darstellung) |
