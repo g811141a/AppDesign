@@ -1,6 +1,6 @@
 # AppDesign – Backlog (allgemeine Themen)
 
-**Stand 05.11.2026** · Aktuelle Version: AppDesign 4.52.0
+**Stand 06.11.2026** · Aktuelle Version: AppDesign 4.52.0
 
 Allgemeine Themen, die alle Apps betreffen. App-Themen stehen im Backlog der jeweiligen App.
 Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.4.
@@ -54,6 +54,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 ## Erledigt
 
 | Nr. | Thema | Version | Datum |
+| P-95 | Geprüft **P-95 (Reiselogbuch 3.50.0): alles ok** (Nutzer 06.11.2026, Sitzung 0082) – APD-40 Pakete B und C am Gerät bestätigt (Abgleichbericht zweistelliges Datum, R-10.7; automatisch gesichert und Verwerfen, R-5.10) | 4.52.0 | 06.11.2026 |
 | APD-40 | **Pakete B und C – Texte und Abläufe automatisch prüfen:** R-4.10, R-4.11, R-4.12, R-5.10, R-10.6, R-10.7 statt G-4, G-7, G-12, G-13 und Teilen von G-19; Prüfungen `texteMenues`, `dateinameFehler` (hig.mjs, kontextmenue.mjs, backup.mjs), `checkMenueFenster`, `checkAutoSpeichern`, `checkErstFragen` (ablauf.mjs), Gegenproben APD-40/B-1 bis B-8, C-1, C-2, C-5, C-6 (Usertest P-95; **APD-40 damit abgeschlossen** – Paket D bleibt Sicht) | 4.52.0 | 05.11.2026 |
 | P-94 | Geprüft **P-94 (Reiselogbuch 3.49.0): alles ok** (Nutzer 05.11.2026, Sitzung 0081) – APD-40 Paket A am Gerät bestätigt (Kopf der Quartierliste haftet, R-6.7; gesperrte Knöpfe in Gruppen 40 %, R-3.8) | 4.51.0 | 05.11.2026 |
 | APD-114 | **Kontext in der Bau-Frage, ein Fenster je Antwort (Zusammenarbeit 3.7.0, Wortlaut bestätigt 05.11.2026):** 0 Nr. 21 ‚Soll ich Version … erstellen? (Kontext N)‘, Kasten Punkt 9, 2.8; Regelwächter APD-84/W-16 und W-17, Prüfung APD-114/B-1 bis B-12 und B-14 (`tests/regelwaechter.mjs`, Gegenprobe) | 4.51.0 | 05.11.2026 |
