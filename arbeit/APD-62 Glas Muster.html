@@ -5,7 +5,8 @@
 <meta name="apple-mobile-web-app-title" content="APD-62 Glas">
 <title>APD-62 Glas</title>
 <style>
-/* APD-62 Teil APD-38/T-37 ‚Glas-Optik schwebender Knöpfe‘ – Muster (Sitzung Reiselogbuch 0083), nur hell (Vereinbarung 30.10.2026), iPad quer.
+/* APD-62 Teil APD-38/T-37 ‚Glas-Optik schwebender Knöpfe‘ – Muster (Sitzung Reiselogbuch 0083), nur hell (Vereinbarung 30.10.2026), iPad quer und hoch, iPhone hoch und quer
+   (iPhone: ohne Seitenleiste, untere Leiste mit Suchfeld und rundem Knopf plus wie die App, 15.17 – beide ebenfalls in der gewählten Variante).
    Drei Varianten nebeneinander (0 Nr. 6) – unten als Vergleichsleiste über demselben gerollten Inhalt, oben umschaltbar für Kapsel ‚Nach oben / Ans Ende‘
    und Mehr-Menü (?v=heute|g75|g55):
    heute = wie die App (15.1): deckend --btn #f9f9f9, Lichtkante .5px weiß, Schatten --float.
@@ -20,6 +21,21 @@
 html, body { margin: 0; height: 100%; overflow: hidden; background: var(--bg); color: var(--txt); font: 17px -apple-system, system-ui, sans-serif; }
 .frame { position: fixed; inset: 0; display: grid; grid-template-columns: 320px 1fr; }
 @media (max-width: 900px) { .frame { grid-template-columns: 1fr; } #side { display: none; } }
+/* iPhone (kompakte Breite oder niedrige Höhe): untere Leiste wie die App (.bbar), Kapsel und Vergleich darüber */
+.bbar { display: none; }
+@media (max-width: 600px), (max-height: 500px) {
+  .bar .seg a { padding: 6px 8px; font-size: 14px; } label.sw { font-size: 14px; }
+  .bbar { display: flex; position: absolute; z-index: 8; left: max(16px, env(safe-area-inset-left)); right: max(16px, env(safe-area-inset-right));
+    bottom: calc(env(safe-area-inset-bottom) + 10px); gap: 10px; align-items: center; }
+  .bbar::before { content: ''; position: absolute; left: -16px; right: -16px; bottom: calc(-10px - env(safe-area-inset-bottom)); height: 100px; z-index: -1;
+    background: linear-gradient(to bottom, transparent, var(--bg) 55%); pointer-events: none; }
+  .bbar .sb { flex: 1; height: 44px; border-radius: 22px; display: flex; align-items: center; gap: 8px; padding: 0 14px; color: var(--sub); }
+  .bbar .rb { width: 44px; height: 44px; border-radius: 22px; display: grid; place-items: center; color: var(--blue); border: 0; padding: 0; }
+  main .fab { bottom: calc(env(safe-area-inset-bottom) + 70px); }
+  main .cmp { left: 16px; transform: none; bottom: calc(env(safe-area-inset-bottom) + 70px); gap: 8px; flex-direction: column; align-items: flex-start; }
+  main .cmp .k { font-size: 13px; padding-right: 10px; }
+  main .content { padding: 16px 16px 300px; } .pics { grid-template-columns: repeat(3, 1fr); } main .pic { height: 90px; }
+}
 #side { background: var(--card); border-right: .5px solid var(--line); padding: max(12px, env(safe-area-inset-top)) 16px 16px; overflow: hidden; }
 #side h2 { font-size: 28px; margin: 8px 0 12px; }
 .row { padding: 12px; border-radius: 10px; margin-bottom: 4px; }
@@ -79,6 +95,10 @@ button:active { opacity: .35; }
       <div class="k v-g75"><button aria-label="Nach oben"><svg viewBox="0 0 24 24"><path d="M5 3h14"/><path d="m18 13-6-6-6 6"/><path d="M12 7v14"/></svg></button>Glas 75 %</div>
       <div class="k v-g55"><button aria-label="Nach oben"><svg viewBox="0 0 24 24"><path d="M5 3h14"/><path d="m18 13-6-6-6 6"/><path d="M12 7v14"/></svg></button>Glas 55 %</div>
     </div>
+    <div class="bbar" id="bbar">
+      <div class="sb" id="sb"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>Suchen</div>
+      <button class="rb" id="rb" aria-label="Neu"><svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+    </div>
     <div class="fab" id="fab">
       <button id="up" aria-label="Nach oben"><svg viewBox="0 0 24 24"><path d="M5 3h14"/><path d="m18 13-6-6-6 6"/><path d="M12 7v14"/></svg></button>
       <button id="down" aria-label="Ans Ende"><svg viewBox="0 0 24 24"><path d="M12 17V3"/><path d="m6 11 6 6 6-6"/><path d="M19 21H5"/></svg></button>
@@ -97,7 +117,7 @@ button:active { opacity: .35; }
 const farben = [['#ff9500','#ff2d55'],['#34c759','#007aff'],['#5856d6','#af52de'],['#ffcc00','#ff9500'],['#5ac8fa','#34c759'],['#ff3b30','#5856d6'],['#1c1c1e','#8e8e93'],['#ffffff','#e5e5ea']];
 const orte = ['Reykjavík','Þingvellir','Geysir','Gullfoss','Vík','Jökulsárlón','Höfn','Mývatn','Akureyri','Snæfellsnes','Borgarnes','Keflavík'];
 const c = document.getElementById('content');
-let h = '<p class="info">Rolle den Inhalt und vergleiche unten die drei Kapseln (heute, Glas 75 %, Glas 55 %) über Bildern, Text und Weiß. Oben wählst du die Variante für die Kapsel unten rechts und das Mehr-Menü (ellipsis).</p>';
+let h = '<p class="info">Rolle den Inhalt und vergleiche unten die drei Kapseln (heute, Glas 75 %, Glas 55 %) über Bildern, Text und Weiß. Oben wählst du die Variante für die Kapsel unten rechts und das Mehr-Menü (ellipsis), auf dem iPhone auch für Suchfeld und plus in der unteren Leiste.</p>';
 orte.forEach((o, i) => {
   h += `<section class="day"><h3>Tag ${i + 1} · ${o}</h3><p>Am Morgen Fahrt nach ${o}, unterwegs zwei Stopps an Wasserfällen. Mittag im Café am Hafen, danach Wanderung bei Wind und Sonne; abends Fischsuppe und Blick auf die Bucht.</p><div class="pics">` +
     [0,1,2].map(k => { const f = farben[(i * 3 + k) % farben.length]; return `<div class="pic" style="background:linear-gradient(135deg,${f[0]},${f[1]})"></div>`; }).join('') + '</div></section>';
@@ -109,6 +129,7 @@ const fab = document.getElementById('fab'), menu = document.getElementById('menu
 function setze() {
   const cls = v === 'heute' ? 'glass' : 'v-' + v;
   fab.className = 'fab ' + cls; menu.className = 'menu ' + cls;
+  document.getElementById('sb').className = 'sb ' + cls; document.getElementById('rb').className = 'rb ' + cls;
   document.querySelectorAll('#seg a').forEach(a => { a.classList.toggle('on', a.dataset.v === v); a.href = '?v=' + a.dataset.v; });
 }
 document.querySelectorAll('#seg a').forEach(a => a.addEventListener('click', e => { e.preventDefault(); v = a.dataset.v; history.replaceState(null, '', '?v=' + v); setze(); }));
