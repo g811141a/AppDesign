@@ -1,0 +1,124 @@
+<!doctype html><html lang="de"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="APD-62 Muster">
+<title>APD-62 Muster</title>
+<style>
+/* APD-62 Teil APD-38/T-16 ‚Öffnen und Schließen mit Bewegung‘ – Muster zum Ausprobieren (Sitzung Reiselogbuch 0082), nur hell, iPad quer.
+   Vier Varianten über ?v=heute|a|b|c (oben in der Kopfzeile umschaltbar):
+   heute = wie die App: Fenster, Menü, Sprechblase und Seitenleiste erscheinen sofort.
+   A     = Apple-nah (iOS 26, Vergleich APD-38/T-16): Fenster gleitet von unten herein (0,5 s, Kurve cubic-bezier(.32,.72,0,1) wie der iOS-Nachbau
+           von Ionic), Abdunkelung blendet ein; Menü und Sprechblase wachsen aus der Schaltfläche (0,35 s); Seitenleiste gleitet (0,35 s);
+           Schließen jeweils umgekehrt und etwas schneller (0,25 s).
+   B     = dieselben Wege, aber kurz: Fenster 0,3 s, Menü und Sprechblase 0,2 s und nur aus 90 % Größe, Schließen 0,15 s.
+   C     = nur Überblenden (0,2 s) – so verhält sich jede Variante bei ‚Bewegung reduzieren‘ (Schalter oben).
+   Jede Bewegung lässt sich unterbrechen: x oder Häkchen während des Hereingleitens schließt sofort von der aktuellen Stelle. */
+:root { --bg: #f2f2f7; --card: #fff; --line: #d1d1d6; --txt: #000; --sub: #6e6e73; --blue: #007aff; --red: #ff3b30; --btn: #f9f9f9;
+  --float: 0 3px 28px rgba(0,0,0,.16); color-scheme: light; }
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { margin: 0; height: 100%; overflow: hidden; background: var(--bg); color: var(--txt); font: 17px -apple-system, system-ui, sans-serif; }
+.frame { position: fixed; inset: 0; display: grid; grid-template-columns: auto 1fr; }
+#side { width: 320px; background: var(--card); border-right: .5px solid var(--line); overflow: hidden; }
+#side .in { width: 320px; padding: max(12px, env(safe-area-inset-top)) 16px 16px; }
+#side h2 { font-size: 28px; margin: 8px 0 12px; }
+.row { padding: 12px; border-radius: 10px; margin-bottom: 4px; }
+.row.on { background: var(--blue); color: #fff; }
+main { display: grid; grid-template-rows: auto 1fr; min-width: 0; }
+.bar { display: flex; align-items: center; gap: 8px; min-height: 52px; padding: env(safe-area-inset-top) 12px 0; border-bottom: .5px solid var(--line); flex-wrap: wrap; }
+.bar h1 { font-size: 17px; font-weight: 600; margin: 0 auto 0 4px; }
+.seg { display: flex; background: #e3e3e8; border-radius: 9px; padding: 2px; }
+.seg a { padding: 6px 12px; border-radius: 7px; color: var(--txt); text-decoration: none; font-size: 15px; }
+.seg a.on { background: var(--card); box-shadow: 0 1px 3px rgba(0,0,0,.15); font-weight: 600; }
+.ib { width: 44px; height: 44px; border-radius: 22px; border: 0; background: var(--btn); box-shadow: var(--float); font-size: 20px; color: var(--blue); }
+.content { overflow: auto; padding: 20px; }
+.info { color: var(--sub); font-size: 15px; margin: 0 0 16px; max-width: 640px; }
+.btns { display: flex; gap: 12px; flex-wrap: wrap; }
+.big { min-height: 44px; padding: 0 18px; border-radius: 22px; border: 0; background: var(--card); color: var(--blue); font-size: 17px; box-shadow: 0 1px 2px rgba(0,0,0,.08); }
+label.sw { display: flex; align-items: center; gap: 8px; font-size: 15px; color: var(--sub); }
+/* Fenster (Formblatt), Menü, Sprechblase */
+#dim { position: fixed; inset: 0; background: rgba(0,0,0,.25); opacity: 0; pointer-events: none; }
+#dim.open { pointer-events: auto; }
+#dlg { position: fixed; left: 50%; top: 50%; width: min(560px, 90vw); height: min(560px, 80vh); margin: calc(min(560px, 80vh) / -2) 0 0 calc(min(560px, 90vw) / -2);
+  background: var(--bg); border-radius: 16px; box-shadow: 0 10px 60px rgba(0,0,0,.25); display: none; flex-direction: column; overflow: hidden; }
+#dlg .head { display: grid; grid-template-columns: 44px 1fr 44px; align-items: center; padding: 10px; }
+#dlg .head b { text-align: center; }
+#dlg .ok { color: #fff; background: var(--blue); }
+#dlg .body { padding: 16px; } #dlg textarea { width: 100%; height: 160px; border: 0; border-radius: 10px; padding: 12px; font: inherit; }
+.menu { position: fixed; min-width: 240px; background: rgba(255,255,255,.98); border-radius: 14px; box-shadow: 0 10px 40px rgba(0,0,0,.22); padding: 6px 0; display: none; }
+.menu div { padding: 11px 16px; } .menu .red { color: var(--red); } .menu hr { border: 0; border-top: .5px solid var(--line); margin: 4px 0; }
+</style></head><body>
+<div class="frame">
+  <aside id="side"><div class="in"><h2>Reiselogbücher</h2><div class="row on">Australien</div><div class="row">Island</div><div class="row">Toskana</div></div></aside>
+  <main>
+    <div class="bar">
+      <button class="ib" id="bSide" aria-label="Seitenleiste ein/aus">▥</button>
+      <h1>APD-62 Bewegung</h1>
+      <div class="seg" id="seg"></div>
+      <label class="sw"><input type="checkbox" id="reduce"> Bewegung reduzieren</label>
+      <button class="ib" id="bMenu" aria-label="Mehr">…</button>
+    </div>
+    <div class="content">
+      <p class="info" id="info"></p>
+      <div class="btns">
+        <button class="big" id="bDlg">Fenster ‚Tag‘ öffnen</button>
+        <button class="big" id="bPop">Sprechblase (x mit Änderung)</button>
+      </div>
+    </div>
+  </main>
+</div>
+<div id="dim"></div>
+<div id="dlg" role="dialog" aria-label="Tag"><div class="head"><button class="ib" id="dX" aria-label="Schließen">✕</button><b>Mo., 24.08.2026</b><button class="ib ok" id="dOk" aria-label="Fertig">✓</button></div>
+  <div class="body"><textarea>Fahrt nach Sydney</textarea></div></div>
+<div class="menu" id="menu"><div>Suchen</div><hr><div>Backup erstellen</div><div>Backup laden</div><div>Einstellungen</div><hr><div class="red">Alle löschen</div></div>
+<div class="menu" id="pop"><div class="red">Änderungen verwerfen</div><div>Weiter bearbeiten</div></div>
+<script>
+const V = { heute: null,
+  a: { dlgIn: 500, dlgOut: 250, popIn: 350, popOut: 250, side: 350, from: .2, ease: 'cubic-bezier(.32,.72,0,1)' },
+  b: { dlgIn: 300, dlgOut: 150, popIn: 200, popOut: 150, side: 250, from: .9, ease: 'cubic-bezier(.32,.72,0,1)' },
+  c: { fade: 200 } };
+const TXT = { heute: 'Heute: alles erscheint sofort – zum Vergleich.',
+  a: 'A Apple-nah: Fenster gleitet von unten herein (0,5 s), Menü und Sprechblase wachsen aus der Schaltfläche (0,35 s), Seitenleiste gleitet. Schließen umgekehrt, schneller.',
+  b: 'B kurz: dieselben Wege, aber etwa halb so lang; Menü und Sprechblase wachsen nur aus 90 %.',
+  c: 'C nur Überblenden (0,2 s) – so verhält sich jede Variante bei ‚Bewegung reduzieren‘.' };
+const v = new URLSearchParams(location.search).get('v') in V ? new URLSearchParams(location.search).get('v') : 'a';
+seg.innerHTML = Object.keys(V).map(k => `<a href="?v=${k}" class="${k === v ? 'on' : ''}">${k === 'heute' ? 'Heute' : k.toUpperCase()}</a>`).join('');
+info.textContent = TXT[v];
+const mq = matchMedia('(prefers-reduced-motion: reduce)'); reduce.checked = mq.matches;
+const mode = () => v === 'heute' ? null : (reduce.checked || v === 'c') ? V.c : V[v];
+const anim = (el, frames, ms, ease = 'ease') => { el.getAnimations().forEach(a => a.cancel()); return ms ? el.animate(frames, { duration: ms, easing: ease, fill: 'forwards' }) : null; };
+// Fenster
+function openDlg() { const m = mode(); dlg.style.display = 'flex'; dim.classList.add('open');
+  if (!m) { dim.style.opacity = 1; return; }
+  if (m.fade) { anim(dlg, [{ opacity: 0 }, { opacity: 1 }], m.fade); anim(dim, [{ opacity: 0 }, { opacity: 1 }], m.fade); return; }
+  anim(dlg, [{ transform: 'translateY(100vh)' }, { transform: 'none' }], m.dlgIn, m.ease); anim(dim, [{ opacity: 0 }, { opacity: 1 }], m.dlgIn); }
+function closeDlg() { const m = mode(); dim.classList.remove('open'); const done = () => { dlg.style.display = 'none'; dim.style.opacity = 0; dim.getAnimations().forEach(a => a.cancel()); };
+  if (!m) return done();
+  const from = getComputedStyle(dlg).transform, op = getComputedStyle(dim).opacity;   // unterbrechbar: ab der aktuellen Stelle
+  const a = m.fade ? anim(dlg, [{ opacity: getComputedStyle(dlg).opacity }, { opacity: 0 }], m.fade)
+    : anim(dlg, [{ transform: from === 'none' ? 'none' : from }, { transform: 'translateY(100vh)' }], m.dlgOut, 'cubic-bezier(.4,0,1,1)');
+  anim(dim, [{ opacity: op }, { opacity: 0 }], m.fade || m.dlgOut); a.onfinish = () => { done(); dlg.getAnimations().forEach(x => x.cancel()); }; }
+// Menü und Sprechblase wachsen aus der Schaltfläche
+function openPop(el, btn, below = true) { closePops(el); const r = btn.getBoundingClientRect(); el.style.display = 'block';
+  const w = el.offsetWidth; el.style.left = Math.max(8, Math.min(innerWidth - w - 8, r.right - w)) + 'px'; el.style.top = (r.bottom + 8) + 'px';
+  el.style.transformOrigin = `${r.left + r.width / 2 - parseFloat(el.style.left)}px -8px`; el.dataset.open = 1;
+  const m = mode(); if (!m) return; if (m.fade) return anim(el, [{ opacity: 0 }, { opacity: 1 }], m.fade);
+  anim(el, [{ opacity: 0, transform: `scale(${m.from})` }, { opacity: 1, transform: 'none' }], m.popIn, m.ease); }
+function closePop(el) { if (!el.dataset.open) return; delete el.dataset.open; const m = mode(); const done = () => { el.style.display = 'none'; el.getAnimations().forEach(a => a.cancel()); };
+  if (!m) return done(); const a = m.fade ? anim(el, [{ opacity: getComputedStyle(el).opacity }, { opacity: 0 }], m.fade)
+    : anim(el, [{ opacity: getComputedStyle(el).opacity, transform: getComputedStyle(el).transform }, { opacity: 0, transform: `scale(${Math.max(m.from, .6)})` }], m.popOut, 'ease-in');
+  a.onfinish = done; }
+const closePops = except => [menu, pop].forEach(x => x !== except && closePop(x));
+// Seitenleiste gleitet
+let sideOpen = true;
+function toggleSide() { sideOpen = !sideOpen; const m = mode(), w = sideOpen ? 320 : 0;
+  if (!m || m.fade) { if (m?.fade) anim(side, [{ opacity: sideOpen ? 0 : 1 }, { opacity: 1 }], m.fade); side.style.width = w + 'px'; return; }
+  const from = side.offsetWidth; side.style.width = w + 'px'; anim(side, [{ width: from + 'px' }, { width: w + 'px' }], m.side, m.ease); }
+bDlg.onclick = openDlg; dX.onclick = () => openPop(pop, dX); dOk.onclick = closeDlg;
+bPop.onclick = () => openPop(pop, bPop);
+bMenu.onclick = e => { e.stopPropagation(); menu.dataset.open ? closePop(menu) : openPop(menu, bMenu); };
+bSide.onclick = toggleSide;
+pop.onclick = e => { const t = e.target.textContent; closePop(pop); if (t === 'Änderungen verwerfen' && dlg.style.display === 'flex') closeDlg(); };
+menu.onclick = () => closePop(menu);
+document.addEventListener('click', e => { if (!e.target.closest('.menu, button')) closePops(); }, true);
+</script></body></html>
