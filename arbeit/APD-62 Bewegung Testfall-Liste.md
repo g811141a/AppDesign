@@ -3,7 +3,8 @@
 Stand 06.11.2026 · Sitzung Reiselogbuch 0082 · Muster `arbeit/APD-62 Bewegung Muster.html` (Varianten heute, A, B, C). Die Nummern gelten
 nur in dieser Datei (außerhalb APD-62/M-n). **Gewählt: Variante A Apple-nah** (Nutzer 06.11.2026, Sitzung 0082): Fenster gleitet von unten (0,5 s, cubic-bezier(.32,.72,0,1)), Menü und
 Sprechblase wachsen aus der Schaltfläche (0,35 s), Seitenleiste gleitet (0,35 s), Schließen umgekehrt in 0,25 s; ‚Bewegung reduzieren‘ =
-nur Überblenden 0,2 s. Offen: Muster dunkel und hoch sowie iPhone (0 Nr. 6), allgemeine Regel (0 Nr. 4), Wortlaut; dann vor dem Bau bestätigen (0 Nr. 1).
+nur Überblenden 0,2 s. Muster iPad hoch und iPhone (Blatt von unten) bestätigt, allgemeine Regel ja (Nutzer 06.11.2026). Offen: Wortlaut der Regel im Katalog
+(0 Nr. 29) und diese Liste vor dem Bau bestätigen (0 Nr. 1).
 
 | Nr. | Fall | Erwartet |
 |---|---|---|
