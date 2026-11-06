@@ -111,6 +111,40 @@ export function masseStile() {
   document.querySelectorAll('.check.chip').forEach(e => { if (!vis(e)) return;
     hoehe('R-5.9', e, Math.max(44, 44 * fBody), 'Options-Kapsel');
     const f = parseFloat(cs(e).fontSize), soll = v('--t-subhead', 15); if (Math.abs(f - soll) > 0.5) R('R-5.9', `Options-Kapsel ‚${name(e)}‘ Schrift ${f} px statt ${soll} (15 px)`); });
+  // R-3.9 (seit 4.53.0, APD-38/T-37, Testfall-Liste APD-62/L-1 bis L-9): Kapsel Nach oben / Ans Ende, Menü, Untermenü, Kontextmenü, Suchfeld und runde
+  // Knöpfe der unteren Leiste – Grundfarbe 75 % deckend, Unschärfe 20 px, Sättigung 180 %, Schatten (L-1 bis L-3, L-5, L-6; Lichtkante --btn-rim wie R-3.2);
+  // ‚Transparenz reduzieren‘ deckend ohne Unschärfe (L-4); Leisten, Fenster, Sprechblasen und alle übrigen Schaltflächen ohne Unschärfe (L-7); in den
+  // Stilblättern deckend bei ‚Transparenz reduzieren‘ und in der Ausgabe (L-4, L-9 – WebKit kann ‚Transparenz reduzieren‘ nicht nachbilden). Einzeln in checkGlas;
+  // Gegenproben: lauf.mjs --gegenprobe masse (glas, glasleiste).
+  const GLAS = '.fab, .menu, .bbar .searchbox input[type=search], .bbar > button:not([aria-pressed="true"])';
+  const visG = e => { const s = cs(e), b = e.getBoundingClientRect(); return b.width > 0 && b.height > 0 && s.visibility !== 'hidden' && s.display !== 'none'; };
+  const nameG = e => (e.getAttribute('aria-label') || (e.matches('.menu') ? 'Menü' : '') || e.id || e.className || e.tagName).toString().replace(/\s+/g, ' ').trim().slice(0, 30);
+  const filt = e => cs(e).backdropFilter || cs(e).webkitBackdropFilter || 'none';
+  const alpha = c => { const m = c.match(/rgba?\(([^)]+)\)/); if (!m) return 1; const q = m[1].split(/[\s,\/]+/).filter(Boolean); return q.length > 3 ? parseFloat(q[3]) * (q[3].endsWith('%') ? 0.01 : 1) : 1; };
+  const rt = matchMedia('(prefers-reduced-transparency: reduce)').matches;
+  document.querySelectorAll(GLAS).forEach(e => {
+    if (!visG(e)) return;
+    const f = filt(e), a = alpha(cs(e).backgroundColor), n = nameG(e);
+    if (rt) { if (f !== 'none' || a < 0.999) R('R-3.9', `APD-62/L-4 ‚${n}‘ mit ‚Transparenz reduzieren‘ nicht deckend (Deckkraft ${Math.round(a * 100)} %, ${f})`); return; }
+    if (!/blur\(20px\)/.test(f) || !/saturate\((1\.8|180%)\)/.test(f)) R('R-3.9', `APD-62/L-1 ‚${n}‘ nicht aus Glas (${f} statt blur(20px) saturate(180%))`);
+    if (Math.abs(a - 0.75) > 0.011) R('R-3.9', `APD-62/L-1 ‚${n}‘ Grundfarbe ${Math.round(a * 100)} % deckend statt 75 %`);
+    if (cs(e).boxShadow === 'none') R('R-3.9', `APD-62/L-1 ‚${n}‘ ohne Schatten`);
+  });
+  document.querySelectorAll('button, input, dialog, .pop, .nb, .nb2, .pnav, .bbar, .cap, .grp, .navgrp, #side, .side-head, .dlg-head, .titel-blase').forEach(e => {
+    if (!visG(e) || e.matches(GLAS) || e.closest('.zu-geist')) return;
+    if (filt(e) !== 'none') R('R-3.9', `APD-62/L-7 ‚${nameG(e)}‘ aus Glas – Leisten, Fenster, Sprechblasen und übrige Schaltflächen bleiben deckend`);
+  });
+  // Stilblätter: unter prefers-reduced-transparency bzw. print je eine Regel mit backdrop-filter: none für Kapsel und Menü
+  const regeln = (list, bed, acc = []) => { for (const r of list) { const c = r.conditionText || r.media?.mediaText;
+    if (c != null && r.cssRules) regeln(r.cssRules, [...bed, c], acc); else if (r.selectorText) acc.push({ bed, sel: r.selectorText, st: r.style }); } return acc; };
+  let alle = []; for (const s of document.styleSheets) { try { alle = alle.concat(regeln(s.cssRules, [])); } catch {} }
+  const deckend = (re, teil) => alle.some(x => x.bed.some(b => re.test(b)) && x.sel.includes(teil) && /none/.test(x.st.getPropertyValue('backdrop-filter') || x.st.getPropertyValue('-webkit-backdrop-filter') || ''));
+  if (alle.some(x => x.sel.includes('.menu') && /blur/.test(x.st.getPropertyValue('backdrop-filter') || '')) || alle.some(x => /var\(--glas-filter\)/.test(x.st.getPropertyValue('backdrop-filter') || ''))) {
+    for (const teil of ['.fab', '.menu']) {
+      if (!deckend(/prefers-reduced-transparency:\s*reduce/, teil)) R('R-3.9', `APD-62/L-4 keine Stilregel ‚Transparenz reduzieren‘ → deckend für ${teil}`);
+      if (!deckend(/\bprint\b/, teil)) R('R-3.9', `APD-62/L-9 keine Stilregel für die Ausgabe ohne Unschärfe für ${teil}`);
+    }
+  }
   // R-6.7 Tabelle: der Tabellenkopf haftet beim Rollen (App; die Ausgabe wird nicht gerollt), Links ohne Unterstreichung, Zahlenspalten (th/td.num) rechtsbündig
   document.querySelectorAll('table').forEach(t => {
     if (!vis(t)) return;
@@ -120,6 +154,33 @@ export function masseStile() {
     t.querySelectorAll('td.num, th.num').forEach(c => { if (vis(c) && !/right|end/.test(cs(c).textAlign)) R('R-6.7', `${n}: Zahlenspalte ‚${name(c)}‘ nicht rechtsbündig (${cs(c).textAlign})`); });
   });
   return out;
+}
+
+export const GLAS = '.fab, .menu, .bbar .searchbox input[type=search], .bbar > button:not([aria-pressed="true"])';
+// Einzelprüfung R-3.9 (seit 4.53.0, APD-62/L-1 bis L-4, L-10): öffnet das Menü (menue), prüft Glas schon während des Wachsens (L-10) und danach,
+// mit ‚Transparenz reduzieren‘ (nur Chromium kann es nachbilden – Emulation.setEmulatedMedia) deckend. Gibt Fehler zurück.
+export async function checkGlas(p, { menue, where = '' } = {}) {
+  const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}${t}`);
+  const filtStand = () => p.evaluate(() => { const m = document.querySelector('.menu:not(.submenu)'), s = m && getComputedStyle(m);
+    return m && { f: s.backdropFilter || s.webkitBackdropFilter || 'none', waechst: m.getAnimations().some(a => a.playState !== 'finished') }; });
+  await p.click(menue);
+  const w = await filtStand();
+  if (!w) { E(`R-3.9 Menü ${menue} öffnet sich nicht`); return errors; }
+  if (!/blur\(20px\)/.test(w.f)) E(`R-3.9 APD-62/L-10 Menü ${menue} während des Wachsens nicht aus Glas (${w.f})`);
+  await p.waitForFunction(() => !document.getAnimations().some(a => a.playState === 'running'), null, { timeout: 3000 }).catch(() => {});
+  const n = await p.evaluate(g => [...document.querySelectorAll(g)].filter(e => e.getClientRects().length).length, GLAS);
+  if (n < 1) E('R-3.9 kein Baustein aus Glas zu sehen – die Prüfung prüft nichts');
+  for (const x of (await p.evaluate(masseStile)).filter(x => x.startsWith('R-3.9'))) E(x);
+  if (p.context().browser()?.browserType().name() === 'chromium') {
+    const cdp = await p.context().newCDPSession(p);
+    await cdp.send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-transparency', value: 'reduce' }] });
+    if (!await p.evaluate(() => matchMedia('(prefers-reduced-transparency: reduce)').matches)) E('R-3.9 APD-62/L-4 ‚Transparenz reduzieren‘ lässt sich nicht nachbilden');
+    for (const x of (await p.evaluate(masseStile)).filter(x => x.startsWith('R-3.9'))) E(x);
+    await cdp.send('Emulation.setEmulatedMedia', { features: [] }); await cdp.detach();
+  }
+  await p.keyboard.press('Escape');
+  await p.waitForFunction(() => !document.querySelector('.zu-geist'), null, { timeout: 3000 }).catch(() => {});
+  return errors;
 }
 
 // APD-40 Paket B (seit 4.52.0, Testfall-Liste arbeit/APD-40 Paket B.md, APD-40/B-1 bis B-4, B-6 bis B-8): Texte, die bisher nur Sicht waren
@@ -751,7 +812,7 @@ const found = new Map(), icons = new Map();
     for (const [k, list] of Object.entries(r)) for (const x of list) note('Regel', { target: 'R-3.1 Antippfläche ', font: 'R-10.2 Schrift ', contrast: 'R-10.2 Kontrast ', quotes: 'R-10.1 Anführungszeichen ', menu: 'R-4.1 Menü: ', rules: '' }[k] + x, where);
     for (const x of await p.evaluate(bezeichnungen)) note('Regel', `R-5.8 ${x}`, where);
     for (const x of await p.evaluate(kastenBezeichnung)) note('Regel', `R-6.5 ${x}`, where);
-    for (const x of await p.evaluate(masseStile)) note('Regel', x, where);   // APD-40 Paket A: R-1.11, R-3.7, R-3.8, R-4.8, R-4.9, R-5.9, R-6.7
+    for (const x of await p.evaluate(masseStile)) note('Regel', x, where);   // APD-40 Paket A: R-1.11, R-3.7, R-3.8, R-4.8, R-4.9, R-5.9, R-6.7; seit 4.53.0 R-3.9
     for (const x of await p.evaluate(texteMenues)) note('Regel', x, where);  // APD-40 Paket B: R-4.10, R-10.6, R-10.7
     if (schnell) return;
     await safe(p, where);

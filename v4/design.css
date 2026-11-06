@@ -1,4 +1,4 @@
-/* AppDesign 4.52.0 · design.css – gemeinsame Gestaltung der iPad-Web-Apps von g811141a (Apple-like)
+/* AppDesign 4.53.0 · design.css – gemeinsame Gestaltung der iPad-Web-Apps von g811141a (Apple-like)
    Einbinden im <head> vor dem eigenen <style> der App:  <link rel="stylesheet" href="../AppDesign/fassung/X.Y.Z/design.css"> (feste Fassung, R-10.3)
    Farben als Variablen auf :root, Dunkelmodus über data-theme="dark" (setzt ui.js / applyTheme).
    Komponenten: Schaltflächen, Suchfeld, Kapsel, Eingabefelder, Datumsfelder, Kopfzeile, Seitenleiste,
@@ -6,7 +6,7 @@
    Options-Kapsel; seit 4.1.0 iPhone-Ansicht (html.phone: Seitenkopf, großer Titel, Liste, Kasten, untere Leiste). Regeln dazu: README - Designrichtlinie allgemein.md */
 /* Farben im Apple-Look: Hintergrund Hellgrau, Kästen weiß ohne Rand, schwebende Schaltflächen */
 :root {
-  --ad-version: "4.52.0";   /* R-10.3: Version der Bausteine, die App prüft sie beim Start */
+  --ad-version: "4.53.0";   /* R-10.3: Version der Bausteine, die App prüft sie beim Start */
   --bg: #f2f2f7;
   --card: #ffffff;
   --ink: #1c1c1e;
@@ -35,6 +35,11 @@
   --beruehrt: #e5e5ea;   /* seit 4.48.0 (R-3.6): Zeile beim Berühren */
   --heben: #ffffff;   /* seit 4.48.2 (R-3.6, APD-107): Leisten-Knopf beim Berühren */
   --gross-bg: rgba(242,242,247,.94);   /* seit 4.48.0 (R-2.6): Großanzeige */
+  /* seit 4.53.0 (R-3.9, APD-38/T-37): Glas für Schwebendes – Grundfarbe zu 75 % deckend, Unschärfe 20 px, Sättigung 180 %, Lichtkante oben */
+  --glas-knopf: rgba(255,255,255,.75);
+  --glas-karte: rgba(255,255,255,.75);
+  --glas-filter: blur(20px) saturate(180%);
+  --glas-licht: inset 0 1px 0 rgba(255,255,255,.8);
   --mark: #ffe45c;
   --mark-cur: #ffc46b;
   --mark-cur-ink: inherit;
@@ -63,6 +68,7 @@
   --dlg-bg: #1c1c1e; --dlg-card: #2c2c2e; --dlg-field: #1c1c1e;
   --btn: #3a3a3c; --btn-rim: rgba(255,255,255,.16); --sel-bg: #10335c;
   --beruehrt: #3a3a3c; --gross-bg: rgba(44,44,46,.94); --heben: #636366;
+  --glas-knopf: rgba(58,58,60,.75); --glas-karte: rgba(44,44,46,.75); --glas-licht: inset 0 1px 0 rgba(255,255,255,.08);   /* R-3.9: --btn bzw. Menüfarbe zu 75 % */
   --mark: #8a6d00; --mark-cur: #e08a1e; --mark-cur-ink: #000;
   --float: 0 3px 28px rgba(0,0,0,.7);
   --glow-accent: 0 2px 4px rgba(0,0,0,.5), 0 5px 18px rgba(10,132,255,.50);
@@ -822,3 +828,20 @@ dialog.gleitet { transition: top .25s ease; }
   #side .side-row.current small, #side .side-row.current > .ic, .irow.current small, .irow.current > .ic { color: #ffffff; }
   .schnell .griff > span { color: var(--ink); }
 }
+/* R-3.9 (seit 4.53.0, APD-38/T-37, Testfall-Liste APD-62/L-1 bis L-10): Schwebendes aus Glas wie iOS 26 – die Kapsel Nach oben / Ans Ende, Menü,
+   Untermenü und Kontextmenü sowie Suchfeld und runde Knöpfe der unteren Leiste (iPhone): Grundfarbe zu 75 % deckend, Unschärfe 20 px, Sättigung 180 %,
+   Lichtkante (--btn-rim, mit ‚Kontrast erhöhen‘ kräftiger) und Schatten wie R-3.2. Leisten, Fenster, Sprechblasen und alle übrigen Schaltflächen bleiben
+   deckend. ‚Transparenz reduzieren‘ des Geräts und die Ausgabe: deckend wie bisher. Am Ende, damit es die Farben der Bauteile übersteuert. */
+.fab, .menu, .bbar .searchbox input[type=search], .bbar > button:not([aria-pressed="true"]) {
+  -webkit-backdrop-filter: var(--glas-filter); backdrop-filter: var(--glas-filter); box-shadow: var(--float), var(--glas-licht); }
+.fab, .bbar .searchbox input[type=search], .bbar > button:not([aria-pressed="true"]) { background: var(--glas-knopf); }
+.menu, :root[data-theme="dark"] .menu { background: var(--glas-karte); }
+@media (prefers-reduced-transparency: reduce) {
+  .fab, .menu, .bbar .searchbox input[type=search], .bbar > button:not([aria-pressed="true"]) { -webkit-backdrop-filter: none; backdrop-filter: none; box-shadow: var(--float); }
+  .fab, .bbar .searchbox input[type=search], .bbar > button:not([aria-pressed="true"]) { background: var(--btn); }
+  .menu { background: var(--card); }
+  :root[data-theme="dark"] .menu { background: #2c2c2e; }
+}
+@media print { .fab, .menu, .bbar .searchbox input[type=search], .bbar > button, .zu-geist { -webkit-backdrop-filter: none !important; backdrop-filter: none !important; } .zu-geist { display: none !important; } }
+/* R-4.13 (seit 4.53.0, APD-38/T-16): Abbild eines schließenden Menüs bzw. einer Sprechblase – schrumpft zur Schaltfläche, nicht bedienbar (Stile setzt ui.js) */
+.zu-geist { pointer-events: none !important; }

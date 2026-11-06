@@ -3,6 +3,41 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.53.0 – 06.11.2026
+
+AppDesign 4.53.0 · Designrichtlinie allgemein 4.53.0 · Zusammenarbeit allgemein 3.8.0 · geprüft mit Reiselogbuch 3.51.0
+
+**APD-62 Bewegung und Glas, APD-113 Push und Kontextstand** – dein Ja vom 06.11.2026, Sitzung 0083 (‚Ja, ich nehme deine Empfehlung an‘ –
+Übergabe, 0084 baut). Wortlaut und Testfall-Listen `arbeit/APD-62 Bewegung Testfall-Liste.md`, `arbeit/APD-62 Glas Testfall-Liste.md`,
+`arbeit/APD-113 Push und Kontext Wortlaut und Testfall-Liste.md`. Usertest im Reiselogbuch: P-97.
+
+- **APD-38/T-16 – Menüs und Sprechblasen wachsen aus der Schaltfläche (neu R-4.13):** Menü, Untermenü, Kontextmenü und Sprechblase wachsen in
+  0,35 s aus der Mitte ihrer Schaltfläche (20 % → volle Größe, Kurve wie das Blatt) und schrumpfen beim Schließen in 0,25 s dorthin zurück (auf 60 %
+  und ausgeblendet, wie Muster Variante A); Schließen mitten im Öffnen beginnt an der aktuellen Größe; ‚Bewegung reduzieren‘: nur Überblenden 0,2 s.
+  `ui.js`: `wachsen`/`schrumpfen` in `openMenu` und `choosePop` – die Lage setzt `placeAt` wie bisher, die Bewegung ist nur eine Animation ohne
+  `fill` (Endlage wie ohne Bewegung); beim Schließen ist der Baustein sofort weg (Zustand, Fokus, Sperre wie bisher), ein nicht bedienbares Abbild
+  (`.zu-geist`, für VoiceOver verborgen) schrumpft. Das Untermenü richtet sich während das Menü noch wächst nach `left`/`top` statt nach der
+  verkleinerten Größe aus.
+- **APD-38/T-37 – Schwebendes aus Glas (neu R-3.9):** Kapsel Nach oben / Ans Ende, Menü, Untermenü, Kontextmenü sowie Suchfeld und runde Knöpfe der
+  unteren Leiste: Grundfarbe 75 % deckend (hell Weiß, dunkel `--btn` bzw. die Menüfarbe #2c2c2e wie bisher), Unschärfe 20 px, Sättigung 180 %,
+  Lichtkante `--btn-rim` (mit ‚Kontrast erhöhen‘ kräftiger) und Schatten, oben eine feine helle Kante wie im Muster; ‚Transparenz reduzieren‘ und
+  die Ausgabe deckend. `design.css`: Variablen `--glas-knopf`, `--glas-karte`, `--glas-filter`, `--glas-licht`, Block am Ende.
+- **Designrichtlinie:** Regelkatalog 17 neu R-3.9 und R-4.13 (Wortlaut bestätigt); Verweise in 1, 15.1, 15.6, 15.7 und 15.17.
+- **Prüfungen:** `tests/ablauf.mjs` – neu `checkWachsen` (APD-62/M-1 bis M-9, M-11; prüft die Animation selbst: Schlüsselbilder, Dauer, Kurve, Ursprung =
+  Mitte der Schaltfläche, Größe beim Einfügen, Abbild beim Schließen, Endlage nach dem Ende mit `warteBis`, APD-62/M-10; Schließen mitten im Öffnen bei
+  angehaltener Bewegung, weil WebKit Bildwechsel auslässt). `tests/hig.mjs` – `masseStile` prüft R-3.9 nach jedem Schritt (APD-62/L-1 bis L-9; dazu
+  die Stilregeln für ‚Transparenz reduzieren‘ und die Ausgabe), neu `checkGlas` (APD-62/L-10 Glas schon beim Wachsen, APD-62/L-4 in Chromium nachgebildet –
+  WebKit kann ‚Transparenz reduzieren‘ nicht nachbilden). Gegenproben: `GEGENPROBEN_MASSE` um `glas` und `glasleiste`; `checkWachsen` wird rot mit
+  absichtlich 500 ms und ohne Abbild (Chromium geprüft).
+- **APD-113 – Push und Kontextstand (Zusammenarbeit 3.8.0, Regelwächter):** ‚(Kontext N)‘ am Ende jeder Frage im Fenster (Kasten ‚Jede Antwort‘ 9,
+  0 Nr. 28) – die Push-Mitteilung am iPad zeigt den Fragetext; 2.1 ‚Fenster nacheinander‘ – ein weiteres Fenster in derselben Antwort, wenn das vorige
+  beantwortet ist und danach ein Werkzeug lief; 2.3 `PushNotification` kommt am iPad nicht an; 2.8 Wortlaut. `werkzeug/regelwaechter.mjs`:
+  APD-84/W-16 prüft jede Frage (nicht nur die Bau-Frage), APD-84/W-17 lässt ein weiteres Fenster zu, wenn seit dem vorigen ein Werkzeug lief –
+  `messung.mjs` zählt dabei nicht (liest nur ab), sonst wäre jedes zweite Fenster erlaubt. Die neue Fassung gilt in dieser Umgebung sofort.
+- **Prüfung APD-113 (`tests/regelwaechter.mjs`):** APD-113/H-1 bis H-8 (ersetzt APD-114/B-5; angepasst APD-99/C-5, APD-114/B-4 und die Rückmeldung ‚P-n‘
+  mit ‚(Kontext N)‘); Gegenprobe `--gegenprobe` grün; gegen den Wächter von 4.52.0 rot (APD-113/H-1 bis H-3, H-5 bis H-7) – APD-113/H-9 nur mit den Antworten aus
+  0050, 0051 und 0062 (Antworten aus 0083 liegen in dieser Sitzung nicht vor).
+
 ## 4.52.0 – 05.11.2026
 
 AppDesign 4.52.0 · Designrichtlinie allgemein 4.52.0 · Zusammenarbeit allgemein 3.7.0 · geprüft mit Reiselogbuch 3.50.0

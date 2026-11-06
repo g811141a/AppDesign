@@ -1,6 +1,6 @@
 # Designrichtlinie allgemein
 
-**Version 4.52.0** · Stand 05.11.2026
+**Version 4.53.0** · Stand 06.11.2026
 
 Allgemeine Gestaltungs- und Bedienregeln für alle Web-Apps von g811141a auf iPad und iPhone. Die Datei liegt im Design-Repo
 **AppDesign** (g811141a/AppDesign); ihre Versionsnummer ist die des Repos. Die Komponenten sind dort einmal programmiert und
@@ -49,7 +49,7 @@ Gestaltung und Bauteile und verweisen auf die Regel (R-x.y); was dort ohne autom
   geht in Menü, Sprechblase und Fenster und zurück, Ergebnisse werden angesagt (`ansagen`); Hardware-Tastatur am iPad (R-4.7) – Esc,
   ⌘., Pfeile, Eingabe, Tab; ‚Kontrast erhöhen‘ und ‚Bewegung reduzieren‘ des Geräts (R-1.9). Testfall-Liste
   `arbeit/APD-43 Teil 1 Testfall-Liste.md`.
-- Bewusst verworfen: eigene Kennzeichnung von Pflichtfeldern; harte, schmale Schatten; Glas-Leiste (schlechter lesbar).
+- Bewusst verworfen: eigene Kennzeichnung von Pflichtfeldern; harte, schmale Schatten; Glas-Leiste (schlechter lesbar); schwebende Kapseln und Menüs sind aus Glas (R-3.9).
 
 ## 2. Farben
 
@@ -596,7 +596,7 @@ Regel). In AppDesign ist jede Komponente einmal programmiert (`v4/design.css`, `
 - **Aufbau:** Icon (20 px) links, dann Text; oder nur Icon bzw. Emoji (24 px).
 - **Maße:** 44 px hoch, Kapsel (Radius 22 px); Icon-/Emoji-Schaltflächen 44 × 44 rund; Abstand zu Nachbarn 12 px.
 - **Aussehen/Zustände:** neutral `--btn` + Lichtkante + `--float`; Hauptaktion, eingeschaltet, gedrückt und Löschen siehe 4;
-  gesperrt 40 % Deckkraft. Regeln R-3.1 bis R-3.3.
+  gesperrt 40 % Deckkraft; die Kapsel Nach oben / Ans Ende aus Glas (R-3.9). Regeln R-3.1 bis R-3.3.
 - **Nach oben / Ans Ende** (`.fab`): senkrechte Kapsel unten rechts (4), rollt den Rollbereich (15.22) und steht bei offener
   Tastatur über ihr; passt sie nicht mit 16 px Abstand oben und unten in den sichtbaren Teil des Rollbereichs (z. B. iPhone quer
   mit offener Tastatur), ist sie ausgeblendet (`updateFab`). **Nur wirksame Pfeile:** ganz oben nur `arrow-down-to-line`, am Ende
@@ -737,14 +737,14 @@ Regel). In AppDesign ist jede Komponente einmal programmiert (`v4/design.css`, `
 - **Apple:** [HIG – Menus](https://developer.apple.com/design/human-interface-guidelines/menus)
 - **Zweck:** weitere Aktionen hinter ellipsis bzw. Auswahl hinter einer Schaltfläche. **Technisch:** `.menu` (öffnen mit
   `openMenu`). Regel R-4.1.
-- **Aussehen:** Karte 340 px, Radius 14 px, Lichtkante und Schatten wie die Schaltflächen; Einträge 46 px hoch, Icon **vor** dem
+- **Aussehen:** Karte 340 px, Radius 14 px, aus Glas, Lichtkante und Schatten wie die Schaltflächen (R-3.9); Einträge 46 px hoch, Icon **vor** dem
   Text, **keine Linien zwischen einzelnen Punkten**; Gruppen durch eine **dünne, links und rechts eingerückte Linie** getrennt (wie
   Apple, iOS 26 – `'sep'`/`'line'`, 1 px, 20 px Einzug); Auswahl mit blauem Häkchen vorne (bei Punkten mit Icon: Häkchen, dann
   Icon und Text); graue Zusatzzeile unter einem Eintrag; graue Notizen und technische Informationen (Version, Speicher, Zahl der
   Tage, Dateiname) ganz unten nach der Linie, ohne Leerzeilen. Nichts blau eingefärbt, „… löschen“ rot.
 - **Untermenü** (`submenu`, eine Ebene, höchstens etwa 5 Punkte): Eintrag mit grauem Wert und ›; öffnet neben dem Menü, oben
   bündig; der Eintrag bleibt blau, solange es offen ist.
-- **Verhalten:** erscheint unter der Schaltfläche (darf über die Seitenleiste hinausragen); die Schaltfläche ist so lange gedrückt
+- **Verhalten:** erscheint unter der Schaltfläche und wächst aus ihr (R-4.13; darf über die Seitenleiste hinausragen); die Schaltfläche ist so lange gedrückt
   (blau getönt); der Mehr-Knopf zeigt dabei drei senkrechte Punkte (`ellipsis-vertical`) statt der waagrechten – der Wechsel sofort,
   ohne Bewegung, beim Schließen zurück; daneben tippen schließt. Reicht der Platz darunter nicht, rollt das Menü in sich (erst unter 200 px Platz öffnet
   es nach oben).
@@ -762,7 +762,7 @@ Regel). In AppDesign ist jede Komponente einmal programmiert (`v4/design.css`, `
   zuerst, eine zerstörende in roter Schrift (`danger-text`), zuletzt ‚Abbrechen‘; eine kurze graue Erklärung der Wege steht im
   Text. Bekommt ein Weg eine Erklärung (`desc`), steht er in einer eigenen Kachel – Erklärung oben (gleiche Schrift wie der Text
   der Sprechblase), Knopf darunter; ‚Abbrechen‘ darunter.
-- **Verhalten:** an der angetippten Schaltfläche (diese ist gedrückt); daneben tippen bricht ab.
+- **Verhalten:** an der angetippten Schaltfläche (diese ist gedrückt), wächst aus ihr (R-4.13); daneben tippen bricht ab.
 - **Passt immer auf den Bildschirm** (R-4.5): auf dem iPhone quer ist die Sprechblase breiter (bis 600 px) und die Knöpfe stehen
   nebeneinander; reicht der Platz trotzdem nicht, rollt der Inhalt in ihr. Gilt ebenso für Menüs und Fenster.
 
@@ -919,7 +919,7 @@ Regel). In AppDesign ist jede Komponente einmal programmiert (`v4/design.css`, `
 - **Suche** wie am iPad (15.2): ‚Suchen‘ im Mehr-Menü öffnet unter der Leiste die Suchzeile mit ‚1 von 4‘, ⓧ, ⌃ ⌄ und x ‚Suche beenden‘.
 - **Fester Hinweis unten** (`.bbar` mit `.bnote`): z. B. der Backup-Hinweis – gelb getönte Karte (`--focus`) mit blau gefülltem
   Knopf, fest am unteren Rand; die Liste läuft dahinter durch (Verlauf), bei offener Tastatur wandert die Leiste über die Tastatur
-  (`--vv-bottom`). Am iPad steht derselbe Hinweis ebenso gelb fest am unteren Rand der Seitenleiste.
+  (`--vv-bottom`); Suchfeld und runde Knöpfe der unteren Leiste aus Glas (R-3.9). Am iPad steht derselbe Hinweis ebenso gelb fest am unteren Rand der Seitenleiste.
 - **Fenster als Blatt** (R-4.6, Variante A ‚nur groß‘ wie ‚Neuer Termin‘): von 10 px unter der Statusleiste (quer 8 px) bis zum
   unteren Rand bzw. zur Tastatur (R-4.5), oben runde Ecken (26 px, quer 18 px), gleitet von unten herein; die Seite dahinter weicht
   hoch um 7 % verkleinert mit runden Ecken vor Schwarz zurück, abgedunkelt wird mit 30 % Schwarz; quer bleibt die Seite. Nach unten
@@ -1217,6 +1217,7 @@ Testfall (User) in den Usertest, wenn eine Version es betrifft.
 | R-3.6 | **Rückmeldung beim Berühren:** solange der Finger liegt, wird eine Schaltfläche blass (Icon und Text 35 %), ein Leisten-Knopf hebt sich als helle Fläche mit Schatten (1,3-fach) über die Kapsel, eine Listen- oder Tabellenzeile grau – Schaltflächen sofort, in Rollbereichen (Liste, Smiley-Leiste, Kapsel) nach 80 ms; mehr als 10 px Bewegung oder Rollen hebt es auf, ohne auszulösen – das Loslassen danach löst nichts aus, wie lange der Finger auch liegt; Loslassen blendet in 0,15 s aus; gesperrte Schaltflächen zeigen nichts; Safaris eigene Antipp-Markierung ist aus, und langes Drücken auf antippbare Zeilen, Kacheln, Leisten und die Smiley-Leiste markiert keinen Text und zeigt keine Lupe | ablauf.mjs | Rollen ohne Aufblitzen | 4, 15.1, 15.4, 15.12 |
 | R-3.7 | **Keine Hover-Farbe:** auf iPad und iPhone ändert eine Schaltfläche beim Darüberfahren nichts; Stilregeln mit `:hover` stehen nur unter `@media (hover: hover)` | hig.mjs – `masseStile` (alle Stilregeln der Seite, design.css und App) | – | 4 |
 | R-3.8 | **Gesperrt und Abbrechen:** gesperrte Schaltflächen, Schalter und Options-Kapseln 40 % Deckkraft; ‚Abbrechen‘ ohne Icon, normale Schrift | hig.mjs – `masseStile` (jede Ansicht, jedes Fenster, nach jedem Schritt) | – | 4, 15.15, 15.16 |
+| R-3.9 | **Schwebendes aus Glas:** die Kapsel Nach oben / Ans Ende, Menü, Untermenü und Kontextmenü sowie Suchfeld und runde Knöpfe der unteren Leiste (iPhone) sind aus Glas – Grundfarbe (hell Weiß, dunkel `--btn` bzw. `--card`) zu 75 % deckend, Unschärfe 20 px, Sättigung 180 %, Lichtkante und Schatten wie R-3.2; ‚Transparenz reduzieren‘ des Geräts: deckend wie bisher; Leisten, Fenster, Sprechblasen und alle übrigen Schaltflächen bleiben deckend | hig.mjs – `masseStile` (Unschärfe und Deckkraft genau an diesen Bausteinen, deckend bei ‚Transparenz reduzieren‘, keine Glas-Leiste) | Lesbarkeit und Flüssigkeit am Gerät | 4, 15.1, 15.6, 15.17 |
 
 ### 4. Menüs, Abfragen, Fenster
 
@@ -1234,6 +1235,7 @@ Testfall (User) in den Usertest, wenn eine Version es betrifft.
 | R-4.10 | **Menütexte:** kein ‚…‘ am Ende eines Menüpunkts; in einer Gruppe haben alle Punkte ein Icon oder keiner; ein Kontextmenü hat höchstens 3 Gruppen und zeigt keine gesperrten Punkte (ausblenden statt grau) | hig.mjs – `texteMenues` (jedes offene Menü und Untermenü nach jedem Schritt; jedes Kontextmenü in kontextmenue.mjs) | – | 15.6, 16 |
 | R-4.11 | **Menüpunkt und Fenster heißen gleich:** öffnet ein Menüpunkt ein Fenster, ist der Fenstertitel der Text des Menüpunkts; Systembeschriftungen bleiben | ablauf.mjs – `checkMenueFenster` (jeden Menüpunkt mit Fenster antippen) | – | 6 |
 | R-4.12 | **Erst fragen, dann zerstören:** jede Lösch-, Ersetz- oder Rücksetz-Aktion (roter Menüpunkt, Schaltfläche mit ‚Löschen‘, ‚Entfernen‘, ‚Ersetzen‘, ‚Zurücksetzen‘) zeigt zuerst die Sprechblase (R-4.3); bis zur Bestätigung ändert sich nichts, ‚Abbrechen‘ lässt alles, wie es war | ablauf.mjs – `checkErstFragen` (jede solche Aktion in jeder Ansicht antippen, Speicher vorher und nachher vergleichen; Menüpunkte an `red`, Schaltflächen an ihrem Text bzw. `aria-label`) | – | 10, 16 |
+| R-4.13 | **Menüs und Sprechblasen wachsen aus der Schaltfläche:** Menü, Untermenü, Kontextmenü (aus der Kachel) und Sprechblase (R-4.3) wachsen beim Öffnen in 0,35 s aus ihrer Schaltfläche (von 20 % auf volle Größe, Kurve wie das Blatt `cubic-bezier(.32,.72,0,1)`) und schrumpfen beim Schließen in 0,25 s dorthin zurück; Schließen während des Öffnens beginnt an der aktuellen Stelle; ‚Bewegung reduzieren‘: nur Überblenden in 0,2 s; die Endlage ist dieselbe wie ohne Bewegung; Fenster und Blatt gleiten wie bisher (R-4.6) | ablauf.mjs – neue Prüfung (Herkunft, Dauer, Endlage, Schließen mitten im Öffnen, ‚Bewegung reduzieren‘) | Gefühl am Gerät | 15.6, 15.7 |
 
 ### 5. Eingaben
 
@@ -1360,6 +1362,7 @@ R-2.3 (15.2), R-4.4 (6, 15.8, HIG 9), R-5.3 (8), R-5.4 (15.12), R-5.5 (APD-14), 
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 4.53.0 | 06.11.2026 | Neben | **APD-38/T-16 und APD-38/T-37 (Nutzer 06.11.2026, Sitzungen 0082 und 0083, Wortlaut bestätigt):** Regelkatalog 17 – neu R-4.13 ‚Menüs und Sprechblasen wachsen aus der Schaltfläche‘ (0,35 s aus der Schaltfläche, 0,25 s zurück, mitten im Öffnen ab der aktuellen Stelle, ‚Bewegung reduzieren‘ nur Überblenden; Prüfung `checkWachsen`, Testfall-Liste APD-62/M-1 bis M-11) und R-3.9 ‚Schwebendes aus Glas‘ (Kapsel Nach oben / Ans Ende, Menüs, untere Leiste – 75 % deckend, Unschärfe 20 px, Sättigung 180 %, ‚Transparenz reduzieren‘ deckend; Prüfung `masseStile`, `checkGlas`, Testfall-Liste APD-62/L-1 bis L-10); Verweise in 1, 15.1, 15.6, 15.7, 15.17 |
 | 4.52.0 | 05.11.2026 | Neben | **APD-40 Pakete B und C (Nutzer 05.11.2026, Sitzung 0081, Wortlaut bestätigt):** Regelkatalog 17 – neu R-4.10 ‚Menütexte‘ (Kontextmenü streng höchstens 3 Gruppen), R-4.11 ‚Menüpunkt und Fenster heißen gleich‘, R-4.12 ‚Erst fragen, dann zerstören‘, R-5.10 ‚Automatisch speichern‘ (spätestens 10 s nach der Änderung statt alle 10 s), R-10.6 ‚Ansprache‘, R-10.7 ‚Datum und Dateinamen‘; G-4, G-7, G-12, G-13 ersetzt, G-19 gekürzt; Verweise in 6, 8 und 10; Prüfungen `texteMenues` (hig.mjs, kontextmenue.mjs), `dateinameFehler`, `checkMenueFenster`, `checkAutoSpeichern`, `checkErstFragen` (ablauf.mjs), Gegenproben `--gegenprobe masse` |
 | 4.51.0 | 05.11.2026 | Neben | **APD-40 Paket A (Nutzer 03.11.2026, Sitzung 0078, Wortlaut bestätigt):** Regelkatalog 17 – neu R-1.11 ‚Verborgen heißt unsichtbar‘, R-3.7 ‚Keine Hover-Farbe‘, R-3.8 ‚Gesperrt und Abbrechen‘, R-4.8 ‚Fensterbreite‘, R-4.9 ‚Menümaße‘ (Untermenü höchstens 5 statt ‚etwa 5‘), R-5.9 ‚Schalterzeilen und Options-Kapsel‘, R-6.7 ‚Tabelle‘, alle mit automatischer Prüfung `masseStile` (hig.mjs, Testfall-Liste APD-40/A-1 bis APD-40/A-10); G-1, G-2, G-5, G-17 ersetzt, G-10, G-15, G-18 auf den Rest gekürzt |
 | 4.50.1 | 03.11.2026 | Korrektur | **APD-111 (Usertest P-92/4 und P-92/5 nicht ok, Nutzer 03.11.2026, Sitzung 0078, Wortlaut bestätigt):** 15.23 ‚Aufbau‘ – Symbol 36 pt und Titel 17 pt halbfett überall gleich groß (im Inhalt, in der Startliste und in der Seitenleiste; vorher im Inhalt 52 pt und 22 pt fett), in der Seitenleiste nur kleinere Abstände; Katalog R-7.7 ergänzt (Prüfung `hig.mjs` misst Symbol und Titel in jeder Ansicht). **APD-112** (R-1.8 unverändert): ui.js gibt den Fokus nach dem Schließen eines Fensters, Blatts bzw. einer Meldung an den öffnenden Knopf zurück (Prüfung `checkFokusZurueck`). **APD-85 Teil 5** (Werkzeug): feste Pausen in `offline.mjs` durch `warteBis` ersetzt |
