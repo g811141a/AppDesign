@@ -4,7 +4,7 @@
 // Einbinden im Prüfskript der App:  import { checkSearch, checkDialogHead } from '../../AppDesign/tests/ablauf.mjs';
 //                                   fehler.push(...await checkSearch(page, { term: 'Sydney' }));
 import { ROLL, RING, rolle, rollstand, navFertig, rollRuht, ruhe, warteBis } from './pruefe.mjs';
-import { safariWischen, safariModell, mausWieFinger, safariHalten, KLICK_NACH, mausKlickSpaet } from './safari.mjs';
+import { safariWischen, safariModell, mausWieFinger, safariHalten, KLICK_NACH, mausKlickSpaet, obenOhneKlick, KEIN_KLICK_OBEN } from './safari.mjs';
 const wait = (p, ms = 250) => p.waitForTimeout(ms);
 // R-2.3 (seit 4.25.1, APD-24): beim Tippen bleibt das Suchfeld dasselbe Element und behält den Fokus – sonst schließt Safari am
 // iPhone die Tastatur kurz und Kopf- und Suchzeile zittern bei jedem Buchstaben. Tippt Buchstabe für Buchstabe (und löscht
@@ -2535,6 +2535,116 @@ export async function checkMehrKnopf(p, { sel, untermenue = null, where = '' } =
   if (x.menue) E('APD-87/E-5: Esc schließt das Mehr-Menü nicht');
   if (x.art !== 'waagrecht') E(`APD-87/E-5: nach dem Schließen nicht wieder waagrecht (${x.art})`);
   if (x.on || x.exp !== 'false') E(`APD-87/E-11: nach dem Schließen noch hervorgehoben bzw. aria-expanded ${x.exp}`);
+  return errors;
+}
+
+// Seit 4.54.0 (APD-118, Usertest P-97/6, Testfall-Liste im BACKLOG unter APD-118, APD-118/X-1 bis X-8; Designrichtlinie 13 ‚Am
+// oberen Rand kein Klick‘): die Sperrschicht hinter Menü, Untermenü, Kontextmenü und Sprechblase schließt beim Loslassen (bis 20 px Weg) und
+// verschluckt den Klick danach. Im iPhone quer (Safari-Modell obenOhneKlick: am oberen Rand kein click) mit der Maus bzw. dem Finger der Prüfung:
+// X-1 über dem Mehr-Knopf (mehr) ohne Klick → zu, waagrechte Punkte, Fokus auf Mehr · X-2 mit 14 px Weg → zu · X-3 Klick danach (unterhalb
+// KEIN_KLICK_OBEN, der click kommt) → bleibt zu, darunter nichts · X-4 daneben mit Klick → einmal zu · X-5 öffnen: weitere Öffner (Untermenü,
+// Kontextmenü, Sprechblase; je async p => …) · X-6 Wischen > 20 px → bleibt offen · X-8 messung: Zeilen einer Messdatei (lies) – die zeiger-Ereignisse
+// auf div.layer werden nachgespielt, nach dem ersten Tipp ist das Menü zu. Gibt Fehler zurück.
+// oben: false (iPad, iPhone hoch) – nur X-4 bis X-6, der Tipp kommt mit Klick; ein freier Punkt der Schicht wird gesucht (frei).
+export async function checkSchichtOben(p, { mehr = '#mainMore', oeffner = [], messung = null, oben: amRand = true, where = '' } = {}) {
+  const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}13 ${t}`);
+  const offen = () => p.evaluate(() => !!document.querySelector('.menu:not(.zu-geist), .pop:not(.zu-geist), .layer'));
+  // öffnen wie mit dem Finger: erst aufsetzen (gibt die Sperre ‚Wischen tippt nie an‘ frei), dann der Klick – ohne Playwright-Klick, den das Modell
+  // am oberen Rand wegnähme
+  const auf = async () => { await p.evaluate(s => { const k = document.querySelector(s); if (!k) return;
+    k.dispatchEvent(new PointerEvent('pointerdown', { pointerId: 4118, pointerType: 'touch', isPrimary: true, bubbles: true, cancelable: true, composed: true })); k.click(); }, mehr);
+    await wait(p, 450); return offen(); };
+  const zuWarten = () => p.waitForFunction(() => !document.querySelector('.zu-geist'), null, { timeout: 3000 }).catch(() => {});
+  const mitte = () => p.evaluate(s => { const r = document.querySelector(s)?.getBoundingClientRect(); return r && { x: r.x + r.width / 2, y: r.y + r.height / 2, oben: r.top, unten: r.bottom }; }, mehr);
+  const zug = async (x, y, wege = []) => { await p.mouse.move(x, y); await p.mouse.down(); for (const [dx, dy] of wege) await p.mouse.move(x + dx, y + dy, { steps: 3 }); await p.mouse.up(); await wait(p, 120); };
+  const lage = () => p.evaluate(s => { const b = document.querySelector(s), c = b ? [...b.querySelectorAll(':scope > svg circle')] : [];
+    return { waagrecht: c.length === 3 && new Set(c.map(k => k.getAttribute('cy'))).size === 1, fokus: document.activeElement === b, exp: b?.getAttribute('aria-expanded') }; }, mehr);
+  // freier Punkt der Schicht (nicht Menü, Sprechblase, Kontextmenü) mit y zwischen y0 und y1
+  const frei = (y0, y1) => p.evaluate(([y0, y1]) => { for (let y = Math.round(y0); y <= y1; y += 6) for (let x = 12; x < innerWidth - 12; x += 24) {
+    const e = document.elementFromPoint(x, y); if (e?.classList.contains('layer')) return { x, y }; } return null; }, [y0, y1]);
+  const tippFrei = async (y0, y1, wege, was) => { const f = await frei(y0, y1); if (!f) { E(`APD-118 ${was}: kein freier Punkt der Schicht zwischen y ${Math.round(y0)} und ${Math.round(y1)}`); return false; } await zug(f.x, f.y, wege); return true; };
+  const vp = p.viewportSize();
+  if (!amRand) {
+    if (!await auf()) { E(`APD-118 Menü ${mehr} öffnet sich nicht`); return errors; }
+    if (await tippFrei(vp.height * 0.3, vp.height - 10, [], 'X-4')) {
+      await wait(p, 200);
+      if (await offen()) E('APD-118/X-4 Tipp daneben schließt das Menü nicht (bzw. öffnet etwas Neues)');
+      if (await p.evaluate(() => !!document.querySelector('dialog[open]'))) E('APD-118/X-4 Tipp daneben öffnet zusätzlich ein Fenster darunter');
+    }
+    await p.evaluate(() => document.querySelectorAll('dialog[open]').forEach(d => d.close())); await zuWarten(); if (await offen()) await p.keyboard.press('Escape');
+    await auf();
+    if (await tippFrei(vp.height * 0.3, vp.height - 50, [[0, -12], [0, -30]], 'X-6') && !await offen()) E('APD-118/X-6 Wischen über 30 px schließt das Menü (soll offen bleiben)');
+    await p.keyboard.press('Escape'); await zuWarten(); if (await offen()) await p.keyboard.press('Escape');
+    for (const [i, o] of oeffner.entries()) {
+      await o(p); await wait(p, 450);
+      if (!await offen()) { E(`APD-118/X-5 Öffner ${i + 1} öffnet nichts – die Prüfung prüft nichts`); continue; }
+      if (await tippFrei(10, vp.height - 10, [], `X-5 Öffner ${i + 1}`)) { await wait(p, 200); if (await offen()) E(`APD-118/X-5 Öffner ${i + 1}: Tipp daneben schließt nicht`); }
+      await zuWarten(); for (let k = 0; k < 3 && await offen(); k++) await p.keyboard.press('Escape');
+    }
+    return errors;
+  }
+  await obenOhneKlick(p);
+  try {
+    const m = await mitte();
+    if (!m) { E(`APD-118 Mehr-Knopf ${mehr} fehlt`); return errors; }
+    const yOben = Math.min(m.y, KEIN_KLICK_OBEN - 3);
+    if (yOben >= KEIN_KLICK_OBEN || m.oben > yOben) E(`APD-118 Mehr-Knopf ${mehr} steht nicht am oberen Rand (oben ${Math.round(m.oben)}) – die Prüfung prüft nichts`);
+    // Modell an? Ein Klick am oberen Rand (Mitte, ohne Menü) kommt nicht an
+    const weg0 = await p.evaluate(() => window.__safariKlick?.obenWeg ?? 0);
+    await p.mouse.click(Math.round(vp.width / 2), yOben); await wait(p, 150);
+    if (await p.evaluate(() => window.__safariKlick?.obenWeg ?? 0) <= weg0) E('APD-118 das Safari-Modell nimmt den Klick am oberen Rand nicht weg – die Prüfung prüft nichts');
+    // X-1: Tipp ohne Klick über Mehr
+    if (!await auf()) { E('APD-118/X-1 Mehr-Menü öffnet sich nicht'); return errors; }
+    await zug(m.x, yOben);
+    if (await offen()) E(`APD-118/X-1 Tipp bei y ${Math.round(yOben)} ohne Klick über ${mehr} schließt das Menü nicht`);
+    await zuWarten();
+    const l = await lage();
+    if (!l.waagrecht || l.exp !== 'false') E(`APD-118/X-1 nach dem Schließen Mehr-Knopf nicht waagrecht bzw. aria-expanded ${l.exp}`);
+    if (!l.fokus) E('APD-118/X-1 nach dem Schließen liegt der Fokus nicht auf Mehr');
+    if (await offen()) await p.keyboard.press('Escape');
+    // X-2: mit 14 px Weg
+    await auf(); await zug(m.x - 10, yOben - 2, [[7, -1], [14, -4]]);
+    if (await offen()) E('APD-118/X-2 Tipp mit 14 px Weg schließt das Menü nicht');
+    await zuWarten(); if (await offen()) await p.keyboard.press('Escape');
+    // X-3: Klick danach (unterhalb der Grenze kommt der click) – bleibt zu, Mehr öffnet nicht wieder
+    const yKlick = Math.min(m.unten - 2, Math.max(KEIN_KLICK_OBEN + 2, m.y));
+    if (!await auf()) E('APD-118/X-3 Mehr-Menü öffnet sich nicht');
+    await zug(m.x, yKlick); await wait(p, 200);
+    if (await offen()) E(`APD-118/X-3 nach Tipp mit Klick bei y ${Math.round(yKlick)} über ${mehr} ist wieder ein Menü offen (der Klick traf Mehr)`);
+    await zuWarten(); if (await offen()) await p.keyboard.press('Escape');
+    // X-4: daneben mit Klick – einmal zu, darunter nichts (kein Fenster, kein neues Menü)
+    await auf(); await tippFrei(vp.height * 0.4, vp.height - 10, [], 'X-4'); await wait(p, 200);
+    const x4 = await p.evaluate(() => ({ offen: !!document.querySelector('.menu:not(.zu-geist), .pop:not(.zu-geist), .layer'), dlg: !!document.querySelector('dialog[open]') }));
+    if (x4.offen) E('APD-118/X-4 Tipp daneben schließt das Menü nicht (bzw. öffnet etwas Neues)');
+    if (x4.dlg) E('APD-118/X-4 Tipp daneben öffnet zusätzlich ein Fenster darunter');
+    await p.evaluate(() => document.querySelectorAll('dialog[open]').forEach(d => d.close()));
+    await zuWarten();
+    // X-6: Wischen über 20 px – bleibt offen
+    await auf();
+    if (await tippFrei(vp.height * 0.4, vp.height - 50, [[0, -12], [0, -30]], 'X-6') && !await offen()) E('APD-118/X-6 Wischen über 30 px schließt das Menü (soll offen bleiben)');
+    await p.keyboard.press('Escape'); await zuWarten(); if (await offen()) await p.keyboard.press('Escape');
+    // X-5: Untermenü, Kontextmenü, Sprechblase – Tipp oben ohne Klick schließt alles
+    for (const [i, o] of oeffner.entries()) {
+      await o(p); await wait(p, 450);
+      if (!await offen()) { E(`APD-118/X-5 Öffner ${i + 1} öffnet nichts – die Prüfung prüft nichts`); continue; }
+      if (await tippFrei(2, yOben, [], `X-5 Öffner ${i + 1}`) && await offen()) E(`APD-118/X-5 Öffner ${i + 1}: Tipp am oberen Rand ohne Klick schließt nicht`);
+      await zuWarten(); for (let k = 0; k < 3 && await offen(); k++) await p.keyboard.press('Escape');
+    }
+    // X-8: Messdatei nachspielen – die zeiger-Ereignisse auf div.layer, nach dem ersten Tipp zu
+    if (messung) {
+      const ev = messung.zeilen.map(z => z.ereignis || '').map(t => t.match(/^zeiger (down|move|up) (\d+) (\d+) touch div\.layer/)).filter(Boolean);
+      if (!ev.length) E('APD-118/X-8 Messung ohne zeiger-Ereignisse auf div.layer – die Prüfung prüft nichts');
+      await auf();
+      let ersterZu = null, n = 0;
+      for (const [, art, x, y] of ev) {
+        if (art === 'down') { await p.mouse.move(+x, +y); await p.mouse.down(); }
+        else if (art === 'move') await p.mouse.move(+x, +y);
+        else { await p.mouse.move(+x, +y); await p.mouse.up(); await wait(p, 150); n++; if (ersterZu === null) ersterZu = !await offen(); if (!await offen()) break; }
+      }
+      if (ersterZu === false) E(`APD-118/X-8 Messung nachgespielt: nach dem ersten Tipp (${ev.find(e => e[1] === 'up')?.slice(2).join(', ')}) ist das Menü noch offen${await offen() ? ', auch nach allen' : ` (zu erst nach Tipp ${n})`}`);
+      await zuWarten(); if (await offen()) await p.keyboard.press('Escape');
+    }
+  } finally { await obenOhneKlick(p, false); }
   return errors;
 }
 

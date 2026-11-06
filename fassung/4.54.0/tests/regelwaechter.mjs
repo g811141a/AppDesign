@@ -1,4 +1,4 @@
-// AppDesign 4.51.0 · Prüfung des Regelwächters werkzeug/regelwaechter.mjs (APD-84/M-3, Testfall-Liste arbeit/APD-84 APD-83 Testfall-Liste.md
+// AppDesign 4.54.0 · Prüfung des Regelwächters werkzeug/regelwaechter.mjs (APD-84/M-3, Testfall-Liste arbeit/APD-84 APD-83 Testfall-Liste.md
 // APD-84/W-1 bis W-13) mit künstlichen Sitzungsdaten in einem Ordner auf Zeit und den echten Antworten aus 0050 und 0051
 // (tests/regelwaechter-faelle.json). Aufruf: node tests/regelwaechter.mjs (braucht kein Playwright).
 // Gegenprobe: node tests/regelwaechter.mjs --gegenprobe – je W-1 bis W-7 und W-14 wird genau diese Prüfung im Wächter abgeschaltet
@@ -16,6 +16,10 @@ import { fuehreAus, uhrzeitzeile, uhr, setupText, SOLL_MODELL } from '../werkzeu
 // seit 4.51.0: W-16 Kontext in der Bau-Frage, W-17 ein Fenster je Antwort (APD-114, Testfall-Liste arbeit/APD-114 Testfall-Liste.md B-1 bis B-12;
 // B-11 und B-12 nach der Antwort aus Sitzung 0080, 12:12 bis 12:15, nachgebaut); seit 4.53.0 (APD-113, Testfall-Liste arbeit/APD-113 Push und Kontext
 // Wortlaut und Testfall-Liste.md H-1 bis H-9): W-16 für jede Frage, W-17 erlaubt ein weiteres Fenster nach einem Werkzeug (messung.mjs zählt nicht)
+// seit 4.54.0 (APD-113 Teil (6), Testfall-Liste arbeit/APD-113 Teil 6 Testfall-Liste.md M-1 bis M-17; ersetzt APD-110/L-1 bis L-13 und APD-114/B-9):
+// W-15 lehnt jedes Fenster mit Link ab und prüft die letzte Ausgabe nach ‚… anzeigen?‘, W-4 ohne Grenze und ab der letzten Meldung bzw.
+// Zurückweisung, W-17 zählt einen Aufruf mit messung.mjs und etwas anderem sowie eine Zurückweisung als Werkzeug. Nachgebaut nach den Antworten
+// aus 0086 (00:30, 00:31, 19:00, 19:22, 19:27) und 0087 (00:42) – die Sitzungsdateien liegen nicht im Repo. Gegenprobe M-12: je Teil abgeschaltet.
 
 const ordner = mkdtempSync(join(tmpdir(), 'regelwaechter-'));
 const WAECHTER = fileURLToPath(new URL('../werkzeug/regelwaechter.mjs', import.meta.url));
@@ -154,36 +158,71 @@ function lauf(env = {}) {
   pruefe(abgelehnt(vorher(d7, 'gibt-es-noch-nicht')), 'W-14 D-7 Ablauf aus 0065 (nach Neustart, unsicher, ohne messung.mjs) – wird vor dem Zeigen nicht abgelehnt');
   pruefe(abgelehnt(vorher([...d7, werkzeug(545, 'f9', 'AskUserQuestion', frage(GUT))], 'f9')), 'W-14 D-7 Ablauf aus 0065, Fenster schon gespeichert – wird nicht abgelehnt');
 
-  // W-15 Link und Schritte im Chat vor dem Fenster (seit 4.50.0, APD-110, Testfall-Liste arbeit/APD-110 Testfall-Liste.md L-1 bis L-13)
-  { const M = 'https://g811141a.github.io/AppDesign/arbeit/APD-30%20Muster.html', ML = 'https://g811141a.github.io/AppDesign/arbeit/APD-30 Muster.html';
-    const lf = (link = M, opts = GUT.map(option)) => ({ questions: [{ question: `Muster APD-30 ${link} – 1. öffnen 2. ansehen, erwartet: mittig. Welche Variante passt?`, header: 'Muster', multiSelect: false, options: opts }] });
-    const SCHR = (link = M) => `Das Muster: ${link}\n\n1. Öffne den Link am iPad quer.\n2. Sieh dir die Varianten A, B und C an.\nErwartet: Symbol, Titel, Satz und Knopf stehen mittig.`;
-    const fall = (chat, fenster = lf()) => antwort({ zwischen: `${UZ('14:02', '14:00')}\n\n${chat}`, fenster });
-    const zeige = (zeilen, fenster = lf(), id = 'f1') => hook('fenster', zeilen, { env, eingabe: { tool_name: 'AskUserQuestion', tool_use_id: id, tool_input: fenster } });
-    const w15 = r => r?.hookSpecificOutput?.permissionDecision === 'deny' && /W-15/.test(r.hookSpecificOutput.permissionDecisionReason) ? r.hookSpecificOutput.permissionDecisionReason : '';
-    const beide = (zeilen, fenster, nr, text, muster = /W-15/) => { const a = w15(zeige(zeilen, fenster)), b = stop(zeilen).filter(x => x.startsWith('W-15'));
-      pruefe(muster.test(a) && b.some(x => muster.test(x)), `W-15 ${nr} ${text} (beim Zeigen: ${a ? 'abgelehnt' : 'gezeigt'}, beim Stop: ${b.join(' | ') || 'durchgelassen'})`); };
-    const frei = (zeilen, fenster, nr, text) => { const a = w15(zeige(zeilen, fenster)), b = stop(zeilen).filter(x => x.startsWith('W-15'));
-      pruefe(!a && !b.length, `W-15 ${nr} ${text} wird abgelehnt: ${a || b.join(' | ')}`); };
-    // L-1: wie Sitzung 0076, 17:14 – Link und Schritte nur im Fenster, im Chat nur eine Zusammenfassung
-    const l1 = fall('Das Muster ist fertig: drei Varianten des leeren Zustands nebeneinander, nur hell.');
-    beide(l1, lf(), 'L-1', 'Fenster mit Link, im Chat ohne Link – nicht abgelehnt', /APD-30 Muster\.html/);
-    beide(fall(`Das Muster: ${M}\nErwartet: mittig.`), lf(), 'L-2', 'Link ohne nummerierte Schritte – nicht abgelehnt', /Schritte fehlen/);
-    beide(fall(`Das Muster: ${M}\n1. Öffne den Link.\n2. Sieh dir die Varianten an.`), lf(), 'L-3', 'Link und Schritte ohne ‚Erwartet:‘ – nicht abgelehnt', /Erwartet fehlt/);
-    beide(fall(SCHR('https://g811141a.github.io/AppDesign/arbeit/APD-28%20Muster.html')), lf(), 'L-4', 'anderer Link im Chat als im Fenster – nicht abgelehnt');
-    frei(fall(SCHR()), lf(), 'L-5', 'Link, zwei Schritte und ‚Erwartet:‘');
-    frei(fall(SCHR()), frage(GUT, 'Passt Variante A?'), 'L-6', 'Link und Schritte im Chat, Fenster ohne Link');
-    frei(antwort(), frage(GUT), 'L-7', 'Fenster ohne Link (Bau-Frage)');
-    const l8 = { questions: [{ question: 'Welche Variante passt?', header: 'Muster', multiSelect: false, options: [{ label: 'A (Empfohlen)', description: `wie Apple – ${M}` }, option('B'), option('Ich schreibe im Chat')] }] };
-    beide(fall('Das Muster ist fertig.', l8), l8, 'L-8', 'Link nur in der Beschreibung einer Möglichkeit – nicht abgelehnt');
-    frei(fall(SCHR(ML)), lf(M), 'L-9', 'Link im Chat mit Leerzeichen, im Fenster mit %20');
-    frei(fall(SCHR(M)), lf(ML), 'L-9', 'Link im Chat mit %20, im Fenster mit Leerzeichen');
-    const l10 = fall('Das Muster ist fertig.'); l10.splice(l10.findIndex(z => z.message?.content?.[0]?.text?.includes('Das Muster ist fertig')), 1, bausteine(135, [{ type: 'thinking', thinking: 'umformuliert' }]));
-    frei(l10, lf(), 'L-10', 'Ausgabe davor nicht wörtlich gespeichert (Selbstkontrolle)');
-    // L-11: Stop ohne Fenster-Hook – Zurückweisung mit W-15 und Anleitung zum Nachholen
-    const r11 = hook('stop', l1, { env });
-    pruefe(r11?.decision === 'block' && /- W-15/.test(r11.reason) && /Link und nummerierte Schritte mit ‚Erwartet: …‘ \(W-15\)/.test(r11.reason) && /Auswahlfenster/.test(r11.reason), `W-15 L-11 Stop: keine Anleitung zum Nachholen (${r11?.reason?.slice(0, 160) || 'durchgelassen'})`);
-    beide(fall(`Siehe \`${M}\`\n\n1. Öffne den Link.\n2. Sieh hin.\nErwartet: mittig.\n\n<sub>⏱ 01:00 · ${M}</sub>`), lf(), 'L-13', 'Link nur in Code bzw. Zeitzeile – nicht abgelehnt'); }
+  // W-15, W-4 und W-17 nach APD-113 Teil (6) (seit 4.54.0, Testfall-Liste arbeit/APD-113 Teil 6 Testfall-Liste.md M-1 bis M-17)
+  { const M = 'https://g811141a.github.io/AppDesign/arbeit/APD-30%20Muster.html';
+    const zeige = (zeilen, fenster, id = 'f1') => hook('fenster', zeilen, { env, eingabe: { tool_name: 'AskUserQuestion', tool_use_id: id, tool_input: fenster } });
+    const grund = (r, nr) => r?.hookSpecificOutput?.permissionDecision === 'deny' && new RegExp(nr).test(r.hookSpecificOutput.permissionDecisionReason) ? r.hookSpecificOutput.permissionDecisionReason : '';
+    const nur = (m, nr) => m.filter(x => x.startsWith(nr));
+    const ANZ = frage(['Anzeigen (Empfohlen)', 'Ich schreibe im Chat'], 'Muster APD-30 bereit – anzeigen? (Kontext 120.000)');
+    const SCHRITTE = `Das Muster: ${M}\n\n1. Öffne den Link am iPad quer.\n2. Sieh dir die Varianten A, B und C an.\nErwartet: Symbol, Titel, Satz und Knopf stehen mittig.`;
+    const LETZTE = (t = `${SCHRITTE}\n\nAntworte im Chat, z. B. „A ok“ oder „B, weil …“.`) => `${UZ('14:06', '14:02')}\n\n${t}\n\n${Z}`;
+    const mitAnz = t => antwort({ fenster: ANZ, schluss: LETZTE(t) });
+    // M-1: Fenster mit Link im Fragetext – auch wenn Link und Schritte davor im Chat stehen (früher erlaubt, APD-110/L-5)
+    const m1f = { questions: [{ question: `Muster APD-30 ${M} – passt Variante A? (Kontext 120.000)`, header: 'Muster', multiSelect: false, options: GUT.map(option) }] };
+    const m1 = antwort({ zwischen: `${UZ('14:02', '14:00')}\n\n${SCHRITTE}`, fenster: m1f });
+    pruefe(/W-15 Fenster/.test(grund(zeige(m1, m1f), 'W-15')) && nur(stop(m1), 'W-15').length, 'W-15 APD-113/M-1 Fenster mit Link wird nicht abgelehnt (Zeigen bzw. Stop)');
+    const m1b = { questions: [{ question: 'Welche Variante passt? (Kontext 120.000)', header: 'Muster', multiSelect: false, options: [{ label: 'A (Empfohlen)', description: `wie Apple – ${M}` }, option('B'), option('Ich schreibe im Chat')] }] };
+    pruefe(grund(zeige(antwort({ fenster: m1b }), m1b), 'W-15') && grund(hook('fenster', null, { env, eingabe: { tool_input: m1b } }), 'W-15'), 'W-15 APD-113/M-1 Link nur in der Beschreibung einer Möglichkeit bzw. ohne Sitzungsdatei wird nicht abgelehnt');
+    // M-2: Fenster ‚… bereit – anzeigen?‘ ohne Link
+    pruefe(!zeige(antwort({ fenster: ANZ }), ANZ), `W-15 APD-113/M-2 Fenster ‚… anzeigen?‘ ohne Link wird abgelehnt: ${grund(zeige(antwort({ fenster: ANZ }), ANZ), 'W-')}`);
+    // M-3: letzte Ausgabe mit Link, Schritten, ‚Erwartet:‘ und ‚Antworte im Chat‘, Zeitzeile am Ende – kein Fenster danach
+    { const m = stop(mitAnz()); pruefe(!m.length, `W-15 APD-113/M-3 letzte Ausgabe nach ‚… anzeigen?‘ regelgerecht wird zurückgewiesen: ${m.join(' | ')}`); }
+    // M-4: ohne nummerierte Schritte bzw. ohne ‚Erwartet:‘
+    genau(stop(mitAnz(`Das Muster: ${M}\nErwartet: mittig.\n\nAntworte im Chat, z. B. „ok“.`)), 'W-15', 'APD-113/M-4 letzte Ausgabe ohne nummerierte Schritte');
+    genau(stop(mitAnz(`Das Muster: ${M}\n\n1. Öffne den Link.\n2. Sieh dir die Varianten an.\n\nAntworte im Chat, z. B. „ok“.`)), 'W-15', 'APD-113/M-4 letzte Ausgabe ohne ‚Erwartet:‘');
+    // M-15: wie 0086, 00:31 – Wortlaut ohne Link bzw. ohne ‚Antworte im Chat‘
+    genau(stop(mitAnz('Wortlaut N-1 bis N-5:\n\n1. N-1 erledigt durch Teil (6).\n2. N-2 entfällt.\nErwartet: alles bestätigt.\n\nAntworte im Chat, z. B. „N-1 bis N-5 ja“.')), 'W-15', 'APD-113/M-15 letzte Ausgabe ohne Link');
+    genau(stop(mitAnz(SCHRITTE)), 'W-15', 'APD-113/M-15 letzte Ausgabe ohne ‚Antworte im Chat‘');
+    // ‚Ich schreibe im Chat‘ gewählt – Claude beendet die Antwort, keine letzte Ausgabe mit Link nötig
+    { const a = antwort({ fenster: ANZ, schluss: LETZTE('Du schreibst im Chat.') }); a[a.findIndex(z => z.message?.content?.[0]?.tool_use_id === 'f1')].message.content[0].content = 'Your questions have been answered: "Muster …"="Ich schreibe im Chat"';
+      const m = stop(a); pruefe(!m.length, `W-15 APD-113/M-3 ‚Ich schreibe im Chat‘ gewählt – letzte Ausgabe wird angemahnt: ${m.join(' | ')}`); }
+    // M-5: Antwort ganz ohne Fenster, dreimal hintereinander – jedes Mal abgelehnt, auch nach der zweiten Zurückweisung
+    { const a = antwort({ ohneFenster: true }), s5 = { env, eingabe: { session_id: 'm5' } };
+      const r = [0, 1, 2].map(k => hook('stop', a, { ...s5, jetzt: T0 + 420000 + k * 10000 }));
+      pruefe(r.every(x => x?.decision === 'block' && /- W-4/.test(x.reason)) && /Zurückweisung 3 – ohne beantwortetes Fenster endet keine Antwort/.test(r[2]?.reason || ''),
+        `W-4 APD-113/M-5 Antwort ohne Fenster nach der zweiten Zurückweisung durchgelassen (${r.map(x => x?.decision || 'durch').join(', ')})`); }
+    // M-6: wie 0086, 19:00 – Neustart des Arbeitsprozesses mitten in der Antwort (Meldung als Systemanstoß), danach ‚No response requested‘ ohne Fenster
+    const nachMeldung = (meldung, text) => [...antwort(), { type: 'system', subtype: 'restart', timestamp: iso(500), content: 'Arbeitsprozess neu gestartet' }, meldung,
+      werkzeug(605, 'k6m', 'Bash', { command: 'node werkzeug/messung.mjs' }), ergebnis(606, 'k6m', Z), ausgabe(610, `${UZ('14:10', '14:06')}\n\n${text}\n\n${Z}`)];
+    const anstoss = (s, t) => ({ type: 'user', uuid: `an${++n}`, timestamp: iso(s), origin: { kind: 'task-notification' }, promptSource: 'system', turnOrigin: 'task_notification', message: { role: 'user', content: t } });
+    genau(stop(nachMeldung(anstoss(520, '[SYSTEM NOTIFICATION - NOT USER INPUT] Der Arbeitsprozess wurde neu gestartet.'), 'No response requested.')), 'W-4', 'APD-113/M-6 nach einem Neustart Antwort ohne Fenster');
+    // M-7: wie 0086, 19:22 – Meldung einer Hintergrundaufgabe bzw. einer anderen Sitzung, danach Antwort ohne Fenster
+    genau(stop(nachMeldung(anstoss(520, '<task-notification>Der Prüflauf ist fertig.</task-notification>'), 'Der Prüflauf ist fertig, alles grün.')), 'W-4', 'APD-113/M-7 nach der Meldung einer Hintergrundaufgabe Antwort ohne Fenster');
+    // M-8: Übergabe ohne Fenster bleibt erlaubt (auch nach einer Meldung)
+    { const m = stop(nachMeldung(anstoss(520, '<task-notification>fertig</task-notification>'), 'Übergabe geschrieben.\n\n**Die Sitzung (Chat) ist damit beendet!**'));
+      pruefe(!m.length, `W-4 APD-113/M-8 Übergabe ohne Fenster wird zurückgewiesen: ${m.join(' | ')}`); }
+    // M-9: Zeitzeile mitten in der Antwort, danach noch ein Fenster (0086, 19:22)
+    genau(stop(antwort({ zwischen: `${UZ('14:02', '14:00')}\n\nZwischenstand.\n\n${Z}\n\n${KS}` })), 'W-6', 'APD-113/M-9 Zeitzeile vor einem späteren Fenster');
+    // M-10: gewöhnliche Frage am Ende ohne Link
+    { const m = stop(antwort()); pruefe(!m.length, `W-15 APD-113/M-10 gewöhnliche Frage ohne Link wird zurückgewiesen: ${m.join(' | ')}`); }
+    // M-13 und M-14: zwei Fenster in einer Antwort, dazwischen ein Aufruf mit Commit und messung.mjs (0086, 19:27) bzw. nur messung.mjs
+    const zwischen = befehl => [...antwort({ schluss: `${UZ('14:06', '14:02')}\n\nDu hast Ja gewählt – ich trage es ein.` }),
+      werkzeug(411, 'c13', 'Bash', { command: befehl }), ergebnis(412, 'c13', `[main abc1234] Eintrag\n${Z}`), ausgabe(418, `${UZ('14:07', '14:06')}\n\nEingetragen, jetzt die Priorität.\n\n${KS}`)];
+    const f13 = frage(GUT, 'Mit welcher Priorität? (Kontext 120.000)');
+    pruefe(!grund(zeige(zwischen('cd /home/user/AppDesign && git commit -qam "Eintrag" && git push -q && node werkzeug/messung.mjs'), f13, 'gibt-es-noch-nicht'), 'W-17'),
+      'W-17 APD-113/M-13 zweites Fenster nach Commit und messung.mjs in einem Aufruf wird abgelehnt');
+    pruefe(/seitdem lief kein Werkzeug/.test(grund(zeige(zwischen('cd /home/user/AppDesign && node werkzeug/messung.mjs | tail -1'), f13, 'gibt-es-noch-nicht'), 'W-17')),
+      'W-17 APD-113/M-14 zweites Fenster, dazwischen nur messung.mjs (mit cd), wird nicht abgelehnt');
+    // M-16 und M-17: Zurückweisung des Stop-Hooks nach einem beantworteten Fenster (0086, 00:30; 0087, 00:42)
+    const zurueck = s => ({ type: 'user', uuid: `sh${++n}`, timestamp: iso(s), isMeta: true, message: { role: 'user', content: 'Stop hook feedback:\nRegelwächter (Zusammenarbeit 0, Kasten ‚Jede Antwort‘) – Zurückweisung 1 von 2, die Antwort ist noch nicht fertig:\n- W-1 Ausgabe ohne Uhrzeitzeile …' } });
+    const nachZurueck = [...antwort(), zurueck(412), werkzeug(415, 'k16', 'Bash', { command: 'node werkzeug/messung.mjs' }), ergebnis(416, 'k16', Z)];
+    genau(stop([...nachZurueck, ausgabe(418, `${UZ('14:07', '14:06')}\n\nRegelbruch W-1: die Zwischenmeldung hatte keine Uhrzeitzeile.\n\n${Z}`)]), 'W-4', 'APD-113/M-16 Nachholen nach einer Zurückweisung ohne neues Fenster');
+    pruefe(!grund(zeige([...nachZurueck, ausgabe(418, `${UZ('14:07', '14:06')}\n\nRegelbruch W-1 nachgeholt. ${KS}`)], frage(GUT, 'Hinweis bereit – anzeigen? (Kontext 120.000)'), 'gibt-es-noch-nicht'), 'W-17'),
+      'W-17 APD-113/M-17 Fenster nach einer Zurückweisung (seitdem nur messung.mjs) wird abgelehnt');
+    // eine Zurückweisung eines anderen Stop-Hooks (z. B. Git ‚unpushed‘) zählt nicht als Zurückweisung des Regelwächters
+    { const fremd = [...antwort(), { type: 'user', uuid: 'shg', timestamp: iso(412), isMeta: true, message: { role: 'user', content: 'Stop hook feedback:\nThere are unpushed commits.' } },
+        werkzeug(414, 'gp', 'Bash', { command: 'git push' }), ergebnis(415, 'gp', 'ok'), werkzeug(416, 'k17', 'Bash', { command: 'node werkzeug/messung.mjs' }), ergebnis(417, 'k17', Z), ausgabe(418, `${UZ('14:07', '14:06')}\n\nGepusht.\n\n${Z}`)];
+      const m = stop(fremd); pruefe(!m.length, `W-4 APD-113/M-16 Zurückweisung eines anderen Stop-Hooks verlangt ein Fenster: ${m.join(' | ')}`); } }
 
   // W-16 Kontext in der Bau-Frage, W-17 ein Fenster je Antwort (seit 4.51.0, APD-114, Testfall-Liste arbeit/APD-114 Testfall-Liste.md)
   { const BF = 'Soll ich Version 4.51.0 mit APD-40 erstellen?';
@@ -248,9 +287,10 @@ function lauf(env = {}) {
     b8[j].message.content[0].content = 'PreToolUse:AskUserQuestion hook error: Regelwächter (Zusammenarbeit 0 Nr. 7, Nr. 28, 2.1) – Fenster so nicht zeigen:\n- W-15 …';
     const b8n = [...b8.slice(0, j + 1), werkzeug(150, 'k8', 'Bash', { command: 'node werkzeug/messung.mjs' }), ergebnis(151, 'k8', Z), ausgabe(152, `${UZ('14:02', '14:02')}\n\nNeu gestellt.\n\n${KS}`)];
     pruefe(!zeige(b8n, frage(GUT), 'gibt-es-noch-nicht'), 'W-17 B-8 neu gestelltes Fenster nach einer Ablehnung durch den Wächter wird abgelehnt');
-    // B-9: Nachholen nach einer Zurückweisung des Stop-Hooks gehört zur selben Antwort
+    // B-9 (seit 4.54.0 umgekehrt, APD-113/M-17): Nachholen nach einer Zurückweisung des Stop-Hooks gehört zur selben Antwort, die Zurückweisung zählt
+    // für W-17 wie ein Werkzeug – das Fenster, das N-6 verlangt, ist erlaubt
     const b9 = zweites([{ type: 'user', uuid: 'sh9', timestamp: iso(412), isMeta: true, message: { role: 'user', content: 'Stop hook feedback:\nRegelwächter … Zurückweisung 1 von 2' } }]);
-    pruefe(grund(zeige(b9, frage(GUT), 'gibt-es-noch-nicht'), 'W-17'), 'W-17 B-9 Fenster beim Nachholen nach dem Stop-Hook (schon ein Fenster gezeigt) wird nicht abgelehnt');
+    pruefe(!grund(zeige(b9, frage(GUT), 'gibt-es-noch-nicht'), 'W-17'), 'W-17 B-9/APD-113/M-17 Fenster beim Nachholen nach dem Stop-Hook wird abgelehnt');
     // B-14: wie Sitzung 0080, 14:15 – nach dem Fenster kam die Meldung einer Hintergrundaufgabe (neuer Zug ohne Nachricht des Nutzers)
     const b14 = [...antwort(), { type: 'user', uuid: 'tn14', timestamp: iso(600), origin: { kind: 'task-notification' }, message: { role: 'user', content: '<task-notification>fertig</task-notification>' } },
       werkzeug(605, 'k14', 'Bash', { command: 'node werkzeug/messung.mjs' }), ergebnis(606, 'k14', Z), ausgabe(610, `${UZ('14:10', '14:06')}\n\nDer Nebenstrang ist fertig.\n\n${KS}`)];
@@ -282,8 +322,8 @@ function lauf(env = {}) {
     for (const nr of f.erwartet) pruefe(r.some(x => x.startsWith(nr)), `${nr} echte Antwort ${f.name} wird nicht zurückgewiesen (${r.join(' | ') || 'lässt durch'})`);
   }
 
-  // W-9 höchstens zwei Zurückweisungen je Antwort; danach nur noch neue Ausgaben
-  const w9 = antwort({ ohneFenster: true });
+  // W-9 höchstens zwei Zurückweisungen je Antwort; danach nur noch neue Ausgaben – außer ohne Fenster (W-4 ohne Grenze, seit 4.54.0, APD-113/M-5)
+  const w9 = antwort({ schluss: `${UZ('14:06', '14:02')}\n\nOhne Zeitzeile.` });
   const s9 = { env, eingabe: { session_id: 'w9' } };
   const r1 = hook('stop', w9, { ...s9, jetzt: T0 + 420000 }), r2 = hook('stop', w9, { ...s9, jetzt: T0 + 430000 }), r3 = hook('stop', w9, { ...s9, jetzt: T0 + 440000 });
   pruefe(r1?.decision === 'block' && r2?.decision === 'block' && /Zurückweisung 2 von 2/.test(r2.reason) && r3 === null, `W-9 dritte Zurückweisung derselben Antwort (${[r1, r2, r3].map(r => r?.decision || 'durch').join(', ')})`);
@@ -349,6 +389,12 @@ if (!gegenprobe) {
     if (!f.some(x => x.startsWith(nr))) gruen.push(nr);
   }
   if (gruen.length) fehler.push(`Gegenprobe: ohne ${gruen.join(', ')} bleibt die Prüfung grün – sie prüft diese Fälle nicht`);
+  // APD-113/M-12 (seit 4.54.0): je neuer Teil abgeschaltet – genau seine Fälle werden rot
+  for (const [teil, faelle] of [['W-15-Link', ['M-1']], ['W-15-Ende', ['M-4', 'M-15']], ['W-4-ohne-Grenze', ['M-5']], ['W-4-Abschnitt', ['M-6', 'M-7', 'M-16']],
+    ['W-17-Commit', ['M-13']], ['W-17-Zurückweisung', ['M-17']]]) {
+    const f = lauf({ REGELWAECHTER_AUS: teil }), fehlt = faelle.filter(m => !f.some(x => x.includes(`APD-113/${m} `)));
+    if (fehlt.length) fehler.push(`Gegenprobe APD-113/M-12: ohne ${teil} bleiben ${fehlt.join(', ')} grün`);
+  }
   // D-9: nur der Rückfall abgeschaltet – D-2, D-3, D-5 und D-7 müssen rot werden
   const r = lauf({ REGELWAECHTER_AUS: 'W-14-Rückfall' });
   const fehlt = ['D-2', 'D-3', 'D-5', 'D-7'].filter(d => !r.some(x => x.startsWith(`W-14 ${d}`)));
@@ -356,4 +402,4 @@ if (!gegenprobe) {
 }
 rmSync(ordner, { recursive: true, force: true });
 if (fehler.length) { console.log(`✗ regelwaechter${gegenprobe ? ' (Gegenprobe)' : ''}: ${fehler.length} Fehler\n${fehler.map(f => '  - ' + f).join('\n')}`); process.exit(1); }
-console.log(gegenprobe ? '✓ regelwaechter Gegenprobe: jede der Prüfungen W-1 bis W-7, W-14 (mit Rückfall D-2, D-3, D-5, D-7), W-15, W-16 und W-17 wird rot, wenn sie im Wächter fehlt' : '✓ regelwaechter: W-1 bis W-17 in Ordnung');
+console.log(gegenprobe ? '✓ regelwaechter Gegenprobe: jede der Prüfungen W-1 bis W-7, W-14 (mit Rückfall D-2, D-3, D-5, D-7), W-15, W-16 und W-17 wird rot, wenn sie im Wächter fehlt; APD-113/M-1, M-4, M-5, M-6, M-7, M-13, M-15, M-16 und M-17 werden rot, wenn ihr Teil fehlt (M-12)' : '✓ regelwaechter: W-1 bis W-17 und APD-113/M-1 bis M-17 in Ordnung');

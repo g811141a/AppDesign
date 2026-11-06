@@ -518,10 +518,32 @@ const onRoll = fn => window.addEventListener('scroll', e => { if (e.target === d
 /* ---------- Menüs und Sprechblasen ---------- */
 
 // Ebene hinter Menü und Sprechblase: daneben tippen schließt, Wischen bewegt die Seite dahinter nicht.
-function blockingLayer() {
+// Seit 4.54.0 (APD-118, Designrichtlinie 13 ‚Am oberen Rand kein Klick‘, Testfall-Liste APD-118/X-1 bis X-9): sie schließt schon beim Loslassen
+// (pointerup), wenn der Finger bzw. die Maus auf ihr aufsetzte und höchstens SCHICHT_WEG px wanderte – am oberen Rand (iPhone quer, Home-Bildschirm)
+// schickt Safari keinen click. Den Klick danach verschluckt sie (sonst träfe er, was unter der Schicht lag, z. B. den Mehr-Knopf: wieder offen);
+// ein Klick ohne pointerdown (el.click() aus dem Skript, Tastatur) schließt wie bisher.
+const SCHICHT_WEG = 20, SCHICHT_KLICK_MS = 700;
+function klickVerschlucken(x, y) {
+  const weg = e => { if (Math.hypot(e.clientX - x, e.clientY - y) > 40) return; e.preventDefault(); e.stopImmediatePropagation(); if (e.type === 'click') aus(); };
+  const typen = ['mousedown', 'mouseup', 'click'];
+  const aus = () => { clearTimeout(t); for (const typ of typen) window.removeEventListener(typ, weg, true); };
+  for (const typ of typen) window.addEventListener(typ, weg, true);
+  const t = setTimeout(aus, SCHICHT_KLICK_MS);
+}
+function blockingLayer(schliessen = () => {}) {
   const layer = document.createElement('div');
   layer.className = 'layer';
   layer.addEventListener('touchmove', e => e.preventDefault(), { passive: false });
+  let start = null;
+  layer.addEventListener('pointerdown', e => { start = e.isPrimary ? { id: e.pointerId, x: e.clientX, y: e.clientY } : null; });
+  layer.addEventListener('pointercancel', () => { start = null; });
+  layer.addEventListener('pointerup', e => {
+    const s = start; start = null;
+    if (!s || s.id !== e.pointerId || Math.hypot(e.clientX - s.x, e.clientY - s.y) > SCHICHT_WEG) return;
+    klickVerschlucken(e.clientX, e.clientY);
+    schliessen();
+  });
+  layer.addEventListener('click', () => { start = null; schliessen(); });
   return layer;
 }
 
@@ -727,7 +749,7 @@ function schrumpfen(el, anchor) {
 }
 function openMenu(anchor, items, align = 'right') {
   const host = anchor.closest('dialog') || document.body;
-  const layer = blockingLayer();
+  const layer = blockingLayer(() => close());
   const menu = document.createElement('div');
   menu.className = 'menu';
   // seit 4.52.0 (R-4.10, APD-40 Paket B): ein Kontextmenü (neben einer Zeile bzw. Kachel) ist erkennbar – höchstens 3 Gruppen, nichts Gesperrtes
@@ -781,7 +803,6 @@ function openMenu(anchor, items, align = 'right') {
     document.querySelectorAll('.side-list[data-padded]').forEach(l => { l.style.paddingBottom = ''; delete l.dataset.padded; });
     fokusZurueck(anchor, host);   // V5: zurück auf den Knopf, ohne Rollen
   };
-  layer.onclick = close;
   const binde = () => menu.querySelectorAll('[data-i]').forEach(b => b.onclick = () => {
     const it = items[b.dataset.i];
     if (!it.submenu) { close(); it.act(); return; }
@@ -867,7 +888,7 @@ function choosePop(anchor, html, buttons, { feld = null } = {}) {
   return new Promise(resolve => {
     const visible = anchor?.isConnected && anchor.getClientRects().length;
     const host = (visible && anchor.closest('dialog')) || (dlg.open ? dlg : document.body);
-    const layer = blockingLayer();
+    const layer = blockingLayer(() => done(null));
     const pop = document.createElement('div');
     pop.className = 'pop';
     // Seit 4.10.0 (R-9.2): Wege mit Erklärung (desc) stehen je in einer eigenen Kachel – Erklärung, darunter der Knopf;
@@ -900,7 +921,6 @@ function choosePop(anchor, html, buttons, { feld = null } = {}) {
       if (!feld) fokusZurueck(visible ? anchor : null, host);   // V6: zurück auf den Knopf bzw. die Kopfzeile, ohne Rollen
       resolve(v);
     };
-    layer.onclick = () => done(null);
     pop.querySelectorAll('[data-i]').forEach(b => b.onclick = () => done(buttons[b.dataset.i].value));
     // R-4.7 (K4): Eingabe = der blaue Weg, sonst der Weg zurück – nie die rote Aktion; Esc bzw. ⌘. = Abbrechen (das Fenster bleibt);
     // Tab und Pfeile markieren mit Umlauf, die Leertaste drückt den markierten Knopf (auch den roten)
