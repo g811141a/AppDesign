@@ -1,66 +1,64 @@
 # Übergabe an die nächste Sitzung
 
-**Stand 05.11.2026** · geschrieben in der Sitzung ‚Reiselogbuch 0081‘ (P-94 ausgewertet, APD-40 Pakete B und C geklärt, Version AppDesign 4.52.0 /
-Reiselogbuch 3.50.0 gebaut und veröffentlicht; automatische Übergabe bei Kontext über 300.000, 0 Nr. 13) – Aufbau nach Zusammenarbeit allgemein 2.5.
-**Claude liest diese Datei zu Beginn jeder Sitzung zuerst, dann die ganze Zusammenarbeit** (0 Nr. 15); die Arbeitsumgebung steht in der
-AppDesign-`CLAUDE.md`.
+**Stand 06.11.2026** · geschrieben in der Sitzung ‚Reiselogbuch 0082‘ (P-95 ok, RLB-118 nachgestellt, gebaut und veröffentlicht als Reiselogbuch
+3.50.1, P-96 ok; APD-62/T-16 Muster, Variante und Wortlaut R-4.13 geklärt; automatische Übergabe bei Kontext über 300.000, 0 Nr. 13) – Aufbau
+nach Zusammenarbeit allgemein 2.5. **Claude liest diese Datei zu Beginn jeder Sitzung zuerst, dann die ganze Zusammenarbeit** (0 Nr. 15); die
+Arbeitsumgebung steht in der AppDesign-`CLAUDE.md`.
 
 ## 1. Lagebild
 
 | Teil | Version | Datei |
 |---|---|---|
-| Reiselogbuch | **3.50.0** veröffentlicht (Fassung 4.52.0) | g811141a/ReiseLogBuch |
+| Reiselogbuch | **3.50.1** veröffentlicht (Fassung 4.52.0) | g811141a/ReiseLogBuch |
 | AppDesign | **4.52.0** veröffentlicht | g811141a/AppDesign |
 | Zusammenarbeit allgemein | **3.7.0** | `README - Zusammenarbeit allgemein.md` |
 | AppDesign-`CLAUDE.md` | **2.10.0** | `CLAUDE.md` |
 | ReiseLogBuch-Import (privat) | 1.3.0 | g811141a/ReiseLogBuch-Import |
 
-- Alles liegt auf **`main`** (beide Repos); keine lokalen Vorbereitungs-Zweige (auf GitHub bleiben `vorbereitung-4.52.0` und `vorbereitung-3.50.0`).
-- **Chatnummer:** die nächste Sitzung heißt **Reiselogbuch 0082**; die danach 0083.
-- **Modell und Aufwand:** in 0081 Opus 5.5 (`get_session`), Aufrufe `"effort":"high"`, kein `model_fallback`; der Arbeitsprozess wurde einmal neu gestartet.
+- Alles liegt auf **`main`** (beide Repos); keine lokalen Vorbereitungs-Zweige (auf GitHub bleiben u. a. `vorbereitung-3.50.1` und `rlb-118-pruefung`).
+- **Chatnummer:** die nächste Sitzung heißt **Reiselogbuch 0083**; die danach 0084.
+- **Modell und Aufwand:** in 0082 Opus 5.5 (`get_session`), Aufrufe `"effort":"high"`, kein `model_fallback`; der Arbeitsprozess wurde dreimal neu gestartet.
 - **Regelwächter läuft** (Hooks in `~/.claude/settings.json`).
-- **Offener Usertest: P-95** (3.50.0 / 4.52.0) – Testfälle P-95/0 bis P-95/3 im Reiselogbuch-CHANGELOG; Rückmeldung noch nicht erfragt.
+- **Offene Usertests:** keine (P-95 und P-96 alles ok).
 - **Nächste Version:** 0 Punkte bereit.
 - **Vereinbarung (Nutzer 30.10.2026, Sitzung 0058):** Muster bis auf Weiteres **nur hell** – in jede Übergabe übernehmen.
 - **Erinnerung:** ‚Backlog-Erinnerung (AppDesign und Reiselogbuch)‘ montags 8:58.
 
-## 2. Ergebnisse der Sitzung 0081
+## 2. Ergebnisse der Sitzung 0082
 
-- **P-94 alles ok** (Nutzer 05.11.2026) – in beiden Backlogs unter ‚Erledigt‘.
-- **APD-40 Pakete B und C geklärt** (deine Ja zum Wortlaut, 05.11.2026): `arbeit/APD-40 Paket B.md`, `arbeit/APD-40 Paket C.md`; Kontextmenü streng
-  höchstens 3 Gruppen; zerstörende Schaltflächen am Text erkannt, Menüpunkte an `red`; B und C zusammen gebaut.
-- **4.52.0 / 3.50.0 veröffentlicht** (dein Ja 05.11.2026, ‚hier in dieser Sitzung‘ – meine Empfehlung war eine neue Sitzung wegen des Kontexts):
-  `los`: 142 Läufe grün in 59:21 (Chromium und WebKit), Pages beider Repos ‚success‘ (AppDesign 8a5d3d6, Reiselogbuch 112e0a8).
-  - neu R-4.10, R-4.11, R-4.12, R-5.10, R-10.6, R-10.7 statt G-4, G-7, G-12, G-13 und Teilen von G-19; Prüfungen `texteMenues`, `dateinameFehler`,
-    `checkMenueFenster`, `checkAutoSpeichern`, `checkErstFragen`; neue Prüfung im Reiselogbuch `ablauf-texte-ablaeufe`; 12 Gegenproben in
-    Chromium alle rot (WebKit nicht gelaufen).
-  - **Behoben (gefunden von der neuen Prüfung):** Abgleichbericht ‚Geändert am‘ mit zweistelligem Tag und Monat (ui.js `atText`).
-- **Befund ohne Änderung (Vorschlag fürs Backlog, noch nicht gefragt):** nach Zwischenspeichern und ‚Änderungen verwerfen‘ bleiben die Zeitstempel
-  des Abgleichs (`dayAt`, `metaAt`, `changedAt`, `changedOn`) auf ‚geändert‘ – Vermutung: ein Abgleich könnte den alten Stand für neuer halten
-  als eine echte Änderung am anderen Gerät. Außerdem fehlt in AppDesign `BACKLOG.md` unter ‚Erledigt‘ die Trennzeile der Tabelle (`|---|`, schon
-  auf `main` vor 0081).
-- **Selbstkritik 0081:** zwei Zwischenmeldungen ohne Uhrzeitzeile, eine davon englisch; einmal eine Uhrzeit selbst geschrieben (19:29) statt
-  vom Regelwächter; zweimal ein zweites Fenster in derselben Antwort versucht (vom Regelwächter abgelehnt); einmal lehnte der Regelwächter
-  das P-94-Fenster fälschlich ab (APD-113 ergänzt).
+- **P-95 alles ok** (06.11.2026) – in beiden Backlogs unter ‚Erledigt‘; Trennzeile unter ‚Erledigt‘ in AppDesign `BACKLOG.md` ergänzt (dein Ja).
+- **RLB-118 (Prio 1, dein Ja):** nach automatischem Sichern und ‚Änderungen verwerfen‘ stempelte `restore` die Felder neu – beim Abgleich überschrieb
+  der alte Text eine echte Änderung am anderen Gerät (auf beiden Geräten). Nachgestellt mit `tests/ablauf-verwerfen-abgleich.mjs` (RLB-118/V-1 bis
+  V-5, rot gegen 3.50.0 in Chromium und WebKit); übersehen, weil `ablauf-texte-ablaeufe` die Zeitstempel absichtlich ausklammerte (`ohne:
+  ABGLEICH_ZEIT`, entfernt). **Reiselogbuch 3.50.1** (dein Ja 06.11.2026): `restoreStamps` in `index.html`; `los --nur-app`: 144 Läufe grün in
+  58:49, davon 1 wackelt (`ablauf-gesamt · webkit`, APD-85 Teil 6), Pages ‚success‘ (3b4e15b). **P-96 alles ok.**
+- **APD-62 Teil APD-38/T-16** (deine Wahl): Muster `arbeit/APD-62 Bewegung Muster.html` (iPad quer/hoch, iPhone; nur hell), **Variante A Apple-nah**,
+  allgemeine Regel ja, **Wortlaut R-4.13 bestätigt** (steht in `arbeit/APD-62 Bewegung Testfall-Liste.md`, noch nicht im Katalog – kommt mit dem
+  Bau). **Befund:** Fenster und Blatt gleiten schon seit 4.38.0 (APD-72, `BLATT_KURVE`), die Seitenleiste gleitet (15.4) – neu sind nur Menüs,
+  Untermenüs, Kontextmenüs und Sprechblasen. Meine Vorlage stützte sich zuerst auf die ältere Vergleichsseite (21.10.) – im Chat korrigiert.
+- **Regelwächter (für APD-113):** W-15/W-14 lehnten das Usertest-Fenster dreimal fälschlich ab (Text davor nach Denkschritt bzw. nach Neustart
+  des Arbeitsprozesses nicht in der Sitzungsdatei); nach einem Hintergrundlauf verlangte der Stop-Hook ein Fenster, das W-17 als zweites Fenster
+  ablehnte (APD-113 (4)); dadurch mehrere Fragen erst nach ‚w‘.
+- **Selbstkritik 0082:** zwei Ausgaben ohne Uhrzeitzeile bzw. mit alter Zeitzeile (vom Stop-Hook gemeldet, nachgeholt); Wortlaut-Vorlage APD-62 zuerst
+  ohne Prüfung des heutigen Stands.
 
 ## 3. Nächster Schritt
 
 1. `UEBERGABE.md`, die ganze Zusammenarbeit, Überschriften der Designrichtlinien; Lagebild; Regelwächter; ReiseLogBuch dazuholen (`main`).
-2. Usertest P-95 vollständig im Chat zeigen (Link und Schritte aus dem Reiselogbuch-CHANGELOG, ‚Testfälle P-95‘), dann im Fenster:
-   ‚P-95: Wie ist die Prüfung ausgegangen?‘ – ‚Alles ok‘ · ‚Nicht ok – ich schreibe im Chat‘ · ‚Ich prüfe später‘ · ‚Ich schreibe im Chat‘.
-3. Danach den Befund zu den Zeitstempeln nach ‚Verwerfen‘ (Abschnitt 2) als neues Thema vorschlagen (‚Ins Backlog übernehmen?‘ mit Priorität).
+2. APD-62/T-16: Testfall-Liste APD-62/M-1 bis M-10 in `arbeit/APD-62 Bewegung Testfall-Liste.md` im Chat zeigen und im Fenster bestätigen lassen
+   (0 Nr. 1), dann in AppDesign ‚0. Nächste Version‘ eintragen (Status bereit) und nach 0 Nr. 8 fragen, ob gebaut wird (Kontext in der Frage, 0 Nr. 21).
 
 ## 4. Danach
 
-APD-113 (Regelwächter) · APD-85 Teil 6 · APD-62 (APD-38/T-16, APD-38/T-1, APD-38/T-37) · APD-80 · APD-30 übrige Teile (Kurzmeldung,
-Wischaktionen) · APD-57 · APD-44 bis APD-60 · APD-70 · RLB-6 · APD-1.
+APD-62 übrige Teile (APD-38/T-1 Titel rastet ein, APD-38/T-37 Glas-Optik) · APD-113 (Regelwächter, neue Belege aus 0082) · APD-85 Teil 6 · APD-80 ·
+APD-30 übrige Teile (Kurzmeldung, Wischaktionen) · APD-57 · APD-44 bis APD-60 · APD-70 · RLB-6 · APD-1.
 
 ## 5. Starttext für die neue Sitzung
 
 In der neuen Sitzung müssen **AppDesign** und **ReiseLogBuch** verfügbar sein; alles liegt auf `main`.
 
 ```
-Reiselogbuch 0082 – Usertest P-95 (Version 4.52.0 / 3.50.0)
+Reiselogbuch 0083 – APD-62 Bewegung (Testfall-Liste T-16)
 
-Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md, dann die GANZE Zusammenarbeit allgemein (Kasten ‚Immer‘ und ‚Jede Antwort‘ oben in Abschnitt 0 gilt ab der ersten Antwort) und die Überschriften der Designrichtlinien. Prüfe Modell und Aufwand (Sitzungsdatei, auch model_fallback), hole das Repo g811141a/ReiseLogBuch (Branch main) dazu, wie in der AppDesign-CLAUDE.md unter ‚Arbeitsumgebung‘, und prüfe, ob der Regelwächter läuft. Gib kurz das Lagebild. Dann zeige den Usertest P-95 vollständig (Reiselogbuch-CHANGELOG) und frage im Auswahlfenster nach der Rückmeldung (UEBERGABE.md 3.).
+Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md, dann die GANZE Zusammenarbeit allgemein (Kasten ‚Immer‘ und ‚Jede Antwort‘ oben in Abschnitt 0 gilt ab der ersten Antwort) und die Überschriften der Designrichtlinien. Prüfe Modell und Aufwand (Sitzungsdatei, auch model_fallback), hole das Repo g811141a/ReiseLogBuch (Branch main) dazu, wie in der AppDesign-CLAUDE.md unter ‚Arbeitsumgebung‘, und prüfe, ob der Regelwächter läuft. Gib kurz das Lagebild. Dann zeige die Testfall-Liste APD-62/M-1 bis M-10 (arbeit/APD-62 Bewegung Testfall-Liste.md) und frage im Auswahlfenster nach der Bestätigung (UEBERGABE.md 3.).
 ```
