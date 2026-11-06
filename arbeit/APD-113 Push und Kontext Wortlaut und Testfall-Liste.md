@@ -24,7 +24,7 @@ getestet: ‚Mobile push requested‘, kam am iPad nicht an. Die Push-Mitteilung
 Dazu: Regelwächter `werkzeug/regelwaechter.mjs` (W-16 für jede Frage, W-17 mit Werkzeug dazwischen, Stop-Hook: Zeitzeile nach dem letzten
 Fenster), Prüfung `tests/regelwaechter.mjs`, Versionsgeschichte.
 
-## Testfall-Liste (Entwurf – vor dem Bau bestätigen, 0 Nr. 1)
+## Testfall-Liste (bestätigt, Nutzer 06.11.2026, Sitzung 0083, 0 Nr. 1)
 
 | Nr. | Fall | Erwartet |
 |---|---|---|
