@@ -1,6 +1,6 @@
 # Zusammenarbeit allgemein
 
-**Version 3.7.0** · Stand 05.11.2026
+**Version 3.8.0** · Stand 06.11.2026
 
 Regeln für die Zusammenarbeit mit Claude bei allen iPad-Web-Apps von g811141a. Die Datei liegt im Design-Repo **AppDesign**
 (g811141a/AppDesign); App-Eigenes steht in der `CLAUDE.md` des App-Repos. **Abschnitt 0 ist das Arbeitsmodell** (oben der Kasten ‚Immer‘ und ‚Jede
@@ -30,8 +30,8 @@ Antwort‘), Abschnitt 1 die Sprache, Abschnitt 2 die Einzelheiten und Formate. 
 > 7. Ganz am Ende, nach dem Fenster: die Zeitzeile von `messung.mjs`, unverändert (2.2). **W**
 > 8. Meldet der Regelwächter ‚⚠ Modell‘, steht es in der Antwort (2.5); steht ‚⚠ Übergabe fällig‘ in der Zeitzeile: nach dem
 >    laufenden Schritt übergeben (Nr. 13).
-> 9. Vor **jedem Auswahlfenster**: der Kontextstand als Satz mit ‚Kontext N‘ aus `messung.mjs`, abgelesen (Nr. 28); bei der Bau-Frage
->    zusätzlich in der Frage selbst (Nr. 21). **W**
+> 9. Vor **jedem Auswahlfenster**: der Kontextstand als Satz mit ‚Kontext N‘ aus `messung.mjs`, abgelesen, und derselbe Wert als
+>    ‚(Kontext N)‘ am Ende **jeder Frage** im Fenster – die Push-Mitteilung am iPad zeigt den Fragetext (Nr. 21, 28). **W**
 
 Ziel: nichts vergessen, Fehler finden, bevor der Nutzer sie findet, schnell und sparsam arbeiten. Die Nummern bleiben fest
 (Verweise in Code und Changelogs), neue Punkte bekommen die nächste freie Nummer. Einzelheiten und Formate: Abschnitt 2.
@@ -55,8 +55,8 @@ Ziel: nichts vergessen, Fehler finden, bevor der Nutzer sie findet, schnell und 
     Prüfung: Uhrzeit und Zeitzeile Regelwächter; sonst Selbstkontrolle mit Quelle im Bericht.
 28. **Jede Frage im Fenster:** Jede Frage an den Nutzer kommt ins Auswahlfenster, und jede Antwort endet mit einem – nie ‚Sag
     Bescheid …‘ oder eine offene Frage im Text; einzige Ausnahme die Übergabe (Nr. 14). Unmittelbar vor jedem Fenster steht im Chat
-    der Kontextstand als Satz mit ‚Kontext N‘ aus `messung.mjs` – abgelesen, nie geschätzt; die Zeitzeile selbst steht nur ganz am
-    Ende. Format 2.1. Prüfung: Regelwächter.
+    der Kontextstand als Satz mit ‚Kontext N‘ aus `messung.mjs` – abgelesen, nie geschätzt –, im Fenster am Ende jeder Frage
+    ‚(Kontext N)‘; die Zeitzeile selbst steht nur ganz am Ende. Format 2.1. Prüfung: Regelwächter.
 29. **Regeln nur mit Genehmigung:** Claude löscht, ändert oder ergänzt keine Regel – Zusammenarbeit, Designrichtlinien mit
     Regelkatalog, App-Richtlinien, `CLAUDE.md` – ohne dein ausdrückliches ‚Ja‘ zum Wortlaut. Vorher stehen alter und neuer Text im
     Chat, die Frage im Auswahlfenster: ‚Regel … so ändern? Ja/Nein‘. Das gilt auch für Korrekturen und Zusammenfassungen (Nr. 3).
@@ -209,10 +209,11 @@ Prüfung: Selbstkontrolle.
   Rückmeldung zu einem Usertest (‚P-n: …‘, 2.3). Der Regelwächter lehnt ein Fenster ohne das schon vor dem Zeigen ab. Im Fenster steht nur eine **kurze Frage** mit den Schaltflächen – keine Erklärtexte, keine Zeitangaben. **Ausnahme:** Bei
   jeder Bitte, am Gerät zu prüfen oder auszuprobieren, stehen Link, nummerierte Schritte und ‚erwartet: …‘ kurz auch in der
   Frage. Das Feld ‚Sonstiges‘ schneidet lange Texte ab.
-- **Ein Fenster je Antwort, die Erklärung davor:** Text am Anfang einer Antwort kommt vor dem Auswahlfenster beim Nutzer an, Text
-  zwischen zwei Fenstern derselben Antwort und die Vorschau-Funktion nicht. Muster, Beispiele und längere Erklärungen, die der
-  Nutzer vor der Entscheidung lesen muss, kommen **als Datei oder Bild vor dem Fenster**. Mehrere Themen nacheinander: je Antwort
-  eines (ganze Zeile, Einschätzung, Kachel), der Nutzer schreibt ‚w‘ für das nächste.
+- **Fenster nacheinander, die Erklärung davor:** nie zwei Fenster direkt hintereinander; ein weiteres Fenster in derselben Antwort
+  erst, wenn das vorige beantwortet ist, danach ein Werkzeug lief (z. B. Eintrag ins Backlog) und davor eine neue Ausgabe mit
+  Erklärung und ‚Kontext N‘ steht – so endet jede Antwort mit einem Fenster und einem Push am iPad (2.3). Die Vorschau-Funktion
+  kommt nicht an. Muster, Beispiele und längere Erklärungen, die der Nutzer vor der Entscheidung lesen muss, kommen **als Datei
+  oder Bild vor dem Fenster**. Mehrere Themen nacheinander: je Fenster eines (ganze Zeile, Einschätzung, Kachel).
 - Schließt der Nutzer das Fenster und antwortet im Text, gilt die Antwort; bei den nächsten Fragen kommt trotzdem wieder das
   Auswahlfenster.
 - Eine **Antwortzeile zum Kopieren** (z. B. `1 ja · 2 a · 3 ja`) gibt es nur bei mehr als 4 Fragen – dann ist sie der einzige
@@ -261,7 +262,7 @@ Prüfung: Selbstkontrolle.
   offenen Usertests einzeln im Chat, auch die früherer Versionen.
 - **Rückmeldung:** Der Bericht endet immer mit einem Auswahlfenster, z. B. ‚P-54: Wie ist die Prüfung ausgegangen?‘ – ‚Alles ok‘ ·
   ‚Nicht ok – ich schreibe im Chat‘ · ‚Ich prüfe später‘ · ‚Ich schreibe im Chat‘ – auch wenn die Version im Hintergrund fertig
-  wird: nur ein Auswahlfenster löst auf dem iPad eine Push-Nachricht aus. Antwort z. B. ‚alles ok‘ oder ‚ok bis auf 3‘;
+  wird: nur ein Auswahlfenster löst auf dem iPad eine Push-Nachricht aus (`PushNotification` kommt am iPad nicht an). Antwort z. B. ‚alles ok‘ oder ‚ok bis auf 3‘;
   Abweichungen kommen wieder in ‚0. Nächste Version‘.
 - Prüfung: `doku.mjs` (Testfälle der neuesten Version beginnen mit /0, nennen App- und AppDesign-Version, jeder Testfall mit
   nummerierten Schritten und ‚Erwartet‘).
@@ -372,8 +373,8 @@ Rohdaten durch Claude, damit keine falsche Anzeige in die Irre führt.
   wenn die Ausgabe davor keinen Satz mit ‚Kontext N‘ aus `messung.mjs` enthält; steht diese Ausgabe (noch) nicht wörtlich in der
   Sitzungsdatei, lehnt er ab, wenn seit der vorigen Nachricht bzw. dem vorigen Fenster `messung.mjs` keinen Kontext gemeldet hat.
   Enthält das Fenster einen Link zum Prüfen am Gerät, lehnt er ab, wenn die Ausgabe davor nicht denselben Link und nummerierte
-  Schritte mit ‚Erwartet: …‘ enthält. Er lehnt eine Bau-Frage (‚Soll ich Version …‘) ohne ‚Kontext N‘ im Fragetext ab, ebenso ein
-  zweites Fenster in derselben Antwort.
+  Schritte mit ‚Erwartet: …‘ enthält. Er lehnt jede Frage ohne ‚(Kontext N)‘ im Fragetext ab, ebenso ein
+  weiteres Fenster in derselben Antwort, solange seit dem vorigen Fenster kein Werkzeug lief.
 - **Am Ende jeder Antwort:** prüft die Antwort in der Sitzungsdatei – jede Ausgabe beginnt mit der Uhrzeitzeile und ihre Uhrzeit
   ist abgelesen (± 1 min um ihren Anlass), der Zeitabstand passt, die Antwort hat ein Fenster (außer der Übergabe), die Zeitzeile
   steht ganz am Ende nach dem letzten Fenster und kommt unverändert aus `messung.mjs`. Fehlt etwas, lässt er die Antwort nicht enden
@@ -411,6 +412,7 @@ im Verlauf und in Kommentaren der Prüfungen nennen noch die alten Stellen):
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 3.8.0 | 06.11.2026 | Neben | **APD-113 Teil ‚Push und Kontextstand‘ (Nutzer 06.11.2026, Sitzung 0083, Wortlaut bestätigt):** Kasten ‚Jede Antwort‘ Punkt 9 und 0 Nr. 28 – ‚(Kontext N)‘ am Ende jeder Frage im Fenster (die Push-Mitteilung am iPad zeigt den Fragetext); 2.1 ‚Fenster nacheinander‘ – ein weiteres Fenster in derselben Antwort, wenn das vorige beantwortet ist und danach ein Werkzeug lief, mit neuer Ausgabe und ‚Kontext N‘ davor; 2.3 `PushNotification` kommt am iPad nicht an; 2.8 der Regelwächter lehnt jede Frage ohne ‚(Kontext N)‘ ab (APD-84/W-16) und ein weiteres Fenster nur, solange seit dem vorigen kein Werkzeug lief (APD-84/W-17; Testfall-Liste APD-113/H-1 bis H-9). Anlass: ein Push am iPad kommt nur über ein Fenster, W-17 ließ nach einer beantworteten Frage keines mehr zu |
 | 3.7.0 | 05.11.2026 | Neben | **APD-114 (Nutzer 05.11.2026, Sitzung 0080, Wortlaut bestätigt):** 0 Nr. 21 – ‚Soll ich Version X.Y.Z mit … erstellen? (Kontext N) Ja/Nein‘, der Kontextstand steht in der Frage selbst und davor im Chat; Kasten ‚Jede Antwort‘ Punkt 9 ergänzt; 2.8 ‚Vor jedem Auswahlfenster‘ – der Regelwächter lehnt eine Bau-Frage ohne ‚Kontext N‘ im Fragetext (APD-84/W-16) und ein zweites Fenster in derselben Antwort (APD-84/W-17) ab. Anlass: in 0080 stand der Satz mit dem Kontext vor der Bau-Frage, aber als drittes von vier Fenstern einer Antwort – er kam nicht an |
 | 3.6.0 | 02.11.2026 | Neben | **APD-110 (Nutzer 02.11.2026, Sitzung 0076, Wortlaut bestätigt):** Kasten ‚Jede Antwort‘ Punkt 4 – bei jedem Bericht und jeder Bitte, am Gerät zu prüfen, im Chat der vollständige Link und nummerierte Schritte mit ‚Erwartet: …‘ unmittelbar vor dem Fenster, nie nur im Fenster (jetzt **W**); 2.8 ‚Vor jedem Auswahlfenster‘ – ein Fenster mit Link ohne denselben Link und Schritte davor lehnt der Regelwächter ab (APD-84/W-15). Anlass: in 0076 standen Link und Schritte zum Muster APD-30 nur im Fenster |
 | 3.5.0 | 31.10.2026 | Neben | **APD-103 (Nutzer 31.10.2026, Sitzungen 0065 und 0067, Wortlaut bestätigt):** 2.8 ‚Vor jedem Auswahlfenster‘ – ist die Ausgabe davor (noch) nicht wörtlich in der Sitzungsdatei, lehnt der Regelwächter ab, wenn seit der vorigen Nachricht bzw. dem vorigen Fenster `messung.mjs` keinen Kontext gemeldet hat (Rückfall statt Durchlassen, APD-103/D-1 bis D-9); 2.8 ‚Grenze‘ – Uhrzeitzeile und Satz ‚Kontext N‘ bleiben dort Selbstkontrolle |

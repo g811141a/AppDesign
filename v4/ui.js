@@ -1,4 +1,4 @@
-// AppDesign 4.52.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
+// AppDesign 4.53.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
 // Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/fassung/X.Y.Z/ui.js"></script> (feste Fassung, R-10.3)
 // Seit 4.11.0 (R-10.3): ui.js und design.css immer mit ?v=<AppDesign-Version> einbinden (auch in sw.js) und beim Start
 // prüfen, ob genau diese Fassung geladen ist (AD_VERSION hier, --ad-version in design.css).
@@ -20,7 +20,7 @@
 
 'use strict';
 // Version der Bausteine (R-10.3): die App vergleicht sie beim Start mit der benötigten Fassung.
-const AD_VERSION = '4.52.0';
+const AD_VERSION = '4.53.0';
 /* ---------- Icons ---------- */
 
 // Schaltflächen-Icons aus Lucide (ISC-Lizenz), direkt eingebettet, damit die App offline funktioniert.
@@ -688,6 +688,43 @@ function mehrKippen(knopf, offen) {
   const s = knopf?.querySelector?.(':scope > svg[data-mehr]');
   if (s) s.innerHTML = ICONS[offen ? 'ellipsis-vertical' : 'ellipsis'];
 }
+// R-4.13 (seit 4.53.0, APD-38/T-16, Testfall-Liste APD-62/M-1 bis M-11): Menü, Untermenü, Kontextmenü und Sprechblase wachsen in 0,35 s aus
+// ihrer Schaltfläche (20 % → volle Größe, Kurve wie das Blatt) und schrumpfen beim Schließen in 0,25 s dorthin zurück (wie Muster Variante A:
+// auf 60 % und ausgeblendet). Die Lage setzt placeAt wie ohne Bewegung – die Bewegung ist nur eine Animation ohne fill, die Endlage ist dieselbe.
+// Beim Schließen ist der Baustein sofort weg (Zustand, Fokus, Sperre wie bisher); ein Abbild (.zu-geist, mit den berechneten Stilen, nicht
+// bedienbar, für VoiceOver verborgen) schrumpft ab der aktuellen Stelle – auch mitten im Öffnen (M-3). ‚Bewegung reduzieren‘: nur Überblenden 0,2 s.
+const WACHS_KURVE = 'cubic-bezier(.32,.72,0,1)', WACHS_MS = 350, SCHRUMPF_MS = 250, RUHIG_MS = 200;
+const bewegungRuhig = () => !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+function wachsUrsprung(el, anchor) {
+  // Lage aus left/top (setzt placeAt) – getBoundingClientRect wäre mitten in der Bewegung verkleinert
+  const b = el.getBoundingClientRect(), x = parseFloat(el.style.left), y = parseFloat(el.style.top);
+  const r = { left: Number.isFinite(x) ? x : b.left, top: Number.isFinite(y) ? y : b.top };
+  const a = anchor?.isConnected && anchor.getClientRects().length ? anchor.getBoundingClientRect() : null;
+  return a ? `${Math.round(a.left + a.width / 2 - r.left)}px ${Math.round(a.top + a.height / 2 - r.top)}px` : '50% 50%';
+}
+function wachsen(el, anchor) {
+  if (!el.animate) return;
+  if (bewegungRuhig()) { el.animate([{ opacity: 0 }, { opacity: 1 }], { duration: RUHIG_MS, easing: 'ease-out' }); return; }
+  el.style.transformOrigin = wachsUrsprung(el, anchor);
+  el.animate([{ opacity: 0, transform: 'scale(.2)' }, { opacity: 1, transform: 'none' }], { duration: WACHS_MS, easing: WACHS_KURVE });
+}
+function schrumpfen(el, anchor) {
+  if (!el.animate || !el.isConnected || !el.getClientRects().length) return;
+  const ruhig = bewegungRuhig(), cs = getComputedStyle(el), von = { opacity: cs.opacity, transform: cs.transform === 'none' ? 'none' : cs.transform };
+  const g = el.cloneNode(true), quellen = [el, ...el.querySelectorAll('*')], ziele = [g, ...g.querySelectorAll('*')];
+  quellen.forEach((q, i) => { const s = getComputedStyle(q), z = ziele[i]; for (const p of s) z.style.setProperty(p, s.getPropertyValue(p)); z.removeAttribute('id'); });
+  g.className = 'zu-geist'; g.dataset.von = el.className;   // data-von: woraus das Abbild stammt (für die Prüfung)
+  g.removeAttribute('role'); g.removeAttribute('aria-label'); g.removeAttribute('aria-labelledby'); g.removeAttribute('aria-modal');
+  g.setAttribute('aria-hidden', 'true'); g.inert = true;
+  g.style.pointerEvents = 'none'; g.style.transition = 'none';
+  if (!ruhig) g.style.transformOrigin = wachsUrsprung(el, anchor);
+  el.parentNode.append(g);
+  const a = g.animate(ruhig ? [{ opacity: von.opacity }, { opacity: 0 }] : [von, { opacity: 0, transform: 'scale(.6)' }],
+    { duration: ruhig ? RUHIG_MS : SCHRUMPF_MS, easing: ruhig ? 'ease-out' : 'ease-in', fill: 'forwards' });
+  const weg = () => g.remove();
+  a.onfinish = weg; a.oncancel = weg;
+  setTimeout(weg, SCHRUMPF_MS + 500);   // falls der Bildwechsel ausbleibt (Seite im Hintergrund)
+}
 function openMenu(anchor, items, align = 'right') {
   const host = anchor.closest('dialog') || document.body;
   const layer = blockingLayer();
@@ -702,6 +739,7 @@ function openMenu(anchor, items, align = 'right') {
   if (name) menu.setAttribute('aria-label', name);
   let subMenu = null, subItem = null;
   const closeSub = (zurueck = false) => {
+    if (subMenu) schrumpfen(subMenu, subItem);   // R-4.13: das Untermenü schrumpft zu seinem Eintrag zurück
     subMenu?.remove(); subMenu = null;
     const it = subItem; subItem = null;
     menu.querySelector('.mi.on')?.classList.remove('on');
@@ -717,7 +755,10 @@ function openMenu(anchor, items, align = 'right') {
     subMenu.style.maxHeight = ''; subMenu.style.overflowY = '';
     const { L, R, T, B } = rand12(), room = innerHeight - T - B;
     if (subMenu.scrollHeight > room) { subMenu.style.maxHeight = room + 'px'; subMenu.style.overflowY = 'auto'; }
-    const mr = menu.getBoundingClientRect(), br = subItem.getBoundingClientRect(), w = subMenu.offsetWidth;
+    // R-4.13: Lage des Menüs aus left/top und Breite – während es wächst, wäre getBoundingClientRect verkleinert
+    const waechst = menu.getAnimations?.().length, ml = parseFloat(menu.style.left), w = subMenu.offsetWidth;
+    const mr = waechst ? { left: ml, right: ml + menu.offsetWidth } : menu.getBoundingClientRect();
+    const br = waechst ? { top: parseFloat(menu.style.top) + menu.clientTop + subItem.offsetTop - menu.scrollTop } : subItem.getBoundingClientRect();
     subMenu.style.left = Math.max(L, mr.left - w - 8 >= L ? mr.left - w - 8 : Math.min(mr.right + 8, innerWidth - w - R)) + 'px';
     subMenu.style.top = Math.max(T, Math.min(br.top, innerHeight - subMenu.offsetHeight - B)) + 'px';
   };
@@ -734,7 +775,7 @@ function openMenu(anchor, items, align = 'right') {
   let entsperren = null;
   const close = () => {
     if (!menu.isConnected) return;
-    closeSub(); layer.remove(); menu.remove(); anchor.classList.remove('on'); mehrKippen(anchor, false); anchor.setAttribute('aria-expanded', 'false'); floating.delete(place);
+    closeSub(); schrumpfen(menu, anchor); layer.remove(); menu.remove(); anchor.classList.remove('on'); mehrKippen(anchor, false); anchor.setAttribute('aria-expanded', 'false'); floating.delete(place);
     entsperren?.(); tastenStapel.splice(tastenStapel.indexOf(tasten) >>> 0, 1);
     // Seit 4.11.0: den für das Kontextmenü dazugegebenen Platz unter der Liste wieder entfernen.
     document.querySelectorAll('.side-list[data-padded]').forEach(l => { l.style.paddingBottom = ''; delete l.dataset.padded; });
@@ -759,6 +800,7 @@ function openMenu(anchor, items, align = 'right') {
     host.append(subMenu);
     subItem = b;
     placeSub();
+    wachsen(subMenu, b);   // R-4.13: wächst aus seinem Menüpunkt
     fokus(subMenu.querySelector('.mi:not(:disabled)'));   // K3: Fokus auf den ersten Eintrag des Untermenüs
   });
   binde();
@@ -795,6 +837,7 @@ function openMenu(anchor, items, align = 'right') {
   };
   host.append(layer, menu);
   placeAt(menu, anchor, align);
+  wachsen(menu, anchor);   // R-4.13: wächst aus der Schaltfläche bzw. der Kachel (Kontextmenü)
   floating.add(place);
   entsperren = sperreAusser(host, [layer, menu]);
   tastenStapel.push(tasten);
@@ -852,7 +895,7 @@ function choosePop(anchor, html, buttons, { feld = null } = {}) {
     let entsperren = null;
     const done = v => {
       if (!pop.isConnected) return;
-      floating.delete(place); layer.remove(); pop.remove(); if (visible) anchor.classList.remove('on');
+      floating.delete(place); schrumpfen(pop, visible ? anchor : null); layer.remove(); pop.remove(); if (visible) anchor.classList.remove('on');
       entsperren?.(); tastenStapel.splice(tastenStapel.indexOf(tasten) >>> 0, 1);
       if (!feld) fokusZurueck(visible ? anchor : null, host);   // V6: zurück auf den Knopf bzw. die Kopfzeile, ohne Rollen
       resolve(v);
@@ -880,6 +923,7 @@ function choosePop(anchor, html, buttons, { feld = null } = {}) {
     host.append(layer, pop);
     if (visible) placeAt(pop, anchor, anchor.classList.contains('side-row') ? 'beside' : anchor.getBoundingClientRect().left > innerWidth / 2 ? 'right' : 'left');
     else { pop.style.left = (innerWidth - pop.offsetWidth) / 2 + 'px'; pop.style.top = '120px'; }
+    wachsen(pop, visible ? anchor : null);   // R-4.13: die Sprechblase wächst aus ihrer Schaltfläche
     tastenStapel.push(tasten);
     if (feld) { for (const el of [layer, pop]) { el.addEventListener('pointerdown', e => e.preventDefault()); el.addEventListener('mousedown', e => e.preventDefault()); } return; }
     entsperren = sperreAusser(host, [layer, pop]);

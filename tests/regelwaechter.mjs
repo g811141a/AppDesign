@@ -14,7 +14,8 @@ import { fuehreAus, uhrzeitzeile, uhr, setupText, SOLL_MODELL } from '../werkzeu
 // seit 4.50.0: W-15 Link und Schritte im Chat vor einem Fenster mit Link (APD-110, Testfall-Liste arbeit/APD-110 Testfall-Liste.md L-1 bis L-13;
 // L-1 nach der Antwort aus Sitzung 0076, 17:14, nachgebaut – die Sitzungsdatei liegt nicht im Repo)
 // seit 4.51.0: W-16 Kontext in der Bau-Frage, W-17 ein Fenster je Antwort (APD-114, Testfall-Liste arbeit/APD-114 Testfall-Liste.md B-1 bis B-12;
-// B-11 und B-12 nach der Antwort aus Sitzung 0080, 12:12 bis 12:15, nachgebaut)
+// B-11 und B-12 nach der Antwort aus Sitzung 0080, 12:12 bis 12:15, nachgebaut); seit 4.53.0 (APD-113, Testfall-Liste arbeit/APD-113 Push und Kontext
+// Wortlaut und Testfall-Liste.md H-1 bis H-9): W-16 für jede Frage, W-17 erlaubt ein weiteres Fenster nach einem Werkzeug (messung.mjs zählt nicht)
 
 const ordner = mkdtempSync(join(tmpdir(), 'regelwaechter-'));
 const WAECHTER = fileURLToPath(new URL('../werkzeug/regelwaechter.mjs', import.meta.url));
@@ -85,7 +86,7 @@ function lauf(env = {}) {
     const r = hook('fenster', null, { env, eingabe: { tool_name: 'AskUserQuestion', tool_input: frage(labels) } });
     pruefe(r?.hookSpecificOutput?.permissionDecision === 'deny' && /W-5/.test(r.hookSpecificOutput.permissionDecisionReason), `W-5 Fenster ${was} wird vor dem Zeigen nicht abgelehnt`);
   }
-  const rueck = frage(['Alles ok', 'Nicht ok – ich schreibe im Chat', 'Ich prüfe später', 'Ich schreibe im Chat'], 'P-77: Wie ist die Prüfung ausgegangen?');
+  const rueck = frage(['Alles ok', 'Nicht ok – ich schreibe im Chat', 'Ich prüfe später', 'Ich schreibe im Chat'], 'P-77: Wie ist die Prüfung ausgegangen? (Kontext 120.000)');
   m = stop(antwort({ fenster: rueck }));
   pruefe(!m.length && !hook('fenster', null, { env, eingabe: { tool_input: rueck } }), `W-5 Rückmeldung ‚P-n: …‘ ohne Empfehlung wird abgelehnt: ${m.join(' | ')}`);
   pruefe(!hook('fenster', null, { env, eingabe: { tool_input: frage(GUT) } }), 'W-5 regelgerechtes Fenster wird vor dem Zeigen abgelehnt');
@@ -115,7 +116,8 @@ function lauf(env = {}) {
   const k4 = [...antwort(), werkzeug(420, 'f2', 'AskUserQuestion', frage(GUT)), ergebnis(430, 'f2', 'Ja (Empfohlen)')];
   pruefe(abgelehnt(vorher(k4, 'f2')), 'W-14 C-4 ‚Kontext N‘ nur vor dem vorigen Fenster wird nicht abgelehnt');
   pruefe(abgelehnt(vorher(antwort({ messungDavor: Z.replace('120.000', '130.000') }))), 'W-14 C-5 ‚Kontext N‘ anders als messung.mjs wird nicht abgelehnt');
-  genau(stop(antwort({ ohneMessungDavor: true, fenster: frage(GUT, 'Passt es so?') })), 'W-14', 'C-5 ‚Kontext N‘ ohne messung.mjs davor');   // keine Bau-Frage (sonst zusätzlich W-16)
+  { const c5 = stop(antwort({ ohneMessungDavor: true, fenster: frage(GUT, 'Passt es so? (Kontext 120.000)') }));   // seit 4.53.0 meldet W-16 die Frage zusätzlich (APD-113)
+    pruefe(c5.some(x => x.startsWith('W-14')) && c5.every(x => /^W-1[46]/.test(x)), `W-14 C-5 ‚Kontext N‘ ohne messung.mjs davor: ${c5.join(' | ') || 'nicht zurückgewiesen'}`); }
   const k6 = antwort({ ohneKontext: true, zwischen: `${UZ('14:02', '14:00')}\n\nJetzt die Frage.\n\n${Z}` });
   pruefe(abgelehnt(vorher(k6)), 'W-14 C-6 ‚Kontext N‘ nur in der Zeitzeile wird nicht abgelehnt');
   const k7 = antwort({ ohneKontext: true, zwischen: `${UZ('14:02', '14:00')}\n\nOhne Kontext.` }); k7.splice(k7.findIndex(z => z.message?.content?.[0]?.text?.includes('Ohne Kontext')), 1, bausteine(135, [{ type: 'thinking', thinking: 'umformuliert' }]));
@@ -201,11 +203,22 @@ function lauf(env = {}) {
     // B-4: Bau-Frage als zweite Frage im Fenster
     const b4 = { questions: [frage(GUT, 'Mit welcher Priorität?').questions[0], frage(GUT, BF).questions[0]] };
     pruefe(grund(zeige(antwort({ fenster: b4 }), b4), 'W-16'), 'W-16 B-4 Bau-Frage als zweite Frage ohne Kontext wird nicht abgelehnt');
-    const b4b = { questions: [frage(GUT, 'Mit welcher Priorität?').questions[0], b1.questions[0]] };
+    const b4b = { questions: [frage(GUT, 'Mit welcher Priorität? (Kontext 120.000)').questions[0], b1.questions[0]] };
     pruefe(!zeige(antwort({ fenster: b4b }), b4b), 'W-16 B-4 Bau-Frage als zweite Frage mit Kontext wird abgelehnt');
-    // B-5: andere Frage ohne Kontext in der Frage
-    const b5 = frage(GUT, 'Ins Backlog übernehmen?');
-    pruefe(!zeige(antwort({ fenster: b5 }), b5) && !stop(antwort({ fenster: b5 })).length, 'W-16 B-5 andere Frage ohne Kontext in der Frage wird abgelehnt');
+    // APD-113/H-1 (seit 4.53.0, ersetzt B-5): jede Frage ohne ‚(Kontext N)‘ wird abgelehnt, der Hinweis nennt die Frage – Zeigen, Stop, ohne Sitzungsdatei
+    const h1 = frage(GUT, 'Ins Backlog übernehmen?');
+    pruefe(/W-16 Frage „Ins Backlog übernehmen\?“ ohne ‚\(Kontext N\)‘/.test(grund(zeige(antwort({ fenster: h1 }), h1), 'W-16')) && nur(stop(antwort({ fenster: h1 })), 'W-16').length === 1
+      && grund(hook('fenster', null, { env, eingabe: { tool_input: h1 } }), 'W-16'), 'W-16 APD-113/H-1 Frage ohne Kontext wird nicht abgelehnt bzw. der Hinweis nennt sie nicht');
+    // H-2: zwei Fragen, nur eine mit ‚(Kontext N)‘
+    const h2 = { questions: [frage(GUT, 'Ins Backlog übernehmen? (Kontext 120.000)').questions[0], frage(GUT, 'Mit welcher Priorität?').questions[0]] };
+    pruefe(/Mit welcher Priorität/.test(grund(zeige(antwort({ fenster: h2 }), h2), 'W-16')) && !/Ins Backlog/.test(grund(zeige(antwort({ fenster: h2 }), h2), 'W-16 Frage „Ins')),
+      'W-16 APD-113/H-2 zwei Fragen, nur eine mit Kontext – nicht (nur die ohne) abgelehnt');
+    // H-3: ‚(Kontext N)‘ mit einem anderen Wert als der letzte von messung.mjs
+    const h3 = frage(GUT, 'Ins Backlog übernehmen? (Kontext 118.500)');
+    pruefe(/nicht abgelesen/.test(grund(zeige(antwort({ fenster: h3 }), h3), 'W-16')), 'W-16 APD-113/H-3 Frage mit geschätztem Kontext wird nicht abgelehnt');
+    // H-4: Kontext in jeder Frage, Satz davor, gleicher Wert
+    const h4 = { questions: [frage(GUT, 'Ins Backlog übernehmen? (Kontext 120.000)').questions[0], frage(GUT, 'Mit welcher Priorität? (Kontext 120.000)').questions[0]] };
+    pruefe(!zeige(antwort({ fenster: h4 }), h4) && !stop(antwort({ fenster: h4 })).length, 'W-16 APD-113/H-4 jede Frage mit abgelesenem Kontext wird abgelehnt');
     // B-6: erstes Fenster nach einer Nachricht; danach eine neue Nachricht und wieder ein Fenster
     pruefe(!grund(zeige(antwort(), frage(GUT)), 'W-17'), 'W-17 B-6 erstes Fenster der Antwort wird abgelehnt');
     const neueAntwort = [...antwort(), nachricht(500, 'weiter'), werkzeug(505, 'k6', 'Bash', { command: 'node werkzeug/messung.mjs' }), ergebnis(506, 'k6', Z), ausgabe(510, `${UZ('14:08', '14:06')}\n\n${KS}`)];
@@ -214,7 +227,20 @@ function lauf(env = {}) {
     const zweites = (vor = []) => [...antwort(), ...vor, werkzeug(415, 'k7', 'Bash', { command: 'node werkzeug/messung.mjs' }), ergebnis(416, 'k7', Z),
       ausgabe(418, `${UZ('14:07', '14:06')}\n\nNoch eine Frage.\n\n${KS}`)];
     const b7 = zweites();
-    pruefe(/ein Fenster je Antwort/.test(grund(zeige(b7, frage(GUT), 'gibt-es-noch-nicht'), 'W-17')), 'W-17 B-7 zweites Fenster in derselben Antwort wird vor dem Zeigen nicht abgelehnt');
+    // APD-113/H-5: zweites Fenster direkt nach dem ersten – dazwischen nur messung.mjs (liest nur ab), kein Werkzeug
+    pruefe(/seitdem lief kein Werkzeug/.test(grund(zeige(b7, frage(GUT), 'gibt-es-noch-nicht'), 'W-17')), 'W-17 B-7/APD-113/H-5 zweites Fenster ohne Werkzeug dazwischen wird vor dem Zeigen nicht abgelehnt');
+    // APD-113/H-6: das erste ist beantwortet, danach lief ein Werkzeug (Eintrag ins Backlog), neue Ausgabe mit ‚Kontext N‘ – zugelassen; H-7 Stop danach ohne Zurückweisung
+    // die Antwort auf das erste Fenster ohne Zeitzeile – sie steht nur ganz am Ende, nach dem letzten Fenster (W-6)
+    const h6 = [...antwort({ schluss: `${UZ('14:06', '14:02')}\n\nDu hast Ja gewählt – ich trage es ein.` }), werkzeug(411, 'bl6', 'Edit', { file_path: '/home/user/AppDesign/BACKLOG.md', old_string: 'a', new_string: 'b' }), ergebnis(412, 'bl6', 'ok'),
+      werkzeug(415, 'k6b', 'Bash', { command: 'node werkzeug/messung.mjs' }), ergebnis(416, 'k6b', Z), ausgabe(418, `${UZ('14:07', '14:06')}\n\nEingetragen, jetzt die Priorität.\n\n${KS}`)];
+    pruefe(!zeige(h6, frage(GUT, 'Ins Backlog übernehmen? (Kontext 120.000)'), 'gibt-es-noch-nicht'), 'W-17 APD-113/H-6 zweites Fenster nach einem Werkzeug wird abgelehnt');
+    const h7 = [...h6, werkzeug(420, 'f2', 'AskUserQuestion', frage(GUT, 'Ins Backlog übernehmen? (Kontext 120.000)')), ergebnis(430, 'f2', 'Ja (Empfohlen)'),
+      werkzeug(432, 'm2', 'Bash', { command: 'node werkzeug/messung.mjs' }), ergebnis(433, 'm2', Z), ausgabe(435, `${UZ('14:07', '14:07')}\n\nZusammenfassung.\n\n${Z}`)];
+    pruefe(!stop(h7).length, `APD-113/H-7 Stop nach H-6 (Zeitzeile nach dem letzten Fenster) wird zurückgewiesen: ${stop(h7).join(' | ')}`);
+    // H-6 ohne neue Ausgabe mit ‚Kontext N‘ davor: W-14 lehnt ab
+    const h6f = frage(GUT, 'Ins Backlog übernehmen? (Kontext 120.000)');
+    const h6o = [...antwort({ schluss: `${UZ('14:06', '14:02')}\n\nDu hast Ja gewählt.` }), werkzeug(411, 'bl7', 'Edit', { file_path: 'BACKLOG.md' }), ergebnis(412, 'bl7', 'ok'), werkzeug(420, 'f7', 'AskUserQuestion', h6f)];
+    pruefe(grund(zeige(h6o, h6f, 'f7'), 'W-14'), 'W-14 APD-113/H-6 zweites Fenster nach einem Werkzeug ohne Ausgabe mit Kontext davor wird nicht abgelehnt');
     const b7s = [...b7, werkzeug(420, 'f2', 'AskUserQuestion', frage(GUT)), ergebnis(430, 'f2', 'Ja (Empfohlen)'), werkzeug(432, 'm2', 'Bash', { command: 'node werkzeug/messung.mjs' }), ergebnis(433, 'm2', Z), ausgabe(435, `${UZ('14:07', '14:07')}\n\nZusammenfassung.\n\n${Z}`)];
     pruefe(nur(stop(b7s), 'W-17').length === 1, `W-17 B-7 zweites gezeigtes Fenster wird beim Stop nicht genau einmal gemeldet: ${stop(b7s).join(' | ')}`);
     // B-8: das vorige Fenster hat der Wächter abgelehnt (nie gezeigt) – das neu gestellte zählt nicht als zweites

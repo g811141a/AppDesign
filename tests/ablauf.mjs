@@ -3253,3 +3253,187 @@ export async function checkErstFragen(p, { menues = [], zustaende = [], key, whe
   } catch (e) { E(`Ablauf bricht ab: ${e.message.split('\n')[0]}`); await dlgZu(p).catch(() => {}); }   // Meldungen davor bleiben
   return errors;
 }
+
+// R-4.13 (seit 4.53.0, APD-38/T-16, Testfall-Liste arbeit/APD-62 Bewegung Testfall-Liste.md APD-62/M-1 bis M-11): Menü, Untermenü, Kontextmenü und
+// Sprechblase wachsen in 0,35 s aus ihrer Schaltfläche (20 % → volle Größe, cubic-bezier(.32,.72,0,1)) und schrumpfen in 0,25 s dorthin zurück
+// (Abbild .zu-geist, der Baustein selbst ist sofort weg); Schließen mitten im Öffnen ab der aktuellen Größe; ‚Bewegung reduzieren‘: nur Überblenden
+// 0,2 s; Endlage wie ohne Bewegung. Geprüft wird die Animation selbst (Schlüsselbilder, Dauer, Kurve, Ursprung = Mitte der Schaltfläche) – unabhängig
+// davon, wie schnell die Bildwechsel kommen –, dazu die Größe beim Einfügen und nach dem Ende (warteBis, keine festen Pausen, M-10).
+// menue: Knopf eines Menüs (M-1 bis M-3, M-7, M-8, M-11 je nach Seite); untermenue: Text eines Menüpunkts mit Untermenü (M-4); kontext: Funktion,
+// die ein Kontextmenü öffnet (M-5); blase: Funktion, die eine Sprechblase öffnet (M-6); drehen: [breite, hoehe] der anderen Lage (M-8);
+// gross: die Seite steht ab AX1 – langes Drücken auf den Menü-Knopf zeigt die Großanzeige, beim Loslassen wächst das Menü (M-9).
+export const WACHS = { kurve: 'cubic-bezier(0.32, 0.72, 0, 1)', auf: 350, zu: 250, ruhig: 200, von: 0.2, bis: 0.6 };
+export async function checkWachsen(p, { menue = null, untermenue = null, kontext = null, blase = null, drehen = null, gross = false, where = '' } = {}) {
+  const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}R-4.13 ${t}`);
+  const ruhig = await p.evaluate(() => matchMedia('(prefers-reduced-motion: reduce)').matches);
+  // Beim Einfügen eines Menüs bzw. einer Sprechblase und eines Abbilds festhalten: Größe (Maßstab), Deckkraft, Animation, Ursprung, Mitte der Schaltfläche
+  await p.evaluate(() => {
+    window.__wachs?.disconnect();
+    const skala = t => { if (!t || t === 'none') return 1; const m = t.match(/matrix\(([^,]+),/); return m ? +m[1] : 1; };
+    const lage = el => { const x = parseFloat(el.style.left), y = parseFloat(el.style.top), b = el.getBoundingClientRect();
+      return { left: Number.isFinite(x) ? x : b.left, top: Number.isFinite(y) ? y : b.top }; };
+    window.__wachsInfo = el => {
+      const a = el.getAnimations().find(x => x.effect?.getKeyframes) || null, k = a?.effect.getKeyframes() || [], t = a?.effect.getTiming() || {};
+      // Schaltfläche: hervorgehoben (.on); beim Abbild (data-von) die beim Öffnen gemerkte – beim Einfügen des Abbilds ist .on schon weg
+      const von = el.dataset.von || el.className, sub = /\bsubmenu\b/.test(von), merk = window.__wachsAnker ||= {};
+      const cs = getComputedStyle(el), on = el.classList.contains('zu-geist') ? merk[sub ? 'sub' : 'haupt'] : sub ? document.querySelector('.menu:not(.submenu) .mi.on')
+        : (() => { // die Schaltfläche des Menüs trägt aria-expanded, die der Sprechblase nur .on – bei mehreren die nächste
+          const b = el.getBoundingClientRect(), nah = e => { const r = e.getBoundingClientRect(); return Math.hypot(Math.max(0, r.left - b.right, b.left - r.right), Math.max(0, r.top - b.bottom, b.top - r.bottom)); };
+          const frei = q => [...document.querySelectorAll(q)].filter(e => !e.closest('.menu, .pop, .zu-geist') && e.getClientRects().length);
+          const c = el.classList.contains('pop') ? frei('.on') : frei('[aria-expanded="true"]').length ? frei('[aria-expanded="true"]') : frei('.on');
+          return c.sort((x, y) => nah(x) - nah(y))[0]; })();
+      if (!el.classList.contains('zu-geist')) merk[sub ? 'sub' : 'haupt'] = on;
+      const l = lage(el), ar = on?.isConnected && on.getClientRects().length ? on.getBoundingClientRect() : null, o = cs.transformOrigin.split(' ').map(parseFloat);
+      return { art: el.classList.contains('zu-geist') ? 'geist' : el.classList.contains('pop') ? 'blase' : el.classList.contains('submenu') ? 'untermenue' : el.classList.contains('kontext') ? 'kontext' : 'menue', von,
+        skala: skala(cs.transform), deck: +cs.opacity, dauer: t.duration ?? null, kurve: t.easing ?? null, fill: t.fill ?? null,
+        k0: k[0] ? { transform: k[0].transform ?? null, opacity: k[0].opacity ?? null } : null, k1: k.at(-1) ? { transform: k.at(-1).transform ?? null, opacity: k.at(-1).opacity ?? null } : null,
+        ursprung: o, anker: ar ? [ar.left + ar.width / 2 - l.left, ar.top + ar.height / 2 - l.top] : null,
+        bedienbar: el.classList.contains('zu-geist') ? !(el.inert && el.getAttribute('aria-hidden') === 'true' && getComputedStyle(el).pointerEvents === 'none') : true };
+    };
+    window.__wachsLog = [];
+    window.__wachs = new MutationObserver(ms => { for (const m of ms) for (const n of m.addedNodes) if (n.nodeType === 1 && n.matches('.menu, .pop, .zu-geist')) window.__wachsLog.push(window.__wachsInfo(n)); });
+    window.__wachs.observe(document.body, { childList: true, subtree: true });
+    const d = document.querySelector('dialog[open]'); if (d) window.__wachs.observe(d, { childList: true, subtree: true });
+  });
+  const log = () => p.evaluate(() => window.__wachsLog.splice(0));
+  // ruhig: kein Abbild mehr, und kein Menü bzw. keine Sprechblase hat eine Animation, die nicht beendet ist (WebKit meldet eine eben gestartete
+  // Animation nicht immer als ‚running‘ – deshalb je Element und alles außer ‚finished‘)
+  // WebKit setzt nach dem Ende einer Animation den Stil erst im nächsten Bild zurück – deshalb auch Größe 1 und Deckkraft 1 abwarten
+  const ruht = (was, max = 3000) => warteBis(p, () => !document.querySelector('.zu-geist') && ![...document.querySelectorAll('.menu, .pop')].some(e => {
+    const cs = getComputedStyle(e); return e.getAnimations().some(a => a.playState !== 'finished') || cs.transform !== 'none' || +cs.opacity !== 1; }), { was, max });
+  const endlage = sel => p.evaluate(sel => { const el = document.querySelector(sel); if (!el) return null; const b = el.getBoundingClientRect(), cs = getComputedStyle(el);
+    return { dx: Math.abs(b.left - parseFloat(el.style.left)), dy: Math.abs(b.top - parseFloat(el.style.top)), dw: Math.abs(b.width - el.offsetWidth), dh: Math.abs(b.height - el.offsetHeight),
+      transform: cs.transform, deck: +cs.opacity, drin: b.left >= -0.5 && b.top >= -0.5 && b.right <= innerWidth + 0.5 && b.bottom <= innerHeight + 0.5 }; }, sel);
+  const r2 = x => Math.round(x * 100) / 100;
+  // Öffnen: wächst aus der Schaltfläche (bzw. blendet bei ‚Bewegung reduzieren‘ nur über)
+  const pruefeAuf = (x, wo) => {
+    if (!x) { E(`${wo}: öffnet sich nicht`); return; }
+    if (ruhig) {
+      if (x.dauer !== WACHS.ruhig || x.k0?.transform || x.k1?.transform || +x.k0?.opacity !== 0) E(`APD-62/M-7 ${wo}: mit ‚Bewegung reduzieren‘ nicht nur Überblenden in 0,2 s (Dauer ${x.dauer}, Größe ${x.k0?.transform ?? '–'} → ${x.k1?.transform ?? '–'})`);
+      if (Math.abs(x.skala - 1) > 0.001) E(`APD-62/M-7 ${wo}: mit ‚Bewegung reduzieren‘ ändert sich die Größe (${r2(x.skala)})`);
+      return;
+    }
+    if (x.dauer !== WACHS.auf || x.kurve !== WACHS.kurve) E(`APD-62/M-1 ${wo}: wächst in ${x.dauer} ms mit ${x.kurve} statt 350 ms mit ${WACHS.kurve}`);
+    if (!/scale\(0?\.2\)/.test(x.k0?.transform || '') || +x.k0?.opacity !== 0 || !/^(none|)$/.test(x.k1?.transform || '') || +x.k1?.opacity !== 1) E(`APD-62/M-1 ${wo}: wächst nicht von 20 % auf volle Größe (${x.k0?.transform} → ${x.k1?.transform})`);
+    if (Math.abs(x.skala - WACHS.von) > 0.05) E(`APD-62/M-1 ${wo}: beim Öffnen ${Math.round(x.skala * 100)} % groß statt 20 %`);
+    if (x.fill && x.fill !== 'none' && x.fill !== 'auto') E(`APD-62/M-1 ${wo}: die Animation bleibt stehen (fill ${x.fill}) – die Endlage wäre nicht die ohne Bewegung`);
+    if (!x.anker) E(`APD-62/M-1 ${wo}: keine hervorgehobene Schaltfläche gefunden`);
+    else if (Math.abs(x.ursprung[0] - x.anker[0]) > 2 || Math.abs(x.ursprung[1] - x.anker[1]) > 2) E(`APD-62/M-1 ${wo}: wächst nicht aus der Mitte der Schaltfläche (Ursprung ${x.ursprung.map(Math.round).join('/')} statt ${x.anker.map(Math.round).join('/')})`);
+  };
+  const pruefeZu = (x, wo, vonSkala = 1) => {
+    if (!x) { E(`APD-62/M-2 ${wo}: kein schrumpfendes Abbild`); return; }
+    if (x.bedienbar) E(`APD-62/M-2 ${wo}: das Abbild ist bedienbar oder für VoiceOver sichtbar`);
+    if (ruhig) { if (x.dauer !== WACHS.ruhig || x.k1?.transform) E(`APD-62/M-7 ${wo}: mit ‚Bewegung reduzieren‘ nicht nur Ausblenden in 0,2 s (Dauer ${x.dauer}, ${x.k1?.transform ?? '–'})`); return; }
+    if (x.dauer !== WACHS.zu) E(`APD-62/M-2 ${wo}: schrumpft in ${x.dauer} ms statt 250 ms`);
+    if (!/scale\(0?\.6\)/.test(x.k1?.transform || '') || +x.k1?.opacity !== 0) E(`APD-62/M-2 ${wo}: schrumpft nicht zur Schaltfläche (Ende ${x.k1?.transform}, Deckkraft ${x.k1?.opacity})`);
+    if (Math.abs(x.skala - vonSkala) > 0.03) E(`APD-62/M-3 ${wo}: das Schrumpfen beginnt bei ${Math.round(x.skala * 100)} % statt bei ${Math.round(vonSkala * 100)} % (Sprung)`);
+    if (x.anker && (Math.abs(x.ursprung[0] - x.anker[0]) > 2 || Math.abs(x.ursprung[1] - x.anker[1]) > 2)) E(`APD-62/M-2 ${wo}: schrumpft nicht zur Mitte der Schaltfläche (Ursprung ${x.ursprung.map(Math.round).join('/')} statt ${x.anker.map(Math.round).join('/')})`);
+  };
+  const pruefeEnde = async (sel, wo, fall = 'APD-62/M-1') => {
+    const m = await ruht(`${wo}: Bewegung zu Ende`); if (m) E(`APD-62/M-10 ${m}`);
+    const e = await endlage(sel);
+    if (!e) { E(`${fall} ${wo}: nach der Bewegung nicht mehr offen`); return; }
+    if (e.transform !== 'none' || e.deck !== 1 || e.dx > 0.6 || e.dy > 0.6 || e.dw > 0.6 || e.dh > 0.6) E(`${fall} ${wo}: Endlage nicht wie ohne Bewegung (Versatz ${r2(e.dx)}/${r2(e.dy)}, Größe ±${r2(e.dw)}/${r2(e.dh)}, ${e.transform}, Deckkraft ${e.deck})`);
+    if (!e.drin) E(`${fall} ${wo}: nach der Bewegung nicht ganz auf dem Bildschirm`);
+  };
+  const zuMit = async (wie, wo) => {
+    const vorher = await p.evaluate(() => [...document.querySelectorAll('.menu, .pop')].length);
+    if (wie === 'esc') await p.keyboard.press('Escape');
+    else if (wie === 'daneben') { const vp = p.viewportSize(); await p.mouse.click(vp.width - 6, vp.height - 6); }
+    else await wie();
+    const nach = await p.evaluate(() => [...document.querySelectorAll('.menu, .pop')].length);
+    if (nach >= vorher) E(`APD-62/M-2 ${wo}: schließt nicht sofort (der Baustein bleibt bis zum Ende der Bewegung)`);
+  };
+  if (menue) {
+    // M-1: Öffnen
+    await log(); await p.click(menue);
+    let l = await log();
+    pruefeAuf(l.find(x => x.art === 'menue'), `Menü ${menue}`);
+    await pruefeEnde('.menu:not(.submenu)', `Menü ${menue}`);
+    // M-2: Esc schrumpft zurück, Fokus wie heute auf dem Knopf
+    await zuMit('esc', `Menü ${menue} (Esc)`);
+    l = await log();
+    pruefeZu(l.find(x => x.art === 'geist'), `Menü ${menue} (Esc)`);
+    if (!await p.evaluate(sel => document.activeElement === document.querySelector(sel), menue)) E(`APD-62/M-2 Menü ${menue}: nach Esc liegt der Fokus nicht auf dem Knopf (R-1.9)`);
+    let m = await ruht(`Menü ${menue}: Abbild weg`); if (m) E(`APD-62/M-2 ${m}`);
+    // M-2: daneben tippen
+    await p.click(menue); await ruht(`Menü ${menue}: offen`); await log();
+    await zuMit('daneben', `Menü ${menue} (daneben)`);
+    pruefeZu((await log()).find(x => x.art === 'geist'), `Menü ${menue} (daneben)`);
+    m = await ruht(`Menü ${menue}: Abbild weg`); if (m) E(`APD-62/M-2 ${m}`);
+    // M-3: Schließen mitten im Öffnen – Größe direkt vor dem Schließen = Anfang des Schrumpfens (in einem Zug in der Seite)
+    if (!ruhig) {
+      // die Bewegung wird bei 150 ms angehalten (WebKit lässt Bildwechsel unter Last aus – eine natürliche Mitte wäre Zufall), dann Esc im selben Zug
+      await p.click(menue);
+      const w = await warteBis(p, () => !!document.querySelector('.menu:not(.submenu)')?.getAnimations()[0], { was: 'Menü wächst', max: 2000 });
+      if (w) E(`APD-62/M-3 ${w}`);
+      await log();
+      const s = await p.evaluate(() => { const el = document.querySelector('.menu:not(.submenu)'), a = el.getAnimations()[0]; if (a) { a.pause(); a.currentTime = 150; }
+        const t = getComputedStyle(el).transform, m = t.match(/matrix\(([^,]+),/), s0 = m ? +m[1] : 1;
+        (document.activeElement || document.body).dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', code: 'Escape', bubbles: true, cancelable: true }));
+        return { s0, offen: !!document.querySelector('.menu:not(.submenu)') }; });
+      if (s.offen) E('APD-62/M-3 Esc mitten im Öffnen schließt das Menü nicht');
+      if (s.s0 > 0.99) E('APD-62/M-3 das Menü war beim Schließen schon ganz offen – kein Fall mitten im Öffnen');
+      pruefeZu((await log()).find(x => x.art === 'geist'), `Menü ${menue} (mitten im Öffnen)`, s.s0);
+      m = await ruht(`Menü ${menue}: Abbild weg`); if (m) E(`APD-62/M-3 ${m}`);
+    }
+    // M-4: Untermenü wächst aus seinem Menüpunkt, Esc schrumpft es dorthin zurück
+    if (untermenue) {
+      await p.click(menue); await ruht('Menü offen'); await log();
+      await p.locator('.menu:not(.submenu) .mi', { hasText: untermenue }).first().click();
+      pruefeAuf((await log()).find(x => x.art === 'untermenue'), `Untermenü ‚${untermenue}‘`);
+      await pruefeEnde('.menu.submenu', `Untermenü ‚${untermenue}‘`, 'APD-62/M-4');
+      await zuMit('esc', `Untermenü ‚${untermenue}‘`);
+      pruefeZu((await log()).find(x => x.art === 'geist'), `Untermenü ‚${untermenue}‘`);
+      if (!await p.evaluate(() => !!document.querySelector('.menu:not(.submenu)'))) E(`APD-62/M-4 Esc im Untermenü ‚${untermenue}‘ schließt auch das Menü`);
+      await p.keyboard.press('Escape'); await ruht('Menü zu');
+    }
+    // M-8: Drehen, während das Menü wächst – Endzustand wie ohne Bewegung
+    if (drehen) {
+      const vp = p.viewportSize();
+      await p.click(menue); await p.setViewportSize({ width: drehen[0], height: drehen[1] });
+      await pruefeEnde('.menu:not(.submenu)', `Menü ${menue} gedreht beim Wachsen`, 'APD-62/M-8');
+      await p.setViewportSize(vp);
+      await pruefeEnde('.menu:not(.submenu)', `Menü ${menue} zurückgedreht`, 'APD-62/M-8');
+      await p.keyboard.press('Escape'); await ruht('Menü zu');
+    }
+    // M-9: Großanzeige – langes Drücken auf den Menü-Knopf zeigt sie, beim Loslassen öffnet das Menü und wächst wie sonst
+    if (gross) {
+      await log();
+      const r = await finger(p, menue, [['warte', 700], ['merke', 'lang']], { fangen: false });
+      if (!r.gemerkt?.lang?.gross) E(`APD-62/M-9 langes Drücken auf ${menue} zeigt die Großanzeige nicht (R-2.6)`);
+      const w = await warteBis(p, () => !!document.querySelector('.menu:not(.submenu)') && !document.querySelector('.grossanzeige'), { was: 'Menü nach der Großanzeige', max: 2000 });
+      if (w) E(`APD-62/M-9 ${w}`);
+      else { pruefeAuf((await log()).find(x => x.art === 'menue'), `Menü ${menue} nach der Großanzeige`); await pruefeEnde('.menu:not(.submenu)', `Menü ${menue} nach der Großanzeige`, 'APD-62/M-9'); }
+      await p.keyboard.press('Escape'); await ruht('Menü zu');
+    }
+  }
+  // M-5: Kontextmenü wächst aus der Kachel; Menüpunkt schließt es
+  if (kontext) {
+    await log(); await kontext();
+    const w = await warteBis(p, () => !!document.querySelector('.menu.kontext'), { was: 'Kontextmenü offen', max: 2000 });
+    if (w) E(`APD-62/M-5 ${w}`);
+    else {
+      pruefeAuf((await log()).find(x => x.art === 'kontext'), 'Kontextmenü');
+      await pruefeEnde('.menu.kontext', 'Kontextmenü', 'APD-62/M-5');
+      await zuMit('esc', 'Kontextmenü');
+      pruefeZu((await log()).find(x => x.art === 'geist'), 'Kontextmenü');
+      const m = await ruht('Kontextmenü: Abbild weg'); if (m) E(`APD-62/M-5 ${m}`);
+    }
+  }
+  // M-6: Sprechblase wächst aus der Schaltfläche, ‚Abbrechen‘ schrumpft zurück
+  if (blase) {
+    await log(); await blase();
+    const w = await warteBis(p, () => !!document.querySelector('.pop'), { was: 'Sprechblase offen', max: 2000 });
+    if (w) E(`APD-62/M-6 ${w}`);
+    else {
+      pruefeAuf((await log()).find(x => x.art === 'blase'), 'Sprechblase');
+      await pruefeEnde('.pop', 'Sprechblase', 'APD-62/M-6');
+      await zuMit(() => p.locator('.pop button', { hasText: /^Abbrechen$/ }).first().click(), 'Sprechblase (Abbrechen)');
+      pruefeZu((await log()).find(x => x.art === 'geist'), 'Sprechblase (Abbrechen)');
+      const m = await ruht('Sprechblase: Abbild weg'); if (m) E(`APD-62/M-6 ${m}`);
+    }
+  }
+  await p.evaluate(() => { window.__wachs?.disconnect(); window.__wachs = null; });
+  return errors;
+}

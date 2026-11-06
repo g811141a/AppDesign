@@ -252,6 +252,9 @@ export const GEGENPROBEN_MASSE = {
   verwerfen: { zeichen: /R-5\.10 .*nicht wie beim Öffnen/, was: 'Verwerfen stellt den Stand beim Öffnen nicht her (APD-40/C-2)', test: 'ablauf-texte-ablaeufe' },
   sofort: { zeichen: /R-4\.12 .*ohne Sprechblase/, was: '‚Reiselogbuch löschen‘ löscht sofort (APD-40/C-5)', test: 'ablauf-texte-ablaeufe' },
   abbrechen2: { zeichen: /R-4\.12 .*‚Abbrechen‘ ändert/, was: 'Abbrechen löscht trotzdem (APD-40/C-6)', test: 'ablauf-texte-ablaeufe' },
+  // seit 4.53.0 (R-3.9, APD-38/T-37): Kapsel und Menü ohne Glas · eine Leiste aus Glas
+  glas: { zeichen: /R-3\.9 APD-62\/L-1 .*nicht aus Glas/, was: 'Kapsel und Menü ohne Unschärfe (APD-62/L-1)' },
+  glasleiste: { zeichen: /R-3\.9 APD-62\/L-7 /, was: 'Kopfzeile aus Glas (APD-62/L-7)' },
 };
 function gegenprobeMasse(fall) {
   const beob = fn => new MutationObserver(() => fn()).observe(document, { subtree: true, childList: true });
@@ -286,6 +289,8 @@ function gegenprobeMasse(fall) {
     autoaus: () => { const alt = Storage.prototype.setItem; Storage.prototype.setItem = function (k, v) { if (document.querySelector('dialog#dlg[open]') && String(v).includes('Zwischenspeicher')) return; return alt.call(this, k, v); }; },   // nur die Eingabe der Prüfung
     verwerfen: () => { let aus = false; const alt = Storage.prototype.setItem; Storage.prototype.setItem = function (k, v) { if (aus) return; return alt.call(this, k, v); };
       document.addEventListener('click', e => { if (/Änderungen verwerfen/.test(e.target.closest('button')?.textContent || '')) aus = true; }, true); },
+    glas: () => stil('.fab, .menu { -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }'),
+    glasleiste: () => stil('.nb, .pnav { -webkit-backdrop-filter: blur(20px) !important; backdrop-filter: blur(20px) !important; }'),
     sofort: () => addEventListener('load', () => { confirmPop = async () => true; }),
     abbrechen2: () => addEventListener('load', () => { const alt = confirmPop; confirmPop = async (...a) => { await alt(...a); return true; }; }),
   }[fall];
