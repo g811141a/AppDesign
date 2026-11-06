@@ -1,0 +1,130 @@
+<!doctype html><html lang="de"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="APD-62 Glas">
+<title>APD-62 Glas</title>
+<style>
+/* APD-62 Teil APD-38/T-37 ‚Glas-Optik schwebender Knöpfe‘ – Muster (Sitzung Reiselogbuch 0083), nur hell (Vereinbarung 30.10.2026), iPad quer.
+   Drei Varianten nebeneinander (0 Nr. 6) – unten als Vergleichsleiste über demselben gerollten Inhalt, oben umschaltbar für Kapsel ‚Nach oben / Ans Ende‘
+   und Mehr-Menü (?v=heute|g75|g55):
+   heute = wie die App (15.1): deckend --btn #f9f9f9, Lichtkante .5px weiß, Schatten --float.
+   g75   = Glas 75 % (APD-38/V4): Weiß 75 % deckend, Unschärfe 20 px, Sättigung 180 %, Lichtkante, Schatten.
+   g55   = Glas 55 %: Weiß 55 % deckend, Unschärfe 24 px – näher an iOS 26 Liquid Glass, weniger deckend.
+   ‚Transparenz reduzieren‘ (Schalter oben; am Gerät zusätzlich die Einstellung, prefers-reduced-transparency): Glas wird deckend wie ‚heute‘.
+   Leisten bleiben deckend (R-2.1, Designrichtlinie 1 ‚Glas-Leiste verworfen‘); nur Schwebendes wird Glas. */
+:root { --bg: #f2f2f7; --card: #fff; --line: #d1d1d6; --txt: #000; --sub: #6e6e73; --blue: #007aff; --red: #ff3b30;
+  --btn: #f9f9f9; --rim: #ffffff; --float: 0 3px 28px rgba(0,0,0,.16); color-scheme: light; }
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { margin: 0; height: 100%; overflow: hidden; background: var(--bg); color: var(--txt); font: 17px -apple-system, system-ui, sans-serif; }
+.frame { position: fixed; inset: 0; display: grid; grid-template-columns: 320px 1fr; }
+@media (max-width: 900px) { .frame { grid-template-columns: 1fr; } #side { display: none; } }
+#side { background: var(--card); border-right: .5px solid var(--line); padding: max(12px, env(safe-area-inset-top)) 16px 16px; overflow: hidden; }
+#side h2 { font-size: 28px; margin: 8px 0 12px; }
+.row { padding: 12px; border-radius: 10px; margin-bottom: 4px; }
+.row.on { background: var(--blue); color: #fff; }
+main { display: grid; grid-template-rows: auto minmax(0, 1fr); min-width: 0; min-height: 0; height: 100%; overflow: hidden; position: relative; }
+.bar { display: flex; align-items: center; gap: 8px; min-height: 52px; padding: env(safe-area-inset-top) 12px 6px; background: var(--bg); border-bottom: .5px solid var(--line); flex-wrap: wrap; }
+.bar h1 { font-size: 17px; font-weight: 600; margin: 0 auto 0 4px; }
+.seg { display: flex; background: #e3e3e8; border-radius: 9px; padding: 2px; }
+.seg a { padding: 6px 12px; border-radius: 7px; color: var(--txt); text-decoration: none; font-size: 15px; }
+.seg a.on { background: var(--card); box-shadow: 0 1px 3px rgba(0,0,0,.15); font-weight: 600; }
+label.sw { display: flex; align-items: center; gap: 6px; font-size: 15px; color: var(--sub); }
+.cap { display: flex; border-radius: 22px; background: var(--btn); border: .5px solid var(--rim); box-shadow: var(--float); }
+.cap button, .fab button { width: 44px; height: 44px; border: 0; background: none; color: var(--blue); display: grid; place-items: center; border-radius: 22px; padding: 0; }
+svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.content { overflow: auto; padding: 20px 20px 160px; -webkit-overflow-scrolling: touch; }
+.info { color: var(--sub); font-size: 15px; margin: 0 0 16px; max-width: 680px; }
+.day { background: var(--card); border-radius: 14px; padding: 16px; margin-bottom: 16px; max-width: 760px; }
+.day h3 { margin: 0 0 8px; font-size: 20px; }
+.day p { margin: 0 0 12px; line-height: 1.4; }
+.pics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.pic { height: 130px; border-radius: 10px; }
+/* Schwebendes in den drei Varianten */
+.glass { background: var(--btn); border: .5px solid var(--rim); box-shadow: var(--float); }
+.v-g75 { background: rgba(255,255,255,.75); -webkit-backdrop-filter: blur(20px) saturate(180%); backdrop-filter: blur(20px) saturate(180%);
+  border: .5px solid rgba(255,255,255,.9); box-shadow: var(--float), inset 0 1px 0 rgba(255,255,255,.8); }
+.v-g55 { background: rgba(255,255,255,.55); -webkit-backdrop-filter: blur(24px) saturate(180%); backdrop-filter: blur(24px) saturate(180%);
+  border: .5px solid rgba(255,255,255,.9); box-shadow: var(--float), inset 0 1px 0 rgba(255,255,255,.8); }
+html.rt .v-g75, html.rt .v-g55 { background: var(--btn); -webkit-backdrop-filter: none; backdrop-filter: none; border-color: var(--rim); box-shadow: var(--float); }
+@media (prefers-reduced-transparency: reduce) { .v-g75, .v-g55 { background: var(--btn); -webkit-backdrop-filter: none; backdrop-filter: none; } }
+.fab { position: absolute; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom)); display: flex; flex-direction: column; border-radius: 22px; z-index: 4; }
+.cmp { position: absolute; left: 50%; transform: translateX(-50%); bottom: calc(16px + env(safe-area-inset-bottom)); display: flex; gap: 16px; z-index: 4; }
+.cmp .k { display: flex; align-items: center; gap: 2px; padding: 0 14px 0 2px; border-radius: 22px; color: var(--txt); font-size: 15px; font-weight: 600; }
+.cmp .k button { width: 44px; height: 44px; border: 0; background: none; color: var(--blue); display: grid; place-items: center; padding: 0; }
+.menu { position: absolute; z-index: 30; width: 300px; border-radius: 14px; overflow: hidden; }
+.menu[hidden] { display: none; }
+.menu .mi { display: flex; align-items: center; gap: 10px; width: 100%; min-height: 46px; padding: 0 16px; font-size: 17px; border: 0; background: none; color: var(--txt); text-align: left; }
+.menu .mi svg { color: var(--txt); }
+.menu .mi.red, .menu .mi.red svg { color: var(--red); }
+.menu hr { border: 0; border-top: .5px solid var(--line); margin: 0 0 0 48px; }
+.menu.glass { background: var(--card); }   /* wie die App: Menü --card, Kapsel --btn */
+button:active { opacity: .35; }
+</style></head><body>
+<div class="frame">
+  <aside id="side"><h2>Reiselogbücher</h2>
+    <div class="row on">Island 2026</div><div class="row">Portugal 2025</div><div class="row">Norwegen 2024</div><div class="row">Toskana 2023</div></aside>
+  <main>
+    <div class="bar">
+      <h1>Island 2026</h1>
+      <div class="seg" id="seg"><a data-v="heute">heute</a><a data-v="g75">Glas 75 %</a><a data-v="g55">Glas 55 %</a></div>
+      <label class="sw"><input type="checkbox" id="rt"> Transparenz reduzieren</label>
+      <div class="cap"><button aria-label="Teilen"><svg viewBox="0 0 24 24"><path d="M12 2v13"/><path d="m16 6-4-4-4 4"/><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/></svg></button>
+        <button id="more" aria-label="Mehr" aria-haspopup="menu" aria-expanded="false"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></div>
+    </div>
+    <div class="content" id="content"></div>
+    <div class="cmp" aria-label="Vergleich">
+      <div class="k glass"><button aria-label="Nach oben"><svg viewBox="0 0 24 24"><path d="M5 3h14"/><path d="m18 13-6-6-6 6"/><path d="M12 7v14"/></svg></button>heute</div>
+      <div class="k v-g75"><button aria-label="Nach oben"><svg viewBox="0 0 24 24"><path d="M5 3h14"/><path d="m18 13-6-6-6 6"/><path d="M12 7v14"/></svg></button>Glas 75 %</div>
+      <div class="k v-g55"><button aria-label="Nach oben"><svg viewBox="0 0 24 24"><path d="M5 3h14"/><path d="m18 13-6-6-6 6"/><path d="M12 7v14"/></svg></button>Glas 55 %</div>
+    </div>
+    <div class="fab" id="fab">
+      <button id="up" aria-label="Nach oben"><svg viewBox="0 0 24 24"><path d="M5 3h14"/><path d="m18 13-6-6-6 6"/><path d="M12 7v14"/></svg></button>
+      <button id="down" aria-label="Ans Ende"><svg viewBox="0 0 24 24"><path d="M12 17V3"/><path d="m6 11 6 6 6-6"/><path d="M19 21H5"/></svg></button>
+    </div>
+    <div class="menu" id="menu" role="menu" hidden>
+      <button class="mi" role="menuitem"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>Suchen</button>
+      <button class="mi" role="menuitem"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>Bearbeiten</button>
+      <hr>
+      <button class="mi" role="menuitem"><svg viewBox="0 0 24 24"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 14h12v8H6z"/></svg>Drucken</button>
+      <hr>
+      <button class="mi red" role="menuitem"><svg viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>Löschen</button>
+    </div>
+  </main>
+</div>
+<script>
+const farben = [['#ff9500','#ff2d55'],['#34c759','#007aff'],['#5856d6','#af52de'],['#ffcc00','#ff9500'],['#5ac8fa','#34c759'],['#ff3b30','#5856d6'],['#1c1c1e','#8e8e93'],['#ffffff','#e5e5ea']];
+const orte = ['Reykjavík','Þingvellir','Geysir','Gullfoss','Vík','Jökulsárlón','Höfn','Mývatn','Akureyri','Snæfellsnes','Borgarnes','Keflavík'];
+const c = document.getElementById('content');
+let h = '<p class="info">Rolle den Inhalt und vergleiche unten die drei Kapseln (heute, Glas 75 %, Glas 55 %) über Bildern, Text und Weiß. Oben wählst du die Variante für die Kapsel unten rechts und das Mehr-Menü (ellipsis).</p>';
+orte.forEach((o, i) => {
+  h += `<section class="day"><h3>Tag ${i + 1} · ${o}</h3><p>Am Morgen Fahrt nach ${o}, unterwegs zwei Stopps an Wasserfällen. Mittag im Café am Hafen, danach Wanderung bei Wind und Sonne; abends Fischsuppe und Blick auf die Bucht.</p><div class="pics">` +
+    [0,1,2].map(k => { const f = farben[(i * 3 + k) % farben.length]; return `<div class="pic" style="background:linear-gradient(135deg,${f[0]},${f[1]})"></div>`; }).join('') + '</div></section>';
+});
+c.innerHTML = h;
+const q = new URLSearchParams(location.search);
+let v = ['heute','g75','g55'].includes(q.get('v')) ? q.get('v') : 'g75';
+const fab = document.getElementById('fab'), menu = document.getElementById('menu'), more = document.getElementById('more');
+function setze() {
+  const cls = v === 'heute' ? 'glass' : 'v-' + v;
+  fab.className = 'fab ' + cls; menu.className = 'menu ' + cls;
+  document.querySelectorAll('#seg a').forEach(a => { a.classList.toggle('on', a.dataset.v === v); a.href = '?v=' + a.dataset.v; });
+}
+document.querySelectorAll('#seg a').forEach(a => a.addEventListener('click', e => { e.preventDefault(); v = a.dataset.v; history.replaceState(null, '', '?v=' + v); setze(); }));
+document.getElementById('rt').addEventListener('change', e => document.documentElement.classList.toggle('rt', e.target.checked));
+document.getElementById('up').onclick = () => c.scrollTo({ top: 0, behavior: 'smooth' });
+document.getElementById('down').onclick = () => c.scrollTo({ top: c.scrollHeight, behavior: 'smooth' });
+document.querySelectorAll('.cmp button').forEach(b => b.onclick = () => c.scrollTo({ top: 0, behavior: 'smooth' }));
+function zu() { menu.hidden = true; more.setAttribute('aria-expanded', 'false'); }
+more.onclick = e => {
+  e.stopPropagation();
+  if (!menu.hidden) return zu();
+  const m = document.querySelector('main').getBoundingClientRect(), r = more.getBoundingClientRect();
+  menu.style.top = (r.bottom - m.top + 8) + 'px'; menu.style.right = Math.max(12, m.right - r.right) + 'px';
+  menu.hidden = false; more.setAttribute('aria-expanded', 'true');
+};
+document.addEventListener('click', e => { if (!menu.hidden && !menu.contains(e.target)) zu(); });
+menu.addEventListener('click', zu);
+setze();
+</script>
+</body></html>
