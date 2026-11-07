@@ -48,6 +48,20 @@ Tastatur 274) und Nachstellung im Safari-Modell (Skript nur in der Sitzung):
   unter der Tastatur, Fenster mit dem Finger hochgeschoben, dann Ort antippen – wie in den Schritten am Gerät). (2) iPhone quer W-2: Ort höher als
   der sichtbare Teil, Safari verschiebt im Modell 30 px – Hinweis wie APD-115/A-3. Chromium und WebKit ohne Fehler, Gegenprobe `PRUEF_V=heute`
   rot (35 Fehler). Am Gerät zu messen, welche Variante ruhig ist.
+- APD-115/N-11 Messung am Gerät (Nutzer 07.11.2026, Sitzung 0092; `messung-2026-11-07-2118` iPad quer W-1, `-2119` iPad quer W-2, `-2037` iPhone hoch
+  W-2, `-2006` iPhone leer – nach 691 s ohne Ereignis an der Grenze; iPhone W-1 fehlt). Rückmeldung: ‚Schritte 7 und 8 haben auf allen Geräten
+  geruckelt‘ – Schritt 6 nicht.
+  - Schritt 6 (Ort antippen bei offener Tastatur): Safari verschiebt die Seite **in beiden Varianten** – iPad quer W-1 139 px (die App rollt 0, Ort
+    war ganz sichtbar), W-2 ebenso 139 px, obwohl die App 138 px zur Mitte rollt und neu fokussiert; iPhone hoch W-2 47 px (App rollt 46). Die App
+    fängt es in 4–5 ms ab (Kopfzeile kurz −139 bzw. −47, dann 0). Folgerung: der neue Fokus bei offener Tastatur hilft nicht – APD-36/S-8 gilt nur
+    beim Öffnen; Safari nimmt die Lage beim Fokus vor dem Rollen der App (APD-36/S-7). Das Modell sagt für W-2 ‚Safari verschiebt nicht‘ – falsch,
+    zu korrigieren (0 Nr. 20). W-2 bringt nur zusätzliches Rollen.
+  - Schritt 8 (x – Tastatur schließt): Safari setzt `scrollY` sofort auf 0, meldet `offsetTop` aber noch alt – iPhone hoch 400 ms lang 47 (Kopfzeile
+    47 px zu tief, 79020 → 79435 ms), iPad quer ein Bild lang (‚vv resize‘ mit offsetTop 0, die App steht noch auf 138: Kopfzeile 138 px tief,
+    22400 → 22408 ms). Ebenso nach dem Schließen über den Link im Hinweis (iPhone 48661 → 49066 ms, 14 px). Nur nach einer Verschiebung durch Safari.
+  - Schritt 7 (‚Rom‘ tippen): beim ersten Zeichen iPad quer W-1 Safari `scrollY` 139 → 138 (Kopfzeile 45 ms lang +1 px), W-2 zusätzlich ‚scroll div‘;
+    iPhone W-2 ‚scroll div‘. Wie weit der Fensterinhalt rollt, zeichnet der Messmodus nicht auf (kein Rollstand des Fensters, kein Fensterkopf) –
+    im Modell rollt beim Tippen nichts.
 
 ## Apple-Abgleich (0 Nr. 23, 2.6)
 

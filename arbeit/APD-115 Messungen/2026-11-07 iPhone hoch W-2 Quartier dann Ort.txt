@@ -1,0 +1,796 @@
+# Messung · Reiselogbuch 3.52.0 · AppDesign 4.54.0 · Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.6.3 Mobile/15E148 Safari/604.1 · Safari · 402×874 @3 · Ränder 0/0/0/0 · hell · 2026-11-07T13:37:33.853Z · Kontrast normal · Bewegung normal · Text xl 19
+t      sy     inh    sh     ih     vh     vt     vvtop  kopf   such   tag    lkopf  lsuch  lroll  fokus  lage
+1      0      -      714    714    714    0      0      -      -      -      0      -      0      sideMore hoch   ! start
+23374  0      -      714    714    714    0      0      -      -      -      0      -      0      sideMore hoch   ! nav kein kandidat
+23375  0      -      714    714    714    0      0      -      -      -      0      -      0      sideMore hoch   ! zeiger down 80 197 touch button.side-row @side
+23383  0      -      714    714    714    0      0      -      -      -      0      -      0      sideMore hoch   ! zeiger move 89 194 touch button.side-row @side
+23384  0      -      714    714    714    0      0      -      -      -      0      -      0      sideMore hoch   ! touchmove frei
+23384  0      -      714    714    714    0      0      -      -      -      0      -      0      sideMore hoch   ! zeiger move 89 194 touch button.side-row @side
+23400  0      -      714    714    714    0      0      -      -      -      0      -      0      sideMore hoch   ! zeiger move 101 194 touch button.side-row @side
+23417  0      -      714    714    714    0      0      -      -      -      0      -      0      sideMore hoch   ! zeiger move 103 193 touch button.side-row @side
+23417  0      -      714    714    714    0      0      -      -      -      0      -      0      sideMore hoch   ! zeiger move 105 192 touch button.side-row @side
+23420  0      -      714    714    714    0      0      -      -      -      0      -      0      sideMore hoch   ! zeiger up 107 190 touch button.side-row @side
+23421  0      -      714    714    714    0      0      -      -      -      0      -      0      -      hoch   ! blur sideMore
+23935  0      -      714    714    714    0      0      -      -      -      0      -      0      -      hoch   ! nav kein kandidat
+23935  0      -      714    714    714    0      0      -      -      -      0      -      0      -      hoch   ! zeiger down 88 163 touch small in button.side-row @side
+24001  0      -      714    714    714    0      0      -      -      -      0      -      0      -      hoch   ! zeiger up 88 163 touch small in button.side-row @side
+24005  0      -      714    714    714    0      0      -      -      -      0      -      0      -      hoch   ! tippen button
+24014  0      -      714    714    714    0      0      -      -      -      -      -      -      -      hoch   ! neuaufbau app
+24038  0      0      714    714    714    0      0      0      -      282    -      -      -      bar    hoch   ! focus bar
+24039  0      0      714    714    714    0      0      0      -      282    0      -      0      bar    hoch   ! neuaufbau side
+24407  0      0      714    714    714    0      0      0      -      282    -      -      -      bar    hoch
+25156  0      0      714    714    714    0      0      0      -      282    -      -      -      bar    hoch   ! nav kandidat phone
+25156  0      0      714    714    714    0      0      0      -      282    -      -      -      bar    hoch   ! zeiger down 188 584 touch span.t in div.box.day.tippziel[button] @pdays
+25218  0      0      714    714    714    0      0      0      -      282    -      -      -      bar    hoch   ! zeiger up 188 584 touch span.t in div.box.day.tippziel[button] @pdays
+25224  0      0      714    714    714    0      0      0      -      282    -      -      -      -      hoch   ! blur bar
+25224  0      0      714    714    714    0      0      0      -      282    -      -      -      div    hoch   ! focus div
+25225  0      0      714    714    714    0      0      0      -      282    -      -      -      div    hoch   ! tippen -
+25229  0      0      714    714    714    0      0      0      -      282    -      -      -      dlgX   hoch   ! blur div
+25246  0      0      714    714    714    0      0      0      -      282    -      -      -      dlgX   hoch   ! focus dlgX
+25246  0      0      714    714    714    0      0      0      -      282    -      -      -      -      hoch   ! blur dlgX
+25247  0      0      714    714    714    0      0      0      -      282    -      -      -      dlg    hoch   ! focus dlg
+25264  0      0      714    714    714    0      0      0      -      280    -      -      -      dlg    hoch
+25296  0      0      714    714    714    0      0      0      -      276    -      -      -      dlg    hoch
+25316  0      0      714    714    714    0      0      0      -      273    -      -      -      dlg    hoch
+25333  0      0      714    714    714    0      0      0      -      271    -      -      -      dlg    hoch
+25350  0      0      714    714    714    0      0      0      -      268    -      -      -      dlg    hoch
+25366  0      0      714    714    714    0      0      0      -      266    -      -      -      dlg    hoch
+25383  0      0      714    714    714    0      0      0      -      265    -      -      -      dlg    hoch
+25416  0      0      714    714    714    0      0      0      -      264    -      -      -      dlg    hoch
+25450  0      0      714    714    714    0      0      0      -      263    -      -      -      dlg    hoch
+25517  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch
+26442  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! nav kein kandidat
+26442  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger down 84 512 touch suggest in dlg
+26467  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 80 491 touch suggest in dlg
+26468  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! touchmove frei
+26468  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 80 491 touch suggest in dlg
+26483  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 80 480 touch suggest in dlg
+26499  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 80 470 touch suggest in dlg
+26499  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! touchmove fest
+26501  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+26508  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 79 466 touch suggest in dlg
+26516  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 78 461 touch suggest in dlg
+26517  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+26524  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 78 456 touch suggest in dlg
+26533  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 77 452 touch suggest in dlg
+26536  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+26541  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 76 447 touch suggest in dlg
+26549  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 76 442 touch suggest in dlg
+26551  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+26558  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 75 437 touch suggest in dlg
+26566  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 74 433 touch suggest in dlg
+26568  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+26574  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 74 428 touch suggest in dlg
+26583  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 73 423 touch suggest in dlg
+26584  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+26591  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 73 418 touch suggest in dlg
+26600  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 72 412 touch suggest in dlg
+26601  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+26608  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 72 407 touch suggest in dlg
+26616  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 71 401 touch suggest in dlg
+26618  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+26624  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 70 395 touch suggest in dlg
+26633  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 70 389 touch suggest in dlg
+26634  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+26641  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 70 382 touch suggest in dlg
+26650  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 70 376 touch suggest in dlg
+26651  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+26658  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 70 370 touch suggest in dlg
+26666  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 70 364 touch suggest in dlg
+26668  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+26674  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 70 357 touch suggest in dlg
+26683  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 70 351 touch suggest in dlg
+26685  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+26691  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 70 345 touch suggest in dlg
+26700  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 70 339 touch suggest in dlg
+26701  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+26708  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 70 332 touch suggest in dlg
+26716  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 70 326 touch suggest in dlg
+26718  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+26724  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 70 321 touch suggest in dlg
+26733  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 70 315 touch suggest in dlg
+26734  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+26741  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 71 309 touch suggest in dlg
+26749  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 71 303 touch suggest in dlg
+26751  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+26758  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 72 298 touch suggest in dlg
+26766  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 72 292 touch suggest in dlg
+26768  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+26775  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 72 287 touch suggest in dlg
+26783  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 73 281 touch suggest in dlg
+26784  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+26791  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 73 276 touch suggest in dlg
+26799  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 73 271 touch suggest in dlg
+26801  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+26808  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 73 266 touch suggest in dlg
+26816  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 73 261 touch suggest in dlg
+26818  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+26824  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 73 255 touch suggest in dlg
+26833  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 73 250 touch suggest in dlg
+26834  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+26841  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 73 245 touch suggest in dlg
+26849  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 73 240 touch suggest in dlg
+26850  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+26858  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 73 236 touch suggest in dlg
+26866  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 73 231 touch suggest in dlg
+26868  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+26875  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 73 226 touch suggest in dlg
+26883  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 72 221 touch suggest in dlg
+26884  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+26891  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 71 217 touch suggest in dlg
+26900  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 70 212 touch suggest in dlg
+26901  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+26908  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 69 208 touch suggest in dlg
+26916  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 68 203 touch suggest in dlg
+26917  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+26925  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 67 199 touch suggest in dlg
+26933  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 66 195 touch suggest in dlg
+26934  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+26941  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 65 190 touch suggest in dlg
+26950  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 63 187 touch suggest in dlg
+26951  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+26958  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 62 183 touch suggest in dlg
+26966  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 61 179 touch suggest in dlg
+26969  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+26975  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 60 175 touch suggest in dlg
+26983  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 59 172 touch suggest in dlg
+26984  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+26991  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 58 168 touch suggest in dlg
+27000  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 57 164 touch suggest in dlg
+27002  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+27008  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 56 160 touch suggest in dlg
+27016  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 54 157 touch suggest in dlg
+27018  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+27025  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 53 153 touch suggest in dlg
+27033  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 52 150 touch suggest in dlg
+27035  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+27041  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 50 146 touch suggest in dlg
+27049  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 49 142 touch suggest in dlg
+27050  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+27058  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 48 139 touch suggest in dlg
+27066  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 47 135 touch suggest in dlg
+27067  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+27074  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 45 132 touch suggest in dlg
+27083  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 44 128 touch suggest in dlg
+27084  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+27091  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 43 125 touch suggest in dlg
+27099  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 42 122 touch suggest in dlg
+27101  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+27108  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 42 120 touch suggest in dlg
+27116  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 41 117 touch suggest in dlg
+27118  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+27124  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 41 114 touch suggest in dlg
+27133  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 40 112 touch suggest in dlg
+27134  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+27141  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 40 109 touch suggest in dlg
+27150  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 40 107 touch suggest in dlg
+27151  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+27158  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 39 105 touch suggest in dlg
+27171  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 39 102 touch suggest in dlg
+27183  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 39 99 touch suggest in dlg
+27184  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+27196  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 39 96 touch suggest in dlg
+27208  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 39 94 touch suggest in dlg
+27210  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+27221  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 39 91 touch suggest in dlg
+27233  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 39 89 touch suggest in dlg
+27235  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+27246  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 39 87 touch suggest in dlg
+27258  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 39 85 touch suggest in dlg
+27259  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+27271  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 39 83 touch suggest in dlg
+27283  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 39 82 touch suggest in dlg
+27284  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+27300  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 39 81 touch suggest in dlg
+27317  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 39 80 touch suggest in dlg
+27318  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+27333  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 39 78 touch suggest in dlg
+27335  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+27350  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 39 77 touch suggest in dlg
+27351  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+27367  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 39 75 touch suggest in dlg
+27368  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+27383  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 39 74 touch suggest in dlg
+27384  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+27400  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 39 73 touch suggest in dlg
+27401  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+27417  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 39 72 touch suggest in dlg
+27418  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+27433  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 39 70 touch suggest in dlg
+27434  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+27450  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 39 69 touch suggest in dlg
+27451  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+27466  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 39 68 touch suggest in dlg
+27468  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+27483  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 39 67 touch suggest in dlg
+27484  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+27501  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 38 67 touch suggest in dlg
+27502  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger up 37 65 touch suggest in dlg
+28050  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! nav kein kandidat
+28050  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger down 99 484 touch div.hint in dlg
+28075  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 97 472 touch div.hint in dlg
+28075  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! touchmove frei
+28075  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 97 472 touch div.hint in dlg
+28091  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 97 465 touch div.hint in dlg
+28108  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 96 458 touch div.hint in dlg
+28108  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! touchmove fest
+28109  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+28116  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 95 454 touch div.hint in dlg
+28125  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 94 450 touch div.hint in dlg
+28126  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+28133  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 93 446 touch div.hint in dlg
+28142  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 92 442 touch div.hint in dlg
+28144  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+28150  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 91 438 touch div.hint in dlg
+28158  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 90 434 touch div.hint in dlg
+28160  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+28166  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 89 429 touch div.hint in dlg
+28175  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 87 423 touch div.hint in dlg
+28177  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+28183  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 85 417 touch div.hint in dlg
+28191  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 83 411 touch div.hint in dlg
+28193  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+28200  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 81 404 touch div.hint in dlg
+28208  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 80 397 touch div.hint in dlg
+28210  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+28216  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 78 390 touch div.hint in dlg
+28225  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 77 383 touch div.hint in dlg
+28227  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+28233  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 76 376 touch div.hint in dlg
+28241  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 75 370 touch div.hint in dlg
+28243  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+28250  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 74 363 touch div.hint in dlg
+28258  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 73 357 touch div.hint in dlg
+28259  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+28266  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 73 351 touch div.hint in dlg
+28275  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 72 345 touch div.hint in dlg
+28277  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+28283  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 72 339 touch div.hint in dlg
+28291  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 71 333 touch div.hint in dlg
+28293  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+28300  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 71 327 touch div.hint in dlg
+28308  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 71 321 touch div.hint in dlg
+28310  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+28316  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 70 315 touch div.hint in dlg
+28325  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 70 310 touch div.hint in dlg
+28327  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+28333  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 70 304 touch div.hint in dlg
+28342  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 70 298 touch div.hint in dlg
+28344  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+28350  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 69 292 touch div.hint in dlg
+28358  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 68 286 touch div.hint in dlg
+28360  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+28366  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 68 280 touch div.hint in dlg
+28375  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 67 275 touch div.hint in dlg
+28376  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+28383  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 66 269 touch div.hint in dlg
+28391  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 65 263 touch div.hint in dlg
+28393  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+28400  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 64 258 touch div.hint in dlg
+28408  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 63 252 touch div.hint in dlg
+28410  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+28417  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 62 246 touch div.hint in dlg
+28425  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 61 241 touch div.hint in dlg
+28428  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+28433  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 60 236 touch div.hint in dlg
+28441  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 59 231 touch div.hint in dlg
+28442  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+28450  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 58 226 touch div.hint in dlg
+28458  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 58 221 touch div.hint in dlg
+28459  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+28466  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 57 216 touch div.hint in dlg
+28475  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 56 212 touch div.hint in dlg
+28476  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+28483  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 55 208 touch div.hint in dlg
+28491  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 54 205 touch div.hint in dlg
+28493  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+28500  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 53 202 touch div.hint in dlg
+28508  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 52 199 touch div.hint in dlg
+28510  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+28516  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 52 197 touch div.hint in dlg
+28525  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 51 194 touch div.hint in dlg
+28527  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+28533  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 51 193 touch div.hint in dlg
+28546  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 50 190 touch div.hint in dlg
+28547  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+28558  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 49 189 touch div.hint in dlg
+28575  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 48 187 touch div.hint in dlg
+28576  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+28592  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 48 185 touch div.hint in dlg
+28593  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+28608  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 47 184 touch div.hint in dlg
+28609  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+28625  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 46 183 touch div.hint in dlg
+28626  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+28642  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 45 181 touch div.hint in dlg
+28643  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+28658  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 44 180 touch div.hint in dlg
+28660  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+28675  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 44 178 touch div.hint in dlg
+28676  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+28692  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 43 176 touch div.hint in dlg
+28693  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+28708  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 43 175 touch div.hint in dlg
+28709  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+28725  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 43 173 touch div.hint in dlg
+28726  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+28742  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 42 172 touch div.hint in dlg
+28743  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+28758  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 42 170 touch div.hint in dlg
+28759  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+28775  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 42 168 touch div.hint in dlg
+28776  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+28792  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 42 166 touch div.hint in dlg
+28793  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+28808  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 42 163 touch div.hint in dlg
+28809  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+28825  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 42 161 touch div.hint in dlg
+28826  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+28842  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 42 157 touch div.hint in dlg
+28843  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+28854  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 42 154 touch div.hint in dlg
+28866  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 42 151 touch div.hint in dlg
+28867  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+28879  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 42 147 touch div.hint in dlg
+28892  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 42 142 touch div.hint in dlg
+28893  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+28900  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 42 139 touch div.hint in dlg
+28908  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 41 136 touch div.hint in dlg
+28917  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 40 132 touch div.hint in dlg
+28918  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+28925  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 39 128 touch div.hint in dlg
+28926  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+28933  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 38 123 touch div.hint in dlg
+28942  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 37 119 touch div.hint in dlg
+28943  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+28950  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 36 114 touch div.hint in dlg
+28958  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 35 110 touch div.hint in dlg
+28960  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+28967  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 34 105 touch div.hint in dlg
+28975  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 32 100 touch div.hint in dlg
+28976  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+28983  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 30 95 touch div.hint in dlg
+28992  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 29 90 touch div.hint in dlg
+28993  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+29000  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 27 86 touch div.hint in dlg
+29008  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 26 82 touch div.hint in dlg
+29010  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+29017  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger move 24 78 touch div.hint in dlg
+29026  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger up 22 76 touch div.hint in dlg
+29029  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+29042  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+29059  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+29075  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+29092  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+29109  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+29125  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+29142  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+29159  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+29175  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+29192  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+29209  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+29225  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+29242  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+29259  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+29284  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+29309  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+29334  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+29359  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+29384  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+29409  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+29434  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+29459  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+29497  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+29588  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+29605  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+29622  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+29638  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+29655  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+29672  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+29705  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+29739  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+29755  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+29772  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+29788  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+30589  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! nav kein kandidat
+30589  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger down 89 409 touch label @dlg
+30698  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger up 89 409 touch label @dlg
+30735  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! tippen -
+30736  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! tippen fQuarter
+30736  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! blur dlg
+30775  0      0      714    714    714    0      0      0      -      262    -      -      -      fQuarter hoch   ! V-3 fQuarter rollt 228 (W-2)
+30780  0      0      714    714    714    0      0      0      -      262    -      -      -      fQuarter hoch   ! neu fokussiert fQuarter
+30780  0      0      714    714    714    0      0      0      -      262    -      -      -      fQuarter hoch   ! focus fQuarter
+30782  0      0      714    714    714    0      0      0      -      262    -      -      -      fQuarter hoch   ! scroll div
+30884  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! vv resize
+30888  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! scroll div
+40843  0      0      714    714    714    0      0      0      -      262    -      -      -      fQuarter hoch   ! vv resize
+40850  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! blur fQuarter
+40855  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! platz weg div
+40856  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! scroll div
+41970  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! nav kein kandidat
+41970  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! zeiger down 189 334 touch label @dlg
+42045  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! zeiger up 189 334 touch label @dlg
+42078  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! focus dlg
+42078  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! tippen -
+42078  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! tippen fQuarter
+42078  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! blur dlg
+42080  0      0      714    714    714    0      0      0      -      262    -      -      -      fQuarter hoch   ! V-3 fQuarter rollt 173 (W-2)
+42083  0      0      714    714    714    0      0      0      -      262    -      -      -      fQuarter hoch   ! neu fokussiert fQuarter
+42083  0      0      714    714    714    0      0      0      -      262    -      -      -      fQuarter hoch   ! focus fQuarter
+42160  0      0      714    714    714    0      0      0      -      262    -      -      -      fQuarter hoch   ! scroll div
+42178  14     0      714    700    377    14     0      -14    -      248    -      -      -      fQuarter hoch   ! vv resize
+42183  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! scroll div
+42183  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! vv scroll
+42228  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! scroll
+43159  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! eingabe 13
+43356  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! eingabe 14
+43539  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! eingabe 15
+43728  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! eingabe 16
+43925  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! eingabe 17
+44124  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! eingabe 18
+44339  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! eingabe 19
+44521  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! eingabe 20
+44705  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! eingabe 21
+47520  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! nav kein kandidat
+47520  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! zeiger down 113 291 touch label.check.chip.head-check @dlg
+47546  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! zeiger move 110 282 touch label.check.chip.head-check @dlg
+47546  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! touchmove frei
+47546  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! zeiger move 110 282 touch label.check.chip.head-check @dlg
+47563  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! zeiger move 110 275 touch label.check.chip.head-check @dlg
+47578  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! zeiger move 108 268 touch label.check.chip.head-check @dlg
+47595  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! zeiger move 106 262 touch label.check.chip.head-check @dlg
+47595  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! touchmove fest
+47597  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! scroll div
+47603  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! zeiger move 105 259 touch label.check.chip.head-check @dlg
+47616  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! zeiger move 104 254 touch label.check.chip.head-check @dlg
+47616  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! scroll div
+47624  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! zeiger move 103 251 touch label.check.chip.head-check @dlg
+47632  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! zeiger move 102 247 touch label.check.chip.head-check @dlg
+47641  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! zeiger move 101 244 touch label.check.chip.head-check @dlg
+47642  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! scroll div
+47649  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! zeiger move 100 240 touch label.check.chip.head-check @dlg
+47650  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! scroll div
+47657  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! zeiger move 99 236 touch label.check.chip.head-check @dlg
+47666  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! zeiger move 98 233 touch label.check.chip.head-check @dlg
+47667  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! scroll div
+47674  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! zeiger move 97 229 touch label.check.chip.head-check @dlg
+47682  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! zeiger move 97 225 touch label.check.chip.head-check @dlg
+47683  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! scroll div
+47690  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! zeiger move 96 221 touch label.check.chip.head-check @dlg
+47700  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! zeiger move 96 217 touch label.check.chip.head-check @dlg
+47700  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! scroll div
+47708  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! zeiger move 95 213 touch label.check.chip.head-check @dlg
+47716  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! zeiger move 95 210 touch label.check.chip.head-check @dlg
+47717  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! scroll div
+47724  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! zeiger move 94 206 touch label.check.chip.head-check @dlg
+47732  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! zeiger move 94 202 touch label.check.chip.head-check @dlg
+47733  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! scroll div
+47740  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! zeiger move 93 199 touch label.check.chip.head-check @dlg
+47750  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! zeiger move 93 195 touch label.check.chip.head-check @dlg
+47750  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! scroll div
+47757  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! zeiger move 93 192 touch label.check.chip.head-check @dlg
+47765  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! zeiger move 92 189 touch label.check.chip.head-check @dlg
+47767  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! scroll div
+47774  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! zeiger move 92 186 touch label.check.chip.head-check @dlg
+47782  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! zeiger move 91 183 touch label.check.chip.head-check @dlg
+47783  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! scroll div
+47791  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! zeiger move 91 180 touch label.check.chip.head-check @dlg
+47799  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! zeiger move 90 177 touch label.check.chip.head-check @dlg
+47800  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! scroll div
+47807  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! zeiger move 89 175 touch label.check.chip.head-check @dlg
+47816  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! zeiger move 89 172 touch label.check.chip.head-check @dlg
+47817  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! scroll div
+47824  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! zeiger move 89 170 touch label.check.chip.head-check @dlg
+47832  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! zeiger move 88 167 touch label.check.chip.head-check @dlg
+47833  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! scroll div
+47841  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! zeiger move 88 165 touch label.check.chip.head-check @dlg
+47853  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! zeiger move 87 162 touch label.check.chip.head-check @dlg
+47854  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! scroll div
+47866  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! zeiger move 87 159 touch label.check.chip.head-check @dlg
+47878  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! zeiger move 86 157 touch label.check.chip.head-check @dlg
+47879  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! scroll div
+47891  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! zeiger move 86 154 touch label.check.chip.head-check @dlg
+47903  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! zeiger move 86 151 touch label.check.chip.head-check @dlg
+47904  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! scroll div
+47916  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! zeiger move 85 149 touch label.check.chip.head-check @dlg
+47928  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! zeiger move 85 146 touch label.check.chip.head-check @dlg
+47929  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! scroll div
+47941  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! zeiger move 85 144 touch label.check.chip.head-check @dlg
+47953  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! zeiger move 85 143 touch label.check.chip.head-check @dlg
+47954  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! scroll div
+47970  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! zeiger move 84 141 touch label.check.chip.head-check @dlg
+47987  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! zeiger move 84 141 touch label.check.chip.head-check @dlg
+47988  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! scroll div
+48003  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! zeiger move 84 140 touch label.check.chip.head-check @dlg
+48004  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! scroll div
+48020  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! zeiger move 83 140 touch label.check.chip.head-check @dlg
+48036  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! zeiger move 83 140 touch label.check.chip.head-check @dlg
+48053  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! zeiger move 81 140 touch label.check.chip.head-check @dlg
+48070  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! zeiger up 80 140 touch label.check.chip.head-check @dlg
+48486  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! nav kein kandidat
+48487  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! zeiger down 177 313 touch a @qHint
+48546  14     0      714    700    377    14     13     0      -      261    -      -      -      fQuarter hoch   ! zeiger up 177 313 touch a @qHint
+48587  14     0      714    700    377    14     13     0      -      261    -      -      -      -      hoch   ! blur fQuarter
+48587  14     0      714    700    377    14     13     0      -      261    -      -      -      dlg    hoch   ! focus dlg
+48588  14     0      714    700    377    14     13     0      -      261    -      -      -      dlg    hoch   ! tippen a
+48661  0      0      714    714    377    14     13     14     -      275    -      -      -      dlg    hoch
+48711  0      0      714    714    377    14     13     14     -      275    -      -      -      dlg    hoch   ! scroll
+49061  0      0      714    714    714    0      13     14     -      275    -      -      -      dlg    hoch   ! vv resize
+49066  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! vv scroll
+49097  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! platz weg div
+49099  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! scroll div
+52726  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! nav kein kandidat eigen
+52726  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger down 165 580 touch fPlace
+52805  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! zeiger up 165 580 touch fPlace
+52809  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! blur dlg
+52813  0      0      714    714    714    0      0      0      -      262    -      -      -      fPlace hoch   ! V-3 fPlace rollt 233 (W-2)
+52818  0      0      714    714    714    0      0      0      -      262    -      -      -      fPlace hoch   ! neu fokussiert fPlace
+52818  0      0      714    714    714    0      0      0      -      262    -      -      -      fPlace hoch   ! focus fPlace
+52819  0      0      714    714    714    0      0      0      -      262    -      -      -      fPlace hoch   ! klick unterdrückt div (Feld fPlace)
+52820  0      0      714    714    714    0      0      0      -      262    -      -      -      fPlace hoch   ! scroll div
+52937  0      0      714    714    377    0      0      0      -      262    -      -      -      fPlace hoch   ! vv resize
+52941  0      0      714    714    377    0      0      0      -      262    -      -      -      fPlace hoch   ! scroll div
+54150  0      0      714    714    377    0      0      0      -      262    -      -      -      fPlace hoch   ! eingabe 19
+54351  0      0      714    714    377    0      0      0      -      262    -      -      -      fPlace hoch   ! eingabe 20
+54535  0      0      714    714    377    0      0      0      -      262    -      -      -      fPlace hoch   ! eingabe 21
+54730  0      0      714    714    377    0      0      0      -      262    -      -      -      fPlace hoch   ! eingabe 22
+54912  0      0      714    714    377    0      0      0      -      262    -      -      -      fPlace hoch   ! eingabe 23
+55095  0      0      714    714    377    0      0      0      -      262    -      -      -      fPlace hoch   ! eingabe 24
+55278  0      0      714    714    377    0      0      0      -      262    -      -      -      fPlace hoch   ! eingabe 25
+68544  0      0      714    714    714    0      0      0      -      262    -      -      -      fPlace hoch   ! vv resize
+68558  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! blur fPlace
+68558  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! platz weg div
+68559  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! scroll div
+69819  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! nav kein kandidat
+69819  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! zeiger down 78 311 touch div.dlg-body in dlg
+69885  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! zeiger move 81 305 touch div.dlg-body in dlg
+69886  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! touchmove frei
+69886  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! zeiger move 81 305 touch div.dlg-body in dlg
+69899  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! zeiger move 81 303 touch div.dlg-body in dlg
+69915  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! zeiger move 81 300 touch div.dlg-body in dlg
+69921  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! scroll div
+69923  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! zeiger move 81 299 touch div.dlg-body in dlg
+69923  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! touchmove fest
+69931  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! zeiger move 81 298 touch div.dlg-body in dlg
+69932  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! scroll div
+69940  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! zeiger move 81 297 touch div.dlg-body in dlg
+69956  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! zeiger move 81 293 touch div.dlg-body in dlg
+69973  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! zeiger move 81 288 touch div.dlg-body in dlg
+69991  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! zeiger move 80 281 touch div.dlg-body in dlg
+70007  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! zeiger move 79 273 touch div.dlg-body in dlg
+70015  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! zeiger move 79 269 touch div.dlg-body in dlg
+70032  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! zeiger move 78 263 touch div.dlg-body in dlg
+70048  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! zeiger move 78 257 touch div.dlg-body in dlg
+70066  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! zeiger move 77 251 touch div.dlg-body in dlg
+70082  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! zeiger move 77 245 touch div.dlg-body in dlg
+70098  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! zeiger move 77 240 touch div.dlg-body in dlg
+70115  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! zeiger move 76 235 touch div.dlg-body in dlg
+70132  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! zeiger move 76 231 touch div.dlg-body in dlg
+70148  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! zeiger move 76 227 touch div.dlg-body in dlg
+70165  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! zeiger move 76 224 touch div.dlg-body in dlg
+70182  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! zeiger move 76 221 touch div.dlg-body in dlg
+70199  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! zeiger move 75 217 touch div.dlg-body in dlg
+70215  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! zeiger move 74 214 touch div.dlg-body in dlg
+70232  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! zeiger move 73 211 touch div.dlg-body in dlg
+70249  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! zeiger move 73 208 touch div.dlg-body in dlg
+70265  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! zeiger move 72 206 touch div.dlg-body in dlg
+70282  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! zeiger move 71 203 touch div.dlg-body in dlg
+70299  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! zeiger move 71 202 touch div.dlg-body in dlg
+70315  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! zeiger move 71 201 touch div.dlg-body in dlg
+70335  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! zeiger move 71 200 touch div.dlg-body in dlg
+70351  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! zeiger move 71 200 touch div.dlg-body in dlg
+70365  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! zeiger move 70 200 touch div.dlg-body in dlg
+70383  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! zeiger move 69 199 touch div.dlg-body in dlg
+70399  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! zeiger move 69 198 touch div.dlg-body in dlg
+70415  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! zeiger move 68 197 touch div.dlg-body in dlg
+70432  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! zeiger move 66 196 touch div.dlg-body in dlg
+70450  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! zeiger up 65 194 touch div.dlg-body in dlg
+70756  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! nav kein kandidat
+70756  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! zeiger down 144 451 touch label.check.chip.head-check @dlg
+70776  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! zeiger move 149 440 touch label.check.chip.head-check @dlg
+70776  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! touchmove frei
+70776  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! zeiger move 149 440 touch label.check.chip.head-check @dlg
+70782  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! zeiger move 149 428 touch label.check.chip.head-check @dlg
+70798  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! zeiger move 146 411 touch label.check.chip.head-check @dlg
+70799  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! touchmove fest
+70815  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! zeiger move 138 390 touch label.check.chip.head-check @dlg
+70832  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! zeiger move 130 368 touch label.check.chip.head-check @dlg
+70849  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! zeiger move 123 348 touch label.check.chip.head-check @dlg
+70865  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! zeiger move 117 331 touch label.check.chip.head-check @dlg
+70882  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! zeiger move 113 316 touch label.check.chip.head-check @dlg
+70899  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! zeiger move 110 305 touch label.check.chip.head-check @dlg
+70915  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! zeiger move 107 298 touch label.check.chip.head-check @dlg
+70932  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! zeiger move 105 293 touch label.check.chip.head-check @dlg
+70949  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! zeiger move 103 290 touch label.check.chip.head-check @dlg
+70966  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! zeiger move 101 288 touch label.check.chip.head-check @dlg
+70982  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! zeiger move 100 285 touch label.check.chip.head-check @dlg
+70999  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! zeiger move 99 283 touch label.check.chip.head-check @dlg
+71015  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! zeiger move 98 280 touch label.check.chip.head-check @dlg
+71032  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! zeiger move 97 277 touch label.check.chip.head-check @dlg
+71049  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! zeiger move 95 275 touch label.check.chip.head-check @dlg
+71065  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! zeiger move 92 273 touch label.check.chip.head-check @dlg
+71083  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! zeiger up 90 271 touch label.check.chip.head-check @dlg
+71674  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! nav kein kandidat eigen
+71674  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! zeiger down 224 526 touch fQuarter
+71785  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! zeiger up 224 526 touch fQuarter
+71793  0      0      714    714    714    0      0      0      -      262    -      -      -      fQuarter hoch   ! V-3 fQuarter rollt 173 (W-2)
+71800  0      0      714    714    714    0      0      0      -      262    -      -      -      fQuarter hoch   ! neu fokussiert fQuarter
+71800  0      0      714    714    714    0      0      0      -      262    -      -      -      fQuarter hoch   ! focus fQuarter
+71802  0      0      714    714    714    0      0      0      -      262    -      -      -      fQuarter hoch   ! klick unterdrückt div (Feld fQuarter)
+71802  0      0      714    714    714    0      0      0      -      262    -      -      -      fQuarter hoch   ! scroll div
+71932  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! vv resize
+73446  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! eingabe 22
+73646  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! eingabe 23
+73812  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! eingabe 24
+74030  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! eingabe 25
+74625  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! nav kein kandidat eigen
+74625  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! zeiger down 57 318 touch fQuarter
+74668  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! zeiger move 61 305 touch fQuarter
+74668  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! touchmove frei
+74668  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! zeiger move 61 305 touch fQuarter
+74682  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! zeiger move 61 304 touch fQuarter
+74683  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! zeiger move 61 301 touch fQuarter
+74699  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! zeiger move 62 296 touch fQuarter
+74700  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! touchmove fest
+74703  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! scroll div
+74708  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! zeiger move 63 294 touch fQuarter
+74720  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! zeiger move 63 291 touch fQuarter
+74721  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! scroll div
+74733  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! zeiger move 64 288 touch fQuarter
+74745  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! zeiger move 64 284 touch fQuarter
+74747  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! scroll div
+74758  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! zeiger move 64 281 touch fQuarter
+74770  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! zeiger move 64 278 touch fQuarter
+74771  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! scroll div
+74783  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! zeiger move 64 274 touch fQuarter
+74796  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! zeiger move 64 270 touch fQuarter
+74797  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! scroll div
+74808  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! zeiger move 64 266 touch fQuarter
+74821  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! zeiger move 64 261 touch fQuarter
+74821  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! scroll div
+74828  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! zeiger move 63 258 touch fQuarter
+74837  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! zeiger move 63 255 touch fQuarter
+74845  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! zeiger move 63 251 touch fQuarter
+74846  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! scroll div
+74854  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! zeiger move 63 248 touch fQuarter
+74856  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! scroll div
+74862  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! zeiger move 63 244 touch fQuarter
+74872  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! zeiger move 63 241 touch fQuarter
+74872  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! scroll div
+74878  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! zeiger move 63 237 touch fQuarter
+74888  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! zeiger move 63 234 touch fQuarter
+74889  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! scroll div
+74895  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! zeiger move 63 230 touch fQuarter
+74903  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! zeiger move 63 226 touch fQuarter
+74905  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! scroll div
+74913  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! zeiger move 63 222 touch fQuarter
+74922  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! zeiger move 63 219 touch fQuarter
+74922  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! scroll div
+74928  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! zeiger move 63 215 touch fQuarter
+74938  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! zeiger move 62 211 touch fQuarter
+74939  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! scroll div
+74945  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! zeiger move 62 207 touch fQuarter
+74954  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! zeiger move 62 203 touch fQuarter
+74955  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! scroll div
+74962  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! zeiger move 61 198 touch fQuarter
+74970  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! zeiger move 61 195 touch fQuarter
+74971  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! scroll div
+74979  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! zeiger move 60 191 touch fQuarter
+74987  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! zeiger move 60 187 touch fQuarter
+74989  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! scroll div
+74995  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! zeiger move 59 183 touch fQuarter
+75005  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! zeiger move 59 179 touch fQuarter
+75005  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! scroll div
+75012  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! zeiger move 58 175 touch fQuarter
+75020  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! zeiger move 58 172 touch fQuarter
+75022  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! scroll div
+75029  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! zeiger move 57 168 touch fQuarter
+75037  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! zeiger move 57 165 touch fQuarter
+75038  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! scroll div
+75045  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! zeiger move 56 162 touch fQuarter
+75053  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! zeiger move 56 159 touch fQuarter
+75055  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! scroll div
+75062  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! zeiger move 55 156 touch fQuarter
+75071  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! zeiger move 54 153 touch fQuarter
+75072  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! scroll div
+75079  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! zeiger move 54 150 touch fQuarter
+75087  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! zeiger move 53 148 touch fQuarter
+75088  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! scroll div
+75095  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! zeiger move 52 145 touch fQuarter
+75103  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! zeiger move 51 143 touch fQuarter
+75105  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! scroll div
+75116  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! zeiger move 50 140 touch fQuarter
+75129  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! zeiger move 50 138 touch fQuarter
+75141  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! zeiger move 49 137 touch fQuarter
+75143  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! scroll div
+75158  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! zeiger move 48 135 touch fQuarter
+75175  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! zeiger move 48 135 touch fQuarter
+75191  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! zeiger move 47 134 touch fQuarter
+75251  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! zeiger move 47 134 touch fQuarter
+75268  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! zeiger up 45 134 touch fQuarter
+75774  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! nav kein kandidat eigen
+75775  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! zeiger down 262 236 touch fPlace
+75900  0      0      714    714    377    0      0      0      -      262    -      -      -      fQuarter hoch   ! zeiger up 262 236 touch fPlace
+75908  0      0      714    714    377    0      0      0      -      262    -      -      -      -      hoch   ! blur fQuarter
+75912  0      0      714    714    377    0      0      0      -      262    -      -      -      fPlace hoch   ! V-3 fPlace rollt 46 (W-2)
+75916  0      0      714    714    377    0      0      0      -      262    -      -      -      fPlace hoch   ! neu fokussiert fPlace
+75916  0      0      714    714    377    0      0      0      -      262    -      -      -      fPlace hoch   ! focus fPlace
+75917  0      0      714    714    377    0      0      0      -      262    -      -      -      fPlace hoch   ! klick unterdrückt div (Feld fPlace)
+75947  0      0      714    714    377    0      0      0      -      262    -      -      -      fPlace hoch   ! scroll div
+75999  47     0      714    667    377    47     0      -47    -      215    -      -      -      fPlace hoch   ! scroll
+75999  47     0      714    667    377    47     0      -47    -      215    -      -      -      fPlace hoch   ! vv scroll
+76003  47     0      714    667    377    47     46     0      -      261    -      -      -      fPlace hoch
+76666  47     0      714    667    377    47     46     0      -      261    -      -      -      fPlace hoch   ! eingabe 26
+76670  47     0      714    667    377    47     46     0      -      261    -      -      -      fPlace hoch   ! scroll div
+76883  47     0      714    667    377    47     46     0      -      261    -      -      -      fPlace hoch   ! eingabe 27
+77099  47     0      714    667    377    47     46     0      -      261    -      -      -      fPlace hoch   ! eingabe 28
+77299  47     0      714    667    377    47     46     0      -      261    -      -      -      fPlace hoch   ! eingabe 29
+78944  47     0      714    667    377    47     46     0      -      261    -      -      -      -      hoch   ! blur fPlace
+79020  0      0      714    714    377    47     46     47     -      308    -      -      -      -      hoch
+79037  0      0      714    714    377    47     46     47     -      308    -      -      -      -      hoch   ! scroll
+79420  0      0      714    714    714    0      46     47     -      308    -      -      -      -      hoch   ! vv resize
+79435  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! vv scroll
+81197  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! nav kein kandidat eigen
+81198  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! zeiger down 42 39 touch path in dlgX
+81268  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! zeiger up 42 39 touch path in dlgX
+81270  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! focus dlg
+81270  0      0      714    714    714    0      0      0      -      262    -      -      -      dlg    hoch   ! tippen dlgX
+81277  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! blur dlg
+81278  0      0      714    714    714    0      0      0      -      262    -      -      -      div    hoch   ! focus div
+81283  0      0      714    714    714    0      0      0      -      262    -      -      -      div    hoch   ! scroll div
+81937  0      0      714    714    714    0      0      0      -      262    -      -      -      div    hoch   ! nav kein kandidat eigen
+81938  0      0      714    714    714    0      0      0      -      262    -      -      -      div    hoch   ! zeiger down 105 183 touch button.danger.beruehrt @dlg
+81980  0      0      714    714    714    0      0      0      -      262    -      -      -      div    hoch   ! zeiger up 105 183 touch button.danger.beruehrt-aus @dlg
+81983  0      0      714    714    714    0      0      0      -      262    -      -      -      div    hoch   ! tippen button
+81995  0      0      714    714    714    0      0      0      -      262    -      -      -      dlgX   hoch   ! focus dlgX
+82011  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! blur dlgX
+82011  0      0      714    714    714    0      0      0      -      262    -      -      -      div    hoch   ! focus div
+82015  0      0      714    714    714    0      0      0      -      262    -      -      -      div    hoch   ! neuaufbau app
+82025  0      0      714    714    714    0      0      0      -      262    -      -      -      -      hoch   ! scroll div
+82063  0      0      714    714    714    0      0      0      -      267    -      -      -      -      hoch
+82063  0      0      714    714    714    0      0      0      -      267    -      -      -      div    hoch   ! focus div
+82079  0      0      714    714    714    0      0      0      -      270    -      -      -      div    hoch
+82096  0      0      714    714    714    0      0      0      -      274    -      -      -      div    hoch
+82112  0      0      714    714    714    0      0      0      -      276    -      -      -      div    hoch
+82129  0      0      714    714    714    0      0      0      -      278    -      -      -      div    hoch
+82146  0      0      714    714    714    0      0      0      -      279    -      -      -      div    hoch
+82179  0      0      714    714    714    0      0      0      -      280    -      -      -      div    hoch
+82213  0      0      714    714    714    0      0      0      -      281    -      -      -      div    hoch
+82414  0      0      714    714    714    0      0      0      -      282    -      -      -      div    hoch
+83170  0      0      714    714    714    0      0      0      -      282    -      -      -      div    hoch   ! nav kein kandidat eigen
+83171  0      0      714    714    714    0      0      0      -      282    -      -      -      div    hoch   ! zeiger down 366 36 touch svg.ic in mainMore
+83214  0      0      714    714    714    0      0      0      -      282    -      -      -      div    hoch   ! zeiger up 366 36 touch svg.ic in mainMore
+83215  0      0      714    714    714    0      0      0      -      282    -      -      -      -      hoch   ! blur div
+83216  0      0      714    714    714    0      0      0      -      282    -      -      -      -      hoch   ! tippen mainMore
+83224  0      0      714    714    714    0      0      0      -      282    -      -      -      button hoch   ! focus button
+85437  0      0      714    714    714    0      0      0      -      282    -      -      -      button hoch   ! nav kein kandidat
+85437  0      0      714    714    714    0      0      0      -      282    -      -      -      button hoch   ! zeiger down 161 551 touch div.layer
+85530  0      0      714    714    714    0      0      0      -      282    -      -      -      button hoch   ! zeiger up 161 551 touch div.layer
+85574  0      0      714    714    714    0      0      0      -      282    -      -      -      mainMore hoch   ! focus mainMore
+86054  0      0      714    714    714    0      0      0      -      282    -      -      -      mainMore hoch   ! nav kein kandidat eigen
+86055  0      0      714    714    714    0      0      0      -      282    -      -      -      mainMore hoch   ! zeiger down 44 37 touch svg.ic in back
+86098  0      0      714    714    714    0      0      0      -      282    -      -      -      mainMore hoch   ! zeiger up 44 37 touch svg.ic in back
+86099  0      0      714    714    714    0      0      0      -      282    -      -      -      -      hoch   ! blur mainMore
+86100  0      0      714    714    714    0      0      0      -      282    -      -      -      -      hoch   ! tippen back
+86101  0      0      714    714    714    0      0      0      -      282    0      -      0      -      hoch   ! neuaufbau side
+86464  0      -      714    714    714    0      0      -      -      -      0      -      0      -      hoch   ! neuaufbau side
+86468  0      -      714    714    714    0      0      -      -      -      0      -      0      button hoch   ! focus button
+87533  0      -      714    714    714    0      0      -      -      -      0      -      0      button hoch   ! nav kein kandidat eigen
+87533  0      -      714    714    714    0      0      -      -      -      0      -      0      button hoch   ! zeiger down 352 34 touch circle in sideMore
+87578  0      -      714    714    714    0      0      -      -      -      0      -      0      button hoch   ! zeiger move 349 32 touch circle in sideMore
+87579  0      -      714    714    714    0      0      -      -      -      0      -      0      button hoch   ! touchmove frei
+87579  0      -      714    714    714    0      0      -      -      -      0      -      0      button hoch   ! zeiger move 349 32 touch circle in sideMore
+87595  0      -      714    714    714    0      0      -      -      -      0      -      0      button hoch   ! zeiger move 345 32 touch circle in sideMore
+87610  0      -      714    714    714    0      0      -      -      -      0      -      0      button hoch   ! zeiger up 343 34 touch circle in sideMore
+87613  0      -      714    714    714    0      0      -      -      -      0      -      0      -      hoch   ! blur button
+87613  0      -      714    714    714    0      0      -      -      -      0      -      0      -      hoch   ! tippen sideMore
+87635  0      -      714    714    714    0      0      -      -      -      0      -      0      button hoch   ! focus button
+88792  0      -      714    714    714    0      0      -      -      -      0      -      0      button hoch   ! nav kein kandidat eigen
+88792  0      -      714    714    714    0      0      -      -      -      0      -      0      button hoch   ! zeiger down 112 370 touch button.mi.has-sub.beruehrt[menuitem]
+88869  0      -      714    714    714    0      0      -      -      -      0      -      0      button hoch   ! zeiger up 112 370 touch button.mi.has-sub.beruehrt-aus[menuitem]
+88873  0      -      714    714    714    0      0      -      -      -      0      -      0      -      hoch   ! blur button
+88873  0      -      714    714    714    0      0      -      -      -      0      -      0      -      hoch   ! tippen button
+88912  0      -      714    714    714    0      0      -      -      -      0      -      0      sideMore hoch   ! focus sideMore
+88913  0      -      714    714    714    0      0      -      -      -      0      -      0      sideMore hoch   ! messung beendet
+# Ende nach 89 s
