@@ -147,6 +147,9 @@ iPhone hoch, in Safari – vier Messungen:
 8. Tageserfassung mit x (Abbrechen) schließen, Mehr-Menü → ‚Messung beenden und teilen‘, die Datei in den Chat teilen. Erwartet: Datei
    `messung-JJJJ-MM-TT-hhmm.txt`.
 
+**Zweite Messung (Sitzung 0092, nur W-1, Muster nach APD-115/N-12):** Link `…?v=a&w=1`, Seite neu laden, Schritte wie oben; Erwartet bei 6: nichts rollt,
+nichts springt; bei 8 (x): die Tastatur geht zu, Kopfzeile und Fenster bleiben ruhig (iPad: das Fenster gleitet ruhig in die Mitte). Auswertung in 0093.
+
 ## Wortlaut R-4.5 (0 Nr. 29, zum ‚Ja‘ vor dem Bau)
 
 - **Alt (Designrichtlinie 17, Satz 2):** ‚Ein Feld mit Fokus steht immer ganz über der Tastatur – in Fenstern und im Inhalt, 16 px
