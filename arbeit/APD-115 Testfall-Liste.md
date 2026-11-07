@@ -42,6 +42,12 @@ Tastatur 274) und Nachstellung im Safari-Modell (Skript nur in der Sitzung):
   Herkunft klären: vermutlich das Rollen des Browsers beim Fokus, vor bzw. neben dem focusin), dann 16 bzw. 201 px; (2) iPhone quer W-2: Safari
   verschiebt im Modell 30 px, weil Ort nicht bis zur Mitte rollen kann (oben am Fensterkopf) – wie APD-115/A-3 als Hinweis statt Fehler werten.
   WebKit und Gegenprobe noch nicht gelaufen; das Muster ist noch nicht zum Prüfen am Gerät freigegeben.
+- APD-115/N-10 Stand Sitzung 0092: (1) der erste Schub ‚43 px‘ kam von der Prüfung selbst – `p.tap()` von Playwright rollt Ort vor dem Antippen
+  bis genau an die Tastatur (aktives Element dabei noch Quartier); mit Fokus wie über den Pfeil der Tastatur ein Schub (W-1 59 px bis 16 px über
+  der Tastatur, W-2 244 px bis zur Mitte). M-7 tippt Ort nur an, wenn es ganz sichtbar ist, sonst Fokus direkt; neu der Fall ‚geschoben‘ (Ort
+  unter der Tastatur, Fenster mit dem Finger hochgeschoben, dann Ort antippen – wie in den Schritten am Gerät). (2) iPhone quer W-2: Ort höher als
+  der sichtbare Teil, Safari verschiebt im Modell 30 px – Hinweis wie APD-115/A-3. Chromium und WebKit ohne Fehler, Gegenprobe `PRUEF_V=heute`
+  rot (35 Fehler). Am Gerät zu messen, welche Variante ruhig ist.
 
 ## Apple-Abgleich (0 Nr. 23, 2.6)
 
@@ -100,6 +106,22 @@ langer Verlauf mit 14 Zeilen (Tag 4).
 
 **Am Gerät (Testfall (User) des Musters):** Gefühl beim Rollen, ob Safari bei Feldwechsel (APD-115/A-2) und hohem Textbereich (APD-115/A-3)
 verschiebt (Messmodus), Lesbarkeit von Variante A gegen B.
+
+**Schritte am Gerät – Feld wechseln, APD-115/W-1 gegen W-2 (Sitzung 0092).** Je Link (zuerst `&w=1`, dann `&w=2`), am iPad quer und am
+iPhone hoch, in Safari – vier Messungen:
+
+1. Link öffnen: `https://g811141a.github.io/AppDesign/arbeit/APD-115/?v=a&w=1` bzw. `…?v=a&w=2`. Erwartet: Reise ‚Muster A – Verlauf über
+   dem Feld‘.
+2. Mehr-Menü der Seitenleiste (iPhone: Startliste) öffnen, die graue Versionszeile lange drücken, ‚Messung starten‘ antippen. Erwartet: die
+   Messung läuft (im Menü ‚Messung beenden und teilen‘, grau ‚läuft · …‘).
+3. Tag 2 (25.08.) antippen, nicht rollen. Erwartet: die Tageserfassung ist offen, ganz oben.
+4. Quartier antippen. Erwartet: die Tastatur öffnet sich, Quartier steht über ihr, nichts springt.
+5. ‚Hotel‘ tippen. Erwartet: nichts zuckt.
+6. Ort antippen; liegt Ort unter der Tastatur (iPhone hoch), vorher das Fenster mit dem Finger hochschieben, bis Ort ganz zu sehen ist.
+   Erwartet: W-1 – nichts rollt; W-2 – Ort gleitet einmal ruhig zur Mitte; in beiden springt nichts (Kopfzeile, Fensterkopf).
+7. ‚Rom‘ tippen. Erwartet: nichts zuckt.
+8. Tageserfassung mit x (Abbrechen) schließen, Mehr-Menü → ‚Messung beenden und teilen‘, die Datei in den Chat teilen. Erwartet: Datei
+   `messung-JJJJ-MM-TT-hhmm.txt`.
 
 ## Wortlaut R-4.5 (0 Nr. 29, zum ‚Ja‘ vor dem Bau)
 

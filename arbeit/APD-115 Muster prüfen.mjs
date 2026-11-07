@@ -104,25 +104,39 @@ for (const ansicht of ['iPhone hoch', 'iPad quer', 'iPad hoch', 'iPhone quer']) 
     // APD-115/M-7 geschärft (Befund APD-115/N-1 bis N-8, Messung 07.11.2026): wie am Gerät – Fenster oben bzw. unten, Quartier antippen, tippen, Ort
     // antippen. APD-115/W-1 (&w=1): nur so weit wie nötig – ganz sichtbar: nichts, sonst einmal bis 16 px (± 3) über der Tastatur; verschiebt Safari im
     // Modell (APD-36/S-6 b), wird es berichtet (am Gerät zu messen). APD-115/W-2 (&w=2): ein Schub, danach ganz über der Tastatur, Safari verschiebt nicht.
-    for (const w of ['1', '2']) for (const vorher of ['oben', 'unten']) {
+    // ‚geschoben‘ (Schritte am Gerät, Sitzung 0092): liegt Ort nach dem Tippen unter der Tastatur, schiebt der Nutzer das Fenster mit dem Finger hoch,
+    // bis Ort ganz zu sehen ist (40 px über der Tastatur), dann tippt er Ort an.
+    for (const w of ['1', '2']) for (const vorher of ['oben', 'unten', 'geschoben']) {
       const p = await neu(ansicht, `${v}&w=${w}`);
       if (vorher === 'unten') await ansEnde(p, '#fQuarter');
       await p.tap('#fQuarter'); await p.waitForTimeout(900);
       await p.keyboard.type('Hotel'); await p.waitForTimeout(300);
+      if (vorher === 'geschoben') {
+        const v0 = await lage(p, '#fPlace');
+        if (v0.unten <= Math.min(v0.kb, v0.cb) - 16) { await p.close(); continue; }   // Ort schon sichtbar: wie ‚oben‘
+        await p.evaluate(() => { const f = document.querySelector('#fPlace'), c = f.closest('.dlg-body'), o = __safari.top();
+          c.scrollTop += f.getBoundingClientRect().bottom - o - (Math.min(__safari.hoehe(), c.getBoundingClientRect().bottom - o) - 40); });
+        await p.waitForTimeout(400);
+      }
       const a = await lage(p, '#fPlace'), pan0 = await p.evaluate(() => __safari.top());
       await p.evaluate(() => { const c = document.querySelector('.dlg-body'); window.__schuebe = []; let y = c.scrollTop;
         c.addEventListener('scroll', () => { if (Math.abs(c.scrollTop - y) > 1) { __schuebe.push(Math.round(c.scrollTop - y)); y = c.scrollTop; } }); });
-      await p.tap('#fPlace'); await p.waitForTimeout(900);
+      // Ort ganz sichtbar: antippen. Sonst (unter der Tastatur, am Gerät nicht antippbar) Fokus direkt wie mit dem Pfeil über der Tastatur – p.tap
+      // rollte vorher selbst bis an die Tastatur (scrollIntoViewIfNeeded, Sitzung 0092: der Schub ‚43 px‘ aus APD-115/N-9 kam vor dem Fokus)
+      const sichtbar = a.unten <= Math.min(a.kb, a.cb) && a.oben >= a.ct;
+      if (sichtbar) await p.tap('#fPlace'); else await p.evaluate(() => document.querySelector('#fPlace').focus());
+      await p.waitForTimeout(900);
       const l = await lage(p, '#fPlace'), schuebe = await p.evaluate(() => __schuebe), pan = await p.evaluate(() => __safari.top());
       const lim = Math.min(l.kb, l.cb) - 16, war = a.unten <= Math.min(a.kb, a.cb) - 16 && a.oben >= a.ct, passt = l.unten - l.oben <= lim - l.ct - 25;
-      const wo = `W-${w}, Fenster ${vorher}, Ort vorher ${a.oben}–${a.unten} px, Tastatur ab ${a.kb}`;
+      const wo = `W-${w}, Fenster ${vorher}, Ort vorher ${a.oben}–${a.unten} px, Tastatur ab ${a.kb}${sichtbar ? '' : ' (Pfeil)'}`;
       if (!l.fokus || !l.offen) E('APD-115/M-7', `${wo}: Ort ohne Fokus bzw. Tastatur`);
       else if (!passt) console.log(`ℹ ${t.ort} APD-115/M-7 ${wo}: Ort höher als der sichtbare Teil (${l.oben}–${l.unten} px)`);
       else if (w === '1' && war && Math.abs(l.y - a.y) > 1) E('APD-115/M-7', `${wo}: Ort war ganz sichtbar, trotzdem rollt der Inhalt ${a.y} → ${l.y} px (Sprung, nicht wie Apple)`);
       else if (w === '1' && !war && Math.abs(l.unten - lim) > 3) E('APD-115/M-7', `${wo}: Ort endet bei ${l.unten} px statt ${lim} (16 px über der Tastatur) – ${l.unten < lim ? 'rollt zu weit' : 'zu wenig'}`);
       else if (w === '2' && (l.unten > lim + 3 || l.oben < l.ct)) E('APD-115/M-7', `${wo}: Ort danach ${l.oben}–${l.unten} px, nicht ganz über der Tastatur (${lim})`);
       if (schuebe.length > 1) E('APD-115/M-7', `${wo}: rollt in ${schuebe.length} Schüben (${schuebe.join(', ')} px) statt in einem`);
-      if (pan !== pan0) (w === '2' ? E('APD-115/M-7', `${wo}: Safari verschiebt im Modell ${pan0} → ${pan} px (Sprung)`)
+      // W-2 und Ort höher als der sichtbare Teil (iPhone quer): Ort kann nicht bis zur Mitte, Safari verschiebt – Hinweis wie APD-115/A-3
+      if (pan !== pan0) (w === '2' && passt ? E('APD-115/M-7', `${wo}: Safari verschiebt im Modell ${pan0} → ${pan} px (Sprung)`)
         : console.log(`ℹ ${t.ort} APD-115/M-7 ${wo}: Safari verschiebt im Modell ${pan0} → ${pan} px (APD-36/S-6 b) – am Gerät messen`));
       await p.close();
     }
