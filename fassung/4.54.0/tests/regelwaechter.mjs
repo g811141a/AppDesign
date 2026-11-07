@@ -181,7 +181,7 @@ function lauf(env = {}) {
     genau(stop(mitAnz(`Das Muster: ${M}\nErwartet: mittig.\n\nAntworte im Chat, z. B. „ok“.`)), 'W-15', 'APD-113/M-4 letzte Ausgabe ohne nummerierte Schritte');
     genau(stop(mitAnz(`Das Muster: ${M}\n\n1. Öffne den Link.\n2. Sieh dir die Varianten an.\n\nAntworte im Chat, z. B. „ok“.`)), 'W-15', 'APD-113/M-4 letzte Ausgabe ohne ‚Erwartet:‘');
     // M-15: wie 0086, 00:31 – Wortlaut ohne Link bzw. ohne ‚Antworte im Chat‘
-    genau(stop(mitAnz('Wortlaut N-1 bis N-5:\n\n1. N-1 erledigt durch Teil (6).\n2. N-2 entfällt.\nErwartet: alles bestätigt.\n\nAntworte im Chat, z. B. „N-1 bis N-5 ja“.')), 'W-15', 'APD-113/M-15 letzte Ausgabe ohne Link');
+    genau(stop(mitAnz('Wortlaut APD-113/N-1 bis APD-113/N-5:\n\n1. APD-113/N-1 erledigt durch Teil (6).\n2. APD-113/N-2 entfällt.\nErwartet: alles bestätigt.\n\nAntworte im Chat, z. B. „APD-113/N-1 bis APD-113/N-5 ja“.')), 'W-15', 'APD-113/M-15 letzte Ausgabe ohne Link');
     genau(stop(mitAnz(SCHRITTE)), 'W-15', 'APD-113/M-15 letzte Ausgabe ohne ‚Antworte im Chat‘');
     // ‚Ich schreibe im Chat‘ gewählt – Claude beendet die Antwort, keine letzte Ausgabe mit Link nötig
     { const a = antwort({ fenster: ANZ, schluss: LETZTE('Du schreibst im Chat.') }); a[a.findIndex(z => z.message?.content?.[0]?.tool_use_id === 'f1')].message.content[0].content = 'Your questions have been answered: "Muster …"="Ich schreibe im Chat"';
@@ -288,7 +288,7 @@ function lauf(env = {}) {
     const b8n = [...b8.slice(0, j + 1), werkzeug(150, 'k8', 'Bash', { command: 'node werkzeug/messung.mjs' }), ergebnis(151, 'k8', Z), ausgabe(152, `${UZ('14:02', '14:02')}\n\nNeu gestellt.\n\n${KS}`)];
     pruefe(!zeige(b8n, frage(GUT), 'gibt-es-noch-nicht'), 'W-17 B-8 neu gestelltes Fenster nach einer Ablehnung durch den Wächter wird abgelehnt');
     // B-9 (seit 4.54.0 umgekehrt, APD-113/M-17): Nachholen nach einer Zurückweisung des Stop-Hooks gehört zur selben Antwort, die Zurückweisung zählt
-    // für W-17 wie ein Werkzeug – das Fenster, das N-6 verlangt, ist erlaubt
+    // für W-17 wie ein Werkzeug – das Fenster, das APD-113/N-6 verlangt, ist erlaubt
     const b9 = zweites([{ type: 'user', uuid: 'sh9', timestamp: iso(412), isMeta: true, message: { role: 'user', content: 'Stop hook feedback:\nRegelwächter … Zurückweisung 1 von 2' } }]);
     pruefe(!grund(zeige(b9, frage(GUT), 'gibt-es-noch-nicht'), 'W-17'), 'W-17 B-9/APD-113/M-17 Fenster beim Nachholen nach dem Stop-Hook wird abgelehnt');
     // B-14: wie Sitzung 0080, 14:15 – nach dem Fenster kam die Meldung einer Hintergrundaufgabe (neuer Zug ohne Nachricht des Nutzers)

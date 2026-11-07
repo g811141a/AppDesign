@@ -2538,7 +2538,7 @@ export async function checkMehrKnopf(p, { sel, untermenue = null, where = '' } =
   return errors;
 }
 
-// Seit 4.54.0 (APD-118, Usertest P-97/6, Testfall-Liste arbeit/APD-118 Testfall-Liste.md bzw. BACKLOG APD-118/X-1 bis X-8; Designrichtlinie 13 ‚Am
+// Seit 4.54.0 (APD-118, Usertest P-97/6, Testfall-Liste im BACKLOG unter APD-118, APD-118/X-1 bis X-8; Designrichtlinie 13 ‚Am
 // oberen Rand kein Klick‘): die Sperrschicht hinter Menü, Untermenü, Kontextmenü und Sprechblase schließt beim Loslassen (bis 20 px Weg) und
 // verschluckt den Klick danach. Im iPhone quer (Safari-Modell obenOhneKlick: am oberen Rand kein click) mit der Maus bzw. dem Finger der Prüfung:
 // X-1 über dem Mehr-Knopf (mehr) ohne Klick → zu, waagrechte Punkte, Fokus auf Mehr · X-2 mit 14 px Weg → zu · X-3 Klick danach (unterhalb

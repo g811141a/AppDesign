@@ -396,6 +396,10 @@ body.docked { padding-left: calc(var(--side-w) + max(10px, var(--safe-left)) + 2
 .menu .mi .chev { margin-left: auto; color: var(--muted); }
 .menu .mi .val + .chev { margin-left: 6px; }
 .menu .mi.on { background: var(--sel-bg); }
+/* Seit 4.54.0 (APD-120): Schalter im Menü (Untermenü ‚Darstellung‘ → Glas) – Text links, Schalter rechts wie in den Einstellungen (15.15) */
+.menu .mi.sw .schalter { flex: none; margin-left: auto; width: 51px; height: 31px; border-radius: 16px;
+  background: radial-gradient(circle at 15.5px 50%, #fff 13.5px, transparent 14px), var(--sw-off); transition: background .2s; }
+.menu .mi.sw[aria-checked="true"] .schalter { background: radial-gradient(circle at calc(100% - 15.5px) 50%, #fff 13.5px, transparent 14px), var(--sw-on); }
 .menu .mi.on .val { color: var(--ink); }
 .menu.submenu { width: min(max(260px, calc(260px * var(--f-body))), calc(100vw - 24px - var(--safe-left) - var(--safe-right))); }
 .menu .sub { font-size: var(--t-footnote); color: var(--muted); padding: 0 16px 10px calc(26px + 20px * var(--k)); margin-top: -8px; }
@@ -842,6 +846,11 @@ dialog.gleitet { transition: top .25s ease; }
   .menu { background: var(--card); }
   :root[data-theme="dark"] .menu { background: #2c2c2e; }
 }
+/* Seit 4.54.0 (APD-120): Schalter ‚Glas‘ aus (html.ohne-glas, setzt ui.js) – deckend wie ‚Transparenz reduzieren‘ */
+:root.ohne-glas :is(.fab, .menu, .bbar .searchbox input[type=search], .bbar > button:not([aria-pressed="true"])) { -webkit-backdrop-filter: none; backdrop-filter: none; box-shadow: var(--float); }
+:root.ohne-glas :is(.fab, .bbar .searchbox input[type=search], .bbar > button:not([aria-pressed="true"])) { background: var(--btn); }
+:root.ohne-glas .menu { background: var(--card); }
+:root.ohne-glas[data-theme="dark"] .menu { background: #2c2c2e; }
 @media print { .fab, .menu, .bbar .searchbox input[type=search], .bbar > button, .zu-geist { -webkit-backdrop-filter: none !important; backdrop-filter: none !important; } .zu-geist { display: none !important; } }
 /* R-4.13 (seit 4.53.0, APD-38/T-16): Abbild eines schließenden Menüs bzw. einer Sprechblase – schrumpft zur Schaltfläche, nicht bedienbar (Stile setzt ui.js) */
 .zu-geist { pointer-events: none !important; }

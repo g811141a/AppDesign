@@ -476,7 +476,16 @@ const darkQuery = window.matchMedia?.('(prefers-color-scheme: dark)');
 function applyTheme() {
   const a = db.settings.appearance;
   document.documentElement.setAttribute('data-theme', a === 'auto' ? (darkQuery?.matches ? 'dark' : 'light') : a);
+  applyGlas();
 }
+// Seit 4.54.0 (APD-120, Testfall-Liste arbeit/APD-120 Testfall-Liste.md APD-120/G-1 bis G-13): Schalter ‚Glas‘ im Untermenü ‚Darstellung‘ – aus macht
+// Schwebendes deckend wie ‚Transparenz reduzieren‘ (R-3.9; die Einstellung des iPads kommt in Safari nicht an, Designrichtlinie 13). db.settings.glas:
+// fehlt = noch keine Wahl auf diesem Gerät (Glas ein); die App übernimmt beim Laden eines Backups den Wert aus der Datei nur dann (glasAusBackup).
+const glasAn = () => db.settings.glas !== false;
+function applyGlas() { document.documentElement.classList.toggle('ohne-glas', !glasAn()); }
+function setGlas(an) { db.settings.glas = !!an; save(); applyGlas(); }
+// Beim Laden eines Backups (Abgleichen oder Ersetzen): vorher = db.settings.glas dieses Geräts vor dem Laden – gilt weiter, wenn hier schon gewählt.
+function glasAusBackup(vorher) { if (typeof vorher === 'boolean') db.settings.glas = vorher; else if (typeof db.settings.glas !== 'boolean') delete db.settings.glas; applyGlas(); }
 darkQuery?.addEventListener?.('change', () => { if (db.settings.appearance === 'auto') applyTheme(); });
 
 function setAppearance(a) {
@@ -488,8 +497,10 @@ function setAppearance(a) {
 const APPEARANCES = { auto: 'Automatisch', light: 'Hell', dark: 'Dunkel' };
 // Seit 4.43.0 (APD-92, R-1.2): ‚Darstellung ›‘ steht im Mehr-Menü der Seitenleiste (iPhone: Startliste) nach Backup erstellen und
 // Backup laden – nie im Menü eines Eintrags, denn sie gilt für die ganze App; rechts grau der aktuelle Wert, Untermenü mit Häkchen.
+// Seit 4.54.0 (APD-120, Variante A): darunter als eigene Gruppe der Schalter ‚Glas‘ – das Menü bleibt beim Umschalten offen.
 const darstellungMenuItem = () => ({ icon: 'sun-moon', label: 'Darstellung', value: APPEARANCES[db.settings.appearance],
-  submenu: Object.entries(APPEARANCES).map(([k, l]) => ({ tick: db.settings.appearance === k, label: l, act: () => setAppearance(k) })) });
+  submenu: [...Object.entries(APPEARANCES).map(([k, l]) => ({ tick: db.settings.appearance === k, label: l, act: () => setAppearance(k) })),
+    'sep', { schalter: glasAn(), label: 'Glas', act: setGlas }] });
 
 /* ---------- Rahmen und Rollbereich (seit 4.27.0, APD-28, R-2.1) ---------- */
 
@@ -670,7 +681,7 @@ function placeAt(el, anchor, align) {
 }
 
 // Einträge: { icon, label, sub, red, tick, disabled, act } (tick und icon zusammen: Häkchen vorne, dann Icon und Text) · { …, value, submenu: [Einträge] } (Untermenü ›, eine Ebene)
-// · 'sep' (Abstand) · 'line' (Strich) · { note } (graue Zeile) · { note, halten: true } (graue Zeile, langes Drücken schaltet den Messmodus frei,
+// · { label, schalter: true|false, act(an) } (Schalter, seit 4.54.0) · 'sep' (Abstand) · 'line' (Strich) · { note } (graue Zeile) · { note, halten: true } (graue Zeile, langes Drücken schaltet den Messmodus frei,
 // seit 4.40.0, APD-77) · { messPlatz } (Platz des versteckten Messmodus, zeigt nichts). Ein Abstand ohne Eintrag danach entfällt.
 // Seit 4.35.0 (R-1.8, V3, V4): Einträge mit Häkchen-Spalte sind menuitemcheckbox mit aria-checked (‚Hell, ausgewählt‘), Einträge mit
 // Untermenü haben aria-haspopup und aria-expanded, die graue Zeile darunter ist ihre Beschreibung.
@@ -680,6 +691,8 @@ const menuHtml = items => { const nr = ++menuNr; return items.map((it, i) => it?
   : it === 'sep' ? (n => !n || n === 'sep' || n === 'line' ? '' : '<div class="sep" role="separator"></div>')(menuDanach(items, i))
   : it === 'line' ? '<div class="line" role="separator"></div>'
   : it.note ? `<div class="note${it.halten ? ' halten' : ''}" role="presentation">${esc(it.note)}</div>`
+  // seit 4.54.0 (APD-120): Schalter im Menü – Rolle ‚Schalter‘ mit Zustand, rechts der Schalter wie in den Einstellungen (15.15)
+  : 'schalter' in it ? `<button type="button" class="mi sw" data-i="${i}" role="switch" aria-checked="${it.schalter ? 'true' : 'false'}">${esc(it.label)}<span class="schalter" aria-hidden="true"></span></button>`
   : `<button type="button" class="mi ${it.red ? 'red' : ''} ${it.sub ? 'has-sub' : ''}" data-i="${i}" ${it.disabled ? 'disabled' : ''} role="${'tick' in it ? 'menuitemcheckbox' : 'menuitem'}"${
       'tick' in it ? ` aria-checked="${it.tick ? 'true' : 'false'}"` : ''}${it.submenu ? ' aria-haspopup="menu" aria-expanded="false"' : ''}${it.sub ? ` aria-describedby="mi${nr}-${i}"` : ''}>${
       'tick' in it ? `<span class="tick">${it.tick ? ic('check') : ''}</span>` : ''}${it.icon ? ic(it.icon) : ''}${esc(it.label)}${
@@ -795,6 +808,8 @@ function openMenu(anchor, items, align = 'right') {
     placeSub();
   };
   let entsperren = null;
+  // APD-120 (seit 4.54.0): ein Schalter im Menü schaltet um, das Menü bleibt offen
+  const schalten = (b, it) => { it.schalter = !it.schalter; b.setAttribute('aria-checked', it.schalter ? 'true' : 'false'); it.act(it.schalter); };
   const close = () => {
     if (!menu.isConnected) return;
     closeSub(); schrumpfen(menu, anchor); layer.remove(); menu.remove(); anchor.classList.remove('on'); mehrKippen(anchor, false); anchor.setAttribute('aria-expanded', 'false'); floating.delete(place);
@@ -805,6 +820,7 @@ function openMenu(anchor, items, align = 'right') {
   };
   const binde = () => menu.querySelectorAll('[data-i]').forEach(b => b.onclick = () => {
     const it = items[b.dataset.i];
+    if ('schalter' in it) { schalten(b, it); return; }
     if (!it.submenu) { close(); it.act(); return; }
     // Untermenü neben dem Menü, oben bündig mit dem Eintrag; der Eintrag bleibt blau.
     const again = b.classList.contains('on');
@@ -817,7 +833,7 @@ function openMenu(anchor, items, align = 'right') {
     subMenu.setAttribute('role', 'menu');
     subMenu.setAttribute('aria-label', it.label);
     subMenu.innerHTML = menuHtml(it.submenu);
-    subMenu.querySelectorAll('[data-i]').forEach(sb => sb.onclick = () => { close(); it.submenu[sb.dataset.i].act(); });
+    subMenu.querySelectorAll('[data-i]').forEach(sb => sb.onclick = () => { const x = it.submenu[sb.dataset.i]; if ('schalter' in x) { schalten(sb, x); return; } close(); x.act(); });
     host.append(subMenu);
     subItem = b;
     placeSub();

@@ -124,6 +124,8 @@ export function checkCollab(appDir, app) {
   // seit 4.50.0 (APD-110, Testfall-Liste arbeit/APD-110 Testfall-Liste.md): Kasten ‚Jede Antwort‘ Punkt 4 nennt Link, ‚Erwartet‘ und **W** (W-15)
   const punkt4 = collab.match(/\n> 4\. ([\s\S]*?)\n> 5\. /)?.[1] || '';
   if (!/Link/.test(punkt4) || !/Erwartet/.test(punkt4) || !/\*\*W\*\*/.test(punkt4)) E('Zusammenarbeit 0 Kasten ‚Jede Antwort‘ Punkt 4 ohne Link, ‚Erwartet‘ und **W** (APD-110, Regelwächter W-15)');
+  // seit 4.54.0 (APD-113/M-11): der Wortlaut ‚Text nach dem Fenster, Push bei jeder Aufgabe‘
+  errors.push(...checkNachFenster(collab));
   // Veraltete Stellen (Verlauf-Abgleich APD-2/W-1 bis W-3, W-5, W-7)
   const stale = [
     [/etwa 5 Punkte/, 'Zusammenarbeit 0 Nr. 8: ‚etwa 5 Punkte‘ – es gilt 2–3 Punkte, höchstens 2 Themen'],
@@ -185,6 +187,32 @@ export function checkCollab(appDir, app) {
   return errors;
 }
 
+// Seit 4.54.0 (APD-113/M-11, Testfall-Liste arbeit/APD-113 Teil 6 Testfall-Liste.md; Wortlaut arbeit/APD-113 Teil 6 Wortlaut.md L-1 bis L-8 und
+// arbeit/APD-113 Rest und APD-117 Wortlaut.md APD-113/N-3, APD-113/N-5, APD-113/N-6): Kasten Punkt 4 und 6, 0 Nr. 11, 15, 28, 29, 2.1, 2.3 und 2.8 im neuen Wortlaut; kein
+// ‚unmittelbar vor dem Fenster‘ mehr und in 2.1 kein ‚als Datei oder Bild vor dem Fenster‘. Gegenprobe: PRUEF_GEGENPROBE=schema:APD-113/M-11.
+export function checkNachFenster(collab, gp = (process.env.PRUEF_GEGENPROBE || '') === 'schema:APD-113/M-11') {
+  const errors = [], E = t => errors.push(`APD-113/M-11 Zusammenarbeit: ${t}`);
+  let t = collab.split(/\n## Versionsgeschichte/)[0];
+  if (gp) t = t.replace('nie vor einem Fenster, nie nur im Fenster', 'unmittelbar vor dem Fenster, nie nur im Fenster');
+  const flach = x => x.replace(/\n>?[ \t]*/g, ' ');
+  const teil = (von, bis) => flach(t.split(von)[1]?.split(bis)[0] || '');
+  const kasten = flach(t.split('> **Jede Antwort**')[1]?.split('\n\nZiel:')[0] || ''), null0 = teil(/\n## 0\. /, /\n## 1\. /);
+  const nr = n => null0.match(new RegExp(`(?:^| )${n}\\. (.*?)(?= \\d+\\. \\*\\*| \\*\\*[A-H]\\. |$)`))?.[1] || '';
+  const p4 = kasten.match(/ 4\. (.*?) 5\. /)?.[1] || '', p6 = kasten.match(/ 6\. (.*?) 7\. /)?.[1] || '';
+  const soll = [['Kasten ‚Jede Antwort‘ Punkt 4', p4, ['‚… bereit – anzeigen?‘', '**letzte Ausgabe ohne Fenster**', 'nie vor einem Fenster', 'Antworte im Chat: …', 'nach einer Zurückweisung des Regelwächters', '**W**']],
+    ['Kasten ‚Jede Antwort‘ Punkt 6', p6, ['**Push bei jeder Aufgabe:**', 'nach einem Neustart des Arbeitsprozesses', '**W**']],
+    ['0 Nr. 11', nr(11), ['Bericht und Testfälle anzeigen?', 'die Rückmeldung schreibt der Nutzer im Chat']],
+    ['0 Nr. 15', nr(15), ['als **eigene Antwort**', 'Lagebild bereit – anzeigen?']],
+    ['0 Nr. 28', nr(28), ['die letzte Ausgabe nach Kasten ‚Jede Antwort‘ Punkt 4']], ['0 Nr. 29', nr(29), ['Wortlaut … anzeigen?']],
+    ['2.1', teil('\n### 2.1 ', '\n### 2.2 '), ['**Fenster nacheinander, der Text danach:**', '**nie vor einem Fenster**', 'fragt das Fenster nur ‚… bereit – anzeigen?‘, ohne Link']],
+    ['2.3', teil('\n### 2.3 ', '\n### 2.4 '), ['Rückmeldung im Chat']],
+    ['2.8', teil('\n### 2.8 ', /\n---/), ['Enthält ein Fenster einen Link zum Prüfen am Gerät, lehnt er es ab.', 'lässt er **nie** enden', 'eine Zurückweisung des Regelwächters zählt ebenso']]];
+  for (const [wo, text, woerter] of soll) for (const w of woerter) if (!text.includes(w)) E(`${wo} ohne ‚${w}‘`);
+  if (/unmittelbar vor dem Fenster/.test(flach(t))) E('‚unmittelbar vor dem Fenster‘ steht noch im Text (Kasten Punkt 4, L-1)');
+  if (/als Datei oder Bild vor dem Fenster/.test(teil('\n### 2.1 ', '\n### 2.2 ').replace(/\*\*/g, ''))) E('2.1: ‚als Datei oder Bild vor dem Fenster‘ steht noch im Text (L-7)');
+  return errors;
+}
+
 // Seit 4.39.0 (APD-84/M-7, Testfall-Liste arbeit/APD-84 APD-83 Testfall-Liste.md APD-84/C-1 bis C-5): Abschnitt 0 der Zusammenarbeit
 // beginnt mit dem Kasten ‚Immer‘ und ‚Jede Antwort‘, der jede Pflicht jeder Antwort nennt; beide CLAUDE.md und 0 Nr. 15 lassen zu Beginn
 // die ganze Zusammenarbeit lesen; jede Pflicht in 0 nennt ihre Prüfung. Gegenprobe: PRUEF_GEGENPROBE=schema:APD-84/C-n.
@@ -233,7 +261,9 @@ export const GEGENPROBEN_SCHEMA = Object.fromEntries([
   // seit 4.39.0 (APD-84/C-1 bis C-5): der Kasten ‚Jede Antwort‘ (checkKasten)
   ['C-1', 'Kasten fehlt', 'Kasten'], ['C-2', 'Pflicht fehlt im Kasten', 'nennt 2.4 nicht'], ['C-3', 'CLAUDE.md liest nur 0 und 1', 'ganze Zusammenarbeit'],
   ['C-4', '0 Nr. 15 ohne ganze Datei', 'ganze Datei'], ['C-5', 'Pflicht ohne Prüfung', 'Nr. 28 ohne'],
-].map(([c, was, z]) => ['APD-84/' + c, { was, zeichen: new RegExp('APD-84/' + c + ' .*' + z) }])));
+].map(([c, was, z]) => ['APD-84/' + c, { was, zeichen: new RegExp('APD-84/' + c + ' .*' + z) }])).concat([
+  // seit 4.54.0 (APD-113/M-11): der Wortlaut ‚Text nach dem Fenster‘ (checkNachFenster)
+  ['APD-113/M-11', { was: 'alter Wortlaut ‚unmittelbar vor dem Fenster‘', zeichen: /APD-113\/M-11 .*unmittelbar vor dem Fenster/ }]]));
 export function checkSchema(appDir, app, gp = (process.env.PRUEF_GEGENPROBE || '').match(/^schema:APD-78\/(S-\d+)$/)?.[1]) {
   const errors = [], E = t => errors.push(t);
   const ad = new URL('../AppDesign/', appDir);
