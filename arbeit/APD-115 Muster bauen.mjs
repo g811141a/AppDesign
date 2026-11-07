@@ -49,6 +49,9 @@ const ta = `          <textarea id="fProgram" autocapitalize="sentences" autocor
 // verschachtelte Vorlage in \${…} braucht kein Escaping
 h = ersetze(h, chips + ta, `\${MUSTER_V === 'b' ? \`\n${chips}\` : ''}\n${ta}\${MUSTER_V === 'a' ? \`\n${chips}\` : ''}\n`);
 h = ersetze(h, "if ('serviceWorker' in navigator && location.protocol === 'https:') {", "if (false) {   // APD-115 Muster: kein Service Worker");
+// APD-115/N-11: der Messmodus zeichnet auch Fensterkopf und Rollstand des Fensters auf (Schritt 7 war nicht messbar)
+h = ersetze(h, "rollen: { lroll: '.side-list' } }),", "rollen: { lroll: '.side-list', froll: 'dialog[open] .dlg-body' } }),");
+h = ersetze(h, "lkopf: '.side-head', lsuch: '.side-search' },", "lkopf: '.side-head', lsuch: '.side-search', fkopf: 'dialog[open] .dlg-head' },");
 writeFileSync(new URL('index.html', ZIEL), h);
 
 // ---------- ui.js ----------
@@ -139,5 +142,9 @@ u = ersetze(u, `// Jede Meldung von Safari (Tastatur auf und zu`, `document.addE
     if (zu > unten) { rollen(c, zu - unten); messZeile(\`V-3 Cursor \${messId(f)} \${Math.round(zu - unten)}\`); } });
 });
 // Jede Meldung von Safari (Tastatur auf und zu`);
+// APD-115/N-11 (Sitzung 0092): Schließen der Tastatur und Verschiebung durch Safari ohne Springen
+u = ersetze(u, "  const top = vv ? Math.max(0, vv.offsetTop) : 0;\n  const h = vv ? vv.height : innerHeight;\n  const full = isPhone();\n  const root = document.documentElement.style;\n  root.setProperty('--vv-top', top + 'px');", "  // APD-115/N-11 (Messung 07.11.2026): beim Schließen der Tastatur setzt Safari scrollY sofort auf 0, meldet offsetTop aber noch bis zu 400 ms\n  // alt (iPhone) – mit Rollbereich ist scrollY nur Safaris Verschiebung, darum zählt der kleinere Wert\n  const top = vv ? Math.max(0, rolle.el ? Math.min(vv.offsetTop, scrollY) : vv.offsetTop) : 0;\n  const h = vv ? vv.height : innerHeight;\n  const full = isPhone();\n  const root = document.documentElement.style;\n  const dTop = top - (placeDialogs.top ?? top); placeDialogs.top = top;\n  root.setProperty('--vv-top', top + 'px');");
+u = ersetze(u, "    d.style.margin = '0 auto';\n    d.style.bottom = 'auto';\n    const jetzt = parseFloat(d.style.top),", "    d.style.margin = '0 auto';\n    d.style.bottom = 'auto';\n    // APD-115/N-11: eine Verschiebung durch Safari (offsetTop ändert sich) gleicht das Fenster im selben Augenblick aus – gleiten (.gleitet) nur\n    // für den Rest (Tastatur auf und zu); sonst springt es erst mit Safari weg und gleitet dann zurück\n    if (dTop && d.style.top) { const g = d.classList.contains('gleitet'); d.classList.remove('gleitet');\n      d.style.top = Math.round(parseFloat(d.style.top) + dTop) + 'px'; void d.offsetHeight; if (g) d.classList.add('gleitet'); }\n    const jetzt = parseFloat(d.style.top),");
+u = ersetze(u, "if (window.visualViewport) ['resize', 'scroll'].forEach(t => visualViewport.addEventListener(t, gemeldet));", "if (window.visualViewport) ['resize', 'scroll'].forEach(t => visualViewport.addEventListener(t, gemeldet));\n// APD-115/N-11: beim Schließen kommt Safaris ‚scroll‘ der Seite (scrollY 0) bis zu 400 ms vor ‚vv resize‘ – mit Rollbereich sofort neu stellen\naddEventListener('scroll', e => { if (rolle.el && (e.target === document || e.target === window) && Math.max(0, scrollY) !== placeDialogs.top) gemeldet(); }, { passive: true });");
 writeFileSync(new URL('ui.js', ZIEL), u);
 console.log('APD-115 Muster gebaut: arbeit/APD-115/index.html, arbeit/APD-115/ui.js');

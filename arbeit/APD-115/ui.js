@@ -2823,10 +2823,13 @@ function safeRand() {
 }
 function placeDialogs() {
   const vv = window.visualViewport;
-  const top = vv ? Math.max(0, vv.offsetTop) : 0;
+  // APD-115/N-11 (Messung 07.11.2026): beim Schließen der Tastatur setzt Safari scrollY sofort auf 0, meldet offsetTop aber noch bis zu 400 ms
+  // alt (iPhone) – mit Rollbereich ist scrollY nur Safaris Verschiebung, darum zählt der kleinere Wert
+  const top = vv ? Math.max(0, rolle.el ? Math.min(vv.offsetTop, scrollY) : vv.offsetTop) : 0;
   const h = vv ? vv.height : innerHeight;
   const full = isPhone();
   const root = document.documentElement.style;
+  const dTop = top - (placeDialogs.top ?? top); placeDialogs.top = top;
   root.setProperty('--vv-top', top + 'px');
   // APD-28 (B1): der Rahmen ist so hoch wie der sichtbare Bereich und endet über der Tastatur.
   root.setProperty('--vv-h', Math.round(h) + 'px');
@@ -2850,6 +2853,10 @@ function placeDialogs() {
     // schon ganz, bleibt es stehen – auch nach dem Schließen der Tastatur, solange ein Feld darin den Fokus hat.
     d.style.margin = '0 auto';
     d.style.bottom = 'auto';
+    // APD-115/N-11: eine Verschiebung durch Safari (offsetTop ändert sich) gleicht das Fenster im selben Augenblick aus – gleiten (.gleitet) nur
+    // für den Rest (Tastatur auf und zu); sonst springt es erst mit Safari weg und gleitet dann zurück
+    if (dTop && d.style.top) { const g = d.classList.contains('gleitet'); d.classList.remove('gleitet');
+      d.style.top = Math.round(parseFloat(d.style.top) + dTop) + 'px'; void d.offsetHeight; if (g) d.classList.add('gleitet'); }
     const jetzt = parseFloat(d.style.top), ganz = jetzt >= top + oben - 1 && jetzt + d.offsetHeight <= top + h - unten + 1;
     if (ganz && (kbOffen() || d.contains(document.activeElement) && document.activeElement.matches(FELD))) return;
     d.style.top = Math.round(top + oben + Math.max(0, (h - oben - unten - d.offsetHeight) / 2)) + 'px';
@@ -3067,6 +3074,8 @@ function gemeldet() {
   kbWar = offen;
 }
 if (window.visualViewport) ['resize', 'scroll'].forEach(t => visualViewport.addEventListener(t, gemeldet));
+// APD-115/N-11: beim Schließen kommt Safaris ‚scroll‘ der Seite (scrollY 0) bis zu 400 ms vor ‚vv resize‘ – mit Rollbereich sofort neu stellen
+addEventListener('scroll', e => { if (rolle.el && (e.target === document || e.target === window) && Math.max(0, scrollY) !== placeDialogs.top) gemeldet(); }, { passive: true });
 // Seit 4.28.1 (APD-36, 6n): ‚Nach oben / Ans Ende‘ bei offener Tastatur – das Antippen schließt die Tastatur; gerollt wird erst danach
 // (sonst bricht der Ausgleich beim Schließen das sanfte Rollen ab und es braucht ein zweites Antippen), spätestens nach 600 ms.
 function nachTastatur(fn) {

@@ -1249,8 +1249,8 @@ const backupMenuItems = sel => [
   // Messmodus (seit 3.24.0, AppDesign APD-27): Kopf- und Suchzeile von Inhalt und Liste, erster Tag, Rollstand der Liste – seit 3.38.0
   // (AppDesign APD-77) versteckt, bis langes Drücken auf die Versionszeile ihn freischaltet.
   'sep',
-  ...messungMenuItems({ app: `Reiselogbuch ${APP_VERSION}`, teile: { kopf: '#bar', such: '#app .nb2', tag: '#app [data-day]', lkopf: '.side-head', lsuch: '.side-search' },
-    rollen: { lroll: '.side-list' } }),
+  ...messungMenuItems({ app: `Reiselogbuch ${APP_VERSION}`, teile: { kopf: '#bar', such: '#app .nb2', tag: '#app [data-day]', lkopf: '.side-head', lsuch: '.side-search', fkopf: 'dialog[open] .dlg-head' },
+    rollen: { lroll: '.side-list', froll: 'dialog[open] .dlg-body' } }),
   'line',
   { note: `Reiselogbuch · Version ${APP_VERSION} · erstellt am ${APP_BUILT} · AppDesign ${adLoaded().js}`, halten: true },   // seit 3.38.0 (AppDesign APD-77): langes Drücken schaltet den Messmodus frei
   { note: storagePersistent ? `Die Daten bleiben in Safari gespeichert, solange das Reiselogbuch auf dem Home-Bildschirm nicht entfernt wird.`

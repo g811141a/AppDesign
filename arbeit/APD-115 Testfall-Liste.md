@@ -62,6 +62,15 @@ Tastatur 274) und Nachstellung im Safari-Modell (Skript nur in der Sitzung):
   - Schritt 7 (‚Rom‘ tippen): beim ersten Zeichen iPad quer W-1 Safari `scrollY` 139 → 138 (Kopfzeile 45 ms lang +1 px), W-2 zusätzlich ‚scroll div‘;
     iPhone W-2 ‚scroll div‘. Wie weit der Fensterinhalt rollt, zeichnet der Messmodus nicht auf (kein Rollstand des Fensters, kein Fensterkopf) –
     im Modell rollt beim Tippen nichts.
+- APD-115/E-9 Entscheidung (Nutzer 07.11.2026, Sitzung 0092): **W-1** (‚nur so weit wie nötig‘); W-2 verworfen. Schritt 8 im Modell nachbilden, im
+  Muster beheben, hier weiter.
+- APD-115/N-12 Umsetzung Sitzung 0092: (1) Safari-Modell (`tests/safari.mjs`, Option `apd115` – vorerst nur im Muster, damit die Prüfungen von
+  4.55.0 unberührt bleiben; mit der Version von APD-115 Standard): beim Wechsel bei offener Tastatur zählt die Lage beim ersten Fokus, ein neuer
+  Fokus im focusin ändert sie nicht; beim Schließen `scrollY` sofort 0 (‚scroll‘ am document), `offsetTop` und Höhe erst nach `zuVerzug` (iPhone
+  400 ms, iPad sofort). Damit zeigt das Modell die Sprünge des Geräts (APD-115/M-11 und die Sprungprüfung von M-7 rot: iPad Fensterkopf bis −130
+  bzw. 157 px, iPhone Kopfzeile bis 161 px). (2) Muster (`ui.js`): mit Rollbereich zählt für `--vv-top` der kleinere Wert aus `offsetTop` und
+  `scrollY`; Safaris ‚scroll‘ der Seite stellt sofort neu; das iPad-Fenster gleicht eine Verschiebung durch Safari im selben Augenblick aus
+  und gleitet nur für den Rest.
 
 ## Apple-Abgleich (0 Nr. 23, 2.6)
 
@@ -113,6 +122,7 @@ langer Verlauf mit 14 Zeilen (Tag 4).
 | APD-115/M-5 | langer Verlauf, eine Zeile unten antippen | Cursorzeile und eine halbe Zeile darunter zwischen Fensterkopf und Tastatur; verschiebt Safari im Modell, wird es berichtet (APD-115/A-3) |
 | APD-115/M-6 | am Ende des langen Verlaufs zwei Zeilen tippen | die neue Zeile mit einer halben Zeile darunter bleibt über der Tastatur |
 | APD-115/M-7 | Quartier antippen, dann Ort (Feld wechseln) | kein Sprung, Ort ganz über der Tastatur (APD-115/A-2) |
+| APD-115/M-11 | wie am Gerät (Schritte 6 bis 8): Quartier, ‚Hotel‘, Ort antippen (unter der Tastatur: vorher hochgeschoben), ‚Rom‘ tippen, x | in jedem Bild Kopfzeile still, Fensterkopf nur zwischen vorher und nachher (Befund APD-115/N-11) |
 | APD-115/M-8 | Variante A öffnen | Feld höchstens 12 px unter der Bezeichnung ‚Verlauf‘, Vorschläge darunter |
 | APD-115/M-9 | Variante B öffnen | Vorschläge zwischen Bezeichnung und Feld |
 | APD-115/M-10 | jede Ansicht | Grundregeln (`pruefe.mjs`) |

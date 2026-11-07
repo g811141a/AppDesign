@@ -79,14 +79,14 @@
 //   später‘ (APD-27 2) gilt nur noch für das Rollen.
 export const ABSTAND = 24, ABSTAND_FENSTER = 0;
 export const SAFARI = {
-  'iPhone hoch': { tastatur: 403, ziffern: 376, fokusRollen: -120, fokusSchub: 0 },
-  'iPhone quer': { tastatur: 276, ziffern: 232, fokusRollen: 0, fokusSchub: 0 },
+  'iPhone hoch': { tastatur: 403, ziffern: 376, fokusRollen: -120, fokusSchub: 0, zuVerzug: 400 },
+  'iPhone quer': { tastatur: 276, ziffern: 232, fokusRollen: 0, fokusSchub: 0, zuVerzug: 400 },
   'iPad quer': { tastatur: 428, fokusRollen: 0, fokusSchub: 0 },
   'iPad hoch': { tastatur: 340, fokusRollen: 0, fokusSchub: 0 },
 };
 
-export async function safariModell(p, ansicht, { leisten = { bar: '.nb, .pnav', box: '.searchbox' }, links = {}, auto = false, abstand = ABSTAND, abstandFenster = ABSTAND_FENSTER } = {}) {
-  const werte = { abstand, abstandFenster, ...SAFARI[ansicht] };
+export async function safariModell(p, ansicht, { leisten = { bar: '.nb, .pnav', box: '.searchbox' }, links = {}, auto = false, abstand = ABSTAND, abstandFenster = ABSTAND_FENSTER, apd115 = false } = {}) {
+  const werte = { abstand, abstandFenster, ...SAFARI[ansicht], apd115, zuVerzug: apd115 ? (SAFARI[ansicht]?.zuVerzug ?? 0) : 0 };
   if (!werte) throw new Error(`Safari-Modell: keine Werte für ${ansicht}`);
   await p.evaluate(({ werte, leisten, links, auto }) => {
     const vv = window.visualViewport;
@@ -112,7 +112,7 @@ export async function safariModell(p, ansicht, { leisten = { bar: '.nb, .pnav', 
         let fest = false;
         for (let e = a; e && e !== document.documentElement; e = e.parentElement) if (e.matches('dialog[open]') || getComputedStyle(e).position === 'fixed') { fest = true; break; }
         // APD-36/S-7: beim ersten Öffnen zählt die Lage beim Fokus (vor den Hörern der App)
-        const v = s.top(), r = art === 'auf' && s.fokusLage?.el === a ? s.fokusLage.r : a.getBoundingClientRect(), d = fest ? v : 0;
+        const v = s.top(), r = (art === 'auf' || (werte.apd115 && art === 'wechsel')) && s.fokusLage?.el === a ? s.fokusLage.r : a.getBoundingClientRect(), d = fest ? v : 0;
         // APD-36/S-5: zu nah über der Tastatur (weniger als abstand, im Fenster abstandFenster) – Safari stellt das Feld in die Mitte;
         // APD-36/S-6: außerhalb eines Rollbereichs, beim Wechseln und erneuten Antippen genügt eine Mitte unter der Mitte
         let rolle = false;
@@ -123,6 +123,7 @@ export async function safariModell(p, ansicht, { leisten = { bar: '.nb, .pnav', 
       // Safari meldet 2 Bilder später, was es zeigt (Rollen); sofort: im selben Augenblick (Tastatur, seit 4.38.0)
       melde(sofort = false) {
         if (s.weg) return;
+        if (s.zuT && !sofort) return;   // APD-115/N-11: bis zur verzögerten Meldung beim Schließen bleibt offsetTop alt
         if (sofort && s.warte) { cancelAnimationFrame(s.warte); s.warte = null; }
         if (s.warte) return;
         let n = sofort ? 0 : 2;
@@ -145,7 +146,7 @@ export async function safariModell(p, ansicht, { leisten = { bar: '.nb, .pnav', 
         // APD-35: Felder mit Ziffern bekommen die niedrigere Zifferntastatur (quer 232, hoch 376 – beide gemessen)
         const a = document.activeElement;
         s.kb = auf && s.naechste ? s.naechste : auf && werte.ziffern && /^(decimal|numeric)$/.test(a?.getAttribute?.('inputmode') || '') ? werte.ziffern : werte.tastatur;
-        if (auf) s.naechste = null;
+        if (auf) { s.naechste = null; if (s.zuT) { clearTimeout(s.zuT); s.zuT = null; } }
         // APD-36/S-9: Feld im Inhalt – Rollbereich zurück auf den Stand beim ersten Fokus
         if (auf && s.zurueck?.el === a) s.zurueck.c.scrollTop = s.zurueck.y;
         if (auf) s.zurueck = null;
@@ -154,6 +155,13 @@ export async function safariModell(p, ansicht, { leisten = { bar: '.nb, .pnav', 
         if (auf) s.zumFeld(art);
         if (auf && werte.fokusSchub) s.schub();
         if (!auf) s.L = Y();
+        // APD-115/N-11 (Messung 07.11.2026, iPhone hoch zweimal 400 ms): beim Schließen setzt Safari scrollY sofort zurück (Ereignis ‚scroll‘), meldet
+        // offsetTop und Höhe aber erst nach zuVerzug (‚vv resize‘); iPad quer im selben Augenblick
+        if (!auf && werte.zuVerzug && s.gemeldet.pan) {
+          s.gemeldet = { ...s.gemeldet, pan: 0 }; document.dispatchEvent(new Event('scroll', { bubbles: true }));
+          clearTimeout(s.zuT); s.zuT = setTimeout(() => { s.zuT = null; if (!s.offen) s.melde(true); }, werte.zuVerzug);
+          return;
+        }
         s.melde(true);
       },
       // Lage fester Leisten auf dem Bildschirm (Lage im Layout-Bereich minus offsetTop); links = linker Rand (Fenster mittig)
@@ -215,7 +223,9 @@ export async function safariModell(p, ansicht, { leisten = { bar: '.nb, .pnav', 
     }, true);
     document.addEventListener('focusout', e => { if (e.target.matches?.('input, textarea')) s.blur = true; }, true);
     // APD-36/S-7: window vor document – läuft vor jedem Fokus-Hörer der Seite
-    window.addEventListener('focusin', e => { const r = e.target.getBoundingClientRect?.(); s.fokusLage = r ? { el: e.target, r: { top: r.top, bottom: r.bottom } } : null;
+    window.addEventListener('focusin', e => { const r = e.target.getBoundingClientRect?.(), jetzt = performance.now();
+      // APD-115/N-11 (Messung 07.11.2026): bei offener Tastatur zählt die Lage beim ersten Fokus – ein neuer Fokus im focusin (APD-36/S-8) ändert sie nicht
+      if (!(werte.apd115 && s.offen && s.fokusLage?.el === e.target && jetzt - s.fokusLage.t < 100)) s.fokusLage = r ? { el: e.target, r: { top: r.top, bottom: r.bottom }, t: jetzt } : null;
       // APD-36/S-9: Rollstand beim ersten Fokus eines Felds im Inhalt merken (ein neuer Fokus desselben Felds ändert ihn nicht)
       if (!s.offen && e.target.matches?.('input, textarea') && !e.target.closest('dialog') && s.zurueck?.el !== e.target) {
         let c = e.target.parentElement; while (c && c !== document.body && !/(auto|scroll)/.test(getComputedStyle(c).overflowY)) c = c.parentElement;

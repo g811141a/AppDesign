@@ -30,7 +30,7 @@ async function neu(ansicht, v, iso = TAG) {
   const p = await t.seite(b, ansicht, { theme: 'light' });
   if (heute) await p.route(/APD-115\/ui\.js$/, r => r.fulfill({ path: new URL('../fassung/4.54.0/ui.js', import.meta.url).pathname, contentType: 'text/javascript' }));
   await oeffne(p, v, iso);
-  await safariModell(p, ansicht, { auto: true, leisten: STILL_LEISTEN, links: STILL_LINKS });
+  await safariModell(p, ansicht, { auto: true, leisten: STILL_LEISTEN, links: STILL_LINKS, apd115: true });   // Modell mit Befund APD-115/N-11
   return p;
 }
 const E = (regel, was) => t.liste([`${t.ort}: ${regel} ${was}`]);
@@ -106,7 +106,8 @@ for (const ansicht of ['iPhone hoch', 'iPad quer', 'iPad hoch', 'iPhone quer']) 
     // Modell (APD-36/S-6 b), wird es berichtet (am Gerät zu messen). APD-115/W-2 (&w=2): ein Schub, danach ganz über der Tastatur, Safari verschiebt nicht.
     // ‚geschoben‘ (Schritte am Gerät, Sitzung 0092): liegt Ort nach dem Tippen unter der Tastatur, schiebt der Nutzer das Fenster mit dem Finger hoch,
     // bis Ort ganz zu sehen ist (40 px über der Tastatur), dann tippt er Ort an.
-    for (const w of ['1', '2']) for (const vorher of ['oben', 'unten', 'geschoben']) {
+    for (const w of ['1'])   // W-2 verworfen (APD-115/N-11: neuer Fokus hilft nicht, Nutzer 07.11.2026: W-1)
+    for (const vorher of ['oben', 'unten', 'geschoben']) {
       const p = await neu(ansicht, `${v}&w=${w}`);
       if (vorher === 'unten') await ansEnde(p, '#fQuarter');
       await p.tap('#fQuarter'); await p.waitForTimeout(900);
@@ -138,6 +139,36 @@ for (const ansicht of ['iPhone hoch', 'iPad quer', 'iPad hoch', 'iPhone quer']) 
       // W-2 und Ort höher als der sichtbare Teil (iPhone quer): Ort kann nicht bis zur Mitte, Safari verschiebt – Hinweis wie APD-115/A-3
       if (pan !== pan0) (w === '2' && passt ? E('APD-115/M-7', `${wo}: Safari verschiebt im Modell ${pan0} → ${pan} px (Sprung)`)
         : console.log(`ℹ ${t.ort} APD-115/M-7 ${wo}: Safari verschiebt im Modell ${pan0} → ${pan} px (APD-36/S-6 b) – am Gerät messen`));
+      await p.close();
+    }
+    // APD-115/M-11 (Befund APD-115/N-11, Messung 07.11.2026 – Schritte 6 bis 8 am Gerät): nach Quartier und ‚Hotel‘ Ort antippen (liegt Ort unter
+    // der Tastatur, vorher hochgeschoben), ‚Rom‘ tippen, mit x schließen. In jedem Bild: Kopfzeile still, Fensterkopf nur zwischen vorher und nachher.
+    for (const w of ['1'])   // W-2 verworfen (APD-115/N-11: neuer Fokus hilft nicht, Nutzer 07.11.2026: W-1)
+    {
+      const p = await neu(ansicht, `${v}&w=${w}`);
+      await p.tap('#fQuarter'); await p.waitForTimeout(900);
+      await p.keyboard.type('Hotel'); await p.waitForTimeout(300);
+      const a0 = await lage(p, '#fPlace');
+      if (!(a0.unten <= Math.min(a0.kb, a0.cb) - 16 && a0.oben >= a0.ct)) {
+        await p.evaluate(() => { const f = document.querySelector('#fPlace'), c = f.closest('.dlg-body'), o = __safari.top();
+          c.scrollTop += f.getBoundingClientRect().bottom - o - (Math.min(__safari.hoehe(), c.getBoundingClientRect().bottom - o) - 40); });
+        await p.waitForTimeout(400);
+      }
+      const film = async (name, fn, warte = 900) => {
+        const a = await p.evaluate(() => __safari.lage());
+        await p.evaluate(() => __safari.bilder(true)); await fn(); await p.waitForTimeout(warte);
+        const bilder = await p.evaluate(() => __safari.bilder(false)), e = await p.evaluate(() => __safari.lage());
+        for (const [k, nm] of [['bar', 'Kopfzeile'], ['kopf', 'Fensterkopf']]) {
+          if (a[k] == null || e[k] == null) continue;
+          const lo = Math.min(a[k], k === 'bar' ? a[k] : e[k]) - 2, hi = Math.max(a[k], k === 'bar' ? a[k] : e[k]) + 2;
+          const aus = bilder.filter(b => b[k] != null && (b[k] < lo || b[k] > hi));
+          if (aus.length) { const m = aus.reduce((x, b) => Math.abs(b[k] - a[k]) > Math.abs(x - a[k]) ? b[k] : x, aus[0][k]);
+            E('APD-115/M-11', `W-${w} ${name}: ${nm} springt in ${aus.length} von ${bilder.length} Bildern bis ${m} px (vorher ${a[k]}, danach ${e[k]} px)`); }
+        }
+      };
+      await film('Ort antippen', () => p.tap('#fPlace'));
+      await film('‚Rom‘ tippen', () => p.keyboard.type('Rom', { delay: 150 }));
+      await film('x (Tastatur zu)', () => p.tap('#dlgX'), 1200);
       await p.close();
     }
     // APD-115/M-8 (Variante A): Bezeichnung ‚Verlauf‘ direkt über dem Feld, Vorschläge darunter; M-9 (B): Vorschläge zwischen Bezeichnung und Feld
