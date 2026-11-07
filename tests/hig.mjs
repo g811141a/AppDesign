@@ -121,7 +121,7 @@ export function masseStile() {
   const nameG = e => (e.getAttribute('aria-label') || (e.matches('.menu') ? 'Menü' : '') || e.id || e.className || e.tagName).toString().replace(/\s+/g, ' ').trim().slice(0, 30);
   const filt = e => cs(e).backdropFilter || cs(e).webkitBackdropFilter || 'none';
   const alpha = c => { const m = c.match(/rgba?\(([^)]+)\)/); if (!m) return 1; const q = m[1].split(/[\s,\/]+/).filter(Boolean); return q.length > 3 ? parseFloat(q[3]) * (q[3].endsWith('%') ? 0.01 : 1) : 1; };
-  // seit 4.54.0 (APD-120/G-1, G-4, G-5): Schalter ‚Glas‘ aus (html.ohne-glas) wie ‚Transparenz reduzieren‘
+  // seit 4.54.0 (APD-120/J-1, J-4, J-5): Schalter ‚Glas‘ aus (html.ohne-glas) wie ‚Transparenz reduzieren‘
   const rt = matchMedia('(prefers-reduced-transparency: reduce)').matches || document.documentElement.classList.contains('ohne-glas');
   document.querySelectorAll(GLAS).forEach(e => {
     if (!visG(e)) return;
@@ -160,7 +160,7 @@ export function masseStile() {
 export const GLAS = '.fab, .menu, .bbar .searchbox input[type=search], .bbar > button:not([aria-pressed="true"])';
 // Einzelprüfung R-3.9 (seit 4.53.0, APD-62/L-1 bis L-4, L-10): öffnet das Menü (menue), prüft Glas schon während des Wachsens (L-10) und danach,
 // mit ‚Transparenz reduzieren‘ (nur Chromium kann es nachbilden – Emulation.setEmulatedMedia) deckend. Gibt Fehler zurück.
-// Seit 4.54.0 (APD-120, Testfall-Liste arbeit/APD-120 Testfall-Liste.md APD-120/G-1 bis G-3, G-5 bis G-7, G-12): schalter = Menüpunkt mit dem
+// Seit 4.54.0 (APD-120, Testfall-Liste arbeit/APD-120 Testfall-Liste.md APD-120/J-1 bis J-3, J-5 bis J-7, J-12): schalter = Menüpunkt mit dem
 // Untermenü (‚Darstellung‘) – darin der Schalter ‚Glas‘ (Rolle switch, Name, Zustand; Standard ein), aus → deckend (masseStile), das Menü bleibt offen,
 // die Leertaste schaltet, neu laden → Wahl bleibt, wieder ein → Glas.
 export async function checkGlas(p, { menue, schalter = null, where = '' } = {}) {
@@ -197,29 +197,29 @@ async function checkGlasSchalter(p, { menue, schalter, E }) {
   const glas = () => p.evaluate(masseStile).then(l => l.filter(x => x.startsWith('R-3.9')));
   await auf();
   let x = await sw();
-  if (!x) { E(`R-3.9 APD-120/G-6 im Untermenü ‚${schalter}‘ kein Schalter ‚Glas‘ (role switch)`); await zu(); return []; }
-  if (x.an !== 'true' || x.klasse) E(`R-3.9 APD-120/G-12 Schalter ‚Glas‘ zu Beginn nicht ein (aria-checked ${x.an})`);
-  if (!x.ganz) E('R-3.9 APD-120/G-7 Schalter ‚Glas‘ nicht ganz auf dem Bildschirm');
+  if (!x) { E(`R-3.9 APD-120/J-6 im Untermenü ‚${schalter}‘ kein Schalter ‚Glas‘ (role switch)`); await zu(); return []; }
+  if (x.an !== 'true' || x.klasse) E(`R-3.9 APD-120/J-12 Schalter ‚Glas‘ zu Beginn nicht ein (aria-checked ${x.an})`);
+  if (!x.ganz) E('R-3.9 APD-120/J-7 Schalter ‚Glas‘ nicht ganz auf dem Bildschirm');
   await p.locator('.menu.submenu [role="switch"]').click(); await ruhe();
   x = await sw();
-  if (!x) E('R-3.9 APD-120/G-6 Umschalten schließt das Menü (soll offen bleiben)');
-  else if (x.an !== 'false' || !x.klasse) E(`R-3.9 APD-120/G-1 Schalter aus: aria-checked ${x.an}, Klasse ohne-glas ${x.klasse}`);
-  for (const f of await glas()) E(`APD-120/G-1 Glas aus: ${f}`);
+  if (!x) E('R-3.9 APD-120/J-6 Umschalten schließt das Menü (soll offen bleiben)');
+  else if (x.an !== 'false' || !x.klasse) E(`R-3.9 APD-120/J-1 Schalter aus: aria-checked ${x.an}, Klasse ohne-glas ${x.klasse}`);
+  for (const f of await glas()) E(`APD-120/J-1 Glas aus: ${f}`);
   const n = await p.evaluate(() => [...document.querySelectorAll('.fab, .menu')].filter(e => e.getClientRects().length).length);
-  if (n < 1) E('R-3.9 APD-120/G-1 kein Baustein aus Glas zu sehen – die Prüfung prüft nichts');
+  if (n < 1) E('R-3.9 APD-120/J-1 kein Baustein aus Glas zu sehen – die Prüfung prüft nichts');
   await zu();
-  for (const f of await glas()) E(`APD-120/G-1 Glas aus (Kapsel, Leiste): ${f}`);
+  for (const f of await glas()) E(`APD-120/J-1 Glas aus (Kapsel, Leiste): ${f}`);
   await p.reload(); await p.waitForTimeout(400); await ruhe();
-  if (!await p.evaluate(() => document.documentElement.classList.contains('ohne-glas'))) E('R-3.9 APD-120/G-3 nach dem Neuladen ist Glas wieder ein (Wahl nicht gespeichert)');
+  if (!await p.evaluate(() => document.documentElement.classList.contains('ohne-glas'))) E('R-3.9 APD-120/J-3 nach dem Neuladen ist Glas wieder ein (Wahl nicht gespeichert)');
   await auf();
   x = await sw();
-  if (x?.an !== 'false') E(`R-3.9 APD-120/G-3 nach dem Neuladen zeigt der Schalter ${x?.an} statt aus`);
+  if (x?.an !== 'false') E(`R-3.9 APD-120/J-3 nach dem Neuladen zeigt der Schalter ${x?.an} statt aus`);
   // G-6: Leertaste schaltet (Fokus auf dem Schalter), Menü bleibt offen
   await p.locator('.menu.submenu [role="switch"]').focus(); await p.keyboard.press(' '); await ruhe();
   x = await sw();
-  if (!x) E('R-3.9 APD-120/G-6 Leertaste auf dem Schalter schließt das Menü');
-  else if (x.an !== 'true' || x.klasse) E(`R-3.9 APD-120/G-2 Schalter wieder ein: aria-checked ${x.an}, Klasse ohne-glas ${x.klasse}`);
-  for (const f of await glas()) E(`APD-120/G-2 Glas wieder ein: ${f}`);
+  if (!x) E('R-3.9 APD-120/J-6 Leertaste auf dem Schalter schließt das Menü');
+  else if (x.an !== 'true' || x.klasse) E(`R-3.9 APD-120/J-2 Schalter wieder ein: aria-checked ${x.an}, Klasse ohne-glas ${x.klasse}`);
+  for (const f of await glas()) E(`APD-120/J-2 Glas wieder ein: ${f}`);
   await zu();
   return [];
 }

@@ -436,6 +436,9 @@ Gemessene bzw. belegte Eigenheiten mit Quelle; sie gelten für alle Apps, die Pr
 - **Textgröße pro App:** ‚Größerer Text‘ unter Einstellungen → Bedienungshilfen → Einstellungen pro App → Safari wirkt auch auf die
   Web-App vom Home-Bildschirm – sie meldet dieselbe Grundgröße (`-apple-system-body`, R-1.10) wie bei der allgemeinen Textgröße
   (Auskunft des Nutzers am iPhone, P-75/6, 25.10.2026).
+- **‚Transparenz reduzieren‘ kommt in der Web-App nicht an:** die Einstellung des iPads, die Safari als `@media (prefers-reduced-transparency: reduce)`
+  melden sollte, greift in der Web-App vom Home-Bildschirm nicht (Usertest P-97/10, 06.11.2026); die WebKit-Fassung der Prüfumgebung (26.0) kennt die
+  Abfrage. Die Abfrage bleibt für Browser, die sie melden (R-3.9); die Texte auf Glas prüft `hig.mjs` auf Kontrast wie überall.
 - Beim Drucken nur den Ausgabe-Inhalt zeigen: Seitenleiste, Fenster und deren Abstände (z. B. `padding-left` für die
   Seitenleiste) ausblenden bzw. auf 0 setzen; im Druck ist nichts auf Bildschirmhöhe begrenzt (15.22).
 - Elemente mit `display` im CSS brauchen eine eigene `[hidden]`-Regel, sonst bleiben sie sichtbar.
@@ -552,7 +555,8 @@ Gemessene bzw. belegte Eigenheiten mit Quelle; sie gelten für alle Apps, die Pr
   gilt deshalb bis zum Loslassen und danach noch 400 ms für genau diesen einen Klick und zählt den größten Weg. iPad: Vermutung.
 - **Am oberen Rand kein Klick (iPhone quer, Home-Bildschirm):** eine Berührung bei y ≈ 20 px liefert `pointerdown`/`pointerup`, aber keinen `click` –
   bei y = 26 und weiter unten schon (Messung 06.11.2026, P-97/6, iOS 18.7). Was beim Antippen schließen soll (Sperrschicht hinter Menüs und Sprechblasen),
-  schließt deshalb beim Loslassen (bis 20 px Weg) und verschluckt einen Klick danach; das Safari-Modell schickt dort keinen Klick.
+  schließt deshalb beim Loslassen (bis 20 px Weg) und verschluckt einen Klick danach; das Safari-Modell schickt dort keinen Klick (`obenOhneKlick`,
+  eingeschaltet in den Prüfungen zum oberen Rand – überall an, fiele der Tipp auf die Mitte des Mehr-Knopfs, y 16, in allen Prüfungen weg).
 - **Neustart ist nicht erkennbar** (R-7.2): Safari meldet nicht, **warum** eine Seite neu lädt. Als Neustart zählt jedes
   Neuladen: App im App-Umschalter weggewischt, **von iOS im Hintergrund beendet** (Speicher – auch nach kurzer Zeit in einer
   anderen App) oder neue Version geladen. Bleibt die Seite im Speicher, kommen nur `visibilitychange` und `pageshow` (aus dem
@@ -746,7 +750,8 @@ Regel). In AppDesign ist jede Komponente einmal programmiert (`v4/design.css`, `
   Icon und Text); graue Zusatzzeile unter einem Eintrag; graue Notizen und technische Informationen (Version, Speicher, Zahl der
   Tage, Dateiname) ganz unten nach der Linie, ohne Leerzeilen. Nichts blau eingefärbt, „… löschen“ rot.
 - **Untermenü** (`submenu`, eine Ebene, höchstens etwa 5 Punkte): Eintrag mit grauem Wert und ›; öffnet neben dem Menü, oben
-  bündig; der Eintrag bleibt blau, solange es offen ist.
+  bündig; der Eintrag bleibt blau, solange es offen ist. **Ein Schalter** im Menü (z. B. ‚Glas‘ als eigene Gruppe im Untermenü ‚Darstellung‘) steht
+  mit Text links und Schalter rechts wie in den Einstellungen (15.15), Rolle ‚Schalter‘; Umschalten lässt das Menü offen.
 - **Verhalten:** erscheint unter der Schaltfläche und wächst aus ihr (R-4.13; darf über die Seitenleiste hinausragen); die Schaltfläche ist so lange gedrückt
   (blau getönt); der Mehr-Knopf zeigt dabei drei senkrechte Punkte (`ellipsis-vertical`) statt der waagrechten – der Wechsel sofort,
   ohne Bewegung, beim Schließen zurück; daneben tippen schließt. Reicht der Platz darunter nicht, rollt das Menü in sich (erst unter 200 px Platz öffnet
@@ -1220,7 +1225,7 @@ Testfall (User) in den Usertest, wenn eine Version es betrifft.
 | R-3.6 | **Rückmeldung beim Berühren:** solange der Finger liegt, wird eine Schaltfläche blass (Icon und Text 35 %), ein Leisten-Knopf hebt sich als helle Fläche mit Schatten (1,3-fach) über die Kapsel, eine Listen- oder Tabellenzeile grau – Schaltflächen sofort, in Rollbereichen (Liste, Smiley-Leiste, Kapsel) nach 80 ms; mehr als 10 px Bewegung oder Rollen hebt es auf, ohne auszulösen – das Loslassen danach löst nichts aus, wie lange der Finger auch liegt; Loslassen blendet in 0,15 s aus; gesperrte Schaltflächen zeigen nichts; Safaris eigene Antipp-Markierung ist aus, und langes Drücken auf antippbare Zeilen, Kacheln, Leisten und die Smiley-Leiste markiert keinen Text und zeigt keine Lupe | ablauf.mjs | Rollen ohne Aufblitzen | 4, 15.1, 15.4, 15.12 |
 | R-3.7 | **Keine Hover-Farbe:** auf iPad und iPhone ändert eine Schaltfläche beim Darüberfahren nichts; Stilregeln mit `:hover` stehen nur unter `@media (hover: hover)` | hig.mjs – `masseStile` (alle Stilregeln der Seite, design.css und App) | – | 4 |
 | R-3.8 | **Gesperrt und Abbrechen:** gesperrte Schaltflächen, Schalter und Options-Kapseln 40 % Deckkraft; ‚Abbrechen‘ ohne Icon, normale Schrift | hig.mjs – `masseStile` (jede Ansicht, jedes Fenster, nach jedem Schritt) | – | 4, 15.15, 15.16 |
-| R-3.9 | **Schwebendes aus Glas:** die Kapsel Nach oben / Ans Ende, Menü, Untermenü und Kontextmenü sowie Suchfeld und runde Knöpfe der unteren Leiste (iPhone) sind aus Glas – Grundfarbe (hell Weiß, dunkel `--btn` bzw. `--card`) zu 75 % deckend, Unschärfe 20 px, Sättigung 180 %, Lichtkante und Schatten wie R-3.2; ‚Transparenz reduzieren‘ des Geräts: deckend wie bisher, wo der Browser es meldet (Safari am iPad nicht, 13); Leisten, Fenster, Sprechblasen und alle übrigen Schaltflächen bleiben deckend | hig.mjs – `masseStile` (Unschärfe und Deckkraft genau an diesen Bausteinen, deckend bei ‚Transparenz reduzieren‘, keine Glas-Leiste) | Lesbarkeit und Flüssigkeit am Gerät | 4, 15.1, 15.6, 15.17 |
+| R-3.9 | **Schwebendes aus Glas:** die Kapsel Nach oben / Ans Ende, Menü, Untermenü und Kontextmenü sowie Suchfeld und runde Knöpfe der unteren Leiste (iPhone) sind aus Glas – Grundfarbe (hell Weiß, dunkel `--btn` bzw. `--card`) zu 75 % deckend, Unschärfe 20 px, Sättigung 180 %, Lichtkante und Schatten wie R-3.2; ‚Transparenz reduzieren‘ des Geräts: deckend wie bisher, wo der Browser es meldet (Safari am iPad nicht, 13); ebenso deckend mit dem Schalter ‚Glas‘ aus (Untermenü ‚Darstellung‘, Standard ein, gilt je Gerät; ein Backup bringt die Wahl nur mit, wenn das Gerät noch keine hat); Leisten, Fenster, Sprechblasen und alle übrigen Schaltflächen bleiben deckend | hig.mjs – `masseStile` (Unschärfe und Deckkraft genau an diesen Bausteinen, deckend bei ‚Transparenz reduzieren‘, keine Glas-Leiste); `checkGlas` mit Schalter (`ablauf-glas`) | Lesbarkeit und Flüssigkeit am Gerät | 4, 15.1, 15.6, 15.17 |
 
 ### 4. Menüs, Abfragen, Fenster
 
@@ -1365,6 +1370,7 @@ R-2.3 (15.2), R-4.4 (6, 15.8, HIG 9), R-5.3 (8), R-5.4 (15.12), R-5.5 (APD-14), 
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 4.54.0 | 07.11.2026 | Neben | **APD-118, APD-119, APD-120 (Nutzer 06.11.2026 und 07.11.2026, Sitzungen 0085 bis 0087, Wortlaut bestätigt):** 13 neu ‚Am oberen Rand kein Klick‘ (Sperrschicht schließt beim Loslassen, Safari-Modell `obenOhneKlick`) und ‚‚Transparenz reduzieren‘ kommt in der Web-App nicht an‘; R-3.9 deckend, wo der Browser es meldet, und mit dem Schalter ‚Glas‘ aus (Prüfung `checkGlas` mit Schalter); 15.6 Schalter im Menü |
 | 4.53.0 | 06.11.2026 | Neben | **APD-38/T-16 und APD-38/T-37 (Nutzer 06.11.2026, Sitzungen 0082 und 0083, Wortlaut bestätigt):** Regelkatalog 17 – neu R-4.13 ‚Menüs und Sprechblasen wachsen aus der Schaltfläche‘ (0,35 s aus der Schaltfläche, 0,25 s zurück, mitten im Öffnen ab der aktuellen Stelle, ‚Bewegung reduzieren‘ nur Überblenden; Prüfung `checkWachsen`, Testfall-Liste APD-62/M-1 bis M-11) und R-3.9 ‚Schwebendes aus Glas‘ (Kapsel Nach oben / Ans Ende, Menüs, untere Leiste – 75 % deckend, Unschärfe 20 px, Sättigung 180 %, ‚Transparenz reduzieren‘ deckend; Prüfung `masseStile`, `checkGlas`, Testfall-Liste APD-62/L-1 bis L-10); Verweise in 1, 15.1, 15.6, 15.7, 15.17 |
 | 4.52.0 | 05.11.2026 | Neben | **APD-40 Pakete B und C (Nutzer 05.11.2026, Sitzung 0081, Wortlaut bestätigt):** Regelkatalog 17 – neu R-4.10 ‚Menütexte‘ (Kontextmenü streng höchstens 3 Gruppen), R-4.11 ‚Menüpunkt und Fenster heißen gleich‘, R-4.12 ‚Erst fragen, dann zerstören‘, R-5.10 ‚Automatisch speichern‘ (spätestens 10 s nach der Änderung statt alle 10 s), R-10.6 ‚Ansprache‘, R-10.7 ‚Datum und Dateinamen‘; G-4, G-7, G-12, G-13 ersetzt, G-19 gekürzt; Verweise in 6, 8 und 10; Prüfungen `texteMenues` (hig.mjs, kontextmenue.mjs), `dateinameFehler`, `checkMenueFenster`, `checkAutoSpeichern`, `checkErstFragen` (ablauf.mjs), Gegenproben `--gegenprobe masse` |
 | 4.51.0 | 05.11.2026 | Neben | **APD-40 Paket A (Nutzer 03.11.2026, Sitzung 0078, Wortlaut bestätigt):** Regelkatalog 17 – neu R-1.11 ‚Verborgen heißt unsichtbar‘, R-3.7 ‚Keine Hover-Farbe‘, R-3.8 ‚Gesperrt und Abbrechen‘, R-4.8 ‚Fensterbreite‘, R-4.9 ‚Menümaße‘ (Untermenü höchstens 5 statt ‚etwa 5‘), R-5.9 ‚Schalterzeilen und Options-Kapsel‘, R-6.7 ‚Tabelle‘, alle mit automatischer Prüfung `masseStile` (hig.mjs, Testfall-Liste APD-40/A-1 bis APD-40/A-10); G-1, G-2, G-5, G-17 ersetzt, G-10, G-15, G-18 auf den Rest gekürzt |

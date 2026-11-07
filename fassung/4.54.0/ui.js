@@ -478,7 +478,7 @@ function applyTheme() {
   document.documentElement.setAttribute('data-theme', a === 'auto' ? (darkQuery?.matches ? 'dark' : 'light') : a);
   applyGlas();
 }
-// Seit 4.54.0 (APD-120, Testfall-Liste arbeit/APD-120 Testfall-Liste.md APD-120/G-1 bis G-13): Schalter ‚Glas‘ im Untermenü ‚Darstellung‘ – aus macht
+// Seit 4.54.0 (APD-120, Testfall-Liste arbeit/APD-120 Testfall-Liste.md APD-120/J-1 bis J-13): Schalter ‚Glas‘ im Untermenü ‚Darstellung‘ – aus macht
 // Schwebendes deckend wie ‚Transparenz reduzieren‘ (R-3.9; die Einstellung des iPads kommt in Safari nicht an, Designrichtlinie 13). db.settings.glas:
 // fehlt = noch keine Wahl auf diesem Gerät (Glas ein); die App übernimmt beim Laden eines Backups den Wert aus der Datei nur dann (glasAusBackup).
 const glasAn = () => db.settings.glas !== false;
