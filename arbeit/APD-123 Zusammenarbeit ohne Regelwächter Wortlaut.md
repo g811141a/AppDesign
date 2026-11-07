@@ -1,6 +1,6 @@
 # APD-123 – Zusammenarbeit ohne Regelwächter: Wortlaut
 
-Stand 07.11.2026 · Sitzung Reiselogbuch 0089 · **Wortlaut zur Bestätigung** (0 Nr. 29)
+Stand 07.11.2026 · Sitzung Reiselogbuch 0089 · **Wortlaut bestätigt** (Nutzer 07.11.2026: V-1, V-2 und D-1 bis D-12, ‚Ja, beides‘ – kommt mit AppDesign 4.55.0 statt APD-113)
 
 ## Entscheidungen (Nutzer 07.11.2026, Sitzung 0089)
 
