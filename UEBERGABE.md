@@ -29,16 +29,16 @@ ganze Zusammenarbeit** (0 Nr. 15); die Arbeitsumgebung steht in der AppDesign-`C
   `… 2.txt`): der Mehr-Knopf öffnet auch ganz oben (y 21 viermal); kein Klick bis y 20 (P-97/6). Das Safari-Modell (`KEIN_KLICK_OBEN` = 23) wird auf 21
   gesetzt, Designrichtlinie 13 ‚Am oberen Rand kein Klick‘ neu gefasst – `arbeit/APD-121 Wortlaut und Testfall-Liste.md` (APD-121/V-1, Y-1 bis Y-7).
   Nebenbefund APD-121/B-5: Safari schickt einen Tipp neben dem Knopf an den Knopf – nicht als Thema eingetragen.
-- **APD-115 nachgestellt und entschieden** – `arbeit/APD-115 Befund.md`: die App rollt nur nach dem Feld, nie nach der Überschrift (B-1 bis B-6);
-  entschieden E-3 (V-3 wie Apple: nur so weit rollen, dass das Feld über der Tastatur liegt; mehrzeilig Cursorzeile + ½ Zeile; ändert R-4.5),
-  E-4 (keine neue Regel zur Bezeichnung, ‚nur Apple-like‘), E-5 (Muster für den Verlauf: Bezeichnung direkt über dem Feld).
+- **APD-115 nachgestellt und entschieden** – `arbeit/APD-115 Befund.md`: die App rollt nur nach dem Feld, nie nach der Überschrift (APD-115/B-1 bis B-6);
+  entschieden APD-115/E-3 (APD-115/V-3 wie Apple: nur so weit rollen, dass das Feld über der Tastatur liegt; mehrzeilig Cursorzeile + ½ Zeile; ändert R-4.5),
+  APD-115/E-4 (keine neue Regel zur Bezeichnung, ‚nur Apple-like‘), APD-115/E-5 (Muster für den Verlauf: Bezeichnung direkt über dem Feld).
 - **Selbstkritik 0089:** nach Neustarts des Arbeitsprozesses dreimal ein Fenster ohne Uhrzeitzeile und Satz ‚Kontext N‘ davor; einmal ‚Mehr-Knöpf‘ im
   Fenster. Abhilfe: nach jedem Neustart zuerst die Ausgabe mit Uhrzeitzeile und ‚Kontext N‘, dann das Fenster.
 
 ## 3. Nächster Schritt
 
 1. Lesen wie immer; Lagebild als eigene Antwort (Fenster ‚Lagebild bereit – anzeigen?‘, danach als letzte Ausgabe). Repos dazuholen, Tests einrichten.
-2. **APD-115 Muster** (E-5): Apple-Abgleich, Testfall-Liste, Muster nur hell – Tageserfassung mit V-3 (Rollen wie Apple) und der Bezeichnung
+2. **APD-115 Muster** (APD-115/E-5): Apple-Abgleich, Testfall-Liste, Muster nur hell – Tageserfassung mit APD-115/V-3 (Rollen wie Apple) und der Bezeichnung
    ‚Verlauf‘ direkt über dem Feld; dazu Wortlaut R-4.5 (0 Nr. 29).
 3. Danach die **Bau-Frage** im Fenster: ‚Soll ich Version AppDesign 4.55.0 / Reiselogbuch 3.53.0 mit APD-122, APD-113 Teile (1) bis (4), APD-121 und
    RLB-119 erstellen? (Kontext N) Ja/Nein‘ – nach ‚Ja‘ bauen nach den Arbeitsdateien; jede neue Prüfung zuerst rot gegen 4.54.0 / 3.52.0 (0 Nr. 1);
@@ -55,5 +55,5 @@ In der neuen Sitzung müssen **AppDesign** und **ReiseLogBuch** verfügbar sein;
 ```
 Reiselogbuch 0090 – APD-115 Muster (Rollen wie Apple), danach Bau 4.55.0 / 3.53.0
 
-Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md, dann die GANZE Zusammenarbeit allgemein (Kasten ‚Immer‘ und ‚Jede Antwort‘ oben in Abschnitt 0 gilt ab der ersten Antwort) und die Überschriften der Designrichtlinien. Prüfe Modell und Aufwand (Sitzungsdatei, auch model_fallback), hole das Repo g811141a/ReiseLogBuch dazu, wie in der AppDesign-CLAUDE.md unter ‚Arbeitsumgebung‘, richte die Tests ein und prüfe, ob der Regelwächter läuft. Lagebild als eigene Antwort (Fenster ‚Lagebild bereit – anzeigen?‘, danach das Lagebild als letzte Ausgabe), dann weiter nach UEBERGABE.md Abschnitt 3: APD-115 Muster (arbeit/APD-115 Befund.md, E-3 bis E-5), danach die Bau-Frage.
+Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md, dann die GANZE Zusammenarbeit allgemein (Kasten ‚Immer‘ und ‚Jede Antwort‘ oben in Abschnitt 0 gilt ab der ersten Antwort) und die Überschriften der Designrichtlinien. Prüfe Modell und Aufwand (Sitzungsdatei, auch model_fallback), hole das Repo g811141a/ReiseLogBuch dazu, wie in der AppDesign-CLAUDE.md unter ‚Arbeitsumgebung‘, richte die Tests ein und prüfe, ob der Regelwächter läuft. Lagebild als eigene Antwort (Fenster ‚Lagebild bereit – anzeigen?‘, danach das Lagebild als letzte Ausgabe), dann weiter nach UEBERGABE.md Abschnitt 3: APD-115 Muster (arbeit/APD-115 Befund.md, APD-115/E-3, APD-115/E-4 und APD-115/E-5), danach die Bau-Frage.
 ```
