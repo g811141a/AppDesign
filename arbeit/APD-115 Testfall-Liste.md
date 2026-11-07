@@ -1,6 +1,13 @@
 # APD-115 – Rollen wie Apple (APD-115/V-3) und Bezeichnung über dem Feld: Apple-Abgleich, Muster, Testfall-Liste
 
-Stand 07.11.2026 · Sitzung Reiselogbuch 0090 · Grundlage `arbeit/APD-115 Befund.md` (APD-115/E-3, APD-115/E-4, APD-115/E-5) · **Muster, noch nicht bestätigt**
+Stand 07.11.2026 · Sitzung Reiselogbuch 0090 · Grundlage `arbeit/APD-115 Befund.md` (APD-115/E-3, APD-115/E-4, APD-115/E-5) · **Muster: Variante A gewählt, Wortlaut R-4.5 bestätigt, am Gerät ‚nicht ok‘ (Einzelheiten offen)**
+
+## Rückmeldung (Nutzer 07.11.2026, Sitzung 0091)
+
+- APD-115/E-6 Variante A (APD-115/V-4): ‚Verlauf‘ direkt über dem Feld, Vorschläge darunter.
+- APD-115/E-7 Wortlaut R-4.5 ‚Neu‘ (unten) bestätigt (0 Nr. 29) – geht mit dem Bau von APD-115.
+- APD-115/E-8 Schritte am Gerät ‚nicht ok‘ – welche Schritte und was, wird erfragt; danach nach 0 Nr. 1 zuerst den Ablauf als feste Prüfung
+  nachbauen (rot gegen das Muster), dann beheben.
 
 ## Apple-Abgleich (0 Nr. 23, 2.6)
 
