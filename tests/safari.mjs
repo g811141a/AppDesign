@@ -224,12 +224,18 @@ export async function safariModell(p, ansicht, { leisten = { bar: '.nb, .pnav', 
       if (s.offen && a?.matches?.('input, textarea') && e.target.closest?.('button')) a.blur();
     }, true);
     document.addEventListener('focusout', e => { if (e.target.matches?.('input, textarea')) s.blur = true; }, true);
-    // APD-115/N-16 (dritte Messung 07./08.11.2026, W-4): Fokus, den die App im touchend selbst setzt (Loslassen abgefangen) – s.te ist das
-    // touchend, solange es läuft (eventPhase ≠ 0); window vor jedem Hörer der Seite
-    window.addEventListener('touchend', e => { s.te = e; }, true);
+    // APD-115/N-16 (dritte Messung 07./08.11.2026, W-4): Fokus, den die App selbst setzt (focus() aus dem Programm), während der Finger liegt
+    // bzw. im touchend der App – s.finger gilt von touchstart bis nach dem touchend (die Hörer der App laufen vor denen des Modells)
+    if (werte.fokusSelbst && !HTMLElement.prototype.focus.__safari) {
+      const fokus = HTMLElement.prototype.focus;
+      HTMLElement.prototype.focus = function (...a) { s.programm = (s.programm || 0) + 1; try { return fokus.apply(this, a); } finally { s.programm--; } };
+      HTMLElement.prototype.focus.__safari = true;
+    }
+    window.addEventListener('touchstart', () => { s.finger = true; }, true);
+    window.addEventListener('touchend', () => setTimeout(() => { s.finger = false; }), true);
     // APD-36/S-7: window vor document – läuft vor jedem Fokus-Hörer der Seite
     window.addEventListener('focusin', e => { const r = e.target.getBoundingClientRect?.(), jetzt = performance.now();
-      s.selbst = werte.fokusSelbst && !!s.te && s.te.eventPhase !== 0 ? { el: e.target, r: r ? { top: r.top, bottom: r.bottom } : null, top: s.top(), h: s.hoehe() } : null;
+      s.selbst = werte.fokusSelbst && s.finger && s.programm > 0 ? { el: e.target, r: r ? { top: r.top, bottom: r.bottom } : null, top: s.top(), h: s.hoehe() } : null;
       // APD-115/N-11 (Messung 07.11.2026): bei offener Tastatur zählt die Lage beim ersten Fokus – ein neuer Fokus im focusin (APD-36/S-8) ändert sie nicht
       if (!(werte.apd115 && s.offen && s.fokusLage?.el === e.target && jetzt - s.fokusLage.t < 100)) s.fokusLage = r ? { el: e.target, r: { top: r.top, bottom: r.bottom }, t: jetzt } : null;
       // APD-36/S-9: Rollstand beim ersten Fokus eines Felds im Inhalt merken (ein neuer Fokus desselben Felds ändert ihn nicht)
