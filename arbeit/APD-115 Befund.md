@@ -32,3 +32,17 @@ hinausgerollt war.
 - So macht es Apple (Vermutung, nicht geprüft): iOS rollt in Formularen nur so weit, dass das Feld über der Tastatur steht; die Überschrift einer
   Gruppe bleibt dabei nicht eigens stehen.
 - Offen: ob 16 px Abstand zur Tastatur zugunsten der Überschrift auf z. B. 8 px sinken dürfen (B-1).
+
+## Variante des Nutzers (07.11.2026, Sitzung 0089) und Apple-Abgleich
+
+- APD-115/V-2 (Nutzer): wie Apple nur so weit rollen, dass das Feld über der Tastatur liegt; passt ein mehrzeiliges Feld nicht ganz, liegen nur
+  seine ersten 1,5 Zeilen über der Tastatur.
+- APD-115/V-3 (Claude, Abwandlung von V-2): statt der ersten 1,5 Zeilen die Zeile mit dem Cursor und eine halbe Zeile darunter – sonst läge der Cursor
+  bei einem langen Text unter der Tastatur.
+- Apple (HIG ‚Text fields‘, gelesen 07.11.2026): ‚Show a hint in a text field to help communicate its purpose.‘ · ‚Because placeholder text disappears
+  when people start typing, it can also be useful to include a separate label describing the field to remind people of its purpose.‘ · ‚To let people
+  input larger amounts of text, use a text view instead.‘ – zum Rollen bei der Tastatur sagt die Seite nichts.
+- UIKit (Zweitquellen, nicht Apple selbst): Tabellen rollen das Feld mit Fokus von selbst über die Tastatur; ein Textbereich (UITextView) rollt so,
+  dass der Cursor sichtbar ist.
+- Eigene Regeln: R-5.1 (Bezeichnung und Feld gehören zusammen), R-5.8 (Schrift der Bezeichnungen) – eine Regel ‚jedes Feld hat eine sichtbare
+  Bezeichnung‘ gibt es nicht; z. B. ‚Ort für Google Maps‘ (`#fPlace`) hat nur Platzhalter und `aria-label`.
