@@ -119,6 +119,14 @@ Tastatur 274) und Nachstellung im Safari-Modell (Skript nur in der Sitzung):
     geschieht in Schritt 5 (Quartier), der als ruhig gemeldet ist. Nachgefragt: welche Variante, was bewegt sich.
   - Schritt 8 (x, ‚Änderungen verwerfen‘): Rollstand des Fensters bleibt in allen vier (930, 793, 1438, 1362), Kopfzeile und Fensterkopf ruhig – die
     Korrektur aus APD-115/N-13 (`gemeldet`) wirkt am Gerät.
+  - **Nachgefragt (Nutzer 07.11.2026):** Schritt 7 ruckelt **nur bei W-3**, das **ganze Fenster**. Vermutung (nicht gemessen): W-3 setzt den Rollstand
+    beim Loslassen (793 → 930); am iPad kommt ‚scroll‘ des Fensters erst 2,2 s später (18124 ms, Rollstand unverändert 930; iPhone nach 40 ms) –
+    Safari rückt das Fenster am iPad vermutlich erst dann sichtbar nach, die Messung liest den Rollstand der Seite und sieht es nicht. W-4 rollt nicht.
+- APD-115/E-11 Entscheidung (Nutzer 07.11.2026, Sitzung 0094): **W-4** ‚Fokus selbst setzen‘ (am Gerät ruhig in Schritt 6, 7 und 8, iPad quer und iPhone
+  hoch). Offen vor dem Bau: (1) Safari-Modell (`tests/safari.mjs`, Option `apd115`): setzt die App den Fokus selbst (`focus({ preventScroll: true })`
+  im `touchend`), verschiebt Safari nicht – M-7/M-11 für W-4 danach als Fehler statt Hinweis; (2) Fall ‚Ort unter der Tastatur, nicht hochgeschoben‘
+  (W-4 rollt dann nach V-3 bis 16 px über die Tastatur) ist am Gerät nicht gemessen – kurze Messung oder Testfall (User) im Usertest; (3) danach
+  APD-115 bereit (eigene Version nach 4.55.0, 0 Nr. 8): W-4 ins Bauskript als einzige Variante, Option `apd115` zum Standard, bestehende Prüfungen anpassen.
 
 ## Apple-Abgleich (0 Nr. 23, 2.6)
 
