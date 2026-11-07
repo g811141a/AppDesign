@@ -1,6 +1,6 @@
 # AppDesign – Hinweise für Claude
 
-**Version 2.10.0** · Stand 31.10.2026
+**Version 2.11.0** · Stand 07.11.2026
 
 ## Zuerst lesen (gezielt, Zusammenarbeit 0 Nr. 15)
 
@@ -14,7 +14,7 @@
 
 Alle Regeln stehen in der Zusammenarbeit allgemein (hier keine Wiederholung) – zuerst der Kasten ‚Jede Antwort‘, dazu Startfrage ohne Auftrag (0 Nr. 19),
 nie ohne ‚Ja‘ bauen (0 Nr. 21), Testfall-Liste vor jedem Bau (0 Nr. 1), erst Usertests, dann Neues (0 Nr. 22), Auswahlfenster mit
-‚Ich schreibe im Chat‘ (0 Nr. 7) und die Zeile mit Zeit und Token am Ende jeder Antwort (`node werkzeug/messung.mjs`, 2.2).
+‚Ich schreibe im Chat‘ (0 Nr. 7) und ‚(Kontext N)‘ in jeder Frage im Fenster (`node werkzeug/messung.mjs`, 2.2).
 
 ## Technisch
 
@@ -50,10 +50,7 @@ nie ohne ‚Ja‘ bauen (0 Nr. 21), Testfall-Liste vor jedem Bau (0 Nr. 1), erst
   ln -sfn /opt/pw-browsers/chromium-1243/chrome-linux64 /opt/pw-browsers/chromium-1194/chrome-linux &&
   ln -sfn /opt/pw-browsers/chromium_headless_shell-1243/chrome-headless-shell-linux64 /opt/pw-browsers/chromium_headless_shell-1194/chrome-linux &&
   ln -sfn chrome-headless-shell /opt/pw-browsers/chromium_headless_shell-1243/chrome-headless-shell-linux64/headless_shell`.
-- **Regelwächter** (Zusammenarbeit 2.8): einmal ins Setup-Skript der Umgebung (Umgebungsmenü → Bearbeiten → Setup-Skript) den
-  Text von `node werkzeug/regelwaechter.mjs setup` – er schreibt den Starter `~/.claude/regelwaechter.sh` und `~/.claude/settings.json`
-  mit den Hooks (UserPromptSubmit, PostToolUse, PreToolUse für das Auswahlfenster, Stop). Wirkt ab der nächsten Sitzung; Prüfung
-  `node tests/regelwaechter.mjs` (`--gegenprobe`).
+- **Regelwächter** (Zusammenarbeit 2.8): abgeschaltet (APD-123); Werkzeug und Prüfung bleiben im Repo, nicht einrichten.
 - **Veröffentlichen** (Zusammenarbeit 0 Nr. 9): Vorbereitungs-Zweige `vorbereitung-X.Y.Z` in beiden Repos;
   `node werkzeug/veroeffentlichen.mjs vorbereiten --ad X.Y.Z --app reiselogbuch=X.Y.Z` (ohne `--ad`, wenn nur die App); Texte
   schreiben (CHANGELOG mit Testfällen, Backlog, Versionsgeschichten); nach Änderungen an `v4/` oder `tests/` bzw. an Designrichtlinie
@@ -70,6 +67,7 @@ nie ohne ‚Ja‘ bauen (0 Nr. 21), Testfall-Liste vor jedem Bau (0 Nr. 1), erst
 
 | Version | Datum | Inhalt |
 |---|---|---|
+| 2.11.0 | 07.11.2026 | APD-123: ‚(Kontext N)‘ in jeder Frage im Fenster statt der Zeile mit Zeit und Token; Regelwächter abgeschaltet (Wortlaut bestätigt 07.11.2026, Sitzung 0089) |
 | 2.10.0 | 31.10.2026 | APD-102: `los` führt eine neuere `main` vor dem Prüflauf in die Vorbereitungs-Zweige zusammen (bei Konflikt Abbruch vorher), ~60 min (Wortlaut bestätigt 31.10.2026, Sitzung 0065) |
 | 2.9.0 | 26.10.2026 | APD-84: zu Beginn die ganze Zusammenarbeit (Kasten ‚Jede Antwort‘); Regelwächter über das Setup-Skript einrichten |
 | 2.8.0 | 25.10.2026 | APD-78 Nummernschema: Verweise mit den neuen Nummern (APD-n, RLB-n, Usertest, Testfall-Liste); Tabelle alt → neu in `ZUORDNUNG.md` |

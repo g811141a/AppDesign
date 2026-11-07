@@ -88,7 +88,7 @@ u = ersetze(u, `// Feld ganz über der Tastatur (R-4.5, seit 4.28.0)`, `// -----
 // - einzeilig bzw. passt das Feld ganz: es endet 16 px über der Tastatur (im Inhalt 28 px – Safari verschiebt sonst, APD-36/S-5 ABSTAND 24);
 // - mehrzeilig und zu hoch: die Zeile mit dem Cursor und eine halbe Zeile darunter (beim Antippen die Zeile unter dem Finger);
 // - Feld wechseln bei offener Tastatur: APD-115/W-1 (?w=1) genauso, ganz sichtbar: nichts; APD-115/W-2 (Standard) zusätzlich höchstens bis
-//   zur Mitte des sichtbaren Teils und neuer Fokus, damit Safari die Lage danach liest (Befund APD-115/N-1 bis N-8, Messung 07.11.2026);
+//   zur Mitte des sichtbaren Teils und neuer Fokus, damit Safari die Lage danach liest (Befund APD-115/N-1 bis APD-115/N-8, Messung 07.11.2026);
 // - nie höher als Umrandung und Schatten unter dem oberen Rand des Bereichs (fokusRand). ≤ 0: nichts rollen.
 const zeilenHoehe = f => { const s = getComputedStyle(f), lh = parseFloat(s.lineHeight); return Number.isFinite(lh) ? lh : parseFloat(s.fontSize) * 1.45; };
 // Zeile mit dem Cursor (Bildschirm): Spiegel mit dem Text bis zum Cursor
@@ -151,7 +151,7 @@ u = ersetze(u, "if (window.visualViewport) ['resize', 'scroll'].forEach(t => vis
 // Jeder Rollbereich bekommt vorher Platz, knapp nimmt danach zurück, was nicht nötig ist.
 u = ersetze(u, "  cs.forEach(c => { if (platzVon(c)) platz(c, 2000); });\n  placeDialogs();\n  cs.forEach((c, i) => { if (platzVon(c)) { c.scrollTop = y[i]; knapp(c); } });",
   "  cs.forEach(c => platz(c, 2000));\n  placeDialogs();\n  cs.forEach((c, i) => { c.scrollTop = y[i]; knapp(c); });");
-// APD-115/W-3, W-4 (Sitzung 0093, APD-115/N-13, E-10): ein anderes Feld bei offener Tastatur antippen – Safari stellt es nach dem Fokus selbst in die
+// APD-115/W-3, W-4 (Sitzung 0093, APD-115/N-13, APD-115/E-10): ein anderes Feld bei offener Tastatur antippen – Safari stellt es nach dem Fokus selbst in die
 // Mitte des sichtbaren Teils und verschiebt dafür sichtbar die Seite (Kopfzeile und Fenster ruckeln). W-3: vor dem Fokus (beim Loslassen) so weit rollen,
 // wie Safari verschieben würde – Safari liest die Lage beim Fokus (APD-36/S-7) und verschiebt nicht. W-4: das Loslassen abfangen, Fokus selbst setzen.
 u = ersetze(u, "addEventListener('focusout', () => { if (!neuFokus) halten = null; }, true);", `addEventListener('touchend', e => {

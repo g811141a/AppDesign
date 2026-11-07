@@ -1,6 +1,6 @@
 # Designrichtlinie allgemein
 
-**Version 4.54.0** · Stand 07.11.2026
+**Version 4.55.0** · Stand 07.11.2026
 
 Allgemeine Gestaltungs- und Bedienregeln für alle Web-Apps von g811141a auf iPad und iPhone. Die Datei liegt im Design-Repo
 **AppDesign** (g811141a/AppDesign); ihre Versionsnummer ist die des Repos. Die Komponenten sind dort einmal programmiert und
@@ -553,10 +553,12 @@ Gemessene bzw. belegte Eigenheiten mit Quelle; sie gelten für alle Apps, die Pr
   `click` an das Element unter dem Aufsetzen, auch wenn der Finger weit gewandert ist (gemessen bis 154 px), solange nichts gerollt hat
   (kein `pointercancel`) – als eigene Aufgabe 1–4 ms nach `pointerup`, also nach einem `setTimeout 0`. Eine Sperre ‚Wischen tippt nie an‘
   gilt deshalb bis zum Loslassen und danach noch 400 ms für genau diesen einen Klick und zählt den größten Weg. iPad: Vermutung.
-- **Am oberen Rand kein Klick (iPhone quer, Home-Bildschirm):** eine Berührung bei y ≈ 20 px liefert `pointerdown`/`pointerup`, aber keinen `click` –
-  bei y = 26 und weiter unten schon (Messung 06.11.2026, P-97/6, iOS 18.7). Was beim Antippen schließen soll (Sperrschicht hinter Menüs und Sprechblasen),
-  schließt deshalb beim Loslassen (bis 20 px Weg) und verschluckt einen Klick danach; das Safari-Modell schickt dort keinen Klick (`obenOhneKlick`,
-  eingeschaltet in den Prüfungen zum oberen Rand – überall an, fiele der Tipp auf die Mitte des Mehr-Knopfs, y 16, in allen Prüfungen weg).
+- **Am oberen Rand kein Klick (iPhone quer, Home-Bildschirm):** eine Berührung bis y 20 px liefert `pointerdown`/`pointerup`, aber keinen `click` –
+  ab y 21 schon (Messungen 06.11.2026, P-97/6, und 07.11.2026, APD-121, iOS 18.7: y 20 ohne Klick, y 21 viermal mit Klick). Der Mehr-Knopf öffnet
+  deshalb auch ganz oben angetippt; höher als y 21 kommt der Finger am Gerät nicht. Was beim Antippen schließen soll (Sperrschicht hinter Menüs und
+  Sprechblasen), schließt beim Loslassen (bis 20 px Weg) und verschluckt einen Klick danach; das Safari-Modell schickt bis y 20 keinen Klick
+  (`obenOhneKlick`, Grenze `KEIN_KLICK_OBEN` = 21, eingeschaltet in den Prüfungen zum oberen Rand – überall an, fiele der Tipp auf die Mitte des
+  Mehr-Knopfs, y 16, in allen Prüfungen weg).
 - **Neustart ist nicht erkennbar** (R-7.2): Safari meldet nicht, **warum** eine Seite neu lädt. Als Neustart zählt jedes
   Neuladen: App im App-Umschalter weggewischt, **von iOS im Hintergrund beendet** (Speicher – auch nach kurzer Zeit in einer
   anderen App) oder neue Version geladen. Bleibt die Seite im Speicher, kommen nur `visibilitychange` und `pageshow` (aus dem
@@ -571,7 +573,7 @@ Gemessene bzw. belegte Eigenheiten mit Quelle; sie gelten für alle Apps, die Pr
   Darstellung, Auswahl-Kapsel, Tastatur/sichtbarer Bereich, Beträge, Backup und Abgleich, Offline, Messmodus, Rollbereich,
   iPhone-Erkennung `isPhone()`), `apple-referenz/` (Vergleichsbilder), `tests/` (Prüfungen des Regelkatalogs, Messdateien in
   `tests/messungen/` zum Abspielen, 15.21), `vorlage/index.html` (Startpunkt für neue Apps), `werkzeug/` (Veröffentlichen,
-  Zeitzeile), `arbeit/` (Muster, Testfall-Listen, Auswertungen).
+  Kontextstand), `arbeit/` (Muster, Testfall-Listen, Auswertungen).
 - **Einbindung:** Jede App lädt die Bausteine von GitHub Pages aus **ihrer** Fassung:
   `<link rel="stylesheet" href="../AppDesign/fassung/X.Y.Z/design.css">` im `<head>` vor dem eigenen `<style>`,
   `<script src="../AppDesign/fassung/X.Y.Z/ui.js"></script>` am Ende von `<body>` vor dem Skript der App. Der Service Worker der
@@ -645,6 +647,9 @@ Regel). In AppDesign ist jede Komponente einmal programmiert (`v4/design.css`, `
   werden alle Wörter, längere zuerst, aneinanderstoßende Stellen als eine Markierung. Was ‚ein Eintrag‘ ist, legt die App fest.
 - **Ohne Akzente** (wie Apple): ‚Zurich‘ findet ‚Zürich‘ und umgekehrt, ‚cafe‘ findet ‚Café‘; markiert wird das Wort, wie es im
   Text steht. ß, ø, æ sind eigene Buchstaben (‚Strasse‘ findet ‚Straße‘ nicht).
+- **Smileys (Emoji)** werden gesucht, markiert und gezählt wie ein Wort – überall, wo sie stehen, auch in einer eigenen
+  Smiley-Spalte am Zeilenanfang. Markiert wird immer das ganze Zeichen (mit Hautton). ‚☕‘ und ‚☕️‘ gelten als gleich;
+  ‚👍‘ findet auch ‚👍🏽‘, ‚👍🏽‘ nur ‚👍🏽‘.
 - **Verhalten:** Suche beim Tippen (Markierung sofort); jede Markierung ist ein Treffer; zum ersten wird erst nach einer kurzen
   Tipp-Pause (ca. 0,5 s) gesprungen. Der Treffer steht dann **direkt unter der Suchzeile** (und dem Tabellenkopf), nicht in der
   Bildmitte. Kopf- und Suchzeile bleiben fest oben, auch bei offener Tastatur. Treffer gelb (`--mark`), Treffer im Fokus
@@ -1207,7 +1212,7 @@ Testfall (User) in den Usertest, wenn eine Version es betrifft.
 |---|---|---|---|---|
 | R-2.1 | **Leisten stehen fest – keinen Millimeter:** Kopfzeile, Seitenkopf, Seitenleisten-Kopf, mit und ohne Suchzeile, beim Wischen, am Rand, bei offener und beim Schließen der Tastatur; nichts federt; erstes Wischen bei offener Tastatur schließt nur die Tastatur. **Die Seite rollt nie, nur der Inhalt** – Rahmen mit festen Zeilen und Rollbereich, so hoch wie der sichtbare Bereich | hig.mjs – `barStill`: Lage der Leiste beim Rollen des Inhalts gemessen, auch mit nachgebildeter Tastatur; Grundregel ‚Seite rollt nie‘ (`scrollY` bleibt 0) | Federn, Tastatur, Wischgefühl | 13, 15.22 |
 | R-2.2 | **Titel in der Leiste:** Titel einer Inhaltsseite steht in der Leiste; unter dem Titel der Seitenleiste bzw. Startliste klein und grau die Anzahl | hig.mjs | – | 15.4, 15.17 |
-| R-2.3 | **Suche:** Suchzeile unter der Leiste über die volle Breite; Treffer ‚3 von 57‘ bzw. ‚0‘; nach kurzer Pause steht der Treffer direkt unter der Suchzeile; Pfeile ohne Umlauf; gefiltert auf Einträge mit Treffern; gleich auf iPad und iPhone; beim Tippen bleibt das Suchfeld dasselbe Feld mit Fokus; **mehrere Wörter** (alle müssen vorkommen, Reihenfolge egal, „…“ = genaue Folge, alle markiert; die Einheit legt die App fest); **geöffnet über ‚Suchen‘ als ersten Punkt im Mehr-Menü** (darunter ein Strich) oder ⌘F, **beendet mit dem runden x rechts in der Suchzeile**, keine Lupe in der Kapsel; **auch in der zentralen Liste** (‚Suchen‘ im Mehr-Menü der Seitenleiste): filtert die Einträge, Kachel ‚N Treffer‘ je Fundstelle wie ‚1 von N‘, Öffnen mit gefüllter Suche, beide Suchfelder offen = 1:1, ‚Keine Treffer‘; **Suche öffnen und ⓧ rollen den Inhalt ganz nach oben**, der Fokus bleibt im Feld; **ohne Akzente** (‚Zurich‘ findet ‚Zürich‘ und umgekehrt, markiert wird das Wort wie im Text; ß, ø, æ sind eigene Buchstaben) | ablauf.mjs – `checkSearch`, `checkListSearch`, `checkSearchWords`, `checkSearchPlace`, Feld bleibt beim Tippen, `checkSearchTop`, `checkSucheBeenden`, `checkCmdF` | – | 15.2, 15.4, 15.5 |
+| R-2.3 | **Suche:** Suchzeile unter der Leiste über die volle Breite; Treffer ‚3 von 57‘ bzw. ‚0‘; nach kurzer Pause steht der Treffer direkt unter der Suchzeile; Pfeile ohne Umlauf; gefiltert auf Einträge mit Treffern; gleich auf iPad und iPhone; beim Tippen bleibt das Suchfeld dasselbe Feld mit Fokus; **mehrere Wörter** (alle müssen vorkommen, Reihenfolge egal, „…“ = genaue Folge, alle markiert; die Einheit legt die App fest); **Smileys** wie Wörter gesucht, markiert und gezählt, auch am Zeilenanfang, markiert als ganzes Zeichen; **geöffnet über ‚Suchen‘ als ersten Punkt im Mehr-Menü** (darunter ein Strich) oder ⌘F, **beendet mit dem runden x rechts in der Suchzeile**, keine Lupe in der Kapsel; **auch in der zentralen Liste** (‚Suchen‘ im Mehr-Menü der Seitenleiste): filtert die Einträge, Kachel ‚N Treffer‘ je Fundstelle wie ‚1 von N‘, Öffnen mit gefüllter Suche, beide Suchfelder offen = 1:1, ‚Keine Treffer‘; **Suche öffnen und ⓧ rollen den Inhalt ganz nach oben**, der Fokus bleibt im Feld; **ohne Akzente** (‚Zurich‘ findet ‚Zürich‘ und umgekehrt, markiert wird das Wort wie im Text; ß, ø, æ sind eigene Buchstaben) | ablauf.mjs – `checkSearch`, `checkListSearch`, `checkSearchWords`, `checkSearchPlace`, Feld bleibt beim Tippen, `checkSearchTop`, `checkSucheBeenden`, `checkCmdF` | – | 15.2, 15.4, 15.5 |
 | R-2.4 | **iPhone quer: niedrige Leisten** (wie iOS quer): Kopfzeile, Suchzeile und Fensterkopf 32 statt 44 px hoch – Knöpfe in Kapseln 31 px, runde Knöpfe 32 × 32 mit Antippfläche 44 × 44, das Suchfeld als Kapsel 32 px (R-3.1: Kapseln ab 28); damit liegen Suche und Felder darunter bei offener Tastatur in der oberen Hälfte (R-4.5). Hoch und am iPad 44 px | hig.mjs – Höhe der Knöpfe und des Suchfelds in Kopfzeile und Fensterkopf (iPhone quer 32, hoch 44) | – | 15.3, 15.8 |
 | R-2.5 | **Gekürzter Titel:** ein mit ‚…‘ gekürzter Titel in Kopfzeile oder Fenster-Kopfzeile zeigt beim langen Drücken den ganzen Titel in einer Sprechblase darunter – ganz sichtbar, bis zum nächsten Tippen (das nur sie schließt), Rollen, Esc oder Drehen; ein ganz sichtbarer Titel und kurzes Antippen zeigen nichts | ablauf.mjs | – | 15.3, 15.8 |
 | R-2.6 | **Großanzeige für Leisten-Knöpfe:** ab der Textgröße AX1 zeigt langes Drücken (R-3.5) auf einen Knopf einer Leiste (Kopfzeile, Fenster-Kopfzeile, Seitenleiste, schwebende Knöpfe) Icon und Namen groß in der Mitte des Bildschirms; Gleiten über die Knöpfe wechselt die Anzeige, Loslassen über einem Knopf löst ihn aus, daneben schließt sie nur; unter AX1 und bei kurzem Antippen nichts davon | ablauf.mjs | Gleiten, keine Lupe | 15.1, 15.3, 15.4, 15.8 |
@@ -1370,6 +1375,7 @@ R-2.3 (15.2), R-4.4 (6, 15.8, HIG 9), R-5.3 (8), R-5.4 (15.12), R-5.5 (APD-14), 
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 4.55.0 | 07.11.2026 | Neben | **APD-122, APD-121, APD-123 (Nutzer 07.11.2026, Sitzungen 0088 und 0089, Wortlaut bestätigt):** 15.2 neuer Punkt ‚Smileys (Emoji)‘ und R-2.3 – Smileys wie Wörter gesucht, markiert und gezählt, auch am Zeilenanfang, markiert als ganzes Zeichen (APD-122/V-1, V-2); 13 ‚Am oberen Rand kein Klick‘ – bis y 20 kein Klick, ab y 21 schon, Grenze `KEIN_KLICK_OBEN` = 21 (APD-121/V-1); 14 `werkzeug/` ‚Kontextstand‘ statt ‚Zeitzeile‘ (APD-123/D-8) |
 | 4.54.0 | 07.11.2026 | Neben | **APD-118, APD-119, APD-120 (Nutzer 06.11.2026 und 07.11.2026, Sitzungen 0085 bis 0087, Wortlaut bestätigt):** 13 neu ‚Am oberen Rand kein Klick‘ (Sperrschicht schließt beim Loslassen, Safari-Modell `obenOhneKlick`) und ‚‚Transparenz reduzieren‘ kommt in der Web-App nicht an‘; R-3.9 deckend, wo der Browser es meldet, und mit dem Schalter ‚Glas‘ aus (Prüfung `checkGlas` mit Schalter); 15.6 Schalter im Menü |
 | 4.53.0 | 06.11.2026 | Neben | **APD-38/T-16 und APD-38/T-37 (Nutzer 06.11.2026, Sitzungen 0082 und 0083, Wortlaut bestätigt):** Regelkatalog 17 – neu R-4.13 ‚Menüs und Sprechblasen wachsen aus der Schaltfläche‘ (0,35 s aus der Schaltfläche, 0,25 s zurück, mitten im Öffnen ab der aktuellen Stelle, ‚Bewegung reduzieren‘ nur Überblenden; Prüfung `checkWachsen`, Testfall-Liste APD-62/M-1 bis M-11) und R-3.9 ‚Schwebendes aus Glas‘ (Kapsel Nach oben / Ans Ende, Menüs, untere Leiste – 75 % deckend, Unschärfe 20 px, Sättigung 180 %, ‚Transparenz reduzieren‘ deckend; Prüfung `masseStile`, `checkGlas`, Testfall-Liste APD-62/L-1 bis L-10); Verweise in 1, 15.1, 15.6, 15.7, 15.17 |
 | 4.52.0 | 05.11.2026 | Neben | **APD-40 Pakete B und C (Nutzer 05.11.2026, Sitzung 0081, Wortlaut bestätigt):** Regelkatalog 17 – neu R-4.10 ‚Menütexte‘ (Kontextmenü streng höchstens 3 Gruppen), R-4.11 ‚Menüpunkt und Fenster heißen gleich‘, R-4.12 ‚Erst fragen, dann zerstören‘, R-5.10 ‚Automatisch speichern‘ (spätestens 10 s nach der Änderung statt alle 10 s), R-10.6 ‚Ansprache‘, R-10.7 ‚Datum und Dateinamen‘; G-4, G-7, G-12, G-13 ersetzt, G-19 gekürzt; Verweise in 6, 8 und 10; Prüfungen `texteMenues` (hig.mjs, kontextmenue.mjs), `dateinameFehler`, `checkMenueFenster`, `checkAutoSpeichern`, `checkErstFragen` (ablauf.mjs), Gegenproben `--gegenprobe masse` |

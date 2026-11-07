@@ -3,6 +3,26 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.55.0 – 07.11.2026
+
+AppDesign 4.55.0 · Designrichtlinie allgemein 4.55.0 · Zusammenarbeit allgemein 3.10.0 · geprüft mit Reiselogbuch 3.53.0
+
+**APD-122, APD-123 und APD-121** – dein Ja vom 07.11.2026, Sitzung 0096. Wortlaut `arbeit/APD-122 RLB-119 Wortlaut und Testfall-Liste.md` (APD-122/V-1, V-2;
+Testfall-Liste APD-122/S-1 bis S-8), `arbeit/APD-123 Zusammenarbeit ohne Regelwächter Wortlaut.md` (APD-123/V-1, V-2, D-1 bis D-12),
+`arbeit/APD-121 Wortlaut und Testfall-Liste.md` (APD-121/V-1; Testfall-Liste APD-121/Y-1 bis Y-7). Usertest im Reiselogbuch: P-99.
+
+- **APD-122 – Smileys in der Suche wie Wörter (mit RLB-119):** `ui.js` `markWords` markiert einen Smiley als ganzes Zeichen – mit Hautton (‚👍‘ trifft
+  ‚👍🏽‘ ganz) und als Folge mit Verbinder (‚👨‘ trifft ‚👨‍👩‍👧‘ ganz); ‚👍🏽‘ trifft ‚👍‘ nicht, ‚☕‘ = ‚☕️‘. Designrichtlinie 15.2 neuer Punkt ‚Smileys (Emoji)‘,
+  R-2.3 ergänzt. Prüfung `checkSearchWords` APD-122/S-7 (rot gegen 4.54.0).
+- **APD-123 – Zusammenarbeit ohne Regelwächter (Zusammenarbeit 3.10.0):** Kasten ‚Jede Antwort‘ neu – Kachel am Ende, alles zum Lesen davor (im Chat und als
+  Datei im Seitenbereich), ‚(Kontext N)‘ in jeder Frage, keine Uhrzeit- und Zeitzeile; 0 Nr. 7, 11, 13–15, 21, 26–29, 2.1, 2.2 ‚Kontextstand‘, 2.3, 2.5, 2.8
+  ‚abgeschaltet‘; Designrichtlinie 14 ‚Kontextstand‘; AppDesign-`CLAUDE.md` 2.11.0. `werkzeug/messung.mjs` hängt ‚⚠ Modell …‘ an, wenn der letzte Aufruf nicht
+  Opus 5.5 ist (APD-123/D-6, `tests/messung.mjs`). `doku.mjs` `checkKachel` statt `checkNachFenster` (Gegenprobe `schema:APD-123/K-1`), `checkKasten` ohne
+  Nr. 26 und 2.2; `veroeffentlichen.mjs … los` ohne `tests/regelwaechter.mjs` (bleibt im Repo, APD-123/D-10).
+- **APD-121 – Mehr-Knopf am oberen Rand (iPhone quer):** Safari-Modell `KEIN_KLICK_OBEN` 23 → 21 (bis y 20 kein Klick, ab y 21 schon – Messungen 06. und
+  07.11.2026); `checkSchichtOben` APD-121/Y-1 bis Y-4 mit den gemessenen Werten y 21 und y 20 (Gegenprobe Grenze 23: Y-1 und Y-2 rot); Designrichtlinie 13
+  ‚Am oberen Rand kein Klick‘ neu gefasst.
+
 ## 4.54.0 – 07.11.2026
 
 AppDesign 4.54.0 · Designrichtlinie allgemein 4.54.0 · Zusammenarbeit allgemein 3.9.0 · geprüft mit Reiselogbuch 3.52.0

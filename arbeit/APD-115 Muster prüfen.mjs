@@ -32,7 +32,7 @@ async function neu(ansicht, v, iso = TAG) {
   const p = await t.seite(b, ansicht, { theme: 'light' });
   if (heute) await p.route(/APD-115\/ui\.js$/, r => r.fulfill({ path: new URL('../fassung/4.54.0/ui.js', import.meta.url).pathname, contentType: 'text/javascript' }));
   await oeffne(p, v, iso);
-  await safariModell(p, ansicht, { auto: true, leisten: STILL_LEISTEN, links: STILL_LINKS, apd115: true, fokusSelbst: process.env.PRUEF_FOKUS !== 'alt' });   // Modell mit Befund APD-115/N-11, N-16
+  await safariModell(p, ansicht, { auto: true, leisten: STILL_LEISTEN, links: STILL_LINKS, apd115: true, fokusSelbst: process.env.PRUEF_FOKUS !== 'alt' });   // Modell mit Befund APD-115/N-11, APD-115/N-16
   return p;
 }
 const E = (regel, was) => t.liste([`${t.ort}: ${regel} ${was}`]);
@@ -97,21 +97,21 @@ for (const ansicht of ['iPhone hoch', 'iPad quer', 'iPad hoch', 'iPhone quer'].f
       if (n.fokus && n.unten > n.kb + 1) E('APD-115/M-6', `nach dem Tippen am Ende: letzte Zeile (mit ½ Zeile) endet bei ${n.unten} px, Tastatur ab ${n.kb}`);
       await p.close();
     }
-    // APD-115/M-7: Feld wechseln bei offener Tastatur (Quartier → Ort) – kein Sprung; mit W-3 (ohne &w= = W-2, verworfen, springt im Modell seit N-13)
+    // APD-115/M-7: Feld wechseln bei offener Tastatur (Quartier → Ort) – kein Sprung; mit W-3 (ohne &w= = W-2, verworfen, springt im Modell seit APD-115/N-13)
     {
       const p = await neu(ansicht, `${v}&w=3`);
-      // iPhone quer: Ort höher als der sichtbare Teil, kann nicht in die Mitte – Safari verschiebt (30 px), Hinweis wie APD-115/A-3 (N-14 b)
+      // iPhone quer: Ort höher als der sichtbare Teil, kann nicht in die Mitte – Safari verschiebt (30 px), Hinweis wie APD-115/A-3 (APD-115/N-14 b)
       const f7 = await checkTastaturStill(p, { field: '#fQuarter', vorher: () => ansEnde(p, '#fQuarter'), wechsel: '#fPlace', where: `${t.ort} APD-115/M-7` });
       if (quer) f7.forEach(x => console.log(`ℹ ${x} – Ort höher als der sichtbare Teil (APD-115/A-3), am Gerät messen`)); else t.liste(f7);
       await p.close();
     }
-    // APD-115/M-7 geschärft (Befund APD-115/N-1 bis N-8, Messung 07.11.2026): wie am Gerät – Fenster oben bzw. unten, Quartier antippen, tippen, Ort
+    // APD-115/M-7 geschärft (Befund APD-115/N-1 bis APD-115/N-8, Messung 07.11.2026): wie am Gerät – Fenster oben bzw. unten, Quartier antippen, tippen, Ort
     // antippen. APD-115/W-1 (&w=1): nur so weit wie nötig – ganz sichtbar: nichts, sonst einmal bis 16 px (± 3) über der Tastatur; verschiebt Safari im
     // Modell (APD-36/S-6 b), wird es berichtet (am Gerät zu messen). APD-115/W-2 (&w=2): ein Schub, danach ganz über der Tastatur, Safari verschiebt nicht.
     // ‚geschoben‘ (Schritte am Gerät, Sitzung 0092): liegt Ort nach dem Tippen unter der Tastatur, schiebt der Nutzer das Fenster mit dem Finger hoch,
     // bis Ort ganz zu sehen ist (40 px über der Tastatur), dann tippt er Ort an.
-    // APD-115/W-3 (&w=3, E-10): beim Antippen rollt die App vor dem Fokus so weit, wie Safari verschieben würde – Safari verschiebt nicht, ein Schub;
-    // APD-115/W-4 (&w=4, E-11): Fokus selbst gesetzt, sonst wie W-1 – Safari verschiebt dann nicht (APD-115/N-16, am Gerät gemessen): Verschiebung = Fehler
+    // APD-115/W-3 (&w=3, APD-115/E-10): beim Antippen rollt die App vor dem Fokus so weit, wie Safari verschieben würde – Safari verschiebt nicht, ein Schub;
+    // APD-115/W-4 (&w=4, APD-115/E-11): Fokus selbst gesetzt, sonst wie W-1 – Safari verschiebt dann nicht (APD-115/N-16, am Gerät gemessen): Verschiebung = Fehler
     for (const w of ['1', '3', '4'])   // W-2 verworfen (APD-115/N-11: neuer Fokus hilft nicht, Nutzer 07.11.2026: W-1)
     for (const vorher of ['oben', 'unten', 'geschoben']) {
       const p = await neu(ansicht, `${v}&w=${w}`);
@@ -149,7 +149,7 @@ for (const ansicht of ['iPhone hoch', 'iPad quer', 'iPad hoch', 'iPhone quer'].f
     }
     // APD-115/M-11 (Befund APD-115/N-11, Messung 07.11.2026 – Schritte 6 bis 8 am Gerät): nach Quartier und ‚Hotel‘ Ort antippen (liegt Ort unter
     // der Tastatur, vorher hochgeschoben), ‚Rom‘ tippen, mit x schließen. In jedem Bild: Kopfzeile still, Fensterkopf nur zwischen vorher und nachher.
-    // W-1: Safaris Verschiebung beim Antippen von Ort zeigt das Modell seit APD-115/N-13 (am Gerät gemessen) – Hinweis; W-4 verschiebt nicht (N-16) – Fehler
+    // W-1: Safaris Verschiebung beim Antippen von Ort zeigt das Modell seit APD-115/N-13 (am Gerät gemessen) – Hinweis; W-4 verschiebt nicht (APD-115/N-16) – Fehler
     for (const w of ['1', '3', '4'])   // W-2 verworfen (APD-115/N-11: neuer Fokus hilft nicht, Nutzer 07.11.2026: W-1)
     {
       const p = await neu(ansicht, `${v}&w=${w}`);
@@ -161,7 +161,7 @@ for (const ansicht of ['iPhone hoch', 'iPad quer', 'iPad hoch', 'iPhone quer'].f
           c.scrollTop += f.getBoundingClientRect().bottom - o - (Math.min(__safari.hoehe(), c.getBoundingClientRect().bottom - o) - 40); });
         await p.waitForTimeout(400);
       }
-      // W-3 und Ort höher als der sichtbare Teil (iPhone quer): Ort kann nicht in die Mitte, Safari verschiebt – Hinweis wie APD-115/A-3 (N-14 b)
+      // W-3 und Ort höher als der sichtbare Teil (iPhone quer): Ort kann nicht in die Mitte, Safari verschiebt – Hinweis wie APD-115/A-3 (APD-115/N-14 b)
       const z = await lage(p, '#fPlace'), passtOrt = z.unten - z.oben <= Math.min(z.kb, z.cb) - 16 - z.ct - 25;
       const film = async (name, fn, warte = 900, hinweis = false) => {
         const a = await p.evaluate(() => __safari.lage());

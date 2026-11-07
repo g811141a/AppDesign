@@ -64,6 +64,9 @@ pruefe(m.ms === 60000, `APD-12/M-14 mitten in der Antwort, Fenster offen (erwart
 // APD-12/M-10/M-11 Darstellung
 pruefe(dauer(3599000) === '59:59' && dauer(3600000) === '01:00:00' && dauer(7384000) === '02:03:04', 'APD-12/M-10 hh:mm:ss ab 60 Minuten');
 pruefe(zahl(0) === '0' && zahl(999) === '999' && zahl(1234) === '1.234' && zahl(1234567) === '1.234.567', 'APD-12/M-11 Tausenderpunkt');
+// APD-123/D-6 (seit 4.55.0): Rückfall des Modells steht in der Zeile, Opus 5.5 nicht
+pruefe(zeile({ ms: 0, token: null, kontext: 5, modell: 'claude-opus-5' }).includes('⚠ Modell claude-opus-5') && !zeile({ ms: 0, token: null, kontext: 5, modell: 'claude-opus-5-5' }).includes('⚠')
+  && !zeile({ ms: 0, token: null, kontext: 5 }).includes('⚠'), 'APD-123/D-6 ‚⚠ Modell …‘ beim Rückfall');
 
 // APD-20/H-1 bis APD-20/H-11 Kontext des letzten eigenen Aufrufs (APD-20)
 const kontext = (s, t) => messe(daten.slice(0, s), Date.parse(T(t)));
