@@ -137,6 +137,29 @@ Tastatur 274) und Nachstellung im Safari-Modell (Skript nur in der Sitzung):
   W-4); offen ist ‚Ort **teilweise** unter der Tastatur antippen‘. Dazu ein Risiko aus APD-36 (Testfall-Liste 6c, 6e, 6g; `safari.mjs` ‚Nicht
   nachgebildet‘): Fokus, den die App nach einer abgefangenen Berührung selbst setzt, ging am Gerät in 12 bis 13 von rund 35 bis 40 Fällen nach
   33–37 ms verloren (meist bei geschlossener Tastatur; W-4 fängt nur bei offener Tastatur ab, in N-16 2 von 2 ohne Verlust).
+- APD-115/E-12 Entscheidung (Nutzer 07.11.2026, Sitzung 0095): **keine vierte Messung** – ‚Ort teilweise unter der Tastatur antippen‘ und ‚zehnmal
+  wechseln, Fokus nach dem ersten Antippen‘ kommen als Testfall (User) in den Usertest der APD-115-Version (APD-115/U-1, U-2 unten).
+- APD-115/N-18 W-4 widerspricht Designrichtlinie 13 (Zeile 490 in 4.54.0): ‚Berührungen nie abfangen‘ – Wortlaut APD-115/L-1, L-2 unten (0 Nr. 29).
+
+## Wortlaut Designrichtlinie 13 für W-4 (0 Nr. 29, Sitzung 0095)
+
+- APD-115/L-1 **Alt:** ‚Abfangen der Berührung (`preventDefault`, eigener Fokus) verlor am Gerät oft nach 34–37 ms den Fokus – **Berührungen nie
+  abfangen**.‘ **Neu:** ‚Abfangen der Berührung (`preventDefault`, eigener Fokus) verlor am Gerät oft nach 34–37 ms den Fokus (12 bis 13 von rund
+  35 bis 40, meist bei geschlossener Tastatur) – **Berührungen nie abfangen**, ausgenommen den **Wechsel bei offener Tastatur** (APD-115/N-16):
+  setzt die App den Fokus dann im `touchend` selbst (`focus({ preventScroll: true })`) und liegt das Feld ganz über der Tastatur, verschiebt Safari
+  nicht (iPad quer und iPhone hoch, 2 von 2 ohne Fokusverlust). Ein teilweise verdecktes Feld ist nicht gemessen (Testfall (User)).‘
+- APD-115/L-2 **‚Lösung in ui.js‘, neuer Satz:** ‚Beim Wechsel bei offener Tastatur fängt ui.js das Loslassen auf einem anderen Feld ab und setzt den
+  Fokus selbst (APD-115/W-4); das Feld rollt nur, wenn es nicht ganz über der Tastatur liegt, und dann bis 16 px darüber (R-4.5).‘ (Der übrige Text
+  von ‚Lösung in ui.js‘ wird nach R-4.5 angepasst, APD-115/E-7.)
+
+## Testfälle (User) für den Usertest der APD-115-Version (Entwurf, Sitzung 0095)
+
+- APD-115/U-1 **Feld wechseln, zehnmal:** 1. iPad quer bzw. iPhone hoch, hell, Reiselogbuch, Tag öffnen, Quartier antippen. 2. Ort antippen, Quartier
+  antippen – fünfmal hin und her (liegt Ort unter der Tastatur, das Fenster vorher hochschieben, bis Ort ganz zu sehen ist). 3. Erwartet: die
+  Tastatur bleibt offen, der Cursor steht nach dem ersten Antippen im Feld, nichts rollt, Kopfzeile und Fensterkopf springen nicht.
+- APD-115/U-2 **Ort halb verdeckt:** 1. iPad quer bzw. iPhone hoch, hell, Tag öffnen, Quartier antippen. 2. Das Fenster so schieben, dass von Ort nur
+  die obere Hälfte über der Tastatur zu sehen ist, diese Hälfte antippen. 3. Erwartet: Ort gleitet einmal ruhig ganz über die Tastatur (16 px
+  darüber), Kopfzeile und Fensterkopf springen nicht, der Cursor steht in Ort.
 
 ## Apple-Abgleich (0 Nr. 23, 2.6)
 
