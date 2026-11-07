@@ -9,6 +9,23 @@ Stand 07.11.2026 · Sitzung Reiselogbuch 0090 · Grundlage `arbeit/APD-115 Befun
 - APD-115/E-8 Schritte am Gerät ‚nicht ok‘ – welche Schritte und was, wird erfragt; danach nach 0 Nr. 1 zuerst den Ablauf als feste Prüfung
   nachbauen (rot gegen das Muster), dann beheben.
 
+## Befund Schritt 7 ‚Feld wechseln‘ (Nutzer 07.11.2026, Sitzung 0091: ‚am iPad und iPhone herumgesprungen, sehr irritierend‘)
+
+Messung `arbeit/APD-115 Messungen/2026-11-07 iPad quer Quartier dann Ort.txt` (iPad quer, Safari mit Adressleiste: Seitenhöhe 702, sichtbar mit
+Tastatur 274) und Nachstellung im Safari-Modell (Skript nur in der Sitzung):
+
+- APD-115/N-1 Quartier antippen (Fenster oben): ‚V-3 fQuarter rollt 342‘, Tastatur auf – ruhig.
+- APD-115/N-2 Ort antippen (iPad quer **in derselben Zeile** wie Quartier, ganz über der Tastatur): ‚V-3 fPlace rollt 178‘ – die Mitte-Regel
+  (APD-115/A-2) rollt, obwohl das Feld schon ganz sichtbar ist. 136 ms danach verschiebt Safari zusätzlich die Seite um 179 px (`scrollY` 179,
+  Kopfzeile 6 ms lang bei −179, dann von `placeDialogs` zurückgestellt) – das Springen.
+- APD-115/N-3 beim Tippen in Ort zweimal ‚zurückgestellt fPlace 1251 → 1284‘: etwas rollt den Fensterinhalt 33 px zurück, die App stellt ihn
+  wieder hin – kleines Zucken bei jedem Zeichen.
+- APD-115/N-4 Safari-Modell: iPad quer rollt die App beim Wechsel 777 → 924 (147 px) statt 0; iPhone hoch zweimal (43, dann 201 px) statt einmal
+  59 px bis 16 px über die Tastatur. Die Verschiebung von Safari (N-2) bildet das Modell nicht nach – darum war APD-115/M-7 grün.
+- APD-115/N-5 Folgerung: beim Wechsel wie beim ersten Antippen nur so weit rollen wie nötig (ganz sichtbar: nichts); das Modell bekommt den
+  Befund N-2 (Rollen der App beim Wechsel → Safari verschiebt zusätzlich), M-7 wird geschärft (gleiche Zeile: nichts rollt; Feld unter der
+  Tastatur: einmal bis 16 px darüber). Ob Safari ohne das Rollen der App noch selbst verschiebt (APD-36/S-6 b), zeigt erst die nächste Messung.
+
 ## Apple-Abgleich (0 Nr. 23, 2.6)
 
 - **So macht es Apple (Quellen dieser Sitzung):**
