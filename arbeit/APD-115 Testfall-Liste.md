@@ -127,6 +127,16 @@ Tastatur 274) und Nachstellung im Safari-Modell (Skript nur in der Sitzung):
   im `touchend`), verschiebt Safari nicht – M-7/M-11 für W-4 danach als Fehler statt Hinweis; (2) Fall ‚Ort unter der Tastatur, nicht hochgeschoben‘
   (W-4 rollt dann nach V-3 bis 16 px über die Tastatur) ist am Gerät nicht gemessen – kurze Messung oder Testfall (User) im Usertest; (3) danach
   APD-115 bereit (eigene Version nach 4.55.0, 0 Nr. 8): W-4 ins Bauskript als einzige Variante, Option `apd115` zum Standard, bestehende Prüfungen anpassen.
+- APD-115/N-17 Stand Sitzung 0095 – E-11 (1) erledigt: Safari-Modell (`tests/safari.mjs`, Option `apd115`, neu `fokusSelbst`, Standard an): ruft die
+  App `focus()` selbst auf, während der Finger liegt (im `touchend`), und liegt das Feld dabei ganz über der Tastatur, verschiebt Safari beim Wechsel
+  nicht (N-16). Liegt es dabei ganz oder teilweise unter der Tastatur, ist nicht gemessen – das Modell verschiebt dort weiter wie bisher (sichere Seite).
+  Erste Fassung erkannte den Fokus über das laufende `touchend` – griff nicht, weil die Hörer der App vor denen des Modells angemeldet sind; jetzt über
+  `focus()` aus dem Programm bei liegendem Finger. M-7 und M-11 für W-4 jetzt Fehler statt Hinweis. Gegenprobe `PRUEF_FOKUS=alt` (Modell ohne N-16):
+  iPad quer 8 Fehler (M-7 W-4 0 → 147 px, M-11 W-4 Kopfzeile bis −147, Fensterkopf bis −137 px); mit N-16 iPad quer Chromium ‚alles in Ordnung‘.
+  Zu (2): ‚Ort ganz unter der Tastatur‘ lässt sich am Gerät nicht antippen (nur mit dem Pfeil über der Tastatur – dann setzt Safari den Fokus, nicht
+  W-4); offen ist ‚Ort **teilweise** unter der Tastatur antippen‘. Dazu ein Risiko aus APD-36 (Testfall-Liste 6c, 6e, 6g; `safari.mjs` ‚Nicht
+  nachgebildet‘): Fokus, den die App nach einer abgefangenen Berührung selbst setzt, ging am Gerät in 12 bis 13 von rund 35 bis 40 Fällen nach
+  33–37 ms verloren (meist bei geschlossener Tastatur; W-4 fängt nur bei offener Tastatur ab, in N-16 2 von 2 ohne Verlust).
 
 ## Apple-Abgleich (0 Nr. 23, 2.6)
 
