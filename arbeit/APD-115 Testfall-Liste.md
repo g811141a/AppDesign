@@ -132,7 +132,7 @@ Tastatur 274) und Nachstellung im Safari-Modell (Skript nur in der Sitzung):
   nicht (N-16). Liegt es dabei ganz oder teilweise unter der Tastatur, ist nicht gemessen – das Modell verschiebt dort weiter wie bisher (sichere Seite).
   Erste Fassung erkannte den Fokus über das laufende `touchend` – griff nicht, weil die Hörer der App vor denen des Modells angemeldet sind; jetzt über
   `focus()` aus dem Programm bei liegendem Finger. M-7 und M-11 für W-4 jetzt Fehler statt Hinweis. Gegenprobe `PRUEF_FOKUS=alt` (Modell ohne N-16):
-  iPad quer 8 Fehler (M-7 W-4 0 → 147 px, M-11 W-4 Kopfzeile bis −147, Fensterkopf bis −137 px); mit N-16 iPad quer Chromium ‚alles in Ordnung‘.
+  iPad quer 8 Fehler (M-7 W-4 0 → 147 px, M-11 W-4 Kopfzeile bis −147, Fensterkopf bis −137 px); mit N-16 voller Lauf (alle Ansichten) Chromium und WebKit ‚alles in Ordnung‘.
   Zu (2): ‚Ort ganz unter der Tastatur‘ lässt sich am Gerät nicht antippen (nur mit dem Pfeil über der Tastatur – dann setzt Safari den Fokus, nicht
   W-4); offen ist ‚Ort **teilweise** unter der Tastatur antippen‘. Dazu ein Risiko aus APD-36 (Testfall-Liste 6c, 6e, 6g; `safari.mjs` ‚Nicht
   nachgebildet‘): Fokus, den die App nach einer abgefangenen Berührung selbst setzt, ging am Gerät in 12 bis 13 von rund 35 bis 40 Fällen nach
