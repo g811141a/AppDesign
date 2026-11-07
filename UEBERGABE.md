@@ -1,8 +1,8 @@
 # Übergabe an die nächste Sitzung
 
-**Stand 07.11.2026** · geschrieben in der Sitzung ‚Reiselogbuch 0090‘ (APD-115 Muster; Übergabe nach 0 Nr. 13, Kontext etwa 291.000) – Aufbau nach
-Zusammenarbeit allgemein 2.5. **Claude liest diese Datei zu Beginn jeder Sitzung zuerst, dann die ganze Zusammenarbeit** (0 Nr. 15); die
-Arbeitsumgebung steht in der AppDesign-`CLAUDE.md`.
+**Stand 07.11.2026** · geschrieben in der Sitzung ‚Reiselogbuch 0091‘ (APD-115 Rückmeldung und Feldwechsel; Übergabe nach 0 Nr. 13, Kontext etwa
+275.000) – Aufbau nach Zusammenarbeit allgemein 2.5. **Claude liest diese Datei zu Beginn jeder Sitzung zuerst, dann die ganze Zusammenarbeit**
+(0 Nr. 15); die Arbeitsumgebung steht in der AppDesign-`CLAUDE.md`.
 
 ## 1. Lagebild
 
@@ -10,42 +10,47 @@ Arbeitsumgebung steht in der AppDesign-`CLAUDE.md`.
 |---|---|---|
 | Reiselogbuch | **3.52.0** veröffentlicht (Fassung 4.54.0) | g811141a/ReiseLogBuch |
 | AppDesign | **4.54.0** veröffentlicht | g811141a/AppDesign |
-| Zusammenarbeit allgemein | **3.9.0** (Wortlaut APD-123 bestätigt, kommt mit 4.55.0) | `README - Zusammenarbeit allgemein.md` |
+| Zusammenarbeit allgemein | **3.9.0** (Wortlaut APD-123 bestätigt, kommt mit 4.55.0, gilt schon) | `README - Zusammenarbeit allgemein.md` |
 | AppDesign-`CLAUDE.md` | **2.10.0** | `CLAUDE.md` |
 | ReiseLogBuch-Import (privat) | 1.3.0 | g811141a/ReiseLogBuch-Import |
 
-- **Chatnummer:** die nächste Sitzung heißt **Reiselogbuch 0091**; die danach 0092.
-- **Modell und Aufwand:** in 0090 Opus 5.5 (`get_session`), alle Aufrufe `"effort":"high"`, kein `model_fallback`.
-- **APD-123 bestätigt (Nutzer 07.11.2026, Sitzung 0089, lief parallel zu 0090):** Regelwächter abgeschaltet – Hooks in der Umgebung entfernt, das
-  Setup-Skript ‚Standard‘ ohne ihn gilt ab der nächsten frischen Sitzung. **Ab sofort** (Wortlaut `arbeit/APD-123 Zusammenarbeit ohne Regelwächter
-  Wortlaut.md`, APD-123/V-1, V-2, D-1 bis D-12): Kachel (Auswahlfenster) mit Push am Ende jeder Antwort, nach der der Nutzer etwas tun soll; **alles zum
-  Lesen vor der Kachel**, bei Prüfen am Gerät zusätzlich als Datei im Seitenbereich (`SendUserFile`, `display: 'render'`); ‚(Kontext N)‘ am Ende jeder
-  Frage (N aus `messung.mjs`); **Uhrzeitzeile und Zeitzeile entfallen**. Prüfe zu Beginn `cat ~/.claude/settings.json` – steht dort noch `hooks`, bitte
-  den Nutzer, sie zu entfernen (in 0090 lehnte die Freigabe das Ändern durch Claude ab).
+- **Chatnummer:** die nächste Sitzung heißt **Reiselogbuch 0092**; die danach 0093.
+- **Modell und Aufwand:** in 0091 Opus 5.5 (`get_session`), alle Aufrufe `"effort":"high"`, kein `model_fallback`. `~/.claude/settings.json` = `{}` (keine Hooks).
+- **Arbeitsweise nach APD-123** (`arbeit/APD-123 Zusammenarbeit ohne Regelwächter Wortlaut.md`): Kachel mit Push am Ende jeder Antwort, nach der der
+  Nutzer etwas tun soll; alles zum Lesen davor, bei Prüfen am Gerät zusätzlich als Datei (`SendUserFile`, `display: 'render'`); ‚(Kontext N)‘ in
+  jeder Frage; keine Uhrzeit- und Zeitzeile.
 - **Offener Usertest:** keiner.
-- **Offene Frage an den Nutzer (geht mit, 0 Nr. 13):** Rückmeldung zum Muster APD-115 (Variante A oder B, Wortlaut R-4.5 ja/nein) – siehe 3.
 - **Vereinbarung (Nutzer 30.10.2026, Sitzung 0058):** Muster bis auf Weiteres **nur hell** – in jede Übergabe übernehmen.
 - **Erinnerung:** ‚Backlog-Erinnerung (AppDesign und Reiselogbuch)‘ montags 8:58.
+- **Hinweis Prüfumgebung:** Pages (`g811141a.github.io`) ist aus der Sitzung nicht erreichbar (Proxy) – Muster lokal per `file://` prüfen.
 
-## 2. Ergebnisse der Sitzung 0090
+## 2. Ergebnisse der Sitzung 0091
 
-- **APD-115 Muster** (`arbeit/APD-115 Testfall-Liste.md`: Apple-Abgleich, Abweichungen APD-115/A-1 bis A-3, Varianten APD-115/V-4 und V-5,
-  Testfall-Liste APD-115/M-1 bis M-10 und Y-1, Wortlaut R-4.5): Kopie des Reiselogbuchs 3.52.0 mit eigenem Speicher (`reiselogbuch.muster-apd115`),
-  gebaut mit `arbeit/APD-115 Muster bauen.mjs`; `ui.js` 4.54.0 mit V-3 (`noetigV3`, `cursorZeile`, Cursorzeile beim Tippen, iPad-Fenster nach dem
-  Gleiten). Links: https://g811141a.github.io/AppDesign/arbeit/APD-115/?v=a (A: ‚Verlauf‘ direkt über dem Feld, Vorschläge darunter, Empfehlung) und
-  `?v=b` (wie heute). Prüfung `arbeit/APD-115 Muster prüfen.mjs`: Chromium und WebKit grün, Gegenprobe `PRUEF_V=heute` rot (31 Fehler). Dem Nutzer
-  mit Link und Schritten gezeigt – Rückmeldung steht aus.
-- **Selbstkritik 0090:** eine Zwischenmeldung ohne Uhrzeitzeile, vor dem Muster-Fenster kein eigener Satz mit ‚Kontext N‘; Lagebild zuerst ohne Link.
-  In der Testfall-Liste lokale Nummern ohne Elternnummer (von 0089 gemeldet, behoben).
+- **APD-115 Rückmeldung (Nutzer 07.11.2026):** Variante A (APD-115/E-6), Wortlaut R-4.5 ‚Neu‘ bestätigt (APD-115/E-7), am Gerät **nicht ok**:
+  Schritt 7 ‚Feld wechseln‘ (Quartier → Ort) springt am iPad und iPhone, ‚sehr irritierend‘ (APD-115/E-8).
+- **Befund** (`arbeit/APD-115 Testfall-Liste.md` APD-115/N-1 bis N-9, Messung `arbeit/APD-115 Messungen/2026-11-07 iPad quer Quartier dann Ort.txt`,
+  iPad quer im Safari-Browser, sichtbar mit Tastatur 274): die Mitte-Regel (APD-115/A-2) rollt Ort (iPad quer in derselben Zeile, ganz sichtbar)
+  178 px, danach verschiebt Safari zusätzlich 179 px; ohne die Regel stellt im Modell Safari das Feld selbst in die Mitte (APD-36/S-6 b).
+  Vermutung: Safari liest die Lage beim Fokus (APD-36/S-7), bei offener Tastatur macht das Muster keinen neuen Fokus (APD-36/S-8).
+- **Prüfung zuerst (0 Nr. 1):** M-7 geschärft (Ablauf des Nutzers: Fenster oben bzw. unten, Quartier, tippen, Ort) – rot gegen das gezeigte Muster
+  (20 Fehler).
+- **Muster mit zwei Wechsel-Varianten** (Nutzer ‚Ja, hier noch‘): `&w=1` APD-115/W-1 ‚nur so weit wie nötig‘, `&w=2` APD-115/W-2 ‚Mitte-Regel und
+  neuer Fokus auch bei offener Tastatur‘ (Standard); gebaut mit `arbeit/APD-115 Muster bauen.mjs`, Commit c45ae57. **Noch nicht fertig:**
+  M-7 (Chromium) 12 Fehler, siehe 3.
+- **Selbstkritik 0091:** für die Schritte zum Muster das Protokoll von 0090 gelesen (teuer, etwa 50.000 Token) – Schritte stehen jetzt in der
+  Testfall-Liste nicht, sondern nur im Chat; künftig Schritte zum Muster in die Testfall-Liste schreiben.
 
 ## 3. Nächster Schritt
 
-1. Lesen wie immer (nach APD-123: Lagebild mit Kachel am Ende, alles zum Lesen davor). Repos dazuholen, Tests einrichten.
-2. **Rückmeldung zum Muster APD-115** erfragen (Kachel): Variante A oder B, Schritte 1–7 am Gerät ok, Wortlaut R-4.5 (0 Nr. 29) ja/nein. Bei ‚ok‘:
-   APD-115 als bereit in ‚0. Nächste Version‘ (eigenes Thema – zusammen mit 4.55.0 nur, wenn höchstens 2 Themen, sonst die Version danach, 0 Nr. 8);
-   beim Bau R-4.5 und Designrichtlinie 13 ‚Lösung in ui.js‘ anpassen, die Prüfungen `checkFieldVisible`/`checkTastaturStill` (Lage ‚obere Hälfte‘
-   bzw. ‚ganz über der Tastatur‘ für hohe Textfelder) nach V-3 umstellen, M-1 bis M-7 als feste Prüfung ins Reiselogbuch.
-3. Danach die **Bau-Frage** in der Kachel: ‚Soll ich Version AppDesign 4.55.0 / Reiselogbuch 3.53.0 mit APD-122, APD-123, APD-121 und RLB-119
+1. Lesen wie immer, Repos dazuholen, Tests einrichten. Lagebild als eigene Antwort mit Kachel am Ende.
+2. **APD-115 Muster W-1/W-2 fertigstellen** (`node "arbeit/APD-115 Muster prüfen.mjs"`, dann `PRUEF_BROWSER=webkit`, Gegenprobe `PRUEF_V=heute`):
+   (1) iPhone hoch zwei Schübe – zuerst 43 px (Feldunterkante genau an die Tastatur; Herkunft klären, vermutlich das Rollen des Browsers beim Fokus),
+   dann V-3; Ziel ein Schub; (2) iPhone quer W-2: Safari verschiebt im Modell 30 px, weil Ort nicht bis zur Mitte kann – als Hinweis werten (wie
+   APD-115/A-3); (3) ggf. die enge Lage aus der Messung (Safari mit Adressleiste, sichtbar 274) als Ansicht prüfen.
+3. Dem Nutzer zeigen (Kachel): Links `https://g811141a.github.io/AppDesign/arbeit/APD-115/?v=a&w=1` und `…?v=a&w=2`, Messmodus an, je Variante am
+   iPad quer und iPhone hoch: Fenster oben, Quartier antippen, tippen, Ort antippen, tippen; Messung teilen. Schritte in die Testfall-Liste schreiben.
+   Nach der Messung das Safari-Modell korrigieren (0 Nr. 20), M-7 nach der gewählten Variante, APD-115 bereit (eigene Version nach 4.55.0, 0 Nr. 8).
+4. Danach die **Bau-Frage** in der Kachel: ‚Soll ich Version AppDesign 4.55.0 / Reiselogbuch 3.53.0 mit APD-122, APD-123, APD-121 und RLB-119
    erstellen? (Kontext N)‘ – nach ‚Ja‘ bauen nach den Arbeitsdateien; jede neue Prüfung zuerst rot gegen 4.54.0 / 3.52.0 (0 Nr. 1); APD-123 mit der
    Anpassung von `tests/doku.mjs` (`checkCollab`, APD-123/D-9) und dem Kasten ‚Jede Antwort‘ neu; vor `los` die bestehenden Prüfungen anpassen
    (`ablauf-suche-*`, `checkSearchWords`, `checkSchichtOben`).
@@ -59,7 +64,7 @@ APD-116 · RLB-120 · RLB-122 · RLB-121 · APD-85 Teil 6 · APD-80 · APD-30 ü
 In der neuen Sitzung müssen **AppDesign** und **ReiseLogBuch** verfügbar sein; alles liegt auf `main`.
 
 ```
-Reiselogbuch 0091 – Rückmeldung Muster APD-115, danach Bau 4.55.0 / 3.53.0
+Reiselogbuch 0092 – APD-115 Muster Feldwechsel (W-1/W-2) fertigstellen, danach Bau 4.55.0 / 3.53.0
 
-Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md, dann die GANZE Zusammenarbeit allgemein und dazu arbeit/APD-123 Zusammenarbeit ohne Regelwächter Wortlaut.md (bestätigt, gilt ab sofort: Kachel am Ende, alles zum Lesen davor, keine Uhrzeit- und Zeitzeile) und die Überschriften der Designrichtlinien. Prüfe Modell und Aufwand (Sitzungsdatei, auch model_fallback), hole das Repo g811141a/ReiseLogBuch dazu, wie in der AppDesign-CLAUDE.md unter ‚Arbeitsumgebung‘, richte die Tests ein und prüfe, ob in ~/.claude/settings.json noch Hooks stehen. Lagebild als eigene Antwort, dann weiter nach UEBERGABE.md Abschnitt 3: Rückmeldung zum Muster APD-115 (arbeit/APD-115 Testfall-Liste.md), danach die Bau-Frage.
+Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md, dann die GANZE Zusammenarbeit allgemein und dazu arbeit/APD-123 Zusammenarbeit ohne Regelwächter Wortlaut.md (bestätigt, gilt: Kachel am Ende, alles zum Lesen davor, keine Uhrzeit- und Zeitzeile) und die Überschriften der Designrichtlinien. Prüfe Modell und Aufwand (Sitzungsdatei, auch model_fallback), hole das Repo g811141a/ReiseLogBuch dazu, wie in der AppDesign-CLAUDE.md unter ‚Arbeitsumgebung‘, richte die Tests ein und prüfe, ob in ~/.claude/settings.json Hooks stehen. Lagebild als eigene Antwort, dann weiter nach UEBERGABE.md Abschnitt 3: APD-115 Muster W-1/W-2 fertigstellen (arbeit/APD-115 Testfall-Liste.md, APD-115/N-1 bis N-9) und dem Nutzer zum Messen zeigen, danach die Bau-Frage.
 ```
