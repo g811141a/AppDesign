@@ -1,6 +1,6 @@
 # APD-121 – Mehr-Knopf am oberen Rand (iPhone quer): Wortlaut und Testfall-Liste
 
-Stand 07.11.2026 · Sitzung Reiselogbuch 0089 · **Wortlaut zur Bestätigung** (0 Nr. 29)
+Stand 07.11.2026 · Sitzung Reiselogbuch 0089 · **Wortlaut bestätigt** (Nutzer 07.11.2026: ‚Wortlaut ja‘)
 
 ## Befund (Messungen am Gerät)
 
