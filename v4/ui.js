@@ -1,4 +1,4 @@
-// AppDesign 4.53.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
+// AppDesign 4.54.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
 // Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/fassung/X.Y.Z/ui.js"></script> (feste Fassung, R-10.3)
 // Seit 4.11.0 (R-10.3): ui.js und design.css immer mit ?v=<AppDesign-Version> einbinden (auch in sw.js) und beim Start
 // prüfen, ob genau diese Fassung geladen ist (AD_VERSION hier, --ad-version in design.css).
@@ -20,7 +20,7 @@
 
 'use strict';
 // Version der Bausteine (R-10.3): die App vergleicht sie beim Start mit der benötigten Fassung.
-const AD_VERSION = '4.53.0';
+const AD_VERSION = '4.54.0';
 /* ---------- Icons ---------- */
 
 // Schaltflächen-Icons aus Lucide (ISC-Lizenz), direkt eingebettet, damit die App offline funktioniert.
@@ -476,7 +476,16 @@ const darkQuery = window.matchMedia?.('(prefers-color-scheme: dark)');
 function applyTheme() {
   const a = db.settings.appearance;
   document.documentElement.setAttribute('data-theme', a === 'auto' ? (darkQuery?.matches ? 'dark' : 'light') : a);
+  applyGlas();
 }
+// Seit 4.54.0 (APD-120, Testfall-Liste arbeit/APD-120 Testfall-Liste.md APD-120/J-1 bis J-13): Schalter ‚Glas‘ im Untermenü ‚Darstellung‘ – aus macht
+// Schwebendes deckend wie ‚Transparenz reduzieren‘ (R-3.9; die Einstellung des iPads kommt in Safari nicht an, Designrichtlinie 13). db.settings.glas:
+// fehlt = noch keine Wahl auf diesem Gerät (Glas ein); die App übernimmt beim Laden eines Backups den Wert aus der Datei nur dann (glasAusBackup).
+const glasAn = () => db.settings.glas !== false;
+function applyGlas() { document.documentElement.classList.toggle('ohne-glas', !glasAn()); }
+function setGlas(an) { db.settings.glas = !!an; save(); applyGlas(); }
+// Beim Laden eines Backups (Abgleichen oder Ersetzen): vorher = db.settings.glas dieses Geräts vor dem Laden – gilt weiter, wenn hier schon gewählt.
+function glasAusBackup(vorher) { if (typeof vorher === 'boolean') db.settings.glas = vorher; else if (typeof db.settings.glas !== 'boolean') delete db.settings.glas; applyGlas(); }
 darkQuery?.addEventListener?.('change', () => { if (db.settings.appearance === 'auto') applyTheme(); });
 
 function setAppearance(a) {
@@ -488,8 +497,10 @@ function setAppearance(a) {
 const APPEARANCES = { auto: 'Automatisch', light: 'Hell', dark: 'Dunkel' };
 // Seit 4.43.0 (APD-92, R-1.2): ‚Darstellung ›‘ steht im Mehr-Menü der Seitenleiste (iPhone: Startliste) nach Backup erstellen und
 // Backup laden – nie im Menü eines Eintrags, denn sie gilt für die ganze App; rechts grau der aktuelle Wert, Untermenü mit Häkchen.
+// Seit 4.54.0 (APD-120, Variante A): darunter als eigene Gruppe der Schalter ‚Glas‘ – das Menü bleibt beim Umschalten offen.
 const darstellungMenuItem = () => ({ icon: 'sun-moon', label: 'Darstellung', value: APPEARANCES[db.settings.appearance],
-  submenu: Object.entries(APPEARANCES).map(([k, l]) => ({ tick: db.settings.appearance === k, label: l, act: () => setAppearance(k) })) });
+  submenu: [...Object.entries(APPEARANCES).map(([k, l]) => ({ tick: db.settings.appearance === k, label: l, act: () => setAppearance(k) })),
+    'sep', { schalter: glasAn(), label: 'Glas', act: setGlas }] });
 
 /* ---------- Rahmen und Rollbereich (seit 4.27.0, APD-28, R-2.1) ---------- */
 
@@ -518,10 +529,32 @@ const onRoll = fn => window.addEventListener('scroll', e => { if (e.target === d
 /* ---------- Menüs und Sprechblasen ---------- */
 
 // Ebene hinter Menü und Sprechblase: daneben tippen schließt, Wischen bewegt die Seite dahinter nicht.
-function blockingLayer() {
+// Seit 4.54.0 (APD-118, Designrichtlinie 13 ‚Am oberen Rand kein Klick‘, Testfall-Liste APD-118/X-1 bis X-9): sie schließt schon beim Loslassen
+// (pointerup), wenn der Finger bzw. die Maus auf ihr aufsetzte und höchstens SCHICHT_WEG px wanderte – am oberen Rand (iPhone quer, Home-Bildschirm)
+// schickt Safari keinen click. Den Klick danach verschluckt sie (sonst träfe er, was unter der Schicht lag, z. B. den Mehr-Knopf: wieder offen);
+// ein Klick ohne pointerdown (el.click() aus dem Skript, Tastatur) schließt wie bisher.
+const SCHICHT_WEG = 20, SCHICHT_KLICK_MS = 700;
+function klickVerschlucken(x, y) {
+  const weg = e => { if (Math.hypot(e.clientX - x, e.clientY - y) > 40) return; e.preventDefault(); e.stopImmediatePropagation(); if (e.type === 'click') aus(); };
+  const typen = ['mousedown', 'mouseup', 'click'];
+  const aus = () => { clearTimeout(t); for (const typ of typen) window.removeEventListener(typ, weg, true); };
+  for (const typ of typen) window.addEventListener(typ, weg, true);
+  const t = setTimeout(aus, SCHICHT_KLICK_MS);
+}
+function blockingLayer(schliessen = () => {}) {
   const layer = document.createElement('div');
   layer.className = 'layer';
   layer.addEventListener('touchmove', e => e.preventDefault(), { passive: false });
+  let start = null;
+  layer.addEventListener('pointerdown', e => { start = e.isPrimary ? { id: e.pointerId, x: e.clientX, y: e.clientY } : null; });
+  layer.addEventListener('pointercancel', () => { start = null; });
+  layer.addEventListener('pointerup', e => {
+    const s = start; start = null;
+    if (!s || s.id !== e.pointerId || Math.hypot(e.clientX - s.x, e.clientY - s.y) > SCHICHT_WEG) return;
+    klickVerschlucken(e.clientX, e.clientY);
+    schliessen();
+  });
+  layer.addEventListener('click', () => { start = null; schliessen(); });
   return layer;
 }
 
@@ -648,7 +681,7 @@ function placeAt(el, anchor, align) {
 }
 
 // Einträge: { icon, label, sub, red, tick, disabled, act } (tick und icon zusammen: Häkchen vorne, dann Icon und Text) · { …, value, submenu: [Einträge] } (Untermenü ›, eine Ebene)
-// · 'sep' (Abstand) · 'line' (Strich) · { note } (graue Zeile) · { note, halten: true } (graue Zeile, langes Drücken schaltet den Messmodus frei,
+// · { label, schalter: true|false, act(an) } (Schalter, seit 4.54.0) · 'sep' (Abstand) · 'line' (Strich) · { note } (graue Zeile) · { note, halten: true } (graue Zeile, langes Drücken schaltet den Messmodus frei,
 // seit 4.40.0, APD-77) · { messPlatz } (Platz des versteckten Messmodus, zeigt nichts). Ein Abstand ohne Eintrag danach entfällt.
 // Seit 4.35.0 (R-1.8, V3, V4): Einträge mit Häkchen-Spalte sind menuitemcheckbox mit aria-checked (‚Hell, ausgewählt‘), Einträge mit
 // Untermenü haben aria-haspopup und aria-expanded, die graue Zeile darunter ist ihre Beschreibung.
@@ -658,6 +691,8 @@ const menuHtml = items => { const nr = ++menuNr; return items.map((it, i) => it?
   : it === 'sep' ? (n => !n || n === 'sep' || n === 'line' ? '' : '<div class="sep" role="separator"></div>')(menuDanach(items, i))
   : it === 'line' ? '<div class="line" role="separator"></div>'
   : it.note ? `<div class="note${it.halten ? ' halten' : ''}" role="presentation">${esc(it.note)}</div>`
+  // seit 4.54.0 (APD-120): Schalter im Menü – Rolle ‚Schalter‘ mit Zustand, rechts der Schalter wie in den Einstellungen (15.15)
+  : 'schalter' in it ? `<button type="button" class="mi sw" data-i="${i}" role="switch" aria-checked="${it.schalter ? 'true' : 'false'}">${esc(it.label)}<span class="schalter" aria-hidden="true"></span></button>`
   : `<button type="button" class="mi ${it.red ? 'red' : ''} ${it.sub ? 'has-sub' : ''}" data-i="${i}" ${it.disabled ? 'disabled' : ''} role="${'tick' in it ? 'menuitemcheckbox' : 'menuitem'}"${
       'tick' in it ? ` aria-checked="${it.tick ? 'true' : 'false'}"` : ''}${it.submenu ? ' aria-haspopup="menu" aria-expanded="false"' : ''}${it.sub ? ` aria-describedby="mi${nr}-${i}"` : ''}>${
       'tick' in it ? `<span class="tick">${it.tick ? ic('check') : ''}</span>` : ''}${it.icon ? ic(it.icon) : ''}${esc(it.label)}${
@@ -727,7 +762,7 @@ function schrumpfen(el, anchor) {
 }
 function openMenu(anchor, items, align = 'right') {
   const host = anchor.closest('dialog') || document.body;
-  const layer = blockingLayer();
+  const layer = blockingLayer(() => close());
   const menu = document.createElement('div');
   menu.className = 'menu';
   // seit 4.52.0 (R-4.10, APD-40 Paket B): ein Kontextmenü (neben einer Zeile bzw. Kachel) ist erkennbar – höchstens 3 Gruppen, nichts Gesperrtes
@@ -773,6 +808,8 @@ function openMenu(anchor, items, align = 'right') {
     placeSub();
   };
   let entsperren = null;
+  // APD-120 (seit 4.54.0): ein Schalter im Menü schaltet um, das Menü bleibt offen
+  const schalten = (b, it) => { it.schalter = !it.schalter; b.setAttribute('aria-checked', it.schalter ? 'true' : 'false'); it.act(it.schalter); };
   const close = () => {
     if (!menu.isConnected) return;
     closeSub(); schrumpfen(menu, anchor); layer.remove(); menu.remove(); anchor.classList.remove('on'); mehrKippen(anchor, false); anchor.setAttribute('aria-expanded', 'false'); floating.delete(place);
@@ -781,9 +818,9 @@ function openMenu(anchor, items, align = 'right') {
     document.querySelectorAll('.side-list[data-padded]').forEach(l => { l.style.paddingBottom = ''; delete l.dataset.padded; });
     fokusZurueck(anchor, host);   // V5: zurück auf den Knopf, ohne Rollen
   };
-  layer.onclick = close;
   const binde = () => menu.querySelectorAll('[data-i]').forEach(b => b.onclick = () => {
     const it = items[b.dataset.i];
+    if ('schalter' in it) { schalten(b, it); return; }
     if (!it.submenu) { close(); it.act(); return; }
     // Untermenü neben dem Menü, oben bündig mit dem Eintrag; der Eintrag bleibt blau.
     const again = b.classList.contains('on');
@@ -796,7 +833,7 @@ function openMenu(anchor, items, align = 'right') {
     subMenu.setAttribute('role', 'menu');
     subMenu.setAttribute('aria-label', it.label);
     subMenu.innerHTML = menuHtml(it.submenu);
-    subMenu.querySelectorAll('[data-i]').forEach(sb => sb.onclick = () => { close(); it.submenu[sb.dataset.i].act(); });
+    subMenu.querySelectorAll('[data-i]').forEach(sb => sb.onclick = () => { const x = it.submenu[sb.dataset.i]; if ('schalter' in x) { schalten(sb, x); return; } close(); x.act(); });
     host.append(subMenu);
     subItem = b;
     placeSub();
@@ -867,7 +904,7 @@ function choosePop(anchor, html, buttons, { feld = null } = {}) {
   return new Promise(resolve => {
     const visible = anchor?.isConnected && anchor.getClientRects().length;
     const host = (visible && anchor.closest('dialog')) || (dlg.open ? dlg : document.body);
-    const layer = blockingLayer();
+    const layer = blockingLayer(() => done(null));
     const pop = document.createElement('div');
     pop.className = 'pop';
     // Seit 4.10.0 (R-9.2): Wege mit Erklärung (desc) stehen je in einer eigenen Kachel – Erklärung, darunter der Knopf;
@@ -900,7 +937,6 @@ function choosePop(anchor, html, buttons, { feld = null } = {}) {
       if (!feld) fokusZurueck(visible ? anchor : null, host);   // V6: zurück auf den Knopf bzw. die Kopfzeile, ohne Rollen
       resolve(v);
     };
-    layer.onclick = () => done(null);
     pop.querySelectorAll('[data-i]').forEach(b => b.onclick = () => done(buttons[b.dataset.i].value));
     // R-4.7 (K4): Eingabe = der blaue Weg, sonst der Weg zurück – nie die rote Aktion; Esc bzw. ⌘. = Abbrechen (das Fenster bleibt);
     // Tab und Pfeile markieren mit Umlauf, die Leertaste drückt den markierten Knopf (auch den roten)

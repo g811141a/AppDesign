@@ -1,4 +1,4 @@
-/* AppDesign 4.53.0 · design.css – gemeinsame Gestaltung der iPad-Web-Apps von g811141a (Apple-like)
+/* AppDesign 4.54.0 · design.css – gemeinsame Gestaltung der iPad-Web-Apps von g811141a (Apple-like)
    Einbinden im <head> vor dem eigenen <style> der App:  <link rel="stylesheet" href="../AppDesign/fassung/X.Y.Z/design.css"> (feste Fassung, R-10.3)
    Farben als Variablen auf :root, Dunkelmodus über data-theme="dark" (setzt ui.js / applyTheme).
    Komponenten: Schaltflächen, Suchfeld, Kapsel, Eingabefelder, Datumsfelder, Kopfzeile, Seitenleiste,
@@ -6,7 +6,7 @@
    Options-Kapsel; seit 4.1.0 iPhone-Ansicht (html.phone: Seitenkopf, großer Titel, Liste, Kasten, untere Leiste). Regeln dazu: README - Designrichtlinie allgemein.md */
 /* Farben im Apple-Look: Hintergrund Hellgrau, Kästen weiß ohne Rand, schwebende Schaltflächen */
 :root {
-  --ad-version: "4.53.0";   /* R-10.3: Version der Bausteine, die App prüft sie beim Start */
+  --ad-version: "4.54.0";   /* R-10.3: Version der Bausteine, die App prüft sie beim Start */
   --bg: #f2f2f7;
   --card: #ffffff;
   --ink: #1c1c1e;
@@ -396,6 +396,10 @@ body.docked { padding-left: calc(var(--side-w) + max(10px, var(--safe-left)) + 2
 .menu .mi .chev { margin-left: auto; color: var(--muted); }
 .menu .mi .val + .chev { margin-left: 6px; }
 .menu .mi.on { background: var(--sel-bg); }
+/* Seit 4.54.0 (APD-120): Schalter im Menü (Untermenü ‚Darstellung‘ → Glas) – Text links, Schalter rechts wie in den Einstellungen (15.15) */
+.menu .mi.sw .schalter { flex: none; margin-left: auto; width: 51px; height: 31px; border-radius: 16px;
+  background: radial-gradient(circle at 15.5px 50%, #fff 13.5px, transparent 14px), var(--sw-off); transition: background .2s; }
+.menu .mi.sw[aria-checked="true"] .schalter { background: radial-gradient(circle at calc(100% - 15.5px) 50%, #fff 13.5px, transparent 14px), var(--sw-on); }
 .menu .mi.on .val { color: var(--ink); }
 .menu.submenu { width: min(max(260px, calc(260px * var(--f-body))), calc(100vw - 24px - var(--safe-left) - var(--safe-right))); }
 .menu .sub { font-size: var(--t-footnote); color: var(--muted); padding: 0 16px 10px calc(26px + 20px * var(--k)); margin-top: -8px; }
@@ -842,6 +846,11 @@ dialog.gleitet { transition: top .25s ease; }
   .menu { background: var(--card); }
   :root[data-theme="dark"] .menu { background: #2c2c2e; }
 }
+/* Seit 4.54.0 (APD-120): Schalter ‚Glas‘ aus (html.ohne-glas, setzt ui.js) – deckend wie ‚Transparenz reduzieren‘ */
+:root.ohne-glas :is(.fab, .menu, .bbar .searchbox input[type=search], .bbar > button:not([aria-pressed="true"])) { -webkit-backdrop-filter: none; backdrop-filter: none; box-shadow: var(--float); }
+:root.ohne-glas :is(.fab, .bbar .searchbox input[type=search], .bbar > button:not([aria-pressed="true"])) { background: var(--btn); }
+:root.ohne-glas .menu { background: var(--card); }
+:root.ohne-glas[data-theme="dark"] .menu { background: #2c2c2e; }
 @media print { .fab, .menu, .bbar .searchbox input[type=search], .bbar > button, .zu-geist { -webkit-backdrop-filter: none !important; backdrop-filter: none !important; } .zu-geist { display: none !important; } }
 /* R-4.13 (seit 4.53.0, APD-38/T-16): Abbild eines schließenden Menüs bzw. einer Sprechblase – schrumpft zur Schaltfläche, nicht bedienbar (Stile setzt ui.js) */
 .zu-geist { pointer-events: none !important; }

@@ -3,6 +3,27 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.54.0 – 07.11.2026
+
+AppDesign 4.54.0 · Designrichtlinie allgemein 4.54.0 · Zusammenarbeit allgemein 3.9.0 · geprüft mit Reiselogbuch 3.52.0
+
+**APD-118, APD-119, APD-120, APD-113 Teil (6) und APD-117** – dein Ja vom 07.11.2026, Sitzung 0087. Wortlaut `arbeit/APD-113 Teil 6 Wortlaut.md`,
+`arbeit/APD-113 Rest und APD-117 Wortlaut.md`, `arbeit/APD-118 bis APD-120 Wortlaut Bau 4.54.0.md`; Testfall-Listen im BACKLOG (APD-118/X-1 bis X-9),
+`arbeit/APD-120 Testfall-Liste.md` (APD-120/J-1 bis J-13), `arbeit/APD-113 Teil 6 Testfall-Liste.md` (APD-113/M-1 bis M-17). Usertest im Reiselogbuch: P-98.
+
+- **APD-118 – Sperrschicht schließt beim Loslassen (P-97/6):** `ui.js` `blockingLayer(schliessen)` schließt bei `pointerup` auf der Schicht (Aufsetzen auf
+  ihr, höchstens 20 px Weg) und verschluckt danach 700 ms lang einen Klick in 40 px Umkreis (`klickVerschlucken`); ein Klick ohne Aufsetzen (Skript,
+  Tastatur) schließt wie bisher. Safari-Modell `obenOhneKlick` (`tests/safari.mjs`, `KEIN_KLICK_OBEN` 23): im Querformat kein click oberhalb y 23;
+  Prüfung `checkSchichtOben` (`tests/ablauf.mjs`) mit nachgespielter Messung. Designrichtlinie 13 ‚Am oberen Rand kein Klick‘.
+- **APD-119 – ‚Transparenz reduzieren‘ kommt in der Web-App nicht an (P-97/10):** Designrichtlinie 13 neuer Punkt; R-3.9 ‚deckend, wo der Browser es meldet‘.
+- **APD-120 – Schalter ‚Glas‘:** Menüeintrag `{ label, schalter, act }` (Rolle switch, Menü bleibt offen, Leertaste schaltet) – in `darstellungMenuItem`
+  als eigene Gruppe; `html.ohne-glas` macht Schwebendes deckend wie ‚Transparenz reduzieren‘ (`design.css`); `db.settings.glas` je Gerät, `applyTheme`
+  setzt es, `glasAusBackup(vorher)` für das Laden eines Backups. `masseStile` prüft mit Glas aus deckend, `checkGlas` mit `schalter`. R-3.9 und 15.6.
+- **APD-113 Teil (6) und APD-117 – Zusammenarbeit 3.9.0:** erst ein Fenster ‚… anzeigen?‘, danach Link, Schritte, Bericht, Wortlaut als letzte Ausgabe; Lagebild
+  als eigene Antwort; 0 Nr. 7 angepasst. Regelwächter: APD-84/W-4 lässt eine Antwort ohne Fenster nie enden (auch nach Neustart und über zwei Zurückweisungen
+  hinaus), APD-84/W-15 lehnt jedes Fenster mit Link ab und prüft die letzte Ausgabe, APD-84/W-17 zählt einen Aufruf mit `messung.mjs` und anderem Befehl sowie eine
+  Zurückweisung als Werkzeug; `tests/regelwaechter.mjs` APD-113/M-1 bis M-17 mit Gegenprobe, `doku.mjs` `checkNachFenster`.
+
 ## 4.53.0 – 06.11.2026
 
 AppDesign 4.53.0 · Designrichtlinie allgemein 4.53.0 · Zusammenarbeit allgemein 3.8.0 · geprüft mit Reiselogbuch 3.51.0

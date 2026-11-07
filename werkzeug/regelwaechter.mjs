@@ -1,4 +1,4 @@
-// AppDesign 4.53.0 · Regelwächter (APD-84/M-3, Testfall-Liste arbeit/APD-84 APD-83 Testfall-Liste.md APD-84/W-1 bis W-13; Zusammenarbeit
+// AppDesign 4.54.0 · Regelwächter (APD-84/M-3, Testfall-Liste arbeit/APD-84 APD-83 Testfall-Liste.md APD-84/W-1 bis W-13; Zusammenarbeit
 // allgemein 0, Kasten ‚Jede Antwort‘). Läuft als Hook von Claude Code – eingerichtet einmal über das Setup-Skript der Umgebung, den Text
 // gibt `node werkzeug/regelwaechter.mjs setup` aus. Befehle (das JSON des Hooks kommt auf stdin, `transcript_path` = Sitzungsdatei):
 //   uhrzeit  UserPromptSubmit und PostToolUse: gibt Claude die abgelesene Uhrzeitzeile für die nächste Ausgabe (0 Nr. 26 – nie schätzen)
@@ -9,12 +9,18 @@
 //            ein Fenster mit Link zum Prüfen am Gerät ohne denselben Link und nummerierte Schritte mit ‚Erwartet: …‘ davor im Chat (W-15);
 //            seit 4.51.0 (APD-114) eine Bau-Frage ohne abgelesenes ‚Kontext N‘ in der Frage selbst (W-16) und ein zweites Fenster in derselben
 //            Antwort (W-17); seit 4.53.0 (APD-113) jede Frage ohne abgelesenes ‚(Kontext N)‘ (W-16) und ein weiteres Fenster nur, wenn seit dem
-//            vorigen ein Werkzeug lief (W-17)
+//            vorigen ein Werkzeug lief (W-17); seit 4.54.0 (APD-113 Teil (6), Testfall-Liste arbeit/APD-113 Teil 6 Testfall-Liste.md M-1 bis
+//            M-17) jedes Fenster mit Link (W-15 – Link und Schritte kommen als letzte Ausgabe danach), W-17 zählt einen Aufruf mit messung.mjs
+//            und etwas anderem (z. B. Commit) und eine Zurückweisung des Regelwächters als Werkzeug
 //   stop     Stop: prüft die Antwort in der Sitzungsdatei (W-1 bis W-7, W-14 bis W-17) und lässt sie nicht enden, bis die Formpflichten stimmen –
-//            höchstens zweimal je Antwort (W-9); danach werden nur noch neue Ausgaben geprüft
+//            höchstens zweimal je Antwort (W-9); danach werden nur noch neue Ausgaben geprüft. Seit 4.54.0 (APD-113/L-8, M-5 bis M-7, M-16):
+//            eine Antwort ohne beantwortetes Fenster (außer der Übergabe) endet nie – gezählt ab der letzten Nachricht, Meldung einer
+//            Hintergrundaufgabe bzw. eines Neustarts oder Zurückweisung des Regelwächters, auch über die zwei Zurückweisungen hinaus (W-4);
+//            nach einem Fenster ‚… anzeigen?‘ braucht die letzte Ausgabe Link, nummerierte Schritte mit ‚Erwartet:‘ und ‚Antworte im Chat‘ (W-15)
 //   setup    gibt den Text für das Setup-Skript aus (W-13)
 // Jeder Fehler (keine Sitzungsdatei, kaputtes JSON) lässt durch: Rückgabewert 0, keine Ausgabe (W-12) – nie eine Sitzung festhalten.
-// Für die Prüfung: REGELWAECHTER_ORDNER (Zustand), REGELWAECHTER_JETZT (ISO-Zeit), REGELWAECHTER_AUS (Gegenprobe: W-n abschalten).
+// Für die Prüfung: REGELWAECHTER_ORDNER (Zustand), REGELWAECHTER_JETZT (ISO-Zeit), REGELWAECHTER_AUS (Gegenprobe: W-n abschalten; seit 4.54.0
+// einzeln W-15-Link, W-15-Ende, W-4-Abschnitt, W-4-ohne-Grenze, W-17-Commit, W-17-Zurückweisung – APD-113/M-12).
 import { readFileSync, writeFileSync, mkdirSync, existsSync, realpathSync } from 'node:fs';
 import { join } from 'node:path';
 import { homedir } from 'node:os';
@@ -58,6 +64,8 @@ export function verlauf(zeilen) {
       if (istNachricht(z)) ev.push({ art: 'nachricht', t, z });
       // eine Meldung einer Hintergrundaufgabe beginnt einen neuen Zug – für W-17 eine neue Antwort (APD-114/B-14)
       else if (z.origin?.kind === 'task-notification' && !z.isMeta) ev.push({ art: 'anstoss', t, z });
+      // seit 4.54.0 (APD-113/M-16, M-17): Zurückweisung des Regelwächters durch den Stop-Hook – das Nachholen braucht wieder ein Fenster (APD-113/N-6)
+      else if (z.isMeta && /^Stop hook feedback:[\s\S]*Regelwächter/.test(text(c))) ev.push({ art: 'zurueckweisung', t });
       if (Array.isArray(c)) for (const b of c) if (b?.type === 'tool_result') ev.push({ art: 'ergebnis', t, id: b.tool_use_id, text: text(b.content) });
       if (!Number.isNaN(t)) anlass = t;
       continue;
@@ -130,32 +138,39 @@ export function pruefeKontext(ev, i, aus = [], frageText = null) {
   return [];
 }
 
-// W-15 (seit 4.50.0, APD-110, Testfall-Liste arbeit/APD-110 Testfall-Liste.md L-1 bis L-13): enthält das Fenster (Frage, Beschriftung oder
-// Beschreibung einer Möglichkeit) einen Link zum Prüfen am Gerät, muss die Ausgabe unmittelbar davor (seit der vorigen Nachricht bzw. dem
-// vorigen Fenster) denselben Link (dekodiert verglichen, %20 = Leerzeichen) und nummerierte Schritte mit ‚Erwartet: …‘ enthalten – nie nur
-// im Fenster (Kasten ‚Jede Antwort‘ 4, 0 Nr. 11, 2.3). Links in der Zeitzeile und in Code (`…`, ```…```) zählen nicht. Ist die Ausgabe davor
-// nicht wörtlich gespeichert (‚unsicher‘, 2.8 ‚Grenze‘) oder noch nicht geschrieben (Fenster beim Zeigen), bleibt es Selbstkontrolle.
+// W-15 (seit 4.50.0, APD-110; seit 4.54.0 neu, APD-113/L-6, Testfall-Liste arbeit/APD-113 Teil 6 Testfall-Liste.md M-1 bis M-4, M-15): am iPad
+// verdeckt die Kachel des Fensters den Text davor, aus ihr lässt sich nichts kopieren – ein Fenster mit Link (Frage, Beschriftung oder
+// Beschreibung einer Möglichkeit) wird immer abgelehnt; Link und Schritte kommen nach einem Fenster ‚… anzeigen?‘ als letzte Ausgabe
+// (Kasten ‚Jede Antwort‘ 4, 2.1). pruefeEnde: wurde in der Antwort zuletzt ein Fenster ‚… anzeigen?‘ beantwortet (nicht mit ‚Ich schreibe im
+// Chat‘), muss die letzte Ausgabe danach einen Link, nummerierte Schritte (1., 2. …), ‚Erwartet:‘ und ‚Antworte im Chat‘ enthalten (L-6, APD-113/N-6).
+// Links in der Zeitzeile und in Code (`…`, ```…```) zählen nicht. Ist die letzte Ausgabe nicht wörtlich gespeichert (‚unsicher‘, 2.8
+// ‚Grenze‘), bleibt es Selbstkontrolle.
 const LINK = /https?:\/\/[^\s<>"'`)\]‘’“”]+/g;
 const dekodiert = l => { const x = l.replace(/[.,;:!?]+$/, ''); try { return decodeURI(x); } catch { return x; } };
+const ANZEIGEN = /anzeigen\?/i;
 export function pruefeLink(ev, i, aus = [], input = null) {
-  if (aus.includes('W-15')) return [];
+  if (aus.includes('W-15') || aus.includes('W-15-Link')) return [];
   const fragen = (input ?? ev[i]?.input)?.questions || [];
   const imFenster = [...new Set(fragen.flatMap(q => [q.question, ...(q.options || []).flatMap(o => [o.label, o.description])])
     .flatMap(t => String(t || '').match(LINK) || []).map(dekodiert))];
   if (!imFenster.length) return [];
-  const bis = i < 0 ? ev.length : i;
-  let von = bis - 1; while (von >= 0 && ev[von].art !== 'nachricht' && ev[von].art !== 'fenster') von--;
-  const aussage = ev.slice(von + 1, bis).filter(e => e.art === 'text' || e.art === 'unsicher').at(-1);
-  if (aussage?.art === 'unsicher' || (!aussage && i < 0)) return [];
-  const frage = `„${kurz(fragen[0]?.question || '', 60)}“`;
-  const chat = (aussage?.text || '').replace(/```[\s\S]*?```/g, '').replace(/`[^`\n]*`/g, '').replace(new RegExp(ZEIT.source, 'g'), '');
-  const imChat = new Set((chat.match(LINK) || []).map(dekodiert)), dek = (() => { try { return decodeURI(chat); } catch { return chat; } })();
-  const fehlt = imFenster.filter(l => !imChat.has(l) && !dek.includes(l));
-  if (fehlt.length) return [`W-15 vor dem Fenster ${frage} steht der Link ${fehlt.join(', ')} nicht im Chat – Link und nummerierte Schritte mit ‚Erwartet: …‘ unmittelbar vor dem Fenster, nie nur im Fenster (Kasten ‚Jede Antwort‘ 4, 0 Nr. 11)`];
-  const schritte = chat.split('\n').filter(z => /^\s*(?:[-*>]\s*)?\d+\.\s+\S/.test(z)).length;
-  if (schritte < 2) return [`W-15 vor dem Fenster ${frage}: Schritte fehlen – im Chat nummerierte Schritte (1., 2. …) zum Link (Kasten ‚Jede Antwort‘ 4, 2.3)`];
-  if (!/erwartet:/i.test(chat)) return [`W-15 vor dem Fenster ${frage}: Erwartet fehlt – im Chat ‚Erwartet: …‘ zu den Schritten (Kasten ‚Jede Antwort‘ 4, 2.3)`];
-  return [];
+  return [`W-15 Fenster „${kurz(fragen[0]?.question || '', 60)}“ mit Link ${imFenster.join(', ')} – am iPad verdeckt die Kachel den Text, aus ihr lässt sich nichts kopieren: Fenster ‚… bereit – anzeigen?‘ ohne Link, danach Link und nummerierte Schritte mit ‚Erwartet: …‘ als letzte Ausgabe (Kasten ‚Jede Antwort‘ 4, 2.1)`];
+}
+const ohneCode = t => (t || '').replace(/```[\s\S]*?```/g, '').replace(/`[^`\n]*`/g, '').replace(new RegExp(ZEIT.source, 'g'), '');
+export function pruefeEnde(ev, antwort, aus = []) {
+  if (aus.includes('W-15') || aus.includes('W-15-Ende')) return [];
+  const letztes = antwort.filter(e => e.art === 'fenster' && gezeigt(ev, e)).at(-1);
+  const fragen = letztes?.input?.questions || [];
+  if (!fragen.some(q => ANZEIGEN.test(q.question || ''))) return [];
+  if (ev.find(x => x.art === 'ergebnis' && x.id === letztes.id)?.text.includes(CHAT)) return [];   // ‚Ich schreibe im Chat‘ – Claude beendet die Antwort
+  const schluss = ev.slice(ev.indexOf(letztes) + 1).filter(e => e.art === 'text' || e.art === 'unsicher').at(-1);
+  if (!schluss || schluss.art === 'unsicher') return [];
+  const chat = ohneCode(schluss.text), fehlt = [];
+  if (!(chat.match(LINK) || []).length) fehlt.push('Link');
+  if (chat.split('\n').filter(z => /^\s*(?:[-*>]\s*)?\d+\.\s+\S/.test(z)).length < 2) fehlt.push('nummerierte Schritte (1., 2. …)');
+  if (!/erwartet:/i.test(chat)) fehlt.push('‚Erwartet: …‘');
+  if (!/Antworte im Chat/i.test(chat)) fehlt.push('‚Antworte im Chat: …‘');
+  return fehlt.length ? [`W-15 letzte Ausgabe nach dem Fenster „${kurz(fragen[0]?.question || '', 50)}“ ohne ${fehlt.join(', ')} – als letzte Ausgabe der vollständige Link, nummerierte Schritte mit ‚Erwartet: …‘ und zuletzt ‚Antworte im Chat: …‘ mit Beispiel (Kasten ‚Jede Antwort‘ 4, 2.1)`] : [];
 }
 
 // W-16 (seit 4.51.0, APD-114, Testfall-Liste arbeit/APD-114 Testfall-Liste.md B-1 bis B-5; seit 4.53.0 jede Frage, APD-113/H-1 bis H-4, H-8):
@@ -185,17 +200,24 @@ export function pruefeBauFrage(ev, i, aus = [], input = null, mitDatei = true) {
 // nacheinander (2.1) – wurde in der laufenden Antwort (seit der letzten Nachricht des Nutzers bzw. der letzten Meldung einer Hintergrundaufgabe, B-14;
 // Nachholen nach einer Zurückweisung des Stop-Hooks gehört dazu) schon ein Fenster gezeigt, ist ein weiteres nur erlaubt, wenn das vorige beantwortet
 // ist und danach ein Werkzeug lief (z. B. Eintrag ins Backlog) – messung.mjs zählt nicht, es liest nur ab; die Ausgabe mit ‚Kontext N‘ davor prüft W-14.
-// Ein vom Wächter abgelehntes Fenster wurde nie gezeigt und zählt nicht.
+// Ein vom Wächter abgelehntes Fenster wurde nie gezeigt und zählt nicht. Seit 4.54.0 (APD-113/N-3, M-13, M-14, M-17): ein Aufruf, der nur
+// messung.mjs startet (daneben höchstens cd), zählt nicht, einer, der daneben etwas anderes tut (z. B. Commit), zählt; eine Zurückweisung des
+// Regelwächters seit dem vorigen Fenster zählt ebenso – das Nachholen braucht wieder ein Fenster (APD-113/N-6).
 const ABGELEHNT = /Fenster so nicht zeigen/;
 const gezeigt = (ev, e) => ev.some(x => x.art === 'ergebnis' && x.id === e.id && !ABGELEHNT.test(x.text));
-const arbeit = e => e.art === 'werkzeug' && !/messung\.mjs/.test(JSON.stringify(e.input));
+const nurMessung = e => {
+  const c = e.name === 'Bash' ? String(e.input?.command || '') : '';
+  return /messung\.mjs/.test(c) && c.split(/&&|\|\||;|\n/).map(x => x.trim()).filter(Boolean).every(x => /messung\.mjs/.test(x) || /^cd\s/.test(x));
+};
+const arbeit = (e, aus = []) => e.art === 'werkzeug' && (aus.includes('W-17-Commit') ? !/messung\.mjs/.test(JSON.stringify(e.input)) : !nurMessung(e))
+  || (e.art === 'zurueckweisung' && !aus.includes('W-17-Zurückweisung'));
 export function pruefeEinFenster(ev, i, aus = [], frageText = null) {
   if (aus.includes('W-17')) return [];
   const bis = i < 0 ? ev.length : i, ab = ev.slice(0, bis).findLastIndex(e => e.art === 'nachricht' || e.art === 'anstoss');
   const vorige = ev.slice(ab + 1, bis).filter(e => e.art === 'fenster' && gezeigt(ev, e));
   if (!vorige.length) return [];
   const letztes = ev.indexOf(vorige.at(-1));
-  if (ev.slice(letztes + 1, bis).some(arbeit)) return [];
+  if (ev.slice(letztes + 1, bis).some(e => arbeit(e, aus))) return [];
   const frage = `„${kurz(frageText ?? ev[i]?.input?.questions?.[0]?.question ?? '', 60)}“`;
   return [`W-17 Fenster ${frage}: in dieser Antwort wurde schon ein Fenster gezeigt und seitdem lief kein Werkzeug – nie zwei Fenster direkt hintereinander (2.1); erst die Antwort umsetzen (z. B. Eintrag ins Backlog), dann Erklärung mit ‚Kontext N‘ und das nächste Fenster`];
 }
@@ -220,15 +242,22 @@ export function pruefe(zeilen, { seit = null, aus = [] } = {}) {
     const v = vorige(e), soll = v ? abstand(v, m[1]) : '–';
     if (v ? m[2] === '–' || minute(m[2]) > minute(soll) : false) F('W-3', `Zeitabstand ${m[2]} statt ${soll} (vorige Uhrzeitzeile ${v})`);
   }
-  // W-4: jede Antwort endet mit einem Auswahlfenster – einzige Ausnahme die Übergabe (0 Nr. 28)
-  if (!fenster.length && !texte.some(e => e.text.includes(UEBERGABE)))
-    F('W-4', 'die Antwort hat kein Auswahlfenster – jede Frage kommt ins Fenster, jede Antwort endet mit einem, nie ‚Sag Bescheid‘ (0 Nr. 28)');
+  // W-4: jede Antwort enthält ein beantwortetes Auswahlfenster – einzige Ausnahme die Übergabe (Kasten ‚Jede Antwort‘ 6, 0 Nr. 28). Seit 4.54.0
+  // (APD-113/L-8, M-6, M-7, M-16) gezählt ab der letzten Nachricht, Meldung einer Hintergrundaufgabe bzw. eines Neustarts oder Zurückweisung
+  // des Regelwächters – nur das Fenster bringt am iPad den Push
+  const abschnitt = aus.includes('W-4-Abschnitt') ? antwort : ev.slice(ev.findLastIndex(e => e.art === 'nachricht' || e.art === 'anstoss' || e.art === 'zurueckweisung') + 1);
+  if (!abschnitt.some(e => e.art === 'fenster' && gezeigt(ev, e)) && !texte.some(e => e.text.includes(UEBERGABE)))
+    F('W-4', abschnitt === antwort || !antwort.some(e => e.art === 'fenster')
+      ? 'die Antwort hat kein beantwortetes Auswahlfenster – jede Antwort, nach der du etwas tun sollst, enthält eines (Push), nie ‚Sag Bescheid‘ (Kasten ‚Jede Antwort‘ 6, 0 Nr. 28)'
+      : 'seit der letzten Meldung (Hintergrundaufgabe, Neustart) bzw. Zurückweisung kein beantwortetes Auswahlfenster – auch danach braucht die Antwort eines (Push, Kasten ‚Jede Antwort‘ 4 und 6)');
   // W-5 (wie beim Zeigen, falls der Hook ‚fenster‘ fehlte)
   for (const e of fenster.filter(neu)) fehler.push(...pruefeFenster(e.input, aus));
   // W-14 Kontextstand vor jedem Fenster (wie beim Zeigen)
   for (const e of fenster.filter(neu)) fehler.push(...pruefeKontext(ev, pos(e), aus));
   // W-15 Link und Schritte im Chat vor einem Fenster mit Link (wie beim Zeigen, falls der Hook ‚fenster‘ fehlte)
   for (const e of fenster.filter(neu)) fehler.push(...pruefeLink(ev, pos(e), aus));
+  // W-15 letzte Ausgabe nach einem Fenster ‚… anzeigen?‘ (seit 4.54.0, APD-113/L-6, APD-113/N-6)
+  fehler.push(...pruefeEnde(ev, antwort, aus));
   // W-16 Kontext in der Bau-Frage, W-17 ein Fenster je Antwort (wie beim Zeigen; abgelehnte Fenster wurden nie gezeigt)
   for (const e of fenster.filter(neu)) fehler.push(...pruefeBauFrage(ev, pos(e), aus));
   for (const e of fenster.filter(neu).filter(e => gezeigt(ev, e))) fehler.push(...pruefeEinFenster(ev, pos(e), aus));
@@ -264,10 +293,10 @@ export function fuehreAus(befehl, eingabe, { env = process.env, jetzt = Date.now
     // der Rückfall auf den Aufruf von messung.mjs (seit 4.48.0, APD-103/D-4, D-5); ohne Sitzungsdatei lässt er durch (W-12)
     const f = datei(eingabe), ev = f ? verlauf(lies(f)) : [], i = ev.findIndex(e => e.art === 'fenster' && e.id === eingabe.tool_use_id);
     const fehler = [...pruefeFenster(eingabe.tool_input, aus), ...(f ? pruefeKontext(ev, i, aus, eingabe.tool_input?.questions?.[0]?.question || '') : []),
-      ...(f ? pruefeLink(ev, i, aus, eingabe.tool_input) : []), ...pruefeBauFrage(ev, i, aus, eingabe.tool_input, !!f),
+      ...pruefeLink(ev, i, aus, eingabe.tool_input), ...pruefeBauFrage(ev, i, aus, eingabe.tool_input, !!f),
       ...(f ? pruefeEinFenster(ev, i, aus, eingabe.tool_input?.questions?.[0]?.question || '') : [])];
     return fehler.length ? { hookSpecificOutput: { hookEventName: 'PreToolUse', permissionDecision: 'deny', permissionDecisionReason:
-      `Regelwächter (Zusammenarbeit 0 Nr. 7, Nr. 28, 2.1) – Fenster so nicht zeigen:\n${fehler.map(f => '- ' + f).join('\n')}\nNeu stellen: die Empfehlung zuerst mit ‚(Empfohlen)‘ und Grund in der Beschreibung, immer ‚${CHAT}‘; davor \`node ${MESSUNG}\` aufrufen und den Kontextstand als Satz mit ‚Kontext N‘ ausgeben${fehler.some(x => x.startsWith('W-15')) ? '; bei einem Link zum Prüfen am Gerät davor im Chat der vollständige Link und nummerierte Schritte mit ‚Erwartet: …‘' : ''}${fehler.some(x => x.startsWith('W-16')) ? `; in jeder Frage selbst ‚(Kontext N)‘ aus messung.mjs${fehler.some(x => x.startsWith('W-16 Bau-Frage')) ? ' – in der Bau-Frage selbst' : ''}` : ''}${fehler.some(x => x.startsWith('W-17')) ? '; W-17: kein zweites Fenster direkt nach dem ersten – erst ein Werkzeug (z. B. Eintrag ins Backlog), dann Erklärung mit ‚Kontext N‘' : ''}.` } } : null;
+      `Regelwächter (Zusammenarbeit 0 Nr. 7, Nr. 28, 2.1) – Fenster so nicht zeigen:\n${fehler.map(f => '- ' + f).join('\n')}\nNeu stellen: die Empfehlung zuerst mit ‚(Empfohlen)‘ und Grund in der Beschreibung, immer ‚${CHAT}‘; davor \`node ${MESSUNG}\` aufrufen und den Kontextstand als Satz mit ‚Kontext N‘ ausgeben${fehler.some(x => x.startsWith('W-15')) ? '; W-15: kein Link im Fenster – Fenster ‚… bereit – anzeigen?‘, Link und nummerierte Schritte mit ‚Erwartet: …‘ danach als letzte Ausgabe' : ''}${fehler.some(x => x.startsWith('W-16')) ? `; in jeder Frage selbst ‚(Kontext N)‘ aus messung.mjs${fehler.some(x => x.startsWith('W-16 Bau-Frage')) ? ' – in der Bau-Frage selbst' : ''}` : ''}${fehler.some(x => x.startsWith('W-17')) ? '; W-17: kein zweites Fenster direkt nach dem ersten – erst ein Werkzeug (z. B. Eintrag ins Backlog), dann Erklärung mit ‚Kontext N‘' : ''}.` } } : null;
   }
   const f = datei(eingabe);
   const zeilen = f ? lies(f) : [];
@@ -287,15 +316,19 @@ export function fuehreAus(befehl, eingabe, { env = process.env, jetzt = Date.now
   if (befehl === 'stop') {
     if (!f) return null;
     const k = kennung(ev, beginn(ev)), z = zustand.antwort === k ? zustand : { ...zustand, antwort: k, abweisungen: 0, seit: null };
-    if (z.abweisungen >= MAX_ABWEISUNGEN) return null;
-    const fehler = pruefe(zeilen, { seit: z.seit, aus });
+    // seit 4.54.0 (APD-113/L-8, M-5): ohne beantwortetes Fenster endet eine Antwort nie – W-4 auch über die zwei Zurückweisungen hinaus
+    if (z.abweisungen >= MAX_ABWEISUNGEN && aus.includes('W-4-ohne-Grenze')) return null;
+    const alle = pruefe(zeilen, { seit: z.seit, aus });
+    const fehler = z.abweisungen >= MAX_ABWEISUNGEN ? alle.filter(x => x.startsWith('W-4')) : alle;
     if (!fehler.length) return null;
     speichere(zd, { ...z, abweisungen: z.abweisungen + 1, seit: z.seit ?? jetzt });
-    const fenster = fehler.some(x => x.startsWith('W-4') || x.startsWith('W-15'));
-    return { decision: 'block', reason: `Regelwächter (Zusammenarbeit 0, Kasten ‚Jede Antwort‘) – Zurückweisung ${z.abweisungen + 1} von ${MAX_ABWEISUNGEN}, die Antwort ist noch nicht fertig:\n${fehler.map(x => '- ' + x).join('\n')}\n` +
+    const n = z.abweisungen + 1, uebergabe = ev.slice(beginn(ev) + 1).some(e => e.art === 'text' && e.text.includes(UEBERGABE));
+    // APD-113/N-6: nach einer Zurückweisung wieder ein Fenster (Push) – außer nach der Übergabe
+    return { decision: 'block', reason: `Regelwächter (Zusammenarbeit 0, Kasten ‚Jede Antwort‘) – Zurückweisung ${n}${n <= MAX_ABWEISUNGEN ? ` von ${MAX_ABWEISUNGEN}` : ' – ohne beantwortetes Fenster endet keine Antwort, auch über die zwei Zurückweisungen hinaus (Kasten ‚Jede Antwort‘ 6)'}, die Antwort ist noch nicht fertig:\n${fehler.map(x => '- ' + x).join('\n')}\n` +
       `Hole jetzt nach, in dieser Reihenfolge: (1) eine neue Ausgabe, erste Zeile die Uhrzeitzeile ${zeile} (Zeitabstand ab der letzten Uhrzeitzeile, die du ausgegeben hast) – nenne darin kurz den Regelbruch (schon Gesendetes lässt sich nicht ändern)` +
-      `${fehler.some(x => x.startsWith('W-15')) ? ' – darin der vollständige Link und nummerierte Schritte mit ‚Erwartet: …‘ (W-15)' : ''}` +
-      `${fenster ? `; (2) das Auswahlfenster: kurze Frage, die Empfehlung zuerst mit ‚(Empfohlen)‘, immer ‚${CHAT}‘` : ''}; (${fenster ? 3 : 2}) zuletzt \`node ${MESSUNG}\` aufrufen und die Zeitzeile unverändert ans Ende setzen.` };
+      (uebergabe ? `; (2) zuletzt \`node ${MESSUNG}\` aufrufen und die Zeitzeile unverändert ans Ende setzen.` :
+      ` und den Satz mit ‚Kontext N‘ aus \`node ${MESSUNG}\`; (2) ein Auswahlfenster (Push, Kasten ‚Jede Antwort‘ 4): kurze Frage mit ‚(Kontext N)‘ bzw. ‚… bereit – anzeigen?‘, ohne Link, die Empfehlung zuerst mit ‚(Empfohlen)‘, immer ‚${CHAT}‘; ` +
+      `(3) nach der Antwort die letzte Ausgabe – nach ‚… anzeigen?‘ mit dem vollständigen Link, nummerierten Schritten mit ‚Erwartet: …‘ und ‚Antworte im Chat: …‘ –, zuletzt \`node ${MESSUNG}\` aufrufen und die Zeitzeile unverändert ans Ende setzen.`) };
   }
   return null;
 }

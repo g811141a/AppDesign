@@ -1,6 +1,6 @@
 # APD-113 Teil (6) Testfall-Liste – Text nach dem Fenster, Push bei jeder Aufgabe
 
-Stand 07.11.2026 · Sitzung Reiselogbuch 0086 · M-1 bis M-12 bestätigt (Nutzer 06.11.2026), **M-13 bis M-17 bestätigt** (Nutzer 07.11.2026, 00:47, Sitzung 0087: ‚M-13 bis M-16 ja · M-17 ja · N-3-Zusatz ja‘) · Wortlaut `arbeit/APD-113 Teil 6 Wortlaut.md` (L-1 bis L-8, bestätigt). Nummern gelten nur
+Stand 07.11.2026 · Sitzung Reiselogbuch 0086 · M-1 bis M-12 bestätigt (Nutzer 06.11.2026), **M-13 bis M-17 bestätigt** (Nutzer 07.11.2026, 00:47, Sitzung 0087: ‚M-13 bis M-16 ja · M-17 ja · APD-113/N-3-Zusatz ja‘) · Wortlaut `arbeit/APD-113 Teil 6 Wortlaut.md` (L-1 bis L-8, bestätigt). Nummern gelten nur
 in dieser Datei (außerhalb: APD-113/M-n). Jeder Fall wird eine feste Prüfung in `tests/regelwaechter.mjs` (Sitzungsdaten nachgebaut bzw. echte
 Antworten aus 0085 und 0086).
 
@@ -22,6 +22,6 @@ Antworten aus 0085 und 0086).
 | M-14 | wie M-13, dazwischen nur `messung.mjs` | zweites Fenster | Fenster-Hook lehnt ab (W-17 wie bisher) |
 | M-15 | letzte Ausgabe nach ‚… anzeigen?‘ mit Wortlaut, aber ohne Link oder ohne nummerierte Schritte bzw. ‚Antworte im Chat‘ (echte Daten 0086, 00:31) | Antwort enden | Stop-Hook lehnt ab (APD-113/N-6) |
 | M-16 | Zurückweisung des Stop-Hooks, Nachholen endet ohne neues Fenster (echte Daten 0086, 00:30) | Antwort enden | Stop-Hook lehnt ab (APD-113/N-6, L-8) |
-| M-17 | Fenster beantwortet, danach eine Zurückweisung des Stop-Hooks, seitdem nur `messung.mjs` (echte Daten 0087, 00:42: W-17 lehnte das von N-6 verlangte Fenster ab) | Fenster nach der Zurückweisung | Fenster-Hook lässt durch – eine Zurückweisung zählt für W-17 wie ein Werkzeug (APD-113/N-3 Zusatz) |
+| M-17 | Fenster beantwortet, danach eine Zurückweisung des Stop-Hooks, seitdem nur `messung.mjs` (echte Daten 0087, 00:42: W-17 lehnte das von APD-113/N-6 verlangte Fenster ab) | Fenster nach der Zurückweisung | Fenster-Hook lässt durch – eine Zurückweisung zählt für W-17 wie ein Werkzeug (APD-113/N-3 Zusatz) |
 
 Nur am Gerät (Usertest): Push kommt bei ‚… anzeigen?‘, danach ist der Text sichtbar und lässt sich kopieren; nach einem Neustart kommt trotzdem ein Push.

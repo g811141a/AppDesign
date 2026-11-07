@@ -297,6 +297,13 @@ export const mausWieFinger = p => p.evaluate(() => { if (window.__mausWieFinger)
   addEventListener('dragstart', e => e.preventDefault(), true); });
 // Seit 4.50.0 (APD-108): Mauszug wie mit dem Finger auch beim Klick – solange an, nimmt das Modell (safariKlick) den Klick des Browsers nach
 // dem Loslassen weg und schickt ihn wie Safari KLICK_NACH ms nach pointerup an das Element unter dem Aufsetzen (nicht nach pointercancel).
+// Seit 4.54.0 (APD-118, Messung tests/messungen/2026-11-06 iPhone quer Mehr-Menü oberer Rand.txt, Usertest P-97/6; Designrichtlinie 13 ‚Am oberen
+// Rand kein Klick‘): iPhone quer vom Home-Bildschirm – eine Berührung bei y ≈ 20 px (und darüber) liefert pointerdown/pointerup, aber keinen click
+// (gemessen: 790/20, 792/20 → 804/13 ohne click; 782/26 mit click). obenOhneKlick(p) nimmt im Querformat jeden Klick mit clientY < KEIN_KLICK_OBEN
+// weg (window.__safariKlick.obenWeg zählt sie). Nur in den Prüfungen zum oberen Rand eingeschaltet (checkSchichtOben): der Mehr-Knopf steht im
+// iPhone quer bei y 1–31, Playwright tippt seine Mitte (y 16) – ob er dort am Gerät öffnet, ist nicht gemessen (Vermutung: nein, eigenes Thema).
+export const KEIN_KLICK_OBEN = 23;
+export const obenOhneKlick = (p, an = true) => p.evaluate(y => { if (window.__safariKlick) window.__safariKlick.oben = y; }, an ? KEIN_KLICK_OBEN : 0);
 export const mausKlickSpaet = (p, an = true) => p.evaluate(ms => { if (window.__safariKlick) window.__safariKlick.spaet = ms; }, an ? KLICK_NACH : 0);
 
 // Seit 4.48.1 (APD-106, Messung 01.11.2026 mit arbeit/APD-106 Messung.html, iPhone iOS 18.7, Fälle 3–8; Designrichtlinie 13):
@@ -359,6 +366,9 @@ export function safariKlick() {
   }, true);
   const pruefe = e => {
     if (!e.isTrusted) return;
+    // APD-118 (seit 4.54.0): am oberen Rand kein Klick (obenOhneKlick) – pointerdown/pointerup kommen, der click nicht
+    const oben = window.__safariKlick.oben;
+    if (e.type === 'click' && oben && e.clientY < oben && innerWidth > innerHeight) { e.stopImmediatePropagation(); e.preventDefault(); window.__safariKlick.obenWeg++; return; }
     if (e.type === 'click' && window.__safariKlick.spaet) { e.stopImmediatePropagation(); e.preventDefault(); return; }
     if (e.type === 'mousedown') weg = !antippbar(e.target);
     if (!weg) return;
@@ -366,6 +376,6 @@ export function safariKlick() {
     e.stopImmediatePropagation(); e.preventDefault();
     window.__safariKlick.weg++;
   };
-  window.__safariKlick = { weg: 0, docZaehlt: true, spaet: 0, antippbar, ohne(fn) { ohne++; try { return fn(); } finally { ohne--; } } };
+  window.__safariKlick = { weg: 0, docZaehlt: true, spaet: 0, oben: 0, obenWeg: 0, antippbar, ohne(fn) { ohne++; try { return fn(); } finally { ohne--; } } };
   for (const typ of TYPEN) orig.call(window, typ, pruefe, true);
 }
