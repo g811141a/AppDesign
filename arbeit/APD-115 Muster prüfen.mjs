@@ -95,9 +95,9 @@ for (const ansicht of ['iPhone hoch', 'iPad quer', 'iPad hoch', 'iPhone quer']) 
       if (n.fokus && n.unten > n.kb + 1) E('APD-115/M-6', `nach dem Tippen am Ende: letzte Zeile (mit ½ Zeile) endet bei ${n.unten} px, Tastatur ab ${n.kb}`);
       await p.close();
     }
-    // APD-115/M-7: Feld wechseln bei offener Tastatur (Quartier → Ort) – kein Sprung
+    // APD-115/M-7: Feld wechseln bei offener Tastatur (Quartier → Ort) – kein Sprung; mit W-3 (ohne &w= = W-2, verworfen, springt im Modell seit N-13)
     {
-      const p = await neu(ansicht, v);
+      const p = await neu(ansicht, `${v}&w=3`);
       t.liste(await checkTastaturStill(p, { field: '#fQuarter', vorher: () => ansEnde(p, '#fQuarter'), wechsel: '#fPlace', where: `${t.ort} APD-115/M-7` }));
       await p.close();
     }
