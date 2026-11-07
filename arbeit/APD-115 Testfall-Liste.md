@@ -25,6 +25,18 @@ Tastatur 274) und Nachstellung im Safari-Modell (Skript nur in der Sitzung):
 - APD-115/N-5 Folgerung: beim Wechsel wie beim ersten Antippen nur so weit rollen wie nötig (ganz sichtbar: nichts); das Modell bekommt den
   Befund N-2 (Rollen der App beim Wechsel → Safari verschiebt zusätzlich), M-7 wird geschärft (gleiche Zeile: nichts rollt; Feld unter der
   Tastatur: einmal bis 16 px darüber). Ob Safari ohne das Rollen der App noch selbst verschiebt (APD-36/S-6 b), zeigt erst die nächste Messung.
+- APD-115/N-6 Geschärfte Prüfung APD-115/M-7 (Fenster oben bzw. unten, Quartier antippen, tippen, Ort antippen; ‚ganz sichtbar: nichts rollt,
+  sonst einmal bis 16 px über die Tastatur, ein Schub‘) gegen das Muster: **rot**, 20 Fehler in allen vier Ansichten (iPad quer 777 → 924,
+  iPad hoch 385 → 756, iPhone hoch zwei Schübe 43 und 201 px bis 248 statt 433, iPhone quer 11 px zu wenig).
+- APD-115/N-7 Versuch ohne die Mitte-Regel (Sitzung 0091, nicht eingecheckt): die neuen Fälle werden grün bis auf iPhone quer, dafür wird die
+  bisherige Sprungprüfung von M-7 rot – im Modell stellt Safari das Feld beim Wechsel selbst in die Mitte (APD-36/S-6 b, am Gerät gemessen:
+  iPad quer Notiz 34 px über der Tastatur → 132 px), iPad hoch Ort 768 → 445, der Fensterkopf springt kurz mit. Ohne die Regel springt also
+  Safari, mit ihr springen App und Safari (N-2). Grund vermutlich APD-36/S-7: Safari liest die Lage beim Fokus, vor dem Rollen der App – bei offener
+  Tastatur macht das Muster keinen neuen Fokus (APD-36/S-8), Safari sieht also die alte Lage.
+- APD-115/N-8 Nächster Schritt (Vorschlag): Muster mit zwei Varianten für den Wechsel, beide mit Messmodus –
+  APD-115/W-1 ‚nur so weit wie nötig‘ (Safari entscheidet selbst) und APD-115/W-2 ‚Mitte-Regel und neuer Fokus (APD-36/S-8) auch bei offener
+  Tastatur‘ (Safari liest die Lage nach dem Rollen, eine Bewegung). Am Gerät messen, welche ruhig ist; das Safari-Modell danach korrigieren
+  (0 Nr. 20), die Erwartung von M-7 nach der gewählten Variante.
 
 ## Apple-Abgleich (0 Nr. 23, 2.6)
 
