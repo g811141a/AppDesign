@@ -1,6 +1,6 @@
 # APD-113 Teile (1) bis (4) – Befund und Testfall-Liste
 
-Stand 07.11.2026 · Sitzung Reiselogbuch 0088 · Vorschlag, **noch nicht bestätigt**. Nachgestellt mit künstlichen Sitzungsdaten gegen
+Stand 07.11.2026 · Sitzung Reiselogbuch 0088 · **Vorschlag und Testfall-Liste Q-1 bis Q-8 bestätigt** (Nutzer 07.11.2026: ‚Vorschlag und Q-1 bis Q-8 ok, Bau in 0089‘). Nachgestellt mit künstlichen Sitzungsdaten gegen
 `werkzeug/regelwaechter.mjs` 4.54.0 (`pruefe`) – alle drei Funde rot.
 
 ## Befund
@@ -12,7 +12,7 @@ Stand 07.11.2026 · Sitzung Reiselogbuch 0088 · Vorschlag, **noch nicht bestät
 | (3) | ‚Vorhin Kontext 161.093, jetzt Kontext 172.152‘ vor dem Fenster: W-14 nimmt 161.093 und meldet ‚nicht abgelesen‘ (Beleg 0080) | `pruefeKontext` nimmt die **erste** Zahl hinter ‚Kontext‘ | die **letzte** Zahl ‚Kontext N‘ der Ausgabe vor dem Fenster |
 | (4) | Teil 1 einer Antwort endet mit Fenster und Zeitzeile, dann kommt die Meldung einer Hintergrundaufgabe, Teil 2 hat wieder ein Fenster: W-6 meldet die Zeitzeile aus Teil 1 als ‚vor dem Fenster‘ (Belege 0080 15:52, 0087) | W-6 prüft alles seit der letzten Nachricht des Nutzers | W-6 prüft nur den laufenden Abschnitt – seit der letzten Nachricht, Meldung (Hintergrundaufgabe, Neustart) bzw. Zurückweisung, wie W-4 seit 4.54.0 |
 
-Die Teile (5) und (7) bis (9) sind mit Zusammenarbeit 3.9.0 erledigt (APD-113/N-1 bis N-4). Am Regeltext ändert sich nichts (2.8 beschreibt
+Die Teile (5) und (7) bis (9) sind mit Zusammenarbeit 3.9.0 erledigt (APD-113/N-1 bis APD-113/N-4). Am Regeltext ändert sich nichts (2.8 beschreibt
 schon, was gelten soll) – es sind Fehler im Werkzeug.
 
 ## Testfall-Liste (Testfall (automatisch), `tests/regelwaechter.mjs`)
