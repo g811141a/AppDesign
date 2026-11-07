@@ -104,6 +104,10 @@ Tastatur 274) und Nachstellung im Safari-Modell (Skript nur in der Sitzung):
   Antippen von Ort nur Hinweis). **Offen** (Chromium 30, WebKit 29 Fehler, Gegenprobe 99): (a) der erste M-7-Block (`checkTastaturStill` mit
   `wechsel`) läuft ohne `&w=` = W-2 und springt im neuen Modell – auf `&w=3` stellen; (b) iPhone quer W-3: Ort höher als der sichtbare Teil, kann nicht
   in die Mitte, Safari verschiebt 30 px – als Hinweis wie APD-115/A-3. Danach Chromium, WebKit grün, Gegenprobe rot, dann Messung W-3 und W-4.
+- APD-115/N-15 Stand Sitzung 0094: (a) erster M-7-Block mit `&w=3`; (b) iPhone quer W-3 (Ort 46 px hoch, sichtbarer Teil zu klein für die Mitte,
+  Safari verschiebt im Modell 30 px) in M-7 und M-11 als Hinweis wie APD-115/A-3. `node "arbeit/APD-115 Muster prüfen.mjs"` Chromium und WebKit
+  ‚alles in Ordnung‘, Gegenprobe `PRUEF_V=heute` rot (87 Fehler, darunter M-1 bis M-3). Modell beim Antippen von Ort: W-3 ein Schub, Safari verschiebt
+  nicht; W-4 Safari verschiebt (iPad quer 147, iPhone hoch 161 px) – ob am Gerät, zeigt die dritte Messung. Neu `PRUEF_ANSICHT` für eine Ansicht.
 
 ## Apple-Abgleich (0 Nr. 23, 2.6)
 
@@ -182,6 +186,11 @@ iPhone hoch, in Safari – vier Messungen:
 
 **Zweite Messung (Sitzung 0092, nur W-1, Muster nach APD-115/N-12):** Link `…?v=a&w=1`, Seite neu laden, Schritte wie oben; Erwartet bei 6: nichts rollt,
 nichts springt; bei 8 (x): die Tastatur geht zu, Kopfzeile und Fenster bleiben ruhig (iPad: das Fenster gleitet ruhig in die Mitte). Auswertung in 0093.
+
+**Dritte Messung (Sitzung 0094, W-3 gegen W-4, APD-115/E-10):** je Link `…?v=a&w=3` und `…?v=a&w=4`, am iPad quer und am iPhone hoch, Seite neu
+laden, Schritte 2 bis 8 wie oben; bei 6 nach dem Antippen von Ort 2 Sekunden warten; bei 8 nach x die rote Schaltfläche der Abfrage. Erwartet bei 6:
+W-3 – Ort gleitet einmal ruhig nach oben, nichts springt; W-4 – nichts rollt, nichts springt (ob Safari verschiebt, zeigt nur das Gerät). Frage: wann
+ruckelt es (6 gleich nach dem Antippen, 7 beim Tippen, 8 beim Schließen)?
 
 ## Wortlaut R-4.5 (0 Nr. 29, zum ‚Ja‘ vor dem Bau)
 
