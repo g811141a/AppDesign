@@ -108,6 +108,17 @@ Tastatur 274) und Nachstellung im Safari-Modell (Skript nur in der Sitzung):
   Safari verschiebt im Modell 30 px) in M-7 und M-11 als Hinweis wie APD-115/A-3. `node "arbeit/APD-115 Muster prüfen.mjs"` Chromium und WebKit
   ‚alles in Ordnung‘, Gegenprobe `PRUEF_V=heute` rot (87 Fehler, darunter M-1 bis M-3). Modell beim Antippen von Ort: W-3 ein Schub, Safari verschiebt
   nicht; W-4 Safari verschiebt (iPad quer 147, iPhone hoch 161 px) – ob am Gerät, zeigt die dritte Messung. Neu `PRUEF_ANSICHT` für eine Ansicht.
+- APD-115/N-16 Dritte Messung (Nutzer 07./08.11.2026, Sitzung 0094; `… iPad quer W-3 dritte Messung.txt`, `… iPad quer W-4 …`, `… iPhone hoch W-3 …`,
+  `… iPhone hoch W-4 …`, alle Home-Bildschirm). Rückmeldung: ‚7 hat auf iPad sicher wieder geruckelt‘.
+  - Schritt 6 (Ort antippen): in allen vier Messungen verschiebt Safari **nicht** (`scrollY` immer 0, Kopfzeile immer 0, Fensterkopf 10). W-3 rollt vor
+    dem Fokus einmal (iPad 793 → 930, iPhone 1370 → 1438), W-4 rollt nicht (Fokus selbst, Ort war ganz sichtbar). **Abweichung vom Modell:** das Modell
+    lässt Safari bei W-4 verschieben (iPad quer 147, iPhone hoch 161 px) – am Gerät verschiebt Safari nicht, wenn die App den Fokus selbst setzt. Im Modell
+    zu korrigieren (0 Nr. 20).
+  - Schritt 7 (‚Rom‘ tippen): in allen vier Messungen keine Bewegung in den Daten (kein ‚scroll‘, kein ‚vv resize‘, Rollstand des Fensters unverändert).
+    Bei jeder Eingabe in Ort setzt `updateQuarter()` `fQuarter.value`, `fPlace.value` und `qHint.innerHTML` neu – Vermutung, nicht gemessen; dasselbe
+    geschieht in Schritt 5 (Quartier), der als ruhig gemeldet ist. Nachgefragt: welche Variante, was bewegt sich.
+  - Schritt 8 (x, ‚Änderungen verwerfen‘): Rollstand des Fensters bleibt in allen vier (930, 793, 1438, 1362), Kopfzeile und Fensterkopf ruhig – die
+    Korrektur aus APD-115/N-13 (`gemeldet`) wirkt am Gerät.
 
 ## Apple-Abgleich (0 Nr. 23, 2.6)
 
