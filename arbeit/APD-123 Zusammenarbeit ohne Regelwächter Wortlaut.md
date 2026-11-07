@@ -64,3 +64,29 @@ Neu:
 - Prüfungen: `doku.mjs` (`checkCollab`) und `tests/regelwaechter.mjs` an den neuen Text anpassen bzw. aus dem vollen Lauf nehmen – mit der nächsten
   Version.
 - Vermutung, am iPad zu prüfen: ist die Kachel geschlossen (beantwortet oder ‚Ich schreibe im Chat‘), lässt sich der Text davor lesen und kopieren.
+
+## Durchsicht aller Regeln (07.11.2026, Sitzung 0089) – APD-123/D-1 bis D-12
+
+Zusätzlich zu APD-123/V-2 betroffen:
+
+- APD-123/D-1 **Kopf der Zusammenarbeit** (Zeile 8): ‚den Regelwächter (Hooks, 2.8)‘ als Prüfart streichen – es bleiben Prüfdatei und Selbstkontrolle.
+- APD-123/D-2 **0 Nr. 7:** ‚Längeres immer im Chat – vor dem Fenster‘ (statt ‚nach einem Fenster ‚… anzeigen?‘‘); Prüfung ohne Regelwächter.
+- APD-123/D-3 **0 Nr. 13:** ‚⚠ Übergabe fällig‘ meldet `messung.mjs` (statt ‚in der Zeitzeile‘); ‚Selbstkontrolle anhand von `messung.mjs`‘.
+- APD-123/D-4 **0 Nr. 14:** ‚danach nur die Zeitzeile‘ entfällt.
+- APD-123/D-5 **2.3 Rückmeldung:** ‚Rückmeldung in der Kachel (z. B. ‚P-99: alles ok‘ / ‚nicht ok‘) oder im Chat; Link und Schritte stehen in der Datei
+  neben der Kachel‘ (statt ‚im Chat, den Push bringt ‚… anzeigen?‘ davor‘).
+- APD-123/D-6 **2.5 Modell-Rückfall:** heute meldet der Regelwächter ‚⚠ Modell …‘ nach jedem Werkzeug – ohne ihn nur noch beim Lagebild geprüft.
+  Vorschlag: `messung.mjs` meldet ‚⚠ Modell …‘ mit (kleine Änderung am Werkzeug, mit Prüfung `tests/messung.mjs`).
+- APD-123/D-7 **2.1 ‚Reihenfolge in einer Antwort‘:** ‚erst die Arbeit und alles zum Lesen, dann das Fenster; nach der Antwort nur noch kurz‘;
+  ‚Antwortzeile‘, ‚Vorschau kommt nicht an‘ und die Ausnahme ‚P-n: …‘ bleiben.
+- APD-123/D-8 **Designrichtlinie 14** (Zeile 574): ‚werkzeug/ … (Zeitzeile)‘ → ‚(Kontextstand)‘.
+- APD-123/D-9 **Prüfung `tests/doku.mjs`:** `checkCollab` verlangt heute die alten Sätze (Kasten Punkt 4 mit **W**, ‚Lagebild bereit – anzeigen?‘,
+  ‚Bericht und Testfälle anzeigen?‘, 2.1, 2.8 …, Zeilen 126 und 202–230) – ohne Anpassung wird `doku-regeln` rot. Da die App ihre feste Fassung
+  (`fassung/4.54.0/tests/doku.mjs`) gegen die Zusammenarbeit im Hauptordner prüft, gehen neuer Wortlaut und neue Prüfung **zusammen mit einer
+  AppDesign-Version** (4.55.0) und dem Heben der App – also erst nach der Bau-Frage (0 Nr. 21).
+- APD-123/D-10 **`tests/regelwaechter.mjs` und `werkzeug/regelwaechter.mjs`:** Vorschlag: im Repo lassen (falls wir ihn wieder brauchen), aber
+  aus `veroeffentlichen.mjs … los` nehmen (Zeile 260) und in der AppDesign-`CLAUDE.md` nur noch ‚abgeschaltet‘.
+- APD-123/D-11 **Backlog:** APD-113 Teile (1) bis (4) hinfällig (‚ersetzt durch APD-123‘); in ‚0. Nächste Version‘ dafür APD-123.
+- APD-123/D-12 **UEBERGABE.md / Starttext:** ‚Lagebild als eigene Antwort, danach Kachel‘ statt ‚Fenster ‚Lagebild bereit – anzeigen?‘‘.
+- Unverändert: 0 Nr. 1–6, 8–10, 12, 16–25, 27 (bis auf die Uhrzeit), 29 (bis auf ‚anzeigen?‘), 2.4, 2.6, 2.7.
+- Risiko: ohne Wächter ist die Kachel am Ende wieder reine Selbstkontrolle – vor 3.0.0 fehlte sie oft.
