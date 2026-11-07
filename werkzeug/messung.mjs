@@ -92,7 +92,9 @@ export function messe(zeilen, jetzt = Date.now()) {
   const u = aufruf?.message.usage;
   const kontext = u ? (u.input_tokens || 0) + (u.cache_read_input_tokens || 0) + (u.cache_creation_input_tokens || 0) : null;
   const faellig = zeilen.some(z => z.isCompactSummary) || (kontext ?? 0) >= GRENZE;
-  return { ms, token, kontext, faellig, ab: nachrichten.at(-1).timestamp };
+  // APD-123/D-6 (seit 4.55.0): ohne Regelwächter meldet das Werkzeug den Rückfall des Modells (Zusammenarbeit 2.5)
+  const modell = aufruf?.message?.model || null;
+  return { ms, token, kontext, faellig, modell, ab: nachrichten.at(-1).timestamp };
 }
 
 // APD-12/M-10: ab 60 Minuten hh:mm:ss; APD-12/M-11: Tausenderpunkt
@@ -102,9 +104,10 @@ export const dauer = ms => {
 };
 export const zahl = n => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 
-export function zeile({ ms, token, kontext = null, faellig = false }) {
+export const MODELL = 'claude-opus-5-5';
+export function zeile({ ms, token, kontext = null, faellig = false, modell = null }) {
   const t = token ? `${zahl(token.neu)} neu · ${zahl(token.gelesen)} aus Zwischenspeicher · ${zahl(token.geschrieben)} geschrieben` : '–';
-  const k = `Kontext ${kontext === null ? '–' : zahl(kontext)}${faellig ? ' ⚠ Übergabe fällig' : ''}`;
+  const k = `Kontext ${kontext === null ? '–' : zahl(kontext)}${faellig ? ' ⚠ Übergabe fällig' : ''}${modell && modell !== MODELL && !modell.startsWith('<') ? ` ⚠ Modell ${modell}` : ''}`;
   return `<sub>⏱ ${dauer(ms)} · Token vorige Antwort: ${t} · ${k}</sub>`;
 }
 

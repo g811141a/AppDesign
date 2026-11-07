@@ -289,7 +289,7 @@ const FX_X = fxBtn.innerHTML, FX_V = new URLSearchParams(location.search).get('v
 const FX_RUECK = FX_V === 'b'
   ? '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="currentColor"/><g transform="translate(5.5 5.5) scale(.54)" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></g></svg>'
   : '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg>';
-// APD-124: nach dem Leeren merkt sich das Feld den Text (fxRueck) – bis zur ersten Eingabe bzw. bis es den Fokus verliert (E-2)
+// APD-124: nach dem Leeren merkt sich das Feld den Text (fxRueck) – bis zur ersten Eingabe bzw. bis es den Fokus verliert (APD-124/E-2)
 let fxFeld = null, fxTippt = false, fxRahmen = null, fxFrage = false, fxRueck = null, fxArt = 'x';
 const fxMeld = t => { const m = document.getElementById('meldung'); if (m) m.textContent = t; };
 function fxZeigen() {

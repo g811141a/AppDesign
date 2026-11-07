@@ -1,6 +1,6 @@
-// APD-124 · Muster ‚Rückgängig im Feld‘ prüfen (Testfall-Liste arbeit/APD-124 Klärung und Testfall-Liste.md, APD-124/T-1 bis T-7).
+// APD-124 · Muster ‚Rückgängig im Feld‘ prüfen (Testfall-Liste arbeit/APD-124 Klärung und Testfall-Liste.md, APD-124/T-1 bis APD-124/T-7).
 //   node "arbeit/APD-124 Muster prüfen.mjs"            (im Ordner AppDesign; PRUEF_BROWSER=webkit für WebKit)
-//   PRUEF_V=heute …                                    Gegenprobe: ui.js der Fassung 4.54.0 – T-1 bis T-6 müssen rot werden
+//   PRUEF_V=heute …                                    Gegenprobe: ui.js der Fassung 4.54.0 – APD-124/T-1 bis APD-124/T-6 müssen rot werden
 import { createRequire } from 'node:module';
 const pw = createRequire(new URL('../../ReiseLogBuch/tests/', import.meta.url))('playwright');
 const art = process.env.PRUEF_BROWSER || 'chromium', heute = process.env.PRUEF_V === 'heute';
@@ -41,7 +41,7 @@ for (const v of ['a', 'b']) {
     await p.keyboard.press('Backspace'); await p.waitForTimeout(100);
     z = await zustand(sel);
     if (z.knopf) F('APD-124/T-6', `${w} nach Eingabe und Löschen per Taste wieder ein Knopf (${z.rueck ? 'Rückgängig' : 'ⓧ'})`);
-    // Fokus weg: Rückgängig verfällt (E-2)
+    // Fokus weg: Rückgängig verfällt (APD-124/E-2)
     await p.fill(sel, alt); await p.click(sel); await tipp(); await p.waitForTimeout(100);
     await p.click('h1'); await p.waitForTimeout(100); await p.click(sel); await p.waitForTimeout(100);
     z = await zustand(sel);

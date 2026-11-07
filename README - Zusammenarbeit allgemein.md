@@ -1,11 +1,11 @@
 # Zusammenarbeit allgemein
 
-**Version 3.9.0** · Stand 07.11.2026
+**Version 3.10.0** · Stand 07.11.2026
 
 Regeln für die Zusammenarbeit mit Claude bei allen iPad-Web-Apps von g811141a. Die Datei liegt im Design-Repo **AppDesign**
 (g811141a/AppDesign); App-Eigenes steht in der `CLAUDE.md` des App-Repos. **Abschnitt 0 ist das Arbeitsmodell** (oben der Kasten ‚Immer‘ und ‚Jede
-Antwort‘), Abschnitt 1 die Sprache, Abschnitt 2 die Einzelheiten und Formate. Jede Regel nennt ihre Prüfung – den
-**Regelwächter** (Hooks, 2.8), eine Prüfdatei oder **Selbstkontrolle** (Claude prüft vor dem Senden selbst).
+Antwort‘), Abschnitt 1 die Sprache, Abschnitt 2 die Einzelheiten und Formate. Jede Regel nennt ihre Prüfung – eine Prüfdatei
+oder **Selbstkontrolle** (Claude prüft vor dem Senden selbst).
 
 > **Hinweis für Claude:** Diese Regeln gelten in jeder Sitzung, auch nach langer Pause. Zu Beginn `UEBERGABE.md` und **diese ganze
 > Datei** lesen, alles Weitere gezielt (Nr. 15).
@@ -17,28 +17,21 @@ Antwort‘), Abschnitt 1 die Sprache, Abschnitt 2 die Einzelheiten und Formate. 
 > **Immer:** nie ohne ‚Ja‘ bauen (Nr. 21) · erst Usertests, dann Neues (Nr. 22) · Sammelversionen (Nr. 8) · nur Belegtes (Nr. 27) ·
 > Regeln nur mit Genehmigung (Nr. 29).
 >
-> **Jede Antwort** (was mit **W** markiert ist, prüft der Regelwächter, 2.8; der Rest ist Selbstkontrolle vor dem Senden):
-> 1. Erste Zeile jeder Ausgabe: die Uhrzeitzeile, die der Regelwächter liefert – nie selbst schätzen (Nr. 26, 2.2). **W**
-> 2. Per du, deutsch, kurz (Abschnitt 1).
-> 3. Nur Belegtes: jede Uhrzeit, Zahl, Version, jedes Prüfergebnis aus einem Werkzeug oder einer Datei dieser Sitzung (Nr. 27).
-> 4. Bericht oder Bitte, am Gerät zu prüfen (Muster, Versuch, Messung, Usertest): zuerst ein Fenster ‚… bereit – anzeigen?‘ (bringt
->    den Push); nach der Antwort als **letzte Ausgabe ohne Fenster** der vollständige Link und nummerierte Schritte mit ‚Erwartet: …‘,
->    dazu alle offenen Usertests vollständig – nie vor einem Fenster, nie nur im Fenster, als Zusammenfassung oder als Verweis auf eine
->    Datei; der Nutzer antwortet im Chat (Nr. 11, 2.1, 2.3). Das gilt für **jede** letzte Ausgabe, nach der der Nutzer etwas tun soll
->    (lesen, entscheiden, prüfen, antworten): vollständiger Link zur Datei bzw. zum Muster und nummerierte Schritte mit ‚Erwartet: …‘,
->    zuletzt ‚Antworte im Chat: …‘ mit Beispiel. Endet eine Antwort nach einer Zurückweisung des Regelwächters, steht davor wieder ein
->    Fenster (Push). **W**
-> 5. Wurde etwas gebaut oder entschieden: die Backlog-Erinnerung ‚Nächste Version …: N Punkte bereit (…) · Offen im Backlog: …‘ (2.4).
-> 6. **Push bei jeder Aufgabe:** jede Antwort, nach der der Nutzer etwas tun soll (entscheiden, lesen, prüfen, antworten), enthält ein
->    Auswahlfenster – am Ende mit der kurzen Frage oder als ‚… anzeigen?‘ vor der letzten Ausgabe (Punkt 4, 2.1) –, denn nur das Fenster
->    bringt am iPad den Push; das gilt auch nach einem Neustart des Arbeitsprozesses und nach der Meldung einer Hintergrundaufgabe oder
->    einer anderen Sitzung; nie ‚Sag Bescheid‘; Empfehlung zuerst mit ‚(Empfohlen)‘ und Grund, immer ‚Ich schreibe im Chat‘; einzige
->    Ausnahme die Übergabe (Nr. 28, 2.1). **W**
-> 7. Ganz am Ende, nach dem Fenster: die Zeitzeile von `messung.mjs`, unverändert (2.2). **W**
-> 8. Meldet der Regelwächter ‚⚠ Modell‘, steht es in der Antwort (2.5); steht ‚⚠ Übergabe fällig‘ in der Zeitzeile: nach dem
->    laufenden Schritt übergeben (Nr. 13).
-> 9. Vor **jedem Auswahlfenster**: der Kontextstand als Satz mit ‚Kontext N‘ aus `messung.mjs`, abgelesen, und derselbe Wert als
->    ‚(Kontext N)‘ am Ende **jeder Frage** im Fenster – die Push-Mitteilung am iPad zeigt den Fragetext (Nr. 21, 28). **W**
+> **Jede Antwort** (Selbstkontrolle vor dem Senden):
+> 1. Per du, deutsch, kurz (Abschnitt 1).
+> 2. Nur Belegtes: jede Zahl, Version, jedes Prüfergebnis aus einem Werkzeug oder einer Datei dieser Sitzung (Nr. 27).
+> 3. **Kachel mit Push:** jede Antwort, nach der der Nutzer etwas tun soll (lesen, entscheiden, prüfen, antworten), endet mit einem
+>    Auswahlfenster – nur das Fenster bringt am iPad den Push; auch nach einem Neustart des Arbeitsprozesses und nach der Meldung einer
+>    Hintergrundaufgabe oder einer anderen Sitzung; Empfehlung zuerst mit ‚(Empfohlen)‘ und Grund, immer ‚Ich schreibe im Chat‘; einzige
+>    Ausnahme die Übergabe (Nr. 28, 2.1).
+> 4. **Alles zum Lesen vor der Kachel:** Link, nummerierte Schritte mit ‚Erwartet: …‘, Bericht, Wortlaut, Muster und alle offenen
+>    Usertests stehen vor dem Fenster – im Chat und, wenn der Nutzer dabei etwas tun soll (prüfen, testen, entscheiden), zusätzlich als
+>    Datei im Seitenbereich (`SendUserFile`, `display: 'render'`), die neben der offenen Kachel lesbar bleibt; das Fenster selbst nur mit der
+>    kurzen Frage, ohne Link (Nr. 11, 2.1, 2.3).
+> 5. **Kontextstand in der Kachel:** jede Frage im Fenster endet mit ‚(Kontext N)‘, N abgelesen aus `messung.mjs` unmittelbar vor dem
+>    Fenster – nie geschätzt (Nr. 21, 28).
+> 6. Wurde etwas gebaut oder entschieden: die Backlog-Erinnerung ‚Nächste Version …: N Punkte bereit (…) · Offen im Backlog: …‘ (2.4).
+> 7. Meldet `messung.mjs` ‚⚠ Übergabe fällig‘: nach dem laufenden Schritt übergeben (Nr. 13).
 
 Ziel: nichts vergessen, Fehler finden, bevor der Nutzer sie findet, schnell und sparsam arbeiten. Die Nummern bleiben fest
 (Verweise in Code und Changelogs), neue Punkte bekommen die nächste freie Nummer. Einzelheiten und Formate: Abschnitt 2.
@@ -47,27 +40,22 @@ Ziel: nichts vergessen, Fehler finden, bevor der Nutzer sie findet, schnell und 
 
 21. **Nie ohne ‚Ja‘ bauen:** Claude entscheidet nie selbst, eine Version zu bauen oder hochzuladen – auch nicht bei kleinen
     Korrekturen oder wenn die Bitte ‚korrigieren‘, ‚verbessern‘, ‚ausbessern‘ lautet. Vorher immer ‚Soll ich Version X.Y.Z mit …
-    erstellen? (Kontext N) Ja/Nein‘ – der Kontextstand aus `messung.mjs` steht **in der Frage selbst** und davor im Chat (Nr. 28).
+    erstellen? (Kontext N) Ja/Nein‘ – der Kontextstand aus `messung.mjs` steht **in der Frage selbst** (Nr. 28).
     Gebaut wird erst nach einem
     ausdrücklichen ‚Ja‘ (eine Bitte um Korrektur ist keins). Bis dahin:
     erklären, Vorschlag machen, ins Backlog eintragen. Prüfung: Selbstkontrolle.
 22. **Erst prüfen, dann Neues:** Nach jeder Version werden alle Testfälle (User) des Usertests geprüft und gefundene Fehler beseitigt, bevor Neues
     umgesetzt wird; jeder Bericht endet mit dem Hinweis darauf (2.3). Ausnahme: Der Nutzer besteht nach dem Hinweis darauf, zuerst
     Neues umzusetzen. Prüfung: Selbstkontrolle.
-26. **Uhrzeit in der ersten Zeile:** Jede Ausgabe darüber, was das System tut (jede Antwort und jede Zwischenmeldung), beginnt
-    mit der Uhrzeitzeile `<sub>Aktuelle Uhrzeit: hh:mm&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Zeitabstand zu vorher: hh:mm)</sub>` –
-    Format 2.2. Prüfung: Regelwächter (liefert die abgelesene Uhrzeit, prüft erste Zeile, Uhrzeit und Zeitabstand).
+26. entfällt (APD-123).
 27. **Nur Belegtes:** Uhrzeiten, Zahlen, Versionen, Prüfergebnisse, Dateiinhalte und ‚So macht es Apple‘ nur aus einem Werkzeug,
     einer Datei oder einer Quelle **dieser** Sitzung; sonst ‚weiß ich nicht – ich prüfe es‘; Vermutungen heißen ‚Vermutung‘.
-    Prüfung: Uhrzeit und Zeitzeile Regelwächter; sonst Selbstkontrolle mit Quelle im Bericht.
+    Prüfung: Selbstkontrolle mit Quelle im Bericht.
 28. **Jede Frage im Fenster:** Jede Frage an den Nutzer kommt ins Auswahlfenster, und jede Antwort endet mit einem – nie ‚Sag
-    Bescheid …‘ oder eine offene Frage im Text; Ausnahmen: die Übergabe (Nr. 14) und die letzte Ausgabe nach
-    Kasten ‚Jede Antwort‘ Punkt 4. Unmittelbar vor jedem Fenster steht im Chat
-    der Kontextstand als Satz mit ‚Kontext N‘ aus `messung.mjs` – abgelesen, nie geschätzt –, im Fenster am Ende jeder Frage
-    ‚(Kontext N)‘; die Zeitzeile selbst steht nur ganz am Ende. Format 2.1. Prüfung: Regelwächter.
+    Bescheid …‘ oder eine offene Frage im Text; Ausnahme: die Übergabe (Nr. 14). Am Ende jeder Frage im Fenster steht ‚(Kontext N)‘ aus
+    `messung.mjs` – abgelesen, nie geschätzt. Format 2.1. Prüfung: Selbstkontrolle.
 29. **Regeln nur mit Genehmigung:** Claude löscht, ändert oder ergänzt keine Regel – Zusammenarbeit, Designrichtlinien mit
-    Regelkatalog, App-Richtlinien, `CLAUDE.md` – ohne dein ausdrückliches ‚Ja‘ zum Wortlaut. Alter und neuer Text stehen nach einem Fenster ‚Wortlaut … anzeigen?‘ als letzte
-    Ausgabe, die Antwort ‚Ja/Nein‘ kommt im Chat (2.1). Das gilt auch für Korrekturen und Zusammenfassungen (Nr. 3).
+    Regelkatalog, App-Richtlinien, `CLAUDE.md` – ohne dein ausdrückliches ‚Ja‘ zum Wortlaut. Alter und neuer Text stehen im Chat, danach das Fenster mit ‚Ja/Nein‘ (2.1). Das gilt auch für Korrekturen und Zusammenfassungen (Nr. 3).
     Prüfung: Selbstkontrolle.
 
 **A. Testen und Qualität**
@@ -102,9 +90,9 @@ Ziel: nichts vergessen, Fehler finden, bevor der Nutzer sie findet, schnell und 
 6. **Muster:** bei Gestaltungsfragen zuerst ein Muster – beim ersten 2–3 Varianten nebeneinander, bei kleinen Korrekturen eine;
    zuerst nur hell und quer, dunkel und hoch erst, wenn hell passt; Bilder in Viererpaketen. Prüfung: Selbstkontrolle.
 7. **Auswahlfenster:** jede Frage als Ja/Nein oder klare Auswahl (Nr. 28), die Empfehlung zuerst, jedes Fenster mit ‚Ich schreibe
-   im Chat‘ (gewählt → Claude beendet die Antwort). Längeres immer im Chat – nach einem Fenster ‚… anzeigen?‘ als letzte
-   Ausgabe ohne Fenster (2.1). Format 2.1. Prüfung: Regelwächter (Empfehlung zuerst, ‚Ich schreibe im Chat‘ – schon vor dem
-   Zeigen); `checkCollab` (keine Antwortzeile ohne ‚mehr als 4 Fragen‘, keine Muster im Fragetext).
+   im Chat‘ (gewählt → Claude beendet die Antwort). Längeres immer im Chat – vor dem Fenster (2.1). Format 2.1. Prüfung:
+   Selbstkontrolle (Empfehlung zuerst, ‚Ich schreibe im Chat‘); `checkCollab` (keine Antwortzeile ohne ‚mehr als 4 Fragen‘, keine
+   Muster im Fragetext).
 
 **C. Apple, Backlog und Ablauf einer Änderung**
 
@@ -137,29 +125,29 @@ Ziel: nichts vergessen, Fehler finden, bevor der Nutzer sie findet, schnell und 
     App-Eigenes im App-Repo (`CLAUDE.md`, `PROMPT.md`, `CHANGELOG.md`, `BACKLOG.md`, App-Richtlinie) ohne Wiederholungen.
     Gemeinsames wird in AppDesign geändert und mit jeder App getestet, die es nutzt. Jede App bindet genau ihre feste
     AppDesign-Fassung ein und wird nur nach Rückfrage gehoben. Prüfung: `version.mjs` (R-10.3); Rückfrage: Selbstkontrolle.
-11. **Bericht** nach einer Version **und jede Bitte, am Gerät zu prüfen** (Muster, Versuch, Messung, Usertest): Fenster ‚… fertig –
-    Bericht und Testfälle anzeigen?‘ → danach als letzte Ausgabe ohne Fenster: Bericht (3–5 Sätze), vollständige Aufzählung aller
-    Änderungen, alle offenen Usertests vollständig; die Rückmeldung schreibt der Nutzer im Chat; nie nur ein Verweis aufs CHANGELOG. Ist ein Fehler durchgerutscht, steht dabei, warum die Prüfung ihn übersah.
+11. **Bericht** nach einer Version **und jede Bitte, am Gerät zu prüfen** (Muster, Versuch, Messung, Usertest): Bericht (3–5 Sätze),
+    vollständige Aufzählung aller Änderungen und alle offenen Usertests vollständig im Chat (und als Datei, Kasten Punkt 4), danach das
+    Fenster zur Rückmeldung; nie nur ein Verweis aufs CHANGELOG. Ist ein Fehler durchgerutscht, steht dabei, warum die Prüfung ihn übersah.
     Einzelheiten 2.3. Prüfung: `doku.mjs` (Testfälle); sonst Selbstkontrolle.
 
 **E. Sitzungen und Übergabe**
 
 12. **Ein Thema je Sitzung.** Lange Sitzungen werden langsam und automatisch zusammengefasst – dabei gehen Einzelheiten
     verloren. Prüfung: Selbstkontrolle.
-13. **Automatische Übergabe ab etwa 300.000 Token:** Hat der Kontext etwa **300.000 Token** erreicht (‚⚠ Übergabe fällig‘ in
-    der Zeitzeile) oder wurde die Sitzung schon zusammengefasst, übergibt Claude **ohne Rückfrage**, sobald der laufende Schritt
+13. **Automatische Übergabe ab etwa 300.000 Token:** Hat der Kontext etwa **300.000 Token** erreicht (‚⚠ Übergabe fällig‘ meldet
+    `messung.mjs`) oder wurde die Sitzung schon zusammengefasst, übergibt Claude **ohne Rückfrage**, sobald der laufende Schritt
     abgeschlossen ist (Version veröffentlicht und Bericht gegeben bzw. Auswertung eingetragen) – nie mitten in einem Bau oder
     Prüflauf: Übergabe schreiben (Nr. 14) und die neue Sitzung selbst starten – Opus 5.5, Aufwand hoch, Name
     `<App> <Chatnummer> – <Thema>` (2.5). Eine offene Frage an den Nutzer (z. B. Rückmeldung zu Usertests) geht mit in die
     Übergabe und wird in der neuen Sitzung gestellt. Ist ein Thema vorher abgeschlossen, schlägt Claude die Übergabe vor. Prüfung:
-    Selbstkontrolle anhand der Zeitzeile.
+    Selbstkontrolle anhand von `messung.mjs`.
 14. **Übergabe** sofort nach `UEBERGABE.md` im Repo AppDesign schreiben und veröffentlichen, mit Starttext (2.5); am Ende der
-    Antwort fett **‚Die Sitzung (Chat) ist damit beendet!‘**, danach nur die Zeitzeile. Prüfung: Selbstkontrolle.
+    Antwort fett **‚Die Sitzung (Chat) ist damit beendet!‘**. Prüfung: Selbstkontrolle.
 15. **Beginn einer Sitzung:** lesen – `UEBERGABE.md`, **diese ganze Datei** (einmal je Sitzung, etwa 14.000 Token), die
     Überschriften der Designrichtlinien; alles Weitere (Katalog, Backlog, CHANGELOG, PROMPT.md) nur, soweit die Aufgabe es braucht.
     Dann das **Lagebild** (Versionen, offene Usertests, Backlog-Spitze, Modell und Aufwand – 2.5) als **eigene Antwort** vor jeder
-    Arbeit, auch wenn der Starttext einen Auftrag hat: Fenster ‚Lagebild bereit – anzeigen?‘, danach das Lagebild als letzte Ausgabe
-    (2.1); die Arbeit beginnt erst nach der Antwort des Nutzers. Prüfung:
+    Arbeit, auch wenn der Starttext einen Auftrag hat: das Lagebild im Chat, danach das Fenster (2.1); die Arbeit beginnt erst nach der
+    Antwort des Nutzers. Prüfung:
     `doku.mjs` (beide `CLAUDE.md` nennen zuerst `UEBERGABE.md`, dann die ganze Zusammenarbeit); sonst Selbstkontrolle.
 16. **Übergabe statt Gedächtnis:** jede Vereinbarung sofort an ihre Stelle in den Richtlinien (Nr. 3); was nicht auf GitHub
     steht, gibt es in der nächsten Sitzung nicht. Prüfung: Selbstkontrolle.
@@ -216,46 +204,32 @@ Prüfung: Selbstkontrolle.
   Aufzählung a, b, c …; Fragen nummeriert (1, 2, 3 …); die eigene Empfehlung kurz dazu.
 - **Auswahlfenster:** bis zu 4 Fragen, je 2–4 Möglichkeiten; die Empfehlung zuerst mit ‚(Empfohlen)‘ (so geschrieben, nie
   ‚(Empfehlung)‘) und ihrem Grund in der Beschreibung, immer ‚Ich schreibe im Chat‘ – ausgenommen nur die Empfehlung bei der
-  Rückmeldung zu einem Usertest (‚P-n: …‘, 2.3). Der Regelwächter lehnt ein Fenster ohne das schon vor dem Zeigen ab. Im Fenster steht nur eine **kurze Frage** mit den Schaltflächen – keine Erklärtexte, keine Zeitangaben. **Ausnahme:** Bei
-  jeder Bitte, am Gerät zu prüfen oder auszuprobieren, fragt das Fenster nur ‚… bereit – anzeigen?‘, ohne Link; Link und Schritte
-  folgen als letzte Ausgabe ohne Fenster (am iPad verdeckt die Kachel den Text davor, aus ihr lässt sich nichts kopieren). Das Feld ‚Sonstiges‘ schneidet lange Texte ab.
-- **Fenster nacheinander, der Text danach:** nie zwei Fenster direkt hintereinander; ein weiteres Fenster in derselben Antwort
-  erst, wenn das vorige beantwortet ist, danach ein Werkzeug lief (z. B. Eintrag ins Backlog) und davor eine neue Ausgabe mit
-  Erklärung und ‚Kontext N‘ steht – so endet jede Antwort mit einem Fenster und einem Push am iPad (2.3). Die Vorschau-Funktion
-  kommt nicht an. Alles, was der Nutzer vor einer
-  Entscheidung lesen muss – Link, Schritte, Bericht, Wortlaut (0 Nr. 29), Muster, Erklärungen –, steht **nie vor einem Fenster** (am
-  iPad verdeckt die Kachel den Text davor, aus ihr lässt sich nichts kopieren): zuerst ein Fenster ‚… bereit – anzeigen?‘ (Push),
-  danach der Text als letzte Ausgabe ohne Fenster; der Nutzer antwortet im Chat. Mehrere Themen nacheinander: je Fenster eines (ganze Zeile, Einschätzung, Kachel).
+  Rückmeldung zu einem Usertest (‚P-n: …‘, 2.3). Im Fenster steht nur eine **kurze Frage** mit den Schaltflächen – keine Erklärtexte,
+  keine Zeitangaben, auch bei Bitten, am Gerät zu prüfen, kein Link. Das Feld ‚Sonstiges‘ schneidet lange Texte ab.
+- **Der Text davor, das Fenster danach:** alles, was der Nutzer vor einer Entscheidung lesen muss – Link, Schritte, Bericht, Wortlaut
+  (0 Nr. 29), Muster, Erklärungen –, steht vor dem Fenster: im Chat und, wenn der Nutzer dabei etwas tun soll, zusätzlich als Datei im
+  Seitenbereich (`SendUserFile`, `display: 'render'`), die neben der offenen Kachel lesbar bleibt (Kasten Punkt 4); das Fenster nur mit
+  der kurzen Frage, ohne Link. Nie zwei Fenster direkt hintereinander; ein weiteres Fenster in derselben Antwort erst, wenn das vorige
+  beantwortet ist und davor eine neue Ausgabe mit Erklärung steht – so endet jede Antwort mit einem Fenster und einem Push am iPad. Die
+  Vorschau-Funktion kommt nicht an. Mehrere Themen nacheinander: je Fenster eines (ganze Zeile, Einschätzung, Kachel).
 - Schließt der Nutzer das Fenster und antwortet im Text, gilt die Antwort; bei den nächsten Fragen kommt trotzdem wieder das
   Auswahlfenster.
 - Eine **Antwortzeile zum Kopieren** (z. B. `1 ja · 2 a · 3 ja`) gibt es nur bei mehr als 4 Fragen – dann ist sie der einzige
   Weg.
-- **Reihenfolge in einer Antwort:** erst die Arbeit, dann das Auswahlfenster, nach der Antwort die Zusammenfassung; die
-  Zeitzeile steht immer ganz am Ende, nach der letzten Antwort im Fenster. Solange ein Fenster offen ist, ist die Antwort nicht
-  fertig. Die laufende Zeitanzeige während der Bearbeitung kommt von der App.
-- Prüfung: Regelwächter (Fenster, Empfehlung, ‚Ich schreibe im Chat‘, Zeitzeile nach dem letzten Fenster); sonst Selbstkontrolle.
+- **Reihenfolge in einer Antwort:** erst die Arbeit und alles zum Lesen, dann das Fenster; nach der Antwort nur noch kurz. Solange ein
+  Fenster offen ist, ist die Antwort nicht fertig. Die laufende Zeitanzeige während der Bearbeitung kommt von der App.
+- Prüfung: Selbstkontrolle; `checkCollab` (Wortlaut).
 
-### 2.2 Zeit und Token (Pflicht, am Ende jeder Antwort)
+### 2.2 Kontextstand
 
-- Claude erzeugt die Zeile mit `node ../AppDesign/werkzeug/messung.mjs` (in AppDesign `node werkzeug/messung.mjs`) und übernimmt
-  sie unverändert – nie schätzen, nie weglassen; meldet das Werkzeug einen Fehler, steht der Fehler statt der Zeile da. Format,
-  klein gesetzt: `<sub>⏱ mm:ss · Token vorige Antwort: N neu · N aus Zwischenspeicher · N geschrieben · Kontext N</sub>`
-  (ab 60 Minuten hh:mm:ss). Nutzung in Prozent und Rücksetzzeiten zeigt nur die Claude-App.
-- **Zeit:** Arbeitszeit ab dem Eingang der Nachricht des Nutzers (Zeitpunkt aus den Sitzungsdaten – das Nachdenken davor zählt
-  mit) bis zur Übergabe, ohne Wartezeit in Auswahlfenstern; mit jeder neuen Nachricht des Nutzers wieder ab 00:00;
-  Systemmeldungen zählen nicht als Nachricht.
-- **Token:** aus den Sitzungsdaten der **vorigen** Antwort (genaue Werte; die laufende wird erst an ihrem Ende gezählt), jeder
-  Modell-Aufruf einmal; ‚neu‘ = Eingabe + Ausgabe.
+- Claude liest den Kontextstand mit `node ../AppDesign/werkzeug/messung.mjs` (in AppDesign `node werkzeug/messung.mjs`) ab –
+  unmittelbar vor jedem Fenster, nie geschätzt – und setzt ihn als ‚(Kontext N)‘ ans Ende jeder Frage im Fenster (Kasten Punkt 5);
+  meldet das Werkzeug einen Fehler, steht der Fehler statt der Zahl da. Die Zeitzeile des Werkzeugs und die Uhrzeitzeile stehen nicht
+  in der Antwort. Nutzung in Prozent und Rücksetzzeiten zeigt nur die Claude-App.
 - **Kontext:** Größe der Sitzung = Eingabe + Zwischenspeicher + geschrieben des letzten eigenen Modell-Aufrufs. Ab 300.000 oder
   nach einer automatischen Zusammenfassung hängt das Werkzeug ‚⚠ Übergabe fällig‘ an; dann übergibt Claude nach dem laufenden
-  Schritt von selbst (0 Nr. 13).
+  Schritt von selbst (0 Nr. 13). Läuft der letzte Aufruf nicht mit Opus 5.5, hängt es ‚⚠ Modell …‘ an (2.5).
 - Prüfung: `tests/messung.mjs` (Gegenprobe `--gegenprobe`).
-- **Uhrzeitzeile (0 Nr. 26, erste Zeile jeder Ausgabe):** `<sub>Aktuelle Uhrzeit: hh:mm&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Zeitabstand zu
-  vorher: hh:mm)</sub>` – deutsche Zeit (Europe/Berlin), klein gesetzt wie die Zeitzeile, ein Leerzeichen nach ‚Uhrzeit:‘, fünf
-  geschützte Leerzeichen vor der Klammer, ohne Leerzeile davor und danach; Zeitabstand = seit der letzten Uhrzeitzeile, bei der
-  ersten Ausgabe einer Sitzung ‚–‘. Die fertige Zeile liefert der Regelwächter nach jeder Nachricht des Nutzers und nach jedem
-  Werkzeug, sobald sich die Minute ändert (2.8); ohne Wächter liest Claude die Uhrzeit ab (`TZ=Europe/Berlin date +%H:%M`) –
-  nie geschätzt. Prüfung: Regelwächter.
 
 ### 2.3 Bericht, Usertests und Rückmeldung
 
@@ -272,9 +246,9 @@ Prüfung: Selbstkontrolle.
   oder ‚siehe Tabelle‘ ersetzen keine Schritte.
 - Am Ende **jeder** Umsetzung – nach einer Version und ebenso nach vorbereiteten, noch nicht gebauten Änderungen – stehen alle
   offenen Usertests einzeln im Chat, auch die früherer Versionen.
-- **Rückmeldung:** Rückmeldung im Chat, z. B. ‚alles ok‘ oder ‚ok bis auf 3‘; den Push bringt das Fenster
-  ‚… anzeigen?‘ davor (`PushNotification` kommt am iPad nicht an);
-  Abweichungen kommen wieder in ‚0. Nächste Version‘.
+- **Rückmeldung:** in der Kachel (z. B. ‚P-99: alles ok‘ / ‚nicht ok‘) oder im Chat, z. B. ‚ok bis auf 3‘; Link und Schritte stehen in
+  der Datei neben der Kachel; den Push bringt das Fenster (`PushNotification` kommt am iPad nicht an); Abweichungen kommen wieder in
+  ‚0. Nächste Version‘.
 - Prüfung: `doku.mjs` (Testfälle der neuesten Version beginnen mit /0, nennen App- und AppDesign-Version, jeder Testfall mit
   nummerierten Schritten und ‚Erwartet‘).
 
@@ -349,8 +323,8 @@ Elternnummer.
   ‚mittel‘, obwohl die Aufrufe mit ‚hoch‘ laufen – dann stellt der Nutzer sie zur Sicherheit auf ‚hoch‘. Ist es nicht Opus 5.5
   bzw. nicht ‚hoch‘, weist Claude darauf hin: für diese Sitzung `/model` bzw. `/effort high`, dauerhaft die Umgebungsvariable.
   Bei hoher Last weicht die Sitzung von selbst auf das nächste Modell aus (Eintrag `model_fallback` in der Sitzungsdatei, z. B.
-  ‚Switched to Opus 5 … due to high demand for Opus 5.5‘) – der Regelwächter meldet dann ‚⚠ Modell …‘ mit diesem Grund, Claude
-  nennt es in der nächsten Ausgabe (Kasten ‚Jede Antwort‘ 8).
+  ‚Switched to Opus 5 … due to high demand for Opus 5.5‘) – `messung.mjs` hängt dann ‚⚠ Modell …‘ an (2.2), Claude nennt es in der
+  nächsten Ausgabe.
   Gelesen wird zu Beginn wenig, weil alles Gelesene bei jedem weiteren Schritt mitverarbeitet wird.
 
 ### 2.6 Apple-Abgleich, Apple-Review, Vergleichsbilder
@@ -376,28 +350,8 @@ Rohdaten durch Claude, damit keine falsche Anzeige in die Irre führt.
 
 ### 2.8 Regelwächter
 
-- `werkzeug/regelwaechter.mjs` läuft als Hook von Claude Code in jeder Sitzung der Umgebung (eingerichtet einmal über das
-  Setup-Skript, Text und Befehle: AppDesign-`CLAUDE.md`). Er sucht AppDesign unter `/home/user`; fehlt es, läuft er leer durch.
-- **Nach jeder Nachricht und jedem Werkzeug:** die fertige Uhrzeitzeile für die nächste Ausgabe (Zeitabstand ab der letzten
-  Uhrzeitzeile in der Sitzungsdatei) und ‚⚠ Modell …‘, wenn der letzte Aufruf nicht Opus 5.5 war.
-- **Vor jedem Auswahlfenster:** lehnt es ab, wenn eine Frage keine Empfehlung zuerst oder kein ‚Ich schreibe im Chat‘ hat oder
-  wenn die Ausgabe davor keinen Satz mit ‚Kontext N‘ aus `messung.mjs` enthält; steht diese Ausgabe (noch) nicht wörtlich in der
-  Sitzungsdatei, lehnt er ab, wenn seit der vorigen Nachricht bzw. dem vorigen Fenster `messung.mjs` keinen Kontext gemeldet hat.
-  Enthält ein Fenster einen Link zum Prüfen am Gerät, lehnt er es ab. Endet eine Antwort ohne Fenster, lässt er sie nur durch, wenn
-  in ihr ein Fenster ‚… anzeigen?‘ beantwortet wurde und die letzte Ausgabe einen Link und nummerierte Schritte mit ‚Erwartet: …‘
-  enthält. Er lehnt jede Frage ohne ‚(Kontext N)‘ im Fragetext ab, ebenso ein
-  weiteres Fenster in derselben Antwort, solange seit dem vorigen Fenster kein Werkzeug lief; ein Aufruf, der nur `messung.mjs`
-  startet, zählt nicht, einer, der daneben etwas anderes tut (z. B. Commit), zählt; eine Zurückweisung des Regelwächters zählt
-  ebenso.
-- **Am Ende jeder Antwort:** prüft die Antwort in der Sitzungsdatei – jede Ausgabe beginnt mit der Uhrzeitzeile und ihre Uhrzeit
-  ist abgelesen (± 1 min um ihren Anlass), der Zeitabstand passt, die Antwort hat ein Fenster (außer der Übergabe), die Zeitzeile
-  steht ganz am Ende nach dem letzten Fenster und kommt unverändert aus `messung.mjs`. Fehlt etwas, lässt er die Antwort nicht enden
-  und sagt, was nachzuholen ist. Eine Antwort ohne beantwortetes Fenster (außer der Übergabe) lässt er **nie** enden, auch nach einem
-  Neustart und über die zwei Zurückweisungen hinaus; sonst höchstens zweimal je Antwort, danach prüft er nur noch Neues.
-- **Grenze:** Ausgaben, die in derselben Nachricht nach einem Denkschritt stehen, speichert die Sitzungsdatei nicht wörtlich
-  (Befund 26.10.2026) – für sie bleiben die Uhrzeitzeile und der Satz ‚Kontext N‘ Selbstkontrolle; geprüft wird nur der Aufruf
-  von `messung.mjs`.
-- Prüfung: `tests/regelwaechter.mjs` mit echten Antworten aus den Sitzungen 0050 und 0051 (Gegenprobe `--gegenprobe`).
+- Abgeschaltet (APD-123, Nutzer 07.11.2026); Werkzeug (`werkzeug/regelwaechter.mjs`) und Prüfung (`tests/regelwaechter.mjs`) bleiben im
+  Repo, eingerichtet wird er nicht mehr.
 
 ---
 
@@ -427,6 +381,7 @@ im Verlauf und in Kommentaren der Prüfungen nennen noch die alten Stellen):
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 3.10.0 | 07.11.2026 | Neben | **APD-123 Zusammenarbeit ohne Regelwächter (Nutzer 07.11.2026, Sitzung 0089, Wortlaut bestätigt – `arbeit/APD-123 Zusammenarbeit ohne Regelwächter Wortlaut.md` APD-123/V-1, V-2, D-1 bis D-12):** Kasten ‚Jede Antwort‘ neu (Punkte 1–7, Selbstkontrolle): Kachel mit Push am Ende jeder Antwort, nach der der Nutzer etwas tun soll; alles zum Lesen davor – im Chat und bei Prüfen/Entscheiden zusätzlich als Datei im Seitenbereich (`SendUserFile`); ‚(Kontext N)‘ in jeder Frage; 0 Nr. 26 Uhrzeitzeile entfällt; 0 Nr. 7, 11, 13, 14, 15, 21, 27, 28, 29 ohne ‚… anzeigen?‘, Zeitzeile und Regelwächter; 2.1 ‚Der Text davor, das Fenster danach‘, Reihenfolge; 2.2 ‚Kontextstand‘ statt Zeit und Token; 2.3 Rückmeldung in der Kachel oder im Chat; 2.5 ‚⚠ Modell …‘ meldet `messung.mjs`; 2.8 Regelwächter abgeschaltet. Anlass: Regelwächter in Sitzung 0089 abgeschaltet |
 | 3.9.0 | 07.11.2026 | Neben | **APD-113 Teil (6) ‚Text nach dem Fenster, Push bei jeder Aufgabe‘ und APD-117 (Nutzer 06. und 07.11.2026, Sitzungen 0086 und 0087, Wortlaut bestätigt – `arbeit/APD-113 Teil 6 Wortlaut.md` APD-113/L-1 bis L-8, `arbeit/APD-113 Rest und APD-117 Wortlaut.md` APD-113/N-3 mit Zusatz, APD-113/N-5, APD-113/N-6):** Kasten ‚Jede Antwort‘ Punkt 4 – zuerst ein Fenster ‚… bereit – anzeigen?‘ (Push), danach Link, Schritte mit ‚Erwartet: …‘ und offene Usertests als letzte Ausgabe ohne Fenster, Antwort im Chat; das gilt für jede letzte Ausgabe, nach der der Nutzer etwas tun soll (Link, Schritte, ‚Antworte im Chat: …‘), nach einer Zurückweisung wieder ein Fenster; Punkt 6 ‚Push bei jeder Aufgabe‘ (auch nach einem Neustart und nach der Meldung einer Hintergrundaufgabe oder einer anderen Sitzung); 0 Nr. 11 Bericht nach dem Fenster ‚… fertig – Bericht und Testfälle anzeigen?‘; 0 Nr. 15 Lagebild als eigene Antwort (APD-117); 0 Nr. 28 Ausnahme letzte Ausgabe; 0 Nr. 29 Wortlaut nach ‚Wortlaut … anzeigen?‘; 2.1 ‚Fenster nacheinander, der Text danach‘ – alles zum Lesen nie vor einem Fenster, Fenster bei Bitten zum Prüfen ohne Link; 2.3 Rückmeldung im Chat; 2.8 APD-84/W-15 lehnt jedes Fenster mit Link ab und prüft die letzte Ausgabe nach ‚… anzeigen?‘, eine Antwort ohne beantwortetes Fenster endet nie (auch nach einem Neustart, über die zwei Zurückweisungen hinaus), APD-84/W-17 zählt einen Aufruf mit `messung.mjs` und etwas anderem (z. B. Commit) und eine Zurückweisung des Regelwächters als Werkzeug (Testfall-Liste APD-113/M-1 bis M-17). Anlass: am iPad verdeckt die Kachel des Fensters den Text davor, aus ihr lässt sich nichts kopieren (Nutzer 06.11.2026)  · **0 Nr. 7** ‚Längeres … nach einem Fenster ‚… anzeigen?‘ als letzte Ausgabe‘ (APD-120/V-4, Nutzer 07.11.2026, Sitzung 0087) |
 | 3.8.0 | 06.11.2026 | Neben | **APD-113 Teil ‚Push und Kontextstand‘ (Nutzer 06.11.2026, Sitzung 0083, Wortlaut bestätigt):** Kasten ‚Jede Antwort‘ Punkt 9 und 0 Nr. 28 – ‚(Kontext N)‘ am Ende jeder Frage im Fenster (die Push-Mitteilung am iPad zeigt den Fragetext); 2.1 ‚Fenster nacheinander‘ – ein weiteres Fenster in derselben Antwort, wenn das vorige beantwortet ist und danach ein Werkzeug lief, mit neuer Ausgabe und ‚Kontext N‘ davor; 2.3 `PushNotification` kommt am iPad nicht an; 2.8 der Regelwächter lehnt jede Frage ohne ‚(Kontext N)‘ ab (APD-84/W-16) und ein weiteres Fenster nur, solange seit dem vorigen kein Werkzeug lief (APD-84/W-17; Testfall-Liste APD-113/H-1 bis H-9). Anlass: ein Push am iPad kommt nur über ein Fenster, W-17 ließ nach einer beantworteten Frage keines mehr zu |
 | 3.7.0 | 05.11.2026 | Neben | **APD-114 (Nutzer 05.11.2026, Sitzung 0080, Wortlaut bestätigt):** 0 Nr. 21 – ‚Soll ich Version X.Y.Z mit … erstellen? (Kontext N) Ja/Nein‘, der Kontextstand steht in der Frage selbst und davor im Chat; Kasten ‚Jede Antwort‘ Punkt 9 ergänzt; 2.8 ‚Vor jedem Auswahlfenster‘ – der Regelwächter lehnt eine Bau-Frage ohne ‚Kontext N‘ im Fragetext (APD-84/W-16) und ein zweites Fenster in derselben Antwort (APD-84/W-17) ab. Anlass: in 0080 stand der Satz mit dem Kontext vor der Bau-Frage, aber als drittes von vier Fenstern einer Antwort – er kam nicht an |

@@ -28,13 +28,13 @@ Zusammenarbeit** (0 Nr. 15); die Arbeitsumgebung steht in der AppDesign-`CLAUDE.
 ## 2. Ergebnisse der Sitzung 0095
 
 - **Bau-Frage 4.55.0 / 3.53.0: Nein** (Nutzer, ohne Grund); die Korrektur `gemeldet` (APD-115/N-13) kommt **mit APD-115**, nicht mit 4.55.0.
-- **APD-115 bereit** (eigene Version nach 4.55.0): Safari-Modell für W-4 korrigiert (APD-115/N-17: ruft die App `focus()` bei liegendem Finger
-  selbst auf und liegt das Feld ganz über der Tastatur, verschiebt Safari nicht; Option `fokusSelbst`), M-7/M-11 W-4 als Fehler, voller Lauf des
-  Musters Chromium und WebKit grün, Gegenprobe `PRUEF_FOKUS=alt` rot. Keine vierte Messung (E-12) – Testfälle (User) APD-115/U-1, U-2.
-  W-4 widerspricht Designrichtlinie 13 ‚Berührungen nie abfangen‘ – Wortlaut APD-115/L-1, L-2 **bestätigt** (E-13).
+- **APD-115 bereit** (eigene Version nach 4.55.0): Safari-Modell für APD-115/W-4 korrigiert (APD-115/N-17: ruft die App `focus()` bei liegendem Finger
+  selbst auf und liegt das Feld ganz über der Tastatur, verschiebt Safari nicht; Option `fokusSelbst`), APD-115/M-7 und M-11 W-4 als Fehler, voller Lauf des
+  Musters Chromium und WebKit grün, Gegenprobe `PRUEF_FOKUS=alt` rot. Keine vierte Messung (APD-115/E-12) – Testfälle (User) APD-115/U-1, U-2.
+  APD-115/W-4 widerspricht Designrichtlinie 13 ‚Berührungen nie abfangen‘ – Wortlaut APD-115/L-1, L-2 **bestätigt** (APD-115/E-13).
 - **APD-124 neu (Prio 1, allgemein):** Rückgängig im Feld nach dem Leeren mit ⓧ, Text in die Zwischenablage. Sprechblase ‚Text löschen?‘ entfällt
-  (E-1), Icon verschwindet ohne Fokus (E-2); Muster `arbeit/APD-124/index.html` – **Variante A (graue Linie, `undo-2`) am Gerät ok** (E-4);
-  Testfall-Liste APD-124/T-1 bis T-7 grün, Gegenprobe rot – `arbeit/APD-124 Klärung und Testfall-Liste.md`.
+  (APD-124/E-1), Icon verschwindet ohne Fokus (APD-124/E-2); Muster `arbeit/APD-124/index.html` – **Variante A (graue Linie, `undo-2`) am Gerät ok** (APD-124/E-4);
+  Testfall-Liste APD-124/T-1 bis APD-124/T-7 grün, Gegenprobe rot – `arbeit/APD-124 Klärung und Testfall-Liste.md`.
 
 ## 3. Nächster Schritt
 
@@ -43,7 +43,7 @@ Zusammenarbeit** (0 Nr. 15); die Arbeitsumgebung steht in der AppDesign-`CLAUDE.
    (Kontext N)‘ (in 0095 mit Nein beantwortet – ggf. nach dem Grund fragen). Nach ‚Ja‘ bauen nach den Arbeitsdateien; jede neue Prüfung zuerst rot
    gegen 4.54.0 / 3.52.0 (0 Nr. 1); APD-123 mit `tests/doku.mjs` (`checkCollab`, APD-123/D-9); vor `los` `ablauf-suche-*`, `checkSearchWords`,
    `checkSchichtOben` anpassen. `tests/safari.mjs` hat die Optionen `apd115` und `fokusSelbst` (Standard aus) – gehen so in 4.55.0.
-3. Danach **Bau-Frage APD-115** (eigene Version, mit `gemeldet`): `arbeit/APD-115 Testfall-Liste.md` E-13.
+3. Danach **Bau-Frage APD-115** (eigene Version, mit `gemeldet`): `arbeit/APD-115 Testfall-Liste.md` APD-115/E-13.
 4. **APD-124 weiter klären:** Wortlaut R-5.6, Designrichtlinie 15.11 und 16 (0 Nr. 29), Muster iPad hoch und iPhone quer, Testfälle (User).
 
 ## 4. Danach

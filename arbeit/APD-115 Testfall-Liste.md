@@ -21,9 +21,9 @@ Tastatur 274) und Nachstellung im Safari-Modell (Skript nur in der Sitzung):
 - APD-115/N-3 beim Tippen in Ort zweimal ‚zurückgestellt fPlace 1251 → 1284‘: etwas rollt den Fensterinhalt 33 px zurück, die App stellt ihn
   wieder hin – kleines Zucken bei jedem Zeichen.
 - APD-115/N-4 Safari-Modell: iPad quer rollt die App beim Wechsel 777 → 924 (147 px) statt 0; iPhone hoch zweimal (43, dann 201 px) statt einmal
-  59 px bis 16 px über die Tastatur. Die Verschiebung von Safari (N-2) bildet das Modell nicht nach – darum war APD-115/M-7 grün.
+  59 px bis 16 px über die Tastatur. Die Verschiebung von Safari (APD-115/N-2) bildet das Modell nicht nach – darum war APD-115/M-7 grün.
 - APD-115/N-5 Folgerung: beim Wechsel wie beim ersten Antippen nur so weit rollen wie nötig (ganz sichtbar: nichts); das Modell bekommt den
-  Befund N-2 (Rollen der App beim Wechsel → Safari verschiebt zusätzlich), M-7 wird geschärft (gleiche Zeile: nichts rollt; Feld unter der
+  Befund APD-115/N-2 (Rollen der App beim Wechsel → Safari verschiebt zusätzlich), M-7 wird geschärft (gleiche Zeile: nichts rollt; Feld unter der
   Tastatur: einmal bis 16 px darüber). Ob Safari ohne das Rollen der App noch selbst verschiebt (APD-36/S-6 b), zeigt erst die nächste Messung.
 - APD-115/N-6 Geschärfte Prüfung APD-115/M-7 (Fenster oben bzw. unten, Quartier antippen, tippen, Ort antippen; ‚ganz sichtbar: nichts rollt,
   sonst einmal bis 16 px über die Tastatur, ein Schub‘) gegen das Muster: **rot**, 20 Fehler in allen vier Ansichten (iPad quer 777 → 924,
@@ -31,7 +31,7 @@ Tastatur 274) und Nachstellung im Safari-Modell (Skript nur in der Sitzung):
 - APD-115/N-7 Versuch ohne die Mitte-Regel (Sitzung 0091, nicht eingecheckt): die neuen Fälle werden grün bis auf iPhone quer, dafür wird die
   bisherige Sprungprüfung von M-7 rot – im Modell stellt Safari das Feld beim Wechsel selbst in die Mitte (APD-36/S-6 b, am Gerät gemessen:
   iPad quer Notiz 34 px über der Tastatur → 132 px), iPad hoch Ort 768 → 445, der Fensterkopf springt kurz mit. Ohne die Regel springt also
-  Safari, mit ihr springen App und Safari (N-2). Grund vermutlich APD-36/S-7: Safari liest die Lage beim Fokus, vor dem Rollen der App – bei offener
+  Safari, mit ihr springen App und Safari (APD-115/N-2). Grund vermutlich APD-36/S-7: Safari liest die Lage beim Fokus, vor dem Rollen der App – bei offener
   Tastatur macht das Muster keinen neuen Fokus (APD-36/S-8), Safari sieht also die alte Lage.
 - APD-115/N-8 Nächster Schritt (Vorschlag): Muster mit zwei Varianten für den Wechsel, beide mit Messmodus –
   APD-115/W-1 ‚nur so weit wie nötig‘ (Safari entscheidet selbst) und APD-115/W-2 ‚Mitte-Regel und neuer Fokus (APD-36/S-8) auch bei offener
@@ -127,21 +127,21 @@ Tastatur 274) und Nachstellung im Safari-Modell (Skript nur in der Sitzung):
   im `touchend`), verschiebt Safari nicht – M-7/M-11 für W-4 danach als Fehler statt Hinweis; (2) Fall ‚Ort unter der Tastatur, nicht hochgeschoben‘
   (W-4 rollt dann nach V-3 bis 16 px über die Tastatur) ist am Gerät nicht gemessen – kurze Messung oder Testfall (User) im Usertest; (3) danach
   APD-115 bereit (eigene Version nach 4.55.0, 0 Nr. 8): W-4 ins Bauskript als einzige Variante, Option `apd115` zum Standard, bestehende Prüfungen anpassen.
-- APD-115/N-17 Stand Sitzung 0095 – E-11 (1) erledigt: Safari-Modell (`tests/safari.mjs`, Option `apd115`, neu `fokusSelbst`, Standard an): ruft die
+- APD-115/N-17 Stand Sitzung 0095 – APD-115/E-11 (1) erledigt: Safari-Modell (`tests/safari.mjs`, Option `apd115`, neu `fokusSelbst`, Standard an): ruft die
   App `focus()` selbst auf, während der Finger liegt (im `touchend`), und liegt das Feld dabei ganz über der Tastatur, verschiebt Safari beim Wechsel
-  nicht (N-16). Liegt es dabei ganz oder teilweise unter der Tastatur, ist nicht gemessen – das Modell verschiebt dort weiter wie bisher (sichere Seite).
+  nicht (APD-115/N-16). Liegt es dabei ganz oder teilweise unter der Tastatur, ist nicht gemessen – das Modell verschiebt dort weiter wie bisher (sichere Seite).
   Erste Fassung erkannte den Fokus über das laufende `touchend` – griff nicht, weil die Hörer der App vor denen des Modells angemeldet sind; jetzt über
-  `focus()` aus dem Programm bei liegendem Finger. M-7 und M-11 für W-4 jetzt Fehler statt Hinweis. Gegenprobe `PRUEF_FOKUS=alt` (Modell ohne N-16):
-  iPad quer 8 Fehler (M-7 W-4 0 → 147 px, M-11 W-4 Kopfzeile bis −147, Fensterkopf bis −137 px); mit N-16 voller Lauf (alle Ansichten) Chromium und WebKit ‚alles in Ordnung‘.
+  `focus()` aus dem Programm bei liegendem Finger. M-7 und M-11 für W-4 jetzt Fehler statt Hinweis. Gegenprobe `PRUEF_FOKUS=alt` (Modell ohne APD-115/N-16):
+  iPad quer 8 Fehler (M-7 W-4 0 → 147 px, M-11 W-4 Kopfzeile bis −147, Fensterkopf bis −137 px); mit APD-115/N-16 voller Lauf (alle Ansichten) Chromium und WebKit ‚alles in Ordnung‘.
   Zu (2): ‚Ort ganz unter der Tastatur‘ lässt sich am Gerät nicht antippen (nur mit dem Pfeil über der Tastatur – dann setzt Safari den Fokus, nicht
   W-4); offen ist ‚Ort **teilweise** unter der Tastatur antippen‘. Dazu ein Risiko aus APD-36 (Testfall-Liste 6c, 6e, 6g; `safari.mjs` ‚Nicht
   nachgebildet‘): Fokus, den die App nach einer abgefangenen Berührung selbst setzt, ging am Gerät in 12 bis 13 von rund 35 bis 40 Fällen nach
-  33–37 ms verloren (meist bei geschlossener Tastatur; W-4 fängt nur bei offener Tastatur ab, in N-16 2 von 2 ohne Verlust).
+  33–37 ms verloren (meist bei geschlossener Tastatur; W-4 fängt nur bei offener Tastatur ab, in APD-115/N-16 2 von 2 ohne Verlust).
 - APD-115/E-12 Entscheidung (Nutzer 07.11.2026, Sitzung 0095): **keine vierte Messung** – ‚Ort teilweise unter der Tastatur antippen‘ und ‚zehnmal
   wechseln, Fokus nach dem ersten Antippen‘ kommen als Testfall (User) in den Usertest der APD-115-Version (APD-115/U-1, U-2 unten).
 - APD-115/E-13 Wortlaut APD-115/L-1, L-2 und Testfälle (User) APD-115/U-1, U-2 **bestätigt** (Nutzer 07.11.2026, Sitzung 0095) – geht mit dem Bau von
-  APD-115. Damit ist APD-115 **bereit**: eigene Version nach 4.55.0 (E-11 (3)) – W-4 ins Bauskript als einzige Variante (in `v4/ui.js`), Option
-  `apd115` mit `fokusSelbst` zum Standard, bestehende Prüfungen anpassen, M-1 bis M-11 als feste Prüfung, Korrektur `gemeldet` (N-13), R-4.5 (E-7),
+  APD-115. Damit ist APD-115 **bereit**: eigene Version nach 4.55.0 (APD-115/E-11 (3)) – W-4 ins Bauskript als einzige Variante (in `v4/ui.js`), Option
+  `apd115` mit `fokusSelbst` zum Standard, bestehende Prüfungen anpassen, M-1 bis M-11 als feste Prüfung, Korrektur `gemeldet` (APD-115/N-13), R-4.5 (APD-115/E-7),
   Designrichtlinie 13 (L-1, L-2, ‚Lösung in ui.js‘ nach R-4.5).
 - APD-115/N-18 W-4 widerspricht Designrichtlinie 13 (Zeile 490 in 4.54.0): ‚Berührungen nie abfangen‘ – Wortlaut APD-115/L-1, L-2 unten (0 Nr. 29).
 

@@ -54,10 +54,10 @@ nach dem Rückgängig steht wieder das ⓧ zum Löschen. Der ausgeschnittene Wer
 | APD-124/T-4 | danach (Chromium) | der geleerte Text liegt in der Zwischenablage |
 | APD-124/T-5 | Rückgängig antippen | der ganze Text ist zurück, wieder das ⓧ |
 | APD-124/T-6 | leeren, ein Zeichen tippen, per Taste löschen | nach dem Tippen das ⓧ; nach dem Löschen kein Knopf (Rückgängig verfallen) |
-| APD-124/T-7 | leeren, Fokus weg, wieder ins Feld | kein Knopf (E-2) |
-| APD-124/Y-1 | Gegenprobe `PRUEF_V=heute` (ui.js 4.54.0) | T-2 bis T-7 rot |
+| APD-124/T-7 | leeren, Fokus weg, wieder ins Feld | kein Knopf (APD-124/E-2) |
+| APD-124/Y-1 | Gegenprobe `PRUEF_V=heute` (ui.js 4.54.0) | APD-124/T-2 bis APD-124/T-7 rot |
 
-Ergebnis Sitzung 0095: Chromium und WebKit ‚alles in Ordnung‘; Gegenprobe rot (T-2 Sprechblase im Verlauf, T-3, T-5, T-6, T-7).
+Ergebnis Sitzung 0095: Chromium und WebKit ‚alles in Ordnung‘; Gegenprobe rot (APD-124/T-2 Sprechblase im Verlauf, APD-124/T-3, APD-124/T-5, APD-124/T-6, APD-124/T-7).
 
 **Am Gerät (Testfall (User) des Musters):** ob Safari die Zwischenablage beim Tipp auf ⓧ beschreiben lässt (Meldung unten auf der Seite, dann in
 Notizen einsetzen), Rückgängig per Icon mit der Undo-Taste danach, Aussehen A gegen B, iPhone ohne Undo-Taste.

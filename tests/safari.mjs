@@ -338,8 +338,11 @@ export const mausWieFinger = p => p.evaluate(() => { if (window.__mausWieFinger)
 // Rand kein Klick‘): iPhone quer vom Home-Bildschirm – eine Berührung bei y ≈ 20 px (und darüber) liefert pointerdown/pointerup, aber keinen click
 // (gemessen: 790/20, 792/20 → 804/13 ohne click; 782/26 mit click). obenOhneKlick(p) nimmt im Querformat jeden Klick mit clientY < KEIN_KLICK_OBEN
 // weg (window.__safariKlick.obenWeg zählt sie). Nur in den Prüfungen zum oberen Rand eingeschaltet (checkSchichtOben): der Mehr-Knopf steht im
-// iPhone quer bei y 1–31, Playwright tippt seine Mitte (y 16) – ob er dort am Gerät öffnet, ist nicht gemessen (Vermutung: nein, eigenes Thema).
-export const KEIN_KLICK_OBEN = 23;
+// iPhone quer bei y 1–31, Playwright tippt seine Mitte (y 16) – überall an, fiele der Tipp in allen Prüfungen weg.
+// Seit 4.55.0 (APD-121, Messungen tests/messungen/2026-11-07 iPhone quer Mehr-Knopf oben 1.txt und … 2.txt, iOS 18.7): Grenze 21 statt 23 – bis
+// y 20 kein click (790/20 am 06.11.2026), ab y 21 schon (Mehr-Knopf bei y 21 viermal geöffnet, bei 23, 26, 27–36 jedes Mal); höher als y 21 kam
+// der Finger am Gerät nicht.
+export const KEIN_KLICK_OBEN = 21;
 export const obenOhneKlick = (p, an = true) => p.evaluate(y => { if (window.__safariKlick) window.__safariKlick.oben = y; }, an ? KEIN_KLICK_OBEN : 0);
 export const mausKlickSpaet = (p, an = true) => p.evaluate(ms => { if (window.__safariKlick) window.__safariKlick.spaet = ms; }, an ? KLICK_NACH : 0);
 

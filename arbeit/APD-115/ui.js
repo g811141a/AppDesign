@@ -2936,7 +2936,7 @@ function noetig(f, c) {
 // - einzeilig bzw. passt das Feld ganz: es endet 16 px über der Tastatur (im Inhalt 28 px – Safari verschiebt sonst, APD-36/S-5 ABSTAND 24);
 // - mehrzeilig und zu hoch: die Zeile mit dem Cursor und eine halbe Zeile darunter (beim Antippen die Zeile unter dem Finger);
 // - Feld wechseln bei offener Tastatur: APD-115/W-1 (?w=1) genauso, ganz sichtbar: nichts; APD-115/W-2 (Standard) zusätzlich höchstens bis
-//   zur Mitte des sichtbaren Teils und neuer Fokus, damit Safari die Lage danach liest (Befund APD-115/N-1 bis N-8, Messung 07.11.2026);
+//   zur Mitte des sichtbaren Teils und neuer Fokus, damit Safari die Lage danach liest (Befund APD-115/N-1 bis APD-115/N-8, Messung 07.11.2026);
 // - nie höher als Umrandung und Schatten unter dem oberen Rand des Bereichs (fokusRand). ≤ 0: nichts rollen.
 const zeilenHoehe = f => { const s = getComputedStyle(f), lh = parseFloat(s.lineHeight); return Number.isFinite(lh) ? lh : parseFloat(s.fontSize) * 1.45; };
 // Zeile mit dem Cursor (Bildschirm): Spiegel mit dem Text bis zum Cursor

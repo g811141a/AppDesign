@@ -1,5 +1,5 @@
 // APD-124 · Muster ‚Rückgängig im Feld nach dem Leeren‘ bauen (Sitzung Reiselogbuch 0095). Kopie von fassung/4.54.0/ui.js mit dem
-// geänderten ⓧ (APD-124/E-1 bis E-3) nach arbeit/APD-124/ui.js; die Seite arbeit/APD-124/index.html lädt sie mit fassung/4.54.0/design.css.
+// geänderten ⓧ (APD-124/E-1 bis APD-124/E-3) nach `arbeit/APD-124/ui.js`, die Seite `arbeit/APD-124/index.html` lädt sie mit fassung/4.54.0/design.css.
 //   node "arbeit/APD-124 Muster bauen.mjs"      (im Ordner AppDesign)
 // Variante über ?v=a (Rückgängig als graue Linie, Lucide undo-2) bzw. ?v=b (weiß im grauen Kreis wie das ⓧ).
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
@@ -14,7 +14,7 @@ ersetze("let fxFeld = null, fxTippt = false, fxRahmen = null, fxFrage = false;",
 const FX_RUECK = FX_V === 'b'
   ? '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="currentColor"/><g transform="translate(5.5 5.5) scale(.54)" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></g></svg>'
   : '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg>';
-// APD-124: nach dem Leeren merkt sich das Feld den Text (fxRueck) – bis zur ersten Eingabe bzw. bis es den Fokus verliert (E-2)
+// APD-124: nach dem Leeren merkt sich das Feld den Text (fxRueck) – bis zur ersten Eingabe bzw. bis es den Fokus verliert (APD-124/E-2)
 let fxFeld = null, fxTippt = false, fxRahmen = null, fxFrage = false, fxRueck = null, fxArt = 'x';
 const fxMeld = t => { const m = document.getElementById('meldung'); if (m) m.textContent = t; };`);
 
@@ -61,7 +61,7 @@ ersetze(`  if (f.tagName === 'TEXTAREA' && fxZeilen(f) > 1) {
 `  if (fxArt === 'rueck' && fxRueck?.feld === f) fxZurueck(f, fxRueck.text);
   else fxLeeren(f);`);
 
-// erste Eingabe nach dem Leeren: Rückgängig verfällt (E-3: danach wieder das ⓧ)
+// erste Eingabe nach dem Leeren: Rückgängig verfällt (APD-124/E-3: danach wieder das ⓧ)
 ersetze("document.addEventListener('input', () => queueMicrotask(fxZeigen));",
 "document.addEventListener('input', e => { if (fxRueck && e.target === fxRueck.feld && e.target.value !== '') fxRueck = null; queueMicrotask(fxZeigen); });");
 

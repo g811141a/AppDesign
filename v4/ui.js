@@ -1,4 +1,4 @@
-// AppDesign 4.54.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
+// AppDesign 4.55.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
 // Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/fassung/X.Y.Z/ui.js"></script> (feste Fassung, R-10.3)
 // Seit 4.11.0 (R-10.3): ui.js und design.css immer mit ?v=<AppDesign-Version> einbinden (auch in sw.js) und beim Start
 // prüfen, ob genau diese Fassung geladen ist (AD_VERSION hier, --ad-version in design.css).
@@ -20,7 +20,7 @@
 
 'use strict';
 // Version der Bausteine (R-10.3): die App vergleicht sie beim Start mit der benötigten Fassung.
-const AD_VERSION = '4.54.0';
+const AD_VERSION = '4.55.0';
 /* ---------- Icons ---------- */
 
 // Schaltflächen-Icons aus Lucide (ISC-Lizenz), direkt eingebettet, damit die App offline funktioniert.
@@ -213,12 +213,17 @@ function mitAkzent(ch) {
 // Zwischen den Zeichen darf eine unsichtbare Umbruchstelle stehen (lange Wörter, R-6.3). Seit 4.29.0 trifft jeder Buchstabe
 // auch seine Formen mit Akzent (ü, ú …) und angehängte Zeichen (Akzent als eigenes Zeichen, Emoji-Variante) – markiert wird
 // das ganze Wort, wie es im Text steht.
+// Seit 4.55.0 (APD-122, Designrichtlinie 15.2 ‚Smileys (Emoji)‘): ein Smiley wird als ganzes Zeichen markiert – mit Hautton
+// (‚👍‘ trifft ‚👍🏽‘ ganz) und als Folge mit Verbinder (‚👨‘ trifft ‚👨‍👩‍👧‘ ganz); ‚👍🏽‘ trifft ‚👍‘ nicht.
+const EMOJI_REST = '(?:\\p{M}|\\p{Emoji_Modifier})*(?:\\u200D\\p{Extended_Pictographic}(?:\\p{M}|\\p{Emoji_Modifier})*)*';
 function markWords(html, words) {
   if (!words.length) return html;
   const pattern = [...words].sort((a, b) => b.length - a.length)
-    .map(w => (esc(w).match(/&[a-z0-9#]+;|./gsu) || []).map(ch => {
+    .map(w => (esc(w).match(/&[a-z0-9#]+;|./gsu) || []).map((ch, i, alle) => {
       const v = ch.length === 1 && mitAkzent(ch);
-      return (v ? `[${ch}${v}]` : ch.replace(/[.*+?^${}()|[\]\\\/]/g, '\\$&')) + '\\p{M}*';
+      // nach einem Smiley am Ende des Worts (bzw. vor einem anderen Zeichen als Hautton/Verbinder) das ganze Zeichen mitnehmen
+      const rest = /\p{Extended_Pictographic}/u.test(ch) && !/^(?:\p{Emoji_Modifier}|\u200D)/u.test(alle[i + 1] || '') ? EMOJI_REST : '\\p{M}*';
+      return (v ? `[${ch}${v}]` : ch.replace(/[.*+?^${}()|[\]\\\/]/g, '\\$&')) + rest;
     }).join('\u200B?')).join('|');
   return html.replace(new RegExp(pattern, 'giu'), m => `<mark>${m}</mark>`).replaceAll('</mark><mark>', '');
 }

@@ -749,6 +749,11 @@ export async function checkSearchWords(p, { where = '' } = {}) {
       A3: [findsAll('São Paulo', W('Sao Paulo')), M('Café Crème', 'cafe creme')], A4: [findsAll('São Paulo', W('„Sao Paulo“')), findsAll('Paulo in São', W('„Sao Paulo“')), M('in São Paulo', '„sao paulo“')],
       A6: M('Sehr​lange​Grüße', 'langegruße'), A7: [M('Sonne ☀️ und A &amp; B', '☀️ & b'), findsAll('Sonne ☀️', W('☀️'))], A7b: M('Zu\u0308rich', 'zurich'),
       A8: [findsAll('Straße', W('strasse')), findsAll('Øresund', W('oresund')), findsAll('Straße', W('straße'))],
+      // APD-122/S-7 (seit 4.55.0): Smileys wie Wörter – markiert wird das ganze Zeichen (mit Hautton bzw. als Folge mit Verbinder)
+      E1: [findsAll('👍🏽 gut', W('👍')), M('👍🏽 gut', '👍'), M('Daumen👍🏿', '👍'), M('Familie 👨‍👩‍👧 da', '👨')],
+      E2: [findsAll('👍 gut', W('👍🏽')), findsAll('👍🏽 gut', W('👍🏽')), M('👍🏽 und 👍', '👍🏽')],
+      E3: [findsAll('☕️ früh', W('☕')), findsAll('☕ früh', W('☕️')), M('☕️ früh', '☕'), M('☕ früh', '☕️')],
+      E4: [M('😀😡 Text', '😡'), M('😀 gut 😀', '😀')],
     };
   });
   if (!r) { E('Bausteine searchWords/markWords fehlen in ui.js'); return errors; }
@@ -778,6 +783,13 @@ export async function checkSearchWords(p, { where = '' } = {}) {
   if (r.A7[0] !== 'Sonne <mark>☀️</mark> und A <mark>&amp;</mark> <mark>B</mark>' || !r.A7[1]) A('APD-63/A-7', `Emoji und Sonderzeichen: ${r.A7}`);
   if (r.A7b !== '<mark>Zu\u0308rich</mark>') A('APD-63/A-7', `Akzent als eigenes Zeichen: ${JSON.stringify(r.A7b)}`);
   if (r.A8[0] || r.A8[1] || !r.A8[2]) A('APD-63/A-8', `ß und ø sind eigene Buchstaben (${r.A8})`);
+  // APD-122/S-7 (seit 4.55.0, Designrichtlinie 15.2 ‚Smileys (Emoji)‘): ‚👍‘ findet ‚👍🏽‘ und markiert das ganze Zeichen, ‚👍🏽‘ nur ‚👍🏽‘, ‚☕‘ = ‚☕️‘
+  const S = (t) => E(`Smileys APD-122/S-7: ${t}`);
+  if (!r.E1[0] || r.E1[1] !== '<mark>👍🏽</mark> gut' || r.E1[2] !== 'Daumen<mark>👍🏿</mark>') S(`‚👍‘ markiert den Hautton nicht mit (${r.E1.slice(1, 3)})`);
+  if (r.E1[3] !== 'Familie <mark>👨‍👩‍👧</mark> da') S(`Folge mit Verbinder nicht ganz markiert (${r.E1[3]})`);
+  if (r.E2[0] || !r.E2[1] || r.E2[2] !== '<mark>👍🏽</mark> und 👍') S(`‚👍🏽‘ findet bzw. markiert ‚👍‘ (${r.E2})`);
+  if (!r.E3[0] || !r.E3[1] || r.E3[2] !== '<mark>☕️</mark> früh' || r.E3[3] !== '<mark>☕</mark> früh') S(`‚☕‘ und ‚☕️‘ nicht gleich (${r.E3})`);
+  if (r.E4[0] !== '😀<mark>😡</mark> Text' || r.E4[1] !== '<mark>😀</mark> gut <mark>😀</mark>') S(`mehrere Smileys (${r.E4})`);
   return errors;
 }
 
@@ -2544,7 +2556,8 @@ export async function checkMehrKnopf(p, { sel, untermenue = null, where = '' } =
 // X-1 über dem Mehr-Knopf (mehr) ohne Klick → zu, waagrechte Punkte, Fokus auf Mehr · X-2 mit 14 px Weg → zu · X-3 Klick danach (unterhalb
 // KEIN_KLICK_OBEN, der click kommt) → bleibt zu, darunter nichts · X-4 daneben mit Klick → einmal zu · X-5 öffnen: weitere Öffner (Untermenü,
 // Kontextmenü, Sprechblase; je async p => …) · X-6 Wischen > 20 px → bleibt offen · X-8 messung: Zeilen einer Messdatei (lies) – die zeiger-Ereignisse
-// auf div.layer werden nachgespielt, nach dem ersten Tipp ist das Menü zu. Gibt Fehler zurück.
+// auf div.layer werden nachgespielt, nach dem ersten Tipp ist das Menü zu. Seit 4.55.0 (APD-121, arbeit/APD-121 Wortlaut und Testfall-Liste.md
+// Y-1 bis Y-4): Grenze y 21 wie gemessen – Mehr ohne Menü öffnet bei y 21, bei y 20 nichts; X-1 tippt bei y 20. Gibt Fehler zurück.
 // oben: false (iPad, iPhone hoch) – nur X-4 bis X-6, der Tipp kommt mit Klick; ein freier Punkt der Schicht wird gesucht (frei).
 export async function checkSchichtOben(p, { mehr = '#mainMore', oeffner = [], messung = null, oben: amRand = true, where = '' } = {}) {
   const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}13 ${t}`);
@@ -2587,12 +2600,30 @@ export async function checkSchichtOben(p, { mehr = '#mainMore', oeffner = [], me
   try {
     const m = await mitte();
     if (!m) { E(`APD-118 Mehr-Knopf ${mehr} fehlt`); return errors; }
-    const yOben = Math.min(m.y, KEIN_KLICK_OBEN - 3);
+    // seit 4.55.0 (APD-121/Y-4): der Tipp ohne Klick bei y 20 wie gemessen (Grenze 21)
+    const yOben = Math.min(m.y, KEIN_KLICK_OBEN - 1);
     if (yOben >= KEIN_KLICK_OBEN || m.oben > yOben) E(`APD-118 Mehr-Knopf ${mehr} steht nicht am oberen Rand (oben ${Math.round(m.oben)}) – die Prüfung prüft nichts`);
     // Modell an? Ein Klick am oberen Rand (Mitte, ohne Menü) kommt nicht an
     const weg0 = await p.evaluate(() => window.__safariKlick?.obenWeg ?? 0);
     await p.mouse.click(Math.round(vp.width / 2), yOben); await wait(p, 150);
     if (await p.evaluate(() => window.__safariKlick?.obenWeg ?? 0) <= weg0) E('APD-118 das Safari-Modell nimmt den Klick am oberen Rand nicht weg – die Prüfung prüft nichts');
+    // APD-121/Y-1 bis Y-3 (seit 4.55.0, Messungen 07.11.2026): Mehr ohne offenes Menü – bei y 21 kommt der Klick an und das Menü öffnet,
+    // bei y 20 öffnet nichts und es bleibt kein Rest (kein Fokusring, aria-expanded false) – fest die gemessenen Werte, nicht die Grenze des Modells
+    // (sonst wanderte die Prüfung mit einer falschen Grenze mit; Gegenprobe Grenze 23: Y-1 und Y-2 rot)
+    const MIT = 21, OHNE = 20;
+    if (m.oben <= OHNE && m.unten > MIT) {
+      const weg1 = await p.evaluate(() => window.__safariKlick?.obenWeg ?? 0);
+      await zug(m.x, MIT); await wait(p, 450);
+      if (await p.evaluate(() => window.__safariKlick?.obenWeg ?? 0) > weg1) E(`APD-121/Y-1 der Klick bei y ${MIT} kommt im Safari-Modell nicht an (gemessen: ab y 21 kommt er)`);
+      if (!await offen()) E(`APD-121/Y-2 Tipp bei y ${MIT} auf ${mehr} öffnet das Menü nicht (gemessen: öffnet)`);
+      for (let k = 0; k < 3 && await offen(); k++) { await p.keyboard.press('Escape'); await zuWarten(); }
+      await p.evaluate(() => document.activeElement?.blur());
+      await zug(m.x, OHNE); await wait(p, 450);
+      const y3 = await p.evaluate(s => { const b = document.querySelector(s); return { ring: !!b?.matches(':focus-visible'), exp: b?.getAttribute('aria-expanded') }; }, mehr);
+      if (await offen()) E(`APD-121/Y-3 Tipp bei y ${OHNE} auf ${mehr} öffnet etwas (gemessen: kein Klick)`);
+      if (y3.ring || y3.exp === 'true') E(`APD-121/Y-3 nach dem Tipp bei y ${OHNE} bleibt ein Rest (Fokusring ${y3.ring}, aria-expanded ${y3.exp})`);
+      for (let k = 0; k < 3 && await offen(); k++) { await p.keyboard.press('Escape'); await zuWarten(); }
+    } else E(`APD-121 Mehr-Knopf ${mehr} reicht nicht über y ${OHNE} bis ${MIT} (${Math.round(m.oben)}–${Math.round(m.unten)}) – Y-2 und Y-3 prüfen nichts`);
     // X-1: Tipp ohne Klick über Mehr
     if (!await auf()) { E('APD-118/X-1 Mehr-Menü öffnet sich nicht'); return errors; }
     await zug(m.x, yOben);
