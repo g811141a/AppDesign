@@ -79,7 +79,10 @@ Tastatur 274) und Nachstellung im Safari-Modell (Skript nur in der Sitzung):
     Teils steht (iPad Tipp bei y 339, sichtbar 374; iPhone y 272, sichtbar 377). Die Meldung zeigt die Kopfzeile −139 bzw. −75 und den Fensterkopf −129
     bzw. −65; 5 bzw. 3 ms später steht beides wieder (`--vv-top` 138 bzw. 74). Bei Quartier (Tastatur noch zu) verschiebt Safari nicht.
   - Schritt 7 (‚Rom‘ tippen): iPad beim ersten Zeichen `scrollY` 139 → 138 (Kopfzeile und Fensterkopf 40 ms lang +1 px), sonst nichts; iPhone keine
-    Bewegung in den Daten (kein ‚scroll‘, Rollstand des Fensters 1382, Fensterkopf 10). Das Ruckeln in Schritt 7 zeigen die Daten nicht – nachgefragt.
+    Bewegung in den Daten (kein ‚scroll‘, Rollstand des Fensters 1382, Fensterkopf 10). Das Ruckeln in Schritt 7 zeigen die Daten nicht. **Nachgefragt (Nutzer 07.11.2026):** es ruckelt
+    **gleich nach dem Antippen von Ort** – also Safaris Verschiebung aus Schritt 6 und das Zurückstellen der App. Vermutung: Safari verschiebt
+    sichtbar (etwa 130 ms) und meldet erst am Ende; das Modell meldet sofort, darum sind M-11 und M-7 dort grün – im Modell zu korrigieren
+    (0 Nr. 20), bevor eine Lösung gebaut wird.
   - Schritt 8 (x): (1) Kopfzeile und Fensterkopf kurz zu tief, iPad 7 ms (‚vv resize‘, `--vv-top` noch 138), iPhone 2 ms (‚scroll‘ der Seite,
     `offsetTop` noch 75) – die App stellt im nächsten Ereignis neu. (2) **Der Fensterinhalt springt**, wenn der Rahmen mit dem Schließen wächst: iPad
     Rollstand 793 → 451 (342 px) 7 ms nach ‚vv resize‘, iPhone 1382 → 1075 (307 px) 7 ms nach ‚vv resize‘ (400 ms nach dem Antippen von x). Ursache:
