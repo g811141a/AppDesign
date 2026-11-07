@@ -106,7 +106,9 @@ for (const ansicht of ['iPhone hoch', 'iPad quer', 'iPad hoch', 'iPhone quer']) 
     // Modell (APD-36/S-6 b), wird es berichtet (am Gerät zu messen). APD-115/W-2 (&w=2): ein Schub, danach ganz über der Tastatur, Safari verschiebt nicht.
     // ‚geschoben‘ (Schritte am Gerät, Sitzung 0092): liegt Ort nach dem Tippen unter der Tastatur, schiebt der Nutzer das Fenster mit dem Finger hoch,
     // bis Ort ganz zu sehen ist (40 px über der Tastatur), dann tippt er Ort an.
-    for (const w of ['1'])   // W-2 verworfen (APD-115/N-11: neuer Fokus hilft nicht, Nutzer 07.11.2026: W-1)
+    // APD-115/W-3 (&w=3, E-10): beim Antippen rollt die App vor dem Fokus so weit, wie Safari verschieben würde – Safari verschiebt nicht, ein Schub;
+    // APD-115/W-4 (&w=4): Fokus selbst gesetzt, sonst wie W-1 – ob Safari verschiebt, zeigt nur das Gerät (Hinweis)
+    for (const w of ['1', '3', '4'])   // W-2 verworfen (APD-115/N-11: neuer Fokus hilft nicht, Nutzer 07.11.2026: W-1)
     for (const vorher of ['oben', 'unten', 'geschoben']) {
       const p = await neu(ansicht, `${v}&w=${w}`);
       if (vorher === 'unten') await ansEnde(p, '#fQuarter');
@@ -132,18 +134,19 @@ for (const ansicht of ['iPhone hoch', 'iPad quer', 'iPad hoch', 'iPhone quer']) 
       const wo = `W-${w}, Fenster ${vorher}, Ort vorher ${a.oben}–${a.unten} px, Tastatur ab ${a.kb}${sichtbar ? '' : ' (Pfeil)'}`;
       if (!l.fokus || !l.offen) E('APD-115/M-7', `${wo}: Ort ohne Fokus bzw. Tastatur`);
       else if (!passt) console.log(`ℹ ${t.ort} APD-115/M-7 ${wo}: Ort höher als der sichtbare Teil (${l.oben}–${l.unten} px)`);
-      else if (w === '1' && war && Math.abs(l.y - a.y) > 1) E('APD-115/M-7', `${wo}: Ort war ganz sichtbar, trotzdem rollt der Inhalt ${a.y} → ${l.y} px (Sprung, nicht wie Apple)`);
-      else if (w === '1' && !war && Math.abs(l.unten - lim) > 3) E('APD-115/M-7', `${wo}: Ort endet bei ${l.unten} px statt ${lim} (16 px über der Tastatur) – ${l.unten < lim ? 'rollt zu weit' : 'zu wenig'}`);
+      else if (w !== '3' && war && Math.abs(l.y - a.y) > 1) E('APD-115/M-7', `${wo}: Ort war ganz sichtbar, trotzdem rollt der Inhalt ${a.y} → ${l.y} px (Sprung, nicht wie Apple)`);
+      else if ((w !== '3' || !sichtbar) && !war && Math.abs(l.unten - lim) > 3) E('APD-115/M-7', `${wo}: Ort endet bei ${l.unten} px statt ${lim} (16 px über der Tastatur) – ${l.unten < lim ? 'rollt zu weit' : 'zu wenig'}`);
       else if (w === '2' && (l.unten > lim + 3 || l.oben < l.ct)) E('APD-115/M-7', `${wo}: Ort danach ${l.oben}–${l.unten} px, nicht ganz über der Tastatur (${lim})`);
       if (schuebe.length > 1) E('APD-115/M-7', `${wo}: rollt in ${schuebe.length} Schüben (${schuebe.join(', ')} px) statt in einem`);
       // W-2 und Ort höher als der sichtbare Teil (iPhone quer): Ort kann nicht bis zur Mitte, Safari verschiebt – Hinweis wie APD-115/A-3
-      if (pan !== pan0) (w === '2' && passt ? E('APD-115/M-7', `${wo}: Safari verschiebt im Modell ${pan0} → ${pan} px (Sprung)`)
+      if (pan !== pan0) ((w === '2' || w === '3' && sichtbar) && passt ? E('APD-115/M-7', `${wo}: Safari verschiebt im Modell ${pan0} → ${pan} px (Sprung)`)
         : console.log(`ℹ ${t.ort} APD-115/M-7 ${wo}: Safari verschiebt im Modell ${pan0} → ${pan} px (APD-36/S-6 b) – am Gerät messen`));
       await p.close();
     }
     // APD-115/M-11 (Befund APD-115/N-11, Messung 07.11.2026 – Schritte 6 bis 8 am Gerät): nach Quartier und ‚Hotel‘ Ort antippen (liegt Ort unter
     // der Tastatur, vorher hochgeschoben), ‚Rom‘ tippen, mit x schließen. In jedem Bild: Kopfzeile still, Fensterkopf nur zwischen vorher und nachher.
-    for (const w of ['1'])   // W-2 verworfen (APD-115/N-11: neuer Fokus hilft nicht, Nutzer 07.11.2026: W-1)
+    // W-1 und W-4: Safaris Verschiebung beim Antippen von Ort zeigt das Modell seit APD-115/N-13 (am Gerät: W-1 gemessen, W-4 zu messen) – Hinweis
+    for (const w of ['1', '3', '4'])   // W-2 verworfen (APD-115/N-11: neuer Fokus hilft nicht, Nutzer 07.11.2026: W-1)
     {
       const p = await neu(ansicht, `${v}&w=${w}`);
       await p.tap('#fQuarter'); await p.waitForTimeout(900);
@@ -154,7 +157,7 @@ for (const ansicht of ['iPhone hoch', 'iPad quer', 'iPad hoch', 'iPhone quer']) 
           c.scrollTop += f.getBoundingClientRect().bottom - o - (Math.min(__safari.hoehe(), c.getBoundingClientRect().bottom - o) - 40); });
         await p.waitForTimeout(400);
       }
-      const film = async (name, fn, warte = 900) => {
+      const film = async (name, fn, warte = 900, hinweis = false) => {
         const a = await p.evaluate(() => __safari.lage());
         await p.evaluate(() => __safari.bilder(true)); await fn(); await p.waitForTimeout(warte);
         const bilder = await p.evaluate(() => __safari.bilder(false)), e = await p.evaluate(() => __safari.lage());
@@ -163,10 +166,11 @@ for (const ansicht of ['iPhone hoch', 'iPad quer', 'iPad hoch', 'iPhone quer']) 
           const lo = Math.min(a[k], k === 'bar' ? a[k] : e[k]) - 2, hi = Math.max(a[k], k === 'bar' ? a[k] : e[k]) + 2;
           const aus = bilder.filter(b => b[k] != null && (b[k] < lo || b[k] > hi));
           if (aus.length) { const m = aus.reduce((x, b) => Math.abs(b[k] - a[k]) > Math.abs(x - a[k]) ? b[k] : x, aus[0][k]);
-            E('APD-115/M-11', `W-${w} ${name}: ${nm} springt in ${aus.length} von ${bilder.length} Bildern bis ${m} px (vorher ${a[k]}, danach ${e[k]} px)`); }
+            const txt = `W-${w} ${name}: ${nm} springt in ${aus.length} von ${bilder.length} Bildern bis ${m} px (vorher ${a[k]}, danach ${e[k]} px)`;
+            if (hinweis) console.log(`ℹ ${t.ort} APD-115/M-11 ${txt} – Safaris Verschiebung (APD-115/N-13), am Gerät messen`); else E('APD-115/M-11', txt); }
         }
       };
-      await film('Ort antippen', () => p.tap('#fPlace'));
+      await film('Ort antippen', () => p.tap('#fPlace'), 900, w !== '3');
       await film('‚Rom‘ tippen', () => p.keyboard.type('Rom', { delay: 150 }));
       // APD-115/N-13 (zweite Messung, Sitzung 0093): beim Schließen springt der Fensterinhalt (iPad quer 793 → 451, iPhone hoch 1382 → 1075) – der
       // Rollstand des Fensters bleibt in jedem Bild (± 2 px); Kopfzeile und Fensterkopf prüft film

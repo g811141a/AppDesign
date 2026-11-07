@@ -70,7 +70,7 @@ u = ersetze(u, `  const n = noetig(f, c);
 u = ersetze(u, `  halten = { f, c, y: c.scrollTop, bis: performance.now() + 1500 };
   if (kbOffen()) return;`, `  halten = { f, c, y: c.scrollTop, bis: performance.now() + 1500 };
   if (kbOffen() && WECHSEL !== 2) return;`);
-u = ersetze(u, 'let tipp = null, neuFokus = false,', 'const WECHSEL = new URLSearchParams(location.search).get(\'w\') === \'1\' ? 1 : 2;   // APD-115/W-1, W-2\nlet tipp = null, neuFokus = false,');
+u = ersetze(u, 'let tipp = null, neuFokus = false,', 'const WECHSEL = [1, 3, 4].includes(+new URLSearchParams(location.search).get(\'w\')) ? +new URLSearchParams(location.search).get(\'w\') : 2;   // APD-115/W-1 bis W-4 (W-3, W-4 sonst wie W-1)\nlet tipp = null, neuFokus = false,');
 // feldZeigen: Ziel statt ganzes Feld (mehrzeilig: Cursorzeile)
 u = ersetze(u, `  const rand = fokusRand(f);
   if (r.height > unten - oben - rand) { if (Math.abs(ro - oben - rand) > 1) rollen(c, ro - oben - rand); }
@@ -151,5 +151,26 @@ u = ersetze(u, "if (window.visualViewport) ['resize', 'scroll'].forEach(t => vis
 // Jeder Rollbereich bekommt vorher Platz, knapp nimmt danach zurück, was nicht nötig ist.
 u = ersetze(u, "  cs.forEach(c => { if (platzVon(c)) platz(c, 2000); });\n  placeDialogs();\n  cs.forEach((c, i) => { if (platzVon(c)) { c.scrollTop = y[i]; knapp(c); } });",
   "  cs.forEach(c => platz(c, 2000));\n  placeDialogs();\n  cs.forEach((c, i) => { c.scrollTop = y[i]; knapp(c); });");
+// APD-115/W-3, W-4 (Sitzung 0093, APD-115/N-13, E-10): ein anderes Feld bei offener Tastatur antippen – Safari stellt es nach dem Fokus selbst in die
+// Mitte des sichtbaren Teils und verschiebt dafür sichtbar die Seite (Kopfzeile und Fenster ruckeln). W-3: vor dem Fokus (beim Loslassen) so weit rollen,
+// wie Safari verschieben würde – Safari liest die Lage beim Fokus (APD-36/S-7) und verschiebt nicht. W-4: das Loslassen abfangen, Fokus selbst setzen.
+u = ersetze(u, "addEventListener('focusout', () => { if (!neuFokus) halten = null; }, true);", `addEventListener('touchend', e => {
+  if (WECHSEL < 3 || !kbOffen() || e.changedTouches?.length !== 1 || !tipp || performance.now() - tipp.t > 800) return;
+  const f = e.target.closest?.(FELD), t = e.changedTouches[0];
+  if (!f || f === document.activeElement || Math.abs(t.clientY - tipp.y) > 10) return;   // nur Antippen, kein Rollen
+  const c = behaelter(f);
+  if (!c) return;
+  if (WECHSEL === 4) { e.preventDefault(); f.focus({ preventScroll: true }); messZeile(\`W-4 \${messId(f)} Fokus selbst\`); return; }
+  let fest = false;
+  for (let x = f; x && x !== document.documentElement; x = x.parentElement) if (x.matches('dialog[open]') || getComputedStyle(x).position === 'fixed') { fest = true; break; }
+  const r = f.getBoundingClientRect(), b = c.getBoundingClientRect(), d = fest ? visualViewport.offsetTop : 0;
+  const n = Math.round(Math.min((r.top + r.bottom) / 2 - d - visualViewport.height / 2, r.top - b.top - Math.max(4, fokusRand(f))));
+  if (n <= 0) return;
+  platz(c, seitenHoehe()); c.scrollTop += n; knapp(c);
+  // nach dem Rollen läge der Klick an der alten Stelle auf etwas anderem – den Fokus selbst setzen
+  e.preventDefault(); f.focus({ preventScroll: true });
+  messZeile(\`W-3 \${messId(f)} rollt \${n} vor dem Fokus\`);
+}, { capture: true, passive: false });
+addEventListener('focusout', () => { if (!neuFokus) halten = null; }, true);`);
 writeFileSync(new URL('ui.js', ZIEL), u);
 console.log('APD-115 Muster gebaut: arbeit/APD-115/index.html, arbeit/APD-115/ui.js');

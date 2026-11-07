@@ -92,6 +92,18 @@ Tastatur 274) und Nachstellung im Safari-Modell (Skript nur in der Sitzung):
   - Umsetzung: M-11 prüft beim Schließen zusätzlich den Rollstand des Fensters in jedem Bild (± 2 px) – rot gegen das Muster (6 Fehler: iPhone hoch,
     iPad quer, iPad hoch). Bauskript: jeder Rollbereich bekommt vor dem Wachsen Platz, `knapp` nimmt danach zurück, was nicht nötig ist.
     Derselbe Fehler steckt in `fassung/4.54.0/ui.js` und `v4/ui.js` (`gemeldet`, Zeile 2997) – also auch im Reiselogbuch 3.52.0.
+- APD-115/E-10 Entscheidung (Nutzer 07.11.2026, Sitzung 0093): zuerst das Modell korrigieren (Safaris Verschiebung beim Wechsel sichtbar, gemeldet
+  erst nach iPad 135 / iPhone 88 ms, M-11 rot), dann zwei Varianten mit Messmodus bauen und am Gerät messen: **APD-115/W-3** ‚vor dem Fokus zur Mitte‘
+  (bei offener Tastatur rollt die App beim Loslassen auf einem anderen Feld, vor dem Fokus, so weit, wie Safari das Feld verschieben würde – Safari
+  verschiebt dann nicht, nur der Inhalt rollt einmal) und **APD-115/W-4** ‚Fokus selbst setzen‘ (die App fängt das Loslassen ab und setzt den Fokus
+  ohne Rollen; ob Safari dann verschiebt, zeigt nur das Gerät).
+- APD-115/N-14 Stand Sitzung 0093: (1) Safari-Modell (Option `apd115`): Verschiebung beim Wechsel sofort sichtbar, gemeldet nach `wechselVerzug` (iPhone
+  88, iPad 135 ms) – W-1 zeigt jetzt das Ruckeln (iPad quer Ort 320 → 173 → 320, iPhone hoch 362 → 201 → 362). (2) Bauskript: `&w=3` (beim Loslassen
+  vor dem Fokus rollen, dann Fokus selbst – sonst trifft der Klick an der alten Stelle etwas anderes und die Tastatur geht zu) und `&w=4`. W-3 im Modell:
+  Safari verschiebt nicht, ein Schub (iPad quer 147, iPhone hoch 161 px), Schritt 8 ruhig. (3) M-7 und M-11 laufen für W-1, W-3, W-4 (W-1/W-4 beim
+  Antippen von Ort nur Hinweis). **Offen** (Chromium 30, WebKit 29 Fehler, Gegenprobe 99): (a) der erste M-7-Block (`checkTastaturStill` mit
+  `wechsel`) läuft ohne `&w=` = W-2 und springt im neuen Modell – auf `&w=3` stellen; (b) iPhone quer W-3: Ort höher als der sichtbare Teil, kann nicht
+  in die Mitte, Safari verschiebt 30 px – als Hinweis wie APD-115/A-3. Danach Chromium, WebKit grün, Gegenprobe rot, dann Messung W-3 und W-4.
 
 ## Apple-Abgleich (0 Nr. 23, 2.6)
 

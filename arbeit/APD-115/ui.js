@@ -2998,7 +2998,7 @@ function feldZeigen(f) {
   else if (ru > unten) rollen(c, ru - unten);
   else if (ro < oben + rand) rollen(c, ro - oben - Math.max(16, rand));
 }
-const WECHSEL = new URLSearchParams(location.search).get('w') === '1' ? 1 : 2;   // APD-115/W-1, W-2
+const WECHSEL = [1, 3, 4].includes(+new URLSearchParams(location.search).get('w')) ? +new URLSearchParams(location.search).get('w') : 2;   // APD-115/W-1 bis W-4 (W-3, W-4 sonst wie W-1)
 let tipp = null, neuFokus = false, beruehrt = -1e9, gerollt = null, halten = null, kbWar = false, nachKb = null;
 // die Ereignisse des neuen Fokus nicht an die App weitergeben (Safari-Modell und Safari selbst lesen die Lage vorher, auf window)
 ['focusout', 'blur', 'focusin', 'focus'].forEach(t => document.addEventListener(t, e => { if (neuFokus) e.stopImmediatePropagation(); }, true));
@@ -3006,6 +3006,23 @@ let tipp = null, neuFokus = false, beruehrt = -1e9, gerollt = null, halten = nul
 // Berührung, die das Feld fokussiert hat, wird unterdrückt
 addEventListener('touchstart', e => { beruehrt = performance.now(); gerollt = null; halten = null; tipp = { y: e.touches?.[0]?.clientY, t: beruehrt }; }, { capture: true, passive: true });
 addEventListener('pointerdown', e => { gerollt = null; halten = null; if (e.pointerType !== 'touch') tipp = { y: e.clientY, t: performance.now() }; }, { capture: true, passive: true });
+addEventListener('touchend', e => {
+  if (WECHSEL < 3 || !kbOffen() || e.changedTouches?.length !== 1 || !tipp || performance.now() - tipp.t > 800) return;
+  const f = e.target.closest?.(FELD), t = e.changedTouches[0];
+  if (!f || f === document.activeElement || Math.abs(t.clientY - tipp.y) > 10) return;   // nur Antippen, kein Rollen
+  const c = behaelter(f);
+  if (!c) return;
+  if (WECHSEL === 4) { e.preventDefault(); f.focus({ preventScroll: true }); messZeile(`W-4 ${messId(f)} Fokus selbst`); return; }
+  let fest = false;
+  for (let x = f; x && x !== document.documentElement; x = x.parentElement) if (x.matches('dialog[open]') || getComputedStyle(x).position === 'fixed') { fest = true; break; }
+  const r = f.getBoundingClientRect(), b = c.getBoundingClientRect(), d = fest ? visualViewport.offsetTop : 0;
+  const n = Math.round(Math.min((r.top + r.bottom) / 2 - d - visualViewport.height / 2, r.top - b.top - Math.max(4, fokusRand(f))));
+  if (n <= 0) return;
+  platz(c, seitenHoehe()); c.scrollTop += n; knapp(c);
+  // nach dem Rollen läge der Klick an der alten Stelle auf etwas anderem – den Fokus selbst setzen
+  e.preventDefault(); f.focus({ preventScroll: true });
+  messZeile(`W-3 ${messId(f)} rollt ${n} vor dem Fokus`);
+}, { capture: true, passive: false });
 addEventListener('focusout', () => { if (!neuFokus) halten = null; }, true);
 document.addEventListener('focusin', e => {
   const f = e.target;

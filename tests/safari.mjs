@@ -79,14 +79,15 @@
 //   später‘ (APD-27 2) gilt nur noch für das Rollen.
 export const ABSTAND = 24, ABSTAND_FENSTER = 0;
 export const SAFARI = {
-  'iPhone hoch': { tastatur: 403, ziffern: 376, fokusRollen: -120, fokusSchub: 0, zuVerzug: 400 },
-  'iPhone quer': { tastatur: 276, ziffern: 232, fokusRollen: 0, fokusSchub: 0, zuVerzug: 400 },
-  'iPad quer': { tastatur: 428, fokusRollen: 0, fokusSchub: 0 },
-  'iPad hoch': { tastatur: 340, fokusRollen: 0, fokusSchub: 0 },
+  'iPhone hoch': { tastatur: 403, ziffern: 376, fokusRollen: -120, fokusSchub: 0, zuVerzug: 400, wechselVerzug: 88 },
+  'iPhone quer': { tastatur: 276, ziffern: 232, fokusRollen: 0, fokusSchub: 0, zuVerzug: 400, wechselVerzug: 88 },
+  'iPad quer': { tastatur: 428, fokusRollen: 0, fokusSchub: 0, wechselVerzug: 135 },
+  'iPad hoch': { tastatur: 340, fokusRollen: 0, fokusSchub: 0, wechselVerzug: 135 },
 };
 
 export async function safariModell(p, ansicht, { leisten = { bar: '.nb, .pnav', box: '.searchbox' }, links = {}, auto = false, abstand = ABSTAND, abstandFenster = ABSTAND_FENSTER, apd115 = false } = {}) {
-  const werte = { abstand, abstandFenster, ...SAFARI[ansicht], apd115, zuVerzug: apd115 ? (SAFARI[ansicht]?.zuVerzug ?? 0) : 0 };
+  const werte = { abstand, abstandFenster, ...SAFARI[ansicht], apd115, zuVerzug: apd115 ? (SAFARI[ansicht]?.zuVerzug ?? 0) : 0,
+    wechselVerzug: apd115 ? (SAFARI[ansicht]?.wechselVerzug ?? 0) : 0 };
   if (!werte) throw new Error(`Safari-Modell: keine Werte für ${ansicht}`);
   await p.evaluate(({ werte, leisten, links, auto }) => {
     const vv = window.visualViewport;
@@ -124,6 +125,7 @@ export async function safariModell(p, ansicht, { leisten = { bar: '.nb, .pnav', 
       melde(sofort = false) {
         if (s.weg) return;
         if (s.zuT && !sofort) return;   // APD-115/N-11: bis zur verzögerten Meldung beim Schließen bleibt offsetTop alt
+        if (s.wechselT && !sofort) return;   // APD-115/N-13: ebenso bis zur Meldung der Verschiebung beim Wechsel
         if (sofort && s.warte) { cancelAnimationFrame(s.warte); s.warte = null; }
         if (s.warte) return;
         let n = sofort ? 0 : 2;
@@ -236,9 +238,15 @@ export async function safariModell(p, ansicht, { leisten = { bar: '.nb, .pnav', 
       s.blur = false;
       // neuer Fokus bei offener Tastatur: Safari rollt bzw. schiebt nach dem Fokus (im nächsten Bild)
       requestAnimationFrame(() => {
+        const vor = s.top();
         s.zumFeld('wechsel');
         if (werte.fokusRollen) scrollTo(0, Math.max(0, Y() + werte.fokusRollen));
         if (werte.fokusSchub) s.schub();
+        // APD-115/N-13 (zweite Messung 07.11.2026: ‚scroll‘ iPad 135, iPhone 88 ms nach dem Fokus, Nutzer: ‚ruckelt gleich nach dem Antippen‘):
+        // Safaris Verschiebung beim Wechsel ist sofort zu sehen, gemeldet wird sie erst nach wechselVerzug (Vermutung: Safari verschiebt sichtbar
+        // und meldet am Ende) – bis dahin stehen feste Leisten um die Verschiebung zu hoch
+        if (werte.wechselVerzug && s.top() !== vor) { clearTimeout(s.wechselT);
+          s.wechselT = setTimeout(() => { s.wechselT = null; s.top(); s.melde(true); }, werte.wechselVerzug); return; }
         s.top(); s.melde(true);
       });
     }, true);
