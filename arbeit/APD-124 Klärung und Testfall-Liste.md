@@ -29,6 +29,10 @@ nach dem Rückgängig steht wieder das ⓧ zum Löschen. Der ausgeschnittene Wer
 - APD-124/E-3 (aus dem Wunsch) Rückgängig bis zur ersten Eingabe; nach dem Rückgängig bzw. der ersten Eingabe wieder das ⓧ. Der geleerte Text kommt
   beim Leeren in die Zwischenablage.
 
+- APD-124/E-4 Muster am iPad und iPhone geprüft: **Variante A (graue Linie, `undo-2`), alles ok** (Nutzer 07.11.2026, Sitzung 0095). Schritt 10
+  (Undo-Taste nach dem Rückgängig) ohne eigene Angabe. Offen vor ‚bereit‘: Wortlaut R-5.6 und Designrichtlinie 15.11/16 (0 Nr. 29), Muster iPad hoch
+  und iPhone quer (0 Nr. 6), Testfälle (User).
+
 ## Muster (nur hell, Vereinbarung 30.10.2026)
 
 `arbeit/APD-124/index.html` – drei Felder (Titel, Ort, Verlauf mehrzeilig), design.css der Fassung 4.54.0, ui.js aus `arbeit/APD-124 Muster bauen.mjs`
