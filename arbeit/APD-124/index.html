@@ -1,0 +1,41 @@
+<!doctype html><html lang="de"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="APD-124">
+<title>APD-124 Rückgängig im Feld</title>
+<link rel="stylesheet" href="../../fassung/4.54.0/design.css">
+<style>
+/* APD-124 Muster ‚Rückgängig im Feld nach dem Leeren‘ (Sitzung Reiselogbuch 0095). design.css der Fassung 4.54.0 unverändert, ui.js aus
+   ‚arbeit/APD-124 Muster bauen.mjs‘. ?v=a: Rückgängig als graue Linie (Lucide undo-2), ?v=b: weiß im grauen Kreis wie das ⓧ. Nur hell. */
+html { color-scheme: light; }
+.muster { max-width: 640px; margin: 0 auto; padding: 8px 16px 32px; }
+.muster .karte { background: var(--card, #fff); border-radius: 12px; padding: 12px 14px 14px; margin: 14px 0; border: .5px solid var(--line); }
+.muster p { margin: 0 0 10px; color: var(--muted); }
+.muster .wahl { display: flex; gap: 8px; margin: 6px 0 10px; }
+.muster .wahl a { padding: 6px 12px; border-radius: 16px; background: var(--btn, #e9e9eb); color: inherit; text-decoration: none; }
+.muster .wahl a[aria-current] { background: var(--accent); color: #fff; }
+.muster label { display: block; margin: 12px 0 4px; }
+#meldung { min-height: 1.4em; color: var(--muted); }
+</style></head><body>
+<div class="muster">
+  <h1 class="nb-title" style="font-size:var(--t-title2);margin:8px 0 4px">APD-124 · Rückgängig im Feld</h1>
+  <p>Tippe in ein Feld und dann auf das ⓧ: das Feld ist leer, an Stelle des ⓧ steht Rückgängig. Rückgängig holt den Text zurück, danach steht wieder das ⓧ. Tippst du nach dem Leeren etwas, verfällt das Rückgängig. Der geleerte Text liegt in der Zwischenablage.</p>
+  <div class="wahl"><a id="va" href="?v=a">A · Linie</a><a id="vb" href="?v=b">B · im Kreis</a></div>
+  <div class="karte">
+    <label for="fTitel">Titel</label>
+    <input type="text" id="fTitel" value="Australien und Neuseeland 2026" autocapitalize="sentences">
+    <label for="fOrt">Ort</label>
+    <input type="text" id="fOrt" value="Cairns, Australien" autocapitalize="sentences">
+    <label for="fVerlauf">Verlauf</label>
+    <textarea id="fVerlauf" rows="4" autocapitalize="sentences">Anreise nach Cairns
+Rundgang an der Esplanade
+Abendessen am Hafen</textarea>
+  </div>
+  <p id="meldung" aria-live="polite"></p>
+</div>
+<script src="ui.js"></script>
+<script>
+document.getElementById(new URLSearchParams(location.search).get('v') === 'b' ? 'vb' : 'va').setAttribute('aria-current', 'page');
+</script>
+</body></html>
