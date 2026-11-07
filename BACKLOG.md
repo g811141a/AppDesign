@@ -11,8 +11,9 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Prio | Thema | bereit seit |
 |---|---|---|---|
+| APD-122 | 1 | **Smileys in der Suche wie Wörter (Nutzer 07.11.2026, Sitzung 0088, Prio 1, mit RLB-119):** Designrichtlinie 15.2 neuer Punkt ‚Smileys (Emoji)‘ und R-2.3 (Wortlaut APD-122/V-1, V-2 bestätigt); Baustein `markWords` markiert das ganze Zeichen mit Hautton; Prüfung `checkSearchWords` (APD-122/S-7) – `arbeit/APD-122 RLB-119 Wortlaut und Testfall-Liste.md` | 07.11.2026 |
 
-0 Punkte bereit.
+1 Punkt bereit (APD-122, mit RLB-119 im Reiselogbuch).
 
 
 ## 1. Auf iPad und iPhone prüfen
