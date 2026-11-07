@@ -139,6 +139,10 @@ Tastatur 274) und Nachstellung im Safari-Modell (Skript nur in der Sitzung):
   33–37 ms verloren (meist bei geschlossener Tastatur; W-4 fängt nur bei offener Tastatur ab, in N-16 2 von 2 ohne Verlust).
 - APD-115/E-12 Entscheidung (Nutzer 07.11.2026, Sitzung 0095): **keine vierte Messung** – ‚Ort teilweise unter der Tastatur antippen‘ und ‚zehnmal
   wechseln, Fokus nach dem ersten Antippen‘ kommen als Testfall (User) in den Usertest der APD-115-Version (APD-115/U-1, U-2 unten).
+- APD-115/E-13 Wortlaut APD-115/L-1, L-2 und Testfälle (User) APD-115/U-1, U-2 **bestätigt** (Nutzer 07.11.2026, Sitzung 0095) – geht mit dem Bau von
+  APD-115. Damit ist APD-115 **bereit**: eigene Version nach 4.55.0 (E-11 (3)) – W-4 ins Bauskript als einzige Variante (in `v4/ui.js`), Option
+  `apd115` mit `fokusSelbst` zum Standard, bestehende Prüfungen anpassen, M-1 bis M-11 als feste Prüfung, Korrektur `gemeldet` (N-13), R-4.5 (E-7),
+  Designrichtlinie 13 (L-1, L-2, ‚Lösung in ui.js‘ nach R-4.5).
 - APD-115/N-18 W-4 widerspricht Designrichtlinie 13 (Zeile 490 in 4.54.0): ‚Berührungen nie abfangen‘ – Wortlaut APD-115/L-1, L-2 unten (0 Nr. 29).
 
 ## Wortlaut Designrichtlinie 13 für W-4 (0 Nr. 29, Sitzung 0095)
