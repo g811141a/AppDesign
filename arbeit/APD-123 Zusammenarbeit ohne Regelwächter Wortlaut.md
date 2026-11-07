@@ -10,6 +10,8 @@ Stand 07.11.2026 · Sitzung Reiselogbuch 0089 · **Wortlaut zur Bestätigung** (
 - APD-123/E-3 Alles zum Lesen steht vor der Kachel.
 - APD-123/E-4 Uhrzeitzeile und Zeitzeile entfallen.
 - APD-123/E-5 Der Kontextstand steht immer in der Kachel: am Ende jeder Frage ‚(Kontext N)‘.
+- APD-123/E-6 Link und Schritte müssen bei offener Kachel lesbar sein. **Probe am iPad (Nutzer 07.11.2026):** eine Datei, mit `SendUserFile`
+  (`display: 'render'`) vor der Kachel geschickt, ist neben der offenen Kachel lesbar, der Link antippbar, Text kopierbar.
 
 ## Wortlaut
 
@@ -30,7 +32,9 @@ Neu:
 >    Hintergrundaufgabe oder einer anderen Sitzung; Empfehlung zuerst mit ‚(Empfohlen)‘ und Grund, immer ‚Ich schreibe im Chat‘; einzige
 >    Ausnahme die Übergabe (Nr. 28, 2.1).
 > 4. **Alles zum Lesen vor der Kachel:** Link, nummerierte Schritte mit ‚Erwartet: …‘, Bericht, Wortlaut, Muster und alle offenen
->    Usertests stehen im Chat vor dem Fenster, das Fenster selbst nur mit der kurzen Frage, ohne Link (Nr. 11, 2.1, 2.3).
+>    Usertests stehen vor dem Fenster – im Chat und, wenn der Nutzer dabei etwas tun soll (prüfen, testen, entscheiden), zusätzlich als
+>    Datei im Seitenbereich (`SendUserFile`, `display: 'render'`), die neben der offenen Kachel lesbar bleibt; das Fenster selbst nur mit der
+>    kurzen Frage, ohne Link (Nr. 11, 2.1, 2.3).
 > 5. **Kontextstand in der Kachel:** jede Frage im Fenster endet mit ‚(Kontext N)‘, N abgelesen aus `messung.mjs` unmittelbar vor dem
 >    Fenster – nie geschätzt (Nr. 21, 28).
 > 6. Wurde etwas gebaut oder entschieden: die Backlog-Erinnerung ‚Nächste Version …: N Punkte bereit (…) · Offen im Backlog: …‘ (2.4).
