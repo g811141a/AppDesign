@@ -1,6 +1,7 @@
 // APD-115 · Muster ‚Rollen wie Apple‘ (V-3) und ‚Bezeichnung über dem Feld‘ vor der Übergabe im Safari-Modell prüfen (Zusammenarbeit 0 Nr. 20, 2.7;
 // Testfall-Liste arbeit/APD-115 Testfall-Liste.md APD-115/M-1 bis M-10).
 //   node "arbeit/APD-115 Muster prüfen.mjs"        (im Ordner AppDesign; Browser über PRUEF_BROWSER, Standard chromium)
+//   PRUEF_ANSICHT='iPhone quer' …                   nur eine Ansicht (während der Arbeit)
 //   PRUEF_V=heute …                                 Gegenprobe: das Muster mit dem Rollen von 4.54.0 (fassung/4.54.0/ui.js) – M-1 bis M-3 müssen rot werden
 import { createRequire } from 'node:module';
 const pw = createRequire(new URL('../../ReiseLogBuch/tests/', import.meta.url))('playwright');
@@ -35,7 +36,7 @@ async function neu(ansicht, v, iso = TAG) {
 }
 const E = (regel, was) => t.liste([`${t.ort}: ${regel} ${was}`]);
 
-for (const ansicht of ['iPhone hoch', 'iPad quer', 'iPad hoch', 'iPhone quer']) {
+for (const ansicht of ['iPhone hoch', 'iPad quer', 'iPad hoch', 'iPhone quer'].filter(a => !process.env.PRUEF_ANSICHT || a === process.env.PRUEF_ANSICHT)) {
   for (const v of ['a', 'b']) {
     t.ort = `${ansicht} Variante ${v.toUpperCase()}${heute ? ' (Gegenprobe heute)' : ''}`;
     const quer = ansicht === 'iPhone quer';
@@ -98,7 +99,9 @@ for (const ansicht of ['iPhone hoch', 'iPad quer', 'iPad hoch', 'iPhone quer']) 
     // APD-115/M-7: Feld wechseln bei offener Tastatur (Quartier → Ort) – kein Sprung; mit W-3 (ohne &w= = W-2, verworfen, springt im Modell seit N-13)
     {
       const p = await neu(ansicht, `${v}&w=3`);
-      t.liste(await checkTastaturStill(p, { field: '#fQuarter', vorher: () => ansEnde(p, '#fQuarter'), wechsel: '#fPlace', where: `${t.ort} APD-115/M-7` }));
+      // iPhone quer: Ort höher als der sichtbare Teil, kann nicht in die Mitte – Safari verschiebt (30 px), Hinweis wie APD-115/A-3 (N-14 b)
+      const f7 = await checkTastaturStill(p, { field: '#fQuarter', vorher: () => ansEnde(p, '#fQuarter'), wechsel: '#fPlace', where: `${t.ort} APD-115/M-7` });
+      if (quer) f7.forEach(x => console.log(`ℹ ${x} – Ort höher als der sichtbare Teil (APD-115/A-3), am Gerät messen`)); else t.liste(f7);
       await p.close();
     }
     // APD-115/M-7 geschärft (Befund APD-115/N-1 bis N-8, Messung 07.11.2026): wie am Gerät – Fenster oben bzw. unten, Quartier antippen, tippen, Ort
@@ -157,6 +160,8 @@ for (const ansicht of ['iPhone hoch', 'iPad quer', 'iPad hoch', 'iPhone quer']) 
           c.scrollTop += f.getBoundingClientRect().bottom - o - (Math.min(__safari.hoehe(), c.getBoundingClientRect().bottom - o) - 40); });
         await p.waitForTimeout(400);
       }
+      // W-3 und Ort höher als der sichtbare Teil (iPhone quer): Ort kann nicht in die Mitte, Safari verschiebt – Hinweis wie APD-115/A-3 (N-14 b)
+      const z = await lage(p, '#fPlace'), passtOrt = z.unten - z.oben <= Math.min(z.kb, z.cb) - 16 - z.ct - 25;
       const film = async (name, fn, warte = 900, hinweis = false) => {
         const a = await p.evaluate(() => __safari.lage());
         await p.evaluate(() => __safari.bilder(true)); await fn(); await p.waitForTimeout(warte);
@@ -170,7 +175,7 @@ for (const ansicht of ['iPhone hoch', 'iPad quer', 'iPad hoch', 'iPhone quer']) 
             if (hinweis) console.log(`ℹ ${t.ort} APD-115/M-11 ${txt} – Safaris Verschiebung (APD-115/N-13), am Gerät messen`); else E('APD-115/M-11', txt); }
         }
       };
-      await film('Ort antippen', () => p.tap('#fPlace'), 900, w !== '3');
+      await film('Ort antippen', () => p.tap('#fPlace'), 900, w !== '3' || !passtOrt);
       await film('‚Rom‘ tippen', () => p.keyboard.type('Rom', { delay: 150 }));
       // APD-115/N-13 (zweite Messung, Sitzung 0093): beim Schließen springt der Fensterinhalt (iPad quer 793 → 451, iPhone hoch 1382 → 1075) – der
       // Rollstand des Fensters bleibt in jedem Bild (± 2 px); Kopfzeile und Fensterkopf prüft film
