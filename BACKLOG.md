@@ -19,7 +19,6 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| P-98 | 1 | **Usertest P-98 (Reiselogbuch 3.52.0, AppDesign 4.54.0):** Mehr-Menü schließt am oberen Rand (APD-118), Schalter ‚Glas‘ im Untermenü ‚Darstellung‘ (APD-120, R-3.9), Text nach dem Fenster und Push bei jeder Aufgabe (APD-113 Teil (6), APD-117, Zusammenarbeit 3.9.0) – Testfälle P-98/0 bis P-98/7 im CHANGELOG des Reiselogbuchs | offen |
 
 ## 2. Weitere Themen (in Klärung)
 
@@ -59,6 +58,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Thema | Version | Datum |
 |---|---|---|---|
+| P-98 | **Usertest P-98 (Reiselogbuch 3.52.0, AppDesign 4.54.0): alles ok** (Nutzer 07.11.2026, Sitzung 0088) – Mehr-Menü schließt am oberen Rand (APD-118), Schalter ‚Glas‘ im Untermenü ‚Darstellung‘ (APD-120, R-3.9), Text nach dem Fenster und Push bei jeder Aufgabe (APD-113 Teil (6), APD-117, Zusammenarbeit 3.9.0) | 4.54.0 | 07.11.2026 |
 | P-97 | **Usertest P-97 (Reiselogbuch 3.51.0, AppDesign 4.53.0):** /0 bis /5, /7 bis /9 und /11 ok; /6 und /10 nicht ok – behoben in 4.54.0 (APD-118, APD-119/APD-120), neu zu prüfen in P-98 | 4.54.0 | 07.11.2026 |
 | APD-118 | **Sperrschicht schließt beim Loslassen (P-97/6):** hinter Menü, Untermenü, Kontextmenü und Sprechblase schließt sie bei `pointerup` (bis 20 px Weg) und verschluckt den Klick danach; Safari-Modell `obenOhneKlick` (am oberen Rand kein click); Designrichtlinie 13 ‚Am oberen Rand kein Klick‘; Prüfung `checkSchichtOben` (APD-118/X-1 bis X-8, Messung nachgespielt) | 4.54.0 | 07.11.2026 |
 | APD-119 | **‚Transparenz reduzieren‘ kommt in der Web-App nicht an (P-97/10):** Designrichtlinie 13 neuer Punkt, R-3.9 ‚deckend, wo der Browser es meldet‘ (Wortlaut APD-120/V-1) | 4.54.0 | 07.11.2026 |
@@ -85,12 +85,6 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 | APD-85 | **APD-85 Teil 3 – Wackler beheben:** Baustein `warteBis` in `tests/pruefe.mjs` (APD-85/Z-1, Z-2, Selbsttest Z-6), `ablauf-blatt` ohne feste Pausen (Z-3 bis Z-5) | 4.49.0 | 01.11.2026 |
 | APD-107 | **APD-107 Korrektur aus P-88:** Leisten-Knopf hebt sich beim Berühren als helle Fläche mit Schatten 1,3-fach über die Kapsel (R-3.6, Variante C), Loslassen nach dem Wegziehen löst nichts aus, wie lange der Finger auch liegt (Messung P-88/1), Smiley-Kreis im modalen Fenster zuoberst (15.12); Prüfungen APD-107/S-1 bis S-13 – Usertest im Reiselogbuch P-89 | 4.48.2 | 01.11.2026 |
 | APD-106 | **APD-106 Korrektur aus P-87:** Safaris Antipp-Markierung aus, keine Textauswahl und Lupe beim Halten antippbarer Zeilen und der Smiley-Leiste (R-3.6), Smiley hebt sich auf einem hellen Kreis mit Schatten über die Leiste, Entfernen nach 1 s (R-3.5, Variante C), Großanzeige bleibt ab AX1; mit RLB-115 (`keepKante`, R-8.1); Prüfungen `checkBeruehren`, `checkAnheben`, `checkSideToggle`, Safari-Modell `safariHalten`; Usertest P-88 im Reiselogbuch | 4.48.1 | 01.11.2026 |
-|---|---|---|---|
-| P-97 | **Usertest P-97 (Reiselogbuch 3.51.0, AppDesign 4.53.0):** /0 bis /5, /7 bis /9 und /11 ok; /6 und /10 nicht ok – behoben in 4.54.0 (APD-118, APD-119/APD-120), neu zu prüfen in P-98 | 4.54.0 | 07.11.2026 |
-| APD-118 | **Sperrschicht schließt beim Loslassen (P-97/6):** hinter Menü, Untermenü, Kontextmenü und Sprechblase schließt sie bei `pointerup` (bis 20 px Weg) und verschluckt den Klick danach; Safari-Modell `obenOhneKlick` (am oberen Rand kein click); Designrichtlinie 13 ‚Am oberen Rand kein Klick‘; Prüfung `checkSchichtOben` (APD-118/X-1 bis X-8, Messung nachgespielt) | 4.54.0 | 07.11.2026 |
-| APD-119 | **‚Transparenz reduzieren‘ kommt in der Web-App nicht an (P-97/10):** Designrichtlinie 13 neuer Punkt, R-3.9 ‚deckend, wo der Browser es meldet‘ (Wortlaut APD-120/V-1) | 4.54.0 | 07.11.2026 |
-| APD-120 | **Schalter ‚Glas‘ (Variante A):** eigene Gruppe im Untermenü ‚Darstellung‘ (`darstellungMenuItem`, Menüeintrag `schalter`, Rolle switch, Menü bleibt offen), aus = `html.ohne-glas` deckend wie ‚Transparenz reduzieren‘; `db.settings.glas` je Gerät, aus dem Backup nur ohne eigene Wahl (`glasAusBackup`); R-3.9 und 15.6 (Wortlaut APD-120/V-2, V-3, V-5); Prüfung `checkGlas` mit Schalter (APD-120/J-1 bis J-13) | 4.54.0 | 07.11.2026 |
-| APD-113, APD-117 | **Teil (6) ‚Text nach dem Fenster, Push bei jeder Aufgabe‘ und Lagebild als eigene Antwort:** Zusammenarbeit 3.9.0 (APD-113/L-1 bis L-8, APD-113/N-3 mit Zusatz, APD-113/N-5, APD-113/N-6; 0 Nr. 7 APD-120/V-4); Regelwächter W-4 ohne Grenze, W-15 neu, W-17 mit Commit und Zurückweisung; Prüfungen APD-113/M-1 bis M-17 | 4.54.0 | 07.11.2026 |
 | APD-104 | **APD-104 Großanzeige für Leisten-Knöpfe:** ab AX1 zeigt langes Drücken auf einen Leisten-Knopf Icon und Namen groß in der Mitte (`.grossanzeige`), gleiten wechselt, Loslassen über einem Knopf löst aus; neue Regel R-2.6 mit `checkGrossanzeige` (`ablauf.mjs`), 15.3 neu, 16 ‚Keine Großanzeige‘ ersetzt; im Reiselogbuch neue Prüfung `ablauf-grossanzeige`; Usertest P-87 | 4.48.0 | 31.10.2026 |
 | APD-105 | **APD-105 Antippen und langes Drücken:** beim Berühren Knöpfe blass (35 %), Zeilen grau (`.beruehrt`), in Rollbereichen nach 80 ms; Anheben beim langen Drücken (`.hebt`); neue Regel R-3.6 mit `checkBeruehren`, R-3.5 ergänzt mit `checkAnheben`, 4 und 15.12; im Reiselogbuch neue Prüfung `ablauf-beruehren`; Usertest P-87 | 4.48.0 | 31.10.2026 |
 | APD-103 | **APD-103 Lücke im Regelwächter:** APD-84/W-14 mit Rückfall – ist der Satz ‚Kontext N‘ nicht prüfbar, verlangt der Wächter einen Aufruf von `messung.mjs` seit der vorigen Nachricht bzw. dem vorigen Fenster; `tests/regelwaechter.mjs` APD-103/D-1 bis D-9; Zusammenarbeit 3.5.0 (2.8) | 4.48.0 | 31.10.2026 |
