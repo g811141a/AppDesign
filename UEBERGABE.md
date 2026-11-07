@@ -30,10 +30,10 @@ ganze Zusammenarbeit** (0 Nr. 15); die Arbeitsumgebung steht in der AppDesign-`C
   R-2.3); dazu Fund im Baustein: `markWords` markiert bei ‚👍‘ in ‚👍🏽‘ den Hautton nicht mit. Testfall-Liste APD-122/S-1 bis S-8 –
   `arbeit/APD-122 RLB-119 Wortlaut und Testfall-Liste.md`.
 - **APD-113 Teile (1) bis (4) nachgestellt, Vorschlag und Testfall-Liste APD-113/Q-1 bis Q-8 bestätigt** – `arbeit/APD-113 Teile 1 bis 4 Befund und
-  Testfall-Liste.md`: (1) W-5, W-14 bis W-16 nur an gezeigten Fenstern, (3) W-14 nimmt die letzte Zahl ‚Kontext N‘, (4) W-6 nur im laufenden Abschnitt;
+  Testfall-Liste.md`: (1) APD-84/W-5, APD-84/W-14 bis W-16 nur an gezeigten Fenstern, (3) APD-84/W-14 nimmt die letzte Zahl ‚Kontext N‘, (4) APD-84/W-6 nur im laufenden Abschnitt;
   (2) entfällt; kein neuer Regeltext. Nachgestellt mit künstlichen Sitzungsdaten über `pruefe` (wie in `tests/regelwaechter.mjs`).
 - Bau-Frage 4.55.0 / 3.53.0 einmal mit ‚Nein‘ beantwortet; danach entschieden: **Bau in 0089** (Nutzer 07.11.2026).
-- **Selbstkritik 0088:** zwei Ausgaben ohne Uhrzeitzeile (W-1); dreimal die Uhrzeit geschätzt statt abgelesen (05:26, 05:27, 05:31 – W-2); nach einem
+- **Selbstkritik 0088:** zwei Ausgaben ohne Uhrzeitzeile (APD-84/W-1); dreimal die Uhrzeit geschätzt statt abgelesen (05:26, 05:27, 05:31 – APD-84/W-2); nach einem
   Neustart ein Fenster ohne Uhrzeitzeile und Satz ‚Kontext N‘ davor. Abhilfe: nur die Zeile des Regelwächters übernehmen, nie selbst schreiben.
 
 ## 3. Nächster Schritt
