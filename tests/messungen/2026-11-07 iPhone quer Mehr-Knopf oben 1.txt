@@ -1,0 +1,156 @@
+# Messung · Reiselogbuch 3.52.0 · AppDesign 4.54.0 · Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.6.3 Mobile/15E148 Safari/604.1 · Home-Bildschirm · 402×874 @3 · Ränder 0/20/62/62 · hell · 2026-11-07T05:16:06.640Z · Kontrast normal · Bewegung normal · Text xl 19
+t      sy     inh    sh     ih     vh     vt     vvtop  kopf   such   tag    lkopf  lsuch  lroll  fokus  lage
+0      0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! start
+11710  0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! nav kein kandidat eigen
+11711  0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! zeiger down 792 36 touch svg.ic in sideMore
+11719  0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! zeiger move 792 36 touch svg.ic in sideMore
+11719  0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! touchmove frei
+11719  0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! zeiger move 792 36 touch svg.ic in sideMore
+11774  0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! zeiger up 792 36 touch svg.ic in sideMore
+11776  0      -      402    402    402    0      0      -      -      -      0      -      0      -      quer   ! blur sideMore
+11776  0      -      402    402    402    0      0      -      -      -      0      -      0      -      quer   ! tippen sideMore
+11782  0      -      402    402    402    0      0      -      -      -      0      -      0      button quer   ! focus button
+12678  0      -      402    402    402    0      0      -      -      -      0      -      0      button quer   ! nav kein kandidat
+12678  0      -      402    402    402    0      0      -      -      -      0      -      0      button quer   ! zeiger down 361 185 touch div.layer
+12774  0      -      402    402    402    0      0      -      -      -      0      -      0      button quer   ! zeiger up 361 185 touch div.layer
+12816  0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! focus sideMore
+13561  0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! nav kein kandidat eigen
+13562  0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! zeiger down 797 28 touch svg.ic in sideMore
+13574  0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! zeiger move 797 28 touch svg.ic in sideMore
+13574  0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! touchmove frei
+13574  0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! zeiger move 797 28 touch svg.ic in sideMore
+13659  0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! zeiger up 797 28 touch svg.ic in sideMore
+13660  0      -      402    402    402    0      0      -      -      -      0      -      0      -      quer   ! blur sideMore
+13660  0      -      402    402    402    0      0      -      -      -      0      -      0      -      quer   ! tippen sideMore
+13665  0      -      402    402    402    0      0      -      -      -      0      -      0      button quer   ! focus button
+14320  0      -      402    402    402    0      0      -      -      -      0      -      0      button quer   ! nav kein kandidat
+14320  0      -      402    402    402    0      0      -      -      -      0      -      0      button quer   ! zeiger down 370 194 touch div.layer
+14416  0      -      402    402    402    0      0      -      -      -      0      -      0      button quer   ! zeiger up 370 194 touch div.layer
+14457  0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! focus sideMore
+15104  0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! nav kein kandidat eigen
+15105  0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! zeiger down 801 30 touch sideMore
+15115  0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! zeiger move 801 30 touch sideMore
+15115  0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! touchmove frei
+15115  0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! zeiger move 801 30 touch sideMore
+15201  0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! zeiger up 801 30 touch sideMore
+15203  0      -      402    402    402    0      0      -      -      -      0      -      0      -      quer   ! blur sideMore
+15203  0      -      402    402    402    0      0      -      -      -      0      -      0      -      quer   ! tippen sideMore
+15208  0      -      402    402    402    0      0      -      -      -      0      -      0      button quer   ! focus button
+15829  0      -      402    402    402    0      0      -      -      -      0      -      0      button quer   ! nav kein kandidat
+15829  0      -      402    402    402    0      0      -      -      -      0      -      0      button quer   ! zeiger down 363 194 touch div.layer
+15908  0      -      402    402    402    0      0      -      -      -      0      -      0      button quer   ! zeiger up 363 194 touch div.layer
+15950  0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! focus sideMore
+16544  0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! nav kein kandidat eigen
+16544  0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! zeiger down 805 28 touch sideMore
+16551  0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! zeiger move 805 28 touch sideMore
+16551  0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! touchmove frei
+16551  0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! zeiger move 805 28 touch sideMore
+16642  0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! zeiger up 805 28 touch sideMore
+16644  0      -      402    402    402    0      0      -      -      -      0      -      0      -      quer   ! blur sideMore
+16644  0      -      402    402    402    0      0      -      -      -      0      -      0      -      quer   ! tippen sideMore
+16650  0      -      402    402    402    0      0      -      -      -      0      -      0      button quer   ! focus button
+17153  0      -      402    402    402    0      0      -      -      -      0      -      0      button quer   ! nav kein kandidat
+17153  0      -      402    402    402    0      0      -      -      -      0      -      0      button quer   ! zeiger down 359 205 touch div.layer
+17233  0      -      402    402    402    0      0      -      -      -      0      -      0      button quer   ! zeiger up 359 205 touch div.layer
+17274  0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! focus sideMore
+17870  0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! nav kein kandidat eigen
+17871  0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! zeiger down 804 27 touch sideMore
+17878  0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! zeiger move 804 27 touch sideMore
+17878  0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! touchmove frei
+17878  0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! zeiger move 804 27 touch sideMore
+17934  0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! zeiger up 804 27 touch sideMore
+17936  0      -      402    402    402    0      0      -      -      -      0      -      0      -      quer   ! blur sideMore
+17936  0      -      402    402    402    0      0      -      -      -      0      -      0      -      quer   ! tippen sideMore
+17941  0      -      402    402    402    0      0      -      -      -      0      -      0      button quer   ! focus button
+18697  0      -      402    402    402    0      0      -      -      -      0      -      0      button quer   ! nav kein kandidat
+18697  0      -      402    402    402    0      0      -      -      -      0      -      0      button quer   ! zeiger down 360 196 touch div.layer
+18808  0      -      402    402    402    0      0      -      -      -      0      -      0      button quer   ! zeiger up 360 196 touch div.layer
+18849  0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! focus sideMore
+32897  0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! nav kein kandidat
+32898  0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! zeiger down 794 61 touch div.side-head @side
+33044  0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! zeiger up 794 61 touch div.side-head @side
+33045  0      -      402    402    402    0      0      -      -      -      0      -      0      -      quer   ! blur sideMore
+33046  0      -      402    402    402    0      0      -      -      -      0      -      0      -      quer   ! tippen sideMore
+33053  0      -      402    402    402    0      0      -      -      -      0      -      0      button quer   ! focus button
+35065  0      -      402    402    402    0      0      -      -      -      0      -      0      button quer   ! nav kein kandidat
+35065  0      -      402    402    402    0      0      -      -      -      0      -      0      button quer   ! zeiger down 323 56 touch div.layer
+35227  0      -      402    402    402    0      0      -      -      -      0      -      0      button quer   ! zeiger up 323 56 touch div.layer
+35264  0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! focus sideMore
+36098  0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! nav kein kandidat
+36098  0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! zeiger down 795 56 touch div.side-head @side
+36107  0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! zeiger move 795 56 touch div.side-head @side
+36107  0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! touchmove frei
+36107  0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! zeiger move 795 56 touch div.side-head @side
+36211  0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! zeiger up 795 56 touch div.side-head @side
+36214  0      -      402    402    402    0      0      -      -      -      0      -      0      -      quer   ! blur sideMore
+36214  0      -      402    402    402    0      0      -      -      -      0      -      0      -      quer   ! tippen sideMore
+36220  0      -      402    402    402    0      0      -      -      -      0      -      0      button quer   ! focus button
+36899  0      -      402    402    402    0      0      -      -      -      0      -      0      button quer   ! nav kein kandidat
+36899  0      -      402    402    402    0      0      -      -      -      0      -      0      button quer   ! zeiger down 310 49 touch div.layer
+36910  0      -      402    402    402    0      0      -      -      -      0      -      0      button quer   ! zeiger move 310 49 touch div.layer
+36910  0      -      402    402    402    0      0      -      -      -      0      -      0      button quer   ! touchmove frei
+36911  0      -      402    402    402    0      0      -      -      -      0      -      0      button quer   ! zeiger move 310 49 touch div.layer
+37027  0      -      402    402    402    0      0      -      -      -      0      -      0      button quer   ! zeiger up 310 49 touch div.layer
+37070  0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! focus sideMore
+37732  0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! nav kein kandidat
+37732  0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! zeiger down 797 64 touch div.side-head @side
+37878  0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! zeiger up 797 64 touch div.side-head @side
+37879  0      -      402    402    402    0      0      -      -      -      0      -      0      -      quer   ! blur sideMore
+37879  0      -      402    402    402    0      0      -      -      -      0      -      0      -      quer   ! tippen sideMore
+37886  0      -      402    402    402    0      0      -      -      -      0      -      0      button quer   ! focus button
+38449  0      -      402    402    402    0      0      -      -      -      0      -      0      button quer   ! nav kein kandidat
+38449  0      -      402    402    402    0      0      -      -      -      0      -      0      button quer   ! zeiger down 302 49 touch div.layer
+38458  0      -      402    402    402    0      0      -      -      -      0      -      0      button quer   ! zeiger move 302 49 touch div.layer
+38458  0      -      402    402    402    0      0      -      -      -      0      -      0      button quer   ! touchmove frei
+38458  0      -      402    402    402    0      0      -      -      -      0      -      0      button quer   ! zeiger move 302 49 touch div.layer
+38528  0      -      402    402    402    0      0      -      -      -      0      -      0      button quer   ! zeiger up 302 49 touch div.layer
+38570  0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! focus sideMore
+39132  0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! nav kein kandidat
+39132  0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! zeiger down 796 63 touch div.side-head @side
+39141  0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! zeiger move 796 63 touch div.side-head @side
+39141  0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! touchmove frei
+39141  0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! zeiger move 796 63 touch div.side-head @side
+39245  0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! zeiger up 796 63 touch div.side-head @side
+39248  0      -      402    402    402    0      0      -      -      -      0      -      0      -      quer   ! blur sideMore
+39248  0      -      402    402    402    0      0      -      -      -      0      -      0      -      quer   ! tippen sideMore
+39254  0      -      402    402    402    0      0      -      -      -      0      -      0      button quer   ! focus button
+39832  0      -      402    402    402    0      0      -      -      -      0      -      0      button quer   ! nav kein kandidat
+39832  0      -      402    402    402    0      0      -      -      -      0      -      0      button quer   ! zeiger down 293 39 touch div.layer
+39844  0      -      402    402    402    0      0      -      -      -      0      -      0      button quer   ! zeiger move 293 39 touch div.layer
+39844  0      -      402    402    402    0      0      -      -      -      0      -      0      button quer   ! touchmove frei
+39844  0      -      402    402    402    0      0      -      -      -      0      -      0      button quer   ! zeiger move 293 39 touch div.layer
+39911  0      -      402    402    402    0      0      -      -      -      0      -      0      button quer   ! zeiger up 293 39 touch div.layer
+39954  0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! focus sideMore
+40516  0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! nav kein kandidat
+40516  0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! zeiger down 799 66 touch div.side-list @side
+40533  0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! zeiger move 799 66 touch div.side-list @side
+40534  0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! touchmove frei
+40535  0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! zeiger move 799 66 touch div.side-list @side
+40645  0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! zeiger up 799 66 touch div.side-list @side
+40647  0      -      402    402    402    0      0      -      -      -      0      -      0      -      quer   ! blur sideMore
+40647  0      -      402    402    402    0      0      -      -      -      0      -      0      -      quer   ! tippen sideMore
+40653  0      -      402    402    402    0      0      -      -      -      0      -      0      button quer   ! focus button
+41833  0      -      402    402    402    0      0      -      -      -      0      -      0      button quer   ! nav kein kandidat
+41833  0      -      402    402    402    0      0      -      -      -      0      -      0      button quer   ! zeiger down 292 43 touch div.layer
+41844  0      -      402    402    402    0      0      -      -      -      0      -      0      button quer   ! zeiger move 292 43 touch div.layer
+41844  0      -      402    402    402    0      0      -      -      -      0      -      0      button quer   ! touchmove frei
+41844  0      -      402    402    402    0      0      -      -      -      0      -      0      button quer   ! zeiger move 292 43 touch div.layer
+41929  0      -      402    402    402    0      0      -      -      -      0      -      0      button quer   ! zeiger up 292 43 touch div.layer
+41968  0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! focus sideMore
+48834  0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! nav kein kandidat eigen
+48834  0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! zeiger down 798 28 touch sideMore
+48842  0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! zeiger move 798 28 touch sideMore
+48842  0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! touchmove frei
+48842  0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! zeiger move 798 28 touch sideMore
+48914  0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! zeiger up 798 28 touch sideMore
+48916  0      -      402    402    402    0      0      -      -      -      0      -      0      -      quer   ! blur sideMore
+48917  0      -      402    402    402    0      0      -      -      -      0      -      0      -      quer   ! tippen sideMore
+48922  0      -      402    402    402    0      0      -      -      -      0      -      0      button quer   ! focus button
+50376  0      -      402    402    402    0      0      -      -      -      0      -      0      button quer   ! nav kein kandidat eigen
+50376  0      -      402    402    402    0      0      -      -      -      0      -      0      button quer   ! zeiger down 710 360 touch button.mi.has-sub.beruehrt[menuitem]
+50489  0      -      402    402    402    0      0      -      -      -      0      -      0      button quer   ! zeiger up 710 360 touch button.mi.has-sub.beruehrt-aus[menuitem]
+50494  0      -      402    402    402    0      0      -      -      -      0      -      0      -      quer   ! blur button
+50494  0      -      402    402    402    0      0      -      -      -      0      -      0      -      quer   ! tippen button
+50531  0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! focus sideMore
+50531  0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! messung beendet
+# Ende nach 51 s
