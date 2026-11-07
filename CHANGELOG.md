@@ -20,8 +20,8 @@ AppDesign 4.54.0 · Designrichtlinie allgemein 4.54.0 · Zusammenarbeit allgemei
   als eigene Gruppe; `html.ohne-glas` macht Schwebendes deckend wie ‚Transparenz reduzieren‘ (`design.css`); `db.settings.glas` je Gerät, `applyTheme`
   setzt es, `glasAusBackup(vorher)` für das Laden eines Backups. `masseStile` prüft mit Glas aus deckend, `checkGlas` mit `schalter`. R-3.9 und 15.6.
 - **APD-113 Teil (6) und APD-117 – Zusammenarbeit 3.9.0:** erst ein Fenster ‚… anzeigen?‘, danach Link, Schritte, Bericht, Wortlaut als letzte Ausgabe; Lagebild
-  als eigene Antwort; 0 Nr. 7 angepasst. Regelwächter: W-4 lässt eine Antwort ohne Fenster nie enden (auch nach Neustart und über zwei Zurückweisungen
-  hinaus), W-15 lehnt jedes Fenster mit Link ab und prüft die letzte Ausgabe, W-17 zählt einen Aufruf mit `messung.mjs` und anderem Befehl sowie eine
+  als eigene Antwort; 0 Nr. 7 angepasst. Regelwächter: APD-84/W-4 lässt eine Antwort ohne Fenster nie enden (auch nach Neustart und über zwei Zurückweisungen
+  hinaus), APD-84/W-15 lehnt jedes Fenster mit Link ab und prüft die letzte Ausgabe, APD-84/W-17 zählt einen Aufruf mit `messung.mjs` und anderem Befehl sowie eine
   Zurückweisung als Werkzeug; `tests/regelwaechter.mjs` APD-113/M-1 bis M-17 mit Gegenprobe, `doku.mjs` `checkNachFenster`.
 
 ## 4.53.0 – 06.11.2026
