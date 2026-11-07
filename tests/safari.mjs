@@ -85,8 +85,8 @@ export const SAFARI = {
   'iPad hoch': { tastatur: 340, fokusRollen: 0, fokusSchub: 0, wechselVerzug: 135 },
 };
 
-export async function safariModell(p, ansicht, { leisten = { bar: '.nb, .pnav', box: '.searchbox' }, links = {}, auto = false, abstand = ABSTAND, abstandFenster = ABSTAND_FENSTER, apd115 = false } = {}) {
-  const werte = { abstand, abstandFenster, ...SAFARI[ansicht], apd115, zuVerzug: apd115 ? (SAFARI[ansicht]?.zuVerzug ?? 0) : 0,
+export async function safariModell(p, ansicht, { leisten = { bar: '.nb, .pnav', box: '.searchbox' }, links = {}, auto = false, abstand = ABSTAND, abstandFenster = ABSTAND_FENSTER, apd115 = false, fokusSelbst = true } = {}) {
+  const werte = { abstand, abstandFenster, ...SAFARI[ansicht], apd115, fokusSelbst: apd115 && fokusSelbst, zuVerzug: apd115 ? (SAFARI[ansicht]?.zuVerzug ?? 0) : 0,
     wechselVerzug: apd115 ? (SAFARI[ansicht]?.wechselVerzug ?? 0) : 0 };
   if (!werte) throw new Error(`Safari-Modell: keine Werte für ${ansicht}`);
   await p.evaluate(({ werte, leisten, links, auto }) => {
@@ -224,8 +224,12 @@ export async function safariModell(p, ansicht, { leisten = { bar: '.nb, .pnav', 
       if (s.offen && a?.matches?.('input, textarea') && e.target.closest?.('button')) a.blur();
     }, true);
     document.addEventListener('focusout', e => { if (e.target.matches?.('input, textarea')) s.blur = true; }, true);
+    // APD-115/N-16 (dritte Messung 07./08.11.2026, W-4): Fokus, den die App im touchend selbst setzt (Loslassen abgefangen) – s.te ist das
+    // touchend, solange es läuft (eventPhase ≠ 0); window vor jedem Hörer der Seite
+    window.addEventListener('touchend', e => { s.te = e; }, true);
     // APD-36/S-7: window vor document – läuft vor jedem Fokus-Hörer der Seite
     window.addEventListener('focusin', e => { const r = e.target.getBoundingClientRect?.(), jetzt = performance.now();
+      s.selbst = werte.fokusSelbst && !!s.te && s.te.eventPhase !== 0 ? { el: e.target, r: r ? { top: r.top, bottom: r.bottom } : null, top: s.top(), h: s.hoehe() } : null;
       // APD-115/N-11 (Messung 07.11.2026): bei offener Tastatur zählt die Lage beim ersten Fokus – ein neuer Fokus im focusin (APD-36/S-8) ändert sie nicht
       if (!(werte.apd115 && s.offen && s.fokusLage?.el === e.target && jetzt - s.fokusLage.t < 100)) s.fokusLage = r ? { el: e.target, r: { top: r.top, bottom: r.bottom }, t: jetzt } : null;
       // APD-36/S-9: Rollstand beim ersten Fokus eines Felds im Inhalt merken (ein neuer Fokus desselben Felds ändert ihn nicht)
@@ -239,6 +243,15 @@ export async function safariModell(p, ansicht, { leisten = { bar: '.nb, .pnav', 
       // neuer Fokus bei offener Tastatur: Safari rollt bzw. schiebt nach dem Fokus (im nächsten Bild)
       requestAnimationFrame(() => {
         const vor = s.top();
+        // APD-115/N-16 (dritte Messung, iPad quer und iPhone hoch, je W-4 Ort 'Fokus selbst'): setzt die App den Fokus im touchend selbst
+        // (focus({ preventScroll: true })) und liegt das Feld dabei ganz über der Tastatur, verschiebt Safari nicht (scrollY und visualViewport.offsetTop
+        // bleiben 0, Kopfzeile 0, Fensterkopf 10). Liegt es dabei unter der Tastatur, ist nicht gemessen (APD-115/E-11 (2)) – das Modell bleibt dort auf
+        // der sicheren Seite und verschiebt wie beim Antippen durch Safari.
+        const sf = s.selbst?.el === e.target ? s.selbst : null;
+        s.selbst = null;
+        let fest = false;
+        for (let x = e.target; sf && x && x !== document.documentElement; x = x.parentElement) if (x.matches('dialog[open]') || getComputedStyle(x).position === 'fixed') { fest = true; break; }
+        if (sf?.r && sf.r.bottom - (fest ? sf.top : 0) <= sf.h) { s.top(); s.melde(true); return; }
         s.zumFeld('wechsel');
         if (werte.fokusRollen) scrollTo(0, Math.max(0, Y() + werte.fokusRollen));
         if (werte.fokusSchub) s.schub();
