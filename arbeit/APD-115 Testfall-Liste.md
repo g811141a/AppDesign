@@ -71,6 +71,24 @@ Tastatur 274) und Nachstellung im Safari-Modell (Skript nur in der Sitzung):
   bzw. 157 px, iPhone Kopfzeile bis 161 px). (2) Muster (`ui.js`): mit Rollbereich zählt für `--vv-top` der kleinere Wert aus `offsetTop` und
   `scrollY`; Safaris ‚scroll‘ der Seite stellt sofort neu; das iPad-Fenster gleicht eine Verschiebung durch Safari im selben Augenblick aus
   und gleitet nur für den Rest.
+- APD-115/N-13 Zweite Messung W-1 (Nutzer 07.11.2026, Sitzung 0093; `2026-11-07 iPad quer W-1 zweite Messung.txt` (Home-Bildschirm), `… iPhone hoch W-1
+  zweite Messung.txt` (Safari)). Rückmeldung: ‚7 und 8 ruckelt noch immer‘.
+  - Schritte 4 und 5 ruhig: Quartier rollt 342 bzw. 345 px, neuer Fokus, Tastatur auf, beim Tippen nichts.
+  - Schritt 6 (Ort antippen): die App rollt nicht (iPad ‚rollt 0‘, iPhone ‚rollt −74‘ – Ort war nach dem Hochschieben ganz sichtbar). Trotzdem verschiebt
+    Safari die Seite 135 bzw. 87 ms nach dem Antippen: iPad `scrollY`/`offsetTop` 139, iPhone 75 – so viel, dass Ort etwa in der Mitte des sichtbaren
+    Teils steht (iPad Tipp bei y 339, sichtbar 374; iPhone y 272, sichtbar 377). Die Meldung zeigt die Kopfzeile −139 bzw. −75 und den Fensterkopf −129
+    bzw. −65; 5 bzw. 3 ms später steht beides wieder (`--vv-top` 138 bzw. 74). Bei Quartier (Tastatur noch zu) verschiebt Safari nicht.
+  - Schritt 7 (‚Rom‘ tippen): iPad beim ersten Zeichen `scrollY` 139 → 138 (Kopfzeile und Fensterkopf 40 ms lang +1 px), sonst nichts; iPhone keine
+    Bewegung in den Daten (kein ‚scroll‘, Rollstand des Fensters 1382, Fensterkopf 10). Das Ruckeln in Schritt 7 zeigen die Daten nicht – nachgefragt.
+  - Schritt 8 (x): (1) Kopfzeile und Fensterkopf kurz zu tief, iPad 7 ms (‚vv resize‘, `--vv-top` noch 138), iPhone 2 ms (‚scroll‘ der Seite,
+    `offsetTop` noch 75) – die App stellt im nächsten Ereignis neu. (2) **Der Fensterinhalt springt**, wenn der Rahmen mit dem Schließen wächst: iPad
+    Rollstand 793 → 451 (342 px) 7 ms nach ‚vv resize‘, iPhone 1382 → 1075 (307 px) 7 ms nach ‚vv resize‘ (400 ms nach dem Antippen von x). Ursache:
+    nach dem Rollen steht `--platz` auf `0px` (`knapp`), `gemeldet()` gab Platz vor dem Wachsen nur bei `platzVon(c)` > 0 – der Browser kürzte den
+    Rollstand. Das Modell zeigt es auch (iPad quer 777 → 426, iPhone hoch 1137 → 807, iPad hoch 385 → 122); APD-115/M-11 prüfte nur Kopfzeile und
+    Fensterkopf, nicht den Inhalt – darum grün.
+  - Umsetzung: M-11 prüft beim Schließen zusätzlich den Rollstand des Fensters in jedem Bild (± 2 px) – rot gegen das Muster (6 Fehler: iPhone hoch,
+    iPad quer, iPad hoch). Bauskript: jeder Rollbereich bekommt vor dem Wachsen Platz, `knapp` nimmt danach zurück, was nicht nötig ist.
+    Derselbe Fehler steckt in `fassung/4.54.0/ui.js` und `v4/ui.js` (`gemeldet`, Zeile 2997) – also auch im Reiselogbuch 3.52.0.
 
 ## Apple-Abgleich (0 Nr. 23, 2.6)
 
@@ -122,7 +140,7 @@ langer Verlauf mit 14 Zeilen (Tag 4).
 | APD-115/M-5 | langer Verlauf, eine Zeile unten antippen | Cursorzeile und eine halbe Zeile darunter zwischen Fensterkopf und Tastatur; verschiebt Safari im Modell, wird es berichtet (APD-115/A-3) |
 | APD-115/M-6 | am Ende des langen Verlaufs zwei Zeilen tippen | die neue Zeile mit einer halben Zeile darunter bleibt über der Tastatur |
 | APD-115/M-7 | Quartier antippen, dann Ort (Feld wechseln) | kein Sprung, Ort ganz über der Tastatur (APD-115/A-2) |
-| APD-115/M-11 | wie am Gerät (Schritte 6 bis 8): Quartier, ‚Hotel‘, Ort antippen (unter der Tastatur: vorher hochgeschoben), ‚Rom‘ tippen, x | in jedem Bild Kopfzeile still, Fensterkopf nur zwischen vorher und nachher (Befund APD-115/N-11) |
+| APD-115/M-11 | wie am Gerät (Schritte 6 bis 8): Quartier, ‚Hotel‘, Ort antippen (unter der Tastatur: vorher hochgeschoben), ‚Rom‘ tippen, x | in jedem Bild Kopfzeile still, Fensterkopf nur zwischen vorher und nachher (Befund APD-115/N-11); beim Schließen bleibt der Rollstand des Fensters (± 2 px, APD-115/N-13) |
 | APD-115/M-8 | Variante A öffnen | Feld höchstens 12 px unter der Bezeichnung ‚Verlauf‘, Vorschläge darunter |
 | APD-115/M-9 | Variante B öffnen | Vorschläge zwischen Bezeichnung und Feld |
 | APD-115/M-10 | jede Ansicht | Grundregeln (`pruefe.mjs`) |

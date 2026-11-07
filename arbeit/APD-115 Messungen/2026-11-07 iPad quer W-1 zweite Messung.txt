@@ -1,0 +1,165 @@
+# Messung · Reiselogbuch 3.52.0 · AppDesign 4.54.0 · Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.6.3 Safari/605.1.15 · Home-Bildschirm · 834×1194 @2 · Ränder 0/20/0/0 · hell · 2026-11-07T15:09:10.992Z · Kontrast normal · Bewegung normal · Text l 17
+t      sy     inh    sh     ih     vh     vt     vvtop  kopf   such   tag    lkopf  lsuch  fkopf  lroll  froll  fokus  lage
+1      0      0      802    802    802    0      0      0      -      228    11     -      -      0      -      sideMore quer   ! start
+1509   0      0      802    802    802    0      0      0      -      228    11     -      -      0      -      sideMore quer   ! nav kein kandidat
+1510   0      0      802    802    802    0      0      0      -      228    11     -      -      0      -      sideMore quer   ! zeiger down 1071 416 touch td.quarter @rolle
+1595   0      0      802    802    802    0      0      0      -      228    11     -      -      0      -      sideMore quer   ! zeiger up 1071 416 touch td.quarter @rolle
+1633   0      0      802    802    802    0      0      0      -      228    11     -      -      0      -      -      quer   ! blur sideMore
+1634   0      0      802    802    802    0      0      0      -      228    11     -      -      0      -      -      quer   ! tippen -
+1638   0      0      802    802    802    0      0      0      -      228    11     -      10     0      0      dlgX   quer   ! focus dlgX
+1654   0      0      802    802    802    0      0      0      -      228    11     -      10     0      0      -      quer   ! blur dlgX
+1655   0      0      802    802    802    0      0      0      -      228    11     -      10     0      0      dlg    quer   ! focus dlg
+1677   0      0      802    802    802    0      0      0      -      228    11     -      802    0      0      dlg    quer
+1701   0      0      802    802    802    0      0      0      -      228    11     -      701    0      0      dlg    quer
+1726   0      0      802    802    802    0      0      0      -      228    11     -      577    0      0      dlg    quer
+1736   0      0      802    802    802    0      0      0      -      228    11     -      525    0      0      dlg    quer
+1752   0      0      802    802    802    0      0      0      -      228    11     -      412    0      0      dlg    quer
+1769   0      0      802    802    802    0      0      0      -      228    11     -      306    0      0      dlg    quer
+1786   0      0      802    802    802    0      0      0      -      228    11     -      222    0      0      dlg    quer
+1802   0      0      802    802    802    0      0      0      -      228    11     -      171    0      0      dlg    quer
+1819   0      0      802    802    802    0      0      0      -      228    11     -      135    0      0      dlg    quer
+1836   0      0      802    802    802    0      0      0      -      228    11     -      108    0      0      dlg    quer
+1852   0      0      802    802    802    0      0      0      -      228    11     -      90     0      0      dlg    quer
+1869   0      0      802    802    802    0      0      0      -      228    11     -      75     0      0      dlg    quer
+1886   0      0      802    802    802    0      0      0      -      228    11     -      62     0      0      dlg    quer
+1902   0      0      802    802    802    0      0      0      -      228    11     -      53     0      0      dlg    quer
+1919   0      0      802    802    802    0      0      0      -      228    11     -      45     0      0      dlg    quer
+1936   0      0      802    802    802    0      0      0      -      228    11     -      38     0      0      dlg    quer
+1952   0      0      802    802    802    0      0      0      -      228    11     -      33     0      0      dlg    quer
+1969   0      0      802    802    802    0      0      0      -      228    11     -      28     0      0      dlg    quer
+1986   0      0      802    802    802    0      0      0      -      228    11     -      24     0      0      dlg    quer
+2003   0      0      802    802    802    0      0      0      -      228    11     -      21     0      0      dlg    quer
+2019   0      0      802    802    802    0      0      0      -      228    11     -      18     0      0      dlg    quer
+2036   0      0      802    802    802    0      0      0      -      228    11     -      16     0      0      dlg    quer
+2052   0      0      802    802    802    0      0      0      -      228    11     -      14     0      0      dlg    quer
+2069   0      0      802    802    802    0      0      0      -      228    11     -      13     0      0      dlg    quer
+2086   0      0      802    802    802    0      0      0      -      228    11     -      12     0      0      dlg    quer
+2102   0      0      802    802    802    0      0      0      -      228    11     -      11     0      0      dlg    quer
+2136   0      0      802    802    802    0      0      0      -      228    11     -      10     0      0      dlg    quer
+3248   0      0      802    802    802    0      0      0      -      228    11     -      10     0      0      dlg    quer   ! nav kein kandidat eigen
+3248   0      0      802    802    802    0      0      0      -      228    11     -      10     0      0      dlg    quer   ! zeiger down 1079 522 touch button.reset @moods
+3279   0      0      802    802    802    0      0      0      -      228    11     -      10     0      0      dlg    quer   ! zeiger move 1079 512 touch button.reset @moods
+3279   0      0      802    802    802    0      0      0      -      228    11     -      10     0      0      dlg    quer   ! touchmove frei
+3279   0      0      802    802    802    0      0      0      -      228    11     -      10     0      0      dlg    quer   ! zeiger move 1079 512 touch button.reset @moods
+3286   0      0      802    802    802    0      0      0      -      228    11     -      10     0      0      dlg    quer   ! zeiger move 1079 510 touch button.reset @moods
+3291   0      0      802    802    802    0      0      0      -      228    11     -      10     0      0      dlg    quer   ! zeiger move 1079 507 touch button.reset @moods
+3294   0      0      802    802    802    0      0      0      -      228    11     -      10     0      0      dlg    quer   ! zeiger move 1079 504 touch button.reset @moods
+3294   0      0      802    802    802    0      0      0      -      228    11     -      10     0      0      dlg    quer   ! touchmove fest
+3303   0      0      802    802    802    0      0      0      -      228    11     -      10     0      4      dlg    quer   ! zeiger move 1079 500 touch button.reset @moods
+3304   0      0      802    802    802    0      0      0      -      228    11     -      10     0      8      dlg    quer   ! scroll div
+3311   0      0      802    802    802    0      0      0      -      228    11     -      10     0      8      dlg    quer   ! zeiger move 1079 495 touch button.reset @moods
+3319   0      0      802    802    802    0      0      0      -      228    11     -      10     0      12     dlg    quer   ! zeiger move 1079 489 touch button.reset @moods
+3320   0      0      802    802    802    0      0      0      -      228    11     -      10     0      19     dlg    quer   ! scroll div
+3328   0      0      802    802    802    0      0      0      -      228    11     -      10     0      19     dlg    quer   ! zeiger move 1080 480 touch button.reset @moods
+3336   0      0      802    802    802    0      0      0      -      228    11     -      10     0      27     dlg    quer   ! zeiger move 1082 469 touch button.reset @moods
+3337   0      0      802    802    802    0      0      0      -      228    11     -      10     0      39     dlg    quer   ! scroll div
+3344   0      0      802    802    802    0      0      0      -      228    11     -      10     0      39     dlg    quer   ! zeiger move 1085 456 touch button.reset @moods
+3353   0      0      802    802    802    0      0      0      -      228    11     -      10     0      51     dlg    quer   ! scroll div
+3363   0      0      802    802    802    0      0      0      -      228    11     -      10     0      51     dlg    quer   ! zeiger up 1090 441 touch button.reset @moods
+3372   0      0      802    802    802    0      0      0      -      228    11     -      10     0      68     dlg    quer   ! scroll div
+3386   0      0      802    802    802    0      0      0      -      228    11     -      10     0      77     dlg    quer   ! scroll div
+3403   0      0      802    802    802    0      0      0      -      228    11     -      10     0      95     dlg    quer   ! scroll div
+3420   0      0      802    802    802    0      0      0      -      228    11     -      10     0      112    dlg    quer   ! scroll div
+3437   0      0      802    802    802    0      0      0      -      228    11     -      10     0      129    dlg    quer   ! scroll div
+3453   0      0      802    802    802    0      0      0      -      228    11     -      10     0      145    dlg    quer   ! scroll div
+3470   0      0      802    802    802    0      0      0      -      228    11     -      10     0      161    dlg    quer   ! scroll div
+3486   0      0      802    802    802    0      0      0      -      228    11     -      10     0      176    dlg    quer   ! scroll div
+3503   0      0      802    802    802    0      0      0      -      228    11     -      10     0      191    dlg    quer   ! scroll div
+3520   0      0      802    802    802    0      0      0      -      228    11     -      10     0      205    dlg    quer   ! scroll div
+3537   0      0      802    802    802    0      0      0      -      228    11     -      10     0      219    dlg    quer   ! scroll div
+3553   0      0      802    802    802    0      0      0      -      228    11     -      10     0      232    dlg    quer   ! scroll div
+3570   0      0      802    802    802    0      0      0      -      228    11     -      10     0      245    dlg    quer   ! scroll div
+3586   0      0      802    802    802    0      0      0      -      228    11     -      10     0      257    dlg    quer   ! scroll div
+3603   0      0      802    802    802    0      0      0      -      228    11     -      10     0      270    dlg    quer   ! scroll div
+3620   0      0      802    802    802    0      0      0      -      228    11     -      10     0      281    dlg    quer   ! scroll div
+3637   0      0      802    802    802    0      0      0      -      228    11     -      10     0      292    dlg    quer   ! scroll div
+3653   0      0      802    802    802    0      0      0      -      228    11     -      10     0      303    dlg    quer   ! scroll div
+3670   0      0      802    802    802    0      0      0      -      228    11     -      10     0      314    dlg    quer   ! scroll div
+3690   0      0      802    802    802    0      0      0      -      228    11     -      10     0      329    dlg    quer   ! scroll div
+3703   0      0      802    802    802    0      0      0      -      228    11     -      10     0      334    dlg    quer   ! scroll div
+3723   0      0      802    802    802    0      0      0      -      228    11     -      10     0      348    dlg    quer   ! scroll div
+3737   0      0      802    802    802    0      0      0      -      228    11     -      10     0      353    dlg    quer   ! scroll div
+3753   0      0      802    802    802    0      0      0      -      228    11     -      10     0      362    dlg    quer   ! scroll div
+3770   0      0      802    802    802    0      0      0      -      228    11     -      10     0      370    dlg    quer   ! scroll div
+3787   0      0      802    802    802    0      0      0      -      228    11     -      10     0      379    dlg    quer   ! scroll div
+3803   0      0      802    802    802    0      0      0      -      228    11     -      10     0      387    dlg    quer   ! scroll div
+3822   0      0      802    802    802    0      0      0      -      228    11     -      10     0      398    dlg    quer   ! scroll div
+3837   0      0      802    802    802    0      0      0      -      228    11     -      10     0      402    dlg    quer   ! scroll div
+3853   0      0      802    802    802    0      0      0      -      228    11     -      10     0      409    dlg    quer   ! scroll div
+3870   0      0      802    802    802    0      0      0      -      228    11     -      10     0      416    dlg    quer   ! scroll div
+3887   0      0      802    802    802    0      0      0      -      228    11     -      10     0      423    dlg    quer   ! scroll div
+3903   0      0      802    802    802    0      0      0      -      228    11     -      10     0      430    dlg    quer   ! scroll div
+3920   0      0      802    802    802    0      0      0      -      228    11     -      10     0      436    dlg    quer   ! scroll div
+3937   0      0      802    802    802    0      0      0      -      228    11     -      10     0      442    dlg    quer   ! scroll div
+3953   0      0      802    802    802    0      0      0      -      228    11     -      10     0      448    dlg    quer   ! scroll div
+3970   0      0      802    802    802    0      0      0      -      228    11     -      10     0      451    dlg    quer   ! scroll div
+5181   0      0      802    802    802    0      0      0      -      228    11     -      10     0      451    dlg    quer   ! nav kein kandidat
+5181   0      0      802    802    802    0      0      0      -      228    11     -      10     0      451    dlg    quer   ! zeiger down 132 617 touch label @dlg
+5358   0      0      802    802    802    0      0      0      -      228    11     -      10     0      451    dlg    quer   ! zeiger up 132 617 touch label @dlg
+5395   0      0      802    802    802    0      0      0      -      228    11     -      10     0      451    dlg    quer   ! tippen -
+5396   0      0      802    802    802    0      0      0      -      228    11     -      10     0      451    dlg    quer   ! tippen fQuarter
+5397   0      0      802    802    802    0      0      0      -      228    11     -      10     0      451    -      quer   ! blur dlg
+5447   0      0      802    802    802    0      0      0      -      228    11     -      10     0      451    fQuarter quer   ! V-3 fQuarter rollt 342 (W-1)
+5451   0      0      802    802    802    0      0      0      -      228    11     -      10     0      793    fQuarter quer   ! neu fokussiert fQuarter
+5451   0      0      802    802    802    0      0      0      -      228    11     -      10     0      793    fQuarter quer   ! focus fQuarter
+5454   0      0      802    802    802    0      0      0      -      228    11     -      10     0      792    fQuarter quer   ! scroll div
+5632   0      0      802    802    374    0      0      0      -      228    11     -      10     0      792    fQuarter quer   ! vv resize
+5639   0      0      802    802    374    0      0      0      -      228    11     -      10     0      793    fQuarter quer   ! scroll div
+7198   0      0      802    802    374    0      0      0      -      228    11     -      10     0      793    fQuarter quer   ! eingabe 13
+7594   0      0      802    802    374    0      0      0      -      228    11     -      10     0      793    fQuarter quer   ! eingabe 14
+7901   0      0      802    802    374    0      0      0      -      228    11     -      10     0      793    fQuarter quer   ! eingabe 15
+8268   0      0      802    802    374    0      0      0      -      228    11     -      10     0      793    fQuarter quer   ! eingabe 16
+8503   0      0      802    802    374    0      0      0      -      228    11     -      10     0      793    fQuarter quer   ! eingabe 17
+10700  0      0      802    802    374    0      0      0      -      228    11     -      10     0      793    fQuarter quer   ! nav kein kandidat eigen
+10700  0      0      802    802    374    0      0      0      -      228    11     -      10     0      793    fQuarter quer   ! zeiger down 994 339 touch fPlace
+10824  0      0      802    802    374    0      0      0      -      228    11     -      10     0      793    fQuarter quer   ! zeiger up 994 339 touch fPlace
+10831  0      0      802    802    374    0      0      0      -      228    11     -      10     0      793    -      quer   ! blur fQuarter
+10836  0      0      802    802    374    0      0      0      -      228    11     -      10     0      793    fPlace quer   ! V-3 fPlace rollt 0 (W-1)
+10838  0      0      802    802    374    0      0      0      -      228    11     -      10     0      793    fPlace quer   ! focus fPlace
+10838  0      0      802    802    374    0      0      0      -      228    11     -      10     0      793    fPlace quer   ! tippen fPlace
+10973  139    0      802    664    374    139    0      -139   -      89     -128   -      -129   0      793    fPlace quer   ! scroll
+10978  139    0      802    664    374    139    138    0      -      227    10     -      10     0      793    fPlace quer   ! vv scroll
+12814  139    0      802    664    374    139    138    0      -      227    10     -      10     0      793    fPlace quer   ! eingabe 19
+12826  138    0      802    664    374    139    138    1      -      228    11     -      11     0      793    fPlace quer   ! scroll
+12837  138    0      802    664    374    139    138    0      -      228    11     -      11     0      793    fPlace quer
+12866  138    0      802    664    374    138    138    0      -      228    11     -      11     0      793    fPlace quer   ! vv scroll
+12988  138    0      802    664    374    138    138    0      -      228    11     -      11     0      793    fPlace quer   ! eingabe 20
+13511  138    0      802    664    374    138    138    0      -      228    11     -      11     0      793    fPlace quer   ! eingabe 21
+15574  138    0      802    664    374    138    138    0      -      228    11     -      11     0      793    fPlace quer   ! nav kein kandidat eigen
+15575  138    0      802    664    374    138    138    0      -      228    11     -      11     0      793    fPlace quer   ! zeiger down 73 56 touch dlgX
+15684  138    0      802    664    374    138    138    0      -      228    11     -      11     0      793    fPlace quer   ! zeiger up 73 56 touch dlgX
+15687  138    0      802    664    374    138    138    0      -      228    11     -      11     0      793    -      quer   ! blur fPlace
+15687  138    0      802    664    374    138    138    0      -      228    11     -      11     0      793    dlg    quer   ! focus dlg
+15688  138    0      802    664    374    138    138    0      -      228    11     -      11     0      793    dlg    quer   ! tippen dlgX
+15693  138    0      802    664    374    138    138    0      -      228    11     -      11     0      793    -      quer   ! blur dlg
+15694  138    0      802    664    374    138    138    0      -      228    11     -      11     0      793    div    quer   ! focus div
+15729  0      0      802    802    802    0      138    138    -      366    149    -      149    0      793    div    quer   ! vv resize
+15736  0      0      802    802    802    0      0      0      -      228    11     -      11     0      451    div    quer   ! scroll
+15736  0      0      802    802    802    0      0      0      -      228    11     -      11     0      451    div    quer   ! platz weg div
+15737  0      0      802    802    802    0      0      0      -      228    11     -      11     0      451    div    quer   ! scroll div
+15737  0      0      802    802    802    0      0      0      -      228    11     -      11     0      451    div    quer   ! vv scroll
+15808  0      0      802    802    802    0      0      0      -      228    11     -      10     0      451    div    quer
+16641  0      0      802    802    802    0      0      0      -      228    11     -      10     0      451    div    quer   ! nav kein kandidat eigen
+16642  0      0      802    802    802    0      0      0      -      228    11     -      10     0      451    div    quer   ! zeiger down 152 175 touch button.danger.beruehrt @dlg
+16754  0      0      802    802    802    0      0      0      -      228    11     -      10     0      451    div    quer   ! zeiger up 152 175 touch button.danger.beruehrt-aus @dlg
+16756  0      0      802    802    802    0      0      0      -      228    11     -      10     0      451    div    quer   ! tippen button
+16771  0      0      802    802    802    0      0      0      -      228    11     -      10     0      451    dlgX   quer   ! focus dlgX
+16793  0      0      802    802    802    0      0      0      -      228    11     -      -      0      -      dlgX   quer   ! neuaufbau side
+16796  0      0      802    802    802    0      0      0      -      228    11     -      -      0      -      dlgX   quer   ! neuaufbau app
+16807  0      0      802    802    802    0      0      0      -      228    11     -      -      0      -      dlgX   quer   ! scroll div
+16808  0      0      802    802    802    0      0      0      -      228    11     -      -      0      -      -      quer   ! blur dlgX
+16870  0      0      802    802    802    0      0      0      -      228    11     -      -      0      -      tr     quer   ! focus tr
+19190  0      0      802    802    802    0      0      0      -      228    11     -      -      0      -      tr     quer   ! nav kein kandidat eigen
+19192  0      0      802    802    802    0      0      0      -      228    11     -      -      0      -      tr     quer   ! zeiger down 258 47 touch sideMore
+19302  0      0      802    802    802    0      0      0      -      228    11     -      -      0      -      tr     quer   ! zeiger up 258 47 touch sideMore
+19304  0      0      802    802    802    0      0      0      -      228    11     -      -      0      -      -      quer   ! blur tr
+19304  0      0      802    802    802    0      0      0      -      228    11     -      -      0      -      -      quer   ! tippen sideMore
+19333  0      0      802    802    802    0      0      0      -      228    11     -      -      0      -      button quer   ! focus button
+20750  0      0      802    802    802    0      0      0      -      228    11     -      -      0      -      button quer   ! nav kein kandidat eigen
+20750  0      0      802    802    802    0      0      0      -      228    11     -      -      0      -      button quer   ! zeiger down 361 371 touch button.mi.has-sub.beruehrt[menuitem]
+20871  0      0      802    802    802    0      0      0      -      228    11     -      -      0      -      button quer   ! zeiger up 361 371 touch button.mi.has-sub.beruehrt-aus[menuitem]
+20873  0      0      802    802    802    0      0      0      -      228    11     -      -      0      -      -      quer   ! blur button
+20874  0      0      802    802    802    0      0      0      -      228    11     -      -      0      -      -      quer   ! tippen button
+20926  0      0      802    802    802    0      0      0      -      228    11     -      -      0      -      sideMore quer   ! focus sideMore
+20926  0      0      802    802    802    0      0      0      -      228    11     -      -      0      -      sideMore quer   ! messung beendet
+# Ende nach 21 s

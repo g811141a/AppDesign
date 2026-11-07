@@ -3063,9 +3063,9 @@ function gemeldet() {
   const cs = [rolle.el, dlg.open ? dlg.querySelector('.dlg-body') : null].filter(Boolean), y = cs.map(c => c.scrollTop);
   const offen = kbOffen(), f = document.activeElement, feld = f?.matches?.(FELD) ? f : null;
   if (dlg.open && !isPhone()) { dlg.classList.add('gleitet'); clearTimeout(gemeldet.t); gemeldet.t = setTimeout(() => dlg.classList.remove('gleitet'), 300); }
-  cs.forEach(c => { if (platzVon(c)) platz(c, 2000); });
+  cs.forEach(c => platz(c, 2000));
   placeDialogs();
-  cs.forEach((c, i) => { if (platzVon(c)) { c.scrollTop = y[i]; knapp(c); } });
+  cs.forEach((c, i) => { c.scrollTop = y[i]; knapp(c); });
   if (offen && feld) { kbMerken(feld); feldZeigen(feld); }
   if (kbWar && !offen) {
     if (feld) feld.blur();

@@ -168,7 +168,14 @@ for (const ansicht of ['iPhone hoch', 'iPad quer', 'iPad hoch', 'iPhone quer']) 
       };
       await film('Ort antippen', () => p.tap('#fPlace'));
       await film('‚Rom‘ tippen', () => p.keyboard.type('Rom', { delay: 150 }));
+      // APD-115/N-13 (zweite Messung, Sitzung 0093): beim Schließen springt der Fensterinhalt (iPad quer 793 → 451, iPhone hoch 1382 → 1075) – der
+      // Rollstand des Fensters bleibt in jedem Bild (± 2 px); Kopfzeile und Fensterkopf prüft film
+      await p.evaluate(() => { window.__froll = []; const s = () => { if (!window.__froll) return; const c = document.querySelector('dialog[open] .dlg-body');
+        if (c) __froll.push(Math.round(c.scrollTop)); requestAnimationFrame(s); }; requestAnimationFrame(s); });
       await film('x (Tastatur zu)', () => p.tap('#dlgX'), 1200);
+      const fr = await p.evaluate(() => { const x = window.__froll; window.__froll = null; return x; });
+      const frAus = fr.filter(y => Math.abs(y - fr[0]) > 2);
+      if (frAus.length) E('APD-115/M-11', `W-${w} x (Tastatur zu): Fensterinhalt springt in ${frAus.length} von ${fr.length} Bildern (Rollstand ${fr[0]} → ${frAus[frAus.length - 1]})`);
       await p.close();
     }
     // APD-115/M-8 (Variante A): Bezeichnung ‚Verlauf‘ direkt über dem Feld, Vorschläge darunter; M-9 (B): Vorschläge zwischen Bezeichnung und Feld
