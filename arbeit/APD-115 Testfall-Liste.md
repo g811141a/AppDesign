@@ -37,6 +37,11 @@ Tastatur 274) und Nachstellung im Safari-Modell (Skript nur in der Sitzung):
   APD-115/W-1 ‚nur so weit wie nötig‘ (Safari entscheidet selbst) und APD-115/W-2 ‚Mitte-Regel und neuer Fokus (APD-36/S-8) auch bei offener
   Tastatur‘ (Safari liest die Lage nach dem Rollen, eine Bewegung). Am Gerät messen, welche ruhig ist; das Safari-Modell danach korrigieren
   (0 Nr. 20), die Erwartung von M-7 nach der gewählten Variante.
+- APD-115/N-9 Stand Sitzung 0091 (Nutzer: ‚Ja, hier noch‘): Muster mit `&w=1` (APD-115/W-1) und `&w=2` (APD-115/W-2, Standard) gebaut; M-7 für beide
+  Varianten (Chromium): 12 Fehler offen – (1) iPhone hoch in beiden Varianten zwei Schübe, zuerst 43 px (Feldunterkante genau an die Tastatur –
+  Herkunft klären: vermutlich das Rollen des Browsers beim Fokus, vor bzw. neben dem focusin), dann 16 bzw. 201 px; (2) iPhone quer W-2: Safari
+  verschiebt im Modell 30 px, weil Ort nicht bis zur Mitte rollen kann (oben am Fensterkopf) – wie APD-115/A-3 als Hinweis statt Fehler werten.
+  WebKit und Gegenprobe noch nicht gelaufen; das Muster ist noch nicht zum Prüfen am Gerät freigegeben.
 
 ## Apple-Abgleich (0 Nr. 23, 2.6)
 

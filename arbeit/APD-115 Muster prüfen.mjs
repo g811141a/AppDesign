@@ -101,23 +101,29 @@ for (const ansicht of ['iPhone hoch', 'iPad quer', 'iPad hoch', 'iPhone quer']) 
       t.liste(await checkTastaturStill(p, { field: '#fQuarter', vorher: () => ansEnde(p, '#fQuarter'), wechsel: '#fPlace', where: `${t.ort} APD-115/M-7` }));
       await p.close();
     }
-    // APD-115/M-7 geschärft (Befund APD-115/N-1 bis N-4, Messung 07.11.2026): wie am Gerät – Fenster oben, Quartier antippen, tippen, Ort antippen.
-    // Wie Apple nur so weit wie nötig: ist Ort ganz über der Tastatur, rollt nichts; sonst einmal, bis es 16 px (± 3) über ihr endet.
-    for (const vorher of ['oben', 'unten']) {
-      const p = await neu(ansicht, v);
+    // APD-115/M-7 geschärft (Befund APD-115/N-1 bis N-8, Messung 07.11.2026): wie am Gerät – Fenster oben bzw. unten, Quartier antippen, tippen, Ort
+    // antippen. APD-115/W-1 (&w=1): nur so weit wie nötig – ganz sichtbar: nichts, sonst einmal bis 16 px (± 3) über der Tastatur; verschiebt Safari im
+    // Modell (APD-36/S-6 b), wird es berichtet (am Gerät zu messen). APD-115/W-2 (&w=2): ein Schub, danach ganz über der Tastatur, Safari verschiebt nicht.
+    for (const w of ['1', '2']) for (const vorher of ['oben', 'unten']) {
+      const p = await neu(ansicht, `${v}&w=${w}`);
       if (vorher === 'unten') await ansEnde(p, '#fQuarter');
       await p.tap('#fQuarter'); await p.waitForTimeout(900);
       await p.keyboard.type('Hotel'); await p.waitForTimeout(300);
-      const a = await lage(p, '#fPlace');
+      const a = await lage(p, '#fPlace'), pan0 = await p.evaluate(() => __safari.top());
       await p.evaluate(() => { const c = document.querySelector('.dlg-body'); window.__schuebe = []; let y = c.scrollTop;
         c.addEventListener('scroll', () => { if (Math.abs(c.scrollTop - y) > 1) { __schuebe.push(Math.round(c.scrollTop - y)); y = c.scrollTop; } }); });
       await p.tap('#fPlace'); await p.waitForTimeout(900);
-      const l = await lage(p, '#fPlace'), schuebe = await p.evaluate(() => __schuebe), lim = Math.min(l.kb, l.cb) - 16, war = a.unten <= Math.min(a.kb, a.cb) - 16 && a.oben >= a.ct;
-      const wo = `Fenster ${vorher}, Ort vorher ${a.oben}–${a.unten} px, Tastatur ab ${a.kb}`;
+      const l = await lage(p, '#fPlace'), schuebe = await p.evaluate(() => __schuebe), pan = await p.evaluate(() => __safari.top());
+      const lim = Math.min(l.kb, l.cb) - 16, war = a.unten <= Math.min(a.kb, a.cb) - 16 && a.oben >= a.ct, passt = l.unten - l.oben <= lim - l.ct - 25;
+      const wo = `W-${w}, Fenster ${vorher}, Ort vorher ${a.oben}–${a.unten} px, Tastatur ab ${a.kb}`;
       if (!l.fokus || !l.offen) E('APD-115/M-7', `${wo}: Ort ohne Fokus bzw. Tastatur`);
-      else if (war && Math.abs(l.y - a.y) > 1) E('APD-115/M-7', `${wo}: Ort war ganz sichtbar, trotzdem rollt der Inhalt ${a.y} → ${l.y} px (Sprung, nicht wie Apple)`);
-      else if (!war && Math.abs(l.unten - lim) > 3) E('APD-115/M-7', `${wo}: Ort endet bei ${l.unten} px statt ${lim} (16 px über der Tastatur) – ${l.unten < lim ? 'rollt zu weit' : 'zu wenig'}`);
+      else if (!passt) console.log(`ℹ ${t.ort} APD-115/M-7 ${wo}: Ort höher als der sichtbare Teil (${l.oben}–${l.unten} px)`);
+      else if (w === '1' && war && Math.abs(l.y - a.y) > 1) E('APD-115/M-7', `${wo}: Ort war ganz sichtbar, trotzdem rollt der Inhalt ${a.y} → ${l.y} px (Sprung, nicht wie Apple)`);
+      else if (w === '1' && !war && Math.abs(l.unten - lim) > 3) E('APD-115/M-7', `${wo}: Ort endet bei ${l.unten} px statt ${lim} (16 px über der Tastatur) – ${l.unten < lim ? 'rollt zu weit' : 'zu wenig'}`);
+      else if (w === '2' && (l.unten > lim + 3 || l.oben < l.ct)) E('APD-115/M-7', `${wo}: Ort danach ${l.oben}–${l.unten} px, nicht ganz über der Tastatur (${lim})`);
       if (schuebe.length > 1) E('APD-115/M-7', `${wo}: rollt in ${schuebe.length} Schüben (${schuebe.join(', ')} px) statt in einem`);
+      if (pan !== pan0) (w === '2' ? E('APD-115/M-7', `${wo}: Safari verschiebt im Modell ${pan0} → ${pan} px (Sprung)`)
+        : console.log(`ℹ ${t.ort} APD-115/M-7 ${wo}: Safari verschiebt im Modell ${pan0} → ${pan} px (APD-36/S-6 b) – am Gerät messen`));
       await p.close();
     }
     // APD-115/M-8 (Variante A): Bezeichnung ‚Verlauf‘ direkt über dem Feld, Vorschläge darunter; M-9 (B): Vorschläge zwischen Bezeichnung und Feld

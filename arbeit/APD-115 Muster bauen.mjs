@@ -61,8 +61,13 @@ u = ersetze(u, 'let neuFokus = false, beruehrt = -1e9,', 'let tipp = null, neuFo
 // focusin: V-3 statt ‚obere Hälfte‘
 u = ersetze(u, `  const n = noetig(f, c);
   if (n <= 0) return;`, `  const n = noetigV3(f, c);
-  messZeile(\`V-3 \${messId(f)} rollt \${Math.round(n)}\`);
+  messZeile(\`V-3 \${messId(f)} rollt \${Math.round(n)} (W-\${WECHSEL})\`);
   if (n <= 0) return;`);
+// APD-115/W-2: neuer Fokus (APD-36/S-8) auch bei offener Tastatur – Safari liest die Lage nach dem Rollen (APD-36/S-7)
+u = ersetze(u, `  halten = { f, c, y: c.scrollTop, bis: performance.now() + 1500 };
+  if (kbOffen()) return;`, `  halten = { f, c, y: c.scrollTop, bis: performance.now() + 1500 };
+  if (kbOffen() && WECHSEL !== 2) return;`);
+u = ersetze(u, 'let tipp = null, neuFokus = false,', 'const WECHSEL = new URLSearchParams(location.search).get(\'w\') === \'1\' ? 1 : 2;   // APD-115/W-1, W-2\nlet tipp = null, neuFokus = false,');
 // feldZeigen: Ziel statt ganzes Feld (mehrzeilig: Cursorzeile)
 u = ersetze(u, `  const rand = fokusRand(f);
   if (r.height > unten - oben - rand) { if (Math.abs(ro - oben - rand) > 1) rollen(c, ro - oben - rand); }
@@ -79,8 +84,8 @@ u = ersetze(u, `  const rand = fokusRand(f);
 u = ersetze(u, `// Feld ganz über der Tastatur (R-4.5, seit 4.28.0)`, `// ---------- APD-115 V-3 (Muster, Sitzung 0090): wie Apple nur so weit rollen, dass das Feld über der Tastatur liegt ----------
 // - einzeilig bzw. passt das Feld ganz: es endet 16 px über der Tastatur (im Inhalt 28 px – Safari verschiebt sonst, APD-36/S-5 ABSTAND 24);
 // - mehrzeilig und zu hoch: die Zeile mit dem Cursor und eine halbe Zeile darunter (beim Antippen die Zeile unter dem Finger);
-// - Feld wechseln bei offener Tastatur: zusätzlich höchstens bis zur Mitte des sichtbaren Teils – liegt die Mitte des Felds tiefer,
-//   stellt Safari es selbst in die Mitte (APD-36/S-6 b, Modell; am Gerät mit dem Muster zu messen);
+// - Feld wechseln bei offener Tastatur: APD-115/W-1 (?w=1) genauso, ganz sichtbar: nichts; APD-115/W-2 (Standard) zusätzlich höchstens bis
+//   zur Mitte des sichtbaren Teils und neuer Fokus, damit Safari die Lage danach liest (Befund APD-115/N-1 bis N-8, Messung 07.11.2026);
 // - nie höher als Umrandung und Schatten unter dem oberen Rand des Bereichs (fokusRand). ≤ 0: nichts rollen.
 const zeilenHoehe = f => { const s = getComputedStyle(f), lh = parseFloat(s.lineHeight); return Number.isFinite(lh) ? lh : parseFloat(s.fontSize) * 1.45; };
 // Zeile mit dem Cursor (Bildschirm): Spiegel mit dem Text bis zum Cursor
@@ -119,7 +124,8 @@ function noetigV3(f, c) {
     n = Math.min(z.bottom + z.lh / 2 + dy - unten, z.top + dy - oben);
   } else if (r.height > unten - oben) n = r.top + dy - oben;
   else n = Math.max(r.bottom + dy - unten, r.bottom - jetzt);
-  if (offen) n = Math.max(n, Math.min((r.top + r.bottom) / 2 - sichtbar / 2, r.top - oben));
+  // APD-115/W-1 (?w=1): beim Wechsel nur so weit wie nötig; APD-115/W-2 (Standard): zusätzlich bis zur Mitte, mit neuem Fokus (focusin)
+  if (offen && WECHSEL === 2) n = Math.max(n, Math.min((r.top + r.bottom) / 2 - sichtbar / 2, r.top - oben));
   return n;
 }
 // Feld ganz über der Tastatur (R-4.5, seit 4.28.0)`);
