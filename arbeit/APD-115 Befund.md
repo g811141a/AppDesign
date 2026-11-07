@@ -46,3 +46,10 @@ hinausgerollt war.
   dass der Cursor sichtbar ist.
 - Eigene Regeln: R-5.1 (Bezeichnung und Feld gehören zusammen), R-5.8 (Schrift der Bezeichnungen) – eine Regel ‚jedes Feld hat eine sichtbare
   Bezeichnung‘ gibt es nicht; z. B. ‚Ort für Google Maps‘ (`#fPlace`) hat nur Platzhalter und `aria-label`.
+
+## Entscheidungen (Nutzer 07.11.2026, Sitzung 0089, Fortsetzung)
+
+- APD-115/E-3 **V-3 statt V-1:** wie Apple nur so weit rollen, dass das Feld über der Tastatur liegt; mehrzeilig die Zeile mit dem Cursor und eine
+  halbe Zeile darunter (ändert R-4.5 – Wortlaut vor dem Bau zum ‚Ja‘).
+- APD-115/E-4 **keine neue Regel** ‚jedes Feld hat eine sichtbare Bezeichnung‘ – ‚nur Apple-like‘.
+- APD-115/E-5 **Muster** für den Verlauf (Bezeichnung direkt über dem Feld) in der nächsten Sitzung (0090), mit Apple-Abgleich und Testfall-Liste.

@@ -1,7 +1,7 @@
 # Übergabe an die nächste Sitzung
 
-**Stand 07.11.2026** · geschrieben in der Sitzung ‚Reiselogbuch 0088‘ (Usertest P-98 erledigt, Bau 4.55.0 / 3.53.0 geklärt; Übergabe nach 0 Nr. 13,
-Kontext über 250.000, Thema abgeschlossen) – Aufbau nach Zusammenarbeit allgemein 2.5. **Claude liest diese Datei zu Beginn jeder Sitzung zuerst, dann die
+**Stand 07.11.2026** · geschrieben in der Sitzung ‚Reiselogbuch 0089‘ (APD-121 gemessen und geklärt, APD-115 nachgestellt und entschieden; Übergabe
+nach 0 Nr. 13, Kontext etwa 275.000) – Aufbau nach Zusammenarbeit allgemein 2.5. **Claude liest diese Datei zu Beginn jeder Sitzung zuerst, dann die
 ganze Zusammenarbeit** (0 Nr. 15); die Arbeitsumgebung steht in der AppDesign-`CLAUDE.md`.
 
 ## 1. Lagebild
@@ -14,46 +14,46 @@ ganze Zusammenarbeit** (0 Nr. 15); die Arbeitsumgebung steht in der AppDesign-`C
 | AppDesign-`CLAUDE.md` | **2.10.0** | `CLAUDE.md` |
 | ReiseLogBuch-Import (privat) | 1.3.0 | g811141a/ReiseLogBuch-Import |
 
-- **Chatnummer:** die nächste Sitzung heißt **Reiselogbuch 0089**; die danach 0090.
-- **Modell und Aufwand:** in 0088 Opus 5.5 (`get_session`), Aufrufe `"effort":"high"`, kein `model_fallback`. Der Arbeitsprozess wurde zweimal neu gestartet.
+- **Chatnummer:** die nächste Sitzung heißt **Reiselogbuch 0090**; die danach 0091.
+- **Modell und Aufwand:** in 0089 Opus 5.5 (`get_session`), Aufrufe `"effort":"high"`, kein `model_fallback`. Der Arbeitsprozess wurde mehrfach neu gestartet.
 - **Regelwächter läuft** (`tests/regelwaechter.mjs` in Ordnung).
-- **Offener Usertest:** keiner – **P-98 alles ok** (Nutzer 07.11.2026, Sitzung 0088).
+- **Offener Usertest:** keiner.
 - **Vereinbarung (Nutzer 30.10.2026, Sitzung 0058):** Muster bis auf Weiteres **nur hell** – in jede Übergabe übernehmen.
 - **Erinnerung:** ‚Backlog-Erinnerung (AppDesign und Reiselogbuch)‘ montags 8:58.
 
-## 2. Ergebnisse der Sitzung 0088
+## 2. Ergebnisse der Sitzung 0089
 
-- **Usertest P-98 alles ok** – in beiden Backlogs unter ‚Erledigt‘; dabei doppelte Zeilen in ‚Erledigt‘ (aus 73e255f, Sitzung 0087) entfernt.
-- **RLB-119 nachgestellt:** führende Smileys (Verlauf, ‚Wie war was?‘, Essen) werden nie markiert (`linesHtml`, `foodHtml` mit `esc(m)` statt `highlight`),
-  daher zählen `hitCount` und ‚1 von N‘ zu wenig; Versuch mit `highlight(m, term)` in der Seite: 3 von 3.
-- **Neu APD-122 (Prio 1, allgemein, Wunsch des Nutzers):** Smileys in der Suche wie Wörter – **Wortlaut bestätigt** (15.2 neuer Punkt ‚Smileys (Emoji)‘,
-  R-2.3); dazu Fund im Baustein: `markWords` markiert bei ‚👍‘ in ‚👍🏽‘ den Hautton nicht mit. Testfall-Liste APD-122/S-1 bis S-8 –
-  `arbeit/APD-122 RLB-119 Wortlaut und Testfall-Liste.md`.
-- **APD-113 Teile (1) bis (4) nachgestellt, Vorschlag und Testfall-Liste APD-113/Q-1 bis Q-8 bestätigt** – `arbeit/APD-113 Teile 1 bis 4 Befund und
-  Testfall-Liste.md`: (1) APD-84/W-5, APD-84/W-14 bis W-16 nur an gezeigten Fenstern, (3) APD-84/W-14 nimmt die letzte Zahl ‚Kontext N‘, (4) APD-84/W-6 nur im laufenden Abschnitt;
-  (2) entfällt; kein neuer Regeltext. Nachgestellt mit künstlichen Sitzungsdaten über `pruefe` (wie in `tests/regelwaechter.mjs`).
-- Bau-Frage 4.55.0 / 3.53.0 einmal mit ‚Nein‘ beantwortet; danach entschieden: **Bau in 0089** (Nutzer 07.11.2026).
-- **Selbstkritik 0088:** zwei Ausgaben ohne Uhrzeitzeile (APD-84/W-1); dreimal die Uhrzeit geschätzt statt abgelesen (05:26, 05:27, 05:31 – APD-84/W-2); nach einem
-  Neustart ein Fenster ohne Uhrzeitzeile und Satz ‚Kontext N‘ davor. Abhilfe: nur die Zeile des Regelwächters übernehmen, nie selbst schreiben.
+- **Bau-Frage 4.55.0 / 3.53.0 zweimal mit ‚Nein‘ beantwortet** (einmal mit APD-122, APD-113 Teile (1) bis (4), RLB-119; einmal zusätzlich mit APD-121) –
+  alle Punkte bleiben bereit in ‚0. Nächste Version‘.
+- **APD-121 geklärt, bereit (Wortlaut bestätigt):** zwei Messungen am iPhone quer (`tests/messungen/2026-11-07 iPhone quer Mehr-Knopf oben 1.txt`,
+  `… 2.txt`): der Mehr-Knopf öffnet auch ganz oben (y 21 viermal); kein Klick bis y 20 (P-97/6). Das Safari-Modell (`KEIN_KLICK_OBEN` = 23) wird auf 21
+  gesetzt, Designrichtlinie 13 ‚Am oberen Rand kein Klick‘ neu gefasst – `arbeit/APD-121 Wortlaut und Testfall-Liste.md` (APD-121/V-1, Y-1 bis Y-7).
+  Nebenbefund APD-121/B-5: Safari schickt einen Tipp neben dem Knopf an den Knopf – nicht als Thema eingetragen.
+- **APD-115 nachgestellt und entschieden** – `arbeit/APD-115 Befund.md`: die App rollt nur nach dem Feld, nie nach der Überschrift (B-1 bis B-6);
+  entschieden E-3 (V-3 wie Apple: nur so weit rollen, dass das Feld über der Tastatur liegt; mehrzeilig Cursorzeile + ½ Zeile; ändert R-4.5),
+  E-4 (keine neue Regel zur Bezeichnung, ‚nur Apple-like‘), E-5 (Muster für den Verlauf: Bezeichnung direkt über dem Feld).
+- **Selbstkritik 0089:** nach Neustarts des Arbeitsprozesses dreimal ein Fenster ohne Uhrzeitzeile und Satz ‚Kontext N‘ davor; einmal ‚Mehr-Knöpf‘ im
+  Fenster. Abhilfe: nach jedem Neustart zuerst die Ausgabe mit Uhrzeitzeile und ‚Kontext N‘, dann das Fenster.
 
 ## 3. Nächster Schritt
 
 1. Lesen wie immer; Lagebild als eigene Antwort (Fenster ‚Lagebild bereit – anzeigen?‘, danach als letzte Ausgabe). Repos dazuholen, Tests einrichten.
-2. **Bau-Frage** im Fenster: ‚Soll ich Version AppDesign 4.55.0 / Reiselogbuch 3.53.0 mit APD-122, APD-113 Teile (1) bis (4) und RLB-119 erstellen?
-   (Kontext N) Ja/Nein‘ – nach ‚Ja‘ bauen nach den beiden Arbeitsdateien; jede neue Prüfung zuerst rot gegen 4.54.0 / 3.52.0 (0 Nr. 1); **vor `los`
-   die bestehenden Prüfungen anpassen**, die die Suche bzw. den Regelwächter betreffen (`ablauf-suche-*`, `checkSearchWords`, `tests/regelwaechter.mjs`).
-3. Danach nach dem Backlog (Abschnitt 4).
+2. **APD-115 Muster** (E-5): Apple-Abgleich, Testfall-Liste, Muster nur hell – Tageserfassung mit V-3 (Rollen wie Apple) und der Bezeichnung
+   ‚Verlauf‘ direkt über dem Feld; dazu Wortlaut R-4.5 (0 Nr. 29).
+3. Danach die **Bau-Frage** im Fenster: ‚Soll ich Version AppDesign 4.55.0 / Reiselogbuch 3.53.0 mit APD-122, APD-113 Teile (1) bis (4), APD-121 und
+   RLB-119 erstellen? (Kontext N) Ja/Nein‘ – nach ‚Ja‘ bauen nach den Arbeitsdateien; jede neue Prüfung zuerst rot gegen 4.54.0 / 3.52.0 (0 Nr. 1);
+   vor `los` die bestehenden Prüfungen anpassen (`ablauf-suche-*`, `checkSearchWords`, `tests/regelwaechter.mjs`, `checkSchichtOben`).
 
 ## 4. Danach
 
-APD-121 · APD-115 · APD-116 · RLB-120 · RLB-122 · RLB-121 · APD-85 Teil 6 · APD-80 · APD-30 übrige Teile · APD-57 · APD-44 bis APD-60 · APD-70 · RLB-6 · APD-1.
+APD-116 · RLB-120 · RLB-122 · RLB-121 · APD-85 Teil 6 · APD-80 · APD-30 übrige Teile · APD-57 · APD-44 bis APD-60 · APD-70 · RLB-6 · APD-1.
 
 ## 5. Starttext für die neue Sitzung
 
 In der neuen Sitzung müssen **AppDesign** und **ReiseLogBuch** verfügbar sein; alles liegt auf `main`.
 
 ```
-Reiselogbuch 0089 – AppDesign 4.55.0 / Reiselogbuch 3.53.0 (Smileys in der Suche, Regelwächter)
+Reiselogbuch 0090 – APD-115 Muster (Rollen wie Apple), danach Bau 4.55.0 / 3.53.0
 
-Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md, dann die GANZE Zusammenarbeit allgemein (Kasten ‚Immer‘ und ‚Jede Antwort‘ oben in Abschnitt 0 gilt ab der ersten Antwort) und die Überschriften der Designrichtlinien. Prüfe Modell und Aufwand (Sitzungsdatei, auch model_fallback), hole das Repo g811141a/ReiseLogBuch dazu, wie in der AppDesign-CLAUDE.md unter ‚Arbeitsumgebung‘, richte die Tests ein und prüfe, ob der Regelwächter läuft. Lagebild als eigene Antwort (Fenster ‚Lagebild bereit – anzeigen?‘, danach das Lagebild als letzte Ausgabe), dann im Fenster die Bau-Frage für AppDesign 4.55.0 / Reiselogbuch 3.53.0 mit APD-122, APD-113 Teile (1) bis (4) und RLB-119 stellen (UEBERGABE.md Abschnitt 3).
+Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md, dann die GANZE Zusammenarbeit allgemein (Kasten ‚Immer‘ und ‚Jede Antwort‘ oben in Abschnitt 0 gilt ab der ersten Antwort) und die Überschriften der Designrichtlinien. Prüfe Modell und Aufwand (Sitzungsdatei, auch model_fallback), hole das Repo g811141a/ReiseLogBuch dazu, wie in der AppDesign-CLAUDE.md unter ‚Arbeitsumgebung‘, richte die Tests ein und prüfe, ob der Regelwächter läuft. Lagebild als eigene Antwort (Fenster ‚Lagebild bereit – anzeigen?‘, danach das Lagebild als letzte Ausgabe), dann weiter nach UEBERGABE.md Abschnitt 3: APD-115 Muster (arbeit/APD-115 Befund.md, E-3 bis E-5), danach die Bau-Frage.
 ```
