@@ -132,21 +132,21 @@ leere Feld wäre zwei Zeilen hoch. Im Muster bleibt der Platzhalter einzeilig un
 
 ## Testfall-Liste (Testfall (automatisch), `arbeit/APD-126 Muster prüfen.mjs`, Chromium und WebKit, iPad quer und iPhone hoch)
 
-- APD-126/T-1 Feld mit Text vorn antippen (Titel, Ort, Verlauf, Fazit): der Cursor steht am Ende.
-- APD-126/T-2 Ins aktive Feld nochmals vorn tippen: der Cursor steht an der Stelle, nicht am Ende.
-- APD-126/T-3 Mit Tab ins nächste Feld: der Cursor steht am Ende, nichts ist ausgewählt.
-- APD-126/T-4 Ein leeres Textfeld ist so hoch wie ein einzeiliges Feld.
-- APD-126/T-5 Nach der Eingabetaste ist das Feld eine Zeile höher.
-- APD-126/T-6 Bei automatischem Umbruch wächst das Feld, der ganze Inhalt ist zu sehen.
-- APD-126/T-7 Alles löschen: das Feld ist wieder eine Zeile hoch.
-- APD-126/T-8 Vorhandener mehrzeiliger Inhalt (Verlauf, Fazit) ist ganz zu sehen, auch nach einem Vorschlag.
-- APD-126/T-9 Vorschlag bei Cursor in der ersten Zeile: er kommt nach der letzten Zeile, der Cursor am Ende; danach getippt bleibt klein
+- APD-126/M-1 Feld mit Text vorn antippen (Titel, Ort, Verlauf, Fazit): der Cursor steht am Ende.
+- APD-126/M-2 Ins aktive Feld nochmals vorn tippen: der Cursor steht an der Stelle, nicht am Ende.
+- APD-126/M-3 Mit Tab ins nächste Feld: der Cursor steht am Ende, nichts ist ausgewählt.
+- APD-126/M-4 Ein leeres Textfeld ist so hoch wie ein einzeiliges Feld.
+- APD-126/M-5 Nach der Eingabetaste ist das Feld eine Zeile höher.
+- APD-126/M-6 Bei automatischem Umbruch wächst das Feld, der ganze Inhalt ist zu sehen.
+- APD-126/M-7 Alles löschen: das Feld ist wieder eine Zeile hoch.
+- APD-126/M-8 Vorhandener mehrzeiliger Inhalt (Verlauf, Fazit) ist ganz zu sehen, auch nach einem Vorschlag.
+- APD-126/M-9 Vorschlag bei Cursor in der ersten Zeile: er kommt nach der letzten Zeile, der Cursor am Ende; danach getippt bleibt klein
   (‚Weiterfahrt nach rom‘).
-- APD-126/T-10 ‚Sonstiges …‘ hängt eine leere Zeile an, ein zweites Antippen keine weitere.
-- APD-126/T-11 Die Vorschläge stehen über dem Feld.
+- APD-126/M-10 ‚Sonstiges …‘ hängt eine leere Zeile an, ein zweites Antippen keine weitere.
+- APD-126/M-11 Die Vorschläge stehen über dem Feld.
 
-Ergebnis (08.11.2026): Chromium und WebKit **alles in Ordnung**. Gegenprobe mit `ui.js` der Fassung 4.56.0 (`PRUEF_V=heute`): APD-126/T-1 und
-T-3 bis T-6 rot.
+Ergebnis (08.11.2026): Chromium und WebKit **alles in Ordnung**. Gegenprobe mit `ui.js` der Fassung 4.56.0 (`PRUEF_V=heute`): APD-126/M-1 und
+M-3 bis M-6 rot.
 
 **Nur am Gerät (Testfall (User) des Musters):** ob Safari den Cursor beim ersten Antippen wirklich ans Ende setzen lässt; ob die Tastatur nach
 einem Vorschlag auf Kleinbuchstaben steht; wie sich Wachsen und Schrumpfen anfühlen.
