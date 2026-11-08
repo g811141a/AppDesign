@@ -152,7 +152,7 @@ M-3 bis M-6 rot.
 iPad hoch und iPhone quer (0 Nr. 6).
 
 Ergebnis (08.11.2026, Sitzung 0099): Prüfung um **iPad hoch und iPhone quer** erweitert – Chromium und WebKit **alles in Ordnung**;
-Gegenprobe `PRUEF_V=heute` rot (32 Fehler, auch in den beiden neuen Lagen). Muster am Gerät iPad hoch und iPhone quer: angefragt.
+Gegenprobe `PRUEF_V=heute` rot (32 Fehler, auch in den beiden neuen Lagen). **Muster am Gerät iPad hoch und iPhone quer: alles ok** (Nutzer 08.11.2026, Sitzung 0099) – APD-126 und RLB-123 bereit.
 
 **Nur am Gerät (Testfall (User) des Musters):** ob Safari den Cursor beim ersten Antippen wirklich ans Ende setzen lässt; ob die Tastatur nach
 einem Vorschlag auf Kleinbuchstaben steht; wie sich Wachsen und Schrumpfen anfühlen.
