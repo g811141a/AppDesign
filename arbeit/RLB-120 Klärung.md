@@ -155,3 +155,30 @@ Ergebnis (08.11.2026, Sitzung 0103): Chromium und WebKit **alles in Ordnung**; G
 ## Offene Usertests
 
 - **P-100** (Reiselogbuch 3.54.0, AppDesign 4.56.0) – ok bis auf **P-100/1** (→ RLB-123, kommt mit 3.55.0).
+
+## Verlauf statt Grau (Nutzer 08.11.2026, Sitzung 0104)
+
+- **Rückmeldung zur Linie ganz unten:** ‚Die Hintergrundfarbe in der ersten Spalte der Tageskachel ist nicht ansprechend.‘ Wunsch: drei Muster, in denen
+  die Hintergrundfarbe von links nach rechts von Weiß nach Grau verläuft, mit unterschiedlichem Verlaufscharakter; Empfehlungen, welche Farben es in der
+  Apple-Welt sonst noch gibt; die Fläche verläuft in jedem Fall von links nach rechts. Dieselbe Verlaufsfarbe in der Kopfzeile der Tabelle im
+  Reiselogbuch, dort von oben nach unten.
+- **Muster** `arbeit/RLB-120/verlauf.html` (nur hell; Grundlage der Stand von `index.html`): heute (grau flach) · **A gleichmäßig** Weiß → Grau 5
+  `#e5e5ea` · **B weich, spät** lange weiß, Grau erst zum Ende hin, Weiß → Grau 5 · **C kräftig** früh grau, Weiß → Grau 5 → Grau 4 `#d1d1d6`.
+  Weitere Farben (Verlauf wie A): **F1** Grau 6 `#f2f2f7` · **F2** Grau 4 `#d1d1d6` · **F3** Blau zart (Apple-Blau 8 %, ≈ `#ebf4ff`) · **F4** Blau hell
+  `#dcebff` (= `--sel-bg`, Fläche ‚ausgewählt‘).
+- **Apple-Abgleich:** Grau 4 bis 6 sind Apple-Systemfarben (hell `#d1d1d6`, `#e5e5ea`, `#f2f2f7`; Quellen der Sitzung: Apple-Dokumentation UIKit
+  ‚Standard colors‘ und Tabellen der dynamischen Farben). Einen Verlauf als Fläche von Tabellen oder Listen habe ich in Apple-Apps nicht belegt – Vermutung:
+  Apple nutzt dort flache Flächen; der Verlauf ist eine bewusste Abweichung (Wunsch). Betroffen: R-6.1 (‚Kopf grau‘), Farbtabelle Designrichtlinie 2
+  (`--th-bg`), 9 und 15.10.
+- **Testfall-Liste** (Testfall (automatisch), `arbeit/RLB-120 Verlauf prüfen.mjs`, Chromium und WebKit, vier Lagen, Textgröße l, xxl, xxxl, ax3):
+
+| Nr. | Fall | Erwartet |
+|---|---|---|
+| RLB-120/V-1 | Spalte 1 der Tageskachel | links weiß, nach rechts verlaufend |
+| RLB-120/V-2 | Kopfzeile der Tabelle | oben weiß, nach unten verlaufend |
+| RLB-120/V-3 | Kachel und Kopfzeile | dieselben Farben |
+| RLB-120/V-4 | Kachel | nichts ragt hinaus |
+| RLB-120/V-5 | Seite | rollt nicht seitlich |
+| RLB-120/V-6 | Gegenprobe `PRUEF_V=heute` | V-1 und V-2 rot |
+
+Ergebnis (08.11.2026, Sitzung 0104): Chromium und WebKit **alles in Ordnung**; Gegenprobe rot (32 Fehler).
