@@ -6,7 +6,7 @@ const pw = createRequire(new URL('../../ReiseLogBuch/tests/', import.meta.url))(
 const art = process.env.PRUEF_BROWSER || 'chromium', heute = process.env.PRUEF_V === 'heute';
 const b = await pw[art].launch();
 const fehler = [], F = (t, was) => fehler.push(`${t} ${art}: ${was}`);
-for (const [name, vp] of [['iPad quer', { width: 1180, height: 820 }], ['iPhone hoch', { width: 393, height: 852 }]]) {
+for (const [name, vp] of [['iPad quer', { width: 1180, height: 820 }], ['iPhone hoch', { width: 393, height: 852 }], ['iPad hoch', { width: 820, height: 1180 }], ['iPhone quer', { width: 852, height: 393 }]]) {
   const ctx = await b.newContext({ viewport: vp, deviceScaleFactor: 1, hasTouch: false });
   const p = await ctx.newPage();
   if (heute) await p.route(/APD-126\/ui\.js$/, r => r.fulfill({ path: new URL('../fassung/4.56.0/ui.js', import.meta.url).pathname, contentType: 'text/javascript' }));

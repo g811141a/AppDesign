@@ -130,7 +130,7 @@ https://g811141a.github.io/AppDesign/arbeit/APD-126/index.html
 Auffällig beim Bau: Auf dem iPhone hoch bricht ein langer Platzhalter (‚Smiley antippen, dann ein paar Worte dazu.‘) in zwei Zeilen um, und das
 leere Feld wäre zwei Zeilen hoch. Im Muster bleibt der Platzhalter einzeilig und wird abgeschnitten, wie in iOS.
 
-## Testfall-Liste (Testfall (automatisch), `arbeit/APD-126 Muster prüfen.mjs`, Chromium und WebKit, iPad quer und iPhone hoch)
+## Testfall-Liste (Testfall (automatisch), `arbeit/APD-126 Muster prüfen.mjs`, Chromium und WebKit, iPad quer, iPhone hoch, iPad hoch, iPhone quer)
 
 - APD-126/M-1 Feld mit Text vorn antippen (Titel, Ort, Verlauf, Fazit): der Cursor steht am Ende.
 - APD-126/M-2 Ins aktive Feld nochmals vorn tippen: der Cursor steht an der Stelle, nicht am Ende.
@@ -150,6 +150,9 @@ M-3 bis M-6 rot.
 
 **Muster am Gerät: alles ok** (Schritte 1 bis 10, iPad quer und iPhone hoch, hell; Nutzer 08.11.2026, Sitzung 0098). Offen vor ‚bereit‘: Muster
 iPad hoch und iPhone quer (0 Nr. 6).
+
+Ergebnis (08.11.2026, Sitzung 0099): Prüfung um **iPad hoch und iPhone quer** erweitert – Chromium und WebKit **alles in Ordnung**;
+Gegenprobe `PRUEF_V=heute` rot (32 Fehler, auch in den beiden neuen Lagen). Muster am Gerät iPad hoch und iPhone quer: angefragt.
 
 **Nur am Gerät (Testfall (User) des Musters):** ob Safari den Cursor beim ersten Antippen wirklich ans Ende setzen lässt; ob die Tastatur nach
 einem Vorschlag auf Kleinbuchstaben steht; wie sich Wachsen und Schrumpfen anfühlen.
