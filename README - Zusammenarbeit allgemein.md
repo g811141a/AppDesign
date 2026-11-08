@@ -1,6 +1,6 @@
 # Zusammenarbeit allgemein
 
-**Version 3.10.0** · Stand 07.11.2026
+**Version 3.11.0** · Stand 08.11.2026
 
 Regeln für die Zusammenarbeit mit Claude bei allen iPad-Web-Apps von g811141a. Die Datei liegt im Design-Repo **AppDesign**
 (g811141a/AppDesign); App-Eigenes steht in der `CLAUDE.md` des App-Repos. **Abschnitt 0 ist das Arbeitsmodell** (oben der Kasten ‚Immer‘ und ‚Jede
@@ -24,10 +24,11 @@ oder **Selbstkontrolle** (Claude prüft vor dem Senden selbst).
 >    Auswahlfenster – nur das Fenster bringt am iPad den Push; auch nach einem Neustart des Arbeitsprozesses und nach der Meldung einer
 >    Hintergrundaufgabe oder einer anderen Sitzung; Empfehlung zuerst mit ‚(Empfohlen)‘ und Grund, immer ‚Ich schreibe im Chat‘; einzige
 >    Ausnahme die Übergabe (Nr. 28, 2.1).
-> 4. **Alles zum Lesen vor der Kachel:** Link, nummerierte Schritte mit ‚Erwartet: …‘, Bericht, Wortlaut, Muster und alle offenen
->    Usertests stehen vor dem Fenster – im Chat und, wenn der Nutzer dabei etwas tun soll (prüfen, testen, entscheiden), zusätzlich als
->    Datei im Seitenbereich (`SendUserFile`, `display: 'render'`), die neben der offenen Kachel lesbar bleibt; das Fenster selbst nur mit der
->    kurzen Frage, ohne Link (Nr. 11, 2.1, 2.3).
+> 4. **Datei vor jeder Kachel:** vor jedem Fenster stehen alle wichtigen Informationen der Antwort in **einer Datei** im Seitenbereich
+>    (`SendUserFile`, `display: 'render'`), die neben der offenen Kachel lesbar bleibt. Das gilt auch dann, wenn die Frage im Fenster nicht
+>    danach fragt. Dazu gehören Lagebild, Bericht, Wortlaut alt und neu, Muster, der vollständige Testlink, nummerierte Schritte mit
+>    ‚Erwartet: …‘ und alle offenen Usertests vollständig. Derselbe Inhalt steht auch im Chat. Das gilt ohne Ausnahme. Das Fenster selbst
+>    enthält nur die kurze Frage, ohne Link (Nr. 11, 15, 2.1, 2.3).
 > 5. **Kontextstand in der Kachel:** jede Frage im Fenster endet mit ‚(Kontext N)‘, N abgelesen aus `messung.mjs` unmittelbar vor dem
 >    Fenster – nie geschätzt (Nr. 21, 28).
 > 6. Wurde etwas gebaut oder entschieden: die Backlog-Erinnerung ‚Nächste Version …: N Punkte bereit (…) · Offen im Backlog: …‘ (2.4).
@@ -146,7 +147,8 @@ Ziel: nichts vergessen, Fehler finden, bevor der Nutzer sie findet, schnell und 
 15. **Beginn einer Sitzung:** lesen – `UEBERGABE.md`, **diese ganze Datei** (einmal je Sitzung, etwa 14.000 Token), die
     Überschriften der Designrichtlinien; alles Weitere (Katalog, Backlog, CHANGELOG, PROMPT.md) nur, soweit die Aufgabe es braucht.
     Dann das **Lagebild** (Versionen, offene Usertests, Backlog-Spitze, Modell und Aufwand – 2.5) als **eigene Antwort** vor jeder
-    Arbeit, auch wenn der Starttext einen Auftrag hat: das Lagebild im Chat, danach das Fenster (2.1); die Arbeit beginnt erst nach der
+    Arbeit, auch wenn der Starttext einen Auftrag hat: das Lagebild im Chat und als Datei, danach das
+    Fenster (2.1); die Arbeit beginnt erst nach der
     Antwort des Nutzers. Prüfung:
     `doku.mjs` (beide `CLAUDE.md` nennen zuerst `UEBERGABE.md`, dann die ganze Zusammenarbeit); sonst Selbstkontrolle.
 16. **Übergabe statt Gedächtnis:** jede Vereinbarung sofort an ihre Stelle in den Richtlinien (Nr. 3); was nicht auf GitHub
@@ -206,10 +208,10 @@ Prüfung: Selbstkontrolle.
   ‚(Empfehlung)‘) und ihrem Grund in der Beschreibung, immer ‚Ich schreibe im Chat‘ – ausgenommen nur die Empfehlung bei der
   Rückmeldung zu einem Usertest (‚P-n: …‘, 2.3). Im Fenster steht nur eine **kurze Frage** mit den Schaltflächen – keine Erklärtexte,
   keine Zeitangaben, auch bei Bitten, am Gerät zu prüfen, kein Link. Das Feld ‚Sonstiges‘ schneidet lange Texte ab.
-- **Der Text davor, das Fenster danach:** alles, was der Nutzer vor einer Entscheidung lesen muss – Link, Schritte, Bericht, Wortlaut
-  (0 Nr. 29), Muster, Erklärungen –, steht vor dem Fenster: im Chat und, wenn der Nutzer dabei etwas tun soll, zusätzlich als Datei im
-  Seitenbereich (`SendUserFile`, `display: 'render'`), die neben der offenen Kachel lesbar bleibt (Kasten Punkt 4); das Fenster nur mit
-  der kurzen Frage, ohne Link. Nie zwei Fenster direkt hintereinander; ein weiteres Fenster in derselben Antwort erst, wenn das vorige
+- **Die Datei davor, das Fenster danach:** alle wichtigen Informationen der Antwort (Lagebild, Link, Schritte, Testfälle, Bericht,
+  Wortlaut nach 0 Nr. 29, Muster, Erklärungen) stehen vor jedem Fenster in einer Datei im Seitenbereich (`SendUserFile`,
+  `display: 'render'`) und ebenso im Chat (Kasten Punkt 4), auch wenn die Frage im Fenster nicht danach fragt. Das Fenster enthält nur
+  die kurze Frage, ohne Link. Nie zwei Fenster direkt hintereinander; ein weiteres Fenster in derselben Antwort erst, wenn das vorige
   beantwortet ist und davor eine neue Ausgabe mit Erklärung steht – so endet jede Antwort mit einem Fenster und einem Push am iPad. Die
   Vorschau-Funktion kommt nicht an. Mehrere Themen nacheinander: je Fenster eines (ganze Zeile, Einschätzung, Kachel).
 - Schließt der Nutzer das Fenster und antwortet im Text, gilt die Antwort; bei den nächsten Fragen kommt trotzdem wieder das
@@ -381,6 +383,7 @@ im Verlauf und in Kommentaren der Prüfungen nennen noch die alten Stellen):
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 3.11.0 | 08.11.2026 | Neben | **APD-125 Datei vor jeder Kachel (Nutzer 08.11.2026, Sitzung 0098, Wortlaut bestätigt – `arbeit/APD-125 Datei vor jeder Kachel Wortlaut.md` APD-125/V-1 bis V-3):** Kasten ‚Jede Antwort‘ Punkt 4 ‚Datei vor jeder Kachel‘ – vor jedem Fenster alle wichtigen Informationen der Antwort (Lagebild, Bericht, Wortlaut alt und neu, Muster, Testlink, Schritte mit ‚Erwartet: …‘, alle offenen Usertests) in einer Datei im Seitenbereich und ebenso im Chat, auch wenn die Frage nicht danach fragt, ohne Ausnahme; 2.1 ‚Die Datei davor, das Fenster danach‘; 0 Nr. 15 Lagebild im Chat und als Datei. Anlass: das Lagebild fehlte vor der Kachel |
 | 3.10.0 | 07.11.2026 | Neben | **APD-123 Zusammenarbeit ohne Regelwächter (Nutzer 07.11.2026, Sitzung 0089, Wortlaut bestätigt – `arbeit/APD-123 Zusammenarbeit ohne Regelwächter Wortlaut.md` APD-123/V-1, V-2, D-1 bis D-12):** Kasten ‚Jede Antwort‘ neu (Punkte 1–7, Selbstkontrolle): Kachel mit Push am Ende jeder Antwort, nach der der Nutzer etwas tun soll; alles zum Lesen davor – im Chat und bei Prüfen/Entscheiden zusätzlich als Datei im Seitenbereich (`SendUserFile`); ‚(Kontext N)‘ in jeder Frage; 0 Nr. 26 Uhrzeitzeile entfällt; 0 Nr. 7, 11, 13, 14, 15, 21, 27, 28, 29 ohne ‚… anzeigen?‘, Zeitzeile und Regelwächter; 2.1 ‚Der Text davor, das Fenster danach‘, Reihenfolge; 2.2 ‚Kontextstand‘ statt Zeit und Token; 2.3 Rückmeldung in der Kachel oder im Chat; 2.5 ‚⚠ Modell …‘ meldet `messung.mjs`; 2.8 Regelwächter abgeschaltet. Anlass: Regelwächter in Sitzung 0089 abgeschaltet |
 | 3.9.0 | 07.11.2026 | Neben | **APD-113 Teil (6) ‚Text nach dem Fenster, Push bei jeder Aufgabe‘ und APD-117 (Nutzer 06. und 07.11.2026, Sitzungen 0086 und 0087, Wortlaut bestätigt – `arbeit/APD-113 Teil 6 Wortlaut.md` APD-113/L-1 bis L-8, `arbeit/APD-113 Rest und APD-117 Wortlaut.md` APD-113/N-3 mit Zusatz, APD-113/N-5, APD-113/N-6):** Kasten ‚Jede Antwort‘ Punkt 4 – zuerst ein Fenster ‚… bereit – anzeigen?‘ (Push), danach Link, Schritte mit ‚Erwartet: …‘ und offene Usertests als letzte Ausgabe ohne Fenster, Antwort im Chat; das gilt für jede letzte Ausgabe, nach der der Nutzer etwas tun soll (Link, Schritte, ‚Antworte im Chat: …‘), nach einer Zurückweisung wieder ein Fenster; Punkt 6 ‚Push bei jeder Aufgabe‘ (auch nach einem Neustart und nach der Meldung einer Hintergrundaufgabe oder einer anderen Sitzung); 0 Nr. 11 Bericht nach dem Fenster ‚… fertig – Bericht und Testfälle anzeigen?‘; 0 Nr. 15 Lagebild als eigene Antwort (APD-117); 0 Nr. 28 Ausnahme letzte Ausgabe; 0 Nr. 29 Wortlaut nach ‚Wortlaut … anzeigen?‘; 2.1 ‚Fenster nacheinander, der Text danach‘ – alles zum Lesen nie vor einem Fenster, Fenster bei Bitten zum Prüfen ohne Link; 2.3 Rückmeldung im Chat; 2.8 APD-84/W-15 lehnt jedes Fenster mit Link ab und prüft die letzte Ausgabe nach ‚… anzeigen?‘, eine Antwort ohne beantwortetes Fenster endet nie (auch nach einem Neustart, über die zwei Zurückweisungen hinaus), APD-84/W-17 zählt einen Aufruf mit `messung.mjs` und etwas anderem (z. B. Commit) und eine Zurückweisung des Regelwächters als Werkzeug (Testfall-Liste APD-113/M-1 bis M-17). Anlass: am iPad verdeckt die Kachel des Fensters den Text davor, aus ihr lässt sich nichts kopieren (Nutzer 06.11.2026)  · **0 Nr. 7** ‚Längeres … nach einem Fenster ‚… anzeigen?‘ als letzte Ausgabe‘ (APD-120/V-4, Nutzer 07.11.2026, Sitzung 0087) |
 | 3.8.0 | 06.11.2026 | Neben | **APD-113 Teil ‚Push und Kontextstand‘ (Nutzer 06.11.2026, Sitzung 0083, Wortlaut bestätigt):** Kasten ‚Jede Antwort‘ Punkt 9 und 0 Nr. 28 – ‚(Kontext N)‘ am Ende jeder Frage im Fenster (die Push-Mitteilung am iPad zeigt den Fragetext); 2.1 ‚Fenster nacheinander‘ – ein weiteres Fenster in derselben Antwort, wenn das vorige beantwortet ist und danach ein Werkzeug lief, mit neuer Ausgabe und ‚Kontext N‘ davor; 2.3 `PushNotification` kommt am iPad nicht an; 2.8 der Regelwächter lehnt jede Frage ohne ‚(Kontext N)‘ ab (APD-84/W-16) und ein weiteres Fenster nur, solange seit dem vorigen kein Werkzeug lief (APD-84/W-17; Testfall-Liste APD-113/H-1 bis H-9). Anlass: ein Push am iPad kommt nur über ein Fenster, W-17 ließ nach einer beantworteten Frage keines mehr zu |

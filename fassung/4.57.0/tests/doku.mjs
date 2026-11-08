@@ -188,22 +188,22 @@ export function checkCollab(appDir, app) {
 }
 
 // Seit 4.55.0 (APD-123/D-9, Wortlaut arbeit/APD-123 Zusammenarbeit ohne Regelwächter Wortlaut.md APD-123/V-1, V-2, D-1 bis D-12; ersetzt
-// checkNachFenster, APD-113/M-11): Kasten Punkt 3 bis 5, 0 Nr. 11, 15, 26, 28, 29, 2.1, 2.2, 2.3 und 2.8 im neuen Wortlaut; keine Fenster
+// checkNachFenster, APD-113/M-11; seit 4.57.0 APD-125/V-1 bis V-3 ‚Datei vor jeder Kachel‘, APD-125/B-1): Kasten Punkt 3 bis 5, 0 Nr. 11, 15, 26, 28, 29, 2.1, 2.2, 2.3 und 2.8 im neuen Wortlaut; keine Fenster
 // ‚… anzeigen?‘, kein **W**, keine Uhrzeit- und Zeitzeile mehr außerhalb der Versionsgeschichte. Gegenprobe: PRUEF_GEGENPROBE=schema:APD-123/K-1.
 export function checkKachel(collab, gp = (process.env.PRUEF_GEGENPROBE || '') === 'schema:APD-123/K-1') {
   const errors = [], E = t => errors.push(`APD-123/K-1 Zusammenarbeit: ${t}`);
   let t = collab.split(/\n## Versionsgeschichte/)[0];
-  if (gp) t = t.replace('das Lagebild im Chat, danach das Fenster', 'Fenster ‚Lagebild bereit – anzeigen?‘, danach das Lagebild');
+  if (gp) t = t.replace('das Lagebild im Chat und als Datei, danach das', 'Fenster ‚Lagebild bereit – anzeigen?‘, danach das Lagebild');
   const flach = x => x.replace(/\n>?[ \t]*/g, ' ');
   const teil = (von, bis) => flach(t.split(von)[1]?.split(bis)[0] || '');
   const kasten = flach(t.split('> **Jede Antwort**')[1]?.split('\n\nZiel:')[0] || ''), null0 = teil(/\n## 0\. /, /\n## 1\. /);
   const nr = n => null0.match(new RegExp(`(?:^| )${n}\\. (.*?)(?= \\d+\\. |$)`))?.[1] || '';
   const p = n => kasten.match(new RegExp(` ${n}\\. (.*?) ${n + 1}\\. `))?.[1] || '';
   const soll = [['Kasten Punkt 3', p(3), ['**Kachel mit Push:**', 'nach einem Neustart des Arbeitsprozesses', 'Ich schreibe im Chat']],
-    ['Kasten Punkt 4', p(4), ['**Alles zum Lesen vor der Kachel:**', 'SendUserFile', 'ohne Link']], ['Kasten Punkt 5', p(5), ['‚(Kontext N)‘', 'nie geschätzt']],
-    ['0 Nr. 11', nr(11), ['danach das Fenster zur Rückmeldung']], ['0 Nr. 15', nr(15), ['als **eigene Antwort**', 'das Lagebild im Chat, danach das Fenster']],
+    ['Kasten Punkt 4', p(4), ['**Datei vor jeder Kachel:**', 'SendUserFile', 'ohne Ausnahme', 'ohne Link']], ['Kasten Punkt 5', p(5), ['‚(Kontext N)‘', 'nie geschätzt']],
+    ['0 Nr. 11', nr(11), ['danach das Fenster zur Rückmeldung']], ['0 Nr. 15', nr(15), ['als **eigene Antwort**', 'das Lagebild im Chat und als Datei, danach das Fenster']],
     ['0 Nr. 26', nr(26), ['entfällt (APD-123)']], ['0 Nr. 28', nr(28), ['‚(Kontext N)‘', 'Prüfung: Selbstkontrolle']], ['0 Nr. 29', nr(29), ['im Chat, danach das Fenster']],
-    ['2.1', teil('\n### 2.1 ', '\n### 2.2 '), ['**Der Text davor, das Fenster danach:**', 'SendUserFile', 'ohne Link']],
+    ['2.1', teil('\n### 2.1 ', '\n### 2.2 '), ['**Die Datei davor, das Fenster danach:**', 'SendUserFile', 'vor jedem Fenster', 'ohne Link']],
     ['2.2', teil('\n### 2.2 ', '\n### 2.3 '), ['Kontextstand', '‚(Kontext N)‘', '⚠ Übergabe fällig']],
     ['2.3', teil('\n### 2.3 ', '\n### 2.4 '), ['in der Kachel']], ['2.8', teil('\n### 2.8 ', /\n---/), ['Abgeschaltet (APD-123']]];
   for (const [wo, text, woerter] of soll) for (const w of woerter) if (!text.includes(w)) E(`${wo} ohne ‚${w}‘`);
