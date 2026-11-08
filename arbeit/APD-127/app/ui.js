@@ -1,5 +1,7 @@
-// ---------- APD-127 Muster (Sitzung 0100): R-1.12 nur mit ?v=a bzw. ohne Angabe, ?v=b = 4.56.0 ----------
-const R112 = !/[?&]v=b/.test(location.search), K = 'cubic-bezier(.32,.72,0,1)', AUF_MS = 350, ZU_MS = 250;
+// ---------- APD-127 Muster (Sitzung 0100, Werte 0101): R-1.12 nur mit ?v=a bzw. ohne Angabe, ?v=b = 4.56.0 ----------
+const R112 = !/[?&]v=b/.test(location.search), FEDER = 'linear(0.0000, 0.0368, 0.1215, 0.2269, 0.3366, 0.4414, 0.5364, 0.6197, 0.6910, 0.7510, 0.8007, 0.8414, 0.8745, 0.9011, 0.9225, 0.9395, 0.9530, 0.9636, 0.9720, 0.9785, 0.9836, 0.9876, 0.9908, 0.9932, 0.9950, 0.9965, 0.9976, 0.9984, 0.9991, 0.9996, 1.0000)', ZU_KURVE = 'cubic-bezier(.42,0,.58,1)', AUF_MS = 500, ZU_MS = 250;
+// Feder aus Notizen (Antwortzeit 0,35 s, ohne Nachschwingen) für eigenes Rollen Bild für Bild: k = Anteil der 0,5 s
+function feder(k) { const w = t => 1 - (1 + 2 * Math.PI / 0.35 * t) * Math.exp(-2 * Math.PI / 0.35 * t); return k >= 1 ? 1 : w(k * 0.5) / w(0.5); }
 // Kurve K für eigenes Rollen Bild für Bild (Titel antippen): x(t) nach t auflösen, y(t) zurückgeben
 function kurveK(x) { const x1 = .32, y1 = .72, x2 = 0, y2 = 1, b = (t, a1, a2) => 3 * a1 * t * (1 - t) ** 2 + 3 * a2 * t * t * (1 - t) + t ** 3;
   let lo = 0, hi = 1, t = x; for (let i = 0; i < 30; i++) { t = (lo + hi) / 2; if (b(t, x1, x2) < x) lo = t; else hi = t; } return b(t, y1, y2); }
@@ -1057,7 +1059,7 @@ function titelRoll(el) {
   const f = jetzt => {
     if (titelRollt !== lauf || !el.isConnected) return;
     const k = Math.min(1, (jetzt - t0) / dauer);
-    el.scrollTop = R112 ? y0 * (1 - kurveK(k)) : y0 * Math.pow(1 - k, 3);
+    el.scrollTop = R112 ? y0 * (1 - feder(k)) : y0 * Math.pow(1 - k, 3);
     if (k < 1) requestAnimationFrame(f); else titelRollt = null;
   };
   requestAnimationFrame(f);
@@ -2365,7 +2367,7 @@ function navFahre(art, von, nach, w, fertig) {
   H.classList.add('nav-faehrt');
   const dauer = navRuhig?.matches ? 200 : Math.max(150, (R112 ? (nach > von ? AUF_MS : ZU_MS) : NAV_DAUER) * Math.abs(nach - von));
   const anims = navTeile(art).map(el => {
-    const a = el.animate([navBild(art, el, von, w), navBild(art, el, nach, w)], { duration: dauer, easing: R112 ? K : 'cubic-bezier(.2,.8,.2,1)', fill: 'forwards' });
+    const a = el.animate([navBild(art, el, von, w), navBild(art, el, nach, w)], { duration: dauer, easing: R112 ? (nach > von ? FEDER : ZU_KURVE) : 'cubic-bezier(.2,.8,.2,1)', fill: 'forwards' });
     a.id = 'nav';
     return a;
   });
@@ -2654,7 +2656,7 @@ function blattFahre(nach, fertig, dauer) {
   const a = blattBild(von), b = blattBild(nach);
   blattSetze(Math.min(von, nach));   // die Seite weicht schon während der Bewegung zurück (runde Ecken, Hintergrund)
   blattAnimiere([[dlg, { translate: a.blatt }, { translate: b.blatt }], [blattSchleier, { opacity: a.schleier }, { opacity: b.schleier }],
-    ...blattSeiteTeile(a, b)], dauer, BLATT_KURVE, () => { blattSetze(nach); fertig?.(); });
+    ...blattSeiteTeile(a, b)], dauer, R112 ? (nach > von ? ZU_KURVE : FEDER) : BLATT_KURVE, () => { blattSetze(nach); fertig?.(); });
 }
 // die Seite bewegt sich nur, wenn sie zurückweicht (iPhone hoch) – am iPad und quer bleibt sie ohne Animation (APD-72/D-2)
 const blattSeiteTeile = (a, b) => a.s || b.s ? blattSeite().map(e => [e, a.seite, b.seite]) : [];
@@ -2698,7 +2700,7 @@ function blattGeist() {
   blattGeistEl = g;
   const weg = () => { g.remove(); if (blattGeistEl === g) blattGeistEl = null; };
   const a = navRuhig?.matches ? g.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 200, easing: 'ease-out', fill: 'forwards' })
-    : g.animate([{ translate: `0 ${Math.round(blattY)}px` }, { translate: `0 ${Math.round(blattZu())}px` }], { duration: R112 ? ZU_MS : Math.max(220, Math.min(420, (blattZu() - blattY) * 0.5)), easing: BLATT_KURVE, fill: 'forwards' });
+    : g.animate([{ translate: `0 ${Math.round(blattY)}px` }, { translate: `0 ${Math.round(blattZu())}px` }], { duration: R112 ? ZU_MS : Math.max(220, Math.min(420, (blattZu() - blattY) * 0.5)), easing: R112 ? ZU_KURVE : BLATT_KURVE, fill: 'forwards' });
   a.onfinish = weg; a.oncancel = weg;
 }
 // geschlossen: Abdunkelung und Seite zurück, gleichzeitig mit dem Abbild
@@ -2711,7 +2713,7 @@ function blattWeg() {
   H.classList.remove('blatt-zieht');
   if (!blattSeite().length && !von.schleier) return blattAus();
   blattAnimiere([[blattSchleier, { opacity: von.schleier }, { opacity: 0 }], ...blattSeiteTeile(von, nach)],
-    navRuhig?.matches ? 200 : R112 ? ZU_MS : 380, navRuhig?.matches ? 'ease-out' : BLATT_KURVE, blattAus);
+    navRuhig?.matches ? 200 : R112 ? ZU_MS : 380, navRuhig?.matches ? 'ease-out' : R112 ? ZU_KURVE : BLATT_KURVE, blattAus);
 }
 const dlgSchliessen = dlg.close.bind(dlg);
 dlg.close = v => { blattGeist(); dlgSchliessen(v); };
@@ -3068,7 +3070,7 @@ document.addEventListener('input', e => {
 function gemeldet() {
   const cs = [rolle.el, dlg.open ? dlg.querySelector('.dlg-body') : null].filter(Boolean), y = cs.map(c => c.scrollTop);
   const offen = kbOffen(), f = document.activeElement, feld = f?.matches?.(FELD) ? f : null;
-  if (dlg.open && !isPhone()) { dlg.classList.add('gleitet'); dlg.classList.toggle('runter', !kbOffen()); clearTimeout(gemeldet.t); gemeldet.t = setTimeout(() => dlg.classList.remove('gleitet'), R112 ? 400 : 300); }
+  if (dlg.open && !isPhone()) { dlg.classList.add('gleitet'); dlg.classList.toggle('runter', !kbOffen()); clearTimeout(gemeldet.t); gemeldet.t = setTimeout(() => dlg.classList.remove('gleitet'), R112 ? 550 : 300); }
   // APD-115/N-13: wächst der Rahmen (Tastatur geht zu), bekommt jeder Rollbereich vorher Platz – sonst nur, wo schon Platz steht; Platz bei jeder
   // Meldung bräche das sanfte Rollen ab (‚Nach oben‘ bei offener Tastatur, APD-36/B-8)
   const waechst = kbWar && !offen, mit = cs.map(c => waechst || platzVon(c) > 0);

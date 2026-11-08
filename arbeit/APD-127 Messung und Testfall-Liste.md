@@ -156,3 +156,11 @@ und Sprechblasen bleiben (R-4.13). Danach neues Muster und neuer Wortlaut R-1.12
 
 ~~Entscheidung A behalten oder B bauen~~ (A) → Muster R-1.12 am Gerät (iPhone hoch, iPad quer, hell) → → bei A kein Wortlaut ‚alle Gleitbewegungen wie das Mehr-Menü‘; Modell und Designrichtlinie 13 nach W-3 und
 W-7 (Wortlaut) → Bau-Frage.
+
+## Muster R-1.12 neu (Sitzung 0101, Werte aus Notizen)
+
+Nutzer 08.11.2026: ‚Ja, so bauen‘. `arbeit/APD-127 Muster bauen.mjs`: öffnen, hinein, nach oben (Navigation, Seitenleiste, Blatt, iPad-Fenster mit der
+Tastatur, Titel antippen) mit der Feder aus Notizen (0,35 s ohne Nachschwingen, `linear()` über 0,5 s), schließen und hinaus ease-in-out 0,25 s; Rest nach
+einer Geste anteilig (≥ 0,15 s); Mehr-Menü und Sprechblasen unverändert. Prüfung `arbeit/APD-127 Muster R-1.12 prüfen.mjs` angepasst (M-9 bis M-13 mit
+Feder bzw. ease-in-out; M-13 rollt jetzt den Inhalt der Reise 1600 px statt der Startliste 86–100 px – die alte Prüfung griff den falschen Rollbereich):
+Chromium und WebKit je 2 von 2 grün, Gegenprobe `PRUEF_V=heute` in beiden rot (M-9 bis M-13).

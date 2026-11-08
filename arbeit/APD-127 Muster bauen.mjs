@@ -8,6 +8,10 @@
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 const AD = new URL('../', import.meta.url), RLB = new URL('../../ReiseLogBuch/', import.meta.url), ZIEL = new URL('./APD-127/app/', import.meta.url);
 mkdirSync(ZIEL, { recursive: true });
+// Sitzung 0101 (Messung Notizen-Seitenleiste): öffnen mit Feder ohne Nachschwingen, Antwortzeit 0,35 s, als linear()-Kurve über 0,5 s;
+// schließen ease-in-out 0,25 s (Form wie Notizen, Länge wie das Mehr-Menü)
+const federWert = t => 1 - (1 + 2 * Math.PI / 0.35 * t) * Math.exp(-2 * Math.PI / 0.35 * t);
+const FEDER = 'linear(' + Array.from({ length: 31 }, (_, i) => (federWert(i / 30 * 0.5) / federWert(0.5)).toFixed(4)).join(', ') + ')', ZU_KURVE = 'cubic-bezier(.42,0,.58,1)';
 const ersetze = (s, alt, neu) => { if (s.split(alt).length !== 2) throw new Error('nicht genau einmal: ' + alt.slice(0, 80)); return s.replace(alt, () => neu); };
 
 // ---------- index.html ----------
@@ -16,9 +20,9 @@ h = ersetze(h, '<link rel="manifest" href="manifest.json">\n', '');
 h = ersetze(h, '<link rel="apple-touch-icon" href="icon-180.png">', '<link rel="apple-touch-icon" href="../../../../ReiseLogBuch/icon-180.png">');
 h = ersetze(h, '<title>Reiselogbuch</title>', '<title>APD-127 Muster</title>');
 h = ersetze(h, 'href="../AppDesign/fassung/4.56.0/design.css">', `href="../../../fassung/4.56.0/design.css">
-<style>/* APD-127 R-1.12: iPad-Fenster mit der Tastatur – hoch 0,35 s, runter 0,25 s, Kurve K */
-.muster-a dialog.gleitet { transition: top .35s cubic-bezier(.32,.72,0,1); }
-.muster-a dialog.gleitet.runter { transition-duration: .25s; }
+<style>/* APD-127 R-1.12 (0101): iPad-Fenster mit der Tastatur – hoch Feder aus Notizen (0,5 s), runter ease-in-out 0,25 s */
+.muster-a dialog.gleitet { transition: top .5s ${FEDER}; }
+.muster-a dialog.gleitet.runter { transition: top .25s ${ZU_KURVE}; }
 @media (prefers-reduced-motion: reduce) { .muster-a dialog.gleitet { transition: none; } }</style>`);
 h = ersetze(h, '<script src="../AppDesign/fassung/4.56.0/ui.js"></script>', `<script>
 // APD-127 Muster: Variante aus der Adresse (?v=a bzw. ohne Angabe neu nach R-1.12, ?v=b heute)
@@ -44,32 +48,36 @@ writeFileSync(new URL('index.html', ZIEL), h);
 
 // ---------- ui.js ----------
 let u = readFileSync(new URL('fassung/4.56.0/ui.js', AD), 'utf8');
-u = `// ---------- APD-127 Muster (Sitzung 0100): R-1.12 nur mit ?v=a bzw. ohne Angabe, ?v=b = 4.56.0 ----------
-const R112 = !/[?&]v=b/.test(location.search), K = 'cubic-bezier(.32,.72,0,1)', AUF_MS = 350, ZU_MS = 250;
+u = `// ---------- APD-127 Muster (Sitzung 0100, Werte 0101): R-1.12 nur mit ?v=a bzw. ohne Angabe, ?v=b = 4.56.0 ----------
+const R112 = !/[?&]v=b/.test(location.search), FEDER = '${FEDER}', ZU_KURVE = '${ZU_KURVE}', AUF_MS = 500, ZU_MS = 250;
+// Feder aus Notizen (Antwortzeit 0,35 s, ohne Nachschwingen) für eigenes Rollen Bild für Bild: k = Anteil der 0,5 s
+function feder(k) { const w = t => 1 - (1 + 2 * Math.PI / 0.35 * t) * Math.exp(-2 * Math.PI / 0.35 * t); return k >= 1 ? 1 : w(k * 0.5) / w(0.5); }
 // Kurve K für eigenes Rollen Bild für Bild (Titel antippen): x(t) nach t auflösen, y(t) zurückgeben
 function kurveK(x) { const x1 = .32, y1 = .72, x2 = 0, y2 = 1, b = (t, a1, a2) => 3 * a1 * t * (1 - t) ** 2 + 3 * a2 * t * t * (1 - t) + t ** 3;
   let lo = 0, hi = 1, t = x; for (let i = 0; i < 30; i++) { t = (lo + hi) / 2; if (b(t, x1, x2) < x) lo = t; else hi = t; } return b(t, y1, y2); }
 ` + u;
 // Titel antippen = nach oben: 0,35 s, Kurve K (heute 0,3–0,7 s, kubisch auslaufend)
 u = ersetze(u, 'dauer = Math.min(700, 300 + y0 / 20), lauf = titelRollt = { el };', 'dauer = R112 ? AUF_MS : Math.min(700, 300 + y0 / 20), lauf = titelRollt = { el };');
-u = ersetze(u, '    el.scrollTop = y0 * Math.pow(1 - k, 3);', '    el.scrollTop = R112 ? y0 * (1 - kurveK(k)) : y0 * Math.pow(1 - k, 3);');
+u = ersetze(u, '    el.scrollTop = y0 * Math.pow(1 - k, 3);', '    el.scrollTop = R112 ? y0 * (1 - feder(k)) : y0 * Math.pow(1 - k, 3);');
 // Navigation iPhone und Seitenleiste iPad: hinein bzw. ein 0,35 s, zurück bzw. aus 0,25 s, Rest anteilig (≥ 0,15 s), Kurve K
 u = ersetze(u, 'const dauer = navRuhig?.matches ? 200 : Math.max(150, NAV_DAUER * Math.abs(nach - von));',
   'const dauer = navRuhig?.matches ? 200 : Math.max(150, (R112 ? (nach > von ? AUF_MS : ZU_MS) : NAV_DAUER) * Math.abs(nach - von));');
-u = ersetze(u, "{ duration: dauer, easing: 'cubic-bezier(.2,.8,.2,1)', fill: 'forwards' }", "{ duration: dauer, easing: R112 ? K : 'cubic-bezier(.2,.8,.2,1)', fill: 'forwards' }");
+u = ersetze(u, "{ duration: dauer, easing: 'cubic-bezier(.2,.8,.2,1)', fill: 'forwards' }", "{ duration: dauer, easing: R112 ? (nach > von ? FEDER : ZU_KURVE) : 'cubic-bezier(.2,.8,.2,1)', fill: 'forwards' }");
 // Blatt nach dem Loslassen: zurück 0,35 s, zu 0,25 s, Rest anteilig (≥ 0,15 s)
 u = ersetze(u, '  dauer = dauer || Math.max(220, Math.min(480, Math.abs(nach - von) * 0.9));',
   '  dauer = dauer || (R112 ? Math.max(150, (nach > von ? ZU_MS : AUF_MS) * Math.min(1, Math.abs(nach - von) / Math.max(1, blattZu()))) : Math.max(220, Math.min(480, Math.abs(nach - von) * 0.9)));');
 // Blatt schließen mit x: 0,25 s (heute 0,22–0,42 s je nach Weg)
 u = ersetze(u, '{ duration: Math.max(220, Math.min(420, (blattZu() - blattY) * 0.5)), easing: BLATT_KURVE',
-  '{ duration: R112 ? ZU_MS : Math.max(220, Math.min(420, (blattZu() - blattY) * 0.5)), easing: BLATT_KURVE');
+  '{ duration: R112 ? ZU_MS : Math.max(220, Math.min(420, (blattZu() - blattY) * 0.5)), easing: R112 ? ZU_KURVE : BLATT_KURVE');
 // Blatt öffnen: blattFahre(0) – 0,35 s über die Regel oben (heute 0,22–0,48 s je nach Weg)
 // Blatt schließen: die Seite dahinter kommt zurück (blattWeg) in 0,25 s (heute 0,38 s)
-u = ersetze(u, 'navRuhig?.matches ? 200 : 380, navRuhig?.matches', 'navRuhig?.matches ? 200 : R112 ? ZU_MS : 380, navRuhig?.matches');
+u = ersetze(u, "navRuhig?.matches ? 200 : 380, navRuhig?.matches ? 'ease-out' : BLATT_KURVE", "navRuhig?.matches ? 200 : R112 ? ZU_MS : 380, navRuhig?.matches ? 'ease-out' : R112 ? ZU_KURVE : BLATT_KURVE");
+// Blatt nach dem Loslassen bzw. öffnen: hinunter (zu) ease-in-out, hinauf (auf, zurück) Feder
+u = ersetze(u, '...blattSeiteTeile(a, b)], dauer, BLATT_KURVE,', '...blattSeiteTeile(a, b)], dauer, R112 ? (nach > von ? ZU_KURVE : FEDER) : BLATT_KURVE,');
 // Blatt nach dem Loslassen zu: 0,25 s anteilig (heute 0,18–0,36 s je nach Weg)
 u = ersetze(u, 'Math.max(180, Math.min(360, (zu - blattY) * 0.5)));', 'R112 ? Math.max(150, ZU_MS * Math.min(1, (zu - blattY) / Math.max(1, zu))) : Math.max(180, Math.min(360, (zu - blattY) * 0.5)));');
 // iPad-Fenster mit der Tastatur: Richtung merken (runter = Tastatur zu, 0,25 s), gleiten etwas länger als die Dauer
 u = ersetze(u, "if (dlg.open && !isPhone()) { dlg.classList.add('gleitet'); clearTimeout(gemeldet.t); gemeldet.t = setTimeout(() => dlg.classList.remove('gleitet'), 300); }",
-  "if (dlg.open && !isPhone()) { dlg.classList.add('gleitet'); dlg.classList.toggle('runter', !kbOffen()); clearTimeout(gemeldet.t); gemeldet.t = setTimeout(() => dlg.classList.remove('gleitet'), R112 ? 400 : 300); }");
+  "if (dlg.open && !isPhone()) { dlg.classList.add('gleitet'); dlg.classList.toggle('runter', !kbOffen()); clearTimeout(gemeldet.t); gemeldet.t = setTimeout(() => dlg.classList.remove('gleitet'), R112 ? 550 : 300); }");
 writeFileSync(new URL('ui.js', ZIEL), u);
 console.log('APD-127 Muster gebaut: arbeit/APD-127/app/index.html, arbeit/APD-127/app/ui.js');

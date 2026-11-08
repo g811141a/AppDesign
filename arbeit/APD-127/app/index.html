@@ -11,9 +11,9 @@
 <link rel="apple-touch-icon" href="../../../../ReiseLogBuch/icon-180.png">
 <title>APD-127 Muster</title>
 <link rel="stylesheet" href="../../../fassung/4.56.0/design.css">
-<style>/* APD-127 R-1.12: iPad-Fenster mit der Tastatur – hoch 0,35 s, runter 0,25 s, Kurve K */
-.muster-a dialog.gleitet { transition: top .35s cubic-bezier(.32,.72,0,1); }
-.muster-a dialog.gleitet.runter { transition-duration: .25s; }
+<style>/* APD-127 R-1.12 (0101): iPad-Fenster mit der Tastatur – hoch Feder aus Notizen (0,5 s), runter ease-in-out 0,25 s */
+.muster-a dialog.gleitet { transition: top .5s linear(0.0000, 0.0368, 0.1215, 0.2269, 0.3366, 0.4414, 0.5364, 0.6197, 0.6910, 0.7510, 0.8007, 0.8414, 0.8745, 0.9011, 0.9225, 0.9395, 0.9530, 0.9636, 0.9720, 0.9785, 0.9836, 0.9876, 0.9908, 0.9932, 0.9950, 0.9965, 0.9976, 0.9984, 0.9991, 0.9996, 1.0000); }
+.muster-a dialog.gleitet.runter { transition: top .25s cubic-bezier(.42,0,.58,1); }
 @media (prefers-reduced-motion: reduce) { .muster-a dialog.gleitet { transition: none; } }</style>
 <style>
   /* Reiselogbuch: nur, was zur App gehört – die gemeinsamen Bausteine kommen aus AppDesign (design.css) */
