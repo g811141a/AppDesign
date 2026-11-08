@@ -29,9 +29,9 @@ for (const [lage, [width, height]] of Object.entries(LAGEN)) {
       const luecke = um ? false : ks.slice(1).some((x, i) => x.getBoundingClientRect().top - ks[i].getBoundingClientRect().bottom > 1.5);
       // T-8: der Wert hat links mindestens 16 px Abstand zum Rand der Kachel (auch ‚untereinander‘)
       const einzug = [...box.querySelectorAll('.kv .v')].every(x => x.getBoundingClientRect().left - bb.left >= 15.5);
-      // T-9: Linie vor der ersten Zeile, von Rand zu Rand · T-10: alle Texte in Spalte 1 fett (600)
+      // T-9: Linie vor der ersten Zeile, wie die anderen Zeilenlinien mit 16 px Abstand zum Rand (Nutzer 08.11.2026) · T-10: alle Texte in Spalte 1 fett (600)
       const erste = box.querySelector('.h + .kv'), ecs = getComputedStyle(erste), er = erste.getBoundingClientRect();
-      const linie = parseFloat(ecs.borderTopWidth) >= 1 && ecs.borderTopStyle === 'solid' && Math.abs(er.left - bb.left) <= 1 && Math.abs(er.right - bb.right) <= 1;
+      const linie = parseFloat(ecs.borderTopWidth) >= 1 && ecs.borderTopStyle === 'solid' && Math.abs(er.left - bb.left - 16) <= 1 && Math.abs(bb.right - er.right - 16) <= 1;
       const fett = [...box.querySelectorAll('.kv .k .l')].every(l => { const tw = document.createTreeWalker(l, NodeFilter.SHOW_TEXT); let ok = true;
         for (let n; (n = tw.nextNode());) if (/\p{L}/u.test(n.data) && +getComputedStyle(n.parentElement).fontWeight < 600) ok = false; return ok; });
       return { bi, k, v, wx, ragt, k1, boxRagt: box.scrollWidth > box.clientWidth + 1, grau, links, unten, luecke, einzug, linie, fett };
@@ -43,7 +43,7 @@ for (const [lage, [width, height]] of Object.entries(LAGEN)) {
       if (e.ragt) F('RLB-120/T-3', `${w} Bezeichnung ragt über Spalte 1 hinaus`);
       if (e.k1.length) F('RLB-120/T-4', `${w} Emojis der Bezeichnung in zwei Zeilen: ${e.k1.join(', ')}`);
       if (e.boxRagt) F('RLB-120/T-5', `${w} Kachel ragt hinaus`);
-      if (!e.linie) F('RLB-120/T-9', `${w} keine Linie vor der ersten Zeile von Rand zu Rand`);
+      if (!e.linie) F('RLB-120/T-9', `${w} keine Linie vor der ersten Zeile (mit 16 px Abstand zum Rand)`);
       if (!e.fett) F('RLB-120/T-10', `${w} Text in Spalte 1 nicht fett`);
       if (!e.einzug) F('RLB-120/T-8', `${w} Wert ohne 16 px Abstand zum linken Rand`);
       if (!e.grau || !e.links || !e.unten || e.luecke) F('RLB-120/T-7', `${w} Spalte 1 nicht grau nur in der Zelle (grau ${e.grau}, Abstand links ${e.links}, Abstand unten ${e.unten}, Lücke ${e.luecke})`);

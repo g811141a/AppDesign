@@ -133,6 +133,19 @@ Ergebnis (08.11.2026, Sitzung 0103): Chromium und WebKit **alles in Ordnung**; G
 2. Oben ‚Text sehr groß‘ antippen. Erwartet: jede Bezeichnung als grauer Streifen über ihrem Wert, links und rechts mit weißem Rand.
 3. iPad **quer**: die Schritte 1 und 2 wiederholen. Erwartet: wie oben.
 
+## Linien wie heute (Nutzer 08.11.2026, Sitzung 0103)
+
+- **Ergebnis:** ‚Die Linien sollen nicht bis zum linken und rechten Rand reichen, sondern so wie im Muster heute.‘
+- **Umgesetzt:** alle Zeilenlinien (auch die neue Linie vor der ersten Zeile) wieder mit 16 px Abstand zum linken und rechten Rand wie heute; Spalte 1
+  grau nur in ihrer Zelle. Prüfung T-9 jetzt ‚Linie vor der ersten Zeile mit 16 px Abstand zum Rand‘. Chromium und WebKit **alles in Ordnung**,
+  Gegenprobe rot (158 Fehler).
+
+**Link:** https://g811141a.github.io/AppDesign/arbeit/RLB-120/index.html – Safari, hell.
+
+1. iPhone **hoch**: den Link öffnen (neu laden). Erwartet: in ‚neu‘ reichen die Linien wie in ‚heute‘ nicht bis zum Rand; die erste Linie steht unter
+   dem Datum; Spalte 1 grau nur in der Zelle, fett.
+2. iPad **quer**: Schritt 1 wiederholen. Erwartet: wie oben.
+
 ## Offene Usertests
 
 - **P-100** (Reiselogbuch 3.54.0, AppDesign 4.56.0) – ok bis auf **P-100/1** (→ RLB-123, kommt mit 3.55.0).
