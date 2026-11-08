@@ -1,6 +1,6 @@
-// RLB-120 · Muster ‚Emojis in Textgröße‘ prüfen (Testfall-Liste arbeit/RLB-120 Klärung.md, RLB-120/T-1 bis T-13; Sitzungen 0103, 0104; T-7 auch markierte und ausgewählte Kachel).
+// RLB-120 · Muster ‚Emojis in Textgröße‘ prüfen (Testfall-Liste arbeit/RLB-120 Klärung.md, RLB-120/T-1 bis RLB-120/T-13; Sitzungen 0103, 0104; RLB-120/T-7 auch markierte und ausgewählte Kachel).
 //   node "arbeit/RLB-120 Muster prüfen.mjs"     (im Ordner AppDesign; PRUEF_BROWSER=webkit für WebKit)
-//   PRUEF_V=heute …                             Gegenprobe: prüft die Kästen ‚heute‘ – T-1, T-2, T-7, T-12 und T-13 müssen rot werden
+//   PRUEF_V=heute …                             Gegenprobe: prüft die Kästen ‚heute‘ – RLB-120/T-1, RLB-120/T-2, RLB-120/T-7, RLB-120/T-12 und RLB-120/T-13 müssen rot werden
 import { createRequire } from 'node:module';
 const pw = createRequire(new URL('../../ReiseLogBuch/tests/', import.meta.url))('playwright');
 const art = process.env.PRUEF_BROWSER || 'chromium', seite = process.env.PRUEF_V === 'heute' ? 'heute' : 'neu';
@@ -20,10 +20,10 @@ for (const [lage, [width, height]] of Object.entries(LAGEN)) {
       const k = [...box.querySelectorAll('.kv .k')].flatMap(hoehe), v = [...box.querySelectorAll('.kv .v')].flatMap(hoehe), wx = hoehe(box.querySelector('.h .wx'));
       const ragt = [...box.querySelectorAll('.kv .k .l')].some(l => l.scrollWidth > l.parentElement.clientWidth + 1 || l.getBoundingClientRect().right > l.parentElement.getBoundingClientRect().right + 1);
       const k1 = [...box.querySelectorAll('.kv .k .l')].filter(l => { const tops = new Set(hoehe(l).map(x => x.top)); return tops.size > 1; }).map(l => l.textContent);
-      // T-7 (Nutzer 08.11.2026): Spalte 1 grau wie die Kopfzeile der Tabelle (--th-bg), nur in der Zelle – nicht bis zum linken und unteren Rand der Kachel
+      // RLB-120/T-7 (Nutzer 08.11.2026): Spalte 1 grau wie die Kopfzeile der Tabelle (--th-bg), nur in der Zelle – nicht bis zum linken und unteren Rand der Kachel
       const th = getComputedStyle(document.documentElement).getPropertyValue('--th-bg').trim(), bb = box.getBoundingClientRect();
       const ks = [...box.querySelectorAll('.kv .k')], um = document.documentElement.classList.contains('ts-um');
-      // T-7 (Nutzer 08.11.2026, Sitzung 0104): Verlauf B Weiß → Grau 5 (#e5e5ea) – nebeneinander von links nach rechts, untereinander (ts-um) von oben nach unten
+      // RLB-120/T-7 (Nutzer 08.11.2026, Sitzung 0104): Verlauf B Weiß → Grau 5 (#e5e5ea) – nebeneinander von links nach rechts, untereinander (ts-um) von oben nach unten
       // markierte (.gap) und ausgewählte (.on) Kachel: der Verlauf beginnt mit der Farbe der Kachel (Nutzer 08.11.2026, Sitzung 0104)
       const start = getComputedStyle(box).backgroundColor;
       const nachUnten = x => x.startsWith('linear-gradient(' + start) || x.startsWith('linear-gradient(to bottom, ' + start), nachRechts = x => x.startsWith('linear-gradient(to right, ' + start);
@@ -31,14 +31,14 @@ for (const [lage, [width, height]] of Object.entries(LAGEN)) {
       const links = ks.every(x => x.getBoundingClientRect().left - bb.left >= 15);
       const unten = bb.bottom - ks.at(-1).getBoundingClientRect().bottom >= 4;
       const luecke = um ? false : ks.slice(1).some((x, i) => x.getBoundingClientRect().top - ks[i].getBoundingClientRect().bottom > 1.5);
-      // T-8: der Wert hat links mindestens 16 px Abstand zum Rand der Kachel (auch ‚untereinander‘)
+      // RLB-120/T-8: der Wert hat links mindestens 16 px Abstand zum Rand der Kachel (auch ‚untereinander‘)
       const einzug = [...box.querySelectorAll('.kv .v')].every(x => x.getBoundingClientRect().left - bb.left >= 15.5);
-      // T-9: Linie vor der ersten Zeile, wie die anderen Zeilenlinien mit 16 px Abstand zum Rand (Nutzer 08.11.2026) · T-10: alle Texte in Spalte 1 fett (600)
+      // RLB-120/T-9: Linie vor der ersten Zeile, wie die anderen Zeilenlinien mit 16 px Abstand zum Rand (Nutzer 08.11.2026) · RLB-120/T-10: alle Texte in Spalte 1 fett (600)
       const erste = box.querySelector('.h + .kv'), ecs = getComputedStyle(erste), er = erste.getBoundingClientRect();
       const linie = parseFloat(ecs.borderTopWidth) >= 1 && ecs.borderTopStyle === 'solid' && Math.abs(er.left - bb.left - 16) <= 1 && Math.abs(bb.right - er.right - 16) <= 1;
       const fett = [...box.querySelectorAll('.kv .k .l')].every(l => { const tw = document.createTreeWalker(l, NodeFilter.SHOW_TEXT); let ok = true;
         for (let n; (n = tw.nextNode());) if (/\p{L}/u.test(n.data) && +getComputedStyle(n.parentElement).fontWeight < 600) ok = false; return ok; });
-      // T-11: Linie auch nach der letzten Zeile (Nutzer 08.11.2026)
+      // RLB-120/T-11: Linie auch nach der letzten Zeile (Nutzer 08.11.2026)
       const lz = getComputedStyle([...box.querySelectorAll('.kv')].at(-1)), unterste = parseFloat(lz.borderBottomWidth) >= 1 && lz.borderBottomStyle === 'solid';
       return { bi, k, v, wx, ragt, k1, boxRagt: box.scrollWidth > box.clientWidth + 1, grau, links, unten, luecke, einzug, linie, fett, unterste };
     }), seite);
@@ -63,7 +63,7 @@ for (const [lage, [width, height]] of Object.entries(LAGEN)) {
   }
   await p.close();
 }
-// T-13 (Nutzer 08.11.2026, Sitzung 0104): Ausgabe (HTML/PDF, Mustertabelle outputCss) – Kopf mit Verlauf B von oben Weiß nach unten #d9d9d9; nichts ragt hinaus
+// RLB-120/T-13 (Nutzer 08.11.2026, Sitzung 0104): Ausgabe (HTML/PDF, Mustertabelle outputCss) – Kopf mit Verlauf B von oben Weiß nach unten #d9d9d9; nichts ragt hinaus
 for (const [lage, [width, height]] of Object.entries(LAGEN)) {
   const p = await b.newPage({ viewport: { width, height } });
   await p.goto(new URL('./RLB-120/ausgabe.html', import.meta.url).href);

@@ -1,6 +1,6 @@
-// RLB-122 · Muster ‚Umbruch vor der Anzahl‘ prüfen (Testfall-Liste arbeit/RLB-122 Klärung.md, RLB-122/T-1 bis T-5; Sitzung 0103).
+// RLB-122 · Muster ‚Umbruch vor der Anzahl‘ prüfen (Testfall-Liste arbeit/RLB-122 Klärung.md, RLB-122/T-1 bis RLB-122/T-5; Sitzung 0103).
 //   node "arbeit/RLB-122 Muster prüfen.mjs"     (im Ordner AppDesign; PRUEF_BROWSER=webkit für WebKit)
-//   PRUEF_V=heute …                             Gegenprobe: prüft die Spalten ‚heute‘ – T-1 und T-2 müssen rot werden
+//   PRUEF_V=heute …                             Gegenprobe: prüft die Spalten ‚heute‘ – RLB-122/T-1 und RLB-122/T-2 müssen rot werden
 import { createRequire } from 'node:module';
 const pw = createRequire(new URL('../../ReiseLogBuch/tests/', import.meta.url))('playwright');
 const art = process.env.PRUEF_BROWSER || 'chromium', seite = process.env.PRUEF_V === 'heute' ? 'heute' : 'neu';

@@ -66,7 +66,7 @@ Umbruch). Oben die Textgröße (Standard, groß = xxxl, sehr groß = ax3).
 | RLB-122/T-4 | danach | Text unverändert |
 | RLB-122/T-5 | danach | nichts ragt hinaus |
 | RLB-122/T-6 | Muster | es gibt Umbrüche (sonst prüft es nichts) |
-| RLB-122/T-7 | Gegenprobe `PRUEF_V=heute` | T-1 und T-2 rot |
+| RLB-122/T-7 | Gegenprobe `PRUEF_V=heute` | RLB-122/T-1 und RLB-122/T-2 rot |
 
 Ergebnis (08.11.2026, Sitzung 0103): Chromium und WebKit **alles in Ordnung** (66 Umbrüche geprüft); Gegenprobe in beiden rot (78 Fehler).
 

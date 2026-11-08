@@ -1,6 +1,6 @@
-// APD-116 · Muster ‚Dateiname in eigener Zeile‘ prüfen (Testfall-Liste arbeit/APD-116 Klärung.md, APD-116/T-1 bis T-5; Sitzung 0102).
+// APD-116 · Muster ‚Dateiname in eigener Zeile‘ prüfen (Testfall-Liste arbeit/APD-116 Klärung.md, APD-116/T-1 bis APD-116/T-5; Sitzung 0102).
 //   node "arbeit/APD-116 Muster prüfen.mjs"     (im Ordner AppDesign; PRUEF_BROWSER=webkit für WebKit)
-//   PRUEF_V=heute …                             Gegenprobe: prüft die Kästen ‚heute‘ – T-1 muss rot werden
+//   PRUEF_V=heute …                             Gegenprobe: prüft die Kästen ‚heute‘ – APD-116/T-1 muss rot werden
 import { createRequire } from 'node:module';
 const pw = createRequire(new URL('../../ReiseLogBuch/tests/', import.meta.url))('playwright');
 const art = process.env.PRUEF_BROWSER || 'chromium', seite = process.env.PRUEF_V === 'heute' ? 'heute' : 'neu';
