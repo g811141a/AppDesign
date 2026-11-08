@@ -85,6 +85,20 @@ Ergebnis (08.11.2026, Sitzung 0103): Chromium und WebKit **alles in Ordnung**; G
 2. Oben ‚Text sehr groß‘ antippen. Erwartet: jede Bezeichnung als grauer Streifen über ihrem Wert, der Wert mit Abstand zum linken Rand.
 3. iPad **quer**: die Schritte 1 und 2 wiederholen. Erwartet: wie oben.
 
+## Linie vor der ersten Zeile, Spalte 1 fett (Nutzer 08.11.2026, Sitzung 0103)
+
+- **Ergebnis:** Farbe ok; dazu ‚vor der ersten Zeile eine Linie einziehen und alle Texte in der ersten Spalte fett formatieren‘.
+- **Umgesetzt im Muster:** Linie unter dem Kopf vor der ersten Zeile, von Rand zu Rand (wie die anderen Zeilenlinien); alle Texte in Spalte 1 fett
+  (600, wie die Kopfzeile der Tabelle).
+- **Hinweis:** ‚fett‘ widerspricht **R-6.5** (‚Text in der ersten Spalte normal (400)‘) – R-6.5 wird geändert; den Wortlaut lege ich vor (0 Nr. 29).
+- **Prüfung ergänzt:** RLB-120/T-9 Linie vor der ersten Zeile · T-10 Text in Spalte 1 fett. Chromium und WebKit **alles in Ordnung**, Gegenprobe rot
+  (158 Fehler).
+
+**Link:** https://g811141a.github.io/AppDesign/arbeit/RLB-120/index.html – Safari, hell.
+
+1. iPhone **hoch**: den Link öffnen (neu laden). Erwartet: in ‚neu‘ unter dem Datum eine Linie von Rand zu Rand; ‚Verlauf‘ und ‚km‘ in Spalte 1 fett.
+2. iPad **quer**: Schritt 1 wiederholen. Erwartet: wie oben.
+
 ## Offene Usertests
 
 - **P-100** (Reiselogbuch 3.54.0, AppDesign 4.56.0) – ok bis auf **P-100/1** (→ RLB-123, kommt mit 3.55.0).

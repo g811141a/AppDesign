@@ -132,6 +132,9 @@ body { background: var(--bg); }
 .neu .box .kv { margin: 0 -16px; padding-right: 16px; }
 .neu .box .kv .k { background: var(--th-bg); margin: calc(-7px * var(--f-body)) 0; padding: calc(7px * var(--f-body)) 8px calc(7px * var(--f-body)) 16px; width: calc(90px * var(--f-body) + 16px); }
 .neu .box .kv:last-child .k { margin-bottom: calc(-19px * var(--f-body)); padding-bottom: calc(19px * var(--f-body)); }
+/* Linie vor der ersten Zeile (unter dem Kopf), von Rand zu Rand; alle Texte in Spalte 1 fett wie die Kopfzeile der Tabelle (Nutzer 08.11.2026) */
+.neu .box .h + .kv { border-top: 1px solid var(--line); margin-top: calc(8px * var(--f-body)); }
+.neu .box .kv .k, .neu .box .kv .k.word, .neu .box .kv .k .w { font-weight: 600; }
 html.ts-um .neu .box .kv { padding-left: 16px; }
 html.ts-um .neu .box .kv .k { width: auto; margin: calc(-7px * var(--f-body)) -16px 2px -16px; padding: 4px 16px; }
 html.ts-um .neu .box .kv:last-child .k { margin-bottom: 2px; padding-bottom: 4px; }
