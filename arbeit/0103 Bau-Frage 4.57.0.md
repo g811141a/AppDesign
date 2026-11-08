@@ -39,3 +39,20 @@ Nächste Version AppDesign 4.57.0: **5 Punkte bereit** (APD-125, APD-126, APD-12
 ## Ergebnis
 
 **‚Nein‘** (Nutzer 08.11.2026, Sitzung 0103) – nicht gebaut; die sechs Punkte bleiben in ‚0. Nächste Version‘. Weiter keine gültige Freigabe.
+
+## Neue Bau-Frage – kleinere Version (Nutzer 08.11.2026: ‚Kleinere Version‘)
+
+| Punkt | Thema | Inhalt |
+|---|---|---|
+| APD-126 | Eingabefelder | Cursor beim ersten Antippen am Ende; leeres Textfeld einzeilig, wächst und schrumpft mit |
+| APD-124 | Eingabefelder | Rückgängig-Icon im Feld nach dem Leeren mit ⓧ |
+| RLB-123 | Eingabefelder (App) | Verlauf: Vorschläge wieder über dem Feld (behebt P-100/1) |
+| APD-125 | klein | Zusammenarbeit 3.11.0 |
+| APD-116 | klein | Dateiname im Hinweisfenster allein in einer Zeile, R-10.8 |
+
+- **APD-127 (Gleiten) bleibt** in ‚0. Nächste Version‘ für eine spätere Version; die Testfälle APD-127/B-1 bis B-10 (`checkGleiten`) und P-101/5 bis /7
+  fallen aus dieser Version heraus, die Testfall-Liste wird beim Bau entsprechend gekürzt (Testfälle P-101 neu nummeriert).
+- 0 Nr. 8: **ein Thema** (Eingabefelder) und zwei kleine Punkte.
+- Ablauf nach ‚Ja‘ wie oben (Vorbereitungs-Zweige, `vorbereiten`, bauen, CHANGELOG mit P-101, `fassung`, `los` ~60 min, Bericht).
+
+**Ergebnis:** **‚Nein‘** auch zur kleineren Version (Nutzer 08.11.2026, Sitzung 0103) – nicht gebaut, keine gültige Freigabe.
