@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="de" data-ts="l" class="phone"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>RLB-120 Tageskachel</title>
+<link rel="stylesheet" href="../../fassung/4.56.0/design.css">
+<style>
+/* Stile des Reiselogbuchs 3.54.0 (index.html), unverändert kopiert */
+
+  /* Reiselogbuch: nur, was zur App gehört – die gemeinsamen Bausteine kommen aus AppDesign (design.css) */
+  .meta { display: grid; grid-template-columns: max-content 1fr; gap: 2px 14px; margin: 4px 0 6px; }
+  .meta dt { font-weight: 600; }
+  .meta dd { margin: 0; }
+  .avg { display: inline-flex; flex-wrap: wrap; } .avg > span { white-space: nowrap; }   /* RLB-112: Ø unter dem Wert, statHtml */
+  .progress { font-size: calc(14px * var(--f-subhead)); color: var(--muted); margin: 0 0 12px; }
+
+  /* Tabelle */
+  .table-wrap { background: var(--card); border-radius: 12px; overflow: clip; box-shadow: var(--table-shadow); }
+  table.days { border-collapse: separate; border-spacing: 0; width: 100%; }
+  table.days th, table.days td { border-bottom: 1px solid var(--line); padding: 10px 12px; vertical-align: top; text-align: left; }
+  table.days td + td { border-left: 1px solid var(--line); }
+  table.days th { position: sticky; top: 0; background: var(--th-bg); border-bottom-color: var(--th-line); font-size: var(--t-headline); font-weight: 600; z-index: 2; }
+  table.days th + th { border-left: 1px solid var(--th-line); }
+  table.days tbody tr:last-child td { border-bottom: none; }
+  table.days tbody tr { cursor: pointer; }
+  table.days tbody tr.alt { background: var(--zebra); }
+  @media (hover: hover) { table.days tbody tr:hover { background: var(--row-hover); } }
+  table.days tbody tr.gap { background: var(--focus); }
+  table.days tbody tr.on { background: var(--sel-bg); }
+  td.day { white-space: nowrap; width: 1%; }
+  td.day .wx { display: block; font-size: calc(18px * var(--f-body)); }
+  td.day .wx.empty { opacity: .25; }
+  .tag { display: inline-block; font-size: var(--t-caption1); border-radius: 6px; padding: 0 6px; margin-left: 4px; vertical-align: 1px; }
+  .tag.today { background: var(--accent-fill); color: var(--accent-ink); }
+  .tag.miss { color: var(--warn); border: 1px solid var(--warn); }
+  td.quarter a { text-decoration: none; }
+
+  /* Hängender Einzug: Folgezeilen beginnen unter dem Text, nicht unter dem Zeichen */
+  .ln { display: flex; gap: .35em; }
+  .ln + .ln { margin-top: 2px; }
+  .ln .m { flex: none; }
+  .ln .t { min-width: 0; overflow-wrap: anywhere; }
+  /* In der Tagestabelle zwischen ganzen Wörtern umbrechen (die Spalte wird so breit wie das längste Wort);
+     ein zu langes Wort, das nicht in die Spalte passt, bricht im Wort um (R-6.3). */
+  table.days .ln .t { overflow-wrap: break-word; }
+  /* Spaltenköpfe (Smileys) bleiben in einer Zeile – die Spalte wird mindestens so breit. */
+  table.days th { white-space: nowrap; }
+  mark { background: var(--mark); color: inherit; border-radius: 3px; padding: 0 1px; }
+  mark.cur { background: var(--mark-cur); color: var(--mark-cur-ink); }
+
+  .fazit-box { display: inline-block; width: auto; max-width: 100%; text-align: left; padding: 12px 14px; min-height: 60px; border-radius: 14px; background: var(--card); }
+  .kosten { display: flex; align-items: center; gap: 10px; }
+  /* seit 3.42.0 (AppDesign APD-95, R-5.8): ‚€‘ normal und in Textgröße wie das Feld */
+  /* RLB-101 (AppDesign APD-43 B5): Betragsfeld in Zeichenbreite (‚4.850,00 €‘ plus Luft) statt fest 130 px – wächst mit der Textgröße */
+  #kosten, #fPrice { text-align: right; width: calc(11.5ch + 24px); flex: none; }
+  /* seit 3.41.0 (RLB-109): Preis des Quartiers unter ‚Ort‘ – Bezeichnung, Betragsfeld, € (R-5.1) */
+  .qprice { margin-top: 12px; }
+  .qprice[hidden] { display: none; }
+  .qprice label { margin: 0; }
+  .table-wrap.fit { display: inline-block; max-width: 100%; }
+  .table-wrap.fit table { width: auto; }
+  table.days.static tbody tr { cursor: default; }
+  table.days td.num, table.days th.num { text-align: right; }
+  table.days td.nw { white-space: nowrap; }
+  table.days.static td.quarter a, table.days.static a { text-decoration: none; }
+  td a { text-decoration: none; }
+  /* Maps-Links: Antippfläche unsichtbar auf 44 px Höhe vergrößert (Innenabstand eines Inline-Links ändert das Layout nicht) */
+  .ln.q a, #qHint a { padding: 12px 0; position: relative; }
+  /* R-3.1 (seit 3.12.0, Fund APD-5): kurze Quartiernamen (‚Hotel‘) gaben eine Antippfläche unter 44 px. Wie iOS wird die Fläche
+     unsichtbar auf mindestens 44 px verbreitert – Schrift und Abstände bleiben gleich. */
+  .ln.q a::after, #qHint a::after { content: ''; position: absolute; top: 0; bottom: 0; left: 50%; width: max(100%, 44px); transform: translateX(-50%); }
+
+  /* iPhone: Tage als Kästen (AppDesign .box) – Kopf mit Datum, Hinweisen und Wetter */
+  .box.day { cursor: pointer; }
+  .box.day .h { display: flex; align-items: center; gap: 4px; font-weight: 600; }
+  .box.day .h .wx { margin-left: auto; font-size: calc(18px * var(--f-body)); font-weight: 400; }
+  .box.day .wx.empty { opacity: .25; }
+  .box.day.gap { background: var(--focus); }
+  .box.day.on { background: var(--sel-bg); }
+  .box.day a { text-decoration: none; }
+  /* iPhone: Bezeichnung mit Doppelpunkt, darunter der Wert; Reisemittel in einer Zeile, seitlich wischen – seit 3.38.0 (AppDesign APD-86)
+     als Wischzeile mit Verlauf und Pfeilen am Rand (R-5.4); am iPad umbrochen wie bisher */
+  html.phone .meta.trip { display: block; margin-top: 8px; }
+  html.phone .meta.trip dd { margin: 0 0 6px; }
+  html:not(.phone) .meta.trip #reisemittel { white-space: normal; }
+  html.phone .fazit-box { width: 100%; }
+  /* Wetter auf dem iPhone 40 px breit, damit alle sieben ohne Wischen nebeneinander passen (bewusste Abweichung) – seit 3.35.0
+     (RLB-101, AppDesign APD-43 B6) nur bei Standard; bei größerer Schrift wachsen die Knöpfe, passt es nicht, wischt die Kapsel seitlich */
+  html.phone #wx button { width: max(40px, calc(48px * var(--f-body) - 8px)); min-width: max(40px, calc(48px * var(--f-body) - 8px)); }
+  /* RLB-101 (AppDesign APD-43 U1): bei großer Schrift (html.ts-um) Reisedaten und Statistik untereinander, Wetter unter dem Datum */
+  html.ts-um .meta { display: block; }
+  html.ts-um .meta dd { margin: 0 0 6px; }
+  html.ts-um .box.day .h { flex-wrap: wrap; }
+  html.ts-um .box.day .h .wx { flex: 1 0 100%; margin-left: 0; overflow-wrap: anywhere; }
+  html.ts-um .meta.trip #reisemittel { white-space: normal; }
+  /* Zeichen vor der Zeile (🕛☕📍 …) dürfen bei großer Schrift umbrechen, statt hinauszuragen (R-6.3) */
+  html.ts-um .ln .m { flex: 0 1 auto; min-width: 0; overflow-wrap: anywhere; }
+
+  .qrow { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+  .dlg-body.preview { margin: 0; padding: 24px; background: #fff; color: #000; color-scheme: light; }
+  /* Vorschau in voller Seitenbreite (wie die Ausgabe) – ist das Fenster schmaler (iPad hoch, iPhone),
+     wischt man seitlich, statt dass Wörter zerreißen oder Inhalte über die Tabelle hinausragen */
+  .dlg-body.preview { overflow: auto; }
+  .dlg-body.preview .rt { min-width: 960px; }
+  html.phone .dlg-body.preview { padding: 16px; }
+
+  #printout { display: none; }
+  @media print {
+    @page { size: A4 landscape; margin: 12mm; }
+    html, body, body.docked { background: #fff !important; color: #000; padding: 0 !important; margin: 0; }
+    #app, #side, .side-shade, dialog, .fab { display: none !important; }
+    #printout { display: block; }
+  }
+/* seit 3.54.0 (AppDesign APD-115/E-6, Variante A): ‚Verlauf‘ direkt über dem Feld, die Vorschläge darunter */
+#suggest { margin: 10px 0 0; }
+
+</style>
+<style>
+/* RLB-120 Muster ‚Emojis in Textgröße‘ (Sitzung Reiselogbuch 0103). Die Kästen sind die echte Tageskachel des Reiselogbuchs 3.54.0 (kopiert).
+   Neu: Emojis der Bezeichnung in Spalte 1 in Textgröße wie Spalte 2 (statt Fußnote), Spalte 1 dafür breiter; Wetter im Kopf in Textgröße
+   (statt fest 18 px). Nur hell. */
+html { color-scheme: light; }
+body { background: var(--bg); }
+.muster { max-width: 1100px; margin: 0 auto; padding: 8px 16px 40px; }
+.muster > p { color: var(--muted); margin: 0 0 10px; }
+.reihe { display: flex; flex-wrap: wrap; gap: 16px; margin: 4px 0 22px; }
+.spalte { flex: 1 1 320px; min-width: 0; }
+.spalte > h2 { font-size: var(--t-headline); margin: 0 0 2px; }
+.neu .box .kv .k { font-size: var(--t-body); width: calc(90px * var(--f-body)); }
+.neu .box.day .h .wx { font-size: var(--t-body); }
+.ts { display: flex; gap: 8px; flex-wrap: wrap; margin: 6px 0 4px; }
+.ts button { padding: 6px 12px; border-radius: 16px; border: none; background: var(--btn, #e9e9eb); color: inherit; font: inherit; }
+.ts button[aria-pressed=true] { background: var(--accent); color: #fff; }
+</style></head><body>
+<div class="muster">
+  <h1 class="nb-title" style="font-size:var(--t-title2);margin:8px 0 4px">RLB-120 · Tageskachel: Emojis gleich groß</h1>
+  <p>Links heute, rechts neu: die Emojis in Spalte 1 und das Wetter im Kopf in derselben Größe wie Text und Smileys in Spalte 2.</p>
+  <div class="ts" id="ts"><button data-ts="l">Text Standard</button><button data-ts="xxl">Text größer</button><button data-ts="xxxl">Text groß</button><button data-ts="ax3">Text sehr groß</button></div>
+  <div class="reihe"><div class="spalte heute"><h2>heute</h2><div class="box day " data-day="2026-08-24" data-marke="Tag 1 · Mo 24.08." role="button" tabindex="0">
+      <div class="h">Mo, 24.08.<span class="wx">☀️🌤️</span></div>
+      <div class="kv"><span class="k word"><span class="l">Verlauf</span></span><span class="v"><div class="ln"><span class="m">▫️</span><span class="t">Anreise</span></div><div class="ln"><span class="m">▫️</span><span class="t">Strand</span></div></span></div>
+      <div class="kv"><span class="k "><span class="l">🙂☹️😉</span></span><span class="v"><div class="ln"><span class="m">😉</span><span class="t">gut</span></div><div class="ln"><span class="m">☹️</span><span class="t">Regen</span></div></span></div>
+      <div class="kv"><span class="k "><span class="l">🚶🏽‍♂️<span class="w">km</span></span></span><span class="v">6,0</span></div>
+      <div class="kv"><span class="k "><span class="l">🍽️🍷☕️</span></span><span class="v"><div class="ln"><span class="m">📍</span><span class="t"><a href="https://www.google.com/maps/search/?api=1&amp;query=Pizza%2C%20Cairns" target="_blank" rel="noopener" onclick="event.stopPropagation()">Pizza</a></span></div></span></div>
+      <div class="kv"><span class="k "><span class="l">😴💤</span></span><span class="v"><div class="ln q"><span class="m">📍</span><span class="t"><a href="https://www.google.com/maps/search/?api=1&amp;query=Hotel%20A%2C%20Cairns" target="_blank" rel="noopener" onclick="event.stopPropagation()">Hotel A</a>, Cairns</span></div></span></div>
+    </div>
+<div class="box day " data-day="2026-08-25" data-marke="Tag 2 · Di 25.08." role="button" tabindex="0">
+      <div class="h">Di, 25.08.<span class="wx">🌧️</span></div>
+      <div class="kv"><span class="k word"><span class="l">Verlauf</span></span><span class="v"><div class="ln"><span class="t">Regenwald</span></div></span></div>
+      <div class="kv"><span class="k "><span class="l">🙂☹️😉</span></span><span class="v"><div class="ln"><span class="m">😀</span><span class="t">super</span></div></span></div>
+      <div class="kv"><span class="k "><span class="l">🚶🏽‍♂️<span class="w">km</span></span></span><span class="v">12,5</span></div>
+      <div class="kv"><span class="k "><span class="l">🍽️🍷☕️</span></span><span class="v"><div class="ln"><span class="m">📍</span><span class="t"><a href="https://www.google.com/maps/search/?api=1&amp;query=Fisch%2C%20Cairns" target="_blank" rel="noopener" onclick="event.stopPropagation()">Fisch</a></span></div></span></div>
+      <div class="kv"><span class="k "><span class="l">😴💤</span></span><span class="v"><div class="ln q"><span class="m">📍</span><span class="t"><a href="https://www.google.com/maps/search/?api=1&amp;query=Hotel%20A%2C%20Cairns" target="_blank" rel="noopener" onclick="event.stopPropagation()">Hotel A</a>, Cairns</span></div></span></div>
+    </div></div><div class="spalte neu"><h2>neu</h2><div class="box day " data-day="2026-08-24" data-marke="Tag 1 · Mo 24.08." role="button" tabindex="0">
+      <div class="h">Mo, 24.08.<span class="wx">☀️🌤️</span></div>
+      <div class="kv"><span class="k word"><span class="l">Verlauf</span></span><span class="v"><div class="ln"><span class="m">▫️</span><span class="t">Anreise</span></div><div class="ln"><span class="m">▫️</span><span class="t">Strand</span></div></span></div>
+      <div class="kv"><span class="k "><span class="l">🙂☹️😉</span></span><span class="v"><div class="ln"><span class="m">😉</span><span class="t">gut</span></div><div class="ln"><span class="m">☹️</span><span class="t">Regen</span></div></span></div>
+      <div class="kv"><span class="k "><span class="l">🚶🏽‍♂️<span class="w">km</span></span></span><span class="v">6,0</span></div>
+      <div class="kv"><span class="k "><span class="l">🍽️🍷☕️</span></span><span class="v"><div class="ln"><span class="m">📍</span><span class="t"><a href="https://www.google.com/maps/search/?api=1&amp;query=Pizza%2C%20Cairns" target="_blank" rel="noopener" onclick="event.stopPropagation()">Pizza</a></span></div></span></div>
+      <div class="kv"><span class="k "><span class="l">😴💤</span></span><span class="v"><div class="ln q"><span class="m">📍</span><span class="t"><a href="https://www.google.com/maps/search/?api=1&amp;query=Hotel%20A%2C%20Cairns" target="_blank" rel="noopener" onclick="event.stopPropagation()">Hotel A</a>, Cairns</span></div></span></div>
+    </div>
+<div class="box day " data-day="2026-08-25" data-marke="Tag 2 · Di 25.08." role="button" tabindex="0">
+      <div class="h">Di, 25.08.<span class="wx">🌧️</span></div>
+      <div class="kv"><span class="k word"><span class="l">Verlauf</span></span><span class="v"><div class="ln"><span class="t">Regenwald</span></div></span></div>
+      <div class="kv"><span class="k "><span class="l">🙂☹️😉</span></span><span class="v"><div class="ln"><span class="m">😀</span><span class="t">super</span></div></span></div>
+      <div class="kv"><span class="k "><span class="l">🚶🏽‍♂️<span class="w">km</span></span></span><span class="v">12,5</span></div>
+      <div class="kv"><span class="k "><span class="l">🍽️🍷☕️</span></span><span class="v"><div class="ln"><span class="m">📍</span><span class="t"><a href="https://www.google.com/maps/search/?api=1&amp;query=Fisch%2C%20Cairns" target="_blank" rel="noopener" onclick="event.stopPropagation()">Fisch</a></span></div></span></div>
+      <div class="kv"><span class="k "><span class="l">😴💤</span></span><span class="v"><div class="ln q"><span class="m">📍</span><span class="t"><a href="https://www.google.com/maps/search/?api=1&amp;query=Hotel%20A%2C%20Cairns" target="_blank" rel="noopener" onclick="event.stopPropagation()">Hotel A</a>, Cairns</span></div></span></div>
+    </div></div></div>
+</div>
+<script>
+const PX = { l: 17, xxl: 21, xxxl: 23, ax3: 40 };
+const setTs = ts => { const r = document.documentElement, px = PX[ts]; r.dataset.ts = ts; r.style.fontSize = px + 'px';   // wie Safari ‚Textgröße‘ (html { font: -apple-system-body })
+  r.classList.toggle('ts-gross', px >= 21); r.classList.toggle('ts-ax', px >= 28);
+  r.classList.toggle('ts-um', px >= 28 || (px >= 21 && innerWidth < 700 && innerHeight > innerWidth));
+  document.querySelectorAll('#ts button').forEach(b => b.setAttribute('aria-pressed', b.dataset.ts === ts)); };
+document.getElementById('ts').onclick = e => { const b = e.target.closest('button'); if (b) setTs(b.dataset.ts); };
+addEventListener('resize', () => setTs(document.documentElement.dataset.ts));
+setTs('l');
+</script>
+</body></html>
