@@ -126,6 +126,32 @@ Das Muster ist unverändert (automatisch schon in allen vier Lagen grün). **Lin
 4. iPhone **quer**: die Schritte 1 bis 3 wiederholen. Erwartet: wie oben (bei Standardschrift gibt es dort evtl. keinen Umbruch – dann mit ‚Text
    sehr groß‘ prüfen).
 
+**Ergebnis:** Muster iPad hoch und iPhone quer **alles ok** (Nutzer 08.11.2026, Sitzung 0103) – damit in allen vier Lagen ok.
+
+## Testfälle für den Bau
+
+### Testfall (automatisch) – Ort in den festen Prüfungen (Chromium und WebKit, vier Lagen, Textgröße l, xxxl, ax3)
+
+Neuer Baustein `aufzaehlung(liste)` in AppDesign `v4/ui.js`, neue Funktion `checkAufzaehlung` in `tests/ablauf.mjs` (aus `arbeit/RLB-122 Muster
+prüfen.mjs`). Aufgerufen aus Reiselogbuch `ablauf-preis-km.mjs` (Statistik in App, Vorschau und Ausgabe; Reise mit 10 Wetter-Zeichen und 10 Smileys).
+
+| Nr. | Fall | Erwartet |
+|---|---|---|
+| RLB-122/B-1 | Statistik Wetter und Smileys, App, iPhone hoch und iPad hoch, große Schrift | keine Zeile endet mit der Anzahl (‚8×‘) |
+| RLB-122/B-2 | danach | keine Folgezeile beginnt mit ‚·‘, sie beginnt mit der Anzahl |
+| RLB-122/B-3 | danach | jede umbrochene Zeile endet mit ‚·‘ |
+| RLB-122/B-4 | Vorschau und Ausgabe (HTML) | B-1 bis B-3 ebenso |
+| RLB-122/B-5 | danach | Text unverändert (z. B. ‚8×☀️ · 6×🌧️‘), nichts ragt hinaus (R-6.3) |
+| RLB-122/B-6 | Gegenprobe (heutiges `fmt`) | B-1 und B-2 rot |
+| RLB-122/B-7 | Katalog R-10.5 nennt `checkAufzaehlung` | `doku.mjs` (`checkCatalog`) |
+
+### Testfall (User) – Entwurf für Usertest P-101 (Nummer vorläufig, nach P-101/13)
+
+**P-101/14 – Statistik: Umbruch nur nach ‚·‘**
+1. iPhone hoch, hell: ein Reiselogbuch mit vielen verschiedenen Wetter-Zeichen und Smileys öffnen, nach unten zur ‚Statistik‘ rollen.
+2. Die Zeilen ‚Wetter‘ und ‚Smileys‘ ansehen.
+3. Erwartet: jede umbrochene Zeile endet mit ‚·‘, die nächste beginnt mit der Anzahl (z. B. ‚8×⛅‘); Anzahl und Zeichen stehen nie getrennt.
+
 ## Offene Usertests
 
 - **P-100** (Reiselogbuch 3.54.0, AppDesign 4.56.0) – ok bis auf **P-100/1** (→ RLB-123, kommt mit 3.55.0).
