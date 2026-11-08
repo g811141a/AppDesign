@@ -116,6 +116,23 @@ Ergebnis (08.11.2026, Sitzung 0103): Chromium und WebKit **alles in Ordnung**; G
 2. iPad **quer**: ganz nach unten zu ‚Tabelle der Tage (iPad)‘ rollen. Erwartet: in ‚neu‘ sind die Linie unter der Kopfzeile und die Linien zwischen
    ‚Tag‘, ‚Verlauf‘ … schwarz; sonst wie ‚heute‘.
 
+## Schwarz zurück, Grau nur in der Zelle (Nutzer 08.11.2026, Sitzung 0103)
+
+- **Ergebnis:** ‚Nicht ok‘ – ‚Setze die schwarzen Linien wieder zurück wie es vorher war. Außerdem hinterlege die 1. Spalte in der Tageskachel nur im
+  Bereich der Tabellenzelle mit der Hintergrundfarbe. Zum linken und unteren Rand aber nicht.‘
+- **Umgesetzt im Muster:** Linien wieder grau (`--line`), die Tabelle der Tage ist wieder aus dem Muster; Spalte 1 grau nur in ihrer Zelle – links mit
+  16 px Abstand zum Rand der Kachel, unten endet das Grau an der Zelle; die Zeilenlinien bleiben von Rand zu Rand, Linie vor der ersten Zeile und Spalte 1
+  fett bleiben.
+- **Prüfung:** T-11 und T-12 entfallen; T-7 jetzt ‚grau nur in der Zelle‘ (Abstand links ≥ 15 px, unten ≥ 4 px, ohne Lücke zwischen den Zeilen).
+  Chromium und WebKit **alles in Ordnung**, Gegenprobe rot (158 Fehler).
+
+**Link:** https://g811141a.github.io/AppDesign/arbeit/RLB-120/index.html – Safari, hell.
+
+1. iPhone **hoch**: den Link öffnen (neu laden). Erwartet: in ‚neu‘ alle Linien grau; Spalte 1 grau nur in der Zelle – links ein weißer Rand, unten
+   endet das Grau mit der letzten Zelle, darunter weiß.
+2. Oben ‚Text sehr groß‘ antippen. Erwartet: jede Bezeichnung als grauer Streifen über ihrem Wert, links und rechts mit weißem Rand.
+3. iPad **quer**: die Schritte 1 und 2 wiederholen. Erwartet: wie oben.
+
 ## Offene Usertests
 
 - **P-100** (Reiselogbuch 3.54.0, AppDesign 4.56.0) – ok bis auf **P-100/1** (→ RLB-123, kommt mit 3.55.0).
