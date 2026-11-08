@@ -1,9 +1,11 @@
-// APD-124 · Muster ‚Rückgängig im Feld nach dem Leeren‘ bauen (Sitzung Reiselogbuch 0095). Kopie von fassung/4.54.0/ui.js mit dem
-// geänderten ⓧ (APD-124/E-1 bis APD-124/E-3) nach `arbeit/APD-124/ui.js`, die Seite `arbeit/APD-124/index.html` lädt sie mit fassung/4.54.0/design.css.
+// APD-124 · Muster ‚Rückgängig im Feld nach dem Leeren‘ bauen (Sitzung Reiselogbuch 0095, neu aufgesetzt in 0102). Seit 0102 auf dem Muster
+// APD-126 (`arbeit/APD-126/ui.js` = fassung/4.56.0/ui.js mit Cursor am Ende und leer einzeilig – vorher `node "arbeit/APD-126 Muster bauen.mjs"`)
+// mit dem geänderten ⓧ (APD-124/E-1 bis APD-124/E-3) nach `arbeit/APD-124/ui.js`; die Seite `arbeit/APD-124/index.html` lädt sie mit
+// fassung/4.56.0/design.css und ‚leer einzeilig‘ (APD-126/W-5). Gegenprobe: PRUEF_V=heute lädt fassung/4.56.0/ui.js.
 //   node "arbeit/APD-124 Muster bauen.mjs"      (im Ordner AppDesign)
 // Variante über ?v=a (Rückgängig als graue Linie, Lucide undo-2) bzw. ?v=b (weiß im grauen Kreis wie das ⓧ).
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
-const QUELLE = new URL('../fassung/4.54.0/ui.js', import.meta.url), ZIEL = new URL('./APD-124/', import.meta.url);
+const QUELLE = new URL('./APD-126/ui.js', import.meta.url), ZIEL = new URL('./APD-124/', import.meta.url);
 mkdirSync(ZIEL, { recursive: true });
 let u = readFileSync(QUELLE, 'utf8');
 const ersetze = (alt, neu) => { if (u.split(alt).length !== 2) throw new Error('nicht genau einmal: ' + alt.slice(0, 80)); u = u.replace(alt, () => neu); };
