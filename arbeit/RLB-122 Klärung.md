@@ -81,6 +81,51 @@ Ergebnis (08.11.2026, Sitzung 0103): Chromium und WebKit **alles in Ordnung** (6
 4. Oben ‚Text groß‘ und ‚Text sehr groß‘ antippen. Erwartet: rechts bzw. unten (‚neu‘) weiterhin nur Umbrüche nach ‚·‘, nichts ragt hinaus.
 5. iPad **quer**: die Schritte 1 bis 4 wiederholen (‚heute‘ und ‚neu‘ stehen nebeneinander). Erwartet: wie oben.
 
+**Ergebnis:** Muster iPhone hoch und iPad quer **alles ok** (Nutzer 08.11.2026, Sitzung 0103).
+
+## Wortlaut (0 Nr. 29) – alt und neu
+
+### RLB-122/W-1 Regelkatalog R-10.5 (Designrichtlinie 17, Thema 10)
+
+**Alt:** | R-10.5 | **Icon und Text** eines Eintrags bleiben zusammen – Umbruch nur zwischen Einträgen | ablauf.mjs – `checkIconText` (Icon und erstes
+Wort auf derselben Zeile) | – | 3 |
+
+**Neu:** | R-10.5 | **Icon und Text** eines Eintrags bleiben zusammen – Umbruch nur zwischen Einträgen; **in einer Aufzählung mit ‚·‘ (z. B.
+‚8×☀️ · 6×🌧️‘) bleibt jeder Eintrag am Stück, umgebrochen wird nur nach dem ‚·‘ – die neue Zeile beginnt mit dem nächsten Eintrag** |
+ablauf.mjs – `checkIconText` (Icon und erstes Wort auf derselben Zeile), **`checkAufzaehlung` (keine Zeile endet mit der Anzahl oder beginnt
+mit ‚·‘)** | – | 3 |
+
+### RLB-122/W-2 Designrichtlinie 3 ‚Schrift und Abstände‘, Punkt ‚Icon und Text bleiben zusammen‘ – neuer Satz am Ende
+
+**Alt:** … ist ein Eintrag allein breiter als die Zeile, bricht er im Text um, nie direkt nach dem Icon. **Technisch:** `iconText(icon, text)`
+(ui.js) – `.ict` (design.css, auch in `outputCss`).
+
+**Neu:** … ist ein Eintrag allein breiter als die Zeile, bricht er im Text um, nie direkt nach dem Icon. **Technisch:** `iconText(icon, text)`
+(ui.js) – `.ict` (design.css, auch in `outputCss`). **Aufzählungen mit Trennpunkt** (z. B. Wetter und Smileys der Statistik, ‚8×☀️ · 6×🌧️‘):
+jeder Eintrag am Stück, der ‚·‘ bleibt am Ende der Zeile, die neue Zeile beginnt mit dem nächsten Eintrag. **Technisch:** `aufzaehlung(liste)`
+(ui.js) – jeder Eintrag in `.ict`, davor ein geschütztes Leerzeichen und ‚· ‘.
+
+### RLB-122/W-3 Reiselogbuch `PROMPT.md` (Statistik, Zeilen 238–239)
+
+**Alt:** … Smileys aus Tagen und Fazit absteigend nach Anzahl (z. B. ‚5×😊 · 3×😉 · 2×☹️‘; Varianten wie ☹️/☹ zählen gemeinsam, Anzahl vor dem
+Symbol ohne Leerzeichen).
+
+**Neu:** … Smileys aus Tagen und Fazit absteigend nach Anzahl (z. B. ‚5×😊 · 3×😉 · 2×☹️‘; Varianten wie ☹️/☹ zählen gemeinsam, Anzahl vor dem
+Symbol ohne Leerzeichen; **Wetter und Smileys als Aufzählung nach R-10.5 – umgebrochen wird nur nach dem ‚·‘, App und Ausgabe**).
+
+**Ergebnis:** Wortlaut W-1 bis W-3 bestätigt (Nutzer 08.11.2026, Sitzung 0103).
+
+## Muster iPhone quer und iPad hoch (0 Nr. 6)
+
+Das Muster ist unverändert (automatisch schon in allen vier Lagen grün). **Link:** https://g811141a.github.io/AppDesign/arbeit/RLB-122/index.html
+
+1. iPad **hoch**: den Link öffnen. Erwartet: drei Fälle, ‚heute‘ und ‚neu‘ nebeneinander.
+2. Fall 1 und 2, Kasten ‚neu‘ ansehen. Erwartet: jede umbrochene Zeile endet mit ‚·‘, die nächste beginnt mit der Anzahl; ‚Anzahl×Zeichen‘ nie
+   getrennt.
+3. Oben ‚Text groß‘ und ‚Text sehr groß‘ antippen. Erwartet: weiterhin nur Umbrüche nach ‚·‘, nichts ragt hinaus.
+4. iPhone **quer**: die Schritte 1 bis 3 wiederholen. Erwartet: wie oben (bei Standardschrift gibt es dort evtl. keinen Umbruch – dann mit ‚Text
+   sehr groß‘ prüfen).
+
 ## Offene Usertests
 
 - **P-100** (Reiselogbuch 3.54.0, AppDesign 4.56.0) – ok bis auf **P-100/1** (→ RLB-123, kommt mit 3.55.0).
