@@ -2060,8 +2060,12 @@ export async function checkSheet(p, { open, change = null, field = null, ok = nu
       return p.evaluate(({ sel, RI }) => {
         const f = document.querySelector(`#dlg ${sel}`) || document.querySelector(sel), b = f.closest('.dlg-body'), r = f.getBoundingClientRect(), br = b.getBoundingClientRect();
         const x = Math.round(br.left + 4), y = Math.round((r.top + r.bottom) / 2), t = document.elementFromPoint(x, y);
-        return { gerollt: Math.round(b.scrollTop), tastatur: !!window.__safari?.offen, fokus: document.activeElement === f, abstand: Math.round(r.top - br.top), ring: eval(RI)(f),
-          feld: { x: Math.round(r.left + Math.min(40, r.width / 2)), y: Math.round(r.top + Math.min(14, r.height / 2)) },
+        // seit 4.56.0 (APD-115/V-3, R-4.5): ein mehrzeiliges Feld, höher als der sichtbare Inhalt, zeigt die Cursorzeile – sein oberer Rand darf
+        // dann über dem Inhalt liegen (hoch); gezogen wird im sichtbaren Teil des Felds
+        const ring = eval(RI)(f), unten = Math.min(br.bottom, window.__safari ? __safari.top() + __safari.hoehe() : innerHeight), oben = Math.max(r.top, br.top);
+        const hoch = f.tagName === 'TEXTAREA' && r.height > unten - br.top - ring;
+        return { gerollt: Math.round(b.scrollTop), tastatur: !!window.__safari?.offen, fokus: document.activeElement === f, abstand: Math.round(r.top - br.top), ring, hoch,
+          feld: { x: Math.round(r.left + Math.min(40, r.width / 2)), y: Math.round(oben + Math.min(14, (Math.min(r.bottom, unten) - oben) / 2)) },
           daneben: t && !t.closest('input, textarea, select, button') && b.contains(t) ? { x, y } : null };
       }, { sel: field, RI: RING });
     };
@@ -2073,7 +2077,7 @@ export async function checkSheet(p, { open, change = null, field = null, ok = nu
       g = await tippen();
       if (!g.fokus || !g.tastatur) { E(`${nr('B10', 'D-10')} Vorbereitung: nach dem Antippen von ${field} ${g.fokus ? '' : 'kein Fokus '}${g.tastatur ? '' : 'keine Tastatur'}`); break; }
       // R-4.5 (seit 4.32.2, APD-73, P-69/3 quer): über dem Feld bleibt Platz für Fokus-Umrandung und Schatten
-      if (art === 'nach unten ziehen' && g.abstand < g.ring - 1) E(`${nr('B10', 'D-10')} ${field} mit Fokus steht ${g.abstand} px unter dem oberen Rand des Inhalts – Fokus-Umrandung und Schatten (${g.ring} px) oben abgeschnitten`);
+      if (art === 'nach unten ziehen' && !g.hoch && g.abstand < g.ring - 1) E(`${nr('B10', 'D-10')} ${field} mit Fokus steht ${g.abstand} px unter dem oberen Rand des Inhalts – Fokus-Umrandung und Schatten (${g.ring} px) oben abgeschnitten`);
       if (g.gerollt > 0 && g.daneben) {
         // als Berührung (Zeigerereignisse in der Seite, je 16 ms wie gemessen): ein Mausklick auf den Inhalt nimmt dem Feld in Chromium
         // schon beim Drücken den Fokus – am Gerät nicht, sonst wäre der Fall nie rot

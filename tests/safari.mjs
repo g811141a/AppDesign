@@ -59,7 +59,8 @@
 //       öffnet sich ohne neuen Fokus, Safari verschiebt (iPad quer 618–662 → 428 = ganzer Raum). Tastatur-Taste im Modell:
 //       __safari.tastatur(false) bei bleibendem Fokus.
 //   Nicht nachgebildet: Fokus, den die App am Ende einer abgefangenen Berührung selbst setzt, geht am Gerät oft nach 33–37 ms
-//   verloren (12 von ~35, iPhone und iPad, 6c 1 und 6e) – Berührungen nie abfangen. Zifferntastatur iPhone hoch 376 px (Versuch 4).
+//   verloren (12 von ~35, iPhone und iPad, 6c 1 und 6e) – Berührungen nie abfangen, ausgenommen den Wechsel bei offener Tastatur (APD-115/N-16,
+//   fokusSelbst unten). Zifferntastatur iPhone hoch 376 px (Versuch 4).
 // - APD-36/S-7 (Muster 5, 6g): Safari liest die Lage des Felds für das erste Öffnen **beim Fokus**, bevor die Fokus-Hörer der App laufen –
 //   Rollen im focusin zählt nicht (iPad quer: Ort 527–571 → 362, Gesamtausgaben 618–662 → 428, obwohl danach in der oberen Hälfte).
 // - APD-36/S-8 (Muster 6, 6h; am Gerät bestätigt 6i, 6k, 6m, 6n – iPhone hoch, iPad quer, 10 von 10): ein neuer Fokus (blur() + focus()
@@ -85,7 +86,7 @@ export const SAFARI = {
   'iPad hoch': { tastatur: 340, fokusRollen: 0, fokusSchub: 0, wechselVerzug: 135 },
 };
 
-export async function safariModell(p, ansicht, { leisten = { bar: '.nb, .pnav', box: '.searchbox' }, links = {}, auto = false, abstand = ABSTAND, abstandFenster = ABSTAND_FENSTER, apd115 = false, fokusSelbst = true } = {}) {
+export async function safariModell(p, ansicht, { leisten = { bar: '.nb, .pnav', box: '.searchbox' }, links = {}, auto = false, abstand = ABSTAND, abstandFenster = ABSTAND_FENSTER, apd115 = true, fokusSelbst = true } = {}) {   // seit 4.56.0 (APD-115) apd115 Standard; apd115: false = Modell bis 4.55.0 (Gegenprobe)
   const werte = { abstand, abstandFenster, ...SAFARI[ansicht], apd115, fokusSelbst: apd115 && fokusSelbst, zuVerzug: apd115 ? (SAFARI[ansicht]?.zuVerzug ?? 0) : 0,
     wechselVerzug: apd115 ? (SAFARI[ansicht]?.wechselVerzug ?? 0) : 0 };
   if (!werte) throw new Error(`Safari-Modell: keine Werte für ${ansicht}`);

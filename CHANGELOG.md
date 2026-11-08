@@ -3,6 +3,32 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.56.0 – 08.11.2026
+
+AppDesign 4.56.0 · Designrichtlinie allgemein 4.56.0 · Zusammenarbeit allgemein 3.10.0 · geprüft mit Reiselogbuch 3.54.0
+
+**APD-115 – Rollen wie Apple, Feld wechseln ohne Ruckeln** – dein Ja vom 08.11.2026, Sitzung 0097. Grundlage `arbeit/APD-115 Befund.md` und
+`arbeit/APD-115 Testfall-Liste.md` (APD-115/E-1 bis APD-115/E-13, Messungen APD-115/N-11, APD-115/N-13, APD-115/N-16; Testfall-Liste APD-115/M-1 bis M-11). Usertest im Reiselogbuch: P-100.
+
+- **Rollen wie Apple (APD-115/V-3):** `ui.js` rollt ein Feld beim Antippen nur so weit wie nötig – es endet 16 px über der Tastatur (im Inhalt 28 px);
+  liegt es schon darüber, rollt nichts (bisher in die obere Hälfte). Ein mehrzeiliges Feld, das nicht ganz passt, zeigt die Zeile mit dem Cursor (beim
+  Antippen die unter dem Finger) und eine halbe Zeile darunter, auch beim Tippen (`noetig`, `cursorZeile`, `feldZeigen`, `input`).
+- **Feld wechseln bei offener Tastatur (APD-115/W-4):** `ui.js` fängt das Loslassen auf einem anderen Feld ab und setzt den Fokus selbst
+  (`focus({ preventScroll: true })`) – Safari verschiebt dann die Seite nicht (gemessen APD-115/N-16); bisher ruckelten Kopfzeile und Fenster gleich nach
+  dem Antippen (APD-115/N-13).
+- **Tastatur zu ohne Sprung (APD-115/N-11, Korrektur APD-115/N-13):** beim Schließen zählt mit Rollbereich der kleinere Wert aus `offsetTop` und `scrollY`,
+  Safaris ‚scroll‘ der Seite stellt sofort neu, das iPad-Fenster gleicht eine Verschiebung durch Safari im selben Augenblick aus; `gemeldet` gibt jedem
+  Rollbereich vor dem Wachsen des Rahmens (Tastatur geht zu) Platz – der Fensterinhalt sprang beim Schließen der Tastatur (iPad quer 342, iPhone hoch 307 px;
+  auch in 4.55.0). Nur dann: Platz bei jeder Meldung brach ‚Nach oben‘ bei offener Tastatur ab (APD-36/B-8, im Bau gefunden).
+- **Regeln (Wortlaut bestätigt):** R-4.5 ‚wie bei Apple nur so weit gerollt wie nötig‘ (APD-115/E-7); Designrichtlinie 13 – Ausnahme von ‚Berührungen nie
+  abfangen‘ für den Wechsel bei offener Tastatur (APD-115/L-1), ‚Lösung in ui.js‘ nach R-4.5 mit dem Satz APD-115/L-2.
+- **Safari-Modell:** `safariModell` mit `apd115` (Verschiebung beim Wechsel sichtbar, gemeldet erst nach `wechselVerzug`; beim Schließen `scrollY` sofort 0,
+  `offsetTop` nach `zuVerzug`) und `fokusSelbst` (selbst gesetzter Fokus über der Tastatur: Safari verschiebt nicht) jetzt Standard; `apd115: false` = Modell bis 4.55.0.
+- **Prüfung:** im Reiselogbuch neu `ablauf-feld-rollen` (APD-115/M-1 bis M-11; Gegenprobe `PRUEF_V=alt` mit `ui.js` 4.55.0 und `PRUEF_FOKUS=alt`).
+  `checkSheet` B10: ein mehrzeiliges Feld, höher als der sichtbare Inhalt, zeigt nach R-4.5 die Cursorzeile – kein Abstand oben verlangt, der Zug setzt im
+  sichtbaren Teil des Felds an (iPhone quer Verlauf und Fazit). `hig` R-2.1 (Leisten folgen Safaris Verschiebung): mit Rollbereich verschiebt Safari
+  dafür die Seite – die Nachbildung setzt jetzt wie gemessen auch `scrollY` (APD-115/N-13; `ui.js` nimmt seit APD-115/N-11 den kleineren Wert).
+
 ## 4.55.0 – 07.11.2026
 
 AppDesign 4.55.0 · Designrichtlinie allgemein 4.55.0 · Zusammenarbeit allgemein 3.10.0 · geprüft mit Reiselogbuch 3.53.0
