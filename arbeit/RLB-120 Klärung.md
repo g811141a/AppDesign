@@ -99,6 +99,23 @@ Ergebnis (08.11.2026, Sitzung 0103): Chromium und WebKit **alles in Ordnung**; G
 1. iPhone **hoch**: den Link öffnen (neu laden). Erwartet: in ‚neu‘ unter dem Datum eine Linie von Rand zu Rand; ‚Verlauf‘ und ‚km‘ in Spalte 1 fett.
 2. iPad **quer**: Schritt 1 wiederholen. Erwartet: wie oben.
 
+## Linien schwarz (Nutzer 08.11.2026, Sitzung 0103)
+
+- **Ergebnis:** Linie und fett ok; dazu ‚in der Tageskachel die Linie zwischen den Zeilen in Schwarz, ebenso in der Überschrift der
+  Reiselogbuchtabelle‘.
+- **Umgesetzt im Muster (nur hell):** Tageskachel – alle waagrechten Linien zwischen den Zeilen (auch vor der ersten) `#000`; die senkrechte Linie
+  nach Spalte 1 bleibt grau. Tabelle der Tage (iPad, neu im Muster) – Linie unter der Kopfzeile und die Linien zwischen den Spalten der Kopfzeile `#000`.
+- **So macht es Apple:** Trennlinien sind in Apple-Apps hellgrau (Systemfarbe ‚separator‘); schwarze Linien sind eine bewusste Abweichung (Wunsch).
+  Vermutung, nicht in dieser Sitzung nachgeschlagen. Für ‚dunkel‘ fehlt noch eine Farbe (Muster nur hell).
+- **Prüfung ergänzt:** RLB-120/T-11 Linien zwischen den Zeilen schwarz · T-12 Linien der Kopfzeile der Tabelle schwarz. Chromium und WebKit **alles in
+  Ordnung**, Gegenprobe rot (206 Fehler).
+
+**Link:** https://g811141a.github.io/AppDesign/arbeit/RLB-120/index.html – Safari, hell.
+
+1. iPhone **hoch**: den Link öffnen (neu laden). Erwartet: in den Kacheln ‚neu‘ sind die Linien zwischen den Zeilen schwarz.
+2. iPad **quer**: ganz nach unten zu ‚Tabelle der Tage (iPad)‘ rollen. Erwartet: in ‚neu‘ sind die Linie unter der Kopfzeile und die Linien zwischen
+   ‚Tag‘, ‚Verlauf‘ … schwarz; sonst wie ‚heute‘.
+
 ## Offene Usertests
 
 - **P-100** (Reiselogbuch 3.54.0, AppDesign 4.56.0) – ok bis auf **P-100/1** (→ RLB-123, kommt mit 3.55.0).

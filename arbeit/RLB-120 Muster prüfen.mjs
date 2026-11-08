@@ -1,4 +1,4 @@
-// RLB-120 · Muster ‚Emojis in Textgröße‘ prüfen (Testfall-Liste arbeit/RLB-120 Klärung.md, RLB-120/T-1 bis T-10; Sitzung 0103).
+// RLB-120 · Muster ‚Emojis in Textgröße‘ prüfen (Testfall-Liste arbeit/RLB-120 Klärung.md, RLB-120/T-1 bis T-12; Sitzung 0103).
 //   node "arbeit/RLB-120 Muster prüfen.mjs"     (im Ordner AppDesign; PRUEF_BROWSER=webkit für WebKit)
 //   PRUEF_V=heute …                             Gegenprobe: prüft die Kästen ‚heute‘ – T-1 und T-2 müssen rot werden
 import { createRequire } from 'node:module';
@@ -34,7 +34,9 @@ for (const [lage, [width, height]] of Object.entries(LAGEN)) {
       const linie = parseFloat(ecs.borderTopWidth) >= 1 && ecs.borderTopStyle === 'solid' && Math.abs(er.left - bb.left) <= 1 && Math.abs(er.right - bb.right) <= 1;
       const fett = [...box.querySelectorAll('.kv .k .l')].every(l => { const tw = document.createTreeWalker(l, NodeFilter.SHOW_TEXT); let ok = true;
         for (let n; (n = tw.nextNode());) if (/\p{L}/u.test(n.data) && +getComputedStyle(n.parentElement).fontWeight < 600) ok = false; return ok; });
-      return { bi, k, v, wx, ragt, k1, boxRagt: box.scrollWidth > box.clientWidth + 1, grau, links, unten, luecke, einzug, linie, fett };
+      // T-11: alle Linien zwischen den Zeilen (auch vor der ersten) schwarz
+      const schwarz = [...box.querySelectorAll('.h + .kv, .kv + .kv')].every(x => getComputedStyle(x).borderTopColor === 'rgb(0, 0, 0)');
+      return { bi, k, v, wx, ragt, k1, boxRagt: box.scrollWidth > box.clientWidth + 1, grau, links, unten, luecke, einzug, linie, fett, schwarz };
     }), seite);
     for (const e of erg) {
       const w = `${art} ${lage} Text ${ts} Kachel ${e.bi + 1} (${seite}):`, vh = Math.max(...e.v.map(x => x.h));
@@ -43,11 +45,16 @@ for (const [lage, [width, height]] of Object.entries(LAGEN)) {
       if (e.ragt) F('RLB-120/T-3', `${w} Bezeichnung ragt über Spalte 1 hinaus`);
       if (e.k1.length) F('RLB-120/T-4', `${w} Emojis der Bezeichnung in zwei Zeilen: ${e.k1.join(', ')}`);
       if (e.boxRagt) F('RLB-120/T-5', `${w} Kachel ragt hinaus`);
+      if (!e.schwarz) F('RLB-120/T-11', `${w} Linie zwischen den Zeilen nicht schwarz`);
       if (!e.linie) F('RLB-120/T-9', `${w} keine Linie vor der ersten Zeile von Rand zu Rand`);
       if (!e.fett) F('RLB-120/T-10', `${w} Text in Spalte 1 nicht fett`);
       if (!e.einzug) F('RLB-120/T-8', `${w} Wert ohne 16 px Abstand zum linken Rand`);
       if (!e.grau || !e.links || !e.unten || e.luecke) F('RLB-120/T-7', `${w} Spalte 1 nicht durchgehend grau vom Rand an (grau ${e.grau}, links ${e.links}, unten ${e.unten}, Lücke ${e.luecke})`);
     }
+    // T-12: Kopfzeile der Tabelle – Linie unten und Linien zwischen den Spalten schwarz
+    const th = await p.evaluate(k => [...document.querySelectorAll(`.spalte.${k} table.days th`)].every((x, i) => { const c = getComputedStyle(x);
+      return c.borderBottomColor === 'rgb(0, 0, 0)' && (i === 0 || c.borderLeftColor === 'rgb(0, 0, 0)'); }), seite);
+    if (!th) F('RLB-120/T-12', `${art} ${lage} Text ${ts} (${seite}): Linien der Kopfzeile der Tabelle nicht schwarz`);
   }
   await p.close();
 }
