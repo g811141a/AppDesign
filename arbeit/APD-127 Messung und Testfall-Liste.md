@@ -127,6 +127,31 @@ dadurch grob); Gegenprobe in Chromium und WebKit je 8 Fehler (M-9 bis M-13). Bei
 - **Vorschlag:** die Seitenleiste in Notizen per Bildschirmaufnahme am iPad messen (Bild für Bild mit `ffmpeg`), das Mehr-Menü zum Vergleich mitmessen.
   Danach R-1.12 neu berechnen (neuer Wortlaut nach 0 Nr. 29) und das Muster neu bauen.
 
+## Messung Notizen-Seitenleiste (Video, Sitzung 0101)
+
+Bildschirmaufnahme iPad quer, hell (Nutzer 08.11.2026, 38 s, 960×672, bis 120 Bilder/s mit wechselnder Bildrate; ausgewertet im Notizordner,
+aus dem Zweig `messung-video` von ReiseLogBuch-Import wieder gelöscht). Werkzeug: `ffmpeg` Bild für Bild mit Zeitstempel, rechter Rand der
+Seitenleiste (Notizen: graue Markierung ‚Quick Notes‘, Muster: blaue Zeile) bzw. Lage des Inhalts; Modelle mit kleinsten Fehlerquadraten angepasst.
+
+- **Methode geprüft:** Das Muster ergibt genau die eingebauten Werte – auf Kurve K 0,35 s (Fehler 0,8–1,2 px), zu Kurve K 0,25 s (2–8 px), Weg 285–305 px.
+- **Notizen öffnen (3×):** Feder ohne Nachschwingen, **Antwortzeit 0,35 s** (`1 − (1 + ωt)·e^(−ωt)`, ω = 2π/0,35 s), Fehler 0,6–0,7 px, Weg 295–305 px.
+  Der Inhalt springt beim Öffnen in einem Bild an seine neue Stelle, nur die Leiste gleitet (Muster: Inhalt rückt mit, APD-68 Variante B).
+- **Notizen schließen (3×):** Inhalt gleitet 312 → 64 px in 150–170 ms fast gleichmäßig; am ehesten ease-in-out 0,2 s (Fehler 5–6 px). Die Leiste
+  ist nach etwa 0,2 s weg.
+- **Mehr-Menü im Muster (je 3×):** sichtbare Änderung beim Öffnen über etwa 270 ms, beim Schließen etwa 200–235 ms.
+
+| Anteil des Wegs nach … ms | 17 | 50 | 83 | 117 | 167 | 250 | 333 | 417 |
+|---|---|---|---|---|---|---|---|---|
+| Notizen auf: Feder 0,35 s | 4 % | 23 % | 44 % | 62 % | 80 % | 94 % | 98 % | 100 % |
+| Muster auf: Kurve K 0,35 s | 12 % | 43 % | 75 % | 88 % | 95 % | 99 % | 100 % | 100 % |
+| Notizen zu: ease-in-out 0,2 s | 1 % | 13 % | 36 % | 64 % | 95 % | 100 % | 100 % | 100 % |
+| Vorschlag zu: ease-in-out 0,25 s | 1 % | 8 % | 23 % | 44 % | 77 % | 100 % | 100 % | 100 % |
+| Muster zu: Kurve K 0,25 s | 17 % | 66 % | 88 % | 95 % | 98 % | 100 % | 100 % | 100 % |
+
+**Vorschlag (Sitzung 0101, noch nicht bestätigt):** alle Gleitbewegungen öffnen bzw. hinein mit der Feder aus Notizen (0,35 s, ohne Nachschwingen;
+CSS als `linear()`-Kurve über 0,5 s, 99 % nach 370 ms), schließen bzw. hinaus ease-in-out 0,25 s (Form wie Notizen, Länge wie das Mehr-Menü); Mehr-Menü
+und Sprechblasen bleiben (R-4.13). Danach neues Muster und neuer Wortlaut R-1.12 (0 Nr. 29).
+
 ## Nächster Schritt
 
 ~~Entscheidung A behalten oder B bauen~~ (A) → Muster R-1.12 am Gerät (iPhone hoch, iPad quer, hell) → → bei A kein Wortlaut ‚alle Gleitbewegungen wie das Mehr-Menü‘; Modell und Designrichtlinie 13 nach W-3 und
