@@ -68,6 +68,23 @@ Ergebnis (08.11.2026, Sitzung 0103): Chromium und WebKit **alles in Ordnung**; G
 3. Oben ‚Text größer‘, ‚Text groß‘ und ‚Text sehr groß‘ antippen. Erwartet: in ‚neu‘ bleiben alle Emojis gleich groß, nichts ragt hinaus.
 4. iPad **quer**: die Schritte 1 bis 3 wiederholen (‚heute‘ und ‚neu‘ nebeneinander). Erwartet: wie oben.
 
+## Muster ok – dazu Spalte 1 grau (Nutzer 08.11.2026, Sitzung 0103)
+
+- **Ergebnis:** Muster iPhone hoch und iPad quer **ok**; dazu: ‚in der Tageskachel die 1. Spalte mit derselben grauen Hintergrundfarbe hinterlegen wie
+  die 1. Zeile in der Tabelle im Reiselogbuch‘ – gleich mit.
+- **Umgesetzt im Muster:** Spalte 1 in `--th-bg` (Kopfzeile der Tabelle, hell #e5e5ea), vom linken Rand der Kachel bis zur Linie und ohne Lücke bis
+  unten; die Zeilenlinien gehen von Rand zu Rand. Bei ‚untereinander‘ (große Schrift) ist die Bezeichnung ein grauer Streifen über dem Wert.
+- **Prüfung ergänzt:** RLB-120/T-7 Spalte 1 durchgehend grau vom Rand an · T-8 der Wert hat links mindestens 16 px Abstand. Chromium und WebKit **alles
+  in Ordnung**, Gegenprobe rot (94 Fehler). Beim Bauen des Musters gefunden: Spalte 1 rechnete mit festen 7 px, die Zeile mit der Schrift – bei großer
+  Schrift entstand eine Lücke (jetzt beide mit der Schrift).
+
+**Link:** https://g811141a.github.io/AppDesign/arbeit/RLB-120/index.html – Safari, hell.
+
+1. iPhone **hoch**: den Link öffnen (neu laden). Erwartet: in den Kacheln ‚neu‘ ist Spalte 1 grau wie die Kopfzeile der Tabelle, vom linken Rand bis
+   zur Linie, von der ersten Zeile bis ganz unten ohne Lücke.
+2. Oben ‚Text sehr groß‘ antippen. Erwartet: jede Bezeichnung als grauer Streifen über ihrem Wert, der Wert mit Abstand zum linken Rand.
+3. iPad **quer**: die Schritte 1 und 2 wiederholen. Erwartet: wie oben.
+
 ## Offene Usertests
 
 - **P-100** (Reiselogbuch 3.54.0, AppDesign 4.56.0) – ok bis auf **P-100/1** (→ RLB-123, kommt mit 3.55.0).
