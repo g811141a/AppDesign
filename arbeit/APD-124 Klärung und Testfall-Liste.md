@@ -86,7 +86,7 @@ Link: https://g811141a.github.io/AppDesign/arbeit/APD-124/index.html
 Ergebnis (08.11.2026, Sitzung 0102): Chromium und WebKit **alles in Ordnung** (T-1 bis T-10, vier Lagen). Gegenprobe `PRUEF_V=heute`
 (ui.js 4.56.0): rot in T-2 bis T-8 und T-10 (Chromium 72, WebKit 60 Fehler).
 
-### Wortlaut-Vorschlag (0 Nr. 29) – noch nicht bestätigt
+### Wortlaut (0 Nr. 29) – **bestätigt** (Nutzer 08.11.2026, Sitzung 0102)
 
 **APD-124/W-1 – Regelkatalog R-5.6**
 
@@ -172,3 +172,9 @@ Link: https://g811141a.github.io/AppDesign/arbeit/APD-124/index.html – in Safa
 7. Zu Notizen wechseln, in eine Notiz tippen, ‚Einsetzen‘. Erwartet: die drei Zeilen des Verlaufs werden eingesetzt. Danach die Notiz wieder
    leeren.
 8. iPhone quer, hell: die Schritte 1 bis 6 wiederholen. Erwartet: wie oben; das Rückgängig-Icon ist ganz zu sehen und nicht vom Rand abgeschnitten.
+
+### Ergebnis (Nutzer 08.11.2026, Sitzung 0102)
+
+- **Muster iPad hoch und iPhone quer: alles ok** (Schritte 1 bis 8, auch die Zwischenablage).
+- **Wortlaut APD-124/W-1 bis W-3: Ja.**
+- APD-124 ist damit **bereit** (AppDesign-Backlog ‚0. Nächste Version‘); Testfall-Liste für den Bau in `arbeit/4.57.0 Testfall-Liste.md`.
