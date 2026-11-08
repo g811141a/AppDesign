@@ -204,3 +204,12 @@ Ergebnis (08.11.2026, Sitzung 0104): Chromium und WebKit **alles in Ordnung**; G
   Weiß nach unten `#d9d9d9`‘ – Chromium und WebKit **alles in Ordnung**, Gegenprobe rot (210 Fehler). Wortlaut W-2 neu gefasst, dazu W-6 (Abschnitt 10) und
   W-7 (R-6.2) – `arbeit/RLB-120 Wortlaut.md`.
 - **Wortlaut W-2 (neu gefasst), W-6 und W-7 bestätigt** (Nutzer 08.11.2026, Sitzung 0104, ‚Ja‘). Muster der Ausgabe: Antwort des Nutzers im Chat folgt.
+- **Muster Ausgabe ok** (Nutzer 08.11.2026, Sitzung 0104): ‚Die Muster sind ok, aber bei der Verlaufsfarbe Grau bin ich noch unschlüssig.‘ Wunsch: weitere
+  Farben aus der Apple-Welt, auch ein nicht zu grelles Gelb – 10 Verlaufsmuster als Bild.
+- **Muster** `arbeit/RLB-120/farben.html` (Verlauf B, Endton = Anteil der Apple-Systemfarbe auf Weiß): 1 Grau 5 `#e5e5ea` · 2 Gelb zart (Gelb `#ffcc00`
+  12 %) `#fff9e0` · 3 Gelb (20 %) `#fff5cc` · 4 Orange zart (`#ff9500` 14 %) `#fff0db` · 5 Sand (Braun `#a2845e` 18 %) `#eee9e2` · 6 Grün (`#34c759` 14 %)
+  `#e3f7e8` · 7 Cyan (`#32ade6` 14 %) `#e2f4fc` · 8 Blau (`#007aff` 10 %) `#e6f2ff` · 9 Indigo (`#5856d6` 12 %) `#ebebfa` · 10 Grau 4 `#d1d1d6`. Quellen der
+  Farbwerte: Apple-Dokumentation UIKit ‚Standard colors‘ und Tabellen (Braun nur als macOS-Wert belegt). WebKit: jede Variante mit Verlauf, iPhone ohne
+  seitliches Rollen.
+- **Auffällig:** in einer gelb markierten (`.box.day.gap`, `--focus`) oder ausgewählten Kachel (`.on`, `--sel-bg`) beginnt der Verlauf weiß – mit den
+  Testfällen klären.
