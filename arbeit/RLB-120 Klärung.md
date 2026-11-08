@@ -251,3 +251,9 @@ Reiselogbuch damit in allen Ansichten mit Tageskachel, Tabelle, Vorschau. Vier L
 
 **Noch offen (Auffällig):** gelb markierte (`.gap`) bzw. ausgewählte (`.on`) Tageskachel – der Verlauf beginnt weiß; Vorschlag: dort mit der Farbe der
 Kachel beginnen – Muster folgt.
+- **Testfälle B-1 bis B-10, P-101/15 und /16 ok** (Nutzer 08.11.2026, Sitzung 0104). Markierte/ausgewählte Kachel: Muster noch in 0104 (Nutzer).
+- **Muster markierte/ausgewählte Kachel** (Sitzung 0104, `arbeit/RLB-120/index.html`, je Spalte eine gelb markierte `.gap` und eine ausgewählte `.on`
+  Kachel): der Verlauf beginnt mit der Farbe der Kachel (`--kachel-bg`: `--card`, `.gap` → `--focus`, `.on` → `--sel-bg`) und endet bei Grau 5;
+  Zwischenstufen über `color-mix(in srgb, var(--kachel-bg), var(--th-bg) 23 % bzw. 58 %)`; Kopfzeile der Tabelle mit derselben Formel (`--kachel-bg` =
+  `--card`). Prüfung T-7 jetzt ‚Verlauf beginnt mit der Farbe der Kachel‘: Chromium und WebKit **alles in Ordnung**, Gegenprobe rot (400 Fehler); zweite
+  Gegenprobe ohne die Regel für `.gap`: T-7 rot (16 Fehler).

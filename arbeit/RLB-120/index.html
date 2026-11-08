@@ -139,6 +139,13 @@ body { background: var(--bg); }
 .neu .box .kv:last-child { border-bottom: 1px solid var(--line); }   /* Linie auch nach der letzten Zeile (Nutzer 08.11.2026) */
 .neu .box .kv .k, .neu .box .kv .k.word, .neu .box .kv .k .w { font-weight: 600; }
 html.ts-um .neu .box .kv .k { background: linear-gradient(to bottom, var(--kopf-verlauf)); width: auto; margin: calc(-7px * var(--f-body)) 0 2px; padding: 4px 8px; }
+/* Markierte (gelb, .gap) und ausgewählte (blau, .on) Tageskachel (Nutzer 08.11.2026, Sitzung 0104): der Verlauf beginnt mit der Farbe der Kachel
+   statt weiß und endet bei Grau 5 – Zwischenstufen wie B über color-mix */
+.neu .box, .tab.neu table.days th { --kachel-bg: var(--card); --kopf-verlauf: var(--kachel-bg) 0%, var(--kachel-bg) 25%, color-mix(in srgb, var(--kachel-bg), var(--th-bg) 23%) 50%,
+  color-mix(in srgb, var(--kachel-bg), var(--th-bg) 58%) 75%, var(--th-bg) 100%; }
+.neu .box.day.gap { --kachel-bg: var(--focus); }
+.neu .box.day.on { --kachel-bg: var(--sel-bg); }
+.spalte > h2.m2 { margin-top: 14px; }
 .tab { margin: 4px 0 22px; overflow-x: auto; }
 .tab > h2 { font-size: var(--t-headline); margin: 0 0 2px; }
 .tab.neu table.days th { background: linear-gradient(to bottom, var(--kopf-verlauf)); }
@@ -165,6 +172,21 @@ html.ts-um .neu .box .kv .k { background: linear-gradient(to bottom, var(--kopf-
       <div class="kv"><span class="k "><span class="l">🚶🏽‍♂️<span class="w">km</span></span></span><span class="v">12,5</span></div>
       <div class="kv"><span class="k "><span class="l">🍽️🍷☕️</span></span><span class="v"><div class="ln"><span class="m">📍</span><span class="t"><a href="https://www.google.com/maps/search/?api=1&amp;query=Fisch%2C%20Cairns" target="_blank" rel="noopener" onclick="event.stopPropagation()">Fisch</a></span></div></span></div>
       <div class="kv"><span class="k "><span class="l">😴💤</span></span><span class="v"><div class="ln q"><span class="m">📍</span><span class="t"><a href="https://www.google.com/maps/search/?api=1&amp;query=Hotel%20A%2C%20Cairns" target="_blank" rel="noopener" onclick="event.stopPropagation()">Hotel A</a>, Cairns</span></div></span></div>
+    </div><h2 class="m2">markiert (gelb) · ausgewählt (blau)</h2><div class="box day gap" data-day="2026-08-24" data-marke="Tag 1 · Mo 24.08." role="button" tabindex="0">
+      <div class="h">Mi, 26.08.<span class="wx">☀️🌤️</span></div>
+      <div class="kv"><span class="k word"><span class="l">Verlauf</span></span><span class="v"><div class="ln"><span class="m">▫️</span><span class="t">Anreise</span></div><div class="ln"><span class="m">▫️</span><span class="t">Strand</span></div></span></div>
+      <div class="kv"><span class="k "><span class="l">🙂☹️😉</span></span><span class="v"><div class="ln"><span class="m">😉</span><span class="t">gut</span></div><div class="ln"><span class="m">☹️</span><span class="t">Regen</span></div></span></div>
+      <div class="kv"><span class="k "><span class="l">🚶🏽‍♂️<span class="w">km</span></span></span><span class="v">6,0</span></div>
+      <div class="kv"><span class="k "><span class="l">🍽️🍷☕️</span></span><span class="v"><div class="ln"><span class="m">📍</span><span class="t"><a href="https://www.google.com/maps/search/?api=1&amp;query=Pizza%2C%20Cairns" target="_blank" rel="noopener" onclick="event.stopPropagation()">Pizza</a></span></div></span></div>
+      <div class="kv"><span class="k "><span class="l">😴💤</span></span><span class="v"><div class="ln q"><span class="m">📍</span><span class="t"><a href="https://www.google.com/maps/search/?api=1&amp;query=Hotel%20A%2C%20Cairns" target="_blank" rel="noopener" onclick="event.stopPropagation()">Hotel A</a>, Cairns</span></div></span></div>
+    </div>
+<div class="box day on" data-day="2026-08-24" data-marke="Tag 1 · Mo 24.08." role="button" tabindex="0">
+      <div class="h">Do, 27.08.<span class="wx">☀️🌤️</span></div>
+      <div class="kv"><span class="k word"><span class="l">Verlauf</span></span><span class="v"><div class="ln"><span class="m">▫️</span><span class="t">Anreise</span></div><div class="ln"><span class="m">▫️</span><span class="t">Strand</span></div></span></div>
+      <div class="kv"><span class="k "><span class="l">🙂☹️😉</span></span><span class="v"><div class="ln"><span class="m">😉</span><span class="t">gut</span></div><div class="ln"><span class="m">☹️</span><span class="t">Regen</span></div></span></div>
+      <div class="kv"><span class="k "><span class="l">🚶🏽‍♂️<span class="w">km</span></span></span><span class="v">6,0</span></div>
+      <div class="kv"><span class="k "><span class="l">🍽️🍷☕️</span></span><span class="v"><div class="ln"><span class="m">📍</span><span class="t"><a href="https://www.google.com/maps/search/?api=1&amp;query=Pizza%2C%20Cairns" target="_blank" rel="noopener" onclick="event.stopPropagation()">Pizza</a></span></div></span></div>
+      <div class="kv"><span class="k "><span class="l">😴💤</span></span><span class="v"><div class="ln q"><span class="m">📍</span><span class="t"><a href="https://www.google.com/maps/search/?api=1&amp;query=Hotel%20A%2C%20Cairns" target="_blank" rel="noopener" onclick="event.stopPropagation()">Hotel A</a>, Cairns</span></div></span></div>
     </div></div><div class="spalte neu"><h2>neu</h2><div class="box day " data-day="2026-08-24" data-marke="Tag 1 · Mo 24.08." role="button" tabindex="0">
       <div class="h">Mo, 24.08.<span class="wx">☀️🌤️</span></div>
       <div class="kv"><span class="k word"><span class="l">Verlauf</span></span><span class="v"><div class="ln"><span class="m">▫️</span><span class="t">Anreise</span></div><div class="ln"><span class="m">▫️</span><span class="t">Strand</span></div></span></div>
@@ -179,6 +201,21 @@ html.ts-um .neu .box .kv .k { background: linear-gradient(to bottom, var(--kopf-
       <div class="kv"><span class="k "><span class="l">🙂☹️😉</span></span><span class="v"><div class="ln"><span class="m">😀</span><span class="t">super</span></div></span></div>
       <div class="kv"><span class="k "><span class="l">🚶🏽‍♂️<span class="w">km</span></span></span><span class="v">12,5</span></div>
       <div class="kv"><span class="k "><span class="l">🍽️🍷☕️</span></span><span class="v"><div class="ln"><span class="m">📍</span><span class="t"><a href="https://www.google.com/maps/search/?api=1&amp;query=Fisch%2C%20Cairns" target="_blank" rel="noopener" onclick="event.stopPropagation()">Fisch</a></span></div></span></div>
+      <div class="kv"><span class="k "><span class="l">😴💤</span></span><span class="v"><div class="ln q"><span class="m">📍</span><span class="t"><a href="https://www.google.com/maps/search/?api=1&amp;query=Hotel%20A%2C%20Cairns" target="_blank" rel="noopener" onclick="event.stopPropagation()">Hotel A</a>, Cairns</span></div></span></div>
+    </div><h2 class="m2">markiert (gelb) · ausgewählt (blau)</h2><div class="box day gap" data-day="2026-08-24" data-marke="Tag 1 · Mo 24.08." role="button" tabindex="0">
+      <div class="h">Mi, 26.08.<span class="wx">☀️🌤️</span></div>
+      <div class="kv"><span class="k word"><span class="l">Verlauf</span></span><span class="v"><div class="ln"><span class="m">▫️</span><span class="t">Anreise</span></div><div class="ln"><span class="m">▫️</span><span class="t">Strand</span></div></span></div>
+      <div class="kv"><span class="k "><span class="l">🙂☹️😉</span></span><span class="v"><div class="ln"><span class="m">😉</span><span class="t">gut</span></div><div class="ln"><span class="m">☹️</span><span class="t">Regen</span></div></span></div>
+      <div class="kv"><span class="k "><span class="l">🚶🏽‍♂️<span class="w">km</span></span></span><span class="v">6,0</span></div>
+      <div class="kv"><span class="k "><span class="l">🍽️🍷☕️</span></span><span class="v"><div class="ln"><span class="m">📍</span><span class="t"><a href="https://www.google.com/maps/search/?api=1&amp;query=Pizza%2C%20Cairns" target="_blank" rel="noopener" onclick="event.stopPropagation()">Pizza</a></span></div></span></div>
+      <div class="kv"><span class="k "><span class="l">😴💤</span></span><span class="v"><div class="ln q"><span class="m">📍</span><span class="t"><a href="https://www.google.com/maps/search/?api=1&amp;query=Hotel%20A%2C%20Cairns" target="_blank" rel="noopener" onclick="event.stopPropagation()">Hotel A</a>, Cairns</span></div></span></div>
+    </div>
+<div class="box day on" data-day="2026-08-24" data-marke="Tag 1 · Mo 24.08." role="button" tabindex="0">
+      <div class="h">Do, 27.08.<span class="wx">☀️🌤️</span></div>
+      <div class="kv"><span class="k word"><span class="l">Verlauf</span></span><span class="v"><div class="ln"><span class="m">▫️</span><span class="t">Anreise</span></div><div class="ln"><span class="m">▫️</span><span class="t">Strand</span></div></span></div>
+      <div class="kv"><span class="k "><span class="l">🙂☹️😉</span></span><span class="v"><div class="ln"><span class="m">😉</span><span class="t">gut</span></div><div class="ln"><span class="m">☹️</span><span class="t">Regen</span></div></span></div>
+      <div class="kv"><span class="k "><span class="l">🚶🏽‍♂️<span class="w">km</span></span></span><span class="v">6,0</span></div>
+      <div class="kv"><span class="k "><span class="l">🍽️🍷☕️</span></span><span class="v"><div class="ln"><span class="m">📍</span><span class="t"><a href="https://www.google.com/maps/search/?api=1&amp;query=Pizza%2C%20Cairns" target="_blank" rel="noopener" onclick="event.stopPropagation()">Pizza</a></span></div></span></div>
       <div class="kv"><span class="k "><span class="l">😴💤</span></span><span class="v"><div class="ln q"><span class="m">📍</span><span class="t"><a href="https://www.google.com/maps/search/?api=1&amp;query=Hotel%20A%2C%20Cairns" target="_blank" rel="noopener" onclick="event.stopPropagation()">Hotel A</a>, Cairns</span></div></span></div>
     </div></div></div>
   <div class="tab heute"><h2>Tabelle der Tage (iPad) – heute</h2><div class="table-wrap"><table class="days static"><thead><tr><th>Tag</th><th>Verlauf</th><th>🙂☹️😉</th><th class="num">🚶🏽‍♂️km</th><th>🍽️🍷☕️</th><th>😴💤</th></tr></thead><tbody>

@@ -1,4 +1,4 @@
-// RLB-120 · Muster ‚Emojis in Textgröße‘ prüfen (Testfall-Liste arbeit/RLB-120 Klärung.md, RLB-120/T-1 bis T-13; Sitzungen 0103, 0104).
+// RLB-120 · Muster ‚Emojis in Textgröße‘ prüfen (Testfall-Liste arbeit/RLB-120 Klärung.md, RLB-120/T-1 bis T-13; Sitzungen 0103, 0104; T-7 auch markierte und ausgewählte Kachel).
 //   node "arbeit/RLB-120 Muster prüfen.mjs"     (im Ordner AppDesign; PRUEF_BROWSER=webkit für WebKit)
 //   PRUEF_V=heute …                             Gegenprobe: prüft die Kästen ‚heute‘ – T-1, T-2, T-7, T-12 und T-13 müssen rot werden
 import { createRequire } from 'node:module';
@@ -24,7 +24,9 @@ for (const [lage, [width, height]] of Object.entries(LAGEN)) {
       const th = getComputedStyle(document.documentElement).getPropertyValue('--th-bg').trim(), bb = box.getBoundingClientRect();
       const ks = [...box.querySelectorAll('.kv .k')], um = document.documentElement.classList.contains('ts-um');
       // T-7 (Nutzer 08.11.2026, Sitzung 0104): Verlauf B Weiß → Grau 5 (#e5e5ea) – nebeneinander von links nach rechts, untereinander (ts-um) von oben nach unten
-      const nachUnten = x => /^linear-gradient\((to bottom, )?rgb\(255, 255, 255\)/.test(x), nachRechts = x => /^linear-gradient\(to right, rgb\(255, 255, 255\)/.test(x);
+      // markierte (.gap) und ausgewählte (.on) Kachel: der Verlauf beginnt mit der Farbe der Kachel (Nutzer 08.11.2026, Sitzung 0104)
+      const start = getComputedStyle(box).backgroundColor;
+      const nachUnten = x => x.startsWith('linear-gradient(' + start) || x.startsWith('linear-gradient(to bottom, ' + start), nachRechts = x => x.startsWith('linear-gradient(to right, ' + start);
       const grau = ks.every(x => { const g = getComputedStyle(x).backgroundImage; return (um ? nachUnten(g) : nachRechts(g)) && /rgb\(229, 229, 234\)[^,]*\)$/.test(g); });
       const links = ks.every(x => x.getBoundingClientRect().left - bb.left >= 15);
       const unten = bb.bottom - ks.at(-1).getBoundingClientRect().bottom >= 4;
