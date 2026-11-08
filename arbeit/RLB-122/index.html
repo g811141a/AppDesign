@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="de" data-ts="l"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>RLB-122 Statistik</title>
+<link rel="stylesheet" href="../../fassung/4.56.0/design.css">
+<style>
+/* RLB-122 Muster ‚Umbruch vor der Anzahl‘ (Sitzung Reiselogbuch 0103, R-10.5 ergänzt). design.css der Fassung 4.56.0; die Zeilen bilden die
+   Statistik des Reiselogbuchs nach (.meta wie in index.html). Neu: jeder Eintrag ‚Anzahl×Zeichen‘ am Stück (.az, nowrap), vor dem ‚·‘ ein
+   geschütztes Leerzeichen – umgebrochen wird nur nach dem ‚·‘. Nur hell. */
+html { color-scheme: light; }
+body { background: var(--bg); }
+.muster { max-width: 1100px; margin: 0 auto; padding: 8px 16px 40px; }
+.muster > p { color: var(--muted); margin: 0 0 10px; }
+.reihe { display: flex; flex-wrap: wrap; gap: 16px; margin: 12px 0 22px; }
+.spalte { flex: 1 1 320px; min-width: 0; background: var(--card, #fff); border-radius: 14px; padding: 10px 14px; }
+.spalte h2 { font-size: var(--t-headline); margin: 0 0 6px; }
+.meta { display: grid; grid-template-columns: max-content 1fr; gap: 2px 14px; margin: 4px 0 6px; }
+.meta dt { font-weight: 600; }
+.meta dd { margin: 0; }
+.neu .az { white-space: nowrap; }
+.ts { display: flex; gap: 8px; flex-wrap: wrap; margin: 6px 0 4px; }
+.ts button { padding: 6px 12px; border-radius: 16px; border: none; background: var(--btn, #e9e9eb); color: inherit; font: inherit; }
+.ts button[aria-pressed=true] { background: var(--accent); color: #fff; }
+</style></head><body>
+<div class="muster">
+  <h1 class="nb-title" style="font-size:var(--t-title2);margin:8px 0 4px">RLB-122 · Statistik: Umbruch vor der Anzahl</h1>
+  <p>Links heute, rechts neu: ‚Anzahl×Zeichen‘ bleibt zusammen, der Trennpunkt ‚·‘ steht am Zeilenende, die neue Zeile beginnt mit der Anzahl.</p>
+  <div class="ts" id="ts"><button data-ts="l">Text Standard</button><button data-ts="xxxl">Text groß</button><button data-ts="ax3">Text sehr groß</button></div>
+  <div id="faelle"></div>
+</div>
+<script>
+const esc = s => s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+// heute: wie fmt in tripStats (Reiselogbuch 3.54.0); neu: jeder Eintrag am Stück, ‚ · ‘ dazwischen
+const heute = list => esc(list.map(([e, n]) => `${n}×${e}`).join(' · '));
+const neu = list => list.map(([e, n]) => `<span class="az">${esc(`${n}×${e}`)}</span>`).join(' · ');
+const FAELLE = [
+  ['Viele Zeichen', [['☀️', 8], ['🌧️', 8], ['🌤️', 8], ['⛅', 8], ['🌫️', 8], ['⛈️', 8], ['🌨️', 8], ['🌦️', 8], ['🌬️', 8], ['☁️', 8]],
+                    [['😀', 6], ['😉', 6], ['🙂', 6], ['😐', 6], ['☹️', 6], ['😡', 6], ['🤩', 6], ['😴', 6], ['🥵', 6], ['🥶', 6]]],
+  ['Zweistellige Anzahl', [['☀️', 31], ['🌧️', 12], ['⛅', 10], ['🌤️', 4], ['⛈️', 2], ['🌫️', 1]], [['😀', 22], ['🙂', 14], ['😉', 11], ['😐', 3], ['☹️', 2], ['🤩', 1]]],
+  ['Wenige Zeichen', [['☀️', 3], ['🌧️', 1]], [['😀', 2]]],
+];
+const block = (k, w, s) => `<dl class="meta"><dt>Reisetage:</dt><dd>60, davon erfasst 60</dd><dt>Wetter:</dt><dd data-z="wetter">${k(w)}</dd><dt>Smileys:</dt><dd data-z="smileys">${k(s)}</dd></dl>`;
+document.getElementById('faelle').innerHTML = FAELLE.map(([t, w, s], i) =>
+  `<h2 style="margin:14px 0 0">${i + 1}. ${t}</h2><div class="reihe" data-fall="${i}"><div class="spalte heute"><h2>heute</h2>${block(heute, w, s)}</div><div class="spalte neu"><h2>neu</h2>${block(neu, w, s)}</div></div>`).join('');
+const setTs = ts => { document.documentElement.dataset.ts = ts; document.querySelectorAll('#ts button').forEach(b => b.setAttribute('aria-pressed', b.dataset.ts === ts)); };
+document.getElementById('ts').onclick = e => { const b = e.target.closest('button'); if (b) setTs(b.dataset.ts); };
+setTs('l');
+</script>
+</body></html>
