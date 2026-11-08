@@ -200,3 +200,6 @@ Ergebnis (08.11.2026, Sitzung 0104): Chromium und WebKit **alles in Ordnung**; G
 - **Noch offen:** dunkel (Muster nur hell), Ausgabe HTML/PDF (R-6.2, eigene helle Gestaltung) – mit dem Wortlaut klären.
 - **Muster Verlauf B ok** in allen Fällen (Nutzer 08.11.2026, Sitzung 0104). Wortlaut: `arbeit/RLB-120 Wortlaut.md` (RLB-120/W-1 bis W-5).
 - **Wortlaut RLB-120/W-1 bis W-5 bestätigt** (Nutzer 08.11.2026, Sitzung 0104, ‚Ja‘). Ausgabe (HTML/PDF): Antwort des Nutzers im Chat folgt.
+- **Ausgabe auch mit Verlauf** (Nutzer 08.11.2026, Sitzung 0104). Muster `arbeit/RLB-120/ausgabe.html`; Prüfung neu **T-13** ‚Kopf der Ausgabe von oben
+  Weiß nach unten `#d9d9d9`‘ – Chromium und WebKit **alles in Ordnung**, Gegenprobe rot (210 Fehler). Wortlaut W-2 neu gefasst, dazu W-6 (Abschnitt 10) und
+  W-7 (R-6.2) – `arbeit/RLB-120 Wortlaut.md`.

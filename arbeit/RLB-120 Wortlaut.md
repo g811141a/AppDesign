@@ -67,3 +67,33 @@ nach jedem Schritt; Gegenprobe im Reiselogbuch `ablauf-preis-km`) | – | 15.10 
 Die Ausgabe (HTML/PDF, `outputCss`, R-6.2) hat heute eine flache graue Kopfzeile (`#d9d9d9`). **Empfehlung: so lassen.** Die Ausgabe ist ein Dokument
 mit eigener, immer heller Gestaltung (Mustertabelle, R-6.2), ein Verlauf auf Papier bringt dort nichts. W-2 ist so formuliert; bei ‚auch Verlauf‘ ändere
 ich W-2 und R-6.2.
+
+## Nachtrag: Ausgabe auch mit Verlauf (Nutzer 08.11.2026, Sitzung 0104)
+
+‚Ausgabe ist auch mit Verlauf zu gestalten.‘ Muster `arbeit/RLB-120/ausgabe.html` (Mustertabelle `outputCss`, Kopf mit Verlauf B von oben nach unten,
+Weiß → `#d9d9d9`, dieselbe Abstufung wie in der App: `#ffffff` 0 %, `#ffffff` 25 %, `#f6f6f6` 50 %, `#e9e9e9` 75 %, `#d9d9d9` 100 %). Damit ändern sich
+W-2 (ersetzt den bestätigten Wortlaut) und zwei weitere Stellen:
+
+### RLB-120/W-2 (neu gefasst) – Abschnitt 9, erster Punkt
+
+**Alt:** Kopfzeile grau (`--th-bg`) mit Rändern `--th-line`; die Tabelle selbst ohne äußeren Rand, mit Schatten `--table-shadow`, damit die seitlichen
+Grenzen gut zu sehen sind.
+
+**Neu:** Kopfzeile mit dem Kopfverlauf von oben nach unten (`--kopf-verlauf`: oben weiß, das Grau erst zum unteren Rand hin) und Rändern `--th-line`;
+in der Ausgabe (HTML/PDF) derselbe Verlauf nach `#d9d9d9` (R-6.2). Die Tabelle selbst ohne äußeren Rand, mit Schatten `--table-shadow`, damit die
+seitlichen Grenzen gut zu sehen sind.
+
+### RLB-120/W-6 – Abschnitt 10, Punkt ‚Ausgabe-Design‘
+
+**Alt:** … Tabellen wie in der App (Kopf `#d9d9d9`, Ränder `#a5a5a5`, Zebra `#f5f5f5`), Zeilen nicht über Seitenumbrüche teilen. …
+
+**Neu:** … Tabellen wie in der App (Kopf mit dem Kopfverlauf von oben nach unten, Weiß → `#d9d9d9`: `#ffffff` 0 %, `#ffffff` 25 %, `#f6f6f6` 50 %,
+`#e9e9e9` 75 %, `#d9d9d9` 100 %; Ränder `#a5a5a5`, Zebra `#f5f5f5`), Zeilen nicht über Seitenumbrüche teilen. …
+
+### RLB-120/W-7 – Abschnitt 17, R-6.2
+
+**Alt:** | R-6.2 | **Mustertabelle der Ausgabe** (`outputCss`): jede Tabelle in Ausgabe, Vorschau und Bericht, Zebra je Tabellenzeile, keine eigene
+Nachbildung | hig.mjs – Vergleich mit unsichtbarer Mustertabelle | – | 10, 15.18 |
+
+**Neu:** | R-6.2 | **Mustertabelle der Ausgabe** (`outputCss`): jede Tabelle in Ausgabe, Vorschau und Bericht, Kopf mit Kopfverlauf von oben nach unten
+(Weiß → `#d9d9d9`), Zebra je Tabellenzeile, keine eigene Nachbildung | hig.mjs – Vergleich mit unsichtbarer Mustertabelle (auch der Verlauf des Kopfs) | – | 10, 15.18 |

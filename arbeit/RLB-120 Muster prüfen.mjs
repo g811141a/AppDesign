@@ -1,6 +1,6 @@
-// RLB-120 · Muster ‚Emojis in Textgröße‘ prüfen (Testfall-Liste arbeit/RLB-120 Klärung.md, RLB-120/T-1 bis T-12; Sitzungen 0103, 0104).
+// RLB-120 · Muster ‚Emojis in Textgröße‘ prüfen (Testfall-Liste arbeit/RLB-120 Klärung.md, RLB-120/T-1 bis T-13; Sitzungen 0103, 0104).
 //   node "arbeit/RLB-120 Muster prüfen.mjs"     (im Ordner AppDesign; PRUEF_BROWSER=webkit für WebKit)
-//   PRUEF_V=heute …                             Gegenprobe: prüft die Kästen ‚heute‘ – T-1, T-2, T-7 und T-12 müssen rot werden
+//   PRUEF_V=heute …                             Gegenprobe: prüft die Kästen ‚heute‘ – T-1, T-2, T-7, T-12 und T-13 müssen rot werden
 import { createRequire } from 'node:module';
 const pw = createRequire(new URL('../../ReiseLogBuch/tests/', import.meta.url))('playwright');
 const art = process.env.PRUEF_BROWSER || 'chromium', seite = process.env.PRUEF_V === 'heute' ? 'heute' : 'neu';
@@ -59,6 +59,17 @@ for (const [lage, [width, height]] of Object.entries(LAGEN)) {
       if (!e.grau || !e.links || !e.unten || e.luecke) F('RLB-120/T-7', `${w} Spalte 1 nicht mit Verlauf nur in der Zelle (Verlauf passend zur Lage ${e.grau}, Abstand links ${e.links}, Abstand unten ${e.unten}, Lücke ${e.luecke})`);
     }
   }
+  await p.close();
+}
+// T-13 (Nutzer 08.11.2026, Sitzung 0104): Ausgabe (HTML/PDF, Mustertabelle outputCss) – Kopf mit Verlauf B von oben Weiß nach unten #d9d9d9; nichts ragt hinaus
+for (const [lage, [width, height]] of Object.entries(LAGEN)) {
+  const p = await b.newPage({ viewport: { width, height } });
+  await p.goto(new URL('./RLB-120/ausgabe.html', import.meta.url).href);
+  const ok = await p.evaluate(k => { const th = [...document.querySelectorAll(`.rt.${k} table.grid thead th`)];
+    return th.length > 0 && th.every(x => { const g = getComputedStyle(x).backgroundImage;
+      return /^linear-gradient\((to bottom, )?rgb\(255, 255, 255\)/.test(g) && /rgb\(217, 217, 217\)[^,]*\)$/.test(g); })
+      && document.documentElement.scrollWidth <= innerWidth; }, seite);
+  if (!ok) F('RLB-120/T-13', `${art} ${lage} (${seite}): Kopf der Ausgabe nicht von oben Weiß nach unten #d9d9d9 (oder Seite rollt seitlich)`);
   await p.close();
 }
 await b.close();
