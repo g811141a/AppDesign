@@ -1,8 +1,9 @@
 # Übergabe an die nächste Sitzung
 
-**Stand 08.11.2026** · geschrieben in der Sitzung ‚Reiselogbuch 0103‘ (APD-116 und RLB-122 bereit, RLB-120 Muster in Arbeit, zwei Bau-Fragen ‚Nein‘;
-Übergabe nach 0 Nr. 13 bei Kontext 347.868 – Ausnahme bis 350.000 vom Nutzer erlaubt) – Aufbau nach Zusammenarbeit allgemein 2.5. **Claude liest diese
-Datei zu Beginn jeder Sitzung zuerst, dann die ganze Zusammenarbeit** (0 Nr. 15); die Arbeitsumgebung steht in der AppDesign-`CLAUDE.md`.
+**Stand 08.11.2026** · geschrieben in der Sitzung ‚Reiselogbuch 0104‘ (RLB-120 fast fertig geklärt: Verlauf B in Kachel, Tabelle und Ausgabe, Wortlaut W-1 bis W-7
+bestätigt, Testfälle ok, Muster markierte Kachel ok; Übergabe nach 0 Nr. 13 bei Kontext etwa 290.000 – Muster auf Wunsch des Nutzers noch in 0104) – Aufbau nach
+Zusammenarbeit allgemein 2.5. **Claude liest diese Datei zu Beginn jeder Sitzung zuerst, dann die ganze Zusammenarbeit** (0 Nr. 15); die Arbeitsumgebung steht
+in der AppDesign-`CLAUDE.md`.
 
 ## 1. Lagebild
 
@@ -14,9 +15,9 @@ Datei zu Beginn jeder Sitzung zuerst, dann die ganze Zusammenarbeit** (0 Nr. 15)
 | AppDesign-`CLAUDE.md` | **2.11.0** |
 | ReiseLogBuch-Import (privat) | 1.3.0 |
 
-- **Chatnummer:** die nächste Sitzung heißt **Reiselogbuch 0104**; die danach 0105.
-- **Modell und Aufwand:** in 0103 Opus 5.5 (`get_session`), alle Aufrufe `"effort":"high"`, kein `model_fallback`. `~/.claude/settings.json` = `{}` (keine Hooks).
-  Der Arbeitsprozess wurde zweimal neu gestartet.
+- **Chatnummer:** die nächste Sitzung heißt **Reiselogbuch 0105**; die danach 0106.
+- **Modell und Aufwand:** in 0104 Opus 5.5 (`get_session`), alle Aufrufe `"effort":"high"`, kein `model_fallback`. `~/.claude/settings.json` = `{}` (keine Hooks).
+  Der Arbeitsprozess wurde mehrmals neu gestartet.
 - **Arbeitsweise (APD-125, gilt):** vor **jeder** Kachel alle wichtigen Informationen in **einer Datei** (`SendUserFile`, `display: 'render'`) und ebenso im Chat;
   ‚(Kontext N)‘ in jeder Frage.
 - **Offener Usertest:** **P-100** (Reiselogbuch 3.54.0, AppDesign 4.56.0) – ok bis auf **P-100/1** (→ RLB-123, kommt mit 3.55.0).
@@ -24,37 +25,37 @@ Datei zu Beginn jeder Sitzung zuerst, dann die ganze Zusammenarbeit** (0 Nr. 15)
 - **Erinnerung:** ‚Backlog-Erinnerung (AppDesign und Reiselogbuch)‘ montags 8:58.
 - **Hinweis Prüfumgebung:** Pages über `curl https://api.github.com/repos/g811141a/AppDesign/actions/runs?per_page=1`; `g811141a.github.io` ist aus der
   Sitzung nicht erreichbar (Proxy 403) – Muster lokal per `file://` prüfen. Ein eigenes `node -e` mit Playwright braucht
-  `NODE_PATH=/home/user/ReiseLogBuch/tests/node_modules` (sonst falsche Playwright-Fassung). Videos über einen Zweig von **ReiseLogBuch-Import**
-  (`arbeit/APD-127 Messung und Testfall-Liste.md`); der Zweig `messung-video` enthält noch ein Video im Verlauf – der Nutzer kann ihn auf GitHub löschen.
+  `NODE_PATH=/home/user/ReiseLogBuch/tests/node_modules`. Videos über einen Zweig von **ReiseLogBuch-Import** (`arbeit/APD-127 Messung und Testfall-Liste.md`);
+  der Zweig `messung-video` enthält noch ein Video im Verlauf – der Nutzer kann ihn auf GitHub löschen.
 
-## 2. Ergebnisse der Sitzung 0103
+## 2. Ergebnisse der Sitzung 0104
 
-- **APD-116 bereit** (allgemein, Wortlaut APD-116/W-1 bis W-4 mit neuer Regel R-10.8, Muster in allen vier Lagen ok, Testfälle B-1 bis B-8 und P-101/12, /13
-  bestätigt) – `arbeit/APD-116 Fertig klären.md`.
-- **Bau-Frage zweimal ‚Nein‘** (Nutzer 08.11.2026): erst alle sechs Punkte, dann die kleinere Version ohne APD-127 – `arbeit/0103 Bau-Frage 4.57.0.md`.
-  **Es gibt keine gültige Freigabe**; der Grund für das ‚Nein‘ ist nicht genannt.
-- **RLB-122 bereit** (Statistik: Umbruch nur nach dem ‚·‘; nachgestellt – heute bricht die Zeile zwischen ‚8×‘ und dem Zeichen; ‚·‘ ans Zeilenende;
-  allgemein als Ergänzung von **R-10.5**, Baustein `aufzaehlung(liste)`, Prüfung `checkAufzaehlung`; Wortlaut RLB-122/W-1 bis W-3, Muster in allen vier Lagen ok,
-  Testfälle B-1 bis B-7 und P-101/14 bestätigt) – `arbeit/RLB-122 Klärung.md`. Steht in beiden Backlogs unter ‚0.‘.
-- **Backlog jetzt:** AppDesign ‚0.‘ **6 Punkte bereit** (APD-125, APD-126, APD-127, APD-124, APD-116, AppDesign-Teil von RLB-122); Reiselogbuch ‚0.‘ **2 Punkte
-  bereit** (RLB-123, RLB-122). Testfall-Liste `arbeit/4.57.0 Testfall-Liste.md` um APD-116 und RLB-122 ergänzt.
-- **RLB-120 (Tageskachel) – Muster in Arbeit** (`arbeit/RLB-120 Klärung.md`, Muster `arbeit/RLB-120/index.html`, Prüfung `arbeit/RLB-120 Muster prüfen.mjs`
-  T-1 bis T-11, Chromium und WebKit grün, Gegenprobe rot). Gemessen: Emojis der Bezeichnung in Spalte 1 13 px (`--t-footnote`), Spalte 2 17 px, Wetter fest 18 px.
-  Vom Nutzer schon bestätigt bzw. gewünscht (alles nur in ‚neu‘): Emojis in Spalte 1 und Wetter in Textgröße, Spalte 1 breiter (`calc(98px * var(--f-body))`
-  inkl. 8 px Innenabstand); **Spalte 1 grau** (`--th-bg`) **nur in der Zelle** (nicht bis zum linken und unteren Rand); **Linie vor der ersten Zeile**;
-  **Spalte 1 fett (600)**; **Linien wie heute** (mit Abstand zum Rand, grau – schwarz zurückgenommen); zuletzt **Linie auch nach der letzten Zeile** (Commit
-  `28dde4f`, vom Nutzer noch nicht gesehen). **‚Fett‘ widerspricht R-6.5** (‚Text in der ersten Spalte normal (400)‘) – R-6.5 muss geändert werden (0 Nr. 29).
-- **Ausnahme 0 Nr. 13** (Nutzer 08.11.2026): in 0103 bis etwa 350.000 statt 300.000 – nur für diese Sitzung, die Regel ist unverändert.
+- **RLB-120 (Tageskachel) fast fertig geklärt** – alles in `arbeit/RLB-120 Klärung.md`, Wortlaut in `arbeit/RLB-120 Wortlaut.md`:
+  - Rückmeldung ‚Grau in Spalte 1 nicht ansprechend‘ → drei Verläufe (`arbeit/RLB-120/verlauf.html`), gewählt **B** (lange weiß, Grau erst zum Ende hin,
+    Weiß → Grau 5 `#e5e5ea`); zehn Farben geprüft (`arbeit/RLB-120/farben.html`) – **Grau bleibt** (Nutzer).
+  - **Allgemeine Regel** (Nutzer): Kopfverlauf `--kopf-verlauf` – Tabellen-Kopfzeile von oben nach unten; Bezeichnung im Kasten mit Feldern nebeneinander von
+    links nach rechts, untereinander (`html.ts-um`) von oben nach unten; **Ausgabe (HTML/PDF) auch mit Verlauf** Weiß → `#d9d9d9` (`arbeit/RLB-120/ausgabe.html`).
+  - **Wortlaut RLB-120/W-1 bis W-7 bestätigt** (Abschnitt 2 `--kopf-verlauf`, 9, 10, 15.10, R-6.1, R-6.2, R-6.5: Bezeichnung halbfett 600, Emojis in Textgröße,
+    Spalte 1 `calc(98px * var(--f-body))`, Linien vor dem ersten und nach dem letzten Feld).
+  - **Testfälle ok:** RLB-120/B-1 bis B-10 und P-101/15, P-101/16.
+  - **Muster markierte (`.gap`) und ausgewählte (`.on`) Kachel ok:** der Verlauf beginnt mit der Farbe der Kachel (`--kachel-bg`, Zwischenstufen über
+    `color-mix`), endet bei Grau 5 (`arbeit/RLB-120/index.html`). Prüfung `arbeit/RLB-120 Muster prüfen.mjs` T-1 bis T-13: Chromium und WebKit grün, Gegenprobe rot.
+  - Muster Linie ganz unten, Verlauf B in allen Fällen, Ausgabe: ok (Nutzer).
+- **Keine gültige Bau-Freigabe.** Der Nutzer sagte in 0104 ‚danach machen wir Übergabe und Bau‘ – die Bau-Frage (0 Nr. 21) wird in 0105 ausdrücklich gestellt.
 
 ## 3. Nächster Schritt
 
 1. Lesen wie immer, Repos dazuholen, Tests einrichten. **Lagebild als eigene Antwort – im Chat und als Datei – mit Kachel** (APD-125).
-2. **RLB-120 weiter:** zuerst ‚Muster mit Linie ganz unten ok?‘ (Link https://g811141a.github.io/AppDesign/arbeit/RLB-120/index.html, iPhone hoch und
-   iPad quer, Schritte in `arbeit/RLB-120 Klärung.md`); dann iPad hoch und iPhone quer; ‚Als allgemeine Regel festhalten?‘ (0 Nr. 4 – Empfehlung ja:
-   Kasten mit Feldern 15.10 und R-6.5 in AppDesign; das Wetter im Kopf ist App); Wortlaut alt/neu (R-6.5, 15.10, ggf. R-6.1; `hig.mjs`
-   `bezeichnungen`/`kastenBezeichnung` prüfen heute 400 – anpassen); Testfälle (B-… und P-101/15); dann ‚bereit‘ in beide Backlogs und die Testfall-Liste.
-3. **RLB-121** (Statistik: 3 teuerste und 3 günstigste Quartiere) klären, wenn Platz ist.
-4. **Bau-Frage neu stellen** (0 Nr. 21) nur, wenn der Nutzer es möchte – zweimal ‚Nein‘ in 0103; vorher kurz nach dem Grund fragen (Auswahlfenster).
+2. **RLB-120 abschließen:**
+   - Wortlaut-Nachtrag **RLB-120/W-8** vorlegen (0 Nr. 29): W-1/W-3 ergänzen – ‚in einer markierten (`--focus`) bzw. ausgewählten (`--sel-bg`) Kachel beginnt der
+     Kopfverlauf mit der Farbe der Kachel‘; hell sind die Stufen in W-1 als Hex-Werte genannt, das Muster rechnet mit `color-mix` (23 %, 58 %) – Wortlaut darauf
+     abstimmen.
+   - Testfall **RLB-120/B-11** (markierte und ausgewählte Kachel) ergänzen und bestätigen lassen.
+   - Dann **‚bereit‘** in beide Backlogs (Reiselogbuch RLB-120 von ‚2.‘ nach ‚0.‘; AppDesign ‚0.‘ AppDesign-Teil von RLB-120) und in `arbeit/4.57.0 Testfall-Liste.md`
+     (Abschnitt 1 Zeile, Abschnitt 2 B-1 bis B-11, Abschnitt 3 P-101/15 und /16 aus `arbeit/RLB-120 Klärung.md`).
+3. **Bau-Frage** (0 Nr. 21): ‚Soll ich Version 4.57.0 / 3.55.0 mit … erstellen? (Kontext N)‘ mit allen bereiten Punkten – AppDesign: APD-125, APD-126, APD-127,
+   APD-124, APD-116, RLB-122-Teil, RLB-120-Teil; Reiselogbuch: RLB-123, RLB-122, RLB-120. Nach 0 Nr. 8 höchstens 2 Themen je Version – ggf. aufteilen vorschlagen.
+4. RLB-121 (Statistik: 3 teuerste und 3 günstigste Quartiere) klären, wenn Platz ist.
 
 ## 4. Danach
 
@@ -66,7 +67,7 @@ APD-30 übrige Teile · APD-57 · APD-44 bis APD-60 · APD-70 · RLB-6 · APD-1.
 In der neuen Sitzung müssen **AppDesign** und **ReiseLogBuch** verfügbar sein; alles liegt auf `main`.
 
 ```
-Reiselogbuch 0104 – RLB-120 Tageskachel fertig klären
+Reiselogbuch 0105 – RLB-120 abschließen und Bau-Frage 4.57.0
 
-Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md, dann die GANZE Zusammenarbeit allgemein (3.10.0 plus APD-125: vor jeder Kachel alle wichtigen Informationen in einer Datei und im Chat) und die Überschriften der Designrichtlinien. Prüfe Modell und Aufwand (Sitzungsdatei, auch model_fallback), hole das Repo g811141a/ReiseLogBuch dazu, wie in der AppDesign-CLAUDE.md unter ‚Arbeitsumgebung‘, richte die Tests ein und prüfe, ob in ~/.claude/settings.json Hooks stehen. Lagebild als eigene Antwort (im Chat und als Datei) mit Kachel, dann weiter nach UEBERGABE.md Abschnitt 3: zuerst die offene Frage ‚RLB-120 Muster mit Linie ganz unten ok?‘ (arbeit/RLB-120 Klärung.md), dann RLB-120 fertig klären (allgemein, Wortlaut R-6.5, Testfälle). Keine gültige Bau-Freigabe (zweimal ‚Nein‘ in 0103).
+Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md, dann die GANZE Zusammenarbeit allgemein (3.10.0 plus APD-125: vor jeder Kachel alle wichtigen Informationen in einer Datei und im Chat) und die Überschriften der Designrichtlinien. Prüfe Modell und Aufwand (Sitzungsdatei, auch model_fallback), hole das Repo g811141a/ReiseLogBuch dazu, wie in der AppDesign-CLAUDE.md unter ‚Arbeitsumgebung‘, richte die Tests ein und prüfe, ob in ~/.claude/settings.json Hooks stehen. Lagebild als eigene Antwort (im Chat und als Datei) mit Kachel, dann weiter nach UEBERGABE.md Abschnitt 3: RLB-120 abschließen (Wortlaut-Nachtrag W-8 markierte Kachel, Testfall B-11, ‚bereit‘ in beide Backlogs und die Testfall-Liste – arbeit/RLB-120 Klärung.md), dann die Bau-Frage 4.57.0 / 3.55.0 ausdrücklich stellen (0 Nr. 21). Keine gültige Bau-Freigabe bisher.
 ```
