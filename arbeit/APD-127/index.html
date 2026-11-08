@@ -1,0 +1,224 @@
+<!doctype html><html lang="de"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="APD-127 Messung">
+<title>APD-127 Messung</title>
+<link rel="stylesheet" href="../../fassung/4.56.0/design.css">
+<style>
+/* APD-127 Messmuster (Sitzung Reiselogbuch 0099; Zusammenarbeit 0 Nr. 20 und 2.7): Wie schnell gleitet was am Gerät? Die Seite lädt die
+   unveränderte Fassung 4.56.0 (design.css, ui.js) wie Reiselogbuch 3.54.0 – Mehr-Menü (R-4.13), Blatt (R-4.6) und das Rollen beim Antippen
+   eines Felds (R-4.5, APD-115) laufen genau so. Aufgezeichnet werden je Bild nur Zahlen und ids (keine Texte); am Gerät steht nur
+   ‚aufgenommen‘, ausgewertet wird mit arbeit/APD-127 auswerten.mjs. Variante A = heute (das Feld springt beim Antippen an seinen Platz);
+   Variante B = Versuch: dasselbe Rollen, aber der Inhalt gleitet in 0,35 s mit der Kurve des Mehr-Menüs dorthin (nur eine Bewegung,
+   der Rollstand ist sofort richtig – Safari liest die Lage beim Fokus). Prüfung: arbeit/APD-127 Muster prüfen.mjs. Nur hell. */
+html { color-scheme: light; }
+.mess { max-width: 640px; margin: 0 auto; padding: 8px 16px 24px; }
+.mess .box2 { background: var(--card, #fff); border-radius: 12px; padding: 12px 14px; margin: 12px 0; border: .5px solid var(--line); }
+#schritt { line-height: 1.4; } #schritt b { display: block; margin-bottom: 4px; }
+#liste { list-style: none; margin: 0; padding: 0; } #liste li { display: flex; gap: 10px; padding: 8px 0; border-top: .5px solid var(--line); }
+#liste li:first-child { border-top: 0; } #liste .h { width: 20px; flex: none; color: #248a3d; font-weight: 700; } #liste li.jetzt { font-weight: 600; }
+.knoepfe { display: flex; flex-wrap: wrap; gap: 10px; }
+.knoepfe button { font: inherit; min-height: 44px; padding: 0 16px; border-radius: 22px; border: 0; background: #007aff; color: #fff; }
+.knoepfe button.grau { background: #e5e5ea; color: #007aff; }
+.knoepfe button:disabled { opacity: .4; }
+#zaehler { color: var(--sub, #6e6e73); margin-top: 8px; }
+.dlg-body label { display: block; margin: 14px 0 6px; }
+.dlg-body .inhalt { padding-bottom: 8px; }
+</style></head><body>
+<main id="app"></main>
+<dialog id="dlg"></dialog>
+<dialog id="msg"></dialog>
+<script src="../../fassung/4.56.0/ui.js"></script>
+<script>
+const $ = s => document.querySelector(s);
+// Gegenprobe im Safari-Modell: ?gegenprobe=sprung – Variante B gleitet nicht (0 ms); die Auswertung muss dann ‚Sprung‘ melden
+const GEGEN = new URLSearchParams(location.search).get('gegenprobe');
+const SPEICHER = 'a127.messung1';
+const FAELLE = [
+  { id: 'menue', v: 'A', titel: 'Mehr-Menü (Vergleich)',
+    schritt: 'Oben rechts auf ‚…‘ tippen, das Menü aufgehen lassen, dann daneben tippen, damit es zugeht. Das Ganze zweimal. Dann ‚Fall fertig‘.' },
+  { id: 'blatt', v: 'A', titel: 'Fenster auf und zu',
+    schritt: '‚Fenster öffnen‘ (unten) tippen, warten, bis es ruhig steht, dann oben links auf x. Dann ‚Fall fertig‘.' },
+  { id: 'oben', v: 'A', titel: 'Feld oben antippen',
+    schritt: '‚Fenster öffnen‘ tippen, dann ‚Ort‘ (oben) antippen. Warten, bis die Tastatur ganz offen ist und nichts mehr gleitet. Tastatur schließen (Häkchen bzw. ‚Fertig‘ über der Tastatur), dann x. Dann ‚Fall fertig‘.' },
+  { id: 'unten-a', v: 'A', titel: 'Feld unten antippen – Variante A (heute)',
+    schritt: '‚Fenster öffnen‘ tippen – ‚Wie war was?‘ steht ganz unten. Es antippen und genau hinsehen, wie es nach oben kommt. Warten, bis nichts mehr gleitet. Tastatur schließen, dann x. Dann ‚Fall fertig‘.' },
+  { id: 'unten-b', v: 'B', titel: 'Feld unten antippen – Variante B (gleitet 0,35 s)',
+    schritt: 'Wie eben: ‚Fenster öffnen‘, ‚Wie war was?‘ unten antippen, hinsehen, warten, Tastatur schließen, x. Merke dir, ob A oder B sich besser anfühlt. Dann ‚Fall fertig‘.' },
+  { id: 'unten-a2', v: 'A', titel: 'Feld unten antippen – Variante A nochmals',
+    schritt: 'Noch einmal wie bei A: ‚Fenster öffnen‘, ‚Wie war was?‘ antippen, hinsehen, warten, Tastatur schließen, x. Dann ‚Fall fertig‘.' }
+];
+let zustand = { fall: 0, fertig: [], zeilen: [] };
+try { const s = JSON.parse(sessionStorage.getItem(SPEICHER)); if (s?.zeilen) zustand = s; } catch {}
+const t0 = performance.now();
+const ms = () => Math.round(performance.now() - t0);
+let sicherT = 0;
+const sichere = () => { clearTimeout(sicherT); sicherT = setTimeout(() => { try { sessionStorage.setItem(SPEICHER, JSON.stringify(zustand)); } catch {} }, 300); };
+function zeile(s) { if (zustand.zeilen.length < 20000) zustand.zeilen.push(`${ms()} ${s}`); sichere(); }
+const rnd = n => Math.round(n);
+const fall = () => FAELLE[zustand.fall];
+
+// ---------- Aufbau mit den Bausteinen der Fassung 4.56.0 ----------
+$('#app').innerHTML = `
+  <div class="nb" id="bar"><div class="nb1"><span></span><span class="nb-title">APD-127 Messung</span>
+    <span class="r"><span class="grp"><button type="button" id="mainMore" aria-label="Mehr">${ic('ellipsis')}</button></span></span></div></div>
+  <div class="rolle" id="rolle">
+    <div class="mess">
+      <p style="color:var(--sub,#6e6e73);margin:4px 0 0">Am iPhone hoch, hell – App vom Home-Bildschirm oder Safari</p>
+      <div class="box2" id="schritt"></div>
+      <div class="knoepfe"><button type="button" id="fensterAuf">Fenster öffnen</button></div>
+      <div class="knoepfe" style="margin-top:16px"><button type="button" id="fertig">Fall fertig</button><button type="button" class="grau" id="nochmal">Fall neu</button></div>
+      <div class="box2"><ol id="liste"></ol><div id="zaehler"></div></div>
+      <div class="knoepfe"><button type="button" id="teilen">Messung teilen</button><button type="button" class="grau" id="trotzdem">trotzdem teilen</button><button type="button" class="grau" id="neu">neu beginnen</button></div>
+    </div>
+  </div>`;
+$('#mainMore').onclick = e => openMenu(e.currentTarget, [
+  { label: 'Teilen', icon: 'share', act: () => zeile('menue punkt') },
+  { label: 'Drucken', icon: 'printer', act: () => zeile('menue punkt') },
+  { label: 'Einstellungen', icon: 'settings', act: () => zeile('menue punkt') }]);
+
+const VERLAUF = 'Frühstück im Hotel\nSpaziergang zum Hafen\nFähre nach Manly\nMittagessen am Strand\nRückfahrt mit der Fähre';
+$('#fensterAuf').onclick = () => {
+  openDialog(`<form method="dialog">${dlgHead('Di, 25.08.', { check: false })}<div class="dlg-body"><div class="inhalt">
+    <label for="fOrt">Ort</label><input type="text" id="fOrt" value="" autocapitalize="sentences">
+    <label for="fQuartier">Quartier</label><input type="text" id="fQuartier" value="" autocapitalize="sentences">
+    <label for="fPreis">Preis</label><input type="text" id="fPreis" value="" inputmode="decimal" style="width:8em">
+    <label for="fMittel">Reisemittel</label><input type="text" id="fMittel" value="" autocapitalize="sentences">
+    <label for="fVerlauf"><span class="step-num">2</span>Verlauf</label>
+    <textarea id="fVerlauf" autocapitalize="sentences"></textarea>
+    <label for="fEssen">Essen</label><textarea id="fEssen" autocapitalize="sentences"></textarea>
+    <label for="fWie"><span class="step-num">3</span>Wie war was?</label>
+    <textarea id="fWie" autocapitalize="sentences" placeholder="Ein paar Worte zum Tag"></textarea>
+    <label for="fFazit">Notiz</label><textarea id="fFazit" autocapitalize="sentences"></textarea>
+    <label for="fWetter">Wetter</label><input type="text" id="fWetter" value="" autocapitalize="sentences">
+    <label for="fKm">Gegangene Kilometer</label><input type="text" id="fKm" value="" inputmode="decimal" style="width:8em">
+    <label for="fLinks">Links</label><textarea id="fLinks" autocapitalize="none"></textarea>
+  </div></div></form>`);
+  $('#fVerlauf').value = VERLAUF; $('#fEssen').value = 'Mittag: Fisch\nAbend: Pasta';
+  growAll();
+  $('#dlgX').onclick = () => dlg.close();
+  zeile(`fenster auf ${fall()?.v || '-'}`);
+  // Fälle ‚unten‘: ‚Wie war was?‘ steht ganz unten im Fenster, gerade noch ganz zu sehen (wie P-100/2 Schritt 1)
+  if (/^unten/.test(fall()?.id || '')) requestAnimationFrame(() => requestAnimationFrame(() => {
+    const f = $('#fWie'), c = f?.closest('.dlg-body'); if (!c) return;
+    c.scrollTop += f.getBoundingClientRect().bottom - (c.getBoundingClientRect().bottom - 4);   // Feld und Fenster gegeneinander – das Blatt gleitet noch herein
+    zeile(`ans ende ${rnd(c.scrollTop)}`);
+  }));
+};
+dlg.addEventListener('close', () => zeile('fenster zu'));
+
+// ---------- Variante B: der Inhalt gleitet in 0,35 s (Kurve des Mehr-Menüs) an den Platz, an den ui.js ihn beim Fokus gerollt hat ----------
+let vorFokus = null;
+const merke = () => { const c = dlg.open && dlg.querySelector('.dlg-body'); vorFokus = c ? { c, y: c.scrollTop } : null; };
+addEventListener('touchstart', merke, { capture: true, passive: true });
+addEventListener('pointerdown', e => { if (e.pointerType !== 'touch') merke(); }, { capture: true, passive: true });
+document.addEventListener('focusin', () => {   // nach dem Hörer von ui.js (capture) – der Rollstand ist schon neu
+  const v = vorFokus; vorFokus = null;
+  if (fall()?.v !== 'B' || !v || !v.c.isConnected) return;
+  const d = rnd(v.c.scrollTop - v.y), w = v.c.querySelector('.inhalt');
+  if (d < 2 || !w) return;
+  w.getAnimations().forEach(a => a.cancel());
+  gleitet = true;
+  const a = w.animate([{ transform: `translateY(${d}px)` }, { transform: 'none' }], { duration: GEGEN === 'sprung' ? 0 : 350, easing: 'cubic-bezier(.32,.72,0,1)' });
+  const fertig = () => { gleitet = false; const f = nachGleiten; nachGleiten = null; if (f?.isConnected && document.activeElement === f) feldZeigenUi(f); };
+  a.onfinish = fertig; a.oncancel = fertig;
+  zeile(`B gleitet ${d}`);
+});
+// Solange B gleitet, misst ui.js beim Öffnen der Tastatur (gemeldet → feldZeigen) die verschobene Lage und rollte zu weit – das Nachstellen
+// wartet bis zum Ende der Bewegung (feldZeigen ist eine globale Funktion von ui.js; ui.js selbst bleibt unverändert)
+let gleitet = false, nachGleiten = null;
+const feldZeigenUi = feldZeigen;
+feldZeigen = f => { if (gleitet) { nachGleiten = f; return; } feldZeigenUi(f); };
+
+// ---------- Aufzeichnung je Bild, solange ein Fall läuft (nur Zahlen und ids) ----------
+// vh/vt sichtbarer Bereich (Höhe, offsetTop) · sy scrollY · blatt Oberkante Fenster · froll Rollstand im Fenster · ort/wie Oberkante der
+// Felder · menu Oberkante, Höhe und Deckkraft des Menüs bzw. seines Abbilds beim Schließen · geist Oberkante des Blatt-Abbilds beim Schließen
+// · bt/gt Versatz von Fenster bzw. Abbild · fokus id. Lagen im Fenster (Layout); auf dem Bildschirm = Lage − vt (Auswertung).
+const SP = ['vh', 'vt', 'sy', 'blatt', 'bt', 'froll', 'ort', 'wie', 'menu', 'geist', 'gt', 'fokus'];
+// bt/gt: Versatz (translate) des Fensters bzw. seines Abbilds aus dem berechneten Stil – WebKit rechnet ein laufendes ‚translate‘ nicht in
+// getBoundingClientRect ein (Playwright-WebKit 26.0, Sitzung 0099), der berechnete Stil zeigt es
+const versatz = el => { if (!el) return '-'; const t = getComputedStyle(el).translate; return t === 'none' ? 0 : rnd(parseFloat(t.split(' ')[1] || '0')); };
+const oben = el => el && el.getClientRects().length ? rnd(el.getBoundingClientRect().top) : '-';
+function werte() {
+  const vv = window.visualViewport, m = $('.menu') || $('.zu-geist'), body = dlg.open ? dlg.querySelector('.dlg-body') : null;
+  const mr = m?.getBoundingClientRect();
+  return [vv ? rnd(vv.height) : rnd(innerHeight), vv ? rnd(vv.offsetTop) : 0, rnd(scrollY), dlg.open ? oben(dlg) : '-', dlg.open ? versatz(dlg) : '-', body ? rnd(body.scrollTop) : '-',
+    oben($('#fOrt')), oben($('#fWie')), mr ? `${rnd(mr.top)}/${rnd(mr.height)}/${(+getComputedStyle(m).opacity).toFixed(2)}` : '-',
+    oben($('.blatt-geist')), versatz($('.blatt-geist')), document.activeElement?.id || '-'];
+}
+let letzte = '', lauf = 0;
+function bild() {
+  lauf = 0;
+  if (!fall()) return;
+  const w = werte().join(' ');
+  if (w !== letzte) { letzte = w; zeile('= ' + w); }
+  lauf = requestAnimationFrame(bild);
+}
+const ziel = el => { if (el && el.nodeType !== 1) el = el.parentElement; if (!el) return '-';
+  const b = el.closest('[id]'); return b ? b.id + (b === el ? '' : '<' + el.tagName.toLowerCase()) : el.tagName.toLowerCase(); };
+const imMuster = el => !!el?.closest?.('.mess');
+for (const typ of ['touchstart', 'touchend', 'touchcancel']) addEventListener(typ, e => { if (!imMuster(e.target) || e.target.closest('#fensterAuf')) zeile(`${typ} ${ziel(e.target)}`); }, { capture: true, passive: true });
+for (const typ of ['focusin', 'focusout']) document.addEventListener(typ, e => zeile(`${typ} ${ziel(e.target)}`), true);
+for (const typ of ['resize', 'scroll']) window.visualViewport?.addEventListener(typ, () => zeile(`vv ${typ}`));
+new MutationObserver(ms => {
+  for (const m of ms) {
+    for (const n of m.addedNodes || []) if (n.nodeType === 1 && n.matches('.menu, .zu-geist, .blatt-geist')) zeile(`${n.className.split(' ')[0]} auf`);
+    for (const n of m.removedNodes || []) if (n.nodeType === 1 && n.matches('.menu, .zu-geist, .blatt-geist')) zeile(`${n.className.split(' ')[0]} weg`);
+  }
+}).observe(document.body, { childList: true });
+
+// ---------- Ablauf: feste Fälle, ‚Nächster Schritt‘, abgehakt (2.7) ----------
+function stand() { return `innen ${innerWidth}x${innerHeight} ruhig ${matchMedia('(prefers-reduced-motion: reduce)').matches ? 1 : 0}`; }
+function zeige() {
+  const n = zustand.fall, f = FAELLE[n];
+  $('#schritt').innerHTML = f ? `<b>Nächster Schritt: Fall ${n + 1} von ${FAELLE.length} – ${f.titel}</b>${f.schritt}`
+    : '<b>Nächster Schritt: ‚Messung teilen‘</b>Alle Fälle sind aufgenommen. Teile die Datei mit Claude.';
+  $('#liste').innerHTML = FAELLE.map((x, i) => `<li class="${i === n ? 'jetzt' : ''}"><span class="h">${zustand.fertig.includes(i) ? '✓' : ''}</span>Fall ${i + 1}: ${x.titel}${zustand.fertig.includes(i) ? ' – aufgenommen' : ''}</li>`).join('');
+  $('#zaehler').textContent = `${zustand.fertig.length} von ${FAELLE.length} aufgenommen`;
+  $('#fertig').disabled = $('#nochmal').disabled = $('#fensterAuf').disabled = !f;
+  $('#teilen').disabled = zustand.fertig.length < FAELLE.length;
+  $('#trotzdem').style.display = zustand.fertig.length < FAELLE.length ? '' : 'none';
+}
+function starte(n) {
+  zustand.fall = n; letzte = '';
+  zeile(`fall ${n + 1} ${FAELLE[n] ? FAELLE[n].id + ' ' + FAELLE[n].v : 'ende'} · ${stand()}`); zeile('# ' + SP.join(' '));
+  zeige();
+  if (FAELLE[n] && !lauf) lauf = requestAnimationFrame(bild);
+}
+$('#fertig').onclick = () => {
+  const n = zustand.fall; if (!FAELLE[n]) return;
+  if (dlg.open) dlg.close();
+  zeile(`fertig ${n + 1} · ${stand()}`);
+  if (!zustand.fertig.includes(n)) zustand.fertig.push(n);
+  const weiter = FAELLE.findIndex((_, i) => !zustand.fertig.includes(i));
+  if (weiter < 0) { zustand.fall = FAELLE.length; zeile('alle faelle'); zeige(); }
+  else starte(weiter);
+};
+$('#nochmal').onclick = () => { zeile(`neu ${zustand.fall + 1}`); starte(zustand.fall); };
+$('#neu').onclick = () => { if (!confirm('Messung löschen und neu beginnen?')) return;
+  zustand = { fall: 0, fertig: [], zeilen: [] }; try { sessionStorage.removeItem(SPEICHER); } catch {} kopf(); starte(0); };
+function kopf() {
+  const st = matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+  zeile(`start ${st ? 'home' : 'safari'} ${screen.width}x${screen.height} @${devicePixelRatio} AppDesign ${typeof AD_VERSION !== 'undefined' ? AD_VERSION : '-'} gegenprobe ${GEGEN || '-'} · ${stand()}`);
+}
+function text() {
+  try { sessionStorage.setItem(SPEICHER, JSON.stringify(zustand)); } catch {}
+  return `# APD-127 Messung 1 · ${navigator.userAgent} · ${new Date().toISOString()}\n` +
+    `# ${zustand.fertig.length} von ${FAELLE.length} Fällen aufgenommen\n` + zustand.zeilen.join('\n') + '\n';
+}
+async function teile() {
+  const name = `messung-APD-127-${new Date().toISOString().slice(0, 16).replace(/[:T]/g, '-')}.txt`;
+  try { await navigator.share({ files: [new File([text()], name, { type: 'text/plain' })] }); }
+  catch (e) {
+    if (e.name === 'AbortError') return;
+    const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([text()], { type: 'text/plain' })); a.download = name; a.click();
+  }
+}
+$('#teilen').onclick = teile;
+$('#trotzdem').onclick = () => { zeile('trotzdem teilen'); teile(); };
+window.a127 = { text, FAELLE };   // für die Prüfung im Safari-Modell
+if (!zustand.zeilen.length) { kopf(); starte(0); }
+else { zeile('neu geladen · ' + stand()); zeige(); if (fall()) { zeile('# ' + SP.join(' ')); lauf = requestAnimationFrame(bild); } }
+</script>
+</body></html>
