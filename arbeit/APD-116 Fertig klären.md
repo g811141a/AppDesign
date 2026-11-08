@@ -77,6 +77,41 @@ Neu im Muster: die Fälle 5 ‚Ausgabe (ohne Teilen-Menü)‘ und 6 ‚Backup (F
 4. Oben ‚Text groß‘ und ‚Text sehr groß‘ antippen. Erwartet: rechts weiterhin nur Umbrüche an Leerzeichen, nichts ragt aus dem Kasten.
 5. iPhone **quer**: die Schritte 1 bis 4 wiederholen. Erwartet: wie oben.
 
+**Ergebnis:** Muster iPad hoch und iPhone quer **alles ok** (Nutzer 08.11.2026, Sitzung 0103) – damit in allen vier Lagen ok.
+
+## 4. Testfälle für den Bau
+
+### Testfall (automatisch) – Ort in den festen Prüfungen (Chromium und WebKit, vier Lagen, Textgröße l, xxxl, ax3)
+
+Neue Funktion `checkDateiname` in AppDesign `tests/ablauf.mjs` (aus `arbeit/APD-116 Muster prüfen.mjs`). Aufgerufen aus AppDesign
+`tests/backup.mjs` (Backup: geteilt, abgebrochen, Fehler), Reiselogbuch `ablauf-abgleich.mjs` (Abgleichbericht HTML und PDF; die Textabfrage
+‚Drucken-Menü geöffnet für …‘ wird angepasst) und `ablauf-gesamt.mjs` (Ausgabe HTML und PDF).
+
+| Nr. | Fall | Erwartet |
+|---|---|---|
+| APD-116/B-1 | jedes Hinweisfenster mit Dateinamen (Backup, Ausgabe, Abgleichbericht; alle fünf Fälle aus W-4) | der Name beginnt in einer neuen Zeile unter dem Satz |
+| APD-116/B-2 | langer Name, schmales Fenster (iPhone hoch), große Schrift | Umbruch nur nach einem Leerzeichen, nie nach ‚-‘ oder ‚.‘ |
+| APD-116/B-3 | danach | der Name ist unverändert (kein Zeichen ersetzt), ohne Punkt danach |
+| APD-116/B-4 | danach | nichts ragt aus dem Fenster (R-6.3) |
+| APD-116/B-5 | Name in einer Zeile | zentriert, fett |
+| APD-116/B-6 | Texte | wörtlich nach W-4 |
+| APD-116/B-7 | Gegenprobe (Name wieder im Satz) | B-1 und B-2 rot |
+| APD-116/B-8 | Katalog R-10.8 mit Prüfung genannt | `doku.mjs` (`checkCatalog`) |
+
+### Testfälle (User) – Entwurf für Usertest P-101 (Nummern vorläufig, nach den vier Testfällen zu APD-124)
+
+**P-101/12 – Dateiname nach ‚Backup erstellen‘**
+1. iPad hoch, hell: in der Seitenleiste oben ‚…‘ (Mehr) → ‚Backup erstellen‘.
+2. Im Teilen-Menü ‚In Dateien sichern‘ wählen und sichern.
+3. Erwartet: kleines Fenster ‚Backup‘ mit ‚✅ Teilen-Menü abgeschlossen für‘, darunter fett und allein ‚Ω Backup Reiselogbuch JJJJ.MM.TT hh.mm.json‘;
+   bricht der Name um, dann nur an einem Leerzeichen.
+
+**P-101/13 – Dateiname nach abgebrochener Ausgabe**
+1. iPhone quer, hell: ein Reiselogbuch öffnen, oben das Teilen-Icon (share) → ‚HTML‘.
+2. Das Teilen-Menü ohne Auswahl schließen.
+3. Erwartet: kleines Fenster ‚Ausgabe V…‘ mit ‚⚠️ Teilen-Menü abgebrochen – nicht gespeichert:‘, darunter fett und allein der Name
+   ‚Reiselogbuch <Titel> JJJJ.MM.TT-JJJJ.MM.TT V….html‘; das Datum ‚JJJJ.MM.TT-JJJJ.MM.TT‘ bleibt zusammen.
+
 ## Offene Usertests
 
 - **P-100** (Reiselogbuch 3.54.0, AppDesign 4.56.0) – ok bis auf **P-100/1** (→ RLB-123, kommt mit 3.55.0).
