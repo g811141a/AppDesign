@@ -78,7 +78,10 @@ Unterschied zu merken.‘**
 **Bewertung:** A springt, B gleitet – am Gerät messbar verschieden, aber **nicht spürbar** (Nutzer). Vermutung: der Sprung fällt mit dem Start der
 Tastatur zusammen (W-4, W-7) und geht in ihrer Bewegung unter. B bringt also nichts, kostet aber Code (Warten in `feldZeigen`).
 
+**Entscheidung (Nutzer 08.11.2026, Sitzung 0100):** Variante **A bleibt**, P-100/2 Schritt 3 ohne Änderung erledigt; kein Wortlaut ‚alle
+Gleitbewegungen wie das Mehr-Menü‘ für das Feld.
+
 ## Nächster Schritt
 
-Entscheidung A behalten oder B bauen → bei A kein Wortlaut ‚alle Gleitbewegungen wie das Mehr-Menü‘; Modell und Designrichtlinie 13 nach W-3 und
+~~Entscheidung A behalten oder B bauen~~ (A) → bei A kein Wortlaut ‚alle Gleitbewegungen wie das Mehr-Menü‘; Modell und Designrichtlinie 13 nach W-3 und
 W-7 (Wortlaut) → Bau-Frage.
