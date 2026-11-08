@@ -29,7 +29,7 @@ Zusammenarbeit** (0 Nr. 15); die Arbeitsumgebung steht in der AppDesign-`CLAUDE.
 
 - **Bau-Frage 4.55.0 / 3.53.0: Ja** (Nutzer 07.11.2026). Gebaut: APD-122 mit RLB-119 (Smileys in der Suche wie Wörter, ganzes Zeichen mit Hautton;
   am Zeilenanfang in ‚Wie war was?‘ und Essen markiert und gezählt), APD-123 (Zusammenarbeit 3.10.0, `doku.mjs` `checkKachel`, `messung.mjs` ‚⚠ Modell‘,
-  `los` ohne `regelwaechter.mjs`), APD-121 (Safari-Modell `KEIN_KLICK_OBEN` 21, `checkSchichtOben` Y-1 bis Y-4, Messungen 07.11.2026 nachgespielt).
+  `los` ohne `regelwaechter.mjs`), APD-121 (Safari-Modell `KEIN_KLICK_OBEN` 21, `checkSchichtOben` APD-121/Y-1 bis Y-4, Messungen 07.11.2026 nachgespielt).
   Jede neue Prüfung rot gegen 4.54.0 / 3.52.0 bzw. mit der Grenze 23. Voller Lauf: 148 Läufe grün (66:37), davon 1 wackelt – `ablauf-suche-woerter` WebKit (rot unter Last, allein grün; im ersten `los` fiel dort einmal die Liste ‚😀‘ leer aus, seitdem wartet die Prüfung auf das Ergebnis – beobachten). Pages beider Repos ‚success‘ (AppDesign 1ac34fe, Reiselogbuch 7c9624a). Im ersten `los` rot: `ablauf-tastatur-still` spielte die Messungen ‚Mehr-Knopf oben‘ nach (keine Tastatur) – jetzt ausgelassen.
 - **Nebenbei behoben:** Nummernschema in `arbeit/APD-115 …`, `arbeit/APD-124 …`, BACKLOG und UEBERGABE (lokale Nummern mit Elternnummer, z. B.
   `APD-124/E-2`) – `doku-regeln` war seit 0095 rot.
