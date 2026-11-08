@@ -11,8 +11,9 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Prio | Thema | bereit seit |
 |---|---|---|---|
+| APD-125 | 1 | **Datei vor jeder Kachel (Nutzer 08.11.2026, Sitzung 0098, Wortlaut bestätigt):** Zusammenarbeit 3.11.0 – Kasten ‚Jede Antwort‘ Punkt 4, 2.1 ‚Die Datei davor, das Fenster danach‘, 0 Nr. 15: vor jedem Fenster alle wichtigen Informationen der Antwort (Lagebild, Bericht, Wortlaut, Muster, Testlink, Schritte, alle offenen Usertests) in einer Datei (`SendUserFile`, `display: 'render'`) und im Chat, auch wenn die Frage nicht danach fragt, ohne Ausnahme; Selbstkontrolle – `arbeit/APD-125 Datei vor jeder Kachel Wortlaut.md` (APD-125/V-1 bis V-3) | 08.11.2026 |
 
-0 Punkte bereit.
+1 Punkt bereit.
 
 
 ## 1. Auf iPad und iPhone prüfen

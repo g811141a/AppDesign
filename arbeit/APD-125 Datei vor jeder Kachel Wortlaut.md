@@ -1,5 +1,8 @@
 # APD-125 – Datei vor jeder Kachel (Wortlaut)
 
+**Wortlaut bestätigt: Ja (Nutzer 08.11.2026, Sitzung 0098)** – V-1 bis V-3 in der ergänzten Fassung; gilt ab sofort, kommt mit der nächsten
+AppDesign-Version in die Zusammenarbeit 3.11.0.
+
 **Stand 08.11.2026** · Sitzung ‚Reiselogbuch 0098‘ · Anlass: das Lagebild fehlte vor der Kachel. Du willst, dass alle relevanten Texte,
 Informationen, der Testlink und die Tests vor der Kachelfrage in einer Datei stehen, und zwar verbindlich und allgemein (Nutzer 08.11.2026).
 
