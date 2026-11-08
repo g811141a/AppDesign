@@ -213,3 +213,41 @@ Ergebnis (08.11.2026, Sitzung 0104): Chromium und WebKit **alles in Ordnung**; G
   seitliches Rollen.
 - **Auffällig:** in einer gelb markierten (`.box.day.gap`, `--focus`) oder ausgewählten Kachel (`.on`, `--sel-bg`) beginnt der Verlauf weiß – mit den
   Testfällen klären.
+- **Farbe: Grau bleibt** (Nutzer 08.11.2026, Sitzung 0104) – Verlauf B Weiß → Grau 5 wie im Muster und Wortlaut W-1.
+
+## Testfälle für den Bau – Entwurf (Sitzung 0104)
+
+**Testfall (automatisch)** – AppDesign `tests/hig.mjs`: `kastenBezeichnung` angepasst (600 statt 400, Emoji-Höhe wie im Wert), neue Funktion `kopfVerlauf`
+nach `arbeit/RLB-120 Muster prüfen.mjs`, Mustertabellen-Vergleich (R-6.2) auch mit `background-image`; aufgerufen nach jedem Schritt (measure) – im
+Reiselogbuch damit in allen Ansichten mit Tageskachel, Tabelle, Vorschau. Vier Lagen, hell und dunkel, Textgröße l, xxl, xxxl, ax3.
+
+| Nr. | Fall | Erwartet |
+|---|---|---|
+| RLB-120/B-1 | Emojis der Bezeichnung (Kasten mit Feldern) | so hoch wie im Wert (±1 px), in einer Zeile |
+| RLB-120/B-2 | Wetter im Kopf der Tageskachel (App) | so hoch wie die Smileys im Wert (±1 px) |
+| RLB-120/B-3 | Text der Bezeichnung | halbfett (600), Textgröße und Textfarbe wie der Wert |
+| RLB-120/B-4 | Fläche der Bezeichnung | Kopfverlauf nur in der Zelle – nebeneinander nach rechts, untereinander nach unten, Endton `--th-bg`; wechselt beim Ändern der Textgröße und beim Drehen ohne Neuaufbau |
+| RLB-120/B-5 | Linien im Kasten mit Feldern | auch vor dem ersten und nach dem letzten Feld, 16 px Abstand zum Rand |
+| RLB-120/B-6 | Kopfzeile jeder Tabelle in der App (Tage, Quartiere) | Kopfverlauf von oben nach unten |
+| RLB-120/B-7 | Kopf in Ausgabe und Vorschau | Verlauf von oben Weiß nach unten `#d9d9d9`, gleich der Mustertabelle |
+| RLB-120/B-8 | Kachel und Wert | nichts ragt hinaus, Wert mindestens 16 px vom Rand |
+| RLB-120/B-9 | dunkel | Verlauf von `--card` nach `--th-bg` |
+| RLB-120/B-10 | Gegenprobe und Katalog | Gegenprobe rot; R-6.1, R-6.2, R-6.5 neu in `checkCatalog` |
+
+**Testfälle (User)** – Entwurf für P-101:
+
+**P-101/15 – Tageskachel mit Verlauf**
+1. iPhone hoch, hell: eine Reise öffnen.
+2. Die Tageskacheln ansehen. Erwartet: Spalte 1 links weiß, nach rechts grau, Text fett; Emojis in Spalte 1 und das Wetter oben rechts so groß wie die
+   Smileys in Spalte 2; eine Linie unter dem Datum und eine unter der letzten Zeile.
+3. iPhone-Einstellungen › Anzeige & Helligkeit › Textgröße ganz groß (Größere Textgrößen ein), zurück in die App. Erwartet: jede Bezeichnung als Streifen
+   über dem Wert, oben weiß, nach unten grau.
+4. Darstellung dunkel. Erwartet: der Verlauf zart von Dunkelgrau zu etwas hellerem Grau, Text gut lesbar.
+
+**P-101/16 – Kopfzeile in Tabelle und Ausgabe**
+1. iPad quer, hell: eine Reise öffnen. Erwartet: die Kopfzeile der Tabelle der Tage und der Quartiere oben weiß, nach unten grau.
+2. Ausgabe ›  HTML › Vorschau. Erwartet: die Kopfzeilen der Tabellen oben weiß, nach unten grau.
+3. PDF erstellen. Erwartet: im PDF dieselben Kopfzeilen mit Verlauf.
+
+**Noch offen (Auffällig):** gelb markierte (`.gap`) bzw. ausgewählte (`.on`) Tageskachel – der Verlauf beginnt weiß; Vorschlag: dort mit der Farbe der
+Kachel beginnen – Muster folgt.
