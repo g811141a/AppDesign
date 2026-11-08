@@ -48,7 +48,37 @@ https://g811141a.github.io/AppDesign/arbeit/APD-127/index.html
 **Am Gerät (Testfall (User) des Musters):** wie schnell die Tastatur aufgeht; ob Safari bei A oder B selbst etwas verschiebt (Spalte `vt`); ob B
 ruhig gleitet oder flackert; welche Variante sich besser anfühlt.
 
+## Messung am Gerät (08.11.2026, Sitzung 0100)
+
+Messung 1: iPhone hoch, hell, iOS 18_7 / Safari 26.6.3, **im Safari-Tab** (innen 402 × 714, nicht vom Home-Bildschirm), alle 6 Fälle, AppDesign 4.56.0.
+Rohdaten im Notizordner der Sitzung (nicht im Repo), ausgewertet mit `arbeit/APD-127 auswerten.mjs`. Nutzer: **‚Bei A und B war eigentlich kein
+Unterschied zu merken.‘**
+
+- APD-127/W-1 **Mehr-Menü:** auf 319 und 324 ms (13–14 Bilder), zu 247 und 252 ms (15 Bilder) – gleitet; Modell 270–290 / ~230 ms, passt.
+- APD-127/W-2 **Fenster:** herein 421–425 ms (26 Bilder), Abbild hinaus 306–318 ms (18–20 Bilder) – gleitet.
+- APD-127/W-3 **Tastatur (`vh`):** 714 → 377 in **einem** Bild (337 px), gemeldet 95–110 ms nach dem Fokus; zu 463–498 ms nach `focusout`. Die
+  Bewegung der Tastatur selbst zeigt `visualViewport` nicht – ihre Dauer bleibt am Gerät unmessbar (APD-127/B-4).
+- APD-127/W-4 **Variante A:** ‚Wie war was?‘ springt 602 → 252 (349 px) in einem Bild, 90–91 ms nach dem Fokus, etwa 19 ms **vor** der Meldung der
+  Tastatur; Rollstand 272 → 622. Zweimal gleich (Fall 4 und 6).
+- APD-127/W-5 **Variante B:** derselbe Weg (602 → 252), gleitet 351 ms in 19 Bildern (größter Schritt 64 px), erstes Bild 88 ms nach dem Fokus,
+  zugleich mit der Tastatur; Endlage wie A (252).
+- APD-127/W-6 **Safari verschiebt nichts:** `vt` und `sy` bleiben in allen Fällen 0 (auch bei ‚Ort‘ oben) – das Rollen von `ui.js` beim Fokus
+  (APD-36/S-7, S-8) verhindert die Verschiebung durch Safari, wie im Modell.
+- APD-127/W-7 **Erstes Bild nach dem Fokus:** in A und B 88–91 ms nach `focusin` (bei ‚Ort‘ ohne Rollen schon nach 3 ms). Vermutung: Safari zeichnet,
+  während die Tastatur startet, kein neues Bild – der Sprung von A wird so erst im selben Augenblick sichtbar, in dem die Tastatur hereinkommt.
+- APD-127/W-8 **Fenster-Versatz (`blatt`, `bt`):** am Gerät ist `blatt` in jedem Bild genau `bt` + 10 – Safari rechnet das laufende `translate` in
+  `getBoundingClientRect` ein. Die Lücke ist nur in Playwright-WebKit 26.0 (Prüfumgebung), keine Safari-Eigenheit → kein Eintrag in Designrichtlinie 13.
+
+**Safari-Modell (0 Nr. 20):**
+- Weg: Modell 415 px, Gerät 349 px. Unterschied 66 px = Tastatur Modell 403 px (iPhone hoch) − Gerät 337 px. Vermutung: der Safari-Tab hat eine
+  andere Tastaturhöhe als die App vom Home-Bildschirm (für die das Modell gilt); am Home-Bildschirm nicht gemessen.
+- Abweichung: das Modell meldet die Tastatur ein Bild nach dem Fokus, das Gerät nach 95–110 ms (W-3); im Modell kommt das erste Bild nach dem Fokus
+  sofort, am Gerät nach 88–91 ms (W-7). Beides gehört ins Modell (`tests/safari.mjs`), mit Quelle in Designrichtlinie 13 (Wortlaut, 0 Nr. 29).
+
+**Bewertung:** A springt, B gleitet – am Gerät messbar verschieden, aber **nicht spürbar** (Nutzer). Vermutung: der Sprung fällt mit dem Start der
+Tastatur zusammen (W-4, W-7) und geht in ihrer Bewegung unter. B bringt also nichts, kostet aber Code (Warten in `feldZeigen`).
+
 ## Nächster Schritt
 
-Messung am Gerät (iPhone hoch, hell) → Auswertung hier eintragen → Wortlaut ‚alle Gleitbewegungen wie das Mehr-Menü‘ (0 Nr. 29) → Testfall-Liste
-für den Bau.
+Entscheidung A behalten oder B bauen → bei A kein Wortlaut ‚alle Gleitbewegungen wie das Mehr-Menü‘; Modell und Designrichtlinie 13 nach W-3 und
+W-7 (Wortlaut) → Bau-Frage.
