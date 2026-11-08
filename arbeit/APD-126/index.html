@@ -1,0 +1,72 @@
+<!doctype html><html lang="de"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="APD-126">
+<title>APD-126 Eingabefelder</title>
+<link rel="stylesheet" href="../../fassung/4.56.0/design.css">
+<style>
+/* APD-126 / RLB-123 Muster (Sitzung Reiselogbuch 0098): Cursor am Ende (R-5.11), Textfelder leer einzeilig (APD-126/W-1), Verlauf mit den
+   Vorschlägen über dem Feld, Vorschlag ans Ende, danach klein (RLB-123, APD-126/W-3, W-4). design.css der Fassung 4.56.0, dazu nur
+   ‚leer einzeilig‘ (APD-126/W-5); ui.js aus ‚arbeit/APD-126 Muster bauen.mjs‘. Nur hell. */
+html { color-scheme: light; }
+textarea { min-height: 44px; }   /* APD-126/W-1, W-5: leer bzw. einzeilig 44 px wie die einzeiligen Felder */
+textarea:placeholder-shown { white-space: nowrap; }   /* leer: der Platzhalter bleibt einzeilig und wird abgeschnitten (wie in iOS) */
+textarea::placeholder { text-overflow: ellipsis; overflow: hidden; white-space: nowrap; }
+.muster { max-width: 640px; margin: 0 auto; padding: 8px 16px 40vh; }
+.muster .karte { background: var(--card, #fff); border-radius: 12px; padding: 12px 14px 14px; margin: 14px 0; border: .5px solid var(--line); }
+.muster p { margin: 0 0 10px; color: var(--muted); }
+.muster label { display: block; margin: 14px 0 6px; }
+.muster .chips { margin: 0 0 10px; }
+#meldung { min-height: 1.4em; color: var(--muted); }
+</style></head><body>
+<div class="muster">
+  <h1 class="nb-title" style="font-size:var(--t-title2);margin:8px 0 4px">APD-126 · Eingabefelder</h1>
+  <p>Tippe irgendwo in ein Feld mit Text: der Cursor steht am Ende. Tippst du danach nochmals in dasselbe Feld, setzt er an die Stelle. Leere Felder sind eine Zeile hoch und wachsen mit jeder Zeile. Ein Vorschlag kommt nach der letzten Zeile des Verlaufs.</p>
+  <div class="karte">
+    <label for="fTitel">Titel</label>
+    <input type="text" id="fTitel" value="Australien und Neuseeland 2026" autocapitalize="sentences">
+    <label for="fOrt">Ort</label>
+    <input type="text" id="fOrt" value="Cairns, Australien" autocapitalize="sentences">
+    <label for="fKm">Gegangene Kilometer</label>
+    <input type="text" id="fKm" value="12,5" inputmode="decimal" enterkeyhint="done" style="width:8em">
+  </div>
+  <div class="karte">
+    <label for="fVerlauf"><span class="step-num">2</span>Verlauf</label>
+    <div class="chips" id="suggest">
+      <button type="button" data-t="Weiterfahrt nach ">Weiterfahrt nach …</button>
+      <button type="button" data-t="Rundgang durch ">Rundgang durch …</button>
+      <button type="button" data-t="Besichtigung ">Besichtigung …</button>
+      <button type="button" data-t="Freetour ">Freetour …</button>
+      <button type="button" data-t="Tour ">Tour …</button>
+      <button type="button" data-t="">Sonstiges …</button>
+    </div>
+    <textarea id="fVerlauf" autocapitalize="sentences" autocorrect="on" spellcheck="true" placeholder="Wie ist der Tag verlaufen? Eine Zeile pro Punkt.">Anreise nach Cairns
+Rundgang an der Esplanade
+Abendessen am Hafen</textarea>
+    <label for="fWie"><span class="step-num">3</span>Wie war was?</label>
+    <textarea id="fWie" autocapitalize="sentences" autocorrect="on" spellcheck="true" placeholder="Smiley antippen, dann ein paar Worte dazu."></textarea>
+    <label for="fFazit">Fazit</label>
+    <textarea id="fFazit" autocapitalize="sentences" autocorrect="on" spellcheck="true" placeholder="Ein paar Worte zur ganzen Reise.">Eine wunderbare Reise mit vielen Eindrücken, langen Fahrten und herzlichen Menschen. Am schönsten waren das Riff vor Cairns und die Wanderungen auf der Südinsel, bei denen wir jeden Tag etwas Neues entdeckt haben.
+Nächstes Mal mehr Zeit für Tasmanien.</textarea>
+  </div>
+  <p id="meldung" aria-live="polite"></p>
+</div>
+<script src="ui.js"></script>
+<script>
+// RLB-123: ein Vorschlag kommt als neue Zeile nach der letzten Zeile, der Cursor ans Ende, ohne capNext (danach klein, APD-126/W-4);
+// ‚Sonstiges …‘ hängt eine leere Zeile an (ist die letzte schon leer, keine zweite). Der Knopf nimmt dem Feld den Fokus nicht (mousedown).
+const fV = document.getElementById('fVerlauf');
+document.querySelectorAll('#suggest button').forEach(b => {
+  b.addEventListener('mousedown', e => e.preventDefault());
+  b.onclick = () => {
+    const v = fV.value, neu = (v && !v.endsWith('\n') ? '\n' : '') + b.dataset.t;
+    if (neu) fV.value = v + neu;
+    fV.focus();
+    const n = fV.value.length; fV.setSelectionRange(n, n);
+    autoGrow(fV);
+    document.getElementById('meldung').textContent = b.dataset.t ? `‚${b.dataset.t.trim()} …‘ angehängt` : 'leere Zeile angehängt';
+  };
+});
+</script>
+</body></html>
