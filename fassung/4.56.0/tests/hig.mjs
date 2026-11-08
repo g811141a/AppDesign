@@ -1055,9 +1055,12 @@ const found = new Map(), icons = new Map();
       if (window.visualViewport) {
         const shift = 200, before = snap();
         Object.defineProperty(visualViewport, 'offsetTop', { get: () => shift, configurable: true });
+        // seit 4.56.0 (APD-115/N-13, gemessen): mit Rollbereich verschiebt Safari dafür die Seite – scrollY = offsetTop (iPad 139, iPhone 75)
+        const sy = Object.getOwnPropertyDescriptor(window, 'scrollY');
+        if (roll.el) Object.defineProperty(window, 'scrollY', { get: () => shift, configurable: true });
         visualViewport.dispatchEvent(new Event('scroll')); await frame();
         for (const [e, v] of snap()) { const o = before.get(e); if (o && Math.abs(v[0] - o[0] - shift) >= 0.5) out.add(`Leiste ${name(e)} folgt dem von Safari verschobenen sichtbaren Bereich nicht (rückt um ${Math.round(shift - (v[0] - o[0]))} px nach oben)`); }
-        delete visualViewport.offsetTop; visualViewport.dispatchEvent(new Event('scroll')); await frame();
+        delete visualViewport.offsetTop; if (roll.el) { if (sy) Object.defineProperty(window, 'scrollY', sy); else delete window.scrollY; } visualViewport.dispatchEvent(new Event('scroll')); await frame();
       }
       return [...out];
     }, ROLL);

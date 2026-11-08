@@ -26,7 +26,8 @@ AppDesign 4.56.0 · Designrichtlinie allgemein 4.56.0 · Zusammenarbeit allgemei
   `offsetTop` nach `zuVerzug`) und `fokusSelbst` (selbst gesetzter Fokus über der Tastatur: Safari verschiebt nicht) jetzt Standard; `apd115: false` = Modell bis 4.55.0.
 - **Prüfung:** im Reiselogbuch neu `ablauf-feld-rollen` (APD-115/M-1 bis M-11; Gegenprobe `PRUEF_V=alt` mit `ui.js` 4.55.0 und `PRUEF_FOKUS=alt`).
   `checkSheet` B10: ein mehrzeiliges Feld, höher als der sichtbare Inhalt, zeigt nach R-4.5 die Cursorzeile – kein Abstand oben verlangt, der Zug setzt im
-  sichtbaren Teil des Felds an (iPhone quer Verlauf und Fazit).
+  sichtbaren Teil des Felds an (iPhone quer Verlauf und Fazit). `hig` R-2.1 (Leisten folgen Safaris Verschiebung): mit Rollbereich verschiebt Safari
+  dafür die Seite – die Nachbildung setzt jetzt wie gemessen auch `scrollY` (APD-115/N-13; `ui.js` nimmt seit APD-115/N-11 den kleineren Wert).
 
 ## 4.55.0 – 07.11.2026
 
