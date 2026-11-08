@@ -182,3 +182,19 @@ Ergebnis (08.11.2026, Sitzung 0103): Chromium und WebKit **alles in Ordnung**; G
 | RLB-120/V-6 | Gegenprobe `PRUEF_V=heute` | V-1 und V-2 rot |
 
 Ergebnis (08.11.2026, Sitzung 0104): Chromium und WebKit **alles in Ordnung**; Gegenprobe rot (32 Fehler).
+
+## Verlauf B, Richtung je nach Anordnung, allgemeine Regel (Nutzer 08.11.2026, Sitzung 0104)
+
+- **Ergebnis:** ‚Bitte B umsetzen. Beide Tabellenverläufe (Tabellenüberschrift seitlich links und Tabellenüberschrift oben in der ersten Zeile) sind als
+  allgemeine Regel zu verankern.‘ Dazu: steht bei großer Schrift die Bezeichnung (Spalte 1) über den Daten, verläuft der Verlauf von oben nach unten statt
+  von links nach rechts – dynamisch. Muster für alle Fälle mit B.
+- **Allgemein oder App (0 Nr. 4):** **allgemein** (Nutzer) – Kasten mit Feldern (15.10, R-6.1, R-6.5) und Kopfzeile jeder Tabelle (9, R-6.1, `--th-bg`)
+  in AppDesign. Wortlaut folgt (0 Nr. 29).
+- **Umgesetzt im Muster** `arbeit/RLB-120/index.html` (nur hell): Variable `--kopf-verlauf` (B: Weiß 0 %, Weiß 25 %, `#f9f9fb` 50 %, `#f0f0f3` 75 %, Grau 5
+  `#e5e5ea` 100 %); Spalte 1 nebeneinander `linear-gradient(to right, …)`, untereinander (`html.ts-um`) `linear-gradient(to bottom, …)` – die Richtung
+  wechselt mit der Anordnung, ohne Neuaufbau; neu darunter die Tabelle der Tage (iPad) heute/neu, Kopfzeile in ‚neu‘ von oben nach unten.
+- **Prüfung** (`arbeit/RLB-120 Muster prüfen.mjs`): T-7 jetzt ‚Verlauf passend zur Anordnung nur in der Zelle‘ (nebeneinander nach rechts, untereinander
+  nach unten, endet bei Grau 5) · neu **T-12** ‚Kopfzeile der Tabelle von oben nach unten mit demselben Verlauf wie Spalte 1‘. Chromium und WebKit **alles
+  in Ordnung**; Gegenprobe `PRUEF_V=heute` rot (206 Fehler, darunter T-7 und T-12); zweite Gegenprobe ohne die Regel für ‚untereinander‘: T-7 rot genau in
+  den Fällen ‚untereinander‘ (12 Fehler).
+- **Noch offen:** dunkel (Muster nur hell), Ausgabe HTML/PDF (R-6.2, eigene helle Gestaltung) – mit dem Wortlaut klären.

@@ -130,19 +130,25 @@ body { background: var(--bg); }
 /* Spalte 1 grau hinterlegt wie die Kopfzeile der Tabelle (--th-bg), vom linken Rand der Kachel bis zur Linie; Zeilenlinien von Rand zu Rand */
 .neu .box { overflow: hidden; }
 /* Zeilenlinien wie heute (mit Abstand zum Rand); Spalte 1 grau nur in ihrer Zelle (nicht bis zum linken und unteren Rand der Kachel, Nutzer 08.11.2026) */
-.neu .box .kv .k { background: var(--th-bg); margin: calc(-7px * var(--f-body)) 0; padding: calc(7px * var(--f-body)) 8px; width: calc(98px * var(--f-body)); }
+/* Verlauf B (Nutzer 08.11.2026, Sitzung 0104): Weiß → Grau 5, lange weiß, das Grau erst zum Ende hin – nebeneinander von links nach rechts,
+   untereinander (große Schrift, html.ts-um) von oben nach unten; die Kopfzeile der Tabelle von oben nach unten */
+:root { --kopf-verlauf: #ffffff 0%, #ffffff 25%, #f9f9fb 50%, #f0f0f3 75%, #e5e5ea 100%; }
+.neu .box .kv .k { background: linear-gradient(to right, var(--kopf-verlauf)); margin: calc(-7px * var(--f-body)) 0; padding: calc(7px * var(--f-body)) 8px; width: calc(98px * var(--f-body)); }
 /* Linie vor der ersten Zeile (unter dem Kopf); alle Texte in Spalte 1 fett wie die Kopfzeile der Tabelle (Nutzer 08.11.2026) */
 .neu .box .h + .kv { border-top: 1px solid var(--line); margin-top: calc(8px * var(--f-body)); }
 .neu .box .kv:last-child { border-bottom: 1px solid var(--line); }   /* Linie auch nach der letzten Zeile (Nutzer 08.11.2026) */
 .neu .box .kv .k, .neu .box .kv .k.word, .neu .box .kv .k .w { font-weight: 600; }
-html.ts-um .neu .box .kv .k { width: auto; margin: calc(-7px * var(--f-body)) 0 2px; padding: 4px 8px; }
+html.ts-um .neu .box .kv .k { background: linear-gradient(to bottom, var(--kopf-verlauf)); width: auto; margin: calc(-7px * var(--f-body)) 0 2px; padding: 4px 8px; }
+.tab { margin: 4px 0 22px; overflow-x: auto; }
+.tab > h2 { font-size: var(--t-headline); margin: 0 0 2px; }
+.tab.neu table.days th { background: linear-gradient(to bottom, var(--kopf-verlauf)); }
 .ts { display: flex; gap: 8px; flex-wrap: wrap; margin: 6px 0 4px; }
 .ts button { padding: 6px 12px; border-radius: 16px; border: none; background: var(--btn, #e9e9eb); color: inherit; font: inherit; }
 .ts button[aria-pressed=true] { background: var(--accent); color: #fff; }
 </style></head><body>
 <div class="muster">
   <h1 class="nb-title" style="font-size:var(--t-title2);margin:8px 0 4px">RLB-120 · Tageskachel: Emojis gleich groß</h1>
-  <p>Links heute, rechts neu: die Emojis in Spalte 1 und das Wetter im Kopf in derselben Größe wie Text und Smileys in Spalte 2; Spalte 1 grau hinterlegt wie die Kopfzeile der Tabelle, nur in der Zelle; Linie vor der ersten Zeile, Spalte 1 fett.</p>
+  <p>Links heute, rechts neu: Spalte 1 mit Verlauf B von Weiß nach Grau – nebeneinander von links nach rechts, bei großer Schrift (Bezeichnung über dem Wert) von oben nach unten; darunter die Tabelle der Tage, die Kopfzeile in ‚neu‘ von oben nach unten. Emojis gleich groß, Spalte 1 fett, Linien vor der ersten und nach der letzten Zeile.</p>
   <div class="ts" id="ts"><button data-ts="l">Text Standard</button><button data-ts="xxl">Text größer</button><button data-ts="xxxl">Text groß</button><button data-ts="ax3">Text sehr groß</button></div>
   <div class="reihe"><div class="spalte heute"><h2>heute</h2><div class="box day " data-day="2026-08-24" data-marke="Tag 1 · Mo 24.08." role="button" tabindex="0">
       <div class="h">Mo, 24.08.<span class="wx">☀️🌤️</span></div>
@@ -175,6 +181,14 @@ html.ts-um .neu .box .kv .k { width: auto; margin: calc(-7px * var(--f-body)) 0 
       <div class="kv"><span class="k "><span class="l">🍽️🍷☕️</span></span><span class="v"><div class="ln"><span class="m">📍</span><span class="t"><a href="https://www.google.com/maps/search/?api=1&amp;query=Fisch%2C%20Cairns" target="_blank" rel="noopener" onclick="event.stopPropagation()">Fisch</a></span></div></span></div>
       <div class="kv"><span class="k "><span class="l">😴💤</span></span><span class="v"><div class="ln q"><span class="m">📍</span><span class="t"><a href="https://www.google.com/maps/search/?api=1&amp;query=Hotel%20A%2C%20Cairns" target="_blank" rel="noopener" onclick="event.stopPropagation()">Hotel A</a>, Cairns</span></div></span></div>
     </div></div></div>
+  <div class="tab heute"><h2>Tabelle der Tage (iPad) – heute</h2><div class="table-wrap"><table class="days static"><thead><tr><th>Tag</th><th>Verlauf</th><th>🙂☹️😉</th><th class="num">🚶🏽‍♂️km</th><th>🍽️🍷☕️</th><th>😴💤</th></tr></thead><tbody>
+  <tr><td class="day">Mo, 24.08.<span class="wx">☀️🌤️</span></td><td><div class="ln"><span class="m">▫️</span><span class="t">Anreise</span></div><div class="ln"><span class="m">▫️</span><span class="t">Strand</span></div></td><td><div class="ln"><span class="m">😉</span><span class="t">gut</span></div><div class="ln"><span class="m">☹️</span><span class="t">Regen</span></div></td><td class="num">6,0</td><td><div class="ln"><span class="m">📍</span><span class="t"><a href="#">Pizza</a></span></div></td><td><div class="ln q"><span class="m">📍</span><span class="t"><a href="#">Hotel A</a>, Cairns</span></div></td></tr>
+  <tr class="alt"><td class="day">Di, 25.08.<span class="wx">🌧️</span></td><td><div class="ln"><span class="m">▫️</span><span class="t">Regenwald</span></div></td><td><div class="ln"><span class="m">😀</span><span class="t">super</span></div></td><td class="num">12,5</td><td><div class="ln"><span class="m">📍</span><span class="t"><a href="#">Fisch</a></span></div></td><td><div class="ln q"><span class="m">📍</span><span class="t"><a href="#">Hotel A</a>, Cairns</span></div></td></tr>
+</tbody></table></div></div>
+  <div class="tab neu"><h2>Tabelle der Tage (iPad) – neu</h2><div class="table-wrap"><table class="days static"><thead><tr><th>Tag</th><th>Verlauf</th><th>🙂☹️😉</th><th class="num">🚶🏽‍♂️km</th><th>🍽️🍷☕️</th><th>😴💤</th></tr></thead><tbody>
+  <tr><td class="day">Mo, 24.08.<span class="wx">☀️🌤️</span></td><td><div class="ln"><span class="m">▫️</span><span class="t">Anreise</span></div><div class="ln"><span class="m">▫️</span><span class="t">Strand</span></div></td><td><div class="ln"><span class="m">😉</span><span class="t">gut</span></div><div class="ln"><span class="m">☹️</span><span class="t">Regen</span></div></td><td class="num">6,0</td><td><div class="ln"><span class="m">📍</span><span class="t"><a href="#">Pizza</a></span></div></td><td><div class="ln q"><span class="m">📍</span><span class="t"><a href="#">Hotel A</a>, Cairns</span></div></td></tr>
+  <tr class="alt"><td class="day">Di, 25.08.<span class="wx">🌧️</span></td><td><div class="ln"><span class="m">▫️</span><span class="t">Regenwald</span></div></td><td><div class="ln"><span class="m">😀</span><span class="t">super</span></div></td><td class="num">12,5</td><td><div class="ln"><span class="m">📍</span><span class="t"><a href="#">Fisch</a></span></div></td><td><div class="ln q"><span class="m">📍</span><span class="t"><a href="#">Hotel A</a>, Cairns</span></div></td></tr>
+</tbody></table></div></div>
 </div>
 <script>
 const PX = { l: 17, xxl: 21, xxxl: 23, ax3: 40 };
