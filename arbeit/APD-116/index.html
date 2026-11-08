@@ -4,7 +4,7 @@
 <title>APD-116 Dateiname</title>
 <link rel="stylesheet" href="../../fassung/4.56.0/design.css">
 <style>
-/* APD-116 Muster ‚Dateiname in eigener Zeile‘ (Sitzung Reiselogbuch 0102). design.css der Fassung 4.56.0; die Kästen bilden das kleine
+/* APD-116 Muster ‚Dateiname in eigener Zeile‘ (Sitzung Reiselogbuch 0102; Fälle 5 und 6 ‚heruntergeladen‘ und ‚Fehler‘ Sitzung 0103). design.css der Fassung 4.56.0; die Kästen bilden das kleine
    Hinweisfenster #msg nach (Breite wie #msg, Kopf ohne Strich, Text zentriert). Neu: der Name als eigener Block (.fname), Umbruch nur an
    Leerzeichen (jedes Wort als inline-block); ein einzelnes Wort länger als die Zeile bricht notfalls in sich. Nur hell. */
 html { color-scheme: light; }
@@ -38,18 +38,24 @@ const HEUTE = {
   shared: n => `✅ Teilen-Menü abgeschlossen für <b>${esc(n)}</b>.<div class="hint">Wenn du ‚In Dateien sichern‘ gewählt hast, liegt die Datei im gewählten Ordner.</div>`,
   aborted: n => `⚠️ Teilen-Menü abgebrochen – <b>${esc(n)}</b> wurde nicht gespeichert.`,
   print: n => `✅ Drucken-Menü geöffnet für <b>${esc(n)}</b>.<div class="hint">Dort über ‚Teilen‘ → ‚In Dateien sichern‘ als PDF ablegen.</div>`,
+  downloaded: n => `✅ <b>${esc(n)}</b> wird geladen.<div class="hint">Du findest die Datei in der Dateien-App unter ‚Downloads‘.</div>`,
+  error: n => `⚠️ <b>${esc(n)}</b> konnte nicht übergeben werden.`,
 };
 const fn = n => `<b class="fname">${n.split(' ').map(w => `<span class="fw">${esc(w)}</span>`).join(' ')}</b>`;
 const NEU = {
   shared: n => `✅ Teilen-Menü abgeschlossen für${fn(n)}<div class="hint">Wenn du ‚In Dateien sichern‘ gewählt hast, liegt die Datei im gewählten Ordner.</div>`,
   aborted: n => `⚠️ Teilen-Menü abgebrochen – nicht gespeichert:${fn(n)}`,
   print: n => `✅ Drucken-Menü geöffnet für${fn(n)}<div class="hint">Dort über ‚Teilen‘ → ‚In Dateien sichern‘ als PDF ablegen.</div>`,
+  downloaded: n => `✅ Wird geladen:${fn(n)}<div class="hint">Du findest die Datei in der Dateien-App unter ‚Downloads‘.</div>`,
+  error: n => `⚠️ Konnte nicht übergeben werden:${fn(n)}`,
 };
 const FAELLE = [
   ['Backup', 'shared', 'Ω Backup Reiselogbuch 2026.11.08 09.17.json'],
   ['Ausgabe', 'shared', 'Reiselogbuch Australien und Neuseeland 2026 2026.08.24-2026.11.11 V003.html'],
   ['Backup', 'aborted', 'Ω Backup Reiselogbuch 2026.11.08 09.17.json'],
   ['Abgleichbericht', 'print', 'Abgleichbericht 2026.11.08 09.17.pdf'],
+  ['Ausgabe (ohne Teilen-Menü)', 'downloaded', 'Reiselogbuch Australien und Neuseeland 2026 2026.08.24-2026.11.11 V003.html'],
+  ['Backup (Fehler)', 'error', 'Ω Backup Reiselogbuch 2026.11.08 09.17.json'],
 ];
 const box = (k, titel, html) => `<div class="mbox ${k}"><div class="mkopf">${titel}</div><div class="msg-text">${html}</div></div>`;
 document.getElementById('faelle').innerHTML = FAELLE.map(([t, art, n], i) =>
