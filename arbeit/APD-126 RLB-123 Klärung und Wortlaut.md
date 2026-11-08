@@ -1,5 +1,8 @@
 # APD-126 und RLB-123 – Klärung und Wortlaut
 
+**Wortlaut bestätigt: Ja zu APD-126/W-1 bis W-7 (Nutzer 08.11.2026, Sitzung 0098).** Eingetragen wird er mit dem Bau; als Nächstes
+kommt das Muster mit der Testfall-Liste.
+
 **Stand 08.11.2026** · Sitzung ‚Reiselogbuch 0098‘ · Korrektur aus Usertest P-100 (P-100/1) und allgemeine Regel des Nutzers (08.11.2026)
 
 **Entscheidungen bisher (Nutzer 08.11.2026):**
