@@ -47,3 +47,13 @@ mit `display: block` allein brach die Ausgabe nach ‚2026.08.24-‘ – deshalb
 
 **Für den Bau:** `checkShareResult` o. Ä. in `tests/ablauf.mjs` mit den echten Fenstern (Backup im Reiselogbuch, Abgleichbericht), dazu R-… im
 Katalog (Wortlaut folgt nach ‚Muster ok‘).
+
+## Anleitung Muster am Gerät
+
+Link: https://g811141a.github.io/AppDesign/arbeit/APD-116/index.html – Safari, hell.
+
+1. iPad quer: den Link öffnen. Erwartet: vier Paare ‚heute‘ und ‚neu‘; rechts steht der fette Dateiname jeweils allein unter dem Satz.
+2. Das zweite Paar ‚Ausgabe‘ ansehen. Erwartet: rechts bricht der Name nur an Leerzeichen um, ‚2026.08.24-2026.11.11‘ bleibt zusammen; links bricht
+   er heute nach ‚2026.08.24-‘.
+3. Oben ‚Text groß‘ und ‚Text sehr groß‘ antippen. Erwartet: rechts weiterhin nur Umbrüche an Leerzeichen, nichts ragt aus dem Kasten.
+4. iPhone hoch: die Schritte 1 bis 3 wiederholen. Erwartet: wie oben.
