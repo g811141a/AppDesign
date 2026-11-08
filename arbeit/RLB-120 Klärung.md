@@ -203,3 +203,4 @@ Ergebnis (08.11.2026, Sitzung 0104): Chromium und WebKit **alles in Ordnung**; G
 - **Ausgabe auch mit Verlauf** (Nutzer 08.11.2026, Sitzung 0104). Muster `arbeit/RLB-120/ausgabe.html`; Prüfung neu **T-13** ‚Kopf der Ausgabe von oben
   Weiß nach unten `#d9d9d9`‘ – Chromium und WebKit **alles in Ordnung**, Gegenprobe rot (210 Fehler). Wortlaut W-2 neu gefasst, dazu W-6 (Abschnitt 10) und
   W-7 (R-6.2) – `arbeit/RLB-120 Wortlaut.md`.
+- **Wortlaut W-2 (neu gefasst), W-6 und W-7 bestätigt** (Nutzer 08.11.2026, Sitzung 0104, ‚Ja‘). Muster der Ausgabe: Antwort des Nutzers im Chat folgt.
