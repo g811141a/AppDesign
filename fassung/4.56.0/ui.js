@@ -3064,9 +3064,12 @@ function gemeldet() {
   const cs = [rolle.el, dlg.open ? dlg.querySelector('.dlg-body') : null].filter(Boolean), y = cs.map(c => c.scrollTop);
   const offen = kbOffen(), f = document.activeElement, feld = f?.matches?.(FELD) ? f : null;
   if (dlg.open && !isPhone()) { dlg.classList.add('gleitet'); clearTimeout(gemeldet.t); gemeldet.t = setTimeout(() => dlg.classList.remove('gleitet'), 300); }
-  cs.forEach(c => platz(c, 2000));
+  // APD-115/N-13: wächst der Rahmen (Tastatur geht zu), bekommt jeder Rollbereich vorher Platz – sonst nur, wo schon Platz steht; Platz bei jeder
+  // Meldung bräche das sanfte Rollen ab (‚Nach oben‘ bei offener Tastatur, APD-36/B-8)
+  const waechst = kbWar && !offen, mit = cs.map(c => waechst || platzVon(c) > 0);
+  cs.forEach((c, i) => { if (mit[i]) platz(c, 2000); });
   placeDialogs();
-  cs.forEach((c, i) => { c.scrollTop = y[i]; knapp(c); });
+  cs.forEach((c, i) => { if (mit[i]) { c.scrollTop = y[i]; knapp(c); } });
   if (offen && feld) { kbMerken(feld); feldZeigen(feld); }
   if (kbWar && !offen) {
     if (feld) feld.blur();

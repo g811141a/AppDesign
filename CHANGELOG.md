@@ -18,12 +18,15 @@ AppDesign 4.56.0 · Designrichtlinie allgemein 4.56.0 · Zusammenarbeit allgemei
   dem Antippen (APD-115/N-13).
 - **Tastatur zu ohne Sprung (APD-115/N-11, Korrektur APD-115/N-13):** beim Schließen zählt mit Rollbereich der kleinere Wert aus `offsetTop` und `scrollY`,
   Safaris ‚scroll‘ der Seite stellt sofort neu, das iPad-Fenster gleicht eine Verschiebung durch Safari im selben Augenblick aus; `gemeldet` gibt jedem
-  Rollbereich vor dem Wachsen des Rahmens Platz – der Fensterinhalt sprang beim Schließen der Tastatur (iPad quer 342, iPhone hoch 307 px; auch in 4.55.0).
+  Rollbereich vor dem Wachsen des Rahmens (Tastatur geht zu) Platz – der Fensterinhalt sprang beim Schließen der Tastatur (iPad quer 342, iPhone hoch 307 px;
+  auch in 4.55.0). Nur dann: Platz bei jeder Meldung brach ‚Nach oben‘ bei offener Tastatur ab (APD-36/B-8, im Bau gefunden).
 - **Regeln (Wortlaut bestätigt):** R-4.5 ‚wie bei Apple nur so weit gerollt wie nötig‘ (APD-115/E-7); Designrichtlinie 13 – Ausnahme von ‚Berührungen nie
   abfangen‘ für den Wechsel bei offener Tastatur (APD-115/L-1), ‚Lösung in ui.js‘ nach R-4.5 mit dem Satz APD-115/L-2.
 - **Safari-Modell:** `safariModell` mit `apd115` (Verschiebung beim Wechsel sichtbar, gemeldet erst nach `wechselVerzug`; beim Schließen `scrollY` sofort 0,
   `offsetTop` nach `zuVerzug`) und `fokusSelbst` (selbst gesetzter Fokus über der Tastatur: Safari verschiebt nicht) jetzt Standard; `apd115: false` = Modell bis 4.55.0.
 - **Prüfung:** im Reiselogbuch neu `ablauf-feld-rollen` (APD-115/M-1 bis M-11; Gegenprobe `PRUEF_V=alt` mit `ui.js` 4.55.0 und `PRUEF_FOKUS=alt`).
+  `checkSheet` B10: ein mehrzeiliges Feld, höher als der sichtbare Inhalt, zeigt nach R-4.5 die Cursorzeile – kein Abstand oben verlangt, der Zug setzt im
+  sichtbaren Teil des Felds an (iPhone quer Verlauf und Fazit).
 
 ## 4.55.0 – 07.11.2026
 
