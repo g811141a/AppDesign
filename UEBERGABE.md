@@ -1,8 +1,8 @@
 # Übergabe an die nächste Sitzung
 
-**Stand 08.11.2026** · geschrieben in der Sitzung ‚Reiselogbuch 0100‘ (APD-127 Messung ausgewertet, Wortlaut bestätigt, Muster R-1.12 ‚nicht ok‘;
-Übergabe nach 0 Nr. 13, Kontext 289.895) – Aufbau nach Zusammenarbeit allgemein 2.5. **Claude liest diese Datei zu Beginn jeder Sitzung zuerst, dann die
-ganze Zusammenarbeit** (0 Nr. 15); die Arbeitsumgebung steht in der AppDesign-`CLAUDE.md`.
+**Stand 08.11.2026** · geschrieben in der Sitzung ‚Reiselogbuch 0101‘ (APD-127: Notizen-Seitenleiste gemessen, Muster R-1.12 neu ok, Wortlaut bestätigt,
+**Bau freigegeben**; Übergabe nach 0 Nr. 13, Kontext 279.849) – Aufbau nach Zusammenarbeit allgemein 2.5. **Claude liest diese Datei zu Beginn jeder
+Sitzung zuerst, dann die ganze Zusammenarbeit** (0 Nr. 15); die Arbeitsumgebung steht in der AppDesign-`CLAUDE.md`.
 
 ## 1. Lagebild
 
@@ -10,63 +10,60 @@ ganze Zusammenarbeit** (0 Nr. 15); die Arbeitsumgebung steht in der AppDesign-`C
 |---|---|
 | Reiselogbuch | **3.54.0** veröffentlicht (Fassung 4.56.0) |
 | AppDesign | **4.56.0** veröffentlicht |
-| Zusammenarbeit allgemein | **3.10.0** (3.11.0 mit APD-125 bestätigt, kommt mit der nächsten Version) |
+| Zusammenarbeit allgemein | **3.10.0** (3.11.0 mit APD-125 bestätigt, kommt mit 4.57.0) |
 | AppDesign-`CLAUDE.md` | **2.11.0** |
 | ReiseLogBuch-Import (privat) | 1.3.0 |
 
-- **Chatnummer:** die nächste Sitzung heißt **Reiselogbuch 0101**; die danach 0102.
-- **Modell und Aufwand:** in 0100 Opus 5.5 (`get_session`), alle Aufrufe `"effort":"high"`, kein `model_fallback`. `~/.claude/settings.json` = `{}` (keine Hooks).
-  Der Arbeitsprozess wurde einmal neu gestartet (Repos und Einrichtung blieben).
-- **Arbeitsweise (APD-125, gilt):** vor **jeder** Kachel alle wichtigen Informationen der Antwort in **einer Datei** (`SendUserFile`, `display: 'render'`)
-  und ebenso im Chat; ‚(Kontext N)‘ in jeder Frage.
-- **Offener Usertest:** **P-100** (Reiselogbuch 3.54.0, AppDesign 4.56.0) – ok bis auf **P-100/1** (→ RLB-123, bereit). **P-100/2 Schritt 3 ohne
-  Änderung erledigt** (APD-127: Variante A bleibt, Nutzer 08.11.2026). Bleibt unter ‚Prüfen‘, bis RLB-123 gebaut und geprüft ist.
+- **Chatnummer:** die nächste Sitzung heißt **Reiselogbuch 0102**; die danach 0103.
+- **Modell und Aufwand:** in 0101 Opus 5.5 (`get_session`), alle Aufrufe `"effort":"high"`, kein `model_fallback`. `~/.claude/settings.json` = `{}` (keine Hooks).
+  Der Arbeitsprozess wurde zweimal neu gestartet (Repos und Einrichtung blieben).
+- **Arbeitsweise (APD-125, gilt):** vor **jeder** Kachel alle wichtigen Informationen in **einer Datei** (`SendUserFile`, `display: 'render'`) und ebenso im Chat;
+  ‚(Kontext N)‘ in jeder Frage.
+- **Offener Usertest:** **P-100** (Reiselogbuch 3.54.0, AppDesign 4.56.0) – ok bis auf **P-100/1** (→ RLB-123, kommt mit 3.55.0).
 - **Vereinbarung (Nutzer 30.10.2026, Sitzung 0058):** Muster bis auf Weiteres **nur hell** – in jede Übergabe übernehmen.
 - **Erinnerung:** ‚Backlog-Erinnerung (AppDesign und Reiselogbuch)‘ montags 8:58.
-- **Hinweis Prüfumgebung:** Pages über `curl https://api.github.com/repos/g811141a/AppDesign/actions/runs?per_page=1` prüfbar (github.io selbst ist aus
-  der Sitzung nicht erreichbar); Muster lokal per `file://` prüfen. Testfall-Nummern in `arbeit/` nie mit `T-` oder `G-` (globale Präfixe).
-  Arbeitszweige `claude/…` per schnellem Vorlauf nach `main` (`git push origin HEAD:main`), damit Pages die Muster zeigt.
-  Achtung: `arbeit/APD-127 Muster prüfen.mjs` ist die Prüfung des **Messmusters** – die Prüfung des Musters R-1.12 heißt `arbeit/APD-127 Muster R-1.12 prüfen.mjs`.
+- **Hinweis Prüfumgebung:** Pages über `curl https://api.github.com/repos/g811141a/AppDesign/actions/runs?per_page=1`; Muster lokal per `file://`.
+  Videos nimmt die Claude-App nicht an (nur Dokumente und Bilder): Video über github.com in einen Zweig von **ReiseLogBuch-Import** hochladen (bis 25 MiB im
+  Browser), mit `ffmpeg` auswerten (Werkzeuge der Auswertung: Notizordner, Vorgehen in der Arbeitsdatei), danach aus dem Zweig löschen. Der Zweig
+  `messung-video` (ReiseLogBuch-Import) enthält das Video noch im Verlauf – der Nutzer kann ihn auf GitHub löschen.
 
-## 2. Ergebnisse der Sitzung 0100
+## 2. Ergebnisse der Sitzung 0101
 
-Alles in `arbeit/APD-127 Messung und Testfall-Liste.md` (auf `main`, 786a8bb):
+Alles in `arbeit/APD-127 Messung und Testfall-Liste.md` (auf `main`, 7218d51):
 
-- **Messung APD-127** (iPhone hoch, Safari-Tab, APD-127/W-1 bis W-8): Menü auf 319–324 / zu 247–252 ms, Fenster herein ~425 / hinaus ~310 ms;
-  Tastatur in **einem** Schritt 95–110 ms nach dem Fokus; A springt 349 px, B gleitet 351 ms, **kein Unterschied spürbar** (Nutzer) → **A bleibt**.
-  Safari verschiebt nichts (`vt` 0). Erstes Bild nach dem Fokus erst nach 88–91 ms. Safari rechnet laufendes `translate` in `getBoundingClientRect` ein
-  (nur Playwright-WebKit nicht). Weg 349 statt 415 px im Modell: Tastatur im Safari-Tab 337 statt 403 px (Vermutung: Tab statt Home-Bildschirm).
-- **Wortlaut bestätigt (Nutzer 08.11.2026):** Designrichtlinie 13 neuer Punkt APD-127/W-3, W-7 (Zeitpunkt der Tastatur), Safari-Modell iPhone hoch
-  `aufVerzug` 100 ms (APD-127/M-7, M-8), **neue Regel R-1.12 ‚Gleitbewegungen wie das Mehr-Menü‘** (alle: 0,35 s auf / 0,25 s zu, Kurve
-  `cubic-bezier(.32,.72,0,1)`, Rest nach einer Geste anteilig ≥ 0,15 s; Ausnahme Feld beim Antippen), R-4.13 verweist darauf. Wortlaut wörtlich in der
-  Arbeitsdatei, Abschnitt ‚Wortlaut bestätigt‘.
-- **Muster R-1.12** online: https://g811141a.github.io/AppDesign/arbeit/APD-127/app/index.html (heute: `?v=b`), gebaut mit `arbeit/APD-127 Muster bauen.mjs`
-  (Blatt öffnen/x/Loslassen, `blattWeg` 0,25 s, iPad-Fenster mit Tastatur, Navigation, Seitenleiste, Titel antippen). Prüfung M-9 bis M-15: Chromium
-  grün, WebKit 2 von 3 grün (M-13 an der Grenze, Startwert nur 86–100 px – grob), Gegenprobe rot.
-- **Rückmeldung zum Muster: ‚nicht ok‘** (Nutzer 08.11.2026) – **was genau, ist noch offen**.
+- **Rückmeldung zum alten Muster:** alle Gleitbewegungen mindestens so langsam wie das Mehr-Menü; Seitenleiste ‚extrem schnell‘. Ursache: Kurve K
+  schafft 75 % des Wegs nach 83 ms; das Menü wirkt weich, weil es aus 20 % wächst und eingeblendet wird.
+- **Messung Notizen (Video, iPad quer):** öffnen = Feder ohne Nachschwingen, Antwortzeit 0,35 s (Fehler 0,6 px); schließen ≈ 0,2 s, ease-in-out.
+  Methode geprüft: beim Muster kamen genau die eingebauten Werte heraus. In Notizen springt der Inhalt beim Öffnen sofort, nur die Leiste gleitet
+  (im Reiselogbuch rückt der Inhalt mit, APD-68 Variante B – nur genannt, nicht geändert).
+- **Muster R-1.12 neu** (`arbeit/APD-127 Muster bauen.mjs`): auf Feder 0,35 s als `linear()` über 0,5 s, zu ease-in-out 0,25 s, Mehr-Menü und
+  Sprechblasen unverändert. Prüfung `arbeit/APD-127 Muster R-1.12 prüfen.mjs` angepasst (M-13 griff vorher den falschen Rollbereich): Chromium und
+  WebKit je 2 von 2 grün, Gegenprobe rot. **Am Gerät ok** (Nutzer 08.11.2026).
+- **Wortlaut R-1.12 neu bestätigt** (‚Gleitbewegungen wie die Seitenleiste in Notizen‘, wörtlich im letzten Abschnitt der Arbeitsdatei); Designrichtlinie
+  13 (APD-127/W-3, W-7), Safari-Modell `aufVerzug` 100 ms und R-4.13 wie im Abschnitt ‚Wortlaut bestätigt‘ (0100).
+- **Bau-Frage: ‚Ja‘** (Nutzer 08.11.2026) – AppDesign 4.57.0 / Reiselogbuch 3.55.0 mit **APD-125, APD-126, RLB-123, APD-127**.
 
 ## 3. Nächster Schritt
 
 1. Lesen wie immer, Repos dazuholen, Tests einrichten. **Lagebild als eigene Antwort – im Chat und als Datei – mit Kachel** (APD-125).
-2. **Zuerst fragen (offene Frage aus 0100):** Muster R-1.12 ‚nicht ok‘ – welcher Schritt (1–8 der Anleitung in der Arbeitsdatei bzw. unten) und was passt nicht
-   (zu schnell, zu langsam, Kurve, Ruck, etwas anderes)? Dann das Muster anpassen (Bauskript), prüfen, nach `main`, erneut am Gerät.
-   Die Schritte: 1 Link öffnen · 2 iPhone ‚Muster A‘ und zurück · 3 Tag antippen, x · 4 Blatt ziehen und loslassen · 5 Titel antippen · 6 iPad Seitenleiste
-   aus/ein · 7 iPad Fenster mit Tastatur · 8 Vergleich mit `?v=b`.
-3. Dann die Bau-Frage (0 Nr. 8, 21): AppDesign 4.57.0 / Reiselogbuch 3.55.0 mit APD-125, APD-126, RLB-123 und APD-127 Modell plus Designrichtlinie 13
-   (höchstens 2 Themen) – R-1.12 als eigene Version, sobald das Muster ok ist.
+2. **Bauen (Freigabe liegt vor):** AppDesign 4.57.0 / Reiselogbuch 3.55.0 nach AppDesign-`CLAUDE.md` ‚Veröffentlichen‘:
+   - **APD-125:** Zusammenarbeit 3.11.0 (Wortlaut in `BACKLOG.md` bzw. der Arbeitsdatei APD-125).
+   - **APD-126 / RLB-123:** Eingabefelder (Cursor am Ende, leer einzeilig) und Verlauf (Vorschläge über dem Feld) – Muster und Prüfung `arbeit/APD-126 …`.
+   - **APD-127:** R-1.12 in `v4/ui.js` und `v4/design.css` wie im Muster (Bauskript zeigt jede Stelle), Regelkatalog R-1.12 neu, R-4.13 ‚Fenster und
+     Blatt gleiten nach R-1.12‘, Designrichtlinie 13, `tests/safari.mjs` (`aufVerzug` 100 ms), Prüfung in `ablauf.mjs` nach M-9 bis M-15.
+   - Testfall-Liste vor dem Bau (0 Nr. 1), CHANGELOG mit Testfällen P-101, voller Prüflauf in `… los`, Bericht mit allen offenen Usertests.
 
 ## 4. Danach
 
-APD-124 (berührt APD-126 – zusammen besprechen) · APD-116 · RLB-120 · RLB-122 · RLB-121 · APD-85 Teil 6 (Wackler `ablauf-suche-woerter` und
-`ablauf-seitenleiste-position` WebKit; dazu in 0100: `APD-127 Muster prüfen.mjs` wackelt in WebKit, 1 von 4 grün) · APD-80 · APD-30 übrige Teile · APD-57 ·
-APD-44 bis APD-60 · APD-70 · RLB-6 · APD-1.
+Usertest P-101 · APD-124 (berührt APD-126) · APD-116 · RLB-120 · RLB-122 · RLB-121 · APD-85 Teil 6 (Wackler WebKit) · APD-80 · APD-30 übrige Teile ·
+APD-57 · APD-44 bis APD-60 · APD-70 · RLB-6 · APD-1.
 
 ## 5. Starttext für die neue Sitzung
 
 In der neuen Sitzung müssen **AppDesign** und **ReiseLogBuch** verfügbar sein; alles liegt auf `main`.
 
 ```
-Reiselogbuch 0101 – APD-127 Muster R-1.12 nicht ok
+Reiselogbuch 0102 – AppDesign 4.57.0
 
-Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md, dann die GANZE Zusammenarbeit allgemein (3.10.0 plus APD-125: vor jeder Kachel alle wichtigen Informationen in einer Datei und im Chat) und die Überschriften der Designrichtlinien. Prüfe Modell und Aufwand (Sitzungsdatei, auch model_fallback), hole das Repo g811141a/ReiseLogBuch dazu, wie in der AppDesign-CLAUDE.md unter ‚Arbeitsumgebung‘, richte die Tests ein und prüfe, ob in ~/.claude/settings.json Hooks stehen. Lagebild als eigene Antwort (im Chat und als Datei) mit Kachel, dann weiter nach UEBERGABE.md Abschnitt 3: zuerst fragen, was am Muster R-1.12 nicht ok ist (arbeit/APD-127 Messung und Testfall-Liste.md), anpassen, danach die Bau-Frage.
+Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md, dann die GANZE Zusammenarbeit allgemein (3.10.0 plus APD-125: vor jeder Kachel alle wichtigen Informationen in einer Datei und im Chat) und die Überschriften der Designrichtlinien. Prüfe Modell und Aufwand (Sitzungsdatei, auch model_fallback), hole das Repo g811141a/ReiseLogBuch dazu, wie in der AppDesign-CLAUDE.md unter ‚Arbeitsumgebung‘, richte die Tests ein und prüfe, ob in ~/.claude/settings.json Hooks stehen. Lagebild als eigene Antwort (im Chat und als Datei) mit Kachel, dann weiter nach UEBERGABE.md Abschnitt 3: AppDesign 4.57.0 / Reiselogbuch 3.55.0 mit APD-125, APD-126, RLB-123 und APD-127 bauen und veröffentlichen (Freigabe liegt vor, Nutzer 08.11.2026).
 ```
