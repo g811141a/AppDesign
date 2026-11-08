@@ -5,7 +5,11 @@ Informationen, der Testlink und die Tests vor der Kachelfrage in einer Datei ste
 
 **Bisher:** Eine Datei kommt nur dann zusätzlich, wenn du etwas tun sollst (prüfen, testen, entscheiden). Das Lagebild stand nur im Chat
 (0 Nr. 15), und ob etwas in die Datei gehört, habe ich bisher selbst entschieden.
-**Neu:** vor **jedem** Fenster genau eine Datei mit allem, worauf sich die Frage bezieht. Es gibt keine Ausnahme und nichts abzuwägen.
+**Neu:** vor **jedem** Fenster genau eine Datei mit allen wichtigen Informationen der Antwort, auch wenn die Frage im Fenster nicht danach
+fragt (z. B. das Lagebild). Es gibt keine Ausnahme und nichts abzuwägen.
+
+**Ergänzt (Nutzer 08.11.2026):** Wichtige Informationen wie das Lagebild gehören immer in die Datei, auch wenn die Kachelfrage nicht danach
+fragt. Deshalb heißt es in V-1 und V-2 jetzt ‚alle wichtigen Informationen der Antwort‘ statt ‚alles, worauf sich die Frage bezieht‘.
 
 Geändert werden drei Stellen der Zusammenarbeit allgemein (3.10.0 → 3.11.0).
 
@@ -22,10 +26,11 @@ Geändert werden drei Stellen der Zusammenarbeit allgemein (3.10.0 → 3.11.0).
 
 **Neu:**
 
-> 4. **Datei vor jeder Kachel:** vor jedem Fenster steht alles, worauf sich die Frage bezieht, in **einer Datei** im Seitenbereich
->    (`SendUserFile`, `display: 'render'`), die neben der offenen Kachel lesbar bleibt. Dazu gehören Lagebild, Bericht, Wortlaut alt und neu,
->    Muster, der vollständige Testlink, nummerierte Schritte mit ‚Erwartet: …‘ und alle offenen Usertests vollständig. Derselbe Inhalt steht
->    auch im Chat. Das gilt ohne Ausnahme. Das Fenster selbst enthält nur die kurze Frage, ohne Link (Nr. 11, 15, 2.1, 2.3).
+> 4. **Datei vor jeder Kachel:** vor jedem Fenster stehen alle wichtigen Informationen der Antwort in **einer Datei** im Seitenbereich
+>    (`SendUserFile`, `display: 'render'`), die neben der offenen Kachel lesbar bleibt. Das gilt auch dann, wenn die Frage im Fenster nicht
+>    danach fragt. Dazu gehören Lagebild, Bericht, Wortlaut alt und neu, Muster, der vollständige Testlink, nummerierte Schritte mit
+>    ‚Erwartet: …‘ und alle offenen Usertests vollständig. Derselbe Inhalt steht auch im Chat. Das gilt ohne Ausnahme. Das Fenster selbst
+>    enthält nur die kurze Frage, ohne Link (Nr. 11, 15, 2.1, 2.3).
 
 ## APD-125/V-2 – 2.1, Punkt ‚Der Text davor, das Fenster danach‘ (nur der erste Satz)
 
@@ -38,9 +43,9 @@ Geändert werden drei Stellen der Zusammenarbeit allgemein (3.10.0 → 3.11.0).
 
 **Neu:**
 
-> - **Die Datei davor, das Fenster danach:** alles, was der Nutzer vor einer Frage lesen muss (Lagebild, Link, Schritte, Testfälle, Bericht,
->   Wortlaut nach 0 Nr. 29, Muster, Erklärungen), steht vor jedem Fenster in einer Datei im Seitenbereich (`SendUserFile`,
->   `display: 'render'`) und ebenso im Chat (Kasten Punkt 4). Das Fenster enthält nur die kurze Frage, ohne Link. Nie zwei Fenster …
+> - **Die Datei davor, das Fenster danach:** alle wichtigen Informationen der Antwort (Lagebild, Link, Schritte, Testfälle, Bericht,
+>   Wortlaut nach 0 Nr. 29, Muster, Erklärungen) stehen vor jedem Fenster in einer Datei im Seitenbereich (`SendUserFile`,
+>   `display: 'render'`) und ebenso im Chat (Kasten Punkt 4), auch wenn die Frage im Fenster nicht danach fragt. Das Fenster enthält nur die kurze Frage, ohne Link. Nie zwei Fenster …
 >   *(Rest des Punkts unverändert)*
 
 ## APD-125/V-3 – 0 Nr. 15, Lagebild
