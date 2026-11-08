@@ -115,6 +115,18 @@ Fassung 4.56.0 mit R-1.12; `?v=b` = heute zum Vergleich. Prüfung `arbeit/APD-12
 dadurch grob); Gegenprobe in Chromium und WebKit je 8 Fehler (M-9 bis M-13). Beim Bau gefunden: das Schließen mit x ließ Schleier und Seite noch
 0,38 s gleiten (`blattWeg`) – im Muster behoben.
 
+## Rückmeldung zum Muster R-1.12 (Nutzer 08.11.2026, Sitzung 0101)
+
+- **Nicht ok:** ‚Alle Gleitbewegungen sollten zumindest so langsam wie das Mehrmenü sein. Ist es aber nicht. Z. B. fährt die Seitenleiste extrem
+  schnell rein und raus und nicht so smooth wie das Mehrmenü. Nimm als Beispiel die Seitenleiste der Notizen-App und kalkuliere die Gleitbewegungen neu.‘
+- **Befund (nachgerechnet, Sitzung 0101):** Kurve K schafft bei 0,35 s nach 83 ms 75 % des Wegs, bei 0,25 s 88 %. Die Seitenleiste (ca. 330 px)
+  bewegt sich praktisch in 0,1 s. Das Mehr-Menü wächst ab 20 % und wird dabei eingeblendet, daher wirkt es bei gleicher Dauer und Kurve weich. Gleiche
+  Dauer und Kurve heißt also nicht gleich schnell.
+- **Vergleich (Vermutung für Notizen):** Feder ohne Nachschwingen mit 0,5 s (WWDC23 ‚Animate with springs‘, Beispielwert): 28 % nach 83 ms,
+  62 % nach 167 ms, 82 % nach 250 ms, 93 % nach 350 ms. Dauer und Feder von UISplitViewController sind nicht veröffentlicht.
+- **Vorschlag:** die Seitenleiste in Notizen per Bildschirmaufnahme am iPad messen (Bild für Bild mit `ffmpeg`), das Mehr-Menü zum Vergleich mitmessen.
+  Danach R-1.12 neu berechnen (neuer Wortlaut nach 0 Nr. 29) und das Muster neu bauen.
+
 ## Nächster Schritt
 
 ~~Entscheidung A behalten oder B bauen~~ (A) → Muster R-1.12 am Gerät (iPhone hoch, iPad quer, hell) → → bei A kein Wortlaut ‚alle Gleitbewegungen wie das Mehr-Menü‘; Modell und Designrichtlinie 13 nach W-3 und
