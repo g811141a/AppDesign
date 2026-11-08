@@ -1,4 +1,4 @@
-// RLB-120 · Muster ‚Emojis in Textgröße‘ prüfen (Testfall-Liste arbeit/RLB-120 Klärung.md, RLB-120/T-1 bis T-10; Sitzung 0103).
+// RLB-120 · Muster ‚Emojis in Textgröße‘ prüfen (Testfall-Liste arbeit/RLB-120 Klärung.md, RLB-120/T-1 bis T-11; Sitzung 0103).
 //   node "arbeit/RLB-120 Muster prüfen.mjs"     (im Ordner AppDesign; PRUEF_BROWSER=webkit für WebKit)
 //   PRUEF_V=heute …                             Gegenprobe: prüft die Kästen ‚heute‘ – T-1 und T-2 müssen rot werden
 import { createRequire } from 'node:module';
@@ -34,7 +34,9 @@ for (const [lage, [width, height]] of Object.entries(LAGEN)) {
       const linie = parseFloat(ecs.borderTopWidth) >= 1 && ecs.borderTopStyle === 'solid' && Math.abs(er.left - bb.left - 16) <= 1 && Math.abs(bb.right - er.right - 16) <= 1;
       const fett = [...box.querySelectorAll('.kv .k .l')].every(l => { const tw = document.createTreeWalker(l, NodeFilter.SHOW_TEXT); let ok = true;
         for (let n; (n = tw.nextNode());) if (/\p{L}/u.test(n.data) && +getComputedStyle(n.parentElement).fontWeight < 600) ok = false; return ok; });
-      return { bi, k, v, wx, ragt, k1, boxRagt: box.scrollWidth > box.clientWidth + 1, grau, links, unten, luecke, einzug, linie, fett };
+      // T-11: Linie auch nach der letzten Zeile (Nutzer 08.11.2026)
+      const lz = getComputedStyle([...box.querySelectorAll('.kv')].at(-1)), unterste = parseFloat(lz.borderBottomWidth) >= 1 && lz.borderBottomStyle === 'solid';
+      return { bi, k, v, wx, ragt, k1, boxRagt: box.scrollWidth > box.clientWidth + 1, grau, links, unten, luecke, einzug, linie, fett, unterste };
     }), seite);
     for (const e of erg) {
       const w = `${art} ${lage} Text ${ts} Kachel ${e.bi + 1} (${seite}):`, vh = Math.max(...e.v.map(x => x.h));
@@ -43,6 +45,7 @@ for (const [lage, [width, height]] of Object.entries(LAGEN)) {
       if (e.ragt) F('RLB-120/T-3', `${w} Bezeichnung ragt über Spalte 1 hinaus`);
       if (e.k1.length) F('RLB-120/T-4', `${w} Emojis der Bezeichnung in zwei Zeilen: ${e.k1.join(', ')}`);
       if (e.boxRagt) F('RLB-120/T-5', `${w} Kachel ragt hinaus`);
+      if (!e.unterste) F('RLB-120/T-11', `${w} keine Linie nach der letzten Zeile`);
       if (!e.linie) F('RLB-120/T-9', `${w} keine Linie vor der ersten Zeile (mit 16 px Abstand zum Rand)`);
       if (!e.fett) F('RLB-120/T-10', `${w} Text in Spalte 1 nicht fett`);
       if (!e.einzug) F('RLB-120/T-8', `${w} Wert ohne 16 px Abstand zum linken Rand`);

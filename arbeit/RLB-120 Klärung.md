@@ -146,6 +146,12 @@ Ergebnis (08.11.2026, Sitzung 0103): Chromium und WebKit **alles in Ordnung**; G
    dem Datum; Spalte 1 grau nur in der Zelle, fett.
 2. iPad **quer**: Schritt 1 wiederholen. Erwartet: wie oben.
 
+## Linie ganz unten (Nutzer 08.11.2026, Sitzung 0103)
+
+- **Ergebnis:** ‚Linie ganz unten fehlt noch.‘ – **Umgesetzt:** Linie auch nach der letzten Zeile, mit Abstand zum Rand wie die anderen. Prüfung
+  RLB-120/T-11 ‚Linie nach der letzten Zeile‘.
+- **Link und Schritte:** wie oben; zusätzlich Erwartet: unter der letzten Zeile (😴💤) eine Linie wie zwischen den Zeilen.
+
 ## Offene Usertests
 
 - **P-100** (Reiselogbuch 3.54.0, AppDesign 4.56.0) – ok bis auf **P-100/1** (→ RLB-123, kommt mit 3.55.0).

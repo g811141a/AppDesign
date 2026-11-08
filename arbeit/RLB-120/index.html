@@ -133,6 +133,7 @@ body { background: var(--bg); }
 .neu .box .kv .k { background: var(--th-bg); margin: calc(-7px * var(--f-body)) 0; padding: calc(7px * var(--f-body)) 8px; width: calc(98px * var(--f-body)); }
 /* Linie vor der ersten Zeile (unter dem Kopf); alle Texte in Spalte 1 fett wie die Kopfzeile der Tabelle (Nutzer 08.11.2026) */
 .neu .box .h + .kv { border-top: 1px solid var(--line); margin-top: calc(8px * var(--f-body)); }
+.neu .box .kv:last-child { border-bottom: 1px solid var(--line); }   /* Linie auch nach der letzten Zeile (Nutzer 08.11.2026) */
 .neu .box .kv .k, .neu .box .kv .k.word, .neu .box .kv .k .w { font-weight: 600; }
 html.ts-um .neu .box .kv .k { width: auto; margin: calc(-7px * var(--f-body)) 0 2px; padding: 4px 8px; }
 .ts { display: flex; gap: 8px; flex-wrap: wrap; margin: 6px 0 4px; }
