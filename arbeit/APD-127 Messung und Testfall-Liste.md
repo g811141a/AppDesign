@@ -81,7 +81,41 @@ Tastatur zusammen (W-4, W-7) und geht in ihrer Bewegung unter. B bringt also nic
 **Entscheidung (Nutzer 08.11.2026, Sitzung 0100):** Variante **A bleibt**, P-100/2 Schritt 3 ohne Änderung erledigt; kein Wortlaut ‚alle
 Gleitbewegungen wie das Mehr-Menü‘ für das Feld.
 
+## Wortlaut bestätigt (Nutzer 08.11.2026, Sitzung 0100)
+
+- **Designrichtlinie 13** ‚Tastatur ohne Springen‘, neuer Punkt nach APD-36/S-9: ‚**APD-127/W-3, W-7 Zeitpunkt der Tastatur** (Messung 08.11.2026, iPhone hoch,
+  Safari-Tab, Safari 26.6.3, `arbeit/APD-127 Messung und Testfall-Liste.md`): `visualViewport` meldet die Tastatur in **einem** Schritt (`resize`, gleich
+  mit der Endhöhe) 95–110 ms nach dem Fokus, beim Schließen 460–500 ms nach `focusout`; ihre Bewegung selbst ist nicht messbar. Rollt die App im
+  `focusin`, kommt das erste Bild erst 88–91 ms nach dem Fokus (ohne Rollen nach 3 ms) – ein Sprung dort fällt mit dem Start der Tastatur zusammen und
+  war am Gerät nicht von einem Gleiten über 0,35 s zu unterscheiden. Im Safari-Tab nahm die Tastatur 337 px vom sichtbaren Bereich (APD-36/S-2:
+  403 px). Ein laufendes CSS-`translate` rechnet Safari in `getBoundingClientRect` ein (Playwright-WebKit 26.0 der Prüfumgebung nicht).‘
+- **Safari-Modell** `tests/safari.mjs`: iPhone hoch `aufVerzug` 100 ms (APD-127/M-7, M-8); das fehlende Bild nach dem Fokus als ‚nicht nachgebildet‘.
+- **Regelkatalog R-1.12 (neu):** ‚**Gleitbewegungen wie das Mehr-Menü:** jede Bewegung, mit der die App selbst etwas an einen anderen Ort bringt – Menü
+  und Sprechblase (R-4.13), Fenster und Blatt (R-4.6), Navigation und Seitenleiste (R-7.5), das Fenster mit der Tastatur am iPad, ‚Titel antippen = nach
+  oben‘ –, läuft mit der Kurve `cubic-bezier(.32,.72,0,1)`: öffnen, hinein und nach oben in 0,35 s, schließen und hinaus in 0,25 s; nach einer Geste
+  (Ziehen, Zurückwischen) der Rest anteilig, mindestens 0,15 s. Ausgenommen: das Feld beim Antippen springt (Safari, 13, APD-127/W-4), Rückmeldungen
+  beim Drücken und Überblenden; ‚Bewegung reduzieren‘ nach R-1.9‘ · Prüfung ablauf.mjs (neu: Dauer und Kurve jeder Bewegung, Endlage unverändert) ·
+  Gerät: Gefühl am Gerät · 15.
+- **R-4.13** letzter Satzteil: ‚Fenster und Blatt gleiten wie bisher (R-4.6)‘ → ‚Fenster und Blatt gleiten nach R-1.12‘.
+
+## Muster R-1.12 (Sitzung 0100)
+
+`arbeit/APD-127/app/index.html` (gebaut mit `arbeit/APD-127 Muster bauen.mjs`): Reiselogbuch 3.54.0 mit eigenem Speicher und Beispielreisen, `ui.js` aus
+Fassung 4.56.0 mit R-1.12; `?v=b` = heute zum Vergleich. Prüfung `arbeit/APD-127 Muster R-1.12 prüfen.mjs`:
+
+- APD-127/M-9 Blatt: öffnen 0,35 s, x 0,25 s (Blatt, Schleier, Seite), nach dem Loslassen zurück 0,35 s bzw. zu 0,25 s anteilig – Kurve K.
+- APD-127/M-10 iPad-Fenster mit der Tastatur: hoch 0,35 s, runter 0,25 s, Kurve K.
+- APD-127/M-11 Navigation iPhone: hinein 0,35 s, zurück 0,25 s, Kurve K.
+- APD-127/M-12 Seitenleiste iPad: ein 0,35 s, aus 0,25 s, Kurve K.
+- APD-127/M-13 ‚Titel antippen‘: fertig in 250–420 ms (die Kurve endet flach), nach 100–120 ms 0,78–0,93 des Wegs (heute 0,61–0,69).
+- APD-127/M-14 ‚Bewegung reduzieren‘: das Blatt bewegt sich nicht über 200 ms.
+- APD-127/M-15 Gegenprobe `PRUEF_V=heute`: M-9 bis M-13 rot.
+
+**Ergebnis:** Chromium alles in Ordnung; WebKit 2 von 3 Läufen grün, 1 rot (M-13 knapp an der Grenze – der Startwert des Rollens liegt nur bei 86–100 px,
+dadurch grob); Gegenprobe in Chromium und WebKit je 8 Fehler (M-9 bis M-13). Beim Bau gefunden: das Schließen mit x ließ Schleier und Seite noch
+0,38 s gleiten (`blattWeg`) – im Muster behoben.
+
 ## Nächster Schritt
 
-~~Entscheidung A behalten oder B bauen~~ (A) → bei A kein Wortlaut ‚alle Gleitbewegungen wie das Mehr-Menü‘; Modell und Designrichtlinie 13 nach W-3 und
+~~Entscheidung A behalten oder B bauen~~ (A) → Muster R-1.12 am Gerät (iPhone hoch, iPad quer, hell) → → bei A kein Wortlaut ‚alle Gleitbewegungen wie das Mehr-Menü‘; Modell und Designrichtlinie 13 nach W-3 und
 W-7 (Wortlaut) → Bau-Frage.
