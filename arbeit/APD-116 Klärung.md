@@ -57,3 +57,9 @@ Link: https://g811141a.github.io/AppDesign/arbeit/APD-116/index.html – Safari,
    er heute nach ‚2026.08.24-‘.
 3. Oben ‚Text groß‘ und ‚Text sehr groß‘ antippen. Erwartet: rechts weiterhin nur Umbrüche an Leerzeichen, nichts ragt aus dem Kasten.
 4. iPhone hoch: die Schritte 1 bis 3 wiederholen. Erwartet: wie oben.
+
+## Ergebnis (Nutzer 08.11.2026, Sitzung 0102)
+
+- **Muster iPad quer und iPhone hoch: alles ok.**
+- Offen vor ‚bereit‘: ‚Als allgemeine Regel festhalten?‘ (0 Nr. 4; Vorschlag ja, `SHARE_RESULT` ist allgemein), Wortlaut (15.19/10 und Katalog-Regel
+  mit Prüfung, 0 Nr. 29), Muster iPad hoch und iPhone quer (0 Nr. 6), Testfälle (User).
