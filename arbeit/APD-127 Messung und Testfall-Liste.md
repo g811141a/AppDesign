@@ -164,3 +164,17 @@ Tastatur, Titel antippen) mit der Feder aus Notizen (0,35 s ohne Nachschwingen, 
 einer Geste anteilig (≥ 0,15 s); Mehr-Menü und Sprechblasen unverändert. Prüfung `arbeit/APD-127 Muster R-1.12 prüfen.mjs` angepasst (M-9 bis M-13 mit
 Feder bzw. ease-in-out; M-13 rollt jetzt den Inhalt der Reise 1600 px statt der Startliste 86–100 px – die alte Prüfung griff den falschen Rollbereich):
 Chromium und WebKit je 2 von 2 grün, Gegenprobe `PRUEF_V=heute` in beiden rot (M-9 bis M-13).
+
+## Wortlaut R-1.12 neu bestätigt (Nutzer 08.11.2026, Sitzung 0101; Muster am Gerät ok)
+
+Ersetzt den Eintrag R-1.12 im Abschnitt ‚Wortlaut bestätigt‘ (Designrichtlinie 13 und R-4.13 bleiben wie dort):
+
+‚**Gleitbewegungen wie die Seitenleiste in Notizen:** jede Bewegung, mit der die App selbst etwas an einen anderen Ort bringt – Fenster und Blatt
+(R-4.6), Navigation und Seitenleiste (R-7.5), das Fenster mit der Tastatur am iPad, ‚Titel antippen = nach oben‘ –: öffnen, hinein und nach oben mit einer
+Feder ohne Nachschwingen, Antwortzeit 0,35 s (gemessen an der Seitenleiste in Notizen, APD-127; CSS `linear()` über 0,5 s); schließen und hinaus mit
+`ease-in-out` in 0,25 s; nach einer Geste (Ziehen, Zurückwischen) der Rest anteilig, mindestens 0,15 s. Keine Gleitbewegung ist schneller als das
+Mehr-Menü (R-4.13). Ausgenommen: das Feld beim Antippen springt (Safari, 13, APD-127/W-4), Rückmeldungen beim Drücken und Überblenden; ‚Bewegung
+reduzieren‘ nach R-1.9‘ · Prüfung ablauf.mjs (Dauer und Kurve jeder Bewegung, Endlage unverändert) · Gerät: Gefühl am Gerät · 15.
+
+Umsetzung wie im Muster (`arbeit/APD-127 Muster bauen.mjs`), Prüfung nach `arbeit/APD-127 Muster R-1.12 prüfen.mjs` (M-9 bis M-15) in `ablauf.mjs`.
+APD-127 ist damit **bereit** (Backlog ‚0. Nächste Version‘).
