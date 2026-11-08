@@ -148,6 +148,9 @@ leere Feld wäre zwei Zeilen hoch. Im Muster bleibt der Platzhalter einzeilig un
 Ergebnis (08.11.2026): Chromium und WebKit **alles in Ordnung**. Gegenprobe mit `ui.js` der Fassung 4.56.0 (`PRUEF_V=heute`): APD-126/M-1 und
 M-3 bis M-6 rot.
 
+**Muster am Gerät: alles ok** (Schritte 1 bis 10, iPad quer und iPhone hoch, hell; Nutzer 08.11.2026, Sitzung 0098). Offen vor ‚bereit‘: Muster
+iPad hoch und iPhone quer (0 Nr. 6).
+
 **Nur am Gerät (Testfall (User) des Musters):** ob Safari den Cursor beim ersten Antippen wirklich ans Ende setzen lässt; ob die Tastatur nach
 einem Vorschlag auf Kleinbuchstaben steht; wie sich Wachsen und Schrumpfen anfühlen.
 
