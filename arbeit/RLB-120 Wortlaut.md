@@ -97,3 +97,29 @@ Nachbildung | hig.mjs – Vergleich mit unsichtbarer Mustertabelle | – | 10, 1
 
 **Neu:** | R-6.2 | **Mustertabelle der Ausgabe** (`outputCss`): jede Tabelle in Ausgabe, Vorschau und Bericht, Kopf mit Kopfverlauf von oben nach unten
 (Weiß → `#d9d9d9`), Zebra je Tabellenzeile, keine eigene Nachbildung | hig.mjs – Vergleich mit unsichtbarer Mustertabelle (auch der Verlauf des Kopfs) | – | 10, 15.18 |
+
+## Nachtrag: markierte und ausgewählte Kachel (Sitzung 0105)
+
+Muster markierte (`.gap`, `--focus`) und ausgewählte (`.on`, `--sel-bg`) Kachel ok (Nutzer 08.11.2026, Sitzung 0104): der Verlauf beginnt mit der Farbe
+der Kachel. Das Muster rechnet mit `color-mix` (23 %, 58 % `--th-bg`); auf Weiß ergibt das `#f9f9fa` bei 50 % (W-1 nannte `#f9f9fb`, Rundung). Die
+Ausgabe (W-6) folgt der Formel schon genau. **Wortlaut RLB-120/W-8a und W-8b bestätigt** (Nutzer 08.11.2026, Sitzung 0105, ‚Ja‘).
+
+### RLB-120/W-8a – Abschnitt 2 Farben, Zeile `--kopf-verlauf` (ersetzt die Zeile aus W-1)
+
+**Alt (W-1):**
+
+| `--kopf-verlauf` | `#ffffff` 0 %, `#ffffff` 25 %, `#f9f9fb` 50 %, `#f0f0f3` 75 %, `#e5e5ea` 100 % | dieselbe Abstufung von `--card` (`#1c1c1e`) nach `--th-bg` (`#2c2c2e`) | **Kopfverlauf** (lange weiß, das Grau erst zum Ende hin): Tabellen-Kopfzeile von oben nach unten; Bezeichnung im Kasten mit Feldern nebeneinander von links nach rechts, untereinander von oben nach unten (15.10) |
+
+**Neu:**
+
+| `--kopf-verlauf` | von `--kachel-bg` nach `--th-bg`: `--kachel-bg` bei 0 % und 25 %, mit 23 % `--th-bg` gemischt bei 50 %, mit 58 % bei 75 %, `--th-bg` bei 100 % (`color-mix`); auf Weiß `#ffffff`, `#ffffff`, `#f9f9fa`, `#f0f0f3`, `#e5e5ea` | dieselbe Formel, auf `--card` (`#1c1c1e`) nach `--th-bg` (`#2c2c2e`) | **Kopfverlauf** (lange in der Farbe der Fläche, das Grau erst zum Ende hin): Tabellen-Kopfzeile von oben nach unten; Bezeichnung im Kasten mit Feldern nebeneinander von links nach rechts, untereinander von oben nach unten (15.10). `--kachel-bg` ist die Farbe der Fläche: sonst `--card`, in einem markierten Kasten `--focus`, in einem ausgewählten `--sel-bg` |
+
+### RLB-120/W-8b – Abschnitt 15.10, Satz zur Fläche der Bezeichnung (ergänzt W-3)
+
+**Alt (W-3):** Die Fläche der Bezeichnung trägt den Kopfverlauf (`--kopf-verlauf`) nur in ihrer Zelle: nebeneinander von links nach rechts, bei großer
+Schrift (Bezeichnung als Streifen über dem Wert) von oben nach unten – die Richtung wechselt mit der Anordnung.
+
+**Neu:** Die Fläche der Bezeichnung trägt den Kopfverlauf (`--kopf-verlauf`) nur in ihrer Zelle: nebeneinander von links nach rechts, bei großer
+Schrift (Bezeichnung als Streifen über dem Wert) von oben nach unten – die Richtung wechselt mit der Anordnung. Der Verlauf beginnt mit der Farbe des
+Kastens: in einem markierten Kasten (`--focus`) bzw. einem ausgewählten (`--sel-bg`) setzt die App `--kachel-bg` auf diese Farbe, damit links bzw. oben
+kein weißer Streifen entsteht.

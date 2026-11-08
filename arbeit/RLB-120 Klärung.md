@@ -258,3 +258,15 @@ Kachel beginnen – Muster folgt.
   `--card`). Prüfung T-7 jetzt ‚Verlauf beginnt mit der Farbe der Kachel‘: Chromium und WebKit **alles in Ordnung**, Gegenprobe rot (400 Fehler); zweite
   Gegenprobe ohne die Regel für `.gap`: T-7 rot (16 Fehler).
 - **Muster markierte/ausgewählte Kachel ok** (Nutzer 08.11.2026, Sitzung 0104). Offen für ‚bereit‘: Wortlaut-Nachtrag RLB-120/W-8 (W-1/W-3: in markierter bzw. ausgewählter Kachel beginnt der Verlauf mit der Farbe der Kachel), Testfall RLB-120/B-11, Einträge in beide Backlogs und `arbeit/4.57.0 Testfall-Liste.md` – Sitzung 0105.
+
+## Abschluss (Sitzung 0105)
+
+- **Wortlaut RLB-120/W-8a, W-8b bestätigt** (Nutzer 08.11.2026, Sitzung 0105) – `arbeit/RLB-120 Wortlaut.md`, Nachtrag.
+- **Testfall RLB-120/B-11 ok** (Nutzer 08.11.2026, Sitzung 0105):
+
+| Nr. | Fall | Erwartet |
+|---|---|---|
+| RLB-120/B-11 | gelb markierte (`.gap`, `--focus`) und ausgewählte (`.on`, `--sel-bg`) Tageskachel, nebeneinander und untereinander (`html.ts-um`), hell und dunkel | der Kopfverlauf der Bezeichnung beginnt mit der Farbe der Kachel (±2 je Farbkanal), Zwischenstufen mit 23 % und 58 % `--th-bg`, endet bei `--th-bg`; kein weißer Streifen links bzw. oben; Gegenprobe (Verlauf ab Weiß) rot |
+
+- Kein Testfall (User) dazu (Farben automatisch prüfbar); P-101/15 und /16 bleiben.
+- **RLB-120 bereit** (08.11.2026): Reiselogbuch-Backlog ‚0.‘, AppDesign-Backlog ‚0.‘ (AppDesign-Teil), `arbeit/4.57.0 Testfall-Liste.md`.
