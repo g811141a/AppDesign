@@ -1,0 +1,89 @@
+# RLB-124 Messung 1 · Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/27.2 Safari/605.1.15 · 2026-11-12T23:07:47.662Z
+# 8 von 8 Fällen aufgenommen
+1 start home 834x1194 innen 1194x834 AppDesign 4.57.0 gegenprobe -
+1 fall 1 direkt
+4 pageshow
+10697 los direkt
+10698 print direkt aktiv 1 fenster 0
+10699 print zurueck 1 ms
+18776 los direkt
+18776 print direkt aktiv 1 fenster 0
+18778 print zurueck 2 ms
+20009 los direkt
+20009 print direkt aktiv 1 fenster 0
+20010 print zurueck 1 ms
+20610 los direkt
+20610 print direkt aktiv 1 fenster 0
+20611 print zurueck 1 ms
+29652 antwort 1 direkt nicht
+29653 fall 2 direkt-fenster
+37466 los direkt-fenster
+37486 fenster auf
+37486 print direkt aktiv 1 fenster 1
+37486 print zurueck 0 ms
+42384 fenster zu
+45881 antwort 2 direkt-fenster nicht
+45881 fall 3 spaet
+52464 los spaet
+52464 warte 50
+52515 print spaet aktiv 1 fenster 0
+52516 print zurueck 0 ms
+56748 los spaet
+56748 warte 50
+56799 print spaet aktiv 1 fenster 0
+56800 print zurueck 1 ms
+57640 los spaet
+57640 warte 50
+57692 print spaet aktiv 1 fenster 0
+57692 print zurueck 0 ms
+58750 antwort 3 spaet nicht
+58750 fall 4 wie-app
+75413 los wie-app
+75419 fenster auf
+75420 warte 50
+75470 print spaet aktiv 1 fenster 1
+75471 print zurueck 1 ms
+79783 fenster zu
+81192 antwort 4 wie-app nicht
+81192 fall 5 rahmen
+86435 los rahmen
+86446 rahmen geladen aktiv 1
+86446 blur
+86446 rahmen print zurueck
+90603 focus
+90604 los rahmen
+90611 rahmen geladen aktiv 1
+90611 blur
+90611 rahmen print zurueck
+92071 focus
+92072 los rahmen
+92080 rahmen geladen aktiv 1
+92081 blur
+92081 rahmen print zurueck
+93063 focus
+93064 antwort 5 rahmen nicht
+93064 fall 6 fenster
+105110 los fenster
+105187 fenster offen 1
+105187 blur
+105187 focus
+105187 blur
+105196 sicht hidden
+111140 sicht visible
+111164 focus
+113946 antwort 6 fenster seite
+113946 fall 7 html-teilen
+130663 los html-teilen
+130666 teilen RLB-124 Probedruck.html canShare 1 aktiv 1
+152433 teilen AbortError
+158190 antwort 7 html-teilen nicht
+158190 fall 8 pdf-teilen
+168025 los pdf-teilen
+168025 teilen RLB-124 Probedruck.pdf canShare 1 aktiv 1
+179135 teilen fertig
+185907 fehler ReferenceError: Can't find variable: db
+185996 fehler ReferenceError: Can't find variable: db
+186049 sicht hidden
+268810 sicht visible
+272503 antwort 8 pdf-teilen kam
+272503 alle faelle
