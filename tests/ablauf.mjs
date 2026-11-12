@@ -555,7 +555,8 @@ export async function checkCursorEnde(p, { open = null, felder = [], tab = null,
     await p.click(sel, { position: { x: 30, y: 18 } }); await wait(p, 300);
     const c = await cur(sel);
     if (!c.fokus || c.s !== c.n || c.e !== c.n) E('B-1', `${sel} vorn angetippt: ${c.fokus ? `Cursor ${c.s}–${c.e} statt am Ende ${c.n}` : 'kein Fokus'}`);
-    await wait(p, 300); await p.click(sel, { position: { x: 30, y: 18 } }); await wait(p, 200);
+    // nach dem Nachsetzen von ui.js (höchstens 0,7 s ab dem Fokus) – unter Last kam der Klick sonst noch hinein (WebKit, ein Wackler)
+    await wait(p, 600); await p.click(sel, { position: { x: 30, y: 18 } }); await wait(p, 200);
     const d = await cur(sel);
     if (d.fokus && d.s === d.n) E('B-2', `${sel} im aktiven Feld nochmals vorn angetippt: Cursor wieder am Ende statt an der Stelle`);
   }
