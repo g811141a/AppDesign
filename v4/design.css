@@ -77,6 +77,12 @@
   --rim-color: rgba(255,255,255,.4);
   color-scheme: dark;
 }
+/* seit 4.57.0 (RLB-120, R-6.1, Designrichtlinie 2): Kopfverlauf – von --kachel-bg (Farbe der Fläche) nach --th-bg, lange in der Farbe der Fläche,
+   das Grau erst zum Ende hin (0 % und 25 % Fläche, 50 % mit 23 %, 75 % mit 58 % --th-bg gemischt, 100 % --th-bg); hell und dunkel dieselbe Formel.
+   Auf jedem Kasten neu berechnet: ein markierter bzw. ausgewählter Kasten setzt --kachel-bg auf seine Farbe, der Verlauf beginnt damit (RLB-120/W-8). */
+:root { --kachel-bg: var(--card); }
+:root, .box { --kopf-verlauf: var(--kachel-bg) 0%, var(--kachel-bg) 25%, color-mix(in srgb, var(--kachel-bg), var(--th-bg) 23%) 50%,
+  color-mix(in srgb, var(--kachel-bg), var(--th-bg) 58%) 75%, var(--th-bg) 100%; }
 /* R-1.9 (seit 4.35.0, APD-43 H1–H3, H5): ‚Kontrast erhöhen‘ des Geräts – zweite Farbtabelle nach Apple (hell und dunkel), jeder Text und
    jedes Icon mindestens 4,5 : 1; nur Variablen, deshalb wechselt sie sofort ohne Neuaufbau. Die Ausgabe (HTML/PDF) bleibt hell (R-6.2). */
 @media (prefers-contrast: more) {
@@ -110,7 +116,8 @@ html[data-ts="ax5"] { --t-large: 60px; --f-large: 1.7647; --t-title1: 58px; --f-
 html.ts-um .menu .mi { flex-wrap: wrap; padding-top: 6px; padding-bottom: 6px; }
 html.ts-um .menu .mi .val { order: 9; flex: 1 0 100%; margin-left: 0; padding-left: calc(10px + 20px * var(--k)); }
 html.ts-um .box .kv { flex-direction: column; gap: 2px; }
-html.ts-um .box .kv .k { width: auto; margin: 0; padding: 0; border-right: none; }
+/* seit 4.57.0 (RLB-120): die Bezeichnung als Streifen über dem Wert, Kopfverlauf von oben nach unten (nur in ihrer Zelle) */
+html.ts-um .box .kv .k { width: auto; margin: calc(-7px * var(--f-body)) 0 2px; padding: 4px 8px; border-right: none; background: linear-gradient(to bottom, var(--kopf-verlauf)); }
 html.ts-um .box .kv .k > .l { height: auto; }
 html.ts-um .step-head { flex-wrap: wrap; row-gap: 8px; }
 html.ts-um .step-head > label:first-child { flex: 1 0 100%; }
@@ -234,8 +241,12 @@ input[type=text], input[type=search], input[type=date], input[type=number], text
 input:disabled { opacity: .6; }
 input.invalid { border: 1px solid var(--danger); }
 .step.off .hint { opacity: .5; }
-/* Textfelder wachsen mit dem Inhalt; man muss nie innerhalb eines Feldes scrollen. */
-textarea { resize: none; overflow: hidden; min-height: calc(96px * var(--f-body)); }
+/* Textfelder wachsen mit dem Inhalt; man muss nie innerhalb eines Feldes scrollen. Seit 4.57.0 (APD-126/W-1, W-5): leer bzw. mit einer
+   Zeile 44 px hoch wie die einzeiligen Felder (ui.js autoGrow macht sie so hoch wie ihren Inhalt); leer bleibt der Platzhalter einzeilig und
+   wird abgeschnitten (wie in iOS) – sonst wäre das leere Feld am iPhone zwei Zeilen hoch. */
+textarea { resize: none; overflow: hidden; min-height: 44px; }
+textarea:placeholder-shown { white-space: nowrap; }
+textarea::placeholder { text-overflow: ellipsis; overflow: hidden; white-space: nowrap; }
 /* Datumsfelder sind so breit wie das Datum (wird beim Öffnen berechnet). */
 input[type=date] { -webkit-appearance: none; appearance: none; text-align: left; }
 input[type=date]::-webkit-date-and-time-value { text-align: left; }
@@ -563,6 +574,10 @@ dialog form { display: flex; flex-direction: column; max-height: var(--dlg-max, 
 #msg, #msg form { max-height: var(--msg-max, calc(100vh - 40px)); }
 #msg .dlg-head { border: none; }
 #msg .msg-text { text-align: center; padding: 0 4px 10px; }
+/* seit 4.57.0 (APD-116, R-10.8): Dateiname allein in einer eigenen Zeile unter dem Satz (fett, zentriert wie der Text); jedes Wort am Stück
+   (.fw), deshalb Umbruch nur nach einem Leerzeichen – nur ein Wort, das länger ist als die Zeile, bricht in sich (R-6.3) */
+.msg-text .fname { display: block; margin-top: 2px; }
+.msg-text .fname .fw { display: inline-block; max-width: 100%; overflow-wrap: anywhere; }
 /* Seit 4.11.0 (R-9.4): kleines Fenster mit einer blauen Schaltfläche unter dem Text (z. B. ‚Abgleichbericht anzeigen‘) */
 #msg.wide { width: min(max(600px, calc(600px * var(--f-body))), calc(100vw - 32px)); }
 #msg .msg-btns { display: flex; justify-content: center; padding: 2px 0 6px; }
@@ -723,17 +738,21 @@ html.phone body { padding-top: var(--pnav-h, 60px); }
 /* Komponente Kasten (iPhone): ein Eintrag als Karte; Zeilen mit grauer Bezeichnung links */
 .box { background: var(--card); border-radius: 22px; padding: calc(12px * var(--f-body)) 16px; margin-top: 10px; box-shadow: var(--table-shadow); }
 .box .kv { display: flex; gap: 10px; padding: calc(7px * var(--f-body)) 0; }
-.box .h + .kv { margin-top: 2px; }
+.box .h + .kv { margin-top: calc(8px * var(--f-body)); }
 /* Seit 4.2.0: Felder im Kasten durch dünne Linien getrennt (wie die Trennlinie im Menü) – waagrecht zwischen
-   den Feldern, senkrecht zwischen Bezeichnung und Inhalt */
-.box .kv + .kv { border-top: 1px solid var(--line); }
-.box .kv .k { flex: none; display: flex; align-items: flex-start; width: 74px; font-size: var(--t-footnote); color: var(--muted); margin: -7px 0; padding: 7px 8px 7px 0; border-right: 1px solid var(--line); }
+   den Feldern, senkrecht zwischen Bezeichnung und Inhalt; seit 4.57.0 (RLB-120, R-6.1) auch vor dem ersten und nach dem letzten Feld */
+.box .kv { border-top: 1px solid var(--line); }
+.box .kv:last-child { border-bottom: 1px solid var(--line); }
+/* seit 4.57.0 (RLB-120, R-6.5): Emojis der Bezeichnung in Textgröße wie im Wert, in einer Zeile – Spalte 1 dafür 98 px (mit der Schrift) mit
+   8 px Innenabstand; die Fläche trägt den Kopfverlauf nur in ihrer Zelle, nebeneinander von links nach rechts (untereinander: html.ts-um oben) */
+.box .kv .k { flex: none; display: flex; align-items: flex-start; width: calc(98px * var(--f-body)); font-size: var(--t-body); font-weight: 600; color: var(--muted);
+  margin: calc(-7px * var(--f-body)) 0; padding: calc(7px * var(--f-body)) 8px; border-right: 1px solid var(--line); background: linear-gradient(to right, var(--kopf-verlauf)); }
 .box .kv .v { flex: 1; min-width: 0; }
-/* Seit 4.44.1 (APD-98, R-6.5): Bezeichnung (.l, Emojis klein, Text .w bzw. ganz .k.word) mittig zur ersten Zeile des Werts; Text normal
-   in Textgröße und Textfarbe wie der Wert (R-5.8) */
+/* Seit 4.44.1 (APD-98, R-6.5): Bezeichnung (.l, Text .w bzw. ganz .k.word) mittig zur ersten Zeile des Werts; Text in Textgröße und
+   Textfarbe wie der Wert (R-5.8), seit 4.57.0 (RLB-120) halbfett (600) wie die Kopfzeile der Tabelle */
 .box .kv .k > .l { display: flex; align-items: center; gap: 2px; height: calc(var(--t-body) * var(--lh, 1.45)); }
-.box .kv .k.word, .box .kv .k .w { font-size: var(--t-body); font-weight: 400; color: var(--ink); }
-.box.on { background: var(--sel-bg); }
+.box .kv .k.word, .box .kv .k .w { font-size: var(--t-body); font-weight: 600; color: var(--ink); }
+.box.on { background: var(--sel-bg); --kachel-bg: var(--sel-bg); }
 /* Komponente untere Leiste (iPhone): Suchfeld und runde Knöpfe unten; wandert mit der Tastatur nach oben */
 .bbar { position: fixed; z-index: 8; left: max(16px, var(--safe-left)); right: max(16px, var(--safe-right));
   bottom: calc(max(var(--vv-bottom), var(--safe-bottom)) + 10px); display: flex; gap: 10px; align-items: center; justify-content: flex-end; }
@@ -800,9 +819,13 @@ html.phone .step-head .head-checks { order: 3; margin-left: 0; justify-content: 
 @media print { .nettoast, #side .side-foot .offl { display: none !important; } }
 
 /* R-4.5 (seit 4.28.1, APD-36): das iPad-Fenster gleitet mit der Tastatur in die Mitte des sichtbaren Bereichs und zurück (wie die
-   Formularblätter von iPadOS); ui.js setzt .gleitet bei jeder Meldung von Safari für 0,3 s. */
-dialog.gleitet { transition: top .25s ease; }
-@media (prefers-reduced-motion: reduce) { dialog.gleitet { transition: none; } }
+   Formularblätter von iPadOS); ui.js setzt .gleitet bei jeder Meldung von Safari für 0,55 s. Seit 4.57.0 (R-1.12, APD-127/B-2): hoch mit der
+   Feder aus Notizen (Antwortzeit 0,35 s, als linear() über 0,5 s – dieselbe Kurve wie GLEIT_FEDER in ui.js), runter (.runter, Tastatur zu)
+   ease-in-out in 0,25 s; bis 4.56.0 beides 0,25 s ease. */
+dialog.gleitet { transition: top .5s linear(0.0000, 0.0368, 0.1215, 0.2269, 0.3366, 0.4414, 0.5364, 0.6197, 0.6910, 0.7510, 0.8007, 0.8414, 0.8745,
+  0.9011, 0.9225, 0.9395, 0.9530, 0.9636, 0.9720, 0.9785, 0.9836, 0.9876, 0.9908, 0.9932, 0.9950, 0.9965, 0.9976, 0.9984, 0.9991, 0.9996, 1.0000); }
+dialog.gleitet.runter { transition: top .25s ease-in-out; }
+@media (prefers-reduced-motion: reduce) { dialog.gleitet, dialog.gleitet.runter { transition: none; } }
 /* R-2.4 (seit 4.28.1, APD-36): iPhone quer – niedrige Leisten wie iOS quer. Kopfzeile, Suchzeile und Fensterkopf 32 statt 44 px
    hoch, damit Felder darunter und die Suche bei offener Tastatur in der oberen Hälfte des sichtbaren Bereichs liegen – dann verschiebt
    Safari nichts (R-4.5). Knöpfe in Kapseln 31 px (R-3.1: ab 28), Markierung 25 × 25; runde Knöpfe 32 × 32 mit einer unsichtbaren

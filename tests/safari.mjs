@@ -78,9 +78,13 @@
 // - Was Safari wegen der Tastatur verschiebt (Öffnen, Feld wechseln, Schließen), meldet es im selben Augenblick (Zeile 532 ff.: ‚scroll‘
 //   und ‚vv scroll‘ bei 31711 ms, 167 px; Zeile 541 ff.: Schließen; ebenso die Messung vom 20.10. iPhone hoch, Zeilen 228–244). ‚2 Bilder
 //   später‘ (APD-27 2) gilt nur noch für das Rollen.
+// Seit 4.57.0 (APD-127/W-3, W-7, Messung 08.11.2026 iPhone hoch im Safari-Tab, arbeit/APD-127 Messung und Testfall-Liste.md; Designrichtlinie 13):
+// - APD-127/W-3 Option auto: iPhone hoch öffnet sich die Tastatur nach dem Fokus erst nach aufVerzug (100 ms; gemessen meldet visualViewport sie
+//   in einem Schritt 95–110 ms nach dem Fokus) statt im nächsten Bild; die Lage beim Fokus (APD-36/S-7) bleibt die beim Fokus.
+// - Nicht nachgebildet: APD-127/W-7 – rollt die App im focusin, zeichnet Safari das erste Bild erst 88–91 ms nach dem Fokus (ohne Rollen nach 3 ms).
 export const ABSTAND = 24, ABSTAND_FENSTER = 0;
 export const SAFARI = {
-  'iPhone hoch': { tastatur: 403, ziffern: 376, fokusRollen: -120, fokusSchub: 0, zuVerzug: 400, wechselVerzug: 88 },
+  'iPhone hoch': { tastatur: 403, ziffern: 376, fokusRollen: -120, fokusSchub: 0, zuVerzug: 400, wechselVerzug: 88, aufVerzug: 100 },
   'iPhone quer': { tastatur: 276, ziffern: 232, fokusRollen: 0, fokusSchub: 0, zuVerzug: 400, wechselVerzug: 88 },
   'iPad quer': { tastatur: 428, fokusRollen: 0, fokusSchub: 0, wechselVerzug: 135 },
   'iPad hoch': { tastatur: 340, fokusRollen: 0, fokusSchub: 0, wechselVerzug: 135 },
@@ -88,7 +92,7 @@ export const SAFARI = {
 
 export async function safariModell(p, ansicht, { leisten = { bar: '.nb, .pnav', box: '.searchbox' }, links = {}, auto = false, abstand = ABSTAND, abstandFenster = ABSTAND_FENSTER, apd115 = true, fokusSelbst = true } = {}) {   // seit 4.56.0 (APD-115) apd115 Standard; apd115: false = Modell bis 4.55.0 (Gegenprobe)
   const werte = { abstand, abstandFenster, ...SAFARI[ansicht], apd115, fokusSelbst: apd115 && fokusSelbst, zuVerzug: apd115 ? (SAFARI[ansicht]?.zuVerzug ?? 0) : 0,
-    wechselVerzug: apd115 ? (SAFARI[ansicht]?.wechselVerzug ?? 0) : 0 };
+    wechselVerzug: apd115 ? (SAFARI[ansicht]?.wechselVerzug ?? 0) : 0, aufVerzug: apd115 ? (SAFARI[ansicht]?.aufVerzug ?? 0) : 0 };   // aufVerzug seit 4.57.0 (APD-127/W-3)
   if (!werte) throw new Error(`Safari-Modell: keine Werte für ${ansicht}`);
   await p.evaluate(({ werte, leisten, links, auto }) => {
     const vv = window.visualViewport;
@@ -210,7 +214,9 @@ export async function safariModell(p, ansicht, { leisten = { bar: '.nb, .pnav', 
     // APD-36/S-4: Tastatur folgt dem Fokus (Felder mit Tastatur; Datum, Auswahl und Schalter öffnen keine)
     const mitTastatur = e => e?.matches?.('textarea, input:not([type=date],[type=time],[type=checkbox],[type=radio],[type=button],[type=submit],[type=range],[type=color],[type=file]):not([readonly])');
     if (auto) {
-      document.addEventListener('focusin', e => { if (!s.offen && mitTastatur(e.target)) requestAnimationFrame(() => { if (!s.offen && mitTastatur(document.activeElement)) s.tastatur(true, s.erneut === document.activeElement ? 'erneut' : 'auf'); }); }, true);
+      // APD-127/W-3 (seit 4.57.0): iPhone hoch erst nach aufVerzug, sonst im nächsten Bild
+      const spaeter = f => werte.aufVerzug ? setTimeout(f, werte.aufVerzug) : requestAnimationFrame(f);
+      document.addEventListener('focusin', e => { if (!s.offen && mitTastatur(e.target)) spaeter(() => { if (!s.offen && mitTastatur(document.activeElement)) s.tastatur(true, s.erneut === document.activeElement ? 'erneut' : 'auf'); }); }, true);
       document.addEventListener('focusout', () => setTimeout(() => { if (s.offen && !mitTastatur(document.activeElement)) s.tastatur(false); }, 100), true);
       // APD-36/S-6 (c): Antippen des Felds, das den Fokus noch hat, bei geschlossener Tastatur öffnet sie wieder (ohne neuen Fokus); wie Safari
       // es bewertet, wenn die App dabei den Fokus neu setzt, ist nicht gemessen – das Modell bleibt auf der sicheren Seite (erneut)
