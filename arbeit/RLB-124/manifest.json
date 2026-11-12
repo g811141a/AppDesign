@@ -1,0 +1,9 @@
+{
+  "name": "RLB-124 Drucken",
+  "short_name": "RLB-124",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f2f2f7",
+  "theme_color": "#f2f2f7"
+}

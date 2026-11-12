@@ -1,0 +1,204 @@
+<!doctype html><html lang="de"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="RLB-124">
+<link rel="manifest" href="manifest.json">
+<title>RLB-124 Drucken</title>
+<link rel="stylesheet" href="../../fassung/4.57.0/design.css">
+<style>
+/* RLB-124 – Versuch vor dem Bau (Sitzung Reiselogbuch 0107; Zusammenarbeit 0 Nr. 20 und 2.7): Welche Wege zum PDF gehen in der App vom
+   Home-Bildschirm? Rückmeldung P-101/16 Schritt 3: ‚PDF‘ öffnet dort das Drucken-Menü nicht, in Safari schon (Proben A–D, 12.11.2026).
+   Die Seite lädt die unveränderte Fassung 4.57.0 (design.css, ui.js) – das Fenster (openDialog) und #printout wie im Reiselogbuch 3.55.0.
+   Vorher im Safari-Modell geprüft (arbeit/RLB-124/pruefen.mjs); am Gerät nur ‚aufgenommen‘, bewertet wird aus den Rohdaten. Nur hell. */
+html { color-scheme: light; }
+.mess { max-width: 640px; margin: 0 auto; padding: 8px 16px 24px; }
+.box2 { background: var(--card, #fff); border-radius: 12px; padding: 12px 14px; margin: 12px 0; border: .5px solid var(--line); }
+#schritt { line-height: 1.45; } #schritt b { display: block; margin-bottom: 6px; }
+#hinweis { background: #fff4e5; border-color: #ffcc80; display: none; }
+#liste { list-style: none; margin: 0; padding: 0; } #liste li { display: flex; gap: 10px; padding: 8px 0; border-top: .5px solid var(--line); }
+#liste li:first-child { border-top: 0; } #liste .h { width: 20px; flex: none; color: #248a3d; font-weight: 700; } #liste li.jetzt { font-weight: 600; }
+.knoepfe { display: flex; flex-wrap: wrap; gap: 10px; margin: 10px 0; }
+.knoepfe button { font: inherit; min-height: 44px; padding: 0 16px; border-radius: 22px; border: 0; background: #007aff; color: #fff; }
+.knoepfe button.grau { background: #e5e5ea; color: #007aff; }
+.knoepfe button:disabled { opacity: .4; }
+#zaehler { color: var(--sub, #6e6e73); margin-top: 8px; }
+#kopie { width: 100%; min-height: 120px; font: 12px ui-monospace, monospace; display: none; }
+</style></head><body>
+<main id="app"></main>
+<div id="printout"></div>
+<dialog id="dlg"></dialog>
+<dialog id="msg"></dialog>
+<script src="../../fassung/4.57.0/ui.js"></script>
+<script>
+'use strict';
+const $ = s => document.querySelector(s);
+// Gegenprobe im Safari-Modell: ?gegenprobe=ohne-druck – die Druckknöpfe rufen print() nicht auf; die Auswertung muss das melden
+const GEGEN = new URLSearchParams(location.search).get('gegenprobe');
+const SPEICHER = 'rlb124.messung1';
+const DRUCK = [{ a: 'kam', t: 'Drucken-Menü kam' }, { a: 'nicht', t: 'Kein Drucken-Menü', grau: 1 }];
+// Jeder Fall: ein Knopf (los), danach genau eine Beobachtung (antworten). Fälle 1–4: print() direkt bzw. nach 50 ms, ohne bzw. mit offenem
+// Fenster (Fall 4 = genau wie ‚PDF‘ im Reiselogbuch 3.55.0); 5 Drucken aus einem Rahmen (iframe); 6 Weg c (eigenes Fenster); 7 Weg b (HTML teilen,
+// ‚Drucken‘ im Teilen-Menü); 8 Weg a (PDF-Datei teilen).
+const FAELLE = [
+  { id: 'direkt', titel: 'Drucken sofort, ohne Fenster', knopf: 'Drucken',
+    schritt: 'Auf ‚Drucken‘ tippen. Kommt das Drucken-Menü, es mit ‚Abbrechen‘ bzw. x schließen. Dann antworten.', antworten: DRUCK },
+  { id: 'direkt-fenster', titel: 'Drucken sofort, mit offenem Fenster', knopf: 'Drucken',
+    schritt: 'Auf ‚Drucken‘ tippen – erst geht ein Fenster auf, gleich danach soll das Drucken-Menü kommen. Drucken-Menü schließen, dann das Fenster mit x. Dann antworten.', antworten: DRUCK },
+  { id: 'spaet', titel: 'Drucken nach 50 ms, ohne Fenster', knopf: 'Drucken',
+    schritt: 'Auf ‚Drucken‘ tippen. Kommt das Drucken-Menü, es schließen. Dann antworten.', antworten: DRUCK },
+  { id: 'wie-app', titel: 'Drucken nach 50 ms, mit Fenster (wie ‚PDF‘ in der App)', knopf: 'Drucken',
+    schritt: 'Auf ‚Drucken‘ tippen – das Fenster ‚Ausgabe‘ geht auf wie in der App. Drucken-Menü (falls es kommt) schließen, dann das Fenster mit x. Dann antworten.', antworten: DRUCK },
+  { id: 'rahmen', titel: 'Drucken aus einem Rahmen', knopf: 'Drucken',
+    schritt: 'Auf ‚Drucken‘ tippen. Kommt das Drucken-Menü, es schließen. Dann antworten.', antworten: DRUCK },
+  { id: 'fenster', titel: 'Weg c – Ausgabe in eigenem Fenster', knopf: 'Ausgabe öffnen',
+    schritt: 'Auf ‚Ausgabe öffnen‘ tippen. Geht eine Seite ‚RLB-124 Probedruck‘ auf, dort oben auf ‚Drucken‘ tippen. Drucken-Menü schließen, die Seite schließen (‚Fertig‘ bzw. x) und hierher zurück. Dann antworten.',
+    antworten: [{ a: 'kam', t: 'Seite und Drucken-Menü kamen' }, { a: 'seite', t: 'Seite kam, kein Drucken-Menü', grau: 1 }, { a: 'nicht', t: 'Keine Seite', grau: 1 }] },
+  { id: 'html-teilen', titel: 'Weg b – HTML teilen, dort ‚Drucken‘', knopf: 'HTML teilen',
+    schritt: 'Auf ‚HTML teilen‘ tippen. Im Teilen-Menü nach unten rollen und ‚Drucken‘ suchen. Gibt es ‚Drucken‘, antippen; kommt die Druckvorschau, sie schließen. Sonst das Teilen-Menü schließen. Dann antworten.',
+    antworten: [{ a: 'kam', t: '‚Drucken‘ da, Vorschau kam' }, { a: 'leer', t: '‚Drucken‘ da, keine Vorschau', grau: 1 }, { a: 'nicht', t: 'Kein ‚Drucken‘', grau: 1 }] },
+  { id: 'pdf-teilen', titel: 'Weg a – PDF-Datei teilen', knopf: 'PDF teilen',
+    schritt: 'Auf ‚PDF teilen‘ tippen. Im Teilen-Menü ‚In Dateien sichern‘ wählen und sichern. Dann antworten.',
+    antworten: [{ a: 'kam', t: 'Teilen-Menü kam, gesichert' }, { a: 'nicht', t: 'Kein Teilen-Menü', grau: 1 }] },
+];
+let zustand = { fall: 0, fertig: [], zeilen: [] };
+try { const s = JSON.parse(sessionStorage.getItem(SPEICHER)); if (s?.zeilen) zustand = s; } catch {}
+const t0 = performance.now();
+const ms = () => Math.round(performance.now() - t0);
+const sichere = () => { try { sessionStorage.setItem(SPEICHER, JSON.stringify(zustand)); } catch {} };
+function zeile(s) { if (zustand.zeilen.length < 5000) zustand.zeilen.push(`${ms()} ${s}`); sichere(); }
+const home = () => matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+const aktiv = () => navigator.userActivation ? (navigator.userActivation.isActive ? 1 : 0) : '-';
+
+// ---------- Probeausgabe (wie die Ausgabe des Reiselogbuchs: Titel, Tabelle mit Kopfzeile) ----------
+const PROBE_CSS = `body{font:15px -apple-system,system-ui,sans-serif;color:#000;background:#fff;margin:24px}h1{font-size:22px}
+table{border-collapse:collapse;width:100%}th,td{border:1px solid #c6c6c8;padding:6px 8px;text-align:left}th{background:linear-gradient(#fff,#e5e5ea)}`;
+const PROBE_BODY = '<h1>RLB-124 Probedruck</h1><p>Erstellt mit dem Versuch RLB-124.</p><table><thead><tr><th>Tag</th><th>Verlauf</th></tr></thead>' +
+  '<tbody><tr><td>Mo, 24.08.</td><td>☀️ Anreise nach Wien</td></tr><tr><td>Di, 25.08.</td><td>🌤 Weiterfahrt</td></tr></tbody></table>';
+const PROBE_HTML = `<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>RLB-124 Probedruck</title><style>${PROBE_CSS}</style></head><body>${PROBE_BODY}</body></html>`;
+
+// kleines, gültiges PDF (eine Seite A4, Helvetica) – Querverweise mit echten Byte-Positionen
+function probePdf() {
+  const text = 'BT /F1 18 Tf 72 770 Td (RLB-124 Probedruck) Tj ET';
+  const obj = ['<< /Type /Catalog /Pages 2 0 R >>', '<< /Type /Pages /Kids [3 0 R] /Count 1 >>',
+    '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >>',
+    '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>', `<< /Length ${text.length} >>\nstream\n${text}\nendstream`];
+  let pdf = '%PDF-1.4\n'; const pos = [];
+  obj.forEach((o, i) => { pos.push(pdf.length); pdf += `${i + 1} 0 obj\n${o}\nendobj\n`; });
+  const xref = pdf.length;
+  pdf += `xref\n0 ${obj.length + 1}\n0000000000 65535 f \n` + pos.map(p => String(p).padStart(10, '0') + ' 00000 n \n').join('');
+  pdf += `trailer\n<< /Size ${obj.length + 1} /Root 1 0 R >>\nstartxref\n${xref}\n%%EOF\n`;
+  return pdf;
+}
+
+// ---------- Rohdaten: Druck-Ereignisse, Sichtbarkeit, Fokus ----------
+addEventListener('beforeprint', () => zeile('beforeprint'));
+addEventListener('afterprint', () => zeile('afterprint'));
+document.addEventListener('visibilitychange', () => zeile('sicht ' + document.visibilityState));
+addEventListener('blur', () => zeile('blur'));
+addEventListener('focus', () => zeile('focus'));
+addEventListener('pagehide', () => zeile('pagehide'));
+addEventListener('pageshow', e => zeile('pageshow' + (e.persisted ? ' bfcache' : '')));
+addEventListener('error', e => zeile('fehler ' + (e.message || '?')));
+
+function drucke(wie) {
+  zeile(`print ${wie} aktiv ${aktiv()} fenster ${dlg.open ? 1 : 0}`);
+  if (GEGEN === 'ohne-druck') return;
+  const t = performance.now();
+  try { window.print(); zeile(`print zurueck ${Math.round(performance.now() - t)} ms`); } catch (e) { zeile('print fehler ' + e.name); }
+}
+function ausgabe(an) { $('#printout').innerHTML = an ? `<style>${PROBE_CSS.replace(/\bbody\b/g, '#printout')}</style>${PROBE_BODY}` : ''; }
+function fensterAuf() {
+  openDialog(`<form method="dialog">${dlgHead('Ausgabe V001', { check: false })}<div class="dlg-body"><div class="step">Drucken-Menü geöffnet für <b>RLB-124 Probedruck.pdf</b></div></div></form>`);
+  zeile('fenster auf');
+}
+dlg.addEventListener('close', () => { zeile('fenster zu'); ausgabe(false); });
+async function teileDatei(name, typ, inhalt) {
+  const file = new File([inhalt], name, { type: typ });
+  const kann = navigator.canShare ? (navigator.canShare({ files: [file] }) ? 1 : 0) : '-';
+  zeile(`teilen ${name} canShare ${kann} aktiv ${aktiv()}`);
+  try { await navigator.share({ files: [file] }); zeile('teilen fertig'); } catch (e) { zeile('teilen ' + e.name); }
+}
+const LOS = {
+  direkt() { ausgabe(true); drucke('direkt'); },
+  'direkt-fenster'() { ausgabe(true); fensterAuf(); drucke('direkt'); },
+  spaet() { ausgabe(true); zeile('warte 50'); setTimeout(() => drucke('spaet'), 50); },
+  'wie-app'() { fensterAuf(); ausgabe(true); zeile('warte 50'); setTimeout(() => drucke('spaet'), 50); },
+  rahmen() {
+    const f = document.createElement('iframe');
+    f.style.cssText = 'position:fixed;width:1px;height:1px;opacity:0;border:0;bottom:0';
+    f.srcdoc = PROBE_HTML; document.body.append(f);
+    f.onload = () => { zeile(`rahmen geladen aktiv ${aktiv()}`); if (GEGEN === 'ohne-druck') return;
+      try { f.contentWindow.focus(); f.contentWindow.print(); zeile('rahmen print zurueck'); } catch (e) { zeile('rahmen fehler ' + e.name); }
+      setTimeout(() => f.remove(), 60000); };
+  },
+  fenster() {
+    const seite = PROBE_HTML.replace('<body>', `<body><p><button onclick="print()" style="font:inherit;min-height:44px;padding:0 16px;border-radius:22px;border:0;background:#007aff;color:#fff">Drucken</button></p>`);
+    const url = URL.createObjectURL(new Blob([seite], { type: 'text/html' }));
+    let w = null; try { w = window.open(url, '_blank'); } catch (e) { zeile('fenster fehler ' + e.name); }
+    zeile(`fenster offen ${w ? 1 : 0}`);
+  },
+  'html-teilen'() { teileDatei('RLB-124 Probedruck.html', 'text/html', PROBE_HTML); },
+  'pdf-teilen'() { teileDatei('RLB-124 Probedruck.pdf', 'application/pdf', probePdf()); },
+};
+
+// ---------- Aufbau ----------
+$('#app').innerHTML = `
+  <div class="nb" id="bar"><div class="nb1"><span></span><span class="nb-title">RLB-124 Drucken</span><span class="r"></span></div></div>
+  <div class="rolle" id="rolle"><div class="mess">
+    <p style="color:var(--sub,#6e6e73);margin:4px 0 0">iPad quer, hell – App vom Home-Bildschirm</p>
+    <div class="box2" id="hinweis"><b>Diese Seite läuft in Safari.</b> Bitte über Teilen › ‚Zum Home-Bildschirm‘ hinzufügen und von dort öffnen.</div>
+    <div class="box2" id="schritt"></div>
+    <div class="knoepfe" id="los"></div>
+    <div class="knoepfe" id="antworten"></div>
+    <div class="box2"><ol id="liste"></ol><div id="zaehler"></div></div>
+    <div class="knoepfe"><button type="button" id="teilen">Messung teilen</button><button type="button" class="grau" id="trotzdem">trotzdem teilen</button><button type="button" class="grau" id="nochmal">Fall neu</button><button type="button" class="grau" id="neu">neu beginnen</button></div>
+    <textarea id="kopie" readonly></textarea>
+  </div></div>`;
+
+function zeige() {
+  const n = zustand.fall, fall = FAELLE[n];
+  $('#hinweis').style.display = home() ? 'none' : 'block';
+  $('#schritt').innerHTML = fall ? `<b>Nächster Schritt: Fall ${n + 1} von ${FAELLE.length} – ${fall.titel}</b>${fall.schritt}`
+    : '<b>Nächster Schritt: ‚Messung teilen‘</b>Alle Fälle sind aufgenommen. Teile die Datei mit Claude (z. B. ‚In Dateien sichern‘ und im Chat anhängen).';
+  $('#los').innerHTML = fall ? `<button type="button" id="losKnopf">${fall.knopf}</button>` : '';
+  $('#antworten').innerHTML = fall ? fall.antworten.map(x => `<button type="button" class="${x.grau ? 'grau' : ''}" data-a="${x.a}">${x.t}</button>`).join('') : '';
+  if (fall) {
+    $('#losKnopf').onclick = () => { zeile(`los ${fall.id}`); LOS[fall.id](); };
+    $('#antworten').querySelectorAll('[data-a]').forEach(b => b.onclick = () => antworte(b.dataset.a));
+  }
+  $('#liste').innerHTML = FAELLE.map((x, i) => `<li class="${i === n ? 'jetzt' : ''}"><span class="h">${zustand.fertig.includes(i) ? '✓' : ''}</span>Fall ${i + 1}: ${x.titel}</li>`).join('');
+  $('#zaehler').textContent = `${zustand.fertig.length} von ${FAELLE.length} aufgenommen`;
+  $('#nochmal').disabled = !fall;
+  $('#teilen').disabled = zustand.fertig.length < FAELLE.length;
+  $('#trotzdem').style.display = zustand.fertig.length < FAELLE.length ? '' : 'none';
+}
+function starte(n) { zustand.fall = n; zeile(`fall ${n + 1} ${FAELLE[n] ? FAELLE[n].id : 'ende'}`); zeige(); }
+function antworte(a) {
+  const n = zustand.fall; if (!FAELLE[n]) return;
+  if (dlg.open) dlg.close();
+  zeile(`antwort ${n + 1} ${FAELLE[n].id} ${a}`);
+  if (!zustand.fertig.includes(n)) zustand.fertig.push(n);
+  const weiter = FAELLE.findIndex((_, i) => !zustand.fertig.includes(i));
+  if (weiter < 0) { zustand.fall = FAELLE.length; zeile('alle faelle'); zeige(); } else starte(weiter);
+}
+$('#nochmal').onclick = () => { zeile(`neu ${zustand.fall + 1}`); starte(zustand.fall); };
+$('#neu').onclick = () => { if (!confirm('Messung löschen und neu beginnen?')) return;
+  zustand = { fall: 0, fertig: [], zeilen: [] }; try { sessionStorage.removeItem(SPEICHER); } catch {} kopf(); starte(0); };
+function kopf() { zeile(`start ${home() ? 'home' : 'safari'} ${screen.width}x${screen.height} innen ${innerWidth}x${innerHeight} AppDesign ${typeof AD_VERSION !== 'undefined' ? AD_VERSION : '-'} gegenprobe ${GEGEN || '-'}`); }
+function text() {
+  return `# RLB-124 Messung 1 · ${navigator.userAgent} · ${new Date().toISOString()}\n` +
+    `# ${zustand.fertig.length} von ${FAELLE.length} Fällen aufgenommen\n` + zustand.zeilen.join('\n') + '\n';
+}
+async function teile() {
+  const name = `messung-RLB-124-${new Date().toISOString().slice(0, 16).replace(/[:T]/g, '-')}.txt`;
+  const k = $('#kopie'); k.value = text(); k.style.display = 'block';   // Rückfall: Text zum Kopieren
+  try { await navigator.share({ files: [new File([text()], name, { type: 'text/plain' })] }); }
+  catch (e) { if (e.name !== 'AbortError') { k.select(); } }
+}
+$('#teilen').onclick = teile;
+$('#trotzdem').onclick = () => { zeile('trotzdem teilen'); teile(); };
+window.r124 = { text, FAELLE, probePdf, PROBE_HTML };   // für die Prüfung im Safari-Modell
+if (!zustand.zeilen.length) { kopf(); starte(0); } else { zeile('neu geladen'); zeige(); }
+</script>
+</body></html>
