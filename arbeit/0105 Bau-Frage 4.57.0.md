@@ -29,7 +29,7 @@ Die Testfall-Liste ist für alle bestätigt; beim Bau wird sie auf die Punkte de
 
 ## Auffällig (nicht von mir verursacht)
 
-Die Doku-Prüfung (`ReiseLogBuch/tests/doku-regeln.mjs`) meldet schon auf `main` **35 Fehler**: lokale Nummern ohne Themennummer davor (z. B. ‚T-1‘ statt ‚RLB-122/T-1‘) in `arbeit/` – APD-116 Klärung, APD-124 Klärung, RLB-120 Klärung, RLB-122 Klärung und Muster-Prüfungen, 4.57.0 Testfall-Liste, BACKLOG.md Zeile 17 (APD-124). Meine Änderungen von heute fügen keinen hinzu (vorher und nachher gleich viele, nach Korrektur der neuen Datei 35). Der volle Lauf in `los` würde daran rot. **Vorschlag:** beim Bau als Erstes die Themennummer davorsetzen (reine Schreibweise, kein Inhalt).
+Die Doku-Prüfung (`ReiseLogBuch/tests/doku-regeln.mjs`) meldet schon auf `main` **35 Fehler**: lokale Nummern ohne Themennummer davor (z. B. ohne ‚RLB-122/‘ vor der lokalen Nummer) in `arbeit/` – APD-116 Klärung, APD-124 Klärung, RLB-120 Klärung, RLB-122 Klärung und Muster-Prüfungen, 4.57.0 Testfall-Liste, BACKLOG.md Zeile 17 (APD-124). Meine Änderungen von heute fügen keinen hinzu (vorher und nachher gleich viele, nach Korrektur der neuen Datei 35). Der volle Lauf in `los` würde daran rot. **Vorschlag:** beim Bau als Erstes die Themennummer davorsetzen (reine Schreibweise, kein Inhalt).
 
 ## Ablauf nach ‚Ja‘
 

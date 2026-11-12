@@ -83,8 +83,8 @@ Link: https://g811141a.github.io/AppDesign/arbeit/APD-124/index.html
 | APD-124/T-9 | nach dem Leeren | Rückgängig 44 × 44, im Feld |
 | APD-124/T-10 | Rückgängig antippen | ganzer Text zu sehen (Feld wächst wieder), Cursor am Ende, Fokus bleibt |
 
-Ergebnis (08.11.2026, Sitzung 0102): Chromium und WebKit **alles in Ordnung** (T-1 bis T-10, vier Lagen). Gegenprobe `PRUEF_V=heute`
-(ui.js 4.56.0): rot in T-2 bis T-8 und T-10 (Chromium 72, WebKit 60 Fehler).
+Ergebnis (08.11.2026, Sitzung 0102): Chromium und WebKit **alles in Ordnung** (APD-124/T-1 bis APD-124/T-10, vier Lagen). Gegenprobe `PRUEF_V=heute`
+(ui.js 4.56.0): rot in APD-124/T-2 bis APD-124/T-8 und APD-124/T-10 (Chromium 72, WebKit 60 Fehler).
 
 ### Wortlaut (0 Nr. 29) – **bestätigt** (Nutzer 08.11.2026, Sitzung 0102)
 

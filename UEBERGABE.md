@@ -33,10 +33,10 @@ steht in der AppDesign-`CLAUDE.md`.
 - **RLB-120 abgeschlossen:** Wortlaut **RLB-120/W-8a, W-8b bestätigt** (Kopfverlauf von `--kachel-bg` nach `--th-bg` über `color-mix` 23 %/58 %; in markierter
   `--focus` bzw. ausgewählter `--sel-bg` Kachel beginnt er mit der Farbe der Kachel; auf Weiß `#f9f9fa` statt `#f9f9fb` bei 50 %) – `arbeit/RLB-120 Wortlaut.md`;
   **Testfall RLB-120/B-11 ok** – `arbeit/RLB-120 Klärung.md`. RLB-120 **bereit** in beiden Backlogs (‚0.‘) und in `arbeit/4.57.0 Testfall-Liste.md`
-  (Abschnitt 1, Abschnitt 2 B-1 bis B-11, Abschnitt 3 P-101/15 und /16).
+  (Abschnitt 1, Abschnitt 2 RLB-120/B-1 bis RLB-120/B-11, Abschnitt 3 P-101/15 und /16).
 - **Bau-Frage gestellt:** Vorschlag Aufteilen (0 Nr. 8) – Antwort **‚Ja, alle 10 Punkte‘** (Nutzer 08.11.2026, Sitzung 0105): **gültige Bau-Freigabe** für
   AppDesign 4.57.0 / Reiselogbuch 3.55.0, eine Version mit vier Themen, bewusst abweichend von 0 Nr. 8 – `arbeit/0105 Bau-Frage 4.57.0.md`.
-- **Auffällig (schon auf `main`):** `ReiseLogBuch/tests/doku-regeln.mjs` meldet **35 Fehler** – lokale Nummern ohne Themennummer (z. B. ‚T-1‘ statt
+- **Auffällig (schon auf `main`):** `ReiseLogBuch/tests/doku-regeln.mjs` meldet **35 Fehler** – lokale Nummern ohne Themennummer (z. B. ohne Themennummer statt
   ‚RLB-122/T-1‘) in `arbeit/APD-116 Klärung.md`, `arbeit/APD-124 Klärung und Testfall-Liste.md`, `arbeit/RLB-120 Klärung.md`, `arbeit/RLB-120 Muster prüfen.mjs`,
   `arbeit/RLB-122 Klärung.md`, `arbeit/RLB-122 Muster prüfen.mjs`, `arbeit/4.57.0 Testfall-Liste.md` und AppDesign `BACKLOG.md` Zeile 17 (APD-124). Der volle
   Lauf in `los` würde daran rot – beim Bau **als Erstes** beheben (nur Schreibweise; mit dem Nutzer so besprochen).

@@ -40,9 +40,9 @@ groß = xxxl, sehr groß = ax3). Link: https://g811141a.github.io/AppDesign/arbe
 | APD-116/T-3 | danach | der Name ist unverändert (keine Zeichen ersetzt) |
 | APD-116/T-4 | danach | nichts ragt aus dem Fenster |
 | APD-116/T-5 | Name in einer Zeile | zentriert |
-| APD-116/T-6 | Gegenprobe `PRUEF_V=heute` | T-1 und T-2 rot |
+| APD-116/T-6 | Gegenprobe `PRUEF_V=heute` | APD-116/T-1 und APD-116/T-2 rot |
 
-Ergebnis (08.11.2026, Sitzung 0102): Chromium und WebKit **alles in Ordnung**; Gegenprobe in beiden rot (T-1 14-mal, T-2 6-mal). Beim Bau gefunden:
+Ergebnis (08.11.2026, Sitzung 0102): Chromium und WebKit **alles in Ordnung**; Gegenprobe in beiden rot (APD-116/T-1 14-mal, APD-116/T-2 6-mal). Beim Bau gefunden:
 mit `display: block` allein brach die Ausgabe nach ‚2026.08.24-‘ – deshalb jedes Wort als `inline-block`.
 
 **Für den Bau:** `checkShareResult` o. Ä. in `tests/ablauf.mjs` mit den echten Fenstern (Backup im Reiselogbuch, Abgleichbericht), dazu R-… im

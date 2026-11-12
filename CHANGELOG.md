@@ -3,6 +3,60 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.57.0 – 12.11.2026
+
+AppDesign 4.57.0 · Designrichtlinie allgemein 4.57.0 · Zusammenarbeit allgemein 3.11.0 · geprüft mit Reiselogbuch 3.55.0
+
+**Sammelversion mit vier Themen** – dein ‚Ja, alle 10 Punkte‘ vom 08.11.2026, Sitzung 0105 (`arbeit/0105 Bau-Frage 4.57.0.md`), gebaut in Sitzung 0106
+nach `arbeit/4.57.0 Testfall-Liste.md`. Usertest im Reiselogbuch: P-101.
+
+**Eingabefelder – APD-126, APD-124** (`arbeit/APD-126 RLB-123 Klärung und Wortlaut.md`, `arbeit/APD-124 Klärung und Testfall-Liste.md`)
+
+- **Cursor am Ende (APD-126/W-2, neu R-5.11):** beim ersten Antippen und mit Tab steht der Cursor hinter dem letzten Zeichen (`ui.js` setzt ihn 0,7 s
+  lang nach), danach setzt Antippen ihn wie gewohnt an die Stelle; bei Fokus durch die App nur, wenn sie nicht selbst ausgewählt hat.
+- **Leer einzeilig (APD-126/W-1, W-5, W-7):** ein leeres Textfeld ist so hoch wie ein einzeiliges (`min-height: 44px` statt 96 px × Textgröße), der
+  Platzhalter einzeilig und abgeschnitten; `autoGrow` läuft bei jeder Eingabe und lässt das Feld auch wieder schrumpfen, der Rollstand bleibt.
+- **Nach einem Vorschlag klein weiter (APD-126/W-3, W-4, R-5.2):** `capNext()` bewirkt nichts mehr (bleibt für ältere Aufrufe).
+- **R-4.5 beim Aktivieren (APD-126/W-6):** gerollt wird zur Zeile mit dem Cursor (der letzten), nicht mehr zur Zeile unter dem Finger.
+- **Rückgängig im Feld (APD-124/W-1 bis W-3, R-5.6, 15.11, 16):** ⓧ leert sofort, auch mehrzeilig, ohne Sprechblase; der Text kommt zusätzlich in die
+  Zwischenablage; an Stelle des ⓧ steht dann Rückgängig (Lucide `undo-2`, Klasse `rueck`, 44 × 44) – es holt den Text zurück, Cursor am Ende; es
+  verfällt mit der ersten Eingabe oder ohne Fokus.
+- **Prüfung:** `checkFeldCursor` neu (APD-126/B-1 bis B-12, dazu `checkCursorEnde`), `checkClear` erweitert (APD-124/B-1 bis B-10; die Fälle mit
+  Sprechblase entfallen); Gegenproben mit `ui.js` 4.56.0 rot (APD-126/B-13: 60 Fehler; APD-124/B-11: 158 Fehler).
+
+**Darstellung – RLB-120, RLB-122, APD-116** (`arbeit/RLB-120 Klärung.md`, `arbeit/RLB-120 Wortlaut.md`, `arbeit/RLB-122 Klärung.md`,
+`arbeit/APD-116 Fertig klären.md`)
+
+- **Kopfverlauf (RLB-120/W-1 bis W-8, R-6.1, R-6.2, R-6.5, Designrichtlinie 2, 9, 10, 15.10):** `--kopf-verlauf` von `--kachel-bg` nach `--th-bg`
+  (Stufen über `color-mix` 23 % und 58 %) in der Bezeichnung im Kasten mit Feldern (nebeneinander nach rechts, untereinander nach unten) und in der
+  Kopfzeile jeder Tabelle; ausgewählter Kasten beginnt mit `--sel-bg`; Bezeichnung halbfett, Emojis in Textgröße, Spalte 1 `calc(98px * var(--f-body))`,
+  Linien vor dem ersten und nach dem letzten Feld; Ausgabe (`outputCss`) Kopf Weiß → `#d9d9d9`.
+- **Aufzählung mit ‚·‘ am Stück (RLB-122/W-1, W-2, R-10.5, Designrichtlinie 3):** Baustein `aufzaehlung(liste)` – jeder Eintrag in `.ict.az` (inline,
+  ohne Umbruch), umgebrochen wird nur nach dem ‚·‘.
+- **Dateiname allein in einer Zeile (APD-116/W-1 bis W-4, neu R-10.8, Designrichtlinie 10, 15.19):** `fileNameHtml` – der Name steht fett und zentriert
+  in einer eigenen Zeile unter dem Satz, ohne Punkt, umgebrochen nur nach einem Leerzeichen; Texte `SHARE_RESULT` nach APD-116/W-4.
+- **Prüfung:** `hig.mjs` – `kastenBezeichnung` angepasst, `kopfVerlauf` neu, R-6.2 vergleicht auch `background-image`; `ablauf.mjs` – `checkAufzaehlung`,
+  `checkDateiname` (Backup, Ausgabe, Abgleichbericht; Textgröße l, xxxl, ax3) und `textGroesseSetzen` neu; `backup.mjs` ruft `checkDateiname`.
+  Gegenproben rot (u. a. `design.css` 4.56.0: `kopfVerlauf` 35, `kastenBezeichnung` 30 Meldungen; ohne Zentrierung 8 Meldungen).
+
+**Gleiten – APD-127** (`arbeit/APD-127 Messung und Testfall-Liste.md`)
+
+- **Gleitbewegungen wie die Seitenleiste in Notizen (neu R-1.12, R-4.13, Designrichtlinie 13 APD-127/W-3, W-7):** öffnen, hinein und nach oben mit Feder
+  ohne Nachschwingen (`linear()` über 0,5 s, `GLEIT_FEDER`), schließen und hinaus ease-in-out 0,25 s, Rest nach einer Geste anteilig, mindestens 0,15 s –
+  für Blatt (`blattFahre`, `blattGeist`, `blattWeg`), Navigation und Seitenleiste (`navFahre`), Titel antippen (`titelRoll`) und das iPad-Fenster mit der
+  Tastatur (`dialog.gleitet`, neu `.runter`); ‚Bewegung reduzieren‘ und das Mehr-Menü unverändert.
+- **Safari-Modell:** iPhone hoch `aufVerzug` 100 ms – die Tastatur öffnet sich 100 ms nach dem Fokus (APD-127/W-3).
+- **Prüfung:** `checkGleiten` neu (APD-127/B-1 bis B-8: Dauer und Kurve jeder Bewegung, Mehr-Menü, ‚Bewegung reduzieren‘, Endlage), Gegenprobe
+  `gleitenGegenprobe` mit `PRUEF_V=heute` rot (APD-127/B-1 bis APD-127/B-5).
+  `checkOpenAt` wartet nach dem Öffnen auf das Ende der Gleitbewegung (`navFertig`) – hinein dauert jetzt 0,5 s.
+
+**Regeltext – APD-125** (`arbeit/APD-125 Datei vor jeder Kachel Wortlaut.md`)
+
+- **Zusammenarbeit 3.11.0 (APD-125/V-1 bis V-3):** Kasten ‚Jede Antwort‘ Punkt 4 ‚Datei vor jeder Kachel‘, 2.1 ‚Die Datei davor, das Fenster danach‘,
+  0 Nr. 15 Lagebild im Chat und als Datei; `doku.mjs` `checkKachel` prüft den neuen Wortlaut (APD-125/B-1, Gegenprobe rot).
+
+**Dazu:** Doku-Schreibweise – lokale Nummern in `arbeit/` und `BACKLOG.md` mit Themennummer (33 Meldungen von `checkSchema`, schon auf `main`).
+
 ## 4.56.0 – 08.11.2026
 
 AppDesign 4.56.0 · Designrichtlinie allgemein 4.56.0 · Zusammenarbeit allgemein 3.10.0 · geprüft mit Reiselogbuch 3.54.0

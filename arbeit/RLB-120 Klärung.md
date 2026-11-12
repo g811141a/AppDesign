@@ -54,7 +54,7 @@ größer = xxl, groß = xxxl, sehr groß = ax3).
 | RLB-120/T-3 | Bezeichnung | ragt nicht über Spalte 1 hinaus |
 | RLB-120/T-4 | Emojis der Bezeichnung | in einer Zeile (außer bei ‚untereinander‘, ts-um) |
 | RLB-120/T-5 | Kachel | ragt nicht hinaus |
-| RLB-120/T-6 | Gegenprobe `PRUEF_V=heute` | T-1 und T-2 rot |
+| RLB-120/T-6 | Gegenprobe `PRUEF_V=heute` | RLB-120/T-1 und RLB-120/T-2 rot |
 
 Ergebnis (08.11.2026, Sitzung 0103): Chromium und WebKit **alles in Ordnung**; Gegenprobe in beiden rot (62 Fehler).
 
@@ -74,7 +74,7 @@ Ergebnis (08.11.2026, Sitzung 0103): Chromium und WebKit **alles in Ordnung**; G
   die 1. Zeile in der Tabelle im Reiselogbuch‘ – gleich mit.
 - **Umgesetzt im Muster:** Spalte 1 in `--th-bg` (Kopfzeile der Tabelle, hell #e5e5ea), vom linken Rand der Kachel bis zur Linie und ohne Lücke bis
   unten; die Zeilenlinien gehen von Rand zu Rand. Bei ‚untereinander‘ (große Schrift) ist die Bezeichnung ein grauer Streifen über dem Wert.
-- **Prüfung ergänzt:** RLB-120/T-7 Spalte 1 durchgehend grau vom Rand an · T-8 der Wert hat links mindestens 16 px Abstand. Chromium und WebKit **alles
+- **Prüfung ergänzt:** RLB-120/T-7 Spalte 1 durchgehend grau vom Rand an · RLB-120/T-8 der Wert hat links mindestens 16 px Abstand. Chromium und WebKit **alles
   in Ordnung**, Gegenprobe rot (94 Fehler). Beim Bauen des Musters gefunden: Spalte 1 rechnete mit festen 7 px, die Zeile mit der Schrift – bei großer
   Schrift entstand eine Lücke (jetzt beide mit der Schrift).
 
@@ -91,7 +91,7 @@ Ergebnis (08.11.2026, Sitzung 0103): Chromium und WebKit **alles in Ordnung**; G
 - **Umgesetzt im Muster:** Linie unter dem Kopf vor der ersten Zeile, von Rand zu Rand (wie die anderen Zeilenlinien); alle Texte in Spalte 1 fett
   (600, wie die Kopfzeile der Tabelle).
 - **Hinweis:** ‚fett‘ widerspricht **R-6.5** (‚Text in der ersten Spalte normal (400)‘) – R-6.5 wird geändert; den Wortlaut lege ich vor (0 Nr. 29).
-- **Prüfung ergänzt:** RLB-120/T-9 Linie vor der ersten Zeile · T-10 Text in Spalte 1 fett. Chromium und WebKit **alles in Ordnung**, Gegenprobe rot
+- **Prüfung ergänzt:** RLB-120/T-9 Linie vor der ersten Zeile · RLB-120/T-10 Text in Spalte 1 fett. Chromium und WebKit **alles in Ordnung**, Gegenprobe rot
   (158 Fehler).
 
 **Link:** https://g811141a.github.io/AppDesign/arbeit/RLB-120/index.html – Safari, hell.
@@ -107,7 +107,7 @@ Ergebnis (08.11.2026, Sitzung 0103): Chromium und WebKit **alles in Ordnung**; G
   nach Spalte 1 bleibt grau. Tabelle der Tage (iPad, neu im Muster) – Linie unter der Kopfzeile und die Linien zwischen den Spalten der Kopfzeile `#000`.
 - **So macht es Apple:** Trennlinien sind in Apple-Apps hellgrau (Systemfarbe ‚separator‘); schwarze Linien sind eine bewusste Abweichung (Wunsch).
   Vermutung, nicht in dieser Sitzung nachgeschlagen. Für ‚dunkel‘ fehlt noch eine Farbe (Muster nur hell).
-- **Prüfung ergänzt:** RLB-120/T-11 Linien zwischen den Zeilen schwarz · T-12 Linien der Kopfzeile der Tabelle schwarz. Chromium und WebKit **alles in
+- **Prüfung ergänzt:** RLB-120/T-11 Linien zwischen den Zeilen schwarz · RLB-120/T-12 Linien der Kopfzeile der Tabelle schwarz. Chromium und WebKit **alles in
   Ordnung**, Gegenprobe rot (206 Fehler).
 
 **Link:** https://g811141a.github.io/AppDesign/arbeit/RLB-120/index.html – Safari, hell.
@@ -123,7 +123,7 @@ Ergebnis (08.11.2026, Sitzung 0103): Chromium und WebKit **alles in Ordnung**; G
 - **Umgesetzt im Muster:** Linien wieder grau (`--line`), die Tabelle der Tage ist wieder aus dem Muster; Spalte 1 grau nur in ihrer Zelle – links mit
   16 px Abstand zum Rand der Kachel, unten endet das Grau an der Zelle; die Zeilenlinien bleiben von Rand zu Rand, Linie vor der ersten Zeile und Spalte 1
   fett bleiben.
-- **Prüfung:** T-11 und T-12 entfallen; T-7 jetzt ‚grau nur in der Zelle‘ (Abstand links ≥ 15 px, unten ≥ 4 px, ohne Lücke zwischen den Zeilen).
+- **Prüfung:** RLB-120/T-11 und RLB-120/T-12 entfallen; RLB-120/T-7 jetzt ‚grau nur in der Zelle‘ (Abstand links ≥ 15 px, unten ≥ 4 px, ohne Lücke zwischen den Zeilen).
   Chromium und WebKit **alles in Ordnung**, Gegenprobe rot (158 Fehler).
 
 **Link:** https://g811141a.github.io/AppDesign/arbeit/RLB-120/index.html – Safari, hell.
@@ -137,7 +137,7 @@ Ergebnis (08.11.2026, Sitzung 0103): Chromium und WebKit **alles in Ordnung**; G
 
 - **Ergebnis:** ‚Die Linien sollen nicht bis zum linken und rechten Rand reichen, sondern so wie im Muster heute.‘
 - **Umgesetzt:** alle Zeilenlinien (auch die neue Linie vor der ersten Zeile) wieder mit 16 px Abstand zum linken und rechten Rand wie heute; Spalte 1
-  grau nur in ihrer Zelle. Prüfung T-9 jetzt ‚Linie vor der ersten Zeile mit 16 px Abstand zum Rand‘. Chromium und WebKit **alles in Ordnung**,
+  grau nur in ihrer Zelle. Prüfung RLB-120/T-9 jetzt ‚Linie vor der ersten Zeile mit 16 px Abstand zum Rand‘. Chromium und WebKit **alles in Ordnung**,
   Gegenprobe rot (158 Fehler).
 
 **Link:** https://g811141a.github.io/AppDesign/arbeit/RLB-120/index.html – Safari, hell.
@@ -193,14 +193,14 @@ Ergebnis (08.11.2026, Sitzung 0104): Chromium und WebKit **alles in Ordnung**; G
 - **Umgesetzt im Muster** `arbeit/RLB-120/index.html` (nur hell): Variable `--kopf-verlauf` (B: Weiß 0 %, Weiß 25 %, `#f9f9fb` 50 %, `#f0f0f3` 75 %, Grau 5
   `#e5e5ea` 100 %); Spalte 1 nebeneinander `linear-gradient(to right, …)`, untereinander (`html.ts-um`) `linear-gradient(to bottom, …)` – die Richtung
   wechselt mit der Anordnung, ohne Neuaufbau; neu darunter die Tabelle der Tage (iPad) heute/neu, Kopfzeile in ‚neu‘ von oben nach unten.
-- **Prüfung** (`arbeit/RLB-120 Muster prüfen.mjs`): T-7 jetzt ‚Verlauf passend zur Anordnung nur in der Zelle‘ (nebeneinander nach rechts, untereinander
-  nach unten, endet bei Grau 5) · neu **T-12** ‚Kopfzeile der Tabelle von oben nach unten mit demselben Verlauf wie Spalte 1‘. Chromium und WebKit **alles
-  in Ordnung**; Gegenprobe `PRUEF_V=heute` rot (206 Fehler, darunter T-7 und T-12); zweite Gegenprobe ohne die Regel für ‚untereinander‘: T-7 rot genau in
+- **Prüfung** (`arbeit/RLB-120 Muster prüfen.mjs`): RLB-120/T-7 jetzt ‚Verlauf passend zur Anordnung nur in der Zelle‘ (nebeneinander nach rechts, untereinander
+  nach unten, endet bei Grau 5) · neu **RLB-120/T-12** ‚Kopfzeile der Tabelle von oben nach unten mit demselben Verlauf wie Spalte 1‘. Chromium und WebKit **alles
+  in Ordnung**; Gegenprobe `PRUEF_V=heute` rot (206 Fehler, darunter RLB-120/T-7 und RLB-120/T-12); zweite Gegenprobe ohne die Regel für ‚untereinander‘: RLB-120/T-7 rot genau in
   den Fällen ‚untereinander‘ (12 Fehler).
 - **Noch offen:** dunkel (Muster nur hell), Ausgabe HTML/PDF (R-6.2, eigene helle Gestaltung) – mit dem Wortlaut klären.
 - **Muster Verlauf B ok** in allen Fällen (Nutzer 08.11.2026, Sitzung 0104). Wortlaut: `arbeit/RLB-120 Wortlaut.md` (RLB-120/W-1 bis W-5).
 - **Wortlaut RLB-120/W-1 bis W-5 bestätigt** (Nutzer 08.11.2026, Sitzung 0104, ‚Ja‘). Ausgabe (HTML/PDF): Antwort des Nutzers im Chat folgt.
-- **Ausgabe auch mit Verlauf** (Nutzer 08.11.2026, Sitzung 0104). Muster `arbeit/RLB-120/ausgabe.html`; Prüfung neu **T-13** ‚Kopf der Ausgabe von oben
+- **Ausgabe auch mit Verlauf** (Nutzer 08.11.2026, Sitzung 0104). Muster `arbeit/RLB-120/ausgabe.html`; Prüfung neu **RLB-120/T-13** ‚Kopf der Ausgabe von oben
   Weiß nach unten `#d9d9d9`‘ – Chromium und WebKit **alles in Ordnung**, Gegenprobe rot (210 Fehler). Wortlaut W-2 neu gefasst, dazu W-6 (Abschnitt 10) und
   W-7 (R-6.2) – `arbeit/RLB-120 Wortlaut.md`.
 - **Wortlaut W-2 (neu gefasst), W-6 und W-7 bestätigt** (Nutzer 08.11.2026, Sitzung 0104, ‚Ja‘). Muster der Ausgabe: Antwort des Nutzers im Chat folgt.
@@ -255,8 +255,8 @@ Kachel beginnen – Muster folgt.
 - **Muster markierte/ausgewählte Kachel** (Sitzung 0104, `arbeit/RLB-120/index.html`, je Spalte eine gelb markierte `.gap` und eine ausgewählte `.on`
   Kachel): der Verlauf beginnt mit der Farbe der Kachel (`--kachel-bg`: `--card`, `.gap` → `--focus`, `.on` → `--sel-bg`) und endet bei Grau 5;
   Zwischenstufen über `color-mix(in srgb, var(--kachel-bg), var(--th-bg) 23 % bzw. 58 %)`; Kopfzeile der Tabelle mit derselben Formel (`--kachel-bg` =
-  `--card`). Prüfung T-7 jetzt ‚Verlauf beginnt mit der Farbe der Kachel‘: Chromium und WebKit **alles in Ordnung**, Gegenprobe rot (400 Fehler); zweite
-  Gegenprobe ohne die Regel für `.gap`: T-7 rot (16 Fehler).
+  `--card`). Prüfung RLB-120/T-7 jetzt ‚Verlauf beginnt mit der Farbe der Kachel‘: Chromium und WebKit **alles in Ordnung**, Gegenprobe rot (400 Fehler); zweite
+  Gegenprobe ohne die Regel für `.gap`: RLB-120/T-7 rot (16 Fehler).
 - **Muster markierte/ausgewählte Kachel ok** (Nutzer 08.11.2026, Sitzung 0104). Offen für ‚bereit‘: Wortlaut-Nachtrag RLB-120/W-8 (W-1/W-3: in markierter bzw. ausgewählter Kachel beginnt der Verlauf mit der Farbe der Kachel), Testfall RLB-120/B-11, Einträge in beide Backlogs und `arbeit/4.57.0 Testfall-Liste.md` – Sitzung 0105.
 
 ## Abschluss (Sitzung 0105)

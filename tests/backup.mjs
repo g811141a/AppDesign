@@ -6,7 +6,8 @@
 //   const fehler = await checkBackup(page, { menu: '#sideMore', list: 'trips', where: 'iPad' });   // [] = alles richtig
 import { readFileSync } from 'node:fs';
 import { dateinameFehler } from './hig.mjs';
-export async function checkBackup(page, { menu = '#sideMore', list, where = '' }) {
+import { checkDateiname } from './ablauf.mjs';
+export async function checkBackup(page, { menu = '#sideMore', list, dateiname = true, where = '' }) {
   const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}${t}`);
   const openMenu = async () => { await page.click(menu); await page.waitForTimeout(200); };
   const closeMsg = async () => { if (await page.locator('#msg[open]').count()) { await page.click('#msg [data-x]'); await page.waitForTimeout(200); } };
@@ -86,5 +87,10 @@ export async function checkBackup(page, { menu = '#sideMore', list, where = '' }
   if (f[3].kachel) E('R-9.1 Backup-Kachel steht bei leerer Liste');
   if (f.some(x => !x.zeile)) E('R-1.5 Offline-Zeile fehlt im Fuß (auch ohne Kachel und bei leerer Liste)');
   if (await page.evaluate(() => typeof onNeuerTag !== 'function')) E('R-9.1 onNeuerTag fehlt (Kachel kommt um 0:00 nicht wieder)');
+  // 6. Seit 4.57.0 (APD-116, R-10.8): Dateiname im Fenster ‚Backup‘ allein in einer Zeile unter dem Satz – geteilt, abgebrochen, Fehler und ohne
+  // Teilen-Menü (heruntergeladen), Textgröße l, xxxl, ax3 (checkDateiname)
+  if (dateiname) errors.push(...await checkDateiname(page, { where, name: /^Ω Backup .+ \d{4}\.\d\d\.\d\d \d\d\.\d\d\.json$/, ausloesen: async () => {
+    if (await page.locator('.menu').count()) { await page.keyboard.press('Escape'); await page.waitForTimeout(200); }
+    await openMenu(); await page.locator('.menu .mi', { hasText: 'Backup erstellen' }).click(); } }));
   return errors;
 }

@@ -373,10 +373,14 @@ export async function checkEnterDone(p, { open, fields = [], multi = '', where =
 // Geprüft: leer bzw. ohne Fokus kein ⓧ; mit Text rechts im Feld, 44 × 44, Text läuft nicht darunter; Antippen leert, Fokus bleibt,
 // die App bekommt ein input-Ereignis; das ⓧ rollt mit (APD-63/X-7) und bleibt nach dem Drehen am Feld (APD-63/X-8).
 // Seit 4.41.0 (APD-81, Testfall-Liste arbeit/APD-81 Testfall-Liste.md APD-81/C1 bis C16): auch mehrzeilige Felder (textarea) – ⓧ mittig
-// auf der ersten Zeile (C1), auch wenn das Feld wächst (C9); eine Zeile leert sofort (C2), mehr als eine erst nach der Sprechblase
-// ‚Text löschen?‘ mit ‚Löschen‘ (rot) und ‚Abbrechen‘ (C3–C5), Fokus bleibt im Feld; Rückgängig (Bearbeiten-Befehl ‚undo‘ wie die
-// Undo-Taste, M-2) holt den ganzen Text zurück, input ‚historyUndo‘ (C6, einzeilig C7); in WebKit nach dem Leeren getippt mit einem
-// Schritt (C8, M-4). Grau wie im Suchfeld (C12), nicht fokussierbar mit Bezeichnung ‚Eingabe löschen‘ (C15). ohne: Felder ohne ⓧ (C14).
+// auf der ersten Zeile (C1), auch wenn das Feld wächst (C9); Rückgängig (Bearbeiten-Befehl ‚undo‘ wie die Undo-Taste, M-2) holt den
+// ganzen Text zurück, input ‚historyUndo‘ (C6, einzeilig C7); in WebKit nach dem Leeren getippt mit einem Schritt (C8, M-4). Grau wie
+// im Suchfeld (C12), nicht fokussierbar mit Bezeichnung ‚Eingabe löschen‘ (C15). ohne: Felder ohne ⓧ (C14).
+// Seit 4.57.0 (APD-124, Testfall-Liste arbeit/4.57.0 Testfall-Liste.md APD-124/B-1 bis B-10, Muster arbeit/APD-124 Muster prüfen.mjs): ⓧ leert
+// sofort, auch mehrzeilig – keine Sprechblase ‚Text löschen?‘ mehr (B-2, die Fälle APD-81/C3–C5 entfallen); danach an Stelle des ⓧ das
+// Rückgängig (Klasse rueck, 44 × 44, im Feld, B-3), auch nach dem Drehen (B-10); der geleerte Text liegt in der Zwischenablage (Chromium, B-4);
+// Rückgängig holt den ganzen Text zurück, ganz zu sehen, Cursor am Ende, wieder das ⓧ (B-5); erste Eingabe → ⓧ, per Taste gelöscht → kein
+// Knopf (B-6); Fokus weg und zurück → kein Knopf (B-7); mehrzeilig geleert einzeilig (B-8, APD-126); Undo-Taste bleibt (B-9 = APD-81/C6–C8).
 export async function checkClear(p, { open, fields = [], ohne = [], where = '' } = {}) {
   const errors = [], E = (sel, t) => errors.push(`${where ? where + ': ' : ''}R-5.6 ${sel}: ${t}`);
   const webkit = p.context().browser()?.browserType().name() === 'webkit';
@@ -393,15 +397,23 @@ export async function checkClear(p, { open, fields = [], ohne = [], where = '' }
     document.body.append(m); const grau = getComputedStyle(m.firstChild).color; m.remove();
     return { x: true, fokus: document.activeElement === f, wert: f.value, w: Math.round(xr.width), h: Math.round(xr.height), rechts: Math.round(fr.right - xr.right),
       mitte: Math.round((xr.top + xr.bottom) / 2 - soll), platz: parseFloat(cs.paddingRight), farbe: getComputedStyle(x).color, grau,
-      tab: x.tabIndex, name: x.getAttribute('aria-label') };
+      tab: x.tabIndex, name: x.getAttribute('aria-label'), rueck: x.classList.contains('rueck') };
   }, sel);
-  const amFeld = (sel, l, wann, mehr) => {
-    if (!l.x) { E(sel, `kein ⓧ ${wann}`); return; }
-    if (l.w < 44 || l.h < 44) E(sel, `ⓧ ${wann}: Antippfläche ${l.w} × ${l.h} statt 44 × 44`);
-    if (Math.abs(l.rechts) > 2 || Math.abs(l.mitte) > 2) E(sel, `ⓧ ${wann} nicht rechts ${mehr ? 'auf Höhe der ersten Zeile (APD-81/C1)' : 'im Feld'} (Abstand rechts ${l.rechts} px, senkrecht ${l.mitte} px versetzt)`);
-    if (l.platz < 32) E(sel, `ⓧ ${wann}: Text läuft unter das ⓧ (Abstand rechts ${l.platz} px)`);
-    if (l.farbe !== l.grau) E(sel, `ⓧ ${wann}: Farbe ${l.farbe} statt ${l.grau} wie im Suchfeld (APD-81/C12)`);
-    if (l.tab !== -1 || l.name !== 'Eingabe löschen') E(sel, `ⓧ ${wann}: fokussierbar (tabIndex ${l.tab}) oder Bezeichnung ‚${l.name}‘ statt ‚Eingabe löschen‘ (APD-81/C15)`);
+  // Feld selbst (APD-124/B-5, B-8): Höhe, ganz zu sehen, Cursor am Ende, Fokus
+  const feld = sel => p.evaluate(sel => { const f = document.querySelector(sel);
+    return { wert: f.value, hoch: Math.round(f.getBoundingClientRect().height), voll: f.scrollHeight <= f.clientHeight + 2,
+      ende: f.selectionStart === f.value.length && f.selectionEnd === f.value.length, fokus: document.activeElement === f }; }, sel);
+  // rueck: Rückgängig statt ⓧ erwartet (APD-124/B-3) – gleiche Lage, Größe und Farbe, Bezeichnung ‚Löschen widerrufen‘
+  const amFeld = (sel, l, wann, mehr, rueck = false) => {
+    const k = rueck ? 'Rückgängig' : 'ⓧ';
+    if (!l.x) { E(sel, `kein ${k} ${wann}`); return; }
+    if (l.rueck !== rueck) E(sel, `${wann}: ${l.rueck ? 'Rückgängig' : 'ⓧ'} statt ${k} (APD-124/${rueck ? 'B-3' : 'B-1'})`);
+    if (l.w < 44 || l.h < 44) E(sel, `${k} ${wann}: Antippfläche ${l.w} × ${l.h} statt 44 × 44${rueck ? ' (APD-124/B-3)' : ''}`);
+    if (Math.abs(l.rechts) > 2 || Math.abs(l.mitte) > 2) E(sel, `${k} ${wann} nicht rechts ${mehr ? 'auf Höhe der ersten Zeile (APD-81/C1)' : 'im Feld'} (Abstand rechts ${l.rechts} px, senkrecht ${l.mitte} px versetzt)${rueck ? ' (APD-124/B-3)' : ''}`);
+    if (l.platz < 32) E(sel, `${k} ${wann}: Text läuft unter das ${k} (Abstand rechts ${l.platz} px)`);
+    if (l.farbe !== l.grau) E(sel, `${k} ${wann}: Farbe ${l.farbe} statt ${l.grau} wie im Suchfeld (APD-81/C12)`);
+    const name = rueck ? 'Löschen widerrufen' : 'Eingabe löschen';
+    if (l.tab !== -1 || l.name !== name) E(sel, `${k} ${wann}: fokussierbar (tabIndex ${l.tab}) oder Bezeichnung ‚${l.name}‘ statt ‚${name}‘ (APD-81/C15)`);
   };
   const tippeX = async sel => {
     const ziel = await p.evaluate(() => { const r = document.querySelector('.fclear')?.getBoundingClientRect(); return r && r.width ? { x: r.left + r.width / 2, y: r.top + r.height / 2 } : null; });
@@ -414,7 +426,9 @@ export async function checkClear(p, { open, fields = [], ohne = [], where = '' }
     return { text: b.querySelector('p')?.textContent.trim(), knoepfe: [...b.querySelectorAll('button')].map(k => k.textContent.trim() + (k.classList.contains('danger') ? ' (rot)' : '')),
       ganz: r.left >= -1 && r.top >= -1 && r.right <= (vv?.width ?? innerWidth) + 1 && r.bottom <= (vv?.height ?? innerHeight) + 1 };
   });
-  const knopf = async t => { await p.locator('.pop button', { hasText: t }).click(); await wait(p, 200); };
+  // APD-124/B-4: Zwischenablage lesen (nur Chromium – WebKit von Playwright erlaubt kein Lesen)
+  if (!webkit) await p.context().grantPermissions(['clipboard-read', 'clipboard-write']).catch(() => {});
+  const ablage = () => p.evaluate(() => navigator.clipboard.readText()).catch(e => `Fehler ${e.message}`);
   // Rückgängig wie die Undo-Taste (am Gerät gemessen gleich, APD-81/M-2); meldet die Art der input-Ereignisse
   const undo = (sel, n = 1) => p.evaluate(({ sel, n }) => { const f = document.querySelector(sel), arten = [], h = e => arten.push(e.inputType);
     f.addEventListener('input', h); for (let i = 0; i < n; i++) document.execCommand('undo'); f.removeEventListener('input', h); return { wert: f.value, arten, fokus: document.activeElement === f }; }, { sel, n });
@@ -440,56 +454,74 @@ export async function checkClear(p, { open, fields = [], ohne = [], where = '' }
     await p.setViewportSize(vp); await wait(p, 400);
     if (!(await lage(sel)).fokus) await p.locator(sel).focus();
     await p.locator(sel).scrollIntoViewIfNeeded(); await wait(p, 100);   // nach dem Drehen steht oben derselbe Eintrag (R-8.1) – Feld ins Bild
-    // APD-63/X-2, APD-81/C2: Antippen leert sofort (eine Zeile), Fokus bleibt, die App erfährt es
-    await p.evaluate(sel => { window.__fxInput = 0; document.querySelector(sel).addEventListener('input', () => window.__fxInput++, { once: true }); }, sel);
+    // Leeren mit ⓧ und Rückgängig im Feld (APD-124/B-2 bis B-5, B-10) – einzeilig mit dem getippten Text, mehrzeilig zusätzlich mit fünf Zeilen
+    const leerenUndZurueck = async (vorher, wie) => {
+      await p.evaluate(sel => { window.__fxInput = 0; document.querySelector(sel).addEventListener('input', () => window.__fxInput++, { once: true }); }, sel);
+      const hoch = (await feld(sel)).hoch;
+      if (!await tippeX(sel)) return false;
+      // APD-63/X-2, APD-124/B-2: sofort leer, ohne Sprechblase, Fokus bleibt, die App erfährt es
+      if (await blase()) { E(sel, `${wie}: Sprechblase statt sofort leeren (APD-124/B-2)`); await p.keyboard.press('Escape'); await wait(p, 200); }
+      const l = await lage(sel), gemeldet = await p.evaluate(() => window.__fxInput);
+      if (l.wert !== '') E(sel, `${wie}: ⓧ leert das Feld nicht (‚${l.wert.slice(0, 20)}‘) (APD-63/X-2, APD-124/B-2)`);
+      if (!l.fokus) E(sel, `${wie}: nach dem ⓧ hat das Feld keinen Fokus mehr – die Tastatur schließt (APD-63/X-2, APD-124/B-2)`);
+      if (!gemeldet) E(sel, `${wie}: die App erfährt das Leeren nicht (kein input-Ereignis) (APD-63/X-2)`);
+      if (l.wert !== '') return false;
+      // APD-124/B-3: Rückgängig an Stelle des ⓧ
+      amFeld(sel, l, `${wie}, nach dem Leeren (APD-124/B-3)`, mehr, true);
+      // APD-124/B-8 (APD-126): mehrzeilig geleert so hoch wie mit einer Zeile
+      if (mehr) { const f = await feld(sel), eine = await p.evaluate(sel => { const f = document.querySelector(sel), s = getComputedStyle(f), lh = parseFloat(s.lineHeight) || parseFloat(s.fontSize) * 1.2;
+        return Math.max(44, Math.round(lh + parseFloat(s.paddingTop) + parseFloat(s.paddingBottom) + parseFloat(s.borderTopWidth) + parseFloat(s.borderBottomWidth))); }, sel);
+        if (Math.abs(f.hoch - eine) > 3) E(sel, `${wie}: geleert ${f.hoch} px hoch statt einzeilig ${eine} px (APD-124/B-8, APD-126)`); }
+      // APD-124/B-4: der geleerte Text liegt in der Zwischenablage (Chromium)
+      if (!webkit) { const c = await ablage(); if (c !== vorher) E(sel, `${wie}: Zwischenablage ‚${String(c).slice(0, 20)}‘ statt des geleerten Texts (APD-124/B-4)`); }
+      // APD-124/B-10: drehen und zurück – das Rückgängig bleibt am Feld
+      const vp = p.viewportSize();
+      await p.setViewportSize({ width: vp.height, height: vp.width }); await wait(p, 400);
+      if ((await lage(sel)).fokus) amFeld(sel, await lage(sel), `${wie}, nach dem Drehen (APD-124/B-10)`, mehr, true);
+      await p.setViewportSize(vp); await wait(p, 400);
+      if (!(await lage(sel)).fokus) await p.locator(sel).focus();
+      await p.locator(sel).scrollIntoViewIfNeeded(); await wait(p, 100);
+      // APD-124/B-5: Rückgängig holt den ganzen Text zurück, ganz zu sehen, Cursor am Ende, wieder das ⓧ
+      if (!await tippeX(sel)) { E(sel, `${wie}: kein Rückgängig zum Antippen – der Text ist nicht zurückzuholen (APD-124/B-5)`); return false; }
+      const z = await feld(sel), l2 = await lage(sel);
+      if (z.wert !== vorher) E(sel, `${wie}: Rückgängig holt ‚${z.wert.slice(0, 20)}‘ statt ‚${vorher.slice(0, 20)}‘ (APD-124/B-5)`);
+      if (!z.voll || !z.ende || !z.fokus) E(sel, `${wie}: nach Rückgängig ${z.voll ? '' : 'nicht ganz zu sehen, '}${z.ende ? '' : 'Cursor nicht am Ende, '}${z.fokus ? '' : 'ohne Fokus'} (APD-124/B-5)`);
+      if (mehr && Math.abs(z.hoch - hoch) > 2) E(sel, `${wie}: nach Rückgängig ${z.hoch} px statt wieder ${hoch} px hoch (APD-124/B-5)`);
+      if (!l2.x || l2.rueck) E(sel, `${wie}: nach Rückgängig nicht wieder das ⓧ (APD-124/B-5)`);
+      return z.wert === vorher;
+    };
     const vorher = await p.locator(sel).inputValue();
-    if (!await tippeX(sel)) { await p.locator(sel).blur(); continue; }
-    if (await blase()) { E(sel, 'eine Zeile: Sprechblase statt sofort leeren (APD-81/C2)'); await knopf('Abbrechen'); }
-    const l = await lage(sel), gemeldet = await p.evaluate(() => window.__fxInput);
-    if (l.wert !== '') E(sel, `ⓧ leert das Feld nicht (‚${l.wert}‘) (APD-63/X-2)`);
-    if (!l.fokus) E(sel, 'nach dem ⓧ hat das Feld keinen Fokus mehr – die Tastatur schließt (APD-63/X-2)');
-    if (l.x) E(sel, 'ⓧ bleibt im leeren Feld (APD-63/X-2)');
-    if (!gemeldet) E(sel, 'die App erfährt das Leeren nicht (kein input-Ereignis) (APD-63/X-2)');
-    // APD-81/C6, C7: Rückgängig holt den Text zurück (Undo-Taste, drei Finger)
-    if (l.wert === '') { await pruefeUndo(sel, vorher, mehr ? 'C6' : 'C7'); await p.locator(sel).fill(''); }
-    if (warn) {
-      await p.locator(sel).blur(); await wait(p);
-      if (!await p.evaluate(() => [...document.querySelectorAll('.warn')].some(w => !w.hidden && w.getClientRects().length && w.textContent.trim()))) E(sel, 'nach dem Leeren mit ⓧ keine Fehlermeldung (APD-63/X-4, R-5.3)');
-    }
+    if (!await leerenUndZurueck(vorher, 'eine Zeile')) { await p.locator(sel).fill(vorher); await p.locator(sel).focus(); await wait(p, 100); }   // weiter mit den übrigen Fällen
+    // APD-124/B-9 (APD-81/C6, C7): Undo-Taste nach dem Leeren holt den Text zurück (drei Finger ebenso)
+    await tippeX(sel);
+    if ((await feld(sel)).wert === '') await pruefeUndo(sel, vorher, mehr ? 'C6' : 'C7');
+    // APD-124/B-6: leeren, ein Zeichen tippen → ⓧ; per Taste gelöscht → kein Knopf (Rückgängig verfallen)
+    await p.locator(sel).fill(vorher); await p.locator(sel).focus(); await wait(p, 100);
+    const zeichen = text.trim().charAt(0) || 'a';   // ein Zeichen, das das Feld annimmt (Betragsfeld: Ziffer); am Zeilenanfang groß (R-5.2)
+    await tippeX(sel); await p.keyboard.type(zeichen.toLowerCase()); await wait(p, 150);
+    { const l = await lage(sel); if (l.wert.toLowerCase() !== zeichen.toLowerCase() || !l.x || l.rueck) E(sel, `nach dem Leeren getippt: ${l.x ? (l.rueck ? 'Rückgängig' : 'ⓧ') : 'kein Knopf'} (Wert ‚${l.wert.slice(0, 20)}‘) statt ⓧ (APD-124/B-6)`); }
+    await p.keyboard.press('Backspace'); await wait(p, 150);
+    { const l = await lage(sel); if (l.x) E(sel, `getippt und per Taste gelöscht: ${l.rueck ? 'Rückgängig' : 'ⓧ'} statt kein Knopf (APD-124/B-6)`); }
+    // APD-124/B-7: leeren, Fokus weg, zurück → kein Knopf (APD-124/E-2)
+    await p.locator(sel).fill(vorher); await p.locator(sel).focus(); await wait(p, 100);
+    await tippeX(sel);
+    await p.locator(sel).blur(); await wait(p, 150);
+    if (warn && !await p.evaluate(() => [...document.querySelectorAll('.warn')].some(w => !w.hidden && w.getClientRects().length && w.textContent.trim()))) E(sel, 'nach dem Leeren mit ⓧ keine Fehlermeldung (APD-63/X-4, R-5.3)');
+    await p.locator(sel).focus(); await wait(p, 150);
+    { const l = await lage(sel); if (l.x) E(sel, `geleert, Fokus weg und zurück: ${l.rueck ? 'Rückgängig' : 'ⓧ'} statt kein Knopf (APD-124/B-7)`); }
     if (mehr) {
-      // APD-81/C3–C6, C8, C9: drei Zeilen – Sprechblase, Abbrechen, Löschen, Rückgängig, nach dem Leeren getippt
-      const drei = `${text} eins\nzwei\ndrei`;
-      await p.locator(sel).fill(drei); await p.locator(sel).focus(); await wait(p, 150);
+      // APD-81/C1, C9; APD-124/B-2, B-3, B-5, B-8: fünf Zeilen – sofort leer ohne Sprechblase, einzeilig, Rückgängig holt alle Zeilen zurück
+      await p.locator(sel).fill(`${text} eins\nzwei\ndrei`); await p.locator(sel).focus(); await wait(p, 150);
       amFeld(sel, await lage(sel), 'mit drei Zeilen (APD-81/C1)', true);
       await p.keyboard.press('ControlOrMeta+End'); await p.keyboard.type('\nvier\nfünf'); await wait(p, 200);
       amFeld(sel, await lage(sel), 'nachdem das Feld gewachsen ist (APD-81/C9)', true);
       const voll = await p.locator(sel).inputValue();
-      if (!await tippeX(sel)) { await p.locator(sel).blur(); continue; }
-      const b = await blase(), f1 = await lage(sel);
-      if (!b) E(sel, 'mehr als eine Zeile: keine Sprechblase ‚Text löschen?‘ (APD-81/C3)');
-      else {
-        if (b.text !== 'Text löschen?' || b.knoepfe.join(' · ') !== 'Löschen (rot) · Abbrechen') E(sel, `Sprechblase ‚${b.text}‘ mit ${b.knoepfe.join(' · ')} statt ‚Text löschen?‘ mit Löschen (rot) · Abbrechen (APD-81/C3)`);
-        if (!b.ganz) E(sel, 'Sprechblase nicht ganz auf dem Bildschirm (APD-81/C11)');
-        if (f1.wert !== voll) E(sel, 'Text ändert sich schon vor der Antwort (APD-81/C3)');
-        if (!f1.fokus) E(sel, 'Sprechblase offen: das Feld hat keinen Fokus mehr – die Tastatur schließt (APD-81/F-2)');
-        await knopf('Abbrechen');
-        const f2 = await lage(sel);
-        if (f2.wert !== voll || !f2.fokus) E(sel, `‚Abbrechen‘: Text ${f2.wert === voll ? 'unverändert' : 'geändert'}, Fokus ${f2.fokus ? 'im Feld' : 'weg'} (APD-81/C4)`);
-        if (!await tippeX(sel)) continue;
-        if (!await blase()) E(sel, 'zweites Antippen: keine Sprechblase (APD-81/C3)');
-        else {
-          await knopf('Löschen');
-          const f3 = await lage(sel);
-          if (f3.wert !== '' || !f3.fokus) E(sel, `‚Löschen‘: ${f3.wert === '' ? 'leer' : `‚${f3.wert.slice(0, 20)}‘`}, Fokus ${f3.fokus ? 'im Feld' : 'weg'} (APD-81/C5)`);
-          if (f3.wert === '') {
-            await pruefeUndo(sel, voll, 'C6');
-            // APD-81/C8 (M-4): Safari fasst Leeren und Tippen zu einem Schritt zusammen – in WebKit genügt ein Rückgängig
-            await p.locator(sel).fill(voll); await p.locator(sel).focus(); await wait(p, 100);
-            await tippeX(sel); await knopf('Löschen'); await p.keyboard.type('Wort'); await wait(p, 100);
-            const u = await undo(sel, webkit ? 1 : 2);
-            if (u.wert !== voll) E(sel, `nach dem Leeren getippt: ${webkit ? 'ein' : 'zwei'}mal Rückgängig ergibt ‚${u.wert.slice(0, 20)}‘ statt des ganzen Textes (APD-81/C8)`);
-          }
-        }
+      if (await leerenUndZurueck(voll, 'fünf Zeilen')) {
+        // APD-124/B-9 (APD-81/C8, M-4): Safari fasst Leeren und Tippen zu einem Schritt zusammen – in WebKit genügt ein Rückgängig
+        await tippeX(sel); await p.keyboard.type('Wort'); await wait(p, 100);
+        // Chromium teilt das Tippen nach dem Wechsel Rückgängig → ⓧ in zwei Schritte (‚W‘, ‚ort‘) – dort bis zu dreimal, bis der Text zurück ist
+        const u = webkit ? await undo(sel, 1) : await p.evaluate(({ sel, voll }) => { const f = document.querySelector(sel); for (let i = 0; i < 3 && f.value !== voll; i++) document.execCommand('undo'); return { wert: f.value }; }, { sel, voll });
+        if (u.wert !== voll) E(sel, `nach dem Leeren getippt: ${webkit ? 'einmal' : 'bis zu dreimal'} Rückgängig ergibt ‚${u.wert.slice(0, 20)}‘ statt des ganzen Textes (APD-81/C8, APD-124/B-9)`);
       }
     }
     // APD-63/X-3: ohne Fokus kein ⓧ
@@ -507,6 +539,154 @@ export async function checkClear(p, { open, fields = [], ohne = [], where = '' }
   return errors;
 }
 
+// R-5.11 Cursor am Ende (seit 4.57.0, APD-126/W-2, Testfall-Liste arbeit/4.57.0 Testfall-Liste.md APD-126/B-1 bis B-3, Muster
+// arbeit/APD-126 Muster prüfen.mjs): open() öffnet Fenster bzw. Ansicht (optional); felder: Felder mit Text (hat eins weniger als 8 Zeichen,
+// setzt die Prüfung Text davor). B-1 vorn antippen → Cursor am Ende; B-2 im aktiven Feld nochmals vorn antippen → Cursor an der Stelle;
+// tab: [von, nach] – B-3 mit Tab ins nächste Feld → Cursor am Ende, nichts ausgewählt.
+export async function checkCursorEnde(p, { open = null, felder = [], tab = null, where = '' } = {}) {
+  const errors = [], E = (nr, t) => errors.push(`${where ? where + ': ' : ''}R-5.11 APD-126/${nr} ${t}`);
+  if (open) { await open(); await wait(p, 350); }
+  const cur = sel => p.$eval(sel, f => ({ s: f.selectionStart, e: f.selectionEnd, n: f.value.length, fokus: document.activeElement === f }));
+  const weg = async () => { await p.evaluate(() => document.activeElement?.blur?.()); await wait(p, 150); };
+  const mitText = sel => p.$eval(sel, f => { if (f.value.length < 8) { f.value = 'Text zum Antippen ' + f.value; f.dispatchEvent(new Event('input', { bubbles: true })); } });
+  for (const sel of felder) {
+    if (!await p.locator(sel).isVisible()) { E('B-1', `${sel} nicht zu sehen`); continue; }
+    await weg(); await mitText(sel); await p.locator(sel).scrollIntoViewIfNeeded();
+    await p.click(sel, { position: { x: 30, y: 18 } }); await wait(p, 300);
+    const c = await cur(sel);
+    if (!c.fokus || c.s !== c.n || c.e !== c.n) E('B-1', `${sel} vorn angetippt: ${c.fokus ? `Cursor ${c.s}–${c.e} statt am Ende ${c.n}` : 'kein Fokus'}`);
+    // nach dem Nachsetzen von ui.js (höchstens 0,7 s ab dem Fokus) – unter Last kam der Klick sonst noch hinein (WebKit, ein Wackler)
+    await wait(p, 600); await p.click(sel, { position: { x: 30, y: 18 } }); await wait(p, 200);
+    const d = await cur(sel);
+    if (d.fokus && d.s === d.n) E('B-2', `${sel} im aktiven Feld nochmals vorn angetippt: Cursor wieder am Ende statt an der Stelle`);
+  }
+  if (tab) {
+    const [von, nach] = tab;
+    await weg(); await mitText(von); await mitText(nach);
+    await p.click(von); await wait(p, 300); await p.keyboard.press('Tab'); await wait(p, 200);
+    const c = await cur(nach);
+    if (!c.fokus || c.s !== c.n || c.e !== c.n) E('B-3', `Tab von ${von} nach ${nach}: ${c.fokus ? `Cursor ${c.s}–${c.e} statt am Ende ${c.n}${c.s !== c.e ? ' (ausgewählt)' : ''}` : 'kein Fokus'}`);
+  }
+  await weg();
+  return errors;
+}
+
+// Eingabefelder (seit 4.57.0, APD-126, Testfall-Liste arbeit/4.57.0 Testfall-Liste.md APD-126/B-1 bis B-12): R-5.11 Cursor am Ende (checkCursorEnde,
+// B-1 bis B-3) und R-5.2 ‚Textfelder leer einzeilig, wachsen mit‘ (APD-126/W-1). open() optional; felder, tab wie checkCursorEnde;
+// leer: ein leeres Textfeld – B-4 eine Zeile hoch (Höhe folgt der Textgröße, B-11), Platzhalter einzeilig; einzeilig: ein einzeiliges Feld zum
+// Vergleich (nur bei Textgröße bis 20 px); B-12 kein ⓧ ohne Text (R-5.6), mit Text das ⓧ, nach dem Leeren wieder einzeilig und Fokus im Feld;
+// B-5 Eingabetaste eine Zeile höher; B-6 automatischer Umbruch wächst, alles zu sehen; B-7 alles löschen wieder eine Zeile; im Safari-Modell mit
+// offener Tastatur B-10 (R-4.5): die Zeile mit dem Cursor bleibt 16 px über der Tastatur, Kopfzeile bzw. Fensterkopf still.
+// mehrzeilig: Felder mit mehrzeiligem Inhalt – B-8 ganz zu sehen, auch nach einem Vorschlag (vorschlag: { feld, knopf }); drehen: B-9 (R-8.1)
+// Drehen mit Fokus und Cursor in der Mitte – Fokus und Cursor bleiben (den Rollstand prüfen die Grundregeln der App).
+export async function checkFeldCursor(p, { open = null, felder = [], tab = null, leer = null, einzeilig = null, mehrzeilig = [], vorschlag = null, drehen = true, where = '' } = {}) {
+  const errors = [], E = (regel, nr, t) => errors.push(`${where ? where + ': ' : ''}${regel} APD-126/${nr} ${t}`);
+  if (open) { await open(); await wait(p, 350); }
+  errors.push(...await checkCursorEnde(p, { felder, tab, where }));
+  const hoehe = sel => p.$eval(sel, f => { const r = f.getBoundingClientRect(), s = getComputedStyle(f), lh = parseFloat(s.lineHeight) || parseFloat(s.fontSize) * 1.2;
+    return { h: Math.round(r.height), sh: f.scrollHeight, ch: f.clientHeight, v: f.value, lh, ws: s.whiteSpace, platzhalter: !!f.placeholder, fokus: document.activeElement === f,
+      eine: Math.max(44, Math.round(lh + parseFloat(s.paddingTop) + parseFloat(s.paddingBottom) + parseFloat(s.borderTopWidth) + parseFloat(s.borderBottomWidth))) }; });
+  const weg = async () => { await p.evaluate(() => document.activeElement?.blur?.()); await wait(p, 150); };
+  const knopf = () => p.evaluate(() => { const x = [...document.querySelectorAll('.fclear')].find(b => b.getClientRects().length); return x ? (x.classList.contains('rueck') ? 'rueck' : 'x') : null; });
+  // B-10: im Safari-Modell bei offener Tastatur – Zeile mit dem Cursor (Spiegel wie ui.js) 16 px über der Tastatur, Kopf still
+  const lageTastatur = sel => p.evaluate(sel => {
+    if (!window.__safari?.offen) return null;
+    const f = document.querySelector(sel), s = getComputedStyle(f), lh = parseFloat(s.lineHeight) || parseFloat(s.fontSize) * 1.2, o = __safari.top(), r = f.getBoundingClientRect();
+    const m = document.createElement('div');
+    for (const k of ['boxSizing', 'width', 'fontFamily', 'fontSize', 'fontWeight', 'lineHeight', 'letterSpacing', 'paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft',
+      'borderTopWidth', 'borderRightWidth', 'borderBottomWidth', 'borderLeftWidth', 'borderStyle', 'wordSpacing']) m.style[k] = s[k];
+    Object.assign(m.style, { position: 'absolute', visibility: 'hidden', top: '0', left: '-9999px', whiteSpace: 'pre-wrap', overflowWrap: 'break-word', height: 'auto' });
+    m.textContent = f.value.slice(0, f.selectionEnd ?? f.value.length); const k = document.createElement('span'); k.textContent = '​'; m.append(k); document.body.append(m);
+    const top = r.top + parseFloat(s.borderTopWidth) + k.offsetTop - f.scrollTop - o; m.remove();
+    const kopf = document.querySelector('dialog[open] .dlg-head') || document.querySelector('.nb');
+    return { unten: Math.round(top + lh), kb: Math.round(__safari.hoehe()), kopf: kopf ? Math.round(kopf.getBoundingClientRect().top - o) : null };
+  }, sel);
+  const tastatur = async (sel, kopf0, wann) => {
+    const z = await lageTastatur(sel);
+    if (!z) return;
+    if (z.unten > z.kb - 16 + 2) E('R-4.5', 'B-10', `${sel} ${wann}: die Zeile mit dem Cursor endet bei ${z.unten} px, Tastatur ab ${z.kb} px (soll 16 px darüber)`);
+    if (kopf0 != null && z.kopf != null && Math.abs(z.kopf - kopf0) > 1) E('R-4.5', 'B-10', `${sel} ${wann}: Kopfzeile bewegt sich ${kopf0} → ${z.kopf} px`);
+  };
+  if (leer) {
+    await weg(); await p.locator(leer).scrollIntoViewIfNeeded(); await wait(p, 150);
+    // B-4, B-11: leer eine Zeile hoch (folgt der Textgröße), Platzhalter einzeilig
+    const h0 = await hoehe(leer);
+    if (h0.v !== '') E('R-5.2', 'B-4', `${leer} ist nicht leer (‚${h0.v.slice(0, 20)}‘)`);
+    else {
+      if (Math.abs(h0.h - h0.eine) > 3) E('R-5.2', 'B-4', `leeres ${leer} ${h0.h} px hoch statt einzeilig ${h0.eine} px (B-11: Höhe folgt der Textgröße)`);
+      if (h0.platzhalter && h0.ws !== 'nowrap') E('R-5.2', 'B-4', `${leer}: Platzhalter bricht um (white-space ${h0.ws}) – leer bleibt er einzeilig und wird abgeschnitten`);
+      if (einzeilig && h0.lh <= 30) { const e1 = await hoehe(einzeilig); if (Math.abs(h0.h - e1.h) > 3) E('R-5.2', 'B-4', `leeres ${leer} ${h0.h} px, einzeiliges ${einzeilig} ${e1.h} px`); }
+    }
+    // B-12: im leeren Feld mit Fokus kein ⓧ
+    await p.click(leer); await wait(p, 400);
+    if (await knopf()) E('R-5.6', 'B-12', `${leer} leer mit Fokus: ${await knopf() === 'rueck' ? 'Rückgängig' : 'ⓧ'} statt kein Knopf`);
+    const kopf0 = (await lageTastatur(leer))?.kopf ?? null;
+    await p.keyboard.type('Schön'); await wait(p, 200);
+    const h1 = await hoehe(leer);
+    if (await knopf() !== 'x') E('R-5.6', 'B-12', `${leer} mit Text: kein ⓧ`);
+    if (Math.abs(h1.h - h0.h) > 2) E('R-5.2', 'B-4', `${leer} mit einer Zeile ${h1.h} px, leer ${h0.h} px`);
+    await tastatur(leer, kopf0, 'nach ‚Schön‘');
+    // B-5: Eingabetaste – eine Zeile höher
+    await p.keyboard.press('Enter'); await p.keyboard.type('Zweite'); await wait(p, 200);
+    const h2 = await hoehe(leer);
+    if (h2.h - h1.h < h1.lh * 0.8) E('R-5.2', 'B-5', `${leer} nach der Eingabetaste ${h1.h} → ${h2.h} px, nicht eine Zeile (${Math.round(h1.lh)} px) höher`);
+    await tastatur(leer, kopf0, 'nach der Eingabetaste');
+    // B-6: automatischer Umbruch – wächst, ganzer Inhalt zu sehen
+    await p.keyboard.type(' sehr langer Text, der in dieser Zeile ganz sicher automatisch umbricht, weil er breiter ist als das Feld selbst'.repeat(2)); await wait(p, 250);
+    const h3 = await hoehe(leer);
+    if (h3.h - h2.h < h1.lh * 0.8 || h3.sh > h3.ch + 1) E('R-5.2', 'B-6', `${leer} automatischer Umbruch ${h2.h} → ${h3.h} px (Inhalt ${h3.sh}, sichtbar ${h3.ch} px)`);
+    await tastatur(leer, kopf0, 'nach dem automatischen Umbruch');
+    // B-7: alles löschen – wieder eine Zeile
+    await p.keyboard.press('ControlOrMeta+A'); await p.keyboard.press('Backspace'); await wait(p, 200);
+    { const z = await hoehe(leer); if (z.v !== '' || Math.abs(z.h - h0.h) > 2) E('R-5.2', 'B-7', `${leer} nach dem Löschen ${z.h} px statt ${h0.h} px (‚${z.v.slice(0, 20)}‘)`); }
+    // B-12: mit ⓧ geleert – wieder einzeilig, Fokus bleibt
+    await p.keyboard.type('Abc\nZweite Zeile'); await wait(p, 200);
+    // das ⓧ steht auf Höhe der ersten Zeile – bei großer Schrift und offener Tastatur (iPhone quer) erst ins Bild rollen, wie der Nutzer
+    await p.evaluate(() => document.querySelector('.fclear')?.scrollIntoView({ block: 'nearest' })); await wait(p, 200);
+    const x = await p.evaluate(() => { const r = document.querySelector('.fclear')?.getBoundingClientRect(); return r?.width ? { x: r.left + r.width / 2, y: r.top + r.height / 2 } : null; });
+    if (!x) E('R-5.6', 'B-12', `${leer} mit zwei Zeilen: kein ⓧ`);
+    else {
+      await p.mouse.click(x.x, x.y); await wait(p, 250);
+      if (await p.evaluate(() => [...document.querySelectorAll('.pop')].some(b => b.getClientRects().length))) {   // bis 4.56.0: Sprechblase ‚Text löschen?‘
+        E('R-5.6', 'B-12', `${leer} mit zwei Zeilen: Sprechblase statt sofort leeren (APD-124/B-2)`); await p.keyboard.press('Escape'); await wait(p, 300); }
+      const z = await hoehe(leer);
+      if (z.v !== '' || Math.abs(z.h - h0.h) > 2 || !z.fokus) E('R-5.6', 'B-12', `${leer} mit ⓧ geleert: ${z.v === '' ? 'leer' : `‚${z.v.slice(0, 20)}‘`}, ${z.h} px statt ${h0.h} px, Fokus ${z.fokus ? 'im Feld' : 'weg'}`);
+      if (await p.$eval(leer, f => f.value) === '') { await p.locator(leer).fill(''); }
+    }
+    await weg();
+  }
+  // B-8: vorhandener mehrzeiliger Inhalt ganz zu sehen, auch nach einem Vorschlag
+  for (const sel of mehrzeilig) {
+    await weg();
+    const z = await hoehe(sel);
+    if (!z.v.includes('\n') && z.sh <= z.eine + 4) E('R-5.2', 'B-8', `${sel} hat keinen mehrzeiligen Inhalt (Prüfung falsch aufgerufen)`);
+    if (z.sh > z.ch + 1) E('R-5.2', 'B-8', `${sel}: Inhalt ${z.sh} px, sichtbar nur ${z.ch} px`);
+  }
+  if (vorschlag) {
+    await weg(); await p.locator(vorschlag.feld).scrollIntoViewIfNeeded();
+    const geklickt = await p.click(vorschlag.feld, { position: { x: 30, y: 18 }, timeout: 3000 }).then(() => wait(p, 400)).then(() => p.click(vorschlag.knopf, { timeout: 3000 })).then(() => true, e => e);
+    if (geklickt !== true) E('R-5.2', 'B-8', `Vorschlag nicht antippbar (${String(geklickt.message).split('\n')[0]})`);
+    await wait(p, 300);
+    const z = await hoehe(vorschlag.feld);
+    if (z.sh > z.ch + 1) E('R-5.2', 'B-8', `${vorschlag.feld} nach dem Vorschlag: Inhalt ${z.sh} px, sichtbar nur ${z.ch} px`);
+    await weg();
+  }
+  // B-9: drehen mit Fokus und Cursor in der Mitte – Fokus und Cursor bleiben
+  const dsel = mehrzeilig[0] || felder[0];
+  if (drehen && dsel) {
+    await weg(); await p.locator(dsel).focus(); await wait(p, 200);
+    const mitte = await p.$eval(dsel, f => { const m = Math.floor(f.value.length / 2); f.setSelectionRange(m, m); return m; });
+    const vp = p.viewportSize();
+    for (const [wann, g] of [['gedreht', { width: vp.height, height: vp.width }], ['zurückgedreht', vp]]) {
+      await p.setViewportSize(g); await wait(p, 500);
+      const c = await p.$eval(dsel, f => ({ s: f.selectionStart, e: f.selectionEnd, fokus: document.activeElement === f }));
+      if (!c.fokus || c.s !== mitte || c.e !== mitte) E('R-8.1', 'B-9', `${dsel} ${wann}: ${c.fokus ? `Cursor ${c.s}–${c.e} statt ${mitte}` : 'Fokus weg'}`);
+    }
+    await weg();
+  }
+  return errors;
+}
+
 // R-7.4 Position beim Öffnen (seit 4.21.0, APD-16): open() öffnet einen Eintrag; want = data-day (bzw. data-keep) des
 // ‚nächsten offenen‘ Eintrags oder null. Mit want: genau dieser ist hervorgehoben (mark) und steht direkt unter dem Kopf
 // (Leiste und haftender Tabellenkopf, ± 2 px) – ist die Seite nicht so weit rollbar, ganz unten und ganz sichtbar.
@@ -514,7 +694,8 @@ export async function checkClear(p, { open, fields = [], ohne = [], where = '' }
 // markiert: null = ein aktueller Eintrag (z. B. heute) steht oben, aber nichts ist hervorgehoben – nur Offenes wird hervorgehoben.
 export async function checkOpenAt(p, { open, want = null, markiert = want, mark = '.gap', where = '' } = {}) {
   const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}R-7.4 ${t}`);
-  await open(); await wait(p, 400);
+  // seit 4.57.0 (APD-127, R-1.12): hinein gleitet mit der Feder über 0,5 s – erst messen, wenn die Bewegung fertig ist
+  await open(); await wait(p, 400); await navFertig(p);
   const r = await p.evaluate(({ want, mark, R }) => {
     const roll = eval(R);
     const bar = document.querySelector('.pnav, .nb')?.getBoundingClientRect().bottom || 0;
@@ -2736,6 +2917,134 @@ export async function checkIconText(p, { sel, lang = false, where = '' } = {}) {
   return errors;
 }
 
+// Textgröße des Geräts in einer offenen Seite umstellen (seit 4.57.0): Grundschrift wie Safari ‚Textgröße‘, ui.js (textStufe) setzt data-ts und
+// ts-um selbst und baut neu auf; px null = zurück zur Grundschrift der Seite. Wartet, bis die Stufe gilt und nichts mehr gleitet.
+const TS_PX = { l: 17, xxl: 21, xxxl: 23, ax1: 28, ax3: 40, ax5: 53 };
+export async function textGroesseSetzen(p, stufe) {
+  await p.evaluate(px => { let s = document.getElementById('pruef-ts');
+    if (px == null) { s?.remove(); return; }
+    if (!s) { s = document.createElement('style'); s.id = 'pruef-ts'; document.head.append(s); }
+    s.textContent = `html { font-size: ${px}px !important; }`; }, stufe ? TS_PX[stufe] : null);
+  if (stufe) await warteBis(p, `document.documentElement.dataset.ts === ${JSON.stringify(stufe)}`, { max: 3000 });
+  await p.waitForTimeout(250);
+}
+const zeilenVon = el => {   // Zeilen eines Elements: Text je Zeile (nach der Lage jedes Zeichens; Leerzeichen am Zeilenende ohne Breite)
+  const rg = document.createRange(), z = []; let y = null, cur = '';
+  const tw = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+  for (let n; (n = tw.nextNode());) for (const s of new Intl.Segmenter().segment(n.data)) {
+    rg.setStart(n, s.index); rg.setEnd(n, s.index + s.segment.length); const bb = [...rg.getClientRects()].filter(x => x.width > 0)[0];
+    if (!bb) { cur += s.segment; continue; }
+    const t = Math.round(bb.top); if (y !== null && t > y + 4) { z.push(cur); cur = ''; } cur += s.segment; y = t; }
+  z.push(cur);
+  return z;
+};
+
+// Seit 4.57.0 (RLB-122, R-10.5; Muster arbeit/RLB-122 Muster prüfen.mjs, Testfälle RLB-122/B-1 bis B-5): Aufzählung mit Trennpunkt (aufzaehlung in
+// ui.js, z. B. Wetter und Smileys der Statistik ‚8×☀️ · 6×🌧️‘) – sel: die Zellen mit der Aufzählung (dd, td). Je Textgröße (groessen; für Ausgabe
+// und Vorschau, die nicht mitwachsen, ['l']) und Zelle: keine Zeile endet mit der Anzahl (B-1), keine Folgezeile beginnt mit ‚·‘ – sie beginnt
+// mit der Anzahl (B-2), jede umgebrochene Zeile endet mit ‚·‘ (B-3); der Text ist unverändert (texte: erwartete Texte je Zelle, ‚ · ‘ getrennt)
+// und ragt nicht hinaus (B-5). umbruch: es muss mindestens einen Umbruch geben (sonst prüft es nichts). Danach wieder die Grundschrift.
+export async function checkAufzaehlung(p, { sel, groessen = ['l', 'xxxl', 'ax3'], texte = null, umbruch = false, where = '' } = {}) {
+  const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}R-10.5 ${t}`);
+  let umbrueche = 0, zellen = 0;
+  for (const ts of groessen) {
+    if (groessen.length > 1 || ts !== 'l') await textGroesseSetzen(p, ts);
+    const erg = await p.evaluate(([sel, zf]) => { const zeilenVon = eval(zf);
+      return [...document.querySelectorAll(sel)].filter(e => e.getClientRects().length).map(dd => ({ zeilen: zeilenVon(dd), text: dd.textContent.replace(/ /g, ' ').replace(/\s+/g, ' ').trim(),
+        ict: dd.querySelectorAll('.ict').length, ragt: dd.scrollWidth > dd.clientWidth + 1 })); }, [sel, zeilenVon.toString()]);
+    if (!erg.length) E(`Text ${ts}: keine Aufzählung in ${sel}`);
+    for (const [j, e] of erg.entries()) {
+      const w = `Text ${ts} ‚${e.text.slice(0, 24)}…‘`; zellen++;
+      umbrueche += e.zeilen.length - 1;
+      for (const [i, z] of e.zeilen.entries()) {
+        if (i < e.zeilen.length - 1 && /\d×\s*$/.test(z)) E(`${w}: Zeile ${i + 1} endet mit der Anzahl ‚…${z.trim().slice(-6)}‘ – das Zeichen steht in der nächsten Zeile (RLB-122/B-1)`);
+        if (i > 0 && !/^\d/.test(z.trim())) E(`${w}: Zeile ${i + 1} beginnt nicht mit der Anzahl: ‚${z.trim().slice(0, 6)}…‘ (RLB-122/B-2)`);
+        if (i < e.zeilen.length - 1 && !/·\s*$/.test(z)) E(`${w}: Zeile ${i + 1} endet nicht mit ‚·‘ (RLB-122/B-3)`);
+      }
+      if (e.zeilen.join('').replace(/\s/g, '') !== e.text.replace(/\s/g, '')) E(`${w}: Text verändert (RLB-122/B-5)`);
+      if (texte && texte[j] != null && e.text !== texte[j]) E(`${w}: Text ‚${e.text}‘ statt ‚${texte[j]}‘ (RLB-122/B-5)`);
+      if (e.ict && e.text !== '–' && e.ict !== e.text.split(' · ').length) E(`${w}: ${e.ict} Einträge am Stück (.ict) statt ${e.text.split(' · ').length} – Baustein aufzaehlung`);
+      if (e.ragt) E(`${w}: ragt hinaus (R-6.3, RLB-122/B-5)`);
+    }
+  }
+  if (groessen.length > 1 || groessen[0] !== 'l') await textGroesseSetzen(p, null);
+  if (umbruch && zellen && !umbrueche) E('kein einziger Umbruch – die Prüfung prüft nichts');
+  return errors;
+}
+
+// Seit 4.57.0 (APD-116, R-10.8; Muster arbeit/APD-116 Muster prüfen.mjs, Testfälle APD-116/B-1 bis B-6): Dateiname im Hinweisfenster (#msg). ausloesen(fall)
+// führt die Handlung aus, die das Fenster öffnet (Backup erstellen, Teilen der Ausgabe, PDF …); für die Fälle des Teilen-Menüs (shared, aborted,
+// error) bildet die Prüfung das Teilen-Menü nach (navigator.canShare/share), downloaded nutzt den Weg ohne Teilen-Menü, print ruft nur ausloesen.
+// Je Fall und Textgröße (l, xxxl, ax3): der Name (.fname) beginnt in einer neuen Zeile unter dem Satz (B-1), bricht nur nach einem Leerzeichen
+// (B-2), ist unverändert und ohne Punkt danach (B-3; name: erwarteter Name als Text oder RegExp), nichts ragt aus dem Fenster (B-4), in einer
+// Zeile zentriert, fett (B-5); Satz und grauer Hinweis wörtlich nach APD-116/W-4 (B-6). Danach Fenster zu, Teilen-Menü wieder wie vorher.
+export const DATEINAME_TEXTE = {
+  shared: ['✅ Teilen-Menü abgeschlossen für', 'Wenn du ‚In Dateien sichern‘ gewählt hast, liegt die Datei im gewählten Ordner.'],
+  downloaded: ['✅ Wird geladen:', 'Du findest die Datei in der Dateien-App unter ‚Downloads‘.'],
+  aborted: ['⚠️ Teilen-Menü abgebrochen – nicht gespeichert:', ''],
+  error: ['⚠️ Konnte nicht übergeben werden:', ''],
+  print: ['✅ Drucken-Menü geöffnet für', 'Dort über ‚Teilen‘ → ‚In Dateien sichern‘ als PDF ablegen.'],
+};
+export async function checkDateiname(p, { ausloesen, faelle = ['shared', 'aborted', 'error', 'downloaded'], name = null, groessen = ['l', 'xxxl', 'ax3'], text = '#msg[open] .msg-text', schliessen = '#msg [data-x]', where = '' } = {}) {
+  const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}R-10.8 ${t}`);
+  for (const fall of faelle) {
+    await p.evaluate(f => {
+      const n = navigator; if (!window.__dnOrig) window.__dnOrig = { share: n.share, canShare: n.canShare };
+      const setze = (k, v) => Object.defineProperty(n, k, { value: v, configurable: true, writable: true });
+      if (f === 'shared' || f === 'aborted' || f === 'error') {
+        setze('canShare', () => true);
+        setze('share', () => f === 'shared' ? Promise.resolve() : Promise.reject(new DOMException('Prüfung', f === 'aborted' ? 'AbortError' : 'NotAllowedError')));
+      } else { setze('canShare', undefined); setze('share', undefined); }
+    }, fall);
+    try {
+      await ausloesen(fall);
+      if (!await p.waitForSelector(text, { timeout: 4000 }).catch(() => null)) { E(`${fall}: kein Hinweisfenster (${text})`); continue; }
+      await p.waitForTimeout(300);
+      for (const ts of groessen) {
+        if (groessen.length > 1 || ts !== 'l') await textGroesseSetzen(p, ts);
+        const e = await p.evaluate(([zf, sel]) => { const zeilenVon = eval(zf);
+          const t = document.querySelector(sel), n = t.querySelector('.fname') || t.querySelector('b'); if (!n) return null;
+          const vor = document.createRange(); vor.setStart(t, 0); vor.setEndBefore(n);
+          const vr = [...vor.getClientRects()].filter(x => x.width > 0), unterVor = vr.length ? Math.max(...vr.map(x => x.bottom)) : 0;
+          const nach = document.createRange(); nach.setStartAfter(n); nach.setEnd(t, t.childNodes.length);
+          const nb = n.getBoundingClientRect(), tb = t.getBoundingClientRect(), mb = (t.closest('dialog') || t).getBoundingClientRect();
+          // Zeilen des Namens; ein Leerzeichen am Zeilenende hat keine Breite – es gehört zur Zeile davor
+          const zeilen = zeilenVon(n);
+          // Wörter, die allein länger sind als die Zeile – nur sie dürfen in sich brechen (R-6.3)
+          const lange = n.textContent.split(' ').filter(wort => { const s = document.createElement('span'); s.style.cssText = 'position:absolute;visibility:hidden;white-space:nowrap';
+            s.textContent = wort; n.append(s); const x = s.getBoundingClientRect().width; s.remove(); return x > nb.width - 0.5; });
+          return { name: n.textContent, zeilen, lange, eigen: n.getClientRects()[0].top >= unterVor - 1, vorText: vor.toString().replace(/\s+/g, ' ').trim(),
+            nachText: nach.toString().replace(/\s+/g, ' ').trim(), fett: +getComputedStyle(n).fontWeight >= 600,
+            ragt: t.scrollWidth > t.clientWidth + 1 || mb.right > innerWidth + 1 || mb.left < -1 || nb.right > tb.right + 1,
+            mitte: (() => { const r = document.createRange(); r.selectNodeContents(n); const q = [...r.getClientRects()].filter(x => x.width > 0); if (!q.length) return 0;
+              const l = Math.min(...q.map(x => x.left)), rr = Math.max(...q.map(x => x.right)); return Math.abs((l + rr) / 2 - (tb.left + tb.right) / 2); })(), mittig: getComputedStyle(t).textAlign === 'center',
+            links: vr.length ? Math.abs(n.getClientRects()[0].left - vr[0].left) : 0 };
+        }, [zeilenVon.toString(), text]);
+        const w = `${fall} Text ${ts}`;
+        if (!e) { E(`${w}: kein Dateiname im Hinweisfenster`); continue; }
+        if (!e.eigen) E(`${w}: Name ‚${e.name}‘ beginnt nicht in einer neuen Zeile unter dem Satz (APD-116/B-1)`);
+        for (const z of e.zeilen.slice(0, -1)) if (!/ $/.test(z) && !e.lange.some(l => l.includes(z.split(' ').pop()))) E(`${w}: Umbruch nicht nach einem Leerzeichen: ‚${z.slice(-14)}|‘ (APD-116/B-2)`);
+        if (e.zeilen.join('') !== e.name) E(`${w}: Name in den Zeilen verändert (APD-116/B-3)`);
+        if (name && !(name instanceof RegExp ? name.test(e.name) : e.name === name)) E(`${w}: Name ‚${e.name}‘ statt ‚${name}‘ (APD-116/B-3)`);
+        if (/^\./.test(e.nachText)) E(`${w}: Punkt nach dem Namen (APD-116/B-3)`);
+        if (e.ragt) E(`${w}: ragt aus dem Fenster (R-6.3, APD-116/B-4)`);
+        if (!e.fett) E(`${w}: Name nicht fett (APD-116/B-5)`);
+        // immer zentriert (R-10.8 ‚fett und zentriert‘) – auch in einem Fenster mit linksbündigem Text (Ergebnis der Ausgabe)
+        if (e.zeilen.length === 1 && e.mitte > 2) E(`${w}: Name nicht zentriert (${Math.round(e.mitte)} px daneben, APD-116/B-5)`);
+        const [satz, hinweis] = DATEINAME_TEXTE[fall] || [];
+        if (satz && e.vorText !== satz) E(`${w}: Satz ‚${e.vorText}‘ statt ‚${satz}‘ (APD-116/W-4, B-6)`);
+        if (satz != null && !e.nachText.startsWith(hinweis)) E(`${w}: nach dem Namen ‚${e.nachText.slice(0, 60)}‘ statt ‚${hinweis}‘ (APD-116/W-4, B-6)`);
+      }
+      if (groessen.length > 1 || groessen[0] !== 'l') await textGroesseSetzen(p, null);
+    } finally {
+      await p.evaluate(() => { const o = window.__dnOrig, n = navigator; if (!o) return;
+        Object.defineProperty(n, 'canShare', { value: o.canShare, configurable: true, writable: true }); Object.defineProperty(n, 'share', { value: o.share, configurable: true, writable: true }); });
+      if (schliessen && await p.locator(schliessen).count()) { await p.click(schliessen).catch(() => {}); await p.waitForTimeout(400); }
+    }
+  }
+  return errors;
+}
+
 // R-2.5 (seit 4.47.0, APD-101; Testfall-Liste arbeit/APD-101 Testfall-Liste.md L-1 bis L-10): gekürzter Titel – ein mit ‚…‘ gekürzter Titel
 // (sel: .dlg-head h3, .nb-title oder .pnav-title) zeigt beim langen Drücken den ganzen Titel in einer Sprechblase (.titel-blase) direkt unter
 // seiner Kopfzeile: genau der Text des Titels, nicht gekürzt, ganz auf dem Bildschirm (R-4.5), über keinem Knopf der Leiste, Pfeil zur
@@ -3396,6 +3705,304 @@ export async function checkErstFragen(p, { menues = [], zustaende = [], key, whe
     await dlgZu(p); await wait(p, 200);
   }
   } catch (e) { E(`Ablauf bricht ab: ${e.message.split('\n')[0]}`); await dlgZu(p).catch(() => {}); }   // Meldungen davor bleiben
+  return errors;
+}
+
+// R-1.12 Gleitbewegungen wie die Seitenleiste in Notizen (seit 4.57.0, APD-127; Testfall-Liste arbeit/4.57.0 Testfall-Liste.md APD-127/B-1 bis B-8,
+// nach arbeit/APD-127 Muster R-1.12 prüfen.mjs, APD-127/M-9 bis M-14): jede Web-Animation wird mit Dauer, Kurve und Schlüsselbildern aufgezeichnet
+// (beim iPad-Fenster mit der Tastatur der CSS-Übergang von top). Öffnen, hinein und nach oben: Feder ohne Nachschwingen, Antwortzeit 0,35 s
+// (linear() über 0,5 s, jede Stützstelle ± 0,01); schließen und hinaus: ease-in-out in 0,25 s; nach einer Geste der Rest anteilig, mindestens
+// 0,15 s; keine ganze Gleitbewegung kürzer als das Mehr-Menü (B-7); die Endlage nach jeder Bewegung ist dieselbe wie bei denselben Schritten ohne
+// Bewegung (jede Animation sofort am Ende, ± 1 px; B-8) – die Endlagen sind damit unabhängig von Dauer und Kurve wie in 4.56.0. Fälle, je nur
+// wenn angegeben:
+//   blatt: Funktion, die ein Fenster ohne Eingaben öffnet (B-1: öffnen, x, nach dem Loslassen zurück bzw. zu; ‚Bewegung reduzieren‘: B-6, nichts
+//          bewegt sich über 200 ms); x: Schließen-Knopf im Fensterkopf
+//   tastatur: { oeffnen, feld } – iPad-Fenster mit der Tastatur (B-2; das Safari-Modell mit auto muss in der Seite sein)
+//   navigation: { eintrag, zurueck } – Navigation iPhone (B-3)
+//   seitenleiste: { aus, ein } – Seitenleiste iPad (B-4)
+//   titel: { sel, rolle } – ‚Titel antippen = nach oben‘ mit mindestens 1000 px Rollweg (B-5)
+//   menue: Knopf des Mehr-Menüs, auch mehrere (der sichtbare; B-7: wächst wie bisher in 0,35 s, schrumpft in 0,25 s, R-4.13)
+// Gegenprobe (B-10): PRUEF_V=heute – gleitenGegenprobe(p) vor dem Laden der Seite setzt in ui.js und design.css die Bewegungen auf 4.56.0 zurück;
+// B-1 bis B-5 werden rot.
+export const GLEITEN = { auf: 500, zu: 250, min: 150, toleranz: 3 };
+const gleitWertP = t => 1 - (1 + 2 * Math.PI / 0.35 * t) * Math.exp(-2 * Math.PI / 0.35 * t);
+export const gleitFederSoll = x => x >= 1 ? 1 : gleitWertP(x * 0.5) / gleitWertP(0.5);   // Anteil des Wegs nach x · 0,5 s
+// linear(): Werte mit Stellen (fehlende gleichmäßig verteilt, wie CSS) – stimmt jede Stützstelle mit der Feder überein?
+export function istGleitFeder(e) {
+  const m = /^linear\((.*)\)$/s.exec(String(e || '').trim());
+  if (!m) return false;
+  const q = m[1].split(',').map(s => s.trim().split(/\s+/)).map(([v, st]) => ({ v: parseFloat(v), x: st ? parseFloat(st) / 100 : null }));
+  if (q.length < 10 || q.some(a => !Number.isFinite(a.v))) return false;
+  if (q[0].x === null) q[0].x = 0;
+  if (q.at(-1).x === null) q.at(-1).x = 1;
+  for (let i = 1; i < q.length - 1; i++) if (q[i].x === null) {
+    let j = i; while (q[j].x === null) j++;
+    for (let k = i; k < j; k++) q[k].x = q[i - 1].x + (q[j].x - q[i - 1].x) * (k - i + 1) / (j - i + 1);
+    i = j;
+  }
+  return q.every(a => Math.abs(a.v - gleitFederSoll(a.x)) < 0.01);
+}
+export const istGleitZu = e => { const s = String(e || '').trim(); return s === 'ease-in-out' || /^cubic-bezier\(\s*0?\.42\s*,\s*0\s*,\s*0?\.58\s*,\s*1\s*\)$/.test(s); };
+const kurzKurve = e => String(e || '–').replace(/^linear\(.*\)$/s, 'linear(…)');
+const kurveZahlen = e => (String(e || '').match(/[\d.]+/g) || []).map(Number).join(',');
+// B-10: die Bewegungen wie in 4.56.0 – ui.js und design.css der geladenen Fassung, nur die Stellen von APD-127 zurückgesetzt (die ganze Fassung
+// 4.56.0 passt nicht zur App 3.55.0). Fehlt eine Stelle, meldet checkGleiten das (die Gegenprobe wäre sonst wertlos).
+const K456 = "'cubic-bezier(.32,.72,0,1)'";
+const GLEITEN_456 = { 'ui.js': [
+  ['dauer = GLEIT_AUF_MS, lauf = titelRollt', 'dauer = Math.min(700, 300 + y0 / 20), lauf = titelRollt'],
+  ['el.scrollTop = y0 * (1 - gleitFeder(k));', 'el.scrollTop = y0 * Math.pow(1 - k, 3);'],
+  ['Math.max(GLEIT_MIN_MS, (auf ? GLEIT_AUF_MS : GLEIT_ZU_MS) * Math.abs(nach - von))', 'Math.max(150, 350 * Math.abs(nach - von))'],
+  ["navRuhig?.matches ? 'cubic-bezier(.2,.8,.2,1)' : auf ? GLEIT_FEDER : GLEIT_ZU", "'cubic-bezier(.2,.8,.2,1)'"],
+  ['Math.max(GLEIT_MIN_MS, (zu ? GLEIT_ZU_MS : GLEIT_AUF_MS) * Math.min(1, Math.abs(nach - von) / Math.max(1, blattZu())))', 'Math.max(220, Math.min(480, Math.abs(nach - von) * 0.9))'],
+  ['dauer, zu ? GLEIT_ZU : GLEIT_FEDER, () =>', `dauer, ${K456}, () =>`],
+  ["{ duration: GLEIT_ZU_MS, easing: GLEIT_ZU, fill: 'forwards' }", `{ duration: Math.max(220, Math.min(420, (blattZu() - blattY) * 0.5)), easing: ${K456}, fill: 'forwards' }`],
+  ["navRuhig?.matches ? 200 : GLEIT_ZU_MS, navRuhig?.matches ? 'ease-out' : GLEIT_ZU, blattAus", `navRuhig?.matches ? 200 : 380, navRuhig?.matches ? 'ease-out' : ${K456}, blattAus`],
+  ['blattFahre(zu, () => { blattWieX(); if (dlg.open) blattFahre(0); });', 'blattFahre(zu, () => { blattWieX(); if (dlg.open) blattFahre(0); }, Math.max(180, Math.min(360, (zu - blattY) * 0.5)));'],
+  ["dlg.classList.toggle('runter', !offen); ", ''],
+  ["dlg.classList.remove('gleitet', 'runter'), GLEIT_AUF_MS + 50)", "dlg.classList.remove('gleitet', 'runter'), 300)"]],
+  'design.css': [[/$/, '\ndialog.gleitet, dialog.gleitet.runter { transition: top .25s ease; }\n@media (prefers-reduced-motion: reduce) { dialog.gleitet, dialog.gleitet.runter { transition: none; } }\n']] };
+const gleitenGegenFehlt = [];
+export async function gleitenGegenprobe(p) {
+  if (process.env.PRUEF_V !== 'heute') return false;
+  const { readFileSync } = await import('node:fs');
+  await p.route(/\/fassung\/\d+\.\d+\.\d+\/(ui\.js|design\.css)(\?.*)?$/, r => {
+    const u = new URL(r.request().url()), datei = u.pathname.endsWith('ui.js') ? 'ui.js' : 'design.css';
+    let text = readFileSync(decodeURIComponent(u.pathname), 'utf8');
+    for (const [neu, alt] of GLEITEN_456[datei]) {
+      if (typeof neu === 'string' && text.split(neu).length !== 2) { gleitenGegenFehlt.push(`${datei}: ${neu.slice(0, 60)}`); continue; }
+      text = text.replace(neu, () => alt);
+    }
+    return r.fulfill({ body: text, contentType: datei === 'ui.js' ? 'text/javascript' : 'text/css' });
+  });
+  return true;
+}
+export async function checkGleiten(p, { blatt = null, x = 'dialog[open] .dlg-head button', tastatur = null, navigation = null, seitenleiste = null, titel = null, menue = null, where = '' } = {}) {
+  const errors = [], E = (nr, t) => errors.push(`${where ? where + ': ' : ''}R-1.12 APD-127/${nr} ${t}`);
+  const ruhig = await p.evaluate(() => matchMedia('(prefers-reduced-motion: reduce)').matches);
+  if (gleitenGegenFehlt.length) E('B-10', `Gegenprobe: Stellen von APD-127 nicht gefunden (${[...new Set(gleitenGegenFehlt)].join(' · ')})`);
+  await p.evaluate(() => {
+    window.__gleitLog = []; window.__gleitSofort = false;
+    if (window.__gleitAnimate) return;
+    const orig = window.__gleitAnimate = Element.prototype.animate, LAGE = ['translate', 'transform', 'scale', 'left', 'top', 'right', 'bottom', 'width', 'height'];
+    Element.prototype.animate = function (k, o) {
+      const a = orig.call(this, k, o);
+      try {
+        const kf = (Array.isArray(k) ? k : [k]).filter(Boolean), props = [...new Set(kf.flatMap(f => Object.keys(f)))].filter(n => !['offset', 'easing', 'composite'].includes(n));
+        const aendert = n => new Set(kf.map(f => String(f[n] ?? ''))).size > 1, cls = typeof this.className === 'string' ? this.className : '';
+        window.__gleitLog.push({ el: this.classList?.contains('blatt-geist') ? 'Abbild des Blatts' : this.id ? '#' + this.id : this.tagName.toLowerCase() + (cls ? '.' + cls.trim().split(/\s+/)[0] : ''),
+          cls, d: Math.round(typeof o === 'number' ? o : o?.duration ?? 0), e: (o && typeof o === 'object' && o.easing) || 'linear',
+          lage: props.some(n => LAGE.includes(n) && aendert(n)), deck: props.includes('opacity') && aendert('opacity'), von: kf[0]?.translate ?? null, nach: kf.at(-1)?.translate ?? null });
+      } catch {}
+      // B-8: dieselben Schritte ohne Bewegung – jede Animation sofort am Ende (nach dem Setzen der Hörer der App)
+      if (window.__gleitSofort) queueMicrotask(() => { try { a.finish(); } catch {} });
+      return a;
+    };
+  });
+  const log = () => p.evaluate(() => window.__gleitLog.splice(0));
+  const sofort = an => p.evaluate(v => { window.__gleitSofort = v; }, an);
+  const ruht = async was => { const m = await warteBis(p, () => !document.getAnimations().some(a => a.playState === 'running') && !/(^|\s)(nav-|blatt-faehrt|blatt-zieht)/.test(document.documentElement.className), { was, max: 5000 }); await ruhe(p); return m; };
+  const zustand = () => p.evaluate(() => {
+    const r = e => { if (!e || !e.getClientRects().length) return null; const b = e.getBoundingClientRect(); return [b.left, b.top, b.width, b.height].map(Math.round); };
+    const d = document.getElementById('dlg'), s = document.querySelector('.blatt-schleier');
+    return { Fenster: d?.open ? r(d) : null, Inhalt: r(document.getElementById('app')), Seitenleiste: r(document.getElementById('side')),
+      Abdunkelung: s ? [Math.round(+getComputedStyle(s).opacity * 100)] : null, Abbild: document.querySelector('.blatt-geist') ? [1] : null };
+  });
+  const vergleiche = (wo, ist, soll) => {
+    const ab = Object.keys(soll).filter(k => { const a = ist[k], b = soll[k]; if (!a || !b) return !a !== !b; return a.some((v, i) => Math.abs(v - b[i]) > 1); });
+    if (ab.length) E('B-8', `${wo}: Endlage nicht wie ohne Bewegung (${ab.map(k => `${k} ${JSON.stringify(ist[k])} statt ${JSON.stringify(soll[k])}`).join(', ')})`);
+  };
+  let menueAuf = WACHS.auf, menueZu = WACHS.zu;
+  // jede Bewegung (Lage oder Deckkraft ändert sich, ab 100 ms) mit Dauer und Kurve; ganz: eine ganze Bewegung (B-7 gilt), sonst der Rest nach einer Geste
+  const erwarte = (nr, wo, liste, art, ms, ganz = true) => {
+    const m = liste.filter(a => a.d >= 100 && (a.lage || a.deck));
+    if (!m.length) { E(nr, `${wo}: keine Bewegung`); return []; }
+    const soll = art === 'auf' ? 'Feder (Antwortzeit 0,35 s, linear() über 0,5 s)' : 'ease-in-out';
+    const falsch = m.find(a => Math.abs(a.d - ms) > GLEITEN.toleranz || !(art === 'auf' ? istGleitFeder(a.e) : istGleitZu(a.e)));
+    if (falsch) E(nr, `${wo}: ${falsch.el} ${falsch.d} ms ${kurzKurve(falsch.e)} statt ${Math.round(ms)} ms ${soll}`);
+    const schnell = ganz && m.find(a => a.d < (art === 'auf' ? menueAuf : menueZu));
+    if (schnell) E('B-7', `${wo}: ${schnell.el} ${schnell.d} ms – schneller als das Mehr-Menü (${art === 'auf' ? menueAuf : menueZu} ms, R-4.13)`);
+    return m;
+  };
+  const yAus = t => Math.abs(parseFloat(String(t ?? '').split(/\s+/)[1]) || 0);
+  const sichtbar = s => p.locator(s).first().isVisible().catch(() => false);
+
+  // B-7: das Mehr-Menü wächst und schrumpft wie bisher (R-4.13) – seine Dauern sind die Untergrenze für jede ganze Gleitbewegung
+  await ruht('Ausgangslage ruht');
+  if (menue && !ruhig) {
+    await log(); await p.locator(`${menue} >> visible=true`).first().click();   // menue darf mehrere Knöpfe nennen – der sichtbare zählt
+    const w = await warteBis(p, () => !!document.querySelector('.menu:not(.submenu)'), { was: 'Mehr-Menü offen', max: 3000 });
+    const a = (await log()).find(z => /(^|\s)menu(\s|$)/.test(z.cls) && !/submenu|zu-geist/.test(z.cls));
+    if (w || !a) E('B-7', `Mehr-Menü ${menue}: ${w || 'wächst nicht'}`);
+    else if (a.d !== WACHS.auf || kurveZahlen(a.e) !== kurveZahlen(WACHS.kurve)) E('B-7', `Mehr-Menü wächst in ${a.d} ms ${a.e} statt unverändert ${WACHS.auf} ms ${WACHS.kurve} (R-4.13)`);
+    else menueAuf = a.d;
+    await ruht('Mehr-Menü ruht'); await log(); await p.keyboard.press('Escape');
+    await warteBis(p, () => !document.querySelector('.menu:not(.submenu)'), { was: 'Mehr-Menü zu', max: 3000 });
+    const g = (await log()).find(z => /zu-geist/.test(z.cls));
+    if (!g) E('B-7', 'Mehr-Menü: kein schrumpfendes Abbild nach Esc');
+    else if (g.d !== WACHS.zu) E('B-7', `Mehr-Menü schrumpft in ${g.d} ms statt unverändert ${WACHS.zu} ms (R-4.13)`);
+    else menueZu = g.d;
+    await ruht('Mehr-Menü zu');
+  }
+
+  // B-1 Blatt bzw. Fenster: öffnen, nach dem Loslassen zurück, x, nach dem Loslassen zu; B-6 ‚Bewegung reduzieren‘
+  if (blatt) {
+    const offen = () => p.evaluate(() => !!document.getElementById('dlg')?.open);
+    const zu = async () => { if (await offen()) await p.evaluate(() => document.getElementById('dlg').close()); await ruht('Fenster zu'); };
+    const kopf = async () => { const b = await p.locator('#dlg .dlg-head h3').boundingBox(); return { x: b.x + b.width / 2, y: b.y + b.height / 2 }; };
+    // langsam ziehen und still loslassen (Tempo 0) – aufgezeichnet wird nur, was nach dem Loslassen läuft
+    const zieh = async dy => { const k = await kopf(); await p.mouse.move(k.x, k.y); await p.mouse.down(); await p.mouse.move(k.x, k.y + dy * 0.1, { steps: 3 });
+      await p.mouse.move(k.x, k.y + dy, { steps: 10 }); await wait(p, 160); await log(); await p.mouse.up(); };
+    await zu(); await log();
+    const z0 = await zustand();
+    if (ruhig) {
+      await blatt(); await ruht('Fenster offen');
+      const lang = l => l.filter(a => a.d > 200 && (a.lage || a.deck));   // Hervorheben (Hintergrundfarbe) zählt nicht
+      let m = lang(await log());
+      if (m.length) E('B-6', `‚Bewegung reduzieren‘: öffnen bewegt sich über 200 ms (${m.map(a => `${a.el} ${a.d} ms`).join(', ')})`);
+      await p.locator(x).first().click(); await ruht('Fenster zu');
+      m = lang(await log());
+      if (m.length) E('B-6', `‚Bewegung reduzieren‘: schließen bewegt sich über 200 ms (${m.map(a => `${a.el} ${a.d} ms`).join(', ')})`);
+      await zu();
+    } else {
+      // B-8 Bezug: öffnen und schließen ohne Bewegung
+      await sofort(true); await blatt(); await ruht('Fenster offen (ohne Bewegung)');
+      const zAufSoll = await zustand();
+      await zu(); await sofort(false); await log();
+      // öffnen
+      await blatt(); await ruht('Fenster offen');
+      const auf = erwarte('B-1', 'Fenster öffnen', await log(), 'auf', GLEITEN.auf);
+      vergleiche('Fenster öffnen', await zustand(), zAufSoll);
+      const Z = yAus(auf.find(a => a.el === '#dlg')?.von);
+      if (!Z) E('B-1', 'Fenster öffnen: das Fenster gleitet nicht von unten herein');
+      else {
+        // nach dem Loslassen zurück: kurz gezogen
+        await zieh(120); await ruht('Fenster zurück');
+        let l = await log(), d = l.find(a => a.el === '#dlg' && a.lage), D = yAus(d?.von);
+        if (!d) E('B-1', 'kurz gezogen und losgelassen: das Fenster gleitet nicht zurück');
+        else erwarte('B-1', `nach dem Loslassen zurück (${D} von ${Z} px)`, l, 'auf', Math.max(GLEITEN.min, GLEITEN.auf * Math.min(1, D / Z)), false);
+        vergleiche('nach dem Loslassen zurück', await zustand(), zAufSoll);
+        // x: Abbild, Abdunkelung und Seite in 0,25 s
+        await log(); await p.locator(x).first().click(); await ruht('Fenster mit x zu');
+        erwarte('B-1', 'mit x schließen (Fenster, Abdunkelung, Seite)', await log(), 'zu', GLEITEN.zu);
+        vergleiche('mit x geschlossen', await zustand(), z0);
+        // nach dem Loslassen zu: weit gezogen
+        await blatt(); await ruht('Fenster offen');
+        const k = await kopf(), vh = await p.evaluate(() => innerHeight), dy = Math.round(Math.min(Z * 0.7, vh - k.y - 8));
+        if (dy < Z / 2 + 10) E('B-1', `Vorbereitung: das Fenster lässt sich nicht weit genug ziehen (${dy} von ${Z} px)`);
+        else {
+          await zieh(dy); await warteBis(p, () => !document.getElementById('dlg').open, { was: 'Fenster zu', max: 3000 }); await ruht('Fenster zu');
+          l = await log(); d = l.find(a => a.el === '#dlg' && a.lage); D = yAus(d?.von);
+          if (!d) E('B-1', 'weit gezogen und losgelassen: das Fenster gleitet nicht hinaus');
+          else erwarte('B-1', `nach dem Loslassen zu (${D} von ${Z} px)`, l, 'zu', Math.max(GLEITEN.min, GLEITEN.zu * Math.min(1, (Z - D) / Z)), false);
+          vergleiche('nach dem Loslassen zu', await zustand(), z0);
+        }
+      }
+      await zu();
+    }
+  }
+
+  // B-2 iPad-Fenster mit der Tastatur: hoch mit der Feder, runter ease-in-out (CSS-Übergang von top)
+  if (tastatur && !ruhig) {
+    if (!await p.evaluate(() => !!window.__safari)) E('B-2', 'Vorbereitung: das Safari-Modell (auto) fehlt in der Seite');
+    else {
+      if (await p.evaluate(() => !!document.getElementById('dlg')?.open)) await p.evaluate(() => document.getElementById('dlg').close());
+      await ruht('Fenster zu'); await tastatur.oeffnen(); await ruht('Fenster offen');
+      const lage = () => p.evaluate(() => { const d = document.getElementById('dlg'); return { top: Math.round(d.getBoundingClientRect().top), soll: Math.round(parseFloat(d.style.top) || 0), laeufe: window.__gleitTop.splice(0) }; });
+      // je Meldung (Klasse .gleitet gesetzt) der Übergang, der gilt, und ob top tatsächlich gleitet (transitionrun); nach dem Schließen der Tastatur
+      // bleibt das Fenster oben, solange sein Inhalt Platz hat (APD-115/N-13) – dann zählt der Übergang, der gälte
+      await p.evaluate(() => { const d = document.getElementById('dlg'); window.__gleitTop = [];
+        const merke = lauf => { const cs = getComputedStyle(d); window.__gleitTop.push({ lauf, runter: d.classList.contains('runter'), dauer: cs.transitionDuration, kurve: cs.transitionTimingFunction }); };
+        new MutationObserver(() => { if (d.classList.contains('gleitet')) merke(false); }).observe(d, { attributes: true, attributeFilter: ['class'] });
+        d.addEventListener('transitionrun', e => { if (e.target === d && e.propertyName === 'top') merke(true); }); });
+      const vor = await lage();
+      const fertig = (auf, was) => warteBis(p, a => window.__safari.offen === a && !document.getElementById('dlg').classList.contains('gleitet')
+        && !document.getElementById('dlg').getAnimations().some(x => x.playState === 'running'), { arg: auf, was, max: 4000 });
+      await p.locator(tastatur.feld).first().click();
+      await wait(p, 150);
+      let m = await fertig(true, 'Tastatur offen, Fenster ruht'); if (m) E('B-2', m);
+      const hoch = await lage(), h = hoch.laeufe.find(z => z.lauf && !z.runter);
+      if (!h) E('B-2', `Tastatur auf: das Fenster gleitet nicht hoch (${vor.top} → ${hoch.top} px)`);
+      else if (h.dauer !== '0.5s' || !istGleitFeder(h.kurve)) E('B-2', `Tastatur auf: das Fenster gleitet in ${h.dauer} ${kurzKurve(h.kurve)} statt 0.5s Feder (Antwortzeit 0,35 s)`);
+      if (Math.abs(hoch.top - hoch.soll) > 1) E('B-8', `Tastatur auf: das Fenster endet bei ${hoch.top} statt ${hoch.soll} px`);
+      // Tastatur-Taste (iPad): die Tastatur schließt, das Feld gibt den Fokus ab
+      await p.evaluate(() => window.__safari.tastatur(false));
+      await wait(p, 150);   // die App stellt das Fenster erst nach der Meldung (Bildwechsel) neu
+      m = await fertig(false, 'Tastatur zu, Fenster ruht'); if (m) E('B-2', m);
+      const runter = await lage(), r = runter.laeufe.at(-1);
+      if (!r) E('B-2', 'Tastatur zu: das Fenster wird nicht neu gestellt (keine Meldung)');
+      else if (!r.runter || r.dauer !== '0.25s' || !istGleitZu(r.kurve)) E('B-2', `Tastatur zu: das Fenster gleitet in ${r.dauer} ${kurzKurve(r.kurve)} statt 0.25s ease-in-out`);
+      if (Math.abs(runter.top - runter.soll) > 1) E('B-8', `Tastatur zu: das Fenster endet bei ${runter.top} statt ${runter.soll} px`);
+      await p.evaluate(() => document.getElementById('dlg').close());
+      await ruht('Fenster zu');
+    }
+  }
+
+  // B-3 Navigation iPhone, B-4 Seitenleiste iPad: hinein bzw. ein mit der Feder, zurück bzw. aus ease-in-out; Endlagen wie ohne Bewegung
+  const hinUndZurueck = async (nr, name, [hin, hinArt, hinName], [her, herArt, herName]) => {
+    const z0 = await zustand();
+    await sofort(true); await p.locator(hin).first().click(); await ruht(`${name} ${hinName} (ohne Bewegung)`);
+    const zHinSoll = await zustand();
+    await p.locator(her).first().click(); await ruht(`${name} ${herName} (ohne Bewegung)`); await sofort(false);
+    vergleiche(`${name} ohne Bewegung hin und zurück`, await zustand(), z0);
+    await log(); await p.locator(hin).first().click(); await ruht(`${name} ${hinName}`);
+    erwarte(nr, `${name} ${hinName}`, await log(), hinArt, hinArt === 'auf' ? GLEITEN.auf : GLEITEN.zu);
+    vergleiche(`${name} ${hinName}`, await zustand(), zHinSoll);
+    await p.locator(her).first().click(); await ruht(`${name} ${herName}`);
+    erwarte(nr, `${name} ${herName}`, await log(), herArt, herArt === 'auf' ? GLEITEN.auf : GLEITEN.zu);
+    vergleiche(`${name} ${herName}`, await zustand(), z0);
+  };
+  if (navigation && !ruhig) {
+    const { eintrag, zurueck } = navigation;
+    if (!await sichtbar(eintrag) && await sichtbar(zurueck)) { await p.locator(zurueck).first().click(); await ruht('Startliste'); }
+    if (!await sichtbar(eintrag)) E('B-3', `Vorbereitung: ${eintrag} ist nicht zu sehen`);
+    else await hinUndZurueck('B-3', 'Navigation', [eintrag, 'auf', 'hinein'], [zurueck, 'zu', 'zurück']);
+  }
+  if (seitenleiste && !ruhig) {
+    const { aus, ein } = seitenleiste;
+    if (await sichtbar(aus)) await hinUndZurueck('B-4', 'Seitenleiste', [aus, 'zu', 'aus'], [ein, 'auf', 'ein']);
+    else if (await sichtbar(ein)) await hinUndZurueck('B-4', 'Seitenleiste', [ein, 'auf', 'ein'], [aus, 'zu', 'aus']);
+    else E('B-4', `Vorbereitung: weder ${aus} noch ${ein} ist zu sehen`);
+  }
+
+  // B-5 ‚Titel antippen = nach oben‘: Rollstand Bild für Bild ab dem Klick – folgt der Feder (gleicher Verzug je Bild), nach 350 ms (Antwortzeit)
+  // mindestens 0,95, ganz oben nach 440–650 ms (Feder über 0,5 s; bis 4.56.0 0,3 s + Weg/20, bei 1500 px 375 ms)
+  if (titel && !ruhig) {
+    const { sel, rolle: rs } = titel;
+    const vor = await p.evaluate(rs => { const c = document.querySelector(rs); if (!c) return null; c.scrollTop = Math.min(1500, c.scrollHeight - c.clientHeight); return Math.round(c.scrollTop); }, rs);
+    if (vor === null) E('B-5', `Rollbereich ${rs} fehlt`);
+    else if (vor < 1000) E('B-5', `Vorbereitung: ${rs} lässt sich nur ${vor} px rollen (mindestens 1000 für die Prüfung)`);
+    else {
+      await ruhe(p);
+      await p.evaluate(rs => { const c = document.querySelector(rs), g = window.__titelGleit = { spur: [], fertig: null };
+        // ab dem Klick (dort beginnt das Rollen; WebKit bringt ihn bis 60 ms nach pointerdown)
+        addEventListener('click', () => { g.t0 = performance.now(); g.y0 = c.scrollTop;
+          const f = () => { const t = performance.now() - g.t0, y = c.scrollTop; g.spur.push([t, y]); if (y <= 0) { g.fertig = Math.round(t); return; } if (t < 3000) requestAnimationFrame(f); };
+          requestAnimationFrame(f); }, { once: true, capture: true }); }, rs);
+      const b = await p.locator(sel).first().boundingBox();
+      await p.mouse.click(b.x + Math.min(b.width / 2, 40), b.y + b.height / 2);
+      await warteBis(p, () => window.__titelGleit.fertig !== null, { was: 'Titel antippen: ganz oben', max: 4000 });
+      const g = await p.evaluate(() => window.__titelGleit), y = await p.evaluate(rs => Math.round(document.querySelector(rs).scrollTop), rs);
+      // Anteil des Wegs zur Zeit ms (zwischen zwei Bildern linear)
+      const anteil = ms => { const i = g.spur.findIndex(([t]) => t >= ms); if (i < 0) return 1; if (i === 0) return 1 - g.spur[0][1] / g.y0;
+        const [t1, y1] = g.spur[i - 1], [t2, y2] = g.spur[i]; return 1 - (y1 + (y2 - y1) * (ms - t1) / Math.max(1, t2 - t1)) / g.y0; };
+      // Die Bilder kommen verspätet (WebKit: das erste bis 110 ms nach dem Klick, die Zeit des Bilds ist älter als die Uhr) – deshalb je Bild mit
+      // 0,2–0,97 des Wegs die Zeit der Feder für diesen Anteil und daraus der Verzug: bei der Feder bleibt er gleich (Spanne ≤ 80 ms; gleichmäßig
+      // über 0,5 s wären es über 200), die Dauer ist ‚ganz oben‘ minus Verzug (Feder 500 ms, bis 4.56.0 bei 1500 px 375 ms)
+      const federZeit = a => { let lo = 0, hi = 1; for (let i = 0; i < 30; i++) { const mi = (lo + hi) / 2; if (gleitFederSoll(mi) < a) lo = mi; else hi = mi; } return lo * GLEITEN.auf; };
+      const verzug = g.spur.map(([t, yy]) => [t, 1 - yy / g.y0]).filter(([, a]) => a >= 0.2 && a <= 0.97).map(([t, a]) => t - federZeit(a)).sort((a, b) => a - b);
+      const bilder = g.spur.slice(0, 14).map(([t, yy]) => `${Math.round(t)}:${Math.round(yy)}`).join(' ');
+      if (g.fertig === null || y !== 0) E('B-5', `Titel antippen: der Bereich steht nicht ganz oben (${y} px, vorher ${vor} px)`);
+      else if (verzug.length < 2) E('B-5', `Titel antippen: zu wenige Bilder zwischen 0,2 und 0,97 des Wegs (Bilder ${bilder})`);
+      else {
+        const v = verzug[verzug.length >> 1], spanne = Math.round(verzug.at(-1) - verzug[0]), dauer = Math.round(g.fertig - v), a350 = +anteil(v + 350).toFixed(3);
+        if (spanne > 80) E('B-5', `Titel antippen: das Rollen folgt nicht der Feder (Verzug je Bild ${verzug.map(Math.round).join(', ')} ms; Bilder ${bilder})`);
+        if (dauer < 440 || dauer > 650) E('B-5', `Titel antippen: ganz oben nach ${dauer} ms statt nach 0,5 s (Feder, linear() über 0,5 s; Verzug ${Math.round(v)} ms, Bilder ${bilder})`);
+        if (a350 < 0.95) E('B-5', `Titel antippen: nach 350 ms (Antwortzeit) erst ${a350} des Wegs statt mindestens 0,95`);
+      }
+      await ruht('Titel antippen fertig');
+    }
+  }
+  await p.evaluate(() => { if (window.__gleitAnimate) { Element.prototype.animate = window.__gleitAnimate; delete window.__gleitAnimate; } window.__gleitSofort = false; });
   return errors;
 }
 
