@@ -255,6 +255,9 @@ dialog input[type=date] { flex: none; }
 .dates .dl { color: var(--muted); min-width: 2.2em; }
 /* Seit 4.42.0 (APD-90, R-10.5): Icon und Text eines Eintrags bleiben zusammen – Umbruch nur zwischen den Einträgen (iconText) */
 .ict { display: inline-block; max-width: 100%; }
+/* seit 4.57.0 (RLB-122, R-10.5): Eintrag einer Aufzählung mit Trennpunkt (aufzaehlung) – inline am Stück, damit vor dem geschützten Leerzeichen
+   und dem ‚·‘ kein Umbruch entsteht (nach einem inline-block bräche der Browser dort um) */
+.ict.az { display: inline; white-space: nowrap; }
 /* Seit 4.3.0: Bezeichnung und Feld gehören zusammen (.pair) – reicht der Platz nicht, bricht die Zeile vor der Bezeichnung um */
 .dates .pair { display: inline-flex; align-items: center; gap: 10px; flex: none; }
 .datebox { position: relative; display: inline-flex; align-items: center; flex: none; }
@@ -576,8 +579,8 @@ dialog form { display: flex; flex-direction: column; max-height: var(--dlg-max, 
 #msg .msg-text { text-align: center; padding: 0 4px 10px; }
 /* seit 4.57.0 (APD-116, R-10.8): Dateiname allein in einer eigenen Zeile unter dem Satz (fett, zentriert wie der Text); jedes Wort am Stück
    (.fw), deshalb Umbruch nur nach einem Leerzeichen – nur ein Wort, das länger ist als die Zeile, bricht in sich (R-6.3) */
-.msg-text .fname { display: block; margin-top: 2px; }
-.msg-text .fname .fw { display: inline-block; max-width: 100%; overflow-wrap: anywhere; }
+.fname { display: block; margin-top: 2px; text-align: center; }
+.fname .fw { display: inline-block; max-width: 100%; overflow-wrap: anywhere; }
 /* Seit 4.11.0 (R-9.4): kleines Fenster mit einer blauen Schaltfläche unter dem Text (z. B. ‚Abgleichbericht anzeigen‘) */
 #msg.wide { width: min(max(600px, calc(600px * var(--f-body))), calc(100vw - 32px)); }
 #msg .msg-btns { display: flex; justify-content: center; padding: 2px 0 6px; }

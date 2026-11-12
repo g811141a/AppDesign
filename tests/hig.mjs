@@ -30,19 +30,33 @@ export function bezeichnungen() {
   return out;
 }
 
-// R-6.5 (seit 4.44.1, APD-98): Bezeichnung im Kasten mit Feldern (.box .kv .k) – jeder Text (Buchstaben) normal (400), so groß und in
-// derselben Farbe wie der Wert; Icon und Text mittig zur ersten Zeile des Werts (nicht bei großer Schrift, wo die Bezeichnung darüber steht).
+// R-6.5 (seit 4.44.1, APD-98): Bezeichnung im Kasten mit Feldern (.box .kv .k) – jeder Text (Buchstaben) so groß und in derselben Farbe wie
+// der Wert; Icon und Text mittig zur ersten Zeile des Werts (nicht bei großer Schrift, wo die Bezeichnung darüber steht). Seit 4.57.0
+// (RLB-120/B-1, B-3): Text halbfett (600 statt 400); Emojis der Bezeichnung so hoch wie ein Emoji im Wert (±1 px, gemessen an einem kurz in den
+// Wert gesetzten 🙂) und in einer Zeile (nebeneinander).
 // Läuft in der Seite (p.evaluate(kastenBezeichnung)) – nach jedem Schritt in measure, einzeln für die Gegenprobe.
 export function kastenBezeichnung() {
-  const out = [], r = document.createRange();
+  const out = [], r = document.createRange(), um = document.documentElement.classList.contains('ts-um');
+  const seg = new Intl.Segmenter();
+  const emojis = el => { const res = [], tw = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+    for (let n; (n = tw.nextNode());) for (const s of seg.segment(n.data)) if (/\p{Extended_Pictographic}/u.test(s.segment)) {
+      r.setStart(n, s.index); r.setEnd(n, s.index + s.segment.length); const b = r.getBoundingClientRect(); if (b.height) res.push({ z: s.segment, h: b.height, top: b.top }); }
+    return res; };
   document.querySelectorAll('.box .kv').forEach(kv => {
     const k = kv.querySelector(':scope > .k'), v = kv.querySelector(':scope > .v'), kb = k?.getBoundingClientRect();
     if (!k || !v || !kb.width || !kb.height) return;
     const name = k.textContent.trim().slice(0, 20), cv = getComputedStyle(v);
+    const ke = emojis(k);
+    if (ke.length) {
+      const probe = document.createElement('span'); probe.textContent = '🙂'; v.append(probe); const ref = emojis(probe)[0]; probe.remove();
+      const e = ref && ke.find(x => Math.abs(x.h - ref.h) > 1);
+      if (e) out.push(`Emoji ‚${e.z}‘ der Bezeichnung ‚${name}‘ ${Math.round(e.h)} px hoch statt ${Math.round(ref.h)} px wie im Wert (RLB-120/B-1)`);
+      if (!um && new Set(ke.map(x => Math.round(x.top))).size > 1) out.push(`Emojis der Bezeichnung ‚${name}‘ nicht in einer Zeile (RLB-120/B-1)`);
+    }
     const w = document.createTreeWalker(k, NodeFilter.SHOW_TEXT);
     for (let n; (n = w.nextNode());) if (/\p{L}/u.test(n.data)) {
       const c = getComputedStyle(n.parentElement);
-      if (+c.fontWeight !== 400) out.push(`Bezeichnung ‚${name}‘ ${c.fontWeight} statt normal (400)`);
+      if (+c.fontWeight !== 600) out.push(`Bezeichnung ‚${name}‘ ${c.fontWeight} statt halbfett (600)`);
       if (Math.abs(parseFloat(c.fontSize) - parseFloat(cv.fontSize)) > 0.5) out.push(`Bezeichnung ‚${name}‘ ${c.fontSize} statt ${cv.fontSize} wie der Wert`);
       if (c.color !== cv.color) out.push(`Bezeichnung ‚${name}‘ Farbe ${c.color} statt ${cv.color} wie der Wert`);
     }
@@ -53,6 +67,67 @@ export function kastenBezeichnung() {
     const z = r.getClientRects()[0], lb = l.getClientRects()[0], mitte = b => (b.top + b.bottom) / 2, zm = z && mitte(z);
     if (z && lb && Math.abs(mitte(lb) - zm) > 2) out.push(`Bezeichnung ‚${name}‘ ${Math.round(mitte(lb) - zm)} px neben der Mitte der ersten Zeile des Werts`);
   });
+  return out;
+}
+
+// R-6.1 (seit 4.57.0, RLB-120/B-4 bis B-6, B-8, B-9, B-11; Muster arbeit/RLB-120 Muster prüfen.mjs): Kopfverlauf (--kopf-verlauf, Designrichtlinie 2).
+// Kasten mit Feldern: die Bezeichnung (.box .kv > .k) trägt den Verlauf nur in ihrer Zelle – nebeneinander von links nach rechts, untereinander
+// (html.ts-um) von oben nach unten; er beginnt mit der Farbe des Kastens (auch markiert bzw. ausgewählt) und hat die Stufen 0 % und 25 % Fläche,
+// 50 % und 75 % mit 23 % bzw. 58 % --th-bg gemischt, 100 % --th-bg (je Farbkanal ±2; hell und dunkel); Linien vor dem ersten und nach dem letzten
+// Feld mit 16 px Abstand zum Rand; der Wert mindestens 16 px vom Rand, die Bezeichnung ragt nicht hinaus. Kopfzeile jeder Tabelle der App
+// (#app table thead th): derselbe Verlauf von oben nach unten, ab der Fläche der Tabelle. Läuft in der Seite (p.evaluate(kopfVerlauf)) – nach jedem
+// Schritt in measure; jede Meldung beginnt mit R-6.1.
+export function kopfVerlauf() {
+  const out = [], R = t => out.push(`R-6.1 ${t}`), um = document.documentElement.classList.contains('ts-um');
+  const cs = e => getComputedStyle(e), vis = e => { const b = e.getBoundingClientRect(); return b.width > 0 && b.height > 0 && cs(e).visibility !== 'hidden'; };
+  // Farbe → [r, g, b] (0–255); color-mix und color(srgb …) über ein Probe-Element im selben Zusammenhang aufgelöst
+  const rgb = (farbe, ort) => { const p = document.createElement('i'); p.style.cssText = 'position:absolute;width:0;height:0'; p.style.backgroundColor = farbe; ort.append(p);
+    const c = cs(p).backgroundColor; p.remove();
+    const m = c.match(/^color\(srgb ([\d.e-]+) ([\d.e-]+) ([\d.e-]+)/); return m ? m.slice(1, 4).map(x => +x * 255) : (c.match(/[\d.]+/g) || [0, 0, 0]).slice(0, 3).map(Number); };
+  const mix = (a, b, t) => a.map((x, i) => x + (b[i] - x) * t);
+  const nah = (a, b) => a.every((x, i) => Math.abs(x - b[i]) <= 2), zeig = c => `rgb(${c.map(Math.round).join(', ')})`;
+  const flaeche = e => { for (let x = e; x; x = x.parentElement) { const c = cs(x).backgroundColor; if (c !== 'rgba(0, 0, 0, 0)' && c !== 'transparent') return c; } return 'rgb(255, 255, 255)'; };
+  // Verlauf zerlegen: Richtung und Stufen (Farbe, Lage) – Kommas nur auf oberster Ebene
+  const verlauf = bild => { const m = bild.match(/^linear-gradient\((.*)\)$/); if (!m) return null;
+    const teile = []; let tiefe = 0, cur = '';
+    for (const ch of m[1]) { if (ch === '(') tiefe++; if (ch === ')') tiefe--; if (ch === ',' && !tiefe) { teile.push(cur.trim()); cur = ''; } else cur += ch; }
+    teile.push(cur.trim());
+    const richtung = /^(to |\d)/.test(teile[0]) ? teile.shift() : 'to bottom';
+    return { richtung: richtung === '180deg' ? 'to bottom' : richtung === '90deg' ? 'to right' : richtung,
+      stufen: teile.map(t => { const s = t.match(/^(.*?)\s+([\d.]+)%$/); return s ? { farbe: s[1], lage: +s[2] } : { farbe: t, lage: NaN }; }) }; };
+  const pruefeVerlauf = (el, soll, start, was) => {
+    const v = verlauf(cs(el).backgroundImage);
+    if (!v) return R(`${was}: ohne Kopfverlauf (background-image ${cs(el).backgroundImage.slice(0, 40)})`);
+    if (v.richtung !== soll) R(`${was}: Kopfverlauf ‚${v.richtung}‘ statt ‚${soll}‘`);
+    const th = rgb('var(--th-bg)', el), s0 = rgb(start, el);
+    const want = [[0, s0], [25, s0], [50, mix(s0, th, 0.23)], [75, mix(s0, th, 0.58)], [100, th]];
+    if (v.stufen.length !== 5) return R(`${was}: Kopfverlauf mit ${v.stufen.length} statt 5 Stufen`);
+    v.stufen.forEach((s, i) => { const ist = rgb(s.farbe, el);
+      if (s.lage !== want[i][0] || !nah(ist, want[i][1])) R(`${was}: Stufe ${i + 1} ${zeig(ist)} bei ${s.lage} % statt ${zeig(want[i][1])} bei ${want[i][0]} %${i === 0 ? ' – der Verlauf beginnt nicht mit der Farbe der Fläche (RLB-120/B-11)' : ''}`); });
+  };
+  // hinter einem offenen Fenster (am iPhone verkleinert dahinter) wird nicht gemessen
+  const dahinter = e => { const d = document.querySelector('dialog[open]'); return !!d && !d.contains(e); };
+  document.querySelectorAll('.box').forEach(box => {
+    const kvs = [...box.querySelectorAll(':scope > .kv')].filter(vis); if (!vis(box) || !kvs.length || dahinter(box)) return;
+    const bb = box.getBoundingClientRect(), name = (box.getAttribute('data-marke') || box.querySelector('.h')?.textContent || 'Kasten').trim().slice(0, 30);
+    const farbe = flaeche(box);
+    if (cs(box).backgroundImage !== 'none') R(`Kasten ‚${name}‘: Verlauf auf dem ganzen Kasten statt nur in der Zelle der Bezeichnung`);
+    kvs.forEach((kv, i) => {
+      const k = kv.querySelector(':scope > .k'), v = kv.querySelector(':scope > .v');
+      if (k) { const was = `Kasten ‚${name}‘ Bezeichnung ‚${k.textContent.trim().slice(0, 12)}‘`, kr = k.getBoundingClientRect();
+        pruefeVerlauf(k, um ? 'to bottom' : 'to right', farbe, was);
+        if (kr.left - bb.left < 15) R(`${was}: Verlauf nicht nur in der Zelle (${Math.round(kr.left - bb.left)} px vom linken Rand)`);
+        const l = k.querySelector('.l') || k; if (l.scrollWidth > k.clientWidth + 1) R(`${was}: Bezeichnung ragt aus ihrer Zelle (RLB-120/B-8)`); }
+      if (v && v.getBoundingClientRect().left - bb.left < 15.5) R(`Kasten ‚${name}‘: Wert ${Math.round(v.getBoundingClientRect().left - bb.left)} px statt mindestens 16 px vom Rand (RLB-120/B-8)`);
+      const c = cs(kv), r = kv.getBoundingClientRect();
+      if (Math.abs(r.left - bb.left - 16) > 1 || Math.abs(bb.right - r.right - 16) > 1) R(`Kasten ‚${name}‘: Linie nicht mit 16 px Abstand zum Rand`);
+      if (i === 0 && !(parseFloat(c.borderTopWidth) >= 1 && c.borderTopStyle === 'solid')) R(`Kasten ‚${name}‘: keine Linie vor dem ersten Feld (RLB-120/B-5)`);
+      if (i === kvs.length - 1 && !(parseFloat(c.borderBottomWidth) >= 1 && c.borderBottomStyle === 'solid')) R(`Kasten ‚${name}‘: keine Linie nach dem letzten Feld (RLB-120/B-5)`);
+    });
+    const letzte = kvs.at(-1).querySelector(':scope > .k'); if (letzte && bb.bottom - letzte.getBoundingClientRect().bottom < 4) R(`Kasten ‚${name}‘: Verlauf reicht bis zum unteren Rand des Kastens`);
+  });
+  document.querySelectorAll('#app table').forEach(t => { const th = t.querySelector('thead th'); if (!th || !vis(th) || dahinter(t)) return;
+    pruefeVerlauf(th, 'to bottom', flaeche(t), `Kopfzeile der Tabelle ‚${th.textContent.trim().slice(0, 12)}‘ (RLB-120/B-6)`); });
   return out;
 }
 
@@ -737,7 +812,10 @@ const found = new Map(), icons = new Map();
         ref.innerHTML = `<style>${outputCss('.r52ref')}</style><table class="grid"><thead><tr><th>K</th><th>K</th></tr></thead><tbody><tr><td>a</td><td>b</td></tr><tr><td>c</td><td>d</td></tr></tbody></table>`;
         document.body.append(ref);
         const pick = (e, ks) => e ? ks.map(k => cs(e)[k]).join(' | ') : '–';
-        const head = ['backgroundColor', 'fontWeight', 'borderTopColor', 'borderTopWidth', 'paddingTop', 'paddingLeft', 'fontSize', 'fontFamily'];
+        // seit 4.57.0 (RLB-120/B-7): auch der Verlauf des Kopfs (background-image); die Mustertabelle selbst hat ihn von oben Weiß nach unten #d9d9d9
+        const head = ['backgroundColor', 'backgroundImage', 'fontWeight', 'borderTopColor', 'borderTopWidth', 'paddingTop', 'paddingLeft', 'fontSize', 'fontFamily'];
+        const kopfBild = cs(ref.querySelector('thead th')).backgroundImage;
+        if (!/^linear-gradient\((to bottom, )?rgb\(255, 255, 255\) 0%, rgb\(255, 255, 255\) 25%, .*rgb\(217, 217, 217\) 100%\)$/.test(kopfBild)) R('R-6.2', `Mustertabelle: Kopf ohne Kopfverlauf von oben Weiß nach unten #d9d9d9 (${kopfBild.slice(0, 60)}) – RLB-120/B-7`);
         const cell = ['borderTopWidth', 'borderTopColor', 'paddingTop', 'paddingLeft', 'fontSize', 'fontFamily', 'verticalAlign'];
         const want = { head: pick(ref.querySelector('thead th'), head), cell: pick(ref.querySelector('tbody tr:first-child td'), cell),
           odd: cs(ref.querySelector('tbody tr:nth-child(1)')).backgroundColor, even: cs(ref.querySelector('tbody tr:nth-child(2)')).backgroundColor };
@@ -853,6 +931,7 @@ const found = new Map(), icons = new Map();
     for (const [k, list] of Object.entries(r)) for (const x of list) note('Regel', { target: 'R-3.1 Antippfläche ', font: 'R-10.2 Schrift ', contrast: 'R-10.2 Kontrast ', quotes: 'R-10.1 Anführungszeichen ', menu: 'R-4.1 Menü: ', rules: '' }[k] + x, where);
     for (const x of await p.evaluate(bezeichnungen)) note('Regel', `R-5.8 ${x}`, where);
     for (const x of await p.evaluate(kastenBezeichnung)) note('Regel', `R-6.5 ${x}`, where);
+    for (const x of await p.evaluate(kopfVerlauf)) note('Regel', x, where);   // seit 4.57.0 (RLB-120): R-6.1 Kopfverlauf
     for (const x of await p.evaluate(masseStile)) note('Regel', x, where);   // APD-40 Paket A: R-1.11, R-3.7, R-3.8, R-4.8, R-4.9, R-5.9, R-6.7; seit 4.53.0 R-3.9
     for (const x of await p.evaluate(texteMenues)) note('Regel', x, where);  // APD-40 Paket B: R-4.10, R-10.6, R-10.7
     if (schnell) return;

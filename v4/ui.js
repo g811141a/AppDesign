@@ -100,8 +100,10 @@ function breakable(text) {
 const iconText = (icon, text) => `<span class="ict">${esc(icon)}\u00a0${esc(text)}</span>`;
 // Seit 4.57.0 (RLB-122, R-10.5): Aufz\u00e4hlung mit Trennpunkt (z. B. \u201a8\u00d7\u2600\ufe0f \u00b7 6\u00d7\ud83c\udf27\ufe0f\u2018) \u2013 jeder Eintrag am St\u00fcck (.ict), davor ein gesch\u00fctztes
 // Leerzeichen und \u201a\u00b7 \u2018: der \u201a\u00b7\u2018 bleibt am Ende der Zeile, umgebrochen wird nur danach, die neue Zeile beginnt mit dem n\u00e4chsten Eintrag.
+// Der Eintrag ist hier inline am St\u00fcck (.ict.az, nowrap) statt inline-block: nach einem inline-block bricht Safari (und Chromium) auch vor
+// dem gesch\u00fctzten Leerzeichen um \u2013 der \u201a\u00b7\u2018 st\u00fcnde dann vorn in der neuen Zeile.
 function aufzaehlung(liste) {
-  return liste.map(x => `<span class="ict">${esc(x)}</span>`).join('\u00a0\u00b7 ');
+  return liste.map(x => `<span class="ict az">${esc(x)}</span>`).join('\u00a0\u00b7 ');
 }
 // Ganze Zahl mit Tausenderpunkt, z. B. 4850 → "4.850".
 function thousands(n) {
@@ -298,7 +300,7 @@ function setHtml(el, html) {
 // Seit 4.57.0 (APD-124, R-5.6, Muster arbeit/APD-124/index.html Variante A): Antippen leert sofort, auch mehrzeilig (keine Sprechblase
 // ‚Text löschen?‘ mehr, APD-124/E-1); der geleerte Text kommt in die Zwischenablage. An Stelle des ⓧ steht dann ein graues Rückgängig
 // (Lucide undo-2 als Linie, Klasse rueck) – es holt den ganzen Text zurück, danach wieder das ⓧ; mit der ersten Eingabe oder wenn das
-// Feld den Fokus verliert, verfällt es (APD-124/E-2, E-3).
+// Feld den Fokus verliert, verfällt es (APD-124/E-2, APD-124/E-3).
 const FX = 'input:is([type=text], [type=email], [type=url], [type=tel]):not([readonly], [disabled], [data-noclear]), textarea:not([readonly], [disabled], [data-noclear])';
 const fxBtn = document.createElement('button');
 fxBtn.type = 'button'; fxBtn.className = 'fclear'; fxBtn.tabIndex = -1; fxBtn.setAttribute('aria-label', 'Eingabe löschen');
@@ -399,14 +401,18 @@ const CE = 'input:is([type=text], [type=search], [type=email], [type=url], [type
 let ceFeld = null, ceBis = 0, ceZeiger = null, ceTab = -1e9;
 const ceEnde = f => { try { const n = f.value.length; if (f.selectionStart !== n || f.selectionEnd !== n) f.setSelectionRange(n, n); } catch {} };
 addEventListener('pointerdown', e => { ceZeiger = { ziel: e.target, t: performance.now() }; }, { capture: true, passive: true });
+addEventListener('click', () => setTimeout(() => { ceZeiger = null; }), true);   // die Berührung ist vorbei – ein späterer Fokus durch die App ist kein Antippen
 addEventListener('keydown', e => { if (e.key === 'Tab') ceTab = performance.now(); }, true);
 addEventListener('focusin', e => {
   const f = e.target;
   if (!f.matches?.(CE)) return;
   const jetzt = performance.now(), getippt = ceZeiger?.ziel === f && jetzt - ceZeiger.t < 1500, tab = jetzt - ceTab < 500;
   ceFeld = f; ceBis = getippt || tab ? jetzt + 700 : 0;
-  ceEnde(f);
-  if (ceBis) setTimeout(() => ceFeld === f && ceEnde(f));
+  if (ceBis) { ceEnde(f); setTimeout(() => ceFeld === f && ceEnde(f)); return; }
+  // Fokus durch die App: gleich danach ans Ende – es sei denn, die App hat selbst ausgewählt bzw. den Cursor gesetzt (select() vor focus() übernimmt
+  // der Browser erst nach dem Fokus; setSelectionRange danach)
+  const s0 = f.selectionStart, e0 = f.selectionEnd;
+  setTimeout(() => { if (ceFeld === f && document.activeElement === f && f.selectionStart === s0 && f.selectionEnd === e0 && s0 === e0) ceEnde(f); });
 }, true);
 document.addEventListener('selectionchange', () => { const f = document.activeElement;
   if (f === ceFeld && performance.now() <= ceBis && (f.selectionStart === f.selectionEnd || f.selectionStart === 0 && f.selectionEnd === f.value.length)) ceEnde(f); });   // Tab wählt alles aus
@@ -1344,6 +1350,7 @@ const outputCss = scope => `
   ${scope} h2 { font-size: 14pt; margin: 20px 0 6px; break-after: avoid; page-break-after: avoid; }
   ${scope} table { border-collapse: collapse; }
   ${scope} .ict { display: inline-block; max-width: 100%; }
+  ${scope} .ict.az { display: inline; white-space: nowrap; }
   ${scope} .meta td { border: none; padding: 1px 16px 1px 0; vertical-align: top; }
   ${scope} table.grid { width: 100%; margin-top: 12px; table-layout: auto; }
   ${scope} table.grid.fit { width: auto; }

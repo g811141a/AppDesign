@@ -98,6 +98,13 @@ function breakable(text) {
 // Seit 4.42.0 (APD-90, R-10.5): Icon und Text eines Eintrags bleiben zusammen – ein Eintrag ist ein Block in der Zeile (.ict), die Zeile
 // bricht nur zwischen den Einträgen um; ist ein Eintrag allein zu lang, bricht er im Text, nie direkt nach dem Icon (festes Leerzeichen).
 const iconText = (icon, text) => `<span class="ict">${esc(icon)}\u00a0${esc(text)}</span>`;
+// Seit 4.57.0 (RLB-122, R-10.5): Aufz\u00e4hlung mit Trennpunkt (z. B. \u201a8\u00d7\u2600\ufe0f \u00b7 6\u00d7\ud83c\udf27\ufe0f\u2018) \u2013 jeder Eintrag am St\u00fcck (.ict), davor ein gesch\u00fctztes
+// Leerzeichen und \u201a\u00b7 \u2018: der \u201a\u00b7\u2018 bleibt am Ende der Zeile, umgebrochen wird nur danach, die neue Zeile beginnt mit dem n\u00e4chsten Eintrag.
+// Der Eintrag ist hier inline am St\u00fcck (.ict.az, nowrap) statt inline-block: nach einem inline-block bricht Safari (und Chromium) auch vor
+// dem gesch\u00fctzten Leerzeichen um \u2013 der \u201a\u00b7\u2018 st\u00fcnde dann vorn in der neuen Zeile.
+function aufzaehlung(liste) {
+  return liste.map(x => `<span class="ict az">${esc(x)}</span>`).join('\u00a0\u00b7 ');
+}
 // Ganze Zahl mit Tausenderpunkt, z. B. 4850 → "4.850".
 function thousands(n) {
   return String(Math.round(Number(n) || 0)).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
@@ -112,9 +119,13 @@ function formatEuro(value) {
 }
 
 // Textfeld so hoch wie sein Inhalt (mindestens die eingestellte Höhe).
+// Seit 4.57.0 (APD-126/W-1): auch niedriger – die Höhe erst auf 0 (sonst zählen die alte Höhe bzw. rows mit), leer eine Zeile (design.css
+// min-height 44 px); der Rollstand des Bereichs bleibt, auch wenn das Feld dabei kurz niedriger ist.
 function autoGrow(ta) {
-  ta.style.height = 'auto';
+  const c = ta.closest('.dlg-body, .rolle'), y = c?.scrollTop;
+  ta.style.height = '0px';
   ta.style.height = (ta.scrollHeight + 2) + 'px';
+  if (c && c.scrollTop !== y) c.scrollTop = y;
 }
 const growAll = () => dlg.querySelectorAll('textarea').forEach(autoGrow);
 
@@ -283,17 +294,29 @@ function setHtml(el, html) {
 // leert das Feld, Cursor und Tastatur bleiben; die App erfährt es über ein input-Ereignis (wie beim Löschen per Taste). Ein Knopf
 // für alle Felder, gleich hinter das Feld gesetzt (rollt mit); abschaltbar mit data-noclear.
 // Seit 4.41.0 (APD-81, Testfall-Liste arbeit/APD-81 Testfall-Liste.md): auch in mehrzeiligen Feldern – oben rechts auf Höhe der
-// ersten Zeile (APD-81/F-1); mehr als eine Zeile: erst die Sprechblase ‚Text löschen?‘ (F-2). Geleert wird in allen Feldern über den
-// Bearbeiten-Befehl (Text auswählen, execCommand('delete')) – so holen Undo-Taste und drei Finger den Text zurück (F-5, gemessen
-// APD-81/M-1 bis M-4, Designrichtlinie 13); geht der Befehl nicht, über den Wert wie bisher.
+// ersten Zeile (APD-81/F-1). Geleert wird in allen Feldern über den Bearbeiten-Befehl (Text auswählen, execCommand('delete')) – so
+// holen Undo-Taste und drei Finger den Text zurück (F-5, gemessen APD-81/M-1 bis M-4, Designrichtlinie 13); geht der Befehl nicht,
+// über den Wert wie bisher.
+// Seit 4.57.0 (APD-124, R-5.6, Muster arbeit/APD-124/index.html Variante A): Antippen leert sofort, auch mehrzeilig (keine Sprechblase
+// ‚Text löschen?‘ mehr, APD-124/E-1); der geleerte Text kommt in die Zwischenablage. An Stelle des ⓧ steht dann ein graues Rückgängig
+// (Lucide undo-2 als Linie, Klasse rueck) – es holt den ganzen Text zurück, danach wieder das ⓧ; mit der ersten Eingabe oder wenn das
+// Feld den Fokus verliert, verfällt es (APD-124/E-2, APD-124/E-3).
 const FX = 'input:is([type=text], [type=email], [type=url], [type=tel]):not([readonly], [disabled], [data-noclear]), textarea:not([readonly], [disabled], [data-noclear])';
 const fxBtn = document.createElement('button');
 fxBtn.type = 'button'; fxBtn.className = 'fclear'; fxBtn.tabIndex = -1; fxBtn.setAttribute('aria-label', 'Eingabe löschen');
 fxBtn.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="currentColor"/><path d="M15 9l-6 6M9 9l6 6" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>';
-let fxFeld = null, fxTippt = false, fxRahmen = null, fxFrage = false;
+const FX_X = fxBtn.innerHTML;
+const FX_RUECK = '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg>';
+// fxRueck: nach dem Leeren merkt sich das Feld den Text – bis zur ersten Eingabe bzw. bis es den Fokus verliert
+let fxFeld = null, fxTippt = false, fxRahmen = null, fxRueck = null, fxArt = 'x';
 function fxZeigen() {
-  if (fxFrage) return;   // APD-81/F-2: solange die Sprechblase offen ist, bleibt das ⓧ (ihr Anker) stehen
-  const f = document.activeElement, an = f?.matches?.(FX) && f.value !== '' ? f : null;
+  const f = document.activeElement;
+  if (fxRueck && fxRueck.feld !== f && !fxTippt) fxRueck = null;   // APD-124/E-2: Fokus weg – Rückgängig verfällt
+  // ⓧ mit Text; im leeren Feld, solange es einen Text zum Zurückholen hat, das Rückgängig
+  const an = f?.matches?.(FX) && (f.value !== '' || fxRueck?.feld === f) ? f : null;
+  const art = an && an.value === '' ? 'rueck' : 'x';
+  if (art !== fxArt) { fxArt = art; fxBtn.innerHTML = art === 'rueck' ? FX_RUECK : FX_X;
+    fxBtn.setAttribute('aria-label', art === 'rueck' ? 'Löschen widerrufen' : 'Eingabe löschen'); fxBtn.classList.toggle('rueck', art === 'rueck'); }
   if (fxFeld && fxFeld !== an) { fxFeld.classList.remove('mitx'); if (fxFeld.tagName === 'TEXTAREA') autoGrow(fxFeld); }
   // Bezugsrahmen ist das Element um das Feld (sonst läge er womöglich außerhalb des Rollbereichs und das ⓧ rollte nicht mit)
   if (fxRahmen && fxRahmen !== an?.parentElement) { fxRahmen.style.position = ''; fxRahmen = null; }
@@ -320,21 +343,26 @@ function fxErsteZeile(ta) {
   const cs = getComputedStyle(ta), lh = parseFloat(cs.lineHeight) || parseFloat(cs.fontSize) * 1.2;
   return parseFloat(cs.borderTopWidth) + parseFloat(cs.paddingTop) + lh / 2;
 }
-// Zahl der Zeilen, wie sie im Feld zu sehen sind (auch umbrochene): Text in einer unsichtbaren Kopie mit gleicher Schrift und Breite
-function fxZeilen(ta) {
-  const cs = getComputedStyle(ta), d = document.createElement('div');
-  d.style.cssText = `position:absolute;visibility:hidden;left:-9999px;top:0;white-space:pre-wrap;overflow-wrap:break-word;box-sizing:content-box;
-    width:${ta.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight)}px;font:${cs.font};letter-spacing:${cs.letterSpacing};line-height:${cs.lineHeight}`;
-  d.textContent = 'x'; document.body.append(d);
-  const eine = d.offsetHeight;
-  d.textContent = ta.value.endsWith('\n') ? ta.value + ' ' : ta.value;
-  const n = Math.round(d.offsetHeight / (eine || 1));
-  d.remove();
-  return n;
+// APD-124: Text merken und in die Zwischenablage (der Tipp ist die Geste des Nutzers, die Safari dafür verlangt), dann leeren
+function fxLeeren(f) {
+  const text = f.value;
+  try { navigator.clipboard?.writeText?.(text)?.catch?.(() => {}); } catch {}
+  fxLeerenOhne(f);
+  if (f.value === '') fxRueck = { feld: f, text };
+}
+// APD-124 Rückgängig: Text über den Bearbeiten-Befehl wieder einsetzen (die Undo-Taste kennt den Schritt dann auch), Cursor am Ende;
+// liefert der Befehl false, über den Wert
+function fxZurueck(f, text) {
+  if (document.activeElement !== f) f.focus({ preventScroll: true });
+  fxRueck = null;
+  let ok = false;
+  try { ok = document.execCommand('insertText', false, text); } catch {}
+  if (!ok || f.value !== text) { f.value = text; f.dispatchEvent(new Event('input', { bubbles: true })); }
+  try { f.setSelectionRange(text.length, text.length); } catch {}
 }
 // APD-81/F-5: über den Bearbeiten-Befehl leeren – Safari legt dafür einen Schritt zum Rückgängigmachen an, beim Setzen des Werts
 // nicht (M-1, M-2); das input-Ereignis kommt dann vom Browser. Liefert der Befehl false oder bleibt Text stehen: über den Wert.
-function fxLeeren(f) {
+function fxLeerenOhne(f) {
   if (document.activeElement !== f) f.focus();
   let ok = false;
   try { f.select(); ok = document.execCommand('delete'); } catch {}
@@ -342,29 +370,56 @@ function fxLeeren(f) {
   f.value = '';
   f.dispatchEvent(new Event('input', { bubbles: true }));
 }
-// Antippen: den Fokus nicht abgeben (Tastatur bleibt), leeren, die App benachrichtigen
+// Antippen: den Fokus nicht abgeben (Tastatur bleibt), leeren bzw. zurückholen (APD-124, ohne Sprechblase), die App benachrichtigen
 fxBtn.addEventListener('pointerdown', e => { fxTippt = true; e.preventDefault(); });
 fxBtn.addEventListener('mousedown', e => e.preventDefault());
-fxBtn.addEventListener('click', async e => {
+fxBtn.addEventListener('click', e => {
   e.preventDefault(); fxTippt = false;
-  const f = fxFeld; if (!f || fxFrage) return;
-  // APD-81/F-2: mehr als eine Zeile – erst fragen; Fokus und Tastatur bleiben im Feld, solange die Sprechblase offen ist
-  if (f.tagName === 'TEXTAREA' && fxZeilen(f) > 1) {
-    fxFrage = true;
-    let ja = false;
-    try { ja = await confirmPop(fxBtn, 'Text löschen?', { label: 'Löschen' }, { label: 'Abbrechen' }, { feld: f }); } finally { fxFrage = false; }
-    if (document.activeElement !== f) f.focus({ preventScroll: true });
-    if (ja && f.isConnected) fxLeeren(f);
-  } else fxLeeren(f);
+  const f = fxFeld; if (!f) return;
+  if (fxArt === 'rueck' && fxRueck?.feld === f) fxZurueck(f, fxRueck.text);
+  else fxLeeren(f);
   fxZeigen();
 });
 document.addEventListener('focusin', fxZeigen);
-document.addEventListener('input', () => queueMicrotask(fxZeigen));
+// APD-124/E-3: die erste Eingabe nach dem Leeren lässt das Rückgängig verfallen (danach wieder das ⓧ, ohne Text kein Knopf)
+document.addEventListener('input', e => { if (fxRueck && e.target === fxRueck.feld && e.target.value !== '') fxRueck = null; queueMicrotask(fxZeigen); });
 document.addEventListener('focusout', () => setTimeout(() => { if (!fxTippt) fxZeigen(); }, 0));
 document.addEventListener('pointerup', () => setTimeout(() => { fxTippt = false; }, 400), true);
 window.addEventListener('resize', () => requestAnimationFrame(fxZeigen));
 // Größe des Feldes (Rahmen, nicht Innenraum – das ⓧ ändert den Innenabstand), im nächsten Bild: sonst meldet Safari eine Schleife
 if (window.ResizeObserver) { const ro = new ResizeObserver(() => fxFeld && requestAnimationFrame(fxZeigen)); document.addEventListener('focusin', e => { ro.disconnect(); if (e.target.matches?.(FX)) ro.observe(e.target, { box: 'border-box' }); }); }
+
+// ---------- Seit 4.57.0 (APD-126, Muster arbeit/APD-126/index.html): Textfelder leer einzeilig, Cursor am Ende ----------
+// APD-126/W-1 (R-5.2, 8): jedes Textfeld wächst und schrumpft beim Tippen, Einfügen und Leeren mit – in ui.js für alle Felder, die App setzt
+// nichts selbst; leer ist es eine Zeile hoch (design.css).
+document.addEventListener('input', e => { if (e.target.tagName === 'TEXTAREA') autoGrow(e.target); });
+// APD-126/W-2 (R-5.11): wird ein Feld aktiviert (Antippen, Tab, Fokus durch die App), steht der Cursor am Ende; im aktiven Feld setzt Antippen
+// ihn an die Stelle. Safari setzt den Cursor nach dem Fokus noch selbst (beim Loslassen bzw. per selectionchange) – nach Antippen und Tab kurz
+// nachsetzen (ceBis). Fokus durch die App ohne Antippen des Felds: nur einmal ans Ende – setzt die App danach selbst einen Cursor (z. B. Smiley
+// in der Zeile), bleibt er.
+const CE = 'input:is([type=text], [type=search], [type=email], [type=url], [type=tel], [type=number], :not([type])), textarea';
+let ceFeld = null, ceBis = 0, ceZeiger = null, ceTab = -1e9;
+const ceEnde = f => { try { const n = f.value.length; if (f.selectionStart !== n || f.selectionEnd !== n) f.setSelectionRange(n, n); } catch {} };
+addEventListener('pointerdown', e => { ceZeiger = { ziel: e.target, t: performance.now() }; }, { capture: true, passive: true });
+addEventListener('click', () => setTimeout(() => { ceZeiger = null; }), true);   // die Berührung ist vorbei – ein späterer Fokus durch die App ist kein Antippen
+addEventListener('keydown', e => { if (e.key === 'Tab') ceTab = performance.now(); }, true);
+addEventListener('focusin', e => {
+  const f = e.target;
+  if (!f.matches?.(CE)) return;
+  const jetzt = performance.now(), getippt = ceZeiger?.ziel === f && jetzt - ceZeiger.t < 1500, tab = jetzt - ceTab < 500;
+  ceFeld = f; ceBis = getippt || tab ? jetzt + 700 : 0;
+  if (ceBis) { ceEnde(f); setTimeout(() => ceFeld === f && ceEnde(f)); return; }
+  // Fokus durch die App: gleich danach ans Ende – es sei denn, die App hat selbst ausgewählt bzw. den Cursor gesetzt (select() vor focus() übernimmt
+  // der Browser erst nach dem Fokus; setSelectionRange danach)
+  const s0 = f.selectionStart, e0 = f.selectionEnd;
+  setTimeout(() => { if (ceFeld === f && document.activeElement === f && f.selectionStart === s0 && f.selectionEnd === e0 && s0 === e0) ceEnde(f); });
+}, true);
+document.addEventListener('selectionchange', () => { const f = document.activeElement;
+  if (f === ceFeld && performance.now() <= ceBis && (f.selectionStart === f.selectionEnd || f.selectionStart === 0 && f.selectionEnd === f.value.length)) ceEnde(f); });   // Tab wählt alles aus
+for (const t of ['pointerup', 'mouseup', 'touchend']) addEventListener(t, e => { if (e.target === ceFeld && performance.now() <= ceBis) setTimeout(() => ceFeld && ceEnde(ceFeld)); }, true);
+addEventListener('click', e => { if (e.target !== ceFeld || performance.now() > ceBis) return;
+  setTimeout(() => { if (ceFeld) ceEnde(ceFeld); ceBis = performance.now() + 120; }); }, true);   // danach gilt Antippen wieder der Stelle
+addEventListener('focusout', e => { if (e.target === ceFeld) { ceFeld = null; ceBis = 0; } }, true);
 
 /* ---------- Bedienungshilfen (seit 4.35.0, APD-43 Teil 1: R-1.8 VoiceOver, R-4.7 Hardware-Tastatur, R-5.3, R-3.4) ---------- */
 
@@ -734,6 +789,15 @@ function mehrKippen(knopf, offen) {
 // Beim Schließen ist der Baustein sofort weg (Zustand, Fokus, Sperre wie bisher); ein Abbild (.zu-geist, mit den berechneten Stilen, nicht
 // bedienbar, für VoiceOver verborgen) schrumpft ab der aktuellen Stelle – auch mitten im Öffnen (M-3). ‚Bewegung reduzieren‘: nur Überblenden 0,2 s.
 const WACHS_KURVE = 'cubic-bezier(.32,.72,0,1)', WACHS_MS = 350, SCHRUMPF_MS = 250, RUHIG_MS = 200;
+// R-1.12 (seit 4.57.0, APD-127, gemessen an der Seitenleiste in Notizen): Gleitbewegungen – öffnen, hinein und nach oben mit einer Feder ohne
+// Nachschwingen, Antwortzeit 0,35 s (1 − (1 + ωt)·e^(−ωt), ω = 2π/0,35 s; als linear()-Kurve über GLEIT_AUF_MS 0,5 s, 99 % nach 370 ms – dieselbe
+// Kurve steht in design.css bei dialog.gleitet); schließen und hinaus ease-in-out in GLEIT_ZU_MS 0,25 s; nach einer Geste der Rest anteilig,
+// mindestens GLEIT_MIN_MS 0,15 s. Menü und Sprechblase (R-4.13) bleiben bei WACHS_KURVE.
+const gleitWert = t => 1 - (1 + 2 * Math.PI / 0.35 * t) * Math.exp(-2 * Math.PI / 0.35 * t);
+const GLEIT_AUF_MS = 500, GLEIT_ZU_MS = 250, GLEIT_MIN_MS = 150, GLEIT_ZU = 'ease-in-out';
+const GLEIT_FEDER = 'linear(' + Array.from({ length: 31 }, (_, i) => (gleitWert(i / 30 * 0.5) / gleitWert(0.5)).toFixed(4)).join(', ') + ')';
+// dieselbe Feder für eigenes Rollen Bild für Bild (Titel antippen): k = Anteil der 0,5 s
+const gleitFeder = k => k >= 1 ? 1 : gleitWert(k * 0.5) / gleitWert(0.5);
 const bewegungRuhig = () => !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
 function wachsUrsprung(el, anchor) {
   // Lage aus left/top (setzt placeAt) – getBoundingClientRect wäre mitten in der Bewegung verkleinert
@@ -1045,14 +1109,15 @@ const TITEL_OBEN = [['.nb-title, .pnav-title', () => rolle.el || document.scroll
   ['.side-head .ttl, .side-head > h2', t => t.closest('#side')?.querySelector('.side-list')],
   ['.dlg-head h3', t => t.closest('dialog')?.querySelector('.dlg-body')]];
 let titelTipp = null, titelRollt = null;
-// Eigenes Rollen Bild für Bild (Ausrollen, 0,3 bis 0,7 s je nach Weg) statt scrollTo smooth: Chromium hält ein weiches Rollen unter Last
-// nicht verlässlich an, WebKit gar nicht (rolle.halt) – hier heißt Anhalten nur ‚kein weiteres Bild‘, in beiden Browsern gleich (H-6).
+// Eigenes Rollen Bild für Bild statt scrollTo smooth: Chromium hält ein weiches Rollen unter Last nicht verlässlich an, WebKit gar nicht
+// (rolle.halt) – hier heißt Anhalten nur ‚kein weiteres Bild‘, in beiden Browsern gleich (H-6). Seit 4.57.0 (R-1.12, APD-127/B-5) mit der
+// Feder aus Notizen über 0,5 s (bis 4.56.0 kubisch auslaufend in 0,3 bis 0,7 s je nach Weg).
 function titelRoll(el) {
-  const y0 = el.scrollTop, t0 = performance.now(), dauer = Math.min(700, 300 + y0 / 20), lauf = titelRollt = { el };
+  const y0 = el.scrollTop, t0 = performance.now(), dauer = GLEIT_AUF_MS, lauf = titelRollt = { el };
   const f = jetzt => {
     if (titelRollt !== lauf || !el.isConnected) return;
     const k = Math.min(1, (jetzt - t0) / dauer);
-    el.scrollTop = y0 * Math.pow(1 - k, 3);
+    el.scrollTop = y0 * (1 - gleitFeder(k));
     if (k < 1) requestAnimationFrame(f); else titelRollt = null;
   };
   requestAnimationFrame(f);
@@ -1261,18 +1326,22 @@ function markOpener() {
 /* ---------- Backup erstellen und laden (R-9.1, R-9.2, seit 4.10.0) ---------- */
 
 // Ergebnis des Teilen-Menüs als Text für das kleine Fenster (✅ bzw. ⚠️ davor).
+// Seit 4.57.0 (APD-116, R-10.8): der Dateiname steht allein in einer eigenen Zeile unter dem Satz (.fname, fett, ohne Punkt danach); jedes
+// Wort am Stück (.fw), deshalb bricht er nur nach einem Leerzeichen – nie nach ‚-‘ oder ‚.‘.
+const fileNameHtml = name => `<b class="fname">${String(name).split(' ').map(w => `<span class="fw">${esc(w)}</span>`).join(' ')}</b>`;
 const SHARE_RESULT = {
-  shared: name => `Teilen-Menü abgeschlossen für <b>${esc(name)}</b>.<div class="hint">Wenn du ‚In Dateien sichern‘ gewählt hast, liegt die Datei im gewählten Ordner.</div>`,
-  downloaded: name => `<b>${esc(name)}</b> wird geladen.<div class="hint">Du findest die Datei in der Dateien-App unter ‚Downloads‘.</div>`,
-  aborted: name => `Teilen-Menü abgebrochen – <b>${esc(name)}</b> wurde nicht gespeichert.`,
-  error: name => `<b>${esc(name)}</b> konnte nicht übergeben werden.`,
-  print: name => `Drucken-Menü geöffnet für <b>${esc(name)}</b>.<div class="hint">Dort über ‚Teilen‘ → ‚In Dateien sichern‘ als PDF ablegen.</div>`,
+  shared: name => `Teilen-Menü abgeschlossen für${fileNameHtml(name)}<div class="hint">Wenn du ‚In Dateien sichern‘ gewählt hast, liegt die Datei im gewählten Ordner.</div>`,
+  downloaded: name => `Wird geladen:${fileNameHtml(name)}<div class="hint">Du findest die Datei in der Dateien-App unter ‚Downloads‘.</div>`,
+  aborted: name => `Teilen-Menü abgebrochen – nicht gespeichert:${fileNameHtml(name)}`,
+  error: name => `Konnte nicht übergeben werden:${fileNameHtml(name)}`,
+  print: name => `Drucken-Menü geöffnet für${fileNameHtml(name)}<div class="hint">Dort über ‚Teilen‘ → ‚In Dateien sichern‘ als PDF ablegen.</div>`,
 };
 const shareResultText = (result, name) => `${result === 'aborted' || result === 'error' ? '⚠️' : '✅'} ${SHARE_RESULT[result](name)}`;
 const MIME = { json: 'application/json', html: 'text/html', txt: 'text/plain' };
 // R-6.2 (seit 4.11.3): Mustertabelle der Ausgabe (Designrichtlinie allgemein 10) – eine Quelle für jede Ausgabe, Vorschau und
 // jeden Bericht (z. B. HTML-Ausgabe des Reiselogbuchs, Abgleichbericht): Systemschrift 11 pt, h1 20 pt, h2 14 pt, Tabellen
-// mit Linien 1 px #999 (außen und Kopf #a5a5a5), Kopf #d9d9d9 fett, jede zweite Zeile #f5f5f5, Zeilen nicht über
+// mit Linien 1 px #999 (außen und Kopf #a5a5a5), Kopf fett mit dem Kopfverlauf von oben Weiß nach unten #d9d9d9 (seit 4.57.0, RLB-120:
+// #ffffff 0 %, #ffffff 25 %, #f6f6f6 50 %, #e9e9e9 75 %, #d9d9d9 100 %), jede zweite Zeile #f5f5f5, Zeilen nicht über
 // Seitenumbrüche teilen, dezente letzte Zeile 9 pt grau. scope: Klasse des Inhalts (z. B. '.rt').
 const outputCss = scope => `
   ${scope} { font: 11pt/1.4 -apple-system, "Segoe UI", Roboto, Arial, sans-serif; color: #000; }
@@ -1281,11 +1350,12 @@ const outputCss = scope => `
   ${scope} h2 { font-size: 14pt; margin: 20px 0 6px; break-after: avoid; page-break-after: avoid; }
   ${scope} table { border-collapse: collapse; }
   ${scope} .ict { display: inline-block; max-width: 100%; }
+  ${scope} .ict.az { display: inline; white-space: nowrap; }
   ${scope} .meta td { border: none; padding: 1px 16px 1px 0; vertical-align: top; }
   ${scope} table.grid { width: 100%; margin-top: 12px; table-layout: auto; }
   ${scope} table.grid.fit { width: auto; }
   ${scope} table.grid th, ${scope} table.grid td { border: 1px solid #999; padding: 6px 8px; vertical-align: top; text-align: left; }
-  ${scope} table.grid thead th { background: #d9d9d9; border-color: #a5a5a5; font-weight: 700; }
+  ${scope} table.grid thead th { background: linear-gradient(to bottom, #ffffff 0%, #ffffff 25%, #f6f6f6 50%, #e9e9e9 75%, #d9d9d9 100%); border-color: #a5a5a5; font-weight: 700; }
   ${scope} table.grid tr > :first-child { border-left-color: #a5a5a5; }
   ${scope} table.grid tr > :last-child { border-right-color: #a5a5a5; }
   ${scope} table.grid tbody:last-child tr:last-child > * { border-bottom-color: #a5a5a5; }
@@ -1771,10 +1841,10 @@ function refreshOk() {
 }
 // Seit 4.3.0: Der erste Buchstabe jeder Zeile (und nach . ! ?) wird groß – iOS macht das nicht zuverlässig,
 // z. B. nach einem Smiley am Zeilenanfang. Seit 4.4.0 schon vor der Eingabe (beforeinput), damit die Tastatur nicht
-// zurückschreibt; capNext(feld) macht auch den nächsten Buchstaben groß (z. B. nach einem Vorschlag ‚Freetour …‘).
-function capNext(f) { f.dataset.capNext = '1'; }
+// zurückschreibt. Seit 4.57.0 (APD-126/W-3, W-4, R-5.2): nach einem Vorschlag geht es klein weiter – capNext(feld) bewirkt nichts mehr
+// (bleibt, damit ältere Aufrufe der App nicht brechen).
+function capNext() {}
 function capWanted(f, pos) {
-  if (f.dataset.capNext) return true;
   const before = f.value.slice(f.value.lastIndexOf('\n', pos - 1) + 1, pos);
   return !/[\p{L}\p{N}]/u.test(before) || /[.!?]\s+$/.test(before);
 }
@@ -2299,7 +2369,7 @@ document.addEventListener('touchmove', e => {
 //     seite.fest()        – seit 4.31.0 (APD-68): Seitenleiste steht fest links (iPad quer); seite.neu() – alles neu aufbauen
 // Aufrufe der App: navVor(change) beim Öffnen eines Eintrags aus der Startliste, navZurueck() für den Zurück-Knopf,
 // navSeite(an) für panel-left (iPad hoch und quer) und die Abdunkelung am iPad hoch.
-const NAV_DAUER = 350, NAV_ENTSCHEID = 10, NAV_WAAGRECHT = 1.2, NAV_TEMPO = 0.3, NAV_HALTEN = 500, NAV_DUNKEL = 0.1;
+const NAV_ENTSCHEID = 10, NAV_WAAGRECHT = 1.2, NAV_TEMPO = 0.3, NAV_HALTEN = 500, NAV_DUNKEL = 0.1;
 const NAV_EIGEN = 'input, textarea, select, [contenteditable], .cap, .fab, .schnell, .searchbox, [data-eigene-geste], button:not(.side-row)';
 const navRuhig = window.matchMedia?.('(prefers-reduced-motion: reduce)');
 const navSchleier = document.createElement('div');
@@ -2358,9 +2428,11 @@ function navFahre(art, von, nach, w, fertig) {
   const ende = () => { navLauf = null; fertig?.(); navAufraeumen(art); updateFab(); };
   if (von === nach) return ende();
   H.classList.add('nav-faehrt');
-  const dauer = navRuhig?.matches ? 200 : Math.max(150, NAV_DAUER * Math.abs(nach - von));
+  // R-1.12 (seit 4.57.0, APD-127/B-3, B-4): hinein bzw. ein (nach > von) mit der Feder, zurück bzw. aus ease-in-out; nach einer Geste der Rest
+  // anteilig, mindestens 0,15 s (bis 4.56.0 beides 0,35 s mit cubic-bezier(.2,.8,.2,1))
+  const auf = nach > von, dauer = navRuhig?.matches ? 200 : Math.max(GLEIT_MIN_MS, (auf ? GLEIT_AUF_MS : GLEIT_ZU_MS) * Math.abs(nach - von));
   const anims = navTeile(art).map(el => {
-    const a = el.animate([navBild(art, el, von, w), navBild(art, el, nach, w)], { duration: dauer, easing: 'cubic-bezier(.2,.8,.2,1)', fill: 'forwards' });
+    const a = el.animate([navBild(art, el, von, w), navBild(art, el, nach, w)], { duration: dauer, easing: navRuhig?.matches ? 'cubic-bezier(.2,.8,.2,1)' : auf ? GLEIT_FEDER : GLEIT_ZU, fill: 'forwards' });
     a.id = 'nav';
     return a;
   });
@@ -2581,7 +2653,7 @@ document.addEventListener('keydown', e => {
 // Je Bild nur translate, scale und opacity (Web-Animation, damit die Prüfungen auf ihr Ende warten); ‚Bewegung reduzieren‘: Überblenden,
 // das Ziehen folgt weiter dem Finger. Das Schließen bleibt sofort (dlg.close, Häkchen): ein Abbild des Blatts gleitet hinaus.
 const BLATT_ENTSCHEID = 8, BLATT_SENKRECHT = 1.2, BLATT_ZAEH = 0.3, BLATT_DUNKEL = 0.3, BLATT_KLEINER = 0.07, BLATT_AUSLAUF = 400;
-const BLATT_KURVE = 'cubic-bezier(.32,.72,0,1)';
+// Kurven und Dauern seit 4.57.0 nach R-1.12 (GLEIT_FEDER, GLEIT_ZU; bis 4.56.0 BLATT_KURVE = cubic-bezier(.32,.72,0,1))
 const blattSchleier = document.createElement('div');
 blattSchleier.className = 'blatt-schleier';
 blattSchleier.setAttribute('aria-hidden', 'true');
@@ -2645,11 +2717,14 @@ function blattFahre(nach, fertig, dauer) {
   if (Math.abs(von - nach) < 1) { blattSetze(nach); fertig?.(); return; }
   // erst nach dem Loslassen; das x kommt trotz blattSperre an (eigenKlick in blattWieX, APD-108)
   if (navRuhig?.matches) { blattSetze(nach); setTimeout(() => fertig?.()); return; }
-  dauer = dauer || Math.max(220, Math.min(480, Math.abs(nach - von) * 0.9));
+  // R-1.12 (seit 4.57.0, APD-127/B-1): hinauf (öffnen, zurück nach dem Loslassen) mit der Feder in 0,5 s, hinunter (zu) ease-in-out in 0,25 s –
+  // je nach Weg anteilig, mindestens 0,15 s (bis 4.56.0 0,22–0,48 s je nach Weg, Kurve BLATT_KURVE)
+  const zu = nach > von;
+  dauer = dauer || Math.max(GLEIT_MIN_MS, (zu ? GLEIT_ZU_MS : GLEIT_AUF_MS) * Math.min(1, Math.abs(nach - von) / Math.max(1, blattZu())));
   const a = blattBild(von), b = blattBild(nach);
   blattSetze(Math.min(von, nach));   // die Seite weicht schon während der Bewegung zurück (runde Ecken, Hintergrund)
   blattAnimiere([[dlg, { translate: a.blatt }, { translate: b.blatt }], [blattSchleier, { opacity: a.schleier }, { opacity: b.schleier }],
-    ...blattSeiteTeile(a, b)], dauer, BLATT_KURVE, () => { blattSetze(nach); fertig?.(); });
+    ...blattSeiteTeile(a, b)], dauer, zu ? GLEIT_ZU : GLEIT_FEDER, () => { blattSetze(nach); fertig?.(); });
 }
 // die Seite bewegt sich nur, wenn sie zurückweicht (iPhone hoch) – am iPad und quer bleibt sie ohne Animation (APD-72/D-2)
 const blattSeiteTeile = (a, b) => a.s || b.s ? blattSeite().map(e => [e, a.seite, b.seite]) : [];
@@ -2693,7 +2768,7 @@ function blattGeist() {
   blattGeistEl = g;
   const weg = () => { g.remove(); if (blattGeistEl === g) blattGeistEl = null; };
   const a = navRuhig?.matches ? g.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 200, easing: 'ease-out', fill: 'forwards' })
-    : g.animate([{ translate: `0 ${Math.round(blattY)}px` }, { translate: `0 ${Math.round(blattZu())}px` }], { duration: Math.max(220, Math.min(420, (blattZu() - blattY) * 0.5)), easing: BLATT_KURVE, fill: 'forwards' });
+    : g.animate([{ translate: `0 ${Math.round(blattY)}px` }, { translate: `0 ${Math.round(blattZu())}px` }], { duration: GLEIT_ZU_MS, easing: GLEIT_ZU, fill: 'forwards' });   // R-1.12 (seit 4.57.0): 0,25 s ease-in-out
   a.onfinish = weg; a.oncancel = weg;
 }
 // geschlossen: Abdunkelung und Seite zurück, gleichzeitig mit dem Abbild
@@ -2706,7 +2781,7 @@ function blattWeg() {
   H.classList.remove('blatt-zieht');
   if (!blattSeite().length && !von.schleier) return blattAus();
   blattAnimiere([[blattSchleier, { opacity: von.schleier }, { opacity: 0 }], ...blattSeiteTeile(von, nach)],
-    navRuhig?.matches ? 200 : 380, navRuhig?.matches ? 'ease-out' : BLATT_KURVE, blattAus);
+    navRuhig?.matches ? 200 : GLEIT_ZU_MS, navRuhig?.matches ? 'ease-out' : GLEIT_ZU, blattAus);   // R-1.12 (seit 4.57.0): gleich mit dem Abbild (bis 4.56.0 0,38 s)
 }
 const dlgSchliessen = dlg.close.bind(dlg);
 dlg.close = v => { blattGeist(); dlgSchliessen(v); };
@@ -2800,7 +2875,7 @@ function blattLos(e, abbruch) {
   const wohin = (z.roh ?? blattY) + tempo * BLATT_AUSLAUF, zu = blattZu();
   if (abbruch || Math.abs(wohin) <= Math.abs(zu - wohin)) { blattFahre(0); return; }
   if (dlgDirty?.()) { blattFahre(0); setTimeout(() => { if (dlg.open) blattWieX(); }, 260); return; }
-  blattFahre(zu, () => { blattWieX(); if (dlg.open) blattFahre(0); }, Math.max(180, Math.min(360, (zu - blattY) * 0.5)));
+  blattFahre(zu, () => { blattWieX(); if (dlg.open) blattFahre(0); });   // R-1.12 (seit 4.57.0): Rest anteilig in blattFahre (bis 4.56.0 0,18–0,36 s)
 }
 window.addEventListener('pointerup', e => blattLos(e, false), true);
 window.addEventListener('pointercancel', e => blattLos(e, true), true);
@@ -2932,7 +3007,7 @@ function fokusRand(f) {
 }
 // ---------- Seit 4.56.0 (APD-115/V-3, R-4.5): wie Apple nur so weit rollen, dass das Feld über der Tastatur liegt ----------
 // - einzeilig bzw. passt das Feld ganz: es endet 16 px über der Tastatur (im Inhalt 28 px – Safari verschiebt sonst, APD-36/S-5 ABSTAND 24);
-// - mehrzeilig und zu hoch: die Zeile mit dem Cursor und eine halbe Zeile darunter (beim Antippen die Zeile unter dem Finger);
+// - mehrzeilig und zu hoch: die Zeile mit dem Cursor und eine halbe Zeile darunter (beim Aktivieren die letzte, R-5.11 – seit 4.57.0, APD-126/W-6);
 // - Feld wechseln bei offener Tastatur genauso (ganz sichtbar: nichts) – den Fokus setzt ui.js dann selbst (APD-115/W-4, unten bei ‚touchend‘);
 // - nie höher als Umrandung und Schatten unter dem oberen Rand des Bereichs (fokusRand). ≤ 0: nichts rollen.
 const zeilenHoehe = f => { const s = getComputedStyle(f), lh = parseFloat(s.lineHeight); return Number.isFinite(lh) ? lh : parseFloat(s.fontSize) * 1.45; };
@@ -2968,7 +3043,7 @@ function noetig(f, c) {
   const oben = b.top + dy + rand, unten = untenNachher - abstand, jetzt = Math.min(sichtbar, b.bottom) - (d ? 0 : abstand);
   let n;
   if (f.tagName === 'TEXTAREA' && r.height > unten - oben) {
-    const t = tipp && performance.now() - tipp.t < 1500 ? tipp.y : null, z = cursorZeile(f, t);
+    const z = cursorZeile(f);   // seit 4.57.0 (APD-126/W-6): beim Aktivieren die letzte Zeile – der Cursor steht am Ende (R-5.11)
     n = Math.min(z.bottom + z.lh / 2 + dy - unten, z.top + dy - oben);
   } else if (r.height > unten - oben) n = r.top + dy - oben;
   else n = Math.max(r.bottom + dy - unten, r.bottom - jetzt);
@@ -3058,12 +3133,13 @@ document.addEventListener('input', e => {
     if (zu > unten) { rollen(c, zu - unten); messZeile(`V-3 Cursor ${messId(f)} ${Math.round(zu - unten)}`); } });
 });
 // Jede Meldung von Safari (Tastatur auf und zu, sichtbarer Bereich verschoben): Rahmen und Fenster neu stellen, ohne dass ein Inhalt
-// rutscht – vor dem Wachsen des Rahmens Platz geben, sonst kürzt der Browser den Rollstand. Das iPad-Fenster gleitet (0,25 s) mit.
+// rutscht – vor dem Wachsen des Rahmens Platz geben, sonst kürzt der Browser den Rollstand. Das iPad-Fenster gleitet mit (R-1.12).
 // Schließt die Tastatur (iPad: Tastatur-Taste), gibt das Feld den Fokus ab – erneutes Antippen ist dann ein gewöhnliches.
 function gemeldet() {
   const cs = [rolle.el, dlg.open ? dlg.querySelector('.dlg-body') : null].filter(Boolean), y = cs.map(c => c.scrollTop);
   const offen = kbOffen(), f = document.activeElement, feld = f?.matches?.(FELD) ? f : null;
-  if (dlg.open && !isPhone()) { dlg.classList.add('gleitet'); clearTimeout(gemeldet.t); gemeldet.t = setTimeout(() => dlg.classList.remove('gleitet'), 300); }
+  // R-1.12 (seit 4.57.0, APD-127/B-2): hoch (Tastatur auf) mit der Feder 0,5 s, runter (.runter, Tastatur zu) ease-in-out 0,25 s (design.css)
+  if (dlg.open && !isPhone()) { dlg.classList.add('gleitet'); dlg.classList.toggle('runter', !offen); clearTimeout(gemeldet.t); gemeldet.t = setTimeout(() => dlg.classList.remove('gleitet', 'runter'), GLEIT_AUF_MS + 50); }
   // APD-115/N-13: wächst der Rahmen (Tastatur geht zu), bekommt jeder Rollbereich vorher Platz – sonst nur, wo schon Platz steht; Platz bei jeder
   // Meldung bräche das sanfte Rollen ab (‚Nach oben‘ bei offener Tastatur, APD-36/B-8)
   const waechst = kbWar && !offen, mit = cs.map(c => waechst || platzVon(c) > 0);
