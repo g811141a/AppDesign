@@ -48,6 +48,7 @@ nach `arbeit/4.57.0 Testfall-Liste.md`. Usertest im Reiselogbuch: P-101.
 - **Safari-Modell:** iPhone hoch `aufVerzug` 100 ms – die Tastatur öffnet sich 100 ms nach dem Fokus (APD-127/W-3).
 - **Prüfung:** `checkGleiten` neu (APD-127/B-1 bis B-8: Dauer und Kurve jeder Bewegung, Mehr-Menü, ‚Bewegung reduzieren‘, Endlage), Gegenprobe
   `gleitenGegenprobe` mit `PRUEF_V=heute` rot (APD-127/B-1 bis APD-127/B-5).
+  `checkOpenAt` wartet nach dem Öffnen auf das Ende der Gleitbewegung (`navFertig`) – hinein dauert jetzt 0,5 s.
 
 **Regeltext – APD-125** (`arbeit/APD-125 Datei vor jeder Kachel Wortlaut.md`)
 

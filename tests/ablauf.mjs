@@ -694,7 +694,8 @@ export async function checkFeldCursor(p, { open = null, felder = [], tab = null,
 // markiert: null = ein aktueller Eintrag (z. B. heute) steht oben, aber nichts ist hervorgehoben – nur Offenes wird hervorgehoben.
 export async function checkOpenAt(p, { open, want = null, markiert = want, mark = '.gap', where = '' } = {}) {
   const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}R-7.4 ${t}`);
-  await open(); await wait(p, 400);
+  // seit 4.57.0 (APD-127, R-1.12): hinein gleitet mit der Feder über 0,5 s – erst messen, wenn die Bewegung fertig ist
+  await open(); await wait(p, 400); await navFertig(p);
   const r = await p.evaluate(({ want, mark, R }) => {
     const roll = eval(R);
     const bar = document.querySelector('.pnav, .nb')?.getBoundingClientRect().bottom || 0;
