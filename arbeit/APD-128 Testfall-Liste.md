@@ -1,7 +1,7 @@
 # APD-128 Prüfumfang nach Art der Änderung – Testfall-Liste
 
 **Stand 13.11.2026** · Sitzung ‚Reiselogbuch 0108‘ · Wortlaut APD-128/V-1 bis V-3 bestätigt (Nutzer 13.11.2026), Entscheidungen APD-128/D-1 bis D-4 ·
-noch nichts gebaut
+noch nichts gebaut · **V-4 und M-1 bis M-18 bestätigt (Nutzer 13.11.2026)**
 
 Die Nummern M-1 … gelten nur in dieser Datei (außerhalb: APD-128/M-n). Jeder Fall wird ein Testfall (automatisch) in
 `werkzeug/veroeffentlichen-selbsttest.mjs`; er baut wie die bisherigen Fälle kleine Übungs-Repos (AppDesign und App) und vergleicht mit `origin/main`.
