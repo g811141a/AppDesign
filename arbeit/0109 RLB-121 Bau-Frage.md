@@ -34,4 +34,4 @@ keine.
 ## Backlog-Erinnerung
 
 Nächste Version Reiselogbuch 3.56.0: 1 Punkt bereit (RLB-121) · Offen im Backlog: RLB-6 · AppDesign: APD-85 Teil 6, APD-80, APD-30,
-APD-62 (T-1), APD-70.
+APD-62 (APD-38/T-1), APD-70.

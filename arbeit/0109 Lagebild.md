@@ -24,7 +24,7 @@
 
 - **Nächste Version:** Reiselogbuch 0 Punkte bereit · AppDesign 0 Punkte bereit.
 - **Reiselogbuch in Klärung:** RLB-121 (Prio 3, geklärt D-1 bis D-4, jetzt Apple-Abgleich und Muster) · RLB-6 (Prio 3).
-- **AppDesign offen:** APD-85 Teil 6 (Wackler WebKit) · APD-80 (Kontrast dunkel) · APD-30 (Kurzmeldung, Wischaktionen) · APD-62 (nur T-1, zurückgestellt) · APD-70.
+- **AppDesign offen:** APD-85 Teil 6 (Wackler WebKit) · APD-80 (Kontrast dunkel) · APD-30 (Kurzmeldung, Wischaktionen) · APD-62 (nur APD-38/T-1, zurückgestellt) · APD-70.
 
 ## Modell, Aufwand, Umgebung
 

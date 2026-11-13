@@ -28,7 +28,7 @@ Kontext etwa 266.000 – die Übergabe (ab 300.000) steht nach dem nächsten Sch
 ## Backlog-Erinnerung
 
 Nächste Version Reiselogbuch 3.56.0: 0 Punkte bereit (RLB-121 nach Wortlaut bereit) · Offen im Backlog: RLB-121 (allgemein/App, Wortlaut),
-RLB-6 · AppDesign: APD-85 Teil 6, APD-80, APD-30, APD-62 (T-1), APD-70.
+RLB-6 · AppDesign: APD-85 Teil 6, APD-80, APD-30, APD-62 (APD-38/T-1), APD-70.
 
 ## Offene Usertests
 
