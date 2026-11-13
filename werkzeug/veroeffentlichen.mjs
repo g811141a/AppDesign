@@ -11,16 +11,23 @@
 //        --jobs N (seit 4.39.0, APD-85): so viele Prüfungen gleichzeitig (Standard: Kerne) – weniger Last für WebKit.
 //        Seit 4.47.0 (APD-102): vor dem Prüflauf holt los origin/main; ist main neuer als der Vorbereitungs-Zweig, führt es main in den
 //        Zweig zusammen und prüft genau diesen Stand – bei einem Konflikt Abbruch vor dem Prüflauf (Zweig unverändert, nichts gepusht).
+//        Seit 4.58.0 (APD-128): --stufe text (nur mit --nur-app) prüft nur die Prüfungen der Stufe Text (werkzeug/pruefstufe.mjs); passt die
+//        Stufe nicht, Abbruch vor dem Prüflauf. Der Merge-Commit auf main trägt dann ‚(Prüfstufe Text)‘ – die nächste Version läuft voll (D-4).
+//   node werkzeug/veroeffentlichen.mjs stufe [--app reiselogbuch]
+//        (seit 4.58.0, APD-128) nur lesen: schlägt die Prüfstufe vor (Text mit Liste der Prüfungen oder voll mit Grund) – Vergleich des
+//        Arbeitsordners mit dem gemeinsamen Stand von origin/main; für die Bau-Frage (Zusammenarbeit 0 Nr. 2 und 21).
 // Seit 4.14.1 ohne Git-Markierung (aus der Cloud gesperrt): veröffentlicht = fassung/X.Y.Z/ liegt auf origin/main.
 // AppDesign und die Apps liegen nebeneinander (Liste werkzeug/apps.json). Rückgabewert 0 = fertig, 1 = abgebrochen.
 // Für den Selbsttest: --ad-dir <Ordner>, VEROEFF_PAGES=success|failure|haengt (Pages-Lauf nachgebildet), VEROEFF_PAGES_MAX_S,
 // VEROEFF_WARTE_MS (Grundzeit der Wiederholungen, Standard 1000 → 2, 4, 8, 16 s); seit 4.47.0 (APD-102) VEROEFF_FETCH_FEHLT=n (die ersten
-// n git fetch scheitern, APD-102/M-7) und VEROEFF_OHNE_VORHER=1 (Gegenprobe APD-102/M-8: kein Zusammenführen vor dem Prüflauf).
+// n git fetch scheitern, APD-102/M-7) und VEROEFF_OHNE_VORHER=1 (Gegenprobe APD-102/M-8: kein Zusammenführen vor dem Prüflauf); seit 4.58.0
+// VEROEFF_GEGENPROBE=stufe (Gegenprobe APD-128/M-17: Code wird nicht verglichen).
 import { readFileSync, writeFileSync, existsSync, mkdirSync, rmSync, copyFileSync } from 'node:fs';
 import { execFileSync, spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { join } from 'node:path';
 import { vergleiche, fassungQuellen, fassungListe, pruefsummen, checkFassungen } from '../tests/version.mjs';
+import { bewerte, pruefungenAusListe } from './pruefstufe.mjs';
 
 const argv = process.argv.slice(2), befehl = argv[0];
 const opt = n => { const i = argv.indexOf(n); return i < 0 ? undefined : argv[i + 1]; };
@@ -136,6 +143,35 @@ function vorbereiten() {
   console.log('Weiter: CHANGELOG, Testfälle (/0), Backlog und Richtlinien-Versionsgeschichte schreiben, committen, dann ‚los‘.');
 }
 
+// APD-128 (seit 4.58.0): Prüfstufe einer App – verglichen wird mit dem gemeinsamen Stand von origin/main (merge-base), so zählen nur die
+// Änderungen der Vorbereitung; arbeitsordner: auch noch nicht committete und neue Dateien (Befehl stufe), sonst HEAD (los).
+const STUFE_TEXT = '(Prüfstufe Text)';
+function ermittleStufe(a, { arbeitsordner = false } = {}) {
+  gitOk(a.dir, 'fetch', '-q', 'origin', 'main');
+  const mb = gitOk(a.dir, 'merge-base', 'origin/main', 'HEAD');
+  if (!mb) return { stufe: 'voll', gruende: ['kein gemeinsamer Stand mit origin/main'], pruefungen: [] };
+  const zeilen = t => (t || '').split('\n').filter(Boolean);
+  const dateien = arbeitsordner ? [...new Set([...zeilen(git(a.dir, 'diff', '--name-only', mb)), ...zeilen(git(a.dir, 'ls-files', '--others', '--exclude-standard'))])]
+    : zeilen(git(a.dir, 'diff', '--name-only', mb, 'HEAD'));
+  // Inhalte ungekürzt (git() kürzt die Ausgabe – der Vergleich mit dem Arbeitsordner braucht den letzten Zeilenumbruch)
+  const zeige = ref => { try { return execFileSync('git', ['-C', pfad(a.dir), 'show', ref], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], maxBuffer: 1e8 }); } catch { return null; } };
+  const neuVon = f => arbeitsordner ? (existsSync(new URL(f, a.dir)) ? lies(a.dir, f) : null) : zeige(`HEAD:${f}`);
+  const aenderungen = dateien.map(f => ({ f, alt: zeige(`${mb}:${f}`), neu: neuVon(f) }));
+  const testDateien = arbeitsordner ? zeilen(git(a.dir, 'ls-files', '-co', '--exclude-standard', 'tests/*.mjs')) : zeilen(git(a.dir, 'ls-tree', '--name-only', 'HEAD', 'tests/'));
+  const namen = testDateien.filter(f => /^tests\/[^/]+\.mjs$/.test(f)).map(f => f.slice(6, -4));
+  const pruefungen = Object.fromEntries(pruefungenAusListe(neuVon('tests/alle.mjs') || '', namen).map(n => [n, neuVon(`tests/${n}.mjs`) || '']));
+  // D-4: der letzte Merge-Commit einer Veröffentlichung auf main (‚Merge <Zweig>: …‘) trägt ‚(Prüfstufe Text)‘ → diese Version voll
+  const letzte = zeilen(gitOk(a.dir, 'log', '--first-parent', '--merges', '--format=%s', '-n', '50', 'origin/main')).find(z => /^Merge \S+: /.test(z) && !/^Merge origin\/main /.test(z));
+  return bewerte({ aenderungen, pruefungen, cache: a.cache, adOnline: online(adVersion()), vorigeText: !!letzte?.includes(STUFE_TEXT),
+    ohneCode: process.env.VEROEFF_GEGENPROBE === 'stufe' });
+}
+const stufeText = s => s.stufe === 'text' ? `Stufe Text – ${s.pruefungen.length} Prüfungen: ${s.pruefungen.join(', ')}` : `voll – Grund: ${s.gruende.join(' · ')}`;
+function stufe() {
+  const namen = opts('--app'), apps = namen.length ? namen.map(n => APPS.find(a => a.name === n) || abbruch(`App ‚${n}‘ steht nicht in werkzeug/apps.json`))
+    : APPS.filter(a => existsSync(new URL('index.html', a.dir)));
+  for (const a of apps) console.log(`${a.titel}: Vorschlag ${stufeText(ermittleStufe(a, { arbeitsordner: true }))}`);
+}
+
 let fetchFehlt = +(process.env.VEROEFF_FETCH_FEHLT || 0);
 const holeMain = async (dir, name) => mitWiederholung(`${name}: git fetch`, () => {
   if (fetchFehlt > 0) { fetchFehlt--; throw new Error('git fetch nachgebildet gescheitert (Selbsttest)'); }
@@ -207,14 +243,14 @@ function pruefeRepo(dir, name, branchName) {
   return b;
 }
 
-async function veroeffentliche(dir, name, branch, pruefe) {
+async function veroeffentliche(dir, name, branch, pruefe, zusatz = '') {
   const t0 = Date.now();
   await holeMain(dir, name);
   // APD-102/M-5, M-6: hat sich main während des Prüflaufs noch einmal geändert, wird wie bisher beim Veröffentlichen zusammengeführt
   const geaendert = mainStand.has(pfad(dir)) && git(dir, 'rev-parse', 'origin/main') !== mainStand.get(pfad(dir));
   if (geaendert) console.log(`⚠ ${name}: main hat sich während des Prüflaufs geändert – wird ohne neue Prüfung zusammengeführt`);
   git(dir, 'checkout', '-q', '-B', 'main', 'origin/main');
-  const konflikt = fuehreZusammen(dir, branch, `Merge ${branch}: ${name}`);
+  const konflikt = fuehreZusammen(dir, branch, `Merge ${branch}: ${name}${zusatz}`);
   if (konflikt.length) {
     git(dir, 'checkout', '-q', branch);
     abbruch(`${name}: main hat sich während des Prüflaufs geändert und lässt sich nicht konfliktfrei zusammenführen – ${konflikt.join(', ')}.\n` +
@@ -234,11 +270,25 @@ async function los() {
   const X = adVersion(), apps = (namen.length ? namen.map(n => APPS.find(a => a.name === n) || abbruch(`App ‚${n}‘ steht nicht in werkzeug/apps.json`)) :
     // ohne --app: jede App, deren Version neuer ist als auf origin/main (also vorbereitet) – egal auf welchem Zweig sie steht
     APPS.filter(a => existsSync(new URL('index.html', a.dir)) && appVersion(a) !== (gitOk(a.dir, 'show', 'origin/main:index.html') || '').match(/const APP_VERSION = '([\d.]+)'/)?.[1]));
+  // APD-128 (seit 4.58.0): --stufe zuerst prüfen
+  const stufeOpt = opt('--stufe');
+  if (stufeOpt && !['text', 'voll'].includes(stufeOpt)) abbruch(`--stufe ${stufeOpt}: erlaubt sind text und voll`);
+  const nurText = stufeOpt === 'text', auswahl = new Map();
+  if (nurText && !nurApp) abbruch('--stufe text nur mit --nur-app: AppDesign muss unverändert und schon veröffentlicht sein (Zusammenarbeit 0 Nr. 2)');
   // APD-5/E-3: vor dem Push – Zweig, offene Änderungen, Texte, Fassung
   if (!nurApp && online(X)) abbruch(`AppDesign ${X} ist schon veröffentlicht (fassung/${X}/ auf main) – nur die App: los --nur-app`);
   const adBranch = nurApp ? null : pruefeRepo(AD, 'AppDesign', `vorbereitung-${X}`);
   if (nurApp) { if (!online(X)) abbruch(`--nur-app: AppDesign ${X} ist noch nicht veröffentlicht (fassung/${X}/ fehlt auf main)`); }
   const appBranches = apps.map(a => pruefeRepo(a.dir, a.titel, `vorbereitung-${appVersion(a)}`));
+  // APD-128 (seit 4.58.0): --stufe text – vor allem anderen prüfen, ob die Stufe passt (Zweig unverändert, nichts geprüft, nichts gepusht)
+  if (nurText) {
+    for (const a of apps) {
+      const s = ermittleStufe(a);
+      if (s.stufe !== 'text') abbruch(`${a.titel}: Stufe Text passt nicht – ${s.gruende.join(' · ')}.\n  Nichts geprüft, nichts geändert, nichts gepusht. Voll prüfen: los ohne --stufe`);
+      auswahl.set(a.name, s.pruefungen);
+      console.log(`✓ ${a.titel}: ${stufeText(s)}`);
+    }
+  }
   // APD-102 (seit 4.47.0): vor allen Prüfungen main holen und – wenn neuer – in die Zweige zusammenführen; Konflikt in einem Repo: Abbruch vor allem
   if (!nurApp) await mainVorher(AD, 'AppDesign', adBranch);
   for (const [i, a] of apps.entries()) await mainVorher(a.dir, a.titel, appBranches[i]);
@@ -266,10 +316,11 @@ async function los() {
   // APD-5/E-4: alle Tests jeder App – einer rot: nichts veröffentlichen
   const wackler = [];
   for (const a of apps) {
-    console.log(`\n— Prüfungen ${a.titel} (node tests/alle.mjs) —`);
+    const nur = auswahl.get(a.name);
+    console.log(`\n— Prüfungen ${a.titel} (node tests/alle.mjs${nur ? ' --nur …, Prüfstufe Text' : ''}) —`);
     const wDatei = join(pfad(a.dir), 'tests', 'out', 'wackelt.json');
     rmSync(wDatei, { force: true });
-    const r = spawnSync(process.execPath, ['tests/alle.mjs', ...(opt('--jobs') ? ['--jobs', opt('--jobs')] : [])], { cwd: pfad(a.dir), stdio: 'inherit' });
+    const r = spawnSync(process.execPath, ['tests/alle.mjs', ...(nur ? ['--nur', nur.join(',')] : []), ...(opt('--jobs') ? ['--jobs', opt('--jobs')] : [])], { cwd: pfad(a.dir), stdio: 'inherit' });
     if (r.status !== 0) abbruch(`Prüfungen von ${a.titel} rot – nichts veröffentlicht`);
     // APD-85/W-11 (seit 4.42.0): Wackler (rot unter Last, allein grün) zählen als grün und stehen in der Zusammenfassung
     try { for (const w of JSON.parse(readFileSync(wDatei, 'utf8'))) wackler.push(`${a.titel}: ${w}`); } catch {}
@@ -289,7 +340,7 @@ async function los() {
       ergebnis.push(await veroeffentliche(a.dir, `${a.titel} ${Y}`, appBranches[i], show => {
         const h = show('index.html');
         if (!h.includes(`const APP_VERSION = '${Y}'`) || !h.includes(`const AD_NEEDED = '${F}'`)) abbruch(`${a.titel}: main enthält nicht ${Y} mit Fassung ${F}`);
-      }));
+      }, auswahl.has(a.name) ? ` ${STUFE_TEXT}` : ''));
     } catch (e) {
       // APD-5/E-8: dank fester Fassung kein Schaden – die App lädt weiter ihre alte Fassung.
       if (e instanceof Abbruch && !nurApp) e.message += `\n  AppDesign ${X} ist online; die App lädt weiter ihre bisherige Fassung. Nach der Behebung: node werkzeug/veroeffentlichen.mjs los --nur-app --app ${a.name}`;
@@ -299,6 +350,7 @@ async function los() {
   console.log('\n✓ Fertig – alle Pages-Läufe ‚success‘, main enthält die neuen Versionen:');
   for (const r of ergebnis) console.log(`  ${r.name}: Commit ${r.sha.slice(0, 7)}, Pages ${r.pages} s, zusammen ${r.dauer} s`);
   for (const r of ergebnis) if (r.geaendert) console.log(`  ⚠ ${r.name}: main hat sich während des Prüflaufs geändert – zusammengeführt ohne neue Prüfung (APD-102)`);
+  for (const [n, l] of auswahl) console.log(`  Prüfstufe Text: ${l.length} Prüfungen (${APPS.find(a => a.name === n).titel}: ${l.join(', ')}) – die nächste Version läuft voll (APD-128/D-4)`);
   if (wackler.length) console.log(`  ⚠ ${wackler.length} Prüfung${wackler.length > 1 ? 'en' : ''} wackelt (rot unter Last, allein grün – APD-85): ${wackler.join(' · ')}`);
   console.log('  Die echte Seite (github.io) prüft der Nutzer mit /0 ‚Version prüfen‘ (APD-5/E-9).');
   aeltereFassungen(X);
@@ -308,7 +360,8 @@ try {
   if (befehl === 'vorbereiten') vorbereiten();
   else if (befehl === 'fassung') { legeFassungAn(); const f = checkFassungen(AD); if (f.length) abbruch(f.join('\n')); }
   else if (befehl === 'los') await los();
-  else abbruch('Aufruf: node werkzeug/veroeffentlichen.mjs vorbereiten --ad X.Y.Z --app name=X.Y.Z | fassung | los [--app name] [--nur-app]');
+  else if (befehl === 'stufe') stufe();
+  else abbruch('Aufruf: node werkzeug/veroeffentlichen.mjs vorbereiten --ad X.Y.Z --app name=X.Y.Z | fassung | stufe [--app name] | los [--app name] [--nur-app] [--stufe text]');
 } catch (e) {
   if (!(e instanceof Abbruch)) throw e;
   console.log(`✗ Abbruch: ${e.message}`); process.exit(1);

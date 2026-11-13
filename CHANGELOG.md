@@ -3,6 +3,29 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.58.0 – 13.11.2026
+
+AppDesign 4.58.0 · Designrichtlinie allgemein 4.58.0 · Zusammenarbeit allgemein 3.12.0 · Reiselogbuch bleibt 3.55.1 (Fassung 4.57.0)
+
+**APD-128 Prüfumfang nach Art der Änderung** – dein ‚Ja‘ vom 13.11.2026, Sitzung 0108 (`arbeit/0108 Bau-Frage 4.58.0.md`). Entscheidungen und Wortlaut
+`arbeit/0108 APD-128 Klärung.md`, `arbeit/0108 APD-128 Wortlaut.md` (APD-128/D-1 bis D-4, V-1 bis V-3), `arbeit/APD-128 Testfall-Liste.md` (V-4,
+Testfall-Liste APD-128/M-1 bis APD-128/M-18).
+
+- **Zusammenarbeit 3.12.0, 0 Nr. 2:** genau ein Prüflauf je Version in einer von zwei Stufen – **Stufe Text**, wenn sich nur Texte der App geändert
+  haben (`index.html` ohne die Inhalte der Zeichenketten und die Kommentare unverändert, sonst nur Doku und Versionsstellen, AppDesign unverändert)
+  und die vorige Version voll geprüft wurde: Grundprüfungen (`doku-regeln`, `version-regeln`, `text-regeln`) und alle Prüfungen mit dem alten oder
+  neuen Text, ohne `hig`, in Chromium und WebKit; sonst **voll**. Das Skript schlägt die Stufe vor, die Bau-Frage nennt sie, im Zweifel voll.
+- **AppDesign-`CLAUDE.md` 2.12.0:** ‚Technisch‘ und ‚Veröffentlichen‘ mit `stufe` und `los … --stufe text`.
+- **`werkzeug/pruefstufe.mjs` (neu):** zerlegt `index.html` und `tests/*.mjs` in Code, Zeichenketten (auch die Textteile von Vorlagen) und Kommentare;
+  eine geänderte Zeichenkette zählt als Text nur mit Leerzeichen oder Umlaut, mit Großbuchstabe oder Umlaut und ohne `<`, `>`, `{`, `}`, `;`, `=`.
+  Änderungen in `<style>`, an `AD_NEEDED`, an `sw.js` außerhalb von `CACHE` oder an anderen Dateien (z. B. `manifest.json`) heißen voll.
+- **`werkzeug/veroeffentlichen.mjs`:** Befehl `stufe [--app …]` (nur lesen, Arbeitsordner gegen den gemeinsamen Stand von `origin/main`);
+  `los --nur-app --app … --stufe text` prüft die Stufe vor allem anderen (sonst Abbruch, nichts geändert), ruft `tests/alle.mjs --nur …` auf und
+  schreibt ‚(Prüfstufe Text)‘ in den Merge-Commit auf `main` – danach schlägt `stufe` für die nächste Version voll vor (APD-128/D-4).
+- **Selbsttest** `werkzeug/veroeffentlichen-selbsttest.mjs`: 21 neue Fälle APD-128/M-1 bis M-18, alle grün, mit Gegenprobe APD-128/M-17 (ohne Codevergleich
+  werden APD-128/M-5, M-6 und M-9 rot). Am echten Stand: Reiselogbuch 3.55.0 → 3.55.1 ergibt Stufe Text mit 8 Prüfungen.
+- **Kein Usertest am Gerät:** die App ändert sich nicht (bleibt auf Fassung 4.57.0); die erste Version mit Stufe Text nennt sie in der Bau-Frage.
+
 ## 4.57.0 – 12.11.2026
 
 AppDesign 4.57.0 · Designrichtlinie allgemein 4.57.0 · Zusammenarbeit allgemein 3.11.0 · geprüft mit Reiselogbuch 3.55.0

@@ -1,6 +1,6 @@
 # AppDesign
 
-**Version 4.57.0** · Stand 08.11.2026
+**Version 4.58.0** · Stand 13.11.2026
 
 Gemeinsames Design für alle iPad-Web-Apps von g811141a – Apple-like nach den
 [Human Interface Guidelines](https://developer.apple.com/design/human-interface-guidelines).
@@ -15,7 +15,8 @@ Jede Komponente ist hier einmal beschrieben **und** einmal programmiert; alle Ap
 | `v4/design.css` | Farben, Schrift und alle Komponenten (Arbeitsstand der Hauptversion 4 = neueste Fassung) |
 | `v4/ui.js` | Icons, Menüs, Sprechblasen, Fenster, Darstellung … (Arbeitsstand der Hauptversion 4 = neueste Fassung) |
 | `fassung/X.Y.Z/` | feste, unveränderliche Fassung je Version seit 4.14.0: `design.css`, `ui.js`, `tests/`, seit 4.14.1 auch Designrichtlinie und Zusammenarbeit dieser Version; Prüfsummen in `fassung/PRUEFSUMMEN` |
-| `werkzeug/veroeffentlichen.mjs` | Veröffentlichungs-Skript: `vorbereiten` (Versionen erhöhen, Fassung anlegen), `los` (prüfen, erst AppDesign, dann die App, Pages abwarten) |
+| `werkzeug/veroeffentlichen.mjs` | Veröffentlichungs-Skript: `vorbereiten` (Versionen erhöhen, Fassung anlegen), `stufe` (Prüfstufe Text oder voll vorschlagen, seit 4.58.0), `los` (prüfen – mit `--stufe text` nur die Prüfungen der Stufe Text –, erst AppDesign, dann die App, Pages abwarten) |
+| `werkzeug/pruefstufe.mjs` | Prüfstufe einer App-Version (APD-128, Zusammenarbeit 0 Nr. 2): erkennt ‚nur Texte‘ und wählt die Prüfungen der Stufe Text |
 | `apple-referenz/` | Vergleichsbilder aus Apple-Apps (private Inhalte verpixelt) |
 | `tests/` | Prüfungen des Regelkatalogs (`hig.mjs`, `ablauf.mjs` u. a.), werden von den Prüfskripten jeder App eingebunden |
 | `vorlage/index.html` | Startpunkt für eine neue App |
