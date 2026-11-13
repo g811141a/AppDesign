@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="de" data-ts="l"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>RLB-121 Günstigste Quartiere</title>
+<link rel="stylesheet" href="../../fassung/4.57.0/design.css">
+<style>
+/* RLB-121 Muster ‚Teuerste und günstigste Quartiere‘ (Sitzung Reiselogbuch 0109; Klärung arbeit/0108 RLB-121 Klärung.md, RLB-121/D-1 bis D-4).
+   design.css der Fassung 4.57.0 (die des Reiselogbuchs 3.55.1); die Zeilen bilden die Statistik nach (.meta wie in index.html, Ausgabe wie
+   OUTPUT_CSS). Neu: zwei Zeilen unter ‚Quartierkosten‘, je eine Aufzählung ‚Name (Preis je Nacht)‘ mit ‚·‘ (aufzaehlung, R-10.5).
+   Ein Eintrag bleibt am Stück (.azq: inline-block, max-width 100 %); ist er allein breiter als die Zeile, bricht er im Namen um, der Preis
+   in Klammern bleibt ganz. Nur hell. */
+html { color-scheme: light; }
+body { background: var(--bg); }
+.muster { max-width: 1100px; margin: 0 auto; padding: 8px 16px 40px; }
+.muster > p { color: var(--muted); margin: 0 0 10px; }
+.reihe { display: flex; flex-direction: column; gap: 12px; margin: 8px 0 22px; }
+.spalte { min-width: 0; background: var(--card, #fff); border-radius: 14px; padding: 10px 14px; box-sizing: border-box; }
+/* Breiten wie im Reiselogbuch gemessen: Inhalt neben der Seitenleiste am iPad quer 813 px; Ausgabe A4 hoch bedruckbar etwa 718 px */
+.spalte.app-sp { max-width: 813px; } .spalte.aus-sp { max-width: 718px; }
+.spalte h3 { font-size: var(--t-footnote); color: var(--muted); font-weight: 600; margin: 0 0 6px; text-transform: none; }
+.meta { display: grid; grid-template-columns: max-content 1fr; gap: 2px 14px; margin: 4px 0 6px; }
+.meta dt { font-weight: 600; }
+.meta dd { margin: 0; min-width: 0; }
+html.ts-um .meta { display: block; } html.ts-um .meta dd { margin: 0 0 6px; }   /* wie index.html (RLB-101) */
+.azq { display: inline-block; max-width: 100%; }
+.preis { white-space: nowrap; }
+.neu-z { background: color-mix(in srgb, var(--accent) 9%, transparent); border-radius: 4px; }
+/* Ausgabe (HTML/PDF) wie OUTPUT_CSS: 11 pt, Tabelle ohne Linien */
+.aus { font: 11pt/1.4 -apple-system, "Segoe UI", Roboto, Arial, sans-serif; color: #000; background: #fff; }
+.aus table { border-collapse: collapse; }
+.aus td { border: none; padding: 1px 16px 1px 0; vertical-align: top; }
+.aus td:first-child { white-space: nowrap; }
+.aus .avg { display: inline-flex; flex-wrap: wrap; } .aus .avg > span { white-space: nowrap; }
+.ts { display: flex; gap: 8px; flex-wrap: wrap; margin: 6px 0 4px; }
+.ts button { padding: 6px 12px; border-radius: 16px; border: none; background: var(--btn, #e9e9eb); color: inherit; font: inherit; }
+.ts button[aria-pressed=true] { background: var(--accent); color: #fff; }
+.fall-info { color: var(--muted); font-size: var(--t-subhead); margin: 2px 0 0; }
+</style></head><body>
+<div class="muster">
+  <h1 class="nb-title" style="font-size:var(--t-title2);margin:8px 0 4px">RLB-121 · Statistik: teuerste und günstigste Quartiere</h1>
+  <p>Je Fall oben die Statistik in der App (so breit wie der Inhalt neben der Seitenleiste am iPad quer), darunter in der Ausgabe (HTML/PDF, A4). Neu sind die zwei blau hinterlegten Zeilen; in Klammern der Preis je Nacht des Aufenthalts.</p>
+  <div class="ts" id="ts"><button data-ts="l">Text Standard</button><button data-ts="xxxl">Text groß</button><button data-ts="ax3">Text sehr groß</button></div>
+  <div id="faelle"></div>
+</div>
+<script>
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+// wie ui.js (Fassung 4.57.0)
+const thousands = n => String(Math.round(Number(n) || 0)).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+const money = n => { const [i, d] = (Math.round((Number(n) || 0) * 100) / 100).toFixed(2).split('.'); return thousands(i) + ',' + d; };
+const NB = ' ';
+const avg = (v, d, unit) => `${v}${NB}${unit}${NB.repeat(5)}(Ø${NB}${d}${NB}${unit})`;
+
+// RLB-121/D-3, D-4: Preis je Nacht je Aufenthalt (Preis ÷ Nächte), jeder Aufenthalt für sich; ab 2 Aufenthalten mit Preis; kein Aufenthalt
+// in beiden Zeilen – die teurere Hälfte oben (bei ungerader Zahl der mittlere oben), der Rest unten, je höchstens 3; gleicher Preis: frühere
+// Aufenthalt zuerst. Oben der teuerste zuerst, unten der günstigste zuerst.
+function quarterRanks(priced) {
+  const list = priced.map((st, i) => ({ name: st.name, v: st.price / st.nights, i }));
+  if (list.length < 2) return null;
+  const desc = [...list].sort((a, b) => b.v - a.v || a.i - b.i), k = Math.ceil(list.length / 2);
+  return { teuer: desc.slice(0, Math.min(3, k)), guenstig: desc.slice(k).sort((a, b) => a.v - b.v || a.i - b.i).slice(0, 3) };
+}
+const eintrag = r => `${r.name}${NB}(${money(r.v)}${NB}€)`;
+// Aufzählung wie aufzaehlung (R-10.5): geschütztes Leerzeichen vor ‚·‘; der Preis in Klammern bleibt immer ganz. Der ‚·‘ gehört in den
+// Block des Eintrags davor – nach einem inline-block bricht die Zeile sonst vor dem ‚·‘ um (Chromium und WebKit gemessen)
+const liste = rs => rs.map((r, i) => `<span class="azq">${esc(r.name)}<span class="preis">${NB}(${money(r.v)}${NB}€)${i < rs.length - 1 ? NB + '·' : ''}</span></span>`).join(' ');
+
+function stats(f) {
+  const priced = f.preisAn ? f.stays.filter(s => s.price != null) : [];
+  const cost = priced.reduce((a, s) => a + s.price, 0), nights = priced.reduce((a, s) => a + s.nights, 0);
+  const rk = quarterRanks(priced);
+  return [
+    ['Reisetage', `${f.tage}, davon erfasst ${f.tage}`],
+    ['Quartiere', String(new Set(f.stays.map(s => s.name)).size)],
+    ['Nächte', String(f.stays.reduce((a, s) => a + s.nights, 0))],
+    ...(priced.length ? [['Quartierkosten', avg(money(cost), money(cost / nights), '€')]] : []),
+    ...(rk ? [['Teuerste Quartiere', rk.teuer, 1], ['Günstigste Quartiere', rk.guenstig, 1]] : []),
+    ['Wetter', '8×☀️ · 3×🌧️'],
+  ];
+}
+const wert = v => {
+  if (Array.isArray(v)) return liste(v);
+  const m = v.match(/^(.*? {5})(\(Ø.*)$/);
+  return m ? `<span class="avg"><span>${esc(m[1])}</span><span>${esc(m[2])}</span></span>` : esc(v);
+};
+const app = f => `<dl class="meta">${stats(f).map(([k, v, n]) => `<dt${n ? ' class="neu-z"' : ''}>${k}:</dt><dd${n ? ` class="neu-z" data-z="${k}"` : ''}>${wert(v)}</dd>`).join('')}</dl>`;
+const aus = f => `<div class="aus"><table>${stats(f).map(([k, v, n]) => `<tr${n ? ' class="neu-z"' : ''}><td><b>${k}:</b></td><td${n ? ` data-z="${k}"` : ''}>${wert(v)}</td></tr>`).join('')}</table></div>`;
+
+const S = (name, nights, price) => ({ name, nights, price });
+const FAELLE = [
+  { t: 'Rundreise mit 8 Aufenthalten', info: '8 Aufenthalte mit Preis: oben die 3 teuersten, unten die 3 günstigsten, 2 in der Mitte fehlen.', tage: 21, preisAn: true,
+    stays: [S('Hotel Adlon', 2, 520), S('Pension Seeblick', 3, 255), S('Gasthof Krone', 2, 178), S('Hotel Sacher', 2, 610), S('B&B Rosengarten', 4, 296),
+            S('Jugendherberge Lindau', 2, 84), S('Hotel Post', 3, 345), S('Ferienwohnung Alpenblick', 3, 270)] },
+  { t: '5 Aufenthalte', info: 'Weniger als 6: die teurere Hälfte oben (3, der mittlere oben), der Rest unten (2) – kein Quartier doppelt.', tage: 12, preisAn: true,
+    stays: [S('Hotel Krone', 3, 360), S('Pension Ruth', 2, 150), S('Hotel Elephant', 2, 330), S('Gasthaus Linde', 3, 195), S('Hotel Bären', 2, 240)] },
+  { t: '2 Aufenthalte', info: 'Ab 2 Aufenthalten mit Preis: je einer oben und unten.', tage: 6, preisAn: true,
+    stays: [S('Hotel Krone', 3, 360), S('Pension Ruth', 3, 225)] },
+  { t: '1 Aufenthalt mit Preis', info: 'Nur 1 Aufenthalt mit Preis (der zweite ohne Preis): keine der beiden Zeilen.', tage: 6, preisAn: true,
+    stays: [S('Hotel Krone', 3, 360), S('Bei Freunden', 3, null)] },
+  { t: 'Dasselbe Quartier zweimal, lange Namen', info: 'Jeder Aufenthalt für sich (wie in der Quartierliste); ein langer Name bricht im Namen um, der Preis bleibt ganz.', tage: 14, preisAn: true,
+    stays: [S('Hotel Krone', 2, 260), S('Romantik-Hotel Schloss Hohenstein an der Weinstraße', 3, 597), S('Hotel Krone', 3, 330), S('Pension Ruth', 2, 130),
+            S('Gästehaus zur alten Mühle am Mühlbach', 4, 300), S('Camping am See', 2, 0)] },
+  { t: '‚Preis der Quartiere erfassen‘ aus', info: 'Ohne Preise: weder Quartierkosten noch die zwei Zeilen (wie heute).', tage: 12, preisAn: false,
+    stays: [S('Hotel Krone', 3, 360), S('Pension Ruth', 2, 150), S('Hotel Elephant', 2, 330)] },
+];
+document.getElementById('faelle').innerHTML = FAELLE.map((f, i) =>
+  `<h2 style="margin:14px 0 0">${i + 1}. ${esc(f.t)}</h2><p class="fall-info">${esc(f.info)}</p><div class="reihe" data-fall="${i}"><div class="spalte app-sp"><h3>App</h3>${app(f)}</div><div class="spalte aus-sp"><h3>Ausgabe (HTML/PDF)</h3>${aus(f)}</div></div>`).join('');
+// Textgröße wie am Gerät: Grundschrift = Body der Stufe (am Gerät -apple-system-body), ab 28 px untereinander, iPhone hoch ab 21 px (ts-um wie textStufe in ui.js)
+const setTs = ts => { const r = document.documentElement; r.dataset.ts = ts; const px = parseFloat(getComputedStyle(r).getPropertyValue('--t-body'));
+  r.style.fontSize = px + 'px'; r.classList.toggle('ts-um', px >= 28 || (px >= 21 && innerWidth < 600 && innerHeight > innerWidth));   // iPhone hoch schon ab 21 px
+  document.querySelectorAll('#ts button').forEach(b => b.setAttribute('aria-pressed', b.dataset.ts === ts)); };
+document.getElementById('ts').onclick = e => { const b = e.target.closest('button'); if (b) setTs(b.dataset.ts); };
+setTs('l');
+window.__muster = { FAELLE, quarterRanks, eintrag };
+</script>
+</body></html>
