@@ -2272,6 +2272,9 @@ function keepPlace(change) {
   const anchor = topAnchor();
   if (anchor && 'sel' in anchor) anchor.app = true;
   change();
+  // Seit 4.59.0 (RLB-121/W-4, R-8.1): der Umbau bei großer Schrift folgt der neuen Breite von main sofort – kam er erst ein Bild später
+  // (ResizeObserver), stand nach Seitenleiste ein/aus am iPad hoch ein anderer Eintrag oben und das Gedächtnis war veraltet
+  textUm();
   keepTop = anchor;
   if (anchor) { restoreTop(); delete anchor.app; return; }   // beim nächsten Drehen wieder als Anteil
   keepBusy = true;

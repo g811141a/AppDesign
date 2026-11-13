@@ -15,6 +15,10 @@ AppDesign 4.59.0 · Designrichtlinie allgemein 4.59.0 · Zusammenarbeit allgemei
   ein Eintrag in die Zeile, bleibt er am Stück, sonst bricht er im Text um. `design.css` und `outputCss`: `.ict .az-n { white-space: nowrap }`.
 - **`textUm` (ui.js, R-1.10):** `ts-um` ab 21 px, wenn `main` schmaler als 600 px ist (bisher nur am iPhone hoch) – neu am iPad hoch neben der
   Seitenleiste und bei geteiltem Bildschirm; neu berechnet bei `resize` und wenn sich die Breite von `main` ändert (ResizeObserver).
+  **`keepPlace` ruft `textUm()` gleich nach der Änderung auf** (R-8.1): im vollen Prüflauf (Sitzung 0111) stand am iPad hoch bei Text 23 nach Seitenleiste
+  aus und ein ein anderer Tag oben, und beim nächsten Drehen sprang die Seite (hig Text 23 allein 2 von 3 rot, oeffnen-position Text 23 sicher rot, mit
+  Fassung 4.57.0 grün). Ursache: der Umbau kam erst ein Bild später über den ResizeObserver, nach dem Halten des obersten Eintrags. Die Prüfungen sahen
+  es vorher nicht, weil `oeffnen-position` (Seitenleiste ein/aus) nur in der Standard-Textgröße lief und bei Text 53 `ts-um` immer an ist.
 - **Designrichtlinie 4.59.0:** 3 ‚Aufzählungen mit Trennpunkt‘ (RLB-121/W-1), R-10.5 (RLB-121/W-2), 3 ‚Umbau bei großer Schrift‘ (RLB-121/W-3), R-1.10 (RLB-121/W-4).
 - **`checkAufzaehlung` (tests/ablauf.mjs):** zusätzlich ‚ein Eintrag, der passt, ist nicht getrennt‘, ‚Klammer nie über zwei Zeilen‘, ‚nichts ragt
   aus Zelle oder Fenster‘ (Option `fenster`), ‚·‘ am Zeilenanfang immer verboten, die Anzahl am Zeilenanfang nur bei Anzahlen (Wetter, Smileys).
