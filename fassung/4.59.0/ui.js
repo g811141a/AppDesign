@@ -2309,9 +2309,15 @@ const textPx = () => TEXT_STUFEN[textName] || 17;
 // Seit 4.59.0 (RLB-121/W-3, W-4, R-1.10): ab 21 px untereinander, wenn der Inhalt (main) schmaler als 600 px ist \u2013 iPhone hoch wie bisher,
 // dazu iPad hoch neben der Seitenleiste und geteilter Bildschirm; neu berechnet beim Drehen und wenn sich die Breite von main \u00e4ndert.
 const inhaltBreite = () => (document.querySelector('main') || document.documentElement).clientWidth || innerWidth;
+const umSoll = () => { const px = textPx(); return px >= 28 || (px >= 21 && inhaltBreite() < 600); };
 function textUm() {
-  const r = document.documentElement, px = textPx();
-  r.classList.toggle('ts-um', px >= 28 || (px >= 21 && inhaltBreite() < 600));
+  document.documentElement.classList.toggle('ts-um', umSoll());
+}
+// Umbau, wenn sich nur die Breite von main ändert (ResizeObserver): der oberste Eintrag bleibt (keepPlace, R-8.1) – sonst stand am iPad hoch bei
+// Text 23 nach dem Öffnen der Tag nicht mehr unter dem Kopf (R-7.4); bei offenem Fenster (R-7.3) nur umschalten
+function textUmHalten() {
+  if (document.documentElement.classList.contains('ts-um') === umSoll()) return;
+  if (lockY !== null) textUm(); else keepPlace(textUm);
 }
 function textStufe() {
   const px = parseFloat(getComputedStyle(document.documentElement).fontSize) || 17;
@@ -2348,7 +2354,7 @@ if (window.ResizeObserver) new ResizeObserver(() => requestAnimationFrame(textSt
 document.addEventListener('visibilitychange', () => { if (!document.hidden) textStufe(); });
 window.addEventListener('resize', textUm);
 // Seitenleiste ein/aus \u00e4ndert die Breite von main ohne resize (RLB-121) \u2013 im n\u00e4chsten Bild, sonst meldet Safari eine ResizeObserver-Schleife
-{ let umBreite = 0; const umRo = new ResizeObserver(es => { const w = Math.round(es[0].contentRect.width); if (w === umBreite) return; umBreite = w; requestAnimationFrame(textUm); });
+{ let umBreite = 0; const umRo = new ResizeObserver(es => { const w = Math.round(es[0].contentRect.width); if (w === umBreite) return; umBreite = w; requestAnimationFrame(textUmHalten); });
   const umMain = () => { const m = document.querySelector('main'); if (m) umRo.observe(m); else requestAnimationFrame(umMain); }; umMain(); }
 
 // R-2.1: Die Leiste (mit oder ohne Suchzeile) bewegt sich beim Wischen keinen Millimeter.
