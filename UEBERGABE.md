@@ -29,7 +29,7 @@ die Arbeitsumgebung steht in der AppDesign-`CLAUDE.md`.
 - **Gebaut auf den Vorbereitungs-Zweigen** (`vorbereiten`, `fassung`, Commit, Push): AppDesign `aufzaehlung` mit langen Einträgen (`.ict.az`
   als Block, ‚·‘ und Zusatz in `.az-n`), `checkAufzaehlung` erweitert (Option `fenster`); Reiselogbuch `quarterRanks`/`quarterRankRows` in
   `tripStats`, Prüfungen RLB-121/M-1 bis M-14, M-16 in `ablauf-preis-km`, Fall 18 (RLB-121/M-15) in `ablauf-abgleich-faelle`; PROMPT.md,
-  Backlogs, CHANGELOGs (Testfälle P-103/0 bis P-103/4), Designrichtlinie 4.59.0 mit W-1 bis W-4.
+  Backlogs, CHANGELOGs (Testfälle P-103/0 bis P-103/4), Designrichtlinie 4.59.0 mit RLB-121/W-1 bis W-4.
 - **Befund beim Bau** (`arbeit/0110 RLB-121 iPad hoch.md`): am iPad hoch neben der Seitenleiste ragte die Statistik bei Text XXL/XXXL hinaus
   (Muster bildete iPad hoch nur ohne Seitenleiste nach). **Entschieden (Nutzer 13.11.2026): Variante A, allgemein** – `ts-um` ab 21 px, wenn `main`
   schmaler als 600 px ist (`textUm` in `ui.js`, ResizeObserver auf `main`). **Wortlaut RLB-121/W-3 (Designrichtlinie 3) und W-4 (R-1.10)
@@ -37,7 +37,7 @@ die Arbeitsumgebung steht in der AppDesign-`CLAUDE.md`.
 - **Geprüft (einzeln):** `ablauf-preis-km` und `ablauf-abgleich-faelle` in Chromium und WebKit grün; `ablauf-navigation`, `ablauf-jahre`,
   `ablauf-seitenleiste-position`, `ablauf-feld-cursor` (Chromium), `version-regeln`, `text-regeln` grün; `doku-regeln` grün bis auf die alte
   `UEBERGABE.md` (mit dieser Fassung behoben). `stufe --app reiselogbuch`: **voll**.
-- **Offensichtliche Korrektur:** in `arbeit/0109 …` (Lagebild, Bau-Frage, allgemein) ‚APD-62 (T-1)‘ → ‚APD-62 (APD-38/T-1)‘ (doku-regeln APD-78/S-2).
+- **Offensichtliche Korrektur:** in `arbeit/0109 …` (Lagebild, Bau-Frage, allgemein) bei APD-62 die Elternnummer ergänzt: ‚APD-62 (APD-38/T-1)‘ (doku-regeln APD-78/S-2).
 
 ## 3. Nächster Schritt
 
