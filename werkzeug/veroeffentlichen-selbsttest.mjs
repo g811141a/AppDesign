@@ -79,7 +79,9 @@ try {
   // ——— Kopie 1: APD-5/D-4 und APD-5/E-2 (Fassung gibt es schon) ———
   let k = kopie();
   r = skript(k, {}, 'vorbereiten', '--ad', X);
-  pruefe(r.code === 0 && new RegExp(`Reiselogbuch nutzt die Fassung ${X0.replace(/\./g, '\\.')}`).test(r.text) && lies(k.app, 'index.html').includes(`AD_NEEDED = '${X0}'`),
+  // seit 4.58.0: die App kann auf einer älteren Fassung stehen als AppDesign (nicht gehoben) – verglichen wird mit ihrer eigenen Fassung F0
+  const F0 = lies(join(QUELLE, 'ReiseLogBuch'), 'index.html').match(/const AD_NEEDED = '([\d.]+)'/)[1];
+  pruefe(r.code === 0 && new RegExp(`Reiselogbuch nutzt die Fassung ${F0.replace(/\./g, '\\.')}`).test(r.text) && lies(k.app, 'index.html').includes(`AD_NEEDED = '${F0}'`),
     'APD-5/D-4 nur AppDesign erhöht: Skript nennt die App auf der älteren Fassung und hebt sie nicht');
   mkdirSync(join(k.ad, 'fassung', hoch(X)), { recursive: true }); schreibe(k.ad, `fassung/${hoch(X)}/ui.js`, '');
   const vorher = git(k.ad, 'status', '--porcelain');
