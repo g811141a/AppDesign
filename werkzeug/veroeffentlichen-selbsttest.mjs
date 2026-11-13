@@ -207,6 +207,113 @@ try {
   pruefe(r.code === 0 && /git fetch gescheitert – neuer Versuch/.test(r.text) && /Fertig/.test(r.text), 'APD-102/M-7 git fetch scheitert zuerst: Wiederholung, danach veröffentlicht');
   // M-8: Gegenprobe – ohne Zusammenführen vor dem Prüflauf werden M-2 und M-3 rot
   pruefe(!m2({ VEROEFF_OHNE_VORHER: '1' }) && !m3({ VEROEFF_OHNE_VORHER: '1' }), 'APD-102/M-8 Gegenprobe: ohne Zusammenführen vor dem Prüflauf sind M-2 und M-3 rot');
+  // ——— APD-128 (seit 4.58.0): Prüfstufe Text oder voll – Testfall-Liste arbeit/APD-128 Testfall-Liste.md ———
+  {
+    const { bewerte, GRUNDPRUEFUNGEN } = await import(pathToFileURL(join(QUELLE, 'AppDesign/werkzeug/pruefstufe.mjs')));
+    const RLB = join(QUELLE, 'ReiseLogBuch'), H = lies(RLB, 'index.html'), SW = lies(RLB, 'sw.js'), GES = lies(RLB, 'tests/ablauf-gesamt.mjs');
+    const NAMEN = ['doku-regeln', 'version-regeln', 'text-regeln', 'ablauf-gesamt', 'hig', 'link-name', 'ablauf-abgleich', 'regeln-ablauf', 'ablauf-texte-ablaeufe', 'ablauf-blatt', 'start-regeln'];
+    const PR = Object.fromEntries(NAMEN.map(n => [n, lies(RLB, `tests/${n}.mjs`)]));
+    const LABEL = "label: 'PDF (mit iOS 27 zurzeit nicht möglich)'", KOMMENTAR = /\n *\/\/ seit 3\.55\.1 \(RLB-124\/W-1\)[^\n]*/;
+    const ersetzt = (t, a, b) => { if (!(a instanceof RegExp ? a.test(t) : t.includes(a))) throw new Error(`Anker fehlt: ${a}`); return t.replace(a, b); };
+    const versionHoch = t => t.replace(/const APP_VERSION = '[^']*';/, "const APP_VERSION = '9.9.9';").replace(/const APP_BUILT = '[^']*';/, "const APP_BUILT = '01.01.2030 um 10:00';");
+    const md = { f: 'CHANGELOG.md', alt: '# alt\n', neu: '# neu\n' }, sw = { f: 'sw.js', alt: SW, neu: SW.replace(/const CACHE = 'reiselogbuch-[\d.]+';/, "const CACHE = 'reiselogbuch-9.9.9';") };
+    const html = (alt, neu = alt) => ({ f: 'index.html', alt, neu: versionHoch(neu) });
+    const B = (aen, o = {}) => bewerte({ aenderungen: aen, pruefungen: PR, cache: 'reiselogbuch', ...o });
+    const istVoll = (e, re) => e.stufe === 'voll' && (!re || e.gruende.some(g => re.test(g)));
+    let e;
+    // M-1: Nachbau 3.55.1 ohne Kommentarzeile
+    const altPdf = ersetzt(H, LABEL, "label: 'PDF'"), gesAlt = ersetzt(GES, "'PDF (mit iOS 27 zurzeit nicht möglich)'", "'PDF'");
+    e = B([html(altPdf, H), sw, md, { f: 'tests/ablauf-gesamt.mjs', alt: gesAlt, neu: GES }]);
+    pruefe(e.stufe === 'text' && GRUNDPRUEFUNGEN.every(p => e.pruefungen.includes(p)) && e.pruefungen.includes('ablauf-gesamt') && !e.pruefungen.includes('hig') &&
+      e.pruefungen.includes('link-name') && !e.pruefungen.includes('start-regeln'), `APD-128/M-1 Menütext ‚PDF‘ → ‚PDF (mit iOS 27 …)‘: Stufe Text, Grundprüfungen + Texttreffer + geänderte Prüfdatei, ohne hig (${e.stufe}: ${e.pruefungen.join(', ') || e.gruende.join(' · ')})`);
+    // M-2: nur Doku und Versionsstellen
+    e = B([html(H), sw, md]);
+    pruefe(e.stufe === 'text' && e.pruefungen.join() === GRUNDPRUEFUNGEN.join(), `APD-128/M-2 nur Doku und Versionsstellen: Stufe Text, nur die drei Grundprüfungen (${e.pruefungen.join(', ')})`);
+    // M-3: das echte 3.55.1 – Text und eine neue Kommentarzeile (V-4)
+    e = B([html(ersetzt(altPdf, KOMMENTAR, ''), H), sw, md]);
+    pruefe(e.stufe === 'text', `APD-128/M-3 Text und neue Kommentarzeile: Stufe Text (V-4) (${e.gruende.join(' · ')})`);
+    // M-4: Textteil einer Vorlage `…${n}…`
+    e = B([html(H, ersetzt(H, '${count} erfasste${', '${count} gezählte${'))]);
+    pruefe(e.stufe === 'text', `APD-128/M-4 Textteil einer Vorlage geändert: Stufe Text (${e.gruende.join(' · ')})`);
+    // M-5: Ausdruck in ${…}
+    const m5 = [html(H, ersetzt(H, '${count} erfasste${', '${count + 1} erfasste${'))];
+    e = B(m5); pruefe(istVoll(e, /Code geändert/), `APD-128/M-5 Ausdruck in \${…} geändert: voll – Code geändert (${e.gruende.join(' · ')})`);
+    // M-6: Zahl bzw. Vergleich – mit Zeile
+    const z6 = H.split('\n').findIndex(l => l.includes('erfasste${count === 1')) + 1, m6 = [html(H, ersetzt(H, 'erfasste${count === 1', 'erfasste${count === 2'))];
+    e = B(m6); pruefe(istVoll(e, new RegExp(`index\\.html Zeile ${z6}: Code geändert`)), `APD-128/M-6 Vergleich geändert: voll – ‚index.html Zeile ${z6}: Code geändert‘ (${e.gruende.join(' · ')})`);
+    // M-7: HTML bzw. CSS in einer Zeichenkette
+    const css = H.indexOf('const OUTPUT_CSS'), cssNeu = H.slice(0, css) + H.slice(css).replace(/(\d+)px/, (_, n) => `${+n + 1}px`);
+    const e7a = B([html(H, ersetzt(H, "sub: 'Im Drucken-Menü Teilen,", "sub: 'Im Drucken-Menü <b>Teilen</b>,"))]), e7b = B([html(H, cssNeu)]);
+    pruefe(istVoll(e7a, /kein Text/) && istVoll(e7b), `APD-128/M-7 HTML bzw. CSS in einer Zeichenkette: voll (${e7a.gruende.join(' · ')} | ${e7b.gruende.join(' · ')})`);
+    // M-8: Schlüssel, Ereignis, Klasse
+    const e8 = [B([html(H, ersetzt(H, "'reiselogbuch.v1'", "'reiselogbuch.v2'"))]), B([html(H, ersetzt(H, "ok.addEventListener('click'", "ok.addEventListener('pointerdown'"))]),
+      B([{ f: 'index.html', alt: "<script>el.className = 'mi on';</script>", neu: "<script>el.className = 'mi off';</script>" }])];
+    pruefe(e8.every(x => istVoll(x, /kein Text/)), `APD-128/M-8 Schlüssel, Ereignis, Klasse: je voll (${e8.map(x => x.stufe).join(', ')})`);
+    // M-9: <style>
+    const st = H.indexOf('<style>'), m9 = [html(H, H.slice(0, st) + H.slice(st).replace(/gap: 2px 14px/, 'gap: 3px 14px'))];
+    e = B(m9); pruefe(istVoll(e, /<style> geändert/), `APD-128/M-9 Änderung in <style>: voll (${e.gruende.join(' · ')})`);
+    // M-10: manifest.json bzw. Icon
+    const e10 = [B([{ f: 'manifest.json', alt: '{}', neu: '{ }' }]), B([{ f: 'icon-180.png', alt: 'a', neu: 'b' }])];
+    pruefe(istVoll(e10[0], /manifest\.json geändert/) && istVoll(e10[1], /icon-180\.png geändert/), 'APD-128/M-10 manifest.json bzw. Icon geändert: voll, Datei genannt');
+    // M-11: AppDesign geändert
+    const e11 = [B([html(H, H.replace(/const AD_NEEDED = '[\d.]+';/, "const AD_NEEDED = '9.9.9';"))]), B([html(H), md], { adOnline: false })];
+    pruefe(e11.every(x => istVoll(x, /AppDesign geändert/)), `APD-128/M-11 AD_NEEDED geändert bzw. AppDesign vorbereitet: voll – ‚AppDesign geändert‘ (${e11.map(x => x.gruende.join(' · ')).join(' | ')})`);
+    // M-12: sw.js außerhalb von CACHE
+    e = B([{ f: 'sw.js', alt: SW, neu: SW.replace("'manifest.json',", "'manifest.json', 'neu.png',") }]);
+    pruefe(istVoll(e, /sw\.js außerhalb von CACHE/), `APD-128/M-12 sw.js außerhalb von CACHE: voll (${e.gruende.join(' · ')})`);
+    // M-13: vorige Version mit Stufe Text
+    e = B([html(H), md], { vorigeText: true });
+    pruefe(istVoll(e, /vorige Version mit Stufe Text/), 'APD-128/M-13 vorige Version mit Stufe Text: voll (D-4)');
+    // M-18: \', URL mit //, Regex mit Anführungszeichen, Kommentar
+    const S = "<script>\nconst a = 'Geht\\'s Los'; // alt\nx('https://a.b/c', 1);\ns.replace(/'/g, 'Ä');\ny = 2;\n</script>";
+    const e18 = { text: B([{ f: 'index.html', alt: S, neu: S.replace("'Geht\\'s Los'", "'Geht\\'s weiter Los'") }]), kommentar: B([{ f: 'index.html', alt: S, neu: S.replace('// alt', '// neu Text') }]),
+      url: B([{ f: 'index.html', alt: S, neu: S.replace("'https://a.b/c', 1", "'https://a.b/c', 2") }]), regex: B([{ f: 'index.html', alt: S, neu: S.replace('y = 2', 'y = 3') }]) };
+    pruefe(e18.text.stufe === 'text' && e18.kommentar.stufe === 'text' && istVoll(e18.url, /Zeile 3: Code/) && istVoll(e18.regex, /Zeile 5: Code/),
+      `APD-128/M-18 \\', URL mit // und Regex mit ' richtig zerlegt (${Object.entries(e18).map(([k, x]) => `${k} ${x.stufe}`).join(', ')})`);
+    // M-17: Gegenprobe – ohne Codevergleich werden M-5, M-6 und M-9 rot
+    pruefe([m5, m6, m9].every(a => B(a, { ohneCode: true }).stufe === 'text'), 'APD-128/M-17 Gegenprobe: ohne Codevergleich wären M-5, M-6 und M-9 Stufe Text (rot)');
+
+    // M-14 bis M-16 und M-13 in Kopien: die Prüfungen der App nachgebildet (tests/alle.mjs mit der echten Liste, schreibt die Aufrufparameter)
+    const appBereit = (aendere) => {
+      const k = kopie(), alle = lies(k.app, 'tests/alle.mjs');
+      schreibe(k.app, 'tests/alle.mjs', "import { mkdirSync, writeFileSync } from 'node:fs';\n" + alle.replace(/^import .*$/gm, '').replace(/^process\.exit\(await lauf\(.*$/m,
+        "mkdirSync('tests/out', { recursive: true }); writeFileSync('tests/out/argv', JSON.stringify(process.argv.slice(2))); writeFileSync('tests/out/wackelt.json', '[]');"));
+      git(k.app, 'add', '-A'); git(k.app, 'commit', '-qm', 'Prüfungen nachgebildet'); git(k.app, 'push', '-q', 'origin', 'HEAD:main'); git(k.app, 'fetch', '-q', 'origin');
+      skript(k, {}, 'vorbereiten', '--app', `reiselogbuch=${Y}`);
+      ersetze(k.app, 'CHANGELOG.md', /\n## /, `\n## ${Y} – 01.01.2030 (Korrektur)\n\nTestfälle P-99\n\n**P-99/0 – Version prüfen**\n1. Versionszeile ansehen. Erwartet: Reiselogbuch ${Y} · AppDesign ${X0}\n\n## `);
+      aendere(k); git(k.app, 'add', '-A'); git(k.app, 'commit', '-qm', 'bereit');
+      return k;
+    };
+    const textAenderung = k => { ersetze(k.app, 'index.html', LABEL, "label: 'PDF (mit iOS 27 leider nicht möglich)'");
+      ersetze(k.app, 'tests/ablauf-gesamt.mjs', "'PDF (mit iOS 27 zurzeit nicht möglich)'", "'PDF (mit iOS 27 leider nicht möglich)'"); };
+    const argvVon = k => { try { return JSON.parse(lies(k.app, 'tests/out/argv')); } catch { return null; } };
+    // M-14: Code geändert, trotzdem --stufe text → Abbruch vor dem Prüflauf
+    k = appBereit(k => ersetze(k.app, 'index.html', 'erfasste${count === 1', 'erfasste${count === 2'));
+    { const kopf = git(k.app, 'rev-parse', 'HEAD'), app0 = remote(k, 'app');
+      r = skript(k, {}, 'los', '--nur-app', '--app', 'reiselogbuch', '--stufe', 'text');
+      pruefe(r.code === 1 && /Stufe Text passt nicht – index\.html Zeile \d+: Code geändert/.test(r.text) && !/— Prüfungen/.test(r.text) && argvVon(k) === null &&
+        git(k.app, 'rev-parse', 'HEAD') === kopf && remote(k, 'app') === app0, 'APD-128/M-14 los --stufe text bei Code-Änderung: Abbruch vor dem Prüflauf mit Grund, Zweig unverändert, nichts gepusht');
+      r = skript(k, {}, 'los', '--app', 'reiselogbuch', '--stufe', 'text');
+      pruefe(r.code === 1 && /--stufe text nur mit --nur-app/.test(r.text), 'APD-128/M-14 los --stufe text ohne --nur-app: Abbruch'); }
+    // M-15 (und M-1 im echten Ablauf): stufe schlägt Text vor, los --stufe text prüft genau diese Liste und markiert den Merge-Commit
+    k = appBereit(textAenderung);
+    r = skript(k, {}, 'stufe', '--app', 'reiselogbuch');
+    const liste = (r.text.match(/Vorschlag Stufe Text – \d+ Prüfungen: (.*)/) || [])[1]?.split(', ') || [];
+    pruefe(r.code === 0 && liste.includes('ablauf-gesamt') && GRUNDPRUEFUNGEN.every(p => liste.includes(p)) && !liste.includes('hig'), `APD-128/M-15 stufe: ‚Vorschlag Stufe Text‘ mit Liste (${liste.join(', ')})`);
+    r = skript(k, {}, 'los', '--nur-app', '--app', 'reiselogbuch', '--stufe', 'text');
+    const av = argvVon(k) || [], subj = git(k.app, 'log', '-1', '--format=%s', 'origin/main');
+    pruefe(r.code === 0 && av[0] === '--nur' && av[1] === liste.join(',') && subj.endsWith('(Prüfstufe Text)') && new RegExp(`Prüfstufe Text: ${liste.length} Prüfungen`).test(r.text) &&
+      !/— Prüfung AppDesign/.test(r.text), `APD-128/M-15 los --stufe text: genau die Liste, ohne messung, Merge-Commit ‚${subj}‘`);
+    // M-13 im echten Ablauf: die nächste Version schlägt voll vor
+    skript(k, {}, 'vorbereiten', '--app', `reiselogbuch=${hoch(Y)}`);
+    r = skript(k, {}, 'stufe', '--app', 'reiselogbuch');
+    pruefe(/Vorschlag voll – Grund: vorige Version mit Stufe Text/.test(r.text), 'APD-128/M-13 nach einer Version mit Stufe Text schlägt stufe voll vor (Merge-Commit auf main)');
+    // M-16: ohne --stufe voll wie bisher
+    k = appBereit(textAenderung);
+    r = skript(k, {}, 'los', '--nur-app', '--app', 'reiselogbuch');
+    pruefe(r.code === 0 && (argvVon(k) || ['x']).length === 0 && !/Prüfstufe/.test(git(k.app, 'log', '-1', '--format=%s', 'origin/main')),
+      'APD-128/M-16 los ohne --stufe: voll wie bisher, Merge-Commit ohne Zusatz');
+  }
 } finally { rmSync(TMP, { recursive: true, force: true }); }
 
 console.log(fehler.length ? `\n✗ ${fehler.length} Fälle rot` : '\n✓ Selbsttest Veröffentlichungs-Skript: alle Fälle grün');

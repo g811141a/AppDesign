@@ -1,6 +1,6 @@
 # AppDesign – Backlog (allgemeine Themen)
 
-**Stand 08.11.2026** · Aktuelle Version: AppDesign 4.57.0
+**Stand 13.11.2026** · Aktuelle Version: AppDesign 4.58.0
 
 Allgemeine Themen, die alle Apps betreffen. App-Themen stehen im Backlog der jeweiligen App.
 Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.4.
@@ -11,9 +11,8 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Prio | Thema | bereit seit |
 |---|---|---|---|
-| APD-128 | 1 | **Prüfumfang nach Art der Änderung (Nutzer 13.11.2026, Sitzungen 0107 und 0108):** zwei Stufen Text oder voll (APD-128/D-1 bis D-4); Wortlaut 0 Nr. 2 und AppDesign-`CLAUDE.md` bestätigt (APD-128/V-1 bis V-4, `arbeit/0108 APD-128 Wortlaut.md`, `arbeit/APD-128 Testfall-Liste.md` – V-4: Kommentare zählen wie Texte); Befehl `stufe`, `los --stufe text`, Merge-Commit ‚(Prüfstufe Text)‘; Testfall-Liste APD-128/M-1 bis M-18 bestätigt (Selbsttest `werkzeug/veroeffentlichen-selbsttest.mjs`) | 13.11.2026 |
 
-1 Punkt bereit.
+0 Punkte bereit.
 
 
 ## 1. Auf iPad und iPhone prüfen
@@ -56,6 +55,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Thema | Version | Datum |
 |---|---|---|---|
+| APD-128 | **Prüfumfang nach Art der Änderung:** Zusammenarbeit 3.12.0 0 Nr. 2 – genau ein Prüflauf je Version, Stufe Text (nur Texte und Kommentare der App, Doku, Versionsstellen; vorige Version voll) oder voll (APD-128/D-1 bis D-4, V-1 bis V-4); AppDesign-`CLAUDE.md` 2.12.0; `werkzeug/pruefstufe.mjs`, Befehl `stufe`, `los --stufe text`, Merge-Commit ‚(Prüfstufe Text)‘; Selbsttest APD-128/M-1 bis M-18 (`arbeit/APD-128 Testfall-Liste.md`) | 4.58.0 | 13.11.2026 |
 | APD-125 | **Datei vor jeder Kachel:** Zusammenarbeit 3.11.0 – Kasten ‚Jede Antwort‘ Punkt 4, 2.1 ‚Die Datei davor, das Fenster danach‘, 0 Nr. 15 Lagebild auch als Datei (APD-125/V-1 bis V-3); `checkKachel` auf den neuen Wortlaut (APD-125/B-1) | 4.57.0 | 08.11.2026 |
 | APD-126 | **Eingabefelder: Cursor am Ende, leer einzeilig:** Cursor beim ersten Antippen am Ende, leeres Textfeld einzeilig, wächst und schrumpft mit, nach einem Vorschlag klein weiter (APD-126/W-1 bis W-7, R-4.5, R-5.2); Prüfung `checkFeldCursor`; Usertest P-101 im Reiselogbuch | 4.57.0 | 08.11.2026 |
 | APD-124 | **Rückgängig im Feld nach dem Leeren:** ⓧ leert ohne Sprechblase, danach Rückgängig-Icon `undo-2` bis zur ersten Eingabe, geleerter Text auch in der Zwischenablage (APD-124/W-1 bis W-3, R-5.6, 15.11, 16); Prüfung `checkClear` erweitert; Usertest P-101 | 4.57.0 | 08.11.2026 |

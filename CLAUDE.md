@@ -1,6 +1,6 @@
 # AppDesign – Hinweise für Claude
 
-**Version 2.11.0** · Stand 07.11.2026
+**Version 2.12.0** · Stand 13.11.2026
 
 ## Zuerst lesen (gezielt, Zusammenarbeit 0 Nr. 15)
 
@@ -23,7 +23,7 @@ nie ohne ‚Ja‘ bauen (0 Nr. 21), Testfall-Liste vor jedem Bau (0 Nr. 1), erst
   Fassung), eine Hauptversion bekommt `v5/`. `AD_VERSION` (ui.js) und `--ad-version` (design.css) steigen mit jeder
   AppDesign-Version (setzt das Skript).
 - **Prüfungen** in `tests/` (Designrichtlinie 17); sie laufen über die Prüfskripte der Apps (AppDesign liegt neben dem App-Repo),
-  z. B. im Reiselogbuch `sh tests/alle.sh`. Während der Arbeit nur die betroffenen, der volle Lauf genau einmal in `… los`.
+  z. B. im Reiselogbuch `sh tests/alle.sh`. Während der Arbeit nur die betroffenen, genau ein Lauf in `… los` – Stufe Text oder voll (Zusammenarbeit 0 Nr. 2).
 - **GitHub Pages:** Branch `main`, Hauptordner.
 
 ## Arbeitsumgebung (Cloud)
@@ -54,10 +54,11 @@ nie ohne ‚Ja‘ bauen (0 Nr. 21), Testfall-Liste vor jedem Bau (0 Nr. 1), erst
 - **Veröffentlichen** (Zusammenarbeit 0 Nr. 9): Vorbereitungs-Zweige `vorbereitung-X.Y.Z` in beiden Repos;
   `node werkzeug/veroeffentlichen.mjs vorbereiten --ad X.Y.Z --app reiselogbuch=X.Y.Z` (ohne `--ad`, wenn nur die App); Texte
   schreiben (CHANGELOG mit Testfällen, Backlog, Versionsgeschichten); nach Änderungen an `v4/` oder `tests/` bzw. an Designrichtlinie
-  oder Zusammenarbeit nach `vorbereiten`: `node werkzeug/veroeffentlichen.mjs fassung`; committen; dann
-  `node werkzeug/veroeffentlichen.mjs los --app reiselogbuch` im Hintergrund (prüft, führt eine neuere `main` vorher in die
-  Vorbereitungs-Zweige zusammen – bei Konflikt Abbruch vor dem Prüflauf –, voller Prüflauf, erst AppDesign, dann die App, wartet auf
-  Pages; ~60 min). **Nie `… fassung` für eine schon veröffentlichte Version** – erst `vorbereiten` (neue Version),
+  oder Zusammenarbeit nach `vorbereiten`: `node werkzeug/veroeffentlichen.mjs fassung`; committen; vor der Bau-Frage
+  `node werkzeug/veroeffentlichen.mjs stufe --app reiselogbuch` (schlägt die Stufe vor und nennt die Prüfungen); dann
+  `node werkzeug/veroeffentlichen.mjs los --app reiselogbuch [--stufe text]` im Hintergrund (prüft, führt eine neuere `main` vorher in die
+  Vorbereitungs-Zweige zusammen – bei Konflikt Abbruch vor dem Prüflauf –, Prüflauf in der Stufe – `--stufe text` nur, wenn das Skript
+  sie bestätigt, sonst Abbruch vor dem Prüflauf –, erst AppDesign, dann die App, wartet auf Pages; voll ~60 min, Text deutlich kürzer). **Nie `… fassung` für eine schon veröffentlichte Version** – erst `vorbereiten` (neue Version),
   dann ändern. Danach die lokalen Vorbereitungs-Zweige löschen (sonst meldet der Stop-Hook ‚unpushed‘). Zweige auf GitHub löschen
   geht aus der Cloud nicht (403) – alte Vorbereitungs-Zweige dort schaden nicht.
 
@@ -67,6 +68,7 @@ nie ohne ‚Ja‘ bauen (0 Nr. 21), Testfall-Liste vor jedem Bau (0 Nr. 1), erst
 
 | Version | Datum | Inhalt |
 |---|---|---|
+| 2.12.0 | 13.11.2026 | APD-128: genau ein Prüflauf je Version, Stufe Text oder voll; Befehl `stufe` vor der Bau-Frage, `los … --stufe text` (Wortlaut bestätigt 13.11.2026, Sitzung 0108 – APD-128/V-2, V-3) |
 | 2.11.0 | 07.11.2026 | APD-123: ‚(Kontext N)‘ in jeder Frage im Fenster statt der Zeile mit Zeit und Token; Regelwächter abgeschaltet (Wortlaut bestätigt 07.11.2026, Sitzung 0089) |
 | 2.10.0 | 31.10.2026 | APD-102: `los` führt eine neuere `main` vor dem Prüflauf in die Vorbereitungs-Zweige zusammen (bei Konflikt Abbruch vorher), ~60 min (Wortlaut bestätigt 31.10.2026, Sitzung 0065) |
 | 2.9.0 | 26.10.2026 | APD-84: zu Beginn die ganze Zusammenarbeit (Kasten ‚Jede Antwort‘); Regelwächter über das Setup-Skript einrichten |

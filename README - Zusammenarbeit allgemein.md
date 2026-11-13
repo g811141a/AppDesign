@@ -1,6 +1,6 @@
 # Zusammenarbeit allgemein
 
-**Version 3.11.0** · Stand 08.11.2026
+**Version 3.12.0** · Stand 13.11.2026
 
 Regeln für die Zusammenarbeit mit Claude bei allen iPad-Web-Apps von g811141a. Die Datei liegt im Design-Repo **AppDesign**
 (g811141a/AppDesign); App-Eigenes steht in der `CLAUDE.md` des App-Repos. **Abschnitt 0 ist das Arbeitsmodell** (oben der Kasten ‚Immer‘ und ‚Jede
@@ -71,10 +71,15 @@ Ziel: nichts vergessen, Fehler finden, bevor der Nutzer sie findet, schnell und 
    fragt Claude nach. Prüfung: Selbstkontrolle; Grundregeln nach jedem Schritt `pruefe.mjs`.
 2. **Prüfen parallel und sparsam:** `node tests/alle.mjs` in der App (Werkzeug `tests/lauf.mjs`: parallel, schnellste zuerst,
    Abbruch ab dem dritten roten Lauf, jeder rote Lauf am Ende einmal allein – grün heißt ‚wackelt‘ und wird gemeldet, Gegenprobe
-   `--gegenprobe`). Während der Arbeit nur die betroffenen Prüfungen; **alle** (Chromium
-   und WebKit, alle Ansichten, alle automatisch prüfbaren Regeln des Katalogs) genau **einmal je Version** im
-   Veröffentlichungs-Skript, nicht zusätzlich vorher. Geräte-Regeln des Katalogs kommen als Testfall (User) in den Usertest, wenn die Version sie betrifft. Hilfsagenten bzw.
-   eigene Sitzungen arbeiten parallel, **wenn möglich und sinnvoll**. Prüfung: `lauf.mjs` (Selbsttest `tests/lauf-selbsttest.mjs`).
+   `--gegenprobe`). Während der Arbeit nur die betroffenen Prüfungen; im Veröffentlichungs-Skript genau **ein Prüflauf je Version**,
+   nicht zusätzlich vorher, in einer von zwei Stufen: **Stufe Text**, wenn sich nur Texte der App geändert haben (`index.html` ohne die
+   Inhalte der Zeichenketten und die Kommentare unverändert, sonst nur Doku und Versionsstellen, AppDesign unverändert) und die vorige
+   Version voll geprüft wurde – dann die Grundprüfungen (Doku, Versionen, Texte) und alle Prüfungen, die den alten oder neuen Text
+   enthalten, in Chromium und WebKit; sonst **voll** – **alle** (Chromium und WebKit, alle Ansichten, alle automatisch prüfbaren Regeln des
+   Katalogs). Das Skript schlägt die Stufe aus dem Unterschied vor, Claude nennt sie in der Bau-Frage (Nr. 21), im Zweifel voll.
+   Geräte-Regeln des Katalogs kommen als Testfall (User) in den Usertest, wenn die Version sie betrifft. Hilfsagenten bzw. eigene Sitzungen
+   arbeiten parallel, **wenn möglich und sinnvoll**. Prüfung: `lauf.mjs` (Selbsttest `tests/lauf-selbsttest.mjs`), Stufe
+   `veroeffentlichen.mjs` (Selbsttest `werkzeug/veroeffentlichen-selbsttest.mjs`).
 3. **Regeln schlank halten:** Jede Regel steht an genau einer Stelle und nennt genau eine Prüfung; eine neue Regel ersetzt
    oder ergänzt eine bestehende, Regeln zum selben Thema werden zusammengefasst. Neue allgemeine Design-Regeln bekommen sofort
    eine Nummer im Katalog (Designrichtlinie 17) und eine automatische Prüfung, sonst ‚Gerät‘. Im Regeltext steht nur, was heute
@@ -383,6 +388,7 @@ im Verlauf und in Kommentaren der Prüfungen nennen noch die alten Stellen):
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 3.12.0 | 13.11.2026 | Neben | **APD-128 Prüfumfang nach Art der Änderung (Nutzer 13.11.2026, Sitzung 0108, Wortlaut bestätigt – `arbeit/0108 APD-128 Wortlaut.md` APD-128/V-1, `arbeit/APD-128 Testfall-Liste.md` APD-128/V-4; Entscheidungen APD-128/D-1 bis D-4):** 0 Nr. 2 – genau ein Prüflauf je Version in einer von zwei Stufen: Stufe Text (nur Texte und Kommentare der App, Doku, Versionsstellen; AppDesign unverändert; vorige Version voll) mit den Grundprüfungen und allen Prüfungen mit dem alten oder neuen Text, sonst voll; das Skript schlägt die Stufe vor, die Bau-Frage nennt sie, im Zweifel voll. Anlass: Reiselogbuch 3.55.1 (eine Zeile Text) mit vollem Lauf, 152 Läufe in 70:19 |
 | 3.11.0 | 08.11.2026 | Neben | **APD-125 Datei vor jeder Kachel (Nutzer 08.11.2026, Sitzung 0098, Wortlaut bestätigt – `arbeit/APD-125 Datei vor jeder Kachel Wortlaut.md` APD-125/V-1 bis V-3):** Kasten ‚Jede Antwort‘ Punkt 4 ‚Datei vor jeder Kachel‘ – vor jedem Fenster alle wichtigen Informationen der Antwort (Lagebild, Bericht, Wortlaut alt und neu, Muster, Testlink, Schritte mit ‚Erwartet: …‘, alle offenen Usertests) in einer Datei im Seitenbereich und ebenso im Chat, auch wenn die Frage nicht danach fragt, ohne Ausnahme; 2.1 ‚Die Datei davor, das Fenster danach‘; 0 Nr. 15 Lagebild im Chat und als Datei. Anlass: das Lagebild fehlte vor der Kachel |
 | 3.10.0 | 07.11.2026 | Neben | **APD-123 Zusammenarbeit ohne Regelwächter (Nutzer 07.11.2026, Sitzung 0089, Wortlaut bestätigt – `arbeit/APD-123 Zusammenarbeit ohne Regelwächter Wortlaut.md` APD-123/V-1, V-2, D-1 bis D-12):** Kasten ‚Jede Antwort‘ neu (Punkte 1–7, Selbstkontrolle): Kachel mit Push am Ende jeder Antwort, nach der der Nutzer etwas tun soll; alles zum Lesen davor – im Chat und bei Prüfen/Entscheiden zusätzlich als Datei im Seitenbereich (`SendUserFile`); ‚(Kontext N)‘ in jeder Frage; 0 Nr. 26 Uhrzeitzeile entfällt; 0 Nr. 7, 11, 13, 14, 15, 21, 27, 28, 29 ohne ‚… anzeigen?‘, Zeitzeile und Regelwächter; 2.1 ‚Der Text davor, das Fenster danach‘, Reihenfolge; 2.2 ‚Kontextstand‘ statt Zeit und Token; 2.3 Rückmeldung in der Kachel oder im Chat; 2.5 ‚⚠ Modell …‘ meldet `messung.mjs`; 2.8 Regelwächter abgeschaltet. Anlass: Regelwächter in Sitzung 0089 abgeschaltet |
 | 3.9.0 | 07.11.2026 | Neben | **APD-113 Teil (6) ‚Text nach dem Fenster, Push bei jeder Aufgabe‘ und APD-117 (Nutzer 06. und 07.11.2026, Sitzungen 0086 und 0087, Wortlaut bestätigt – `arbeit/APD-113 Teil 6 Wortlaut.md` APD-113/L-1 bis L-8, `arbeit/APD-113 Rest und APD-117 Wortlaut.md` APD-113/N-3 mit Zusatz, APD-113/N-5, APD-113/N-6):** Kasten ‚Jede Antwort‘ Punkt 4 – zuerst ein Fenster ‚… bereit – anzeigen?‘ (Push), danach Link, Schritte mit ‚Erwartet: …‘ und offene Usertests als letzte Ausgabe ohne Fenster, Antwort im Chat; das gilt für jede letzte Ausgabe, nach der der Nutzer etwas tun soll (Link, Schritte, ‚Antworte im Chat: …‘), nach einer Zurückweisung wieder ein Fenster; Punkt 6 ‚Push bei jeder Aufgabe‘ (auch nach einem Neustart und nach der Meldung einer Hintergrundaufgabe oder einer anderen Sitzung); 0 Nr. 11 Bericht nach dem Fenster ‚… fertig – Bericht und Testfälle anzeigen?‘; 0 Nr. 15 Lagebild als eigene Antwort (APD-117); 0 Nr. 28 Ausnahme letzte Ausgabe; 0 Nr. 29 Wortlaut nach ‚Wortlaut … anzeigen?‘; 2.1 ‚Fenster nacheinander, der Text danach‘ – alles zum Lesen nie vor einem Fenster, Fenster bei Bitten zum Prüfen ohne Link; 2.3 Rückmeldung im Chat; 2.8 APD-84/W-15 lehnt jedes Fenster mit Link ab und prüft die letzte Ausgabe nach ‚… anzeigen?‘, eine Antwort ohne beantwortetes Fenster endet nie (auch nach einem Neustart, über die zwei Zurückweisungen hinaus), APD-84/W-17 zählt einen Aufruf mit `messung.mjs` und etwas anderem (z. B. Commit) und eine Zurückweisung des Regelwächters als Werkzeug (Testfall-Liste APD-113/M-1 bis M-17). Anlass: am iPad verdeckt die Kachel des Fensters den Text davor, aus ihr lässt sich nichts kopieren (Nutzer 06.11.2026)  · **0 Nr. 7** ‚Längeres … nach einem Fenster ‚… anzeigen?‘ als letzte Ausgabe‘ (APD-120/V-4, Nutzer 07.11.2026, Sitzung 0087) |
