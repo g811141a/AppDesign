@@ -1,7 +1,7 @@
 # RLB-121 Teuerste und günstigste Quartiere – Testfall-Liste
 
 **Stand 13.11.2026** · Sitzung ‚Reiselogbuch 0109‘ · Entscheidungen RLB-121/D-1 bis D-4 (`arbeit/0108 RLB-121 Klärung.md`) · Muster
-`arbeit/RLB-121/index.html`, Prüfung `arbeit/RLB-121 Muster prüfen.mjs` · **noch nicht bestätigt**
+`arbeit/RLB-121/index.html`, Prüfung `arbeit/RLB-121 Muster prüfen.mjs` · **bestätigt (Nutzer 13.11.2026, Sitzung 0109):** Muster, Testfall-Liste M-1 bis M-17, Reihenfolge – bei ungerader Zahl der mittlere oben, bei gleichem Preis je Nacht der frühere Aufenthalt zuerst (RLB-121/D-5)
 
 Nach Zusammenarbeit 0 Nr. 1: Gerät (iPad, iPhone) × Lage (quer, hoch) × Darstellung (hell, dunkel, Bedienungshilfen) × Handlung (ansehen, drehen,
 Textgröße, Preis ändern, abgleichen, Ausgabe teilen) × Daten (0, 1, 2, 3, 5, 8 Aufenthalte mit Preis; Preis 0; gleicher Preis; langer Name;
