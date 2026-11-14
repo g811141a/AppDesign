@@ -1,0 +1,303 @@
+# Messung · Reiselogbuch 3.56.0 · AppDesign 4.59.0 · Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/27.2 Mobile/15E148 Safari/604.1 · Home-Bildschirm · 402×874 @3 · Ränder 0/34/0/0 · hell · 2026-11-14T08:48:47.773Z · Kontrast normal · Bewegung normal · Text xl 19
+t      sy     inh    sh     ih     vh     vt     vvtop  kopf   such   tag    lkopf  lsuch  lroll  fokus  lage
+0      0      -      812    812    812    0      0      -      -      -      0      -      0      sideMore hoch   ! start
+10178  0      -      812    812    812    0      0      -      -      -      0      -      0      sideMore hoch   ! nav kein kandidat
+10179  0      -      812    812    812    0      0      -      -      -      0      -      0      sideMore hoch   ! zeiger down 57 618 touch b in button.side-row @side
+10292  0      -      812    812    812    0      0      -      -      -      0      -      0      sideMore hoch   ! zeiger up 57 618 touch b in button.side-row.beruehrt-aus @side
+10295  0      -      812    812    812    0      0      -      -      -      0      -      0      -      hoch   ! blur sideMore
+10296  0      -      812    812    812    0      0      -      -      -      0      -      0      -      hoch   ! tippen button
+10300  0      -      812    812    812    0      0      -      -      -      -      -      -      -      hoch   ! neuaufbau app
+10312  0      0      812    812    812    0      0      0      -      287    -      -      -      bar    hoch   ! focus bar
+10313  0      0      812    812    812    0      0      0      -      287    0      -      0      bar    hoch   ! neuaufbau side
+10320  0      0      812    812    812    0      0      0      -      287    0      -      15     bar    hoch   ! scroll div
+10828  0      0      812    812    812    0      0      0      -      287    -      -      -      bar    hoch
+12560  0      0      402    812    812    0      0      0      -      254    -      -      -      bar    hoch
+12582  0      0      402    402    402    0      0      0      -      254    -      -      -      bar    quer   ! resize
+12587  0      0      402    402    402    0      0      0      -      254    -      -      -      bar    quer   ! vv resize
+12588  0      0      402    402    402    0      0      0      -      254    -      -      -      bar    quer   ! vv scroll
+12863  0      0      402    402    402    0      0      0      -      254    -      -      -      bar    quer   ! drehen
+19883  0      0      812    402    402    0      0      0      -      287    -      -      -      bar    quer
+19905  0      0      812    874    874    0      0      0      -      349    -      -      -      bar    hoch   ! resize
+19910  0      0      812    874    874    0      0      0      -      349    -      -      -      bar    hoch   ! vv resize
+19911  0      0      812    874    874    0      0      0      -      349    -      -      -      bar    hoch   ! vv scroll
+19932  0      0      812    812    812    0      0      0      -      349    -      -      -      bar    hoch   ! vv resize
+20178  0      0      812    812    812    0      0      0      -      349    -      -      -      bar    hoch   ! drehen
+20207  62     0      812    812    812    62     0      -62    -      225    -      -      -      bar    hoch   ! resize
+20215  62     0      812    812    812    62     62     0      -      287    -      -      -      bar    hoch   ! scroll
+20215  62     0      812    812    812    62     62     0      -      287    -      -      -      bar    hoch   ! vv scroll
+24781  62     0      812    812    812    62     62     0      -      287    -      -      -      bar    hoch   ! nav kandidat phone
+24781  62     0      812    812    812    62     62     0      -      287    -      -      -      bar    hoch   ! zeiger down 37 107 touch dd @rolle
+24909  62     0      812    812    812    62     62     0      -      287    -      -      -      bar    hoch   ! zeiger up 37 107 touch dd @rolle
+24946  62     0      812    812    812    62     62     0      -      287    -      -      -      -      hoch   ! blur bar
+24947  62     0      812    812    812    62     62     0      -      287    -      -      -      -      hoch   ! tippen -
+25447  62     0      812    812    812    62     62     0      -      287    -      -      -      -      hoch   ! nav kandidat phone
+25447  62     0      812    812    812    62     62     0      -      287    -      -      -      -      hoch   ! zeiger down 38 105 touch dd @rolle
+25543  62     0      812    812    812    62     62     0      -      287    -      -      -      -      hoch   ! zeiger up 38 105 touch dd @rolle
+25579  62     0      812    812    812    62     62     0      -      287    -      -      -      -      hoch   ! tippen -
+26014  62     0      812    812    812    62     62     0      -      287    -      -      -      -      hoch   ! nav kandidat phone
+26014  62     0      812    812    812    62     62     0      -      287    -      -      -      -      hoch   ! zeiger down 38 102 touch dd @rolle
+26143  62     0      812    812    812    62     62     0      -      287    -      -      -      -      hoch   ! zeiger up 38 102 touch dd @rolle
+26180  62     0      812    812    812    62     62     0      -      287    -      -      -      -      hoch   ! tippen -
+26380  62     0      812    812    812    62     62     0      -      287    -      -      -      -      hoch   ! nav kandidat phone
+26380  62     0      812    812    812    62     62     0      -      287    -      -      -      -      hoch   ! zeiger down 41 93 touch dt @rolle
+26426  62     0      812    812    812    62     62     0      -      287    -      -      -      -      hoch   ! zeiger move 45 92 touch dt @rolle
+26427  62     0      812    812    812    62     62     0      -      287    -      -      -      -      hoch   ! touchmove frei
+26443  62     0      812    812    812    62     62     0      -      287    -      -      -      -      hoch   ! zeiger move 43 98 touch dt @rolle
+26459  62     0      812    812    812    62     62     0      -      287    -      -      -      -      hoch   ! nav verworfen richtung -1 12
+26460  62     0      812    812    812    62     62     0      -      287    -      -      -      -      hoch   ! zeiger move 40 105 touch dt @rolle
+26476  62     0      812    812    812    62     62     0      -      287    -      -      -      -      hoch   ! zeiger move 39 106 touch dt @rolle
+26477  62     0      812    812    812    62     62     0      -      287    -      -      -      -      hoch   ! zeiger move 39 108 touch dt @rolle
+26477  62     0      812    812    812    62     62     0      -      287    -      -      -      -      hoch   ! zeiger up 36 110 touch dt @rolle
+26697  62     0      812    812    812    62     62     0      -      287    -      -      -      -      hoch   ! nav kandidat phone
+26697  62     0      812    812    812    62     62     0      -      287    -      -      -      -      hoch   ! zeiger down 43 101 touch dd @rolle
+26743  62     0      812    812    812    62     62     0      -      287    -      -      -      -      hoch   ! zeiger move 43 104 touch dd @rolle
+26743  62     0      812    812    812    62     62     0      -      287    -      -      -      -      hoch   ! touchmove frei
+26760  62     0      812    812    812    62     62     0      -      287    -      -      -      -      hoch   ! nav verworfen richtung -4 11
+26760  62     0      812    812    812    62     62     0      -      287    -      -      -      -      hoch   ! zeiger move 39 112 touch dd @rolle
+26776  62     0      812    812    812    62     62     0      -      287    -      -      -      -      hoch   ! zeiger move 38 114 touch dd @rolle
+26776  62     0      812    812    812    62     62     0      -      287    -      -      -      -      hoch   ! zeiger move 36 120 touch dd @rolle
+26793  62     0      812    812    812    62     62     0      -      287    -      -      -      -      hoch   ! zeiger up 34 122 touch dd @rolle
+27398  62     0      812    812    812    62     62     0      -      287    -      -      -      -      hoch   ! nav kandidat phone
+27398  62     0      812    812    812    62     62     0      -      287    -      -      -      -      hoch   ! zeiger down 97 588 touch span.k.word in div.box.day.tippziel[button] @pdays
+27510  62     0      812    812    812    62     62     0      -      287    -      -      -      -      hoch   ! zeiger up 97 588 touch span.k.word in div.box.day.tippziel[button] @pdays
+27513  62     0      812    812    812    62     62     0      -      287    -      -      -      div    hoch   ! focus div
+27514  62     0      812    812    812    62     62     0      -      287    -      -      -      div    hoch   ! tippen -
+27524  62     0      812    812    812    62     62     0      -      287    -      -      -      dlgX   hoch   ! blur div
+27527  62     0      812    812    812    62     62     0      -      287    -      -      -      dlgX   hoch   ! focus dlgX
+27528  62     0      812    812    812    62     62     0      -      287    -      -      -      -      hoch   ! blur dlgX
+27528  62     0      812    812    812    62     62     0      -      287    -      -      -      dlg    hoch   ! focus dlg
+27562  62     0      812    812    812    62     62     0      -      286    -      -      -      dlg    hoch
+27575  62     0      812    812    812    62     62     0      -      284    -      -      -      dlg    hoch
+27592  62     0      812    812    812    62     62     0      -      282    -      -      -      dlg    hoch
+27609  62     0      812    812    812    62     62     0      -      280    -      -      -      dlg    hoch
+27625  62     0      812    812    812    62     62     0      -      278    -      -      -      dlg    hoch
+27642  62     0      812    812    812    62     62     0      -      276    -      -      -      dlg    hoch
+27659  62     0      812    812    812    62     62     0      -      274    -      -      -      dlg    hoch
+27675  62     0      812    812    812    62     62     0      -      273    -      -      -      dlg    hoch
+27692  62     0      812    812    812    62     62     0      -      272    -      -      -      dlg    hoch
+27709  62     0      812    812    812    62     62     0      -      271    -      -      -      dlg    hoch
+27725  62     0      812    812    812    62     62     0      -      270    -      -      -      dlg    hoch
+27759  62     0      812    812    812    62     62     0      -      269    -      -      -      dlg    hoch
+27792  62     0      812    812    812    62     62     0      -      268    -      -      -      dlg    hoch
+27876  62     0      812    812    812    62     62     0      -      267    -      -      -      dlg    hoch
+29048  62     0      812    812    812    62     62     0      -      267    -      -      -      dlg    hoch   ! nav kein kandidat
+29049  62     0      812    812    812    62     62     0      -      267    -      -      -      dlg    hoch   ! zeiger down 49 121 touch span.step-num in label @dlg
+29127  62     0      812    812    812    62     62     0      -      267    -      -      -      dlg    hoch   ! zeiger up 49 121 touch span.step-num in label @dlg
+29163  62     0      812    812    812    62     62     0      -      267    -      -      -      dlg    hoch   ! tippen -
+29582  62     0      812    812    812    62     62     0      -      267    -      -      -      dlg    hoch   ! nav kein kandidat
+29582  62     0      812    812    812    62     62     0      -      267    -      -      -      dlg    hoch   ! zeiger down 37 112 touch span.step-num in label @dlg
+29644  62     0      812    812    812    62     62     0      -      267    -      -      -      dlg    hoch   ! zeiger move 34 106 touch span.step-num in label @dlg
+29644  62     0      812    812    812    62     62     0      -      267    -      -      -      dlg    hoch   ! touchmove frei
+29660  62     0      812    812    812    62     62     0      -      267    -      -      -      dlg    hoch   ! zeiger move 32 107 touch span.step-num in label @dlg
+29661  62     0      812    812    812    62     62     0      -      267    -      -      -      dlg    hoch   ! zeiger up 30 109 touch span.step-num in label @dlg
+29697  62     0      812    812    812    62     62     0      -      267    -      -      -      dlg    hoch   ! tippen -
+29899  62     0      812    812    812    62     62     0      -      267    -      -      -      dlg    hoch   ! nav kein kandidat
+29900  62     0      812    812    812    62     62     0      -      267    -      -      -      dlg    hoch   ! zeiger down 37 105 touch div.step in dlg
+29944  62     0      812    812    812    62     62     0      -      267    -      -      -      dlg    hoch   ! zeiger move 42 108 touch div.step in dlg
+29944  62     0      812    812    812    62     62     0      -      267    -      -      -      dlg    hoch   ! touchmove frei
+29960  62     0      812    812    812    62     62     0      -      267    -      -      -      dlg    hoch   ! zeiger move 41 114 touch div.step in dlg
+29976  62     0      812    812    812    62     62     0      -      267    -      -      -      dlg    hoch   ! zeiger move 41 117 touch div.step in dlg
+29982  62     0      812    812    812    62     62     0      -      267    -      -      -      dlg    hoch   ! zeiger up 39 119 touch dlg
+30165  62     0      812    812    812    62     62     0      -      267    -      -      -      dlg    hoch   ! nav kein kandidat
+30165  62     0      812    812    812    62     62     0      -      267    -      -      -      dlg    hoch   ! zeiger down 38 108 touch div.step in dlg
+30210  62     0      812    812    812    62     62     0      -      267    -      -      -      dlg    hoch   ! zeiger move 40 102 touch div.step in dlg
+30211  62     0      812    812    812    62     62     0      -      267    -      -      -      dlg    hoch   ! touchmove frei
+30227  62     0      812    812    812    62     62     0      -      267    -      -      -      dlg    hoch   ! zeiger move 37 108 touch div.step in dlg
+30243  62     0      812    812    812    62     62     0      -      267    -      -      -      dlg    hoch   ! zeiger move 36 110 touch div.step in dlg
+30245  62     0      812    812    812    62     62     0      -      267    -      -      -      dlg    hoch   ! zeiger move 34 115 touch div.step in dlg
+30260  62     0      812    812    812    62     62     0      -      267    -      -      -      dlg    hoch   ! zeiger up 32 117 touch div.step in dlg
+30466  62     0      812    812    812    62     62     0      -      267    -      -      -      dlg    hoch   ! nav kein kandidat
+30466  62     0      812    812    812    62     62     0      -      267    -      -      -      dlg    hoch   ! zeiger down 35 110 touch span.step-num in label @dlg
+30510  62     0      812    812    812    62     62     0      -      267    -      -      -      dlg    hoch   ! zeiger move 43 102 touch span.step-num in label @dlg
+30510  62     0      812    812    812    62     62     0      -      267    -      -      -      dlg    hoch   ! touchmove frei
+30527  62     0      812    812    812    62     62     0      -      267    -      -      -      dlg    hoch   ! zeiger move 42 108 touch span.step-num in label @dlg
+30543  62     0      812    812    812    62     62     0      -      267    -      -      -      dlg    hoch   ! zeiger move 41 110 touch span.step-num in label @dlg
+30544  62     0      812    812    812    62     62     0      -      267    -      -      -      dlg    hoch   ! zeiger move 39 114 touch span.step-num in label @dlg
+30560  62     0      812    812    812    62     62     0      -      267    -      -      -      dlg    hoch   ! zeiger up 37 116 touch span.step-num in label @dlg
+30799  62     0      812    812    812    62     62     0      -      267    -      -      -      dlg    hoch   ! nav kein kandidat
+30799  62     0      812    812    812    62     62     0      -      267    -      -      -      dlg    hoch   ! zeiger down 38 109 touch span.step-num in label @dlg
+30844  62     0      812    812    812    62     62     0      -      267    -      -      -      dlg    hoch   ! zeiger move 43 107 touch span.step-num in label @dlg
+30844  62     0      812    812    812    62     62     0      -      267    -      -      -      dlg    hoch   ! touchmove frei
+30860  62     0      812    812    812    62     62     0      -      267    -      -      -      dlg    hoch   ! zeiger move 39 111 touch span.step-num in label @dlg
+30876  62     0      812    812    812    62     62     0      -      267    -      -      -      dlg    hoch   ! zeiger move 38 113 touch span.step-num in label @dlg
+30880  62     0      812    812    812    62     62     0      -      267    -      -      -      dlg    hoch   ! zeiger up 36 115 touch span.step-num in label @dlg
+31384  62     0      812    812    812    62     62     0      -      267    -      -      -      dlg    hoch   ! nav kein kandidat eigen
+31384  62     0      812    812    812    62     62     0      -      267    -      -      -      dlg    hoch   ! zeiger down 172 189 touch button @wx
+31399  62     0      812    812    812    62     62     0      -      267    -      -      -      dlg    hoch   ! zeiger move 173 205 touch button @wx
+31403  62     0      812    812    812    62     62     0      -      268    -      -      -      dlg    hoch   ! touchmove frei
+31410  62     0      812    812    812    62     62     0      -      268    -      -      -      dlg    hoch   ! zeiger move 173 216 touch button @wx
+31426  62     0      812    812    812    62     62     0      -      268    -      -      -      dlg    hoch   ! zeiger move 173 241 touch dlg
+31443  62     0      812    812    812    62     62     0      -      268    -      -      -      dlg    hoch   ! zeiger move 173 274 touch dlg
+31443  62     0      812    812    812    62     62     0      -      269    -      -      -      dlg    hoch
+31459  62     0      812    812    812    62     62     0      -      269    -      -      -      dlg    hoch   ! zeiger move 178 345 touch dlg
+31460  62     0      812    812    812    62     62     0      -      271    -      -      -      dlg    hoch
+31476  62     0      812    812    812    62     62     0      -      271    -      -      -      dlg    hoch   ! zeiger move 187 404 touch dlg
+31478  62     0      812    812    812    62     62     0      -      272    -      -      -      dlg    hoch
+31493  62     0      812    812    812    62     62     0      -      272    -      -      -      dlg    hoch   ! zeiger move 196 464 touch dlg
+31495  62     0      812    812    812    62     62     0      -      274    -      -      -      dlg    hoch
+31510  62     0      812    812    812    62     62     0      -      274    -      -      -      dlg    hoch   ! zeiger move 205 527 touch dlg
+31512  62     0      812    812    812    62     62     0      -      275    -      -      -      dlg    hoch
+31527  62     0      812    812    812    62     62     0      -      275    -      -      -      dlg    hoch   ! zeiger move 213 594 touch dlg
+31528  62     0      812    812    812    62     62     0      -      277    -      -      -      dlg    hoch
+31544  62     0      812    812    812    62     62     0      -      277    -      -      -      dlg    hoch   ! zeiger move 217 671 touch dlg
+31545  62     0      812    812    812    62     62     0      -      278    -      -      -      dlg    hoch
+31560  62     0      812    812    812    62     62     0      -      278    -      -      -      dlg    hoch   ! zeiger move 217 752 touch dlg
+31562  62     0      812    812    812    62     62     0      -      280    -      -      -      dlg    hoch
+31577  62     0      812    812    812    62     62     0      -      280    -      -      -      dlg    hoch   ! zeiger move 214 789 touch dlg
+31584  62     0      812    812    812    62     62     0      -      281    -      -      -      dlg    hoch   ! zeiger up 212 791 touch dlg
+31610  62     0      812    812    812    62     62     0      -      282    -      -      -      dlg    hoch
+31643  62     0      812    812    812    62     62     0      -      283    -      -      -      dlg    hoch
+31660  62     0      812    812    812    62     62     0      -      284    -      -      -      dlg    hoch
+31676  62     0      812    812    812    62     62     0      -      285    -      -      -      dlg    hoch
+31693  62     0      812    812    812    62     62     0      -      286    -      -      -      dlg    hoch
+31709  62     0      812    812    812    62     62     0      -      287    -      -      -      dlg    hoch
+31745  62     0      812    812    812    62     62     0      -      287    -      -      -      dlg    hoch   ! tippen dlgX
+31750  62     0      812    812    812    62     62     0      -      287    -      -      -      -      hoch   ! blur dlg
+31751  62     0      812    812    812    62     62     0      -      287    -      -      -      div    hoch   ! focus div
+31759  62     0      812    812    812    62     62     0      -      287    -      -      -      div    hoch   ! neuaufbau app
+31771  62     0      812    812    812    62     62     0      -      287    -      -      -      -      hoch
+31793  62     0      812    812    812    62     62     0      -      287    -      -      -      div    hoch   ! focus div
+32681  62     0      812    812    812    62     62     0      -      287    -      -      -      div    hoch   ! nav kandidat phone
+32681  62     0      812    812    812    62     62     0      -      287    -      -      -      div    hoch   ! zeiger down 45 105 touch dd @rolle
+32778  62     0      812    812    812    62     62     0      -      287    -      -      -      div    hoch   ! zeiger up 45 105 touch dd @rolle
+32814  62     0      812    812    812    62     62     0      -      287    -      -      -      -      hoch   ! blur div
+32815  62     0      812    812    812    62     62     0      -      287    -      -      -      -      hoch   ! tippen -
+32948  62     0      812    812    812    62     62     0      -      287    -      -      -      -      hoch   ! nav kandidat phone
+32948  62     0      812    812    812    62     62     0      -      287    -      -      -      -      hoch   ! zeiger down 42 103 touch dd @rolle
+32994  62     0      812    812    812    62     62     0      -      287    -      -      -      -      hoch   ! zeiger move 51 106 touch dd @rolle
+32994  62     0      812    812    812    62     62     0      -      287    -      -      -      -      hoch   ! touchmove frei
+33011  62     0      812    812    812    62     62     0      -      287    -      -      -      -      hoch   ! nav verworfen richtung 8 10
+33011  62     0      812    812    812    62     62     0      -      287    -      -      -      -      hoch   ! zeiger move 50 113 touch dd @rolle
+33027  62     0      812    812    812    62     62     0      -      287    -      -      -      -      hoch   ! zeiger up 48 114 touch dd @rolle
+33196  62     0      812    812    812    62     62     0      -      287    -      -      -      -      hoch   ! nav kandidat phone
+33196  62     0      812    812    812    62     62     0      -      287    -      -      -      -      hoch   ! zeiger down 48 97 touch dt @rolle
+33244  62     0      812    812    812    62     62     0      -      287    -      -      -      -      hoch   ! zeiger move 51 100 touch dt @rolle
+33244  62     0      812    812    812    62     62     0      -      287    -      -      -      -      hoch   ! touchmove frei
+33261  62     0      812    812    812    62     62     0      -      287    -      -      -      -      hoch   ! nav verworfen richtung -1 10
+33261  62     0      812    812    812    62     62     0      -      287    -      -      -      -      hoch   ! zeiger move 47 107 touch dt @rolle
+33277  62     0      812    812    812    62     62     0      -      287    -      -      -      -      hoch   ! zeiger up 45 109 touch dt @rolle
+33465  62     0      812    812    812    62     62     0      -      287    -      -      -      -      hoch   ! nav kandidat phone
+33465  62     0      812    812    812    62     62     0      -      287    -      -      -      -      hoch   ! zeiger down 38 112 touch dd @rolle
+33510  62     0      812    812    812    62     62     0      -      287    -      -      -      -      hoch   ! zeiger move 41 111 touch dd @rolle
+33511  62     0      812    812    812    62     62     0      -      287    -      -      -      -      hoch   ! touchmove frei
+33528  62     0      812    812    812    62     62     0      -      287    -      -      -      -      hoch   ! zeiger move 39 118 touch dd @rolle
+33544  62     0      812    812    812    62     62     0      -      287    -      -      -      -      hoch   ! zeiger up 37 120 touch dd @rolle
+33580  62     0      812    812    812    62     62     0      -      287    -      -      -      -      hoch   ! tippen -
+33715  62     0      812    812    812    62     62     0      -      287    -      -      -      -      hoch   ! nav kandidat phone
+33715  62     0      812    812    812    62     62     0      -      287    -      -      -      -      hoch   ! zeiger down 38 113 touch dd @rolle
+33761  62     0      812    812    812    62     62     0      -      287    -      -      -      -      hoch   ! zeiger move 46 107 touch dd @rolle
+33761  62     0      812    812    812    62     62     0      -      287    -      -      -      -      hoch   ! touchmove frei
+33777  62     0      812    812    812    62     62     0      -      287    -      -      -      -      hoch   ! zeiger move 43 114 touch dd @rolle
+33794  62     0      812    812    812    62     62     0      -      287    -      -      -      -      hoch   ! zeiger move 42 116 touch dd @rolle
+33795  62     0      812    812    812    62     62     0      -      287    -      -      -      -      hoch   ! zeiger move 42 118 touch dd @rolle
+33796  62     0      812    812    812    62     62     0      -      287    -      -      -      -      hoch   ! zeiger up 40 120 touch dd @rolle
+33833  62     0      812    812    812    62     62     0      -      287    -      -      -      -      hoch   ! tippen -
+34698  62     0      812    812    812    62     62     0      -      287    -      -      -      -      hoch   ! nav kandidat phone
+34698  62     0      812    812    812    62     62     0      -      287    -      -      -      -      hoch   ! zeiger down 77 535 touch span.k.word in div.box.day.tippziel[button] @pdays
+34711  62     0      812    812    812    62     62     0      -      287    -      -      -      -      hoch   ! zeiger move 86 540 touch span.k.word in div.box.day.tippziel[button] @pdays
+34711  62     0      812    812    812    62     62     0      -      287    -      -      -      -      hoch   ! touchmove frei
+34728  62     0      812    812    812    62     62     0      -      287    -      -      -      -      hoch   ! nav aktiv phone 27 7
+34730  62     0      812    812    812    62     62     0      -      287    0      -      15     -      hoch   ! neuaufbau side
+34734  62     0      812    812    812    62     62     0      -      287    -62    -      15     -      hoch   ! zeiger move 103 542 touch span.k.word in div.box.day.tippziel[button] @pdays
+34736  62     0      812    812    812    62     62     0      -      287    -62    -      15     -      hoch   ! touchmove verhindert
+34736  62     0      812    812    812    62     62     0      -      287    -62    -      15     -      hoch   ! scroll div
+34744  62     0      812    812    812    62     62     0      -      287    -62    -      15     -      hoch   ! zeiger move 129 549 touch span.k.word in div.box.day.tippziel[button] @pdays
+34762  62     0      812    812    812    62     62     0      -      287    -62    -      15     -      hoch   ! zeiger move 163 556 touch span.k.word in div.box.day.tippziel[button] @pdays
+34777  62     0      812    812    812    62     62     0      -      287    -62    -      15     -      hoch   ! zeiger move 200 563 touch span.k.word in div.box.day.tippziel[button] @pdays
+34793  62     0      812    812    812    62     62     0      -      287    -62    -      15     -      hoch   ! zeiger move 239 570 touch span.k.word in div.box.day.tippziel[button] @pdays
+34810  62     0      812    812    812    62     62     0      -      287    -62    -      15     -      hoch   ! nav fertig weg 0.40 tempo 2.02
+34810  62     0      812    812    812    62     62     0      -      287    -62    -      15     -      hoch   ! zeiger up 241 572 touch span.k.word in div.box.day.tippziel[button] @pdays
+34963  62     -      812    812    812    62     62     -      -      -      -62    -      15     -      hoch   ! neuaufbau side
+34970  62     -      812    812    812    62     62     -      -      -      -62    -      15     button hoch   ! focus button
+34972  62     -      812    812    812    62     62     -      -      -      0      -      15     button hoch
+34992  62     -      812    812    812    62     62     -      -      -      0      -      15     button hoch   ! scroll div
+41500  62     -      812    812    812    62     62     -      -      -      0      -      15     button hoch   ! nav kein kandidat
+41500  62     -      812    812    812    62     62     -      -      -      0      -      15     button hoch   ! zeiger down 359 92 touch div.side-list @side
+41595  62     -      812    812    812    62     62     -      -      -      0      -      15     button hoch   ! zeiger move 354 90 touch div.side-list @side
+41596  62     -      812    812    812    62     62     -      -      -      0      -      15     button hoch   ! touchmove frei
+41612  62     -      812    812    812    62     62     -      -      -      0      -      15     button hoch   ! zeiger move 352 92 touch div.side-list @side
+41629  62     -      812    812    812    62     62     -      -      -      0      -      15     button hoch   ! zeiger up 350 94 touch div.side-list @side
+41666  62     -      812    812    812    62     62     -      -      -      0      -      15     -      hoch   ! blur button
+41666  62     -      812    812    812    62     62     -      -      -      0      -      15     -      hoch   ! tippen -
+42885  62     -      812    812    812    62     62     -      -      -      0      -      15     -      hoch   ! nav kein kandidat
+42885  62     -      812    812    812    62     62     -      -      -      0      -      15     -      hoch   ! zeiger down 342 145 touch button.side-row @side
+42996  62     -      812    812    812    62     62     -      -      -      0      -      15     -      hoch   ! zeiger up 342 145 touch button.side-row.beruehrt-aus @side
+43000  62     -      812    812    812    62     62     -      -      -      0      -      15     -      hoch   ! tippen button
+43004  0      -      812    812    812    0      62     -      -      -      -      -      -      -      hoch   ! neuaufbau app
+43015  0      0      812    812    812    0      62     62     -      349    -      -      -      bar    hoch   ! focus bar
+43015  0      0      812    812    812    0      62     62     -      349    62     -      15     bar    hoch   ! neuaufbau side
+43022  0      0      812    812    812    0      62     62     -      349    0      -      15     bar    hoch   ! scroll
+43024  0      0      812    812    812    0      0      0      -      287    0      -      15     bar    hoch   ! scroll div
+43024  0      0      812    812    812    0      0      0      -      287    0      -      15     bar    hoch   ! vv scroll
+43536  0      0      812    812    812    0      0      0      -      287    -      -      -      bar    hoch
+45418  0      0      812    812    812    0      0      0      -      287    -      -      -      bar    hoch   ! nav kein kandidat eigen
+45419  0      0      812    812    812    0      0      0      -      287    -      -      -      bar    hoch   ! zeiger down 50 34 touch svg.ic in back
+45464  0      0      812    812    812    0      0      0      -      287    -      -      -      bar    hoch   ! zeiger up 50 34 touch svg.ic in back
+45466  0      0      812    812    812    0      0      0      -      287    -      -      -      bar    hoch   ! tippen back
+45467  0      0      812    812    812    0      0      0      -      287    0      -      15     bar    hoch   ! neuaufbau side
+45491  0      0      812    812    812    0      0      0      -      287    0      -      15     bar    hoch   ! scroll div
+45753  0      -      812    812    812    0      0      -      -      -      0      -      15     -      hoch   ! neuaufbau side
+45759  0      -      812    812    812    0      0      -      -      -      0      -      15     button hoch   ! focus button
+45783  0      -      812    812    812    0      0      -      -      -      0      -      15     button hoch   ! scroll div
+48089  0      -      812    812    812    0      0      -      -      -      0      -      15     button hoch   ! nav kein kandidat
+48089  0      -      812    812    812    0      0      -      -      -      0      -      15     button hoch   ! zeiger down 344 221 touch h3.side-sec @side
+48201  0      -      812    812    812    0      0      -      -      -      0      -      15     button hoch   ! zeiger up 344 221 touch h3.side-sec @side
+48240  0      -      812    812    812    0      0      -      -      -      0      -      15     -      hoch   ! blur button
+48241  0      -      812    812    812    0      0      -      -      -      0      -      15     -      hoch   ! tippen -
+49455  0      -      812    812    812    0      0      -      -      -      0      -      15     -      hoch   ! nav kein kandidat
+49455  0      -      812    812    812    0      0      -      -      -      0      -      15     -      hoch   ! zeiger down 337 85 touch h3.side-sec @side
+49552  0      -      812    812    812    0      0      -      -      -      0      -      15     -      hoch   ! zeiger up 337 85 touch h3.side-sec @side
+49590  0      -      812    812    812    0      0      -      -      -      0      -      15     -      hoch   ! tippen -
+50256  0      -      812    812    812    0      0      -      -      -      0      -      15     -      hoch   ! nav kein kandidat
+50256  0      -      812    812    812    0      0      -      -      -      0      -      15     -      hoch   ! zeiger down 344 80 touch h3.side-sec @side
+50352  0      -      812    812    812    0      0      -      -      -      0      -      15     -      hoch   ! zeiger up 344 80 touch h3.side-sec @side
+50390  0      -      812    812    812    0      0      -      -      -      0      -      15     -      hoch   ! tippen -
+50789  0      -      812    812    812    0      0      -      -      -      0      -      15     -      hoch   ! nav kein kandidat
+50789  0      -      812    812    812    0      0      -      -      -      0      -      15     -      hoch   ! zeiger down 341 69 touch h3.side-sec @side
+50951  0      -      812    812    812    0      0      -      -      -      0      -      15     -      hoch   ! zeiger up 341 69 touch h3.side-sec @side
+50987  0      -      812    812    812    0      0      -      -      -      0      -      15     -      hoch   ! tippen -
+51406  0      -      812    812    812    0      0      -      -      -      0      -      15     -      hoch   ! nav kein kandidat
+51406  0      -      812    812    812    0      0      -      -      -      0      -      15     -      hoch   ! zeiger down 354 82 touch h3.side-sec @side
+51485  0      -      812    812    812    0      0      -      -      -      0      -      15     -      hoch   ! zeiger up 354 82 touch h3.side-sec @side
+51523  0      -      812    812    812    0      0      -      -      -      0      -      15     -      hoch   ! tippen -
+52456  0      -      812    812    812    0      0      -      -      -      0      -      15     -      hoch   ! nav kein kandidat
+52456  0      -      812    812    812    0      0      -      -      -      0      -      15     -      hoch   ! zeiger down 348 63 touch div.side-head @side
+52535  0      -      812    812    812    0      0      -      -      -      0      -      15     -      hoch   ! zeiger up 348 63 touch div.side-head @side
+52572  0      -      812    812    812    0      0      -      -      -      0      -      15     -      hoch   ! tippen -
+52873  0      -      812    812    812    0      0      -      -      -      0      -      15     -      hoch   ! nav kein kandidat eigen
+52874  0      -      812    812    812    0      0      -      -      -      0      -      15     -      hoch   ! zeiger down 330 37 touch newTrip
+53035  0      -      812    812    812    0      0      -      -      -      0      -      15     -      hoch   ! zeiger up 330 37 touch newTrip
+53038  0      -      812    812    812    0      0      -      -      -      0      -      15     -      hoch   ! tippen newTrip
+53048  0      -      812    812    812    0      0      -      -      -      0      -      15     dlgX   hoch   ! focus dlgX
+53051  0      -      812    812    812    0      0      -      -      -      0      -      15     -      hoch   ! blur dlgX
+53051  0      -      812    812    812    0      0      -      -      -      0      -      15     dlg    hoch   ! focus dlg
+53259  0      -      812    812    812    0      0      -      -      -      0      -      15     dlg    hoch   ! nav kein kandidat
+53260  0      -      812    812    812    0      0      -      -      -      0      -      15     dlg    hoch   ! zeiger down 353 33 touch dlg
+53324  0      -      812    812    812    0      0      -      -      -      0      -      15     dlg    hoch   ! zeiger move 357 34 touch dlg
+53324  0      -      812    812    812    0      0      -      -      -      0      -      15     dlg    hoch   ! touchmove frei
+53340  0      -      812    812    812    0      0      -      -      -      0      -      15     dlg    hoch   ! zeiger move 355 36 touch dlg
+53356  0      -      812    812    812    0      0      -      -      -      0      -      15     dlg    hoch   ! zeiger move 354 36 touch dlg
+53358  0      -      812    812    812    0      0      -      -      -      0      -      15     dlg    hoch   ! zeiger up 352 38 touch dlg
+53395  0      -      812    812    812    0      0      -      -      -      0      -      15     dlg    hoch   ! tippen -
+54929  0      -      812    812    812    0      0      -      -      -      0      -      15     dlg    hoch   ! nav kein kandidat eigen
+54930  0      -      812    812    812    0      0      -      -      -      0      -      15     dlg    hoch   ! zeiger down 38 45 touch path in dlgX
+55036  0      -      812    812    812    0      0      -      -      -      0      -      15     dlg    hoch   ! zeiger up 38 45 touch path in dlgX
+55040  0      -      812    812    812    0      0      -      -      -      0      -      15     dlg    hoch   ! tippen dlgX
+55048  0      -      812    812    812    0      0      -      -      -      0      -      15     dlg    hoch   ! neuaufbau side
+55052  0      -      812    812    812    0      0      -      -      -      0      -      15     dlg    hoch   ! scroll div
+55053  0      -      812    812    812    0      0      -      -      -      0      -      15     -      hoch   ! blur dlg
+55085  0      -      812    812    812    0      0      -      -      -      0      -      15     newTrip hoch   ! focus newTrip
+58015  0      -      812    812    812    0      0      -      -      -      0      -      15     newTrip hoch   ! nav kein kandidat eigen
+58016  0      -      812    812    812    0      0      -      -      -      0      -      15     newTrip hoch   ! zeiger down 348 34 touch svg.ic in sideMore
+58162  0      -      812    812    812    0      0      -      -      -      0      -      15     newTrip hoch   ! zeiger up 348 34 touch svg.ic in sideMore
+58166  0      -      812    812    812    0      0      -      -      -      0      -      15     -      hoch   ! blur newTrip
+58166  0      -      812    812    812    0      0      -      -      -      0      -      15     -      hoch   ! tippen sideMore
+58173  0      -      812    812    812    0      0      -      -      -      0      -      15     button hoch   ! focus button
+60291  0      -      812    812    812    0      0      -      -      -      0      -      15     button hoch   ! nav kein kandidat eigen
+60291  0      -      812    812    812    0      0      -      -      -      0      -      15     button hoch   ! zeiger down 120 367 touch button.mi.has-sub.beruehrt[menuitem]
+60420  0      -      812    812    812    0      0      -      -      -      0      -      15     button hoch   ! zeiger up 120 367 touch button.mi.has-sub.beruehrt-aus[menuitem]
+60425  0      -      812    812    812    0      0      -      -      -      0      -      15     -      hoch   ! blur button
+60425  0      -      812    812    812    0      0      -      -      -      0      -      15     -      hoch   ! tippen button
+60463  0      -      812    812    812    0      0      -      -      -      0      -      15     sideMore hoch   ! focus sideMore
+60464  0      -      812    812    812    0      0      -      -      -      0      -      15     sideMore hoch   ! messung beendet
+# Ende nach 60 s
