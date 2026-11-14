@@ -3,6 +3,34 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.59.2 – 14.11.2026
+
+AppDesign 4.59.2 · Designrichtlinie allgemein 4.59.2 · Zusammenarbeit allgemein 3.13.1 · Reiselogbuch 3.56.2 (Fassung 4.59.2)
+
+**APD-129 Teil 2 Korrektur: iPhone – Bild springt nach dem Zurückdrehen nach oben** – deine Rückmeldung zu P-104 (/1, /2, /3 nicht ok, Sitzung 0113),
+Messung `arbeit/APD-129/messung-2026-11-14-2137.txt`, Befund und Testfall-Liste `arbeit/APD-129 Teil 2 Befund und Testfall-Liste.md` (APD-129/M-10 bis M-18,
+Vorschlag A + B bestätigt), Wortlaut `arbeit/APD-129 Teil 2 Wortlaut.md` (APD-129/W-1).
+
+- **`ui.js` – Teil A `randOben()` (R-8.1, R-4.6):** nach der Meldung 812 bleibt `env(safe-area-inset-top)` am iPhone vom Home-Bildschirm noch 250–300 ms
+  auf 62. Ist das Fenster hoch und niedriger als der Bildschirm, setzt `ui.js` `--safe-top: 0px` am Element `html` (sonst entfernt) und stellt bei einer
+  Änderung das Blatt sofort neu (`placeDialogs`). Quer, am iPad und in Safari gilt `env(…)`.
+- **`ui.js` – Teil B `drehRestWeg()`:** die Verschiebung um die Statusleiste nach dem Drehen (4.59.1) wird jetzt schon im ersten `resize`-Hörer
+  zurückgestellt, nicht erst mit der nächsten Meldung; `placeDialogs` ruft beide.
+- **Safari-Modell (`tests/safari.mjs`):** `safeOben(p, px)` (oberer Rand, der nachhinkt; die Prüfumgebung kennt keine sicheren Ränder), `RAND_NACH`
+  280 ms, `safariDrehenHoch(p, { rand, bilder })` mit Home-Bildschirm und Bildschirmhöhe; die sichtbare Höhe meldet das Modell beim Drehen ohne Tastatur
+  jetzt schon im `resize` des Fensters, wie gemessen (Zeilen 266–271) – vorher blieb sie in Chromium bis zur nächsten Meldung auf der Höhe von quer.
+- **Warum die Prüfung ihn übersah:** die Prüfumgebung kennt keine sicheren Ränder (`env(…)` ist 0), und die Prüfung sah nur den Stand nach dem Drehen.
+- **Prüfung im Reiselogbuch:** `ablauf-drehen-iphone` APD-129/M-10 bis M-16 (jedes Bild ab der Meldung); Gegenprobe M-18 ohne Teil A und gegen 4.59.1
+  rot (Chromium und WebKit). APD-129/M-14 = M-4 (Tastatur), M-17 (iPad) deckt die bestehende Drehprüfung ab.
+- **Designrichtlinie 13:** neu ‚Oberer Rand nach dem Drehen (iPhone, Home-Bildschirm)‘ (APD-129/W-1).
+
+**APD-130/W-5 Modell-Hinweis mit dem eingestellten Modell** – Wortlaut `arbeit/APD-130 Modell und Aufwand Wortlaut.md` (bestätigt, Sitzung 0113).
+
+- **`werkzeug/messung.mjs`:** ‚⚠ Modell …‘ erscheint, wenn der letzte Aufruf mit einem anderen Modell läuft, als die Sitzung eingestellt hat (letzte
+  Anlage ‚model‘ der Sitzungsdatei; ohne sie wie bisher Opus 5.5; Zusatz wie ‚[1m]‘ zählt nicht) – statt fest gegen `claude-opus-5-5`.
+- **Prüfung `tests/messung.mjs`:** fünf neue Fälle (eingestellt = Aufruf, Rückfall, nach `/model`, Zusatz, ohne Anlage); gegen 4.59.1 vier davon rot.
+- **Zusammenarbeit 3.13.1:** 2.2 nach APD-130/W-5.
+
 ## 4.59.1 – 14.11.2026
 
 AppDesign 4.59.1 · Designrichtlinie allgemein 4.59.1 · Zusammenarbeit allgemein 3.12.0 · Reiselogbuch 3.56.1 (Fassung 4.59.1)

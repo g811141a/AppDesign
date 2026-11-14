@@ -1,5 +1,5 @@
 // AppDesign 4.22.0 · Prüfung des Werkzeugs werkzeug/messung.mjs (APD-12, Testfall-Liste arbeit/APD-12 Testfall-Liste.md APD-12/M-1 bis APD-12/M-14;
-// APD-20, arbeit/APD-20 Testfall-Liste.md APD-20/H-1 bis APD-20/H-12)
+// APD-20, arbeit/APD-20 Testfall-Liste.md APD-20/H-1 bis APD-20/H-12; seit 4.59.2 APD-130/W-5 eingestelltes Modell)
 // mit künstlichen Sitzungsdaten in einem Ordner auf Zeit. Aufruf: node tests/messung.mjs (braucht kein Playwright).
 // Gegenprobe: node tests/messung.mjs --gegenprobe – zählt jede Zeile einzeln (Fund 2) und muss rot werden.
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync, utimesSync } from 'node:fs';
@@ -67,6 +67,20 @@ pruefe(zahl(0) === '0' && zahl(999) === '999' && zahl(1234) === '1.234' && zahl(
 // APD-123/D-6 (seit 4.55.0): Rückfall des Modells steht in der Zeile, Opus 5.5 nicht
 pruefe(zeile({ ms: 0, token: null, kontext: 5, modell: 'claude-opus-5' }).includes('⚠ Modell claude-opus-5') && !zeile({ ms: 0, token: null, kontext: 5, modell: 'claude-opus-5-5' }).includes('⚠')
   && !zeile({ ms: 0, token: null, kontext: 5 }).includes('⚠'), 'APD-123/D-6 ‚⚠ Modell …‘ beim Rückfall');
+// APD-130/W-5 (seit 4.59.2): verglichen wird mit dem eingestellten Modell (letzte Anlage ‚model‘ der Sitzungsdatei), ohne Anlage mit Opus 5.5
+const anlage = (s, id) => ({ type: 'attachment', timestamp: T(s), attachment: { type: 'model', identity: { modelId: id } } });
+const mitModell = (bausteine, m) => bausteine.map(z => z.type === 'assistant' ? { ...z, message: { ...z.message, model: m } } : z);
+const w5 = (vorne, m, t = 20) => messe([nutzer(0, 'Hallo'), ...vorne, ...mitModell(modell(10, [{ type: 'text' }], [1, 10, 0, 5]), m)], Date.parse(T(t)));
+m = w5([anlage(1, 'claude-sonnet-5-5')], 'claude-sonnet-5-5');
+pruefe(m.eingestellt === 'claude-sonnet-5-5' && !zeile(m).includes('⚠'), `APD-130/W-5 eingestellt Sonnet 5.5, Aufruf Sonnet 5.5 – kein ⚠: ${zeile(m)}`);
+m = w5([anlage(1, 'claude-opus-5-5')], 'claude-opus-5');
+pruefe(zeile(m).includes('⚠ Modell claude-opus-5'), `APD-130/W-5 Rückfall von Opus 5.5 auf Opus 5 – ⚠: ${zeile(m)}`);
+m = w5([anlage(1, 'claude-opus-5-5'), anlage(5, 'claude-fable-5-2')], 'claude-fable-5-2');
+pruefe(m.eingestellt === 'claude-fable-5-2' && !zeile(m).includes('⚠'), `APD-130/W-5 nach /model gilt die letzte Anlage: ${zeile(m)}`);
+m = w5([anlage(1, 'claude-opus-5[1m]')], 'claude-opus-5');
+pruefe(!zeile(m).includes('⚠'), `APD-130/W-5 Zusatz [1m] zählt nicht: ${zeile(m)}`);
+m = w5([anlage(15, 'claude-fable-5-2')], 'claude-sonnet-5-5', 12);
+pruefe(m.eingestellt === null && zeile(m).includes('⚠ Modell claude-sonnet-5-5'), `APD-130/W-5 ohne Anlage (bzw. nach jetzt) Vergleich mit Opus 5.5: ${zeile(m)}`);
 
 // APD-20/H-1 bis APD-20/H-11 Kontext des letzten eigenen Aufrufs (APD-20)
 const kontext = (s, t) => messe(daten.slice(0, s), Date.parse(T(t)));

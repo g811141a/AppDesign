@@ -244,6 +244,14 @@ export async function safariModell(p, ansicht, { leisten = { bar: '.nb, .pnav', 
     }
     // jede Bewegung (App oder Safari) zeigt sich sofort und wird 2 Bilder später gemeldet
     addEventListener('scroll', () => { if (!s.weg) { s.top(); s.melde(); } }, { capture: true, passive: true });
+    // APD-129 Teil 2 (seit 4.59.2, Messung 14.11.2026 arbeit/APD-129/messung-2026-11-14-2137.txt, Zeilen 266–271): beim Drehen ohne Tastatur meldet Safari
+    // die sichtbare Höhe schon im ‚resize‘ des Fensters (vh = ih), ‚vv resize‘ folgt danach. Als Hörer mit capture läuft das vor den Hörern der App
+    addEventListener('resize', () => {
+      if (s.weg || s.fest || s.offen || s.zuT) return;
+      const h = s.hoehe(); if (h === s.gemeldet.h) return;
+      s.gemeldet = { ...s.gemeldet, h };
+      requestAnimationFrame(() => { if (!s.weg) { vv.dispatchEvent(new Event('resize')); vv.dispatchEvent(new Event('scroll')); } });
+    }, { capture: true });
     // Antippen einer Schaltfläche nimmt dem Feld den Fokus (Chromium behält ihn); die App setzt ihn danach neu
     document.addEventListener('mousedown', e => {
       const a = document.activeElement;

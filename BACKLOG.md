@@ -11,17 +11,15 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Prio | Thema | bereit seit |
 |---|---|---|---|
-| APD-129 | 1 | **Teil 2 – Korrektur: iPhone, Bild springt nach dem Zurückdrehen nach oben** (P-104/1 bis /3, Messung `arbeit/APD-129/messung-2026-11-14-2137.txt`): A `--safe-top` am iPhone vom Home-Bildschirm selbst bestimmen, B Verschiebung im selben Ereignis zurücksetzen, Safari-Modell `safeOben`, Prüfung APD-129/M-10 bis M-18 (`arbeit/APD-129 Teil 2 Befund und Testfall-Liste.md`, Nutzer 14.11.2026, Sitzung 0113); Wortlaut Designrichtlinie 13 APD-129/W-1 bestätigt (`arbeit/APD-129 Teil 2 Wortlaut.md`) | 14.11.2026 |
-| APD-130 | 1 | **Neue Sitzung mit Modell und Aufwand dieses Chats** (Nutzer 14.11.2026, Sitzung 0113, Wortlaut bestätigt – `arbeit/APD-130 Modell und Aufwand Wortlaut.md`): APD-130/W-1 bis W-4 **sofort umgesetzt** in Zusammenarbeit 3.13.0 auf `main` (‚Ja, bitte sofort umsetzen‘); offen für die Version: APD-130/W-5 – `werkzeug/messung.mjs` vergleicht mit dem eingestellten Modell statt fest mit `claude-opus-5-5`, Prüfung in `tests/messung.mjs`, Wortlaut 2.2 nach W-5 | 14.11.2026 |
 
-2 Punkte bereit.
+0 Punkte bereit.
 
 
 ## 1. Auf iPad und iPhone prüfen
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| P-104 | 1 | **APD-129 am iPhone nicht bestätigt (Usertest P-104, Reiselogbuch 3.56.1 mit 4.59.1):** P-104/0 und /4 ok; P-104/1, /2, /3 nicht ok – bei allen drei springt das Bild nach dem Zurückdrehen auf hoch nach oben; erwartet: Bildaufbau wie am iPad (Nutzer 14.11.2026, Sitzung 0113); zuerst Messung am iPhone (0 Nr. 20) | prüfen |
+| P-105 | 1 | **Usertest P-105 (Reiselogbuch 3.56.2, AppDesign 4.59.2):** APD-129 Teil 2 – iPhone vom Home-Bildschirm, kein Sprung nach dem Zurückdrehen (Startliste, Reiselogbuch, Blatt, Tastatur wie bisher); Testfälle P-105/0 bis P-105/4 im CHANGELOG des Reiselogbuchs 3.56.2 | prüfen |
 
 ## 2. Weitere Themen (in Klärung)
 
@@ -58,6 +56,9 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Thema | Version | Datum |
 |---|---|---|---|
+| APD-129 | **Teil 2 – Korrektur: iPhone, Bild springt nach dem Zurückdrehen nach oben:** `--safe-top` am iPhone vom Home-Bildschirm hoch selbst bestimmt (`randOben`), Verschiebung im selben Ereignis zurück (`drehRestWeg`, R-8.1, R-4.6); Safari-Modell `safeOben`, sichtbare Höhe beim Drehen im ‚resize‘; Prüfung APD-129/M-10 bis M-16, Gegenprobe M-18; Designrichtlinie 13 (APD-129/W-1); Usertest P-105 | 4.59.2 | 14.11.2026 |
+| APD-130 | **Neue Sitzung mit Modell und Aufwand dieses Chats:** APD-130/W-1 bis W-4 in Zusammenarbeit 3.13.0; APD-130/W-5 – `werkzeug/messung.mjs` vergleicht mit dem eingestellten Modell, Prüfung `tests/messung.mjs`, Zusammenarbeit 3.13.1 (2.2) | 4.59.2 | 14.11.2026 |
+| P-104 | **Usertest P-104 (Reiselogbuch 3.56.1, AppDesign 4.59.1):** /0 und /4 ok; /1, /2, /3 nicht ok (Bild springt nach dem Zurückdrehen nach oben, Nutzer 14.11.2026, Sitzung 0113) – korrigiert mit APD-129 Teil 2, erneut im Usertest P-105 | 4.59.2 | 14.11.2026 |
 | APD-129 | **Korrektur: iPhone – App rutscht nach dem Drehen nach unten:** `placeDialogs` setzt die Verschiebung durch Safari nach dem Drehen ohne Tastatur auf 0 zurück (R-8.1); Safari-Modell `drehRest`, `safariDrehenHoch`; Prüfung `ablauf-drehen-iphone` (APD-129/M-1 bis M-6, M-9); Usertest P-104 | 4.59.1 | 14.11.2026 |
 | P-103 | **Usertest P-103 (Reiselogbuch 3.56.0, AppDesign 4.59.0): alles ok** (Nutzer 14.11.2026, Sitzung 0112) – Aufzählung mit langen Einträgen (R-10.5), Umbau bei großer Schrift im schmalen Inhalt (R-1.10) | 4.59.0 | 14.11.2026 |
 | APD-128 | **Prüfumfang nach Art der Änderung:** Zusammenarbeit 3.12.0 0 Nr. 2 – genau ein Prüflauf je Version, Stufe Text (nur Texte und Kommentare der App, Doku, Versionsstellen; vorige Version voll) oder voll (APD-128/D-1 bis D-4, V-1 bis V-4); AppDesign-`CLAUDE.md` 2.12.0; `werkzeug/pruefstufe.mjs`, Befehl `stufe`, `los --stufe text`, Merge-Commit ‚(Prüfstufe Text)‘; Selbsttest APD-128/M-1 bis M-18 (`arbeit/APD-128 Testfall-Liste.md`) | 4.58.0 | 13.11.2026 |

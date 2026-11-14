@@ -1,6 +1,6 @@
 # Zusammenarbeit allgemein
 
-**Version 3.13.0** · Stand 14.11.2026
+**Version 3.13.1** · Stand 14.11.2026
 
 Regeln für die Zusammenarbeit mit Claude bei allen iPad-Web-Apps von g811141a. Die Datei liegt im Design-Repo **AppDesign**
 (g811141a/AppDesign); App-Eigenes steht in der `CLAUDE.md` des App-Repos. **Abschnitt 0 ist das Arbeitsmodell** (oben der Kasten ‚Immer‘ und ‚Jede
@@ -235,7 +235,8 @@ Prüfung: Selbstkontrolle.
   in der Antwort. Nutzung in Prozent und Rücksetzzeiten zeigt nur die Claude-App.
 - **Kontext:** Größe der Sitzung = Eingabe + Zwischenspeicher + geschrieben des letzten eigenen Modell-Aufrufs. Ab 300.000 oder
   nach einer automatischen Zusammenfassung hängt das Werkzeug ‚⚠ Übergabe fällig‘ an; dann übergibt Claude nach dem laufenden
-  Schritt von selbst (0 Nr. 13). Läuft der letzte Aufruf nicht mit Opus 5.5, hängt es ‚⚠ Modell …‘ an (2.5).
+  Schritt von selbst (0 Nr. 13). Läuft der letzte Aufruf mit einem anderen Modell als die Sitzung eingestellt hat (Rückfall bei hoher Last,
+  `model_fallback`), hängt es ‚⚠ Modell …‘ an (2.5).
 - Prüfung: `tests/messung.mjs` (Gegenprobe `--gegenprobe`).
 
 ### 2.3 Bericht, Usertests und Rückmeldung
@@ -390,6 +391,7 @@ im Verlauf und in Kommentaren der Prüfungen nennen noch die alten Stellen):
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 3.13.1 | 14.11.2026 | Korrektur | **APD-130/W-5 (Nutzer 14.11.2026, Sitzung 0113, Wortlaut bestätigt – `arbeit/APD-130 Modell und Aufwand Wortlaut.md`), mit AppDesign 4.59.2:** 2.2 ‚Kontext‘ – ‚⚠ Modell …‘, wenn der letzte Aufruf mit einem anderen Modell läuft, als die Sitzung eingestellt hat (statt: nicht mit Opus 5.5); `werkzeug/messung.mjs` vergleicht mit dem eingestellten Modell (letzte Anlage ‚model‘ der Sitzungsdatei), Prüfung `tests/messung.mjs` |
 | 3.13.0 | 14.11.2026 | Neben | **APD-130 Neue Sitzung mit Modell und Aufwand dieses Chats (Nutzer 14.11.2026, Sitzung 0113, Wortlaut bestätigt – `arbeit/APD-130 Modell und Aufwand Wortlaut.md` APD-130/W-1 bis W-4):** 0 Nr. 13 und 2.5 – die neue Sitzung startet mit dem Modell und dem Aufwand, die im Chat gerade eingestellt sind (`create_session` mit `model` aus `get_session` und `effort` aus der Sitzungsdatei) statt fest Opus 5.5 und hoch; 2.5 ‚Aufwand‘ – `create_session` setzt ihn jetzt (Feld `effort`); Lagebild nennt Modell und Aufwand ohne festen Sollwert. APD-130/W-5 (`messung.mjs` vergleicht mit dem eingestellten Modell) folgt mit der nächsten AppDesign-Version |
 | 3.12.0 | 13.11.2026 | Neben | **APD-128 Prüfumfang nach Art der Änderung (Nutzer 13.11.2026, Sitzung 0108, Wortlaut bestätigt – `arbeit/0108 APD-128 Wortlaut.md` APD-128/V-1, `arbeit/APD-128 Testfall-Liste.md` APD-128/V-4; Entscheidungen APD-128/D-1 bis D-4):** 0 Nr. 2 – genau ein Prüflauf je Version in einer von zwei Stufen: Stufe Text (nur Texte und Kommentare der App, Doku, Versionsstellen; AppDesign unverändert; vorige Version voll) mit den Grundprüfungen und allen Prüfungen mit dem alten oder neuen Text, sonst voll; das Skript schlägt die Stufe vor, die Bau-Frage nennt sie, im Zweifel voll. Anlass: Reiselogbuch 3.55.1 (eine Zeile Text) mit vollem Lauf, 152 Läufe in 70:19 |
 | 3.11.0 | 08.11.2026 | Neben | **APD-125 Datei vor jeder Kachel (Nutzer 08.11.2026, Sitzung 0098, Wortlaut bestätigt – `arbeit/APD-125 Datei vor jeder Kachel Wortlaut.md` APD-125/V-1 bis V-3):** Kasten ‚Jede Antwort‘ Punkt 4 ‚Datei vor jeder Kachel‘ – vor jedem Fenster alle wichtigen Informationen der Antwort (Lagebild, Bericht, Wortlaut alt und neu, Muster, Testlink, Schritte mit ‚Erwartet: …‘, alle offenen Usertests) in einer Datei im Seitenbereich und ebenso im Chat, auch wenn die Frage nicht danach fragt, ohne Ausnahme; 2.1 ‚Die Datei davor, das Fenster danach‘; 0 Nr. 15 Lagebild im Chat und als Datei. Anlass: das Lagebild fehlte vor der Kachel |
