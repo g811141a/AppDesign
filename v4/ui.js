@@ -1,4 +1,4 @@
-// AppDesign 4.59.1 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
+// AppDesign 4.59.2 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
 // Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/fassung/X.Y.Z/ui.js"></script> (feste Fassung, R-10.3)
 // Seit 4.11.0 (R-10.3): ui.js und design.css immer mit ?v=<AppDesign-Version> einbinden (auch in sw.js) und beim Start
 // prüfen, ob genau diese Fassung geladen ist (AD_VERSION hier, --ad-version in design.css).
@@ -20,7 +20,22 @@
 
 'use strict';
 // Version der Bausteine (R-10.3): die App vergleicht sie beim Start mit der benötigten Fassung.
-const AD_VERSION = '4.59.1';
+const AD_VERSION = '4.59.2';
+// APD-129 Teil 2 (seit 4.59.2, Messung 14.11.2026 arbeit/APD-129/messung-2026-11-14-2137.txt, Zeilen 9–17, 207–216, 263–272; Designrichtlinie 13
+// ‚Oberer Rand nach dem Drehen‘): iPhone vom Home-Bildschirm quer → hoch – nach der Meldung 812 bleibt env(safe-area-inset-top) noch 250–300 ms
+// auf 62; alles mit --safe-top stünde so lange 62 px zu tief und spränge dann hoch. Ist das Fenster hoch und niedriger als der Bildschirm, liegt
+// die Statusleiste außerhalb des Fensters: der obere Rand ist 0 (randOben). Teil B: Safaris Verschiebung nach dem Drehen im selben Ereignis
+// zurück (drehRestWeg), nicht erst mit der nächsten Meldung. Beide als erste Hörer von ‚resize‘, vor allen, die messen.
+function randOben() {
+  const heim = matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+  const aus = heim && innerHeight > innerWidth && innerHeight + 1 < Math.max(screen.width, screen.height) && isPhone();
+  const root = document.documentElement.style;
+  if (aus) { if (root.getPropertyValue('--safe-top') !== '0px') { root.setProperty('--safe-top', '0px'); return true; } }
+  else if (root.getPropertyValue('--safe-top')) { root.removeProperty('--safe-top'); return true; }
+  return false;
+}
+// Ändert sich der Rand, stellt placeDialogs das Blatt sofort neu (es steht über style.top, R-4.6)
+addEventListener('resize', () => { if (randOben()) placeDialogs(); drehRestWeg(); });
 /* ---------- Icons ---------- */
 
 // Schaltflächen-Icons aus Lucide (ISC-Lizenz), direkt eingebettet, damit die App offline funktioniert.
@@ -2923,13 +2938,17 @@ function safeRand() {
   const c = getComputedStyle(safeEl);
   return { top: parseFloat(c.paddingTop) || 0, bottom: parseFloat(c.paddingBottom) || 0, left: parseFloat(c.paddingLeft) || 0, right: parseFloat(c.paddingRight) || 0 };
 }
+function drehRestWeg() {
+  if (window.visualViewport && scrollY > 0 && (rolle.el || document.documentElement.scrollHeight <= innerHeight + 1) && !kbOffen() && !document.activeElement?.matches?.(FELD)) scrollTo(0, 0);
+}
 function placeDialogs() {
   const vv = window.visualViewport;
   // APD-129 (seit 4.59.1, Messung 14.11.2026 arbeit/APD-129/messung-2026-11-14-0948.txt, iPhone vom Home-Bildschirm): nach dem Zurückdrehen auf hoch
   // lässt Safari die Seite um die Statusleiste verschoben (scrollY und offsetTop 62) – ohne Tastatur. Mit Rollbereich rollt die Seite nie; ohne
   // Tastatur und ohne Feld mit Fokus zurück auf 0, sonst stünde die App 62 px tiefer, als Safari die Antippflächen rechnet (Designrichtlinie 13).
   // Ohne Rollbereich (iPhone-Startliste) ebenso, wenn die Seite gar nicht rollen kann
-  if (vv && scrollY > 0 && (rolle.el || document.documentElement.scrollHeight <= innerHeight + 1) && !kbOffen() && !document.activeElement?.matches?.(FELD)) scrollTo(0, 0);
+  randOben();
+  drehRestWeg();
   // APD-115/N-11 (Messung 07.11.2026): beim Schließen der Tastatur setzt Safari scrollY sofort auf 0, meldet offsetTop aber noch bis zu 400 ms
   // alt (iPhone) – mit Rollbereich ist scrollY nur Safaris Verschiebung, darum zählt der kleinere Wert
   const top = vv ? Math.max(0, rolle.el ? Math.min(vv.offsetTop, scrollY) : vv.offsetTop) : 0;

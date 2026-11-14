@@ -310,14 +310,34 @@ export async function safariModell(p, ansicht, { leisten = { bar: '.nb, .pnav', 
 // APD-129 (Messung 14.11.2026, Zeilen 14–27): iPhone vom Home-Bildschirm quer → hoch – Safari meldet kurz die ganze Bildschirmhöhe (874 statt 812,
 // + Statusleiste), dann wieder die Fensterhöhe, und lässt danach die Seite um die Statusleiste verschoben (DREH_REST, drehRest).
 // safariDrehenHoch(p): von hoch nach quer und zurück, wie gemessen; das Modell muss gesetzt sein.
+// APD-129 Teil 2 (seit 4.59.2, Messung 14.11.2026 arbeit/APD-129/messung-2026-11-14-2137.txt, Zeilen 9–17, 207–216, 263–272): dazu der obere sichere
+// Rand, der nachhinkt (safeOben) – bei der ganzen Höhe (Statusleiste über dem Fenster) 62, nach der Meldung der Fensterhöhe noch RAND_NACH ms 62,
+// erst mit der Verschiebung 0. Die Prüfumgebung kennt keine sicheren Ränder (env(…) ist 0): safeOben setzt --safe-top über eine Stilregel, die
+// jede Angabe der App am Element (style) überstimmt. Dazu wie gemessen Home-Bildschirm (navigator.standalone) und Bildschirmhöhe = Fensterhöhe +
+// Statusleiste. Mit { rand: false } ohne den Rand (wie bis 4.59.1). Ergebnis: die Bilder ab der Meldung der Fensterhöhe (bilder, falls an).
 export const DREH_REST = 62;
-export async function safariDrehenHoch(p) {
+export const RAND_NACH = 280;
+export async function safeOben(p, px) {
+  await p.evaluate(px => { let st = document.getElementById('__safeOben');
+    if (!st) { st = document.createElement('style'); st.id = '__safeOben'; document.head.append(st); }
+    st.textContent = px ? `html:root { --safe-top: ${px}px; }` : ''; }, px);
+}
+export async function safariDrehenHoch(p, { rand = true, bilder = null } = {}) {
   const hoch = p.viewportSize();
+  await p.evaluate(([w, h]) => { Object.defineProperty(navigator, 'standalone', { configurable: true, get: () => true });
+    Object.defineProperty(screen, 'width', { configurable: true, get: () => w }); Object.defineProperty(screen, 'height', { configurable: true, get: () => h }); },
+    [hoch.width, hoch.height + DREH_REST]);
   await p.setViewportSize({ width: hoch.height, height: hoch.width }); await p.waitForTimeout(500);
+  if (rand) await safeOben(p, DREH_REST);
   await p.setViewportSize({ width: hoch.width, height: hoch.height + DREH_REST }); await p.waitForTimeout(30);
-  await p.setViewportSize(hoch); await p.waitForTimeout(250);
+  if (bilder) await p.evaluate(bilder.start);
+  await p.setViewportSize(hoch); await p.waitForTimeout(rand ? RAND_NACH : 250);
+  // wie gemessen (Zeilen 13, 211, 266): Safari meldet die sichtbare Höhe 812 lange vor der Verschiebung – erst danach drehRest
+  await p.waitForFunction(() => Math.abs(visualViewport.height - innerHeight) < 2, null, { timeout: 2000 }).catch(() => {});
+  if (rand) await safeOben(p, 0);
   await p.evaluate(px => window.__safari?.drehRest(px), DREH_REST);
   await p.waitForTimeout(400);
+  return bilder ? p.evaluate(bilder.ende) : null;
 }
 
 export const WISCH_SCHWELLE = 10;
