@@ -1,4 +1,4 @@
-// AppDesign 4.59.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
+// AppDesign 4.59.1 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
 // Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/fassung/X.Y.Z/ui.js"></script> (feste Fassung, R-10.3)
 // Seit 4.11.0 (R-10.3): ui.js und design.css immer mit ?v=<AppDesign-Version> einbinden (auch in sw.js) und beim Start
 // prüfen, ob genau diese Fassung geladen ist (AD_VERSION hier, --ad-version in design.css).
@@ -20,7 +20,7 @@
 
 'use strict';
 // Version der Bausteine (R-10.3): die App vergleicht sie beim Start mit der benötigten Fassung.
-const AD_VERSION = '4.59.0';
+const AD_VERSION = '4.59.1';
 /* ---------- Icons ---------- */
 
 // Schaltflächen-Icons aus Lucide (ISC-Lizenz), direkt eingebettet, damit die App offline funktioniert.
@@ -2925,6 +2925,11 @@ function safeRand() {
 }
 function placeDialogs() {
   const vv = window.visualViewport;
+  // APD-129 (seit 4.59.1, Messung 14.11.2026 arbeit/APD-129/messung-2026-11-14-0948.txt, iPhone vom Home-Bildschirm): nach dem Zurückdrehen auf hoch
+  // lässt Safari die Seite um die Statusleiste verschoben (scrollY und offsetTop 62) – ohne Tastatur. Mit Rollbereich rollt die Seite nie; ohne
+  // Tastatur und ohne Feld mit Fokus zurück auf 0, sonst stünde die App 62 px tiefer, als Safari die Antippflächen rechnet (Designrichtlinie 13).
+  // Ohne Rollbereich (iPhone-Startliste) ebenso, wenn die Seite gar nicht rollen kann
+  if (vv && scrollY > 0 && (rolle.el || document.documentElement.scrollHeight <= innerHeight + 1) && !kbOffen() && !document.activeElement?.matches?.(FELD)) scrollTo(0, 0);
   // APD-115/N-11 (Messung 07.11.2026): beim Schließen der Tastatur setzt Safari scrollY sofort auf 0, meldet offsetTop aber noch bis zu 400 ms
   // alt (iPhone) – mit Rollbereich ist scrollY nur Safaris Verschiebung, darum zählt der kleinere Wert
   const top = vv ? Math.max(0, rolle.el ? Math.min(vv.offsetTop, scrollY) : vv.offsetTop) : 0;

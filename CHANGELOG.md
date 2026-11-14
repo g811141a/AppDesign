@@ -3,6 +3,22 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.59.1 – 14.11.2026
+
+AppDesign 4.59.1 · Designrichtlinie allgemein 4.59.1 · Zusammenarbeit allgemein 3.12.0 · Reiselogbuch 3.56.1 (Fassung 4.59.1)
+
+**APD-129 Korrektur: iPhone – App rutscht nach dem Drehen nach unten** – deine Meldung vom 14.11.2026 (Sitzung 0112), Messung
+`arbeit/APD-129/messung-2026-11-14-0948.txt`, Befund und Testfall-Liste `arbeit/APD-129 Befund und Testfall-Liste.md` (APD-129/M-1 bis M-9).
+
+- **`ui.js` – `placeDialogs` (R-8.1):** nach dem Zurückdrehen auf hoch lässt Safari am iPhone vom Home-Bildschirm die Seite um die Statusleiste verschoben
+  (scrollY und offsetTop 62, ohne Tastatur). Ohne Tastatur und ohne Feld mit Fokus setzt `ui.js` die Seite jetzt auf 0 zurück (mit Rollbereich immer,
+  ohne Rollbereich, wenn die Seite nicht rollen kann); `--vv-top` bleibt 0. Bei offener Tastatur unverändert (APD-36, APD-115).
+- **Safari-Modell (`tests/safari.mjs`):** `drehRest` (Verschiebung nach dem Drehen; das Bild bleibt unverschoben, Antippen trifft daneben – `trifft`),
+  `safariDrehenHoch` (quer → hoch wie gemessen: erst ganze Bildschirmhöhe, dann Fensterhöhe, dann die Verschiebung), `DREH_REST` 62.
+- **Warum die Prüfung ihn übersah:** das Modell drehte direkt von hoch auf quer und zurück, ohne die Verschiebung um die Statusleiste.
+- **Prüfung im Reiselogbuch:** `ablauf-drehen-iphone` (APD-129/M-1 bis M-6), gegen 4.59.0 rot (M-9). APD-129/M-7 (iPad) deckt die bestehende Drehprüfung ab
+  (`hig.mjs`); APD-129/M-8 (Messung nachspielen) entfällt – `abspielen.mjs` spielt das Drehen ohne die Verschiebung nach.
+
 ## 4.59.0 – 13.11.2026
 
 AppDesign 4.59.0 · Designrichtlinie allgemein 4.59.0 · Zusammenarbeit allgemein 3.12.0 · Reiselogbuch 3.56.0 (Fassung 4.59.0)
