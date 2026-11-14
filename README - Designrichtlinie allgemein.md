@@ -1,6 +1,6 @@
 # Designrichtlinie allgemein
 
-**Version 4.59.1** · Stand 14.11.2026
+**Version 4.59.2** · Stand 14.11.2026
 
 Allgemeine Gestaltungs- und Bedienregeln für alle Web-Apps von g811141a auf iPad und iPhone. Die Datei liegt im Design-Repo
 **AppDesign** (g811141a/AppDesign); ihre Versionsnummer ist die des Repos. Die Komponenten sind dort einmal programmiert und
@@ -471,6 +471,11 @@ Gemessene bzw. belegte Eigenheiten mit Quelle; sie gelten für alle Apps, die Pr
   die Seite nicht rollen kann. Das Bild bleibt dabei unverschoben, Antippen trifft 62 px daneben; erst `scrollTo(0, 0)` bzw. ein Neuaufbau der
   Seite stellt es richtig. ui.js setzt die Seite deshalb ohne Tastatur und ohne Feld mit Fokus auf 0 zurück (`placeDialogs`, R-8.1); Safari-Modell
   `drehRest` (Messung 14.11.2026, Safari 27.2, APD-129).
+- **Oberer Rand nach dem Drehen (iPhone, Home-Bildschirm):** quer → hoch – nach der Meldung 812 bleibt `env(safe-area-inset-top)` noch
+  250–300 ms auf 62 (Statusleiste); alles mit `--safe-top` (Kopfzeile, Seitenleiste bzw. Startliste, Blatt) steht so lange 62 px zu tief und
+  springt dann hoch – zugleich mit der Verschiebung oben. ui.js setzt `--safe-top` deshalb am iPhone vom Home-Bildschirm auf 0, sobald die
+  Fensterhöhe kleiner als die Bildschirmhöhe ist, und stellt die Verschiebung im selben Ereignis zurück (`placeDialogs`, R-8.1); quer, am iPad
+  und in Safari gilt `env(…)`. Safari-Modell `safeOben` (Messung 14.11.2026 21:37, Safari 27.2, APD-129 Teil 2).
 - **Position beim Öffnen:** `openAt(element | null)` in ui.js (R-7.4) – ein ‚nächster offener‘ bzw. aktueller Eintrag steht unter
   der Leiste und einem haftenden Tabellenkopf; ist die Seite nicht so weit rollbar, ganz unten. Ob er hervorgehoben ist, legt die App
   mit ihrer Klasse fest (nur Offenes).
@@ -1420,6 +1425,7 @@ R-2.3 (15.2), R-4.4 (6, 15.8, HIG 9), R-5.3 (8), R-5.4 (15.12), R-5.5 (APD-14), 
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 4.59.2 | 14.11.2026 | Korrektur | **APD-129 Teil 2 (Nutzer 14.11.2026, Sitzung 0113, Wortlaut bestätigt – `arbeit/APD-129 Teil 2 Wortlaut.md` APD-129/W-1; Befund und Testfall-Liste `arbeit/APD-129 Teil 2 Befund und Testfall-Liste.md` APD-129/M-10 bis M-18):** 13 neu ‚Oberer Rand nach dem Drehen (iPhone, Home-Bildschirm)‘ – `--safe-top` am iPhone vom Home-Bildschirm hoch 0, solange das Fenster niedriger als der Bildschirm ist (`ui.js` `randOben`), Verschiebung im selben Ereignis zurück (`drehRestWeg`, R-8.1); Safari-Modell `safeOben`, sichtbare Höhe beim Drehen schon im ‚resize‘ |
 | 4.59.1 | 14.11.2026 | Korrektur | **APD-129 (Nutzer 14.11.2026, Sitzung 0112, Wortlaut bestätigt – `arbeit/0112 APD-129 Bau-Frage.md`):** 13 neu ‚Verschiebung nach dem Drehen (iPhone, Home-Bildschirm)‘; iPhone vom Home-Bildschirm – nach dem Drehen keine Verschiebung um die Statusleiste mehr (`ui.js` `placeDialogs`, R-8.1); Safari-Modell `drehRest` |
 | 4.59.0 | 13.11.2026 | Neben | **RLB-121 (Nutzer 13.11.2026, Sitzungen 0109 und 0110, Wortlaut bestätigt – `arbeit/0109 RLB-121 Wortlaut.md` RLB-121/W-1, W-2, `arbeit/0110 RLB-121 Wortlaut ts-um.md` RLB-121/W-3, W-4):** 3 ‚Aufzählungen mit Trennpunkt‘ und R-10.5 – auch lange Einträge: am Stück, wenn sie in die Zeile passen, sonst Umbruch im Text, Zusatz in Klammern ganz, nichts ragt hinaus (`aufzaehlung` mit Block `.az`, `checkAufzaehlung` erweitert); 3 ‚Umbau bei großer Schrift‘ und R-1.10 – ab XXL untereinander, wenn der Inhalt schmaler als 600 px ist (iPhone hoch, iPad hoch neben der Seitenleiste). Anlass: Statistik ‚Teuerste/Günstigste Quartiere‘ im Reiselogbuch; am iPad hoch ragte sie bei großer Schrift hinaus (Befund `arbeit/0110 RLB-121 iPad hoch.md`) |
 | 4.58.0 | 13.11.2026 | Neben | Keine Änderung an dieser Richtlinie – AppDesign 4.58.0 bringt APD-128 (Prüfstufe Text oder voll) in Zusammenarbeit allgemein 3.12.0 (0 Nr. 2) und im Veröffentlichungs-Skript |

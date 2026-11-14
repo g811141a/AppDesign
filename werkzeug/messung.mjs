@@ -94,7 +94,11 @@ export function messe(zeilen, jetzt = Date.now()) {
   const faellig = zeilen.some(z => z.isCompactSummary) || (kontext ?? 0) >= GRENZE;
   // APD-123/D-6 (seit 4.55.0): ohne Regelwächter meldet das Werkzeug den Rückfall des Modells (Zusammenarbeit 2.5)
   const modell = aufruf?.message?.model || null;
-  return { ms, token, kontext, faellig, modell, ab: nachrichten.at(-1).timestamp };
+  // APD-130/W-5 (seit 4.59.2): verglichen wird mit dem eingestellten Modell – der letzten Anlage ‚model‘ der Sitzungsdatei (die Kennung, die die
+  // Sitzung dem Modell nennt; neu nach /model). Ohne Anlage gilt MODELL (wie bis 4.59.1)
+  const anlage = zeilen.findLast(z => z.type === 'attachment' && z.attachment?.type === 'model' && z.attachment.identity?.modelId && (!z.timestamp || zeit(z) <= jetzt));
+  const eingestellt = anlage?.attachment.identity.modelId || null;
+  return { ms, token, kontext, faellig, modell, eingestellt, ab: nachrichten.at(-1).timestamp };
 }
 
 // APD-12/M-10: ab 60 Minuten hh:mm:ss; APD-12/M-11: Tausenderpunkt
@@ -105,9 +109,12 @@ export const dauer = ms => {
 export const zahl = n => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 
 export const MODELL = 'claude-opus-5-5';
-export function zeile({ ms, token, kontext = null, faellig = false, modell = null }) {
+// APD-130/W-5: Kennung ohne Zusatz für das Kontextfenster (z. B. ‚claude-opus-5[1m]‘ → ‚claude-opus-5‘)
+const kern = m => m.replace(/\[[^\]]*\]$/, '');
+export function zeile({ ms, token, kontext = null, faellig = false, modell = null, eingestellt = null }) {
   const t = token ? `${zahl(token.neu)} neu · ${zahl(token.gelesen)} aus Zwischenspeicher · ${zahl(token.geschrieben)} geschrieben` : '–';
-  const k = `Kontext ${kontext === null ? '–' : zahl(kontext)}${faellig ? ' ⚠ Übergabe fällig' : ''}${modell && modell !== MODELL && !modell.startsWith('<') ? ` ⚠ Modell ${modell}` : ''}`;
+  const soll = kern(eingestellt || MODELL), anders = modell && !modell.startsWith('<') && kern(modell) !== soll;
+  const k = `Kontext ${kontext === null ? '–' : zahl(kontext)}${faellig ? ' ⚠ Übergabe fällig' : ''}${anders ? ` ⚠ Modell ${modell}` : ''}`;
   return `<sub>⏱ ${dauer(ms)} · Token vorige Antwort: ${t} · ${k}</sub>`;
 }
 
