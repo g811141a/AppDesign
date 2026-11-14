@@ -26,12 +26,14 @@ const AD_VERSION = '4.59.2';
 // auf 62; alles mit --safe-top stünde so lange 62 px zu tief und spränge dann hoch. Ist das Fenster hoch und niedriger als der Bildschirm, liegt
 // die Statusleiste außerhalb des Fensters: der obere Rand ist 0 (randOben). Teil B: Safaris Verschiebung nach dem Drehen im selben Ereignis
 // zurück (drehRestWeg), nicht erst mit der nächsten Meldung. Beide als erste Hörer von ‚resize‘, vor allen, die messen.
+// Zurückgenommen wird nur der eigene Wert (randEigen) – eine andere Angabe am Element bleibt (z. B. die Gerätewerte der Prüfung R-1.7 in hig.mjs)
+let randEigen = false;
 function randOben() {
   const heim = matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
   const aus = heim && innerHeight > innerWidth && innerHeight + 1 < Math.max(screen.width, screen.height) && isPhone();
   const root = document.documentElement.style;
-  if (aus) { if (root.getPropertyValue('--safe-top') !== '0px') { root.setProperty('--safe-top', '0px'); return true; } }
-  else if (root.getPropertyValue('--safe-top')) { root.removeProperty('--safe-top'); return true; }
+  if (aus) { if (root.getPropertyValue('--safe-top') !== '0px') { root.setProperty('--safe-top', '0px'); randEigen = true; return true; } }
+  else if (randEigen) { randEigen = false; if (root.getPropertyValue('--safe-top') === '0px') root.removeProperty('--safe-top'); return true; }
   return false;
 }
 // Ändert sich der Rand, stellt placeDialogs das Blatt sofort neu (es steht über style.top, R-4.6)

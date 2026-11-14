@@ -13,7 +13,8 @@ Vorschlag A + B bestätigt), Wortlaut `arbeit/APD-129 Teil 2 Wortlaut.md` (APD-1
 
 - **`ui.js` – Teil A `randOben()` (R-8.1, R-4.6):** nach der Meldung 812 bleibt `env(safe-area-inset-top)` am iPhone vom Home-Bildschirm noch 250–300 ms
   auf 62. Ist das Fenster hoch und niedriger als der Bildschirm, setzt `ui.js` `--safe-top: 0px` am Element `html` (sonst entfernt) und stellt bei einer
-  Änderung das Blatt sofort neu (`placeDialogs`). Quer, am iPad und in Safari gilt `env(…)`.
+  Änderung das Blatt sofort neu (`placeDialogs`). Quer, am iPad und in Safari gilt `env(…)`. Zurückgenommen wird nur der eigene Wert – eine andere
+  Angabe am Element bleibt (im ersten Prüflauf nahm `randOben` die Gerätewerte der Prüfung R-1.7 in `hig.mjs` weg, `hig` war rot).
 - **`ui.js` – Teil B `drehRestWeg()`:** die Verschiebung um die Statusleiste nach dem Drehen (4.59.1) wird jetzt schon im ersten `resize`-Hörer
   zurückgestellt, nicht erst mit der nächsten Meldung; `placeDialogs` ruft beide.
 - **Safari-Modell (`tests/safari.mjs`):** `safeOben(p, px)` (oberer Rand, der nachhinkt; die Prüfumgebung kennt keine sicheren Ränder), `RAND_NACH`
