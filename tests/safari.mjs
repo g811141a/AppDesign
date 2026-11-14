@@ -102,6 +102,7 @@ export async function safariModell(p, ansicht, { leisten = { bar: '.nb, .pnav', 
     const s = window.__safari = {
       offen: false, L: Y(), gemeldet: { top: 0, h: H(), pan: 0 }, warte: null, aufnahme: null, blur: false,
       kb: werte.tastatur, pan: 0, fest: false, naechste: null,
+      rest: 0,   // APD-129: Verschiebung, die Safari nach dem Zurückdrehen auf hoch ohne Tastatur stehen lässt (drehRest)
       hoehe: () => s.offen ? H() - s.kb : H(),
       // offsetTop, wie Safari ihn gerade zeigt: L folgt V nur, wenn V an den Rand von L stößt
       top() {
@@ -189,6 +190,18 @@ export async function safariModell(p, ansicht, { leisten = { bar: '.nb, .pnav', 
         if (h !== alt.h) vv.dispatchEvent(new Event('resize'));
         if (top !== alt.top || h !== alt.h) vv.dispatchEvent(new Event('scroll'));
       },
+      // APD-129 (Messung 14.11.2026 arbeit/APD-129/messung-2026-11-14-0948.txt, Zeilen 20–27 und 28–59): iPhone vom Home-Bildschirm quer → hoch – Safari
+      // lässt die Seite um die Statusleiste verschoben (scrollY und offsetTop 62, innerHeight bleibt), ohne Tastatur. Das Bild zeigt die Seite
+      // dabei unverschoben: getBoundingClientRect liegt um rest zu hoch, Antippen trifft, was im Bild rest tiefer liegt (trifft). Weg erst mit
+      // scrollTo(0, 0) der App (Zeilen 226–231: nach scrollY 0 meldet Safari offsetTop 0, Antippen trifft wieder).
+      drehRest(px) {
+        if (s.weg) return;
+        s.rest = px;
+        window.dispatchEvent(new Event('resize'));
+        document.dispatchEvent(new Event('scroll', { bubbles: true }));
+        vv.dispatchEvent(new Event('scroll'));
+      },
+      trifft(x, y) { return document.elementFromPoint(x, y + s.rest); },
       bilder(an) {
         if (!an) { const b = s.aufnahme || []; s.aufnahme = null; return b; }
         s.aufnahme = [];
@@ -197,7 +210,7 @@ export async function safariModell(p, ansicht, { leisten = { bar: '.nb, .pnav', 
       },
     };
     // aus(): echte Werte zurück, das Modell schweigt (seine Hörer bleiben, tun aber nichts mehr)
-    const echteWerte = [[vv, 'offsetTop'], [vv, 'height'], [window, 'scrollY'], [window, 'pageYOffset'], [window, 'innerHeight']]
+    const echteWerte = [[vv, 'offsetTop'], [vv, 'height'], [window, 'scrollY'], [window, 'pageYOffset'], [window, 'innerHeight'], [window, 'scrollTo'], [window, 'scroll']]
       .map(([o, n]) => [o, n, Object.getOwnPropertyDescriptor(o, n)]);
     s.aus = () => {
       s.weg = true; s.offen = false; s.pan = 0;
@@ -206,10 +219,16 @@ export async function safariModell(p, ansicht, { leisten = { bar: '.nb, .pnav', 
       delete window.__safari;
       vv.dispatchEvent(new Event('resize')); vv.dispatchEvent(new Event('scroll'));
     };
-    Object.defineProperty(vv, 'offsetTop', { configurable: true, get: () => s.gemeldet.top });
+    // APD-129: scrollTo(0, 0) bzw. scroll(0, 0) der App nimmt die Verschiebung nach dem Drehen weg; Safari meldet es wie gemessen (scroll, vv scroll)
+    for (const n of ['scrollTo', 'scroll']) { const orig = window[n].bind(window);
+      Object.defineProperty(window, n, { configurable: true, writable: true, value: (...a) => {
+        const y = a[0] && typeof a[0] === 'object' ? a[0].top : a[1];
+        if (s.rest && !s.weg && y === 0) { s.rest = 0; document.dispatchEvent(new Event('scroll', { bubbles: true })); vv.dispatchEvent(new Event('scroll')); }
+        return orig(...a); } }); }
+    Object.defineProperty(vv, 'offsetTop', { configurable: true, get: () => s.gemeldet.top + s.rest });
     Object.defineProperty(vv, 'height', { configurable: true, get: () => s.gemeldet.h });
     // APD-36/S-3: Safari rollt die Seite um die Verschiebung, innerHeight schrumpft um sie (ab der Meldung)
-    for (const n of ['scrollY', 'pageYOffset']) Object.defineProperty(window, n, { configurable: true, get: () => syEcht() + s.gemeldet.pan });
+    for (const n of ['scrollY', 'pageYOffset']) Object.defineProperty(window, n, { configurable: true, get: () => syEcht() + s.gemeldet.pan + s.rest });
     Object.defineProperty(window, 'innerHeight', { configurable: true, get: () => H() - s.gemeldet.pan });
     // APD-36/S-4: Tastatur folgt dem Fokus (Felder mit Tastatur; Datum, Auswahl und Schalter öffnen keine)
     const mitTastatur = e => e?.matches?.('textarea, input:not([type=date],[type=time],[type=checkbox],[type=radio],[type=button],[type=submit],[type=range],[type=color],[type=file]):not([readonly])');
@@ -288,6 +307,19 @@ export async function safariModell(p, ansicht, { leisten = { bar: '.nb, .pnav', 
 // safariWischen(p, x, y, schritte): Finger bei x/y aufsetzen, schritte = [[dx, dy, ms], …] (Lage seit dem Aufsetzen, Zeit seit dem
 // vorigen Schritt), loslassen. Ergebnis { abgebrochen, gerollt, klick } (gerollt = Änderung des Rollstands in px; klick: Safari schickte
 // den Klick nach dem Loslassen, KLICK_NACH).
+// APD-129 (Messung 14.11.2026, Zeilen 14–27): iPhone vom Home-Bildschirm quer → hoch – Safari meldet kurz die ganze Bildschirmhöhe (874 statt 812,
+// + Statusleiste), dann wieder die Fensterhöhe, und lässt danach die Seite um die Statusleiste verschoben (DREH_REST, drehRest).
+// safariDrehenHoch(p): von hoch nach quer und zurück, wie gemessen; das Modell muss gesetzt sein.
+export const DREH_REST = 62;
+export async function safariDrehenHoch(p) {
+  const hoch = p.viewportSize();
+  await p.setViewportSize({ width: hoch.height, height: hoch.width }); await p.waitForTimeout(500);
+  await p.setViewportSize({ width: hoch.width, height: hoch.height + DREH_REST }); await p.waitForTimeout(30);
+  await p.setViewportSize(hoch); await p.waitForTimeout(250);
+  await p.evaluate(px => window.__safari?.drehRest(px), DREH_REST);
+  await p.waitForTimeout(400);
+}
+
 export const WISCH_SCHWELLE = 10;
 // Seit 4.50.0 (APD-108/W-A, Messung arbeit/APD-106 Messungen/2026-11-01 iPhone hoch Muster.txt, Fall 3, Zeilen 73–80; Designrichtlinie 13
 // ‚Klick nach dem Wischen‘): Safari schickt nach dem Loslassen einen click an das Element unter dem Aufsetzen, auch nach weitem Weg (gemessen
