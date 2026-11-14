@@ -466,6 +466,11 @@ Gemessene bzw. belegte Eigenheiten mit Quelle; sie gelten für alle Apps, die Pr
   Steht oben kein Eintrag (Ende der Seite: Fazit, Statistik), bleibt der Abstand zum Ende gleich; ganz oben
   bleibt ganz oben, ganz unten bleibt ganz unten. Tests bilden das nach (`overflow-anchor: none`), sonst verdeckt Chrome den
   Fehler (R-8.1).
+- **Verschiebung nach dem Drehen (iPhone, Home-Bildschirm):** quer → hoch meldet Safari kurz die ganze Bildschirmhöhe (874 statt 812), dann
+  wieder 812, und lässt die Seite danach um die Statusleiste verschoben (`scrollY` und `visualViewport.offsetTop` 62) – ohne Tastatur, obwohl
+  die Seite nicht rollen kann. Das Bild bleibt dabei unverschoben, Antippen trifft 62 px daneben; erst `scrollTo(0, 0)` bzw. ein Neuaufbau der
+  Seite stellt es richtig. ui.js setzt die Seite deshalb ohne Tastatur und ohne Feld mit Fokus auf 0 zurück (`placeDialogs`, R-8.1); Safari-Modell
+  `drehRest` (Messung 14.11.2026, Safari 27.2, APD-129).
 - **Position beim Öffnen:** `openAt(element | null)` in ui.js (R-7.4) – ein ‚nächster offener‘ bzw. aktueller Eintrag steht unter
   der Leiste und einem haftenden Tabellenkopf; ist die Seite nicht so weit rollbar, ganz unten. Ob er hervorgehoben ist, legt die App
   mit ihrer Klasse fest (nur Offenes).
@@ -1415,7 +1420,7 @@ R-2.3 (15.2), R-4.4 (6, 15.8, HIG 9), R-5.3 (8), R-5.4 (15.12), R-5.5 (APD-14), 
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
-| 4.59.1 | 14.11.2026 | Korrektur | **APD-129 (Nutzer 14.11.2026, Sitzung 0112):** iPhone vom Home-Bildschirm – nach dem Drehen keine Verschiebung um die Statusleiste mehr (`ui.js` `placeDialogs`, R-8.1); Safari-Modell `drehRest` |
+| 4.59.1 | 14.11.2026 | Korrektur | **APD-129 (Nutzer 14.11.2026, Sitzung 0112, Wortlaut bestätigt – `arbeit/0112 APD-129 Bau-Frage.md`):** 13 neu ‚Verschiebung nach dem Drehen (iPhone, Home-Bildschirm)‘; iPhone vom Home-Bildschirm – nach dem Drehen keine Verschiebung um die Statusleiste mehr (`ui.js` `placeDialogs`, R-8.1); Safari-Modell `drehRest` |
 | 4.59.0 | 13.11.2026 | Neben | **RLB-121 (Nutzer 13.11.2026, Sitzungen 0109 und 0110, Wortlaut bestätigt – `arbeit/0109 RLB-121 Wortlaut.md` RLB-121/W-1, W-2, `arbeit/0110 RLB-121 Wortlaut ts-um.md` RLB-121/W-3, W-4):** 3 ‚Aufzählungen mit Trennpunkt‘ und R-10.5 – auch lange Einträge: am Stück, wenn sie in die Zeile passen, sonst Umbruch im Text, Zusatz in Klammern ganz, nichts ragt hinaus (`aufzaehlung` mit Block `.az`, `checkAufzaehlung` erweitert); 3 ‚Umbau bei großer Schrift‘ und R-1.10 – ab XXL untereinander, wenn der Inhalt schmaler als 600 px ist (iPhone hoch, iPad hoch neben der Seitenleiste). Anlass: Statistik ‚Teuerste/Günstigste Quartiere‘ im Reiselogbuch; am iPad hoch ragte sie bei großer Schrift hinaus (Befund `arbeit/0110 RLB-121 iPad hoch.md`) |
 | 4.58.0 | 13.11.2026 | Neben | Keine Änderung an dieser Richtlinie – AppDesign 4.58.0 bringt APD-128 (Prüfstufe Text oder voll) in Zusammenarbeit allgemein 3.12.0 (0 Nr. 2) und im Veröffentlichungs-Skript |
 | 4.57.0 | 12.11.2026 | Neben | **Sammelversion (Nutzer 08.11.2026, Sitzung 0105, alle Wortlaute bestätigt):** **APD-126** – 8 Textfelder leer einzeilig, neuer Punkt ‚Cursor am Ende‘, nach einem Vorschlag klein weiter; 13 ‚Lösung in ui.js‘ beim Aktivieren die letzte Zeile; 15.11, 15.22; R-4.5, R-5.2, neu R-5.11 (APD-126/W-1 bis W-7) · **APD-124** – R-5.6, 15.11 ‚ⓧ zum Leeren‘ mit Rückgängig im Feld und Zwischenablage, 16 bewusste Abweichung (APD-124/W-1 bis W-3) · **APD-127** – neu R-1.12 Gleitbewegungen wie die Seitenleiste in Notizen, R-4.13 Verweis, 13 Zeitpunkt der Tastatur (APD-127/W-3, W-7) · **APD-116** – neu R-10.8 Dateiname im Hinweisfenster, 10, 15.19 (APD-116/W-1 bis W-3) · **RLB-122** – R-10.5 Aufzählung mit ‚·‘ am Stück, 3 (RLB-122/W-1, W-2) · **RLB-120** – 2 `--kopf-verlauf`, 9, 10, 15.10, R-6.1, R-6.2, R-6.5 (RLB-120/W-1 bis W-8) |
