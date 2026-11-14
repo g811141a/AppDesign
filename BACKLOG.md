@@ -12,8 +12,9 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 | Nr. | Prio | Thema | bereit seit |
 |---|---|---|---|
 | APD-129 | 1 | **Teil 2 – Korrektur: iPhone, Bild springt nach dem Zurückdrehen nach oben** (P-104/1 bis /3, Messung `arbeit/APD-129/messung-2026-11-14-2137.txt`): A `--safe-top` am iPhone vom Home-Bildschirm selbst bestimmen, B Verschiebung im selben Ereignis zurücksetzen, Safari-Modell `safeOben`, Prüfung APD-129/M-10 bis M-18 (`arbeit/APD-129 Teil 2 Befund und Testfall-Liste.md`, Nutzer 14.11.2026, Sitzung 0113); Wortlaut Designrichtlinie 13 APD-129/W-1 bestätigt (`arbeit/APD-129 Teil 2 Wortlaut.md`) | 14.11.2026 |
+| APD-130 | 1 | **Neue Sitzung mit Modell und Aufwand dieses Chats** (Nutzer 14.11.2026, Sitzung 0113, Wortlaut bestätigt – `arbeit/APD-130 Modell und Aufwand Wortlaut.md`): APD-130/W-1 bis W-4 **sofort umgesetzt** in Zusammenarbeit 3.13.0 auf `main` (‚Ja, bitte sofort umsetzen‘); offen für die Version: APD-130/W-5 – `werkzeug/messung.mjs` vergleicht mit dem eingestellten Modell statt fest mit `claude-opus-5-5`, Prüfung in `tests/messung.mjs`, Wortlaut 2.2 nach W-5 | 14.11.2026 |
 
-1 Punkt bereit.
+2 Punkte bereit.
 
 
 ## 1. Auf iPad und iPhone prüfen

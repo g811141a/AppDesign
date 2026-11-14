@@ -1,6 +1,6 @@
 # Zusammenarbeit allgemein
 
-**Version 3.12.0** · Stand 13.11.2026
+**Version 3.13.0** · Stand 14.11.2026
 
 Regeln für die Zusammenarbeit mit Claude bei allen iPad-Web-Apps von g811141a. Die Datei liegt im Design-Repo **AppDesign**
 (g811141a/AppDesign); App-Eigenes steht in der `CLAUDE.md` des App-Repos. **Abschnitt 0 ist das Arbeitsmodell** (oben der Kasten ‚Immer‘ und ‚Jede
@@ -143,8 +143,8 @@ Ziel: nichts vergessen, Fehler finden, bevor der Nutzer sie findet, schnell und 
 13. **Automatische Übergabe ab etwa 300.000 Token:** Hat der Kontext etwa **300.000 Token** erreicht (‚⚠ Übergabe fällig‘ meldet
     `messung.mjs`) oder wurde die Sitzung schon zusammengefasst, übergibt Claude **ohne Rückfrage**, sobald der laufende Schritt
     abgeschlossen ist (Version veröffentlicht und Bericht gegeben bzw. Auswertung eingetragen) – nie mitten in einem Bau oder
-    Prüflauf: Übergabe schreiben (Nr. 14) und die neue Sitzung selbst starten – Opus 5.5, Aufwand hoch, Name
-    `<App> <Chatnummer> – <Thema>` (2.5). Eine offene Frage an den Nutzer (z. B. Rückmeldung zu Usertests) geht mit in die
+    Prüflauf: Übergabe schreiben (Nr. 14) und die neue Sitzung selbst starten – mit dem Modell und dem Aufwand, die in diesem Chat
+    gerade eingestellt sind, Name `<App> <Chatnummer> – <Thema>` (2.5). Eine offene Frage an den Nutzer (z. B. Rückmeldung zu Usertests) geht mit in die
     Übergabe und wird in der neuen Sitzung gestellt. Ist ein Thema vorher abgeschlossen, schlägt Claude die Übergabe vor. Prüfung:
     Selbstkontrolle anhand von `messung.mjs`.
 14. **Übergabe** sofort nach `UEBERGABE.md` im Repo AppDesign schreiben und veröffentlichen, mit Starttext (2.5); am Ende der
@@ -317,18 +317,20 @@ Elternnummer.
   Starttext. Dauerhaftes (Arbeitsumgebung, Befehle) steht in der AppDesign-`CLAUDE.md`.
 - Der **Starttext** steht immer als Codeblock (```), damit er mit der Kopieren-Schaltfläche übernommen werden kann, und nennt,
   wo auf GitHub alles liegt (Repo, Branch `main`, Dateien).
-- **Neue Sitzung starten:** `create_session` in derselben Umgebung mit `model: claude-opus-5-5`, Repo AppDesign angehängt; die
+- **Neue Sitzung starten:** `create_session` in derselben Umgebung mit dem Modell und dem Aufwand, die in diesem Chat
+  gerade eingestellt sind – `model` = `session_context.model` aus `get_session` (nicht ein vorübergehender Rückfall), `effort` =
+  `"effort"` des letzten eigenen Modell-Aufrufs in der Sitzungsdatei –, Repo AppDesign angehängt; die
   App-Repos holt die neue Sitzung selbst dazu (`add_repo`), der Starttext ist ihre erste Nachricht. Scheitert das Starten, öffnet
   der Nutzer einen neuen Chat in derselben Umgebung und fügt den Starttext ein. **Name** `<App> <Chatnummer> – <Thema>` mit
   vierstelliger, aufsteigender Nummer (z. B. ‚Reiselogbuch 0001 – AppDesign 4.12.0‘); jede Sitzung, die die nächste startet,
   erhöht die Nummer um 1, die nächste steht in `UEBERGABE.md`; Claude nennt dem Nutzer den Namen.
-- **Aufwand hoch:** `create_session` kann ihn nicht setzen; er kommt aus der Umgebungsvariablen `CLAUDE_CODE_EFFORT_LEVEL=high`
-  (setzt der Nutzer: Umgebungsmenü in der Titelleiste → Bearbeiten → Umgebungsvariablen) und gilt dann auch für Chats, die der
-  Nutzer selbst öffnet.
+- **Aufwand:** `create_session` übernimmt ihn nicht von selbst – Claude gibt ihn mit (`effort`). Für Chats, die der Nutzer selbst
+  öffnet, gilt die Umgebungsvariable `CLAUDE_CODE_EFFORT_LEVEL` (setzt der Nutzer: Umgebungsmenü in der Titelleiste → Bearbeiten →
+  Umgebungsvariablen).
 - **Lagebild prüft Modell und Aufwand:** Modell mit `get_session`, Aufwand mit `echo $CLAUDE_CODE_EFFORT_LEVEL` und – maßgeblich –
   `"effort"` der Modell-Aufrufe in der Sitzungsdatei `/root/.claude/projects/…/*.jsonl`. Die Claude-App zeigt im Chat ggf.
-  ‚mittel‘, obwohl die Aufrufe mit ‚hoch‘ laufen – dann stellt der Nutzer sie zur Sicherheit auf ‚hoch‘. Ist es nicht Opus 5.5
-  bzw. nicht ‚hoch‘, weist Claude darauf hin: für diese Sitzung `/model` bzw. `/effort high`, dauerhaft die Umgebungsvariable.
+  einen anderen Aufwand, als die Aufrufe haben – maßgeblich sind die Aufrufe. Claude nennt Modell und Aufwand im Lagebild; ändern
+  kann der Nutzer sie für diese Sitzung mit `/model` bzw. `/effort`, dauerhaft über die Umgebungsvariable.
   Bei hoher Last weicht die Sitzung von selbst auf das nächste Modell aus (Eintrag `model_fallback` in der Sitzungsdatei, z. B.
   ‚Switched to Opus 5 … due to high demand for Opus 5.5‘) – `messung.mjs` hängt dann ‚⚠ Modell …‘ an (2.2), Claude nennt es in der
   nächsten Ausgabe.
@@ -388,6 +390,7 @@ im Verlauf und in Kommentaren der Prüfungen nennen noch die alten Stellen):
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 3.13.0 | 14.11.2026 | Neben | **APD-130 Neue Sitzung mit Modell und Aufwand dieses Chats (Nutzer 14.11.2026, Sitzung 0113, Wortlaut bestätigt – `arbeit/APD-130 Modell und Aufwand Wortlaut.md` APD-130/W-1 bis W-4):** 0 Nr. 13 und 2.5 – die neue Sitzung startet mit dem Modell und dem Aufwand, die im Chat gerade eingestellt sind (`create_session` mit `model` aus `get_session` und `effort` aus der Sitzungsdatei) statt fest Opus 5.5 und hoch; 2.5 ‚Aufwand‘ – `create_session` setzt ihn jetzt (Feld `effort`); Lagebild nennt Modell und Aufwand ohne festen Sollwert. APD-130/W-5 (`messung.mjs` vergleicht mit dem eingestellten Modell) folgt mit der nächsten AppDesign-Version |
 | 3.12.0 | 13.11.2026 | Neben | **APD-128 Prüfumfang nach Art der Änderung (Nutzer 13.11.2026, Sitzung 0108, Wortlaut bestätigt – `arbeit/0108 APD-128 Wortlaut.md` APD-128/V-1, `arbeit/APD-128 Testfall-Liste.md` APD-128/V-4; Entscheidungen APD-128/D-1 bis D-4):** 0 Nr. 2 – genau ein Prüflauf je Version in einer von zwei Stufen: Stufe Text (nur Texte und Kommentare der App, Doku, Versionsstellen; AppDesign unverändert; vorige Version voll) mit den Grundprüfungen und allen Prüfungen mit dem alten oder neuen Text, sonst voll; das Skript schlägt die Stufe vor, die Bau-Frage nennt sie, im Zweifel voll. Anlass: Reiselogbuch 3.55.1 (eine Zeile Text) mit vollem Lauf, 152 Läufe in 70:19 |
 | 3.11.0 | 08.11.2026 | Neben | **APD-125 Datei vor jeder Kachel (Nutzer 08.11.2026, Sitzung 0098, Wortlaut bestätigt – `arbeit/APD-125 Datei vor jeder Kachel Wortlaut.md` APD-125/V-1 bis V-3):** Kasten ‚Jede Antwort‘ Punkt 4 ‚Datei vor jeder Kachel‘ – vor jedem Fenster alle wichtigen Informationen der Antwort (Lagebild, Bericht, Wortlaut alt und neu, Muster, Testlink, Schritte mit ‚Erwartet: …‘, alle offenen Usertests) in einer Datei im Seitenbereich und ebenso im Chat, auch wenn die Frage nicht danach fragt, ohne Ausnahme; 2.1 ‚Die Datei davor, das Fenster danach‘; 0 Nr. 15 Lagebild im Chat und als Datei. Anlass: das Lagebild fehlte vor der Kachel |
 | 3.10.0 | 07.11.2026 | Neben | **APD-123 Zusammenarbeit ohne Regelwächter (Nutzer 07.11.2026, Sitzung 0089, Wortlaut bestätigt – `arbeit/APD-123 Zusammenarbeit ohne Regelwächter Wortlaut.md` APD-123/V-1, V-2, D-1 bis D-12):** Kasten ‚Jede Antwort‘ neu (Punkte 1–7, Selbstkontrolle): Kachel mit Push am Ende jeder Antwort, nach der der Nutzer etwas tun soll; alles zum Lesen davor – im Chat und bei Prüfen/Entscheiden zusätzlich als Datei im Seitenbereich (`SendUserFile`); ‚(Kontext N)‘ in jeder Frage; 0 Nr. 26 Uhrzeitzeile entfällt; 0 Nr. 7, 11, 13, 14, 15, 21, 27, 28, 29 ohne ‚… anzeigen?‘, Zeitzeile und Regelwächter; 2.1 ‚Der Text davor, das Fenster danach‘, Reihenfolge; 2.2 ‚Kontextstand‘ statt Zeit und Token; 2.3 Rückmeldung in der Kachel oder im Chat; 2.5 ‚⚠ Modell …‘ meldet `messung.mjs`; 2.8 Regelwächter abgeschaltet. Anlass: Regelwächter in Sitzung 0089 abgeschaltet |
