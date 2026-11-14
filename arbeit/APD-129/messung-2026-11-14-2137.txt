@@ -1,0 +1,320 @@
+# Messung · Reiselogbuch 3.56.1 · AppDesign 4.59.1 · Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/27.2 Mobile/15E148 Safari/604.1 · Home-Bildschirm · 402×874 @3 · Ränder 0/34/0/0 · hell · 2026-11-14T20:37:20.991Z · Kontrast normal · Bewegung normal · Text xl 19
+t      sy     inh    sh     ih     vh     vt     vvtop  kopf   such   tag    lkopf  lsuch  lroll  fokus  lage
+0      0      -      812    812    812    0      0      -      -      -      0      -      0      sideMore hoch   ! start
+13771  0      -      402    812    812    0      0      -      -      -      0      -      0      sideMore hoch
+13785  0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! resize
+13787  0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! vv resize
+13790  0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! vv scroll
+14075  0      -      402    402    402    0      0      -      -      -      0      -      0      sideMore quer   ! drehen
+16896  0      -      812    402    402    0      0      -      -      -      0      -      0      sideMore quer
+16910  0      -      812    874    874    0      0      -      -      -      62     -      0      sideMore hoch   ! resize
+16913  0      -      812    874    874    0      0      -      -      -      62     -      0      sideMore hoch   ! vv resize
+16913  0      -      812    874    874    0      0      -      -      -      62     -      0      sideMore hoch   ! vv scroll
+16935  0      -      812    812    812    0      0      -      -      -      62     -      0      sideMore hoch   ! vv resize
+17206  0      -      812    812    812    0      0      -      -      -      62     -      0      sideMore hoch   ! drehen
+17236  62     -      812    812    812    62     0      -      -      -      -62    -      0      sideMore hoch   ! resize
+17239  0      -      812    812    812    0      0      -      -      -      0      -      0      sideMore hoch   ! scroll
+17240  0      -      812    812    812    0      0      -      -      -      0      -      0      sideMore hoch   ! vv scroll
+32377  0      -      812    812    812    0      0      -      -      -      0      -      0      sideMore hoch   ! nav kein kandidat
+32378  0      -      812    812    812    0      0      -      -      -      0      -      0      sideMore hoch   ! zeiger down 105 467 touch b in button.side-row @side
+32507  0      -      812    812    812    0      0      -      -      -      0      -      0      sideMore hoch   ! zeiger up 105 467 touch b in button.side-row.beruehrt-aus @side
+32511  0      -      812    812    812    0      0      -      -      -      0      -      0      -      hoch   ! blur sideMore
+32511  0      -      812    812    812    0      0      -      -      -      0      -      0      -      hoch   ! tippen button
+32524  0      -      812    812    812    0      0      -      -      -      -      -      -      -      hoch   ! neuaufbau app
+32554  0      34353  812    812    812    0      0      0      -      -34066 -      -      -      bar    hoch   ! focus bar
+32555  0      34353  812    812    812    0      0      0      -      -34066 0      -      0      bar    hoch   ! neuaufbau side
+32562  0      34353  812    812    812    0      0      0      -      -34066 0      -      0      bar    hoch   ! scroll rolle
+33091  0      34353  812    812    812    0      0      0      -      -34066 -      -      -      bar    hoch
+36882  0      34353  812    812    812    0      0      0      -      -34066 -      -      -      bar    hoch   ! nav kandidat phone
+36882  0      34353  812    812    812    0      0      0      -      -34066 -      -      -      bar    hoch   ! zeiger down 168 300 touch div.box.day.tippziel[button] @pdays
+36907  0      34353  812    812    812    0      0      0      -      -34066 -      -      -      bar    hoch   ! nav verworfen richtung 6 17
+36908  0      34353  812    812    812    0      0      0      -      -34066 -      -      -      bar    hoch   ! zeiger move 174 317 touch div.box.day.tippziel[button] @pdays
+36908  0      34353  812    812    812    0      0      0      -      -34066 -      -      -      bar    hoch   ! touchmove frei
+36923  0      34353  812    812    812    0      0      0      -      -34066 -      -      -      bar    hoch   ! zeiger move 174 331 touch div.box.day.tippziel[button] @pdays
+36924  0      34353  812    812    812    0      0      0      -      -34066 -      -      -      bar    hoch   ! zeiger cancel 0 0 touch div.box.day.tippziel[button] @pdays
+36940  0      34353  812    812    812    0      0      0      -      -34066 -      -      -      bar    hoch   ! touchmove fest
+36945  0      34329  812    812    812    0      0      0      -      -34042 -      -      -      bar    hoch   ! scroll rolle
+36959  0      34303  812    812    812    0      0      0      -      -34016 -      -      -      bar    hoch   ! scroll rolle
+36985  0      34252  812    812    812    0      0      0      -      -33965 -      -      -      bar    hoch   ! scroll rolle
+37010  0      34192  812    812    812    0      0      0      -      -33905 -      -      -      bar    hoch   ! scroll rolle
+37029  0      34182  812    812    812    0      0      0      -      -33895 -      -      -      bar    hoch   ! scroll rolle
+37055  0      34136  812    812    812    0      0      0      -      -33849 -      -      -      bar    hoch   ! scroll rolle
+37080  0      34080  812    812    812    0      0      0      -      -33793 -      -      -      bar    hoch   ! scroll rolle
+37105  0      34027  812    812    812    0      0      0      -      -33740 -      -      -      bar    hoch   ! scroll rolle
+37130  0      33976  812    812    812    0      0      0      -      -33689 -      -      -      bar    hoch   ! scroll rolle
+37155  0      33927  812    812    812    0      0      0      -      -33640 -      -      -      bar    hoch   ! scroll rolle
+37179  0      33882  812    812    812    0      0      0      -      -33595 -      -      -      bar    hoch   ! scroll rolle
+37204  0      33838  812    812    812    0      0      0      -      -33551 -      -      -      bar    hoch   ! scroll rolle
+37229  0      33796  812    812    812    0      0      0      -      -33509 -      -      -      bar    hoch   ! scroll rolle
+37255  0      33757  812    812    812    0      0      0      -      -33470 -      -      -      bar    hoch   ! scroll rolle
+37262  0      33738  812    812    812    0      0      0      -      -33451 -      -      -      bar    hoch   ! scroll rolle
+37279  0      33713  812    812    812    0      0      0      -      -33426 -      -      -      bar    hoch   ! scroll rolle
+37297  0      33689  812    812    812    0      0      0      -      -33402 -      -      -      bar    hoch   ! scroll rolle
+37312  0      33666  812    812    812    0      0      0      -      -33379 -      -      -      bar    hoch   ! scroll rolle
+37330  0      33644  812    812    812    0      0      0      -      -33357 -      -      -      bar    hoch   ! scroll rolle
+37346  0      33622  812    812    812    0      0      0      -      -33335 -      -      -      bar    hoch   ! scroll rolle
+37363  0      33601  812    812    812    0      0      0      -      -33314 -      -      -      bar    hoch   ! scroll rolle
+37379  0      33581  812    812    812    0      0      0      -      -33294 -      -      -      bar    hoch   ! scroll rolle
+37396  0      33562  812    812    812    0      0      0      -      -33275 -      -      -      bar    hoch   ! scroll rolle
+37413  0      33543  812    812    812    0      0      0      -      -33256 -      -      -      bar    hoch   ! scroll rolle
+37429  0      33525  812    812    812    0      0      0      -      -33238 -      -      -      bar    hoch   ! scroll rolle
+37446  0      33507  812    812    812    0      0      0      -      -33220 -      -      -      bar    hoch   ! scroll rolle
+37462  0      33490  812    812    812    0      0      0      -      -33203 -      -      -      bar    hoch   ! scroll rolle
+37479  0      33473  812    812    812    0      0      0      -      -33186 -      -      -      bar    hoch   ! scroll rolle
+37495  0      33457  812    812    812    0      0      0      -      -33170 -      -      -      bar    hoch   ! scroll rolle
+37512  0      33442  812    812    812    0      0      0      -      -33155 -      -      -      bar    hoch   ! scroll rolle
+37528  0      33427  812    812    812    0      0      0      -      -33140 -      -      -      bar    hoch   ! scroll rolle
+37546  0      33406  812    812    812    0      0      0      -      -33119 -      -      -      bar    hoch   ! scroll rolle
+37562  0      33399  812    812    812    0      0      0      -      -33112 -      -      -      bar    hoch   ! scroll rolle
+37580  0      33385  812    812    812    0      0      0      -      -33098 -      -      -      bar    hoch   ! scroll rolle
+37595  0      33372  812    812    812    0      0      0      -      -33085 -      -      -      bar    hoch   ! scroll rolle
+37613  0      33359  812    812    812    0      0      0      -      -33072 -      -      -      bar    hoch   ! scroll rolle
+37630  0      33341  812    812    812    0      0      0      -      -33054 -      -      -      bar    hoch   ! scroll rolle
+37646  0      33335  812    812    812    0      0      0      -      -33048 -      -      -      bar    hoch   ! scroll rolle
+37662  0      33324  812    812    812    0      0      0      -      -33037 -      -      -      bar    hoch   ! scroll rolle
+37679  0      33313  812    812    812    0      0      0      -      -33026 -      -      -      bar    hoch   ! scroll rolle
+37696  0      33302  812    812    812    0      0      0      -      -33015 -      -      -      bar    hoch   ! scroll rolle
+37713  0      33292  812    812    812    0      0      0      -      -33005 -      -      -      bar    hoch   ! scroll rolle
+37729  0      33282  812    812    812    0      0      0      -      -32995 -      -      -      bar    hoch   ! scroll rolle
+37746  0      33272  812    812    812    0      0      0      -      -32985 -      -      -      bar    hoch   ! scroll rolle
+37763  0      33263  812    812    812    0      0      0      -      -32976 -      -      -      bar    hoch   ! scroll rolle
+37779  0      33254  812    812    812    0      0      0      -      -32967 -      -      -      bar    hoch   ! scroll rolle
+37796  0      33245  812    812    812    0      0      0      -      -32958 -      -      -      bar    hoch   ! scroll rolle
+37812  0      33236  812    812    812    0      0      0      -      -32949 -      -      -      bar    hoch   ! scroll rolle
+37829  0      33228  812    812    812    0      0      0      -      -32941 -      -      -      bar    hoch   ! scroll rolle
+37845  0      33220  812    812    812    0      0      0      -      -32933 -      -      -      bar    hoch   ! scroll rolle
+37862  0      33213  812    812    812    0      0      0      -      -32926 -      -      -      bar    hoch   ! scroll rolle
+37880  0      33205  812    812    812    0      0      0      -      -32918 -      -      -      bar    hoch   ! scroll rolle
+37896  0      33198  812    812    812    0      0      0      -      -32911 -      -      -      bar    hoch   ! scroll rolle
+37914  0      33191  812    812    812    0      0      0      -      -32904 -      -      -      bar    hoch   ! scroll rolle
+37929  0      33184  812    812    812    0      0      0      -      -32897 -      -      -      bar    hoch   ! scroll rolle
+37947  0      33178  812    812    812    0      0      0      -      -32891 -      -      -      bar    hoch   ! scroll rolle
+37962  0      33172  812    812    812    0      0      0      -      -32885 -      -      -      bar    hoch   ! scroll rolle
+37979  0      33166  812    812    812    0      0      0      -      -32879 -      -      -      bar    hoch   ! scroll rolle
+37996  0      33160  812    812    812    0      0      0      -      -32873 -      -      -      bar    hoch   ! scroll rolle
+38023  0      33154  812    812    812    0      0      0      -      -32867 -      -      -      bar    hoch   ! scroll rolle
+38083  0      33180  812    812    812    0      0      0      -      -32893 -      -      -      bar    hoch   ! scroll rolle
+38102  0      33241  812    812    812    0      0      0      -      -32954 -      -      -      bar    hoch   ! scroll rolle
+38127  0      33309  812    812    812    0      0      0      -      -33022 -      -      -      bar    hoch   ! scroll rolle
+38152  0      33368  812    812    812    0      0      0      -      -33081 -      -      -      bar    hoch   ! scroll rolle
+38171  0      33377  812    812    812    0      0      0      -      -33090 -      -      -      bar    hoch   ! scroll rolle
+38197  0      33425  812    812    812    0      0      0      -      -33138 -      -      -      bar    hoch   ! scroll rolle
+38221  0      33480  812    812    812    0      0      0      -      -33193 -      -      -      bar    hoch   ! scroll rolle
+38246  0      33533  812    812    812    0      0      0      -      -33246 -      -      -      bar    hoch   ! scroll rolle
+38272  0      33583  812    812    812    0      0      0      -      -33296 -      -      -      bar    hoch   ! scroll rolle
+38297  0      33631  812    812    812    0      0      0      -      -33344 -      -      -      bar    hoch   ! scroll rolle
+38321  0      33676  812    812    812    0      0      0      -      -33389 -      -      -      bar    hoch   ! scroll rolle
+38347  0      33719  812    812    812    0      0      0      -      -33432 -      -      -      bar    hoch   ! scroll rolle
+38372  0      33761  812    812    812    0      0      0      -      -33474 -      -      -      bar    hoch   ! scroll rolle
+38396  0      33800  812    812    812    0      0      0      -      -33513 -      -      -      bar    hoch   ! scroll rolle
+38404  0      33831  812    812    812    0      0      0      -      -33544 -      -      -      bar    hoch   ! scroll rolle
+38421  0      33843  812    812    812    0      0      0      -      -33556 -      -      -      bar    hoch   ! scroll rolle
+38438  0      33866  812    812    812    0      0      0      -      -33579 -      -      -      bar    hoch   ! scroll rolle
+38454  0      33889  812    812    812    0      0      0      -      -33602 -      -      -      bar    hoch   ! scroll rolle
+38471  0      33911  812    812    812    0      0      0      -      -33624 -      -      -      bar    hoch   ! scroll rolle
+38487  0      33932  812    812    812    0      0      0      -      -33645 -      -      -      bar    hoch   ! scroll rolle
+38504  0      33953  812    812    812    0      0      0      -      -33666 -      -      -      bar    hoch   ! scroll rolle
+38522  0      33973  812    812    812    0      0      0      -      -33686 -      -      -      bar    hoch   ! scroll rolle
+38537  0      33992  812    812    812    0      0      0      -      -33705 -      -      -      bar    hoch   ! scroll rolle
+38554  0      34011  812    812    812    0      0      0      -      -33724 -      -      -      bar    hoch   ! scroll rolle
+38571  0      34029  812    812    812    0      0      0      -      -33742 -      -      -      bar    hoch   ! scroll rolle
+38588  0      34046  812    812    812    0      0      0      -      -33759 -      -      -      bar    hoch   ! scroll rolle
+38604  0      34063  812    812    812    0      0      0      -      -33776 -      -      -      bar    hoch   ! scroll rolle
+38621  0      34079  812    812    812    0      0      0      -      -33792 -      -      -      bar    hoch   ! scroll rolle
+38640  0      34087  812    812    812    0      0      0      -      -33800 -      -      -      bar    hoch   ! scroll rolle
+38824  0      34085  812    812    812    0      0      0      -      -33798 -      -      -      bar    hoch   ! scroll rolle
+38848  0      34074  812    812    812    0      0      0      -      -33787 -      -      -      bar    hoch   ! scroll rolle
+38856  0      34071  812    812    812    0      0      0      -      -33784 -      -      -      bar    hoch   ! scroll rolle
+38873  0      34064  812    812    812    0      0      0      -      -33777 -      -      -      bar    hoch   ! scroll rolle
+38889  0      34057  812    812    812    0      0      0      -      -33770 -      -      -      bar    hoch   ! scroll rolle
+38906  0      34049  812    812    812    0      0      0      -      -33762 -      -      -      bar    hoch   ! scroll rolle
+38923  0      34042  812    812    812    0      0      0      -      -33755 -      -      -      bar    hoch   ! scroll rolle
+38939  0      34035  812    812    812    0      0      0      -      -33748 -      -      -      bar    hoch   ! scroll rolle
+38956  0      34030  812    812    812    0      0      0      -      -33743 -      -      -      bar    hoch   ! scroll rolle
+38973  0      34025  812    812    812    0      0      0      -      -33738 -      -      -      bar    hoch   ! scroll rolle
+39015  0      34021  812    812    812    0      0      0      -      -33734 -      -      -      bar    hoch   ! scroll rolle
+39082  0      34025  812    812    812    0      0      0      -      -33738 -      -      -      bar    hoch   ! scroll rolle
+39094  0      34030  812    812    812    0      0      0      -      -33743 -      -      -      bar    hoch   ! scroll rolle
+39119  0      34045  812    812    812    0      0      0      -      -33758 -      -      -      bar    hoch   ! scroll rolle
+39125  0      34050  812    812    812    0      0      0      -      -33763 -      -      -      bar    hoch   ! scroll rolle
+39144  0      34061  812    812    812    0      0      0      -      -33774 -      -      -      bar    hoch   ! scroll rolle
+39159  0      34073  812    812    812    0      0      0      -      -33786 -      -      -      bar    hoch   ! scroll rolle
+39176  0      34084  812    812    812    0      0      0      -      -33797 -      -      -      bar    hoch   ! scroll rolle
+39193  0      34096  812    812    812    0      0      0      -      -33809 -      -      -      bar    hoch   ! scroll rolle
+39210  0      34107  812    812    812    0      0      0      -      -33820 -      -      -      bar    hoch   ! scroll rolle
+39227  0      34117  812    812    812    0      0      0      -      -33830 -      -      -      bar    hoch   ! scroll rolle
+39243  0      34126  812    812    812    0      0      0      -      -33839 -      -      -      bar    hoch   ! scroll rolle
+39260  0      34134  812    812    812    0      0      0      -      -33847 -      -      -      bar    hoch   ! scroll rolle
+39276  0      34140  812    812    812    0      0      0      -      -33853 -      -      -      bar    hoch   ! scroll rolle
+39293  0      34145  812    812    812    0      0      0      -      -33858 -      -      -      bar    hoch   ! scroll rolle
+39332  0      34151  812    812    812    0      0      0      -      -33864 -      -      -      bar    hoch   ! scroll rolle
+39357  0      34154  812    812    812    0      0      0      -      -33867 -      -      -      bar    hoch   ! scroll rolle
+39390  0      34157  812    812    812    0      0      0      -      -33870 -      -      -      bar    hoch   ! scroll rolle
+39406  0      34160  812    812    812    0      0      0      -      -33873 -      -      -      bar    hoch   ! scroll rolle
+39418  0      34163  812    812    812    0      0      0      -      -33876 -      -      -      bar    hoch   ! scroll rolle
+39444  0      34171  812    812    812    0      0      0      -      -33884 -      -      -      bar    hoch   ! scroll rolle
+39469  0      34183  812    812    812    0      0      0      -      -33896 -      -      -      bar    hoch   ! scroll rolle
+39486  0      34193  812    812    812    0      0      0      -      -33906 -      -      -      bar    hoch   ! scroll rolle
+39501  0      34205  812    812    812    0      0      0      -      -33918 -      -      -      bar    hoch   ! scroll rolle
+39519  0      34218  812    812    812    0      0      0      -      -33931 -      -      -      bar    hoch   ! scroll rolle
+39535  0      34231  812    812    812    0      0      0      -      -33944 -      -      -      bar    hoch   ! scroll rolle
+39552  0      34243  812    812    812    0      0      0      -      -33956 -      -      -      bar    hoch   ! scroll rolle
+39568  0      34255  812    812    812    0      0      0      -      -33968 -      -      -      bar    hoch   ! scroll rolle
+39586  0      34267  812    812    812    0      0      0      -      -33980 -      -      -      bar    hoch   ! scroll rolle
+39601  0      34277  812    812    812    0      0      0      -      -33990 -      -      -      bar    hoch   ! scroll rolle
+39618  0      34286  812    812    812    0      0      0      -      -33999 -      -      -      bar    hoch   ! scroll rolle
+39635  0      34295  812    812    812    0      0      0      -      -34008 -      -      -      bar    hoch   ! scroll rolle
+39651  0      34303  812    812    812    0      0      0      -      -34016 -      -      -      bar    hoch   ! scroll rolle
+39668  0      34312  812    812    812    0      0      0      -      -34025 -      -      -      bar    hoch   ! scroll rolle
+39685  0      34320  812    812    812    0      0      0      -      -34033 -      -      -      bar    hoch   ! scroll rolle
+39702  0      34327  812    812    812    0      0      0      -      -34040 -      -      -      bar    hoch   ! scroll rolle
+39718  0      34333  812    812    812    0      0      0      -      -34046 -      -      -      bar    hoch   ! scroll rolle
+39735  0      34338  812    812    812    0      0      0      -      -34051 -      -      -      bar    hoch   ! scroll rolle
+39761  0      34342  812    812    812    0      0      0      -      -34055 -      -      -      bar    hoch   ! scroll rolle
+39790  0      34344  812    812    812    0      0      0      -      -34057 -      -      -      bar    hoch   ! scroll rolle
+39882  0      34343  812    812    812    0      0      0      -      -34056 -      -      -      bar    hoch   ! scroll rolle
+39907  0      34341  812    812    812    0      0      0      -      -34054 -      -      -      bar    hoch   ! scroll rolle
+39922  0      34338  812    812    812    0      0      0      -      -34051 -      -      -      bar    hoch   ! scroll rolle
+39939  0      34336  812    812    812    0      0      0      -      -34049 -      -      -      bar    hoch   ! scroll rolle
+39956  0      34333  812    812    812    0      0      0      -      -34046 -      -      -      bar    hoch   ! scroll rolle
+39982  0      34329  812    812    812    0      0      0      -      -34042 -      -      -      bar    hoch   ! scroll rolle
+40011  0      34326  812    812    812    0      0      0      -      -34039 -      -      -      bar    hoch   ! scroll rolle
+40027  0      34325  812    812    812    0      0      0      -      -34038 -      -      -      bar    hoch   ! scroll rolle
+40043  0      34324  812    812    812    0      0      0      -      -34037 -      -      -      bar    hoch   ! scroll rolle
+40060  0      34323  812    812    812    0      0      0      -      -34036 -      -      -      bar    hoch   ! scroll rolle
+40077  0      34322  812    812    812    0      0      0      -      -34035 -      -      -      bar    hoch   ! scroll rolle
+40094  0      34321  812    812    812    0      0      0      -      -34034 -      -      -      bar    hoch   ! scroll rolle
+40353  0      34322  812    812    812    0      0      0      -      -34035 -      -      -      bar    hoch   ! scroll rolle
+40411  0      34323  812    812    812    0      0      0      -      -34036 -      -      -      bar    hoch   ! scroll rolle
+40461  0      34324  812    812    812    0      0      0      -      -34037 -      -      -      bar    hoch   ! scroll rolle
+40477  0      34325  812    812    812    0      0      0      -      -34038 -      -      -      bar    hoch   ! scroll rolle
+40494  0      34327  812    812    812    0      0      0      -      -34040 -      -      -      bar    hoch   ! scroll rolle
+40510  0      34329  812    812    812    0      0      0      -      -34042 -      -      -      bar    hoch   ! scroll rolle
+40527  0      34331  812    812    812    0      0      0      -      -34044 -      -      -      bar    hoch   ! scroll rolle
+40543  0      34334  812    812    812    0      0      0      -      -34047 -      -      -      bar    hoch   ! scroll rolle
+40560  0      34336  812    812    812    0      0      0      -      -34049 -      -      -      bar    hoch   ! scroll rolle
+40577  0      34337  812    812    812    0      0      0      -      -34050 -      -      -      bar    hoch   ! scroll rolle
+40594  0      34338  812    812    812    0      0      0      -      -34051 -      -      -      bar    hoch   ! scroll rolle
+40694  0      34336  812    812    812    0      0      0      -      -34049 -      -      -      bar    hoch   ! scroll rolle
+40709  0      34335  812    812    812    0      0      0      -      -34048 -      -      -      bar    hoch   ! scroll rolle
+40729  0      34334  812    812    812    0      0      0      -      -34047 -      -      -      bar    hoch   ! scroll rolle
+41848  0      24104  402    402    402    0      0      0      -      -23850 -      -      -      bar    quer   ! resize
+41872  0      24104  402    402    402    0      0      0      -      -23850 -      -      -      bar    quer   ! vv resize
+41877  0      24104  402    402    402    0      0      0      -      -23850 -      -      -      bar    quer   ! scroll rolle
+41877  0      24104  402    402    402    0      0      0      -      -23850 -      -      -      bar    quer   ! vv scroll
+41905  0      21190  402    402    402    0      0      0      -      -20936 -      -      -      bar    quer   ! scroll rolle
+42135  0      21190  402    402    402    0      0      0      -      -20936 -      -      -      bar    quer   ! drehen
+47085  0      21190  812    402    402    0      0      0      -      -20903 -      -      -      bar    quer
+47110  0      21190  812    874    874    0      0      0      -      -20841 -      -      -      bar    hoch   ! resize
+47130  0      21190  812    874    874    0      0      0      -      -20841 -      -      -      bar    hoch   ! vv resize
+47134  0      21190  812    874    874    0      0      0      -      -20841 -      -      -      bar    hoch   ! vv scroll
+47148  0      21190  812    812    812    0      0      0      -      -20841 -      -      -      bar    hoch   ! vv resize
+47163  0      34334  812    812    812    0      0      0      -      -33985 -      -      -      bar    hoch   ! scroll rolle
+47386  0      34334  812    812    812    0      0      0      -      -33985 -      -      -      bar    hoch   ! drehen
+47426  62     34334  812    812    812    62     0      -62    -      -34109 -      -      -      bar    hoch   ! resize
+47452  0      34334  812    812    812    0      0      0      -      -34047 -      -      -      bar    hoch   ! scroll
+47452  0      34334  812    812    812    0      0      0      -      -34047 -      -      -      bar    hoch   ! vv scroll
+52993  0      34334  812    812    812    0      0      0      -      -34047 -      -      -      bar    hoch   ! nav kandidat phone
+52993  0      34334  812    812    812    0      0      0      -      -34047 -      -      -      bar    hoch   ! zeiger down 79 112 touch div.h in div.box.day.gap[button] @pdays
+53070  0      34334  812    812    812    0      0      0      -      -34047 -      -      -      bar    hoch   ! zeiger up 79 112 touch div.h in div.box.day.gap[button] @pdays
+53074  0      34334  812    812    812    0      0      0      -      -34047 -      -      -      -      hoch   ! blur bar
+53074  0      34334  812    812    812    0      0      0      -      -34047 -      -      -      div    hoch   ! focus div
+53086  0      34334  812    812    812    0      0      0      -      -34047 -      -      -      div    hoch   ! tippen -
+53105  0      34334  812    812    812    0      0      0      -      -34047 -      -      -      dlgX   hoch   ! blur div
+53108  0      34334  812    812    812    0      0      0      -      -34047 -      -      -      dlgX   hoch   ! focus dlgX
+53109  0      34334  812    812    812    0      0      0      -      -34047 -      -      -      -      hoch   ! blur dlgX
+53109  0      34334  812    812    812    0      0      0      -      -34047 -      -      -      dlg    hoch   ! focus dlg
+53140  0      34334  812    812    812    0      0      0      -      -33894 -      -      -      dlg    hoch
+53150  0      34334  812    812    812    0      0      0      -      -33773 -      -      -      dlg    hoch
+53167  0      34334  812    812    812    0      0      0      -      -33521 -      -      -      dlg    hoch
+53184  0      34334  812    812    812    0      0      0      -      -33255 -      -      -      dlg    hoch
+53200  0      34334  812    812    812    0      0      0      -      -33015 -      -      -      dlg    hoch
+53217  0      34334  812    812    812    0      0      0      -      -32782 -      -      -      dlg    hoch
+53234  0      34334  812    812    812    0      0      0      -      -32578 -      -      -      dlg    hoch
+53250  0      34334  812    812    812    0      0      0      -      -32413 -      -      -      dlg    hoch
+53267  0      34334  812    812    812    0      0      0      -      -32265 -      -      -      dlg    hoch
+53284  0      34334  812    812    812    0      0      0      -      -32143 -      -      -      dlg    hoch
+53300  0      34334  812    812    812    0      0      0      -      -32049 -      -      -      dlg    hoch
+53317  0      34334  812    812    812    0      0      0      -      -31967 -      -      -      dlg    hoch
+53334  0      34334  812    812    812    0      0      0      -      -31902 -      -      -      dlg    hoch
+53350  0      34334  812    812    812    0      0      0      -      -31852 -      -      -      dlg    hoch
+53367  0      34334  812    812    812    0      0      0      -      -31810 -      -      -      dlg    hoch
+53384  0      34334  812    812    812    0      0      0      -      -31777 -      -      -      dlg    hoch
+53401  0      34334  812    812    812    0      0      0      -      -31752 -      -      -      dlg    hoch
+53417  0      34334  812    812    812    0      0      0      -      -31731 -      -      -      dlg    hoch
+53434  0      34334  812    812    812    0      0      0      -      -31715 -      -      -      dlg    hoch
+53450  0      34334  812    812    812    0      0      0      -      -31704 -      -      -      dlg    hoch
+53467  0      34334  812    812    812    0      0      0      -      -31694 -      -      -      dlg    hoch
+53484  0      34334  812    812    812    0      0      0      -      -31686 -      -      -      dlg    hoch
+53501  0      34334  812    812    812    0      0      0      -      -31680 -      -      -      dlg    hoch
+53517  0      34334  812    812    812    0      0      0      -      -31676 -      -      -      dlg    hoch
+53534  0      34334  812    812    812    0      0      0      -      -31672 -      -      -      dlg    hoch
+53550  0      34334  812    812    812    0      0      0      -      -31669 -      -      -      dlg    hoch
+53567  0      34334  812    812    812    0      0      0      -      -31667 -      -      -      dlg    hoch
+53584  0      34334  812    812    812    0      0      0      -      -31666 -      -      -      dlg    hoch
+53601  0      34334  812    812    812    0      0      0      -      -31664 -      -      -      dlg    hoch
+53636  0      34334  812    812    812    0      0      0      -      -31663 -      -      -      dlg    hoch
+63119  0      24104  402    402    402    0      0      0      -      -22180 -      -      -      dlg    quer   ! resize
+63143  0      24104  402    402    402    0      0      0      -      -23850 -      -      -      dlg    quer   ! vv resize
+63147  0      24104  402    402    402    0      0      0      -      -23850 -      -      -      dlg    quer   ! scroll rolle
+63147  0      24104  402    402    402    0      0      0      -      -23850 -      -      -      dlg    quer   ! vv scroll
+63170  0      21190  402    402    402    0      0      0      -      -20936 -      -      -      dlg    quer   ! scroll rolle
+63389  0      21190  402    402    402    0      0      0      -      -20936 -      -      -      dlg    quer   ! drehen
+66838  0      21190  812    874    874    0      0      0      -      -20841 -      -      -      dlg    hoch   ! resize
+66862  0      21190  812    874    874    0      0      60     -      -19322 -      -      -      dlg    hoch   ! vv resize
+66866  0      21190  812    874    874    0      0      60     -      -19322 -      -      -      dlg    hoch   ! vv scroll
+66906  0      20640  812    812    812    0      0      60     -      -18810 -      -      -      dlg    hoch   ! vv resize
+66914  0      20640  812    812    812    0      0      60     -      -18810 -      -      -      dlg    hoch   ! scroll rolle
+67124  0      20640  812    812    812    0      0      60     -      -18810 -      -      -      dlg    hoch   ! drehen
+67156  62     20640  812    812    812    62     0      -2     -      -18930 -      -      -      dlg    hoch   ! resize
+67187  0      20640  812    812    812    0      0      0      -      -18928 -      -      -      dlg    hoch   ! scroll
+67187  0      20640  812    812    812    0      0      0      -      -18928 -      -      -      dlg    hoch   ! vv scroll
+67211  0      33375  812    812    812    0      0      0      -      -30772 -      -      -      dlg    hoch   ! scroll rolle
+71494  0      33375  812    812    812    0      0      0      -      -30772 -      -      -      dlg    hoch   ! nav kein kandidat eigen
+71495  0      33375  812    812    812    0      0      0      -      -30772 -      -      -      dlg    hoch   ! zeiger down 38 51 touch svg.ic in dlgX
+71636  0      33375  812    812    812    0      0      0      -      -30772 -      -      -      dlg    hoch   ! zeiger up 38 51 touch svg.ic in dlgX
+71638  0      33375  812    812    812    0      0      0      -      -30772 -      -      -      dlg    hoch   ! tippen dlgX
+71659  0      33375  812    812    812    0      0      0      -      -30772 -      -      -      -      hoch   ! blur dlg
+71660  0      33375  812    812    812    0      0      0      -      -30772 -      -      -      div    hoch   ! focus div
+71673  0      34415  812    812    812    0      0      0      -      -31739 -      -      -      div    hoch   ! neuaufbau app
+71696  0      34420  812    812    812    0      0      0      -      -31743 -      -      -      -      hoch   ! scroll rolle
+71719  0      34421  812    812    812    0      0      0      -      -31744 -      -      -      -      hoch   ! scroll rolle
+71719  0      34421  812    812    812    0      0      0      -      -31791 -      -      -      -      hoch
+71720  0      34421  812    812    812    0      0      0      -      -31791 -      -      -      div    hoch   ! focus div
+71721  0      34421  812    812    812    0      0      0      -      -31795 -      -      -      div    hoch
+71733  0      34421  812    812    812    0      0      0      -      -31855 -      -      -      div    hoch
+71749  0      34421  812    812    812    0      0      0      -      -31973 -      -      -      div    hoch
+71766  0      34421  812    812    812    0      0      0      -      -32145 -      -      -      div    hoch
+71783  0      34421  812    812    812    0      0      0      -      -32362 -      -      -      div    hoch
+71799  0      34421  812    812    812    0      0      0      -      -32599 -      -      -      div    hoch
+71816  0      34421  812    812    812    0      0      0      -      -32873 -      -      -      div    hoch
+71832  0      34421  812    812    812    0      0      0      -      -33152 -      -      -      div    hoch
+71849  0      34421  812    812    812    0      0      0      -      -33416 -      -      -      div    hoch
+71866  0      34421  812    812    812    0      0      0      -      -33636 -      -      -      div    hoch
+71883  0      34421  812    812    812    0      0      0      -      -33840 -      -      -      div    hoch
+71899  0      34421  812    812    812    0      0      0      -      -33984 -      -      -      div    hoch
+71916  0      34421  812    812    812    0      0      0      -      -34074 -      -      -      div    hoch
+71933  0      34421  812    812    812    0      0      0      -      -34125 -      -      -      div    hoch
+71952  0      34421  812    812    812    0      0      0      -      -34134 -      -      -      div    hoch
+72588  0      34421  812    812    812    0      0      0      -      -34134 -      -      -      div    hoch   ! nav kein kandidat eigen
+72589  0      34421  812    812    812    0      0      0      -      -34134 -      -      -      div    hoch   ! zeiger down 44 37 touch svg.ic in back
+72682  0      34421  812    812    812    0      0      0      -      -34134 -      -      -      div    hoch   ! zeiger up 44 37 touch svg.ic in back
+72686  0      34421  812    812    812    0      0      0      -      -34134 -      -      -      -      hoch   ! blur div
+72686  0      34421  812    812    812    0      0      0      -      -34134 -      -      -      -      hoch   ! tippen back
+72688  0      34421  812    812    812    0      0      0      -      -34134 0      -      0      -      hoch   ! neuaufbau side
+72967  0      -      812    812    812    0      0      -      -      -      0      -      0      -      hoch   ! neuaufbau side
+72973  0      -      812    812    812    0      0      -      -      -      0      -      0      button hoch   ! focus button
+76764  0      -      812    812    812    0      0      -      -      -      0      -      0      button hoch   ! nav kein kandidat eigen
+76765  0      -      812    812    812    0      0      -      -      -      0      -      0      button hoch   ! zeiger down 355 30 touch svg.ic in sideMore
+76895  0      -      812    812    812    0      0      -      -      -      0      -      0      button hoch   ! zeiger up 355 30 touch svg.ic in sideMore
+76898  0      -      812    812    812    0      0      -      -      -      0      -      0      -      hoch   ! blur button
+76898  0      -      812    812    812    0      0      -      -      -      0      -      0      -      hoch   ! tippen sideMore
+76910  0      -      812    812    812    0      0      -      -      -      0      -      0      button hoch   ! focus button
+78530  0      -      812    812    812    0      0      -      -      -      0      -      0      button hoch   ! nav kein kandidat eigen
+78531  0      -      812    812    812    0      0      -      -      -      0      -      0      button hoch   ! zeiger down 159 374 touch button.mi.has-sub.beruehrt[menuitem]
+78628  0      -      812    812    812    0      0      -      -      -      0      -      0      button hoch   ! zeiger up 159 374 touch button.mi.has-sub.beruehrt-aus[menuitem]
+78632  0      -      812    812    812    0      0      -      -      -      0      -      0      -      hoch   ! blur button
+78632  0      -      812    812    812    0      0      -      -      -      0      -      0      -      hoch   ! tippen button
+78670  0      -      812    812    812    0      0      -      -      -      0      -      0      sideMore hoch   ! focus sideMore
+78671  0      -      812    812    812    0      0      -      -      -      0      -      0      sideMore hoch   ! messung beendet
+# Ende nach 79 s
