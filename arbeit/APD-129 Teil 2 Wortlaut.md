@@ -15,3 +15,15 @@
 >   und in Safari gilt `env(…)`. Safari-Modell `safeOben` (Messung 14.11.2026 21:37, Safari 27.2, APD-129 Teil 2).
 
 Regelkatalog (17): keine Änderung – R-8.1 deckt es schon ab (nach dem Drehen bleibt alles an seinem Platz); die neue Prüfung nimmt dazu jedes Bild auf.
+
+## Stand nach der Bestätigung (14.11.2026, Sitzung 0113)
+
+- APD-129/W-1: **Ja** (Nutzer 14.11.2026).
+- Backlog AppDesign ‚0. Nächste Version‘: APD-129 Teil 2, **1 Punkt bereit** (`9ec54b1`).
+- **Bau-Frage:** Korrekturversion **AppDesign 4.59.2** mit **Reiselogbuch 3.56.2**.
+  - Inhalt: Teil A `--safe-top` selbst bestimmen, Teil B Verschiebung im selben Ereignis zurücksetzen, Safari-Modell `safeOben`, Prüfung
+    APD-129/M-10 bis M-18 (rot gegen 4.59.1), Designrichtlinie 13 nach W-1, CHANGELOG mit Usertest P-105.
+  - **Prüfstufe voll:** AppDesign ändert sich, Stufe Text scheidet damit aus (0 Nr. 2). `stufe` läuft nach `vorbereiten`; schlägt es
+    etwas anderes vor, melde ich das vor `los`.
+  - Dauer des vollen Laufs etwa 60 min (AppDesign-`CLAUDE.md`). Bei einem Kontext von etwa 209.000 kann die Übergabe (ab 300.000) nach dem
+    Bericht fällig werden (0 Nr. 13).
