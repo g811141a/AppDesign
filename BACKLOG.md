@@ -19,6 +19,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
+| P-104 | 1 | **APD-129 am iPhone nicht bestätigt (Usertest P-104, Reiselogbuch 3.56.1 mit 4.59.1):** P-104/0 und /4 ok; P-104/1, /2, /3 nicht ok – bei allen drei springt das Bild nach dem Zurückdrehen auf hoch nach oben; erwartet: Bildaufbau wie am iPad (Nutzer 14.11.2026, Sitzung 0113); zuerst Messung am iPhone (0 Nr. 20) | prüfen |
 
 ## 2. Weitere Themen (in Klärung)
 
