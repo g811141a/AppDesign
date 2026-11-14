@@ -1,4 +1,4 @@
-// AppDesign 4.58.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
+// AppDesign 4.59.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
 // Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/fassung/X.Y.Z/ui.js"></script> (feste Fassung, R-10.3)
 // Seit 4.11.0 (R-10.3): ui.js und design.css immer mit ?v=<AppDesign-Version> einbinden (auch in sw.js) und beim Start
 // prüfen, ob genau diese Fassung geladen ist (AD_VERSION hier, --ad-version in design.css).
@@ -20,7 +20,7 @@
 
 'use strict';
 // Version der Bausteine (R-10.3): die App vergleicht sie beim Start mit der benötigten Fassung.
-const AD_VERSION = '4.58.0';
+const AD_VERSION = '4.59.0';
 /* ---------- Icons ---------- */
 
 // Schaltflächen-Icons aus Lucide (ISC-Lizenz), direkt eingebettet, damit die App offline funktioniert.
@@ -98,12 +98,19 @@ function breakable(text) {
 // Seit 4.42.0 (APD-90, R-10.5): Icon und Text eines Eintrags bleiben zusammen – ein Eintrag ist ein Block in der Zeile (.ict), die Zeile
 // bricht nur zwischen den Einträgen um; ist ein Eintrag allein zu lang, bricht er im Text, nie direkt nach dem Icon (festes Leerzeichen).
 const iconText = (icon, text) => `<span class="ict">${esc(icon)}\u00a0${esc(text)}</span>`;
-// Seit 4.57.0 (RLB-122, R-10.5): Aufz\u00e4hlung mit Trennpunkt (z. B. \u201a8\u00d7\u2600\ufe0f \u00b7 6\u00d7\ud83c\udf27\ufe0f\u2018) \u2013 jeder Eintrag am St\u00fcck (.ict), davor ein gesch\u00fctztes
-// Leerzeichen und \u201a\u00b7 \u2018: der \u201a\u00b7\u2018 bleibt am Ende der Zeile, umgebrochen wird nur danach, die neue Zeile beginnt mit dem n\u00e4chsten Eintrag.
-// Der Eintrag ist hier inline am St\u00fcck (.ict.az, nowrap) statt inline-block: nach einem inline-block bricht Safari (und Chromium) auch vor
-// dem gesch\u00fctzten Leerzeichen um \u2013 der \u201a\u00b7\u2018 st\u00fcnde dann vorn in der neuen Zeile.
+// Seit 4.57.0 (RLB-122, R-10.5): Aufz\u00e4hlung mit Trennpunkt (z. B. \u201a8\u00d7\u2600\ufe0f \u00b7 6\u00d7\ud83c\udf27\ufe0f\u2018) \u2013 der \u201a\u00b7\u2018 bleibt am Ende der
+// Zeile, umgebrochen wird nur danach, die neue Zeile beginnt mit dem n\u00e4chsten Eintrag.
+// Seit 4.59.0 (RLB-121, R-10.5): auch lange Eintr\u00e4ge (z. B. Quartiere \u201aHotel Krone (120,00 \u20ac) \u00b7 \u2026\u2018). Jeder Eintrag ist ein Block (.ict.az,
+// inline-block, h\u00f6chstens so breit wie die Zeile): passt er in die Zeile, bleibt er am St\u00fcck; ist er allein breiter, bricht er im Text um.
+// Der \u201a\u00b7\u2018 steht mit gesch\u00fctztem Leerzeichen im Block des Eintrags davor (.az-n, nowrap) \u2013 nach einem inline-block br\u00e4che der Browser
+// sonst vor dem \u201a\u00b7\u2018 um (Chromium und WebKit gemessen); ein Zusatz in Klammern (z. B. der Preis) steht ebenso darin und bleibt ganz.
+// liste: Texte oder [Text, Zusatz], z. B. ['Hotel Krone', '(120,00\u00a0\u20ac)'].
 function aufzaehlung(liste) {
-  return liste.map(x => `<span class="ict az">${esc(x)}</span>`).join('\u00a0\u00b7 ');
+  return liste.map((x, i) => {
+    const [text, zusatz] = Array.isArray(x) ? x : [x, ''];
+    const n = (zusatz ? '\u00a0' + esc(zusatz) : '') + (i < liste.length - 1 ? '\u00a0\u00b7' : '');
+    return `<span class="ict az">${esc(text)}${n ? `<span class="az-n">${n}</span>` : ''}</span>`;
+  }).join(' ');
 }
 // Ganze Zahl mit Tausenderpunkt, z. B. 4850 → "4.850".
 function thousands(n) {
@@ -1350,7 +1357,7 @@ const outputCss = scope => `
   ${scope} h2 { font-size: 14pt; margin: 20px 0 6px; break-after: avoid; page-break-after: avoid; }
   ${scope} table { border-collapse: collapse; }
   ${scope} .ict { display: inline-block; max-width: 100%; }
-  ${scope} .ict.az { display: inline; white-space: nowrap; }
+  ${scope} .ict .az-n { white-space: nowrap; }
   ${scope} .meta td { border: none; padding: 1px 16px 1px 0; vertical-align: top; }
   ${scope} table.grid { width: 100%; margin-top: 12px; table-layout: auto; }
   ${scope} table.grid.fit { width: auto; }
@@ -2265,6 +2272,9 @@ function keepPlace(change) {
   const anchor = topAnchor();
   if (anchor && 'sel' in anchor) anchor.app = true;
   change();
+  // Seit 4.59.0 (RLB-121/W-4, R-8.1): der Umbau bei großer Schrift folgt der neuen Breite von main sofort – kam er erst ein Bild später
+  // (ResizeObserver), stand nach Seitenleiste ein/aus am iPad hoch ein anderer Eintrag oben und das Gedächtnis war veraltet
+  textUm();
   keepTop = anchor;
   if (anchor) { restoreTop(); delete anchor.app; return; }   // beim nächsten Drehen wieder als Anteil
   keepBusy = true;
@@ -2296,9 +2306,18 @@ window.addEventListener('resize', () => { if ((lockY !== null || holdTop) && inn
 const TEXT_STUFEN = { xs: 14, s: 15, m: 16, l: 17, xl: 19, xxl: 21, xxxl: 23, ax1: 28, ax2: 33, ax3: 40, ax4: 47, ax5: 53 };
 let textName = '';
 const textPx = () => TEXT_STUFEN[textName] || 17;
+// Seit 4.59.0 (RLB-121/W-3, W-4, R-1.10): ab 21 px untereinander, wenn der Inhalt (main) schmaler als 600 px ist \u2013 iPhone hoch wie bisher,
+// dazu iPad hoch neben der Seitenleiste und geteilter Bildschirm; neu berechnet beim Drehen und wenn sich die Breite von main \u00e4ndert.
+const inhaltBreite = () => (document.querySelector('main') || document.documentElement).clientWidth || innerWidth;
+const umSoll = () => { const px = textPx(); return px >= 28 || (px >= 21 && inhaltBreite() < 600); };
 function textUm() {
-  const r = document.documentElement, px = textPx();
-  r.classList.toggle('ts-um', px >= 28 || (px >= 21 && r.classList.contains('phone') && innerHeight > innerWidth));
+  document.documentElement.classList.toggle('ts-um', umSoll());
+}
+// Umbau, wenn sich nur die Breite von main ändert (ResizeObserver): der oberste Eintrag bleibt (keepPlace, R-8.1) – sonst stand am iPad hoch bei
+// Text 23 nach dem Öffnen der Tag nicht mehr unter dem Kopf (R-7.4); bei offenem Fenster (R-7.3) nur umschalten
+function textUmHalten() {
+  if (document.documentElement.classList.contains('ts-um') === umSoll()) return;
+  if (lockY !== null) textUm(); else keepPlace(textUm);
 }
 function textStufe() {
   const px = parseFloat(getComputedStyle(document.documentElement).fontSize) || 17;
@@ -2334,6 +2353,9 @@ textStufe();
 if (window.ResizeObserver) new ResizeObserver(() => requestAnimationFrame(textStufe)).observe(textProbe);
 document.addEventListener('visibilitychange', () => { if (!document.hidden) textStufe(); });
 window.addEventListener('resize', textUm);
+// Seitenleiste ein/aus \u00e4ndert die Breite von main ohne resize (RLB-121) \u2013 im n\u00e4chsten Bild, sonst meldet Safari eine ResizeObserver-Schleife
+{ let umBreite = 0; const umRo = new ResizeObserver(es => { const w = Math.round(es[0].contentRect.width); if (w === umBreite) return; umBreite = w; requestAnimationFrame(textUmHalten); });
+  const umMain = () => { const m = document.querySelector('main'); if (m) umRo.observe(m); else requestAnimationFrame(umMain); }; umMain(); }
 
 // R-2.1: Die Leiste (mit oder ohne Suchzeile) bewegt sich beim Wischen keinen Millimeter.
 // Bei offener Tastatur würde iOS beim Wischen den sichtbaren Bereich verschieben; die Leiste müsste ihm

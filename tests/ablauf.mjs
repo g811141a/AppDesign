@@ -2941,30 +2941,50 @@ const zeilenVon = el => {   // Zeilen eines Elements: Text je Zeile (nach der La
 
 // Seit 4.57.0 (RLB-122, R-10.5; Muster arbeit/RLB-122 Muster prüfen.mjs, Testfälle RLB-122/B-1 bis B-5): Aufzählung mit Trennpunkt (aufzaehlung in
 // ui.js, z. B. Wetter und Smileys der Statistik ‚8×☀️ · 6×🌧️‘) – sel: die Zellen mit der Aufzählung (dd, td). Je Textgröße (groessen; für Ausgabe
-// und Vorschau, die nicht mitwachsen, ['l']) und Zelle: keine Zeile endet mit der Anzahl (B-1), keine Folgezeile beginnt mit ‚·‘ – sie beginnt
-// mit der Anzahl (B-2), jede umgebrochene Zeile endet mit ‚·‘ (B-3); der Text ist unverändert (texte: erwartete Texte je Zelle, ‚ · ‘ getrennt)
-// und ragt nicht hinaus (B-5). umbruch: es muss mindestens einen Umbruch geben (sonst prüft es nichts). Danach wieder die Grundschrift.
-export async function checkAufzaehlung(p, { sel, groessen = ['l', 'xxxl', 'ax3'], texte = null, umbruch = false, where = '' } = {}) {
+// und Vorschau, die nicht mitwachsen, ['l']) und Zelle: keine Zeile endet mit der Anzahl (B-1), keine Folgezeile beginnt mit ‚·‘ – bei Anzahlen
+// beginnt sie mit der Anzahl (B-2), jede umgebrochene Zeile endet mit ‚·‘ (B-3); der Text ist unverändert (texte: erwartete Texte je Zelle, ‚ · ‘
+// getrennt) und ragt nicht hinaus (B-5). umbruch: es muss mindestens einen Umbruch geben (sonst prüft es nichts). Danach wieder die Grundschrift.
+// Seit 4.59.0 (RLB-121, R-10.5; Muster arbeit/RLB-121 Muster prüfen.mjs, Testfälle RLB-121/M-8 bis M-11): auch lange Einträge (‚Name (Preis)‘) –
+// ein Eintrag, der allein in die Zeile passt, ist nicht getrennt (M-9); ein Eintrag, der allein nicht passt, darf im Text umbrechen (dort endet
+// die Zeile ohne ‚·‘); Klammern nie über zwei Zeilen (M-8); nichts ragt aus der Zelle oder dem Fenster (M-10; fenster: false für die wischbare
+// Vorschau, die breiter als das Fenster ist).
+export async function checkAufzaehlung(p, { sel, groessen = ['l', 'xxxl', 'ax3'], texte = null, umbruch = false, fenster = true, where = '' } = {}) {
   const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}R-10.5 ${t}`);
   let umbrueche = 0, zellen = 0;
   for (const ts of groessen) {
     if (groessen.length > 1 || ts !== 'l') await textGroesseSetzen(p, ts);
-    const erg = await p.evaluate(([sel, zf]) => { const zeilenVon = eval(zf);
-      return [...document.querySelectorAll(sel)].filter(e => e.getClientRects().length).map(dd => ({ zeilen: zeilenVon(dd), text: dd.textContent.replace(/ /g, ' ').replace(/\s+/g, ' ').trim(),
-        ict: dd.querySelectorAll('.ict').length, ragt: dd.scrollWidth > dd.clientWidth + 1 })); }, [sel, zeilenVon.toString()]);
+    const erg = await p.evaluate(([sel, zf, fenster]) => { const zeilenVon = eval(zf);
+      return [...document.querySelectorAll(sel)].filter(e => e.getClientRects().length).map(dd => {
+        const cs = getComputedStyle(dd), innen = dd.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight), box = dd.getBoundingClientRect();
+        // je Eintrag (.ict): Zeilen und ob er allein in die Zeile passt (Breite am Stück gemessen)
+        const eintraege = [...dd.querySelectorAll('.ict')].map(a => {
+          const c = a.cloneNode(true); c.style.cssText = 'position:absolute;visibility:hidden;white-space:nowrap;display:inline-block;max-width:none';
+          dd.appendChild(c); const nat = c.getBoundingClientRect().width; c.remove();
+          return { text: a.textContent, zeilen: zeilenVon(a).length, passt: nat <= innen - 1 };
+        });
+        return { zeilen: zeilenVon(dd), text: dd.textContent.replace(/\u00a0/g, ' ').replace(/\s+/g, ' ').trim(), eintraege,
+          ict: eintraege.length, ragt: dd.scrollWidth > dd.clientWidth + 1 || (fenster && box.right > innerWidth + 1) };
+      }); }, [sel, zeilenVon.toString(), fenster]);
     if (!erg.length) E(`Text ${ts}: keine Aufzählung in ${sel}`);
     for (const [j, e] of erg.entries()) {
       const w = `Text ${ts} ‚${e.text.slice(0, 24)}…‘`; zellen++;
       umbrueche += e.zeilen.length - 1;
+      const anzahlen = e.eintraege.length > 0 && e.eintraege.every(x => /^\d+×/.test(x.text.trim()));
+      const intern = e.eintraege.filter(x => x.zeilen > 1).reduce((n, x) => n + x.zeilen - 1, 0);   // Umbrüche in zu langen Einträgen
+      let ohnePunkt = 0;
       for (const [i, z] of e.zeilen.entries()) {
         if (i < e.zeilen.length - 1 && /\d×\s*$/.test(z)) E(`${w}: Zeile ${i + 1} endet mit der Anzahl ‚…${z.trim().slice(-6)}‘ – das Zeichen steht in der nächsten Zeile (RLB-122/B-1)`);
-        if (i > 0 && !/^\d/.test(z.trim())) E(`${w}: Zeile ${i + 1} beginnt nicht mit der Anzahl: ‚${z.trim().slice(0, 6)}…‘ (RLB-122/B-2)`);
-        if (i < e.zeilen.length - 1 && !/·\s*$/.test(z)) E(`${w}: Zeile ${i + 1} endet nicht mit ‚·‘ (RLB-122/B-3)`);
+        if (i > 0 && /^\s*·/.test(z)) E(`${w}: Zeile ${i + 1} beginnt mit ‚·‘ (RLB-122/B-2, RLB-121/M-9)`);
+        else if (i > 0 && anzahlen && !/^\d/.test(z.trim())) E(`${w}: Zeile ${i + 1} beginnt nicht mit der Anzahl: ‚${z.trim().slice(0, 6)}…‘ (RLB-122/B-2)`);
+        if (i < e.zeilen.length - 1 && !/·\s*$/.test(z)) ohnePunkt++;
+        if ((z.match(/\(/g) || []).length !== (z.match(/\)/g) || []).length) E(`${w}: Zeile ${i + 1} trennt die Klammer: ‚${z.trim()}‘ (RLB-121/M-8)`);
       }
+      if (ohnePunkt > intern) E(`${w}: ${ohnePunkt - intern} umgebrochene Zeile(n) enden nicht mit ‚·‘ (RLB-122/B-3)`);
+      for (const x of e.eintraege) if (x.passt && x.zeilen > 1) E(`${w}: Eintrag passt in die Zeile, ist aber getrennt: ‚${x.text.trim()}‘ (RLB-121/M-9)`);
       if (e.zeilen.join('').replace(/\s/g, '') !== e.text.replace(/\s/g, '')) E(`${w}: Text verändert (RLB-122/B-5)`);
       if (texte && texte[j] != null && e.text !== texte[j]) E(`${w}: Text ‚${e.text}‘ statt ‚${texte[j]}‘ (RLB-122/B-5)`);
       if (e.ict && e.text !== '–' && e.ict !== e.text.split(' · ').length) E(`${w}: ${e.ict} Einträge am Stück (.ict) statt ${e.text.split(' · ').length} – Baustein aufzaehlung`);
-      if (e.ragt) E(`${w}: ragt hinaus (R-6.3, RLB-122/B-5)`);
+      if (e.ragt) E(`${w}: ragt hinaus (R-6.3, RLB-122/B-5, RLB-121/M-10)`);
     }
   }
   if (groessen.length > 1 || groessen[0] !== 'l') await textGroesseSetzen(p, null);
