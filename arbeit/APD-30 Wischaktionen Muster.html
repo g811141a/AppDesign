@@ -12,6 +12,8 @@
    B = runde Knöpfe mit Wort darunter (iOS 26 SwiftUI: Symbol und Titel).
    D = Kapseln (links und rechts rund, in die Breite gezogen) mit Wort darunter – wie Notizen und Mail am Gerät (Beobachtung des Nutzers 15.11.2026);
        ersetzt C ‚Blöcke an der Kachel‘ (bis iOS 18).
+   Gewählt: D (Nutzer 15.11.2026, Sitzung 0116) – ohne Parameter zeigt das Muster nur D in Breite der Seitenleiste (iPad quer und hoch) bzw. als
+   Startliste in voller Breite (iPhone hoch und quer); ?alle=1 zeigt A, B und D nebeneinander.
    ?offen=1 öffnet in jeder Spalte die erste Kachel (für Bilder). */
 :root { --bg: #f2f2f7; --card: #fff; --line: #d1d1d6; --txt: #000; --sub: #6e6e73; --blue: #007aff; --red: #ff3b30; --grey: #8e8e93;
   --btn: #f9f9f9; --rim: #ffffff; --float: 0 3px 28px rgba(0,0,0,.16); --shadow: 0 1px 3px rgba(0,0,0,.08); color-scheme: light; }
@@ -21,6 +23,8 @@ body { padding: max(14px, env(safe-area-inset-top)) max(14px, env(safe-area-inse
 h1 { font-size: 20px; margin: 0 0 4px; } p.lead { margin: 0 0 12px; color: var(--sub); font-size: 15px; }
 .cols { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
 @media (max-width: 900px) { .cols { grid-template-columns: 1fr; } }
+.cols.eins { grid-template-columns: minmax(0, 380px); }
+@media (max-width: 600px), (max-height: 500px) { .cols.eins { grid-template-columns: 1fr; } }
 .col { background: var(--bg); border-radius: 22px; box-shadow: var(--float); padding: 14px 12px 6px; overflow: hidden; position: relative; }
 .col h2 { font-size: 20px; margin: 0 4px 2px; } .col .cnt { color: var(--sub); font-size: 13px; margin: 0 4px 10px; }
 .sw { position: relative; margin-bottom: 10px; --rev: 0px; }
@@ -76,7 +80,9 @@ const TRIPS = [['Südtirol mit Wandergruppe', '03.09.2026 – 12.09.2026 · abge
   ['Adventsfahrt Elsass', '04.12.2026 – 07.12.2026 · geplant', 'geändert am 11.11.2026 um 20:03 · iPad']];
 const VAR = { A: 'A · rund, nur Symbol', B: 'B · rund, mit Wort', D: 'D · Kapsel mit Wort' };
 const cols = document.getElementById('cols');
-for (const v of Object.keys(VAR)) {
+const ALLE = new URLSearchParams(location.search).get('alle');
+if (!ALLE) { cols.classList.add('eins'); VAR.D = 'Reiselogbücher'; document.querySelector('p.lead').textContent = 'Gewählt: Kapsel mit Wort. Eine Kachel nach links wischen.'; }
+for (const v of ALLE ? Object.keys(VAR) : ['D']) {
   const col = document.createElement('section'); col.className = 'col v' + v; col.dataset.v = v;
   col.innerHTML = `<h2>${VAR[v]}</h2><div class="cnt">3 Reiselogbücher</div>` + TRIPS.map((t, i) => {
     const set = `<button class="a set" aria-label="Reiselogbuch einstellen">${IC.settings}${v === 'C' ? '<span>Einstellen</span>' : ''}</button>`;

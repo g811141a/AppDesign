@@ -41,6 +41,20 @@ https://g811141a.github.io/AppDesign/arbeit/APD-30%20Wischaktionen%20Muster.html
 
 Je Variante grün: kurz wischen öffnet, beide Aktionen sichtbar · Antippflächen mindestens 44 × 44 · Aktionen neben der Kachel, nichts über dem Rand · Tippen auf die offene Kachel schließt und öffnet nichts · senkrechtes Rollen bewegt nichts seitlich · zu kurzes Wischen federt zurück · Durchwischen zeigt die Sprechblase · ‚Abbrechen‘ lässt alles · ‚Löschen‘ fragt zuerst · gelöscht erst nach Bestätigung · keine Skriptfehler.
 
+## Entschieden und Stand (Nutzer 15.11.2026, Sitzung 0116)
+
+- **Variante D gewählt** – Kapsel mit Wort darunter, wie Notizen und Mail.
+- Das Muster zeigt ohne Parameter nur noch D: am iPad in Breite der Seitenleiste (380 px), am iPhone als Startliste in voller Breite; `?alle=1` zeigt A, B und D nebeneinander.
+- **Geprüft für D** (Chromium und WebKit; iPad quer 1180 × 820, iPad hoch 820 × 1180, iPhone hoch 390 × 844, iPhone quer 844 × 390), alles grün: nichts ragt seitlich hinaus · öffnet auf 162 px, Kapseln 66 × 44 neben der Kachel · von der offenen Kachel bleiben mindestens 176 px sichtbar · Tippen schließt · senkrecht bewegt nichts · Durchwischen fragt, Sprechblase ganz im Bild · ‚Abbrechen‘ lässt alles · keine Skriptfehler.
+
+### Schritte am iPad hoch und am iPhone (hell)
+
+1. Den Link neu laden – am iPad hoch, am iPhone hoch und quer. Erwartet: eine Liste ‚Reiselogbücher‘ mit drei Kacheln.
+2. Eine Kachel ein Stück nach links wischen. Erwartet: zwei Kapseln, darunter ‚Einstellen‘ und ‚Löschen‘; der Titel der Kachel bleibt teilweise lesbar.
+3. Die Kachel weit durchwischen. Erwartet: die rote Kapsel wird breit, nach dem Loslassen fragt die Sprechblase; sie steht ganz im Bild.
+4. ‚Abbrechen‘ antippen. Erwartet: die Kachel gleitet zurück, alles bleibt.
+5. Am iPhone: vom linken Rand nach rechts wischen. Erwartet: die Kachel bewegt sich nicht nach rechts.
+
 ## Danach
 
-Hoch und iPhone erst, wenn quer passt (0 Nr. 6); dann Testfall-Liste, ‚allgemeine Regel?‘ und Wortlaut (15.4 ‚Kein Wischen‘ entfällt, neue Regel).
+Testfall-Liste, ‚allgemeine Regel?‘ und Wortlaut (15.4 ‚Kein Wischen‘ entfällt, neue Regel).
