@@ -1,6 +1,6 @@
 # APD-30 Wischaktionen – allgemeine Regel? Sperrende Sprechblase für alle Abfragen?
 
-**Stand 15.11.2026** · Sitzung Reiselogbuch 0117 · Testfall-Liste bestätigt (`arbeit/APD-30 Wischaktionen Testfall-Liste.md`, D-1 bis D-11,
+**Stand 15.11.2026** · Sitzung Reiselogbuch 0117 · **entschieden (Nutzer 15.11.2026): Frage 1 Ja – allgemeine Regel; Frage 2 a – alle Abfragen** · Testfall-Liste bestätigt (`arbeit/APD-30 Wischaktionen Testfall-Liste.md`, D-1 bis D-11,
 W-1 bis W-71, Nutzer 15.11.2026)
 
 ## Frage 1 – Wischaktionen als allgemeine Regel festhalten? (0 Nr. 4)
