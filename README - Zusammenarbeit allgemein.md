@@ -1,6 +1,6 @@
 # Zusammenarbeit allgemein
 
-**Version 3.14.0** · Stand 15.11.2026
+**Version 3.14.1** · Stand 15.11.2026
 
 Regeln für die Zusammenarbeit mit Claude bei allen iPad-Web-Apps von g811141a. Die Datei liegt im Design-Repo **AppDesign**
 (g811141a/AppDesign); App-Eigenes steht in der `CLAUDE.md` des App-Repos. **Abschnitt 0 ist das Arbeitsmodell** (oben der Kasten ‚Immer‘ und ‚Jede
@@ -332,7 +332,7 @@ Elternnummer.
   `session_context.effort_level`), den tatsächlichen Aufwand mit `"effort"` der Modell-Aufrufe in der Sitzungsdatei
   `/root/.claude/projects/…/*.jsonl` und `echo $CLAUDE_CODE_EFFORT_LEVEL`. Weichen eingestellt und tatsächlich ab, nennt Claude es im
   Lagebild mit dem Grund. Claude nennt Modell und Aufwand im Lagebild; ändern
-  kann der Nutzer sie für diese Sitzung mit `/model` bzw. `/effort`, dauerhaft über die Umgebungsvariable.
+  kann der Nutzer sie mit `/model` bzw. `/effort` – die nächste Sitzung übernimmt beides aus diesem Chat (‚Neue Sitzung starten‘).
   Bei hoher Last weicht die Sitzung von selbst auf das nächste Modell aus (Eintrag `model_fallback` in der Sitzungsdatei, z. B.
   ‚Switched to Opus 5 … due to high demand for Opus 5.5‘) – `messung.mjs` hängt dann ‚⚠ Modell …‘ an (2.2), Claude nennt es in der
   nächsten Ausgabe.
@@ -392,6 +392,7 @@ im Verlauf und in Kommentaren der Prüfungen nennen noch die alten Stellen):
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 3.14.1 | 15.11.2026 | Korrektur | **APD-130/W-9 (Nutzer 15.11.2026, Sitzung 0117, Wortlaut bestätigt – `arbeit/APD-130 Teil 2 Aufwand Wortlaut.md`):** 2.5 ‚Lagebild‘ – ändern mit `/model` bzw. `/effort`, die nächste Sitzung übernimmt beides aus dem Chat; der Hinweis ‚dauerhaft über die Umgebungsvariable‘ entfällt (widersprach APD-130/W-7) |
 | 3.14.0 | 15.11.2026 | Neben | **APD-130 Teil 2 Aufwand wie im Chat eingestellt (Nutzer 15.11.2026, Sitzung 0115, Wortlaut bestätigt – `arbeit/APD-130 Teil 2 Aufwand Wortlaut.md`):** 2.5 ‚Neue Sitzung starten‘ – `effort` aus `session_context.effort_level` (APD-130/W-6); ‚Aufwand‘ – Umgebungsvariable `CLAUDE_CODE_EFFORT_LEVEL` bleibt ungesetzt (APD-130/W-7); ‚Lagebild‘ – eingestellten und tatsächlichen Aufwand vergleichen (APD-130/W-8) |
 | 3.13.1 | 14.11.2026 | Korrektur | **APD-130/W-5 (Nutzer 14.11.2026, Sitzung 0113, Wortlaut bestätigt – `arbeit/APD-130 Modell und Aufwand Wortlaut.md`), mit AppDesign 4.59.2:** 2.2 ‚Kontext‘ – ‚⚠ Modell …‘, wenn der letzte Aufruf mit einem anderen Modell läuft, als die Sitzung eingestellt hat (statt: nicht mit Opus 5.5); `werkzeug/messung.mjs` vergleicht mit dem eingestellten Modell (letzte Anlage ‚model‘ der Sitzungsdatei), Prüfung `tests/messung.mjs` |
 | 3.13.0 | 14.11.2026 | Neben | **APD-130 Neue Sitzung mit Modell und Aufwand dieses Chats (Nutzer 14.11.2026, Sitzung 0113, Wortlaut bestätigt – `arbeit/APD-130 Modell und Aufwand Wortlaut.md` APD-130/W-1 bis W-4):** 0 Nr. 13 und 2.5 – die neue Sitzung startet mit dem Modell und dem Aufwand, die im Chat gerade eingestellt sind (`create_session` mit `model` aus `get_session` und `effort` aus der Sitzungsdatei) statt fest Opus 5.5 und hoch; 2.5 ‚Aufwand‘ – `create_session` setzt ihn jetzt (Feld `effort`); Lagebild nennt Modell und Aufwand ohne festen Sollwert. APD-130/W-5 (`messung.mjs` vergleicht mit dem eingestellten Modell) folgt mit der nächsten AppDesign-Version |

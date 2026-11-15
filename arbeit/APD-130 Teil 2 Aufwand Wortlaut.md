@@ -63,3 +63,6 @@ drittletzten Sitzung ersucht, diesbezüglich das Zusammenarbeitsmodell zu änder
   Titelleiste → ‚Standard‘ → Bearbeiten → Umgebungsvariablen.
 - **Offen:** Der Satz ‚… dauerhaft über die Umgebungsvariable‘ im Punkt ‚Lagebild‘ (2.5) widerspricht W-7. Er ist nicht Teil von W-8 und bleibt bis zu
   einem eigenen Wortlaut stehen.
+- **W-9 – bestätigt (Nutzer 15.11.2026, Sitzung 0117), Zusammenarbeit 3.14.1:** 2.5 ‚Lagebild‘. **Alt:** ‚… ändern kann der Nutzer sie für diese
+  Sitzung mit `/model` bzw. `/effort`, dauerhaft über die Umgebungsvariable.‘ **Neu:** ‚… ändern kann der Nutzer sie mit `/model` bzw. `/effort` –
+  die nächste Sitzung übernimmt beides aus diesem Chat (‚Neue Sitzung starten‘).‘ Damit ist der offene Punkt oben erledigt.
