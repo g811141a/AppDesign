@@ -32,8 +32,8 @@ Zusammenarbeit** (0 Nr. 15); die Arbeitsumgebung steht in der AppDesign-`CLAUDE.
   `ablauf-seitenleiste-position` 4 von 16 rot, `ablauf-gesamt` 1 von 16. Ursache in den Prüfungen: nach dem langen Drücken feste Pause statt
   Warten auf die Endlage des Kontextmenüs (`replaceSoon` richtet erst nach dem Loslassen aus, APD-85/B-1 bis B-3); `ruhe()` endet ohne Meldung
   (APD-85/B-4, Vermutung). Vorschlag `langDruecken`, Testfälle APD-85/F-1 bis F-8. **Bau-Frage 4.59.3 / 3.56.3: ‚Nein‘** (Nutzer 15.11.2026).
-- **APD-130 Teil 2 – Aufwand wie im Chat eingestellt:** Zusammenarbeit **3.14.0** (W-6 bis W-8, Wortlaut bestätigt,
-  `arbeit/APD-130 Teil 2 Aufwand Wortlaut.md`). Offen: der Satz ‚… dauerhaft über die Umgebungsvariable‘ in 2.5 ‚Lagebild‘ widerspricht W-7 – eigener
+- **APD-130 Teil 2 – Aufwand wie im Chat eingestellt:** Zusammenarbeit **3.14.0** (APD-130/W-6 bis W-8, Wortlaut bestätigt,
+  `arbeit/APD-130 Teil 2 Aufwand Wortlaut.md`). Offen: der Satz ‚… dauerhaft über die Umgebungsvariable‘ in 2.5 ‚Lagebild‘ widerspricht APD-130/W-7 – eigener
   Wortlaut nötig (0 Nr. 29).
 
 ## 3. Nächster Schritt
