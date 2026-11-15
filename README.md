@@ -1,6 +1,6 @@
 # AppDesign
 
-**Version 4.59.2** · Stand 14.11.2026
+**Version 4.59.3** · Stand 15.11.2026
 
 Gemeinsames Design für alle iPad-Web-Apps von g811141a – Apple-like nach den
 [Human Interface Guidelines](https://developer.apple.com/design/human-interface-guidelines).

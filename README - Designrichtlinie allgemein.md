@@ -1,6 +1,6 @@
 # Designrichtlinie allgemein
 
-**Version 4.59.2** · Stand 14.11.2026
+**Version 4.59.3** · Stand 15.11.2026
 
 Allgemeine Gestaltungs- und Bedienregeln für alle Web-Apps von g811141a auf iPad und iPhone. Die Datei liegt im Design-Repo
 **AppDesign** (g811141a/AppDesign); ihre Versionsnummer ist die des Repos. Die Komponenten sind dort einmal programmiert und
@@ -871,7 +871,7 @@ Regel). In AppDesign ist jede Komponente einmal programmiert (`v4/design.css`, `
   Zwischenablage. **Rückgängig nach dem Leeren:** an Stelle des ⓧ steht ein graues Rückgängig (Lucide `undo-2` als Linie, 44 × 44, `--muted`,
   wächst mit der Textgröße); Antippen holt den ganzen Text zurück, das Feld wächst wieder (8), der Cursor steht am Ende, danach wieder das ⓧ.
   Mit der ersten Eingabe verfällt es (dann das ⓧ, ohne Text kein Knopf); verliert das Feld den Fokus, verschwindet es, der Text bleibt in der
-  Zwischenablage. Nicht in Datums- und Suchfeldern. **Technisch:** ein Knopf `.fclear` für alle Felder (ui.js), abschaltbar mit
+  Zwischenablage. VoiceOver nennt das ⓧ ‚Eingabe löschen‘ und das Rückgängig ‚Löschen widerrufen‘. Nicht in Datums- und Suchfeldern. **Technisch:** ein Knopf `.fclear` für alle Felder (ui.js), abschaltbar mit
   `data-noclear`, mit Rückgängig Klasse `rueck`; geleert wird über den Bearbeiten-Befehl (Text auswählen, `execCommand('delete')`),
   zurückgeholt über `execCommand('insertText')` – die Undo-Taste der iPad-Tastatur und drei Finger holen den Text ebenso zurück (13);
   liefert ein Befehl false, über den Wert. Zwischenablage mit `navigator.clipboard.writeText` im Tipp (Geste des Nutzers).
@@ -1217,6 +1217,7 @@ steht in der Spalte ‚außerdem‘ (ohne automatische Prüfung: G-19).
 | Feldtext bei xS bis M mindestens 16 px (Apple: 14–16) | – | sonst vergrößert Safari beim Antippen (R-1.3) | 23.10.2026 |
 | ⓧ auch in mehrzeiligen Textfeldern (Apple: UITextView – Notizen, Mail, Notizfelder in Kalender, Erinnerungen, Kontakte – hat kein ⓧ; geleert wird mit Auswählen → ‚Ausschneiden‘ bzw. Löschtaste) | – | Wunsch des Nutzers (P-73/1, APD-81); leert sofort, sicher durch das Rückgängig im Feld (APD-124, R-5.6) | 26.10.2026 |
 | Rückgängig im Feld nach dem Leeren (Apple: das ⓧ leert nur, Rückgängig über Undo-Taste, drei Finger, Schütteln – ein solches Icon gibt es nicht) | – | Wunsch des Nutzers (APD-124): am iPhone gibt es keine Undo-Taste, Schütteln und drei Finger sind wenig bekannt; der geleerte Text bleibt zusätzlich in der Zwischenablage | 07.11.2026 |
+| Cursor am Ende beim Aktivieren eines Felds (Apple: der Cursor steht an der angetippten Stelle) | – | Wunsch des Nutzers (APD-126/W-2): man schreibt am Ende weiter; im aktiven Feld setzt Antippen ihn an die Stelle wie bei Apple (R-5.11) | 08.11.2026 |
 | Kapsel ‚Nach oben / Ans Ende‘ auch auf dem iPhone (Apple: Statusleiste antippen bzw. Scroll-Leiste ziehen) | – | der Apple-Weg war dem Nutzer zu schwerfällig (R-3.2); das Ziehen der Scroll-Leiste gibt es dazu als Schnellroll-Griff | 17.10.2026 |
 | Suche in der Liste (Seitenleiste, iPhone-Startliste) im Mehr-Menü (Apple: Suchfeld in der Liste immer sichtbar, iPhone unten) | – | Wunsch des Nutzers (APD-91): gleich wie im Eintrag, ruhiger Kopf | 30.10.2026 |
 | Geöffnete Suchzeile am iPhone oben (Apple iOS 26: über der Tastatur) | – | oben ohne Springen gemessen (R-4.5, APD-36); in Safaris Leiste über der Tastatur kann eine Web-App nichts einbauen – unten erst mit einer App-Hülle (APD-38, APD-57) | 30.10.2026 |
@@ -1425,6 +1426,7 @@ R-2.3 (15.2), R-4.4 (6, 15.8, HIG 9), R-5.3 (8), R-5.4 (15.12), R-5.5 (APD-14), 
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 4.59.3 | 15.11.2026 | Korrektur | **APD-131 Reste aus 0106 (Nutzer 15.11.2026, Sitzung 0118, Wortlaut bestätigt – `arbeit/APD-131 Reste aus 0106 Wortlaut.md` APD-131/V-2, V-3):** 15.11 – VoiceOver nennt das ⓧ ‚Eingabe löschen‘ und das Rückgängig ‚Löschen widerrufen‘; 16 ‚Bewusste Abweichungen‘ – neue Zeile ‚Cursor am Ende beim Aktivieren eines Felds‘ (R-5.11). Dazu nur Prüfungen: APD-85 Teil 6 (`langDruecken`, `ruhe()` meldet), APD-132 (`checkSchema`) |
 | 4.59.2 | 14.11.2026 | Korrektur | **APD-129 Teil 2 (Nutzer 14.11.2026, Sitzung 0113, Wortlaut bestätigt – `arbeit/APD-129 Teil 2 Wortlaut.md` APD-129/W-1; Befund und Testfall-Liste `arbeit/APD-129 Teil 2 Befund und Testfall-Liste.md` APD-129/M-10 bis M-18):** 13 neu ‚Oberer Rand nach dem Drehen (iPhone, Home-Bildschirm)‘ – `--safe-top` am iPhone vom Home-Bildschirm hoch 0, solange das Fenster niedriger als der Bildschirm ist (`ui.js` `randOben`), Verschiebung im selben Ereignis zurück (`drehRestWeg`, R-8.1); Safari-Modell `safeOben`, sichtbare Höhe beim Drehen schon im ‚resize‘ |
 | 4.59.1 | 14.11.2026 | Korrektur | **APD-129 (Nutzer 14.11.2026, Sitzung 0112, Wortlaut bestätigt – `arbeit/0112 APD-129 Bau-Frage.md`):** 13 neu ‚Verschiebung nach dem Drehen (iPhone, Home-Bildschirm)‘; iPhone vom Home-Bildschirm – nach dem Drehen keine Verschiebung um die Statusleiste mehr (`ui.js` `placeDialogs`, R-8.1); Safari-Modell `drehRest` |
 | 4.59.0 | 13.11.2026 | Neben | **RLB-121 (Nutzer 13.11.2026, Sitzungen 0109 und 0110, Wortlaut bestätigt – `arbeit/0109 RLB-121 Wortlaut.md` RLB-121/W-1, W-2, `arbeit/0110 RLB-121 Wortlaut ts-um.md` RLB-121/W-3, W-4):** 3 ‚Aufzählungen mit Trennpunkt‘ und R-10.5 – auch lange Einträge: am Stück, wenn sie in die Zeile passen, sonst Umbruch im Text, Zusatz in Klammern ganz, nichts ragt hinaus (`aufzaehlung` mit Block `.az`, `checkAufzaehlung` erweitert); 3 ‚Umbau bei großer Schrift‘ und R-1.10 – ab XXL untereinander, wenn der Inhalt schmaler als 600 px ist (iPhone hoch, iPad hoch neben der Seitenleiste). Anlass: Statistik ‚Teuerste/Günstigste Quartiere‘ im Reiselogbuch; am iPad hoch ragte sie bei großer Schrift hinaus (Befund `arbeit/0110 RLB-121 iPad hoch.md`) |

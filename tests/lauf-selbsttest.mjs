@@ -100,6 +100,16 @@ pruefe(/Z-2 Menü offen – nach 300 ms nicht erreicht/.test(m2 || '') && ms2 >=
 z = await z1(async () => null);
 pruefe(!z.ok, `APD-85/Z-6 Gegenprobe: ein warteBis, das nicht wartet, fällt in Z-1 nicht auf (${z.ms} ms)`);
 
+// APD-85 Teil 6 (seit 4.59.3, APD-85/F-5): ruhe() meldet, wenn die Seite nicht zur Ruhe kommt – nachgebildete Seite, deren Bewegung nie
+// endet; Gegenprobe: eine ruhige Seite gibt null zurück.
+const { ruhe } = await import('./pruefe.mjs');
+const unruhigeSeite = { evaluate: async () => 'läuft', waitForTimeout: () => new Promise(r => setTimeout(r, 1)) };
+const f5 = await ruhe(unruhigeSeite);
+pruefe(/^Seite nicht zur Ruhe gekommen \(zuletzt: läuft\)$/.test(f5 || ''), `APD-85/F-5 Bewegung endet nie: Rückgabe ${f5}`);
+const ruhigeSeite = { evaluate: async () => '[0,0]', waitForTimeout: () => new Promise(r => setTimeout(r, 1)) };
+const f5g = await ruhe(ruhigeSeite);
+pruefe(f5g === null, `APD-85/F-5 Gegenprobe: ruhige Seite, Rückgabe ${f5g}`);
+
 rmSync(dir, { recursive: true, force: true });
 for (const f of fehler) console.log('✗ ' + f);
 console.log(fehler.length ? `lauf-selbsttest: ${fehler.length} Fehler` : 'lauf-selbsttest: alles in Ordnung');

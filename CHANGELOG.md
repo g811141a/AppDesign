@@ -3,6 +3,48 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.59.3 – 15.11.2026
+
+AppDesign 4.59.3 · Designrichtlinie allgemein 4.59.3 · Zusammenarbeit allgemein 3.14.1 · Reiselogbuch 3.56.3 (Fassung 4.59.3)
+
+**APD-85 Teil 6 – Wackler in WebKit beheben** (nur Prüfungen; Befund und Testfall-Liste `arbeit/APD-85 Teil 6 Befund und Testfall-Liste.md`, APD-85/F-1 bis F-8).
+
+- **`tests/ablauf.mjs` – neu `langDruecken(p, ziel, { ms, offen, mitte, max })`:** drückt, hält, lässt los und wartet auf die Endlage – kein angehobener
+  Eintrag (`.hebt`), keine laufende Bewegung, mindestens 350 ms und zwei Bildwechsel nach dem Loslassen (dann richtet `ui.js` das Menü neu aus), das
+  Erwartete zweimal hintereinander an derselben Stelle. Nach 10 s kommt die Meldung mit den Maßen – ein echter Fehler bleibt sichtbar. Dazu `menueZu(p)`.
+- **`tests/pruefe.mjs` – `ruhe()` meldet:** Rückgabe null oder ‚Seite nicht zur Ruhe gekommen (zuletzt: …)‘; `hig.mjs` – `measure` meldet das und misst
+  dann nicht, statt Zwischenmaße als Regelverstöße zu melden (APD-85/B-4). Selbsttest in `tests/lauf-selbsttest.mjs` (APD-85/F-5, mit Gegenprobe).
+- **Nicht gemacht:** die Gegenprobe APD-85/F-4 (Menü absichtlich 6 px verschoben) und der Lastnachweis APD-85/F-7 und F-8 (4 Runden mit 8 Browsern) liefen in dieser Sitzung nicht; der volle Prüflauf zeigt, ob die
+  Prüfungen noch wackeln.
+
+**APD-132 – `checkSchema` lässt die Nummer allein zu** (nur Prüfung): steht dieselbe Liste in der Zeile davor mit Elternnummer (‚APD-54/T-1 bis T-9‘),
+genügt die Nummer allein, wie Zusammenarbeit 2.4 es sagt – bisher meldete `doku.mjs` für die Buchstaben A, T, E und N ‚alte Nummer‘. Gegenprobe
+`schema:APD-78/S-2` (Nummer ohne Elternnummer) bleibt rot.
+
+**APD-131 – Reste aus 0106, Texte nachgeführt** (Wortlaut `arbeit/APD-131 Reste aus 0106 Wortlaut.md`, APD-131/V-1 bis V-4 bestätigt).
+
+- **Designrichtlinie 15.11:** VoiceOver nennt das ⓧ ‚Eingabe löschen‘ und das Rückgängig ‚Löschen widerrufen‘ (so schon im Code).
+- **Designrichtlinie 16:** neue bewusste Abweichung ‚Cursor am Ende beim Aktivieren eines Felds‘ (R-5.11).
+- **`tests/README.md`:** `checkGleiten`, `checkAufzaehlung`, `checkDateiname`, `textGroesseSetzen`, `kopfVerlauf`, dazu `langDruecken`, `menueZu`.
+- Reiselogbuch: `PROMPT.md` und `tests/README.md` (siehe dort).
+
+**APD-54 – Fremden Text bereinigen** (Befund und Testfall-Liste `arbeit/APD-54 Befund und Testfall-Liste.md`; keine allgemeine Regel): die Bausteine in
+`ui.js` bereinigen schon (Menüs, Hinweisfenster-Titel, Dateiname); behoben wird im Reiselogbuch 3.56.3. `ui.js` und `design.css` ändern sich nur an der
+Versionsstelle.
+
+Testfälle P-106 (Schritt für Schritt, Zusammenarbeit allgemein 3.14.1). Link: https://g811141a.github.io/ReiseLogBuch/ – bitte in der
+**App vom Home-Bildschirm**, zuerst die App ganz schließen und neu öffnen.
+
+**P-106/0 – Version prüfen**
+1. Auf iPhone und iPad die App ganz schließen (vom unteren Rand nach oben wischen und wegschieben) und mit Netz neu öffnen.
+2. In der Startliste (iPhone) bzw. Seitenleiste (iPad) ‚Reiselogbücher‘ oben auf ‚…‘ (Mehr) tippen.
+3. Erwartet auf beiden Geräten: unten grau ‚Reiselogbuch · Version 3.56.3 · erstellt am … · AppDesign 4.59.3‘.
+
+**P-106/1 – Smileys der Schnellauswahl sind noch da**
+1. iPhone oder iPad: ein Reiselogbuch öffnen und einen Tag antippen (Tageserfassung).
+2. Die Smiley-Leisten unter ‚Verlauf‘ und unter dem Essen ansehen. Erwartet: dieselben Smileys wie vor der neuen Version, deine häufigsten zuerst.
+3. Einen Smiley antippen. Erwartet: er steht im Textfeld.
+
 ## 4.59.2 – 14.11.2026
 
 AppDesign 4.59.2 · Designrichtlinie allgemein 4.59.2 · Zusammenarbeit allgemein 3.13.1 · Reiselogbuch 3.56.2 (Fassung 4.59.2)

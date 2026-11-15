@@ -118,6 +118,9 @@ export async function ruhe(p) {
     gleich = jetzt.startsWith('[') && jetzt === vorher ? gleich + 1 : 0;
     vorher = jetzt; if (gleich < 2) await p.waitForTimeout(100);
   }
+  // seit 4.59.3 (APD-85 Teil 6, APD-85/B-4, F-5): Rückgabe null, wenn die Seite ruht, sonst die Meldung – wer danach misst (hig.mjs –
+  // measure), meldet sie, statt Zwischenmaße einer laufenden Bewegung als Regelverstöße zu melden.
+  return gleich >= 2 ? null : `Seite nicht zur Ruhe gekommen (zuletzt: ${String(vorher).slice(0, 120) || 'keine Antwort'})`;
 }
 
 // R-1.9 (seit 4.35.0, APD-43 M6, M7): Bewegungswächter – läuft mit ‚Bewegung reduzieren‘ in der Seite und misst jede Bewegung an der
