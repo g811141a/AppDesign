@@ -1,6 +1,6 @@
 # APD-133 – Befund: nach dem Drehen steht der Inhalt am Ende
 
-**Stand 15.11.2026** · Sitzung ‚Reiselogbuch 0119‘ · Stand der Zweige `vorbereitung-4.59.3` / `vorbereitung-3.56.3` · es wurde nichts gebaut.
+**Stand 15.11.2026** · Sitzung ‚Reiselogbuch 0119‘ · Stand der Zweige `vorbereitung-4.59.3` / `vorbereitung-3.56.3`.
 
 ## Ergebnis
 
@@ -40,11 +40,13 @@ Im grünen Fall kommt das `resize` für 1180×820 vor dem geplanten `restoreTop`
 - **Prüfung:** sie meldet zu Recht. Ein voller Lauf wertet einen Lauf, der allein grün ist, als ‚wackelt‘ (gilt als grün, `tests/lauf.mjs`);
   in 0118 war er allein 1 von 3-mal rot.
 
-## Vorschlag für die Korrektur (nicht gebaut)
+## Korrektur (Nutzer 15.11.2026, Sitzung 0119: in 4.59.3 aufnehmen – Ja)
 
-`ui.js` merkt sich die zuletzt mit `resize` gemeldete Größe; `restoreTop` tut nichts, solange das Fenster eine andere Größe hat. Etwa 3 Zeilen.
+`ui.js` merkt sich die zuletzt mit `resize` gemeldete Größe; `restoreTop` übernimmt nur diese (statt der Größe des Fensters) – bis das `resize`
+ankommt, gilt das Fenster als gedreht, das Gedächtnis bleibt gesperrt. Gebaut in AppDesign 4.59.3; Prüfung im Reiselogbuch
+`tests/ablauf-drehen-luecke.mjs` (B-1 bis B-4; B-5: gegen den Stand vor der Korrektur in Chromium und WebKit rot).
 
-Testfall-Liste (Entwurf, je Fall eine feste Prüfung in Chromium und WebKit):
+Testfall-Liste (je Fall eine feste Prüfung in Chromium und WebKit):
 
 | Nr. | Fall | Erwartet |
 |---|---|---|

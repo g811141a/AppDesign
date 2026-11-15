@@ -2233,6 +2233,11 @@ const untenBeobachtet = new WeakSet(), untenRO = window.ResizeObserver ? new Res
 const KEEP_SEL = '#app [data-day], #app [data-keep]';
 // Als Drehen zählt eine neue Breite oder eine um mehr als 150 px andere Höhe (Leisten von Safari ändern sie weniger).
 let keepTop = null, keepWidth = innerWidth, keepHeight = innerHeight, keepBusy = false;
+// Seit 4.59.3 (APD-133, R-8.1): die zuletzt mit resize gemeldete Größe. Das Fenster kann die neue Größe schon haben, bevor ihr resize ankommt
+// (WebKit der Prüfumgebung unter Last, rund 200 ms). Lief das von der Zwischengröße geplante restoreTop in dieser Lücke, galt das Drehen als
+// erledigt; baute die App danach um und rutschte der Rollbereich ans Ende, überschrieb rememberTop das Gedächtnis mit ‚ganz am Ende‘.
+// restoreTop übernimmt deshalb nur die gemeldete Größe – bis das resize da ist, bleibt keepTurned() wahr und rememberTop gesperrt.
+let keepMeldW = innerWidth, keepMeldH = innerHeight;
 const keepTurned = () => innerWidth !== keepWidth || Math.abs(innerHeight - keepHeight) > 150;
 const keepEdge = () => document.querySelector('.pnav, .nb')?.getBoundingClientRect().bottom || 0;
 // Seit 4.48.1 (RLB-115, R-8.1): Kante für einen Eintrag – unter der Leiste und, steht er in einer Tabelle mit haftendem Kopf, unter dem
@@ -2257,7 +2262,7 @@ function rememberTop() {
   keepTop = topAnchor();
 }
 function restoreTop() {
-  keepWidth = innerWidth; keepHeight = innerHeight;
+  keepWidth = keepMeldW; keepHeight = keepMeldH;
   if (!keepTop) return;
   if ('rest' in keepTop) {
     keepBusy = true;
@@ -2312,7 +2317,7 @@ function openAt(el) {
   keepFrei();
 }
 // Seit 4.23.2: bei offenem bzw. gerade geschlossenem Fenster ändert nur die Tastatur die Höhe – das ist kein Drehen (R-7.3).
-window.addEventListener('resize', () => { if ((lockY !== null || holdTop) && innerWidth === keepWidth) { keepHeight = innerHeight; return; } if (!keepTurned()) return; requestAnimationFrame(() => requestAnimationFrame(restoreTop)); setTimeout(restoreTop, 350); });
+window.addEventListener('resize', () => { keepMeldW = innerWidth; keepMeldH = innerHeight; if ((lockY !== null || holdTop) && innerWidth === keepWidth) { keepHeight = innerHeight; return; } if (!keepTurned()) return; requestAnimationFrame(() => requestAnimationFrame(restoreTop)); setTimeout(restoreTop, 350); });
 
 /* ---------- Textgröße (seit 4.37.0, APD-43 Teil 2, R-1.10) ---------- */
 

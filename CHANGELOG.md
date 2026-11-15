@@ -7,6 +7,17 @@ allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
 AppDesign 4.59.3 · Designrichtlinie allgemein 4.59.3 · Zusammenarbeit allgemein 3.14.1 · Reiselogbuch 3.56.3 (Fassung 4.59.3)
 
+**APD-133 – nach dem Drehen steht der Inhalt am Ende** (`ui.js`, R-8.1; Befund und Testfall-Liste `arbeit/APD-133 Befund Drehen.md`, APD-133/B-1 bis B-6; Sitzung 0119).
+
+- **Ursache:** das Fenster kann die neue Größe schon haben, bevor das Ereignis `resize` dafür ankommt (gemessen im WebKit der Prüfumgebung unter Last,
+  rund 200 ms). Lief das von der Zwischengröße geplante `restoreTop` in dieser Lücke, galt das Drehen als erledigt. Baute die App danach um
+  (Kästen ↔ Tabelle) und rutschte der Rollbereich ans Ende, überschrieb `rememberTop` das Gedächtnis mit ‚ganz am Ende‘.
+- **Korrektur:** `ui.js` merkt sich die zuletzt mit `resize` gemeldete Größe (`keepMeldW`, `keepMeldH`); `restoreTop` übernimmt nur diese. Bis das
+  `resize` da ist, gilt das Fenster als gedreht und das Gedächtnis bleibt gesperrt; das `resize` plant das Wiederherstellen dann selbst.
+- **Prüfung:** neu im Reiselogbuch `tests/ablauf-drehen-luecke.mjs` (Lücke fest nachgebildet; Chromium und WebKit grün, gegen 4.59.2 beide rot).
+- **Warum die Prüfung es übersah:** sie übersah es nicht – `ablauf-seitenleiste-hoch` (APD-97/L-6) war unter Last rot und galt als Wackler (0111, 0118).
+- **Am Gerät:** nie gemeldet; ob die Lücke dort auftritt, ist nicht gemessen.
+
 **APD-85 Teil 6 – Wackler in WebKit beheben** (nur Prüfungen; Befund und Testfall-Liste `arbeit/APD-85 Teil 6 Befund und Testfall-Liste.md`, APD-85/F-1 bis F-8).
 
 - **`tests/ablauf.mjs` – neu `langDruecken(p, ziel, { ms, offen, mitte, max })`:** drückt, hält, lässt los und wartet auf die Endlage – kein angehobener
