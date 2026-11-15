@@ -1298,6 +1298,8 @@ export async function checkGriff(p, { zeit = 2000, where = '' } = {}) {
       aria: gr ? { role: gr.getAttribute('role'), label: gr.getAttribute('aria-label'), wert: gr.getAttribute('aria-valuetext') } : null, dialog: !!document.querySelector('dialog[open]'),
       nav: /nav-/.test(document.documentElement.className) };
   }, ROLL);
+  // seit 4.59.3: unter Last fehlte der Rollbereich einmal beim ersten Messen (Abbruch mit TypeError) – darauf warten, sonst melden
+  { const m = await warteBis(p, R => !!eval(R).el, { was: 'Rollbereich da', max: 5000, arg: ROLL }); if (m) { E(m); return errors; } }
   await rolle(p, 0); await wait(p, 1800);
   let s = await g();
   if (s.sicht) E('ohne Rollen sichtbar (APD-37/F-4)');
