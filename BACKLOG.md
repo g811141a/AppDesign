@@ -1,6 +1,6 @@
 # AppDesign – Backlog (allgemeine Themen)
 
-**Stand 14.11.2026** · Aktuelle Version: AppDesign 4.59.2
+**Stand 15.11.2026** · Aktuelle Version: AppDesign 4.59.2
 
 Allgemeine Themen, die alle Apps betreffen. App-Themen stehen im Backlog der jeweiligen App.
 Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.4.
@@ -19,7 +19,6 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| P-105 | 1 | **Usertest P-105 (Reiselogbuch 3.56.2, AppDesign 4.59.2):** APD-129 Teil 2 – iPhone vom Home-Bildschirm, kein Sprung nach dem Zurückdrehen (Startliste, Reiselogbuch, Blatt, Tastatur wie bisher); Testfälle P-105/0 bis P-105/4 im CHANGELOG des Reiselogbuchs 3.56.2 | prüfen |
 
 ## 2. Weitere Themen (in Klärung)
 
@@ -56,6 +55,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Thema | Version | Datum |
 |---|---|---|---|
+| P-105 | **Usertest P-105 (Reiselogbuch 3.56.2, AppDesign 4.59.2):** alles ok – APD-129 Teil 2 am iPhone vom Home-Bildschirm bestätigt (Nutzer 15.11.2026, Sitzung 0115) | 4.59.2 | 15.11.2026 |
 | APD-129 | **Teil 2 – Korrektur: iPhone, Bild springt nach dem Zurückdrehen nach oben:** `--safe-top` am iPhone vom Home-Bildschirm hoch selbst bestimmt (`randOben`), Verschiebung im selben Ereignis zurück (`drehRestWeg`, R-8.1, R-4.6); Safari-Modell `safeOben`, sichtbare Höhe beim Drehen im ‚resize‘; Prüfung APD-129/M-10 bis M-16, Gegenprobe M-18; Designrichtlinie 13 (APD-129/W-1); Usertest P-105 | 4.59.2 | 14.11.2026 |
 | APD-130 | **Neue Sitzung mit Modell und Aufwand dieses Chats:** APD-130/W-1 bis W-4 in Zusammenarbeit 3.13.0; APD-130/W-5 – `werkzeug/messung.mjs` vergleicht mit dem eingestellten Modell, Prüfung `tests/messung.mjs`, Zusammenarbeit 3.13.1 (2.2) | 4.59.2 | 14.11.2026 |
 | P-104 | **Usertest P-104 (Reiselogbuch 3.56.1, AppDesign 4.59.1):** /0 und /4 ok; /1, /2, /3 nicht ok (Bild springt nach dem Zurückdrehen nach oben, Nutzer 14.11.2026, Sitzung 0113) – korrigiert mit APD-129 Teil 2, erneut im Usertest P-105 | 4.59.2 | 14.11.2026 |
