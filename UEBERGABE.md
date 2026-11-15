@@ -48,9 +48,9 @@ die ganze Zusammenarbeit** (0 Nr. 15); die Arbeitsumgebung steht in der AppDesig
    Wischaktionen samt sperrender Sprechblase erstellen? (Kontext N)‘ – Prüflauf **voll**; die Nummern vorher mit
    `node werkzeug/veroeffentlichen.mjs stufe --app reiselogbuch` bestätigen (in 0117 schlug es ‚Text‘ vor, weil noch kein Code geändert war).
 3. Nach ‚Ja‘: `vorbereiten`, dann bauen nach `arbeit/APD-30 Wischaktionen Testfall-Liste.md` und `arbeit/APD-85 Teil 6 Befund und Testfall-Liste.md`;
-   Wortlaut V-1 bis V-11 wörtlich in die Designrichtlinie; Prüfungen, die ‚daneben tippen bricht ab‘ erwarten, umstellen; `PROMPT.md`,
+   Wortlaut APD-30/V-1 bis V-11 wörtlich in die Designrichtlinie; Prüfungen, die ‚daneben tippen bricht ab‘ erwarten, umstellen; `PROMPT.md`,
    `tests/README.md`, CHANGELOG mit Testfällen (Usertest mit den 8 Geräte-Punkten der Testfall-Liste). Im Code gelesen (0117): die Kachel ist
-   ein `<button class="side-row">` (`renderSide`, `onLongPress`) – die Kapseln brauchen eine Hülle daneben, nie in der Schaltfläche (W-64);
+   ein `<button class="side-row">` (`renderSide`, `onLongPress`) – die Kapseln brauchen eine Hülle daneben, nie in der Schaltfläche (APD-30/W-64);
    `choosePop` nutzt `blockingLayer(() => done(null))` – dort entfällt das Schließen, dazu das Grau; `navKandidat` berührt die Kacheln nicht
    (`sideOver` ist seit 3.43.0 nie wahr).
 4. Der Bau ist groß – nach der Version und dem Bericht voraussichtlich Übergabe.
