@@ -1,6 +1,8 @@
 # APD-54 Fremden Text bereinigen – Befund und Testfall-Liste
 
-**Stand 15.11.2026** · Sitzung ‚Reiselogbuch 0118‘ · noch nicht bestätigt, nichts gebaut
+**Bestätigt: Ja zu D-1 bis D-3 und T-1 bis T-9; allgemeine Regel: nein (Nutzer 15.11.2026, Sitzung 0118).**
+
+**Stand 15.11.2026** · Sitzung ‚Reiselogbuch 0118‘ · nichts gebaut
 
 ## Befund
 
