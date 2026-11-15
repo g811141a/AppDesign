@@ -55,6 +55,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Thema | Version | Datum |
 |---|---|---|---|
+| APD-130 | **Teil 2 – Aufwand wie im Chat eingestellt:** APD-130/W-6 bis W-8 in Zusammenarbeit 3.14.0 (Nutzer 15.11.2026, Sitzung 0115, `arbeit/APD-130 Teil 2 Aufwand Wortlaut.md`); Umgebungsvariable `CLAUDE_CODE_EFFORT_LEVEL` löscht der Nutzer selbst (aus der Sitzung gesperrt) | Zusammenarbeit 3.14.0 | 15.11.2026 |
 | P-105 | **Usertest P-105 (Reiselogbuch 3.56.2, AppDesign 4.59.2):** alles ok – APD-129 Teil 2 am iPhone vom Home-Bildschirm bestätigt (Nutzer 15.11.2026, Sitzung 0115) | 4.59.2 | 15.11.2026 |
 | APD-129 | **Teil 2 – Korrektur: iPhone, Bild springt nach dem Zurückdrehen nach oben:** `--safe-top` am iPhone vom Home-Bildschirm hoch selbst bestimmt (`randOben`), Verschiebung im selben Ereignis zurück (`drehRestWeg`, R-8.1, R-4.6); Safari-Modell `safeOben`, sichtbare Höhe beim Drehen im ‚resize‘; Prüfung APD-129/M-10 bis M-16, Gegenprobe M-18; Designrichtlinie 13 (APD-129/W-1); Usertest P-105 | 4.59.2 | 14.11.2026 |
 | APD-130 | **Neue Sitzung mit Modell und Aufwand dieses Chats:** APD-130/W-1 bis W-4 in Zusammenarbeit 3.13.0; APD-130/W-5 – `werkzeug/messung.mjs` vergleicht mit dem eingestellten Modell, Prüfung `tests/messung.mjs`, Zusammenarbeit 3.13.1 (2.2) | 4.59.2 | 14.11.2026 |
