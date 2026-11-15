@@ -10,7 +10,8 @@
    ‚Einstellen‘ (settings) und ‚Löschen‘ (trash) wie das Kontextmenü; ‚Löschen‘ fragt mit der Sprechblase, auch beim Durchwischen (R-4.12).
    A = runde Knöpfe, nur Symbol (iOS 26: UIContextualAction rund, Kachel bleibt rund).
    B = runde Knöpfe mit Wort darunter (iOS 26 SwiftUI: Symbol und Titel).
-   C = Blöcke an der Kachel, Symbol und Wort (bis iOS 18).
+   D = Kapseln (links und rechts rund, in die Breite gezogen) mit Wort darunter – wie Notizen und Mail am Gerät (Beobachtung des Nutzers 15.11.2026);
+       ersetzt C ‚Blöcke an der Kachel‘ (bis iOS 18).
    ?offen=1 öffnet in jeder Spalte die erste Kachel (für Bilder). */
 :root { --bg: #f2f2f7; --card: #fff; --line: #d1d1d6; --txt: #000; --sub: #6e6e73; --blue: #007aff; --red: #ff3b30; --grey: #8e8e93;
   --btn: #f9f9f9; --rim: #ffffff; --float: 0 3px 28px rgba(0,0,0,.16); --shadow: 0 1px 3px rgba(0,0,0,.08); color-scheme: light; }
@@ -35,14 +36,16 @@ h1 { font-size: 20px; margin: 0 0 4px; } p.lead { margin: 0 0 12px; color: var(-
 .a { border: 0; padding: 0; font: inherit; color: #fff; display: grid; place-items: center; cursor: pointer; opacity: var(--op, 1); }
 .a.set { background: var(--grey); } .a.del { background: var(--red); }
 /* A und B: runde Knöpfe neben der Kachel */
-.vA .acts, .vB .acts { gap: 8px; padding-left: 8px; }
-.vA .a, .vB .a { flex: 0 0 44px; width: 44px; height: 44px; border-radius: 22px; }
-.vA .a.set, .vB .a.set { background: var(--btn); color: var(--txt); box-shadow: inset 0 0 0 .5px var(--rim), 0 1px 6px rgba(0,0,0,.14); }
+.vA .acts, .vB .acts, .vD .acts { gap: 8px; padding-left: 8px; }
+.vA .a, .vB .a, .vD .a { flex: 0 0 44px; width: 44px; height: 44px; border-radius: 22px; }
+.vD .a { flex-basis: 66px; width: 66px; }
+.vA .a.set, .vB .a.set, .vD .a.set { background: var(--btn); color: var(--txt); box-shadow: inset 0 0 0 .5px var(--rim), 0 1px 6px rgba(0,0,0,.14); }
 .vA .a span { display: none; }
-.vB .acts { gap: 6px; padding-left: 6px; }
-.vB .k { display: grid; justify-items: center; gap: 3px; flex: 0 0 58px; opacity: var(--op, 1); }
-.vB .k span { font-size: 11px; color: var(--sub); white-space: nowrap; }
-.vB .sw.voll .k.kset { display: none; } .vB .sw.voll .k.kdel { flex: 1; } .vB .sw.voll .k.kdel .a { width: 100%; flex: none; }
+.vB .acts, .vD .acts { gap: 6px; padding-left: 6px; }
+.vB .k, .vD .k { display: grid; justify-items: center; gap: 3px; flex: 0 0 58px; opacity: var(--op, 1); }
+.vD .k { flex-basis: 72px; }
+.vB .k span, .vD .k span { font-size: 11px; color: var(--sub); white-space: nowrap; }
+:is(.vB, .vD) .sw.voll .k.kset { display: none; } :is(.vB, .vD) .sw.voll .k.kdel { flex: 1; } :is(.vB, .vD) .sw.voll .k.kdel .a { width: 100%; flex: none; }
 .vA .sw.voll .a.set { display: none; } .vA .sw.voll .a.del { flex: 1; }
 /* C: Blöcke an der Kachel */
 .vC .acts { align-items: stretch; border-radius: 0 22px 22px 0; }
@@ -57,7 +60,7 @@ h1 { font-size: 20px; margin: 0 0 4px; } p.lead { margin: 0 0 12px; color: var(-
 ol.schritte { margin: 14px 0 0; padding-left: 22px; font-size: 15px; color: #3c3c43; } ol.schritte li { margin-bottom: 4px; }
 </style></head><body>
 <h1>APD-30 Wischaktionen – Muster</h1>
-<p class="lead">Eine Kachel nach links wischen. A, B und C unterscheiden sich nur im Aussehen der Aktionen.</p>
+<p class="lead">Eine Kachel nach links wischen. A, B und D unterscheiden sich nur im Aussehen der Aktionen.</p>
 <div class="cols" id="cols"></div>
 <ol class="schritte">
 <li>Kachel ein Stück nach links wischen und loslassen. Erwartet: ‚Einstellen‘ und ‚Löschen‘ bleiben stehen.</li>
@@ -71,20 +74,20 @@ const IC = {"settings": "<svg class=\"ic\" viewBox=\"0 0 24 24\" width=\"22\" he
 const TRIPS = [['Südtirol mit Wandergruppe', '03.09.2026 – 12.09.2026 · abgeschlossen', 'geändert am 14.09.2026 um 18:20 · iPad'],
   ['Hamburg', '02.10.2026 – 05.10.2026 · abgeschlossen', 'geändert am 06.10.2026 um 09:12 · iPhone'],
   ['Adventsfahrt Elsass', '04.12.2026 – 07.12.2026 · geplant', 'geändert am 11.11.2026 um 20:03 · iPad']];
-const VAR = { A: 'A · rund, nur Symbol', B: 'B · rund, mit Wort', C: 'C · Blöcke an der Kachel' };
+const VAR = { A: 'A · rund, nur Symbol', B: 'B · rund, mit Wort', D: 'D · Kapsel mit Wort' };
 const cols = document.getElementById('cols');
 for (const v of Object.keys(VAR)) {
   const col = document.createElement('section'); col.className = 'col v' + v; col.dataset.v = v;
   col.innerHTML = `<h2>${VAR[v]}</h2><div class="cnt">3 Reiselogbücher</div>` + TRIPS.map((t, i) => {
     const set = `<button class="a set" aria-label="Reiselogbuch einstellen">${IC.settings}${v === 'C' ? '<span>Einstellen</span>' : ''}</button>`;
     const del = `<button class="a del" aria-label="Reiselogbuch löschen">${IC.trash}${v === 'C' ? '<span>Löschen</span>' : ''}</button>`;
-    const acts = v === 'B' ? `<div class="k kset">${set}<span>Einstellen</span></div><div class="k kdel">${del}<span>Löschen</span></div>` : set + del;
+    const acts = v === 'B' || v === 'D' ? `<div class="k kset">${set}<span>Einstellen</span></div><div class="k kdel">${del}<span>Löschen</span></div>` : set + del;
     return `<div class="sw ruhe" data-t="${t[0]}"><div class="acts">${acts}</div>
       <button class="row${i === 1 ? ' current' : ''}"><span class="t"><b>${t[0]}</b><small>${t[1]}</small><small class="chg">${t[2]}</small></span>${IC['chevron-right']}</button></div>`;
   }).join('');
   cols.append(col);
 }
-const W = { A: 112, B: 134, C: 148 };   // Breite der offenen Aktionen
+const W = { A: 112, B: 134, D: 162 };   // Breite der offenen Aktionen
 let offen = null;
 function setze(sw, rev, ruhe) {
   const w = W[sw.closest('.col').dataset.v], breit = sw.offsetWidth;

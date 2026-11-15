@@ -1,6 +1,6 @@
 # APD-30 Wischaktionen – Muster und Apple-Abgleich
 
-**Stand 15.11.2026** · Sitzung Reiselogbuch 0116 · Muster `arbeit/APD-30 Wischaktionen Muster.html` (Varianten A, B, C; nur hell, iPad quer)
+**Stand 15.11.2026** · Sitzung Reiselogbuch 0116 · Muster `arbeit/APD-30 Wischaktionen Muster.html` (Varianten A, B, D; nur hell, iPad quer)
 
 ## Link
 
@@ -8,7 +8,7 @@ https://g811141a.github.io/AppDesign/arbeit/APD-30%20Wischaktionen%20Muster.html
 
 ## Schritte am iPad (quer, hell)
 
-1. Den Link in Safari öffnen. Erwartet: drei Spalten A, B, C mit je drei Kacheln.
+1. Den Link in Safari öffnen. Erwartet: drei Spalten A, B, D mit je drei Kacheln.
 2. In jeder Spalte eine Kachel ein Stück nach links wischen und loslassen. Erwartet: ‚Einstellen‘ und ‚Löschen‘ bleiben neben der Kachel stehen.
 3. Auf die offene Kachel tippen. Erwartet: sie gleitet zurück, nichts wird geöffnet.
 4. Eine Kachel weit nach links durchwischen. Erwartet: ‚Löschen‘ wird breit; nach dem Loslassen fragt die Sprechblase ‚… mit allen Einträgen löschen? …‘.
@@ -20,11 +20,13 @@ https://g811141a.github.io/AppDesign/arbeit/APD-30%20Wischaktionen%20Muster.html
 
 | | Aussehen | Vorbild |
 |---|---|---|
-| **A** | Runde Knöpfe neben der Kachel, nur Symbol: ‚Einstellen‘ hell wie unsere runden Schaltflächen, ‚Löschen‘ rot. Die Kachel bleibt rund. | iOS 26: Wischaktionen sind runde Knöpfe, die Zeile bekommt runde Ecken (Mail) |
+| **A** | Runde Knöpfe neben der Kachel, nur Symbol: ‚Einstellen‘ hell wie unsere runden Schaltflächen, ‚Löschen‘ rot. Die Kachel bleibt rund. | Beitrag im Apple-Entwicklerforum: Wischaktionen in iOS 26 ‚rund‘ |
 | **B** | Wie A, unter jedem Knopf klein das Wort. | iOS 26 SwiftUI zeigt Symbol und Titel |
-| **C** | Graue und rote Blöcke direkt an der Kachel, Symbol und Wort. | iOS bis 18 |
+| **D** | **Kapseln** – links und rechts rund, in die Breite gezogen (66 × 44) –, darunter klein das Wort. | **Notizen und Mail am Gerät (Beobachtung des Nutzers 15.11.2026)** |
 
-**Empfehlung: A.** Es entspricht iOS 26 und unseren runden Schaltflächen; die Symbole settings und trash kennt man aus dem Kontextmenü. B ist deutlicher, braucht aber mehr Breite. C wirkt neben Glas und runden Knöpfen alt.
+**Empfehlung: D** – so sieht es in Notizen und Mail am Gerät aus. Variante C ‚Blöcke an der Kachel‘ (iOS bis 18) ist dafür entfallen.
+
+**Warum D zuerst fehlte (Nutzer 15.11.2026):** Ich hatte kein Bild von Notizen oder Mail in iOS 26, nur Texte – ein Forumsbeitrag nennt die Knöpfe ‚circular‘, ein Blog ‚Symbol und Titel‘. Daraus habe ich A und B gebaut, statt nach 2.6 zuerst um ein Vergleichsbild zu bitten. Die Maße von D (66 × 44, Wort 11 pt) sind geschätzt; mit einem Bildschirmfoto aus Notizen oder Mail gleiche ich sie an.
 
 ## Apple-Abgleich (0 Nr. 23, 2.6)
 
