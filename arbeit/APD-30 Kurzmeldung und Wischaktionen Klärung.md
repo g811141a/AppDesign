@@ -36,8 +36,30 @@
 
 **Empfehlung: a** – Wischen und Kontextmenü bieten dasselbe (wie Mail und Notizen), niemand muss sich zwei Sätze von Aktionen merken.
 
-## Danach zu klären (je nach Antwort)
+## Entschieden (Nutzer 15.11.2026, Sitzung 0116)
 
-- Wofür die Kurzmeldung im Reiselogbuch eingesetzt wird (bei 1 a: reine Bestätigungen, z. B. nach Backup oder Ausgabe – heute teils kleine Fenster).
-- Muster (nur hell): Kurzmeldung mit und ohne Knopf; Kachel mit Wischaktionen am iPad und iPhone.
-- Testfall-Liste, ‚allgemeine Regel?‘, Wortlaut für 15.4 (‚Kein Wischen‘ entfällt), neue Regeln.
+- **Entscheidung 1: a** – ‚Löschen‘ fragt wie heute mit der Sprechblase, auch beim Durchwischen; kein ‚Widerrufen‘; R-4.12 bleibt.
+- **Entscheidung 2: a** – Wischen nach links zeigt ‚Einstellen‘ (grau, settings) und ‚Löschen‘ (rot, trash), dieselben wie im Kontextmenü.
+
+## Entscheidung 3 – Wofür die Kurzmeldung?
+
+Mit Entscheidung 1 a entfällt ‚Gelöscht · Widerrufen‘ – der Hauptgrund für die Kurzmeldung mit Knopf. Übrig bleiben reine Bestätigungen. Heute zeigt das Reiselogbuch dafür kleine Fenster (`inform`):
+
+| Stelle | Text heute | Als Kurzmeldung geeignet? |
+|---|---|---|
+| Backup erstellen, Ausgabe HTML/PDF, Abgleichbericht teilen | ‚✅ Teilen-Menü geöffnet für‘ + Dateiname in eigener Zeile (R-10.8) + Hinweis, bzw. ‚⚠️ … abgebrochen‘ | bedingt – Dateiname und Hinweis sind für 4 s viel Text; Abbruch und Fehler müssten Fenster bleiben |
+| Abgleichen (Ergebnis, ‚Abgleichbericht anzeigen‘) | Zahlen und Knopf zu den Einzelheiten | nein – R-4.3 ‚Meldung mit Weiterweg‘ |
+| Speichern fehlgeschlagen, Backup nicht lesbar, neue Version wird geladen | Fehler bzw. wichtiger Hinweis | nein – muss stehen bleiben |
+
+| | Variante | Folge |
+|---|---|---|
+| **a** | **Kurzmeldung zurückstellen** (Status ‚später‘, bis eine Stelle sie braucht); die Version enthält APD-85 Teil 6 und die Wischaktionen. | Kleine, klare Version; keine Regel zu Meldungen ändert sich. |
+| **b** | Baustein jetzt bauen und die Erfolgsmeldung nach Backup und Ausgabe als Kurzmeldung zeigen (Abbruch und Fehler bleiben Fenster). | Abschnitt 10 und R-10.8 brauchen neuen Wortlaut; Muster für den langen Dateinamen nötig; größere Version. |
+| **c** | Nur den allgemeinen Baustein bauen (die Offline-Meldung nutzt ihn), im Reiselogbuch keine neue Stelle. | Umbau ohne sichtbaren Nutzen. |
+
+**Empfehlung: a** – ohne ‚Widerrufen‘ gibt es im Reiselogbuch keine Stelle, an der die Kurzmeldung klar besser ist als das Fenster; ein Baustein ohne Verwendung widerspricht ‚nur bauen, was gebraucht wird‘.
+
+## Danach
+
+- Recherche Apple (Maße, Verhalten der Wischaktionen), Muster nur hell: Kachel mit Wischaktionen am iPad und iPhone.
+- Testfall-Liste, ‚allgemeine Regel?‘, Wortlaut für 15.4 (‚Kein Wischen‘ entfällt) und eine neue Regel zu Wischaktionen.
