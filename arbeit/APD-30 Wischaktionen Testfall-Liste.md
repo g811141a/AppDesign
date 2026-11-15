@@ -1,6 +1,6 @@
 # APD-30 Wischaktionen – Testfall-Liste
 
-**Stand 15.11.2026** · Sitzung Reiselogbuch 0117 · Muster `arbeit/APD-30 Wischaktionen Muster.html` (Variante D ‚Kapsel mit Wort‘, bestätigt
+**Stand 15.11.2026** · Sitzung Reiselogbuch 0117 · **bestätigt (Nutzer 15.11.2026, mit D-1 bis D-11)** · Muster `arbeit/APD-30 Wischaktionen Muster.html` (Variante D ‚Kapsel mit Wort‘, bestätigt
 15.11.2026, Sitzung 0116) · Apple-Abgleich `arbeit/APD-30 Wischaktionen Muster und Apple-Abgleich.md`
 (Zusammenarbeit 0 Nr. 1: jeder Fall wird ein Testfall (automatisch) mit fester Prüfung; was nur das Gerät zeigt, kommt in den Usertest)
 
@@ -14,7 +14,7 @@
   sperrt sie – daneben tippen ändert nichts.
 - Das Kontextmenü (langes Drücken) bleibt unverändert.
 
-## Annahmen für die Fälle – mit der Liste zu bestätigen
+## Annahmen für die Fälle – bestätigt (Nutzer 15.11.2026)
 
 Im Muster nicht gezeigt, im Code bzw. in den Regeln gelesen (Sitzung 0117); jede ist meine Empfehlung.
 
