@@ -58,8 +58,8 @@ die ganze Zusammenarbeit** (0 Nr. 15); die Arbeitsumgebung steht in der AppDesig
 ## 4. Danach
 
 APD-32 · APD-55 · RLB-6 · APD-1 · APD-70 · APD-30 Kurzmeldung (zurückgestellt) · APD-57 · APD-44 bis APD-60 · zuletzt APD-80; aus 0106 ohne
-bestätigten Wortlaut: PROMPT.md ‚Emojis klein‘, VoiceOver-Name für Rückgängig, ‚Cursor am Ende‘ in Designrichtlinie 16, `tests/README.md`,
-`color-mix` am Gerät. Später: nach einem iOS-Update, das `print()` in der App vom Home-Bildschirm wieder zulässt, den PDF-Hinweis (RLB-124) entfernen.
+bestätigten Wortlaut: PROMPT.md ‚Emojis klein‘, VoiceOver-Name für Rückgängig, ‚Cursor am Ende‘ in Designrichtlinie 16, `tests/README.md`
+(seit 0118 als APD-131 bereit; `color-mix` am Gerät ist mit P-101/15 belegt). Später: nach einem iOS-Update, das `print()` in der App vom Home-Bildschirm wieder zulässt, den PDF-Hinweis (RLB-124) entfernen.
 
 ## 5. Starttext für die neue Sitzung
 
