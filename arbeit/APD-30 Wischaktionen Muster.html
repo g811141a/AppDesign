@@ -1,0 +1,139 @@
+<!doctype html><html lang="de"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="APD-30 Wischen">
+<title>APD-30 Wischaktionen</title>
+<style>
+/* APD-30 Rest ‚Wischaktionen in Listen‘ (APD-38/T-10) – Muster (Sitzung Reiselogbuch 0116), nur hell (Vereinbarung 30.10.2026), zuerst iPad quer (0 Nr. 6).
+   Drei Varianten nebeneinander, jede Spalte ist eine Seitenleiste mit Kacheln (15.4). Entschieden (Nutzer 15.11.2026): Wischen nach links zeigt
+   ‚Einstellen‘ (settings) und ‚Löschen‘ (trash) wie das Kontextmenü; ‚Löschen‘ fragt mit der Sprechblase, auch beim Durchwischen (R-4.12).
+   A = runde Knöpfe, nur Symbol (iOS 26: UIContextualAction rund, Kachel bleibt rund).
+   B = runde Knöpfe mit Wort darunter (iOS 26 SwiftUI: Symbol und Titel).
+   C = Blöcke an der Kachel, Symbol und Wort (bis iOS 18).
+   ?offen=1 öffnet in jeder Spalte die erste Kachel (für Bilder). */
+:root { --bg: #f2f2f7; --card: #fff; --line: #d1d1d6; --txt: #000; --sub: #6e6e73; --blue: #007aff; --red: #ff3b30; --grey: #8e8e93;
+  --btn: #f9f9f9; --rim: #ffffff; --float: 0 3px 28px rgba(0,0,0,.16); --shadow: 0 1px 3px rgba(0,0,0,.08); color-scheme: light; }
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { margin: 0; min-height: 100%; background: #e5e5ea; color: var(--txt); font: 17px -apple-system, system-ui, sans-serif; }
+body { padding: max(14px, env(safe-area-inset-top)) max(14px, env(safe-area-inset-right)) 14px max(14px, env(safe-area-inset-left)); }
+h1 { font-size: 20px; margin: 0 0 4px; } p.lead { margin: 0 0 12px; color: var(--sub); font-size: 15px; }
+.cols { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+@media (max-width: 900px) { .cols { grid-template-columns: 1fr; } }
+.col { background: var(--bg); border-radius: 22px; box-shadow: var(--float); padding: 14px 12px 6px; overflow: hidden; position: relative; }
+.col h2 { font-size: 20px; margin: 0 4px 2px; } .col .cnt { color: var(--sub); font-size: 13px; margin: 0 4px 10px; }
+.sw { position: relative; margin-bottom: 10px; --rev: 0px; }
+.row { position: relative; z-index: 1; display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; border: 0; background: var(--card); color: inherit;
+  font: inherit; border-radius: 22px; box-shadow: var(--shadow); padding: 12px 16px; min-height: 60px; transform: translateX(calc(-1 * var(--rev)));
+  touch-action: pan-y; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+.sw.ruhe .row, .sw.ruhe .acts, .sw.ruhe .a { transition: transform .3s cubic-bezier(.2,.8,.2,1), width .3s cubic-bezier(.2,.8,.2,1), opacity .2s, flex-basis .2s; }
+.row .t { flex: 1; min-width: 0; } .row b { display: block; font-weight: 600; overflow-wrap: anywhere; }
+.row small { display: block; color: var(--sub); font-size: 15px; } .row small.chg { font-size: 13px; margin-top: 2px; }
+.row > .ic { color: #c7c7cc; }
+.row.current { background: var(--blue); color: #fff; } .row.current small, .row.current > .ic { color: rgba(255,255,255,.85); }
+.acts { position: absolute; top: 0; bottom: 0; right: 0; width: var(--rev); display: flex; justify-content: flex-end; align-items: center; overflow: hidden; }
+.a { border: 0; padding: 0; font: inherit; color: #fff; display: grid; place-items: center; cursor: pointer; opacity: var(--op, 1); }
+.a.set { background: var(--grey); } .a.del { background: var(--red); }
+/* A und B: runde Knöpfe neben der Kachel */
+.vA .acts, .vB .acts { gap: 8px; padding-left: 8px; }
+.vA .a, .vB .a { flex: 0 0 44px; width: 44px; height: 44px; border-radius: 22px; }
+.vA .a.set, .vB .a.set { background: var(--btn); color: var(--txt); box-shadow: inset 0 0 0 .5px var(--rim), 0 1px 6px rgba(0,0,0,.14); }
+.vA .a span { display: none; }
+.vB .acts { gap: 6px; padding-left: 6px; }
+.vB .k { display: grid; justify-items: center; gap: 3px; flex: 0 0 58px; opacity: var(--op, 1); }
+.vB .k span { font-size: 11px; color: var(--sub); white-space: nowrap; }
+.vB .sw.voll .k.kset { display: none; } .vB .sw.voll .k.kdel { flex: 1; } .vB .sw.voll .k.kdel .a { width: 100%; flex: none; }
+.vA .sw.voll .a.set { display: none; } .vA .sw.voll .a.del { flex: 1; }
+/* C: Blöcke an der Kachel */
+.vC .acts { align-items: stretch; border-radius: 0 22px 22px 0; }
+.vC .a { flex: 1 0 0; min-width: 0; gap: 2px; align-content: center; font-size: 12px; }
+.vC .sw.auf .row, .vC .sw.zieht .row { border-radius: 22px 0 0 22px; }
+.vC .sw.voll .a.set { flex: 0 0 0; opacity: 0; }
+/* Sprechblase (15.7), vereinfacht */
+.pop { position: fixed; z-index: 20; width: 300px; background: var(--card); border-radius: 18px; box-shadow: var(--float); padding: 14px; font-size: 15px; }
+.pop p { margin: 0 0 12px; } .pop button { display: block; width: 100%; height: 44px; border: 0; border-radius: 12px; font: inherit; font-weight: 600; margin-top: 8px; }
+.pop .rot { background: var(--red); color: #fff; } .pop .ab { background: #e9e9eb; color: var(--blue); }
+.note { position: fixed; z-index: 20; left: 50%; bottom: 24px; transform: translateX(-50%); background: #1c1c1e; color: #fff; border-radius: 14px; padding: 10px 16px; font-size: 15px; }
+ol.schritte { margin: 14px 0 0; padding-left: 22px; font-size: 15px; color: #3c3c43; } ol.schritte li { margin-bottom: 4px; }
+</style></head><body>
+<h1>APD-30 Wischaktionen – Muster</h1>
+<p class="lead">Eine Kachel nach links wischen. A, B und C unterscheiden sich nur im Aussehen der Aktionen.</p>
+<div class="cols" id="cols"></div>
+<ol class="schritte">
+<li>Kachel ein Stück nach links wischen und loslassen. Erwartet: ‚Einstellen‘ und ‚Löschen‘ bleiben stehen.</li>
+<li>Daneben oder auf die Kachel tippen. Erwartet: die Kachel gleitet zurück, nichts wird geöffnet.</li>
+<li>Kachel weit nach links durchwischen. Erwartet: ‚Löschen‘ wird breit, nach dem Loslassen fragt die Sprechblase.</li>
+<li>‚Abbrechen‘ antippen. Erwartet: die Kachel gleitet zurück, alles bleibt.</li>
+<li>Liste senkrecht rollen. Erwartet: keine Kachel bewegt sich seitlich.</li>
+</ol>
+<script>
+const IC = {"settings": "<svg class=\"ic\" viewBox=\"0 0 24 24\" width=\"22\" height=\"22\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915\"/><circle cx=\"12\" cy=\"12\" r=\"3\"/></svg>", "trash": "<svg class=\"ic\" viewBox=\"0 0 24 24\" width=\"22\" height=\"22\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M10 11v6\"/><path d=\"M14 11v6\"/><path d=\"M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6\"/><path d=\"M3 6h18\"/><path d=\"M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2\"/></svg>", "chevron-right": "<svg class=\"ic\" viewBox=\"0 0 24 24\" width=\"22\" height=\"22\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"m9 18 6-6-6-6\"/></svg>"};
+const TRIPS = [['Südtirol mit Wandergruppe', '03.09.2026 – 12.09.2026 · abgeschlossen', 'geändert am 14.09.2026 um 18:20 · iPad'],
+  ['Hamburg', '02.10.2026 – 05.10.2026 · abgeschlossen', 'geändert am 06.10.2026 um 09:12 · iPhone'],
+  ['Adventsfahrt Elsass', '04.12.2026 – 07.12.2026 · geplant', 'geändert am 11.11.2026 um 20:03 · iPad']];
+const VAR = { A: 'A · rund, nur Symbol', B: 'B · rund, mit Wort', C: 'C · Blöcke an der Kachel' };
+const cols = document.getElementById('cols');
+for (const v of Object.keys(VAR)) {
+  const col = document.createElement('section'); col.className = 'col v' + v; col.dataset.v = v;
+  col.innerHTML = `<h2>${VAR[v]}</h2><div class="cnt">3 Reiselogbücher</div>` + TRIPS.map((t, i) => {
+    const set = `<button class="a set" aria-label="Reiselogbuch einstellen">${IC.settings}${v === 'C' ? '<span>Einstellen</span>' : ''}</button>`;
+    const del = `<button class="a del" aria-label="Reiselogbuch löschen">${IC.trash}${v === 'C' ? '<span>Löschen</span>' : ''}</button>`;
+    const acts = v === 'B' ? `<div class="k kset">${set}<span>Einstellen</span></div><div class="k kdel">${del}<span>Löschen</span></div>` : set + del;
+    return `<div class="sw ruhe" data-t="${t[0]}"><div class="acts">${acts}</div>
+      <button class="row${i === 1 ? ' current' : ''}"><span class="t"><b>${t[0]}</b><small>${t[1]}</small><small class="chg">${t[2]}</small></span>${IC['chevron-right']}</button></div>`;
+  }).join('');
+  cols.append(col);
+}
+const W = { A: 112, B: 134, C: 148 };   // Breite der offenen Aktionen
+let offen = null;
+function setze(sw, rev, ruhe) {
+  const w = W[sw.closest('.col').dataset.v], breit = sw.offsetWidth;
+  sw.classList.toggle('ruhe', !!ruhe);
+  sw.classList.toggle('zieht', rev > 0 && !ruhe);
+  sw.classList.toggle('voll', rev > breit * .6);
+  sw.style.setProperty('--rev', rev + 'px');
+  sw.style.setProperty('--op', Math.min(1, rev / (w * .6)).toFixed(2));
+}
+function zu(sw = offen) { if (!sw) return; setze(sw, 0, true); sw.classList.remove('auf'); if (offen === sw) offen = null; }
+function auf(sw) { if (offen && offen !== sw) zu(); offen = sw; sw.classList.add('auf'); setze(sw, W[sw.closest('.col').dataset.v], true); }
+function schliessePop() { document.querySelectorAll('.pop, .note').forEach(e => e.remove()); }
+function frage(sw) {
+  schliessePop(); auf(sw);
+  const r = sw.querySelector('.a.del').getBoundingClientRect();
+  const p = document.createElement('div'); p.className = 'pop'; p.setAttribute('role', 'dialog');
+  p.innerHTML = `<p>‚${sw.dataset.t}‘ mit allen Einträgen löschen? Das kann nicht rückgängig gemacht werden. Tipp: Vorher ein Backup erstellen.</p>
+    <button class="rot">Reiselogbuch löschen</button><button class="ab">Abbrechen</button>`;
+  document.body.append(p);
+  p.style.left = Math.max(10, Math.min(innerWidth - 310, r.right - 300)) + 'px';
+  p.style.top = Math.min(innerHeight - p.offsetHeight - 10, r.bottom + 10) + 'px';
+  p.querySelector('.ab').onclick = () => { schliessePop(); zu(sw); };
+  p.querySelector('.rot').onclick = () => { schliessePop(); sw.style.transition = 'opacity .25s'; sw.style.opacity = 0; setTimeout(() => { sw.remove(); offen = null; }, 250); };
+}
+function hinweis(text) { schliessePop(); const n = document.createElement('div'); n.className = 'note'; n.textContent = text; document.body.append(n); setTimeout(() => n.remove(), 2000); }
+cols.addEventListener('pointerdown', e => {
+  const row = e.target.closest('.row'); if (!row) return;
+  const sw = row.parentElement, x0 = e.clientX, y0 = e.clientY, start = sw === offen ? W[sw.closest('.col').dataset.v] : 0;
+  let modus = null, rev = start;
+  const move = ev => {
+    const dx = ev.clientX - x0, dy = ev.clientY - y0;
+    if (!modus) { if (Math.abs(dx) > 8 && Math.abs(dx) > Math.abs(dy)) { modus = 'wisch'; schliessePop(); if (offen && offen !== sw) zu(); row.setPointerCapture(ev.pointerId); } else if (Math.abs(dy) > 8) modus = 'roll'; }
+    if (modus !== 'wisch') return;
+    rev = Math.max(0, Math.min(sw.offsetWidth - 20, start - dx)); setze(sw, rev, false);
+  };
+  const up = () => {
+    row.removeEventListener('pointermove', move); row.removeEventListener('pointerup', up); row.removeEventListener('pointercancel', up);
+    if (modus !== 'wisch') return;
+    row.dataset.gewischt = '1'; setTimeout(() => delete row.dataset.gewischt, 50);
+    const w = W[sw.closest('.col').dataset.v];
+    if (rev > sw.offsetWidth * .6) frage(sw); else if (rev > w / 2) auf(sw); else zu(sw);
+  };
+  row.addEventListener('pointermove', move); row.addEventListener('pointerup', up); row.addEventListener('pointercancel', up);
+});
+cols.addEventListener('click', e => {
+  const a = e.target.closest('.a'), row = e.target.closest('.row');
+  if (a) { const sw = a.closest('.sw'); if (a.classList.contains('del')) frage(sw); else { zu(sw); hinweis('Fenster ‚Reiselogbuch einstellen‘ öffnet sich'); } return; }
+  if (row) { if (row.dataset.gewischt) return; if (offen) { zu(); return; } hinweis('‚' + row.parentElement.dataset.t + '‘ wird geöffnet'); }
+});
+document.addEventListener('pointerdown', e => { if (!e.target.closest('.sw, .pop')) { schliessePop(); zu(); } });
+if (new URLSearchParams(location.search).get('offen')) document.querySelectorAll('.col').forEach(c => { const sw = c.querySelector('.sw'); sw.classList.add('auf'); setze(sw, W[c.dataset.v], true); });
+</script></body></html>
