@@ -1,6 +1,6 @@
 # Bau-Frage – AppDesign 4.59.3 mit Reiselogbuch 3.56.3
 
-**Stand 15.11.2026** · Sitzung ‚Reiselogbuch 0118‘ · Korrekturversion, zwei kleine Themen
+**Stand 15.11.2026** · Sitzung ‚Reiselogbuch 0118‘ · Korrekturversion, drei kleine Punkte
 
 ## Was gebaut wird
 
@@ -16,14 +16,19 @@
    - Designrichtlinie 16: neue bewusste Abweichung ‚Cursor am Ende‘.
    - `tests/README.md` in beiden Repos nachführen.
 
+3. **APD-54 – Fremden Text bereinigen** (Testfall-Liste APD-54/T-1 bis APD-54/T-9 bestätigt, keine allgemeine Regel)
+   - `index.html`: Smileys der Schnellauswahl in der Smiley-Leiste und in der Sprechblase ‚… aus der Schnellauswahl entfernen?‘ mit `esc()`.
+   - `normalize` übernimmt aus `moodUsage`, `foodUsage`, `hiddenMoods`, `hiddenFood` nur Schlüssel aus Emojis (Backup laden, Abgleich).
+   - Neue Prüfung `tests/ablauf-fremdtext.mjs` im Reiselogbuch.
+
 ## Was sich nicht ändert
 
-- Die App selbst (`index.html`, `ui.js`, `design.css`) bleibt im Verhalten gleich; es ändern sich nur die Versionsstellen.
+- Aussehen und Bedienung der App bleiben gleich; `ui.js` und `design.css` ändern sich nur an den Versionsstellen.
 - APD-30 Wischaktionen bleibt bereit und kommt danach als AppDesign 4.60.0 mit Reiselogbuch 3.57.0.
 
 ## Prüflauf
 
-- **Voll** (Chromium und WebKit, alle Ansichten), weil sich Prüfungen in `tests/` ändern – nach `CLAUDE.md` etwa 60 min.
+- **Voll** (Chromium und WebKit, alle Ansichten), weil sich Prüfungen in `tests/` und Code der App ändern – nach `CLAUDE.md` etwa 60 min.
 - Das Skript `stufe` schlägt zurzeit ‚Text‘ vor, weil noch nichts geändert ist; nach dem Bau frage ich es erneut.
 
 ## Usertest
@@ -32,4 +37,8 @@ Am Gerät ist nur die Version zu prüfen (Testfall /0); die Nummer des Usertests
 
 ## Backlog
 
-Nächste Version: 3 Punkte bereit (APD-85 Teil 6, APD-30 Wischaktionen, APD-131) · Offen im Backlog: APD-32 · APD-55 · RLB-6 · APD-1 · APD-70.
+Nächste Version: 4 Punkte bereit (APD-85 Teil 6, APD-30 Wischaktionen, APD-131, APD-54) · Offen im Backlog: APD-32 · APD-55 · RLB-6 · APD-1 · APD-70.
+
+## Hinweis Kontext
+
+Der Kontext steht bei etwa 246.000. Nach der Version und dem Bericht ist die Übergabe fällig (ab 300.000); APD-30 Wischaktionen baut dann die nächste Sitzung.
