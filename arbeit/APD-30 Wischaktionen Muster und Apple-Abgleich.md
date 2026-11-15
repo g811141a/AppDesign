@@ -55,6 +55,22 @@ Je Variante grün: kurz wischen öffnet, beide Aktionen sichtbar · Antippfläch
 4. ‚Abbrechen‘ antippen. Erwartet: die Kachel gleitet zurück, alles bleibt.
 5. Am iPhone: vom linken Rand nach rechts wischen. Erwartet: die Kachel bewegt sich nicht nach rechts.
 
+## Rückmeldung zum Muster D (Nutzer 15.11.2026, Sitzung 0116) – nachgebessert
+
+1. **Abfrage sperrt die Umgebung (wie Notizen):** Solange die Sprechblase offen ist, ist alles daneben leicht eingegraut (Schwarz 20 %) und ohne Wirkung – Tippen auf eine andere Kachel oder daneben ändert nichts; man entscheidet sich für ‚Reiselogbuch löschen‘ oder ‚Abbrechen‘. Im ersten Muster blieb die Blase stehen und die Liste dahinter war bedienbar – ein Fehler des Musters.
+   **Unterschied zur App heute (gelesen in `v4/ui.js` `choosePop`, Designrichtlinie 15.7):** Dort liegt hinter der Sprechblase schon eine unsichtbare Sperre; daneben tippen bricht ab, nichts wird eingegraut. ‚Eingegraut, daneben tippen ändert nichts‘ wäre also eine Änderung an der Sprechblase – offen: nur hier oder als allgemeine Regel für alle Sprechblasen (0 Nr. 4, Wortlaut nach 0 Nr. 29).
+2. **Beim Zurückwischen kleiner und blasser (wie Notizen):** Größe (100 % → 50 %) und Deckkraft (100 % → 0 %) der Kapseln folgen dem Weg der Kachel; beim Öffnen umgekehrt.
+
+Geprüft (Chromium und WebKit, vier Größen), grün: daneben tippen (andere Kachel, Rand) ändert nichts, Abfrage bleibt · Umgebung eingegraut · auf halbem Rückweg Größe 75 %, Deckkraft 50 %, geschlossen 50 % und 0 %.
+
+### Schritte (iPad und iPhone, hell)
+
+1. Den Link neu laden.
+2. Eine Kachel nach links wischen, ‚Löschen‘ antippen. Erwartet: die Sprechblase erscheint, alles andere ist leicht eingegraut.
+3. Auf ein anderes Reiselogbuch oder daneben tippen. Erwartet: nichts geschieht, die Sprechblase bleibt.
+4. ‚Abbrechen‘ antippen. Erwartet: das Grau verschwindet, die Kachel gleitet zurück.
+5. Eine Kachel nach links wischen, loslassen, dann langsam nach rechts zurückwischen. Erwartet: die Kapseln werden kleiner und blasser und sind am Ende verschwunden.
+
 ## Danach
 
 Testfall-Liste, ‚allgemeine Regel?‘ und Wortlaut (15.4 ‚Kein Wischen‘ entfällt, neue Regel).
