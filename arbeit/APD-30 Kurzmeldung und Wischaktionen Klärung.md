@@ -10,7 +10,7 @@
 - **Kollision mit dem Wegwischen der Seitenleiste (APD-68): schon gelöst.** 15.4 ‚Gesten‘: Ausblenden nur mit panel-left – ‚nach links wischen ändert nichts, damit die Kacheln für Wischaktionen frei bleiben‘. Im iPhone-Aufbau gibt es in der Startliste kein Zurückwischen. Wischen nach links auf einer Kachel ist also frei.
 - **Entschieden am 02.11.2026 (Sitzung 0075):** ‚Rückgängig statt Abfrage‘ – die Abfrage bleibt; Rückgängig erst zusammen mit Wischaktionen und Kurzmeldung neu bewerten. Das ist jetzt.
 
-## So macht es Apple (Quelle: `arbeit/APD-38 Framework-Vergleich.html`, Zeilen APD-38/T-10, T-20, T-21)
+## So macht es Apple (Quelle: `arbeit/APD-38 Framework-Vergleich.html`, Zeilen APD-38/T-10, APD-38/T-20, APD-38/T-21)
 
 - **Wischaktionen:** Mail und Notizen – nach links wischen zeigt rotes ‚Löschen‘, ganz durchwischen löscht; alles geht auch über das Kontextmenü.
 - **Kurzmeldung:** kurze Einblendungen wie ‚Kopiert‘ oder ‚Rückgängig‘ in Mail; Abfragen nicht nur zum Informieren verwenden.
