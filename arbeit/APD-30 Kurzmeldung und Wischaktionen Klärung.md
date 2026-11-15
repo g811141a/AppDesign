@@ -59,6 +59,8 @@ Mit Entscheidung 1 a entfällt ‚Gelöscht · Widerrufen‘ – der Hauptgrund 
 
 **Empfehlung: a** – ohne ‚Widerrufen‘ gibt es im Reiselogbuch keine Stelle, an der die Kurzmeldung klar besser ist als das Fenster; ein Baustein ohne Verwendung widerspricht ‚nur bauen, was gebraucht wird‘.
 
+**Entschieden: a** – Kurzmeldung zurückgestellt, bis eine Stelle sie braucht (Nutzer 15.11.2026, Sitzung 0116). Die Version enthält APD-85 Teil 6 und die Wischaktionen.
+
 ## Danach
 
 - Recherche Apple (Maße, Verhalten der Wischaktionen), Muster nur hell: Kachel mit Wischaktionen am iPad und iPhone.
