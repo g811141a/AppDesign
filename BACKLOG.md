@@ -12,8 +12,9 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 | Nr. | Prio | Thema | bereit seit |
 |---|---|---|---|
 | APD-85 | 1 | **Teil 6 – Wackler WebKit beheben (Befund und Testfall-Liste `arbeit/APD-85 Teil 6 Befund und Testfall-Liste.md`, Nutzer 15.11.2026, Sitzung 0115):** Ursache in den Prüfungen – nach dem langen Drücken feste Pause statt Warten auf die Endlage des Kontextmenüs (APD-85/B-1 bis B-3); `ruhe()` endet ohne Meldung (APD-85/B-4). Neu `langDruecken` in `tests/ablauf.mjs`, `ruhe()` meldet ‚Seite nicht zur Ruhe gekommen‘; Testfälle APD-85/F-1 bis F-8; nur Prüfungen | 15.11.2026 |
+| APD-30 | 1 | **Wischaktionen der Kacheln und sperrende Sprechblase (Nutzer 15.11.2026, Sitzung 0117):** Muster D bestätigt (0116); Testfall-Liste `arbeit/APD-30 Wischaktionen Testfall-Liste.md` (APD-30/D-1 bis D-11, W-1 bis W-71) bestätigt; **allgemeine Regel**, neue R-7.8 mit `checkWischen`; die eingegraute, sperrende Sprechblase gilt für **alle Abfragen** (`arbeit/APD-30 Wischaktionen allgemeine Regel und Sprechblase.md`); **Wortlaut bestätigt** (`arbeit/APD-30 Wischaktionen Wortlaut.md`, APD-30/V-1 bis V-11: 15.4, 15.7, 15.18, 15.19, 15.21, 16, R-1.4, R-7.8); Baustein in `ui.js`, Prüflauf voll | 15.11.2026 |
 
-1 Punkt bereit.
+2 Punkte bereit.
 
 
 ## 1. Auf iPad und iPhone prüfen

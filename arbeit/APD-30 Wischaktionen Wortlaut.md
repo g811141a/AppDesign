@@ -1,6 +1,6 @@
 # APD-30 Wischaktionen und sperrende Sprechblase – Wortlaut alt und neu (0 Nr. 29)
 
-**Stand 15.11.2026** · Sitzung Reiselogbuch 0117 · Entschieden (Nutzer 15.11.2026): Wischaktionen als **allgemeine Regel**; die
+**Stand 15.11.2026** · Sitzung Reiselogbuch 0117 · **Wortlaut V-1 bis V-11 bestätigt (Nutzer 15.11.2026)** · Entschieden (Nutzer 15.11.2026): Wischaktionen als **allgemeine Regel**; die
 eingegraute, sperrende Sprechblase gilt für **alle Abfragen** (Variante a) · Grundlage: `arbeit/APD-30 Wischaktionen Testfall-Liste.md`
 (D-1 bis D-11, W-1 bis W-71), `arbeit/APD-30 Wischaktionen allgemeine Regel und Sprechblase.md`
 
