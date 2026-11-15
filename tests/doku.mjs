@@ -308,7 +308,8 @@ export function checkSchema(appDir, app, gp = (process.env.PRUEF_GEGENPROBE || '
         // APD-78/S-4 führende Null (alte zweistellige Regelnummern bleiben, D8)
         if (/^0\d/.test(n) && L !== 'R') zeigen('APD-78/S-4', k, i + 1, `führende Null in ${g} – ${L}-${+n}`);
         if (L.length > 1) continue;
-        if ('ATEN'.includes(L)) { if (!eigen.has(tok) && !(/^arbeit\//.test(f) && f.includes(` ${tok}`))) zeigen('APD-78/S-2', k, i + 1, `alte Nummer ${g} – neu ${neu[L](n)}`); continue; }
+        // seit 4.59.3 (APD-132, Zusammenarbeit 2.4): steht dieselbe Liste in der Zeile davor mit Elternnummer (APD-54/T-1 bis T-9), genügt die Nummer allein
+        if ('ATEN'.includes(L)) { if (!eigen.has(tok) && !(/^arbeit\//.test(f) && f.includes(` ${tok}`)) && !new RegExp(`(?:[A-Z]{3}-\\d+[a-z]?|[A-Z]{3} \\d+\\.\\d+\\.\\d+)\\/${L}-\\d+`).test(vor)) zeigen('APD-78/S-2', k, i + 1, `alte Nummer ${g} – neu ${neu[L](n)}`); continue; }
         if (global.has(L) || eigen.has(tok) || !doku(k) || folge.test(vor)) continue;
         zeigen('APD-78/S-1', k, i + 1, `Präfix ${L}- unbekannt – mit Elternnummer zitieren (APD-n/${g})`);
       }

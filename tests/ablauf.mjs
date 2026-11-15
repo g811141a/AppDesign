@@ -687,6 +687,37 @@ export async function checkFeldCursor(p, { open = null, felder = [], tab = null,
   return errors;
 }
 
+// Langes Drücken mit Warten auf die Endlage (seit 4.59.3, APD-85 Teil 6, APD-85/B-1 bis B-3, F-1 bis F-4): drückt bei (x, y) bzw. auf
+// `ziel` (Selektor oder Locator; Punkt 40 px von links, 20 px von oben, mit `mitte` in der Mitte), hält `ms`, lässt los und wartet, bis die
+// Endlage erreicht ist: kein angehobener Eintrag (.hebt), keine laufende Bewegung, mindestens 350 ms und zwei Bildwechsel nach dem
+// Loslassen (ui.js richtet Menüs dann neu aus – replaceSoon) und – mit `offen` (Vorgabe '.menu.kontext', null = nichts erwartet) – das
+// Erwartete sichtbar und zweimal hintereinander an derselben Stelle. Ersetzt die feste Pause nach dem Loslassen, die unter Last zu kurz
+// war (Wackler in WebKit). Rückgabe: null oder die Meldung mit den Maßen (nach `max` ms, Vorgabe 10 s) – ein echter Fehler bleibt sichtbar.
+export async function langDruecken(p, ziel, { ms = 750, offen = '.menu.kontext', mitte = false, max = 10000 } = {}) {
+  let x, y;
+  if (ziel && typeof ziel === 'object' && 'x' in ziel && !('boundingBox' in ziel)) ({ x, y } = ziel);
+  else { const b = await (typeof ziel === 'string' ? p.locator(ziel).first() : ziel).boundingBox();
+    if (!b) return 'langDruecken: Ziel nicht sichtbar';
+    x = b.x + (mitte ? b.width / 2 : Math.min(40, b.width / 2)); y = b.y + (mitte ? b.height / 2 : Math.min(20, b.height / 2)); }
+  await p.mouse.move(x, y); await p.mouse.down(); await p.waitForTimeout(ms); await p.mouse.up();
+  await p.evaluate(() => { const w = window.__langEnde = { t: performance.now(), bilder: 0, lage: '', gleich: 0 };
+    const f = () => { if (window.__langEnde !== w) return; w.bilder++; requestAnimationFrame(f); }; requestAnimationFrame(f); }).catch(() => {});
+  const m = await warteBis(p, offen => { const w = window.__langEnde; if (!w || performance.now() - w.t < 350 || w.bilder < 2) return false;
+    if (document.querySelector('.hebt') || document.getAnimations().some(a => a.playState === 'running')) { w.gleich = 0; return false; }
+    if (!offen) return true;
+    const e = [...document.querySelectorAll(offen)].find(e => e.getBoundingClientRect().height > 0); if (!e) { w.gleich = 0; return false; }
+    const r = e.getBoundingClientRect(), lage = [r.left, r.top, r.width, r.height].map(v => v.toFixed(1)).join(' ');
+    w.gleich = lage === w.lage ? w.gleich + 1 : 0; w.lage = lage; return w.gleich >= 2; },
+  { was: `Endlage nach dem langen Drücken${offen ? ' (' + offen + ')' : ''}`, max, arg: offen });
+  if (!m) return null;
+  const stand = await p.evaluate(offen => { const e = offen && document.querySelector(offen), r = e?.getBoundingClientRect();
+    return `${offen || 'nichts erwartet'}: ${r ? `${r.left.toFixed(1)}/${r.top.toFixed(1)} ${r.width.toFixed(1)}×${r.height.toFixed(1)}` : 'fehlt'}, .hebt ${document.querySelectorAll('.hebt').length}, Bewegungen ${
+      document.getAnimations().filter(a => a.playState === 'running').length}`; }, offen).catch(() => 'Seite antwortet nicht');
+  return `${m} – ${stand}`;
+}
+// Kontextmenü geschlossen (APD-85/F-3): weiter erst, wenn Menü und Abbild (.zu-geist) weg sind. Rückgabe null oder die Meldung.
+export const menueZu = (p, { max = 5000 } = {}) => warteBis(p, () => !document.querySelector('.menu, .zu-geist'), { was: 'Menü und Abbild weg', max });
+
 // R-7.4 Position beim Öffnen (seit 4.21.0, APD-16): open() öffnet einen Eintrag; want = data-day (bzw. data-keep) des
 // ‚nächsten offenen‘ Eintrags oder null. Mit want: genau dieser ist hervorgehoben (mark) und steht direkt unter dem Kopf
 // (Leiste und haftender Tabellenkopf, ± 2 px) – ist die Seite nicht so weit rollbar, ganz unten und ganz sichtbar.
@@ -1267,6 +1298,8 @@ export async function checkGriff(p, { zeit = 2000, where = '' } = {}) {
       aria: gr ? { role: gr.getAttribute('role'), label: gr.getAttribute('aria-label'), wert: gr.getAttribute('aria-valuetext') } : null, dialog: !!document.querySelector('dialog[open]'),
       nav: /nav-/.test(document.documentElement.className) };
   }, ROLL);
+  // seit 4.59.3: unter Last fehlte der Rollbereich einmal beim ersten Messen (Abbruch mit TypeError) – darauf warten, sonst melden
+  { const m = await warteBis(p, R => !!eval(R).el, { was: 'Rollbereich da', max: 5000, arg: ROLL }); if (m) { E(m); return errors; } }
   await rolle(p, 0); await wait(p, 1800);
   let s = await g();
   if (s.sicht) E('ohne Rollen sichtbar (APD-37/F-4)');

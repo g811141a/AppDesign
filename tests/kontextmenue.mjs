@@ -6,6 +6,7 @@
 //   import { checkContextMenus } from '../../AppDesign/tests/kontextmenue.mjs';
 //   const fehler = await checkContextMenus(page, 'iPhone hoch, 8 Einträge');   // [] = alles richtig
 import { texteMenues } from './hig.mjs';
+import { langDruecken } from './ablauf.mjs';
 export async function checkContextMenus(page, where = '') {
   const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}R-4.2 ${t}`);
   const ids = await page.evaluate(() => { const foot = document.querySelector('#side .side-foot .bhint, #side .side-foot .offl:not([hidden])')?.getBoundingClientRect(), lr = document.querySelector('#side .side-list').getBoundingClientRect(), lt = lr.top, unten = Math.min(innerHeight, lr.bottom);
@@ -16,7 +17,8 @@ export async function checkContextMenus(page, where = '') {
   for (let id of ids) {
     if (id.startsWith('ende:')) { id = id.slice(5); await page.evaluate(() => { const l = document.querySelector('#side .side-list'); l.scrollTop = l.scrollHeight; }); await page.waitForTimeout(200); }
     const row = page.locator(`#side .side-row[data-id="${id}"]`), rb = await row.boundingBox();
-    await page.mouse.move(rb.x + 40, rb.y + rb.height / 2); await page.mouse.down(); await page.waitForTimeout(700); await page.mouse.up(); await page.waitForTimeout(300);
+    // seit 4.59.3 (APD-85 Teil 6): Warten auf die Endlage statt fester Pause (unter Last maß die Prüfung vor dem Ausrichten – Wackler in WebKit)
+    { const m = await langDruecken(page, { x: rb.x + 40, y: rb.y + rb.height / 2 }, { ms: 700, offen: '.menu' }); if (m) E(`Eintrag ${id}: ${m}`); }
     const g = await page.evaluate(id => {
       const m = document.querySelector('.menu'); if (!m) return null;
       const r = document.querySelector(`#side .side-row[data-id="${id}"]`).getBoundingClientRect(), mr = m.getBoundingClientRect();

@@ -461,7 +461,9 @@ const found = new Map(), icons = new Map();
   // schnell (seit 4.13.0): nur messen, nicht drehen – für die Grundregeln nach jedem Schritt eines Ablauf-Tests (pruefe.mjs).
   async function measure(p, where, { schnell = false } = {}) {
     // Seit 4.13.0: erst messen, wenn keine Animation mehr läuft (sonst zufällige Funde bei Last, z. B. Titel halb eingeblendet).
-    await ruhe(p);
+    // seit 4.59.3 (APD-85/B-4): ruht die Seite nicht, nur das melden – keine Regelfunde mit Zwischenmaßen
+    const unruhig = await ruhe(p);
+    if (unruhig) { note('Regel', unruhig, where); return; }
     const r = await p.evaluate(skip => {
       const vis = e => { const s = getComputedStyle(e), b = e.getBoundingClientRect();
         return b.width > 0 && b.height > 0 && s.visibility !== 'hidden' && s.display !== 'none' && b.bottom > 0 && b.top < innerHeight && b.right > 0 && b.left < innerWidth; };
