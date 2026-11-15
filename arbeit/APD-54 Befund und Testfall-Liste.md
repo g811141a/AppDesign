@@ -41,6 +41,7 @@ Neue Prüfung `tests/ablauf-fremdtext.mjs` im Reiselogbuch, iPad quer und iPhone
 | T-7 | Backup mit zusammengesetzten Smileys (🚶🏽‍♂️, ☹️ mit und ohne Variantenzeichen) laden | alle bleiben mit ihren Zählern |
 | T-8 | Reiselogbuch mit Titel `<b>x</b>` löschen | Sprechblase zeigt den Titel wörtlich (schon heute so; sichert B-3) |
 | T-9 | Gegenprobe gegen 3.56.2 (`PRUEF_APP=../_alt.html`) | T-1, T-2 und T-4 rot |
+| T-10 | (ergänzt und bestätigt, Nutzer 15.11.2026, Sitzung 0118) ein Reiselogbuch, in dem jedes Textfeld (Titel, Teilnehmer, Ort, Verlauf, Quartier, Lokal, Fazit, Reisemittel) `<b>x</b>` enthält; jede Ansicht öffnen (Seitenleiste, Startliste, Reiselogbuch, Tageserfassung, Einstellen, Suche, Ausgabe-Vorschau) | in keiner Ansicht entsteht aus den Daten ein Element `<b>`; gefundene Stellen werden mit `esc()` behoben und im Bericht genannt |
 
 ## Usertest
 
