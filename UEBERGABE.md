@@ -33,7 +33,7 @@ die ganze Zusammenarbeit** (0 Nr. 15); die Arbeitsumgebung steht in der AppDesig
   - **APD-85 Teil 6** (Wackler WebKit): `langDruecken` und `menueZu` in `tests/ablauf.mjs`, `ruhe()` gibt null oder ‚Seite nicht zur Ruhe gekommen‘
     zurück (`hig.mjs` – `measure` meldet es), Selbsttest APD-85/F-5; 8 Prüfungen im Reiselogbuch und `tests/kontextmenue.mjs` umgestellt.
     Nicht gelaufen: Gegenprobe APD-85/F-4, Lastnachweis F-7 und F-8.
-  - **APD-132** (neu): `checkSchema` lässt ‚APD-54/T-1 bis T-10‘ zu (Zusammenarbeit 2.4); Gegenprobe `schema:APD-78/S-2` rot.
+  - **APD-132** (neu): `checkSchema` lässt die Nummer allein zu, wenn dieselbe Liste davor mit Elternnummer steht (Zusammenarbeit 2.4); Gegenprobe `schema:APD-78/S-2` rot.
   - **APD-131** (neu, Reste aus 0106): Wortlaut `arbeit/APD-131 Reste aus 0106 Wortlaut.md` bestätigt und eingetragen (PROMPT ‚Tage als Kästen‘,
     Designrichtlinie 15.11 VoiceOver-Namen, 16 ‚Cursor am Ende‘, `tests/README.md` beider Repos).
   - **APD-54** (Fremden Text bereinigen, keine allgemeine Regel): `arbeit/APD-54 Befund und Testfall-Liste.md` bestätigt; `index.html` – `esc()` in
