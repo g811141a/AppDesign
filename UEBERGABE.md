@@ -39,7 +39,7 @@ jeder Sitzung zuerst, dann die ganze Zusammenarbeit** (0 Nr. 15); die Arbeitsumg
   graue Abfrage) mit demselben Aussehen und Verhalten.
 - **Umfang und Entscheidungen** stehen in `arbeit/APD-135 Konsolidierung 3 Vorschlag.md` (Abschnitt H): Auftrag A, Paket 1 Prüfungen und
   Bauzeit (mit APD-134), Paket 2 Lesekosten und Ablage, Paket 3 Backlog, Import, Code, Paket 4 gekapselte Bausteine **APD-135/B-1 bis B-5
-  mit Umbau von `ui.js`** (Claude hatte B-5 nicht empfohlen, der Nutzer hat ihn gewählt); Reihenfolge **Befund → 4.60.0 (APD-30) → Bau der
+  mit Umbau von `ui.js`** (Claude hatte APD-135/B-5 nicht empfohlen, der Nutzer hat ihn gewählt); Reihenfolge **Befund → 4.60.0 (APD-30) → Bau der
   Konsolidierung in kleinen Versionen**; neue Sitzung mit Aufwand hoch.
 - **Erste Befunde aus dem Code (0120 gelesen):** `v4/ui.js` ist ein klassisches Skript mit 3.325 Zeilen und 169 globalen Funktionen, rund
   20 Hörer auf `resize`, geteilter Zustand; AppDesign hat keine Seite, auf der Bausteine allein laufen (`vorlage/index.html` wird nur als
@@ -55,7 +55,7 @@ jeder Sitzung zuerst, dann die ganze Zusammenarbeit** (0 Nr. 15); die Arbeitsumg
    - Liste der Mehrgleisigkeiten und Widersprüche über alle Regeldateien (Zusammenarbeit, Designrichtlinie allgemein mit Katalog,
      Designrichtlinie Reiselogbuch, beide `PROMPT.md`, alle drei `CLAUDE.md`, `ERKENNTNISSE.md`), mit Wortlaut alt und neu (0 Nr. 29);
    - Tabelle Prüfung → Baustein → Regel, gemessen mit `--abdeckung`; Laufzeit je Prüfung; Vorschlag für neue Stufen (‚App‘, ‚Baustein‘);
-   - Karte der Bausteine in `ui.js` (in sich geschlossen oder greift in die Seite ein) und Plan für B-3 bis B-5 in kleinen Schritten;
+   - Karte der Bausteine in `ui.js` (in sich geschlossen oder greift in die Seite ein) und Plan für APD-135/B-3 bis B-5 in kleinen Schritten;
    - Nachweis-Tabelle ‚stand in … → steht jetzt in … → geprüft durch …‘, Einsparung in Minuten und Risiko je Vorschlag;
    - jeder Punkt einzeln zum Entscheiden im Auswahlfenster. Die Sicherheitsregeln stehen im Vorschlag, Abschnitt B.
 3. **Danach Bau-Frage für AppDesign 4.60.0 mit Reiselogbuch 3.57.0** (Nebenversion, Prüflauf voll) mit den 2 bereiten Punkten:
