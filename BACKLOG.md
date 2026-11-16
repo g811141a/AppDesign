@@ -1,6 +1,6 @@
 # AppDesign – Backlog (allgemeine Themen)
 
-**Stand 15.11.2026** · Aktuelle Version: AppDesign 4.59.3
+**Stand 16.11.2026** · Aktuelle Version: AppDesign 4.59.3
 
 Allgemeine Themen, die alle Apps betreffen. App-Themen stehen im Backlog der jeweiligen App.
 Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.4.
@@ -20,7 +20,6 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| P-106 | 1 | **Usertest P-106 (Reiselogbuch 3.56.3, AppDesign 4.59.3):** Version prüfen (P-106/0), Smileys der Schnellauswahl sind noch da (P-106/1) – Testfälle im CHANGELOG des Reiselogbuchs | prüfen |
 
 ## 2. Weitere Themen (in Klärung)
 
@@ -53,6 +52,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Thema | Version | Datum |
 |---|---|---|---|
+| P-106 | **Usertest P-106 (Reiselogbuch 3.56.3, AppDesign 4.59.3):** alles ok; Testfall P-106/1 berichtigt – die Smiley-Leisten stehen unter ‚Wie war was?‘ und ‚Essen und Trinken‘, nicht unter ‚Verlauf‘ (Nutzer 16.11.2026, Sitzung 0119) | 4.59.3 | 16.11.2026 |
 | APD-133 | **Nach dem Drehen steht der Inhalt am Ende (Befund und Testfall-Liste `arbeit/APD-133 Befund Drehen.md`, APD-133/B-1 bis B-6; Nutzer 15.11.2026, Sitzung 0119):** `ui.js` – `restoreTop` übernimmt nur die mit `resize` gemeldete Fenstergröße; lief es in der Lücke zwischen neuer Größe und `resize`, überschrieb `rememberTop` nach dem Umbau der App das Gedächtnis mit ‚ganz am Ende‘ (R-8.1). Neue Prüfung im Reiselogbuch `tests/ablauf-drehen-luecke.mjs` (gegen 4.59.2 rot) | 4.59.3 | 15.11.2026 |
 | APD-85 | **Teil 6 – Wackler WebKit:** `langDruecken` in `tests/ablauf.mjs` wartet auf die Endlage statt fester Pause, `ruhe()` meldet ‚Seite nicht zur Ruhe gekommen‘ (APD-85/F-1 bis F-3, F-5, F-6; Gegenprobe F-4 und Lastnachweis F-7, F-8 nicht gelaufen); 8 Prüfungen im Reiselogbuch umgestellt | 4.59.3 | 15.11.2026 |
 | APD-132 | **`checkSchema` lässt die Nummer allein zu**, wenn dieselbe Liste in der Zeile davor mit Elternnummer steht (Zusammenarbeit 2.4); Gegenprobe bleibt rot | 4.59.3 | 15.11.2026 |
