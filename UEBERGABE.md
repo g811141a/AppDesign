@@ -35,16 +35,16 @@ Arbeitsumgebung steht in der AppDesign-`CLAUDE.md`.
 
 - **Nichts gebaut, keine Version.** Nur gelesen und Arbeitsdateien in `arbeit/` geschrieben, jede mit `doku-regeln` grün hochgeladen.
 - **Befund zu APD-135 fertig** – fünf Teilbefunde:
-  `arbeit/APD-135 Befund C Prüfungen.md` (C-1 bis C-68, dazu `arbeit/APD-135 Befund C Tabelle.json`),
-  `arbeit/APD-135 Befund U Bausteine ui.js.md`, `arbeit/APD-135 Befund F Arbeitsregeln.md` (F-1 bis F-41),
-  `arbeit/APD-135 Befund D Designregeln.md` (D-1 bis D-51), `arbeit/APD-135 Befund L Ablage Backlog Code.md` (L-1 bis L-31).
-- **Zusammengeführt in `arbeit/APD-135 Konsolidierung 3 Befund und Plan.md`:** Kurzfassung, 56 Wortlaute alt/neu (W-1 bis W-56),
-  35 Entscheidungen (J-1 bis J-35) in 7 Paketen, Nachweis-Tabelle, Stufen (Stufe ‚App‘ spart nur rund 3,6 min), Plan B-3 bis B-5.
-- **Entschieden (Abschnitt 7 der Plan-Datei):** J-1 Pakete 1 → 7 · J-3 ganz getrennt von 4.60.0 · **J-4 Pakete 1 und 3 zusammen in einer
-  Version** · J-2 Korrekturen als Liste · J-5 Fenster nur, wenn der Nutzer etwas tun soll · J-6 Korrekturversion mit Bau-Frage · J-8 Blau
-  an den gebauten Stand · J-9 beim Usertest keine Empfehlung · J-10 erst Lagebild, dann Startfrage · J-12 ‚ihre Prüfung‘ · J-14
-  Versionsgeschichten auslagern (alle vier) · J-15 Backlog nur bis ‚## Erledigt‘ · J-18 Datum in Abweichungstabellen als Ausnahme ·
-  J-19 erst in Paket 6 prüfen · J-20 G-8 und G-16 mit Paket 5 als R-Regeln.
+  `arbeit/APD-135 Befund C Prüfungen.md` (APD-135/C-1 bis C-68, dazu `arbeit/APD-135 Befund C Tabelle.json`),
+  `arbeit/APD-135 Befund U Bausteine ui.js.md`, `arbeit/APD-135 Befund F Arbeitsregeln.md` (APD-135/F-1 bis F-41),
+  `arbeit/APD-135 Befund D Designregeln.md` (APD-135/D-1 bis D-51), `arbeit/APD-135 Befund L Ablage Backlog Code.md` (APD-135/L-1 bis L-31).
+- **Zusammengeführt in `arbeit/APD-135 Konsolidierung 3 Befund und Plan.md`:** Kurzfassung, 56 Wortlaute alt/neu (APD-135/W-1 bis W-56),
+  35 Entscheidungen (APD-135/J-1 bis J-35) in 7 Paketen, Nachweis-Tabelle, Stufen (Stufe ‚App‘ spart nur rund 3,6 min), Plan B-3 bis B-5.
+- **Entschieden (Abschnitt 7 der Plan-Datei):** APD-135/J-1 Pakete 1 → 7 · APD-135/J-3 ganz getrennt von 4.60.0 · **APD-135/J-4 Pakete 1 und 3 zusammen in einer
+  Version** · APD-135/J-2 Korrekturen als Liste · APD-135/J-5 Fenster nur, wenn der Nutzer etwas tun soll · APD-135/J-6 Korrekturversion mit Bau-Frage · APD-135/J-8 Blau
+  an den gebauten Stand · APD-135/J-9 beim Usertest keine Empfehlung · APD-135/J-10 erst Lagebild, dann Startfrage · APD-135/J-12 ‚ihre Prüfung‘ · APD-135/J-14
+  Versionsgeschichten auslagern (alle vier) · APD-135/J-15 Backlog nur bis ‚## Erledigt‘ · APD-135/J-18 Datum in Abweichungstabellen als Ausnahme ·
+  APD-135/J-19 erst in Paket 6 prüfen · APD-135/J-20 G-8 und G-16 mit Paket 5 als R-Regeln.
 - Arbeitsdateien: `arbeit/0122 Lagebild.md`, `arbeit/0122 Stand Befund APD-135.md`.
 - Backlog APD-135 um den Stand ergänzt.
 
@@ -54,10 +54,10 @@ Arbeitsumgebung steht in der AppDesign-`CLAUDE.md`.
    als Markdown-Datei – mit Kachel**, darin der Stand der Nutzungsgrenze.
 2. **Restliche Entscheidungen zu APD-135 im Auswahlfenster** (je bis zu 4, Datei davor im Seitenbereich; Wortlaute in Abschnitt 1, Punkte
    in Abschnitt 5 der Plan-Datei; nicht die ganze Plan-Datei lesen, nur Abschnitt 5 und 7 sowie die betroffenen W-n):
-   - Paket 3 (kommt mit Paket 1 in eine Version): **J-16** CHANGELOG lesen · **J-17** Usertests nur im Backlog der App · **J-7** ‚Muster
-     nur hell‘ · **J-11** Nutzungsgrenze im Lagebild · **J-25** Arbeitsumgebung der AppDesign-`CLAUDE.md`;
-   - Paket 2 (Import): J-13, J-33, J-34, J-35;
-   - Pakete 4 bis 7: J-21, J-22, J-23, J-24, J-26 bis J-32.
+   - Paket 3 (kommt mit Paket 1 in eine Version): **APD-135/J-16** CHANGELOG lesen · **APD-135/J-17** Usertests nur im Backlog der App · **APD-135/J-7** ‚Muster
+     nur hell‘ · **APD-135/J-11** Nutzungsgrenze im Lagebild · **APD-135/J-25** Arbeitsumgebung der AppDesign-`CLAUDE.md`;
+   - Paket 2 (Import): APD-135/J-13, APD-135/J-33, APD-135/J-34, APD-135/J-35;
+   - Pakete 4 bis 7: APD-135/J-21, APD-135/J-22, APD-135/J-23, APD-135/J-24, APD-135/J-26 bis J-32.
    Jede Entscheidung sofort in Abschnitt 7 und ins Backlog eintragen und hochladen.
 3. **Danach Bau-Frage für AppDesign 4.60.0 mit Reiselogbuch 3.57.0** (Nebenversion, Prüflauf voll) mit den 2 bereiten Punkten:
    - **APD-30** Wischaktionen mit sperrender Sprechblase: Testfall-Liste `arbeit/APD-30 Wischaktionen Testfall-Liste.md`, Wortlaut
