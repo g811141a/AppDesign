@@ -92,6 +92,7 @@ Teil 1b – Zusammenarbeit 2.1 bis Ende (18 Stellen: 2.1 ‚Auswahlfenster‘ bi
 Teil 2 – AppDesign-`CLAUDE.md`, README, `UEBERGABE.md` (8 Stellen, W-19 weiter erst mit Paket 2) wie unten.
 Teil 3a – Designrichtlinie W-23 bis W-39 (Z. 1232 bis R-4.13, R-2.5 bis R-3.6) wie unten.
 Teil 3b – Designrichtlinie W-40 bis W-51 (Farbtabelle bis ‚seit X.Y.Z‘ an 20 Stellen) wie unten.
+Teil 4 – Reiselogbuch-Dateien (W-17, W-31, W-8, W-51, W-44, W-33) wie unten.
 
 ## Abweichungen zwischen Plan und heutigem Text
 
