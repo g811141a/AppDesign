@@ -39,3 +39,12 @@ Texte (CHANGELOG mit Usertest P-107 ab /0, Backlog, Versionsgeschichten) → `fa
 ## Offene Usertests
 
 Keine.
+
+## Antwort: Nein (17.11.2026)
+
+Nichts gebaut. APD-30 und APD-133/V-1 bleiben unter ‚0. Nächste Version‘ bereit. Möglichkeiten jetzt:
+
+- **Konsolidierung vorziehen:** den Wortlaut für Pakete 1 und 3 zusammenstellen (Liste nach J-2, dazu die Wortlaute zu J-7, J-11, J-14 bis J-17)
+  zur Bestätigung nach 0 Nr. 29 – noch kein Bau. Das hebt J-3 nicht auf (die Konsolidierung bleibt eine eigene Version).
+- **Übergabe:** Sitzung jetzt beenden (Kontext rund 202.000), nächste Sitzung 0124.
+- Etwas anderes (z. B. Grund für ‚Nein‘ oder Änderungen an 4.60.0) im Chat.
