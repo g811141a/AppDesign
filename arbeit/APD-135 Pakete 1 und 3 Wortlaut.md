@@ -83,6 +83,10 @@ APD-135/J-25 (‚Arbeitsumgebung (Cloud)‘ bleibt in der AppDesign-`CLAUDE.md`)
    APD-135/W-40 auch Z. 100 (aus APD-135/D-10), APD-135/W-46 auch 15.10 Z. 846 (aus APD-135/D-23). **Empfehlung: mitnehmen** – sonst widerspricht
    8 dem neuen R-5.8, Z. 100 nennt weiter die tote Variable `--field-line`, und 15.10 sagt weiter ‚iPhone statt Tabellenzeile‘.
 
+**Entschieden (Nutzer 17.11.2026, Sitzung 0123):** 1. APD-135/W-19 **mit Paket 2** (zusammen mit W-29) · 2. ausgelagerte Versionsgeschichten
+**nicht** in die feste Fassung · 3. die drei Ergänzungen aus Befund D (DR 8 Z. 319–320, Z. 100, 15.10 Z. 846) **mitnehmen**. Der übrige Wortlaut ist noch
+nicht bestätigt.
+
 ## Abweichungen zwischen Plan und heutigem Text
 
 - **AppDesign-Backlog:** seit dem Plan ist APD-136 in Z. 30 dazugekommen – APD-62 steht jetzt in **Z. 31** (Plan: 30), die 18 Zeilen ‚später‘

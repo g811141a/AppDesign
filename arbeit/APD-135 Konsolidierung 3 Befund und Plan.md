@@ -665,5 +665,6 @@ Datei heißt `arbeit/APD-135 Befund C Tabelle.json`.
 | J-28 | **`.iconbtn` mit Doku streichen, `.lcount` behalten** (W-55) – Sitzung 0123 |
 | J-32 | Allgemeines aus der App nach AppDesign (U-14 bis U-24, `sw.js` als Basis): **eigenes Thema nach B-3** – wird nach Paket 6 mit Priorität ins Backlog übernommen (0 Nr. 24) – Sitzung 0123 |
 | J-27 neu | B-5 wird **festes Ziel**: APD-136 (AD-Beans, Nutzer 17.11.2026, Sitzung 0123) – alle allgemeinen Elemente als gekapselte Bausteine (Fabrik-Funktion in `ui.js`); Reihenfolge nach Paket 6 (B-4, B-3) bleibt, die Schritte von B-5 kommen je mit eigener Bau-Frage. Ersetzt die Wahl ‚nur bei Anlass‘ von oben |
+| Wortlaut 1+3 | `arbeit/APD-135 Pakete 1 und 3 Wortlaut.md`: W-19 **mit Paket 2**; Versionsgeschichten **nicht** in die feste Fassung; Ergänzungen aus Befund D (D-10, D-18, D-23) **mitnehmen** – Sitzung 0123 |
 
 **Alle 35 Entscheidungen getroffen** (Sitzungen 0122 und 0123).
