@@ -67,3 +67,5 @@ Möglichkeiten:
   im Code `createMenu(…)`
 - (b) ‚Bean‘ allein – kurz; in AppDesign gibt es nur eine Art Bean
 - (c) ‚APD-Bean‘ trotzdem – dann braucht 2.4 eine Ausnahme
+
+**Entschieden (17.11.2026): (a) ‚AD-Bean‘.** Eingetragen: APD-136 im Backlog (Priorität 1, in Klärung), APD-135/J-27 neu in Abschnitt 7 der Plan-Datei, Hinweis in der Zeile von APD-30.
