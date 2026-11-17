@@ -129,3 +129,31 @@ Sprechblase bei ‚Löschen‘, ‚Bewegung reduzieren‘, VoiceOver-Namen – s
 
 **Zum Vergleich mit Nummer (Variante b/c):** ‚ADB-1 Wischaktionen‘ in der Doku, im Code trotzdem `createSwipe`, `.ad-swipe…`, `data-ad-bean="swipe"` –
 die Nummer käme als zweite Kennung dazu.
+
+## Präfix nach Bereich? (Frage des Nutzers, 17.11.2026)
+
+**Einschätzung:** Eine Einteilung nach Bereichen hilft beim Überblick. Die genannten Bereiche mischen aber zwei Achsen:
+- **nach Aufgabe:** Oberflächenaktionen, Eingabeelemente, Kalkulationen;
+- **nach Technik:** JavaScript, CSS – jede AD-Bean besteht aus beidem (Fabrik in `ui.js` und CSS unter `.ad-…`), daher taugt die Technik nicht zur Einteilung.
+  Farben, Schrift und Abstände (`:root`-Variablen in `design.css`) sind keine Bean, sondern die **Grundlagen**, auf denen alle Beans aufbauen.
+
+**So macht es Apple:** Die HIG ordnet ihre Bausteine nach Aufgabe; belegt ist die Gruppe ‚Menus and actions‘ (Pfad
+`developer.apple.com/design/human-interface-guidelines/components/menus-and-actions/…`, z. B. Edit menus, Context menus). Weitere Gruppen wie ‚Selection and
+input‘ und ‚Navigation and search‘ habe ich in der Suche nicht belegt gefunden (Vermutung).
+
+**Vorschlag Bereiche (nach Aufgabe, je Bean genau einer):**
+
+| Bereich | Kürzel | Beispiele heute |
+|---|---|---|
+| Aktionen und Menüs | `aktion` | Kapsel, Menü, Kontextmenü, Wischaktionen, schwebende Schaltfläche |
+| Navigation und Suche | `nav` | Seitenleiste, Kopfzeile, Suche, Navigation und Blatt |
+| Fenster und Meldungen | `fenster` | Fenster, Sprechblase, Meldung, leerer Zustand |
+| Eingabe | `eingabe` | Eingabefeld mit Fehlermeldung, Smiley-Leiste, Schalter, Options-Kapsel, Format beim Tippen (Beträge, APD-56) |
+| Inhalt | `inhalt` | Tabelle, Kasten |
+| Dienste (ohne eigene Oberfläche) | `dienst` | Backup, Abgleich, Offline, Version, Messmodus, Berechnungen |
+
+**Wo der Bereich steht – zwei Wege:**
+- **(a) Als Gruppe in der Liste der AD-Beans, die Kennung bleibt kurz (Empfohlen):** z. B. Bereich ‚Aktionen‘ → `swipe`, `menu`. Ändert sich die
+  Zuordnung später, wird nur die Liste umgestellt – die Kennung bleibt (sie darf nie umbenannt werden). Die Prüfung verlangt je Bean genau einen Bereich.
+- **(b) Als Präfix in der Kennung:** z. B. `aktion-swipe` → `createAktionSwipe`, `.ad-aktion-swipe`, `data-ad-bean="aktion-swipe"`. Sofort sichtbar, aber
+  länger, und eine falsche Zuordnung bliebe für immer im Namen.
