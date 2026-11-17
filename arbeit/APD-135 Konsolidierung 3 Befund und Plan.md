@@ -633,5 +633,9 @@ Datei heißt `arbeit/APD-135 Befund C Tabelle.json`.
 | J-5 | Fenster am Ende **nur bei Antworten, nach denen du etwas tun sollst** (W-4) |
 | J-6 | Fehler aus dem Testen: **eigene Korrekturversion mit Bau-Frage**, Nr. 25 verweist auf Nr. 8 (W-5) |
 | J-8 | ‚Blau gefüllt‘: **Regel an den gebauten Stand** – Hauptaktion in Fenster/Sprechblase, Backup-Knopf, fester Hinweis, gewählte Kachel (W-37) |
+| J-9 | Ausnahme bei der Rückmeldung zu einem Usertest: **dort keine Empfehlung**, ‚Ich schreibe im Chat‘ bleibt (W-11) |
+| J-10 | Sitzung ohne Auftrag: **erst das Lagebild, dann das Fenster ‚Was möchtest du als Nächstes tun?‘** (W-16) |
+| J-12 | 0 Nr. 3: **‚ihre Prüfung‘** statt ‚genau eine Prüfung‘ (W-23) |
+| J-18 | Datum in den Abweichungstabellen: **Ausnahme in 0 Nr. 3** (W-43) |
 
-Offen: J-7 und J-9 bis J-35.
+Offen: J-7, J-11, J-13 bis J-17, J-19 bis J-35.
