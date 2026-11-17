@@ -621,3 +621,13 @@ Aus den fünf Befunden gesammelt (Einzelheiten jeweils im Abschnitt ‚Nicht ode
 
 Ergebnis: 16 von 16 Wortlauten richtig, 15 von 16 Zeilen genau, eine um 1 verschoben (D-22). Nebenbei: Befund C nennt seine Tabelle ‚`C-tabelle.json`‘ – die
 Datei heißt `arbeit/APD-135 Befund C Tabelle.json`.
+
+## 7. Deine Entscheidungen (17.11.2026, Sitzung 0122, im Auswahlfenster)
+
+| Nr. | Entscheidung |
+|---|---|
+| J-1 | Reihenfolge der Pakete **1 → 2 → 3 → 4 → 5 → 6 → 7** |
+| J-3 | Konsolidierung **ganz getrennt** von AppDesign 4.60.0 (APD-30) |
+| J-4 | **Pakete 1 und 3 zusammen in einer Version** (spart einen vollen Prüflauf); die übrigen Pakete je eine Version. Damit verschieben sich die vorläufigen Versionsnummern in Abschnitt 5 – die Bau-Frage setzt sie. |
+
+Offen: J-2 und J-5 bis J-35.
