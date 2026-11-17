@@ -69,3 +69,23 @@ Möglichkeiten:
 - (c) ‚APD-Bean‘ trotzdem – dann braucht 2.4 eine Ausnahme
 
 **Entschieden (17.11.2026): (a) ‚AD-Bean‘.** Eingetragen: APD-136 im Backlog (Priorität 1, in Klärung), APD-135/J-27 neu in Abschnitt 7 der Plan-Datei, Hinweis in der Zeile von APD-30.
+
+## Eindeutige Kennung je AD-Bean (Frage des Nutzers, 17.11.2026)
+
+Gute Idee – das ist die Grundlage für APD-135/B-4.1 (Liste der öffentlichen Namen mit Prüfung auf Namensgleichheit). Heute hat ein Element bis zu
+vier verschiedene Namen: Abschnitt der Designrichtlinie (15.6 Menü), Funktion (`openMenu`), CSS-Klasse (`.menu`), Prüfung (`checkMenue` o. ä.).
+
+**Vorschlag: eine Kennung je AD-Bean, überall dieselbe**
+- Kennung: kurzes Wort in Kleinbuchstaben, z. B. `menu`, `pop` (Sprechblase), `swipe` (Wischaktionen) – fest, nie umbenannt, nie wiederverwendet
+  (wie die Nummern, 2.4).
+- Daraus abgeleitet, ohne zweite Liste: Fabrik `createMenu(…)`, CSS nur unter `.ad-menu…`, im Aufbau `data-ad-bean="menu"`, Messmodus ‚menu …‘,
+  Prüfung `checkBean('menu')`.
+- **Eine Liste** in AppDesign (Designrichtlinie 15 und als Datei für die Prüfung): Kennung · Fabrik · Eigenschaften mit Standardwerten · Methoden ·
+  Ereignisse · Regeln (R-n) · Prüfung.
+- Eine Prüfung meldet: Kennung doppelt, Fabrik oder CSS ohne Eintrag in der Liste, CSS einer Bean außerhalb ihres Präfixes, App benutzt einen Namen
+  außerhalb der Schnittstelle.
+
+Möglichkeiten:
+- **(a) Sprechende Kennung, überall gleich (Empfohlen)** – ein Name für Code, CSS, Aufbau, Prüfung und Doku; nichts muss synchron gehalten werden
+- (b) Nummer mit neuem Präfix (z. B. ADB-7 Menü) – passt zum Nummernschema, aber zusätzlich zum Namen im Code, zwei Kennungen je Bean
+- (c) beides: Nummer für Doku, Name für Code
