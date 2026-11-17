@@ -629,5 +629,9 @@ Datei heißt `arbeit/APD-135 Befund C Tabelle.json`.
 | J-1 | Reihenfolge der Pakete **1 → 2 → 3 → 4 → 5 → 6 → 7** |
 | J-3 | Konsolidierung **ganz getrennt** von AppDesign 4.60.0 (APD-30) |
 | J-4 | **Pakete 1 und 3 zusammen in einer Version** (spart einen vollen Prüflauf); die übrigen Pakete je eine Version. Damit verschieben sich die vorläufigen Versionsnummern in Abschnitt 5 – die Bau-Frage setzt sie. |
+| J-2 | Paket 1: die Wortlaute ohne eigenen J-Punkt **als Liste übernehmen** (alt und neu in Abschnitt 1) |
+| J-5 | Fenster am Ende **nur bei Antworten, nach denen du etwas tun sollst** (W-4) |
+| J-6 | Fehler aus dem Testen: **eigene Korrekturversion mit Bau-Frage**, Nr. 25 verweist auf Nr. 8 (W-5) |
+| J-8 | ‚Blau gefüllt‘: **Regel an den gebauten Stand** – Hauptaktion in Fenster/Sprechblase, Backup-Knopf, fester Hinweis, gewählte Kachel (W-37) |
 
-Offen: J-2 und J-5 bis J-35.
+Offen: J-7 und J-9 bis J-35.
