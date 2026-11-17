@@ -157,3 +157,43 @@ input‘ und ‚Navigation and search‘ habe ich in der Suche nicht belegt gefu
   Zuordnung später, wird nur die Liste umgestellt – die Kennung bleibt (sie darf nie umbenannt werden). Die Prüfung verlangt je Bean genau einen Bereich.
 - **(b) Als Präfix in der Kennung:** z. B. `aktion-swipe` → `createAktionSwipe`, `.ad-aktion-swipe`, `data-ad-bean="aktion-swipe"`. Sofort sichtbar, aber
   länger, und eine falsche Zuordnung bliebe für immer im Namen.
+
+## Beispiel: Eingabefeld nur für eine gültige E-Mail-Adresse (Frage des Nutzers, 17.11.2026)
+
+Entwurf zur Anschauung, noch nicht gebaut.
+
+**Name:** Kennung **`email`**, Bereich ‚Eingabe‘. Sie baut auf der Grund-Bean **`field`** auf (Eingabefeld mit Fehlermeldung, heute 15.11 mit
+`feldFehler`, R-5.3) – wie in Java `EmailField extends TextField`: `field` bringt Aussehen, ⓧ zum Leeren, Fehlermeldung und Fokus mit, `email` nur
+das, was eine E-Mail-Adresse ausmacht. Weitere Felder nach demselben Muster: `amount` (Betrag), `date`, `phone`, `iban`.
+
+| Feld | Inhalt |
+|---|---|
+| Kennung | `email` (baut auf `field` auf) |
+| Fabrik | `createEmail(feld, einstellungen)` |
+| Eigenschaften (Standardwert) | `pflicht` (false) · `mehrere` (false – eine Adresse) · `wert` (get/set, immer bereinigt) · `gueltig` (nur lesen) |
+| Aufbereitung beim Verlassen | Leerzeichen am Rand entfernen, Teil nach dem @ klein schreiben |
+| Prüfungen (in der Bean) | leer und Pflicht → ‚Bitte eine E-Mail-Adresse eingeben.‘ · Format falsch → ‚Bitte eine gültige E-Mail-Adresse eingeben (z. B. name@beispiel.at).‘ · Leerzeichen in der Mitte, zwei @, Punkt am Ende → wie Format falsch |
+| Wann geprüft | beim Verlassen des Felds und beim Häkchen (wie R-5.3), nicht bei jedem Tastendruck |
+| Tastatur und Gerät | `type="email"`, `inputmode="email"`, `autocomplete="email"`, keine Großschreibung, keine Autokorrektur, keine Rechtschreibprüfung – am iPhone kommt die Tastatur mit @ und Punkt |
+| Methoden | `pruefen()` (gibt `true`/`false`, setzt die Meldung) · `leeren()` |
+| Ereignisse | `on('gueltig', wert => …)` · `on('fehler', text => …)` |
+| CSS / Aufbau | nur `.ad-email…` (sonst das CSS von `field`) · `data-ad-bean="email"` |
+| Prüfbeispiele (in der Bean) | gültig: `name@beispiel.at`, `vor.nach@sub.beispiel.com`, `a+b@x.de` · ungültig: `name`, `name@`, `@beispiel.at`, `na me@x.de`, `a@@x.de`, `name@x.` |
+| Prüfung | `checkBean('email')` – spielt die Prüfbeispiele in Chromium und WebKit durch und prüft Meldungstexte, Tastatur-Attribute und die Grundregeln |
+
+**‚Alle Prüfungen in der Bean‘ heißt zweierlei:** (1) die **Gültigkeitsregeln** für die Eingabe (was gilt als E-Mail, welche Meldung) und (2) die
+**Prüfbeispiele** für den automatischen Test. Beides steht nur in der Bean; die allgemeine Prüfung `checkBean` liest die Beispiele aus und braucht
+kein eigenes Wissen über E-Mail-Adressen. Eine App, die `email` nutzt, schreibt keine eigene Prüfung dafür.
+
+**So nutzt die App sie:**
+```js
+const mail = createEmail(document.querySelector('#kontaktMail'), { pflicht: true });
+// beim Häkchen:
+if (!mail.pruefen()) return;   // Meldung steht schon unter dem Feld
+speichern(mail.wert);
+```
+
+**Varianten für den Namen:**
+- **(a) `email` auf der Grund-Bean `field` (Empfohlen)** – jede Feldart ist eine eigene Bean mit ihren Prüfungen, die Grund-Bean einmal
+- (b) eine Bean `field` mit Eigenschaft `typ: 'email'` – weniger Beans, aber `field` wächst mit jeder Feldart und kennt alle Regeln
+- (c) `field-email` als Name – zeigt die Verwandtschaft im Namen, ist aber länger
