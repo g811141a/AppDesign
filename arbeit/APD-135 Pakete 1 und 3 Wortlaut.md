@@ -87,6 +87,9 @@ APD-135/J-25 (‚Arbeitsumgebung (Cloud)‘ bleibt in der AppDesign-`CLAUDE.md`)
 **nicht** in die feste Fassung · 3. die drei Ergänzungen aus Befund D (DR 8 Z. 319–320, Z. 100, 15.10 Z. 846) **mitnehmen**. Der übrige Wortlaut ist noch
 nicht bestätigt.
 
+**Bestätigt (Nutzer 17.11.2026, Sitzung 0124):** Teil 1a – Zusammenarbeit Abschnitt 0 (16 Stellen: Kopf Z. 5 bis 0 Nr. 19) wie unten.
+Teil 1b – Zusammenarbeit 2.1 bis Ende (18 Stellen: 2.1 ‚Auswahlfenster‘ bis W-31 Versionsgeschichte) wie unten.
+
 ## Abweichungen zwischen Plan und heutigem Text
 
 - **AppDesign-Backlog:** seit dem Plan ist APD-136 in Z. 30 dazugekommen – APD-62 steht jetzt in **Z. 31** (Plan: 30), die 18 Zeilen ‚später‘
