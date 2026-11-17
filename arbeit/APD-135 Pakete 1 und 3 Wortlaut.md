@@ -89,6 +89,8 @@ nicht bestätigt.
 
 **Bestätigt (Nutzer 17.11.2026, Sitzung 0124):** Teil 1a – Zusammenarbeit Abschnitt 0 (16 Stellen: Kopf Z. 5 bis 0 Nr. 19) wie unten.
 Teil 1b – Zusammenarbeit 2.1 bis Ende (18 Stellen: 2.1 ‚Auswahlfenster‘ bis W-31 Versionsgeschichte) wie unten.
+Teil 2 – AppDesign-`CLAUDE.md`, README, `UEBERGABE.md` (8 Stellen, W-19 weiter erst mit Paket 2) wie unten.
+Teil 3a – Designrichtlinie W-23 bis W-39 (Z. 1232 bis R-4.13, R-2.5 bis R-3.6) wie unten.
 
 ## Abweichungen zwischen Plan und heutigem Text
 
