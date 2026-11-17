@@ -151,6 +151,23 @@ Gilt die eingegraute, sperrende Sprechblase für **alle** Abfragen (Frage beim W
 | W-70 | Gegenprobe: Kapseln bei geschlossener Kachel erreichbar | W-59 wird rot |
 | W-71 | Doku: 15.4, Katalog (neue Regel), 16 ‚Bewusste Abweichungen‘ (Durchwischen fragt; keine VoiceOver-Aktionen) | `doku.mjs` – `checkCatalog` grün |
 
+### 9. Schnittstelle der AD-Bean `swipeactions` (APD-136, bestätigt 17.11.2026, Sitzung 0125)
+
+Schnittstelle und Begründung: `arbeit/0125 APD-136 Schnittstelle swipeactions.md` (Abschnitt 2).
+
+| Nr. | Fall | Erwartet |
+|---|---|---|
+| W-72 | `checkBeans`: Liste der AD-Beans (Designrichtlinie 15) gegen `v4/ui.js` und `v4/design.css` | `createSwipeactions` vorhanden; Kennung nur einmal in der Liste; CSS der Bean nur unter `.ad-swipeactions…`; jede Fabrik in `ui.js`, die eine Bean ist, steht in der Liste |
+| W-73 | `checkBeans`: Code des Reiselogbuchs (`index.html`) | nennt keine Klasse `.ad-swipeactions…` und keinen inneren Namen der Bean – nur `createSwipeactions`, die Eigenschaften, `offen`, `masse`, `schliessen`, `entfernen`, `on` |
+| W-74 | Nach dem Start | die Liste (`#side`) trägt `data-ad-bean="swipeactions"` |
+| W-75 | `createSwipeactions` ohne `kacheln` oder `aktionen`, oder ein Eintrag ohne `kurz` | Fehler ‚swipeactions: … fehlt‘ in der Konsole; die Liste bleibt bedienbar (Tippen öffnet, langes Drücken zeigt das Kontextmenü) |
+| W-76 | Standardwert: ohne `durchwischen` über 60 % wischen; mit `durchwischen: false` dasselbe | ohne: Sprechblase wie W-17 · mit `false`: Kachel rastet offen ein, keine Sprechblase |
+| W-77 | `offen` und Ereignisse: öffnen, schließen per Tippen, öffnen, Neuaufbau der Liste | `offen` = Kachel bzw. `null`; ‚offen‘ und ‚zu‘ je genau einmal pro Vorgang, auch beim Neuaufbau ‚zu‘ |
+| W-78 | ‚Löschen‘ antippen | `act` bekommt `anker` = rote Kapsel und `quelle` = ‚wischen‘; die Kachel bleibt offen, bis das Promise erfüllt ist; nach ‚Abbrechen‘ gleitet sie zurück (wie W-14) |
+| W-79 | `schliessen()` bei offener Kachel; danach `entfernen()` und wischen | schließt ohne Aktion, ‚zu‘ einmal · nach `entfernen()` bewegt sich keine Kachel, `data-ad-bean` ist weg, Tippen und Kontextmenü wie vorher |
+| W-80 | Gegenprobe: in `index.html` eine Regel für `.ad-swipeactions-kapsel` einfügen | W-73 wird rot |
+
+
 ## Usertest – was nur das Gerät zeigt (Testfälle (User), mit /0 ‚Version prüfen‘)
 
 | Fall | iPad | iPhone |
