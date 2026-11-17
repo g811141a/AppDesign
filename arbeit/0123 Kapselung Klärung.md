@@ -261,3 +261,7 @@ Betrag mit Währung als eigene Bean `amount` nur, wenn später mehr dazukommt (a
 
 - **(a) eine Bean `decimal` mit Eigenschaften (Empfohlen)**
 - (b) zwei Beans `amount` (Preis) und `distance` (Kilometer), beide auf `field`
+
+**Entschieden (17.11.2026): (a) eine AD-Bean `decimal`** für Kilometer, Preis und Gesamtausgaben. **Ergänzung des Nutzers:** im leeren Feld steht ein
+hellgraues Eingabemuster – auch im Kilometerfeld ‚0,0‘ wie heute ‚0,00‘ im Preisfeld; ein Eingabemuster ist bei **allen** Zahlenfeldern vorgesehen
+(Eigenschaft `muster`, Standard aus `stellen` abgeleitet: 1 → ‚0,0‘, 2 → ‚0,00‘). APD-56 geht in APD-136 auf.
