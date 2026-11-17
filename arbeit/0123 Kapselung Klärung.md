@@ -89,3 +89,43 @@ Möglichkeiten:
 - **(a) Sprechende Kennung, überall gleich (Empfohlen)** – ein Name für Code, CSS, Aufbau, Prüfung und Doku; nichts muss synchron gehalten werden
 - (b) Nummer mit neuem Präfix (z. B. ADB-7 Menü) – passt zum Nummernschema, aber zusätzlich zum Namen im Code, zwei Kennungen je Bean
 - (c) beides: Nummer für Doku, Name für Code
+
+## Beispiel: die erste AD-Bean – Wischaktionen (APD-30)
+
+Entwurf zur Anschauung, noch nicht gebaut. Die Werte stammen aus der bestätigten Testfall-Liste `arbeit/APD-30 Wischaktionen Testfall-Liste.md`
+(APD-30/D-1 bis D-11).
+
+**Eintrag in der Liste der AD-Beans**
+
+| Feld | Inhalt |
+|---|---|
+| Kennung | `swipe` |
+| Name | Wischaktionen |
+| Fabrik | `createSwipe(liste, einstellungen)` |
+| Eigenschaften (Standardwert) | `aktionen` (– Pflicht, dieselbe Liste wie das Kontextmenü) · `offenBreite` (162) · `einrasten` (0,5 = 81 px) · `durchwischen` (0,6 der Kachelbreite) · `kapsel` (66 × 44) · `entscheid` (10 px) · `waagrecht` (1,2) |
+| Nur lesen | `offen` – die gerade offene Kachel oder `null` |
+| Methoden | `schliessen()` · `aktualisieren()` (nach Neuaufbau der Liste) · `entfernen()` |
+| Ereignisse | `on('aktion', (kachel, aktion) => …)` · `on('offen', kachel => …)` · `on('zu', kachel => …)` |
+| CSS | nur unter `.ad-swipe…` (z. B. `.ad-swipe-huelle`, `.ad-swipe-kapsel`, `.ad-swipe-kapsel.rot`) |
+| Aufbau | Hülle der Liste trägt `data-ad-bean="swipe"` |
+| Messmodus | ‚swipe kandidat‘, ‚swipe verworfen‘, ‚swipe offen‘, ‚swipe durch‘, ‚swipe zurück gefedert‘, ‚swipe abgebrochen‘ |
+| Regeln | R-7.8 (neu), R-4.12, R-4.13, R-1.8 |
+| Prüfung | `checkBean('swipe')` (Schnittstelle, CSS, Namen) und `checkWischen` (Verhalten, Testfälle APD-30/W-1 bis W-71) |
+| Abschnitt | Designrichtlinie 15.4 ‚Wischaktionen‘ |
+
+**So nutzt die App sie** (Reiselogbuch, Skizze)
+
+```js
+const wischen = createSwipe(document.querySelector('#side'), {
+  aktionen: kachel => kontextAktionen(kachel)     // dieselbe Liste wie das Kontextmenü
+});
+wischen.on('aktion', (kachel, aktion) => aktion.ausfuehren());
+// nach jedem Neuaufbau der Liste:
+wischen.aktualisieren();
+```
+
+Die App liest oder schreibt nichts Inneres (keine `dlg…`- oder `keep…`-Variablen); alles Weitere – Gesten, Schließen bei Rollen, Drehen, Esc,
+Sprechblase bei ‚Löschen‘, ‚Bewegung reduzieren‘, VoiceOver-Namen – steckt in der Bean.
+
+**Zum Vergleich mit Nummer (Variante b/c):** ‚ADB-1 Wischaktionen‘ in der Doku, im Code trotzdem `createSwipe`, `.ad-swipe…`, `data-ad-bean="swipe"` –
+die Nummer käme als zweite Kennung dazu.
