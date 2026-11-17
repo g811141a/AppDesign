@@ -1,6 +1,6 @@
 # APD-135 Pakete 1 und 3 – Wortlaut alt und neu (0 Nr. 29)
 
-**Stand 17.11.2026** · Sitzung Reiselogbuch 0123 · noch nicht bestätigt
+**Stand 17.11.2026** · Sitzung Reiselogbuch 0123 · **bestätigt in 0124** (Teile 1a bis 5)
 
 Grundlage: `arbeit/APD-135 Konsolidierung 3 Befund und Plan.md` (Abschnitt 1, 5 und 7), dazu `arbeit/APD-135 Befund F Arbeitsregeln.md`,
 `arbeit/APD-135 Befund D Designregeln.md`, `arbeit/APD-135 Befund L Ablage Backlog Code.md`. Pakete 1 und 3 kommen zusammen in eine Version
@@ -93,6 +93,9 @@ Teil 2 – AppDesign-`CLAUDE.md`, README, `UEBERGABE.md` (8 Stellen, W-19 weiter
 Teil 3a – Designrichtlinie W-23 bis W-39 (Z. 1232 bis R-4.13, R-2.5 bis R-3.6) wie unten.
 Teil 3b – Designrichtlinie W-40 bis W-51 (Farbtabelle bis ‚seit X.Y.Z‘ an 20 Stellen) wie unten.
 Teil 4 – Reiselogbuch-Dateien (W-17, W-31, W-8, W-51, W-44, W-33) wie unten.
+Teil 5 – Backlogs und Kommentare (W-24, L-18, W-26, W-1, W-2, W-52) wie unten, **mit einer Anpassung bei APD-56:** der Zusatz
+‚· **Geht in APD-136 auf** (AD-Bean `decimal`, Nutzer 17.11.2026, Sitzung 0123)‘ (seit 0123 in der Zeile) bleibt; ersetzt wird nur ‚(index.html:784-793)‘
+durch ‚(`bindMoney` in `index.html`)‘. **Damit ist der Wortlaut der Pakete 1 und 3 vollständig bestätigt** (W-19 erst mit Paket 2).
 
 ## Abweichungen zwischen Plan und heutigem Text
 
