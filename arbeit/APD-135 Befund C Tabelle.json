@@ -1,0 +1,1503 @@
+[
+ {
+  "lauf": "doku-regeln",
+  "teile": [
+   ""
+  ],
+  "prueft": "Doku, Regelkatalog, Zusammenarbeit, Nummernschema und Versionstabellen – liest nur Dateien, öffnet keinen Browser",
+  "bausteine": [],
+  "regeln": [
+   "R-10.4",
+   "R-1.7",
+   "R-10.1",
+   "R-10.3",
+   "R-9.2"
+  ],
+  "art": "Doku",
+  "grundregeln": false,
+  "ansichten": null,
+  "stufeVorschlag": "immer",
+  "laeufe": 2,
+  "minuten": 0,
+  "hinweis": ""
+ },
+ {
+  "lauf": "ablauf-suche-menue",
+  "teile": [
+   ""
+  ],
+  "prueft": "‚Suchen‘ als erster Punkt im Mehr-Menü, x ‚Suche beenden‘, ⌘F, Drehen mit offener Suche",
+  "bausteine": [
+   "Suchfeld",
+   "Menü",
+   "Tastatur (Hardware)",
+   "Drehen"
+  ],
+  "regeln": [
+   "R-2.3",
+   "R-4.7",
+   "R-6.6",
+   "R-8.1"
+  ],
+  "art": "Zusammenspiel",
+  "grundregeln": true,
+  "ansichten": 8,
+  "stufeVorschlag": "App",
+  "laeufe": 2,
+  "minuten": 2.1,
+  "hinweis": "die Menüs setzt die App zusammen"
+ },
+ {
+  "lauf": "ablauf-preis-km",
+  "teile": [
+   ""
+  ],
+  "prueft": "‚Darstellung‘ im Mehr-Menü, Preis beim Quartier, Spalte ‚Gegangene Kilometer‘, Statistik, Bezeichnungen und Aufzählungen",
+  "bausteine": [
+   "Untermenü",
+   "Fenster",
+   "Tabelle/Kasten",
+   "Feld",
+   "Schrift/Textgröße"
+  ],
+  "regeln": [
+   "R-1.2",
+   "R-5.1",
+   "R-5.8",
+   "R-6.5",
+   "R-6.1",
+   "R-6.2",
+   "R-6.6",
+   "R-5.6",
+   "R-10.5",
+   "R-4.4",
+   "R-8.1"
+  ],
+  "art": "App",
+  "grundregeln": true,
+  "ansichten": 18,
+  "stufeVorschlag": "App",
+  "laeufe": 2,
+  "minuten": 4.9,
+  "hinweis": ""
+ },
+ {
+  "lauf": "ablauf-liste-still",
+  "teile": [
+   ""
+  ],
+  "prueft": "Liste steht still: nach Erfassen oder Verwerfen steht oben derselbe Tag an derselben Stelle (Safari-Tastatur nachgebildet)",
+  "bausteine": [
+   "Fenster",
+   "Tastatur",
+   "Rollen"
+  ],
+  "regeln": [
+   "R-7.3",
+   "R-7.4"
+  ],
+  "art": "Zusammenspiel",
+  "grundregeln": true,
+  "ansichten": 8,
+  "stufeVorschlag": "App",
+  "laeufe": 2,
+  "minuten": 6.7,
+  "hinweis": ""
+ },
+ {
+  "lauf": "version-regeln",
+  "teile": [
+   ""
+  ],
+  "prueft": "Versionskopplung App ↔ Fassung: Pfade, Prüfsummen der Fassungen, Meldung bei falscher Fassung (öffnet dafür zwei Seiten)",
+  "bausteine": [
+   "Versionskopplung"
+  ],
+  "regeln": [
+   "R-10.3"
+  ],
+  "art": "Doku",
+  "grundregeln": false,
+  "ansichten": null,
+  "stufeVorschlag": "immer",
+  "laeufe": 2,
+  "minuten": 0.1,
+  "hinweis": ""
+ },
+ {
+  "lauf": "offline-regeln",
+  "teile": [
+   ""
+  ],
+  "prueft": "Start ohne Netz mit echtem Service Worker (eigener Webserver), andere Adresse, hängendes Netz, Offline-Zeile und Meldung",
+  "bausteine": [
+   "Offline"
+  ],
+  "regeln": [
+   "R-1.5",
+   "R-10.2"
+  ],
+  "art": "Zusammenspiel",
+  "grundregeln": false,
+  "ansichten": 4,
+  "stufeVorschlag": "App",
+  "laeufe": 2,
+  "minuten": 3.9,
+  "hinweis": ""
+ },
+ {
+  "lauf": "start-regeln",
+  "teile": [
+   ""
+  ],
+  "prueft": "Start nach dem Neuladen: iPhone-Aufbau in der Startliste, iPad öffnet das zuletzt verwendete bzw. laufende Reiselogbuch",
+  "bausteine": [
+   "Seitenleiste/Startliste",
+   "leerer Zustand"
+  ],
+  "regeln": [
+   "R-7.2",
+   "R-8.1",
+   "R-7.7"
+  ],
+  "art": "Zusammenspiel",
+  "grundregeln": true,
+  "ansichten": 27,
+  "stufeVorschlag": "App",
+  "laeufe": 2,
+  "minuten": 3.4,
+  "hinweis": ""
+ },
+ {
+  "lauf": "abgleich-regeln",
+  "teile": [
+   ""
+  ],
+  "prueft": "Baustein `createSync` mit der Konfiguration der App: Fälle des Abgleichs, Abfrage, Ergebnis und Bericht",
+  "bausteine": [
+   "Abgleich"
+  ],
+  "regeln": [
+   "R-9.2",
+   "R-9.3",
+   "R-9.4"
+  ],
+  "art": "Baustein",
+  "grundregeln": false,
+  "ansichten": 1,
+  "stufeVorschlag": "App",
+  "laeufe": 2,
+  "minuten": 0,
+  "hinweis": "läuft in 1 s; bleibt in Stufe App, weil die Konfiguration (`sync.config`) in `index.html` steht"
+ },
+ {
+  "lauf": "ablauf-suche-tabelle",
+  "teile": [
+   ""
+  ],
+  "prueft": "Kostenfeld, Suche springt erst nach der Pause, Treffer unter dem Tabellenkopf, Druck, Reisemittel und Wetter wählen",
+  "bausteine": [
+   "Suchfeld",
+   "Kapsel (Auswahl)",
+   "Tabelle/Kasten"
+  ],
+  "regeln": [
+   "R-2.3",
+   "R-5.1",
+   "R-5.4"
+  ],
+  "art": "App",
+  "grundregeln": true,
+  "ansichten": 2,
+  "stufeVorschlag": "App",
+  "laeufe": 2,
+  "minuten": 0.5,
+  "hinweis": ""
+ },
+ {
+  "lauf": "ablauf-suche-woerter",
+  "teile": [
+   ""
+  ],
+  "prueft": "Suche mit mehreren Wörtern, „…“, ohne Akzente, Smileys; Einheit = Reiselogbuch; zentrale Liste 1:1",
+  "bausteine": [
+   "Suchfeld",
+   "Seitenleiste/Startliste",
+   "Menü"
+  ],
+  "regeln": [
+   "R-2.3"
+  ],
+  "art": "Zusammenspiel",
+  "grundregeln": true,
+  "ansichten": 4,
+  "stufeVorschlag": "App",
+  "laeufe": 2,
+  "minuten": 8.3,
+  "hinweis": ""
+ },
+ {
+  "lauf": "ablauf-suche-iphone",
+  "teile": [
+   ""
+  ],
+  "prueft": "Kopf- und Suchzeile stehen am iPhone beim Tippen in der Suche fest (gemessener Ablauf, Safari-Modell)",
+  "bausteine": [
+   "Suchfeld",
+   "Kopfzeile",
+   "Tastatur",
+   "Rollen"
+  ],
+  "regeln": [
+   "R-2.1",
+   "R-2.3"
+  ],
+  "art": "Zusammenspiel",
+  "grundregeln": false,
+  "ansichten": 4,
+  "stufeVorschlag": "App",
+  "laeufe": 2,
+  "minuten": 3.2,
+  "hinweis": ""
+ },
+ {
+  "lauf": "ablauf-messung",
+  "teile": [
+   ""
+  ],
+  "prueft": "Messmodus: starten nach langem Drücken auf die Versionszeile, aufzeichnen, beenden und teilen, keine Texte in der Datei",
+  "bausteine": [
+   "Messmodus",
+   "Menü"
+  ],
+  "regeln": [
+   "R-1.6"
+  ],
+  "art": "Baustein",
+  "grundregeln": true,
+  "ansichten": 6,
+  "stufeVorschlag": "Baustein",
+  "laeufe": 2,
+  "minuten": 1.8,
+  "hinweis": ""
+ },
+ {
+  "lauf": "tastatur",
+  "teile": [
+   ""
+  ],
+  "prueft": "Fenster passt bei offener Tastatur in den sichtbaren Bereich, Fensterkopf bleibt sichtbar",
+  "bausteine": [
+   "Fenster",
+   "Tastatur"
+  ],
+  "regeln": [
+   "R-4.5"
+  ],
+  "art": "Zusammenspiel",
+  "grundregeln": true,
+  "ansichten": 6,
+  "stufeVorschlag": "App",
+  "laeufe": 2,
+  "minuten": 1.5,
+  "hinweis": ""
+ },
+ {
+  "lauf": "ablauf-abgleich",
+  "teile": [
+   ""
+  ],
+  "prueft": "Abgleich zwischen iPad und iPhone über ein Backup (ändern, löschen, anlegen), Dateiname des Abgleichberichts",
+  "bausteine": [
+   "Abgleich",
+   "Backup",
+   "Fenster"
+  ],
+  "regeln": [
+   "R-9.4",
+   "R-10.8"
+  ],
+  "art": "App",
+  "grundregeln": true,
+  "ansichten": 2,
+  "stufeVorschlag": "App",
+  "laeufe": 2,
+  "minuten": 1,
+  "hinweis": ""
+ },
+ {
+  "lauf": "ablauf-seitenleiste-kontextmenue",
+  "teile": [
+   ""
+  ],
+  "prueft": "kurz tippen öffnet, langes Drücken zeigt das Kontextmenü, ‚Reiselogbuch einstellen‘ daraus, Löschen mit Abfrage, Versionszeile im Mehr-Menü",
+  "bausteine": [
+   "Kontextmenü",
+   "Seitenleiste/Startliste",
+   "Sprechblase",
+   "Menü"
+  ],
+  "regeln": [
+   "R-4.2",
+   "R-3.3",
+   "R-4.3",
+   "R-4.1"
+  ],
+  "art": "Zusammenspiel",
+  "grundregeln": true,
+  "ansichten": 2,
+  "stufeVorschlag": "App",
+  "laeufe": 2,
+  "minuten": 0.9,
+  "hinweis": ""
+ },
+ {
+  "lauf": "ablauf-seitenleiste-hoch",
+  "teile": [
+   ""
+  ],
+  "prueft": "iPad hoch: Seitenleiste fest neben dem Inhalt, Inhalt unter 700 px als Kästen, vier iPad-Größen und die Grenze",
+  "bausteine": [
+   "Seitenleiste/Startliste",
+   "Drehen",
+   "Tabelle/Kasten",
+   "Kontextmenü"
+  ],
+  "regeln": [
+   "R-6.6",
+   "R-7.5",
+   "R-8.1",
+   "R-6.3",
+   "R-4.2",
+   "R-6.2"
+  ],
+  "art": "Zusammenspiel",
+  "grundregeln": true,
+  "ansichten": 7,
+  "stufeVorschlag": "App",
+  "laeufe": 2,
+  "minuten": 1.7,
+  "hinweis": ""
+ },
+ {
+  "lauf": "ablauf-einstellen",
+  "teile": [
+   ""
+  ],
+  "prueft": "Menüpunkt, Kontextmenü-Punkt und Fenster heißen ‚Reiselogbuch einstellen‘",
+  "bausteine": [
+   "Menü",
+   "Kontextmenü",
+   "Fenster"
+  ],
+  "regeln": [
+   "R-4.1",
+   "R-6.3",
+   "R-4.2",
+   "R-3.3"
+  ],
+  "art": "App",
+  "grundregeln": true,
+  "ansichten": 6,
+  "stufeVorschlag": "App",
+  "laeufe": 2,
+  "minuten": 1.7,
+  "hinweis": ""
+ },
+ {
+  "lauf": "ablauf-titel-blase",
+  "teile": [
+   ""
+  ],
+  "prueft": "gekürzter Titel zeigt beim langen Drücken den ganzen Titel in einer Sprechblase; Antippen, Rollen, Esc, Drehen schließen",
+  "bausteine": [
+   "Sprechblase (Titel)",
+   "Kopfzeile",
+   "Fenster"
+  ],
+  "regeln": [
+   "R-2.5"
+  ],
+  "art": "Baustein",
+  "grundregeln": true,
+  "ansichten": 5,
+  "stufeVorschlag": "Baustein",
+  "laeufe": 2,
+  "minuten": 1.8,
+  "hinweis": ""
+ },
+ {
+  "lauf": "ablauf-titel-oben",
+  "teile": [
+   ""
+  ],
+  "prueft": "Titel antippen rollt den zugehörigen Bereich nach oben (Kopfzeile, Seitenleiste, Fensterkopf); Safari-Modell geprüft",
+  "bausteine": [
+   "Kopfzeile",
+   "Seitenleiste/Startliste",
+   "Fenster",
+   "Rollen"
+  ],
+  "regeln": [
+   "R-2.7",
+   "R-1.12",
+   "R-7.3"
+  ],
+  "art": "Baustein",
+  "grundregeln": true,
+  "ansichten": 6,
+  "stufeVorschlag": "Baustein",
+  "laeufe": 2,
+  "minuten": 3.3,
+  "hinweis": ""
+ },
+ {
+  "lauf": "ablauf-leer",
+  "teile": [
+   ""
+  ],
+  "prueft": "leere Zustände: kein Reiselogbuch, Suche ohne Treffer in Liste und Reiselogbuch, ‚Nur erfasste Tage‘ ohne Tag",
+  "bausteine": [
+   "leerer Zustand",
+   "Seitenleiste/Startliste",
+   "Suchfeld"
+  ],
+  "regeln": [
+   "R-7.7",
+   "R-1.8",
+   "R-1.10",
+   "R-8.1",
+   "R-2.3"
+  ],
+  "art": "Zusammenspiel",
+  "grundregeln": true,
+  "ansichten": 8,
+  "stufeVorschlag": "App",
+  "laeufe": 2,
+  "minuten": 4.1,
+  "hinweis": ""
+ },
+ {
+  "lauf": "ablauf-drehen-iphone",
+  "teile": [
+   ""
+  ],
+  "prueft": "iPhone hoch → quer → hoch: Safari lässt die Seite verschoben – Startliste, gerollt, Blatt offen, Tastatur offen",
+  "bausteine": [
+   "Drehen",
+   "Blatt",
+   "Tastatur",
+   "Kopfzeile"
+  ],
+  "regeln": [
+   "R-8.1",
+   "R-4.6",
+   "R-4.5"
+  ],
+  "art": "Zusammenspiel",
+  "grundregeln": true,
+  "ansichten": 1,
+  "stufeVorschlag": "App",
+  "laeufe": 2,
+  "minuten": 0.4,
+  "hinweis": ""
+ },
+ {
+  "lauf": "ablauf-schicht-oben",
+  "teile": [
+   ""
+  ],
+  "prueft": "Sperrschicht hinter Menü, Untermenü, Kontextmenü und Sprechblase schließt beim Loslassen, auch wo Safari oben keinen Klick schickt",
+  "bausteine": [
+   "Menü",
+   "Untermenü",
+   "Kontextmenü",
+   "Sprechblase"
+  ],
+  "regeln": [],
+  "art": "Baustein",
+  "grundregeln": true,
+  "ansichten": 8,
+  "stufeVorschlag": "Baustein",
+  "laeufe": 2,
+  "minuten": 2.3,
+  "hinweis": "Regel steht in Designrichtlinie 13, nicht im Katalog"
+ },
+ {
+  "lauf": "ablauf-glas",
+  "teile": [
+   ""
+  ],
+  "prueft": "Schalter ‚Glas‘ im Untermenü ‚Darstellung‘: aus → deckend, bleibt nach Neuladen, Backup und Abgleich bringen die Wahl richtig mit",
+  "bausteine": [
+   "Glas",
+   "Menü",
+   "Untermenü",
+   "Kapsel",
+   "Backup"
+  ],
+  "regeln": [
+   "R-3.9"
+  ],
+  "art": "Zusammenspiel",
+  "grundregeln": true,
+  "ansichten": 6,
+  "stufeVorschlag": "App",
+  "laeufe": 2,
+  "minuten": 1.5,
+  "hinweis": "Baustein-Teil `checkGlas`; Backup und Abgleich der Wahl hängen an der App"
+ },
+ {
+  "lauf": "ablauf-feld-rollen",
+  "teile": [
+   ""
+  ],
+  "prueft": "Feld mit Fokus wird nur so weit gerollt wie nötig (16 px über der Tastatur), Feldwechsel, Leisten in jedem Bild still",
+  "bausteine": [
+   "Tastatur",
+   "Fenster",
+   "Feld",
+   "Rollen"
+  ],
+  "regeln": [
+   "R-4.5",
+   "R-5.11"
+  ],
+  "art": "Zusammenspiel",
+  "grundregeln": true,
+  "ansichten": 4,
+  "stufeVorschlag": "App",
+  "laeufe": 2,
+  "minuten": 8.1,
+  "hinweis": ""
+ },
+ {
+  "lauf": "ablauf-feld-cursor",
+  "teile": [
+   ""
+  ],
+  "prueft": "Cursor am Ende beim Antippen, Textfelder leer einzeilig und wachsen mit, ⓧ, Drehen mit Cursor",
+  "bausteine": [
+   "Feld",
+   "Tastatur",
+   "Fenster",
+   "Drehen"
+  ],
+  "regeln": [
+   "R-5.11",
+   "R-5.2",
+   "R-4.5",
+   "R-5.6",
+   "R-8.1"
+  ],
+  "art": "Zusammenspiel",
+  "grundregeln": true,
+  "ansichten": 16,
+  "stufeVorschlag": "App",
+  "laeufe": 2,
+  "minuten": 4.7,
+  "hinweis": ""
+ },
+ {
+  "lauf": "ablauf-fremdtext",
+  "teile": [
+   ""
+  ],
+  "prueft": "Text aus den Daten wird wörtlich gezeigt, nie als HTML; `normalize` nimmt nur echte Emoji-Schlüssel",
+  "bausteine": [
+   "Sprechblase",
+   "Smiley-Leiste"
+  ],
+  "regeln": [],
+  "art": "App",
+  "grundregeln": true,
+  "ansichten": 2,
+  "stufeVorschlag": "App",
+  "laeufe": 2,
+  "minuten": 1.3,
+  "hinweis": ""
+ },
+ {
+  "lauf": "ablauf-drehen-luecke",
+  "teile": [
+   ""
+  ],
+  "prueft": "Drehen in der Lücke zwischen neuer Größe und `resize` (fest nachgebildet): der Inhalt steht danach nicht am Ende",
+  "bausteine": [
+   "Drehen",
+   "Rollen"
+  ],
+  "regeln": [
+   "R-8.1"
+  ],
+  "art": "Zusammenspiel",
+  "grundregeln": true,
+  "ansichten": 3,
+  "stufeVorschlag": "App",
+  "laeufe": 2,
+  "minuten": 0.7,
+  "hinweis": "Fehler saß in ui.js (`restoreTop`), sichtbar erst mit dem Inhalt der App (APD-133)"
+ },
+ {
+  "lauf": "ablauf-grossanzeige",
+  "teile": [
+   ""
+  ],
+  "prueft": "Großanzeige ab AX1: langes Drücken auf Leisten-Knöpfe zeigt Icon und Namen groß, Gleiten wechselt, Loslassen löst aus",
+  "bausteine": [
+   "Großanzeige",
+   "Kopfzeile",
+   "Seitenleiste/Startliste",
+   "Fenster",
+   "Kapsel",
+   "Menü"
+  ],
+  "regeln": [
+   "R-2.6",
+   "R-4.13"
+  ],
+  "art": "Baustein",
+  "grundregeln": true,
+  "ansichten": 12,
+  "stufeVorschlag": "Baustein",
+  "laeufe": 2,
+  "minuten": 5.5,
+  "hinweis": ""
+ },
+ {
+  "lauf": "ablauf-beruehren",
+  "teile": [
+   ""
+  ],
+  "prueft": "Rückmeldung beim Berühren (blass, grau, Anheben), Wegziehen hebt sie auf; Wischen über einen Link öffnet ihn nicht",
+  "bausteine": [
+   "Berühren",
+   "Kopfzeile",
+   "Liste",
+   "Smiley-Leiste",
+   "Kapsel (Auswahl)"
+  ],
+  "regeln": [
+   "R-3.6",
+   "R-3.5",
+   "R-7.5"
+  ],
+  "art": "Zusammenspiel",
+  "grundregeln": true,
+  "ansichten": 5,
+  "stufeVorschlag": "App",
+  "laeufe": 2,
+  "minuten": 3.8,
+  "hinweis": "überwiegend Baustein; W-5 bis W-7 mit dem 📍-Link der App"
+ },
+ {
+  "lauf": "ablauf-jahre",
+  "teile": [
+   ""
+  ],
+  "prueft": "Jahr des Reisebeginns als Abschnittskopf in Seitenleiste und Startliste, bei Suche nur Jahre mit Treffern",
+  "bausteine": [
+   "Seitenleiste/Startliste",
+   "Suchfeld",
+   "Kontextmenü"
+  ],
+  "regeln": [
+   "R-7.6",
+   "R-7.7",
+   "R-4.2",
+   "R-7.1"
+  ],
+  "art": "App",
+  "grundregeln": true,
+  "ansichten": 8,
+  "stufeVorschlag": "App",
+  "laeufe": 2,
+  "minuten": 1.4,
+  "hinweis": ""
+ },
+ {
+  "lauf": "ablauf-abgleich-faelle",
+  "teile": [
+   ""
+  ],
+  "prueft": "18 Anwendungsfälle des Abgleichs als reine Datenprüfung über `mergeWith`, in beide Richtungen",
+  "bausteine": [
+   "Abgleich"
+  ],
+  "regeln": [],
+  "art": "App",
+  "grundregeln": false,
+  "ansichten": null,
+  "stufeVorschlag": "App",
+  "laeufe": 2,
+  "minuten": 0.7,
+  "hinweis": ""
+ },
+ {
+  "lauf": "ablauf-gesamt",
+  "teile": [
+   ""
+  ],
+  "prueft": "Gesamtablauf der App: Seitenleiste, Menüs, einstellen, Tag erfassen, Fazit, Vorschau, Suche, Löschen, neues Reiselogbuch, Kosten, Statistik, Backup",
+  "bausteine": [
+   "Seitenleiste/Startliste",
+   "Menü",
+   "Fenster",
+   "Sprechblase",
+   "Suchfeld",
+   "Backup",
+   "leerer Zustand",
+   "Kapsel"
+  ],
+  "regeln": [
+   "R-10.8",
+   "R-7.1",
+   "R-2.2",
+   "R-4.1",
+   "R-3.3",
+   "R-1.2",
+   "R-4.4",
+   "R-5.1",
+   "R-5.2",
+   "R-4.3",
+   "R-6.4",
+   "R-2.3",
+   "R-9.1",
+   "R-7.7",
+   "R-6.6",
+   "R-8.1",
+   "R-3.2",
+   "R-1.6"
+  ],
+  "art": "App",
+  "grundregeln": true,
+  "ansichten": 4,
+  "stufeVorschlag": "App",
+  "laeufe": 2,
+  "minuten": 5.4,
+  "hinweis": ""
+ },
+ {
+  "lauf": "verlauf-vorschlaege",
+  "teile": [
+   ""
+  ],
+  "prueft": "Vorschläge im Fenster ‚Tag‘, Schritt Verlauf: Reihenfolge, Häkchen, neue Zeile, Cursor am Ende",
+  "bausteine": [
+   "Fenster",
+   "Feld"
+  ],
+  "regeln": [
+   "R-5.11",
+   "R-5.2",
+   "R-4.5",
+   "R-4.4"
+  ],
+  "art": "App",
+  "grundregeln": true,
+  "ansichten": 4,
+  "stufeVorschlag": "App",
+  "laeufe": 2,
+  "minuten": 0.7,
+  "hinweis": ""
+ },
+ {
+  "lauf": "ablauf-markierung-menues",
+  "teile": [
+   ""
+  ],
+  "prueft": "blaue Markierung bleibt, solange Menü oder Fenster offen ist; Mehr-Knopf senkrecht; Menüs und Sprechblase wachsen aus der Schaltfläche; Menü aus Glas",
+  "bausteine": [
+   "Menü",
+   "Untermenü",
+   "Kontextmenü",
+   "Sprechblase",
+   "Glas",
+   "Drehen",
+   "Fenster"
+  ],
+  "regeln": [
+   "R-3.3",
+   "R-4.1",
+   "R-4.13",
+   "R-3.9",
+   "R-3.1",
+   "R-1.4"
+  ],
+  "art": "Zusammenspiel",
+  "grundregeln": true,
+  "ansichten": 9,
+  "stufeVorschlag": "App",
+  "laeufe": 2,
+  "minuten": 4.7,
+  "hinweis": "gemischt: Markierung und Menü-Inhalt sind App, `checkMehrKnopf`, `checkWachsen`, `checkGlas` Baustein – Kandidat zum Teilen"
+ },
+ {
+  "lauf": "backup-regeln",
+  "teile": [
+   ""
+  ],
+  "prueft": "Backup erstellen und laden über das Menü der App: Datei, Dateiname, Abfrage, Wege",
+  "bausteine": [
+   "Backup",
+   "Menü",
+   "Sprechblase"
+  ],
+  "regeln": [
+   "R-9.1",
+   "R-9.2",
+   "R-10.7",
+   "R-1.5",
+   "R-4.5"
+  ],
+  "art": "Zusammenspiel",
+  "grundregeln": true,
+  "ansichten": 8,
+  "stufeVorschlag": "App",
+  "laeufe": 2,
+  "minuten": 4.3,
+  "hinweis": ""
+ },
+ {
+  "lauf": "ablauf-abgleich-ui",
+  "teile": [
+   ""
+  ],
+  "prueft": "Abgleich über die echte Oberfläche wie am Gerät (Fälle 8, 9, 9a–9c): Fenster ‚Tag‘, Backup erstellen, laden, abgleichen",
+  "bausteine": [
+   "Abgleich",
+   "Backup",
+   "Fenster"
+  ],
+  "regeln": [
+   "R-4.6"
+  ],
+  "art": "App",
+  "grundregeln": true,
+  "ansichten": 10,
+  "stufeVorschlag": "App",
+  "laeufe": 2,
+  "minuten": 2,
+  "hinweis": ""
+ },
+ {
+  "lauf": "regeln-ablauf",
+  "teile": [
+   ""
+  ],
+  "prueft": "allgemeine Regeln mit Handlung: Suche, Fenster-Kopfzeile, Texteingabe, Fehlermeldungen, Eingabetaste, ⓧ, Vorschau, Drucken, Kapsel",
+  "bausteine": [
+   "Suchfeld",
+   "Fenster",
+   "Feld",
+   "Kapsel",
+   "Vorschau/Ausgabe",
+   "Abgleich"
+  ],
+  "regeln": [
+   "R-2.3",
+   "R-4.4",
+   "R-5.2",
+   "R-5.3",
+   "R-5.5",
+   "R-5.6",
+   "R-6.4",
+   "R-3.2",
+   "R-10.1",
+   "R-2.1"
+  ],
+  "art": "Zusammenspiel",
+  "grundregeln": true,
+  "ansichten": 6,
+  "stufeVorschlag": "App",
+  "laeufe": 2,
+  "minuten": 8.5,
+  "hinweis": ""
+ },
+ {
+  "lauf": "ablauf-texte-ablaeufe",
+  "teile": [
+   ""
+  ],
+  "prueft": "Menüpunkt und Fenster heißen gleich, erst fragen dann zerstören, automatisch speichern und verwerfen",
+  "bausteine": [
+   "Menü",
+   "Fenster",
+   "Sprechblase",
+   "Automatisch speichern"
+  ],
+  "regeln": [
+   "R-4.11",
+   "R-4.12",
+   "R-5.10"
+  ],
+  "art": "Zusammenspiel",
+  "grundregeln": false,
+  "ansichten": 2,
+  "stufeVorschlag": "App",
+  "laeufe": 2,
+  "minuten": 1.9,
+  "hinweis": ""
+ },
+ {
+  "lauf": "ablauf-verwerfen-abgleich",
+  "teile": [
+   ""
+  ],
+  "prueft": "‚Änderungen verwerfen‘ nach dem automatischen Sichern stellt auch die Zeitstempel des Abgleichs wieder her",
+  "bausteine": [
+   "Abgleich",
+   "Automatisch speichern",
+   "Fenster"
+  ],
+  "regeln": [],
+  "art": "App",
+  "grundregeln": false,
+  "ansichten": 7,
+  "stufeVorschlag": "App",
+  "laeufe": 2,
+  "minuten": 0.9,
+  "hinweis": ""
+ },
+ {
+  "lauf": "link-name",
+  "teile": [
+   ""
+  ],
+  "prueft": "nur der Name ist der Maps-Link (Essen, Quartier) in Tabelle, Kästen und Vorschau",
+  "bausteine": [
+   "Tabelle/Kasten",
+   "Vorschau/Ausgabe"
+  ],
+  "regeln": [],
+  "art": "App",
+  "grundregeln": true,
+  "ansichten": 2,
+  "stufeVorschlag": "App",
+  "laeufe": 2,
+  "minuten": 0.5,
+  "hinweis": ""
+ },
+ {
+  "lauf": "kapsel-iphone",
+  "teile": [
+   ""
+  ],
+  "prueft": "Kapsel ‚Nach oben / Ans Ende‘ und Schnellroll-Griff: nur wenn es zu rollen gibt, nie über Kopf- oder Suchzeile, über der Tastatur",
+  "bausteine": [
+   "Kapsel",
+   "Schnellroll-Griff",
+   "Tastatur",
+   "Suchfeld",
+   "Rollen"
+  ],
+  "regeln": [
+   "R-3.2",
+   "R-1.12"
+  ],
+  "art": "Zusammenspiel",
+  "grundregeln": true,
+  "ansichten": 8,
+  "stufeVorschlag": "App",
+  "laeufe": 2,
+  "minuten": 6.5,
+  "hinweis": ""
+ },
+ {
+  "lauf": "ablauf-feld-tastatur",
+  "teile": [
+   ""
+  ],
+  "prueft": "unterstes Feld (Gesamtausgaben) steht nach dem Antippen 16 px über der Tastatur; Fenster gleitet mit der Tastatur",
+  "bausteine": [
+   "Tastatur",
+   "Feld",
+   "Fenster",
+   "Rollen"
+  ],
+  "regeln": [
+   "R-4.5",
+   "R-1.12",
+   "R-2.1"
+  ],
+  "art": "Zusammenspiel",
+  "grundregeln": true,
+  "ansichten": 5,
+  "stufeVorschlag": "App",
+  "laeufe": 2,
+  "minuten": 0.9,
+  "hinweis": ""
+ },
+ {
+  "lauf": "ablauf-abspielen",
+  "teile": [
+   ""
+  ],
+  "prueft": "spielt die Messdateien vom Gerät nach: Kopf-, Suchzeile und Fokus wie gemessen; verschobene Messung muss rot werden",
+  "bausteine": [
+   "Tastatur",
+   "Kopfzeile",
+   "Suchfeld",
+   "Fenster",
+   "Blatt"
+  ],
+  "regeln": [
+   "R-4.5",
+   "R-2.4"
+  ],
+  "art": "Zusammenspiel",
+  "grundregeln": false,
+  "ansichten": 8,
+  "stufeVorschlag": "App",
+  "laeufe": 2,
+  "minuten": 2.1,
+  "hinweis": ""
+ },
+ {
+  "lauf": "ablauf-tastatur-still",
+  "teile": [
+   ""
+  ],
+  "prueft": "Tastatur ohne Springen: in jedem Bild stehen Kopfzeile, Suchzeile, Seitenleiste und Fensterkopf still (20 Abläufe, 8 Messungen)",
+  "bausteine": [
+   "Tastatur",
+   "Fenster",
+   "Kopfzeile",
+   "Suchfeld",
+   "Seitenleiste/Startliste",
+   "Kapsel"
+  ],
+  "regeln": [
+   "R-4.5"
+  ],
+  "art": "Zusammenspiel",
+  "grundregeln": false,
+  "ansichten": 36,
+  "stufeVorschlag": "App",
+  "laeufe": 2,
+  "minuten": 6.3,
+  "hinweis": ""
+ },
+ {
+  "lauf": "ablauf-fenster-breite",
+  "teile": [
+   ""
+  ],
+  "prueft": "ein offenes Fenster ändert Breite und Lage nicht, Buchstabe für Buchstabe",
+  "bausteine": [
+   "Fenster"
+  ],
+  "regeln": [
+   "R-4.6"
+  ],
+  "art": "Zusammenspiel",
+  "grundregeln": true,
+  "ansichten": 3,
+  "stufeVorschlag": "App",
+  "laeufe": 2,
+  "minuten": 1.5,
+  "hinweis": ""
+ },
+ {
+  "lauf": "ablauf-smiley-leiste",
+  "teile": [
+   ""
+  ],
+  "prueft": "Ziehen an der Smiley-Leiste ist kein langes Drücken; still halten fragt ‚… entfernen?‘, antippen fügt ein",
+  "bausteine": [
+   "Smiley-Leiste",
+   "Langes Drücken",
+   "Sprechblase"
+  ],
+  "regeln": [
+   "R-3.5"
+  ],
+  "art": "Zusammenspiel",
+  "grundregeln": true,
+  "ansichten": 3,
+  "stufeVorschlag": "App",
+  "laeufe": 2,
+  "minuten": 4,
+  "hinweis": "langes Drücken ist Baustein, die Abfrage und das Entfernen sind App"
+ },
+ {
+  "lauf": "ablauf-kapsel-pfeile",
+  "teile": [
+   ""
+  ],
+  "prueft": "Auswahl-Kapsel mit Verlauf und Pfeilen am Rand (Reisemittel, Wetter, Smileys), Drehen mit offenem Blatt",
+  "bausteine": [
+   "Kapsel (Auswahl)",
+   "Blatt",
+   "Drehen"
+  ],
+  "regeln": [
+   "R-5.4"
+  ],
+  "art": "Zusammenspiel",
+  "grundregeln": true,
+  "ansichten": 5,
+  "stufeVorschlag": "App",
+  "laeufe": 2,
+  "minuten": 2.6,
+  "hinweis": "Baustein mit dem Inhalt der App (Zahl der Einträge entscheidet über die Pfeile)"
+ },
+ {
+  "lauf": "ablauf-reisemittel-zeile",
+  "teile": [
+   ""
+  ],
+  "prueft": "Zeile ‚Reisemittel‘ wischt am iPhone seitlich mit Verlauf und Pfeil; passt alles, weder noch; Icon und Text auf einer Zeile",
+  "bausteine": [
+   "Wischzeile",
+   "Kopfzeile",
+   "Schrift/Textgröße"
+  ],
+  "regeln": [
+   "R-5.4",
+   "R-10.5"
+  ],
+  "art": "Zusammenspiel",
+  "grundregeln": true,
+  "ansichten": 13,
+  "stufeVorschlag": "App",
+  "laeufe": 2,
+  "minuten": 0.8,
+  "hinweis": ""
+ },
+ {
+  "lauf": "ablauf-backup-kachel",
+  "teile": [
+   ""
+  ],
+  "prueft": "Backup-Kachel nur, solange heute kein Backup erstellt wurde; Tageswechsel, leere Liste, Offline-Zeile, Kontextmenü darüber",
+  "bausteine": [
+   "Backup",
+   "Seitenleiste/Startliste",
+   "Kontextmenü",
+   "Offline",
+   "Suchfeld"
+  ],
+  "regeln": [
+   "R-9.1",
+   "R-4.2",
+   "R-4.10",
+   "R-1.1",
+   "R-1.5"
+  ],
+  "art": "Zusammenspiel",
+  "grundregeln": true,
+  "ansichten": 5,
+  "stufeVorschlag": "App",
+  "laeufe": 2,
+  "minuten": 7.7,
+  "hinweis": ""
+ },
+ {
+  "lauf": "ablauf-bedienung",
+  "teile": [
+   ""
+  ],
+  "prueft": "Bedienungshilfen: VoiceOver (Namen, Fokus, Ansagen), Hardware-Tastatur, ‚Kontrast erhöhen‘, ‚Bewegung reduzieren‘; trägt die Gegenprobe ‚bedienung‘",
+  "bausteine": [
+   "Bedienungshilfen",
+   "Menü",
+   "Sprechblase",
+   "Fenster",
+   "Tastatur (Hardware)",
+   "Suchfeld"
+  ],
+  "regeln": [
+   "R-1.8",
+   "R-1.9",
+   "R-1.4",
+   "R-3.4",
+   "R-4.7",
+   "R-5.3",
+   "R-6.2",
+   "R-7.3",
+   "R-4.4"
+  ],
+  "art": "Zusammenspiel",
+  "grundregeln": true,
+  "ansichten": 6,
+  "stufeVorschlag": "App",
+  "laeufe": 2,
+  "minuten": 2.4,
+  "hinweis": ""
+ },
+ {
+  "lauf": "text-regeln",
+  "teile": [
+   ""
+  ],
+  "prueft": "Textgröße folgt dem Gerät: Wechsel 17 → 53 px bei offener Seite in vier Ansichten (`checkText`), oberster Tag und offenes Fenster bleiben",
+  "bausteine": [
+   "Schrift/Textgröße",
+   "Fenster",
+   "Menü",
+   "Tabelle/Kasten"
+  ],
+  "regeln": [
+   "R-1.10",
+   "R-8.1",
+   "R-6.6",
+   "R-6.2",
+   "R-7.1"
+  ],
+  "art": "Zusammenspiel",
+  "grundregeln": true,
+  "ansichten": 4,
+  "stufeVorschlag": "immer",
+  "laeufe": 2,
+  "minuten": 2.5,
+  "hinweis": ""
+ },
+ {
+  "lauf": "ablauf-navigation",
+  "teile": [
+   "",
+   "Bedienungshilfen",
+   "Text 53"
+  ],
+  "prueft": "Seitenwechsel als Schieben, Zurückwischen am iPhone, Seitenleiste per Wischen am iPad, Gleiten nach R-1.12",
+  "bausteine": [
+   "Navigation/Gesten",
+   "Seitenleiste/Startliste",
+   "Wischzeile",
+   "Bedienungshilfen",
+   "Schrift/Textgröße"
+  ],
+  "regeln": [
+   "R-7.5",
+   "R-1.12",
+   "R-7.1",
+   "R-7.2"
+  ],
+  "art": "Zusammenspiel",
+  "grundregeln": true,
+  "ansichten": 10,
+  "stufeVorschlag": "App",
+  "laeufe": 6,
+  "minuten": 25.9,
+  "hinweis": ""
+ },
+ {
+  "lauf": "ablauf-fenster",
+  "teile": [
+   "",
+   "Bedienungshilfen",
+   "Text 53"
+  ],
+  "prueft": "Seitenleiste beim Start sichtbar und fest, gewählter Eintrag, Titel in der Leiste, Abstand unten",
+  "bausteine": [
+   "Seitenleiste/Startliste",
+   "Kopfzeile"
+  ],
+  "regeln": [
+   "R-8.1",
+   "R-7.1",
+   "R-2.2"
+  ],
+  "art": "Zusammenspiel",
+  "grundregeln": true,
+  "ansichten": 4,
+  "stufeVorschlag": "App",
+  "laeufe": 6,
+  "minuten": 0.7,
+  "hinweis": "kein Ablauf mit Bewegung – ein Schritt je Ansicht"
+ },
+ {
+  "lauf": "ablauf-iphone",
+  "teile": [
+   "",
+   "Bedienungshilfen",
+   "Text 53"
+  ],
+  "prueft": "iPhone-Aufbau: Startliste, öffnen, Suche, Tag erfassen und speichern, Blättern, Kontextmenü, Löschen, neues Reiselogbuch, Wechsel iPhone ↔ iPad",
+  "bausteine": [
+   "Seitenleiste/Startliste",
+   "Suchfeld",
+   "Blatt",
+   "Kontextmenü",
+   "Sprechblase"
+  ],
+  "regeln": [
+   "R-7.2",
+   "R-4.6",
+   "R-5.2",
+   "R-1.1"
+  ],
+  "art": "App",
+  "grundregeln": true,
+  "ansichten": 2,
+  "stufeVorschlag": "App",
+  "laeufe": 6,
+  "minuten": 3.5,
+  "hinweis": ""
+ },
+ {
+  "lauf": "ablauf-suche-liste",
+  "teile": [
+   "",
+   "Bedienungshilfen",
+   "Text 53"
+  ],
+  "prueft": "Suche über alle Reiselogbücher in Startliste bzw. Seitenleiste: Filter, ‚N Treffer‘, Öffnen mit gefüllter Suche, Drehen, Eingabetaste, Neuladen",
+  "bausteine": [
+   "Suchfeld",
+   "Seitenleiste/Startliste",
+   "Drehen",
+   "Tastatur"
+  ],
+  "regeln": [
+   "R-2.3",
+   "R-5.5",
+   "R-8.1"
+  ],
+  "art": "Zusammenspiel",
+  "grundregeln": true,
+  "ansichten": 5,
+  "stufeVorschlag": "App",
+  "laeufe": 6,
+  "minuten": 10,
+  "hinweis": ""
+ },
+ {
+  "lauf": "ablauf-seitenleiste-position",
+  "teile": [
+   "",
+   "Bedienungshilfen",
+   "Text 53"
+  ],
+  "prueft": "Seitenleiste bzw. Startliste behält ihre Position, gewählter Eintrag bleibt sichtbar; erstes Wischen bei offener Suche schließt nur die Tastatur",
+  "bausteine": [
+   "Seitenleiste/Startliste",
+   "Suchfeld",
+   "Tastatur",
+   "Kontextmenü",
+   "Rollen"
+  ],
+  "regeln": [
+   "R-2.1",
+   "R-1.12",
+   "R-7.2",
+   "R-8.1",
+   "R-4.2"
+  ],
+  "art": "Zusammenspiel",
+  "grundregeln": true,
+  "ansichten": 4,
+  "stufeVorschlag": "App",
+  "laeufe": 6,
+  "minuten": 1.9,
+  "hinweis": "Teil ‚Bedienungshilfen‘ ist wirkungslos (C-31)"
+ },
+ {
+  "lauf": "oeffnen-position",
+  "teile": [
+   "",
+   "Text 23"
+  ],
+  "prueft": "Position beim Öffnen (erster nicht erfasster Tag unter dem Kopf), Seitenleiste ein/aus und Drehen am Ende behalten den Stand",
+  "bausteine": [
+   "Rollen",
+   "Seitenleiste/Startliste",
+   "Drehen",
+   "Schrift/Textgröße"
+  ],
+  "regeln": [
+   "R-7.4",
+   "R-8.1"
+  ],
+  "art": "Zusammenspiel",
+  "grundregeln": true,
+  "ansichten": 8,
+  "stufeVorschlag": "App",
+  "laeufe": 4,
+  "minuten": 12.7,
+  "hinweis": ""
+ },
+ {
+  "lauf": "ablauf-blatt",
+  "teile": [
+   "iPhone",
+   "iPad"
+  ],
+  "prueft": "Blatt auf dem iPhone und Fenster am iPad: gleiten, ziehen schließt, mit Änderungen zäh und Rückfrage – für jedes Fenster der App",
+  "bausteine": [
+   "Blatt",
+   "Fenster",
+   "Tastatur",
+   "Bedienungshilfen"
+  ],
+  "regeln": [
+   "R-4.6",
+   "R-1.12",
+   "R-4.5"
+  ],
+  "art": "Zusammenspiel",
+  "grundregeln": true,
+  "ansichten": 4,
+  "stufeVorschlag": "App",
+  "laeufe": 4,
+  "minuten": 21,
+  "hinweis": ""
+ },
+ {
+  "lauf": "hig",
+  "teile": [
+   "hell",
+   "dunkel",
+   "hell Bedienungshilfen",
+   "dunkel Bedienungshilfen",
+   "Text 14",
+   "Text 23",
+   "Text 33",
+   "Text 53"
+  ],
+  "prueft": "geht je Teil 4 Seiten (iPad quer und hoch, iPhone hoch und quer) mit 16 bis 21 Zuständen durch und misst jeden voll: alle Grundregeln, sichere Ränder, Drehen, Gerätevergleich, Leisten beim Rollen",
+  "bausteine": [
+   "alle sichtbaren Bausteine",
+   "Drehen",
+   "Schrift/Textgröße",
+   "Bedienungshilfen"
+  ],
+  "regeln": [
+   "R-1.7",
+   "R-8.1",
+   "R-9.4"
+  ],
+  "art": "Zusammenspiel",
+  "grundregeln": true,
+  "ansichten": 4,
+  "stufeVorschlag": "App",
+  "laeufe": 16,
+  "minuten": 57.7,
+  "hinweis": "Teile unterscheiden sich nur in Darstellung, Bedienungshilfen und Textgröße (C-30)"
+ },
+ {
+  "lauf": "kontextmenue-regeln",
+  "teile": [
+   "iPad",
+   "iPhone"
+  ],
+  "prueft": "Kontextmenü einer Kachel bei 3, 6, 8, 9, 12 Einträgen: daneben bzw. darunter, ganz sichtbar, über der Backup-Kachel",
+  "bausteine": [
+   "Kontextmenü",
+   "Seitenleiste/Startliste",
+   "Backup"
+  ],
+  "regeln": [
+   "R-4.2",
+   "R-4.10"
+  ],
+  "art": "Zusammenspiel",
+  "grundregeln": false,
+  "ansichten": 10,
+  "stufeVorschlag": "App",
+  "laeufe": 4,
+  "minuten": 6.5,
+  "hinweis": ""
+ }
+]
