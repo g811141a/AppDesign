@@ -220,3 +220,11 @@ Seitenleiste hereinwischen bzw. im Inhalt zurückwischen (R-7.5) –, später k�
 - **nie** `swipe2` oder `swipe-neu`; ändert sich eine Bean grundlegend, behält sie ihre Kennung – jede App hängt an ihrer festen AppDesign-Fassung (R-10.3)
   und wird nur nach Rückfrage gehoben. Eine Bean, die eine andere ablöst, bekommt einen neuen Namen und den Vermerk ‚ersetzt …‘ in der Liste (wie bei
   den Nummern, 2.4).
+
+**Entschieden (17.11.2026): Kennung sprechend nach der Aufgabe** (nie nach Geste oder Technik, keine Nummer): erste Bean **`swipeactions`**; daraus
+`createSwipeactions`, `.ad-swipeactions…`, `data-ad-bean="swipeactions"`; gleiche Aufgabe in anderer Ausprägung = Eigenschaft, andere Aufgabe = eigener Name;
+nie umbenennen, Ablösung mit ‚ersetzt …‘.
+
+**Stand APD-136:** entschieden Begriff AD-Bean, Fabrik-Funktion in `ui.js`, Priorität 1 mit APD-135 (B-5 festes Ziel), APD-30 als erste AD-Bean,
+Feldarten auf der Grund-Bean `field`, Bereiche als Gruppe, Kennung nach Aufgabe. **Offen:** Apple-Abgleich (mit Quellen), Wortlaut der allgemeinen
+Regel (Zusammenarbeit/Designrichtlinie, 0 Nr. 29), Schnittstelle `swipeactions` als Ergänzung zur Testfall-Liste APD-30.
