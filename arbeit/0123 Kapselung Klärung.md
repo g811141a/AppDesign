@@ -228,3 +228,36 @@ nie umbenennen, Ablösung mit ‚ersetzt …‘.
 **Stand APD-136:** entschieden Begriff AD-Bean, Fabrik-Funktion in `ui.js`, Priorität 1 mit APD-135 (B-5 festes Ziel), APD-30 als erste AD-Bean,
 Feldarten auf der Grund-Bean `field`, Bereiche als Gruppe, Kennung nach Aufgabe. **Offen:** Apple-Abgleich (mit Quellen), Wortlaut der allgemeinen
 Regel (Zusammenarbeit/Designrichtlinie, 0 Nr. 29), Schnittstelle `swipeactions` als Ergänzung zur Testfall-Liste APD-30.
+
+## Kilometer und Preis als AD-Bean? (Frage des Nutzers, 17.11.2026)
+
+**Heute (gelesen in Reiselogbuch `index.html` und AppDesign `v4/ui.js`):**
+- **Preis** (Quartier) und **Gesamtausgaben:** `bindMoney` in der App (`index.html` Z. 881–895) – nur Ziffern und Komma, Tausenderpunkt beim Tippen,
+  höchstens 9 Stellen vor und 2 nach dem Komma, beim Verlassen ‚,00‘ ergänzt (`money` aus `ui.js`), Breite passt sich an (`fitMoney`, Z. 653); Einheit ‚€‘ daneben.
+- **Kilometer** (Tag): eigener Code im Tagesfenster (`index.html` Z. 1640–1641) – Punkt wird Komma, höchstens 2 Stellen vor und 1 nach dem Komma, beim
+  Verlassen gerundet (`fmtKm`), 0 wird leer; Einheit ‚km‘ daneben.
+- Beides steht in der App, nicht in AppDesign; dieselbe Aufgabe ist zweimal verschieden gebaut (APD-56 nennt das schon: ‚Format beim Tippen als
+  allgemeiner Baustein‘).
+
+**Vorschlag:** Ja – aber nicht in `field` selbst, sondern als **eine** AD-Bean **`decimal`** (Zahl mit festen Nachkommastellen) auf der Grund-Bean `field`.
+Kilometer und Preis sind dieselbe Aufgabe in zwei Ausprägungen, also Eigenschaften (Regel ‚gleiche Aufgabe = Eigenschaft‘):
+
+| Eigenschaft (Standard) | Kilometer | Preis |
+|---|---|---|
+| `stellen` (2) | 1 | 2 |
+| `vorkomma` (9) | 2 | 9 |
+| `tausender` (true) | false | true |
+| `ergaenzen` – Nachkommastellen beim Verlassen auffüllen (true) | false | true (‚,00‘) |
+| `null` – leer statt 0 (true) | true | true |
+| `einheit` (–) | ‚km‘ | ‚€‘ |
+| `breiteAnpassen` (false) | false | true |
+
+Dazu wie bei `email`: `wert` (get/set als Zahl), `pruefen()`, Ereignis `on('wert', …)`, Tastatur `inputmode="decimal"`, CSS `.ad-decimal…`, Prüfbeispiele
+(z. B. Preis: ‚1234,5‘ → ‚1.234,50‘, ‚0012‘ → ‚12,00‘; Kilometer: ‚12.34‘ → ‚12,3‘, ‚123‘ → ‚12‘) und `checkBean('decimal')`. Die App sagt nur
+`createDecimal(fKmDay, { stellen: 1, vorkomma: 2, tausender: false, ergaenzen: false, einheit: 'km' })`.
+
+**Folgen:** APD-56 (Format beim Tippen) geht in APD-136 auf; G-8 (‚,00‘ ergänzen, Tausenderpunkt) steckt dann in der Bean (APD-135/J-20 macht daraus R-5.1).
+Betrag mit Währung als eigene Bean `amount` nur, wenn später mehr dazukommt (andere Währung, negative Beträge).
+
+- **(a) eine Bean `decimal` mit Eigenschaften (Empfohlen)**
+- (b) zwei Beans `amount` (Preis) und `distance` (Kilometer), beide auf `field`
