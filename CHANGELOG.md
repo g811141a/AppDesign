@@ -19,7 +19,8 @@ APD-30/D-1 bis D-11, W-1 bis W-80; Sitzungen 0117 und 0125).
 - **Sprechblase graut ein und sperrt** (alle Abfragen, `choosePop`): alles daneben Schwarz 20 %, daneben tippen ändert nichts; Esc bzw. ⌘. = ‚Abbrechen‘.
 - **Prüfungen:** neu `checkWischen` in `tests/ablauf.mjs` (mit APD-30/W-42 iPad: panel-left bei offener Kachel blendet die Seitenleiste beim ersten Tipp aus,
   beim Einblenden sind alle Kacheln zu; APD-30/W-43: Mehr im Kopf öffnet das Menü sofort; W-5: Tipp auf eine andere Kachel bzw. Fläche in der Liste schließt nur);
-  Prüfungen mit ‚daneben tippen bricht ab‘ auf ‚ändert nichts‘ umgestellt; Gegenproben APD-30/W-68 und W-80.
+  Prüfungen mit ‚daneben tippen bricht ab‘ auf ‚ändert nichts‘ umgestellt; `checkNavigation` APD-68/Q-2 (nach links auf der Seitenleiste ist auf einer Kachel
+  ein Durchwischen – die Prüfung bricht die Sprechblase ab, die Seitenleiste bleibt); Gegenproben APD-30/W-68 und W-80.
 
 **APD-136 – AD-Beans** (R-1.13; Wortlaut `arbeit/0125 APD-136 Wortlaut allgemeine Regel.md` APD-136/V-1 bis V-4; Sitzung 0125): allgemeine Elemente, die
 neu entstehen oder umgebaut werden, sind gekapselte Bausteine mit Fabrik, Eigenschaften, Methoden und Ereignissen und eigenem CSS unter `.ad-<kennung>…`.

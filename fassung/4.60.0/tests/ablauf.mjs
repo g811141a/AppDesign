@@ -1892,7 +1892,8 @@ export async function checkNavigation(p, { eintrag, titel, zurueck = '#back', wa
     // APD-68/Q-1 bis APD-68/Q-12 (seit 4.31.0, APD-68 Variante B ‚Mitschieben‘, Testfall-Liste arbeit/APD-68 Testfall-Liste.md): quer steht die Seitenleiste fest
     // links; ausgeblendet holt Wischen nach rechts von überall im Inhalt sie herein – der Inhalt rückt mit dem Finger nach rechts, fertig
     // nach halber Breite oder schnellem Wischen, dann rastet sie ein und der Inhalt wird schmaler (oberster Kasten bleibt); sonst federt
-    // sie zurück. Ausblenden quer nur mit panel-left (gleitet); nach links wischen ändert nichts (Kacheln frei für Wischaktionen, APD-38/T-10).
+    // sie zurück. Ausblenden quer nur mit panel-left (gleitet); nach links wischen blendet sie nie aus – auf einer Kachel zeigt es die Wischaktionen
+    // (seit 4.60.0, APD-30/V-1, R-7.8).
     const fest = l => l.seite && l.sideX >= 0 && Math.abs(l.appX - (l.sideX + l.sideW + 4)) <= 2;
     const da = async (soll, wo) => { l = await lage();
       if (soll ? !fest(l) : (l.seite || Math.abs(l.appX) > 1)) E(`${wo}: Seitenleiste ${l.seite ? `da (bei ${l.sideX} px, Inhalt bei ${l.appX} px)` : `weg (Inhalt bei ${l.appX} px)`}, soll ${soll ? 'fest da' : 'weg, Inhalt ganz breit'}`); };
@@ -1908,6 +1909,10 @@ export async function checkNavigation(p, { eintrag, titel, zurueck = '#back', wa
     // schnell, damit es kein langes Drücken auf einer Kachel wird (Kontextmenü)
     await ziehe(l.sideX + l.sideW * 0.8, h * 0.7, 10, h * 0.7, { schnell: true });
     if ((await lage()).menue) { await tippeLayer(); await wait(p, 200); }
+    // seit 4.60.0 (APD-30/V-1, R-7.8): auf einer Kachel ist das ein Durchwischen – die Sprechblase fragt; ‚Abbrechen‘, dann die Kachel mit Esc schließen
+    const abbrechen = p.locator('.pop:not(.zu-geist) button', { hasText: /^Abbrechen$/ });
+    if (await abbrechen.count()) { await abbrechen.first().click(); await ruhig(); await wait(p, 100); }
+    if (await p.locator('.ad-swipeactions-aktionen').count()) { await p.keyboard.press('Escape'); await ruhig(); await wait(p, 100); }
     await da(true, 'APD-68/Q-2 nach links auf der Seitenleiste');
     // APD-68/Q-3: panel-left blendet aus – sie gleitet hinaus, der Inhalt wird ganz breit, der oberste Kasten bleibt
     await p.evaluate(() => { const r = document.querySelector('#app > .rolle'); r?.scrollTo(0, Math.min(900, r.scrollHeight / 3)); }); await wait(p, 150);
