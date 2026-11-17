@@ -197,3 +197,8 @@ speichern(mail.wert);
 - **(a) `email` auf der Grund-Bean `field` (Empfohlen)** – jede Feldart ist eine eigene Bean mit ihren Prüfungen, die Grund-Bean einmal
 - (b) eine Bean `field` mit Eigenschaft `typ: 'email'` – weniger Beans, aber `field` wächst mit jeder Feldart und kennt alle Regeln
 - (c) `field-email` als Name – zeigt die Verwandtschaft im Namen, ist aber länger
+
+**Entschieden (17.11.2026): (a) Feldarten als eigene AD-Bean auf der Grund-Bean `field`** (z. B. `email`, später `amount`, `date`, `phone`, `iban`); Gültigkeitsregeln,
+Meldungen und Prüfbeispiele stehen in der Bean, `checkBean` spielt sie durch.
+
+**Noch offen:** Kennung sprechend oder mit Nummer (Abschnitt ‚Eindeutige Kennung‘) · Bereiche als Gruppe in der Liste oder als Präfix (Abschnitt ‚Präfix nach Bereich?‘).
