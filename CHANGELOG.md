@@ -3,6 +3,101 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.60.0 – 17.11.2026
+
+AppDesign 4.60.0 · Designrichtlinie allgemein 4.60.0 · Zusammenarbeit allgemein 3.14.1 · Reiselogbuch 3.57.0 (Fassung 4.60.0)
+
+**APD-30 – Wischaktionen der Kacheln und sperrende Sprechblase** (`ui.js`, `design.css`, R-7.8, R-1.4; Wortlaut `arbeit/APD-30 Wischaktionen Wortlaut.md`
+APD-30/V-1 bis V-11, `arbeit/0125 Bau 4.60.0 Zwischenstand.md` APD-30/V-12, V-13; Testfall-Liste `arbeit/APD-30 Wischaktionen Testfall-Liste.md`
+APD-30/D-1 bis D-11, W-1 bis W-80; Sitzungen 0117 und 0125).
+
+- **Wischaktionen:** Wischen nach links auf einer Kachel der zentralen Liste zeigt rechts neben ihr die Aktionen des Kontextmenüs als Kapseln 66 × 44 mit
+  Symbol und Wort darunter – ‚Löschen‘ rot und ganz außen. Offen bei halber Aktionsbreite (bei zwei Aktionen 162 px), sonst federt die Kachel zurück; beim
+  Zurückwischen werden die Kapseln kleiner und blasser; Durchwischen über 60 % fragt mit der Sprechblase, die aus der roten Kapsel wächst.
+- **Schließen (APD-30/V-12, Entscheidung des Nutzers 17.11.2026):** Tippen auf die Kachel oder daneben in der Liste schließt sie, ohne etwas auszulösen;
+  Schaltflächen außerhalb der Liste – auch panel-left, plus und Mehr im Kopf der Liste – wirken sofort und schließen sie dabei (APD-30/W-42).
+- **Sprechblase graut ein und sperrt** (alle Abfragen, `choosePop`): alles daneben Schwarz 20 %, daneben tippen ändert nichts; Esc bzw. ⌘. = ‚Abbrechen‘.
+- **Prüfungen:** neu `checkWischen` in `tests/ablauf.mjs` (mit APD-30/W-42 iPad: panel-left bei offener Kachel blendet die Seitenleiste beim ersten Tipp aus,
+  beim Einblenden sind alle Kacheln zu; APD-30/W-43: Mehr im Kopf öffnet das Menü sofort; W-5: Tipp auf eine andere Kachel bzw. Fläche in der Liste schließt nur);
+  Prüfungen mit ‚daneben tippen bricht ab‘ auf ‚ändert nichts‘ umgestellt; `checkNavigation` APD-68/Q-2 (nach links auf der Seitenleiste ist auf einer Kachel
+  ein Durchwischen – die Prüfung bricht die Sprechblase ab, die Seitenleiste bleibt); Gegenproben APD-30/W-68 und W-80.
+
+**APD-136 – AD-Beans** (R-1.13; Wortlaut `arbeit/0125 APD-136 Wortlaut allgemeine Regel.md` APD-136/V-1 bis V-4; Sitzung 0125): allgemeine Elemente, die
+neu entstehen oder umgebaut werden, sind gekapselte Bausteine mit Fabrik, Eigenschaften, Methoden und Ereignissen und eigenem CSS unter `.ad-<kennung>…`.
+Erste Bean `swipeactions` (`createSwipeactions`); Liste der AD-Beans in Designrichtlinie 15, Schnittstelle in 14. Prüfung neu `checkBeans` in `tests/doku.mjs`.
+Bestehende Elemente werden erst mit APD-135 Paket 6 und 7 umgebaut.
+
+**APD-133 – Designrichtlinie 13 ‚Neue Fenstergröße vor `resize`‘** (Wortlaut `arbeit/APD-133 Wortlaut Designrichtlinie 13.md` APD-133/V-1): der Befund aus
+4.59.3 steht jetzt in der Richtlinie (nur Text).
+
+Testfälle P-107 (Schritt für Schritt, Zusammenarbeit allgemein 3.14.1). Link: https://g811141a.github.io/ReiseLogBuch/ – bitte in der
+**App vom Home-Bildschirm**, zuerst die App ganz schließen und neu öffnen. Bei allen Fällen mit der Sprechblase zum Schluss ‚Abbrechen‘ tippen –
+dann wird nichts gelöscht.
+
+**P-107/0 – Version prüfen**
+1. Auf iPhone und iPad die App ganz schließen (vom unteren Rand nach oben wischen und wegschieben) und mit Netz neu öffnen.
+2. In der Startliste (iPhone) bzw. Seitenleiste (iPad) ‚Reiselogbücher‘ oben auf ‚…‘ (Mehr) tippen.
+3. Erwartet auf beiden Geräten: unten grau ‚Reiselogbuch · Version 3.57.0 · erstellt am … · AppDesign 4.60.0‘.
+
+**P-107/1 – Wischgefühl**
+1. iPad quer, dann hoch: in der Seitenleiste ‚Reiselogbücher‘ eine Kachel langsam nach links wischen und dabei den Finger hin und her bewegen.
+2. Erwartet: die Kachel folgt dem Finger ohne Ruckeln; rechts daneben erscheinen zwei Kapseln mit dem Wort darunter, ‚Einstellen‘ und ganz außen rot ‚Löschen‘.
+3. Etwa eine Fingerbreite weit wischen und loslassen. Erwartet: die Kachel rastet weich ein und bleibt offen, vom Titel ist links noch ein Teil zu sehen.
+4. Dasselbe am iPhone hoch und quer in der Startliste. Erwartet: wie in 2 und 3.
+
+**P-107/2 – Rollen gegen Wischen**
+1. iPad und iPhone, Liste ‚Reiselogbücher‘ mit mehreren Kacheln: auf einer Kachel senkrecht nach oben wischen. Erwartet: die Liste rollt, keine Kachel bewegt sich seitlich.
+2. Schräg wischen, mehr nach unten als nach links. Erwartet: die Liste rollt, keine Kachel öffnet.
+3. Schräg wischen, deutlich mehr nach links als nach unten. Erwartet: die Kachel folgt dem Finger, die Liste rollt nicht.
+
+**P-107/3 – Durchwischen fragt, alles daneben ist eingegraut**
+1. iPad und iPhone: eine Kachel in einem Zug weit nach links ziehen (über mehr als die halbe Kachel) und noch nicht loslassen.
+2. Erwartet: die rote Kapsel ‚Löschen‘ wird breit, ‚Einstellen‘ weicht.
+3. Loslassen. Erwartet: aus der roten Kapsel wächst die Sprechblase ‚‚<Titel>‘ mit allen Einträgen löschen? Das kann nicht rückgängig gemacht werden. Tipp: Vorher
+   ein Backup erstellen.‘ mit ‚Reiselogbuch löschen‘ (rot) und ‚Abbrechen‘; alles daneben ist leicht eingegraut, die Kachel bleibt offen.
+4. Daneben tippen (auf eine andere Kachel, den Kopf, den Inhalt). Erwartet: nichts geschieht, die Sprechblase bleibt.
+5. ‚Abbrechen‘ tippen. Erwartet: die Sprechblase ist weg, das Grau ist weg, die Kachel gleitet zurück, das Reiselogbuch ist noch da.
+
+**P-107/4 – Zurückwischen: Kapseln werden kleiner und blasser**
+1. iPad und iPhone: eine Kachel nach links wischen, bis sie offen bleibt.
+2. Die offene Kachel langsam nach rechts zurückwischen.
+3. Erwartet: die Kapseln ‚Einstellen‘ und ‚Löschen‘ werden dabei kleiner und blasser; ist die Kachel geschlossen, ist keine Kapsel mehr zu sehen.
+
+**P-107/5 – Hereinwischen der Seitenleiste und Zurückwischen wie bisher**
+1. iPad quer oder hoch: die Seitenleiste mit panel-left ausblenden, dann im Reiselogbuch von irgendwo nach rechts wischen.
+2. Erwartet: die Seitenleiste ‚Reiselogbücher‘ kommt herein wie bisher, keine Kachel ist offen.
+3. iPhone: ein Reiselogbuch öffnen und im Inhalt nach rechts wischen. Erwartet: zurück zur Startliste wie bisher, keine Kachel ist offen.
+
+**P-107/6 – Kontextmenü wie bisher**
+1. iPad und iPhone: eine Kachel ohne zu wischen etwa eine halbe Sekunde drücken.
+2. Erwartet: das Kontextmenü mit ‚Reiselogbuch einstellen‘ und ‚Reiselogbuch löschen‘ (rot) wie bisher, die Kachel ist blau getönt und nicht verschoben.
+3. Daneben tippen. Erwartet: das Menü schließt, sonst geschieht nichts.
+
+**P-107/7 – VoiceOver**
+1. iPad und iPhone: VoiceOver einschalten (Einstellungen › Bedienungshilfen › VoiceOver).
+2. In der Liste ‚Reiselogbücher‘ mit einem Finger nach rechts wischen, von Kachel zu Kachel. Erwartet: jede Kachel wird einzeln angesagt (Titel, Zeitraum, Zustand), keine
+   Kapsel ‚Einstellen‘ oder ‚Löschen‘ dazwischen.
+3. Auf einer Kachel doppeltippen und beim zweiten Tippen halten. Erwartet: das Kontextmenü mit ‚Reiselogbuch einstellen‘ und ‚Reiselogbuch löschen‘ wird angesagt.
+4. Das Menü schließen (mit zwei Fingern ein ‚Z‘ zeichnen), VoiceOver wieder ausschalten.
+
+**P-107/8 – Bewegung reduzieren**
+1. iPad und iPhone: Einstellungen › Bedienungshilfen › Bewegung › ‚Bewegung reduzieren‘ ein; App neu öffnen.
+2. Eine Kachel nach links wischen. Erwartet: die Kachel folgt weiter dem Finger; die Kapseln blenden nur ein, ohne zu wachsen.
+3. Loslassen bzw. auf die Kachel tippen. Erwartet: die Kachel steht sofort offen bzw. sofort wieder an ihrem Platz, ohne Gleiten.
+4. ‚Bewegung reduzieren‘ wieder aus.
+
+**P-107/9 – Größte Textgröße**
+1. iPad und iPhone: Einstellungen › Bedienungshilfen › Anzeige & Textgröße › Größerer Text ein, Regler ganz nach rechts; App neu öffnen.
+2. Eine Kachel nach links wischen, bis sie offen bleibt.
+3. Erwartet: die Wörter ‚Einstellen‘ und ‚Löschen‘ sind größer und ganz zu lesen, nichts ist abgeschnitten oder überlappt, keine Kapsel ragt aus dem Bild.
+4. Textgröße wieder zurückstellen.
+
+**P-107/10 – Dunkel**
+1. iPad und iPhone: Mehr (‚…‘) der Liste ‚Reiselogbücher‘ › ‚Darstellung ›‘ › ‚Dunkel‘.
+2. Eine Kachel nach links wischen, bis sie offen bleibt. Erwartet: ‚Löschen‘ rot wie andere rote Schaltflächen, ‚Einstellen‘ wie runde Schaltflächen, beide Wörter gut lesbar.
+3. ‚Löschen‘ antippen. Erwartet: die Sprechblase ‚‚<Titel>‘ mit allen Einträgen löschen? …‘; das Eingrauen daneben ist auch dunkel zu sehen.
+4. ‚Abbrechen‘ tippen, Darstellung wieder wie vorher (‚Automatisch‘).
+
 ## 4.59.3 – 15.11.2026
 
 AppDesign 4.59.3 · Designrichtlinie allgemein 4.59.3 · Zusammenarbeit allgemein 3.14.1 · Reiselogbuch 3.56.3 (Fassung 4.59.3)

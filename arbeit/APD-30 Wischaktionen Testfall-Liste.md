@@ -22,7 +22,7 @@ Im Muster nicht gezeigt, im Code bzw. in den Regeln gelesen (Sitzung 0117); jede
 |---|---|---|
 | D-1 | **Gemeinsamer Baustein in AppDesign** (`ui.js`), die App nennt nur die Aktionen – dieselbe Liste wie für das Kontextmenü | 0 Nr. 10; Wischen und Kontextmenü können nie auseinanderlaufen |
 | D-2 | **Entscheidung der Geste wie R-7.5:** nach 10 px, deutlich waagrecht (mehr als 1,2 × senkrecht), nach links; sonst gehört die Bewegung dem Rollen (Muster: 8 px, 1 ×) | ein Wert für alle Gesten (`NAV_ENTSCHEID`, `NAV_WAAGRECHT` in `ui.js`) |
-| D-3 | **Höchstens eine Kachel offen.** Sie schließt bei: Tippen auf die Kachel oder daneben, Rollen der Liste, Wischen an einer anderen Kachel, Neuaufbau der Liste (Abgleich, Suche, Speichern), Drehen, Seitenleiste ausblenden, Esc. Das schließende Tippen löst sonst nichts aus | wie Mail und Notizen im Muster (Tippen schließt); nichts bleibt versteckt offen |
+| D-3 | **Höchstens eine Kachel offen.** Sie schließt bei: Tippen auf die Kachel oder daneben in der Liste (Schaltflächen außerhalb der Liste wirken sofort und schließen sie dabei – APD-30/V-12, Nutzer 17.11.2026, Sitzung 0125), Rollen der Liste, Wischen an einer anderen Kachel, Neuaufbau der Liste (Abgleich, Suche, Speichern), Drehen, Seitenleiste ausblenden, Esc. Das schließende Tippen löst sonst nichts aus | wie Mail und Notizen im Muster (Tippen schließt); nichts bleibt versteckt offen |
 | D-4 | **Wischen nach rechts** bewegt eine geschlossene Kachel nicht; eine offene folgt dem Finger zurück | Muster Schritt 5 (iPhone) |
 | D-5 | **Kapseln deckend wie im Muster,** kein Glas – R-3.9 bleibt unverändert | hinter den Kapseln läuft kein Inhalt durch, Glas hätte keine sichtbare Wirkung |
 | D-6 | **Sprechblase wächst aus der roten Kapsel** (R-4.13) und steht ganz im Bild (R-4.5); die Kachel bleibt offen, bis entschieden ist; ‚Abbrechen‘ → Kachel gleitet zurück | Muster |
@@ -45,7 +45,7 @@ dunkel; Chromium und WebKit. Nach jeder Handlung gelten die Grundregeln (`pruefe
 | W-2 | Kachel 60 px nach links wischen, loslassen | federt zurück, keine Kapsel sichtbar, nichts geöffnet |
 | W-3 | Reihenfolge und Aussehen bei offener Kachel | links ‚Einstellen‘ (Symbol settings, nicht rot), rechts außen ‚Löschen‘ (Symbol trash, rot); Rot nur an ‚Löschen‘ (R-3.3) |
 | W-4 | Auf die offene Kachel tippen | gleitet zurück; das Reiselogbuch wird nicht geöffnet, am iPad bleibt der gewählte Eintrag |
-| W-5 | Bei offener Kachel daneben tippen (Kopf, leere Fläche, andere Kachel, Inhalt am iPad) | Kachel schließt; das Tippen löst nichts weiter aus |
+| W-5 | Bei offener Kachel daneben tippen (leere Fläche, andere Kachel, Inhalt am iPad) | Kachel schließt; in der Liste löst das Tippen nichts weiter aus (Knöpfe im Kopf: W-43; angepasst an APD-30/V-12, Sitzung 0125) |
 | W-6 | Kachel 1 offen, Kachel 2 nach links wischen | Kachel 1 schließt, Kachel 2 öffnet – nie zwei offen |
 | W-7 | Offene Kachel 100 px nach rechts wischen | folgt dem Finger und schließt; auf halbem Weg Kapseln 75 % groß und 50 % deckend, geschlossen nicht mehr sichtbar |
 | W-8 | Geschlossene Kachel nach rechts wischen | bewegt sich nicht; am iPad (Seitenleiste sichtbar) und in der iPhone-Startliste geschieht nichts |
@@ -106,7 +106,7 @@ Gilt die eingegraute, sperrende Sprechblase für **alle** Abfragen (Frage beim W
 |---|---|---|
 | W-41 | Kachel offen, dann drehen | Kachel geschlossen; Seitenleiste, oberster Eintrag und Auswahl wie vorher (R-8.1) |
 | W-42 | Kachel offen, dann panel-left (iPad) | Seitenleiste gleitet hinaus; beim Einblenden sind alle Kacheln geschlossen |
-| W-43 | Kachel offen, dann Mehr-Menü oder plus im Kopf antippen | Kachel schließt, das Tippen öffnet in diesem Fall das Menü bzw. Fenster **nicht** (D-3: schließendes Tippen löst nichts aus) |
+| W-43 | Kachel offen, dann Mehr-Menü oder plus im Kopf antippen | Kachel schließt, das Tippen öffnet das Menü bzw. Fenster **sofort** (D-3: Schaltflächen außerhalb der Liste wirken sofort – angepasst an APD-30/V-12, Nutzer 17.11.2026, Sitzung 0125) |
 | W-44 | Suche in der Liste offen, Treffer-Kachel wischen | wie W-1, W-12, W-15; nach dem Löschen stimmt ‚N von M Reiselogbüchern‘; die Tastatur schließt zuerst (R-7.5) |
 | W-45 | Suchbegriff ändern, während eine Kachel offen ist | Liste neu, alle Kacheln geschlossen |
 | W-46 | Abgleich bzw. ‚Backup laden‘ baut die Liste neu, während eine Kachel offen ist | alle Kacheln geschlossen, Position der Liste bleibt (R-7.1) |

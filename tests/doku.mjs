@@ -362,3 +362,58 @@ export function checkSchema(appDir, app, gp = (process.env.PRUEF_GEGENPROBE || '
   for (const x of noetig) if (!global.has(x)) E(`APD-78/S-10 Zusammenarbeit 2.4: Präfix ${x}- fehlt in der Tabelle ‚Nummern und Präfixe‘`);
   return errors;
 }
+
+// R-1.13 AD-Beans (seit 4.60.0, APD-136; Testfall-Liste arbeit/APD-30 Wischaktionen Testfall-Liste.md W-72, W-73, W-80): liest die Liste der AD-Beans
+// (Designrichtlinie 15) aus der Fassung der App und prüft sie gegen ui.js und design.css derselben Fassung sowie gegen den Code der App (index.html):
+//   W-72: je Kennung genau eine Zeile; die Fabrik heißt create<Kennung> und steht in ui.js; jede Fabrik in ui.js, die eine Bean ist (setzt
+//         data-ad-bean), steht in der Liste; CSS der Bean nur unter .ad-<kennung>… (jede Regel, die die Bean nennt, zielt auf ihre Klassen)
+//   W-73: die App nennt keine Klasse .ad-<kennung>… und keinen inneren Namen der Bean (Namen, die ui.js im Abschnitt der Bean außer der Fabrik
+//         anlegt) – nur Fabrik, Eigenschaften, Nur lesen, Methoden, Ereignisse
+// Gegenprobe W-80: PRUEF_GEGENPROBE=beans:W-80 fügt dem gelesenen index.html eine Regel für .ad-swipeactions-kapsel hinzu – W-73 wird rot.
+export function checkBeans(appDir, app) {
+  const errors = [], E = t => errors.push(`R-1.13 ${t}`);
+  const read = f => { try { return readFileSync(new URL(f, appDir), 'utf8'); } catch { return ''; } };
+  let html = read('index.html');
+  const needed = html.match(/AD_NEEDED = '([\d.]+)'/)?.[1];
+  if (process.env.PRUEF_GEGENPROBE === 'beans:W-80') html = html.replace('</style>', '.ad-swipeactions-kapsel { color: red; }\n</style>');
+  const guide = adText(appDir, 'README - Designrichtlinie allgemein.md', needed);
+  const ui = adText(appDir, needed ? 'ui.js' : 'v4/ui.js', needed) || adText(appDir, 'v4/ui.js'), css = adText(appDir, needed ? 'design.css' : 'v4/design.css', needed) || adText(appDir, 'v4/design.css');
+  const abschnitt = guide.split('\n## 15. ')[1]?.split('\n### ')[0] || '';
+  const tabelle = abschnitt.split('**Liste der AD-Beans**')[1] || '';
+  if (!tabelle) { E('Designrichtlinie 15: ‚Liste der AD-Beans‘ fehlt'); return errors; }
+  const zeilen = [...tabelle.matchAll(/^\| `([a-z]+)` \|([^\n]+)$/gm)].map(m => ({ kennung: m[1], spalten: m[2].split(' | ').map(x => x.replace(/\|\s*$/, '').trim()) }));
+  if (!zeilen.length) E('Designrichtlinie 15: die Liste der AD-Beans hat keine Zeile');
+  const namen = s => [...String(s).matchAll(/`([A-Za-z]\w*)/g)].map(m => m[1]);
+  const gross = k => k[0].toUpperCase() + k.slice(1);
+  const kennungen = zeilen.map(z => z.kennung);
+  for (const k of new Set(kennungen)) if (kennungen.filter(x => x === k).length > 1) E(`W-72 Kennung ‚${k}‘ steht ${kennungen.filter(x => x === k).length}-mal in der Liste der AD-Beans`);
+  // Fabriken in ui.js, die Beans sind (setzen data-ad-bean)
+  const fabriken = [...ui.matchAll(/\nfunction (create[A-Z]\w*)\(/g)].map(m => { const i = m.index, ende = ui.indexOf('\n}\n', i); return { name: m[1], text: ui.slice(i, ende) }; });
+  for (const f of fabriken) if (/adBean\s*=|data-ad-bean/.test(f.text) && !zeilen.some(z => `create${gross(z.kennung)}` === f.name)) E(`W-72 ${f.name} in ui.js ist eine Bean (setzt data-ad-bean), steht aber nicht in der Liste der AD-Beans`);
+  for (const { kennung, spalten } of zeilen) {
+    const fabrik = `create${gross(kennung)}`;
+    if (!spalten[1]?.includes(fabrik)) E(`W-72 ${kennung}: Fabrik in der Liste ‚${spalten[1]}‘ statt ${fabrik}(…)`);
+    const f = fabriken.find(x => x.name === fabrik);
+    if (!f) { E(`W-72 ${kennung}: ${fabrik} fehlt in ui.js`); continue; }
+    if (!new RegExp(`adBean\\s*=\\s*'${kennung}'`).test(f.text)) E(`W-72 ${kennung}: ${fabrik} setzt data-ad-bean="${kennung}" nicht`);
+    // CSS nur unter .ad-<kennung>…: jede Regel, die die Bean nennt, zielt mit jedem Selektor auf eine Klasse der Bean
+    for (const m of css.replace(/\/\*[\s\S]*?\*\//g, '').matchAll(/([^{}]+)\{[^{}]*\}/g)) {
+      const sel = m[1].trim();
+      if (!sel.includes(`ad-${kennung}`) || sel.startsWith('@')) continue;
+      for (const s of sel.split(',').map(x => x.trim())) if (!new RegExp(`\\.ad-${kennung}(?:-[\\w-]+)?(?:[.:\\[][^\\s>+~]*)?$`).test(s)) E(`W-72 ${kennung}: CSS ‚${s}‘ zielt nicht auf eine Klasse .ad-${kennung}…`);
+    }
+    for (const m of css.replace(/\/\*[\s\S]*?\*\//g, '').matchAll(/([^{}]+)\{[^{}]*\}/g)) for (const s of m[1].split(',').map(x => x.trim()))
+      if (/\.ad-[a-z]+/.test(s) && !s.includes(`ad-${kennung}`) && !kennungen.some(k => s.includes(`ad-${k}`))) E(`W-72 CSS ‚${s}‘ nennt eine Bean, die nicht in der Liste steht`);
+    // W-73: der Code der App nennt keine Klasse und keinen inneren Namen der Bean
+    const klassen = [...new Set(html.match(new RegExp(`ad-${kennung}(?:-[\\w-]+)?`, 'g')) || [])];
+    if (klassen.length) E(`W-73 ${app} index.html nennt CSS bzw. Klassen der Bean ${kennung}: ${klassen.join(', ')}`);
+    const start = ui.indexOf(`/* ---------- AD-Bean ${kennung}`), teil = start >= 0 ? ui.slice(start, ui.indexOf('\n}\n', ui.indexOf(`function ${fabrik}(`)) + 3) : '';
+    if (!teil) { E(`W-73 ${kennung}: Abschnitt ‚/* ---------- AD-Bean ${kennung}‘ fehlt in ui.js`); continue; }
+    const erlaubt = new Set([fabrik, ...namen(spalten[2]), ...namen(spalten[3]), ...namen(spalten[4]), ...namen(spalten[5])]);
+    const innen = [...teil.matchAll(/^(?:let|const|var|function)\s+(\w+)/gm)].map(m => m[1]).filter(n => !erlaubt.has(n));
+    const code = html.replace(/<!--[\s\S]*?-->/g, '').replace(/\/\/[^\n]*/g, '');
+    const genannt = innen.filter(n => new RegExp(`\\b${n}\\b`).test(code));
+    if (genannt.length) E(`W-73 ${app} index.html nennt innere Namen der Bean ${kennung}: ${genannt.join(', ')}`);
+  }
+  return errors;
+}

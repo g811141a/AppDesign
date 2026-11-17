@@ -1,4 +1,4 @@
-// AppDesign 4.59.3 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
+// AppDesign 4.60.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
 // Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/fassung/X.Y.Z/ui.js"></script> (feste Fassung, R-10.3)
 // Seit 4.11.0 (R-10.3): ui.js und design.css immer mit ?v=<AppDesign-Version> einbinden (auch in sw.js) und beim Start
 // prüfen, ob genau diese Fassung geladen ist (AD_VERSION hier, --ad-version in design.css).
@@ -20,7 +20,7 @@
 
 'use strict';
 // Version der Bausteine (R-10.3): die App vergleicht sie beim Start mit der benötigten Fassung.
-const AD_VERSION = '4.59.3';
+const AD_VERSION = '4.60.0';
 // APD-129 Teil 2 (seit 4.59.2, Messung 14.11.2026 arbeit/APD-129/messung-2026-11-14-2137.txt, Zeilen 9–17, 207–216, 263–272; Designrichtlinie 13
 // ‚Oberer Rand nach dem Drehen‘): iPhone vom Home-Bildschirm quer → hoch – nach der Meldung 812 bleibt env(safe-area-inset-top) noch 250–300 ms
 // auf 62; alles mit --safe-top stünde so lange 62 px zu tief und spränge dann hoch. Ist das Fenster hoch und niedriger als der Bildschirm, liegt
@@ -190,8 +190,8 @@ function onLongPress(btn, onLong, onTap, { entfernen = false } = {}) {
     stop();
     fired = false; x0 = e.clientX; y0 = e.clientY;
     addEventListener('scroll', rollt, { capture: true, passive: true });
-    heben = setTimeout(() => { heben = null; if (!navZug?.aktiv) anheben(); }, LANG_HEBEN);
-    timer = setTimeout(() => { stop(); if (navZug?.aktiv) return; fired = true; beruehrAus(true); onLong(); }, entfernen ? LANG_ENTFERNEN : LANG_DAUER);   // seit 4.30.0: nicht während einer Wischgeste (APD-61)
+    heben = setTimeout(() => { heben = null; if (!navZug?.aktiv && !swipeZieht) anheben(); }, LANG_HEBEN);
+    timer = setTimeout(() => { stop(); if (navZug?.aktiv || swipeZieht) return; fired = true; beruehrAus(true); onLong(); }, entfernen ? LANG_ENTFERNEN : LANG_DAUER);   // seit 4.30.0: nicht während einer Wischgeste (APD-61)
   });
   btn.addEventListener('pointermove', e => { if (timer && Math.hypot(e.clientX - x0, e.clientY - y0) > LANG_WEG) stop(); });
   ['pointerup', 'pointerleave', 'pointercancel'].forEach(ev => btn.addEventListener(ev, stop));
@@ -612,7 +612,8 @@ const onRoll = fn => window.addEventListener('scroll', e => { if (e.target === d
 
 /* ---------- Menüs und Sprechblasen ---------- */
 
-// Ebene hinter Menü und Sprechblase: daneben tippen schließt, Wischen bewegt die Seite dahinter nicht.
+// Ebene hinter Menü und Sprechblase: daneben tippen schließt (seit 4.60.0 nur das Menü – die Sprechblase ruft sie ohne schliessen auf und graut
+// alles daneben ein, APD-30/V-7), Wischen bewegt die Seite dahinter nicht.
 // Seit 4.54.0 (APD-118, Designrichtlinie 13 ‚Am oberen Rand kein Klick‘, Testfall-Liste APD-118/X-1 bis X-9): sie schließt schon beim Loslassen
 // (pointerup), wenn der Finger bzw. die Maus auf ihr aufsetzte und höchstens SCHICHT_WEG px wanderte – am oberen Rand (iPhone quer, Home-Bildschirm)
 // schickt Safari keinen click. Den Klick danach verschluckt sie (sonst träfe er, was unter der Schicht lag, z. B. den Mehr-Knopf: wieder offen);
@@ -981,7 +982,8 @@ function openMenu(anchor, items, align = 'right') {
   }
 }
 
-// Abfrage als Sprechblase an der angetippten Schaltfläche; daneben tippen bricht ab.
+// Abfrage als Sprechblase an der angetippten Schaltfläche. Seit 4.60.0 (APD-30/V-7, V-8, R-1.4): alles daneben ist eingegraut (Schwarz 20 %)
+// und gesperrt – daneben tippen ändert nichts; Esc bzw. ⌘. = ‚Abbrechen‘.
 // Schaltflächen ohne Icons wie in Apple-Abfragen: die Aktion rot gefüllt, darunter der Weg zurück in normaler Schrift.
 function confirmPop(anchor, html, act, back = { label: 'Abbrechen' }, opts) {
   return choosePop(anchor, html, [{ label: act.label, cls: act.cls || 'danger', value: true }, { label: back.label, value: false }], opts)
@@ -990,14 +992,23 @@ function confirmPop(anchor, html, act, back = { label: 'Abbrechen' }, opts) {
 
 // Seit 4.9.0: Abfrage mit mehreren Wegen (wie eine Apple-Abfrage mit drei Knöpfen): die bevorzugte Aktion blau
 // gefüllt (cls 'primary'), eine zerstörende in roter Schrift (cls 'danger-text'), zuletzt der Weg zurück.
-// Ergebnis: value des gewählten Knopfs; daneben tippen ergibt null.
+// Ergebnis: value des gewählten Knopfs; Esc bzw. ⌘. ergibt null. Seit 4.60.0 (APD-30/V-7, V-8, R-1.4) graut die Ebene dahinter alles daneben ein
+// (Schwarz 20 %, .layer.schleier) und daneben tippen ändert nichts (bis 4.59.x: ergab null). Gehört der Anker zu einer offenen Kachel der
+// Wischaktionen (schleierFrei), bleiben Kachel und Kapseln frei (ein Loch im Grau, APD-30/W-22).
 // Seit 4.41.0 (APD-81/F-2): feld – die Abfrage gehört zu diesem Textfeld (ⓧ); Fokus und Tastatur bleiben darin, solange sie offen ist
 // (nichts wird gesperrt oder fokussiert, Antippen der Blase und daneben nimmt dem Feld den Fokus nicht).
 function choosePop(anchor, html, buttons, { feld = null } = {}) {
   return new Promise(resolve => {
     const visible = anchor?.isConnected && anchor.getClientRects().length;
     const host = (visible && anchor.closest('dialog')) || (dlg.open ? dlg : document.body);
-    const layer = blockingLayer(() => done(null));
+    const layer = blockingLayer();   // daneben tippen ändert nichts (APD-30/V-7)
+    layer.classList.add('schleier');
+    const loch = (anchor && schleierFrei.get(anchor)) || null;
+    if (loch) { layer.classList.add('mit-loch'); layer.append(Object.assign(document.createElement('div'), { className: 'schleier-loch' })); }
+    // das Loch folgt der offenen Kachel samt Kapseln (nach dem Drehen neu gemessen)
+    const lochSetzen = () => { const l = layer.querySelector('.schleier-loch'); if (!l) return; const r = loch();
+      if (!r) { layer.classList.remove('mit-loch'); l.remove(); return; }
+      Object.assign(l.style, { left: r.left + 'px', top: r.top + 'px', width: r.width + 'px', height: r.height + 'px' }); };
     const pop = document.createElement('div');
     pop.className = 'pop';
     // Seit 4.10.0 (R-9.2): Wege mit Erklärung (desc) stehen je in einer eigenen Kachel – Erklärung, darunter der Knopf;
@@ -1014,6 +1025,7 @@ function choosePop(anchor, html, buttons, { feld = null } = {}) {
     if (tiles) pop.classList.add('wide');
     if (visible) anchor.classList.add('on');
     const place = () => {
+      lochSetzen();
       if (!visible) { pop.style.left = (innerWidth - pop.offsetWidth) / 2 + 'px'; return; }
       const a = liveAnchor(anchor);
       // Schaltfläche nicht mehr zu sehen: die Abfrage bleibt offen und steht mittig (eine Entscheidung geht nicht verloren).
@@ -1050,6 +1062,7 @@ function choosePop(anchor, html, buttons, { feld = null } = {}) {
       fokus(bs[i < 0 ? (d > 0 ? 0 : bs.length - 1) : (i + d + bs.length) % bs.length]);
     };
     host.append(layer, pop);
+    lochSetzen();
     if (visible) placeAt(pop, anchor, anchor.classList.contains('side-row') ? 'beside' : anchor.getBoundingClientRect().left > innerWidth / 2 ? 'right' : 'left');
     else { pop.style.left = (innerWidth - pop.offsetWidth) / 2 + 'px'; pop.style.top = '120px'; }
     wachsen(pop, visible ? anchor : null);   // R-4.13: die Sprechblase wächst aus ihrer Schaltfläche
@@ -2544,6 +2557,7 @@ function navKandidat(e) {
   if (!navApp || e.button > 0 || !e.isPrimary || navLauf) return null;
   const t = e.target;
   if (!(t instanceof Element) || dlg.open || msg.open || document.querySelector('.menu, .pop, .layer') || t.closest(NAV_EIGEN)) return null;
+  if (swipeFaengt(t)) return null;   // seit 4.60.0 (APD-30, R-7.8): auf einer wischbaren Kachel gehört das Wischen den Wischaktionen
   const app = document.getElementById('app'), side = document.getElementById('side');
   if (isPhone()) {
     if (!navApp.zurueck?.offen() || !app?.contains(t) || navEigenesRollen(t, app)) return null;
@@ -2653,6 +2667,281 @@ window.addEventListener('resize', () => {
   }
   navSofort();
 });
+/* ---------- AD-Bean swipeactions: Wischaktionen (seit 4.60.0, APD-30, APD-136, R-7.8, R-1.13) ---------- */
+
+// Wie Notizen und Mail (iOS 26, Muster arbeit/APD-30 Wischaktionen Muster.html, Variante D ‚Kapsel mit Wort‘; Testfall-Liste arbeit/APD-30
+// Wischaktionen Testfall-Liste.md D-1 bis D-11, W-1 bis W-80): Wischen nach links auf einer Kachel zeigt rechts neben ihr die Aktionen ihres
+// Kontextmenüs als Kapseln 66 × 44 mit Symbol und dem Wort darunter – gleiche Reihenfolge, die zerstörende rot und ganz außen. Die Kachel folgt dem
+// Finger, bleibt ab halber Aktionsbreite offen (bei zwei Aktionen 162 px), sonst federt sie zurück; beim Zurückwischen werden die Kapseln kleiner
+// (bis 50 %) und blasser. Durchwischen über 60 % der Kachelbreite macht die rote Kapsel breit und löst sie beim Loslassen aus – sie fragt mit der
+// Sprechblase, die aus der roten Kapsel wächst; die Kachel bleibt bis zur Entscheidung offen. Höchstens eine Kachel ist offen; sie schließt bei
+// Tippen auf die Kachel oder daneben in der Liste (das Tippen löst sonst nichts aus; Schaltflächen außerhalb der Liste – auch Knöpfe im Kopf
+// der Liste wie panel-left, plus und Mehr – wirken sofort und schließen sie dabei, APD-30/V-12, W-42), Rollen, Wischen an einer anderen Kachel,
+// Neuaufbau der Liste (die Bean hört an der Liste mit), Drehen und Esc; das Ausblenden der Seitenleiste meldet die App mit schliessen(). Entschieden wird wie in R-7.5 (nach
+// NAV_ENTSCHEID, deutlich waagrecht NAV_WAAGRECHT – sonst rollt die Liste); eine geschlossene Kachel bewegt sich nicht nach rechts; kein Wischen
+// nach langem Drücken (NAV_HALTEN), bei offenem Fenster, Menü oder offener Sprechblase und an Kacheln ohne Aktionen. Geschlossen sind die Kapseln
+// nicht im Dokument (VoiceOver und Tastatur erreichen die Aktionen über das Kontextmenü, D-7), offen sind sie Schaltflächen mit dem Namen der
+// Aktion. ‚Bewegung reduzieren‘ (D-8): die Kachel folgt dem Finger, alles Übrige ohne Gleiten und ohne Größenänderung; je Bild nur transform und
+// opacity. Textgröße (D-9): das Wort wächst mit, die offene Breite so weit, dass kein Wort abgeschnitten wird (sonst bricht es um).
+// Schnittstelle (R-1.13, Liste der AD-Beans in Designrichtlinie 15) – die App nutzt nur diese Namen, kein CSS der Bean:
+//   const w = createSwipeactions(liste, { kacheln: '[data-id]', aktionen: kachel => Einträge, durchwischen: true })   – einmal je Liste
+//   Einträge wie bei openMenu: { icon, label, kurz, red, act } ('sep' wird übergangen; leere Liste = Kachel nicht wischbar); kurz = Wort unter der
+//   Kapsel, label = Name für VoiceOver. act({ anker: Kapsel, quelle: 'wischen' }) – gibt act ein Promise zurück, bleibt die Kachel bis dahin offen.
+//   w.offen (offene Kachel oder null) · w.masse (feste Maße, nur lesen) · w.schliessen() · w.entfernen() · w.on('offen' | 'zu', kachel => …) → abmelden
+// Messmodus (15.21): ‚wisch kandidat‘, ‚wisch verworfen dx dy‘, ‚wisch offen|durch|zurück gefedert|abgebrochen weg W‘ (Weg in px).
+let swipeZieht = false;                 // eine Kachel folgt gerade dem Finger – langes Drücken löst dann nicht aus (onLongPress)
+const swipeBeans = new Set();           // angemeldete Listen – die Gestenstelle (navKandidat) überlässt ihnen das Wischen auf ihren Kacheln
+const swipeFaengt = t => [...swipeBeans].some(f => f(t));
+const SWIPE_BEDIENBAR = 'button, a[href], input, select, textarea, label, summary, [contenteditable], [role=button], [role=link], [role=menuitem], [role=switch]';
+const schleierFrei = new WeakMap();     // Kapsel → () => Rechteck der offenen Kachel samt Kapseln (bleibt beim Grau der Sprechblase frei, choosePop)
+function createSwipeactions(liste, { kacheln, aktionen, durchwischen = true } = {}) {
+  const masse = Object.freeze({ kapselBreite: 66, kapselHoehe: 44, abstand: 8, rand: 11, offenAb: 0.5, durchwischenAb: 0.6,
+    entscheid: NAV_ENTSCHEID, waagrecht: NAV_WAAGRECHT });
+  const hoerer = { offen: new Set(), zu: new Set() };
+  let offen = null;
+  const bean = { masse, get offen() { return offen; }, schliessen() {}, entfernen() {},
+    on(name, fn) { const h = hoerer[name]; if (!h || typeof fn !== 'function') return () => {}; h.add(fn); return () => { h.delete(fn); }; } };
+  // Pflichtangaben (APD-136/W-75): ohne sie meldet die Bean den Fehler und tut nichts – die Liste bleibt bedienbar wie ohne Wischaktionen
+  const fehlt = was => { console.error(`swipeactions: ${was} fehlt`); return bean; };
+  if (!(liste instanceof Element)) return fehlt('liste');
+  if (!kacheln || typeof kacheln !== 'string') return fehlt('kacheln');
+  if (typeof aktionen !== 'function') return fehlt('aktionen');
+  const melde = (name, k) => hoerer[name].forEach(fn => { try { fn(k); } catch (e) { console.error(e); } });
+  const wm = t => { if (mess?.an) messEreignis('wisch ' + t); };
+  const kachelVon = t => { const k = t instanceof Element ? t.closest(kacheln) : null; return k && k !== liste && liste.contains(k) ? k : null; };
+  const eintraegeVon = k => {
+    let alle;
+    try { alle = aktionen(k) || []; } catch (e) { console.error(e); return []; }
+    const e = alle.filter(x => x && typeof x === 'object' && typeof x.act === 'function' && !x.submenu && !('schalter' in x));
+    const ohne = e.find(x => !x.kurz);
+    if (ohne) { console.error(`swipeactions: kurz für ‚${ohne.label || '?'}‘ fehlt`); return []; }
+    return e;
+  };
+  const gesperrt = () => dlg.open || msg.open || !!document.querySelector('.menu, .pop, .layer');
+  // ‚daneben in der Liste‘ (APD-30/V-12): andere Kachel oder Fläche ohne Bedienelement in der Liste – schließt nur; alles außerhalb der Liste und jedes
+  // Bedienelement in ihr, das keine Kachel ist (Kopf, Suchzeile, Backup-Kachel), wirkt sofort
+  const nurSchliessen = (t, k) => !!k || (t instanceof Element && liste.contains(t) && !t.closest(SWIPE_BEDIENBAR));
+  const eigene = new WeakSet();   // Bausteine der Bean in der Liste (zählen nicht als Neuaufbau)
+  let ui = null, z = null, lauf = null, warten = false;
+  const sperre = klickSperre();   // das schließende Tippen löst sonst nichts aus (D-3)
+
+  // Aufbau: die Kapseln liegen neben der Kachel (nie darin, W-64) in einem Kasten so groß wie die Kachel, hinter ihr; die Kachel rückt nach links.
+  function aufbauen(k, e) {
+    abbauen();
+    const traeger = k.parentElement;
+    traeger.classList.add('ad-swipeactions-traeger');
+    k.classList.add('ad-swipeactions-kachel');
+    const box = document.createElement('div');
+    box.className = 'ad-swipeactions-aktionen';
+    box.inert = true;   // erst offen erreichbar (D-7)
+    box.innerHTML = '<div class="ad-swipeactions-bahn" aria-hidden="true"><div class="ad-swipeactions-band"></div></div>' + e.map((x, i) =>
+      `<div class="ad-swipeactions-eintrag" data-i="${i}"><button type="button" class="ad-swipeactions-kapsel${x.red ? ' rot' : ''}" aria-label="${esc(x.label || x.kurz)}">${
+        x.icon ? ic(x.icon) : ''}</button><span class="ad-swipeactions-wort" aria-hidden="true">${esc(x.kurz)}</span></div>`).join('');
+    eigene.add(box);
+    k.after(box);
+    const u = { k, e, box, traeger, r: 0, bahn: box.firstElementChild, band: box.firstElementChild.firstElementChild,
+      ein: [...box.querySelectorAll('.ad-swipeactions-eintrag')].map((el, i) => ({ x: e[i], el, kapsel: el.firstElementChild, wort: el.lastElementChild })) };
+    u.ein.forEach((d, i) => { d.kapsel.onclick = () => ausloesen(u, i); });
+    messen(u);
+    ui = u;
+    return u;
+  }
+  // Maße aus der Kachel und den Wörtern (D-9): je Aktion so breit wie die Kapsel bzw. das Wort; passt es nicht, bricht das Wort um
+  function messen(u) {
+    const { k, box } = u, bw = k.offsetWidth, bh = k.offsetHeight, n = u.ein.length, { kapselBreite: K, abstand: A, rand: R } = masse;
+    Object.assign(box.style, { left: k.offsetLeft + 'px', top: k.offsetTop + 'px', width: bw + 'px', height: bh + 'px' });
+    const platz = Math.max(K, Math.floor((bw - 60 - 2 * R - (n - 1) * A) / n));   // von der Kachel bleibt etwas sichtbar (W-1, W-54)
+    let x = R;
+    u.ein.forEach(d => {
+      d.wort.classList.remove('umbruch'); d.el.style.width = '';
+      const soll = Math.max(K, Math.ceil(d.wort.scrollWidth) + 4);
+      d.w = Math.min(soll, Math.max(K, platz));
+      d.wort.classList.toggle('umbruch', soll > d.w);
+      d.el.style.width = d.w + 'px';
+      d.xl = x; x += d.w + A;
+    });
+    u.breite = x - A + R; u.bw = bw;
+    u.ein.forEach(d => { d.left = bw - u.breite + d.xl; d.el.style.left = d.left + 'px'; d.el.style.top = Math.max(0, Math.round((bh - d.el.offsetHeight) / 2)) + 'px'; });
+    const top = u.ein[0] ? parseFloat(u.ein[0].el.style.top) : 0;
+    Object.assign(u.bahn.style, { top: top + 'px', width: (bw - R) + 'px' });
+  }
+  // Lage aller Teile bei r px Weg: Kapseln rücken anteilig heraus, Größe 50 → 100 %, Deckkraft 0 → 100 % (D-8: ruhig ohne Größenänderung);
+  // voll (Durchwischen): die rote Kapsel steht an der Kante der Kachel, die Bahn dahinter füllt den Platz, die übrigen weichen
+  function bild(u, r, voll) {
+    const ruhig = bewegungRuhig(), k = Math.min(1, r / u.breite), n = u.ein.length, m = new Map();
+    m.set(u.k, { transform: r ? `translate3d(${-Math.round(r)}px,0,0)` : 'none' });
+    u.ein.forEach((d, i) => {
+      const letzte = i === n - 1;
+      let dx = r <= u.breite ? (1 - k) * (u.breite - d.xl) : -(r - u.breite) * (u.breite - d.xl) / u.breite;
+      if (voll && letzte) dx = u.bw - r + masse.rand - d.left;
+      const s = ruhig || voll ? 1 : 0.5 + 0.5 * k;
+      m.set(d.el, { transform: `translate3d(${dx.toFixed(1)}px,0,0) scale(${s.toFixed(3)})`, opacity: String(voll && !letzte ? 0 : +k.toFixed(3)) });
+    });
+    m.set(u.bahn, { opacity: voll ? '1' : '0' });
+    m.set(u.band, { transform: `translate3d(${Math.round(u.bw - r + masse.rand)}px,0,0)` });
+    return m;
+  }
+  function setze(u, r, voll) {
+    u.r = r;
+    for (const [el, b] of bild(u, r, voll)) { if ('transform' in b) el.style.transform = b.transform === 'none' ? '' : b.transform; if ('opacity' in b) el.style.opacity = b.opacity; }
+  }
+  // Bewegung als Web-Animation (die Prüfungen warten auf ihr Ende); die Endlage steht sofort, die Animation läuft darüber (R-1.12: öffnen mit der
+  // Feder, schließen ease-in-out, der Rest anteilig, mindestens GLEIT_MIN_MS); ‚Bewegung reduzieren‘: sofort
+  function fahre(u, von, nach, fertig, vollVon = false) {
+    stoppe();
+    const a = bild(u, von, vollVon), b = bild(u, nach, false);
+    setze(u, nach, false);
+    if (bewegungRuhig() || von === nach || !u.k.animate) return fertig?.();
+    const auf = nach > von, dauer = Math.max(GLEIT_MIN_MS, (auf ? GLEIT_AUF_MS : GLEIT_ZU_MS) * Math.min(1, Math.abs(nach - von) / u.breite));
+    const anims = [...b.keys()].map(el => { const x = el.animate([a.get(el), b.get(el)], { duration: dauer, easing: auf ? GLEIT_FEDER : GLEIT_ZU }); x.id = 'swipeactions'; return x; });
+    lauf = { anims, fertig };
+    anims[0].onfinish = () => { if (lauf?.anims === anims) { lauf = null; fertig?.(); } };
+  }
+  function stoppe() { const l = lauf; if (!l) return; lauf = null; l.anims.forEach(x => x.cancel()); l.fertig?.(); }
+  function abbauen() {
+    const u = ui; if (!u) return;
+    ui = null; stoppe();
+    u.box.remove(); u.k.classList.remove('ad-swipeactions-kachel'); u.k.style.transform = '';
+    if (!u.traeger.querySelector(':scope > .ad-swipeactions-aktionen')) u.traeger.classList.remove('ad-swipeactions-traeger');
+  }
+  function oeffnen(u, von, fertig, vollVon = false) {
+    const war = offen === u.k;
+    offen = u.k; u.box.inert = false;
+    fahre(u, von, u.breite, fertig, vollVon);
+    if (!war) melde('offen', u.k);
+  }
+  function zumachen(sofort = false) {
+    const u = ui, war = offen;
+    offen = null;
+    if (u) { u.box.inert = true; if (sofort || !u.k.isConnected) abbauen(); else fahre(u, u.r, 0, abbauen); }
+    if (war) melde('zu', war);
+  }
+  function ziehenAus() { if (z?.aktiv) { swipeZieht = false; sperre.los(); } z = null; }
+  // Aktion: act bekommt die Kapsel als Anker (die Sprechblase wächst aus ihr, D-6); ein Promise hält die Kachel offen, bis es erfüllt ist
+  function ausloesen(u, i) {
+    const d = u.ein[i];
+    if (!d || ui !== u || offen !== u.k || warten) return;
+    schleierFrei.set(d.kapsel, () => { if (ui !== u || !u.k.isConnected) return null;
+      // sichtbarer Teil: die Kachel läuft links unter den Rand der Liste
+      const a = u.k.getBoundingClientRect(), b = u.box.getBoundingClientRect(), t = u.traeger.getBoundingClientRect(), l = Math.max(a.left, t.left);
+      return { left: l, top: a.top, width: Math.min(b.right, t.right) - l, height: a.height }; });
+    warten = true;
+    let r;
+    try { r = d.x.act({ anker: d.kapsel, quelle: 'wischen' }); } catch (e) { console.error(e); }
+    const fertig = () => {
+      warten = false;
+      if (ui !== u || offen !== u.k) return;
+      const a = document.activeElement, zurueck = !a || a === document.body || u.box.contains(a);
+      zumachen();
+      if (zurueck) fokus(u.k);   // W-14: Fokus auf der Kachel
+    };
+    if (r && typeof r.then === 'function') r.then(fertig, fertig); else fertig();
+  }
+
+  // Gesten. Aufsetzen: Tippen daneben in der Liste schließt die offene Kachel und löst nichts aus, eine Schaltfläche außerhalb schließt sie und wirkt
+  // (W-42, W-43); auf die offene Kachel entscheidet das Loslassen
+  const druck = e => {
+    if (!e.isPrimary) { if (z?.aktiv) los(e, true, true); return; }   // zweiter Finger = Abbruch (W-39)
+    sperre.frei();
+    const k = kachelVon(e.target), inBox = !!ui?.box.contains(e.target);
+    if (offen && !warten && !inBox && k !== offen) { zumachen(); if (nurSchliessen(e.target, k)) sperre.an(); }
+    z = null;
+    if (e.button > 0 || !k || inBox || warten || gesperrt()) return;
+    stoppe();
+    z = { k, id: e.pointerId, x0: e.clientX, y0: e.clientY, t0: e.timeStamp, aktiv: false, start: offen === k && ui?.k === k ? ui.breite : 0, tipp: offen === k };
+    wm('kandidat');
+  };
+  const zug = e => {
+    if (!z || e.pointerId !== z.id) return;
+    const dx = e.clientX - z.x0, dy = e.clientY - z.y0;
+    if (!z.aktiv) {
+      if (Math.abs(dx) < masse.entscheid && Math.abs(dy) < masse.entscheid) return;
+      const waagrecht = Math.abs(dx) > Math.abs(dy) * masse.waagrecht && (dx < 0 || z.start > 0);   // D-4: geschlossen nie nach rechts
+      const eintr = waagrecht && e.timeStamp - z.t0 <= NAV_HALTEN && !gesperrt() ? (z.start ? ui.e : eintraegeVon(z.k)) : [];
+      if (!eintr.length) { wm(`verworfen ${Math.round(dx)} ${Math.round(dy)}`); z = null; return; }
+      if (offen && offen !== z.k) zumachen(true);
+      if (ui?.k !== z.k) aufbauen(z.k, eintr);
+      z.aktiv = true; swipeZieht = true; sperre.an();
+      if (kbOffen()) document.activeElement?.blur?.();   // wie R-7.5: die Tastatur schließt zuerst
+      try { e.target.setPointerCapture?.(e.pointerId); } catch {}
+    }
+    if (e.cancelable) e.preventDefault();
+    z.r = Math.max(0, Math.min(ui.bw - 20, z.start - dx));
+    z.voll = !!durchwischen && z.r > ui.bw * masse.durchwischenAb;
+    setze(ui, z.r, z.voll);
+  };
+  function los(e, abbruch, egal = false) {
+    if (!egal) sperre.los();
+    if (!z || (!egal && e.pointerId !== z.id)) return;
+    const a = z;
+    ziehenAus();
+    const u = ui;
+    if (!a.aktiv) {
+      // Tippen auf die offene Kachel schließt sie und öffnet nichts (W-4)
+      if (!abbruch && a.tipp && offen === a.k && !warten) { sperre.an(); sperre.los(); zumachen(); }
+      return;
+    }
+    if (!u || u.k !== a.k) return;
+    const r = a.r ?? a.start, weg = `weg ${Math.round(r)}`;
+    if (abbruch) { wm(`abgebrochen ${weg}`); if (a.start) oeffnen(u, r); else fahre(u, r, 0, abbauen); return; }   // Zustand wie vorher
+    if (a.voll) { wm(`durch ${weg}`); oeffnen(u, r, () => ausloesen(u, u.ein.length - 1), true); return; }
+    if (r > u.breite * masse.offenAb) { wm(`offen ${weg}`); oeffnen(u, r); }
+    else { wm(`zurück gefedert ${weg}`); if (offen === u.k) zumachen(); else fahre(u, r, 0, abbauen); }
+  }
+  const hoch = e => los(e, false), abbruch = e => los(e, true);
+  const klick = e => { if (sperre.nimm()) { e.preventDefault(); e.stopImmediatePropagation(); } };
+  const touch = e => { if (z?.aktiv && e.cancelable) e.preventDefault(); };   // Safari nimmt dem Finger die Geste sonst weg (W-65)
+  const taste = e => {
+    if (!offen || warten || !istAbbruch(e) || e.defaultPrevented || tastenStapel.length || dlg.open || msg.open) return;
+    verbrauchen(e);
+    const k = offen, f = !!ui?.box.contains(document.activeElement);
+    zumachen();
+    if (f) fokus(k);
+  };
+  const roll = e => { if (!offen || warten || z?.aktiv) return; const t = e.target; if (t === document || t.contains?.(offen)) zumachen(); };
+  let breiteVorher = innerWidth;
+  const groesse = () => {
+    if (innerWidth === breiteVorher) return;   // nur Drehen (neue Breite) – die Tastatur ändert nur die Höhe
+    breiteVorher = innerWidth;
+    if (z?.aktiv) { wm(`abgebrochen weg ${Math.round(z.r || 0)}`); ziehenAus(); zumachen(true); return; }
+    if (warten && ui) { messen(ui); setze(ui, ui.breite, false); return; }
+    if (offen || ui) zumachen(true);
+  };
+  // Neuaufbau der Liste (Abgleich, Suche, Speichern): die offene bzw. gezogene Kachel schließt sofort
+  const mo = new MutationObserver(rs => {
+    if (!ui) return;
+    const fremd = rs.some(r => !(eigeneDrin(r.target) || [...r.addedNodes, ...r.removedNodes].every(n => eigene.has(n))));
+    if (!ui.k.isConnected || fremd) { ziehenAus(); zumachen(true); }
+  });
+  const eigeneDrin = n => { for (let e = n; e && e !== liste; e = e.parentNode) if (eigene.has(e)) return true; return false; };
+  const faengt = t => !!kachelVon(t);
+  addEventListener('pointerdown', druck, true);
+  addEventListener('pointermove', zug, { capture: true, passive: false });
+  addEventListener('pointerup', hoch, true);
+  addEventListener('pointercancel', abbruch, true);
+  addEventListener('click', klick, true);
+  addEventListener('touchmove', touch, { capture: true, passive: false });
+  document.addEventListener('keydown', taste, true);
+  addEventListener('scroll', roll, { capture: true, passive: true });
+  addEventListener('resize', groesse);
+  mo.observe(liste, { childList: true, subtree: true });
+  swipeBeans.add(faengt);
+  liste.classList.add('ad-swipeactions');
+  liste.dataset.adBean = 'swipeactions';
+  bean.schliessen = () => { ziehenAus(); zumachen(); };
+  bean.entfernen = () => {
+    ziehenAus(); zumachen(true);
+    removeEventListener('pointerdown', druck, true); removeEventListener('pointermove', zug, { capture: true });
+    removeEventListener('pointerup', hoch, true); removeEventListener('pointercancel', abbruch, true); removeEventListener('click', klick, true);
+    removeEventListener('touchmove', touch, { capture: true }); document.removeEventListener('keydown', taste, true);
+    removeEventListener('scroll', roll, { capture: true }); removeEventListener('resize', groesse);
+    mo.disconnect(); swipeBeans.delete(faengt);
+    liste.classList.remove('ad-swipeactions'); delete liste.dataset.adBean;
+    bean.schliessen = () => {}; bean.entfernen = () => {};
+  };
+  return bean;
+}
+
 // Seit 4.43.0 (APD-91, R-2.3, R-4.7): die Suche öffnet ‚Suchen‘ als erster Punkt im Mehr-Menü (darunter ein Strich, wie ‚Find in
 // Note‘ in Notizen) oder ⌘F – im offenen Eintrag, ohne offenen Eintrag in allen; das entscheidet die App (sucheAnmelden). Ist die Suche
 // schon offen, setzt die App nur den Cursor ins Feld; bei offenem Fenster, Meldung oder Menü wirkt ⌘F nicht.
