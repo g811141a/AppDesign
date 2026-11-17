@@ -645,5 +645,9 @@ Datei heißt `arbeit/APD-135 Befund C Tabelle.json`.
 | J-17 | Usertests **nur im Backlog der App**, AppDesign nennt ihn in der Zeile des Themas (W-28) – Sitzung 0123 |
 | J-7 | ‚Muster nur hell‘ **in 0 Nr. 6**, die Hinweise zur Prüfumgebung aus der Übergabe in die AppDesign-`CLAUDE.md` (W-7) – Sitzung 0123 |
 | J-11 | **Nutzungsgrenze dauerhaft im Lagebild** (0 Nr. 15, mit W-15) – Sitzung 0123 |
+| J-25 | ‚Arbeitsumgebung (Cloud)‘ **bleibt** in der AppDesign-`CLAUDE.md` – Sitzung 0123 |
+| J-13 | Konvertierung: **Felder `km`/`price` in Anleitung und Werkzeug**, Kilometer ins Feld (W-30) – Sitzung 0123 |
+| J-33 | Mehr als 4 Fragen bei einer Konvertierung: **Fenster nacheinander, die wichtigsten 4 zuerst** (W-30) – Sitzung 0123 |
+| J-34 | `pruefen.mjs` ohne `--zone`: **Abbruch** statt Wien – Sitzung 0123 |
 
-Offen: Paket 3 J-25; Paket 2 J-13, J-33 bis J-35; Pakete 4 bis 7 J-21 bis J-24, J-26 bis J-32.
+Offen: Paket 2 J-35; Pakete 4 bis 7 J-21 bis J-24, J-26 bis J-32.
