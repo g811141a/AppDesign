@@ -35,7 +35,7 @@ Arbeitsumgebung steht in der AppDesign-`CLAUDE.md`.
 
 - **Nichts gebaut, keine Version.**
 - **Wortlaut APD-135 Pakete 1 und 3 vollständig bestätigt** (Nutzer 17.11.2026) in sieben Teilen: 1a Zusammenarbeit 0, 1b Zusammenarbeit 2.1 bis Ende,
-  2 AppDesign-`CLAUDE.md`/README/UEBERGABE, 3a Designrichtlinie W-23 bis W-39, 3b W-40 bis W-51, 4 Reiselogbuch-Dateien, 5 Backlogs und Kommentare.
+  2 AppDesign-`CLAUDE.md`/README/UEBERGABE, 3a Designrichtlinie APD-135/W-23 bis W-39, 3b APD-135/W-40 bis W-51, 4 Reiselogbuch-Dateien, 5 Backlogs und Kommentare.
   Vermerkt in `arbeit/APD-135 Pakete 1 und 3 Wortlaut.md` (Abschnitt ‚Offene Fragen‘, ‚Bestätigt‘) und im Backlog APD-135. Jeder Alt-Text vorher per
   Skript gegen die heutigen Dateien geprüft.
 - **Eine Anpassung:** APD-56 (AppDesign-Backlog) – der Zusatz ‚Geht in APD-136 auf‘ aus 0123 bleibt, nur ‚(index.html:784-793)‘ → ‚(`bindMoney` in
