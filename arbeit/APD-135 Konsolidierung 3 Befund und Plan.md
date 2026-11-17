@@ -660,4 +660,9 @@ Datei heißt `arbeit/APD-135 Befund C Tabelle.json`.
 | J-29 | APD-134: **erst C-68 (Ausgabe eines Wacklers sichern) bauen, die Ursache nach dem nächsten Wackler beheben** – Sitzung 0123 |
 | J-27 | B-5: **nach Paket 6 neu entscheiden, Schritte nur bei konkretem Anlass** – Sitzung 0123 |
 
-Offen: Pakete 5 und 6 J-28, J-30 bis J-32.
+| J-30 | Messungen: **Regel ‚Messungen in `tests/messungen/` nie umbenennen‘** – Sitzung 0123 |
+| J-31 | Paket 6: **B-4.1, B-4.2, dann B-3.1 und B-3.2**, je mit Gegenprobe – Sitzung 0123 |
+| J-28 | **`.iconbtn` mit Doku streichen, `.lcount` behalten** (W-55) – Sitzung 0123 |
+| J-32 | Allgemeines aus der App nach AppDesign (U-14 bis U-24, `sw.js` als Basis): **eigenes Thema nach B-3** – wird nach Paket 6 mit Priorität ins Backlog übernommen (0 Nr. 24) – Sitzung 0123 |
+
+**Alle 35 Entscheidungen getroffen** (Sitzungen 0122 und 0123).
