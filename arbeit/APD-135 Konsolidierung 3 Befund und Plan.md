@@ -655,4 +655,9 @@ Datei heißt `arbeit/APD-135 Befund C Tabelle.json`.
 | J-22 | Stufe ‚App‘ **erst mit Schritt 2 und der Prüfseite** – Sitzung 0123 |
 | J-23 | Nach einer kleineren Stufe: **keine feste Regel – Claude fragt jedes Mal (Bau-Frage mit Stufe) und weist darauf hin, wenn ein voller Lauf nötig ist** (eigene Antwort des Nutzers statt (a)/(b)) – Sitzung 0123 |
 
-Offen: Pakete 5 bis 7 J-24, J-26 bis J-32.
+| J-26 | Paket 5: **alles, ‚lang zuerst‘ mit Vergleichslauf** – Sitzung 0123 |
+| J-24 | Vier Läufe ohne Grundregeln: **Grundregeln ergänzen, Laufzeit vorher messen** (W-54) – Sitzung 0123 |
+| J-29 | APD-134: **erst C-68 (Ausgabe eines Wacklers sichern) bauen, die Ursache nach dem nächsten Wackler beheben** – Sitzung 0123 |
+| J-27 | B-5: **nach Paket 6 neu entscheiden, Schritte nur bei konkretem Anlass** – Sitzung 0123 |
+
+Offen: Pakete 5 und 6 J-28, J-30 bis J-32.
