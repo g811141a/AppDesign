@@ -641,5 +641,9 @@ Datei heißt `arbeit/APD-135 Befund C Tabelle.json`.
 | J-20 | G-8 und G-16: **mit Paket 5 zu R-Regeln mit Prüfung** (W-48), mit Gegenprobe |
 | J-14 | Versionsgeschichten **auslagern: Zusammenarbeit, beide `CLAUDE.md` und Designrichtlinie** (W-31) |
 | J-15 | Backlog **nur bis ‚## Erledigt‘ lesen** (W-26) |
+| J-16 | CHANGELOG: **nur den neuesten Eintrag lesen** (W-27) – Sitzung 0123 |
+| J-17 | Usertests **nur im Backlog der App**, AppDesign nennt ihn in der Zeile des Themas (W-28) – Sitzung 0123 |
+| J-7 | ‚Muster nur hell‘ **in 0 Nr. 6**, die Hinweise zur Prüfumgebung aus der Übergabe in die AppDesign-`CLAUDE.md` (W-7) – Sitzung 0123 |
+| J-11 | **Nutzungsgrenze dauerhaft im Lagebild** (0 Nr. 15, mit W-15) – Sitzung 0123 |
 
-Offen: Paket 3 J-7, J-11, J-16, J-17, J-25; Paket 2 J-13, J-33 bis J-35; Pakete 4 bis 7 J-21 bis J-24, J-26 bis J-32.
+Offen: Paket 3 J-25; Paket 2 J-13, J-33 bis J-35; Pakete 4 bis 7 J-21 bis J-24, J-26 bis J-32.
