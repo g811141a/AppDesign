@@ -8,7 +8,7 @@ Arbeitsumgebung steht in der AppDesign-`CLAUDE.md`.
 
 | Teil | Version |
 |---|---|
-| Reiselogbuch | **3.57.0** veröffentlicht (Commit e0eaf16, Pages ‚success‘) – Usertest P-107 **mit Fehlern F-1 bis F-4** |
+| Reiselogbuch | **3.57.0** veröffentlicht (Commit e0eaf16, Pages ‚success‘) – Usertest P-107 **mit Fehlern P-107/F-1 bis F-4** |
 | AppDesign | **4.60.0** veröffentlicht (Commit dbfb143, Pages ‚success‘) |
 | Zusammenarbeit allgemein | **3.14.1** |
 | AppDesign-`CLAUDE.md` | **2.12.0** |
@@ -41,7 +41,7 @@ Arbeitsumgebung steht in der AppDesign-`CLAUDE.md`.
   - sperrende, eingrauende Sprechblase;
   - R-1.13 mit `checkBeans`;
   - APD-133/V-1.
-  - Entscheidung W-42 (a) mit Wortlaut APD-30/V-12, V-13 (`arbeit/0125 Bau 4.60.0 Zwischenstand.md`).
+  - Entscheidung APD-30/W-42 (a) mit Wortlaut APD-30/V-12, V-13 (`arbeit/0125 Bau 4.60.0 Zwischenstand.md`).
   - Bericht: `arbeit/0125 Bericht 4.60.0.md`.
 - **Usertest P-107 (Nutzer 17.11.2026):** /0, /2, /3, /5, /6, /7, /10 ok. Fehler:
   - **F-1 (P-107/1):** Aufwischen nacheinander wie in Notizen – zuerst ‚Löschen‘ einblenden und wachsen, dann ‚Einstellen‘.

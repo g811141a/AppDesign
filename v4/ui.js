@@ -2671,9 +2671,9 @@ window.addEventListener('resize', () => {
 
 // Wie Notizen und Mail (iOS 26, Muster arbeit/APD-30 Wischaktionen Muster.html, Variante D ‚Kapsel mit Wort‘; Testfall-Liste arbeit/APD-30
 // Wischaktionen Testfall-Liste.md D-1 bis D-11, W-1 bis W-80): Wischen nach links auf einer Kachel zeigt rechts neben ihr die Aktionen ihres
-// Kontextmenüs als Kapseln 66 × 44 mit Symbol und dem Wort darunter – gleiche Reihenfolge, die zerstörende rot und ganz außen. Die Kachel folgt dem
-// Finger, bleibt ab halber Aktionsbreite offen (bei zwei Aktionen 162 px), sonst federt sie zurück; beim Zurückwischen werden die Kapseln kleiner
-// (bis 50 %) und blasser. Durchwischen über 60 % der Kachelbreite macht die rote Kapsel breit und löst sie beim Loslassen aus – sie fragt mit der
+// Kontextmenüs als Kapseln 66 × 44 (wachsen mit der Textgröße, seit 4.60.1) mit Symbol und dem Wort darunter – gleiche Reihenfolge, die zerstörende
+// rot und ganz außen. Die Kachel folgt dem Finger, bleibt ab halber Aktionsbreite offen (bei zwei Aktionen 162 px), sonst federt sie zurück; die Kapseln
+// erscheinen nacheinander von außen und wachsen aus dem frei werdenden Platz, beim Zurückwischen vergehen sie umgekehrt (seit 4.60.1, P-107/F-1, F-2). Durchwischen über 60 % der Kachelbreite macht die rote Kapsel breit und löst sie beim Loslassen aus – sie fragt mit der
 // Sprechblase, die aus der roten Kapsel wächst; die Kachel bleibt bis zur Entscheidung offen. Höchstens eine Kachel ist offen; sie schließt bei
 // Tippen auf die Kachel oder daneben in der Liste (das Tippen löst sonst nichts aus; Schaltflächen außerhalb der Liste – auch Knöpfe im Kopf
 // der Liste wie panel-left, plus und Mehr – wirken sofort und schließen sie dabei, APD-30/V-12, W-42), Rollen, Wischen an einer anderen Kachel,
@@ -2681,13 +2681,13 @@ window.addEventListener('resize', () => {
 // NAV_ENTSCHEID, deutlich waagrecht NAV_WAAGRECHT – sonst rollt die Liste); eine geschlossene Kachel bewegt sich nicht nach rechts; kein Wischen
 // nach langem Drücken (NAV_HALTEN), bei offenem Fenster, Menü oder offener Sprechblase und an Kacheln ohne Aktionen. Geschlossen sind die Kapseln
 // nicht im Dokument (VoiceOver und Tastatur erreichen die Aktionen über das Kontextmenü, D-7), offen sind sie Schaltflächen mit dem Namen der
-// Aktion. ‚Bewegung reduzieren‘ (D-8): die Kachel folgt dem Finger, alles Übrige ohne Gleiten und ohne Größenänderung; je Bild nur transform und
-// opacity. Textgröße (D-9): das Wort wächst mit, die offene Breite so weit, dass kein Wort abgeschnitten wird (sonst bricht es um).
+// Aktion. ‚Bewegung reduzieren‘ (D-8): die Kachel folgt dem Finger, die Kapseln stehen an ihrem Platz und blenden nur ein (seit 4.60.1 auch ohne
+// Herausrücken, P-107/F-3); je Bild nur transform und opacity. Textgröße (D-9): das Wort wächst mit, die offene Breite so weit, dass kein Wort abgeschnitten wird (sonst bricht es um).
 // Schnittstelle (R-1.13, Liste der AD-Beans in Designrichtlinie 15) – die App nutzt nur diese Namen, kein CSS der Bean:
 //   const w = createSwipeactions(liste, { kacheln: '[data-id]', aktionen: kachel => Einträge, durchwischen: true })   – einmal je Liste
 //   Einträge wie bei openMenu: { icon, label, kurz, red, act } ('sep' wird übergangen; leere Liste = Kachel nicht wischbar); kurz = Wort unter der
 //   Kapsel, label = Name für VoiceOver. act({ anker: Kapsel, quelle: 'wischen' }) – gibt act ein Promise zurück, bleibt die Kachel bis dahin offen.
-//   w.offen (offene Kachel oder null) · w.masse (feste Maße, nur lesen) · w.schliessen() · w.entfernen() · w.on('offen' | 'zu', kachel => …) → abmelden
+//   w.offen (offene Kachel oder null) · w.masse (Maße bei Textgröße ‚groß‘ und Schwellen, nur lesen) · w.schliessen() · w.entfernen() · w.on('offen' | 'zu', kachel => …) → abmelden
 // Messmodus (15.21): ‚wisch kandidat‘, ‚wisch verworfen dx dy‘, ‚wisch offen|durch|zurück gefedert|abgebrochen weg W‘ (Weg in px).
 let swipeZieht = false;                 // eine Kachel folgt gerade dem Finger – langes Drücken löst dann nicht aus (onLongPress)
 const swipeBeans = new Set();           // angemeldete Listen – die Gestenstelle (navKandidat) überlässt ihnen das Wischen auf ihren Kacheln
@@ -2748,7 +2748,8 @@ function createSwipeactions(liste, { kacheln, aktionen, durchwischen = true } = 
   }
   // Maße aus der Kachel und den Wörtern (D-9): je Aktion so breit wie die Kapsel bzw. das Wort; passt es nicht, bricht das Wort um
   function messen(u) {
-    const { k, box } = u, bw = k.offsetWidth, bh = k.offsetHeight, n = u.ein.length, { kapselBreite: K, abstand: A, rand: R } = masse;
+    const { k, box } = u, bw = k.offsetWidth, bh = k.offsetHeight, n = u.ein.length, { abstand: A, rand: R } = masse;
+    const K = Math.max(masse.kapselBreite, u.ein[0]?.kapsel.offsetWidth || 0);   // Kapselbreite wächst mit der Textgröße (--fb, F-4)
     Object.assign(box.style, { left: k.offsetLeft + 'px', top: k.offsetTop + 'px', width: bw + 'px', height: bh + 'px' });
     const platz = Math.max(K, Math.floor((bw - 60 - 2 * R - (n - 1) * A) / n));   // von der Kachel bleibt etwas sichtbar (W-1, W-54)
     let x = R;
@@ -2761,21 +2762,28 @@ function createSwipeactions(liste, { kacheln, aktionen, durchwischen = true } = 
       d.xl = x; x += d.w + A;
     });
     u.breite = x - A + R; u.bw = bw;
+    let von = R;   // von außen: ab welchem Weg die Kapsel erscheint (W-81)
+    for (let i = n - 1; i >= 0; i--) { u.ein[i].von = von; von += u.ein[i].w + A; }
     u.ein.forEach(d => { d.left = bw - u.breite + d.xl; d.el.style.left = d.left + 'px'; d.el.style.top = Math.max(0, Math.round((bh - d.el.offsetHeight) / 2)) + 'px'; });
     const top = u.ein[0] ? parseFloat(u.ein[0].el.style.top) : 0;
     Object.assign(u.bahn.style, { top: top + 'px', width: (bw - R) + 'px' });
   }
-  // Lage aller Teile bei r px Weg: Kapseln rücken anteilig heraus, Größe 50 → 100 %, Deckkraft 0 → 100 % (D-8: ruhig ohne Größenänderung);
-  // voll (Durchwischen): die rote Kapsel steht an der Kante der Kachel, die Bahn dahinter füllt den Platz, die übrigen weichen
+  // Lage aller Teile bei r px Weg (APD-30/W-81 bis W-84, wie Notizen): die Kapseln erscheinen nacheinander von außen – zuerst die äußerste
+  // (‚Löschen‘), die nächste erst, wenn sie ganz da ist. Jede steht rechts bündig in dem Stück, das die Kachel neben den schon vollen Kapseln
+  // freigibt, und wächst mit ihm von 0 auf 100 % (Größe und Deckkraft); zurück genau umgekehrt. Keine Kapsel rückt dabei nach rechts über ihren
+  // Platz hinaus (nie über Kachel, Seitenleiste oder Bild). ‚Bewegung reduzieren‘ (D-8): jede steht an ihrem Platz in voller Größe und blendet
+  // nur ein. Über die volle Breite hinaus weichen die Kapseln anteilig; voll (Durchwischen): die rote Kapsel steht an der Kante der Kachel, die
+  // Bahn dahinter füllt den Platz, die übrigen blenden aus
   function bild(u, r, voll) {
-    const ruhig = bewegungRuhig(), k = Math.min(1, r / u.breite), n = u.ein.length, m = new Map();
+    const ruhig = bewegungRuhig(), n = u.ein.length, m = new Map();
     m.set(u.k, { transform: r ? `translate3d(${-Math.round(r)}px,0,0)` : 'none' });
     u.ein.forEach((d, i) => {
-      const letzte = i === n - 1;
-      let dx = r <= u.breite ? (1 - k) * (u.breite - d.xl) : -(r - u.breite) * (u.breite - d.xl) / u.breite;
+      const letzte = i === n - 1, a = Math.max(0, Math.min(d.w, r - d.von)), q = a / d.w;
+      let dx = 0, s = 1;
       if (voll && letzte) dx = u.bw - r + masse.rand - d.left;
-      const s = ruhig || voll ? 1 : 0.5 + 0.5 * k;
-      m.set(d.el, { transform: `translate3d(${dx.toFixed(1)}px,0,0) scale(${s.toFixed(3)})`, opacity: String(voll && !letzte ? 0 : +k.toFixed(3)) });
+      else if (r > u.breite) dx = ruhig ? 0 : -(r - u.breite) * (u.breite - d.xl) / u.breite;
+      else if (!ruhig && !voll) { s = q; dx = (1 - q) * d.w / 2; }   // rechts bündig, die linke Kante geht mit der Kachel
+      m.set(d.el, { transform: `translate3d(${dx.toFixed(1)}px,0,0) scale(${Math.max(0.001, s).toFixed(3)})`, opacity: String(voll ? (letzte ? 1 : 0) : +q.toFixed(3)) });
     });
     m.set(u.bahn, { opacity: voll ? '1' : '0' });
     m.set(u.band, { transform: `translate3d(${Math.round(u.bw - r + masse.rand)}px,0,0)` });
@@ -2793,7 +2801,9 @@ function createSwipeactions(liste, { kacheln, aktionen, durchwischen = true } = 
     setze(u, nach, false);
     if (bewegungRuhig() || von === nach || !u.k.animate) return fertig?.();
     const auf = nach > von, dauer = Math.max(GLEIT_MIN_MS, (auf ? GLEIT_AUF_MS : GLEIT_ZU_MS) * Math.min(1, Math.abs(nach - von) / u.breite));
-    const anims = [...b.keys()].map(el => { const x = el.animate([a.get(el), b.get(el)], { duration: dauer, easing: auf ? GLEIT_FEDER : GLEIT_ZU }); x.id = 'swipeactions'; return x; });
+    // Zwischenbilder entlang des Wegs, damit die Kapseln auch beim Gleiten nacheinander erscheinen bzw. vergehen (W-83); die Kurve gilt für den ganzen Weg
+    const N = 12, bilder = [a, ...Array.from({ length: N - 1 }, (_, i) => bild(u, von + (nach - von) * (i + 1) / N, false)), b];
+    const anims = [...b.keys()].map(el => { const x = el.animate(bilder.map(m => m.get(el)), { duration: dauer, easing: auf ? GLEIT_FEDER : GLEIT_ZU }); x.id = 'swipeactions'; return x; });
     lauf = { anims, fertig };
     anims[0].onfinish = () => { if (lauf?.anims === anims) { lauf = null; fertig?.(); } };
   }
