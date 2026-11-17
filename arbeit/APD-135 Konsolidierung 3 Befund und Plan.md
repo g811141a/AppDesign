@@ -637,5 +637,9 @@ Datei heißt `arbeit/APD-135 Befund C Tabelle.json`.
 | J-10 | Sitzung ohne Auftrag: **erst das Lagebild, dann das Fenster ‚Was möchtest du als Nächstes tun?‘** (W-16) |
 | J-12 | 0 Nr. 3: **‚ihre Prüfung‘** statt ‚genau eine Prüfung‘ (W-23) |
 | J-18 | Datum in den Abweichungstabellen: **Ausnahme in 0 Nr. 3** (W-43) |
+| J-19 | Satz ‚Ohne Rollbereich rollt das Fenster‘: **erst in Paket 6 prüfen**, ob `ui.js` oder die Vorlage den Rückfall brauchen |
+| J-20 | G-8 und G-16: **mit Paket 5 zu R-Regeln mit Prüfung** (W-48), mit Gegenprobe |
+| J-14 | Versionsgeschichten **auslagern: Zusammenarbeit, beide `CLAUDE.md` und Designrichtlinie** (W-31) |
+| J-15 | Backlog **nur bis ‚## Erledigt‘ lesen** (W-26) |
 
-Offen: J-7, J-11, J-13 bis J-17, J-19 bis J-35.
+Offen: Paket 3 J-7, J-11, J-16, J-17, J-25; Paket 2 J-13, J-33 bis J-35; Pakete 4 bis 7 J-21 bis J-24, J-26 bis J-32.
