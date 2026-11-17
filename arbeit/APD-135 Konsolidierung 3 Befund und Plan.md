@@ -650,4 +650,9 @@ Datei heißt `arbeit/APD-135 Befund C Tabelle.json`.
 | J-33 | Mehr als 4 Fragen bei einer Konvertierung: **Fenster nacheinander, die wichtigsten 4 zuerst** (W-30) – Sitzung 0123 |
 | J-34 | `pruefen.mjs` ohne `--zone`: **Abbruch** statt Wien – Sitzung 0123 |
 
-Offen: Paket 2 J-35; Pakete 4 bis 7 J-21 bis J-24, J-26 bis J-32.
+| J-35 | Import-`PROMPT.md` **ohne eigene Versionsgeschichte**, sie bleibt in der README (I-1) – Sitzung 0123 |
+| J-21 | Paket 4: **Grundsatz und alle Paare in einer eigenen Version** (W-49, W-50) – Sitzung 0123 |
+| J-22 | Stufe ‚App‘ **erst mit Schritt 2 und der Prüfseite** – Sitzung 0123 |
+| J-23 | Nach einer kleineren Stufe: **keine feste Regel – Claude fragt jedes Mal (Bau-Frage mit Stufe) und weist darauf hin, wenn ein voller Lauf nötig ist** (eigene Antwort des Nutzers statt (a)/(b)) – Sitzung 0123 |
+
+Offen: Pakete 5 bis 7 J-24, J-26 bis J-32.
