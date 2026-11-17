@@ -55,3 +55,15 @@ Den Apple-Abgleich (SwiftUI-Views und UIKit-Steuerelemente mit Eigenschaften und
 - Frage 1 Begriff: offen – du schreibst im Chat.
 
 Eingetragen werden APD-136 und die Änderung an APD-135/J-27, sobald der Begriff feststeht.
+
+## Begriff – Vorschlag des Nutzers ‚APD-Bean‘ (17.11.2026)
+
+‚Bean‘ trifft genau, was gemeint ist (Java Bean). Das Präfix ‚APD-‘ ist aber vergeben: Nach dem Nummernschema (Zusammenarbeit 2.4) steht ‚APD-n‘
+für ein **Thema im Backlog von AppDesign** (APD-30, APD-135 …), und eine Nummer bzw. ein Präfix bezeichnet überall genau eine Sache. ‚APD-Bean‘
+läse sich wie ein Backlog-Thema, z. B. ‚APD-Bean Menü‘ neben ‚APD-30‘.
+
+Möglichkeiten:
+- **(a) ‚AD-Bean‘ (Empfohlen)** – ‚AD‘ steht im Code schon für AppDesign (`AD_VERSION`, `AD_NEEDED`), kein Konflikt mit dem Schema; z. B. ‚AD-Bean Menü‘,
+  im Code `createMenu(…)`
+- (b) ‚Bean‘ allein – kurz; in AppDesign gibt es nur eine Art Bean
+- (c) ‚APD-Bean‘ trotzdem – dann braucht 2.4 eine Ausnahme
