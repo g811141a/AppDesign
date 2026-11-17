@@ -2675,8 +2675,9 @@ window.addEventListener('resize', () => {
 // Finger, bleibt ab halber Aktionsbreite offen (bei zwei Aktionen 162 px), sonst federt sie zurück; beim Zurückwischen werden die Kapseln kleiner
 // (bis 50 %) und blasser. Durchwischen über 60 % der Kachelbreite macht die rote Kapsel breit und löst sie beim Loslassen aus – sie fragt mit der
 // Sprechblase, die aus der roten Kapsel wächst; die Kachel bleibt bis zur Entscheidung offen. Höchstens eine Kachel ist offen; sie schließt bei
-// Tippen auf die Kachel oder daneben (das Tippen löst sonst nichts aus), Rollen, Wischen an einer anderen Kachel, Neuaufbau der Liste (die Bean
-// hört an der Liste mit), Drehen und Esc; das Ausblenden der Seitenleiste meldet die App mit schliessen(). Entschieden wird wie in R-7.5 (nach
+// Tippen auf die Kachel oder daneben in der Liste (das Tippen löst sonst nichts aus; Schaltflächen außerhalb der Liste – auch Knöpfe im Kopf
+// der Liste wie panel-left, plus und Mehr – wirken sofort und schließen sie dabei, APD-30/V-12, W-42), Rollen, Wischen an einer anderen Kachel,
+// Neuaufbau der Liste (die Bean hört an der Liste mit), Drehen und Esc; das Ausblenden der Seitenleiste meldet die App mit schliessen(). Entschieden wird wie in R-7.5 (nach
 // NAV_ENTSCHEID, deutlich waagrecht NAV_WAAGRECHT – sonst rollt die Liste); eine geschlossene Kachel bewegt sich nicht nach rechts; kein Wischen
 // nach langem Drücken (NAV_HALTEN), bei offenem Fenster, Menü oder offener Sprechblase und an Kacheln ohne Aktionen. Geschlossen sind die Kapseln
 // nicht im Dokument (VoiceOver und Tastatur erreichen die Aktionen über das Kontextmenü, D-7), offen sind sie Schaltflächen mit dem Namen der
@@ -2691,6 +2692,7 @@ window.addEventListener('resize', () => {
 let swipeZieht = false;                 // eine Kachel folgt gerade dem Finger – langes Drücken löst dann nicht aus (onLongPress)
 const swipeBeans = new Set();           // angemeldete Listen – die Gestenstelle (navKandidat) überlässt ihnen das Wischen auf ihren Kacheln
 const swipeFaengt = t => [...swipeBeans].some(f => f(t));
+const SWIPE_BEDIENBAR = 'button, a[href], input, select, textarea, label, summary, [contenteditable], [role=button], [role=link], [role=menuitem], [role=switch]';
 const schleierFrei = new WeakMap();     // Kapsel → () => Rechteck der offenen Kachel samt Kapseln (bleibt beim Grau der Sprechblase frei, choosePop)
 function createSwipeactions(liste, { kacheln, aktionen, durchwischen = true } = {}) {
   const masse = Object.freeze({ kapselBreite: 66, kapselHoehe: 44, abstand: 8, rand: 11, offenAb: 0.5, durchwischenAb: 0.6,
@@ -2716,6 +2718,9 @@ function createSwipeactions(liste, { kacheln, aktionen, durchwischen = true } = 
     return e;
   };
   const gesperrt = () => dlg.open || msg.open || !!document.querySelector('.menu, .pop, .layer');
+  // ‚daneben in der Liste‘ (APD-30/V-12): andere Kachel oder Fläche ohne Bedienelement in der Liste – schließt nur; alles außerhalb der Liste und jedes
+  // Bedienelement in ihr, das keine Kachel ist (Kopf, Suchzeile, Backup-Kachel), wirkt sofort
+  const nurSchliessen = (t, k) => !!k || (t instanceof Element && liste.contains(t) && !t.closest(SWIPE_BEDIENBAR));
   const eigene = new WeakSet();   // Bausteine der Bean in der Liste (zählen nicht als Neuaufbau)
   let ui = null, z = null, lauf = null, warten = false;
   const sperre = klickSperre();   // das schließende Tippen löst sonst nichts aus (D-3)
@@ -2833,12 +2838,13 @@ function createSwipeactions(liste, { kacheln, aktionen, durchwischen = true } = 
     if (r && typeof r.then === 'function') r.then(fertig, fertig); else fertig();
   }
 
-  // Gesten. Aufsetzen: Tippen daneben schließt die offene Kachel und löst nichts aus; auf die offene Kachel entscheidet das Loslassen
+  // Gesten. Aufsetzen: Tippen daneben in der Liste schließt die offene Kachel und löst nichts aus, eine Schaltfläche außerhalb schließt sie und wirkt
+  // (W-42, W-43); auf die offene Kachel entscheidet das Loslassen
   const druck = e => {
     if (!e.isPrimary) { if (z?.aktiv) los(e, true, true); return; }   // zweiter Finger = Abbruch (W-39)
     sperre.frei();
     const k = kachelVon(e.target), inBox = !!ui?.box.contains(e.target);
-    if (offen && !warten && !inBox && k !== offen) { zumachen(); sperre.an(); }
+    if (offen && !warten && !inBox && k !== offen) { zumachen(); if (nurSchliessen(e.target, k)) sperre.an(); }
     z = null;
     if (e.button > 0 || !k || inBox || warten || gesperrt()) return;
     stoppe();

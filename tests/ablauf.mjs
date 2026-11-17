@@ -4254,8 +4254,11 @@ export async function checkWachsen(p, { menue = null, untermenue = null, kontext
 // ohne Daten der App) – die AD-Bean swipeactions (APD-136, R-1.13) samt eingegrauter, sperrender Sprechblase (R-1.4, APD-30/V-7, V-8). Optionen:
 //   bean: Ausdruck in der Seite, der die Bean der App liefert (z. B. 'wischen'); aktionen: Ausdruck der Aktionsfunktion (dieselbe wie für das Kontextmenü)
 //   liste: die Liste (#side); kacheln: Selektor der wischbaren Kacheln wie in der App; kachel, kachel2: zwei sichtbare Kacheln (Selektoren)
-//   titel: Titel in der Kachel (W-1: bleibt teilweise sichtbar); kopf: Knopf im Kopf der Liste (W-5, W-23, W-43: Tipp schließt nur bzw. ändert nichts)
-//   inhalt: { x, y } – eine Stelle im Inhalt neben der Liste (iPad) oder null; nicht: Selektoren in der Liste ohne Wischen (W-37)
+//   titel: Titel in der Kachel (W-1: bleibt teilweise sichtbar); kopf: Knopf im Kopf der Liste, der ein Menü öffnet (W-43: Tipp schließt die Kachel
+//   und wirkt sofort, APD-30/V-12; W-23: bei offener Sprechblase ändert er nichts)
+//   inhalt: { x, y } – eine Stelle im Inhalt neben der Liste (iPad) oder null (W-5: schließt); nicht: Selektoren in der Liste ohne Wischen (W-37;
+//   der erste ist für W-5 eine Fläche ‚daneben in der Liste‘)
+//   seitenleiste: { aus, ein } – panel-left in der Liste und der Knopf, der sie wieder einblendet (iPad, W-42), oder null
 //   neuaufbau: Ausdruck, der die Liste neu aufbaut (W-77); einstellen: Funktion, die das Fenster der ersten Aktion prüft (W-12, gibt Fehler zurück)
 //   messe(name): Grundregeln im aktuellen Zustand (pruefe.mjs – t.schritt); ende: zum Schluss W-75, W-76 (durchwischen: false), W-78, W-79 mit eigenen
 //   Beans – danach wischt die Bean der App nicht mehr (die Seite schließen)
@@ -4307,7 +4310,7 @@ const WISCH_HELFER = () => {
 };
 const farbeVon = (p, v) => p.evaluate(v => { const d = document.createElement('div'); d.style.background = `var(${v})`; document.body.append(d); const c = getComputedStyle(d).backgroundColor; d.remove(); return c; }, v);
 export async function checkWischen(p, { bean, aktionen, liste = '#side', kacheln, kachel, kachel2, titel = 'b', kopf = null, inhalt = null, nicht = [], neuaufbau = null,
-  einstellen = null, messe = async () => {}, ende = false, where = '' } = {}) {
+  seitenleiste = null, einstellen = null, messe = async () => {}, ende = false, where = '' } = {}) {
   const errors = [], E = (t, r = 'R-7.8') => errors.push(`${where ? where + ': ' : ''}${r} ${t}`);
   const alles = () => p.evaluate(() => JSON.stringify(Object.keys(localStorage).sort().map(k => [k, localStorage.getItem(k)])));
   const ruhig = async () => { await warteBis(p, () => !document.getAnimations().some(a => a.playState === 'running'), { max: 3000 }); await wait(p, 30); };
@@ -4330,7 +4333,8 @@ export async function checkWischen(p, { bean, aktionen, liste = '#side', kacheln
     if (a0.bean !== 'swipeactions') E(`W-74 ${liste} trägt nicht data-ad-bean="swipeactions" (ist ${a0.bean})`, 'R-1.13');
     if (a0.kapseln) E(`W-59 bei geschlossener Kachel stehen ${a0.kapseln} Kapseln im Dokument (VoiceOver und Tastatur erreichen sie)`, 'R-1.8');
     if (!a0.knopf || !a0.name) E(`W-64 die Kachel ${kachel} ist keine Schaltfläche mit Namen`, 'R-1.8');
-    const s0 = await alles(), titel0 = (await stand()).titel;
+    let s0 = await alles();
+    const titel0 = (await stand()).titel;
 
     // W-1: 100 px nach links – rastet ein; zwei Kapseln (≥ 66 × 44) mit Wort, ganz in der Liste und im Bild; der Titel bleibt teilweise sichtbar
     const r1 = await wisch(kachel, [...weg(-50, 0, 5), { merke: 'w40' }, ...weg(-100, 0, 10).slice(5), { merke: 'w100' }]);
@@ -4388,19 +4392,45 @@ export async function checkWischen(p, { bean, aktionen, liste = '#side', kacheln
       if (s4.offen || s4.tx) E('W-4 Tippen auf die offene Kachel schließt sie nicht');
       if (s4.titel !== titel0 || s4.dlg || s4.menu) E(`W-4 Tippen auf die offene Kachel öffnet etwas (Titel ‚${s4.titel}‘, Fenster ${s4.dlg}, Menü ${s4.menu})`);
     } else E('W-4 Kachel öffnet nicht');
-    // W-5, W-43: daneben tippen (Knopf im Kopf, Inhalt, andere Kachel) schließt nur
-    for (const [name, ziel] of [['Kopf', kopf && await mitte(kopf)], ['Inhalt', inhalt], ['andere Kachel', await mitte(kachel2)]]) {
+    // W-5: daneben in der Liste tippen (andere Kachel, Fläche ohne Bedienelement) schließt nur; im Inhalt schließt es (APD-30/V-12)
+    // W-43: ein Knopf im Kopf der Liste schließt die Kachel und wirkt sofort (Menü offen)
+    const flaeche = nicht[0] && await mitte(nicht[0]);
+    for (const [name, ziel, nur, wirkt] of [['andere Kachel', await mitte(kachel2), true], ['Fläche in der Liste', flaeche, true], ['Inhalt', inhalt, false],
+      ['Kopf', kopf && await mitte(kopf), false, true]]) {
       if (!ziel) continue;
       await wisch(kachel, weg(-100));
       if (!(await stand()).offenIst) { E(`W-5 Kachel öffnet nicht (vor ‚${name}‘)`); continue; }
       await tippe(ziel.x, ziel.y);
       const s5 = await stand();
-      if (s5.offen || s5.tx) E(`W-5 Tipp daneben (${name}) schließt die Kachel nicht`);
-      if (s5.titel !== titel0 || s5.dlg || s5.menu) E(`W-5/W-43 Tipp daneben (${name}) löst etwas aus (Titel ‚${s5.titel}‘, Fenster ${s5.dlg}, Menü ${s5.menu})`);
-      if (s5.menu) await p.keyboard.press('Escape');
+      if (s5.offen || s5.tx) E(`${wirkt ? 'W-43' : 'W-5'} Tipp daneben (${name}) schließt die Kachel nicht`);
+      if (nur && (s5.titel !== titel0 || s5.dlg || s5.menu)) E(`W-5 Tipp daneben in der Liste (${name}) löst etwas aus (Titel ‚${s5.titel}‘, Fenster ${s5.dlg}, Menü ${s5.menu})`);
+      if (wirkt && !s5.menu) E(`W-43 Tipp auf den Knopf im Kopf (${kopf}) bei offener Kachel öffnet das Menü nicht (Schaltflächen außerhalb der Liste wirken sofort, APD-30/V-12)`);
+      if (s5.menu) { await p.keyboard.press('Escape'); await menueZu(p); }
       if (s5.dlg) await dlgZu(p);
       await ruhig();
     }
+    // W-42 (iPad): Kachel offen, dann panel-left – die Seitenleiste gleitet beim ersten Tipp hinaus; beim Einblenden sind alle Kacheln geschlossen
+    if (seitenleiste?.aus && seitenleiste?.ein && await p.locator(seitenleiste.aus).isVisible().catch(() => false)) {
+      await wisch(kachel, weg(-100));
+      if (!(await stand()).offenIst) E('W-42 Kachel öffnet nicht (vor panel-left)');
+      else {
+        const zuSehen = () => p.evaluate(l => { const e = document.querySelector(l); if (!e || e.hidden || !e.getClientRects().length) return false; const r = e.getBoundingClientRect(); return r.right > 1 && r.left < innerWidth - 1; }, liste);
+        await p.click(seitenleiste.aus); await ruhig(); await navFertig(p).catch(() => {}); await ruhig();
+        const b42 = await p.evaluate(() => (0, eval)(window.__wischBean).offen);
+        if (await zuSehen()) E('W-42 panel-left bei offener Kachel blendet die Seitenleiste nicht aus (der Tipp schließt nur die Kachel)');
+        if (b42) E('W-42 nach panel-left ist die Kachel noch offen');
+        const ein = await p.evaluate(s => !![...document.querySelectorAll(s)].find(b => b.getClientRects().length), seitenleiste.ein);
+        if (!ein) E(`W-42 kein Knopf ${seitenleiste.ein} zum Einblenden zu sehen`);
+        else {
+          await p.evaluate(s => [...document.querySelectorAll(s)].find(b => b.getClientRects().length).click(), seitenleiste.ein); await ruhig(); await navFertig(p).catch(() => {}); await ruhig();
+          const s42 = await stand();
+          if (!await zuSehen()) E('W-42 die Seitenleiste kommt beim Einblenden nicht wieder');
+          if (s42.offen || s42.tx || s42.boxen) E(`W-42 beim Einblenden ist eine Kachel offen (offen ${s42.offen}, tx ${s42.tx}, Aktionsflächen ${s42.boxen})`);
+        }
+      }
+    }
+    // Tipps außerhalb der Liste (Inhalt, panel-left) wirken (APD-30/V-12) und dürfen den Speicher ändern – Ausgangslage für R-4.12 neu
+    s0 = await alles();
     // W-6: Kachel 1 offen, Kachel 2 wischen – nie zwei offen
     await wisch(kachel, weg(-100));
     await wisch(kachel2, weg(-100));

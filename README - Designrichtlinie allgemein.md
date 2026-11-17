@@ -466,6 +466,11 @@ Gemessene bzw. belegte Eigenheiten mit Quelle; sie gelten für alle Apps, die Pr
   Steht oben kein Eintrag (Ende der Seite: Fazit, Statistik), bleibt der Abstand zum Ende gleich; ganz oben
   bleibt ganz oben, ganz unten bleibt ganz unten. Tests bilden das nach (`overflow-anchor: none`), sonst verdeckt Chrome den
   Fehler (R-8.1).
+- **Neue Fenstergröße vor `resize`** (R-8.1, gemessen 15.11.2026 im WebKit der Prüfumgebung unter Last, Sitzung 0119 –
+  `arbeit/APD-133 Befund Drehen.md`): `innerWidth` und `innerHeight` können die neue Größe schon zeigen, bevor das Ereignis `resize` dafür
+  ankommt (gemessen rund 200 ms). Ein Zeitgeber, der in dieser Lücke läuft, sieht die neue Größe, die App hat aber noch nicht umgebaut. ui.js
+  übernimmt als ‚fertig gedreht‘ deshalb nur die mit `resize` gemeldete Größe (`keepMeldW`, `keepMeldH`); bis dahin bleibt das Gedächtnis für
+  den obersten Eintrag gesperrt. Am Gerät nicht gemessen. Prüfung: Reiselogbuch `tests/ablauf-drehen-luecke.mjs` (hält `resize` zurück).
 - **Verschiebung nach dem Drehen (iPhone, Home-Bildschirm):** quer → hoch meldet Safari kurz die ganze Bildschirmhöhe (874 statt 812), dann
   wieder 812, und lässt die Seite danach um die Statusleiste verschoben (`scrollY` und `visualViewport.offsetTop` 62) – ohne Tastatur, obwohl
   die Seite nicht rollen kann. Das Bild bleibt dabei unverschoben, Antippen trifft 62 px daneben; erst `scrollTo(0, 0)` bzw. ein Neuaufbau der
@@ -622,7 +627,8 @@ Gemessene bzw. belegte Eigenheiten mit Quelle; sie gelten für alle Apps, die Pr
   neueste 4er-Fassung; eine Hauptversion (5.0.0) bekommt einen neuen Ordner `v5/`. Veröffentlicht wird mit
   `werkzeug/veroeffentlichen.mjs` (Zusammenarbeit 0 Nr. 9).
 - **Schnittstelle von ui.js:** Die App stellt bereit: `<dialog id="dlg">`, `<dialog id="msg">`, `db.settings.appearance`
-  (`auto` | `light` | `dark`), `save()`, `render()`; optional `onDialogOpen()` (wird bei jedem `openDialog` aufgerufen).
+  (`auto` | `light` | `dark`), `save()`, `render()`; optional `onDialogOpen()` (wird bei jedem `openDialog` aufgerufen). Von einer
+  AD-Bean nutzt die App nur Fabrik, Eigenschaften, Methoden und Ereignisse (R-1.13, Liste in 15).
 - **Prüfen:** Jede App hat eigene Prüfskripte, die ihre Ansichten und Fenster durchgehen und mit den Bausteinen aus
   `AppDesign/tests/` messen (AppDesign liegt beim Testen neben dem App-Repo): Fehler mit Sollwerten und Rückgabewert
   (`pruefe.mjs`), nach jedem Schritt die Grundregeln (dieselben Prüfungen wie `hig.mjs`, ohne Drehen), Chromium **und WebKit**;
@@ -764,7 +770,7 @@ und Meldungen · Eingabe · Inhalt · Dienste (ohne eigene Oberfläche).
 - **Gesten** (R-7.5): **Hoch wie quer:** ist sie ausgeblendet, holt Wischen nach rechts von überall im Inhalt sie herein – sie folgt
   dem Finger und der Inhalt rückt mit; fertig nach halber Breite oder schnellem Wischen, dann rastet sie links ein und der Inhalt wird
   schmaler (der oberste Eintrag bleibt), sonst federt sie zurück. Ausblenden nur mit panel-left (gleitet, ~0,35 s) – nach links wischen
-  ändert nichts, damit die Kacheln für Wischaktionen frei bleiben.
+  blendet sie nie aus; auf einer Kachel zeigt es die Wischaktionen.
 - **Drehen** (R-8.1): die Seitenleiste behält ihren Zustand – sichtbar bleibt sichtbar (neben dem Inhalt),
   ausgeblendet bleibt ausgeblendet; technisch **ein einziger Zustand** für quer und hoch, den nur Tippen bzw. ein fertiges Wischen
   ändert (Knopf panel-left bzw. Hereinwischen, R-7.5) – nie das Drehen und keine Zwischengrößen, die iOS beim
@@ -778,8 +784,17 @@ und Meldungen · Eingabe · Inhalt · Dienste (ohne eigene Oberfläche).
   Platz (iPhone), linksbündig unter der Kachel; immer vollständig und ganz oberhalb der Backup-Kachel, nie über oder hinter ihr
   (die Liste rückt dafür nach oben und bekommt bei wenigen Einträgen unten Platz; am iPad endet das Menü daneben ebenfalls über
   der Backup-Kachel); ohne Kachel ebenso über der Offline-Zeile bzw. dem unteren Rand (`sideFootRect()`). Inhalt: Einstellungen (settings) · … löschen (rot, Sprechblase) – **ohne ‚Öffnen‘**, weil Tippen öffnet
-  (wie Notizen); der Eintrag ist dabei blau getönt. Kein Wischen, kein Hinweistext.
+  (wie Notizen); der Eintrag ist dabei blau getönt. Dieselben Aktionen zeigt das Wischen nach links (Wischaktionen). Kein Hinweistext.
   [HIG – Context menus](https://developer.apple.com/design/human-interface-guidelines/context-menus)
+- **Wischaktionen** (R-7.8): Wischen nach links auf einer Kachel zeigt rechts neben ihr die Aktionen des Kontextmenüs als **Kapseln**
+  (66 × 44, links und rechts rund, Abstand 8 px, deckend) mit Symbol, darunter klein das Wort (11 pt, z. B. ‚Einstellen‘, ‚Löschen‘) –
+  ‚Löschen‘ rot und ganz außen. Die Kachel folgt dem Finger; ab halber Aktionsbreite bleibt sie offen (bei zwei Aktionen 162 px), sonst
+  federt sie zurück. Beim Zurückwischen werden die Kapseln kleiner (bis 50 %) und blasser. **Durchwischen** über 60 % der Kachelbreite
+  macht die rote Kapsel breit und löst sie beim Loslassen aus; sie fragt mit der Sprechblase (R-4.12, 15.7), die aus der roten Kapsel
+  wächst – die Kachel bleibt offen, bis entschieden ist. Höchstens eine Kachel ist offen; Tippen auf die Kachel oder daneben in der Liste
+  schließt sie und löst sonst nichts aus, Schaltflächen außerhalb der Liste wirken sofort. Technisch: AD-Bean `swipeactions` (R-1.13,
+  Liste in 15), die App übergibt dieselbe Aktionsliste wie dem Kontextmenü. Vorbild Notizen und Mail (iOS 26); anders als dort fragt
+  das Durchwischen (16).
 
 ### 15.5 Kapsel
 - **Apple:** [HIG – Toolbars](https://developer.apple.com/design/human-interface-guidelines/toolbars)
@@ -820,7 +835,10 @@ und Meldungen · Eingabe · Inhalt · Dienste (ohne eigene Oberfläche).
   zuerst, eine zerstörende in roter Schrift (`danger-text`), zuletzt ‚Abbrechen‘; eine kurze graue Erklärung der Wege steht im
   Text. Bekommt ein Weg eine Erklärung (`desc`), steht er in einer eigenen Kachel – Erklärung oben (gleiche Schrift wie der Text
   der Sprechblase), Knopf darunter; ‚Abbrechen‘ darunter.
-- **Verhalten:** an der angetippten Schaltfläche (diese ist gedrückt), wächst aus ihr (R-4.13); daneben tippen bricht ab.
+- **Verhalten:** an der angetippten Schaltfläche (diese ist gedrückt), wächst aus ihr (R-4.13). Solange sie offen ist, ist alles
+  daneben leicht eingegraut (Schwarz 20 %) und gesperrt – **daneben tippen ändert nichts**; man entscheidet sich für eine Schaltfläche der
+  Sprechblase (Esc bzw. ⌘. = ‚Abbrechen‘, R-4.7). Gehört die Abfrage zu einem Textfeld (ⓧ), bleiben Fokus und Tastatur im Feld. Vorbild
+  Notizen (Abfrage beim Löschen) und der Alert, der sich nicht wegtippen lässt.
 - **Passt immer auf den Bildschirm** (R-4.5): auf dem iPhone quer ist die Sprechblase breiter (bis 600 px) und die Knöpfe stehen
   nebeneinander; reicht der Platz trotzdem nicht, rollt der Inhalt in ihr. Gilt ebenso für Menüs und Fenster.
 
@@ -1064,7 +1082,7 @@ und Meldungen · Eingabe · Inhalt · Dienste (ohne eigene Oberfläche).
 | 17 | Zähler ohne Zeitpunkt (`maxFields`, z. B. Dateinummer) verschieden | der größere Wert gilt | wie links |
 | 18 | Einstellungen (Darstellung, Smiley-Leiste, ‚Letztes Backup‘) | bleiben die des iPhones | bleiben die des iPads |
 | 19 | ‚Ersetzen‘ statt ‚Abgleichen‘ | alle Daten des iPhones werden durch das Backup ersetzt (hier Gelöschtes kommt zurück, hier Geändertes geht verloren); ‚Letztes Backup‘ bleibt | wie links |
-| 20 | ‚Abbrechen‘ oder daneben tippen | nichts ändert sich | wie links |
+| 20 | ‚Abbrechen‘ | nichts ändert sich | wie links |
 
 ### 15.19 Backup erstellen und Backup laden
 - **Apple:** [HIG – Activity views](https://developer.apple.com/design/human-interface-guidelines/activity-views) (Teilen-Menü) ·
@@ -1092,7 +1110,7 @@ und Meldungen · Eingabe · Inhalt · Dienste (ohne eigene Oberfläche).
     darunter der Knopf – Kachel 1 ‚Abgleichen‘ (blau gefüllt), Kachel 2 ‚Ersetzen‘ (rote Schrift); unter den Kacheln ‚Abbrechen‘
     wie in jeder Abfrage. iPhone quer: Kacheln nebeneinander (R-4.5).
   - **Unlesbare Datei:** kleines Fenster ‚Backup laden‘ mit ⚠️ und dem Grund.
-  - **Abbrechen / daneben tippen:** nichts ändert sich.
+  - **Abbrechen:** nichts ändert sich.
 - **Prüfung:** `tests/backup.mjs` bedient Menü, Backup erstellen, Backup laden (Abfrage, Abbrechen, unlesbare Datei) in jeder App
   und prüft Texte, Layout, Schriftgrößen und Ergebnis.
 
@@ -1144,6 +1162,8 @@ und Meldungen · Eingabe · Inhalt · Dienste (ohne eigene Oberfläche).
   Gestenstelle (R-7.5): ‚nav kandidat <art>‘ bzw. ‚nav kein kandidat [eigen]‘, ‚nav verworfen richtung|gehalten|offen dx dy‘,
   ‚nav aktiv <art> dx dy‘, ‚nav fertig|zurück gefedert|abgebrochen weg W tempo T‘ (Weg als Anteil der Breite, Tempo in px/ms),
   ‚nav abgebrochen vor der entscheidung‘, ‚nav abgebrochen drehen‘ – sie stehen vor der Zeigerzeile desselben Augenblicks.
+  Ebenso die Wischaktionen (R-7.8): ‚wisch kandidat‘, ‚wisch verworfen dx dy‘, ‚wisch offen|durch|zurück gefedert|abgebrochen weg W‘
+  (Weg in px).
 - **Grenzen:** aus, solange nicht gestartet (kein `requestAnimationFrame`, keine Hörer); keine Texte; nichts gespeichert (neu laden
   verwirft); Ende nach 5 Minuten oder 20 000 Zeilen.
 - **Technisch:** `ui.js` – `messungMenuItems({ app, teile, rollen })` ins Menü der Seitenleiste; `teile`/`rollen` = Spalte →
@@ -1230,6 +1250,9 @@ steht in der Spalte ‚außerdem‘ (ohne automatische Prüfung: G-19).
 | Kapsel ‚Nach oben / Ans Ende‘ auch auf dem iPhone (Apple: Statusleiste antippen bzw. Scroll-Leiste ziehen) | – | der Apple-Weg war dem Nutzer zu schwerfällig (R-3.2); das Ziehen der Scroll-Leiste gibt es dazu als Schnellroll-Griff | 17.10.2026 |
 | Suche in der Liste (Seitenleiste, iPhone-Startliste) im Mehr-Menü (Apple: Suchfeld in der Liste immer sichtbar, iPhone unten) | – | Wunsch des Nutzers (APD-91): gleich wie im Eintrag, ruhiger Kopf | 30.10.2026 |
 | Geöffnete Suchzeile am iPhone oben (Apple iOS 26: über der Tastatur) | – | oben ohne Springen gemessen (R-4.5, APD-36); in Safaris Leiste über der Tastatur kann eine Web-App nichts einbauen – unten erst mit einer App-Hülle (APD-38, APD-57) | 30.10.2026 |
+| Durchwischen einer Kachel fragt mit der Sprechblase (Apple: Durchwischen löscht sofort, Mail und Notizen bieten Rückgängig bzw. ‚Zuletzt gelöscht‘) | – | ein Reiselogbuch mit allen Einträgen wäre endgültig weg; es gilt R-4.12 wie bei jedem Löschen (APD-30) | 15.11.2026 |
+| Wischaktionen ohne VoiceOver-Aktionen am Eintrag (Apple: Aktionen-Rotor) | – | im Web nicht möglich; dieselben Aktionen stehen im Kontextmenü (R-7.8, R-1.8) | 15.11.2026 |
+| Sprechblase lässt sich nicht wegtippen (Apple: ein Action Sheet am iPad schließt beim Tippen daneben = ‚Abbrechen‘) | Abdunkelung Schwarz 20 % | unsere Sprechblase stellt immer eine Entscheidung, meist vor dem Zerstören – wie der Alert, der sich nicht wegtippen lässt; die HIG rät bei Warnungen vom Popover ab, weil es sich leicht versehentlich schließt (APD-30) | 15.11.2026 |
 
 ## 17. Regelkatalog
 
@@ -1254,7 +1277,7 @@ Testfall (User) in den Usertest, wenn eine Version es betrifft.
 | R-1.1 | **Gleiche Funktion = gleicher Baustein, gleiche Bedienung** auf iPad und iPhone: eine Umsetzung, nur die Anordnung unterscheidet sich (Seitenleiste = Startliste); Aktionen und Suche oben in der Kapsel, unten nur feste Hinweise (Backup-Kachel) | hig.mjs – Gerätevergleich des Aufbaus | – | 1, 15.17 |
 | R-1.2 | **Darstellung** folgt dem Gerät (‚Automatisch‘), im Mehr-Menü der Seitenleiste übersteuerbar (Automatisch · Hell · Dunkel), nie im Menü eines Eintrags | hig.mjs | – | 2 |
 | R-1.3 | **Nie ungewollt vergrößern:** Doppeltippen vergrößert nicht; Eingabefelder mindestens 16 px (sonst vergrößert iOS beim Antippen) | hig.mjs | iOS-Tastatur | 1, 15.11 |
-| R-1.4 | **Nur der Vordergrund reagiert – auch für VoiceOver und Tastatur:** offenes Fenster sperrt die Seite (Fenster, Meldung und Blatt sind modal), Menü und Sprechblase fangen Wischen ab, daneben tippen schließt; bei offenem Menü und offener Sprechblase ist alles daneben gesperrt (`inert` – Seite bzw. übriger Fensterinhalt), nach jedem Schließen (auch beim Drehen, R-8.1) wieder frei | hig.mjs (Sperre, modal, nach dem Schließen frei) | – | 1 |
+| R-1.4 | **Nur der Vordergrund reagiert – auch für VoiceOver und Tastatur:** offenes Fenster sperrt die Seite (Fenster, Meldung und Blatt sind modal), Menü und Sprechblase fangen Wischen ab; daneben tippen schließt das Menü, bei der Sprechblase ändert es nichts – dort ist alles daneben eingegraut (Schwarz 20 %), bis eine ihrer Schaltflächen gewählt ist; bei offenem Menü und offener Sprechblase ist alles daneben gesperrt (`inert` – Seite bzw. übriger Fensterinhalt), nach jedem Schließen (auch beim Drehen, R-8.1) wieder frei und ohne Grau | hig.mjs (Sperre, modal, nach dem Schließen frei, eingegraut, daneben tippen ändert nichts) | – | 1 |
 | R-1.5 | **Offline nutzbar und erkennbar:** die App startet ohne Netz aus dem Speicher – auch unter anderer Adresse und bei hängendem Netz nach höchstens 3 s, nie eine weiße Seite; arbeitet sie offline, steht unten in Seitenleiste bzw. Startliste (unter der Backup-Kachel bzw. ohne sie) grau ‚Offline – alles bleibt auf diesem Gerät‘, beim Wechsel und beim Start ohne Netz kurz die Meldung ‚Du bist offline‘ bzw. ‚Wieder online‘ | offline.mjs | Gerät (Flugmodus) | 11, 15.20 |
 | R-1.6 | **Messmodus:** im Mehr-Menü der Seitenleiste bzw. Startliste ‚Messung starten‘ (grau ‚Für Claude: Bewegungen aufzeichnen‘) erst nach langem Drücken auf die graue Versionszeile (bis zum Neustart) und ‚Messung beenden und teilen‘ (grau ‚läuft · m:ss · N Zeilen‘); aus, solange nicht gestartet; je Bild eine Zeile nur bei Änderung, dazu jedes Ereignis; keine Texte (nur Längen und ids); endet nach 5 min bzw. 20 000 Zeilen; Datei `messung-JJJJ-MM-TT-hhmm.txt` über das Teilen-Menü; neu laden verwirft | ablauf.mjs – `checkMessung` | Gerät (Messung, Teilen) | 15.21 |
 | R-1.8 | **VoiceOver:** jedes Bedienelement hat Namen, Rolle und Zustand – Icon-Knöpfe `aria-label`, Felder über ihr `label`, Icons `aria-hidden`; Menüknöpfe ‚öffnet Menü‘ mit offen/zu (`aria-haspopup`, `aria-expanded`), Einträge mit Häkchen ‚ausgewählt‘ (`menuitemcheckbox`, `aria-checked`), Untermenü-Einträge wie Menüknöpfe; Fenster, Meldung und Blatt heißen wie ihr Titel, die Zusatzzeile ist ihre Beschreibung; die Sprechblase ist eine modale Abfrage mit ihrem Text als Namen. **Fokus:** ins Menü auf den ersten wählbaren Eintrag, in die Sprechblase auf die Blase, ins Fenster auf das Fenster – danach zurück auf den Knopf (fehlt er: Kopfzeile), immer ohne Rollen; iPhone: Eintrag öffnen → Seitentitel, zurück → blaue Zeile bzw. Titel der Startliste. **Ansagen** höflich über `ansagen()` (im obersten Fenster, sonst auf der Seite): Treffer der Suche nach 0,7 s Pause, ‚Treffer 2 von 3‘, Filter der Liste, Fehlermeldungen (R-5.3), offline/online; ‚Automatisch gespeichert‘ nicht | hig.mjs – Namen, Rollen, Zustände in jeder Ansicht; ablauf.mjs – `checkFokus`, `ansage` (Ansage-Bereich), `checkFieldErrors` | – (keine VoiceOver-Prüfung am Gerät, Nutzer 23.10.2026) | 1, 15.6, 15.7, 15.9 |
@@ -1348,6 +1371,7 @@ Testfall (User) in den Usertest, wenn eine Version es betrifft.
 | R-7.5 | **Navigation und Gesten** (wie iOS 26): im iPhone-Aufbau schiebt sich der Inhalt beim Öffnen herein und beim Zurück hinaus; **Zurückwischen von überall im Inhalt** folgt dem Finger, fertig nach halber Breite oder schnellem Wischen, sonst federt es zurück; am iPad hoch und quer holt Wischen nach rechts die ausgeblendete Seitenleiste herein, der Inhalt rückt mit und wird beim Einrasten schmaler, ausblenden quer nur mit panel-left (gleitet). Vorrang an einer Stelle: senkrechtes Rollen, eigenes waagrechtes Rollen, Felder, Knöpfe, Kapseln, Schnellroll-Griff; nicht nach langem Drücken und nicht bei offenem Fenster, Menü oder offener Sprechblase; Tastatur schließt zuerst; Drehen beim Ziehen = Zustand wie vorher; Wischen tippt nie an; ‚Bewegung reduzieren‘ überblendet; je Bild nur transform und opacity | ablauf.mjs – `checkNavigation` | Wischgefühl, Rand mit dem Daumen, versehentliches Zurück, Home-Bildschirm-App, VoiceOver | 13, 15.4, 15.17 |
 | R-7.6 | **Abschnittsköpfe in der Liste:** jede Gruppe hat eine Überschrift, auch die erste; Schrift wie die Überschrift des Kopfs (Größe, Stärke, Farbe, Schrift), wächst mit der Textgröße; rollt mit; Rolle heading, nicht antippbar; bei der Suche nur Gruppen mit Treffern | hig.mjs | – | 15.4 |
 | R-7.7 | **Leerer Zustand:** jeder leere Bereich (keine Einträge, keine Treffer, alles ausgeblendet) zeigt den Baustein 15.23 – Symbol, Titel, Satz, optional ein getönter Knopf –, mittig im freien Bereich; bei der Suche ‚Keine Treffer für ‚…‘‘ mit dem Begriff; in der Seitenleiste neben dem Inhalt nur Symbol und Titel; Symbol (36 pt) und Titel (17 pt halbfett) überall gleich groß | hig.mjs | – | 15.23 |
+| R-7.8 | **Wischaktionen der Kacheln:** Wischen nach links auf einer Kachel der zentralen Liste zeigt rechts neben ihr die Aktionen ihres Kontextmenüs (R-4.2) – gleiche Aktionen, gleiche Reihenfolge, die zerstörende rot und ganz außen – als Kapseln mindestens 66 × 44 mit Symbol und dem Wort darunter (wächst mit der Textgröße, nie abgeschnitten); nichts ragt aus Seitenleiste oder Bild. Die Kachel folgt dem Finger, bleibt ab halber Aktionsbreite offen, sonst federt sie zurück; beim Zurückwischen werden die Kapseln kleiner und blasser. **Durchwischen** über 60 % der Kachelbreite löst beim Loslassen die rote Aktion aus – sie fragt zuerst (R-4.12), die Kachel bleibt bis zur Entscheidung offen. Höchstens eine Kachel ist offen; sie schließt bei Tippen auf die Kachel oder daneben in der Liste (das Tippen löst sonst nichts aus; Schaltflächen außerhalb der Liste wirken sofort und schließen sie dabei), Rollen, Wischen an einer anderen Kachel, Neuaufbau der Liste, Drehen, Ausblenden der Seitenleiste und Esc. Entschieden wird die Geste wie in R-7.5 (nach 10 px, deutlich waagrecht – sonst rollt die Liste); eine geschlossene Kachel bewegt sich nicht nach rechts; kein Wischen nach langem Drücken, bei offenem Fenster, Menü oder offener Sprechblase und an allem, was kein Kontextmenü hat; Wischen tippt nie an; Drehen oder Abbruch beim Ziehen = Zustand wie vorher. Geschlossen sind die Kapseln für VoiceOver und Tastatur nicht erreichbar (die Aktionen bleiben im Kontextmenü), offen sind sie Schaltflächen mit dem Namen der Aktion. ‚Bewegung reduzieren‘: die Kachel folgt dem Finger, alles Übrige ohne Gleiten und ohne Größenänderung; je Bild nur transform und opacity | ablauf.mjs – `checkWischen` | Wischgefühl, Rollen gegen Wischen, Durchwischen, VoiceOver | 15.4 |
 
 ### 8. Drehen
 
@@ -1436,6 +1460,7 @@ R-2.3 (15.2), R-4.4 (6, 15.8, HIG 9), R-5.3 (8), R-5.4 (15.12), R-5.5 (APD-14), 
 
 | Version | Datum | Art | Inhalt |
 |---|---|---|---|
+| 4.60.0 | 17.11.2026 | Neben | **APD-30 Wischaktionen und sperrende Sprechblase (Nutzer 15.11.2026, Sitzung 0117, und 17.11.2026, Sitzung 0125, Wortlaut bestätigt – `arbeit/APD-30 Wischaktionen Wortlaut.md` APD-30/V-1 bis V-11, `arbeit/0125 Bau 4.60.0 Zwischenstand.md` APD-30/V-12, V-13):** 15.4 ‚Gesten‘ – nach links wischen blendet die Seitenleiste nie aus, auf einer Kachel zeigt es die Wischaktionen; 15.4 ‚Kontextmenü‘ – dieselben Aktionen zeigt das Wischen nach links; 15.4 neu ‚Wischaktionen‘ und Katalog R-7.8 neu (Prüfung `checkWischen`) – Tippen daneben in der Liste schließt nur, Schaltflächen außerhalb der Liste wirken sofort (V-12, V-13); 15.21 Messmodus ‚wisch …‘; 15.7 ‚Verhalten‘, R-1.4, 15.18 Zeile 20 und 15.19 – die Sprechblase graut alles daneben ein (Schwarz 20 %) und sperrt es, daneben tippen ändert nichts; 16 ‚Bewusste Abweichungen‘ – drei neue Zeilen (Durchwischen fragt, keine VoiceOver-Aktionen am Eintrag, Sprechblase lässt sich nicht wegtippen). **APD-136 AD-Beans (Nutzer 17.11.2026, Sitzung 0125, Wortlaut bestätigt – `arbeit/0125 APD-136 Wortlaut allgemeine Regel.md` APD-136/V-1 bis V-4):** Katalog R-1.13 neu (Prüfung `checkBeans`); 15 Einleitung und Liste der AD-Beans (erste Bean `swipeactions`); 14 ‚Schnittstelle von ui.js‘ – von einer AD-Bean nutzt die App nur die Schnittstelle; 15.4 ‚Wischaktionen‘ technischer Satz. **APD-133 (Nutzer 16.11.2026, Sitzung 0119, Wortlaut bestätigt – `arbeit/APD-133 Wortlaut Designrichtlinie 13.md` APD-133/V-1):** 13 neu ‚Neue Fenstergröße vor `resize`‘ (R-8.1) |
 | 4.59.3 | 15.11.2026 | Korrektur | **APD-131 Reste aus 0106 (Nutzer 15.11.2026, Sitzung 0118, Wortlaut bestätigt – `arbeit/APD-131 Reste aus 0106 Wortlaut.md` APD-131/V-2, V-3):** 15.11 – VoiceOver nennt das ⓧ ‚Eingabe löschen‘ und das Rückgängig ‚Löschen widerrufen‘; 16 ‚Bewusste Abweichungen‘ – neue Zeile ‚Cursor am Ende beim Aktivieren eines Felds‘ (R-5.11). Dazu nur Prüfungen: APD-85 Teil 6 (`langDruecken`, `ruhe()` meldet), APD-132 (`checkSchema`) |
 | 4.59.2 | 14.11.2026 | Korrektur | **APD-129 Teil 2 (Nutzer 14.11.2026, Sitzung 0113, Wortlaut bestätigt – `arbeit/APD-129 Teil 2 Wortlaut.md` APD-129/W-1; Befund und Testfall-Liste `arbeit/APD-129 Teil 2 Befund und Testfall-Liste.md` APD-129/M-10 bis M-18):** 13 neu ‚Oberer Rand nach dem Drehen (iPhone, Home-Bildschirm)‘ – `--safe-top` am iPhone vom Home-Bildschirm hoch 0, solange das Fenster niedriger als der Bildschirm ist (`ui.js` `randOben`), Verschiebung im selben Ereignis zurück (`drehRestWeg`, R-8.1); Safari-Modell `safeOben`, sichtbare Höhe beim Drehen schon im ‚resize‘ |
 | 4.59.1 | 14.11.2026 | Korrektur | **APD-129 (Nutzer 14.11.2026, Sitzung 0112, Wortlaut bestätigt – `arbeit/0112 APD-129 Bau-Frage.md`):** 13 neu ‚Verschiebung nach dem Drehen (iPhone, Home-Bildschirm)‘; iPhone vom Home-Bildschirm – nach dem Drehen keine Verschiebung um die Statusleiste mehr (`ui.js` `placeDialogs`, R-8.1); Safari-Modell `drehRest` |
