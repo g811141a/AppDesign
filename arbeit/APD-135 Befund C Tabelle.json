@@ -279,7 +279,8 @@
   "stufeVorschlag": "Baustein",
   "laeufe": 2,
   "minuten": 1.8,
-  "hinweis": ""
+  "hinweis": "",
+  "stufeBedingung": "in Stufe App mit, wenn <style> oder eine Zeichenkette mit class/aria-label/style in index.html geändert ist (C-55 Nr. 3)"
  },
  {
   "lauf": "tastatur",
@@ -424,7 +425,8 @@
   "stufeVorschlag": "Baustein",
   "laeufe": 2,
   "minuten": 1.8,
-  "hinweis": ""
+  "hinweis": "",
+  "stufeBedingung": "in Stufe App mit, wenn <style> oder eine Zeichenkette mit class/aria-label/style in index.html geändert ist (C-55 Nr. 3)"
  },
  {
   "lauf": "ablauf-titel-oben",
@@ -449,7 +451,8 @@
   "stufeVorschlag": "Baustein",
   "laeufe": 2,
   "minuten": 3.3,
-  "hinweis": ""
+  "hinweis": "",
+  "stufeBedingung": "in Stufe App mit, wenn <style> oder eine Zeichenkette mit class/aria-label/style in index.html geändert ist (C-55 Nr. 3)"
  },
  {
   "lauf": "ablauf-leer",
@@ -521,7 +524,8 @@
   "stufeVorschlag": "Baustein",
   "laeufe": 2,
   "minuten": 2.3,
-  "hinweis": "Regel steht in Designrichtlinie 13, nicht im Katalog"
+  "hinweis": "Regel steht in Designrichtlinie 13, nicht im Katalog",
+  "stufeBedingung": "in Stufe App mit, wenn <style> oder eine Zeichenkette mit class/aria-label/style in index.html geändert ist (C-55 Nr. 3)"
  },
  {
   "lauf": "ablauf-glas",
@@ -662,7 +666,8 @@
   "stufeVorschlag": "Baustein",
   "laeufe": 2,
   "minuten": 5.5,
-  "hinweis": ""
+  "hinweis": "",
+  "stufeBedingung": "in Stufe App mit, wenn <style> oder eine Zeichenkette mit class/aria-label/style in index.html geändert ist (C-55 Nr. 3)"
  },
  {
   "lauf": "ablauf-beruehren",
@@ -1280,7 +1285,12 @@
   "stufeVorschlag": "App",
   "laeufe": 6,
   "minuten": 25.9,
-  "hinweis": ""
+  "hinweis": "",
+  "stufeTeile": {
+   "": "App",
+   "Bedienungshilfen": "Baustein nach Gegenprobe C-32",
+   "Text 53": "Baustein nach Gegenprobe C-32"
+  }
  },
  {
   "lauf": "ablauf-fenster",
@@ -1305,7 +1315,12 @@
   "stufeVorschlag": "App",
   "laeufe": 6,
   "minuten": 0.7,
-  "hinweis": "kein Ablauf mit Bewegung – ein Schritt je Ansicht"
+  "hinweis": "kein Ablauf mit Bewegung – ein Schritt je Ansicht",
+  "stufeTeile": {
+   "": "App",
+   "Bedienungshilfen": "Baustein nach Gegenprobe C-32",
+   "Text 53": "Baustein nach Gegenprobe C-32"
+  }
  },
  {
   "lauf": "ablauf-iphone",
@@ -1334,7 +1349,12 @@
   "stufeVorschlag": "App",
   "laeufe": 6,
   "minuten": 3.5,
-  "hinweis": ""
+  "hinweis": "",
+  "stufeTeile": {
+   "": "App",
+   "Bedienungshilfen": "Baustein nach Gegenprobe C-32",
+   "Text 53": "Baustein nach Gegenprobe C-32"
+  }
  },
  {
   "lauf": "ablauf-suche-liste",
@@ -1361,7 +1381,12 @@
   "stufeVorschlag": "App",
   "laeufe": 6,
   "minuten": 10,
-  "hinweis": ""
+  "hinweis": "",
+  "stufeTeile": {
+   "": "App",
+   "Bedienungshilfen": "Baustein nach Gegenprobe C-32",
+   "Text 53": "Baustein nach Gegenprobe C-32"
+  }
  },
  {
   "lauf": "ablauf-seitenleiste-position",
@@ -1391,7 +1416,12 @@
   "stufeVorschlag": "App",
   "laeufe": 6,
   "minuten": 1.9,
-  "hinweis": "Teil ‚Bedienungshilfen‘ ist wirkungslos (C-31)"
+  "hinweis": "Teil ‚Bedienungshilfen‘ ist wirkungslos (C-31)",
+  "stufeTeile": {
+   "": "App",
+   "Bedienungshilfen": "streichen oder t.seite (C-31)",
+   "Text 53": "Baustein nach Gegenprobe C-32"
+  }
  },
  {
   "lauf": "oeffnen-position",
