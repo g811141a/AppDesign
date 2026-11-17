@@ -633,6 +633,15 @@ Gemessene bzw. belegte Eigenheiten mit Quelle; sie gelten für alle Apps, die Pr
 
 Jede Komponente ist hier einmal beschrieben (Zweck · Aufbau · Maße · Aussehen · Zustände · Verhalten · technischer Name ·
 Regel). In AppDesign ist jede Komponente einmal programmiert (`v4/design.css`, `v4/ui.js`) und wird von allen Apps übernommen.
+Komponenten, die als in sich geschlossener Baustein gebaut sind – analog einer Java Bean –, heißen **AD-Beans** (R-1.13); die
+folgende Liste ist ihre einzige Aufzählung, `checkBeans` liest sie. Bereiche: Aktionen und Menüs · Navigation und Suche · Fenster
+und Meldungen · Eingabe · Inhalt · Dienste (ohne eigene Oberfläche).
+
+**Liste der AD-Beans**
+
+| Kennung | Bereich | Fabrik | Eigenschaften (Standard) | Nur lesen | Methoden | Ereignisse | Regeln | Abschnitt |
+|---|---|---|---|---|---|---|---|---|
+| `swipeactions` | Aktionen und Menüs | `createSwipeactions(liste, …)` | `kacheln` (Pflicht) · `aktionen` (Pflicht, dieselbe Funktion wie für das Kontextmenü; Einträge wie bei `openMenu` mit `kurz`) · `durchwischen` (`true`) | `offen` · `masse` | `schliessen()` · `entfernen()` | `offen` · `zu` | R-7.8, R-4.12, R-4.13, R-1.4, R-1.8 | 15.4 |
 
 ### 15.1 Schwebende Schaltfläche
 - **Apple:** [HIG – Buttons](https://developer.apple.com/design/human-interface-guidelines/buttons)
@@ -1254,6 +1263,7 @@ Testfall (User) in den Usertest, wenn eine Version es betrifft.
 | R-1.7 | **Sichere Ränder:** nichts fest Stehendes (Knopf, Feld, Titel, Kachel, Leiste) liegt unter Statusleiste bzw. Dynamic Island, Aussparung oder Home-Leiste; Fenster, Menüs und Sprechblasen bleiben ganz innerhalb (am iPad mindestens 10 px bzw. der sichere Rand, das iPhone-Fenster füllt den Bildschirm); Inhalt darf darunter rollen, sein Ende lässt sich bis über die Home-Leiste rollen. `env(safe-area-inset-*)` nur in `--safe-top/-bottom/-left/-right` | hig.mjs – `safe` in jeder gemessenen Ansicht mit Gerätewerten (iPhone hoch 62/34, quer 62 links und rechts/20 unten, iPad 24/20); doku.mjs – nur die vier Festlegungen | Dynamic Island, Home-Leiste | 13 |
 | R-1.11 | **Verborgen heißt unsichtbar:** jedes Element mit `hidden` ist nicht zu sehen – eine eigene `display`-Regel hebt `[hidden]` nie auf | hig.mjs – `masseStile` (jede Ansicht, nach jedem Schritt, alle `[hidden]`) | – | 13 |
 | R-1.12 | **Gleitbewegungen wie die Seitenleiste in Notizen:** jede Bewegung, mit der die App selbst etwas an einen anderen Ort bringt – Fenster und Blatt (R-4.6), Navigation und Seitenleiste (R-7.5), das Fenster mit der Tastatur am iPad, ‚Titel antippen = nach oben‘ –: öffnen, hinein und nach oben mit einer Feder ohne Nachschwingen, Antwortzeit 0,35 s (gemessen an der Seitenleiste in Notizen, APD-127; CSS `linear()` über 0,5 s); schließen und hinaus mit `ease-in-out` in 0,25 s; nach einer Geste (Ziehen, Zurückwischen) der Rest anteilig, mindestens 0,15 s. Keine Gleitbewegung ist schneller als das Mehr-Menü (R-4.13). Ausgenommen: das Feld beim Antippen springt (Safari, 13, APD-127/W-4), Rückmeldungen beim Drücken und Überblenden; ‚Bewegung reduzieren‘ nach R-1.9 | ablauf.mjs – `checkGleiten` (Dauer und Kurve jeder Bewegung, Endlage unverändert) | Gefühl am Gerät | 15 |
+| R-1.13 | **AD-Beans – allgemeine Elemente gekapselt:** ein allgemeines Element, das neu entsteht oder umgebaut wird, ist eine **AD-Bean** in `ui.js` – eine Fabrik `create<Kennung>(…)` mit Eigenschaften und Standardwerten, Methoden und Ereignissen (`on(…)`), eigenem Zustand und eigenem CSS nur unter `.ad-<kennung>…`; die Liste der AD-Beans (15) nennt je Bean Kennung, Bereich, Fabrik, Schnittstelle, Regeln und Abschnitt. Die **Kennung** ist sprechend nach der Aufgabe (nie nach Geste oder Technik, keine Nummer), fest und nie wiederverwendet: gleiche Aufgabe in anderer Ausprägung = Eigenschaft, andere Aufgabe = eigene Bean, Ablösung mit ‚ersetzt …‘. Feldarten bauen auf der Grund-Bean `field` auf; ihre Gültigkeitsregeln, Meldungen und Prüfbeispiele stehen in der Bean. Maße und Schwellen der Bedienung sind fest in der Bean (nur lesbar). Die App nutzt nur die Schnittstelle – kein CSS und keine inneren Namen einer Bean | doku.mjs – `checkBeans` (Liste ↔ `ui.js` und `design.css`, Kennung einmal, CSS nur unter dem Präfix, Namen in der App) | – | 14, 15 |
 
 ### 2. Leisten, Suche, Rollen
 
