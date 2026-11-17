@@ -202,3 +202,21 @@ speichern(mail.wert);
 Meldungen und Prüfbeispiele stehen in der Bean, `checkBean` spielt sie durch.
 
 **Noch offen:** Kennung sprechend oder mit Nummer (Abschnitt ‚Eindeutige Kennung‘) · Bereiche als Gruppe in der Liste oder als Präfix (Abschnitt ‚Präfix nach Bereich?‘).
+
+**Entschieden (17.11.2026): Bereiche als Gruppe in der Liste der AD-Beans** (Aktionen und Menüs · Navigation und Suche · Fenster und Meldungen · Eingabe ·
+Inhalt · Dienste), die Kennung bleibt ohne Bereich.
+
+## Eine zweite ‚swipe‘-Definition? (Frage des Nutzers, 17.11.2026)
+
+Die Frage zeigt eine Schwäche des Namens `swipe`: Er nennt die **Geste**, nicht die **Aufgabe**. Es gibt heute schon ein zweites Wischen – die
+Seitenleiste hereinwischen bzw. im Inhalt zurückwischen (R-7.5) –, später käme Fotos wischen (APD-60). Alle drei wären ‚swipe‘.
+
+**Vorschlag: Kennung nach der Aufgabe benennen, nie nach Geste oder Technik**
+- erste Bean: **`swipeactions`** (Apples Begriff ‚Swipe Actions‘ für die Aktionen einer Zeile) statt `swipe`;
+- **dieselbe Aufgabe, andere Ausprägung** (z. B. auch nach rechts wischen für ‚Erledigt‘ wie in Mail) → **keine neue Bean**, sondern eine Eigenschaft:
+  `createSwipeactions(liste, { links: […], rechts: […] })`;
+- **andere Aufgabe mit derselben Geste** → eigene Bean, benannt nach ihrer Aufgabe: Seitenleiste hereinwischen gehört zur Bean `sidebar`, Fotos
+  wischen wird `gallery`, Seiten blättern `pager`;
+- **nie** `swipe2` oder `swipe-neu`; ändert sich eine Bean grundlegend, behält sie ihre Kennung – jede App hängt an ihrer festen AppDesign-Fassung (R-10.3)
+  und wird nur nach Rückfrage gehoben. Eine Bean, die eine andere ablöst, bekommt einen neuen Namen und den Vermerk ‚ersetzt …‘ in der Liste (wie bei
+  den Nummern, 2.4).
