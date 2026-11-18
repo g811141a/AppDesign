@@ -1,4 +1,4 @@
-// AppDesign 4.14.1 · Prüfung der Versionskopplung App ↔ AppDesign (Regel R-10.3, Designrichtlinie allgemein 15.20).
+// AppDesign 4.14.1 · Prüfung der Versionskopplung App ↔ AppDesign (Regel R-10.3, Designrichtlinie allgemein 11, 14).
 // Seit 4.14.0 (APD-5 Version B, feste Fassung): Jede AppDesign-Version liegt unveränderlich in fassung/X.Y.Z/ (design.css,
 // ui.js, tests/); die App lädt genau ihre Fassung: ../AppDesign/fassung/X.Y.Z/ui.js und …/design.css in index.html und in der
 // Dateiliste von sw.js (ohne ?v=, der Pfad enthält die Version), AD_NEEDED = X.Y.Z = AD_VERSION (ui.js) = --ad-version

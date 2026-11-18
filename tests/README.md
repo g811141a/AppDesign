@@ -78,7 +78,8 @@ quer (170 px sichtbar); ein Feld im Rollbereich unter der Tastatur antippen vers
 ## Alle Prüfungen einer App `lauf.mjs`
 
 Startet alle Prüfskripte parallel, die schnellsten zuerst (gemessene Dauer in `tests/out/dauer.json` der App), in Chromium und WebKit;
-beim ersten roten Test werden die übrigen beendet und seine Fehlerzeilen gezeigt. Aufruf über `tests/alle.mjs` der App:
+ab dem dritten roten Lauf werden die übrigen beendet, jeder rote Lauf läuft am Ende einmal allein (Zusammenarbeit 0 Nr. 2), die
+Fehlerzeilen der roten Läufe werden gezeigt. Aufruf über `tests/alle.mjs` der App:
 `node tests/alle.mjs [--alle] [--browser chromium] [--nur hig] [--abdeckung] [--gegenprobe [grundregeln | bedienung | text]] [--jobs N] [--zeit S]`.
 `--gegenprobe bedienung` (seit 4.35.0) läuft die Prüfung der Bedienungshilfen der App (`ablauf-bedienung`) je eingeschleustem Fehler
 einmal; rot zählt nur mit genau der passenden Meldung – beim Bau von APD-43/1 und wenn sich eine dieser Prüfungen ändert, nicht in jedem

@@ -1,8 +1,8 @@
 # AppDesign
 
-**Version 4.60.3** · Stand 18.11.2026
+**Version 4.61.0** · Stand 18.11.2026
 
-Gemeinsames Design für alle iPad-Web-Apps von g811141a – Apple-like nach den
+Gemeinsames Design für alle Web-Apps für iPad und iPhone von g811141a – Apple-like nach den
 [Human Interface Guidelines](https://developer.apple.com/design/human-interface-guidelines).
 Jede Komponente ist hier einmal beschrieben **und** einmal programmiert; alle Apps übernehmen sie.
 
@@ -10,6 +10,7 @@ Jede Komponente ist hier einmal beschrieben **und** einmal programmiert; alle Ap
 |---|---|
 | `README - Designrichtlinie allgemein.md` | Gestaltungs- und Bedienregeln, Komponenten, HIG-Checkliste, Regelkatalog (Abschnitt 17) |
 | `README - Zusammenarbeit allgemein.md` | Regeln für die Zusammenarbeit mit Claude |
+| `… Versionsgeschichte.md` | ausgelagerte Versionsgeschichten (Designrichtlinie 11) |
 | `UEBERGABE.md` | Stand der letzten Sitzung – Claude liest sie zu Beginn jeder Sitzung zuerst |
 | `VERLAUF.md` | alle Wünsche und Entscheidungen des Nutzers (seit 04.10.2026) – damit nichts vergessen wird |
 | `v4/design.css` | Farben, Schrift und alle Komponenten (Arbeitsstand der Hauptversion 4 = neueste Fassung) |
@@ -56,8 +57,8 @@ Jede Komponente ist hier einmal beschrieben **und** einmal programmiert; alle Ap
   neuere Fassung gehoben (Zusammenarbeit 0 Nr. 10).
 - `v4/` ist der Arbeitsstand und zeigt die neueste 4er-Fassung (für schon installierte ältere App-Stände).
 - Eine Hauptversion bekommt einen neuen Ordner (`v5/`).
-- Veröffentlichen mit `node werkzeug/veroeffentlichen.mjs vorbereiten --ad X.Y.Z --app <app>=X.Y.Z`, Texte schreiben,
-  committen, dann `… los` – **erst AppDesign, dann die App** (Selbsttest `werkzeug/veroeffentlichen-selbsttest.mjs`).
+- Veröffentlichen mit `werkzeug/veroeffentlichen.mjs` – Befehle und Reihenfolge in der AppDesign-`CLAUDE.md` (‚Veröffentlichen‘);
+  **erst AppDesign, dann die App** (Selbsttest `werkzeug/veroeffentlichen-selbsttest.mjs`).
 
 ## Apps
 

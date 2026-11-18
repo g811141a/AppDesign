@@ -1,5 +1,6 @@
-// AppDesign 4.22.0 · Zeile ‚Zeit und Token‘ aus den Sitzungsdaten (APD-12, Testfall-Liste arbeit/APD-12 Testfall-Liste.md APD-12/M-1 bis APD-12/M-14;
-// Zusammenarbeit allgemein §2). Claude ruft es am Ende jeder Antwort auf und übernimmt die Zeile unverändert – nie schätzen.
+// AppDesign 4.22.0 · Kontextstand aus den Sitzungsdaten (APD-12, Testfall-Liste arbeit/APD-12 Testfall-Liste.md APD-12/M-1 bis APD-12/M-14;
+// Zusammenarbeit allgemein 2.2): Claude ruft es unmittelbar vor jedem Auswahlfenster auf und setzt ‚(Kontext N)‘ ans Ende jeder Frage
+// im Fenster – nie schätzen. Die Zeitzeile (⏱ und Token) ist nur zur Kontrolle und steht nicht in der Antwort.
 //   node werkzeug/messung.mjs [--datei <sitzung.jsonl>] [--jetzt <ISO-Zeit>]
 // Zeit: ab der letzten Nachricht des Nutzers bis jetzt, ohne Wartezeit in Auswahlfenstern (APD-12/M-1 bis APD-12/M-4).
 // Token: alle Modell-Aufrufe zwischen der vorletzten und der letzten Nachricht des Nutzers, je Aufruf einmal (APD-12/M-5, Fund 2);

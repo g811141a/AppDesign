@@ -1,6 +1,6 @@
 # AppDesign – Hinweise für Claude
 
-**Version 2.12.0** · Stand 13.11.2026
+**Version 2.13.0** · Stand 18.11.2026
 
 ## Zuerst lesen (gezielt, Zusammenarbeit 0 Nr. 15)
 
@@ -12,9 +12,8 @@
 
 ## Verpflichtend
 
-Alle Regeln stehen in der Zusammenarbeit allgemein (hier keine Wiederholung) – zuerst der Kasten ‚Jede Antwort‘, dazu Startfrage ohne Auftrag (0 Nr. 19),
-nie ohne ‚Ja‘ bauen (0 Nr. 21), Testfall-Liste vor jedem Bau (0 Nr. 1), erst Usertests, dann Neues (0 Nr. 22), Auswahlfenster mit
-‚Ich schreibe im Chat‘ (0 Nr. 7) und ‚(Kontext N)‘ in jeder Frage im Fenster (`node werkzeug/messung.mjs`, 2.2).
+Alle Regeln stehen in der Zusammenarbeit allgemein – zuerst der Kasten ‚Immer‘ und ‚Jede Antwort‘ oben in Abschnitt 0; hier keine
+Wiederholung.
 
 ## Technisch
 
@@ -50,7 +49,12 @@ nie ohne ‚Ja‘ bauen (0 Nr. 21), Testfall-Liste vor jedem Bau (0 Nr. 1), erst
   ln -sfn /opt/pw-browsers/chromium-1243/chrome-linux64 /opt/pw-browsers/chromium-1194/chrome-linux &&
   ln -sfn /opt/pw-browsers/chromium_headless_shell-1243/chrome-headless-shell-linux64 /opt/pw-browsers/chromium_headless_shell-1194/chrome-linux &&
   ln -sfn chrome-headless-shell /opt/pw-browsers/chromium_headless_shell-1243/chrome-headless-shell-linux64/headless_shell`.
-- **Regelwächter** (Zusammenarbeit 2.8): abgeschaltet (APD-123); Werkzeug und Prüfung bleiben im Repo, nicht einrichten.
+- **Hinweise zur Prüfumgebung:** Stand der Pages über `curl https://api.github.com/repos/g811141a/AppDesign/actions/runs?per_page=1`;
+  ein eigenes `node -e` mit Playwright braucht `createRequire('/home/user/ReiseLogBuch/tests/')('playwright')`. Einzelne Prüfungen
+  dauern bis zu 3 min. `los` führt eine neuere `main` in den Vorbereitungs-Zweig zusammen – danach den Zweig hochladen. `npm install`
+  im Ordner `werkzeug` von ReiseLogBuch-Import verändert `package-lock.json` – danach `git checkout -- werkzeug/package-lock.json`.
+  Nach einem Neustart des Arbeitsprozesses kann der Notizordner einen neuen Pfad bekommen. AppDesign ist nach dem Klonen ohne Zweig
+  (HEAD lose): committen und mit `git push origin HEAD:main` hochladen.
 - **Veröffentlichen** (Zusammenarbeit 0 Nr. 9): Vorbereitungs-Zweige `vorbereitung-X.Y.Z` in beiden Repos;
   `node werkzeug/veroeffentlichen.mjs vorbereiten --ad X.Y.Z --app reiselogbuch=X.Y.Z` (ohne `--ad`, wenn nur die App); Texte
   schreiben (CHANGELOG mit Testfällen, Backlog, Versionsgeschichten); nach Änderungen an `v4/` oder `tests/` bzw. an Designrichtlinie
@@ -58,7 +62,7 @@ nie ohne ‚Ja‘ bauen (0 Nr. 21), Testfall-Liste vor jedem Bau (0 Nr. 1), erst
   `node werkzeug/veroeffentlichen.mjs stufe --app reiselogbuch` (schlägt die Stufe vor und nennt die Prüfungen); dann
   `node werkzeug/veroeffentlichen.mjs los --app reiselogbuch [--stufe text]` im Hintergrund (prüft, führt eine neuere `main` vorher in die
   Vorbereitungs-Zweige zusammen – bei Konflikt Abbruch vor dem Prüflauf –, Prüflauf in der Stufe – `--stufe text` nur, wenn das Skript
-  sie bestätigt, sonst Abbruch vor dem Prüflauf –, erst AppDesign, dann die App, wartet auf Pages; voll ~60 min, Text deutlich kürzer). **Nie `… fassung` für eine schon veröffentlichte Version** – erst `vorbereiten` (neue Version),
+  sie bestätigt, sonst Abbruch vor dem Prüflauf –, erst AppDesign, dann die App, wartet auf Pages; voll ~75 min, Text deutlich kürzer). **Nie `… fassung` für eine schon veröffentlichte Version** – erst `vorbereiten` (neue Version),
   dann ändern. Danach die lokalen Vorbereitungs-Zweige löschen (sonst meldet der Stop-Hook ‚unpushed‘). Zweige auf GitHub löschen
   geht aus der Cloud nicht (403) – alte Vorbereitungs-Zweige dort schaden nicht.
 
@@ -66,21 +70,4 @@ nie ohne ‚Ja‘ bauen (0 Nr. 21), Testfall-Liste vor jedem Bau (0 Nr. 1), erst
 
 ## Versionsgeschichte
 
-| Version | Datum | Inhalt |
-|---|---|---|
-| 2.12.0 | 13.11.2026 | APD-128: genau ein Prüflauf je Version, Stufe Text oder voll; Befehl `stufe` vor der Bau-Frage, `los … --stufe text` (Wortlaut bestätigt 13.11.2026, Sitzung 0108 – APD-128/V-2, V-3) |
-| 2.11.0 | 07.11.2026 | APD-123: ‚(Kontext N)‘ in jeder Frage im Fenster statt der Zeile mit Zeit und Token; Regelwächter abgeschaltet (Wortlaut bestätigt 07.11.2026, Sitzung 0089) |
-| 2.10.0 | 31.10.2026 | APD-102: `los` führt eine neuere `main` vor dem Prüflauf in die Vorbereitungs-Zweige zusammen (bei Konflikt Abbruch vorher), ~60 min (Wortlaut bestätigt 31.10.2026, Sitzung 0065) |
-| 2.9.0 | 26.10.2026 | APD-84: zu Beginn die ganze Zusammenarbeit (Kasten ‚Jede Antwort‘); Regelwächter über das Setup-Skript einrichten |
-| 2.8.0 | 25.10.2026 | APD-78 Nummernschema: Verweise mit den neuen Nummern (APD-n, RLB-n, Usertest, Testfall-Liste); Tabelle alt → neu in `ZUORDNUNG.md` |
-| 2.7.0 | 24.10.2026 | Tests einrichten: Chromium-Verweise für einen neueren Chromium der Umgebung (Chrome 153) dauerhaft hier statt in UEBERGABE.md (Nutzer 24.10.2026) |
-| 2.6.0 | 21.10.2026 | APD-39 Konsolidierung: Arbeitsumgebung (klonen, Verweise, Tests einrichten, Veröffentlichen) dauerhaft hier statt in UEBERGABE.md (APD-39/F-9); Verweise auf Zusammenarbeit 2.17.0 (0 Nr. 21, 22, Abschnitt 2.2) |
-| 2.5.0 | 20.10.2026 | Zu Beginn Abschnitte 0 und 1 der Zusammenarbeit (Sprache und Ton: per du) – Zusammenarbeit 2.14.0 |
-| 2.4.0 | 16.10.2026 | Zeile Zeit und Token mit `werkzeug/messung.mjs` (APD-12) |
-| 2.3.0 | 16.10.2026 | Startfrage zu Beginn einer Sitzung ohne Auftrag (Zusammenarbeit 0 Nr. 19) |
-| 2.2.0 | 15.10.2026 | Gezielt lesen (nur Abschnitt 0 und Überschriften), ein voller Prüflauf je Version (APD-7) |
-| 2.1.1 | 14.10.2026 | Fassung enthält Designrichtlinie und Zusammenarbeit statt Git-Markierung (aus der Cloud gesperrt) |
-| 2.1.0 | 14.10.2026 | Feste Fassung `fassung/X.Y.Z/` statt `v4/…?v=` (APD-5 Version B, APD-5/W-4), Veröffentlichungs-Skript |
-| 2.0.0 | 14.10.2026 | Neu gefasst (APD-2 Schritt 4): zuerst UEBERGABE.md, Regeln nur noch als Verweis auf die Zusammenarbeit (ohne Antwortzeile), Prüfungen und Versionskopplung |
-| 1.1.0 | 10.10.2026 | Zeitmessung |
-| 1.0.0 | 09.10.2026 | erste Fassung |
+Steht in `CLAUDE Versionsgeschichte.md` (neueste oben); jede neue Version bekommt dort eine Zeile.
