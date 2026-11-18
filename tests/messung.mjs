@@ -81,6 +81,9 @@ m = w5([anlage(1, 'claude-opus-5[1m]')], 'claude-opus-5');
 pruefe(!zeile(m).includes('⚠'), `APD-130/W-5 Zusatz [1m] zählt nicht: ${zeile(m)}`);
 m = w5([anlage(15, 'claude-fable-5-2')], 'claude-sonnet-5-5', 12);
 pruefe(m.eingestellt === null && zeile(m).includes('⚠ Modell claude-sonnet-5-5'), `APD-130/W-5 ohne Anlage (bzw. nach jetzt) Vergleich mit Opus 5.5: ${zeile(m)}`);
+// APD-137 (seit 4.60.1): die Anlage ‚model‘ eines Hilfsagenten (isSidechain) ist nicht das eingestellte Modell – kein Fehlalarm danach
+m = w5([anlage(1, 'claude-opus-5-5'), { ...anlage(5, 'claude-haiku-5-5'), isSidechain: true }], 'claude-opus-5-5');
+pruefe(m.eingestellt === 'claude-opus-5-5' && !zeile(m).includes('⚠'), `APD-137 Anlage eines Hilfsagenten zählt nicht: ${zeile(m)}`);
 
 // APD-20/H-1 bis APD-20/H-11 Kontext des letzten eigenen Aufrufs (APD-20)
 const kontext = (s, t) => messe(daten.slice(0, s), Date.parse(T(t)));
