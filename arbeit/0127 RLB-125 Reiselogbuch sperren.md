@@ -36,6 +36,22 @@
 
 **Entschieden (Nutzer 18.11.2026):** L-1 bis L-5 in RLB-125, L-6 als eigenes Thema RLB-126 mit Priorität 3.
 
+## Ergänzung des Nutzers (18.11.2026): Symbol auf der Kachel und im geöffneten Reiselogbuch
+
+**Wunsch:** auf der Kachel der Seitenleiste rechts unten immer ein Symbol – offen bzw. geschlossen an derselben Stelle. Im geöffneten Reiselogbuch
+ein Symbol, wenn es gesperrt ist; bei nicht gesperrtem kein Symbol (Frage: oder was meinst du?).
+
+**Meine Einschätzung:**
+
+| Nr. | Stelle | Empfehlung | Warum |
+|---|---|---|---|
+| RLB-125/S-1 | Kachel, gesperrt | `lock` rechts unten, in der Farbe der Nebenschrift der Kachel | Wie gewünscht, man sieht den Zustand ohne Öffnen |
+| RLB-125/S-2 | Kachel, nicht gesperrt | **Variante a (meine Empfehlung):** kein Symbol. **Variante b:** `lock-open` an derselben Stelle, deutlich blasser als `lock` | a: Der Normalfall braucht kein Zeichen, so fällt ein gesperrtes Reiselogbuch sofort auf und die Liste bleibt ruhig. Vermutung: Apple zeigt in Listen nur den Sonderfall (Schloss in Notizen) – Quelle in der Klärung. b: hat den Vorteil, dass man sieht, dass Sperren möglich ist; die Blässe hält den Normalfall zurück |
+| RLB-125/S-3 | Geöffnetes Reiselogbuch, gesperrt | `lock` in der Kopfzeile neben dem Titel; Antippen öffnet die Sprechblase ‚Reiselogbuch entsperren?‘ mit ‚Entsperren‘ und ‚Abbrechen‘. Dazu sind plus und alle Bearbeiten-Schaltflächen ausgeblendet, die Felder nur lesbar | Man sieht es dort, wo man etwas ändern wollte, und kann ohne Umweg über die Seitenleiste entsperren |
+| RLB-125/S-4 | Geöffnetes Reiselogbuch, nicht gesperrt | kein Symbol – ich stimme dir zu | Dass man ändern kann, zeigen die Bearbeiten-Schaltflächen selbst; ein offenes Schloss wäre doppelt |
+
+**Entschieden (Nutzer 18.11.2026):** RLB-125/S-2 Variante a – nicht gesperrt zeigt die Kachel kein Symbol; RLB-125/S-1, S-3 und S-4 wie empfohlen (Ausgestaltung von S-3 im Muster).
+
 ## So macht es Apple
 
 **Weiß ich nicht – ich prüfe es.** Die Apple-Hilfe und die HIG sind von hier nicht erreichbar, weil das Netz support.apple.com sperrt. Vermutungen,
