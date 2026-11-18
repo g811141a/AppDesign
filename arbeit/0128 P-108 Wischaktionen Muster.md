@@ -6,7 +6,7 @@ Stand 18.11.2026 · zu P-108/F-1 bis P-108/F-4 · Antworten P-108/Q-1 bis P-108/
 
 https://g811141a.github.io/AppDesign/arbeit/0128%20P-108%20Wischaktionen%20Muster.html
 
-(funktioniert erst, wenn das Muster auf `main` von AppDesign liegt – siehe Frage in der Kachel; bis dahin als Vorschau im Seitenbereich)
+(auf `main` von AppDesign seit Commit d5e4335, Nutzer ‚Ja, hochladen‘ 18.11.2026)
 
 ## Was gleich ist in allen Varianten
 
