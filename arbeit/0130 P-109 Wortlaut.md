@@ -1,6 +1,6 @@
 # P-109 – Wortlaut der Korrektur (Sitzung 0130)
 
-Stand 18.11.2026 · Muster P-109 ‚passt‘ (Nutzer 18.11.2026) · Messung `arbeit/0130 P-109 Notizen Messung.md` · Muster `arbeit/0130 P-109 Wischaktionen Muster.md`
+Stand 18.11.2026 · **Wortlaut P-109/V-1 bis P-109/V-3 und Testfall-Liste P-109/M-1 bis P-109/M-12 bestätigt (Nutzer 18.11.2026)** · Muster P-109 ‚passt‘ (Nutzer 18.11.2026) · Messung `arbeit/0130 P-109 Notizen Messung.md` · Muster `arbeit/0130 P-109 Wischaktionen Muster.md`
 Korrekturversion: AppDesign 4.60.3 / Reiselogbuch 3.57.3 (voll). Kapseln 66 × 44 und Abstand 11 pt bleiben.
 
 ## P-109/V-1 – Designrichtlinie allgemein 15.4 ‚Wischaktionen‘
