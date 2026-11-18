@@ -19,7 +19,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| P-108 | 1 | **Usertest P-108 (Reiselogbuch 3.57.1, AppDesign 4.60.1):** Version prüfen (P-108/0), Aufwischen nacheinander von außen (P-108/1), Zurückwischen umgekehrt, nichts über die Seitenleiste (P-108/2), Bewegung reduzieren nur Einblenden (P-108/3), größte Textgröße Kapseln größer (P-108/4) – Testfälle im CHANGELOG des Reiselogbuchs | prüfen |
+| P-108 | 1 | **Usertest P-108 (Reiselogbuch 3.57.1, AppDesign 4.60.1):** Version prüfen (P-108/0), Aufwischen nacheinander von außen (P-108/1), Zurückwischen umgekehrt, nichts über die Seitenleiste (P-108/2), Bewegung reduzieren nur Einblenden (P-108/3), größte Textgröße Kapseln größer (P-108/4) – Testfälle im CHANGELOG des Reiselogbuchs · **Rückmeldung (Nutzer 18.11.2026, Sitzung 0128):** /0, /3, /4 ok; /1, /2 nicht ok (P-108/F-1 bis P-108/F-4: Kapsel erst ab halber eigener Breite einblenden, über die letzte Kapsel hinaus nichts langziehen und zurückfedern, Abstand Kachel–Kapsel wie zwischen den Kapseln, zurück umgekehrt – wie Notizen) – in Klärung, `AppDesign/arbeit/0128 P-108 Rückmeldung und Klärung.md` | prüfen |
 
 ## 2. Weitere Themen (in Klärung)
 
