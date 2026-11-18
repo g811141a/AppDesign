@@ -89,5 +89,5 @@ Dazu passend, ohne eigene Regel: Kommentar und Liste der AD-Beans nennen `masse`
 
 ## 5. Weiter
 
-Nach deinem ‚Ja‘ zum Wortlaut folgt die Bau-Frage **AppDesign 4.60.1 mit Reiselogbuch 3.57.1** (Prüflauf voll, weil Code in AppDesign und App
+**Wortlaut P-107/V-1 bis V-3 bestätigt (Nutzer 18.11.2026, Sitzung 0126) und in die Designrichtlinie allgemein übernommen.** Jetzt folgt die Bau-Frage **AppDesign 4.60.1 mit Reiselogbuch 3.57.1** (Prüflauf voll, weil Code in AppDesign und App
 geändert), danach Usertest P-108.
