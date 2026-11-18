@@ -4704,10 +4704,11 @@ export async function checkWischen(p, { bean, aktionen, liste = '#side', kacheln
     await wisch(kachel, weg(-60, 0, 6));
     await wisch(kachel, weg(-100), { abbruch: true });
     await wisch(kachel, weg(10, 40, 4));
-    if (eintr.at(-1).red) { await wisch(kachel, weg(-bw * 0.72, 0, 12)); await p.keyboard.press('Escape'); await ruhig(); }
+    await wisch(kachel, weg(-bw * 0.72, 0, 12)); await zu();   // weit überwischt: ‚wisch offen‘, nie ‚wisch durch‘
     const zeilen = await p.evaluate(() => { const z = mess?.zeilen?.join('\n') || ''; messAus(); mess = null; return z; });
-    for (const w of ['wisch kandidat', 'wisch verworfen ', 'wisch offen weg ', 'wisch zurück gefedert weg ', 'wisch abgebrochen weg ', ...(eintr.at(-1).red ? ['wisch durch weg '] : [])])
+    for (const w of ['wisch kandidat', 'wisch verworfen ', 'wisch offen weg ', 'wisch zurück gefedert weg ', 'wisch abgebrochen weg '])
       if (!zeilen.includes(w)) E(`W-67 Messung ohne ‚${w.trim()}‘`, 'R-1.6');
+    if (zeilen.includes('wisch durch')) E('W-67 Messung mit ‚wisch durch‘ – seit 4.60.2 gibt es kein Durchwischen (P-108)', 'R-1.6');
     await zu();
     // W-77: offen und Ereignisse – je genau einmal pro Vorgang, auch beim Neuaufbau ‚zu‘
     await p.evaluate(() => { const b = (0, eval)(window.__wischBean); window.__wischEv = []; window.__wischAb = [b.on('offen', k => window.__wischEv.push('offen')), b.on('zu', k => window.__wischEv.push('zu'))]; });
