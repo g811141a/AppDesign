@@ -12,7 +12,7 @@ AppDesign-`CLAUDE.md`.
 
 | Teil | Version |
 |---|---|
-| Reiselogbuch | **3.57.0** veröffentlicht (`main` e0eaf16) – Usertest P-107 **mit Fehlern P-107/F-1 bis F-4** (behoben auf dem Zweig, nicht gebaut) |
+| Reiselogbuch | **3.57.0** veröffentlicht (`main` e0eaf16) – Usertest P-107 **mit Fehlern P-107/F-1 bis P-107/F-4** (behoben auf dem Zweig, nicht gebaut) |
 | AppDesign | **4.60.0** veröffentlicht (`main` b9157cf) |
 | Zusammenarbeit allgemein | **3.14.1** |
 | AppDesign-`CLAUDE.md` | **2.12.0** |
@@ -23,7 +23,7 @@ AppDesign-`CLAUDE.md`.
   `web-fetch` mit Opus 5.5, Aufwand hoch. Festlegung (0122): Fable 5.2 vorerst nicht, Hilfsagenten nur Opus 5.5 und hoch, einzeln.
 - **Nutzungsgrenze:** zu Beginn 5-Stunden-Fenster ‚allowed‘. `get_session` auf `rate_limit_info` ansehen und im Lagebild nennen.
 - **Hooks:** `~/.claude/settings.json` war leer (`{}`).
-- **Offene Usertests:** **P-107** mit den Fehlern F-1 bis F-4 (`arbeit/0125 Usertest P-107 Befund.md`).
+- **Offene Usertests:** **P-107** mit den Fehlern P-107/F-1 bis P-107/F-4 (`arbeit/0125 Usertest P-107 Befund.md`).
 - **Vereinbarung (Nutzer 30.10.2026, Sitzung 0058):** Muster bis auf Weiteres **nur hell** – in jede Übergabe übernehmen.
 - **Erinnerung:** ‚Backlog-Erinnerung (AppDesign und Reiselogbuch)‘ montags 8:58.
 - **Hinweis Prüfumgebung:** Den Arbeitsstand prüft man vor `vorbereiten` mit einer nicht hochgeladenen Kopie: `index-v4.html` (Pfad `AppDesign/v4/`) und
@@ -33,14 +33,14 @@ AppDesign-`CLAUDE.md`.
 
 ## 2. Ergebnisse der Sitzung 0126
 
-- **P-107/F-1 bis F-4 behoben (Zweig, nicht gebaut)** – `arbeit/0126 P-107 Fehler Befund und Wortlaut.md`:
+- **P-107/F-1 bis P-107/F-4 behoben (Zweig, nicht gebaut)** – `arbeit/0126 P-107 Fehler Befund und Wortlaut.md`:
   - `v4/ui.js` `createSwipeactions`: Kapseln nacheinander von außen, wachsen aus dem frei werdenden Platz (0 → 100 %), zurück und beim Gleiten
     umgekehrt (Zwischenbilder in `fahre`), rechts bündig – nie über ihren Platz; ‚Bewegung reduzieren‘ an ihrem Platz, nur Einblenden.
   - `v4/design.css`: Kapseln 66 × 44 mal `--fb`, Symbol mit `--k`.
-  - Prüfungen W-81 bis W-86 in `checkWischen` (`tests/ablauf.mjs`) und W-86 in `ReiseLogBuch/tests/ablauf-wischen.mjs`; Gegenproben W-87 bis W-90
+  - Prüfungen APD-30/W-81 bis APD-30/W-86 in `checkWischen` (`tests/ablauf.mjs`) und APD-30/W-86 in `ReiseLogBuch/tests/ablauf-wischen.mjs`; Gegenproben APD-30/W-87 bis APD-30/W-90
     (`wischenGegenprobe` jetzt allgemein, auch für `v4/` und design.css). Gegen 4.60.0 rot, mit Behebung grün (Chromium iPad/iPhone, WebKit alle),
-    Gegenproben rot. W-7 angepasst. Testfall-Liste: `arbeit/APD-30 Wischaktionen Testfall-Liste.md` Nachtrag P-107 (mit ‚warum übersehen‘).
-  - **Wortlaut P-107/V-1 bis V-3 bestätigt** (Nutzer 18.11.2026) und übernommen: R-7.8, 15.4 ‚Wischaktionen‘, R-1.13.
+    Gegenproben rot. APD-30/W-7 angepasst. Testfall-Liste: `arbeit/APD-30 Wischaktionen Testfall-Liste.md` Nachtrag P-107 (mit ‚warum übersehen‘).
+  - **Wortlaut P-107/V-1 bis P-107/V-3 bestätigt** (Nutzer 18.11.2026) und übernommen: R-7.8, 15.4 ‚Wischaktionen‘, R-1.13.
   - **Bau-Frage 4.60.1 / 3.57.1: Nutzer ‚Nein‘** (18.11.2026) – stattdessen zwei kleine Themen in 0126; gebaut wird in 0127.
 - **APD-137 behoben (Zweig, nicht gebaut):** `werkzeug/messung.mjs` übergeht die Anlage ‚model‘ der Hilfsagenten (`!isSidechain`); Prüfung in
   `tests/messung.mjs` (vorher rot, jetzt grün, Gegenprobe rot).
@@ -56,7 +56,7 @@ AppDesign-`CLAUDE.md`.
 1. Lesen wie immer, Repos dazuholen, **Zweig `claude/upbeat-johnson-spcqz3` holen**, Tests einrichten, Lagebild als eigene Antwort (Chat und Datei) mit Kachel.
 2. APD-134: den Lasttest wiederholen (4 × `PRUEF_BROWSER=webkit node tests/ablauf-markierung-menues.mjs` gleichzeitig, zweimal); bleibt er grün, gehört
    die Änderung in den Bau; die R-3.1-Abweichung beobachten.
-3. **Bau-Frage AppDesign 4.60.1 mit Reiselogbuch 3.57.1** (voll): P-107/F-1 bis F-4, APD-137, APD-134 – dann Usertest P-108 (Testfälle: Aufwischen
+3. **Bau-Frage AppDesign 4.60.1 mit Reiselogbuch 3.57.1** (voll): P-107/F-1 bis P-107/F-4, APD-137, APD-134 – dann Usertest P-108 (Testfälle: Aufwischen
    nacheinander, Zurückwischen umgekehrt und nichts über die Seitenleiste, ‚Bewegung reduzieren‘ nur Einblenden, größte Textgröße Kapseln größer, dazu
    /0). Backlog: APD-137, APD-134 nach ‚Erledigt‘, P-107 auswerten.
 4. Danach **APD-135 Pakete 1 und 3** (eigene Version, voll; ‚Folgen beim Bau‘ in `arbeit/APD-135 Pakete 1 und 3 Wortlaut.md`).
