@@ -1,6 +1,6 @@
 # Designrichtlinie allgemein
 
-**Version 4.61.0** · Stand 18.11.2026
+**Version 4.62.0** · Stand 18.11.2026
 
 Allgemeine Gestaltungs- und Bedienregeln für alle Web-Apps von g811141a auf iPad und iPhone. Die Datei liegt im Design-Repo
 **AppDesign** (g811141a/AppDesign); ihre Versionsnummer ist die des Repos. Die Komponenten sind dort einmal programmiert und
@@ -8,9 +8,9 @@ werden von allen Apps übernommen (Abschnitt 14). Was eine App bewusst anders ma
 `README - Designrichtlinie <App>.md`, ihr übriges Eigenes in `PROMPT.md` (Abschnitt 12); die Zusammenarbeit in
 `README - Zusammenarbeit allgemein.md`.
 
-**Aufbau:** Die **Regeln** stehen nur im Regelkatalog (17), jede mit ihrer Prüfung. Die Abschnitte 1–15 beschreiben Werte,
-Gestaltung und Bauteile und verweisen auf die Regel (R-x.y); was dort ohne automatische Prüfung gilt, listet 17 als G-1 … auf.
-16 ordnet die HIG-Checkliste den Regeln zu.
+**Aufbau:** Was gilt und geprüft wird, steht als Regel im Regelkatalog (17), jede mit ihrer Prüfung. Die Abschnitte 1–15 nennen
+dazu nur Werte, Maße, Farben, technische Namen und Begründungen (‚Bau‘) und die Nummer der Regel (R-x.y) – sie wiederholen den
+Regeltext nicht; was dort ohne automatische Prüfung gilt, listet 17 als G-1 … auf. 16 ordnet die HIG-Checkliste den Regeln zu.
 
 > **Vorbild Apple:** Grundlage sind die Apple Human Interface Guidelines
 > ([HIG](https://developer.apple.com/design/human-interface-guidelines)) und die [Apple Design Resources](https://developer.apple.com/design/resources/)
@@ -101,9 +101,8 @@ heller).
 
   Icons, die sonst nur Linienfarbe haben (› in Listen, ⓧ in Feldern), stehen dann in `--muted`. Jeder Text und jedes Icon hat
   mindestens 4,5 : 1 – ohne die Ausnahmen ‚Weiß auf Systemblau‘ und ‚Orange‘.
-- **Darstellung** (R-1.2): folgt automatisch der Hell/Dunkel-Einstellung des Geräts (Voreinstellung ‚Automatisch‘, wechselt
-  sofort mit); im Mehr-Menü der Seitenleiste (iPhone: Startliste) übersteuerbar, nach Backup erstellen und Backup laden – nie im
-  Menü eines Eintrags, denn sie gilt für die ganze App: Untermenü ‚Darstellung ›‘ (sun-moon, rechts grau der aktuelle Wert) mit
+- **Darstellung** (R-1.2): ‚Automatisch‘ wechselt sofort mit; im Mehr-Menü der Seitenleiste (iPhone: Startliste) nach Backup erstellen
+  und Backup laden, weil sie für die ganze App gilt: Untermenü ‚Darstellung ›‘ (sun-moon, rechts grau der aktuelle Wert) mit
   Automatisch · Hell · Dunkel (Häkchen), darunter als eigene Gruppe der Schalter ‚Glas‘ (R-3.9). Gespeichert in `settings.appearance`
   (`auto` | `light` | `dark`).
 
@@ -119,14 +118,11 @@ heller).
   Headline (17), Werte und Datumszeilen Subhead (15), Hinweise (`.hint`) 14 (wächst wie Subhead), Zusatzzeilen und Notizen in Menüs
   und Fensterköpfen Footnote (13), kleine Marken Caption 1 (12). **Keine Schriftgröße und keine Zeilenhöhe in px** (außer Ausgabe und
   Druck); Größen ohne Apple-Stil wachsen mit dem Faktor des nächsten Stils (`calc(19px * var(--f-title3))`).
-- **Icon und Text bleiben zusammen** (R-10.5): In einer Reihe aus Einträgen mit Icon und Text (z. B. Reisemittel) bricht die Zeile nur
-  zwischen den Einträgen um, nie zwischen Icon und Text; ist ein Eintrag allein breiter als die Zeile, bricht er im Text um, nie direkt
-  nach dem Icon. **Technisch:** `iconText(icon, text)` (ui.js) – `.ict` (design.css, auch in `outputCss`). **Aufzählungen mit Trennpunkt**
-  (z. B. Wetter und Smileys der Statistik, ‚8×☀️ · 6×🌧️‘, Quartiere ‚Hotel Krone (120,00 €) · …‘): jeder Eintrag am Stück, wenn er in die Zeile
-  passt; der ‚·‘ bleibt am Ende der Zeile, die neue Zeile beginnt mit dem nächsten Eintrag. Ist ein Eintrag allein breiter als die Zeile, bricht
-  er im Text um; ein Zusatz in Klammern (z. B. der Preis) und der ‚·‘ bleiben beim letzten Wort. **Technisch:** `aufzaehlung(liste)` (ui.js) –
-  jeder Eintrag als Block (`.az`, `inline-block`, höchstens so breit wie die Zeile), der ‚·‘ mit geschütztem Leerzeichen im Block des Eintrags
-  davor, Zusatz in Klammern ohne Umbruch.
+- **Icon und Text bleiben zusammen** (R-10.5), z. B. Reisemittel. **Technisch:** `iconText(icon, text)` (ui.js) – `.ict` (design.css,
+  auch in `outputCss`). **Aufzählungen mit Trennpunkt** (R-10.5; z. B. Wetter und Smileys der Statistik, ‚8×☀️ · 6×🌧️‘, Quartiere
+  ‚Hotel Krone (120,00 €) · …‘): der ‚·‘ bleibt beim letzten Wort. **Technisch:** `aufzaehlung(liste)` (ui.js) – jeder Eintrag als Block
+  (`.az`, `inline-block`, höchstens so breit wie die Zeile), der ‚·‘ mit geschütztem Leerzeichen im Block des Eintrags davor, Zusatz in
+  Klammern ohne Umbruch.
 - **Leisten** (Kopfzeile, Seitenkopf, Suchzeile, Seitenleisten-Kopf, Fensterkopf, untere Leiste, Backup-Kachel, Kapsel unten,
   Meldung) wachsen nur bis XXXL (`--tb-<Stil>`, Faktor `--fb`: Text bis 23, Knöpfe 44 → 60 px, Icons bis 27 px); iPhone quer gar
   nicht (R-2.4). Im Inhalt wachsen Icons (`--k`), senkrechte Innenabstände und Mindesthöhen mit dem Body-Faktor; 44 px bleibt
@@ -188,15 +184,9 @@ Body = Grundgröße der Stufe (14 … 53). Zeilenabstände und Werte wörtlich a
     ist** – auch Listenzeilen (Eintrag der Seitenleiste, z. B. über das Kontextmenü → Einstellungen), Tabellenzeilen (Tag; beim
     Blättern wandert die Markierung mit) und Kästen (Fazit). Technisch `setOpener(selector)`.
     [HIG – Lists and tables](https://developer.apple.com/design/human-interface-guidelines/lists-and-tables)
-  - **Berühren** (R-3.6, wie Apple): Solange der Finger auf einer Schaltfläche liegt, wird sie blass (Icon und Text 35 %); ein Knopf
-    einer Leiste (Kopfzeile, Fenster-Kopfzeile, Seitenleiste, schwebende Knöpfe) hebt sich stattdessen als helle Fläche mit Schatten auf
-    das 1,3-Fache über seine Kapsel – neben dem Finger zu sehen, wie Liquid Glass in iOS 26 (‚Bewegung reduzieren‘: ohne Wachsen); eine
-    Listen- oder Tabellenzeile wird grau. Schaltflächen zeigen das sofort, in Rollbereichen erst nach 80 ms, damit beim Rollen nichts
-    aufblitzt; wandert der Finger mehr als 10 px oder rollt die Fläche, verschwindet es, und das Loslassen danach löst nichts aus – auch
-    wenn der Finger noch liegt. Loslassen blendet in 0,15 s
-    aus. Gesperrte Schaltflächen zeigen nichts. ‚Blau getönt = gedrückt‘ (offenes Menü) bleibt davon unberührt. Safaris eigene
-    Antipp-Markierung ist aus, und langes Drücken auf antippbare Zeilen, Kacheln, Leisten und die Smiley-Leiste markiert keinen Text
-    und zeigt keine Lupe.
+  - **Berühren** (R-3.6, wie Apple): Knöpfe einer Leiste sind die der Kopfzeile, Fenster-Kopfzeile, Seitenleiste und die schwebenden
+    Knöpfe; ihre helle Fläche ist neben dem Finger zu sehen, wie Liquid Glass in iOS 26 (‚Bewegung reduzieren‘: ohne Wachsen). In
+    Rollbereichen erst nach 80 ms, damit beim Rollen nichts aufblitzt. ‚Blau getönt = gedrückt‘ (offenes Menü) bleibt davon unberührt.
   - **Apple-Grün** nur für eingeschaltete **Schalter**.
   - **Rot gefüllt = Löschen/Verwerfen** (endgültige Aktionen, z. B. in Sprechblasen): `--danger-fill`, weiße Schrift, Schatten
     `--glow-danger`. In Menüs steht „… löschen“ als roter Text mit rotem Icon.
@@ -204,9 +194,7 @@ Body = Grundgröße der Stufe (14 … 53). Zeilenabstände und Werte wörtlich a
 - „Abbrechen“ (in Sprechblasen): neutral, ohne Icon, normale Schrift.
 - Gesperrte Schaltflächen: ausgegraut (Deckkraft 40 %).
 - Keine Hover-Farbe auf dem iPad – Hover nur in `@media (hover: hover)` (sie bliebe nach dem Antippen hängen).
-- **Nach oben / Ans Ende** unten rechts: zusammen in einer **senkrechten Kapsel** (`.fab`), auch im iPhone-Aufbau in der
-  Inhaltsansicht (nicht in der Startliste); sie zeigt nur die Pfeile, die etwas bewirken, und ist ausgeblendet, wenn es nichts zu
-  rollen gibt (R-3.2) – bewusste Abweichung von Apple (16). Bei langem Inhalt kommt der **Schnellroll-Griff** dazu (15.1).
+- **Nach oben / Ans Ende** und **Schnellroll-Griff** unten rechts (R-3.2, Bau 15.1) – bewusste Abweichung von Apple (16).
 
 ## 5. Icons
 
@@ -265,12 +253,7 @@ Body = Grundgröße der Stufe (14 … 53). Zeilenabstände und Werte wörtlich a
   vorhandenen Breite um – technisch `dialog .warn { contain: inline-size; }` (R-4.6).
 - Hintergrund `--dlg-bg`, Kästen darin `--dlg-card`, Radius 18 px, Schatten, abgedunkelter Hintergrund dahinter.
 - Escape wirkt wie das x.
-- **iPhone: Blatt** (R-4.6, wie ‚Neuer Termin‘): gleitet von unten bis knapp unter die Statusleiste, die Seite dahinter weicht
-  verkleinert und abgedunkelt zurück (quer volle Höhe, die Seite bleibt); nach unten ziehen schließt wie das x – mit Änderungen
-  federt es zurück und fragt; Antippen der Abdunkelung wie x.
-- **iPad: Fenster nach unten ziehen** (R-4.6, wie ein Formblatt in iPadOS): das Fenster bleibt in der Mitte, gleitet beim Öffnen
-  und Schließen (x, Häkchen, Escape) von unten; nach unten ziehen wie am iPhone – dabei fährt nur das Fenster mit, die Abdunkelung
-  wird heller, die Seite bleibt; Antippen der Abdunkelung schließt nicht (15.17).
+- **iPhone: Blatt, iPad: Fenster nach unten ziehen** (R-4.6, wie ‚Neuer Termin‘ bzw. ein Formblatt in iPadOS; Bau 15.17).
 - Solange ein Fenster offen ist, steht die Liste dahinter still (R-7.3, Technik 15.9).
 - **Bei sichtbarer Tastatur** passt sich jedes Fenster dem sichtbaren Bereich über der Tastatur an: die Kopfzeile bleibt immer
   sichtbar, nur der Inhalt rollt, und das Feld mit Fokus steht ganz über der Tastatur, ohne Springen (R-4.5; ebenso für Kopf- und
@@ -309,10 +292,8 @@ Body = Grundgröße der Stufe (14 … 53). Zeilenabstände und Werte wörtlich a
   Treffer). In mehrzeiligen Feldern macht sie einen Zeilenumbruch; die Tastatur schließt mit Häkchen bzw. x des Fensters oder
   durch Tippen daneben (HIG). Ziffernfelder auf dem iPhone haben keine Eingabetaste – dort schließt ‚Fertig‘ bzw. ✓ in der
   Leiste über der Tastatur. Gebaut in `ui.js` für alle Felder; die App setzt nichts selbst.
-- **Cursor am Ende** (R-5.11): Wird ein Eingabefeld aktiviert (erstes Antippen, Tab, Fokus durch die App), steht der Cursor nach dem
-  letzten Zeichen, egal wohin der Finger tippt. Hat das Feld den Fokus schon, setzt Antippen den Cursor wie gewohnt an die Stelle. Das weicht
-  bewusst von Apple ab, das schon beim ersten Antippen die Stelle des Fingers nimmt. Gilt für alle Text-, Zahlen- und mehrzeiligen Felder,
-  nicht für Datumsfelder. Gebaut in `ui.js` für alle Felder; die App setzt nichts selbst.
+- **Cursor am Ende** (R-5.11, bewusst anders als Apple, das schon beim ersten Antippen die Stelle des Fingers nimmt – 16): für alle
+  Text-, Zahlen- und mehrzeiligen Felder, nicht für Datumsfelder. Gebaut in `ui.js` für alle Felder; die App setzt nichts selbst.
 - **Datumsfelder sind so breit wie das Datum** und haben rechts ein eigenes Kalender-Icon (Lucide `calendar`, auf allen Geräten
   gleich, kurzer Abstand zum Datum); zwei zusammengehörige Daten mit grauer Beschriftung „Von“ · „Bis“ in einer Zeile (R-5.1).
 - **Bezeichnung und Feld gehören zusammen** (`.pair`, R-5.1): reicht der Platz nicht, bricht die Zeile **vor** der Bezeichnung
@@ -389,8 +370,7 @@ Body = Grundgröße der Stufe (14 … 53). Zeilenabstände und Werte wörtlich a
 - **Meldung mit Weiterweg:** ein kleines Fenster darf unter dem Text **eine** blaue Schaltfläche haben, die zu den Einzelheiten
   führt (`inform(titel, text, { action: { label, icon, run } })`, z. B. ‚Abgleichbericht anzeigen‘); sie schließt das Fenster und
   öffnet die Einzelheiten. Ohne Einzelheiten keine Schaltfläche (R-4.3).
-- **Backup einmal am Tag:** Backup-Kachel (nur, solange heute keines erstellt wurde) und ‚Backup erstellen‘ (R-9.1, 15.19); nach
-  einer Ausgabe erinnert das Ergebnisfenster daran.
+- Nach einer Ausgabe erinnert das Ergebnisfenster an ein Backup (R-9.1, 15.19).
 
 ## 11. Versionen und Aktualisierung
 
@@ -726,16 +706,12 @@ und Meldungen · Eingabe · Inhalt · Dienste (ohne eigene Oberfläche).
 - **Verhalten:** feste Zeile des Rahmens (15.22) – nur der Inhalt darunter rollt (Hintergrund `--bg`, sobald der Inhalt gerollt
   ist, Haarlinie unten); keine Glas-Leiste. Regel R-2.1.
 - **Gekürzter Titel:** wie in der Fenster-Kopfzeile (15.8, R-2.5).
-- **Titel antippen** (R-2.7): rollt den Inhalt sanft ganz nach oben – Ersatz für das Antippen der Statusleiste bei Apple, das in
-  der Home-Bildschirm-App für eigene Rollbereiche nicht wirkt (Abweichung, 16). Ebenso der Titel der Seitenleiste (15.4) und der
-  Fenster-Kopfzeile (15.8).
-- **Großanzeige** (R-2.6, wie Apple): Ab der Textgröße AX1 wachsen die Leisten nicht mehr mit (R-1.10). Langes Drücken auf einen
-  Leisten-Knopf zeigt dann Icon und Namen groß in der Mitte des Bildschirms; gleitet der Finger zu einem anderen Knopf, wechselt
-  die Anzeige; Loslassen über einem Knopf löst ihn aus, daneben schließt sie nur. Gilt ebenso in Fenster-Kopfzeile (15.8),
-  Seitenleiste (15.4) und für schwebende Knöpfe (15.1). Die Anzeige ist nur zu sehen – VoiceOver nennt jeden Knopf mit Namen (R-1.8).
-- **iPhone quer niedrig** (R-2.4, wie iOS quer): Kopfzeile, Suchzeile und Fensterkopf 32 statt 44 px hoch – Knöpfe in Kapseln
-  31 px, Markierung 25 × 25, runde Knöpfe 32 × 32 mit unsichtbarer Antippfläche 44 × 44, das Suchfeld als Kapsel 32 px (R-3.1
-  erlaubt Kapseln ab 28) –, damit Suche und Felder darunter bei offener Tastatur in der oberen Hälfte liegen (R-4.5).
+- **Titel antippen** (R-2.7): Ersatz für das Antippen der Statusleiste bei Apple, das in der Home-Bildschirm-App für eigene
+  Rollbereiche nicht wirkt (Abweichung, 16).
+- **Großanzeige** (R-2.6, wie Apple): weil die Leisten ab AX1 nicht mehr mitwachsen (R-1.10). Die Anzeige ist nur zu sehen – VoiceOver
+  nennt jeden Knopf mit Namen (R-1.8).
+- **iPhone quer niedrig** (R-2.4, wie iOS quer): Markierung in Kapseln 25 × 25; die Antippfläche 44 × 44 der runden Knöpfe ist
+  unsichtbar.
 - **Filter** (z. B. „Alle / Nur erfasste“): beim Öffnen eines Eintrags und beim Start immer auf „Alle“.
 
 ### 15.4 Seitenleiste
@@ -748,7 +724,7 @@ und Meldungen · Eingabe · Inhalt · Dienste (ohne eigene Oberfläche).
   Status, rechts ›; gewählter Eintrag blau gefüllt; reichen sie über den Rand, wischt man sie nach oben – sie laufen unter dem Kopf
   und **hinter der Backup-Kachel durch** (keine starre Begrenzung); nur `.side-list` rollt, Kopf und Backup-Kachel nie. Die Liste
   behält beim Neuaufbau ihre Position; der gewählte Eintrag bleibt sichtbar, auch wenn er erst durch Wischen sichtbar wurde. Unten
-  fest die Backup-Kachel, **solange heute noch kein Backup erstellt wurde** (15.19, auch während der Suche); darunter, solange die
+  fest die Backup-Kachel (R-9.1, 15.19, auch während der Suche); darunter, solange die
   App offline arbeitet, die Zeile ‚Offline – alles bleibt auf diesem Gerät‘ (15.20) – auch ohne Kachel und bei leerer Liste. Ohne
   Kachel läuft die Liste bis an den unteren Rand bzw. bis über die Zeile.
 - **Geändert am:** jede Kachel zeigt als dritte Zeile klein und grau (Footnote) ‚geändert am TT.MM.JJJJ um hh:mm · iPad‘ bzw.
@@ -785,11 +761,11 @@ und Meldungen · Eingabe · Inhalt · Dienste (ohne eigene Oberfläche).
   erstellt am …“ (mit ‚AppDesign X.Y.Z‘, 11) und ein verständlicher Satz zum Speicher: „Die Daten bleiben in Safari gespeichert,
   solange <App> auf dem Home-Bildschirm nicht entfernt wird.“ bzw. (nicht dauerhaft) „Safari kann die Daten bei Speichermangel
   löschen – bitte regelmäßig ein Backup erstellen.“ Backup laden = Abgleich zwischen den Geräten (15.18, 15.19).
-- **Kontextmenü** (R-4.2): Langes Drücken (ca. 0,6 s) auf einen Eintrag öffnet rechts daneben ein Menü (15.6) – ist daneben kein
-  Platz (iPhone), linksbündig unter der Kachel; immer vollständig und ganz oberhalb der Backup-Kachel, nie über oder hinter ihr
-  (die Liste rückt dafür nach oben und bekommt bei wenigen Einträgen unten Platz; am iPad endet das Menü daneben ebenfalls über
-  der Backup-Kachel); ohne Kachel ebenso über der Offline-Zeile bzw. dem unteren Rand (`sideFootRect()`). Inhalt: Einstellungen (settings) · … löschen (rot, Sprechblase) – **ohne ‚Öffnen‘**, weil Tippen öffnet
-  (wie Notizen); der Eintrag ist dabei blau getönt. Dieselben Aktionen zeigt das Wischen nach links (Wischaktionen). Kein Hinweistext.
+- **Kontextmenü** (R-4.2): langes Drücken (ca. 0,6 s, R-3.5) auf einen Eintrag öffnet ein Menü (15.6) rechts neben der Kachel, ohne
+  Platz daneben (iPhone) linksbündig darunter; bei wenigen Einträgen bekommt die Liste unten Platz; die Lage über der Backup-Kachel
+  bzw. der Offline-Zeile liefert `sideFootRect()`. Inhalt: Einstellungen (settings) · … löschen (rot, Sprechblase) – **ohne ‚Öffnen‘**,
+  weil Tippen öffnet (wie Notizen); der Eintrag ist dabei blau getönt (R-3.3). Dieselben Aktionen zeigt das Wischen nach links
+  (Wischaktionen). Kein Hinweistext.
   [HIG – Context menus](https://developer.apple.com/design/human-interface-guidelines/context-menus)
 - **Wischaktionen** (R-7.8): Wischen nach links auf einer Kachel zeigt rechts neben ihr die Aktionen des Kontextmenüs als **Kapseln**
   (66 × 44, wachsen mit der Textgröße wie die Schaltflächen der Leisten; links und rechts rund, deckend) mit Symbol, darunter klein das Wort (11 pt, z. B. ‚Einstellen‘, ‚Löschen‘) –
@@ -857,13 +833,11 @@ und Meldungen · Eingabe · Inhalt · Dienste (ohne eigene Oberfläche).
 ### 15.8 Fenster-Kopfzeile
 - **Apple:** [HIG – Sheets](https://developer.apple.com/design/human-interface-guidelines/sheets)
 - **Aufbau:** links rundes x (44 × 44) · Mitte Titel (19, wächst wie Title 3) mit grauer Zusatzzeile (Footnote) · rechts ggf. eine Kapsel und das
-  runde Häkchen. Häkchen grau, nach einer Änderung blau gefüllt. iPhone quer 32 px (R-2.4, wie 15.3). Technisch `dlgHead()`.
+  runde Häkchen. Häkchen grau, nach einer Änderung blau gefüllt. iPhone quer 32 px (R-2.4). Technisch `dlgHead()`.
   Regel R-4.4.
-- **Gekürzter Titel** (R-2.5): Passt der Titel nicht ganz zwischen die Knöpfe (z. B. iPhone hoch bei großer Schrift), endet er mit
-  ‚…‘; langes Drücken auf ihn zeigt den ganzen Titel in einer Sprechblase direkt darunter – Pfeil zur Mitte des Titels, Schrift wie
-  der Titel, bricht um, passt immer auf den Bildschirm (R-4.5). Sie bleibt stehen, bis man irgendwo tippt (dieser Tipp schließt nur
-  die Sprechblase), rollt, Esc drückt oder dreht. Ein ganz sichtbarer Titel und kurzes Antippen zeigen nichts. Apple zeigt hier die
-  Großanzeige in der Mitte des Bildschirms (Abweichung, 16).
+- **Gekürzter Titel** (R-2.5): z. B. iPhone hoch bei großer Schrift; die Sprechblase hat den Pfeil zur Mitte des Titels, Schrift wie
+  der Titel, bricht um, passt immer auf den Bildschirm (R-4.5). Apple zeigt hier die Großanzeige in der Mitte des Bildschirms
+  (Abweichung, 16).
 
 ### 15.9 Fenster
 - **Apple:** [HIG – Sheets](https://developer.apple.com/design/human-interface-guidelines/sheets)
@@ -882,17 +856,14 @@ und Meldungen · Eingabe · Inhalt · Dienste (ohne eigene Oberfläche).
 - **Schaltflächen im Schrittkopf als Gruppe** (R-5.1): mehrere Options-Kapseln (`.head-check`) stehen in
   `<span class="head-checks">`. Passt alles in eine Zeile, stehen sie rechts neben dem Titel (auch iPhone quer); sonst rückt die
   ganze Gruppe unter den Titel – nie eine Kapsel allein.
-- **Kasten mit Feldern** (`.box` mit `.kv`, statt Tabellenzeile – 15.13, R-6.1): Felder durch dünne Linien getrennt (1 px
-  `--line`, wie die Trennlinie im Menü) – waagrecht vor dem ersten Feld, zwischen den Feldern und nach dem letzten, mit dem Innenabstand des
-  Kastens zum Rand; senkrecht zwischen Bezeichnung und Inhalt. Bezeichnung in der ersten Spalte (Wort, Emoji oder Emoji mit Wort, z. B.
-  ‚Verlauf‘, ‚🚶🏽‍♂️ km‘): Text halbfett (600) wie die Kopfzeile der Tabelle, in Textgröße und Textfarbe wie der Wert (R-6.5); Emojis in
-  Textgröße wie im Wert, in einer Zeile – die erste Spalte ist dafür `calc(98px * var(--f-body))` breit (mit 8 px Innenabstand). Die Fläche
-  der Bezeichnung trägt den Kopfverlauf (`--kopf-verlauf`) nur in ihrer Zelle: nebeneinander von links nach rechts, bei großer Schrift
-  (Bezeichnung als Streifen über dem Wert) von oben nach unten – die Richtung wechselt mit der Anordnung. Der Verlauf beginnt mit der Farbe
-  des Kastens: in einem markierten Kasten (`--focus`) bzw. einem ausgewählten (`--sel-bg`) setzt die App `--kachel-bg` auf diese Farbe, damit
-  links bzw. oben kein weißer Streifen entsteht. Icon und Text der Bezeichnung stehen waagrecht mittig zur ersten Zeile des Werts, auch
-  wenn der Wert mehrzeilig ist (R-6.5). **Technisch:** `<span class="k"><span class="l">…</span></span>`, ein Wort allein `.k.word`,
-  Buchstaben neben einem Emoji in `.w`; Richtung über `html.ts-um`.
+- **Kasten mit Feldern** (`.box` mit `.kv`, statt Tabellenzeile – 15.13, R-6.1, R-6.5): Linien 1 px `--line` wie die Trennlinie im
+  Menü, waagrecht mit dem Innenabstand des Kastens zum Rand. Bezeichnung in der ersten Spalte (Wort, Emoji oder Emoji mit Wort, z. B.
+  ‚Verlauf‘, ‚🚶🏽‍♂️ km‘), halbfett wie die Kopfzeile der Tabelle; die erste Spalte ist `calc(98px * var(--f-body))` breit (mit 8 px
+  Innenabstand). Kopfverlauf `--kopf-verlauf`; er beginnt mit der Farbe des Kastens: in einem markierten Kasten (`--focus`) bzw. einem
+  ausgewählten (`--sel-bg`) setzt die App `--kachel-bg` auf diese Farbe, damit links bzw. oben kein weißer Streifen entsteht. Mittig
+  zur ersten Zeile auch bei mehrzeiligem Wert. **Technisch:** `<span class="k"><span class="l">…</span></span>`, ein Wort allein `.k.word`,
+  Buchstaben neben einem Emoji in `.w`; Richtung des Verlaufs über `html.ts-um` (bei großer Schrift steht die Bezeichnung als Streifen
+  über dem Wert).
 
 ### 15.11 Eingabefeld mit Fehlermeldung
 - **Apple:** [HIG – Text fields](https://developer.apple.com/design/human-interface-guidelines/text-fields)
@@ -903,17 +874,13 @@ und Meldungen · Eingabe · Inhalt · Dienste (ohne eigene Oberfläche).
 - **Technisch** (R-5.3): `feldFehler(felder, zeile, text)` setzt Meldung, roten Rand, `aria-invalid` und
   `aria-describedby` und sagt eine neue Meldung einmal an (leerer Text nimmt alles weg); `ersterFehler(fenster)` beim Häkchen –
   der Abschnitt des ersten fehlerhaften Felds rollt in die Mitte (‚Bewegung reduzieren‘: springt), dann hat das Feld den Fokus.
-- **ⓧ zum Leeren** (R-5.6, wie Apple ‚whileEditing‘): ein- und mehrzeilige Textfelder zeigen rechts ein graues ⓧ (wie im Suchfeld,
-  44 × 44), solange sie den Fokus haben und etwas drinsteht – mehrzeilig **oben rechts auf Höhe der ersten Zeile**, der Text läuft in
-  allen Zeilen nicht darunter; wächst das Feld oder rollt es in sich, bleibt das ⓧ oben rechts am Feld. Antippen leert sofort, auch
-  mehrzeilig (keine Sprechblase). Fokus und Tastatur bleiben, die App erfährt es wie beim Löschen per Taste; der geleerte Text kommt in die
-  Zwischenablage. **Rückgängig nach dem Leeren:** an Stelle des ⓧ steht ein graues Rückgängig (Lucide `undo-2` als Linie, 44 × 44, `--muted`,
-  wächst mit der Textgröße); Antippen holt den ganzen Text zurück, das Feld wächst wieder (8), der Cursor steht am Ende, danach wieder das ⓧ.
-  Mit der ersten Eingabe verfällt es (dann das ⓧ, ohne Text kein Knopf); verliert das Feld den Fokus, verschwindet es, der Text bleibt in der
-  Zwischenablage. VoiceOver nennt das ⓧ ‚Eingabe löschen‘ und das Rückgängig ‚Löschen widerrufen‘. Nicht in Datums- und Suchfeldern. **Technisch:** ein Knopf `.fclear` für alle Felder (ui.js), abschaltbar mit
-  `data-noclear`, mit Rückgängig Klasse `rueck`; geleert wird über den Bearbeiten-Befehl (Text auswählen, `execCommand('delete')`),
-  zurückgeholt über `execCommand('insertText')` – die Undo-Taste der iPad-Tastatur und drei Finger holen den Text ebenso zurück (13);
-  liefert ein Befehl false, über den Wert. Zwischenablage mit `navigator.clipboard.writeText` im Tipp (Geste des Nutzers).
+- **ⓧ zum Leeren** (R-5.6, wie Apple ‚whileEditing‘): das ⓧ wie im Suchfeld; wächst das Feld oder rollt es in sich, bleibt es oben
+  rechts am Feld; keine Sprechblase. Das Rückgängig ist Lucide `undo-2` in `--muted` und wächst mit der Textgröße; nach dem Zurückholen
+  wächst das Feld wieder (8); ohne Text kein Knopf. VoiceOver nennt das ⓧ ‚Eingabe löschen‘ und das Rückgängig ‚Löschen widerrufen‘.
+  **Technisch:** ein Knopf `.fclear` für alle Felder (ui.js), abschaltbar mit `data-noclear`, mit Rückgängig Klasse `rueck`; geleert
+  wird über den Bearbeiten-Befehl (Text auswählen, `execCommand('delete')`), zurückgeholt über `execCommand('insertText')` – so holen
+  die Undo-Taste der iPad-Tastatur und drei Finger den Text ebenso zurück (13); liefert ein Befehl false, über den Wert. Zwischenablage
+  mit `navigator.clipboard.writeText` im Tipp (Geste des Nutzers).
 
 ### 15.12 Smiley-Leiste und Auswahl-Kapsel
 - **Apple:** [HIG – Collections](https://developer.apple.com/design/human-interface-guidelines/collections)
@@ -977,11 +944,9 @@ und Meldungen · Eingabe · Inhalt · Dienste (ohne eigene Oberfläche).
 - **Startliste = Seitenleiste:** die Startliste ist die Seitenleiste `#side` als ganze Seite (`#side.page`) – kein eigener
   Nachbau. Kopf wie am iPad (Titel links, 20 pt fett, darunter klein und grau die Anzahl, rechts [`plus` |
   `ellipsis`]; panel-left entfällt), Kacheln und Backup-Kachel wie 15.4. (`.ilist.tiles` bleibt als Liste für andere Seiten.)
-- **Start** (R-7.2): jedes Neuladen beginnt in der Startliste, ganz oben, **kein Eintrag blau** (nichts ist geöffnet, HIG 4);
-  nach ‚Zurück‘ ist der zuletzt geöffnete blau. Es entscheidet der **Aufbau** (`isPhone()`), nicht das Gerät – auch ein iPad im
-  schmalen Fenster beginnt in der Startliste; der iPad-Aufbau öffnet den aktuellen Eintrag (15.4). Rückkehr aus dem Hintergrund
-  ohne Neuladen ändert nichts (13). Die App merkt sich den Start-Eintrag trotzdem, damit ein breiteres Fenster ihn mit der
-  Seitenleiste zeigt.
+- **Start** (R-7.2): kein Eintrag blau, weil nichts geöffnet ist (HIG 4); nach ‚Zurück‘ ist der zuletzt geöffnete blau. Es entscheidet
+  der **Aufbau** (`isPhone()`), nicht das Gerät; was als Neuladen zählt: 13. Die App merkt sich den Start-Eintrag trotzdem, damit ein
+  breiteres Fenster ihn mit der Seitenleiste zeigt.
 - **Seitenkopf** (`.pnav`): bleibt fest oben stehen; links runder Zurück-Knopf mit `chevron-left` **ohne Text**, rechts
   **dieselbe Kapsel wie am iPad** (z. B. [`share` | `ellipsis`] im Inhalt).
 - **Seitenwechsel und Zurückwischen** (R-7.5, wie iOS 26): Öffnen aus der Startliste schiebt den Inhalt von rechts herein, die
@@ -1005,8 +970,7 @@ und Meldungen · Eingabe · Inhalt · Dienste (ohne eigene Oberfläche).
   `chevron-right`; Haarlinie links eingerückt. Tippen öffnet, lange drücken zeigt das Kontextmenü; markierte Zeile `--sel-bg`.
 - **Kasten** (`.box` mit Zeilen `.kv` = Bezeichnung `.k` links, Wert `.v` rechts; Aussehen 15.10): ein Eintrag als Karte, z. B. ein Tag
   statt einer Tabellenzeile (15.10).
-- **Nach oben / Ans Ende:** in einer Inhaltsseite dieselbe senkrechte Kapsel unten rechts wie am iPad, nicht in der Startliste,
-  dazu bei langem Inhalt der Schnellroll-Griff (15.1, R-3.2).
+- **Nach oben / Ans Ende** und Schnellroll-Griff wie am iPad (15.1, R-3.2).
 - **Tastatur der Suche:** wischt man den Inhalt, während die Tastatur der Suche offen ist, schließt sie sich (wie bei Apple) –
   sonst verschiebt iOS den sichtbaren Bereich und die Leisten zittern (R-2.1).
 - **Suche** wie am iPad (15.2): ‚Suchen‘ im Mehr-Menü öffnet unter der Leiste die Suchzeile mit ‚1 von 4‘, ⓧ, ⌃ ⌄ und x ‚Suche beenden‘.
@@ -1014,23 +978,16 @@ und Meldungen · Eingabe · Inhalt · Dienste (ohne eigene Oberfläche).
   Knopf, fest am unteren Rand; die Liste läuft dahinter durch (Verlauf), bei offener Tastatur wandert die Leiste über die Tastatur
   (`--vv-bottom`); Suchfeld und runde Knöpfe der unteren Leiste aus Glas (R-3.9). Am iPad steht derselbe Hinweis ebenso gelb fest am unteren Rand der Seitenleiste.
 - **Fenster als Blatt** (R-4.6, Variante A ‚nur groß‘ wie ‚Neuer Termin‘): von 10 px unter der Statusleiste (quer 8 px) bis zum
-  unteren Rand bzw. zur Tastatur (R-4.5), oben runde Ecken (26 px, quer 18 px), gleitet von unten herein; die Seite dahinter weicht
-  hoch um 7 % verkleinert mit runden Ecken vor Schwarz zurück, abgedunkelt wird mit 30 % Schwarz; quer bleibt die Seite. Nach unten
-  ziehen am Kopf (immer) oder im Inhalt (wenn er ganz oben steht) folgt dem Finger: entschieden nach 8 px, deutlich senkrecht (1,2 ×
-  so weit wie waagerecht); beim Loslassen zählt der Punkt, an dem das Blatt mit dem Tempo der letzten 100 ms auslaufen würde
-  (Tempo × 400 ms) – liegt er näher am unteren Rand, schließt es wie das x, sonst federt es zurück; über ‚groß‘ hinaus Gummiband.
-  Mit Änderungen seit dem Öffnen (`dlgDirty`, auch beim Erfassen) zieht es sich zäh (30 %), federt zurück und fragt am x (R-4.4).
-  Ein Zug nach unten schließt zuerst die Tastatur; beginnt er bei offener Tastatur auf einem Feld, zieht er im selben Zug das Blatt
-  wie am Kopf – auch wenn R-4.5 den Inhalt dafür gerollt hat (ein Feld, das selbst gerollt ist, rollt weiter);
-  im gerollten Inhalt daneben rollt er weiter und schließt die Tastatur – auch, wenn der Finger zuerst ein Stück nach oben geht.
-  Antippen der Abdunkelung und Escape wie x; Drehen lässt es
-  offen. ‚Bewegung reduzieren‘: Überblenden, das Ziehen folgt weiter dem Finger. Kopfzeile kompakt mit einzeiligem Titel (kurze
-  Form, z. B. ‚Di, 25.08.2026‘); Options-Kapseln stehen unter dem Kasten-Titel. Meldungen bleiben kleine Fenster in der Mitte.
-  **Am iPad** (Variante B wie ein Formblatt in iPadOS, z. B. ‚Neuer Kontakt‘): das Fenster bleibt in der Mitte
-  (7) und gleitet beim Öffnen und Schließen (x, Häkchen, Escape) von unten; das Ziehen beginnt und entscheidet wie am iPhone (Kopf,
-  Inhalt ganz oben, schnelles Wischen, mit Änderungen zäh und fragend, Tastatur zuerst zu); dabei fährt nur das Fenster mit, die
-  Abdunkelung (35 % Schwarz, statt `::backdrop`) wird heller, die Seite bleibt groß; Antippen der Abdunkelung schließt nicht (iPadOS
-  sperrt das bei Formblättern ebenso); Drehen lässt es offen in der Mitte; kein Griff (wie iPadOS).
+  unteren Rand bzw. zur Tastatur (R-4.5), oben runde Ecken (26 px, quer 18 px); die Seite dahinter hoch um 7 % verkleinert mit runden
+  Ecken vor Schwarz, abgedunkelt mit 30 % Schwarz. Ziehen: entschieden nach 8 px, deutlich senkrecht (1,2 × so weit wie waagerecht);
+  beim Loslassen zählt der Punkt, an dem das Blatt mit dem Tempo der letzten 100 ms auslaufen würde (Tempo × 400 ms) – liegt er näher
+  am unteren Rand, schließt es, sonst federt es zurück; über ‚groß‘ hinaus Gummiband. Mit Änderungen (`dlgDirty`, auch beim Erfassen)
+  zieht es sich zäh (30 %). Ein Zug auf einem Feld zieht das Blatt auch, wenn R-4.5 den Inhalt dafür gerollt hat. ‚Bewegung
+  reduzieren‘: das Ziehen folgt weiter dem Finger. Kopfzeile kompakt mit einzeiligem Titel (kurze Form, z. B. ‚Di, 25.08.2026‘);
+  Options-Kapseln stehen unter dem Kasten-Titel. Meldungen bleiben kleine Fenster in der Mitte.
+  **Am iPad** (Variante B wie ein Formblatt in iPadOS, z. B. ‚Neuer Kontakt‘): das Ziehen beginnt und entscheidet wie am iPhone;
+  Abdunkelung 35 % Schwarz (statt `::backdrop`); dass Antippen der Abdunkelung nicht schließt, sperrt iPadOS bei Formblättern
+  ebenso; kein Griff (wie iPadOS).
   **Technisch:** `blattAuf()` aus `openDialog` (iPhone und iPad), Lage `blattOben()` in `placeDialogs` (iPad 0: das Fenster steht, wo `placeDialogs` es hinstellt), Klassen `html.blatt`, `.blatt-zurueck`,
   `.blatt-faehrt`, `.blatt-zieht`, an den zurückweichenden Elementen `.blatt-seite`; die App braucht nichts weiter (Schließen über x bzw. `dlg.close()`).
 - **Abfragen** wie auf dem iPad als Sprechblase an der angetippten Schaltfläche (iOS 26 zeigt Abfragen ebenfalls an der
@@ -1249,12 +1206,12 @@ steht in der Spalte ‚außerdem‘ (ohne automatische Prüfung: G-19).
 |---|---|---|---|
 | Weiße Schrift auf Systemblau (`--accent`): gewählte Zeile, ‚heute‘, Schrittnummern, Häkchen | 4,0 : 1 hell · 3,7 : 1 dunkel | Apple-Systemblau wie in allen Apple-Apps | 09.10.2026 |
 | Orange `--warn` (z. B. ‚fehlt‘) | 3,1–3,5 : 1 | bleibt wie es ist | 09.10.2026 |
-| Gekürzter Titel als Sprechblase (Apple: Großanzeige in der Mitte) | – | ein gekürzter Titel zeigt beim langen Drücken den ganzen Titel in einer Sprechblase darunter statt groß in der Mitte (R-2.5, Wunsch des Nutzers); Leisten-Knöpfe zeigen ab AX1 die Großanzeige wie Apple (R-2.6) | 31.10.2026 |
+| Gekürzter Titel als Sprechblase (Apple: Großanzeige in der Mitte) | – | Wunsch des Nutzers (R-2.5); Leisten-Knöpfe zeigen ab AX1 die Großanzeige wie Apple (R-2.6) | 31.10.2026 |
 | Titel antippen statt Statusleiste (Apple: Tipp auf die Statusleiste rollt nach oben) | – | wirkt in der Home-Bildschirm-App für eigene Rollbereiche nicht; Titel antippen rollt nach oben (R-2.7) | 31.10.2026 |
 | Feldtext bei xS bis M mindestens 16 px (Apple: 14–16) | – | sonst vergrößert Safari beim Antippen (R-1.3) | 23.10.2026 |
 | ⓧ auch in mehrzeiligen Textfeldern (Apple: UITextView – Notizen, Mail, Notizfelder in Kalender, Erinnerungen, Kontakte – hat kein ⓧ; geleert wird mit Auswählen → ‚Ausschneiden‘ bzw. Löschtaste) | – | Wunsch des Nutzers (P-73/1, APD-81); leert sofort, sicher durch das Rückgängig im Feld (APD-124, R-5.6) | 26.10.2026 |
 | Rückgängig im Feld nach dem Leeren (Apple: das ⓧ leert nur, Rückgängig über Undo-Taste, drei Finger, Schütteln – ein solches Icon gibt es nicht) | – | Wunsch des Nutzers (APD-124): am iPhone gibt es keine Undo-Taste, Schütteln und drei Finger sind wenig bekannt; der geleerte Text bleibt zusätzlich in der Zwischenablage | 07.11.2026 |
-| Cursor am Ende beim Aktivieren eines Felds (Apple: der Cursor steht an der angetippten Stelle) | – | Wunsch des Nutzers (APD-126/W-2): man schreibt am Ende weiter; im aktiven Feld setzt Antippen ihn an die Stelle wie bei Apple (R-5.11) | 08.11.2026 |
+| Cursor am Ende beim Aktivieren eines Felds (Apple: der Cursor steht an der angetippten Stelle) | – | Wunsch des Nutzers (APD-126/W-2): man schreibt am Ende weiter; im aktiven Feld wie Apple (R-5.11) | 08.11.2026 |
 | Kapsel ‚Nach oben / Ans Ende‘ auch auf dem iPhone (Apple: Statusleiste antippen bzw. Scroll-Leiste ziehen) | – | der Apple-Weg war dem Nutzer zu schwerfällig (R-3.2); das Ziehen der Scroll-Leiste gibt es dazu als Schnellroll-Griff | 17.10.2026 |
 | Suche in der Liste (Seitenleiste, iPhone-Startliste) im Mehr-Menü (Apple: Suchfeld in der Liste immer sichtbar, iPhone unten) | – | Wunsch des Nutzers (APD-91): gleich wie im Eintrag, ruhiger Kopf | 30.10.2026 |
 | Geöffnete Suchzeile am iPhone oben (Apple iOS 26: über der Tastatur) | – | oben ohne Springen gemessen (R-4.5, APD-36); in Safaris Leiste über der Tastatur kann eine Web-App nichts einbauen – unten erst mit einer App-Hülle (APD-38, APD-57) | 30.10.2026 |

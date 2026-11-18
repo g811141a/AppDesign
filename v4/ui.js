@@ -1,4 +1,4 @@
-// AppDesign 4.61.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
+// AppDesign 4.62.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
 // Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/fassung/X.Y.Z/ui.js"></script> (feste Fassung, R-10.3)
 // Seit 4.11.0 (R-10.3): ui.js und design.css immer mit ?v=<AppDesign-Version> einbinden (auch in sw.js) und beim Start
 // prüfen, ob genau diese Fassung geladen ist (AD_VERSION hier, --ad-version in design.css).
@@ -20,7 +20,7 @@
 
 'use strict';
 // Version der Bausteine (R-10.3): die App vergleicht sie beim Start mit der benötigten Fassung.
-const AD_VERSION = '4.61.0';
+const AD_VERSION = '4.62.0';
 // APD-129 Teil 2 (seit 4.59.2, Messung 14.11.2026 arbeit/APD-129/messung-2026-11-14-2137.txt, Zeilen 9–17, 207–216, 263–272; Designrichtlinie 13
 // ‚Oberer Rand nach dem Drehen‘): iPhone vom Home-Bildschirm quer → hoch – nach der Meldung 812 bleibt env(safe-area-inset-top) noch 250–300 ms
 // auf 62; alles mit --safe-top stünde so lange 62 px zu tief und spränge dann hoch. Ist das Fenster hoch und niedriger als der Bildschirm, liegt
