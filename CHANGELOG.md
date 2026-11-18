@@ -3,6 +3,63 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.60.1 – 18.11.2026
+
+AppDesign 4.60.1 · Designrichtlinie allgemein 4.60.1 · Zusammenarbeit allgemein 3.14.1 · Reiselogbuch 3.57.1 (Fassung 4.60.1)
+
+**P-107/F-1 bis P-107/F-4 – Wischaktionen wie in Notizen** (`ui.js` `createSwipeactions`, `design.css`, R-7.8, 15.4, R-1.13; Befund und Wortlaut
+`arbeit/0126 P-107 Fehler Befund und Wortlaut.md` P-107/V-1 bis P-107/V-3, bestätigt 18.11.2026; Testfall-Liste `arbeit/APD-30 Wischaktionen Testfall-Liste.md`
+Nachtrag P-107, APD-30/W-81 bis W-90; Sitzung 0126).
+
+- **Nacheinander von außen (P-107/F-1):** zuerst ‚Löschen‘ ganz außen – sie wächst aus dem frei werdenden Platz (0 → 100 %) und blendet ein –, die nächste erst,
+  wenn sie ganz da ist; beim Zurückwischen und Gleiten genau umgekehrt (Zwischenbilder in `fahre`).
+- **Nichts über den Platz hinaus (P-107/F-2):** jede Kapsel steht rechts bündig an ihrem Platz; nichts ragt mehr über Seitenleiste oder Bild.
+- **‚Bewegung reduzieren‘ (P-107/F-3):** die Kapseln stehen an ihrem Platz in voller Größe und blenden nur ein und aus.
+- **Textgröße (P-107/F-4):** Kapseln 66 × 44 mal `--fb` wie die Schaltflächen der Leisten, das Symbol wächst mit (`--k`).
+- **Prüfungen:** APD-30/W-81 bis W-86 in `checkWischen` (`tests/ablauf.mjs`), Gegenproben W-87 bis W-90 (`wischenGegenprobe` jetzt auch für `v4/` und
+  design.css); APD-30/W-7 angepasst. Gegen 4.60.0 rot, mit Behebung grün. Warum übersehen (Testfall-Liste, Nachtrag P-107): APD-30/W-7 verlangte das gleichzeitige
+  Wachsen aus dem Muster (P-107/F-1); geprüft wurde nur die offene Lage, nie die Zwischenlagen, und der Kasten der Nachbildung schnitt ‚Löschen‘ ab (P-107/F-2); mit
+  ‚Bewegung reduzieren‘ prüfte APD-30/W-7 nur die Größe, nicht die Lage (P-107/F-3); APD-30/W-57 verlangte nur ‚mindestens 66 × 44‘ (P-107/F-4).
+
+**APD-137 – kein Fehlalarm ‚⚠ Modell‘ nach Hilfsagenten** (`werkzeug/messung.mjs`): die Anlage ‚model‘ der Hilfsagenten (`isSidechain`) zählt nicht mehr
+als eingestelltes Modell; Prüfung in `tests/messung.mjs` (vorher rot, jetzt grün, Gegenprobe rot).
+
+**APD-134 – Wackler `ablauf-markierung-menues` in WebKit** (Prüfung im Reiselogbuch): nach dem Drehen fehlte die Kachel unter Last kurz
+(`boundingBox()` null); die Prüfung fasst bis 5 s nach. Lasttest 2 × 4 gleichzeitig in WebKit: 8 von 8 grün (Sitzung 0127; vorher je 1 von 8 rot).
+
+Testfälle P-108 (Schritt für Schritt, Zusammenarbeit allgemein 3.14.1). Link: https://g811141a.github.io/ReiseLogBuch/ – bitte in der
+**App vom Home-Bildschirm**, zuerst die App ganz schließen und neu öffnen. Es wird nichts gelöscht: nie ganz durchwischen, nie ‚Löschen‘ antippen.
+
+**P-108/0 – Version prüfen**
+1. Auf iPhone und iPad die App ganz schließen (vom unteren Rand nach oben wischen und wegschieben) und mit Netz neu öffnen.
+2. In der Startliste (iPhone) bzw. Seitenleiste (iPad) ‚Reiselogbücher‘ oben auf ‚…‘ (Mehr) tippen.
+3. Erwartet auf beiden Geräten: unten grau ‚Reiselogbuch · Version 3.57.1 · erstellt am … · AppDesign 4.60.1‘.
+
+**P-108/1 – Aufwischen: Kapseln nacheinander von außen**
+1. iPad quer: in der Seitenleiste ‚Reiselogbücher‘ eine Kachel langsam nach links wischen und dabei auf die Kapseln rechts daneben achten.
+2. Erwartet: zuerst erscheint ganz außen rot ‚Löschen‘ – sie wächst aus dem frei werdenden Platz und blendet ein; erst wenn ‚Löschen‘ ganz da ist, erscheint ‚Einstellen‘ auf dieselbe Weise.
+3. Loslassen, wenn die Kachel offen bleibt. Erwartet: beide Kapseln stehen in voller Größe nebeneinander.
+4. Dasselbe am iPhone hoch in der Startliste. Erwartet: wie in 2 und 3.
+
+**P-108/2 – Zurückwischen umgekehrt, nichts über die Seitenleiste**
+1. iPad quer: eine Kachel öffnen (nach links wischen, bis sie offen bleibt).
+2. Die offene Kachel langsam nach rechts zurückwischen.
+3. Erwartet: zuerst wird ‚Einstellen‘ kleiner und blasser, bis sie weg ist, danach ‚Löschen‘; keine Kapsel rückt dabei nach rechts über den Rand der Seitenleiste hinaus.
+4. Eine Kachel öffnen und auf die Kachel tippen. Erwartet: sie gleitet zurück, die Kapseln vergehen in derselben Reihenfolge (erst ‚Einstellen‘, dann ‚Löschen‘), nichts ragt über die Seitenleiste.
+5. Dasselbe am iPhone hoch. Erwartet: wie in 3 und 4, nichts ragt über den rechten Bildrand.
+
+**P-108/3 – Bewegung reduzieren: Kapseln blenden nur ein**
+1. iPad und iPhone: Einstellungen › Bedienungshilfen › Bewegung › ‚Bewegung reduzieren‘ ein; App neu öffnen.
+2. Eine Kachel langsam nach links wischen. Erwartet: die Kachel folgt dem Finger; die Kapseln stehen an ihrem Platz in voller Größe und blenden nur ein – sie wachsen nicht und rücken nicht herein.
+3. Langsam zurückwischen. Erwartet: die Kapseln blenden nur aus, ohne kleiner zu werden oder zu rücken.
+4. ‚Bewegung reduzieren‘ wieder aus.
+
+**P-108/4 – Größte Textgröße: Kapseln größer**
+1. iPad und iPhone: Einstellungen › Bedienungshilfen › Anzeige & Textgröße › Größerer Text ein, Regler ganz nach rechts; App neu öffnen.
+2. Eine Kachel nach links wischen, bis sie offen bleibt.
+3. Erwartet: die Kapseln ‚Einstellen‘ und ‚Löschen‘ samt Symbol sind sichtbar größer als bei normaler Textgröße (etwa so groß wie die runden Schaltflächen oben), die Wörter ganz zu lesen, nichts abgeschnitten, keine Kapsel ragt aus Seitenleiste oder Bild.
+4. Textgröße wieder zurückstellen.
+
 ## 4.60.0 – 17.11.2026
 
 AppDesign 4.60.0 · Designrichtlinie allgemein 4.60.0 · Zusammenarbeit allgemein 3.14.1 · Reiselogbuch 3.57.0 (Fassung 4.60.0)

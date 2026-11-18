@@ -95,8 +95,8 @@ export function messe(zeilen, jetzt = Date.now()) {
   // APD-123/D-6 (seit 4.55.0): ohne Regelwächter meldet das Werkzeug den Rückfall des Modells (Zusammenarbeit 2.5)
   const modell = aufruf?.message?.model || null;
   // APD-130/W-5 (seit 4.59.2): verglichen wird mit dem eingestellten Modell – der letzten Anlage ‚model‘ der Sitzungsdatei (die Kennung, die die
-  // Sitzung dem Modell nennt; neu nach /model). Ohne Anlage gilt MODELL (wie bis 4.59.1)
-  const anlage = zeilen.findLast(z => z.type === 'attachment' && z.attachment?.type === 'model' && z.attachment.identity?.modelId && (!z.timestamp || zeit(z) <= jetzt));
+  // Sitzung dem Modell nennt; neu nach /model; seit 4.60.1 ohne die Anlagen der Hilfsagenten, APD-137). Ohne Anlage gilt MODELL (wie bis 4.59.1)
+  const anlage = zeilen.findLast(z => z.type === 'attachment' && !z.isSidechain && z.attachment?.type === 'model' && z.attachment.identity?.modelId && (!z.timestamp || zeit(z) <= jetzt));
   const eingestellt = anlage?.attachment.identity.modelId || null;
   return { ms, token, kontext, faellig, modell, eingestellt, ab: nachrichten.at(-1).timestamp };
 }

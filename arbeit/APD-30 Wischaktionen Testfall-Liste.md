@@ -167,6 +167,35 @@ Schnittstelle und Begründung: `arbeit/0125 APD-136 Schnittstelle swipeactions.m
 | W-79 | `schliessen()` bei offener Kachel; danach `entfernen()` und wischen | schließt ohne Aktion, ‚zu‘ einmal · nach `entfernen()` bewegt sich keine Kachel, `data-ad-bean` ist weg, Tippen und Kontextmenü wie vorher |
 | W-80 | Gegenprobe: in `index.html` eine Regel für `.ad-swipeactions-kapsel` einfügen | W-73 wird rot |
 
+### Nachtrag P-107 (AppDesign 4.60.1, Sitzung 0126) – Fehler P-107/F-1 bis F-4
+
+Jeder Fall in iPad quer und hoch, iPhone hoch und quer, je hell und dunkel (`checkWischen`), dazu ‚Bewegung reduzieren‘ und AX5 (`ablauf-wischen.mjs`).
+Gemessen wird die Lage samt transform. Gegen 4.60.0 sind W-81 bis W-86 rot (Chromium, iPad und iPhone).
+
+| Nr. | Fall | Erwartet |
+|---|---|---|
+| W-81 | Aufwischen in 24 Schritten bis zur vollen Breite (P-107/F-1) | eine innere Kapsel erscheint erst, wenn alle äußeren ganz da sind (Deckkraft ≥ 98 %); die äußere wächst aus klein (erste Größe ≤ 50 %) und wird nie kleiner |
+| W-82 | Zurückwischen in 24 Schritten von offen bis zu (P-107/F-2) | umgekehrt: die innere vergeht zuerst, ‚Löschen‘ bleibt ganz da, bis die Kachel ihren Platz erreicht |
+| W-83 | Gleiten: offene Kachel mit `schliessen()`, Bild für Bild 450 ms | wie W-82 in jedem Bild |
+| W-84 | alle Schritte aus W-81 und W-82 (P-107/F-2) | keine sichtbare Kapsel rechts über ihren Platz (offene Lage), die geschlossene Kachel oder die Liste hinaus |
+| W-85 | wie W-81 und W-82 mit ‚Bewegung reduzieren‘ (P-107/F-3) | jede Kapsel an ihrem Platz in voller Größe, nur die Deckkraft ändert sich |
+| W-86 | Kachel offen bei Textgröße ‚groß‘ und AX5 (P-107/F-4) | Kapseln 66 × 44 mal `--fb` (groß 66 × 44, AX5 89 × 60), wie die Schaltflächen der Leisten |
+| W-87 | Gegenprobe: alle Kapseln wachsen gleichzeitig (`PRUEF_GEGENPROBE=wischen:W-87`) | W-81 und W-82 werden rot |
+| W-88 | Gegenprobe: ‚Bewegung reduzieren‘ rückt heraus und wächst (`wischen:W-88`) | W-85 wird rot |
+| W-89 | Gegenprobe: Kapseln rücken beim Zurückwischen nach rechts hinaus wie 4.60.0 (`wischen:W-89`) | W-84 wird rot |
+| W-90 | Gegenprobe: Kapseln fest 66 × 44 (`wischen:W-90`, design.css) | W-86 wird rot |
+
+**Warum die Prüfung die Fehler übersah:**
+- **F-1 und F-2:** W-7 verlangte das gleichzeitige Wachsen (auf halbem Weg beide 75 % groß, 50 % deckend). Die Prüfung bestätigte also das falsche
+  Verhalten aus dem Muster, statt Notizen zu folgen.
+- **F-2 (über die Seitenleiste):** Geprüft wurde nur die offene Lage („nichts ragt hinaus“), nie die Zwischenlagen beim Zurückwischen. In der
+  Nachbildung schneidet der Kasten der Aktionen (`overflow: hidden`) ‚Löschen‘ am Rand der Kachel ab, auf dem Bild war also nichts zu sehen. Die Lage
+  (getBoundingClientRect) zeigt aber 395 px bei einer Seitenleiste bis 363 px.
+- **F-3:** Mit ‚Bewegung reduzieren‘ prüfte W-7 nur die Größe (100 %), nicht die Lage. Die Kapseln rückten weiter von rechts herein, und das sieht
+  am Gerät wie Gleiten und Wachsen aus.
+- **F-4:** W-57 verlangte „mindestens 66 × 44“. Feste 66 × 44 waren deshalb grün, obwohl die Schaltflächen der Leisten mit `--fb` wachsen.
+
+
 
 ## Usertest – was nur das Gerät zeigt (Testfälle (User), mit /0 ‚Version prüfen‘)
 

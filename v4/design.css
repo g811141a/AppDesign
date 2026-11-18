@@ -1,4 +1,4 @@
-/* AppDesign 4.60.0 · design.css – gemeinsame Gestaltung der iPad-Web-Apps von g811141a (Apple-like)
+/* AppDesign 4.60.1 · design.css – gemeinsame Gestaltung der iPad-Web-Apps von g811141a (Apple-like)
    Einbinden im <head> vor dem eigenen <style> der App:  <link rel="stylesheet" href="../AppDesign/fassung/X.Y.Z/design.css"> (feste Fassung, R-10.3)
    Farben als Variablen auf :root, Dunkelmodus über data-theme="dark" (setzt ui.js / applyTheme).
    Komponenten: Schaltflächen, Suchfeld, Kapsel, Eingabefelder, Datumsfelder, Kopfzeile, Seitenleiste,
@@ -6,7 +6,7 @@
    Options-Kapsel; seit 4.1.0 iPhone-Ansicht (html.phone: Seitenkopf, großer Titel, Liste, Kasten, untere Leiste). Regeln dazu: README - Designrichtlinie allgemein.md */
 /* Farben im Apple-Look: Hintergrund Hellgrau, Kästen weiß ohne Rand, schwebende Schaltflächen */
 :root {
-  --ad-version: "4.60.0";   /* R-10.3: Version der Bausteine, die App prüft sie beim Start */
+  --ad-version: "4.60.1";   /* R-10.3: Version der Bausteine, die App prüft sie beim Start */
   --bg: #f2f2f7;
   --card: #ffffff;
   --ink: #1c1c1e;
@@ -887,17 +887,18 @@ dialog.gleitet.runter { transition: top .25s ease-in-out; }
 .zu-geist { pointer-events: none !important; }
 /* AD-Bean swipeactions (seit 4.60.0, APD-30, APD-136, R-7.8, R-1.13; Muster arbeit/APD-30 Wischaktionen Muster.html Variante D): Wischaktionen der
    Kacheln – nur unter .ad-swipeactions…, die App nennt keine dieser Klassen. Kapseln 66 × 44 (links und rechts rund, deckend wie runde
-   Schaltflächen, D-5), die zerstörende rot wie rote Schaltflächen; darunter das Wort (Caption 2, wächst mit der Textgröße). Die Liste rollt nur
+   Schaltflächen, D-5), seit 4.60.1 wachsen sie wie die Schaltflächen der Leisten mit der Textgröße (--fb, P-107/F-4); die zerstörende rot wie rote
+   Schaltflächen; darunter das Wort (Caption 2, wächst mit der Textgröße). Die Liste rollt nur
    senkrecht, waagrecht gehört das Wischen der Bean (ui.js); bewegt werden nur transform und opacity. */
 .ad-swipeactions { touch-action: pan-y pinch-zoom; }
 .ad-swipeactions-traeger { position: relative; }
 .ad-swipeactions-kachel { position: relative; z-index: 1; }
 .ad-swipeactions-aktionen { position: absolute; z-index: 0; overflow: hidden; pointer-events: none; }
-.ad-swipeactions-eintrag { position: absolute; display: flex; flex-direction: column; align-items: center; gap: 2px; transform-origin: 50% 22px; }
-.ad-swipeactions-kapsel { pointer-events: auto; display: grid; place-items: center; width: 66px; min-width: 66px; height: 44px; min-height: 44px; padding: 0;
-  border-radius: 22px; background: var(--btn); color: var(--ink); border: .5px solid var(--btn-rim); box-shadow: var(--float); touch-action: manipulation; }
+.ad-swipeactions-eintrag { position: absolute; display: flex; flex-direction: column; align-items: center; gap: 2px; transform-origin: 50% calc(22px * var(--fb)); }
+.ad-swipeactions-kapsel { pointer-events: auto; --k: var(--fb); display: grid; place-items: center; width: calc(66px * var(--fb)); min-width: calc(66px * var(--fb)); height: calc(44px * var(--fb));
+  min-height: calc(44px * var(--fb)); padding: 0; border-radius: 999px; background: var(--btn); color: var(--ink); border: .5px solid var(--btn-rim); box-shadow: var(--float); touch-action: manipulation; }
 .ad-swipeactions-kapsel.rot { background: var(--danger-fill); color: #fff; border-color: var(--rim-color); box-shadow: var(--glow-danger); }
 .ad-swipeactions-wort { font-size: var(--t-caption2); line-height: 1.2; color: var(--muted); white-space: nowrap; text-align: center; }
 .ad-swipeactions-wort.umbruch { white-space: normal; overflow-wrap: anywhere; }
-.ad-swipeactions-bahn { position: absolute; left: 0; height: 44px; border-radius: 22px; overflow: hidden; opacity: 0; }
+.ad-swipeactions-bahn { position: absolute; left: 0; height: calc(44px * var(--fb)); border-radius: 999px; overflow: hidden; opacity: 0; }
 .ad-swipeactions-band { width: 100%; height: 100%; background: var(--danger-fill); }
