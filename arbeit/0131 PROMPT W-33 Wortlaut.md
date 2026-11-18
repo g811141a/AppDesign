@@ -6,6 +6,13 @@ Stand: AppDesign 4.61.0 / Reiselogbuch 3.57.4 sind vorbereitet und gepusht (Zwei
 Geprüft ist schon: `doku-regeln` (Chromium) ist ‚alles in Ordnung‘, `checkVersionsgeschichte` meldet 0 Fehler, die Gegenprobe des Schemas
 meldet alle 20 Fälle rot, auch APD-135/M-1 bis M-4. `stufe` schlägt **voll** vor. Was fehlt, ist der volle Prüflauf mit `los`.
 
+## Stand nach deiner Korrektur
+
+- Erste Antwort im Fenster: ‚Wortlaut aus 0124‘ – eingesetzt, committed, gepusht, `los` gestartet.
+- Du hast gemeldet, dass die Antwort ein Irrtum war: `los` ist angehalten (nur `messung`, `doku-regeln`, `version-regeln` waren gelaufen),
+  **nichts veröffentlicht** – `main` steht weiter bei AppDesign 75a1415 und ReiseLogBuch bf600c5.
+- Entscheidung nach der Korrektur: **mit R-7.8** (Nutzer 18.11.2026) – eingesetzt, `los` neu gestartet.
+
 ## Warum eine Rückfrage
 
 Der Wortlaut zu W-33 ist in 0124 bestätigt worden. Seitdem hat APD-30 (Wischaktionen, Reiselogbuch 3.57.0 bis 3.57.3) den Punkt ‚iPad hoch‘
