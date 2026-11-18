@@ -3,6 +3,26 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.61.0 – 18.11.2026
+
+AppDesign 4.61.0 · Designrichtlinie allgemein 4.61.0 · Zusammenarbeit allgemein 3.15.0 · Reiselogbuch 3.57.4 (Fassung 4.61.0)
+
+**APD-135 Pakete 1 und 3 – Konsolidierung 3** (Wortlaut `arbeit/APD-135 Pakete 1 und 3 Wortlaut.md`, bestätigt 17.11.2026 in Sitzung 0124, APD-135/W-57
+in Sitzung 0127; Testfall-Liste `arbeit/APD-135 Pakete 1 und 3 Testfall-Liste.md` APD-135/M-1 bis M-9; Sitzung 0131).
+
+- **Zusammenarbeit 3.15.0:** Kasten ‚Immer‘ mit Testfall-Liste (Nr. 1) und Startfrage nach dem Lagebild (Nr. 19); Fenster nur am Ende von Antworten, nach denen
+  du etwas tun sollst; 0 Nr. 25 Korrekturversion mit Bau-Frage und AD-Bean klären (APD-135/W-5, W-57); Muster nur hell in 0 Nr. 6; Bau-Frage nennt die Stufe;
+  Lagebild mit Nutzungsgrenze; CHANGELOG nur den neuesten Eintrag, Backlog bis ‚## Erledigt‘ lesen; Usertests nur im Backlog der App; Bericht an einer Stelle.
+- **Designrichtlinie 4.61.0:** Regeln an den gebauten Stand (R-1.10, R-3.3, R-4.7, R-4.13, R-5.8, R-6.1, R-7.5), Glas-Leiste als bewusste Abweichung, Rand, Linien,
+  Radien und Textstile, Mehr-Menü wie gebaut, geprüfte HIG-Punkte, Katalog mit Funktionsnamen und ohne Geschichte, ‚seit X.Y.Z‘ gestrichen.
+- **Versionsgeschichten ausgelagert (APD-135/W-31):** `README - Zusammenarbeit Versionsgeschichte.md` (mit der Zuordnung alt → neu),
+  `README - Designrichtlinie allgemein Versionsgeschichte.md`, `CLAUDE Versionsgeschichte.md` (AppDesign und Reiselogbuch); sie kommen nicht in die feste Fassung.
+- **AppDesign-`CLAUDE.md` 2.13.0:** ‚Verpflichtend‘ nur noch Verweis auf den Kasten, Hinweise zur Prüfumgebung aus der Übergabe, ~75 min.
+- **Backlog:** Abschnitt ‚3. Später‘, APD-62 auf ‚später‘ (APD-135/L-18).
+- **Prüfungen:** neu `checkVersionsgeschichte` in `tests/doku.mjs` (APD-135/M-1 bis M-4, Gegenproben `schema:APD-135/M-1` bis `M-4`) – gegen 4.60.3 rot mit
+  11 Meldungen (4 × M-1, 4 × M-2, 2 × M-3, 1 × M-4); Kommentare in `tests/lauf.mjs`, `tests/README.md`, `tests/doku.mjs`, `tests/abgleich.mjs`, `tests/version.mjs`
+  und `werkzeug/messung.mjs` berichtigt (APD-135/W-1, W-2, W-52). Nicht dabei: APD-135/W-19 (kommt mit Paket 2).
+
 ## 4.60.3 – 18.11.2026
 
 AppDesign 4.60.3 · Designrichtlinie allgemein 4.60.3 · Zusammenarbeit allgemein 3.14.1 · Reiselogbuch 3.57.3 (Fassung 4.60.3)
