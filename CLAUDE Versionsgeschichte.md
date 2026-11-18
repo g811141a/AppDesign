@@ -5,6 +5,7 @@ Jede neue Version bekommt hier eine Zeile.
 
 | Version | Datum | Inhalt |
 |---|---|---|
+| 2.14.0 | 18.11.2026 | APD-135 Paket 2: Satz zu ReiseLogBuch-Import ohne eigene Anleitung, verweist auf dessen `CLAUDE.md` und `PROMPT.md` (W-19, Wortlaut bestätigt 18.11.2026, Sitzung 0132) |
 | 2.13.0 | 18.11.2026 | APD-135 Pakete 1 und 3: ‚Verpflichtend‘ nur noch Verweis auf den Kasten ‚Immer‘ und ‚Jede Antwort‘ (W-18); Hinweise zur Prüfumgebung statt Regelwächter (W-7, W-22); ~75 min (W-3); Versionsgeschichte in `CLAUDE Versionsgeschichte.md` (W-31) (Wortlaut bestätigt 17.11.2026, Sitzung 0124) |
 | 2.12.0 | 13.11.2026 | APD-128: genau ein Prüflauf je Version, Stufe Text oder voll; Befehl `stufe` vor der Bau-Frage, `los … --stufe text` (Wortlaut bestätigt 13.11.2026, Sitzung 0108 – APD-128/V-2, V-3) |
 | 2.11.0 | 07.11.2026 | APD-123: ‚(Kontext N)‘ in jeder Frage im Fenster statt der Zeile mit Zeit und Token; Regelwächter abgeschaltet (Wortlaut bestätigt 07.11.2026, Sitzung 0089) |

@@ -1,6 +1,6 @@
 # AppDesign – Hinweise für Claude
 
-**Version 2.13.0** · Stand 18.11.2026
+**Version 2.14.0** · Stand 18.11.2026
 
 ## Zuerst lesen (gezielt, Zusammenarbeit 0 Nr. 15)
 
@@ -36,8 +36,8 @@ Wiederholung.
   `git config --add remote.origin.fetch '+refs/heads/<zweig>:refs/remotes/origin/<zweig>' && git fetch origin`. Der lokale
   `main` kann veraltet sein: vor dem ersten Commit `git fetch origin main` und auf `origin/main` aufsetzen
   (`git checkout -b <zweig> origin/main`); `git reset --hard` ist gesperrt.
-- **ReiseLogBuch-Import:** dort **nie Reisedaten** ablegen (Datenschutz) – Originale, Ergebnisse und Protokolle nur im
-  Notizordner der Sitzung. Im Ordner `werkzeug` einmal `npm install`, dann `node werkzeug/pruefen.mjs <Datei> --zone <Zeitzone>`.
+- **ReiseLogBuch-Import:** dort **nie Reisedaten** ablegen (Datenschutz); Konvertieren und Prüfen nach dessen `CLAUDE.md` und
+  `PROMPT.md`.
 - **Tests einrichten:** im Ordner `ReiseLogBuch/tests` `npm install playwright@1.56.1` (die entstehenden `package.json` und
   `package-lock.json` nicht hochladen – löschen); WebKit kommt über das Setup-Skript der Umgebung. Dann im App-Ordner
   `node tests/alle.mjs` (`--alle`, `--gegenprobe [grundregeln]`, `--abdeckung`); einzeln in WebKit
