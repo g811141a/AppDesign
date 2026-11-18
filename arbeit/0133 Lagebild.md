@@ -24,7 +24,7 @@
 
 - Alle drei Repos sind an die Sitzung angehängt und auf `main`-Stand; Verweise (klein geschrieben) angelegt und angemeldet.
 - **Hooks:** `~/.claude/settings.json` ist leer (`{}`).
-- **Tests eingerichtet:** Playwright 1.56.1, Chromium-Verweise auf 1243; `start-regeln` in Chromium grün, WebKit siehe Chat.
+- **Tests eingerichtet:** Playwright 1.56.1, Chromium-Verweise auf 1243; `start-regeln` in Chromium grün; in WebKit erst 1 Fehler (R-7.2 ‚Rückkehr aus dem Hintergrund‘, iPhone hoch hell: Seitenleiste danach weg), allein nachgeprüft **grün** – also **wackelt** (0 Nr. 2), die Einrichtung steht.
 - `doku-regeln` ist schon jetzt **rot** (5 Fehler, alle in `UEBERGABE.md`): Verweis auf die noch fehlende
   `arbeit/APD-135 Paket 4 Testfall-Liste.md` und W-Nummern ohne Elternnummer (APD-135/W-19, W-49 …). Beides behebe ich mit dem Bau
   (Testfall-Liste anlegen; Übergabe wird ohnehin neu geschrieben).
