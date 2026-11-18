@@ -13,7 +13,8 @@ AppDesign 4.62.0 · Designrichtlinie allgemein 4.62.0 · Zusammenarbeit allgemei
 - **Designrichtlinie 4.62.0:** Kopf ‚Aufbau‘ als Grundsatz – Abschnitte nennen nur Bau (Werte, Maße, Farben, technische Namen, Begründungen) und die Regelnummer
   (APD-135/W-49); 21 Absätze in 2, 3, 4, 7, 8, 10, 15.3, 15.4, 15.8, 15.10, 15.11, 15.17 und 16 wiederholen ihre Regel nicht mehr (APD-135/D-27 bis D-39).
   Der Katalog (17) und sein Kopf bleiben unverändert.
-- **Reiselogbuch 3.57.5:** Designrichtlinie Reiselogbuch Abweichungen 1–3 und 21 Stellen im `PROMPT.md` nach demselben Grundsatz (APD-135/W-50).
+- **Reiselogbuch 3.57.5:** Designrichtlinie Reiselogbuch Abweichungen 1–3 und 21 Stellen im `PROMPT.md` nach demselben Grundsatz (APD-135/W-50),
+  dazu der Rest von APD-135/W-51 im `PROMPT.md` (‚seit X.Y.Z‘ beim Wischen, ‚rechtsbündig‘ bei ‚🚶🏽‍♂️km‘).
 - **Prüfung:** `arbeit/APD-135 Paket 4 pruefen.mjs` setzt die Blöcke wörtlich aus der Wortlaut-Datei ein und prüft je Stelle: alter Text weg, neuer genau einmal,
   jedes Code-Wort der Liste ‚bleibt‘ noch da, jede Regel der Überschrift genannt – vorher rot (46 alte, 0 neue), nachher grün; Gegenproben (Wert, Nummer) rot.
   `doku-regeln` grün, `--gegenprobe schema` 20 von 20 rot. Kein Code geändert.
