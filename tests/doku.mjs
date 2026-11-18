@@ -1,7 +1,7 @@
-// AppDesign 4.14.1 · Prüfung der Doku einer App (Regel R-10.4, Zusammenarbeit allgemein 7) und des Regelkatalogs (checkCatalog).
+// AppDesign 4.14.1 · Prüfung der Doku einer App (Regel R-10.4, Zusammenarbeit allgemein 2.3) und des Regelkatalogs (checkCatalog).
 // R-10.4: README.md zeigt ganz oben ‚Verwendete Versionen‘ – App, AppDesign, Designrichtlinie allgemein, Designrichtlinie <App>,
 //       Zusammenarbeit allgemein – je mit Version (gleich wie in index.html bzw. den Richtlinien) und Link.
-// Zusammenarbeit 7: Die Testfälle der neuesten Version im CHANGELOG beginnt mit /0 ‚Version prüfen‘ (App- und AppDesign-Version);
+// Zusammenarbeit 2.3: Die Testfälle der neuesten Version im CHANGELOG beginnt mit /0 ‚Version prüfen‘ (App- und AppDesign-Version);
 //       jeder Usertest hat nummerierte Schritte und mindestens ein ‚Erwartet‘.
 // Einbinden im Prüfskript der App:  import { checkDocs } from '../../AppDesign/tests/doku.mjs';
 //                                   const fehler = checkDocs(new URL('..', import.meta.url), 'Reiselogbuch');
@@ -53,19 +53,19 @@ export function checkDocs(appDir, app) {
     if (env.length !== 4 || !def) E(`R-1.7 design.css: env(safe-area-inset-…) ${env.length}-mal statt nur viermal in der Festlegung von --safe-top/-bottom/-left/-right`);
     if (/env\(safe-area-inset/.test(html)) E('R-1.7 index.html: env(safe-area-inset-…) direkt in der App – sichere Ränder nur über var(--safe-…)');
   }
-  // Zusammenarbeit 7: neueste Version im CHANGELOG
+  // Zusammenarbeit 2.3: neueste Version im CHANGELOG
   const newest = changelog.split(/\n## /)[1] || '';
   // APD-78/S-8 (seit 4.36.0): die Liste heißt ‚Testfälle P-n‘
   const nl = (process.env.PRUEF_GEGENPROBE === 'schema:APD-78/S-8' ? newest.replace(/Testfälle P-(\d+)/g, 'Liste P-$1') : newest);
   if (!/Testfälle P-\d+/.test(nl)) E('APD-78/S-8 CHANGELOG: neueste Version ohne Zeile ‚Testfälle P-n‘ (Zusammenarbeit 2.3 und 2.4)');
   const items = [...newest.matchAll(/\*\*(P-\d+\/\d+) – ([^*]+)\*\*\n([\s\S]*?)(?=\n\*\*P-\d+\/|\n## |$)/g)];
-  if (!items.length) E('Zusammenarbeit 7 CHANGELOG: neueste Version ohne Testfälle');
+  if (!items.length) E('Zusammenarbeit 2.3 CHANGELOG: neueste Version ohne Testfälle');
   else {
-    if (!/\/0$/.test(items[0][1]) || !/Version/.test(items[0][2])) E(`Zusammenarbeit 7 CHANGELOG: Testfälle beginnen nicht mit /0 ‚Version prüfen‘ (sondern ${items[0][1]})`);
-    else if (!items[0][3].includes(want[app]) || !items[0][3].includes(`AppDesign ${want.AppDesign}`)) E('Zusammenarbeit 7 CHANGELOG: /0 nennt nicht App- und AppDesign-Version');
+    if (!/\/0$/.test(items[0][1]) || !/Version/.test(items[0][2])) E(`Zusammenarbeit 2.3 CHANGELOG: Testfälle beginnen nicht mit /0 ‚Version prüfen‘ (sondern ${items[0][1]})`);
+    else if (!items[0][3].includes(want[app]) || !items[0][3].includes(`AppDesign ${want.AppDesign}`)) E('Zusammenarbeit 2.3 CHANGELOG: /0 nennt nicht App- und AppDesign-Version');
     for (const [, nr, , body] of items) {
-      if (!/^1\. /m.test(body)) E(`Zusammenarbeit 7 CHANGELOG: ${nr} ohne nummerierte Schritte`);
-      if (!/Erwartet/.test(body)) E(`Zusammenarbeit 7 CHANGELOG: ${nr} ohne ‚Erwartet‘`);
+      if (!/^1\. /m.test(body)) E(`Zusammenarbeit 2.3 CHANGELOG: ${nr} ohne nummerierte Schritte`);
+      if (!/Erwartet/.test(body)) E(`Zusammenarbeit 2.3 CHANGELOG: ${nr} ohne ‚Erwartet‘`);
     }
   }
   return errors;
@@ -131,7 +131,7 @@ export function checkCollab(appDir, app) {
     [/etwa 5 Punkte/, 'Zusammenarbeit 0 Nr. 8: ‚etwa 5 Punkte‘ – es gilt 2–3 Punkte, höchstens 2 Themen'],
     [/nur bei schweren Fehlern|Eigene Version außer der Reihe nur bei/, 'Zusammenarbeit 0 Nr. 8: Korrekturversion nur bei Datenverlust – es gilt ‚Korrekturen sofort‘'],
     [/direkt im Fragetext/, 'Zusammenarbeit 0 Nr. 7: Muster im Fragetext – Muster und Erklärungen kommen als Datei vor dem Fenster'],
-    [/⏱ Gesamt/, 'Zusammenarbeit 2: Zeitzeile mit ‚Gesamt‘ – es gilt ‚⏱ mm:ss · Token vorige Antwort …‘'],
+    [/⏱ Gesamt/, 'Zusammenarbeit 2.2: Zeitzeile mit ‚Gesamt‘ – die Zeitzeile steht nicht in der Antwort'],
     [/werden ersetzt\.|ersetzt nach einer Sprechblase/, 'R-9.2: alter Text ‚Backup laden … ersetzt‘ – die Abfrage hat die Kacheln Abgleichen und Ersetzen (15.19)'],
     [/Läuft nur auf dem iPad|kein Teilen, kein Login/, 'Designrichtlinie 1: ‚nur auf dem iPad‘ – Zielgeräte sind iPad und iPhone'],
   ];
@@ -142,7 +142,7 @@ export function checkCollab(appDir, app) {
       const around = text.slice(Math.max(0, m.index - 250), m.index + 250);
       if (!/mehr als 4 Fragen/.test(around)) { E(`Zusammenarbeit 0 Nr. 7: Antwortzeile ohne ‚nur bei mehr als 4 Fragen‘ (${name})`); break; }
     }
-    // Verweise auf die Zusammenarbeit zeigen auf vorhandene Stellen (Abschnitte 0–9, Abschnitt 0 Nr. 1–17)
+    // Verweise auf die Zusammenarbeit zeigen auf vorhandene Stellen (Abschnitte und Nummern, die es gibt)
     const sections = [...collab.matchAll(/^## (\d+)\. /gm)].map(m => +m[1]);
     const items = (collab.split(/\n## 0\. /)[1]?.split(/\n## /)[0].match(/^\d+\. /gm) || []).length;
     // seit 4.39.0: eine Versionsnummer (‚Zusammenarbeit allgemein 3.0.0‘) ist kein Verweis auf Abschnitt 3
@@ -158,16 +158,16 @@ export function checkCollab(appDir, app) {
     if (!/UEBERGABE\.md/.test(first)) E(`Zusammenarbeit 0 Nr. 15: ${name} nennt unter ‚Zuerst lesen‘ nicht zuerst UEBERGABE.md`);
     if (!version(t) || !/\n## Versionsgeschichte/.test(t)) E(`Designrichtlinie 11: ${name} ohne Version oder Versionsgeschichte`);
   }
-  if (read(appDir, 'tests/alle.sh') && !/sh tests\/alle\.sh/.test(read(appDir, 'CLAUDE.md'))) E(`Zusammenarbeit 7: ${app} CLAUDE.md nennt nicht ‚sh tests/alle.sh‘`);
+  if (read(appDir, 'tests/alle.sh') && !/sh tests\/alle\.sh/.test(read(appDir, 'CLAUDE.md'))) E(`Zusammenarbeit 0 Nr. 2: ${app} CLAUDE.md nennt nicht ‚sh tests/alle.sh‘`);
   // PROMPT.md: Versionszeile nennt die aktuellen Fassungen (wie die README, R-10.4)
   const needed = html.match(/const AD_NEEDED = '([\d.]+)'/)?.[1];
   const want = { [app]: html.match(/const APP_VERSION = '([\d.]+)'/)?.[1], AppDesign: needed,
     'Designrichtlinie allgemein': version(adText(appDir, 'README - Designrichtlinie allgemein.md', needed)), [`Designrichtlinie ${app}`]: version(read(appDir, own)),
     'Zusammenarbeit allgemein': version(adText(appDir, 'README - Zusammenarbeit allgemein.md', needed)) };
   const line = prompt.split('\n').find(l => l.startsWith(`${app} `) && /\d+\.\d+\.\d+/.test(l)) || '';
-  if (!line) E(`Zusammenarbeit 7: ${app} PROMPT.md ohne Versionszeile`);
-  for (const [n, v] of Object.entries(want)) if (line && !line.includes(`${n} ${v}`)) E(`Zusammenarbeit 7: Versionszeile in ${app} PROMPT.md nennt nicht ‚${n} ${v}‘`);
-  if (/siehe Designrichtlinie allgemein \d/.test(prompt)) E(`Zusammenarbeit 7: ${app} PROMPT.md verweist auf eine alte Fassung der Designrichtlinie allgemein`);
+  if (!line) E(`Designrichtlinie 11: ${app} PROMPT.md ohne Versionszeile`);
+  for (const [n, v] of Object.entries(want)) if (line && !line.includes(`${n} ${v}`)) E(`Designrichtlinie 11: Versionszeile in ${app} PROMPT.md nennt nicht ‚${n} ${v}‘`);
+  if (/siehe Designrichtlinie allgemein \d/.test(prompt)) E(`Designrichtlinie 11: ${app} PROMPT.md verweist auf eine alte Fassung der Designrichtlinie allgemein`);
   // Seit 4.14.0 (APD-5/D-7, W-4): feste Fassung je App – ‚gilt sofort für alle Apps‘ steht nirgends mehr (außer Versionsgeschichte).
   for (const [name, text] of [['Designrichtlinie allgemein', noHistory(read(ad, 'README - Designrichtlinie allgemein.md'))], ['AppDesign README.md', noHistory(read(ad, 'README.md'))],
     ['AppDesign CLAUDE.md', noHistory(read(ad, 'CLAUDE.md'))], [`${app} CLAUDE.md`, noHistory(read(appDir, 'CLAUDE.md'))]])
@@ -184,6 +184,43 @@ export function checkCollab(appDir, app) {
   errors.push(...checkSchema(appDir, app));
   // Seit 4.39.0 (APD-84): der Kasten ‚Jede Antwort‘
   errors.push(...checkKasten(appDir, app));
+  // Seit 4.60.4 (APD-135 Pakete 1 und 3): ausgelagerte Versionsgeschichten, Kasten ‚Immer‘, ‚Verpflichtend‘ ohne Wiederholung
+  errors.push(...checkVersionsgeschichte(appDir, app));
+  return errors;
+}
+
+// Seit 4.60.4 (APD-135/W-18, W-31; Testfall-Liste `arbeit/APD-135 Pakete 1 und 3 Testfall-Liste.md` APD-135/M-1 bis M-4):
+// M-1 Zusammenarbeit, Designrichtlinie allgemein und beide CLAUDE.md haben unter ‚## Versionsgeschichte‘ nur den Verweis, keine Tabellenzeile;
+// M-2 die Datei daneben (`… Versionsgeschichte.md`) gibt es, ihre erste Zeile ist die eigene Version der Datei;
+// M-3 der Kasten ‚Immer‘ nennt Nr. 21, 22, 1, 8, 27, 29 und 19; M-4 ‚Verpflichtend‘ der AppDesign-CLAUDE.md wiederholt keine Regel (kein ‚Nr. n‘).
+// Gegenprobe: PRUEF_GEGENPROBE=schema:APD-135/T-n (lauf.mjs --gegenprobe schema).
+export const IMMER_PFLICHTEN = ['Nr. 21', 'Nr. 22', 'Nr. 1', 'Nr. 8', 'Nr. 27', 'Nr. 29', 'Nr. 19'];
+export function checkVersionsgeschichte(appDir, app, gp = (process.env.PRUEF_GEGENPROBE || '').match(/^schema:APD-135\/(M-\d+)$/)?.[1]) {
+  const errors = [], E = t => errors.push(t);
+  const ad = new URL('../AppDesign/', appDir);
+  const read = (base, f) => { try { return readFileSync(new URL(f, base), 'utf8'); } catch { return ''; } };
+  const version = text => text.match(/\*\*Version (\d+\.\d+\.\d+)\*\*/)?.[1];
+  const paare = [['Zusammenarbeit allgemein', ad, 'README - Zusammenarbeit allgemein.md', 'README - Zusammenarbeit Versionsgeschichte.md'],
+    ['Designrichtlinie allgemein', ad, 'README - Designrichtlinie allgemein.md', 'README - Designrichtlinie allgemein Versionsgeschichte.md'],
+    ['AppDesign CLAUDE.md', ad, 'CLAUDE.md', 'CLAUDE Versionsgeschichte.md'], [`${app} CLAUDE.md`, appDir, 'CLAUDE.md', 'CLAUDE Versionsgeschichte.md']];
+  for (const [name, base, f, vg] of paare) {
+    let t = read(base, f), g = read(base, vg);
+    if (gp === 'M-1' && name === 'Zusammenarbeit allgemein') t += '\n| 9.9.9 | 01.01.2026 | Neben | Gegenprobe |\n';
+    if (gp === 'M-2' && name === 'AppDesign CLAUDE.md') g = g.replace(/^\| \d+\.\d+\.\d+ \|/m, '| 0.0.0 |');
+    const teil = t.split(/\n## Versionsgeschichte\n/)[1];
+    if (teil === undefined) { E(`APD-135/M-1 ${name}: ohne ‚## Versionsgeschichte‘`); continue; }
+    if (/^\| \d+\.\d+\.\d+ \|/m.test(teil) || !teil.includes(`\`${vg}\``)) E(`APD-135/M-1 ${name}: Versionsgeschichte nicht ausgelagert – unter ‚## Versionsgeschichte‘ nur der Verweis auf \`${vg}\` (Designrichtlinie 11)`);
+    const erste = g.match(/^\| (\d+\.\d+\.\d+) \|/m)?.[1];
+    if (!g) E(`APD-135/M-2 ${name}: \`${vg}\` fehlt`);
+    else if (erste !== version(t)) E(`APD-135/M-2 ${name}: erste Zeile in \`${vg}\` ist ${erste || 'keine Version'}, die Datei hat Version ${version(t)} – jede neue Version bekommt dort eine Zeile`);
+  }
+  let collab = read(ad, 'README - Zusammenarbeit allgemein.md');
+  if (gp === 'M-3') collab = collab.replace('Testfall-Liste vor jedem Bau (Nr. 1) ·', '(Gegenprobe) ·');
+  const immer = collab.match(/\n> \*\*Immer:\*\*([\s\S]*?)\n>\n/)?.[1] || '';
+  for (const x of IMMER_PFLICHTEN) if (!new RegExp(`(?<![\\d.])${x.replace('.', '\\.')}(?![\\d])`).test(immer)) E(`APD-135/M-3 Zusammenarbeit: der Kasten ‚Immer‘ nennt ${x} nicht`);
+  let pflicht = read(ad, 'CLAUDE.md').split(/\n## Verpflichtend\n/)[1]?.split(/\n## /)[0] ?? '';
+  if (gp === 'M-4') pflicht += ' (0 Nr. 21)';
+  if (/Nr\. \d/.test(pflicht)) E(`APD-135/M-4 AppDesign CLAUDE.md: ‚Verpflichtend‘ wiederholt Regeln (‚${pflicht.match(/[^\n]{0,40}Nr\. \d+[^\n]{0,5}/)[0].trim()}‘) – dort nur der Verweis auf den Kasten der Zusammenarbeit`);
   return errors;
 }
 
@@ -265,7 +302,12 @@ export const GEGENPROBEN_SCHEMA = Object.fromEntries([
   ['C-4', '0 Nr. 15 ohne ganze Datei', 'ganze Datei'], ['C-5', 'Pflicht ohne Prüfung', 'Nr. 28 ohne'],
 ].map(([c, was, z]) => ['APD-84/' + c, { was, zeichen: new RegExp('APD-84/' + c + ' .*' + z) }])).concat([
   // seit 4.55.0 (APD-123/K-1, ersetzt APD-113/M-11): der Wortlaut ‚Kachel am Ende, alles zum Lesen davor‘ (checkKachel)
-  ['APD-123/K-1', { was: 'alter Wortlaut ‚Lagebild bereit – anzeigen?‘', zeichen: /APD-123\/K-1 .*anzeigen\?/ }]]));
+  ['APD-123/K-1', { was: 'alter Wortlaut ‚Lagebild bereit – anzeigen?‘', zeichen: /APD-123\/K-1 .*anzeigen\?/ }]]).concat([
+  // seit 4.60.4 (APD-135/M-1 bis M-4): ausgelagerte Versionsgeschichten, Kasten ‚Immer‘, ‚Verpflichtend‘ (checkVersionsgeschichte)
+  ['M-1', 'Tabellenzeile im Regeltext', 'Zusammenarbeit allgemein: Versionsgeschichte nicht ausgelagert'],
+  ['M-2', 'erste Zeile ohne die eigene Version', 'AppDesign CLAUDE.md: erste Zeile .* ist 0\\.0\\.0'],
+  ['M-3', 'Kasten ‚Immer‘ ohne Nr. 1', 'nennt Nr\\. 1 nicht'], ['M-4', '‚Verpflichtend‘ wiederholt eine Regel', 'wiederholt Regeln'],
+].map(([t, was, z]) => ['APD-135/' + t, { was, zeichen: new RegExp('APD-135/' + t + ' .*' + z) }])));
 export function checkSchema(appDir, app, gp = (process.env.PRUEF_GEGENPROBE || '').match(/^schema:APD-78\/(S-\d+)$/)?.[1]) {
   const errors = [], E = t => errors.push(t);
   const ad = new URL('../AppDesign/', appDir);

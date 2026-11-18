@@ -20,7 +20,7 @@ in Sitzung 0127; Testfall-Liste `arbeit/APD-135 Pakete 1 und 3 Testfall-Liste.md
 - **AppDesign-`CLAUDE.md` 2.13.0:** ‚Verpflichtend‘ nur noch Verweis auf den Kasten, Hinweise zur Prüfumgebung aus der Übergabe, ~75 min.
 - **Backlog:** Abschnitt ‚3. Später‘, APD-62 auf ‚später‘ (APD-135/L-18).
 - **Prüfungen:** neu `checkVersionsgeschichte` in `tests/doku.mjs` (APD-135/M-1 bis M-4, Gegenproben `schema:APD-135/M-1` bis `M-4`) – gegen 4.60.3 rot mit
-  11 Meldungen (4 × M-1, 4 × M-2, 2 × M-3, 1 × M-4); Kommentare in `tests/lauf.mjs`, `tests/README.md`, `tests/doku.mjs`, `tests/abgleich.mjs`, `tests/version.mjs`
+  11 Meldungen (4 × APD-135/M-1, 4 × M-2, 2 × M-3, 1 × M-4); Kommentare in `tests/lauf.mjs`, `tests/README.md`, `tests/doku.mjs`, `tests/abgleich.mjs`, `tests/version.mjs`
   und `werkzeug/messung.mjs` berichtigt (APD-135/W-1, W-2, W-52). Nicht dabei: APD-135/W-19 (kommt mit Paket 2).
 
 ## 4.60.3 – 18.11.2026

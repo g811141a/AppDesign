@@ -1,5 +1,6 @@
 // AppDesign 4.13.0 · Lauf-Werkzeug (APD-5, seit 4.13.0): alle Prüfskripte einer App parallel, die schnellsten zuerst
-// (nach der zuletzt gemessenen Dauer), in Chromium und WebKit; beim ersten roten Test werden die übrigen beendet.
+// (nach der zuletzt gemessenen Dauer), in Chromium und WebKit; ab dem dritten roten Lauf werden die übrigen beendet, jeder rote
+// Lauf läuft am Ende einmal allein (Zusammenarbeit 0 Nr. 2).
 // Seit 4.16.1 (APD-11): erst alle Läufe des ersten Browsers, dann die des nächsten – nie beide gleichzeitig. Im gemeinsamen
 // Lauf wurden einzelne WebKit-Prüfungen rot, die einzeln und im reinen WebKit-Lauf grün sind (Vergleich 15.10.2026).
 // Einbinden in tests/alle.mjs der App:
