@@ -15,7 +15,7 @@ Beginn jeder Sitzung zuerst, dann die ganze Zusammenarbeit** (0 Nr. 15); die Arb
 | AppDesign | **4.61.0** veröffentlicht (`main` mit dieser Übergabe; Pages nach jedem Push ‚success‘ geprüft) |
 | ReiseLogBuch-Import (privat) | **1.4.0** (`main` 2ec7d03) – APD-135 Paket 2 |
 | Zusammenarbeit allgemein | **3.15.0** |
-| AppDesign-`CLAUDE.md` | **2.14.0** (W-19) · Reiselogbuch-`CLAUDE.md` 3.10.0 · Import-`CLAUDE.md` 1.2.0 |
+| AppDesign-`CLAUDE.md` | **2.14.0** (APD-135/W-19) · Reiselogbuch-`CLAUDE.md` 3.10.0 · Import-`CLAUDE.md` 1.2.0 |
 
 - **Chatnummer:** die nächste Sitzung heißt **Reiselogbuch 0133**; die danach 0134.
 - **Modell und Aufwand:** 0132 lief mit **Opus 5.5**, Aufwand **hoch** (eingestellt und tatsächlich), kein `model_fallback`; ein Hilfsagent (Opus 5.5, hoch)
@@ -31,13 +31,13 @@ Beginn jeder Sitzung zuerst, dann die ganze Zusammenarbeit** (0 Nr. 15); die Arb
 ## 2. Ergebnisse der Sitzung 0132
 
 - **Usertest P-111:** ok – im Reiselogbuch-Backlog unter ‚Erledigt‘, in AppDesign in der Zeile von APD-135.
-- **Gebaut: ReiseLogBuch-Import 1.4.0 mit AppDesign-`CLAUDE.md` 2.14.0 (APD-135 Paket 2 mit W-19):** Felder `km`/`price` in Anleitung und Werkzeug
+- **Gebaut: ReiseLogBuch-Import 1.4.0 mit AppDesign-`CLAUDE.md` 2.14.0 (APD-135 Paket 2 mit APD-135/W-19):** Felder `km`/`price` in Anleitung und Werkzeug
   (neue Fälle RLB-5/F-23, F-24), Fenster nach 2.1, ohne `--zone` Abbruch, Verweise statt Wiederholung. Selbsttest vorher rot (12), nachher grün; Stufe Text
   (doku-, version-, text-regeln) 6 Läufe grün. Wortlaut, Testfall-Liste, Bau-Frage, Bericht: `arbeit/APD-135 Paket 2 …`, `arbeit/0132 …`.
   Hinweis: Paket 2 heißt im ersten Vorschlag (0120) ‚Lesekosten und Ablage‘ – im Befund (0122) ist Paket 2 = Import; maßgeblich ist der Befund.
-- **Wortlaut APD-135 Paket 4 bestätigt** (`arbeit/APD-135 Paket 4 Wortlaut.md`, Abschnitt ‚Entscheidung‘): 46 Stellen – Grundsatz W-49, 13 Paare D-27 bis
-  D-39 in der Designrichtlinie allgemein, 3 Zeilen der Designrichtlinie Reiselogbuch, 21 Stellen im Reiselogbuch-`PROMPT.md` (W-50); Wörter 3301 → 2007.
-  Alt-Texte wörtlich geprüft, Nummern im Katalog. Kopf von 17 und der G-Regeln **bleibt**; D-46 Nr. 2 **R-5.4**.
+- **Wortlaut APD-135 Paket 4 bestätigt** (`arbeit/APD-135 Paket 4 Wortlaut.md`, Abschnitt ‚Entscheidung‘): 46 Stellen – Grundsatz APD-135/W-49, 13 Paare APD-135/D-27 bis
+  APD-135/D-39 in der Designrichtlinie allgemein, 3 Zeilen der Designrichtlinie Reiselogbuch, 21 Stellen im Reiselogbuch-`PROMPT.md` (APD-135/W-50); Wörter 3301 → 2007.
+  Alt-Texte wörtlich geprüft, Nummern im Katalog. Kopf von 17 und der G-Regeln **bleibt**; APD-135/D-46 Nr. 2 **R-5.4**.
 - **Offen aus 0130:** die Gegenproben APD-30/W-87, W-88, W-89, W-96, W-103, W-104 einzeln (`PRUEF_GEGENPROBE=wischen:W-n node tests/ablauf-wischen.mjs`).
 
 ## 3. Nächster Schritt
@@ -50,7 +50,7 @@ Beginn jeder Sitzung zuerst, dann die ganze Zusammenarbeit** (0 Nr. 15); die Arb
 
 ## 4. Danach
 
-APD-135 Pakete 5–7 (Paket 5 mit J-20: G-8/G-16 als R-Regeln; W-51 ‚seit X.Y.Z‘ in PROMPT Z. 108/110, ‚rechtsbündig‘ Z. 127) · APD-136 Umbau der Elemente ·
+APD-135 Pakete 5–7 (Paket 5 mit APD-135/J-20: G-8/G-16 als R-Regeln; APD-135/W-51 ‚seit X.Y.Z‘ in PROMPT Z. 108/110, ‚rechtsbündig‘ Z. 127) · APD-136 Umbau der Elemente ·
 RLB-125 klären (Prio 2) · RLB-126 (Prio 3) · APD-32 · APD-55 · RLB-6 · APD-1 · APD-70 · APD-57 · APD-62 · APD-44 bis APD-60 · zuletzt APD-80. Später: nach
 einem iOS-Update, das `print()` vom Home-Bildschirm wieder zulässt, den PDF-Hinweis (RLB-124) entfernen.
 
