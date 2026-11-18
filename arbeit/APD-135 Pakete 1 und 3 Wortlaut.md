@@ -292,6 +292,20 @@ Regeln für die Zusammenarbeit mit Claude bei allen Web-Apps für iPad und iPhon
     → bauen nur nach Nr. 8 und 21. Nur ändern, was besprochen wurde; Auffälliges nennen statt eigenmächtig ändern (offensichtliche Fehler beheben und
 ```
 
+### APD-135/W-57 · Zusammenarbeit, 0 Nr. 25 – AD-Bean klären (Nachtrag 0127, Nutzer 18.11.2026, Wortlaut bestätigt)
+
+Anlass: Frage des Nutzers, ob jedes allgemeine Thema auf eine AD-Bean geprüft wird (`arbeit/0127 Frage AD-Bean-Prüfung.md`) – R-1.13 verlangt die
+Bean beim Bau, die Zusammenarbeit nennt den Schritt aber nicht. Gemeinsamer Wortlaut mit APD-135/W-5 (ersetzt dessen Neu-Text):
+
+**Neu (W-5 und W-57 zusammen):**
+```
+    (Nr. 4) → bei allgemein: welche AD-Bean – eine bestehende mit neuer Eigenschaft oder eine neue mit Kennung (R-1.13); das steht
+    im Muster und in der Bau-Frage → in ‚0. Nächste Version‘ eintragen, nicht ohne Bau-Frage bauen (Fehler aus dem Testen als
+    Korrekturversion nach Nr. 8) → bauen nur nach Nr. 8 und 21. Nur ändern, was besprochen wurde; Auffälliges nennen statt eigenmächtig ändern (offensichtliche Fehler beheben und
+```
+Prüfung: Selbstkontrolle (wie bisher). Eine automatische Prüfung, die neue allgemeine Elemente außerhalb einer Bean findet, gehört zu APD-135
+Paket 6 und 7.
+
 ### APD-135/W-13 · Zusammenarbeit, 0 Nr. 11 Satz 1 (Z. 134–136)
 
 **Alt:**
