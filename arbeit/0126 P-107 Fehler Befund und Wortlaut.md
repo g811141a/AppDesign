@@ -34,7 +34,16 @@ am Gerät zu bestätigen.
 
 Stehen in `arbeit/APD-30 Wischaktionen Testfall-Liste.md` (Nachtrag P-107), mit der Begründung, warum die Prüfung die Fehler übersah. Kurz:
 W-81 nacheinander auf · W-82 zurück umgekehrt · W-83 beim Gleiten · W-84 nichts rechts hinaus · W-85 ‚Bewegung reduzieren‘ ohne Herausrücken und
-Wachsen · W-86 mit der Textgröße · W-87 bis W-90 Gegenproben. Gegen 4.60.0 sind W-81 bis W-86 rot.
+Wachsen · W-86 mit der Textgröße · W-87 bis W-90 Gegenproben.
+
+**Ergebnisse dieser Sitzung (`ablauf-wischen` mit dem Arbeitsstand `v4`):**
+- **Gegen 4.60.0** (Chromium, iPad und iPhone) sind W-81 bis W-86 rot. Die Prüfung zeigt also P-107/F-1 bis F-4.
+- **Mit der Behebung** gibt es keine Fehler: Chromium iPad und iPhone, WebKit alle Ansichten.
+- **Gegenproben** (Chromium, iPad):
+  - W-87 → W-81, W-82 und W-83 rot;
+  - W-88 → W-85 rot;
+  - W-89 → W-84 rot;
+  - W-90 → W-86 rot.
 
 ## 4. Wortlaut alt und neu (0 Nr. 29)
 
