@@ -58,7 +58,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Thema | Version | Datum |
 |---|---|---|---|
-| APD-135 Pakete 1 und 3 | **Konsolidierung 3, Pakete 1 und 3 mit APD-135/W-57** (Wortlaut bestätigt in Sitzung 0124 und 0127): Regeln an einer Stelle und an den gebauten Stand, Versionsgeschichten ausgelagert, Prüfung `checkVersionsgeschichte` – Usertest P-111 im Backlog des Reiselogbuchs | AppDesign 4.61.0 / Reiselogbuch 3.57.4 | 18.11.2026 |
+| APD-135 Pakete 1 und 3 | **Konsolidierung 3, Pakete 1 und 3 mit APD-135/W-57** (Wortlaut bestätigt in Sitzung 0124 und 0127): Regeln an einer Stelle und an den gebauten Stand, Versionsgeschichten ausgelagert, Prüfung `checkVersionsgeschichte` – Usertest P-111 ok (Nutzer 18.11.2026, Sitzung 0132) | AppDesign 4.61.0 / Reiselogbuch 3.57.4 | 18.11.2026 |
 | P-110 | **Usertest P-110** (Reiselogbuch 3.57.3, AppDesign 4.60.3): /0 bis /4 ok (Nutzer 18.11.2026, Sitzung 0131) | AppDesign 4.60.3 / Reiselogbuch 3.57.3 | 18.11.2026 |
 | P-109 | **Usertest P-109** (/0, /3, /4, /5 ok; /1, /2 nicht ok → Korrektur P-109/F-1, P-109/F-2 Wischaktionen weich wie Notizen) | AppDesign 4.60.3 / Reiselogbuch 3.57.3 | 18.11.2026 |
 | P-108 | **Usertest P-108 (Reiselogbuch 3.57.1, AppDesign 4.60.1):** /0, /3, /4 ok; /1, /2 nicht ok (P-108/F-1 bis P-108/F-4, Nutzer 18.11.2026, Sitzung 0128) – Muster wie Notizen gemessen (Sitzung 0128, bestätigt in 0129), korrigiert mit Reiselogbuch 3.57.2 / AppDesign 4.60.2, erneut im Usertest P-109 | 4.60.2 | 18.11.2026 |
