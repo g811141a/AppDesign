@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Muster P-108 Wischaktionen</title>
+<!-- Muster P-108/F-1 bis P-108/F-4 (Sitzung 0128): Wischaktionen wie Notizen – Kapsel erst ab halber eigener Breite, kein Durchwischen,
+     über die letzte Kapsel hinaus mit Widerstand und zurückfedern, Abstand Kachel–Kapsel = zwischen den Kapseln (8 px). Vier Varianten:
+     Erscheinen (A/B rasch einblenden · C/D mitwachsend einblenden) × Überwischen (A/C Kapseln bleiben · B/D Kapseln wandern mit). Nur hell. -->
+<style>
+  :root { --bg: #f2f2f7; --card: #ffffff; --ink: #000000; --muted: #6e6e73; --danger-fill: #d70015; --btn: rgba(255,255,255,.92);
+    --btn-rim: rgba(0,0,0,.12); --float: 0 2px 4px rgba(0,0,0,.08), 0 5px 14px rgba(0,0,0,.12);
+    --glow-danger: 0 2px 4px rgba(0,0,0,.12), 0 5px 14px rgba(215,0,21,.35); --shadow: 0 1px 2px rgba(0,0,0,.06), 0 2px 8px rgba(0,0,0,.05); }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 17px/1.3 -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+    -webkit-text-size-adjust: 100%; }
+  body { padding: max(16px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) 32px max(16px, env(safe-area-inset-left)); }
+  h1 { font-size: 28px; margin: 4px 0 2px; }
+  .hinweis { color: var(--muted); font-size: 15px; margin: 0 0 14px; }
+  .raster { display: grid; grid-template-columns: 1fr; gap: 16px 20px; }
+  @media (min-width: 820px) { .raster { grid-template-columns: 1fr 1fr; } }
+  .feld { background: #e9e9ee; border-radius: 26px; padding: 12px 12px 4px; overflow: hidden; }
+  .feld h2 { font-size: 17px; margin: 2px 6px 0; }
+  .feld p { color: var(--muted); font-size: 13px; margin: 2px 6px 10px; }
+  .zeile { position: relative; margin-bottom: 10px; touch-action: pan-y; }
+  .kachel { position: relative; z-index: 1; display: flex; align-items: center; gap: 10px; min-height: 60px; padding: 12px 16px; background: var(--card);
+    border-radius: 22px; box-shadow: var(--shadow); -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; will-change: transform; }
+  .kachel .t { flex: 1; min-width: 0; }
+  .kachel b { display: block; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .kachel small { color: var(--muted); font-size: 13px; }
+  .akt { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+  .eintrag { position: absolute; top: 50%; width: 66px; margin-top: -30px; display: flex; flex-direction: column; align-items: center; gap: 2px;
+    opacity: 0; transform-origin: 50% 22px; will-change: transform, opacity; }
+  .eintrag.rasch { transition: opacity .15s ease-out; }
+  .kapsel { pointer-events: auto; display: grid; place-items: center; width: 66px; height: 44px; padding: 0; border-radius: 999px; background: var(--btn);
+    color: var(--ink); border: .5px solid var(--btn-rim); box-shadow: var(--float); font: inherit; }
+  .kapsel.rot { background: var(--danger-fill); color: #fff; border-color: rgba(255,255,255,.5); box-shadow: var(--glow-danger); }
+  .kapsel svg { width: 22px; height: 22px; }
+  .wort { font-size: 11px; line-height: 1.2; color: var(--muted); white-space: nowrap; }
+  #status { margin-top: 10px; color: var(--muted); font-size: 13px; min-height: 18px; }
+</style>
+</head>
+<body>
+<h1>Muster P-108 – Wischaktionen</h1>
+<p class="hinweis">Wische eine Kachel langsam nach links und wieder zurück, dann einmal weit über die Kapseln hinaus und loslassen.
+  Abstand überall 8 px, kein Durchwischen. Tippen auf die offene Kachel oder daneben schließt sie.</p>
+<div class="raster" id="raster"></div>
+<div id="status">Muster P-108 · Sitzung 0128 · nur hell</div>
+
+<script>
+'use strict';
+const K = 66, A = 8, R = 11;                         // Kapselbreite, Abstand (Kachel–Kapsel und zwischen den Kapseln), Rand rechts außen
+const ICON = {
+  settings: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>',
+  trash: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>',
+};
+// von außen nach innen: zuerst ‚Löschen‘ (rot, ganz außen), dann ‚Einstellen‘ – wie im Kontextmenü, die zerstörende außen (R-7.8)
+const AKTIONEN = [{ icon: 'trash', wort: 'Löschen', rot: true }, { icon: 'settings', wort: 'Einstellen' }];
+const B = R + AKTIONEN.length * K + (AKTIONEN.length - 1) * A + A;   // offene Breite: Rand + Kapseln + Abstände + Abstand zur Kachel = 159
+const VARIANTEN = [
+  { id: 'A', erscheinen: 'rasch', ueber: 'bleiben', titel: 'A · rasch einblenden · Kapseln bleiben',
+    text: 'Kapsel liegt unter der Kachel an ihrem Platz und blendet rasch in voller Größe ein, sobald die Hälfte frei ist. Darüber hinaus bleiben die Kapseln stehen.' },
+  { id: 'B', erscheinen: 'rasch', ueber: 'wandern', titel: 'B · rasch einblenden · Kapseln wandern mit',
+    text: 'Einblenden wie A. Darüber hinaus wandern die Kapseln mit der Kachel, der Abstand bleibt 8 px.' },
+  { id: 'C', erscheinen: 'wachsen', ueber: 'bleiben', titel: 'C · mitwachsend einblenden · Kapseln bleiben',
+    text: 'Kapsel wächst mit dem freien Platz; ab der Hälfte wird sie sichtbar und blendet bis zur vollen Größe ein. Darüber hinaus bleiben die Kapseln stehen.' },
+  { id: 'D', erscheinen: 'wachsen', ueber: 'wandern', titel: 'D · mitwachsend einblenden · Kapseln wandern mit',
+    text: 'Einblenden wie C. Darüber hinaus wandern die Kapseln mit der Kachel, der Abstand bleibt 8 px.' },
+];
+const KACHELN = [['Island mit dem Camper', '12.06.2025 – 28.06.2025 · 17 Tage'], ['Toskana mit dem Rad', '03.09.2025 – 14.09.2025 · 12 Tage']];
+const status = document.getElementById('status');
+const melde = t => { status.textContent = t; };
+
+// Widerstand über die offene Breite hinaus (wie das Federn am Rand einer Rollfläche)
+const gummi = x => (1 - 1 / (x * 0.55 / 150 + 1)) * 150;
+let offen = null;     // offene Zeile
+
+function baueZeile(feld, v, [titel, unter]) {
+  const zeile = document.createElement('div'); zeile.className = 'zeile';
+  const akt = document.createElement('div'); akt.className = 'akt';
+  const kachel = document.createElement('div'); kachel.className = 'kachel';
+  kachel.innerHTML = `<div class="t"><b>${titel}</b><small>${unter}</small></div>`;
+  const ein = AKTIONEN.map((a, j) => {
+    const el = document.createElement('div'); el.className = 'eintrag' + (v.erscheinen === 'rasch' ? ' rasch' : '');
+    el.innerHTML = `<button class="kapsel${a.rot ? ' rot' : ''}" type="button" aria-label="${a.wort}" tabindex="-1">${ICON[a.icon]}</button><span class="wort">${a.wort}</span>`;
+    const start = R + j * (K + A);                 // Abstand der rechten Kante der Kapsel vom rechten Rand
+    el.style.right = start + 'px';
+    el.querySelector('button').addEventListener('click', e => { e.stopPropagation(); melde(`${v.id}: ‚${a.wort}‘ angetippt – im Muster passiert nichts.`); zu(z); });
+    akt.appendChild(el);
+    return { el, start };
+  });
+  zeile.append(akt, kachel); feld.appendChild(zeile);
+  const z = { zeile, kachel, ein, v, r: 0, anim: 0 };
+  setze(z, 0);
+  ziehen(z);
+  return z;
+}
+
+// Lage bei r px Weg (r schon mit Widerstand): Kachel, Kapseln, Deckkraft
+function setze(z, r) {
+  z.r = r;
+  z.kachel.style.transform = r ? `translate3d(${-r.toFixed(1)}px,0,0)` : '';
+  const weiter = z.v.ueber === 'wandern' ? Math.max(0, r - B) : 0;
+  z.ein.forEach(d => {
+    if (z.v.erscheinen === 'rasch') {
+      const sicht = Math.max(0, Math.min(K, r - d.start));          // sichtbarer Teil der Kapsel neben der Kachel
+      d.el.style.transform = weiter ? `translate3d(${-weiter.toFixed(1)}px,0,0)` : '';
+      d.el.style.opacity = sicht >= K / 2 ? '1' : '0';               // ab der Hälfte rasch ein (Übergang 0,15 s), darunter rasch aus
+      d.el.style.pointerEvents = sicht >= K ? '' : 'none';
+    } else {
+      const frei = Math.max(0, Math.min(K, r - d.start - A));       // freier Platz für die Kapsel, 8 px Abstand zur Kachel
+      const q = frei / K;
+      const dx = (1 - q) * K / 2 - weiter;                            // rechts bündig an ihrem Platz, wächst nach links mit der Kachel
+      d.el.style.transform = `translate3d(${dx.toFixed(1)}px,0,0) scale(${Math.max(0.001, q).toFixed(3)})`;
+      d.el.style.opacity = q < 0.5 ? '0' : ((q - 0.5) / 0.5).toFixed(3);
+      d.el.style.pointerEvents = q >= 1 ? '' : 'none';
+    }
+  });
+}
+
+function fahre(z, nach, ms, fertig) {
+  cancelAnimationFrame(z.anim);
+  const von = z.r, t0 = performance.now();
+  const ease = nach > von ? (t => 1 - Math.pow(1 - t, 3)) : (t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+  const schritt = now => {
+    const t = Math.min(1, (now - t0) / ms);
+    setze(z, von + (nach - von) * ease(t));
+    if (t < 1) z.anim = requestAnimationFrame(schritt); else fertig?.();
+  };
+  z.anim = requestAnimationFrame(schritt);
+}
+function auf(z) { if (offen && offen !== z) zu(offen); offen = z; fahre(z, B, 320); }
+function zu(z) { if (offen === z) offen = null; fahre(z, 0, 260); }
+
+function ziehen(z) {
+  let g = null;
+  z.kachel.addEventListener('pointerdown', e => {
+    if (e.button) return;
+    cancelAnimationFrame(z.anim);
+    g = { id: e.pointerId, x: e.clientX, y: e.clientY, r0: z.r, aktiv: false, weg: false };
+  });
+  z.kachel.addEventListener('pointermove', e => {
+    if (!g || e.pointerId !== g.id || g.weg) return;
+    const dx = e.clientX - g.x, dy = e.clientY - g.y;
+    if (!g.aktiv) {
+      if (Math.hypot(dx, dy) < 10) return;
+      if (Math.abs(dx) < Math.abs(dy) * 1.2 || (dx > 0 && g.r0 === 0)) { g.weg = true; return; }   // rollen bzw. geschlossen nach rechts: nichts
+      g.aktiv = true;
+      if (offen && offen !== z) zu(offen);
+      try { z.kachel.setPointerCapture(e.pointerId); } catch {}
+    }
+    e.preventDefault();
+    const roh = Math.max(0, g.r0 - dx);
+    setze(z, roh > B ? B + gummi(roh - B) : roh);
+  });
+  const los = e => {
+    if (!g || e.pointerId !== g.id) return;
+    const a = g; g = null;
+    if (!a.aktiv) {
+      if (!a.weg && e.type === 'pointerup') {
+        if (offen === z) zu(z); else melde(`${z.v.id}: Kachel angetippt – öffnet im Muster nichts.`);
+      }
+      return;
+    }
+    if (e.type === 'pointercancel') { a.r0 ? auf(z) : zu(z); return; }   // Abbruch: Zustand wie vorher
+    if (z.r > B * 0.5) auf(z); else zu(z);                               // ab halber Breite offen, darüber hinaus federt sie auf ‚offen‘ zurück
+  };
+  z.kachel.addEventListener('pointerup', los);
+  z.kachel.addEventListener('pointercancel', los);
+}
+
+const raster = document.getElementById('raster');
+for (const v of VARIANTEN) {
+  const feld = document.createElement('section'); feld.className = 'feld';
+  feld.innerHTML = `<h2>${v.titel}</h2><p>${v.text}</p>`;
+  raster.appendChild(feld);
+  KACHELN.forEach(k => baueZeile(feld, v, k));
+}
+// Tippen daneben schließt die offene Kachel und löst nichts aus
+document.addEventListener('pointerdown', e => { if (offen && !offen.zeile.contains(e.target)) zu(offen); }, true);
+window.__muster = { B, K, A, R };
+</script>
+</body>
+</html>

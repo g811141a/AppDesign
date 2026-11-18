@@ -41,6 +41,11 @@ Durchwischen, auch die Zeile ‚Durchwischen fragt‘ in 16 ‚Bewusste Abweichu
 | Q-3 | Was passiert über die letzte Kapsel hinaus? | a) Die Kachel folgt mit Widerstand, die Kapseln bleiben an ihrem Platz, Loslassen federt auf ‚offen‘ zurück (Empfohlen) · b) wie a, aber die Kapseln wandern mit der Kachel (Abstand bleibt gleich) · c) beides im Muster |
 | Q-4 | Welcher Abstand gilt? | a) überall 8 px, rechts außen 11 px wie bisher (Empfohlen – kompakter, wie Apple-Listen) · b) überall 11 px |
 
+## Antworten (Nutzer 18.11.2026)
+
+- Q-1: a) beide Arten im Muster · Q-2: a) Durchwischen entfällt, Löschen nur über die Kapsel · Q-3: c) beides im Muster · Q-4: a) überall 8 px, rechts außen 11 px.
+- Muster: `arbeit/0128 P-108 Wischaktionen Muster.html`, Beschreibung und Testfall-Liste: `arbeit/0128 P-108 Wischaktionen Muster.md`.
+
 ## Nächste Schritte
 
 1. Deine Antworten auf Q-1 bis Q-4.
