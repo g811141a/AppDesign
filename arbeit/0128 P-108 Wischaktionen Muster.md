@@ -77,3 +77,15 @@ Geräte iPad quer und hoch, iPhone hoch und quer · hell und dunkel · ‚Bewegu
 | M-11 | iPhone hoch und quer, 320 × 568: nichts ragt über den Bildrand, auch beim Überwischen | Rechtecke |
 
 Am Gerät (Testfall (User) im nächsten Usertest): Wischgefühl, Widerstand beim Überwischen, Zurückfedern.
+
+## Stand 2 – wie Notizen (18.11.2026, nach der Bildschirmaufnahme)
+
+Die Varianten A–D sind ersetzt durch **N wie Notizen** (Messwerte: `arbeit/0128 P-108 Notizen Messung.md`), auf `main` seit Commit aab2381.
+Link: https://g811141a.github.io/AppDesign/arbeit/0128%20P-108%20Wischaktionen%20Muster.html?v=3
+
+1. Link in Safari öffnen, iPad quer. Erwartet: zwei Felder ‚N · wie Notizen – Reiselogbuch (2 Aktionen)‘ und ‚… zum Vergleich mit 3 Aktionen‘.
+2. Im ersten Feld eine Kachel langsam nach links wischen. Erwartet: ‚Löschen‘ wächst aus seiner Mitte, sobald die halbe Kapsel frei ist, und ist voll, wenn auch der Abstand frei ist; danach ebenso ‚Einstellen‘.
+3. Langsam zurückwischen. Erwartet: genau umgekehrt – erst schrumpft ‚Einstellen‘ zur Mitte, dann ‚Löschen‘.
+4. Aufwischen und weit darüber hinaus ziehen. Erwartet: die Kachel geht nur noch wenig und schwer mit, die Kapseln rücken etwas mit und werden minimal größer, nichts wird langgezogen; loslassen – federt auf ‚offen‘ zurück.
+5. Abstände ansehen. Erwartet: Kachel–Kapsel, zwischen den Kapseln und rechts außen gleich (11 pt).
+6. Im zweiten Feld dasselbe und daneben Notizen öffnen. Erwartet: Ablauf wie in Notizen.
