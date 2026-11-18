@@ -7,3 +7,10 @@
   - a) **Übergabe jetzt** (empfohlen): Übergabe 0126 → 0127 schreiben, der Bau 4.60.1 / 3.57.1 kommt als erster Schritt in 0127 mit frischem Kontext.
   - b) Vorher noch etwas am Ablauf ändern (du beschreibst es im Chat).
 - **Offener Usertest:** P-107 mit den Fehlern F-1 bis F-4.
+
+## Zwei kleine Themen in dieser Sitzung (Nutzer 18.11.2026)
+
+Welche zwei? Kleine Kandidaten aus dem Backlog:
+- **APD-137** (Prio 2): Fehlalarm ‚⚠ Modell‘ in `messung.mjs` nach einem Hilfsagenten (fehlt `!isSidechain`) – klein, nur Werkzeug und Prüfung.
+- **APD-134** (Prio 3): Wackler `ablauf-markierung-menues` in WebKit nachstellen.
+- Oder zwei eigene Themen von dir (im Chat).
