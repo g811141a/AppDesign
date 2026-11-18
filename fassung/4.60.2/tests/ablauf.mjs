@@ -4489,8 +4489,8 @@ export async function checkWischen(p, { bean, aktionen, liste = '#side', kacheln
           const t0 = performance.now(); while (performance.now() - t0 < 450) { out.push(window.__wischStand(s)); await new Promise(r => requestAnimationFrame(r)); } return out; }, kachel2);
         await ruhig();
         nacheinander(bilder.map((q, i) => [`Gleiten Bild ${i + 1}`, q]), 'W-83');
-        // W-91 bis W-94 (seit 4.60.2, P-108/F-1 bis P-108/F-4, wie Notizen gemessen – Testfall-Liste arbeit/0129 P-108 Wortlaut.md M-1 bis M-5, M-8, M-9):
-        // W-91 (M-1, M-2, M-8): jede Kapsel unsichtbar, bis die Kachel die halbe Kapsel freigibt, voll, wenn auch der Abstand dahinter frei ist –
+        // W-91 bis W-94 (seit 4.60.2, P-108/F-1 bis P-108/F-4, wie Notizen gemessen – Testfall-Liste arbeit/0129 P-108 Wortlaut.md P-108/M-1 bis P-108/M-5, P-108/M-8, P-108/M-9):
+        // W-91 (P-108/M-1, P-108/M-2, P-108/M-8): jede Kapsel unsichtbar, bis die Kachel die halbe Kapsel freigibt, voll, wenn auch der Abstand dahinter frei ist –
         // dazwischen gleichmäßig (Deckkraft und Größe), ihre Mitte bleibt stehen; zurück an denselben Stellen. Gemessen an der Lage der Einträge (Kapsel
         // samt Wort) in der offenen Kachel; der Weg ist der Weg der Kachel (tx).
         const fbW = await p.evaluate(() => parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--fb')) || 1);
@@ -4506,12 +4506,12 @@ export async function checkWischen(p, { bean, aktionen, liste = '#side', kacheln
                 fehler = `${wo}: ‚${c.label}‘ wächst nicht aus ihrer Mitte (Mitte ${Math.round((c.el.l + c.el.r) / 2)} px statt ${Math.round((fin[i].el.l + fin[i].el.r) / 2)} px)`; }); }
           if (fehler) E(`${name} ${fehler}`);
         }
-        // W-92 (M-3, M-9): offen ein Abstand für alles – Kachel–Kapsel, zwischen den Kapseln, rechts außen je 11 pt (wächst mit der Textgröße)
+        // W-92 (P-108/M-3, P-108/M-9): offen ein Abstand für alles – Kachel–Kapsel, zwischen den Kapseln, rechts außen je 11 pt (wächst mit der Textgröße)
         const abst = [['Kachel–‚' + fin[0].label + '‘', fin[0].el.l - (Rk - B)], ...fin.slice(1).map((c, i) => [`‚${fin[i].label}‘–‚${c.label}‘`, c.el.l - fin[i].el.r]),
           ['‚' + fin.at(-1).label + '‘–rechts', Rk - fin.at(-1).el.r]];
         const a92 = abst.find(([, a]) => Math.abs(a - ABSTAND) > 1.5);
         if (a92) E(`W-92 Abstand ${a92[0]} ${Math.round(a92[1])} px statt ${Math.round(ABSTAND)} (${abst.map(([n, a]) => `${n} ${Math.round(a)}`).join(', ')})`);
-        // W-93 (M-4, M-8): weit über die offene Breite hinaus (300 px mehr) – kein Durchwischen: die Kachel höchstens 60 px weiter, alle Kapseln sichtbar,
+        // W-93 (P-108/M-4, P-108/M-8): weit über die offene Breite hinaus (300 px mehr) – kein Durchwischen: die Kachel höchstens 60 px weiter, alle Kapseln sichtbar,
         // keine wird langgezogen (höchstens 6 % größer), sie rücken nur nach links mit; ‚Bewegung reduzieren‘: an ihrem Platz in voller Größe
         const s93 = await alles();
         const ueberWege = Array.from({ length: 20 }, (_, i) => [Math.round(-(B + 300) * (i + 1) / 20), 0]);
@@ -4527,7 +4527,7 @@ export async function checkWischen(p, { bean, aktionen, liste = '#side', kacheln
           if (c93) { const f = fin[u.kapseln.indexOf(c93)];
             E(`W-93 beim Überwischen: ‚${c93.label}‘ Deckkraft ${Math.round(c93.op * 100)} %, Breite ${Math.round(c93.el.r - c93.el.l)} statt ${Math.round(f.el.r - f.el.l)} px, links ${Math.round(c93.el.l)} statt ${Math.round(f.el.l)} px${ruhigMotion ? ' (‚Bewegung reduzieren‘: an ihrem Platz)' : ' (langgezogen, ausgeblendet oder nach rechts)'}`); }
         }
-        // W-94 (M-5): loslassen nach dem Überwischen – federt auf ‚offen‘, keine Sprechblase, nichts gelöscht
+        // W-94 (P-108/M-5): loslassen nach dem Überwischen – federt auf ‚offen‘, keine Sprechblase, nichts gelöscht
         await p.evaluate(() => window.__wischZug?.ende(false)); await ruhig(); await wait(p, 60);
         const s94 = await stand(kachel2);
         if (s94.pop || !s94.offenIst || -s94.tx !== B) E(`W-94 nach dem Loslassen über der offenen Breite: Sprechblase ${!!s94.pop}, offen ${s94.offenIst}, bei ${-s94.tx} px statt ${B}`, s94.pop ? 'R-4.12' : 'R-7.8');

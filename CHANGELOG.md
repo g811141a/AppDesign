@@ -9,7 +9,7 @@ AppDesign 4.60.2 · Designrichtlinie allgemein 4.60.2 · Zusammenarbeit allgemei
 
 **P-108/F-1 bis P-108/F-4 – Wischaktionen wie in Notizen, gemessen** (`ui.js` `createSwipeactions`, `design.css`, R-7.8, 15.4, 15, 15.21, 16; Muster
 `arbeit/0128 P-108 Wischaktionen Muster.html` Stand 2 und Messung `arbeit/0128 P-108 Notizen Messung.md`; Wortlaut und Testfall-Liste `arbeit/0129 P-108 Wortlaut.md`
-V-1 bis V-6, M-1 bis M-12, bestätigt 18.11.2026; Sitzungen 0128 und 0129).
+P-108/V-1 bis P-108/V-6, P-108/M-1 bis P-108/M-12, bestätigt 18.11.2026; Sitzungen 0128 und 0129).
 
 - **Erscheinen aus der Mitte (P-108/F-1):** jede Kapsel steht an ihrem Platz und wächst aus ihrer Mitte – ab dem Weg, an dem die Kachel die halbe Kapsel freigibt,
   bis auch der Abstand dahinter frei ist (Größe und Deckkraft gleichmäßig); zurück genau umgekehrt (P-108/F-4).
@@ -17,10 +17,10 @@ V-1 bis V-6, M-1 bis M-12, bestätigt 18.11.2026; Sitzungen 0128 und 0129).
   und wachsen bis 6 %, Loslassen federt auf ‚offen‘; Eigenschaft `durchwischen`, Messzeile ‚wisch durch‘ und die rote Bahn entfallen.
 - **Ein Abstand 11 pt (P-108/F-3):** Kachel–Kapsel, zwischen den Kapseln und rechts außen; offen bei zwei Aktionen 165 px; die Abstände wachsen mit der Textgröße.
   Kapsel 66 × 44 bleibt (HIG-Mindestgröße zum Antippen; Notizen 60 × 32).
-- **Prüfungen:** APD-30/W-91 bis W-94 in `checkWischen` (`tests/ablauf.mjs`; Schwelle, Mitte, Abstände, Überwischen, Zurückfedern), W-95 in `checkBeans`
-  (`tests/doku.mjs`: Eigenschaften der Liste = Parameter der Fabrik), W-1 (165 px), W-67 (kein ‚wisch durch‘), W-76; W-16 bis W-19 entfallen. Gegen 4.60.1 rot
-  (W-1, W-76, W-91 bis W-94), mit Behebung grün in Chromium und WebKit; Gegenproben W-87, W-88, W-89 neu gefasst, neu W-96 (Schwelle ab dem ersten Pixel),
-  W-97 (Abstand 8 px), W-98 (kein Widerstand); W-68 entfällt. Warum die Prüfung es nicht fand: `checkWischen` prüfte R-7.8 wie geschrieben – die Regel wich von Notizen ab (Erscheinen ab dem ersten Pixel, 8 px zwischen den Kapseln, Durchwischen); die Lücke lag in der Regel, nicht in der Prüfung (Sitzung 0128).
+- **Prüfungen:** APD-30/W-91 bis APD-30/W-94 in `checkWischen` (`tests/ablauf.mjs`; Schwelle, Mitte, Abstände, Überwischen, Zurückfedern), APD-30/W-95 in `checkBeans`
+  (`tests/doku.mjs`: Eigenschaften der Liste = Parameter der Fabrik), APD-30/W-1 (165 px), APD-30/W-67 (kein ‚wisch durch‘), APD-30/W-76; APD-30/W-16 bis APD-30/W-19 entfallen. Gegen 4.60.1 rot
+  (APD-30/W-1, APD-30/W-76, APD-30/W-91 bis APD-30/W-94), mit Behebung grün in Chromium und WebKit; Gegenproben APD-30/W-87, APD-30/W-88, APD-30/W-89 neu gefasst, neu APD-30/W-96 (Schwelle ab dem ersten Pixel),
+  APD-30/W-97 (Abstand 8 px), APD-30/W-98 (kein Widerstand); APD-30/W-68 entfällt. Warum die Prüfung es nicht fand: `checkWischen` prüfte R-7.8 wie geschrieben – die Regel wich von Notizen ab (Erscheinen ab dem ersten Pixel, 8 px zwischen den Kapseln, Durchwischen); die Lücke lag in der Regel, nicht in der Prüfung (Sitzung 0128).
 
 Testfälle P-109 (Schritt für Schritt, Zusammenarbeit allgemein 3.14.1). Link: https://g811141a.github.io/ReiseLogBuch/ – bitte in der
 **App vom Home-Bildschirm**, zuerst die App ganz schließen und neu öffnen. Es wird nichts gelöscht: nie ‚Löschen‘ antippen. Zum Vergleich Notizen daneben öffnen.

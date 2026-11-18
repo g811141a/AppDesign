@@ -395,7 +395,7 @@ export function checkBeans(appDir, app) {
     if (!spalten[1]?.includes(fabrik)) E(`W-72 ${kennung}: Fabrik in der Liste ‚${spalten[1]}‘ statt ${fabrik}(…)`);
     const f = fabriken.find(x => x.name === fabrik);
     if (!f) { E(`W-72 ${kennung}: ${fabrik} fehlt in ui.js`); continue; }
-    // W-95 (seit 4.60.2, P-108 M-12): die Eigenschaften der Liste (ohne Klammern) = die Parameter der Fabrik ({ … } im Kopf der Funktion)
+    // W-95 (seit 4.60.2, P-108/M-12): die Eigenschaften der Liste (ohne Klammern) = die Parameter der Fabrik ({ … } im Kopf der Funktion)
     const param = (f.text.match(/function \w+\([^,{)]*,\s*\{([^}]*)\}/)?.[1] || '').split(',').map(x => x.split('=')[0].trim()).filter(Boolean).sort();
     const inListe = namen(String(spalten[2] || '').replace(/\([^()]*\)/g, '')).sort();
     if (param.join() !== inListe.join()) E(`W-95 ${kennung}: Eigenschaften in der Liste ${inListe.join(', ') || '–'} – Parameter von ${fabrik} ${param.join(', ') || '–'}`);
