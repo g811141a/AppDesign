@@ -1,6 +1,6 @@
 # AppDesign – Backlog (allgemeine Themen)
 
-**Stand 18.11.2026** · Aktuelle Version: AppDesign 4.60.1
+**Stand 18.11.2026** · Aktuelle Version: AppDesign 4.60.2
 
 Allgemeine Themen, die alle Apps betreffen. App-Themen stehen im Backlog der jeweiligen App.
 Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.4.
@@ -19,7 +19,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| P-108 | 1 | **Usertest P-108 (Reiselogbuch 3.57.1, AppDesign 4.60.1):** Version prüfen (P-108/0), Aufwischen nacheinander von außen (P-108/1), Zurückwischen umgekehrt, nichts über die Seitenleiste (P-108/2), Bewegung reduzieren nur Einblenden (P-108/3), größte Textgröße Kapseln größer (P-108/4) – Testfälle im CHANGELOG des Reiselogbuchs | prüfen |
+| P-109 | 1 | **Usertest P-109 (Reiselogbuch 3.57.2, AppDesign 4.60.2):** Version prüfen (P-109/0), Aufwischen wie Notizen ab halber Kapsel aus der Mitte (P-109/1), Zurückwischen und Tippen umgekehrt (P-109/2), kein Durchwischen und Zurückfedern (P-109/3), Bewegung reduzieren nur Einblenden (P-109/4), größte Textgröße Kapseln und Abstände größer (P-109/5) – Testfälle im CHANGELOG des Reiselogbuchs | prüfen |
 
 ## 2. Weitere Themen (in Klärung)
 
@@ -54,6 +54,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Thema | Version | Datum |
 |---|---|---|---|
+| P-108 | **Usertest P-108 (Reiselogbuch 3.57.1, AppDesign 4.60.1):** /0, /3, /4 ok; /1, /2 nicht ok (P-108/F-1 bis P-108/F-4, Nutzer 18.11.2026, Sitzung 0128) – Muster wie Notizen gemessen (Sitzung 0128, bestätigt in 0129), korrigiert mit Reiselogbuch 3.57.2 / AppDesign 4.60.2, erneut im Usertest P-109 | 4.60.2 | 18.11.2026 |
 | APD-137 | **Kein Fehlalarm ‚⚠ Modell‘ nach Hilfsagenten:** `messung.mjs` übergeht die Anlage ‚model‘ der Hilfsagenten (`isSidechain`), Prüfung in `tests/messung.mjs` (Sitzung 0126) | 4.60.1 | 18.11.2026 |
 | APD-134 | **Wackler `ablauf-markierung-menues` in WebKit:** nach dem Drehen fehlte die Kachel unter Last kurz (`boundingBox()` null); die Prüfung fasst bis 5 s nach – Lasttest 2 × 4 gleichzeitig 8 von 8 grün (Sitzungen 0126 und 0127) | 4.60.1 | 18.11.2026 |
 | P-107 | **Usertest P-107 (Reiselogbuch 3.57.0, AppDesign 4.60.0):** /0, /2, /3, /5, /6, /7, /10 ok; /1, /4, /8, /9 nicht ok (P-107/F-1 bis P-107/F-4, Nutzer 17.11.2026, Sitzung 0125) – korrigiert mit 4.60.1, erneut im Usertest P-108 | 4.60.1 | 18.11.2026 |

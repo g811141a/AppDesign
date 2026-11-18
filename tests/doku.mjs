@@ -395,6 +395,10 @@ export function checkBeans(appDir, app) {
     if (!spalten[1]?.includes(fabrik)) E(`W-72 ${kennung}: Fabrik in der Liste ‚${spalten[1]}‘ statt ${fabrik}(…)`);
     const f = fabriken.find(x => x.name === fabrik);
     if (!f) { E(`W-72 ${kennung}: ${fabrik} fehlt in ui.js`); continue; }
+    // W-95 (seit 4.60.2, P-108/M-12): die Eigenschaften der Liste (ohne Klammern) = die Parameter der Fabrik ({ … } im Kopf der Funktion)
+    const param = (f.text.match(/function \w+\([^,{)]*,\s*\{([^}]*)\}/)?.[1] || '').split(',').map(x => x.split('=')[0].trim()).filter(Boolean).sort();
+    const inListe = namen(String(spalten[2] || '').replace(/\([^()]*\)/g, '')).sort();
+    if (param.join() !== inListe.join()) E(`W-95 ${kennung}: Eigenschaften in der Liste ${inListe.join(', ') || '–'} – Parameter von ${fabrik} ${param.join(', ') || '–'}`);
     if (!new RegExp(`adBean\\s*=\\s*'${kennung}'`).test(f.text)) E(`W-72 ${kennung}: ${fabrik} setzt data-ad-bean="${kennung}" nicht`);
     // CSS nur unter .ad-<kennung>…: jede Regel, die die Bean nennt, zielt mit jedem Selektor auf eine Klasse der Bean
     for (const m of css.replace(/\/\*[\s\S]*?\*\//g, '').matchAll(/([^{}]+)\{[^{}]*\}/g)) {
