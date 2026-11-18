@@ -4803,16 +4803,19 @@ export async function checkWischen(p, { bean, aktionen, liste = '#side', kacheln
 }
 // Gegenproben (PRUEF_GEGENPROBE=wischen:W-n): die Prüfkopie von ui.js bzw. design.css bekommt den Fehler, die genannte Prüfung muss rot werden.
 // Vor dem Laden der Seite aufrufen. W-87 alle Kapseln wachsen gleichzeitig → W-81, W-82 · W-88 ‚Bewegung reduzieren‘ rückt mit und wächst → W-85, W-93 ·
-// W-89 Kapseln rücken nach rechts hinaus → W-84 · W-90 Kapseln fest 66 × 44 → W-86 · seit 4.60.2 (P-108): W-96 Kapsel erscheint ab dem ersten Pixel
-// (wie 4.60.1) → W-91 · W-97 Abstand 8 px → W-92 · W-98 kein Widerstand über der offenen Breite → W-93 (W-68 ‚Durchwischen‘ entfällt)
+// W-89 Kapseln rücken nach rechts hinaus → W-84 · W-90 Kapseln fest 66 × 44 → W-86 · seit 4.60.2 (P-108): W-97 Abstand 8 px → W-92 · W-98 kein
+// Widerstand über der offenen Breite → W-93 (W-68 ‚Durchwischen‘ entfällt) · seit 4.60.3 (P-109): W-87 alle Kapseln erscheinen zugleich → W-81 ·
+// W-96 Kapsel ohne eigene Zeit (sofort da) → W-101 · W-103 schnelle Kurve (0,25 s) → W-100, W-102 · W-104 Schließen nicht zugleich → W-102
 const WISCH_GEGENPROBEN = {
-  'W-87': ['ui.js', '(r - d.von - d.w / 2) / (d.w / 2 + u.A)', 'r / u.breite'],
-  'W-88': ['ui.js', 'const dx = ruhig ? 0 : -ueber * (d.von + d.w) / u.breite, s = ruhig ? 1 : q *', 'const dx = -ueber * (d.von + d.w) / u.breite, s = q *'],
-  'W-89': ['ui.js', 'const dx = ruhig ? 0 : -ueber * (d.von + d.w) / u.breite,', 'const dx = ruhig ? 0 : (1 - q) * (u.breite - d.von),'],
+  'W-87': ['ui.js', 'const ziel = !u.alleAus && u.r >= d.von + d.w - 0.5 ? 1 : 0;', 'const ziel = !u.alleAus && u.r >= u.breite - 0.5 ? 1 : 0;'],
+  'W-88': ['ui.js', 'const dx = ruhig ? 0 : -ueber * (d.von + d.w) / u.breite, s = ruhig ? 1 : g *', 'const dx = -ueber * (d.von + d.w) / u.breite, s = (ruhig ? 0.7 : g) *'],
+  'W-89': ['ui.js', 'const dx = ruhig ? 0 : -ueber * (d.von + d.w) / u.breite,', 'const dx = ruhig ? 0 : (1 - g) * (u.breite - d.von),'],
   'W-90': ['design.css', 'width: calc(66px * var(--fb)); min-width: calc(66px * var(--fb)); height: calc(44px * var(--fb));\n  min-height: calc(44px * var(--fb));', 'width: 66px; min-width: 66px; height: 44px;\n  min-height: 44px;'],
-  'W-96': ['ui.js', '(r - d.von - d.w / 2) / (d.w / 2 + u.A)', '(r - d.von) / d.w'],
+  'W-96': ['ui.js', 'SW_EIN_MS = 250, SW_DECK_MS = 100,', 'SW_EIN_MS = 1, SW_DECK_MS = 1,'],
   'W-97': ['ui.js', 'abstand: 11, rand: 11,', 'abstand: 8, rand: 11,'],
   'W-98': ['ui.js', 'z.r = roh > B ? B + (1 - 1 / ((roh - B) * 0.55 / M + 1)) * M : roh;', 'z.r = Math.min(roh, ui.bw - 20);'],
+  'W-103': ['ui.js', 'const SW_OMEGA = 12.6, SW_FEDER_MS = 750,', 'const SW_OMEGA = 30, SW_FEDER_MS = 250,'],
+  'W-104': ['ui.js', 'const ziel = !u.alleAus && u.r >= d.von + d.w - 0.5 ? 1 : 0;', 'const ziel = u.r >= d.von + d.w - 0.5 ? 1 : 0;'],
 };
 export async function wischenGegenprobe(p) {
   const m = /^wischen:(W-\d+)$/.exec(process.env.PRUEF_GEGENPROBE || ''), g = m && WISCH_GEGENPROBEN[m[1]];

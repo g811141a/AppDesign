@@ -1,6 +1,6 @@
 # AppDesign – Backlog (allgemeine Themen)
 
-**Stand 18.11.2026** · Aktuelle Version: AppDesign 4.60.2
+**Stand 18.11.2026** · Aktuelle Version: AppDesign 4.60.3
 
 Allgemeine Themen, die alle Apps betreffen. App-Themen stehen im Backlog der jeweiligen App.
 Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.4.
@@ -11,16 +11,15 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Prio | Thema | bereit seit |
 |---|---|---|---|
-| P-109/F-1, P-109/F-2 | 1 | **Korrektur Wischaktionen weich wie Notizen** (Muster ‚passt‘, Wortlaut P-109/V-1 bis P-109/V-3 und Testfall-Liste P-109/M-1 bis P-109/M-12 bestätigt, Nutzer 18.11.2026, Sitzung 0130 – `arbeit/0130 P-109 Wortlaut.md`): Feder 0,5 s auf und zu, Kapseln mit eigener Zeit (0,25 s ein, 0,23 s aus, beim Schließen durch Tippen alle zugleich); Korrekturversion AppDesign 4.60.3 / Reiselogbuch 3.57.3, voll | 18.11.2026 |
 
-1 Punkt bereit.
+0 Punkte bereit.
 
 
 ## 1. Auf iPad und iPhone prüfen
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| P-109 | 1 | **Usertest P-109 (Reiselogbuch 3.57.2, AppDesign 4.60.2):** Version prüfen (P-109/0), Aufwischen wie Notizen ab halber Kapsel aus der Mitte (P-109/1), Zurückwischen und Tippen umgekehrt (P-109/2), kein Durchwischen und Zurückfedern (P-109/3), Bewegung reduzieren nur Einblenden (P-109/4), größte Textgröße Kapseln und Abstände größer (P-109/5) – Testfälle im CHANGELOG des Reiselogbuchs · **Rückmeldung 18.11.2026 (Sitzung 0130): nicht ok** – P-109/F-1 Kapseln blenden beim Auf- und Zuwischen viel zu schnell ein und aus, P-109/F-2 Schließen beim Tippen auf eine andere Kachel viel zu schnell, nicht weich wie Notizen; Messung `arbeit/0130 P-109 Notizen Messung.md` | prüfen |
+| P-110 | 1 | **Usertest P-110 (Reiselogbuch 3.57.3, AppDesign 4.60.3):** Version prüfen (P-110/0), Aufwischen weich wie Notizen (P-110/1), Tippen auf eine andere Kachel weich zu (P-110/2), Zurückwischen und Tippen auf die offene Kachel (P-110/3), Bewegung reduzieren (P-110/4) – Testfälle im CHANGELOG des Reiselogbuchs | prüfen |
 
 ## 2. Weitere Themen (in Klärung)
 
@@ -55,6 +54,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Thema | Version | Datum |
 |---|---|---|---|
+| P-109 | **Usertest P-109** (/0, /3, /4, /5 ok; /1, /2 nicht ok → Korrektur P-109/F-1, P-109/F-2 Wischaktionen weich wie Notizen) | AppDesign 4.60.3 / Reiselogbuch 3.57.3 | 18.11.2026 |
 | P-108 | **Usertest P-108 (Reiselogbuch 3.57.1, AppDesign 4.60.1):** /0, /3, /4 ok; /1, /2 nicht ok (P-108/F-1 bis P-108/F-4, Nutzer 18.11.2026, Sitzung 0128) – Muster wie Notizen gemessen (Sitzung 0128, bestätigt in 0129), korrigiert mit Reiselogbuch 3.57.2 / AppDesign 4.60.2, erneut im Usertest P-109 | 4.60.2 | 18.11.2026 |
 | APD-137 | **Kein Fehlalarm ‚⚠ Modell‘ nach Hilfsagenten:** `messung.mjs` übergeht die Anlage ‚model‘ der Hilfsagenten (`isSidechain`), Prüfung in `tests/messung.mjs` (Sitzung 0126) | 4.60.1 | 18.11.2026 |
 | APD-134 | **Wackler `ablauf-markierung-menues` in WebKit:** nach dem Drehen fehlte die Kachel unter Last kurz (`boundingBox()` null); die Prüfung fasst bis 5 s nach – Lasttest 2 × 4 gleichzeitig 8 von 8 grün (Sitzungen 0126 und 0127) | 4.60.1 | 18.11.2026 |

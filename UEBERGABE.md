@@ -30,7 +30,7 @@ AppDesign-`CLAUDE.md`.
 - **Hinweis Prüfumgebung:** github.io und support.apple.com sind von hier gesperrt (Proxy 403); developer.apple.com liefert die Doku als JSON
   (`https://developer.apple.com/tutorials/data/<pfad>.json`). Ein Muster-Link gilt erst nach dem Pages-Lauf. Videos des Nutzers: `ffmpeg` ist vorhanden.
 - **Doku-Prüfung (`checkSchema`):** jede lokale Nummer außerhalb ihrer Datei mit Elternnummer aus drei Buchstaben (APD-n, RLB-n) oder ganz ausgeschrieben
-  (‚P-108/V-1 bis P-108/V-6‘, nicht ‚bis V-6‘).
+  (‚P-108/V-1 bis P-108/V-6‘, auch die Endnummer mit Elternnummer).
 - **Voller Prüflauf** dauerte in 0129 **76:42** (164 Läufe).
 
 ## 2. Ergebnisse der Sitzung 0129
