@@ -1,4 +1,4 @@
-// AppDesign 4.60.2 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
+// AppDesign 4.60.3 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
 // Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/fassung/X.Y.Z/ui.js"></script> (feste Fassung, R-10.3)
 // Seit 4.11.0 (R-10.3): ui.js und design.css immer mit ?v=<AppDesign-Version> einbinden (auch in sw.js) und beim Start
 // prüfen, ob genau diese Fassung geladen ist (AD_VERSION hier, --ad-version in design.css).
@@ -20,7 +20,7 @@
 
 'use strict';
 // Version der Bausteine (R-10.3): die App vergleicht sie beim Start mit der benötigten Fassung.
-const AD_VERSION = '4.60.2';
+const AD_VERSION = '4.60.3';
 // APD-129 Teil 2 (seit 4.59.2, Messung 14.11.2026 arbeit/APD-129/messung-2026-11-14-2137.txt, Zeilen 9–17, 207–216, 263–272; Designrichtlinie 13
 // ‚Oberer Rand nach dem Drehen‘): iPhone vom Home-Bildschirm quer → hoch – nach der Meldung 812 bleibt env(safe-area-inset-top) noch 250–300 ms
 // auf 62; alles mit --safe-top stünde so lange 62 px zu tief und spränge dann hoch. Ist das Fenster hoch und niedriger als der Bildschirm, liegt
@@ -2725,7 +2725,7 @@ function createSwipeactions(liste, { kacheln, aktionen } = {}) {
   // Bedienelement in ihr, das keine Kachel ist (Kopf, Suchzeile, Backup-Kachel), wirkt sofort
   const nurSchliessen = (t, k) => !!k || (t instanceof Element && liste.contains(t) && !t.closest(SWIPE_BEDIENBAR));
   const eigene = new WeakSet();   // Bausteine der Bean in der Liste (zählen nicht als Neuaufbau)
-  let ui = null, z = null, lauf = null, warten = false;
+  let ui = null, z = null, warten = false;
   const sperre = klickSperre();   // das schließende Tippen löst sonst nichts aus (D-3)
 
   // Aufbau: die Kapseln liegen neben der Kachel (nie darin, W-64) in einem Kasten so groß wie die Kachel, hinter ihr; die Kachel rückt nach links.
@@ -2770,56 +2770,84 @@ function createSwipeactions(liste, { kacheln, aktionen } = {}) {
     for (let i = n - 1; i >= 0; i--) { u.ein[i].von = von; von += u.ein[i].w + A; }
     u.ein.forEach(d => { d.left = bw - u.breite + d.xl; d.el.style.left = d.left + 'px'; d.el.style.top = Math.max(0, Math.round((bh - d.el.offsetHeight) / 2)) + 'px'; });
   }
-  // Lage aller Teile bei r px Weg (wie Notizen, P-108, W-91 bis W-93): jede Kapsel steht an ihrem Platz und wächst aus ihrer Mitte (Größe und Deckkraft
-  // gemeinsam, gleichmäßig) – ab dem Weg, an dem die Kachel die halbe Kapsel freigibt (d.von + d.w / 2), bis auch der Abstand dahinter frei ist; zurück
-  // genau umgekehrt, allein vom Weg bestimmt. So erscheint zuerst die äußerste (‚Löschen‘), dann die nächste. Über die offene Breite hinaus rücken die
-  // Kapseln anteilig mit (nach dem Abstand ihrer linken Kante vom rechten Rand) und wachsen bis 6 %. ‚Bewegung reduzieren‘ (D-8): an ihrem Platz in
-  // voller Größe, nur die Deckkraft an denselben Stellen
-  function bild(u, r) {
-    const ruhig = bewegungRuhig(), m = new Map(), ueber = Math.max(0, r - u.breite);
-    m.set(u.k, { transform: r ? `translate3d(${-Math.round(r)}px,0,0)` : 'none' });
+  // P-109 (seit 4.60.3, wie Notizen gemessen – Wortlaut arbeit/0130 P-109 Wortlaut.md P-109/V-1, V-2; W-100 bis W-102): die Kachel gleitet mit der
+  // Feder aus Notizen (ω = 12,6/s, Antwortzeit 0,5 s, unabhängig vom Weg). Jede Kapsel hat ihre eigene Zeit: Ziel ‚da‘, sobald die Kachel sie ganz
+  // freigibt (r ≥ d.von + d.w), dann wächst sie aus ihrer Mitte in 0,25 s (ease-out) und ist nach 0,1 s ganz deckend; Ziel ‚weg‘, sobald die Kachel
+  // sie erreicht, beim Schließen durch Tippen daneben bzw. auf eine andere Kachel für alle zugleich (u.alleAus) – sie vergeht in 0,23 s. Über die
+  // offene Breite hinaus rücken die Kapseln anteilig mit und wachsen bis 6 % (P-108). ‚Bewegung reduzieren‘ (D-8): die Kachel steht sofort, die
+  // Kapseln an ihrem Platz in voller Größe, nur die Deckkraft zu denselben Zeitpunkten. Ein Bild je requestAnimationFrame (nur transform und
+  // opacity); eine Uhr-Animation an der Aktionsfläche hält document.getAnimations() bis zum letzten Bild ‚laufend‘ (die Prüfungen warten darauf).
+  const SW_OMEGA = 12.6, SW_FEDER_MS = 750, SW_EIN_MS = 250, SW_DECK_MS = 100, SW_AUS_MS = 230;
+  const swFeder = t => 1 - (1 + SW_OMEGA * t) * Math.exp(-SW_OMEGA * t), swEnde = swFeder(SW_FEDER_MS / 1000);
+  const kanal = (d, k, ziel, ms, kurve, now) => { const c = d[k] ??= { v: 0, ziel: 0, v0: 0, t0: now };
+    if (ziel !== c.ziel) { c.ziel = ziel; c.v0 = c.v; c.t0 = now; }
+    if (c.v !== ziel) { const t = Math.min(1, (now - c.t0) / ms); c.v = t >= 1 ? ziel : c.v0 + (ziel - c.v0) * kurve(t); }
+    return c.v; };
+  const linear = t => t, easeOut = t => 1 - (1 - t) * (1 - t);
+  function male(u, now) {
+    const ruhig = bewegungRuhig(), ueber = Math.max(0, u.r - u.breite);
+    let laeuft = false;
+    u.k.style.transform = u.r ? `translate3d(${-Math.round(u.r)}px,0,0)` : '';
     u.ein.forEach(d => {
-      const q = Math.max(0, Math.min(1, (r - d.von - d.w / 2) / (d.w / 2 + u.A)));
-      const dx = ruhig ? 0 : -ueber * (d.von + d.w) / u.breite, s = ruhig ? 1 : q * (1 + Math.min(masse.ueberWachsen, ueber * masse.ueberWachsen / 30));
-      m.set(d.el, { transform: `translate3d(${dx.toFixed(1)}px,0,0) scale(${Math.max(0.001, s).toFixed(3)})`, opacity: String(+q.toFixed(3)) });
+      const ziel = !u.alleAus && u.r >= d.von + d.w - 0.5 ? 1 : 0;
+      const g = ruhig ? 1 : kanal(d, 'g', ziel, ziel ? SW_EIN_MS : SW_AUS_MS, ziel ? easeOut : linear, now);
+      const o = kanal(d, 'o', ziel, ziel ? SW_DECK_MS : SW_AUS_MS, linear, now);
+      if (d.o.v !== ziel || (!ruhig && d.g.v !== ziel)) laeuft = true;
+      const dx = ruhig ? 0 : -ueber * (d.von + d.w) / u.breite, s = ruhig ? 1 : g * (1 + Math.min(masse.ueberWachsen, ueber * masse.ueberWachsen / 30));
+      d.el.style.transform = `translate3d(${dx.toFixed(1)}px,0,0) scale(${Math.max(0.001, s).toFixed(3)})`;
+      d.el.style.opacity = String(+o.toFixed(3));
     });
-    return m;
+    return laeuft;
   }
-  function setze(u, r) {
-    u.r = r;
-    for (const [el, b] of bild(u, r)) { if ('transform' in b) el.style.transform = b.transform === 'none' ? '' : b.transform; if ('opacity' in b) el.style.opacity = b.opacity; }
+  let takt = 0, uhr = null;
+  function uhrAus() { if (takt) cancelAnimationFrame(takt); takt = 0; if (uhr) { uhr.cancel(); uhr = null; } }
+  // die Zeit immer aus performance.now() – der Zeitstempel von requestAnimationFrame kann davon abweichen (z. B. mit fester Uhr in den Prüfungen)
+  function tick() {
+    const now = performance.now();
+    takt = 0;
+    const u = ui; if (!u) return uhrAus();
+    let weiter = false;
+    const f = u.fahrt;
+    if (f) { const ms = now - f.t0; if (ms >= SW_FEDER_MS) { u.r = f.nach; u.fahrt = null; } else { u.r = f.von + (f.nach - f.von) * Math.max(0, swFeder(ms / 1000)) / swEnde; weiter = true; } }
+    if (male(u, now)) weiter = true;
+    if (weiter) { takt = requestAnimationFrame(tick); return; }
+    uhrAus();
+    const fertig = u.fertig; u.fertig = null; fertig?.();
   }
-  // Bewegung als Web-Animation (die Prüfungen warten auf ihr Ende); die Endlage steht sofort, die Animation läuft darüber (R-1.12: öffnen mit der
-  // Feder, schließen ease-in-out, der Rest anteilig, mindestens GLEIT_MIN_MS); ‚Bewegung reduzieren‘: sofort
+  function anstossen(u) {
+    if (!uhr && u.box.animate) { uhr = u.box.animate([{ opacity: 1 }, { opacity: 1 }], { duration: 60000 }); uhr.id = 'swipeactions'; }
+    if (!takt) takt = requestAnimationFrame(tick);
+  }
+  // Finger: die Kachel steht genau unter dem Finger, die Kapseln laufen mit ihrer Zeit weiter
+  function setze(u, r) { u.r = r; u.alleAus = false; if (male(u, performance.now())) anstossen(u); }
+  // Gleiten mit der Feder (nicht bei ‚Bewegung reduzieren‘); fertig erst, wenn auch die Kapseln am Ziel sind
   function fahre(u, von, nach, fertig) {
     stoppe();
-    const a = bild(u, von), b = bild(u, nach);
-    setze(u, nach);
-    if (bewegungRuhig() || von === nach || !u.k.animate) return fertig?.();
-    const auf = nach > von, dauer = Math.max(GLEIT_MIN_MS, (auf ? GLEIT_AUF_MS : GLEIT_ZU_MS) * Math.min(1, Math.abs(nach - von) / u.breite));
-    // Zwischenbilder entlang des Wegs, damit die Kapseln auch beim Gleiten nacheinander erscheinen bzw. vergehen (W-83); die Kurve gilt für den ganzen Weg
-    const N = 12, bilder = [a, ...Array.from({ length: N - 1 }, (_, i) => bild(u, von + (nach - von) * (i + 1) / N)), b];
-    const anims = [...b.keys()].map(el => { const x = el.animate(bilder.map(m => m.get(el)), { duration: dauer, easing: auf ? GLEIT_FEDER : GLEIT_ZU }); x.id = 'swipeactions'; return x; });
-    lauf = { anims, fertig };
-    anims[0].onfinish = () => { if (lauf?.anims === anims) { lauf = null; fertig?.(); } };
+    const ruhig = bewegungRuhig() || von === nach || !u.k.isConnected;
+    u.r = ruhig ? nach : von; u.fahrt = ruhig ? null : { von, nach, t0: performance.now() }; u.fertig = fertig;
+    if (!male(u, performance.now()) && !u.fahrt) { u.fertig = null; uhrAus(); return fertig?.(); }
+    anstossen(u);
   }
-  function stoppe() { const l = lauf; if (!l) return; lauf = null; l.anims.forEach(x => x.cancel()); l.fertig?.(); }
+  // Abbruch einer laufenden Bewegung: die Kachel steht am Ziel (wie bisher), fertig läuft sofort
+  function stoppe() { const u = ui; if (!u) return; if (u.fahrt) { u.r = u.fahrt.nach; u.fahrt = null; } const f = u.fertig; u.fertig = null; f?.(); }
   function abbauen() {
     const u = ui; if (!u) return;
-    ui = null; stoppe();
+    stoppe(); ui = null; uhrAus();
     u.box.remove(); u.k.classList.remove('ad-swipeactions-kachel'); u.k.style.transform = '';
     if (!u.traeger.querySelector(':scope > .ad-swipeactions-aktionen')) u.traeger.classList.remove('ad-swipeactions-traeger');
   }
   function oeffnen(u, von, fertig) {
     const war = offen === u.k;
-    offen = u.k; u.box.inert = false;
+    offen = u.k; u.box.inert = false; u.alleAus = false;
     fahre(u, von, u.breite, fertig);
     if (!war) melde('offen', u.k);
   }
-  function zumachen(sofort = false) {
+  // alle (P-109/V-1): Schließen durch Tippen daneben bzw. auf eine andere Kachel, Rollen, schliessen() – alle Kapseln vergehen zugleich;
+  // sonst (Tippen auf die offene Kachel, Zurückwischen) jede, sobald die Kachel sie erreicht
+  function zumachen(sofort = false, alle = true) {
     const u = ui, war = offen;
     offen = null;
-    if (u) { u.box.inert = true; if (sofort || !u.k.isConnected) abbauen(); else fahre(u, u.r, 0, abbauen); }
+    if (u) { u.box.inert = true; if (sofort || !u.k.isConnected) abbauen(); else { u.alleAus = alle; fahre(u, u.r, 0, abbauen); } }
     if (war) melde('zu', war);
   }
   function ziehenAus() { if (z?.aktiv) { swipeZieht = false; sperre.los(); } z = null; }
@@ -2853,7 +2881,7 @@ function createSwipeactions(liste, { kacheln, aktionen } = {}) {
     if (offen && !warten && !inBox && k !== offen) { zumachen(); if (nurSchliessen(e.target, k)) sperre.an(); }
     z = null;
     if (e.button > 0 || !k || inBox || warten || gesperrt()) return;
-    stoppe();
+    if (ui?.k === k) stoppe();   // P-109/F-2: nur die eigene Bewegung anhalten – das Schließen einer anderen Kachel gleitet weiter
     z = { k, id: e.pointerId, x0: e.clientX, y0: e.clientY, t0: e.timeStamp, aktiv: false, start: offen === k && ui?.k === k ? ui.breite : 0, tipp: offen === k };
     wm('kandidat');
   };
@@ -2885,14 +2913,14 @@ function createSwipeactions(liste, { kacheln, aktionen } = {}) {
     const u = ui;
     if (!a.aktiv) {
       // Tippen auf die offene Kachel schließt sie und öffnet nichts (W-4)
-      if (!abbruch && a.tipp && offen === a.k && !warten) { sperre.an(); sperre.los(); zumachen(); }
+      if (!abbruch && a.tipp && offen === a.k && !warten) { sperre.an(); sperre.los(); zumachen(false, false); }
       return;
     }
     if (!u || u.k !== a.k) return;
     const r = a.r ?? a.start, weg = `weg ${Math.round(r)}`;
     if (abbruch) { wm(`abgebrochen ${weg}`); if (a.start) oeffnen(u, r); else fahre(u, r, 0, abbauen); return; }   // Zustand wie vorher
     if (r > u.breite * masse.offenAb) { wm(`offen ${weg}`); oeffnen(u, r); }
-    else { wm(`zurück gefedert ${weg}`); if (offen === u.k) zumachen(); else fahre(u, r, 0, abbauen); }
+    else { wm(`zurück gefedert ${weg}`); if (offen === u.k) zumachen(false, false); else fahre(u, r, 0, abbauen); }
   }
   const hoch = e => los(e, false), abbruch = e => los(e, true);
   const klick = e => { if (sperre.nimm()) { e.preventDefault(); e.stopImmediatePropagation(); } };

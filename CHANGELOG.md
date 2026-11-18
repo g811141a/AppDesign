@@ -3,6 +3,26 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.60.3 – 18.11.2026
+
+AppDesign 4.60.3 · Designrichtlinie allgemein 4.60.3 · Zusammenarbeit allgemein 3.14.1 · Reiselogbuch 3.57.3 (Fassung 4.60.3)
+
+**P-109/F-1, P-109/F-2 – Wischaktionen weich wie Notizen** (`ui.js` `createSwipeactions`, R-7.8, R-1.12, 15.4; Messung `arbeit/0130 P-109 Notizen Messung.md`,
+Muster `arbeit/0130 P-109 Wischaktionen Muster.html`; Wortlaut und Testfall-Liste `arbeit/0130 P-109 Wortlaut.md` P-109/V-1 bis P-109/V-3, P-109/M-1 bis P-109/M-12,
+bestätigt 18.11.2026; Sitzung 0130).
+
+- **Feder wie Notizen (P-109/F-2):** die Kachel gleitet auf und zu mit einer Feder ohne Nachschwingen (ω = 12,6/s, Antwortzeit 0,5 s), unabhängig vom Weg; vorher
+  schließen `ease-in-out` 0,25 s und nach einer Geste anteilig kürzer. Tippen auf eine andere Kachel brach das Schließen bisher sofort ab (`stoppe()` beim Antippen
+  jeder Kachel) – jetzt hält nur die eigene Bewegung an.
+- **Kapseln mit eigener Zeit (P-109/F-1):** jede erscheint, sobald die Kachel sie ganz freigibt, und wächst in 0,25 s aus ihrer Mitte (Deckkraft voll nach 0,1 s);
+  sie vergeht beim Zurückwischen und Tippen auf die offene Kachel, sobald die Kachel sie erreicht, beim Schließen durch Tippen daneben, auf eine andere Kachel,
+  Rollen oder `schliessen()` alle zugleich – je 0,23 s. ‚Bewegung reduzieren‘: Kachel ohne Gleiten, Kapseln blenden zu denselben Zeitpunkten nur ein und aus.
+  Bild für Bild per `requestAnimationFrame` (nur transform und opacity), eine Uhr-Animation hält `document.getAnimations()` bis zum letzten Bild laufend.
+- **Prüfungen** (`checkWischen`, `tests/ablauf.mjs`): neu APD-30/W-100 (Feder nach dem Loslassen), APD-30/W-101 (Kapsel mit eigener Zeit), APD-30/W-102 (Schließen:
+  alle zugleich in 0,23 s, Feder); APD-30/W-83 und APD-30/W-91 entfallen (ersetzt durch APD-30/W-102 und APD-30/W-101); APD-30/W-81 und APD-30/W-82 prüfen die
+  Reihenfolge. Gegen 4.60.2 rot an APD-30/W-100, APD-30/W-101 und APD-30/W-102 (alle Ansichten). Warum P-109/F-1 und P-109/F-2 durchrutschten: die Prüfungen
+  maßen die Kapseln nur am Weg und die Dauer des Schließens gar nicht; das Tempo kam aus R-1.12 (gemessen an der Seitenleiste, nicht an den Wischaktionen).
+
 ## 4.60.2 – 18.11.2026
 
 AppDesign 4.60.2 · Designrichtlinie allgemein 4.60.2 · Zusammenarbeit allgemein 3.14.1 · Reiselogbuch 3.57.2 (Fassung 4.60.2)

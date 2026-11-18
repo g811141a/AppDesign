@@ -2,7 +2,9 @@
 
 Stand 18.11.2026 · zu P-109/F-1 und P-109/F-2 · Messung `arbeit/0130 P-109 Notizen Messung.md` · nur hell
 
-## Link (gilt erst nach dem Hochladen auf `main` und dem Pages-Lauf)
+## Link
+
+Auf `main` von AppDesign seit Commit 9063ade (Nutzer ‚Ja, hochladen‘ 18.11.2026), Pages-Lauf ‚success‘ 14:58 UTC.
 
 https://g811141a.github.io/AppDesign/arbeit/0130%20P-109%20Wischaktionen%20Muster.html
 
