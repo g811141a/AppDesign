@@ -4265,7 +4265,7 @@ export async function checkWachsen(p, { menue = null, untermenue = null, kontext
 //   der erste ist für W-5 eine Fläche ‚daneben in der Liste‘)
 //   seitenleiste: { aus, ein } – panel-left in der Liste und der Knopf, der sie wieder einblendet (iPad, W-42), oder null
 //   neuaufbau: Ausdruck, der die Liste neu aufbaut (W-77); einstellen: Funktion, die das Fenster der ersten Aktion prüft (W-12, gibt Fehler zurück)
-//   messe(name): Grundregeln im aktuellen Zustand (pruefe.mjs – t.schritt); ende: zum Schluss W-75, W-76 (durchwischen: false), W-78, W-79 mit eigenen
+//   messe(name): Grundregeln im aktuellen Zustand (pruefe.mjs – t.schritt); ende: zum Schluss W-75, W-76 (über 60 % rastet offen ein), W-78, W-79 mit eigenen
 //   Beans – danach wischt die Bean der App nicht mehr (die Seite schließen)
 // Gibt die Fehler zurück, je mit Regelnummer.
 const WISCH_HELFER = () => {
@@ -4302,11 +4302,10 @@ const WISCH_HELFER = () => {
       kachel: (r => ({ l: r.left, r: r.right, t: r.top, b: r.bottom }))(k.getBoundingClientRect()),
       kapseln: [...document.querySelectorAll('.ad-swipeactions-kapsel')].map(c => { const r = c.getBoundingClientRect(), e = c.parentElement, w = e.querySelector('.ad-swipeactions-wort'), me = matrix(e);
         return { label: c.getAttribute('aria-label'), rot: c.classList.contains('rot'), l: r.left, r: r.right, t: r.top, b: r.bottom, w: c.offsetWidth, h: c.offsetHeight,
-          op: +getComputedStyle(e).opacity, sc: +Math.hypot(me.a, me.b).toFixed(3), wort: w?.textContent, wortGanz: !!w && w.scrollWidth <= w.clientWidth + 1 && w.scrollHeight <= w.clientHeight + 1,
+          el: (q => ({ l: q.left, r: q.right }))(e.getBoundingClientRect()), op: +getComputedStyle(e).opacity, sc: +Math.hypot(me.a, me.b).toFixed(3), wort: w?.textContent, wortGanz: !!w && w.scrollWidth <= w.clientWidth + 1 && w.scrollHeight <= w.clientHeight + 1,
           wortR: w && (q => ({ l: q.left, r: q.right, t: q.top, b: q.bottom }))(w.getBoundingClientRect()),
           icon: c.querySelector('svg')?.getAttribute('aria-hidden'), bg: getComputedStyle(c).backgroundColor, inKachel: k.contains(c), knopfImKnopf: !!c.parentElement.closest('button'),
           oben: c.contains(document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2)) }; }),
-      bahn: +(document.querySelector('.ad-swipeactions-bahn') ? getComputedStyle(document.querySelector('.ad-swipeactions-bahn')).opacity : 0),
       pop: document.querySelector('.pop:not(.zu-geist) p')?.textContent || null, menu: !!document.querySelector('.menu:not(.zu-geist)'), dlg: !!document.querySelector('dialog[open]'),
       titel: document.querySelector('.nb-title, .pnav-title')?.textContent || '', nav: /(^|\s)nav-/.test(document.documentElement.className) };
   };
@@ -4344,7 +4343,7 @@ export async function checkWischen(p, { bean, aktionen, liste = '#side', kacheln
     // W-1: 100 px nach links – rastet ein; zwei Kapseln (≥ 66 × 44) mit Wort, ganz in der Liste und im Bild; der Titel bleibt teilweise sichtbar
     const r1 = await wisch(kachel, [...weg(-50, 0, 5), { merke: 'w40' }, ...weg(-100, 0, 10).slice(5), { merke: 'w100' }]);
     let st = await stand();
-    const offenSoll = await p.evaluate(() => { const ts = document.documentElement.dataset.ts; return !ts || ts === 'l'; }) ? 162 : null;
+    const offenSoll = await p.evaluate(() => { const ts = document.documentElement.dataset.ts; return !ts || ts === 'l'; }) ? 165 : null;   // 2 × 66 + 3 × 11 (seit 4.60.2, P-108)
     if (!st.offenIst) E(`W-1 100 px gewischt: Kachel nicht offen (tx ${st.tx})`);
     else {
       if (offenSoll && -st.tx !== offenSoll) E(`W-1 offen bei ${-st.tx} px statt ${offenSoll}`);
@@ -4490,6 +4489,51 @@ export async function checkWischen(p, { bean, aktionen, liste = '#side', kacheln
           const t0 = performance.now(); while (performance.now() - t0 < 450) { out.push(window.__wischStand(s)); await new Promise(r => requestAnimationFrame(r)); } return out; }, kachel2);
         await ruhig();
         nacheinander(bilder.map((q, i) => [`Gleiten Bild ${i + 1}`, q]), 'W-83');
+        // W-91 bis W-94 (seit 4.60.2, P-108/F-1 bis P-108/F-4, wie Notizen gemessen – Testfall-Liste arbeit/0129 P-108 Wortlaut.md M-1 bis M-5, M-8, M-9):
+        // W-91 (M-1, M-2, M-8): jede Kapsel unsichtbar, bis die Kachel die halbe Kapsel freigibt, voll, wenn auch der Abstand dahinter frei ist –
+        // dazwischen gleichmäßig (Deckkraft und Größe), ihre Mitte bleibt stehen; zurück an denselben Stellen. Gemessen an der Lage der Einträge (Kapsel
+        // samt Wort) in der offenen Kachel; der Weg ist der Weg der Kachel (tx).
+        const fbW = await p.evaluate(() => parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--fb')) || 1);
+        const ABSTAND = 11 * Math.max(1, fbW), Rk = st0.kachel.r;
+        const soll91 = (i, r) => { const e = fin[i].el, w = e.r - e.l, von = Rk - e.r; return Math.max(0, Math.min(1, (r - von - w / 2) / (w / 2 + ABSTAND))); };
+        for (const [name, proben] of [['W-91 aufwischen', auf], ['W-91 zurückwischen', zur]]) {
+          let fehler = null;
+          for (const [wo, q] of proben) { if (!q?.kapseln) continue; const r = -q.tx;
+            q.kapseln.forEach((c, i) => { if (fehler || !fin[i]) return; const s = soll91(i, r);
+              if (Math.abs(c.op - s) > 0.08) fehler = `${wo}: ‚${c.label}‘ Deckkraft ${Math.round(c.op * 100)} % statt ${Math.round(s * 100)} % (unsichtbar bis zur halben Kapsel, voll mit dem Abstand)`;
+              else if (!ruhigMotion && c.op > 0.02 && Math.abs(c.sc - s) > 0.08) fehler = `${wo}: ‚${c.label}‘ Größe ${Math.round(c.sc * 100)} % statt ${Math.round(s * 100)} %`;
+              else if (!ruhigMotion && c.op > 0.02 && Math.abs((c.el.l + c.el.r) / 2 - (fin[i].el.l + fin[i].el.r) / 2) > 1.5)
+                fehler = `${wo}: ‚${c.label}‘ wächst nicht aus ihrer Mitte (Mitte ${Math.round((c.el.l + c.el.r) / 2)} px statt ${Math.round((fin[i].el.l + fin[i].el.r) / 2)} px)`; }); }
+          if (fehler) E(`${name} ${fehler}`);
+        }
+        // W-92 (M-3, M-9): offen ein Abstand für alles – Kachel–Kapsel, zwischen den Kapseln, rechts außen je 11 pt (wächst mit der Textgröße)
+        const abst = [['Kachel–‚' + fin[0].label + '‘', fin[0].el.l - (Rk - B)], ...fin.slice(1).map((c, i) => [`‚${fin[i].label}‘–‚${c.label}‘`, c.el.l - fin[i].el.r]),
+          ['‚' + fin.at(-1).label + '‘–rechts', Rk - fin.at(-1).el.r]];
+        const a92 = abst.find(([, a]) => Math.abs(a - ABSTAND) > 1.5);
+        if (a92) E(`W-92 Abstand ${a92[0]} ${Math.round(a92[1])} px statt ${Math.round(ABSTAND)} (${abst.map(([n, a]) => `${n} ${Math.round(a)}`).join(', ')})`);
+        // W-93 (M-4, M-8): weit über die offene Breite hinaus (300 px mehr) – kein Durchwischen: die Kachel höchstens 60 px weiter, alle Kapseln sichtbar,
+        // keine wird langgezogen (höchstens 6 % größer), sie rücken nur nach links mit; ‚Bewegung reduzieren‘: an ihrem Platz in voller Größe
+        const s93 = await alles();
+        const ueberWege = Array.from({ length: 20 }, (_, i) => [Math.round(-(B + 300) * (i + 1) / 20), 0]);
+        const r93 = await p.evaluate(([s, w]) => window.__wisch(s, [...w, { merke: 'u' }], { offenLassen: true, kachel: s }), [kachel2, ueberWege]);
+        const u = r93.merk?.u;
+        if (!u) E('W-93 Überwischen: kein Messpunkt');
+        else {
+          const weiter = -u.tx - B;
+          if (!(weiter > 0) || weiter > 60.5) E(`W-93 über die offene Breite hinaus geht die Kachel ${Math.round(weiter)} px weiter statt mit Widerstand höchstens 60 px (Fingerweg 300 px mehr)`);
+          if (u.pop) E('W-93 beim Überwischen erscheint eine Sprechblase', 'R-4.12');
+          const c93 = u.kapseln.find((c, i) => { const f = fin[i]; if (!f) return false; const wf = (c.el.r - c.el.l) / (f.el.r - f.el.l), mitte = (c.el.l + c.el.r) / 2 - (f.el.l + f.el.r) / 2;
+            return c.op < 0.98 || wf > 1.061 || wf < 0.99 || (ruhigMotion ? Math.abs(mitte) > 1.5 || Math.abs(c.sc - 1) > 0.01 : mitte > 1); });
+          if (c93) { const f = fin[u.kapseln.indexOf(c93)];
+            E(`W-93 beim Überwischen: ‚${c93.label}‘ Deckkraft ${Math.round(c93.op * 100)} %, Breite ${Math.round(c93.el.r - c93.el.l)} statt ${Math.round(f.el.r - f.el.l)} px, links ${Math.round(c93.el.l)} statt ${Math.round(f.el.l)} px${ruhigMotion ? ' (‚Bewegung reduzieren‘: an ihrem Platz)' : ' (langgezogen, ausgeblendet oder nach rechts)'}`); }
+        }
+        // W-94 (M-5): loslassen nach dem Überwischen – federt auf ‚offen‘, keine Sprechblase, nichts gelöscht
+        await p.evaluate(() => window.__wischZug?.ende(false)); await ruhig(); await wait(p, 60);
+        const s94 = await stand(kachel2);
+        if (s94.pop || !s94.offenIst || -s94.tx !== B) E(`W-94 nach dem Loslassen über der offenen Breite: Sprechblase ${!!s94.pop}, offen ${s94.offenIst}, bei ${-s94.tx} px statt ${B}`, s94.pop ? 'R-4.12' : 'R-7.8');
+        if (s94.pop) { await p.keyboard.press('Escape'); await ruhig(); }
+        if (await alles() !== s93) E('W-94 Überwischen ändert den Speicher', 'R-4.12');
+        await zu();
         // W-86 (P-107/F-4): Kapseln wachsen mit der Textgröße wie die Schaltflächen der Leisten (66 × 44 mal --fb)
         const fb = await p.evaluate(() => parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--fb')) || 1);
         const c86 = fin.find(c => Math.abs(c.w - masse.kapselBreite * fb) > 1.5 || Math.abs(c.h - masse.kapselHoehe * fb) > 1.5);
@@ -4554,29 +4598,9 @@ export async function checkWischen(p, { bean, aktionen, liste = '#side', kacheln
     st = await stand();
     if (!st.offenIst || (offenSoll && -st.tx !== offenSoll)) E(`W-39 Abbruch beim Zurückwischen: Kachel nicht wieder offen (tx ${st.tx})`);
     await zu();
-    // W-16 bis W-19: Durchwischen über 60 % – rote Kapsel breit, erst beim Loslassen die Sprechblase; zurück unter 60 % = keine; Esc = Abbrechen
+    // W-16 bis W-19 entfallen seit 4.60.2 (P-108/Q-2: kein Durchwischen, Löschen nur über die Kapsel) – Überwischen prüfen W-93 und W-94
     const bw = (await stand()).kachel.r - (await stand()).kachel.l;
     if (eintr.at(-1).red) {
-      const r16 = await wisch(kachel, [...weg(-bw * 0.72, 0, 12), { merke: 'voll' }]);
-      const v = r16.merk.voll;
-      if (!v?.bahn || (v.kapseln.length > 1 && v.kapseln[0].op > 0.01)) E(`W-16 über 60 % wird die rote Kapsel nicht breit bzw. die übrigen weichen nicht (Bahn ${v?.bahn}, erste Kapsel ${v?.kapseln?.[0]?.op})`);
-      if (v?.pop) E('W-16 Sprechblase schon vor dem Loslassen', 'R-4.12');
-      st = await stand();
-      if (!st.pop) E('W-17 nach dem Durchwischen keine Sprechblase', 'R-4.12');
-      if (await alles() !== s0) E('W-17 Durchwischen ändert den Speicher vor der Bestätigung', 'R-4.12');
-      await p.keyboard.press('Escape'); await ruhig();
-      st = await stand();
-      if (st.pop || st.offen || st.tx) E(`W-19 Esc nach dem Durchwischen: Sprechblase ${!!st.pop}, Kachel offen ${st.offen}`, 'R-4.7');
-      if (await alles() !== s0) E('W-19 Esc ändert den Speicher', 'R-4.12');
-      await wisch(kachel, [...weg(-bw * 0.72, 0, 12), ...Array.from({ length: 6 }, (_, i) => [Math.round(-bw * 0.72 + (bw * 0.72 - 100) * (i + 1) / 6), 0])]);
-      st = await stand();
-      if (st.pop || !st.offenIst) E(`W-18 unter 60 % zurückgezogen (100 px): Sprechblase ${!!st.pop}, offen ${st.offenIst} (soll: offen, keine Sprechblase)`);
-      if (st.pop) { await p.keyboard.press('Escape'); await ruhig(); }
-      await zu();
-      await wisch(kachel, [...weg(-bw * 0.72, 0, 12), ...Array.from({ length: 6 }, (_, i) => [Math.round(-bw * 0.72 + (bw * 0.72 - 40) * (i + 1) / 6), 0])]);
-      st = await stand();
-      if (st.pop || st.offen) E(`W-18 unter 60 % zurückgezogen (40 px): Sprechblase ${!!st.pop}, offen ${st.offen} (soll: federt zurück)`);
-      if (st.pop) { await p.keyboard.press('Escape'); await ruhig(); }
       // W-13, W-21: ‚Löschen‘ antippen – Sprechblase aus der roten Kapsel, ganz im Bild, Speicher unverändert; W-22 bis W-25: eingegraut, gesperrt
       await wisch(kachel, weg(-100));
       await p.locator('.ad-swipeactions-kapsel.rot').click(); await ruhig();
@@ -4722,13 +4746,13 @@ export async function checkWischen(p, { bean, aktionen, liste = '#side', kacheln
       const m75 = await langDruecken(p, kachel);
       if (m75 || !(await stand()).menu) E(`W-75 ohne Bean zeigt langes Drücken kein Kontextmenü${m75 ? ' – ' + m75 : ''}`, 'R-1.13');
       await p.keyboard.press('Escape'); await ruhig(); await menueZu(p);
-      // W-76, W-78, W-79: eigene Bean mit durchwischen: false und aufgezeichnetem act
-      await p.evaluate(([a, l, ks]) => { window.__wischAct = []; window.__wischTest = createSwipeactions(document.querySelector(l), { kacheln: ks, durchwischen: false,
+      // W-76, W-78, W-79: eigene Bean mit aufgezeichnetem act (seit 4.60.2 ohne Eigenschaft durchwischen – über 60 % rastet die Kachel immer offen ein)
+      await p.evaluate(([a, l, ks]) => { window.__wischAct = []; window.__wischTest = createSwipeactions(document.querySelector(l), { kacheln: ks,
         aktionen: x => (0, eval)(a)(x).map(e => typeof e === 'object' ? { ...e, act: w => { window.__wischAct.push({ anker: w?.anker?.className || '', quelle: w?.quelle }); return e.act(w); } } : e) });
         window.__wischBean = 'window.__wischTest'; }, [aktionen, liste, kacheln]);
       await wisch(kachel, weg(-bw * 0.72, 0, 12));
       st = await stand();
-      if (st.pop || !st.offenIst) E(`W-76 mit durchwischen: false über 60 %: Sprechblase ${!!st.pop}, offen ${st.offenIst} (soll: rastet offen ein)`, 'R-1.13');
+      if (st.pop || !st.offenIst) E(`W-76 über 60 % gewischt: Sprechblase ${!!st.pop}, offen ${st.offenIst} (soll: rastet offen ein)`, 'R-1.13');
       if (st.pop) { await p.keyboard.press('Escape'); await ruhig(); }
       if (eintr.at(-1).red) {
         await zu(); await wisch(kachel, weg(-100));
@@ -4753,17 +4777,18 @@ export async function checkWischen(p, { bean, aktionen, liste = '#side', kacheln
   } catch (e) { E(`Ablauf bricht ab: ${e.message.split("\n")[0]}`); }
   return errors;
 }
-// Gegenprobe W-68 (APD-30): PRUEF_GEGENPROBE=wischen:W-68 setzt in der Prüfkopie von ui.js die Schwelle ‚Durchwischen‘ auf 20 % – W-1 wird rot
-// (Sprechblase statt offener Kachel). Vor dem Laden der Seite aufrufen.
 // Gegenproben (PRUEF_GEGENPROBE=wischen:W-n): die Prüfkopie von ui.js bzw. design.css bekommt den Fehler, die genannte Prüfung muss rot werden.
-// W-68 Schwelle ‚Durchwischen‘ 20 % → W-1 · seit 4.60.1 (P-107): W-87 alle Kapseln wachsen gleichzeitig → W-81, W-82 · W-88 ‚Bewegung reduzieren‘
-// rückt heraus und wächst → W-85 · W-89 Kapseln rücken beim Zurückwischen nach rechts hinaus (wie 4.60.0) → W-84 · W-90 Kapseln fest 66 × 44 → W-86
+// Vor dem Laden der Seite aufrufen. W-87 alle Kapseln wachsen gleichzeitig → W-81, W-82 · W-88 ‚Bewegung reduzieren‘ rückt mit und wächst → W-85, W-93 ·
+// W-89 Kapseln rücken nach rechts hinaus → W-84 · W-90 Kapseln fest 66 × 44 → W-86 · seit 4.60.2 (P-108): W-96 Kapsel erscheint ab dem ersten Pixel
+// (wie 4.60.1) → W-91 · W-97 Abstand 8 px → W-92 · W-98 kein Widerstand über der offenen Breite → W-93 (W-68 ‚Durchwischen‘ entfällt)
 const WISCH_GEGENPROBEN = {
-  'W-68': ['ui.js', 'durchwischenAb: 0.6', 'durchwischenAb: 0.2'],
-  'W-87': ['ui.js', 'a = Math.max(0, Math.min(d.w, r - d.von))', 'a = Math.max(0, Math.min(d.w, r / u.breite * d.w))'],
-  'W-88': ['ui.js', 'else if (!ruhig && !voll) { s = q;', 'else if (!voll) { s = q;'],
-  'W-89': ['ui.js', 'dx = (1 - q) * d.w / 2; }', 'dx = (1 - q) * (u.breite - d.xl); }'],
+  'W-87': ['ui.js', '(r - d.von - d.w / 2) / (d.w / 2 + u.A)', 'r / u.breite'],
+  'W-88': ['ui.js', 'const dx = ruhig ? 0 : -ueber * (d.von + d.w) / u.breite, s = ruhig ? 1 : q *', 'const dx = -ueber * (d.von + d.w) / u.breite, s = q *'],
+  'W-89': ['ui.js', 'const dx = ruhig ? 0 : -ueber * (d.von + d.w) / u.breite,', 'const dx = ruhig ? 0 : (1 - q) * (u.breite - d.von),'],
   'W-90': ['design.css', 'width: calc(66px * var(--fb)); min-width: calc(66px * var(--fb)); height: calc(44px * var(--fb));\n  min-height: calc(44px * var(--fb));', 'width: 66px; min-width: 66px; height: 44px;\n  min-height: 44px;'],
+  'W-96': ['ui.js', '(r - d.von - d.w / 2) / (d.w / 2 + u.A)', '(r - d.von) / d.w'],
+  'W-97': ['ui.js', 'abstand: 11, rand: 11,', 'abstand: 8, rand: 11,'],
+  'W-98': ['ui.js', 'z.r = roh > B ? B + (1 - 1 / ((roh - B) * 0.55 / M + 1)) * M : roh;', 'z.r = Math.min(roh, ui.bw - 20);'],
 };
 export async function wischenGegenprobe(p) {
   const m = /^wischen:(W-\d+)$/.exec(process.env.PRUEF_GEGENPROBE || ''), g = m && WISCH_GEGENPROBEN[m[1]];
