@@ -4,6 +4,8 @@
 alle Feld-Funktionen bleiben, Seite = Feld oder Bündel, AD-Bean mit eigener Prüfseite). Hinweise auf Apple-Apps hier sind **Vermutung** – die Quelle kommt im
 Apple-Abgleich vor dem Muster (0 Nr. 23, 27).
 
+> **Gewählt (Nutzer 19.11.2026, Sitzung 0134):** **A + E** ins erste Muster.
+
 ## A – Seite für Seite (Blatt blättert)
 Das Blatt zeigt je Seite nur ein Feld bzw. Bündel, groß mit Überschrift und Hilfesatz; unten ‹ Zurück / Weiter ›, Seitenwechsel gleitet seitlich.
 - **Gut:** ruhig, eine Sache zur Zeit, am iPhone am leichtesten; entspricht dem mehrstufigen Blatt der HIG (‚Zurück ersetzt Abbrechen‘, Sheets).
