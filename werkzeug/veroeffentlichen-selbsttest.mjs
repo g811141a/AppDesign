@@ -97,8 +97,9 @@ try {
   const appUrl = pathToFileURL(k.app + '/');
   const v = await checkVersions(appUrl);
   pruefe(!v.length, `APD-5/E-1 danach version.mjs grün${v.length ? ': ' + v.join(' | ') : ''}`);
-  // CHANGELOG und Testfälle schreibt Claude erst nach ‚vorbereiten‘ – nur diese Meldungen sind hier erlaubt.
-  const d = [...checkDocs(appUrl, 'Reiselogbuch'), ...checkCollab(appUrl, 'Reiselogbuch')].filter(e => !/CHANGELOG/.test(e));
+  // CHANGELOG, Testfälle und die Zeile der Versionsgeschichte schreibt Claude erst nach ‚vorbereiten‘ – nur diese Meldungen sind hier erlaubt
+  // (seit 4.63.0 auch APD-135/M-2: seit 4.61.0 rot, unbemerkt, weil kein Skript diesen Selbsttest startete – APD-135/C-47).
+  const d = [...checkDocs(appUrl, 'Reiselogbuch'), ...checkCollab(appUrl, 'Reiselogbuch')].filter(e => !/CHANGELOG|APD-135\/M-2 .*Versionsgeschichte/.test(e));
   pruefe(!d.length, `APD-5/E-1 danach doku.mjs grün (außer CHANGELOG)${d.length ? ': ' + d.join(' | ') : ''}`);
   pruefe(lies(k.app, 'index.html').includes(`../AppDesign/fassung/${X}/ui.js"`) && lies(k.app, 'tests/hig.mjs').includes(`AppDesign/fassung/${X}/tests/`) &&
     lies(k.app, 'README.md').includes(`AppDesign/blob/main/fassung/${X}/README%20-%20Designrichtlinie%20allgemein.md`) && !/blob\/v\d/.test(lies(k.app, 'README.md')) &&
