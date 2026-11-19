@@ -1,6 +1,6 @@
 # APD-135 Paket 6, Schritt 2 (B-3.1, B-3.2) – Vorschlag mit Wortlaut und Testfall-Liste
 
-**Stand 19.11.2026** · Sitzung 0139 · **noch nicht bestätigt** · Grundlage: `arbeit/APD-135 Konsolidierung 3 Befund und Plan.md` (Abschnitt 3, B-3.1, B-3.2),
+**Stand 19.11.2026** · Sitzung 0139 · **Umfang, Wortlaut und Testfall-Liste bestätigt (Nutzer 19.11.2026, im Fenster: 1 a Vorlage selbst als Prüfseite · 2 a `ablauf-bausteine` mit kurzer Zusammenspiel-Prüfung · 3 ja)** · Grundlage: `arbeit/APD-135 Konsolidierung 3 Befund und Plan.md` (Abschnitt 3, B-3.1, B-3.2),
 `arbeit/APD-135 Befund U Bausteine ui.js.md` (APD-135/U-26 bis U-32, U-45), Entscheidung APD-135/J-31 und Nutzer 19.11.2026 (Schritt 2 kommt mit in
 AppDesign 4.64.0 / Reiselogbuch 3.57.7). Die Bestandsaufnahme hat ein Hilfsagent gemacht (Opus 5.5, Aufwand hoch, nur gelesen).
 
