@@ -1,28 +1,36 @@
 // AppDesign 4.64.0 · tests/pruefseite.mjs – Bausteine auf der Prüfseite (APD-135 Paket 6 Schritt 2, APD-135/B-3.1, APD-135/U-32; Designrichtlinie 14 ‚Prüfen‘;
-// Testfall-Liste arbeit/APD-135 Paket 6 Schritt 2 Vorschlag.md APD-135/E-2 bis E-6). Bausteine, die ohne den Inhalt einer App gleich laufen,
+// Testfall-Liste arbeit/APD-135 Paket 6 Schritt 2 Vorschlag.md APD-135/E-2 bis E-12). Bausteine, die ohne den Inhalt einer App gleich laufen,
 // prüft AppDesign auf der Prüfseite – der Vorlage (vorlage/index.html) derselben Fassung mit neutralen Daten –, ihre Werte auf der daraus
 // abgeleiteten Mindestseite. Kein Playwright hier: die Hülle der App (tests/bausteine-pruefseite.mjs) übergibt es (pw) und den Ausgabeordner.
 //   oeffneVorlage(p, { daten, fehler })  – Vorlage mit neutralen Daten (localStorage neueapp.v1); ui.js und design.css der Fassung, in der diese
 //                                           Datei liegt (Arbeitsstand: v4/), über p.route – so passen die Pfade in Arbeitsstand und Fassung
 //   oeffneMindestseite(p, { fehler })    – aus dem Text der Vorlage: <head>, #dlg, #msg, ui.js; das Skript der App durch Platzhalter ersetzt
 //   checkWerte(p)                         – Gruppe A (8 Bausteine mit festen Beispielwerten) auf der Mindestseite; Meldungen ‚R-x.y <Baustein>: …‘
-//   pruefseite(pw, { out, teil })         – ein Teil (heute ‚werte‘) mit Ergebnis und Rückgabewert (pruefe.mjs)
+//   pruefseite(pw, { out, teil })         – ein Teil mit Ergebnis und Rückgabewert (pruefe.mjs): ‚werte‘ und seit B-3.2 (APD-135/E-7 bis E-11) die Abläufe
+//                                           ‚messung‘ (ablaufMessung), ‚titel-blase‘ (ablaufTitelBlase), ‚titel-oben‘ (ablaufTitelOben), ‚schicht-oben‘
+//                                           (ablaufSchichtOben) und ‚grossanzeige‘ (ablaufGrossanzeige) – bis Reiselogbuch 3.57.6 eigene Prüfdateien der App
 // Gegenprobe (lauf.mjs --gegenprobe pruefseite): PRUEF_GEGENPROBE=pruefseite:<fall> schleust den Fehler eines Bausteins per Textersetzung in
 // ui.js ein (wie gleitenGegenprobe in ablauf.mjs); der Teil muss mit der Meldung dieses Bausteins rot werden (GEGENPROBEN_PRUEFSEITE).
 // Die Vorlage in der Fassung (fassung/X.Y.Z/vorlage/index.html) nennt ../fassung/X.Y.Z/… – geladen wird trotzdem nur, was p.route liefert.
 import { readFileSync, existsSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { pruefung } from './pruefe.mjs';
+import { pruefung, navFertig, warteBis, ruhe } from './pruefe.mjs';
 import { createCheck } from './hig.mjs';
 import { checkSync } from './abgleich.mjs';
-import { checkSearchWords } from './ablauf.mjs';
+import { checkSearchWords, langDruecken, checkMessung, sucheAuf, checkTitelBlase, titelLang, titelBlaseOffen, checkTitelOben, checkSafariKlick,
+  checkSafariWischKlick, checkGleiten, checkSchichtOben, checkGrossanzeige, finger, checkWachsen } from './ablauf.mjs';
+import { lies as liesMessung, ansicht as messAnsicht } from './abspielen.mjs';
+import { obenOhneKlick } from './safari.mjs';
 
 const hier = path.dirname(fileURLToPath(import.meta.url));
 // in der festen Fassung liegen ui.js und vorlage/ neben tests/, im Arbeitsstand ui.js unter v4/
 const inFassung = existsSync(path.join(hier, '..', 'ui.js'));
 const basis = inFassung ? path.join(hier, '..') : path.join(hier, '..', 'v4');
 const VORLAGE = path.join(hier, '..', 'vorlage', 'index.html');
+// Messdateien (Designrichtlinie 15.21) gehören nicht zur Fassung (nur Dateien direkt in tests/) – aus der Fassung liest der Ablauf sie aus
+// AppDesign/tests/messungen/ (wie bisher die Prüfdatei der App)
+const MESSUNGEN = inFassung ? path.join(hier, '..', '..', '..', 'tests', 'messungen') : path.join(hier, 'messungen');
 const lies = f => readFileSync(f, 'utf8');
 // Fassung, aus der geprüft wird: Ordnername (fassung/X.Y.Z) bzw. im Arbeitsstand die Version von v4/design.css
 export const FASSUNG = inFassung ? path.basename(path.join(hier, '..')) : lies(path.join(basis, 'design.css')).match(/--ad-version:\s*"([\d.]+)"/)?.[1];
@@ -41,7 +49,7 @@ export function datenNeutral(n = 60) {
 export const DATEN_LEER = { items: [], deleted: [], settings: { appearance: 'auto' } };
 
 // Je Baustein der Gruppe A ein Fehler (APD-135/E-6): Ersetzungen in ui.js; zeichen = die Meldung, die rot werden muss.
-const fall = (baustein, was, ersetze) => ({ baustein, was, ersetze, zeichen: new RegExp(`R-\\d+\\.\\d+ ${baustein}: `) });
+const fall = (baustein, was, ersetze, zeichen = new RegExp(`R-\\d+\\.\\d+ ${baustein}: `)) => ({ baustein, was, ersetze, zeichen });
 export const GEGENPROBEN_PRUEFSEITE = { werte: {
   version: fall('Version', 'AD_VERSION falsch', [[/const AD_VERSION = '[\d.]+';/, "const AD_VERSION = '0.0.0';"]]),
   icons: fall('Icons', 'Icon ohne aria-hidden', [['viewBox="0 0 24 24" aria-hidden="true"${name', 'viewBox="0 0 24 24"${name']]),
@@ -51,6 +59,29 @@ export const GEGENPROBEN_PRUEFSEITE = { werte: {
   teilen: fall('Teilen', 'Kopfverlauf endet nicht in #d9d9d9', [['#e9e9e9 75%, #d9d9d9 100%', '#e9e9e9 75%, #e9e9e9 100%']]),
   backup: fall('Backup', 'readBackup lässt savedAt in den Daten', [['delete data.savedAt; delete data.savedOn;', '']]),
   abgleich: fall('Abgleich', 'ältere Änderung gewinnt', [['const useR = ra > la ||', 'const useR = ra < la ||']]),
+},
+// B-3.2 (APD-135/E-12): je Ablauf ein Fehler, der den alten Fehler nachbildet; derselbe muss auch die bisherige Prüfdatei der App rot machen
+// (Nachweis-Tabelle im CHANGELOG). zeichen = die Meldung des Ablaufs.
+messung: {
+  eingabeText: fall('Messung', 'Messdatei zeichnet den eingegebenen Text auf statt seiner Länge (Datenschutz)',
+    [["hoere(document, 'input', e => 'eingabe ' + (e.target.value?.length ?? 0));", "hoere(document, 'input', e => 'eingabe ' + (e.target.value ?? ''));"]],
+    /R-1\.6 Datei enthält den Text ‚Rom‘/),
+},
+'titel-blase': {
+  keineBlase: fall('Titel-Blase', 'langes Drücken auf den gekürzten Titel zeigt keine Sprechblase',
+    [['    zeigeTitelBlase(t);\n  }, 600) };', '  }, 600) };']], /R-2\.5 .*(keine Sprechblase|Sprechblase fehlt|ohne Sprechblase)/),
+},
+'titel-oben': {
+  hoererWindow: fall('Titel antippen', 'Hörer von ‚Titel antippen‘ am window statt am document (Safari schickt den Klick nicht)',
+    [["document.addEventListener('click', e => {\n  const start = titelTipp;", "window.addEventListener('click', e => {\n  const start = titelTipp;"]], /R-2\.7 .*H-1/),
+},
+'schicht-oben': {
+  loslassen: fall('Sperrschicht', 'Sperrschicht schließt nicht beim Loslassen (nur mit Klick)',
+    [['    klickVerschlucken(e.clientX, e.clientY);\n    schliessen();\n  });', '  });']], /APD-118\/X-1 Tipp bei y \d+ ohne Klick über #mainMore schließt das Menü nicht/),
+},
+grossanzeige: {
+  ohneAusloesen: fall('Großanzeige', 'Loslassen über einem Knopf löst ihn nicht aus',
+    [['if (k && !k.disabled) { grossSelbst = true;', 'if (false && k && !k.disabled) { grossSelbst = true;']], /R-2\.6 .*L-8/),
 } };
 const gpFall = () => (process.env.PRUEF_GEGENPROBE || '').match(/^pruefseite:(.+)$/)?.[1] || null;
 const gpSuche = name => name && Object.values(GEGENPROBEN_PRUEFSEITE).map(t => t[name]).find(Boolean);
@@ -225,6 +256,366 @@ async function vorlageAnsichten(t, b) {
   }
 }
 
+// ---------- B-3.2 (APD-135/E-7 bis E-11): die 5 Abläufe auf der Prüfseite ----------
+// Dieselben Fälle wie bis 3.57.6 in den Prüfdateien des Reiselogbuchs (ablauf-messung, -titel-blase, -titel-oben, -schicht-oben, -grossanzeige),
+// nur auf der Vorlage mit neutralen Daten (Einträge mit Unterpunkten). Was nur das Reiselogbuch hat (Datum im Fenstertitel, Reisetitel, ‚nichts
+// gelöscht‘ an db.trips, ‚Neues Reiselogbuch‘ beim Start ohne Daten), prüft die App in tests/ablauf-bausteine.mjs; hier stehen neutrale Entsprechungen.
+// Jede Funktion (t, b) nimmt die Prüfung (pruefe.mjs) und den Browser; Ansichten, Textgrößen, ‚Bewegung reduzieren‘ und Grundregeln wie bisher.
+const RUHE = '!document.getAnimations().some(a => a.playState === "running")';
+const KOPF = '#bar .nb-title, #bar .pnav-title', FTITEL = '#dlg .dlg-head h3';
+const tag = n => `u${String(n).padStart(3, '0')}`;
+// Einträge für einen Ablauf: [{ id, title, n (Anzahl Unterpunkte), text(i) }] – ohne Backup-Kachel (lastBackup heute), lastItem = erster Eintrag
+export function datenEintraege(liste, lastItem = liste[0]?.id) {
+  return { items: liste.map(({ id, title, n = 0, text = i => `Text ${i}` }) => ({ id, title, sub: Object.fromEntries(Array.from({ length: n }, (_, i) => [tag(i + 1), { text: text(i + 1) }])) })),
+    deleted: [], settings: { appearance: 'auto', lastBackup: Date.now(), ...(lastItem ? { lastItem } : {}) } };
+}
+// Textgröße vor dem Laden (wie die Einstellung ‚Textgröße‘ am Gerät; html font-size)
+const groesse = px => { const s = () => { const e = document.createElement('style'); e.textContent = `html { font-size: ${px}px !important; }`; document.documentElement.prepend(e); };
+  if (document.documentElement) s(); else new MutationObserver((m, o) => { if (document.documentElement) { o.disconnect(); s(); } }).observe(document, { childList: true }); };
+const zustand = p => p.evaluate(() => `Fenster ${document.getElementById('dlg')?.open ? 'offen' : 'zu'}, Meldung ${document.getElementById('msg')?.open ? 'offen' : 'zu'}, laufend: ${document.getAnimations().filter(a => a.playState === 'running').map(a => a.animationName || a.transitionProperty || a.effect?.target?.className || '?').join(', ') || '–'}`).catch(() => '?');
+const bis = async (p, bedingung, was) => { const m = await warteBis(p, bedingung, { was, max: 10000 }); if (m) throw new Error(`${m} (${await zustand(p)})`); };
+// Vorlage öffnen; am iPhone (Startliste) den Eintrag id öffnen. Gewartet wird auf Zustände (warteBis), nie fest.
+async function vorlageStart(p, daten, id = daten.settings.lastItem) {
+  await oeffneVorlage(p, { daten });
+  await bis(p, `document.readyState === 'complete' && !!document.querySelector('#side .side-row, #shareBtn') && ${RUHE}`, 'Vorlage aufgebaut'); await navFertig(p);
+  if (id && await p.evaluate(() => isPhone()) && await p.locator('#side.page').isVisible()) {
+    await p.locator(`#side .side-row[data-id="${id}"]`).click(); await bis(p, `currentId === '${id}' && !phoneList && !!document.querySelector('#shareBtn') && ${RUHE}`, 'Eintrag offen'); await navFertig(p);
+  }
+}
+const fensterAuf = async p => { await bis(p, `document.getElementById('dlg').open && ${RUHE}`, 'Fenster offen'); await navFertig(p); };
+// Fenster zu: das close-Ereignis kommt später als close() – erst danach baut die Vorlage neu auf (render, auch die Seitenleiste); gewartet wird
+// darauf, sonst ersetzt der Neuaufbau mitten im nächsten Schritt die Liste, die eine Prüfung gerade beobachtet
+const zuFenster = async p => { await p.evaluate(() => { window.__dlgZu = false; dlg.addEventListener('close', () => setTimeout(() => { window.__dlgZu = true; }), { once: true });
+  dlgDirty = () => false; dlg.close(); }); await bis(p, `window.__dlgZu && !document.getElementById('dlg').open && ${RUHE}`, 'Fenster zu'); await navFertig(p); };
+// Inhalt eines Fensters zum Rollen: ist er zu kurz, verlängert ihn ein Platzhalter (nur in der Prüfung; Fenster der Vorlage haben ein Feld)
+const fensterLang = p => p.evaluate(() => { const b = document.querySelector('#dlg .dlg-body'); if (b.scrollHeight - b.clientHeight < 400) { const d = document.createElement('div'); d.style.height = '1200px'; b.append(d); } });
+const gespeichert = p => p.evaluate(k => JSON.parse(localStorage.getItem(k) || '{"items":[]}'), SPEICHER);
+
+// APD-27/F-1 bis F-12 (R-1.6, checkMessung; seit APD-77 erst nach langem Drücken auf die Versionszeile): iPad quer, iPhone hoch dunkel, iPhone quer,
+// je mit vielen Unterpunkten und leer. F10 leer: starten und teilen (neutral statt ‚Neues Reiselogbuch‘ beim Start – das prüft die App).
+export async function ablaufMessung(t, b) {
+  const daten = datenEintraege([{ id: 'a', title: 'Garten', n: 60, text: i => `Zitrone ${i} und Ausflug ans Meer` }, { id: 'b', title: 'Werkstatt' }]);
+  for (const [w, h, cs, dev] of [[1180, 820, 'light', 'iPad quer'], [393, 852, 'dark', 'iPhone hoch dunkel'], [852, 393, 'light', 'iPhone quer']]) {
+    for (const leer of [false, true]) {
+      const ctx = await b.newContext({ viewport: { width: w, height: h }, hasTouch: true, isMobile: w < 700 || h < 500, colorScheme: cs, acceptDownloads: true });
+      const p = await ctx.newPage(); t.ort = `${dev}${leer ? ' leer' : ''}`;
+      p.setDefaultTimeout(10000);
+      p.on('pageerror', e => t.fehler('', `Skriptfehler der Seite: ${e.message}`));
+      try {
+        await oeffneVorlage(p, { daten: leer ? DATEN_LEER : daten });
+        await bis(p, `document.readyState === 'complete' && !!document.querySelector('#side .side-head') && ${RUHE}`, 'Vorlage aufgebaut'); await navFertig(p);
+        const menu = async () => { if (!await p.locator('#sideMore').isVisible()) { await p.locator('#back, [data-side-toggle]').first().click(); await navFertig(p); await bis(p, RUHE, 'Seitenleiste offen'); } await p.click('#sideMore'); };
+        if (leer) {   // F10: leere Vorlage – nach langem Drücken auf die Versionszeile starten, Menü zeigt ‚läuft‘, teilen liefert eine Datei
+          await menu(); await bis(p, `!!document.querySelector('.menu .note.halten') && ${RUHE}`, 'Mehr-Menü offen');   // gemessen erst in der Endlage
+          const v = await p.locator('.menu .note.halten').boundingBox();
+          { const m = await langDruecken(p, { x: v.x + v.width / 2, y: v.y + v.height / 2 }, { ms: 900, offen: '.menu' }); if (m) throw new Error(m); }
+          await p.locator('.menu .mi', { hasText: 'Messung starten' }).click(); await bis(p, '!!mess?.an', 'Messung läuft').catch(() => {});
+          if (!await p.evaluate(() => mess?.an)) t.fehler('', 'R-1.6 leere Vorlage: ‚Messung starten‘ startet keine Messung');
+          await menu(); await bis(p, `!!document.querySelector('.menu .mi') && ${RUHE}`, 'Mehr-Menü offen');
+          const [dl] = await Promise.all([p.waitForEvent('download', { timeout: 5000 }).catch(() => null), p.locator('.menu .mi', { hasText: 'Messung beenden und teilen' }).click()]);
+          if (!dl) t.fehler('', 'R-1.6 leere Vorlage: ‚Messung beenden und teilen‘ liefert keine Datei');
+        } else {
+          const search = async () => { await sucheAuf(p, '#sideMore'); await bis(p, `!!document.querySelector('#lsearch') && ${RUHE}`, 'Suche offen'); return '#lsearch'; };
+          t.liste(await checkMessung(p, { menu, search, secret: ['Garten', 'Werkstatt', 'Zitrone', 'Ausflug'], where: t.ort }));
+        }
+        await t.schritt(p, 'nach der Messung', async () => {});   // Grundregeln im Endzustand
+      } catch (e) { t.fehler('', `Ablauf bricht ab: ${e.message.split('\n')[0]}`); }
+      await ctx.close();
+    }
+  }
+}
+
+// APD-101/L-1 bis L-12 (R-2.5, checkTitelBlase): iPhone hoch bei größter Schrift (Text 53) – Kopfzeile (L-2), Fenster ‚Eintrag bearbeiten‘ (L-1),
+// Fenster eines Unterpunkts (L-3, neutral: Titel ‚Unterpunkt 4‘), Titel mit 80 Zeichen (L-4); Antippen, Wandern, Rollen, Tipp daneben, Esc (L-6 bis L-10),
+// L-8 neutral: nach den Tipps Fenster offen, Titel im Feld und gespeichert unverändert; Drehen (L-11); bei normaler Schrift in allen Ansichten zeigt
+// ein ganz sichtbarer Titel (‚Kurz‘) nichts (L-5); Grundregeln nach jedem Schritt (L-12).
+export async function ablaufTitelBlase(t, b) {
+  const LANG = 'Ein sehr langer Titel eines Eintrags, der in keiner Kopfzeile und keinem Fenster Platz';   // 80 Zeichen
+  const TITEL = 'Erster Eintrag mit Unterpunkten';
+  const daten = id => datenEintraege([{ id: 'a', title: TITEL, n: 20, text: i => `Text ${i} am Hafen` }, { id: 'b', title: LANG }, { id: 'c', title: 'Kurz' }], id);
+  // Die Fenstertitel der Vorlage (‚Eintrag bearbeiten‘, ‚Unterpunkt 4‘) passen bei Text 53 ganz hinein (im Reiselogbuch nicht: ‚Reiselogbuch
+  // einstellen‘, ‚Do, 27.08.2026‘) – für L-1, L-3 und L-4 verlängert die Prüfung den Titel des offenen Fensters (nur in der Prüfung, wie der Platzhalter in H-3).
+  const langerTitel = (p, zusatz) => p.evaluate(z => { const h = document.querySelector('#dlg .dlg-head h3'); h.textContent += z; }, zusatz);
+  const pruefe = async (p, name, opts, soll) => {
+    let r = { gekuerzt: false, errors: [] };
+    await t.schritt(p, name, async () => { r = await checkTitelBlase(p, { ...opts, where: name }); t.liste(r.errors); });
+    if (soll !== undefined) t.ist(`${name}: Titel gekürzt`, r.gekuerzt, soll, 'R-2.5');
+    return r;
+  };
+  // L-1 bis L-3, L-6 bis L-11: iPhone hoch, größte Schrift
+  {
+    const p = await t.seite(b, 'iPhone hoch', { theme: 'light' });
+    t.ort = 'iPhone hoch · Text 53';
+    await p.addInitScript(groesse, 53);
+    try {
+      await vorlageStart(p, daten('a'));
+      // L-2: Titel des Eintrags in der Kopfzeile; Tipp auf Teilen und Mehr schließt nur die Blase (kein Menü)
+      await pruefe(p, `L-2 Kopfzeile ‚${TITEL}‘`, { sel: KOPF, daneben: ['#mainMore', '#shareBtn'], rollen: '#app > .rolle', esc: true }, true);
+      // L-1: Fenster ‚Eintrag bearbeiten‘; Tipp auf x, Häkchen und Feld schließt nur die Blase (Fenster bleibt offen, nichts gespeichert)
+      await p.evaluate(() => openItemDialog(getItem('a'))); await fensterAuf(p); await langerTitel(p, `: ${TITEL}`); await fensterLang(p);   // L-9 rollt den Inhalt
+      await pruefe(p, 'L-1 Fenster ‚Eintrag bearbeiten‘', { sel: FTITEL, daneben: ['#dlgX', '#dlgOk', '#fTitle'], rollen: '#dlg .dlg-body', esc: true }, true);
+      t.ist('L-8 nach den Tipps: Fenster offen, Titel im Feld und gespeichert unverändert',
+        [await p.evaluate(() => dlg.open), await p.inputValue('#fTitle'), (await gespeichert(p)).items.find(e => e.id === 'a')?.title], [true, TITEL, TITEL], 'R-2.5');
+      // L-11: Drehen schließt die Blase; danach Grundregeln (oberster Eintrag bleibt) – t.schritt
+      await titelLang(p, FTITEL);
+      t.wahr('L-11 vor dem Drehen ist die Sprechblase offen', await titelBlaseOffen(p), 'R-2.5');
+      await t.schritt(p, 'L-11 drehen (hoch → quer → hoch)', async () => {
+        await p.setViewportSize({ width: 852, height: 393 }); await warteBis(p, `innerWidth === 852 && !document.querySelector('.titel-blase') && ${RUHE}`, { max: 3000 });
+        t.wahr('L-11 Drehen schließt die Sprechblase', !await titelBlaseOffen(p), 'R-2.5');
+        await p.evaluate(() => { window.__gedreht = 0; }); await p.setViewportSize({ width: 393, height: 852 }); await bis(p, `innerWidth === 393 && ${RUHE} && (window.__gedreht = (window.__gedreht || 0) + 1) > 3`, 'zurückgedreht');
+      });
+      t.wahr('L-11 nach dem Drehen ist das Fenster noch offen', await p.evaluate(() => dlg.open), 'R-2.5');
+      await zuFenster(p);
+      // L-3: Fenster eines Unterpunkts (neutral statt des Datums im Reiselogbuch)
+      await p.evaluate(k => openSubDialog(getItem('a'), k), tag(4)); await fensterAuf(p);
+      t.ist('L-3 Titel des Unterpunkts', await p.textContent(FTITEL), 'Unterpunkt 4', 'R-2.5');
+      await langerTitel(p, ` von ‚${TITEL}‘`);
+      await pruefe(p, 'L-3 Fenster eines Unterpunkts', { sel: FTITEL, daneben: ['#dlgX'], esc: true }, true);
+      await zuFenster(p);
+    } catch (e) { t.fehler('', `Ablauf bricht ab: ${e.message.split('\n')[0]}`); }
+    await p.close();
+  }
+  // L-4: Titel mit 80 Zeichen – mehrzeilig, ganz sichtbar, über keinem Knopf
+  {
+    const p = await t.seite(b, 'iPhone hoch', { theme: 'light' });
+    t.ort = 'iPhone hoch · Text 53';
+    await p.addInitScript(groesse, 53);
+    try {
+      await vorlageStart(p, daten('b'));
+      await pruefe(p, 'L-4 Kopfzeile, Titel mit 80 Zeichen', { sel: KOPF, esc: false }, true);
+      await titelLang(p, KOPF);
+      const z = await p.evaluate(() => { const e = document.querySelector('.titel-blase'); return e ? Math.round(e.getBoundingClientRect().height / parseFloat(getComputedStyle(e).lineHeight)) : 0; });
+      t.wahr(`L-4 der lange Titel steht mehrzeilig in der Sprechblase (${z} Zeilen)`, z >= 2, 'R-2.5');
+      await p.keyboard.press('Escape');
+      await p.evaluate(() => openItemDialog(getItem('b'))); await fensterAuf(p); await langerTitel(p, `: ${LANG}`);
+      await pruefe(p, 'L-4 Fenster des langen Eintrags', { sel: FTITEL, daneben: ['#dlgX'], esc: false }, true);
+      await zuFenster(p);
+    } catch (e) { t.fehler('', `Ablauf bricht ab: ${e.message.split('\n')[0]}`); }
+    await p.close();
+  }
+  // L-5: normale Schrift, alle Ansichten, kurzer Titel ‚Kurz‘ – ganz sichtbar, langes Drücken zeigt nichts
+  for (const ansicht of ['iPad quer', 'iPad hoch', 'iPhone hoch', 'iPhone quer']) {
+    const p = await t.seite(b, ansicht, { theme: 'light' });
+    try {
+      await vorlageStart(p, daten('c'));
+      await pruefe(p, 'L-5 Kopfzeile', { sel: KOPF }, false);
+      await p.evaluate(() => openItemDialog(getItem('c'))); await fensterAuf(p);
+      await pruefe(p, 'L-5 Fenster ‚Eintrag bearbeiten‘', { sel: FTITEL }, false);
+      await zuFenster(p);
+    } catch (e) { t.fehler('', `Ablauf bricht ab: ${e.message.split('\n')[0]}`); }
+    await p.close();
+  }
+}
+
+// APD-62/H-1 bis H-9 (R-2.7, checkTitelOben): Titel antippen rollt den zugehörigen Bereich sanft ganz nach oben – Kopfzeile den Inhalt (H-1),
+// Seitenleiste ihre Liste (H-2), Fenster-Kopfzeile den Inhalt des Fensters (H-3); schon oben nichts, langes Drücken nicht, Tipp hält an, ‚Bewegung
+// reduzieren‘ sofort oben, während eines Seitenwechsels nichts – 4 Ansichten und 2 mit ‚Bewegung reduzieren‘. APD-109/C-1 bis C-9: alles im
+// Safari-Modell ‚Klick nur mit Hörer‘, Selbsttest zuerst (checkSafariKlick). APD-108/W-1 bis W-7: Selbsttest ‚Klick nach dem Wischen‘
+// (checkSafariWischKlick), Wischen über den Titel rollt nicht. APD-127/B-5 (R-1.12): mit der Feder nach oben (iPad quer, iPhone hoch).
+export async function ablaufTitelOben(t, b) {
+  const daten = datenEintraege([{ id: 'a', title: 'Erster Eintrag', n: 40, text: i => `Text ${i}\nzweite Zeile` },
+    ...Array.from({ length: 40 }, (_, i) => ({ id: `e${i}`, title: `Eintrag ${String(i + 1).padStart(2, '0')}` }))], 'a');
+  const ruht = sel => `(() => { const e = document.querySelector(${JSON.stringify(sel)}); return !!e && e.getBoundingClientRect().height > 0
+    && !document.getAnimations().some(a => a.playState === 'running') && !/(^|\\s)(nav-|blatt-faehrt|blatt-zieht)/.test(document.documentElement.className); })()`;
+  const pruefe = async (p, name, opts) => { await t.schritt(p, name, async () => t.liste(await checkTitelOben(p, { ...opts, where: name }))); };
+  // Fenster eines Unterpunkts mit langem Inhalt (H-3): ist er zu kurz zum Rollen, verlängert ihn ein Platzhalter (nur in der Prüfung)
+  const fenster = async p => {
+    await p.evaluate(k => openSubDialog(getItem('a'), k), tag(3)); await bis(p, ruht('#dlg[open] .dlg-body'), 'Fenster offen'); await ruhe(p);
+    await fensterLang(p);
+  };
+  for (const [ansicht, ruhig] of [['iPad quer', false], ['iPad hoch', false], ['iPhone hoch', false], ['iPhone quer', false], ['iPad quer', true], ['iPhone hoch', true]]) {
+    const p = await t.seite(b, ansicht, { theme: 'light', ...(ruhig ? { reducedMotion: 'reduce' } : {}) });
+    if (ruhig) t.ort = `${t.ort} · Bewegung reduzieren`;
+    try {
+      await vorlageStart(p, daten, 'a'); await bis(p, ruht('#shareBtn'), 'Eintrag offen');
+      if (!ruhig) await t.schritt(p, 'C-1/C-2 Safari-Modell', async () => t.liste(await checkSafariKlick(p)));
+      if (!ruhig) await t.schritt(p, 'APD-108/W-1 Safari-Modell', async () => t.liste(await checkSafariWischKlick(p)));
+      const seite = await p.locator('#side .side-list').isVisible();
+      // H-1: Titel der Kopfzeile rollt den Inhalt; die Seitenleiste daneben bleibt
+      await pruefe(p, 'H-1 Kopfzeile', { titel: KOPF, rolle: '#app > .rolle', still: seite ? ['#side .side-list'] : [], ruhig });
+      // APD-127/B-5 (R-1.12): mit der Feder nach oben
+      if (!ruhig && (ansicht === 'iPad quer' || ansicht === 'iPhone hoch')) await t.schritt(p, 'APD-127/B-5 Gleiten', async () =>
+        t.liste(await checkGleiten(p, { titel: { sel: KOPF, rolle: '#app > .rolle' }, where: 'APD-127/B-5 Kopfzeile' })));
+      if (!ruhig) {
+        // H-3: Titel des Fensters rollt den Inhalt des Fensters; die Seite dahinter steht still (R-7.3)
+        await fenster(p);
+        await pruefe(p, 'H-3 Fenster eines Unterpunkts', { titel: FTITEL, rolle: '#dlg .dlg-body', still: ['#app > .rolle'] });
+        await zuFenster(p);
+        // H-2: Titel der Seitenleiste rollt nur ihre Liste (iPad quer: neben dem Inhalt; iPhone hoch: Startliste)
+        if (ansicht === 'iPad quer') await pruefe(p, 'H-2 Seitenleiste', { titel: '#side .side-head h2', rolle: '#side .side-list', still: ['#app > .rolle'] });
+        if (ansicht === 'iPhone hoch') {
+          await p.locator('#back').click(); await navFertig(p); await bis(p, ruht('#side.page .side-row'), 'Startliste offen');
+          await pruefe(p, 'H-2 Startliste', { titel: '#side .side-head h2', rolle: '#side .side-list' });
+        }
+      }
+    } catch (e) { t.fehler('', `Ablauf bricht ab: ${e.message.split('\n')[0]}`); }
+    await p.close();
+  }
+}
+
+// APD-118/X-1 bis X-8 (Designrichtlinie 13 ‚Am oberen Rand kein Klick‘, checkSchichtOben): die Sperrschicht hinter Menü, Untermenü, Kontextmenü und
+// Sprechblase schließt beim Loslassen (bis 20 px Weg) und verschluckt den Klick danach. iPhone quer hell und dunkel (am Rand), iPhone hoch, iPad quer
+// und hoch (X-4 bis X-6 mit Untermenü ‚Darstellung‘, Kontextmenü und Sprechblase ‚Eintrag löschen‘); danach neutral ‚nichts gelöscht‘ (gespeicherte
+// Einträge). X-8: Messung 2026-11-06 nachgespielt; APD-121/Y-5: die Tipps auf den Mehr-Knopf der Liste aus den Messungen vom 07.11.2026.
+export async function ablaufSchichtOben(t, b) {
+  const daten = datenEintraege([{ id: 'a', title: 'Erster Eintrag', n: 12, text: i => `Text ${i} am Hafen` }, { id: 'b', title: 'Zweiter Eintrag' }], 'a');
+  const messung = datei => liesMessung(readFileSync(path.join(MESSUNGEN, datei), 'utf8'));
+  const loeschenFrage = async p => { await p.evaluate(() => document.querySelector('#mainMore')?.click()); await p.waitForSelector('.menu .mi');
+    await p.locator('.menu .mi', { hasText: 'Eintrag löschen' }).click(); };
+  const lang = async (p, n) => { const bx = await p.locator('.side-row', { hasText: n }).boundingBox(); await p.mouse.move(bx.x + 40, bx.y + 20); await p.mouse.down(); await p.waitForTimeout(750); await p.mouse.up(); };
+  for (const [ansicht_, theme] of [['iPhone quer', 'light'], ['iPhone quer', 'dark'], ['iPhone hoch', 'light'], ['iPad quer', 'light'], ['iPad hoch', 'light']]) {
+    const p = await t.seite(b, ansicht_, { theme });
+    try {
+      await vorlageStart(p, daten, 'a');
+      const amRand = ansicht_ === 'iPhone quer', ipad = ansicht_.startsWith('iPad');
+      const oeffner = [loeschenFrage, ...(ipad ? [
+        async p => { await p.click('#sideMore'); await p.waitForSelector('.menu .mi'); await p.locator('.menu .mi', { hasText: 'Darstellung' }).click(); },
+        p => lang(p, 'Zweiter Eintrag'),
+        async p => { await lang(p, 'Zweiter Eintrag'); await p.waitForSelector('.menu.kontext .mi'); await p.locator('.menu.kontext .mi', { hasText: 'Eintrag löschen' }).click(); }] : [])];
+      await t.schritt(p, 'Sperrschicht schließt beim Loslassen', async () => t.liste(await checkSchichtOben(p, { mehr: '#mainMore', oeffner, oben: amRand, where: t.ort })));
+      t.ist('nichts gelöscht (gespeicherte Einträge)', (await gespeichert(p)).items.length, 2, 'R-4.4');
+    } catch (e) { t.fehler('', `Ablauf bricht ab: ${e.message.split('\n')[0]}`); }
+    await p.close();
+  }
+  // X-8: die Messung nachgespielt (Größe und Gerät aus dem Kopf, gedreht wie gemessen)
+  {
+    const m = messung('2026-11-06 iPhone quer Mehr-Menü oberer Rand.txt');
+    const a = messAnsicht(m), { width: kurz, height: lang_ } = a.viewport;
+    const p = await t.seite(b, { ...a, viewport: { width: Math.max(kurz, lang_), height: Math.min(kurz, lang_) } }, { theme: 'light' });
+    t.ort = 'Messung iPhone quer';
+    try {
+      await vorlageStart(p, daten, 'a');
+      await t.schritt(p, 'Messung nachgespielt', async () => t.liste(await checkSchichtOben(p, { mehr: '#mainMore', messung: m, where: 'X-8 Messung' })));
+    } catch (e) { t.fehler('', `Ablauf bricht ab: ${e.message.split('\n')[0]}`); }
+    await p.close();
+  }
+  // APD-121/Y-5: Tipps auf den Mehr-Knopf der Liste aus den Messungen vom 07.11.2026 nachgespielt (Startliste, #sideMore)
+  for (const datei of ['2026-11-07 iPhone quer Mehr-Knopf oben 1.txt', '2026-11-07 iPhone quer Mehr-Knopf oben 2.txt']) {
+    const m = messung(datei);
+    const ev = m.zeilen.map(z => z.ereignis || '').filter(e => /^(zeiger (down|move|up) \d+ \d+ touch|tippen )/.test(e));
+    const tipps = [];
+    ev.forEach((e, i) => { const d = e.match(/^zeiger down (\d+) (\d+) touch (?:svg\.ic in )?sideMore$/); if (!d) return;
+      const j = ev.findIndex((x, k) => k > i && x.startsWith('zeiger up')), u = ev[j].match(/^zeiger up (\d+) (\d+)/);
+      tipps.push({ x0: +d[1], y0: +d[2], x1: +u[1], y1: +u[2], soll: ev[j + 1] === 'tippen sideMore' }); });
+    const a = messAnsicht(m), { width: kurz, height: lang_ } = a.viewport;
+    const p = await t.seite(b, { ...a, viewport: { width: Math.max(kurz, lang_), height: Math.min(kurz, lang_) } }, { theme: 'light' });
+    t.ort = `APD-121/Y-5 ${datei.replace(/\.txt$/, '')}`;
+    try {
+      await vorlageStart(p, daten, 'a');
+      if (await p.locator('#back').isVisible()) { await p.click('#back'); await navFertig(p); await bis(p, `!!document.querySelector('#side.page #sideMore') && ${RUHE}`, 'Startliste offen'); }
+      const offen = () => p.evaluate(() => !!document.querySelector('.menu:not(.zu-geist), .layer'));
+      t.wahr('APD-121/Y-5 Messung mit Tipps auf den Mehr-Knopf (sonst prüft die Prüfung nichts)', tipps.length >= 6 && (datei.includes('oben 1') || tipps.some(x => x.y0 === 21) && tipps.some(x => !x.soll)), 'APD-121');
+      // waagrecht auf die Mitte des Knopfs verschoben (am Gerät anderer sicherer Rand: Knopf weiter links), y und Weg wie gemessen
+      const mx = await p.evaluate(() => { const r = document.querySelector('#sideMore').getBoundingClientRect(); return r.x + r.width / 2; });
+      const dx = Math.round(mx - tipps.map(k => k.x0).sort((a, b) => a - b)[tipps.length >> 1]);
+      await obenOhneKlick(p);
+      try {
+        for (const k of tipps) {
+          await p.mouse.move(k.x0 + dx, k.y0); await p.mouse.down(); if (k.x1 !== k.x0 || k.y1 !== k.y0) await p.mouse.move(k.x1 + dx, k.y1, { steps: 3 }); await p.mouse.up();
+          await p.waitForTimeout(450);
+          const ist = await offen();
+          if (ist !== k.soll) t.fehler('13', `APD-121/Y-5 Tipp ${k.x0}/${k.y0}${k.x1 !== k.x0 || k.y1 !== k.y0 ? ` → ${k.x1}/${k.y1}` : ''} auf #sideMore: Menü ${ist ? 'offen' : 'zu'}, gemessen ${k.soll ? 'offen' : 'zu'}`);
+          for (let n = 0; n < 3 && await offen(); n++) { await p.keyboard.press('Escape'); await p.waitForTimeout(350); }
+        }
+      } finally { await obenOhneKlick(p, false); }
+      await t.schritt(p, 'Mehr-Knopf oben nachgespielt', async () => {});
+    } catch (e) { t.fehler('', `Ablauf bricht ab: ${e.message.split('\n')[0]}`); }
+    await p.close();
+  }
+}
+
+// APD-104/L-1 bis L-9 (R-2.6, checkGrossanzeige): ab AX1 zeigt langes Drücken auf einen Leisten-Knopf Icon und Namen groß in der Mitte; gleiten
+// wechselt, Loslassen über einem Knopf löst ihn aus, daneben schließt sie nur. Je Ansicht bei AX1 (Text 28): Kopfzeile (Ausgabe → Mehr, daneben der
+// Titel), Seitenleiste (Neuer Eintrag → Mehr), Fenster-Kopfzeile (Abbrechen → Fertig), schwebende Knöpfe (Nach oben → Ans Ende); echt ausgelöst:
+// Loslassen über ‚Mehr‘ öffnet das Menü; offenes Menü: keine Anzeige auf verdeckten Knöpfen; Drehen schließt ohne Auslösen; APD-62/M-9 (R-4.13):
+// das Menü wächst nach der Großanzeige aus der Schaltfläche; AX5 (Text 53): die Anzeige wächst mit; Text 17 (L): nichts davon (L-1, L-2).
+export async function ablaufGrossanzeige(t, b) {
+  const daten = datenEintraege([{ id: 'a', title: 'Erster Eintrag', n: 20, text: i => `Text ${i} mit etwas mehr Inhalt für eine lange Seite` }, { id: 'b', title: 'Zweiter Eintrag' }], 'a');
+  const sichtbar = (p, s) => p.evaluate(s => { const e = document.querySelector(s); return !!e && !!e.getClientRects().length && getComputedStyle(e).visibility !== 'hidden'; }, s);
+  for (const ansicht of ['iPad quer', 'iPad hoch', 'iPhone hoch', 'iPhone quer']) {
+    const p = await t.seite(b, ansicht, { theme: 'light' });
+    t.ort = `${ansicht} · Text 28 (AX1)`;
+    await p.addInitScript(groesse, 28);
+    try {
+      await vorlageStart(p, daten, 'a');
+      t.wahr('Text 28 ist AX1 (html.ts-ax)', await p.evaluate(() => document.documentElement.classList.contains('ts-ax')), 'R-2.6');
+      // Kopfzeile: Ausgabe → Mehr; daneben: der Titel
+      await t.schritt(p, 'Kopfzeile', async () => t.liste(await checkGrossanzeige(p, { knoepfe: ['#shareBtn', '#mainMore'], daneben: KOPF, where: 'Kopfzeile' })));
+      // echt ausgelöst: 0,7 s auf ‚Mehr‘, loslassen – das Menü öffnet sich genau einmal, die Anzeige ist zu
+      await t.schritt(p, 'Kopfzeile – Mehr echt auslösen', async () => {
+        await finger(p, '#mainMore', [['warte', 700]], { fangen: false }); await p.waitForTimeout(300);
+        t.ist('L-8 Loslassen über ‚Mehr‘ öffnet das Menü', await p.locator('.menu').count(), 1, 'R-2.6');
+        t.wahr('L-8 nach dem Loslassen ist die Großanzeige zu', !await p.locator('.grossanzeige').count(), 'R-2.6');
+        // offenes Menü: die Knöpfe darunter sind verdeckt – langes Drücken dort zeigt keine Anzeige
+        const r = await p.evaluate(async () => {
+          const k = document.querySelector('#shareBtn').getBoundingClientRect(), x = k.left + k.width / 2, y = k.top + k.height / 2, z = document.elementFromPoint(x, y);
+          const ev = typ => z.dispatchEvent(new PointerEvent(typ, { pointerId: 9, pointerType: 'touch', isPrimary: true, clientX: x, clientY: y, button: 0, buttons: typ === 'pointerup' ? 0 : 1, bubbles: true, cancelable: true }));
+          ev('pointerdown'); await new Promise(r => setTimeout(r, 700)); const g = !!document.querySelector('.grossanzeige'); ev('pointerup'); return g;
+        });
+        t.wahr('bei offenem Menü zeigt langes Drücken auf den verdeckten Knopf ‚Ausgabe‘ keine Großanzeige', !r, 'R-2.6');
+        // das Loslassen auf der Sperrschicht schließt das Menü schon (APD-118) – Esc nur, wenn noch eins offen ist
+        if (await p.locator('.menu').count()) await p.keyboard.press('Escape');
+        await p.waitForTimeout(300);
+      });
+      // APD-62/M-9 (R-4.13): Großanzeige auf ‚Mehr‘, dann wächst das Menü aus der Schaltfläche, Endlage wie ohne Bewegung
+      await t.schritt(p, 'Kopfzeile – Mehr wächst nach der Großanzeige', async () => t.liste(await checkWachsen(p, { menue: '#mainMore', gross: true, where: 'Kopfzeile AX1' })));
+      // Seitenleiste (iPad: fest links)
+      if (await sichtbar(p, '#newItem'))
+        await t.schritt(p, 'Seitenleiste', async () => t.liste(await checkGrossanzeige(p, { knoepfe: ['#newItem', '#sideMore'], where: 'Seitenleiste' })));
+      // schwebende Knöpfe: in der Mitte der Seite sind beide sichtbar
+      await p.evaluate(() => { const r = document.querySelector('#app > .rolle'); r.scrollTop = (r.scrollHeight - r.clientHeight) / 2; }); await p.waitForTimeout(500);
+      if (await sichtbar(p, '#toTop') && await sichtbar(p, '#toEnd'))
+        await t.schritt(p, 'schwebende Knöpfe', async () => t.liste(await checkGrossanzeige(p, { knoepfe: ['#toTop', '#toEnd'], where: 'schwebende Knöpfe' })));
+      else if (ansicht.startsWith('iPad')) t.fehler('R-2.6', 'schwebende Knöpfe ‚Nach oben‘ und ‚Ans Ende‘ in der Mitte der Seite nicht beide sichtbar');
+      // Fenster-Kopfzeile: Abbrechen → Fertig (Fenster ‚Eintrag bearbeiten‘)
+      await p.evaluate(() => openItemDialog(getItem('a'))); await fensterAuf(p);
+      await t.schritt(p, 'Fenster-Kopfzeile', async () => t.liste(await checkGrossanzeige(p, { knoepfe: ['#dlgX', '#dlgOk'], daneben: FTITEL, where: 'Fenster-Kopfzeile' })));
+      // Drehen schließt die Anzeige ohne Auslösen; das Fenster bleibt offen
+      await t.schritt(p, 'drehen bei offener Großanzeige', async () => {
+        const vp = p.viewportSize();
+        const r = await p.evaluate(async () => {
+          const k = document.querySelector('#dlgX'), q = k.getBoundingClientRect(), x = q.left + q.width / 2, y = q.top + q.height / 2;
+          const ev = typ => k.dispatchEvent(new PointerEvent(typ, { pointerId: 10, pointerType: 'touch', isPrimary: true, clientX: x, clientY: y, button: 0, buttons: typ === 'pointerup' ? 0 : 1, bubbles: true, cancelable: true }));
+          ev('pointerdown'); await new Promise(r => setTimeout(r, 700)); window.__ev = ev; return !!document.querySelector('.grossanzeige');
+        });
+        t.wahr('vor dem Drehen ist die Großanzeige offen', r, 'R-2.6');
+        await p.setViewportSize({ width: vp.height, height: vp.width }); await p.waitForTimeout(400);
+        t.wahr('Drehen schließt die Großanzeige', !await p.locator('.grossanzeige').count(), 'R-2.6');
+        await p.evaluate(() => window.__ev('pointerup')); await p.waitForTimeout(300);
+        t.wahr('nach dem Drehen löst das Loslassen ‚Abbrechen‘ nicht aus – das Fenster bleibt offen', await p.evaluate(() => dlg.open), 'R-2.6');
+        await p.setViewportSize(vp); await p.waitForTimeout(400);
+      });
+      await zuFenster(p);
+    } catch (e) { t.fehler('', `Ablauf bricht ab: ${e.message.split('\n')[0]}`); }
+    await p.close();
+  }
+  // AX5 (Text 53): die Anzeige wächst mit und bleibt ganz auf dem Bildschirm (iPhone quer ist am niedrigsten)
+  for (const ansicht of ['iPhone hoch', 'iPhone quer']) {
+    const p = await t.seite(b, ansicht, { theme: 'light' });
+    t.ort = `${ansicht} · Text 53 (AX5)`;
+    await p.addInitScript(groesse, 53);
+    try {
+      await vorlageStart(p, daten, 'a');
+      await t.schritt(p, 'Kopfzeile AX5', async () => t.liste(await checkGrossanzeige(p, { knoepfe: ['#shareBtn', '#mainMore'], where: 'Kopfzeile AX5' })));
+      const r = await finger(p, '#mainMore', [['warte', 700], ['merke', 'g'], ['ohneKlick']]);
+      t.wahr(`AX5: die Großanzeige wächst mit der Textgröße (Schrift ${r.gemerkt.g.gross?.schrift} px)`, (r.gemerkt.g.gross?.schrift || 0) >= 52, 'R-2.6');
+      await p.keyboard.press('Escape'); await p.waitForTimeout(200);
+    } catch (e) { t.fehler('', `Ablauf bricht ab: ${e.message.split('\n')[0]}`); }
+    await p.close();
+  }
+  // L-1, L-2: Text 17 (L) – langes Drücken zeigt nichts und wirkt wie Antippen
+  for (const ansicht of ['iPad quer', 'iPhone hoch']) {
+    const p = await t.seite(b, ansicht, { theme: 'light' });
+    t.ort = `${ansicht} · Text 17 (L)`;
+    try {
+      await vorlageStart(p, daten, 'a');
+      await t.schritt(p, 'Kopfzeile L', async () => t.liste(await checkGrossanzeige(p, { knoepfe: ['#shareBtn', '#mainMore'], ax: false, where: 'Kopfzeile L' })));
+    } catch (e) { t.fehler('', `Ablauf bricht ab: ${e.message.split('\n')[0]}`); }
+    await p.close();
+  }
+}
+const ABLAEUFE = { messung: ablaufMessung, 'titel-blase': ablaufTitelBlase, 'titel-oben': ablaufTitelOben, 'schicht-oben': ablaufSchichtOben, grossanzeige: ablaufGrossanzeige };
+
 export async function pruefseite(pw, { out, teil = process.env.PRUEF_TEIL || 'werte' } = {}) {
   const t = pruefung('bausteine-pruefseite', pw, { hig: createCheck(), out });
   const fehler = gpFall();
@@ -237,6 +628,7 @@ export async function pruefseite(pw, { out, teil = process.env.PRUEF_TEIL || 'we
     await p.close();
     // bricht ein Schritt ab (z. B. mit eingeschleustem Fehler), bleiben die Meldungen bis dahin – der Abbruch ist selbst ein Fehler
     try { await vorlageAnsichten(t, b); } catch (e) { t.fehler('', `Vorlage: Ablauf bricht ab – ${e.message.split('\n')[0]}`); }
-  } else t.fehler('', `unbekannter Teil ‚${teil}‘ (werte)`);
+  } else if (ABLAEUFE[teil]) await ABLAEUFE[teil](t, b);
+  else t.fehler('', `unbekannter Teil ‚${teil}‘ (werte, ${Object.keys(ABLAEUFE).join(', ')})`);
   await t.ende(b);
 }

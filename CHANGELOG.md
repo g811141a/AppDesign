@@ -25,7 +25,7 @@ APD-138/D-1 bis D-18; Sitzungen 0137 und 0138).
 
 **APD-135 Paket 6 – Schnittstelle und Prüfseite** (Schritt 1: Umfang, Wortlaut und Testfall-Liste APD-135/S-1 bis S-15 bestätigt 19.11.2026 in Sitzung 0136 –
 `arbeit/APD-135 Paket 6 Schritt 1 Vorschlag.md`; Sitzungen 0136 bis 0138. Schritt 2: Umfang, Wortlaut und Testfall-Liste APD-135/E-1 bis E-17 bestätigt
-19.11.2026 in Sitzung 0139 – `arbeit/APD-135 Paket 6 Schritt 2 Vorschlag.md`; hier APD-135/B-3.1).
+19.11.2026 in Sitzung 0139 – `arbeit/APD-135 Paket 6 Schritt 2 Vorschlag.md`; hier APD-135/B-3.1 und APD-135/B-3.2, Sitzungen 0139 und 0140).
 
 - **Schnittstelle (APD-135/B-4.1):** neu `v4/schnittstelle.json` (Teile `app` und `pruefungen`) und `tests/schnittstelle.mjs` mit `checkSchnittstelle`
   (Zerleger `tests/schnittstelle-zerleger.mjs`); in der App `tests/schnittstelle-regeln.mjs` im Vorlauf von `lauf.mjs`, nur im ersten Browser;
@@ -56,6 +56,25 @@ APD-138/D-1 bis D-18; Sitzungen 0137 und 0138).
   Vorlage; eine Kopie mit `setAppearance` wird rot mit ‚R-1.14‘ (APD-135/E-1, gegen die alte Vorlage rot).
 - **Texte (APD-135/B-3.1):** Designrichtlinie 14 (Inhalt, Feste Fassung, Prüfen), 17 Kopf ‚Prüfung‘, R-1.14 Spalte Prüfung; `tests/README.md` (Abschnitt ‚Prüfseite‘
   und Reiselogbuch), AppDesign-`README.md` (Vorlage).
+- **Abläufe auf der Prüfseite (APD-135/B-3.2):** `tests/pruefseite.mjs` mit `ablaufMessung` (APD-27/F-1 bis F-12), `ablaufTitelBlase` (APD-101/L-1 bis L-12),
+  `ablaufTitelOben` (APD-62/H-1 bis H-9, APD-109/C-1 bis C-9, APD-108/W-1 bis W-7), `ablaufSchichtOben` (APD-118/X-1 bis X-8 mit den 3 Messdateien) und
+  `ablaufGrossanzeige` (APD-104/L-1 bis L-9) – dieselben Fälle wie bisher in der App, gegen die Vorlage mit neutralen Daten; in der Hülle der App die Teile
+  `messung`, `titel-blase`, `titel-oben`, `schicht-oben`, `grossanzeige` (mit `werte` 6 Teile, APD-135/E-7 bis E-11). Abweichungen vom Vorschlag: die
+  Fenstertitel der Vorlage passen bei Text 53 ganz hinein – die Prüfung verlängert für APD-101/L-1, L-3, L-4 den Titel und für APD-101/L-9 und APD-62/H-3
+  den Inhalt (nur in der Prüfung, Vorlage unverändert); neutrale Gegenstücke statt Reiselogik; die Gegenprobe APD-127/B-10 bleibt in `ablauf-blatt` und
+  `ablauf-feld-tastatur`; die Abläufe warten auf das `close`-Ereignis des Fensters (sonst baute die Vorlage die Seitenleiste mitten in APD-62/H-2 neu auf).
+- **Gegenprobe vor dem Wegfall (APD-135/B-3.2, APD-135/E-12):** je Ablauf ein eingeschleuster Fehler in `--gegenprobe pruefseite` (zusammen 13 Fälle × 2 Browser =
+  26 Läufe, alle rot). Derselbe Fehler war rot auf der Prüfseite, in der bisherigen Prüfdatei des Reiselogbuchs und in der neuen `ablauf-bausteine` (Chromium):
+
+  | Ablauf | eingeschleuster Fehler in `ui.js` | Prüfseite | bisherige Prüfdatei | `ablauf-bausteine` |
+  |---|---|---|---|---|
+  | messung | Eingabetext statt Länge in der Messdatei | rot (9 Fehler) | `ablauf-messung` rot (9) | rot (2) |
+  | titel-blase | keine Sprechblase am gekürzten Titel | rot (7) | `ablauf-titel-blase` rot (7) | rot (3) |
+  | titel-oben | Hörer von ‚Titel antippen‘ am `window` statt am `document` | rot (10) | `ablauf-titel-oben` rot (10) | rot (4) |
+  | schicht-oben | Sperrschicht schließt nicht beim Loslassen | rot (13) | `ablauf-schicht-oben` rot (13) | rot (4) |
+  | grossanzeige | Loslassen löst den Knopf nicht aus | rot (42) | `ablauf-grossanzeige` rot (42) | rot (1) |
+
+- **Doku (APD-135/B-3.2):** `tests/README.md` (Abschnitt ‚Prüfseite‘ mit den neuen Teilen). `ui.js`, `design.css`, Vorlage und `schnittstelle.json` unverändert.
 - AD-Bean: keine, weil nur die Schnittstelle von `ui.js` und innere Bausteine; die gedrückten Schaltflächen (`markHeld`, `hold`, `release`, `setOpener`,
   `markOpener`) bekommen später eine eigene Bean `gedrueckt`, `FX_SVG` ist Kandidat für APD-136 (Nutzer 19.11.2026, Sitzung 0138).
 

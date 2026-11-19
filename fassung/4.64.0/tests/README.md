@@ -87,7 +87,7 @@ einmal; rot zählt nur mit genau der passenden Meldung – beim Bau von APD-43/1
 `los`.
 `--gegenprobe text` (seit 4.37.0) ebenso mit der Prüfung der Textgröße der App (`text-regeln`).
 `--gegenprobe pruefseite` (seit 4.64.0) läuft jeden Teil der Prüfseite (`bausteine-pruefseite`) je eingeschleustem Fehler seiner Bausteine einmal
-(`GEGENPROBEN_PRUEFSEITE`, Teil `werte` 8 Fehler); rot zählt nur mit der Meldung dieses Bausteins, ein Teil ohne Fehler bricht ab.
+(`GEGENPROBEN_PRUEFSEITE`, Teil `werte` 8 Fehler, die 5 Abläufe je 1); rot zählt nur mit der Meldung dieses Bausteins, ein Teil ohne Fehler bricht ab.
 Gleichzeitig laufen standardmäßig so viele Browser, wie der Rechner Kerne hat (mit doppelt so vielen schwankte WebKit unter
 Volllast); erst alle Prüfungen in Chromium, dann alle in WebKit – nie beide gleichzeitig. Fehlt WebKit, bricht der Lauf mit Hinweis
 ab (Rückgabewert 2) – nie stillschweigend nur Chromium. Lange Prüfungen lassen sich teilen (`teile`, z. B. hig nach Darstellung).
@@ -111,6 +111,16 @@ Zusammenspiel mit der App sichtbar wird, prüft die App selbst.
 - `pruefseite(pw, { out, teil })` – ein Teil mit Ergebnis und Rückgabewert (`pruefe.mjs`); Teil `werte`: `checkWerte` auf der Mindestseite, dann die Vorlage
   in iPad quer und hoch, iPhone hoch und quer, hell und dunkel, leer und mit 60 Unterpunkten mit den Grundregeln nach jedem Schritt (Menü, Fenster,
   Sprechblase im iPad quer und iPhone hoch).
+- Seit 4.64.0 (APD-135/B-3.2, APD-135/E-7 bis E-11) die 5 Abläufe als Teile – dieselben Fälle wie bis Reiselogbuch 3.57.6 in dessen Prüfdateien, auf der
+  Vorlage mit neutralen Daten (`datenEintraege`): `messung` (`ablaufMessung`, APD-27/F-1 bis F-12, `checkMessung`; iPad quer, iPhone hoch dunkel, iPhone
+  quer, je voll und leer), `titel-blase` (`ablaufTitelBlase`, APD-101/L-1 bis L-12, `checkTitelBlase`; Text 53 iPhone hoch, L-5 in 4 Ansichten),
+  `titel-oben` (`ablaufTitelOben`, APD-62/H-1 bis H-9, APD-109/C-1 bis C-9, APD-108/W-1 bis W-7, APD-127/B-5; 6 Durchläufe, 2 mit ‚Bewegung reduzieren‘),
+  `schicht-oben` (`ablaufSchichtOben`, APD-118/X-1 bis X-8 mit den 3 Messdateien aus `tests/messungen/`, APD-121/Y-5), `grossanzeige`
+  (`ablaufGrossanzeige`, APD-104/L-1 bis L-9, APD-62/M-9; Text 28, 53 und 17). Die Fenstertitel der Vorlage passen bei Text 53 ganz hinein – für
+  APD-101/L-1, APD-101/L-3 und APD-101/L-4 verlängert der Ablauf den Titel des offenen Fensters, für das Rollen (APD-101/L-9, APD-62/H-3) den Inhalt (nur in
+  der Prüfung). Was nur die App
+  hat (Datum im Fenstertitel, Reisetitel, Daten der App, Fenster beim Start ohne Daten) und das Zusammenspiel mit ihren Knöpfen prüft die App selbst
+  (Reiselogbuch: `ablauf-bausteine`).
 - Die App startet sie über eine Hülle – Playwright und der Ausgabeordner kommen von ihr, nie wird in die Fassung geschrieben:
 
 ```js
@@ -120,7 +130,10 @@ await pruefseite(pw, { out: new URL('out/', import.meta.url), teil: process.env.
 ```
 
 **Gegenprobe:** `PRUEF_GEGENPROBE=pruefseite:<fall>` schleust den Fehler eines Bausteins per Textersetzung in `ui.js` ein (`GEGENPROBEN_PRUEFSEITE`; eine Stelle,
-die nicht genau einmal vorkommt, wird gemeldet); `node tests/alle.mjs --gegenprobe pruefseite` läuft alle Fehler jedes Teils.
+die nicht genau einmal vorkommt, wird gemeldet); `node tests/alle.mjs --gegenprobe pruefseite` läuft alle Fehler jedes Teils. Je Ablauf ein Fehler, der den
+alten Fehler nachbildet (seit 4.64.0, APD-135/E-12): `messung` – die Messdatei zeichnet den eingegebenen Text auf statt seiner Länge; `titel-blase` – keine
+Sprechblase am gekürzten Titel; `titel-oben` – Hörer von ‚Titel antippen‘ am `window` statt am `document`; `schicht-oben` – die Sperrschicht schließt nicht
+beim Loslassen; `grossanzeige` – Loslassen über einem Knopf löst ihn nicht aus.
 
 ## Weitere allgemeine Prüfungen
 
@@ -134,7 +147,7 @@ die nicht genau einmal vorkommt, wird gemeldet); `node tests/alle.mjs --gegenpro
 | `doku.mjs` | R-10.4, R-10.1 (Feldnamen), R-1.7 (`env()` nur in `--safe-…`), Katalog; Zusammenarbeit 0 Nr. 3, 7, 8, 9, 11 und 15, 2.3, R-1.13 | `checkDocs`: README mit ‚Verwendete Versionen‘ (Links nach AppDesign auf `main`, Richtlinie, Zusammenarbeit und Bausteine aus `fassung/X.Y.Z/`; Richtlinien-Versionen aus der Fassung), Testfälle der neuesten Version beginnen mit /0, Schritte und ‚Erwartet‘ (Meldungen nennen die Testfälle noch ‚Zusammenarbeit 7‘ – heute 2.3); `checkCatalog`: jede Regel hat eine Prüfung, alte Nummern zugeordnet und nirgends mehr verwendet; `checkCollab`: keine veralteten Formulierungen (auch kein ‚gilt sofort für alle Apps‘, kein `?v=<Version>`), Verweise auf die Zusammenarbeit gültig, beide `CLAUDE.md` beginnen mit `UEBERGABE.md` und haben Version und Versionsgeschichte, PROMPT-Versionszeile, Feldnamen des Abgleichberichts; `checkKasten` (seit 4.39.0, APD-84/C-1 bis C-5): Kasten ‚Immer‘ und ‚Jede Antwort‘ oben in 0 mit allen Pflichten, beide `CLAUDE.md` und 0 Nr. 15 lassen die ganze Zusammenarbeit lesen, jede Pflicht nennt ihre Prüfung (Gegenprobe `--gegenprobe schema`); seit 4.60.0 (APD-136) `checkBeans`: Liste der AD-Beans (Designrichtlinie 15) ↔ `ui.js` und `design.css`, Kennung einmal, CSS nur unter `.ad-<kennung>…`, keine Klassen und inneren Namen einer Bean in der App (APD-30/W-72, APD-30/W-73; Gegenprobe APD-30/W-80 `PRUEF_GEGENPROBE=beans:W-80`) |
 | `start.mjs` | R-7.2 | `checkStart(page, { inhalt, leer })` nach dem Neuladen: iPhone-Aufbau in der Startliste (`#side.page`), ganz oben, kein Eintrag blau, kein Inhalt offen; iPad-Aufbau mit Seitenleiste und genau einem blauen, geöffneten Eintrag. `checkRueckkehr(page)`: `visibilitychange` und `pageshow` (aus dem Zwischenspeicher) ändern nichts |
 | `offline.mjs` | R-1.5 | eigener Webserver mit echtem Service Worker; ohne Netz, unter anderer Adresse und bei hängendem Netz (höchstens 3 s) erscheint die App – iPad und iPhone, Chromium und WebKit; der Offline-Hinweis (APD-6/F-1 bis F-17): Meldung und Zeile beim Start ohne Netz, bei hängendem Netz und beim Wechsel (Safari meldet offline/online); Lage, Kontrast, 4 s, ‚Wieder online‘, schnelles Hin und Her, Drehen, offenes Fenster, Tastatur, lange Liste, Startliste (iPhone); Option `vorbereiten(page)` für Daten der App |
-| `pruefseite.mjs` | R-10.3, R-1.8, R-7.7, R-10.1, R-6.3, R-10.5, R-5.1, R-2.3, R-6.2, R-10.8, R-10.7, R-9.1 bis R-9.4 | Bausteine auf der Prüfseite (oben) |
+| `pruefseite.mjs` | R-10.3, R-1.8, R-7.7, R-10.1, R-6.3, R-10.5, R-5.1, R-2.3, R-6.2, R-10.8, R-10.7, R-9.1 bis R-9.4; Abläufe R-1.6, R-2.5, R-2.6, R-2.7, R-1.12, R-4.13, Designrichtlinie 13 | Bausteine auf der Prüfseite (oben) |
 | `version.mjs` | R-10.3 | feste Fassung: `index.html` und `sw.js` laden genau `fassung/<AD_NEEDED>/` (nichts aus `v4/`), Versionen der Fassung stimmen, Prüfsummen `fassung/PRUEFSUMMEN` (keine Datei geändert, fehlt oder dazu), `v4/` und `tests/` = neueste Fassung; Hinweis beim Start bei älterer Fassung; ein geänderter Arbeitsstand `v4/` erreicht die App nicht (kein Abruf) |
 | `schnittstelle.mjs` | R-1.14 | Schnittstelle von `ui.js` ohne Browser (`checkSchnittstelle`, Zerleger `schnittstelle-zerleger.mjs`): die App und seit 4.64.0 die Vorlage nutzen nur den Teil `app` von `schnittstelle.json` (Gegenprobe: Kopie der Vorlage mit `setAppearance`), Prüfdateien dazu `pruefungen`; keine Deklaration der App mit dem Namen eines Bausteins; jeder Name der Liste steht in `ui.js` |
 | `messung.mjs` | Zusammenarbeit 2.2 | Werkzeug `werkzeug/messung.mjs` (Zeile Zeit und Token) mit künstlichen Sitzungsdaten; Gegenprobe `--gegenprobe` |
