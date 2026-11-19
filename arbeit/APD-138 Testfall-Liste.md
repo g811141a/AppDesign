@@ -11,6 +11,16 @@
 - **Regel:** R-10.8 im bestätigten Wortlaut (Designrichtlinie 17), Prüfung `ablauf.mjs` – `checkDateiname` erweitert.
 - **Prüfstufe:** voll (Code in AppDesign und neue Fassung in der App).
 
+## Wortlaut R-10.8 (bestätigt, Nutzer 19.11.2026, Sitzung 0136, 12:29 UTC – nachgetragen in 0137 aus dem Verlauf von 0136)
+
+**Alt:**
+
+| R-10.8 | **Dateiname im Hinweisfenster:** steht allein in einer eigenen Zeile unter dem Satz, fett und zentriert, ohne Punkt danach; Umbruch nur nach einem Leerzeichen – nur ein Wort, das länger ist als die Zeile, bricht in sich (R-6.3) | ablauf.mjs – `checkDateiname` (Backup, Ausgabe, Abgleichbericht; vier Lagen, große Schrift; Gegenprobe) | – | 10, 15.19 |
+
+**Neu:**
+
+| R-10.8 | **Dateiname im Hinweisfenster:** steht allein in einer eigenen Zeile unter dem Satz, fett und zentriert, ohne Punkt danach. Am iPad wird das Fenster so breit, dass der Name in einer Zeile steht – mindestens so breit wie sonst, höchstens wie das breite Hinweisfenster (600 px, wächst mit der Textgröße, höchstens Bildschirmbreite − 32 px); passt er auch dann nicht, bricht er nur nach einem Leerzeichen um – nur ein Wort, das länger ist als die Zeile, bricht in sich (R-6.3). Am iPhone bleibt die Breite wie bei jedem Hinweisfenster | ablauf.mjs – `checkDateiname` (Backup, Ausgabe, Abgleichbericht; vier Lagen, große Schrift; iPad: eine Zeile und Höchstbreite; Gegenprobe) | – | 10, 15.19 |
+
 ## Testfälle (automatisch)
 
 Alle in Chromium und WebKit; nach jedem Schritt die Grundregeln (`pruefe.mjs`).

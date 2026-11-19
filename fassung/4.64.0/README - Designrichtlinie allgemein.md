@@ -637,7 +637,7 @@ und Meldungen · Eingabe · Inhalt · Dienste (ohne eigene Oberfläche).
 ### 15.1 Schwebende Schaltfläche
 - **Apple:** [HIG – Buttons](https://developer.apple.com/design/human-interface-guidelines/buttons)
 - **Zweck:** jede Aktion. **Technisch:** `button` (Hauptaktion `.primary`, Löschen `.danger`, eingeschaltet
-  `aria-pressed="true"`, nur Icon `.iconbtn`).
+  `aria-pressed="true"`).
 - **Aufbau:** Icon (20 px) links, dann Text; oder nur Icon bzw. Emoji (24 px).
 - **Maße:** 44 px hoch, Kapsel (Radius 22 px); Icon-/Emoji-Schaltflächen 44 × 44 rund; Abstand zu Nachbarn 12 px.
 - **Aussehen/Zustände:** neutral `--btn` + Lichtkante + `--float`; Hauptaktion, eingeschaltet, gedrückt und Löschen siehe 4;
@@ -1368,7 +1368,7 @@ Testfall (User) in den Usertest, wenn eine Version es betrifft.
 | R-10.5 | **Icon und Text** eines Eintrags bleiben zusammen – Umbruch nur zwischen Einträgen; **in einer Aufzählung mit ‚·‘ (z. B. ‚8×☀️ · 6×🌧️‘) bleibt jeder Eintrag am Stück, wenn er in die Zeile passt, umgebrochen wird nur nach dem ‚·‘ – die neue Zeile beginnt mit dem nächsten Eintrag; ein Eintrag, der allein nicht passt, bricht im Text um, ein Zusatz in Klammern bleibt ganz, nichts ragt hinaus** | ablauf.mjs – `checkIconText` (Icon und erstes Wort auf derselben Zeile), **`checkAufzaehlung` (keine Zeile endet mit der Anzahl oder beginnt mit ‚·‘; ein Eintrag, der passt, ist nicht getrennt; Klammern nie getrennt; nichts ragt hinaus)** | – | 3 |
 | R-10.6 | **Ansprache:** sichtbare Texte ohne ‚wir/uns/unser‘ und ohne ‚klicken‘ (‚tippen‘) | hig.mjs – `texteMenues` (Texte der App, `title`, `aria-label`, Platzhalter) | – | 16 |
 | R-10.7 | **Datum und Dateinamen:** Datum in Texten TT.MM.JJJJ, Uhrzeit hh:mm; Dateinamen nach den Mustern aus 10 (Ausgabe, Backup, Abgleichbericht; Datum JJJJ.MM.TT, Uhrzeit hh.mm, nie zwei Leerzeichen) | hig.mjs – `texteMenues` (Datumsangaben und angezeigte Dateinamen nach jedem Schritt); backup.mjs (`dateinameFehler`) | – | 10 |
-| R-10.8 | **Dateiname im Hinweisfenster:** steht allein in einer eigenen Zeile unter dem Satz, fett und zentriert, ohne Punkt danach; Umbruch nur nach einem Leerzeichen – nur ein Wort, das länger ist als die Zeile, bricht in sich (R-6.3) | ablauf.mjs – `checkDateiname` (Backup, Ausgabe, Abgleichbericht; vier Lagen, große Schrift; Gegenprobe) | – | 10, 15.19 |
+| R-10.8 | **Dateiname im Hinweisfenster:** steht allein in einer eigenen Zeile unter dem Satz, fett und zentriert, ohne Punkt danach. Am iPad wird das Fenster so breit, dass der Name in einer Zeile steht – mindestens so breit wie sonst, höchstens wie das breite Hinweisfenster (600 px, wächst mit der Textgröße, höchstens Bildschirmbreite − 32 px); passt er auch dann nicht, bricht er nur nach einem Leerzeichen um – nur ein Wort, das länger ist als die Zeile, bricht in sich (R-6.3). Am iPhone bleibt die Breite wie bei jedem Hinweisfenster | ablauf.mjs – `checkDateiname` (Backup, Ausgabe, Abgleichbericht; vier Lagen, große Schrift; iPad: eine Zeile und Höchstbreite; Gegenprobe) | – | 10, 15.19 |
 
 ### Regeln ohne automatische Prüfung
 

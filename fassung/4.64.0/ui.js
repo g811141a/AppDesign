@@ -1805,26 +1805,73 @@ function createSync({ list, sub, subAt, maxFields = [], nouns = ['Eintrag', 'Ein
 // Kleines Fenster mit rundem x; Abfragen mit Entscheidung sind Sprechblasen (confirmPop).
 // Seit 4.11.0: { wide: true } – breiteres Fenster; { action: { label, icon, run } } – eine blaue Schaltfläche unter dem
 // Text (z. B. ‚Abgleichbericht anzeigen‘, R-9.4): schließt das Fenster und führt run() aus.
-function inform(title, html, { wide = false, action = null } = {}) {
-  return new Promise(resolve => {
-    msg.classList.toggle('wide', wide);
-    msg.innerHTML = `
+// Seit 4.64.0 (APD-138, R-10.8, R-1.13): das Hinweisfenster ist die AD-Bean `hinweis` (Fenster und Meldungen) auf <dialog id="msg">; ui.js legt sie
+// einmal an (adHinweis), inform(…) ist der kurze Aufruf dafür.
+// Eigenschaft breiteNachDateiname (Standard ein): steht ein Dateiname (.fname) im Text, wird das Fenster am iPad so breit, dass er in einer Zeile
+// steht – mindestens die Grundbreite von #msg, höchstens die Breite von #msg.wide (600 px × Textgröße, höchstens Bildschirmbreite − 32 px); darüber
+// Umbruch nur nach einem Leerzeichen (.fw). Am iPhone und im breiten Fenster bleibt die Breite aus design.css. Neu berechnet bei jedem resize (Drehen,
+// Textgröße – textWechsel meldet resize), vor placeDialogs.
+// Schnittstelle (R-1.13, Liste der AD-Beans in Designrichtlinie 15) – die App nutzt nur diese Namen:
+//   inform(titel, html, { wide, action }) → Promise (erfüllt beim Schließen)
+//   createHinweis(fenster, { breiteNachDateiname = true }) – ui.js legt die eine Bean für #msg an
+//   h.breiteNachDateiname (lesen und setzen) · h.offen (nur lesen) · h.zeigen(titel, html, { breit, aktion }) → Promise · h.schliessen() · h.on('zu', fn) → abmelden
+function createHinweis(fenster, { breiteNachDateiname = true } = {}) {
+  const hoerer = { zu: new Set() };
+  let fertig = null;
+  const bean = {
+    get breiteNachDateiname() { return breiteNachDateiname; },
+    set breiteNachDateiname(v) { breiteNachDateiname = !!v; if (fenster.open) passen(); },
+    get offen() { return !!fenster?.open; },
+    zeigen, schliessen() { fertig?.(); },
+    on(name, fn) { const h = hoerer[name]; if (!h || typeof fn !== 'function') return () => {}; h.add(fn); return () => { h.delete(fn); }; },
+  };
+  if (!(fenster instanceof HTMLDialogElement)) { console.error('hinweis: fenster fehlt'); return bean; }
+  fenster.dataset.adBean = 'hinweis';
+  // Breite nach Dateiname: Breite des Namens in einer Zeile + Rand des Fensters um den Text, zwischen Grund- und Höchstbreite
+  function passen() {
+    fenster.style.width = ''; fenster.style.maxWidth = '';
+    const n = fenster.querySelector('.fname');
+    if (!breiteNachDateiname || !n || !fenster.open || isPhone() || fenster.classList.contains('wide')) return;
+    const probe = n.cloneNode(true);
+    probe.style.cssText = 'position:absolute;visibility:hidden;white-space:nowrap;display:inline-block;width:auto;left:0;top:0';
+    n.parentNode.append(probe);
+    const name = probe.getBoundingClientRect().width;
+    probe.remove();
+    const grund = fenster.getBoundingClientRect().width, rand = grund - n.getBoundingClientRect().width;
+    fenster.classList.add('wide');
+    const hoechst = fenster.getBoundingClientRect().width;
+    fenster.classList.remove('wide');
+    const soll = Math.ceil(name + rand + 1);
+    // max-width wie bei dialog.wide aufheben (dialog: höchstens 90vw) – die Höchstbreite liegt mit Bildschirmbreite − 32 px darunter
+    if (soll > grund + 0.5) { fenster.style.width = Math.min(soll, hoechst) + 'px'; fenster.style.maxWidth = 'none'; }
+  }
+  addEventListener('resize', () => { if (fenster.open) passen(); });
+  function zeigen(titel, html, { breit = false, aktion = null } = {}) {
+    return new Promise(resolve => {
+      fenster.classList.toggle('wide', breit);
+      fenster.innerHTML = `
       <form method="dialog">
         <div class="dlg-head"><div class="hl"><button type="button" class="round" data-x aria-label="Schließen">${ic('x')}</button></div>
-          <div class="mid"><h3 id="msgTitel">${esc(title)}</h3></div><div class="hr"></div></div>
-        <div class="dlg-body"><div class="msg-text" id="msgText">${html}</div>${action ? `<div class="msg-btns"><button type="button" class="primary" data-act>${action.icon ? ic(action.icon) : ''}${esc(action.label)}</button></div>` : ''}</div>
+          <div class="mid"><h3 id="msgTitel">${esc(titel)}</h3></div><div class="hr"></div></div>
+        <div class="dlg-body"><div class="msg-text" id="msgText">${html}</div>${aktion ? `<div class="msg-btns"><button type="button" class="primary" data-act>${aktion.icon ? ic(aktion.icon) : ''}${esc(aktion.label)}</button></div>` : ''}</div>
       </form>`;
-    const done = () => { if (msg.open) msg.close(); resolve(); };
-    if (action) msg.querySelector('[data-act]').onclick = () => { done(); action.run(); };
-    msg.querySelector('[data-x]').onclick = done;
-    msg.oncancel = e => { e.preventDefault(); done(); };
-    msg.setAttribute('aria-labelledby', 'msgTitel');   // R-1.8 (V2): Name = Titel, Beschreibung = Text
-    msg.setAttribute('aria-describedby', 'msgText');
-    if (!msg.open) msgVorher = document.activeElement;   // R-1.8 (APD-112)
-    showModalQuiet(msg);
-    placeDialogs();
-  });
+      const done = () => { fertig = null; if (fenster.open) fenster.close(); hoerer.zu.forEach(fn => { try { fn(); } catch (e) { console.error(e); } }); resolve(); };
+      fertig = done;
+      if (aktion) fenster.querySelector('[data-act]').onclick = () => { done(); aktion.run(); };
+      fenster.querySelector('[data-x]').onclick = done;
+      fenster.oncancel = e => { e.preventDefault(); done(); };
+      fenster.setAttribute('aria-labelledby', 'msgTitel');   // R-1.8 (V2): Name = Titel, Beschreibung = Text
+      fenster.setAttribute('aria-describedby', 'msgText');
+      if (!fenster.open) msgVorher = document.activeElement;   // R-1.8 (APD-112)
+      showModalQuiet(fenster);
+      passen();
+      placeDialogs();
+    });
+  }
+  return bean;
 }
+const adHinweis = createHinweis(msg);
+const inform = (title, html, { wide = false, action = null } = {}) => adHinweis.zeigen(title, html, { breit: wide, aktion: action });
 
 /* ---------- Dialoge ---------- */
 

@@ -47,7 +47,7 @@ Jede Komponente ist hier einmal beschrieben **und** einmal programmiert; alle Ap
 - Der Service Worker der App nimmt `design.css` und `ui.js` ihrer Fassung in seinen Cache auf, damit die App offline
   funktioniert.
 - **Schnittstelle:** Die App stellt bereit: `db.settings.appearance` (`auto` | `light` | `dark`),
-  `save()`, `render()`; optional `onDialogOpen()`.
+  `save()`, `render()`; optional `onDialogOpen()`. Von `ui.js` nutzt sie nur die Namen aus `v4/schnittstelle.json` (R-1.14).
 
 ## Versionen
 

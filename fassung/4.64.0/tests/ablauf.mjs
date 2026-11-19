@@ -3050,8 +3050,20 @@ export const DATEINAME_TEXTE = {
   error: ['⚠️ Konnte nicht übergeben werden:', ''],
   print: ['✅ Drucken-Menü geöffnet für', 'Dort über ‚Teilen‘ → ‚In Dateien sichern‘ als PDF ablegen.'],
 };
-export async function checkDateiname(p, { ausloesen, faelle = ['shared', 'aborted', 'error', 'downloaded'], name = null, groessen = ['l', 'xxxl', 'ax3'], text = '#msg[open] .msg-text', schliessen = '#msg [data-x]', where = '' } = {}) {
+export async function checkDateiname(p, { ausloesen, faelle = ['shared', 'aborted', 'error', 'downloaded'], name = null, groessen = ['l', 'xxxl', 'ax3'], text = '#msg[open] .msg-text', schliessen = '#msg [data-x]', where = '', drehen = null } = {}) {
   const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}R-10.8 ${t}`);
+  // seit 4.64.0 (APD-138, AD-Bean hinweis): am iPad so breit, dass der Name in einer Zeile steht – zwischen Grund- und Höchstbreite; am iPhone nichts Eigenes
+  const breitePruefen = (e, w) => {
+    const b = e.breite; if (!b) return;
+    const px = x => Math.round(x);
+    if (b.phone) { if (b.eigen) E(`${w}: iPhone – das Hinweisfenster hat eine eigene Breite (${px(b.ist)} px) statt der jedes Hinweisfensters (APD-138/D-7)`); return; }
+    if (b.grund == null) return;   // breites Fenster: Breite aus design.css
+    if (b.ist < b.grund - 0.5) E(`${w}: Fenster ${px(b.ist)} px schmaler als die Grundbreite ${px(b.grund)} px (APD-138/D-3)`);
+    if (b.ist > b.hoechst + 0.5) E(`${w}: Fenster ${px(b.ist)} px breiter als die Höchstbreite ${px(b.hoechst)} px (APD-138/D-4, D-6)`);
+    if (b.soll <= b.hoechst - 1 && e.zeilen.length > 1) E(`${w}: iPad – Name in ${e.zeilen.length} Zeilen, obwohl er in die Höchstbreite ${px(b.hoechst)} px passt (braucht ${px(b.soll)} px; APD-138/D-1, D-2)`);
+    if (b.soll <= b.grund && Math.abs(b.ist - b.grund) > 1) E(`${w}: kurzer Name – Fenster ${px(b.ist)} px statt der Grundbreite ${px(b.grund)} px (APD-138/D-3)`);
+    if (b.soll > b.hoechst + 1 && Math.abs(b.ist - b.hoechst) > 1) E(`${w}: langer Name – Fenster ${px(b.ist)} px statt der Höchstbreite ${px(b.hoechst)} px (APD-138/D-4)`);
+  };
   for (const fall of faelle) {
     await p.evaluate(f => {
       const n = navigator; if (!window.__dnOrig) window.__dnOrig = { share: n.share, canShare: n.canShare };
@@ -3083,7 +3095,17 @@ export async function checkDateiname(p, { ausloesen, faelle = ['shared', 'aborte
             ragt: t.scrollWidth > t.clientWidth + 1 || mb.right > innerWidth + 1 || mb.left < -1 || nb.right > tb.right + 1,
             mitte: (() => { const r = document.createRange(); r.selectNodeContents(n); const q = [...r.getClientRects()].filter(x => x.width > 0); if (!q.length) return 0;
               const l = Math.min(...q.map(x => x.left)), rr = Math.max(...q.map(x => x.right)); return Math.abs((l + rr) / 2 - (tb.left + tb.right) / 2); })(), mittig: getComputedStyle(t).textAlign === 'center',
-            links: vr.length ? Math.abs(n.getClientRects()[0].left - vr[0].left) : 0 };
+            links: vr.length ? Math.abs(n.getClientRects()[0].left - vr[0].left) : 0,
+            // seit 4.64.0 (APD-138/D-1 bis D-7, R-10.8): Breite des Hinweisfensters – Grund- und Höchstbreite aus design.css (ohne die Breite der Bean),
+            // Breite des Namens in einer Zeile; am iPhone und im breiten Fenster keine eigene Breite
+            breite: (() => { const d = t.closest('dialog'); if (!d || d.id !== 'msg') return null;
+              const phone = document.documentElement.classList.contains('phone'), ist = d.getBoundingClientRect().width;
+              if (phone || d.classList.contains('wide')) return { phone, eigen: !!d.style.width, ist };
+              const alt = d.style.width, altMax = d.style.maxWidth; d.style.width = ''; d.style.maxWidth = ''; const grund = d.getBoundingClientRect().width;
+              d.classList.add('wide'); const hoechst = d.getBoundingClientRect().width; d.classList.remove('wide'); d.style.width = alt; d.style.maxWidth = altMax;
+              const pr = n.cloneNode(true); pr.style.cssText = 'position:absolute;visibility:hidden;white-space:nowrap;display:inline-block;width:auto;left:0;top:0';
+              n.parentNode.append(pr); const nw = pr.getBoundingClientRect().width; pr.remove();
+              return { phone, ist, grund, hoechst, soll: nw + (ist - nb.width) }; })() };
         }, [zeilenVon.toString(), text]);
         const w = `${fall} Text ${ts}`;
         if (!e) { E(`${w}: kein Dateiname im Hinweisfenster`); continue; }
@@ -3099,6 +3121,22 @@ export async function checkDateiname(p, { ausloesen, faelle = ['shared', 'aborte
         const [satz, hinweis] = DATEINAME_TEXTE[fall] || [];
         if (satz && e.vorText !== satz) E(`${w}: Satz ‚${e.vorText}‘ statt ‚${satz}‘ (APD-116/W-4, B-6)`);
         if (satz != null && !e.nachText.startsWith(hinweis)) E(`${w}: nach dem Namen ‚${e.nachText.slice(0, 60)}‘ statt ‚${hinweis}‘ (APD-116/W-4, B-6)`);
+        breitePruefen(e, w);
+      }
+      // APD-138/D-9: drehen bei offenem Hinweis (quer → hoch → quer) – die Breite wird neu berechnet, der Name bleibt einzeilig
+      if (drehen) for (const hoch of [true, false]) {
+        await drehen(hoch); await p.waitForTimeout(400);
+        const e = await p.evaluate(([zf, sel]) => { const zeilenVon = eval(zf); const t = document.querySelector(sel), n = t?.querySelector('.fname'); if (!n) return null;
+          const d = t.closest('dialog'), ist = d.getBoundingClientRect().width, nb = n.getBoundingClientRect(), alt = d.style.width, altMax = d.style.maxWidth; d.style.width = ''; d.style.maxWidth = ''; const grund = d.getBoundingClientRect().width;
+          d.classList.add('wide'); const hoechst = d.getBoundingClientRect().width; d.classList.remove('wide'); d.style.width = alt; d.style.maxWidth = altMax;
+          const pr = n.cloneNode(true); pr.style.cssText = 'position:absolute;visibility:hidden;white-space:nowrap;display:inline-block;width:auto;left:0;top:0';
+          n.parentNode.append(pr); const nw = pr.getBoundingClientRect().width; pr.remove();
+          return { name: n.textContent, zeilen: zeilenVon(n), ragt: d.getBoundingClientRect().right > innerWidth + 1,
+            breite: d.id !== 'msg' ? null : { phone: document.documentElement.classList.contains('phone'), ist, grund, hoechst, soll: nw + (ist - nb.width) } }; }, [zeilenVon.toString(), text]);
+        const w = `${fall} nach dem Drehen ${hoch ? 'hoch' : 'quer'} (APD-138/D-9)`;
+        if (!e) { E(`${w}: Hinweisfenster mit Dateinamen nicht mehr offen`); continue; }
+        if (e.ragt) E(`${w}: ragt aus dem Fenster (R-6.3)`);
+        breitePruefen(e, w);
       }
       if (groessen.length > 1 || groessen[0] !== 'l') await textGroesseSetzen(p, null);
     } finally {
@@ -3107,6 +3145,30 @@ export async function checkDateiname(p, { ausloesen, faelle = ['shared', 'aborte
       if (schliessen && await p.locator(schliessen).count()) { await p.click(schliessen).catch(() => {}); await p.waitForTimeout(400); }
     }
   }
+  return errors;
+}
+
+// APD-138 (seit 4.64.0, R-10.8, AD-Bean hinweis; Testfall-Liste arbeit/APD-138 Testfall-Liste.md D-3 bis D-6, D-9, D-10): Breite nach Dateiname am iPad mit
+// eigenen Namen über inform – kurzer Name (Grundbreite), sehr langer Name (Höchstbreite, Umbruch nur nach Leerzeichen), Text 53, schmales Fenster
+// (geteilter Bildschirm), drehen bei offenem Hinweis; Gegenprobe: ohne breiteNachDateiname muss checkDateiname D-1 melden. Aufruf am iPad quer.
+export const DATEINAME_BEISPIEL = 'Ω Backup Reiselogbuch 2026.11.19 08.15.json';
+export const DATEINAME_SEHR_LANG = 'Ω Backup Reiselogbuch Australien Neuseeland Tasmanien Fidschi 2026.08.24-2026.11.11 Sicherung 2026.11.19 08.15.json';
+export async function checkHinweisBreite(p, { where = '' } = {}) {
+  const errors = [], vp = p.viewportSize();
+  const dn = (name, wo, o = {}) => checkDateiname(p, { faelle: ['shared'], groessen: ['l'], name, where: `${where} ${wo}`.trim(),
+    ausloesen: () => p.evaluate(n => { inform('Backup', shareResultText('shared', n)); }, name), ...o });
+  errors.push(...await dn('Kurz.json', 'kurzer Name (APD-138/D-3)'));
+  errors.push(...await dn(DATEINAME_SEHR_LANG, 'sehr langer Name (APD-138/D-4)'));
+  errors.push(...await dn(DATEINAME_BEISPIEL, 'Text 53 (APD-138/D-5)', { groessen: ['ax5'] }));
+  errors.push(...await dn(DATEINAME_BEISPIEL, 'drehen', { drehen: hoch => p.setViewportSize(hoch ? { width: vp.height, height: vp.width } : vp) }));
+  await p.setViewportSize({ width: 760, height: vp.height }); await p.waitForTimeout(400);
+  errors.push(...await dn(DATEINAME_BEISPIEL, 'schmales Fenster 760 px (APD-138/D-6)'));
+  errors.push(...await dn(DATEINAME_SEHR_LANG, 'schmales Fenster 760 px, sehr langer Name (APD-138/D-6)'));
+  await p.setViewportSize(vp); await p.waitForTimeout(400);
+  await p.evaluate(() => { adHinweis.breiteNachDateiname = false; });
+  const gp = await dn(DATEINAME_BEISPIEL, 'Gegenprobe');
+  await p.evaluate(() => { adHinweis.breiteNachDateiname = true; });
+  if (!gp.some(x => x.includes('APD-138/D-1'))) errors.push(`${where}: R-10.8 Gegenprobe (APD-138/D-10): ohne Breite nach Dateiname meldet checkDateiname nichts – ${gp.join(' · ') || 'keine Meldung'}`);
   return errors;
 }
 

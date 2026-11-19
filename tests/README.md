@@ -77,7 +77,7 @@ quer (170 px sichtbar); ein Feld im Rollbereich unter der Tastatur antippen vers
 
 ## Alle Prüfungen einer App `lauf.mjs`
 
-Startet alle Prüfskripte in Chromium und WebKit: nach dem Vorlauf (`doku-regeln`, `version-regeln`, rot bricht sofort ab) parallel, die
+Startet alle Prüfskripte in Chromium und WebKit: nach dem Vorlauf (`doku-regeln`, `version-regeln`, seit 4.64.0 `schnittstelle-regeln` – ohne Browser, einmal; rot bricht sofort ab) parallel, die
 längsten zuerst (gemessene Dauer in `tests/out/dauer.json` der App); ab dem dritten roten Lauf werden die übrigen beendet, jeder rote
 Lauf läuft am Ende einmal allein (Zusammenarbeit 0 Nr. 2), die Fehlerzeilen der roten Läufe werden gezeigt; die Ausgabe eines Wacklers
 bleibt in `tests/out/wackelt-<Name>-<Browser>.txt`. Aufruf über `tests/alle.mjs` der App:
@@ -104,6 +104,7 @@ Selbsttest mit Schein-Tests: `node tests/lauf-selbsttest.mjs` (Zusammenarbeit 0 
 | `start.mjs` | R-7.2 | `checkStart(page, { inhalt, leer })` nach dem Neuladen: iPhone-Aufbau in der Startliste (`#side.page`), ganz oben, kein Eintrag blau, kein Inhalt offen; iPad-Aufbau mit Seitenleiste und genau einem blauen, geöffneten Eintrag. `checkRueckkehr(page)`: `visibilitychange` und `pageshow` (aus dem Zwischenspeicher) ändern nichts |
 | `offline.mjs` | R-1.5 | eigener Webserver mit echtem Service Worker; ohne Netz, unter anderer Adresse und bei hängendem Netz (höchstens 3 s) erscheint die App – iPad und iPhone, Chromium und WebKit; der Offline-Hinweis (APD-6/F-1 bis F-17): Meldung und Zeile beim Start ohne Netz, bei hängendem Netz und beim Wechsel (Safari meldet offline/online); Lage, Kontrast, 4 s, ‚Wieder online‘, schnelles Hin und Her, Drehen, offenes Fenster, Tastatur, lange Liste, Startliste (iPhone); Option `vorbereiten(page)` für Daten der App |
 | `version.mjs` | R-10.3 | feste Fassung: `index.html` und `sw.js` laden genau `fassung/<AD_NEEDED>/` (nichts aus `v4/`), Versionen der Fassung stimmen, Prüfsummen `fassung/PRUEFSUMMEN` (keine Datei geändert, fehlt oder dazu), `v4/` und `tests/` = neueste Fassung; Hinweis beim Start bei älterer Fassung; ein geänderter Arbeitsstand `v4/` erreicht die App nicht (kein Abruf) |
+| `schnittstelle.mjs` | R-1.14 | Schnittstelle von `ui.js` ohne Browser (`checkSchnittstelle`, Zerleger `schnittstelle-zerleger.mjs`): die App nutzt nur den Teil `app` von `schnittstelle.json`, Prüfdateien dazu `pruefungen`; keine Deklaration der App mit dem Namen eines Bausteins; jeder Name der Liste steht in `ui.js` |
 | `messung.mjs` | Zusammenarbeit 2.2 | Werkzeug `werkzeug/messung.mjs` (Zeile Zeit und Token) mit künstlichen Sitzungsdaten; Gegenprobe `--gegenprobe` |
 | `regelwaechter.mjs` | Zusammenarbeit 0 (Kasten ‚Jede Antwort‘), 0 Nr. 26–28, 2.1, 2.2, 2.8 | Werkzeug `werkzeug/regelwaechter.mjs` (Hooks: Uhrzeitzeile liefern, Fenster vor dem Zeigen, Antwort am Ende prüfen; Setup-Text) mit künstlichen Sitzungsdaten und echten Antworten aus 0050 und 0051 (`regelwaechter-faelle.json`), APD-84/W-1 bis W-13; Gegenprobe `--gegenprobe` (je Prüfung des Wächters abgeschaltet). Läuft mit `messung.mjs` in `veroeffentlichen.mjs los` |
 | `lauf-selbsttest.mjs` | Zusammenarbeit 0 Nr. 2 | `lauf.mjs` mit Schein-Tests (Vorlauf, Reihenfolge, Abbruch, Gegenprobe, Ausgabe der Wackler, Abdeckung je Teil) |

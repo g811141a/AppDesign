@@ -15,6 +15,7 @@
   "breakable",
   "capHtml",
   "confirmPop",
+  "createHinweis",
   "createSwipeactions",
   "createSync",
   "darstellungMenuItem",
@@ -76,6 +77,7 @@
  "pruefungen": [
   "MESS_MAX_MS",
   "SHARE_RESULT",
+  "adHinweis",
   "beruehrt",
   "gemeldet",
   "gerollt",
