@@ -1,67 +1,78 @@
 # Übergabe an die nächste Sitzung
 
-**Stand 19.11.2026** · geschrieben in der Sitzung ‚Reiselogbuch 0135‘ bei Kontext 382.052 (0 Nr. 13, automatisch). Aufbau nach Zusammenarbeit allgemein 2.5. **Claude
+**Stand 19.11.2026** · geschrieben in der Sitzung ‚Reiselogbuch 0136‘ bei Kontext 274.536 (0 Nr. 13, automatisch). Aufbau nach Zusammenarbeit allgemein 2.5. **Claude
 liest diese Datei zu Beginn jeder Sitzung zuerst, dann die ganze Zusammenarbeit** (0 Nr. 15); die Arbeitsumgebung steht in der AppDesign-`CLAUDE.md`.
 
-> **Hinweis:** APD-135 Paket 5 liegt **fertig vorbereitet, noch nicht gebaut** auf den Zweigen **`vorbereitung-4.63.0`** (AppDesign) und **`vorbereitung-3.57.6`**
-> (Reiselogbuch) auf GitHub – nach dem Klonen holen: `git fetch origin vorbereitung-4.63.0:vorbereitung-4.63.0 && git checkout vorbereitung-4.63.0` (AppDesign),
-> ebenso `vorbereitung-3.57.6` (Reiselogbuch); dazu die Verfolgung wie in der `CLAUDE.md` (‚Flacher Klon‘). Auf `main` liegen nur diese Übergabe, der Bericht
-> `arbeit/0135 Bericht Paket 5 vorbereitet.md` und das Lagebild `arbeit/0135 Lagebild.md`.
+> **Hinweis:** Die Vorbereitung von **AppDesign 4.64.0** hat begonnen: Zweig **`vorbereitung-4.64.0`** (AppDesign, 0680bb4) auf GitHub – nach dem Klonen holen:
+> `git fetch origin vorbereitung-4.64.0:vorbereitung-4.64.0 && git checkout vorbereitung-4.64.0`, dazu die Verfolgung wie in der `CLAUDE.md` (‚Flacher Klon‘).
+> Im Reiselogbuch gibt es noch keinen Zweig: `vorbereitung-3.57.7` neu von `origin/main` anlegen. `vorbereiten` ist **noch nicht** gelaufen.
 
 ## 1. Lagebild
 
 | Teil | Version |
 |---|---|
-| Reiselogbuch | **3.57.5** veröffentlicht; **3.57.6** vorbereitet (Zweig `vorbereitung-3.57.6`) |
-| AppDesign | **4.62.0** veröffentlicht; **4.63.0** vorbereitet (Zweig `vorbereitung-4.63.0`) |
+| Reiselogbuch | **3.57.6** veröffentlicht (P-113 ok) |
+| AppDesign | **4.63.0** veröffentlicht; **4.64.0** in Vorbereitung (Zweig `vorbereitung-4.64.0`) |
 | ReiseLogBuch-Import (privat) | **1.4.0** (`main` 2ec7d03), unverändert |
-| Zusammenarbeit allgemein | **3.15.0** auf `main`, **3.16.0** vorbereitet (0 Nr. 2, 0 Nr. 9 – Wortlaut bestätigt in 0134) |
+| Zusammenarbeit allgemein | **3.16.0** |
 | `CLAUDE.md` | AppDesign **2.14.0** · Reiselogbuch 3.10.0 · Import 1.2.0 |
 
-- **Chatnummer:** Die nächste Sitzung heißt **Reiselogbuch 0136**, die danach 0137.
-- **Modell und Aufwand:** 0135 lief mit **Opus 5.5**, Aufwand **hoch** (eingestellt und tatsächlich, 358 Aufrufe), ohne `model_fallback`; `CLAUDE_CODE_EFFORT_LEVEL`
-  ungesetzt; keine Hilfsagenten. Festlegung (0122): Fable 5.2 vorerst nicht; Hilfsagenten nur mit Opus 5.5 und Aufwand hoch, einzeln nacheinander.
-- **Nutzungsgrenze:** Fünf-Stunden-Grenze, ‚erlaubt‘, keine Überziehung (neu ab 19.11.2026 12:30 MEZ).
+- **Chatnummer:** Die nächste Sitzung heißt **Reiselogbuch 0137**, die danach 0138.
+- **Modell und Aufwand:** 0136 lief mit **Opus 5.5**, Aufwand **hoch** (eingestellt und tatsächlich), ohne `model_fallback`; `CLAUDE_CODE_EFFORT_LEVEL` ungesetzt;
+  keine Hilfsagenten. Festlegung (0122): Fable 5.2 vorerst nicht; Hilfsagenten nur mit Opus 5.5 und Aufwand hoch, einzeln nacheinander.
+- **Nutzungsgrenze:** Fünf-Stunden-Grenze, ‚erlaubt‘, keine Überziehung (Stand Sitzungsbeginn 0136).
 - **Hooks:** `~/.claude/settings.json` leer (`{}`).
-- **Offene Usertests:** keine (P-112 ok). Nach dem Bau: **P-113** (nur /0 ‚Version prüfen‘, Reiselogbuch 3.57.6 · AppDesign 4.63.0).
+- **Offene Usertests:** keine (P-113 ok, 19.11.2026).
 - **Erinnerung:** ‚Backlog-Erinnerung (AppDesign und Reiselogbuch)‘ montags 8:58.
-- **Hinweis Prüfumgebung:** 4 Kerne; github.io und support.apple.com gesperrt; HIG als JSON. Nach Änderungen an `tests/` in AppDesign vor jedem Prüflauf
-  `node werkzeug/veroeffentlichen.mjs fassung` (die App-Prüfungen laden `fassung/4.63.0/`).
+- **Hinweis Prüfumgebung:** 4 Kerne; github.io und support.apple.com gesperrt; HIG als JSON (`developer.apple.com/tutorials/data/design/human-interface-guidelines/<seite>.json`,
+  UIKit ebenso unter `…/tutorials/data/documentation/…`). Während `los` läuft, keinen Browser starten (verfälscht Wackler und Laufzeiten).
 
-## 2. Ergebnisse der Sitzung 0135
+## 2. Ergebnisse der Sitzung 0136
 
-- **APD-139 angelegt** (Prio 2, Wizard mit Festlegungen 1–5, Gestaltung A + E; Nutzer 19.11.2026 im Fenster: ‚Ja, Prio 2‘).
-- **APD-135 Paket 5 vorbereitet** nach dem bestätigten Wortlaut: Testfall-Liste `arbeit/APD-135 Paket 5 Testfall-Liste.md` (APD-135/Z-1 bis Z-20, mit allen
-  Ergebnissen), Code, Texte, CHANGELOG und Backlog – `vorbereiten` (AppDesign 4.63.0 / Reiselogbuch 3.57.6) ist gelaufen. Alle neuen Fälle gegen den veröffentlichten
-  Stand rot, mit dem neuen Stand grün; alle Gegenproben rot mit passender Meldung. Einzelheiten: `arbeit/0135 Bericht Paket 5 vorbereitet.md`.
-- **Fund und Behebung:** der Selbsttest des Veröffentlichungs-Skripts war seit 4.61.0 rot (APD-5/E-1 – die fehlende Zeile der Versionsgeschichte nach `vorbereiten`,
-  APD-135/M-2), unbemerkt, weil kein Skript ihn startete (APD-135/C-47); mit `main` 70b577e in sauberen Arbeitskopien nachgewiesen und behoben.
-- **Zusätzlich zum Wortlaut (zur Kenntnis):** `ablauf-seitenleiste-position` wartet nach dem Start auf Ruhe (`ruhe`) – sonst brach die Gegenprobe ‚verschiebung‘ ab,
-  bevor sie R-1.9 meldete; der Vorlauf bricht auch mit `--alle` ab (wie der Wortlaut ‚rot bricht sofort ab‘).
-- **`stufe`:** Vorschlag **voll**.
+- **AppDesign 4.63.0 / Reiselogbuch 3.57.6 veröffentlicht** (APD-135 Paket 5): ‚Alle 163 Läufe grün in 80:16‘, 0 Wackler, längster Lauf 416 s (Grenze 450 s),
+  Pages beide ‚success‘ – `arbeit/0136 Bericht 4.63.0.md`, Ergebnisse APD-135/Z-19, Z-20 in der Testfall-Liste. **P-113 ok.**
+- **APD-138 bereit** (in ‚0. Nächste Version‘): Fenster wächst mit dem Dateinamen bis `#msg.wide`, iPhone wie heute; Muster und R-10.8-Wortlaut bestätigt –
+  `arbeit/APD-138 Testfall-Liste.md` (D-1 bis D-11), `arbeit/APD-138 Muster/`, `arbeit/0136 APD-138 Klärung.md`. Bau-Frage APD-138 allein: ‚Nein‘ (Nutzer) –
+  kommt in die Sammelversion mit Paket 6 Schritt 1.
+- **APD-135 Paket 6 Schritt 1** (B-4.1, B-4.2, J-28, J-19) mit APD-138 als **Sammelversion AppDesign 4.64.0 / Reiselogbuch 3.57.7**: Umfang, Wortlaut (neu R-1.14,
+  Designrichtlinie 14 und 15.1, README) und Testfall-Liste APD-135/S-1 bis S-15 **bestätigt** (Nutzer 19.11.2026) – `arbeit/APD-135 Paket 6 Schritt 1 Vorschlag.md`.
+- **B-4.1 umgesetzt** (Zweig `vorbereitung-4.64.0`): `v4/schnittstelle.json` (Teil `app` 70 Namen = was das Reiselogbuch nutzt ohne die drei inneren, dazu
+  `markHeld`; Teil `pruefungen` 22 Namen, die Prüfdateien heute nutzen), `tests/schnittstelle.mjs` (`checkSchnittstelle`, ohne Browser, Aufruf
+  `node tests/schnittstelle.mjs <App-Ordner>`) und `tests/schnittstelle-zerleger.mjs` (`woerter`, `deklarationen`; ui.js hat 415 Namen auf oberster Ebene).
+  Ergebnis gegen Reiselogbuch 3.57.6: **rot** mit `held` (Z. 1155), `dlgOpener` (Z. 1983, 1991), `placeDialogs` (Z. 2119) und ‚markHeld gibt es in ui.js nicht‘
+  (= APD-135/S-2 wie gefordert); Gegenproben **S-3** (`function esc`), **S-4** (`let leer`), **S-5** (`endReveal` in einer Prüfdatei) **rot** mit passender Meldung.
 
 ## 3. Nächster Schritt
 
-1. Lesen wie immer, Repos dazuholen, die beiden Vorbereitungs-Zweige holen, Tests einrichten, Lagebild als eigene Antwort (Chat und Datei) mit Kachel; in der Datei
-   auch der Bericht `arbeit/0135 Bericht Paket 5 vorbereitet.md` (0 Nr. 11). Im Fenster die **Bau-Frage**: ‚Soll ich Version AppDesign 4.63.0 / Reiselogbuch 3.57.6
-   mit APD-135 Paket 5 erstellen (Prüflauf Stufe voll)? (Kontext N)‘ – Empfehlung: der volle Lauf in `los` ist zugleich der Vergleichslauf ‚lang zuerst‘ (APD-135/J-26);
-   ein eigener Lauf `--alle` vorher nur auf ausdrücklichen Wunsch (sonst zwei Prüfläufe je Version, 0 Nr. 2).
-2. Nach ‚Ja‘: `node werkzeug/veroeffentlichen.mjs stufe --app reiselogbuch` (noch einmal), dann `los --app reiselogbuch` im Hintergrund (voll ~75 min; `los` startet
-   vorher `lauf-selbsttest` und `veroeffentlichen-selbsttest`, beide grün in 0135). Danach Vergleich: Zahl der Wackler, längster Lauf aus `tests/out/dauer.json`
-   (Grenze 450 s), Bericht mit P-113, Testfall-Liste ‚Ergebnisse‘ ergänzen (APD-135/Z-19, Z-20), lokale Vorbereitungs-Zweige löschen.
+1. Lesen wie immer, Repos dazuholen, Zweig `vorbereitung-4.64.0` holen, im Reiselogbuch `vorbereitung-3.57.7` von `origin/main` anlegen, Tests einrichten, Lagebild
+   als eigene Antwort (Chat und Datei) mit Kachel – Fenster: ‚Vorbereitung von 4.64.0 / 3.57.7 fortsetzen?‘ (Empfehlung ja).
+2. Danach die Vorbereitung nach `arbeit/APD-135 Paket 6 Schritt 1 Vorschlag.md` und `arbeit/APD-138 Testfall-Liste.md`, je Prüfung zuerst rot gegen den
+   veröffentlichten Stand:
+   - **B-4.1 fertig verdrahten:** App-Hülle `ReiseLogBuch/tests/schnittstelle-regeln.mjs` (wie `version-regeln.mjs`), in `tests/alle.mjs` und in den Vorlauf von
+     `tests/lauf.mjs` (`vorlauf = [doku, 'version-regeln', 'schnittstelle-regeln']`), Fall APD-135/S-6 in `lauf-selbsttest`; S-1 (erfundener Name in einer Kopie der
+     Liste → rot) prüfen.
+   - **B-4.2:** `placeDialogs` im `resize` von `ui.js` (zuerst), App ohne Aufruf; `markHeld(root)` neu, App statt `held.forEach`; App `setOpener('#shareBtn')` statt
+     `dlgOpener =` (sichtbare Änderung vorher melden); `capNext` und die drei `delete f.dataset.capNext` streichen, ‚Bewegung reduzieren‘ einmal, ⓧ-SVG einmal;
+     Kopf von `ui.js` Z. 3–4 streichen, Schnittstelle als Verweis auf `v4/schnittstelle.json`. Gegenproben S-8, S-10.
+   - **J-28:** `.iconbtn` aus `design.css` und Designrichtlinie 15.1. **J-19:** prüfen und berichten (Satz nur nach eigenem Ja streichen).
+   - **APD-138:** Eigenschaft ‚Breite nach Dateiname‘ in `inform` (Messung wie im Muster `arbeit/APD-138 Muster/`, Neuberechnung beim Drehen), `checkDateiname`
+     mit D-1 bis D-10.
+   - `vorbereiten --ad 4.64.0 --app reiselogbuch=3.57.7`, Texte (R-1.14, Designrichtlinie 14, 15.1, R-10.8, README, CHANGELOG mit Usertest /0 und /1 APD-138,
+     Backlog, Versionsgeschichten), `fassung`, `stufe` (erwartet voll), Bericht, dann die **Bau-Frage** ‚Soll ich Version AppDesign 4.64.0 / Reiselogbuch 3.57.7 mit
+     APD-135 Paket 6 Schritt 1 und APD-138 erstellen (Prüflauf Stufe voll)? (Kontext N)‘.
 
 ## 4. Danach
 
-Wizard APD-139 (Apple-Abgleich mit Quelle, Muster A + E, iPhone hoch hell) · APD-138 · APD-135 Pakete 6–7 · APD-136 · RLB-125 (Prio 2) · RLB-126 · APD-32 · APD-55 ·
-RLB-6 · APD-1 · APD-70 · APD-57 · APD-62 · APD-44 bis APD-60 · zuletzt APD-80. Später: sobald ein iOS-Update `print()` vom Home-Bildschirm wieder zulässt, den
-PDF-Hinweis (RLB-124) entfernen.
+APD-135 Paket 6 Schritt 2 (B-3.1, B-3.2) · J-32 als eigenes Thema ins Backlog (nach B-3) · APD-135 Paket 7 · APD-136 · Wizard APD-139 (Apple-Abgleich mit Quelle,
+Muster A + E, iPhone hoch hell) · RLB-125 (Prio 2) · RLB-126 · APD-32 · APD-55 · RLB-6 · APD-1 · APD-70 · APD-57 · APD-62 · APD-44 bis APD-60 · zuletzt APD-80.
+Später: sobald ein iOS-Update `print()` vom Home-Bildschirm wieder zulässt, den PDF-Hinweis (RLB-124) entfernen.
 
 ## 5. Starttext für die neue Sitzung
 
 In der neuen Sitzung müssen **AppDesign**, **ReiseLogBuch** und **ReiseLogBuch-Import** verfügbar sein.
 
 ```
-Reiselogbuch 0136 – APD-135 Paket 5 Bau-Frage (AppDesign 4.63.0 / Reiselogbuch 3.57.6)
+Reiselogbuch 0137 – APD-135 Paket 6 Schritt 1 und APD-138 vorbereiten (AppDesign 4.64.0 / Reiselogbuch 3.57.7)
 
-Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md, dann die GANZE Zusammenarbeit allgemein (3.15.0) und die Überschriften der Designrichtlinien. Prüfe Modell und Aufwand (get_session: eingestellt, dazu rate_limit_info; Sitzungsdatei: tatsächlich, auch model_fallback; Umgebungsvariable CLAUDE_CODE_EFFORT_LEVEL), hole die Repos g811141a/ReiseLogBuch und g811141a/ReiseLogBuch-Import dazu, wie in der AppDesign-CLAUDE.md unter ‚Arbeitsumgebung‘, hole die Zweige vorbereitung-4.63.0 (AppDesign) und vorbereitung-3.57.6 (ReiseLogBuch), richte die Tests ein und prüfe, ob in ~/.claude/settings.json Hooks stehen. Lagebild als eigene Antwort (im Chat und als Markdown-Datei, dazu der Bericht arbeit/0135 Bericht Paket 5 vorbereitet.md) mit Kachel, im Fenster die Bau-Frage für APD-135 Paket 5 (Stufe voll); danach weiter nach UEBERGABE.md Abschnitt 3. Hilfsagenten nur mit Opus 5.5 und Aufwand hoch, einzeln nacheinander, auch web-fetch; Fable 5.2 vorerst nicht verwenden.
+Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md, dann die GANZE Zusammenarbeit allgemein (3.16.0) und die Überschriften der Designrichtlinien. Prüfe Modell und Aufwand (get_session: eingestellt, dazu rate_limit_info; Sitzungsdatei: tatsächlich, auch model_fallback; Umgebungsvariable CLAUDE_CODE_EFFORT_LEVEL), hole die Repos g811141a/ReiseLogBuch und g811141a/ReiseLogBuch-Import dazu, wie in der AppDesign-CLAUDE.md unter ‚Arbeitsumgebung‘, hole den Zweig vorbereitung-4.64.0 (AppDesign), lege im Reiselogbuch vorbereitung-3.57.7 von origin/main an, richte die Tests ein und prüfe, ob in ~/.claude/settings.json Hooks stehen. Lagebild als eigene Antwort (im Chat und als Markdown-Datei) mit Kachel; danach weiter nach UEBERGABE.md Abschnitt 3 (Vorbereitung fortsetzen, am Ende die Bau-Frage, Stufe voll). Hilfsagenten nur mit Opus 5.5 und Aufwand hoch, einzeln nacheinander, auch web-fetch; Fable 5.2 vorerst nicht verwenden.
 ```
