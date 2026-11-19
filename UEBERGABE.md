@@ -47,7 +47,8 @@ Grundlage: `arbeit/0137 Vorschlag AD-Bean hinweis und Absicherung.md` (Stand der
 - **Texte eingetragen (bestätigt):** R-1.14 (17), Designrichtlinie 14, AppDesign-`README.md`, 15.1, **R-10.8** (Wortlaut aus dem Verlauf von 0136, Bestätigung
   12:29 UTC – jetzt auch in `arbeit/APD-138 Testfall-Liste.md`); `tests/README.md` beider Repos.
 - **Läufe (Chromium):** `schnittstelle-regeln`, `ablauf-fenster` (3 Teile), `ablauf-markierung-menues`, `ablauf-drehen-luecke`, `ablauf-drehen-iphone`,
-  `ablauf-feld-cursor`, `ablauf-gesamt`, `ablauf-fenster-breite`, `backup-regeln`, `ablauf-abgleich` grün; WebKit-Teil siehe Abschnitt 3 Nr. 2.
+  `ablauf-feld-cursor`, `ablauf-gesamt`, `ablauf-fenster-breite` grün; dann `schnittstelle-regeln`, `ablauf-fenster` (3 Teile), `backup-regeln`, `ablauf-abgleich`,
+  `ablauf-markierung-menues` in **Chromium und WebKit: ‚Alle 13 Läufe grün in 04:25‘**.
 - **Noch rot zu erwarten:** `doku-regeln` (`checkBeans` W-72: `createHinweis` setzt `data-ad-bean`, die Zeile in der Liste der AD-Beans fehlt bis zum Ja).
 
 ## 3. Nächster Schritt
@@ -58,8 +59,6 @@ Grundlage: `arbeit/0137 Vorschlag AD-Bean hinweis und Absicherung.md` (Stand der
    2. ‚`markHeld` und `FX_SVG` bewusst ohne AD-Bean (Kandidaten für APD-136)?‘ (Empfehlung ja; sonst Bean `gedrueckt` später)
    3. ‚Wortlaut ‚allgemein = AD-Bean‘ (Kasten ‚Immer‘ und 0 Nr. 25, Prüfung in `los`) übernehmen?‘ (Empfehlung ja)
    4. ‚J-19: Satz in 15.22 neu fassen?‘ (Empfehlung ja)
-   Vorher den WebKit-Teil von `node tests/alle.mjs --nur schnittstelle-regeln,ablauf-fenster,backup-regeln,ablauf-abgleich,ablauf-markierung-menues` prüfen
-   (war beim Schreiben noch nicht fertig – bis dahin grün: `ablauf-fenster` 3 Teile, `ablauf-abgleich`).
 3. Nach den Antworten umsetzen: Zeile in der Liste der AD-Beans (15), ggf. Kasten/Nr. 25 + Prüfung ‚AD-Bean: …‘ in `veroeffentlichen.mjs` (`los`, mit Selbsttest-Fall
    und Gegenprobe; `vorbereiten` erinnert in der Schlusszeile), ggf. 15.22; dann Texte: CHANGELOG beider Repos (je Thema ‚AD-Bean: …‘; Usertest **P-114** mit /0
    ‚Version prüfen‘ Reiselogbuch 3.57.7 · AppDesign 4.64.0 und /1 APD-138: iPad quer, Backup erstellen, ‚In Dateien sichern‘ – Erwartet: Dateiname in einer Zeile),
