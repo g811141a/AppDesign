@@ -190,7 +190,7 @@ function protokoll(text, dazu = '') {
 function teilProbe(b) { return `${abschnitt('Ausprobieren')}<div id="bkProbe"></div><p class="hint bk-anleitung">${esc(b.anleitung)}</p>${abschnitt('Ereignisse')}<div class="ilist">${protokollHtml()}</div>`; }
 function teilBeschreibung(b) { return `${abschnitt('Regeln')}${textZeilen(b.regeln)}`; }
 function teilSchnittstelle(b) {
-  return `${abschnitt('Fabrik')}<div class="ilist"><div class="irow bk-zeile"><span class="t"><b><code>${esc(b.fabrik)}</code></b></span></div></div>
+  return `${abschnitt('Schnittstelle')}<div class="ilist"><div class="irow bk-zeile"><span class="t"><b><code>${esc(b.fabrik)}</code></b><small>Anlegen (Fabrik) – die App nutzt nur Fabrik, Eigenschaften, Methoden und Ereignisse (R-1.13)</small></span></div></div>
     ${abschnitt('Eigenschaften')}${zeilen(b.eigenschaften, true)}${abschnitt('Nur lesen')}${zeilen(b.lesen)}
     ${abschnitt('Methoden')}${zeilen(b.methoden)}${abschnitt('Ereignisse <code>on(…)</code>')}${zeilen(b.ereignisse)}`;
 }
