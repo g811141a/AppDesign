@@ -5,6 +5,10 @@ Abschnitt 7: J-20, J-24, J-26, J-29, J-30), `arbeit/APD-135 Befund C Prüfungen.
 und `arbeit/APD-135 Befund L Ablage Backlog Code.md` (L-31). Abgeglichen mit dem heutigen Stand: AppDesign 4.62.0 (`main` ee0d764), Reiselogbuch 3.57.5
 (`main` 9758fb3).
 
+> **Vorab – Gegenproben APD-30 (UEBERGABE 3 Nr. 2) erledigt:** alle vier rot wie gefordert, je ein eigener Lauf gegen 4.62.0 / 3.57.5 (Chromium, alle
+> Ansichten): APD-30/W-89 rot (16 Meldungen: W-84 ×8, W-93 ×8) · APD-30/W-96 rot (18: W-101 ×10, W-81 ×8) · APD-30/W-103 rot (16: W-100 ×8, W-102 ×8) ·
+> APD-30/W-104 rot (8: W-102 ×8). Eingetragen in `arbeit/APD-30 Wischaktionen Testfall-Liste.md`. Usertest P-112 ok (in beiden Backlogs).
+
 ## Was sich ändert
 
 Vorläufige Versionen (die Bau-Frage setzt sie): **AppDesign 4.63.0** (Designrichtlinie 4.63.0, Zusammenarbeit 3.15.0 → **3.16.0**) · **Reiselogbuch 3.57.6**
