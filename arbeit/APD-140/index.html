@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Bean-Katalog">
+<meta name="theme-color" content="#f2f2f7">
+<title>Bean-Katalog – Muster APD-140</title>
+<!-- APD-140 Muster (Sitzung Reiselogbuch 0141): Bean-Katalog als App mit Seitenleiste, gebaut auf der Vorlage (vorlage/index.html) mit v4/ (neueste
+     Fassung). Varianten der Bean-Seite: ?v=A (eine Seite mit Abschnitten wie Einstellungen) · ?v=B (Auswahl-Kapsel: Ausprobieren · Beschreibung ·
+     Schnittstelle · Verlauf). Im Bau stünde je Bean eine eigene Datei (katalog/<kennung>.js), die sich mit katalogBean({…}) anmeldet – hier der
+     Einfachheit halber alles in einer Datei. Nur hell und iPad quer (0 Nr. 6). -->
+<link rel="stylesheet" href="../../v4/design.css">
+<style>
+  /* Nur, was der Katalog selbst braucht – alles Gemeinsame kommt aus design.css */
+  .bk-kopf { background: var(--card); border-radius: 22px; box-shadow: var(--table-shadow); padding: calc(18px * var(--f-body)) 20px; margin-top: 12px; }
+  .bk-icon { width: calc(56px * var(--f-body)); height: calc(56px * var(--f-body)); border-radius: 14px; background: var(--accent-fill); color: #fff;
+    display: flex; align-items: center; justify-content: center; }
+  .bk-icon .ic { width: 60%; height: 60%; }
+  .bk-kopf h1 { margin: 12px 0 4px; }
+  .bk-kopf p { margin: 0; color: var(--muted); font-size: var(--t-body); line-height: 1.35; }
+  .bk-kopf .bk-steck { margin-top: 10px; font-size: var(--t-subhead); color: var(--muted); }
+  .bk-abschnitt { margin: 24px 16px 8px; font-size: var(--t-subhead); font-weight: 600; color: var(--muted); }
+  .bk-zeile { cursor: default; }
+  .bk-zeile .t { flex: 1; min-width: 0; }
+  .bk-zeile b { display: block; font-weight: 600; }
+  .bk-zeile small { display: block; color: var(--muted); font-size: var(--t-subhead); }
+  .bk-zeile .val { flex: none; color: var(--muted); font-size: var(--t-body); }
+  code { font: calc(15px * var(--f-body)) ui-monospace, SFMono-Regular, Menlo, monospace; }
+  .bk-zeile b code { font-weight: 600; }
+  .ilist .swlist { margin: 0 0 0 16px; padding-right: 16px; border-top: .5px solid var(--line); }
+  .bk-anleitung { margin: 8px 16px 0; }
+  .bk-protokoll { list-style: none; margin: 0; padding: 4px 16px 8px; text-align: left; }
+  .bk-protokoll li { padding: 8px 0; border-bottom: .5px solid var(--line); font-size: var(--t-body); }
+  .bk-protokoll li:last-child { border-bottom: none; }
+  .bk-protokoll li small { color: var(--muted); margin-left: 8px; }
+  .bk-protokoll .bk-leer { color: var(--muted); }
+  /* Vorführung der Wischaktionen: Kacheln wie in der Seitenleiste (15.4) */
+  .bk-liste { padding: 2px 0 0; }
+  .bk-kachel { display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; border: none; background: var(--card); border-radius: 22px;
+    box-shadow: var(--table-shadow); padding: calc(12px * var(--f-body)) 16px; margin-bottom: 10px; min-height: 60px; font: inherit; color: inherit; }
+  .bk-kachel .t { flex: 1; min-width: 0; } .bk-kachel b { display: block; font-weight: 600; } .bk-kachel small { display: block; color: var(--muted); font-size: var(--t-subhead); }
+  .bk-kachel > .ic { color: var(--th-line); }
+  .bk-kachel.on { background: var(--sel-bg); box-shadow: inset 0 0 0 .5px var(--accent); }
+  /* Seitenleiste: Symbol vor dem Namen wie in Einstellungen; geplante Beans grau, ohne Pfeil */
+  .side-row .bk-sym { flex: none; width: calc(30px * var(--f-body)); height: calc(30px * var(--f-body)); border-radius: 8px; background: var(--accent-fill);
+    color: #fff; display: flex; align-items: center; justify-content: center; }
+  .side-row .bk-sym .ic { width: 62%; height: 62%; }
+  .side-row.current .bk-sym { background: rgba(255,255,255,.25); }
+  #side .side-row.geplant { box-shadow: none; background: transparent; cursor: default; }
+  #side .side-row.geplant b, #side .side-row.geplant small { color: var(--muted); }
+  #side .side-row.geplant .bk-sym { background: var(--th-line); }
+  .bk-seg { margin-top: 18px; }
+  .bk-seg .cap { width: 100%; } .bk-seg .cap .scroll { flex: 1; } .bk-seg .cap .scroll button { flex: 1; padding: 0 14px; white-space: nowrap; }
+  @media print { #app, #side, dialog, .fab { display: none !important; } }
+</style>
+</head>
+<body>
+<aside id="side" hidden></aside>
+<main id="app"></main>
+<div class="fab" id="fab" hidden>
+  <button type="button" id="toTop" aria-label="Nach oben"></button>
+  <button type="button" id="toEnd" aria-label="Ans Ende"></button>
+</div>
+<dialog id="dlg"></dialog>
+<dialog id="msg"></dialog>
+
+<script src="../../v4/ui.js"></script>
+<script>
+'use strict';
+
+const APP_NAME = 'Bean-Katalog';
+const VARIANTE = new URLSearchParams(location.search).get('v') === 'B' ? 'B' : 'A';
+const app = document.getElementById('app');
+const side = document.getElementById('side');
+const fab = document.getElementById('fab');
+
+// Nur die Darstellung wird gespeichert (R-1.2); sonst hat der Katalog keine Daten.
+const STORAGE_KEY = 'adkatalog.v1';
+let db = { settings: { appearance: 'auto' } };
+try { Object.assign(db.settings, JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}')); } catch (e) { /* Standard */ }
+function save() { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(db.settings)); } catch (e) { /* ohne Speicher */ } return true; }
+
+/* ---------- Beans (im Bau: je Bean eine Datei katalog/<kennung>.js) ---------- */
+
+const BEREICHE = ['Aktionen und Menüs', 'Navigation und Suche', 'Fenster und Meldungen', 'Eingabe', 'Inhalt', 'Dienste'];
+const BEANS = [];
+const katalogBean = b => BEANS.push(b);
+
+katalogBean({
+  kennung: 'swipeactions', name: 'Wischaktionen', bereich: 'Aktionen und Menüs', icon: 'chevron-left', seit: '4.60.0', abschnitt: '15.4',
+  satz: 'Wischen nach links auf einer Kachel zeigt rechts neben ihr die Aktionen ihres Kontextmenüs als Kapseln – wie in Notizen. Gelöscht wird nur über die rote Kapsel, sie fragt vorher.',
+  fabrik: 'createSwipeactions(liste, { kacheln, aktionen })',
+  eigenschaften: [
+    ['kacheln', 'Pflicht', 'Welche Elemente der Liste Kacheln sind (CSS-Auswahl, z. B. [data-id]).'],
+    ['aktionen', 'Pflicht', 'Funktion: Kachel → Einträge wie im Kontextmenü, je Eintrag mit kurz (Wort unter der Kapsel).'],
+  ],
+  lesen: [['offen', 'Die offene Kachel oder null.'], ['masse', 'Kapsel 66 × 44, Abstand 11 pt, offen ab halber Breite, Widerstand höchstens 60 px.']],
+  methoden: [['schliessen()', 'Schließt die offene Kachel (z. B. beim Ausblenden der Seitenleiste).'], ['entfernen()', 'Meldet die Liste ab.']],
+  ereignisse: [['offen', 'Eine Kachel ist offen.'], ['zu', 'Die Kachel ist wieder zu.']],
+  regeln: [['R-7.8', 'Wischaktionen der Kacheln'], ['R-4.12', 'Erst fragen, dann zerstören'], ['R-4.13', 'Menüs und Sprechblasen wachsen aus der Schaltfläche'],
+    ['R-1.4', 'Nur der Vordergrund reagiert'], ['R-1.8', 'VoiceOver']],
+  verlauf: [['4.60.3', 'Weich wie Notizen: Kapseln wachsen mit eigener Zeit (P-109).'], ['4.60.2', 'Ein Abstand für alles: 11 pt; kein Durchwischen (P-108).'],
+    ['4.60.1', 'Kapseln wachsen mit der Textgröße (P-107).'], ['4.60.0', 'Neu – die erste AD-Bean (APD-30).']],
+  anleitung: 'Eine Kachel nach links wischen · ‚Löschen‘ antippen – die Sprechblase fragt · lange drücken zeigt dieselben Aktionen als Kontextmenü · die dritte Kachel hat keine Aktionen.',
+  vorfuehren(el, protokoll) {
+    el.innerHTML = `<div class="bk-liste" id="bkListe">${[['k1', 'Erster Eintrag: Rom, Florenz, Siena und Lucca', '12 Unterpunkte'], ['k2', 'Zweiter Eintrag mit einem langen Titel, der umbricht', '3 Unterpunkte'], ['k3', 'Ohne Aktionen', 'lässt sich nicht wischen']]
+      .map(([id, t, s]) => `<button type="button" class="bk-kachel" data-k="${id}"><span class="t"><b>${t}</b><small>${s}</small></span>${ic('chevron-right')}</button>`).join('')}</div>`;
+    const liste = el.querySelector('#bkListe');
+    const aktionen = k => k.dataset.k === 'k3' ? [] : [
+      { icon: 'settings', label: 'Einstellungen', kurz: 'Einstellen', act: () => protokoll('Aktion ‚Einstellen‘') },
+      'sep',
+      { icon: 'trash', label: `‚${k.querySelector('b').textContent}‘ löschen`, kurz: 'Löschen', red: true,
+        act: async ({ anker } = {}) => { const ja = await confirmPop(anker || k, `‚${esc(k.querySelector('b').textContent)}‘ löschen? (nur Vorführung – nichts wird gelöscht)`, { label: 'Löschen', icon: 'trash' });
+          protokoll(ja ? 'Aktion ‚Löschen‘ bestätigt' : '‚Löschen‘ abgebrochen'); } },
+    ];
+    const w = createSwipeactions(liste, { kacheln: '[data-k]', aktionen });
+    window.__bkWisch = w;   // für die Gegenprobe des Musters
+    w.on('offen', k => protokoll('offen', k.querySelector('b').textContent));
+    w.on('zu', k => protokoll('zu', k.querySelector('b').textContent));
+    liste.querySelectorAll('[data-k]').forEach(k => onLongPress(k, () => {
+      const e = aktionen(k); if (!e.length) return;
+      k.classList.add('on');
+      openMenu(k, e, 'beside');
+      const fertig = () => { if (!document.querySelector('.menu')) { k.classList.remove('on'); } else setTimeout(fertig, 120); };
+      setTimeout(fertig, 300);
+    }, () => protokoll('Kachel angetippt', k.querySelector('b').textContent)));
+    return () => w.entfernen();
+  },
+});
+
+katalogBean({
+  kennung: 'hinweis', name: 'Hinweisfenster', bereich: 'Fenster und Meldungen', icon: 'info', seit: '4.64.0', abschnitt: '7, 10',
+  satz: 'Kleines Fenster mit rundem x für eine Meldung ohne Entscheidung, z. B. nach dem Teilen. Steht ein Dateiname darin, wird das Fenster am iPad so breit, dass er in einer Zeile steht.',
+  fabrik: 'createHinweis(fenster, { breiteNachDateiname })',
+  eigenschaften: [['breiteNachDateiname', 'ein', 'Am iPad wächst das Fenster mit dem Dateinamen (höchstens so breit wie das breite Fenster); am iPhone ohne Wirkung.']],
+  lesen: [['offen', 'Ist das Fenster offen?']],
+  methoden: [['zeigen(titel, html, { breit, aktion })', 'Zeigt das Fenster; erfüllt beim Schließen. aktion = blaue Schaltfläche unter dem Text.'], ['schliessen()', 'Schließt das Fenster.']],
+  ereignisse: [['zu', 'Das Fenster ist geschlossen.']],
+  regeln: [['R-10.8', 'Dateiname im Hinweisfenster'], ['R-4.3', 'Abfragen und Meldungen'], ['R-1.8', 'VoiceOver']],
+  verlauf: [['4.64.0', 'Neu als AD-Bean; Dateiname am iPad in einer Zeile (APD-138).']],
+  anleitung: 'Einen Fall antippen – das Fenster geht auf. Mit dem Schalter ‚Breite nach Dateiname‘ siehst du den Unterschied beim langen Dateinamen.',
+  vorfuehren(el, protokoll) {
+    const h = adHinweis;
+    const name = 'Ω Backup Reiselogbuch 2026.11.19 20.41.json';   // wie backupFileOf
+    const faelle = [
+      ['Kurze Meldung', () => h.zeigen('Backup', 'Das Backup wurde gesichert.')],
+      ['Langer Dateiname', () => h.zeigen('Backup', `Das Backup wurde in Dateien gesichert:${fileNameHtml(name)}`)],
+      ['Breites Fenster', () => h.zeigen('Abgleich', 'Ein breites Fenster für längere Texte, z. B. den Abgleichbericht mit mehreren Absätzen.', { breit: true })],
+      ['Mit Schaltfläche', () => h.zeigen('Abgleich', '3 Änderungen übernommen.', { aktion: { label: 'Abgleichbericht anzeigen', icon: 'file-text', run: () => protokoll('Aktion ‚Abgleichbericht anzeigen‘') } })],
+    ];
+    el.innerHTML = `<div class="ilist">${faelle.map(([t], i) => `<button type="button" class="irow" data-fall="${i}"><span class="t"><b>${t}</b></span>${ic('chevron-right')}</button>`).join('')}
+      <div class="swlist"><label class="check sw"><span>Breite nach Dateiname</span><input type="checkbox" switch role="switch" id="bkBreite" ${h.breiteNachDateiname ? 'checked' : ''}></label></div></div>`;
+    el.querySelectorAll('[data-fall]').forEach(b => b.onclick = () => faelle[b.dataset.fall][1]());
+    el.querySelector('#bkBreite').onchange = e => { h.breiteNachDateiname = e.target.checked; protokoll(`breiteNachDateiname = ${e.target.checked ? 'ein' : 'aus'}`); };
+    const ab = h.on('zu', () => protokoll('zu'));
+    return ab;
+  },
+});
+
+// Geplante Beans (APD-136, Kandidaten aus dem Vorschlag 0139) – grau, ohne Seite
+const GEPLANT = [
+  { kennung: 'gedrueckt', name: 'Gedrückte Schaltfläche', bereich: 'Aktionen und Menüs' },
+  { kennung: 'field', name: 'Eingabefeld (Grundlage)', bereich: 'Eingabe' },
+  { kennung: 'decimal', name: 'Betragsfeld', bereich: 'Eingabe' },
+];
+
+/* ---------- Zustand ---------- */
+
+let currentId = new URLSearchParams(location.search).get('bean') || location.hash.slice(1) || BEANS[0].kennung;
+if (!BEANS.some(b => b.kennung === currentId)) currentId = BEANS[0].kennung;
+let sideOpen = true, phoneList = isPhone(), teil = 'probe', abmelden = null;
+const ereignisse = [];
+const getBean = id => BEANS.find(b => b.kennung === id);
+
+/* ---------- Bean-Seite ---------- */
+
+const zeilen = (liste, mitWert) => `<div class="ilist">${liste.map(([n, w, s]) => `<div class="irow bk-zeile"><span class="t"><b><code>${esc(n)}</code></b><small>${esc(mitWert ? s : w)}</small></span>${mitWert ? `<span class="val">${esc(w)}</span>` : ''}</div>`).join('')}</div>`;
+const textZeilen = liste => `<div class="ilist">${liste.map(([n, s]) => `<div class="irow bk-zeile"><span class="t"><b>${esc(n)}</b><small>${esc(s)}</small></span></div>`).join('')}</div>`;
+const abschnitt = t => `<h2 class="bk-abschnitt">${t}</h2>`;
+const protokollHtml = () => `<ul class="bk-protokoll" id="bkProt">${ereignisse.length ? ereignisse.map(([z, t, d]) => `<li>${esc(t)}${d ? ` · ${esc(d)}` : ''}<small>${z}</small></li>`).join('') : '<li class="bk-leer">Noch keine Ereignisse – probier die Bean oben aus.</li>'}</ul>`;
+function protokoll(text, dazu = '') {
+  ereignisse.unshift([new Date().toLocaleTimeString('de-DE'), text, dazu]);
+  ereignisse.length = Math.min(ereignisse.length, 6);
+  const p = app.querySelector('#bkProt'); if (p) p.outerHTML = protokollHtml();
+}
+
+function teilProbe(b) { return `${abschnitt('Ausprobieren')}<div id="bkProbe"></div><p class="hint bk-anleitung">${esc(b.anleitung)}</p>${abschnitt('Ereignisse')}<div class="ilist">${protokollHtml()}</div>`; }
+function teilBeschreibung(b) { return `${abschnitt('Regeln')}${textZeilen(b.regeln)}`; }
+function teilSchnittstelle(b) {
+  return `${abschnitt('Fabrik')}<div class="ilist"><div class="irow bk-zeile"><span class="t"><b><code>${esc(b.fabrik)}</code></b></span></div></div>
+    ${abschnitt('Eigenschaften')}${zeilen(b.eigenschaften, true)}${abschnitt('Nur lesen')}${zeilen(b.lesen)}
+    ${abschnitt('Methoden')}${zeilen(b.methoden)}${abschnitt('Ereignisse <code>on(…)</code>')}${zeilen(b.ereignisse)}`;
+}
+function teilVerlauf(b) { return `${abschnitt('Verlauf')}${textZeilen(b.verlauf.map(([v, s]) => [`AppDesign ${v}`, s]))}`; }
+
+function render() {
+  const b = getBean(currentId), phone = isPhone();
+  if (phone && phoneList) { fab.hidden = true; app.innerHTML = ''; renderSide(); return; }
+  renderSide();
+  fab.hidden = false;
+  const kopf = `<div class="bk-kopf"><div class="bk-icon">${ic(b.icon)}</div><h1>${esc(b.name)}</h1><p>${esc(b.satz)}</p>
+    <div class="bk-steck"><code>${b.kennung}</code> · ${esc(b.bereich)} · seit AppDesign ${b.seit} · Designrichtlinie ${b.abschnitt}</div></div>`;
+  const TEILE = [['probe', 'Ausprobieren'], ['text', 'Regeln'], ['schnitt', 'Schnittstelle'], ['verlauf', 'Verlauf']];
+  const inhalt = VARIANTE === 'A'
+    ? teilProbe(b) + teilBeschreibung(b) + teilSchnittstelle(b) + teilVerlauf(b)
+    : `<div class="bk-seg">${capHtml(TEILE.map(([k, t]) => `<button type="button" data-teil="${k}" aria-pressed="${teil === k}">${t}</button>`).join(''), 'bkSeg')}</div>
+       ${{ probe: teilProbe, text: teilBeschreibung, schnitt: teilSchnittstelle, verlauf: teilVerlauf }[teil](b)}`;
+  setHtml(app, `
+    ${phone ? `<div class="pnav" id="bar"><span><button type="button" class="round" id="back" aria-label="AD-Beans">${ic('chevron-left')}</button></span>
+      <span class="pnav-title">${esc(b.name)}</span><span></span></div>`
+    : `<div class="nb" id="bar"><div class="nb1"><span>${sideToggleHtml()}</span><span class="nb-title">${esc(b.name)}</span><span></span></div></div>`}
+    <div class="rolle" id="rolle">${kopf}${inhalt}<div style="height:24px"></div></div>`);
+  document.documentElement.style.setProperty('--bar-h', app.querySelector('#bar').offsetHeight + 'px');
+  bindSideToggle(app);
+  const back = app.querySelector('#back'); if (back) back.onclick = navZurueck;
+  app.querySelectorAll('[data-teil]').forEach(x => x.onclick = () => { teil = x.dataset.teil; render(); rolle.to(0); });
+  mountCap(app);
+  abmelden?.(); abmelden = null;
+  const probe = app.querySelector('#bkProbe');
+  if (probe) abmelden = b.vorfuehren(probe, protokoll);
+}
+
+function showBean(id) {
+  if (id !== currentId) ereignisse.length = 0;
+  currentId = id; phoneList = false; teil = 'probe';
+  history.replaceState(null, '', '#' + id);
+  render(); rolle.to(0);
+}
+
+/* ---------- Seitenleiste bzw. Startliste ---------- */
+
+const sideFest = () => !isPhone();
+const sideToggleHtml = () => sideOpen && !isPhone() ? '' : `<button type="button" class="round" data-side-toggle aria-label="Seitenleiste einblenden">${ic('panel-left')}</button>`;
+function toggleSide() { if (sideFest()) return navSeite(!sideOpen); keepPlace(() => { sideOpen = !sideOpen; render(); }); }
+const bindSideToggle = root => root.querySelectorAll('[data-side-toggle]').forEach(x => x.onclick = toggleSide);
+
+function renderSide() {
+  const page = isPhone();
+  if (page && !phoneList) { side.hidden = true; side.classList.remove('page'); return; }
+  const show = page || sideOpen;
+  side.hidden = !show;
+  side.classList.toggle('page', page);
+  document.body.classList.toggle('docked', show && !page);
+  if (!show) return;
+  const gruppen = BEREICHE.map(g => [g, [...BEANS.filter(b => b.bereich === g), ...GEPLANT.filter(b => b.bereich === g).map(b => ({ ...b, geplant: true }))]]).filter(([, l]) => l.length);
+  setHtml(side, `
+    <div class="side-head"><div class="ttl"><h2>AD-Beans</h2><small>${BEANS.length} AD-Beans · ${GEPLANT.length} geplant</small></div>
+      <span class="grp"><button type="button" id="sideMore" aria-label="Mehr">${ic('ellipsis')}</button></span>
+      ${page ? '' : `<button type="button" class="round" id="sideHide" aria-label="Seitenleiste ausblenden">${ic('panel-left')}</button>`}
+    </div>
+    <div class="side-list">${gruppen.map(([g, l]) => `<h3 class="side-sec">${g}</h3>${l.map(b => b.geplant
+      ? `<div class="side-row geplant" aria-disabled="true"><span class="bk-sym">${ic('ellipsis')}</span><span class="t"><b>${esc(b.name)}</b><small><code>${b.kennung}</code> · geplant</small></span></div>`
+      : `<button type="button" class="side-row ${b.kennung === currentId && !page ? 'current' : ''}" data-bean="${b.kennung}"><span class="bk-sym">${ic(b.icon)}</span>
+         <span class="t"><b>${esc(b.name)}</b><small><code>${b.kennung}</code> · seit ${b.seit}</small></span>${ic('chevron-right')}</button>`).join('')}`).join('')}</div>`);
+  side.querySelector('#sideMore').onclick = e => openMenu(e.currentTarget, [
+    darstellungMenuItem(), 'line', { note: `${APP_NAME} · AppDesign ${AD_VERSION} (v4, neueste Fassung)` }], 'left');
+  const hide = side.querySelector('#sideHide'); if (hide) hide.onclick = toggleSide;
+  side.querySelectorAll('[data-bean]').forEach(x => x.onclick = () => navVor(() => showBean(x.dataset.bean)));
+  document.documentElement.style.setProperty('--side-w', side.offsetWidth + 'px');
+}
+
+/* ---------- Anmelden und Start ---------- */
+
+document.getElementById('toTop').innerHTML = ic('arrow-up-to-line');
+document.getElementById('toEnd').innerHTML = ic('arrow-down-to-line');
+document.getElementById('toTop').onclick = fabTop;
+document.getElementById('toEnd').onclick = fabEnd;
+navAnmelden({
+  zurueck: {
+    offen: () => isPhone() && !phoneList,
+    darunter: an => { if (an) { phoneList = true; renderSide(); phoneList = false; } else if (!phoneList && isPhone()) { side.hidden = true; side.classList.remove('page'); } },
+    los: () => { phoneList = true; rolle.to(0); render(); },
+  },
+  seite: { moeglich: () => false, fest: sideFest, offen: () => sideOpen, zeigen: an => { sideOpen = an; renderSide(); }, neu: () => render() },
+});
+applyTheme();
+render();
+let wasPhone = isPhone();
+window.addEventListener('resize', () => {
+  if (isPhone() !== wasPhone) { wasPhone = isPhone(); render(); return; }
+  const bar = document.getElementById('bar'); if (bar) document.documentElement.style.setProperty('--bar-h', bar.offsetHeight + 'px');
+  if (!side.hidden) document.documentElement.style.setProperty('--side-w', side.offsetWidth + 'px');
+});
+// für die Bilder des Musters
+window.__muster = { showBean, setTeil: t => { teil = t; render(); } };
+</script>
+</body>
+</html>
