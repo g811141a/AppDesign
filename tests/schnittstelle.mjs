@@ -4,6 +4,8 @@
 // · eine Prüfdatei nutzt einen Namen von ui.js, der weder in `app` noch in `pruefungen` steht und in der Datei nicht selbst vergeben ist
 // · eine Deklaration der App auf oberster Ebene trägt den Namen eines Bausteins von ui.js (Namensgleichheit, U-34 Nr. 4)
 // · ein Name der Liste fehlt in ui.js
+// Seit 4.64.0 (APD-135/B-3.1, APD-135/E-1): ebenso die Vorlage derselben Fassung (vorlage/index.html, Teil app); als Gegenprobe muss eine Kopie der
+// Vorlage mit setAppearance (innerer Name) rot werden.
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -12,6 +14,7 @@ import { woerter, deklarationen } from './schnittstelle-zerleger.mjs';
 const hier = path.dirname(fileURLToPath(import.meta.url));
 // in der festen Fassung liegt ui.js neben tests/, im Arbeitsstand AppDesign/tests unter v4/
 const basis = fs.existsSync(path.join(hier, '..', 'ui.js')) ? path.join(hier, '..') : path.join(hier, '..', 'v4');
+const VORLAGE = path.join(hier, '..', 'vorlage', 'index.html');
 
 export function lokaleNamen(s) {
   const lokal = new Set([...s.matchAll(/\b(?:const|let|var|function|class)\s+([A-Za-z_$][\w$]*)/g)].map(m => m[1]));
@@ -25,6 +28,7 @@ export function checkSchnittstelle(appDir, {
   ui = path.join(basis, 'ui.js'),
   liste = path.join(basis, 'schnittstelle.json'),
   html = path.join(appDir, 'index.html'),
+  vorlage = fs.existsSync(VORLAGE) ? VORLAGE : null,
   pruefdateien = fs.readdirSync(path.join(appDir, 'tests')).filter(f => f.endsWith('.mjs')).map(f => path.join(appDir, 'tests', f)),
 } = {}) {
   const fehler = [];
@@ -33,16 +37,28 @@ export function checkSchnittstelle(appDir, {
   const L = JSON.parse(fs.readFileSync(liste, 'utf8'));
   const appOk = new Set(L.app), prOk = new Set([...L.app, ...L.pruefungen]);
   for (const n of [...L.app, ...L.pruefungen]) if (!uiN.has(n)) fehler.push(`R-1.14 schnittstelle.json: ‚${n}‘ gibt es in ui.js nicht`);
-  const htmlSrc = fs.readFileSync(html, 'utf8');
-  // Skripte der App mit ihrer Startzeile, damit die Meldung die Zeile in index.html nennt
-  for (const m of htmlSrc.matchAll(/<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script>/g)) {
-    const start = htmlSrc.slice(0, m.index + m[0].indexOf('>') + 1).split('\n').length - 1;
-    const code = m[1];
-    const eigene = deklarationen(code);
-    const eigeneN = new Set(eigene.map(d => d.name));
-    for (const d of eigene) if (uiN.has(d.name)) fehler.push(`R-1.14 ${path.basename(html)} Z. ${start + d.zeile}: ‚${d.name}‘ hat denselben Namen wie ein Baustein von ui.js`);
-    for (const w of woerter(code)) if (uiN.has(w.name) && !eigeneN.has(w.name) && !appOk.has(w.name))
-      fehler.push(`R-1.14 ${path.basename(html)} Z. ${start + w.zeile}: innerer Name ‚${w.name}‘ von ui.js (nicht in schnittstelle.json, Teil app)`);
+  // Skripte einer Seite mit ihrer Startzeile, damit die Meldung die Zeile nennt
+  const seite = (htmlSrc, name) => {
+    const out = [];
+    for (const m of htmlSrc.matchAll(/<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script>/g)) {
+      const start = htmlSrc.slice(0, m.index + m[0].indexOf('>') + 1).split('\n').length - 1;
+      const code = m[1];
+      const eigene = deklarationen(code);
+      const eigeneN = new Set(eigene.map(d => d.name));
+      for (const d of eigene) if (uiN.has(d.name)) out.push(`R-1.14 ${name} Z. ${start + d.zeile}: ‚${d.name}‘ hat denselben Namen wie ein Baustein von ui.js`);
+      for (const w of woerter(code)) if (uiN.has(w.name) && !eigeneN.has(w.name) && !appOk.has(w.name))
+        out.push(`R-1.14 ${name} Z. ${start + w.zeile}: innerer Name ‚${w.name}‘ von ui.js (nicht in schnittstelle.json, Teil app)`);
+    }
+    return out;
+  };
+  fehler.push(...seite(fs.readFileSync(html, 'utf8'), path.basename(html)));
+  if (vorlage) {
+    const v = fs.readFileSync(vorlage, 'utf8');
+    fehler.push(...seite(v, 'vorlage/index.html'));
+    // Gegenprobe (APD-135/E-1): dieselbe Prüfung muss einen inneren Namen in der Vorlage finden
+    const kopie = v.replace(/(<script(?![^>]*\bsrc=)[^>]*>)/, "$1setAppearance('auto');");
+    if (!seite(kopie, 'Kopie').some(f => /^R-1\.14 Kopie Z\. \d+: innerer Name ‚setAppearance‘/.test(f)))
+      fehler.push('R-1.14 Gegenprobe: eine Kopie der Vorlage mit setAppearance wird nicht gemeldet');
   }
   for (const f of pruefdateien) {
     const s = fs.readFileSync(f, 'utf8');

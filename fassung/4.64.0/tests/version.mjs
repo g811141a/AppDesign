@@ -23,6 +23,8 @@ export function fassungQuellen(ad) {
   const q = { 'design.css': 'v4/design.css', 'ui.js': 'v4/ui.js', ...Object.fromEntries(TEXTE.map(f => [f, f])) };
   // seit 4.64.0 (APD-135/B-4.1, R-1.14): die Schnittstellenliste gehört zur Fassung – tests/schnittstelle.mjs liest sie neben ui.js
   if (existsSync(new URL('v4/schnittstelle.json', ad))) q['schnittstelle.json'] = 'v4/schnittstelle.json';
+  // seit 4.64.0 (APD-135/B-3.1, APD-135/U-32): die Vorlage ist die Prüfseite der Bausteine – tests/pruefseite.mjs öffnet sie aus derselben Fassung
+  if (existsSync(new URL('vorlage/index.html', ad))) q['vorlage/index.html'] = 'vorlage/index.html';
   for (const f of readdirSync(new URL('tests/', ad))) if (statSync(new URL('tests/' + f, ad)).isFile()) q['tests/' + f] = 'tests/' + f;
   return q;
 }

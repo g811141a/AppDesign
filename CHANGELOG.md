@@ -23,8 +23,9 @@ APD-138/D-1 bis D-18; Sitzungen 0137 und 0138).
   in der Schlusszeile daran. Selbsttest APD-138/D-15 bis D-17, Gegenprobe D-18 (`VEROEFF_GEGENPROBE=adbean`).
 - AD-Bean: `hinweis` (neu).
 
-**APD-135 Paket 6 Schritt 1 – Schnittstelle von ui.js** (Umfang, Wortlaut und Testfall-Liste APD-135/S-1 bis S-15 bestätigt 19.11.2026 in Sitzung 0136 –
-`arbeit/APD-135 Paket 6 Schritt 1 Vorschlag.md`; Sitzungen 0136 bis 0138).
+**APD-135 Paket 6 – Schnittstelle und Prüfseite** (Schritt 1: Umfang, Wortlaut und Testfall-Liste APD-135/S-1 bis S-15 bestätigt 19.11.2026 in Sitzung 0136 –
+`arbeit/APD-135 Paket 6 Schritt 1 Vorschlag.md`; Sitzungen 0136 bis 0138. Schritt 2: Umfang, Wortlaut und Testfall-Liste APD-135/E-1 bis E-17 bestätigt
+19.11.2026 in Sitzung 0139 – `arbeit/APD-135 Paket 6 Schritt 2 Vorschlag.md`; hier APD-135/B-3.1).
 
 - **Schnittstelle (APD-135/B-4.1):** neu `v4/schnittstelle.json` (Teile `app` und `pruefungen`) und `tests/schnittstelle.mjs` mit `checkSchnittstelle`
   (Zerleger `tests/schnittstelle-zerleger.mjs`); in der App `tests/schnittstelle-regeln.mjs` im Vorlauf von `lauf.mjs`, nur im ersten Browser;
@@ -36,6 +37,25 @@ APD-138/D-1 bis D-18; Sitzungen 0137 und 0138).
 - **`design.css`:** `.iconbtn` gestrichen (APD-135/J-28).
 - **Designrichtlinie 4.64.0:** neu R-1.14, Verweis in 14, 15.1 ohne `.iconbtn`, 15.22 neu gefasst (APD-135/J-19: der Rückfall ohne Rollbereich wird gebraucht).
 - **Doku:** `tests/README.md` (AppDesign und Reiselogbuch), AppDesign-`README.md`, `vorlage/index.html`.
+- **Vorlage (APD-135/B-3.1, APD-135/U-45):** `vorlage/index.html` neu als kleine neutrale App ‚Neue App‘ mit Einträgen (`items`) und Unterpunkten (`sub`), gebaut wie das
+  Reiselogbuch – Seitenleiste bzw. Startliste mit Backup-Kachel, Kopfzeile mit Teilen und Mehr, iPhone-Navigation, Rollbereich mit `data-day`, ‚Nach oben /
+  Ans Ende‘, Mehr-Menü der Liste (Suchen, Backup, Darstellung, Messmodus, Versionszeile), Kontextmenü, rotes ‚Eintrag löschen‘ mit Sprechblase, Fenster
+  ‚Eintrag bearbeiten‘ und ‚Unterpunkt n‘, Suche im Eintrag und in allen, Backup laden mit Abgleich; nur Namen aus `schnittstelle.json` (`APPEARANCES`,
+  `setAppearance` fallen weg).
+- **Prüfseite (APD-135/B-3.1, APD-135/U-32):** die Vorlage gehört zur festen Fassung (`fassung/X.Y.Z/vorlage/index.html`, `tests/version.mjs`); neu `tests/pruefseite.mjs` –
+  `oeffneVorlage(p, { daten, fehler })` mit neutralen Daten (`neueapp.v1`), `ui.js` und `design.css` der eigenen Fassung über `p.route` (APD-135/E-3).
+- **Mindestseite (APD-135/B-3.1):** `oeffneMindestseite(p, { fehler })` aus dem Text der Vorlage (`<head>`, `#dlg`, `#msg`, `ui.js`, Platzhalter und `sync`); ohne
+  `#dlg` oder `#msg` ein Fehler (APD-135/E-4). Abweichung vom Vorschlag: `createSync` mit `subAt: 'subAt'` – ohne landen die Zeitpunkte der Unterpunkte
+  unter dem Schlüssel ‚undefined‘ und der Abgleichbericht zeigt sie als Feld (R-9.4 rot).
+- **`checkWerte` (APD-135/B-3.1, Gruppe A):** Version, Icons, leerer Zustand, Hilfen, Suche (`checkSearchWords`, `markWords`), Teilen (`outputCss`,
+  `shareResultText`), Backup (`backupFileOf` → `readBackup`, `backupTileHtml`), Abgleich (`checkSync`) mit festen Beispielwerten (APD-135/E-5); dazu die
+  Vorlage in allen vier Ansichten, hell und dunkel, leer und mit 60 Unterpunkten mit den Grundregeln, Menü, Fenster und Sprechblase (APD-135/E-2).
+- **Hülle (APD-135/B-3.1):** im Reiselogbuch neu `tests/bausteine-pruefseite.mjs` (übergibt `playwright` und den Ausgabeordner), in `alle.mjs` mit Teil `werte`.
+- **Gegenprobe (APD-135/B-3.1):** neu `--gegenprobe pruefseite` in `tests/lauf.mjs` – je Teil und je eingeschleustem Fehler seiner Bausteine ein Lauf, rot nur mit der
+  Meldung dieses Bausteins (`GEGENPROBEN_PRUEFSEITE`, 8 Fehler für `werte`, APD-135/E-6; `lauf-selbsttest` APD-135/E-15). `checkSchnittstelle` prüft auch die
+  Vorlage; eine Kopie mit `setAppearance` wird rot mit ‚R-1.14‘ (APD-135/E-1, gegen die alte Vorlage rot).
+- **Texte (APD-135/B-3.1):** Designrichtlinie 14 (Inhalt, Feste Fassung, Prüfen), 17 Kopf ‚Prüfung‘, R-1.14 Spalte Prüfung; `tests/README.md` (Abschnitt ‚Prüfseite‘
+  und Reiselogbuch), AppDesign-`README.md` (Vorlage).
 - AD-Bean: keine, weil nur die Schnittstelle von `ui.js` und innere Bausteine; die gedrückten Schaltflächen (`markHeld`, `hold`, `release`, `setOpener`,
   `markOpener`) bekommen später eine eigene Bean `gedrueckt`, `FX_SVG` ist Kandidat für APD-136 (Nutzer 19.11.2026, Sitzung 0138).
 

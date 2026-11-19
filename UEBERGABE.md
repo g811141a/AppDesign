@@ -37,7 +37,7 @@ liest diese Datei zu Beginn jeder Sitzung zuerst, dann die ganze Zusammenarbeit*
   `vorbereiten` erinnert daran; Selbsttest APD-138/D-15 bis D-17, Gegenprobe D-18 – **Selbsttest grün**.
 - **Texte geschrieben:** CHANGELOG beider Repos (je Thema ‚AD-Bean: …‘, Usertest **P-114** /0 und /1), Backlog (APD-138 und APD-135 Paket 6 Schritt 1 nach
   Erledigt, P-114 unter 1., APD-135 Paket 5 in Erledigt nachgetragen), Versionsgeschichten (Designrichtlinie 4.64.0, Zusammenarbeit 3.17.0, Designrichtlinie
-  Reiselogbuch 3.57.7), Zusammenarbeit 3.17.0 in README und PROMPT des Reiselogbuchs; Abschnittszeile ‚AD-Bean hinweis‘ in `ui.js` (W-73); `fassung` neu.
+  Reiselogbuch 3.57.7), Zusammenarbeit 3.17.0 in README und PROMPT des Reiselogbuchs; Abschnittszeile ‚AD-Bean hinweis‘ in `ui.js` (APD-30/W-73); `fassung` neu.
 - **`doku-regeln` grün**, `stufe`: **voll**.
 - **Bau-Frage (Paket 6 Schritt 1 und APD-138): ‚Nein‘** – der Nutzer will noch ein passendes Thema in diese Version. **Entschieden (Nutzer 19.11.2026):
   APD-135 Paket 6 Schritt 2 (APD-135/B-3.1, B-3.2) kommt mit** – gleiches Thema, also weiter 2 Themen (0 Nr. 8); abweichend vom Plan ‚je Schritt eine Version‘

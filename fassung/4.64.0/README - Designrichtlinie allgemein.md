@@ -599,7 +599,7 @@ Gemessene bzw. belegte Eigenheiten mit Quelle; sie gelten für alle Apps, die Pr
   Darstellung, Auswahl-Kapsel, Tastatur/sichtbarer Bereich, Beträge, Backup und Abgleich, Offline, Messmodus, Rollbereich,
   iPhone-Erkennung `isPhone()`), `apple-referenz/` (Vergleichsbilder), `tests/` (Prüfungen des Regelkatalogs, Messdateien in
   `tests/messungen/` zum Abspielen, 15.21 – nie umbenennen oder löschen: die Prüfungen jeder App lesen sie aus dem Arbeitsstand, nicht aus
-  ihrer Fassung), `vorlage/index.html` (Startpunkt für neue Apps), `werkzeug/` (Veröffentlichen,
+  ihrer Fassung), `vorlage/index.html` (Startpunkt für neue Apps und Prüfseite der Bausteine), `werkzeug/` (Veröffentlichen,
   Kontextstand), `arbeit/` (Muster, Testfall-Listen, Auswertungen).
 - **Einbindung:** Jede App lädt die Bausteine von GitHub Pages aus **ihrer** Fassung:
   `<link rel="stylesheet" href="../AppDesign/fassung/X.Y.Z/design.css">` im `<head>` vor dem eigenen `<style>`,
@@ -607,7 +607,7 @@ Gemessene bzw. belegte Eigenheiten mit Quelle; sie gelten für alle Apps, die Pr
   App nimmt beide Dateien in seinen Cache auf (offline). Die Prüfskripte der App binden die Prüfungen derselben Fassung ein
   (`fassung/X.Y.Z/tests/`).
 - **Feste Fassung** (R-10.3): Jede AppDesign-Version liegt zusätzlich unveränderlich in `fassung/X.Y.Z/` (`design.css`, `ui.js`,
-  `tests/`, der Text dieser Richtlinie und der Zusammenarbeit; Prüfsummen in `fassung/PRUEFSUMMEN`); die README der App verlinkt
+  `schnittstelle.json`, `tests/`, `vorlage/index.html`, der Text dieser Richtlinie und der Zusammenarbeit; Prüfsummen in `fassung/PRUEFSUMMEN`); die README der App verlinkt
   die Richtlinien in ihrer Fassung (eine Git-Markierung ist aus der Cloud nicht möglich). Eine neue AppDesign-Version ändert eine
   App **nicht**; gehoben wird eine App nur nach Rückfrage (Zusammenarbeit 0 Nr. 10). `v4/` ist der Arbeitsstand und zeigt die
   neueste 4er-Fassung; eine Hauptversion (5.0.0) bekommt einen neuen Ordner `v5/`. Veröffentlicht wird mit
@@ -618,7 +618,10 @@ Gemessene bzw. belegte Eigenheiten mit Quelle; sie gelten für alle Apps, die Pr
 - **Prüfen:** Jede App hat eigene Prüfskripte, die ihre Ansichten und Fenster durchgehen und mit den Bausteinen aus
   `AppDesign/tests/` messen (AppDesign liegt beim Testen neben dem App-Repo): Fehler mit Sollwerten und Rückgabewert
   (`pruefe.mjs`), nach jedem Schritt die Grundregeln (dieselben Prüfungen wie `hig.mjs`, ohne Drehen), Chromium **und WebKit**;
-  `lauf.mjs` startet alle Prüfskripte einer App (`node tests/alle.mjs`). Einzelheiten `tests/README.md`.
+  `lauf.mjs` startet alle Prüfskripte einer App (`node tests/alle.mjs`). Einzelheiten `tests/README.md`. Bausteine, die ohne den Inhalt einer App
+  gleich laufen, prüft AppDesign auf der **Prüfseite** – der Vorlage derselben Fassung mit neutralen Daten –, ihre Werte auf der daraus abgeleiteten
+  Mindestseite (`tests/pruefseite.mjs`); die App startet sie über eine Hülle (`tests/bausteine-pruefseite.mjs`), je Baustein mit eingeschleustem Fehler
+  als Gegenprobe (`--gegenprobe pruefseite`). Was nur im Zusammenspiel mit der App sichtbar wird, prüft die App selbst.
 
 ## 15. Komponenten
 
@@ -1231,7 +1234,7 @@ automatische Prüfung heißen `G-<Nr>` (unten). Alle Präfixe und ihre Regeln: Z
 
 **Prüfung:** je Regel ihre automatische Prüfung in `tests/` (AppDesign), mit Datei und Funktion: `hig.mjs` misst jede Ansicht jeder App, `ablauf.mjs`
 prüft Regeln, die eine Handlung brauchen (die App ruft sie mit ihren Fenstern auf), dazu `kontextmenue.mjs`, `start.mjs`,
-`backup.mjs`, `abgleich.mjs`, `offline.mjs`, `version.mjs`, `doku.mjs`. Jede Meldung beginnt mit der Regelnummer.
+`backup.mjs`, `abgleich.mjs`, `offline.mjs`, `version.mjs`, `doku.mjs`, `pruefseite.mjs` (Bausteine auf der Prüfseite, 14). Jede Meldung beginnt mit der Regelnummer.
 `checkCatalog` (`doku.mjs`) prüft, dass jede Regelnummer in einer Meldung (Zeichenkette, nicht nur im Kommentar) einer Prüfdatei steht, die im
 Prüflauf läuft, und keine alte Nummer mehr verwendet wird. **Grundregeln:**
 die Ablauf-Prüfungen der Apps messen nach jedem Schritt mit denselben Prüfungen aus `hig.mjs` (ohne Drehen) – keine zweite
@@ -1256,7 +1259,7 @@ Testfall (User) in den Usertest, wenn eine Version es betrifft.
 | R-1.11 | **Verborgen heißt unsichtbar:** jedes Element mit `hidden` ist nicht zu sehen – eine eigene `display`-Regel hebt `[hidden]` nie auf | hig.mjs – `masseStile` (jede Ansicht, nach jedem Schritt, alle `[hidden]`) | – | 13 |
 | R-1.12 | **Gleitbewegungen wie die Seitenleiste in Notizen:** jede Bewegung, mit der die App selbst etwas an einen anderen Ort bringt – Fenster und Blatt (R-4.6), Navigation und Seitenleiste (R-7.5), das Fenster mit der Tastatur am iPad, ‚Titel antippen = nach oben‘ –: öffnen, hinein und nach oben mit einer Feder ohne Nachschwingen, Antwortzeit 0,35 s (gemessen an der Seitenleiste in Notizen, APD-127; CSS `linear()` über 0,5 s); schließen und hinaus mit `ease-in-out` in 0,25 s; nach einer Geste (Ziehen, Zurückwischen) der Rest anteilig, mindestens 0,15 s. Keine Gleitbewegung ist schneller als das Mehr-Menü (R-4.13). Ausgenommen: das Feld beim Antippen springt (Safari, 13, APD-127/W-4), die Wischaktionen (R-7.8: Feder mit 0,5 s Antwortzeit auf und zu, gemessen in Notizen, P-109), Rückmeldungen beim Drücken und Überblenden; ‚Bewegung reduzieren‘ nach R-1.9 | ablauf.mjs – `checkGleiten` (Dauer und Kurve jeder Bewegung, Endlage unverändert) | Gefühl am Gerät | 15 |
 | R-1.13 | **AD-Beans – allgemeine Elemente gekapselt:** ein allgemeines Element, das neu entsteht oder umgebaut wird, ist eine **AD-Bean** in `ui.js` – eine Fabrik `create<Kennung>(…)` mit Eigenschaften und Standardwerten, Methoden und Ereignissen (`on(…)`), eigenem Zustand und eigenem CSS nur unter `.ad-<kennung>…`; die Liste der AD-Beans (15) nennt je Bean Kennung, Bereich, Fabrik, Schnittstelle, Regeln und Abschnitt. Die **Kennung** ist sprechend nach der Aufgabe (nie nach Geste oder Technik, keine Nummer), fest und nie wiederverwendet: gleiche Aufgabe in anderer Ausprägung = Eigenschaft, andere Aufgabe = eigene Bean, Ablösung mit ‚ersetzt …‘. Feldarten bauen auf der Grund-Bean `field` auf; ihre Gültigkeitsregeln, Meldungen und Prüfbeispiele stehen in der Bean. Maße und Schwellen der Bedienung legt die Bean fest (nur lesbar); Maße von Schaltflächen wachsen dabei mit der Textgröße wie alle Schaltflächen (R-1.10). Die App nutzt nur die Schnittstelle – kein CSS und keine inneren Namen einer Bean | doku.mjs – `checkBeans` (Liste ↔ `ui.js` und `design.css`, Kennung einmal, CSS nur unter dem Präfix, Namen in der App) | – | 14, 15 |
-| R-1.14 | **Schnittstelle von ui.js:** die App nutzt von `ui.js` nur die Namen aus `v4/schnittstelle.json` (Teil `app`), ihre Prüfungen dazu den Teil `pruefungen`; keine Deklaration der App trägt den Namen eines Bausteins von `ui.js` | schnittstelle.mjs – `checkSchnittstelle` (App, Prüfdateien, Namensgleichheit, Liste gegen `ui.js`; Gegenprobe) | – | 14 |
+| R-1.14 | **Schnittstelle von ui.js:** die App nutzt von `ui.js` nur die Namen aus `v4/schnittstelle.json` (Teil `app`), ihre Prüfungen dazu den Teil `pruefungen`; keine Deklaration der App trägt den Namen eines Bausteins von `ui.js` | schnittstelle.mjs – `checkSchnittstelle` (App, Vorlage, Prüfdateien, Namensgleichheit, Liste gegen `ui.js`; Gegenprobe) | – | 14 |
 
 ### 2. Leisten, Suche, Rollen
 
