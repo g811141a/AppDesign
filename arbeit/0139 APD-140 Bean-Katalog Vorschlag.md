@@ -62,3 +62,29 @@ Aufbau unserer Apps.
 - **Ins Backlog: ja**, als **APD-140**, allgemein (AppDesign), Status offen.
 - **Priorität 1** – er ist die Grundlage für APD-135/B-3.3 und für jeden Umbau aus APD-136; Reihenfolge: nach Version 4.64.0 / 3.57.7, zusammen mit APD-135/B-3.3.
 - Vor dem Bau: Muster der Übersicht und einer Bean-Seite (`hinweis`) am iPad quer hell (0 Nr. 6), Testfall-Liste, Wortlaut der Erweiterung von R-1.13.
+
+---
+
+## Nachtrag 19.11.2026 – deine Präzisierung und meine Meinung
+
+**Dein Wunsch (Nutzer 19.11.2026):**
+1. Die Anforderung zum Testen ziehst du zurück (könnte unübersichtlich werden). Die Entscheidung liegt bei mir.
+2. Keine eigene Übersichtsseite: Aufbau wie eine App mit **Seitenleiste**. Darin blätterst du durch die Bereiche und rufst die einzelnen Beans auf. Ist eine
+   Bean offen, tritt die Seitenleiste in den Hintergrund, und du kannst schnell hin und her wechseln.
+3. Erster Schritt: für die **Beans, die es schon gibt** (`swipeactions`, `hinweis`).
+4. Im Browser aufrufbar, keine eigene App-Gestaltung nötig, aber **responsive**: gut auf iPad und iPhone, nach dem bestehenden Regelwerk.
+
+**Meine Meinung**
+- **Seitenleiste statt Übersichtsseite: ja.** Genau so baut Apple den UIKit Catalog (Split-View: Liste links, Baustein rechts). Bei uns ist es derselbe
+  Aufbau wie im Reiselogbuch (R-1.1): am iPad die Seitenleiste ein- und ausblendbar, am iPhone die Liste als Startseite und die Bean als Seite mit ‚Zurück‘.
+  Das kostet fast nichts, weil `design.css` und `ui.js` Seitenleiste, Navigation und Wischen schon mitbringen. So sieht der Katalog von selbst wie unsere Apps
+  aus, ohne eigene Gestaltung.
+- **Eine Seite `katalog/index.html` mit der Seitenleiste, je Bean eine eigene Datei** (`katalog/hinweis.js`, `katalog/swipeactions.js`: Beschreibung und
+  Vorführung). Jede Bean hat einen eigenen Link (`katalog/#hinweis`). So bleibt ‚je Bean eine eigene Seite‘ für die Pflege erhalten, und du wechselst ohne
+  Neuladen.
+- **Testen – meine Entscheidung: schlank.** Der Katalog ist zum Ansehen und Ausprobieren da. Die Fälle stehen dort nur als Beispiele (‚Zeigen‘). Geprüft wird
+  nur, dass er nicht veraltet und nicht kaputt ist: jede Bean der Liste (15) hat ihre Datei im Katalog (`checkBeans`), und der Katalog lädt am iPad und iPhone
+  ohne Fehler und hält die Grundregeln ein. Die eigentlichen Prüfungen der Beans bleiben auf der Prüfseite (APD-135/B-3).
+- **Reihenfolge:** eigene Version **AppDesign 4.65.0** (die laufende Version hat schon 2 Themen, 0 Nr. 8), nach Version 4.64.0 / 3.57.7 und dem Usertest
+  P-114 (0 Nr. 22). Vorher ein Muster am iPad quer hell (0 Nr. 6) mit Testfall-Liste. **Vermutung:** in dieser Sitzung reicht der Kontext dafür nicht mehr
+  (Übergabe ab 300.000) – das Muster kommt in der nächsten Sitzung.
