@@ -11,6 +11,12 @@ Feld durch das Formular führt – vor allem für das iPhone. **Noch kein Backlo
    Großbuchstabe und Leerzeichen (R-5.2), Fehlermeldungen (R-5.3), automatisches Speichern (R-5.10), Cursor am Ende (R-5.11). Darum zeigt die Bean die
    **vorhandenen** Felder, statt sie nachzubauen; die Prüfung des Wizards läuft dieselben Feld-Prüfungen im Wizard noch einmal.
 3. **Fortschrittsbalken und Navigation** (Punkte 2 und 3 unten) werden **erst bei der Umsetzung** geklärt – sie stehen hier nur als erster Gedanke.
+4. **Nicht nur ein Feld je Seite, sondern je nach Zusammenhang auch gebündelte Felder** – z. B. im Reiselogbuch je nummerierter Abschnitt (Kasten 15.10)
+   eine Seite. Die Bean wird dafür zukunftsfest gebaut: eine **Seite ist eine Liste von Elementen** (ein Feld, mehrere Felder oder ein ganzer Kasten), die App
+   legt die Bündelung fest (z. B. `seiten: [{ kasten: '#schritt2' }, { felder: ['#fName', '#fOrt'] }]`), dazu je Seite eine Bedingung (`wenn`) für Seiten, die
+   nur in einem Zusammenhang erscheinen (ausgeblendete Spalten, ‚Preis der Quartiere erfassen‘).
+5. **Prüfen beim Bau:** eine AD-Bean wird nur dann **voll** geprüft, wenn sie **im Inneren** verändert wurde. Das gehört zur Stufe ‚Baustein‘/Prüfseite
+   (APD-135 Paket 7, APD-136) und wird dort als Regel gefasst (Wortlaut nach 0 Nr. 29) – für diese Bean von Anfang an mit eigener Prüfseite.
 
 ## So macht es Apple (HIG, gelesen in dieser Sitzung)
 
