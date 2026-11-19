@@ -71,6 +71,63 @@ export function checkDocs(appDir, app) {
   return errors;
 }
 
+// Seit 4.63.0 (APD-135/Z-8 bis Z-10, C-6): die Zeichenketten einer Prüfdatei – ohne Kommentare und reguläre Ausdrücke; Vorlagen (`…`) mit
+// ihren Textteilen, Ausdrücke darin (${…}) wie Code. Eine Regelnummer zählt nur, wenn sie in einer Meldung steht, nicht im Kommentar.
+export function zeichenketten(src) {
+  const out = [], n = src.length;
+  let i = 0;
+  const scan = (bisKlammer) => {
+    let prev = '', wort = '', tiefe = 0;
+    while (i < n) {
+      const c = src[i], d = src[i + 1];
+      if (c === '/' && d === '/') { const e = src.indexOf('\n', i); i = e < 0 ? n : e; continue; }
+      if (c === '/' && d === '*') { const e = src.indexOf('*/', i + 2); i = e < 0 ? n : e + 2; continue; }
+      if (c === "'" || c === '"') {
+        let j = i + 1, s = '';
+        while (j < n && src[j] !== c && src[j] !== '\n') { if (src[j] === '\\') { s += src[j + 1]; j += 2; } else s += src[j++]; }
+        out.push(s); i = j + 1; prev = c; wort = ''; continue;
+      }
+      if (c === '`') {
+        let s = ''; i++;
+        while (i < n && src[i] !== '`') {
+          if (src[i] === '\\') { s += src[i + 1]; i += 2; continue; }
+          if (src[i] === '$' && src[i + 1] === '{') { out.push(s); s = ''; i += 2; scan(true); continue; }
+          s += src[i++];
+        }
+        out.push(s); i++; prev = '`'; wort = ''; continue;
+      }
+      // ein / beginnt einen regulären Ausdruck nach einem Operator, einer öffnenden Klammer oder einem Schlüsselwort (sonst: geteilt durch)
+      if (c === '/' && (!prev || /[(,=:[!&|?{};+\-*%<>~^]/.test(prev) || /^(return|typeof|case|of|in|void|yield|await)$/.test(wort))) {
+        let j = i + 1, klasse = false;
+        while (j < n && src[j] !== '\n') { if (src[j] === '\\') { j += 2; continue; } if (src[j] === '[') klasse = true; else if (src[j] === ']') klasse = false; else if (src[j] === '/' && !klasse) break; j++; }
+        i = j + 1; while (i < n && /[a-z]/.test(src[i])) i++;
+        prev = '/'; wort = ''; continue;
+      }
+      if (bisKlammer) { if (c === '{') tiefe++; else if (c === '}') { if (!tiefe) { i++; return; } tiefe--; } }
+      if (/[\w$]/.test(c)) { wort = /[\w$]/.test(prev) ? wort + c : c; prev = c; }
+      else if (!/\s/.test(c)) { prev = c; wort = ''; }
+      i++;
+    }
+  };
+  scan(false);
+  return out;
+}
+// Die Prüfdateien des Prüflaufs einer App: die Namen in tests/alle.mjs (Zeichenketten, zu denen es tests/<Name>.mjs gibt) und alle Dateien,
+// die sie – auch mittelbar – einbinden (from '…', import('…')), genau so aufgelöst, wie Node sie lädt (also die feste Fassung). Ergebnis: Map URL → Text.
+export function pruefdateien(appDir) {
+  const lies = u => { try { return readFileSync(u, 'utf8'); } catch { return null; } };
+  const alle = lies(new URL('tests/alle.mjs', appDir)) || '';
+  const offen = [...new Set(zeichenketten(alle).filter(z => /^[\w-]+$/.test(z)))].map(z => new URL(`tests/${z}.mjs`, appDir)).filter(u => existsSync(u));
+  const dateien = new Map();
+  while (offen.length) {
+    const u = offen.pop(); if (dateien.has(u.href)) continue;
+    const text = lies(u); if (text === null) continue;
+    dateien.set(u.href, text);
+    for (const [, spec] of text.matchAll(/(?:\bfrom|\bimport\()\s*['"](\.{1,2}\/[^'"]+\.mjs)['"]/g)) { const v = new URL(spec, u); if (existsSync(v)) offen.push(v); }
+  }
+  return dateien;
+}
+
 // Seit 4.12.0 – Regelkatalog (Designrichtlinie allgemein 17) vollständig und überall mit den neuen Nummern R-<Thema>.<Nr>:
 // jede Regel hat eine Prüfung in tests/*.mjs (AppDesign oder App), jede alte (zweistellige) Nummer ist zugeordnet, alte Nummern
 // stehen nur noch im Katalog (Spalte ‚ersetzt‘, Zuordnung) und in Versionsgeschichten, jede genannte Nummer gibt es im Katalog.
@@ -85,7 +142,14 @@ export function checkCatalog(appDir, app) {
   if (nrs.length < 30) E(`Abschnitt 17 enthält nur ${nrs.length} Regeln`);
   const has = (text, nr) => new RegExp(`${nr.replace('.', '\\.')}(?![\\d])`).test(text);
   const tests = [ad, appDir].flatMap(base => readdirSync(new URL('tests/', base)).filter(f => f.endsWith('.mjs')).map(f => read(base, 'tests/' + f))).join('\n');
-  for (const nr of nrs) if (!has(tests, nr)) E(`${nr} hat keine Prüfung in tests/*.mjs`);
+  // Seit 4.63.0 (APD-135/Z-10, C-6): jede Regelnummer steht in einer Meldung (Zeichenkette, nicht nur im Kommentar) einer Prüfdatei, die im
+  // Prüflauf läuft (tests/alle.mjs der App und was sie einbinden). Gegenproben: PRUEF_GEGENPROBE=schema:APD-135/Z-8 (R-5.6 nur noch im Kommentar),
+  // schema:APD-135/Z-9 (R-5.6 nur in einer Prüfdatei außerhalb des Prüflaufs).
+  const gp = (process.env.PRUEF_GEGENPROBE || '').match(/^schema:APD-135\/(Z-[89])$/)?.[1], GP_NR = /R-5\.6(?![\d])/g;
+  const imLauf = [...pruefdateien(appDir).values()].map(t => gp ? t.replace(GP_NR, 'R-X.X') + (gp === 'Z-8' ? '\n// R-5.6' : '') : t);
+  // Z-9: R-5.6 steht dann nur noch in Dateien außerhalb des Prüflaufs (die alte Prüfung über alle tests/*.mjs fand es dort weiter)
+  const meldungen = imLauf.map(t => zeichenketten(t).join('\n')).join('\n');
+  for (const nr of nrs) if (!has(meldungen, nr)) E(`${nr} hat keine Meldung in einer Prüfdatei des Prüflaufs (Zeichenkette in tests/alle.mjs der App oder einer eingebundenen Datei – nicht nur im Kommentar, APD-135/Z-10)`);
   const old = new Set([...map.matchAll(/\| (R-\d{2}) \| ([^|]+?) (?=\|)/g)].map(m => (m[2].trim().split(/, /).forEach(t => { if (!nrs.includes(t) && !/^Zusammenarbeit/.test(t)) E(`Zuordnung ${m[1]} → ${t}: gibt es nicht`); }), m[1])));
   for (let i = 1; i <= 52; i++) { const o = `R-${String(i).padStart(2, '0')}`; if (!old.has(o)) E(`alte Regel ${o} ist keiner neuen zugeordnet`); }
   const noHistory = t => t.split(/\n## Versionsgeschichte/)[0];
@@ -307,7 +371,10 @@ export const GEGENPROBEN_SCHEMA = Object.fromEntries([
   ['M-1', 'Tabellenzeile im Regeltext', 'Zusammenarbeit allgemein: Versionsgeschichte nicht ausgelagert'],
   ['M-2', 'erste Zeile ohne die eigene Version', 'AppDesign CLAUDE.md: erste Zeile .* ist 0\\.0\\.0'],
   ['M-3', 'Kasten ‚Immer‘ ohne Nr. 1', 'nennt Nr\\. 1 nicht'], ['M-4', '‚Verpflichtend‘ wiederholt eine Regel', 'wiederholt Regeln'],
-].map(([t, was, z]) => ['APD-135/' + t, { was, zeichen: new RegExp('APD-135/' + t + ' .*' + z) }])));
+].map(([t, was, z]) => ['APD-135/' + t, { was, zeichen: new RegExp('APD-135/' + t + ' .*' + z) }])).concat([
+  // seit 4.63.0 (APD-135/Z-8, Z-9, C-6): eine Regelnummer zählt nur in einer Meldung einer Prüfdatei des Prüflaufs (checkCatalog)
+  ['APD-135/Z-8', { was: 'R-5.6 nur noch im Kommentar', zeichen: /Katalog R-5\.6 hat keine Meldung in einer Prüfdatei des Prüflaufs/ }],
+  ['APD-135/Z-9', { was: 'R-5.6 nur außerhalb des Prüflaufs', zeichen: /Katalog R-5\.6 hat keine Meldung in einer Prüfdatei des Prüflaufs/ }]]));
 export function checkSchema(appDir, app, gp = (process.env.PRUEF_GEGENPROBE || '').match(/^schema:APD-78\/(S-\d+)$/)?.[1]) {
   const errors = [], E = t => errors.push(t);
   const ad = new URL('../AppDesign/', appDir);

@@ -1,6 +1,6 @@
 # Designrichtlinie allgemein
 
-**Version 4.62.0** · Stand 18.11.2026
+**Version 4.63.0** · Stand 19.11.2026
 
 Allgemeine Gestaltungs- und Bedienregeln für alle Web-Apps von g811141a auf iPad und iPhone. Die Datei liegt im Design-Repo
 **AppDesign** (g811141a/AppDesign); ihre Versionsnummer ist die des Repos. Die Komponenten sind dort einmal programmiert und
@@ -598,7 +598,8 @@ Gemessene bzw. belegte Eigenheiten mit Quelle; sie gelten für alle Apps, die Pr
   Kasten, untere Leiste), `v4/ui.js` (Icons, Menüs mit Untermenü, Sprechblase, gedrückte Schaltflächen, Meldung, Fenster,
   Darstellung, Auswahl-Kapsel, Tastatur/sichtbarer Bereich, Beträge, Backup und Abgleich, Offline, Messmodus, Rollbereich,
   iPhone-Erkennung `isPhone()`), `apple-referenz/` (Vergleichsbilder), `tests/` (Prüfungen des Regelkatalogs, Messdateien in
-  `tests/messungen/` zum Abspielen, 15.21), `vorlage/index.html` (Startpunkt für neue Apps), `werkzeug/` (Veröffentlichen,
+  `tests/messungen/` zum Abspielen, 15.21 – nie umbenennen oder löschen: die Prüfungen jeder App lesen sie aus dem Arbeitsstand, nicht aus
+  ihrer Fassung), `vorlage/index.html` (Startpunkt für neue Apps), `werkzeug/` (Veröffentlichen,
   Kontextstand), `arbeit/` (Muster, Testfall-Listen, Auswertungen).
 - **Einbindung:** Jede App lädt die Bausteine von GitHub Pages aus **ihrer** Fassung:
   `<link rel="stylesheet" href="../AppDesign/fassung/X.Y.Z/design.css">` im `<head>` vor dem eigenen `<style>`,
@@ -712,7 +713,7 @@ und Meldungen · Eingabe · Inhalt · Dienste (ohne eigene Oberfläche).
   nennt jeden Knopf mit Namen (R-1.8).
 - **iPhone quer niedrig** (R-2.4, wie iOS quer): Markierung in Kapseln 25 × 25; die Antippfläche 44 × 44 der runden Knöpfe ist
   unsichtbar.
-- **Filter** (z. B. „Alle / Nur erfasste“): beim Öffnen eines Eintrags und beim Start immer auf „Alle“.
+- **Filter** (z. B. „Alle / Nur erfasste“, R-7.9).
 
 ### 15.4 Seitenleiste
 - **Apple:** [HIG – Sidebars](https://developer.apple.com/design/human-interface-guidelines/sidebars)
@@ -1230,7 +1231,8 @@ automatische Prüfung heißen `G-<Nr>` (unten). Alle Präfixe und ihre Regeln: Z
 **Prüfung:** je Regel ihre automatische Prüfung in `tests/` (AppDesign), mit Datei und Funktion: `hig.mjs` misst jede Ansicht jeder App, `ablauf.mjs`
 prüft Regeln, die eine Handlung brauchen (die App ruft sie mit ihren Fenstern auf), dazu `kontextmenue.mjs`, `start.mjs`,
 `backup.mjs`, `abgleich.mjs`, `offline.mjs`, `version.mjs`, `doku.mjs`. Jede Meldung beginnt mit der Regelnummer.
-`checkCatalog` (`doku.mjs`) prüft, dass jede Regel eine Prüfung hat und keine alte Nummer mehr verwendet wird. **Grundregeln:**
+`checkCatalog` (`doku.mjs`) prüft, dass jede Regelnummer in einer Meldung (Zeichenkette, nicht nur im Kommentar) einer Prüfdatei steht, die im
+Prüflauf läuft, und keine alte Nummer mehr verwendet wird. **Grundregeln:**
 die Ablauf-Prüfungen der Apps messen nach jedem Schritt mit denselben Prüfungen aus `hig.mjs` (ohne Drehen) – keine zweite
 Prüfung je Regel, nur mehr Zustände. Safari nachgebildet (13): Tastatur über `visualViewport`, kein Fokus beim Antippen einer
 Schaltfläche, kein Scroll-Anker; jede Prüfung zusätzlich in WebKit. **Gerät** = zusätzlich am iPad/iPhone zu prüfen; kommt als
@@ -1302,7 +1304,7 @@ Testfall (User) in den Usertest, wenn eine Version es betrifft.
 
 | Nr. | Regel | Prüfung | Gerät | Bau |
 |---|---|---|---|---|
-| R-5.1 | **Felder:** Bezeichnung und Feld gehören zusammen (Umbruch nur davor); Schaltflächen im Schrittkopf bleiben als Gruppe zusammen und stehen neben dem Titel, wenn alles in eine Zeile passt; Datumsfelder so breit wie das Datum mit Kalender-Icon; Betragsfelder rechtsbündig, ‚4.850,00 €‘ | hig.mjs | – | 8, 15.10 |
+| R-5.1 | **Felder:** Bezeichnung und Feld gehören zusammen (Umbruch nur davor); Schaltflächen im Schrittkopf bleiben als Gruppe zusammen und stehen neben dem Titel, wenn alles in eine Zeile passt; Datumsfelder so breit wie das Datum mit Kalender-Icon; Betragsfelder rechtsbündig, ‚4.850,00 €‘, der Tausenderpunkt schon beim Tippen, fehlende Nachkommastellen ergänzt das Feld beim Verlassen (‚,00‘) | hig.mjs; Tippen und Verlassen in den Abläufen der App (Reiselogbuch `ablauf-gesamt.mjs`, `ablauf-preis-km.mjs`) – bis die AD-Bean `decimal` (APD-136) es allgemein prüft | – | 8, 15.10 |
 | R-5.2 | **Texteingabe:** Großbuchstabe am Zeilenanfang, nicht nach einer Korrektur von Hand; nach einem Vorschlag klein weiter; keine doppelten Leerzeichen (Tippen und Einfügen, alle Textfelder); Textfelder leer einzeilig, wachsen mit; Diktieren nur über die Mikrofon-Taste der Tastatur (kein eigener Knopf) | ablauf.mjs – `checkCapital`, `checkSpaces`, dazu `checkFeldCursor` für ‚leer einzeilig, wächst und schrumpft‘ | iOS-Tastatur, Kurzbefehl ‚.‘ | 8 |
 | R-5.3 | **Fehlermeldungen:** rot direkt unter dem Feld (Feld rot umrandet), erst nach einer Eingabe bzw. beim Häkchen; Pflichtfelder werden nicht gekennzeichnet; **auch hörbar** – Feld `aria-invalid`, Meldung mit dem Feld verknüpft (`aria-describedby`) und einmal angesagt; beim Häkchen hat das erste fehlerhafte Feld den Fokus (Baustein `feldFehler`, `ersterFehler`) | ablauf.mjs – `checkFieldErrors` | – | 8, 15.11 |
 | R-5.4 | **Auswahl-Kapsel und Wischzeile:** mehrere Auswahl-Schaltflächen in einer Kapsel, seitlich wischbar; jeder seitlich wischbare Bereich bis etwa zwei Zeilen Höhe (Kapsel oder Wischzeile) zeigt, wo es weitergeht, mit Verlauf und kleinem Pfeil am Rand (nur Anzeige), am jeweiligen Ende verschwinden beide; Markierung als eigene Form innen, Breite ändert sich nicht | hig.mjs – Verlauf und Pfeile am Rand, kein wischbarer Bereich ohne sie, Breite beim Wählen (Ablauf: `checkKapsel`) | Wischen, Pfeile verständlich | 15.12 |
@@ -1338,6 +1340,7 @@ Testfall (User) in den Usertest, wenn eine Version es betrifft.
 | R-7.6 | **Abschnittsköpfe in der Liste:** jede Gruppe hat eine Überschrift, auch die erste; Schrift wie die Überschrift des Kopfs (Größe, Stärke, Farbe, Schrift), wächst mit der Textgröße; rollt mit; Rolle heading, nicht antippbar; bei der Suche nur Gruppen mit Treffern | hig.mjs | – | 15.4 |
 | R-7.7 | **Leerer Zustand:** jeder leere Bereich (keine Einträge, keine Treffer, alles ausgeblendet) zeigt den Baustein 15.23 – Symbol, Titel, Satz, optional ein getönter Knopf –, mittig im freien Bereich; bei der Suche ‚Keine Treffer für ‚…‘‘ mit dem Begriff; in der Seitenleiste neben dem Inhalt nur Symbol und Titel; Symbol (36 pt) und Titel (17 pt halbfett) überall gleich groß | hig.mjs | – | 15.23 |
 | R-7.8 | **Wischaktionen der Kacheln:** Wischen nach links auf einer Kachel der zentralen Liste zeigt rechts neben ihr die Aktionen ihres Kontextmenüs (R-4.2) – gleiche Aktionen, gleiche Reihenfolge, die zerstörende rot und ganz außen – als Kapseln 66 × 44 mit Symbol und dem Wort darunter (Kapsel, Symbol und Wort wachsen mit der Textgröße wie die Schaltflächen der Leisten, das Wort nie abgeschnitten), ein Abstand von 11 pt zwischen Kachel und Kapsel, zwischen den Kapseln und rechts außen; nichts ragt aus Seitenleiste oder Bild. Die Kachel folgt dem Finger, bleibt ab halber Aktionsbreite offen, sonst federt sie zurück; die Kachel gleitet auf und zu mit einer Feder ohne Nachschwingen, Antwortzeit 0,5 s, unabhängig vom Weg (gemessen in Notizen, Ausnahme von R-1.12); jede Kapsel steht an ihrem Platz und wächst, sobald die Kachel sie ganz freigibt, mit eigener Zeit aus ihrer Mitte (0,25 s, Deckkraft voll nach 0,1 s); beim Zurückwischen und Tippen auf die offene Kachel vergeht jede, sobald die Kachel sie erreicht, beim Schließen durch Tippen daneben oder auf eine andere Kachel alle zugleich (je 0,23 s); keine rückt dabei nach rechts über ihren Platz hinaus. **Kein Durchwischen:** über die offene Breite hinaus folgt die Kachel nur mit starkem Widerstand (höchstens 60 px), die Kapseln rücken anteilig mit und werden höchstens 6 % größer, keine wird langgezogen; Loslassen federt auf ‚offen‘ und löst nichts aus. Die rote Aktion fragt beim Antippen zuerst (R-4.12), die Kachel bleibt bis zur Entscheidung offen. Höchstens eine Kachel ist offen; sie schließt bei Tippen auf die Kachel oder daneben in der Liste (das Tippen löst sonst nichts aus; Schaltflächen außerhalb der Liste wirken sofort und schließen sie dabei), Rollen, Wischen an einer anderen Kachel, Neuaufbau der Liste, Drehen, Ausblenden der Seitenleiste und Esc. Entschieden wird die Geste wie in R-7.5 (nach 10 px, deutlich waagrecht – sonst rollt die Liste); eine geschlossene Kachel bewegt sich nicht nach rechts; kein Wischen nach langem Drücken, bei offenem Fenster, Menü oder offener Sprechblase und an allem, was kein Kontextmenü hat; Wischen tippt nie an; Drehen oder Abbruch beim Ziehen = Zustand wie vorher. Geschlossen sind die Kapseln für VoiceOver und Tastatur nicht erreichbar (die Aktionen bleiben im Kontextmenü), offen sind sie Schaltflächen mit dem Namen der Aktion. ‚Bewegung reduzieren‘: die Kachel folgt dem Finger, die Kapseln stehen an ihrem Platz in voller Größe und blenden zu denselben Zeitpunkten nur ein und aus; je Bild nur transform und opacity | ablauf.mjs – `checkWischen` | Wischgefühl, Widerstand und Zurückfedern, Rollen gegen Wischen, VoiceOver | 15.4 |
+| R-7.9 | **Filter auf ‚Alle‘:** ein Filter der Liste (z. B. ‚Alle / Nur erfasste‘) steht beim Start und beim Öffnen eines Eintrags immer auf ‚Alle‘ | ablauf.mjs – `checkFilterAlle` (die App nennt Filter setzen, Eintrag öffnen und ‚steht auf Alle‘) | – | 15.3 |
 
 ### 8. Drehen
 
@@ -1377,17 +1380,16 @@ Diese Gestaltungsregeln stehen an ihrer Stelle in 1–16 und haben (noch) keine 
 |---|---|---|---|
 | G-3 | Icon-Zuordnung der Tabelle (gleiche Bezeichnung = gleiches Icon prüft R-10.1) | 5 | Sicht |
 | G-6 | ‚Neues …‘ öffnet einmal von selbst, wenn es noch keinen Eintrag gibt (danach der leere Zustand, R-7.7) | 7 | Abläufe der App |
-| G-8 | Beträge: ‚,00‘ ergänzen, Tausenderpunkt beim Tippen | 8 | Abläufe der App |
 | G-9 | Smiley-Leiste: Häufigkeit, Entfernen, Zurücksetzen, Anhängen in der Zeile | 8, 15.12 | Abläufe der App (teilweise) |
 | G-10 | Statistik als schlichte Liste | 9 | Sicht |
 | G-11 | Speichern über das Teilen-Menü, ehrliche Meldung über Teilen- und Drucken-Menü | 10 | Gerät |
 | G-14 | Service Worker ‚network first‘; Versionsnummer, Erstellungszeitpunkt und Cache-Name steigen mit jeder Version | 11 | teilweise `offline.mjs`, `version.mjs`; Veröffentlichungs-Skript |
 | G-15 | Emoji-Varianten gleich behandeln | 13 | Sicht |
-| G-16 | Filter beim Öffnen und beim Start auf ‚Alle‘ | 15.3 | Abläufe der App |
 | G-18 | Info-Icon: ein Tippen blendet den grauen Hinweis ein bzw. aus | 15.14 | Sicht |
 | G-19 | HIG ‚außerdem‘ (16): alle Punkte der Spalte | 16 | Sicht |
 
-Vergeben, nicht neu verwenden: G-1, G-2, G-4, G-5, G-7, G-12, G-13, G-17 (in R-Regeln aufgegangen, CHANGELOG 4.51.0 und 4.52.0).
+Vergeben, nicht neu verwenden: G-1, G-2, G-4, G-5, G-7, G-8, G-12, G-13, G-16, G-17 (in R-Regeln aufgegangen, CHANGELOG 4.51.0,
+4.52.0 und 4.63.0).
 
 ### Zuordnung alt → neu
 

@@ -431,14 +431,19 @@ export function pruefung(name, pw, { hig = null, out = null } = {}) {
     // R-1.9 (seit 4.35.0, M7): Funde des Bewegungswächters seit dem letzten Abholen melden
     async ruhig(p, schritt = '') { for (const f of await ruhigFunde(p)) melde('R-1.9', `Bewegung: ${f} trotz ‚Bewegung reduzieren‘`, schritt); },
     get anzahl() { return fehler.length; },
+    // Abdeckung festhalten (Ansichten, in denen die Prüfung lief) – seit 4.63.0 (APD-135/Z-7, C-29) je Teil eine eigene Datei
+    // abdeckung-<Name>~<Teil>-<Browser>.json (PRUEF_TEIL setzt lauf.mjs); auch für Prüfungen ohne ende(), z. B. hig der App.
+    abdeckung() {
+      if (!out) return;
+      const teil = process.env.PRUEF_TEIL ? '~' + process.env.PRUEF_TEIL.replace(/[^\wäöüÄÖÜß.-]+/g, '_') : '';
+      try { mkdirSync(out, { recursive: true }); writeFileSync(new URL(`abdeckung-${name}${teil}-${browserName}.json`, out), JSON.stringify([...ansichten])); } catch {}
+    },
     // Ende: Grundregeln und Fehler ausgeben, Abdeckung festhalten, Rückgabewert setzen.
     async ende(b) {
       for (const p of seiten) if (!p.isClosed()) await t.ruhig(p, 'Ende');
       if (b) await b.close().catch(() => {});
       const higRc = hig ? hig.report({ still: true }) : 0;
-      if (out) {
-        try { mkdirSync(out, { recursive: true }); writeFileSync(new URL(`abdeckung-${name}-${browserName}.json`, out), JSON.stringify([...ansichten])); } catch {}
-      }
+      t.abdeckung();
       if (gegenprobe) melde('', 'Gegenprobe: der Test hat keinen einzigen Vergleich gemacht – er prüft nichts');
       for (const f of fehler) console.log(f);
       const n = fehler.length + (higRc ? 1 : 0);

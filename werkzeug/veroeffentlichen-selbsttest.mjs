@@ -97,8 +97,9 @@ try {
   const appUrl = pathToFileURL(k.app + '/');
   const v = await checkVersions(appUrl);
   pruefe(!v.length, `APD-5/E-1 danach version.mjs grün${v.length ? ': ' + v.join(' | ') : ''}`);
-  // CHANGELOG und Testfälle schreibt Claude erst nach ‚vorbereiten‘ – nur diese Meldungen sind hier erlaubt.
-  const d = [...checkDocs(appUrl, 'Reiselogbuch'), ...checkCollab(appUrl, 'Reiselogbuch')].filter(e => !/CHANGELOG/.test(e));
+  // CHANGELOG, Testfälle und die Zeile der Versionsgeschichte schreibt Claude erst nach ‚vorbereiten‘ – nur diese Meldungen sind hier erlaubt
+  // (seit 4.63.0 auch APD-135/M-2: seit 4.61.0 rot, unbemerkt, weil kein Skript diesen Selbsttest startete – APD-135/C-47).
+  const d = [...checkDocs(appUrl, 'Reiselogbuch'), ...checkCollab(appUrl, 'Reiselogbuch')].filter(e => !/CHANGELOG|APD-135\/M-2 .*Versionsgeschichte/.test(e));
   pruefe(!d.length, `APD-5/E-1 danach doku.mjs grün (außer CHANGELOG)${d.length ? ': ' + d.join(' | ') : ''}`);
   pruefe(lies(k.app, 'index.html').includes(`../AppDesign/fassung/${X}/ui.js"`) && lies(k.app, 'tests/hig.mjs').includes(`AppDesign/fassung/${X}/tests/`) &&
     lies(k.app, 'README.md').includes(`AppDesign/blob/main/fassung/${X}/README%20-%20Designrichtlinie%20allgemein.md`) && !/blob\/v\d/.test(lies(k.app, 'README.md')) &&
@@ -315,6 +316,38 @@ try {
     r = skript(k, {}, 'los', '--nur-app', '--app', 'reiselogbuch');
     pruefe(r.code === 0 && (argvVon(k) || ['x']).length === 0 && !/Prüfstufe/.test(git(k.app, 'log', '-1', '--format=%s', 'origin/main')),
       'APD-128/M-16 los ohne --stufe: voll wie bisher, Merge-Commit ohne Zusatz');
+  }
+
+  // ——— APD-135/Z-11 bis Z-13 (C-47, seit 4.63.0): los startet die Selbsttests der Werkzeuge, die sich seit main geändert haben ———
+  {
+    const SELBST = ['tests/lauf-selbsttest.mjs', 'werkzeug/veroeffentlichen-selbsttest.mjs', 'tests/messung.mjs'];
+    // Schein-Selbsttests (auf main der Kopie): schreiben ihren Namen in eine Merkdatei, rot mit SCHEIN_SELBST_ROT=<Datei>
+    const selbstBereit = (aendere) => {
+      const k = kopie(), merk = join(TMP, `selbst-${++nr}.txt`);
+      for (const f of SELBST) schreibe(k.ad, f, `import { appendFileSync } from 'node:fs'; appendFileSync(${JSON.stringify(merk)}, '${f}\\n'); process.exit(process.env.SCHEIN_SELBST_ROT === '${f}' ? 1 : 0);\n`);
+      git(k.ad, 'add', '-A'); git(k.ad, 'commit', '-qm', 'Schein-Selbsttests'); git(k.ad, 'push', '-q', 'origin', 'HEAD:main'); git(k.ad, 'fetch', '-q', 'origin');
+      skript(k, {}, 'vorbereiten', '--ad', X, '--app', `reiselogbuch=${Y}`); texte(k, X, Y); aendere(k); skript(k, {}, 'fassung'); commitAlle(k, 'bereit');
+      return { k, gelaufen: () => { try { return lies(merk, '').trim().split('\n').filter(Boolean); } catch { return []; } } };
+    };
+    // Z-11: tests/lauf.mjs geändert → lauf-selbsttest läuft vor den Prüfungen, nur er; rot → Abbruch, nichts veröffentlicht
+    let s = selbstBereit(k => ersetze(k.ad, 'tests/lauf.mjs', /\n/, '\n// geändert (Selbsttest Z-11)\n'));
+    r = skript(s.k, {}, 'los');
+    pruefe(r.code === 0 && s.gelaufen().join(',') === 'tests/lauf-selbsttest.mjs' && r.text.indexOf('— Selbsttest AppDesign (node tests/lauf-selbsttest.mjs)') < r.text.indexOf('— Prüfungen'),
+      `APD-135/Z-11 lauf.mjs geändert: los startet lauf-selbsttest vor den Prüfungen, nur ihn (gelaufen: ${s.gelaufen().join(', ') || '–'})`);
+    s = selbstBereit(k => ersetze(k.ad, 'tests/lauf.mjs', /\n/, '\n// geändert (Selbsttest Z-11)\n'));
+    { const ad0 = remote(s.k, 'ad');
+      r = skript(s.k, { SCHEIN_SELBST_ROT: 'tests/lauf-selbsttest.mjs' }, 'los');
+      pruefe(r.code === 1 && /tests\/lauf-selbsttest\.mjs rot – nichts veröffentlicht/.test(r.text) && !/— Prüfungen/.test(r.text) && remote(s.k, 'ad') === ad0,
+        'APD-135/Z-11 lauf-selbsttest rot: Abbruch vor den Prüfungen, nichts veröffentlicht'); }
+    // Z-12: pruefstufe.mjs geändert → veroeffentlichen-selbsttest; rot → Abbruch
+    s = selbstBereit(k => ersetze(k.ad, 'werkzeug/pruefstufe.mjs', /\n/, '\n// geändert (Selbsttest Z-12)\n'));
+    r = skript(s.k, { SCHEIN_SELBST_ROT: 'werkzeug/veroeffentlichen-selbsttest.mjs' }, 'los');
+    pruefe(r.code === 1 && s.gelaufen().join(',') === 'werkzeug/veroeffentlichen-selbsttest.mjs' && /veroeffentlichen-selbsttest\.mjs rot – nichts veröffentlicht/.test(r.text),
+      `APD-135/Z-12 pruefstufe.mjs geändert: los startet veroeffentlichen-selbsttest, rot → Abbruch (gelaufen: ${s.gelaufen().join(', ') || '–'})`);
+    // Z-13: kein Werkzeug geändert → kein Selbsttest, auch messung nicht
+    s = selbstBereit(() => {});
+    r = skript(s.k, {}, 'los');
+    pruefe(r.code === 0 && !s.gelaufen().length && !/— Selbsttest AppDesign|— Prüfung AppDesign/.test(r.text), `APD-135/Z-13 ohne Änderung an den Werkzeugen: kein Selbsttest (gelaufen: ${s.gelaufen().join(', ') || '–'})`);
   }
 } finally { rmSync(TMP, { recursive: true, force: true }); }
 

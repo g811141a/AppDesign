@@ -77,9 +77,10 @@ quer (170 px sichtbar); ein Feld im Rollbereich unter der Tastatur antippen vers
 
 ## Alle Prüfungen einer App `lauf.mjs`
 
-Startet alle Prüfskripte parallel, die schnellsten zuerst (gemessene Dauer in `tests/out/dauer.json` der App), in Chromium und WebKit;
-ab dem dritten roten Lauf werden die übrigen beendet, jeder rote Lauf läuft am Ende einmal allein (Zusammenarbeit 0 Nr. 2), die
-Fehlerzeilen der roten Läufe werden gezeigt. Aufruf über `tests/alle.mjs` der App:
+Startet alle Prüfskripte in Chromium und WebKit: nach dem Vorlauf (`doku-regeln`, `version-regeln`, rot bricht sofort ab) parallel, die
+längsten zuerst (gemessene Dauer in `tests/out/dauer.json` der App); ab dem dritten roten Lauf werden die übrigen beendet, jeder rote
+Lauf läuft am Ende einmal allein (Zusammenarbeit 0 Nr. 2), die Fehlerzeilen der roten Läufe werden gezeigt; die Ausgabe eines Wacklers
+bleibt in `tests/out/wackelt-<Name>-<Browser>.txt`. Aufruf über `tests/alle.mjs` der App:
 `node tests/alle.mjs [--alle] [--browser chromium] [--nur hig] [--abdeckung] [--gegenprobe [grundregeln | bedienung | text]] [--jobs N] [--zeit S]`.
 `--gegenprobe bedienung` (seit 4.35.0) läuft die Prüfung der Bedienungshilfen der App (`ablauf-bedienung`) je eingeschleustem Fehler
 einmal; rot zählt nur mit genau der passenden Meldung – beim Bau von APD-43/1 und wenn sich eine dieser Prüfungen ändert, nicht in jedem
@@ -88,7 +89,7 @@ einmal; rot zählt nur mit genau der passenden Meldung – beim Bau von APD-43/1
 Gleichzeitig laufen standardmäßig so viele Browser, wie der Rechner Kerne hat (mit doppelt so vielen schwankte WebKit unter
 Volllast); erst alle Prüfungen in Chromium, dann alle in WebKit – nie beide gleichzeitig. Fehlt WebKit, bricht der Lauf mit Hinweis
 ab (Rückgabewert 2) – nie stillschweigend nur Chromium. Lange Prüfungen lassen sich teilen (`teile`, z. B. hig nach Darstellung).
-Selbsttest mit Schein-Tests: `node tests/lauf-selbsttest.mjs` (Zusammenarbeit 0 Nr. 2).
+Selbsttest mit Schein-Tests: `node tests/lauf-selbsttest.mjs` (Zusammenarbeit 0 Nr. 2); `los` startet ihn, wenn sich `lauf.mjs` seit `main` geändert hat (0 Nr. 9).
 
 ## Weitere allgemeine Prüfungen
 
@@ -105,7 +106,7 @@ Selbsttest mit Schein-Tests: `node tests/lauf-selbsttest.mjs` (Zusammenarbeit 0 
 | `version.mjs` | R-10.3 | feste Fassung: `index.html` und `sw.js` laden genau `fassung/<AD_NEEDED>/` (nichts aus `v4/`), Versionen der Fassung stimmen, Prüfsummen `fassung/PRUEFSUMMEN` (keine Datei geändert, fehlt oder dazu), `v4/` und `tests/` = neueste Fassung; Hinweis beim Start bei älterer Fassung; ein geänderter Arbeitsstand `v4/` erreicht die App nicht (kein Abruf) |
 | `messung.mjs` | Zusammenarbeit 2.2 | Werkzeug `werkzeug/messung.mjs` (Zeile Zeit und Token) mit künstlichen Sitzungsdaten; Gegenprobe `--gegenprobe` |
 | `regelwaechter.mjs` | Zusammenarbeit 0 (Kasten ‚Jede Antwort‘), 0 Nr. 26–28, 2.1, 2.2, 2.8 | Werkzeug `werkzeug/regelwaechter.mjs` (Hooks: Uhrzeitzeile liefern, Fenster vor dem Zeigen, Antwort am Ende prüfen; Setup-Text) mit künstlichen Sitzungsdaten und echten Antworten aus 0050 und 0051 (`regelwaechter-faelle.json`), APD-84/W-1 bis W-13; Gegenprobe `--gegenprobe` (je Prüfung des Wächters abgeschaltet). Läuft mit `messung.mjs` in `veroeffentlichen.mjs los` |
-| `lauf-selbsttest.mjs` | Zusammenarbeit 0 Nr. 2 | `lauf.mjs` mit Schein-Tests (Reihenfolge, Abbruch, Gegenprobe) |
+| `lauf-selbsttest.mjs` | Zusammenarbeit 0 Nr. 2 | `lauf.mjs` mit Schein-Tests (Vorlauf, Reihenfolge, Abbruch, Gegenprobe, Ausgabe der Wackler, Abdeckung je Teil) |
 | `safari.mjs`, `pruefe.mjs` | Werkzeug | Safari-Modell und Baustein der Prüfskripte (oben) |
 
 ## Feste Fassung
