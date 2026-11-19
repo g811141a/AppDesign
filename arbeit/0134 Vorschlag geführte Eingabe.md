@@ -3,6 +3,15 @@
 **Stand 19.11.2026** · Sitzung 0134 · Wunsch des Nutzers: in einem Eingabeformular (z. B. Tageserfassung) per Icon in eine ‚Roadmap‘ wechseln, die Feld für
 Feld durch das Formular führt – vor allem für das iPhone. **Noch kein Backlog-Eintrag** (erst nach deinem Ok).
 
+## Festlegungen des Nutzers (19.11.2026, Sitzung 0134)
+
+1. **Die vorhandene Tageserfassung bleibt unverändert.** Die geführte Erfassung (Wizard) ist nur eine **zusätzliche** Möglichkeit, die aus der
+   Tageserfassungsmaske heraus aufgerufen wird.
+2. **Alle Funktionen, die die Felder heute haben, gelten auch im Wizard** – z. B. Rückgängig im Eingabefeld (R-5.6), dazu ⓧ, Vorschläge-Chips, Smiley-Leisten,
+   Großbuchstabe und Leerzeichen (R-5.2), Fehlermeldungen (R-5.3), automatisches Speichern (R-5.10), Cursor am Ende (R-5.11). Darum zeigt die Bean die
+   **vorhandenen** Felder, statt sie nachzubauen; die Prüfung des Wizards läuft dieselben Feld-Prüfungen im Wizard noch einmal.
+3. **Fortschrittsbalken und Navigation** (Punkte 2 und 3 unten) werden **erst bei der Umsetzung** geklärt – sie stehen hier nur als erster Gedanke.
+
 ## So macht es Apple (HIG, gelesen in dieser Sitzung)
 
 Quelle: developer.apple.com, HIG ‚Sheets‘, ‚Entering data‘, ‚Progress indicators‘, ‚Onboarding‘ (JSON-Fassung, alle vier geladen).
