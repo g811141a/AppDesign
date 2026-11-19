@@ -5,7 +5,7 @@
 ## Heute (aus dem Code von AppDesign 4.63.0)
 
 - Ein Dateiname steht nur im **Hinweisfenster `#msg`**, und zwar nach dem Teilen bzw. Laden, nach einem Abbruch, bei einem Fehler und nach dem Öffnen des
-  Drucken-Menüs (`shareMsg` in `v4/ui.js` Z. 1370–1374). Er kommt aus dem Baustein `fileNameHtml` (Z. 1368): fett, zentriert, in einer eigenen Zeile, jedes Wort
+  Drucken-Menüs (`SHARE_RESULT` in `v4/ui.js` Z. 1369–1375). Er kommt aus dem Baustein `fileNameHtml` (Z. 1368): fett, zentriert, in einer eigenen Zeile, jedes Wort
   am Stück (`.fw`), Umbruch nur nach einem Leerzeichen.
 - Breite `#msg` am iPad: `min(max(360px, 360px × Textgröße), 90vw)` (`design.css` Z. 581). Für breite Hinweise gibt es schon `#msg.wide`:
   `min(max(600px, 600px × Textgröße), 100vw − 32px)` (Z. 590). Am iPhone gilt `min(360px, 100vw − 32px)` (Z. 792).
@@ -33,7 +33,7 @@
    zur Breite von `#msg.wide`, also 600 px (wächst mit der Textgröße) und höchstens Bildschirmbreite − 32 px. Ist der Name selbst dafür zu lang (große
    Textgröße, geteilter Bildschirm), bricht er wie heute nur nach einem Leerzeichen um.
 2. **iPhone:** bleibt wie heute (360 px bzw. Bildschirmbreite − 32 px, Umbruch nach einem Leerzeichen).
-3. **Umsetzung allgemein:** in `fileNameHtml`/`shareMsg` (`ui.js`) und `#msg` (`design.css`). AD-Bean: das bestehende Hinweisfenster `#msg` bekommt die
+3. **Umsetzung allgemein:** in `fileNameHtml`/`shareResultText` und `inform` (`ui.js`) und `#msg` (`design.css`). AD-Bean: das bestehende Hinweisfenster `#msg` bekommt die
    Eigenschaft ‚breite nach Dateiname‘, keine neue Bean (R-1.13).
 4. **R-10.8 neu fassen** (Wortlaut folgt mit dem Muster, 0 Nr. 29) und `checkDateiname` erweitern: iPad quer und hoch mit dem Beispielnamen in einer Zeile,
    Fenster nicht breiter als die Höchstbreite, große Textgröße und geteilter Bildschirm brechen nur nach einem Leerzeichen um, iPhone unverändert, dazu eine
