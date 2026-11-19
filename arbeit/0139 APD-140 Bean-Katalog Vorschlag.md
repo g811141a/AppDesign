@@ -1,6 +1,6 @@
 # APD-140 (Vorschlag) – Bean-Katalog: je AD-Bean eine Seite zum Ansehen, Ausprobieren und Prüfen
 
-**Stand 19.11.2026** · Sitzung 0139 · Wunsch des Nutzers (19.11.2026) · **noch nicht im Backlog** (0 Nr. 24)
+**Stand 19.11.2026** · Sitzung 0139 · Wunsch des Nutzers (19.11.2026) · **im Backlog als APD-140, Priorität 1** (Nutzer 19.11.2026: ja, eigener Unterordner auf GitHub)
 
 ## Dein Wunsch (zusammengefasst)
 
