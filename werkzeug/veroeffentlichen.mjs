@@ -140,7 +140,7 @@ function vorbereiten() {
   console.log(`✓ Versionen erhöht${X ? ` – AppDesign ${altX} → ${X}` : ''}${apps.map(a => ` – ${a.titel} → ${a.Y} (Fassung ${X || appFassung(a)})`).join('')}\n  ${geschrieben.length} Dateien geändert`);
   if (X) legeFassungAn();
   aeltereFassungen(X || altX);
-  console.log('Weiter: CHANGELOG, Testfälle (/0), Backlog und Richtlinien-Versionsgeschichte schreiben, committen, dann ‚los‘.');
+  console.log(`Weiter: CHANGELOG, Testfälle (/0), Backlog und Richtlinien-Versionsgeschichte schreiben${X ? ' – im CHANGELOG je Thema ‚AD-Bean: …‘, wenn ui.js oder design.css sich ändern (0 Nr. 25)' : ''}, committen, dann ‚los‘.`);
 }
 
 // APD-128 (seit 4.58.0): Prüfstufe einer App – verglichen wird mit dem gemeinsamen Stand von origin/main (merge-base), so zählen nur die
@@ -272,6 +272,21 @@ const WERKZEUG_SELBSTTESTS = [['tests/lauf-selbsttest.mjs', ['tests/lauf.mjs']],
 // geändert = der Arbeitsstand weicht von origin/main ab (auch noch nicht committet); ohne origin/main lieber prüfen
 const geaendertSeitMain = (dir, dateien) => { try { execFileSync('git', ['-C', pfad(dir), 'diff', '--quiet', 'origin/main', '--', ...dateien]); return false; } catch { return true; } };
 
+// Zusammenarbeit 0 Nr. 25 (seit 4.64.0, Sitzung 0138): ändert die Version ui.js oder design.css (mehr als die Versionsstellen), nennt der
+// CHANGELOG-Eintrag je Thema (fetter Absatz) eine Zeile ‚AD-Bean: `<kennung>` …‘ oder ‚AD-Bean: keine, weil …‘. Gibt die Themen ohne Zeile zurück.
+// Gegenprobe VEROEFF_GEGENPROBE=adbean: nicht geprüft – dann muss der Selbsttest-Fall APD-138/D-15 rot werden (D-18).
+const OHNE_VERSION = t => (t || '').replace(/^(\/\/|\/\*) AppDesign [\d.]+ ·/m, '').replace(/const AD_VERSION = '[\d.]+';/, '').replace(/--ad-version: "[\d.]+";/, '');
+function adBeanFehlt(X) {
+  if (process.env.VEROEFF_GEGENPROBE === 'adbean') return [];
+  const geaendert = ['v4/ui.js', 'v4/design.css'].filter(f => OHNE_VERSION(gitOk(AD, 'show', `origin/main:${f}`)) !== OHNE_VERSION(lies(AD, f).trim()));
+  if (!geaendert.length) return [];
+  const eintrag = lies(AD, 'CHANGELOG.md').split(new RegExp(`^## ${X.replace(/\./g, '\\.')} – `, 'm'))[1]?.split(/^## /m)[0] || '';
+  const themen = eintrag.split(/^(?=\*\*)/m).slice(1);
+  const hat = t => /^\s*(?:- )?(?:\*\*)?AD-Bean:(?:\*\*)? +(?:`[a-z]+`|keine, weil)/m.test(t);
+  return (themen.length ? themen : [eintrag]).filter(t => !hat(t)).map(t => (t.match(/^\*\*([^*]+)\*\*/)?.[1] || t.trim().split('\n')[0] || '(ohne Thema)').slice(0, 80))
+    .map(t => `${t} (geändert: ${geaendert.join(', ')})`);
+}
+
 async function los() {
   const nurApp = argv.includes('--nur-app'), namen = opts('--app');
   const X = adVersion(), apps = (namen.length ? namen.map(n => APPS.find(a => a.name === n) || abbruch(`App ‚${n}‘ steht nicht in werkzeug/apps.json`)) :
@@ -302,6 +317,8 @@ async function los() {
   if (!nurApp) {
     if (!new RegExp(`^## ${X.replace(/\./g, '\\.')} – `, 'm').test(lies(AD, 'CHANGELOG.md'))) abbruch(`AppDesign CHANGELOG.md: Eintrag ‚## ${X} – …‘ fehlt`);
     if (!fassungListe(AD).includes(X)) abbruch(`fassung/${X}/ fehlt – node werkzeug/veroeffentlichen.mjs fassung`);
+    const ohneBean = adBeanFehlt(X);
+    if (ohneBean.length) abbruch(`AppDesign CHANGELOG.md ${X}: Zeile ‚AD-Bean: \`<kennung>\` …‘ oder ‚AD-Bean: keine, weil …‘ fehlt (Zusammenarbeit 0 Nr. 25, R-1.13) – ${ohneBean.join(' · ')}.\n  Nichts geprüft, nichts gepusht.`);
     const f = checkFassungen(AD); if (f.length) abbruch(`Fassung nicht in Ordnung:\n${f.map(e => '    ' + e).join('\n')}`);
   }
   apps.forEach(a => {

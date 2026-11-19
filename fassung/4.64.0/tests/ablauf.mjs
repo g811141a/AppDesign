@@ -3150,7 +3150,7 @@ export async function checkDateiname(p, { ausloesen, faelle = ['shared', 'aborte
 
 // APD-138 (seit 4.64.0, R-10.8, AD-Bean hinweis; Testfall-Liste arbeit/APD-138 Testfall-Liste.md D-3 bis D-6, D-9, D-10): Breite nach Dateiname am iPad mit
 // eigenen Namen über inform – kurzer Name (Grundbreite), sehr langer Name (Höchstbreite, Umbruch nur nach Leerzeichen), Text 53, schmales Fenster
-// (geteilter Bildschirm), drehen bei offenem Hinweis; Gegenprobe: ohne breiteNachDateiname muss checkDateiname D-1 melden. Aufruf am iPad quer.
+// (geteilter Bildschirm), drehen bei offenem Hinweis; Gegenprobe (D-10, D-14): ohne breiteNachDateiname muss checkDateiname D-1 melden. Aufruf am iPad quer.
 export const DATEINAME_BEISPIEL = 'Ω Backup Reiselogbuch 2026.11.19 08.15.json';
 export const DATEINAME_SEHR_LANG = 'Ω Backup Reiselogbuch Australien Neuseeland Tasmanien Fidschi 2026.08.24-2026.11.11 Sicherung 2026.11.19 08.15.json';
 export async function checkHinweisBreite(p, { where = '' } = {}) {
@@ -3168,7 +3168,7 @@ export async function checkHinweisBreite(p, { where = '' } = {}) {
   await p.evaluate(() => { adHinweis.breiteNachDateiname = false; });
   const gp = await dn(DATEINAME_BEISPIEL, 'Gegenprobe');
   await p.evaluate(() => { adHinweis.breiteNachDateiname = true; });
-  if (!gp.some(x => x.includes('APD-138/D-1'))) errors.push(`${where}: R-10.8 Gegenprobe (APD-138/D-10): ohne Breite nach Dateiname meldet checkDateiname nichts – ${gp.join(' · ') || 'keine Meldung'}`);
+  if (!gp.some(x => x.includes('APD-138/D-1'))) errors.push(`${where}: R-10.8 Gegenprobe (APD-138/D-10, D-14): ohne Breite nach Dateiname meldet checkDateiname nichts – ${gp.join(' · ') || 'keine Meldung'}`);
   return errors;
 }
 

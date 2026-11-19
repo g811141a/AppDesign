@@ -3,6 +3,42 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.64.0 – 19.11.2026
+
+AppDesign 4.64.0 · Designrichtlinie allgemein 4.64.0 · Zusammenarbeit allgemein 3.17.0 · Reiselogbuch 3.57.7 (Fassung 4.64.0)
+
+**APD-138 – Dateiname am iPad in einer Zeile, AD-Bean `hinweis`** (Muster und Wortlaut R-10.8 bestätigt 19.11.2026 in Sitzung 0136; Schnittstelle, Listenzeile
+und Absicherung bestätigt 19.11.2026 in Sitzung 0138 – `arbeit/0137 Vorschlag AD-Bean hinweis und Absicherung.md`; Testfall-Liste `arbeit/APD-138 Testfall-Liste.md`
+APD-138/D-1 bis D-18; Sitzungen 0137 und 0138).
+
+- **`ui.js`:** neu die AD-Bean `hinweis` – `createHinweis(fenster, { breiteNachDateiname = true })` auf `<dialog id="msg">`, `ui.js` legt sie einmal an
+  (`adHinweis`), `inform(…)` bleibt der kurze Aufruf. Steht ein Dateiname (`.fname`) im Text, wird das Fenster am iPad so breit, dass er in einer Zeile steht
+  – mindestens die Grundbreite von `#msg`, höchstens die von `#msg.wide`; neu berechnet bei jedem `resize`. Die Bean hebt die 90vw-Grenze von `dialog` auf wie
+  `dialog.wide` (sonst blieb das Fenster bei Text 53 schmaler als die Höchstbreite).
+- **Prüfungen:** `checkDateiname` misst Grund- und Höchstbreite (APD-138/D-1, D-2, D-7 bis D-9), neu `checkHinweisBreite` (APD-138/D-3 bis D-6, D-9, D-10, D-14,
+  `tests/ablauf.mjs`); Schnittstellenliste mit `createHinweis` (Teil `app`) und `adHinweis` (Teil `pruefungen`).
+- **Designrichtlinie 4.64.0:** R-10.8 (am iPad wächst das Fenster mit dem Dateinamen), Liste der AD-Beans (15) mit `hinweis`.
+- **Absicherung ‚allgemein = AD-Bean‘ – Zusammenarbeit 3.17.0:** Kasten ‚Immer‘ und 0 Nr. 25; `veroeffentlichen.mjs` `los` bricht vor dem Prüflauf ab, wenn sich
+  `ui.js` oder `design.css` (mehr als die Versionsstellen) ändern und ein Thema des CHANGELOG-Eintrags keine Zeile ‚AD-Bean: …‘ hat; `vorbereiten` erinnert
+  in der Schlusszeile daran. Selbsttest APD-138/D-15 bis D-17, Gegenprobe D-18 (`VEROEFF_GEGENPROBE=adbean`).
+- AD-Bean: `hinweis` (neu).
+
+**APD-135 Paket 6 Schritt 1 – Schnittstelle von ui.js** (Umfang, Wortlaut und Testfall-Liste APD-135/S-1 bis S-15 bestätigt 19.11.2026 in Sitzung 0136 –
+`arbeit/APD-135 Paket 6 Schritt 1 Vorschlag.md`; Sitzungen 0136 bis 0138).
+
+- **Schnittstelle (APD-135/B-4.1):** neu `v4/schnittstelle.json` (Teile `app` und `pruefungen`) und `tests/schnittstelle.mjs` mit `checkSchnittstelle`
+  (Zerleger `tests/schnittstelle-zerleger.mjs`); in der App `tests/schnittstelle-regeln.mjs` im Vorlauf von `lauf.mjs`, nur im ersten Browser;
+  `schnittstelle.json` gehört zur festen Fassung (`tests/version.mjs`); `lauf-selbsttest` Fall APD-135/S-6.
+- **`ui.js` (APD-135/B-4.2):** `placeDialogs` als letzter `resize`-Hörer in `ui.js` (die App ruft es nicht mehr), neu `markHeld(root)`, `setOpener`,
+  `FX_SVG` (ⓧ einmal), ‚Bewegung reduzieren‘ einmal abgefragt (`bewegungRuhig`), `capNext` gestrichen, Kopf mit Verweis auf `schnittstelle.json`.
+- **Prüfungen:** feste Fälle APD-135/S-8 (`ablauf-fenster`: Hinweisfenster verschoben, nach `resize` am Platz) und APD-135/S-9 (`backup-regeln`: Mehr-Knopf
+  bleibt beim Neuaufbau der Seitenleiste blau); die Gegenproben APD-135/S-8 und APD-135/S-10 waren vorher gegen die vorhandenen Prüfungen grün.
+- **`design.css`:** `.iconbtn` gestrichen (APD-135/J-28).
+- **Designrichtlinie 4.64.0:** neu R-1.14, Verweis in 14, 15.1 ohne `.iconbtn`, 15.22 neu gefasst (APD-135/J-19: der Rückfall ohne Rollbereich wird gebraucht).
+- **Doku:** `tests/README.md` (AppDesign und Reiselogbuch), AppDesign-`README.md`, `vorlage/index.html`.
+- AD-Bean: keine, weil nur die Schnittstelle von `ui.js` und innere Bausteine; die gedrückten Schaltflächen (`markHeld`, `hold`, `release`, `setOpener`,
+  `markOpener`) bekommen später eine eigene Bean `gedrueckt`, `FX_SVG` ist Kandidat für APD-136 (Nutzer 19.11.2026, Sitzung 0138).
+
 ## 4.63.0 – 19.11.2026
 
 AppDesign 4.63.0 · Designrichtlinie allgemein 4.63.0 · Zusammenarbeit allgemein 3.16.0 · Reiselogbuch 3.57.6 (Fassung 4.63.0)

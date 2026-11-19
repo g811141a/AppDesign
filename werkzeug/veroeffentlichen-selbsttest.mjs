@@ -41,7 +41,7 @@ const remote = (k, repo, ref = 'main') => git(k[repo], 'ls-remote', 'origin', re
 const commitAlle = (k, t) => { for (const d of [k.ad, k.app]) { git(d, 'add', '-A'); git(d, 'commit', '-qm', t, '--allow-empty'); } };
 // Texte, die Claude zwischen ‚vorbereiten‘ und ‚los‘ schreibt; Prüfungen der App nachgebildet (SCHEIN_ROT=1 → rot).
 function texte(k, X, Y) {
-  ersetze(k.ad, 'CHANGELOG.md', /\n## /, `\n## ${X} – 01.01.2030 (Neben)\n\nSelbsttest\n\n## `);
+  ersetze(k.ad, 'CHANGELOG.md', /\n## /, `\n## ${X} – 01.01.2030 (Neben)\n\n**Selbsttest**\n\n- AD-Bean: keine, weil Selbsttest (0 Nr. 25, seit 4.64.0)\n\n## `);
   ersetze(k.app, 'CHANGELOG.md', /\n## /, `\n## ${Y} – 01.01.2030 (Neben)\n\nTestfälle P-99\n\n**P-99/0 – Version prüfen**\n1. Versionszeile ansehen. Erwartet: Reiselogbuch ${Y} · AppDesign ${X}\n\n## `);
   // seit 4.42.0 (APD-85/W-11): SCHEIN_WACKELT=1 → ein Wackler in tests/out/wackelt.json
   // seit 4.47.0 (APD-102): tests/out/geprueft = geprüfter Stand (Baum von HEAD); SCHEIN_MAIN_NEU=[origin, datei, inhalt] → während des
@@ -348,6 +348,31 @@ try {
     s = selbstBereit(() => {});
     r = skript(s.k, {}, 'los');
     pruefe(r.code === 0 && !s.gelaufen().length && !/— Selbsttest AppDesign|— Prüfung AppDesign/.test(r.text), `APD-135/Z-13 ohne Änderung an den Werkzeugen: kein Selbsttest (gelaufen: ${s.gelaufen().join(', ') || '–'})`);
+  }
+
+  // ——— APD-138/D-15 bis D-18 (seit 4.64.0, Zusammenarbeit 0 Nr. 25): ändert sich ui.js oder design.css, verlangt los je Thema ‚AD-Bean: …‘ ———
+  {
+    const beanBereit = (aendere, changelog) => {
+      const k = kopie();
+      skript(k, {}, 'vorbereiten', '--ad', X, '--app', `reiselogbuch=${Y}`); texte(k, X, Y);
+      ersetze(k.ad, 'CHANGELOG.md', /\n## [\d.]+ – 01\.01\.2030 \(Neben\)\n\n[\s\S]*?\n\n## /, `\n## ${X} – 01.01.2030 (Neben)\n\n${changelog}\n\n## `);
+      aendere(k); skript(k, {}, 'fassung'); commitAlle(k, 'bereit');
+      return k;
+    };
+    const uiNeu = k => ersetze(k.ad, 'v4/ui.js', /$/, '\nfunction neuesElement() {}\n');
+    const zweiThemen = '**Thema A**\n\n- AD-Bean: `hinweis` (neu)\n\n**Thema B**\n\n- etwas ohne Zeile';
+    const d15 = env => { const k = beanBereit(uiNeu, zweiThemen), ad0 = remote(k, 'ad');
+      r = skript(k, { SCHEIN_ROT: '1', ...env }, 'los');
+      return r.code === 1 && /AD-Bean: .*fehlt \(Zusammenarbeit 0 Nr\. 25/.test(r.text) && /Thema B \(geändert: v4\/ui\.js\)/.test(r.text) && !/Thema A/.test(r.text) &&
+        !/— Prüfungen/.test(r.text) && remote(k, 'ad') === ad0; };
+    pruefe(d15({}), 'APD-138/D-15 ui.js geändert, ein Thema ohne ‚AD-Bean: …‘ → Abbruch vor dem Prüflauf mit dem Thema, nichts gepusht');
+    let k = beanBereit(uiNeu, '**Thema A**\n\n- AD-Bean: `hinweis` (neu)\n\n**Thema B**\n\n- AD-Bean: keine, weil nur Prüfungen');
+    r = skript(k, { SCHEIN_ROT: '1' }, 'los');
+    pruefe(r.code === 1 && /rot – nichts veröffentlicht/.test(r.text) && !/AD-Bean: .*fehlt/.test(r.text), 'APD-138/D-16 jedes Thema mit ‚AD-Bean: …‘ → weiter bis zum Prüflauf');
+    k = beanBereit(() => {}, zweiThemen);
+    r = skript(k, { SCHEIN_ROT: '1' }, 'los');
+    pruefe(r.code === 1 && /rot – nichts veröffentlicht/.test(r.text) && !/AD-Bean: .*fehlt/.test(r.text), 'APD-138/D-17 nur die Versionsstellen in ui.js und design.css geändert → keine Zeile verlangt');
+    pruefe(!d15({ VEROEFF_GEGENPROBE: 'adbean' }), 'APD-138/D-18 Gegenprobe: prüft das Skript die Zeile nicht, ist D-15 rot');
   }
 } finally { rmSync(TMP, { recursive: true, force: true }); }
 

@@ -33,32 +33,32 @@ liest diese Datei zu Beginn jeder Sitzung zuerst, dann die ganze Zusammenarbeit*
 
 Grundlage: `arbeit/0137 Vorschlag AD-Bean hinweis und Absicherung.md` (Stand der Vorbereitung, alle Befunde und die offenen Wortlaute).
 
-- **B-4.1 verdrahtet:** `ReiseLogBuch/tests/schnittstelle-regeln.mjs` (neu), in `alle.mjs` und im Vorlauf von `lauf.mjs` (nur erster Browser); `lauf-selbsttest`
-  Fall APD-135/S-6 grün (gegen `lauf.mjs` 4.63.0 rot); S-1 rot mit erfundenem Namen; `schnittstelle.json` gehört zur Fassung (`tests/version.mjs` `fassungQuellen`).
-- **B-4.2:** `placeDialogs` als letzter `resize`-Hörer in `ui.js` (App ohne), `markHeld(root)`, App `setOpener('#shareBtn')` (sichtbar: nichts), `capNext` weg,
+- **APD-135/B-4.1 verdrahtet:** `ReiseLogBuch/tests/schnittstelle-regeln.mjs` (neu), in `alle.mjs` und im Vorlauf von `lauf.mjs` (nur erster Browser); `lauf-selbsttest`
+  Fall APD-135/S-6 grün (gegen `lauf.mjs` 4.63.0 rot); APD-135/S-1 rot mit erfundenem Namen; `schnittstelle.json` gehört zur Fassung (`tests/version.mjs` `fassungQuellen`).
+- **APD-135/B-4.2:** `placeDialogs` als letzter `resize`-Hörer in `ui.js` (App ohne), `markHeld(root)`, App `setOpener('#shareBtn')` (sichtbar: nichts), `capNext` weg,
   `bewegungRuhig` einmal (auch Gegenprobe-Texte in `tests/ablauf.mjs` angepasst), `FX_SVG` (App nutzt es in beiden Suchzeilen), Kopf von `ui.js`.
-  Gegenproben S-8/S-10 waren gegen die vorhandenen Prüfungen grün → neue feste Fälle **S-8** (`ablauf-fenster`: Fenster verschoben, nach `resize` am Platz) und
-  **S-9** (`backup-regeln`: Backup aus dem Mehr-Menü, Seitenleiste neu aufgebaut, Mehr-Knopf blau, danach nicht); mit Prüfkopie beide rot.
-- **J-28:** `.iconbtn` aus `design.css` und 15.1. **J-19:** Rückfall wird gebraucht (iPhone-Startliste, iPad ohne Reise: `#app` ohne `.rolle`) – Wortlaut offen.
+  Gegenproben APD-135/S-8, S-10 waren gegen die vorhandenen Prüfungen grün → neue feste Fälle **APD-135/S-8** (`ablauf-fenster`: Fenster verschoben, nach `resize` am Platz) und
+  **APD-135/S-9** (`backup-regeln`: Backup aus dem Mehr-Menü, Seitenleiste neu aufgebaut, Mehr-Knopf blau, danach nicht); mit Prüfkopie beide rot.
+- **APD-135/J-28:** `.iconbtn` aus `design.css` und 15.1. **APD-135/J-19:** Rückfall wird gebraucht (iPhone-Startliste, iPad ohne Reise: `#app` ohne `.rolle`) – Wortlaut offen.
 - **APD-138 als AD-Bean `hinweis`:** `createHinweis(fenster, { breiteNachDateiname = true })`, `adHinweis` (legt `ui.js` an), `inform` = Aufruf; Breite bei jedem
-  `resize` neu, setzt `max-width: none` wie `dialog.wide` (sonst 90vw-Grenze bei Text 53). `checkDateiname` misst Grund-/Höchstbreite (D-1, D-2, D-7, D-8, D-9 mit
-  `drehen`), neu `checkHinweisBreite` (D-3 bis D-6, D-9, D-10) in `backup-regeln` (iPad quer hell). Schnittstellenliste: `app` + `createHinweis`, `FX_SVG`;
+  `resize` neu, setzt `max-width: none` wie `dialog.wide` (sonst 90vw-Grenze bei Text 53). `checkDateiname` misst Grund-/Höchstbreite (APD-138/D-1, D-2, D-7, D-8, D-9 mit
+  `drehen`), neu `checkHinweisBreite` (APD-138/D-3 bis D-6, D-9, D-10) in `backup-regeln` (iPad quer hell). Schnittstellenliste: `app` + `createHinweis`, `FX_SVG`;
   `pruefungen` + `adHinweis`.
 - **Texte eingetragen (bestätigt):** R-1.14 (17), Designrichtlinie 14, AppDesign-`README.md`, 15.1, **R-10.8** (Wortlaut aus dem Verlauf von 0136, Bestätigung
   12:29 UTC – jetzt auch in `arbeit/APD-138 Testfall-Liste.md`); `tests/README.md` beider Repos.
 - **Läufe (Chromium):** `schnittstelle-regeln`, `ablauf-fenster` (3 Teile), `ablauf-markierung-menues`, `ablauf-drehen-luecke`, `ablauf-drehen-iphone`,
   `ablauf-feld-cursor`, `ablauf-gesamt`, `ablauf-fenster-breite` grün; dann `schnittstelle-regeln`, `ablauf-fenster` (3 Teile), `backup-regeln`, `ablauf-abgleich`,
   `ablauf-markierung-menues` in **Chromium und WebKit: ‚Alle 13 Läufe grün in 04:25‘**.
-- **Noch rot zu erwarten:** `doku-regeln` (`checkBeans` W-72: `createHinweis` setzt `data-ad-bean`, die Zeile in der Liste der AD-Beans fehlt bis zum Ja).
+- **Noch rot zu erwarten:** `doku-regeln` (`checkBeans` APD-30/W-72: `createHinweis` setzt `data-ad-bean`, die Zeile in der Liste der AD-Beans fehlt bis zum Ja).
 
 ## 3. Nächster Schritt
 
 1. Lesen wie immer, Repos dazuholen, beide Vorbereitungs-Zweige holen, Tests einrichten, Lagebild als eigene Antwort mit Kachel.
 2. Danach **die offenen Fragen aus 0137** (Datei `arbeit/0137 Vorschlag AD-Bean hinweis und Absicherung.md` neben der Kachel, ein Fenster mit vier Fragen):
-   1. ‚AD-Bean `hinweis`: Schnittstelle, Zeile in der Liste der AD-Beans und Ergänzung der Testfall-Liste (D-12 bis D-14) übernehmen?‘ (Empfehlung ja)
+   1. ‚AD-Bean `hinweis`: Schnittstelle, Zeile in der Liste der AD-Beans und Ergänzung der Testfall-Liste (APD-138/D-12 bis D-14) übernehmen?‘ (Empfehlung ja)
    2. ‚`markHeld` und `FX_SVG` bewusst ohne AD-Bean (Kandidaten für APD-136)?‘ (Empfehlung ja; sonst Bean `gedrueckt` später)
    3. ‚Wortlaut ‚allgemein = AD-Bean‘ (Kasten ‚Immer‘ und 0 Nr. 25, Prüfung in `los`) übernehmen?‘ (Empfehlung ja)
-   4. ‚J-19: Satz in 15.22 neu fassen?‘ (Empfehlung ja)
+   4. ‚APD-135/J-19: Satz in 15.22 neu fassen?‘ (Empfehlung ja)
 3. Nach den Antworten umsetzen: Zeile in der Liste der AD-Beans (15), ggf. Kasten/Nr. 25 + Prüfung ‚AD-Bean: …‘ in `veroeffentlichen.mjs` (`los`, mit Selbsttest-Fall
    und Gegenprobe; `vorbereiten` erinnert in der Schlusszeile), ggf. 15.22; dann Texte: CHANGELOG beider Repos (je Thema ‚AD-Bean: …‘; Usertest **P-114** mit /0
    ‚Version prüfen‘ Reiselogbuch 3.57.7 · AppDesign 4.64.0 und /1 APD-138: iPad quer, Backup erstellen, ‚In Dateien sichern‘ – Erwartet: Dateiname in einer Zeile),
@@ -68,7 +68,7 @@ Grundlage: `arbeit/0137 Vorschlag AD-Bean hinweis und Absicherung.md` (Stand der
 
 ## 4. Danach
 
-APD-135 Paket 6 Schritt 2 (B-3.1, B-3.2) · J-32 als eigenes Thema ins Backlog (nach B-3) · APD-135 Paket 7 · APD-136 (Kandidaten dazu: CSS von `#msg` unter `.ad-hinweis`,
+APD-135 Paket 6 Schritt 2 (APD-135/B-3.1, B-3.2) · APD-135/J-32 als eigenes Thema ins Backlog (nach APD-135/B-3) · APD-135 Paket 7 · APD-136 (Kandidaten dazu: CSS von `#msg` unter `.ad-hinweis`,
 gedrückte Schaltflächen, ⓧ) · Wizard APD-139 · RLB-125 (Prio 2) · RLB-126 · APD-32 · APD-55 · RLB-6 · APD-1 · APD-70 · APD-57 · APD-62 · APD-44 bis APD-60 · zuletzt APD-80.
 Später: sobald ein iOS-Update `print()` vom Home-Bildschirm wieder zulässt, den PDF-Hinweis (RLB-124) entfernen.
 

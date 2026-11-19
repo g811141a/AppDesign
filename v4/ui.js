@@ -1805,6 +1805,8 @@ function createSync({ list, sub, subAt, maxFields = [], nouns = ['Eintrag', 'Ein
 // Kleines Fenster mit rundem x; Abfragen mit Entscheidung sind Sprechblasen (confirmPop).
 // Seit 4.11.0: { wide: true } – breiteres Fenster; { action: { label, icon, run } } – eine blaue Schaltfläche unter dem
 // Text (z. B. ‚Abgleichbericht anzeigen‘, R-9.4): schließt das Fenster und führt run() aus.
+/* ---------- AD-Bean hinweis: Hinweisfenster (seit 4.64.0, APD-138, R-10.8, R-1.13) ---------- */
+
 // Seit 4.64.0 (APD-138, R-10.8, R-1.13): das Hinweisfenster ist die AD-Bean `hinweis` (Fenster und Meldungen) auf <dialog id="msg">; ui.js legt sie
 // einmal an (adHinweis), inform(…) ist der kurze Aufruf dafür.
 // Eigenschaft breiteNachDateiname (Standard ein): steht ein Dateiname (.fname) im Text, wird das Fenster am iPad so breit, dass er in einer Zeile

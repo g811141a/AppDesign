@@ -633,6 +633,7 @@ und Meldungen · Eingabe · Inhalt · Dienste (ohne eigene Oberfläche).
 | Kennung | Bereich | Fabrik | Eigenschaften (Standard) | Nur lesen | Methoden | Ereignisse | Regeln | Abschnitt |
 |---|---|---|---|---|---|---|---|---|
 | `swipeactions` | Aktionen und Menüs | `createSwipeactions(liste, …)` | `kacheln` (Pflicht) · `aktionen` (Pflicht, dieselbe Funktion wie für das Kontextmenü; Einträge wie bei `openMenu` mit `kurz`) | `offen` · `masse` | `schliessen()` · `entfernen()` | `offen` · `zu` | R-7.8, R-4.12, R-4.13, R-1.4, R-1.8 | 15.4 |
+| `hinweis` | Fenster und Meldungen | `createHinweis(fenster, …)` | `breiteNachDateiname` (ein; wirkt nur am iPad) | `offen` | `zeigen(titel, html, { breit, aktion })` · `schliessen()` | `zu` | R-10.8, R-1.8, R-4.3 | 7, 10 |
 
 ### 15.1 Schwebende Schaltfläche
 - **Apple:** [HIG – Buttons](https://developer.apple.com/design/human-interface-guidelines/buttons)
@@ -1163,7 +1164,7 @@ und Meldungen · Eingabe · Inhalt · Dienste (ohne eigene Oberfläche).
   Solange ein Fenster offen ist, steht er still (`html.locked`). Im Druck ist nichts auf Bildschirmhöhe begrenzt (R-6.4).
 - **Technisch:** `design.css` (`#app:has(> .rolle)`, `.rolle`), `ui.js` – `rolle` (`rolle.y`, `rolle.max`, `rolle.rest`,
   `rolle.to(y, weich)`, `rolle.by(d)`, `rolle.ende()`, `rolle.halt()`), `onRoll(fn)`, `fabTop()`/`fabEnd()`. Die App ruft **nie**
-  `window.scrollTo`. Ohne Rollbereich rollt wie bisher das Fenster (ältere Apps). In Prüfungen rollen und messen `rolle(p, y)` und
+  `window.scrollTo`. Ohne Rollbereich (`#app` ohne `.rolle`, z. B. die Startliste am iPhone) beziehen sich `rolle` und `onRoll` auf das Fenster. In Prüfungen rollen und messen `rolle(p, y)` und
   `rollstand(p)` (`pruefe.mjs`); die Regeln dazu prüft der Katalog (R-2.1, R-2.3, R-3.2, R-4.5, R-6.4). Testfall-Liste und Muster:
   `arbeit/APD-28 Testfall-Liste.md`, `arbeit/APD-28 Muster.html`.
 

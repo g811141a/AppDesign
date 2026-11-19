@@ -1,6 +1,6 @@
 # Zusammenarbeit allgemein
 
-**Version 3.16.0** · Stand 19.11.2026
+**Version 3.17.0** · Stand 19.11.2026
 
 Regeln für die Zusammenarbeit mit Claude bei allen Web-Apps für iPad und iPhone von g811141a. Die Datei liegt im Design-Repo **AppDesign**
 (g811141a/AppDesign); App-Eigenes steht in der `CLAUDE.md` des App-Repos. **Abschnitt 0 ist das Arbeitsmodell** (oben der Kasten ‚Immer‘ und ‚Jede
@@ -15,8 +15,8 @@ oder **Selbstkontrolle** (Claude prüft vor dem Senden selbst).
 ## 0. Arbeitsmodell
 
 > **Immer:** nie ohne ‚Ja‘ bauen (Nr. 21) · erst Usertests, dann Neues (Nr. 22) · Testfall-Liste vor jedem Bau (Nr. 1) ·
-> Sammelversionen (Nr. 8) · nur Belegtes (Nr. 27) · Regeln nur mit Genehmigung (Nr. 29) · ohne Auftrag nach dem Lagebild die
-> Startfrage (Nr. 19).
+> allgemein = AD-Bean (R-1.13, Nr. 25) · Sammelversionen (Nr. 8) · nur Belegtes (Nr. 27) · Regeln nur mit Genehmigung (Nr. 29) ·
+> ohne Auftrag nach dem Lagebild die Startfrage (Nr. 19).
 >
 > **Jede Antwort** (Selbstkontrolle vor dem Senden):
 > 1. Per du, deutsch, kurz (Abschnitt 1).
@@ -122,7 +122,9 @@ Ziel: nichts vergessen, Fehler finden, bevor der Nutzer sie findet, schnell und 
     (Nr. 4) → bei allgemein: welche AD-Bean – eine bestehende mit neuer Eigenschaft oder eine neue mit Kennung (R-1.13); das steht
     im Muster und in der Bau-Frage → in ‚0. Nächste Version‘ eintragen, nicht ohne Bau-Frage bauen (Fehler aus dem Testen als
     Korrekturversion nach Nr. 8) → bauen nur nach Nr. 8 und 21. Nur ändern, was besprochen wurde; Auffälliges nennen statt eigenmächtig ändern (offensichtliche Fehler beheben und
-    ausdrücklich erwähnen). Prüfung: Selbstkontrolle.
+    ausdrücklich erwähnen). Prüfung: Selbstkontrolle; ändert eine AppDesign-Version `ui.js` oder `design.css`, nennt ihr
+    CHANGELOG-Eintrag je Thema (fetter Absatz) eine Zeile ‚AD-Bean: `<kennung>` (neu | neue Eigenschaft …)‘ oder ‚AD-Bean: keine,
+    weil …‘ – sonst bricht `veroeffentlichen.mjs` (`los`) vor dem Prüflauf ab (Selbsttest).
 
 **D. Bauen und Veröffentlichen**
 

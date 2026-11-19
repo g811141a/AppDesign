@@ -613,8 +613,8 @@ Gemessene bzw. belegte Eigenheiten mit Quelle; sie gelten für alle Apps, die Pr
   neueste 4er-Fassung; eine Hauptversion (5.0.0) bekommt einen neuen Ordner `v5/`. Veröffentlicht wird mit
   `werkzeug/veroeffentlichen.mjs` (Zusammenarbeit 0 Nr. 9).
 - **Schnittstelle von ui.js:** Die App stellt bereit: `<dialog id="dlg">`, `<dialog id="msg">`, `db.settings.appearance`
-  (`auto` | `light` | `dark`), `save()`, `render()`; optional `onDialogOpen()` (wird bei jedem `openDialog` aufgerufen). Von einer
-  AD-Bean nutzt die App nur Fabrik, Eigenschaften, Methoden und Ereignisse (R-1.13, Liste in 15).
+  (`auto` | `light` | `dark`), `save()`, `render()`; optional `onDialogOpen()` (wird bei jedem `openDialog` aufgerufen). Von `ui.js` nutzt
+  die App nur die Namen aus `v4/schnittstelle.json` (R-1.14); von einer AD-Bean nur Fabrik, Eigenschaften, Methoden und Ereignisse (R-1.13, Liste in 15).
 - **Prüfen:** Jede App hat eigene Prüfskripte, die ihre Ansichten und Fenster durchgehen und mit den Bausteinen aus
   `AppDesign/tests/` messen (AppDesign liegt beim Testen neben dem App-Repo): Fehler mit Sollwerten und Rückgabewert
   (`pruefe.mjs`), nach jedem Schritt die Grundregeln (dieselben Prüfungen wie `hig.mjs`, ohne Drehen), Chromium **und WebKit**;
@@ -633,6 +633,7 @@ und Meldungen · Eingabe · Inhalt · Dienste (ohne eigene Oberfläche).
 | Kennung | Bereich | Fabrik | Eigenschaften (Standard) | Nur lesen | Methoden | Ereignisse | Regeln | Abschnitt |
 |---|---|---|---|---|---|---|---|---|
 | `swipeactions` | Aktionen und Menüs | `createSwipeactions(liste, …)` | `kacheln` (Pflicht) · `aktionen` (Pflicht, dieselbe Funktion wie für das Kontextmenü; Einträge wie bei `openMenu` mit `kurz`) | `offen` · `masse` | `schliessen()` · `entfernen()` | `offen` · `zu` | R-7.8, R-4.12, R-4.13, R-1.4, R-1.8 | 15.4 |
+| `hinweis` | Fenster und Meldungen | `createHinweis(fenster, …)` | `breiteNachDateiname` (ein; wirkt nur am iPad) | `offen` | `zeigen(titel, html, { breit, aktion })` · `schliessen()` | `zu` | R-10.8, R-1.8, R-4.3 | 7, 10 |
 
 ### 15.1 Schwebende Schaltfläche
 - **Apple:** [HIG – Buttons](https://developer.apple.com/design/human-interface-guidelines/buttons)
@@ -1163,7 +1164,7 @@ und Meldungen · Eingabe · Inhalt · Dienste (ohne eigene Oberfläche).
   Solange ein Fenster offen ist, steht er still (`html.locked`). Im Druck ist nichts auf Bildschirmhöhe begrenzt (R-6.4).
 - **Technisch:** `design.css` (`#app:has(> .rolle)`, `.rolle`), `ui.js` – `rolle` (`rolle.y`, `rolle.max`, `rolle.rest`,
   `rolle.to(y, weich)`, `rolle.by(d)`, `rolle.ende()`, `rolle.halt()`), `onRoll(fn)`, `fabTop()`/`fabEnd()`. Die App ruft **nie**
-  `window.scrollTo`. Ohne Rollbereich rollt wie bisher das Fenster (ältere Apps). In Prüfungen rollen und messen `rolle(p, y)` und
+  `window.scrollTo`. Ohne Rollbereich (`#app` ohne `.rolle`, z. B. die Startliste am iPhone) beziehen sich `rolle` und `onRoll` auf das Fenster. In Prüfungen rollen und messen `rolle(p, y)` und
   `rollstand(p)` (`pruefe.mjs`); die Regeln dazu prüft der Katalog (R-2.1, R-2.3, R-3.2, R-4.5, R-6.4). Testfall-Liste und Muster:
   `arbeit/APD-28 Testfall-Liste.md`, `arbeit/APD-28 Muster.html`.
 
@@ -1255,6 +1256,7 @@ Testfall (User) in den Usertest, wenn eine Version es betrifft.
 | R-1.11 | **Verborgen heißt unsichtbar:** jedes Element mit `hidden` ist nicht zu sehen – eine eigene `display`-Regel hebt `[hidden]` nie auf | hig.mjs – `masseStile` (jede Ansicht, nach jedem Schritt, alle `[hidden]`) | – | 13 |
 | R-1.12 | **Gleitbewegungen wie die Seitenleiste in Notizen:** jede Bewegung, mit der die App selbst etwas an einen anderen Ort bringt – Fenster und Blatt (R-4.6), Navigation und Seitenleiste (R-7.5), das Fenster mit der Tastatur am iPad, ‚Titel antippen = nach oben‘ –: öffnen, hinein und nach oben mit einer Feder ohne Nachschwingen, Antwortzeit 0,35 s (gemessen an der Seitenleiste in Notizen, APD-127; CSS `linear()` über 0,5 s); schließen und hinaus mit `ease-in-out` in 0,25 s; nach einer Geste (Ziehen, Zurückwischen) der Rest anteilig, mindestens 0,15 s. Keine Gleitbewegung ist schneller als das Mehr-Menü (R-4.13). Ausgenommen: das Feld beim Antippen springt (Safari, 13, APD-127/W-4), die Wischaktionen (R-7.8: Feder mit 0,5 s Antwortzeit auf und zu, gemessen in Notizen, P-109), Rückmeldungen beim Drücken und Überblenden; ‚Bewegung reduzieren‘ nach R-1.9 | ablauf.mjs – `checkGleiten` (Dauer und Kurve jeder Bewegung, Endlage unverändert) | Gefühl am Gerät | 15 |
 | R-1.13 | **AD-Beans – allgemeine Elemente gekapselt:** ein allgemeines Element, das neu entsteht oder umgebaut wird, ist eine **AD-Bean** in `ui.js` – eine Fabrik `create<Kennung>(…)` mit Eigenschaften und Standardwerten, Methoden und Ereignissen (`on(…)`), eigenem Zustand und eigenem CSS nur unter `.ad-<kennung>…`; die Liste der AD-Beans (15) nennt je Bean Kennung, Bereich, Fabrik, Schnittstelle, Regeln und Abschnitt. Die **Kennung** ist sprechend nach der Aufgabe (nie nach Geste oder Technik, keine Nummer), fest und nie wiederverwendet: gleiche Aufgabe in anderer Ausprägung = Eigenschaft, andere Aufgabe = eigene Bean, Ablösung mit ‚ersetzt …‘. Feldarten bauen auf der Grund-Bean `field` auf; ihre Gültigkeitsregeln, Meldungen und Prüfbeispiele stehen in der Bean. Maße und Schwellen der Bedienung legt die Bean fest (nur lesbar); Maße von Schaltflächen wachsen dabei mit der Textgröße wie alle Schaltflächen (R-1.10). Die App nutzt nur die Schnittstelle – kein CSS und keine inneren Namen einer Bean | doku.mjs – `checkBeans` (Liste ↔ `ui.js` und `design.css`, Kennung einmal, CSS nur unter dem Präfix, Namen in der App) | – | 14, 15 |
+| R-1.14 | **Schnittstelle von ui.js:** die App nutzt von `ui.js` nur die Namen aus `v4/schnittstelle.json` (Teil `app`), ihre Prüfungen dazu den Teil `pruefungen`; keine Deklaration der App trägt den Namen eines Bausteins von `ui.js` | schnittstelle.mjs – `checkSchnittstelle` (App, Prüfdateien, Namensgleichheit, Liste gegen `ui.js`; Gegenprobe) | – | 14 |
 
 ### 2. Leisten, Suche, Rollen
 

@@ -38,6 +38,13 @@ Alle in Chromium und WebKit; nach jedem Schritt die Grundregeln (`pruefe.mjs`).
 | D-9 | drehen bei offenem Hinweis (quer → hoch → quer) | Breite neu berechnet, Name weiter einzeilig; Grundregeln danach | `checkDateiname` | rot |
 | D-10 | Gegenprobe: Prüfkopie ohne Breitenanpassung | `checkDateiname` rot mit ‚R-10.8‘ | Gegenprobe | – |
 | D-11 | Texte: R-10.8 neu genau einmal, alter Text nur in der Geschichte | `doku-regeln` grün | `doku-regeln` | rot |
+| D-12 | Bean `hinweis` in Liste und `ui.js` (Fabrik, `data-ad-bean`, Eigenschaft = Parameter) | `checkBeans` grün; ohne Listenzeile rot (APD-30/W-72) | `doku-regeln` | rot |
+| D-13 | `inform` unverändert: alle Hinweisfenster (Backup, Abgleich, offline, Abgleichbericht) wie bisher | bestehende Prüfungen grün | voller Lauf | grün |
+| D-14 | `breiteNachDateiname = false` | Fenster wie in 4.63.0, `checkDateiname` meldet D-1 (= D-10) | `checkHinweisBreite` | – |
+| D-15 | Absicherung ‚allgemein = AD-Bean‘ (0 Nr. 25): `ui.js` geändert, ein Thema im CHANGELOG ohne ‚AD-Bean: …‘ | `los` bricht vor dem Prüflauf ab und nennt das Thema, nichts gepusht | `veroeffentlichen-selbsttest` | – |
+| D-16 | jedes Thema mit ‚AD-Bean: …‘ | `los` läuft weiter bis zum Prüflauf | `veroeffentlichen-selbsttest` | – |
+| D-17 | nur die Versionsstellen in `ui.js` und `design.css` geändert | keine Zeile verlangt | `veroeffentlichen-selbsttest` | – |
+| D-18 | Gegenprobe `VEROEFF_GEGENPROBE=adbean` (Zeile nicht geprüft) | D-15 rot | `veroeffentlichen-selbsttest` | – |
 
 ## Testfall (User)
 
