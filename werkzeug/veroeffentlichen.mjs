@@ -265,6 +265,13 @@ async function veroeffentliche(dir, name, branch, pruefe, zusatz = '') {
   return { name, sha, pages, dauer: Math.round((Date.now() - t0) / 1000), geaendert };
 }
 
+// APD-135/Z-11 bis Z-13 (C-47): Selbsttest → die Werkzeuge, deren Änderung ihn nötig macht
+const WERKZEUG_SELBSTTESTS = [['tests/lauf-selbsttest.mjs', ['tests/lauf.mjs']],
+  ['werkzeug/veroeffentlichen-selbsttest.mjs', ['werkzeug/veroeffentlichen.mjs', 'werkzeug/veroeffentlichen-selbsttest.mjs', 'werkzeug/pruefstufe.mjs']],
+  ['tests/messung.mjs', ['werkzeug/messung.mjs', 'tests/messung.mjs']]];
+// geändert = der Arbeitsstand weicht von origin/main ab (auch noch nicht committet); ohne origin/main lieber prüfen
+const geaendertSeitMain = (dir, dateien) => { try { execFileSync('git', ['-C', pfad(dir), 'diff', '--quiet', 'origin/main', '--', ...dateien]); return false; } catch { return true; } };
+
 async function los() {
   const nurApp = argv.includes('--nur-app'), namen = opts('--app');
   const X = adVersion(), apps = (namen.length ? namen.map(n => APPS.find(a => a.name === n) || abbruch(`App ‚${n}‘ steht nicht in werkzeug/apps.json`)) :
@@ -307,11 +314,14 @@ async function los() {
   if (!apps.length && nurApp) abbruch('--nur-app, aber keine App ist vorbereitet (Version wie auf origin/main)');
   if (!apps.length) console.log(`ℹ Keine App vorbereitet – nur AppDesign ${X} (Apps bleiben auf ihrer Fassung)`);
   // Seit 4.39.0 (APD-84): zuerst die Werkzeuge von AppDesign – sie laufen in keiner App mit. Seit 4.55.0 (APD-123/D-10) ohne den Regelwächter
-  // (abgeschaltet; tests/regelwaechter.mjs bleibt im Repo)
-  if (!nurApp) for (const t of ['messung'].filter(t => existsSync(new URL(`tests/${t}.mjs`, AD)))) {
-    console.log(`\n— Prüfung AppDesign (node tests/${t}.mjs) —`);
-    const r = spawnSync(process.execPath, [`tests/${t}.mjs`], { cwd: pfad(AD), stdio: 'inherit' });
-    if (r.status !== 0) abbruch(`AppDesign tests/${t}.mjs rot – nichts veröffentlicht`);
+  // (abgeschaltet; tests/regelwaechter.mjs bleibt im Repo). Seit 4.63.0 (APD-135/Z-11 bis Z-13, C-47): die Selbsttests der Werkzeuge, die sich seit
+  // origin/main geändert haben – lauf.mjs → lauf-selbsttest, Veröffentlichungs-Skript bzw. pruefstufe.mjs → veroeffentlichen-selbsttest,
+  // messung.mjs → messung; ohne Änderung keiner.
+  if (!nurApp) for (const [t, quellen] of WERKZEUG_SELBSTTESTS) {
+    if (!existsSync(new URL(t, AD)) || !geaendertSeitMain(AD, quellen)) continue;
+    console.log(`\n— Selbsttest AppDesign (node ${t}) – geändert seit main: ${quellen.join(', ')} —`);
+    const r = spawnSync(process.execPath, [t], { cwd: pfad(AD), stdio: 'inherit' });
+    if (r.status !== 0) abbruch(`AppDesign ${t} rot – nichts veröffentlicht`);
   }
   // APD-5/E-4: alle Tests jeder App – einer rot: nichts veröffentlichen
   const wackler = [];

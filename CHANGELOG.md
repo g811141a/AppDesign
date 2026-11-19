@@ -3,6 +3,28 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.63.0 – 19.11.2026
+
+AppDesign 4.63.0 · Designrichtlinie allgemein 4.63.0 · Zusammenarbeit allgemein 3.16.0 · Reiselogbuch 3.57.6 (Fassung 4.63.0)
+
+**APD-135 Paket 5 – Prüflauf und Prüfungen** (Wortlaut `arbeit/APD-135 Paket 5 Wortlaut.md`, bestätigt 19.11.2026 in Sitzung 0134; Testfall-Liste
+`arbeit/APD-135 Paket 5 Testfall-Liste.md` APD-135/Z-1 bis Z-20; Sitzung 0135).
+
+- **Lauf-Werkzeug `tests/lauf.mjs`:** zuerst der Vorlauf `doku-regeln` und `version-regeln`, rot bricht sofort ab (APD-135/Z-1 bis Z-4, C-44; nicht in der
+  Gegenprobe); die längsten zuerst, nie gemessene ganz vorne (Z-5, C-43); `doku-regeln` nur im ersten Browser (Z-3, C-37); die Ausgabe eines Wacklers bleibt in
+  `tests/out/wackelt-<Name>[-<Teil>]-<Browser>.txt`, die Schlusszeile nennt die Datei (Z-6, C-68); `--abdeckung` je Teil (`PRUEF_TEIL`, `pruefung().abdeckung()`
+  in `tests/pruefe.mjs`, Z-7, C-29).
+- **`checkCatalog` (`tests/doku.mjs`):** eine Regelnummer zählt nur noch in einer Meldung (Zeichenkette, nicht im Kommentar) einer Prüfdatei, die im Prüflauf
+  läuft – Namen aus `tests/alle.mjs` der App und alles, was sie einbinden (neu `zeichenketten`, `pruefdateien`; Z-8 bis Z-10, C-6); Gegenproben
+  `schema:APD-135/Z-8` (Nummer nur im Kommentar) und `schema:APD-135/Z-9` (nur außerhalb des Prüflaufs).
+- **Veröffentlichungs-Skript:** `los` startet vorher die Selbsttests der Werkzeuge, die sich seit `origin/main` geändert haben – `lauf-selbsttest`,
+  `veroeffentlichen-selbsttest`, `messung` (Z-11 bis Z-13, C-47); `messung` läuft nicht mehr in jedem `los`.
+- **Neu `checkFilterAlle` (`tests/ablauf.mjs`)** für R-7.9 (Z-15, Z-16).
+- **Zusammenarbeit 3.16.0:** 0 Nr. 2 (Vorlauf, die längsten zuerst, Ausgabe der Wackler), 0 Nr. 9 (Selbsttests in `los`).
+- **Designrichtlinie 4.63.0:** 14 Messdateien nie umbenennen (APD-135/J-30, L-31); 15.3 Filter nur mit Verweis; 17 Kopf `checkCatalog` (C-6); R-5.1 mit Tausenderpunkt
+  und ‚,00‘ (G-8 geht auf); neu **R-7.9** Filter auf ‚Alle‘ (ersetzt G-16); G-8 und G-16 vergeben (W-48, J-20).
+- **Doku:** `tests/README.md` (AppDesign und Reiselogbuch), Kopfkommentare von `tests/lauf.mjs` und `tests/alle.mjs` der App (C-41).
+
 ## 4.62.0 – 18.11.2026
 
 AppDesign 4.62.0 · Designrichtlinie allgemein 4.62.0 · Zusammenarbeit allgemein 3.15.0 · Reiselogbuch 3.57.5 (Fassung 4.62.0)

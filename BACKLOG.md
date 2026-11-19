@@ -1,6 +1,6 @@
 # AppDesign – Backlog (allgemeine Themen)
 
-**Stand 19.11.2026** · Aktuelle Version: AppDesign 4.62.0
+**Stand 19.11.2026** · Aktuelle Version: AppDesign 4.63.0
 
 Allgemeine Themen, die alle Apps betreffen. App-Themen stehen im Backlog der jeweiligen App.
 Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.4.
@@ -11,8 +11,9 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Prio | Thema | bereit seit |
 |---|---|---|---|
+| APD-135 | 1 | **Paket 5 – Prüflauf und Prüfungen:** Vorlauf mit sofortigem Abbruch, die längsten zuerst, `doku-regeln` einmal, Ausgabe der Wackler, Abdeckung je Teil, `checkCatalog` nur Meldungen im Prüflauf, Selbsttests in `los`, Grundregeln in vier Abläufen, R-7.9 neu (G-16), R-5.1 mit G-8, `ablauf-seitenleiste-position` mit `t.seite` – Wortlaut `arbeit/APD-135 Paket 5 Wortlaut.md`, Testfall-Liste `arbeit/APD-135 Paket 5 Testfall-Liste.md` | 19.11.2026 |
 
-0 Punkte bereit.
+1 Punkt bereit.
 
 
 ## 1. Auf iPad und iPhone prüfen

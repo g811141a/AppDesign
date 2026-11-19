@@ -1,6 +1,6 @@
 # Zusammenarbeit allgemein
 
-**Version 3.15.0** · Stand 18.11.2026
+**Version 3.16.0** · Stand 19.11.2026
 
 Regeln für die Zusammenarbeit mit Claude bei allen Web-Apps für iPad und iPhone von g811141a. Die Datei liegt im Design-Repo **AppDesign**
 (g811141a/AppDesign); App-Eigenes steht in der `CLAUDE.md` des App-Repos. **Abschnitt 0 ist das Arbeitsmodell** (oben der Kasten ‚Immer‘ und ‚Jede
@@ -71,9 +71,10 @@ Ziel: nichts vergessen, Fehler finden, bevor der Nutzer sie findet, schnell und 
    Handgriffe, Safari-Eigenheiten einzeln und zusammen) – rot gegen den veröffentlichten Stand, für immer im vollen Lauf; dann
    beheben, dieselbe Lücke überall suchen und im Bericht nennen (Nr. 11). Gelingt das Nachstellen nicht,
    fragt Claude nach. Prüfung: Selbstkontrolle; Grundregeln nach jedem Schritt `pruefe.mjs`.
-2. **Prüfen parallel und sparsam:** `node tests/alle.mjs` in der App (Werkzeug `tests/lauf.mjs`: parallel, schnellste zuerst,
-   Abbruch ab dem dritten roten Lauf, jeder rote Lauf am Ende einmal allein – grün heißt ‚wackelt‘ und wird gemeldet, Gegenprobe
-   `--gegenprobe`). Während der Arbeit nur die betroffenen Prüfungen; im Veröffentlichungs-Skript genau **ein Prüflauf je Version**,
+2. **Prüfen parallel und sparsam:** `node tests/alle.mjs` in der App (Werkzeug `tests/lauf.mjs`: zuerst der Vorlauf `doku-regeln` (einmal) und
+   `version-regeln` – rot bricht sofort ab; dann parallel, die längsten zuerst, Abbruch ab dem dritten roten Lauf, jeder rote Lauf am
+   Ende einmal allein – grün heißt ‚wackelt‘, wird gemeldet und seine Ausgabe bleibt in `tests/out/wackelt-<Name>-<Browser>.txt`;
+   Gegenprobe `--gegenprobe`). Während der Arbeit nur die betroffenen Prüfungen; im Veröffentlichungs-Skript genau **ein Prüflauf je Version**,
    nicht zusätzlich vorher, in einer von zwei Stufen: **Stufe Text**, wenn sich nur Texte der App geändert haben (`index.html` ohne die
    Inhalte der Zeichenketten und die Kommentare unverändert, sonst nur Doku und Versionsstellen, AppDesign unverändert) und die vorige
    Version voll geprüft wurde – dann die Grundprüfungen (Doku, Versionen, Texte) und alle Prüfungen, die den alten oder neuen Text
@@ -131,7 +132,8 @@ Ziel: nichts vergessen, Fehler finden, bevor der Nutzer sie findet, schnell und 
    Punkten. **Korrekturen sofort:** Fehler aus einer Prüfrunde als eigene Korrekturversion vor allem Neuen, auch ohne
    Datenverlust (vorher fragen). Prüfung: Selbstkontrolle; `checkCollab`.
 9. **Veröffentlichen mit dem Skript** `werkzeug/veroeffentlichen.mjs` (Befehle: AppDesign-`CLAUDE.md`): `vorbereiten` erhöht alle
-   Versionen, Claude schreibt CHANGELOG mit Testfällen (2.3), Backlog und Richtlinien, `los` prüft, veröffentlicht **erst
+   Versionen, Claude schreibt CHANGELOG mit Testfällen (2.3), Backlog und Richtlinien, `los` prüft – vorher die Selbsttests
+   der Werkzeuge, die sich seit `main` geändert haben (`lauf.mjs`, Veröffentlichungs-Skript, `messung.mjs`) –, veröffentlicht **erst
    AppDesign, dann die App** und wartet auf Pages. ‚Fertig‘ erst, wenn beide Pages-Läufe erfolgreich sind und die Dateien die
    neue Version enthalten (`APP_VERSION`, `AD_NEEDED`, `AD_VERSION`); vorher keine Aufforderung zum Testen. Prüfung: das Skript
    (Selbsttest `werkzeug/veroeffentlichen-selbsttest.mjs`), `doku.mjs`.

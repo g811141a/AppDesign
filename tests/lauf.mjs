@@ -1,6 +1,9 @@
-// AppDesign 4.13.0 · Lauf-Werkzeug (APD-5, seit 4.13.0): alle Prüfskripte einer App parallel, die schnellsten zuerst
-// (nach der zuletzt gemessenen Dauer), in Chromium und WebKit; ab dem dritten roten Lauf werden die übrigen beendet, jeder rote
-// Lauf läuft am Ende einmal allein (Zusammenarbeit 0 Nr. 2).
+// AppDesign 4.13.0 · Lauf-Werkzeug (APD-5, seit 4.13.0): alle Prüfskripte einer App in Chromium und WebKit – zuerst der Vorlauf
+// `doku-regeln` (einmal) und `version-regeln`, rot bricht sofort ab; dann parallel, die längsten zuerst (nach der zuletzt gemessenen
+// Dauer); ab dem dritten roten Lauf werden die übrigen beendet, jeder rote Lauf läuft am Ende einmal allein (Zusammenarbeit 0 Nr. 2).
+// Seit 4.63.0 (APD-135 Paket 5, Testfall-Liste APD-135/Z-1 bis Z-7): Vorlauf mit sofortigem Abbruch (C-44, nicht in der Gegenprobe),
+// die längsten zuerst (C-43), `doku-regeln` nur im ersten Browser (C-37), die Ausgabe eines Wacklers bleibt in
+// tests/out/wackelt-<Name>[-<Teil>]-<Browser>.txt (C-68), --abdeckung je Teil (PRUEF_TEIL, C-29).
 // Seit 4.16.1 (APD-11): erst alle Läufe des ersten Browsers, dann die des nächsten – nie beide gleichzeitig. Im gemeinsamen
 // Lauf wurden einzelne WebKit-Prüfungen rot, die einzeln und im reinen WebKit-Lauf grün sind (Vergleich 15.10.2026).
 // Einbinden in tests/alle.mjs der App:
@@ -23,7 +26,7 @@ import { GEGENPROBEN_SCHEMA } from './doku.mjs';
 
 const mmss = ms => { const s = Math.round(ms / 1000); return `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`; };
 
-export async function lauf({ dir, pw, tests, bedienung = 'ablauf-bedienung', text = 'text-regeln', doku = 'doku-regeln', masse = 'hig', argv = process.argv.slice(2) }) {
+export async function lauf({ dir, pw, tests, bedienung = 'ablauf-bedienung', text = 'text-regeln', doku = 'doku-regeln', masse = 'hig', vorlauf = [doku, 'version-regeln'], argv = process.argv.slice(2) }) {
   const arg = (n, d) => { const i = argv.indexOf(n); return i < 0 ? d : argv[i + 1]; };
   const art = argv[argv.indexOf('--gegenprobe') + 1];
   const alle = argv.includes('--alle'), abdeckung = argv.includes('--abdeckung'), gegenprobe = argv.includes('--gegenprobe') ? (['grundregeln', 'bedienung', 'schema', 'text', 'masse'].includes(art) ? art : '1') : '';
@@ -67,14 +70,22 @@ export async function lauf({ dir, pw, tests, bedienung = 'ablauf-bedienung', tex
     const name = typeof t === 'string' ? t : t.name;
     if (nur && !nur.includes(name)) continue;
     const teile = (typeof t === 'object' && t.teile) || { '': {} };
-    for (const br of browsers) for (const [teil, env] of Object.entries(teile))
-      liste.push({ name, teil, br, env, key: `${name}${teil ? ':' + teil : ''}|${br}`, label: `${name}${teil ? ' (' + teil + ')' : ''} · ${br}` });
+    // APD-135/Z-3 (C-37): die Doku-Prüfung startet keinen Browser – nur im ersten
+    for (const br of name === doku ? browsers.slice(0, 1) : browsers) for (const [teil, env] of Object.entries(teile))
+      liste.push({ name, teil, br, env: { ...(teil ? { PRUEF_TEIL: teil } : {}), ...env }, key: `${name}${teil ? ':' + teil : ''}|${br}`, label: `${name}${teil ? ' (' + teil + ')' : ''} · ${br}` });
   }
-  // Je Browser (in der Reihenfolge von --browser) die schnellsten zuerst; noch nie gemessene vorne (meist neue, kurze Tests).
-  liste.sort((a, b) => browsers.indexOf(a.br) - browsers.indexOf(b.br) || (dauer[a.key] ?? 0) - (dauer[b.key] ?? 0));
-  console.log(`${liste.length} Läufe (${browsers.join(' + ')}), bis zu ${jobs} gleichzeitig${browsers.length > 1 ? ', Browser nacheinander' : ''}${alleLaufen ? ', ohne Abbruch' : ', Abbruch ab dem dritten roten Lauf'}${gegenprobe ? ` – Gegenprobe${gegenprobe === 'grundregeln' ? ' der Grundregeln' : ''}` : ''}\n`);
+  // Je Browser (in der Reihenfolge von --browser) die längsten zuerst (APD-135/Z-5, C-43: die kurzen füllen am Ende die Lücken);
+  // noch nie gemessene ganz vorne.
+  const lang = j => dauer[j.key] ?? Number.MAX_SAFE_INTEGER;
+  liste.sort((a, b) => browsers.indexOf(a.br) - browsers.indexOf(b.br) || lang(b) - lang(a));
+  // APD-135/Z-1 bis Z-4 (C-44): der Vorlauf (`doku-regeln`, `version-regeln`) läuft vor allen anderen, einer nach dem anderen – rot bricht sofort ab
+  // (eine falsche Versionstabelle kostet sonst einen ganzen Lauf). Nicht in der Gegenprobe: dort ist rot gewollt, sie läuft ganz durch.
+  const vor = gegenprobe ? [] : liste.filter(j => vorlauf.includes(j.name));
+  for (const j of vor) liste.splice(liste.indexOf(j), 1);
+  console.log(`${vor.length + liste.length} Läufe (${browsers.join(' + ')}), bis zu ${jobs} gleichzeitig${browsers.length > 1 ? ', Browser nacheinander' : ''}${alleLaufen ? ', ohne Abbruch' : ', Abbruch ab dem dritten roten Lauf'}${gegenprobe ? ` – Gegenprobe${gegenprobe === 'grundregeln' ? ' der Grundregeln' : ''}` : ''}\n`);
 
   const start = Date.now(), laufend = new Set(), rot = [], wackelt = [];
+  const dateiName = j => `${j.name}${j.teil ? '-' + j.teil : ''}-${j.br}`.replace(/[^\wäöüÄÖÜß.-]+/g, '_');
   let abbruch = false, next = 0;
   const beende = c => { try { process.kill(-c.pid, 'SIGKILL'); } catch {} };
   // Ein Lauf als eigener Prozess; Zeitgrenze zählt wie rot (APD-85/W-8).
@@ -89,6 +100,21 @@ export async function lauf({ dir, pw, tests, bedienung = 'ablauf-bedienung', tex
   // APD-85 Teil 1 (seit 4.42.0): ein roter Lauf bricht nicht mehr sofort ab – erst ab dem dritten roten (ohne --alle);
   // am Ende läuft jeder rote Lauf einmal allein (W-9); grün heißt ‚wackelt‘ (gemeldet, gilt als grün), wieder rot heißt Fehler.
   const GRENZE = 3;
+  if (vor.length) {
+    console.log(`Vorlauf: ${vor.map(j => j.label).join(', ')}`);
+    for (const j of vor) {
+      const [code, text, ms] = await new Promise(ok => starte(j, (c, code, text, ms) => ok([code, text, ms])));
+      if (code === 0) { dauer[j.key] = ms; console.log(`✓ ${j.label}  ${mmss(ms)}`); continue; }
+      console.log(`✗ ${j.label}  ${mmss(ms)}  (Rückgabewert ${code})`);
+      writeFileSync(dauerDatei, JSON.stringify(dauer, null, 1));
+      if (!gegenprobe) writeFileSync(new URL('wackelt.json', out), '[]');
+      const zeilen = text.trim().split('\n');
+      console.log(`\n── ${j.label} ──\n${zeilen.slice(0, 60).join('\n')}`);
+      console.log(`\nVorlauf rot: ${j.label} – Abbruch vor den übrigen ${liste.length} Läufen nach ${mmss(Date.now() - start)} (APD-135/Z-1)`);
+      return 1;
+    }
+    console.log('');
+  }
   await new Promise(fertig => {
     const weiter = () => {
       if (!laufend.size && (abbruch || next >= liste.length)) return fertig();
@@ -117,7 +143,13 @@ export async function lauf({ dir, pw, tests, bedienung = 'ablauf-bedienung', tex
     console.log(`\n${rot.length} ${rot.length > 1 ? 'rote Läufe' : 'roter Lauf'} – einmal allein wiederholen (ohne Last):`);
     for (const r of [...rot]) {
       const [code, text, ms] = await new Promise(ok => starte(r.j, (c, code, text, ms) => ok([code, text, ms])));
-      if (code === 0) { rot.splice(rot.indexOf(r), 1); wackelt.push(r.j); console.log(`⚠ wackelt: ${r.j.name}${r.j.teil ? ' (' + r.j.teil + ')' : ''} · ${r.j.br} (rot unter Last, allein grün)  ${mmss(ms)}`); }
+      if (code === 0) {
+        // APD-135/Z-6 (C-68): die Ausgabe des roten Laufs unter Last bleibt erhalten – sonst lässt sich ein Wackler nie klären (APD-134)
+        const datei = `tests/out/wackelt-${dateiName(r.j)}.txt`;
+        writeFileSync(new URL(datei, dir), `${r.j.label} – rot unter Last (Rückgabewert ${r.code}), allein grün\n\n${r.text}`);
+        rot.splice(rot.indexOf(r), 1); wackelt.push({ ...r.j, datei });
+        console.log(`⚠ wackelt: ${r.j.name}${r.j.teil ? ' (' + r.j.teil + ')' : ''} · ${r.j.br} (rot unter Last, allein grün)  ${mmss(ms)} – Ausgabe: ${datei}`);
+      }
       else { r.text = text; r.code = code; console.log(`✗ ${r.j.label}  ${mmss(ms)}  allein wieder rot (Rückgabewert ${code})`); }
     }
   }
@@ -128,9 +160,10 @@ export async function lauf({ dir, pw, tests, bedienung = 'ablauf-bedienung', tex
   const zeitGesamt = mmss(Date.now() - start);
   if (abdeckung) {
     const m = new Map();
+    // APD-135/Z-7 (C-29): je Teil eine eigene Datei abdeckung-<Name>~<Teil>-<Browser>.json (PRUEF_TEIL, pruefe.mjs)
     for (const f of readdirSync(out).filter(f => /^abdeckung-.*\.json$/.test(f))) {
-      const [, name, br] = f.match(/^abdeckung-(.+)-(chromium|webkit)\.json$/) || [];
-      if (name) m.set(`${name} · ${br}`, JSON.parse(readFileSync(new URL(f, out), 'utf8')));
+      const [, name, teil, br] = f.match(/^abdeckung-(.+?)(?:~(.+))?-(chromium|webkit)\.json$/) || [];
+      if (name) m.set(`${name}${teil ? ' (' + teil.replace(/_/g, ' ') + ')' : ''} · ${br}`, JSON.parse(readFileSync(new URL(f, out), 'utf8')));
     }
     console.log('\nAbdeckung (Test × Ansicht):');
     for (const [k, v] of [...m].sort()) console.log(`  ${k.padEnd(44)} ${v.join(' · ') || '–'}`);
@@ -150,10 +183,10 @@ export async function lauf({ dir, pw, tests, bedienung = 'ablauf-bedienung', tex
       console.log(`\n── ${j.label} ──\n${(wichtig.length ? wichtig : zeilen).slice(0, 60).join('\n')}`);
     }
     const offen = liste.length - next;
-    const w = wackelt.length ? ` · ${wackelt.length} wackelt: ${wackelt.map(j => j.label).join(', ')}` : '';
+    const w = wackelt.length ? ` · ${wackelt.length} wackelt: ${wackelt.map(j => `${j.label} (Ausgabe: ${j.datei})`).join(', ')}` : '';
     console.log(`\n${rot.length} Test(s) rot nach ${zeitGesamt}${abbruch && offen ? ` – ${offen} nicht mehr gestartet` : ''}${abbruch ? ` (Abbruch ab dem ${GRENZE}. roten Lauf; alle sehen: --alle)` : ''}${w}`);
     return 1;
   }
-  console.log(`\nAlle ${liste.length} Läufe grün in ${zeitGesamt}${wackelt.length ? ` – davon ${wackelt.length} wackelt: ${wackelt.map(j => j.label).join(', ')}` : ''}`);
+  console.log(`\nAlle ${vor.length + liste.length} Läufe grün in ${zeitGesamt}${wackelt.length ? ` – davon ${wackelt.length} wackelt: ${wackelt.map(j => `${j.label} (Ausgabe: ${j.datei})`).join(', ')}` : ''}`);
   return 0;
 }

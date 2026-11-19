@@ -4828,3 +4828,17 @@ export async function wischenGegenprobe(p) {
   });
   return true;
 }
+
+// R-7.9 (seit 4.63.0, APD-135/Z-15, W-48 – G-16 wird R-Regel): ein Filter der Liste (z. B. ‚Alle / Nur erfasste‘) steht beim Start und beim
+// Öffnen eines Eintrags immer auf ‚Alle‘. Die App nennt die Handgriffe: setzen (Filter auf etwas anderes als ‚Alle‘), oeffnen (einen anderen
+// Eintrag öffnen), neustart (App neu laden – der Filter bleibt gespeichert; ohne: nur das Öffnen) und alle (steht der Filter auf ‚Alle‘?).
+// Lässt sich der Filter nicht setzen, ist das selbst ein Fehler (sonst prüfte die Prüfung nichts). Ergebnis: Meldungen mit ‚R-7.9‘.
+export async function checkFilterAlle(p, { setzen, oeffnen, neustart = null, alle, where = '' } = {}) {
+  const errors = [], E = t => errors.push(`R-7.9 ${where ? where + ': ' : ''}${t}`);
+  const gesetzt = async () => { await setzen(); if (await alle()) { E('der Filter lässt sich nicht setzen – die Prüfung prüft nichts'); return false; } return true; };
+  try {
+    if (neustart && await gesetzt()) { await neustart(); if (!await alle()) E('nach dem Start steht der Filter nicht auf ‚Alle‘'); }
+    if (await gesetzt()) { await oeffnen(); if (!await alle()) E('nach dem Öffnen eines Eintrags steht der Filter nicht auf ‚Alle‘'); }
+  } catch (e) { E(`Ablauf bricht ab: ${e.message.split('\n')[0]}`); }
+  return errors;
+}
