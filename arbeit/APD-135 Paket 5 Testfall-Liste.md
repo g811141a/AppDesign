@@ -76,3 +76,12 @@ deshalb am Gerät nur die Versionszeile (P-113/0); alle übrigen Fälle sind aut
 - **Z-18:** alte Texte (8 Stellen) nur noch in Geschichte (Backlog ‚Erledigt‘, CHANGELOG 4.13.0), neue Texte je genau einmal; `doku-regeln` grün (vorher
   2 eigene Fehler behoben: Elternnummern im CHANGELOG, APD-135 doppelt im Backlog).
 
+
+## Ergebnisse (Sitzung 0136, 19.11.2026) – Bau AppDesign 4.63.0 / Reiselogbuch 3.57.6
+
+- **Z-19:** `veroeffentlichen.mjs los --app reiselogbuch` (Stufe voll): ‚Alle 163 Läufe grün in 80:16‘ (Chromium und WebKit); vorher `lauf-selbsttest` und
+  `veroeffentlichen-selbsttest` grün, Vorlauf `doku-regeln` (nur Chromium) und `version-regeln` grün; beide Pages-Läufe ‚success‘ (je 63 s); `main`
+  AppDesign 2506cca, Reiselogbuch 9418a4d. Ein Lauf weniger als bei 4.62.0 (164 Läufe in 81:24, Bericht 0133), weil `doku-regeln` nur noch im ersten Browser läuft.
+- **Z-20:** Der volle Lauf in `los` war zugleich der Vergleichslauf (‚lang zuerst‘, Empfehlung 0135; kein eigener Lauf `--alle`): **0 Wackler** (4.62.0: keine
+  gemeldet, Bericht 0133); längster Lauf `ablauf-wischen:iPad|webkit` **416 s** (Grenze 450 s), danach `ablauf-wischen:iPad|chromium` 388 s und
+  `ablauf-blatt:iPhone|chromium` 387 s (`tests/out/dauer.json`, 163 Einträge).
