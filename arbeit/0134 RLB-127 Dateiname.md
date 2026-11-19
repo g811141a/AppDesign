@@ -1,6 +1,6 @@
 # RLB-127 – Dateiname am iPad nie umbrechen
 
-**Stand 19.11.2026** · Sitzung 0134 · vorgemerkt im Backlog des Reiselogbuchs (2. Weitere Themen, Status offen, vorläufig Prio 2)
+**Stand 19.11.2026** · Sitzung 0134 · **entschieden:** allgemein, Prio 2 (Nutzer 19.11.2026) – jetzt **APD-138** im Backlog von AppDesign; RLB-127 ist ‚ersetzt durch APD-138‘
 
 ## Wunsch (Nutzer 19.11.2026)
 
