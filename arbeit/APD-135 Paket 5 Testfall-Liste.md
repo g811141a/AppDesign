@@ -44,5 +44,19 @@ deshalb am Gerät nur die Versionszeile (P-113/0); alle übrigen Fälle sind aut
 2. In der Startliste (iPhone) bzw. Seitenleiste (iPad) ‚Reiselogbücher‘ oben auf ‚…‘ (Mehr) tippen.
 3. Erwartet auf beiden Geräten: unten grau ‚Reiselogbuch · Version 3.57.6 · erstellt am … · AppDesign 4.63.0‘.
 
-## Ergebnisse (wird beim Bau ergänzt)
+## Ergebnisse (Sitzung 0135, 19.11.2026)
+
+- **`lauf-selbsttest.mjs`:** neu grün (‚alles in Ordnung‘). **Gegen 4.62.0** (der neue Selbsttest mit dem alten `lauf.mjs` und `pruefe.mjs`): **rot mit 9 Fehlern** –
+  Z-5 (2 ×: Reihenfolge ‚schnell, mittel, langsam‘, ‚neu, schnell, langsam‘), Z-6 (2 ×: Datei fehlt), Z-1 (2 ×: die übrigen laufen weiter, 2,6 s), Z-2, Z-3
+  (`doku-regeln` zweimal, nicht zuerst), Z-7 (Abdeckung je Teil fehlt). Z-4 bleibt wie gefordert grün.
+- **`veroeffentlichen-selbsttest.mjs`:** Z-11 bis Z-13 grün (4 Fälle). **Gegen 4.62.0** (altes Skript): **alle 4 rot** – es lief jedes Mal `tests/messung.mjs`, nie ein
+  Selbsttest. Der übrige Selbsttest hatte während der Arbeit 1 roten Fall (APD-5/E-1 doku: Versionsgeschichte der Designrichtlinie ohne Zeile 4.63.0) – behoben
+  mit der Zeile in `README - Designrichtlinie allgemein Versionsgeschichte.md`; neuer Lauf vor der Bau-Frage.
+- **`checkCatalog`:** heutiger Stand grün (Z-10, 73 Prüfdateien im Prüflauf, davon 12 aus der Fassung 4.63.0). Gegenproben `schema:APD-135/Z-8` und `Z-9` je rot mit
+  ‚Katalog R-5.6 hat keine Meldung in einer Prüfdatei des Prüflaufs‘. Die alte Prüfung suchte in allen `tests/*.mjs` samt Kommentaren und wäre in beiden Fällen
+  grün geblieben (Regex über den ganzen Text, doku.mjs 4.62.0 Z. 87–88). Kurzprobe des Zerlegers: Kommentar, Block-Kommentar und regulärer Ausdruck zählen nicht,
+  Zeichenketten und Vorlagen (auch `${…}`) schon.
+- **W-54 Laufzeit (`--jobs 1`, beide Browser):** vorher 12:55 (Chromium: tastatur-still 3:02, suche-iphone 1:27, abspielen 0:58, texte-ablaeufe 0:48; WebKit: 3:02,
+  1:45, 1:02, 0:52), nachher **13:31** (Chromium 3:09, 1:32, 1:02, 0:55; WebKit 3:10, 1:37, 1:07, 0:59) – alle grün. **`--gegenprobe grundregeln`:** alle 4 rot mit der
+  passenden Meldung.
 
