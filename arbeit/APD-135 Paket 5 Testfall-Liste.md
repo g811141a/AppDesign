@@ -51,12 +51,28 @@ deshalb am Gerät nur die Versionszeile (P-113/0); alle übrigen Fälle sind aut
   (`doku-regeln` zweimal, nicht zuerst), Z-7 (Abdeckung je Teil fehlt). Z-4 bleibt wie gefordert grün.
 - **`veroeffentlichen-selbsttest.mjs`:** Z-11 bis Z-13 grün (4 Fälle). **Gegen 4.62.0** (altes Skript): **alle 4 rot** – es lief jedes Mal `tests/messung.mjs`, nie ein
   Selbsttest. Der übrige Selbsttest hatte während der Arbeit 1 roten Fall (APD-5/E-1 doku: Versionsgeschichte der Designrichtlinie ohne Zeile 4.63.0) – behoben
-  mit der Zeile in `README - Designrichtlinie allgemein Versionsgeschichte.md`; neuer Lauf vor der Bau-Frage.
+  mit der Zeile in `README - Designrichtlinie allgemein Versionsgeschichte.md`. **Fund:** danach blieb APD-5/E-1 rot (‚… ist 4.63.0, die Datei hat Version 4.64.0‘) –
+  der Fall erwartet nach `vorbereiten` eine grüne Doku-Prüfung außer CHANGELOG, seit 4.61.0 meldet `checkVersionsgeschichte` aber auch die noch fehlende Zeile der
+  Versionsgeschichte (die Claude wie den CHANGELOG erst danach schreibt). Der veröffentlichte Stand (`main` 70b577e, saubere Arbeitskopien beider Repos) ist im
+  Selbsttest genauso rot (1 Fall) – unbemerkt, weil kein Skript den Selbsttest startete (genau APD-135/C-47). Behoben im Filter von APD-5/E-1; danach **alle
+  Fälle grün**.
 - **`checkCatalog`:** heutiger Stand grün (Z-10, 73 Prüfdateien im Prüflauf, davon 12 aus der Fassung 4.63.0). Gegenproben `schema:APD-135/Z-8` und `Z-9` je rot mit
   ‚Katalog R-5.6 hat keine Meldung in einer Prüfdatei des Prüflaufs‘. Die alte Prüfung suchte in allen `tests/*.mjs` samt Kommentaren und wäre in beiden Fällen
   grün geblieben (Regex über den ganzen Text, doku.mjs 4.62.0 Z. 87–88). Kurzprobe des Zerlegers: Kommentar, Block-Kommentar und regulärer Ausdruck zählen nicht,
   Zeichenketten und Vorlagen (auch `${…}`) schon.
 - **W-54 Laufzeit (`--jobs 1`, beide Browser):** vorher 12:55 (Chromium: tastatur-still 3:02, suche-iphone 1:27, abspielen 0:58, texte-ablaeufe 0:48; WebKit: 3:02,
   1:45, 1:02, 0:52), nachher **13:31** (Chromium 3:09, 1:32, 1:02, 0:55; WebKit 3:10, 1:37, 1:07, 0:59) – alle grün. **`--gegenprobe grundregeln`:** alle 4 rot mit der
-  passenden Meldung.
+  passenden Meldung. **Gegen 3.57.5:** ‚4 Test(s) meldeten die Gegenprobe nicht – sie prüfen nichts‘.
+- **Z-17 (C-31):** gegen 3.57.5 mit `PRUEF_BEDIENUNG=beide PRUEF_GEGENPROBE=bedienung:verschiebung` ‚alles in Ordnung‘ (wirkungslos). Neu mit `t.seite` brach die
+  Prüfung zuerst ab (iPhone-Block maß nach fester Pause von 300 ms mitten in der eingeschleusten Bewegung, keine Kachel gefunden) – seither wartet sie dort auf Ruhe
+  (`ruhe`, 2 Stellen). Danach **rot mit 4 × R-1.9** ‚Bewegung: Lage über 30 px … trotz ‚Bewegung reduzieren‘‘ (iPad quer, iPad hoch, iPhone, Kontextmenü).
+  Normal alle 6 Läufe grün (beide Browser, drei Teile).
+- **Z-15, Z-16 (R-7.9):** `ablauf-gesamt` normal grün (beide Browser, zusammen mit `ablauf-seitenleiste-position` 8 Läufe in 5:03). Gegenprobe
+  `PRUEF_GEGENPROBE=filter`: **rot mit 4 × R-7.9** (Start hell und dunkel ‚ist [true,5], soll [false,82]‘, im neuen Ablauf ‚nach dem Start‘ und ‚nach dem Öffnen eines
+  Eintrags‘); die Prüfkopie `index-gegenprobe-filter.html` wurde am Ende gelöscht.
+- **Z-7 echt:** `--nur ablauf-fenster,hig --browser chromium --abdeckung` – 11 Läufe grün in 7:05; `ablauf-fenster` mit allen drei Teilen, `hig` mit allen 8 Teilen
+  und je 4 Ansichten.
+- **Z-4, Z-8, Z-9:** `--gegenprobe schema --browser chromium` – ‚alle 22 Läufe wurden rot – jeder mit der passenden Meldung‘.
+- **Z-18:** alte Texte (8 Stellen) nur noch in Geschichte (Backlog ‚Erledigt‘, CHANGELOG 4.13.0), neue Texte je genau einmal; `doku-regeln` grün (vorher
+  2 eigene Fehler behoben: Elternnummern im CHANGELOG, APD-135 doppelt im Backlog).
 

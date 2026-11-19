@@ -24,6 +24,9 @@ AppDesign 4.63.0 · Designrichtlinie allgemein 4.63.0 · Zusammenarbeit allgemei
 - **Designrichtlinie 4.63.0:** 14 Messdateien nie umbenennen (APD-135/J-30, APD-135/L-31); 15.3 Filter nur mit Verweis; 17 Kopf `checkCatalog` (APD-135/C-6); R-5.1 mit Tausenderpunkt
   und ‚,00‘ (G-8 geht auf); neu **R-7.9** Filter auf ‚Alle‘ (ersetzt G-16); G-8 und G-16 vergeben (APD-135/W-48, APD-135/J-20).
 - **Doku:** `tests/README.md` (AppDesign und Reiselogbuch), Kopfkommentare von `tests/lauf.mjs` und `tests/alle.mjs` der App (APD-135/C-41).
+- **Behoben (alt seit 4.61.0):** der Selbsttest des Veröffentlichungs-Skripts war im Fall APD-5/E-1 rot – er ließ nach `vorbereiten` nur die Meldung zum CHANGELOG zu, nicht
+  die noch fehlende Zeile der Versionsgeschichte (`checkVersionsgeschichte`, APD-135/M-2). Unbemerkt, weil kein Skript ihn startete (APD-135/C-47); ab jetzt startet
+  `los` ihn bei jeder Änderung am Skript.
 
 ## 4.62.0 – 18.11.2026
 
