@@ -29,9 +29,9 @@ abgeschlossen). Aufbau nach Zusammenarbeit allgemein 2.5. **Claude liest diese D
 - **APD-140 Apple-Abgleich** (Hilfsagent web-fetch, Opus 5.5 hoch): UIKit Catalog (Split View, Liste links, Baustein rechts, flache Liste), HIG Sidebars
   (Gruppen mit kurzer Überschrift, höchstens 2 Ebenen, Symbole, nicht standardmäßig ausblenden), HIG Split Views (Auswahl bleibt markiert); Vorbild der
   Bean-Seite: Einstellungen am iPad – `arbeit/0141 APD-140 Muster.md`.
-- **Muster** `arbeit/APD-140/index.html` (auf der Vorlage, lädt `v4/`; `?v=A|B`, `#kennung`), Bilder `arbeit/APD-140 Muster iPad quer 1–4.png`,
+- **Muster** `arbeit/APD-140/index.html` (auf der Vorlage, lädt `v4/`; `?v=A|B`, `#kennung`), Bilder `arbeit/APD-140 Muster iPad quer 1.png` bis `4.png`,
   Prüfung `arbeit/APD-140 Muster prüfen.mjs` grün in Chromium und WebKit, Gegenproben `zeile` und `wisch` rot; Testfall-Liste
-  `arbeit/APD-140 Testfall-Liste.md` (M-1 bis M-9 Muster, Z-1 bis Z-5 für den Bau).
+  `arbeit/APD-140 Testfall-Liste.md` (APD-140/M-1 bis M-9 Muster, APD-140/Z-1 bis Z-5 für den Bau).
 - **Entschieden (Nutzer 19.11.2026, im Fenster):** Bean-Seite **Variante A** (eine Seite wie Einstellungen); **geplante Beans grau** in der Seitenleiste;
   **neues Lucide-Symbol** für Wischaktionen in `ui.js` (Vorschlag `hand`). Rückfrage des Nutzers ‚warum Fabrik und nicht Schnittstelle?‘ – Antwort: die
   Fabrik ist nur der erste Teil der Schnittstelle (R-1.13: Fabrik, Eigenschaften, Methoden, Ereignisse); im Muster heißt der Abschnitt jetzt
@@ -43,7 +43,7 @@ abgeschlossen). Aufbau nach Zusammenarbeit allgemein 2.5. **Claude liest diese D
 2. **APD-140 weiter:** Wortlaut der Erweiterung von R-1.13 (`checkBeans`: jede Bean der Liste (15) hat `katalog/<kennung>.js`, Kennung, Bereich, Fabrik,
    Schnittstelle und Regeln wie in der Liste) und ggf. Designrichtlinie 14 (Inhalt `katalog/`) zur Freigabe vorlegen (0 Nr. 29, alt/neu in Datei und
    Chat); offene Kleinigkeit: welches Lucide-Symbol (Vorschlag `hand`), Symbol für `hinweis` bleibt `info`. Dann ‚Als allgemeine Regel festhalten?‘
-   (0 Nr. 4) und die **Bau-Frage AppDesign 4.65.0** (Stufe nach `stufe`). Testen schlank (Z-1 bis Z-5).
+   (0 Nr. 4) und die **Bau-Frage AppDesign 4.65.0** (Stufe nach `stufe`). Testen schlank (APD-140/Z-1 bis Z-5).
 
 ## 4. Danach
 

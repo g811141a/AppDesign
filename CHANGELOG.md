@@ -3,6 +3,57 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.65.0 – 19.11.2026
+
+AppDesign 4.65.0 · Designrichtlinie allgemein 4.65.0 · Zusammenarbeit allgemein 3.17.0 · Reiselogbuch 3.57.8 (Fassung 4.65.0)
+
+**APD-140 – Bean-Katalog** (Aufbau bestätigt 19.11.2026 in Sitzung 0139 – `arbeit/0139 APD-140 Bean-Katalog Vorschlag.md`; Muster entschieden in Sitzung 0141 –
+`arbeit/0141 APD-140 Muster.md`, Variante A, geplante Beans grau, neues Symbol; Wortlaut R-1.13, 14 und 15 bestätigt und als allgemeine Regel festgehalten in
+Sitzung 0142 – `arbeit/0142 APD-140 Wortlaut R-1.13.md`; Testfall-Liste `arbeit/APD-140 Testfall-Liste.md` APD-140/Z-1 bis Z-5).
+
+- **Neu `katalog/`:** `index.html` – Split View wie die Apps (Seitenleiste ‚AD-Beans‘ nach Bereichen, geplante Beans `gedrueckt`, `field`, `decimal` grau und nicht
+  antippbar, Fuß mit der Offline-Zeile; am iPhone die Startliste), Bean-Seite wie Einstellungen am iPad: Karte, Ausprobieren mit der echten Bean, Ereignisse,
+  Regeln, Schnittstelle (erste Zeile ‚Anlegen (Fabrik)‘), Verlauf; Versionszeile im Mehr-Menü; lädt immer `v4/`. Je Bean eine Datei: `swipeactions.js`,
+  `hinweis.js` (`katalogBean({…})`). Gegenüber dem Muster: nur Variante A; Fuß der Seitenleiste (R-1.5) und der Titel in der Leiste am iPhone (`updateBar`,
+  R-2.2) ergänzt – beides meldeten die Grundregeln der neuen Prüfung.
+- **`ui.js`:** neues Lucide-Symbol `hand` (lucide-static 1.76.0) für die Wischaktionen im Katalog.
+- **Prüfungen:** `checkBeans` ruft neu `checkKatalog` (`tests/doku.mjs`): Liste der AD-Beans im Arbeitsstand ↔ `katalog/` – jede Bean hat ihre Datei, die
+  `index.html` lädt, Kennung, Bereich, Fabrik, Eigenschaften, Nur lesen, Methoden, Ereignisse und Regeln wie in der Liste, keine Datei ohne Bean (APD-140/Z-1);
+  Gegenprobe `PRUEF_GEGENPROBE=beans:katalog` (Datei der ersten Bean fehlt, Fabrik der zweiten weicht ab → 2 Meldungen, rot). Neu `tests/katalog.mjs`
+  (APD-140/Z-2 bis Z-4) – in der App über die Hülle `bean-katalog.mjs`; mit absichtlich eingebautem Skriptfehler in `katalog/hinweis.js` rot (8 Meldungen).
+- **Designrichtlinie 4.65.0:** R-1.13 (Katalogdatei je Bean, Spalte ‚Prüfung‘), 14 (Inhalt `katalog/`), 15 (Einleitung).
+- **Doku:** `tests/README.md` (AppDesign und Reiselogbuch).
+- AD-Bean: keine, weil der Katalog die Beans nur zeigt; `ui.js` bekommt nur das Symbol `hand`.
+
+**APD-135 Paket 7 – APD-135/B-3.3 Schritt 1: Menü, Sprechblase, Fenster auf der Prüfseite** (Umfang und Testfall-Liste APD-135/Q-1 bis Q-10 bestätigt 19.11.2026 in
+Sitzung 0142 – `arbeit/APD-135 Paket 7 Schritt 1 Vorschlag.md`).
+
+- **Prüfungen (`tests/pruefseite.mjs`):** neue Teile auf der Vorlage mit neutralen Daten, alle 4 Ansichten, Grundregeln nach jedem Schritt –
+  `menue` (`ablaufMenue`: Mehr der Kopfzeile und der Liste, Untermenü ‚Darstellung‘, Kontextmenü; `checkMehrKnopf`, `checkWachsen` mit Drehen am iPad,
+  ‚Bewegung reduzieren‘ und nach der Großanzeige bei Text 28, `checkFokus`; APD-135/Q-1 bis Q-3), `sprechblase` (`ablaufSprechblase`: ‚Eintrag löschen‘ aus
+  Mehr und Kontextmenü – wächst, Rest gesperrt, Fokus auf der Blase, daneben tippen ändert nichts, Esc = Abbrechen mit Fokus zurück, mit ‚Bewegung reduzieren‘
+  nur Überblenden; APD-135/Q-4, Q-5), `fenster` (`ablaufFenster`: ‚Eintrag bearbeiten‘ – `checkDialogHead`, `checkFokus`, `checkFokusZurueck`; Q-6, Q-7). Laufzeit
+  einzeln: `menue` 106 s / 109 s, `sprechblase` 30 s / 33 s, `fenster` 80 s / 81 s (Chromium / WebKit).
+- **Gegenprobe vor dem Wegfall (APD-135/Q-9):** 4 neue Fehler in `GEGENPROBEN_PRUEFSEITE`, rot in beiden Browsern und in der bisherigen Prüfung der App:
+
+  | Teil: eingeschleuster Fehler in `ui.js` | Prüfseite Chromium | Prüfseite WebKit | bisherige Prüfung der App (Chromium) |
+  |---|---|---|---|
+  | menue `mehrWaagrecht`: Mehr-Knopf kippt nicht | rot (20) | rot (20) | `ablauf-markierung-menues` rot (24) |
+  | menue `menueWaechstNicht`: Menü wächst nicht | rot (77) | rot (77) | `ablauf-markierung-menues` rot (53) |
+  | sprechblase `blaseWaechstNicht`: Sprechblase wächst nicht | rot (27) | rot (27) | `ablauf-markierung-menues` rot (16) |
+  | fenster `haekchenGrau`: Häkchen nach Änderung nicht blau | rot (4) | rot (4) | `regeln-ablauf` rot (2) |
+
+- **Wegfall in der App (APD-135/Q-10):** in `ablauf-markierung-menues` alle Aufrufe von `checkMehrKnopf` und `checkWachsen`; die zweite Schleife läuft nur
+  noch in iPad quer mit ‚Bewegung reduzieren‘ (Drehen mit offenem Menü). Es bleiben Markierung, Inhalt der Menüs, Glas, Kontextmenü → Fenster.
+- **Abweichungen vom Vorschlag:** APD-135/Q-3 ohne `checkFokusZurueck` (braucht ein Fenster, steht in Q-7); Q-4 mit drei eigenen kurzen Vergleichen (keine vorhandene
+  Funktion prüft eine Sprechblase außerhalb eines Fensters); APD-135/Q-5 über `checkWachsen` und den Bewegungswächter (`checkRuhig` kennt keine Sprechblase).
+- **Befunde (nicht geändert, Kandidaten fürs Backlog):** iPhone quer – beim Kontextmenü der zweiten Kachel rollt die Liste um 8 px und beim Schließen zurück
+  (die Prüfung nimmt die oberste Kachel); WebKit der Prüfumgebung – nach `checkFokus` am Mehr der Kopfzeile und ‚Zurück‘ trägt am iPhone kein Element mehr
+  `:focus-visible` (APD-135/Q-3 für die Startliste läuft dort auf einer eigenen Seite).
+- **Doku:** `tests/README.md` (AppDesign und Reiselogbuch).
+
+- AD-Bean: keine, weil nur Prüfungen dazukommen.
+
 ## 4.64.0 – 19.11.2026
 
 AppDesign 4.64.0 · Designrichtlinie allgemein 4.64.0 · Zusammenarbeit allgemein 3.17.0 · Reiselogbuch 3.57.7 (Fassung 4.64.0)
@@ -835,7 +886,7 @@ AppDesign 4.49.0 · Designrichtlinie allgemein 4.49.0 · Zusammenarbeit allgemei
 
 **APD-62 Teil APD-38/T-43 und APD-85 Teil 3** – dein Ja vom 01.11.2026, Sitzung 0073; Testfall-Liste und Wortlaut R-2.7 bestätigt am 31.10.2026,
 Sitzung 0067 (`arbeit/APD-62 Titel antippen Testfall-Liste und Wortlaut.md`, APD-62/H-1 bis H-10), Testfall-Liste `arbeit/APD-85 Teil 3
-Testfall-Liste.md` (APD-85/Z-1 bis Z-6). Usertest im Reiselogbuch: P-90.
+Testfall-Liste.md` (APD-85/Z-1 bis APD-140/Z-6). Usertest im Reiselogbuch: P-90.
 
 - **Titel antippen = nach oben (R-2.7, 15.3, 16, `ui.js`):** kurzes Antippen des Titels der Kopfzeile (`.nb-title`, `.pnav-title`) rollt den
   Inhalt sanft ganz nach oben, der Titel der Seitenleiste (`.side-head h2`) ihre Liste, der Titel der Fenster-Kopfzeile (`.dlg-head h3`) den
@@ -853,9 +904,9 @@ Testfall-Liste.md` (APD-85/Z-1 bis Z-6). Usertest im Reiselogbuch: P-90.
 - **Baustein `warteBis` (`tests/pruefe.mjs`, APD-85 Teil 3):** `warteBis(p, bedingung, { was, max, arg })` wartet, bis die Bedingung in der
   Seite wahr ist (in jedem Bild geprüft), höchstens `max` ms, und gibt sonst die Meldung mit `was` zurück – nie ein Hängen; dazu `t.warte`
   (meldet den Fehler). Ersetzt feste Pausen (`waitForTimeout`), die unter Last zu kurz sind. Selbsttest in `tests/lauf-selbsttest.mjs`:
-  kehrt 50 bis 106 ms nach dem Start zurück, wenn die Bedingung nach 50 ms wahr wird (APD-85/Z-1), meldet nach `max` ohne Hängen (Z-2), ein `warteBis`,
+  kehrt 50 bis 106 ms nach dem Start zurück, wenn die Bedingung nach 50 ms wahr wird (APD-85/Z-1), meldet nach `max` ohne Hängen (APD-140/Z-2), ein `warteBis`,
   das nicht wartet, fällt auf (APD-85/Z-6, Gegenprobe rot).
-- **Wackler `ablauf-blatt` (Reiselogbuch, APD-85/Z-3 bis Z-5):** die vier festen Pausen (Menü ‚Teilen‘ 150 ms, Start 400 ms, Eintrag öffnen
+- **Wackler `ablauf-blatt` (Reiselogbuch, APD-85/Z-3 bis APD-140/Z-5):** die vier festen Pausen (Menü ‚Teilen‘ 150 ms, Start 400 ms, Eintrag öffnen
   600 ms, Blatt offen 700 ms) warten jetzt mit `warteBis` auf ihren Zustand, ebenso in `checkSheet` (`tests/ablauf.mjs`) die 600 ms nach dem
   Schließen eines Blatts (bis Blatt und Abbild weg sind und keine Bewegung läuft, höchstens 5 s) – diese Pause kam beim Bau dazu (dein Ja vom
   01.11.2026), weil die Lastprobe zeigte, dass die Fehler dort entstanden. Lastprobe APD-85/Z-4 (zehnmal gleichzeitig, Bewegungen vierfach
@@ -1011,7 +1062,7 @@ dein Ja vom 31.10.2026, Sitzung 0060 (Wortlaut, Muster und Testfall-Liste bestä
 
 - **Seitenleiste hoch fest (15.4, R-7.5):** am iPad steht die Seitenleiste quer und hoch fest links neben dem Inhalt (Apple `tile` statt
   `overlay`) – keine Abdunkelung, die Auswahl lässt sie stehen, ausblenden nur mit panel-left, hereinwischen mit Mitschieben wie quer.
-  `tests/ablauf.mjs` – `checkNavigation` prüft am iPad hoch dieselben Gesten wie quer (APD-68/Q-1 bis Q-12).
+  `tests/ablauf.mjs` – `checkNavigation` prüft am iPad hoch dieselben Gesten wie quer (APD-68/Q-1 bis APD-135/Q-12).
 - **Schmaler Inhalt als Kästen (15.13, R-6.6 neu):** ist der Inhalt schmaler als 700 px (gleiche Grenze wie `isPhone()`), zeigt er jede
   Tabelle als Kästen wie am iPhone; Ausgabe und Vorschau bleiben Tabellen. Neu in `ui.js`: `SCHMAL` und `inhaltSchmal(el)`. Neue Prüfung
   `hig.mjs` (R-6.6) nach jedem Schritt: im iPad-Aufbau keine Tabelle im Inhalt unter 700 px.
@@ -1019,12 +1070,12 @@ dein Ja vom 31.10.2026, Sitzung 0060 (Wortlaut, Muster und Testfall-Liste bestä
 - **Korrekturen vor der Veröffentlichung** (Sitzung 0061 – der volle Prüflauf in 0060 war rot, nur bei großer Schrift am iPad hoch):
   - **Oberster Eintrag bleibt auf den Pixel (R-8.1, `ui.js` – `keepPlace`):** steht der erste Eintrag ganz unter der Kante (darüber der Kopf des Inhalts), bleibt beim Ein-
     und Ausblenden der Seitenleiste sein Abstand in px; bisher als Anteil seiner Höhe – bei AX5 wurde der Kasten im breiteren Inhalt
-    niedriger und rückte um 30 px (APD-68/Q-3, Q-5). Beim Drehen bleibt es beim Anteil.
+    niedriger und rückte um 30 px (APD-68/Q-3, APD-135/Q-5). Beim Drehen bleibt es beim Anteil.
   - **Zeile unter dem Titel der Seitenleiste bricht um (R-6.3, `design.css`):** ‚24.08.2026 - 05.09.2026 · läuft gerade‘ stand immer
     einzeilig; hoch ist die feste Seitenleiste höchstens 420 px breit (darübergelegt waren es bis 70 %) – bei XXL und XXXL ragte die Zeile
     hinaus. Jetzt bricht sie um, sobald die Seitenleiste ihre Höchstbreite erreicht.
   - **Warum die Prüfung es vorher übersah:** vor `los` liefen die geänderten Prüfungen nicht mit großer Schrift (`PRUEF_TEXT`).
-- **Korrektur der Prüfung vor der Veröffentlichung** (Sitzung 0062 – `los` in 0061 rot, nur WebKit am iPad hoch, APD-68/Q-8 und Q-9):
+- **Korrektur der Prüfung vor der Veröffentlichung** (Sitzung 0062 – `los` in 0061 rot, nur WebKit am iPad hoch, APD-68/Q-8 und APD-135/Q-9):
   - **Wischen mit der Maus wie mit dem Finger (`tests/safari.mjs` – neu `mausWieFinger`, genutzt von `checkNavigation`):** der Zug ‚nach
     links‘ (APD-68/Q-7) begann hoch auf einem Link in einem Kasten; ein Mauszug startet dort Ziehen-und-Ablegen, WebKit schickte danach weder
     `pointerup` noch `pointercancel`, der Klick auf das Menü kam ohne `pointerdown` an – das Menü ging nicht auf, der Zug von APD-68/Q-8 holte die
@@ -1567,7 +1618,7 @@ AppDesign 4.31.0 · Designrichtlinie allgemein 4.31.0 · Zusammenarbeit allgemei
 - **APD-64 – keine doppelten Leerzeichen (R-5.2, 8):** in allen Textfeldern (ein- und mehrzeilig, auch im Suchfeld) wird ein
   Leerzeichen direkt neben einem Leerzeichen nicht eingefügt; beim Einfügen werden mehrere Leerzeichen oder Tabs zu einem,
   Zeilenumbrüche bleiben; ein einzelnes Leerzeichen am Zeilenanfang bleibt.
-- **Prüfungen:** `checkNavigation` quer neu APD-68/Q-1 bis Q-12 (statt F-13 ‚quer keine Geste‘), mit Maus und Berührung nach Safari
+- **Prüfungen:** `checkNavigation` quer neu APD-68/Q-1 bis APD-135/Q-12 (statt F-13 ‚quer keine Geste‘), mit Maus und Berührung nach Safari
   (APD-68/S-10); `checkCapital` ergänzt (Korrektur von Hand); neu `checkSpaces` (Tippen, Einfügen, Suchfeld). **Rot gegen 4.30.2**
   (41 bzw. 6 Meldungen), grün mit dem Bau. `checkSideToggle` wartet auf das Ende der Bewegung; `ziehe` in `checkNavigation` hebt vor
   jedem Zug eine Textmarkierung auf (WebKit begann sonst mit der Maus ein Ziehen-und-Ablegen).
