@@ -1,13 +1,12 @@
-// AppDesign 4.63.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
+// AppDesign 4.64.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
 // Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/fassung/X.Y.Z/ui.js"></script> (feste Fassung, R-10.3)
-// Seit 4.11.0 (R-10.3): ui.js und design.css immer mit ?v=<AppDesign-Version> einbinden (auch in sw.js) und beim Start
-// prüfen, ob genau diese Fassung geladen ist (AD_VERSION hier, --ad-version in design.css).
 // Klassisches Skript: alle Funktionen sind global und für das Skript der App sichtbar.
 //
 // Die App muss bereitstellen (Schnittstelle):
 //   <dialog id="dlg"></dialog> und <dialog id="msg"></dialog> im Dokument
 //   db.settings.appearance ('auto' | 'light' | 'dark'), save(), render()     – für Darstellung
 //   optional: function onDialogOpen()                                       – wird bei jedem openDialog aufgerufen
+// Von ui.js nutzt die App nur die Namen aus schnittstelle.json (Teil app; R-1.14, Prüfung tests/schnittstelle.mjs, seit 4.64.0).
 //
 // Inhalt: Icons (ic) · esc · Beträge (money, formatEuro) · autoGrow · onLongPress · Darstellung
 // (applyTheme, setAppearance) · Menüs (openMenu mit Untermenü) · Sprechblase (confirmPop) · gekürzter Titel (Sprechblase, seit 4.47.0) ·
@@ -20,7 +19,9 @@
 
 'use strict';
 // Version der Bausteine (R-10.3): die App vergleicht sie beim Start mit der benötigten Fassung.
-const AD_VERSION = '4.63.0';
+const AD_VERSION = '4.64.0';
+// ‚Bewegung reduzieren‘ (R-1.9) – die eine Abfrage für alle Bausteine (seit 4.64.0, APD-135/B-4.2; vorher fünfmal eigens gebaut)
+const bewegungRuhig = () => !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
 // APD-129 Teil 2 (seit 4.59.2, Messung 14.11.2026 arbeit/APD-129/messung-2026-11-14-2137.txt, Zeilen 9–17, 207–216, 263–272; Designrichtlinie 13
 // ‚Oberer Rand nach dem Drehen‘): iPhone vom Home-Bildschirm quer → hoch – nach der Meldung 812 bleibt env(safe-area-inset-top) noch 250–300 ms
 // auf 62; alles mit --safe-top stünde so lange 62 px zu tief und spränge dann hoch. Ist das Fenster hoch und niedriger als der Bildschirm, liegt
@@ -328,7 +329,9 @@ function setHtml(el, html) {
 const FX = 'input:is([type=text], [type=email], [type=url], [type=tel]):not([readonly], [disabled], [data-noclear]), textarea:not([readonly], [disabled], [data-noclear])';
 const fxBtn = document.createElement('button');
 fxBtn.type = 'button'; fxBtn.className = 'fclear'; fxBtn.tabIndex = -1; fxBtn.setAttribute('aria-label', 'Eingabe löschen');
-fxBtn.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="currentColor"/><path d="M15 9l-6 6M9 9l6 6" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>';
+// Das Zeichen ⓧ (Text löschen) – auch für die Suchfelder der App (seit 4.64.0, APD-135/B-4.2; vorher dreimal Zeichen für Zeichen gleich)
+const FX_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="currentColor"/><path d="M15 9l-6 6M9 9l6 6" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>';
+fxBtn.innerHTML = FX_SVG;
 const FX_X = fxBtn.innerHTML;
 const FX_RUECK = '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg>';
 // fxRueck: nach dem Leeren merkt sich das Feld den Text – bis zur ersten Eingabe bzw. bis es den Fokus verliert
@@ -492,7 +495,7 @@ function feldFehler(felder, zeile, text = '') {
 function ersterFehler(root = dlg) {
   const f = root.querySelector('[aria-invalid="true"]');
   if (!f) return false;
-  const ruhig = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const ruhig = bewegungRuhig();
   (f.closest('.step') || f).scrollIntoView({ behavior: ruhig ? 'instant' : 'smooth', block: 'center' });
   setTimeout(() => f.focus({ preventScroll: true }), ruhig ? 0 : 350);
   return true;
@@ -823,7 +826,6 @@ const GLEIT_AUF_MS = 500, GLEIT_ZU_MS = 250, GLEIT_MIN_MS = 150, GLEIT_ZU = 'eas
 const GLEIT_FEDER = 'linear(' + Array.from({ length: 31 }, (_, i) => (gleitWert(i / 30 * 0.5) / gleitWert(0.5)).toFixed(4)).join(', ') + ')';
 // dieselbe Feder für eigenes Rollen Bild für Bild (Titel antippen): k = Anteil der 0,5 s
 const gleitFeder = k => k >= 1 ? 1 : gleitWert(k * 0.5) / gleitWert(0.5);
-const bewegungRuhig = () => !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
 function wachsUrsprung(el, anchor) {
   // Lage aus left/top (setzt placeAt) – getBoundingClientRect wäre mitten in der Bewegung verkleinert
   const b = el.getBoundingClientRect(), x = parseFloat(el.style.left), y = parseFloat(el.style.top);
@@ -1181,7 +1183,7 @@ document.addEventListener('click', e => {
   if (!el || el.scrollTop <= 0) return;   // H-4: schon oben
   const los = weich => { if (weich) titelRoll(el); else el.scrollTo({ top: 0, behavior: 'instant' }); };
   if (el === rolle.el || el === document.scrollingElement) nachTastatur(() => rolleSpringt(los));
-  else los(!ruhigQuery?.matches);
+  else los(!bewegungRuhig());
 });
 
 // R-3.6 (seit 4.48.0, APD-105 Variante C, Testfall-Liste arbeit/APD-105 Testfall-Liste.md B-1 bis B-8): Rückmeldung beim Berühren wie Apple –
@@ -1348,6 +1350,8 @@ addEventListener('keydown', e => { if (!gross || !istAbbruch(e)) return; if (gro
 const held = new Set();
 function hold(sel) { if (!sel) return; held.add(sel); document.querySelector(sel)?.classList.add('on'); }
 function release(sel) { if (!sel) return; held.delete(sel); document.querySelector(sel)?.classList.remove('on'); }
+// Nach einem Neuaufbau (z. B. der Seitenleiste) die gehaltenen Schaltflächen in root wieder blau hinterlegen (seit 4.64.0, APD-135/B-4.2)
+function markHeld(root = document) { held.forEach(sel => root.querySelector(sel)?.classList.add('on')); }
 
 // Die Schaltfläche oder Zeile, von der ein Fenster kommt, bleibt blau hinterlegt, solange es offen ist.
 function setOpener(sel) {
@@ -1878,9 +1882,7 @@ function refreshOk() {
 }
 // Seit 4.3.0: Der erste Buchstabe jeder Zeile (und nach . ! ?) wird groß – iOS macht das nicht zuverlässig,
 // z. B. nach einem Smiley am Zeilenanfang. Seit 4.4.0 schon vor der Eingabe (beforeinput), damit die Tastatur nicht
-// zurückschreibt. Seit 4.57.0 (APD-126/W-3, W-4, R-5.2): nach einem Vorschlag geht es klein weiter – capNext(feld) bewirkt nichts mehr
-// (bleibt, damit ältere Aufrufe der App nicht brechen).
-function capNext() {}
+// zurückschreibt. Seit 4.57.0 (APD-126/W-3, W-4, R-5.2): nach einem Vorschlag geht es klein weiter.
 function capWanted(f, pos) {
   const before = f.value.slice(f.value.lastIndexOf('\n', pos - 1) + 1, pos);
   return !/[\p{L}\p{N}]/u.test(before) || /[.!?]\s+$/.test(before);
@@ -1907,7 +1909,6 @@ function capBefore(e) {
   if (!e.data || !/^\p{Ll}/u.test(e.data)) return;
   if (f.dataset.capFrei !== undefined || !capWanted(f, start)) return;
   e.preventDefault();
-  delete f.dataset.capNext;
   f.setRangeText(e.data.charAt(0).toLocaleUpperCase('de') + e.data.slice(1), start, end, 'end');
   f.dispatchEvent(new Event('input', { bubbles: true }));
 }
@@ -1917,10 +1918,9 @@ function autoCapital(e) {
   if (e.inputType !== 'insertText' || !e.data || !f.matches?.('textarea, input[type=text]')) return;
   const pos = f.selectionStart;
   const ch = f.value.charAt(pos - 1);
-  if (!/^\p{Ll}$/u.test(ch)) { if (/\p{L}/u.test(ch)) delete f.dataset.capNext; return; }
+  if (!/^\p{Ll}$/u.test(ch)) return;
   if (f.dataset.capFrei !== undefined && +f.dataset.capFrei === pos - 1) { delete f.dataset.capFrei; return; }   // APD-65
   if (!capWanted(f, pos - 1)) return;
-  delete f.dataset.capNext;
   f.setRangeText(ch.toLocaleUpperCase('de'), pos - 1, pos, 'end');
 }
 // R-3.2 (seit 4.20.0, APD-15): ‚Nach oben / Ans Ende‘ (.fab) nur, wenn es etwas zu scrollen gibt – iPad und iPhone.
@@ -1949,9 +1949,8 @@ function updateFab() {
 }
 // R-1.9 (seit 4.35.0, M2): mit ‚Bewegung reduzieren‘ springen ‚Nach oben / Ans Ende‘ direkt, der Inhalt blendet in 0,15 s über
 // (WCAG 2.3.3; Apple rollt beim Antippen der Statusleiste auch dann) – sonst rollen sie sanft
-const ruhigQuery = window.matchMedia?.('(prefers-reduced-motion: reduce)');
 function rolleSpringt(fn) {
-  if (!ruhigQuery?.matches) return fn(true);
+  if (!bewegungRuhig()) return fn(true);
   fn(false);
   rolle.el?.animate?.([{ opacity: 0.4 }, { opacity: 1 }], { duration: 150, easing: 'ease-out' });
 }
@@ -2146,7 +2145,7 @@ function revealRow(sel) {
   if (!el || !el.matches(KEEP_SEL) || !el.getClientRects().length) return;
   if (!el.animate) return;
   const from = getComputedStyle(document.documentElement).getPropertyValue('--sel-bg').trim(), to = getComputedStyle(el).backgroundColor;
-  const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const still = bewegungRuhig();
   revealing = still
     ? el.animate([{ backgroundColor: from }, { backgroundColor: from }], { duration: REVEAL_HOLD })
     : el.animate([{ backgroundColor: from }, { backgroundColor: from, offset: REVEAL_HOLD / (REVEAL_HOLD + REVEAL_FADE), easing: 'ease-in' }, { backgroundColor: to }],
@@ -2428,7 +2427,6 @@ document.addEventListener('touchmove', e => {
 // navSeite(an) für panel-left (iPad hoch und quer) und die Abdunkelung am iPad hoch.
 const NAV_ENTSCHEID = 10, NAV_WAAGRECHT = 1.2, NAV_TEMPO = 0.3, NAV_HALTEN = 500, NAV_DUNKEL = 0.1;
 const NAV_EIGEN = 'input, textarea, select, [contenteditable], .cap, .fab, .schnell, .searchbox, [data-eigene-geste], button:not(.side-row)';
-const navRuhig = window.matchMedia?.('(prefers-reduced-motion: reduce)');
 const navSchleier = document.createElement('div');
 navSchleier.className = 'nav-schleier';
 document.body.append(navSchleier);
@@ -2451,7 +2449,7 @@ const navTeile = art => art === 'phone'
 // Seit 4.31.0 (APD-68, Variante B ‚Mitschieben‘): iPad quer (art ‚fest‘) rückt der Inhalt mit – bei p = 1 steht er dort, wo er neben der
 // festen Seitenleiste beginnt (ihr rechter Rand + 4 px = w − 6), und behält bis zum Einrasten seine volle Breite (html.nav-fest).
 function navBild(art, el, p, w) {
-  const ruhig = navRuhig?.matches;
+  const ruhig = bewegungRuhig();
   if (art === 'phone') {
     if (el.id === 'side') return { transform: ruhig ? 'none' : `translate3d(${Math.round(-0.3 * w * p)}px,0,0)`, opacity: 1 };
     if (el === navSchleier) return { transform: 'none', opacity: ruhig ? 0 : NAV_DUNKEL * p };
@@ -2487,9 +2485,9 @@ function navFahre(art, von, nach, w, fertig) {
   H.classList.add('nav-faehrt');
   // R-1.12 (seit 4.57.0, APD-127/B-3, B-4): hinein bzw. ein (nach > von) mit der Feder, zurück bzw. aus ease-in-out; nach einer Geste der Rest
   // anteilig, mindestens 0,15 s (bis 4.56.0 beides 0,35 s mit cubic-bezier(.2,.8,.2,1))
-  const auf = nach > von, dauer = navRuhig?.matches ? 200 : Math.max(GLEIT_MIN_MS, (auf ? GLEIT_AUF_MS : GLEIT_ZU_MS) * Math.abs(nach - von));
+  const auf = nach > von, dauer = bewegungRuhig() ? 200 : Math.max(GLEIT_MIN_MS, (auf ? GLEIT_AUF_MS : GLEIT_ZU_MS) * Math.abs(nach - von));
   const anims = navTeile(art).map(el => {
-    const a = el.animate([navBild(art, el, von, w), navBild(art, el, nach, w)], { duration: dauer, easing: navRuhig?.matches ? 'cubic-bezier(.2,.8,.2,1)' : auf ? GLEIT_FEDER : GLEIT_ZU, fill: 'forwards' });
+    const a = el.animate([navBild(art, el, von, w), navBild(art, el, nach, w)], { duration: dauer, easing: bewegungRuhig() ? 'cubic-bezier(.2,.8,.2,1)' : auf ? GLEIT_FEDER : GLEIT_ZU, fill: 'forwards' });
     a.id = 'nav';
     return a;
   });
@@ -3040,7 +3038,7 @@ const blattSeite = () => [document.getElementById('app'), document.getElementByI
 // Bild zum Versatz o (0 = offen, blattZu() = unten hinaus): Blatt, Abdunkeln und die Seite – sie weicht nur am iPhone hoch zurück
 function blattBild(o) {
   // R-1.9 (seit 4.35.0, M5): mit ‚Bewegung reduzieren‘ weicht die Seite nicht verkleinert zurück (kein Zoomen), sie dunkelt nur ab
-  const zu = blattZu(), q = Math.max(0, Math.min(1, 1 - o / zu)), s = !isPhone() || blattQuer() || navRuhig?.matches ? 0 : q;
+  const zu = blattZu(), q = Math.max(0, Math.min(1, 1 - o / zu)), s = !isPhone() || blattQuer() || bewegungRuhig() ? 0 : q;
   return { blatt: `0 ${Math.round(o)}px`, schleier: +(blattDunkel() * q).toFixed(3), s,
     seite: { translate: `0px ${(s * Math.max(0, blattOben() - 12)).toFixed(1)}px`, scale: (1 - BLATT_KLEINER * s).toFixed(4) } };
 }
@@ -3083,7 +3081,7 @@ function blattFahre(nach, fertig, dauer) {
   // R-1.9 (seit 4.35.0, M5): mit ‚Bewegung reduzieren‘ gleitet das Blatt nach dem Loslassen nicht (kein Nachfedern) – es steht sofort am Ziel
   if (Math.abs(von - nach) < 1) { blattSetze(nach); fertig?.(); return; }
   // erst nach dem Loslassen; das x kommt trotz blattSperre an (eigenKlick in blattWieX, APD-108)
-  if (navRuhig?.matches) { blattSetze(nach); setTimeout(() => fertig?.()); return; }
+  if (bewegungRuhig()) { blattSetze(nach); setTimeout(() => fertig?.()); return; }
   // R-1.12 (seit 4.57.0, APD-127/B-1): hinauf (öffnen, zurück nach dem Loslassen) mit der Feder in 0,5 s, hinunter (zu) ease-in-out in 0,25 s –
   // je nach Weg anteilig, mindestens 0,15 s (bis 4.56.0 0,22–0,48 s je nach Weg, Kurve BLATT_KURVE)
   const zu = nach > von;
@@ -3100,7 +3098,7 @@ function blattAuf() {
   blattStopp();
   if (!dlg.open) return;
   document.documentElement.classList.add('blatt');
-  if (navRuhig?.matches) {
+  if (bewegungRuhig()) {
     blattSetze(0);
     blattAnimiere([[dlg, { opacity: 0 }, { opacity: 1 }], [blattSchleier, { opacity: 0 }, { opacity: blattBild(0).schleier }]], 200, 'ease-out');
     return;
@@ -3134,7 +3132,7 @@ function blattGeist() {
   alt.forEach((e, i) => { if ((e.scrollTop || e.scrollLeft) && neu[i]) { neu[i].scrollTop = e.scrollTop; neu[i].scrollLeft = e.scrollLeft; } });
   blattGeistEl = g;
   const weg = () => { g.remove(); if (blattGeistEl === g) blattGeistEl = null; };
-  const a = navRuhig?.matches ? g.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 200, easing: 'ease-out', fill: 'forwards' })
+  const a = bewegungRuhig() ? g.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 200, easing: 'ease-out', fill: 'forwards' })
     : g.animate([{ translate: `0 ${Math.round(blattY)}px` }, { translate: `0 ${Math.round(blattZu())}px` }], { duration: GLEIT_ZU_MS, easing: GLEIT_ZU, fill: 'forwards' });   // R-1.12 (seit 4.57.0): 0,25 s ease-in-out
   a.onfinish = weg; a.oncancel = weg;
 }
@@ -3148,7 +3146,7 @@ function blattWeg() {
   H.classList.remove('blatt-zieht');
   if (!blattSeite().length && !von.schleier) return blattAus();
   blattAnimiere([[blattSchleier, { opacity: von.schleier }, { opacity: 0 }], ...blattSeiteTeile(von, nach)],
-    navRuhig?.matches ? 200 : GLEIT_ZU_MS, navRuhig?.matches ? 'ease-out' : GLEIT_ZU, blattAus);   // R-1.12 (seit 4.57.0): gleich mit dem Abbild (bis 4.56.0 0,38 s)
+    bewegungRuhig() ? 200 : GLEIT_ZU_MS, bewegungRuhig() ? 'ease-out' : GLEIT_ZU, blattAus);   // R-1.12 (seit 4.57.0): gleich mit dem Abbild (bis 4.56.0 0,38 s)
 }
 const dlgSchliessen = dlg.close.bind(dlg);
 dlg.close = v => { blattGeist(); dlgSchliessen(v); };
@@ -3597,7 +3595,7 @@ function messStart({ app = '', teile = {}, rollen = {} } = {}) {
     (r => `Ränder ${r.top}/${r.bottom}/${r.left}/${r.right}`)(safeRand())} · ${
     matchMedia('(prefers-color-scheme: dark)').matches ? 'dunkel' : 'hell'} · ${mess.beginn.toISOString()} · ${
     // seit 4.35.0 (APD-43 H5): die Bedienungshilfen des Geräts
-    matchMedia('(prefers-contrast: more)').matches ? 'Kontrast erhöht' : 'Kontrast normal'} · ${matchMedia('(prefers-reduced-motion: reduce)').matches ? 'Bewegung reduziert' : 'Bewegung normal'} · ${
+    matchMedia('(prefers-contrast: more)').matches ? 'Kontrast erhöht' : 'Kontrast normal'} · ${bewegungRuhig() ? 'Bewegung reduziert' : 'Bewegung normal'} · ${
     // seit 4.37.0 (APD-43 W4): die Textgröße des Geräts (Stufe und Body in px)
     `Text ${textName} ${textPx()}`}`);
   mess.zeilen.push(['t', ...Object.keys(messWerte())].map(v => v.padEnd(6)).join(' ').trimEnd());
@@ -3646,3 +3644,6 @@ function messungMenuItems(opt) {
   return [{ icon: 'circle-stop', label: 'Messung beenden und teilen', act: messTeilen,
     sub: `${mess.an ? 'läuft' : 'beendet'} · ${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')} · ${n.toLocaleString('de-DE')} Zeilen` }];
 }
+// Bei jedem resize stellt ui.js die Fenster selbst neu (placeDialogs; seit 4.64.0, APD-135/B-4.2 – bis dahin die erste Zeile im resize-Hörer
+// der App). Als letzter Hörer von ui.js beim Laden: er läuft wie bisher nach allen anderen von ui.js und direkt vor dem der App.
+window.addEventListener('resize', () => placeDialogs());

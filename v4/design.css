@@ -1,4 +1,4 @@
-/* AppDesign 4.63.0 · design.css – gemeinsame Gestaltung der iPad-Web-Apps von g811141a (Apple-like)
+/* AppDesign 4.64.0 · design.css – gemeinsame Gestaltung der iPad-Web-Apps von g811141a (Apple-like)
    Einbinden im <head> vor dem eigenen <style> der App:  <link rel="stylesheet" href="../AppDesign/fassung/X.Y.Z/design.css"> (feste Fassung, R-10.3)
    Farben als Variablen auf :root, Dunkelmodus über data-theme="dark" (setzt ui.js / applyTheme).
    Komponenten: Schaltflächen, Suchfeld, Kapsel, Eingabefelder, Datumsfelder, Kopfzeile, Seitenleiste,
@@ -6,7 +6,7 @@
    Options-Kapsel; seit 4.1.0 iPhone-Ansicht (html.phone: Seitenkopf, großer Titel, Liste, Kasten, untere Leiste). Regeln dazu: README - Designrichtlinie allgemein.md */
 /* Farben im Apple-Look: Hintergrund Hellgrau, Kästen weiß ohne Rand, schwebende Schaltflächen */
 :root {
-  --ad-version: "4.63.0";   /* R-10.3: Version der Bausteine, die App prüft sie beim Start */
+  --ad-version: "4.64.0";   /* R-10.3: Version der Bausteine, die App prüft sie beim Start */
   --bg: #f2f2f7;
   --card: #ffffff;
   --ink: #1c1c1e;
@@ -624,7 +624,7 @@ dialog input[type=text], dialog input[type=date], dialog textarea { background: 
 }
 .emoji-row button.reset { font-size: calc(20px * var(--f-body)); color: var(--muted); flex: none; }
 /* Reine Icon-, Wetter- und Smiley-Schaltflächen einheitlich quadratisch 44 × 44 px */
-.mic, .emoji-row button.reset, .iconbtn { width: max(44px, calc(20px * var(--k) + 24px)); min-width: max(44px, calc(20px * var(--k) + 24px)); height: max(44px, calc(20px * var(--k) + 24px)); padding: 0; border-radius: 50%; }
+.mic, .emoji-row button.reset { width: max(44px, calc(20px * var(--k) + 24px)); min-width: max(44px, calc(20px * var(--k) + 24px)); height: max(44px, calc(20px * var(--k) + 24px)); padding: 0; border-radius: 50%; }
 .fab button { width: calc(44px * var(--fb)); min-width: calc(44px * var(--fb)); height: calc(44px * var(--fb)); padding: 0; border-radius: 50%; }
 .emoji-row button { border-radius: 50%; }
 /* Komponente Auswahl-Kapsel: Smileys, Wetter, Reisemittel in einer Kapsel; bei knappem Platz wischbar */

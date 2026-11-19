@@ -4,6 +4,7 @@
 // Seit 4.63.0 (APD-135 Paket 5, Testfall-Liste APD-135/Z-1 bis Z-7): Vorlauf mit sofortigem Abbruch (C-44, nicht in der Gegenprobe),
 // die längsten zuerst (C-43), `doku-regeln` nur im ersten Browser (C-37), die Ausgabe eines Wacklers bleibt in
 // tests/out/wackelt-<Name>[-<Teil>]-<Browser>.txt (C-68), --abdeckung je Teil (PRUEF_TEIL, C-29).
+// Seit 4.64.0 (APD-135/B-4.1, S-6): `schnittstelle-regeln` (R-1.14, ohne Browser) im Vorlauf nach `version-regeln`, nur im ersten Browser.
 // Seit 4.16.1 (APD-11): erst alle Läufe des ersten Browsers, dann die des nächsten – nie beide gleichzeitig. Im gemeinsamen
 // Lauf wurden einzelne WebKit-Prüfungen rot, die einzeln und im reinen WebKit-Lauf grün sind (Vergleich 15.10.2026).
 // Einbinden in tests/alle.mjs der App:
@@ -26,7 +27,7 @@ import { GEGENPROBEN_SCHEMA } from './doku.mjs';
 
 const mmss = ms => { const s = Math.round(ms / 1000); return `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`; };
 
-export async function lauf({ dir, pw, tests, bedienung = 'ablauf-bedienung', text = 'text-regeln', doku = 'doku-regeln', masse = 'hig', vorlauf = [doku, 'version-regeln'], argv = process.argv.slice(2) }) {
+export async function lauf({ dir, pw, tests, bedienung = 'ablauf-bedienung', text = 'text-regeln', doku = 'doku-regeln', masse = 'hig', schnittstelle = 'schnittstelle-regeln', vorlauf = [doku, 'version-regeln', schnittstelle], argv = process.argv.slice(2) }) {
   const arg = (n, d) => { const i = argv.indexOf(n); return i < 0 ? d : argv[i + 1]; };
   const art = argv[argv.indexOf('--gegenprobe') + 1];
   const alle = argv.includes('--alle'), abdeckung = argv.includes('--abdeckung'), gegenprobe = argv.includes('--gegenprobe') ? (['grundregeln', 'bedienung', 'schema', 'text', 'masse'].includes(art) ? art : '1') : '';
@@ -71,14 +72,14 @@ export async function lauf({ dir, pw, tests, bedienung = 'ablauf-bedienung', tex
     if (nur && !nur.includes(name)) continue;
     const teile = (typeof t === 'object' && t.teile) || { '': {} };
     // APD-135/Z-3 (C-37): die Doku-Prüfung startet keinen Browser – nur im ersten
-    for (const br of name === doku ? browsers.slice(0, 1) : browsers) for (const [teil, env] of Object.entries(teile))
+    for (const br of name === doku || name === schnittstelle ? browsers.slice(0, 1) : browsers) for (const [teil, env] of Object.entries(teile))
       liste.push({ name, teil, br, env: { ...(teil ? { PRUEF_TEIL: teil } : {}), ...env }, key: `${name}${teil ? ':' + teil : ''}|${br}`, label: `${name}${teil ? ' (' + teil + ')' : ''} · ${br}` });
   }
   // Je Browser (in der Reihenfolge von --browser) die längsten zuerst (APD-135/Z-5, C-43: die kurzen füllen am Ende die Lücken);
   // noch nie gemessene ganz vorne.
   const lang = j => dauer[j.key] ?? Number.MAX_SAFE_INTEGER;
   liste.sort((a, b) => browsers.indexOf(a.br) - browsers.indexOf(b.br) || lang(b) - lang(a));
-  // APD-135/Z-1 bis Z-4 (C-44): der Vorlauf (`doku-regeln`, `version-regeln`) läuft vor allen anderen, einer nach dem anderen – rot bricht sofort ab
+  // APD-135/Z-1 bis Z-4 (C-44): der Vorlauf (`doku-regeln`, `version-regeln`, seit 4.64.0 `schnittstelle-regeln`) läuft vor allen anderen, einer nach dem anderen – rot bricht sofort ab
   // (eine falsche Versionstabelle kostet sonst einen ganzen Lauf). Nicht in der Gegenprobe: dort ist rot gewollt, sie läuft ganz durch.
   const vor = gegenprobe ? [] : liste.filter(j => vorlauf.includes(j.name));
   for (const j of vor) liste.splice(liste.indexOf(j), 1);

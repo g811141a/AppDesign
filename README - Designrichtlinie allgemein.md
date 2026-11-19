@@ -1,6 +1,6 @@
 # Designrichtlinie allgemein
 
-**Version 4.63.0** · Stand 19.11.2026
+**Version 4.64.0** · Stand 19.11.2026
 
 Allgemeine Gestaltungs- und Bedienregeln für alle Web-Apps von g811141a auf iPad und iPhone. Die Datei liegt im Design-Repo
 **AppDesign** (g811141a/AppDesign); ihre Versionsnummer ist die des Repos. Die Komponenten sind dort einmal programmiert und
@@ -637,7 +637,7 @@ und Meldungen · Eingabe · Inhalt · Dienste (ohne eigene Oberfläche).
 ### 15.1 Schwebende Schaltfläche
 - **Apple:** [HIG – Buttons](https://developer.apple.com/design/human-interface-guidelines/buttons)
 - **Zweck:** jede Aktion. **Technisch:** `button` (Hauptaktion `.primary`, Löschen `.danger`, eingeschaltet
-  `aria-pressed="true"`, nur Icon `.iconbtn`).
+  `aria-pressed="true"`).
 - **Aufbau:** Icon (20 px) links, dann Text; oder nur Icon bzw. Emoji (24 px).
 - **Maße:** 44 px hoch, Kapsel (Radius 22 px); Icon-/Emoji-Schaltflächen 44 × 44 rund; Abstand zu Nachbarn 12 px.
 - **Aussehen/Zustände:** neutral `--btn` + Lichtkante + `--float`; Hauptaktion, eingeschaltet, gedrückt und Löschen siehe 4;

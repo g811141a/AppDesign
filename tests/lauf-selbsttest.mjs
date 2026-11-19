@@ -2,7 +2,7 @@
 // APD-85/W-10: rote Läufe einmal allein wiederholen, ‚wackelt‘, Abbruch ab dem dritten roten Lauf; seit 4.49.0 APD-85/Z-1, Z-2, Z-6: warteBis) mit Schein-Tests
 // (schnell, langsam, rot, hängt) in einem Ordner auf Zeit. Aufruf: node tests/lauf-selbsttest.mjs (braucht kein Playwright).
 // Seit 4.63.0 (APD-135 Paket 5): APD-135/Z-1 bis Z-7 – Vorlauf mit sofortigem Abbruch, die längsten zuerst, doku-regeln einmal,
-// Ausgabe eines Wacklers in tests/out/wackelt-…txt, Abdeckung je Teil.
+// Ausgabe eines Wacklers in tests/out/wackelt-…txt, Abdeckung je Teil. Seit 4.64.0 APD-135/S-6: schnittstelle-regeln im Vorlauf.
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -124,6 +124,17 @@ pruefe(rc === 0 && folge3.slice(0, 3).join(',') === 'doku-regeln:chromium,versio
 schein('doku-regeln', 50, 1);
 [rc, out] = await mitschreiben(() => lauf({ dir: url, pw, tests: ['rot', 'doku-regeln'], argv: ['--browser', 'chromium', '--gegenprobe'] }));
 pruefe(!/Vorlauf/.test(out) && /✗ rot · chromium/.test(out) && /✗ doku-regeln · chromium/.test(out), `APD-135/Z-4 Gegenprobe ohne Vorlauf-Abbruch\n${out}`);
+// APD-135/S-6 (B-4.1, seit 4.64.0): schnittstelle-regeln (R-1.14, ohne Browser) im Vorlauf – rot bricht sofort ab; grün läuft es nur im ersten Browser
+schein('doku-regeln', 50, 0); schein('version-regeln', 50, 0); schein('schnittstelle-regeln', 50, 1);
+[rc, out] = await mitschreiben(() => lauf({ dir: url, pw: { ...pw, webkit: pw.chromium }, tests: ['schnell', 'doku-regeln', 'version-regeln', 'schnittstelle-regeln'], argv: ['--jobs', '4'] }));
+pruefe(rc === 1 && /Vorlauf rot: schnittstelle-regeln · chromium – Abbruch/.test(out) && /✗ Schein-Fehler/.test(out) && !/✓ schnell/.test(out),
+  `APD-135/S-6 Vorlauf schnittstelle-regeln rot: Rückgabewert ${rc}\n${out}`);
+schein('schnittstelle-regeln', 50, 0);
+[rc, out] = await mitschreiben(() => lauf({ dir: url, pw: { ...pw, webkit: pw.chromium }, tests: ['schnell', 'doku-regeln', 'version-regeln', 'schnittstelle-regeln'], argv: ['--jobs', '4'] }));
+const folge6 = [...out.matchAll(/✓ ([\w-]+) · (\w+)/g)].map(m => m[1] + ':' + m[2]);
+pruefe(rc === 0 && folge6.filter(f => f.startsWith('schnittstelle-regeln')).join(',') === 'schnittstelle-regeln:chromium'
+  && folge6.indexOf('schnittstelle-regeln:chromium') < folge6.indexOf('schnell:chromium') && /Vorlauf: .*schnittstelle-regeln · chromium/.test(out),
+  `APD-135/S-6 Vorlauf schnittstelle-regeln grün, einmal: ${folge6.join(',')}\n${out}`);
 // APD-135/Z-7 (C-29): --abdeckung je Teil eine eigene Zeile (Schein-Prüfung mit pruefung().abdeckung(), PRUEF_TEIL von lauf.mjs)
 writeFileSync(join(dir, 'tests', 'deckt.mjs'), `import { pruefung } from ${JSON.stringify(new URL('./pruefe.mjs', import.meta.url).href)};
 const t = pruefung('deckt', {}, { out: new URL('out/', import.meta.url) }); t.ort = 'Ansicht ' + (process.env.PRUEF_TEIL || 'ohne'); t.abdeckung(); process.exit(0);`);
