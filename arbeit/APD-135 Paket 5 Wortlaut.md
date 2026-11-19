@@ -1,4 +1,4 @@
-# APD-135 Paket 5 – Wortlaut zur Bestätigung
+# APD-135 Paket 5 – Wortlaut (bestätigt)
 
 **Stand 19.11.2026** · Sitzung 0134 · Quelle: `arbeit/APD-135 Konsolidierung 3 Befund und Plan.md` (Abschnitt 1: W-48, W-54; Abschnitt 5: Paket 5;
 Abschnitt 7: J-20, J-24, J-26, J-29, J-30), `arbeit/APD-135 Befund C Prüfungen.md` (C-6, C-11, C-12, C-29, C-31, C-33, C-37, C-41, C-43, C-44, C-47, C-68)
@@ -8,6 +8,8 @@ und `arbeit/APD-135 Befund L Ablage Backlog Code.md` (L-31). Abgeglichen mit dem
 > **Vorab – Gegenproben APD-30 (UEBERGABE 3 Nr. 2) erledigt:** alle vier rot wie gefordert, je ein eigener Lauf gegen 4.62.0 / 3.57.5 (Chromium, alle
 > Ansichten): APD-30/W-89 rot (16 Meldungen: W-84 ×8, W-93 ×8) · APD-30/W-96 rot (18: W-101 ×10, W-81 ×8) · APD-30/W-103 rot (16: W-100 ×8, W-102 ×8) ·
 > APD-30/W-104 rot (8: W-102 ×8). Eingetragen in `arbeit/APD-30 Wischaktionen Testfall-Liste.md`. Usertest P-112 ok (in beiden Backlogs).
+
+> **Bestätigt** (Nutzer 19.11.2026, Sitzung 0134, im Auswahlfenster): Wortlaut Abschnitte 1–3 **ja** · C-31 **mit `t.seite`** · C-33 **so lassen**.
 
 ## Was sich ändert
 
