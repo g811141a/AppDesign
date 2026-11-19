@@ -11,6 +11,16 @@
 - **Regel:** R-10.8 im bestätigten Wortlaut (Designrichtlinie 17), Prüfung `ablauf.mjs` – `checkDateiname` erweitert.
 - **Prüfstufe:** voll (Code in AppDesign und neue Fassung in der App).
 
+## Wortlaut R-10.8 (bestätigt, Nutzer 19.11.2026, Sitzung 0136, 12:29 UTC – nachgetragen in 0137 aus dem Verlauf von 0136)
+
+**Alt:**
+
+| R-10.8 | **Dateiname im Hinweisfenster:** steht allein in einer eigenen Zeile unter dem Satz, fett und zentriert, ohne Punkt danach; Umbruch nur nach einem Leerzeichen – nur ein Wort, das länger ist als die Zeile, bricht in sich (R-6.3) | ablauf.mjs – `checkDateiname` (Backup, Ausgabe, Abgleichbericht; vier Lagen, große Schrift; Gegenprobe) | – | 10, 15.19 |
+
+**Neu:**
+
+| R-10.8 | **Dateiname im Hinweisfenster:** steht allein in einer eigenen Zeile unter dem Satz, fett und zentriert, ohne Punkt danach. Am iPad wird das Fenster so breit, dass der Name in einer Zeile steht – mindestens so breit wie sonst, höchstens wie das breite Hinweisfenster (600 px, wächst mit der Textgröße, höchstens Bildschirmbreite − 32 px); passt er auch dann nicht, bricht er nur nach einem Leerzeichen um – nur ein Wort, das länger ist als die Zeile, bricht in sich (R-6.3). Am iPhone bleibt die Breite wie bei jedem Hinweisfenster | ablauf.mjs – `checkDateiname` (Backup, Ausgabe, Abgleichbericht; vier Lagen, große Schrift; iPad: eine Zeile und Höchstbreite; Gegenprobe) | – | 10, 15.19 |
+
 ## Testfälle (automatisch)
 
 Alle in Chromium und WebKit; nach jedem Schritt die Grundregeln (`pruefe.mjs`).
@@ -28,6 +38,13 @@ Alle in Chromium und WebKit; nach jedem Schritt die Grundregeln (`pruefe.mjs`).
 | D-9 | drehen bei offenem Hinweis (quer → hoch → quer) | Breite neu berechnet, Name weiter einzeilig; Grundregeln danach | `checkDateiname` | rot |
 | D-10 | Gegenprobe: Prüfkopie ohne Breitenanpassung | `checkDateiname` rot mit ‚R-10.8‘ | Gegenprobe | – |
 | D-11 | Texte: R-10.8 neu genau einmal, alter Text nur in der Geschichte | `doku-regeln` grün | `doku-regeln` | rot |
+| D-12 | Bean `hinweis` in Liste und `ui.js` (Fabrik, `data-ad-bean`, Eigenschaft = Parameter) | `checkBeans` grün; ohne Listenzeile rot (APD-30/W-72) | `doku-regeln` | rot |
+| D-13 | `inform` unverändert: alle Hinweisfenster (Backup, Abgleich, offline, Abgleichbericht) wie bisher | bestehende Prüfungen grün | voller Lauf | grün |
+| D-14 | `breiteNachDateiname = false` | Fenster wie in 4.63.0, `checkDateiname` meldet D-1 (= D-10) | `checkHinweisBreite` | – |
+| D-15 | Absicherung ‚allgemein = AD-Bean‘ (0 Nr. 25): `ui.js` geändert, ein Thema im CHANGELOG ohne ‚AD-Bean: …‘ | `los` bricht vor dem Prüflauf ab und nennt das Thema, nichts gepusht | `veroeffentlichen-selbsttest` | – |
+| D-16 | jedes Thema mit ‚AD-Bean: …‘ | `los` läuft weiter bis zum Prüflauf | `veroeffentlichen-selbsttest` | – |
+| D-17 | nur die Versionsstellen in `ui.js` und `design.css` geändert | keine Zeile verlangt | `veroeffentlichen-selbsttest` | – |
+| D-18 | Gegenprobe `VEROEFF_GEGENPROBE=adbean` (Zeile nicht geprüft) | D-15 rot | `veroeffentlichen-selbsttest` | – |
 
 ## Testfall (User)
 

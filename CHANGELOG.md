@@ -3,6 +3,81 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.64.0 – 19.11.2026
+
+AppDesign 4.64.0 · Designrichtlinie allgemein 4.64.0 · Zusammenarbeit allgemein 3.17.0 · Reiselogbuch 3.57.7 (Fassung 4.64.0)
+
+**APD-138 – Dateiname am iPad in einer Zeile, AD-Bean `hinweis`** (Muster und Wortlaut R-10.8 bestätigt 19.11.2026 in Sitzung 0136; Schnittstelle, Listenzeile
+und Absicherung bestätigt 19.11.2026 in Sitzung 0138 – `arbeit/0137 Vorschlag AD-Bean hinweis und Absicherung.md`; Testfall-Liste `arbeit/APD-138 Testfall-Liste.md`
+APD-138/D-1 bis D-18; Sitzungen 0137 und 0138).
+
+- **`ui.js`:** neu die AD-Bean `hinweis` – `createHinweis(fenster, { breiteNachDateiname = true })` auf `<dialog id="msg">`, `ui.js` legt sie einmal an
+  (`adHinweis`), `inform(…)` bleibt der kurze Aufruf. Steht ein Dateiname (`.fname`) im Text, wird das Fenster am iPad so breit, dass er in einer Zeile steht
+  – mindestens die Grundbreite von `#msg`, höchstens die von `#msg.wide`; neu berechnet bei jedem `resize`. Die Bean hebt die 90vw-Grenze von `dialog` auf wie
+  `dialog.wide` (sonst blieb das Fenster bei Text 53 schmaler als die Höchstbreite).
+- **Prüfungen:** `checkDateiname` misst Grund- und Höchstbreite (APD-138/D-1, D-2, D-7 bis D-9), neu `checkHinweisBreite` (APD-138/D-3 bis D-6, D-9, D-10, D-14,
+  `tests/ablauf.mjs`); Schnittstellenliste mit `createHinweis` (Teil `app`) und `adHinweis` (Teil `pruefungen`).
+- **Designrichtlinie 4.64.0:** R-10.8 (am iPad wächst das Fenster mit dem Dateinamen), Liste der AD-Beans (15) mit `hinweis`.
+- **Absicherung ‚allgemein = AD-Bean‘ – Zusammenarbeit 3.17.0:** Kasten ‚Immer‘ und 0 Nr. 25; `veroeffentlichen.mjs` `los` bricht vor dem Prüflauf ab, wenn sich
+  `ui.js` oder `design.css` (mehr als die Versionsstellen) ändern und ein Thema des CHANGELOG-Eintrags keine Zeile ‚AD-Bean: …‘ hat; `vorbereiten` erinnert
+  in der Schlusszeile daran. Selbsttest APD-138/D-15 bis D-17, Gegenprobe D-18 (`VEROEFF_GEGENPROBE=adbean`).
+- AD-Bean: `hinweis` (neu).
+
+**APD-135 Paket 6 – Schnittstelle und Prüfseite** (Schritt 1: Umfang, Wortlaut und Testfall-Liste APD-135/S-1 bis S-15 bestätigt 19.11.2026 in Sitzung 0136 –
+`arbeit/APD-135 Paket 6 Schritt 1 Vorschlag.md`; Sitzungen 0136 bis 0138. Schritt 2: Umfang, Wortlaut und Testfall-Liste APD-135/E-1 bis E-17 bestätigt
+19.11.2026 in Sitzung 0139 – `arbeit/APD-135 Paket 6 Schritt 2 Vorschlag.md`; hier APD-135/B-3.1 und APD-135/B-3.2, Sitzungen 0139 und 0140).
+
+- **Schnittstelle (APD-135/B-4.1):** neu `v4/schnittstelle.json` (Teile `app` und `pruefungen`) und `tests/schnittstelle.mjs` mit `checkSchnittstelle`
+  (Zerleger `tests/schnittstelle-zerleger.mjs`); in der App `tests/schnittstelle-regeln.mjs` im Vorlauf von `lauf.mjs`, nur im ersten Browser;
+  `schnittstelle.json` gehört zur festen Fassung (`tests/version.mjs`); `lauf-selbsttest` Fall APD-135/S-6.
+- **`ui.js` (APD-135/B-4.2):** `placeDialogs` als letzter `resize`-Hörer in `ui.js` (die App ruft es nicht mehr), neu `markHeld(root)`, `setOpener`,
+  `FX_SVG` (ⓧ einmal), ‚Bewegung reduzieren‘ einmal abgefragt (`bewegungRuhig`), `capNext` gestrichen, Kopf mit Verweis auf `schnittstelle.json`.
+- **Prüfungen:** feste Fälle APD-135/S-8 (`ablauf-fenster`: Hinweisfenster verschoben, nach `resize` am Platz) und APD-135/S-9 (`backup-regeln`: Mehr-Knopf
+  bleibt beim Neuaufbau der Seitenleiste blau); die Gegenproben APD-135/S-8 und APD-135/S-10 waren vorher gegen die vorhandenen Prüfungen grün.
+- **`design.css`:** `.iconbtn` gestrichen (APD-135/J-28).
+- **Designrichtlinie 4.64.0:** neu R-1.14, Verweis in 14, 15.1 ohne `.iconbtn`, 15.22 neu gefasst (APD-135/J-19: der Rückfall ohne Rollbereich wird gebraucht).
+- **Doku:** `tests/README.md` (AppDesign und Reiselogbuch), AppDesign-`README.md`, `vorlage/index.html`.
+- **Vorlage (APD-135/B-3.1, APD-135/U-45):** `vorlage/index.html` neu als kleine neutrale App ‚Neue App‘ mit Einträgen (`items`) und Unterpunkten (`sub`), gebaut wie das
+  Reiselogbuch – Seitenleiste bzw. Startliste mit Backup-Kachel, Kopfzeile mit Teilen und Mehr, iPhone-Navigation, Rollbereich mit `data-day`, ‚Nach oben /
+  Ans Ende‘, Mehr-Menü der Liste (Suchen, Backup, Darstellung, Messmodus, Versionszeile), Kontextmenü, rotes ‚Eintrag löschen‘ mit Sprechblase, Fenster
+  ‚Eintrag bearbeiten‘ und ‚Unterpunkt n‘, Suche im Eintrag und in allen, Backup laden mit Abgleich; nur Namen aus `schnittstelle.json` (`APPEARANCES`,
+  `setAppearance` fallen weg).
+- **Prüfseite (APD-135/B-3.1, APD-135/U-32):** die Vorlage gehört zur festen Fassung (`fassung/X.Y.Z/vorlage/index.html`, `tests/version.mjs`); neu `tests/pruefseite.mjs` –
+  `oeffneVorlage(p, { daten, fehler })` mit neutralen Daten (`neueapp.v1`), `ui.js` und `design.css` der eigenen Fassung über `p.route` (APD-135/E-3).
+- **Mindestseite (APD-135/B-3.1):** `oeffneMindestseite(p, { fehler })` aus dem Text der Vorlage (`<head>`, `#dlg`, `#msg`, `ui.js`, Platzhalter und `sync`); ohne
+  `#dlg` oder `#msg` ein Fehler (APD-135/E-4). Abweichung vom Vorschlag: `createSync` mit `subAt: 'subAt'` – ohne landen die Zeitpunkte der Unterpunkte
+  unter dem Schlüssel ‚undefined‘ und der Abgleichbericht zeigt sie als Feld (R-9.4 rot).
+- **`checkWerte` (APD-135/B-3.1, Gruppe A):** Version, Icons, leerer Zustand, Hilfen, Suche (`checkSearchWords`, `markWords`), Teilen (`outputCss`,
+  `shareResultText`), Backup (`backupFileOf` → `readBackup`, `backupTileHtml`), Abgleich (`checkSync`) mit festen Beispielwerten (APD-135/E-5); dazu die
+  Vorlage in allen vier Ansichten, hell und dunkel, leer und mit 60 Unterpunkten mit den Grundregeln, Menü, Fenster und Sprechblase (APD-135/E-2).
+- **Hülle (APD-135/B-3.1):** im Reiselogbuch neu `tests/bausteine-pruefseite.mjs` (übergibt `playwright` und den Ausgabeordner), in `alle.mjs` mit Teil `werte`.
+- **Gegenprobe (APD-135/B-3.1):** neu `--gegenprobe pruefseite` in `tests/lauf.mjs` – je Teil und je eingeschleustem Fehler seiner Bausteine ein Lauf, rot nur mit der
+  Meldung dieses Bausteins (`GEGENPROBEN_PRUEFSEITE`, 8 Fehler für `werte`, APD-135/E-6; `lauf-selbsttest` APD-135/E-15). `checkSchnittstelle` prüft auch die
+  Vorlage; eine Kopie mit `setAppearance` wird rot mit ‚R-1.14‘ (APD-135/E-1, gegen die alte Vorlage rot).
+- **Texte (APD-135/B-3.1):** Designrichtlinie 14 (Inhalt, Feste Fassung, Prüfen), 17 Kopf ‚Prüfung‘, R-1.14 Spalte Prüfung; `tests/README.md` (Abschnitt ‚Prüfseite‘
+  und Reiselogbuch), AppDesign-`README.md` (Vorlage).
+- **Abläufe auf der Prüfseite (APD-135/B-3.2):** `tests/pruefseite.mjs` mit `ablaufMessung` (APD-27/F-1 bis F-12), `ablaufTitelBlase` (APD-101/L-1 bis L-12),
+  `ablaufTitelOben` (APD-62/H-1 bis H-9, APD-109/C-1 bis C-9, APD-108/W-1 bis W-7), `ablaufSchichtOben` (APD-118/X-1 bis X-8 mit den 3 Messdateien) und
+  `ablaufGrossanzeige` (APD-104/L-1 bis L-9) – dieselben Fälle wie bisher in der App, gegen die Vorlage mit neutralen Daten; in der Hülle der App die Teile
+  `messung`, `titel-blase`, `titel-oben`, `schicht-oben`, `grossanzeige` (mit `werte` 6 Teile, APD-135/E-7 bis E-11). Abweichungen vom Vorschlag: die
+  Fenstertitel der Vorlage passen bei Text 53 ganz hinein – die Prüfung verlängert für APD-101/L-1, L-3, L-4 den Titel und für APD-101/L-9 und APD-62/H-3
+  den Inhalt (nur in der Prüfung, Vorlage unverändert); neutrale Gegenstücke statt Reiselogik; die Gegenprobe APD-127/B-10 bleibt in `ablauf-blatt` und
+  `ablauf-feld-tastatur`; die Abläufe warten auf das `close`-Ereignis des Fensters (sonst baute die Vorlage die Seitenleiste mitten in APD-62/H-2 neu auf).
+- **Gegenprobe vor dem Wegfall (APD-135/B-3.2, APD-135/E-12):** je Ablauf ein eingeschleuster Fehler in `--gegenprobe pruefseite` (zusammen 13 Fälle × 2 Browser =
+  26 Läufe, alle rot). Derselbe Fehler war rot auf der Prüfseite, in der bisherigen Prüfdatei des Reiselogbuchs und in der neuen `ablauf-bausteine` (Chromium):
+
+  | Ablauf | eingeschleuster Fehler in `ui.js` | Prüfseite | bisherige Prüfdatei | `ablauf-bausteine` |
+  |---|---|---|---|---|
+  | messung | Eingabetext statt Länge in der Messdatei | rot (9 Fehler) | `ablauf-messung` rot (9) | rot (2) |
+  | titel-blase | keine Sprechblase am gekürzten Titel | rot (7) | `ablauf-titel-blase` rot (7) | rot (3) |
+  | titel-oben | Hörer von ‚Titel antippen‘ am `window` statt am `document` | rot (10) | `ablauf-titel-oben` rot (10) | rot (4) |
+  | schicht-oben | Sperrschicht schließt nicht beim Loslassen | rot (13) | `ablauf-schicht-oben` rot (13) | rot (4) |
+  | grossanzeige | Loslassen löst den Knopf nicht aus | rot (42) | `ablauf-grossanzeige` rot (42) | rot (1) |
+
+- **Doku (APD-135/B-3.2):** `tests/README.md` (Abschnitt ‚Prüfseite‘ mit den neuen Teilen). `ui.js`, `design.css`, Vorlage und `schnittstelle.json` unverändert.
+- AD-Bean: keine, weil nur die Schnittstelle von `ui.js` und innere Bausteine; die gedrückten Schaltflächen (`markHeld`, `hold`, `release`, `setOpener`,
+  `markOpener`) bekommen später eine eigene Bean `gedrueckt`, `FX_SVG` ist Kandidat für APD-136 (Nutzer 19.11.2026, Sitzung 0138).
+
 ## 4.63.0 – 19.11.2026
 
 AppDesign 4.63.0 · Designrichtlinie allgemein 4.63.0 · Zusammenarbeit allgemein 3.16.0 · Reiselogbuch 3.57.6 (Fassung 4.63.0)

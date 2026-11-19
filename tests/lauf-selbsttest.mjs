@@ -2,7 +2,8 @@
 // APD-85/W-10: rote Läufe einmal allein wiederholen, ‚wackelt‘, Abbruch ab dem dritten roten Lauf; seit 4.49.0 APD-85/Z-1, Z-2, Z-6: warteBis) mit Schein-Tests
 // (schnell, langsam, rot, hängt) in einem Ordner auf Zeit. Aufruf: node tests/lauf-selbsttest.mjs (braucht kein Playwright).
 // Seit 4.63.0 (APD-135 Paket 5): APD-135/Z-1 bis Z-7 – Vorlauf mit sofortigem Abbruch, die längsten zuerst, doku-regeln einmal,
-// Ausgabe eines Wacklers in tests/out/wackelt-…txt, Abdeckung je Teil.
+// Ausgabe eines Wacklers in tests/out/wackelt-…txt, Abdeckung je Teil. Seit 4.64.0 APD-135/S-6: schnittstelle-regeln im Vorlauf; APD-135/E-15:
+// --gegenprobe pruefseite.
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -124,6 +125,35 @@ pruefe(rc === 0 && folge3.slice(0, 3).join(',') === 'doku-regeln:chromium,versio
 schein('doku-regeln', 50, 1);
 [rc, out] = await mitschreiben(() => lauf({ dir: url, pw, tests: ['rot', 'doku-regeln'], argv: ['--browser', 'chromium', '--gegenprobe'] }));
 pruefe(!/Vorlauf/.test(out) && /✗ rot · chromium/.test(out) && /✗ doku-regeln · chromium/.test(out), `APD-135/Z-4 Gegenprobe ohne Vorlauf-Abbruch\n${out}`);
+// APD-135/S-6 (B-4.1, seit 4.64.0): schnittstelle-regeln (R-1.14, ohne Browser) im Vorlauf – rot bricht sofort ab; grün läuft es nur im ersten Browser
+schein('doku-regeln', 50, 0); schein('version-regeln', 50, 0); schein('schnittstelle-regeln', 50, 1);
+[rc, out] = await mitschreiben(() => lauf({ dir: url, pw: { ...pw, webkit: pw.chromium }, tests: ['schnell', 'doku-regeln', 'version-regeln', 'schnittstelle-regeln'], argv: ['--jobs', '4'] }));
+pruefe(rc === 1 && /Vorlauf rot: schnittstelle-regeln · chromium – Abbruch/.test(out) && /✗ Schein-Fehler/.test(out) && !/✓ schnell/.test(out),
+  `APD-135/S-6 Vorlauf schnittstelle-regeln rot: Rückgabewert ${rc}\n${out}`);
+schein('schnittstelle-regeln', 50, 0);
+[rc, out] = await mitschreiben(() => lauf({ dir: url, pw: { ...pw, webkit: pw.chromium }, tests: ['schnell', 'doku-regeln', 'version-regeln', 'schnittstelle-regeln'], argv: ['--jobs', '4'] }));
+const folge6 = [...out.matchAll(/✓ ([\w-]+) · (\w+)/g)].map(m => m[1] + ':' + m[2]);
+pruefe(rc === 0 && folge6.filter(f => f.startsWith('schnittstelle-regeln')).join(',') === 'schnittstelle-regeln:chromium'
+  && folge6.indexOf('schnittstelle-regeln:chromium') < folge6.indexOf('schnell:chromium') && /Vorlauf: .*schnittstelle-regeln · chromium/.test(out),
+  `APD-135/S-6 Vorlauf schnittstelle-regeln grün, einmal: ${folge6.join(',')}\n${out}`);
+// APD-135/E-15 (APD-135/B-3.1, seit 4.64.0): --gegenprobe pruefseite – je Teil der Prüfseite und je Fehler seiner Bausteine ein Lauf mit PRUEF_TEIL und
+// PRUEF_GEGENPROBE=pruefseite:<fall>; rot zählt nur mit der Meldung des Bausteins. Schein-Prüfung meldet den Baustein des Falls (außer ‚abgleich‘ in
+// der falschen Fassung); ein Teil ohne eingeschleusten Fehler bricht ab.
+const { GEGENPROBEN_PRUEFSEITE } = await import('./pruefseite.mjs');
+const bausteine = Object.fromEntries(Object.entries(GEGENPROBEN_PRUEFSEITE.werte).map(([f, g]) => [f, g.baustein]));
+const scheinSeite = falsch => writeFileSync(join(dir, 'tests', 'bausteine-pruefseite.mjs'), `const b = ${JSON.stringify(bausteine)}, f = (process.env.PRUEF_GEGENPROBE || '').split(':')[1];
+if (process.env.PRUEF_TEIL !== 'werte' || !b[f]) { console.log('✗ falscher Aufruf ' + process.env.PRUEF_TEIL + ' ' + process.env.PRUEF_GEGENPROBE); process.exit(1); }
+console.log(${falsch ? `f === 'abgleich' ? '✗ R-1.1 Anderes: x' : ` : ''}'✗ R-9.3 ' + b[f] + ': eingeschleust'); process.exit(1);`);
+scheinSeite(false);
+const nFaelle = Object.keys(bausteine).length;
+[rc, out] = await mitschreiben(() => lauf({ dir: url, pw, tests: ['schnell', { name: 'bausteine-pruefseite', teile: { werte: {} } }], argv: ['--browser', 'chromium', '--gegenprobe', 'pruefseite'] }));
+pruefe(rc === 0 && nFaelle === 8 && (out.match(/✗ bausteine-pruefseite \(werte: /g) || []).length === 8 && !/schnell/.test(out) && new RegExp(`Gegenprobe der Prüfseite: alle ${nFaelle} Läufe wurden rot`).test(out),
+  `APD-135/E-15 Gegenprobe der Prüfseite (8 Fälle): Rückgabewert ${rc}\n${out}`);
+scheinSeite(true);
+[rc, out] = await mitschreiben(() => lauf({ dir: url, pw, tests: [{ name: 'bausteine-pruefseite', teile: { werte: {} } }], argv: ['--browser', 'chromium', '--gegenprobe', 'pruefseite'] }));
+pruefe(rc === 1 && /meldeten die Gegenprobe nicht.*bausteine-pruefseite \(werte: Abgleich/.test(out), `APD-135/E-15 falsche Meldung zählt nicht als rot: Rückgabewert ${rc}\n${out}`);
+[rc, out] = await mitschreiben(() => lauf({ dir: url, pw, tests: [{ name: 'bausteine-pruefseite', teile: { werte: {}, neu: {} } }], argv: ['--browser', 'chromium', '--gegenprobe', 'pruefseite'] }));
+pruefe(rc === 1 && /Teil ohne eingeschleusten Fehler: neu/.test(out) && !/✗ bausteine-pruefseite/.test(out), `APD-135/E-15 Teil ohne Fehler: Rückgabewert ${rc}\n${out}`);
 // APD-135/Z-7 (C-29): --abdeckung je Teil eine eigene Zeile (Schein-Prüfung mit pruefung().abdeckung(), PRUEF_TEIL von lauf.mjs)
 writeFileSync(join(dir, 'tests', 'deckt.mjs'), `import { pruefung } from ${JSON.stringify(new URL('./pruefe.mjs', import.meta.url).href)};
 const t = pruefung('deckt', {}, { out: new URL('out/', import.meta.url) }); t.ort = 'Ansicht ' + (process.env.PRUEF_TEIL || 'ohne'); t.abdeckung(); process.exit(0);`);
