@@ -185,6 +185,21 @@ Gemessen wird die Lage samt transform. Gegen 4.60.0 sind W-81 bis W-86 rot (Chro
 | W-89 | Gegenprobe: Kapseln rücken beim Zurückwischen nach rechts hinaus wie 4.60.0 (`wischen:W-89`) | W-84 wird rot |
 | W-90 | Gegenprobe: Kapseln fest 66 × 44 (`wischen:W-90`, design.css) | W-86 wird rot |
 
+**Gegenproben einzeln gegen AppDesign 4.62.0 / Reiselogbuch 3.57.5** (`PRUEF_GEGENPROBE=wischen:W-n node tests/ablauf-wischen.mjs`, Chromium, alle
+Ansichten; je ein eigener Lauf, Sitzungen 0133 und 0134). Die Gegenproben W-96, W-103 und W-104 sind seit 4.60.3 in `tests/ablauf.mjs` (`WISCH_GEGENPROBEN`)
+beschrieben: W-96 Kapsel ohne eigene Zeit → W-101 · W-103 schnelle Kurve (0,25 s) → W-100, W-102 · W-104 Schließen nicht zugleich → W-102.
+
+| Gegenprobe | gefordert | Ergebnis | Sitzung |
+|---|---|---|---|
+| W-87 | W-81 rot | **rot**, 26 Meldungen | 0133 |
+| W-88 | W-85, W-93 rot | **rot**, 6 Meldungen | 0133 |
+| W-89 | W-84 rot | **rot**, 16 Meldungen: W-84 in allen 8 Ansichten, dazu W-93 (8) | 0134 |
+| W-96 | W-101 rot | **rot**, 18 Meldungen: W-101 (10, auch mit ‚Bewegung reduzieren‘), dazu W-81 (8) | 0134 |
+| W-103 | W-100, W-102 rot | **rot**, 16 Meldungen: W-100 (8), W-102 (8) | 0134 |
+| W-104 | W-102 rot | **rot**, 8 Meldungen: W-102 in allen 8 Ansichten | 0134 |
+
+Laufzeit je Gegenprobe 8:22 (W-103) bis rund 14 min (W-89) in 0134. Damit sind alle offenen Gegenproben aus 0130 gelaufen.
+
 **Warum die Prüfung die Fehler übersah:**
 - **F-1 und F-2:** W-7 verlangte das gleichzeitige Wachsen (auf halbem Weg beide 75 % groß, 50 % deckend). Die Prüfung bestätigte also das falsche
   Verhalten aus dem Muster, statt Notizen zu folgen.
