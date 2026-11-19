@@ -61,6 +61,16 @@ liest diese Datei zu Beginn jeder Sitzung zuerst, dann die ganze Zusammenarbeit*
      Backlog, Versionsgeschichten), `fassung`, `stufe` (erwartet voll), Bericht, dann die **Bau-Frage** ‚Soll ich Version AppDesign 4.64.0 / Reiselogbuch 3.57.7 mit
      APD-135 Paket 6 Schritt 1 und APD-138 erstellen (Prüflauf Stufe voll)? (Kontext N)‘.
 
+**Nachtrag nach der Übergabe (Nutzer 19.11.2026, Sitzung 0136, im Fenster) – vor allem anderen in Abschnitt 3 berücksichtigen:**
+- **APD-138 als AD-Bean `hinweis`** (Bereich ‚Fenster und Meldungen‘, Fabrik `createHinweis(…)`, Eigenschaft `breiteNachDateiname`, am iPad Standard ein);
+  `inform(…)` bleibt als kurzer Aufruf der Bean. Die frühere Angabe ‚keine neue Bean‘ war ein Fehler (R-1.13: ein umgebautes allgemeines Element ist eine
+  AD-Bean). 0137 legt Schnittstelle, Wortlaut der Zeile in der Liste der AD-Beans (15) und die Ergänzung der Testfall-Liste vor der Bau-Frage vor (0 Nr. 29).
+  Ebenso prüfen: `markHeld` (B-4.2) als Teil einer AD-Bean der gedrückten Schaltflächen oder bewusst eine Funktion – mit Grund, als Frage im Fenster.
+- **Absichern ‚allgemein = AD-Bean‘:** Wortlaut vorlegen (0 Nr. 29) für (a) Kasten ‚Immer‘ in Zusammenarbeit 0: ‚allgemein = AD-Bean (R-1.13, Nr. 25)‘ und
+  (b) eine Prüfung in `veroeffentlichen.mjs` (`vorbereiten` und `los`): ändert eine AppDesign-Version `ui.js` oder `design.css`, nennt ihr CHANGELOG-Eintrag je
+  Punkt ‚AD-Bean: `<kennung>` (neu | neue Eigenschaft …)‘ oder ‚AD-Bean: keine, weil …‘ – sonst Abbruch; mit Fall im Selbsttest und Gegenprobe. Grundlage:
+  `arbeit/0136 AD-Bean zuerst.md`.
+
 ## 4. Danach
 
 APD-135 Paket 6 Schritt 2 (B-3.1, B-3.2) · J-32 als eigenes Thema ins Backlog (nach B-3) · APD-135 Paket 7 · APD-136 · Wizard APD-139 (Apple-Abgleich mit Quelle,

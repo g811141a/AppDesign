@@ -11,7 +11,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Prio | Thema | bereit seit |
 |---|---|---|---|
-| APD-138 | 2 | **Dateiname am iPad in einer Zeile (aus RLB-127, Nutzer 19.11.2026):** am iPad wächst das Hinweisfenster mit dem Dateinamen bis zur Breite von `#msg.wide` (600 px mit der Textgröße, höchstens Bildschirmbreite − 32 px), darüber Umbruch nach einem Leerzeichen; iPhone wie heute. Allgemein: Eigenschaft ‚Breite nach Dateiname‘ des Hinweisfensters (`inform`, keine neue AD-Bean), R-10.8 im bestätigten Wortlaut, `checkDateiname` erweitert. Muster und Wortlaut bestätigt (Nutzer 19.11.2026, Sitzung 0136) – `arbeit/APD-138 Testfall-Liste.md`, `arbeit/APD-138 Muster/`, `arbeit/0136 APD-138 Klärung.md` | 19.11.2026 |
+| APD-138 | 2 | **Dateiname am iPad in einer Zeile (aus RLB-127, Nutzer 19.11.2026):** am iPad wächst das Hinweisfenster mit dem Dateinamen bis zur Breite von `#msg.wide` (600 px mit der Textgröße, höchstens Bildschirmbreite − 32 px), darüber Umbruch nach einem Leerzeichen; iPhone wie heute. Allgemein: R-10.8 im bestätigten Wortlaut, `checkDateiname` erweitert. **Als AD-Bean `hinweis`** (`createHinweis`, Eigenschaft `breiteNachDateiname`; `inform` bleibt als Aufruf – Nutzer 19.11.2026, Sitzung 0136; Schnittstelle und Listenzeile in 0137). Muster und Wortlaut bestätigt (Nutzer 19.11.2026, Sitzung 0136) – `arbeit/APD-138 Testfall-Liste.md`, `arbeit/APD-138 Muster/`, `arbeit/0136 APD-138 Klärung.md` | 19.11.2026 |
 
 1 Punkt bereit.
 
