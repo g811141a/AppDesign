@@ -75,7 +75,12 @@ AD-Bean: `sourcehighlight` (neu).
 **Testfall (User)** im Usertest: Katalog ‚Hervorgehobene Quelle‘ am iPad ausprobieren; in der App ‚Teilen‘ antippen – der Knopf bleibt blau, bis die
 Meldung zu ist; Mehr-Menü öffnen – der Mehr-Knopf ist blau, bis das Menü zu ist.
 
-## 7. Offen
+## 7. Entschieden (Nutzer 20.11.2026, Sitzung 0145, im Fenster)
+
+- **U-1: ja, alle drei** (Mehr-Knopf bei offenem Menü, Eintrag des Untermenüs, Schaltfläche der Sprechblase) in die Bean.
+- **Listenzeile (Abschnitt 4) und Testfall-Liste S-1 bis S-13 freigegeben.**
+
+## 8. Vorher offen (erledigt)
 
 - **U-1 Umfang:** E-1 nannte den Mehr-Knopf bei offenem Menü. Dieselbe Tönung setzt ui.js auch am Eintrag des Untermenüs und an der Schaltfläche der
   Sprechblase. Empfehlung: **alle drei in die Bean** – sonst setzt ui.js `on` für dieselbe Aufgabe weiter an zwei Stellen.
