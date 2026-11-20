@@ -1,4 +1,4 @@
-/* AppDesign 4.65.0 · design.css – gemeinsame Gestaltung der iPad-Web-Apps von g811141a (Apple-like)
+/* AppDesign 4.66.0 · design.css – gemeinsame Gestaltung der iPad-Web-Apps von g811141a (Apple-like)
    Einbinden im <head> vor dem eigenen <style> der App:  <link rel="stylesheet" href="../AppDesign/fassung/X.Y.Z/design.css"> (feste Fassung, R-10.3)
    Farben als Variablen auf :root, Dunkelmodus über data-theme="dark" (setzt ui.js / applyTheme).
    Komponenten: Schaltflächen, Suchfeld, Kapsel, Eingabefelder, Datumsfelder, Kopfzeile, Seitenleiste,
@@ -6,7 +6,7 @@
    Options-Kapsel; seit 4.1.0 iPhone-Ansicht (html.phone: Seitenkopf, großer Titel, Liste, Kasten, untere Leiste). Regeln dazu: README - Designrichtlinie allgemein.md */
 /* Farben im Apple-Look: Hintergrund Hellgrau, Kästen weiß ohne Rand, schwebende Schaltflächen */
 :root {
-  --ad-version: "4.65.0";   /* R-10.3: Version der Bausteine, die App prüft sie beim Start */
+  --ad-version: "4.66.0";   /* R-10.3: Version der Bausteine, die App prüft sie beim Start */
   --bg: #f2f2f7;
   --card: #ffffff;
   --ink: #1c1c1e;
@@ -155,7 +155,7 @@ button { display: inline-flex; align-items: center; justify-content: center; gap
 button[hidden] { display: none; }
 /* Seit 4.7.0: Kein Text ragt über seine Zelle oder Kachel hinaus – zu lange Wörter brechen im Wort um (R-6.3);
    in Tabellen sorgt breakable() in ui.js für Umbruchstellen in sehr langen Wörtern */
-td, th, .ln .t, dd, .box .kv .v, .irow .t, .side-row .t, .fazit-box, .bhint, .bnote, .msg-text, .pop p { overflow-wrap: anywhere; }
+td, th, .ln .t, dd, .box .kv .v, .irow .t, .side-row .t, .fazit-box, .bhint, .bnote, .pop p { overflow-wrap: anywhere; }
 /* Seit 4.3.0: Doppeltippen vergrößert nie die Ansicht (Zoomen mit zwei Fingern bleibt möglich) */
 * { touch-action: manipulation; }
 /* R-3.4 (seit 4.35.0, APD-43 K6, K9): kein Fokus-Rahmen beim Antippen und beim Öffnen eines Fensters, in Textfeldern nie – auch nicht
@@ -503,7 +503,6 @@ html, html * { -webkit-tap-highlight-color: transparent; }
 .grossanzeige svg { flex: none; width: min(2.6em, 30vh); height: min(2.6em, 30vh); stroke-width: 1.6; color: var(--ink); }
 :is(.nb, .pnav, .bbar, .dlg-head, .side-head, .side-search, .fab) button { -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
 
-.msg-text { padding: 8px 2px; }
 
 /* Seit 4.3.0: Nach oben / Ans Ende in einer senkrechten Kapsel */
 .fab { position: fixed; right: max(16px, var(--safe-right)); bottom: calc(16px + max(var(--vv-bottom), var(--safe-bottom))); display: flex; flex-direction: column; z-index: 4;
@@ -578,18 +577,19 @@ dialog form { display: flex; flex-direction: column; max-height: var(--dlg-max, 
 .dlg-head .mid { flex: none; max-width: 60%; min-width: 0; text-align: center; }
 .dlg-head .mid .sub { display: block; font-size: var(--tb-footnote); color: var(--muted); line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .dlg-head .mid .sub:empty { display: none; }
-#msg { width: min(max(360px, calc(360px * var(--f-body))), 90vw); min-width: 0; }
-#msg, #msg form { max-height: var(--msg-max, calc(100vh - 40px)); }
-#msg .dlg-head { border: none; }
-#msg .msg-text { text-align: center; padding: 0 4px 10px; }
+/* AD-Bean hinweis (seit 4.66.0 alles unter .ad-hinweis, APD-136 b1, R-1.13; vorher #msg, .msg-text, .msg-btns, .wide) */
+.ad-hinweis { width: min(max(360px, calc(360px * var(--f-body))), 90vw); min-width: 0; }
+.ad-hinweis, .ad-hinweis .ad-hinweis-form { max-height: var(--msg-max, calc(100vh - 40px)); }
+.ad-hinweis .ad-hinweis-kopf { border: none; }
+.ad-hinweis .ad-hinweis-text { text-align: center; padding: 0 4px 10px; overflow-wrap: anywhere; }
 /* seit 4.57.0 (APD-116, R-10.8): Dateiname allein in einer eigenen Zeile unter dem Satz (fett, zentriert wie der Text); jedes Wort am Stück
    (.fw), deshalb Umbruch nur nach einem Leerzeichen – nur ein Wort, das länger ist als die Zeile, bricht in sich (R-6.3) */
 .fname { display: block; margin-top: 2px; text-align: center; }
 .fname .fw { display: inline-block; max-width: 100%; overflow-wrap: anywhere; }
 /* Seit 4.11.0 (R-9.4): kleines Fenster mit einer blauen Schaltfläche unter dem Text (z. B. ‚Abgleichbericht anzeigen‘) */
-#msg.wide { width: min(max(600px, calc(600px * var(--f-body))), calc(100vw - 32px)); }
-#msg .msg-btns { display: flex; justify-content: center; padding: 2px 0 6px; }
-#msg .msg-btns button { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 20px; border-radius: 999px; font-size: var(--t-body); }
+.ad-hinweis.ad-hinweis-breit { width: min(max(600px, calc(600px * var(--f-body))), calc(100vw - 32px)); max-width: none; }
+.ad-hinweis .ad-hinweis-knoepfe { display: flex; justify-content: center; padding: 2px 0 6px; }
+.ad-hinweis-knoepfe .ad-hinweis-knopf { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 20px; border-radius: 999px; font-size: var(--t-body); }
 /* Abgleichbericht als Vorschau wie die Ausgabe der App: immer hell, volle Breite, seitlich wischen statt umbrechen */
 .dlg-body.sync-preview { margin: 0; padding: 24px; background: #fff; color: #000; color-scheme: light; overflow: auto; }
 .dlg-body.sync-preview .sync-report { min-width: 760px; }
@@ -789,8 +789,8 @@ html.blatt-zurueck .blatt-seite { transform-origin: 50% 0; border-radius: 12px; 
 html.blatt-zieht, html.blatt-zieht * { -webkit-user-select: none; user-select: none; }
 #dlg .dlg-head { touch-action: none; }
 #dlg .dlg-body { overscroll-behavior: none; }
-html.phone #msg { width: min(360px, calc(100vw - 32px)); }
-html.phone #msg.wide { width: min(600px, calc(100vw - 24px)); }
+html.phone .ad-hinweis { width: min(360px, calc(100vw - 32px)); }
+html.phone .ad-hinweis.ad-hinweis-breit { width: min(600px, calc(100vw - 24px)); }
 html.phone :is(#dlg, .blatt-geist) .dlg-head { gap: 8px; padding: 10px max(12px, var(--safe-right)) 8px max(12px, var(--safe-left)); }
 html.phone :is(#dlg, .blatt-geist) .dlg-head .hl, html.phone :is(#dlg, .blatt-geist) .dlg-head .hr { flex: none; gap: 8px; }
 html.phone :is(#dlg, .blatt-geist) .dlg-head .mid { flex: 1; max-width: none; min-width: 0; }

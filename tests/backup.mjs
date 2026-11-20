@@ -35,7 +35,7 @@ export async function checkBackup(page, { menu = '#sideMore', list, dateiname = 
     const d = JSON.parse(content);
     if (!d.savedAt || !d.savedOn || !Array.isArray(d[list])) E('R-9.1 Backup ohne Zeitpunkt, Gerät oder Daten');
   }
-  const msg = await page.locator('#msg[open]').count() ? await page.locator('#msg').evaluate(m => ({ title: m.querySelector('h3')?.textContent, text: m.querySelector('.msg-text')?.textContent })) : null;
+  const msg = await page.locator('#msg[open]').count() ? await page.locator('#msg').evaluate(m => ({ title: m.querySelector('h3')?.textContent, text: m.querySelector('.ad-hinweis-text')?.textContent })) : null;
   if (!msg || msg.title !== 'Backup' || !msg.text.startsWith('✅')) E('R-9.1 nach dem Backup fehlt das kleine Fenster ‚Backup‘ mit ✅');
   await closeMsg();
   if (download) {
@@ -76,7 +76,7 @@ export async function checkBackup(page, { menu = '#sideMore', list, dateiname = 
   }
   // 4. Unlesbare Datei → kleines Fenster ‚Backup laden‘ mit ⚠️ und Grund
   await load('kaputt.json', Buffer.from('kein Backup'));
-  const bad = await page.locator('#msg[open]').count() ? await page.locator('#msg').evaluate(m => ({ title: m.querySelector('h3')?.textContent, text: m.querySelector('.msg-text')?.textContent })) : null;
+  const bad = await page.locator('#msg[open]').count() ? await page.locator('#msg').evaluate(m => ({ title: m.querySelector('h3')?.textContent, text: m.querySelector('.ad-hinweis-text')?.textContent })) : null;
   if (!bad || bad.title !== 'Backup laden' || !bad.text.startsWith('⚠️') || !/konnte nicht gelesen werden/.test(bad.text)) E('R-9.2 unlesbare Datei: kein kleines Fenster ‚Backup laden‘ mit ⚠️ und Grund');
   await closeMsg();
   // 5. Backup-Kachel nur, solange heute noch kein Backup erstellt wurde und es Einträge gibt; die Offline-Zeile steht immer im Fuß (APD-74)

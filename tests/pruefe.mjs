@@ -258,6 +258,8 @@ export const GEGENPROBEN_MASSE = {
   // seit 4.53.0 (R-3.9, APD-38/T-37): Kapsel und Menü ohne Glas · eine Leiste aus Glas
   glas: { zeichen: /R-3\.9 APD-62\/L-1 .*nicht aus Glas/, was: 'Kapsel und Menü ohne Unschärfe (APD-62/L-1)' },
   glasleiste: { zeichen: /R-3\.9 APD-62\/L-7 /, was: 'Kopfzeile aus Glas (APD-62/L-7)' },
+  // seit 4.65.1 (P-115/5): eine Kapsel mit nur einer Icon-Schaltfläche ist oval
+  einzelkapsel: { zeichen: /R-3\.1 Kapsel mit nur einer Schaltfläche/, was: 'Kapsel der Seitenleiste nur mit ‚Mehr‘ (P-115/5)' },
 };
 function gegenprobeMasse(fall) {
   const beob = fn => new MutationObserver(() => fn()).observe(document, { subtree: true, childList: true });
@@ -294,6 +296,7 @@ function gegenprobeMasse(fall) {
       document.addEventListener('click', e => { if (/Änderungen verwerfen/.test(e.target.closest('button')?.textContent || '')) aus = true; }, true); },
     glas: () => stil('.fab, .menu { -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }'),
     glasleiste: () => stil('.nb, .pnav { -webkit-backdrop-filter: blur(20px) !important; backdrop-filter: blur(20px) !important; }'),
+    einzelkapsel: () => stil('.side-head .grp > button:not(:last-child) { display: none !important; }'),
     sofort: () => addEventListener('load', () => { confirmPop = async () => true; }),
     abbrechen2: () => addEventListener('load', () => { const alt = confirmPop; confirmPop = async (...a) => { await alt(...a); return true; }; }),
   }[fall];
@@ -421,7 +424,7 @@ export function pruefung(name, pw, { hig = null, out = null } = {}) {
       catch (e) { melde('', `Schritt bricht ab: ${e.message.split('\n')[0]}`, name); throw e; }
       // Gegenprobe der Grundregeln (Testfall-Liste APD-5, APD-5/C-1): PRUEF_GEGENPROBE=grundregeln legt beim ersten Schritt einen zu
       // breiten Text sichtbar in den Vordergrund (auch in ein offenes Fenster) – R-6.3 muss ihn melden.
-      if (hig && gegenprobeGrund) { gegenprobeGrund = false; await p.evaluate(() => { const d = document.createElement('div'); d.id = 'gegenprobe'; d.className = 'msg-text';
+      if (hig && gegenprobeGrund) { gegenprobeGrund = false; await p.evaluate(() => { const d = document.createElement('div'); d.id = 'gegenprobe'; d.className = 'ad-hinweis-text';
         d.style.cssText = 'position:fixed;top:120px;left:20px;width:100px;white-space:nowrap;z-index:99999'; d.textContent = 'a'.repeat(100);
         (document.querySelector('dialog[open]') || document.body).append(d); }); }
       if (hig) await hig.measure(p, wo(name), { schnell: true });   // measure wartet selbst, bis die Seite ruht

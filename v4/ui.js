@@ -1,4 +1,4 @@
-// AppDesign 4.65.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
+// AppDesign 4.66.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
 // Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/fassung/X.Y.Z/ui.js"></script> (feste Fassung, R-10.3)
 // Klassisches Skript: alle Funktionen sind global und für das Skript der App sichtbar.
 //
@@ -19,7 +19,7 @@
 
 'use strict';
 // Version der Bausteine (R-10.3): die App vergleicht sie beim Start mit der benötigten Fassung.
-const AD_VERSION = '4.65.0';
+const AD_VERSION = '4.66.0';
 // ‚Bewegung reduzieren‘ (R-1.9) – die eine Abfrage für alle Bausteine (seit 4.64.0, APD-135/B-4.2; vorher fünfmal eigens gebaut)
 const bewegungRuhig = () => !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
 // APD-129 Teil 2 (seit 4.59.2, Messung 14.11.2026 arbeit/APD-129/messung-2026-11-14-2137.txt, Zeilen 9–17, 207–216, 263–272; Designrichtlinie 13
@@ -86,7 +86,12 @@ const ICONS = {
   'settings': '<path d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915"/><circle cx="12" cy="12" r="3"/>'
 };
 // Seit 4.42.0 (APD-87, R-4.1): das Icon des Mehr-Knopfs trägt data-mehr – bei offenem Menü zeigt es senkrechte Punkte (mehrKippen).
-const ic = (name, cls = '') => `<svg class="ic ${cls}" viewBox="0 0 24 24" aria-hidden="true"${name === 'ellipsis' ? ' data-mehr' : ''}>${ICONS[name]}</svg>`;
+// Seit 4.66.0 (APD-136 b3): ein unbekannter Name gibt einen Konsolenfehler und kein svg (vorher ein unsichtbares svg mit dem Text ‚undefined‘);
+// checkWerte (Icons) prüft, dass jeder Name in ic('…') in ui.js, Vorlage und App in ICONS steht.
+const ic = (name, cls = '') => {
+  if (!Object.hasOwn(ICONS, name)) { console.error(`ic: unbekanntes Symbol ‚${name}‘`); return ''; }
+  return `<svg class="ic ${cls}" viewBox="0 0 24 24" aria-hidden="true"${name === 'ellipsis' ? ' data-mehr' : ''}>${ICONS[name]}</svg>`;
+};
 // R-7.7 (seit 4.50.0, APD-30, Designrichtlinie 15.23; Testfall-Liste arbeit/APD-30 Testfall-Liste.md L-1 bis L-20): leerer Zustand wie Apple
 // ContentUnavailableView – Symbol (für VoiceOver verborgen), Titel als Überschrift, Satz, optional ein getönter Knopf { id, label }, der dasselbe
 // auslöst wie der Knopf oder Menüpunkt, für den er steht (die App setzt seinen onclick). klein: Seitenleiste neben dem Inhalt (nur Symbol und
@@ -1561,7 +1566,7 @@ function whenText(ms) {
 //   const sync = createSync({ list: 'trips', sub: 'days', subAt: 'dayAt', maxFields: ['outputCounter'],
 //                             nouns: ['Reiselogbuch', 'Reiselogbücher', 'Reiselogbüchern'] });
 // list = Liste der Einträge (je Eintrag eine id und ein title), sub = Unterdaten je Schlüssel (z. B. Tage), subAt = Feld für deren
-// Zeitpunkte, maxFields = Felder ohne Zeitpunkt, beim Abgleich gilt der größere Wert (z. B. Dateinummer).
+// Zeitpunkte (seit 4.66.0 mit Standardwert `${sub}At`, APD-136 b2 – ohne Angabe landeten sie unter ‚undefined‘), maxFields = Felder ohne Zeitpunkt, beim Abgleich gilt der größere Wert (z. B. Dateinummer).
 // Jede Änderung bekommt je Feld Zeitpunkt und Gerät (metaAt = { Feld: Zeitpunkt }, subAt = { Schlüssel: { Feld: Zeitpunkt } },
 // changedAt/changedOn für ‚geändert am … · Gerät‘). Gelöschte Einträge stehen in data.deleted ({ id, at, on }).
 // R-9.3: je Feld gilt die neuere Änderung; gleich alt: das Vorhandene hier bleibt, Fehlendes kommt dazu.
@@ -1570,7 +1575,7 @@ function whenText(ms) {
 // ISO-Datum als Schlüssel erscheinen als ‚Mo 12.10.2026‘, sonst über subLabel(key).
 // Seit 4.12.1: values – je Feld, wie ein Wert im Abgleichbericht angezeigt wird ({ transport: v => … }), damit dort dasselbe
 // steht wie in der App (R-10.1) und nicht der gespeicherte Wert (z. B. Kürzel).
-function createSync({ list, sub, subAt, maxFields = [], nouns = ['Eintrag', 'Einträge', 'Einträgen'], labels = {}, values = {}, subLabel = null, app = document.title }) {
+function createSync({ list, sub, subAt = `${sub}At`, maxFields = [], nouns = ['Eintrag', 'Einträge', 'Einträgen'], labels = {}, values = {}, subLabel = null, app = document.title }) {
   const STAMPS = [sub, subAt, 'metaAt', 'changedAt', 'changedOn', ...maxFields];
   const metaKeys = e => Object.keys(e).filter(k => !STAMPS.includes(k));
   const metaObj = e => Object.fromEntries(metaKeys(e).map(k => [k, e[k]]));
@@ -1812,13 +1817,15 @@ function createSync({ list, sub, subAt, maxFields = [], nouns = ['Eintrag', 'Ein
 // Seit 4.64.0 (APD-138, R-10.8, R-1.13): das Hinweisfenster ist die AD-Bean `hinweis` (Fenster und Meldungen) auf <dialog id="msg">; ui.js legt sie
 // einmal an (adHinweis), inform(…) ist der kurze Aufruf dafür.
 // Eigenschaft breiteNachDateiname (Standard ein): steht ein Dateiname (.fname) im Text, wird das Fenster am iPad so breit, dass er in einer Zeile
-// steht – mindestens die Grundbreite von #msg, höchstens die Breite von #msg.wide (600 px × Textgröße, höchstens Bildschirmbreite − 32 px); darüber
+// steht – mindestens die Grundbreite des Fensters, höchstens die des breiten Fensters (600 px × Textgröße, höchstens Bildschirmbreite − 32 px); darüber
 // Umbruch nur nach einem Leerzeichen (.fw). Am iPhone und im breiten Fenster bleibt die Breite aus design.css. Neu berechnet bei jedem resize (Drehen,
 // Textgröße – textWechsel meldet resize), vor placeDialogs.
 // Schnittstelle (R-1.13, Liste der AD-Beans in Designrichtlinie 15) – die App nutzt nur diese Namen:
 //   inform(titel, html, { wide, action }) → Promise (erfüllt beim Schließen)
 //   createHinweis(fenster, { breiteNachDateiname = true }) – ui.js legt die eine Bean für #msg an
 //   h.breiteNachDateiname (lesen und setzen) · h.offen (nur lesen) · h.zeigen(titel, html, { breit, aktion }) → Promise · h.schliessen() · h.on('zu', fn) → abmelden
+// Seit 4.66.0 (APD-136 b1, R-1.13): CSS nur unter .ad-hinweis (Fenster), .ad-hinweis-breit, -form, -kopf, -text, -knoepfe, -knopf – vorher #msg, .msg-text,
+// .msg-btns und .wide; Aussehen unverändert.
 function createHinweis(fenster, { breiteNachDateiname = true } = {}) {
   const hoerer = { zu: new Set() };
   let fertig = null;
@@ -1831,33 +1838,34 @@ function createHinweis(fenster, { breiteNachDateiname = true } = {}) {
   };
   if (!(fenster instanceof HTMLDialogElement)) { console.error('hinweis: fenster fehlt'); return bean; }
   fenster.dataset.adBean = 'hinweis';
+  fenster.classList.add('ad-hinweis');
   // Breite nach Dateiname: Breite des Namens in einer Zeile + Rand des Fensters um den Text, zwischen Grund- und Höchstbreite
   function passen() {
     fenster.style.width = ''; fenster.style.maxWidth = '';
     const n = fenster.querySelector('.fname');
-    if (!breiteNachDateiname || !n || !fenster.open || isPhone() || fenster.classList.contains('wide')) return;
+    if (!breiteNachDateiname || !n || !fenster.open || isPhone() || fenster.classList.contains('ad-hinweis-breit')) return;
     const probe = n.cloneNode(true);
     probe.style.cssText = 'position:absolute;visibility:hidden;white-space:nowrap;display:inline-block;width:auto;left:0;top:0';
     n.parentNode.append(probe);
     const name = probe.getBoundingClientRect().width;
     probe.remove();
     const grund = fenster.getBoundingClientRect().width, rand = grund - n.getBoundingClientRect().width;
-    fenster.classList.add('wide');
+    fenster.classList.add('ad-hinweis-breit');
     const hoechst = fenster.getBoundingClientRect().width;
-    fenster.classList.remove('wide');
+    fenster.classList.remove('ad-hinweis-breit');
     const soll = Math.ceil(name + rand + 1);
-    // max-width wie bei dialog.wide aufheben (dialog: höchstens 90vw) – die Höchstbreite liegt mit Bildschirmbreite − 32 px darunter
+    // max-width wie beim breiten Fenster aufheben (dialog: höchstens 90vw) – die Höchstbreite liegt mit Bildschirmbreite − 32 px darunter
     if (soll > grund + 0.5) { fenster.style.width = Math.min(soll, hoechst) + 'px'; fenster.style.maxWidth = 'none'; }
   }
   addEventListener('resize', () => { if (fenster.open) passen(); });
   function zeigen(titel, html, { breit = false, aktion = null } = {}) {
     return new Promise(resolve => {
-      fenster.classList.toggle('wide', breit);
+      fenster.classList.toggle('ad-hinweis-breit', breit);
       fenster.innerHTML = `
-      <form method="dialog">
-        <div class="dlg-head"><div class="hl"><button type="button" class="round" data-x aria-label="Schließen">${ic('x')}</button></div>
+      <form method="dialog" class="ad-hinweis-form">
+        <div class="dlg-head ad-hinweis-kopf"><div class="hl"><button type="button" class="round" data-x aria-label="Schließen">${ic('x')}</button></div>
           <div class="mid"><h3 id="msgTitel">${esc(titel)}</h3></div><div class="hr"></div></div>
-        <div class="dlg-body"><div class="msg-text" id="msgText">${html}</div>${aktion ? `<div class="msg-btns"><button type="button" class="primary" data-act>${aktion.icon ? ic(aktion.icon) : ''}${esc(aktion.label)}</button></div>` : ''}</div>
+        <div class="dlg-body"><div class="ad-hinweis-text" id="msgText">${html}</div>${aktion ? `<div class="ad-hinweis-knoepfe"><button type="button" class="primary ad-hinweis-knopf" data-act>${aktion.icon ? ic(aktion.icon) : ''}${esc(aktion.label)}</button></div>` : ''}</div>
       </form>`;
       const done = () => { fertig = null; if (fenster.open) fenster.close(); hoerer.zu.forEach(fn => { try { fn(); } catch (e) { console.error(e); } }); resolve(); };
       fertig = done;

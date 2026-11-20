@@ -480,6 +480,7 @@ export function checkSchema(appDir, app, gp = (process.env.PRUEF_GEGENPROBE || '
 //   W-73: die App nennt keine Klasse .ad-<kennung>… und keinen inneren Namen der Bean (Namen, die ui.js im Abschnitt der Bean außer der Fabrik
 //         anlegt) – nur Fabrik, Eigenschaften, Nur lesen, Methoden, Ereignisse
 // Gegenprobe W-80: PRUEF_GEGENPROBE=beans:W-80 fügt dem gelesenen index.html eine Regel für .ad-swipeactions-kapsel hinzu – W-73 wird rot.
+//   APD-136/V-2 (seit 4.66.0): kein CSS über die id des Elements, auf dem ui.js die Bean anlegt; Gegenprobe PRUEF_GEGENPROBE=beans:V-2.
 export function checkBeans(appDir, app) {
   const errors = [], E = t => errors.push(`R-1.13 ${t}`);
   const read = f => { try { return readFileSync(new URL(f, appDir), 'utf8'); } catch { return ''; } };
@@ -516,6 +517,12 @@ export function checkBeans(appDir, app) {
       if (!sel.includes(`ad-${kennung}`) || sel.startsWith('@')) continue;
       for (const s of sel.split(',').map(x => x.trim())) if (!new RegExp(`\\.ad-${kennung}(?:-[\\w-]+)?(?:[.:\\[][^\\s>+~]*)?$`).test(s)) E(`W-72 ${kennung}: CSS ‚${s}‘ zielt nicht auf eine Klasse .ad-${kennung}…`);
     }
+    // APD-136/V-2 (seit 4.66.0): kein CSS über die id des Elements, auf dem ui.js die Bean anlegt (z. B. createHinweis(msg) → #msg) –
+    // das CSS der Bean steht nur unter .ad-<kennung>…; Gegenprobe PRUEF_GEGENPROBE=beans:V-2 (Regel ‚#msg .msg-text‘ in design.css)
+    const cssV2 = process.env.PRUEF_GEGENPROBE === 'beans:V-2' ? css + '\n#msg .msg-text { color: red; }\n' : css;
+    const ids = [...ui.matchAll(new RegExp(`\\b${fabrik}\\((\\w+)`, 'g'))].map(m => ui.match(new RegExp(`const ${m[1]} = document\\.getElementById\\('([\\w-]+)'\\)`))?.[1]).filter(Boolean);
+    for (const m of cssV2.replace(/\/\*[\s\S]*?\*\//g, '').matchAll(/([^{}]+)\{[^{}]*\}/g)) for (const s of m[1].split(',').map(x => x.trim()))
+      for (const id of ids) if (new RegExp(`#${id}(?![\\w-])`).test(s)) E(`APD-136/V-2 ${kennung}: CSS ‚${s}‘ zielt über #${id} auf die Bean – nur unter .ad-${kennung}…`);
     for (const m of css.replace(/\/\*[\s\S]*?\*\//g, '').matchAll(/([^{}]+)\{[^{}]*\}/g)) for (const s of m[1].split(',').map(x => x.trim()))
       if (/\.ad-[a-z]+/.test(s) && !s.includes(`ad-${kennung}`) && !kennungen.some(k => s.includes(`ad-${k}`))) E(`W-72 CSS ‚${s}‘ nennt eine Bean, die nicht in der Liste steht`);
     // W-73: der Code der App nennt keine Klasse und keinen inneren Namen der Bean

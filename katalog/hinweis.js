@@ -12,7 +12,7 @@ katalogBean({
   methoden: [['zeigen(titel, html, { breit, aktion })', 'Zeigt das Fenster; erfüllt beim Schließen. aktion = blaue Schaltfläche unter dem Text.'], ['schliessen()', 'Schließt das Fenster.']],
   ereignisse: [['zu', 'Das Fenster ist geschlossen.']],
   regeln: [['R-10.8', 'Dateiname im Hinweisfenster'], ['R-4.3', 'Abfragen und Meldungen'], ['R-1.8', 'VoiceOver']],
-  verlauf: [['4.64.0', 'Neu als AD-Bean; Dateiname am iPad in einer Zeile (APD-138).']],
+  verlauf: [['4.64.0', 'Neu als AD-Bean; Dateiname am iPad in einer Zeile (APD-138).'], ['4.66.0', 'CSS nur unter .ad-hinweis (APD-136 b1); Aussehen unverändert.']],
   anleitung: 'Einen Fall antippen – das Fenster geht auf. Mit dem Schalter ‚Breite nach Dateiname‘ siehst du den Unterschied beim langen Dateinamen.',
   vorfuehren(el, protokoll) {
     const h = adHinweis;

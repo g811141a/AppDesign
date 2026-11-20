@@ -3050,7 +3050,7 @@ export const DATEINAME_TEXTE = {
   error: ['⚠️ Konnte nicht übergeben werden:', ''],
   print: ['✅ Drucken-Menü geöffnet für', 'Dort über ‚Teilen‘ → ‚In Dateien sichern‘ als PDF ablegen.'],
 };
-export async function checkDateiname(p, { ausloesen, faelle = ['shared', 'aborted', 'error', 'downloaded'], name = null, groessen = ['l', 'xxxl', 'ax3'], text = '#msg[open] .msg-text', schliessen = '#msg [data-x]', where = '', drehen = null } = {}) {
+export async function checkDateiname(p, { ausloesen, faelle = ['shared', 'aborted', 'error', 'downloaded'], name = null, groessen = ['l', 'xxxl', 'ax3'], text = '#msg[open] .ad-hinweis-text', schliessen = '#msg [data-x]', where = '', drehen = null } = {}) {
   const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}R-10.8 ${t}`);
   // seit 4.64.0 (APD-138, AD-Bean hinweis): am iPad so breit, dass der Name in einer Zeile steht – zwischen Grund- und Höchstbreite; am iPhone nichts Eigenes
   const breitePruefen = (e, w) => {
@@ -3100,9 +3100,9 @@ export async function checkDateiname(p, { ausloesen, faelle = ['shared', 'aborte
             // Breite des Namens in einer Zeile; am iPhone und im breiten Fenster keine eigene Breite
             breite: (() => { const d = t.closest('dialog'); if (!d || d.id !== 'msg') return null;
               const phone = document.documentElement.classList.contains('phone'), ist = d.getBoundingClientRect().width;
-              if (phone || d.classList.contains('wide')) return { phone, eigen: !!d.style.width, ist };
+              if (phone || d.classList.contains('ad-hinweis-breit')) return { phone, eigen: !!d.style.width, ist };
               const alt = d.style.width, altMax = d.style.maxWidth; d.style.width = ''; d.style.maxWidth = ''; const grund = d.getBoundingClientRect().width;
-              d.classList.add('wide'); const hoechst = d.getBoundingClientRect().width; d.classList.remove('wide'); d.style.width = alt; d.style.maxWidth = altMax;
+              d.classList.add('ad-hinweis-breit'); const hoechst = d.getBoundingClientRect().width; d.classList.remove('ad-hinweis-breit'); d.style.width = alt; d.style.maxWidth = altMax;
               const pr = n.cloneNode(true); pr.style.cssText = 'position:absolute;visibility:hidden;white-space:nowrap;display:inline-block;width:auto;left:0;top:0';
               n.parentNode.append(pr); const nw = pr.getBoundingClientRect().width; pr.remove();
               return { phone, ist, grund, hoechst, soll: nw + (ist - nb.width) }; })() };
@@ -3128,7 +3128,7 @@ export async function checkDateiname(p, { ausloesen, faelle = ['shared', 'aborte
         await drehen(hoch); await p.waitForTimeout(400);
         const e = await p.evaluate(([zf, sel]) => { const zeilenVon = eval(zf); const t = document.querySelector(sel), n = t?.querySelector('.fname'); if (!n) return null;
           const d = t.closest('dialog'), ist = d.getBoundingClientRect().width, nb = n.getBoundingClientRect(), alt = d.style.width, altMax = d.style.maxWidth; d.style.width = ''; d.style.maxWidth = ''; const grund = d.getBoundingClientRect().width;
-          d.classList.add('wide'); const hoechst = d.getBoundingClientRect().width; d.classList.remove('wide'); d.style.width = alt; d.style.maxWidth = altMax;
+          d.classList.add('ad-hinweis-breit'); const hoechst = d.getBoundingClientRect().width; d.classList.remove('ad-hinweis-breit'); d.style.width = alt; d.style.maxWidth = altMax;
           const pr = n.cloneNode(true); pr.style.cssText = 'position:absolute;visibility:hidden;white-space:nowrap;display:inline-block;width:auto;left:0;top:0';
           n.parentNode.append(pr); const nw = pr.getBoundingClientRect().width; pr.remove();
           return { name: n.textContent, zeilen: zeilenVon(n), ragt: d.getBoundingClientRect().right > innerWidth + 1,

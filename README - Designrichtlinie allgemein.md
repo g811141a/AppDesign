@@ -1,6 +1,6 @@
 # Designrichtlinie allgemein
 
-**Version 4.65.0** · Stand 19.11.2026
+**Version 4.66.0** · Stand 20.11.2026
 
 Allgemeine Gestaltungs- und Bedienregeln für alle Web-Apps von g811141a auf iPad und iPhone. Die Datei liegt im Design-Repo
 **AppDesign** (g811141a/AppDesign); ihre Versionsnummer ist die des Repos. Die Komponenten sind dort einmal programmiert und

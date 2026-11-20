@@ -23,6 +23,9 @@ await hig.measure(page, 'Mehr-Menü (hell quer)');
 process.exit(hig.report());
 ```
 
+Seit 4.66.0 (P-115/F-1) meldet `hig.mjs` eine sichtbare Kapsel (`.grp`, `.navgrp`) mit nur einer Icon-Schaltfläche (R-3.1, oval statt rund – eine
+einzelne Schaltfläche ist ein runder Knopf `.round`); Gegenprobe `einzelkapsel` in `--gegenprobe masse`.
+
 Seit 4.57.0 prüft `hig.mjs` mit `kopfVerlauf` den Kopfverlauf (`--kopf-verlauf`) der Tabellen-Kopfzeile und der Bezeichnung im Kasten mit Feldern
 (Richtung, Anfangsfarbe der Fläche; R-6.2 vergleicht dazu auch `background-image`) und mit `kastenBezeichnung` die Bezeichnung (halbfett, Emoji so groß wie im Wert, R-6.5).
 
@@ -105,9 +108,10 @@ Zusammenspiel mit der App sichtbar wird, prüft die App selbst.
 - `oeffneMindestseite(p, { fehler })` – aus dem Text der Vorlage: `<head>`, `#dlg`, `#msg`, `ui.js`; das Skript der App durch die Platzhalter `db`, `save()`,
   `render()` und `const sync = createSync({ list: 'items', sub: 'sub', subAt: 'subAt' })` ersetzt. Fehlt der Vorlage `#dlg` oder `#msg`, ist das ein Fehler.
 - `checkWerte(p)` – Gruppe A mit festen Beispielwerten, Meldung ‚R-x.y <Baustein>: …‘: Version (`AD_VERSION` = `--ad-version` = Fassung = `AD_NEEDED` der
-  Vorlage, R-10.3), Icons (R-1.8), Leerer Zustand (R-7.7), Hilfen (`esc` R-10.1, `breakable` R-6.3, `iconText`/`aufzaehlung` R-10.5, Beträge R-5.1), Suche
+  Vorlage, R-10.3), Icons (R-1.8; seit 4.66.0 unbekannter Name ohne `svg` mit Konsolenfehler, jeder Name in `ic('…')` in `ui.js`, Vorlage und App steht
+  in `ICONS` – APD-136/V-4, V-5), Leerer Zustand (R-7.7), Hilfen (`esc` R-10.1, `breakable` R-6.3, `iconText`/`aufzaehlung` R-10.5, Beträge R-5.1), Suche
   (`checkSearchWords`, `markWords`, R-2.3), Teilen (`outputCss` R-6.2, `shareResultText` R-10.8), Backup (Dateiname R-10.7, `backupFileOf` → `readBackup`,
-  `backupTileHtml`, R-9.1), Abgleich (`checkSync`, R-9.2 bis R-9.4).
+  `backupTileHtml`, R-9.1), Abgleich (`checkSync`, R-9.2 bis R-9.4; seit 4.66.0 die Mindestseite ohne `subAt`, APD-136/V-3).
 - `pruefseite(pw, { out, teil })` – ein Teil mit Ergebnis und Rückgabewert (`pruefe.mjs`); Teil `werte`: `checkWerte` auf der Mindestseite, dann die Vorlage
   in iPad quer und hoch, iPhone hoch und quer, hell und dunkel, leer und mit 60 Unterpunkten mit den Grundregeln nach jedem Schritt (Menü, Fenster,
   Sprechblase im iPad quer und iPhone hoch).
