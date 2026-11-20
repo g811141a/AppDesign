@@ -35,17 +35,17 @@ Zusammenarbeit** (0 Nr. 15); die Arbeitsumgebung steht in der AppDesign-`CLAUDE.
   freigegeben** (`arbeit/APD-143 Wortlaut und Testfall-Liste.md`) → ‚0. Nächste Version‘.
 - **Bau-Frage 4.67.0 / 3.57.10** mit beiden Punkten: **Nein** – der Nutzer will vor dem Bau **noch zwei bis drei Themen klären** (Nutzer 20.11.2026).
 - **Bean `gedrueckt` (APD-136):** Vorschlag `arbeit/0144 APD-136 Bean gedrueckt Vorschlag.md`; entschieden: APD-136/E-1 **auch der Mehr-Knopf** bei offenem
-  Menü (`openMenu`) in die Bean, E-2 **Klasse `on` bleibt**, E-3 **App auf die Bean umstellen** (21 Stellen). Listenzeile und Testfall-Liste sind noch
-  **nicht** freigegeben (müssen nach E-1, E-3 und den englischen Namen angepasst werden).
+  Menü (`openMenu`) in die Bean, APD-136/E-2 **Klasse `on` bleibt**, APD-136/E-3 **App auf die Bean umstellen** (21 Stellen). Listenzeile und Testfall-Liste sind noch
+  **nicht** freigegeben (müssen nach APD-136/E-1, APD-136/E-3 und den englischen Namen angepasst werden).
 - **Namen:** neuer Name statt `gedrueckt`: **`sourcehighlight`** (Nutzer, im Fenster). Grundsatz des Nutzers: „Im Sourcecode alles in Englisch, alle
-  Beschreibungen und Dokumentationen in Deutsch; Bezeichnungen aus dem Code werden nicht übersetzt.“ Meine Meinung dazu mit **F-1 bis F-4** (Code-Namen
+  Beschreibungen und Dokumentationen in Deutsch; Bezeichnungen aus dem Code werden nicht übersetzt.“ Meine Meinung dazu mit **APD-136/F-1 bis APD-136/F-4** (Code-Namen
   englisch · Kommentare, Doku, Texte deutsch mit Namen in Code-Schrift · schrittweise beim Umbau, zuerst die 2 Beans · nie umbenannt: gespeicherte Daten,
   Backups, feste Fassungen, zitierte Prüf- und Dateinamen) in `arbeit/0144 Bean-Namen englisch Vorschlag.md` Abschnitt 3 – **Antwort des Nutzers offen**.
 
 ## 3. Nächster Schritt
 
 1. Lesen wie immer, Repos dazuholen, Tests einrichten, Lagebild als eigene Antwort mit Kachel.
-2. **Frage stellen:** ‚Code englisch, Texte deutsch‘ mit F-1 bis F-4 so? (Datei und Chat vor dem Fenster, Empfehlung: ja).
+2. **Frage stellen:** ‚Code englisch, Texte deutsch‘ mit APD-136/F-1 bis APD-136/F-4 so? (Datei und Chat vor dem Fenster, Empfehlung: ja).
 3. Danach Wortlaut nach 0 Nr. 29: Zusammenarbeit 1 (Sprache im Code) und R-1.13 (Kennung und Schnittstelle englisch), dazu die neuen englischen Namen für
    `hinweis` (Vorschlag `notice`, ‚ersetzt `hinweis`‘) und die Schnittstelle von `swipeactions` (Vorschläge in der Datei, Abschnitt 1).
 4. Bean `sourcehighlight` neu fassen (englische Schnittstelle, mit Mehr-Knopf, App umgestellt): Listenzeile und Testfall-Liste zur Freigabe.
@@ -70,5 +70,5 @@ In der neuen Sitzung müssen **AppDesign**, **ReiseLogBuch** und **ReiseLogBuch-
 ```
 Reiselogbuch 0145 – Code englisch/Texte deutsch, Bean sourcehighlight (APD-136)
 
-Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md, dann die GANZE Zusammenarbeit allgemein (3.17.0) und die Überschriften der Designrichtlinien. Prüfe Modell und Aufwand (get_session: eingestellt, dazu rate_limit_info; Sitzungsdatei: tatsächlich, auch model_fallback; Umgebungsvariable CLAUDE_CODE_EFFORT_LEVEL), hole die Repos g811141a/ReiseLogBuch und g811141a/ReiseLogBuch-Import dazu, wie in der AppDesign-CLAUDE.md unter ‚Arbeitsumgebung‘, richte die Tests ein und prüfe, ob in ~/.claude/settings.json Hooks stehen. Lagebild als eigene Antwort (im Chat und als Markdown-Datei) mit Kachel; danach weiter nach UEBERGABE.md Abschnitt 3 (zuerst die offene Frage ‚Code englisch, Texte deutsch‘ mit F-1 bis F-4 aus arbeit/0144 Bean-Namen englisch Vorschlag.md, dann Wortlaut und Bean sourcehighlight). Hilfsagenten nur mit Opus 5.5 und Aufwand hoch, einzeln nacheinander, auch web-fetch; Fable 5.2 vorerst nicht verwenden.
+Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md, dann die GANZE Zusammenarbeit allgemein (3.17.0) und die Überschriften der Designrichtlinien. Prüfe Modell und Aufwand (get_session: eingestellt, dazu rate_limit_info; Sitzungsdatei: tatsächlich, auch model_fallback; Umgebungsvariable CLAUDE_CODE_EFFORT_LEVEL), hole die Repos g811141a/ReiseLogBuch und g811141a/ReiseLogBuch-Import dazu, wie in der AppDesign-CLAUDE.md unter ‚Arbeitsumgebung‘, richte die Tests ein und prüfe, ob in ~/.claude/settings.json Hooks stehen. Lagebild als eigene Antwort (im Chat und als Markdown-Datei) mit Kachel; danach weiter nach UEBERGABE.md Abschnitt 3 (zuerst die offene Frage ‚Code englisch, Texte deutsch‘ mit APD-136/F-1 bis APD-136/F-4 aus arbeit/0144 Bean-Namen englisch Vorschlag.md, dann Wortlaut und Bean sourcehighlight). Hilfsagenten nur mit Opus 5.5 und Aufwand hoch, einzeln nacheinander, auch web-fetch; Fable 5.2 vorerst nicht verwenden.
 ```
