@@ -57,3 +57,28 @@ Apple nennt den Text der Wisch-Schaltfläche `title`; bei uns ist `label` schon 
 
 Kennung von dir gewählt. Schnittstelle nach Vorbild: Apple `sourceItem` (Element, an dem ein Popover hängt) und `isHighlighted` → Web-Schreibweise
 `highlighted`. Ideen: `source` (nur lesen), `setSource(el)`, `clearSource()` – oder näher an Apple `sourceItem`, `highlighted`.
+
+---
+
+## A – Überlegung und Vorschlag
+
+**Wozu ‚nie nach Geste oder Technik‘?** Die Regel soll verhindern, dass wir einen Baustein nach dem *Wie* benennen (`langdruecken`, `flexbox`), obwohl er
+eine Aufgabe hat, die auf mehreren Wegen erreichbar ist. Bei einem Apple-Namen ist diese Gefahr klein: *swipe actions* ist bei Apple der feste Name des
+Bauteils (`UISwipeActionsConfiguration`, „The set of actions to perform when swiping on rows of a table.“), nicht eine Beschreibung der Geste.
+
+**Für A-1 (Apple-Name hat Vorrang):** jeder, der Apple oder das Web kennt, versteht den Namen sofort; wir müssen nichts erfinden; `swipeactions` bleibt.
+**Für A-2 (Aufgabe hat Vorrang):** die Kennung sagt die Aufgabe auch ohne Apple-Kenntnis; aber `swipeactions` müsste `rowactions` werden – eine Kennung, die
+es bei Apple nicht gibt (erfunden), gegen die eben freigegebene Regel „Vorbild zuerst“.
+
+**Entschieden: A-1** (Nutzer 20.11.2026, Sitzung 0145, im Fenster: ‚Ja, A-1‘) – der neue Satz zur Kennung in R-1.13 unten ist damit **freigegeben**. Folge: der Satz zur Kennung in R-1.13 (eben freigegeben) wird angepasst.
+
+**Alt** (Stand eben freigegeben):
+> Die **Kennung** ist sprechend nach der Aufgabe (nie nach Geste oder Technik, keine Nummer), englisch wie die ganze Schnittstelle (Zusammenarbeit 1),
+> fest und nie wiederverwendet: …
+
+**Neu:**
+> Die **Kennung** ist englisch wie die ganze Schnittstelle: der Name des Vorbilds (Zusammenarbeit 1, z. B. `swipeactions` nach Apples *swipe actions*),
+> ohne Vorbild sprechend nach der Aufgabe (nie nach Geste oder Technik); keine Nummer, fest und nie wiederverwendet: …
+
+Folgen für B bis G: B nach Apple (*alert*-Familie), C `rows`, E `sourceView`/`sourceItem`; G hat kein Bauteil-Vorbild bei Apple – `sourcehighlight`
+ist nach der Aufgabe benannt und bleibt.
