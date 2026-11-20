@@ -82,3 +82,38 @@ es bei Apple nicht gibt (erfunden), gegen die eben freigegebene Regel „Vorbild
 
 Folgen für B bis G: B nach Apple (*alert*-Familie), C `rows`, E `sourceView`/`sourceItem`; G hat kein Bauteil-Vorbild bei Apple – `sourcehighlight`
 ist nach der Aufgabe benannt und bleibt.
+
+---
+
+## B – Überlegung und Vorschlag (Quellen nachgelesen)
+
+| Quelle | wörtlich |
+|---|---|
+| MDN `Window.alert()` | „window.alert() instructs the browser to display a dialog with an optional message, and to wait until the user dismisses the dialog.“ |
+| Apple `UIAlertController` | „An object that displays an alert message.“ |
+| SwiftUI `alert(_:isPresented:actions:message:)` | „Presents an alert with a message when a given condition is true …“ – Teile: Titel, `actions`, `message` |
+| SwiftUI `confirmationDialog(…)` | „Presents a confirmation dialog with a message …“; „In regular size classes in iOS, the system renders confirmation dialogs as a popover …“ |
+| HIG Action sheets | „An action sheet is a modal view that presents choices related to an action people initiate.“ |
+| MDN `HTMLDialogElement` | `open` – „indicating whether the dialog is available for interaction“ · `show()` – „Displays the dialog modelessly“ · `showModal()` – „Displays the dialog as a modal …“ · `close()` – „Closes the dialog.“ · Ereignis `close` – „Fired when the dialog is closed.“ |
+
+**Ergebnis:** Im Web ist *alert* genau unser Hinweisfenster (Meldung, wegtippen, keine Entscheidung); bei Apple ist es die *alert*-Familie. Die Sprechblase
+(`confirmPop`, Entscheidung, am iPad aus der Schaltfläche) entspricht Apples *confirmation dialog* bzw. *action sheet* und im Web `confirm()` – sie bekommt
+später diesen Namen; es gibt also keine Überschneidung.
+
+**Empfehlung B-1 `alert`** mit dieser Schnittstelle:
+
+| Teil | Alt | Neu | Vorbild |
+|---|---|---|---|
+| Kennung | `hinweis` | `alert` (ersetzt `hinweis`) | Web `alert()`, Apple *alert* |
+| Anlegen | `createHinweis(fenster, …)` | `createAlert(dialog, { fitFileName })` | – |
+| Eigenschaft | `breiteNachDateiname` | `fitFileName` | – (eigene Funktion) |
+| Nur lesen | `offen` | `open` | MDN `open` |
+| Methode | `zeigen(titel, html, { breit, aktion })` | `showModal(title, message, { wide, action })` – oder kurz `show(…)` | MDN: `showModal()` = modal (unser Fenster ist immer modal), `show()` = **nicht** modal; Apple `message` |
+| Methode | `schliessen()` | `close()` | MDN `close()` |
+| Ereignis | `zu` | `close` | MDN `close` |
+| Bean in ui.js | `adHinweis` | `adAlert` | – |
+| CSS | `.ad-hinweis…` | `.ad-alert`, `-wide`, `-form`, `-head`, `-message`, `-buttons`, `-button` | Apple `message` |
+| Katalog | `hinweis.js` | `alert.js` | – |
+
+Zu `show` oder `showModal`: nach der Regel ‚Vorbild zuerst‘ `showModal`, weil `show()` im Web ein Fenster **ohne** Sperre öffnet; `show` wäre kürzer, sagt
+aber nach Web-Vorbild etwas anderes. Die App ruft ohnehin `inform(…)` auf, nicht die Methode.
