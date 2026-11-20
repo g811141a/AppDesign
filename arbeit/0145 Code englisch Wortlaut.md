@@ -5,6 +5,8 @@ Sitzung 0145, 20.11.2026. **Entschieden:** APD-136/F-1 bis F-4 aus `arbeit/0144 
 
 **Stand der Freigabe** (Nutzer 20.11.2026, Sitzung 0145, im Fenster): Abschnitte 3 und 4 (neue Namen) **ja** · Abschnitt 5 **a) alle Felder englisch** ·
 Abschnitte 1 und 2 (Wortlaut der Regeln) **offen** – der Nutzer schreibt im Chat.
+**Überholt** durch `0145 Namen nach Vorbild.md`: Wortlaut Zusammenarbeit 1 dort (Abschnitt 4, mit ‚Vorbild zuerst‘) und R-1.13 wie hier Abschnitt 2
+**freigegeben**; die Namen (hier 3–5) werden neu besprochen (Brainstorming).
 
 ## 1. Zusammenarbeit 1 ‚Sprache und Ton‘ – Regel
 
