@@ -147,8 +147,8 @@ console.log(${falsch ? `f === 'abgleich' ? '✗ R-1.1 Anderes: x' : ` : ''}'✗ 
 scheinSeite(false);
 const nFaelle = Object.keys(bausteine).length;
 [rc, out] = await mitschreiben(() => lauf({ dir: url, pw, tests: ['schnell', { name: 'bausteine-pruefseite', teile: { werte: {} } }], argv: ['--browser', 'chromium', '--gegenprobe', 'pruefseite'] }));
-pruefe(rc === 0 && nFaelle === 8 && (out.match(/✗ bausteine-pruefseite \(werte: /g) || []).length === 8 && !/schnell/.test(out) && new RegExp(`Gegenprobe der Prüfseite: alle ${nFaelle} Läufe wurden rot`).test(out),
-  `APD-135/E-15 Gegenprobe der Prüfseite (8 Fälle): Rückgabewert ${rc}\n${out}`);
+pruefe(rc === 0 && nFaelle === 10 && (out.match(/✗ bausteine-pruefseite \(werte: /g) || []).length === 10 && !/schnell/.test(out) && new RegExp(`Gegenprobe der Prüfseite: alle ${nFaelle} Läufe wurden rot`).test(out),
+  `APD-135/E-15 Gegenprobe der Prüfseite (10 Fälle – seit 4.66.0 mit subat und iconname, APD-136/V-3, V-5): Rückgabewert ${rc}\n${out}`);
 scheinSeite(true);
 [rc, out] = await mitschreiben(() => lauf({ dir: url, pw, tests: [{ name: 'bausteine-pruefseite', teile: { werte: {} } }], argv: ['--browser', 'chromium', '--gegenprobe', 'pruefseite'] }));
 pruefe(rc === 1 && /meldeten die Gegenprobe nicht.*bausteine-pruefseite \(werte: Abgleich/.test(out), `APD-135/E-15 falsche Meldung zählt nicht als rot: Rückgabewert ${rc}\n${out}`);

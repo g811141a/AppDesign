@@ -1597,7 +1597,7 @@ af4610071f3061e517d3f906bb40f2416d3a861f3bfff2b34d7fe941de5bb188  4.66.0/tests/d
 b992ac5673a2a484422e9f7061a6208ea8f09e02b657a2dde29bb283d48f054c  4.66.0/tests/hig.mjs
 6fd247b080b11a3ed36540a15d5ce8400bc1f3cf5abe1c742eada7546dcfb7f6  4.66.0/tests/katalog.mjs
 6fc8b463be5c6563a1debfb9b6f676223adbac790975b8abc67a1cdf7cf4d376  4.66.0/tests/kontextmenue.mjs
-89f5fc0c3d64e13eaf409d57066f4ce9de23feb782ed3812a3b4480c78b4d8f2  4.66.0/tests/lauf-selbsttest.mjs
+65bf0bdaec4ed45f835d4ee5898fffaa8c35b909978cd6aad1cf9b7e40e4533e  4.66.0/tests/lauf-selbsttest.mjs
 9d7cfe6ba4ee177fb8a3e51cab7a2b4f73b4a77859dfdda14b27f64bc4ab2748  4.66.0/tests/lauf.mjs
 dd66216f9f77818fc2f9b7086f3b3df224e4ffb8ac788cddad53e406755cde42  4.66.0/tests/messung.mjs
 91526156945657d0ba7cccf4baff0d42b998fae87432926ecb96c187698a552e  4.66.0/tests/offline.mjs

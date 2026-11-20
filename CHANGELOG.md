@@ -36,7 +36,8 @@ APD-136/V-1 bis V-5; Bau bestätigt 20.11.2026 in Sitzung 0143).
   Mindestseite ohne `subAt` grün (APD-136/V-3, Gegenprobe `subat` ohne Standardwert → R-9.4 rot); `ic('gibt-es-nicht')` ohne `svg` mit Konsolenfehler
   (APD-136/V-4); jeder Name in `ic('…')` in `ui.js`, Vorlage und App steht in `ICONS` (APD-136/V-5, Gegenprobe `iconname` mit `ic('gibtsnicht')` → rot).
   Nachgeführt auf die neuen Klassen: `hig.mjs` (R-6.3, Texte), `pruefe.mjs` und `lauf.mjs` (Gegenprobe der Grundregeln), `ablauf.mjs` (`checkDateiname`,
-  `checkHinweisBreite` – Höchstbreite über `ad-hinweis-breit`), `backup.mjs`; im Reiselogbuch `ablauf-abgleich`.
+  `checkHinweisBreite` – Höchstbreite über `ad-hinweis-breit`), `backup.mjs`, `lauf-selbsttest.mjs` (Gegenprobe der Prüfseite mit 10 statt 8 Fällen);
+  im Reiselogbuch `ablauf-abgleich`.
 - **Katalog:** `katalog/hinweis.js` – Verlauf um 4.66.0 ergänzt.
 - AD-Bean: `hinweis` (CSS unter `.ad-hinweis`, Schnittstelle unverändert); b2 und b3: keine, weil `createSync` und `ic` keine Beans sind.
 
