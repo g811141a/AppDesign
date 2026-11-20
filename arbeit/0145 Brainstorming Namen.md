@@ -1,0 +1,59 @@
+# Brainstorming: Namen der AD-Beans (APD-136)
+
+Sitzung 0145, 20.11.2026. Grundlage: die freigegebene Regel „Gibt es ein Vorbild, wird sein Name übernommen – zuerst die Web-Plattform, dann Apple; erfunden
+wird nur, wo es keines gibt“ (Zusammenarbeit 1, Wortlaut in `0145 Namen nach Vorbild.md`). Quellen: Abschnitt 2 dort. ‚Vermutung‘ = in dieser Sitzung
+nicht nachgelesen.
+
+## A. Grundsatz: Kennung nach Apple-Bauteil oder nach Aufgabe?
+
+R-1.13 verlangt: Kennung „sprechend nach der Aufgabe (nie nach Geste oder Technik)“. Apple benennt Bauteile aber oft nach der Geste bzw. der Form:
+*swipe actions*, *alert*, *popover*. Unsere erste Bean heißt schon `swipeactions` – wörtlich nach Geste.
+
+- A-1: Apple-Name hat Vorrang (dann passt R-1.13 ‚nie nach Geste‘ nicht mehr ganz und sollte ‚… außer Apple nennt es so‘ bekommen)
+- A-2: Aufgabe hat Vorrang (dann z. B. `rowactions` statt `swipeactions`; Apple-Namen nur für Eigenschaften und Methoden)
+
+## B. Hinweisfenster (`hinweis`)
+
+| | Name | Für | Gegen |
+|---|---|---|---|
+| B-1 | `alert` | Apple: „An object that displays an alert message.“; HIG: Titel, Text, bis 3 Schaltflächen, auch eine | bei Apple ist *alert* auch die Abfrage mit Entscheidung – unsere Abfrage ist die Sprechblase (`confirmPop`) |
+| B-2 | `notice` | sagt ‚nur Information‘ | kein Vorbild (erfunden) |
+| B-3 | `message` | Apple: `message` = Text des Alerts; unser Fenster ist `<dialog id="msg">` | eher der Text als das Fenster |
+| B-4 | `infoalert` | ‚informational alert‘ steht in der HIG („In informational alerts only, you can use ‚OK‘“) | lang |
+
+Offen dazu: Wie heißt später die Sprechblase (`confirmPop`)? Vermutung: SwiftUI nennt das `confirmationDialog` – prüfe ich, bevor wir B festlegen.
+
+## C. Kacheln der Liste (`kacheln`)
+
+| | Name | Vorbild |
+|---|---|---|
+| C-1 | `rows` | Apple: „swipes a table **row**“, `…ForRowAt` |
+| C-2 | `items` | Apple Collection View: *item* (Vermutung, `…ForItemAt`); allgemein im Web |
+| C-3 | `cells` | UIKit-Bauteil *cell* (Vermutung) |
+| C-4 | `tiles` | unser deutsches Wort ‚Kachel‘ – kein Vorbild |
+
+## D. Kurzwort unter der Kapsel (`kurz`)
+
+Apple nennt den Text der Wisch-Schaltfläche `title`; bei uns ist `label` schon der Text im Menü (Apple: `title` von `UIAction`).
+
+| | Name | Bemerkung |
+|---|---|---|
+| D-1 | `shortTitle` | Apple `AppShortcut(… shortTitle:)` |
+| D-2 | `swipeTitle` | sagt, wo es steht; kein Vorbild |
+| D-3 | `title` für das Kurzwort, `label` bleibt für Menü und VoiceOver | wie Apple bei der Wisch-Schaltfläche; aber `title` und `label` nebeneinander verwechselt man leicht |
+
+## E. Aufruf der Aktion (`act({ anker, quelle: 'wischen' })`)
+
+- E-1 `act({ sourceView })` – wie Apples Handler; `quelle` entfällt (die App nutzt es nicht)
+- E-2 `act({ sourceItem })` – Apples Name für das Element, an dem ein Popover hängt (die Sprechblase wächst aus der Kapsel)
+- E-3 `act({ sourceView, sender: 'swipe' })` – Apple `sender` ist aber ein Objekt, kein Wort
+
+## F. Abmelden (`entfernen()`) und Ereignisse (`offen`/`zu`)
+
+- F-1 `disconnect()` (Web: `MutationObserver`) · F-2 `destroy()` (verbreitet in JS-Bibliotheken – Vermutung) · F-3 `dispose()` (Vermutung)
+- Ereignisse: `open`/`close` oder wie `<dialog>` `close` und `toggle`
+
+## G. Bean `sourcehighlight`
+
+Kennung von dir gewählt. Schnittstelle nach Vorbild: Apple `sourceItem` (Element, an dem ein Popover hängt) und `isHighlighted` → Web-Schreibweise
+`highlighted`. Ideen: `source` (nur lesen), `setSource(el)`, `clearSource()` – oder näher an Apple `sourceItem`, `highlighted`.
