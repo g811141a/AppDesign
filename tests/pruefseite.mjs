@@ -62,6 +62,9 @@ export const GEGENPROBEN_PRUEFSEITE = { werte: {
   teilen: fall('Teilen', 'Kopfverlauf endet nicht in #d9d9d9', [['#e9e9e9 75%, #d9d9d9 100%', '#e9e9e9 75%, #e9e9e9 100%']]),
   backup: fall('Backup', 'readBackup lässt savedAt in den Daten', [['delete data.savedAt; delete data.savedOn;', '']]),
   abgleich: fall('Abgleich', 'ältere Änderung gewinnt', [['const useR = ra > la ||', 'const useR = ra < la ||']]),
+  // seit 4.66.0 (APD-136/V-3, V-5)
+  subat: fall('Abgleich', 'createSync ohne Standardwert für subAt', [['subAt = `${sub}At`, maxFields', 'subAt, maxFields']]),
+  iconname: fall('Icons', 'ic(\'gibtsnicht\') im Code von ui.js', [["${ic('x')}</button></div>\n          <div class=\"mid\"><h3 id=\"msgTitel\">", "${ic('gibtsnicht')}</button></div>\n          <div class=\"mid\"><h3 id=\"msgTitel\">"]]),
 },
 // B-3.2 (APD-135/E-12): je Ablauf ein Fehler, der den alten Fehler nachbildet; derselbe muss auch die bisherige Prüfdatei der App rot machen
 // (Nachweis-Tabelle im CHANGELOG). zeichen = die Meldung des Ablaufs.
@@ -122,15 +125,16 @@ function uiText(fehler) {
 }
 
 // Mindestseite aus dem Text der Vorlage (APD-135/E-4): <head>, #dlg, #msg und ui.js bleiben, das Skript der App wird durch die Platzhalter
-// ersetzt, die ui.js braucht (db, save, render), und ein globales sync für checkSync (mit subAt – ohne landen die Zeitpunkte der Unterpunkte
-// unter dem Schlüssel ‚undefined‘ und der Abgleichbericht zeigt sie als Feld, R-9.4). Fehlt #dlg oder #msg, wirft sie.
+// ersetzt, die ui.js braucht (db, save, render), und ein globales sync für checkSync – seit 4.66.0 ohne subAt (Standardwert `${sub}At`, APD-136 b2,
+// APD-136/V-3; ohne Standardwert landen die Zeitpunkte der Unterpunkte unter ‚undefined‘ und der Abgleichbericht zeigt sie als Feld, R-9.4).
+// Fehlt #dlg oder #msg, wirft sie.
 export function mindestseiteHtml(vorlage = lies(VORLAGE)) {
   const teil = (re, was) => { const m = vorlage.match(re); if (!m) throw new Error(`Mindestseite: der Vorlage fehlt ${was}`); return m[0]; };
   const head = teil(/<head>[\s\S]*?<\/head>/, '<head>');
   const dlg = teil(/<dialog id="dlg"[^>]*><\/dialog>/, '#dlg'), msg = teil(/<dialog id="msg"[^>]*><\/dialog>/, '#msg');
   const ui = teil(/<script src="[^"]*ui\.js"><\/script>/, 'ui.js');
   return `<!doctype html>\n<html lang="de">\n${head}\n<body>\n${dlg}\n${msg}\n${ui}\n<script>\n'use strict';\n` +
-    "let db = { settings: { appearance: 'auto' } }; function save() {} function render() {}\nconst sync = createSync({ list: 'items', sub: 'sub', subAt: 'subAt' });\n</script>\n</body>\n</html>\n";
+    "let db = { settings: { appearance: 'auto' } }; function save() {} function render() {}\nconst sync = createSync({ list: 'items', sub: 'sub' });\n</script>\n</body>\n</html>\n";
 }
 
 // Prüfseite über einen eigenen Ursprung (http://pruefseite.test/), damit localStorage gilt und p.route jede Datei liefern kann.
@@ -188,7 +192,8 @@ export async function checkWerte(p) {
     const datei = backupFileOf('Neue App', { items: [{ id: 'x', title: 'A & B', sub: { u001: { text: '„Zitat“ 👍🏽' } } }], deleted: [] });
     const tag = 864e5;
     return {
-      icon: svg(ic('pencil')), iconUnbekannt: svg(ic('gibt-es-nicht')), ellipsis: dom(ic('ellipsis')).firstElementChild?.hasAttribute('data-mehr'),
+      icon: svg(ic('pencil')), iconUnbekannt: (() => { const alt = console.error; let meldung = ''; console.error = (...a) => { meldung = a.join(' '); };
+        try { return { html: ic('gibt-es-nicht'), meldung }; } finally { console.error = alt; } })(), symbole: Object.keys(ICONS), ellipsis: dom(ic('ellipsis')).firstElementChild?.hasAttribute('data-mehr'),
       leer: leer(leerHtml({ icon: 'calendar', titel: 'Noch nichts <b>', satz: 'Ein Satz & mehr.', aktion: { id: 'leerNeu', label: 'Neu' } })),
       leerKlein: leer(leerHtml({ icon: 'book-open', titel: 'Noch kein Eintrag', klein: true })), leerSuche: leer(leerSuche('a<b')),
       esc: esc(`<a href="x">&'`), escLeer: esc(null), breakable: [breakable('kurz'), breakable('a'.repeat(22)), breakable('🤷🏻‍♂️'.repeat(21))],
@@ -203,7 +208,14 @@ export async function checkWerte(p) {
   });
   // Icons (R-1.8): svg.ic mit aria-hidden; unbekannter Name gibt kein kaputtes Markup (genau ein svg, nichts daneben)
   if (r.icon.n !== 1 || r.icon.tag !== 'svg' || !r.icon.ic || r.icon.hidden !== 'true' || !r.icon.pfade) E('R-1.8', 'Icons', `ic('pencil') ergibt ${JSON.stringify(r.icon)}, soll ein svg.ic mit aria-hidden="true" und Pfaden`);
-  if (r.iconUnbekannt.n !== 1 || r.iconUnbekannt.tag !== 'svg' || r.iconUnbekannt.hidden !== 'true') E('R-1.8', 'Icons', `unbekannter Name ergibt ${JSON.stringify(r.iconUnbekannt)}, soll genau ein svg mit aria-hidden`);
+  // seit 4.66.0 (APD-136/V-4): ein unbekannter Name gibt kein svg und einen Konsolenfehler mit dem Namen
+  if (r.iconUnbekannt.html !== '' || !/ic: unbekanntes Symbol ‚gibt-es-nicht‘/.test(r.iconUnbekannt.meldung)) E('R-1.8', 'Icons', `ic('gibt-es-nicht') ergibt ‚${r.iconUnbekannt.html.slice(0, 80)}‘ mit Meldung ‚${r.iconUnbekannt.meldung}‘, soll kein svg und ‚ic: unbekanntes Symbol ‚gibt-es-nicht‘‘`);
+  // seit 4.66.0 (APD-136/V-5): jeder Name in ic('…') in ui.js (wie die Seite es lädt), in der Vorlage und in der App steht in ICONS
+  const quellen = [['ui.js', await p.evaluate(async () => (await fetch(document.querySelector('script[src$="ui.js"]').src)).text())], ['Vorlage', lies(VORLAGE)]];
+  const appHtml = path.join(process.cwd(), 'index.html');
+  if (existsSync(appHtml) && /AD_NEEDED/.test(readFileSync(appHtml, 'utf8'))) quellen.push(['App', readFileSync(appHtml, 'utf8')]);
+  for (const [wo, text] of quellen) for (const n of new Set([...text.matchAll(/\bic\('([\w-]+)'/g)].map(m => m[1])))
+    if (!r.symbole.includes(n)) E('R-1.8', 'Icons', `${wo}: ic('${n}') – das Symbol steht nicht in ICONS`);
   if (!r.ellipsis) E('R-1.8', 'Icons', 'ic(\'ellipsis\') ohne data-mehr (Mehr-Knopf kippt nicht, R-4.1)');
   // Leerer Zustand (R-7.7): Symbol, Titel als Überschrift, Satz, getönter Knopf; klein nur Symbol und Titel; Suche mit dem Begriff als Text
   const L = r.leer;

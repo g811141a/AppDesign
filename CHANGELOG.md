@@ -3,6 +3,43 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.66.0 – 20.11.2026
+
+AppDesign 4.66.0 · Designrichtlinie allgemein 4.66.0 · Zusammenarbeit allgemein 3.17.0 · Reiselogbuch 3.57.9 (Fassung 4.66.0)
+
+**Korrektur P-115/F-1 – Mehr-Knopf des Bean-Katalogs rund** (P-115/5 nicht ok, Nutzer 20.11.2026, Sitzung 0143: der Knopf ‚…‘ oben in der Seitenleiste war oval
+und erst nach dem Antippen rund; eigene Korrekturversion 4.65.1 abgelehnt, mit 4.66.0 zusammen).
+
+- **`katalog/index.html`:** der Mehr-Knopf stand allein in einer Kapsel (`.grp`, 49 × 44 px – oval; rund war nur die Markierung 36 × 36 beim Antippen) und ist jetzt
+  ein runder Knopf (`.round`, 44 × 44) wie ‚Seitenleiste ausblenden‘ daneben (R-3.1, R-3.2, Designrichtlinie 15.5: Kapsel nur für mehrere Schaltflächen).
+- **Prüfungen:** `tests/hig.mjs` (Grundregeln nach jedem Schritt) meldet neu eine sichtbare Kapsel mit nur einer Icon-Schaltfläche (‚R-3.1 Kapsel mit nur einer
+  Schaltfläche … ist kein Kreis‘) – gegen den veröffentlichten Katalog 4.65.0 rot (`bean-katalog`, ‚#sideMore Mehr‘ 50 × 44 px), danach grün in Chromium und
+  WebKit; Gegenprobe `einzelkapsel` in `--gegenprobe masse` (`tests/pruefe.mjs`: in der App das `plus` der Kapsel der Seitenleiste ausgeblendet → `hig` rot).
+  Dieselbe Lücke gesucht: Reiselogbuch `hig` (alle Ansichten, hell und dunkel) und `bausteine-pruefseite` mit der neuen Prüfung grün – nur der Katalog war betroffen.
+- **Warum die Prüfung es übersah:** R-3.1 wurde nur an Schaltflächen mit `border-radius: 50%` und an der Markierung in Kapseln gemessen; die Kapsel selbst mit
+  nur einer Schaltfläche nie.
+- AD-Bean: keine, weil nur die Katalogseite und die Prüfungen geändert werden.
+
+**APD-136 b1–b3 – AD-Beans: Hinweisfenster, Abgleich, Symbole** (geklärt in Sitzung 0142 – `arbeit/APD-136 Kandidaten 4.66.0 Vorschlag.md`, Testfall-Liste
+APD-136/V-1 bis V-5; Bau bestätigt 20.11.2026 in Sitzung 0143).
+
+- **b1 – CSS des Hinweisfensters unter `.ad-hinweis` (`ui.js`, `design.css`):** `createHinweis` setzt die Klasse `ad-hinweis` an das Fenster; Form, Kopf, Text,
+  Knopfzeile und Knopf heißen `ad-hinweis-form`, `-kopf`, `-text`, `-knoepfe`, `-knopf`, das breite Fenster `ad-hinweis-breit` (vorher `#msg`, `.msg-text`,
+  `.msg-btns`, `.wide`); die Regeln für `#msg` sind entfallen. **Aussehen unverändert** (APD-136/V-1): alle berechneten Stile und Positionen von Fenster, Form,
+  Kopf, Titel, x, Inhalt, Text, Dateiname, Knopfzeile und Knopf gleich wie in 4.65.0 – 64 Fälle (Chromium und WebKit, 4 Ansichten, hell und dunkel; kurz,
+  langer Dateiname, breit, mit Schaltfläche), ohne Konsolenfehler; `backup-regeln` (`checkHinweisBreite`) grün.
+- **b2 – `createSync` mit Standardwert `` subAt = `${sub}At` ``:** die Vorlage und die Mindestseite der Prüfseite geben `subAt` nicht mehr an; das Reiselogbuch
+  gibt weiter `dayAt` an.
+- **b3 – `ic` mit unbekanntem Namen:** Konsolenfehler ‚ic: unbekanntes Symbol ‚…‘‘ und kein `svg` (vorher ein unsichtbares `svg` mit dem Text ‚undefined‘).
+- **Prüfungen:** `checkBeans` (`tests/doku.mjs`) meldet neu CSS über die id des Elements, auf dem `ui.js` die Bean anlegt (`createHinweis(msg)` → `#msg`;
+  APD-136/V-2, Gegenprobe `PRUEF_GEGENPROBE=beans:V-2` mit ‚#msg .msg-text‘ in `design.css` → rot). `checkWerte` (`tests/pruefseite.mjs`): Abgleich auf der
+  Mindestseite ohne `subAt` grün (APD-136/V-3, Gegenprobe `subat` ohne Standardwert → R-9.4 rot); `ic('gibt-es-nicht')` ohne `svg` mit Konsolenfehler
+  (APD-136/V-4); jeder Name in `ic('…')` in `ui.js`, Vorlage und App steht in `ICONS` (APD-136/V-5, Gegenprobe `iconname` mit `ic('gibtsnicht')` → rot).
+  Nachgeführt auf die neuen Klassen: `hig.mjs` (R-6.3, Texte), `pruefe.mjs` und `lauf.mjs` (Gegenprobe der Grundregeln), `ablauf.mjs` (`checkDateiname`,
+  `checkHinweisBreite` – Höchstbreite über `ad-hinweis-breit`), `backup.mjs`; im Reiselogbuch `ablauf-abgleich`.
+- **Katalog:** `katalog/hinweis.js` – Verlauf um 4.66.0 ergänzt.
+- AD-Bean: `hinweis` (CSS unter `.ad-hinweis`, Schnittstelle unverändert); b2 und b3: keine, weil `createSync` und `ic` keine Beans sind.
+
 ## 4.65.0 – 19.11.2026
 
 AppDesign 4.65.0 · Designrichtlinie allgemein 4.65.0 · Zusammenarbeit allgemein 3.17.0 · Reiselogbuch 3.57.8 (Fassung 4.65.0)

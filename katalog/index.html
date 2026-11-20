@@ -174,7 +174,7 @@ function renderSide() {
   const gruppen = BEREICHE.map(g => [g, [...BEANS.filter(b => b.bereich === g), ...GEPLANT.filter(b => b.bereich === g).map(b => ({ ...b, geplant: true }))]]).filter(([, l]) => l.length);
   setHtml(side, `
     <div class="side-head"><div class="ttl"><h2>AD-Beans</h2><small>${BEANS.length} AD-Beans · ${GEPLANT.length} geplant</small></div>
-      <span class="grp"><button type="button" id="sideMore" aria-label="Mehr">${ic('ellipsis')}</button></span>
+      <button type="button" class="round" id="sideMore" aria-label="Mehr">${ic('ellipsis')}</button>
       ${page ? '' : `<button type="button" class="round" id="sideHide" aria-label="Seitenleiste ausblenden">${ic('panel-left')}</button>`}
     </div>
     <div class="side-list">${gruppen.map(([g, l]) => `<h3 class="side-sec">${g}</h3>${l.map(b => b.geplant

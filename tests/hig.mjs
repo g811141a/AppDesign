@@ -340,7 +340,7 @@ export function texteMenues() {
   if (kurzDatum) R('R-10.7', `Datum ‚${kurzDatum[2]}‘ statt TT.MM.JJJJ (zweistellig, in ‚${umfeld(kurzDatum)}‘)`);
   for (const m of sicht.matchAll(/erstellt am (\S+) um (\S+)/g)) if (!/^\d\d\.\d\d\.\d{4}$/.test(m[1]) || !/^\d\d:\d\d$/.test(m[2].replace(/[^\d:]+$/, ''))) R('R-10.7', `‚erstellt am ${m[1]} um ${m[2]}‘ statt TT.MM.JJJJ und hh:mm`);
   // Dateinamen aus dem Text selbst (innerText fasst Leerzeichen zusammen – zwei Leerzeichen wären dort nicht zu sehen)
-  const namen = new Set(); document.querySelectorAll('.note, .sub, small, .msg-text, p, b, div').forEach(e => { if (!vis(e)) return;
+  const namen = new Set(); document.querySelectorAll('.note, .sub, small, .ad-hinweis-text, p, b, div').forEach(e => { if (!vis(e)) return;
     for (const n of e.childNodes) if (n.nodeType === 3) for (const m of n.data.matchAll(/Dateiname: ([^\n]+)/g)) namen.add(m[1].trim()); });
   for (const n of namen) for (const f of dateinameFehler(n)) R('R-10.7', f);
   return out;
@@ -564,7 +564,7 @@ const found = new Map(), icons = new Map();
           if (d.classList.contains('blatt-geist')) return;
           const n = (d.getAttribute('aria-labelledby') || '').split(/\s+/).map(text).join(' ').trim() || (d.getAttribute('aria-label') || '').trim();
           if (!n) R('R-1.8', `Fenster #${d.id} ohne Titel für VoiceOver (aria-labelledby)`);
-          const sub = d.querySelector('.dlg-head .sub, .msg-text');
+          const sub = d.querySelector('.dlg-head .sub, .ad-hinweis-text');
           if (sub && !(d.getAttribute('aria-describedby') || '').split(/\s+/).includes(sub.id)) R('R-1.8', `Fenster #${d.id}: Zusatzzeile nicht als Beschreibung verknüpft (aria-describedby)`);
           if (!d.matches(':modal')) R('R-1.4', `Fenster #${d.id} nicht modal – die Seite dahinter ist für VoiceOver und Tastatur erreichbar`);
         });
@@ -666,6 +666,15 @@ const found = new Map(), icons = new Map();
         const w = /px$/.test(f.width) ? parseFloat(f.width) : b.width - parseFloat(f.left) - parseFloat(f.right);
         const h = /px$/.test(f.height) ? parseFloat(f.height) : b.height - parseFloat(f.top) - parseFloat(f.bottom);
         if (Math.abs(w - h) >= 0.5) R('R-3.1', `Markierung von ‚${label(e)}‘ ist kein Kreis (${Math.round(w)} × ${Math.round(h)} px, eiförmig)`);
+      });
+      // R-3.1/R-3.2 (P-115/5): eine Kapsel mit nur einer Icon-Schaltfläche ist oval (48 × 44) – eine einzelne Schaltfläche ist ein runder Knopf (.round)
+      document.querySelectorAll('.grp, .navgrp').forEach(g => {
+        if (!vis(g)) return;
+        const knoepfe = [...g.querySelectorAll('button')].filter(vis);
+        if (knoepfe.length === 1 && !knoepfe[0].classList.contains('txt')) {
+          const b = g.getBoundingClientRect();
+          R('R-3.1', `Kapsel mit nur einer Schaltfläche ‚${label(knoepfe[0])}‘ ist kein Kreis (${Math.round(b.width)} × ${Math.round(b.height)} px, oval) – einzeln als runder Knopf`);
+        }
       });
       // R-1.3 Eingabefelder mindestens 16 px (sonst vergrößert iOS beim Antippen)
       document.querySelectorAll('input:not([type=checkbox]):not([type=hidden]):not([type=file]), textarea').forEach(e => { if (vis(e) && parseFloat(cs(e).fontSize) < 16) R('R-1.3', `Eingabefeld ${e.id ? '#' + e.id : ''} unter 16 px – iOS vergrößert beim Antippen`); });
@@ -857,7 +866,7 @@ const found = new Map(), icons = new Map();
       }
       // R-6.3 Kein Text ragt über Zelle oder Kachel hinaus – zu lange Wörter brechen im Wort um
       // Seit 4.11.2: jede Tabellenzelle überall – auch in Fenstern, Vorschauen und Berichten (vorher nur #app).
-      document.querySelectorAll('td, th, #app dd, #app .box, .box .kv .v, .box .ln, .irow, .side-row, .bhint, .bnote, .msg-text, .pop p, .fazit-box').forEach(e => {
+      document.querySelectorAll('td, th, #app dd, #app .box, .box .kv .v, .box .ln, .irow, .side-row, .bhint, .bnote, .ad-hinweis-text, .pop p, .fazit-box').forEach(e => {
         if (!vis(e) || e.closest('#printout') || cs(e).textOverflow === 'ellipsis') return;
         const right = e.getBoundingClientRect().right;
         if (e.scrollWidth > e.clientWidth + 1 || [...e.querySelectorAll('*')].some(c => vis(c) && c.getBoundingClientRect().right > right + 1)) R('R-6.3', `Text ragt über ${e.tagName.toLowerCase()}${e.classList[0] ? '.' + e.classList[0] : ''} hinaus: ‚${label(e)}‘`);

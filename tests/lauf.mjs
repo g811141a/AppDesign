@@ -188,7 +188,7 @@ export async function lauf({ dir, pw, tests, bedienung = 'ablauf-bedienung', tex
     // Bei den Grundregeln zählen nur Tests mit Grundregeln (Schritte); die anderen dürfen grün bleiben.
     const pruefbar = gegenprobe === 'grundregeln' ? liste.filter(j => !/^(doku|version|abgleich|kontextmenue)-regeln$|^ablauf-abgleich-faelle$|^hig$/.test(j.name)) : liste;
     // Rot zählt nur, wenn genau die Gegenprobe gemeldet wurde (nicht ein anderer Fehler).
-    const zeichen = gegenprobe === 'grundregeln' ? /R-6\.3 Text ragt über div\.msg-text hinaus: ‚#gegenprobe a/ : /Gegenprobe/;
+    const zeichen = gegenprobe === 'grundregeln' ? /R-6\.3 Text ragt über div\.ad-hinweis-text hinaus: ‚#gegenprobe a/ : /Gegenprobe/;
     const gruen = pruefbar.filter(j => !rot.some(r => r.j === j && (j.zeichen || zeichen).test(r.text)));
     console.log(gruen.length ? `\n✗ Gegenprobe: ${gruen.length} Test(s) meldeten die Gegenprobe nicht – sie prüfen nichts: ${gruen.map(j => j.label).join(', ')}` : `\nGegenprobe${gegenprobe === 'grundregeln' ? ' der Grundregeln' : gegenprobe === 'bedienung' ? ' der Bedienungshilfen' : gegenprobe === 'text' ? ' der Textgröße' : gegenprobe === 'masse' ? ' der Maße und Stile' : gegenprobe === 'schema' ? ' des Nummernschemas' : gegenprobe === 'pruefseite' ? ' der Prüfseite' : ''}: alle ${pruefbar.length} Läufe wurden rot – jeder mit der passenden Meldung.`);
     return gruen.length ? 1 : 0;
