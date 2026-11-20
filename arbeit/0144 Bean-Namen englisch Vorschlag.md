@@ -41,7 +41,7 @@ getönt, bis es fertig ist (R-3.3). ‚Gedrückt‘ passt schlecht – gedrückt
 Nicht empfohlen: `highlight` allein (bei Apple heißt *highlighted* auch ‚Finger liegt‘, wie R-3.6), `selection` (Verwechslung mit dem gewählten
 Listeneintrag R-7.1), `pressed` (wie ‚gedrückt‘).
 
-Die Schnittstelle bei englischen Namen (nach E-1 und E-3): `held` · `source` (nur lesen) · `hold(sel)` · `release(sel)` · `setSource(sel)` ·
+Die Schnittstelle bei englischen Namen (nach APD-136/E-1 und E-3): `held` · `source` (nur lesen) · `hold(sel)` · `release(sel)` · `setSource(sel)` ·
 `clearSource()` · `refresh(wurzel)` · Ereignis `change`.
 
 ## Reihenfolge, falls ‚englisch‘
