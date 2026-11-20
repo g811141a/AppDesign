@@ -6,6 +6,7 @@
 // Einbinden im Prüfskript der App:  import { checkDocs } from '../../AppDesign/tests/doku.mjs';
 //                                   const fehler = checkDocs(new URL('..', import.meta.url), 'Reiselogbuch');
 import { readFileSync, readdirSync, existsSync } from 'node:fs';
+import { runInNewContext } from 'node:vm';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 // Seit 4.14.1 (APD-5/D-6): Richtlinie und Zusammenarbeit so, wie sie in der Fassung der App stehen (fassung/X.Y.Z/) –
@@ -528,5 +529,50 @@ export function checkBeans(appDir, app) {
     const genannt = innen.filter(n => new RegExp(`\\b${n}\\b`).test(code));
     if (genannt.length) E(`W-73 ${app} index.html nennt innere Namen der Bean ${kennung}: ${genannt.join(', ')}`);
   }
+  errors.push(...checkKatalog(appDir));
+  return errors;
+}
+
+// R-1.13 Bean-Katalog (seit 4.65.0, APD-140; Testfall-Liste arbeit/APD-140 Testfall-Liste.md Z-1, Z-5): der Katalog zeigt immer den Arbeitsstand –
+// darum die Liste der AD-Beans aus der Designrichtlinie im Arbeitsstand (nicht aus der Fassung der App) gegen AppDesign/katalog/:
+//   Z-1: jede Bean der Liste hat katalog/<kennung>.js, die index.html lädt; jede Katalogdatei gehört zu einer Bean der Liste; Kennung, Bereich,
+//        Fabrik (Name), Eigenschaften, Nur lesen, Methoden, Ereignisse (Namen) und Regeln (Nummern) wie in der Liste
+// Gegenprobe Z-5: PRUEF_GEGENPROBE=beans:katalog – die Katalogdatei der ersten Bean fehlt, die Fabrik der zweiten weicht ab → rot.
+export function checkKatalog(appDir) {
+  const errors = [], E = t => errors.push(`R-1.13 Z-1 ${t}`);
+  const ad = new URL('../AppDesign/', appDir), kat = new URL('katalog/', ad);
+  const guide = adText(appDir, 'README - Designrichtlinie allgemein.md');
+  const tabelle = guide.split('\n## 15. ')[1]?.split('\n### ')[0]?.split('**Liste der AD-Beans**')[1] || '';
+  const zeilen = [...tabelle.matchAll(/^\| `([a-z]+)` \|([^\n]+)$/gm)].map(m => ({ kennung: m[1], spalten: m[2].split(' | ').map(x => x.replace(/\|\s*$/, '').trim()) }));
+  if (!zeilen.length) { E('Designrichtlinie 15 (Arbeitsstand): keine Liste der AD-Beans'); return errors; }
+  let index = '', dateien = [];
+  try { index = readFileSync(new URL('index.html', kat), 'utf8'); dateien = readdirSync(kat).filter(f => /^[a-z]+\.js$/.test(f)); } catch { E('katalog/index.html fehlt'); return errors; }
+  const gp = process.env.PRUEF_GEGENPROBE === 'beans:katalog';
+  if (gp) dateien = dateien.filter(f => f !== `${zeilen[0].kennung}.js`);
+  const namen = s => [...String(s).matchAll(/`?([A-Za-z]\w*)/g)].map(m => m[1]);
+  const liste = (a, i = 0) => (a || []).map(x => namen(Array.isArray(x) ? x[i] : x)[0]).filter(Boolean).sort().join(', ');
+  const nummern = s => [...String(s).matchAll(/R-\d+\.\d+/g)].map(m => m[0]).sort().join(', ');
+  const beans = new Map();
+  for (const f of dateien) {
+    const gemeldet = [];
+    try { runInNewContext(readFileSync(new URL(f, kat), 'utf8'), { katalogBean: b => gemeldet.push(b) }, { filename: `katalog/${f}` }); }
+    catch (e) { E(`katalog/${f} lässt sich nicht lesen: ${e.message}`); continue; }
+    if (gemeldet.length !== 1) { E(`katalog/${f} meldet ${gemeldet.length} Beans an statt einer`); continue; }
+    const b = gemeldet[0];
+    if (b.kennung !== f.slice(0, -3)) E(`katalog/${f}: Kennung ‚${b.kennung}‘ statt ‚${f.slice(0, -3)}‘`);
+    beans.set(f.slice(0, -3), b);
+  }
+  if (gp && zeilen[1] && beans.has(zeilen[1].kennung)) beans.get(zeilen[1].kennung).fabrik = 'createAnders()';
+  for (const { kennung, spalten } of zeilen) {
+    const b = beans.get(kennung);
+    if (!b) { E(`${kennung}: katalog/${kennung}.js fehlt`); continue; }
+    if (!index.includes(`<script src="${kennung}.js"></script>`)) E(`${kennung}: katalog/index.html lädt ${kennung}.js nicht`);
+    const soll = { Bereich: [spalten[0], b.bereich], Fabrik: [namen(spalten[1])[0], namen(b.fabrik)[0]],
+      Eigenschaften: [namen(String(spalten[2]).replace(/\([^()]*\)/g, '')).sort().join(', '), liste(b.eigenschaften)],
+      'Nur lesen': [namen(spalten[3]).sort().join(', '), liste(b.lesen)], Methoden: [namen(spalten[4].replace(/\([^()]*\)/g, '')).sort().join(', '), liste(b.methoden)],
+      Ereignisse: [namen(spalten[5]).sort().join(', '), liste(b.ereignisse)], Regeln: [nummern(spalten[6]), nummern((b.regeln || []).map(r => r[0]).join(' '))] };
+    for (const [was, [l, k]] of Object.entries(soll)) if (l !== k) E(`${kennung}: ${was} im Katalog ‚${k || '–'}‘ – in der Liste ‚${l || '–'}‘`);
+  }
+  for (const k of beans.keys()) if (!zeilen.some(z => z.kennung === k)) E(`katalog/${k}.js gehört zu keiner Bean der Liste der AD-Beans`);
   return errors;
 }
