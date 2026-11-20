@@ -49,3 +49,19 @@ Die Schnittstelle bei englischen Namen (nach APD-136/E-1 und E-3): `held` · `so
 1. Wortlaut R-1.13 (englische Namen) und neue Namen für `hinweis` und `swipeactions` zur Freigabe.
 2. Bean `sourcehighlight` gleich englisch.
 3. Bau mit der nächsten Version (APD-136, gleiches Thema) – vorher die Bau-Frage.
+
+## 3. Nutzer 20.11.2026: Quellcode englisch, Beschreibungen deutsch – meine Meinung
+
+Nutzer (im Fenster): „Im Sourcecode bitte alles in Englisch codieren und alle Beschreibungen, Dokumentationen etc. in Deutsch, wobei Begriffe wie
+Bezeichnungen aus dem Coding nicht zu übersetzen sind.“ Name statt `gedrueckt`: **a) `sourcehighlight`**.
+
+**Meine Meinung: richtig so** – mit vier Festlegungen, damit es sicher und bezahlbar bleibt:
+
+| | Festlegung | Grund |
+|---|---|---|
+| F-1 | **Englisch:** alle Namen im Code – Funktionen, Variablen, Kennungen, Eigenschaften, Methoden, Ereignisse, CSS-Klassen, neue Dateinamen | wie Zusammenarbeit 1 und Apple |
+| F-2 | **Deutsch:** Kommentare im Code, Doku, Regeln, CHANGELOG, Backlog, Katalog-Texte, Prüfmeldungen und alles, was die App anzeigt; Namen aus dem Code stehen darin unübersetzt in `Code-Schrift` | wie dein Wunsch; Kommentare sind Beschreibungen |
+| F-3 | **Schrittweise:** neuer und geänderter Code sofort englisch; Bestehendes wird umbenannt, wenn sein Baustein ohnehin umgebaut wird (AD-Beans APD-136, Umzug APD-142, Konsolidierung APD-135) – zuerst die 2 Beans | in `ui.js` stehen rund 350 Namen, die Prüfungen nennen viele davon, der Regelkatalog nennt Prüffunktionen wie `checkWachsen` – alles auf einmal wäre ein sehr großer, schwer prüfbarer Bau |
+| F-4 | **Nie umbenannt:** gespeicherte Daten und Backups (Schlüssel im localStorage, Felder im Backup), die festen Fassungen `fassung/X.Y.Z/` und bestehende Prüf- und Dateinamen, solange sie in Regeln und Changelogs zitiert werden | alte Backups müssen lesbar bleiben (R-9.2); Fassungen sind unveränderlich (R-10.3) |
+
+Der Wortlaut (Zusammenarbeit 1 und R-1.13) kommt danach zur Freigabe (0 Nr. 29).
