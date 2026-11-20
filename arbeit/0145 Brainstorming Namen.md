@@ -147,4 +147,12 @@ aber nach Web-Vorbild etwas anderes. Die App ruft ohnehin `inform(…)` auf, nic
 Unverändert: Kennung `swipeactions` (A-1), Eintrag `red` (gehört zu `openMenu`, F-3), `label`, `icon`, `act`. Die App nutzt die Ereignisse heute nicht.
 App: `createSwipeactions(side, { rows: '[data-id]', actions: tripActions })` · `swipe.close()` · `shortTitle:` · `w?.sourceView`.
 
-**Empfehlung:** die Namen der Tabelle; Ereignisse **a) `toggle`** – das ist der Web-Name für ‚geöffnet oder geschlossen‘; ein Ereignis `open` gibt es im Web nicht.
+**Entschieden** (Nutzer 20.11.2026, Sitzung 0145, im Fenster): die Namen der Tabelle **ja**; Ereignisse **a) `toggle`** – das ist der Web-Name für ‚geöffnet oder geschlossen‘; ein Ereignis `open` gibt es im Web nicht.
+
+---
+
+## Katalog-Felder (Abschnitt 5 in `0145 Code englisch Wortlaut.md`, dort a) alle englisch freigegeben)
+
+Nach Vorbild geprüft: nur ein Feld hat ein Vorbild – der Kurztext einer Seite der Apple-Dokumentation heißt `abstract` (in jeder gelesenen JSON-Seite).
+Vorschlag: `satz` → **`abstract`** statt `summary`; alle übrigen Felder wie freigegeben (`id`, `area`, `since`, `section`, `create`, `properties`,
+`readOnly` – Web-Vorbild `readOnly` –, `methods`, `events`, `rules`, `history`, `howTo`, `demo(el, log)`, `catalogBean(…)`; `name`, `icon` bleiben).
