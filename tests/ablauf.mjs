@@ -1912,7 +1912,7 @@ export async function checkNavigation(p, { eintrag, titel, zurueck = '#back', wa
     // seit 4.60.0 (APD-30/V-1, R-7.8): auf einer Kachel ist das ein Durchwischen – die Sprechblase fragt; ‚Abbrechen‘, dann die Kachel mit Esc schließen
     const abbrechen = p.locator('.pop:not(.zu-geist) button', { hasText: /^Abbrechen$/ });
     if (await abbrechen.count()) { await abbrechen.first().click(); await ruhig(); await wait(p, 100); }
-    if (await p.locator('.ad-swipeactions-aktionen').count()) { await p.keyboard.press('Escape'); await ruhig(); await wait(p, 100); }
+    if (await p.locator('.ad-swipeactions-actions').count()) { await p.keyboard.press('Escape'); await ruhig(); await wait(p, 100); }
     await da(true, 'APD-68/Q-2 nach links auf der Seitenleiste');
     // APD-68/Q-3: panel-left blendet aus – sie gleitet hinaus, der Inhalt wird ganz breit, der oberste Kasten bleibt
     await p.evaluate(() => { const r = document.querySelector('#app > .rolle'); r?.scrollTo(0, Math.min(900, r.scrollHeight / 3)); }); await wait(p, 150);
@@ -3050,9 +3050,9 @@ export const DATEINAME_TEXTE = {
   error: ['⚠️ Konnte nicht übergeben werden:', ''],
   print: ['✅ Drucken-Menü geöffnet für', 'Dort über ‚Teilen‘ → ‚In Dateien sichern‘ als PDF ablegen.'],
 };
-export async function checkDateiname(p, { ausloesen, faelle = ['shared', 'aborted', 'error', 'downloaded'], name = null, groessen = ['l', 'xxxl', 'ax3'], text = '#msg[open] .ad-hinweis-text', schliessen = '#msg [data-x]', where = '', drehen = null } = {}) {
+export async function checkDateiname(p, { ausloesen, faelle = ['shared', 'aborted', 'error', 'downloaded'], name = null, groessen = ['l', 'xxxl', 'ax3'], text = '#msg[open] .ad-alert-message', schliessen = '#msg [data-x]', where = '', drehen = null } = {}) {
   const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}R-10.8 ${t}`);
-  // seit 4.64.0 (APD-138, AD-Bean hinweis): am iPad so breit, dass der Name in einer Zeile steht – zwischen Grund- und Höchstbreite; am iPhone nichts Eigenes
+  // seit 4.64.0 (APD-138, AD-Bean alert, bis 4.66.0 hinweis): am iPad so breit, dass der Name in einer Zeile steht – zwischen Grund- und Höchstbreite; am iPhone nichts Eigenes
   const breitePruefen = (e, w) => {
     const b = e.breite; if (!b) return;
     const px = x => Math.round(x);
@@ -3100,9 +3100,9 @@ export async function checkDateiname(p, { ausloesen, faelle = ['shared', 'aborte
             // Breite des Namens in einer Zeile; am iPhone und im breiten Fenster keine eigene Breite
             breite: (() => { const d = t.closest('dialog'); if (!d || d.id !== 'msg') return null;
               const phone = document.documentElement.classList.contains('phone'), ist = d.getBoundingClientRect().width;
-              if (phone || d.classList.contains('ad-hinweis-breit')) return { phone, eigen: !!d.style.width, ist };
+              if (phone || d.classList.contains('ad-alert-wide')) return { phone, eigen: !!d.style.width, ist };
               const alt = d.style.width, altMax = d.style.maxWidth; d.style.width = ''; d.style.maxWidth = ''; const grund = d.getBoundingClientRect().width;
-              d.classList.add('ad-hinweis-breit'); const hoechst = d.getBoundingClientRect().width; d.classList.remove('ad-hinweis-breit'); d.style.width = alt; d.style.maxWidth = altMax;
+              d.classList.add('ad-alert-wide'); const hoechst = d.getBoundingClientRect().width; d.classList.remove('ad-alert-wide'); d.style.width = alt; d.style.maxWidth = altMax;
               const pr = n.cloneNode(true); pr.style.cssText = 'position:absolute;visibility:hidden;white-space:nowrap;display:inline-block;width:auto;left:0;top:0';
               n.parentNode.append(pr); const nw = pr.getBoundingClientRect().width; pr.remove();
               return { phone, ist, grund, hoechst, soll: nw + (ist - nb.width) }; })() };
@@ -3128,7 +3128,7 @@ export async function checkDateiname(p, { ausloesen, faelle = ['shared', 'aborte
         await drehen(hoch); await p.waitForTimeout(400);
         const e = await p.evaluate(([zf, sel]) => { const zeilenVon = eval(zf); const t = document.querySelector(sel), n = t?.querySelector('.fname'); if (!n) return null;
           const d = t.closest('dialog'), ist = d.getBoundingClientRect().width, nb = n.getBoundingClientRect(), alt = d.style.width, altMax = d.style.maxWidth; d.style.width = ''; d.style.maxWidth = ''; const grund = d.getBoundingClientRect().width;
-          d.classList.add('ad-hinweis-breit'); const hoechst = d.getBoundingClientRect().width; d.classList.remove('ad-hinweis-breit'); d.style.width = alt; d.style.maxWidth = altMax;
+          d.classList.add('ad-alert-wide'); const hoechst = d.getBoundingClientRect().width; d.classList.remove('ad-alert-wide'); d.style.width = alt; d.style.maxWidth = altMax;
           const pr = n.cloneNode(true); pr.style.cssText = 'position:absolute;visibility:hidden;white-space:nowrap;display:inline-block;width:auto;left:0;top:0';
           n.parentNode.append(pr); const nw = pr.getBoundingClientRect().width; pr.remove();
           return { name: n.textContent, zeilen: zeilenVon(n), ragt: d.getBoundingClientRect().right > innerWidth + 1,
@@ -3148,9 +3148,9 @@ export async function checkDateiname(p, { ausloesen, faelle = ['shared', 'aborte
   return errors;
 }
 
-// APD-138 (seit 4.64.0, R-10.8, AD-Bean hinweis; Testfall-Liste arbeit/APD-138 Testfall-Liste.md D-3 bis D-6, D-9, D-10): Breite nach Dateiname am iPad mit
+// APD-138 (seit 4.64.0, R-10.8, AD-Bean alert, bis 4.66.0 hinweis; Testfall-Liste arbeit/APD-138 Testfall-Liste.md D-3 bis D-6, D-9, D-10): Breite nach Dateiname am iPad mit
 // eigenen Namen über inform – kurzer Name (Grundbreite), sehr langer Name (Höchstbreite, Umbruch nur nach Leerzeichen), Text 53, schmales Fenster
-// (geteilter Bildschirm), drehen bei offenem Hinweis; Gegenprobe (D-10, D-14): ohne breiteNachDateiname muss checkDateiname D-1 melden. Aufruf am iPad quer.
+// (geteilter Bildschirm), drehen bei offenem Hinweis; Gegenprobe (D-10, D-14): ohne fitFileName muss checkDateiname D-1 melden. Aufruf am iPad quer.
 export const DATEINAME_BEISPIEL = 'Ω Backup Reiselogbuch 2026.11.19 08.15.json';
 export const DATEINAME_SEHR_LANG = 'Ω Backup Reiselogbuch Australien Neuseeland Tasmanien Fidschi 2026.08.24-2026.11.11 Sicherung 2026.11.19 08.15.json';
 export async function checkHinweisBreite(p, { where = '' } = {}) {
@@ -3165,9 +3165,9 @@ export async function checkHinweisBreite(p, { where = '' } = {}) {
   errors.push(...await dn(DATEINAME_BEISPIEL, 'schmales Fenster 760 px (APD-138/D-6)'));
   errors.push(...await dn(DATEINAME_SEHR_LANG, 'schmales Fenster 760 px, sehr langer Name (APD-138/D-6)'));
   await p.setViewportSize(vp); await p.waitForTimeout(400);
-  await p.evaluate(() => { adHinweis.breiteNachDateiname = false; });
+  await p.evaluate(() => { adAlert.fitFileName = false; });
   const gp = await dn(DATEINAME_BEISPIEL, 'Gegenprobe');
-  await p.evaluate(() => { adHinweis.breiteNachDateiname = true; });
+  await p.evaluate(() => { adAlert.fitFileName = true; });
   if (!gp.some(x => x.includes('APD-138/D-1'))) errors.push(`${where}: R-10.8 Gegenprobe (APD-138/D-10, D-14): ohne Breite nach Dateiname meldet checkDateiname nichts – ${gp.join(' · ') || 'keine Meldung'}`);
   return errors;
 }
@@ -4319,7 +4319,7 @@ export async function checkWachsen(p, { menue = null, untermenue = null, kontext
 
 // R-7.8 Wischaktionen der Kacheln (seit 4.60.0, APD-30; Testfall-Liste arbeit/APD-30 Wischaktionen Testfall-Liste.md W-1 bis W-79, soweit automatisch und
 // ohne Daten der App) – die AD-Bean swipeactions (APD-136, R-1.13) samt eingegrauter, sperrender Sprechblase (R-1.4, APD-30/V-7, V-8). Optionen:
-//   bean: Ausdruck in der Seite, der die Bean der App liefert (z. B. 'wischen'); aktionen: Ausdruck der Aktionsfunktion (dieselbe wie für das Kontextmenü)
+//   bean: Ausdruck in der Seite, der die Bean der App liefert (z. B. 'swipe'); aktionen: Ausdruck der Aktionsfunktion (dieselbe wie für das Kontextmenü)
 //   liste: die Liste (#side); kacheln: Selektor der wischbaren Kacheln wie in der App; kachel, kachel2: zwei sichtbare Kacheln (Selektoren)
 //   titel: Titel in der Kachel (W-1: bleibt teilweise sichtbar); kopf: Knopf im Kopf der Liste, der ein Menü öffnet (W-43: Tipp schließt die Kachel
 //   und wirkt sofort, APD-30/V-12; W-23: bei offener Sprechblase ändert er nichts)
@@ -4359,11 +4359,11 @@ const WISCH_HELFER = () => {
   const matrix = e => { const t = getComputedStyle(e).transform; return t && t !== 'none' ? new DOMMatrix(t) : new DOMMatrix(); };
   window.__wischStand = sel => {
     const k = el(sel), b = (0, eval)(window.__wischBean), l = el(window.__wischListe).getBoundingClientRect(), m = matrix(k);
-    return { offen: !!b.offen, offenIst: b.offen === k, tx: Math.round(m.e), boxen: document.querySelectorAll('.ad-swipeactions-aktionen').length,
+    return { offen: !!b.openRow, offenIst: b.openRow === k, tx: Math.round(m.e), boxen: document.querySelectorAll('.ad-swipeactions-actions').length,
       liste: { l: l.left, r: l.right, t: l.top, b: l.bottom }, beruehrt: k.classList.contains('beruehrt') || k.classList.contains('hebt'),
       kachel: (r => ({ l: r.left, r: r.right, t: r.top, b: r.bottom }))(k.getBoundingClientRect()),
-      kapseln: [...document.querySelectorAll('.ad-swipeactions-kapsel')].map(c => { const r = c.getBoundingClientRect(), e = c.parentElement, w = e.querySelector('.ad-swipeactions-wort'), me = matrix(e);
-        return { label: c.getAttribute('aria-label'), rot: c.classList.contains('rot'), l: r.left, r: r.right, t: r.top, b: r.bottom, w: c.offsetWidth, h: c.offsetHeight,
+      kapseln: [...document.querySelectorAll('.ad-swipeactions-button')].map(c => { const r = c.getBoundingClientRect(), e = c.parentElement, w = e.querySelector('.ad-swipeactions-title'), me = matrix(e);
+        return { label: c.getAttribute('aria-label'), rot: c.classList.contains('destructive'), l: r.left, r: r.right, t: r.top, b: r.bottom, w: c.offsetWidth, h: c.offsetHeight,
           el: (q => ({ l: q.left, r: q.right }))(e.getBoundingClientRect()), op: +getComputedStyle(e).opacity, sc: +Math.hypot(me.a, me.b).toFixed(3), wort: w?.textContent, wortGanz: !!w && w.scrollWidth <= w.clientWidth + 1 && w.scrollHeight <= w.clientHeight + 1,
           wortR: w && (q => ({ l: q.left, r: q.right, t: q.top, b: q.bottom }))(w.getBoundingClientRect()),
           icon: c.querySelector('svg')?.getAttribute('aria-hidden'), bg: getComputedStyle(c).backgroundColor, inKachel: k.contains(c), knopfImKnopf: !!c.parentElement.closest('button'),
@@ -4371,7 +4371,7 @@ const WISCH_HELFER = () => {
       pop: document.querySelector('.pop:not(.zu-geist) p')?.textContent || null, menu: !!document.querySelector('.menu:not(.zu-geist)'), dlg: !!document.querySelector('dialog[open]'),
       titel: document.querySelector('.nb-title, .pnav-title')?.textContent || '', nav: /(^|\s)nav-/.test(document.documentElement.className) };
   };
-  window.__wischStile = () => [...document.querySelectorAll('.ad-swipeactions-kachel, .ad-swipeactions-aktionen, .ad-swipeactions-aktionen *')]
+  window.__wischStile = () => [...document.querySelectorAll('.ad-swipeactions-row, .ad-swipeactions-actions, .ad-swipeactions-actions *')]
     .map(e => Object.fromEntries([...e.style].map(n => [n, e.style.getPropertyValue(n)])));
 };
 const farbeVon = (p, v) => p.evaluate(v => { const d = document.createElement('div'); d.style.background = `var(${v})`; document.body.append(d); const c = getComputedStyle(d).backgroundColor; d.remove(); return c; }, v);
@@ -4383,18 +4383,18 @@ export async function checkWischen(p, { bean, aktionen, liste = '#side', kacheln
   const stand = (sel = kachel) => p.evaluate(s => window.__wischStand(s), sel);
   const wisch = async (sel, wege, o = {}) => { const r = await p.evaluate(([s, w, o]) => window.__wisch(s, w, o), [sel, wege, o]); await ruhig(); return r; };
   const weg = (dx, dy = 0, n = 10) => Array.from({ length: n }, (_, i) => [Math.round(dx * (i + 1) / n), Math.round(dy * (i + 1) / n)]);
-  const zu = async () => { await p.evaluate(() => { const b = (0, eval)(window.__wischBean); b.schliessen(); }); await ruhig(); };
+  const zu = async () => { await p.evaluate(() => { const b = (0, eval)(window.__wischBean); b.close(); }); await ruhig(); };
   const tippe = async (x, y) => { await p.mouse.click(x, y); await ruhig(); await wait(p, 120); };
   const mitte = s => p.evaluate(s => { const r = document.querySelector(s)?.getBoundingClientRect(); return r ? { x: r.left + r.width / 2, y: r.top + r.height / 2 } : null; }, s);
   try {
     await p.evaluate(WISCH_HELFER);
     await p.evaluate(([b, l]) => { window.__wischBean = b; window.__wischListe = l; }, [bean, liste]);
     const ruhigMotion = await p.evaluate(() => matchMedia('(prefers-reduced-motion: reduce)').matches);
-    const eintr = await p.evaluate(([a, s]) => (0, eval)(a)(document.querySelector(s)).filter(x => x && typeof x === 'object').map(x => ({ label: x.label, kurz: x.kurz, red: !!x.red })), [aktionen, kachel]);
+    const eintr = await p.evaluate(([a, s]) => (0, eval)(a)(document.querySelector(s)).filter(x => x && typeof x === 'object').map(x => ({ label: x.label, kurz: x.shortTitle, red: !!x.red })), [aktionen, kachel]);
     if (eintr.length < 1) { E(`${kachel}: die App nennt keine Aktionen – die Prüfung prüft nichts`); return errors; }
-    const masse = await p.evaluate(() => (0, eval)(window.__wischBean).masse);
+    const masse = await p.evaluate(() => (0, eval)(window.__wischBean).metrics);
     // W-74 (R-1.13): die Liste trägt die Bean · W-59, W-64 (R-1.8): geschlossen keine Kapsel im Dokument, die Kachel bleibt eine Schaltfläche
-    const a0 = await p.evaluate(([l, k]) => ({ bean: document.querySelector(l)?.dataset.adBean, kapseln: document.querySelectorAll('.ad-swipeactions-kapsel').length,
+    const a0 = await p.evaluate(([l, k]) => ({ bean: document.querySelector(l)?.dataset.adBean, kapseln: document.querySelectorAll('.ad-swipeactions-button').length,
       knopf: document.querySelector(k)?.matches('button, [role=button]'), name: (document.querySelector(k)?.getAttribute('aria-label') || document.querySelector(k)?.textContent || '').trim().length > 0 }), [liste, kachel]);
     if (a0.bean !== 'swipeactions') E(`W-74 ${liste} trägt nicht data-ad-bean="swipeactions" (ist ${a0.bean})`, 'R-1.13');
     if (a0.kapseln) E(`W-59 bei geschlossener Kachel stehen ${a0.kapseln} Kapseln im Dokument (VoiceOver und Tastatur erreichen sie)`, 'R-1.8');
@@ -4411,14 +4411,14 @@ export async function checkWischen(p, { bean, aktionen, liste = '#side', kacheln
       if (offenSoll && -st.tx !== offenSoll) E(`W-1 offen bei ${-st.tx} px statt ${offenSoll}`);
       if (st.kapseln.length !== eintr.length) E(`W-1 ${st.kapseln.length} Kapseln statt ${eintr.length}`);
       st.kapseln.forEach((c, i) => {
-        if (c.w < masse.kapselBreite || c.h < masse.kapselHoehe) E(`W-1/W-61 Kapsel ‚${c.label}‘ ${c.w} × ${c.h} statt mindestens ${masse.kapselBreite} × ${masse.kapselHoehe}`);
+        if (c.w < masse.buttonWidth || c.h < masse.buttonHeight) E(`W-1/W-61 Kapsel ‚${c.label}‘ ${c.w} × ${c.h} statt mindestens ${masse.buttonWidth} × ${masse.buttonHeight}`);
         if (c.wort !== eintr[i].kurz || !c.wortGanz) E(`W-1 Wort unter der Kapsel ‚${c.wort}‘ ${c.wortGanz ? '' : 'abgeschnitten '}statt ‚${eintr[i].kurz}‘`);
         if (c.label !== eintr[i].label) E(`W-60 Kapsel ${i + 1} heißt für VoiceOver ‚${c.label}‘ statt ‚${eintr[i].label}‘ (gleiche Reihenfolge wie im Kontextmenü)`, 'R-1.8');
         if (c.icon !== 'true') E(`W-60 Symbol der Kapsel ‚${c.label}‘ nicht aria-hidden`, 'R-1.8');
         for (const q of [c, c.wortR]) if (q.l < st.liste.l - 0.5 || q.r > st.liste.r + 0.5 || q.l < -0.5 || q.r > p.viewportSize().width + 0.5) E(`W-1 Kapsel ‚${c.label}‘ ragt aus der Liste bzw. dem Bild (${Math.round(q.l)}–${Math.round(q.r)}, Liste ${Math.round(st.liste.l)}–${Math.round(st.liste.r)})`);
         if (c.inKachel || c.knopfImKnopf) E(`W-64 Kapsel ‚${c.label}‘ liegt in der Kachel bzw. in einer Schaltfläche`, 'R-1.8');
         if (!c.oben) E(`W-1 Kapsel ‚${c.label}‘ ist verdeckt (antippen trifft sie nicht)`);
-        if (i && c.l - st.kapseln[i - 1].r < masse.abstand - 0.5) E(`W-61 Abstand zwischen den Kapseln ${Math.round(c.l - st.kapseln[i - 1].r)} px statt mindestens ${masse.abstand}`);
+        if (i && c.l - st.kapseln[i - 1].r < masse.gap - 0.5) E(`W-61 Abstand zwischen den Kapseln ${Math.round(c.l - st.kapseln[i - 1].r)} px statt mindestens ${masse.gap}`);
       });
       // W-3: Reihenfolge und Rot wie im Kontextmenü – die zerstörende ganz außen; W-55: Farben aus den Variablen (rote wie rote Schaltflächen, sonst wie runde)
       const rot = await farbeVon(p, '--danger-fill'), knopf = await farbeVon(p, '--btn');
@@ -4482,7 +4482,7 @@ export async function checkWischen(p, { bean, aktionen, liste = '#side', kacheln
       else {
         const zuSehen = () => p.evaluate(l => { const e = document.querySelector(l); if (!e || e.hidden || !e.getClientRects().length) return false; const r = e.getBoundingClientRect(); return r.right > 1 && r.left < innerWidth - 1; }, liste);
         await p.click(seitenleiste.aus); await ruhig(); await navFertig(p).catch(() => {}); await ruhig();
-        const b42 = await p.evaluate(() => (0, eval)(window.__wischBean).offen);
+        const b42 = await p.evaluate(() => (0, eval)(window.__wischBean).openRow);
         if (await zuSehen()) E('W-42 panel-left bei offener Kachel blendet die Seitenleiste nicht aus (der Tipp schließt nur die Kachel)');
         if (b42) E('W-42 nach panel-left ist die Kachel noch offen');
         const ein = await p.evaluate(s => !![...document.querySelectorAll(s)].find(b => b.getClientRects().length), seitenleiste.ein);
@@ -4610,7 +4610,7 @@ export async function checkWischen(p, { bean, aktionen, liste = '#side', kacheln
           const s101 = await stand(kachel2);
           if (!s101.offenIst || -s101.tx !== B) E(`W-100 nach dem Loslassen bei 60 % nicht offen (bei ${-s101.tx} px statt ${B})`);
           // W-102 (P-109/M-3, M-4): schliessen() wie Tippen daneben bzw. auf eine andere Kachel – alle Kapseln zugleich in 0,23 s, die Kachel mit der Feder
-          const b102 = await p.evaluate(async s => { const out = [], t0 = performance.now(); (0, eval)(window.__wischBean).schliessen();
+          const b102 = await p.evaluate(async s => { const out = [], t0 = performance.now(); (0, eval)(window.__wischBean).close();
             while (performance.now() - t0 < 900) { out.push({ t: performance.now() - t0, ...window.__wischStand(s) }); await new Promise(r => requestAnimationFrame(r)); } return out; }, kachel2);
           await ruhig();
           if (!ruhigMotion && !b102.some(q => (q.kapseln || []).length > 1 && q.kapseln.every(c => c.op > 0.05 && c.op < 0.95)))
@@ -4621,8 +4621,8 @@ export async function checkWischen(p, { bean, aktionen, liste = '#side', kacheln
         }
         // W-86 (P-107/F-4): Kapseln wachsen mit der Textgröße wie die Schaltflächen der Leisten (66 × 44 mal --fb)
         const fb = await p.evaluate(() => parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--fb')) || 1);
-        const c86 = fin.find(c => Math.abs(c.w - masse.kapselBreite * fb) > 1.5 || Math.abs(c.h - masse.kapselHoehe * fb) > 1.5);
-        if (c86) E(`W-86 Kapsel ‚${c86.label}‘ ${c86.w} × ${c86.h} statt ${Math.round(masse.kapselBreite * fb)} × ${Math.round(masse.kapselHoehe * fb)} (Textgröße, --fb ${fb})`, 'R-7.8');
+        const c86 = fin.find(c => Math.abs(c.w - masse.buttonWidth * fb) > 1.5 || Math.abs(c.h - masse.buttonHeight * fb) > 1.5);
+        if (c86) E(`W-86 Kapsel ‚${c86.label}‘ ${c86.w} × ${c86.h} statt ${Math.round(masse.buttonWidth * fb)} × ${Math.round(masse.buttonHeight * fb)} (Textgröße, --fb ${fb})`, 'R-7.8');
       }
       st = await stand(kachel2);
       if (st.offen) await zu();
@@ -4688,10 +4688,10 @@ export async function checkWischen(p, { bean, aktionen, liste = '#side', kacheln
     if (eintr.at(-1).red) {
       // W-13, W-21: ‚Löschen‘ antippen – Sprechblase aus der roten Kapsel, ganz im Bild, Speicher unverändert; W-22 bis W-25: eingegraut, gesperrt
       await wisch(kachel, weg(-100));
-      await p.locator('.ad-swipeactions-kapsel.rot').click(); await ruhig();
+      await p.locator('.ad-swipeactions-button.destructive').click(); await ruhig();
       st = await stand();
       const pop = await p.evaluate(() => { const q = document.querySelector('.pop:not(.zu-geist)'); if (!q) return null; const r = q.getBoundingClientRect(), l = document.querySelector('.layer.schleier'), h = l?.querySelector('.schleier-loch');
-        const k = document.querySelector('.ad-swipeactions-kapsel.rot'), kr = k?.getBoundingClientRect();
+        const k = document.querySelector('.ad-swipeactions-button.destructive'), kr = k?.getBoundingClientRect();
         return { drin: r.left >= -0.5 && r.top >= -0.5 && r.right <= innerWidth + 0.5 && r.bottom <= innerHeight + 0.5, an: k?.classList.contains('on'), schleier: !!l, loch: !!h,
           grau: h ? getComputedStyle(h).boxShadow : l ? getComputedStyle(l).backgroundColor : '', lochR: h && (x => ({ l: x.left, r: x.right, t: x.top, b: x.bottom }))(h.getBoundingClientRect()),
           kapsel: kr && { l: kr.left, r: kr.right, t: kr.top, b: kr.bottom }, nah: kr ? Math.min(Math.abs(r.top - kr.bottom), Math.abs(r.bottom - kr.top)) : 999 }; });
@@ -4735,7 +4735,7 @@ export async function checkWischen(p, { bean, aktionen, liste = '#side', kacheln
     // W-12: erste Aktion (‚Einstellen‘) – derselbe Weg wie im Kontextmenü, die Kachel ist zu; nach x Fokus auf der Kachel
     if (!eintr[0].red) {
       await wisch(kachel, weg(-100));
-      await p.locator('.ad-swipeactions-kapsel').first().click(); await ruhig(); await wait(p, 200);
+      await p.locator('.ad-swipeactions-button').first().click(); await ruhig(); await wait(p, 200);
       st = await stand();
       if (!st.dlg) E(`W-12 ‚${eintr[0].kurz}‘ öffnet kein Fenster`);
       if (st.offen) E(`W-12 nach ‚${eintr[0].kurz}‘ ist die Kachel noch offen`);
@@ -4796,45 +4796,45 @@ export async function checkWischen(p, { bean, aktionen, liste = '#side', kacheln
     if (zeilen.includes('wisch durch')) E('W-67 Messung mit ‚wisch durch‘ – seit 4.60.2 gibt es kein Durchwischen (P-108)', 'R-1.6');
     await zu();
     // W-77: offen und Ereignisse – je genau einmal pro Vorgang, auch beim Neuaufbau ‚zu‘
-    await p.evaluate(() => { const b = (0, eval)(window.__wischBean); window.__wischEv = []; window.__wischAb = [b.on('offen', k => window.__wischEv.push('offen')), b.on('zu', k => window.__wischEv.push('zu'))]; });
+    await p.evaluate(() => { const b = (0, eval)(window.__wischBean); window.__wischEv = []; window.__wischAb = [b.on('toggle', e => window.__wischEv.push(e?.row instanceof Element ? e.newState : 'ohne row'))]; });
     await wisch(kachel, weg(-100));
-    const o1 = await p.evaluate(k => (0, eval)(window.__wischBean).offen === document.querySelector(k), kachel);
+    const o1 = await p.evaluate(k => (0, eval)(window.__wischBean).openRow === document.querySelector(k), kachel);
     st = await stand();
     await tippe(Math.max(st.liste.l + 6, st.kachel.r - 30), (st.kachel.t + st.kachel.b) / 2);
-    const o2 = await p.evaluate(() => (0, eval)(window.__wischBean).offen);
+    const o2 = await p.evaluate(() => (0, eval)(window.__wischBean).openRow);
     await wisch(kachel, weg(-100));
     if (neuaufbau) { await p.evaluate(a => (0, eval)(a), neuaufbau); await ruhig(); }
-    const ev = await p.evaluate(() => { window.__wischAb.forEach(f => f()); const e = window.__wischEv; return { e, offen: (0, eval)(window.__wischBean).offen, kapseln: document.querySelectorAll('.ad-swipeactions-kapsel').length }; });
-    const evSoll = neuaufbau ? ['offen', 'zu', 'offen', 'zu'] : ['offen', 'zu', 'offen'];
-    if (!o1 || o2 !== null) E(`W-77 offen nach dem Öffnen ${o1 ? 'die Kachel' : 'nicht die Kachel'}, nach dem Tippen ${o2 === null ? 'null' : 'nicht null'}`, 'R-1.13');
-    if (JSON.stringify(ev.e) !== JSON.stringify(evSoll)) E(`W-77 Ereignisse ${JSON.stringify(ev.e)} statt ${JSON.stringify(evSoll)}`, 'R-1.13');
+    const ev = await p.evaluate(() => { window.__wischAb.forEach(f => f()); const e = window.__wischEv; return { e, offen: (0, eval)(window.__wischBean).openRow, kapseln: document.querySelectorAll('.ad-swipeactions-button').length }; });
+    const evSoll = neuaufbau ? ['open', 'closed', 'open', 'closed'] : ['open', 'closed', 'open'];
+    if (!o1 || o2 !== null) E(`W-77 openRow nach dem Öffnen ${o1 ? 'die Kachel' : 'nicht die Kachel'}, nach dem Tippen ${o2 === null ? 'null' : 'nicht null'}`, 'R-1.13');
+    if (JSON.stringify(ev.e) !== JSON.stringify(evSoll)) E(`W-77 Ereignis toggle (newState) ${JSON.stringify(ev.e)} statt ${JSON.stringify(evSoll)}`, 'R-1.13');
     if (neuaufbau && (ev.offen || ev.kapseln)) E('W-77 nach dem Neuaufbau der Liste ist eine Kachel offen (D-3)', 'R-1.13');
     await zu();
     if (ende) {
-      // W-75: ohne Pflichtangaben bzw. Eintrag ohne kurz – Fehler in der Konsole, die Liste bleibt bedienbar
+      // W-75: ohne Pflichtangaben bzw. Eintrag ohne shortTitle – Fehler in der Konsole, die Liste bleibt bedienbar
       const f = await p.evaluate(async ([a, l, ks, k]) => {
         const fehler = [], alt = console.error; console.error = (...x) => { fehler.push(x.join(' ')); };
         try {
-          createSwipeactions(document.querySelector(l), { aktionen: (0, eval)(a) });
-          createSwipeactions(document.querySelector(l), { kacheln: ks });
-          (0, eval)(window.__wischBean).entfernen();
-          const b = createSwipeactions(document.querySelector(l), { kacheln: ks, aktionen: x => (0, eval)(a)(x).map(e => typeof e === 'object' ? { ...e, kurz: undefined } : e) });
+          createSwipeactions(document.querySelector(l), { actions: (0, eval)(a) });
+          createSwipeactions(document.querySelector(l), { rows: ks });
+          (0, eval)(window.__wischBean).disconnect();
+          const b = createSwipeactions(document.querySelector(l), { rows: ks, actions: x => (0, eval)(a)(x).map(e => typeof e === 'object' ? { ...e, shortTitle: undefined } : e) });
           await window.__wisch(k, Array.from({ length: 10 }, (_, i) => [-(i + 1) * 10, 0]));
           await new Promise(r => setTimeout(r, 400));
           const tx = getComputedStyle(document.querySelector(k)).transform;
-          b.entfernen();
+          b.disconnect();
           return { fehler, tx, bean: document.querySelector(l).dataset.adBean || null };
         } finally { console.error = alt; }
       }, [aktionen, liste, kacheln, kachel]);
-      for (const w of ['kacheln', 'aktionen', 'kurz']) if (!f.fehler.some(x => new RegExp(`^swipeactions: ${w}.* fehlt`).test(x))) E(`W-75 ohne ${w}: kein Fehler ‚swipeactions: … fehlt‘ in der Konsole (${JSON.stringify(f.fehler)})`, 'R-1.13');
-      if (f.tx !== 'none') E('W-75 Eintrag ohne kurz: die Kachel bewegt sich trotzdem', 'R-1.13');
-      if (f.bean) E(`W-79 nach entfernen() trägt die Liste noch data-ad-bean (${f.bean})`, 'R-1.13');
+      for (const w of ['rows', 'actions', 'shortTitle']) if (!f.fehler.some(x => new RegExp(`^swipeactions: ${w}.* fehlt`).test(x))) E(`W-75 ohne ${w}: kein Fehler ‚swipeactions: … fehlt‘ in der Konsole (${JSON.stringify(f.fehler)})`, 'R-1.13');
+      if (f.tx !== 'none') E('W-75 Eintrag ohne shortTitle: die Kachel bewegt sich trotzdem', 'R-1.13');
+      if (f.bean) E(`W-79 nach disconnect() trägt die Liste noch data-ad-bean (${f.bean})`, 'R-1.13');
       const m75 = await langDruecken(p, kachel);
       if (m75 || !(await stand()).menu) E(`W-75 ohne Bean zeigt langes Drücken kein Kontextmenü${m75 ? ' – ' + m75 : ''}`, 'R-1.13');
       await p.keyboard.press('Escape'); await ruhig(); await menueZu(p);
       // W-76, W-78, W-79: eigene Bean mit aufgezeichnetem act (seit 4.60.2 ohne Eigenschaft durchwischen – über 60 % rastet die Kachel immer offen ein)
-      await p.evaluate(([a, l, ks]) => { window.__wischAct = []; window.__wischTest = createSwipeactions(document.querySelector(l), { kacheln: ks,
-        aktionen: x => (0, eval)(a)(x).map(e => typeof e === 'object' ? { ...e, act: w => { window.__wischAct.push({ anker: w?.anker?.className || '', quelle: w?.quelle }); return e.act(w); } } : e) });
+      await p.evaluate(([a, l, ks]) => { window.__wischAct = []; window.__wischTest = createSwipeactions(document.querySelector(l), { rows: ks,
+        actions: x => (0, eval)(a)(x).map(e => typeof e === 'object' ? { ...e, act: w => { window.__wischAct.push({ sourceView: w?.sourceView?.className || '', keys: Object.keys(w || {}) }); return e.act(w); } } : e) });
         window.__wischBean = 'window.__wischTest'; }, [aktionen, liste, kacheln]);
       await wisch(kachel, weg(-bw * 0.72, 0, 12));
       st = await stand();
@@ -4842,22 +4842,22 @@ export async function checkWischen(p, { bean, aktionen, liste = '#side', kacheln
       if (st.pop) { await p.keyboard.press('Escape'); await ruhig(); }
       if (eintr.at(-1).red) {
         await zu(); await wisch(kachel, weg(-100));
-        await p.locator('.ad-swipeactions-kapsel.rot').click(); await ruhig();
+        await p.locator('.ad-swipeactions-button.destructive').click(); await ruhig();
         const act = await p.evaluate(() => window.__wischAct.at(-1));
-        if (!act || !/ad-swipeactions-kapsel/.test(act.anker) || !/rot/.test(act.anker) || act.quelle !== 'wischen') E(`W-78 act bekommt ${JSON.stringify(act)} statt anker = rote Kapsel, quelle = ‚wischen‘`, 'R-1.13');
+        if (!act || !/ad-swipeactions-button/.test(act.sourceView) || !/destructive/.test(act.sourceView) || act.keys.join() !== 'sourceView') E(`W-78 act bekommt ${JSON.stringify(act)} statt { sourceView: rote Kapsel }`, 'R-1.13');
         if (!(await stand()).offenIst) E('W-78 die Kachel bleibt bis zur Entscheidung nicht offen', 'R-1.13');
         await p.locator('.pop:not(.zu-geist) button', { hasText: /^Abbrechen$/ }).first().click().catch(() => {}); await ruhig();
         if ((await stand()).offen) E('W-78 nach ‚Abbrechen‘ gleitet die Kachel nicht zurück', 'R-1.13');
       }
       await wisch(kachel, weg(-100));
-      const w79 = await p.evaluate(() => { const b = window.__wischTest, ev = []; b.on('zu', () => ev.push('zu')); b.schliessen(); return ev; });
+      const w79 = await p.evaluate(() => { const b = window.__wischTest, ev = []; b.on('toggle', e => ev.push(e.newState)); b.close(); return ev; });
       await ruhig();
-      if (JSON.stringify(w79) !== '["zu"]' || (await stand()).offen || (await stand()).tx) E(`W-79 schliessen(): Ereignisse ${JSON.stringify(w79)}, Kachel ${(await stand()).offen ? 'offen' : 'zu'}`, 'R-1.13');
-      await p.evaluate(() => window.__wischTest.entfernen());
+      if (JSON.stringify(w79) !== '["closed"]' || (await stand()).offen || (await stand()).tx) E(`W-79 close(): Ereignisse ${JSON.stringify(w79)}, Kachel ${(await stand()).offen ? 'offen' : 'zu'}`, 'R-1.13');
+      await p.evaluate(() => window.__wischTest.disconnect());
       const r79 = await wisch(kachel, [...weg(-100), { merke: 'm' }], { klick: false });
-      if (r79.merk.m?.tx || r79.merk.m?.boxen || await p.evaluate(l => !!document.querySelector(l).dataset.adBean, liste)) E('W-79 nach entfernen() wischt die Kachel bzw. die Liste trägt data-ad-bean', 'R-1.13');
+      if (r79.merk.m?.tx || r79.merk.m?.boxen || await p.evaluate(l => !!document.querySelector(l).dataset.adBean, liste)) E('W-79 nach disconnect() wischt die Kachel bzw. die Liste trägt data-ad-bean', 'R-1.13');
       const m79 = await langDruecken(p, kachel);
-      if (m79 || !(await stand()).menu) E('W-79 nach entfernen() zeigt langes Drücken kein Kontextmenü', 'R-1.13');
+      if (m79 || !(await stand()).menu) E('W-79 nach disconnect() zeigt langes Drücken kein Kontextmenü', 'R-1.13');
       await p.keyboard.press('Escape'); await ruhig(); await menueZu(p);
     }
   } catch (e) { E(`Ablauf bricht ab: ${e.message.split("\n")[0]}`); }

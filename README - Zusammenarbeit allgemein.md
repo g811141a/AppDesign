@@ -1,6 +1,6 @@
 # Zusammenarbeit allgemein
 
-**Version 3.17.0** · Stand 19.11.2026
+**Version 3.18.0** · Stand 20.11.2026
 
 Regeln für die Zusammenarbeit mit Claude bei allen Web-Apps für iPad und iPhone von g811141a. Die Datei liegt im Design-Repo **AppDesign**
 (g811141a/AppDesign); App-Eigenes steht in der `CLAUDE.md` des App-Repos. **Abschnitt 0 ist das Arbeitsmodell** (oben der Kasten ‚Immer‘ und ‚Jede
@@ -208,11 +208,19 @@ Ziel: nichts vergessen, Fehler finden, bevor der Nutzer sie findet, schnell und 
 - **Per du:** Claude spricht den Nutzer immer mit ‚du‘ an – nie ‚Sie‘ und nie ‚ihr‘, auch nicht in Dateien, Testfällen und
   Auswahlfenstern.
 - **Jede Meldung deutsch:** auch kurze Zwischenmeldungen während der Arbeit, Statuszeilen, Bildunterschriften zu Screenshots
-  und Fragen im Auswahlfenster – nie englisch. Englisch bleiben nur Code, Dateinamen und Fachbegriffe ohne gängiges deutsches
+  und Fragen im Auswahlfenster – nie englisch. Englisch bleiben nur Code (nächster Punkt) und Fachbegriffe ohne gängiges deutsches
   Wort.
+- **Code englisch, Texte deutsch:** alle Namen im Code sind englisch – Funktionen, Variablen, Kennungen, Eigenschaften, Methoden, Ereignisse,
+  CSS-Klassen, Schlüssel und neue Dateinamen. **Gibt es ein Vorbild, wird sein Name übernommen** – zuerst die Web-Plattform (HTML, DOM, CSS), dann
+  Apple (UIKit, SwiftUI, HIG) – in der Schreibweise von JavaScript (`camelCase`, Wahrheitswerte ohne `is` wie `open`, `hidden`); erfunden wird nur,
+  wo es keines gibt. Deutsch ist alles, was man liest: Kommentare im Code, Doku, Regeln, CHANGELOG, Backlog, Katalog-Texte, Prüfmeldungen und alles,
+  was die App anzeigt; Namen aus dem Code stehen darin unübersetzt in `Code-Schrift`. Neuer und geänderter Code ist sofort englisch; Bestehendes wird
+  umbenannt, wenn sein Baustein ohnehin umgebaut wird (bei einer AD-Bean: Kennung, Schnittstelle, CSS-Klassen und Katalogdatei). Nie umbenannt werden
+  gespeicherte Daten und Backups (Schlüssel im localStorage, Felder im Backup – R-9.2), die festen Fassungen `fassung/X.Y.Z/` (R-10.3) sowie Prüf- und
+  Dateinamen, solange Regeln oder Changelogs sie zitieren.
 - Schaltflächen im Chat mit ihren Lucide-Icon-Namen benennen (z. B. „pencil“, „trash“), nicht mit Emojis.
 
-Prüfung: Selbstkontrolle.
+Prüfung: Selbstkontrolle; Namen der AD-Beans `checkBeans` (R-1.13).
 
 ---
 

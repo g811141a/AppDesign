@@ -1,4 +1,4 @@
-/* AppDesign 4.66.0 · design.css – gemeinsame Gestaltung der iPad-Web-Apps von g811141a (Apple-like)
+/* AppDesign 4.67.0 · design.css – gemeinsame Gestaltung der iPad-Web-Apps von g811141a (Apple-like)
    Einbinden im <head> vor dem eigenen <style> der App:  <link rel="stylesheet" href="../AppDesign/fassung/X.Y.Z/design.css"> (feste Fassung, R-10.3)
    Farben als Variablen auf :root, Dunkelmodus über data-theme="dark" (setzt ui.js / applyTheme).
    Komponenten: Schaltflächen, Suchfeld, Kapsel, Eingabefelder, Datumsfelder, Kopfzeile, Seitenleiste,
@@ -6,7 +6,7 @@
    Options-Kapsel; seit 4.1.0 iPhone-Ansicht (html.phone: Seitenkopf, großer Titel, Liste, Kasten, untere Leiste). Regeln dazu: README - Designrichtlinie allgemein.md */
 /* Farben im Apple-Look: Hintergrund Hellgrau, Kästen weiß ohne Rand, schwebende Schaltflächen */
 :root {
-  --ad-version: "4.66.0";   /* R-10.3: Version der Bausteine, die App prüft sie beim Start */
+  --ad-version: "4.67.0";   /* R-10.3: Version der Bausteine, die App prüft sie beim Start */
   --bg: #f2f2f7;
   --card: #ffffff;
   --ink: #1c1c1e;
@@ -577,19 +577,19 @@ dialog form { display: flex; flex-direction: column; max-height: var(--dlg-max, 
 .dlg-head .mid { flex: none; max-width: 60%; min-width: 0; text-align: center; }
 .dlg-head .mid .sub { display: block; font-size: var(--tb-footnote); color: var(--muted); line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .dlg-head .mid .sub:empty { display: none; }
-/* AD-Bean hinweis (seit 4.66.0 alles unter .ad-hinweis, APD-136 b1, R-1.13; vorher #msg, .msg-text, .msg-btns, .wide) */
-.ad-hinweis { width: min(max(360px, calc(360px * var(--f-body))), 90vw); min-width: 0; }
-.ad-hinweis, .ad-hinweis .ad-hinweis-form { max-height: var(--msg-max, calc(100vh - 40px)); }
-.ad-hinweis .ad-hinweis-kopf { border: none; }
-.ad-hinweis .ad-hinweis-text { text-align: center; padding: 0 4px 10px; overflow-wrap: anywhere; }
+/* AD-Bean alert – Hinweisfenster (seit 4.66.0 alles unter der Bean, APD-136 b1, R-1.13; englische Namen seit 4.67.0, APD-136: vorher .ad-hinweis…) */
+.ad-alert { width: min(max(360px, calc(360px * var(--f-body))), 90vw); min-width: 0; }
+.ad-alert, .ad-alert .ad-alert-form { max-height: var(--msg-max, calc(100vh - 40px)); }
+.ad-alert .ad-alert-head { border: none; }
+.ad-alert .ad-alert-message { text-align: center; padding: 0 4px 10px; overflow-wrap: anywhere; }
 /* seit 4.57.0 (APD-116, R-10.8): Dateiname allein in einer eigenen Zeile unter dem Satz (fett, zentriert wie der Text); jedes Wort am Stück
    (.fw), deshalb Umbruch nur nach einem Leerzeichen – nur ein Wort, das länger ist als die Zeile, bricht in sich (R-6.3) */
 .fname { display: block; margin-top: 2px; text-align: center; }
 .fname .fw { display: inline-block; max-width: 100%; overflow-wrap: anywhere; }
 /* Seit 4.11.0 (R-9.4): kleines Fenster mit einer blauen Schaltfläche unter dem Text (z. B. ‚Abgleichbericht anzeigen‘) */
-.ad-hinweis.ad-hinweis-breit { width: min(max(600px, calc(600px * var(--f-body))), calc(100vw - 32px)); max-width: none; }
-.ad-hinweis .ad-hinweis-knoepfe { display: flex; justify-content: center; padding: 2px 0 6px; }
-.ad-hinweis-knoepfe .ad-hinweis-knopf { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 20px; border-radius: 999px; font-size: var(--t-body); }
+.ad-alert.ad-alert-wide { width: min(max(600px, calc(600px * var(--f-body))), calc(100vw - 32px)); max-width: none; }
+.ad-alert .ad-alert-buttons { display: flex; justify-content: center; padding: 2px 0 6px; }
+.ad-alert-buttons .ad-alert-button { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 20px; border-radius: 999px; font-size: var(--t-body); }
 /* Abgleichbericht als Vorschau wie die Ausgabe der App: immer hell, volle Breite, seitlich wischen statt umbrechen */
 .dlg-body.sync-preview { margin: 0; padding: 24px; background: #fff; color: #000; color-scheme: light; overflow: auto; }
 .dlg-body.sync-preview .sync-report { min-width: 760px; }
@@ -789,8 +789,8 @@ html.blatt-zurueck .blatt-seite { transform-origin: 50% 0; border-radius: 12px; 
 html.blatt-zieht, html.blatt-zieht * { -webkit-user-select: none; user-select: none; }
 #dlg .dlg-head { touch-action: none; }
 #dlg .dlg-body { overscroll-behavior: none; }
-html.phone .ad-hinweis { width: min(360px, calc(100vw - 32px)); }
-html.phone .ad-hinweis.ad-hinweis-breit { width: min(600px, calc(100vw - 24px)); }
+html.phone .ad-alert { width: min(360px, calc(100vw - 32px)); }
+html.phone .ad-alert.ad-alert-wide { width: min(600px, calc(100vw - 24px)); }
 html.phone :is(#dlg, .blatt-geist) .dlg-head { gap: 8px; padding: 10px max(12px, var(--safe-right)) 8px max(12px, var(--safe-left)); }
 html.phone :is(#dlg, .blatt-geist) .dlg-head .hl, html.phone :is(#dlg, .blatt-geist) .dlg-head .hr { flex: none; gap: 8px; }
 html.phone :is(#dlg, .blatt-geist) .dlg-head .mid { flex: 1; max-width: none; min-width: 0; }
@@ -891,12 +891,12 @@ dialog.gleitet.runter { transition: top .25s ease-in-out; }
    Schaltflächen; darunter das Wort (Caption 2, wächst mit der Textgröße). Die Liste rollt nur
    senkrecht, waagrecht gehört das Wischen der Bean (ui.js); bewegt werden nur transform und opacity. */
 .ad-swipeactions { touch-action: pan-y pinch-zoom; }
-.ad-swipeactions-traeger { position: relative; }
-.ad-swipeactions-kachel { position: relative; z-index: 1; }
-.ad-swipeactions-aktionen { position: absolute; z-index: 0; overflow: hidden; pointer-events: none; }
-.ad-swipeactions-eintrag { position: absolute; display: flex; flex-direction: column; align-items: center; gap: 2px; transform-origin: 50% calc(22px * var(--fb)); }
-.ad-swipeactions-kapsel { pointer-events: auto; --k: var(--fb); display: grid; place-items: center; width: calc(66px * var(--fb)); min-width: calc(66px * var(--fb)); height: calc(44px * var(--fb));
+.ad-swipeactions-host { position: relative; }
+.ad-swipeactions-row { position: relative; z-index: 1; }
+.ad-swipeactions-actions { position: absolute; z-index: 0; overflow: hidden; pointer-events: none; }
+.ad-swipeactions-action { position: absolute; display: flex; flex-direction: column; align-items: center; gap: 2px; transform-origin: 50% calc(22px * var(--fb)); }
+.ad-swipeactions-button { pointer-events: auto; --k: var(--fb); display: grid; place-items: center; width: calc(66px * var(--fb)); min-width: calc(66px * var(--fb)); height: calc(44px * var(--fb));
   min-height: calc(44px * var(--fb)); padding: 0; border-radius: 999px; background: var(--btn); color: var(--ink); border: .5px solid var(--btn-rim); box-shadow: var(--float); touch-action: manipulation; }
-.ad-swipeactions-kapsel.rot { background: var(--danger-fill); color: #fff; border-color: var(--rim-color); box-shadow: var(--glow-danger); }
-.ad-swipeactions-wort { font-size: var(--t-caption2); line-height: 1.2; color: var(--muted); white-space: nowrap; text-align: center; }
-.ad-swipeactions-wort.umbruch { white-space: normal; overflow-wrap: anywhere; }
+.ad-swipeactions-button.destructive { background: var(--danger-fill); color: #fff; border-color: var(--rim-color); box-shadow: var(--glow-danger); }
+.ad-swipeactions-title { font-size: var(--t-caption2); line-height: 1.2; color: var(--muted); white-space: nowrap; text-align: center; }
+.ad-swipeactions-title.wrap { white-space: normal; overflow-wrap: anywhere; }

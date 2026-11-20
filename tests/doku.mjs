@@ -475,18 +475,26 @@ export function checkSchema(appDir, app, gp = (process.env.PRUEF_GEGENPROBE || '
 
 // R-1.13 AD-Beans (seit 4.60.0, APD-136; Testfall-Liste arbeit/APD-30 Wischaktionen Testfall-Liste.md W-72, W-73, W-80): liest die Liste der AD-Beans
 // (Designrichtlinie 15) aus der Fassung der App und prüft sie gegen ui.js und design.css derselben Fassung sowie gegen den Code der App (index.html):
-//   W-72: je Kennung genau eine Zeile; die Fabrik heißt create<Kennung> und steht in ui.js; jede Fabrik in ui.js, die eine Bean ist (setzt
+//   W-72: je Kennung genau eine Zeile; Anlegen heißt create<Kennung> und steht in ui.js; jedes create… in ui.js, das eine Bean ist (setzt
 //         data-ad-bean), steht in der Liste; CSS der Bean nur unter .ad-<kennung>… (jede Regel, die die Bean nennt, zielt auf ihre Klassen)
-//   W-73: die App nennt keine Klasse .ad-<kennung>… und keinen inneren Namen der Bean (Namen, die ui.js im Abschnitt der Bean außer der Fabrik
-//         anlegt) – nur Fabrik, Eigenschaften, Nur lesen, Methoden, Ereignisse
-// Gegenprobe W-80: PRUEF_GEGENPROBE=beans:W-80 fügt dem gelesenen index.html eine Regel für .ad-swipeactions-kapsel hinzu – W-73 wird rot.
+//   W-73: die App nennt keine Klasse .ad-<kennung>… und keinen inneren Namen der Bean (Namen, die ui.js im Abschnitt der Bean außer Anlegen
+//         anlegt) – nur Anlegen, Eigenschaften, Nur lesen, Methoden, Ereignisse
+// Gegenprobe W-80: PRUEF_GEGENPROBE=beans:W-80 fügt dem gelesenen index.html eine Regel für .ad-swipeactions-button hinzu – W-73 wird rot.
 //   APD-136/V-2 (seit 4.66.0): kein CSS über die id des Elements, auf dem ui.js die Bean anlegt; Gegenprobe PRUEF_GEGENPROBE=beans:V-2.
+//   Namen englisch (seit 4.67.0, APD-136, Zusammenarbeit 1 ‚Code englisch, Texte deutsch‘): die Namen der Liste (Kennung, Anlegen, Eigenschaften,
+//         Nur lesen, Methoden, Ereignisse) ohne Umlaut und ß und ohne ein Wort der Sperrliste deutscher Namen (auch als Teil eines Namens in
+//         camelCase); Grenze: nur Wörter der Sperrliste, den Rest deckt die Selbstkontrolle ab. Gegenprobe PRUEF_GEGENPROBE=beans:englisch
+//         (in der ersten Zeile wird ein Name zu ‚schliessen‘) – rot.
+// Sperrliste deutscher Namen (R-1.13, Zusammenarbeit 1): Wörter, die als Name oder Teil eines Namens der Liste der AD-Beans nicht vorkommen dürfen
+const SPERRLISTE = new Set(['offen', 'zu', 'zeigen', 'schliessen', 'oeffnen', 'entfernen', 'kachel', 'kacheln', 'aktion', 'aktionen', 'masse', 'breite',
+  'breit', 'hinweis', 'gedrueckt', 'anker', 'quelle', 'kurz', 'rot', 'fenster', 'liste', 'eintrag', 'kapsel', 'wort', 'umbruch', 'traeger', 'fabrik',
+  'anlegen', 'nach', 'dateiname', 'halten', 'frei', 'lesen', 'setzen', 'satz', 'knopf', 'knoepfe', 'kopf', 'titel', 'gehalten', 'quellen']);
 export function checkBeans(appDir, app) {
   const errors = [], E = t => errors.push(`R-1.13 ${t}`);
   const read = f => { try { return readFileSync(new URL(f, appDir), 'utf8'); } catch { return ''; } };
   let html = read('index.html');
   const needed = html.match(/AD_NEEDED = '([\d.]+)'/)?.[1];
-  if (process.env.PRUEF_GEGENPROBE === 'beans:W-80') html = html.replace('</style>', '.ad-swipeactions-kapsel { color: red; }\n</style>');
+  if (process.env.PRUEF_GEGENPROBE === 'beans:W-80') html = html.replace('</style>', '.ad-swipeactions-button { color: red; }\n</style>');
   const guide = adText(appDir, 'README - Designrichtlinie allgemein.md', needed);
   const ui = adText(appDir, needed ? 'ui.js' : 'v4/ui.js', needed) || adText(appDir, 'v4/ui.js'), css = adText(appDir, needed ? 'design.css' : 'v4/design.css', needed) || adText(appDir, 'v4/design.css');
   const abschnitt = guide.split('\n## 15. ')[1]?.split('\n### ')[0] || '';
@@ -494,33 +502,44 @@ export function checkBeans(appDir, app) {
   if (!tabelle) { E('Designrichtlinie 15: ‚Liste der AD-Beans‘ fehlt'); return errors; }
   const zeilen = [...tabelle.matchAll(/^\| `([a-z]+)` \|([^\n]+)$/gm)].map(m => ({ kennung: m[1], spalten: m[2].split(' | ').map(x => x.replace(/\|\s*$/, '').trim()) }));
   if (!zeilen.length) E('Designrichtlinie 15: die Liste der AD-Beans hat keine Zeile');
+  if (process.env.PRUEF_GEGENPROBE === 'beans:englisch' && zeilen[0]) zeilen[0].spalten[4] = zeilen[0].spalten[4].replace(/`close\(\)`|`\w+\(/, '`schliessen(');
   const namen = s => [...String(s).matchAll(/`([A-Za-z]\w*)/g)].map(m => m[1]);
+  // Namen englisch (Zusammenarbeit 1): kein Umlaut, kein ß, kein Wort der Sperrliste – auch nicht als Teil (camelCase) eines Namens
+  for (const { kennung, spalten } of zeilen) {
+    const alle = [kennung, ...[1, 2, 3, 4, 5].flatMap(i => [...String(spalten[i] || '').matchAll(/`([^`]*)`/g)]
+      .flatMap(m => m[1].replace(/'[^']*'/g, '').match(/[A-Za-zÄÖÜäöüß_$][\wÄÖÜäöüß$]*/g) || []))];
+    for (const n of new Set(alle)) {
+      const teile = n.replace(/([a-zäöüß])([A-ZÄÖÜ])/g, '$1 $2').toLowerCase().split(/[\s_]+/);
+      const wort = [n.toLowerCase(), ...teile].find(w => SPERRLISTE.has(w));
+      if (/[ÄÖÜäöüß]/.test(n) || wort) E(`${kennung}: Name ‚${n}‘ in der Liste der AD-Beans ist nicht englisch${wort ? ` (‚${wort}‘ steht in der Sperrliste deutscher Namen)` : ' (Umlaut bzw. ß)'} – Zusammenarbeit 1 ‚Code englisch, Texte deutsch‘`);
+    }
+  }
   const gross = k => k[0].toUpperCase() + k.slice(1);
   const kennungen = zeilen.map(z => z.kennung);
   for (const k of new Set(kennungen)) if (kennungen.filter(x => x === k).length > 1) E(`W-72 Kennung ‚${k}‘ steht ${kennungen.filter(x => x === k).length}-mal in der Liste der AD-Beans`);
-  // Fabriken in ui.js, die Beans sind (setzen data-ad-bean)
-  const fabriken = [...ui.matchAll(/\nfunction (create[A-Z]\w*)\(/g)].map(m => { const i = m.index, ende = ui.indexOf('\n}\n', i); return { name: m[1], text: ui.slice(i, ende) }; });
-  for (const f of fabriken) if (/adBean\s*=|data-ad-bean/.test(f.text) && !zeilen.some(z => `create${gross(z.kennung)}` === f.name)) E(`W-72 ${f.name} in ui.js ist eine Bean (setzt data-ad-bean), steht aber nicht in der Liste der AD-Beans`);
+  // create… in ui.js, die Beans sind (setzen data-ad-bean)
+  const createList = [...ui.matchAll(/\nfunction (create[A-Z]\w*)\(/g)].map(m => { const i = m.index, ende = ui.indexOf('\n}\n', i); return { name: m[1], text: ui.slice(i, ende) }; });
+  for (const f of createList) if (/adBean\s*=|data-ad-bean/.test(f.text) && !zeilen.some(z => `create${gross(z.kennung)}` === f.name)) E(`W-72 ${f.name} in ui.js ist eine Bean (setzt data-ad-bean), steht aber nicht in der Liste der AD-Beans`);
   for (const { kennung, spalten } of zeilen) {
-    const fabrik = `create${gross(kennung)}`;
-    if (!spalten[1]?.includes(fabrik)) E(`W-72 ${kennung}: Fabrik in der Liste ‚${spalten[1]}‘ statt ${fabrik}(…)`);
-    const f = fabriken.find(x => x.name === fabrik);
-    if (!f) { E(`W-72 ${kennung}: ${fabrik} fehlt in ui.js`); continue; }
-    // W-95 (seit 4.60.2, P-108/M-12): die Eigenschaften der Liste (ohne Klammern) = die Parameter der Fabrik ({ … } im Kopf der Funktion)
+    const create = `create${gross(kennung)}`;
+    if (!spalten[1]?.includes(create)) E(`W-72 ${kennung}: Anlegen in der Liste ‚${spalten[1]}‘ statt ${create}(…)`);
+    const f = createList.find(x => x.name === create);
+    if (!f) { E(`W-72 ${kennung}: ${create} fehlt in ui.js`); continue; }
+    // W-95 (seit 4.60.2, P-108/M-12): die Eigenschaften der Liste (ohne Klammern) = die Parameter von Anlegen ({ … } im Kopf der Funktion)
     const param = (f.text.match(/function \w+\([^,{)]*,\s*\{([^}]*)\}/)?.[1] || '').split(',').map(x => x.split('=')[0].trim()).filter(Boolean).sort();
     const inListe = namen(String(spalten[2] || '').replace(/\([^()]*\)/g, '')).sort();
-    if (param.join() !== inListe.join()) E(`W-95 ${kennung}: Eigenschaften in der Liste ${inListe.join(', ') || '–'} – Parameter von ${fabrik} ${param.join(', ') || '–'}`);
-    if (!new RegExp(`adBean\\s*=\\s*'${kennung}'`).test(f.text)) E(`W-72 ${kennung}: ${fabrik} setzt data-ad-bean="${kennung}" nicht`);
+    if (param.join() !== inListe.join()) E(`W-95 ${kennung}: Eigenschaften in der Liste ${inListe.join(', ') || '–'} – Parameter von ${create} ${param.join(', ') || '–'}`);
+    if (!new RegExp(`adBean\\s*=\\s*'${kennung}'`).test(f.text)) E(`W-72 ${kennung}: ${create} setzt data-ad-bean="${kennung}" nicht`);
     // CSS nur unter .ad-<kennung>…: jede Regel, die die Bean nennt, zielt mit jedem Selektor auf eine Klasse der Bean
     for (const m of css.replace(/\/\*[\s\S]*?\*\//g, '').matchAll(/([^{}]+)\{[^{}]*\}/g)) {
       const sel = m[1].trim();
       if (!sel.includes(`ad-${kennung}`) || sel.startsWith('@')) continue;
       for (const s of sel.split(',').map(x => x.trim())) if (!new RegExp(`\\.ad-${kennung}(?:-[\\w-]+)?(?:[.:\\[][^\\s>+~]*)?$`).test(s)) E(`W-72 ${kennung}: CSS ‚${s}‘ zielt nicht auf eine Klasse .ad-${kennung}…`);
     }
-    // APD-136/V-2 (seit 4.66.0): kein CSS über die id des Elements, auf dem ui.js die Bean anlegt (z. B. createHinweis(msg) → #msg) –
+    // APD-136/V-2 (seit 4.66.0): kein CSS über die id des Elements, auf dem ui.js die Bean anlegt (z. B. createAlert(msg) → #msg) –
     // das CSS der Bean steht nur unter .ad-<kennung>…; Gegenprobe PRUEF_GEGENPROBE=beans:V-2 (Regel ‚#msg .msg-text‘ in design.css)
     const cssV2 = process.env.PRUEF_GEGENPROBE === 'beans:V-2' ? css + '\n#msg .msg-text { color: red; }\n' : css;
-    const ids = [...ui.matchAll(new RegExp(`\\b${fabrik}\\((\\w+)`, 'g'))].map(m => ui.match(new RegExp(`const ${m[1]} = document\\.getElementById\\('([\\w-]+)'\\)`))?.[1]).filter(Boolean);
+    const ids = [...ui.matchAll(new RegExp(`\\b${create}\\((\\w+)`, 'g'))].map(m => ui.match(new RegExp(`const ${m[1]} = document\\.getElementById\\('([\\w-]+)'\\)`))?.[1]).filter(Boolean);
     for (const m of cssV2.replace(/\/\*[\s\S]*?\*\//g, '').matchAll(/([^{}]+)\{[^{}]*\}/g)) for (const s of m[1].split(',').map(x => x.trim()))
       for (const id of ids) if (new RegExp(`#${id}(?![\\w-])`).test(s)) E(`APD-136/V-2 ${kennung}: CSS ‚${s}‘ zielt über #${id} auf die Bean – nur unter .ad-${kennung}…`);
     for (const m of css.replace(/\/\*[\s\S]*?\*\//g, '').matchAll(/([^{}]+)\{[^{}]*\}/g)) for (const s of m[1].split(',').map(x => x.trim()))
@@ -528,9 +547,9 @@ export function checkBeans(appDir, app) {
     // W-73: der Code der App nennt keine Klasse und keinen inneren Namen der Bean
     const klassen = [...new Set(html.match(new RegExp(`ad-${kennung}(?:-[\\w-]+)?`, 'g')) || [])];
     if (klassen.length) E(`W-73 ${app} index.html nennt CSS bzw. Klassen der Bean ${kennung}: ${klassen.join(', ')}`);
-    const start = ui.indexOf(`/* ---------- AD-Bean ${kennung}`), teil = start >= 0 ? ui.slice(start, ui.indexOf('\n}\n', ui.indexOf(`function ${fabrik}(`)) + 3) : '';
+    const start = ui.indexOf(`/* ---------- AD-Bean ${kennung}`), teil = start >= 0 ? ui.slice(start, ui.indexOf('\n}\n', ui.indexOf(`function ${create}(`)) + 3) : '';
     if (!teil) { E(`W-73 ${kennung}: Abschnitt ‚/* ---------- AD-Bean ${kennung}‘ fehlt in ui.js`); continue; }
-    const erlaubt = new Set([fabrik, ...namen(spalten[2]), ...namen(spalten[3]), ...namen(spalten[4]), ...namen(spalten[5])]);
+    const erlaubt = new Set([create, ...namen(spalten[2]), ...namen(spalten[3]), ...namen(spalten[4]), ...namen(spalten[5])]);
     const innen = [...teil.matchAll(/^(?:let|const|var|function)\s+(\w+)/gm)].map(m => m[1]).filter(n => !erlaubt.has(n));
     const code = html.replace(/<!--[\s\S]*?-->/g, '').replace(/\/\/[^\n]*/g, '');
     const genannt = innen.filter(n => new RegExp(`\\b${n}\\b`).test(code));
@@ -543,8 +562,9 @@ export function checkBeans(appDir, app) {
 // R-1.13 Bean-Katalog (seit 4.65.0, APD-140; Testfall-Liste arbeit/APD-140 Testfall-Liste.md Z-1, Z-5): der Katalog zeigt immer den Arbeitsstand –
 // darum die Liste der AD-Beans aus der Designrichtlinie im Arbeitsstand (nicht aus der Fassung der App) gegen AppDesign/katalog/:
 //   Z-1: jede Bean der Liste hat katalog/<kennung>.js, die index.html lädt; jede Katalogdatei gehört zu einer Bean der Liste; Kennung, Bereich,
-//        Fabrik (Name), Eigenschaften, Nur lesen, Methoden, Ereignisse (Namen) und Regeln (Nummern) wie in der Liste
-// Gegenprobe Z-5: PRUEF_GEGENPROBE=beans:katalog – die Katalogdatei der ersten Bean fehlt, die Fabrik der zweiten weicht ab → rot.
+//        Anlegen (Name), Eigenschaften, Nur lesen, Methoden, Ereignisse (Namen) und Regeln (Nummern) wie in der Liste
+// Gegenprobe Z-5: PRUEF_GEGENPROBE=beans:katalog – die Katalogdatei der ersten Bean fehlt, Anlegen der zweiten weicht ab → rot.
+// Felder der Katalogdateien englisch seit 4.67.0 (APD-136): id, area, create, properties, readOnly, methods, events, rules …
 export function checkKatalog(appDir) {
   const errors = [], E = t => errors.push(`R-1.13 Z-1 ${t}`);
   const ad = new URL('../AppDesign/', appDir), kat = new URL('katalog/', ad);
@@ -562,22 +582,22 @@ export function checkKatalog(appDir) {
   const beans = new Map();
   for (const f of dateien) {
     const gemeldet = [];
-    try { runInNewContext(readFileSync(new URL(f, kat), 'utf8'), { katalogBean: b => gemeldet.push(b) }, { filename: `katalog/${f}` }); }
+    try { runInNewContext(readFileSync(new URL(f, kat), 'utf8'), { catalogBean: b => gemeldet.push(b) }, { filename: `katalog/${f}` }); }
     catch (e) { E(`katalog/${f} lässt sich nicht lesen: ${e.message}`); continue; }
     if (gemeldet.length !== 1) { E(`katalog/${f} meldet ${gemeldet.length} Beans an statt einer`); continue; }
     const b = gemeldet[0];
-    if (b.kennung !== f.slice(0, -3)) E(`katalog/${f}: Kennung ‚${b.kennung}‘ statt ‚${f.slice(0, -3)}‘`);
+    if (b.id !== f.slice(0, -3)) E(`katalog/${f}: Kennung ‚${b.id}‘ statt ‚${f.slice(0, -3)}‘`);
     beans.set(f.slice(0, -3), b);
   }
-  if (gp && zeilen[1] && beans.has(zeilen[1].kennung)) beans.get(zeilen[1].kennung).fabrik = 'createAnders()';
+  if (gp && zeilen[1] && beans.has(zeilen[1].kennung)) beans.get(zeilen[1].kennung).create = 'createAnders()';
   for (const { kennung, spalten } of zeilen) {
     const b = beans.get(kennung);
     if (!b) { E(`${kennung}: katalog/${kennung}.js fehlt`); continue; }
     if (!index.includes(`<script src="${kennung}.js"></script>`)) E(`${kennung}: katalog/index.html lädt ${kennung}.js nicht`);
-    const soll = { Bereich: [spalten[0], b.bereich], Fabrik: [namen(spalten[1])[0], namen(b.fabrik)[0]],
-      Eigenschaften: [namen(String(spalten[2]).replace(/\([^()]*\)/g, '')).sort().join(', '), liste(b.eigenschaften)],
-      'Nur lesen': [namen(spalten[3]).sort().join(', '), liste(b.lesen)], Methoden: [namen(spalten[4].replace(/\([^()]*\)/g, '')).sort().join(', '), liste(b.methoden)],
-      Ereignisse: [namen(spalten[5]).sort().join(', '), liste(b.ereignisse)], Regeln: [nummern(spalten[6]), nummern((b.regeln || []).map(r => r[0]).join(' '))] };
+    const soll = { Bereich: [spalten[0], b.area], Anlegen: [namen(spalten[1])[0], namen(b.create)[0]],
+      Eigenschaften: [namen(String(spalten[2]).replace(/\([^()]*\)/g, '')).sort().join(', '), liste(b.properties)],
+      'Nur lesen': [namen(spalten[3]).sort().join(', '), liste(b.readOnly)], Methoden: [namen(spalten[4].replace(/\([^()]*\)/g, '')).sort().join(', '), liste(b.methods)],
+      Ereignisse: [namen(spalten[5]).sort().join(', '), liste(b.events)], Regeln: [nummern(spalten[6]), nummern((b.rules || []).map(r => r[0]).join(' '))] };
     for (const [was, [l, k]] of Object.entries(soll)) if (l !== k) E(`${kennung}: ${was} im Katalog ‚${k || '–'}‘ – in der Liste ‚${l || '–'}‘`);
   }
   for (const k of beans.keys()) if (!zeilen.some(z => z.kennung === k)) E(`katalog/${k}.js gehört zu keiner Bean der Liste der AD-Beans`);

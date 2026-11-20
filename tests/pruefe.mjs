@@ -424,7 +424,7 @@ export function pruefung(name, pw, { hig = null, out = null } = {}) {
       catch (e) { melde('', `Schritt bricht ab: ${e.message.split('\n')[0]}`, name); throw e; }
       // Gegenprobe der Grundregeln (Testfall-Liste APD-5, APD-5/C-1): PRUEF_GEGENPROBE=grundregeln legt beim ersten Schritt einen zu
       // breiten Text sichtbar in den Vordergrund (auch in ein offenes Fenster) – R-6.3 muss ihn melden.
-      if (hig && gegenprobeGrund) { gegenprobeGrund = false; await p.evaluate(() => { const d = document.createElement('div'); d.id = 'gegenprobe'; d.className = 'ad-hinweis-text';
+      if (hig && gegenprobeGrund) { gegenprobeGrund = false; await p.evaluate(() => { const d = document.createElement('div'); d.id = 'gegenprobe'; d.className = 'ad-alert-message';
         d.style.cssText = 'position:fixed;top:120px;left:20px;width:100px;white-space:nowrap;z-index:99999'; d.textContent = 'a'.repeat(100);
         (document.querySelector('dialog[open]') || document.body).append(d); }); }
       if (hig) await hig.measure(p, wo(name), { schnell: true });   // measure wartet selbst, bis die Seite ruht

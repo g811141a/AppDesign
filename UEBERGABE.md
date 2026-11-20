@@ -31,12 +31,12 @@ beantwortet, der Bau passt nicht mehr in diese Sitzung; der Arbeitsprozess wurde
 
 - **Code englisch, Texte deutsch:** APD-136/F-1 bis F-4 entschieden. **Wortlaut freigegeben:** Zusammenarbeit 1 (neuer Punkt ‚Code englisch, Texte deutsch‘
   mit ‚Vorbild zuerst – Web, dann Apple – in JavaScript-Schreibweise‘, `arbeit/0145 Namen nach Vorbild.md` Abschnitt 4) und R-1.13 (Satz zur Kennung nach
-  A-1: Name des Vorbilds, ohne Vorbild nach der Aufgabe – `arbeit/0145 Brainstorming Namen.md` Abschnitt A; Prüfung in `checkBeans` mit Sperrliste deutscher
+  APD-136/A-1: Name des Vorbilds, ohne Vorbild nach der Aufgabe – `arbeit/0145 Brainstorming Namen.md` Abschnitt A; Prüfung in `checkBeans` mit Sperrliste deutscher
   Namen – `arbeit/0145 Code englisch Wortlaut.md` Abschnitt 2).
 - **Neue Namen entschieden** (`arbeit/0145 Brainstorming Namen.md` B bis F und Katalog; Begründung `disconnect`: `arbeit/0145 entfernen disconnect.md`):
   `hinweis` → `alert` (`showModal`, `open`, `close`, …), `swipeactions` (`rows`, `shortTitle`, `act({ sourceView })`, `disconnect()`, Ereignis `toggle` …),
   Katalog-Felder englisch mit `abstract`. Der Code-Name im freigegebenen ‚Anlegen‘-Wortlaut heißt `create` statt `anlegen`.
-- **Bean `sourcehighlight`:** Listenzeile und Testfall-Liste S-1 bis S-13 **freigegeben**, U-1 ja (auch Untermenü-Eintrag und Sprechblase)
+- **Bean `sourcehighlight`:** Listenzeile und Testfall-Liste APD-136/S-1 bis S-13 **freigegeben**, APD-136/U-1 ja (auch Untermenü-Eintrag und Sprechblase)
   (`arbeit/0145 APD-136 Bean sourcehighlight Vorschlag.md`).
 - **Backlog AppDesign ‚0. Nächste Version‘: 3 Punkte bereit** – APD-136 Namen, APD-136 sourcehighlight, APD-143 (2 Themen, 0 Nr. 8).
 - **Neu im Backlog:** APD-145 Namensraum `AD` für ui.js (Priorität 2; `arbeit/0145 Praefix UI.md`).
@@ -53,7 +53,7 @@ beantwortet, der Bau passt nicht mehr in diese Sitzung; der Arbeitsprozess wurde
      Katalog = gültige Namen); Liste der AD-Beans (15), `schnittstelle.json`, `katalog/alert.js` (statt `hinweis.js`), `katalog/swipeactions.js`,
      `katalog/index.html`, `tests/doku.mjs` (`checkBeans`, Sperrliste, Gegenprobe), Prüfungen, die die alten Namen und CSS-Klassen nennen
      (`tests/ablauf.mjs`, `backup.mjs`, `lauf.mjs`, `hig.mjs`, `pruefe.mjs`, Reiselogbuch `tests/ablauf-wischen.mjs`, `ablauf-abgleich.mjs`), App `index.html`.
-   - APD-136 sourcehighlight: `arbeit/0145 APD-136 Bean sourcehighlight Vorschlag.md` (Listenzeile, App-Umstellung, S-1 bis S-13, Gegenprobe).
+   - APD-136 sourcehighlight: `arbeit/0145 APD-136 Bean sourcehighlight Vorschlag.md` (Listenzeile, App-Umstellung, APD-136/S-1 bis S-13, Gegenprobe).
    - APD-143: `arbeit/APD-143 Wortlaut und Testfall-Liste.md`.
    CHANGELOG mit Testfällen (P-117), Versionsgeschichten, `… fassung`, `… stufe`, dann `… los --app reiselogbuch` (voll, ~75 min) im Hintergrund.
 3. Bericht nach 0 Nr. 11 mit Usertest P-117.
