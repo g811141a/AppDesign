@@ -100,7 +100,7 @@ ist nach der Aufgabe benannt und bleibt.
 (`confirmPop`, Entscheidung, am iPad aus der Schaltfläche) entspricht Apples *confirmation dialog* bzw. *action sheet* und im Web `confirm()` – sie bekommt
 später diesen Namen; es gibt also keine Überschneidung.
 
-**Empfehlung B-1 `alert`** mit dieser Schnittstelle:
+**Entschieden: B-1 `alert`** mit dieser Schnittstelle und **`showModal`** (Nutzer 20.11.2026, Sitzung 0145, im Fenster):
 
 | Teil | Alt | Neu | Vorbild |
 |---|---|---|---|
@@ -117,3 +117,34 @@ später diesen Namen; es gibt also keine Überschneidung.
 
 Zu `show` oder `showModal`: nach der Regel ‚Vorbild zuerst‘ `showModal`, weil `show()` im Web ein Fenster **ohne** Sperre öffnet; `show` wäre kürzer, sagt
 aber nach Web-Vorbild etwas anderes. Die App ruft ohnehin `inform(…)` auf, nicht die Methode.
+
+---
+
+## C bis F – Wischaktionen (`swipeactions`): Überlegung und Vorschlag
+
+| Quelle | wörtlich |
+|---|---|
+| Apple `UISwipeActionsConfiguration` | „The set of actions to perform when swiping on rows of a table.“ · `actions` |
+| Apple `UIContextualAction` | „An action to display when the user swipes a table row.“ · `title` – „The title displayed on the action button.“ · Stil `destructive` · Handler `(action, sourceView, completionHandler)`, `sourceView` – „The view in which the action was displayed.“ |
+| Apple `AppShortcut` | Parameter `shortTitle` |
+| MDN `ResizeObserver.disconnect()` | „unobserves all observed Element or SVGElement targets.“ · `MutationObserver.disconnect()` – „tells the observer to stop watching for mutations.“ |
+| MDN `toggle`-Ereignis | „fires on a popover element, <dialog> element, or <details> element just after it is shown or hidden“; `newState` = `open` bzw. `closed` |
+| Apple `collectionView(_:contextMenuConfigurationForItemsAt:point:)` | „… for the items at the specified index paths.“ (Kontextmenü: *items*; Wischaktionen: *rows*) |
+
+| Teil | Alt | Neu | Vorbild |
+|---|---|---|---|
+| C Eigenschaft | `kacheln` | `rows` | Apple „swipes a table row“ |
+| Eigenschaft | `aktionen` | `actions` | Apple `actions` |
+| D Eintrag | `kurz` | `shortTitle` | Apple `shortTitle`; `title` der Wisch-Schaltfläche – bei uns ist `label` schon der Text im Menü |
+| E Aufruf | `act({ anker, quelle: 'wischen' })` | `act({ sourceView })` – `quelle` entfällt (die App nutzt es nicht; Apple übergibt nur die Ansicht) | Apple Handler `sourceView` |
+| Nur lesen | `offen` | `openRow` | – (aus Apple *row* und Web *open*) |
+| Nur lesen | `masse` | `metrics` mit `buttonWidth`, `buttonHeight`, `gap`, `margin`, `openAt`, `overshootMax`, `overshootGrow`, `decideAfter`, `horizontal` | Apple *action button*; sonst – |
+| Methode | `schliessen()` | `close()` | MDN `close()` |
+| F Methode | `entfernen()` | `disconnect()` | MDN `disconnect()` (hört auf zu beobachten) |
+| F Ereignisse | `offen` · `zu` (mit Kachel) | **a)** `toggle` mit `{ row, newState: 'open' \| 'closed' }` · **b)** `open` · `close` (mit Zeile) | a) MDN `toggle`; b) nur `close` hat ein Web-Vorbild |
+| CSS | `-traeger`, `-kachel`, `-aktionen`, `-eintrag`, `-kapsel`, `.rot`, `-wort`, `.umbruch` | `-host`, `-row`, `-actions`, `-action`, `-button`, `.destructive`, `-title`, `.wrap` | Apple *row*, *action*, *action button*, `destructive`, `title`; Web *wrap* |
+
+Unverändert: Kennung `swipeactions` (A-1), Eintrag `red` (gehört zu `openMenu`, F-3), `label`, `icon`, `act`. Die App nutzt die Ereignisse heute nicht.
+App: `createSwipeactions(side, { rows: '[data-id]', actions: tripActions })` · `swipe.close()` · `shortTitle:` · `w?.sourceView`.
+
+**Empfehlung:** die Namen der Tabelle; Ereignisse **a) `toggle`** – das ist der Web-Name für ‚geöffnet oder geschlossen‘; ein Ereignis `open` gibt es im Web nicht.
