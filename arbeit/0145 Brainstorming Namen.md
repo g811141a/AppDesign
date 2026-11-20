@@ -154,5 +154,5 @@ App: `createSwipeactions(side, { rows: '[data-id]', actions: tripActions })` · 
 ## Katalog-Felder (Abschnitt 5 in `0145 Code englisch Wortlaut.md`, dort a) alle englisch freigegeben)
 
 Nach Vorbild geprüft: nur ein Feld hat ein Vorbild – der Kurztext einer Seite der Apple-Dokumentation heißt `abstract` (in jeder gelesenen JSON-Seite).
-Vorschlag: `satz` → **`abstract`** statt `summary`; alle übrigen Felder wie freigegeben (`id`, `area`, `since`, `section`, `create`, `properties`,
+**Entschieden** (Nutzer 20.11.2026, Sitzung 0145, im Fenster): `satz` → **`abstract`** statt `summary`; alle übrigen Felder wie freigegeben (`id`, `area`, `since`, `section`, `create`, `properties`,
 `readOnly` – Web-Vorbild `readOnly` –, `methods`, `events`, `rules`, `history`, `howTo`, `demo(el, log)`, `catalogBean(…)`; `name`, `icon` bleiben).
