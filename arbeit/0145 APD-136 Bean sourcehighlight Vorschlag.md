@@ -1,7 +1,7 @@
 # APD-136 – AD-Bean `sourcehighlight` – Listenzeile und Testfall-Liste (zur Freigabe)
 
 Sitzung 0145, 20.11.2026. Grundlage: `0144 APD-136 Bean gedrueckt Vorschlag.md` mit den Entscheidungen APD-136/E-1 (auch der Mehr-Knopf bei offenem Menü),
-E-2 (Klasse `on` bleibt), E-3 (App auf die Bean umstellen); Name `sourcehighlight` (Nutzer 0144); Namen nach Vorbild (Zusammenarbeit 1, freigegeben 0145).
+APD-136/E-2 (Klasse `on` bleibt), E-3 (App auf die Bean umstellen); Name `sourcehighlight` (Nutzer 0144); Namen nach Vorbild (Zusammenarbeit 1, freigegeben 0145).
 
 ## 1. Aufgabe
 
@@ -36,12 +36,12 @@ Dateiauswahl) –, bleibt blau getönt, bis es fertig ist (R-3.3), auch nach ein
 - `refresh(root)` tönt nach einem Neuaufbau in `root` alle Quellen wieder (ersetzt `markOpener()` und `markHeld(root)`, auch `liveAnchor`).
 - `change` meldet `{ item, highlighted }` – für den Katalog.
 - Ein Exemplar für die ganze Seite: `ui.js` legt es einmal an (`adSourcehighlight = createSourcehighlight(document.body)`), wie `alert`.
-- Aussehen: Klasse `on` (E-2) – die Bean hat kein eigenes CSS.
+- Aussehen: Klasse `on` (APD-136/E-2) – die Bean hat kein eigenes CSS.
 - Was ui.js beim Schließen des Fensters dazu tut (Hervorhebung R-7.3, Fokus R-1.8), bleibt in ui.js; es liest die Quelle aus `sourceItem`.
 
 AD-Bean: `sourcehighlight` (neu).
 
-## 5. App umstellen (E-3, `index.html` des Reiselogbuchs)
+## 5. App umstellen (APD-136/E-3, `index.html` des Reiselogbuchs)
 
 | Heute | Neu | Stellen (0144) |
 |---|---|---|
@@ -82,6 +82,6 @@ Meldung zu ist; Mehr-Menü öffnen – der Mehr-Knopf ist blau, bis das Menü zu
 
 ## 8. Vorher offen (erledigt)
 
-- **U-1 Umfang:** E-1 nannte den Mehr-Knopf bei offenem Menü. Dieselbe Tönung setzt ui.js auch am Eintrag des Untermenüs und an der Schaltfläche der
+- **U-1 Umfang:** APD-136/E-1 nannte den Mehr-Knopf bei offenem Menü. Dieselbe Tönung setzt ui.js auch am Eintrag des Untermenüs und an der Schaltfläche der
   Sprechblase. Empfehlung: **alle drei in die Bean** – sonst setzt ui.js `on` für dieselbe Aufgabe weiter an zwei Stellen.
 - Katalog-Name: ‚Hervorgehobene Quelle‘ (deutsch, wie ‚Hinweisfenster‘).

@@ -11,7 +11,7 @@
 <!-- Bean-Katalog (AppDesign katalog/, APD-140, seit 4.65.0; Designrichtlinie 14, R-1.13): je AD-Bean eine Seite zum Ansehen und Ausprobieren –
      Split View wie die Apps (Seitenleiste nach Bereichen, geplante Beans grau), Bean-Seite wie Einstellungen am iPad: Karte, Ausprobieren, Ereignisse,
      Regeln, Schnittstelle, Verlauf. Lädt immer den Arbeitsstand v4/ (gehört nicht zur festen Fassung). Je Bean eine Datei <kennung>.js, die sich mit
-     katalogBean({…}) anmeldet. Prüfung: checkBeans (Liste ↔ katalog/), tests/katalog.mjs (lädt fehlerfrei, Grundregeln, Versionszeile). -->
+     catalogBean({…}) anmeldet. Prüfung: checkBeans (Liste ↔ katalog/), tests/katalog.mjs (lädt fehlerfrei, Grundregeln, Versionszeile). -->
 <link rel="stylesheet" href="../v4/design.css">
 <style>
   /* Nur, was der Katalog selbst braucht – alles Gemeinsame kommt aus design.css */
@@ -39,6 +39,7 @@
   .bk-protokoll .bk-leer { color: var(--muted); }
   /* Vorführung der Wischaktionen: Kacheln wie in der Seitenleiste (15.4) */
   .bk-liste { padding: 2px 0 0; }
+  .bk-knoepfe { display: flex; flex-wrap: wrap; gap: 12px; padding: 4px 16px 12px; }
   .bk-kachel { display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; border: none; background: var(--card); border-radius: 22px;
     box-shadow: var(--table-shadow); padding: calc(12px * var(--f-body)) 16px; margin-bottom: 10px; min-height: 60px; font: inherit; color: inherit; }
   .bk-kachel .t { flex: 1; min-width: 0; } .bk-kachel b { display: block; font-weight: 600; } .bk-kachel small { display: block; color: var(--muted); font-size: var(--t-subhead); }
@@ -70,10 +71,11 @@
 'use strict';
 // Anmeldung der Beans – vor den Bean-Dateien
 const BEANS = [];
-function katalogBean(b) { BEANS.push(b); }
+function catalogBean(b) { BEANS.push(b); }
 </script>
 <script src="swipeactions.js"></script>
-<script src="hinweis.js"></script>
+<script src="alert.js"></script>
+<script src="sourcehighlight.js"></script>
 <script>
 'use strict';
 
@@ -93,18 +95,17 @@ function save() { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(db.sett
 const BEREICHE = ['Aktionen und Menüs', 'Navigation und Suche', 'Fenster und Meldungen', 'Eingabe', 'Inhalt', 'Dienste'];
 // Geplante Beans (APD-136) – grau, ohne Seite, ohne eigene Datei (Designrichtlinie 14)
 const GEPLANT = [
-  { kennung: 'gedrueckt', name: 'Gedrückte Schaltfläche', bereich: 'Aktionen und Menüs' },
-  { kennung: 'field', name: 'Eingabefeld (Grundlage)', bereich: 'Eingabe' },
-  { kennung: 'decimal', name: 'Betragsfeld', bereich: 'Eingabe' },
+  { id: 'field', name: 'Eingabefeld (Grundlage)', area: 'Eingabe' },
+  { id: 'decimal', name: 'Betragsfeld', area: 'Eingabe' },
 ];
 
 /* ---------- Zustand ---------- */
 
-let currentId = new URLSearchParams(location.search).get('bean') || location.hash.slice(1) || BEANS[0].kennung;
-if (!BEANS.some(b => b.kennung === currentId)) currentId = BEANS[0].kennung;
+let currentId = new URLSearchParams(location.search).get('bean') || location.hash.slice(1) || BEANS[0].id;
+if (!BEANS.some(b => b.id === currentId)) currentId = BEANS[0].id;
 let sideOpen = true, phoneList = isPhone(), abmelden = null;
 const ereignisse = [];
-const getBean = id => BEANS.find(b => b.kennung === id);
+const getBean = id => BEANS.find(b => b.id === id);
 
 /* ---------- Bean-Seite ---------- */
 
@@ -118,22 +119,22 @@ function protokoll(text, dazu = '') {
   const p = app.querySelector('#bkProt'); if (p) p.outerHTML = protokollHtml();
 }
 
-function teilProbe(b) { return `${abschnitt('Ausprobieren')}<div id="bkProbe"></div><p class="hint bk-anleitung">${esc(b.anleitung)}</p>${abschnitt('Ereignisse')}<div class="ilist">${protokollHtml()}</div>`; }
-function teilRegeln(b) { return `${abschnitt('Regeln')}${textZeilen(b.regeln)}`; }
+function teilProbe(b) { return `${abschnitt('Ausprobieren')}<div id="bkProbe"></div><p class="hint bk-anleitung">${esc(b.howTo)}</p>${abschnitt('Ereignisse')}<div class="ilist">${protokollHtml()}</div>`; }
+function teilRegeln(b) { return `${abschnitt('Regeln')}${textZeilen(b.rules)}`; }
 function teilSchnittstelle(b) {
-  return `${abschnitt('Schnittstelle')}<div class="ilist"><div class="irow bk-zeile"><span class="t"><b><code>${esc(b.fabrik)}</code></b><small>Anlegen (Fabrik) – die App nutzt nur Fabrik, Eigenschaften, Methoden und Ereignisse (R-1.13)</small></span></div></div>
-    ${abschnitt('Eigenschaften')}${zeilen(b.eigenschaften, true)}${abschnitt('Nur lesen')}${zeilen(b.lesen)}
-    ${abschnitt('Methoden')}${zeilen(b.methoden)}${abschnitt('Ereignisse <code>on(…)</code>')}${zeilen(b.ereignisse)}`;
+  return `${abschnitt('Schnittstelle')}<div class="ilist"><div class="irow bk-zeile"><span class="t"><b><code>${esc(b.create)}</code></b><small>Anlegen – die App nutzt nur Anlegen, Eigenschaften, Methoden und Ereignisse (R-1.13)</small></span></div></div>
+    ${abschnitt('Eigenschaften')}${zeilen(b.properties, true)}${abschnitt('Nur lesen')}${zeilen(b.readOnly)}
+    ${abschnitt('Methoden')}${zeilen(b.methods)}${abschnitt('Ereignisse <code>on(…)</code>')}${zeilen(b.events)}`;
 }
-function teilVerlauf(b) { return `${abschnitt('Verlauf')}${textZeilen(b.verlauf.map(([v, s]) => [`AppDesign ${v}`, s]))}`; }
+function teilVerlauf(b) { return `${abschnitt('Verlauf')}${textZeilen(b.history.map(([v, s]) => [`AppDesign ${v}`, s]))}`; }
 
 function render() {
   const b = getBean(currentId), phone = isPhone();
   if (phone && phoneList) { fab.hidden = true; app.innerHTML = ''; renderSide(); return; }
   renderSide();
   fab.hidden = false;
-  const kopf = `<div class="bk-kopf"><div class="bk-icon">${ic(b.icon)}</div><h1>${esc(b.name)}</h1><p>${esc(b.satz)}</p>
-    <div class="bk-steck"><code>${b.kennung}</code> · ${esc(b.bereich)} · seit AppDesign ${b.seit} · Designrichtlinie ${b.abschnitt}</div></div>`;
+  const kopf = `<div class="bk-kopf"><div class="bk-icon">${ic(b.icon)}</div><h1>${esc(b.name)}</h1><p>${esc(b.abstract)}</p>
+    <div class="bk-steck"><code>${b.id}</code> · ${esc(b.area)} · seit AppDesign ${b.since} · Designrichtlinie ${b.section}</div></div>`;
   const inhalt = teilProbe(b) + teilRegeln(b) + teilSchnittstelle(b) + teilVerlauf(b);
   setHtml(app, `
     ${phone ? `<div class="pnav" id="bar"><span><button type="button" class="round" id="back" aria-label="AD-Beans">${ic('chevron-left')}</button></span>
@@ -146,7 +147,7 @@ function render() {
   const back = app.querySelector('#back'); if (back) back.onclick = navZurueck;
   abmelden?.(); abmelden = null;
   const probe = app.querySelector('#bkProbe');
-  if (probe) abmelden = b.vorfuehren(probe, protokoll);
+  if (probe) abmelden = b.demo(probe, protokoll);
 }
 
 function showBean(id) {
@@ -171,16 +172,16 @@ function renderSide() {
   side.classList.toggle('page', page);
   document.body.classList.toggle('docked', show && !page);
   if (!show) return;
-  const gruppen = BEREICHE.map(g => [g, [...BEANS.filter(b => b.bereich === g), ...GEPLANT.filter(b => b.bereich === g).map(b => ({ ...b, geplant: true }))]]).filter(([, l]) => l.length);
+  const gruppen = BEREICHE.map(g => [g, [...BEANS.filter(b => b.area === g), ...GEPLANT.filter(b => b.area === g).map(b => ({ ...b, geplant: true }))]]).filter(([, l]) => l.length);
   setHtml(side, `
     <div class="side-head"><div class="ttl"><h2>AD-Beans</h2><small>${BEANS.length} AD-Beans · ${GEPLANT.length} geplant</small></div>
       <button type="button" class="round" id="sideMore" aria-label="Mehr">${ic('ellipsis')}</button>
       ${page ? '' : `<button type="button" class="round" id="sideHide" aria-label="Seitenleiste ausblenden">${ic('panel-left')}</button>`}
     </div>
     <div class="side-list">${gruppen.map(([g, l]) => `<h3 class="side-sec">${g}</h3>${l.map(b => b.geplant
-      ? `<div class="side-row geplant" aria-disabled="true"><span class="bk-sym">${ic('ellipsis')}</span><span class="t"><b>${esc(b.name)}</b><small><code>${b.kennung}</code> · geplant</small></span></div>`
-      : `<button type="button" class="side-row ${b.kennung === currentId && !page ? 'current' : ''}" data-bean="${b.kennung}"><span class="bk-sym">${ic(b.icon)}</span>
-         <span class="t"><b>${esc(b.name)}</b><small><code>${b.kennung}</code> · seit ${b.seit}</small></span>${ic('chevron-right')}</button>`).join('')}`).join('')}</div>
+      ? `<div class="side-row geplant" aria-disabled="true"><span class="bk-sym">${ic('ellipsis')}</span><span class="t"><b>${esc(b.name)}</b><small><code>${b.id}</code> · geplant</small></span></div>`
+      : `<button type="button" class="side-row ${b.id === currentId && !page ? 'current' : ''}" data-bean="${b.id}"><span class="bk-sym">${ic(b.icon)}</span>
+         <span class="t"><b>${esc(b.name)}</b><small><code>${b.id}</code> · seit ${b.since}</small></span>${ic('chevron-right')}</button>`).join('')}`).join('')}</div>
     ${backupTileHtml(0, true)}`);   // Fuß der Seitenleiste mit der Offline-Zeile (R-1.5); der Katalog hat nichts zu sichern
   side.querySelector('#sideMore').onclick = e => openMenu(e.currentTarget, [
     darstellungMenuItem(), 'line', { note: `${APP_NAME} · AppDesign ${AD_VERSION} (v4, neueste Fassung)` }], 'left');
@@ -212,7 +213,7 @@ window.addEventListener('resize', () => {
   if (!side.hidden) document.documentElement.style.setProperty('--side-w', side.offsetWidth + 'px');
 });
 // für tests/katalog.mjs
-window.__katalog = { showBean, beans: () => BEANS.map(b => b.kennung) };
+window.__katalog = { showBean, beans: () => BEANS.map(b => b.id) };
 </script>
 </body>
 </html>

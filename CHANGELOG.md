@@ -3,6 +3,65 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.67.0 – 20.11.2026
+
+AppDesign 4.67.0 · Designrichtlinie allgemein 4.67.0 · Zusammenarbeit allgemein 3.18.0 · Reiselogbuch 3.57.10 (Fassung 4.67.0)
+
+**APD-136 Namen – ‚Anlegen‘ und Code englisch** (Wortlaut ‚Anlegen‘ freigegeben 20.11.2026, Sitzung 0144 – `arbeit/0144 Begriff Anlegen Wortlaut.md`; ‚Code englisch,
+Texte deutsch‘ mit ‚Vorbild zuerst‘ und R-1.13 freigegeben, Namen entschieden 20.11.2026, Sitzung 0145 – `arbeit/0145 Namen nach Vorbild.md` Abschnitt 4,
+`arbeit/0145 Code englisch Wortlaut.md` Abschnitt 2, `arbeit/0145 Brainstorming Namen.md` A bis F und Katalog; Bau bestätigt in Sitzung 0145).
+
+- **Zusammenarbeit 1 (3.18.0):** neuer Punkt ‚Code englisch, Texte deutsch‘ – Namen im Code englisch, nach Vorbild (zuerst Web, dann Apple, JavaScript-Schreibweise),
+  Texte deutsch; Prüfzeile ‚Selbstkontrolle; Namen der AD-Beans `checkBeans` (R-1.13)‘.
+- **R-1.13 und Designrichtlinie 14, 15:** ‚Fabrik‘ → ‚Anlegen‘ (Regeltext, Spaltenkopf der Liste der AD-Beans, Abschnitt 14); Satz zur Kennung: englisch, der Name
+  des Vorbilds, ohne Vorbild nach der Aufgabe (APD-136/A-1); Prüfung um die englischen Namen ergänzt.
+- **AD-Bean `alert` ersetzt `hinweis`** (`ui.js`, `design.css`): `createAlert(dialog, { fitFileName })`, `open`, `showModal(title, message, { wide, action })`, `close()`,
+  Ereignis `close`, `adAlert`; CSS `.ad-alert`, `-wide`, `-form`, `-head`, `-message`, `-buttons`, `-button`. `inform(…)` bleibt; Aussehen unverändert.
+- **AD-Bean `swipeactions` – Schnittstelle englisch:** `createSwipeactions(list, { rows, actions })`, Eintrag `shortTitle`, `act({ sourceView })`, `openRow`, `metrics`
+  (`buttonWidth`, `buttonHeight`, `gap`, `margin`, `openAt`, `overshootMax`, `overshootGrow`, `decideAfter`, `horizontal`), `close()`, `disconnect()`, Ereignis `toggle`
+  mit `{ row, newState: 'open' | 'closed' }`; CSS `-host`, `-row`, `-actions`, `-action`, `-button`, `.destructive`, `-title`, `.wrap`. Verhalten unverändert; innere
+  Namen bleiben (Zusammenarbeit 1).
+- **Bean-Katalog:** Felder englisch (`id`, `area`, `since`, `section`, `abstract`, `create`, `properties`, `readOnly`, `methods`, `events`, `rules`, `history`, `howTo`,
+  `demo(el, log)`, `catalogBean(…)`), `katalog/alert.js` statt `hinweis.js`, graue Zeile ‚Anlegen – die App nutzt nur Anlegen, Eigenschaften, Methoden und
+  Ereignisse (R-1.13)‘.
+- **`v4/schnittstelle.json`:** `createAlert` statt `createHinweis`, `adAlert` statt `adHinweis` (Teil `pruefungen`).
+- **Prüfungen:** `checkBeans` (`tests/doku.mjs`) prüft neu, dass die Namen der Liste (Kennung, Anlegen, Eigenschaften, Nur lesen, Methoden, Ereignisse) keinen Umlaut,
+  kein ß und kein Wort der Sperrliste deutscher Namen enthalten (auch als Teil in camelCase); Gegenprobe `PRUEF_GEGENPROBE=beans:englisch` (‚schliessen‘ in der
+  ersten Zeile) → rot; Meldungen ‚Anlegen …‘ statt ‚Fabrik …‘, Katalogfelder englisch. Nachgeführt auf die neuen Namen: `ablauf.mjs` (`checkWischen`
+  APD-30/W-1 bis W-101: `openRow`, `metrics`, `close()`, `disconnect()`, `toggle`, `shortTitle`, `sourceView`; `checkDateiname`, `checkHinweisBreite`), `hig.mjs`, `pruefe.mjs`,
+  `lauf.mjs`, `backup.mjs`; im Reiselogbuch `ablauf-wischen`, `ablauf-abgleich`.
+- AD-Bean: `alert` (neu, ersetzt `hinweis`) · `swipeactions` (neue Schnittstelle, englisch)
+
+**APD-136 sourcehighlight – AD-Bean ‚Hervorgehobene Quelle‘** (Listenzeile und Testfall-Liste APD-136/S-1 bis S-13 freigegeben, APD-136/U-1 ja, 20.11.2026,
+Sitzung 0145 – `arbeit/0145 APD-136 Bean sourcehighlight Vorschlag.md`).
+
+- **`ui.js`:** neu `createSourcehighlight(root)` mit `sourceItem`, `heldItems`, `hold(item)`, `release(item)`, `refresh(root)`, Ereignis `change` (`{ item, highlighted }`);
+  ui.js legt eine Bean für die Seite an (`adSourcehighlight`). Sie ersetzt `hold`, `release`, `markHeld`, `setOpener`, `markOpener` und `dlgOpener`; auch der Knopf
+  des offenen Menüs, der Eintrag des Untermenüs und die Schaltfläche der Sprechblase sind gehaltene Quellen (APD-136/U-1); `liveAnchor` tönt über `refresh`.
+  Eine Stelle wird erst frei, wenn sie weder Quelle noch gehalten ist. Aussehen: Klasse `on` (APD-136/E-2), kein eigenes CSS.
+- **Liste der AD-Beans, Katalog:** Zeile `sourcehighlight` (Aktionen und Menüs); `katalog/sourcehighlight.js` (‚Hervorgehobene Quelle‘, Ausprobieren mit Fenster-Quelle,
+  Halten, Neuaufbau und Menü); die geplante Bean `gedrueckt` ist im Katalog entfallen.
+- **`v4/schnittstelle.json`:** `hold`, `release`, `markHeld`, `setOpener`, `markOpener` entfallen; `createSourcehighlight` und `adSourcehighlight` neu.
+- **Vorlage und App** (APD-136/E-3) nutzen `adSourcehighlight.sourceItem = …`, `.hold`, `.release`, `.refresh()`.
+- **Prüfungen:** Prüfseite Teil `fenster` – `checkSourcehighlight` (APD-136/S-9, S-10); Teil `menue` – offenes Menü: Mehr-Knopf in `heldItems` und blau, danach
+  `heldItems` leer (APD-136/S-6); Gegenproben `pruefseite:quelleNichtGetoent` (S-9 rot) und `pruefseite:releaseGibtNichtFrei` (S-10 rot); S-11 `checkBeans` und
+  `checkSchnittstelle`; APD-136/S-1 bis S-8, S-12, S-13 über die bestehenden Prüfungen und `katalog.mjs`.
+- AD-Bean: `sourcehighlight` (neu)
+
+**APD-143 – Liste bleibt beim Kontextmenü stehen (iPhone)** (Wortlaut R-4.2 und 15.4 und Testfall-Liste APD-143/L-1 bis L-10 freigegeben 20.11.2026, Sitzung 0144 –
+`arbeit/APD-143 Wortlaut und Testfall-Liste.md`).
+
+- **`ui.js` (`placeAt`):** ohne Platz neben der Kachel steht das Kontextmenü linksbündig darunter, reicht der Platz nicht, darüber (wie Apple, HIG Context menus
+  ‚above or below‘); die Liste bleibt stehen, auch beim Schließen. Nur wenn das Menü auf keiner Seite ganz passt (z. B. große Schrift), rückt die Liste wie bisher.
+  Abweichung von der HIG: die Reihenfolge der Einträge bleibt auch über der Kachel gleich.
+- **R-4.2 und 15.4:** Wortlaut wie freigegeben.
+- **Prüfungen:** `checkContextMenus` (`tests/kontextmenue.mjs`) – die Liste bleibt beim Öffnen und Schließen stehen, außer das Menü passt weder unter noch über die
+  Kachel (APD-143/L-1, L-3, L-4, L-6); Prüfseite Teil `menue` – Kontextmenü der zweiten Kachel wächst und schrumpft zur Kachel (L-2, L-5 mit ‚Bewegung reduzieren‘),
+  `checkContextMenus` in allen Ansichten; im Reiselogbuch `ablauf-seitenleiste-position` ‚unter oder über der Kachel‘ (APD-143/L-9). **Gegenprobe**
+  `pruefseite:listeRueckt` (das alte Rollen) → rot: iPhone quer ‚APD-143/L-1 … die Liste rückt (Rollstand 0 → 8, Kachel 211 → 203 px)‘ und ‚APD-62/M-2
+  Kontextmenü: schrumpft nicht zur Mitte der Schaltfläche‘ – genau der Befund aus 0144.
+- AD-Bean: keine, weil das Kontextmenü (`openMenu`/`placeAt`) noch keine Bean ist
+
 ## 4.66.0 – 20.11.2026
 
 AppDesign 4.66.0 · Designrichtlinie allgemein 4.66.0 · Zusammenarbeit allgemein 3.17.0 · Reiselogbuch 3.57.9 (Fassung 4.66.0)

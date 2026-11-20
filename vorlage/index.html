@@ -9,13 +9,13 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="theme-color" content="#f2f2f7">
 <title>Neue App</title>
-<!-- Vorlage für eine neue App (AppDesign 4.66.0) und zugleich die Prüfseite der Bausteine (Designrichtlinie 14, tests/pruefseite.mjs).
+<!-- Vorlage für eine neue App (AppDesign 4.67.0) und zugleich die Prüfseite der Bausteine (Designrichtlinie 14, tests/pruefseite.mjs).
      Eine kleine neutrale App mit Einträgen und Unterpunkten, gebaut wie das Reiselogbuch: Seitenleiste bzw. Startliste, Kopfzeile mit
      Teilen und Mehr, Rollbereich, ‚Nach oben / Ans Ende‘, Menüs, Kontextmenü, Löschen mit Sprechblase, Fenster, Suche, Backup und Abgleich,
      iPhone-Navigation. Daten in localStorage (neueapp.v1). Von ui.js nur Namen aus schnittstelle.json, Teil app (R-1.14).
      Im App-Repo liegt AppDesign daneben: ../AppDesign/fassung/X.Y.Z/… (R-10.3: ui.js und design.css aus der festen Fassung einbinden,
      auch in sw.js, AD_NEEDED = X.Y.Z). Für eine neue App: Namen, Daten und Texte ersetzen, manifest.json, Icons und sw.js ergänzen. -->
-<link rel="stylesheet" href="../fassung/4.66.0/design.css">
+<link rel="stylesheet" href="../fassung/4.67.0/design.css">
 <style>
   /* Nur, was zur App gehört – alles Gemeinsame kommt aus design.css */
   @media print { #app, #side, .side-shade, dialog, .fab { display: none !important; } }
@@ -32,14 +32,14 @@
 <dialog id="msg"></dialog>
 <input type="file" id="importFile" accept="application/json,.json" hidden>
 
-<script src="../fassung/4.66.0/ui.js"></script>
+<script src="../fassung/4.67.0/ui.js"></script>
 <script>
 'use strict';
 
 const APP_NAME = 'Neue App';
 const APP_VERSION = '0.1.0';
 // R-10.3: benötigte AppDesign-Fassung; ist eine andere geladen, erscheint beim Start ein Hinweis.
-const AD_NEEDED = '4.66.0';
+const AD_NEEDED = '4.67.0';
 const adLoaded = () => ({ js: typeof AD_VERSION === 'string' ? AD_VERSION : 'älter',
   css: getComputedStyle(document.documentElement).getPropertyValue('--ad-version').trim().replace(/"/g, '') || 'älter' });
 setTimeout(() => {
@@ -141,10 +141,10 @@ function render() {
   const back = app.querySelector('#back'); if (back) back.onclick = navZurueck;   // der Inhalt schiebt sich hinaus (R-7.5)
   app.querySelector('#shareBtn').onclick = e => openShareMenu(e.currentTarget, item);
   app.querySelector('#mainMore').onclick = e => openMainMenu(e.currentTarget, item);
-  const lp = app.querySelector('#leerPunkt'); if (lp) lp.onclick = () => { setOpener('#leerPunkt'); openSubDialog(item, null); };
-  app.querySelectorAll('[data-day]').forEach(b => b.onclick = () => { setOpener(`#app [data-day="${b.dataset.day}"]`); openSubDialog(item, b.dataset.day); });
+  const lp = app.querySelector('#leerPunkt'); if (lp) lp.onclick = () => { adSourcehighlight.sourceItem = '#leerPunkt'; openSubDialog(item, null); };
+  app.querySelectorAll('[data-day]').forEach(b => b.onclick = () => { adSourcehighlight.sourceItem = `#app [data-day="${b.dataset.day}"]`; openSubDialog(item, b.dataset.day); });
   bindSearch();
-  markOpener();
+  adSourcehighlight.refresh();
 }
 
 // Ohne Eintrag: leerer Zustand mit getöntem Knopf (R-7.7, 15.23) – er löst dasselbe aus wie ‚plus‘ in der Seitenleiste.
@@ -154,7 +154,7 @@ function renderEmpty() {
   app.innerHTML = `<div class="nb" id="bar"><div class="nb1"><span>${sideToggleHtml()}</span><span></span><span></span></div></div>
     <div class="rolle" id="rolle">${leerHtml({ icon: 'book-open', titel: 'Noch kein Eintrag', satz: 'Einen neuen mit ‚plus‘ in der Seitenleiste anlegen.', aktion: { id: 'leerNeu', label: 'Neuer Eintrag' } })}</div>`;
   bindSideToggle(app);
-  app.querySelector('#leerNeu').onclick = () => { setOpener('#leerNeu'); openItemDialog(null); };
+  app.querySelector('#leerNeu').onclick = () => { adSourcehighlight.sourceItem = '#leerNeu'; openItemDialog(null); };
 }
 
 function showItem(id, term = '') {
@@ -204,12 +204,11 @@ function renderSide() {
       : words.length ? leerSuche(listTerm.trim(), !page) : page ? leerHtml({ icon: 'book-open', titel: 'Noch kein Eintrag', satz: 'Einen neuen mit ‚plus‘ anlegen.' })
       : leerHtml({ icon: 'book-open', titel: 'Noch kein Eintrag', klein: true })}</div>
     ${backupTileHtml(db.settings.lastBackup, !all.length)}`);
-  side.querySelector('#newItem').onclick = () => { setOpener('#newItem'); openItemDialog(null); };
+  side.querySelector('#newItem').onclick = () => { adSourcehighlight.sourceItem = '#newItem'; openItemDialog(null); };
   side.querySelector('#sideMore').onclick = e => openMenu(e.currentTarget, listMenuItems('#sideMore'), 'left');
   side.querySelector('#sideHide').onclick = toggleSide;
   const hb = side.querySelector('#hintBackup'); if (hb) hb.onclick = () => saveBackup('#hintBackup');   // Backup-Kachel (R-9.1)
-  markHeld(side);
-  markOpener();
+  adSourcehighlight.refresh();   // seit 4.67.0 (AppDesign APD-136): AD-Bean sourcehighlight statt markHeld und markOpener
   // Kurz tippen öffnet (iPhone: der Eintrag schiebt sich herein, navVor); lange drücken zeigt das Kontextmenü (R-4.2).
   side.querySelectorAll('[data-id]').forEach(b => onLongPress(b, () => itemContextMenu(b),
     () => navVor(() => { if (isPhone()) rolle.to(0); showItem(b.dataset.id, words.length ? listTerm : ''); })));
@@ -224,7 +223,7 @@ function renderSide() {
 const listMenuItems = sel => [
   ...(db.items.length ? suchenMenuItems(openListSearch) : []),
   ...backupMenuEntries({ last: db.settings.lastBackup, disabled: !db.items.length, onSave: () => saveBackup(sel),
-    onLoad: () => { importAnchor = sel; hold(sel); importFile.click(); } }),
+    onLoad: () => { importAnchor = sel; adSourcehighlight.hold(sel); importFile.click(); } }),
   'sep',
   darstellungMenuItem(),
   'sep',
@@ -237,8 +236,8 @@ const listMenuItems = sel => [
 function openMainMenu(anchor, item) {
   openMenu(anchor, [
     ...suchenMenuItems(openItemSearch),
-    { icon: 'plus', label: 'Neuer Unterpunkt', act: () => { setOpener('#mainMore'); openSubDialog(item, null); } },
-    { icon: 'pencil', label: 'Eintrag bearbeiten', act: () => { setOpener('#mainMore'); openItemDialog(item); } },
+    { icon: 'plus', label: 'Neuer Unterpunkt', act: () => { adSourcehighlight.sourceItem = '#mainMore'; openSubDialog(item, null); } },
+    { icon: 'pencil', label: 'Eintrag bearbeiten', act: () => { adSourcehighlight.sourceItem = '#mainMore'; openItemDialog(item); } },
     'sep',
     { icon: 'trash', label: 'Eintrag löschen', red: true, act: () => deleteItem(item) },
   ]);
@@ -248,16 +247,16 @@ function itemContextMenu(row) {
   const item = getItem(row.dataset.id);
   if (!item) return;
   openMenu(row, [
-    { icon: 'pencil', label: 'Eintrag bearbeiten', act: () => { setOpener(`#side .side-row[data-id="${item.id}"]`); openItemDialog(item); } },
+    { icon: 'pencil', label: 'Eintrag bearbeiten', act: () => { adSourcehighlight.sourceItem = `#side .side-row[data-id="${item.id}"]`; openItemDialog(item); } },
     'sep',
-    { icon: 'trash', label: 'Eintrag löschen', red: true, act: () => { row.classList.add('on'); deleteItem(item, row); } },
+    { icon: 'trash', label: 'Eintrag löschen', red: true, act: () => { adSourcehighlight.hold(row); deleteItem(item, row); } },
   ], 'beside');
 }
 // Löschen fragt mit einer Sprechblase an der angetippten Schaltfläche (R-4.4); ‚Abbrechen‘ ändert nichts.
 async function deleteItem(item, anchor = app.querySelector('#mainMore')) {
   const ja = await confirmPop(anchor, `‚${esc(item.title)}‘ mit allen Unterpunkten löschen? Das kann nicht rückgängig gemacht werden.`,
     { label: 'Eintrag löschen', icon: 'trash' });
-  anchor?.classList.remove('on');
+  adSourcehighlight.release(anchor);
   if (!ja) return;
   db.items = db.items.filter(x => x.id !== item.id);
   save();
@@ -277,7 +276,7 @@ function openShareMenu(anchor, item) {
   ]);
 }
 async function exportHtml(item) {
-  hold('#shareBtn');
+  adSourcehighlight.hold('#shareBtn');
   const name = outputName(item);
   const zeilen = subKeys(item).map(k => `<tr><td class="nw">${subName(k)}</td><td>${esc(item.sub[k].text)}</td></tr>`).join('');
   const content = `<!doctype html><html lang="de"><head><meta charset="utf-8"><title>${esc(item.title)}</title><style>${outputCss('.rt')}</style></head>
@@ -285,7 +284,7 @@ async function exportHtml(item) {
 <p class="created">${APP_NAME} ${APP_VERSION}</p></div></body></html>`;
   const result = await shareFiles([{ name, type: 'html', content }]);
   await inform('HTML', shareResultText(result, name));
-  release('#shareBtn');
+  adSourcehighlight.release('#shareBtn');
 }
 
 /* ---------- Fenster ---------- */
@@ -433,7 +432,7 @@ function bindListSearch() {
 
 // Backup erstellen (R-9.1): Datei über das Teilen-Menü; zählt nur abgeschlossen, je Gerät – danach ist die Backup-Kachel weg.
 async function saveBackup(anchor) {
-  hold(anchor);
+  adSourcehighlight.hold(anchor);
   const file = backupFileOf(APP_NAME, db);
   const result = await shareFiles([file]);
   if (result === 'shared' || result === 'downloaded') {
@@ -442,20 +441,20 @@ async function saveBackup(anchor) {
     if (isPhone()) render(); else renderSide();
   }
   await inform('Backup', shareResultText(result, file.name));
-  release(anchor);
+  adSourcehighlight.release(anchor);
   if (anchor && !document.querySelector(anchor)) fokus(side.querySelector('#sideMore'));   // Kachel weg: Fokus auf ‚Mehr‘
 }
 // Backup laden (R-9.2): Abfrage Abgleichen · Ersetzen · Abbrechen, danach das Ergebnis mit Abgleichbericht (R-9.4).
-importFile.addEventListener('cancel', () => release(importAnchor));
+importFile.addEventListener('cancel', () => adSourcehighlight.release(importAnchor));
 importFile.onchange = async () => {
   const file = importFile.files[0];
   importFile.value = '';
-  if (!file) return release(importAnchor);
+  if (!file) return adSourcehighlight.release(importAnchor);
   try {
     const { data, savedAt, savedOn } = await readBackup(file, 'items');
     normalize(data);
     const choice = await sync.ask(document.querySelector(importAnchor), db, data, savedAt, savedOn);
-    if (!choice) return release(importAnchor);
+    if (!choice) return adSourcehighlight.release(importAnchor);
     // je Gerät: das letzte Backup, der zuletzt geöffnete Eintrag und die Wahl ‚Glas‘ bleiben (glasAusBackup)
     const { lastBackup, lastItem, glas } = db.settings;
     let stats = null;
@@ -470,10 +469,10 @@ importFile.onchange = async () => {
     applyTheme();
     if (choice === 'merge' && getItem(currentId)) render(); else showItem(startItem()?.id);
     if (stats) await sync.showResult(stats, savedAt, savedOn);
-    release(importAnchor);
+    adSourcehighlight.release(importAnchor);
   } catch (e) {
     await inform('Backup laden', '⚠️ Die Datei konnte nicht gelesen werden. ' + esc(e.message));
-    release(importAnchor);
+    adSourcehighlight.release(importAnchor);
   }
 };
 // um 0:00 und bei der Rückkehr am nächsten Tag die Liste neu zeichnen – die Backup-Kachel kommt wieder

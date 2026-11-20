@@ -1,4 +1,4 @@
-// AppDesign 4.66.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
+// AppDesign 4.67.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
 // Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/fassung/X.Y.Z/ui.js"></script> (feste Fassung, R-10.3)
 // Klassisches Skript: alle Funktionen sind global und für das Skript der App sichtbar.
 //
@@ -10,7 +10,7 @@
 //
 // Inhalt: Icons (ic) · esc · Beträge (money, formatEuro) · autoGrow · onLongPress · Darstellung
 // (applyTheme, setAppearance) · Menüs (openMenu mit Untermenü) · Sprechblase (confirmPop) · gekürzter Titel (Sprechblase, seit 4.47.0) ·
-// gedrückte Schaltflächen (hold, release, setOpener) · Meldung (inform) · Fenster (openDialog, dlgHead) ·
+// hervorgehobene Quelle (AD-Bean sourcehighlight, seit 4.67.0) · Meldung (inform) · Fenster (openDialog, dlgHead) ·
 // Berühren (R-3.6) und Großanzeige (R-2.6, seit 4.48.0) · Auswahl-Kapsel (capHtml, mountCap) · Tastatur/sichtbarer Bereich (placeDialogs) · iPhone (isPhone, applyLayout) ·
 // Messmodus (messungMenuItems, seit 4.26.0) · Schnellroll-Griff (seit 4.30.0) · Navigation und Gesten (navAnmelden, navVor,
 // navZurueck, navSeite, seit 4.30.0) · Bedienungshilfen (ansagen, feldFehler, ersterFehler, Fokus und Tasten in Menüs, Sprechblasen
@@ -19,7 +19,7 @@
 
 'use strict';
 // Version der Bausteine (R-10.3): die App vergleicht sie beim Start mit der benötigten Fassung.
-const AD_VERSION = '4.66.0';
+const AD_VERSION = '4.67.0';
 // ‚Bewegung reduzieren‘ (R-1.9) – die eine Abfrage für alle Bausteine (seit 4.64.0, APD-135/B-4.2; vorher fünfmal eigens gebaut)
 const bewegungRuhig = () => !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
 // APD-129 Teil 2 (seit 4.59.2, Messung 14.11.2026 arbeit/APD-129/messung-2026-11-14-2137.txt, Zeilen 9–17, 207–216, 263–272; Designrichtlinie 13
@@ -105,7 +105,6 @@ const leerSuche = (begriff, klein = false) => leerHtml({ icon: 'search', titel: 
 // Feste Elemente jeder App: <dialog id="dlg"> (Fenster) und <dialog id="msg"> (Meldungen).
 const dlg = document.getElementById('dlg');
 const msg = document.getElementById('msg');
-let dlgOpener = '';        // Schaltfläche oder Zeile, von der das offene Fenster kommt (bleibt blau hinterlegt)
 let dlgDirty = null;       // Prüft, ob im offenen Fenster etwas geändert wurde
 
 /* ---------- Hilfen ---------- */
@@ -721,7 +720,8 @@ function rand12() {
 function placeAt(el, anchor, align) {
   // R-4.5/R-8.1: Menü und Sprechblase stehen unter ihrer Schaltfläche und passen immer ganz auf den Bildschirm.
   // Reicht der Platz darunter nicht, scrollt ihr Inhalt darin (erst bei weniger als 200 px Platz darunter
-  // öffnen sie nach oben). 'beside': rechts neben dem Eintrag (Kontextmenü in der Seitenleiste), oben bündig.
+  // öffnen sie nach oben). 'beside': rechts neben dem Eintrag (Kontextmenü in der Seitenleiste), oben bündig; ohne Platz daneben darunter bzw.
+  // darüber (APD-143).
   el.style.maxHeight = ''; el.style.overflowY = '';   // nach dem Drehen neu messen
   // Seit 4.29.0 (R-1.7, APD-63): Abstand 12 px vom Rand, mindestens aber die sicheren Ränder (Aussparung, Home-Leiste)
   const { L, R, T, B } = rand12();
@@ -729,12 +729,21 @@ function placeAt(el, anchor, align) {
   const fit = room => { if (el.scrollHeight > room) { el.style.maxHeight = room + 'px'; el.style.overflowY = 'auto'; el.style.overscrollBehavior = 'contain'; } };
   let top;
   // Seit 4.10.0: ist neben dem Eintrag kein Platz (iPhone: Kachel so breit wie der Bildschirm), steht das Menü
-  // linksbündig unter der Kachel – ganz sichtbar über der Backup-Kachel; dafür wird die Liste nötigenfalls
-  // etwas nach oben geschoben (R-4.2).
+  // linksbündig unter der Kachel – ganz sichtbar über der Backup-Kachel (R-4.2).
+  // Seit 4.67.0 (APD-143, wie Apple – HIG Context menus ‚above or below‘): reicht der Platz darunter nicht, steht es über der Kachel; die Liste
+  // bleibt dabei stehen, auch beim Schließen. Nur wenn das Menü weder darunter noch darüber ganz passt (z. B. große Schrift), rückt die Liste
+  // dafür und bekommt bei wenigen Einträgen unten Platz (Rückfall wie bis 4.66.0).
   if (align === 'beside' && innerWidth - (r.right - 40) - R < el.offsetWidth) {
     // seit 4.34.0 (APD-74): ohne Backup-Kachel über der Offline-Zeile bzw. dem unteren Rand
     const list = anchor.closest('.side-list'), tr = sideFootRect(anchor.closest('#side'));
     const limit = tr && tr.height ? Math.min(innerHeight - B, tr.top - 12) : innerHeight - B;
+    const left = Math.max(L, Math.min(r.left, innerWidth - el.offsetWidth - R));
+    if (r.bottom + 8 + el.offsetHeight <= limit || r.top - 8 - el.offsetHeight >= T) {
+      top = r.bottom + 8 + el.offsetHeight <= limit ? r.bottom + 8 : r.top - 8 - el.offsetHeight;
+      el.style.left = left + 'px';
+      el.style.top = top + 'px';
+      return;
+    }
     const need = r.bottom + 8 + el.offsetHeight - limit;
     if (need > 0 && list) {
       // Reicht der Scrollweg nicht (wenige Einträge), bekommt die Liste unten so viel Platz, dass sie weit genug rückt.
@@ -799,11 +808,8 @@ const menuHtml = items => { const nr = ++menuNr; return items.map((it, i) => it?
 const floating = new Set();
 function liveAnchor(anchor) {
   if (anchor.isConnected) return anchor.getClientRects().length ? anchor : null;
-  const key = anchor.id ? '#' + CSS.escape(anchor.id)
-    : anchor.dataset.id ? `.${anchor.classList[0]}[data-id="${CSS.escape(anchor.dataset.id)}"]`
-    : anchor.dataset.day ? `[data-day="${CSS.escape(anchor.dataset.day)}"]` : '';
-  const again = key && document.querySelector(key);
-  if (again) again.classList.add('on');
+  const again = wiederFinden(anchor);
+  if (again) adSourcehighlight.refresh(document);   // seit 4.67.0 (APD-136): die Bean tönt den wiedergefundenen Knopf, wenn er Quelle ist
   return again || null;
 }
 function placeFloating() { floating.forEach(f => f()); }
@@ -880,10 +886,10 @@ function openMenu(anchor, items, align = 'right') {
     if (subMenu) schrumpfen(subMenu, subItem);   // R-4.13: das Untermenü schrumpft zu seinem Eintrag zurück
     subMenu?.remove(); subMenu = null;
     const it = subItem; subItem = null;
-    menu.querySelector('.mi.on')?.classList.remove('on');
+    if (it) adSourcehighlight.release(it);
     if (it) { it.setAttribute('aria-expanded', 'false'); if (zurueck) fokus(it); }
   };
-  anchor.classList.add('on');
+  adSourcehighlight.hold(anchor);   // seit 4.67.0 (APD-136/U-1): der Knopf des offenen Menüs ist eine gehaltene Quelle
   mehrKippen(anchor, true);
   anchor.setAttribute('aria-haspopup', 'menu');
   anchor.setAttribute('aria-expanded', 'true');
@@ -915,7 +921,7 @@ function openMenu(anchor, items, align = 'right') {
   const schalten = (b, it) => { it.schalter = !it.schalter; b.setAttribute('aria-checked', it.schalter ? 'true' : 'false'); it.act(it.schalter); };
   const close = () => {
     if (!menu.isConnected) return;
-    closeSub(); schrumpfen(menu, anchor); layer.remove(); menu.remove(); anchor.classList.remove('on'); mehrKippen(anchor, false); anchor.setAttribute('aria-expanded', 'false'); floating.delete(place);
+    closeSub(); schrumpfen(menu, anchor); layer.remove(); menu.remove(); adSourcehighlight.release(anchor); mehrKippen(anchor, false); anchor.setAttribute('aria-expanded', 'false'); floating.delete(place);
     entsperren?.(); tastenStapel.splice(tastenStapel.indexOf(tasten) >>> 0, 1);
     // Seit 4.11.0: den für das Kontextmenü dazugegebenen Platz unter der Liste wieder entfernen.
     document.querySelectorAll('.side-list[data-padded]').forEach(l => { l.style.paddingBottom = ''; delete l.dataset.padded; });
@@ -929,7 +935,7 @@ function openMenu(anchor, items, align = 'right') {
     const again = b.classList.contains('on');
     closeSub(again);
     if (again) return;
-    b.classList.add('on');
+    adSourcehighlight.hold(b);
     b.setAttribute('aria-expanded', 'true');
     subMenu = document.createElement('div');
     subMenu.className = 'menu submenu';
@@ -1032,7 +1038,7 @@ function choosePop(anchor, html, buttons, { feld = null } = {}) {
     pop.setAttribute('aria-labelledby', pid);
     pop.tabIndex = -1;
     if (tiles) pop.classList.add('wide');
-    if (visible) anchor.classList.add('on');
+    if (visible) adSourcehighlight.hold(anchor);
     const place = () => {
       lochSetzen();
       if (!visible) { pop.style.left = (innerWidth - pop.offsetWidth) / 2 + 'px'; return; }
@@ -1046,7 +1052,7 @@ function choosePop(anchor, html, buttons, { feld = null } = {}) {
     let entsperren = null;
     const done = v => {
       if (!pop.isConnected) return;
-      floating.delete(place); schrumpfen(pop, visible ? anchor : null); layer.remove(); pop.remove(); if (visible) anchor.classList.remove('on');
+      floating.delete(place); schrumpfen(pop, visible ? anchor : null); layer.remove(); pop.remove(); if (visible) adSourcehighlight.release(anchor);
       entsperren?.(); tastenStapel.splice(tastenStapel.indexOf(tasten) >>> 0, 1);
       if (!feld) fokusZurueck(visible ? anchor : null, host);   // V6: zurück auf den Knopf bzw. die Kopfzeile, ohne Rollen
       resolve(v);
@@ -1353,23 +1359,58 @@ addEventListener('scroll', () => { if (gross && !gross.offen) grossZu(); }, { ca
 addEventListener('keydown', e => { if (!gross || !istAbbruch(e)) return; if (gross.offen) verbrauchen(e); grossZu(); grossKlickWeg = performance.now() + 400; }, true);
 { let breite = innerWidth; addEventListener('resize', () => { if (innerWidth !== breite) grossZu(); breite = innerWidth; }); }
 
-// Schaltflächen, von denen eine noch laufende Aktion kommt (Teilen-Menü, Meldung, Dateiauswahl), bleiben blau.
-const held = new Set();
-function hold(sel) { if (!sel) return; held.add(sel); document.querySelector(sel)?.classList.add('on'); }
-function release(sel) { if (!sel) return; held.delete(sel); document.querySelector(sel)?.classList.remove('on'); }
-// Nach einem Neuaufbau (z. B. der Seitenleiste) die gehaltenen Schaltflächen in root wieder blau hinterlegen (seit 4.64.0, APD-135/B-4.2)
-function markHeld(root = document) { held.forEach(sel => root.querySelector(sel)?.classList.add('on')); }
+/* ---------- AD-Bean sourcehighlight: Hervorgehobene Quelle (seit 4.67.0, APD-136, R-3.3, R-4.13, R-8.1, R-1.13) ---------- */
 
-// Die Schaltfläche oder Zeile, von der ein Fenster kommt, bleibt blau hinterlegt, solange es offen ist.
-function setOpener(sel) {
-  endReveal(); // APD-23: eine laufende Hervorhebung endet, sobald das nächste Fenster aufgeht
-  if (dlgOpener && dlgOpener !== sel) document.querySelector(dlgOpener)?.classList.remove('on');
-  dlgOpener = sel;
-  markOpener();
+// Die Schaltfläche, Zeile oder Kachel, aus der etwas kommt – ein Fenster, ein Menü, ein Untermenü, eine Sprechblase oder eine laufende Aktion
+// (Teilen, Dateiauswahl) –, bleibt blau getönt (Klasse `on`, R-3.3), bis es fertig ist, auch nach einem Neuaufbau und nach dem Drehen (R-8.1).
+// Ersetzt seit 4.67.0 (APD-136, Listenzeile und Testfall-Liste arbeit/0145 APD-136 Bean sourcehighlight Vorschlag.md S-1 bis S-13) hold, release,
+// markHeld, setOpener, markOpener und dlgOpener sowie die Tönung in openMenu, im Untermenü und in confirmPop. Namen nach Vorbild (Zusammenarbeit 1):
+// Apple `sourceItem` (UIPopoverPresentationController), `highlighted` (UIControl ohne `is`), Web-Ereignis `change`.
+// Schnittstelle (R-1.13, Liste der AD-Beans in Designrichtlinie 15) – die App nutzt nur diese Namen:
+//   createSourcehighlight(root) – ui.js legt die eine Bean für die Seite an (adSourcehighlight)
+//   s.sourceItem (lesen und setzen; Standard '') – Quelle des offenen Fensters: setzen tönt sie und gibt die vorige frei, '' gibt frei
+//   s.heldItems (nur lesen) – gehaltene Quellen (laufende Aktion, offenes Menü, Untermenü, Sprechblase)
+//   s.hold(item) · s.release(item) · s.refresh(root) – item = CSS-Auswahl oder Element; refresh tönt nach einem Neuaufbau in root alle Quellen wieder
+//   s.on('change', ({ item, highlighted }) => …) → abmelden
+// Eine Stelle ist frei erst, wenn sie weder Quelle noch gehalten ist. Ein Element, das die App neu aufgebaut hat, findet refresh über id, data-id
+// bzw. data-day wieder (wie fokusNachFenster).
+function createSourcehighlight(root, { sourceItem = '' } = {}) {
+  const hoerer = { change: new Set() };
+  const gehalten = new Set();
+  let quelle = '';
+  const melde = (item, highlighted) => hoerer.change.forEach(fn => { try { fn({ item, highlighted }); } catch (e) { console.error(e); } });
+  const finde = (item, r = root) => !item ? null : typeof item === 'string' ? (r.querySelector?.(item) || null) : item instanceof Element ? item : null;
+  const getoent = el => !!el && (finde(quelle) === el || [...gehalten].some(i => finde(i) === el));
+  const toenen = item => finde(item)?.classList.add('on');
+  const freigeben = item => { const el = finde(item); if (el && !getoent(el)) el.classList.remove('on'); };
+  const bean = {
+    get sourceItem() { return quelle; },
+    set sourceItem(v) {
+      v = v || '';
+      if (v) endReveal();   // APD-23: eine laufende Hervorhebung endet, sobald das nächste Fenster aufgeht
+      if (v === quelle) { toenen(v); return; }
+      const vorher = quelle; quelle = v;
+      if (vorher) { freigeben(vorher); melde(vorher, false); }
+      if (v) { toenen(v); melde(v, true); }
+    },
+    get heldItems() { return [...gehalten]; },
+    hold(item) { if (!item) return; const neu = !gehalten.has(item); gehalten.add(item); toenen(item); if (neu) melde(item, true); },
+    release(item) { if (!item || !gehalten.delete(item)) return; freigeben(item); melde(item, false); },
+    refresh(r = root) {
+      for (const item of [...gehalten]) if (item instanceof Element && !item.isConnected) {
+        const neu = wiederFinden(item); if (neu && neu !== item) { gehalten.delete(item); gehalten.add(neu); }
+      }
+      [...gehalten, quelle].forEach(item => { if (item instanceof Element) { if (item.isConnected && (r === document || r.contains(item))) item.classList.add('on'); } else if (item) r.querySelector?.(item)?.classList.add('on'); });
+    },
+    on(name, fn) { const h = hoerer[name]; if (!h || typeof fn !== 'function') return () => {}; h.add(fn); return () => { h.delete(fn); }; },
+  };
+  if (!(root instanceof Node)) { console.error('sourcehighlight: root fehlt'); return bean; }
+  if (root instanceof Element) root.dataset.adBean = 'sourcehighlight';
+  else document.documentElement.dataset.adBean = 'sourcehighlight';
+  if (sourceItem) bean.sourceItem = sourceItem;
+  return bean;
 }
-function markOpener() {
-  if (dlgOpener) document.querySelector(dlgOpener)?.classList.add('on');
-}
+const adSourcehighlight = createSourcehighlight(document.body);
 
 /* ---------- Backup erstellen und laden (R-9.1, R-9.2, seit 4.10.0) ---------- */
 
@@ -1812,78 +1853,78 @@ function createSync({ list, sub, subAt = `${sub}At`, maxFields = [], nouns = ['E
 // Kleines Fenster mit rundem x; Abfragen mit Entscheidung sind Sprechblasen (confirmPop).
 // Seit 4.11.0: { wide: true } – breiteres Fenster; { action: { label, icon, run } } – eine blaue Schaltfläche unter dem
 // Text (z. B. ‚Abgleichbericht anzeigen‘, R-9.4): schließt das Fenster und führt run() aus.
-/* ---------- AD-Bean hinweis: Hinweisfenster (seit 4.64.0, APD-138, R-10.8, R-1.13) ---------- */
+/* ---------- AD-Bean alert: Hinweisfenster (seit 4.64.0, APD-138, R-10.8, R-1.13; Kennung alert seit 4.67.0, APD-136) ---------- */
 
-// Seit 4.64.0 (APD-138, R-10.8, R-1.13): das Hinweisfenster ist die AD-Bean `hinweis` (Fenster und Meldungen) auf <dialog id="msg">; ui.js legt sie
-// einmal an (adHinweis), inform(…) ist der kurze Aufruf dafür.
-// Eigenschaft breiteNachDateiname (Standard ein): steht ein Dateiname (.fname) im Text, wird das Fenster am iPad so breit, dass er in einer Zeile
+// Seit 4.64.0 (APD-138, R-10.8, R-1.13): das Hinweisfenster ist eine AD-Bean (Fenster und Meldungen) auf <dialog id="msg">; ui.js legt sie
+// einmal an (adAlert), inform(…) ist der kurze Aufruf dafür. Seit 4.67.0 (APD-136, Zusammenarbeit 1 ‚Code englisch‘) heißt sie `alert` (ersetzt
+// `hinweis`) – Namen nach Vorbild: Web `alert()` und `<dialog>` (`open`, `showModal()`, `close()`, Ereignis `close`), Apple *alert* (`title`, `message`).
+// Eigenschaft fitFileName (Standard ein): steht ein Dateiname (.fname) im Text, wird das Fenster am iPad so breit, dass er in einer Zeile
 // steht – mindestens die Grundbreite des Fensters, höchstens die des breiten Fensters (600 px × Textgröße, höchstens Bildschirmbreite − 32 px); darüber
 // Umbruch nur nach einem Leerzeichen (.fw). Am iPhone und im breiten Fenster bleibt die Breite aus design.css. Neu berechnet bei jedem resize (Drehen,
 // Textgröße – textWechsel meldet resize), vor placeDialogs.
 // Schnittstelle (R-1.13, Liste der AD-Beans in Designrichtlinie 15) – die App nutzt nur diese Namen:
-//   inform(titel, html, { wide, action }) → Promise (erfüllt beim Schließen)
-//   createHinweis(fenster, { breiteNachDateiname = true }) – ui.js legt die eine Bean für #msg an
-//   h.breiteNachDateiname (lesen und setzen) · h.offen (nur lesen) · h.zeigen(titel, html, { breit, aktion }) → Promise · h.schliessen() · h.on('zu', fn) → abmelden
-// Seit 4.66.0 (APD-136 b1, R-1.13): CSS nur unter .ad-hinweis (Fenster), .ad-hinweis-breit, -form, -kopf, -text, -knoepfe, -knopf – vorher #msg, .msg-text,
-// .msg-btns und .wide; Aussehen unverändert.
-function createHinweis(fenster, { breiteNachDateiname = true } = {}) {
-  const hoerer = { zu: new Set() };
+//   inform(title, html, { wide, action }) → Promise (erfüllt beim Schließen)
+//   createAlert(dialog, { fitFileName = true }) – ui.js legt die eine Bean für #msg an
+//   a.fitFileName (lesen und setzen) · a.open (nur lesen) · a.showModal(title, message, { wide, action }) → Promise · a.close() · a.on('close', fn) → abmelden
+// CSS nur unter .ad-alert (Fenster), .ad-alert-wide, -form, -head, -message, -buttons, -button (seit 4.66.0 unter der Bean, APD-136 b1; englisch seit 4.67.0).
+function createAlert(dialog, { fitFileName = true } = {}) {
+  const hoerer = { close: new Set() };
   let fertig = null;
   const bean = {
-    get breiteNachDateiname() { return breiteNachDateiname; },
-    set breiteNachDateiname(v) { breiteNachDateiname = !!v; if (fenster.open) passen(); },
-    get offen() { return !!fenster?.open; },
-    zeigen, schliessen() { fertig?.(); },
+    get fitFileName() { return fitFileName; },
+    set fitFileName(v) { fitFileName = !!v; if (dialog.open) passen(); },
+    get open() { return !!dialog?.open; },
+    showModal, close() { fertig?.(); },
     on(name, fn) { const h = hoerer[name]; if (!h || typeof fn !== 'function') return () => {}; h.add(fn); return () => { h.delete(fn); }; },
   };
-  if (!(fenster instanceof HTMLDialogElement)) { console.error('hinweis: fenster fehlt'); return bean; }
-  fenster.dataset.adBean = 'hinweis';
-  fenster.classList.add('ad-hinweis');
+  if (!(dialog instanceof HTMLDialogElement)) { console.error('alert: dialog fehlt'); return bean; }
+  dialog.dataset.adBean = 'alert';
+  dialog.classList.add('ad-alert');
   // Breite nach Dateiname: Breite des Namens in einer Zeile + Rand des Fensters um den Text, zwischen Grund- und Höchstbreite
   function passen() {
-    fenster.style.width = ''; fenster.style.maxWidth = '';
-    const n = fenster.querySelector('.fname');
-    if (!breiteNachDateiname || !n || !fenster.open || isPhone() || fenster.classList.contains('ad-hinweis-breit')) return;
+    dialog.style.width = ''; dialog.style.maxWidth = '';
+    const n = dialog.querySelector('.fname');
+    if (!fitFileName || !n || !dialog.open || isPhone() || dialog.classList.contains('ad-alert-wide')) return;
     const probe = n.cloneNode(true);
     probe.style.cssText = 'position:absolute;visibility:hidden;white-space:nowrap;display:inline-block;width:auto;left:0;top:0';
     n.parentNode.append(probe);
     const name = probe.getBoundingClientRect().width;
     probe.remove();
-    const grund = fenster.getBoundingClientRect().width, rand = grund - n.getBoundingClientRect().width;
-    fenster.classList.add('ad-hinweis-breit');
-    const hoechst = fenster.getBoundingClientRect().width;
-    fenster.classList.remove('ad-hinweis-breit');
+    const grund = dialog.getBoundingClientRect().width, rand = grund - n.getBoundingClientRect().width;
+    dialog.classList.add('ad-alert-wide');
+    const hoechst = dialog.getBoundingClientRect().width;
+    dialog.classList.remove('ad-alert-wide');
     const soll = Math.ceil(name + rand + 1);
     // max-width wie beim breiten Fenster aufheben (dialog: höchstens 90vw) – die Höchstbreite liegt mit Bildschirmbreite − 32 px darunter
-    if (soll > grund + 0.5) { fenster.style.width = Math.min(soll, hoechst) + 'px'; fenster.style.maxWidth = 'none'; }
+    if (soll > grund + 0.5) { dialog.style.width = Math.min(soll, hoechst) + 'px'; dialog.style.maxWidth = 'none'; }
   }
-  addEventListener('resize', () => { if (fenster.open) passen(); });
-  function zeigen(titel, html, { breit = false, aktion = null } = {}) {
+  addEventListener('resize', () => { if (dialog.open) passen(); });
+  function showModal(title, message, { wide = false, action = null } = {}) {
     return new Promise(resolve => {
-      fenster.classList.toggle('ad-hinweis-breit', breit);
-      fenster.innerHTML = `
-      <form method="dialog" class="ad-hinweis-form">
-        <div class="dlg-head ad-hinweis-kopf"><div class="hl"><button type="button" class="round" data-x aria-label="Schließen">${ic('x')}</button></div>
-          <div class="mid"><h3 id="msgTitel">${esc(titel)}</h3></div><div class="hr"></div></div>
-        <div class="dlg-body"><div class="ad-hinweis-text" id="msgText">${html}</div>${aktion ? `<div class="ad-hinweis-knoepfe"><button type="button" class="primary ad-hinweis-knopf" data-act>${aktion.icon ? ic(aktion.icon) : ''}${esc(aktion.label)}</button></div>` : ''}</div>
+      dialog.classList.toggle('ad-alert-wide', wide);
+      dialog.innerHTML = `
+      <form method="dialog" class="ad-alert-form">
+        <div class="dlg-head ad-alert-head"><div class="hl"><button type="button" class="round" data-x aria-label="Schließen">${ic('x')}</button></div>
+          <div class="mid"><h3 id="msgTitel">${esc(title)}</h3></div><div class="hr"></div></div>
+        <div class="dlg-body"><div class="ad-alert-message" id="msgText">${message}</div>${action ? `<div class="ad-alert-buttons"><button type="button" class="primary ad-alert-button" data-act>${action.icon ? ic(action.icon) : ''}${esc(action.label)}</button></div>` : ''}</div>
       </form>`;
-      const done = () => { fertig = null; if (fenster.open) fenster.close(); hoerer.zu.forEach(fn => { try { fn(); } catch (e) { console.error(e); } }); resolve(); };
+      const done = () => { fertig = null; if (dialog.open) dialog.close(); hoerer.close.forEach(fn => { try { fn(); } catch (e) { console.error(e); } }); resolve(); };
       fertig = done;
-      if (aktion) fenster.querySelector('[data-act]').onclick = () => { done(); aktion.run(); };
-      fenster.querySelector('[data-x]').onclick = done;
-      fenster.oncancel = e => { e.preventDefault(); done(); };
-      fenster.setAttribute('aria-labelledby', 'msgTitel');   // R-1.8 (V2): Name = Titel, Beschreibung = Text
-      fenster.setAttribute('aria-describedby', 'msgText');
-      if (!fenster.open) msgVorher = document.activeElement;   // R-1.8 (APD-112)
-      showModalQuiet(fenster);
+      if (action) dialog.querySelector('[data-act]').onclick = () => { done(); action.run(); };
+      dialog.querySelector('[data-x]').onclick = done;
+      dialog.oncancel = e => { e.preventDefault(); done(); };
+      dialog.setAttribute('aria-labelledby', 'msgTitel');   // R-1.8 (V2): Name = Titel, Beschreibung = Text
+      dialog.setAttribute('aria-describedby', 'msgText');
+      if (!dialog.open) msgVorher = document.activeElement;   // R-1.8 (APD-112)
+      showModalQuiet(dialog);
       passen();
       placeDialogs();
     });
   }
   return bean;
 }
-const adHinweis = createHinweis(msg);
-const inform = (title, html, { wide = false, action = null } = {}) => adHinweis.zeigen(title, html, { breit: wide, aktion: action });
+const adAlert = createAlert(msg);
+const inform = (title, html, { wide = false, action = null } = {}) => adAlert.showModal(title, html, { wide, action });
 
 /* ---------- Dialoge ---------- */
 
@@ -1910,7 +1951,7 @@ function openDialog(html, wide = false) {
       { label: 'Änderungen verwerfen', icon: 'trash' }, { label: 'Weiter bearbeiten', icon: 'pencil' })) return;
     dlg.close('cancel');
   };
-  markOpener();
+  adSourcehighlight.refresh(document);
   mountCap(dlg);
   growAll();
   requestAnimationFrame(growAll);
@@ -2176,9 +2217,8 @@ dlg.addEventListener('close', () => {
   dlgFest = 0;
   unlockPage();
   if (dlg.open) return;
-  const sel = dlgOpener;
-  if (sel) document.querySelector(sel)?.classList.remove('on');
-  dlgOpener = '';
+  const sel = adSourcehighlight.sourceItem;
+  adSourcehighlight.sourceItem = '';
   // R-7.3: nach dem Neuaufbau durch die App die oberste Zeile zurück an ihren Platz, die Zeile aus dem Fenster kurz hervorheben
   // (seit 4.23.2 rollt nichts mehr – auch nach ‹ › nicht)
   requestAnimationFrame(() => { holdAlign(); if (sel) revealRow(sel); });
@@ -2737,44 +2777,48 @@ window.addEventListener('resize', () => {
 // Entscheidung offen. Höchstens eine Kachel ist offen; sie schließt bei
 // Tippen auf die Kachel oder daneben in der Liste (das Tippen löst sonst nichts aus; Schaltflächen außerhalb der Liste – auch Knöpfe im Kopf
 // der Liste wie panel-left, plus und Mehr – wirken sofort und schließen sie dabei, APD-30/V-12, W-42), Rollen, Wischen an einer anderen Kachel,
-// Neuaufbau der Liste (die Bean hört an der Liste mit), Drehen und Esc; das Ausblenden der Seitenleiste meldet die App mit schliessen(). Entschieden wird wie in R-7.5 (nach
+// Neuaufbau der Liste (die Bean hört an der Liste mit), Drehen und Esc; das Ausblenden der Seitenleiste meldet die App mit close(). Entschieden wird wie in R-7.5 (nach
 // NAV_ENTSCHEID, deutlich waagrecht NAV_WAAGRECHT – sonst rollt die Liste); eine geschlossene Kachel bewegt sich nicht nach rechts; kein Wischen
 // nach langem Drücken (NAV_HALTEN), bei offenem Fenster, Menü oder offener Sprechblase und an Kacheln ohne Aktionen. Geschlossen sind die Kapseln
 // nicht im Dokument (VoiceOver und Tastatur erreichen die Aktionen über das Kontextmenü, D-7), offen sind sie Schaltflächen mit dem Namen der
 // Aktion. ‚Bewegung reduzieren‘ (D-8): die Kachel folgt dem Finger, die Kapseln stehen an ihrem Platz in voller Größe und blenden an denselben Stellen
 // nur ein und aus (kein Wachsen, kein Mitrücken); je Bild nur transform und opacity. Textgröße (D-9): das Wort wächst mit, die offene Breite so weit, dass kein Wort abgeschnitten wird (sonst bricht es um).
-// Schnittstelle (R-1.13, Liste der AD-Beans in Designrichtlinie 15) – die App nutzt nur diese Namen, kein CSS der Bean:
-//   const w = createSwipeactions(liste, { kacheln: '[data-id]', aktionen: kachel => Einträge })   – einmal je Liste
-//   Einträge wie bei openMenu: { icon, label, kurz, red, act } ('sep' wird übergangen; leere Liste = Kachel nicht wischbar); kurz = Wort unter der
-//   Kapsel, label = Name für VoiceOver. act({ anker: Kapsel, quelle: 'wischen' }) – gibt act ein Promise zurück, bleibt die Kachel bis dahin offen.
-//   w.offen (offene Kachel oder null) · w.masse (Maße bei Textgröße ‚groß‘ und Schwellen, nur lesen) · w.schliessen() · w.entfernen() · w.on('offen' | 'zu', kachel => …) → abmelden
+// Schnittstelle (R-1.13, Liste der AD-Beans in Designrichtlinie 15) – die App nutzt nur diese Namen, kein CSS der Bean; englisch nach Vorbild seit
+// 4.67.0 (APD-136, Zusammenarbeit 1: Apple UISwipeActionsConfiguration ‚rows‘, ‚actions‘, UIContextualAction ‚sourceView‘, ‚destructive‘; Web
+// ‚disconnect()‘, Ereignis ‚toggle‘ mit ‚newState‘):
+//   const w = createSwipeactions(list, { rows: '[data-id]', actions: row => Einträge })   – einmal je Liste
+//   Einträge wie bei openMenu: { icon, label, shortTitle, red, act } ('sep' wird übergangen; leere Liste = Kachel nicht wischbar); shortTitle = Wort
+//   unter der Kapsel, label = Name für VoiceOver. act({ sourceView: Kapsel }) – gibt act ein Promise zurück, bleibt die Kachel bis dahin offen.
+//   w.openRow (offene Kachel oder null) · w.metrics (Maße bei Textgröße ‚groß‘ und Schwellen, nur lesen) · w.close() · w.disconnect() ·
+//   w.on('toggle', ({ row, newState: 'open' | 'closed' }) => …) → abmelden
 // Messmodus (15.21): ‚wisch kandidat‘, ‚wisch verworfen dx dy‘, ‚wisch offen|zurück gefedert|abgebrochen weg W‘ (Weg in px).
 let swipeZieht = false;                 // eine Kachel folgt gerade dem Finger – langes Drücken löst dann nicht aus (onLongPress)
 const swipeBeans = new Set();           // angemeldete Listen – die Gestenstelle (navKandidat) überlässt ihnen das Wischen auf ihren Kacheln
 const swipeFaengt = t => [...swipeBeans].some(f => f(t));
 const SWIPE_BEDIENBAR = 'button, a[href], input, select, textarea, label, summary, [contenteditable], [role=button], [role=link], [role=menuitem], [role=switch]';
 const schleierFrei = new WeakMap();     // Kapsel → () => Rechteck der offenen Kachel samt Kapseln (bleibt beim Grau der Sprechblase frei, choosePop)
-function createSwipeactions(liste, { kacheln, aktionen } = {}) {
-  const masse = Object.freeze({ kapselBreite: 66, kapselHoehe: 44, abstand: 11, rand: 11, offenAb: 0.5, ueberMax: 60, ueberWachsen: 0.06,
-    entscheid: NAV_ENTSCHEID, waagrecht: NAV_WAAGRECHT });
-  const hoerer = { offen: new Set(), zu: new Set() };
+function createSwipeactions(list, { rows, actions } = {}) {
+  const liste = list, kacheln = rows, aktionen = actions;   // innere Namen bleiben (Zusammenarbeit 1: umbenannt wird nur die Schnittstelle)
+  const masse = Object.freeze({ buttonWidth: 66, buttonHeight: 44, gap: 11, margin: 11, openAt: 0.5, overshootMax: 60, overshootGrow: 0.06,
+    decideAfter: NAV_ENTSCHEID, horizontal: NAV_WAAGRECHT });
+  const hoerer = { toggle: new Set() };
   let offen = null;
-  const bean = { masse, get offen() { return offen; }, schliessen() {}, entfernen() {},
+  const bean = { metrics: masse, get openRow() { return offen; }, close() {}, disconnect() {},
     on(name, fn) { const h = hoerer[name]; if (!h || typeof fn !== 'function') return () => {}; h.add(fn); return () => { h.delete(fn); }; } };
   // Pflichtangaben (APD-136/W-75): ohne sie meldet die Bean den Fehler und tut nichts – die Liste bleibt bedienbar wie ohne Wischaktionen
   const fehlt = was => { console.error(`swipeactions: ${was} fehlt`); return bean; };
-  if (!(liste instanceof Element)) return fehlt('liste');
-  if (!kacheln || typeof kacheln !== 'string') return fehlt('kacheln');
-  if (typeof aktionen !== 'function') return fehlt('aktionen');
-  const melde = (name, k) => hoerer[name].forEach(fn => { try { fn(k); } catch (e) { console.error(e); } });
+  if (!(liste instanceof Element)) return fehlt('list');
+  if (!kacheln || typeof kacheln !== 'string') return fehlt('rows');
+  if (typeof aktionen !== 'function') return fehlt('actions');
+  const melde = (newState, row) => hoerer.toggle.forEach(fn => { try { fn({ row, newState }); } catch (e) { console.error(e); } });
   const wm = t => { if (mess?.an) messEreignis('wisch ' + t); };
   const kachelVon = t => { const k = t instanceof Element ? t.closest(kacheln) : null; return k && k !== liste && liste.contains(k) ? k : null; };
   const eintraegeVon = k => {
     let alle;
     try { alle = aktionen(k) || []; } catch (e) { console.error(e); return []; }
     const e = alle.filter(x => x && typeof x === 'object' && typeof x.act === 'function' && !x.submenu && !('schalter' in x));
-    const ohne = e.find(x => !x.kurz);
-    if (ohne) { console.error(`swipeactions: kurz für ‚${ohne.label || '?'}‘ fehlt`); return []; }
+    const ohne = e.find(x => !x.shortTitle);
+    if (ohne) { console.error(`swipeactions: shortTitle für ‚${ohne.label || '?'}‘ fehlt`); return []; }
     return e;
   };
   const gesperrt = () => dlg.open || msg.open || !!document.querySelector('.menu, .pop, .layer');
@@ -2789,18 +2833,18 @@ function createSwipeactions(liste, { kacheln, aktionen } = {}) {
   function aufbauen(k, e) {
     abbauen();
     const traeger = k.parentElement;
-    traeger.classList.add('ad-swipeactions-traeger');
-    k.classList.add('ad-swipeactions-kachel');
+    traeger.classList.add('ad-swipeactions-host');
+    k.classList.add('ad-swipeactions-row');
     const box = document.createElement('div');
-    box.className = 'ad-swipeactions-aktionen';
+    box.className = 'ad-swipeactions-actions';
     box.inert = true;   // erst offen erreichbar (D-7)
     box.innerHTML = e.map((x, i) =>
-      `<div class="ad-swipeactions-eintrag" data-i="${i}"><button type="button" class="ad-swipeactions-kapsel${x.red ? ' rot' : ''}" aria-label="${esc(x.label || x.kurz)}">${
-        x.icon ? ic(x.icon) : ''}</button><span class="ad-swipeactions-wort" aria-hidden="true">${esc(x.kurz)}</span></div>`).join('');
+      `<div class="ad-swipeactions-action" data-i="${i}"><button type="button" class="ad-swipeactions-button${x.red ? ' destructive' : ''}" aria-label="${esc(x.label || x.shortTitle)}">${
+        x.icon ? ic(x.icon) : ''}</button><span class="ad-swipeactions-title" aria-hidden="true">${esc(x.shortTitle)}</span></div>`).join('');
     eigene.add(box);
     k.after(box);
     const u = { k, e, box, traeger, r: 0,
-      ein: [...box.querySelectorAll('.ad-swipeactions-eintrag')].map((el, i) => ({ x: e[i], el, kapsel: el.firstElementChild, wort: el.lastElementChild })) };
+      ein: [...box.querySelectorAll('.ad-swipeactions-action')].map((el, i) => ({ x: e[i], el, kapsel: el.firstElementChild, wort: el.lastElementChild })) };
     u.ein.forEach((d, i) => { d.kapsel.onclick = () => ausloesen(u, i); });
     messen(u);
     ui = u;
@@ -2809,16 +2853,16 @@ function createSwipeactions(liste, { kacheln, aktionen } = {}) {
   // Maße aus der Kachel und den Wörtern (D-9): je Aktion so breit wie die Kapsel bzw. das Wort; passt es nicht, bricht das Wort um
   function messen(u) {
     const { k, box } = u, bw = k.offsetWidth, bh = k.offsetHeight, n = u.ein.length;
-    const K = Math.max(masse.kapselBreite, u.ein[0]?.kapsel.offsetWidth || 0);   // Kapselbreite wächst mit der Textgröße (--fb, F-4)
-    const f = K / masse.kapselBreite, A = Math.round(masse.abstand * f), R = Math.round(masse.rand * f);   // Abstände wachsen mit (P-108, M-9)
+    const K = Math.max(masse.buttonWidth, u.ein[0]?.kapsel.offsetWidth || 0);   // Kapselbreite wächst mit der Textgröße (--fb, F-4)
+    const f = K / masse.buttonWidth, A = Math.round(masse.gap * f), R = Math.round(masse.margin * f);   // Abstände wachsen mit (P-108, M-9)
     Object.assign(box.style, { left: k.offsetLeft + 'px', top: k.offsetTop + 'px', width: bw + 'px', height: bh + 'px' });
     const platz = Math.max(K, Math.floor((bw - 60 - 2 * R - (n - 1) * A) / n));   // von der Kachel bleibt etwas sichtbar (W-1, W-54)
     let x = R;
     u.ein.forEach(d => {
-      d.wort.classList.remove('umbruch'); d.el.style.width = '';
+      d.wort.classList.remove('wrap'); d.el.style.width = '';
       const soll = Math.max(K, Math.ceil(d.wort.scrollWidth) + 4);
       d.w = Math.min(soll, Math.max(K, platz));
-      d.wort.classList.toggle('umbruch', soll > d.w);
+      d.wort.classList.toggle('wrap', soll > d.w);
       d.el.style.width = d.w + 'px';
       d.xl = x; x += d.w + A;
     });
@@ -2850,7 +2894,7 @@ function createSwipeactions(liste, { kacheln, aktionen } = {}) {
       const g = ruhig ? 1 : kanal(d, 'g', ziel, ziel ? SW_EIN_MS : SW_AUS_MS, ziel ? easeOut : linear, now);
       const o = kanal(d, 'o', ziel, ziel ? SW_DECK_MS : SW_AUS_MS, linear, now);
       if (d.o.v !== ziel || (!ruhig && d.g.v !== ziel)) laeuft = true;
-      const dx = ruhig ? 0 : -ueber * (d.von + d.w) / u.breite, s = ruhig ? 1 : g * (1 + Math.min(masse.ueberWachsen, ueber * masse.ueberWachsen / 30));
+      const dx = ruhig ? 0 : -ueber * (d.von + d.w) / u.breite, s = ruhig ? 1 : g * (1 + Math.min(masse.overshootGrow, ueber * masse.overshootGrow / 30));
       d.el.style.transform = `translate3d(${dx.toFixed(1)}px,0,0) scale(${Math.max(0.001, s).toFixed(3)})`;
       d.el.style.opacity = String(+o.toFixed(3));
     });
@@ -2890,25 +2934,25 @@ function createSwipeactions(liste, { kacheln, aktionen } = {}) {
   function abbauen() {
     const u = ui; if (!u) return;
     stoppe(); ui = null; uhrAus();
-    u.box.remove(); u.k.classList.remove('ad-swipeactions-kachel'); u.k.style.transform = '';
-    if (!u.traeger.querySelector(':scope > .ad-swipeactions-aktionen')) u.traeger.classList.remove('ad-swipeactions-traeger');
+    u.box.remove(); u.k.classList.remove('ad-swipeactions-row'); u.k.style.transform = '';
+    if (!u.traeger.querySelector(':scope > .ad-swipeactions-actions')) u.traeger.classList.remove('ad-swipeactions-host');
   }
   function oeffnen(u, von, fertig) {
     const war = offen === u.k;
     offen = u.k; u.box.inert = false; u.alleAus = false;
     fahre(u, von, u.breite, fertig);
-    if (!war) melde('offen', u.k);
+    if (!war) melde('open', u.k);
   }
-  // alle (P-109/V-1): Schließen durch Tippen daneben bzw. auf eine andere Kachel, Rollen, schliessen() – alle Kapseln vergehen zugleich;
+  // alle (P-109/V-1): Schließen durch Tippen daneben bzw. auf eine andere Kachel, Rollen, close() – alle Kapseln vergehen zugleich;
   // sonst (Tippen auf die offene Kachel, Zurückwischen) jede, sobald die Kachel sie erreicht
   function zumachen(sofort = false, alle = true) {
     const u = ui, war = offen;
     offen = null;
     if (u) { u.box.inert = true; if (sofort || !u.k.isConnected) abbauen(); else { u.alleAus = alle; fahre(u, u.r, 0, abbauen); } }
-    if (war) melde('zu', war);
+    if (war) melde('closed', war);
   }
   function ziehenAus() { if (z?.aktiv) { swipeZieht = false; sperre.los(); } z = null; }
-  // Aktion: act bekommt die Kapsel als Anker (die Sprechblase wächst aus ihr, D-6); ein Promise hält die Kachel offen, bis es erfüllt ist
+  // Aktion: act bekommt die Kapsel als sourceView (die Sprechblase wächst aus ihr, D-6); ein Promise hält die Kachel offen, bis es erfüllt ist
   function ausloesen(u, i) {
     const d = u.ein[i];
     if (!d || ui !== u || offen !== u.k || warten) return;
@@ -2918,7 +2962,7 @@ function createSwipeactions(liste, { kacheln, aktionen } = {}) {
       return { left: l, top: a.top, width: Math.min(b.right, t.right) - l, height: a.height }; });
     warten = true;
     let r;
-    try { r = d.x.act({ anker: d.kapsel, quelle: 'wischen' }); } catch (e) { console.error(e); }
+    try { r = d.x.act({ sourceView: d.kapsel }); } catch (e) { console.error(e); }
     const fertig = () => {
       warten = false;
       if (ui !== u || offen !== u.k) return;
@@ -2946,8 +2990,8 @@ function createSwipeactions(liste, { kacheln, aktionen } = {}) {
     if (!z || e.pointerId !== z.id) return;
     const dx = e.clientX - z.x0, dy = e.clientY - z.y0;
     if (!z.aktiv) {
-      if (Math.abs(dx) < masse.entscheid && Math.abs(dy) < masse.entscheid) return;
-      const waagrecht = Math.abs(dx) > Math.abs(dy) * masse.waagrecht && (dx < 0 || z.start > 0);   // D-4: geschlossen nie nach rechts
+      if (Math.abs(dx) < masse.decideAfter && Math.abs(dy) < masse.decideAfter) return;
+      const waagrecht = Math.abs(dx) > Math.abs(dy) * masse.horizontal && (dx < 0 || z.start > 0);   // D-4: geschlossen nie nach rechts
       const eintr = waagrecht && e.timeStamp - z.t0 <= NAV_HALTEN && !gesperrt() ? (z.start ? ui.e : eintraegeVon(z.k)) : [];
       if (!eintr.length) { wm(`verworfen ${Math.round(dx)} ${Math.round(dy)}`); z = null; return; }
       if (offen && offen !== z.k) zumachen(true);
@@ -2957,8 +3001,8 @@ function createSwipeactions(liste, { kacheln, aktionen } = {}) {
       try { e.target.setPointerCapture?.(e.pointerId); } catch {}
     }
     if (e.cancelable) e.preventDefault();
-    // über die offene Breite hinaus mit Widerstand wie am Rand einer Rollfläche, höchstens masse.ueberMax (kein Durchwischen, P-108)
-    const roh = Math.max(0, z.start - dx), M = masse.ueberMax, B = ui.breite;
+    // über die offene Breite hinaus mit Widerstand wie am Rand einer Rollfläche, höchstens masse.overshootMax (kein Durchwischen, P-108)
+    const roh = Math.max(0, z.start - dx), M = masse.overshootMax, B = ui.breite;
     z.r = roh > B ? B + (1 - 1 / ((roh - B) * 0.55 / M + 1)) * M : roh;
     setze(ui, z.r);
   };
@@ -2976,7 +3020,7 @@ function createSwipeactions(liste, { kacheln, aktionen } = {}) {
     if (!u || u.k !== a.k) return;
     const r = a.r ?? a.start, weg = `weg ${Math.round(r)}`;
     if (abbruch) { wm(`abgebrochen ${weg}`); if (a.start) oeffnen(u, r); else fahre(u, r, 0, abbauen); return; }   // Zustand wie vorher
-    if (r > u.breite * masse.offenAb) { wm(`offen ${weg}`); oeffnen(u, r); }
+    if (r > u.breite * masse.openAt) { wm(`offen ${weg}`); oeffnen(u, r); }
     else { wm(`zurück gefedert ${weg}`); if (offen === u.k) zumachen(false, false); else fahre(u, r, 0, abbauen); }
   }
   const hoch = e => los(e, false), abbruch = e => los(e, true);
@@ -3019,8 +3063,8 @@ function createSwipeactions(liste, { kacheln, aktionen } = {}) {
   swipeBeans.add(faengt);
   liste.classList.add('ad-swipeactions');
   liste.dataset.adBean = 'swipeactions';
-  bean.schliessen = () => { ziehenAus(); zumachen(); };
-  bean.entfernen = () => {
+  bean.close = () => { ziehenAus(); zumachen(); };
+  bean.disconnect = () => {
     ziehenAus(); zumachen(true);
     removeEventListener('pointerdown', druck, true); removeEventListener('pointermove', zug, { capture: true });
     removeEventListener('pointerup', hoch, true); removeEventListener('pointercancel', abbruch, true); removeEventListener('click', klick, true);
@@ -3028,7 +3072,7 @@ function createSwipeactions(liste, { kacheln, aktionen } = {}) {
     removeEventListener('scroll', roll, { capture: true }); removeEventListener('resize', groesse);
     mo.disconnect(); swipeBeans.delete(faengt);
     liste.classList.remove('ad-swipeactions'); delete liste.dataset.adBean;
-    bean.schliessen = () => {}; bean.entfernen = () => {};
+    bean.close = () => {}; bean.disconnect = () => {};
   };
   return bean;
 }

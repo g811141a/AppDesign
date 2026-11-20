@@ -25,6 +25,7 @@ import { checkSearchWords, langDruecken, checkMessung, sucheAuf, checkTitelBlase
   checkDialogHead } from './ablauf.mjs';
 import { lies as liesMessung, ansicht as messAnsicht } from './abspielen.mjs';
 import { obenOhneKlick } from './safari.mjs';
+import { checkContextMenus } from './kontextmenue.mjs';
 
 const hier = path.dirname(fileURLToPath(import.meta.url));
 // in der festen Fassung liegen ui.js und vorlage/ neben tests/, im Arbeitsstand ui.js unter v4/
@@ -97,6 +98,10 @@ menue: {
     /R-4\.1 APD-87\/E-1: Mehr-Knopf bei offenem Menü nicht mit drei senkrechten Punkten/),
   menueWaechstNicht: fall('Menü', 'Menü wächst nicht aus seiner Schaltfläche (erscheint ohne Bewegung)',
     [['  wachsen(menu, anchor);   // R-4.13', '  // R-4.13']], /R-4\.13 APD-62\/M-[17] Menü #/),
+  // seit 4.67.0 (APD-143, Gegenprobe zu L-1 und L-2): das alte Rollen – die Liste rückt, damit das Menü unter der Kachel Platz hat
+  listeRueckt: fall('Kontextmenü', 'die Liste rückt für das Menü unter der Kachel (bis 4.66.0), statt es darüber zu stellen',
+    [['    if (r.bottom + 8 + el.offsetHeight <= limit || r.top - 8 - el.offsetHeight >= T) {', '    if (r.bottom + 8 + el.offsetHeight <= limit) {']],
+    /R-4\.2 APD-143\/L-[12] /),
 },
 sprechblase: {
   blaseWaechstNicht: fall('Sprechblase', 'Sprechblase wächst nicht aus ihrer Schaltfläche (erscheint ohne Bewegung)',
@@ -106,6 +111,11 @@ fenster: {
   haekchenGrau: fall('Fenster', 'Häkchen wird nach einer Änderung nicht blau',
     [["dlg.querySelector('#dlgOk')?.classList.toggle('primary', Boolean(dlgDirty?.()));", "dlg.querySelector('#dlgOk')?.classList.toggle('primary', false);"]],
     /R-4\.4 Häkchen wird nach einer Änderung nicht blau/),
+  // seit 4.67.0 (APD-136, AD-Bean sourcehighlight, Gegenprobe zu S-9 und S-10)
+  quelleNichtGetoent: fall('Hervorgehobene Quelle', 'sourceItem tönt die Quelle nicht (ohne on)',
+    [["  const toenen = item => finde(item)?.classList.add('on');", "  const toenen = item => {};"]], /APD-136\/S-9 /),
+  releaseGibtNichtFrei: fall('Hervorgehobene Quelle', 'release gibt die Quelle nicht frei',
+    [["release(item) { if (!item || !gehalten.delete(item)) return; freigeben(item);", "release(item) { if (!item || !gehalten.delete(item)) return;"]], /APD-136\/S-10 /),
 } };
 const gpFall = () => (process.env.PRUEF_GEGENPROBE || '').match(/^pruefseite:(.+)$/)?.[1] || null;
 const gpSuche = name => name && Object.values(GEGENPROBEN_PRUEFSEITE).map(t => t[name]).find(Boolean);
@@ -689,15 +699,21 @@ export async function ablaufMenue(t, b) {
       await t.schritt(p, 'Q-1 Menü der Kopfzeile wächst', async () => t.liste(await checkWachsen(p, { menue: '#mainMore', where: wo('Kopfzeile') })));
       if (!ruhig) {
         await t.schritt(p, 'Mehr-Menü der Kopfzeile offen', () => menueAuf(p, '#mainMore'));
+        // APD-136/S-6 (seit 4.67.0, AD-Bean sourcehighlight): der Mehr-Knopf ist gehaltene Quelle, solange sein Menü offen ist, danach ist nichts gehalten
+        t.wahr('APD-136/S-6 offenes Menü: Mehr-Knopf in heldItems und blau', await p.evaluate(() => adSourcehighlight.heldItems.includes(document.querySelector('#mainMore'))
+          && document.querySelector('#mainMore').classList.contains('on')), 'R-3.3');
         await t.schritt(p, 'Mehr-Menü der Kopfzeile zu', () => allesZu(p));
+        t.ist('APD-136/S-6 Menü zu: heldItems leer, Mehr-Knopf frei', await p.evaluate(() => [adSourcehighlight.heldItems.length, document.querySelector('#mainMore').classList.contains('on')]), [0, false], 'R-3.3');
         await t.schritt(p, 'Q-3 Mehr der Kopfzeile mit der Tastatur', async () => t.liste(await checkFokus(p, { menue: '#mainMore', tab: false, where: 'Mehr der Kopfzeile' })));
       }
-      // Liste mit Untermenü ‚Darstellung‘ und Kontextmenü der obersten Kachel (wie in der App eine Kachel, unter der das Menü Platz hat – im iPhone
-      // quer rollt die Liste für die zweite Kachel 8 px und beim Schließen zurück, das Abbild schrumpft dann zur alten Lage; Befund im Bericht B-3.3)
+      // Liste mit Untermenü ‚Darstellung‘ und Kontextmenü der zweiten Kachel – im iPhone quer rollte die Liste bis 4.66.0 dafür 8 px und beim Schließen
+      // zurück, das Abbild schrumpfte zur alten Lage (Befund B-3.3); seit 4.67.0 steht das Menü darüber, die Liste bleibt (APD-143/L-2)
       await zurListe(p);
       await t.schritt(p, 'Q-2 Mehr der Liste mit Untermenü', async () => t.liste(await checkMehrKnopf(p, { sel: '#sideMore', untermenue: 'Darstellung', where: wo('Mehr der Liste') })));
       await t.schritt(p, 'Q-1 Menü, Untermenü und Kontextmenü der Liste wachsen', async () => t.liste(await checkWachsen(p, { menue: '#sideMore', untermenue: 'Darstellung',
-        kontext: () => kachelLang(p), drehen: ipad && !ruhig ? [h, w] : null, where: wo('Liste') })));
+        kontext: () => kachelLang(p, 'Zweiter Eintrag'), drehen: ipad && !ruhig ? [h, w] : null, where: wo('Liste') })));
+      // APD-143/L-1 bis L-5, L-8 (seit 4.67.0): Kontextmenü jeder Kachel – Lage, Liste bleibt beim Öffnen und Schließen stehen
+      await t.schritt(p, 'APD-143 Kontextmenüs der Liste', async () => t.liste(await checkContextMenus(p, wo(ansicht))));
       if (!ruhig) {
         await t.schritt(p, 'Mehr-Menü der Liste offen', () => menueAuf(p, '#sideMore'));
         await t.schritt(p, 'Untermenü ‚Darstellung‘ offen', async () => { await p.locator('.menu:not(.submenu) .mi', { hasText: 'Darstellung' }).click();
@@ -793,9 +809,41 @@ export async function ablaufFenster(t, b) {
         { name: 'Mehr → Eintrag bearbeiten angetippt, x', auf: bearbeiten, zu: () => p.click('#dlgX'), knopf: '#mainMore', tastatur: false },
       ], { where: 'Q-7' })));
       t.ist('nichts gespeichert (Titel der gespeicherten Einträge)', (await gespeichert(p)).items.map(e => e.title), ['Erster Eintrag', 'Zweiter Eintrag', 'Dritter Eintrag'], 'R-4.4');
+      if (ansicht === 'iPad quer') await t.schritt(p, 'APD-136/S-9, S-10 AD-Bean sourcehighlight', async () => t.liste(await checkSourcehighlight(p)));
     } catch (e) { t.fehler('', `Ablauf bricht ab: ${e.message.split('\n')[0]}`); }
     await p.close();
   }
+}
+// APD-136/S-9, S-10 (seit 4.67.0; R-3.3, R-8.1, R-1.13 – arbeit/0145 APD-136 Bean sourcehighlight Vorschlag.md): die AD-Bean sourcehighlight auf der
+// Vorlage. S-9: sourceItem eines zweiten Knopfs setzen, während der erste gilt – der erste frei, der zweite blau, sourceItem = zweiter, change je einmal;
+// S-10: hold, die Knöpfe neu aufbauen, refresh – bleibt blau; release – frei; change je einmal. Gegenproben pruefseite:quelleNichtGetoent (S-9) und
+// pruefseite:releaseGibtNichtFrei (S-10).
+export async function checkSourcehighlight(p) {
+  const errors = [], E = t => errors.push(`R-3.3 ${t}`);
+  const r = await p.evaluate(() => {
+    const s = adSourcehighlight, box = document.createElement('div'), knoepfe = '<button type="button" id="shA">A</button><button type="button" id="shB">B</button>';
+    box.id = 'shProbe'; box.innerHTML = knoepfe; document.body.append(box);
+    const on = id => !!document.getElementById(id)?.classList.contains('on');
+    const ev = [], ab = s.on('change', e => ev.push(`${typeof e.item === 'string' ? e.item : e.item?.id} ${e.highlighted}`));
+    s.sourceItem = '#shA'; const a1 = on('shA');
+    s.sourceItem = '#shB'; const s9 = [on('shA'), on('shB'), s.sourceItem];
+    s.sourceItem = ''; const frei9 = !on('shB') && s.sourceItem === '';
+    const ev9 = ev.splice(0);
+    s.hold('#shA'); box.innerHTML = knoepfe; const vor = on('shA');
+    s.refresh(box); const nach = on('shA'), held = s.heldItems.slice();
+    s.release('#shA'); const frei10 = !on('shA'); const ev10 = ev.splice(0);
+    ab(); box.remove();
+    return { a1, s9, frei9, ev9, vor, nach, held, frei10, ev10, leer: s.heldItems.length };
+  });
+  if (!r.a1) E('APD-136/S-9 sourceItem = erster Knopf: nicht blau');
+  if (JSON.stringify(r.s9) !== JSON.stringify([false, true, '#shB'])) E(`APD-136/S-9 sourceItem auf den zweiten Knopf: erster blau ${r.s9[0]}, zweiter blau ${r.s9[1]}, sourceItem ‚${r.s9[2]}‘ (soll: erster frei, zweiter blau, ‚#shB‘)`);
+  if (!r.frei9) E('APD-136/S-9 sourceItem = \'\': der zweite Knopf bleibt blau');
+  if (JSON.stringify(r.ev9) !== JSON.stringify(['#shA true', '#shA false', '#shB true', '#shB false'])) E(`APD-136/S-9 Ereignis change ${JSON.stringify(r.ev9)} statt je einmal getönt und frei`);
+  if (r.vor) E('APD-136/S-10 die neu aufgebaute Schaltfläche ist schon vor refresh blau – die Prüfung prüft nichts');
+  if (!r.nach || JSON.stringify(r.held) !== '["#shA"]') E(`APD-136/S-10 nach Neuaufbau und refresh: blau ${r.nach}, heldItems ${JSON.stringify(r.held)}`);
+  if (!r.frei10 || r.leer) E(`APD-136/S-10 release: Knopf ${r.frei10 ? 'frei' : 'noch blau'}, heldItems ${r.leer}`);
+  if (JSON.stringify(r.ev10) !== JSON.stringify(['#shA true', '#shA false'])) E(`APD-136/S-10 Ereignis change ${JSON.stringify(r.ev10)} statt je einmal getönt und frei`);
+  return errors;
 }
 const ABLAEUFE = { messung: ablaufMessung, 'titel-blase': ablaufTitelBlase, 'titel-oben': ablaufTitelOben, 'schicht-oben': ablaufSchichtOben, grossanzeige: ablaufGrossanzeige,
   menue: ablaufMenue, sprechblase: ablaufSprechblase, fenster: ablaufFenster };
