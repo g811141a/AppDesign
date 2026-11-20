@@ -22,7 +22,7 @@ Die Liste selbst und ihre Zeilen bleiben unverändert stehen; danach lässt sie 
 
 Andere Möglichkeit: `destroy()` (heißt in vielen JS-Bibliotheken so – Vermutung, nicht nachgelesen) – sagt aber ‚zerstören‘, obwohl nichts zerstört wird.
 
-## Empfehlung
+## Entschieden
 
-`disconnect()` bleibt – Web-Vorbild für genau diese Aufgabe. Das deutsche ‚entfernen‘ war schon ungenau; im Katalog steht als Beschreibung künftig
+(Nutzer 20.11.2026, Sitzung 0145, im Fenster) `disconnect()` bleibt – Web-Vorbild für genau diese Aufgabe. Das deutsche ‚entfernen‘ war schon ungenau; im Katalog steht als Beschreibung künftig
 „Hört auf, die Liste zu beobachten – sie bleibt stehen, lässt sich aber nicht mehr wischen.“
