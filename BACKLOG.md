@@ -11,8 +11,10 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Prio | Thema | bereit seit |
 |---|---|---|---|
+| P-115/F-1 | 1 | **Korrektur: Mehr-Knopf des Bean-Katalogs rund** (P-115/5 nicht ok – oval, erst nach dem Antippen rund; Nutzer 20.11.2026, Sitzung 0143): der Knopf stand allein in einer Kapsel (49 × 44) – wird ein runder Knopf (`.round`, 44 × 44); neue Prüfung in `hig.mjs` (Kapsel mit nur einer Icon-Schaltfläche, R-3.1) und Gegenprobe `einzelkapsel` (`--gegenprobe masse`); App und Prüfseite mit der neuen Prüfung grün. Eigene Korrekturversion 4.65.1 abgelehnt, mit 4.66.0 zusammen (Nutzer im Fenster). AD-Bean: keine | 20.11.2026 |
+| APD-136 b1–b3 | 1 | **AD-Beans – Kandidaten b1–b3** (`arbeit/APD-136 Kandidaten 4.66.0 Vorschlag.md`, Testfall-Liste APD-136/V-1 bis V-5): CSS des Hinweisfensters unter `.ad-hinweis`, `subAt` mit Standardwert, `ic` mit unbekanntem Namen. AD-Bean: `hinweis` (CSS unter `.ad-hinweis`) | 19.11.2026 |
 
-0 Punkte bereit.
+2 Punkte bereit.
 
 
 ## 1. Auf iPad und iPhone prüfen
