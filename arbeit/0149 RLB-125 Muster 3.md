@@ -61,7 +61,7 @@ die Vorschau (Chromium); keine Fehler auf der Seite.
 
 | Nr. | Testfall (automatisch) |
 |---|---|
-| RLB-125/T-1 | Kachel gesperrt: oranges `lock` unten rechts, nicht über dem Text (iPad, iPhone-Startliste, große Schrift); nicht gesperrt kein Symbol |
+| RLB-125/T-1 | Kachel gesperrt: `lock` vor dem Titel, so hoch wie die Großbuchstaben und mittig (J-9) (iPad, iPhone-Startliste, große Schrift); nicht gesperrt kein Symbol |
 | RLB-125/T-2 | Gesperrt öffnen (Kachel, Start, Neustart, Wechsel, nach ‚Sperren‘): nur die Vorschau-Seite, keine Tabelle, keine Kästen, kein Fenster |
 | RLB-125/T-3 | Nach jeder Ausgabe (HTML, PDF, abgebrochen, Fehler) und nach Backup erstellen bzw. laden (Abgleichen): Vorschau bleibt, nie die Tabelle |
 | RLB-125/T-4 | Ausgabe-Menü ohne ‚Vorschau‘; Mehr: ‚Entsperren‘ wirkt, ‚Einstellen‘ und ‚Löschen‘ blass mit ‚Gesperrt‘, nicht antippbar |
@@ -185,3 +185,5 @@ Titels). **Vermutung:** WebKit rundet die Lage des Symbols hier anders. Am Gerä
 1. Link öffnen, ganz neu laden. Erwartet: Das `lock` steht vor ‚Australien‘, genauso hoch wie das ‚A‘ und auf derselben Höhe – oben und unten bündig.
 2. ‚Toskana‘ antippen. Erwartet: Auf der weißen Kachel ‚Australien‘ steht das `lock` schwarz, wieder bündig mit dem ‚A‘.
 3. Am iPhone in der Startliste ansehen. Erwartet: wie in Schritt 2.
+
+## Rückmeldung Muster 6 (Nutzer 21.11.2026, im Fenster): **ok** – eingetragen im Backlog des Reiselogbuchs (J-7 bis J-9).
