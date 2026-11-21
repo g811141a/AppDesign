@@ -40,3 +40,9 @@ R-3.3: ‚Jede Farbe hat eine Bedeutung: blau gefüllt nur die Hauptaktion – i
 - x ohne Entsperren: Heute zeigt das Muster danach die normale Seite, die aber gesperrt bleibt (Tage nur lesen, Menüs blass, wie im ersten
   Muster). Das klären wir beim nächsten Schritt.
 - Aus dem ersten Muster: Wischaktionen, allgemeine Regel ‚blasse Menüpunkte‘.
+
+## Rückmeldung (Nutzer 21.11.2026, Sitzung 0148, im Fenster)
+
+- Muster 2: **nicht ok** – was nicht passt, fragt die nächste Sitzung (0149) zuerst nach.
+- RLB-125/J-5: Schloss auf der Kachel **orange** (`--warn`) statt rot – R-3.3 bleibt eingehalten.
+- RLB-125/J-6: ‚Entsperren‘ in der Vorschau **hell mit blauer Schrift** – Teilen bleibt die einzige blaue Hauptaktion (R-3.3).
