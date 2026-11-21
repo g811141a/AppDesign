@@ -26,6 +26,7 @@ Katalog nicht veraltet und nicht kaputt ist; die eigentlichen Prüfungen der Bea
 | Z-3 | Grundregeln | nach jedem Schritt die Prüfungen aus `hig.mjs` (wie die Ablauf-Prüfungen) |
 | Z-4 | Neueste Fassung | lädt `v4/ui.js` und `v4/design.css`; Versionszeile im Mehr-Menü = `AD_VERSION` |
 | Z-5 | Gegenprobe | eine Bean ohne Katalogdatei bzw. mit abweichender Fabrik → Z-1 rot |
+| Z-6 | Langes Drücken unter ‚Ausprobieren‘ (seit 4.67.1, P-117/F-2) | jede Schaltfläche und Kachel unter ‚Ausprobieren‘ jeder Bean markiert im Safari-Modell (`safariHalten`) keinen Text und zeigt kein Callout (R-3.6) |
 
 ## Testfälle (User), wenn gebaut
 

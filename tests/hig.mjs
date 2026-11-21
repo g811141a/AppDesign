@@ -676,6 +676,23 @@ const found = new Map(), icons = new Map();
           R('R-3.1', `Kapsel mit nur einer Schaltfläche ‚${label(knoepfe[0])}‘ ist kein Kreis (${Math.round(b.width)} × ${Math.round(b.height)} px, oval) – einzeln als runder Knopf`);
         }
       });
+      // R-3.1 (P-117/1, P-117/F-1): eine Schaltfläche nur mit Icon, die für sich allein steht (nicht in einer Kapsel, einem Menü oder einer Zeile),
+      // ist ein Kreis – gleiche Breite und Höhe, Radius mindestens die halbe Höhe (runder Knopf .round). Vorher sah die Prüfung nur Knöpfe mit
+      // border-radius 50 % und übersah eine Icon-Schaltfläche in der Kapselform der Grundschaltfläche (Mehr-Knopf der Katalogseite, 66 × 44).
+      document.querySelectorAll('button').forEach(e => {
+        if (!vis(e) || e.textContent.trim() || !e.querySelector('svg, .ic') || e.closest('.grp, .navgrp, .cap, .fab, .menu, .irow, .side-row, .ad-swipeactions-actions')) return;   // Wischaktionen: Kapseln 66 × 44 (15.4)
+        const b = e.getBoundingClientRect(), r = cs(e).borderTopLeftRadius;
+        const rund = r.endsWith('%') ? parseFloat(r) >= 50 : parseFloat(r) >= Math.min(b.width, b.height) / 2 - .5;
+        if (Math.abs(b.width - b.height) >= 0.5 || !rund) R('R-3.1', `Icon-Schaltfläche ‚${label(e)}‘ ist kein Kreis (${Math.round(b.width)} × ${Math.round(b.height)} px, Radius ${r}) – runder Knopf (.round)`);
+      });
+      // R-3.6 (P-117/1, P-117/4, P-117/F-2): langes Drücken auf eine Schaltfläche markiert keinen Text und zeigt weder Lupe noch Callout – wie
+      // safariHalten (safari.mjs): user-select des Elements mit dem Text, -webkit-touch-callout der Schaltfläche.
+      document.querySelectorAll('button').forEach(e => {
+        if (!vis(e)) return;
+        const t = [...e.querySelectorAll('*')].find(x => [...x.childNodes].some(n => n.nodeType === 3 && n.textContent.trim())) || e, c = cs(t);
+        const wahl = c.webkitUserSelect || c.userSelect, callout = cs(e).webkitTouchCallout ?? 'none';
+        if (wahl !== 'none' || callout !== 'none') R('R-3.6', `langes Drücken auf ‚${label(e)}‘ würde in Safari ${[wahl !== 'none' && 'Text markieren (Lupe)', callout !== 'none' && 'das Callout zeigen'].filter(Boolean).join(' und ')}`);
+      });
       // R-1.3 Eingabefelder mindestens 16 px (sonst vergrößert iOS beim Antippen)
       document.querySelectorAll('input:not([type=checkbox]):not([type=hidden]):not([type=file]), textarea').forEach(e => { if (vis(e) && parseFloat(cs(e).fontSize) < 16) R('R-1.3', `Eingabefeld ${e.id ? '#' + e.id : ''} unter 16 px – iOS vergrößert beim Antippen`); });
       // R-2.2 Anzahl unter dem Titel der Liste

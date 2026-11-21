@@ -3,6 +3,31 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.67.1 – 21.11.2026
+
+AppDesign 4.67.1 · Designrichtlinie allgemein 4.67.1 · Zusammenarbeit allgemein 3.18.0 · Reiselogbuch 3.57.11 (Fassung 4.67.1)
+
+**Korrektur P-117/F-1 – Mehr-Knopf der Katalogseite rund** (P-117/1 nicht ok, Nutzer 21.11.2026, Sitzung 0147 – `arbeit/0147 P-117 Rueckmeldung.md`; Bau bestätigt
+in Sitzung 0147).
+
+- **Bean-Katalog:** der Mehr-Knopf auf ‚Hervorgehobene Quelle‘ (`#bkMenu`) ist ein runder Knopf (`.round`) statt der Kapselform der Grundschaltfläche (vorher 50 × 44).
+- **Prüfung:** `hig.mjs` (R-3.1) meldet jede Icon-Schaltfläche, die für sich allein steht (nicht in Kapsel, Menü, Zeile, Kapsel Nach oben / Ans Ende oder Wischaktionen) und kein
+  Kreis ist – gleiche Breite und Höhe, Radius mindestens die halbe Höhe; rot gegen 4.67.0 (`#bkMenu` 50 × 44), in der App grün. Vorher sah die Prüfung nur Knöpfe
+  mit `border-radius: 50%` und die Kapsel mit einer Schaltfläche (P-115/F-1).
+- AD-Bean: keine, weil nur die Katalogseite und eine Prüfung sich ändern.
+
+**Korrektur P-117/F-2 – langes Drücken auf Schaltflächen markiert keinen Text** (P-117/1 und P-117/4 nicht ok, Nutzer 21.11.2026; Wortlaut R-3.6 freigegeben
+21.11.2026, Sitzung 0147 – `arbeit/0147 P-117 Rueckmeldung.md`).
+
+- **`design.css`:** `button` mit `-webkit-touch-callout: none` und `user-select: none` – gilt für alle Schaltflächen in App, Prüfseite und Katalog. Vorher markierte
+  Safari im Katalog den Text von ‚Erster Knopf‘ und beim Kontextmenü einer Kachel der Wischaktionen die ganze Seite; in der App waren u. a. ‚Backup erstellen‘,
+  ‚Abgleichen‘, ‚Ersetzen‘, ‚Abbrechen‘, ‚Abgleichbericht anzeigen‘, das Feld ‚Fazit‘ und ‚Reiselogbuch löschen‘ wählbar.
+- **R-3.6:** ‚langes Drücken auf **Schaltflächen,** antippbare Zeilen, Kacheln, Leisten und die Smiley-Leiste markiert keinen Text und zeigt keine Lupe‘; Spalte
+  ‚Prüfung‘ mit `hig.mjs` und `katalog.mjs`.
+- **Prüfungen:** `hig.mjs` (R-3.6) – jede sichtbare Schaltfläche in jeder Ansicht: `user-select` des Elements mit dem Text und `-webkit-touch-callout` sind `none`
+  (wie `safariHalten`); `katalog.mjs` APD-140/Z-6 – jede Schaltfläche und Kachel unter ‚Ausprobieren‘ jeder Bean im Safari-Modell (`safariHalten`). Beide rot gegen 4.67.0.
+- AD-Bean: keine, weil `button` ein Grundstil von `design.css` ist, kein Baustein.
+
 ## 4.67.0 – 20.11.2026
 
 AppDesign 4.67.0 · Designrichtlinie allgemein 4.67.0 · Zusammenarbeit allgemein 3.18.0 · Reiselogbuch 3.57.10 (Fassung 4.67.0)

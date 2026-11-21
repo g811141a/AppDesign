@@ -3,6 +3,7 @@
 //   Z-2: lädt in Chromium und WebKit, in allen 4 Ansichten, jede Bean geöffnet, ohne Konsolen- oder Skriptfehler; Titel = Name der Bean, Adresse
 //        #kennung, ‚Ausprobieren‘ zeigt die Bean; iPhone: Startliste → Bean → Zurück
 //   Z-3: nach jedem Schritt die Grundregeln (pruefe.mjs schritt, dieselben Prüfungen wie hig.mjs, ohne Drehen)
+//   Z-6: langes Drücken auf Schaltflächen und Kacheln unter ‚Ausprobieren‘ markiert keinen Text (R-3.6, Safari-Modell; seit 4.67.1, P-117/F-2)
 //   Z-4: lädt v4/ui.js und v4/design.css; AD_VERSION = --ad-version = AD_VERSION in v4/ui.js; Versionszeile im Mehr-Menü nennt AD_VERSION
 // Die Liste ↔ katalog/ (Z-1, Gegenprobe Z-5) prüft checkBeans (doku.mjs, checkKatalog).
 // Einbinden in der App (tests/bean-katalog.mjs):  import { katalog } from '../../AppDesign/fassung/X.Y.Z/tests/katalog.mjs';
@@ -10,6 +11,7 @@
 import { readFileSync } from 'node:fs';
 import { pruefung } from './pruefe.mjs';
 import { createCheck } from './hig.mjs';
+import { safariHalten } from './safari.mjs';
 
 const AD = new URL(import.meta.url.includes('/fassung/') ? '../../../' : '../', import.meta.url);
 
@@ -47,6 +49,14 @@ export async function katalog(pw, { out } = {}) {
       t.ist(`Z-2 ${kennung}: Adresse`, s.hash, `#${kennung}`, 'R-1.13');
       t.wahr(`Z-2 ${kennung}: ‚Ausprobieren‘ zeigt die Bean`, s.probe > 0, 'R-1.13');
       if (!phone) t.ist(`Z-2 ${kennung}: Kachel blau`, s.blau, kennung, 'R-7.1');
+      // Z-6 (P-117/1, P-117/4, P-117/F-2): langes Drücken auf eine Schaltfläche oder Kachel unter ‚Ausprobieren‘ markiert keinen Text und zeigt
+      // keine Lupe (Safari-Modell safariHalten) – am iPad markierte Safari den Text von ‚Erster Knopf‘ und beim Kontextmenü der Kachel die ganze Seite.
+      const n = await p.evaluate(() => { const k = [...document.querySelectorAll('#bkProbe button')]; k.forEach((x, i) => x.dataset.pruefHalten = i); return k.length; });
+      for (let i = 0; i < n; i++) {
+        const h = await safariHalten(p, `#bkProbe [data-pruef-halten="${i}"]`);
+        const name = await p.evaluate(i => document.querySelector(`#bkProbe [data-pruef-halten="${i}"]`)?.textContent.trim().slice(0, 40) || 'Icon', i);
+        if (h.markiert || h.callout) t.fehler('R-3.6', `Z-6 ${kennung}: langes Drücken auf ‚${name}‘ würde in Safari ${[h.markiert && 'Text markieren (Lupe)', h.callout && 'das Callout zeigen'].filter(Boolean).join(' und ')}`);
+      }
     }
     if (phone) {
       await t.schritt(p, 'Zurück zur Startliste', async () => { await p.click('#back'); await p.waitForTimeout(900); });
