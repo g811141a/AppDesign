@@ -251,6 +251,8 @@ export function checkCollab(appDir, app) {
   errors.push(...checkKasten(appDir, app));
   // Seit 4.60.4 (APD-135 Pakete 1 und 3): ausgelagerte Versionsgeschichten, Kasten ‚Immer‘, ‚Verpflichtend‘ ohne Wiederholung
   errors.push(...checkVersionsgeschichte(appDir, app));
+  // Seit 4.67.2 (P-118/F-2): ‚Schaltfläche‘, nie das Sperrwort (R-10.9)
+  errors.push(...checkBegriffe(appDir, app));
   return errors;
 }
 
@@ -312,6 +314,58 @@ export function checkKachel(collab, gp = (process.env.PRUEF_GEGENPROBE || '') ==
   for (const [re, was] of [[/bereit – anzeigen\?|Bericht und Testfälle anzeigen\?|Wortlaut … anzeigen\?/, 'Fenster ‚… anzeigen?‘'], [/\*\*W\*\*/, '**W** (Regelwächter)'],
     [/Uhrzeitzeile (?:\(0 Nr\. 26|liefert)|Erste Zeile jeder Ausgabe/, 'Uhrzeitzeile als Pflicht'], [/Zeitzeile von `messung\.mjs`|Zeit und Token \(Pflicht/, 'Zeitzeile als Pflicht']])
     if (re.test(flach(t))) E(`${was} steht noch im Text`);
+  return errors;
+}
+
+// Seit 4.67.2 (P-118/F-2, R-10.9, Designrichtlinie 6; Testfall-Liste arbeit/0150 Bau-Frage 4.67.2.md P-118/Z-1 bis Z-6): ein antippbares
+// Bedienelement heißt in allen Texten ‚Schaltfläche‘ – nie ‚Knopf‘ bzw. ‚Knöpfe‘, auch nicht in Zusammensetzungen. Geprüft werden die lebenden
+// Texte von AppDesign (Doku, v4/, Katalog, Prüfungen, Werkzeug, Vorlage) und der App (Doku, index.html, Prüfungen); ausgenommen sind
+// Geschichte (CHANGELOG, Versionsgeschichten, VERLAUF, ‚Erledigt‘ im Backlog, ZUORDNUNG.md), die festen Fassungen, arbeit/ und Namen im Code
+// (in Doku zwischen Backticks; im Code ein Name ohne Umlaut, der nicht mit dem großen Wort beginnt – `checkMehrKnopf`, `bk-knoepfe`), Dateinamen
+// (Messungen) und das Sperrwort in Anführungszeichen (Regeltext). Gegenprobe: PRUEF_GEGENPROBE=begriffe:P-118/Z-3a bis Z-3c (lauf.mjs --gegenprobe begriffe).
+const SPERR = 'Kn' + 'opf', SPERR_RE = /[\p{L}\w-]*[Kk]n(?:o|ö|oe)pf[\p{L}\w-]*/gu;
+export const GEGENPROBEN_BEGRIFFE = Object.fromEntries([
+  ['P-118/Z-3a', 'Kommentar in v4/ui.js', 'v4/ui.js'], ['P-118/Z-3b', 'Mehrzahl in der Designrichtlinie', 'Designrichtlinie allgemein'],
+  ['P-118/Z-3c', 'Zusammensetzung im Katalog', 'katalog/'],
+].map(([f, was, wo]) => [f, { was, zeichen: new RegExp('R-10.9 .*' + wo.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')) }]));
+export function begriffTreffer(text, doku) {
+  const treffer = [];
+  text.split('\n').forEach((zeile, i) => {
+    let z = zeile.replace(/[‚'"„]Kn(?:opf|öpfe)[‘'"“]/g, '');   // das Sperrwort in Anführungszeichen (Regeltext) – kein Treffer
+    if (doku) z = z.replace(/`[^`]*`/g, '');   // Namen im Code stehen in Doku zwischen Backticks
+    z = z.replace(/\S*[Kk]n(?:o|ö)pf[^'"`\n]*?\.(?:txt|json|png|jpe?g)\b|\d{4}-\d\d-\d\d [^'"`\n]*?[Kk]n(?:o|ö)pf[^'"`\n]*/g, '');   // Dateinamen (z. B. Messungen) bleiben (Zusammenarbeit 1)
+    for (const m of z.matchAll(SPERR_RE)) {
+      const w = m[0];
+      // im Code: Namen sind englisch oder ASCII – ein Treffer ohne Umlaut, der nicht mit dem großen Wort beginnt (auch nach Bindestrich), ist ein Name
+      if (!doku && !/ö/.test(w) && !/(?:^|-)Kn(?:o|oe)pf/.test(w)) continue;
+      treffer.push({ zeile: i + 1, wort: w });
+    }
+  });
+  return treffer;
+}
+export function checkBegriffe(appDir, app, gp = (process.env.PRUEF_GEGENPROBE || '').match(/^begriffe:(P-118\/Z-3[abc])$/)?.[1]) {
+  const errors = [];
+  const ad = new URL('../AppDesign/', appDir);
+  const read = u => { try { return readFileSync(u, 'utf8'); } catch { return ''; } };
+  const ls = (base, dir, re) => { try { return readdirSync(new URL(dir, base)).filter(f => re.test(f)).map(f => dir + f); } catch { return []; } };
+  const geschichte = /CHANGELOG|Versionsgeschichte|VERLAUF|ZUORDNUNG/;
+  const dateien = [];
+  for (const [base, name] of [[ad, 'AppDesign'], [appDir, app]]) {
+    const liste = [...ls(base, '', /\.md$/), ...ls(base, '', /^index\.html$/), ...ls(base, 'v4/', /\.(js|css)$/), ...ls(base, 'katalog/', /\.(js|html|css|md)$/),
+      ...ls(base, 'tests/', /\.(mjs|md|sh)$/), ...ls(base, 'werkzeug/', /\.(mjs|md)$/), ...ls(base, 'vorlage/', /\.(html|md|js)$/)];
+    for (const f of liste) if (!geschichte.test(f) && !(name !== 'AppDesign' && /README - (Designrichtlinie|Zusammenarbeit) allgemein\.md$/.test(f))) dateien.push([base, name, f]);
+  }
+  const seen = new Set();
+  for (const [base, name, f] of dateien) {
+    const u = new URL(f, base).href; if (seen.has(u)) continue; seen.add(u);
+    let text = read(new URL(f, base));
+    if (/BACKLOG\.md$/.test(f)) text = text.split(/\n## Erledigt/)[0];
+    if (name === 'AppDesign' && gp === 'P-118/Z-3a' && f === 'v4/ui.js') text += `\n// Gegenprobe: der ${SPERR} der Kopfzeile`;
+    if (name === 'AppDesign' && gp === 'P-118/Z-3b' && f === 'README - Designrichtlinie allgemein.md') text += `\nGegenprobe: alle Kn` + `öpfe heben sich.`;
+    if (name === 'AppDesign' && gp === 'P-118/Z-3c' && f === 'katalog/sourcehighlight.js') text += `\n// Gegenprobe: der Mehr-${SPERR}`;
+    for (const t of begriffTreffer(text, /\.md$/.test(f)))
+      errors.push(`R-10.9 ${name} \`${f}\` Zeile ${t.zeile}: ‚${t.wort}‘ – ein antippbares Bedienelement heißt ‚Schaltfläche‘ (Designrichtlinie 6)`);
+  }
   return errors;
 }
 

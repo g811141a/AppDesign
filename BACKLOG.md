@@ -1,6 +1,6 @@
 # AppDesign – Backlog (allgemeine Themen)
 
-**Stand 21.11.2026** · Aktuelle Version: AppDesign 4.67.1
+**Stand 21.11.2026** · Aktuelle Version: AppDesign 4.67.2
 
 Allgemeine Themen, die alle Apps betreffen. App-Themen stehen im Backlog der jeweiligen App.
 Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.4.
@@ -11,10 +11,8 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Prio | Thema | bereit seit |
 |---|---|---|---|
-| P-118/F-1 | 1 | **Gedrückte Schaltfläche vergrößert sich – grundsätzlich (P-118/1 nicht ok, Nutzer 21.11.2026, Sitzung 0147):** die runde Mehr-Schaltfläche des Katalogs wird beim Drücken nur blass, während Schaltflächen in Leisten und Kapseln sich 1,3-fach vergrößern (`design.css`, R-3.6). Wunsch: jede gedrückte Schaltfläche vergrößert sich standardmäßig, im Regelwerk verankert. Heute regelkonform (R-3.6: einzelne Schaltfläche blass 35 %), also eine Regeländerung. Zu klären: Apple-Abgleich (iOS 26), welche Schaltflächen (rund, Text, Hauptaktion, Sprechblase, Fenster), ‚Bewegung reduzieren‘, Muster, Wortlaut R-3.6, Prüfung rot gegen 4.67.1 (0 Nr. 1) – Variante B gewählt (Muster `arbeit/0147 P-118 Muster.html`), Wortlaut R-3.6 freigegeben (Nutzer 21.11.2026, im Fenster), Prüfung `checkBeruehren` für jede Schaltfläche und `katalog.mjs` APD-140/Z-7 rot gegen 4.67.1 (Zweig `p118-pruefung`); Auswahl-Kapsel bleibt wie heute, als genannte Ausnahme in R-3.6 (Nutzer 21.11.2026, im Fenster) · **Satz R-3.6 mit Ausnahme Auswahl-Kapsel freigegeben** (Nutzer 21.11.2026, Sitzung 0148 – `arbeit/0148 P-118 F-1 Satz R-3.6.md`); Bau-Frage 4.67.2 gestellt, Nutzer: noch nicht bauen (`arbeit/0148 Bau-Frage 4.67.2.md`) · **Bau-Frage 4.67.2 / 3.57.12 mit F-1 und F-2: Ja** (Nutzer 21.11.2026, Sitzung 0150, im Fenster – `arbeit/0150 Bau-Frage 4.67.2.md`), gebaut in Sitzung 0151 | 21.11.2026 |
-| P-118/F-2 | 1 | **Begriff ‚Schaltfläche‘ statt ‚Knopf‘ (Nutzer 21.11.2026, Sitzung 0147):** Claude verwendet ‚Knopf‘ nicht, wenn eine Schaltfläche gemeint ist – in Antworten, Testfällen und Texten. Zu klären: Wortlaut (Designrichtlinie 6 ‚Begriffe‘ oder Zusammenarbeit 1), Umbenennen der bestehenden Stellen (Designrichtlinie allgemein 63, `ui.js` 51 in Kommentaren, Katalog `sourcehighlight.js` 9 – u. a. ‚Erster Knopf‘, PROMPT.md 4, index.html 3), Prüfung (Sperrwort in `checkCollab` bzw. `doku.mjs`) · **Wortlaut, Umfang und Testfall-Liste Z-1 bis Z-6 freigegeben** (Nutzer 21.11.2026, Sitzung 0148, im Fenster – `arbeit/0148 P-118 F-2 Wortlaut.md`): neue Regel in Designrichtlinie 6 mit R-10.9 (`doku.mjs` – `checkBegriffe`), Verweis in Zusammenarbeit 1; Namen im Code, Geschichte, `fassung/` und `arbeit/` ausgenommen | 21.11.2026 |
 
-2 Punkte bereit.
+Keine Punkte bereit (nächste Version: RLB-125 im Reiselogbuch, dann APD-135/B-3.3 Schritt 2).
 
 
 ## 1. Auf iPad und iPhone prüfen
@@ -45,7 +43,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 | APD-48 | 3 | **Umsortieren per Ziehen (aus APD-38/T-14, Nutzer 22.10.2026):** Zeilen am Griff ziehen; die anderen weichen aus, die Liste rollt am Rand mit. Warum später: Erst nötig, wenn eine App eine frei wählbare Reihenfolge braucht. | später |
 | APD-49 | 3 | **Lade- und Fortschrittsanzeige (aus APD-38/T-23, Nutzer 22.10.2026):** Ein Drehrad oder Balken zeigt, dass etwas dauert. Warum später: Erst nötig, wenn Backup, PDF oder Abgleich spürbar dauern (über etwa 1 s). | später |
 | APD-50 | 3 | **Segment-Steuerung (aus APD-38/T-25, Nutzer 22.10.2026):** Zwei bis fünf Möglichkeiten nebeneinander in einer Leiste; die Markierung gleitet zur Wahl und lässt sich ziehen. Warum später: Erst nötig, wenn eine App Ansichten umschaltet; der Filter als Menü mit Häkchen ist ebenfalls Apple-Art. | später |
-| APD-51 | 3 | **Stepper und Schieberegler (aus APD-38/T-27, Nutzer 22.10.2026):** Plus-Minus-Knöpfe, die beim Halten weiterzählen, und Regler zum Ziehen, auch mit zwei Knöpfen für einen Bereich. Warum später: Kein Bedarf in den Apps; dann das native Regler-Feld im Apple-Aussehen. | später |
+| APD-51 | 3 | **Stepper und Schieberegler (aus APD-38/T-27, Nutzer 22.10.2026):** Plus-Minus-Schaltflächen, die beim Halten weiterzählen, und Regler zum Ziehen, auch mit zwei Schaltflächen für einen Bereich. Warum später: Kein Bedarf in den Apps; dann das native Regler-Feld im Apple-Aussehen. | später |
 | APD-52 | 3 | **Lange Listen schonend bauen (aus APD-38/T-57, Nutzer 22.10.2026):** Nur die sichtbaren Zeilen werden gebaut; beim Rollen wird nachgeladen. Warum später: Erst ab mehreren hundert Einträgen spürbar; Nachladen entfällt, die Daten sind lokal. | später |
 | APD-53 | 3 | **Zähler, Plaketten und Chips (aus APD-38/T-62, Nutzer 22.10.2026):** Kleine Zähler an Listenzeilen, farbige Plaketten und Kapseln mit Symbol und x. Warum später: Zähler je Eintrag erst bei Bedarf; rote Plaketten passen nicht, weil Rot Löschen bedeutet (R-3.3). | später |
 | APD-55 | 3 | **Inhalt unter Glas-Leisten wie iOS 26 (aus APD-38/T-3, Nutzer 22.10.2026):** Inhalt läuft unter durchscheinende Leisten und wird am Rand weich ausgeblendet (Liquid Glass) – zuerst Muster am Gerät (Lesbarkeit, keine Fragmente über dem Titel); bis dahin gilt ‚deckende Leiste‘ (Designrichtlinie 1, bewusste Abweichung in 16) | später |
@@ -64,6 +62,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Thema | Version | Datum |
 |---|---|---|---|
+| P-118/F-1, P-118/F-2 | **Korrekturen aus P-118:** jede gedrückte Schaltfläche hebt sich und wird größer (R-3.6 Variante B, Auswahl-Kapsel blass); ‚Schaltfläche‘ statt ‚Knopf‘ (Designrichtlinie 6, R-10.9, `checkBegriffe`). Usertest P-119 im Backlog des Reiselogbuchs | AppDesign 4.67.2 | 21.11.2026 |
 | APD-144 | **Kein sichtbarer Fokus nach ‚Zurück‘ (iPhone, WebKit):** Gerätetest des Nutzers (iPhone mit Hardware-Tastatur, Reiselogbuch 3.57.11, AppDesign 4.67.1; Schritte `arbeit/0149 APD-144 Geraetetest.md`): nach ‚Zurück‘ liegt der Fokusrahmen auf der Kachel, von der man kam – am Gerät kein Fehler, keine Änderung; die Abweichung betrifft nur WebKit der Prüfumgebung (APD-135/Q-3 bleibt auf eigener Seite) | – (ohne Änderung) | 21.11.2026 |
 | P-117/F-1, P-117/F-2 | **Korrekturen aus P-117:** Mehr-Knopf der Katalogseite ‚Hervorgehobene Quelle‘ rund (`.round`), `hig.mjs` R-3.1 für jede Icon-Schaltfläche für sich allein; `button` in `design.css` ohne Textauswahl und Callout, R-3.6 um ‚Schaltflächen‘ ergänzt, Prüfungen `hig.mjs` R-3.6 und `katalog.mjs` APD-140/Z-6 – Usertest P-118 (Reiselogbuch) | 4.67.1 | 21.11.2026 |
 | APD-136 Namen | **Namen: ‚Anlegen‘ und Code englisch:** Zusammenarbeit 1 ‚Code englisch, Texte deutsch‘ (3.18.0), R-1.13 ‚Anlegen‘ und Satz zur Kennung (APD-136/A-1), `checkBeans` mit Sperrliste deutscher Namen (Gegenprobe `beans:englisch`); AD-Bean `alert` ersetzt `hinweis`; `swipeactions` mit englischer Schnittstelle (`rows`, `shortTitle`, `sourceView`, `openRow`, `metrics`, `disconnect()`, `toggle`); Katalog-Felder englisch – Usertest P-117 im Backlog des Reiselogbuchs | 4.67.0 | 20.11.2026 |

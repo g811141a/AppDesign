@@ -51,11 +51,13 @@ export async function katalog(pw, { out } = {}) {
       t.wahr(`Z-2 ${kennung}: ‚Ausprobieren‘ zeigt die Bean`, s.probe > 0, 'R-1.13');
       if (!phone) t.ist(`Z-2 ${kennung}: Kachel blau`, s.blau, kennung, 'R-7.1');
       // Z-6 (P-117/1, P-117/4, P-117/F-2): langes Drücken auf eine Schaltfläche oder Kachel unter ‚Ausprobieren‘ markiert keinen Text und zeigt
-      // keine Lupe (Safari-Modell safariHalten) – am iPad markierte Safari den Text von ‚Erster Knopf‘ und beim Kontextmenü der Kachel die ganze Seite.
+      // keine Lupe (Safari-Modell safariHalten) – am iPad markierte Safari den Text von ‚Erste Schaltfläche‘ und beim Kontextmenü der Kachel die ganze Seite.
       const n = await p.evaluate(() => { const k = [...document.querySelectorAll('#bkProbe button')]; k.forEach((x, i) => x.dataset.pruefHalten = i); return k.length; });
       // Z-7 (P-118/1, P-118/F-1): jede Schaltfläche hebt sich beim Berühren und wird größer (R-3.6 Variante B) – auch außerhalb der Leisten
       if (kennung === 'sourcehighlight') for (const k of ['#bkMenu', '#bkQ1']) {
         if (!(await p.$(k))) { t.fehler('R-3.6', `Z-7 ${kennung}: ${k} fehlt`); continue; }
+        // in die Mitte rollen wie der Finger, der nur eine sichtbare Schaltfläche drückt (iPhone quer: sonst halb unter dem Rand)
+        await p.evaluate(k => document.querySelector(k).scrollIntoView({ block: 'center' }), k); await p.waitForTimeout(300);
         t.liste(await checkBeruehren(p, { knopf: k, where: `Z-7 ${kennung}` }));
         if (await p.$('.menu')) { await p.keyboard.press('Escape'); await p.waitForTimeout(400); }
       }

@@ -72,7 +72,7 @@ die Vorschau (Chromium); keine Fehler auf der Seite.
 | RLB-125/T-9 | Backup erstellen und laden behält die Sperre; alte Backups ohne Sperre gelten als nicht gesperrt (`normalize`) |
 | RLB-125/T-10 | Gegenprobe: gesperrt, aber Tabelle sichtbar → rot |
 
-Entfallen gegenüber 0148: Lesefenster mit `lock` in der Kopfzeile (alte T-4) und Tagesfenster nur lesen (alte T-5). Ohne Tabelle öffnet kein Tagesfenster.
+Entfallen gegenüber 0148: Lesefenster mit `lock` in der Kopfzeile (alte RLB-125/T-4) und Tagesfenster nur lesen (alte RLB-125/T-5). Ohne Tabelle öffnet kein Tagesfenster.
 
 ## Noch offen (nach deinem ok zum Muster)
 

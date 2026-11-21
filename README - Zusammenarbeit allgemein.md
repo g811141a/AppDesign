@@ -1,6 +1,6 @@
 # Zusammenarbeit allgemein
 
-**Version 3.18.0** · Stand 20.11.2026
+**Version 3.19.0** · Stand 21.11.2026
 
 Regeln für die Zusammenarbeit mit Claude bei allen Web-Apps für iPad und iPhone von g811141a. Die Datei liegt im Design-Repo **AppDesign**
 (g811141a/AppDesign); App-Eigenes steht in der `CLAUDE.md` des App-Repos. **Abschnitt 0 ist das Arbeitsmodell** (oben der Kasten ‚Immer‘ und ‚Jede
@@ -205,6 +205,7 @@ Ziel: nichts vergessen, Fehler finden, bevor der Nutzer sie findet, schnell und 
 ## 1. Sprache und Ton
 
 - Deutsch, kurz und klar.
+- **Begriffe** wie in Designrichtlinie 6 (R-10.9), auch im Chat.
 - **Per du:** Claude spricht den Nutzer immer mit ‚du‘ an – nie ‚Sie‘ und nie ‚ihr‘, auch nicht in Dateien, Testfällen und
   Auswahlfenstern.
 - **Jede Meldung deutsch:** auch kurze Zwischenmeldungen während der Arbeit, Statuszeilen, Bildunterschriften zu Screenshots

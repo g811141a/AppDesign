@@ -22,7 +22,7 @@ async function typeKeeps(p, input, text, E, back = false) {
 }
 const rgbOf = c => (c.match(/[\d.]+/g) || [0, 0, 0]).slice(0, 3).map(Number);
 
-// Seit 4.43.0 (APD-91, R-2.3): die Suche öffnet ‚Suchen‘ als erster Punkt im Mehr-Menü – mehr: der Mehr-Knopf (eine Funktion öffnet
+// Seit 4.43.0 (APD-91, R-2.3): die Suche öffnet ‚Suchen‘ als erster Punkt im Mehr-Menü – mehr: die Mehr-Schaltfläche (eine Funktion öffnet
 // selbst); beendet wird sie mit dem runden x rechts in der Suchzeile.
 export async function sucheAuf(p, mehr = '#mainMore') {
   if (typeof mehr === 'function') return mehr();
@@ -56,7 +56,7 @@ export async function checkSearchPlace(p, { mehr = '#mainMore', kapsel = null, o
 }
 
 // APD-91 S-4 bis S-6, S-15, S-18 (R-2.3): ‚Suchen‘ im Menü schließt das Menü und öffnet die Suchzeile mit dem Cursor im Feld; bei offener
-// Suche bleibt der Mehr-Knopf normal (waagrecht, nicht hervorgehoben); das runde x ‚Suche beenden‘ rechts in der Suchzeile schließt sie –
+// Suche bleibt die Mehr-Schaltfläche normal (waagrecht, nicht hervorgehoben); das runde x ‚Suche beenden‘ rechts in der Suchzeile schließt sie –
 // Filter und Markierung weg, der Inhalt (scroll: Rollbereich bzw. Liste) steht ganz oben. term: ein Begriff mit Treffern.
 export async function checkSucheBeenden(p, { mehr = '#mainMore', input = '#search', close = '#sclose', row = '#app .nb2', item = '#app [data-day]',
   scroll = null, term, where = '' } = {}) {
@@ -76,8 +76,8 @@ export async function checkSucheBeenden(p, { mehr = '#mainMore', input = '#searc
   if (l.menue) E('APD-91/S-4: ‚Suchen‘ schließt das Menü nicht');
   if (!l.feld) { E('APD-91/S-4: ‚Suchen‘ im Menü öffnet keine Suchzeile'); return errors; }
   if (!l.fokus) E('APD-91/S-4: nach ‚Suchen‘ steht der Cursor nicht im Suchfeld');
-  if (l.mehrOn || !l.waagrecht) E(`APD-91/S-18: bei offener Suche ist der Mehr-Knopf ${l.mehrOn ? 'hervorgehoben' : 'nicht waagrecht'} – nur bei offenem Menü`);
-  if (!l.x || l.xName !== 'Suche beenden') E(`APD-91/S-15: x ‚Suche beenden‘ fehlt (${l.x ? `heißt ‚${l.xName}‘` : 'kein Knopf'})`);
+  if (l.mehrOn || !l.waagrecht) E(`APD-91/S-18: bei offener Suche ist die Mehr-Schaltfläche ${l.mehrOn ? 'hervorgehoben' : 'nicht waagrecht'} – nur bei offenem Menü`);
+  if (!l.x || l.xName !== 'Suche beenden') E(`APD-91/S-15: x ‚Suche beenden‘ fehlt (${l.x ? `heißt ‚${l.xName}‘` : 'keine Schaltfläche'})`);
   else if (!l.xRechts) E('APD-91/S-6: x ‚Suche beenden‘ steht nicht rechts in der Suchzeile');
   await p.locator(input).fill(term); await p.locator(input).dispatchEvent('input'); await wait(p, 900);
   l = await lage();
@@ -290,7 +290,7 @@ export async function checkFieldErrors(p, { open, field, where = '' } = {}) {
   return errors;
 }
 
-// R-5.2 Texteingabe: Großbuchstabe am Zeilenanfang und nach . ! ?; kein eigener Knopf zum Diktieren.
+// R-5.2 Texteingabe: Großbuchstabe am Zeilenanfang und nach . ! ?; keine eigene Schaltfläche zum Diktieren.
 export async function checkCapital(p, { open, field, where = '' } = {}) {
   const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}R-5.2 ${t}`);
   await open(); await wait(p, 350);
@@ -306,7 +306,7 @@ export async function checkCapital(p, { open, field, where = '' } = {}) {
   await p.locator(field).evaluate(f => f.setSelectionRange(f.value.length, f.value.length)); await p.keyboard.press('Enter'); await p.keyboard.type('dritte');
   const v2 = await p.locator(field).inputValue();
   if (v2 !== 'hallo welt. neu\nZweite\nDritte') E(`Großbuchstabe von Hand ersetzt bzw. gelöscht und klein getippt: ‚${v2.replace(/\n/g, '⏎')}‘ statt ‚hallo welt. neu⏎Zweite⏎Dritte‘ (APD-65)`);
-  if (await p.evaluate(() => [...document.querySelectorAll('#dlg button')].some(b => /diktier|mikrofon/i.test(b.getAttribute('aria-label') + b.textContent)))) E('eigener Knopf zum Diktieren');
+  if (await p.evaluate(() => [...document.querySelectorAll('#dlg button')].some(b => /diktier|mikrofon/i.test(b.getAttribute('aria-label') + b.textContent)))) E('eigene Schaltfläche zum Diktieren');
   await p.evaluate(() => document.getElementById('dlg').close()); await wait(p);
   return errors;
 }
@@ -380,7 +380,7 @@ export async function checkEnterDone(p, { open, fields = [], multi = '', where =
 // sofort, auch mehrzeilig – keine Sprechblase ‚Text löschen?‘ mehr (B-2, die Fälle APD-81/C3–C5 entfallen); danach an Stelle des ⓧ das
 // Rückgängig (Klasse rueck, 44 × 44, im Feld, B-3), auch nach dem Drehen (B-10); der geleerte Text liegt in der Zwischenablage (Chromium, B-4);
 // Rückgängig holt den ganzen Text zurück, ganz zu sehen, Cursor am Ende, wieder das ⓧ (B-5); erste Eingabe → ⓧ, per Taste gelöscht → kein
-// Knopf (B-6); Fokus weg und zurück → kein Knopf (B-7); mehrzeilig geleert einzeilig (B-8, APD-126); Undo-Taste bleibt (B-9 = APD-81/C6–C8).
+// Schaltfläche (B-6); Fokus weg und zurück → keine Schaltfläche (B-7); mehrzeilig geleert einzeilig (B-8, APD-126); Undo-Taste bleibt (B-9 = APD-81/C6–C8).
 export async function checkClear(p, { open, fields = [], ohne = [], where = '' } = {}) {
   const errors = [], E = (sel, t) => errors.push(`${where ? where + ': ' : ''}R-5.6 ${sel}: ${t}`);
   const webkit = p.context().browser()?.browserType().name() === 'webkit';
@@ -495,20 +495,20 @@ export async function checkClear(p, { open, fields = [], ohne = [], where = '' }
     // APD-124/B-9 (APD-81/C6, C7): Undo-Taste nach dem Leeren holt den Text zurück (drei Finger ebenso)
     await tippeX(sel);
     if ((await feld(sel)).wert === '') await pruefeUndo(sel, vorher, mehr ? 'C6' : 'C7');
-    // APD-124/B-6: leeren, ein Zeichen tippen → ⓧ; per Taste gelöscht → kein Knopf (Rückgängig verfallen)
+    // APD-124/B-6: leeren, ein Zeichen tippen → ⓧ; per Taste gelöscht → keine Schaltfläche (Rückgängig verfallen)
     await p.locator(sel).fill(vorher); await p.locator(sel).focus(); await wait(p, 100);
     const zeichen = text.trim().charAt(0) || 'a';   // ein Zeichen, das das Feld annimmt (Betragsfeld: Ziffer); am Zeilenanfang groß (R-5.2)
     await tippeX(sel); await p.keyboard.type(zeichen.toLowerCase()); await wait(p, 150);
-    { const l = await lage(sel); if (l.wert.toLowerCase() !== zeichen.toLowerCase() || !l.x || l.rueck) E(sel, `nach dem Leeren getippt: ${l.x ? (l.rueck ? 'Rückgängig' : 'ⓧ') : 'kein Knopf'} (Wert ‚${l.wert.slice(0, 20)}‘) statt ⓧ (APD-124/B-6)`); }
+    { const l = await lage(sel); if (l.wert.toLowerCase() !== zeichen.toLowerCase() || !l.x || l.rueck) E(sel, `nach dem Leeren getippt: ${l.x ? (l.rueck ? 'Rückgängig' : 'ⓧ') : 'keine Schaltfläche'} (Wert ‚${l.wert.slice(0, 20)}‘) statt ⓧ (APD-124/B-6)`); }
     await p.keyboard.press('Backspace'); await wait(p, 150);
-    { const l = await lage(sel); if (l.x) E(sel, `getippt und per Taste gelöscht: ${l.rueck ? 'Rückgängig' : 'ⓧ'} statt kein Knopf (APD-124/B-6)`); }
-    // APD-124/B-7: leeren, Fokus weg, zurück → kein Knopf (APD-124/E-2)
+    { const l = await lage(sel); if (l.x) E(sel, `getippt und per Taste gelöscht: ${l.rueck ? 'Rückgängig' : 'ⓧ'} statt keine Schaltfläche (APD-124/B-6)`); }
+    // APD-124/B-7: leeren, Fokus weg, zurück → keine Schaltfläche (APD-124/E-2)
     await p.locator(sel).fill(vorher); await p.locator(sel).focus(); await wait(p, 100);
     await tippeX(sel);
     await p.locator(sel).blur(); await wait(p, 150);
     if (warn && !await p.evaluate(() => [...document.querySelectorAll('.warn')].some(w => !w.hidden && w.getClientRects().length && w.textContent.trim()))) E(sel, 'nach dem Leeren mit ⓧ keine Fehlermeldung (APD-63/X-4, R-5.3)');
     await p.locator(sel).focus(); await wait(p, 150);
-    { const l = await lage(sel); if (l.x) E(sel, `geleert, Fokus weg und zurück: ${l.rueck ? 'Rückgängig' : 'ⓧ'} statt kein Knopf (APD-124/B-7)`); }
+    { const l = await lage(sel); if (l.x) E(sel, `geleert, Fokus weg und zurück: ${l.rueck ? 'Rückgängig' : 'ⓧ'} statt keine Schaltfläche (APD-124/B-7)`); }
     if (mehr) {
       // APD-81/C1, C9; APD-124/B-2, B-3, B-5, B-8: fünf Zeilen – sofort leer ohne Sprechblase, einzeilig, Rückgängig holt alle Zeilen zurück
       await p.locator(sel).fill(`${text} eins\nzwei\ndrei`); await p.locator(sel).focus(); await wait(p, 150);
@@ -619,7 +619,7 @@ export async function checkFeldCursor(p, { open = null, felder = [], tab = null,
     }
     // B-12: im leeren Feld mit Fokus kein ⓧ
     await p.click(leer); await wait(p, 400);
-    if (await knopf()) E('R-5.6', 'B-12', `${leer} leer mit Fokus: ${await knopf() === 'rueck' ? 'Rückgängig' : 'ⓧ'} statt kein Knopf`);
+    if (await knopf()) E('R-5.6', 'B-12', `${leer} leer mit Fokus: ${await knopf() === 'rueck' ? 'Rückgängig' : 'ⓧ'} statt keine Schaltfläche`);
     const kopf0 = (await lageTastatur(leer))?.kopf ?? null;
     await p.keyboard.type('Schön'); await wait(p, 200);
     const h1 = await hoehe(leer);
@@ -1165,7 +1165,7 @@ export async function checkSearchTop(p, { term, open = '#mainMore', close = '#sc
 // Seit 4.27.1 (APD-33, Testfall-Liste APD-33/H-1 bis APD-33/H-5): die Kapsel überdeckt nie Kopf- oder Suchzeile – sie steht ganz im Rollbereich mit
 // 16 px Abstand oben und unten, sonst ist sie ausgeblendet; die Schaltflächen der Leisten bleiben frei antippbar; nach dem Schließen
 // der Tastatur ist sie wieder da. sichtbar: Höhe des sichtbaren Bereichs bei offener Tastatur (gemessen APD-27: iPhone hoch 409,
-// quer 126 px; ohne Angabe innerHeight − 300); suche: Mehr-Knopf mit ‚Suchen‘ (seit 4.43.0, sucheAuf) – dann auch mit offener Suche gemessen; sucheZu beendet sie.
+// quer 126 px; ohne Angabe innerHeight − 300); suche: Mehr-Schaltfläche mit ‚Suchen‘ (seit 4.43.0, sucheAuf) – dann auch mit offener Suche gemessen; sucheZu beendet sie.
 // Seit 4.30.0 (APD-37 B+C, Testfall-Liste arbeit/APD-37 Testfall-Liste.md): die Kapsel zeigt nur die Pfeile, die etwas bewirken – ganz oben nur
 // ‚Ans Ende‘, am Ende nur ‚Nach oben‘, dazwischen beide, näher als eine halbe Höhe des Rollbereichs an einem Ende fehlt dessen Pfeil;
 // ihr unterer Rand bleibt (APD-37/F-3). Dazu der Schnellroll-Griff (checkGriff, ab drei Höhen des Rollbereichs), bei offener Tastatur und
@@ -1607,10 +1607,10 @@ export async function checkPrint(p, { print, mehr = 2, where = '' } = {}) {
 }
 
 // R-7.5 Navigation und Gesten (seit 4.30.0, APD-61 Teil 1, Variante ‚Überall‘, Testfall-Liste arbeit/APD-61 Teil 1 Testfall-Liste.md APD-61/F-1 bis APD-61/F-21).
-// iPhone-Aufbau (Start in der Startliste): Öffnen schiebt den Inhalt herein (APD-61/F-1), Zurück-Knopf hinaus, zuletzt geöffneter Eintrag blau,
+// iPhone-Aufbau (Start in der Startliste): Öffnen schiebt den Inhalt herein (APD-61/F-1), Zurück-Schaltfläche hinaus, zuletzt geöffneter Eintrag blau,
 // Rollstand der Liste bleibt (APD-61/F-2); Zurückwischen vom Rand langsam über die halbe Breite (APD-61/F-3), halb ziehen folgt dem Finger und federt
 // zurück (APD-61/F-4), kurz und schnell (APD-61/F-5), aus der Mitte (APD-61/F-6); senkrecht und schräg (APD-61/F-7), im waagrecht rollenden Bereich (APD-61/F-8), nach
-// links, auf Knöpfen und der Kapsel (APD-61/F-9) kein Zurück; Wischen während ‚Ans Ende‘ weich rollt (APD-61/F-10); Drehen beim Ziehen (APD-61/F-14);
+// links, auf Schaltflächen und der Kapsel (APD-61/F-9) kein Zurück; Wischen während ‚Ans Ende‘ weich rollt (APD-61/F-10); Drehen beim Ziehen (APD-61/F-14);
 // offenes Menü (APD-61/F-15); Tastatur offen (APD-61/F-16); langes Drücken, dann ziehen (APD-61/F-17); Escape bzw. VoiceOver-‚Zurück‘ (APD-61/F-20); je Bild nur
 // transform und opacity, keine langen Bildlücken (APD-61/F-21); die Messung zeichnet Berührungen und Gesten-Entscheidungen auf (APD-61/F-22, seit 4.30.1);
 // mit Berührung nach Safari (APD-67/S-10): Zurückwischen mit 10–14 px senkrechter Abweichung über einem antippbaren Kasten (kasten) und
@@ -1618,8 +1618,8 @@ export async function checkPrint(p, { print, mehr = 2, where = '' } = {}) {
 // Mitte herein, folgt dem Finger mit wachsender Abdunkelung (APD-67/F-11), nach links auf Seitenleiste bzw. Abdunkelung, panel-left, Abdunkelung
 // antippen (APD-61/F-12), Drehen (APD-61/F-14), Menü (APD-61/F-15), Escape. iPad quer: Wischen ändert nichts (APD-61/F-13). ‚Bewegung reduzieren‘ (Seite mit
 // reducedMotion: 'reduce'): Überblenden statt Schieben (APD-61/F-19). Mit der Maus nachgebildet (Playwright kennt kein Wischen mit dem Finger).
-// eintrag: Zeile der Startliste bzw. Seitenleiste, die geöffnet wird; titel: ihr Titel (steht danach in der Leiste); zurueck: Zurück-Knopf;
-// waagrecht: Bereich mit eigenem waagrechtem Rollen; knopf: Schaltfläche in der Leiste; menue: öffnet ein Menü; suche: Mehr-Knopf mit ‚Suchen‘ (sucheAuf)
+// eintrag: Zeile der Startliste bzw. Seitenleiste, die geöffnet wird; titel: ihr Titel (steht danach in der Leiste); zurueck: Zurück-Schaltfläche;
+// waagrecht: Bereich mit eigenem waagrechtem Rollen; knopf: Schaltfläche in der Leiste; menue: öffnet ein Menü; suche: Mehr-Schaltfläche mit ‚Suchen‘ (sucheAuf)
 // (Feld bekommt den Fokus); seitenKnopf: panel-left.
 export async function checkNavigation(p, { eintrag, titel, zurueck = '#back', waagrecht = null, knopf = null, menue = null, suche = null,
   seitenKnopf = '[data-side-toggle]', kasten = null, where = '' } = {}) {
@@ -1719,13 +1719,13 @@ export async function checkNavigation(p, { eintrag, titel, zurueck = '#back', wa
     if (!await offen('APD-67/F-1 Öffnen')) return errors;
     if (!/pan-y/.test(l.ta) || /pan-x|manipulation|auto/.test(l.ta)) E(`APD-67/F-6 touch-action des Inhalts ‚${l.ta}‘ – waagrecht muss das Wischen bei der App ankommen (pan-y, 13)`);
     if (titel && !l.titel.includes(titel)) E(`APD-67/F-1 Titel ‚${l.titel}‘ statt ‚${titel}‘`);
-    // APD-61/F-2: Zurück-Knopf
+    // APD-61/F-2: Zurück-Schaltfläche
     await aufzeichnen(); await p.click(zurueck);
     bf = await bilder();
     if (l.ruhig) { if (!ueberblendet(bf)) E(`APD-61/F-19 Zurück mit ‚Bewegung reduzieren‘ überblendet nicht (${bf.length} Bilder, Deckkraft ${[...new Set(bf.map(x => x.appO.toFixed(2)))].join(' ')})`); }
-    else if (!geschoben(bf, w)) E(`APD-61/F-2 Zurück-Knopf: kein Schieben (${bf.length} Bilder, Inhalt bei ${[...new Set(bf.map(x => Math.round(x.appX)))].join(' ')} px)`);
+    else if (!geschoben(bf, w)) E(`APD-61/F-2 Zurück-Schaltfläche: kein Schieben (${bf.length} Bilder, Inhalt bei ${[...new Set(bf.map(x => Math.round(x.appX)))].join(' ')} px)`);
     await ruhig(); await wait(p, 100);
-    if (await zu('APD-61/F-2 Zurück-Knopf')) {
+    if (await zu('APD-61/F-2 Zurück-Schaltfläche')) {
       const blau = await p.evaluate(() => [...document.querySelectorAll('#side .side-row.current')].map(r => r.textContent));
       if (titel && (blau.length !== 1 || !blau[0].includes(titel))) E(`APD-61/F-2 zuletzt geöffneter Eintrag nicht blau (blau: ${JSON.stringify(blau)}, R-7.2)`);
       const roll = await p.evaluate(() => document.querySelector('#side .side-list')?.scrollTop);
@@ -1760,7 +1760,7 @@ export async function checkNavigation(p, { eintrag, titel, zurueck = '#back', wa
       if (!b || !eigen || b.b > h - 10 || b.t < 0) E(`APD-67/F-8 Vorbereitung: ${waagrecht} nicht sichtbar oder ohne waagrechtes Rollen`);
       else { await ziehe(b.l + 10, b.y, Math.min(w - 4, b.l + 10 + w * 0.6), b.y); await offen('APD-67/F-8 im waagrecht rollenden Bereich gewischt'); }
     }
-    // APD-61/F-9: nach links; auf Knopf und Kapsel
+    // APD-61/F-9: nach links; auf Schaltfläche und Kapsel
     await ziehe(w * 0.8, h * 0.6, w * 0.1, h * 0.6); await offen('APD-61/F-9 nach links gewischt');
     for (const sel of [knopf, '.fab button:not([hidden])'].filter(Boolean)) {
       const b = await box(sel);
@@ -2469,7 +2469,7 @@ const aktiv = p => p.evaluate(() => { const a = document.activeElement; if (!a |
 const taste = async (p, k, n = 1) => { for (let i = 0; i < n; i++) { await p.keyboard.press(k); await wait(p, 60); } await wait(p, 120); };
 
 // R-4.7, R-1.8 (V5, V6, K1–K6, K9): Fokus und Hardware-Tastatur.
-//   menue: Knopf eines Menüs (Selektor) · untermenue: Beschriftung eines Eintrags mit Untermenü in diesem Menü
+//   menue: Schaltfläche eines Menüs (Selektor) · untermenue: Beschriftung eines Eintrags mit Untermenü in diesem Menü
 //   fenster: { open, change, feld } – Fenster öffnen, etwas ändern, ein Textfeld darin · felder: Textfelder der Seite (antippen)
 //   tab: Tab-Reihenfolge der Seite prüfen (Leiste → Suche → Inhalt → Kapsel ‚Nach oben / Ans Ende‘)
 export async function checkFokus(p, { menue = null, untermenue = null, fenster = null, felder = [], tab = true, where = '' } = {}) {
@@ -2496,18 +2496,18 @@ export async function checkFokus(p, { menue = null, untermenue = null, fenster =
     let o = await offen();
     if (o.menu) { E('R-4.7', 'Esc schließt das Menü nicht'); await p.evaluate(() => document.querySelector('.layer')?.click()); await wait(p); }
     else if (o.dlg && !where.includes('Fenster')) E('R-4.7', 'Esc schließt mit dem Menü auch das Fenster (Taste nicht verbraucht)');
-    if (!await istKnopf(menue)) E('R-4.7', `Esc: Fokus nicht zurück auf dem Knopf ${menue} (V5)`);
-    if (!(await aktiv(p)).ring) E('R-3.4', 'Tastatur: kein Fokusring am Knopf (K6 – bei Bedienung mit der Tastatur sichtbar)');
+    if (!await istKnopf(menue)) E('R-4.7', `Esc: Fokus nicht zurück auf der Schaltfläche ${menue} (V5)`);
+    if (!(await aktiv(p)).ring) E('R-3.4', 'Tastatur: kein Fokusring an der Schaltfläche (K6 – bei Bedienung mit der Tastatur sichtbar)');
     // ⌘. wie Esc
     await p.click(menue); await wait(p, 200); await taste(p, 'Meta+Period');
     if ((await offen()).menu) { E('R-4.7', '⌘. schließt das Menü nicht'); await p.evaluate(() => document.querySelector('.layer')?.click()); await wait(p); }
     // daneben tippen: Fokus zurück, ohne Ring (Antippen, R-3.4)
     await p.click(menue); await wait(p, 200);
     await p.evaluate(() => document.querySelector('.layer')?.click()); await wait(p, 200);
-    if (!await istKnopf(menue)) E('R-4.7', `daneben tippen: Fokus nicht zurück auf dem Knopf ${menue} (V5)`);
+    if (!await istKnopf(menue)) E('R-4.7', `daneben tippen: Fokus nicht zurück auf der Schaltfläche ${menue} (V5)`);
     await p.mouse.click(2, 2); await wait(p, 100);   // Antippen beendet die Tastaturbedienung
     await p.click(menue); await wait(p, 200); await p.evaluate(() => document.querySelector('.layer')?.click()); await wait(p, 200);
-    if ((await aktiv(p)).ring) E('R-3.4', 'Fokus-Rahmen am Knopf nach dem Antippen (K6: nie beim Antippen)');
+    if ((await aktiv(p)).ring) E('R-3.4', 'Fokus-Rahmen an der Schaltfläche nach dem Antippen (K6: nie beim Antippen)');
     if (untermenue) {
       // K3: → öffnet, Fokus auf dem ersten Eintrag; ← schließt, Fokus zurück auf dem ›-Eintrag; Esc schließt zuerst das Untermenü
       await p.click(menue); await wait(p, 200);
@@ -2573,8 +2573,8 @@ export async function checkFokus(p, { menue = null, untermenue = null, fenster =
           await p.locator('#dlgX').click(); await wait(p, 250);
           await taste(p, 'Tab');
           a = await aktiv(p);
-          if (!a.inPop) E('R-4.7', 'Tab markiert keinen Knopf der Sprechblase');
-          else if (!(await aktiv(p)).ring) E('R-3.4', 'Tab in der Sprechblase: kein Fokusring am markierten Knopf');
+          if (!a.inPop) E('R-4.7', 'Tab markiert keine Schaltfläche der Sprechblase');
+          else if (!(await aktiv(p)).ring) E('R-3.4', 'Tab in der Sprechblase: kein Fokusring an der markierten Schaltfläche');
           await taste(p, ' ');
           if ((await offen()).dlg) E('R-4.7', 'Leertaste auf ‚Änderungen verwerfen‘ schließt das Fenster nicht');
         }
@@ -2591,7 +2591,7 @@ export async function checkFokus(p, { menue = null, untermenue = null, fenster =
     await p.evaluate(() => document.activeElement?.blur());
   }
   if (tab) {
-    // K6: Reihenfolge Leiste → Suche → Inhalt → Kapsel, nur Sichtbares; Textfelder ohne, Knöpfe mit Ring
+    // K6: Reihenfolge Leiste → Suche → Inhalt → Kapsel, nur Sichtbares; Textfelder ohne, Schaltflächen mit Ring
     await p.mouse.click(2, 2); await p.evaluate(() => document.activeElement?.blur()); await wait(p, 100);
     const folge = [];
     for (let i = 0; i < 40; i++) {
@@ -2615,7 +2615,7 @@ export async function checkFokus(p, { menue = null, untermenue = null, fenster =
 }
 
 // R-1.8 (seit 4.50.1, APD-112 F-1 bis F-12; Testfall-Liste arbeit/APD-112 Testfall-Liste.md): nach dem Schließen eines Fensters, Blatts bzw.
-// einer Meldung liegt der Fokus wieder auf dem Knopf bzw. der Zeile, die es öffnete – auch wenn die App sie neu aufgebaut hat (gleiche
+// einer Meldung liegt der Fokus wieder auf der Schaltfläche bzw. der Zeile, die es öffnete – auch wenn die App sie neu aufgebaut hat (gleiche
 // Kennung); gibt es sie nicht mehr: auf der Kopfzeile der Seite; ohne Rollen; mit der Tastatur mit Fokusring, nach dem Antippen ohne.
 // checkFokus sah die Lücke nicht: es prüfte beim Fenster Öffnen, Tab, Esc, ⌘. und die Sprechblase, aber nicht, wo der Fokus danach liegt.
 //   faelle: [{ name, auf, zu, knopf (Selektor; null = Kopfzeile), tastatur (true: mit Ring, false: angetippt, ohne Ring), rolle (Rollbereich) }]
@@ -2637,10 +2637,10 @@ export async function checkFokusZurueck(p, faelle, { where = '' } = {}) {
           ring: !!c && c.outlineStyle !== 'none' && parseFloat(c.outlineWidth) > 0, zeile: !!ziel && ziel.tabIndex < 0 };
       }, f.knopf ?? null);
       if (r.offen) { E('R-1.8', `${f.name}: Fenster schließt nicht (${await p.evaluate(() => [...document.querySelectorAll('dialog[open] h3')].map(h => h.textContent).join(', '))})`); await zuAlles(); continue; }
-      if (!r.ok) E('R-1.8', `${f.name}: nach dem Schließen Fokus auf ${r.auf} statt auf ${f.knopf || 'der Kopfzeile'} (zurück auf den Knopf)`);
+      if (!r.ok) E('R-1.8', `${f.name}: nach dem Schließen Fokus auf ${r.auf} statt auf ${f.knopf || 'der Kopfzeile'} (zurück auf die Schaltfläche)`);
       // Zeilen und Kopfzeilen (tabindex -1) haben keinen Ring – die Zeile wird hervorgehoben (R-7.3)
-      else if (f.knopf && !r.zeile && f.tastatur !== false && !r.ring) E('R-3.4', `${f.name}: mit der Tastatur kein Fokusring am Knopf (K6)`);
-      else if (f.tastatur === false && r.ring) E('R-3.4', `${f.name}: nach dem Antippen Fokusring am Knopf (K6: nie beim Antippen)`);
+      else if (f.knopf && !r.zeile && f.tastatur !== false && !r.ring) E('R-3.4', `${f.name}: mit der Tastatur kein Fokusring an der Schaltfläche (K6)`);
+      else if (f.tastatur === false && r.ring) E('R-3.4', `${f.name}: nach dem Antippen Fokusring an der Schaltfläche (K6: nie beim Antippen)`);
       const y1 = await y();
       if (Math.abs(y1 - y0) > 2) E('R-7.3', `${f.name}: nach dem Schließen rollt der Inhalt (${y0} → ${y1} px, ohne Rollen)`);
     } catch (e) { E('R-1.8', `${f.name}: Ablauf bricht ab (${e.message.split('\n')[0]})`); await zuAlles(); }
@@ -2703,7 +2703,7 @@ export async function checkKontrast(p, { vorschau = null, fenster = null, where 
 }
 
 // R-1.9 (APD-43 M1–M5): ‚Bewegung reduzieren‘ gezielt – die Seite muss mit dem Bewegungswächter geöffnet sein (pruefe.mjs t.seite).
-//   fab: ‚Nach oben / Ans Ende‘ springen in einem Schritt · mic: Selektor eines Mikrofon-Knopfs bzw. true (pulsiert nicht)
+//   fab: ‚Nach oben / Ans Ende‘ springen in einem Schritt · mic: Selektor einer Mikrofon-Schaltfläche bzw. true (pulsiert nicht)
 //   fenster: öffnet ein Fenster (iPhone: Blatt ohne Verkleinerung der Seite, M5). Die Funde des Wächters meldet t.ruhig bzw. t.schritt.
 export async function checkRuhig(p, { fab = true, mic = null, fenster = null, where = '' } = {}) {
   const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}R-1.9 ${t}`);
@@ -2721,7 +2721,7 @@ export async function checkRuhig(p, { fab = true, mic = null, fenster = null, wh
     }
   }
   if (mic) {
-    // ohne Selektor: ein Mikrofon-Knopf wird kurz eingesetzt (Regel aus design.css)
+    // ohne Selektor: eine Mikrofon-Schaltfläche wird kurz eingesetzt (Regel aus design.css)
     const r = await p.evaluate(sel => { const neu = sel === true && Object.assign(document.createElement('button'), { className: 'mic', type: 'button' });
       if (neu) document.body.append(neu);
       const m = neu || document.querySelector(sel); if (!m) return null; const alt = m.getAttribute('aria-pressed'); m.setAttribute('aria-pressed', 'true');
@@ -2738,9 +2738,9 @@ export async function checkRuhig(p, { fab = true, mic = null, fenster = null, wh
   return errors;
 }
 
-// Seit 4.42.0 (APD-87, R-4.1; Testfall-Liste arbeit/APD-87 Testfall-Liste.md APD-87/E-1 bis APD-87/E-11): der Mehr-Knopf zeigt bei offenem Menü drei
+// Seit 4.42.0 (APD-87, R-4.1; Testfall-Liste arbeit/APD-87 Testfall-Liste.md APD-87/E-1 bis APD-87/E-11): die Mehr-Schaltfläche zeigt bei offenem Menü drei
 // senkrechte Punkte und ist hervorgehoben, geschlossen wieder waagrecht – sofort, auch mit ‚Bewegung reduzieren‘; Untermenü öffnen und
-// schließen ändert nichts; Esc schließt (R-4.7); Name bleibt ‚Mehr‘, aria-expanded true/false. sel: der Mehr-Knopf; untermenue: Text eines
+// schließen ändert nichts; Esc schließt (R-4.7); Name bleibt ‚Mehr‘, aria-expanded true/false. sel: die Mehr-Schaltfläche; untermenue: Text eines
 // Menüpunkts mit Untermenü (optional).
 export async function checkMehrKnopf(p, { sel, untermenue = null, where = '' } = {}) {
   const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}R-4.1 ${t}`);
@@ -2751,13 +2751,13 @@ export async function checkMehrKnopf(p, { sel, untermenue = null, where = '' } =
       on: b.classList.contains('on'), exp: b.getAttribute('aria-expanded'), name: b.getAttribute('aria-label'), menue: !!document.querySelector('.menu:not(.submenu)') };
   }, sel);
   let x = await lage();
-  if (!x) { E(`Mehr-Knopf ${sel} fehlt`); return errors; }
-  if (x.art !== 'waagrecht') E(`APD-87/E-1: Mehr-Knopf geschlossen nicht mit drei waagrechten Punkten (${x.art})`);
+  if (!x) { E(`Mehr-Schaltfläche ${sel} fehlt`); return errors; }
+  if (x.art !== 'waagrecht') E(`APD-87/E-1: Mehr-Schaltfläche geschlossen nicht mit drei waagrechten Punkten (${x.art})`);
   await p.click(sel); await p.waitForTimeout(50);   // sofort – ohne Warten auf eine Bewegung
   x = await lage();
   if (!x.menue) E('APD-87/E-1: Mehr-Menü öffnet sich nicht');
-  if (x.art !== 'senkrecht') E(`APD-87/E-1: Mehr-Knopf bei offenem Menü nicht mit drei senkrechten Punkten (${x.art})`);
-  if (!x.on) E('APD-87/E-1: Mehr-Knopf bei offenem Menü nicht hervorgehoben');
+  if (x.art !== 'senkrecht') E(`APD-87/E-1: Mehr-Schaltfläche bei offenem Menü nicht mit drei senkrechten Punkten (${x.art})`);
+  if (!x.on) E('APD-87/E-1: Mehr-Schaltfläche bei offenem Menü nicht hervorgehoben');
   if (x.name !== 'Mehr' || x.exp !== 'true') E(`APD-87/E-11: Bildschirmleser – Name ‚${x.name}‘, aria-expanded ${x.exp} (soll ‚Mehr‘, true)`);
   if (untermenue) {
     await p.locator('.menu:not(.submenu) .mi', { hasText: untermenue }).first().click(); await p.waitForTimeout(150);
@@ -2776,7 +2776,7 @@ export async function checkMehrKnopf(p, { sel, untermenue = null, where = '' } =
 // Seit 4.54.0 (APD-118, Usertest P-97/6, Testfall-Liste im BACKLOG unter APD-118, APD-118/X-1 bis X-8; Designrichtlinie 13 ‚Am
 // oberen Rand kein Klick‘): die Sperrschicht hinter Menü, Untermenü, Kontextmenü und Sprechblase schließt beim Loslassen (bis 20 px Weg) und
 // verschluckt den Klick danach. Im iPhone quer (Safari-Modell obenOhneKlick: am oberen Rand kein click) mit der Maus bzw. dem Finger der Prüfung:
-// X-1 über dem Mehr-Knopf (mehr) ohne Klick → zu, waagrechte Punkte, Fokus auf Mehr · X-2 mit 14 px Weg → zu · X-3 Klick danach (unterhalb
+// X-1 über der Mehr-Schaltfläche (mehr) ohne Klick → zu, waagrechte Punkte, Fokus auf Mehr · X-2 mit 14 px Weg → zu · X-3 Klick danach (unterhalb
 // KEIN_KLICK_OBEN, der click kommt) → bleibt zu, darunter nichts · X-4 daneben mit Klick → einmal zu · X-5 öffnen: weitere Öffner (Untermenü,
 // Kontextmenü, Sprechblase; je async p => …) · X-6 Wischen > 20 px → bleibt offen · X-8 messung: Zeilen einer Messdatei (lies) – die zeiger-Ereignisse
 // auf div.layer werden nachgespielt, nach dem ersten Tipp ist das Menü zu. Seit 4.55.0 (APD-121, arbeit/APD-121 Wortlaut und Testfall-Liste.md
@@ -2826,10 +2826,10 @@ export async function checkSchichtOben(p, { mehr = '#mainMore', oeffner = [], me
   await obenOhneKlick(p);
   try {
     const m = await mitte();
-    if (!m) { E(`APD-118 Mehr-Knopf ${mehr} fehlt`); return errors; }
+    if (!m) { E(`APD-118 Mehr-Schaltfläche ${mehr} fehlt`); return errors; }
     // seit 4.55.0 (APD-121/Y-4): der Tipp ohne Klick bei y 20 wie gemessen (Grenze 21)
     const yOben = Math.min(m.y, KEIN_KLICK_OBEN - 1);
-    if (yOben >= KEIN_KLICK_OBEN || m.oben > yOben) E(`APD-118 Mehr-Knopf ${mehr} steht nicht am oberen Rand (oben ${Math.round(m.oben)}) – die Prüfung prüft nichts`);
+    if (yOben >= KEIN_KLICK_OBEN || m.oben > yOben) E(`APD-118 Mehr-Schaltfläche ${mehr} steht nicht am oberen Rand (oben ${Math.round(m.oben)}) – die Prüfung prüft nichts`);
     // Modell an? Ein Klick am oberen Rand (Mitte, ohne Menü) kommt nicht an
     const weg0 = await p.evaluate(() => window.__safariKlick?.obenWeg ?? 0);
     await p.mouse.click(Math.round(vp.width / 2), yOben); await wait(p, 150);
@@ -2850,14 +2850,14 @@ export async function checkSchichtOben(p, { mehr = '#mainMore', oeffner = [], me
       if (await offen()) E(`APD-121/Y-3 Tipp bei y ${OHNE} auf ${mehr} öffnet etwas (gemessen: kein Klick)`);
       if (y3.ring || y3.exp === 'true') E(`APD-121/Y-3 nach dem Tipp bei y ${OHNE} bleibt ein Rest (Fokusring ${y3.ring}, aria-expanded ${y3.exp})`);
       for (let k = 0; k < 3 && await offen(); k++) { await p.keyboard.press('Escape'); await zuWarten(); }
-    } else E(`APD-121 Mehr-Knopf ${mehr} reicht nicht über y ${OHNE} bis ${MIT} (${Math.round(m.oben)}–${Math.round(m.unten)}) – Y-2 und Y-3 prüfen nichts`);
+    } else E(`APD-121 Mehr-Schaltfläche ${mehr} reicht nicht über y ${OHNE} bis ${MIT} (${Math.round(m.oben)}–${Math.round(m.unten)}) – Y-2 und Y-3 prüfen nichts`);
     // X-1: Tipp ohne Klick über Mehr
     if (!await auf()) { E('APD-118/X-1 Mehr-Menü öffnet sich nicht'); return errors; }
     await zug(m.x, yOben);
     if (await offen()) E(`APD-118/X-1 Tipp bei y ${Math.round(yOben)} ohne Klick über ${mehr} schließt das Menü nicht`);
     await zuWarten();
     const l = await lage();
-    if (!l.waagrecht || l.exp !== 'false') E(`APD-118/X-1 nach dem Schließen Mehr-Knopf nicht waagrecht bzw. aria-expanded ${l.exp}`);
+    if (!l.waagrecht || l.exp !== 'false') E(`APD-118/X-1 nach dem Schließen Mehr-Schaltfläche nicht waagrecht bzw. aria-expanded ${l.exp}`);
     if (!l.fokus) E('APD-118/X-1 nach dem Schließen liegt der Fokus nicht auf Mehr');
     if (await offen()) await p.keyboard.press('Escape');
     // X-2: mit 14 px Weg
@@ -3174,9 +3174,9 @@ export async function checkHinweisBreite(p, { where = '' } = {}) {
 
 // R-2.5 (seit 4.47.0, APD-101; Testfall-Liste arbeit/APD-101 Testfall-Liste.md L-1 bis L-10): gekürzter Titel – ein mit ‚…‘ gekürzter Titel
 // (sel: .dlg-head h3, .nb-title oder .pnav-title) zeigt beim langen Drücken den ganzen Titel in einer Sprechblase (.titel-blase) direkt unter
-// seiner Kopfzeile: genau der Text des Titels, nicht gekürzt, ganz auf dem Bildschirm (R-4.5), über keinem Knopf der Leiste, Pfeil zur
+// seiner Kopfzeile: genau der Text des Titels, nicht gekürzt, ganz auf dem Bildschirm (R-4.5), über keiner Schaltfläche der Leiste, Pfeil zur
 // Titelmitte, Schrift wie der Titel; sie bleibt nach dem Loslassen stehen. Kurzes Antippen, Wandern des Fingers (mehr als 10 px) und
-// Rollen während des Drückens zeigen nichts (R-3.5). daneben: Knöpfe, deren Tipp nur die Blase schließen darf (Fenster bleibt offen,
+// Rollen während des Drückens zeigen nichts (R-3.5). daneben: Schaltflächen, deren Tipp nur die Blase schließen darf (Fenster bleibt offen,
 // kein Menü); rollen: Rollbereich, dessen Rollen sie schließt; esc: Esc schließt sie, das Fenster bleibt. Ein ganz sichtbarer Titel zeigt
 // nichts (L-5). Gibt { gekuerzt, errors } zurück; Grundregeln danach ruft die App (t.schritt), Drehen (L-11) prüft die App selbst.
 export async function titelLang(p, sel, ms = 750) {
@@ -3238,7 +3238,7 @@ export async function checkTitelBlase(p, { sel, daneben = [], rollen = null, esc
   if (m.text !== info.text) E(`L-1 die Sprechblase zeigt ‚${m.text}‘ statt des ganzen Titels ‚${info.text}‘`);
   if (!m.ganz) E('L-1 der Text der Sprechblase ist gekürzt bzw. abgeschnitten');
   if (!m.drin) E('L-1 die Sprechblase steht nicht ganz auf dem Bildschirm (R-4.5)');
-  if (m.ueber) E('L-4 die Sprechblase überlappt einen Knopf der Leiste');
+  if (m.ueber) E('L-4 die Sprechblase überlappt eine Schaltfläche der Leiste');
   if (m.abstand < 0 || m.abstand > 16) E(`L-1 die Sprechblase steht nicht direkt unter der Kopfzeile (Abstand ${m.abstand} px)`);
   if (m.pfeil > 2 && !m.rand) E(`L-1 der Pfeil zeigt nicht zur Mitte des Titels (${m.pfeil} px daneben)`);
   if (!m.schrift) E('L-1 die Sprechblase hat nicht die Schrift des Titels');
@@ -3279,7 +3279,7 @@ export async function checkTitelBlase(p, { sel, daneben = [], rollen = null, esc
 // ['merke', name] (Zustand festhalten: Großanzeige, Klassen der Elemente), ['abbruch'] (pointercancel, danach kein Loslassen – seit 4.48.2,
 // APD-107/S-6), ['klickNach', ms] (der Klick kommt erst ms nach dem Loslassen als eigene Aufgabe wie in Safari – Vermutung aus der Messung P-88/1:
 // die Sperre ‚Wischen tippt nie an‘ endet mit setTimeout 0 und hielt den Klick am Gerät nicht auf, APD-107/S-1). Am Ende pointerup (ohne ['ab', false]
-// nicht) und – wie der Browser – ein Klick auf das Element (ausser ['ohneKlick']). Zurück: festgehaltene Zustände und die Knöpfe, deren Klick bis zum Dokument kam.
+// nicht) und – wie der Browser – ein Klick auf das Element (ausser ['ohneKlick']). Zurück: festgehaltene Zustände und die Schaltflächen, deren Klick bis zum Dokument kam.
 // Seit 4.50.0 (APD-108/W-A, belegt mit der Messung APD-106): der Klick kommt wie in Safari immer als eigene Aufgabe KLICK_NACH ms nach dem
 // Loslassen (safari.mjs), nicht mehr synchron; ['klickNach', ms] setzt eine andere Zeit. fangen: false lässt den Klick weiter (z. B. Titel, R-2.7).
 export function finger(p, sel, schritte = [], { pointerType = 'touch', fangen = true } = {}) {
@@ -3343,8 +3343,8 @@ export function finger(p, sel, schritte = [], { pointerType = 'touch', fangen = 
   }, { sel, schritte, pointerType, fangen, KLICK_NACH });
 }
 
-// R-2.6 (seit 4.48.0, APD-104, Testfall-Liste arbeit/APD-104 Testfall-Liste.md L-1 bis L-9): Großanzeige für Leisten-Knöpfe. knoepfe: zwei
-// benachbarte Knöpfe derselben Leiste [a, b] (gleiten von a nach b); daneben: eine Stelle ohne Knopf (Titel), zu der der Finger gleitet;
+// R-2.6 (seit 4.48.0, APD-104, Testfall-Liste arbeit/APD-104 Testfall-Liste.md L-1 bis L-9): Großanzeige für Leisten-Schaltflächen. knoepfe: zwei
+// benachbarte Schaltflächen derselben Leiste [a, b] (gleiten von a nach b); daneben: eine Stelle ohne Schaltfläche (Titel), zu der der Finger gleitet;
 // ax: die Seite steht auf einer Textgröße ab AX1 (sonst prüft die Funktion nur L-1 und L-2: nichts davon). Gibt Fehler zurück.
 export async function checkGrossanzeige(p, { knoepfe, daneben = null, ax = true, where = '' } = {}) {
   const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}R-2.6 ${t}`);
@@ -3356,7 +3356,7 @@ export async function checkGrossanzeige(p, { knoepfe, daneben = null, ax = true,
     // L-1, L-2: unter AX1 – langes Drücken zeigt nichts und wirkt wie Antippen
     let r = await finger(p, a, [['warte', 750], ['merke', 'lang']]);
     if (r.gemerkt.lang.gross) E(`L-1 unter AX1 zeigt langes Drücken auf ${na} die Großanzeige`);
-    if (!r.klicks.includes(await p.evaluate(s => document.querySelector(s).id || document.querySelector(s).getAttribute('aria-label'), a))) E(`L-1 unter AX1 löst langes Drücken auf ${na} den Knopf nicht aus (wie Antippen)`);
+    if (!r.klicks.includes(await p.evaluate(s => document.querySelector(s).id || document.querySelector(s).getAttribute('aria-label'), a))) E(`L-1 unter AX1 löst langes Drücken auf ${na} die Schaltfläche nicht aus (wie Antippen)`);
     r = await finger(p, a, [['warte', 80]]);
     if (r.klicks.length !== 1) E(`L-2 Antippen von ${na} löst ${r.klicks.length}-mal aus`);
     await zu();
@@ -3378,7 +3378,7 @@ export async function checkGrossanzeige(p, { knoepfe, daneben = null, ax = true,
     if (!g.svg || g.icon < 50) E(`L-5 die Großanzeige zeigt kein großes Icon (${g.icon} px)`);
     if (Math.abs(g.mitteX) > 2 || Math.abs(g.mitteY) > 2) E(`L-5 die Großanzeige steht nicht in der Mitte (${g.mitteX}/${g.mitteY} px daneben)`);
     if (!g.drin) E('L-5 die Großanzeige steht nicht ganz auf dem Bildschirm');
-    if (g.hidden !== 'true') E('L-5 die Großanzeige ist nicht nur zu sehen (aria-hidden fehlt) – VoiceOver nennt den Knopf selbst (R-1.8)');
+    if (g.hidden !== 'true') E('L-5 die Großanzeige ist nicht nur zu sehen (aria-hidden fehlt) – VoiceOver nennt die Schaltfläche selbst (R-1.8)');
     if (g.schrift < 27.5) E(`L-5 die Schrift der Großanzeige ist kleiner als AX1 (${g.schrift} px)`);
   }
   if (r.gemerkt.ende.gross) E('L-8 nach dem Loslassen bleibt die Großanzeige offen');
@@ -3396,9 +3396,9 @@ export async function checkGrossanzeige(p, { knoepfe, daneben = null, ax = true,
   // daneben loslassen: schließt nur
   if (daneben) {
     r = await finger(p, a, [['warte', 700], ['zuEl', daneben], ['warte', 50], ['merke', 'daneben']]);
-    if (!r.gemerkt.daneben.gross) E(`L-7 nach dem Gleiten auf ${daneben} ist die Großanzeige weg (sie zeigt den letzten Knopf weiter)`);
+    if (!r.gemerkt.daneben.gross) E(`L-7 nach dem Gleiten auf ${daneben} ist die Großanzeige weg (sie zeigt die letzte Schaltfläche weiter)`);
     if (r.gemerkt.ende.gross) E('L-9 Loslassen daneben schließt die Großanzeige nicht');
-    if (r.klicks.length) E(`L-9 Loslassen neben den Knöpfen löst ${r.klicks.join(', ')} aus`);
+    if (r.klicks.length) E(`L-9 Loslassen neben den Schaltflächen löst ${r.klicks.join(', ')} aus`);
   }
   // Esc schließt ohne Auslösen
   r = await finger(p, a, [['warte', 700], ['taste', 'Escape'], ['merke', 'esc']]);
@@ -3410,10 +3410,10 @@ export async function checkGrossanzeige(p, { knoepfe, daneben = null, ax = true,
 
 // R-3.6 (seit 4.48.0, APD-105, Testfall-Liste arbeit/APD-105 Testfall-Liste.md B-1 bis B-4): Rückmeldung beim Berühren. knopf: Schaltfläche in einer
 // festen Leiste (sofort blass); zeile: Listen- oder Tabellenzeile in einem Rollbereich (nach 80 ms grau); rollen: deren Rollbereich (sel);
-// gesperrt: gesperrte Schaltfläche (zeigt nichts); kapsel: Knopf einer Kapsel (Rollbereich, nach 80 ms blass). Gibt Fehler zurück.
+// gesperrt: gesperrte Schaltfläche (zeigt nichts); kapsel: Schaltfläche einer Kapsel (Rollbereich, nach 80 ms blass). Gibt Fehler zurück.
 const durchsichtig = c => !c || /rgba\(0, 0, 0, 0\)|transparent/.test(c);
 //
-// Seit 4.48.2 (APD-107, Testfall-Liste arbeit/APD-107 Testfall-Liste.md S-1 bis S-13): ein Knopf einer Leiste (LEISTE_SEL wie GROSS_SEL in ui.js) hebt
+// Seit 4.48.2 (APD-107, Testfall-Liste arbeit/APD-107 Testfall-Liste.md S-1 bis S-13): eine Schaltfläche einer Leiste (LEISTE_SEL wie GROSS_SEL in ui.js) hebt
 // sich als helle Fläche (--heben) mit Schatten auf das 1,3-Fache über seine Kapsel, zuoberst, das Icon bleibt kräftig (‚Bewegung reduzieren‘: ohne
 // Wachsen), und senkt sich beim Loslassen in 0,2 s; andere Schaltflächen werden blass wie bisher (S-11). Wegziehen und 1 s liegen lassen, dann
 // loslassen – wie Safari ohne pointercancel, mit Klick – löst nichts aus (S-1, S-2, S-4); danach löst Antippen genau einmal aus (S-5), nach einem
@@ -3429,7 +3429,7 @@ export async function checkBeruehren(p, { knopf = null, zeile = null, rollen = n
   if (knopf) {
     // Seit 4.67.2 (P-118/F-1, R-3.6 Variante B): jede Schaltfläche hebt sich – 1,3-fach, höchstens 24 px breiter (Faktor aus der Breite)
     const leiste = true, breite = await p.evaluate(s => document.querySelector(s)?.offsetWidth || 44, knopf), soll = Math.min(1.3, (breite + 24) / breite);
-    // B-1 sofort Rückmeldung: Leisten-Knopf hebt sich (S-10, S-12), sonst blass (35 %); B-2 Loslassen blendet aus (S-13: 0,2 s), löst genau einmal aus
+    // B-1 sofort Rückmeldung: Leisten-Schaltfläche hebt sich (S-10, S-12), sonst blass (35 %); B-2 Loslassen blendet aus (S-13: 0,2 s), löst genau einmal aus
     // im Rollbereich (Inhalt der Seite) erst nach 80 ms (R-3.6) – dann gilt der Stand nach 100 ms als ‚sofort‘
     const imRoll = await p.evaluate(s => { for (let e = document.querySelector(s)?.parentElement; e; e = e.parentElement) if (/auto|scroll/.test(getComputedStyle(e).overflowY) && e.scrollHeight > e.clientHeight) return true; return false; }, knopf);
     const r = await finger(p, knopf, [['warte', 15], ['merke', 'sofort'], ['warte', 90], ['merke', 'frueh'], ['warte', 400], ['merke', 'gehoben']]);
@@ -3700,14 +3700,14 @@ export async function checkSafariWischKlick(p, { where = '' } = {}) {
 
 // APD-109/C-1, C-2 (seit 4.49.1, Testfall-Liste arbeit/APD-109 Testfall-Liste.md): Selbsttest des Safari-Modells ‚Klick nur mit Hörer‘
 // (safari.mjs, safariKlick). Ein echter Tipp auf einen Text ohne Hörer an ihm, darüber oder am document – nur am window – kommt nicht an
-// (C-1); mit Hörer am document, an einem Element darüber, mit tabindex, mit cursor: pointer oder auf einem Knopf kommt er an (C-2).
+// (C-1); mit Hörer am document, an einem Element darüber, mit tabindex, mit cursor: pointer oder auf einer Schaltfläche kommt er an (C-2).
 // Hört die App selbst am document (seit 4.49.1 R-2.7), ist dort jedes Element antippbar – wie am Gerät; der Selbsttest schaltet das document
 // darum außer im Fall ‚document‘ ab (__safariKlick.docZaehlt). Legt eigene Elemente an und entfernt sie wieder. Gibt die Fehler zurück (leer = in Ordnung).
 export async function checkSafariKlick(p, { where = '' } = {}) {
   const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}APD-109 Safari-Modell ${t}`);
   if (!await p.evaluate(() => !!window.__safariKlick)) { E('fehlt in der Seite (pruefe.mjs setzt safariKlick als Init-Skript)'); return errors; }
   const FAELLE = [['C-1 nur window', {}, false], ['C-2 document', { doc: true }, true], ['C-2 Element darüber', { oben: true }, true],
-    ['C-2 tabindex', { tab: true }, true], ['C-2 cursor: pointer', { zeiger: true }, true], ['C-2 Knopf', { knopf: true }, true]];
+    ['C-2 tabindex', { tab: true }, true], ['C-2 cursor: pointer', { zeiger: true }, true], ['C-2 Schaltfläche', { knopf: true }, true]];
   for (const [name, f, soll] of FAELLE) {
     await p.evaluate(f => {
       const box = document.createElement('div'); box.id = 'safari-klick';
@@ -3730,13 +3730,13 @@ export async function checkSafariKlick(p, { where = '' } = {}) {
 }
 
 // APD-40 Paket B und C (seit 4.52.0, Testfall-Liste arbeit/APD-40 Paket B.md B-5 und Paket C.md C-1 bis C-6): Abläufe, die bisher Sicht bzw. nur
-// Abläufe der App waren (G-4, G-7, G-13). Allgemein für jede App – die App nennt ihre Menüknöpfe, Erfassungsfenster und ihren Speicher.
+// Abläufe der App waren (G-4, G-7, G-13). Allgemein für jede App – die App nennt ihre Menü-Schaltflächen, Erfassungsfenster und ihren Speicher.
 const speicher = (p, key) => p.evaluate(k => localStorage.getItem(k), key);
 const dlgOffen = p => p.evaluate(() => !!document.querySelector('dialog#dlg[open]'));
 const dlgZu = p => p.evaluate(() => { const d = document.getElementById('dlg'); if (d?.open) d.close(); document.querySelectorAll('.pop, .menu').forEach(x => x.remove()); });
 
 // R-4.11 Menüpunkt und Fenster heißen gleich (APD-40/B-5): jeden Menüpunkt (ohne Untermenü, nicht rot, nicht in ohne) antippen; öffnet er ein
-// Fenster, ist der Fenstertitel der Text des Menüpunkts. menues: Selektoren der Menüknöpfe; ohne: Texte von Punkten, die nichts öffnen sollen
+// Fenster, ist der Fenstertitel der Text des Menüpunkts. menues: Selektoren der Menü-Schaltflächen; ohne: Texte von Punkten, die nichts öffnen sollen
 // (Teilen, Herunterladen, Seitenwechsel).
 export async function checkMenueFenster(p, { menues = ['#mainMore'], ohne = [], where = '' } = {}) {
   const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}R-4.11 ${t}`);
@@ -3846,12 +3846,12 @@ export async function checkErstFragen(p, { menues = [], zustaende = [], key, whe
 // Bewegung (jede Animation sofort am Ende, ± 1 px; B-8) – die Endlagen sind damit unabhängig von Dauer und Kurve wie in 4.56.0. Fälle, je nur
 // wenn angegeben:
 //   blatt: Funktion, die ein Fenster ohne Eingaben öffnet (B-1: öffnen, x, nach dem Loslassen zurück bzw. zu; ‚Bewegung reduzieren‘: B-6, nichts
-//          bewegt sich über 200 ms); x: Schließen-Knopf im Fensterkopf
+//          bewegt sich über 200 ms); x: Schließen-Schaltfläche im Fensterkopf
 //   tastatur: { oeffnen, feld } – iPad-Fenster mit der Tastatur (B-2; das Safari-Modell mit auto muss in der Seite sein)
 //   navigation: { eintrag, zurueck } – Navigation iPhone (B-3)
 //   seitenleiste: { aus, ein } – Seitenleiste iPad (B-4)
 //   titel: { sel, rolle } – ‚Titel antippen = nach oben‘ mit mindestens 1000 px Rollweg (B-5)
-//   menue: Knopf des Mehr-Menüs, auch mehrere (der sichtbare; B-7: wächst wie bisher in 0,35 s, schrumpft in 0,25 s, R-4.13)
+//   menue: Schaltfläche des Mehr-Menüs, auch mehrere (der sichtbare; B-7: wächst wie bisher in 0,35 s, schrumpft in 0,25 s, R-4.13)
 // Gegenprobe (B-10): PRUEF_V=heute – gleitenGegenprobe(p) vor dem Laden der Seite setzt in ui.js und design.css die Bewegungen auf 4.56.0 zurück;
 // B-1 bis B-5 werden rot.
 export const GLEITEN = { auf: 500, zu: 250, min: 150, toleranz: 3 };
@@ -3959,7 +3959,7 @@ export async function checkGleiten(p, { blatt = null, x = 'dialog[open] .dlg-hea
   // B-7: das Mehr-Menü wächst und schrumpft wie bisher (R-4.13) – seine Dauern sind die Untergrenze für jede ganze Gleitbewegung
   await ruht('Ausgangslage ruht');
   if (menue && !ruhig) {
-    await log(); await p.locator(`${menue} >> visible=true`).first().click();   // menue darf mehrere Knöpfe nennen – der sichtbare zählt
+    await log(); await p.locator(`${menue} >> visible=true`).first().click();   // menue darf mehrere Schaltflächen nennen – der sichtbare zählt
     const w = await warteBis(p, () => !!document.querySelector('.menu:not(.submenu)'), { was: 'Mehr-Menü offen', max: 3000 });
     const a = (await log()).find(z => /(^|\s)menu(\s|$)/.test(z.cls) && !/submenu|zu-geist/.test(z.cls));
     if (w || !a) E('B-7', `Mehr-Menü ${menue}: ${w || 'wächst nicht'}`);
@@ -4141,9 +4141,9 @@ export async function checkGleiten(p, { blatt = null, x = 'dialog[open] .dlg-hea
 // (Abbild .zu-geist, der Baustein selbst ist sofort weg); Schließen mitten im Öffnen ab der aktuellen Größe; ‚Bewegung reduzieren‘: nur Überblenden
 // 0,2 s; Endlage wie ohne Bewegung. Geprüft wird die Animation selbst (Schlüsselbilder, Dauer, Kurve, Ursprung = Mitte der Schaltfläche) – unabhängig
 // davon, wie schnell die Bildwechsel kommen –, dazu die Größe beim Einfügen und nach dem Ende (warteBis, keine festen Pausen, M-10).
-// menue: Knopf eines Menüs (M-1 bis M-3, M-7, M-8, M-11 je nach Seite); untermenue: Text eines Menüpunkts mit Untermenü (M-4); kontext: Funktion,
+// menue: Schaltfläche eines Menüs (M-1 bis M-3, M-7, M-8, M-11 je nach Seite); untermenue: Text eines Menüpunkts mit Untermenü (M-4); kontext: Funktion,
 // die ein Kontextmenü öffnet (M-5); blase: Funktion, die eine Sprechblase öffnet (M-6); drehen: [breite, hoehe] der anderen Lage (M-8);
-// gross: die Seite steht ab AX1 – langes Drücken auf den Menü-Knopf zeigt die Großanzeige, beim Loslassen wächst das Menü (M-9).
+// gross: die Seite steht ab AX1 – langes Drücken auf die Menü-Schaltfläche zeigt die Großanzeige, beim Loslassen wächst das Menü (M-9).
 export const WACHS = { kurve: 'cubic-bezier(0.32, 0.72, 0, 1)', auf: 350, zu: 250, ruhig: 200, von: 0.2, bis: 0.6 };
 export async function checkWachsen(p, { menue = null, untermenue = null, kontext = null, blase = null, drehen = null, gross = false, where = '' } = {}) {
   const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}R-4.13 ${t}`);
@@ -4232,11 +4232,11 @@ export async function checkWachsen(p, { menue = null, untermenue = null, kontext
     let l = await log();
     pruefeAuf(l.find(x => x.art === 'menue'), `Menü ${menue}`);
     await pruefeEnde('.menu:not(.submenu)', `Menü ${menue}`);
-    // M-2: Esc schrumpft zurück, Fokus wie heute auf dem Knopf
+    // M-2: Esc schrumpft zurück, Fokus wie heute auf der Schaltfläche
     await zuMit('esc', `Menü ${menue} (Esc)`);
     l = await log();
     pruefeZu(l.find(x => x.art === 'geist'), `Menü ${menue} (Esc)`);
-    if (!await p.evaluate(sel => document.activeElement === document.querySelector(sel), menue)) E(`APD-62/M-2 Menü ${menue}: nach Esc liegt der Fokus nicht auf dem Knopf (R-1.9)`);
+    if (!await p.evaluate(sel => document.activeElement === document.querySelector(sel), menue)) E(`APD-62/M-2 Menü ${menue}: nach Esc liegt der Fokus nicht auf der Schaltfläche (R-1.9)`);
     let m = await ruht(`Menü ${menue}: Abbild weg`); if (m) E(`APD-62/M-2 ${m}`);
     // M-2: daneben tippen
     await p.click(menue); await ruht(`Menü ${menue}: offen`); await log();
@@ -4279,7 +4279,7 @@ export async function checkWachsen(p, { menue = null, untermenue = null, kontext
       await pruefeEnde('.menu:not(.submenu)', `Menü ${menue} zurückgedreht`, 'APD-62/M-8');
       await p.keyboard.press('Escape'); await ruht('Menü zu');
     }
-    // M-9: Großanzeige – langes Drücken auf den Menü-Knopf zeigt sie, beim Loslassen öffnet das Menü und wächst wie sonst
+    // M-9: Großanzeige – langes Drücken auf die Menü-Schaltfläche zeigt sie, beim Loslassen öffnet das Menü und wächst wie sonst
     if (gross) {
       await log();
       const r = await finger(p, menue, [['warte', 700], ['merke', 'lang']], { fangen: false });
@@ -4324,11 +4324,11 @@ export async function checkWachsen(p, { menue = null, untermenue = null, kontext
 // ohne Daten der App) – die AD-Bean swipeactions (APD-136, R-1.13) samt eingegrauter, sperrender Sprechblase (R-1.4, APD-30/V-7, V-8). Optionen:
 //   bean: Ausdruck in der Seite, der die Bean der App liefert (z. B. 'swipe'); aktionen: Ausdruck der Aktionsfunktion (dieselbe wie für das Kontextmenü)
 //   liste: die Liste (#side); kacheln: Selektor der wischbaren Kacheln wie in der App; kachel, kachel2: zwei sichtbare Kacheln (Selektoren)
-//   titel: Titel in der Kachel (W-1: bleibt teilweise sichtbar); kopf: Knopf im Kopf der Liste, der ein Menü öffnet (W-43: Tipp schließt die Kachel
+//   titel: Titel in der Kachel (W-1: bleibt teilweise sichtbar); kopf: Schaltfläche im Kopf der Liste, der ein Menü öffnet (W-43: Tipp schließt die Kachel
 //   und wirkt sofort, APD-30/V-12; W-23: bei offener Sprechblase ändert er nichts)
 //   inhalt: { x, y } – eine Stelle im Inhalt neben der Liste (iPad) oder null (W-5: schließt); nicht: Selektoren in der Liste ohne Wischen (W-37;
 //   der erste ist für W-5 eine Fläche ‚daneben in der Liste‘)
-//   seitenleiste: { aus, ein } – panel-left in der Liste und der Knopf, der sie wieder einblendet (iPad, W-42), oder null
+//   seitenleiste: { aus, ein } – panel-left in der Liste und die Schaltfläche, der sie wieder einblendet (iPad, W-42), oder null
 //   neuaufbau: Ausdruck, der die Liste neu aufbaut (W-77); einstellen: Funktion, die das Fenster der ersten Aktion prüft (W-12, gibt Fehler zurück)
 //   messe(name): Grundregeln im aktuellen Zustand (pruefe.mjs – t.schritt); ende: zum Schluss W-75, W-76 (über 60 % rastet offen ein), W-78, W-79 mit eigenen
 //   Beans – danach wischt die Bean der App nicht mehr (die Seite schließen)
@@ -4462,7 +4462,7 @@ export async function checkWischen(p, { bean, aktionen, liste = '#side', kacheln
       if (s4.titel !== titel0 || s4.dlg || s4.menu) E(`W-4 Tippen auf die offene Kachel öffnet etwas (Titel ‚${s4.titel}‘, Fenster ${s4.dlg}, Menü ${s4.menu})`);
     } else E('W-4 Kachel öffnet nicht');
     // W-5: daneben in der Liste tippen (andere Kachel, Fläche ohne Bedienelement) schließt nur; im Inhalt schließt es (APD-30/V-12)
-    // W-43: ein Knopf im Kopf der Liste schließt die Kachel und wirkt sofort (Menü offen)
+    // W-43: eine Schaltfläche im Kopf der Liste schließt die Kachel und wirkt sofort (Menü offen)
     const flaeche = nicht[0] && await mitte(nicht[0]);
     for (const [name, ziel, nur, wirkt] of [['andere Kachel', await mitte(kachel2), true], ['Fläche in der Liste', flaeche, true], ['Inhalt', inhalt, false],
       ['Kopf', kopf && await mitte(kopf), false, true]]) {
@@ -4473,7 +4473,7 @@ export async function checkWischen(p, { bean, aktionen, liste = '#side', kacheln
       const s5 = await stand();
       if (s5.offen || s5.tx) E(`${wirkt ? 'W-43' : 'W-5'} Tipp daneben (${name}) schließt die Kachel nicht`);
       if (nur && (s5.titel !== titel0 || s5.dlg || s5.menu)) E(`W-5 Tipp daneben in der Liste (${name}) löst etwas aus (Titel ‚${s5.titel}‘, Fenster ${s5.dlg}, Menü ${s5.menu})`);
-      if (wirkt && !s5.menu) E(`W-43 Tipp auf den Knopf im Kopf (${kopf}) bei offener Kachel öffnet das Menü nicht (Schaltflächen außerhalb der Liste wirken sofort, APD-30/V-12)`);
+      if (wirkt && !s5.menu) E(`W-43 Tipp auf die Schaltfläche im Kopf (${kopf}) bei offener Kachel öffnet das Menü nicht (Schaltflächen außerhalb der Liste wirken sofort, APD-30/V-12)`);
       if (s5.menu) { await p.keyboard.press('Escape'); await menueZu(p); }
       if (s5.dlg) await dlgZu(p);
       await ruhig();
@@ -4489,7 +4489,7 @@ export async function checkWischen(p, { bean, aktionen, liste = '#side', kacheln
         if (await zuSehen()) E('W-42 panel-left bei offener Kachel blendet die Seitenleiste nicht aus (der Tipp schließt nur die Kachel)');
         if (b42) E('W-42 nach panel-left ist die Kachel noch offen');
         const ein = await p.evaluate(s => !![...document.querySelectorAll(s)].find(b => b.getClientRects().length), seitenleiste.ein);
-        if (!ein) E(`W-42 kein Knopf ${seitenleiste.ein} zum Einblenden zu sehen`);
+        if (!ein) E(`W-42 keine Schaltfläche ${seitenleiste.ein} zum Einblenden zu sehen`);
         else {
           await p.evaluate(s => [...document.querySelectorAll(s)].find(b => b.getClientRects().length).click(), seitenleiste.ein); await ruhig(); await navFertig(p).catch(() => {}); await ruhig();
           const s42 = await stand();

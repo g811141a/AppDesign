@@ -1,4 +1,4 @@
-/* AppDesign 4.67.1 · design.css – gemeinsame Gestaltung der iPad-Web-Apps von g811141a (Apple-like)
+/* AppDesign 4.67.2 · design.css – gemeinsame Gestaltung der iPad-Web-Apps von g811141a (Apple-like)
    Einbinden im <head> vor dem eigenen <style> der App:  <link rel="stylesheet" href="../AppDesign/fassung/X.Y.Z/design.css"> (feste Fassung, R-10.3)
    Farben als Variablen auf :root, Dunkelmodus über data-theme="dark" (setzt ui.js / applyTheme).
    Komponenten: Schaltflächen, Suchfeld, Kapsel, Eingabefelder, Datumsfelder, Kopfzeile, Seitenleiste,
@@ -6,7 +6,7 @@
    Options-Kapsel; seit 4.1.0 iPhone-Ansicht (html.phone: Seitenkopf, großer Titel, Liste, Kasten, untere Leiste). Regeln dazu: README - Designrichtlinie allgemein.md */
 /* Farben im Apple-Look: Hintergrund Hellgrau, Kästen weiß ohne Rand, schwebende Schaltflächen */
 :root {
-  --ad-version: "4.67.1";   /* R-10.3: Version der Bausteine, die App prüft sie beim Start */
+  --ad-version: "4.67.2";   /* R-10.3: Version der Bausteine, die App prüft sie beim Start */
   --bg: #f2f2f7;
   --card: #ffffff;
   --ink: #1c1c1e;
@@ -33,7 +33,7 @@
   --btn-rim: #ffffff;
   --sel-bg: #dcebff;
   --beruehrt: #e5e5ea;   /* seit 4.48.0 (R-3.6): Zeile beim Berühren */
-  --heben: #ffffff;   /* seit 4.48.2 (R-3.6, APD-107): Leisten-Knopf beim Berühren */
+  --heben: #ffffff;   /* seit 4.48.2 (R-3.6, APD-107): Leisten-Schaltfläche beim Berühren */
   --gross-bg: rgba(242,242,247,.94);   /* seit 4.48.0 (R-2.6): Großanzeige */
   /* seit 4.53.0 (R-3.9, APD-38/T-37): Glas für Schwebendes – Grundfarbe zu 75 % deckend, Unschärfe 20 px, Sättigung 180 %, Lichtkante oben */
   --glas-knopf: rgba(255,255,255,.75);
@@ -193,7 +193,7 @@ button.primary .ic.red { color: inherit; }
 .searchbox .sclear { width: calc(44px * var(--fb)); height: calc(44px * var(--fb)); margin: -6px; min-height: 0; min-width: 0; padding: 0; border: none; box-shadow: none; background: none; color: #a1a1a6; border-radius: 50%; }
 .searchbox .sclear svg { width: calc(20px * var(--k)); height: calc(20px * var(--k)); }
 /* Komponente ⓧ in Textfeldern (seit 4.29.0, APD-63 C3, R-5.6): wie im Suchfeld – rechts im Feld, solange es den Fokus
-   hat und etwas drinsteht (ui.js setzt den Knopf hinter das Feld); der Text läuft nicht darunter. Seit 4.41.0 (APD-81) auch in
+   hat und etwas drinsteht (ui.js setzt die Schaltfläche hinter das Feld); der Text läuft nicht darunter. Seit 4.41.0 (APD-81) auch in
    mehrzeiligen Feldern, dort oben rechts auf Höhe der ersten Zeile; der Text läuft in allen Zeilen nicht darunter */
 .fclear { position: absolute; z-index: 2; display: flex; align-items: center; justify-content: center; width: max(44px, calc(20px * var(--k) + 24px)); height: max(44px, calc(20px * var(--k) + 24px)); margin: 0;
   min-width: 0; min-height: 0; padding: 0; border: none; box-shadow: none; background: none; color: #a1a1a6; border-radius: 50%; touch-action: manipulation; }
@@ -288,7 +288,7 @@ body.docked .nb { left: calc(var(--side-w) + max(10px, var(--safe-left)) + 4px);
 .nb2 { display: flex; gap: 12px; align-items: center; margin-top: 10px; }
 .nb2 .searchbox { flex: 1 1 auto; }
 /* Leerer Zustand (seit 4.50.0, APD-30, Designrichtlinie 15.23, R-7.7) wie Apple ContentUnavailableView: Symbol (grau, 36 pt, aria-hidden), Titel
-   17 pt halbfett als Überschrift, Satz grau 15 pt, optional ein getönter Knopf (Systemblau hell hinterlegt, 44 pt hoch) – mittig im freien Bereich;
+   17 pt halbfett als Überschrift, Satz grau 15 pt, optional eine getönte Schaltfläche (Systemblau hell hinterlegt, 44 pt hoch) – mittig im freien Bereich;
    die Textstile wachsen mit der Textgröße (R-1.10). Symbol und Titel überall gleich groß (seit 4.50.1, APD-111; vorher im Inhalt 52 pt und 22 pt
    fett); in der Seitenleiste (.leer.klein) nur kleinere Abstände. Ersetzt .emptymain und .side-empty. */
 .leer { flex: 1 1 auto; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
@@ -387,7 +387,7 @@ body.docked { padding-left: calc(var(--side-w) + max(10px, var(--safe-left)) + 2
 #side .bhint { margin: 0; padding: 12px 16px; border-radius: 22px; background: var(--focus); color: var(--ink);
   box-shadow: var(--float); }
 
-/* Backup-Hinweis gelb getönt mit blau gefülltem Knopf, damit man die Funktion sofort erkennt (iPad und iPhone) */
+/* Backup-Hinweis gelb getönt mit blau gefüllter Schaltfläche, damit man die Funktion sofort erkennt (iPad und iPhone) */
 #side .bhint button, .bbar .bnote button { background: var(--accent-fill); color: var(--accent-ink); border: .5px solid var(--rim-color); box-shadow: var(--glow-accent); }
 /* Seit 4.34.0 (R-9.1, APD-74): die Backup-Kachel steht nur, solange heute noch kein Backup erstellt wurde – der weiße Zustand entfällt */
 .bbar .bnote.ok { background: var(--card); color: var(--muted); }
@@ -428,13 +428,13 @@ body.docked { padding-left: calc(var(--side-w) + max(10px, var(--safe-left)) + 2
 .menu .line ~ .note { padding: 2px 16px; line-height: 1.35; }
 .menu .line + .note { padding-top: 8px; }
 .menu .line ~ .note:last-child { padding-bottom: 10px; }
-/* Komponente Sprechblase (Abfrage): an der angetippten Schaltfläche; roter Knopf, darunter der Weg zurück */
+/* Komponente Sprechblase (Abfrage): an der angetippten Schaltfläche; rote Schaltfläche, darunter der Weg zurück */
 .pop { position: fixed; z-index: 30; width: min(max(320px, calc(320px * var(--f-body))), calc(100vw - 24px - var(--safe-left) - var(--safe-right)));   /* B2 */
   background: var(--card); border-radius: 14px; border: .5px solid var(--btn-rim); box-shadow: var(--float); padding: 16px; text-align: center; }
 .pop p { margin: 0 0 14px; font-size: var(--t-subhead); color: var(--muted); }
 .pop .btns { display: flex; flex-direction: column; gap: 10px; }
 .pop .btns button { width: 100%; }
-/* Seit 4.10.0 (R-9.2): Sprechblase mit Kacheln – je Weg eine Kachel mit Erklärung (gleiche Schrift wie der Text oben) und Knopf */
+/* Seit 4.10.0 (R-9.2): Sprechblase mit Kacheln – je Weg eine Kachel mit Erklärung (gleiche Schrift wie der Text oben) und Schaltfläche */
 .pop.wide { width: min(max(400px, calc(400px * var(--f-body))), calc(100vw - 24px)); }
 .pop .tiles { display: flex; flex-direction: column; gap: 10px; margin-bottom: 10px; }
 .pop .tile { background: var(--bg); border-radius: 14px; padding: 12px; text-align: left; }
@@ -442,7 +442,7 @@ body.docked { padding-left: calc(var(--side-w) + max(10px, var(--safe-left)) + 2
 .pop .tile button { width: 100%; }
 /* Seit 4.9.1: iPhone quer – Sprechblase breiter, damit sie ohne Wischen ganz zu sehen ist (R-4.5) */
 @media (max-height: 500px) { .pop, .pop.wide { width: min(640px, calc(100vw - 24px)); } .pop .btns, .pop .tiles { flex-direction: row; } .pop .tile { flex: 1; display: flex; flex-direction: column; justify-content: space-between; } }
-/* B2: ab AX1 stehen Knöpfe und Kacheln immer untereinander (auch iPhone quer) */
+/* B2: ab AX1 stehen Schaltflächen und Kacheln immer untereinander (auch iPhone quer) */
 html.ts-ax .pop .btns, html.ts-ax .pop .tiles { flex-direction: column; }
 :root[data-theme="dark"] .menu, :root[data-theme="dark"] .pop { background: #2c2c2e; }
 /* Seit 4.60.0 (APD-30/V-7, V-8, R-1.4): solange eine Sprechblase offen ist, ist alles daneben leicht eingegraut (Schwarz 20 %, hell und dunkel)
@@ -462,20 +462,23 @@ html.ts-ax .pop .btns, html.ts-ax .pop .tiles { flex-direction: column; }
 :root[data-theme="dark"] .titel-blase { background: #2c2c2e; }
 /* langes Drücken auf den Titel: ohne Textauswahl, Lupe und Safari-Menü (wie .menu .note.halten) */
 :is(.dlg-head h3, .nb-title, .pnav-title) { -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
-/* R-3.6 (seit 4.48.0, APD-105 Variante C): Berühren – Schaltfläche blass (35 %), Listen- und Tabellenzeile grau (--beruehrt), sofort an,
-   beim Loslassen in 0,15 s aus (.beruehrt-aus setzt ui.js); gesperrte Schaltflächen zeigen nichts (ui.js) */
-button.beruehrt:not(:is(.side-row, .irow, .mi)) { opacity: .35; transition: none; }
+/* R-3.6 (seit 4.48.0, APD-105 Variante C; seit 4.67.2 P-118/F-1 Variante B, Muster arbeit/0147 P-118 Muster.html): Berühren – jede
+   Schaltfläche hebt sich als helle Fläche mit Schatten und wird größer, 1,3-fach, höchstens aber 24 px breiter (--press-scale setzt ui.js aus
+   der Breite); eine Leisten-Schaltfläche hebt sich über ihre Kapsel, neben dem Finger zu sehen wie Liquid Glass in iOS 26; Icon und Text
+   bleiben kräftig (blass war am Gerät nicht zu sehen, P-88/1, P-118/1); gefüllte Schaltflächen (Hauptaktion, Löschen) behalten ihre Farbe;
+   senkt sich in 0,2 s (.beruehrt-aus setzt ui.js). Ausgenommen die Auswahl-Kapsel (15.12): blass (35 %), ihr Anheben regelt R-3.5.
+   Listen- und Tabellenzeile grau (--beruehrt), beim Loslassen in 0,15 s aus; gesperrte Schaltflächen zeigen nichts (ui.js).
+   Lage und Ebene nur mit :where – eine Schaltfläche mit eigener Lage (absolute, fixed) oder Ebene behält sie */
+:where(button.beruehrt, button.beruehrt-aus):not(:is(.side-row, .irow, .mi, .cap .scroll button)) { position: relative; z-index: 3; }
+button.beruehrt:not(:is(.side-row, .irow, .mi, .cap .scroll button)) { opacity: 1; transform: scale(var(--press-scale, 1.3));
+  box-shadow: 0 6px 20px rgba(0,0,0,.22), 0 0 0 .5px rgba(0,0,0,.08); transition: transform .25s cubic-bezier(.2,.9,.3,1.25), box-shadow .2s; }
+button.beruehrt:not(:is(.side-row, .irow, .mi, .cap .scroll button, .primary, .danger)) { background: var(--heben); }
+button.beruehrt-aus:not(:is(.side-row, .irow, .mi, .cap .scroll button)) { transition: transform .2s, box-shadow .2s, background-color .2s, opacity .15s; }
+.cap .scroll button.beruehrt { opacity: .35; transition: none; }
+.cap .scroll button.beruehrt-aus { transition: opacity .15s; }
 :is(.side-row, .irow, .menu .mi, .box).beruehrt:not(.current), tr.beruehrt > :is(td, th) { background-color: var(--beruehrt) !important; transition: none; }
-button.beruehrt-aus, :is(.side-row, .irow, .menu .mi, .box).beruehrt-aus, tr.beruehrt-aus > :is(td, th) { transition: opacity .15s, background-color .15s; }
-/* Seit 4.48.2 (APD-107 Variante C, Muster arbeit/APD-107 Muster.html): ein Knopf einer Leiste (Kopfzeile, Fenster-Kopfzeile, Seitenleiste,
-   schwebende Knöpfe – GROSS_SEL in ui.js) hebt sich stattdessen als helle Fläche mit Schatten auf das 1,3-Fache über seine Kapsel, neben dem
-   Finger zu sehen wie Liquid Glass in iOS 26; das Icon bleibt kräftig (blass war am Gerät nicht zu sehen, P-88/1); senkt sich in 0,2 s */
-:is(.nb, .pnav, .bbar, .dlg-head, .side-head, .side-search, .fab) button.beruehrt { opacity: 1; position: relative; z-index: 3; transform: scale(1.3);
-  background: var(--heben); box-shadow: 0 6px 20px rgba(0,0,0,.22), 0 0 0 .5px rgba(0,0,0,.08);
-  transition: transform .25s cubic-bezier(.2,.9,.3,1.25), box-shadow .2s; }
-:is(.nb, .pnav, .bbar, .dlg-head, .side-head, .side-search, .fab) button.beruehrt-aus { position: relative; z-index: 3;
-  transition: transform .2s, box-shadow .2s, background-color .2s, opacity .15s; }
-@media (prefers-reduced-motion: reduce) { :is(.nb, .pnav, .bbar, .dlg-head, .side-head, .side-search, .fab) button.beruehrt { transform: none; transition: box-shadow .2s; } }
+:is(.side-row, .irow, .menu .mi, .box).beruehrt-aus, tr.beruehrt-aus > :is(td, th) { transition: opacity .15s, background-color .15s; }
+@media (prefers-reduced-motion: reduce) { button.beruehrt:not(:is(.side-row, .irow, .mi, .cap .scroll button)) { transform: none; transition: box-shadow .2s; } }
 /* R-3.5 Anheben (seit 4.48.0, APD-105): ein Eintrag mit eigener Aktion für langes Drücken hebt sich ab 0,15 s an – wächst, Schatten;
    in der Kapsel (Smiley) wächst das Zeichen und wirft Schatten, damit nichts am Rand der Kapsel abgeschnitten wird */
 .hebt { position: relative; z-index: 2; transform: scale(1.03); box-shadow: 0 6px 18px rgba(0,0,0,.22) !important; opacity: 1 !important;
@@ -495,7 +498,7 @@ button.beruehrt-aus, :is(.side-row, .irow, .menu .mi, .box).beruehrt-aus, tr.ber
    beim Berühren jeder Zeile mit eigener Aktion) */
 html, html * { -webkit-tap-highlight-color: transparent; }
 :is(.side-row, .irow, .menu .mi, #app [data-day], .tippziel, .cap, .emoji-row, .chips, .weiter) { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
-/* R-2.6 (seit 4.48.0, APD-104 Variante A): Großanzeige ab AX1 – Icon und Name des Leisten-Knopfs groß in der Mitte (setzt ui.js), wächst
+/* R-2.6 (seit 4.48.0, APD-104 Variante A): Großanzeige ab AX1 – Icon und Name der Leisten-Schaltfläche groß in der Mitte (setzt ui.js), wächst
    mit der Textgröße, bleibt ganz auf dem Bildschirm; nur zu sehen (aria-hidden) */
 .grossanzeige { position: fixed; z-index: 50; box-sizing: border-box; min-width: min(180px, calc(100vw - 48px)); max-width: calc(100vw - 48px);
   max-height: calc(100vh - 24px); max-height: calc(100dvh - 24px); padding: .75em 1em .6em; border-radius: 22px; display: flex; flex-direction: column;
@@ -702,7 +705,7 @@ html.natsw .check.sw input[switch] { -webkit-appearance: auto; appearance: auto;
 /* ---------- iPhone (kompakte Breite) – seit 4.1.0 ----------
    html.phone (setzt ui.js / applyLayout): iPhone hoch und quer sowie sehr schmale Fenster (unter 700 px breit
    oder unter 500 px hoch). Wie Apple (Notizen, iOS 26): eine Seite nach der anderen mit großem Titel,
-   runder Zurück-Knopf ohne Text, Suche unten, Fenster als Blatt (seit 4.32.0, R-4.6), Abfragen als Sprechblase am Knopf. */
+   runde Zurück-Schaltfläche ohne Text, Suche unten, Fenster als Blatt (seit 4.32.0, R-4.6), Abfragen als Sprechblase an der Schaltfläche. */
 html.phone body { padding-bottom: calc(var(--safe-bottom) + 120px * var(--fb)); }
 html.phone body:has(.bnote) { padding-bottom: calc(var(--safe-bottom) + 150px * var(--fb)); }
 html.phone .rolle::after { height: calc(var(--safe-bottom) + var(--unten-h, 120px) + var(--platz, 0px)); }   /* seit 4.27.1 Platzhalter statt Innenabstand (APD-33) */
@@ -710,7 +713,7 @@ html.phone body:has(.bnote) .rolle::after { height: calc(var(--safe-bottom) + va
 html.phone #side:not(.page), html.phone .side-shade { display: none !important; }
 /* Seit 4.20.0 (APD-15): Kapsel ‚Nach oben / Ans Ende‘ auch im iPhone-Aufbau; ausgeblendet, wenn es nichts zu scrollen gibt (R-3.2) */
 .fab.still { display: none; }
-/* Komponente Seitenkopf (iPhone): links rund zurück, rechts Kapsel oder runder Knopf; scrollt nicht mit */
+/* Komponente Seitenkopf (iPhone): links rund zurück, rechts Kapsel oder runde Schaltfläche; scrollt nicht mit */
 .pnav { position: fixed; left: 0; right: 0; top: var(--vv-top); z-index: 6; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px; min-height: calc(44px * var(--fb));
   padding: calc(var(--safe-top) + 8px) max(16px, var(--safe-right)) 8px max(16px, var(--safe-left)); background: var(--bg); border-bottom: .5px solid transparent; }
 /* Die Leiste steht fest (seit 4.5.0); der Inhalt beginnt unter ihr (Höhe setzt updateBar) */
@@ -763,7 +766,7 @@ html.phone body { padding-top: var(--pnav-h, 60px); }
 .box .kv .k > .l { display: flex; align-items: center; gap: 2px; height: calc(var(--t-body) * var(--lh, 1.45)); }
 .box .kv .k.word, .box .kv .k .w { font-size: var(--t-body); font-weight: 600; color: var(--ink); }
 .box.on { background: var(--sel-bg); --kachel-bg: var(--sel-bg); }
-/* Komponente untere Leiste (iPhone): Suchfeld und runde Knöpfe unten; wandert mit der Tastatur nach oben */
+/* Komponente untere Leiste (iPhone): Suchfeld und runde Schaltflächen unten; wandert mit der Tastatur nach oben */
 .bbar { position: fixed; z-index: 8; left: max(16px, var(--safe-left)); right: max(16px, var(--safe-right));
   bottom: calc(max(var(--vv-bottom), var(--safe-bottom)) + 10px); display: flex; gap: 10px; align-items: center; justify-content: flex-end; }
 .bbar::before { content: ''; position: fixed; left: 0; right: 0; bottom: 0; height: calc(max(var(--vv-bottom), var(--safe-bottom)) + 90px * var(--fb)); z-index: -1;
@@ -838,7 +841,7 @@ dialog.gleitet.runter { transition: top .25s ease-in-out; }
 @media (prefers-reduced-motion: reduce) { dialog.gleitet, dialog.gleitet.runter { transition: none; } }
 /* R-2.4 (seit 4.28.1, APD-36): iPhone quer – niedrige Leisten wie iOS quer. Kopfzeile, Suchzeile und Fensterkopf 32 statt 44 px
    hoch, damit Felder darunter und die Suche bei offener Tastatur in der oberen Hälfte des sichtbaren Bereichs liegen – dann verschiebt
-   Safari nichts (R-4.5). Knöpfe in Kapseln 31 px (R-3.1: ab 28), Markierung 25 × 25; runde Knöpfe 32 × 32 mit einer unsichtbaren
+   Safari nichts (R-4.5). Schaltflächen in Kapseln 31 px (R-3.1: ab 28), Markierung 25 × 25; runde Schaltflächen 32 × 32 mit einer unsichtbaren
    Antippfläche von 44 × 44, das Suchfeld als Kapsel 32 px (R-3.1: Kapseln ab 28). */
 @media (orientation: landscape) and (max-height: 500px) {
   /* L2 (R-1.10): iPhone quer wachsen die Leisten nicht – Titel 17, Icons 20, Höhe 32 wie bei Standard; der Inhalt wächst */
@@ -866,7 +869,7 @@ dialog.gleitet.runter { transition: top .25s ease-in-out; }
   .schnell .griff > span { color: var(--ink); }
 }
 /* R-3.9 (seit 4.53.0, APD-38/T-37, Testfall-Liste APD-62/L-1 bis L-10): Schwebendes aus Glas wie iOS 26 – die Kapsel Nach oben / Ans Ende, Menü,
-   Untermenü und Kontextmenü sowie Suchfeld und runde Knöpfe der unteren Leiste (iPhone): Grundfarbe zu 75 % deckend, Unschärfe 20 px, Sättigung 180 %,
+   Untermenü und Kontextmenü sowie Suchfeld und runde Schaltflächen der unteren Leiste (iPhone): Grundfarbe zu 75 % deckend, Unschärfe 20 px, Sättigung 180 %,
    Lichtkante (--btn-rim, mit ‚Kontrast erhöhen‘ kräftiger) und Schatten wie R-3.2. Leisten, Fenster, Sprechblasen und alle übrigen Schaltflächen bleiben
    deckend. ‚Transparenz reduzieren‘ des Geräts und die Ausgabe: deckend wie bisher. Am Ende, damit es die Farben der Bauteile übersteuert. */
 .fab, .menu, .bbar .searchbox input[type=search], .bbar > button:not([aria-pressed="true"]) {

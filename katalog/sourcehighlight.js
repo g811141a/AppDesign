@@ -14,13 +14,13 @@ catalogBean({
   events: [['change', 'Eine Quelle wird getönt oder frei – { item, highlighted }.']],
   rules: [['R-3.3', 'Gedrückt und Quelle blau'], ['R-4.13', 'Menüs und Sprechblasen wachsen aus der Schaltfläche'], ['R-8.1', 'Drehen']],
   history: [['4.67.0', 'Neu als AD-Bean (APD-136); ersetzt hold, release, setOpener, markOpener und markHeld.']],
-  howTo: '‚Fenster-Quelle‘ setzen und zum zweiten Knopf wechseln · ‚Halten‘ und ‚Freigeben‘ · ‚Neu aufbauen‘ – die gehaltene Quelle bleibt blau · ‚Menü‘ öffnen – der Knopf ist blau, bis das Menü zu ist.',
+  howTo: '‚Fenster-Quelle‘ setzen und zur zweiten Schaltfläche wechseln · ‚Halten‘ und ‚Freigeben‘ · ‚Neu aufbauen‘ – die gehaltene Quelle bleibt blau · ‚Menü‘ öffnen – die Schaltfläche ist blau, bis das Menü zu ist.',
   demo(el, log) {
     const s = adSourcehighlight;
-    const knoepfe = () => `<div class="bk-knoepfe" id="bkQuellen"><button type="button" id="bkQ1">Erster Knopf</button> <button type="button" id="bkQ2">Zweiter Knopf</button>
+    const knoepfe = () => `<div class="bk-knoepfe" id="bkQuellen"><button type="button" id="bkQ1">Erste Schaltfläche</button> <button type="button" id="bkQ2">Zweite Schaltfläche</button>
       <button type="button" class="round" id="bkMenu" aria-label="Menü">${ic('ellipsis')}</button></div>`;
-    el.innerHTML = `<div id="bkHost">${knoepfe()}</div><div class="ilist">${[['src1', 'Fenster-Quelle: erster Knopf'], ['src2', 'Fenster-Quelle: zweiter Knopf'], ['src0', 'Fenster-Quelle frei'],
-      ['hold', 'Ersten Knopf halten'], ['release', 'Ersten Knopf freigeben'], ['neu', 'Knöpfe neu aufbauen (refresh)']]
+    el.innerHTML = `<div id="bkHost">${knoepfe()}</div><div class="ilist">${[['src1', 'Fenster-Quelle: erste Schaltfläche'], ['src2', 'Fenster-Quelle: zweite Schaltfläche'], ['src0', 'Fenster-Quelle frei'],
+      ['hold', 'Erste Schaltfläche halten'], ['release', 'Erste Schaltfläche freigeben'], ['neu', 'Schaltflächen neu aufbauen (refresh)']]
       .map(([k, t]) => `<button type="button" class="irow" data-q="${k}"><span class="t"><b>${t}</b></span>${ic('chevron-right')}</button>`).join('')}</div>`;
     const bindMenu = () => { el.querySelector('#bkMenu').onclick = e => openMenu(e.currentTarget, [{ icon: 'info', label: 'Nur Vorführung', act: () => log('Menüpunkt gewählt') }]); };
     const tun = {

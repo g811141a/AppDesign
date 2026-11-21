@@ -1,4 +1,4 @@
-// AppDesign 4.67.1 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
+// AppDesign 4.67.2 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
 // Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/fassung/X.Y.Z/ui.js"></script> (feste Fassung, R-10.3)
 // Klassisches Skript: alle Funktionen sind global und für das Skript der App sichtbar.
 //
@@ -19,7 +19,7 @@
 
 'use strict';
 // Version der Bausteine (R-10.3): die App vergleicht sie beim Start mit der benötigten Fassung.
-const AD_VERSION = '4.67.1';
+const AD_VERSION = '4.67.2';
 // ‚Bewegung reduzieren‘ (R-1.9) – die eine Abfrage für alle Bausteine (seit 4.64.0, APD-135/B-4.2; vorher fünfmal eigens gebaut)
 const bewegungRuhig = () => !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
 // APD-129 Teil 2 (seit 4.59.2, Messung 14.11.2026 arbeit/APD-129/messung-2026-11-14-2137.txt, Zeilen 9–17, 207–216, 263–272; Designrichtlinie 13
@@ -85,7 +85,7 @@ const ICONS = {
   'ellipsis-vertical': '<circle cx="12" cy="12" r="1.3"/><circle cx="12" cy="5" r="1.3"/><circle cx="12" cy="19" r="1.3"/>',
   'settings': '<path d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915"/><circle cx="12" cy="12" r="3"/>'
 };
-// Seit 4.42.0 (APD-87, R-4.1): das Icon des Mehr-Knopfs trägt data-mehr – bei offenem Menü zeigt es senkrechte Punkte (mehrKippen).
+// Seit 4.42.0 (APD-87, R-4.1): das Icon der Mehr-Schaltfläche trägt data-mehr – bei offenem Menü zeigt es senkrechte Punkte (mehrKippen).
 // Seit 4.66.0 (APD-136 b3): ein unbekannter Name gibt einen Konsolenfehler und kein svg (vorher ein unsichtbares svg mit dem Text ‚undefined‘);
 // checkWerte (Icons) prüft, dass jeder Name in ic('…') in ui.js, Vorlage und App in ICONS steht.
 const ic = (name, cls = '') => {
@@ -93,8 +93,8 @@ const ic = (name, cls = '') => {
   return `<svg class="ic ${cls}" viewBox="0 0 24 24" aria-hidden="true"${name === 'ellipsis' ? ' data-mehr' : ''}>${ICONS[name]}</svg>`;
 };
 // R-7.7 (seit 4.50.0, APD-30, Designrichtlinie 15.23; Testfall-Liste arbeit/APD-30 Testfall-Liste.md L-1 bis L-20): leerer Zustand wie Apple
-// ContentUnavailableView – Symbol (für VoiceOver verborgen), Titel als Überschrift, Satz, optional ein getönter Knopf { id, label }, der dasselbe
-// auslöst wie der Knopf oder Menüpunkt, für den er steht (die App setzt seinen onclick). klein: Seitenleiste neben dem Inhalt (nur Symbol und
+// ContentUnavailableView – Symbol (für VoiceOver verborgen), Titel als Überschrift, Satz, optional eine getönte Schaltfläche { id, label }, die dasselbe
+// auslöst wie die Schaltfläche oder der Menüpunkt, für die sie steht (die App setzt ihren onclick). klein: Seitenleiste neben dem Inhalt (nur Symbol und
 // Titel, ohne satz und aktion aufrufen); suche: ‚Keine Treffer für ‚…‘‘ – titel und satz werden hier maskiert (Begriff als Text, nie HTML).
 function leerHtml({ icon, titel, satz = '', aktion = null, klein = false, suche = false } = {}) {
   return `<div class="leer${klein ? ' klein' : ''}${suche ? ' suche' : ''}">${ic(icon, 'sym')}<h3>${esc(titel)}</h3>${satz ? `<p>${esc(satz)}</p>` : ''}`
@@ -322,7 +322,7 @@ function setHtml(el, html) {
 
 // Komponente ⓧ in Textfeldern (seit 4.29.0, APD-63 C3, R-5.6) wie Apple (UIKit ‚clearButtonMode = whileEditing‘): solange ein
 // Textfeld den Fokus hat und etwas drinsteht, steht rechts darin ein graues ⓧ (wie im Suchfeld, 44 × 44 Antippfläche). Antippen
-// leert das Feld, Cursor und Tastatur bleiben; die App erfährt es über ein input-Ereignis (wie beim Löschen per Taste). Ein Knopf
+// leert das Feld, Cursor und Tastatur bleiben; die App erfährt es über ein input-Ereignis (wie beim Löschen per Taste). Eine Schaltfläche
 // für alle Felder, gleich hinter das Feld gesetzt (rollt mit); abschaltbar mit data-noclear.
 // Seit 4.41.0 (APD-81, Testfall-Liste arbeit/APD-81 Testfall-Liste.md): auch in mehrzeiligen Feldern – oben rechts auf Höhe der
 // ersten Zeile (APD-81/F-1). Geleert wird in allen Feldern über den Bearbeiten-Befehl (Text auswählen, execCommand('delete')) – so
@@ -414,7 +414,7 @@ fxBtn.addEventListener('click', e => {
   fxZeigen();
 });
 document.addEventListener('focusin', fxZeigen);
-// APD-124/E-3: die erste Eingabe nach dem Leeren lässt das Rückgängig verfallen (danach wieder das ⓧ, ohne Text kein Knopf)
+// APD-124/E-3: die erste Eingabe nach dem Leeren lässt das Rückgängig verfallen (danach wieder das ⓧ, ohne Text keine Schaltfläche)
 document.addEventListener('input', e => { if (fxRueck && e.target === fxRueck.feld && e.target.value !== '') fxRueck = null; queueMicrotask(fxZeigen); });
 document.addEventListener('focusout', () => setTimeout(() => { if (!fxTippt) fxZeigen(); }, 0));
 document.addEventListener('pointerup', () => setTimeout(() => { fxTippt = false; }, 400), true);
@@ -521,9 +521,9 @@ function fokus(el) {
   el.focus({ preventScroll: true });
   return document.activeElement === el;
 }
-// V5, V6: nach Menü bzw. Sprechblase zurück auf ihren Knopf; gibt es ihn nicht mehr, auf die Kopfzeile (Fenster bzw. Seite)
-// R-1.8 (seit 4.50.1, APD-112): nach dem Schließen eines Fensters, Blatts bzw. einer Meldung zurück auf den Knopf bzw. die Zeile, die es
-// öffnete (sel: gemerkter Knopf, sonst das Element, das beim Öffnen den Fokus hatte) – baut die App neu auf, das neue Element mit derselben
+// V5, V6: nach Menü bzw. Sprechblase zurück auf ihre Schaltfläche; gibt es sie nicht mehr, auf die Kopfzeile (Fenster bzw. Seite)
+// R-1.8 (seit 4.50.1, APD-112): nach dem Schließen eines Fensters, Blatts bzw. einer Meldung zurück auf die Schaltfläche bzw. die Zeile, die es
+// öffnete (sel: gemerkte Schaltfläche, sonst das Element, das beim Öffnen den Fokus hatte) – baut die App neu auf, das neue Element mit derselben
 // Kennung; gibt es keins: die Kopfzeile des Fensters darunter bzw. der Seite. Hat die App bzw. der Browser den Fokus schon sinnvoll gesetzt
 // (ein Element außerhalb geschlossener Fenster) oder ist ein Menü bzw. eine Sprechblase offen, bleibt er dort. Ring nur mit der Tastatur (K6).
 let dlgVorher = null, msgVorher = null;
@@ -625,7 +625,7 @@ const onRoll = fn => window.addEventListener('scroll', e => { if (e.target === d
 // alles daneben ein, APD-30/V-7), Wischen bewegt die Seite dahinter nicht.
 // Seit 4.54.0 (APD-118, Designrichtlinie 13 ‚Am oberen Rand kein Klick‘, Testfall-Liste APD-118/X-1 bis X-9): sie schließt schon beim Loslassen
 // (pointerup), wenn der Finger bzw. die Maus auf ihr aufsetzte und höchstens SCHICHT_WEG px wanderte – am oberen Rand (iPhone quer, Home-Bildschirm)
-// schickt Safari keinen click. Den Klick danach verschluckt sie (sonst träfe er, was unter der Schicht lag, z. B. den Mehr-Knopf: wieder offen);
+// schickt Safari keinen click. Den Klick danach verschluckt sie (sonst träfe er, was unter der Schicht lag, z. B. die Mehr-Schaltfläche: wieder offen);
 // ein Klick ohne pointerdown (el.click() aus dem Skript, Tastatur) schließt wie bisher.
 const SCHICHT_WEG = 20, SCHICHT_KLICK_MS = 700;
 function klickVerschlucken(x, y) {
@@ -809,7 +809,7 @@ const floating = new Set();
 function liveAnchor(anchor) {
   if (anchor.isConnected) return anchor.getClientRects().length ? anchor : null;
   const again = wiederFinden(anchor);
-  if (again) adSourcehighlight.refresh(document);   // seit 4.67.0 (APD-136): die Bean tönt den wiedergefundenen Knopf, wenn er Quelle ist
+  if (again) adSourcehighlight.refresh(document);   // seit 4.67.0 (APD-136): die Bean tönt die wiedergefundene Schaltfläche, wenn sie Quelle ist
   return again || null;
 }
 function placeFloating() { floating.forEach(f => f()); }
@@ -818,8 +818,8 @@ window.addEventListener('resize', replaceSoon);
 window.addEventListener('orientationchange', replaceSoon);
 window.visualViewport?.addEventListener('resize', replaceSoon);
 
-// Seit 4.42.0 (APD-87, R-4.1): der Mehr-Knopf zeigt bei offenem Menü drei senkrechte Punkte (ellipsis-vertical), beim Schließen
-// wieder waagrechte – sofort, ohne Bewegung; andere Knöpfe (Kontextmenü, Auswahl) behalten ihr Icon.
+// Seit 4.42.0 (APD-87, R-4.1): die Mehr-Schaltfläche zeigt bei offenem Menü drei senkrechte Punkte (ellipsis-vertical), beim Schließen
+// wieder waagrechte – sofort, ohne Bewegung; andere Schaltflächen (Kontextmenü, Auswahl) behalten ihr Icon.
 function mehrKippen(knopf, offen) {
   const s = knopf?.querySelector?.(':scope > svg[data-mehr]');
   if (s) s.innerHTML = ICONS[offen ? 'ellipsis-vertical' : 'ellipsis'];
@@ -878,7 +878,7 @@ function openMenu(anchor, items, align = 'right') {
   if (align === 'beside') menu.classList.add('kontext');
   menu.setAttribute('role', 'menu');
   menu.innerHTML = menuHtml(items);
-  // R-1.8 (seit 4.35.0, V3): das Menü trägt den Namen seines Knopfs; der Knopf sagt ‚öffnet Menü‘ und ob es offen ist
+  // R-1.8 (seit 4.35.0, V3): das Menü trägt den Namen seiner Schaltfläche; die Schaltfläche sagt ‚öffnet Menü‘ und ob es offen ist
   const name = anchor.getAttribute('aria-label') || anchor.textContent.trim();
   if (name) menu.setAttribute('aria-label', name);
   let subMenu = null, subItem = null;
@@ -889,7 +889,7 @@ function openMenu(anchor, items, align = 'right') {
     if (it) adSourcehighlight.release(it);
     if (it) { it.setAttribute('aria-expanded', 'false'); if (zurueck) fokus(it); }
   };
-  adSourcehighlight.hold(anchor);   // seit 4.67.0 (APD-136/U-1): der Knopf des offenen Menüs ist eine gehaltene Quelle
+  adSourcehighlight.hold(anchor);   // seit 4.67.0 (APD-136/U-1): die Schaltfläche des offenen Menüs ist eine gehaltene Quelle
   mehrKippen(anchor, true);
   anchor.setAttribute('aria-haspopup', 'menu');
   anchor.setAttribute('aria-expanded', 'true');
@@ -911,7 +911,7 @@ function openMenu(anchor, items, align = 'right') {
     if (!a) return close();
     anchor = a;
     mehrKippen(anchor, true);
-    anchor.setAttribute('aria-haspopup', 'menu');   // baut die App die Leiste neu auf (Drehen), trägt der neue Knopf den Zustand
+    anchor.setAttribute('aria-haspopup', 'menu');   // baut die App die Leiste neu auf (Drehen), trägt die neue Schaltfläche den Zustand
     anchor.setAttribute('aria-expanded', 'true');
     placeAt(menu, anchor, align);
     placeSub();
@@ -925,7 +925,7 @@ function openMenu(anchor, items, align = 'right') {
     entsperren?.(); tastenStapel.splice(tastenStapel.indexOf(tasten) >>> 0, 1);
     // Seit 4.11.0: den für das Kontextmenü dazugegebenen Platz unter der Liste wieder entfernen.
     document.querySelectorAll('.side-list[data-padded]').forEach(l => { l.style.paddingBottom = ''; delete l.dataset.padded; });
-    fokusZurueck(anchor, host);   // V5: zurück auf den Knopf, ohne Rollen
+    fokusZurueck(anchor, host);   // V5: zurück auf die Schaltfläche, ohne Rollen
   };
   const binde = () => menu.querySelectorAll('[data-i]').forEach(b => b.onclick = () => {
     const it = items[b.dataset.i];
@@ -1005,9 +1005,9 @@ function confirmPop(anchor, html, act, back = { label: 'Abbrechen' }, opts) {
     .then(v => v === true);
 }
 
-// Seit 4.9.0: Abfrage mit mehreren Wegen (wie eine Apple-Abfrage mit drei Knöpfen): die bevorzugte Aktion blau
+// Seit 4.9.0: Abfrage mit mehreren Wegen (wie eine Apple-Abfrage mit drei Schaltflächen): die bevorzugte Aktion blau
 // gefüllt (cls 'primary'), eine zerstörende in roter Schrift (cls 'danger-text'), zuletzt der Weg zurück.
-// Ergebnis: value des gewählten Knopfs; Esc bzw. ⌘. ergibt null. Seit 4.60.0 (APD-30/V-7, V-8, R-1.4) graut die Ebene dahinter alles daneben ein
+// Ergebnis: value der gewählten Schaltfläche; Esc bzw. ⌘. ergibt null. Seit 4.60.0 (APD-30/V-7, V-8, R-1.4) graut die Ebene dahinter alles daneben ein
 // (Schwarz 20 %, .layer.schleier) und daneben tippen ändert nichts (bis 4.59.x: ergab null). Gehört der Anker zu einer offenen Kachel der
 // Wischaktionen (schleierFrei), bleiben Kachel und Kapseln frei (ein Loch im Grau, APD-30/W-22).
 // Seit 4.41.0 (APD-81/F-2): feld – die Abfrage gehört zu diesem Textfeld (ⓧ); Fokus und Tastatur bleiben darin, solange sie offen ist
@@ -1026,7 +1026,7 @@ function choosePop(anchor, html, buttons, { feld = null } = {}) {
       Object.assign(l.style, { left: r.left + 'px', top: r.top + 'px', width: r.width + 'px', height: r.height + 'px' }); };
     const pop = document.createElement('div');
     pop.className = 'pop';
-    // Seit 4.10.0 (R-9.2): Wege mit Erklärung (desc) stehen je in einer eigenen Kachel – Erklärung, darunter der Knopf;
+    // Seit 4.10.0 (R-9.2): Wege mit Erklärung (desc) stehen je in einer eigenen Kachel – Erklärung, darunter die Schaltfläche;
     // Wege ohne Erklärung (z. B. Abbrechen) darunter wie bisher.
     const btn = (b, i) => `<button type="button" class="${b.cls || ''}" data-i="${i}">${esc(b.label)}</button>`;
     const tiles = buttons.map((b, i) => b.desc ? `<div class="tile"><p>${b.desc}</p>${btn(b, i)}</div>` : '').join('');
@@ -1054,12 +1054,12 @@ function choosePop(anchor, html, buttons, { feld = null } = {}) {
       if (!pop.isConnected) return;
       floating.delete(place); schrumpfen(pop, visible ? anchor : null); layer.remove(); pop.remove(); if (visible) adSourcehighlight.release(anchor);
       entsperren?.(); tastenStapel.splice(tastenStapel.indexOf(tasten) >>> 0, 1);
-      if (!feld) fokusZurueck(visible ? anchor : null, host);   // V6: zurück auf den Knopf bzw. die Kopfzeile, ohne Rollen
+      if (!feld) fokusZurueck(visible ? anchor : null, host);   // V6: zurück auf die Schaltfläche bzw. die Kopfzeile, ohne Rollen
       resolve(v);
     };
     pop.querySelectorAll('[data-i]').forEach(b => b.onclick = () => done(buttons[b.dataset.i].value));
     // R-4.7 (K4): Eingabe = der blaue Weg, sonst der Weg zurück – nie die rote Aktion; Esc bzw. ⌘. = Abbrechen (das Fenster bleibt);
-    // Tab und Pfeile markieren mit Umlauf, die Leertaste drückt den markierten Knopf (auch den roten)
+    // Tab und Pfeile markieren mit Umlauf, die Leertaste drückt die markierte Schaltfläche (auch die rote)
     const tasten = e => {
       const bs = [...pop.querySelectorAll('[data-i]')];
       if (istAbbruch(e)) { verbrauchen(e); done(null); return; }
@@ -1114,7 +1114,7 @@ function zeigeTitelBlase(t) {
   const c = getComputedStyle(t);
   el.style.font = c.font;
   host.append(el);
-  // unter der ganzen Zeile des Titels (Knöpfe daneben eingeschlossen), waagrecht mittig unter dem Titel, im Bildschirm gehalten
+  // unter der ganzen Zeile des Titels (Schaltflächen daneben eingeschlossen), waagrecht mittig unter dem Titel, im Bildschirm gehalten
   const r = t.getBoundingClientRect(), zeile = t.closest('.dlg-head') || t.parentElement;
   const unten = Math.max(r.bottom, ...[...zeile.querySelectorAll('button')].map(k => k.getBoundingClientRect())
     .filter(k => k.height && k.top < r.bottom && k.bottom > r.top).map(k => k.bottom));
@@ -1205,7 +1205,7 @@ document.addEventListener('click', e => {
 // Smiley-Leiste, Kapsel – jede Fläche, die rollen kann) erst nach BERUEHR_VERZUG, damit beim Rollen nichts aufblitzt. Wandert der Finger
 // mehr als LANG_WEG oder rollt die Fläche, verschwindet sie, und der Klick danach löst nichts aus. Loslassen blendet in 0,15 s aus
 // (.beruehrt-aus). Gesperrte Schaltflächen zeigen nichts. ‚Blau getönt = gedrückt‘ (.on, offenes Menü) bleibt davon unberührt.
-// Seit 4.48.2 (APD-107 Variante C, Testfall-Liste arbeit/APD-107 Testfall-Liste.md S-1 bis S-13): ein Knopf einer Leiste (GROSS_SEL) hebt sich
+// Seit 4.48.2 (APD-107 Variante C, Testfall-Liste arbeit/APD-107 Testfall-Liste.md S-1 bis S-13): eine Schaltfläche einer Leiste (GROSS_SEL) hebt sich
 // stattdessen als helle Fläche mit Schatten 1,3-fach über seine Kapsel (design.css); das Loslassen nach dem Abbruch ist gesperrt, wie lange
 // der Finger auch liegt – Safari meldet beim Wegziehen in einer Leiste kein pointercancel und schickt beim Loslassen den Klick (Messung P-88/1:
 // 843 ms nach dem Abbruch öffnete sich das Menü, die Sperre galt nur 600 ms).
@@ -1213,6 +1213,8 @@ const BERUEHR_VERZUG = 80;
 const BERUEHR_ZEILE = '.side-row, .irow, .menu .mi, tr, .box, li';
 const BERUEHR_NICHT = 'input, textarea, select, label, a, dialog, .layer, .side-shade, .nav-schleier, .menu .note';
 let beruehr = null, beruehrWeg = null;
+// R-3.6 (seit 4.67.2, P-118/F-1 Variante B): Maß des Hebens aus der Breite – 1,3-fach, höchstens aber 24 px breiter (design.css --press-scale)
+function pressScale(el) { const w = el.offsetWidth; if (w > 0) el.style.setProperty('--press-scale', Math.min(1.3, (w + 24) / w).toFixed(3)); }
 function beruehrZiel(t) {
   for (let el = t?.nodeType === 1 ? t : t?.parentElement; el && el !== document.body; el = el.parentElement) {
     if (el.matches('button')) return el.disabled || el.getAttribute('aria-disabled') === 'true' || el.closest('.menu .note') ? null : el;
@@ -1222,7 +1224,7 @@ function beruehrZiel(t) {
   return null;
 }
 // Rollbereich: eine Fläche über dem Element ist zum Rollen gemacht (overflow auto/scroll – wie Apple auch, solange sie noch nicht voll
-// ist); eine feste oder haftende Leiste bzw. ein Fenster davor beendet die Suche (Leisten-Knöpfe: sofort)
+// ist); eine feste oder haftende Leiste bzw. ein Fenster davor beendet die Suche (Leisten-Schaltflächen: sofort)
 function imRollbereich(el) {
   for (let p = el.parentElement; p && p !== document.body && p !== document.documentElement; p = p.parentElement) {
     const c = getComputedStyle(p);
@@ -1245,6 +1247,7 @@ addEventListener('pointerdown', e => {
   if (!e.isPrimary || e.button > 0) return;
   const el = beruehrZiel(e.target); if (!el) return;
   if (!el.matches('button')) el.classList.add('tippziel');   // R-3.6 (seit 4.48.1, APD-106): keine Textauswahl und Lupe beim Halten
+  else pressScale(el);
   const an = () => { if (beruehr?.el === el && el.isConnected && !el.classList.contains('hebt')) { el.classList.remove('beruehrt-aus'); el.classList.add('beruehrt'); } };
   beruehr = { el, x0: e.clientX, y0: e.clientY, timer: 0 };
   if (imRollbereich(el)) beruehr.timer = setTimeout(an, BERUEHR_VERZUG); else an();
@@ -1280,11 +1283,11 @@ function klickSperre() {
   return s;
 }
 
-// R-2.6 (seit 4.48.0, APD-104 Variante A, Testfall-Liste arbeit/APD-104 Testfall-Liste.md L-1 bis L-9): Großanzeige für Leisten-Knöpfe wie
-// Apple (WWDC19 Session 261) – ab der Textgröße AX1 (html.ts-ax) zeigt langes Drücken (R-3.5: still, 0,6 s) auf einen Knopf einer Leiste
-// (Kopfzeile, Fenster-Kopfzeile, Seitenleiste, schwebende Knöpfe) Icon und Namen groß in der Mitte des Bildschirms; gleitet der Finger über
-// die Knöpfe, wechselt die Anzeige; Loslassen über einem Knopf löst ihn aus, daneben schließt sie nur. Unter AX1 und bei kurzem Antippen
-// nichts davon. Esc und Drehen schließen sie ohne Auslösen. Die Anzeige ist nur zu sehen (aria-hidden) – VoiceOver nennt jeden Knopf (R-1.8).
+// R-2.6 (seit 4.48.0, APD-104 Variante A, Testfall-Liste arbeit/APD-104 Testfall-Liste.md L-1 bis L-9): Großanzeige für Leisten-Schaltflächen wie
+// Apple (WWDC19 Session 261) – ab der Textgröße AX1 (html.ts-ax) zeigt langes Drücken (R-3.5: still, 0,6 s) auf eine Schaltfläche einer Leiste
+// (Kopfzeile, Fenster-Kopfzeile, Seitenleiste, schwebende Schaltflächen) Icon und Namen groß in der Mitte des Bildschirms; gleitet der Finger über
+// die Schaltflächen, wechselt die Anzeige; Loslassen über einer Schaltfläche löst sie aus, daneben schließt sie nur. Unter AX1 und bei kurzem Antippen
+// nichts davon. Esc und Drehen schließen sie ohne Auslösen. Die Anzeige ist nur zu sehen (aria-hidden) – VoiceOver nennt jede Schaltfläche (R-1.8).
 // Solange sie offen ist, rollt die Seite nicht mit (touchmove), damit Safari den Finger nicht übernimmt.
 const GROSS_SEL = ':is(.nb, .pnav, .bbar, .dlg-head, .side-head, .side-search, .fab) button';
 let gross = null, grossEl = null, grossKlickWeg = 0, grossSelbst = false;
@@ -1300,7 +1303,7 @@ function grossAnzeigeZu() {
 function grossZu() { if (!gross) return; clearTimeout(gross.timer); grossAnzeigeZu(); gross = null; }
 function grossZeige(k) {
   if (gross.k && gross.k !== k) gross.k.classList.remove('beruehrt');
-  gross.k = k; k.classList.add('beruehrt');
+  gross.k = k; pressScale(k); k.classList.add('beruehrt');
   const host = k.closest('dialog') || document.body;
   if (!grossEl || grossEl.parentNode !== host) {
     grossEl?.remove();
@@ -1343,7 +1346,7 @@ function grossEnde(e) {
   const k = e.type === 'pointerup' ? grossKnopfBei(e.clientX, e.clientY) : null;
   grossAnzeigeZu(); gross = null;
   grossKlickWeg = performance.now() + 400;
-  // seit 4.50.0 (APD-108): eigener Klick – die Sperre ‚Wischen tippt nie an‘ (klickSperre) gilt für ihn nicht, der Finger glitt über die Knöpfe
+  // seit 4.50.0 (APD-108): eigener Klick – die Sperre ‚Wischen tippt nie an‘ (klickSperre) gilt für ihn nicht, der Finger glitt über die Schaltflächen
   if (k && !k.disabled) { grossSelbst = true; klickEigen = true; try { k.click(); } finally { grossSelbst = false; klickEigen = false; } }
 }
 addEventListener('pointerup', grossEnde, true);
@@ -1725,7 +1728,7 @@ function createSync({ list, sub, subAt = `${sub}At`, maxFields = [], nouns = ['E
     const cmp = !mine ? '' : `<br>Es ist <b>${theirs > mine ? 'neuer' : theirs < mine ? 'älter' : 'gleich alt'}</b> ${theirs === mine ? 'wie' : 'als'} die Daten auf diesem ${here} (zuletzt geändert am ${whenText(mine)}).`;
     return `Backup vom <b>${whenText(savedAt)}</b>${savedOn ? ` (${esc(savedOn)})` : ''} mit ${n} ${n === 1 ? nouns[0] : nouns[2]}.${cmp}`;
   }
-  // R-9.2: je Weg eine Kachel mit Erklärung und Knopf; Abbrechen darunter.
+  // R-9.2: je Weg eine Kachel mit Erklärung und Schaltfläche; Abbrechen darunter.
   const choices = (unit = 'Tag') => [
     { label: 'Abgleichen', cls: 'primary', value: 'merge', desc: `Je ${nouns[0]} und ${unit} gilt die neuere Fassung; gelöschte ${nouns[1]} werden auch hier gelöscht.` },
     { label: 'Ersetzen', cls: 'danger-text', value: 'replace', desc: `Alle Daten auf diesem ${deviceName()} werden durch das Backup ersetzt.` },
@@ -1939,7 +1942,7 @@ function openDialog(html, wide = false) {
   dlgFest = 0;
   dlg.returnValue = '';
   const neu = !dlg.open;
-  if (neu) dlgVorher = document.activeElement;   // R-1.8 (APD-112): Rückgabe des Fokus, wenn kein Knopf gemerkt ist
+  if (neu) dlgVorher = document.activeElement;   // R-1.8 (APD-112): Rückgabe des Fokus, wenn keine Schaltfläche gemerkt ist
   if (neu) showModalQuiet(dlg);
   placeDialogs();
   if (neu) blattAuf();   // R-4.6 (seit 4.32.0, am iPad seit 4.38.0, APD-72): das Blatt bzw. Fenster gleitet von unten herein
@@ -2222,7 +2225,7 @@ dlg.addEventListener('close', () => {
   // R-7.3: nach dem Neuaufbau durch die App die oberste Zeile zurück an ihren Platz, die Zeile aus dem Fenster kurz hervorheben
   // (seit 4.23.2 rollt nichts mehr – auch nach ‹ › nicht)
   requestAnimationFrame(() => { holdAlign(); if (sel) revealRow(sel); });
-  // R-1.8 (seit 4.50.1, APD-112; 4.50.0 nur beim Knopf eines leeren Zustands, APD-30/L-3): danach liegt der Fokus wieder auf dem Knopf bzw.
+  // R-1.8 (seit 4.50.1, APD-112; 4.50.0 nur bei der Schaltfläche eines leeren Zustands, APD-30/L-3): danach liegt der Fokus wieder auf der Schaltfläche bzw.
   // der Zeile, die das Fenster öffnete, ohne Rollen
   const vorher = dlgVorher; dlgVorher = null;
   requestAnimationFrame(() => requestAnimationFrame(() => { if (!dlg.open) fokusNachFenster(sel, vorher); }));
@@ -2504,13 +2507,13 @@ document.addEventListener('touchmove', e => {
 /* ---------- Navigation und Gesten (seit 4.30.0, APD-61 Teil 1, R-7.5) ---------- */
 
 // Wie iOS 26 (Variante ‚Überall‘, Nutzer 22.10.2026): Im iPhone-Aufbau schiebt sich der Inhalt beim Öffnen von rechts über die
-// Startliste, die Liste weicht ein Drittel nach links und dunkelt leicht ab; zurück umgekehrt – mit dem Zurück-Knopf oder durch
+// Startliste, die Liste weicht ein Drittel nach links und dunkelt leicht ab; zurück umgekehrt – mit der Zurück-Schaltfläche oder durch
 // Wischen nach rechts von überall im Inhalt; die Seite folgt dem Finger. Am iPad hoch holt Wischen nach rechts von überall im
 // Inhalt die darübergelegte Seitenleiste herein, Wischen nach links auf ihr oder der Abdunkelung schiebt sie weg; panel-left und
 // die Abdunkelung bewegen sie genauso. iPad quer (feste Seitenleiste): keine Geste. Fertig nach halber Breite oder schnellem
 // Wischen (über 0,3 px/ms in den letzten 100 ms), sonst federt die Seite zurück. ‚Bewegung reduzieren‘: Überblenden statt Schieben.
 // Vorrang (APD-38/T-35) an dieser einen Stelle: senkrecht rollt der Browser (touch-action pan-y), Bereiche mit eigenem waagrechtem Rollen,
-// Felder, Knöpfe, Kapseln, Kapsel ‚Nach oben / Ans Ende‘ und Schnellroll-Griff behalten ihre Geste; entschieden wird nach 10 px –
+// Felder, Schaltflächen, Kapseln, Kapsel ‚Nach oben / Ans Ende‘ und Schnellroll-Griff behalten ihre Geste; entschieden wird nach 10 px –
 // deutlich waagrecht (1,2 × so weit wie senkrecht) in der richtigen Richtung, sonst nichts; wer erst hält (langes Drücken), wischt
 // nicht. Kein Wischen bei offenem Fenster, Menü oder offener Sprechblase. Drehen bricht ein Ziehen ab (Zustand wie vorher, R-8.1),
 // eine laufende Bewegung springt an ihr Ziel. Je Bild nur transform und opacity (APD-59), die Bewegung als Web-Animation.
@@ -2522,7 +2525,7 @@ document.addEventListener('touchmove', e => {
 //     seite.moeglich()    – Seitenleiste wird darübergelegt (iPad hoch), seite.offen() – sie ist sichtbar
 //     seite.zeigen(an)    – Seitenleiste ein- bzw. ausblenden (Zustand ändern, nur die Seitenleiste neu aufbauen)
 //     seite.fest()        – seit 4.31.0 (APD-68): Seitenleiste steht fest links (iPad quer); seite.neu() – alles neu aufbauen
-// Aufrufe der App: navVor(change) beim Öffnen eines Eintrags aus der Startliste, navZurueck() für den Zurück-Knopf,
+// Aufrufe der App: navVor(change) beim Öffnen eines Eintrags aus der Startliste, navZurueck() für die Zurück-Schaltfläche,
 // navSeite(an) für panel-left (iPad hoch und quer) und die Abdunkelung am iPad hoch.
 const NAV_ENTSCHEID = 10, NAV_WAAGRECHT = 1.2, NAV_TEMPO = 0.3, NAV_HALTEN = 500, NAV_DUNKEL = 0.1;
 const NAV_EIGEN = 'input, textarea, select, [contenteditable], .cap, .fab, .schnell, .searchbox, [data-eigene-geste], button:not(.side-row)';
@@ -2606,7 +2609,7 @@ function navVor(change) {
   navSetze('phone', 0, w);
   navFahre('phone', 0, 1, w, () => navApp.zurueck.darunter(false));
 }
-// Zurück-Knopf (iPhone-Aufbau): bei offener Tastatur erst sie schließen (APD-36), dann schiebt sich der Inhalt hinaus
+// Zurück-Schaltfläche (iPhone-Aufbau): bei offener Tastatur erst sie schließen (APD-36), dann schiebt sich der Inhalt hinaus
 function navZurueck() {
   const z = navApp?.zurueck;
   if (!z || !isPhone() || !z.offen()) return z?.los();
@@ -2775,7 +2778,7 @@ window.addEventListener('resize', () => {
 // Kein Durchwischen (P-108/Q-2): darüber hinaus folgt die Kachel nur mit Widerstand (höchstens 60 px), die Kapseln rücken anteilig mit und wachsen bis
 // 6 %, Loslassen federt auf ‚offen‘. Gelöscht wird über die Kapsel – sie fragt mit der Sprechblase, die aus ihr wächst; die Kachel bleibt bis zur
 // Entscheidung offen. Höchstens eine Kachel ist offen; sie schließt bei
-// Tippen auf die Kachel oder daneben in der Liste (das Tippen löst sonst nichts aus; Schaltflächen außerhalb der Liste – auch Knöpfe im Kopf
+// Tippen auf die Kachel oder daneben in der Liste (das Tippen löst sonst nichts aus; Schaltflächen außerhalb der Liste – auch Schaltflächen im Kopf
 // der Liste wie panel-left, plus und Mehr – wirken sofort und schließen sie dabei, APD-30/V-12, W-42), Rollen, Wischen an einer anderen Kachel,
 // Neuaufbau der Liste (die Bean hört an der Liste mit), Drehen und Esc; das Ausblenden der Seitenleiste meldet die App mit close(). Entschieden wird wie in R-7.5 (nach
 // NAV_ENTSCHEID, deutlich waagrecht NAV_WAAGRECHT – sonst rollt die Liste); eine geschlossene Kachel bewegt sich nicht nach rechts; kein Wischen
@@ -3089,7 +3092,7 @@ document.addEventListener('keydown', e => {
   if (dlg.open || msg.open || document.querySelector('.menu, .pop')) return;
   sucheApp();
 });
-// Runder Knopf x rechts in der Suchzeile (15.2): schließt die Suchzeile – Filter und Markierung weg, der Inhalt steht ganz oben.
+// Runde Schaltfläche x rechts in der Suchzeile (15.2): schließt die Suchzeile – Filter und Markierung weg, der Inhalt steht ganz oben.
 const sucheBeendenHtml = id => `<button type="button" class="round sclose" id="${id}" aria-label="Suche beenden">${ic('x')}</button>`;
 
 // APD-61/F-20 (VoiceOver): die ‚Zurück‘-Geste (Z) bzw. Escape geht zurück bzw. schließt die darübergelegte Seitenleiste
