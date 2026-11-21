@@ -65,7 +65,7 @@ export async function checkBackup(page, { menu = '#sideMore', list, dateiname = 
       if (pop.tiles.length !== 2 || pop.tiles[0].btn !== 'Abgleichen' || pop.tiles[1].btn !== 'Ersetzen') E('R-9.2 nicht je eine Kachel für Abgleichen und Ersetzen');
       else {
         if (!/primary/.test(pop.tiles[0].cls) || !/danger-text/.test(pop.tiles[1].cls)) E('R-9.2 Abgleichen nicht blau gefüllt bzw. Ersetzen nicht in roter Schrift');
-        if (pop.tiles.some(t => !t.text || !t.after)) E('R-9.2 Erklärung fehlt oder steht nicht über dem Knopf');
+        if (pop.tiles.some(t => !t.text || !t.after)) E('R-9.2 Erklärung fehlt oder steht nicht über der Schaltfläche');
         if (pop.tiles.some(t => t.fs !== pop.headFs)) E(`R-9.2 Erklärung nicht in derselben Schrift wie ‚Backup vom …‘ (${pop.tiles.map(t => t.fs).join('/')} statt ${pop.headFs})`);
       }
       if (pop.rest.join('|') !== 'Abbrechen') E('R-9.2 unter den Kacheln nicht nur ‚Abbrechen‘');

@@ -179,11 +179,11 @@ export const ruhigFunde = p => p.evaluate(() => (window.__ruhigFunde || []).spli
 // Gegenprobe der Bedienungshilfen (seit 4.35.0, APD-43 P2): je Fall ein eingeschleuster Fehler (Init-Skript der Seite), die passende
 // Meldung (zeichen) muss rot werden. lauf.mjs --gegenprobe bedienung läuft jeden Fall einmal mit der Prüfung der Bedienungshilfen.
 export const GEGENPROBEN_BEDIENUNG = {
-  name: { zeichen: /R-1\.8 .*ohne Namen/, was: 'Icon-Knopf ohne Namen (V1)' },
+  name: { zeichen: /R-1\.8 .*ohne Namen/, was: 'Icon-Schaltfläche ohne Namen (V1)' },
   titel: { zeichen: /R-1\.8 Fenster .*ohne Titel/, was: 'Fenster ohne Titelbezug (V2)' },
-  menueknopf: { zeichen: /R-1\.8 Knopf des offenen Menüs/, was: 'Menüknopf ohne aria-haspopup/aria-expanded (V3)' },
+  menueknopf: { zeichen: /R-1\.8 Schaltfläche des offenen Menüs/, was: 'Menü-Schaltfläche ohne aria-haspopup/aria-expanded (V3)' },
   haekchen: { zeichen: /R-1\.8 Menüpunkt .*aria-checked/, was: 'Häkchen ohne aria-checked (V4)' },
-  zurueck: { zeichen: /R-4\.7 .*Fokus nicht zurück/, was: 'Fokus nicht zurück auf den Knopf (V5, V6)' },
+  zurueck: { zeichen: /R-4\.7 .*Fokus nicht zurück/, was: 'Fokus nicht zurück auf die Schaltfläche (V5, V6)' },
   schliessen: { zeichen: /R-1\.8 F-\d.*nach dem Schließen Fokus auf/, was: 'Fokus nach dem Schließen eines Fensters nicht zurück (APD-112/F-13, seit 4.50.1)' },
   inert: { zeichen: /R-1\.4 .*nicht gesperrt \(inert\)/, was: 'ohne inert (V7)' },
   modal: { zeichen: /R-1\.4 Fenster .*nicht modal/, was: 'Fenster nicht modal (V8)' },

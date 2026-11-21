@@ -31,24 +31,24 @@
 
 - **Themen vor dem vollen Lauf** (im Fenster gewählt): RLB-125 Rest, APD-145, APD-142, RLB-126.
 - **RLB-125 bereit** (`arbeit/0150 RLB-125 Rest.md`, im Backlog des Reiselogbuchs unter ‚0. Nächste Version‘): Muster 7 iPhone hoch ok (Hinweis umgebrochen, ‚Entsperren‘
-  darunter; Vorschau 960 px wie die normale Vorschau, seitlich wischen; Bilder `arbeit/RLB-125/bilder/21`, `22`, `24` bis `27`); **J-10** Abgleich Fall 23 (auf dem
+  darunter; Vorschau 960 px wie die normale Vorschau, seitlich wischen; Bilder `arbeit/RLB-125/bilder/21`, `22`, `24` bis `27`); **RLB-125/J-10** Abgleich Fall 23 (auf dem
   iPad gesperrt, auf dem iPhone gelöscht → kommt gesperrt zurück, beide gleich; `createSync` neue Eigenschaft `protect`, Fälle 21–23 in 15.18 und `abgleich.mjs`);
-  **J-11** Sperren und Entsperren zählen als Änderung; Fazit und Gesamtausgaben gesperrt nur in der Vorschau (aus J-7); Testfall-Liste RLB-125/T-1 bis T-13.
+  **RLB-125/J-11** Sperren und Entsperren zählen als Änderung; Fazit und Gesamtausgaben gesperrt nur in der Vorschau (aus RLB-125/J-7); Testfall-Liste RLB-125/T-1 bis T-13.
   **Noch zur Freigabe mit der Bau-Frage von RLB-125 (0 Nr. 29):** Wortlaut der Zeilen 21–23 der Tabelle 15.18 und die Eigenschaft `protect`.
-- **APD-145** (`arbeit/0150 APD-145 APD-142 RLB-126 Klaerung.md`): J-1 Namensraum `AD`, dabei die 19 deutschen Namen englisch; J-2 Hauptversion AppDesign
+- **APD-145** (`arbeit/0150 APD-145 APD-142 RLB-126 Klaerung.md`): APD-145/J-1 Namensraum `AD`, dabei die 19 deutschen Namen englisch; APD-145/J-2 Hauptversion AppDesign
   **5.0.0** mit `v5/`; vor APD-142. Als Nächstes Wortlaut R-1.14 und Testfall-Liste.
-- **APD-142:** J-1 erst APD-145, dann kleine Versionen: U-14 + U-21, U-16, U-18, U-19, Rest; jede neue Bean unter `AD`.
-- **RLB-126:** J-1 allgemein, AD-Bean `recentlydeleted`; Grundform als Vorschlag (Bereich am Ende der Seitenleiste, 30 Tage, Vorschau mit ‚Wiederherstellen‘,
-  ‚Endgültig löschen‘ mit Abfrage – HIG ‚Alerts‘ Freeform belegt). Ändert später die Lösch-Abfrage L-4/L-5 aus RLB-125.
-- **Bau-Frage 4.67.2 / 3.57.12 (P-118/F-1 und F-2, Stufe voll): Ja** (Nutzer 21.11.2026, im Fenster – `arbeit/0150 Bau-Frage 4.67.2.md`). Zweig `p118-pruefung`
+- **APD-142:** APD-142/J-1 erst APD-145, dann kleine Versionen: APD-142/U-14 + U-21, U-16, U-18, U-19, Rest; jede neue Bean unter `AD`.
+- **RLB-126:** RLB-126/J-1 allgemein, AD-Bean `recentlydeleted`; Grundform als Vorschlag (Bereich am Ende der Seitenleiste, 30 Tage, Vorschau mit ‚Wiederherstellen‘,
+  ‚Endgültig löschen‘ mit Abfrage – HIG ‚Alerts‘ Freeform belegt). Ändert später die Lösch-Abfrage RLB-125/L-4 und L-5.
+- **Bau-Frage 4.67.2 / 3.57.12 (P-118/F-1 und P-118/F-2, Stufe voll): Ja** (Nutzer 21.11.2026, im Fenster – `arbeit/0150 Bau-Frage 4.67.2.md`). Zweig `p118-pruefung`
   (1ce6e3c) lässt sich ohne Konflikt mit `main` zusammenführen.
 
 ## 3. Nächster Schritt
 
 1. Lesen wie immer, Tests einrichten, Lagebild als eigene Antwort mit Kachel (0 Nr. 15) – darin nennen, dass der Bau freigegeben ist.
 2. **Nach dem Lagebild sofort bauen, ohne neue Bau-Frage** (das ‚Ja‘ aus 0150 gilt): AppDesign **4.67.2** / Reiselogbuch **3.57.12** nach
-   `arbeit/0150 Bau-Frage 4.67.2.md` – Vorbereitungs-Zweige, `vorbereiten --ad 4.67.2 --app reiselogbuch=3.57.12`, Zweig `p118-pruefung` übernehmen, F-1 (R-3.6,
-   `design.css`, `ui.js` `GROSS_SEL`, `ablauf-beruehren` mit Schaltfläche außerhalb der Leisten) und F-2 (Regel Designrichtlinie 6, R-10.9, `checkBegriffe` mit
+   `arbeit/0150 Bau-Frage 4.67.2.md` – Vorbereitungs-Zweige, `vorbereiten --ad 4.67.2 --app reiselogbuch=3.57.12`, Zweig `p118-pruefung` übernehmen, P-118/F-1 (R-3.6,
+   `design.css`, `ui.js` `GROSS_SEL`, `ablauf-beruehren` mit Schaltfläche außerhalb der Leisten) und P-118/F-2 (Regel Designrichtlinie 6, R-10.9, `checkBegriffe` mit
    Gegenprobe, Verweis Zusammenarbeit 1 → 3.19.0, Umbenennen), CHANGELOG mit Testfällen P-119, Backlog, Versionsgeschichten, `fassung`, `stufe`, `los` voll im
    Hintergrund (~75 min), Bericht mit Usertest P-119.
 3. Danach (nach P-119): RLB-125 als eigene Version (Bau-Frage mit Wortlaut 15.18 Zeilen 21–23 und `protect`), dann APD-135/B-3.3 Schritt 2, dann APD-145 (5.0.0).
@@ -62,14 +62,14 @@ sobald ein iOS-Update `print()` vom Home-Bildschirm wieder zulässt, den PDF-Hin
 
 - Wortlaute freigegeben, aber noch nicht eingetragen:
   - mit dem Bau 4.67.2: R-3.6 neu, Regel ‚Schaltfläche, nie ‚Knopf‘‘ (Designrichtlinie 6, R-10.9), Verweis in Zusammenarbeit 1;
-  - mit dem Bau von RLB-125: **R-4.14** und die Lösch-Abfrage L-4, L-5.
+  - mit dem Bau von RLB-125: **R-4.14** und die Lösch-Abfrage RLB-125/L-4, L-5.
 
 ## 6. Starttext für die neue Sitzung
 
 In der neuen Sitzung müssen **AppDesign**, **ReiseLogBuch** und **ReiseLogBuch-Import** verfügbar sein.
 
 ```
-Reiselogbuch 0151 – Bau 4.67.2 / 3.57.12 (P-118/F-1 und F-2, voll; Ja aus 0150)
+Reiselogbuch 0151 – Bau 4.67.2 / 3.57.12 (P-118/F-1 und P-118/F-2, voll; Ja aus 0150)
 
 Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md, dann die GANZE Zusammenarbeit allgemein (3.18.0) und die Überschriften der Designrichtlinien. Prüfe Modell und Aufwand (get_session: eingestellt, dazu rate_limit_info; Sitzungsdatei: tatsächlich, auch model_fallback; Umgebungsvariable CLAUDE_CODE_EFFORT_LEVEL), hole die Repos g811141a/ReiseLogBuch und g811141a/ReiseLogBuch-Import dazu, wie in der AppDesign-CLAUDE.md unter ‚Arbeitsumgebung‘, richte die Tests ein und prüfe, ob in ~/.claude/settings.json Hooks stehen. Lagebild als eigene Antwort (im Chat und als Markdown-Datei) mit Kachel; danach nach UEBERGABE.md Abschnitt 3 sofort bauen – AppDesign 4.67.2 / Reiselogbuch 3.57.12 nach arbeit/0150 Bau-Frage 4.67.2.md, ohne neue Bau-Frage (das Ja aus 0150 gilt), Prüflauf voll, dann Bericht mit Usertest P-119. Hilfsagenten nur mit Opus 5.5 und Aufwand hoch, einzeln nacheinander, auch web-fetch; Fable 5.2 vorerst nicht verwenden.
 ```

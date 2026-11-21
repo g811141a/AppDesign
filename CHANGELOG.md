@@ -3,6 +3,37 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.67.2 – 21.11.2026
+
+AppDesign 4.67.2 · Designrichtlinie allgemein 4.67.2 · Zusammenarbeit allgemein 3.19.0 · Reiselogbuch 3.57.12 (Fassung 4.67.2)
+
+**Korrektur P-118/F-1 – jede gedrückte Schaltfläche hebt sich und wird größer** (P-118/1 nicht ok, Nutzer 21.11.2026, Sitzung 0147; Variante B und Wortlaut R-3.6
+freigegeben in 0147/0148 – `arbeit/0147 P-118 Muster.md`, `arbeit/0148 …` (Satz R-3.6); Bau bestätigt in Sitzung 0150).
+
+- **`design.css`:** solange der Finger liegt, hebt sich **jede** Schaltfläche als helle Fläche mit Schatten und wird größer – 1,3-fach, höchstens aber 24 px breiter;
+  vorher nur in den Leisten, alle übrigen wurden blass (35 %). Gefüllte Schaltflächen (Hauptaktion, Löschen) behalten ihre Farbe. ‚Bewegung reduzieren‘: nur Schatten.
+  Lage und Ebene beim Heben nur mit `:where`, damit Schaltflächen mit eigener Lage (fest, absolut) sie behalten.
+- **Ausnahme Auswahl-Kapsel (15.12):** ihre Schaltflächen (Smileys, Wetter) werden weiter nach 80 ms blass und heben sich nicht; ihr Anheben beim langen Drücken bleibt R-3.5.
+- **`ui.js`:** `pressScale` setzt beim Berühren das Maß aus der Breite (`--press-scale` = min(1,3; (Breite + 24) / Breite)). `GROSS_SEL` bleibt auf die Leisten
+  beschränkt: es steuert nur die Großanzeige ab AX1 (R-2.6), nicht das Heben – das Heben steckt in `design.css`.
+- **R-3.6** im freigegebenen Wortlaut; Prüfung zusätzlich `katalog.mjs` – APD-140/Z-7.
+- **Prüfungen:** `checkBeruehren` (`ablauf.mjs`) erwartet für jede Schaltfläche das Heben nach Variante B (Zweig `p118-pruefung`); `katalog.mjs` APD-140/Z-7 drückt
+  `#bkMenu` und `#bkQ1` (rot gegen 4.67.1: blass), vorher in die Mitte gerollt (im iPhone quer standen sie halb unter dem Rand); in der App prüft `ablauf-beruehren`
+  eine Schaltfläche außerhalb der Leisten (rot gegen 3.57.11).
+- AD-Bean: keine, weil das Heben ein Grundstil von `design.css` und `ui.js` ist.
+
+**Korrektur P-118/F-2 – ‚Schaltfläche‘ statt ‚Knopf‘** (Nutzer 21.11.2026, Sitzung 0147; Wortlaut freigegeben in Sitzung 0148).
+
+- **Neue Regel** in Designrichtlinie 6 ‚Schaltfläche, nie ‚Knopf‘‘ mit **R-10.9**; Verweis in Zusammenarbeit 1 (3.19.0).
+- **Prüfung `checkBegriffe`** (`doku.mjs`, im Vorlauf `doku-regeln`): meldet Datei und Zeile jedes ‚Knopf‘ bzw. ‚Knöpfe‘ in den lebenden Texten von AppDesign und App;
+  ausgenommen Geschichte, `fassung/`, `arbeit/`, Namen im Code (`checkMehrKnopf`, `bk-knoepfe`), Dateinamen von Messungen und das Sperrwort in Anführungszeichen.
+  Gegen 4.67.1 rot (362 Stellen); Gegenprobe `--gegenprobe begriffe` (`lauf.mjs`): Kommentar in `v4/ui.js`, Mehrzahl in der Designrichtlinie, Zusammensetzung im
+  Katalog – je rot.
+- **Umbenannt** mit Artikel und Endung (‚den Knopf‘ → ‚die Schaltfläche‘): Designrichtlinie, `v4/ui.js`, `v4/design.css`, Katalog (sichtbar: ‚Erste Schaltfläche‘,
+  ‚Zweite Schaltfläche‘ in ‚Hervorgehobene Quelle‘), Prüfungen, Vorlage, Backlog; im Reiselogbuch `index.html` (Kommentare), PROMPT, Designrichtlinie, Prüfungen.
+- **Nebenbei:** ältere Nummern ohne Elternnummer in `UEBERGABE.md`, zwei Arbeitsdateien und den Backlogs ergänzt (APD-78/S-1, S-2).
+- AD-Bean: keine, weil sich nur Texte und Kommentare ändern.
+
 ## 4.67.1 – 21.11.2026
 
 AppDesign 4.67.1 · Designrichtlinie allgemein 4.67.1 · Zusammenarbeit allgemein 3.18.0 · Reiselogbuch 3.57.11 (Fassung 4.67.1)

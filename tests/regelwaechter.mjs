@@ -164,7 +164,7 @@ function lauf(env = {}) {
     const grund = (r, nr) => r?.hookSpecificOutput?.permissionDecision === 'deny' && new RegExp(nr).test(r.hookSpecificOutput.permissionDecisionReason) ? r.hookSpecificOutput.permissionDecisionReason : '';
     const nur = (m, nr) => m.filter(x => x.startsWith(nr));
     const ANZ = frage(['Anzeigen (Empfohlen)', 'Ich schreibe im Chat'], 'Muster APD-30 bereit – anzeigen? (Kontext 120.000)');
-    const SCHRITTE = `Das Muster: ${M}\n\n1. Öffne den Link am iPad quer.\n2. Sieh dir die Varianten A, B und C an.\nErwartet: Symbol, Titel, Satz und Knopf stehen mittig.`;
+    const SCHRITTE = `Das Muster: ${M}\n\n1. Öffne den Link am iPad quer.\n2. Sieh dir die Varianten A, B und C an.\nErwartet: Symbol, Titel, Satz und Schaltfläche stehen mittig.`;
     const LETZTE = (t = `${SCHRITTE}\n\nAntworte im Chat, z. B. „A ok“ oder „B, weil …“.`) => `${UZ('14:06', '14:02')}\n\n${t}\n\n${Z}`;
     const mitAnz = t => antwort({ fenster: ANZ, schluss: LETZTE(t) });
     // M-1: Fenster mit Link im Fragetext – auch wenn Link und Schritte davor im Chat stehen (früher erlaubt, APD-110/L-5)

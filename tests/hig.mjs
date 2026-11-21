@@ -187,7 +187,7 @@ export function masseStile() {
     hoehe('R-5.9', e, Math.max(44, 44 * fBody), 'Options-Kapsel');
     const f = parseFloat(cs(e).fontSize), soll = v('--t-subhead', 15); if (Math.abs(f - soll) > 0.5) R('R-5.9', `Options-Kapsel ‚${name(e)}‘ Schrift ${f} px statt ${soll} (15 px)`); });
   // R-3.9 (seit 4.53.0, APD-38/T-37, Testfall-Liste APD-62/L-1 bis L-9): Kapsel Nach oben / Ans Ende, Menü, Untermenü, Kontextmenü, Suchfeld und runde
-  // Knöpfe der unteren Leiste – Grundfarbe 75 % deckend, Unschärfe 20 px, Sättigung 180 %, Schatten (L-1 bis L-3, L-5, L-6; Lichtkante --btn-rim wie R-3.2);
+  // Schaltflächen der unteren Leiste – Grundfarbe 75 % deckend, Unschärfe 20 px, Sättigung 180 %, Schatten (L-1 bis L-3, L-5, L-6; Lichtkante --btn-rim wie R-3.2);
   // ‚Transparenz reduzieren‘ deckend ohne Unschärfe (L-4); Leisten, Fenster, Sprechblasen und alle übrigen Schaltflächen ohne Unschärfe (L-7); in den
   // Stilblättern deckend bei ‚Transparenz reduzieren‘ und in der Ausgabe (L-4, L-9 – WebKit kann ‚Transparenz reduzieren‘ nicht nachbilden). Einzeln in checkGlas;
   // Gegenproben: lauf.mjs --gegenprobe masse (glas, glasleiste).
@@ -471,7 +471,7 @@ const found = new Map(), icons = new Map();
         const d = document.querySelector('dialog[open]'); return d ? d.contains(e) : true; };
       const label = e => Array.from(((e.id ? '#' + e.id + ' ' : '') + (e.getAttribute('aria-label') || e.textContent || e.placeholder || '')).trim().replace(/\s+/g, ' ')).slice(0, 40).join('');
       const res = { target: [], font: [], contrast: [], quotes: [], menu: [], rules: [] };
-      // Antippflächen: 44 pt Standard; Knöpfe in Kapseln und Schalter wie bei Apple ab 28 pt.
+      // Antippflächen: 44 pt Standard; Schaltflächen in Kapseln und Schalter wie bei Apple ab 28 pt.
       document.querySelectorAll('button, a[href], input:not([type=hidden]):not([type=file]), textarea, select, [role=menuitem]').forEach(e => {
         if (!vis(e) || !onTop(e)) return;
         // Bewusste Abweichungen der App (Selektoren), werden nicht gezählt
@@ -520,7 +520,7 @@ const found = new Map(), icons = new Map();
         if (cr < need) res.contrast.push(`${cr.toFixed(2)} : 1 (mind. ${need}) ${fs} px ‚${txt.slice(0, 30)}‘`);
       }
       // R-1.9 (seit 4.35.0, APD-43 H3): mit ‚Kontrast erhöhen‘ auch jedes Icon mindestens 4,5 : 1 zu seinem Hintergrund (gefüllte Flächen
-      // aus ::before zählen mit – Knöpfe in Kapseln)
+      // aus ::before zählen mit – Schaltflächen in Kapseln)
       if (mehr) document.querySelectorAll('svg.ic').forEach(i => {
         if (!vis(i) || !onTop(i) || i.closest('#printout, .rt, [disabled], .pf:not(.an)')) return;
         const b = i.closest('button'), vor = b && getComputedStyle(b, '::before'), fl = vor && vor.content !== 'none' && rgb(vor.backgroundColor);
@@ -576,7 +576,7 @@ const found = new Map(), icons = new Map();
             if (i.querySelector('.chev') && (i.getAttribute('aria-haspopup') !== 'menu' || !i.hasAttribute('aria-expanded'))) R('R-1.8', `Menüpunkt ‚${label(i)}‘ mit Untermenü ohne aria-haspopup/aria-expanded`);
           });
         });
-        if (document.querySelector('.menu:not(.submenu)') && !document.querySelector('[aria-haspopup="menu"][aria-expanded="true"]:not(.mi)')) R('R-1.8', 'Knopf des offenen Menüs ohne aria-haspopup="menu" und aria-expanded="true"');
+        if (document.querySelector('.menu:not(.submenu)') && !document.querySelector('[aria-haspopup="menu"][aria-expanded="true"]:not(.mi)')) R('R-1.8', 'Schaltfläche des offenen Menüs ohne aria-haspopup="menu" und aria-expanded="true"');
         document.querySelectorAll('.pop').forEach(b => { if (b.getAttribute('role') !== 'alertdialog' || b.getAttribute('aria-modal') !== 'true' || !text(b.getAttribute('aria-labelledby') || '-')) R('R-1.8', 'Sprechblase nicht als alertdialog mit Text als Name (aria-labelledby, aria-modal)'); });
         // V11: ‚Automatisch gespeichert‘ wird nicht angesagt; V13: die Offline-Meldung ohne role="status" (sie sagt der Ansage-Bereich an)
         document.querySelectorAll('[aria-live], [role=status], [role=alert]').forEach(l => { if (/gespeichert um/i.test(l.textContent)) R('R-1.8', '‚Automatisch gespeichert‘ wird angesagt (aria-live) – es ist nur im Fensterkopf lesbar'); });
@@ -594,7 +594,7 @@ const found = new Map(), icons = new Map();
       document.querySelectorAll('.nb, .pnav').forEach(b => { if (vis(b) && cs(b).position !== 'fixed' && (scroller(b) || cs(b.parentElement).position !== 'fixed'))
         R('R-2.1', `Leiste .${b.classList[0]} ist ${cs(b).position} ${scroller(b) ? 'im Rollbereich' : 'ohne festen Rahmen'} statt fest – sie federt mit`); });
       if (cs(document.documentElement).overscrollBehaviorY !== 'none') R('R-2.1', 'Seite federt am Rand nach');
-      // R-2.4 (seit 4.28.1, APD-36): iPhone quer niedrige Leisten wie iOS – Knöpfe und Suchfeld in Kopfzeile und Fensterkopf 32 px hoch
+      // R-2.4 (seit 4.28.1, APD-36): iPhone quer niedrige Leisten wie iOS – Schaltflächen und Suchfeld in Kopfzeile und Fensterkopf 32 px hoch
       // (die Kopfzeile damit 32 statt 44 px); hoch die gewohnten 44 px
       if (phone) {
         const quer = matchMedia('(orientation: landscape) and (max-height: 500px)').matches;
@@ -667,23 +667,23 @@ const found = new Map(), icons = new Map();
         const h = /px$/.test(f.height) ? parseFloat(f.height) : b.height - parseFloat(f.top) - parseFloat(f.bottom);
         if (Math.abs(w - h) >= 0.5) R('R-3.1', `Markierung von ‚${label(e)}‘ ist kein Kreis (${Math.round(w)} × ${Math.round(h)} px, eiförmig)`);
       });
-      // R-3.1/R-3.2 (P-115/5): eine Kapsel mit nur einer Icon-Schaltfläche ist oval (48 × 44) – eine einzelne Schaltfläche ist ein runder Knopf (.round)
+      // R-3.1/R-3.2 (P-115/5): eine Kapsel mit nur einer Icon-Schaltfläche ist oval (48 × 44) – eine einzelne Schaltfläche ist eine runde Schaltfläche (.round)
       document.querySelectorAll('.grp, .navgrp').forEach(g => {
         if (!vis(g)) return;
         const knoepfe = [...g.querySelectorAll('button')].filter(vis);
         if (knoepfe.length === 1 && !knoepfe[0].classList.contains('txt')) {
           const b = g.getBoundingClientRect();
-          R('R-3.1', `Kapsel mit nur einer Schaltfläche ‚${label(knoepfe[0])}‘ ist kein Kreis (${Math.round(b.width)} × ${Math.round(b.height)} px, oval) – einzeln als runder Knopf`);
+          R('R-3.1', `Kapsel mit nur einer Schaltfläche ‚${label(knoepfe[0])}‘ ist kein Kreis (${Math.round(b.width)} × ${Math.round(b.height)} px, oval) – einzeln als runde Schaltfläche`);
         }
       });
       // R-3.1 (P-117/1, P-117/F-1): eine Schaltfläche nur mit Icon, die für sich allein steht (nicht in einer Kapsel, einem Menü oder einer Zeile),
-      // ist ein Kreis – gleiche Breite und Höhe, Radius mindestens die halbe Höhe (runder Knopf .round). Vorher sah die Prüfung nur Knöpfe mit
-      // border-radius 50 % und übersah eine Icon-Schaltfläche in der Kapselform der Grundschaltfläche (Mehr-Knopf der Katalogseite, 66 × 44).
+      // ist ein Kreis – gleiche Breite und Höhe, Radius mindestens die halbe Höhe (runde Schaltfläche .round). Vorher sah die Prüfung nur Schaltflächen mit
+      // border-radius 50 % und übersah eine Icon-Schaltfläche in der Kapselform der Grundschaltfläche (Mehr-Schaltfläche der Katalogseite, 66 × 44).
       document.querySelectorAll('button').forEach(e => {
         if (!vis(e) || e.textContent.trim() || !e.querySelector('svg, .ic') || e.closest('.grp, .navgrp, .cap, .fab, .menu, .irow, .side-row, .ad-swipeactions-actions')) return;   // Wischaktionen: Kapseln 66 × 44 (15.4)
         const b = e.getBoundingClientRect(), r = cs(e).borderTopLeftRadius;
         const rund = r.endsWith('%') ? parseFloat(r) >= 50 : parseFloat(r) >= Math.min(b.width, b.height) / 2 - .5;
-        if (Math.abs(b.width - b.height) >= 0.5 || !rund) R('R-3.1', `Icon-Schaltfläche ‚${label(e)}‘ ist kein Kreis (${Math.round(b.width)} × ${Math.round(b.height)} px, Radius ${r}) – runder Knopf (.round)`);
+        if (Math.abs(b.width - b.height) >= 0.5 || !rund) R('R-3.1', `Icon-Schaltfläche ‚${label(e)}‘ ist kein Kreis (${Math.round(b.width)} × ${Math.round(b.height)} px, Radius ${r}) – runde Schaltfläche (.round)`);
       });
       // R-3.6 (P-117/1, P-117/4, P-117/F-2): langes Drücken auf eine Schaltfläche markiert keinen Text und zeigt weder Lupe noch Callout – wie
       // safariHalten (safari.mjs): user-select des Elements mit dem Text, -webkit-touch-callout der Schaltfläche.
@@ -697,7 +697,7 @@ const found = new Map(), icons = new Map();
       document.querySelectorAll('input:not([type=checkbox]):not([type=hidden]):not([type=file]), textarea').forEach(e => { if (vis(e) && parseFloat(cs(e).fontSize) < 16) R('R-1.3', `Eingabefeld ${e.id ? '#' + e.id : ''} unter 16 px – iOS vergrößert beim Antippen`); });
       // R-2.2 Anzahl unter dem Titel der Liste
       document.querySelectorAll('.side-head, .pnav-head').forEach(h => { if (vis(h) && !h.querySelector('small')) R('R-2.2', 'Anzahl unter dem Titel fehlt'); });
-      // R-3.2 Schaltflächen und Suchfelder schweben (außer innerhalb von Kapseln, Menüs, Listen und als Link; seit 4.50.0 der getönte Knopf des leeren
+      // R-3.2 Schaltflächen und Suchfelder schweben (außer innerhalb von Kapseln, Menüs, Listen und als Link; seit 4.50.0 die getönte Schaltfläche des leeren
       // Zustands – wie Apple ohne Schatten, 15.23)
       document.querySelectorAll('button, .searchbox input').forEach(e => {
         if (!vis(e) || !onTop(e) || e.closest('.grp, .navgrp, .cap, .menu, .pop .btns, #side .side-row, .irow, .fab, .smeta, .chips') || e.matches('.link, .mi, .side-row, .irow, .sclear, .fclear, .fazit-box, [data-day], .leer-knopf')) return;
@@ -742,7 +742,7 @@ const found = new Map(), icons = new Map();
         });
       });
       // R-7.7 (seit 4.50.0, APD-30, Designrichtlinie 15.23; Testfall-Liste arbeit/APD-30 Testfall-Liste.md): leerer Zustand – Symbol für VoiceOver
-      // verborgen, Titel als Überschrift, höchstens ein Knopf, mittig in seinem Bereich; bei der Suche ‚Keine Treffer für ‚…‘‘ mit dem Begriff; in der
+      // verborgen, Titel als Überschrift, höchstens eine Schaltfläche, mittig in seinem Bereich; bei der Suche ‚Keine Treffer für ‚…‘‘ mit dem Begriff; in der
       // Seitenleiste neben dem Inhalt (iPad-Aufbau) nur Symbol und Titel (außer der Suche); kein Hinweis der alten Art mehr (.emptymain, .side-empty, .empty-note)
       document.querySelectorAll('.leer').forEach(l => {
         if (!vis(l)) return;
@@ -750,7 +750,7 @@ const found = new Map(), icons = new Map();
         const sym = l.querySelector(':scope > svg');
         if (!sym || sym.getAttribute('aria-hidden') !== 'true') R('R-7.7', `leerer Zustand ${n}: Symbol fehlt oder ist für VoiceOver nicht verborgen`);
         if (!h) R('R-7.7', `leerer Zustand ${n}: der Titel ist keine Überschrift`);
-        if (l.querySelectorAll(':scope > button').length > 1) R('R-7.7', `leerer Zustand ${n}: mehr als ein Knopf`);
+        if (l.querySelectorAll(':scope > button').length > 1) R('R-7.7', `leerer Zustand ${n}: mehr als eine Schaltfläche`);
         if (l.matches('.suche') && !/^Keine Treffer für ‚.+‘$/s.test(h?.textContent.trim() || '')) R('R-7.7', `leerer Zustand ${n}: bei der Suche ‚Keine Treffer für ‚Begriff‘‘`);
         const lb = l.getBoundingClientRect(), pe = l.parentElement, pb = pe.getBoundingClientRect(), pc = cs(pe);
         const mitte = (pb.left + parseFloat(pc.paddingLeft) + pb.right - parseFloat(pc.paddingRight)) / 2;
@@ -764,7 +764,7 @@ const found = new Map(), icons = new Map();
         if (sym && Math.abs(sw - 36 * fH) > 1) R('R-7.7', `leerer Zustand ${n}: Symbol ${Math.round(sw)} px statt ${Math.round(36 * fH)} (36 pt, überall gleich groß)`);
         if (h && (Math.abs(parseFloat(cs(h).fontSize) - tH) > 0.5 || +cs(h).fontWeight !== 600)) R('R-7.7', `leerer Zustand ${n}: Titel ${cs(h).fontSize} ${cs(h).fontWeight} statt ${tH}px 600 (17 pt halbfett, überall gleich groß)`);
         if (l.closest('#side') && !document.documentElement.classList.contains('phone') && !l.matches('.suche') && l.querySelector(':scope > p, :scope > button'))
-          R('R-7.7', `leerer Zustand ${n} in der Seitenleiste neben dem Inhalt: nur Symbol und Titel (Satz und Knopf stehen rechts)`);
+          R('R-7.7', `leerer Zustand ${n} in der Seitenleiste neben dem Inhalt: nur Symbol und Titel (Satz und Schaltfläche stehen rechts)`);
       });
       document.querySelectorAll('.emptymain, .side-empty, .empty-note').forEach(e => { if (vis(e)) R('R-7.7', `leerer Bereich mit grauem Hinweis ‚${e.textContent.trim().slice(0, 30)}‘ statt des leeren Zustands (15.23)`); });
       // R-1.1 Aktionen und Suche oben – unten nur feste Hinweise
@@ -785,7 +785,7 @@ const found = new Map(), icons = new Map();
         if (!bs[0].classList.contains('primary')) R('R-4.3', 'empfohlene Aktion nicht blau gefüllt an erster Stelle');
         if (!/Abbrechen|Weiter bearbeiten/.test(bs[bs.length - 1].textContent)) R('R-4.3', '‚Abbrechen‘ nicht zuletzt');
         bs.slice(1, -1).forEach(b => { if (/Ersetzen|löschen|Löschen/.test(b.textContent) && !b.classList.contains('danger-text')) R('R-4.3', `zerstörende Aktion ‚${b.textContent}‘ nicht in roter Schrift`); }); });
-      // R-4.5 Menü, Sprechblase und Fenster passen ganz auf den Bildschirm (sonst wären Knöpfe unerreichbar)
+      // R-4.5 Menü, Sprechblase und Fenster passen ganz auf den Bildschirm (sonst wären Schaltflächen unerreichbar)
       document.querySelectorAll('.pop, .menu, dialog[open]').forEach(e => { const b = e.getBoundingClientRect(); if (!b.width || !b.height) return;
         if (b.top < -1 || b.left < -1 || b.bottom > innerHeight + 1 || b.right > innerWidth + 1) R('R-4.5', `${e.classList[0] || e.tagName.toLowerCase()} ragt über den Bildschirm hinaus (${Math.round(b.top)}–${Math.round(b.bottom)} von ${innerHeight} px)`); });
       // R-3.3 (seit 4.12.0): blau gefüllt nur die Hauptaktion – höchstens eine je Fenster bzw. Sprechblase.
@@ -908,7 +908,7 @@ const found = new Map(), icons = new Map();
         for (const sh of document.styleSheets) { try { geh(sh.cssRules, false); } catch {} }
       }
       // Grundregel ‚nichts überlappt‘ (seit 4.37.0, APD-43 Teil 2, P2 Punkt 5) in jeder Textgröße: die Zeilen eines Textes liegen nicht
-      // übereinander (Zeilenhöhe mindestens die Schriftgröße), Knöpfe derselben Ebene schneiden sich nicht (sichtbarer Teil gemessen).
+      // übereinander (Zeilenhöhe mindestens die Schriftgröße), Schaltflächen derselben Ebene schneiden sich nicht (sichtbarer Teil gemessen).
       const zeilenGemeldet = new Set();
       document.querySelectorAll('button, label, h1, h2, h3, b, small, p, .t, td, th, .nb-title, .pnav-title').forEach(e => {
         if (!vis(e) || !onTop(e) || !e.textContent.trim() || e.closest('#printout, .rt')) return;
@@ -929,7 +929,7 @@ const found = new Map(), icons = new Map();
         if (x.contains(y) || y.contains(x) || ebene(x) !== ebene(y)) continue;
         const sa = sichtbar(x), sb = sichtbar(y);
         if (Math.min(sa.rr, sb.rr) - Math.max(sa.l, sb.l) < 2 || Math.min(sa.bb, sb.bb) - Math.max(sa.t, sb.t) < 2) continue;
-        R('R-1.10', `Knöpfe überlappen: ‚${label(x)}‘ und ‚${label(y)}‘`);
+        R('R-1.10', `Schaltflächen überlappen: ‚${label(x)}‘ und ‚${label(y)}‘`);
       }
       // R-2.1 (seit 4.27.0, APD-28): Die Seite rollt nie, nur der Inhalt – nach jedem Schritt steht das Fenster bei 0.
       if (Math.round(scrollY) !== 0) R('R-2.1', `Die Seite rollt (scrollY ${Math.round(scrollY)}) – nur der Inhalt darf rollen (Rollbereich .rolle)`);
@@ -950,7 +950,7 @@ const found = new Map(), icons = new Map();
         if (e.hasAttribute('switch') && (ap === 'none' || ac !== soll)) R('R-5.7', `Schalter ‚${name}‘ mit Safaris Schalter nicht im Systemaussehen (appearance ${ap}, accent-color ${ac} statt ${soll})`);
       });
       // R-10.1 (seit 4.12.0): gleiche Aktion = gleiches Icon – Bezeichnung und Icon jeder sichtbaren Schaltfläche, verglichen in report()
-      // seit 4.42.0 (APD-87): der Mehr-Knopf (data-mehr) zeigt offen senkrechte Punkte – das ist dasselbe Icon
+      // seit 4.42.0 (APD-87): die Mehr-Schaltfläche (data-mehr) zeigt offen senkrechte Punkte – das ist dasselbe Icon
       res.icons = [...document.querySelectorAll('button[aria-label]')].filter(b => vis(b) && b.querySelector('svg.ic')).map(b => [b.getAttribute('aria-label'), b.querySelector('svg.ic').hasAttribute('data-mehr') ? 'ellipsis' : b.querySelector('svg.ic').innerHTML.slice(0, 80)]);
       return res;
     }, skipTargets);
@@ -982,7 +982,7 @@ const found = new Map(), icons = new Map();
   }
 
   // R-1.7 (seit 4.29.0, 3 APD-63/S-2 bis APD-63/S-6): Die Prüfbrowser liefern für env(safe-area-inset-…) immer 0 – deshalb setzt die Prüfung
-  // echte Gerätewerte über die Variablen --safe-… (design.css) und prüft: nichts fest Stehendes (Knopf, Feld, Titel, Kachel) liegt
+  // echte Gerätewerte über die Variablen --safe-… (design.css) und prüft: nichts fest Stehendes (Schaltfläche, Feld, Titel, Kachel) liegt
   // unter Statusleiste bzw. Dynamic Island, Aussparung oder Home-Leiste; Fenster, Menüs und Sprechblasen (außer dem bildschirmfüllenden
   // iPhone-Fenster) bleiben ganz innerhalb; Inhalt darf darunter rollen, sein Ende lässt sich aber bis über die Home-Leiste rollen.
   // Werte: iPhone 16 Pro / 17 Pro (402 × 874) und iPad; oben 62 am iPhone hoch ist streng (vom Home-Bildschirm liegt die Statusleiste
@@ -1043,7 +1043,7 @@ const found = new Map(), icons = new Map();
 
   // R-1.10 (seit 4.37.0, APD-43 Teil 2, P2 Punkte 2–4, W3, B7): die Textgröße wechselt bei offener Seite von der aktuellen Größe
   // (Standard 17) auf AX5 (53 px) und zurück – wie über das Kontrollzentrum (W1). Bei 53: kein Text kleiner als vorher, jeder Text eines
-  // Textstils genau Apples Wert (±1), Leisten höchstens im XXXL-Maß (Text bis 26, Knöpfe bis 60 px; iPhone quer 32 px wie bei Standard),
+  // Textstils genau Apples Wert (±1), Leisten höchstens im XXXL-Maß (Text bis 26, Schaltflächen bis 60 px; iPhone quer 32 px wie bei Standard),
   // keine Tabelle im Inhalt, Bezeichnung über dem Wert, die Ausgabe (.rt) unverändert, der letzte Eintrag nicht verdeckt (R-7.1).
   // Seit 4.46.0 (APD-100): Abschnittsköpfe der Liste (.side-sec) wachsen wie die Überschrift des Kopfs, also im Leisten-Maß (R-7.6).
   const AX5 = { 34: 60, 28: 58, 22: 56, 20: 55, 17: 53, 16: 51, 15: 49, 13: 44, 12: 43, 11: 40 };

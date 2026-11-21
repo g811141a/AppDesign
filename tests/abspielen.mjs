@@ -22,7 +22,7 @@
 // und Suchzeile liegen in jedem Bild zwischen ihrer Lage vor und nach dem Schritt (± toleranz) – so wird ein Springen sichtbar,
 // das der Vergleich des Endzustands nicht sieht (P-60). Gegen 4.28.0 rot (−403, −428, −232).
 // Seit 4.38.0 (RLB-103, Testfall-Liste arbeit/APD-77 Testfall-Liste.md APD-77/F-11 bis APD-77/F-15): das Beenden der Messung im Mehr-Menü wird nicht
-// nachgespielt – die letzten beiden Handlungen ‚tippen <Mehr-Knopf>‘ und ‚tippen button‘ (die Zeile ‚Messung beenden und teilen‘), bei
+// nachgespielt – die letzten beiden Handlungen ‚tippen <Mehr-Schaltfläche>‘ und ‚tippen button‘ (die Zeile ‚Messung beenden und teilen‘), bei
 // neueren Messungen vor der Zeile ‚! messung beendet‘ (ui.js messTeilen). Option ende: false spielt sie mit (Gegenprobe APD-77/F-15).
 
 export const SPALTEN = ['t', 'sy', 'inh', 'sh', 'ih', 'vh', 'vt', 'vvtop', 'kopf', 'such', 'tag', 'lkopf', 'lsuch', 'lroll', 'fokus', 'lage'];
@@ -154,7 +154,7 @@ export async function spieleAb(p, m, { ziele = {}, woerter = {}, bis = Infinity,
     const ist = await p.evaluate(() => {
       const o = __safari.fest ? visualViewport.offsetTop : __safari.top(), top = sel => { const e = [...document.querySelectorAll(sel)].find(x => x.getClientRects().length); return e ? Math.round(e.getBoundingClientRect().top - o) : null; };
       const a = document.activeElement, fokus = !a || a === document.body ? null : a.id || a.tagName.toLowerCase();
-      // seit 4.35.0 (APD-43 R-1.8): der Fokus geht nach Menü, Sprechblase und Seitenwechsel auf Knopf bzw. Kopfzeile – das zeichneten
+      // seit 4.35.0 (APD-43 R-1.8): der Fokus geht nach Menü, Sprechblase und Seitenwechsel auf Schaltfläche bzw. Kopfzeile – das zeichneten
       // ältere Messungen nicht auf (dort ‚–‘); verglichen wird dann nur, ob ein Textfeld den Fokus hat
       return { kopf: top('#app .nb, #app .pnav'), such: top('#app .searchbox'), fokus, feld: !!a?.matches?.('input, textarea') };
     });

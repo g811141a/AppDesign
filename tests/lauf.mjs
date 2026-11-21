@@ -14,7 +14,7 @@
 //   import { lauf } from '../../AppDesign/tests/lauf.mjs';
 //   process.exit(await lauf({ dir: new URL('..', import.meta.url), pw, tests: ['ablauf-fenster', { name: 'hig', teile: { hell: { PRUEF_DARSTELLUNG: 'light' } } }] }));
 // Schalter: --alle (trotz Fehler weiter, am Ende alle roten) · --browser chromium,webkit · --nur name,name ·
-// --gegenprobe [grundregeln | bedienung | schema | text | masse | pruefseite] (jeder Test muss rot werden; zusammen mit --alle; bedienung seit 4.35.0: je eingeschleustem
+// --gegenprobe [grundregeln | bedienung | schema | begriffe | text | masse | pruefseite] (jeder Test muss rot werden; zusammen mit --alle; bedienung seit 4.35.0: je eingeschleustem
 // Fehler der Bedienungshilfen ein Lauf der Prüfung ‚bedienung‘ der App, genau die passende Meldung muss rot werden, APD-43 P2;
 // schema seit 4.36.0: je Fall APD-78/S-1 bis APD-78/S-10 ein Lauf der Doku-Prüfung der App mit genau dieser Verletzung; text seit 4.37.0: je eingeschleustem Fehler der Textgröße ein Lauf der Prüfung ‚text-regeln‘ der App, APD-43 Teil 2 P3) · --jobs N (Standard seit 4.16.1: so viele wie Kerne – APD-10, unter Volllast mit 2 × Kernen schwankte WebKit) · --zeit S (Zeitgrenze je Test, Standard 300) · --abdeckung (Test × Ansicht ausgeben). masse seit 4.51.0: je eingeschleustem Fehler der Maße und Stile (APD-40/A-1 bis APD-40/A-8) ein Lauf der Prüfung ‚hig‘ der App;
 // Rote Läufe (seit 4.42.0, APD-85 Teil 1): kein Abbruch beim ersten, erst ab dem dritten roten Lauf; am Ende jeder rote einmal allein –
@@ -25,7 +25,7 @@ import { existsSync, readFileSync, writeFileSync, mkdirSync, readdirSync } from 
 import { cpus } from 'node:os';
 import { fileURLToPath } from 'node:url';
 import { GEGENPROBEN_BEDIENUNG, GEGENPROBEN_TEXT, GEGENPROBEN_MASSE } from './pruefe.mjs';
-import { GEGENPROBEN_SCHEMA } from './doku.mjs';
+import { GEGENPROBEN_SCHEMA, GEGENPROBEN_BEGRIFFE } from './doku.mjs';
 import { GEGENPROBEN_PRUEFSEITE } from './pruefseite.mjs';
 
 const mmss = ms => { const s = Math.round(ms / 1000); return `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`; };
@@ -33,7 +33,7 @@ const mmss = ms => { const s = Math.round(ms / 1000); return `${String(Math.floo
 export async function lauf({ dir, pw, tests, bedienung = 'ablauf-bedienung', text = 'text-regeln', doku = 'doku-regeln', masse = 'hig', schnittstelle = 'schnittstelle-regeln', pruefseite = 'bausteine-pruefseite', vorlauf = [doku, 'version-regeln', schnittstelle], argv = process.argv.slice(2) }) {
   const arg = (n, d) => { const i = argv.indexOf(n); return i < 0 ? d : argv[i + 1]; };
   const art = argv[argv.indexOf('--gegenprobe') + 1];
-  const alle = argv.includes('--alle'), abdeckung = argv.includes('--abdeckung'), gegenprobe = argv.includes('--gegenprobe') ? (['grundregeln', 'bedienung', 'schema', 'text', 'masse', 'pruefseite'].includes(art) ? art : '1') : '';
+  const alle = argv.includes('--alle'), abdeckung = argv.includes('--abdeckung'), gegenprobe = argv.includes('--gegenprobe') ? (['grundregeln', 'bedienung', 'schema', 'begriffe', 'text', 'masse', 'pruefseite'].includes(art) ? art : '1') : '';
   const alleLaufen = alle || !!gegenprobe;   // die Gegenprobe läuft immer ganz durch
   const browsers = arg('--browser', 'chromium,webkit').split(',');
   const nur = arg('--nur', '') ? arg('--nur', '').split(',') : null;
@@ -70,6 +70,11 @@ export async function lauf({ dir, pw, tests, bedienung = 'ablauf-bedienung', tex
     // (ohne Browser – nur im ersten)
     for (const [fall, g] of Object.entries(GEGENPROBEN_SCHEMA)) if (!nur || nur.includes(fall))
       liste.push({ name: doku, teil: fall, br: browsers[0], env: { PRUEF_GEGENPROBE: 'schema:' + fall }, zeichen: g.zeichen, key: `${doku}:${fall}|${browsers[0]}`, label: `${doku} (${fall}: ${g.was}) · ${browsers[0]}` });
+  } else if (gegenprobe === 'begriffe') {
+    // seit 4.67.2 (P-118/Z-3, R-10.9): je eingeschleustem Sperrwort (Kommentar in v4/ui.js, Mehrzahl in der Designrichtlinie, Zusammensetzung im
+    // Katalog) ein Lauf der Doku-Prüfung der App – genau die Meldung R-10.9 mit dieser Datei muss rot werden (ohne Browser – nur im ersten)
+    for (const [fall, g] of Object.entries(GEGENPROBEN_BEGRIFFE)) if (!nur || nur.includes(fall))
+      liste.push({ name: doku, teil: fall, br: browsers[0], env: { PRUEF_GEGENPROBE: 'begriffe:' + fall }, zeichen: g.zeichen, key: `${doku}:${fall}|${browsers[0]}`, label: `${doku} (${fall}: ${g.was}) · ${browsers[0]}` });
   } else if (gegenprobe === 'pruefseite') {
     // seit 4.64.0 (APD-135/B-3.1, APD-135/E-6): je Teil der Prüfseite und je eingeschleustem Fehler seiner Bausteine ein Lauf; ein Teil ohne Fehler prüft nichts
     const t = tests.find(x => (typeof x === 'string' ? x : x.name) === pruefseite);

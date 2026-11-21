@@ -105,7 +105,7 @@ export async function checkVersions(appDir, browser = null) {
     if (!/AppDesign/.test(t) || !/neu öffnen/.test(t)) E('kein Hinweis beim Start, obwohl eine ältere AppDesign-Fassung geladen ist');
     await p.close();
     // Frische Seite (WebKit nähme sonst die untergeschobene alte ui.js aus dem Zwischenspeicher). APD-5/D-3: ein geänderter
-    // Arbeitsstand v4/ (anderer Knopf, Skriptfehler) darf die App nicht erreichen – sie ruft v4/ gar nicht ab.
+    // Arbeitsstand v4/ (andere Schaltfläche, Skriptfehler) darf die App nicht erreichen – sie ruft v4/ gar nicht ab.
     const q = await browser.newPage(), v4 = [], fehler = [];
     q.on('pageerror', e => fehler.push(e.message));
     await q.route(/AppDesign\/v4\//, async r => { v4.push(r.request().url()); await r.fulfill({ contentType: r.request().url().endsWith('.css') ? 'text/css' : 'text/javascript',

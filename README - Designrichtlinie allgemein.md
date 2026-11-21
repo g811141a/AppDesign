@@ -1,6 +1,6 @@
 # Designrichtlinie allgemein
 
-**Version 4.67.1** · Stand 21.11.2026
+**Version 4.67.2** · Stand 21.11.2026
 
 Allgemeine Gestaltungs- und Bedienregeln für alle Web-Apps von g811141a auf iPad und iPhone. Die Datei liegt im Design-Repo
 **AppDesign** (g811141a/AppDesign); ihre Versionsnummer ist die des Repos. Die Komponenten sind dort einmal programmiert und
@@ -71,7 +71,7 @@ heller).
 | `--muted` | `#6e6e73` | `#98989d` | dezente Texte, Hinweise (Kontrast ≥ 4,5 : 1) |
 | `--line` | `#d1d1d6` | `#38383a` | Trennlinien (Haarlinie) |
 | `--accent` | `#007aff` | `#0a84ff` | **Akzentfarbe Apple-Blau:** Hauptaktion, Auswahl, Schritt-Nummern, Links, Rahmen und Markierungen |
-| `--accent-fill` | = `--accent` | = `--accent` | gefüllte blaue Flächen (Hauptaktion, gewählte Kachel, Schritt-Nummer, Backup-Knopf); eigener Wert nur mit ‚Kontrast erhöhen‘ |
+| `--accent-fill` | = `--accent` | = `--accent` | gefüllte blaue Flächen (Hauptaktion, gewählte Kachel, Schritt-Nummer, Backup-Schaltfläche); eigener Wert nur mit ‚Kontrast erhöhen‘ |
 | `--accent-ink` | `#ffffff` | `#ffffff` | Text auf Akzentfarbe |
 | `--sel-bg` | `#dcebff` | `#10335c` | Fläche eingeschalteter und gedrückter Schaltflächen, Options-Kapseln |
 | `--sw-on` / `--sw-off` | `#34c759` / `#e9e9eb` | `#30d158` / `#39393d` | Schalter ein (Apple-Grün) / aus |
@@ -124,14 +124,14 @@ heller).
   (`.az`, `inline-block`, höchstens so breit wie die Zeile), der ‚·‘ mit geschütztem Leerzeichen im Block des Eintrags davor, Zusatz in
   Klammern ohne Umbruch.
 - **Leisten** (Kopfzeile, Seitenkopf, Suchzeile, Seitenleisten-Kopf, Fensterkopf, untere Leiste, Backup-Kachel, Kapsel unten,
-  Meldung) wachsen nur bis XXXL (`--tb-<Stil>`, Faktor `--fb`: Text bis 23, Knöpfe 44 → 60 px, Icons bis 27 px); iPhone quer gar
+  Meldung) wachsen nur bis XXXL (`--tb-<Stil>`, Faktor `--fb`: Text bis 23, Schaltflächen 44 → 60 px, Icons bis 27 px); iPhone quer gar
   nicht (R-2.4). Im Inhalt wachsen Icons (`--k`), senkrechte Innenabstände und Mindesthöhen mit dem Body-Faktor; 44 px bleibt
   die Untergrenze, Kreise bleiben Kreise, seitliche Ränder bleiben fest.
 - **Umbau bei großer Schrift** (`html.ts-um`: ab AX1; ab XXL, wenn der Inhalt schmal ist – unter 600 px, z. B. iPhone hoch oder iPad hoch
   neben der Seitenleiste): Nebeneinanderliegendes steht untereinander –
-  Datum der Kachel, Menü-Wert unter dem Text, Kasten-Bezeichnung über dem Wert, Knöpfe des Schrittkopfs unter dem Titel; ab XXL
+  Datum der Kachel, Menü-Wert unter dem Text, Kasten-Bezeichnung über dem Wert, Schaltflächen des Schrittkopfs unter dem Titel; ab XXL
   Silbentrennung im Inhalt, lange Wörter brechen im Rollbereich um; ab AX1
-  (`html.ts-ax`) Tabellen im Inhalt als Kästen (15.13), Sprechblasen-Knöpfe untereinander.
+  (`html.ts-ax`) Tabellen im Inhalt als Kästen (15.13), Sprechblasen-Schaltflächen untereinander.
 
 | Stil (pt) | xS | S | M | **L** | XL | XXL | XXXL | AX1 | AX2 | AX3 | AX4 | AX5 | im Bau |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
@@ -173,7 +173,7 @@ Body = Grundgröße der Stufe (14 … 53). Zeilenabstände und Werte wörtlich a
 - **Farben – jede Farbe hat genau eine Bedeutung** (R-3.3):
   - **Blau gefüllt = Hauptaktion** – in Fenstern und Sprechblasen höchstens eine (z. B. Häkchen nach einer Änderung, Teilen
     in der Vorschau, Backup erstellen in der Erinnerung): `--accent`, weiße Schrift, Lichtkante, Schatten `--glow-accent`.
-    Außerhalb von Fenstern und Sprechblasen sind nur der Knopf der Backup-Kachel bzw. des festen Hinweises unten (15.19, 15.17)
+    Außerhalb von Fenstern und Sprechblasen sind nur die Schaltfläche der Backup-Kachel bzw. des festen Hinweises unten (15.19, 15.17)
     und der gewählte Eintrag der Liste (15.4) blau gefüllt. Menüs und die Kapsel der Kopfzeile werden nicht eingefärbt.
   - **Blau getönt mit Haarlinie = eingeschaltet** (Umschalt-Schaltflächen wie Wetter, Reisemittel): Fläche `--sel-bg`,
     Haarlinie (0,5 px) `--accent`, Schrift normal, Schatten `--glow-accent` (`aria-pressed="true"`). Die Breite ändert sich
@@ -184,8 +184,8 @@ Body = Grundgröße der Stufe (14 … 53). Zeilenabstände und Werte wörtlich a
     ist** – auch Listenzeilen (Eintrag der Seitenleiste, z. B. über das Kontextmenü → Einstellungen), Tabellenzeilen (Tag; beim
     Blättern wandert die Markierung mit) und Kästen (Fazit). Technisch `setOpener(selector)`.
     [HIG – Lists and tables](https://developer.apple.com/design/human-interface-guidelines/lists-and-tables)
-  - **Berühren** (R-3.6, wie Apple): Knöpfe einer Leiste sind die der Kopfzeile, Fenster-Kopfzeile, Seitenleiste und die schwebenden
-    Knöpfe; ihre helle Fläche ist neben dem Finger zu sehen, wie Liquid Glass in iOS 26 (‚Bewegung reduzieren‘: ohne Wachsen). In
+  - **Berühren** (R-3.6, wie Apple): Schaltflächen einer Leiste sind die der Kopfzeile, Fenster-Kopfzeile, Seitenleiste und die schwebenden
+    Schaltflächen; ihre helle Fläche ist neben dem Finger zu sehen, wie Liquid Glass in iOS 26 (‚Bewegung reduzieren‘: ohne Wachsen). In
     Rollbereichen erst nach 80 ms, damit beim Rollen nichts aufblitzt. ‚Blau getönt = gedrückt‘ (offenes Menü) bleibt davon unberührt.
   - **Apple-Grün** nur für eingeschaltete **Schalter**.
   - **Rot gefüllt = Löschen/Verwerfen** (endgültige Aktionen, z. B. in Sprechblasen): `--danger-fill`, weiße Schrift, Schatten
@@ -240,6 +240,11 @@ Body = Grundgröße der Stufe (14 … 53). Zeilenabstände und Werte wörtlich a
 - Systembeschriftungen (z. B. „Reset“ der iPad-Datumsauswahl) bleiben.
 - **Anführungszeichen:** In den Texten der Apps immer **einfache** Anführungszeichen ‚…‘ (z. B. ‚In Dateien sichern‘, Spalte
   ‚Wie war was?‘), **keine doppelten** „…“ (R-10.1).
+- **Schaltfläche, nie ‚Knopf‘:** Ein antippbares Bedienelement heißt in allen Texten **Schaltfläche**, auch in Zusammensetzungen
+  (Mehr-Schaltfläche, Icon-Schaltfläche, Hauptschaltfläche). Das gilt für die App, für Doku, Regeln, Katalog, Backlog, Testfälle,
+  Kommentare im Code und Prüfmeldungen und für die Antworten von Claude. Ausgenommen sind Geschichte (CHANGELOG, Versionsgeschichten,
+  ‚Erledigt‘ im Backlog, `ZUORDNUNG.md`), die festen Fassungen `fassung/X.Y.Z/`, die Arbeitsdateien in `arbeit/` und Namen im Code
+  (Zusammenarbeit 1). R-10.9.
 
 ## 7. Fenster (Dialoge)
 
@@ -529,7 +534,7 @@ Gemessene bzw. belegte Eigenheiten mit Quelle; sie gelten für alle Apps, die Pr
   - **Grenzen:** iPhone quer mit offener Suchzeile bleibt für ein Feld im Inhalt zu wenig Platz (59 px) – dort verschiebt Safari
     weiter etwas; ein Feld, das höher ist als der sichtbare Teil (z. B. ‚Programm‘ im Fenster iPhone quer), ist nicht gemessen.
 - **Fokus-Rahmen in Textfeldern** (R-3.4, gemessen 24.10.2026 in WebKit und Chromium der Prüfumgebung):
-  `:focus-visible` trifft bei Textfeldern (ein- und mehrzeilig) **auch beim Antippen** zu – nur bei Knöpfen nicht; Safari zeichnet
+  `:focus-visible` trifft bei Textfeldern (ein- und mehrzeilig) **auch beim Antippen** zu – nur bei Schaltflächen nicht; Safari zeichnet
   dann `outline: auto 5px` blau. Ein Ring ‚nur bei `:focus-visible`‘ ließe ihn also in jedem Textfeld stehen. Deshalb: `:focus`
   ohne Rahmen, der eigene Ring nur mit `html.tastatur` (ui.js: Taste zum Bewegen setzt, Berührung bzw. Klick nimmt es weg), Textfelder
   nie. Bewegt ein Skript den Fokus nach einem Textfeld weiter, gilt auch das neue Ziel als `:focus-visible` – auch deshalb die Klasse.
@@ -580,11 +585,11 @@ Gemessene bzw. belegte Eigenheiten mit Quelle; sie gelten für alle Apps, die Pr
   (kein `pointercancel`) – als eigene Aufgabe 1–4 ms nach `pointerup`, also nach einem `setTimeout 0`. Eine Sperre ‚Wischen tippt nie an‘
   gilt deshalb bis zum Loslassen und danach noch 400 ms für genau diesen einen Klick und zählt den größten Weg. iPad: Vermutung.
 - **Am oberen Rand kein Klick (iPhone quer, Home-Bildschirm):** eine Berührung bis y 20 px liefert `pointerdown`/`pointerup`, aber keinen `click` –
-  ab y 21 schon (Messungen 06.11.2026, P-97/6, und 07.11.2026, APD-121, iOS 18.7: y 20 ohne Klick, y 21 viermal mit Klick). Der Mehr-Knopf öffnet
+  ab y 21 schon (Messungen 06.11.2026, P-97/6, und 07.11.2026, APD-121, iOS 18.7: y 20 ohne Klick, y 21 viermal mit Klick). Die Mehr-Schaltfläche öffnet
   deshalb auch ganz oben angetippt; höher als y 21 kommt der Finger am Gerät nicht. Was beim Antippen schließen soll (Sperrschicht hinter Menüs und
   Sprechblasen), schließt beim Loslassen (bis 20 px Weg) und verschluckt einen Klick danach; das Safari-Modell schickt bis y 20 keinen Klick
   (`obenOhneKlick`, Grenze `KEIN_KLICK_OBEN` = 21, eingeschaltet in den Prüfungen zum oberen Rand – überall an, fiele der Tipp auf die Mitte des
-  Mehr-Knopfs, y 16, in allen Prüfungen weg).
+  Mehr-Schaltfläche, y 16, in allen Prüfungen weg).
 - **Neustart ist nicht erkennbar** (R-7.2): Safari meldet nicht, **warum** eine Seite neu lädt. Als Neustart zählt jedes
   Neuladen: App im App-Umschalter weggewischt, **von iOS im Hintergrund beendet** (Speicher – auch nach kurzer Zeit in einer
   anderen App) oder neue Version geladen. Bleibt die Seite im Speicher, kommen nur `visibilitychange` und `pageshow` (aus dem
@@ -675,9 +680,9 @@ und Meldungen · Eingabe · Inhalt · Dienste (ohne eigene Oberfläche).
 - **Zweck:** Suchen in der aktuellen Ansicht und in der zentralen Liste (15.4). **Technisch:** `.searchbox`, `.navgrp`;
   `searchWords`, `findsAll`, `findsAny`, `markWords` (ui.js). Regel R-2.3.
 - **Aufbau:** Lupe (search) · Eingabe „Suchen“ · Trefferanzeige · x-Schaltfläche; rechts daneben Kapsel-Gruppe chevron-up /
-  chevron-down, dann der runde Knopf x ‚Suche beenden‘ (schließt die Suchzeile). **Geöffnet** wird die Suche über ‚Suchen‘ (search)
+  chevron-down, dann die runde Schaltfläche x ‚Suche beenden‘ (schließt die Suchzeile). **Geöffnet** wird die Suche über ‚Suchen‘ (search)
   als ersten Punkt im Mehr-Menü, darunter ein Strich (wie ‚Find in Note‘ in Notizen), oder mit ⌘F (R-4.7); eine eigene Lupe in der
-  Kapsel gibt es nicht. Der Mehr-Knopf bleibt bei offener Suche normal (blau getönt und senkrecht nur bei offenem Menü, 15.6).
+  Kapsel gibt es nicht. Die Mehr-Schaltfläche bleibt bei offener Suche normal (blau getönt und senkrecht nur bei offenem Menü, 15.6).
 - **Maße:** 44 px hoch (iPhone quer 32 px, R-2.4), Kapsel; in der zweiten Zeile der Kopfzeile über die volle Breite,
   Treffer-Navigation immer am rechten Rand; Abstand 12 px.
 - **Aussehen:** wie die schwebende Schaltfläche; Lupe, Trefferanzeige grau; x als grauer Kreis mit weißem Kreuz.
@@ -718,8 +723,8 @@ und Meldungen · Eingabe · Inhalt · Dienste (ohne eigene Oberfläche).
 - **Titel antippen** (R-2.7): Ersatz für das Antippen der Statusleiste bei Apple, das in der Home-Bildschirm-App für eigene
   Rollbereiche nicht wirkt (Abweichung, 16).
 - **Großanzeige** (R-2.6, wie Apple): weil die Leisten ab AX1 nicht mehr mitwachsen (R-1.10). Die Anzeige ist nur zu sehen – VoiceOver
-  nennt jeden Knopf mit Namen (R-1.8).
-- **iPhone quer niedrig** (R-2.4, wie iOS quer): Markierung in Kapseln 25 × 25; die Antippfläche 44 × 44 der runden Knöpfe ist
+  nennt jede Schaltfläche mit Namen (R-1.8).
+- **iPhone quer niedrig** (R-2.4, wie iOS quer): Markierung in Kapseln 25 × 25; die Antippfläche 44 × 44 der runden Schaltflächen ist
   unsichtbar.
 - **Filter** (z. B. „Alle / Nur erfasste“, R-7.9).
 
@@ -762,7 +767,7 @@ und Meldungen · Eingabe · Inhalt · Dienste (ohne eigene Oberfläche).
   blendet sie nie aus; auf einer Kachel zeigt es die Wischaktionen.
 - **Drehen** (R-8.1): die Seitenleiste behält ihren Zustand – sichtbar bleibt sichtbar (neben dem Inhalt),
   ausgeblendet bleibt ausgeblendet; technisch **ein einziger Zustand** für quer und hoch, den nur Tippen bzw. ein fertiges Wischen
-  ändert (Knopf panel-left bzw. Hereinwischen, R-7.5) – nie das Drehen und keine Zwischengrößen, die iOS beim
+  ändert (Schaltfläche panel-left bzw. Hereinwischen, R-7.5) – nie das Drehen und keine Zwischengrößen, die iOS beim
   Drehen meldet; Drehen während des Ziehens bricht es ab.
 - **Mehr-Menü der Seitenleiste:** Suchen (nur mit Einträgen) · Strich · Backup erstellen (darunter grau „Letztes Backup erstellt
   am …“) · Backup laden · Abstand · Darstellung › (2) · Abstand · Messung starten (15.21) · durchgehender Strich · darunter ohne
@@ -816,7 +821,7 @@ und Meldungen · Eingabe · Inhalt · Dienste (ohne eigene Oberfläche).
   bündig; der Eintrag bleibt blau, solange es offen ist. **Ein Schalter** im Menü (z. B. ‚Glas‘ als eigene Gruppe im Untermenü ‚Darstellung‘) steht
   mit Text links und Schalter rechts wie in den Einstellungen (15.15), Rolle ‚Schalter‘; Umschalten lässt das Menü offen.
 - **Verhalten:** erscheint unter der Schaltfläche und wächst aus ihr (R-4.13; darf über die Seitenleiste hinausragen); die Schaltfläche ist so lange gedrückt
-  (blau getönt); der Mehr-Knopf zeigt dabei drei senkrechte Punkte (`ellipsis-vertical`) statt der waagrechten – der Wechsel sofort,
+  (blau getönt); die Mehr-Schaltfläche zeigt dabei drei senkrechte Punkte (`ellipsis-vertical`) statt der waagrechten – der Wechsel sofort,
   ohne Bewegung, beim Schließen zurück; daneben tippen schließt. Reicht der Platz darunter nicht, rollt das Menü in sich (erst unter 200 px Platz öffnet
   es nach oben).
 - **Beim Drehen** (R-8.1): offenes Menü, Untermenü und Sprechblase werden neu ausgerichtet – das Menü unter der aufrufenden
@@ -829,15 +834,15 @@ und Meldungen · Eingabe · Inhalt · Dienste (ohne eigene Oberfläche).
 - **Zweck:** jede Abfrage mit Entscheidung. **Technisch:** `.pop` (`confirmPop`, mehrere Wege `choosePop`). Regel R-4.3.
 - **Aufbau:** grauer Text · rote Schaltfläche mit dem Verb der Aktion · darunter der Weg zurück („Abbrechen“ bzw. „Weiter
   bearbeiten“, normale Schrift); **Schaltflächen ohne Icons** wie in Apple-Abfragen; Breite 320 px.
-- **Mehrere Wege** (`choosePop`): wie eine Apple-Abfrage mit drei Knöpfen – die empfohlene Aktion blau gefüllt (`primary`)
+- **Mehrere Wege** (`choosePop`): wie eine Apple-Abfrage mit drei Schaltflächen – die empfohlene Aktion blau gefüllt (`primary`)
   zuerst, eine zerstörende in roter Schrift (`danger-text`), zuletzt ‚Abbrechen‘; eine kurze graue Erklärung der Wege steht im
   Text. Bekommt ein Weg eine Erklärung (`desc`), steht er in einer eigenen Kachel – Erklärung oben (gleiche Schrift wie der Text
-  der Sprechblase), Knopf darunter; ‚Abbrechen‘ darunter.
+  der Sprechblase), Schaltfläche darunter; ‚Abbrechen‘ darunter.
 - **Verhalten:** an der angetippten Schaltfläche (diese ist gedrückt), wächst aus ihr (R-4.13). Solange sie offen ist, ist alles
   daneben leicht eingegraut (Schwarz 20 %) und gesperrt – **daneben tippen ändert nichts**; man entscheidet sich für eine Schaltfläche der
   Sprechblase (Esc bzw. ⌘. = ‚Abbrechen‘, R-4.7). Gehört die Abfrage zu einem Textfeld (ⓧ), bleiben Fokus und Tastatur im Feld. Vorbild
   Notizen (Abfrage beim Löschen) und der Alert, der sich nicht wegtippen lässt.
-- **Passt immer auf den Bildschirm** (R-4.5): auf dem iPhone quer ist die Sprechblase breiter (bis 600 px) und die Knöpfe stehen
+- **Passt immer auf den Bildschirm** (R-4.5): auf dem iPhone quer ist die Sprechblase breiter (bis 600 px) und die Schaltflächen stehen
   nebeneinander; reicht der Platz trotzdem nicht, rollt der Inhalt in ihr. Gilt ebenso für Menüs und Fenster.
 
 ### 15.8 Fenster-Kopfzeile
@@ -886,8 +891,8 @@ und Meldungen · Eingabe · Inhalt · Dienste (ohne eigene Oberfläche).
   der Abschnitt des ersten fehlerhaften Felds rollt in die Mitte (‚Bewegung reduzieren‘: springt), dann hat das Feld den Fokus.
 - **ⓧ zum Leeren** (R-5.6, wie Apple ‚whileEditing‘): das ⓧ wie im Suchfeld; wächst das Feld oder rollt es in sich, bleibt es oben
   rechts am Feld; keine Sprechblase. Das Rückgängig ist Lucide `undo-2` in `--muted` und wächst mit der Textgröße; nach dem Zurückholen
-  wächst das Feld wieder (8); ohne Text kein Knopf. VoiceOver nennt das ⓧ ‚Eingabe löschen‘ und das Rückgängig ‚Löschen widerrufen‘.
-  **Technisch:** ein Knopf `.fclear` für alle Felder (ui.js), abschaltbar mit `data-noclear`, mit Rückgängig Klasse `rueck`; geleert
+  wächst das Feld wieder (8); ohne Text keine Schaltfläche. VoiceOver nennt das ⓧ ‚Eingabe löschen‘ und das Rückgängig ‚Löschen widerrufen‘.
+  **Technisch:** eine Schaltfläche `.fclear` für alle Felder (ui.js), abschaltbar mit `data-noclear`, mit Rückgängig Klasse `rueck`; geleert
   wird über den Bearbeiten-Befehl (Text auswählen, `execCommand('delete')`), zurückgeholt über `execCommand('insertText')` – so holen
   die Undo-Taste der iPad-Tastatur und drei Finger den Text ebenso zurück (13); liefert ein Befehl false, über den Wert. Zwischenablage
   mit `navigator.clipboard.writeText` im Tipp (Geste des Nutzers).
@@ -932,8 +937,8 @@ und Meldungen · Eingabe · Inhalt · Dienste (ohne eigene Oberfläche).
   `html.natsw`), zeichnet Safari ihn selbst – er gleitet, lässt sich ziehen, gibt Haptik, VoiceOver sagt ‚Schalter‘, und er hat das
   Aussehen der iOS-Version; Grün über `accent-color: var(--sw-on)`. Sonst unser Schalter wie unten.
 - **Aufbau:** Zeile mit Text links und Apple-Schalter rechts; Zeilen 52 px hoch, dazwischen Haarlinie; Schalter 51 × 31 px,
-  weißer Knopf.
-- **Zustände:** ein = `--sw-on` (Apple-Grün), Knopf rechts; aus = `--sw-off`, Knopf links; gesperrt 40 % Deckkraft (Text und
+  weiße Schaltfläche.
+- **Zustände:** ein = `--sw-on` (Apple-Grün), Schaltfläche rechts; aus = `--sw-off`, Schaltfläche links; gesperrt 40 % Deckkraft (Text und
   Schalter). Kein Schein.
 
 ### 15.16 Options-Kapsel (Optionen beim Erfassen)
@@ -957,17 +962,17 @@ und Meldungen · Eingabe · Inhalt · Dienste (ohne eigene Oberfläche).
 - **Start** (R-7.2): kein Eintrag blau, weil nichts geöffnet ist (HIG 4); nach ‚Zurück‘ ist der zuletzt geöffnete blau. Es entscheidet
   der **Aufbau** (`isPhone()`), nicht das Gerät; was als Neuladen zählt: 13. Die App merkt sich den Start-Eintrag trotzdem, damit ein
   breiteres Fenster ihn mit der Seitenleiste zeigt.
-- **Seitenkopf** (`.pnav`): bleibt fest oben stehen; links runder Zurück-Knopf mit `chevron-left` **ohne Text**, rechts
+- **Seitenkopf** (`.pnav`): bleibt fest oben stehen; links runde Zurück-Schaltfläche mit `chevron-left` **ohne Text**, rechts
   **dieselbe Kapsel wie am iPad** (z. B. [`share` | `ellipsis`] im Inhalt).
 - **Seitenwechsel und Zurückwischen** (R-7.5, wie iOS 26): Öffnen aus der Startliste schiebt den Inhalt von rechts herein, die
-  Liste weicht ein Drittel nach links und dunkelt leicht ab; der Zurück-Knopf schiebt ihn wieder hinaus (R-1.12). Zurück geht es
+  Liste weicht ein Drittel nach links und dunkelt leicht ab; die Zurück-Schaltfläche schiebt ihn wieder hinaus (R-1.12). Zurück geht es
   auch durch **Wischen nach rechts von überall im Inhalt** – die Seite folgt dem Finger, die Startliste ist darunter zu sehen;
   fertig nach halber Breite oder schnellem Wischen (über 0,3 px/ms in den letzten 100 ms), sonst federt sie zurück. Vorrang haben
-  das senkrechte Rollen, Bereiche mit eigenem waagrechtem Rollen, Felder, Knöpfe, Kapseln, Kapsel und Schnellroll-Griff; entschieden
+  das senkrechte Rollen, Bereiche mit eigenem waagrechtem Rollen, Felder, Schaltflächen, Kapseln, Kapsel und Schnellroll-Griff; entschieden
   wird nach 10 px (deutlich waagrecht, 1,2 × so weit wie senkrecht, nach rechts); wer erst hält (langes Drücken), wischt nicht.
   Kein Wischen bei offenem Fenster, Menü oder offener Sprechblase. Bei offener Tastatur schließt das Wischen sie und geht zurück.
   Der Rollstand der Startliste bleibt, der zuletzt geöffnete Eintrag ist blau (R-7.2). ‚Bewegung reduzieren‘: Überblenden statt
-  Schieben, auch beim Wischen. VoiceOver: Zurück-Knopf, ‚Zurück‘-Geste (Escape). Wischen tippt nie an, worauf es begann.
+  Schieben, auch beim Wischen. VoiceOver: Zurück-Schaltfläche, ‚Zurück‘-Geste (Escape). Wischen tippt nie an, worauf es begann.
   **Technisch:** `navAnmelden({ zurueck, seite })` meldet die App an, `navVor(change)`, `navZurueck()`, `navSeite(an)` (ui.js); je
   Bild nur `transform` und `opacity` (Web-Animation), wo gewischt werden kann `touch-action: pan-y pinch-zoom` (`html.wischt`);
   ist die Geste entschieden, verhindert ui.js `touchmove` – Safari rollt dann nicht mehr dazwischen (13 Wischgesten).
@@ -985,8 +990,8 @@ und Meldungen · Eingabe · Inhalt · Dienste (ohne eigene Oberfläche).
   sonst verschiebt iOS den sichtbaren Bereich und die Leisten zittern (R-2.1).
 - **Suche** wie am iPad (15.2): ‚Suchen‘ im Mehr-Menü öffnet unter der Leiste die Suchzeile mit ‚1 von 4‘, ⓧ, ⌃ ⌄ und x ‚Suche beenden‘.
 - **Fester Hinweis unten** (`.bbar` mit `.bnote`): z. B. der Backup-Hinweis – gelb getönte Karte (`--focus`) mit blau gefülltem
-  Knopf, fest am unteren Rand; die Liste läuft dahinter durch (Verlauf), bei offener Tastatur wandert die Leiste über die Tastatur
-  (`--vv-bottom`); Suchfeld und runde Knöpfe der unteren Leiste aus Glas (R-3.9). Am iPad steht derselbe Hinweis ebenso gelb fest am unteren Rand der Seitenleiste.
+  Schaltfläche, fest am unteren Rand; die Liste läuft dahinter durch (Verlauf), bei offener Tastatur wandert die Leiste über die Tastatur
+  (`--vv-bottom`); Suchfeld und runde Schaltflächen der unteren Leiste aus Glas (R-3.9). Am iPad steht derselbe Hinweis ebenso gelb fest am unteren Rand der Seitenleiste.
 - **Fenster als Blatt** (R-4.6, Variante A ‚nur groß‘ wie ‚Neuer Termin‘): von 10 px unter der Statusleiste (quer 8 px) bis zum
   unteren Rand bzw. zur Tastatur (R-4.5), oben runde Ecken (26 px, quer 18 px); die Seite dahinter hoch um 7 % verkleinert mit runden
   Ecken vor Schwarz, abgedunkelt mit 30 % Schwarz. Ziehen: entschieden nach 8 px, deutlich senkrecht (1,2 × so weit wie waagerecht);
@@ -1068,7 +1073,7 @@ und Meldungen · Eingabe · Inhalt · Dienste (ohne eigene Oberfläche).
 - **Backup erstellen:**
   - **Wo:** Backup-Kachel unten in der Seitenleiste bzw. Startliste – **nur, solange heute auf diesem Gerät noch kein Backup
     erstellt wurde** und es Einträge gibt: gelb, ‚Letztes Backup erstellt am …‘ bzw. ‚Noch kein Backup erstellt.‘ und der blaue
-    Knopf ‚Backup erstellen‘; danach verschwindet sie (wie die Hinweise ‚iPhone nicht gesichert‘ in den Einstellungen), um 0:00
+    Schaltfläche ‚Backup erstellen‘; danach verschwindet sie (wie die Hinweise ‚iPhone nicht gesichert‘ in den Einstellungen), um 0:00
     und bei der Rückkehr am nächsten Tag kommt sie von selbst wieder (`onNeuerTag()`). Immer im Mehr-Menü der Seitenleiste: ‚Backup erstellen‘ (Icon `save`, darunter grau ‚Letztes Backup
     erstellt am …‘), direkt darunter ‚Backup laden‘ (Icon `folder-open`).
   - **Ablauf:** Teilen-Menü (iOS) → ‚In Dateien sichern‘ (z. B. iCloud Drive). Datei ‚Ω Backup <App> JJJJ.MM.TT hh.mm.json‘ mit
@@ -1082,7 +1087,7 @@ und Meldungen · Eingabe · Inhalt · Dienste (ohne eigene Oberfläche).
   - **Abfrage** (Sprechblase an der Schaltfläche, 400 px breit, R-4.3): oben grau ‚Backup vom **…** (Gerät) mit n …‘ und ‚Es ist
     **neuer/älter/gleich alt** als die Daten auf diesem Gerät (zuletzt geändert am …)‘, kurz erklärt; darunter **je Weg eine
     Kachel** (Hintergrund `--bg`, Radius 14 px): oben die Erklärung in **derselben Schrift** wie ‚Backup vom …‘ (15 px, grau),
-    darunter der Knopf – Kachel 1 ‚Abgleichen‘ (blau gefüllt), Kachel 2 ‚Ersetzen‘ (rote Schrift); unter den Kacheln ‚Abbrechen‘
+    darunter die Schaltfläche – Kachel 1 ‚Abgleichen‘ (blau gefüllt), Kachel 2 ‚Ersetzen‘ (rote Schrift); unter den Kacheln ‚Abbrechen‘
     wie in jeder Abfrage. iPhone quer: Kacheln nebeneinander (R-4.5).
   - **Unlesbare Datei:** kleines Fenster ‚Backup laden‘ mit ⚠️ und dem Grund.
   - **Abbrechen:** nichts ändert sich.
@@ -1149,7 +1154,7 @@ und Meldungen · Eingabe · Inhalt · Dienste (ohne eigene Oberfläche).
   Darstellung des Geräts), `spieleAb(p, m, { ziele, woerter, bis, nachSchritt })` spielt Tippen, Eingaben und das Schließen der
   Tastatur nach, Safari meldet sichtbare Höhe und `offsetTop` genau wie gemessen (`__safari.setze`). Am Ende jedes Schritts:
   Kopf- und Suchzeile ± 1 px und Fokus wie gemessen; der Inhalt hängt an den eigenen Daten und wird nicht verglichen. Gegenprobe:
-  dieselbe Messung um 20 px verschoben wird rot. Das Beenden der Messung (die letzten beiden Handlungen ‚tippen <Mehr-Knopf>‘ und
+  dieselbe Messung um 20 px verschoben wird rot. Das Beenden der Messung (die letzten beiden Handlungen ‚tippen <Mehr-Schaltfläche>‘ und
   ‚tippen button‘, vor ‚messung beendet‘) wird nicht nachgespielt; ‚klick unterdrückt … (Feld <id>)‘ zählt als Antippen des Felds.
   Grenze: Berührungen und Gesten stehen in der Messung, nachgespielt werden sie nicht –
   dafür bleibt das Safari-Modell.
@@ -1181,13 +1186,13 @@ und Meldungen · Eingabe · Inhalt · Dienste (ohne eigene Oberfläche).
 - **Apple:** SwiftUI `ContentUnavailableView` – Symbol, Titel, Beschreibung, optional Aktionen; für die Suche `.search(text:)`.
 - **Zweck:** Ein leerer Bereich (keine Einträge, keine Treffer, alles ausgeblendet) sagt, warum er leer ist und wie es weitergeht. Regel R-7.7.
 - **Aufbau:** `leerHtml({ icon, titel, satz, aktion })` in ui.js → `.leer`: Symbol (grau, 36 pt, `aria-hidden`), Titel 17 pt halbfett als
-  Überschrift, Satz grau 15 pt, optional ein getönter Knopf (Systemblau hell hinterlegt, 44 pt hoch). Mittig im freien Bereich unter
+  Überschrift, Satz grau 15 pt, optional eine getönte Schaltfläche (Systemblau hell hinterlegt, 44 pt hoch). Mittig im freien Bereich unter
   Kopf, Inhalt und Suchzeile; die Textstile wachsen mit der Textgröße. Symbol und Titel sind überall gleich groß – im Inhalt, in der
   Startliste und in der Seitenleiste. In der Seitenleiste (`.leer.klein`) nur kleinere Abstände.
-- **Suche ohne Treffer:** Lupe, ‚Keine Treffer für ‚Begriff‘‘, ‚Schreibweise prüfen oder nach etwas anderem suchen.‘, ohne Knopf.
-- **Seitenleiste neben dem Inhalt (iPad-Aufbau):** nur Symbol und Titel, Satz und Knopf stehen rechts. Im iPhone-Aufbau zeigt die
+- **Suche ohne Treffer:** Lupe, ‚Keine Treffer für ‚Begriff‘‘, ‚Schreibweise prüfen oder nach etwas anderem suchen.‘, ohne Schaltfläche.
+- **Seitenleiste neben dem Inhalt (iPad-Aufbau):** nur Symbol und Titel, Satz und Schaltfläche stehen rechts. Im iPhone-Aufbau zeigt die
   Startliste den vollen Zustand.
-- **Knopf** nur, wenn eine Aktion direkt weiterhilft. Er löst dasselbe aus wie der Knopf oder Menüpunkt, für den er steht.
+- **Schaltfläche** nur, wenn eine Aktion direkt weiterhilft. Sie löst dasselbe aus wie die Schaltfläche oder der Menüpunkt, für die sie steht.
 
 ## 16. HIG-Checkliste
 
@@ -1197,7 +1202,7 @@ steht in der Spalte ‚außerdem‘ (ohne automatische Prüfung: G-19).
 
 | Nr. | HIG-Punkt | Regel | außerdem |
 |---|---|---|---|
-| 1 | **Antippflächen** ([Accessibility](https://developer.apple.com/design/human-interface-guidelines/accessibility)): Standard 44 × 44 pt, nie kleiner als 28 × 28 pt (Knöpfe in Kapseln und Schalter wie bei Apple ab 28 pt) | R-3.1 | kleine Zeichen und Links bekommen eine unsichtbar größere Antippfläche (Innenabstand), das Layout bleibt gleich |
+| 1 | **Antippflächen** ([Accessibility](https://developer.apple.com/design/human-interface-guidelines/accessibility)): Standard 44 × 44 pt, nie kleiner als 28 × 28 pt (Schaltflächen in Kapseln und Schalter wie bei Apple ab 28 pt) | R-3.1 | kleine Zeichen und Links bekommen eine unsichtbar größere Antippfläche (Innenabstand), das Layout bleibt gleich |
 | 2 | **Schrift:** Fließtext 17 pt, kleinste Schrift 11 pt; Überschriften nach Apple-Textstilen (17 halbfett, 20, 22, 28, 34 pt) | R-10.2 | Hinweise und Zusatzzeilen grau (3) |
 | 3 | **Kontrast und Farbe:** mindestens 4,5 : 1 bis 17 pt, 3 : 1 ab 18 pt oder fett – immer hell **und** dunkel | R-10.2, R-3.3 | Farbe nie als einziges Merkmal; Blau = Aktion/Auswahl, Rot = Löschen |
 | 4 | **Auswahl** ([Lists and tables](https://developer.apple.com/design/human-interface-guidelines/lists-and-tables)): was zu einem Inhalt führt, bleibt markiert, solange dieser offen ist | R-3.3 | Optionen kurz markieren, dann Häkchen; jede Berührung gibt sichtbare Rückmeldung |
@@ -1216,7 +1221,7 @@ steht in der Spalte ‚außerdem‘ (ohne automatische Prüfung: G-19).
 |---|---|---|---|
 | Weiße Schrift auf Systemblau (`--accent`): gewählte Zeile, ‚heute‘, Schrittnummern, Häkchen | 4,0 : 1 hell · 3,7 : 1 dunkel | Apple-Systemblau wie in allen Apple-Apps | 09.10.2026 |
 | Orange `--warn` (z. B. ‚fehlt‘) | 3,1–3,5 : 1 | bleibt wie es ist | 09.10.2026 |
-| Gekürzter Titel als Sprechblase (Apple: Großanzeige in der Mitte) | – | Wunsch des Nutzers (R-2.5); Leisten-Knöpfe zeigen ab AX1 die Großanzeige wie Apple (R-2.6) | 31.10.2026 |
+| Gekürzter Titel als Sprechblase (Apple: Großanzeige in der Mitte) | – | Wunsch des Nutzers (R-2.5); Leisten-Schaltflächen zeigen ab AX1 die Großanzeige wie Apple (R-2.6) | 31.10.2026 |
 | Titel antippen statt Statusleiste (Apple: Tipp auf die Statusleiste rollt nach oben) | – | wirkt in der Home-Bildschirm-App für eigene Rollbereiche nicht; Titel antippen rollt nach oben (R-2.7) | 31.10.2026 |
 | Feldtext bei xS bis M mindestens 16 px (Apple: 14–16) | – | sonst vergrößert Safari beim Antippen (R-1.3) | 23.10.2026 |
 | ⓧ auch in mehrzeiligen Textfeldern (Apple: UITextView – Notizen, Mail, Notizfelder in Kalender, Erinnerungen, Kontakte – hat kein ⓧ; geleert wird mit Auswählen → ‚Ausschneiden‘ bzw. Löschtaste) | – | Wunsch des Nutzers (P-73/1, APD-81); leert sofort, sicher durch das Rückgängig im Feld (APD-124, R-5.6) | 26.10.2026 |
@@ -1257,8 +1262,8 @@ Testfall (User) in den Usertest, wenn eine Version es betrifft.
 | R-1.4 | **Nur der Vordergrund reagiert – auch für VoiceOver und Tastatur:** offenes Fenster sperrt die Seite (Fenster, Meldung und Blatt sind modal), Menü und Sprechblase fangen Wischen ab; daneben tippen schließt das Menü, bei der Sprechblase ändert es nichts – dort ist alles daneben eingegraut (Schwarz 20 %), bis eine ihrer Schaltflächen gewählt ist; bei offenem Menü und offener Sprechblase ist alles daneben gesperrt (`inert` – Seite bzw. übriger Fensterinhalt), nach jedem Schließen (auch beim Drehen, R-8.1) wieder frei und ohne Grau | hig.mjs (Sperre, modal, nach dem Schließen frei, eingegraut, daneben tippen ändert nichts) | – | 1 |
 | R-1.5 | **Offline nutzbar und erkennbar:** die App startet ohne Netz aus dem Speicher – auch unter anderer Adresse und bei hängendem Netz nach höchstens 3 s, nie eine weiße Seite; arbeitet sie offline, steht unten in Seitenleiste bzw. Startliste (unter der Backup-Kachel bzw. ohne sie) grau ‚Offline – alles bleibt auf diesem Gerät‘, beim Wechsel und beim Start ohne Netz kurz die Meldung ‚Du bist offline‘ bzw. ‚Wieder online‘ | offline.mjs | Gerät (Flugmodus) | 11, 15.20 |
 | R-1.6 | **Messmodus:** im Mehr-Menü der Seitenleiste bzw. Startliste ‚Messung starten‘ (grau ‚Für Claude: Bewegungen aufzeichnen‘) erst nach langem Drücken auf die graue Versionszeile (bis zum Neustart) und ‚Messung beenden und teilen‘ (grau ‚läuft · m:ss · N Zeilen‘); aus, solange nicht gestartet; je Bild eine Zeile nur bei Änderung, dazu jedes Ereignis; keine Texte (nur Längen und ids); endet nach 5 min bzw. 20 000 Zeilen; Datei `messung-JJJJ-MM-TT-hhmm.txt` über das Teilen-Menü; neu laden verwirft | ablauf.mjs – `checkMessung` | Gerät (Messung, Teilen) | 15.21 |
-| R-1.7 | **Sichere Ränder:** nichts fest Stehendes (Knopf, Feld, Titel, Kachel, Leiste) liegt unter Statusleiste bzw. Dynamic Island, Aussparung oder Home-Leiste; Fenster, Menüs und Sprechblasen bleiben ganz innerhalb (am iPad mindestens 10 px bzw. der sichere Rand, das iPhone-Fenster füllt den Bildschirm); Inhalt darf darunter rollen, sein Ende lässt sich bis über die Home-Leiste rollen. `env(safe-area-inset-*)` nur in `--safe-top/-bottom/-left/-right` | hig.mjs – `safe` in jeder gemessenen Ansicht mit Gerätewerten (iPhone hoch 62/34, quer 62 links und rechts/20 unten, iPad 24/20); doku.mjs – nur die vier Festlegungen | Dynamic Island, Home-Leiste | 13 |
-| R-1.8 | **VoiceOver:** jedes Bedienelement hat Namen, Rolle und Zustand – Icon-Knöpfe `aria-label`, Felder über ihr `label`, Icons `aria-hidden`; Menüknöpfe ‚öffnet Menü‘ mit offen/zu (`aria-haspopup`, `aria-expanded`), Einträge mit Häkchen ‚ausgewählt‘ (`menuitemcheckbox`, `aria-checked`), Untermenü-Einträge wie Menüknöpfe; Fenster, Meldung und Blatt heißen wie ihr Titel, die Zusatzzeile ist ihre Beschreibung; die Sprechblase ist eine modale Abfrage mit ihrem Text als Namen. **Fokus:** ins Menü auf den ersten wählbaren Eintrag, in die Sprechblase auf die Blase, ins Fenster auf das Fenster – danach zurück auf den Knopf (fehlt er: Kopfzeile), immer ohne Rollen; iPhone: Eintrag öffnen → Seitentitel, zurück → blaue Zeile bzw. Titel der Startliste. **Ansagen** höflich über `ansagen()` (im obersten Fenster, sonst auf der Seite): Treffer der Suche nach 0,7 s Pause, ‚Treffer 2 von 3‘, Filter der Liste, Fehlermeldungen (R-5.3), offline/online; ‚Automatisch gespeichert‘ nicht | hig.mjs – Namen, Rollen, Zustände in jeder Ansicht; ablauf.mjs – `checkFokus`, `ansage` (Ansage-Bereich), `checkFieldErrors` | – (keine VoiceOver-Prüfung am Gerät, Nutzer 23.10.2026) | 1, 15.6, 15.7, 15.9 |
+| R-1.7 | **Sichere Ränder:** nichts fest Stehendes (Schaltfläche, Feld, Titel, Kachel, Leiste) liegt unter Statusleiste bzw. Dynamic Island, Aussparung oder Home-Leiste; Fenster, Menüs und Sprechblasen bleiben ganz innerhalb (am iPad mindestens 10 px bzw. der sichere Rand, das iPhone-Fenster füllt den Bildschirm); Inhalt darf darunter rollen, sein Ende lässt sich bis über die Home-Leiste rollen. `env(safe-area-inset-*)` nur in `--safe-top/-bottom/-left/-right` | hig.mjs – `safe` in jeder gemessenen Ansicht mit Gerätewerten (iPhone hoch 62/34, quer 62 links und rechts/20 unten, iPad 24/20); doku.mjs – nur die vier Festlegungen | Dynamic Island, Home-Leiste | 13 |
+| R-1.8 | **VoiceOver:** jedes Bedienelement hat Namen, Rolle und Zustand – Icon-Schaltflächen `aria-label`, Felder über ihr `label`, Icons `aria-hidden`; Menü-Schaltflächen ‚öffnet Menü‘ mit offen/zu (`aria-haspopup`, `aria-expanded`), Einträge mit Häkchen ‚ausgewählt‘ (`menuitemcheckbox`, `aria-checked`), Untermenü-Einträge wie Menü-Schaltflächen; Fenster, Meldung und Blatt heißen wie ihr Titel, die Zusatzzeile ist ihre Beschreibung; die Sprechblase ist eine modale Abfrage mit ihrem Text als Namen. **Fokus:** ins Menü auf den ersten wählbaren Eintrag, in die Sprechblase auf die Blase, ins Fenster auf das Fenster – danach zurück auf die Schaltfläche (fehlt er: Kopfzeile), immer ohne Rollen; iPhone: Eintrag öffnen → Seitentitel, zurück → blaue Zeile bzw. Titel der Startliste. **Ansagen** höflich über `ansagen()` (im obersten Fenster, sonst auf der Seite): Treffer der Suche nach 0,7 s Pause, ‚Treffer 2 von 3‘, Filter der Liste, Fehlermeldungen (R-5.3), offline/online; ‚Automatisch gespeichert‘ nicht | hig.mjs – Namen, Rollen, Zustände in jeder Ansicht; ablauf.mjs – `checkFokus`, `ansage` (Ansage-Bereich), `checkFieldErrors` | – (keine VoiceOver-Prüfung am Gerät, Nutzer 23.10.2026) | 1, 15.6, 15.7, 15.9 |
 | R-1.9 | **Bedienungshilfen des Geräts:** ‚Kontrast erhöhen‘ schaltet sofort und ohne Neuladen auf die zweite Farbtabelle (2, hell und dunkel), jeder Text und jedes Icon mindestens 4,5 : 1, die Ausgabe bleibt unverändert hell. ‚Bewegung reduzieren‘: erlaubt sind Überblenden (nur Deckkraft bzw. Farbe, bis 0,3 s), kleine Rückmeldungen unter 30 px und Bewegung direkt mit dem Finger; nicht erlaubt sind selbstständige Lageänderungen über 30 px, Zoomen bzw. Verkleinern, Federn, sanftes Rollen durch die App und Dauerschleifen – ‚Nach oben / Ans Ende‘ springen (Überblenden 0,15 s; Apple rollt an der Statusleiste auch dann, WCAG 2.3.3), das Blatt blendet über und die Seite dahinter bleibt groß, das Mikrofon pulsiert nicht | hig.mjs (4,5 : 1 mit ‚Kontrast erhöhen‘, Teile ‚Bedienungshilfen‘); ablauf.mjs – `checkKontrast`, `checkRuhig`; Bewegungswächter in pruefe.mjs (`PRUEF_BEDIENUNG=beide`, Gegenprobe `--gegenprobe bedienung`) | Aussehen mit ‚Kontrast erhöhen‘, Gefühl mit ‚Bewegung reduzieren‘ | 2, 13 |
 | R-1.10 | **Textgröße folgt dem Gerät:** die Schrift folgt der Einstellung ‚Textgröße‘ (14–53 pt) sofort und ohne Neuladen, alle Textstile nach Apples Tabelle (3), keine Schrift und keine Zeilenhöhe in px; Leisten wachsen nur bis XXXL (iPhone quer gar nicht); ab AX1 (bei schmalem Inhalt unter 600 px – iPhone hoch, iPad hoch neben der Seitenleiste – ab XXL) steht Nebeneinanderliegendes untereinander, Tabellen im Inhalt als Kästen; nichts ragt hinaus, **nichts überlappt** (Grundregel); der letzte Eintrag bleibt erreichbar; ein Wechsel wirkt wie das Drehen (R-8.1); Ausgabe und Vorschau unverändert (R-6.2). R-10.2 (mind. 11 pt) und R-1.3 (Felder mind. 16 px) bleiben Untergrenzen. | hig.mjs – `checkText` (Wechsel 17 → 53 px: Apples Wert je Stil, Leisten, Tabellen, Umbau, Ausgabe, letzter Eintrag), Stile ohne px, Grundregel ‚nichts überlappt‘ in jeder Größe; `PRUEF_TEXT` (hig bei 14, 23, 33, 53, Abläufe mit Bewegung bei 53), Gegenprobe `--gegenprobe text` | Aussehen in mehreren Stufen, Wechsel über das Kontrollzentrum | 3, 13 |
 | R-1.11 | **Verborgen heißt unsichtbar:** jedes Element mit `hidden` ist nicht zu sehen – eine eigene `display`-Regel hebt `[hidden]` nie auf | hig.mjs – `masseStile` (jede Ansicht, nach jedem Schritt, alle `[hidden]`) | – | 13 |
@@ -1273,9 +1278,9 @@ Testfall (User) in den Usertest, wenn eine Version es betrifft.
 | R-2.1 | **Leisten stehen fest – keinen Millimeter:** Kopfzeile, Seitenkopf, Seitenleisten-Kopf, mit und ohne Suchzeile, beim Wischen, am Rand, bei offener und beim Schließen der Tastatur; nichts federt; erstes Wischen bei offener Tastatur schließt nur die Tastatur. **Die Seite rollt nie, nur der Inhalt** – Rahmen mit festen Zeilen und Rollbereich, so hoch wie der sichtbare Bereich | hig.mjs – `barStill`: Lage der Leiste beim Rollen des Inhalts gemessen, auch mit nachgebildeter Tastatur; Grundregel ‚Seite rollt nie‘ (`scrollY` bleibt 0) | Federn, Tastatur, Wischgefühl | 13, 15.22 |
 | R-2.2 | **Titel in der Leiste:** Titel einer Inhaltsseite steht in der Leiste; unter dem Titel der Seitenleiste bzw. Startliste klein und grau die Anzahl | hig.mjs | – | 15.4, 15.17 |
 | R-2.3 | **Suche:** Suchzeile unter der Leiste über die volle Breite; Treffer ‚3 von 57‘ bzw. ‚0‘; nach kurzer Pause steht der Treffer direkt unter der Suchzeile; Pfeile ohne Umlauf; gefiltert auf Einträge mit Treffern; gleich auf iPad und iPhone; beim Tippen bleibt das Suchfeld dasselbe Feld mit Fokus; **mehrere Wörter** (alle müssen vorkommen, Reihenfolge egal, „…“ = genaue Folge, alle markiert; die Einheit legt die App fest); **Smileys** wie Wörter gesucht, markiert und gezählt, auch am Zeilenanfang, markiert als ganzes Zeichen; **geöffnet über ‚Suchen‘ als ersten Punkt im Mehr-Menü** (darunter ein Strich) oder ⌘F, **beendet mit dem runden x rechts in der Suchzeile**, keine Lupe in der Kapsel; **auch in der zentralen Liste** (‚Suchen‘ im Mehr-Menü der Seitenleiste): filtert die Einträge, Kachel ‚N Treffer‘ je Fundstelle wie ‚1 von N‘, Öffnen mit gefüllter Suche, beide Suchfelder offen = 1:1, ‚Keine Treffer‘; **Suche öffnen und ⓧ rollen den Inhalt ganz nach oben**, der Fokus bleibt im Feld; **ohne Akzente** (‚Zurich‘ findet ‚Zürich‘ und umgekehrt, markiert wird das Wort wie im Text; ß, ø, æ sind eigene Buchstaben) | ablauf.mjs – `checkSearch`, `checkListSearch`, `checkSearchWords`, `checkSearchPlace`, Feld bleibt beim Tippen, `checkSearchTop`, `checkSucheBeenden`, `checkCmdF` | – | 15.2, 15.4, 15.5 |
-| R-2.4 | **iPhone quer: niedrige Leisten** (wie iOS quer): Kopfzeile, Suchzeile und Fensterkopf 32 statt 44 px hoch – Knöpfe in Kapseln 31 px, runde Knöpfe 32 × 32 mit Antippfläche 44 × 44, das Suchfeld als Kapsel 32 px (R-3.1: Kapseln ab 28); damit liegen Suche und Felder darunter bei offener Tastatur in der oberen Hälfte (R-4.5). Hoch und am iPad 44 px | hig.mjs – Höhe der Knöpfe und des Suchfelds in Kopfzeile und Fensterkopf (iPhone quer 32, hoch 44) | – | 15.3, 15.8 |
+| R-2.4 | **iPhone quer: niedrige Leisten** (wie iOS quer): Kopfzeile, Suchzeile und Fensterkopf 32 statt 44 px hoch – Schaltflächen in Kapseln 31 px, runde Schaltflächen 32 × 32 mit Antippfläche 44 × 44, das Suchfeld als Kapsel 32 px (R-3.1: Kapseln ab 28); damit liegen Suche und Felder darunter bei offener Tastatur in der oberen Hälfte (R-4.5). Hoch und am iPad 44 px | hig.mjs – Höhe der Schaltflächen und des Suchfelds in Kopfzeile und Fensterkopf (iPhone quer 32, hoch 44) | – | 15.3, 15.8 |
 | R-2.5 | **Gekürzter Titel:** ein mit ‚…‘ gekürzter Titel in Kopfzeile oder Fenster-Kopfzeile zeigt beim langen Drücken den ganzen Titel in einer Sprechblase darunter – ganz sichtbar, bis zum nächsten Tippen (das nur sie schließt), Rollen, Esc oder Drehen; ein ganz sichtbarer Titel und kurzes Antippen zeigen nichts | ablauf.mjs – `checkTitelBlase` | – | 15.3, 15.8 |
-| R-2.6 | **Großanzeige für Leisten-Knöpfe:** ab der Textgröße AX1 zeigt langes Drücken (R-3.5) auf einen Knopf einer Leiste (Kopfzeile, Fenster-Kopfzeile, Seitenleiste, schwebende Knöpfe) Icon und Namen groß in der Mitte des Bildschirms; Gleiten über die Knöpfe wechselt die Anzeige, Loslassen über einem Knopf löst ihn aus, daneben schließt sie nur; unter AX1 und bei kurzem Antippen nichts davon | ablauf.mjs – `checkGrossanzeige` | Gleiten, keine Lupe | 15.1, 15.3, 15.4, 15.8 |
+| R-2.6 | **Großanzeige für Leisten-Schaltflächen:** ab der Textgröße AX1 zeigt langes Drücken (R-3.5) auf eine Schaltfläche einer Leiste (Kopfzeile, Fenster-Kopfzeile, Seitenleiste, schwebende Schaltflächen) Icon und Namen groß in der Mitte des Bildschirms; Gleiten über die Schaltflächen wechselt die Anzeige, Loslassen über einer Schaltfläche löst sie aus, daneben schließt sie nur; unter AX1 und bei kurzem Antippen nichts davon | ablauf.mjs – `checkGrossanzeige` | Gleiten, keine Lupe | 15.1, 15.3, 15.4, 15.8 |
 | R-2.7 | **Titel antippen = nach oben:** kurzes Antippen des Titels in Kopfzeile, Seitenleiste oder Fenster-Kopfzeile rollt den zugehörigen Bereich sanft ganz nach oben (‚Bewegung reduzieren‘: sofort); schon oben nichts; Tippen oder Wischen hält das Rollen an | ablauf.mjs – `checkTitelOben` | – | 15.3, 15.4, 15.8 |
 
 ### 3. Schaltflächen
@@ -1284,25 +1289,25 @@ Testfall (User) in den Usertest, wenn eine Version es betrifft.
 |---|---|---|---|---|
 | R-3.1 | **Antippflächen** 44 pt, in Kapseln und Schaltern mindestens 28 pt; reine Icon-Schaltflächen quadratisch; **rund ist ein Kreis** – runde Schaltflächen und die Markierung bei Icons in Kapseln (36 × 36) haben gleiche Breite und Höhe | hig.mjs | – | 4, 15.5 |
 | R-3.2 | **Schweben und Kapseln:** alle Schaltflächen und Suchfelder schweben (Lichtkante, zierlicher Schatten); mehrere nebeneinander stehen in einer Kapsel; Nach oben / Ans Ende in einer senkrechten Kapsel unten rechts – am iPad und am iPhone in der Inhaltsansicht, nur wenn es etwas zu rollen gibt, **nur mit den Pfeilen, die etwas bewirken** (nah an einem Ende – halbe Höhe des Rollbereichs – fehlt dessen Pfeil; unten fest); sie rollt den Inhalt, steht bei offener Tastatur über ihr und überdeckt **nie Kopf- oder Suchzeile** – passt sie nicht ganz in den Inhalt (volle Kapsel + 2 × 16 px), ist sie ausgeblendet; bei offenem Fenster und im Druck nicht zu sehen. **Schnellroll-Griff** ab drei Höhen Inhalt: erscheint beim Rollen, blendet nach 1,5 s aus (nur Deckkraft), Bahn unter Kopf- bzw. Suchzeile bis über die volle Kapsel, Ziehen springt verhältnisgleich (darüber hinaus = Anfang/Ende), Blase mit der Marke des Abschnitts oben (`data-marke`), Regler für VoiceOver; nicht bei offener Tastatur | hig.mjs (Grundregel ‚Kapsel schneidet keine Leiste‘), ablauf.mjs – `checkFab` (Pfeile je Rollstand, Tastatur quer und Suche, Fenster, Drucken) mit `checkGriff` | Gefühl beim Ziehen, Daumen | 4, 15.1, 15.5 |
-| R-3.3 | **Jede Farbe hat eine Bedeutung:** blau gefüllt nur die Hauptaktion – in einem Fenster bzw. einer Sprechblase höchstens eine – sowie der Knopf der Backup-Kachel bzw. des festen Hinweises unten und der gewählte Eintrag der Liste; Gewähltes bleibt blau getönt, solange sein Menü, Fenster oder seine Abfrage offen ist; Grün nur für eingeschaltete Schalter; Rot nur für Löschen | hig.mjs – höchstens eine blaue Hauptaktion, `stays` | – | 4 |
-| R-3.4 | **Kein Fokus-Rahmen** beim Antippen und beim Öffnen eines Fensters (keine vorausgewählte Schaltfläche); **Textfelder nie** (auch Suchfeld, auch mit Tab erreicht – der Cursor zeigt den Fokus, auch nicht Safaris `outline: auto`); bei Bedienung mit der Tastatur ein eigener Ring (Akzentfarbe, 2 px Abstand, folgt dem Radius), im Menü ist der Eintrag hinterlegt | hig.mjs (Feld bzw. Knopf mit Rahmen ohne Tastatur), ablauf.mjs – `checkFokus` (Antippen, Tab, Öffnen) | – | 1, 15.2 |
+| R-3.3 | **Jede Farbe hat eine Bedeutung:** blau gefüllt nur die Hauptaktion – in einem Fenster bzw. einer Sprechblase höchstens eine – sowie die Schaltfläche der Backup-Kachel bzw. des festen Hinweises unten und der gewählte Eintrag der Liste; Gewähltes bleibt blau getönt, solange sein Menü, Fenster oder seine Abfrage offen ist; Grün nur für eingeschaltete Schalter; Rot nur für Löschen | hig.mjs – höchstens eine blaue Hauptaktion, `stays` | – | 4 |
+| R-3.4 | **Kein Fokus-Rahmen** beim Antippen und beim Öffnen eines Fensters (keine vorausgewählte Schaltfläche); **Textfelder nie** (auch Suchfeld, auch mit Tab erreicht – der Cursor zeigt den Fokus, auch nicht Safaris `outline: auto`); bei Bedienung mit der Tastatur ein eigener Ring (Akzentfarbe, 2 px Abstand, folgt dem Radius), im Menü ist der Eintrag hinterlegt | hig.mjs (Feld bzw. Schaltfläche mit Rahmen ohne Tastatur), ablauf.mjs – `checkFokus` (Antippen, Tab, Öffnen) | – | 1, 15.2 |
 | R-3.5 | **Langes Drücken** (0,6 s; Entfernen, z. B. eines Smileys, 1 s) gilt nur, solange der Finger still steht: wandert er mehr als 10 px oder rollt die Fläche um ihn herum (Leiste seitlich ziehen), ist es abgebrochen – Finger und Maus; kurz antippen bleibt Antippen; **Anheben:** ein Eintrag mit eigener Aktion für langes Drücken (z. B. Smiley) hebt sich ab 0,15 s an (wächst, Schatten – ein Emoji hebt sich auf einem hellen Kreis mit Schatten über die Leiste; ‚Bewegung reduzieren‘: nur Schatten) und senkt sich bei Abbruch wieder | ablauf.mjs – `checkLangDruecken`, `checkAnheben` | Smiley-Leiste ziehen, Anheben | 8, 13, 15.12 |
-| R-3.6 | **Rückmeldung beim Berühren:** solange der Finger liegt, wird eine Schaltfläche blass (Icon und Text 35 %), ein Leisten-Knopf hebt sich als helle Fläche mit Schatten (1,3-fach) über die Kapsel, eine Listen- oder Tabellenzeile grau – Schaltflächen sofort, in Rollbereichen (Liste, Smiley-Leiste, Kapsel) nach 80 ms; mehr als 10 px Bewegung oder Rollen hebt es auf, ohne auszulösen – das Loslassen danach löst nichts aus, wie lange der Finger auch liegt; Loslassen blendet in 0,15 s aus; gesperrte Schaltflächen zeigen nichts; Safaris eigene Antipp-Markierung ist aus, und langes Drücken auf Schaltflächen, antippbare Zeilen, Kacheln, Leisten und die Smiley-Leiste markiert keinen Text und zeigt keine Lupe | ablauf.mjs – `checkBeruehren`; hig.mjs – jede Schaltfläche in jeder Ansicht; katalog.mjs – APD-140/Z-6 | Rollen ohne Aufblitzen | 4, 15.1, 15.4, 15.12 |
+| R-3.6 | **Rückmeldung beim Berühren:** solange der Finger liegt, hebt sich jede Schaltfläche als helle Fläche mit Schatten und wird größer – 1,3-fach, höchstens aber 24 px breiter (eine Leisten-Schaltfläche über ihre Kapsel; ‚Bewegung reduzieren‘: nur Schatten) –, ausgenommen die Schaltflächen der Auswahl-Kapsel (15.12): sie werden blass (Icon und Text 35 %), ihr Anheben beim langen Drücken regelt R-3.5; eine Listen- oder Tabellenzeile wird grau – Schaltflächen sofort, in Rollbereichen (Liste, Smiley-Leiste, Kapsel) nach 80 ms; mehr als 10 px Bewegung oder Rollen hebt es auf, ohne auszulösen – das Loslassen danach löst nichts aus, wie lange der Finger auch liegt; Loslassen blendet in 0,15 s aus; gesperrte Schaltflächen zeigen nichts; Safaris eigene Antipp-Markierung ist aus, und langes Drücken auf Schaltflächen, antippbare Zeilen, Kacheln, Leisten und die Smiley-Leiste markiert keinen Text und zeigt keine Lupe | ablauf.mjs – `checkBeruehren`; hig.mjs – jede Schaltfläche in jeder Ansicht; katalog.mjs – APD-140/Z-6 und Z-7 | Rollen ohne Aufblitzen | 4, 15.1, 15.4, 15.12 |
 | R-3.7 | **Keine Hover-Farbe:** auf iPad und iPhone ändert eine Schaltfläche beim Darüberfahren nichts; Stilregeln mit `:hover` stehen nur unter `@media (hover: hover)` | hig.mjs – `masseStile` (alle Stilregeln der Seite, design.css und App) | – | 4 |
 | R-3.8 | **Gesperrt und Abbrechen:** gesperrte Schaltflächen, Schalter und Options-Kapseln 40 % Deckkraft; ‚Abbrechen‘ ohne Icon, normale Schrift | hig.mjs – `masseStile` (jede Ansicht, jedes Fenster, nach jedem Schritt) | – | 4, 15.15, 15.16 |
-| R-3.9 | **Schwebendes aus Glas:** die Kapsel Nach oben / Ans Ende, Menü, Untermenü und Kontextmenü sowie Suchfeld und runde Knöpfe der unteren Leiste (iPhone) sind aus Glas – Grundfarbe (hell Weiß, dunkel `--btn` bzw. `--card`) zu 75 % deckend, Unschärfe 20 px, Sättigung 180 %, Lichtkante und Schatten wie R-3.2; ‚Transparenz reduzieren‘ des Geräts: deckend (Grundfarbe ganz), wo der Browser es meldet (Safari am iPad nicht, 13); ebenso deckend mit dem Schalter ‚Glas‘ aus (Untermenü ‚Darstellung‘, Standard ein, gilt je Gerät; ein Backup bringt die Wahl nur mit, wenn das Gerät noch keine hat); Leisten, Fenster, Sprechblasen und alle übrigen Schaltflächen bleiben deckend | hig.mjs – `masseStile` (Unschärfe und Deckkraft genau an diesen Bausteinen, deckend bei ‚Transparenz reduzieren‘, keine Glas-Leiste); `checkGlas` mit Schalter (`ablauf-glas`) | Lesbarkeit und Flüssigkeit am Gerät | 4, 15.1, 15.6, 15.17 |
+| R-3.9 | **Schwebendes aus Glas:** die Kapsel Nach oben / Ans Ende, Menü, Untermenü und Kontextmenü sowie Suchfeld und runde Schaltflächen der unteren Leiste (iPhone) sind aus Glas – Grundfarbe (hell Weiß, dunkel `--btn` bzw. `--card`) zu 75 % deckend, Unschärfe 20 px, Sättigung 180 %, Lichtkante und Schatten wie R-3.2; ‚Transparenz reduzieren‘ des Geräts: deckend (Grundfarbe ganz), wo der Browser es meldet (Safari am iPad nicht, 13); ebenso deckend mit dem Schalter ‚Glas‘ aus (Untermenü ‚Darstellung‘, Standard ein, gilt je Gerät; ein Backup bringt die Wahl nur mit, wenn das Gerät noch keine hat); Leisten, Fenster, Sprechblasen und alle übrigen Schaltflächen bleiben deckend | hig.mjs – `masseStile` (Unschärfe und Deckkraft genau an diesen Bausteinen, deckend bei ‚Transparenz reduzieren‘, keine Glas-Leiste); `checkGlas` mit Schalter (`ablauf-glas`) | Lesbarkeit und Flüssigkeit am Gerät | 4, 15.1, 15.6, 15.17 |
 
 ### 4. Menüs, Abfragen, Fenster
 
 | Nr. | Regel | Prüfung | Gerät | Bau |
 |---|---|---|---|---|
-| R-4.1 | **Menüs:** Icon vor dem Text, keine Linien zwischen einzelnen Punkten, Gruppen durch eingerückten Strich, ‚… löschen‘ rot am Ende, graue Zusatzinfos unten nach dem Strich, Untermenü eine Ebene; der Mehr-Knopf zeigt bei offenem Menü drei senkrechte Punkte | hig.mjs; ablauf.mjs – `checkMehrKnopf` | – | 15.6 |
+| R-4.1 | **Menüs:** Icon vor dem Text, keine Linien zwischen einzelnen Punkten, Gruppen durch eingerückten Strich, ‚… löschen‘ rot am Ende, graue Zusatzinfos unten nach dem Strich, Untermenü eine Ebene; die Mehr-Schaltfläche zeigt bei offenem Menü drei senkrechte Punkte | hig.mjs; ablauf.mjs – `checkMehrKnopf` | – | 15.6 |
 | R-4.2 | **Kontextmenü** einer Kachel: daneben bzw. (iPhone) darunter, reicht der Platz darunter nicht, darüber – immer vollständig und ganz über der Backup-Kachel (ohne Kachel über der Offline-Zeile bzw. dem Rand); die Liste bleibt dabei stehen, auch beim Schließen; nur wenn das Menü weder darunter noch darüber ganz passt (z. B. große Schrift), rückt sie dafür; ohne ‚Öffnen‘ | kontextmenue.mjs – `checkContextMenus` (Lage, Liste bleibt stehen) · pruefseite.mjs – Teil `menue` (zweite Kachel, Schließen ohne Sprung) | – | 15.4 |
 | R-4.3 | **Abfragen und Meldungen:** keine Systemfenster; Abfrage als Sprechblase an der Schaltfläche, rote Schaltfläche mit dem Verb, ‚Abbrechen‘ zuletzt; mehrere Wege: empfohlener blau zuerst, zerstörender rot; Meldung im kleinen Fenster mit höchstens einer Schaltfläche zu den Einzelheiten | hig.mjs | – | 6, 10, 15.7 |
 | R-4.4 | **Fenster-Kopfzeile:** x links, Häkchen rechts – grau, nach einer Änderung blau; x mit Änderungen fragt ‚Änderungen verwerfen‘ / ‚Weiter bearbeiten‘ | ablauf.mjs – `checkDialogHead` | – | 6, 15.8 |
 | R-4.5 | **Passt immer auf den Bildschirm:** Menü, Sprechblase und Fenster ganz sichtbar (auch iPhone quer), zu hoher Inhalt rollt darin; Fenster auf dem iPhone als Blatt bis zum unteren Rand bzw. zur Tastatur (R-4.6). Ein Feld mit Fokus steht immer über der Tastatur, **wie bei Apple nur so weit gerollt wie nötig**: es endet 16 px über ihr (im Inhalt 28 px); ein mehrzeiliges Feld, das nicht ganz passt, zeigt die Zeile mit dem Cursor und eine halbe Zeile darunter, auch beim Tippen; liegt es schon darüber, rollt nichts; beim Wechsel bei offener Tastatur höchstens bis zur Mitte des sichtbaren Teils. Das alles **ohne Springen**: Safari verschiebt nichts; Kopfzeile, Suchzeile, Seitenleiste und Fensterkopf stehen in jedem Bild still, das Feld springt nicht, das iPad-Fenster gleitet mit der Tastatur | hig.mjs, ablauf.mjs – `checkFieldVisible` (Safari-Modell: Feld unter der Tastatur antippen), `checkTastaturStill` (jedes Bild), `checkSheet` B10 (Abstand über dem Feld ≥ `RING`), Reiselogbuch `ablauf-feld-rollen` (APD-115/M-1 bis M-11) | – | 7, 13, 15.7 |
 | R-4.6 | **Blatt auf dem iPhone, Fenster am iPad ziehen:** im iPhone-Aufbau (hoch und quer) ist jedes Fenster außer Meldungen ein Blatt ‚nur groß‘ wie ‚Neuer Termin‘ – gleitet von unten bis knapp unter die Statusleiste, oben runde Ecken, die Seite dahinter weicht verkleinert und abgedunkelt zurück (quer volle Höhe, die Seite bleibt); nach unten ziehen schließt wie x – am Kopf immer, im Inhalt, wenn er ganz oben steht, auch kurz und schnell gewischt; waagerecht und im gerollten Inhalt bleibt es; mit Änderungen seit dem Öffnen zieht es sich zäh, federt zurück und fragt am x (R-4.4); ein Zug nach unten schließt zuerst die Tastatur, auch nach einem Stück nach oben – beginnt er auf einem Feld, zieht er im selben Zug das Blatt wie am Kopf (ein Feld, das selbst gerollt ist, rollt weiter), im gerollten Inhalt daneben rollt er weiter; Abdunkelung antippen und Escape wie x; Drehen lässt es offen; ‚Bewegung reduzieren‘: Überblenden, die Seite bleibt groß, nach dem Loslassen steht es sofort am Ziel (R-1.9). Am iPad bleibt das Fenster in der Mitte, gleitet beim Öffnen und Schließen von unten und lässt sich ebenso nach unten ziehen – nur das Fenster fährt mit, die Abdunkelung wird heller, die Seite bleibt, Antippen der Abdunkelung schließt nicht (wie iPadOS); ein offenes Fenster ändert durch Eingaben weder Breite noch Lage, Meldungen brechen in der vorhandenen Breite um | ablauf.mjs – `checkSheet` (iPhone B1–B24, iPad APD-72/D-1 bis APD-72/D-15, APD-72/D-21 Breite und Lage nach einer Eingabe); App-Ablauf Buchstabe für Buchstabe (Reiselogbuch `ablauf-fenster-breite`) | Gerät (Wischgefühl, Tastatur) | 7, 13, 15.17 |
-| R-4.7 | **Hardware-Tastatur (Grundlagen):** Esc und ⌘. schließen das oberste Menü (offenes Untermenü zuerst), die Sprechblase (= Abbrechen) und das Fenster (wie x, mit Änderungen die Rückfrage) – die Taste ist damit verbraucht; ↑ ↓ (Tab wie ↓) mit Umlauf, Pos1/Ende in Menüs und Untermenüs, → öffnet und ← schließt das Untermenü, Eingabe bzw. Leertaste wählt; in der Sprechblase löst Eingabe den empfohlenen bzw. den Weg zurück – **nie die rote** Aktion, Tab und Pfeile markieren, die Leertaste drückt den markierten Knopf; Tab bleibt im Vordergrund (Fenster mit Umlauf) und folgt der sichtbaren Reihenfolge (Leiste → Suche → Inhalt → Kapsel); Esc auf der Seite geht im iPhone-Aufbau zurück; **⌘F** öffnet die Suche im offenen Eintrag, ohne offenen Eintrag die Suche in allen; ist die Suche offen, setzt ⌘F nur den Cursor ins Feld; bei offenem Fenster oder Menü wirkt ⌘F nicht; sonst keine Kurzbefehle | ablauf.mjs – `checkFokus`, `checkCmdF` | Esc, ⌘. (gibt Safari es weiter?), Pfeile, Eingabe, Tab (Tastatursteuerung) | 15.6, 15.7, 15.9 |
+| R-4.7 | **Hardware-Tastatur (Grundlagen):** Esc und ⌘. schließen das oberste Menü (offenes Untermenü zuerst), die Sprechblase (= Abbrechen) und das Fenster (wie x, mit Änderungen die Rückfrage) – die Taste ist damit verbraucht; ↑ ↓ (Tab wie ↓) mit Umlauf, Pos1/Ende in Menüs und Untermenüs, → öffnet und ← schließt das Untermenü, Eingabe bzw. Leertaste wählt; in der Sprechblase löst Eingabe den empfohlenen bzw. den Weg zurück – **nie die rote** Aktion, Tab und Pfeile markieren, die Leertaste drückt die markierte Schaltfläche; Tab bleibt im Vordergrund (Fenster mit Umlauf) und folgt der sichtbaren Reihenfolge (Leiste → Suche → Inhalt → Kapsel); Esc auf der Seite geht im iPhone-Aufbau zurück; **⌘F** öffnet die Suche im offenen Eintrag, ohne offenen Eintrag die Suche in allen; ist die Suche offen, setzt ⌘F nur den Cursor ins Feld; bei offenem Fenster oder Menü wirkt ⌘F nicht; sonst keine Kurzbefehle | ablauf.mjs – `checkFokus`, `checkCmdF` | Esc, ⌘. (gibt Safari es weiter?), Pfeile, Eingabe, Tab (Tastatursteuerung) | 15.6, 15.7, 15.9 |
 | R-4.8 | **Fensterbreite:** ein Fenster (außer Meldungen, R-4.3) ist höchstens 90 % der Breite und mindestens 480 px breit (schmaler nur, wenn der Bildschirm es verlangt); Erfassung und Vorschau bis 1100 px | hig.mjs – `masseStile` (jedes Fenster nach jedem Schritt, iPad quer und hoch; im iPhone-Aufbau gilt das Blatt, R-4.6) | – | 7 |
 | R-4.9 | **Menümaße:** Menü 340 px breit, Einträge 46 px hoch; ein Untermenü hat höchstens 5 Einträge | hig.mjs – `masseStile` (jedes offene Menü und Untermenü, nach jedem Schritt der Abläufe) | – | 15.6 |
 | R-4.10 | **Menütexte:** kein ‚…‘ am Ende eines Menüpunkts; in einer Gruppe haben alle Punkte ein Icon oder keiner; ein Kontextmenü hat höchstens 3 Gruppen und zeigt keine gesperrten Punkte (ausblenden statt grau) | hig.mjs – `texteMenues` (jedes offene Menü und Untermenü nach jedem Schritt; jedes Kontextmenü in kontextmenue.mjs) | – | 15.6, 16 |
@@ -1315,7 +1320,7 @@ Testfall (User) in den Usertest, wenn eine Version es betrifft.
 | Nr. | Regel | Prüfung | Gerät | Bau |
 |---|---|---|---|---|
 | R-5.1 | **Felder:** Bezeichnung und Feld gehören zusammen (Umbruch nur davor); Schaltflächen im Schrittkopf bleiben als Gruppe zusammen und stehen neben dem Titel, wenn alles in eine Zeile passt; Datumsfelder so breit wie das Datum mit Kalender-Icon; Betragsfelder rechtsbündig, ‚4.850,00 €‘, der Tausenderpunkt schon beim Tippen, fehlende Nachkommastellen ergänzt das Feld beim Verlassen (‚,00‘) | hig.mjs; Tippen und Verlassen in den Abläufen der App (Reiselogbuch `ablauf-gesamt.mjs`, `ablauf-preis-km.mjs`) – bis die AD-Bean `decimal` (APD-136) es allgemein prüft | – | 8, 15.10 |
-| R-5.2 | **Texteingabe:** Großbuchstabe am Zeilenanfang, nicht nach einer Korrektur von Hand; nach einem Vorschlag klein weiter; keine doppelten Leerzeichen (Tippen und Einfügen, alle Textfelder); Textfelder leer einzeilig, wachsen mit; Diktieren nur über die Mikrofon-Taste der Tastatur (kein eigener Knopf) | ablauf.mjs – `checkCapital`, `checkSpaces`, dazu `checkFeldCursor` für ‚leer einzeilig, wächst und schrumpft‘ | iOS-Tastatur, Kurzbefehl ‚.‘ | 8 |
+| R-5.2 | **Texteingabe:** Großbuchstabe am Zeilenanfang, nicht nach einer Korrektur von Hand; nach einem Vorschlag klein weiter; keine doppelten Leerzeichen (Tippen und Einfügen, alle Textfelder); Textfelder leer einzeilig, wachsen mit; Diktieren nur über die Mikrofon-Taste der Tastatur (keine eigene Schaltfläche) | ablauf.mjs – `checkCapital`, `checkSpaces`, dazu `checkFeldCursor` für ‚leer einzeilig, wächst und schrumpft‘ | iOS-Tastatur, Kurzbefehl ‚.‘ | 8 |
 | R-5.3 | **Fehlermeldungen:** rot direkt unter dem Feld (Feld rot umrandet), erst nach einer Eingabe bzw. beim Häkchen; Pflichtfelder werden nicht gekennzeichnet; **auch hörbar** – Feld `aria-invalid`, Meldung mit dem Feld verknüpft (`aria-describedby`) und einmal angesagt; beim Häkchen hat das erste fehlerhafte Feld den Fokus (Baustein `feldFehler`, `ersterFehler`) | ablauf.mjs – `checkFieldErrors` | – | 8, 15.11 |
 | R-5.4 | **Auswahl-Kapsel und Wischzeile:** mehrere Auswahl-Schaltflächen in einer Kapsel, seitlich wischbar; jeder seitlich wischbare Bereich bis etwa zwei Zeilen Höhe (Kapsel oder Wischzeile) zeigt, wo es weitergeht, mit Verlauf und kleinem Pfeil am Rand (nur Anzeige), am jeweiligen Ende verschwinden beide; Markierung als eigene Form innen, Breite ändert sich nicht | hig.mjs – Verlauf und Pfeile am Rand, kein wischbarer Bereich ohne sie, Breite beim Wählen (Ablauf: `checkKapsel`) | Wischen, Pfeile verständlich | 15.12 |
 | R-5.5 | **Eingabetaste:** einzeilige Felder – ‚Fertig‘, die Eingabetaste schließt die Tastatur, ein Fenster bleibt offen; mehrzeilige Felder – Zeilenumbruch; Suchfeld – ‚Suchen‘ | ablauf.mjs – `checkEnterDone` | iOS-Tastatur (Beschriftung, iPhone-Ziffernfeld) | 8 |
@@ -1346,9 +1351,9 @@ Testfall (User) in den Usertest, wenn eine Version es betrifft.
 | R-7.2 | **Start im iPhone-Aufbau in der Startliste:** jedes Neuladen zeigt im iPhone-Aufbau (auch iPad im schmalen Fenster) die Startliste ganz oben ohne blauen Eintrag; der iPad-Aufbau öffnet den aktuellen Eintrag; Rückkehr aus dem Hintergrund ändert nichts | start.mjs | Gerät (App neu öffnen) | 13, 15.17 |
 | R-7.3 | **Liste steht still:** solange ein Fenster aus einer Zeile (bzw. einem Kasten) offen ist, bewegt sich die Liste dahinter nicht – auch wenn Safari beim Schreiben die Seite für die Tastatur schiebt; nach dem Schließen (Häkchen oder x) steht sie genau wie vorher – die oberste Zeile an derselben Stelle, auch wenn die Tastatur offen war –, die Zeile wird 2 s blau hinterlegt und blendet in 1 s aus (‚Bewegung reduzieren‘: 2 s ohne Ausblenden; endet, sobald das nächste Fenster aufgeht); auch nach ‹ › im Fenster steht die Liste wie beim Öffnen; iPad und iPhone gleich | ablauf.mjs – `checkListStill` (Start z. B. mit dem ersten fehlenden Tag oben; Zeile oben, 3 tiefer, untere Hälfte, 2 px unter dem Kopf, nach 5× ‹ ›; Häkchen und x; Safari-Tastatur einzeln und zusammen: sichtbarer Bereich, Fensterhöhe, Nachrollen beim Zugehen) | Gerät (echte Tastatur, Diktieren) | 7, 15.9 |
 | R-7.4 | **Position beim Öffnen:** ein Eintrag öffnet ganz oben; ein ‚nächster offener‘ Eintrag (von der App bestimmt) steht hervorgehoben direkt unter dem Kopf bzw. Tabellenkopf, nie in der Mitte; legt die App stattdessen einen aktuellen Eintrag fest (z. B. heute), steht er ebenso direkt unter dem Kopf, aber ohne Hervorhebung – hervorgehoben wird nur Offenes, nie Künftiges | ablauf.mjs – `checkOpenAt` (mit `markiert`) | – | 13 |
-| R-7.5 | **Navigation und Gesten** (wie iOS 26): im iPhone-Aufbau schiebt sich der Inhalt beim Öffnen herein und beim Zurück hinaus; **Zurückwischen von überall im Inhalt** folgt dem Finger, fertig nach halber Breite oder schnellem Wischen, sonst federt es zurück; am iPad hoch und quer holt Wischen nach rechts die ausgeblendete Seitenleiste herein, der Inhalt rückt mit und wird beim Einrasten schmaler, ausblenden nur mit panel-left (gleitet). Vorrang an einer Stelle: senkrechtes Rollen, eigenes waagrechtes Rollen, Felder, Knöpfe, Kapseln, Schnellroll-Griff; nicht nach langem Drücken und nicht bei offenem Fenster, Menü oder offener Sprechblase; Tastatur schließt zuerst; Drehen beim Ziehen = Zustand wie vorher; Wischen tippt nie an; ‚Bewegung reduzieren‘ überblendet; je Bild nur transform und opacity | ablauf.mjs – `checkNavigation` | Wischgefühl, Rand mit dem Daumen, versehentliches Zurück, Home-Bildschirm-App, VoiceOver | 13, 15.4, 15.17 |
+| R-7.5 | **Navigation und Gesten** (wie iOS 26): im iPhone-Aufbau schiebt sich der Inhalt beim Öffnen herein und beim Zurück hinaus; **Zurückwischen von überall im Inhalt** folgt dem Finger, fertig nach halber Breite oder schnellem Wischen, sonst federt es zurück; am iPad hoch und quer holt Wischen nach rechts die ausgeblendete Seitenleiste herein, der Inhalt rückt mit und wird beim Einrasten schmaler, ausblenden nur mit panel-left (gleitet). Vorrang an einer Stelle: senkrechtes Rollen, eigenes waagrechtes Rollen, Felder, Schaltflächen, Kapseln, Schnellroll-Griff; nicht nach langem Drücken und nicht bei offenem Fenster, Menü oder offener Sprechblase; Tastatur schließt zuerst; Drehen beim Ziehen = Zustand wie vorher; Wischen tippt nie an; ‚Bewegung reduzieren‘ überblendet; je Bild nur transform und opacity | ablauf.mjs – `checkNavigation` | Wischgefühl, Rand mit dem Daumen, versehentliches Zurück, Home-Bildschirm-App, VoiceOver | 13, 15.4, 15.17 |
 | R-7.6 | **Abschnittsköpfe in der Liste:** jede Gruppe hat eine Überschrift, auch die erste; Schrift wie die Überschrift des Kopfs (Größe, Stärke, Farbe, Schrift), wächst mit der Textgröße; rollt mit; Rolle heading, nicht antippbar; bei der Suche nur Gruppen mit Treffern | hig.mjs | – | 15.4 |
-| R-7.7 | **Leerer Zustand:** jeder leere Bereich (keine Einträge, keine Treffer, alles ausgeblendet) zeigt den Baustein 15.23 – Symbol, Titel, Satz, optional ein getönter Knopf –, mittig im freien Bereich; bei der Suche ‚Keine Treffer für ‚…‘‘ mit dem Begriff; in der Seitenleiste neben dem Inhalt nur Symbol und Titel; Symbol (36 pt) und Titel (17 pt halbfett) überall gleich groß | hig.mjs | – | 15.23 |
+| R-7.7 | **Leerer Zustand:** jeder leere Bereich (keine Einträge, keine Treffer, alles ausgeblendet) zeigt den Baustein 15.23 – Symbol, Titel, Satz, optional eine getönte Schaltfläche –, mittig im freien Bereich; bei der Suche ‚Keine Treffer für ‚…‘‘ mit dem Begriff; in der Seitenleiste neben dem Inhalt nur Symbol und Titel; Symbol (36 pt) und Titel (17 pt halbfett) überall gleich groß | hig.mjs | – | 15.23 |
 | R-7.8 | **Wischaktionen der Kacheln:** Wischen nach links auf einer Kachel der zentralen Liste zeigt rechts neben ihr die Aktionen ihres Kontextmenüs (R-4.2) – gleiche Aktionen, gleiche Reihenfolge, die zerstörende rot und ganz außen – als Kapseln 66 × 44 mit Symbol und dem Wort darunter (Kapsel, Symbol und Wort wachsen mit der Textgröße wie die Schaltflächen der Leisten, das Wort nie abgeschnitten), ein Abstand von 11 pt zwischen Kachel und Kapsel, zwischen den Kapseln und rechts außen; nichts ragt aus Seitenleiste oder Bild. Die Kachel folgt dem Finger, bleibt ab halber Aktionsbreite offen, sonst federt sie zurück; die Kachel gleitet auf und zu mit einer Feder ohne Nachschwingen, Antwortzeit 0,5 s, unabhängig vom Weg (gemessen in Notizen, Ausnahme von R-1.12); jede Kapsel steht an ihrem Platz und wächst, sobald die Kachel sie ganz freigibt, mit eigener Zeit aus ihrer Mitte (0,25 s, Deckkraft voll nach 0,1 s); beim Zurückwischen und Tippen auf die offene Kachel vergeht jede, sobald die Kachel sie erreicht, beim Schließen durch Tippen daneben oder auf eine andere Kachel alle zugleich (je 0,23 s); keine rückt dabei nach rechts über ihren Platz hinaus. **Kein Durchwischen:** über die offene Breite hinaus folgt die Kachel nur mit starkem Widerstand (höchstens 60 px), die Kapseln rücken anteilig mit und werden höchstens 6 % größer, keine wird langgezogen; Loslassen federt auf ‚offen‘ und löst nichts aus. Die rote Aktion fragt beim Antippen zuerst (R-4.12), die Kachel bleibt bis zur Entscheidung offen. Höchstens eine Kachel ist offen; sie schließt bei Tippen auf die Kachel oder daneben in der Liste (das Tippen löst sonst nichts aus; Schaltflächen außerhalb der Liste wirken sofort und schließen sie dabei), Rollen, Wischen an einer anderen Kachel, Neuaufbau der Liste, Drehen, Ausblenden der Seitenleiste und Esc. Entschieden wird die Geste wie in R-7.5 (nach 10 px, deutlich waagrecht – sonst rollt die Liste); eine geschlossene Kachel bewegt sich nicht nach rechts; kein Wischen nach langem Drücken, bei offenem Fenster, Menü oder offener Sprechblase und an allem, was kein Kontextmenü hat; Wischen tippt nie an; Drehen oder Abbruch beim Ziehen = Zustand wie vorher. Geschlossen sind die Kapseln für VoiceOver und Tastatur nicht erreichbar (die Aktionen bleiben im Kontextmenü), offen sind sie Schaltflächen mit dem Namen der Aktion. ‚Bewegung reduzieren‘: die Kachel folgt dem Finger, die Kapseln stehen an ihrem Platz in voller Größe und blenden zu denselben Zeitpunkten nur ein und aus; je Bild nur transform und opacity | ablauf.mjs – `checkWischen` | Wischgefühl, Widerstand und Zurückfedern, Rollen gegen Wischen, VoiceOver | 15.4 |
 | R-7.9 | **Filter auf ‚Alle‘:** ein Filter der Liste (z. B. ‚Alle / Nur erfasste‘) steht beim Start und beim Öffnen eines Eintrags immer auf ‚Alle‘ | ablauf.mjs – `checkFilterAlle` (die App nennt Filter setzen, Eintrag öffnen und ‚steht auf Alle‘) | – | 15.3 |
 
@@ -1379,6 +1384,7 @@ Testfall (User) in den Usertest, wenn eine Version es betrifft.
 | R-10.6 | **Ansprache:** sichtbare Texte ohne ‚wir/uns/unser‘ und ohne ‚klicken‘ (‚tippen‘) | hig.mjs – `texteMenues` (Texte der App, `title`, `aria-label`, Platzhalter) | – | 16 |
 | R-10.7 | **Datum und Dateinamen:** Datum in Texten TT.MM.JJJJ, Uhrzeit hh:mm; Dateinamen nach den Mustern aus 10 (Ausgabe, Backup, Abgleichbericht; Datum JJJJ.MM.TT, Uhrzeit hh.mm, nie zwei Leerzeichen) | hig.mjs – `texteMenues` (Datumsangaben und angezeigte Dateinamen nach jedem Schritt); backup.mjs (`dateinameFehler`) | – | 10 |
 | R-10.8 | **Dateiname im Hinweisfenster:** steht allein in einer eigenen Zeile unter dem Satz, fett und zentriert, ohne Punkt danach. Am iPad wird das Fenster so breit, dass der Name in einer Zeile steht – mindestens so breit wie sonst, höchstens wie das breite Hinweisfenster (600 px, wächst mit der Textgröße, höchstens Bildschirmbreite − 32 px); passt er auch dann nicht, bricht er nur nach einem Leerzeichen um – nur ein Wort, das länger ist als die Zeile, bricht in sich (R-6.3). Am iPhone bleibt die Breite wie bei jedem Hinweisfenster | ablauf.mjs – `checkDateiname` (Backup, Ausgabe, Abgleichbericht; vier Lagen, große Schrift; iPad: eine Zeile und Höchstbreite; Gegenprobe) | – | 10, 15.19 |
+| R-10.9 | **Begriff ‚Schaltfläche‘:** in Texten, Kommentaren und Prüfmeldungen nie ‚Knopf‘ bzw. ‚Knöpfe‘ (auch nicht in Zusammensetzungen), Ausnahmen wie in 6 | doku.mjs – `checkBegriffe` (AppDesign und App: Doku, `v4/`, Katalog, Prüfungen, `index.html`; Namen im Code ausgenommen; Gegenprobe `--gegenprobe begriffe`) | – | 6 |
 
 ### Regeln ohne automatische Prüfung
 

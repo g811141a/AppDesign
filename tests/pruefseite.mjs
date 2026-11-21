@@ -87,15 +87,15 @@ messung: {
     [['    klickVerschlucken(e.clientX, e.clientY);\n    schliessen();\n  });', '  });']], /APD-118\/X-1 Tipp bei y \d+ ohne Klick über #mainMore schließt das Menü nicht/),
 },
 grossanzeige: {
-  ohneAusloesen: fall('Großanzeige', 'Loslassen über einem Knopf löst ihn nicht aus',
+  ohneAusloesen: fall('Großanzeige', 'Loslassen über einer Schaltfläche löst sie nicht aus',
     [['if (k && !k.disabled) { grossSelbst = true;', 'if (false && k && !k.disabled) { grossSelbst = true;']], /R-2\.6 .*L-8/),
 },
 // B-3.3 Schritt 1 (APD-135/Q-9, seit 4.65.0): je Teil ein Fehler, den bis Reiselogbuch 3.57.7 die bisherige Prüfung der App fand (ablauf-markierung-menues
 // bzw. regeln-ablauf; Nachweis-Tabelle im CHANGELOG). zeichen = die Meldung der Prüffunktion.
 menue: {
-  mehrWaagrecht: fall('Mehr-Knopf', 'Mehr-Knopf kippt bei offenem Menü nicht (bleibt waagrecht)',
+  mehrWaagrecht: fall('Mehr-Schaltfläche', 'Mehr-Schaltfläche kippt bei offenem Menü nicht (bleibt waagrecht)',
     [["if (s) s.innerHTML = ICONS[offen ? 'ellipsis-vertical' : 'ellipsis'];", "if (s) s.innerHTML = ICONS['ellipsis'];"]],
-    /R-4\.1 APD-87\/E-1: Mehr-Knopf bei offenem Menü nicht mit drei senkrechten Punkten/),
+    /R-4\.1 APD-87\/E-1: Mehr-Schaltfläche bei offenem Menü nicht mit drei senkrechten Punkten/),
   menueWaechstNicht: fall('Menü', 'Menü wächst nicht aus seiner Schaltfläche (erscheint ohne Bewegung)',
     [['  wachsen(menu, anchor);   // R-4.13', '  // R-4.13']], /R-4\.13 APD-62\/M-[17] Menü #/),
   // seit 4.67.0 (APD-143, Gegenprobe zu L-1 und L-2): das alte Rollen – die Liste rückt, damit das Menü unter der Kachel Platz hat
@@ -226,8 +226,8 @@ export async function checkWerte(p) {
   if (existsSync(appHtml) && /AD_NEEDED/.test(readFileSync(appHtml, 'utf8'))) quellen.push(['App', readFileSync(appHtml, 'utf8')]);
   for (const [wo, text] of quellen) for (const n of new Set([...text.matchAll(/\bic\('([\w-]+)'/g)].map(m => m[1])))
     if (!r.symbole.includes(n)) E('R-1.8', 'Icons', `${wo}: ic('${n}') – das Symbol steht nicht in ICONS`);
-  if (!r.ellipsis) E('R-1.8', 'Icons', 'ic(\'ellipsis\') ohne data-mehr (Mehr-Knopf kippt nicht, R-4.1)');
-  // Leerer Zustand (R-7.7): Symbol, Titel als Überschrift, Satz, getönter Knopf; klein nur Symbol und Titel; Suche mit dem Begriff als Text
+  if (!r.ellipsis) E('R-1.8', 'Icons', 'ic(\'ellipsis\') ohne data-mehr (Mehr-Schaltfläche kippt nicht, R-4.1)');
+  // Leerer Zustand (R-7.7): Symbol, Titel als Überschrift, Satz, getönte Schaltfläche; klein nur Symbol und Titel; Suche mit dem Begriff als Text
   const L = r.leer;
   if (L.cls !== 'leer' || !L.sym || L.h3 !== 'Noch nichts <b>' || L.p !== 'Ein Satz & mehr.' || L.knopf !== 'leerNeu' || L.knopfText !== 'Neu')
     E('R-7.7', 'Leerer Zustand', `leerHtml ergibt ${JSON.stringify(L)}`);
@@ -418,7 +418,7 @@ export async function ablaufTitelBlase(t, b) {
     } catch (e) { t.fehler('', `Ablauf bricht ab: ${e.message.split('\n')[0]}`); }
     await p.close();
   }
-  // L-4: Titel mit 80 Zeichen – mehrzeilig, ganz sichtbar, über keinem Knopf
+  // L-4: Titel mit 80 Zeichen – mehrzeilig, ganz sichtbar, über keiner Schaltfläche
   {
     const p = await t.seite(b, 'iPhone hoch', { theme: 'light' });
     t.ort = 'iPhone hoch · Text 53';
@@ -499,7 +499,7 @@ export async function ablaufTitelOben(t, b) {
 // APD-118/X-1 bis X-8 (Designrichtlinie 13 ‚Am oberen Rand kein Klick‘, checkSchichtOben): die Sperrschicht hinter Menü, Untermenü, Kontextmenü und
 // Sprechblase schließt beim Loslassen (bis 20 px Weg) und verschluckt den Klick danach. iPhone quer hell und dunkel (am Rand), iPhone hoch, iPad quer
 // und hoch (X-4 bis X-6 mit Untermenü ‚Darstellung‘, Kontextmenü und Sprechblase ‚Eintrag löschen‘); danach neutral ‚nichts gelöscht‘ (gespeicherte
-// Einträge). X-8: Messung 2026-11-06 nachgespielt; APD-121/Y-5: die Tipps auf den Mehr-Knopf der Liste aus den Messungen vom 07.11.2026.
+// Einträge). X-8: Messung 2026-11-06 nachgespielt; APD-121/Y-5: die Tipps auf die Mehr-Schaltfläche der Liste aus den Messungen vom 07.11.2026.
 export async function ablaufSchichtOben(t, b) {
   const daten = datenEintraege([{ id: 'a', title: 'Erster Eintrag', n: 12, text: i => `Text ${i} am Hafen` }, { id: 'b', title: 'Zweiter Eintrag' }], 'a');
   const messung = datei => liesMessung(readFileSync(path.join(MESSUNGEN, datei), 'utf8'));
@@ -532,7 +532,7 @@ export async function ablaufSchichtOben(t, b) {
     } catch (e) { t.fehler('', `Ablauf bricht ab: ${e.message.split('\n')[0]}`); }
     await p.close();
   }
-  // APD-121/Y-5: Tipps auf den Mehr-Knopf der Liste aus den Messungen vom 07.11.2026 nachgespielt (Startliste, #sideMore)
+  // APD-121/Y-5: Tipps auf die Mehr-Schaltfläche der Liste aus den Messungen vom 07.11.2026 nachgespielt (Startliste, #sideMore)
   for (const datei of ['2026-11-07 iPhone quer Mehr-Knopf oben 1.txt', '2026-11-07 iPhone quer Mehr-Knopf oben 2.txt']) {
     const m = messung(datei);
     const ev = m.zeilen.map(z => z.ereignis || '').filter(e => /^(zeiger (down|move|up) \d+ \d+ touch|tippen )/.test(e));
@@ -547,8 +547,8 @@ export async function ablaufSchichtOben(t, b) {
       await vorlageStart(p, daten, 'a');
       if (await p.locator('#back').isVisible()) { await p.click('#back'); await navFertig(p); await bis(p, `!!document.querySelector('#side.page #sideMore') && ${RUHE}`, 'Startliste offen'); }
       const offen = () => p.evaluate(() => !!document.querySelector('.menu:not(.zu-geist), .layer'));
-      t.wahr('APD-121/Y-5 Messung mit Tipps auf den Mehr-Knopf (sonst prüft die Prüfung nichts)', tipps.length >= 6 && (datei.includes('oben 1') || tipps.some(x => x.y0 === 21) && tipps.some(x => !x.soll)), 'APD-121');
-      // waagrecht auf die Mitte des Knopfs verschoben (am Gerät anderer sicherer Rand: Knopf weiter links), y und Weg wie gemessen
+      t.wahr('APD-121/Y-5 Messung mit Tipps auf die Mehr-Schaltfläche (sonst prüft die Prüfung nichts)', tipps.length >= 6 && (datei.includes('oben 1') || tipps.some(x => x.y0 === 21) && tipps.some(x => !x.soll)), 'APD-121');
+      // waagrecht auf die Mitte der Schaltfläche verschoben (am Gerät anderer sicherer Rand: Schaltfläche weiter links), y und Weg wie gemessen
       const mx = await p.evaluate(() => { const r = document.querySelector('#sideMore').getBoundingClientRect(); return r.x + r.width / 2; });
       const dx = Math.round(mx - tipps.map(k => k.x0).sort((a, b) => a - b)[tipps.length >> 1]);
       await obenOhneKlick(p);
@@ -561,17 +561,17 @@ export async function ablaufSchichtOben(t, b) {
           for (let n = 0; n < 3 && await offen(); n++) { await p.keyboard.press('Escape'); await p.waitForTimeout(350); }
         }
       } finally { await obenOhneKlick(p, false); }
-      await t.schritt(p, 'Mehr-Knopf oben nachgespielt', async () => {});
+      await t.schritt(p, 'Mehr-Schaltfläche oben nachgespielt', async () => {});
     } catch (e) { t.fehler('', `Ablauf bricht ab: ${e.message.split('\n')[0]}`); }
     await p.close();
   }
 }
 
-// APD-104/L-1 bis L-9 (R-2.6, checkGrossanzeige): ab AX1 zeigt langes Drücken auf einen Leisten-Knopf Icon und Namen groß in der Mitte; gleiten
-// wechselt, Loslassen über einem Knopf löst ihn aus, daneben schließt sie nur. Je Ansicht bei AX1 (Text 28): Kopfzeile (Ausgabe → Mehr, daneben der
-// Titel), Seitenleiste (Neuer Eintrag → Mehr), Fenster-Kopfzeile (Abbrechen → Fertig), schwebende Knöpfe (Nach oben → Ans Ende); echt ausgelöst:
-// Loslassen über ‚Mehr‘ öffnet das Menü; offenes Menü: keine Anzeige auf verdeckten Knöpfen; Drehen schließt ohne Auslösen; APD-62/M-9 (R-4.13):
-// das Menü wächst nach der Großanzeige aus der Schaltfläche; AX5 (Text 53): die Anzeige wächst mit; Text 17 (L): nichts davon (L-1, L-2).
+// APD-104/L-1 bis L-9 (R-2.6, checkGrossanzeige): ab AX1 zeigt langes Drücken auf eine Leisten-Schaltfläche Icon und Namen groß in der Mitte; gleiten
+// wechselt, Loslassen über einer Schaltfläche löst sie aus, daneben schließt sie nur. Je Ansicht bei AX1 (Text 28): Kopfzeile (Ausgabe → Mehr, daneben der
+// Titel), Seitenleiste (Neuer Eintrag → Mehr), Fenster-Kopfzeile (Abbrechen → Fertig), schwebende Schaltflächen (Nach oben → Ans Ende); echt ausgelöst:
+// Loslassen über ‚Mehr‘ öffnet das Menü; offenes Menü: keine Anzeige auf verdeckten Schaltflächen; Drehen schließt ohne Auslösen; APD-62/M-9 (R-4.13):
+// das Menü wächst nach der Großanzeige aus die Schaltfläche; AX5 (Text 53): die Anzeige wächst mit; Text 17 (L): nichts davon (L-1, L-2).
 export async function ablaufGrossanzeige(t, b) {
   const daten = datenEintraege([{ id: 'a', title: 'Erster Eintrag', n: 20, text: i => `Text ${i} mit etwas mehr Inhalt für eine lange Seite` }, { id: 'b', title: 'Zweiter Eintrag' }], 'a');
   const sichtbar = (p, s) => p.evaluate(s => { const e = document.querySelector(s); return !!e && !!e.getClientRects().length && getComputedStyle(e).visibility !== 'hidden'; }, s);
@@ -589,13 +589,13 @@ export async function ablaufGrossanzeige(t, b) {
         await finger(p, '#mainMore', [['warte', 700]], { fangen: false }); await p.waitForTimeout(300);
         t.ist('L-8 Loslassen über ‚Mehr‘ öffnet das Menü', await p.locator('.menu').count(), 1, 'R-2.6');
         t.wahr('L-8 nach dem Loslassen ist die Großanzeige zu', !await p.locator('.grossanzeige').count(), 'R-2.6');
-        // offenes Menü: die Knöpfe darunter sind verdeckt – langes Drücken dort zeigt keine Anzeige
+        // offenes Menü: die Schaltflächen darunter sind verdeckt – langes Drücken dort zeigt keine Anzeige
         const r = await p.evaluate(async () => {
           const k = document.querySelector('#shareBtn').getBoundingClientRect(), x = k.left + k.width / 2, y = k.top + k.height / 2, z = document.elementFromPoint(x, y);
           const ev = typ => z.dispatchEvent(new PointerEvent(typ, { pointerId: 9, pointerType: 'touch', isPrimary: true, clientX: x, clientY: y, button: 0, buttons: typ === 'pointerup' ? 0 : 1, bubbles: true, cancelable: true }));
           ev('pointerdown'); await new Promise(r => setTimeout(r, 700)); const g = !!document.querySelector('.grossanzeige'); ev('pointerup'); return g;
         });
-        t.wahr('bei offenem Menü zeigt langes Drücken auf den verdeckten Knopf ‚Ausgabe‘ keine Großanzeige', !r, 'R-2.6');
+        t.wahr('bei offenem Menü zeigt langes Drücken auf die verdeckte Schaltfläche ‚Ausgabe‘ keine Großanzeige', !r, 'R-2.6');
         // das Loslassen auf der Sperrschicht schließt das Menü schon (APD-118) – Esc nur, wenn noch eins offen ist
         if (await p.locator('.menu').count()) await p.keyboard.press('Escape');
         await p.waitForTimeout(300);
@@ -605,11 +605,11 @@ export async function ablaufGrossanzeige(t, b) {
       // Seitenleiste (iPad: fest links)
       if (await sichtbar(p, '#newItem'))
         await t.schritt(p, 'Seitenleiste', async () => t.liste(await checkGrossanzeige(p, { knoepfe: ['#newItem', '#sideMore'], where: 'Seitenleiste' })));
-      // schwebende Knöpfe: in der Mitte der Seite sind beide sichtbar
+      // schwebende Schaltflächen: in der Mitte der Seite sind beide sichtbar
       await p.evaluate(() => { const r = document.querySelector('#app > .rolle'); r.scrollTop = (r.scrollHeight - r.clientHeight) / 2; }); await p.waitForTimeout(500);
       if (await sichtbar(p, '#toTop') && await sichtbar(p, '#toEnd'))
-        await t.schritt(p, 'schwebende Knöpfe', async () => t.liste(await checkGrossanzeige(p, { knoepfe: ['#toTop', '#toEnd'], where: 'schwebende Knöpfe' })));
-      else if (ansicht.startsWith('iPad')) t.fehler('R-2.6', 'schwebende Knöpfe ‚Nach oben‘ und ‚Ans Ende‘ in der Mitte der Seite nicht beide sichtbar');
+        await t.schritt(p, 'schwebende Schaltflächen', async () => t.liste(await checkGrossanzeige(p, { knoepfe: ['#toTop', '#toEnd'], where: 'schwebende Schaltflächen' })));
+      else if (ansicht.startsWith('iPad')) t.fehler('R-2.6', 'schwebende Schaltflächen ‚Nach oben‘ und ‚Ans Ende‘ in der Mitte der Seite nicht beide sichtbar');
       // Fenster-Kopfzeile: Abbrechen → Fertig (Fenster ‚Eintrag bearbeiten‘)
       await p.evaluate(() => openItemDialog(getItem('a'))); await fensterAuf(p);
       await t.schritt(p, 'Fenster-Kopfzeile', async () => t.liste(await checkGrossanzeige(p, { knoepfe: ['#dlgX', '#dlgOk'], daneben: FTITEL, where: 'Fenster-Kopfzeile' })));
@@ -682,10 +682,10 @@ const zurListe = async p => { if (await zuSehen(p, '#sideMore')) return;
 const ausMehr = (p, punkt) => async () => { await menueAuf(p, '#mainMore'); await p.locator('.menu:not(.submenu) .mi', { hasText: punkt }).click(); };
 
 // APD-135/Q-1 bis Q-3, Q-8 (seit 4.65.0; R-4.1, R-4.13, R-4.7, R-1.4, R-1.8): Mehr-Menü der Kopfzeile (#mainMore) und der Liste (#sideMore, am iPhone auf
-// der Startliste) mit Untermenü ‚Darstellung‘, Kontextmenü einer Kachel. Q-2 checkMehrKnopf: der Mehr-Knopf kippt und bleibt hervorgehoben, solange sein
+// der Startliste) mit Untermenü ‚Darstellung‘, Kontextmenü einer Kachel. Q-2 checkMehrKnopf: die Mehr-Schaltfläche kippt und bleibt hervorgehoben, solange ihr
 // Menü bzw. Untermenü offen ist; Q-1 checkWachsen: jedes Menü wächst aus seiner Schaltfläche (iPad mit Drehen beim Wachsen; ‚Bewegung reduzieren‘ nur
 // Überblenden; nach der Großanzeige bei Text 28 – für Mehr der Kopfzeile im Teil grossanzeige, hier Mehr der Liste); Q-3 checkFokus: Fokus im Menü,
-// Pfeile, Esc schließt (auch erst das Untermenü), Fokus zurück auf den Knopf. 4 Ansichten (iPad hoch dunkel), dazu iPad quer mit ‚Bewegung reduzieren‘.
+// Pfeile, Esc schließt (auch erst das Untermenü), Fokus zurück auf die Schaltfläche. 4 Ansichten (iPad hoch dunkel), dazu iPad quer mit ‚Bewegung reduzieren‘.
 export async function ablaufMenue(t, b) {
   const daten = datenB33();
   for (const [ansicht, theme, ruhig] of [['iPad quer', 'light'], ['iPad hoch', 'dark'], ['iPhone hoch', 'light'], ['iPhone quer', 'light'], ['iPad quer', 'light', true]]) {
@@ -699,11 +699,11 @@ export async function ablaufMenue(t, b) {
       await t.schritt(p, 'Q-1 Menü der Kopfzeile wächst', async () => t.liste(await checkWachsen(p, { menue: '#mainMore', where: wo('Kopfzeile') })));
       if (!ruhig) {
         await t.schritt(p, 'Mehr-Menü der Kopfzeile offen', () => menueAuf(p, '#mainMore'));
-        // APD-136/S-6 (seit 4.67.0, AD-Bean sourcehighlight): der Mehr-Knopf ist gehaltene Quelle, solange sein Menü offen ist, danach ist nichts gehalten
-        t.wahr('APD-136/S-6 offenes Menü: Mehr-Knopf in heldItems und blau', await p.evaluate(() => adSourcehighlight.heldItems.includes(document.querySelector('#mainMore'))
+        // APD-136/S-6 (seit 4.67.0, AD-Bean sourcehighlight): die Mehr-Schaltfläche ist gehaltene Quelle, solange ihr Menü offen ist, danach ist nichts gehalten
+        t.wahr('APD-136/S-6 offenes Menü: Mehr-Schaltfläche in heldItems und blau', await p.evaluate(() => adSourcehighlight.heldItems.includes(document.querySelector('#mainMore'))
           && document.querySelector('#mainMore').classList.contains('on')), 'R-3.3');
         await t.schritt(p, 'Mehr-Menü der Kopfzeile zu', () => allesZu(p));
-        t.ist('APD-136/S-6 Menü zu: heldItems leer, Mehr-Knopf frei', await p.evaluate(() => [adSourcehighlight.heldItems.length, document.querySelector('#mainMore').classList.contains('on')]), [0, false], 'R-3.3');
+        t.ist('APD-136/S-6 Menü zu: heldItems leer, Mehr-Schaltfläche frei', await p.evaluate(() => [adSourcehighlight.heldItems.length, document.querySelector('#mainMore').classList.contains('on')]), [0, false], 'R-3.3');
         await t.schritt(p, 'Q-3 Mehr der Kopfzeile mit der Tastatur', async () => t.liste(await checkFokus(p, { menue: '#mainMore', tab: false, where: 'Mehr der Kopfzeile' })));
       }
       // Liste mit Untermenü ‚Darstellung‘ und Kontextmenü der zweiten Kachel – im iPhone quer rollte die Liste bis 4.66.0 dafür 8 px und beim Schließen
@@ -786,7 +786,7 @@ export async function ablaufSprechblase(t, b) {
 // APD-135/Q-6 bis Q-8 (seit 4.65.0; R-4.4, R-4.7, R-3.4, R-1.8, R-7.3): Fenster ‚Eintrag bearbeiten‘ (Mehr der Kopfzeile). Q-6 checkDialogHead: x links,
 // Häkchen rechts, erst nach einer Änderung blau, x mit Änderung fragt ‚Änderungen verwerfen‘ / ‚Weiter bearbeiten‘; Q-7 checkFokus: das Fenster öffnet mit
 // dem Fokus auf sich, Tab bleibt im Fenster, Esc und ⌘. schließen, die Sprechblase am x mit der Tastatur; checkFokusZurueck: nach dem Schließen liegt der
-// Fokus wieder auf dem Knopf bzw. der Zeile, die es öffnete (Tastatur mit Ring, angetippt ohne), ohne Rollen. Danach ist nichts gespeichert.
+// Fokus wieder auf der Schaltfläche bzw. der Zeile, die es öffnete (Tastatur mit Ring, angetippt ohne), ohne Rollen. Danach ist nichts gespeichert.
 export async function ablaufFenster(t, b) {
   const daten = datenB33(), ZEILE = `#app [data-day="${tag(3)}"]`;
   for (const ansicht of ['iPad quer', 'iPad hoch', 'iPhone hoch', 'iPhone quer']) {
@@ -815,8 +815,8 @@ export async function ablaufFenster(t, b) {
   }
 }
 // APD-136/S-9, S-10 (seit 4.67.0; R-3.3, R-8.1, R-1.13 – arbeit/0145 APD-136 Bean sourcehighlight Vorschlag.md): die AD-Bean sourcehighlight auf der
-// Vorlage. S-9: sourceItem eines zweiten Knopfs setzen, während der erste gilt – der erste frei, der zweite blau, sourceItem = zweiter, change je einmal;
-// S-10: hold, die Knöpfe neu aufbauen, refresh – bleibt blau; release – frei; change je einmal. Gegenproben pruefseite:quelleNichtGetoent (S-9) und
+// Vorlage. S-9: sourceItem einer zweiten Schaltfläche setzen, während der erste gilt – der erste frei, der zweite blau, sourceItem = zweiter, change je einmal;
+// S-10: hold, die Schaltflächen neu aufbauen, refresh – bleibt blau; release – frei; change je einmal. Gegenproben pruefseite:quelleNichtGetoent (S-9) und
 // pruefseite:releaseGibtNichtFrei (S-10).
 export async function checkSourcehighlight(p) {
   const errors = [], E = t => errors.push(`R-3.3 ${t}`);
@@ -835,13 +835,13 @@ export async function checkSourcehighlight(p) {
     ab(); box.remove();
     return { a1, s9, frei9, ev9, vor, nach, held, frei10, ev10, leer: s.heldItems.length };
   });
-  if (!r.a1) E('APD-136/S-9 sourceItem = erster Knopf: nicht blau');
-  if (JSON.stringify(r.s9) !== JSON.stringify([false, true, '#shB'])) E(`APD-136/S-9 sourceItem auf den zweiten Knopf: erster blau ${r.s9[0]}, zweiter blau ${r.s9[1]}, sourceItem ‚${r.s9[2]}‘ (soll: erster frei, zweiter blau, ‚#shB‘)`);
-  if (!r.frei9) E('APD-136/S-9 sourceItem = \'\': der zweite Knopf bleibt blau');
+  if (!r.a1) E('APD-136/S-9 sourceItem = erste Schaltfläche: nicht blau');
+  if (JSON.stringify(r.s9) !== JSON.stringify([false, true, '#shB'])) E(`APD-136/S-9 sourceItem auf die zweite Schaltfläche: erster blau ${r.s9[0]}, zweiter blau ${r.s9[1]}, sourceItem ‚${r.s9[2]}‘ (soll: erster frei, zweiter blau, ‚#shB‘)`);
+  if (!r.frei9) E('APD-136/S-9 sourceItem = \'\': die zweite Schaltfläche bleibt blau');
   if (JSON.stringify(r.ev9) !== JSON.stringify(['#shA true', '#shA false', '#shB true', '#shB false'])) E(`APD-136/S-9 Ereignis change ${JSON.stringify(r.ev9)} statt je einmal getönt und frei`);
   if (r.vor) E('APD-136/S-10 die neu aufgebaute Schaltfläche ist schon vor refresh blau – die Prüfung prüft nichts');
   if (!r.nach || JSON.stringify(r.held) !== '["#shA"]') E(`APD-136/S-10 nach Neuaufbau und refresh: blau ${r.nach}, heldItems ${JSON.stringify(r.held)}`);
-  if (!r.frei10 || r.leer) E(`APD-136/S-10 release: Knopf ${r.frei10 ? 'frei' : 'noch blau'}, heldItems ${r.leer}`);
+  if (!r.frei10 || r.leer) E(`APD-136/S-10 release: Schaltfläche ${r.frei10 ? 'frei' : 'noch blau'}, heldItems ${r.leer}`);
   if (JSON.stringify(r.ev10) !== JSON.stringify(['#shA true', '#shA false'])) E(`APD-136/S-10 Ereignis change ${JSON.stringify(r.ev10)} statt je einmal getönt und frei`);
   return errors;
 }

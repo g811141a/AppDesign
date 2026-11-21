@@ -13,6 +13,6 @@ solange der Finger liegt, hebt sich **jede Schaltfläche** als helle Fläche mit
 Leisten-Schaltfläche über ihre Kapsel; ‚Bewegung reduzieren‘: nur Schatten) –, eine Listen- oder Tabellenzeile wird grau – Schaltflächen sofort, …
 
 **Spalte ‚Prüfung‘:** bleibt `ablauf.mjs – checkBeruehren; hig.mjs – jede Schaltfläche in jeder Ansicht; katalog.mjs – APD-140/Z-6`. `checkBeruehren` prüft künftig
-jede Schaltfläche (heben, Maß nach Variante B, ‚Bewegung reduzieren‘), mit Gegenprobe T-6 (rot gegen 4.67.1: `#bkMenu`, ‚Backup erstellen‘).
+jede Schaltfläche (heben, Maß nach Variante B, ‚Bewegung reduzieren‘), mit Gegenprobe P-118/T-6 (rot gegen 4.67.1: `#bkMenu`, ‚Backup erstellen‘).
 
 **AD-Bean:** keine, weil das Heben ein Grundstil von `design.css` und `ui.js` (`GROSS_SEL`) ist. `GROSS_SEL` wird auf alle Schaltflächen erweitert.
