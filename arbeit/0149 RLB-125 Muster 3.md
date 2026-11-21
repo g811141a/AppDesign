@@ -80,3 +80,8 @@ Entfallen gegenüber 0148: Lesefenster mit `lock` in der Kopfzeile (alte T-4) un
 - L-4, L-5 (Löschen: Anzahl, ‚Erst Backup erstellen‘)
 - Abgleich, iPhone-Bilder (hoch erst, wenn quer passt)
 - Fazit: Ohne Tabelle steht es nur in der Vorschau, und dort nur zum Lesen.
+
+## Rückmeldung (Nutzer 21.11.2026, Sitzung 0149, im Fenster)
+
+- Muster 3: **nicht ok** – Einzelheiten folgen im Chat.
+- Allgemeine Regel ‚gesperrter Eintrag zeigt nur die Vorschau‘: **Nein, App** (bisher sperrt nur das Reiselogbuch).
