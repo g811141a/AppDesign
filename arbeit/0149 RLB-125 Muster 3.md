@@ -118,3 +118,42 @@ Entsperren, Sperren, Neustart und Drehen (Chromium) zeigen das Erwartete; keine 
 ### Testfall-Liste (Änderung)
 
 - RLB-125/T-4 neu: oben ‚PDF‘ und Teilen (blau gefüllt) wie in der Vorschau, kein Mehr; ‚PDF‘ öffnet das Drucken-Menü, Teilen das Teilen-Menü.
+
+## Muster 5 – Schloss auf der Kachel (Nutzer 21.11.2026, Sitzung 0149: „Die Ausgabeseite ist ok, aber das Icon für die Sperre rechts unten auf der Reiselogbuchkachel ist störend. Bitte um ein paar Alternativen“)
+
+**Ausgabeseite (Muster 4): ok.** Allgemeine Regel: nein, App (Antwort im Fenster zu Muster 3).
+
+### Drei Varianten (Bild `arbeit/RLB-125/bilder/17.png`, iPad quer, hell; oben ‚Australien‘ gewählt, unten nicht gewählt)
+
+- **a) Schloss vor dem Titel:** kleines `lock` in der Farbe des Titels direkt vor ‚Australien‘ (weiß auf blau, schwarz auf weiß). Die Kachel bleibt sonst unverändert,
+  der Pfeil bleibt.
+- **b) Schloss statt Pfeil rechts:** `lock` steht dort, wo sonst `chevron-right` steht, in Grau (auf blau weiß).
+- **c) ‚gesperrt‘ statt ‚beendet‘:** In der Datumszeile steht `lock` und ‚gesperrt‘ anstelle des Zustands (‚beendet‘, ‚läuft gerade‘, ‚geplant‘). Der Zustand ist
+  dann nicht mehr zu sehen.
+
+Alle drei ohne Farbe Orange (J-5 entfällt damit) und ohne weißen Kreis.
+
+### Links zum Ausprobieren (bitte ganz neu laden)
+
+- a) https://g811141a.github.io/AppDesign/arbeit/RLB-125/index.html?kachel=a
+- b) https://g811141a.github.io/AppDesign/arbeit/RLB-125/index.html?kachel=b
+- c) https://g811141a.github.io/AppDesign/arbeit/RLB-125/index.html?kachel=c
+
+### Schritte (iPad quer, hell)
+
+1. Link a öffnen. Erwartet: Auf der Kachel ‚Australien‘ steht das `lock` vor dem Titel; ‚Toskana‘ hat kein Schloss.
+2. ‚Toskana‘ antippen. Erwartet: ‚Australien‘ ist weiß, das `lock` ist schwarz vor dem Titel.
+3. Dasselbe mit Link b. Erwartet: Bei ‚Australien‘ steht das `lock` rechts statt des Pfeils.
+4. Dasselbe mit Link c. Erwartet: Bei ‚Australien‘ steht in der Datumszeile ‚gesperrt‘ mit `lock` statt ‚beendet‘.
+
+### Automatisch geprüft (Chromium und WebKit, iPad quer und iPhone)
+
+Für jede Variante grün: Das Symbol steht innerhalb der Kachel, kein Text ist abgeschnitten, nur das Symbol der gewählten Variante ist da, ‚Toskana‘ hat kein
+Schloss, keine Fehler auf der Seite. Die Kachel ist bei allen drei gleich hoch wie ohne Sperre (iPad 80 px in Chromium).
+
+### Empfehlung und Apple
+
+- **Empfohlen a):** Das Schloss fällt beim Lesen des Titels sofort auf, stört die Kachel aber nicht. Pfeil und Zustand bleiben erhalten.
+- b) nimmt den Pfeil weg, der zeigt, dass die Kachel etwas öffnet. c) nimmt den Zustand weg.
+- Apple: **Vermutung** – Notizen zeigt bei gesperrten Notizen ein kleines Schloss in der Zeile der Liste. In dieser Sitzung ist das nicht belegt
+  (support.apple.com ist aus der Umgebung nicht erreichbar).

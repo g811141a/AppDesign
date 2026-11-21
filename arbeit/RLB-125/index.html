@@ -123,11 +123,13 @@
 </style>
 <style>/* Muster RLB-125 */
 #side .side-row { position: relative; }
-#side .side-row .lockmark { position: absolute; right: 10px; bottom: 8px; color: var(--warn); background: #fff; border-radius: 50%; width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; }
-#side .side-row .lockmark svg { width: 15px; height: 15px; }
+/* Muster 5 (Nutzer 21.11.2026, Sitzung 0149: Schloss unten rechts störend) – Varianten über ?kachel=a|b|c */
+#side .side-row .lk-a { display: inline-flex; vertical-align: -2px; margin-right: 5px; } #side .side-row .lk-a svg { width: 15px; height: 15px; stroke-width: 2.4; }
+#side .side-row .lk-b { display: inline-flex; flex: none; color: var(--muted); } #side .side-row .lk-b svg { width: 17px; height: 17px; }
+#side .side-row.current .lk-b { color: rgba(255,255,255,.85); }
+#side .side-row .lk-c { white-space: nowrap; } #side .side-row .lk-c svg { width: 12px; height: 12px; vertical-align: -1px; margin-right: 3px; }
 .nb-title .lockbtn { width: 30px; height: 30px; min-width: 30px; min-height: 30px; margin-left: 6px; vertical-align: middle; color: var(--muted); }
 .nb-title .lockbtn svg { width: 17px; height: 17px; }
-#side .side-row.current .lockmark { box-shadow: 0 1px 3px rgba(0,0,0,.25); }
 #app .lockinfo { display: flex; align-items: center; gap: 12px; background: #fff7ea; border: 1px solid #f3d7a6; border-radius: 16px; padding: 12px 14px; margin: 0 0 12px; }
 #app .lockinfo .li-ic { color: var(--warn); display: inline-flex; } #app .lockinfo .li-ic svg { width: 26px; height: 26px; }
 #app .lockinfo .li-t { flex: 1; }
@@ -182,7 +184,8 @@ const fab = document.getElementById('fab');
 const printout = document.getElementById('printout');
 const importFile = document.getElementById('importFile');
 
-const STORAGE_KEY = 'reiselogbuch.muster-rlb125';   // Muster RLB-125: eigene Daten, nie die echten
+const STORAGE_KEY = 'reiselogbuch.muster-rlb125';
+const KACHEL = ['a', 'b', 'c'].includes(new URLSearchParams(location.search).get('kachel')) ? new URLSearchParams(location.search).get('kachel') : 'a';   // Muster 5: Schloss auf der Kachel   // Muster RLB-125: eigene Daten, nie die echten
 const OLD_STORAGE_KEY = 'reisetagebuch.v1'; // Name vor der Umbenennung, wird beim ersten Start übernommen
 const WEEKDAYS = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'];
 const WEEKDAYS_LONG = ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'];
@@ -1165,7 +1168,7 @@ function renderSide() {
     </div>
     ${listOpen ? listSearchHtml() : ''}
     <div class="side-list">${trips.length ? trips.map((t, i) => `${jahrKopf(t, i)}<button type="button" class="side-row ${t.id === currentTripId && !(page && startList) ? 'current' : ''}" data-id="${t.id}">
-        <span class="t"><b>${esc(t.title)}</b><small>${fullDate(t.start)} - ${fullDate(t.end)} · ${tripState(t, today)}</small>${term ? `<small class="chg hits">${hitText(hits.get(t.id))}</small>` : sync.changedLine(t)}</span>${t.locked ? `<span class="lockmark" aria-label="Gesperrt">${ic('lock')}</span>` : ''}${ic('chevron-right')}</button>`).join('')
+        <span class="t"><b>${t.locked && KACHEL === 'a' ? `<span class="lk-a" role="img" aria-label="Gesperrt">${ic('lock')}</span>` : ''}${esc(t.title)}</b><small>${fullDate(t.start)} - ${fullDate(t.end)} · ${t.locked && KACHEL === 'c' ? `<span class="lk-c">${ic('lock')}gesperrt</span>` : tripState(t, today)}</small>${term ? `<small class="chg hits">${hitText(hits.get(t.id))}</small>` : sync.changedLine(t)}</span>${t.locked && KACHEL === 'b' ? `<span class="lk-b" role="img" aria-label="Gesperrt">${ic('lock')}</span>` : ic('chevron-right')}</button>`).join('')
       : term ? leerSuche(listTerm.trim(), !isPhone()) : isPhone() ? leerKeinBuch('leerNeuListe') : leerHtml({ icon: 'book-open', titel: 'Noch kein Reiselogbuch', klein: true })}</div>
     ${backupTileHtml(db.settings.lastBackup, !all.length)}`);
   side.querySelector('#newTrip').onclick = () => { adSourcehighlight.sourceItem = '#newTrip'; openTripDialog(null); };
