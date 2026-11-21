@@ -11,7 +11,7 @@ AppDesign 4.67.1 · Designrichtlinie allgemein 4.67.1 · Zusammenarbeit allgemei
 in Sitzung 0147).
 
 - **Bean-Katalog:** der Mehr-Knopf auf ‚Hervorgehobene Quelle‘ (`#bkMenu`) ist ein runder Knopf (`.round`) statt der Kapselform der Grundschaltfläche (vorher 50 × 44).
-- **Prüfung:** `hig.mjs` (R-3.1) meldet jede Icon-Schaltfläche, die für sich allein steht (nicht in Kapsel, Menü, Zeile oder Kapsel Nach oben / Ans Ende) und kein
+- **Prüfung:** `hig.mjs` (R-3.1) meldet jede Icon-Schaltfläche, die für sich allein steht (nicht in Kapsel, Menü, Zeile, Kapsel Nach oben / Ans Ende oder Wischaktionen) und kein
   Kreis ist – gleiche Breite und Höhe, Radius mindestens die halbe Höhe; rot gegen 4.67.0 (`#bkMenu` 50 × 44), in der App grün. Vorher sah die Prüfung nur Knöpfe
   mit `border-radius: 50%` und die Kapsel mit einer Schaltfläche (P-115/F-1).
 - AD-Bean: keine, weil nur die Katalogseite und eine Prüfung sich ändern.

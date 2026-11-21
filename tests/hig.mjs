@@ -680,7 +680,7 @@ const found = new Map(), icons = new Map();
       // ist ein Kreis – gleiche Breite und Höhe, Radius mindestens die halbe Höhe (runder Knopf .round). Vorher sah die Prüfung nur Knöpfe mit
       // border-radius 50 % und übersah eine Icon-Schaltfläche in der Kapselform der Grundschaltfläche (Mehr-Knopf der Katalogseite, 66 × 44).
       document.querySelectorAll('button').forEach(e => {
-        if (!vis(e) || e.textContent.trim() || !e.querySelector('svg, .ic') || e.closest('.grp, .navgrp, .cap, .fab, .menu, .irow, .side-row')) return;
+        if (!vis(e) || e.textContent.trim() || !e.querySelector('svg, .ic') || e.closest('.grp, .navgrp, .cap, .fab, .menu, .irow, .side-row, .ad-swipeactions-actions')) return;   // Wischaktionen: Kapseln 66 × 44 (15.4)
         const b = e.getBoundingClientRect(), r = cs(e).borderTopLeftRadius;
         const rund = r.endsWith('%') ? parseFloat(r) >= 50 : parseFloat(r) >= Math.min(b.width, b.height) / 2 - .5;
         if (Math.abs(b.width - b.height) >= 0.5 || !rund) R('R-3.1', `Icon-Schaltfläche ‚${label(e)}‘ ist kein Kreis (${Math.round(b.width)} × ${Math.round(b.height)} px, Radius ${r}) – runder Knopf (.round)`);
