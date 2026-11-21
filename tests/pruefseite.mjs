@@ -102,6 +102,9 @@ menue: {
   listeRueckt: fall('Kontextmenü', 'die Liste rückt für das Menü unter der Kachel (bis 4.66.0), statt es darüber zu stellen',
     [['    if (r.bottom + 8 + el.offsetHeight <= limit || r.top - 8 - el.offsetHeight >= T) {', '    if (r.bottom + 8 + el.offsetHeight <= limit) {']],
     /R-4\.2 APD-143\/L-[12] /),
+  // seit 4.68.0 (RLB-125/T-13, R-4.14): ein nicht verfügbarer Menüpunkt verliert `disabled` – er ist antippbar
+  punktNichtGesperrt: fall('Menü', 'nicht verfügbarer Menüpunkt ohne `disabled` (antippbar)',
+    [["data-i=\"${i}\" ${it.disabled ? 'disabled' : ''} role=", "data-i=\"${i}\" role="]], /R-4\.14 RLB-125\/T-13 /),
 },
 sprechblase: {
   blaseWaechstNicht: fall('Sprechblase', 'Sprechblase wächst nicht aus ihrer Schaltfläche (erscheint ohne Bewegung)',
@@ -681,6 +684,36 @@ const zurListe = async p => { if (await zuSehen(p, '#sideMore')) return;
 // Mehr → ‚Eintrag bearbeiten‘ bzw. ‚Eintrag löschen‘ (angetippt)
 const ausMehr = (p, punkt) => async () => { await menueAuf(p, '#mainMore'); await p.locator('.menu:not(.submenu) .mi', { hasText: punkt }).click(); };
 
+// RLB-125/T-13 (seit 4.68.0, R-4.14): Menü der Kopfzeile mit einem nicht verfügbaren Punkt (openMenu, `disabled`, `sub`) und einem verfügbaren.
+// Erwartet: der Punkt steht sichtbar an seiner Stelle, blass (Deckkraft < 1), mit `disabled` und der grauen Unterzeile ‚Gesperrt‘ als Beschreibung;
+// Antippen und Eingabetaste (Fokus darauf) lösen nichts aus, der Fokus beginnt beim ersten verfügbaren Punkt.
+async function checkUnavailableItem(p, where) {
+  const fehler = [], R = t => fehler.push(`R-4.14 RLB-125/T-13 ${where}: ${t}`);
+  await p.evaluate(() => { window.__r414 = 0; openMenu(document.querySelector('#mainMore'), [
+    { icon: 'settings', label: 'Eintrag einstellen', sub: 'Gesperrt', disabled: true, act: () => { window.__r414++; } },
+    { icon: 'share', label: 'Eintrag teilen', act: () => {} }]); });
+  await bis(p, `!!document.querySelector('.menu:not(.submenu) .mi') && ${RUHE}`, 'Menü mit nicht verfügbarem Punkt offen');
+  const m = await p.evaluate(() => {
+    const mi = [...document.querySelectorAll('.menu:not(.submenu) .mi')], e = mi[0], sub = e && document.getElementById(e.getAttribute('aria-describedby') || '-');
+    return { n: mi.length, sichtbar: !!e?.getClientRects().length, disabled: !!e?.disabled, blass: e ? +getComputedStyle(e).opacity : 1,
+      sub: sub?.textContent || '', subSichtbar: !!sub?.getClientRects().length, fokus: document.activeElement?.textContent || '' };
+  });
+  if (m.n !== 2 || !m.sichtbar) R('nicht verfügbarer Punkt fehlt im Menü (soll sichtbar an seiner Stelle bleiben)');
+  if (!m.disabled) R('nicht verfügbarer Punkt ohne `disabled` – er ist antippbar');
+  if (!(m.blass < 1)) R(`nicht verfügbarer Punkt nicht blass (Deckkraft ${m.blass})`);
+  if (m.sub !== 'Gesperrt' || !m.subSichtbar) R(`Grund ‚Gesperrt‘ fehlt als graue Unterzeile (gefunden ‚${m.sub}‘)`);
+  if (!m.fokus.includes('Eintrag teilen')) R(`Fokus beginnt nicht beim ersten verfügbaren Punkt (‚${m.fokus.trim()}‘)`);
+  await p.locator('.menu:not(.submenu) .mi').first().click({ force: true, timeout: 2000 }).catch(() => {});
+  await p.waitForTimeout(150);
+  // Eingabetaste: ein Punkt mit `disabled` bekommt keinen Fokus – die Taste wird direkt auf ihm ausgelöst (wie ein Tastenkürzel der Tastatursteuerung)
+  await p.evaluate(() => { const e = document.querySelector('.menu:not(.submenu) .mi'); e?.focus();
+    for (const type of ['keydown', 'keyup']) e?.dispatchEvent(new KeyboardEvent(type, { key: 'Enter', code: 'Enter', bubbles: true })); });
+  await p.waitForTimeout(150);
+  if (await p.evaluate(() => window.__r414)) R('Antippen bzw. Eingabetaste auf dem nicht verfügbaren Punkt löst die Aktion aus');
+  await allesZu(p);
+  return fehler;
+}
+
 // APD-135/Q-1 bis Q-3, Q-8 (seit 4.65.0; R-4.1, R-4.13, R-4.7, R-1.4, R-1.8): Mehr-Menü der Kopfzeile (#mainMore) und der Liste (#sideMore, am iPhone auf
 // der Startliste) mit Untermenü ‚Darstellung‘, Kontextmenü einer Kachel. Q-2 checkMehrKnopf: die Mehr-Schaltfläche kippt und bleibt hervorgehoben, solange ihr
 // Menü bzw. Untermenü offen ist; Q-1 checkWachsen: jedes Menü wächst aus seiner Schaltfläche (iPad mit Drehen beim Wachsen; ‚Bewegung reduzieren‘ nur
@@ -706,6 +739,9 @@ export async function ablaufMenue(t, b) {
         t.ist('APD-136/S-6 Menü zu: heldItems leer, Mehr-Schaltfläche frei', await p.evaluate(() => [adSourcehighlight.heldItems.length, document.querySelector('#mainMore').classList.contains('on')]), [0, false], 'R-3.3');
         await t.schritt(p, 'Q-3 Mehr der Kopfzeile mit der Tastatur', async () => t.liste(await checkFokus(p, { menue: '#mainMore', tab: false, where: 'Mehr der Kopfzeile' })));
       }
+      // RLB-125/T-13 (seit 4.68.0, R-4.14): ein nicht verfügbarer Menüpunkt bleibt sichtbar – blass, `disabled`, Grund als graue Unterzeile; Antippen
+      // und Eingabetaste lösen nichts aus
+      if (!ruhig) await t.schritt(p, 'RLB-125/T-13 nicht verfügbarer Menüpunkt (R-4.14)', async () => t.liste(await checkUnavailableItem(p, wo(ansicht))));
       // Liste mit Untermenü ‚Darstellung‘ und Kontextmenü der zweiten Kachel – im iPhone quer rollte die Liste bis 4.66.0 dafür 8 px und beim Schließen
       // zurück, das Abbild schrumpfte zur alten Lage (Befund B-3.3); seit 4.67.0 steht das Menü darüber, die Liste bleibt (APD-143/L-2)
       await zurListe(p);

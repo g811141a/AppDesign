@@ -1,6 +1,6 @@
 # AppDesign – Backlog (allgemeine Themen)
 
-**Stand 21.11.2026** · Aktuelle Version: AppDesign 4.67.2
+**Stand 21.11.2026** · Aktuelle Version: AppDesign 4.68.0
 
 Allgemeine Themen, die alle Apps betreffen. App-Themen stehen im Backlog der jeweiligen App.
 Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.4.
@@ -12,7 +12,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 | Nr. | Prio | Thema | bereit seit |
 |---|---|---|---|
 
-Keine Punkte bereit (nächste Version: RLB-125 im Reiselogbuch, dann APD-135/B-3.3 Schritt 2).
+Keine Punkte bereit (nächste Version: APD-135/B-3.3 Schritt 2, dann APD-145).
 
 
 ## 1. Auf iPad und iPhone prüfen
@@ -62,6 +62,7 @@ Keine Punkte bereit (nächste Version: RLB-125 im Reiselogbuch, dann APD-135/B-3
 
 | Nr. | Thema | Version | Datum |
 |---|---|---|---|
+| RLB-125 | **Allgemeiner Teil von RLB-125 (Reiselogbuch sperren):** `createSync` mit `protect` – ein gesperrter Eintrag wird beim Abgleich nie gelöscht (15.18 Fälle 21–23, R-9.3), ‚Ersetzen‘ nennt die gesperrten; neue Regel R-4.14 ‚Nicht verfügbare Menüpunkte‘ (Prüfseite Teil `menue`); Icons `lock`, `lock-open`. Usertest P-120 im Reiselogbuch | AppDesign 4.68.0 | 21.11.2026 |
 | P-118/F-1, P-118/F-2 | **Korrekturen aus P-118:** jede gedrückte Schaltfläche hebt sich und wird größer (R-3.6 Variante B, Auswahl-Kapsel blass); ‚Schaltfläche‘ statt ‚Knopf‘ (Designrichtlinie 6, R-10.9, `checkBegriffe`). Usertest P-119 im Backlog des Reiselogbuchs | AppDesign 4.67.2 | 21.11.2026 |
 | APD-144 | **Kein sichtbarer Fokus nach ‚Zurück‘ (iPhone, WebKit):** Gerätetest des Nutzers (iPhone mit Hardware-Tastatur, Reiselogbuch 3.57.11, AppDesign 4.67.1; Schritte `arbeit/0149 APD-144 Geraetetest.md`): nach ‚Zurück‘ liegt der Fokusrahmen auf der Kachel, von der man kam – am Gerät kein Fehler, keine Änderung; die Abweichung betrifft nur WebKit der Prüfumgebung (APD-135/Q-3 bleibt auf eigener Seite) | – (ohne Änderung) | 21.11.2026 |
 | P-117/F-1, P-117/F-2 | **Korrekturen aus P-117:** Mehr-Knopf der Katalogseite ‚Hervorgehobene Quelle‘ rund (`.round`), `hig.mjs` R-3.1 für jede Icon-Schaltfläche für sich allein; `button` in `design.css` ohne Textauswahl und Callout, R-3.6 um ‚Schaltflächen‘ ergänzt, Prüfungen `hig.mjs` R-3.6 und `katalog.mjs` APD-140/Z-6 – Usertest P-118 (Reiselogbuch) | 4.67.1 | 21.11.2026 |

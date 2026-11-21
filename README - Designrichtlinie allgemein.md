@@ -1,6 +1,6 @@
 # Designrichtlinie allgemein
 
-**Version 4.67.2** · Stand 21.11.2026
+**Version 4.68.0** · Stand 21.11.2026
 
 Allgemeine Gestaltungs- und Bedienregeln für alle Web-Apps von g811141a auf iPad und iPhone. Die Datei liegt im Design-Repo
 **AppDesign** (g811141a/AppDesign); ihre Versionsnummer ist die des Repos. Die Komponenten sind dort einmal programmiert und
@@ -1011,8 +1011,9 @@ und Meldungen · Eingabe · Inhalt · Dienste (ohne eigene Oberfläche).
 ### 15.18 Abgleich zwischen iPad und iPhone
 - **Apple:** iCloud gleicht ohne Rückfrage ab; ohne Entwicklerkonto geht es bei uns über ein Backup in iCloud Drive – mit
   derselben Grundregel wie Apple: **die neuere Änderung gilt**, je Feld. Regeln R-9.2 bis R-9.4.
-- **Technisch:** gemeinsamer Baustein `createSync({ list, sub, subAt, maxFields, nouns, labels, values, app })` in `ui.js` – jede
-  App mit Backup nutzt ihn (keine eigene Umsetzung, R-1.1). Beim Speichern stempelt `sync.stamp()` jedes geänderte Feld mit
+- **Technisch:** gemeinsamer Baustein `createSync({ list, sub, subAt, maxFields, nouns, labels, values, protect, app })` in `ui.js` – jede
+  App mit Backup nutzt ihn (keine eigene Umsetzung, R-1.1). **`protect`** sagt, welche Einträge gesperrt sind (z. B. `e => e.locked`): Ein gesperrter
+  Eintrag wird beim Abgleich nie gelöscht, auch nicht, wenn das andere Gerät ihn gelöscht hat, ohne die Sperre zu kennen (Fall 23). Beim Speichern stempelt `sync.stamp()` jedes geänderte Feld mit
   Zeitpunkt und Gerät (Kopfdaten `metaAt`, Unterdaten wie Tage `subAt`), gelöschte Einträge kommen nach `data.deleted`; das
   Backup enthält `savedAt` und `savedOn`.
 - **Weg:** auf dem einen Gerät ‚Backup erstellen‘ → ‚In Dateien sichern‘ → iCloud Drive; auf dem anderen ‚Backup laden‘ → Datei
@@ -1063,6 +1064,9 @@ und Meldungen · Eingabe · Inhalt · Dienste (ohne eigene Oberfläche).
 | 18 | Einstellungen (Darstellung, Smiley-Leiste, ‚Letztes Backup‘) | bleiben die des iPhones | bleiben die des iPads |
 | 19 | ‚Ersetzen‘ statt ‚Abgleichen‘ | alle Daten des iPhones werden durch das Backup ersetzt (hier Gelöschtes kommt zurück, hier Geändertes geht verloren); ‚Letztes Backup‘ bleibt | wie links |
 | 20 | ‚Abbrechen‘ | nichts ändert sich | wie links |
+| 21 | Auf dem iPad gesperrt, iPhone unverändert | wird gesperrt – Zeile ‚Gesperrt: ja‘ im Abgleichbericht | bleibt gesperrt – ‚nichts geändert‘, im Abgleichbericht unter ‚Auf diesem iPad neuer als im Backup – bleibt so‘ |
+| 22 | Auf dem iPad gesperrt, auf dem iPhone **danach** entsperrt | bleibt entsperrt – ‚nichts geändert‘, im Abgleichbericht unter ‚Auf diesem iPhone neuer als im Backup – bleibt so‘ | wird entsperrt – Zeile ‚Gesperrt: –‘ im Abgleichbericht |
+| 23 | Auf dem iPad gesperrt, auf dem iPhone **danach** gelöscht (das iPhone kannte die Sperre noch nicht) | kommt gesperrt zurück – Zeile ‚neu angelegt‘ im Abgleichbericht und Hinweis ‚Auf dem iPad gesperrt, auf diesem iPhone gelöscht: … – wiederhergestellt‘; danach sind beide Geräte gleich | bleibt erhalten und gesperrt – Hinweis ‚Auf dem iPhone gelöscht, auf diesem iPad gesperrt: … – bleibt erhalten‘ |
 
 ### 15.19 Backup erstellen und Backup laden
 - **Apple:** [HIG – Activity views](https://developer.apple.com/design/human-interface-guidelines/activity-views) (Teilen-Menü) ·
@@ -1314,6 +1318,7 @@ Testfall (User) in den Usertest, wenn eine Version es betrifft.
 | R-4.11 | **Menüpunkt und Fenster heißen gleich:** öffnet ein Menüpunkt ein Fenster, ist der Fenstertitel der Text des Menüpunkts; Systembeschriftungen bleiben | ablauf.mjs – `checkMenueFenster` (jeden Menüpunkt mit Fenster antippen) | – | 6 |
 | R-4.12 | **Erst fragen, dann zerstören:** jede Lösch-, Ersetz- oder Rücksetz-Aktion (roter Menüpunkt, Schaltfläche mit ‚Löschen‘, ‚Entfernen‘, ‚Ersetzen‘, ‚Zurücksetzen‘) zeigt zuerst die Sprechblase (R-4.3); bis zur Bestätigung ändert sich nichts, ‚Abbrechen‘ lässt alles, wie es war | ablauf.mjs – `checkErstFragen` (jede solche Aktion in jeder Ansicht antippen, Speicher vorher und nachher vergleichen; Menüpunkte an `red`, Schaltflächen an ihrem Text bzw. `aria-label`) | – | 10, 16 |
 | R-4.13 | **Menüs und Sprechblasen wachsen aus der Schaltfläche:** Menü, Untermenü, Kontextmenü (aus der Kachel) und Sprechblase (R-4.3) wachsen beim Öffnen in 0,35 s aus ihrer Schaltfläche (von 20 % auf volle Größe, Kurve `cubic-bezier(.32,.72,0,1)`) und schrumpfen beim Schließen in 0,25 s dorthin zurück; Schließen während des Öffnens beginnt an der aktuellen Stelle; ‚Bewegung reduzieren‘: nur Überblenden in 0,2 s; die Endlage ist dieselbe wie ohne Bewegung; Fenster und Blatt gleiten nach R-1.12 | ablauf.mjs – `checkWachsen` (Herkunft, Dauer, Endlage, Schließen mitten im Öffnen, ‚Bewegung reduzieren‘) | Gefühl am Gerät | 15.6, 15.7 |
+| R-4.14 | **Nicht verfügbare Menüpunkte:** In einem Menü (z. B. Mehr, Ausgabe) bleibt ein Menüpunkt, der gerade nicht ausführbar ist, an seiner Stelle sichtbar: blass, nicht antippbar (`disabled`), mit dem Grund als grauer Unterzeile (z. B. ‚Gesperrt‘). Er wird nicht weggelassen. Kontextmenüs (R-4.10) und Wischaktionen zeigen nur ausführbare Aktionen. | pruefseite.mjs – Teil `menue` (neuer Fall: blasser Eintrag mit `disabled` und Unterzeile, Antippen und Eingabetaste lösen nichts aus; Gegenprobe ohne `disabled` → rot) | – | 15.6 |
 
 ### 5. Eingaben
 
@@ -1369,7 +1374,7 @@ Testfall (User) in den Usertest, wenn eine Version es betrifft.
 |---|---|---|---|---|
 | R-9.1 | **Backup erstellen:** Backup-Kachel nur, solange heute auf diesem Gerät keines erstellt wurde und es Einträge gibt (kommt um 0:00 wieder), Mehr-Menü mit ‚Letztes Backup …‘; Teilen-Menü; Dateiname; Fenster ✅/⚠️; zählt nur abgeschlossen, je Gerät | backup.mjs | iCloud, Teilen | 15.19 |
 | R-9.2 | **Backup laden:** Abfrage mit Zeitpunkt, Gerät und ‚neuer/älter‘; Kacheln Abgleichen (blau) und Ersetzen (rot) mit Erklärung; unlesbare Datei ⚠️; Abbrechen ändert nichts | backup.mjs | – | 15.19 |
-| R-9.3 | **Abgleichen:** je Feld gilt das Neuere; leere Felder überschreiben nichts; Gelöschtes bleibt gelöscht, solange danach nicht geändert (Hinweis nennt die Geräte); Zähler: größerer Wert; Einstellungen je Gerät | abgleich.mjs (Fälle 1–20) | – | 15.18 |
+| R-9.3 | **Abgleichen:** je Feld gilt das Neuere; leere Felder überschreiben nichts; Gelöschtes bleibt gelöscht, solange danach nicht geändert (Hinweis nennt die Geräte); ein gesperrter Eintrag (`protect`) wird nie gelöscht und kommt auf dem Gerät, das ihn gelöscht hat, gesperrt zurück; Zähler: größerer Wert; Einstellungen je Gerät | abgleich.mjs (Fälle 1–23, Gegenprobe Fall 23) | – | 15.18 |
 | R-9.4 | **Ergebnis:** kleines Fenster ohne Einzelheiten, Schaltfläche ‚Abgleichbericht anzeigen‘ nur bei Inhalt; Bericht als Vorschau wie die Ausgabe | abgleich.mjs | – | 15.18 |
 
 ### 10. Texte und Versionen

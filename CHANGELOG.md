@@ -3,6 +3,37 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.68.0 – 21.11.2026
+
+AppDesign 4.68.0 · Designrichtlinie allgemein 4.68.0 · Zusammenarbeit allgemein 3.19.0 · Reiselogbuch 3.58.0 (Fassung 4.68.0)
+
+**RLB-125 – Abgleich mit Sperre (`createSync` mit `protect`)** (RLB-125/J-10, RLB-125/J-11, Sitzung 0150; Wortlaut 15.18 und R-9.3 freigegeben und Bau bestätigt in
+Sitzung 0152 – `arbeit/0152 RLB-125 Bau-Frage.md`).
+
+- **`ui.js`, `createSync`:** neue Eigenschaft `protect` (z. B. `e => e.locked`). Ein gesperrter Eintrag wird beim Abgleich nie gelöscht: auf dem Gerät, das ihn gelöscht hat,
+  ohne die Sperre zu kennen, kommt er gesperrt zurück (Zeile ‚neu angelegt‘, Hinweis ‚Auf dem iPad gesperrt, auf diesem iPhone gelöscht: … – wiederhergestellt.‘); auf dem
+  Gerät mit der Sperre bleibt er (Hinweis ‚Auf dem iPhone gelöscht, auf diesem iPad gesperrt: … – bleibt erhalten.‘). Sein Eintrag in `deleted` entfällt, danach sind
+  beide Geräte gleich (15.18 Fall 23). Die Fälle 21 und 22 laufen mit der bisherigen Regel ‚je Feld gilt das Neuere‘.
+- **‚Ersetzen‘** (Abfrage beim Laden eines Backups) nennt mit `protect` die gesperrten Einträge dieses Geräts: ‚Darunter 2 gesperrte Reiselogbücher.‘; die Endung im Singular
+  steht in `nouns[3]` (‚Darunter 1 gesperrtes Reiselogbuch.‘, Standard ‚er‘).
+- **Icons** `lock` und `lock-open` (lucide-static 1.76.0) in `ICONS`.
+- **Schnittstelle (R-1.14):** `choosePop` im Teil `app` von `v4/schnittstelle.json` – die Lösch-Abfrage des Reiselogbuchs hat drei Wege (‚Erst Backup erstellen‘,
+  ‚Reiselogbuch löschen‘, ‚Abbrechen‘), `confirmPop` kennt nur zwei.
+- **15.18** (Absatz ‚Technisch‘ mit `protect`, Fälle 21–23) und **R-9.3** im freigegebenen Wortlaut.
+- **Prüfungen:** `abgleich.mjs` prüft mit `protect` die Fälle 21–23 in beide Richtungen und die Abfrage ‚Ersetzen‘ (1 und 2 gesperrte); Gegenprobe
+  `checkSync(page, { gegenprobe: 'abgleich:23' })` (in der App `PRUEF_GEGENPROBE=abgleich:23`) – rot. `hig.mjs`: Tabellen der Ausgabe (`.rt`) im Inhalt – z. B. die
+  Vorschau-Seite eines gesperrten Reiselogbuchs – prüft R-6.2 statt der Regeln für App-Tabellen (Kopf mit Verlauf, Trennlinien, Zebra je Tabellenzeile).
+- AD-Bean: keine, weil `createSync` noch keine AD-Bean ist (der Umbau gehört zu APD-142).
+
+**RLB-125 – nicht verfügbare Menüpunkte (R-4.14)** (Wortlaut freigegeben in Sitzung 0149, Zusatz für Kontextmenüs RLB-125/J-12 in Sitzung 0152: die HIG ‚Context
+menus‘ blendet nicht verfügbare Punkte aus, R-4.10 bleibt).
+
+- **Neue Regel R-4.14** (Katalog 17, Abschnitt 4): in einem Menü (z. B. Mehr, Ausgabe) bleibt ein nicht ausführbarer Punkt sichtbar – blass, `disabled`, Grund als graue
+  Unterzeile; Kontextmenüs (R-4.10) und Wischaktionen zeigen nur ausführbare Aktionen.
+- **Prüfung:** `pruefseite.mjs`, Teil `menue` (`checkUnavailableItem`, RLB-125/T-13): blasser Punkt mit `disabled` und Unterzeile ‚Gesperrt‘, Fokus beim ersten verfügbaren
+  Punkt, Antippen und Eingabetaste lösen nichts aus; Gegenprobe `punktNichtGesperrt` (ohne `disabled`) – rot.
+- AD-Bean: keine, weil `openMenu` blasse Einträge schon kann (`disabled`, `sub`).
+
 ## 4.67.2 – 21.11.2026
 
 AppDesign 4.67.2 · Designrichtlinie allgemein 4.67.2 · Zusammenarbeit allgemein 3.19.0 · Reiselogbuch 3.57.12 (Fassung 4.67.2)
