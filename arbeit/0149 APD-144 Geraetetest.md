@@ -33,3 +33,7 @@ https://g811141a.github.io/ReiseLogBuch/ – in der **App vom Home-Bildschirm**,
 ## Rückmeldung
 
 Im Fenster: Rahmen auf der Kachel · Rahmen woanders · kein Rahmen – Einzelheiten zu Schritt 7 bitte im Chat.
+
+## Ergebnis (Nutzer 21.11.2026, Sitzung 0149, im Fenster)
+
+Nach ‚Zurück‘ liegt der Fokusrahmen **auf der Kachel**, von der man kam. Am Gerät gibt es keinen Fehler, nichts wird geändert. APD-144 ist erledigt (Backlog AppDesign).
