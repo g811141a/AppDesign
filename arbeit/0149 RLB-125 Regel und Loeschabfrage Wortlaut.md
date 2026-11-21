@@ -35,3 +35,9 @@ einstellen‘ und ‚Reiselogbuch löschen‘ mit ‚Gesperrt‘.
   erstellen‘, wenn das Backup gesichert wurde.
 - Frage: Steht ‚Erst Backup erstellen‘ **nur, wenn heute noch kein Backup** erstellt wurde (wie der Hinweis in der Seitenleiste), oder **immer**?
   - **Empfohlen: nur ohne Backup heute.** Dann stehen in der Sprechblase meist nur zwei Schaltflächen, wie bei Apple. Die Backup-Kachel folgt derselben Regel.
+
+## Freigabe (Nutzer 21.11.2026, Sitzung 0149, im Fenster)
+
+- R-4.14: **Ja**
+- Lösch-Abfrage (L-4, L-5): **Ja**
+- ‚Erst Backup erstellen‘: **nur ohne Backup heute**
