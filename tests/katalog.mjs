@@ -12,6 +12,7 @@ import { readFileSync } from 'node:fs';
 import { pruefung } from './pruefe.mjs';
 import { createCheck } from './hig.mjs';
 import { safariHalten } from './safari.mjs';
+import { checkBeruehren } from './ablauf.mjs';
 
 const AD = new URL(import.meta.url.includes('/fassung/') ? '../../../' : '../', import.meta.url);
 
@@ -52,6 +53,12 @@ export async function katalog(pw, { out } = {}) {
       // Z-6 (P-117/1, P-117/4, P-117/F-2): langes Drücken auf eine Schaltfläche oder Kachel unter ‚Ausprobieren‘ markiert keinen Text und zeigt
       // keine Lupe (Safari-Modell safariHalten) – am iPad markierte Safari den Text von ‚Erster Knopf‘ und beim Kontextmenü der Kachel die ganze Seite.
       const n = await p.evaluate(() => { const k = [...document.querySelectorAll('#bkProbe button')]; k.forEach((x, i) => x.dataset.pruefHalten = i); return k.length; });
+      // Z-7 (P-118/1, P-118/F-1): jede Schaltfläche hebt sich beim Berühren und wird größer (R-3.6 Variante B) – auch außerhalb der Leisten
+      if (kennung === 'sourcehighlight') for (const k of ['#bkMenu', '#bkQ1']) {
+        if (!(await p.$(k))) { t.fehler('R-3.6', `Z-7 ${kennung}: ${k} fehlt`); continue; }
+        t.liste(await checkBeruehren(p, { knopf: k, where: `Z-7 ${kennung}` }));
+        if (await p.$('.menu')) { await p.keyboard.press('Escape'); await p.waitForTimeout(400); }
+      }
       for (let i = 0; i < n; i++) {
         const h = await safariHalten(p, `#bkProbe [data-pruef-halten="${i}"]`);
         const name = await p.evaluate(i => document.querySelector(`#bkProbe [data-pruef-halten="${i}"]`)?.textContent.trim().slice(0, 40) || 'Icon', i);
