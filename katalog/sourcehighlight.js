@@ -18,7 +18,7 @@ catalogBean({
   demo(el, log) {
     const s = adSourcehighlight;
     const knoepfe = () => `<div class="bk-knoepfe" id="bkQuellen"><button type="button" id="bkQ1">Erster Knopf</button> <button type="button" id="bkQ2">Zweiter Knopf</button>
-      <button type="button" id="bkMenu" aria-label="Menü">${ic('ellipsis')}</button></div>`;
+      <button type="button" class="round" id="bkMenu" aria-label="Menü">${ic('ellipsis')}</button></div>`;
     el.innerHTML = `<div id="bkHost">${knoepfe()}</div><div class="ilist">${[['src1', 'Fenster-Quelle: erster Knopf'], ['src2', 'Fenster-Quelle: zweiter Knopf'], ['src0', 'Fenster-Quelle frei'],
       ['hold', 'Ersten Knopf halten'], ['release', 'Ersten Knopf freigeben'], ['neu', 'Knöpfe neu aufbauen (refresh)']]
       .map(([k, t]) => `<button type="button" class="irow" data-q="${k}"><span class="t"><b>${t}</b></span>${ic('chevron-right')}</button>`).join('')}</div>`;

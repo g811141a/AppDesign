@@ -1,4 +1,4 @@
-/* AppDesign 4.67.0 · design.css – gemeinsame Gestaltung der iPad-Web-Apps von g811141a (Apple-like)
+/* AppDesign 4.67.1 · design.css – gemeinsame Gestaltung der iPad-Web-Apps von g811141a (Apple-like)
    Einbinden im <head> vor dem eigenen <style> der App:  <link rel="stylesheet" href="../AppDesign/fassung/X.Y.Z/design.css"> (feste Fassung, R-10.3)
    Farben als Variablen auf :root, Dunkelmodus über data-theme="dark" (setzt ui.js / applyTheme).
    Komponenten: Schaltflächen, Suchfeld, Kapsel, Eingabefelder, Datumsfelder, Kopfzeile, Seitenleiste,
@@ -6,7 +6,7 @@
    Options-Kapsel; seit 4.1.0 iPhone-Ansicht (html.phone: Seitenkopf, großer Titel, Liste, Kasten, untere Leiste). Regeln dazu: README - Designrichtlinie allgemein.md */
 /* Farben im Apple-Look: Hintergrund Hellgrau, Kästen weiß ohne Rand, schwebende Schaltflächen */
 :root {
-  --ad-version: "4.67.0";   /* R-10.3: Version der Bausteine, die App prüft sie beim Start */
+  --ad-version: "4.67.1";   /* R-10.3: Version der Bausteine, die App prüft sie beim Start */
   --bg: #f2f2f7;
   --card: #ffffff;
   --ink: #1c1c1e;
@@ -150,6 +150,8 @@ button {
   border: .5px solid var(--btn-rim); background: var(--btn); border-radius: 22px; box-shadow: var(--float);
   padding: 8px 14px; cursor: pointer; min-height: 44px; line-height: 1.2;
 }
+/* Seit 4.67.1 (P-117/F-2, R-3.6): langes Drücken auf eine Schaltfläche markiert keinen Text und zeigt weder Lupe noch Callout – wie bei Apple */
+button { -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
 button:disabled, button[aria-disabled="true"] { opacity: .4; cursor: default; }
 button { display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
 button[hidden] { display: none; }

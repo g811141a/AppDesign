@@ -1,6 +1,6 @@
 # AppDesign – Backlog (allgemeine Themen)
 
-**Stand 20.11.2026** · Aktuelle Version: AppDesign 4.67.0
+**Stand 21.11.2026** · Aktuelle Version: AppDesign 4.67.1
 
 Allgemeine Themen, die alle Apps betreffen. App-Themen stehen im Backlog der jeweiligen App.
 Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.4.
@@ -63,6 +63,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Thema | Version | Datum |
 |---|---|---|---|
+| P-117/F-1, P-117/F-2 | **Korrekturen aus P-117:** Mehr-Knopf der Katalogseite ‚Hervorgehobene Quelle‘ rund (`.round`), `hig.mjs` R-3.1 für jede Icon-Schaltfläche für sich allein; `button` in `design.css` ohne Textauswahl und Callout, R-3.6 um ‚Schaltflächen‘ ergänzt, Prüfungen `hig.mjs` R-3.6 und `katalog.mjs` APD-140/Z-6 – Usertest P-118 (Reiselogbuch) | 4.67.1 | 21.11.2026 |
 | APD-136 Namen | **Namen: ‚Anlegen‘ und Code englisch:** Zusammenarbeit 1 ‚Code englisch, Texte deutsch‘ (3.18.0), R-1.13 ‚Anlegen‘ und Satz zur Kennung (APD-136/A-1), `checkBeans` mit Sperrliste deutscher Namen (Gegenprobe `beans:englisch`); AD-Bean `alert` ersetzt `hinweis`; `swipeactions` mit englischer Schnittstelle (`rows`, `shortTitle`, `sourceView`, `openRow`, `metrics`, `disconnect()`, `toggle`); Katalog-Felder englisch – Usertest P-117 im Backlog des Reiselogbuchs | 4.67.0 | 20.11.2026 |
 | APD-136 sourcehighlight | **AD-Bean `sourcehighlight` (Hervorgehobene Quelle):** ersetzt `hold`, `release`, `markHeld`, `setOpener`, `markOpener`, `dlgOpener` und die Tönung in Menü, Untermenü und Sprechblase (APD-136/U-1); Katalogseite; Prüfseite APD-136/S-6, S-9, S-10 mit Gegenproben – Usertest P-117 | 4.67.0 | 20.11.2026 |
 | APD-143 | **Liste bleibt beim Kontextmenü stehen (iPhone):** Menü unter der Kachel, ohne Platz darüber, die Liste rollt nicht und springt beim Schließen nicht zurück (R-4.2, 15.4); `checkContextMenus` (APD-143/L-1, L-2), Prüfseite Teil `menue` mit Gegenprobe `listeRueckt` – Usertest P-117 | 4.67.0 | 20.11.2026 |
@@ -136,7 +137,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 | APD-88 | **APD-88 Bedienung für Linkshänder entschieden: nichts ändern (Nutzer 02.11.2026, Sitzung 0075):** Apple-Standard ohne Seitenwahl – Apple spiegelt iPhone und iPad nicht (keine Regel in der HIG gefunden), eine Wahl der Seite gibt es nur bei Tastatur einhändig, Markup-Leiste am iPad und Apple Watch; vorgeschlagen waren a) Einstellung rechts/links für die schwebenden Elemente, b) Kapsel an eine Kante ziehen | – | 02.11.2026 |
 | APD-109 | **Titel antippen am iPad und in der Seitenleiste (Usertest P-90):** Messung am iPad – Safari schickt den Klick auf den Titel nur mit Hörer am `document`; R-2.7 hört dort; Designrichtlinie 13 ‚Klick nur mit Hörer‘; Safari-Modell `safariKlick` in jeder Prüfung (APD-109/C-1 bis C-9) | 4.49.1 | 02.11.2026 |
 | APD-62 | **APD-62 Teil APD-38/T-43 ‚Titel antippen = nach oben‘ (R-2.7):** kurzes Antippen des Titels in Kopfzeile, Seitenleiste oder Fenster-Kopfzeile rollt den Bereich sanft ganz nach oben, ein Tipp hält an und löst nichts aus, ‚Bewegung reduzieren‘ sofort; Prüfung `checkTitelOben` (APD-62/H-1 bis H-10) – Usertest im Reiselogbuch P-90 | 4.49.0 | 01.11.2026 |
-| APD-85 | **APD-85 Teil 3 – Wackler beheben:** Baustein `warteBis` in `tests/pruefe.mjs` (APD-85/Z-1, APD-140/Z-2, Selbsttest Z-6), `ablauf-blatt` ohne feste Pausen (Z-3 bis Z-5) | 4.49.0 | 01.11.2026 |
+| APD-85 | **APD-85 Teil 3 – Wackler beheben:** Baustein `warteBis` in `tests/pruefe.mjs` (APD-85/Z-1, APD-140/Z-2, Selbsttest APD-140/Z-6), `ablauf-blatt` ohne feste Pausen (Z-3 bis Z-5) | 4.49.0 | 01.11.2026 |
 | APD-107 | **APD-107 Korrektur aus P-88:** Leisten-Knopf hebt sich beim Berühren als helle Fläche mit Schatten 1,3-fach über die Kapsel (R-3.6, Variante C), Loslassen nach dem Wegziehen löst nichts aus, wie lange der Finger auch liegt (Messung P-88/1), Smiley-Kreis im modalen Fenster zuoberst (15.12); Prüfungen APD-107/S-1 bis S-13 – Usertest im Reiselogbuch P-89 | 4.48.2 | 01.11.2026 |
 | APD-106 | **APD-106 Korrektur aus P-87:** Safaris Antipp-Markierung aus, keine Textauswahl und Lupe beim Halten antippbarer Zeilen und der Smiley-Leiste (R-3.6), Smiley hebt sich auf einem hellen Kreis mit Schatten über die Leiste, Entfernen nach 1 s (R-3.5, Variante C), Großanzeige bleibt ab AX1; mit RLB-115 (`keepKante`, R-8.1); Prüfungen `checkBeruehren`, `checkAnheben`, `checkSideToggle`, Safari-Modell `safariHalten`; Usertest P-88 im Reiselogbuch | 4.48.1 | 01.11.2026 |
 | APD-104 | **APD-104 Großanzeige für Leisten-Knöpfe:** ab AX1 zeigt langes Drücken auf einen Leisten-Knopf Icon und Namen groß in der Mitte (`.grossanzeige`), gleiten wechselt, Loslassen über einem Knopf löst aus; neue Regel R-2.6 mit `checkGrossanzeige` (`ablauf.mjs`), 15.3 neu, 16 ‚Keine Großanzeige‘ ersetzt; im Reiselogbuch neue Prüfung `ablauf-grossanzeige`; Usertest P-87 | 4.48.0 | 31.10.2026 |

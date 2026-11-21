@@ -1,0 +1,525 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Neue App">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#f2f2f7">
+<title>Neue App</title>
+<!-- Vorlage für eine neue App (AppDesign 4.67.1) und zugleich die Prüfseite der Bausteine (Designrichtlinie 14, tests/pruefseite.mjs).
+     Eine kleine neutrale App mit Einträgen und Unterpunkten, gebaut wie das Reiselogbuch: Seitenleiste bzw. Startliste, Kopfzeile mit
+     Teilen und Mehr, Rollbereich, ‚Nach oben / Ans Ende‘, Menüs, Kontextmenü, Löschen mit Sprechblase, Fenster, Suche, Backup und Abgleich,
+     iPhone-Navigation. Daten in localStorage (neueapp.v1). Von ui.js nur Namen aus schnittstelle.json, Teil app (R-1.14).
+     Im App-Repo liegt AppDesign daneben: ../AppDesign/fassung/X.Y.Z/… (R-10.3: ui.js und design.css aus der festen Fassung einbinden,
+     auch in sw.js, AD_NEEDED = X.Y.Z). Für eine neue App: Namen, Daten und Texte ersetzen, manifest.json, Icons und sw.js ergänzen. -->
+<link rel="stylesheet" href="../fassung/4.67.1/design.css">
+<style>
+  /* Nur, was zur App gehört – alles Gemeinsame kommt aus design.css */
+  @media print { #app, #side, .side-shade, dialog, .fab { display: none !important; } }
+</style>
+</head>
+<body>
+<aside id="side" hidden></aside>
+<main id="app"></main>
+<div class="fab" id="fab" hidden>
+  <button type="button" id="toTop" aria-label="Nach oben"></button>
+  <button type="button" id="toEnd" aria-label="Ans Ende"></button>
+</div>
+<dialog id="dlg"></dialog>
+<dialog id="msg"></dialog>
+<input type="file" id="importFile" accept="application/json,.json" hidden>
+
+<script src="../fassung/4.67.1/ui.js"></script>
+<script>
+'use strict';
+
+const APP_NAME = 'Neue App';
+const APP_VERSION = '0.1.0';
+// R-10.3: benötigte AppDesign-Fassung; ist eine andere geladen, erscheint beim Start ein Hinweis.
+const AD_NEEDED = '4.67.1';
+const adLoaded = () => ({ js: typeof AD_VERSION === 'string' ? AD_VERSION : 'älter',
+  css: getComputedStyle(document.documentElement).getPropertyValue('--ad-version').trim().replace(/"/g, '') || 'älter' });
+setTimeout(() => {
+  const { js, css } = adLoaded();
+  if (js !== AD_NEEDED || css !== AD_NEEDED) inform('Neue Version wird geladen',
+    `⚠️ ${APP_NAME} ${APP_VERSION} braucht AppDesign ${AD_NEEDED}, geladen ist ${js === css ? js : `${js} / ${css}`}.<br><br>` +
+    'Bitte die App ganz schließen und nach ein paar Minuten neu öffnen.');
+});
+
+const app = document.getElementById('app');
+const side = document.getElementById('side');
+const fab = document.getElementById('fab');
+const importFile = document.getElementById('importFile');
+const STORAGE_KEY = 'neueapp.v1';
+
+/* ---------- Daten ---------- */
+
+// db = { items: [{ id, title, sub: { u001: { text } } }], deleted: [], settings: { appearance, lastBackup, lastItem } }.
+// settings.appearance ('auto' | 'light' | 'dark') nutzt ui.js für die Darstellung; save() und render() ruft ui.js beim Umschalten.
+// Abgleich zwischen iPad und iPhone über ein Backup (R-9.2 bis R-9.4): je Feld Zeitpunkt und Gerät (createSync).
+const sync = createSync({ list: 'items', sub: 'sub', nouns: ['Eintrag', 'Einträge', 'Einträgen'], app: APP_NAME,
+  labels: { title: 'Titel', text: 'Text' }, subLabel: key => `Unterpunkt ${Number(key.slice(1))}` });
+function normalize(data) {
+  data.items = Array.isArray(data.items) ? data.items : [];
+  data.deleted ||= [];
+  data.settings = { appearance: 'auto', ...(data.settings || {}) };
+  if (!['auto', 'light', 'dark'].includes(data.settings.appearance)) data.settings.appearance = 'auto';
+  for (const e of data.items) { e.title = String(e.title ?? ''); if (!e.sub || typeof e.sub !== 'object') e.sub = {}; }
+  return data;
+}
+function load() {
+  try { const raw = localStorage.getItem(STORAGE_KEY); if (raw) return normalize(JSON.parse(raw)); } catch (e) { /* leer starten */ }
+  return normalize({});
+}
+function save() {
+  lastSnap = sync.stamp(db, lastSnap);
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(db)); return true; }
+  catch (e) { inform('Speichern fehlgeschlagen', 'Der Speicher ist voll oder nicht verfügbar. Bitte ein Backup erstellen.'); return false; }
+}
+let db = load();
+let lastSnap = sync.snapshot(db);
+
+const getItem = id => db.items.find(e => e.id === id);
+const newId = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+const subKeys = item => Object.keys(item.sub).sort();
+const subName = key => `Unterpunkt ${Number(key.slice(1))}`;
+const itemCount = n => n ? `${n} ${n === 1 ? 'Eintrag' : 'Einträge'}` : '';
+const subCount = n => `${n} ${n === 1 ? 'Unterpunkt' : 'Unterpunkte'}`;
+const sortedItems = () => [...db.items].sort((a, b) => a.title.localeCompare(b.title, 'de'));
+const startItem = () => getItem(db.settings.lastItem) || sortedItems()[0];
+
+/* ---------- Zustand der Ansicht ---------- */
+
+let currentId = null;     // offener Eintrag
+let sideOpen = true;      // R-8.1: ein Zustand für quer und hoch – nur Tippen ändert ihn, nie das Drehen
+let phoneList = false;    // iPhone: Startliste statt eines Eintrags
+let startList = false;    // R-7.2: Startliste nach dem Neuladen – noch nichts geöffnet, daher kein Eintrag blau
+let searchOpen = false, searchTerm = '', searchIndex = 0, searchJump = null;   // Suche im Eintrag (R-2.3)
+let listOpen = false, listTerm = '';                                          // Suche in allen (Seitenleiste bzw. Startliste)
+let importAnchor = '#sideMore';                                               // Schaltfläche, von der ‚Backup laden‘ kommt
+
+/* ---------- Hauptansicht ---------- */
+
+// Kopfzeile (iPad .nb, iPhone .pnav mit Zurück) mit Kapsel [share | ellipsis], darunter der Inhalt im Rollbereich .rolle
+// (die Seite rollt nie, nur der Inhalt – R-2.1). Seite immer mit setHtml aufbauen (Feld mit Fokus und Rollstand bleiben, R-2.3);
+// rollen nur über rolle (nie window.scrollTo).
+function render() {
+  const item = getItem(currentId), phone = isPhone();
+  if (phone && (phoneList || !item)) {   // iPhone: Startliste = Seitenleiste als ganze Seite (derselbe Baustein, R-1.1)
+    fab.hidden = true; searchOpen = false; app.innerHTML = ''; renderSide(); return;
+  }
+  renderSide();
+  if (!item) return renderEmpty();
+  fab.hidden = false;
+  const words = searchOpen ? searchWords(searchTerm) : [];
+  const keys = subKeys(item).filter(k => !words.length || findsAll(item.sub[k].text, words));
+  const kapsel = `<span class="r"><span class="grp">
+      <button type="button" id="shareBtn" aria-label="Ausgabe">${ic('share')}</button>
+      <button type="button" id="mainMore" aria-label="Mehr">${ic('ellipsis')}</button></span></span>`;
+  const leerInhalt = words.length ? leerSuche(searchTerm.trim())
+    : leerHtml({ icon: 'list-chevrons-up-down', titel: 'Noch keine Unterpunkte', satz: 'Einen Unterpunkt über das Mehr-Menü anlegen.', aktion: { id: 'leerPunkt', label: 'Neuer Unterpunkt' } });
+  setHtml(app, `
+    ${phone ? `<div class="pnav" id="bar">
+      <span><button type="button" class="round" id="back" aria-label="Einträge">${ic('chevron-left')}</button></span>
+      <span class="pnav-title">${esc(item.title)}</span>${kapsel}
+      ${searchOpen ? searchRowHtml() : ''}</div>` : `<div class="nb" id="bar">
+      <div class="nb1"><span>${sideToggleHtml()}</span><span class="nb-title">${esc(item.title)}</span>${kapsel}</div>
+      ${searchOpen ? searchRowHtml() : ''}</div>`}
+    <div class="rolle" id="rolle">
+      <h1>${esc(item.title)}</h1>
+      <p class="hint">${subCount(Object.keys(item.sub).length)}</p>
+      ${keys.length ? `<div class="ilist">${keys.map(k => `<button type="button" class="irow" data-day="${k}"><span class="t"><b>${subName(k)}</b>
+        <small>${markWords(esc(item.sub[k].text), words) || '–'}</small></span>${ic('chevron-right')}</button>`).join('')}</div>` : leerInhalt}
+    </div>`);
+  const bar = app.querySelector('#bar');
+  document.documentElement.style.setProperty('--bar-h', bar.offsetHeight + 'px');
+  updateBar();
+  bindSideToggle(app);
+  const back = app.querySelector('#back'); if (back) back.onclick = navZurueck;   // der Inhalt schiebt sich hinaus (R-7.5)
+  app.querySelector('#shareBtn').onclick = e => openShareMenu(e.currentTarget, item);
+  app.querySelector('#mainMore').onclick = e => openMainMenu(e.currentTarget, item);
+  const lp = app.querySelector('#leerPunkt'); if (lp) lp.onclick = () => { adSourcehighlight.sourceItem = '#leerPunkt'; openSubDialog(item, null); };
+  app.querySelectorAll('[data-day]').forEach(b => b.onclick = () => { adSourcehighlight.sourceItem = `#app [data-day="${b.dataset.day}"]`; openSubDialog(item, b.dataset.day); });
+  bindSearch();
+  adSourcehighlight.refresh();
+}
+
+// Ohne Eintrag: leerer Zustand mit getöntem Knopf (R-7.7, 15.23) – er löst dasselbe aus wie ‚plus‘ in der Seitenleiste.
+function renderEmpty() {
+  fab.hidden = true;
+  searchOpen = false;
+  app.innerHTML = `<div class="nb" id="bar"><div class="nb1"><span>${sideToggleHtml()}</span><span></span><span></span></div></div>
+    <div class="rolle" id="rolle">${leerHtml({ icon: 'book-open', titel: 'Noch kein Eintrag', satz: 'Einen neuen mit ‚plus‘ in der Seitenleiste anlegen.', aktion: { id: 'leerNeu', label: 'Neuer Eintrag' } })}</div>`;
+  bindSideToggle(app);
+  app.querySelector('#leerNeu').onclick = () => { adSourcehighlight.sourceItem = '#leerNeu'; openItemDialog(null); };
+}
+
+function showItem(id, term = '') {
+  currentId = id || null;
+  if (id && db.settings.lastItem !== id) { db.settings.lastItem = id; save(); }
+  phoneList = false;
+  startList = false;
+  searchTerm = term; searchIndex = 0; searchOpen = Boolean(term);
+  render();
+  openAt(null);   // R-7.4: ein geöffneter Eintrag beginnt ganz oben
+  if (term) showHit(true);
+}
+
+/* ---------- Seitenleiste bzw. Startliste ---------- */
+
+// iPad: die Seitenleiste steht quer und hoch fest links neben dem Inhalt und lässt sich mit panel-left aus- und einblenden (navSeite).
+// iPhone: sie ist die Startliste und füllt den Bildschirm (.page); im Eintrag ist sie aus.
+const sideFest = () => !isPhone() && Boolean(getItem(currentId));
+const sideToggleHtml = () => sideOpen && !isPhone() ? ''
+  : `<button type="button" class="round" data-side-toggle aria-label="Seitenleiste einblenden">${ic('panel-left')}</button>`;
+function toggleSide() {
+  if (sideFest()) return navSeite(!sideOpen);
+  keepPlace(() => { sideOpen = !sideOpen; render(); });   // R-8.1: oben bleibt derselbe Unterpunkt
+}
+const bindSideToggle = root => root.querySelectorAll('[data-side-toggle]').forEach(b => b.onclick = toggleSide);
+
+function renderSide() {
+  const page = isPhone();
+  if (page && !(phoneList || !getItem(currentId))) { side.hidden = true; side.classList.remove('page'); return; }
+  const show = page || sideOpen;
+  side.hidden = !show;
+  side.classList.toggle('page', page);
+  document.body.classList.toggle('docked', show && !page);
+  if (!show) return;
+  const all = sortedItems();
+  if (!all.length) { listOpen = false; listTerm = ''; }
+  const words = listOpen ? searchWords(listTerm) : [];
+  const items = words.length ? all.filter(e => findsAll([e.title, ...Object.values(e.sub).map(s => s.text)].join('\n'), words)) : all;
+  setHtml(side, `
+    <div class="side-head"><div class="ttl"><h2>Einträge</h2><small>${words.length ? `${items.length} von ${all.length} ${all.length === 1 ? 'Eintrag' : 'Einträgen'}` : itemCount(all.length)}</small></div>
+      <span class="grp"><button type="button" id="newItem" aria-label="Neuer Eintrag">${ic('plus')}</button><button type="button" id="sideMore" aria-label="Mehr">${ic('ellipsis')}</button></span>
+      <button type="button" class="round" id="sideHide" aria-label="Seitenleiste ausblenden">${ic('panel-left')}</button>
+    </div>
+    ${listOpen ? listSearchHtml() : ''}
+    <div class="side-list">${items.length ? items.map(e => `<button type="button" class="side-row ${e.id === currentId && !(page && startList) ? 'current' : ''}" data-id="${e.id}">
+        <span class="t"><b>${esc(e.title)}</b><small>${subCount(Object.keys(e.sub).length)}</small>${sync.changedLine(e)}</span>${ic('chevron-right')}</button>`).join('')
+      : words.length ? leerSuche(listTerm.trim(), !page) : page ? leerHtml({ icon: 'book-open', titel: 'Noch kein Eintrag', satz: 'Einen neuen mit ‚plus‘ anlegen.' })
+      : leerHtml({ icon: 'book-open', titel: 'Noch kein Eintrag', klein: true })}</div>
+    ${backupTileHtml(db.settings.lastBackup, !all.length)}`);
+  side.querySelector('#newItem').onclick = () => { adSourcehighlight.sourceItem = '#newItem'; openItemDialog(null); };
+  side.querySelector('#sideMore').onclick = e => openMenu(e.currentTarget, listMenuItems('#sideMore'), 'left');
+  side.querySelector('#sideHide').onclick = toggleSide;
+  const hb = side.querySelector('#hintBackup'); if (hb) hb.onclick = () => saveBackup('#hintBackup');   // Backup-Kachel (R-9.1)
+  adSourcehighlight.refresh();   // seit 4.67.0 (AppDesign APD-136): AD-Bean sourcehighlight statt markHeld und markOpener
+  // Kurz tippen öffnet (iPhone: der Eintrag schiebt sich herein, navVor); lange drücken zeigt das Kontextmenü (R-4.2).
+  side.querySelectorAll('[data-id]').forEach(b => onLongPress(b, () => itemContextMenu(b),
+    () => navVor(() => { if (isPhone()) rolle.to(0); showItem(b.dataset.id, words.length ? listTerm : ''); })));
+  bindListSearch();
+  document.documentElement.style.setProperty('--side-w', side.offsetWidth + 'px');
+}
+
+/* ---------- Menüs ---------- */
+
+// Mehr-Menü der Seitenleiste bzw. Startliste: Suchen (nur mit Einträgen), Backup, Darstellung (R-1.2), Messmodus (R-1.6) und die
+// graue Versionszeile – langes Drücken darauf schaltet den Messmodus frei (halten).
+const listMenuItems = sel => [
+  ...(db.items.length ? suchenMenuItems(openListSearch) : []),
+  ...backupMenuEntries({ last: db.settings.lastBackup, disabled: !db.items.length, onSave: () => saveBackup(sel),
+    onLoad: () => { importAnchor = sel; adSourcehighlight.hold(sel); importFile.click(); } }),
+  'sep',
+  darstellungMenuItem(),
+  'sep',
+  ...messungMenuItems({ app: `${APP_NAME} ${APP_VERSION}`, teile: { kopf: '#bar', such: '#app .nb2', tag: '#app [data-day]', lkopf: '.side-head', lsuch: '.side-search' },
+    rollen: { lroll: '.side-list' } }),
+  'line',
+  { note: `${APP_NAME} · Version ${APP_VERSION} · AppDesign ${adLoaded().js}`, halten: true },
+];
+// Mehr-Menü des Eintrags: zuerst ‚Suchen‘ mit Strich darunter (R-2.3), zuletzt rot ‚Eintrag löschen‘ (erst fragen, dann löschen).
+function openMainMenu(anchor, item) {
+  openMenu(anchor, [
+    ...suchenMenuItems(openItemSearch),
+    { icon: 'plus', label: 'Neuer Unterpunkt', act: () => { adSourcehighlight.sourceItem = '#mainMore'; openSubDialog(item, null); } },
+    { icon: 'pencil', label: 'Eintrag bearbeiten', act: () => { adSourcehighlight.sourceItem = '#mainMore'; openItemDialog(item); } },
+    'sep',
+    { icon: 'trash', label: 'Eintrag löschen', red: true, act: () => deleteItem(item) },
+  ]);
+}
+// Kontextmenü eines Eintrags in der Liste (wie in Notizen) – ohne ‚Öffnen‘, weil Tippen öffnet.
+function itemContextMenu(row) {
+  const item = getItem(row.dataset.id);
+  if (!item) return;
+  openMenu(row, [
+    { icon: 'pencil', label: 'Eintrag bearbeiten', act: () => { adSourcehighlight.sourceItem = `#side .side-row[data-id="${item.id}"]`; openItemDialog(item); } },
+    'sep',
+    { icon: 'trash', label: 'Eintrag löschen', red: true, act: () => { adSourcehighlight.hold(row); deleteItem(item, row); } },
+  ], 'beside');
+}
+// Löschen fragt mit einer Sprechblase an der angetippten Schaltfläche (R-4.4); ‚Abbrechen‘ ändert nichts.
+async function deleteItem(item, anchor = app.querySelector('#mainMore')) {
+  const ja = await confirmPop(anchor, `‚${esc(item.title)}‘ mit allen Unterpunkten löschen? Das kann nicht rückgängig gemacht werden.`,
+    { label: 'Eintrag löschen', icon: 'trash' });
+  adSourcehighlight.release(anchor);
+  if (!ja) return;
+  db.items = db.items.filter(x => x.id !== item.id);
+  save();
+  showItem(startItem()?.id);
+  if (isPhone()) { phoneList = true; render(); }   // iPhone: zurück zur Startliste
+}
+
+/* ---------- Teilen ---------- */
+
+// Ausgabe als HTML mit der Mustertabelle (outputCss, R-6.2) über das Teilen-Menü; danach das Hinweisfenster mit dem Dateinamen (R-10.8).
+const outputName = item => `${item.title || APP_NAME}.html`;
+function openShareMenu(anchor, item) {
+  openMenu(anchor, [
+    { icon: 'file-code', label: 'HTML', sub: 'Im Teilen-Menü ‚In Dateien sichern‘ wählen', act: () => exportHtml(item) },
+    'line',
+    { note: `${subCount(Object.keys(item.sub).length)} · Dateiname: ${outputName(item)}` },
+  ]);
+}
+async function exportHtml(item) {
+  adSourcehighlight.hold('#shareBtn');
+  const name = outputName(item);
+  const zeilen = subKeys(item).map(k => `<tr><td class="nw">${subName(k)}</td><td>${esc(item.sub[k].text)}</td></tr>`).join('');
+  const content = `<!doctype html><html lang="de"><head><meta charset="utf-8"><title>${esc(item.title)}</title><style>${outputCss('.rt')}</style></head>
+<body><div class="rt"><h1>${esc(item.title)}</h1><table class="grid"><thead><tr><th>Unterpunkt</th><th>Text</th></tr></thead><tbody>${zeilen}</tbody></table>
+<p class="created">${APP_NAME} ${APP_VERSION}</p></div></body></html>`;
+  const result = await shareFiles([{ name, type: 'html', content }]);
+  await inform('HTML', shareResultText(result, name));
+  adSourcehighlight.release('#shareBtn');
+}
+
+/* ---------- Fenster ---------- */
+
+// Fenster mit Kopfzeile (dlgHead: x, Titel, Häkchen – R-4.4); das Häkchen wird blau, sobald etwas geändert ist (dlgDirty).
+// Pflichtfeld: Fehlermeldung rot unter dem Feld (feldFehler, R-5.3), das Häkchen setzt den Fokus aufs erste fehlerhafte Feld.
+function openItemDialog(item) {
+  const neu = !item;
+  openDialog(`<form method="dialog">${dlgHead(neu ? 'Neuer Eintrag' : 'Eintrag bearbeiten')}
+    <div class="dlg-body"><div class="step"><label for="fTitle">Titel</label>
+      <input type="text" id="fTitle" autocapitalize="sentences" autocorrect="on" spellcheck="true" value="${esc(item?.title ?? '')}" placeholder="z. B. Erster Eintrag">
+      <div class="warn" id="titleWarn" hidden></div></div></div></form>`);
+  const f = dlg.querySelector('#fTitle'), warn = dlg.querySelector('#titleWarn'), start = f.value;
+  let angefasst = false;
+  const pruefe = () => { const t = f.value.trim() ? '' : 'Bitte einen Titel eingeben.'; feldFehler([f], warn, angefasst ? t : ''); return !t; };
+  f.oninput = () => { if (!f.value.trim()) angefasst = true; pruefe(); };
+  f.onblur = () => { angefasst = true; pruefe(); };
+  dlgDirty = () => f.value !== start;
+  dlg.querySelector('#dlgOk').addEventListener('click', ev => {
+    if (!dlgDirty()) { ev.preventDefault(); dlg.close('cancel'); return; }
+    if (pruefe()) return;
+    ev.preventDefault(); angefasst = true; pruefe(); ersterFehler(dlg);
+  });
+  dlg.onclose = () => {
+    if (dlg.returnValue !== 'ok' || !pruefe()) return render();
+    const ziel = item || { id: newId(), title: '', sub: {} };
+    ziel.title = f.value.trim();
+    if (neu) db.items.push(ziel);
+    save();
+    if (neu) return navVor(() => showItem(ziel.id));
+    render();
+  };
+}
+// Unterpunkt: mehrzeiliges Feld (wächst mit, autoGrow über ui.js); Titel ‚Unterpunkt n‘, darunter grau der Eintrag.
+function openSubDialog(item, key) {
+  const neu = !key;
+  if (neu) key = 'u' + String(Math.max(0, ...subKeys(item).map(k => Number(k.slice(1)))) + 1).padStart(3, '0');
+  openDialog(`<form method="dialog">${dlgHead(neu ? 'Neuer Unterpunkt' : subName(key), { sub: esc(item.title) })}
+    <div class="dlg-body"><div class="step"><label for="fText">Text</label>
+      <textarea id="fText" autocapitalize="sentences" autocorrect="on" spellcheck="true" placeholder="Etwas eingeben">${esc(item.sub[key]?.text ?? '')}</textarea></div></div></form>`);
+  const f = dlg.querySelector('#fText'), start = f.value;
+  dlgDirty = () => f.value !== start;
+  dlg.onclose = () => {
+    if (dlg.returnValue !== 'ok' || !dlgDirty()) return render();
+    if (f.value.trim()) item.sub[key] = { text: f.value.trim() }; else delete item.sub[key];
+    save();
+    render();
+  };
+}
+
+/* ---------- Suche ---------- */
+
+// Suchzeile unter der Kopfzeile (R-2.3): Treffer ‚3 von 57‘, ⓧ, Pfeile ohne Umlauf, rechts x ‚Suche beenden‘; gezeigt werden nur
+// Unterpunkte mit allen Wörtern, die Treffer sind gelb (markWords), der aktuelle hellorange.
+const searchRowHtml = () => {
+  const t = searchTerm.trim();
+  return `<div class="nb2">
+    <span class="searchbox active">${ic('search')}<input type="search" id="search" placeholder="Suchen" value="${esc(searchTerm)}" autocomplete="off" autocapitalize="off" enterkeyhint="search">${t ? `
+      <span class="smeta"><span class="scount" id="scount"></span><button type="button" class="sclear" id="sclear" aria-label="Suche löschen">${FX_SVG}</button></span>` : ''}</span>
+    <span class="navgrp"><button type="button" id="sprev" aria-label="Voriger Treffer" ${t ? '' : 'disabled'}>${ic('chevron-up')}</button><button type="button" id="snext" aria-label="Nächster Treffer" ${t ? '' : 'disabled'}>${ic('chevron-down')}</button></span>
+    ${sucheBeendenHtml('sclose')}
+  </div>`;
+};
+// ‚Suchen‘ im Mehr-Menü bzw. ⌘F öffnet die Suche; der Inhalt steht ganz oben. x ‚Suche beenden‘: Filter weg, Fokus auf ‚Mehr‘ (R-4.7).
+function openItemSearch() {
+  if (!searchOpen) { searchOpen = true; render(); rolle.to(0); }
+  app.querySelector('#search')?.focus();
+}
+function closeItemSearch() {
+  clearTimeout(searchJump);
+  searchOpen = false; searchTerm = ''; searchIndex = 0;
+  render(); rolle.to(0);
+  fokus(app.querySelector('#mainMore'));
+}
+const hitMarks = () => [...app.querySelectorAll('#rolle mark')];
+function showHit(scroll) {
+  const marks = hitMarks(), n = marks.length;
+  if (searchIndex >= n) searchIndex = Math.max(0, n - 1);
+  marks.forEach((m, i) => m.classList.toggle('cur', i === searchIndex));
+  const count = app.querySelector('#scount');
+  if (!count) return;
+  count.textContent = n ? `${searchIndex + 1} von ${n}` : '0';
+  app.querySelector('#search').style.paddingRight = (app.querySelector('.smeta').offsetWidth + 14) + 'px';
+  app.querySelector('#sprev').disabled = !n || searchIndex <= 0;
+  app.querySelector('#snext').disabled = !n || searchIndex >= n - 1;
+  // nach kurzer Pause steht der Treffer direkt unter der Suchzeile (nur der Rollbereich rollt)
+  if (scroll && n && rolle.el) rolle.to(rolle.y + (marks[searchIndex].closest('.irow') || marks[searchIndex]).getBoundingClientRect().top - rolle.el.getBoundingClientRect().top - 12);
+}
+function stepHit(dir) {
+  const n = hitMarks().length, next = searchIndex + dir;
+  if (next < 0 || next >= n) return;
+  searchIndex = next;
+  showHit(true);
+  ansagen(`Treffer ${searchIndex + 1} von ${n}`);   // R-1.8: höflich für VoiceOver
+}
+function bindSearch() {
+  const close = app.querySelector('#sclose'); if (close) close.onclick = closeItemSearch;
+  const search = app.querySelector('#search');
+  if (!search) return;
+  const refocus = () => { const s = app.querySelector('#search'); s.focus(); s.selectionStart = s.selectionEnd = s.value.length; };
+  search.oninput = () => {
+    searchTerm = search.value; searchIndex = 0;
+    render(); refocus();
+    clearTimeout(searchJump);
+    searchJump = setTimeout(() => showHit(true), 500);
+    if (searchTerm.trim()) { const n = hitMarks().length; ansagen(n ? `${n} Treffer` : 'Keine Treffer', { warten: 700 }); }
+  };
+  search.onkeydown = e => { if (e.key === 'Enter') { e.preventDefault(); stepHit(1); } };   // Eingabetaste: nächster Treffer
+  if (!searchTerm.trim()) return;
+  app.querySelector('#sclear').onclick = () => { clearTimeout(searchJump); searchTerm = ''; searchIndex = 0; render(); rolle.to(0); refocus(); };
+  app.querySelector('#sprev').onclick = () => stepHit(-1);
+  app.querySelector('#snext').onclick = () => stepHit(1);
+  showHit(false);
+}
+// Suche in allen (Seitenleiste bzw. Startliste): ohne Pfeile – die Liste zeigt nur Einträge mit Treffer.
+const listSearchHtml = () => `<div class="nb2 side-search">
+    <span class="searchbox active">${ic('search')}<input type="search" id="lsearch" placeholder="In allen suchen" value="${esc(listTerm)}" autocomplete="off" autocapitalize="off" enterkeyhint="search">${listTerm ? `
+      <span class="smeta"><button type="button" class="sclear" id="lsclear" aria-label="Suche löschen">${FX_SVG}</button></span>` : ''}</span>
+    ${sucheBeendenHtml('lsclose')}
+  </div>`;
+function openListSearch() {
+  if (!listOpen) { listOpen = true; listTerm = ''; renderSide(); }
+  side.querySelector('#lsearch')?.focus();
+}
+function closeListSearch() {
+  listOpen = false; listTerm = '';
+  renderSide();
+  fokus(side.querySelector('#sideMore'));
+}
+function bindListSearch() {
+  const close = side.querySelector('#lsclose'); if (close) close.onclick = closeListSearch;
+  const input = side.querySelector('#lsearch');
+  if (!input) return;
+  const update = () => {
+    renderSide();
+    const s = side.querySelector('#lsearch'); s.focus(); s.selectionStart = s.selectionEnd = s.value.length;
+    if (listTerm.trim()) ansagen(side.querySelector('.side-row') ? side.querySelector('.side-head small').textContent : 'Keine Treffer', { warten: 700 });
+  };
+  input.oninput = () => { listTerm = input.value; update(); };
+  input.onkeydown = e => { if (e.key === 'Enter') { e.preventDefault(); input.blur(); } };   // ‚Suchen‘ schließt nur die Tastatur (R-5.5)
+  const lc = side.querySelector('#lsclear'); if (lc) lc.onclick = () => { listTerm = ''; update(); };
+}
+
+/* ---------- Backup ---------- */
+
+// Backup erstellen (R-9.1): Datei über das Teilen-Menü; zählt nur abgeschlossen, je Gerät – danach ist die Backup-Kachel weg.
+async function saveBackup(anchor) {
+  adSourcehighlight.hold(anchor);
+  const file = backupFileOf(APP_NAME, db);
+  const result = await shareFiles([file]);
+  if (result === 'shared' || result === 'downloaded') {
+    db.settings.lastBackup = Date.now();
+    save();
+    if (isPhone()) render(); else renderSide();
+  }
+  await inform('Backup', shareResultText(result, file.name));
+  adSourcehighlight.release(anchor);
+  if (anchor && !document.querySelector(anchor)) fokus(side.querySelector('#sideMore'));   // Kachel weg: Fokus auf ‚Mehr‘
+}
+// Backup laden (R-9.2): Abfrage Abgleichen · Ersetzen · Abbrechen, danach das Ergebnis mit Abgleichbericht (R-9.4).
+importFile.addEventListener('cancel', () => adSourcehighlight.release(importAnchor));
+importFile.onchange = async () => {
+  const file = importFile.files[0];
+  importFile.value = '';
+  if (!file) return adSourcehighlight.release(importAnchor);
+  try {
+    const { data, savedAt, savedOn } = await readBackup(file, 'items');
+    normalize(data);
+    const choice = await sync.ask(document.querySelector(importAnchor), db, data, savedAt, savedOn);
+    if (!choice) return adSourcehighlight.release(importAnchor);
+    // je Gerät: das letzte Backup, der zuletzt geöffnete Eintrag und die Wahl ‚Glas‘ bleiben (glasAusBackup)
+    const { lastBackup, lastItem, glas } = db.settings;
+    let stats = null;
+    if (choice === 'merge') ({ data: db, stats } = sync.merge(db, data));
+    else db = data;
+    db = normalize(db);
+    db.settings.lastBackup = lastBackup;
+    if (lastItem) db.settings.lastItem = lastItem; else delete db.settings.lastItem;
+    glasAusBackup(glas);
+    lastSnap = sync.snapshot(db);   // übernommene Änderungen behalten Zeitpunkt und Gerät von drüben
+    save();
+    applyTheme();
+    if (choice === 'merge' && getItem(currentId)) render(); else showItem(startItem()?.id);
+    if (stats) await sync.showResult(stats, savedAt, savedOn);
+    adSourcehighlight.release(importAnchor);
+  } catch (e) {
+    await inform('Backup laden', '⚠️ Die Datei konnte nicht gelesen werden. ' + esc(e.message));
+    adSourcehighlight.release(importAnchor);
+  }
+};
+// um 0:00 und bei der Rückkehr am nächsten Tag die Liste neu zeichnen – die Backup-Kachel kommt wieder
+onNeuerTag(() => { if (isPhone()) render(); else renderSide(); });
+
+/* ---------- Bausteine anmelden ---------- */
+
+document.getElementById('toTop').innerHTML = ic('arrow-up-to-line');
+document.getElementById('toEnd').innerHTML = ic('arrow-down-to-line');
+document.getElementById('toTop').onclick = fabTop;   // ‚Nach oben / Ans Ende‘ rollen den Inhalt (R-3.2)
+document.getElementById('toEnd').onclick = fabEnd;
+// Navigation und Gesten (R-7.5): iPhone Seitenwechsel als Schieben und Zurückwischen; iPad die Seitenleiste mit panel-left.
+// darunter: die Startliste unter dem Inhalt aufbauen, ohne den Zustand zu ändern.
+navAnmelden({
+  zurueck: {
+    offen: () => isPhone() && !phoneList && Boolean(getItem(currentId)),
+    darunter: an => {
+      if (an) { phoneList = true; renderSide(); phoneList = false; }
+      else if (!phoneList && isPhone()) { side.hidden = true; side.classList.remove('page'); }
+    },
+    los: () => { phoneList = true; searchOpen = false; searchTerm = ''; rolle.to(0); render(); },
+  },
+  seite: { moeglich: () => false, fest: sideFest, offen: () => sideOpen, zeigen: an => { sideOpen = an; renderSide(); }, neu: () => render() },
+});
+// ⌘F sucht im offenen Eintrag, ohne offenen Eintrag (iPhone-Startliste) in allen.
+sucheAnmelden(() => {
+  if (getItem(currentId) && !(isPhone() && phoneList)) openItemSearch();
+  else if (db.items.length) openListSearch();
+});
+
+/* ---------- Start ---------- */
+
+applyTheme();
+// Dauerhaften Speicher anfordern (einmalig, ohne Rückfrage), damit Safari die Daten nicht von selbst löscht.
+if (navigator.storage?.persist) navigator.storage.persisted().then(p => p || navigator.storage.persist()).catch(() => {});
+// R-7.2: das iPad öffnet den zuletzt geöffneten Eintrag; im iPhone-Aufbau beginnt jedes Neuladen in der Startliste, ohne blauen Eintrag.
+showItem(startItem()?.id);
+if (isPhone()) { phoneList = true; startList = true; rolle.to(0); render(); }
+// Wechsel iPad ↔ iPhone-Aufbau: neu aufbauen (der Zustand sideOpen bleibt, R-8.1); sonst nur die Maße nachführen.
+let wasPhone = isPhone();
+window.addEventListener('resize', () => {
+  if (document.querySelector('#side .on') && document.querySelector('.menu, .pop')) sideOpen = true;   // R-8.1: Menü aus der Seitenleiste offen
+  if (isPhone() !== wasPhone) { wasPhone = isPhone(); render(); return; }
+  const bar = document.getElementById('bar');
+  if (bar) document.documentElement.style.setProperty('--bar-h', bar.offsetHeight + 'px');
+  if (!side.hidden) document.documentElement.style.setProperty('--side-w', side.offsetWidth + 'px');
+});
+</script>
+</body>
+</html>
