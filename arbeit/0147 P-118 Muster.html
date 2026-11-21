@@ -1,0 +1,67 @@
+<!doctype html><html lang="de"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>P-118 Muster</title>
+<style>
+/* P-118/F-1 Muster (Sitzung Reiselogbuch 0147): jede gedrückte Schaltfläche vergrößert sich – drei Varianten für das Maß.
+   Heute (R-3.6): nur Schaltflächen in Leisten heben sich 1,3-fach als helle Fläche mit Schatten, alle übrigen werden blass (35 %).
+   Nur hell, quer (0 Nr. 6). Aussehen der Schaltflächen wie design.css (schwebend, Kapsel bzw. Kreis). */
+:root { --bg: #f2f2f7; --card: #fff; --btn: #fbfbfd; --rim: rgba(255,255,255,.9); --accent: #007aff; --danger: #ff3b30; --muted: #6e6e73; --heben: #fff;
+  --float: 0 1px 2px rgba(0,0,0,.08), 0 2px 8px rgba(0,0,0,.06); color-scheme: light; }
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { margin: 0; background: var(--bg); font: 17px -apple-system, system-ui, sans-serif; color: #000; }
+.wrap { padding: calc(12px + env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) 24px max(16px, env(safe-area-inset-left)); }
+h1 { font-size: 22px; margin: 4px 0; } p.sub { color: var(--muted); font-size: 15px; margin: 0 0 12px; }
+.spalten { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+.var { background: var(--card); border-radius: 22px; padding: 14px 16px 18px; }
+.var h2 { font-size: 17px; margin: 0 0 2px; } .var small { display: block; color: var(--muted); font-size: 13px; margin-bottom: 14px; }
+.reihe { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin: 14px 0; }
+button { font: inherit; color: inherit; border: .5px solid var(--rim); background: var(--btn); border-radius: 22px; box-shadow: var(--float);
+  padding: 8px 14px; min-height: 44px; display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; touch-action: manipulation; position: relative;
+  transition: transform .2s, box-shadow .2s, background-color .2s; }
+button.round { width: 44px; min-width: 44px; height: 44px; padding: 0; border-radius: 50%; }
+button.primary { background: var(--accent); color: #fff; }
+button.danger { background: var(--danger); color: #fff; }
+svg { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+/* gedrückt: helle Fläche mit Schatten, Maß je Variante (--s setzt das Skript) */
+button.gedrueckt { z-index: 3; transform: scale(var(--s, 1.3)); box-shadow: 0 6px 20px rgba(0,0,0,.22), 0 0 0 .5px rgba(0,0,0,.08);
+  transition: transform .25s cubic-bezier(.2,.9,.3,1.25), box-shadow .2s; }
+button.gedrueckt:not(.primary):not(.danger) { background: var(--heben); }
+.heute button.gedrueckt { transform: none; box-shadow: var(--float); opacity: .35; transition: none; }
+#protokoll { color: var(--muted); font-size: 15px; margin-top: 12px; min-height: 1.4em; }
+</style></head><body><div class="wrap">
+<h1>P-118 Muster – gedrückte Schaltfläche vergrößert sich</h1>
+<p class="sub">Jede Schaltfläche lange drücken und vergleichen. Die Schaltflächen lösen nichts aus.</p>
+<div class="spalten" id="spalten"></div>
+<div id="protokoll"></div>
+</div>
+<script>
+'use strict';
+const ICON = { ellipsis: '<circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/>', plus: '<path d="M12 5v14M5 12h14"/>',
+  x: '<path d="M18 6 6 18M6 6l12 12"/>', check: '<path d="M20 6 9 17l-5-5"/>' };
+const ic = n => `<svg viewBox="0 0 24 24">${ICON[n]}</svg>`;
+const VARIANTEN = [
+  ['heute', 'Heute (zum Vergleich)', 'außerhalb der Leisten blass (35 %), wie R-3.6 heute', () => 1],
+  ['a', 'Variante A – alle 1,3-fach', 'jede Schaltfläche wie die Leisten-Schaltflächen heute', () => 1.3],
+  ['b', 'Variante B – höchstens 24 px breiter', 'runde 1,3-fach; breite Text-Schaltflächen wachsen weniger (Faktor aus der Breite)', w => Math.min(1.3, (w + 24) / w)],
+  ['c', 'Variante C – rund 1,3-fach, Text 1,1-fach', 'feste Stufen: Kreis 1,3, jede Text-Schaltfläche 1,1', (w, rund) => rund ? 1.3 : 1.1],
+];
+const inhalt = `
+  <div class="reihe"><button class="round" aria-label="Mehr">${ic('ellipsis')}</button><button class="round" aria-label="Neu">${ic('plus')}</button>
+    <button class="round" aria-label="Schließen">${ic('x')}</button><button class="round primary" aria-label="Fertig">${ic('check')}</button></div>
+  <div class="reihe"><button>Abbrechen</button><button class="danger">Löschen</button></div>
+  <div class="reihe"><button class="primary">Backup erstellen</button></div>
+  <div class="reihe"><button>Abgleichbericht anzeigen</button></div>`;
+document.getElementById('spalten').innerHTML = VARIANTEN.map(([id, t, s]) => `<section class="var ${id}" data-v="${id}"><h2>${t}</h2><small>${s}</small>${inhalt}</section>`).join('');
+const prot = document.getElementById('protokoll');
+let aktiv = null;
+const los = () => { if (aktiv) { aktiv.classList.remove('gedrueckt'); aktiv = null; } };
+document.addEventListener('pointerdown', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  const v = VARIANTEN.find(x => x[0] === b.closest('[data-v]').dataset.v);
+  const w = b.offsetWidth, s = v[3](w, b.classList.contains('round'));
+  b.style.setProperty('--s', s.toFixed(3)); b.classList.add('gedrueckt'); aktiv = b;
+  prot.textContent = `${v[1]} · ‚${b.getAttribute('aria-label') || b.textContent.trim()}‘ · ${w} px breit → ${Math.round(w * s)} px (Faktor ${s.toFixed(2)})`;
+});
+['pointerup', 'pointercancel', 'pointerleave'].forEach(t => document.addEventListener(t, los));
+</script></body></html>
