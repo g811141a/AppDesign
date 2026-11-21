@@ -157,3 +157,31 @@ Schloss, keine Fehler auf der Seite. Die Kachel ist bei allen drei gleich hoch w
 - b) nimmt den Pfeil weg, der zeigt, dass die Kachel etwas öffnet. c) nimmt den Zustand weg.
 - Apple: **Vermutung** – Notizen zeigt bei gesperrten Notizen ein kleines Schloss in der Zeile der Liste. In dieser Sitzung ist das nicht belegt
   (support.apple.com ist aus der Umgebung nicht erreichbar).
+
+## Muster 6 – Variante a, mittig zum Titel (Nutzer 21.11.2026, Sitzung 0149: „A) vor dem Titel, aber in der Höhe zentriert mit dem Text und nicht tiefergestellt, so wie es im Muster aussieht“)
+
+Link (Variante a ist jetzt der Normalfall): https://g811141a.github.io/AppDesign/arbeit/RLB-125/index.html – bitte ganz neu laden.
+
+### Geändert
+
+- Das `lock` ist so hoch wie die Großbuchstaben des Titels (0,76 der Schriftgröße, bei 17 pt rund 13 px statt 15 px). Es steht mittig zu ihnen und reicht nicht
+  mehr unter die Grundlinie. Vorher war es 14 px hoch und ragte 1,5 px unter die Buchstaben. Weil die Größe in em angegeben ist, wächst das Schloss mit der Textgröße
+  mit.
+- Bild `arbeit/RLB-125/bilder/19.png` (Ausschnitt, stark vergrößert), `17.png` (alle drei Varianten, a jetzt mittig).
+
+### Gemessen (Pixel der Bilder: Mitte des Schlosses gegen Mitte des ‚A‘, positiv = Schloss tiefer)
+
+| | Chromium iPad | Chromium iPhone | WebKit iPad | WebKit iPhone |
+|---|---|---|---|---|
+| vorher (15 px) | +0,63 px | +0,63 px | +1,13 px | +0,63 px |
+| jetzt, 2× | +0,44 px | +0,44 px | −0,16 px | +1,34 px |
+| jetzt, 3× | +0,27 px | +0,27 px | +0,01 px | +1,34 px |
+
+In WebKit am iPhone liegt das Schloss in der Prüfumgebung noch 1,3 px tiefer, obwohl es gleich angeordnet ist wie am iPad (3,84 px unter der Oberkante des
+Titels). **Vermutung:** WebKit rundet die Lage des Symbols hier anders. Am Gerät bitte genau darauf achten.
+
+### Schritte (iPad quer, hell, dann iPhone hoch)
+
+1. Link öffnen, ganz neu laden. Erwartet: Das `lock` steht vor ‚Australien‘, genauso hoch wie das ‚A‘ und auf derselben Höhe – oben und unten bündig.
+2. ‚Toskana‘ antippen. Erwartet: Auf der weißen Kachel ‚Australien‘ steht das `lock` schwarz, wieder bündig mit dem ‚A‘.
+3. Am iPhone in der Startliste ansehen. Erwartet: wie in Schritt 2.
