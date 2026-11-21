@@ -123,14 +123,19 @@
 </style>
 <style>/* Muster RLB-125 */
 #side .side-row { position: relative; }
-#side .side-row .lockmark { position: absolute; right: 10px; bottom: 8px; color: #ff3b30; background: #fff; border-radius: 50%; width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; }
+#side .side-row .lockmark { position: absolute; right: 10px; bottom: 8px; color: var(--warn); background: #fff; border-radius: 50%; width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; }
 #side .side-row .lockmark svg { width: 15px; height: 15px; }
 .nb-title .lockbtn { width: 30px; height: 30px; min-width: 30px; min-height: 30px; margin-left: 6px; vertical-align: middle; color: var(--muted); }
 .nb-title .lockbtn svg { width: 17px; height: 17px; }
 #side .side-row.current .lockmark { box-shadow: 0 1px 3px rgba(0,0,0,.25); }
-.dlg-body.preview .lockinfo { display: flex; align-items: center; gap: 12px; background: #fff4f3; border: 1px solid #ffd2cf; border-radius: 16px; padding: 12px 14px; margin: 0 0 20px; font-family: -apple-system, system-ui, sans-serif; font-size: 15px; color: #1c1c1e; }
-.dlg-body.preview .lockinfo .li-ic { color: #ff3b30; display: inline-flex; } .dlg-body.preview .lockinfo .li-ic svg { width: 26px; height: 26px; }
-.dlg-body.preview .lockinfo .li-t { flex: 1; } .dlg-body.preview .lockinfo button { flex: none; pointer-events: auto; }   /* die Vorschau schaltet Schaltflächen im Inhalt sonst stumm */
+#app .lockinfo { display: flex; align-items: center; gap: 12px; background: #fff7ea; border: 1px solid #f3d7a6; border-radius: 16px; padding: 12px 14px; margin: 0 0 12px; }
+#app .lockinfo .li-ic { color: var(--warn); display: inline-flex; } #app .lockinfo .li-ic svg { width: 26px; height: 26px; }
+#app .lockinfo .li-t { flex: 1; }
+#app .lockinfo button { flex: none; }
+#app .lockcap { color: var(--muted); font-size: var(--t-footnote, 13px); margin: 0 0 8px; }
+#app .lockpage { background: #fff; color: #000; color-scheme: light; border-radius: 16px; padding: 24px; overflow-x: auto; box-shadow: 0 0 0 1px rgba(0,0,0,.08); }
+#app .lockpage .rt { min-width: 0; }   /* Seite passt in den Platz neben der Seitenleiste */
+html.phone #app .lockpage { padding: 16px; }
 .nb-title .lockbtn { background: none; border: none; box-shadow: none; }
 .locked .dlg-body #suggest, .locked .dlg-body .emoji-row:not(.strip), .locked .dlg-body .hint, .locked .dlg-body .fx { display: none !important; }
 .locked .dlg-body button, .locked .dlg-body label.check { pointer-events: none; }
@@ -2129,22 +2134,74 @@ async function askUnlock(trip, anchor) {
   const el = typeof anchor === 'string' ? document.querySelector(anchor) : anchor;
   if (await confirmPop(el, `‚${esc(trip.title)}‘ entsperren? Danach lässt es sich wieder ändern und löschen.`, { label: 'Entsperren', icon: 'lock-open', cls: 'primary' })) setLock(trip, false);
 }
-document.addEventListener('click', e => { const b = e.target.closest('#unlockBtn'); if (b) { const t = getTrip(currentTripId); if (t) openLockedPreview(t); } });
-// Wunsch des Nutzers (21.11.2026, Sitzung 0148): ein gesperrtes Reiselogbuch öffnet als Vorschau mit Hinweis und ‚Entsperren‘;
-// nach dem Entsperren schließt die Vorschau und die normale Seite ist offen
-function openLockedPreview(trip) {
-  openPreview(trip);
-  dlg.querySelector('.dlg-body.preview')?.insertAdjacentHTML('afterbegin', `<div class="lockinfo" role="status">
-    <span class="li-ic">${ic('lock')}</span><span class="li-t"><b>Dieses Reiselogbuch ist gesperrt.</b><br>Es lässt sich lesen und ausgeben, aber nicht ändern oder löschen.</span>
-    <button type="button" class="primary" id="prvUnlock">${ic('lock-open')}Entsperren</button></div>`);
-  dlg.querySelector('#prvUnlock').onclick = () => { trip.locked = false; save(); dlg.close(); render(); };
-}
-const showTripPlain = showTrip;
-showTrip = function (id, ...rest) {
-  showTripPlain(id, ...rest);
-  const t = getTrip(id);
-  if (t?.locked && !dlg.open) openLockedPreview(t);
+// Muster 3 (Wunsch des Nutzers 21.11.2026, Sitzung 0149): ein gesperrtes Reiselogbuch zeigt statt der Tabelle nur die Vorschau – als Seite,
+// nicht als Fenster über der Tabelle. Sie bleibt nach jeder Ausgabe (HTML, PDF, Backup) stehen; die Tabelle erscheint erst nach ‚Entsperren‘.
+const renderTable = render;
+render = function (opts = {}) {
+  const trip = getTrip(currentTripId);
+  if (trip?.locked && !(isPhone() && phoneList)) return renderLocked(trip);
+  return renderTable(opts);
 };
+function renderLocked(trip) {
+  const phone = isPhone();
+  emptyPrompted = false;
+  searchOpen = false; searchTerm = '';
+  if (phone) { side.hidden = true; side.classList.remove('page'); } else renderSide();
+  const version = (trip.outputCounter || 0) + 1;
+  const buttons = `<span class="r"><span class="grp">
+          <button type="button" id="shareBtn" aria-label="Ausgabe">${ic('share')}</button>
+          <button type="button" id="mainMore" aria-label="Mehr">${ic('ellipsis')}</button>
+        </span></span>`;
+  setHtml(app, `
+    ${phone ? `<div class="pnav" id="bar">
+      <span><button type="button" class="round" id="back" aria-label="Reiselogbücher">${ic('chevron-left')}</button></span>
+      <span class="pnav-title">${esc(trip.title)}</span>
+      ${buttons}
+    </div>` : `<div class="nb" id="bar">
+      <div class="nb1">
+        <span>${sideToggleHtml()}</span>
+        <span class="nb-title">${esc(trip.title)}</span>
+        ${buttons}
+      </div>
+    </div>`}
+    <div class="rolle" id="rolle">
+      <div class="lockinfo" role="status">
+        <span class="li-ic">${ic('lock')}</span>
+        <span class="li-t"><b>Dieses Reiselogbuch ist gesperrt.</b><br>Es lässt sich lesen und ausgeben, aber nicht ändern oder löschen.</span>
+        <button type="button" id="lockUnlock">${ic('lock-open')}Entsperren</button>
+      </div>
+      <p class="lockcap">Vorschau · ${esc(outputName(trip, version))}</p>
+      <div class="lockpage"><style>${OUTPUT_CSS.replace(/\bbody\b/g, '#app .lockpage')}#app .lockpage { margin: 0; }</style>${outputBody(trip, version, nowStamp())}</div>
+    </div>`);
+  app.querySelectorAll('.lockpage a[href]').forEach(a => { a.target = '_blank'; a.rel = 'noopener'; });
+  fab.hidden = false;
+  if (phone) app.querySelector('#back').onclick = navZurueck; else bindSideToggle(app);
+  app.querySelector('#shareBtn').onclick = e => openLockedShareMenu(e.currentTarget, trip);
+  app.querySelector('#mainMore').onclick = e => openLockedMenu(e.currentTarget, trip);
+  app.querySelector('#lockUnlock').onclick = () => setLock(trip, false);
+  adSourcehighlight.refresh();
+  updateBar();
+  document.documentElement.style.setProperty('--bar-h', app.querySelector('#bar').offsetHeight + 'px');
+}
+// Ausgabe: wie im normalen Reiselogbuch, ohne ‚Vorschau‘ (die Seite ist die Vorschau)
+function openLockedShareMenu(anchor, trip) {
+  const count = tripDays(trip).filter(iso => isRecorded(trip, iso)).length;
+  openMenu(anchor, [
+    { icon: 'file-code', label: 'HTML', sub: 'Im Teilen-Menü ‚In Dateien sichern‘ wählen', act: () => exportHtml(trip) },
+    { icon: 'file-text', label: 'PDF (mit iOS 27 zurzeit nicht möglich)', sub: 'Im Drucken-Menü Teilen, dann ‚In Dateien sichern‘', act: () => exportPdf(trip) },
+    'line',
+    { note: `${count} erfasste${count === 1 ? 'r Tag' : ' Tage'} · Dateiname: ${outputName(trip, (trip.outputCounter || 0) + 1)}` },
+  ]);
+}
+// Mehr: ohne Suchen und ohne ‚Alle Tage / Nur erfasste Tage‘ (keine Tabelle); Einstellen und Löschen blass mit ‚Gesperrt‘
+function openLockedMenu(anchor, trip) {
+  openMenu(anchor, [
+    { icon: 'lock-open', label: 'Reiselogbuch entsperren', act: () => setLock(trip, false) },
+    { icon: 'settings', label: 'Reiselogbuch einstellen', sub: 'Gesperrt', disabled: true },
+    'sep',
+    { icon: 'trash', label: 'Reiselogbuch löschen', sub: 'Gesperrt', red: true, disabled: true },
+  ]);
+}
 // Tagesfenster nur zum Lesen (RLB-125/J-2): x schließt, kein Häkchen, Felder nur lesbar, Vorschläge und Smileys nicht bedienbar
 const openDayDialogEdit = openDayDialog;
 openDayDialog = function (trip, iso) {
