@@ -23,6 +23,9 @@ Sitzung 0152 – `arbeit/0152 RLB-125 Bau-Frage.md`).
 - **Prüfungen:** `abgleich.mjs` prüft mit `protect` die Fälle 21–23 in beide Richtungen und die Abfrage ‚Ersetzen‘ (1 und 2 gesperrte); Gegenprobe
   `checkSync(page, { gegenprobe: 'abgleich:23' })` (in der App `PRUEF_GEGENPROBE=abgleich:23`) – rot. `hig.mjs`: Tabellen der Ausgabe (`.rt`) im Inhalt – z. B. die
   Vorschau-Seite eines gesperrten Reiselogbuchs – prüft R-6.2 statt der Regeln für App-Tabellen (Kopf mit Verlauf, Trennlinien, Zebra je Tabellenzeile).
+  `ablauf.mjs` – `checkWischen`: die Wischwege wachsen mit der offenen Breite (Werte für zwei Kapseln, 165 px; bei drei Kapseln – Einstellen, Sperren, Löschen –
+  242 px), die erwartete offene Breite ist n × 66 + (n + 1) × 11; W-93 hält vor dem Messpunkt 300 ms, weil die äußere Kapsel bei drei Kapseln erst spät aufgedeckt
+  wird und noch wächst.
 - AD-Bean: keine, weil `createSync` noch keine AD-Bean ist (der Umbau gehört zu APD-142).
 
 **RLB-125 – nicht verfügbare Menüpunkte (R-4.14)** (Wortlaut freigegeben in Sitzung 0149, Zusatz für Kontextmenüs RLB-125/J-12 in Sitzung 0152: die HIG ‚Context

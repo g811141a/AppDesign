@@ -4395,6 +4395,8 @@ export async function checkWischen(p, { bean, aktionen, liste = '#side', kacheln
     const ruhigMotion = await p.evaluate(() => matchMedia('(prefers-reduced-motion: reduce)').matches);
     const eintr = await p.evaluate(([a, s]) => (0, eval)(a)(document.querySelector(s)).filter(x => x && typeof x === 'object').map(x => ({ label: x.label, kurz: x.shortTitle, red: !!x.red })), [aktionen, kachel]);
     if (eintr.length < 1) { E(`${kachel}: die App nennt keine Aktionen – die Prüfung prüft nichts`); return errors; }
+    // seit 4.68.0 (RLB-125: drei Kapseln Einstellen, Sperren, Löschen): Wischwege wachsen mit der offenen Breite – die Werte gelten für zwei Kapseln (165 px)
+    const B0 = eintr.length * 66 + (eintr.length + 1) * 11, W = v => Math.round(v * Math.max(1, B0 / 165));
     const masse = await p.evaluate(() => (0, eval)(window.__wischBean).metrics);
     // W-74 (R-1.13): die Liste trägt die Bean · W-59, W-64 (R-1.8): geschlossen keine Kapsel im Dokument, die Kachel bleibt eine Schaltfläche
     const a0 = await p.evaluate(([l, k]) => ({ bean: document.querySelector(l)?.dataset.adBean, kapseln: document.querySelectorAll('.ad-swipeactions-button').length,
@@ -4406,9 +4408,9 @@ export async function checkWischen(p, { bean, aktionen, liste = '#side', kacheln
     const titel0 = (await stand()).titel;
 
     // W-1: 100 px nach links – rastet ein; zwei Kapseln (≥ 66 × 44) mit Wort, ganz in der Liste und im Bild; der Titel bleibt teilweise sichtbar
-    const r1 = await wisch(kachel, [...weg(-50, 0, 5), { merke: 'w40' }, ...weg(-100, 0, 10).slice(5), { merke: 'w100' }]);
+    const r1 = await wisch(kachel, [...weg(W(-50), 0, 5), { merke: 'w40' }, ...weg(W(-100), 0, 10).slice(5), { merke: 'w100' }]);
     let st = await stand();
-    const offenSoll = await p.evaluate(() => { const ts = document.documentElement.dataset.ts; return !ts || ts === 'l'; }) ? 165 : null;   // 2 × 66 + 3 × 11 (seit 4.60.2, P-108)
+    const offenSoll = await p.evaluate(() => { const ts = document.documentElement.dataset.ts; return !ts || ts === 'l'; }) ? B0 : null;   // n × 66 + (n + 1) × 11 – 165 bei zwei Kapseln (seit 4.60.2, P-108; seit 4.68.0 je Zahl der Kapseln)
     if (!st.offenIst) E(`W-1 100 px gewischt: Kachel nicht offen (tx ${st.tx})`);
     else {
       if (offenSoll && -st.tx !== offenSoll) E(`W-1 offen bei ${-st.tx} px statt ${offenSoll}`);
@@ -4449,11 +4451,11 @@ export async function checkWischen(p, { bean, aktionen, liste = '#side', kacheln
       if (st.dlg || st.menu) E('W-11 Esc öffnet bzw. schließt sonst etwas');
     }
     // W-2: 60 px – federt zurück
-    await wisch(kachel, weg(-60, 0, 6));
+    await wisch(kachel, weg(W(-60), 0, 6));
     st = await stand();
     if (st.offen || st.tx || st.boxen) E(`W-2 nach 60 px federt die Kachel nicht zurück (tx ${st.tx}, offen ${st.offen})`);
     // W-4: auf die offene Kachel tippen – gleitet zurück, nichts geöffnet
-    await wisch(kachel, weg(-100));
+    await wisch(kachel, weg(W(-100)));
     st = await stand();
     if (st.offenIst) {
       await tippe(Math.max(st.liste.l + 6, st.kachel.r - 30), (st.kachel.t + st.kachel.b) / 2);
@@ -4467,7 +4469,7 @@ export async function checkWischen(p, { bean, aktionen, liste = '#side', kacheln
     for (const [name, ziel, nur, wirkt] of [['andere Kachel', await mitte(kachel2), true], ['Fläche in der Liste', flaeche, true], ['Inhalt', inhalt, false],
       ['Kopf', kopf && await mitte(kopf), false, true]]) {
       if (!ziel) continue;
-      await wisch(kachel, weg(-100));
+      await wisch(kachel, weg(W(-100)));
       if (!(await stand()).offenIst) { E(`W-5 Kachel öffnet nicht (vor ‚${name}‘)`); continue; }
       await tippe(ziel.x, ziel.y);
       const s5 = await stand();
@@ -4480,7 +4482,7 @@ export async function checkWischen(p, { bean, aktionen, liste = '#side', kacheln
     }
     // W-42 (iPad): Kachel offen, dann panel-left – die Seitenleiste gleitet beim ersten Tipp hinaus; beim Einblenden sind alle Kacheln geschlossen
     if (seitenleiste?.aus && seitenleiste?.ein && await p.locator(seitenleiste.aus).isVisible().catch(() => false)) {
-      await wisch(kachel, weg(-100));
+      await wisch(kachel, weg(W(-100)));
       if (!(await stand()).offenIst) E('W-42 Kachel öffnet nicht (vor panel-left)');
       else {
         const zuSehen = () => p.evaluate(l => { const e = document.querySelector(l); if (!e || e.hidden || !e.getClientRects().length) return false; const r = e.getBoundingClientRect(); return r.right > 1 && r.left < innerWidth - 1; }, liste);
@@ -4501,13 +4503,13 @@ export async function checkWischen(p, { bean, aktionen, liste = '#side', kacheln
     // Tipps außerhalb der Liste (Inhalt, panel-left) wirken (APD-30/V-12) und dürfen den Speicher ändern – Ausgangslage für R-4.12 neu
     s0 = await alles();
     // W-6: Kachel 1 offen, Kachel 2 wischen – nie zwei offen
-    await wisch(kachel, weg(-100));
-    await wisch(kachel2, weg(-100));
+    await wisch(kachel, weg(W(-100)));
+    await wisch(kachel2, weg(W(-100)));
     st = await stand(kachel2);
     const s6 = await stand(kachel);
     if (!st.offenIst || s6.tx || st.boxen !== 1) E(`W-6 Kachel 2 offen ${st.offenIst}, Kachel 1 tx ${s6.tx}, ${st.boxen} Aktionsflächen`);
     // W-7: die offene Kachel 100 px nach rechts – folgt dem Finger, die Kapseln vergehen (seit 4.60.1 nacheinander, W-82); danach zu
-    const r7 = await wisch(kachel2, [...weg(81, 0, 9), { merke: 'halb' }, ...weg(100, 0, 10).slice(9)], { kachel: kachel2 });
+    const r7 = await wisch(kachel2, [...weg(W(81), 0, 9), { merke: 'halb' }, ...weg(W(100), 0, 10).slice(9)], { kachel: kachel2 });
     const h7 = r7.merk.halb;
     if (!h7?.kapseln?.length) E('W-7 beim Zurückwischen keine Kapseln');
     else if (!(h7.tx < 0) || !h7.kapseln.some(c => c.op < 0.98)) E(`W-7 auf halbem Weg folgt die Kachel nicht (tx ${h7.tx}) oder keine Kapsel vergeht`);
@@ -4527,7 +4529,7 @@ export async function checkWischen(p, { bean, aktionen, liste = '#side', kacheln
               : `${name} ${wo}: ‚${K[i].label}‘ erscheint schon (${Math.round(K[i].op * 100)} %), bevor ‚${schlecht.label}‘ halb da ist (${Math.round(schlecht.op * 100)} %)`, regel); return; } } }
       };
       const st0 = await stand(kachel2);
-      await wisch(kachel2, weg(-100));
+      await wisch(kachel2, weg(W(-100)));
       const so = await stand(kachel2), B = -so.tx, fin = so.kapseln;
       await zu();
       if (!(B > 0) || !fin.length) E(`W-81 Ausgangslage: Kachel nicht offen (tx ${so.tx})`);
@@ -4569,7 +4571,7 @@ export async function checkWischen(p, { bean, aktionen, liste = '#side', kacheln
         // keine wird langgezogen (höchstens 6 % größer), sie rücken nur nach links mit; ‚Bewegung reduzieren‘: an ihrem Platz in voller Größe
         const s93 = await alles();
         const ueberWege = Array.from({ length: 20 }, (_, i) => [Math.round(-(B + 300) * (i + 1) / 20), 0]);
-        const r93 = await p.evaluate(([s, w]) => window.__wisch(s, [...w, { merke: 'u' }], { offenLassen: true, kachel: s }), [kachel2, ueberWege]);
+        const r93 = await p.evaluate(([s, w]) => window.__wisch(s, [...w, { warte: 300 }, { merke: 'u' }], { offenLassen: true, kachel: s }), [kachel2, ueberWege]);   // seit 4.68.0: 300 ms halten – bei drei Kapseln deckt der Finger die äußere erst spät auf, sie wächst noch (SW_EIN_MS 250)
         const u = r93.merk?.u;
         if (!u) E('W-93 Überwischen: kein Messpunkt');
         else {
@@ -4631,7 +4633,7 @@ export async function checkWischen(p, { bean, aktionen, liste = '#side', kacheln
       if (st.offen) await zu();
     }
     // W-8: geschlossene Kachel nach rechts – bewegt sich nicht, nichts geschieht
-    const r8 = await wisch(kachel, [...weg(60, 0, 6), { merke: 'm' }]);
+    const r8 = await wisch(kachel, [...weg(W(60), 0, 6), { merke: 'm' }]);
     if (r8.merk.m?.tx || r8.merk.m?.boxen || r8.merk.m?.nav) E(`W-8 geschlossene Kachel nach rechts: tx ${r8.merk.m?.tx}, Aktionsflächen ${r8.merk.m?.boxen}, Navigation ${r8.merk.m?.nav}`);
     if (r8.klicks || (await stand()).titel !== titel0) E('W-8/W-9 Wischen nach rechts tippt an');
     // W-26 bis W-28: senkrecht und schräg = Rollen, deutlich waagrecht = Wischen (touchmove verhindert dann das Rollen)
@@ -4644,7 +4646,7 @@ export async function checkWischen(p, { bean, aktionen, liste = '#side', kacheln
       await zu();
     }
     // W-29: Rollen der Liste schließt die offene Kachel
-    await wisch(kachel, weg(-100));
+    await wisch(kachel, weg(W(-100)));
     await p.evaluate(k => { const l = document.querySelector(k).parentElement; l.dispatchEvent(new Event('scroll')); }, kachel); await ruhig();
     if ((await stand()).offen) E('W-29 Rollen der Liste schließt die offene Kachel nicht');
     await zu();
@@ -4672,17 +4674,17 @@ export async function checkWischen(p, { bean, aktionen, liste = '#side', kacheln
     } else { await p.keyboard.press('Escape'); await ruhig(); }
     await menueZu(p);
     // W-31: 30 px wischen, dann 1 s halten – kein Kontextmenü, nicht angehoben
-    const r31 = await wisch(kachel, [...weg(-30, 0, 3), { warte: 1000 }, { merke: 'm' }]);
+    const r31 = await wisch(kachel, [...weg(W(-30), 0, 3), { warte: 1000 }, { merke: 'm' }]);
     if (r31.merk.m?.menu || r31.merk.m?.beruehrt) E(`W-31 nach 30 px und 1 s Halten ${r31.merk.m?.menu ? 'Kontextmenü' : 'angehoben'}`, 'R-4.2');
     if ((await stand()).menu) { E('W-31 Kontextmenü nach dem Wischen', 'R-4.2'); await p.keyboard.press('Escape'); await ruhig(); }
     await zu();
     // W-39: Abbruch (pointercancel) bzw. zweiter Finger – Zustand wie vorher
-    await wisch(kachel, weg(-100), { abbruch: true });
+    await wisch(kachel, weg(W(-100)), { abbruch: true });
     if ((await stand()).offen) E('W-39 Abbruch beim Ziehen öffnet die Kachel (soll: Zustand wie vorher)');
-    await wisch(kachel, [...weg(-100, 0, 6), 'zweiter', [-110, 0]]);
+    await wisch(kachel, [...weg(W(-100), 0, 6), 'zweiter', [W(-110), 0]]);
     if ((await stand()).offen) E('W-39 zweiter Finger beim Ziehen öffnet die Kachel');
-    await wisch(kachel, weg(-100));
-    await wisch(kachel, weg(60, 0, 6), { abbruch: true });
+    await wisch(kachel, weg(W(-100)));
+    await wisch(kachel, weg(W(60), 0, 6), { abbruch: true });
     st = await stand();
     if (!st.offenIst || (offenSoll && -st.tx !== offenSoll)) E(`W-39 Abbruch beim Zurückwischen: Kachel nicht wieder offen (tx ${st.tx})`);
     await zu();
@@ -4690,7 +4692,7 @@ export async function checkWischen(p, { bean, aktionen, liste = '#side', kacheln
     const bw = (await stand()).kachel.r - (await stand()).kachel.l;
     if (eintr.at(-1).red) {
       // W-13, W-21: ‚Löschen‘ antippen – Sprechblase aus der roten Kapsel, ganz im Bild, Speicher unverändert; W-22 bis W-25: eingegraut, gesperrt
-      await wisch(kachel, weg(-100));
+      await wisch(kachel, weg(W(-100)));
       await p.locator('.ad-swipeactions-button.destructive').click(); await ruhig();
       st = await stand();
       const pop = await p.evaluate(() => { const q = document.querySelector('.pop:not(.zu-geist)'); if (!q) return null; const r = q.getBoundingClientRect(), l = document.querySelector('.layer.schleier'), h = l?.querySelector('.schleier-loch');
@@ -4737,7 +4739,7 @@ export async function checkWischen(p, { bean, aktionen, liste = '#side', kacheln
     }
     // W-12: erste Aktion (‚Einstellen‘) – derselbe Weg wie im Kontextmenü, die Kachel ist zu; nach x Fokus auf der Kachel
     if (!eintr[0].red) {
-      await wisch(kachel, weg(-100));
+      await wisch(kachel, weg(W(-100)));
       await p.locator('.ad-swipeactions-button').first().click(); await ruhig(); await wait(p, 200);
       st = await stand();
       if (!st.dlg) E(`W-12 ‚${eintr[0].kurz}‘ öffnet kein Fenster`);
@@ -4749,7 +4751,7 @@ export async function checkWischen(p, { bean, aktionen, liste = '#side', kacheln
     // W-37: an allem ohne Kontextmenü bewegt sich nichts
     for (const sel of nicht) {
       if (!await p.evaluate(s => !!document.querySelector(s)?.getClientRects().length, sel)) continue;
-      const r = await wisch(sel, [...weg(-100), { merke: 'm' }], { kachel });
+      const r = await wisch(sel, [...weg(W(-100)), { merke: 'm' }], { kachel });
       if (r.merk.m?.boxen) E(`W-37 Wischen auf ${sel} zeigt Wischaktionen`);
       const tx = await p.evaluate(s => getComputedStyle(document.querySelector(s)).transform, sel);
       if (tx && tx !== 'none') E(`W-37 ${sel} bewegt sich seitlich (${tx})`);
@@ -4758,12 +4760,12 @@ export async function checkWischen(p, { bean, aktionen, liste = '#side', kacheln
     // W-40: Drehen beim Ziehen bricht ab – Kachel geschlossen; W-41: Drehen bei offener Kachel – zu, Auswahl unverändert
     const vp0 = p.viewportSize(), dreh = { width: vp0.height, height: vp0.width };
     const cur0 = await p.evaluate(l => document.querySelector(`${l} .current`)?.outerHTML.slice(0, 80) || '', liste);
-    await p.evaluate(([k, w]) => window.__wisch(k, w, { offenLassen: true }), [kachel, weg(-80, 0, 8)]);
+    await p.evaluate(([k, w]) => window.__wisch(k, w, { offenLassen: true }), [kachel, weg(W(-80), 0, 8)]);
     await p.setViewportSize(dreh); await wait(p, 300);
     await p.evaluate(() => window.__wischZug?.ende(false)); await ruhig();
     if ((await stand()).offen || (await stand()).boxen) E('W-40 Drehen beim Ziehen: die Kachel ist danach offen (soll: Geste bricht ab, geschlossen)', 'R-8.1');
     await p.setViewportSize(vp0); await wait(p, 400); await ruhig();
-    await wisch(kachel, weg(-100));
+    await wisch(kachel, weg(W(-100)));
     await p.setViewportSize(dreh); await wait(p, 300); await ruhig();
     if ((await stand()).offen || (await stand()).boxen) E('W-41 nach dem Drehen ist die Kachel noch offen', 'R-8.1');
     await p.setViewportSize(vp0); await wait(p, 400); await ruhig();
@@ -4771,7 +4773,7 @@ export async function checkWischen(p, { bean, aktionen, liste = '#side', kacheln
     // W-65: Safari-Modell – Wischen mit Berührung, Safari nimmt dem Finger die entschiedene Geste nicht weg; senkrecht rollt Safari
     {
       const k = await p.evaluate(s => { const r = document.querySelector(s).getBoundingClientRect(); return { x: r.left + r.width * 0.7, y: r.top + r.height / 2 }; }, kachel);
-      const a = await safariWischen(p, k.x, k.y, [[-12, 0, 16], [-40, 4, 16], [-80, 12, 16], [-100, 16, 16]]); await ruhig();
+      const a = await safariWischen(p, k.x, k.y, [[-12, 0, 16], [-40, 4, 16], [W(-80), 12, 16], [W(-100), 16, 16]]); await ruhig();
       if (a.abgebrochen || !(await stand()).offenIst) E(`W-65 Safari-Modell: Wischen ${a.abgebrochen ? 'von Safari abgebrochen (pointercancel)' : 'öffnet die Kachel nicht'}`);
       await zu();
       const b = await safariWischen(p, k.x, k.y, [[0, 12, 16], [2, 40, 16]]); await ruhig();
@@ -4781,17 +4783,17 @@ export async function checkWischen(p, { bean, aktionen, liste = '#side', kacheln
     // W-66: Maus bzw. Trackpad – mit gedrückter Taste ziehen wie mit dem Finger
     {
       const k = await mitte(kachel);
-      await p.mouse.move(k.x, k.y); await p.mouse.down(); await p.mouse.move(k.x - 100, k.y, { steps: 10 }); await p.mouse.up(); await ruhig();
+      await p.mouse.move(k.x, k.y); await p.mouse.down(); await p.mouse.move(k.x - W(100), k.y, { steps: 10 }); await p.mouse.up(); await ruhig();
       st = await stand();
       if (!st.offenIst || st.titel !== titel0 || st.dlg) E(`W-66 mit der Maus gezogen: offen ${st.offenIst}, Titel ‚${st.titel}‘, Fenster ${st.dlg}`);
       await zu();
     }
     // W-67: Messmodus zeichnet die Entscheidungen auf
     await p.evaluate(() => messStart({ app: 'Prüfung checkWischen' }));
-    await wisch(kachel, weg(-100)); await zu();
-    await wisch(kachel, weg(-60, 0, 6));
-    await wisch(kachel, weg(-100), { abbruch: true });
-    await wisch(kachel, weg(10, 40, 4));
+    await wisch(kachel, weg(W(-100))); await zu();
+    await wisch(kachel, weg(W(-60), 0, 6));
+    await wisch(kachel, weg(W(-100)), { abbruch: true });
+    await wisch(kachel, weg(W(10), 40, 4));
     await wisch(kachel, weg(-bw * 0.72, 0, 12)); await zu();   // weit überwischt: ‚wisch offen‘, nie ‚wisch durch‘
     const zeilen = await p.evaluate(() => { const z = mess?.zeilen?.join('\n') || ''; messAus(); mess = null; return z; });
     for (const w of ['wisch kandidat', 'wisch verworfen ', 'wisch offen weg ', 'wisch zurück gefedert weg ', 'wisch abgebrochen weg '])
@@ -4800,12 +4802,12 @@ export async function checkWischen(p, { bean, aktionen, liste = '#side', kacheln
     await zu();
     // W-77: offen und Ereignisse – je genau einmal pro Vorgang, auch beim Neuaufbau ‚zu‘
     await p.evaluate(() => { const b = (0, eval)(window.__wischBean); window.__wischEv = []; window.__wischAb = [b.on('toggle', e => window.__wischEv.push(e?.row instanceof Element ? e.newState : 'ohne row'))]; });
-    await wisch(kachel, weg(-100));
+    await wisch(kachel, weg(W(-100)));
     const o1 = await p.evaluate(k => (0, eval)(window.__wischBean).openRow === document.querySelector(k), kachel);
     st = await stand();
     await tippe(Math.max(st.liste.l + 6, st.kachel.r - 30), (st.kachel.t + st.kachel.b) / 2);
     const o2 = await p.evaluate(() => (0, eval)(window.__wischBean).openRow);
-    await wisch(kachel, weg(-100));
+    await wisch(kachel, weg(W(-100)));
     if (neuaufbau) { await p.evaluate(a => (0, eval)(a), neuaufbau); await ruhig(); }
     const ev = await p.evaluate(() => { window.__wischAb.forEach(f => f()); const e = window.__wischEv; return { e, offen: (0, eval)(window.__wischBean).openRow, kapseln: document.querySelectorAll('.ad-swipeactions-button').length }; });
     const evSoll = neuaufbau ? ['open', 'closed', 'open', 'closed'] : ['open', 'closed', 'open'];
@@ -4844,7 +4846,7 @@ export async function checkWischen(p, { bean, aktionen, liste = '#side', kacheln
       if (st.pop || !st.offenIst) E(`W-76 über 60 % gewischt: Sprechblase ${!!st.pop}, offen ${st.offenIst} (soll: rastet offen ein)`, 'R-1.13');
       if (st.pop) { await p.keyboard.press('Escape'); await ruhig(); }
       if (eintr.at(-1).red) {
-        await zu(); await wisch(kachel, weg(-100));
+        await zu(); await wisch(kachel, weg(W(-100)));
         await p.locator('.ad-swipeactions-button.destructive').click(); await ruhig();
         const act = await p.evaluate(() => window.__wischAct.at(-1));
         if (!act || !/ad-swipeactions-button/.test(act.sourceView) || !/destructive/.test(act.sourceView) || act.keys.join() !== 'sourceView') E(`W-78 act bekommt ${JSON.stringify(act)} statt { sourceView: rote Kapsel }`, 'R-1.13');
@@ -4852,12 +4854,12 @@ export async function checkWischen(p, { bean, aktionen, liste = '#side', kacheln
         await p.locator('.pop:not(.zu-geist) button', { hasText: /^Abbrechen$/ }).first().click().catch(() => {}); await ruhig();
         if ((await stand()).offen) E('W-78 nach ‚Abbrechen‘ gleitet die Kachel nicht zurück', 'R-1.13');
       }
-      await wisch(kachel, weg(-100));
+      await wisch(kachel, weg(W(-100)));
       const w79 = await p.evaluate(() => { const b = window.__wischTest, ev = []; b.on('toggle', e => ev.push(e.newState)); b.close(); return ev; });
       await ruhig();
       if (JSON.stringify(w79) !== '["closed"]' || (await stand()).offen || (await stand()).tx) E(`W-79 close(): Ereignisse ${JSON.stringify(w79)}, Kachel ${(await stand()).offen ? 'offen' : 'zu'}`, 'R-1.13');
       await p.evaluate(() => window.__wischTest.disconnect());
-      const r79 = await wisch(kachel, [...weg(-100), { merke: 'm' }], { klick: false });
+      const r79 = await wisch(kachel, [...weg(W(-100)), { merke: 'm' }], { klick: false });
       if (r79.merk.m?.tx || r79.merk.m?.boxen || await p.evaluate(l => !!document.querySelector(l).dataset.adBean, liste)) E('W-79 nach disconnect() wischt die Kachel bzw. die Liste trägt data-ad-bean', 'R-1.13');
       const m79 = await langDruecken(p, kachel);
       if (m79 || !(await stand()).menu) E('W-79 nach disconnect() zeigt langes Drücken kein Kontextmenü', 'R-1.13');
