@@ -139,6 +139,12 @@
 #app .lockpage { background: #fff; color: #000; color-scheme: light; border-radius: 16px; padding: 24px; overflow-x: auto; box-shadow: 0 0 0 1px rgba(0,0,0,.08); }
 #app .lockpage .rt { min-width: 0; }   /* Seite passt in den Platz neben der Seitenleiste */
 html.phone #app .lockpage { padding: 16px; }
+/* Muster 7 (Sitzung 0150, iPhone hoch): Hinweis bricht um – ‚Entsperren‘ unter dem Text, bündig mit ihm; die Seite ist wie die Vorschau
+   960 px breit und wird seitlich gewischt, statt dass Wörter zerreißen (Reiselogbuch: .dlg-body.preview .rt) */
+html.phone #app .lockinfo { flex-wrap: wrap; align-items: flex-start; }
+html.phone #app .lockinfo .li-t { flex: 1 1 calc(100% - 38px); }
+html.phone #app .lockinfo button { margin-left: 38px; }
+html.phone #app .lockpage .rt { min-width: 960px; }
 .nb-title .lockbtn { background: none; border: none; box-shadow: none; }
 .locked .dlg-body #suggest, .locked .dlg-body .emoji-row:not(.strip), .locked .dlg-body .hint, .locked .dlg-body .fx { display: none !important; }
 .locked .dlg-body button, .locked .dlg-body label.check { pointer-events: none; }
