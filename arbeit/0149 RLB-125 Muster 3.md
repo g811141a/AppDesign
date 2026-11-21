@@ -85,3 +85,36 @@ Entfallen gegenüber 0148: Lesefenster mit `lock` in der Kopfzeile (alte T-4) un
 
 - Muster 3: **nicht ok** – Einzelheiten folgen im Chat.
 - Allgemeine Regel ‚gesperrter Eintrag zeigt nur die Vorschau‘: **Nein, App** (bisher sperrt nur das Reiselogbuch).
+
+## Muster 4 (Nutzer 21.11.2026, Sitzung 0149: „In der Vorschau möchte ich die gleichen Schaltflächen oben wie bei der Vorschau im Reiselogbuch, nämlich PDF und Teilen (blau eingefärbt)“)
+
+Link unverändert: https://g811141a.github.io/AppDesign/arbeit/RLB-125/index.html – bitte ganz neu laden.
+
+### Geändert gegenüber Muster 3
+
+- **Oben rechts** stehen dieselben Schaltflächen wie in der Vorschau des Reiselogbuchs: **‚PDF‘** (`file-text` mit Wort) und **Teilen** (`share`, blau gefüllt).
+  ‚PDF‘ öffnet direkt das Drucken-Menü, Teilen öffnet direkt das Teilen-Menü (HTML). Das Ausgabe-Menü fällt weg.
+- **Mehr (`ellipsis`) fällt weg**, wie in der Vorschau. ‚Entsperren‘ geht über die Schaltfläche im Hinweis und über das Kontextmenü bzw. Wischen auf der Kachel.
+  ‚Einstellen‘ und ‚Löschen‘ stehen dort weiter blass mit ‚Gesperrt‘.
+- Alles andere wie Muster 3: nur die Vorschau, die Tabelle nie, die Vorschau bleibt nach jeder Ausgabe, oranges `lock`, ‚Entsperren‘ hell.
+
+### Bilder (iPad quer, hell)
+
+`arbeit/RLB-125/bilder/13.png` gesperrt geöffnet · `14.png` Meldung nach Teilen über der Vorschau · `16.png` nach ‚Entsperren‘
+
+### Schritte (iPad quer, hell)
+
+1. Link öffnen, ganz neu laden. Erwartet: oben rechts ‚PDF‘ und das blaue `share`; darunter nur die Vorschau mit orangem Hinweis und ‚Entsperren‘.
+2. Das blaue `share` antippen, im Teilen-Menü sichern oder abbrechen. Erwartet: Die Meldung ‚Ausgabe V001‘ liegt über der Vorschau; nach x wieder die Vorschau.
+3. ‚PDF‘ antippen, das Drucken-Menü und die Meldung schließen. Erwartet: wieder die Vorschau, keine Tabelle.
+4. ‚Entsperren‘ antippen. Erwartet: normale Seite mit Tabelle, `lock` auf der Kachel weg.
+5. Kachel ‚Australien‘ lange drücken → ‚Reiselogbuch sperren‘. Erwartet: sofort wieder nur die Vorschau.
+
+### Automatisch geprüft (Chromium und WebKit, iPad quer und iPhone)
+
+Alle Fälle sind grün. Neu ist der Fall ‚oben PDF und Teilen blau gefüllt, kein Mehr‘. Weiter geprüft: nach Teilen und nach PDF bleibt die Vorschau; Wechsel,
+Entsperren, Sperren, Neustart und Drehen (Chromium) zeigen das Erwartete; keine Fehler auf der Seite.
+
+### Testfall-Liste (Änderung)
+
+- RLB-125/T-4 neu: oben ‚PDF‘ und Teilen (blau gefüllt) wie in der Vorschau, kein Mehr; ‚PDF‘ öffnet das Drucken-Menü, Teilen das Teilen-Menü.

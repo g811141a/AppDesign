@@ -2148,9 +2148,10 @@ function renderLocked(trip) {
   searchOpen = false; searchTerm = '';
   if (phone) { side.hidden = true; side.classList.remove('page'); } else renderSide();
   const version = (trip.outputCounter || 0) + 1;
+  // Muster 4 (Nutzer 21.11.2026, Sitzung 0149): oben dieselben Schaltflächen wie in der Vorschau – PDF und Teilen (blau gefüllt)
   const buttons = `<span class="r"><span class="grp">
-          <button type="button" id="shareBtn" aria-label="Ausgabe">${ic('share')}</button>
-          <button type="button" id="mainMore" aria-label="Mehr">${ic('ellipsis')}</button>
+          <button type="button" class="txt" id="pdfBtn">${ic('file-text')}PDF</button>
+          <button type="button" class="fill" id="shareBtn" aria-label="Teilen">${ic('share')}</button>
         </span></span>`;
   setHtml(app, `
     ${phone ? `<div class="pnav" id="bar">
@@ -2176,8 +2177,8 @@ function renderLocked(trip) {
   app.querySelectorAll('.lockpage a[href]').forEach(a => { a.target = '_blank'; a.rel = 'noopener'; });
   fab.hidden = false;
   if (phone) app.querySelector('#back').onclick = navZurueck; else bindSideToggle(app);
-  app.querySelector('#shareBtn').onclick = e => openLockedShareMenu(e.currentTarget, trip);
-  app.querySelector('#mainMore').onclick = e => openLockedMenu(e.currentTarget, trip);
+  app.querySelector('#pdfBtn').onclick = () => exportPdf(trip);
+  app.querySelector('#shareBtn').onclick = () => exportHtml(trip);
   app.querySelector('#lockUnlock').onclick = () => setLock(trip, false);
   adSourcehighlight.refresh();
   updateBar();
