@@ -123,11 +123,14 @@
 </style>
 <style>/* Muster RLB-125 */
 #side .side-row { position: relative; }
-#side .side-row .lockmark { position: absolute; right: 14px; bottom: 10px; color: var(--muted); display: inline-flex; }
+#side .side-row .lockmark { position: absolute; right: 10px; bottom: 8px; color: #ff3b30; background: #fff; border-radius: 50%; width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; }
 #side .side-row .lockmark svg { width: 15px; height: 15px; }
 .nb-title .lockbtn { width: 30px; height: 30px; min-width: 30px; min-height: 30px; margin-left: 6px; vertical-align: middle; color: var(--muted); }
 .nb-title .lockbtn svg { width: 17px; height: 17px; }
-#side .side-row.current .lockmark { color: rgba(255,255,255,.85); }
+#side .side-row.current .lockmark { box-shadow: 0 1px 3px rgba(0,0,0,.25); }
+.dlg-body.preview .lockinfo { display: flex; align-items: center; gap: 12px; background: #fff4f3; border: 1px solid #ffd2cf; border-radius: 16px; padding: 12px 14px; margin: 0 0 20px; font-family: -apple-system, system-ui, sans-serif; font-size: 15px; color: #1c1c1e; }
+.dlg-body.preview .lockinfo .li-ic { color: #ff3b30; display: inline-flex; } .dlg-body.preview .lockinfo .li-ic svg { width: 26px; height: 26px; }
+.dlg-body.preview .lockinfo .li-t { flex: 1; } .dlg-body.preview .lockinfo button { flex: none; pointer-events: auto; }   /* die Vorschau schaltet Schaltflächen im Inhalt sonst stumm */
 .nb-title .lockbtn { background: none; border: none; box-shadow: none; }
 .locked .dlg-body #suggest, .locked .dlg-body .emoji-row:not(.strip), .locked .dlg-body .hint, .locked .dlg-body .fx { display: none !important; }
 .locked .dlg-body button, .locked .dlg-body label.check { pointer-events: none; }
@@ -2126,7 +2129,22 @@ async function askUnlock(trip, anchor) {
   const el = typeof anchor === 'string' ? document.querySelector(anchor) : anchor;
   if (await confirmPop(el, `‚${esc(trip.title)}‘ entsperren? Danach lässt es sich wieder ändern und löschen.`, { label: 'Entsperren', icon: 'lock-open', cls: 'primary' })) setLock(trip, false);
 }
-document.addEventListener('click', e => { const b = e.target.closest('#unlockBtn'); if (b) { const t = getTrip(currentTripId); if (t) askUnlock(t, b); } });
+document.addEventListener('click', e => { const b = e.target.closest('#unlockBtn'); if (b) { const t = getTrip(currentTripId); if (t) openLockedPreview(t); } });
+// Wunsch des Nutzers (21.11.2026, Sitzung 0148): ein gesperrtes Reiselogbuch öffnet als Vorschau mit Hinweis und ‚Entsperren‘;
+// nach dem Entsperren schließt die Vorschau und die normale Seite ist offen
+function openLockedPreview(trip) {
+  openPreview(trip);
+  dlg.querySelector('.dlg-body.preview')?.insertAdjacentHTML('afterbegin', `<div class="lockinfo" role="status">
+    <span class="li-ic">${ic('lock')}</span><span class="li-t"><b>Dieses Reiselogbuch ist gesperrt.</b><br>Es lässt sich lesen und ausgeben, aber nicht ändern oder löschen.</span>
+    <button type="button" class="primary" id="prvUnlock">${ic('lock-open')}Entsperren</button></div>`);
+  dlg.querySelector('#prvUnlock').onclick = () => { trip.locked = false; save(); dlg.close(); render(); };
+}
+const showTripPlain = showTrip;
+showTrip = function (id, ...rest) {
+  showTripPlain(id, ...rest);
+  const t = getTrip(id);
+  if (t?.locked && !dlg.open) openLockedPreview(t);
+};
 // Tagesfenster nur zum Lesen (RLB-125/J-2): x schließt, kein Häkchen, Felder nur lesbar, Vorschläge und Smileys nicht bedienbar
 const openDayDialogEdit = openDayDialog;
 openDayDialog = function (trip, iso) {
