@@ -3427,16 +3427,19 @@ export async function checkBeruehren(p, { knopf = null, zeile = null, rollen = n
   const grau = await farbe('--beruehrt'), hell = await farbe('--heben');
   const ruhig = await p.evaluate(() => matchMedia('(prefers-reduced-motion: reduce)').matches);
   if (knopf) {
-    const leiste = await p.evaluate(([s, l]) => !!document.querySelector(s)?.matches(l), [knopf, LEISTE_SEL]);
+    // Seit 4.67.2 (P-118/F-1, R-3.6 Variante B): jede Schaltfläche hebt sich – 1,3-fach, höchstens 24 px breiter (Faktor aus der Breite)
+    const leiste = true, breite = await p.evaluate(s => document.querySelector(s)?.offsetWidth || 44, knopf), soll = Math.min(1.3, (breite + 24) / breite);
     // B-1 sofort Rückmeldung: Leisten-Knopf hebt sich (S-10, S-12), sonst blass (35 %); B-2 Loslassen blendet aus (S-13: 0,2 s), löst genau einmal aus
-    const r = await finger(p, knopf, [['warte', 15], ['merke', 'sofort'], ['warte', 500], ['merke', 'gehoben']]);
-    const s = r.gemerkt.sofort, g = r.gemerkt.gehoben;
-    if (!s.beruehrt) E(`B-1 ${knopf} zeigt beim Berühren nicht sofort eine Rückmeldung`);
+    // im Rollbereich (Inhalt der Seite) erst nach 80 ms (R-3.6) – dann gilt der Stand nach 100 ms als ‚sofort‘
+    const imRoll = await p.evaluate(s => { for (let e = document.querySelector(s)?.parentElement; e; e = e.parentElement) if (/auto|scroll/.test(getComputedStyle(e).overflowY) && e.scrollHeight > e.clientHeight) return true; return false; }, knopf);
+    const r = await finger(p, knopf, [['warte', 15], ['merke', 'sofort'], ['warte', 90], ['merke', 'frueh'], ['warte', 400], ['merke', 'gehoben']]);
+    const s = imRoll && !r.gemerkt.sofort.beruehrt ? r.gemerkt.frueh : r.gemerkt.sofort, g = r.gemerkt.gehoben;
+    if (!s.beruehrt) E(`B-1 ${knopf} zeigt beim Berühren nicht ${imRoll ? 'nach 80 ms' : 'sofort'} eine Rückmeldung`);
     else if (leiste) {
-      if (s.opacity !== 1 || g.opacity !== 1) E(`APD-107/S-10 ${knopf}: der Leisten-Knopf wird blass (Deckkraft ${Math.min(s.opacity, g.opacity)}) – er hebt sich hell über die Kapsel, das Icon bleibt kräftig`);
+      if (s.opacity !== 1 || g.opacity !== 1) E(`P-118/F-1 ${knopf}: die Schaltfläche wird blass (Deckkraft ${Math.min(s.opacity, g.opacity)}) – sie hebt sich hell, Icon und Text bleiben kräftig`);
       if (s.hg !== hell) E(`APD-107/S-10 ${knopf}: keine helle Fläche beim Berühren (${s.hg} statt ${hell})`);
       if (!g.schatten || g.schatten === 'none') E(`APD-107/S-10 ${knopf}: die Fläche wirft keinen Schatten`);
-      if (!ruhig && Math.abs(skalaVon(g.transform) - 1.3) > 0.02) E(`APD-107/S-10 ${knopf}: der Knopf wächst nicht auf das 1,3-Fache (${g.transform})`);
+      if (!ruhig && Math.abs(skalaVon(g.transform) - soll) > 0.02) E(`P-118/F-1 ${knopf}: die Schaltfläche wächst nicht auf das ${soll.toFixed(2).replace('.', ',')}-Fache (${breite} px breit, ${g.transform})`);
       if (ruhig && g.transform !== 'none') E(`APD-107/S-12 ${knopf}: ‚Bewegung reduzieren‘ – Fläche und Schatten ohne Wachsen, trotzdem ${g.transform}`);
       if (!g.oben) E(`APD-107/S-10 ${knopf}: die Fläche liegt nicht zuoberst (von Kapsel, Leiste oder Nachbar abgeschnitten)`);
     } else if (Math.abs(s.opacity - 0.35) > 0.02) E(`B-1 ${knopf} wird beim Berühren nicht sofort blass (Deckkraft ${s.opacity})`);
