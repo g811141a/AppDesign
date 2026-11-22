@@ -3,6 +3,51 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.69.0 – 22.11.2026
+
+AppDesign 4.69.0 · Designrichtlinie allgemein 4.69.0 · Zusammenarbeit allgemein 3.19.0 · Reiselogbuch 3.58.2 (Fassung 4.69.0)
+
+**APD-135/B-3.3 Schritt 2 – Felder auf der Prüfseite** (Vorschlag und Testfall-Liste APD-135/F-1 bis F-10 bestätigt 21.11.2026 in Sitzung 0149 – `arbeit/0149 APD-135 B-3.3 Schritt 2 Vorschlag.md`;
+APD-135/B-3.3 Schritt 2 umgesetzt in Sitzung 0156 – `arbeit/0156 APD-135 B-3.3 Schritt 2 Stand.md`; mit den Korrekturen P-121/F-1 und P-121/F-2 in einer Version – Ausnahme
+nach Zusammenarbeit 0 Nr. 22, Nutzer 22.11.2026; in der App nur ergänzen, nichts streichen – Nutzer 22.11.2026).
+
+- **Prüfungen (`tests/pruefseite.mjs`):** neuer Teil `felder` (`ablaufFelder`), iPad quer und iPhone hoch, Grundregeln nach jedem Schritt (APD-135/F-1), an
+  ‚Eintrag bearbeiten‘ mit dem einzeiligen Pflichtfeld `#fTitle` und an ‚Unterpunkt‘ mit dem Textfeld `#fText` der Vorlage (neu leer bzw. mit Text) – dieselben
+  Prüffunktionen wie in der App:
+
+  | Testfall | Baustein | Prüffunktion |
+  |---|---|---|
+  | APD-135/F-2 | ⓧ einzeilig (Pflichtfeld) und mehrzeilig (R-5.6) | `checkClear` |
+  | APD-135/F-3 | Cursor am Ende einzeilig und mehrzeilig (R-5.11) | `checkCursorEnde` |
+  | APD-135/F-4 | Feldfehler (R-5.3) | `checkFieldErrors` |
+  | APD-135/F-5 | Großschreibung (R-5.2) | `checkCapital` |
+  | APD-135/F-6 | Leerzeichen (R-5.2) | `checkSpaces` |
+  | APD-135/F-7 | Textfeld leer einzeilig, wächst mit (R-5.2) | `checkFeldCursor` (`leer`) |
+  | APD-135/F-8 | Eingabetaste einzeilig und mehrzeilig (R-5.5) | `checkEnterDone` |
+
+- **Prüfseite über `https://pruefseite.test/`** statt `http://` – ein sicherer Kontext wie die App auf GitHub Pages. Über `http` fehlte `navigator.clipboard`, deshalb
+  war ‚ⓧ legt den Text in die Zwischenablage‘ (APD-124/B-4) dort rot. Das betrifft alle Teile der Prüfseite.
+- **Gegenprobe (APD-135/F-9):** 7 neue Fehler in `GEGENPROBEN_PRUEFSEITE.felder`, je einer in `ui.js`; Ergebnis aus Sitzung 0156 (Chromium):
+
+  | Teil `felder`: eingeschleuster Fehler in `ui.js` | Prüfseite Chromium |
+  |---|---|
+  | `keinX`: ⓧ erscheint nicht | rot (40) |
+  | `cursorVorn`: Cursor bleibt an der angetippten Stelle | rot (4) |
+  | `ohneInvalid`: fehlerhaftes Feld ohne `aria-invalid` | rot (4) |
+  | `kleinAmAnfang`: kein Großbuchstabe am Zeilenanfang | rot (6) |
+  | `enterBleibt`: Eingabetaste schließt die Tastatur nicht | rot (4) |
+  | `doppelLeer`: doppelte Leerzeichen beim Tippen | rot (2) |
+  | `waechstNicht`: Textfeld wächst nicht mit | rot (12, davon 6 mit R-5.2 APD-126/B-4 bis B-7) |
+
+  Der Teil `felder` ist grün in Chromium und WebKit (Sitzung 0156). Die Spalten WebKit und ‚bisherige Prüfung der App‘ (Nachweis-Tabelle) kommen mit dem Schritt,
+  der den Baustein-Anteil in der App streicht – in dieser Version fällt in der App nichts weg.
+- **App:** Reiselogbuch 3.58.2 bekommt den Teil `felder` in `bausteine-pruefseite` (`alle.mjs`, `tests/README.md`); die Prüfungen der App mit eigenen Feldern
+  (`#fProgram`, `#fQuarter`, `#fPeople`, `#kosten` …) bleiben.
+- **Doku:** `tests/README.md` (Prüfseite über https, Teil `felder`, Gegenproben; AppDesign und Reiselogbuch).
+- AD-Bean: keine, weil nur Prüfungen dazukommen bzw. umziehen; `ui.js` und `design.css` sind bis auf die Versionsnummer unverändert.
+
+Usertest: P-122 im Reiselogbuch 3.58.2 (P-122/5 – ein kurzer Blick auf ein Feld).
+
 ## 4.68.1 – 22.11.2026
 
 AppDesign 4.68.1 · Designrichtlinie allgemein 4.68.1 · Zusammenarbeit allgemein 3.19.0 · Reiselogbuch 3.58.1 (Fassung 4.68.1)

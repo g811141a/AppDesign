@@ -123,7 +123,7 @@ fenster: {
     [["release(item) { if (!item || !gehalten.delete(item)) return; freigeben(item);", "release(item) { if (!item || !gehalten.delete(item)) return;"]], /APD-136\/S-10 /),
 },
 // B-3.3 Schritt 2 (APD-135/F-9, seit 4.69.0): je Baustein ein Fehler, den bis Reiselogbuch 3.58.1 nur die Prüfungen der App mit Feldern fanden
-// (regeln-ablauf, ablauf-feld-cursor, ablauf-bedienung; Nachweis-Tabelle im CHANGELOG). zeichen = die Meldung der Prüffunktion.
+// (regeln-ablauf, ablauf-feld-cursor, ablauf-bedienung; die Nachweis-Tabelle kommt mit dem Streichen in der App). zeichen = die Meldung der Prüffunktion.
 felder: {
   keinX: fall('ⓧ', 'ⓧ erscheint nicht (Schaltfläche ohne Klasse fclear)', [["fxBtn.className = 'fclear';", "fxBtn.className = 'fclear-aus';"]], /R-5\.6 #f(Title|Text): kein ⓧ/),
   cursorVorn: fall('Cursor', 'Cursor bleibt beim Aktivieren an der angetippten Stelle (nicht am Ende)',

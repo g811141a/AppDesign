@@ -23,15 +23,15 @@
 
 ## 2. Ergebnisse der Sitzung 0156
 
-- Bericht über P-121/F-1 und F-2 gegeben (`arbeit/0156 Bericht P-121 Korrekturen.md` auf dem AppDesign-Arbeitszweig); `ablauf-p120` Teile P-121/F-1 und P-121/F-2
+- Bericht über P-121/F-1 und P-121/F-2 gegeben (`arbeit/0156 Bericht P-121 Korrekturen.md` auf dem AppDesign-Arbeitszweig); `ablauf-p120` Teile P-121/F-1 und P-121/F-2
   in dieser Sitzung **grün in Chromium und WebKit**; `veroeffentlichen.mjs stufe` schlägt **voll** vor (Code geändert).
 - **Entscheidung (Nutzer 22.11.2026, im Fenster, nach dem Hinweis auf 0 Nr. 8 und 22): vor dem Bau ein größeres Thema – APD-135/B-3.3 Schritt 2** (Ausnahme nach 0 Nr. 22).
-  Eine Version: **AppDesign 4.69.0 / Reiselogbuch 3.58.2** mit P-121/F-1, P-121/F-2 und B-3.3 Schritt 2.
-- **B-3.3 Schritt 2 umgesetzt** (AppDesign `tests/pruefseite.mjs`, Arbeitszweig `claude/apd135-b33-felder`; Stand `arbeit/0156 APD-135 B-3.3 Schritt 2 Stand.md`):
+  Eine Version: **AppDesign 4.69.0 / Reiselogbuch 3.58.2** mit P-121/F-1, P-121/F-2 und APD-135/B-3.3 Schritt 2.
+- **APD-135/B-3.3 Schritt 2 umgesetzt** (AppDesign `tests/pruefseite.mjs`, Arbeitszweig `claude/apd135-b33-felder`; Stand `arbeit/0156 APD-135 B-3.3 Schritt 2 Stand.md`):
   - neuer Teil `felder` (`ablaufFelder`, iPad quer und iPhone hoch) mit `checkFieldErrors`, `checkEnterDone`, `checkClear`, `checkCapital`, `checkSpaces`,
     `checkCursorEnde`, `checkFeldCursor` an `#fTitle` und `#fText` der Vorlage (APD-135/F-1 bis F-8);
   - Prüfseite über **`https://pruefseite.test/`** statt `http` (sicherer Kontext, sonst fehlt `navigator.clipboard` – APD-124/B-4 war rot); betrifft alle Teile;
-  - 7 Gegenproben `GEGENPROBEN_PRUEFSEITE.felder` (`keinX`, `cursorVorn`, `ohneInvalid`, `kleinAmAnfang`, `enterBleibt`, `doppelLeer`, `waechstNicht`, F-9);
+  - 7 Gegenproben `GEGENPROBEN_PRUEFSEITE.felder` (`keinX`, `cursorVorn`, `ohneInvalid`, `kleinAmAnfang`, `enterBleibt`, `doppelLeer`, `waechstNicht`, APD-135/F-9);
   - Ergebnis: Teil `felder` grün in Chromium und WebKit, alle 7 Gegenproben rot (Chromium) mit ihrer Meldung.
 - **Entschieden (Nutzer 22.11.2026, im Fenster): in der App nur ergänzen** – keine Prüfung der App wird gestrichen; das Streichen des Baustein-Anteils kommt später in
   einen eigenen Schritt mit Nachweis-Tabelle.
@@ -45,10 +45,10 @@
 3. App: `tests/bausteine-pruefseite.mjs` auf `fassung/4.69.0` heben, Teil `felder` in `alle.mjs` (Teile von `bausteine-pruefseite`) und in `tests/README.md`
    (Zeile `bausteine-pruefseite` und die Zahl der Gegenproben in Zeile 15). AppDesign: `tests/README.md` (Erwähnung `pruefseite.test` → https), Kopf von
    `tests/pruefseite.mjs` ist schon ergänzt; Backlog APD-135 (Schritt 2 gebaut, danach Schritt 3 Bedienung).
-4. Texte: CHANGELOG AppDesign 4.69.0 (B-3.3 Schritt 2, ‚AD-Bean: keine, weil nur Prüfungen umziehen‘, Gegenproben-Tabelle) und Reiselogbuch 3.58.2 mit Testfällen
+4. Texte: CHANGELOG AppDesign 4.69.0 (APD-135/B-3.3 Schritt 2, ‚AD-Bean: keine, weil nur Prüfungen umziehen‘, Gegenproben-Tabelle) und Reiselogbuch 3.58.2 mit Testfällen
    **P-122** – Entwurf in `arbeit/0156 Bericht P-121 Korrekturen.md` (P-122/0 Version 3.58.2 · AppDesign 4.69.0 statt 4.68.1, /1 Sperren → Vorschau oben,
-   /2 Teilen aus der Vorschau, /3 PDF aus der Vorschau, /4 Backup-Erinnerung im Hinweisfenster), dazu ein kurzer Blick auf ein Feld (ⓧ, Großschreibung) für B-3.3.
-   Backlog: P-121/F-1, F-2 aus ‚0.‘ nach dem Bau entfernen, P-121 erledigt, P-122 prüfen.
+   /2 Teilen aus der Vorschau, /3 PDF aus der Vorschau, /4 Backup-Erinnerung im Hinweisfenster), dazu ein kurzer Blick auf ein Feld (ⓧ, Großschreibung) für APD-135/B-3.3.
+   Backlog: P-121/F-1, P-121/F-2 aus ‚0.‘ nach dem Bau entfernen, P-121 erledigt, P-122 prüfen.
 5. `… fassung`, committen, `… stufe --app reiselogbuch` (voll erwartet), **Bau-Frage: AppDesign 4.69.0 / Reiselogbuch 3.58.2 (voll)**.
 
 ## 4. Danach
@@ -59,8 +59,8 @@ Später: sobald ein iOS-Update `print()` vom Home-Bildschirm wieder zulässt, de
 
 ## 5. Neue Vereinbarungen
 
-- Ausnahme nach 0 Nr. 22 für 3.58.2: B-3.3 Schritt 2 kommt mit den Korrekturen P-121/F-1 und F-2 in eine Version (Nutzer 22.11.2026).
-- B-3.3 Schritt 2: in der App nur ergänzen, nichts streichen (Nutzer 22.11.2026).
+- Ausnahme nach 0 Nr. 22 für 3.58.2: APD-135/B-3.3 Schritt 2 kommt mit den Korrekturen P-121/F-1 und P-121/F-2 in eine Version (Nutzer 22.11.2026).
+- APD-135/B-3.3 Schritt 2: in der App nur ergänzen, nichts streichen (Nutzer 22.11.2026).
 
 ## 6. Starttext für die neue Sitzung
 
