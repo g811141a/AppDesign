@@ -3,6 +3,30 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.70.0 – 22.11.2026
+
+AppDesign 4.70.0 · Designrichtlinie allgemein 4.70.0 · Zusammenarbeit allgemein 3.19.0 · Reiselogbuch 3.58.3 (Fassung 4.70.0)
+
+**P-122/F-2 – Hinweise mittig (R-3.10)** (Rückmeldung P-122/4, Nutzer 22.11.2026; Apple-Abgleich, Bestand, Muster A/B/C und Wortlaut in Sitzung 0158 –
+`arbeit/0158 P-122 Vorschlag.md`, Bilder `arbeit/P-122/`; Variante B, der Hinweis ‚gesperrt‘ bleibt; Wortlaut bestätigt 22.11.2026, ‚Ja so bauen‘).
+
+- **Regel R-3.10 (neu):** in Hinweisen – Hinweisfenster, Ergebnisfenster, Erinnerungen, Hinweis-Kacheln (Backup-Kachel) und leerer Zustand – stehen Text und
+  Schaltflächen mittig, die Schaltfläche in ihrer Breite; Hinweisleisten (Symbol, Text, x in einer Zeile) bleiben links. Designrichtlinie 4 (neuer Punkt), 7 (‚Meldung
+  und Ergebnisfenster‘: Text und Schaltflächen zentriert), 15.19 (Backup-Kachel mittig; dabei ‚der blaue Schaltfläche‘ → ‚die blaue Schaltfläche‘ berichtigt).
+- **AD-Bean `notice` (neu, Nutzer 22.11.2026, Sitzung 0159 – `arbeit/0159 AD-Bean notice Vorschlag.md`):** Hinweis-Kasten für Ergebnis und Erinnerung, im
+  Fenster und im Hinweisfenster: `createNotice(element, { message, detail, buttons })`, Eigenschaften `message`, `detail`, `buttons` (je `{ id, label, icon,
+  primary }`), Methode `remove()`, Ereignis `action`; CSS nur unter `.ad-notice` und `.ad-notice-buttons` (mittig, Abstand 8 px, oben 10 px). Liste der AD-Beans
+  (Designrichtlinie 15), Katalog `katalog/notice.js`, Schnittstelle `createNotice`. Kennung ohne Vorbild bei Apple (HIG: kein Baustein für einen Hinweis-Kasten im
+  Inhalt), nach der Aufgabe wie 0145 festgelegt. Statt der in 0158 vorbereiteten Klassen `.ad-notice`/`.ad-buttons` ohne Bean – die verletzten R-1.13 (APD-30/W-72,
+  Vorlauf `doku-regeln` im ersten Bau rot).
+- **`design.css`:** `.bhint` (Backup-Kachel) mittig statt links.
+- **Prüfung:** `hig.mjs` – `masseStile` prüft R-3.10 nach jedem Schritt aller Prüfungen: in `.ad-notice`, im Text des Hinweisfensters, in `.bhint` und im leeren
+  Zustand ist der Text zentriert und jede Schaltfläche steht mittig (± 1,5 px). Gegenprobe (P-122/X-8, Sitzung 0158): die Erinnerung im Hinweisfenster wieder links →
+  `ablauf-p120` rot mit R-3.10.
+- AD-Bean: `notice` (neu) – siehe oben.
+
+Usertest im Reiselogbuch: P-123 (Backlog des Reiselogbuchs).
+
 ## 4.69.0 – 22.11.2026
 
 AppDesign 4.69.0 · Designrichtlinie allgemein 4.69.0 · Zusammenarbeit allgemein 3.19.0 · Reiselogbuch 3.58.2 (Fassung 4.69.0)

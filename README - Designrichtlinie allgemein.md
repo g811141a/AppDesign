@@ -1,6 +1,6 @@
 # Designrichtlinie allgemein
 
-**Version 4.69.0** · Stand 22.11.2026
+**Version 4.70.0** · Stand 22.11.2026
 
 Allgemeine Gestaltungs- und Bedienregeln für alle Web-Apps von g811141a auf iPad und iPhone. Die Datei liegt im Design-Repo
 **AppDesign** (g811141a/AppDesign); ihre Versionsnummer ist die des Repos. Die Komponenten sind dort einmal programmiert und
@@ -191,6 +191,9 @@ Body = Grundgröße der Stufe (14 … 53). Zeilenabstände und Werte wörtlich a
   - **Rot gefüllt = Löschen/Verwerfen** (endgültige Aktionen, z. B. in Sprechblasen): `--danger-fill`, weiße Schrift, Schatten
     `--glow-danger`. In Menüs steht „… löschen“ als roter Text mit rotem Icon.
   - Alle übrigen Schaltflächen neutral (schwebend).
+- **Hinweise mittig** (R-3.10, wie Text und Dateiname im Hinweisfenster, R-10.8): in Hinweisfenstern, Ergebnisfenstern, Erinnerungen, Hinweis-Kacheln
+  und im leeren Zustand stehen Text und Schaltflächen mittig; Hinweisleisten (Symbol, Text, x in einer Zeile) bleiben links. Technisch: Hinweis-Kasten
+  über die AD-Bean `notice` (Ergebnis und Erinnerung, im Fenster und im Hinweisfenster; Liste in 15) – keine eigene Ausrichtung in der App.
 - „Abbrechen“ (in Sprechblasen): neutral, ohne Icon, normale Schrift.
 - Gesperrte Schaltflächen: ausgegraut (Deckkraft 40 %).
 - Keine Hover-Farbe auf dem iPad – Hover nur in `@media (hover: hover)` (sie bliebe nach dem Antippen hängen).
@@ -272,8 +275,8 @@ Body = Grundgröße der Stufe (14 … 53). Zeilenabstände und Werte wörtlich a
   Seitenbreite – ist das Fenster schmaler (iPad hoch, iPhone), wischt man seitlich; kein Inhalt ragt aus der Tabelle (R-6.3);
   Kopfzeile x · „Vorschau“ mit Dateiname als Zusatzzeile · Kapsel [PDF | share blau gefüllt]; nach Teilen bzw. PDF folgt das
   Ergebnisfenster mit ggf. Backup-Erinnerung.
-- **Meldung** (ohne Entscheidung, z. B. Fehler): kleines Fenster, x links oben, Titel, Text zentriert; höchstens eine
-  Schaltfläche zu den Einzelheiten (10).
+- **Meldung** (ohne Entscheidung, z. B. Fehler) **und Ergebnisfenster**: x links oben, Titel, Text und Schaltflächen zentriert (R-3.10); höchstens
+  eine Schaltfläche zu den Einzelheiten (10).
 - Technisch: ein Dialog, dessen Inhalt ausgetauscht wird (nicht schließen und neu öffnen); ein zweiter Dialog nur für Meldungen.
 
 ## 8. Eingaben, Pflichtfelder und Fehlermeldungen
@@ -648,6 +651,7 @@ und Meldungen · Eingabe · Inhalt · Dienste (ohne eigene Oberfläche).
 | `swipeactions` | Aktionen und Menüs | `createSwipeactions(list, …)` | `rows` (Pflicht) · `actions` (Pflicht, dieselbe Funktion wie für das Kontextmenü; Einträge wie bei `openMenu` mit `shortTitle`) | `openRow` · `metrics` | `close()` · `disconnect()` | `toggle` | R-7.8, R-4.12, R-4.13, R-1.4, R-1.8 | 15.4 |
 | `alert` | Fenster und Meldungen | `createAlert(dialog, …)` | `fitFileName` (ein; wirkt nur am iPad) | `open` | `showModal(title, message, { wide, action })` · `close()` | `close` | R-10.8, R-1.8, R-4.3 | 7, 10; ersetzt `hinweis` (4.67.0) |
 | `sourcehighlight` | Aktionen und Menüs | `createSourcehighlight(root)` | `sourceItem` (`''` – Auswahl der Quelle des offenen Fensters; setzen tönt sie und gibt die vorige frei, `''` gibt frei) | `heldItems` | `hold(item)` · `release(item)` · `refresh(root)` | `change` | R-3.3, R-4.13, R-8.1 | 4, 15.6 |
+| `notice` | Fenster und Meldungen | `createNotice(element, …)` | `message` (`''`, HTML) · `detail` (`''`, grau darunter) · `buttons` (`[]`, je `{ id, label, icon, primary }`) | – | `remove()` | `action` | R-3.10, R-1.13 | 4, 7 |
 
 ### 15.1 Schwebende Schaltfläche
 - **Apple:** [HIG – Buttons](https://developer.apple.com/design/human-interface-guidelines/buttons)
@@ -1080,8 +1084,8 @@ und Meldungen · Eingabe · Inhalt · Dienste (ohne eigene Oberfläche).
   (15.18). Jede App mit Backup nutzt sie – keine eigene Umsetzung (R-1.1). Regeln R-9.1, R-9.2.
 - **Backup erstellen:**
   - **Wo:** Backup-Kachel unten in der Seitenleiste bzw. Startliste – **nur, solange heute auf diesem Gerät noch kein Backup
-    erstellt wurde** und es Einträge gibt: gelb, ‚Letztes Backup erstellt am …‘ bzw. ‚Noch kein Backup erstellt.‘ und der blaue
-    Schaltfläche ‚Backup erstellen‘; danach verschwindet sie (wie die Hinweise ‚iPhone nicht gesichert‘ in den Einstellungen), um 0:00
+    erstellt wurde** und es Einträge gibt: gelb, ‚Letztes Backup erstellt am …‘ bzw. ‚Noch kein Backup erstellt.‘ und die blaue
+    Schaltfläche ‚Backup erstellen‘, Text und Schaltfläche mittig (R-3.10); danach verschwindet sie (wie die Hinweise ‚iPhone nicht gesichert‘ in den Einstellungen), um 0:00
     und bei der Rückkehr am nächsten Tag kommt sie von selbst wieder (`onNeuerTag()`). Immer im Mehr-Menü der Seitenleiste: ‚Backup erstellen‘ (Icon `save`, darunter grau ‚Letztes Backup
     erstellt am …‘), direkt darunter ‚Backup laden‘ (Icon `folder-open`).
   - **Ablauf:** Teilen-Menü (iOS) → ‚In Dateien sichern‘ (z. B. iCloud Drive). Datei ‚Ω Backup <App> JJJJ.MM.TT hh.mm.json‘ mit
@@ -1305,6 +1309,7 @@ Testfall (User) in den Usertest, wenn eine Version es betrifft.
 | R-3.7 | **Keine Hover-Farbe:** auf iPad und iPhone ändert eine Schaltfläche beim Darüberfahren nichts; Stilregeln mit `:hover` stehen nur unter `@media (hover: hover)` | hig.mjs – `masseStile` (alle Stilregeln der Seite, design.css und App) | – | 4 |
 | R-3.8 | **Gesperrt und Abbrechen:** gesperrte Schaltflächen, Schalter und Options-Kapseln 40 % Deckkraft; ‚Abbrechen‘ ohne Icon, normale Schrift | hig.mjs – `masseStile` (jede Ansicht, jedes Fenster, nach jedem Schritt) | – | 4, 15.15, 15.16 |
 | R-3.9 | **Schwebendes aus Glas:** die Kapsel Nach oben / Ans Ende, Menü, Untermenü und Kontextmenü sowie Suchfeld und runde Schaltflächen der unteren Leiste (iPhone) sind aus Glas – Grundfarbe (hell Weiß, dunkel `--btn` bzw. `--card`) zu 75 % deckend, Unschärfe 20 px, Sättigung 180 %, Lichtkante und Schatten wie R-3.2; ‚Transparenz reduzieren‘ des Geräts: deckend (Grundfarbe ganz), wo der Browser es meldet (Safari am iPad nicht, 13); ebenso deckend mit dem Schalter ‚Glas‘ aus (Untermenü ‚Darstellung‘, Standard ein, gilt je Gerät; ein Backup bringt die Wahl nur mit, wenn das Gerät noch keine hat); Leisten, Fenster, Sprechblasen und alle übrigen Schaltflächen bleiben deckend | hig.mjs – `masseStile` (Unschärfe und Deckkraft genau an diesen Bausteinen, deckend bei ‚Transparenz reduzieren‘, keine Glas-Leiste); `checkGlas` mit Schalter (`ablauf-glas`) | Lesbarkeit und Flüssigkeit am Gerät | 4, 15.1, 15.6, 15.17 |
+| R-3.10 | **Hinweise mittig:** in Hinweisen – Hinweisfenster, Ergebnisfenster (z. B. ‚Ausgabe V…‘), Erinnerungen, Hinweis-Kacheln (Backup-Kachel) und leerer Zustand – stehen Text und Schaltflächen mittig, die Schaltfläche in ihrer Breite (nicht über die ganze Breite). Ausnahme: Hinweisleisten mit Symbol, Text und x in einer Zeile (z. B. ‚gesperrt‘) bleiben links. Kopfzeilen, Kapseln, Menüs, Sprechblasen und Eingabefenster regeln ihre eigenen Abschnitte | hig.mjs – `masseStile` (jede Ansicht, jedes Fenster, nach jedem Schritt) | – | 4, 7, 15.19, 15.23 |
 
 ### 4. Menüs, Abfragen, Fenster
 

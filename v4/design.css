@@ -1,4 +1,4 @@
-/* AppDesign 4.69.0 · design.css – gemeinsame Gestaltung der iPad-Web-Apps von g811141a (Apple-like)
+/* AppDesign 4.70.0 · design.css – gemeinsame Gestaltung der iPad-Web-Apps von g811141a (Apple-like)
    Einbinden im <head> vor dem eigenen <style> der App:  <link rel="stylesheet" href="../AppDesign/fassung/X.Y.Z/design.css"> (feste Fassung, R-10.3)
    Farben als Variablen auf :root, Dunkelmodus über data-theme="dark" (setzt ui.js / applyTheme).
    Komponenten: Schaltflächen, Suchfeld, Kapsel, Eingabefelder, Datumsfelder, Kopfzeile, Seitenleiste,
@@ -6,7 +6,7 @@
    Options-Kapsel; seit 4.1.0 iPhone-Ansicht (html.phone: Seitenkopf, großer Titel, Liste, Kasten, untere Leiste). Regeln dazu: README - Designrichtlinie allgemein.md */
 /* Farben im Apple-Look: Hintergrund Hellgrau, Kästen weiß ohne Rand, schwebende Schaltflächen */
 :root {
-  --ad-version: "4.69.0";   /* R-10.3: Version der Bausteine, die App prüft sie beim Start */
+  --ad-version: "4.70.0";   /* R-10.3: Version der Bausteine, die App prüft sie beim Start */
   --bg: #f2f2f7;
   --card: #ffffff;
   --ink: #1c1c1e;
@@ -387,7 +387,7 @@ body.docked { padding-left: calc(var(--side-w) + max(10px, var(--safe-left)) + 2
 #side .side-sec { margin: 18px 0 8px; padding: 0 8px; font-size: var(--tb-title3); font-weight: 700; color: inherit; font-family: inherit; line-height: 1.25;
   -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
 #side .side-list > .side-sec:first-child { margin-top: 6px; }
-.bhint { margin-top: auto; padding: 16px 12px 0; font-size: var(--tb-footnote); color: var(--muted); display: flex; flex-direction: column; gap: 10px; align-items: flex-start; }
+.bhint { margin-top: auto; padding: 16px 12px 0; font-size: var(--tb-footnote); color: var(--muted); display: flex; flex-direction: column; gap: 10px; align-items: center; text-align: center; }   /* R-3.10 (P-122/F-2): Hinweis-Kachel mittig */
 .bhint button { color: var(--ink); font-size: var(--tb-body); }
 #side .bhint { margin: 0; padding: 12px 16px; border-radius: 22px; background: var(--focus); color: var(--ink);
   box-shadow: var(--float); }
@@ -592,6 +592,11 @@ dialog form { display: flex; flex-direction: column; max-height: var(--dlg-max, 
 .ad-alert, .ad-alert .ad-alert-form { max-height: var(--msg-max, calc(100vh - 40px)); }
 .ad-alert .ad-alert-head { border: none; }
 .ad-alert .ad-alert-message { text-align: center; padding: 0 4px 10px; overflow-wrap: anywhere; }
+/* R-3.10 (P-122/F-2): Hinweise mittig – AD-Bean notice (seit 4.70.0, R-1.13): Hinweis-Kasten .ad-notice (Ergebnisfenster, Erinnerung; im Fenster und im
+   Hinweisfenster) und Schaltflächenzeile .ad-notice-buttons: Text und Schaltflächen mittig, die Schaltfläche in ihrer Breite; die App richtet nichts selbst aus.
+   Hinweisleisten (Symbol, Text, x) bleiben links. */
+.ad-notice { text-align: center; }
+.ad-notice .ad-notice-buttons { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 10px; }
 /* seit 4.57.0 (APD-116, R-10.8): Dateiname allein in einer eigenen Zeile unter dem Satz (fett, zentriert wie der Text); jedes Wort am Stück
    (.fw), deshalb Umbruch nur nach einem Leerzeichen – nur ein Wort, das länger ist als die Zeile, bricht in sich (R-6.3) */
 .fname { display: block; margin-top: 2px; text-align: center; }

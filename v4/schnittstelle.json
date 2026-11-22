@@ -18,6 +18,7 @@
   "choosePop",
   "confirmPop",
   "createAlert",
+  "createNotice",
   "createSourcehighlight",
   "createSwipeactions",
   "createSync",
