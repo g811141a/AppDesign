@@ -35,15 +35,18 @@ Zwischenstand sichern). Aufbau nach Zusammenarbeit allgemein 2.5.
 ## 3. Nächster Schritt
 
 1. Lesen, Repos dazuholen, Tests einrichten, Lagebild als eigene Antwort mit Kachel (0 Nr. 15).
-2. **Bau aus 0159 ist fertig** (beide Pages ‚success‘). Falls der Bericht in 0159 nicht mehr kam: `curl https://api.github.com/repos/g811141a/AppDesign/actions/runs?per_page=1` und dasselbe für ReiseLogBuch;
-   `main` von AppDesign enthält `AD_VERSION = '4.70.0'` und ReiseLogBuch `APP_VERSION = '3.58.3'`? – dann nur noch Bericht.
-   Sonst: Zweige `vorbereitung-4.70.0` und `vorbereitung-3.58.3` holen und `node werkzeug/veroeffentlichen.mjs los --app reiselogbuch` im Hintergrund
-   (Ja liegt vor; kurz bestätigen lassen, 0 Nr. 21).
-3. Bericht mit allen Änderungen (P-122/F-1, P-122/F-2 mit R-3.10, AD-Bean `notice`, Auffälliges) und Usertest **P-123** vollständig (0 Nr. 11; CHANGELOG 3.58.3).
+2. **Usertest P-123: nicht ok** (Nutzer 22.11.2026, Sitzung 0159; alle übrigen Punkte ok) – drei Punkte im Backlog des Reiselogbuchs unter ‚0.‘:
+   - **P-123/F-1** (zu /2, iPad): Hinweisfenster über der Vorschau (nicht gesperrt, nach Teilen bzw. PDF) schmal; direkt über Teilen → HTML/PDF bei langem
+     Dateinamen so breit wie möglich. **Vermutung:** `alert` misst die Breite (`fitFileName`, `passen()` in `showModal`), bevor `createNotice` den Dateinamen
+     einsetzt (`showOutputResult` in `index.html`: erst `inform(title, boxes)`, dann `createNotice`).
+   - **P-123/F-2** (zu /2, iPhone): direkt über Teilen → HTML/PDF steht das Ergebnis in voller Bildschirmhöhe (Fenster `dlg`), aus der Vorschau nur so hoch wie
+     nötig (Hinweisfenster `msg`) – einheitlich klären (Apple-Abgleich, Muster).
+   - **P-123/F-3** (zu /3, iPad): ‚Backup erstellen‘ (Kachel) → Teilen-Menü abbrechen → am iPad keine Meldung, am iPhone schon (gehört zu APD-148).
+   Je zuerst den Ablauf des Nutzers als feste Prüfung nachbauen (rot gegen 3.58.3, 0 Nr. 1), dann Vorschlag, Korrekturversion mit Bau-Frage (0 Nr. 8, 21).
 
 ## 4. Danach
 
-Usertest P-123 · APD-145 (AppDesign 5.0.0, `v5/`) · **APD-148** AD-Bean `backup` (Kachel, Erinnerung – nutzt `notice`) · APD-135/B-3.3 Schritt 3 · APD-147 ·
+Korrektur P-123 · APD-145 (AppDesign 5.0.0, `v5/`) · **APD-148** AD-Bean `backup` (Kachel, Erinnerung – nutzt `notice`) · APD-135/B-3.3 Schritt 3 · APD-147 ·
 APD-142 schrittweise · RLB-126 · APD-139 · APD-141 · übrige wie bisher.
 
 ## 5. Neue Vereinbarungen
@@ -56,7 +59,7 @@ APD-142 schrittweise · RLB-126 · APD-139 · APD-141 · übrige wie bisher.
 In der neuen Sitzung müssen **AppDesign**, **ReiseLogBuch** und **ReiseLogBuch-Import** verfügbar sein.
 
 ```
-Reiselogbuch 0160 – Bau AppDesign 4.70.0 / Reiselogbuch 3.58.3 prüfen bzw. abschließen
+Reiselogbuch 0160 – Korrekturen aus P-123 (F-1 bis F-3)
 
-Lies im Repo g811141a/AppDesign (Branch main, falls dort noch die alte Übergabe steht: Branch vorbereitung-4.70.0) zuerst UEBERGABE.md, dann die GANZE Zusammenarbeit allgemein (3.19.0) und die Überschriften der Designrichtlinien. Prüfe Modell und Aufwand (get_session: eingestellt, dazu rate_limit_info; Sitzungsdatei: tatsächlich, auch model_fallback; Umgebungsvariable CLAUDE_CODE_EFFORT_LEVEL), hole die Repos g811141a/ReiseLogBuch und g811141a/ReiseLogBuch-Import dazu, wie in der AppDesign-CLAUDE.md unter ‚Arbeitsumgebung‘, richte die Tests ein und prüfe, ob in ~/.claude/settings.json Hooks stehen. Lagebild als eigene Antwort (im Chat und als Markdown-Datei) mit Kachel; danach nach UEBERGABE.md Abschnitt 3: prüfen, ob AppDesign 4.70.0 / Reiselogbuch 3.58.3 veröffentlicht ist, sonst mit Stufe voll bauen, dann Bericht mit Usertest P-123. Hilfsagenten nur mit Opus 5.5 und Aufwand hoch, einzeln nacheinander, auch web-fetch; Fable 5.2 vorerst nicht verwenden.
+Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md, dann die GANZE Zusammenarbeit allgemein (3.19.0) und die Überschriften der Designrichtlinien. Prüfe Modell und Aufwand (get_session: eingestellt, dazu rate_limit_info; Sitzungsdatei: tatsächlich, auch model_fallback; Umgebungsvariable CLAUDE_CODE_EFFORT_LEVEL), hole die Repos g811141a/ReiseLogBuch und g811141a/ReiseLogBuch-Import dazu, wie in der AppDesign-CLAUDE.md unter ‚Arbeitsumgebung‘, richte die Tests ein und prüfe, ob in ~/.claude/settings.json Hooks stehen. Lagebild als eigene Antwort (im Chat und als Markdown-Datei) mit Kachel; danach nach UEBERGABE.md Abschnitt 3: die Rückmeldung P-123 nicht ok (P-123/F-1 bis F-3) bearbeiten – je zuerst als feste Prüfung nachbauen, dann Vorschlag und Bau-Frage. Hilfsagenten nur mit Opus 5.5 und Aufwand hoch, einzeln nacheinander, auch web-fetch; Fable 5.2 vorerst nicht verwenden.
 ```
