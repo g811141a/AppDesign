@@ -4,8 +4,10 @@
 // Einbinden im Prüfskript der App (Seite mit geladener App, globales `sync`):
 //   import { checkSync } from '../../AppDesign/tests/abgleich.mjs';
 //   const fehler = await checkSync(page);   // [] = alles richtig
-export async function checkSync(page) {
-  return page.evaluate(() => {
+// Seit 4.68.0 (RLB-125, 15.18 Fälle 21–23): mit sync.config.protect auch die Sperre; die Prüfung sperrt mit `locked: true`.
+// Gegenprobe: checkSync(page, { gegenprobe: 'abgleich:23' }) sperrt in Fall 23 nicht – der gelöschte Eintrag muss fehlen, die Prüfung rot werden.
+export async function checkSync(page, { gegenprobe = '' } = {}) {
+  return page.evaluate(gegenprobe => {
     const errors = [];
     if (typeof sync === 'undefined' || !sync.config) return ['R-9.2 die App nutzt den Baustein createSync nicht (globales sync fehlt)'];
     const { list, sub, maxFields } = sync.config;
@@ -81,6 +83,35 @@ export async function checkSync(page) {
     if (maxFields.length) { const k = maxFields[0];
       fall(17, `${k}: größerer Wert`, [['10:00', setF('x', k, 5)]], [['11:00', setF('x', k, 3)]],
         { iPhone: r => r.e('x')[k] === 5 ? '' : 'größerer Wert nicht übernommen', iPad: r => r.e('x')[k] === 5 ? '' : 'größerer Wert verloren' }); }
+    // Seit 4.68.0 (RLB-125): Sperre (protect) – Fälle 21–23 der Tabelle 15.18; gesperrt wird mit `locked: true`.
+    if (sync.config.protect) {
+      const lock = (id, v) => data => { if (v) E(data, id).locked = true; else delete E(data, id).locked; };
+      if (!sync.config.protect({ id: 't', locked: true }) || sync.config.protect({ id: 't' })) errors.push('R-9.3 protect erkennt die Sperre (locked: true) nicht – Fälle 21–23 nicht prüfbar');
+      else {
+        const isLocked = e => !!e && sync.config.protect(e);
+        fall(21, 'auf dem iPad gesperrt, iPhone unverändert', [['10:00', lock('y', true)]], [],
+          { iPhone: r => isLocked(r.e('y')) && r.row('updated', 'Eintrag Y') ? '' : 'wird nicht gesperrt oder Zeile im Abgleichbericht fehlt',
+            iPad: r => isLocked(r.e('y')) ? newer(r) : 'Sperre verloren' });
+        fall(22, 'auf dem iPad gesperrt, auf dem iPhone danach entsperrt', [['10:00', lock('y', true)]], [['11:00', lock('y', true)], ['11:30', lock('y', false)]],
+          { iPhone: r => r.e('y') && !isLocked(r.e('y')) ? newer(r) : 'wieder gesperrt (entsperren ist neuer)',
+            iPad: r => r.e('y') && !isLocked(r.e('y')) && r.row('updated', 'Eintrag Y') ? '' : 'wird nicht entsperrt oder Zeile im Abgleichbericht fehlt' });
+        const gp = gegenprobe === 'abgleich:23';
+        fall(23, 'auf dem iPad gesperrt, auf dem iPhone danach gelöscht', [['10:00', gp ? setF('y', 'a', 'zehn') : lock('y', true)]], [['11:00', del('y')]],
+          { iPhone: r => !isLocked(r.e('y')) ? 'gesperrter Eintrag bleibt gelöscht (soll gesperrt zurückkommen)'
+              : !r.row('added', 'Eintrag Y') || !r.has('Auf dem iPad gesperrt, auf diesem iPhone gelöscht:</b> Eintrag Y – wiederhergestellt') ? 'Zeile ‚neu angelegt‘ oder Hinweis ‚… wiederhergestellt‘ fehlt'
+              : r.data.deleted.some(x => x.id === 'y') ? 'Eintrag steht weiter unter deleted' : '',
+            iPad: r => !isLocked(r.e('y')) ? 'gesperrter Eintrag wird gelöscht'
+              : !r.has('Auf dem iPhone gelöscht, auf diesem iPad gesperrt:</b> Eintrag Y – bleibt erhalten') ? 'Hinweis ‚… bleibt erhalten‘ fehlt'
+              : r.data.deleted.some(x => x.id === 'y') ? 'Eintrag steht weiter unter deleted' : '' });
+        // J-3: ‚Ersetzen‘ nennt die gesperrten Einträge dieses Geräts
+        const two = clone(start); two[list].forEach(e => { e.locked = true; });
+        const n = sync.config.nouns, d1 = sync.choices(undefined, two).find(c => c.value === 'replace').desc, d0 = sync.choices(undefined, start).find(c => c.value === 'replace').desc;
+        if (!d1.includes(`Darunter 2 gesperrte ${n[1]}.`) || /gesperrt/.test(d0)) errors.push(`R-9.2 ‚Ersetzen‘ nennt die gesperrten ${n[1]} nicht bzw. ohne Sperre trotzdem: ‚${d1}‘`);
+        const one = clone(start); one[list][0].locked = true;
+        const d2 = sync.choices(undefined, one).find(c => c.value === 'replace').desc;
+        if (!d2.endsWith(`ersetzt. Darunter 1 gesperrt${n[3] || 'er'} ${n[0]}.`)) errors.push(`R-9.2 ‚Ersetzen‘ mit einem gesperrten Eintrag: ‚${d2}‘`);
+      }
+    }
     // R-9.4 (seit 4.11.0): kurzes Fenster mit Schaltfläche ‚Abgleichbericht anzeigen‘ (nur, wenn es etwas zu berichten gibt),
     // Bericht wie die Ausgabe: Kopf (abgeglichen am, Backup mit Gerät, Ergebnis), Tabelle der Änderungen (Eintrag · Tag · Feld ·
     // Neu · Vorher · Vom Gerät · Geändert am) ohne Unverändertes, dessen Anzahl darunter, Tabelle ‚hier neuer‘.
@@ -113,5 +144,5 @@ export async function checkSync(page) {
     if (sync.choices().map(c => `${c.label}:${c.cls || ''}:${c.desc ? 'Kachel' : ''}`).join('|') !== 'Abgleichen:primary:Kachel|Ersetzen:danger-text:Kachel|Abbrechen::') errors.push('R-9.2/R-9.2 Wege nicht Abgleichen (blau, Kachel) · Ersetzen (rot, Kachel) · Abbrechen');
     if (!sync.changedLine(start[list][0]).includes('geändert am 12.10.2026 um 09:00 · iPad')) errors.push('R-9.4 Zeile ‚geändert am … · Gerät‘ fehlt');
     return errors;
-  });
+  }, gegenprobe);
 }

@@ -1,6 +1,6 @@
 # Designrichtlinie allgemein
 
-**Version 4.67.2** · Stand 21.11.2026
+**Version 4.68.0** · Stand 21.11.2026
 
 Allgemeine Gestaltungs- und Bedienregeln für alle Web-Apps von g811141a auf iPad und iPhone. Die Datei liegt im Design-Repo
 **AppDesign** (g811141a/AppDesign); ihre Versionsnummer ist die des Repos. Die Komponenten sind dort einmal programmiert und
@@ -776,8 +776,10 @@ und Meldungen · Eingabe · Inhalt · Dienste (ohne eigene Oberfläche).
   solange <App> auf dem Home-Bildschirm nicht entfernt wird.“ bzw. (nicht dauerhaft) „Safari kann die Daten bei Speichermangel
   löschen – bitte regelmäßig ein Backup erstellen.“ Backup laden = Abgleich zwischen den Geräten (15.18, 15.19).
 - **Kontextmenü** (R-4.2): langes Drücken (ca. 0,6 s, R-3.5) auf einen Eintrag öffnet ein Menü (15.6) rechts neben der Kachel, ohne
-  Platz daneben (iPhone) linksbündig darunter, reicht der Platz darunter nicht, darüber (wie Apple); die Liste bleibt stehen – nur wenn
-  das Menü auf keiner Seite ganz passt, rückt sie und bekommt bei wenigen Einträgen unten Platz; die Lage über der Backup-Kachel
+  Platz daneben (iPhone) linksbündig darunter, reicht der Platz darunter nicht, darüber (wie Apple); passt es auch darüber nicht und ist
+  die Kachel mindestens doppelt so breit wie das Menü (iPhone quer), steht es rechtsbündig auf der Kachel, oben bündig mit ihr (wie neben
+  der Kachel am iPad); die Liste bleibt stehen – nur wenn das Menü auf keine dieser Arten ganz passt, rückt sie und bekommt bei wenigen
+  Einträgen unten Platz; die Lage über der Backup-Kachel
   bzw. der Offline-Zeile liefert `sideFootRect()`. Inhalt: Einstellungen (settings) · … löschen (rot, Sprechblase) – **ohne ‚Öffnen‘**,
   weil Tippen öffnet (wie Notizen); der Eintrag ist dabei blau getönt (R-3.3). Dieselben Aktionen zeigt das Wischen nach links
   (Wischaktionen). Kein Hinweistext.
@@ -1011,8 +1013,9 @@ und Meldungen · Eingabe · Inhalt · Dienste (ohne eigene Oberfläche).
 ### 15.18 Abgleich zwischen iPad und iPhone
 - **Apple:** iCloud gleicht ohne Rückfrage ab; ohne Entwicklerkonto geht es bei uns über ein Backup in iCloud Drive – mit
   derselben Grundregel wie Apple: **die neuere Änderung gilt**, je Feld. Regeln R-9.2 bis R-9.4.
-- **Technisch:** gemeinsamer Baustein `createSync({ list, sub, subAt, maxFields, nouns, labels, values, app })` in `ui.js` – jede
-  App mit Backup nutzt ihn (keine eigene Umsetzung, R-1.1). Beim Speichern stempelt `sync.stamp()` jedes geänderte Feld mit
+- **Technisch:** gemeinsamer Baustein `createSync({ list, sub, subAt, maxFields, nouns, labels, values, protect, app })` in `ui.js` – jede
+  App mit Backup nutzt ihn (keine eigene Umsetzung, R-1.1). **`protect`** sagt, welche Einträge gesperrt sind (z. B. `e => e.locked`): Ein gesperrter
+  Eintrag wird beim Abgleich nie gelöscht, auch nicht, wenn das andere Gerät ihn gelöscht hat, ohne die Sperre zu kennen (Fall 23). Beim Speichern stempelt `sync.stamp()` jedes geänderte Feld mit
   Zeitpunkt und Gerät (Kopfdaten `metaAt`, Unterdaten wie Tage `subAt`), gelöschte Einträge kommen nach `data.deleted`; das
   Backup enthält `savedAt` und `savedOn`.
 - **Weg:** auf dem einen Gerät ‚Backup erstellen‘ → ‚In Dateien sichern‘ → iCloud Drive; auf dem anderen ‚Backup laden‘ → Datei
@@ -1063,6 +1066,9 @@ und Meldungen · Eingabe · Inhalt · Dienste (ohne eigene Oberfläche).
 | 18 | Einstellungen (Darstellung, Smiley-Leiste, ‚Letztes Backup‘) | bleiben die des iPhones | bleiben die des iPads |
 | 19 | ‚Ersetzen‘ statt ‚Abgleichen‘ | alle Daten des iPhones werden durch das Backup ersetzt (hier Gelöschtes kommt zurück, hier Geändertes geht verloren); ‚Letztes Backup‘ bleibt | wie links |
 | 20 | ‚Abbrechen‘ | nichts ändert sich | wie links |
+| 21 | Auf dem iPad gesperrt, iPhone unverändert | wird gesperrt – Zeile ‚Gesperrt: ja‘ im Abgleichbericht | bleibt gesperrt – ‚nichts geändert‘, im Abgleichbericht unter ‚Auf diesem iPad neuer als im Backup – bleibt so‘ |
+| 22 | Auf dem iPad gesperrt, auf dem iPhone **danach** entsperrt | bleibt entsperrt – ‚nichts geändert‘, im Abgleichbericht unter ‚Auf diesem iPhone neuer als im Backup – bleibt so‘ | wird entsperrt – Zeile ‚Gesperrt: –‘ im Abgleichbericht |
+| 23 | Auf dem iPad gesperrt, auf dem iPhone **danach** gelöscht (das iPhone kannte die Sperre noch nicht) | kommt gesperrt zurück – Zeile ‚neu angelegt‘ im Abgleichbericht und Hinweis ‚Auf dem iPad gesperrt, auf diesem iPhone gelöscht: … – wiederhergestellt‘; danach sind beide Geräte gleich | bleibt erhalten und gesperrt – Hinweis ‚Auf dem iPhone gelöscht, auf diesem iPad gesperrt: … – bleibt erhalten‘ |
 
 ### 15.19 Backup erstellen und Backup laden
 - **Apple:** [HIG – Activity views](https://developer.apple.com/design/human-interface-guidelines/activity-views) (Teilen-Menü) ·
@@ -1302,7 +1308,7 @@ Testfall (User) in den Usertest, wenn eine Version es betrifft.
 | Nr. | Regel | Prüfung | Gerät | Bau |
 |---|---|---|---|---|
 | R-4.1 | **Menüs:** Icon vor dem Text, keine Linien zwischen einzelnen Punkten, Gruppen durch eingerückten Strich, ‚… löschen‘ rot am Ende, graue Zusatzinfos unten nach dem Strich, Untermenü eine Ebene; die Mehr-Schaltfläche zeigt bei offenem Menü drei senkrechte Punkte | hig.mjs; ablauf.mjs – `checkMehrKnopf` | – | 15.6 |
-| R-4.2 | **Kontextmenü** einer Kachel: daneben bzw. (iPhone) darunter, reicht der Platz darunter nicht, darüber – immer vollständig und ganz über der Backup-Kachel (ohne Kachel über der Offline-Zeile bzw. dem Rand); die Liste bleibt dabei stehen, auch beim Schließen; nur wenn das Menü weder darunter noch darüber ganz passt (z. B. große Schrift), rückt sie dafür; ohne ‚Öffnen‘ | kontextmenue.mjs – `checkContextMenus` (Lage, Liste bleibt stehen) · pruefseite.mjs – Teil `menue` (zweite Kachel, Schließen ohne Sprung) | – | 15.4 |
+| R-4.2 | **Kontextmenü** einer Kachel: daneben bzw. (iPhone) darunter, reicht der Platz darunter nicht, darüber, passt es auch darüber nicht und ist die Kachel mindestens doppelt so breit wie das Menü (iPhone quer), rechtsbündig auf der Kachel, oben bündig mit ihr – immer vollständig und ganz über der Backup-Kachel (ohne Kachel über der Offline-Zeile bzw. dem Rand); die Liste bleibt dabei stehen, auch beim Schließen; nur wenn das Menü auf keine dieser Arten ganz passt (z. B. große Schrift), rückt sie dafür; ohne ‚Öffnen‘ | kontextmenue.mjs – `checkContextMenus` (Lage, Liste bleibt stehen) · pruefseite.mjs – Teil `menue` (zweite Kachel, Schließen ohne Sprung) | – | 15.4 |
 | R-4.3 | **Abfragen und Meldungen:** keine Systemfenster; Abfrage als Sprechblase an der Schaltfläche, rote Schaltfläche mit dem Verb, ‚Abbrechen‘ zuletzt; mehrere Wege: empfohlener blau zuerst, zerstörender rot; Meldung im kleinen Fenster mit höchstens einer Schaltfläche zu den Einzelheiten | hig.mjs | – | 6, 10, 15.7 |
 | R-4.4 | **Fenster-Kopfzeile:** x links, Häkchen rechts – grau, nach einer Änderung blau; x mit Änderungen fragt ‚Änderungen verwerfen‘ / ‚Weiter bearbeiten‘ | ablauf.mjs – `checkDialogHead` | – | 6, 15.8 |
 | R-4.5 | **Passt immer auf den Bildschirm:** Menü, Sprechblase und Fenster ganz sichtbar (auch iPhone quer), zu hoher Inhalt rollt darin; Fenster auf dem iPhone als Blatt bis zum unteren Rand bzw. zur Tastatur (R-4.6). Ein Feld mit Fokus steht immer über der Tastatur, **wie bei Apple nur so weit gerollt wie nötig**: es endet 16 px über ihr (im Inhalt 28 px); ein mehrzeiliges Feld, das nicht ganz passt, zeigt die Zeile mit dem Cursor und eine halbe Zeile darunter, auch beim Tippen; liegt es schon darüber, rollt nichts; beim Wechsel bei offener Tastatur höchstens bis zur Mitte des sichtbaren Teils. Das alles **ohne Springen**: Safari verschiebt nichts; Kopfzeile, Suchzeile, Seitenleiste und Fensterkopf stehen in jedem Bild still, das Feld springt nicht, das iPad-Fenster gleitet mit der Tastatur | hig.mjs, ablauf.mjs – `checkFieldVisible` (Safari-Modell: Feld unter der Tastatur antippen), `checkTastaturStill` (jedes Bild), `checkSheet` B10 (Abstand über dem Feld ≥ `RING`), Reiselogbuch `ablauf-feld-rollen` (APD-115/M-1 bis M-11) | – | 7, 13, 15.7 |
@@ -1314,6 +1320,7 @@ Testfall (User) in den Usertest, wenn eine Version es betrifft.
 | R-4.11 | **Menüpunkt und Fenster heißen gleich:** öffnet ein Menüpunkt ein Fenster, ist der Fenstertitel der Text des Menüpunkts; Systembeschriftungen bleiben | ablauf.mjs – `checkMenueFenster` (jeden Menüpunkt mit Fenster antippen) | – | 6 |
 | R-4.12 | **Erst fragen, dann zerstören:** jede Lösch-, Ersetz- oder Rücksetz-Aktion (roter Menüpunkt, Schaltfläche mit ‚Löschen‘, ‚Entfernen‘, ‚Ersetzen‘, ‚Zurücksetzen‘) zeigt zuerst die Sprechblase (R-4.3); bis zur Bestätigung ändert sich nichts, ‚Abbrechen‘ lässt alles, wie es war | ablauf.mjs – `checkErstFragen` (jede solche Aktion in jeder Ansicht antippen, Speicher vorher und nachher vergleichen; Menüpunkte an `red`, Schaltflächen an ihrem Text bzw. `aria-label`) | – | 10, 16 |
 | R-4.13 | **Menüs und Sprechblasen wachsen aus der Schaltfläche:** Menü, Untermenü, Kontextmenü (aus der Kachel) und Sprechblase (R-4.3) wachsen beim Öffnen in 0,35 s aus ihrer Schaltfläche (von 20 % auf volle Größe, Kurve `cubic-bezier(.32,.72,0,1)`) und schrumpfen beim Schließen in 0,25 s dorthin zurück; Schließen während des Öffnens beginnt an der aktuellen Stelle; ‚Bewegung reduzieren‘: nur Überblenden in 0,2 s; die Endlage ist dieselbe wie ohne Bewegung; Fenster und Blatt gleiten nach R-1.12 | ablauf.mjs – `checkWachsen` (Herkunft, Dauer, Endlage, Schließen mitten im Öffnen, ‚Bewegung reduzieren‘) | Gefühl am Gerät | 15.6, 15.7 |
+| R-4.14 | **Nicht verfügbare Menüpunkte:** In einem Menü (z. B. Mehr, Ausgabe) bleibt ein Menüpunkt, der gerade nicht ausführbar ist, an seiner Stelle sichtbar: blass, nicht antippbar (`disabled`), mit dem Grund als grauer Unterzeile (z. B. ‚Gesperrt‘). Er wird nicht weggelassen. Kontextmenüs (R-4.10) und Wischaktionen zeigen nur ausführbare Aktionen. | pruefseite.mjs – Teil `menue` (neuer Fall: blasser Eintrag mit `disabled` und Unterzeile, Antippen und Eingabetaste lösen nichts aus; Gegenprobe ohne `disabled` → rot) | – | 15.6 |
 
 ### 5. Eingaben
 
@@ -1369,7 +1376,7 @@ Testfall (User) in den Usertest, wenn eine Version es betrifft.
 |---|---|---|---|---|
 | R-9.1 | **Backup erstellen:** Backup-Kachel nur, solange heute auf diesem Gerät keines erstellt wurde und es Einträge gibt (kommt um 0:00 wieder), Mehr-Menü mit ‚Letztes Backup …‘; Teilen-Menü; Dateiname; Fenster ✅/⚠️; zählt nur abgeschlossen, je Gerät | backup.mjs | iCloud, Teilen | 15.19 |
 | R-9.2 | **Backup laden:** Abfrage mit Zeitpunkt, Gerät und ‚neuer/älter‘; Kacheln Abgleichen (blau) und Ersetzen (rot) mit Erklärung; unlesbare Datei ⚠️; Abbrechen ändert nichts | backup.mjs | – | 15.19 |
-| R-9.3 | **Abgleichen:** je Feld gilt das Neuere; leere Felder überschreiben nichts; Gelöschtes bleibt gelöscht, solange danach nicht geändert (Hinweis nennt die Geräte); Zähler: größerer Wert; Einstellungen je Gerät | abgleich.mjs (Fälle 1–20) | – | 15.18 |
+| R-9.3 | **Abgleichen:** je Feld gilt das Neuere; leere Felder überschreiben nichts; Gelöschtes bleibt gelöscht, solange danach nicht geändert (Hinweis nennt die Geräte); ein gesperrter Eintrag (`protect`) wird nie gelöscht und kommt auf dem Gerät, das ihn gelöscht hat, gesperrt zurück; Zähler: größerer Wert; Einstellungen je Gerät | abgleich.mjs (Fälle 1–23, Gegenprobe Fall 23) | – | 15.18 |
 | R-9.4 | **Ergebnis:** kleines Fenster ohne Einzelheiten, Schaltfläche ‚Abgleichbericht anzeigen‘ nur bei Inhalt; Bericht als Vorschau wie die Ausgabe | abgleich.mjs | – | 15.18 |
 
 ### 10. Texte und Versionen

@@ -126,7 +126,8 @@ export function kopfVerlauf() {
     });
     const letzte = kvs.at(-1).querySelector(':scope > .k'); if (letzte && bb.bottom - letzte.getBoundingClientRect().bottom < 4) R(`Kasten ‚${name}‘: Verlauf reicht bis zum unteren Rand des Kastens`);
   });
-  document.querySelectorAll('#app table').forEach(t => { const th = t.querySelector('thead th'); if (!th || !vis(th) || dahinter(t)) return;
+  // seit 4.68.0 (RLB-125): Tabellen der Ausgabe (.rt, z. B. die Vorschau-Seite eines gesperrten Reiselogbuchs im Inhalt) haben ihren eigenen Kopf (R-6.2)
+  document.querySelectorAll('#app table').forEach(t => { const th = t.querySelector('thead th'); if (!th || !vis(th) || dahinter(t) || t.closest('.rt, #printout')) return;
     pruefeVerlauf(th, 'to bottom', flaeche(t), `Kopfzeile der Tabelle ‚${th.textContent.trim().slice(0, 12)}‘ (RLB-120/B-6)`); });
   return out;
 }
@@ -708,7 +709,8 @@ const found = new Map(), icons = new Map();
       const en = ui.match(/\b(OK|Close|Cancel|Done|Delete|Share)\b/);
       if (en) R('R-10.1', `englischer Text ‚${en[1]}‘`);
       // R-6.1 Tabellen: Trennlinien zwischen allen Spalten (App-Tabellen)
-      document.querySelectorAll('#app table td + td').forEach(td => { if (vis(td) && parseFloat(cs(td).borderLeftWidth) === 0) R('R-6.1', 'Tabelle ohne Trennlinie zwischen Spalten'); });
+      // (seit 4.68.0 ohne Tabellen der Ausgabe – .rt, z. B. die Vorschau-Seite eines gesperrten Reiselogbuchs; für sie gilt R-6.2 unten)
+      document.querySelectorAll('#app table td + td').forEach(td => { if (vis(td) && !td.closest('.rt') && parseFloat(cs(td).borderLeftWidth) === 0) R('R-6.1', 'Tabelle ohne Trennlinie zwischen Spalten'); });
       // R-5.1 Datumsfelder so breit wie das Datum
       document.querySelectorAll('input[type=date]').forEach(e => { if (vis(e) && e.getBoundingClientRect().width > 220 * (parseFloat(cs(document.documentElement).getPropertyValue('--f-body')) || 1)) R('R-5.1', `Datumsfeld zu breit (${Math.round(e.getBoundingClientRect().width)} px)`); });
       // R-5.1 Betragsfelder rechtsbündig
@@ -821,7 +823,7 @@ const found = new Map(), icons = new Map();
       // R-6.1 (seit 4.12.0): Zebra je Tabellenzeile auch in den Tabellen der App – eine Tabellenzeile sind alle Zeilen unter einer
       // zusammengefassten bzw. leeren ersten Zelle; sie ist einheitlich gefärbt, weiß und grau wechseln sich ab. Gelb markierte
       // Zeilen (--focus) zählen nicht.
-      document.querySelectorAll('#app table').forEach(t => { if (!vis(t)) return;
+      document.querySelectorAll('#app table').forEach(t => { if (!vis(t) || t.closest('.rt')) return;   // Ausgabe (.rt): R-6.2
         const bgc = c => { const own = cs(c).backgroundColor; return own !== 'rgba(0, 0, 0, 0)' ? own : cs(c.parentElement).backgroundColor; };
         const units = []; let cover = 0;
         for (const r of t.querySelectorAll('tbody tr')) { if (!r.getClientRects().length) continue;

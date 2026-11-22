@@ -1,4 +1,4 @@
-// AppDesign 4.67.2 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
+// AppDesign 4.68.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
 // Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/fassung/X.Y.Z/ui.js"></script> (feste Fassung, R-10.3)
 // Klassisches Skript: alle Funktionen sind global und für das Skript der App sichtbar.
 //
@@ -19,7 +19,7 @@
 
 'use strict';
 // Version der Bausteine (R-10.3): die App vergleicht sie beim Start mit der benötigten Fassung.
-const AD_VERSION = '4.67.2';
+const AD_VERSION = '4.68.0';
 // ‚Bewegung reduzieren‘ (R-1.9) – die eine Abfrage für alle Bausteine (seit 4.64.0, APD-135/B-4.2; vorher fünfmal eigens gebaut)
 const bewegungRuhig = () => !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
 // APD-129 Teil 2 (seit 4.59.2, Messung 14.11.2026 arbeit/APD-129/messung-2026-11-14-2137.txt, Zeilen 9–17, 207–216, 263–272; Designrichtlinie 13
@@ -43,6 +43,9 @@ addEventListener('resize', () => { if (randOben()) placeDialogs(); drehRestWeg()
 
 // Schaltflächen-Icons aus Lucide (ISC-Lizenz), direkt eingebettet, damit die App offline funktioniert.
 const ICONS = {
+  // lock, lock-open (seit 4.68.0, RLB-125): Reiselogbuch sperren und entsperren (lucide-static 1.76.0)
+  'lock': '<rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
+  'lock-open': '<rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/>',
   'eye': '<path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/>',
   'info': '<circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/>',
   // hand (seit 4.65.0, APD-140): Symbol der Bean swipeactions im Bean-Katalog (lucide-static 1.76.0)
@@ -738,10 +741,19 @@ function placeAt(el, anchor, align) {
     const list = anchor.closest('.side-list'), tr = sideFootRect(anchor.closest('#side'));
     const limit = tr && tr.height ? Math.min(innerHeight - B, tr.top - 12) : innerHeight - B;
     const left = Math.max(L, Math.min(r.left, innerWidth - el.offsetWidth - R));
-    if (r.bottom + 8 + el.offsetHeight <= limit || r.top - 8 - el.offsetHeight >= T) {
+    // seit 4.68.0: nur an einer sichtbaren Kachel – beim erneuten Platzieren (Drehen, Größe) kann sie schon nach oben hinausgerückt sein (große Schrift)
+    const sichtbar = !list || r.bottom > list.getBoundingClientRect().top;
+    if (sichtbar && (r.bottom + 8 + el.offsetHeight <= limit || r.top - 8 - el.offsetHeight >= T)) {
       top = r.bottom + 8 + el.offsetHeight <= limit ? r.bottom + 8 : r.top - 8 - el.offsetHeight;
       el.style.left = left + 'px';
       el.style.top = top + 'px';
+      return;
+    }
+    // Seit 4.68.0 (RLB-125, iPhone quer): passt es weder darunter noch darüber, ist die Kachel aber mindestens doppelt so breit wie das Menü, steht
+    // es rechtsbündig auf der Kachel, oben bündig mit ihr bzw. ganz über der Backup-Kachel – die Liste bleibt stehen (wie neben der Kachel am iPad).
+    if (r.width >= 2 * el.offsetWidth && el.offsetHeight <= limit - T) {
+      el.style.left = Math.max(L, Math.min(r.right - el.offsetWidth, innerWidth - el.offsetWidth - R)) + 'px';
+      el.style.top = Math.max(T, Math.min(r.top, limit - el.offsetHeight)) + 'px';
       return;
     }
     const need = r.bottom + 8 + el.offsetHeight - limit;
@@ -760,9 +772,11 @@ function placeAt(el, anchor, align) {
     // Seit 4.11.0: rückt die Liste trotzdem nicht weit genug (z. B. iOS hält die Liste fest, solange der Finger
     // noch liegt), steht das Menü linksbündig über der Kachel statt hinter der Backup-Kachel (wie Apple).
     if (top + el.offsetHeight > limit + 2 && r.top - 8 - el.offsetHeight >= T) top = r.top - 8 - el.offsetHeight;
-    else fit(limit - top);
+    // seit 4.68.0: nie über den oberen Rand und nie über die Backup-Kachel – ist das Menü höher als der Platz (große Schrift), rollt sein Inhalt (R-4.5)
+    top = Math.max(T, top);
+    fit(limit - top);
     el.style.left = Math.max(L, Math.min(r.left, innerWidth - el.offsetWidth - R)) + 'px';
-    el.style.top = Math.max(T, top) + 'px';
+    el.style.top = top + 'px';
     return;
   }
   if (align === 'beside') {
@@ -1619,7 +1633,10 @@ function whenText(ms) {
 // ISO-Datum als Schlüssel erscheinen als ‚Mo 12.10.2026‘, sonst über subLabel(key).
 // Seit 4.12.1: values – je Feld, wie ein Wert im Abgleichbericht angezeigt wird ({ transport: v => … }), damit dort dasselbe
 // steht wie in der App (R-10.1) und nicht der gespeicherte Wert (z. B. Kürzel).
-function createSync({ list, sub, subAt = `${sub}At`, maxFields = [], nouns = ['Eintrag', 'Einträge', 'Einträgen'], labels = {}, values = {}, subLabel = null, app = document.title }) {
+// Seit 4.68.0 (RLB-125): protect – sagt, welche Einträge gesperrt sind (z. B. e => e.locked). Ein gesperrter Eintrag wird beim Abgleich
+// nie gelöscht, auch nicht, wenn das andere Gerät ihn gelöscht hat, ohne die Sperre zu kennen (15.18 Fall 23, R-9.3): auf dem Gerät, das
+// gelöscht hat, kommt er gesperrt zurück (restored), auf dem Gerät mit der Sperre bleibt er (keptProtected); sein Eintrag in deleted entfällt.
+function createSync({ list, sub, subAt = `${sub}At`, maxFields = [], nouns = ['Eintrag', 'Einträge', 'Einträgen'], labels = {}, values = {}, subLabel = null, protect = null, app = document.title }) {
   const STAMPS = [sub, subAt, 'metaAt', 'changedAt', 'changedOn', ...maxFields];
   const metaKeys = e => Object.keys(e).filter(k => !STAMPS.includes(k));
   const metaObj = e => Object.fromEntries(metaKeys(e).map(k => [k, e[k]]));
@@ -1675,10 +1692,12 @@ function createSync({ list, sub, subAt = `${sub}At`, maxFields = [], nouns = ['E
   }
   // Abgleichen: Ergebnis { data, stats } – stats: updated [{ title, subs, rows }] (rows: [{ key (null = Kopfdaten), fields:
   // [{ k, v, at, cleared }], at, on }]), added [{ title, subs, at, on }], removed [{ title, at, on }], keptDeleted [{ title, at,
-  // on }], keptChanged [{ title, on }], newer [{ title, rows, only, at, on }] (hier neuer als im Backup), same (Anzahl unverändert).
+  // on }], keptChanged [{ title, on }], newer [{ title, rows, only, at, on }] (hier neuer als im Backup), same (Anzahl unverändert),
+  // restored [{ title, on }] (hier gelöscht, drüben gesperrt – kommt zurück), keptProtected [{ title, on }] (drüben gelöscht, hier gesperrt).
   // on = Gerät der Änderung, soweit bekannt (sonst null: das Gerät des Backups bzw. dieses Gerät).
   function merge(local, remote) {
-    const stats = { updated: [], added: [], removed: [], keptDeleted: [], keptChanged: [], newer: [], same: 0 };
+    const stats = { updated: [], added: [], removed: [], keptDeleted: [], keptChanged: [], newer: [], same: 0, restored: [], keptProtected: [] };
+    const locked = e => !!(protect && protect(e));
     // Zeile der Tabelle: Felder, jüngster Zeitpunkt; Gerät, wenn es die letzte Änderung des Eintrags war.
     const row = (key, fields, e) => { const at = Math.max(0, ...fields.map(f => f.at || 0)); return { key, fields, at, on: at && at === e.changedAt ? e.changedOn : null }; };
     const del = new Map();
@@ -1708,15 +1727,18 @@ function createSync({ list, sub, subAt = `${sub}At`, maxFields = [], nouns = ['E
         if (rows.length) stats.updated.push({ title: e.title, subs, rows }); else stats.same++;
         if (newerRows.length) stats.newer.push({ title: e.title, rows: newerRows });
       } else if (l) {
-        if (gone && gone.at > (l.changedAt || 0)) stats.removed.push({ title: l.title, at: gone.at, on: gone.on });
+        if (gone && gone.at > (l.changedAt || 0) && locked(l)) {   // Fall 23: drüben gelöscht, hier gesperrt – bleibt
+          out.push(l); stats.same++; stats.keptProtected.push({ title: l.title, on: gone.on }); del.delete(id);
+        } else if (gone && gone.at > (l.changedAt || 0)) stats.removed.push({ title: l.title, at: gone.at, on: gone.on });
         else {
           out.push(l); stats.same++;
           if (gone) stats.keptChanged.push({ title: l.title, on: gone.on });
           else stats.newer.push({ title: l.title, rows: [], only: true, subs: Object.keys(l[sub] || {}).length, at: l.changedAt, on: l.changedOn });   // nur hier
         }
-      } else if (gone && gone.at >= (r.changedAt || 0)) {
+      } else if (gone && gone.at >= (r.changedAt || 0) && !locked(r)) {
         stats.keptDeleted.push({ title: r.title, at: gone.at, on: gone.on });
       } else {
+        if (gone && gone.at >= (r.changedAt || 0)) { stats.restored.push({ title: r.title, on: r.changedOn }); del.delete(id); }   // Fall 23: hier gelöscht, drüben gesperrt – kommt zurück
         out.push(structuredClone(r)); stats.added.push({ title: r.title, subs: Object.keys(r[sub] || {}).length, at: r.changedAt, on: r.changedOn });
       }
     }
@@ -1729,11 +1751,17 @@ function createSync({ list, sub, subAt = `${sub}At`, maxFields = [], nouns = ['E
     return `Backup vom <b>${whenText(savedAt)}</b>${savedOn ? ` (${esc(savedOn)})` : ''} mit ${n} ${n === 1 ? nouns[0] : nouns[2]}.${cmp}`;
   }
   // R-9.2: je Weg eine Kachel mit Erklärung und Schaltfläche; Abbrechen darunter.
-  const choices = (unit = 'Tag') => [
+  // Seit 4.68.0 (RLB-125/J-3): mit protect nennt ‚Ersetzen‘ die gesperrten Einträge auf diesem Gerät – ‚Darunter 2 gesperrte Reiselogbücher.‘;
+  // die Endung im Singular steht in nouns[3] (‚es‘ für ‚1 gesperrtes Reiselogbuch‘, Standard ‚er‘ für ‚1 gesperrter Eintrag‘).
+  const lockedText = local => {
+    const n = protect && local ? local[list].filter(e => protect(e)).length : 0;
+    return !n ? '' : n === 1 ? ` Darunter 1 gesperrt${nouns[3] || 'er'} ${nouns[0]}.` : ` Darunter ${n} gesperrte ${nouns[1]}.`;
+  };
+  const choices = (unit = 'Tag', local = null) => [
     { label: 'Abgleichen', cls: 'primary', value: 'merge', desc: `Je ${nouns[0]} und ${unit} gilt die neuere Fassung; gelöschte ${nouns[1]} werden auch hier gelöscht.` },
-    { label: 'Ersetzen', cls: 'danger-text', value: 'replace', desc: `Alle Daten auf diesem ${deviceName()} werden durch das Backup ersetzt.` },
+    { label: 'Ersetzen', cls: 'danger-text', value: 'replace', desc: `Alle Daten auf diesem ${deviceName()} werden durch das Backup ersetzt.${lockedText(local)}` },
     { label: 'Abbrechen', value: null }];
-  const ask = (anchor, local, remote, savedAt, savedOn) => choosePop(anchor, question(local, remote, savedAt, savedOn), choices());
+  const ask = (anchor, local, remote, savedAt, savedOn) => choosePop(anchor, question(local, remote, savedAt, savedOn), choices(undefined, local));
   // R-9.4 (seit 4.11.0): Ergebnis in zwei Stufen. Das kleine Fenster ‚Abgleichen‘ nennt nur Backup (Gerät, Zeitpunkt) und
   // das Ergebnis in einem Satz; gibt es etwas zu berichten, öffnet die Schaltfläche ‚Abgleichbericht anzeigen‘ den Bericht –
   // eine Vorschau wie die Ausgabe der App (weiß, Tabellen mit grauem Kopf, teilbar als HTML). Ohne jede Änderung bleibt es bei
@@ -1744,7 +1772,7 @@ function createSync({ list, sub, subAt = `${sub}At`, maxFields = [], nouns = ['E
     ? (([y, m, d]) => `${WD[new Date(y, m - 1, d).getDay()]}, ${d}.${m}.${y}`)(key.split('-')) : key;
   const valueText = (v, k) => !filled(v) ? '–' : values[k] ? String(values[k](v)) : typeof v === 'boolean' ? (v ? 'ja' : 'nein') : Array.isArray(v) ? v.join(', ') : String(v);
   const anything = st => st.updated.length + st.added.length + st.removed.length > 0;
-  const worthReport = st => anything(st) || (st.newer || []).length + st.keptDeleted.length + st.keptChanged.length > 0;
+  const worthReport = st => anything(st) || (st.newer || []).length + st.keptDeleted.length + st.keptChanged.length + (st.keptProtected || []).length > 0;
   function resultText(stats, savedAt, savedOn, here = deviceName()) {
     const head = `✅ Abgeglichen mit dem Backup ${savedOn ? `vom <b>${esc(savedOn)}</b> ` : ''}(${whenText(savedAt)}).`;
     if (anything(stats)) return `${head}<br><br>Auf diesem ${esc(here)} hat sich etwas geändert – Einzelheiten im Abgleichbericht.`;
@@ -1804,6 +1832,17 @@ function createSync({ list, sub, subAt = `${sub}At`, maxFields = [], nouns = ['E
       const l = keptChanged.filter(k => k.on === on), other = !(on || savedOn) ? 'dem anderen Gerät' : (on || savedOn) === here ? `dem anderen ${esc(on || savedOn)}` : `dem ${esc(on || savedOn)}`;
       notes.push(`<b>Auf ${other} gelöscht, auf diesem ${esc(here)} danach noch geändert:</b> ${l.map(k => esc(k.title)).join(', ')} – ${l.length === 1 ? 'bleibt' : 'bleiben'} erhalten.`);
     }
+    // 15.18 Fall 23 (protect): gesperrt geht vor gelöscht.
+    const otherDevice = on => !(on || savedOn) ? 'dem anderen Gerät' : (on || savedOn) === here ? `dem anderen ${esc(on || savedOn)}` : `dem ${esc(on || savedOn)}`;
+    const restored = stats.restored || [], keptProtected = stats.keptProtected || [];
+    for (const on of [...new Set(restored.map(k => k.on))]) {
+      const l = restored.filter(k => k.on === on);
+      notes.push(`<b>Auf ${otherDevice(on)} gesperrt, auf diesem ${esc(here)} gelöscht:</b> ${l.map(k => esc(k.title)).join(', ')} – wiederhergestellt.`);
+    }
+    for (const on of [...new Set(keptProtected.map(k => k.on))]) {
+      const l = keptProtected.filter(k => k.on === on);
+      notes.push(`<b>Auf ${otherDevice(on)} gelöscht, auf diesem ${esc(here)} gesperrt:</b> ${l.map(k => esc(k.title)).join(', ')} – ${l.length === 1 ? 'bleibt' : 'bleiben'} erhalten.`);
+    }
     return `<div class="sync-report" lang="de"><style>${REPORT_CSS}</style>
       <h1>Abgleichbericht</h1>
       <table class="meta"><tr><td><b>Abgeglichen am:</b></td><td>${whenText(now)} auf diesem ${esc(here)}</td></tr>
@@ -1848,7 +1887,7 @@ function createSync({ list, sub, subAt = `${sub}At`, maxFields = [], nouns = ['E
   // R-9.4: kleines Fenster nach dem Abgleichen; mit Schaltfläche zum Bericht, wenn es etwas zu berichten gibt.
   const showResult = (stats, savedAt, savedOn, title = 'Abgleichen') => inform(title, resultText(stats, savedAt, savedOn),
     worthReport(stats) ? { action: { label: 'Abgleichbericht anzeigen', icon: 'eye', run: () => openReport(stats, savedAt, savedOn) } } : {});
-  return { snapshot, stamp, latest, merge, question, choices, ask, resultText, reportHtml, openReport, showResult, changedLine, config: { list, sub, subAt, maxFields, nouns, labels, values, app } };
+  return { snapshot, stamp, latest, merge, question, choices, ask, resultText, reportHtml, openReport, showResult, changedLine, config: { list, sub, subAt, maxFields, nouns, labels, values, protect, app } };
 }
 
 /* ---------- Meldungen und Sicherheitsabfragen ---------- */
