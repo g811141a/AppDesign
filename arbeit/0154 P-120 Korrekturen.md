@@ -101,3 +101,15 @@ Bildschirms?). Für den Usertest: Rollen und x am Gerät.
 ## Bau danach
 
 Reiselogbuch 3.58.1 mit AppDesign 4.68.1 (F-1 und APD-146), Prüflauf voll – Bau-Frage nach deinen Antworten.
+
+## Entscheidungen (Nutzer 22.11.2026, Sitzung 0154, im Fenster)
+
+- **F-1:** Wortlaut R-1.15 (mit Vorschau als Ausnahme), R-3.6 und Designrichtlinie 13 wie oben **freigegeben** – noch einzutragen (Katalog, R-3.6, 13), dazu
+  `design.css` (zwei Zeilen), `hig.mjs` (jeder sichtbare Text, R-1.15; Schaltflächen-Prüfung R-3.6 geht darin auf), `katalog.mjs` Z-6 und `ablauf.mjs`
+  APD-106/H-2, H-6 → R-1.15.
+- **F-2:** dieselbe Lücke mitbeheben – ‚Reiselogbuch einstellen‘ aus der Liste: das Reiselogbuch wird das aktive und angezeigt; ‚Reiselogbuch löschen‘: die
+  Liste bleibt stehen (das aktive bleibt). Noch umzusetzen, mit Teil F-2 in `ablauf-p120` (rot gegen 3.58.0 zuerst).
+- **F-3:** a) PDF zählt erst, wenn das Drucken-Menü wirklich aufgeht (`beforeprint`) – noch umzusetzen (heute in `exportPdf` noch `countOutput` beim Antippen);
+  Testfall (User): am Gerät vom Home-Bildschirm PDF antippen → Nummer bleibt.
+- **F-4:** Muster übernommen, **mit Änderung:** x horizontal zentriert auf derselben Linie wie ‚Entsperren‘ (vorher höher gestellt) – umgesetzt in App und Muster
+  (`.li-x { align-self: center }`, iPhone rechts in der Zeile von ‚Entsperren‘), `ablauf-p120` F-4 grün in Chromium und WebKit, Bilder neu.
