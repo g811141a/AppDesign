@@ -11,8 +11,8 @@
 - **Katalog** `katalog/notice.js` (mit ‚Ausprobieren‘), **Schnittstelle** `createNotice`, CHANGELOG 4.70.0, Versionsgeschichte, Fassung 4.70.0 neu.
 - **Reiselogbuch `index.html`:** Ergebnis und Backup-Erinnerung über `createNotice` (im Fenster und im Hinweisfenster über der Vorschau);
   `backupReminderHtml`/`bindBackupReminder` ersetzt durch `showBackupReminder`. CHANGELOG 3.58.3.
-- **Prüfung:** `ablauf-p120` neuer Teil P-122/F-2 (Testfall-Liste H-1 bis H-7 in `arbeit/0159 AD-Bean notice Vorschlag.md`).
-- Nebenbei behoben: AD-Bean-Zeile im CHANGELOG im Format des Skripts; Bildnamen ‚A-1…‘ in `arbeit/0158 P-122 Vorschlag.md` als Text (alte Nummer).
+- **Prüfung:** `ablauf-p120` neuer Teil P-122/F-2 (Testfall-Liste in `arbeit/0159 AD-Bean notice Vorschlag.md`).
+- Nebenbei behoben: AD-Bean-Zeile im CHANGELOG im Format des Skripts; Bildnamen von Muster A in `arbeit/0158 P-122 Vorschlag.md` als Text (alte Nummer).
 
 ## Prüfungen dieser Sitzung (nur die betroffenen)
 

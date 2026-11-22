@@ -27,7 +27,7 @@ Zwischenstand sichern). Aufbau nach Zusammenarbeit allgemein 2.5.
   das Präfix der AD-Beans ohne Bean (R-1.13, APD-30/W-72) und Bildnamen ‚A-n‘ in `arbeit/0158 P-122 Vorschlag.md` (alte Nummer) – behoben.
 - **Entscheidung (Nutzer, im Fenster):** eigene **AD-Bean `notice`** (Hinweis-Kasten) für Ergebnis und Backup-Erinnerung, in 4.70.0 / 3.58.3, Kennung `notice`;
   die **Backup-Kachel gehört in eine andere AD-Bean** (APD-148 `backup`). Umgesetzt und Wortlaut (R-3.10 ‚Technisch‘, Zeile in der Liste der AD-Beans)
-  **freigegeben** – `arbeit/0159 AD-Bean notice Vorschlag.md` (mit Testfall-Liste H-1 bis H-7), `arbeit/0159 AD-Bean notice Wortlaut und Bau-Frage.md`.
+  **freigegeben** – `arbeit/0159 AD-Bean notice Vorschlag.md` (mit Testfall-Liste, 7 Fälle), `arbeit/0159 AD-Bean notice Wortlaut und Bau-Frage.md`.
 - Prüfungen: `ablauf-p120` (neu Teil P-122/F-2) und `bean-katalog` grün in Chromium und WebKit; `doku-regeln`, `schnittstelle-regeln` grün; Gegenprobe rot (4 Fehler).
 - **Auffällig, nicht geändert:** über der Vorschau öffnet ‚Backup erstellen‘ der Erinnerung ein eigenes Hinweisfenster ‚Backup‘ (wie 3.58.2) – zu APD-148.
 - **Bau-Ja (Stufe voll) liegt vor** (Nutzer 22.11.2026, Sitzung 0159).
