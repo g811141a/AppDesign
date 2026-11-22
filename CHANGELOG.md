@@ -46,6 +46,11 @@ menus‘ blendet nicht verfügbare Punkte aus, R-4.10 bleibt).
 - **R-4.2** und **15.4** im freigegebenen Wortlaut.
 - **Prüfung:** `kontextmenue.mjs` – `checkContextMenus` erkennt die Lage ‚rechtsbündig auf der Kachel‘, erlaubt sie nur, wenn das Menü weder darunter noch darüber passt,
   und verlangt dabei, dass die Liste beim Öffnen und Schließen stehen bleibt. Gegenprobe: ohne die neue Lage in `ui.js` meldet `kontextmenue-regeln (iPhone)` 40 Fehler.
+- **Fehler behoben (gefunden im vollen Prüflauf, `ablauf-seitenleiste-position` mit Text 53, iPhone hoch):** mit drei Punkten ist das Kontextmenü bei Text 53 777 px
+  hoch, frei sind 714 px. Die Liste rückte (Rückfall), beim erneuten Platzieren galt die schon hinausgerückte Kachel als ‚passt darunter‘ und das Menü stand bei −52 px;
+  ohne dieses erneute Platzieren reichte es über die Backup-Kachel. Jetzt gilt ‚passt darunter bzw. darüber‘ nur an einer sichtbaren Kachel, und im Rückfall steht das
+  Menü nie über dem oberen Rand und nie über der Backup-Kachel – ist es höher als der Platz, rollt sein Inhalt (R-4.5). R-4.2 und R-4.5 unverändert. Nachweis:
+  `ablauf-seitenleiste-position` (Text 53) war mit dem bisherigen `ui.js` in Chromium rot (2 Fehler), jetzt grün in Chromium und WebKit.
 - AD-Bean: keine, weil `placeAt` zu keiner AD-Bean gehört.
 
 ## 4.67.2 – 21.11.2026

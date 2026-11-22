@@ -741,7 +741,9 @@ function placeAt(el, anchor, align) {
     const list = anchor.closest('.side-list'), tr = sideFootRect(anchor.closest('#side'));
     const limit = tr && tr.height ? Math.min(innerHeight - B, tr.top - 12) : innerHeight - B;
     const left = Math.max(L, Math.min(r.left, innerWidth - el.offsetWidth - R));
-    if (r.bottom + 8 + el.offsetHeight <= limit || r.top - 8 - el.offsetHeight >= T) {
+    // seit 4.68.0: nur an einer sichtbaren Kachel – beim erneuten Platzieren (Drehen, Größe) kann sie schon nach oben hinausgerückt sein (große Schrift)
+    const sichtbar = !list || r.bottom > list.getBoundingClientRect().top;
+    if (sichtbar && (r.bottom + 8 + el.offsetHeight <= limit || r.top - 8 - el.offsetHeight >= T)) {
       top = r.bottom + 8 + el.offsetHeight <= limit ? r.bottom + 8 : r.top - 8 - el.offsetHeight;
       el.style.left = left + 'px';
       el.style.top = top + 'px';
@@ -770,9 +772,11 @@ function placeAt(el, anchor, align) {
     // Seit 4.11.0: rückt die Liste trotzdem nicht weit genug (z. B. iOS hält die Liste fest, solange der Finger
     // noch liegt), steht das Menü linksbündig über der Kachel statt hinter der Backup-Kachel (wie Apple).
     if (top + el.offsetHeight > limit + 2 && r.top - 8 - el.offsetHeight >= T) top = r.top - 8 - el.offsetHeight;
-    else fit(limit - top);
+    // seit 4.68.0: nie über den oberen Rand und nie über die Backup-Kachel – ist das Menü höher als der Platz (große Schrift), rollt sein Inhalt (R-4.5)
+    top = Math.max(T, top);
+    fit(limit - top);
     el.style.left = Math.max(L, Math.min(r.left, innerWidth - el.offsetWidth - R)) + 'px';
-    el.style.top = Math.max(T, top) + 'px';
+    el.style.top = top + 'px';
     return;
   }
   if (align === 'beside') {
