@@ -230,6 +230,17 @@ export function masseStile() {
     t.querySelectorAll('a[href]').forEach(a => { if (vis(a) && cs(a).textDecorationLine !== 'none') R('R-6.7', `${n}: Link ‚${name(a)}‘ unterstrichen`); });
     t.querySelectorAll('td.num, th.num').forEach(c => { if (vis(c) && !/right|end/.test(cs(c).textAlign)) R('R-6.7', `${n}: Zahlenspalte ‚${name(c)}‘ nicht rechtsbündig (${cs(c).textAlign})`); });
   });
+  // R-3.10 Hinweise mittig (P-122/F-2): in Hinweis-Kästen (.ad-notice), im Text des Hinweisfensters, in der Hinweis-Kachel (.bhint) und im leeren Zustand
+  // ist der Text zentriert und jede Schaltfläche steht mittig im Inhalt (± 1,5 px); Hinweisleisten (Symbol, Text, x) gehören nicht dazu
+  document.querySelectorAll('.ad-notice, .ad-alert-message, .bhint, .leer').forEach(k => {
+    if (!vis(k)) return;
+    const s = cs(k), b = k.getBoundingClientRect(), mitte = b.left + parseFloat(s.borderLeftWidth) + parseFloat(s.paddingLeft)
+      + (b.width - parseFloat(s.borderLeftWidth) - parseFloat(s.borderRightWidth) - parseFloat(s.paddingLeft) - parseFloat(s.paddingRight)) / 2;
+    const n = `${k.className ? '.' + k.className.trim().split(/\s+/)[0] : k.tagName.toLowerCase()}`;
+    if (!/center/.test(s.textAlign)) R('R-3.10', `Hinweis ${n}: Text nicht zentriert (${s.textAlign})`);
+    k.querySelectorAll('button').forEach(x => { if (!vis(x)) return; const r = x.getBoundingClientRect(), d = r.left + r.width / 2 - mitte;
+      if (Math.abs(d) > 1.5) R('R-3.10', `Hinweis ${n}: Schaltfläche ‚${name(x)}‘ nicht mittig (${r1(d)} px daneben)`); });
+  });
   return out;
 }
 
