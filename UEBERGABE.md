@@ -1,6 +1,6 @@
 # Übergabe an die nächste Sitzung
 
-**Stand 22.11.2026** · geschrieben in der Sitzung ‚Reiselogbuch 0159‘ bei Kontext rund 251.000, **vor dem Bau** (Nutzer: nur noch 3 % Nutzungsgrenze –
+**Stand 22.11.2026** · geschrieben in der Sitzung ‚Reiselogbuch 0159‘ bei Kontext rund 251.000, **nach dem Bau** (Nutzer: nur noch 3 % Nutzungsgrenze –
 Zwischenstand sichern). Aufbau nach Zusammenarbeit allgemein 2.5.
 **Claude liest diese Datei zu Beginn jeder Sitzung zuerst, dann die ganze Zusammenarbeit** (0 Nr. 15); die Arbeitsumgebung steht in der AppDesign-`CLAUDE.md`.
 
@@ -8,8 +8,8 @@ Zwischenstand sichern). Aufbau nach Zusammenarbeit allgemein 2.5.
 
 | Teil | Version |
 |---|---|
-| Reiselogbuch | **3.58.2** veröffentlicht; **3.58.3** auf Zweig `vorbereitung-3.58.3` (e0a4d68) – Bau in 0159 gestartet |
-| AppDesign | **4.69.0** veröffentlicht; **4.70.0** auf Zweig `vorbereitung-4.70.0` (mit dieser Übergabe) – Bau in 0159 gestartet |
+| Reiselogbuch | **3.58.2** veröffentlicht; **3.58.3 veröffentlicht** (cb59421, Pages success) |
+| AppDesign | **4.69.0** veröffentlicht; **4.70.0 veröffentlicht** (4a46881, Pages success; voller Lauf 192 Läufe grün in 83:25) |
 | ReiseLogBuch-Import (privat) | **1.4.0**, unverändert |
 | Zusammenarbeit allgemein | **3.19.0** |
 | `CLAUDE.md` | AppDesign **2.14.0** · Reiselogbuch 3.10.0 · Import 1.2.0 |
@@ -35,7 +35,7 @@ Zwischenstand sichern). Aufbau nach Zusammenarbeit allgemein 2.5.
 ## 3. Nächster Schritt
 
 1. Lesen, Repos dazuholen, Tests einrichten, Lagebild als eigene Antwort mit Kachel (0 Nr. 15).
-2. **Prüfen, ob der Bau aus 0159 fertig ist:** `curl https://api.github.com/repos/g811141a/AppDesign/actions/runs?per_page=1` und dasselbe für ReiseLogBuch;
+2. **Bau aus 0159 ist fertig** (beide Pages ‚success‘). Falls der Bericht in 0159 nicht mehr kam: `curl https://api.github.com/repos/g811141a/AppDesign/actions/runs?per_page=1` und dasselbe für ReiseLogBuch;
    `main` von AppDesign enthält `AD_VERSION = '4.70.0'` und ReiseLogBuch `APP_VERSION = '3.58.3'`? – dann nur noch Bericht.
    Sonst: Zweige `vorbereitung-4.70.0` und `vorbereitung-3.58.3` holen und `node werkzeug/veroeffentlichen.mjs los --app reiselogbuch` im Hintergrund
    (Ja liegt vor; kurz bestätigen lassen, 0 Nr. 21).
