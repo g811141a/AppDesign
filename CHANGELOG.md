@@ -24,7 +24,7 @@ Sitzung 0152 – `arbeit/0152 RLB-125 Bau-Frage.md`).
   `checkSync(page, { gegenprobe: 'abgleich:23' })` (in der App `PRUEF_GEGENPROBE=abgleich:23`) – rot. `hig.mjs`: Tabellen der Ausgabe (`.rt`) im Inhalt – z. B. die
   Vorschau-Seite eines gesperrten Reiselogbuchs – prüft R-6.2 statt der Regeln für App-Tabellen (Kopf mit Verlauf, Trennlinien, Zebra je Tabellenzeile).
   `ablauf.mjs` – `checkWischen`: die Wischwege wachsen mit der offenen Breite (Werte für zwei Kapseln, 165 px; bei drei Kapseln – Einstellen, Sperren, Löschen –
-  242 px), die erwartete offene Breite ist n × 66 + (n + 1) × 11; W-93 hält vor dem Messpunkt 300 ms, weil die äußere Kapsel bei drei Kapseln erst spät aufgedeckt
+  242 px), die erwartete offene Breite ist n × 66 + (n + 1) × 11; APD-30/W-93 hält vor dem Messpunkt 300 ms, weil die äußere Kapsel bei drei Kapseln erst spät aufgedeckt
   wird und noch wächst.
 - AD-Bean: keine, weil `createSync` noch keine AD-Bean ist (der Umbau gehört zu APD-142).
 
@@ -36,6 +36,17 @@ menus‘ blendet nicht verfügbare Punkte aus, R-4.10 bleibt).
 - **Prüfung:** `pruefseite.mjs`, Teil `menue` (`checkUnavailableItem`, RLB-125/T-13): blasser Punkt mit `disabled` und Unterzeile ‚Gesperrt‘, Fokus beim ersten verfügbaren
   Punkt, Antippen und Eingabetaste lösen nichts aus; Gegenprobe `punktNichtGesperrt` (ohne `disabled`) – rot.
 - AD-Bean: keine, weil `openMenu` blasse Einträge schon kann (`disabled`, `sub`).
+
+**RLB-125 – Kontextmenü am iPhone quer (R-4.2)** (Wortlaut und Muster freigegeben 22.11.2026, Sitzung 0153 – `arbeit/0153 RLB-125 Kontextmenue iPhone quer.md`).
+
+- **Befund:** mit drei Punkten ist das Kontextmenü der Kachel 153 px hoch; am iPhone quer (852 × 393) sind zwischen Liste und Backup-Kachel 213 px frei, Kachel, Abstand
+  und Menü brauchen 223 px. An der obersten und der letzten Kachel passte es weder darunter noch darüber, die Liste rückte und die Kachel rutschte unter die Kopfzeile.
+- **`ui.js`, `placeAt` (Kontextmenü ohne Platz daneben):** passt das Menü weder darunter noch darüber und ist die Kachel mindestens doppelt so breit wie das Menü, steht es
+  rechtsbündig auf der Kachel, oben bündig mit ihr bzw. ganz über der Backup-Kachel – die Liste bleibt stehen (wie neben der Kachel am iPad). Sonst wie bisher.
+- **R-4.2** und **15.4** im freigegebenen Wortlaut.
+- **Prüfung:** `kontextmenue.mjs` – `checkContextMenus` erkennt die Lage ‚rechtsbündig auf der Kachel‘, erlaubt sie nur, wenn das Menü weder darunter noch darüber passt,
+  und verlangt dabei, dass die Liste beim Öffnen und Schließen stehen bleibt. Gegenprobe: ohne die neue Lage in `ui.js` meldet `kontextmenue-regeln (iPhone)` 40 Fehler.
+- AD-Bean: keine, weil `placeAt` zu keiner AD-Bean gehört.
 
 ## 4.67.2 – 21.11.2026
 

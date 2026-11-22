@@ -747,6 +747,13 @@ function placeAt(el, anchor, align) {
       el.style.top = top + 'px';
       return;
     }
+    // Seit 4.68.0 (RLB-125, iPhone quer): passt es weder darunter noch darüber, ist die Kachel aber mindestens doppelt so breit wie das Menü, steht
+    // es rechtsbündig auf der Kachel, oben bündig mit ihr bzw. ganz über der Backup-Kachel – die Liste bleibt stehen (wie neben der Kachel am iPad).
+    if (r.width >= 2 * el.offsetWidth && el.offsetHeight <= limit - T) {
+      el.style.left = Math.max(L, Math.min(r.right - el.offsetWidth, innerWidth - el.offsetWidth - R)) + 'px';
+      el.style.top = Math.max(T, Math.min(r.top, limit - el.offsetHeight)) + 'px';
+      return;
+    }
     const need = r.bottom + 8 + el.offsetHeight - limit;
     if (need > 0 && list) {
       // Reicht der Scrollweg nicht (wenige Einträge), bekommt die Liste unten so viel Platz, dass sie weit genug rückt.
