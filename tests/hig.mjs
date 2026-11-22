@@ -686,13 +686,21 @@ const found = new Map(), icons = new Map();
         const rund = r.endsWith('%') ? parseFloat(r) >= 50 : parseFloat(r) >= Math.min(b.width, b.height) / 2 - .5;
         if (Math.abs(b.width - b.height) >= 0.5 || !rund) R('R-3.1', `Icon-Schaltfläche ‚${label(e)}‘ ist kein Kreis (${Math.round(b.width)} × ${Math.round(b.height)} px, Radius ${r}) – runde Schaltfläche (.round)`);
       });
-      // R-3.6 (P-117/1, P-117/4, P-117/F-2): langes Drücken auf eine Schaltfläche markiert keinen Text und zeigt weder Lupe noch Callout – wie
-      // safariHalten (safari.mjs): user-select des Elements mit dem Text, -webkit-touch-callout der Schaltfläche.
+      // R-1.15 (seit 4.68.1, P-120/F-1; schließt die Schaltflächen-Prüfung von R-3.6 ein, P-117/F-2): Text ist nur in Eingabefeldern und in der Vorschau
+      // der Ausgabe (.rt) wählbar – jeder sichtbare Text sonst: user-select des Elements mit dem Text none (wie safariHalten, safari.mjs: Safari markiert
+      // sonst samt Lupe), bei Schaltflächen auch -webkit-touch-callout none (Callout).
+      const feld = 'input, textarea, [contenteditable="true"], [contenteditable=""], .rt, style, script, template, noscript';
+      const wahlbar = new Set(), tw = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+      while (tw.nextNode()) {
+        const n = tw.currentNode, e = n.parentElement;
+        if (!n.textContent.trim() || !e || e.closest(feld) || !vis(e)) continue;
+        const r = e.getBoundingClientRect(); if (r.bottom < 0 || r.top > innerHeight || r.right < 0 || r.left > innerWidth || r.width < 2 || r.height < 2) continue;
+        const c = cs(e); if (c.visibility === 'hidden' || +c.opacity === 0) continue;
+        if ((c.webkitUserSelect || c.userSelect) !== 'none') wahlbar.add(e);
+      }
+      [...wahlbar].slice(0, 6).forEach(e => R('R-1.15', `Text ‚${e.textContent.trim().replace(/\s+/g, ' ').slice(0, 30)}‘ (${e.tagName.toLowerCase()}${typeof e.className === 'string' && e.className.trim() ? '.' + e.className.trim().split(/\s+/)[0] : ''}) ist wählbar – Safari markiert ihn beim langen Drücken und zeigt die Lupe`));
       document.querySelectorAll('button').forEach(e => {
-        if (!vis(e)) return;
-        const t = [...e.querySelectorAll('*')].find(x => [...x.childNodes].some(n => n.nodeType === 3 && n.textContent.trim())) || e, c = cs(t);
-        const wahl = c.webkitUserSelect || c.userSelect, callout = cs(e).webkitTouchCallout ?? 'none';
-        if (wahl !== 'none' || callout !== 'none') R('R-3.6', `langes Drücken auf ‚${label(e)}‘ würde in Safari ${[wahl !== 'none' && 'Text markieren (Lupe)', callout !== 'none' && 'das Callout zeigen'].filter(Boolean).join(' und ')}`);
+        if (vis(e) && (cs(e).webkitTouchCallout ?? 'none') !== 'none') R('R-1.15', `langes Drücken auf ‚${label(e)}‘ würde in Safari das Callout zeigen`);
       });
       // R-1.3 Eingabefelder mindestens 16 px (sonst vergrößert iOS beim Antippen)
       document.querySelectorAll('input:not([type=checkbox]):not([type=hidden]):not([type=file]), textarea').forEach(e => { if (vis(e) && parseFloat(cs(e).fontSize) < 16) R('R-1.3', `Eingabefeld ${e.id ? '#' + e.id : ''} unter 16 px – iOS vergrößert beim Antippen`); });

@@ -1,6 +1,6 @@
 # AppDesign – Backlog (allgemeine Themen)
 
-**Stand 21.11.2026** · Aktuelle Version: AppDesign 4.68.0
+**Stand 22.11.2026** · Aktuelle Version: AppDesign 4.68.1
 
 Allgemeine Themen, die alle Apps betreffen. App-Themen stehen im Backlog der jeweiligen App.
 Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.4.
@@ -11,15 +11,15 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Prio | Thema | bereit seit |
 |---|---|---|---|
-| APD-146 | 3 | **Icon-Tabelle: Sperren / Entsperren (aus RLB-125, Wortlaut freigegeben 22.11.2026, Sitzung 0153, im Fenster – `arbeit/0153 Bericht 3.58.0.md`):** Designrichtlinie 5, neue Zeile nach ‚Löschen / Entfernen / Verwerfen‘: ‚Sperren / Entsperren \| `lock` / `lock-open` \| Icon + Text (Kontextmenü, Mehr-Menü), Kapsel beim Wischen; gesperrt zeigt `lock` den Zustand‘ – kommt mit der nächsten AppDesign-Version | 22.11.2026 |
 
-1 Punkt bereit (APD-146, mit der nächsten AppDesign-Version: APD-135/B-3.3 Schritt 2, dann APD-145).
+0 Punkte bereit.
 
 
 ## 1. Auf iPad und iPhone prüfen
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
+| P-121 | 1 | **Usertest P-121** im Reiselogbuch 3.58.1 (Backlog des Reiselogbuchs): P-121/1 bis P-121/4 prüfen R-1.15 (AppDesign 4.68.1, P-120/F-1) | prüfen |
 
 ## 2. Weitere Themen (in Klärung)
 
@@ -63,6 +63,8 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Thema | Version | Datum |
 |---|---|---|---|
+| P-120 | **P-120/F-1 Text nur in Eingabefeldern auswählbar:** neue Regel R-1.15, `design.css` (`html`, `dialog` ohne Textauswahl, Felder und `.rt` `text`), `hig.mjs` prüft jeden sichtbaren Text; R-3.6 und Designrichtlinie 13 angepasst | 4.68.1 | 22.11.2026 |
+| APD-146 | **Icon-Zeile Sperren / Entsperren** (`lock` / `lock-open`) in Designrichtlinie 5 | 4.68.1 | 22.11.2026 |
 | RLB-125 | **Allgemeiner Teil von RLB-125 (Reiselogbuch sperren):** `createSync` mit `protect` – ein gesperrter Eintrag wird beim Abgleich nie gelöscht (15.18 Fälle 21–23, R-9.3), ‚Ersetzen‘ nennt die gesperrten; neue Regel R-4.14 ‚Nicht verfügbare Menüpunkte‘ (Prüfseite Teil `menue`); Icons `lock`, `lock-open`. Usertest P-120 im Reiselogbuch | AppDesign 4.68.0 | 21.11.2026 |
 | P-118/F-1, P-118/F-2 | **Korrekturen aus P-118:** jede gedrückte Schaltfläche hebt sich und wird größer (R-3.6 Variante B, Auswahl-Kapsel blass); ‚Schaltfläche‘ statt ‚Knopf‘ (Designrichtlinie 6, R-10.9, `checkBegriffe`). Usertest P-119 im Backlog des Reiselogbuchs | AppDesign 4.67.2 | 21.11.2026 |
 | APD-144 | **Kein sichtbarer Fokus nach ‚Zurück‘ (iPhone, WebKit):** Gerätetest des Nutzers (iPhone mit Hardware-Tastatur, Reiselogbuch 3.57.11, AppDesign 4.67.1; Schritte `arbeit/0149 APD-144 Geraetetest.md`): nach ‚Zurück‘ liegt der Fokusrahmen auf der Kachel, von der man kam – am Gerät kein Fehler, keine Änderung; die Abweichung betrifft nur WebKit der Prüfumgebung (APD-135/Q-3 bleibt auf eigener Seite) | – (ohne Änderung) | 21.11.2026 |

@@ -3,6 +3,32 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.68.1 – 22.11.2026
+
+AppDesign 4.68.1 · Designrichtlinie allgemein 4.68.1 · Zusammenarbeit allgemein 3.19.0 · Reiselogbuch 3.58.1 (Fassung 4.68.1)
+
+**P-120/F-1 – Text nur in Eingabefeldern auswählbar (R-1.15)** (Usertest P-120 nicht ok, Nutzer 22.11.2026, Sitzung 0153; Wortlaut freigegeben 22.11.2026, Sitzung 0154 –
+`arbeit/0154 P-120 Korrekturen.md`).
+
+- **`design.css`:** `html` und `dialog` mit `user-select: none` und `-webkit-touch-callout: none` (Chromium setzt beim modalen Fenster selbst `user-select: text`);
+  Textfelder, Textbereiche, `contenteditable` und die Vorschau der Ausgabe (`.rt`) ausdrücklich `text` – Safari hatte Probleme, wenn ein Elternelement `none` hat.
+  Vorher waren nur einzelne Elemente gesperrt (Schaltflächen, Kacheln, Leisten); wählbar waren u. a. die Backup-Kachel, Titel, Anzahl, Jahresköpfe, Hinweise und die
+  Beschriftungen in den Fenstern.
+- **Regeln:** neu R-1.15 (Katalog 17, Thema 1); R-3.6 verweist für Textauswahl und Lupe auf R-1.15; Designrichtlinie 13 ‚Long-Press-Menü und Textauswahl‘ gilt für die
+  ganze Seite.
+- **Prüfungen:** `hig.mjs` prüft jeden sichtbaren Text jeder Ansicht (R-1.15; die Schaltflächen-Prüfung von R-3.6 geht darin auf, das Callout der Schaltflächen bleibt
+  geprüft). `katalog.mjs` APD-140/Z-6 und `ablauf.mjs` APD-106/H-2 und APD-106/H-6 melden die Textauswahl als R-1.15 (Grau beim Halten bleibt R-3.6). **Warum es durchrutschte:**
+  `hig.mjs` sah nur Schaltflächen.
+- AD-Bean: keine, weil es eine Grundeinstellung der Seite ist, kein Baustein.
+
+**APD-146 – Icon-Zeile Sperren / Entsperren** (aus RLB-125, Wortlaut freigegeben 22.11.2026, Sitzung 0153 – `arbeit/0153 Bericht 3.58.0.md`).
+
+- **Designrichtlinie 5:** neue Zeile nach ‚Löschen / Entfernen / Verwerfen‘: ‚Sperren / Entsperren | `lock` / `lock-open` | Icon + Text (Kontextmenü, Mehr-Menü), Kapsel
+  beim Wischen; gesperrt zeigt `lock` den Zustand‘.
+- AD-Bean: keine, weil nur die Icon-Tabelle der Richtlinie ergänzt wird.
+
+Usertest: P-121 im Reiselogbuch 3.58.1 (P-121/1 bis P-121/4).
+
 ## 4.68.0 – 21.11.2026
 
 AppDesign 4.68.0 · Designrichtlinie allgemein 4.68.0 · Zusammenarbeit allgemein 3.19.0 · Reiselogbuch 3.58.0 (Fassung 4.68.0)
