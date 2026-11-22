@@ -18,7 +18,7 @@ AppDesign 4.70.0 · Designrichtlinie allgemein 4.70.0 · Zusammenarbeit allgemei
 - **Prüfung:** `hig.mjs` – `masseStile` prüft R-3.10 nach jedem Schritt aller Prüfungen: in `.ad-notice`, im Text des Hinweisfensters, in `.bhint` und im leeren
   Zustand ist der Text zentriert und jede Schaltfläche steht mittig (± 1,5 px). Gegenprobe (P-122/X-8, Sitzung 0158): die Erinnerung im Hinweisfenster wieder links →
   `ablauf-p120` rot mit R-3.10.
-- AD-Bean: keine neue Eigenschaft, weil `.ad-notice` und `.ad-buttons` allgemeines CSS in `design.css` sind und im Hinweisfenster (`alert`) wie im Fenster gleich wirken –
+- AD-Bean: keine, weil `.ad-notice` und `.ad-buttons` allgemeines CSS in `design.css` sind und im Hinweisfenster (`alert`) wie im Fenster gleich wirken –
   einfacher als die im Vorschlag genannte Eigenschaft von `alert`, Wirkung gleich.
 
 Usertest im Reiselogbuch: P-123 (Backlog des Reiselogbuchs).
