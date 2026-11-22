@@ -10,7 +10,7 @@
 //
 // Inhalt: Icons (ic) · esc · Beträge (money, formatEuro) · autoGrow · onLongPress · Darstellung
 // (applyTheme, setAppearance) · Menüs (openMenu mit Untermenü) · Sprechblase (confirmPop) · gekürzter Titel (Sprechblase, seit 4.47.0) ·
-// hervorgehobene Quelle (AD-Bean sourcehighlight, seit 4.67.0) · Meldung (inform) · Fenster (openDialog, dlgHead) ·
+// hervorgehobene Quelle (AD-Bean sourcehighlight, seit 4.67.0) · Meldung (inform) · Hinweis-Kasten (AD-Bean notice, seit 4.70.0) · Fenster (openDialog, dlgHead) ·
 // Berühren (R-3.6) und Großanzeige (R-2.6, seit 4.48.0) · Auswahl-Kapsel (capHtml, mountCap) · Tastatur/sichtbarer Bereich (placeDialogs) · iPhone (isPhone, applyLayout) ·
 // Messmodus (messungMenuItems, seit 4.26.0) · Schnellroll-Griff (seit 4.30.0) · Navigation und Gesten (navAnmelden, navVor,
 // navZurueck, navSeite, seit 4.30.0) · Bedienungshilfen (ansagen, feldFehler, ersterFehler, Fokus und Tasten in Menüs, Sprechblasen
@@ -1967,6 +1967,40 @@ function createAlert(dialog, { fitFileName = true } = {}) {
 }
 const adAlert = createAlert(msg);
 const inform = (title, html, { wide = false, action = null } = {}) => adAlert.showModal(title, html, { wide, action });
+
+/* ---------- AD-Bean notice: Hinweis-Kasten (seit 4.70.0, P-122/F-2, R-3.10, R-1.13) ---------- */
+
+// Seit 4.70.0 (P-122/F-2, R-3.10, Nutzer 22.11.2026, Sitzung 0159): Hinweis-Kasten für Ergebnisse und Erinnerungen – im Fenster wie im Hinweisfenster
+// (AD-Bean alert). Text, darunter grau das Detail, darunter die Schaltflächenzeile, alles mittig; die App richtet nichts selbst aus. Ein Vorbild bei
+// Apple gibt es nicht (HIG: kein Baustein für einen Hinweis-Kasten im Inhalt), Kennung nach der Aufgabe; Namen wie bei alert (`message`, `label`, `icon`).
+// Schnittstelle (R-1.13, Liste der AD-Beans in Designrichtlinie 15) – die App nutzt nur diese Namen:
+//   createNotice(element, { message, detail, buttons }) – macht element (z. B. ein leeres <div class="step">) zum Hinweis-Kasten
+//   n.message (HTML, lesen und setzen) · n.detail (HTML, Standard '') · n.buttons (Standard [], je { id, label, icon, primary }) – setzen baut neu auf
+//   n.remove() · n.on('action', ({ id }) => …) → abmelden – eine Schaltfläche wurde angetippt
+// CSS nur unter .ad-notice (Kasten) und .ad-notice-buttons (Schaltflächenzeile).
+function createNotice(element, { message = '', detail = '', buttons = [] } = {}) {
+  const hoerer = { action: new Set() };
+  const stand = { message, detail, buttons };
+  const melde = id => hoerer.action.forEach(fn => { try { fn({ id }); } catch (e) { console.error(e); } });
+  function aufbauen() {
+    if (!(element instanceof Element)) return;
+    const knoepfe = (stand.buttons || []).map((b, i) => `<button type="button" data-i="${i}"${b.id ? ` id="${esc(b.id)}"` : ''}${b.primary ? ' class="primary"' : ''}>${b.icon ? ic(b.icon) : ''}${esc(b.label || '')}</button>`).join('');
+    element.innerHTML = `${stand.message || ''}${stand.detail ? `<div class="hint">${stand.detail}</div>` : ''}${knoepfe ? `<div class="ad-notice-buttons">${knoepfe}</div>` : ''}`;
+    element.querySelectorAll('.ad-notice-buttons button').forEach(x => x.onclick = () => melde(stand.buttons[+x.dataset.i]?.id || ''));
+  }
+  const bean = {
+    get message() { return stand.message; }, set message(v) { stand.message = v || ''; aufbauen(); },
+    get detail() { return stand.detail; }, set detail(v) { stand.detail = v || ''; aufbauen(); },
+    get buttons() { return [...stand.buttons]; }, set buttons(v) { stand.buttons = Array.isArray(v) ? v : []; aufbauen(); },
+    remove() { element?.remove?.(); },
+    on(name, fn) { const h = hoerer[name]; if (!h || typeof fn !== 'function') return () => {}; h.add(fn); return () => { h.delete(fn); }; },
+  };
+  if (!(element instanceof Element)) { console.error('notice: element fehlt'); return bean; }
+  element.dataset.adBean = 'notice';
+  element.classList.add('ad-notice');
+  aufbauen();
+  return bean;
+}
 
 /* ---------- Dialoge ---------- */
 

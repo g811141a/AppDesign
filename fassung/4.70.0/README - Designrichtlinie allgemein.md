@@ -193,7 +193,7 @@ Body = Grundgröße der Stufe (14 … 53). Zeilenabstände und Werte wörtlich a
   - Alle übrigen Schaltflächen neutral (schwebend).
 - **Hinweise mittig** (R-3.10, wie Text und Dateiname im Hinweisfenster, R-10.8): in Hinweisfenstern, Ergebnisfenstern, Erinnerungen, Hinweis-Kacheln
   und im leeren Zustand stehen Text und Schaltflächen mittig; Hinweisleisten (Symbol, Text, x in einer Zeile) bleiben links. Technisch: Hinweis-Kasten
-  `.ad-notice` und Schaltflächenzeile `.ad-buttons` (design.css) – keine eigene Ausrichtung in der App.
+  über die AD-Bean `notice` (Ergebnis und Erinnerung, im Fenster und im Hinweisfenster; Liste in 15) – keine eigene Ausrichtung in der App.
 - „Abbrechen“ (in Sprechblasen): neutral, ohne Icon, normale Schrift.
 - Gesperrte Schaltflächen: ausgegraut (Deckkraft 40 %).
 - Keine Hover-Farbe auf dem iPad – Hover nur in `@media (hover: hover)` (sie bliebe nach dem Antippen hängen).
@@ -651,6 +651,7 @@ und Meldungen · Eingabe · Inhalt · Dienste (ohne eigene Oberfläche).
 | `swipeactions` | Aktionen und Menüs | `createSwipeactions(list, …)` | `rows` (Pflicht) · `actions` (Pflicht, dieselbe Funktion wie für das Kontextmenü; Einträge wie bei `openMenu` mit `shortTitle`) | `openRow` · `metrics` | `close()` · `disconnect()` | `toggle` | R-7.8, R-4.12, R-4.13, R-1.4, R-1.8 | 15.4 |
 | `alert` | Fenster und Meldungen | `createAlert(dialog, …)` | `fitFileName` (ein; wirkt nur am iPad) | `open` | `showModal(title, message, { wide, action })` · `close()` | `close` | R-10.8, R-1.8, R-4.3 | 7, 10; ersetzt `hinweis` (4.67.0) |
 | `sourcehighlight` | Aktionen und Menüs | `createSourcehighlight(root)` | `sourceItem` (`''` – Auswahl der Quelle des offenen Fensters; setzen tönt sie und gibt die vorige frei, `''` gibt frei) | `heldItems` | `hold(item)` · `release(item)` · `refresh(root)` | `change` | R-3.3, R-4.13, R-8.1 | 4, 15.6 |
+| `notice` | Fenster und Meldungen | `createNotice(element, …)` | `message` (`''`, HTML) · `detail` (`''`, grau darunter) · `buttons` (`[]`, je `{ id, label, icon, primary }`) | – | `remove()` | `action` | R-3.10, R-1.13 | 4, 7 |
 
 ### 15.1 Schwebende Schaltfläche
 - **Apple:** [HIG – Buttons](https://developer.apple.com/design/human-interface-guidelines/buttons)

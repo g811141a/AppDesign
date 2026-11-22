@@ -592,10 +592,11 @@ dialog form { display: flex; flex-direction: column; max-height: var(--dlg-max, 
 .ad-alert, .ad-alert .ad-alert-form { max-height: var(--msg-max, calc(100vh - 40px)); }
 .ad-alert .ad-alert-head { border: none; }
 .ad-alert .ad-alert-message { text-align: center; padding: 0 4px 10px; overflow-wrap: anywhere; }
-/* R-3.10 (P-122/F-2): Hinweise mittig – Hinweis-Kasten .ad-notice (Ergebnisfenster, Erinnerung; im Fenster und im Hinweisfenster) und Schaltflächenzeile
-   .ad-buttons: Text und Schaltflächen mittig, die Schaltfläche in ihrer Breite; die App richtet nichts selbst aus. Hinweisleisten (Symbol, Text, x) bleiben links. */
+/* R-3.10 (P-122/F-2): Hinweise mittig – AD-Bean notice (seit 4.70.0, R-1.13): Hinweis-Kasten .ad-notice (Ergebnisfenster, Erinnerung; im Fenster und im
+   Hinweisfenster) und Schaltflächenzeile .ad-notice-buttons: Text und Schaltflächen mittig, die Schaltfläche in ihrer Breite; die App richtet nichts selbst aus.
+   Hinweisleisten (Symbol, Text, x) bleiben links. */
 .ad-notice { text-align: center; }
-.ad-buttons { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 10px; }
+.ad-notice .ad-notice-buttons { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 10px; }
 /* seit 4.57.0 (APD-116, R-10.8): Dateiname allein in einer eigenen Zeile unter dem Satz (fett, zentriert wie der Text); jedes Wort am Stück
    (.fw), deshalb Umbruch nur nach einem Leerzeichen – nur ein Wort, das länger ist als die Zeile, bricht in sich (R-6.3) */
 .fname { display: block; margin-top: 2px; text-align: center; }

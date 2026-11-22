@@ -51,8 +51,8 @@ Fazit: der einzige Bruch ist die Erinnerung im Hinweisfenster – Text mittig, S
 ### 2.3 Muster (iPad quer, hell) – Bilder in `arbeit/P-122/`
 
 - **Heute:** `ist-3-ueber-vorschau.png` (links), `ist-4-abgleich.png` (mittig).
-- **A (Empfohlen) – die Schaltfläche folgt ihrem Text:** im Hinweisfenster mittig (`A-3-ueber-vorschau.png`), im Fenster und in Kacheln links an der
-  Textkante (`A-2-ergebnisfenster.png`, `A-1-backup-kachel.png`). Ändert nur die Erinnerung im Hinweisfenster; eindeutig prüfbar.
+- **A (Empfohlen) – die Schaltfläche folgt ihrem Text:** im Hinweisfenster mittig (Bild 3 von Muster A, `ueber-vorschau`), im Fenster und in Kacheln links an der
+  Textkante (Bilder 2 und 1 von Muster A, `ergebnisfenster`, `backup-kachel`). Ändert nur die Erinnerung im Hinweisfenster; eindeutig prüfbar.
 - **B – überall mittig:** auch Ergebnisfenster, Erinnerung im Fenster und Backup-Kachel mittig (`B-2…`, `B-1-backup-kachel.png`). Weicht von der
   linksbündigen Seitenleiste und den Kästen ab.
 - **C – wie A, und das Ergebnis immer als Hinweisfenster:** auch Teilen aus der Kopfzeile meldet ‚Ausgabe V…‘ im kleinen Hinweisfenster

@@ -13,13 +13,17 @@ AppDesign 4.70.0 · Designrichtlinie allgemein 4.70.0 · Zusammenarbeit allgemei
 - **Regel R-3.10 (neu):** in Hinweisen – Hinweisfenster, Ergebnisfenster, Erinnerungen, Hinweis-Kacheln (Backup-Kachel) und leerer Zustand – stehen Text und
   Schaltflächen mittig, die Schaltfläche in ihrer Breite; Hinweisleisten (Symbol, Text, x in einer Zeile) bleiben links. Designrichtlinie 4 (neuer Punkt), 7 (‚Meldung
   und Ergebnisfenster‘: Text und Schaltflächen zentriert), 15.19 (Backup-Kachel mittig; dabei ‚der blaue Schaltfläche‘ → ‚die blaue Schaltfläche‘ berichtigt).
-- **`design.css`:** neu `.ad-notice` (Hinweis-Kasten, Text mittig) und `.ad-buttons` (Schaltflächenzeile, mittig, Abstand 8 px, oben 10 px); `.bhint` (Backup-Kachel)
-  mittig statt links.
+- **AD-Bean `notice` (neu, Nutzer 22.11.2026, Sitzung 0159 – `arbeit/0159 AD-Bean notice Vorschlag.md`):** Hinweis-Kasten für Ergebnis und Erinnerung, im
+  Fenster und im Hinweisfenster: `createNotice(element, { message, detail, buttons })`, Eigenschaften `message`, `detail`, `buttons` (je `{ id, label, icon,
+  primary }`), Methode `remove()`, Ereignis `action`; CSS nur unter `.ad-notice` und `.ad-notice-buttons` (mittig, Abstand 8 px, oben 10 px). Liste der AD-Beans
+  (Designrichtlinie 15), Katalog `katalog/notice.js`, Schnittstelle `createNotice`. Kennung ohne Vorbild bei Apple (HIG: kein Baustein für einen Hinweis-Kasten im
+  Inhalt), nach der Aufgabe wie 0145 festgelegt. Statt der in 0158 vorbereiteten Klassen `.ad-notice`/`.ad-buttons` ohne Bean – die verletzten R-1.13 (APD-30/W-72,
+  Vorlauf `doku-regeln` im ersten Bau rot).
+- **`design.css`:** `.bhint` (Backup-Kachel) mittig statt links.
 - **Prüfung:** `hig.mjs` – `masseStile` prüft R-3.10 nach jedem Schritt aller Prüfungen: in `.ad-notice`, im Text des Hinweisfensters, in `.bhint` und im leeren
   Zustand ist der Text zentriert und jede Schaltfläche steht mittig (± 1,5 px). Gegenprobe (P-122/X-8, Sitzung 0158): die Erinnerung im Hinweisfenster wieder links →
   `ablauf-p120` rot mit R-3.10.
-- AD-Bean: keine, weil `.ad-notice` und `.ad-buttons` allgemeines CSS in `design.css` sind und im Hinweisfenster (`alert`) wie im Fenster gleich wirken –
-  einfacher als die im Vorschlag genannte Eigenschaft von `alert`, Wirkung gleich.
+- AD-Bean: `notice` (neu) – siehe oben.
 
 Usertest im Reiselogbuch: P-123 (Backlog des Reiselogbuchs).
 
