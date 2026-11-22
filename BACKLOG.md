@@ -11,8 +11,9 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Prio | Thema | bereit seit |
 |---|---|---|---|
+| APD-146 | 3 | **Icon-Tabelle: Sperren / Entsperren (aus RLB-125, Wortlaut freigegeben 22.11.2026, Sitzung 0153, im Fenster – `arbeit/0153 Bericht 3.58.0.md`):** Designrichtlinie 5, neue Zeile nach ‚Löschen / Entfernen / Verwerfen‘: ‚Sperren / Entsperren \| `lock` / `lock-open` \| Icon + Text (Kontextmenü, Mehr-Menü), Kapsel beim Wischen; gesperrt zeigt `lock` den Zustand‘ – kommt mit der nächsten AppDesign-Version | 22.11.2026 |
 
-Keine Punkte bereit (nächste Version: APD-135/B-3.3 Schritt 2, dann APD-145).
+1 Punkt bereit (APD-146, mit der nächsten AppDesign-Version: APD-135/B-3.3 Schritt 2, dann APD-145).
 
 
 ## 1. Auf iPad und iPhone prüfen
