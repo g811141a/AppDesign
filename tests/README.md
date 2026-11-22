@@ -90,7 +90,7 @@ einmal; rot zählt nur mit genau der passenden Meldung – beim Bau von APD-43/1
 `los`.
 `--gegenprobe text` (seit 4.37.0) ebenso mit der Prüfung der Textgröße der App (`text-regeln`).
 `--gegenprobe pruefseite` (seit 4.64.0) läuft jeden Teil der Prüfseite (`bausteine-pruefseite`) je eingeschleustem Fehler seiner Bausteine einmal
-(`GEGENPROBEN_PRUEFSEITE`, Teil `werte` 8 Fehler, `menue` 2, die übrigen 7 Abläufe je 1); rot zählt nur mit der Meldung dieses Bausteins, ein Teil ohne Fehler bricht ab.
+(`GEGENPROBEN_PRUEFSEITE`, Teil `werte` 8 Fehler, `menue` 2, seit 4.69.0 `felder` 7, die übrigen 7 Abläufe je 1); rot zählt nur mit der Meldung dieses Bausteins, ein Teil ohne Fehler bricht ab.
 Gleichzeitig laufen standardmäßig so viele Browser, wie der Rechner Kerne hat (mit doppelt so vielen schwankte WebKit unter
 Volllast); erst alle Prüfungen in Chromium, dann alle in WebKit – nie beide gleichzeitig. Fehlt WebKit, bricht der Lauf mit Hinweis
 ab (Rückgabewert 2) – nie stillschweigend nur Chromium. Lange Prüfungen lassen sich teilen (`teile`, z. B. hig nach Darstellung).
@@ -103,7 +103,7 @@ Seit 4.64.0 (APD-135 Paket 6 Schritt 2, APD-135/B-3.1; Designrichtlinie 14 ‚Pr
 ihre Werte auf der daraus abgeleiteten **Mindestseite**. Die Vorlage liegt dazu in der festen Fassung (`fassung/X.Y.Z/vorlage/index.html`). Was nur im
 Zusammenspiel mit der App sichtbar wird, prüft die App selbst.
 
-- `oeffneVorlage(p, { daten, fehler })` – öffnet die Vorlage unter `http://pruefseite.test/`; `ui.js` und `design.css` kommen über `p.route` aus der Fassung, in
+- `oeffneVorlage(p, { daten, fehler })` – öffnet die Vorlage unter `https://pruefseite.test/` (seit 4.69.0 https – ein sicherer Kontext wie die App auf GitHub Pages, sonst fehlt `navigator.clipboard`); `ui.js` und `design.css` kommen über `p.route` aus der Fassung, in
   der `pruefseite.mjs` liegt (Arbeitsstand: `v4/`), so passen die Pfade überall; `daten` werden nur beim ersten Laden gesetzt (`datenNeutral(n)`, `DATEN_LEER`).
 - `oeffneMindestseite(p, { fehler })` – aus dem Text der Vorlage: `<head>`, `#dlg`, `#msg`, `ui.js`; das Skript der App durch die Platzhalter `db`, `save()`,
   `render()` und `const sync = createSync({ list: 'items', sub: 'sub', subAt: 'subAt' })` ersetzt. Fehlt der Vorlage `#dlg` oder `#msg`, ist das ein Fehler.
@@ -126,6 +126,7 @@ Zusammenspiel mit der App sichtbar wird, prüft die App selbst.
   hat (Datum im Fenstertitel, Reisetitel, Daten der App, Fenster beim Start ohne Daten) und das Zusammenspiel mit ihren Schaltflächen prüft die App selbst
   (Reiselogbuch: `ablauf-bausteine`).
 - Seit 4.65.0 (APD-135/B-3.3 Schritt 1, APD-135/Q-1 bis Q-9) Menü, Sprechblase und Fenster als Teile, auf der Vorlage mit neutralen Daten in allen 4 Ansichten, Grundregeln nach jedem Schritt: `menue` (`ablaufMenue`: Mehr der Kopfzeile und der Liste, Untermenü ‚Darstellung‘, Kontextmenü – `checkMehrKnopf`, `checkWachsen` mit Drehen am iPad, ‚Bewegung reduzieren‘ und nach der Großanzeige bei Text 28, `checkFokus`), `sprechblase` (`ablaufSprechblase`: ‚Eintrag löschen‘ aus Mehr und aus dem Kontextmenü – `checkWachsen`, offen der Rest gesperrt, Fokus auf der Blase, daneben tippen ändert nichts, Esc = Abbrechen mit Fokus zurück; mit ‚Bewegung reduzieren‘ nur Überblenden und `checkRuhig`), `fenster` (`ablaufFenster`: ‚Eintrag bearbeiten‘ – `checkDialogHead`, `checkFokus`, `checkFokusZurueck`). Bis Reiselogbuch 3.57.7 prüfte `ablauf-markierung-menues` Mehr-Schaltfläche und Wachsen mit.
+- Seit 4.69.0 (APD-135/B-3.3 Schritt 2, APD-135/F-1 bis F-10) die Felder als Teil `felder` (`ablaufFelder`), iPad quer und iPhone hoch, Grundregeln nach jedem Schritt, an ‚Eintrag bearbeiten‘ mit dem einzeiligen Pflichtfeld `#fTitle` und an ‚Unterpunkt‘ mit dem Textfeld `#fText` (neu leer bzw. mit Text): ⓧ ein- und mehrzeilig (`checkClear`, R-5.6), Cursor am Ende (`checkCursorEnde`, R-5.11), Feldfehler (`checkFieldErrors`, R-5.3), Großschreibung (`checkCapital`) und Leerzeichen (`checkSpaces`, R-5.2), Textfeld leer einzeilig, wächst mit (`checkFeldCursor`, R-5.2), Eingabetaste (`checkEnterDone`, R-5.5). Die App prüft ihre eigenen Felder weiter selbst.
 - Die App startet sie über eine Hülle – Playwright und der Ausgabeordner kommen von ihr, nie wird in die Fassung geschrieben:
 
 ```js
@@ -138,7 +139,7 @@ await pruefseite(pw, { out: new URL('out/', import.meta.url), teil: process.env.
 die nicht genau einmal vorkommt, wird gemeldet); `node tests/alle.mjs --gegenprobe pruefseite` läuft alle Fehler jedes Teils. Je Ablauf ein Fehler, der den
 alten Fehler nachbildet (seit 4.64.0, APD-135/E-12): `messung` – die Messdatei zeichnet den eingegebenen Text auf statt seiner Länge; `titel-blase` – keine
 Sprechblase am gekürzten Titel; `titel-oben` – Hörer von ‚Titel antippen‘ am `window` statt am `document`; `schicht-oben` – die Sperrschicht schließt nicht
-beim Loslassen; `grossanzeige` – Loslassen über einer Schaltfläche löst sie nicht aus.
+beim Loslassen; `grossanzeige` – Loslassen über einer Schaltfläche löst sie nicht aus. Seit 4.69.0 (APD-135/F-9) im Teil `felder` je Baustein ein Fehler (7): `keinX` (ⓧ erscheint nicht), `cursorVorn` (Cursor nicht am Ende), `ohneInvalid` (Feld ohne `aria-invalid`), `kleinAmAnfang` (kein Großbuchstabe), `enterBleibt` (Eingabetaste schließt die Tastatur nicht), `doppelLeer` (doppelte Leerzeichen), `waechstNicht` (Textfeld wächst nicht mit).
 
 ## Weitere allgemeine Prüfungen
 
@@ -153,7 +154,7 @@ beim Loslassen; `grossanzeige` – Loslassen über einer Schaltfläche löst sie
 | `katalog.mjs` | R-1.13, R-2.2, R-7.1, R-7.2 | Seit 4.65.0 (APD-140/Z-2 bis Z-4): öffnet `katalog/index.html` im Arbeitsstand (auch aus einer Fassung geladen) in allen 4 Ansichten, jede Bean, ohne Konsolen- oder Skriptfehler, Grundregeln nach jedem Schritt; lädt `v4/`, `AD_VERSION` = `--ad-version` = `v4/ui.js`, Versionszeile im Mehr-Menü; in der App über die Hülle `bean-katalog.mjs` |
 | `start.mjs` | R-7.2 | `checkStart(page, { inhalt, leer })` nach dem Neuladen: iPhone-Aufbau in der Startliste (`#side.page`), ganz oben, kein Eintrag blau, kein Inhalt offen; iPad-Aufbau mit Seitenleiste und genau einem blauen, geöffneten Eintrag. `checkRueckkehr(page)`: `visibilitychange` und `pageshow` (aus dem Zwischenspeicher) ändern nichts |
 | `offline.mjs` | R-1.5 | eigener Webserver mit echtem Service Worker; ohne Netz, unter anderer Adresse und bei hängendem Netz (höchstens 3 s) erscheint die App – iPad und iPhone, Chromium und WebKit; der Offline-Hinweis (APD-6/F-1 bis F-17): Meldung und Zeile beim Start ohne Netz, bei hängendem Netz und beim Wechsel (Safari meldet offline/online); Lage, Kontrast, 4 s, ‚Wieder online‘, schnelles Hin und Her, Drehen, offenes Fenster, Tastatur, lange Liste, Startliste (iPhone); Option `vorbereiten(page)` für Daten der App |
-| `pruefseite.mjs` | R-10.3, R-1.8, R-7.7, R-10.1, R-6.3, R-10.5, R-5.1, R-2.3, R-6.2, R-10.8, R-10.7, R-9.1 bis R-9.4; Abläufe R-1.6, R-2.5, R-2.6, R-2.7, R-1.12, R-4.13, R-4.1, R-4.4, R-4.7, R-3.4, R-1.4, R-1.8, R-1.9, Designrichtlinie 13 | Bausteine auf der Prüfseite (oben) |
+| `pruefseite.mjs` | R-10.3, R-1.8, R-7.7, R-10.1, R-6.3, R-10.5, R-5.1, R-2.3, R-6.2, R-10.8, R-10.7, R-9.1 bis R-9.4; Abläufe R-1.6, R-2.5, R-2.6, R-2.7, R-1.12, R-4.13, R-4.1, R-4.4, R-4.7, R-3.4, R-1.4, R-1.8, R-1.9, R-5.2, R-5.3, R-5.5, R-5.6, R-5.11, Designrichtlinie 13 | Bausteine auf der Prüfseite (oben) |
 | `version.mjs` | R-10.3 | feste Fassung: `index.html` und `sw.js` laden genau `fassung/<AD_NEEDED>/` (nichts aus `v4/`), Versionen der Fassung stimmen, Prüfsummen `fassung/PRUEFSUMMEN` (keine Datei geändert, fehlt oder dazu), `v4/` und `tests/` = neueste Fassung; Hinweis beim Start bei älterer Fassung; ein geänderter Arbeitsstand `v4/` erreicht die App nicht (kein Abruf) |
 | `schnittstelle.mjs` | R-1.14 | Schnittstelle von `ui.js` ohne Browser (`checkSchnittstelle`, Zerleger `schnittstelle-zerleger.mjs`): die App und seit 4.64.0 die Vorlage nutzen nur den Teil `app` von `schnittstelle.json` (Gegenprobe: Kopie der Vorlage mit `setAppearance`), Prüfdateien dazu `pruefungen`; keine Deklaration der App mit dem Namen eines Bausteins; jeder Name der Liste steht in `ui.js` |
 | `messung.mjs` | Zusammenarbeit 2.2 | Werkzeug `werkzeug/messung.mjs` (Zeile Zeit und Token) mit künstlichen Sitzungsdaten; Gegenprobe `--gegenprobe` |

@@ -10,7 +10,9 @@
 //                                           ‚messung‘ (ablaufMessung), ‚titel-blase‘ (ablaufTitelBlase), ‚titel-oben‘ (ablaufTitelOben), ‚schicht-oben‘
 //                                           (ablaufSchichtOben) und ‚grossanzeige‘ (ablaufGrossanzeige) – bis Reiselogbuch 3.57.6 eigene Prüfdateien der App;
 //                                           seit 4.65.0 (APD-135/B-3.3 Schritt 1, Testfall-Liste arbeit/APD-135 Paket 7 Schritt 1 Vorschlag.md APD-135/Q-1
-//                                           bis Q-10) ‚menue‘ (ablaufMenue), ‚sprechblase‘ (ablaufSprechblase) und ‚fenster‘ (ablaufFenster)
+//                                           bis Q-10) ‚menue‘ (ablaufMenue), ‚sprechblase‘ (ablaufSprechblase) und ‚fenster‘ (ablaufFenster);
+//                                           seit 4.69.0 (APD-135/B-3.3 Schritt 2, Testfall-Liste arbeit/0149 APD-135 B-3.3 Schritt 2 Vorschlag.md
+//                                           APD-135/F-1 bis F-10) ‚felder‘ (ablaufFelder)
 // Gegenprobe (lauf.mjs --gegenprobe pruefseite): PRUEF_GEGENPROBE=pruefseite:<fall> schleust den Fehler eines Bausteins per Textersetzung in
 // ui.js ein (wie gleitenGegenprobe in ablauf.mjs); der Teil muss mit der Meldung dieses Bausteins rot werden (GEGENPROBEN_PRUEFSEITE).
 // Die Vorlage in der Fassung (fassung/X.Y.Z/vorlage/index.html) nennt ../fassung/X.Y.Z/… – geladen wird trotzdem nur, was p.route liefert.
@@ -22,7 +24,7 @@ import { createCheck } from './hig.mjs';
 import { checkSync } from './abgleich.mjs';
 import { checkSearchWords, langDruecken, checkMessung, sucheAuf, checkTitelBlase, titelLang, titelBlaseOffen, checkTitelOben, checkSafariKlick,
   checkSafariWischKlick, checkGleiten, checkSchichtOben, checkGrossanzeige, finger, checkWachsen, checkMehrKnopf, checkFokus, checkFokusZurueck, checkRuhig,
-  checkDialogHead } from './ablauf.mjs';
+  checkDialogHead, checkFieldErrors, checkCapital, checkSpaces, checkEnterDone, checkClear, checkCursorEnde, checkFeldCursor } from './ablauf.mjs';
 import { lies as liesMessung, ansicht as messAnsicht } from './abspielen.mjs';
 import { obenOhneKlick } from './safari.mjs';
 import { checkContextMenus } from './kontextmenue.mjs';
@@ -38,7 +40,7 @@ const MESSUNGEN = inFassung ? path.join(hier, '..', '..', '..', 'tests', 'messun
 const lies = f => readFileSync(f, 'utf8');
 // Fassung, aus der geprüft wird: Ordnername (fassung/X.Y.Z) bzw. im Arbeitsstand die Version von v4/design.css
 export const FASSUNG = inFassung ? path.basename(path.join(hier, '..')) : lies(path.join(basis, 'design.css')).match(/--ad-version:\s*"([\d.]+)"/)?.[1];
-export const URSPRUNG = 'http://pruefseite.test/';
+export const URSPRUNG = 'https://pruefseite.test/';   // seit 4.69.0 https (APD-135/F-2): sicherer Kontext wie die App auf GitHub Pages – sonst fehlt navigator.clipboard
 export const SPEICHER = 'neueapp.v1';
 
 // Neutrale Daten: leer bzw. drei Einträge, der erste mit n Unterpunkten (APD-135/E-2: 60).
@@ -119,6 +121,22 @@ fenster: {
     [["  const toenen = item => finde(item)?.classList.add('on');", "  const toenen = item => {};"]], /APD-136\/S-9 /),
   releaseGibtNichtFrei: fall('Hervorgehobene Quelle', 'release gibt die Quelle nicht frei',
     [["release(item) { if (!item || !gehalten.delete(item)) return; freigeben(item);", "release(item) { if (!item || !gehalten.delete(item)) return;"]], /APD-136\/S-10 /),
+},
+// B-3.3 Schritt 2 (APD-135/F-9, seit 4.69.0): je Baustein ein Fehler, den bis Reiselogbuch 3.58.1 nur die Prüfungen der App mit Feldern fanden
+// (regeln-ablauf, ablauf-feld-cursor, ablauf-bedienung; die Nachweis-Tabelle kommt mit dem Streichen in der App). zeichen = die Meldung der Prüffunktion.
+felder: {
+  keinX: fall('ⓧ', 'ⓧ erscheint nicht (Schaltfläche ohne Klasse fclear)', [["fxBtn.className = 'fclear';", "fxBtn.className = 'fclear-aus';"]], /R-5\.6 #f(Title|Text): kein ⓧ/),
+  cursorVorn: fall('Cursor', 'Cursor bleibt beim Aktivieren an der angetippten Stelle (nicht am Ende)',
+    [["const ceEnde = f => { try { const n = f.value.length;", "const ceEnde = f => { return; try { const n = f.value.length;"]], /R-5\.11 APD-126\/B-[13] /),
+  ohneInvalid: fall('Feldfehler', 'fehlerhaftes Feld ohne aria-invalid', [["if (text) f.setAttribute('aria-invalid', 'true'); else f.removeAttribute('aria-invalid');",
+    "f.removeAttribute('aria-invalid');"]], /R-5\.3 fehlerhaftes Feld ohne aria-invalid/),
+  kleinAmAnfang: fall('Großschreibung', 'kein Großbuchstabe am Zeilenanfang', [["dlg.addEventListener('beforeinput', capBefore);\ndlg.addEventListener('input', autoCapital);", ""]],
+    /R-5\.2 Großbuchstaben fehlen/),
+  enterBleibt: fall('Eingabetaste', 'Eingabetaste schließt die Tastatur im einzeiligen Feld nicht', [["  e.preventDefault();\n  e.target.blur();\n});", "});"]],
+    /R-5\.5 #fTitle: Eingabetaste schließt/),
+  doppelLeer: fall('Leerzeichen', 'doppelte Leerzeichen beim Tippen', [["if (leer(f.value.charAt(f.selectionStart - 1)) || leer(f.value.charAt(f.selectionEnd))) e.preventDefault();", ""]],
+    /R-5\.2 doppelte Leerzeichen/),
+  waechstNicht: fall('Textfeld wächst', 'Textfeld wächst nicht mit', [["ta.style.height = (ta.scrollHeight + 2) + 'px';", "ta.style.height = '';"]], /R-5\.2 APD-126\/B-[4-7] /),
 } };
 const gpFall = () => (process.env.PRUEF_GEGENPROBE || '').match(/^pruefseite:(.+)$/)?.[1] || null;
 const gpSuche = name => name && Object.values(GEGENPROBEN_PRUEFSEITE).map(t => t[name]).find(Boolean);
@@ -881,8 +899,40 @@ export async function checkSourcehighlight(p) {
   if (JSON.stringify(r.ev10) !== JSON.stringify(['#shA true', '#shA false'])) E(`APD-136/S-10 Ereignis change ${JSON.stringify(r.ev10)} statt je einmal getönt und frei`);
   return errors;
 }
+// ---------- B-3.3 Schritt 2 (APD-135/F-1 bis F-8, seit 4.69.0): Felder auf der Prüfseite ----------
+// Die Bausteine eines Eingabefelds (ⓧ R-5.6, Cursor am Ende R-5.11, Feldfehler R-5.3, Großschreibung und Leerzeichen R-5.2, Eingabetaste R-5.5, Textfeld wächst
+// R-5.2) mit denselben Prüffunktionen wie in den Prüfungen der App (ablauf.mjs), hier an den Feldern der Vorlage: ‚Eintrag bearbeiten‘ (einzeiliges Pflichtfeld
+// #fTitle mit Meldung) und ‚Unterpunkt‘ (Textfeld #fText, neu leer bzw. mit Text); Grundregeln nach jedem Schritt (t.schritt). iPad quer und iPhone hoch (F-1).
+export async function ablaufFelder(t, b) {
+  const daten = datenB33(), ZEILE = `#app [data-day="${tag(3)}"]`;
+  for (const ansicht of ['iPad quer', 'iPhone hoch']) {
+    const p = await t.seite(b, ansicht, { theme: 'light' });
+    const wo = x => `${ansicht} ${x}`;
+    try {
+      await vorlageStart(p, daten, 'a');
+      const zu = async () => { if (!await p.evaluate(() => document.getElementById('dlg').open)) return;
+        await p.evaluate(() => document.getElementById('dlg').close()); await bis(p, `!document.getElementById('dlg').open && ${RUHE}`, 'Fenster zu'); };
+      const bearbeiten = async () => { await zu(); await ausMehr(p, 'Eintrag bearbeiten')(); await fensterAuf(p); };
+      const neuerPunkt = async () => { await zu(); await ausMehr(p, 'Neuer Unterpunkt')(); await fensterAuf(p); };
+      const unterpunkt = async () => { await zu(); await p.locator(ZEILE).click(); await fensterAuf(p); };
+      await t.schritt(p, 'F-4 Feldfehler (Pflichtfeld Titel)', async () => t.liste(await checkFieldErrors(p, { open: bearbeiten, field: '#fTitle', where: wo('Eintrag bearbeiten') })));
+      await t.schritt(p, 'F-8 Eingabetaste einzeilig', async () => t.liste(await checkEnterDone(p, { open: bearbeiten, fields: [{ sel: '#fTitle', text: ' X' }], where: wo('Eintrag bearbeiten') })));
+      await t.schritt(p, 'F-8 Eingabetaste mehrzeilig', async () => t.liste(await checkEnterDone(p, { open: neuerPunkt, multi: '#fText', where: wo('Neuer Unterpunkt') })));
+      await t.schritt(p, 'F-2 ⓧ einzeilig (Pflichtfeld)', async () => t.liste(await checkClear(p, { open: bearbeiten, fields: [{ sel: '#fTitle', warn: true }], where: wo('Eintrag bearbeiten') })));
+      await t.schritt(p, 'F-2 ⓧ mehrzeilig', async () => t.liste(await checkClear(p, { open: unterpunkt, fields: [{ sel: '#fText' }], where: wo('Unterpunkt') })));
+      await t.schritt(p, 'F-5 Großschreibung', async () => t.liste(await checkCapital(p, { open: neuerPunkt, field: '#fText', where: wo('Neuer Unterpunkt') })));
+      await t.schritt(p, 'F-6 Leerzeichen', async () => t.liste(await checkSpaces(p, { open: neuerPunkt, field: '#fText', where: wo('Neuer Unterpunkt') })));
+      await t.schritt(p, 'F-3 Cursor am Ende einzeilig', async () => t.liste(await checkCursorEnde(p, { open: bearbeiten, felder: ['#fTitle'], where: wo('Eintrag bearbeiten') })));
+      await t.schritt(p, 'F-3 Cursor am Ende mehrzeilig', async () => t.liste(await checkCursorEnde(p, { open: unterpunkt, felder: ['#fText'], where: wo('Unterpunkt') })));
+      await t.schritt(p, 'F-7 Textfeld leer einzeilig, wächst mit', async () => t.liste(await checkFeldCursor(p, { open: neuerPunkt, leer: '#fText', drehen: false, where: wo('Neuer Unterpunkt') })));
+      await zu();
+      t.ist('nichts gespeichert (Titel der gespeicherten Einträge)', (await gespeichert(p)).items.map(e => e.title), ['Erster Eintrag', 'Zweiter Eintrag', 'Dritter Eintrag'], 'R-4.4');
+    } catch (e) { t.fehler('', `Ablauf bricht ab: ${e.message.split('\n')[0]}`); }
+    await p.close();
+  }
+}
 const ABLAEUFE = { messung: ablaufMessung, 'titel-blase': ablaufTitelBlase, 'titel-oben': ablaufTitelOben, 'schicht-oben': ablaufSchichtOben, grossanzeige: ablaufGrossanzeige,
-  menue: ablaufMenue, sprechblase: ablaufSprechblase, fenster: ablaufFenster };
+  menue: ablaufMenue, sprechblase: ablaufSprechblase, fenster: ablaufFenster, felder: ablaufFelder };
 
 export async function pruefseite(pw, { out, teil = process.env.PRUEF_TEIL || 'werte' } = {}) {
   const t = pruefung('bausteine-pruefseite', pw, { hig: createCheck(), out });
