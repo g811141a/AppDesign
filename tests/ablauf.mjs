@@ -3421,7 +3421,7 @@ const durchsichtig = c => !c || /rgba\(0, 0, 0, 0\)|transparent/.test(c);
 const LEISTE_SEL = ':is(.nb, .pnav, .bbar, .dlg-head, .side-head, .side-search, .fab) button';
 const skalaVon = t => { const m = /matrix\(([-\d.e]+)/.exec(t || ''); return m ? +m[1] : 1; };
 export async function checkBeruehren(p, { knopf = null, zeile = null, rollen = null, gesperrt = null, kapsel = null, where = '' } = {}) {
-  const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}R-3.6 ${t}`);
+  const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}R-3.6 ${t}`), E15 = t => errors.push(`${where ? where + ': ' : ''}R-1.15 ${t}`);   // Textauswahl seit 4.68.1 R-1.15
   const farbe = v => p.evaluate(v => { const d = document.createElement('div'); d.style.backgroundColor = `var(${v})`; document.body.append(d);
     const c = getComputedStyle(d).backgroundColor; d.remove(); return c; }, v);
   const grau = await farbe('--beruehrt'), hell = await farbe('--heben');
@@ -3479,10 +3479,11 @@ export async function checkBeruehren(p, { knopf = null, zeile = null, rollen = n
     if (r.gemerkt.spaeter.opacity !== 1) E(`B-3 ${zeile} wird blass statt grau (Deckkraft ${r.gemerkt.spaeter.opacity})`);
     // APD-106/H-1, APD-106/H-2 (seit 4.48.1, APD-106): keine Antipp-Markierung; langes Halten markiert keinen Text und zeigt keine Lupe (Safari-Modell: safari.mjs)
     if (!durchsichtig(r.gemerkt.spaeter.tap)) E(`APD-106/H-1 ${zeile}: Safaris Antipp-Markierung ist an (${r.gemerkt.spaeter.tap})`);
-    if (r.gemerkt.spaeter.auswahl !== 'none') E(`APD-106/H-2 ${zeile}: Text ist beim Halten wählbar (user-select ${r.gemerkt.spaeter.auswahl}) – Safari markiert ihn und zeigt die Lupe`);
-    if (r.gemerkt.spaeter.callout !== undefined && r.gemerkt.spaeter.callout !== 'none') E(`APD-106/H-2 ${zeile}: -webkit-touch-callout ${r.gemerkt.spaeter.callout}`);
+    if (r.gemerkt.spaeter.auswahl !== 'none') E15(`APD-106/H-2 ${zeile}: Text ist beim Halten wählbar (user-select ${r.gemerkt.spaeter.auswahl}) – Safari markiert ihn und zeigt die Lupe`);
+    if (r.gemerkt.spaeter.callout !== undefined && r.gemerkt.spaeter.callout !== 'none') E15(`APD-106/H-2 ${zeile}: -webkit-touch-callout ${r.gemerkt.spaeter.callout}`);
     const s = await safariHalten(p, zeile);   // Safari-Modell: Grau und Markierung, die nur das Gerät zeichnet
-    if (s.grau || s.markiert) E(`APD-106/H-2 ${zeile}: Safari würde beim Halten ${[s.grau && 'grau markieren', s.markiert && 'Text markieren und die Lupe zeigen'].filter(Boolean).join(' und ')}`);
+    if (s.grau) E(`APD-106/H-2 ${zeile}: Safari würde beim Halten grau markieren`);
+    if (s.markiert) E15(`APD-106/H-2 ${zeile}: Safari würde beim Halten Text markieren und die Lupe zeigen`);
     if (r.gemerkt.ende.beruehrt) E(`B-2 ${zeile} bleibt nach dem Loslassen grau`);
     if (r.klicks.length !== 1) E(`B-2 Loslassen auf ${zeile} löst ${r.klicks.length}-mal aus`);
     const w = await finger(p, zeile, [['warte', 120], ['zu', 0, 20], ['merke', 'weg']]);
@@ -3517,7 +3518,7 @@ export async function checkBeruehren(p, { knopf = null, zeile = null, rollen = n
 // Seit 4.48.1 (APD-106 Variante C, Testfall-Liste arbeit/APD-106 Testfall-Liste.md APD-106/H-4 bis APD-106/H-6): entfernen – die Frage kommt erst nach 1 s
 // (nach 0,9 s noch nicht); in der Kapsel hebt sich das Zeichen auf einem hellen Kreis mit Schatten als eigene Ebene (.schwebt) über die Leiste.
 export async function checkAnheben(p, { sel, frage = '.pop, .menu', feld = null, entfernen = false, where = '' } = {}) {
-  const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}R-3.5 ${t}`);
+  const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}R-3.5 ${t}`), E15 = t => errors.push(`${where ? where + ': ' : ''}R-1.15 ${t}`);   // Textauswahl seit 4.68.1 R-1.15
   const skala = t => { const m = /matrix\(([-\d.e]+)/.exec(t || ''); return m ? +m[1] : 1; };
   const ruhig = await p.evaluate(() => matchMedia('(prefers-reduced-motion: reduce)').matches);
   // B-5: nach 0,06 s noch nicht (gemessen, unter 0,14 s), ab 0,15 s angehoben (größer, Schatten); B-8: nach 0,3 s weggezogen – senkt sich, keine Frage
@@ -3539,7 +3540,7 @@ export async function checkAnheben(p, { sel, frage = '.pop, .menu', feld = null,
     if (!s.oben) E(`APD-107/S-7 ${sel}: der Kreis liegt nicht zuoberst (an seiner Mitte liegt etwas anderes darüber)`);
     if (s.zeiger !== 'none' || s.hidden !== 'true') E(`APD-106/H-4 ${sel}: der Kreis fängt Antippen ab oder ist für VoiceOver sichtbar`);
     if (!durchsichtig(h.tap)) E(`APD-106/H-6 ${sel}: Safaris Antipp-Markierung ist an (${h.tap})`);
-    if (h.auswahl !== 'none') E(`APD-106/H-6 ${sel}: Text der Smiley-Leiste ist beim Halten wählbar (user-select ${h.auswahl}) – Safari markiert das Fenster und zeigt die Lupe`);
+    if (h.auswahl !== 'none') E15(`APD-106/H-6 ${sel}: Text der Smiley-Leiste ist beim Halten wählbar (user-select ${h.auswahl}) – Safari markiert das Fenster und zeigt die Lupe`);
   }
   if (r.gemerkt.weg.schwebt) E(`B-8 ${sel}: nach dem Wegziehen bleibt der Kreis stehen`);
   if (r.gemerkt.weg.hebt) E(`B-8 ${sel}: nach dem Wegziehen bleibt der Eintrag angehoben`);
