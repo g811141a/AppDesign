@@ -17,7 +17,7 @@
 - **Modell und Aufwand:** 0154 lief mit **Opus 5.5**, Aufwand **hoch** (get_session; Modell-Aufrufe `high`, `CLAUDE_CODE_EFFORT_LEVEL` ungesetzt); kein
   `model_fallback`. Festlegung (0122): Fable 5.2 vorerst nicht; Hilfsagenten nur mit Opus 5.5 und Aufwand hoch, einzeln nacheinander (auch web-fetch).
 - **Nutzungsgrenze:** Sieben-Tage-Grenze **‚allowed_warning‘** (zurückgesetzt 26.11.2026, 8:00) – sparsam prüfen.
-- **Hooks:** `~/.claude/settings.json` leer (`{}`).
+- **Hooks:** keine; `~/.claude/settings.json` enthält nur die Regel `create_session` erlauben (Setup-Skript der Umgebung ‚Standard‘, Nutzer 22.11.2026, Sitzung 0154).
 - **Usertests:** **P-120 nicht ok** – Korrekturen F-1 bis F-4 entschieden, teils umgesetzt (unten).
 - **Umgebung:** HIG über JSON (`https://developer.apple.com/tutorials/data/design/human-interface-guidelines/<seite>.json`) erreichbar; `support.apple.com` nicht.
 - **Prüfumgebung:** 4 Kerne; Chromium 1243 (Verweise 1194 → 1243), WebKit 2215.
