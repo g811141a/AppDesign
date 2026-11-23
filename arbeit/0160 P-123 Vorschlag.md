@@ -93,3 +93,4 @@ Nach jedem Schritt gelten die Grundregeln (`pruefe.mjs`), R-3.10 mittig prüft `
 - **Vorschlag F-1 bis F-3: Ja** – so übernehmen (AD-Bean `alert` neue Eigenschaft; Ergebnis immer im Hinweisfenster; Backup-Hinweis immer, über der Vorschau in der Erinnerung).
 - **Wortlaut Designrichtlinie 10 und 7 (Abschnitt 5): Ja** – als allgemeine Regel festhalten (0 Nr. 4, 29); wird mit dem Bau eingetragen.
 - **Bau:** noch nicht – ‚Sichere alles und frage dann nach, was als nächstes kommt‘. Stand gesichert auf den Zweigen `arbeit-0160` (AppDesign und ReiseLogBuch); `main` unverändert.
+- **F-3 (Nutzer 23.11.2026):** am iPhone nach einem Neustart der App wieder ok, ‚als erledigt betrachten‘. Die Nachbildung erklärt es (nach einem Neustart ist das Fenster `dlg` leer). **Die Korrektur bleibt in 3.58.4**, ohne eigenen Testfall im Usertest P-124 – /3 entfällt im Entwurf (Abschnitt 7).
