@@ -3,6 +3,36 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.71.0 – 27.11.2026
+
+AppDesign 4.71.0 · Designrichtlinie allgemein 4.71.0 · Zusammenarbeit allgemein 3.19.0 · Reiselogbuch 3.59.0 (Fassung 4.71.0)
+
+**RLB-126 – ‚Zuletzt gelöscht‘ als AD-Bean `recentlydeleted`** (Nutzer 18.11.2026, Sitzung 0127; Entscheidungen RLB-126/J-1 bis J-11, Muster ok und Wortlaut freigegeben
+26.11.2026 – `arbeit/0165 RLB-126 Muster.md`, Aufteilung `arbeit/0164 RLB-126 AD-Bean recentlydeleted Aufteilung.md`; Bau in 4.x, Umzug auf `commands`/`presentation`
+mit `v5/` – RLB-126/J-11; Bau-Frage mit Ja beantwortet 26.11.2026, Sitzung 0166; gebaut in Sitzung 0167).
+
+- **`ui.js` – `createRecentlydeleted(root, { data, list, field, days, nouns, label, detail, question })` (neu):** hält je gelöschtem Eintrag `{ id, item, at, on }`
+  (ganzer Inhalt, Zeitpunkt, Gerät) im Feld `field` (Standard `recentlyDeleted`) der Daten der App – so kommt ‚Zuletzt gelöscht‘ mit Löschdatum ins Backup. Frist
+  `days` (Standard 30) in Kalendertagen, Abgelaufenes fällt beim Start, um 0:00 und beim Lesen weg. Methoden `remove(item)` (ohne Abfrage, Ansage für VoiceOver),
+  `restore(id)` (zurück in die Liste, Eintrag in `data.deleted` entfällt – zählt beim Abgleich als Änderung), `purge(id)` und `purgeAll()` (vermerken `purged` am Eintrag
+  in `data.deleted`), `daysLeft(id)`; nur lesen `items`; Oberfläche `entryHtml()` (letzte Kachel mit Papierkorb und Anzahl, nur wenn nicht leer), `listHtml({ current, end })`
+  (Kopf ‹, ‚Zuletzt gelöscht‘, Anzahl, Hinweis zur Frist, je Kachel ‚Gelöscht am … · noch N Tage‘), `noticeHtml(id)` (Hinweis über der Vorschau mit ‚Wiederherstellen‘),
+  `actions(row)` (Kontextmenü und Wischen ‚Wiederherstellen‘ · ‚Endgültig löschen‘ – nur das fragt); Ereignisse `change`, `restore`, `purge`, `open`, `close`.
+- **`ui.js` – `createSync`:** neue Option `recentlyDeleted` (Feldname). Beim Abgleich gilt je Eintrag der jüngere Löschzeitpunkt beider Geräte; er bleibt in ‚Zuletzt
+  gelöscht‘, solange er danach nicht in der Liste steht (wiederhergestellt, danach geändert oder gesperrt), sein Eintrag in `deleted` besteht und nicht `purged` ist
+  (gleich alt: `purged` gilt).
+- **`design.css`:** Klassen `.ad-recentlydeleted-…` (Kachel, Papierkorb, Anzahl, Hinweis zur Frist – macht die Seitenleiste nicht breiter –, Hinweis über der Vorschau
+  hell und dunkel, iPhone umbrechend).
+- **Regeln (Wortlaut freigegeben RLB-126/J-10):** R-4.12 mit der Ausnahme „Ausgenommen ist das Löschen nach ‚Zuletzt gelöscht‘ (R-7.10): es lässt sich rückgängig machen
+  und fragt nicht“; R-7.8 „Fragt die rote Aktion beim Antippen zuerst (R-4.12), bleibt die Kachel bis zur Entscheidung offen.“ statt „Die rote Aktion fragt …, die Kachel
+  bleibt …“; neu **R-7.10 ‚Zuletzt gelöscht‘** (Prüfung `checkRecentlyDeleted`, Gerät: Wischgefühl, Abgleich zweier Geräte); neuer Abschnitt 15.24; Zeile
+  `recentlydeleted` in der Liste der AD-Beans; `schnittstelle.json` mit `createRecentlydeleted`.
+- **Katalog:** `katalog/recentlydeleted.js` (neu) mit ‚Ausprobieren‘.
+- **Prüfungen:** PRUEFUNGEN_AD
+- AD-Bean: `recentlydeleted` (neu).
+
+Usertest im Reiselogbuch: P-126 (Backlog des Reiselogbuchs).
+
 ## 4.70.2 – 26.11.2026
 
 AppDesign 4.70.2 · Designrichtlinie allgemein 4.70.2 · Zusammenarbeit allgemein 3.19.0 · Reiselogbuch 3.58.5 (Fassung 4.70.2)

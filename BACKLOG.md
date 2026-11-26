@@ -67,6 +67,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Thema | Version | Datum |
 |---|---|---|---|
+| RLB-126 | **Allgemeiner Teil von RLB-126 (Zuletzt gelöscht):** neue AD-Bean `recentlydeleted` mit Katalogdatei, `createSync` mit `recentlyDeleted`, neue Regel R-7.10, R-4.12 mit Ausnahme, R-7.8 ein Satz, Abschnitt 15.24; Usertest P-126 im Reiselogbuch | 4.71.0 | 27.11.2026 |
 | P-125, P-124, P-123, P-122 | **Usertests P-122 bis P-125** (Reiselogbuch 3.58.2 bis 3.58.5): AD-Bean `alert` mit `layout()` (Rand 16 px, Dateiname bis Bildschirmbreite − 32 px, R-10.8), `sourcehighlight` merkt sich den Tausch, R-3.10 Hinweise mittig, Felder auf der Prüfseite (APD-135/B-3.3 Schritt 2) – **P-125 alles ok** (Nutzer 26.11.2026, Sitzung 0164) | 4.70.2 | 26.11.2026 |
 | P-121 | **Usertest P-121** (Reiselogbuch 3.58.1): P-121/1 bis P-121/4 zu R-1.15 ok (Nutzer 22.11.2026); die Rückmeldungen P-121/F-1 und P-121/F-2 betrafen nur die App | 4.69.0 | 22.11.2026 |
 | P-120 | **P-120/F-1 Text nur in Eingabefeldern auswählbar:** neue Regel R-1.15, `design.css` (`html`, `dialog` ohne Textauswahl, Felder und `.rt` `text`), `hig.mjs` prüft jeden sichtbaren Text; R-3.6 und Designrichtlinie 13 angepasst | 4.68.1 | 22.11.2026 |

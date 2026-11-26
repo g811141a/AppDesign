@@ -52,7 +52,7 @@ Keine (Backlog AppDesign und Reiselogbuch: ‚1. Auf iPad und iPhone prüfen‘ 
 Bau **AppDesign 4.71.0 / Reiselogbuch 3.59.0** mit RLB-126 nach `arbeit/0166 RLB-126 Bau-Frage.md` – das Ja zum Bau liegt vor (Sitzung 0166):
 
 - AD-Bean `recentlydeleted` (neu) mit Katalogdatei; Wortlaut R-4.12, R-7.8, neue R-7.10 und Lösch-Abfrage (freigegeben, RLB-126/J-10)
-- Reiselogbuch: Löschen ohne Abfrage nach ‚Zuletzt gelöscht‘, Abgleich (T-9) und Backup (T-10) umbauen, `PROMPT.md`
+- Reiselogbuch: Löschen ohne Abfrage nach ‚Zuletzt gelöscht‘, Abgleich (RLB-126/T-9) und Backup (RLB-126/T-10) umbauen, `PROMPT.md`
 - Prüfungen anpassen (`checkErstFragen`, `ablauf-sperre`, `ablauf-seitenleiste-kontextmenue`, `ablauf-wischen`), neu R-7.10 und
   RLB-126/T-1 bis T-15
 - Usertest **P-126**; Prüflauf **voll** (rund 75 min)
