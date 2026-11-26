@@ -19,10 +19,6 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
-| P-125 | 1 | **Usertest P-125** im Reiselogbuch 3.58.5 (Backlog des Reiselogbuchs): P-125/1 bis P-125/4 – AD-Bean `alert` mit `layout()` (Rand 16 px, Dateiname bis Bildschirmbreite − 32 px, R-10.8) und `sourcehighlight` merkt sich den Tausch (AppDesign 4.70.2, P-124/F-1 und P-124/F-2) | prüfen |
-| P-124 | 1 | **Usertest P-124** im Reiselogbuch 3.58.4 (Backlog des Reiselogbuchs): P-124/1 und P-124/2 – `alert` misst neu, Ergebnis auf jedem Weg im Hinweisfenster (AppDesign 4.70.1, P-123/F-1 und P-123/F-2) · **Rückmeldung (Nutzer 26.11.2026, Sitzung 0161): nicht ok** – P-124/F-1 (Hinweisfenster nicht so breit wie möglich, `alert`) und P-124/F-2 (Teilen nach der Vorschau noch hellblau) im Backlog des Reiselogbuchs | nicht ok |
-| P-123 | 1 | **Usertest P-123** im Reiselogbuch 3.58.3 (Backlog des Reiselogbuchs): P-123/2 und P-123/3 – R-3.10 Hinweise mittig (AppDesign 4.70.0, P-122/F-2) · **Rückmeldung (Nutzer 22.11.2026, Sitzung 0159): nicht ok** – P-123/F-1 bis P-123/F-3 im Backlog des Reiselogbuchs (Breite und Höhe des Hinweisfensters, Meldung nach abgebrochenem Backup am iPad) | nicht ok |
-| P-122 | 1 | **Usertest P-122** im Reiselogbuch 3.58.2 (Backlog des Reiselogbuchs): P-122/5 – ein kurzer Blick auf ein Feld für APD-135/B-3.3 Schritt 2 (AppDesign 4.69.0) · **Rückmeldung (Nutzer 22.11.2026, Sitzung 0157): nicht ok** – P-122/5 ok; allgemein betroffen P-122/F-2 (Ausrichtung von Schaltflächen in Hinweisen, unten) | nicht ok |
 
 ## 2. Weitere Themen (in Klärung)
 
@@ -69,6 +65,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Thema | Version | Datum |
 |---|---|---|---|
+| P-125, P-124, P-123, P-122 | **Usertests P-122 bis P-125** (Reiselogbuch 3.58.2 bis 3.58.5): AD-Bean `alert` mit `layout()` (Rand 16 px, Dateiname bis Bildschirmbreite − 32 px, R-10.8), `sourcehighlight` merkt sich den Tausch, R-3.10 Hinweise mittig, Felder auf der Prüfseite (APD-135/B-3.3 Schritt 2) – **P-125 alles ok** (Nutzer 26.11.2026, Sitzung 0164) | 4.70.2 | 26.11.2026 |
 | P-121 | **Usertest P-121** (Reiselogbuch 3.58.1): P-121/1 bis P-121/4 zu R-1.15 ok (Nutzer 22.11.2026); die Rückmeldungen P-121/F-1 und P-121/F-2 betrafen nur die App | 4.69.0 | 22.11.2026 |
 | P-120 | **P-120/F-1 Text nur in Eingabefeldern auswählbar:** neue Regel R-1.15, `design.css` (`html`, `dialog` ohne Textauswahl, Felder und `.rt` `text`), `hig.mjs` prüft jeden sichtbaren Text; R-3.6 und Designrichtlinie 13 angepasst | 4.68.1 | 22.11.2026 |
 | APD-146 | **Icon-Zeile Sperren / Entsperren** (`lock` / `lock-open`) in Designrichtlinie 5 | 4.68.1 | 22.11.2026 |
