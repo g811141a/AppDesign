@@ -42,7 +42,7 @@ Nachbau und Vorschlag in Sitzung 0162, bestätigt 26.11.2026).
   an den neuen Code angepasst (rot mit APD-136/S-10).
 - AD-Bean: `sourcehighlight` (Korrektur ohne neue Eigenschaft: `hold` und `release` wirken nach einem Tausch durch `refresh` auf das neue Element).
 
-**Warum die Prüfungen es übersahen:** P-123/F-1 hatte kurze Titel (der Name passte schon in 600 px) und verglich nur mit einem erneuten Messen derselben Bean;
+Warum die Prüfungen es übersahen: P-123/F-1 hatte kurze Titel (der Name passte schon in 600 px) und verglich nur mit einem erneuten Messen derselben Bean;
 `checkDateiname` nahm die Höchstbreite des breiten Fensters selbst als Soll. Keine Prüfung baute die Seite bei offenem Menü neu auf.
 
 Usertest im Reiselogbuch: P-125 (Backlog des Reiselogbuchs).
