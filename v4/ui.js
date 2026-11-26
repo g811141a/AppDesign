@@ -1939,8 +1939,13 @@ function createAlert(dialog, { fitFileName = true } = {}) {
     const soll = Math.ceil(name + rand + 1);
     // max-width wie beim breiten Fenster aufheben (dialog: höchstens 90vw) – die Höchstbreite liegt mit Bildschirmbreite − 32 px darunter
     if (soll > grund + 0.5) { dialog.style.width = Math.min(soll, hoechst) + 'px'; dialog.style.maxWidth = 'none'; }
+    beobachter.takeRecords();   // die Messprobe selbst ist keine Änderung des Inhalts
   }
   addEventListener('resize', () => { if (dialog.open) passen(); });
+  // Seit 4.70.1 (P-123/F-1): ändert sich der Inhalt des offenen Fensters (z. B. setzt die AD-Bean notice den Dateinamen erst nach showModal ein),
+  // misst die Bean neu – vorher galt die Breite vom Öffnen und der Dateiname brach um.
+  const beobachter = new MutationObserver(() => { if (dialog.open) { passen(); placeDialogs(); } });
+  beobachter.observe(dialog, { childList: true, subtree: true, characterData: true });
   function showModal(title, message, { wide = false, action = null } = {}) {
     return new Promise(resolve => {
       dialog.classList.toggle('ad-alert-wide', wide);
