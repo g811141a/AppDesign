@@ -63,11 +63,12 @@ Aufbau nach Zusammenarbeit allgemein 2.5. **Claude liest diese Datei zu Beginn j
 
 ## 4. Danach
 
-Usertest P-125 · APD-145 (AppDesign 5.0.0, `v5/`) · APD-148 AD-Bean `backup` · APD-135/B-3.3 Schritt 3 · APD-142 schrittweise · RLB-126 (Apple-Abgleich, Muster) · APD-139 · APD-141 · übrige · **APD-147 zuletzt**.
+Usertest P-125 · **APD-149** Framework mit Steuer-Bean (eigene Sitzung, Prio 1) · APD-145 (AppDesign 5.0.0, `v5/`) · APD-148 AD-Bean `backup` · APD-135/B-3.3 Schritt 3 · APD-142 schrittweise · RLB-126 (Apple-Abgleich, Muster) · APD-139 · APD-141 · übrige · **APD-147 zuletzt**.
 
 ## 5. Neue Vereinbarungen
 
 - Wortlaut R-10.8 neu bestätigt (Nutzer 26.11.2026, Sitzung 0162) – wird mit 4.70.2 eingetragen.
+- **APD-149** Framework mit Steuer-Bean, Priorität 1, neu im Backlog (Nutzer 26.11.2026, Sitzung 0162); eigene Sitzung mit Recherche und Austausch – `arbeit/0162 Framework Steuer-Bean Ideen.md`.
 
 ## 6. Starttext für die neue Sitzung
 
