@@ -112,3 +112,52 @@ V-3 (Empfehlung aus Runde 1) bekommt dadurch klare Vorbilder für die Teile, die
 - Frage 3: **Ja** – die HIG-Regeln kommen als Grundsätze in den Entwurf: ein Popover, ein Alert über allem, ein Sheet, eine Ebene Untermenü,
   Hinweise in einer Warteschlange, Durchlass in der Kopfzeile, Darstellung je Ort. Neue Regeln folgen später mit Wortlaut (0 Nr. 29).
 - Frage 1 (Variante): Der Nutzer schreibt im Chat.
+
+## 4. Gibt es V-3 schon als Open Source? (Frage des Nutzers, Hilfsagent Opus 5.5, Aufwand hoch)
+
+Belegt aus Quelltext, README und npm-Daten. unpkg.com und die GitHub-API für fremde Repos waren gesperrt (403).
+
+**Teile von V-3:** 1 = Befehle · 2 = Stapel und Zustand am Auslöser · 3 = HIG-Regeln zentral
+
+| Kandidat | 1 Befehle | 2 Stapel / Auslöser | 3 HIG | ohne Build und ohne React/Vue | Lizenz · gepflegt |
+|---|---|---|---|---|---|
+| **Lumino** (JupyterLab) | **ja** – `isEnabled`, `isToggled`, `isVisible`, `execute`, `notifyCommandChanged`; Menü, Menüleiste, Kontextmenü und Palette werden aus den Befehlen gebaut | teilweise – kein `aria-expanded`, kein allgemeiner Stapel | nein | ja (UMD) | BSD-3 · 11/2026 |
+| **Lion** (ING) `OverlaysManager` | nein | **ja** – `invokerNode`, `aria-expanded` und Fokus zurück, `isBlocking`, `hidesOnEsc` | teilweise – Popover → unteres Blatt nach Breite | nur mit Import-Map oder Build (`lit`) | MIT · 11/2026 |
+| **Spectrum Web Components** `sp-overlay` | nein | **ja** – `OverlayStack`, Escape fürs oberste, `aria-expanded` am Auslöser | teilweise | nur mit Import-Map oder Build (`lit`) | Apache-2.0 · 11/2026 |
+| React Aria, Radix, Headless UI, Ark UI, Bits UI | nein | ja | nein | nein (React, Svelte, Vue) | MIT/Apache |
+| **VS Code** (nur Vorbild) | **ja** – `when` (ausblenden je Menü) und `enablement` (sperren überall) | nein | nein | – | – |
+| CKEditor 5, ProseMirror, Tiptap | ja (`isEnabled`/`refresh`, `can()`) | kaum | nein | Editor-Bausteine | GPL bzw. MIT |
+| OpenUI5 | teilweise | Popup-System | teilweise (`ResponsivePopover`: iPhone als Dialog) | groß, eigener Rahmen | Apache-2.0 |
+| HTML-Plattform (popover, `commandfor`) | teilweise | teilweise (`aria-expanded` von selbst, Fokus zurück bei Esc) | teilweise (ein auto-Popover) | ja, Safari 26.2 | – |
+| XState · Floating UI · Puppertino | Automat · nur Lage · nur Optik (HIG-Stil, CSS) | – | – | ja | MIT |
+
+Quellen (Auswahl): [Lumino commands](https://raw.githubusercontent.com/jupyterlab/lumino/main/packages/commands/src/index.ts),
+[Lumino menu](https://raw.githubusercontent.com/jupyterlab/lumino/main/packages/widgets/src/menu.ts),
+[Lion configuration](https://raw.githubusercontent.com/ing-bank/lion/master/docs/fundamentals/systems/overlays/configuration.md),
+[Spectrum OverlayStack](https://raw.githubusercontent.com/adobe/spectrum-web-components/main/1st-gen/packages/overlay/src/OverlayStack.ts),
+[VS Code contribution points](https://raw.githubusercontent.com/microsoft/vscode-docs/main/api/references/contribution-points.md),
+[React Aria](https://registry.npmjs.org/react-aria/-/react-aria-3.53.1.tgz) (`FocusScope`),
+[MDN Invoker Commands](https://raw.githubusercontent.com/mdn/content/main/files/en-us/web/api/invoker_commands_api/index.md),
+[MDN Popover](https://raw.githubusercontent.com/mdn/content/main/files/en-us/web/api/popover_api/using/index.md),
+[CKEditor Command](https://raw.githubusercontent.com/ckeditor/ckeditor5/master/packages/ckeditor5-core/src/command.ts),
+[OpenUI5 ResponsivePopover](https://raw.githubusercontent.com/SAP/openui5/master/src/sap.m/src/sap/m/ResponsivePopover.js).
+
+**Was es nicht gibt (in keinem Kandidaten belegt):**
+- **Befehle und Stapel zusammen:** Lumino hat Befehle ohne Stapel. Lion, Spectrum und React Aria haben einen Stapel ohne Befehle.
+- **Tönung der Quelle, solange etwas offen ist:** Nur CKEditor hat sie, und dort nur im eigenen Ausklappmenü.
+- **Quelle nach Neuaufbau über die Kennung wiederfinden:** React Aria gibt einen verschwundenen Auslöser auf und weicht auf einen übergeordneten Bereich aus. Spectrum kennt nur das gespeicherte Element.
+- **HIG-Regeln als Regelwerk an einer Stelle:** Belegt sind nur Teile davon, siehe Spalte 3.
+- **Laufende Systemaktion als Eintrag im Stapel:** Teilen, Drucken und Dateiauswahl werden nirgends so geführt.
+- **Zustand ‚gemischt‘ und Kennzeichen ‚destruktiv‘ am Befehl:** nicht in Lumino und nicht in VS Code.
+
+**Einschätzung (nicht belegt):**
+- **Keine Abhängigkeit übernehmen:**
+  - Lion und Spectrum brauchen `lit` und weitere Pakete über Paketnamen, also Build oder Import-Map. Das passt nicht zu ‚feste Fassung per `<script>`‘.
+  - React Aria, Radix und Ark brauchen React.
+  - Lumino ließe sich laden, hat aber weder Apple-Stil noch Kopfzeile, Blatt oder Alert.
+- **Nach Vorbild nachbauen, das Zusammenspiel selbst erfinden.**
+  - Begriffe aus Lumino: `isEnabled`, `isToggled`, `isVisible`, `notifyCommandChanged`.
+  - Trennung aus VS Code: `when` (ausblenden je Ort) und `enablement` (sperren überall).
+  - Aus Lion: `invokerNode`, `isBlocking`, Umschalten nach Breite.
+  - Aus Spectrum: Arten und Escape fürs oberste Element.
+  - Unterbau aus der Plattform: `popover`, `inert`, `commandfor`.
