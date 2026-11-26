@@ -3,6 +3,50 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.70.2 – 26.11.2026
+
+AppDesign 4.70.2 · Designrichtlinie allgemein 4.70.2 · Zusammenarbeit allgemein 3.19.0 · Reiselogbuch 3.58.5 (Fassung 4.70.2)
+
+**P-124/F-1 – Hinweisfenster so breit wie möglich: AD-Bean `alert` neu berechnet** (Rückmeldung P-124/1, Nutzer 26.11.2026, Sitzung 0161; Nachbau, Ursache, Apple-Abgleich
+und Wortlaut R-10.8 in Sitzung 0162 – `arbeit/0162 P-124 Nachbau und Vorschlag.md`; Neubau der Berechnung und Rand 16 px bestätigt 26.11.2026, Sitzung 0162 –
+`arbeit/0162 AD-Bean alert – wie sie rechnet.md`; gebaut in Sitzung 0163).
+
+- **`ui.js` – `createAlert`:** eine Funktion `layout()` rechnet Breite, Höhe und Lage auf einmal, statt zu messen und nachzubessern. Verfügbare Fläche = sichtbarer
+  Bereich (`visualViewport`, bei offener Tastatur darüber) minus sichere Ränder und **ein fester Rand von 16 px je Seite** (`ALERT_RAND`; ersetzt 32 px, `90vw` und
+  oben/unten 10 px). Breite am iPad = was der Inhalt braucht (Dateiname `.fname` in einer Zeile, `fitFileName`), mindestens 360 px × Textgröße (breites Fenster 600 px ×
+  Textgröße), höchstens die verfügbare Breite – die Grenze von 600 px für den Dateinamen fällt weg, quer wird das Fenster breiter als hoch (R-10.8); am iPhone Breite aus
+  `design.css` wie bisher. Höhe = Inhalt, höchstens die verfügbare Höhe (`--msg-max` am Fenster, darüber rollt der Text). Die Bean zentriert selbst in der Fläche;
+  `placeDialogs` stellt nur noch `#dlg` und ruft `layout()` jeder Bean. Neu gerechnet bei `resize` (Drehen, Textgröße), über `placeDialogs` (Tastatur, sichtbarer
+  Bereich), wenn die AD-Bean `notice` im Fenster neu aufbaut, und über einen `ResizeObserver` im nächsten Bild. Der Inhalt ist vor dem Öffnen fertig:
+  `showModal(title, message)` nimmt als `message` HTML **oder ein Element** (z. B. die Kästen der AD-Bean `notice`, vorher angelegt); der `MutationObserver` aus
+  4.70.1 entfällt.
+- **`design.css`:** Grundbreite `.ad-alert` höchstens `100vw − 32px` (vorher `90vw`), gilt nur bis `layout()`.
+- **Regel R-10.8 (Wortlaut bestätigt 26.11.2026, Sitzung 0162):** „… höchstens Bildschirmbreite − 32 px (quer also breiter als hoch); passt er auch dann nicht, bricht
+  er nur nach einem Leerzeichen um – …“ statt „… höchstens wie das breite Hinweisfenster (600 px, wächst mit der Textgröße, höchstens Bildschirmbreite − 32 px) …“.
+  Sonst keine Regeländerung: Designrichtlinie 7 (Mindestbreite 480 px, höchstens 90 %) beschreibt das Fenster `#dlg`, 10 und die Liste der AD-Beans (15) nennen keine
+  Maße des Hinweisfensters; die Schnittstelle bleibt gleich.
+- **Katalog `katalog/alert.js`:** `fitFileName` (höchstens Bildschirmbreite − 32 px), `showModal` (message = HTML oder Element), Verlauf 4.70.2.
+- **Prüfung:** `tests/ablauf.mjs` `checkDateiname` – Höchstbreite = sichtbarer Bereich − sichere Ränder − 32 px (vorher die Breite des breiten Fensters); im
+  Reiselogbuch `ablauf-p120` Teil P-124/F-1 (rot gegen 4.70.1, 21 Fehler in Chromium und WebKit; grün mit der Korrektur).
+- AD-Bean: `alert` (geänderte Eigenschaft `fitFileName`: höchstens Bildschirmbreite − 32 px; Berechnung neu mit `layout()`, `message` auch als Element).
+
+**P-124/F-2 – Schaltfläche nach einem Neuaufbau bei offenem Menü frei: AD-Bean `sourcehighlight` merkt sich den Tausch** (Rückmeldung P-124/1, Nutzer 26.11.2026;
+Nachbau und Vorschlag in Sitzung 0162, bestätigt 26.11.2026).
+
+- **`ui.js` – `createSourcehighlight`:** tauscht `refresh` ein gehaltenes Element gegen das neu aufgebaute, merkt sich die Bean den Tausch (alt → neu); `release(alt)`
+  und `hold(alt)` wirken danach auf das neue. Vorher gab das Menü beim Schließen das alte Element frei, das die Bean nicht mehr fand – das neue blieb gehalten und
+  hellblau, bis das Menü wieder aufging. Betrifft alles, was ein Element hält: Menü, Untermenü, Sprechblase, Backup und Import mit Schaltfläche, in jeder App.
+- **Prüfung:** `tests/pruefseite.mjs` – `checkSourcehighlight` (Teil `fenster`): `hold(Element)` → Neuaufbau → `refresh` → `hold(alt)` (nicht doppelt) →
+  `release(alt)` (frei, `heldItems` leer); Teil `menue`: Mehr-Menü der Kopfzeile, Sprechblase ‚Eintrag löschen‘ und Untermenü ‚Darstellung‘ offen → `render()` →
+  schließen → frei (`nachNeuaufbauFrei`, Grundregeln nach dem Schließen). Neue Gegenprobe `pruefseite:tauschVergessen` (rot mit P-124/F-2), `releaseGibtNichtFrei`
+  an den neuen Code angepasst (rot mit APD-136/S-10).
+- AD-Bean: `sourcehighlight` (Korrektur ohne neue Eigenschaft: `hold` und `release` wirken nach einem Tausch durch `refresh` auf das neue Element).
+
+**Warum die Prüfungen es übersahen:** P-123/F-1 hatte kurze Titel (der Name passte schon in 600 px) und verglich nur mit einem erneuten Messen derselben Bean;
+`checkDateiname` nahm die Höchstbreite des breiten Fensters selbst als Soll. Keine Prüfung baute die Seite bei offenem Menü neu auf.
+
+Usertest im Reiselogbuch: P-125 (Backlog des Reiselogbuchs).
+
 ## 4.70.1 – 26.11.2026
 
 AppDesign 4.70.1 · Designrichtlinie allgemein 4.70.1 · Zusammenarbeit allgemein 3.19.0 · Reiselogbuch 3.58.4 (Fassung 4.70.1)

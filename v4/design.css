@@ -1,4 +1,4 @@
-/* AppDesign 4.70.1 · design.css – gemeinsame Gestaltung der iPad-Web-Apps von g811141a (Apple-like)
+/* AppDesign 4.70.2 · design.css – gemeinsame Gestaltung der iPad-Web-Apps von g811141a (Apple-like)
    Einbinden im <head> vor dem eigenen <style> der App:  <link rel="stylesheet" href="../AppDesign/fassung/X.Y.Z/design.css"> (feste Fassung, R-10.3)
    Farben als Variablen auf :root, Dunkelmodus über data-theme="dark" (setzt ui.js / applyTheme).
    Komponenten: Schaltflächen, Suchfeld, Kapsel, Eingabefelder, Datumsfelder, Kopfzeile, Seitenleiste,
@@ -6,7 +6,7 @@
    Options-Kapsel; seit 4.1.0 iPhone-Ansicht (html.phone: Seitenkopf, großer Titel, Liste, Kasten, untere Leiste). Regeln dazu: README - Designrichtlinie allgemein.md */
 /* Farben im Apple-Look: Hintergrund Hellgrau, Kästen weiß ohne Rand, schwebende Schaltflächen */
 :root {
-  --ad-version: "4.70.1";   /* R-10.3: Version der Bausteine, die App prüft sie beim Start */
+  --ad-version: "4.70.2";   /* R-10.3: Version der Bausteine, die App prüft sie beim Start */
   --bg: #f2f2f7;
   --card: #ffffff;
   --ink: #1c1c1e;
@@ -588,7 +588,7 @@ dialog form { display: flex; flex-direction: column; max-height: var(--dlg-max, 
 .dlg-head .mid .sub { display: block; font-size: var(--tb-footnote); color: var(--muted); line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .dlg-head .mid .sub:empty { display: none; }
 /* AD-Bean alert – Hinweisfenster (seit 4.66.0 alles unter der Bean, APD-136 b1, R-1.13; englische Namen seit 4.67.0, APD-136: vorher .ad-hinweis…) */
-.ad-alert { width: min(max(360px, calc(360px * var(--f-body))), 90vw); min-width: 0; }
+.ad-alert { width: min(max(360px, calc(360px * var(--f-body))), calc(100vw - 32px)); min-width: 0; }   /* Grundbreite vor layout() (AD-Bean alert); am iPad rechnet layout() Breite, Höhe und Lage (seit 4.70.2, P-124/F-1) */
 .ad-alert, .ad-alert .ad-alert-form { max-height: var(--msg-max, calc(100vh - 40px)); }
 .ad-alert .ad-alert-head { border: none; }
 .ad-alert .ad-alert-message { text-align: center; padding: 0 4px 10px; overflow-wrap: anywhere; }

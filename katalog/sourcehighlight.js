@@ -13,7 +13,8 @@ catalogBean({
     ['refresh(root)', 'Tönt nach einem Neuaufbau in root alle Quellen wieder.']],
   events: [['change', 'Eine Quelle wird getönt oder frei – { item, highlighted }.']],
   rules: [['R-3.3', 'Gedrückt und Quelle blau'], ['R-4.13', 'Menüs und Sprechblasen wachsen aus der Schaltfläche'], ['R-8.1', 'Drehen']],
-  history: [['4.67.0', 'Neu als AD-Bean (APD-136); ersetzt hold, release, setOpener, markOpener und markHeld.']],
+  history: [['4.70.2', 'Nach einem Neuaufbau bei offenem Menü, Untermenü oder offener Sprechblase merkt sich die Bean den Tausch: release und hold mit dem alten Element wirken auf das neue (P-124/F-2).'],
+    ['4.67.0', 'Neu als AD-Bean (APD-136); ersetzt hold, release, setOpener, markOpener und markHeld.']],
   howTo: '‚Fenster-Quelle‘ setzen und zur zweiten Schaltfläche wechseln · ‚Halten‘ und ‚Freigeben‘ · ‚Neu aufbauen‘ – die gehaltene Quelle bleibt blau · ‚Menü‘ öffnen – die Schaltfläche ist blau, bis das Menü zu ist.',
   demo(el, log) {
     const s = adSourcehighlight;
