@@ -191,3 +191,8 @@ Heute lädt der Katalog immer `v4/ui.js` (Designrichtlinie 14). `checkBeans` hä
 - Langsamer in den Runden. Später zieht `v5/` (APD-145) sie unter `AD` um.
 
 Nach dem Muster (W-1) folgt der echte Bau in `v5/` mit APD-145, wie in Abschnitt 6.
+
+## 10. Antwort Runde 4 (Nutzer 26.11.2026, Konzept-Chat APD-149, im Fenster)
+
+- Weg **W-1**: Muster als Entwurf im Bean-Katalog.
+- Übergabe jetzt, das Muster baut eine neue Sitzung (`arbeit/APD-149 Uebergabe.md`).
