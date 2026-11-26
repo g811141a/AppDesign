@@ -1118,7 +1118,7 @@ async function rdPurge(id, anchor) {
 }
 function rdActions(x, row) {
   return [
-    { icon: 'rotate-ccw', label: 'Wiederherstellen', shortTitle: 'Zurücklegen', act: () => rdRestore(x.id, { fromList: true }) },
+    { icon: 'rotate-ccw', label: 'Wiederherstellen', shortTitle: 'Wiederherstellen', act: () => rdRestore(x.id, { fromList: true }) },
     'sep',
     { icon: 'trash', label: 'Endgültig löschen', shortTitle: 'Löschen', red: true, act: w => { if (!w?.sourceView) adSourcehighlight.hold(row); return rdPurge(x.id, w?.sourceView || row); } },
   ];

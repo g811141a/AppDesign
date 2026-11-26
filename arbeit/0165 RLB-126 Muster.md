@@ -141,3 +141,13 @@ R-4.12. Den Bau stimme ich vorher mit dem Chat ‚AppDesign Framework Steuer-Bea
 2. Wort unter der Kapsel: a) ‚Zurücklegen‘ **(Empfohlen)**: passt unter die Kapsel und ist eindeutig · b) ‚Zurück‘: kürzer, sieht aber wie ‚zurückgehen‘ aus
 3. ‚Erst Backup erstellen‘ beim endgültigen Löschen: a) entfällt **(Empfohlen)**: zweiter bewusster Schritt nach 30 Tagen Frist · b) bleibt wie bisher
 4. Wortlaut 5.1 bis 5.4 freigeben? Ja · Nein
+
+## 7. Entschieden (Nutzer 26.11.2026, Sitzung 0165, im Fenster)
+
+- **RLB-126/J-7:** Muster am iPad quer **ok**.
+- **RLB-126/J-8:** Wort unter der Kapsel **‚Wiederherstellen‘**. Im Muster nachgeprüft: Die AD-Bean `swipeactions` macht die Kachel schmaler, das Wort
+  passt ohne Überlappen; Grundregeln grün (Chromium).
+- **RLB-126/J-9:** ‚Erst Backup erstellen‘ entfällt beim endgültigen Löschen.
+- **RLB-126/J-10:** Wortlaut 5.1 bis 5.4 **freigegeben** (Lösch-Abfrage, R-4.12, R-7.8, neue R-7.10). Er kommt mit dem Bau in Richtlinien und `PROMPT.md`.
+- **Auffällig (nicht geändert):** In der Vorschau eines Reiselogbuchs ohne erfasste Tage bricht der Spaltenkopf ‚Tag‘ senkrecht um (‚T a g‘) – gesehen bei
+  Ostsee; das kommt aus der Ausgabe der App (`outputBody`), nicht aus dem Muster.
