@@ -70,7 +70,7 @@
 - **Laut Nachricht wartet der Bau von RLB-126 auf die Abstimmung.**
   - Vorschlag (noch nicht entschieden): `recentlydeleted` in 4.x wie bisher bauen, mit `openMenu` und `swipeactions`. Sie zieht mit `v5/` auf
     `commands`/`presentation` um, damit RLB-126 nicht auf das Framework warten muss.
-  - Das entscheidet der Nutzer.
+  - **Entschieden (Nutzer 26.11.2026, im Fenster): Ja.** `recentlydeleted` wird jetzt in 4.x gebaut und zieht mit `v5/` um.
 
 ## 4. Danach
 
