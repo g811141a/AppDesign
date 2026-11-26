@@ -159,3 +159,35 @@ Jede Zeile wird eine Prüfung in Chromium und WebKit. Nach jedem Schritt gelten 
 - Q-1 Namen `commands` und `presentation` (Vorbild Apple, Lumino)?
 - Q-2 Durchlass in der Kopfzeile (H-6) – gewünscht? Heutiges Verhalten im Reiselogbuch prüfe ich vor dem Muster.
 - Q-3 Nächster Schritt: Muster (Beispiel-App) oder erst die Schnittstelle weiter ausarbeiten?
+
+## 8. Antworten Runde 3 (Nutzer 26.11.2026, Sitzung 0165, im Fenster)
+
+- Q-1: **Ja** – die Beans heißen `commands` und `presentation`.
+- Q-2: **Ja** – Durchlass in der Kopfzeile wie bei Apple (H-6).
+- Q-3 (im Fenster geschrieben): „Die Beans sollen standardmäßig auch in den Bean-Katalog. Kannst du die Muster gleich im Bean-Katalog anstatt der
+  Muster-App bauen?“
+  - Antwort Claude: Der erste Teil gilt schon heute. R-1.13 verlangt für jede Bean der Liste (15) eine Katalogdatei `katalog/<kennung>.js`.
+  - Zum Muster im Katalog siehe Abschnitt 9.
+
+## 9. Muster im Bean-Katalog – zwei Wege
+
+Heute lädt der Katalog immer `v4/ui.js` (Designrichtlinie 14). `checkBeans` hält ihn gleich mit der Liste der AD-Beans (15). Beide Beans gibt es noch nicht.
+
+**W-1 Entwurf im Katalog (Empfehlung für die Musterrunden)**
+- Die beiden Beans entstehen zuerst als eigene Datei `katalog/entwurf/presentation-commands.js`.
+- Der Katalog lädt sie zusätzlich und zeigt sie unter ‚Entwurf‘. Ausprobieren:
+  - Kopfzeile mit zwei Menüs und Untermenü
+  - Fenster, Hinweisfenster und Teilen
+  - Protokoll des Stapels
+- Keine AppDesign-Version, kein Prüflauf von 75 min je Runde. Die Apps bleiben unberührt.
+- Die Fälle S-1 bis S-15 laufen vorher automatisch gegen die Katalogseite.
+- **Braucht** eine kleine Ergänzung im Wortlaut von Designrichtlinie 14 („lädt immer `v4/`“, dazu Beans im Entwurf) und in `checkBeans`.
+  Den Wortlaut alt und neu lege ich dir vorher vor (0 Nr. 29).
+
+**W-2 gleich als Beans in `v4/` (AppDesign 4.71.0)**
+- Die Beans kommen in die Liste (15) und den Katalog wie jede Bean.
+- Jede Musterrunde ist eine Version mit Bau-Frage und vollem Prüflauf.
+- Die Apps bleiben auf ihrer Fassung.
+- Langsamer in den Runden. Später zieht `v5/` (APD-145) sie unter `AD` um.
+
+Nach dem Muster (W-1) folgt der echte Bau in `v5/` mit APD-145, wie in Abschnitt 6.
