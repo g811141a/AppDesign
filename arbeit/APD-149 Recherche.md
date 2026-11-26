@@ -1,4 +1,4 @@
-# APD-149 Framework mit Steuer-Bean – Recherche Runde 2 (Sitzung 0165)
+# APD-149 Framework mit Steuer-Bean – Recherche Runde 2 (Konzept-Chat APD-149, parallel zu 0165)
 
 **26.11.2026** · Ergänzt **Runde 1** aus Sitzung 0164 (`arbeit/0164 APD-149 Recherche und Varianten.md`, Commit 2443f14: Recherche, Varianten V-1 bis V-3,
 Antwort iOS 26.2 oder neuer). Hier steht nur, was neu ist. Offen aus Runde 1: Frage 1 (Variante) und Frage 3 (HIG-Grundsätze).
@@ -107,7 +107,7 @@ V-3 (Empfehlung aus Runde 1) bekommt dadurch klare Vorbilder für die Teile, die
 - **Anpassung je Gerät zentral:** Popover → Blatt auf dem iPhone. Bisher entscheidet das jede Art selbst (Designrichtlinie 15.17).
 - Neue Web-Recherche ist nicht nötig. Runde 1 hat die Safari-Versionen belegt, und du hast iOS 26.2 oder neuer.
 
-## 3. Antworten Runde 2 (Nutzer 26.11.2026, Sitzung 0165, im Fenster)
+## 3. Antworten Runde 2 (Nutzer 26.11.2026, Konzept-Chat APD-149, im Fenster)
 
 - Frage 3: **Ja** – die HIG-Regeln kommen als Grundsätze in den Entwurf: ein Popover, ein Alert über allem, ein Sheet, eine Ebene Untermenü,
   Hinweise in einer Warteschlange, Durchlass in der Kopfzeile, Darstellung je Ort. Neue Regeln folgen später mit Wortlaut (0 Nr. 29).

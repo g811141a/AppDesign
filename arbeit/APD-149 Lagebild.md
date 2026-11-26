@@ -1,4 +1,4 @@
-# Lagebild – Sitzung Reiselogbuch 0165
+# Lagebild – Konzept-Chat APD-149 (parallel zu Reiselogbuch 0165)
 
 **26.11.2026** · Thema: **APD-149 Framework mit Steuer-Bean** (Konzept, Recherche, Austausch – kein Bau)
 
@@ -12,7 +12,7 @@
 | Zusammenarbeit allgemein | 3.19.0 (gelesen) |
 | `CLAUDE.md` AppDesign | 2.14.0 |
 
-- **Chatnummer:** Sitzung 0164 hat den Usertest P-125 abgeschlossen (Commit 9ea6435, `arbeit/0164 Lagebild.md`) ohne neue Übergabe – diese Sitzung ist **0165**.
+- **Chatnummer:** Sitzung 0164 hat den Usertest P-125 abgeschlossen (Commit 9ea6435, `arbeit/0164 Lagebild.md`) ohne neue Übergabe – dieser Konzept-Chat lief parallel zur Sitzung 0165 (RLB-126).
 - Die App-Repos sind **nicht** dazugeholt und die Tests nicht eingerichtet: für die Konzeptarbeit nicht nötig (Thema ohne Eingriff in die Apps). Hole ich nach, sobald ich App-Code lesen muss.
 
 ## Offene Usertests

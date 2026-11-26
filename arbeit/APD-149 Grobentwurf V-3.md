@@ -1,4 +1,4 @@
-# APD-149 Grobentwurf V-3 – Darstellung folgt dem Zustand (Sitzung 0165)
+# APD-149 Grobentwurf V-3 – Darstellung folgt dem Zustand (Konzept-Chat APD-149, parallel zu 0165)
 
 **26.11.2026** · Grundlage:
 - `arbeit/0164 APD-149 Recherche und Varianten.md` (Runde 1)
@@ -160,7 +160,7 @@ Jede Zeile wird eine Prüfung in Chromium und WebKit. Nach jedem Schritt gelten 
 - Q-2 Durchlass in der Kopfzeile (H-6) – gewünscht? Heutiges Verhalten im Reiselogbuch prüfe ich vor dem Muster.
 - Q-3 Nächster Schritt: Muster (Beispiel-App) oder erst die Schnittstelle weiter ausarbeiten?
 
-## 8. Antworten Runde 3 (Nutzer 26.11.2026, Sitzung 0165, im Fenster)
+## 8. Antworten Runde 3 (Nutzer 26.11.2026, Konzept-Chat APD-149, im Fenster)
 
 - Q-1: **Ja** – die Beans heißen `commands` und `presentation`.
 - Q-2: **Ja** – Durchlass in der Kopfzeile wie bei Apple (H-6).
