@@ -23,13 +23,13 @@ Aufbau nach Zusammenarbeit allgemein 2.5. **Claude liest diese Datei zu Beginn j
 
 ## 2. Ergebnisse der Sitzung 0160
 
-- **P-123/F-1 bis F-3 als feste Prüfung nachgebaut** (`ReiseLogBuch/tests/ablauf-p120.mjs`, Teile `P-123/F-1`, `P-123/F-2`, `P-123/F-3`): gegen 3.58.3 rot in Chromium und WebKit
+- **P-123/F-1 bis P-123/F-3 als feste Prüfung nachgebaut** (`ReiseLogBuch/tests/ablauf-p120.mjs`, Teile `P-123/F-1`, `P-123/F-2`, `P-123/F-3`): gegen 3.58.3 rot in Chromium und WebKit
   (12 / 5 / 4 Fehler), mit der Korrektur grün (Chromium und WebKit). Angepasst und grün (Chromium): `ablauf-p120` (P-122/F-2, P-120/F-3), `ablauf-sperre`, `ablauf-gesamt`.
-- **Ursachen:** F-1 `alert` misst die Breite vor dem Einsetzen des Dateinamens durch `notice`; F-2 direkt über Teilen Fenster `dlg` (iPhone Blatt in voller Höhe), aus der
-  Vorschau Hinweisfenster `msg`; F-3 `saveBackup` fragt das geschlossene `dlg` nach `#reminder` (nach jeder Ausgabe schweigt das Backup; nach Neustart der App wieder ok).
-- **Entscheidungen (Nutzer 23.11.2026, im Fenster):** Vorschlag F-1 bis F-3 **Ja**; Wortlaut Designrichtlinie 10 und 7 (‚Ergebnis auf jedem Weg im Hinweisfenster‘) **Ja**,
-  wird mit dem Bau eingetragen; F-3 vom Nutzer als erledigt betrachtet, **Korrektur bleibt** in 3.58.4 ohne eigenen Testfall (Entwurf P-124/3 entfällt).
-  Alles in `arbeit/0160 P-123 Vorschlag.md` (Zweig `arbeit-0160`): Ursachen, Apple-Abgleich mit HIG-Zitaten, Wortlaut alt/neu, Testfall-Liste P-123/T-1 bis T-9, Entwurf P-124.
+- **Ursachen:** P-123/F-1 `alert` misst die Breite vor dem Einsetzen des Dateinamens durch `notice`; P-123/F-2 direkt über Teilen Fenster `dlg` (iPhone Blatt in voller Höhe), aus der
+  Vorschau Hinweisfenster `msg`; P-123/F-3 `saveBackup` fragt das geschlossene `dlg` nach `#reminder` (nach jeder Ausgabe schweigt das Backup; nach Neustart der App wieder ok).
+- **Entscheidungen (Nutzer 23.11.2026, im Fenster):** Vorschlag P-123/F-1 bis P-123/F-3 **Ja**; Wortlaut Designrichtlinie 10 und 7 (‚Ergebnis auf jedem Weg im Hinweisfenster‘) **Ja**,
+  wird mit dem Bau eingetragen; P-123/F-3 vom Nutzer als erledigt betrachtet, **Korrektur bleibt** in 3.58.4 ohne eigenen Testfall (Entwurf P-124/3 entfällt).
+  Alles in `arbeit/0160 P-123 Vorschlag.md` (Zweig `arbeit-0160`): Ursachen, Apple-Abgleich mit HIG-Zitaten, Wortlaut alt/neu, Testfall-Liste P-123/T-1 bis P-123/T-9, Entwurf P-124.
 - **Gesichert:** Zweig `arbeit-0160` in AppDesign (b5293ab: `v4/ui.js` – `createAlert` misst per `MutationObserver` neu; Vorschlag) und ReiseLogBuch (cee905e: `index.html`
   – `showOutputResult` immer `inform`, `exportPdf` host `#msg`, `saveBackup(anchor, { inBox })`; Prüfungen). `main` beider Repos ohne Code-Änderung.
 - **Backlog:** APD-147 Reihenfolge (1 messen · 2 Browser wiederverwenden · 3 feiner wählen · 4 GitHub Actions; AppDesign 1badc64); P-123/F-3 Rückmeldung (Reiselogbuch 2fb6d2e);
@@ -43,7 +43,7 @@ Aufbau nach Zusammenarbeit allgemein 2.5. **Claude liest diese Datei zu Beginn j
    Änderungen aus `arbeit-0160` einspielen (AppDesign `v4/ui.js`; ReiseLogBuch `index.html` und die 3 Prüfdateien; in den Prüfdateien den Fassungs-Pfad auf 4.70.1),
    Wortlaut Designrichtlinie 10 und 7 eintragen (Abschnitt 5 des Vorschlags), Kopfkommentar von `ablauf-p120.mjs` um P-123 ergänzen, CHANGELOG mit Testfällen P-124
    (/0, /1, /2, /4 aus dem Entwurf), Backlog, Versionsgeschichten, `fassung`, `stufe` (voll erwartet).
-3. **Bau-Frage** ‚Soll ich Version AppDesign 4.70.1 / Reiselogbuch 3.58.4 mit P-123/F-1 bis F-3 erstellen (Prüflauf Stufe voll)?‘ – erst nach ‚Ja‘ `los`.
+3. **Bau-Frage** ‚Soll ich Version AppDesign 4.70.1 / Reiselogbuch 3.58.4 mit P-123/F-1 bis P-123/F-3 erstellen (Prüflauf Stufe voll)?‘ – erst nach ‚Ja‘ `los`.
 
 ## 4. Danach
 
@@ -60,7 +60,7 @@ APD-142 schrittweise · RLB-126 (Apple-Abgleich, Muster) · APD-139 · APD-141 �
 In der neuen Sitzung müssen **AppDesign**, **ReiseLogBuch** und **ReiseLogBuch-Import** verfügbar sein.
 
 ```
-Reiselogbuch 0161 – Korrekturversion AppDesign 4.70.1 / Reiselogbuch 3.58.4 (P-123/F-1 bis F-3)
+Reiselogbuch 0161 – Korrekturversion AppDesign 4.70.1 / Reiselogbuch 3.58.4 (P-123/F-1 bis P-123/F-3)
 
 Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md, dann die GANZE Zusammenarbeit allgemein (3.19.0) und die Überschriften der Designrichtlinien. Prüfe Modell und Aufwand (get_session: eingestellt, dazu rate_limit_info; Sitzungsdatei: tatsächlich, auch model_fallback; Umgebungsvariable CLAUDE_CODE_EFFORT_LEVEL), hole die Repos g811141a/ReiseLogBuch und g811141a/ReiseLogBuch-Import dazu, wie in der AppDesign-CLAUDE.md unter ‚Arbeitsumgebung‘, richte die Tests ein und prüfe, ob in ~/.claude/settings.json Hooks stehen. Lagebild als eigene Antwort (im Chat und als Markdown-Datei) mit Kachel; danach nach UEBERGABE.md Abschnitt 3: die vorbereitete Korrektur aus den Zweigen arbeit-0160 übernehmen, Version vorbereiten und die Bau-Frage stellen. Hilfsagenten nur mit Opus 5.5 und Aufwand hoch, einzeln nacheinander, auch web-fetch; Fable 5.2 vorerst nicht verwenden.
 ```
