@@ -11,8 +11,10 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Prio | Thema | bereit seit |
 |---|---|---|---|
+| P-124/F-1 | 1 | **AD-Bean `alert`, `fitFileName` (zu P-124/1, Reiselogbuch):** Dateiname am iPad höchstens Bildschirmbreite − 32 px statt 600 px (quer breiter als hoch); Wortlaut R-10.8 bestätigt (Nutzer 26.11.2026, Sitzung 0162); `ablauf.mjs` `checkDateiname` (Höchstbreite) zieht mit – `arbeit/0162 P-124 Nachbau und Vorschlag.md` | 26.11.2026 |
+| P-124/F-2 | 1 | **AD-Bean `sourcehighlight` (zu P-124/1, Reiselogbuch):** tauscht `refresh` ein gehaltenes Element gegen das neu aufgebaute, gibt `release(alt)` auch das neue frei (ebenso `hold(alt)`) – sonst bleibt nach einem Neuaufbau bei offenem Menü die Schaltfläche hellblau; neue Fälle in der Prüfung der Bean (Menü, Untermenü, Sprechblase) | 26.11.2026 |
 
-0 Punkte bereit.
+2 Punkte bereit.
 
 
 ## 1. Auf iPad und iPhone prüfen
