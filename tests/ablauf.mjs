@@ -3052,7 +3052,8 @@ export const DATEINAME_TEXTE = {
 };
 export async function checkDateiname(p, { ausloesen, faelle = ['shared', 'aborted', 'error', 'downloaded'], name = null, groessen = ['l', 'xxxl', 'ax3'], text = '#msg[open] .ad-alert-message', schliessen = '#msg [data-x]', where = '', drehen = null } = {}) {
   const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}R-10.8 ${t}`);
-  // seit 4.64.0 (APD-138, AD-Bean alert, bis 4.66.0 hinweis): am iPad so breit, dass der Name in einer Zeile steht – zwischen Grund- und Höchstbreite; am iPhone nichts Eigenes
+  // seit 4.64.0 (APD-138, AD-Bean alert, bis 4.66.0 hinweis): am iPad so breit, dass der Name in einer Zeile steht – zwischen Grund- und Höchstbreite; am iPhone nichts Eigenes;
+  // Höchstbreite seit 4.70.2 (P-124/F-1) Bildschirmbreite − 32 px (vorher 600 px des breiten Fensters)
   const breitePruefen = (e, w) => {
     const b = e.breite; if (!b) return;
     const px = x => Math.round(x);
@@ -3098,11 +3099,15 @@ export async function checkDateiname(p, { ausloesen, faelle = ['shared', 'aborte
             links: vr.length ? Math.abs(n.getClientRects()[0].left - vr[0].left) : 0,
             // seit 4.64.0 (APD-138/D-1 bis D-7, R-10.8): Breite des Hinweisfensters – Grund- und Höchstbreite aus design.css (ohne die Breite der Bean),
             // Breite des Namens in einer Zeile; am iPhone und im breiten Fenster keine eigene Breite
+            // seit 4.70.2 (P-124/F-1, R-10.8 neu): Höchstbreite = sichtbarer Bereich − sichere Ränder − 2 × 16 px (vorher die des breiten Fensters, 600 px)
             breite: (() => { const d = t.closest('dialog'); if (!d || d.id !== 'msg') return null;
+              const hoechstBreite = () => { const sp = document.createElement('div'); sp.style.cssText = 'position:fixed;visibility:hidden;padding:0 var(--safe-right) 0 var(--safe-left)';
+                document.body.append(sp); const cs = getComputedStyle(sp), sicher = (parseFloat(cs.paddingLeft) || 0) + (parseFloat(cs.paddingRight) || 0); sp.remove();
+                return (window.visualViewport ? visualViewport.width : innerWidth) - sicher - 32; };
               const phone = document.documentElement.classList.contains('phone'), ist = d.getBoundingClientRect().width;
               if (phone || d.classList.contains('ad-alert-wide')) return { phone, eigen: !!d.style.width, ist };
               const alt = d.style.width, altMax = d.style.maxWidth; d.style.width = ''; d.style.maxWidth = ''; const grund = d.getBoundingClientRect().width;
-              d.classList.add('ad-alert-wide'); const hoechst = d.getBoundingClientRect().width; d.classList.remove('ad-alert-wide'); d.style.width = alt; d.style.maxWidth = altMax;
+              d.style.width = alt; d.style.maxWidth = altMax; const hoechst = hoechstBreite();
               const pr = n.cloneNode(true); pr.style.cssText = 'position:absolute;visibility:hidden;white-space:nowrap;display:inline-block;width:auto;left:0;top:0';
               n.parentNode.append(pr); const nw = pr.getBoundingClientRect().width; pr.remove();
               return { phone, ist, grund, hoechst, soll: nw + (ist - nb.width) }; })() };
@@ -3127,8 +3132,11 @@ export async function checkDateiname(p, { ausloesen, faelle = ['shared', 'aborte
       if (drehen) for (const hoch of [true, false]) {
         await drehen(hoch); await p.waitForTimeout(400);
         const e = await p.evaluate(([zf, sel]) => { const zeilenVon = eval(zf); const t = document.querySelector(sel), n = t?.querySelector('.fname'); if (!n) return null;
+          const hoechstBreite = () => { const sp = document.createElement('div'); sp.style.cssText = 'position:fixed;visibility:hidden;padding:0 var(--safe-right) 0 var(--safe-left)';
+            document.body.append(sp); const cs = getComputedStyle(sp), sicher = (parseFloat(cs.paddingLeft) || 0) + (parseFloat(cs.paddingRight) || 0); sp.remove();
+            return (window.visualViewport ? visualViewport.width : innerWidth) - sicher - 32; };
           const d = t.closest('dialog'), ist = d.getBoundingClientRect().width, nb = n.getBoundingClientRect(), alt = d.style.width, altMax = d.style.maxWidth; d.style.width = ''; d.style.maxWidth = ''; const grund = d.getBoundingClientRect().width;
-          d.classList.add('ad-alert-wide'); const hoechst = d.getBoundingClientRect().width; d.classList.remove('ad-alert-wide'); d.style.width = alt; d.style.maxWidth = altMax;
+          d.style.width = alt; d.style.maxWidth = altMax; const hoechst = hoechstBreite();
           const pr = n.cloneNode(true); pr.style.cssText = 'position:absolute;visibility:hidden;white-space:nowrap;display:inline-block;width:auto;left:0;top:0';
           n.parentNode.append(pr); const nw = pr.getBoundingClientRect().width; pr.remove();
           return { name: n.textContent, zeilen: zeilenVon(n), ragt: d.getBoundingClientRect().right > innerWidth + 1,

@@ -120,7 +120,10 @@ fenster: {
   quelleNichtGetoent: fall('Hervorgehobene Quelle', 'sourceItem tönt die Quelle nicht (ohne on)',
     [["  const toenen = item => finde(item)?.classList.add('on');", "  const toenen = item => {};"]], /APD-136\/S-9 /),
   releaseGibtNichtFrei: fall('Hervorgehobene Quelle', 'release gibt die Quelle nicht frei',
-    [["release(item) { if (!item || !gehalten.delete(item)) return; freigeben(item);", "release(item) { if (!item || !gehalten.delete(item)) return;"]], /APD-136\/S-10 /),
+    [["      freigeben(item); melde(item, false);", "      melde(item, false);"]], /APD-136\/S-10 /),
+  // seit 4.70.2 (P-124/F-2): refresh merkt sich den Tausch nicht – release(alt) findet das neu aufgebaute Element nicht
+  tauschVergessen: fall('Hervorgehobene Quelle', 'refresh merkt sich den Tausch alt → neu nicht',
+    [["gehalten.add(neu); getauscht.set(item, neu); }", "gehalten.add(neu); }"]], /P-124\/F-2 /),
 },
 // B-3.3 Schritt 2 (APD-135/F-9, seit 4.69.0): je Baustein ein Fehler, den bis Reiselogbuch 3.58.1 nur die Prüfungen der App mit Feldern fanden
 // (regeln-ablauf, ablauf-feld-cursor, ablauf-bedienung; die Nachweis-Tabelle kommt mit dem Streichen in der App). zeichen = die Meldung der Prüffunktion.
@@ -737,6 +740,21 @@ async function checkUnavailableItem(p, where) {
 // Menü bzw. Untermenü offen ist; Q-1 checkWachsen: jedes Menü wächst aus seiner Schaltfläche (iPad mit Drehen beim Wachsen; ‚Bewegung reduzieren‘ nur
 // Überblenden; nach der Großanzeige bei Text 28 – für Mehr der Kopfzeile im Teil grossanzeige, hier Mehr der Liste); Q-3 checkFokus: Fokus im Menü,
 // Pfeile, Esc schließt (auch erst das Untermenü), Fokus zurück auf die Schaltfläche. 4 Ansichten (iPad hoch dunkel), dazu iPad quer mit ‚Bewegung reduzieren‘.
+// P-124/F-2 (seit 4.70.2, AD-Bean sourcehighlight; Testfall-Liste arbeit/0162 P-124 Nachbau und Vorschlag.md F-2.4): Neuaufbau bei offenem Menü, Untermenü bzw.
+// offener Sprechblase – refresh tauscht die gehaltene Schaltfläche gegen die neu aufgebaute; beim Schließen gibt release(alt) auch die neue frei (bis 4.70.1
+// blieb sie gehalten und blau, bis das Menü wieder aufging). auf: öffnet; knopf: die gehaltene Schaltfläche (wird von render() neu aufgebaut). Gegenprobe
+// pruefseite:tauschVergessen (Teil fenster, Bean allein in checkSourcehighlight).
+async function nachNeuaufbauFrei(t, p, { name, auf, knopf }) {
+  await t.schritt(p, `P-124/F-2 ${name} offen`, auf);
+  // der Neuaufbau ist keine Handlung des Nutzers (am Gerät z. B. Abgleich oder Tageswechsel) – die Grundregeln gelten nach dem Schließen (nächster Schritt);
+  // mittendrin trüge die neue Schaltfläche noch nicht aria-expanded (gemeldet im Bericht 4.70.2, nicht Teil von P-124/F-2)
+  await p.evaluate(k => { window.__altKnopf = document.querySelector(k); render(); }, knopf); await p.waitForTimeout(200);
+  t.ist(`P-124/F-2 ${name}: nach dem Neuaufbau ist ${knopf} neu aufgebaut und blau`, await p.evaluate(k => { const n = document.querySelector(k);
+    return [!!n && n !== window.__altKnopf && !window.__altKnopf?.isConnected, !!n?.classList.contains('on')]; }, knopf), [true, true], 'R-3.3');
+  await t.schritt(p, `P-124/F-2 ${name} zu`, () => allesZu(p));
+  t.ist(`P-124/F-2 ${name} nach dem Neuaufbau zu: heldItems leer, ${knopf} frei`, await p.evaluate(k => { delete window.__altKnopf;
+    return [adSourcehighlight.heldItems.length, !!document.querySelector(k)?.classList.contains('on')]; }, knopf), [0, false], 'R-3.3');
+}
 export async function ablaufMenue(t, b) {
   const daten = datenB33();
   for (const [ansicht, theme, ruhig] of [['iPad quer', 'light'], ['iPad hoch', 'dark'], ['iPhone hoch', 'light'], ['iPhone quer', 'light'], ['iPad quer', 'light', true]]) {
@@ -755,6 +773,9 @@ export async function ablaufMenue(t, b) {
           && document.querySelector('#mainMore').classList.contains('on')), 'R-3.3');
         await t.schritt(p, 'Mehr-Menü der Kopfzeile zu', () => allesZu(p));
         t.ist('APD-136/S-6 Menü zu: heldItems leer, Mehr-Schaltfläche frei', await p.evaluate(() => [adSourcehighlight.heldItems.length, document.querySelector('#mainMore').classList.contains('on')]), [0, false], 'R-3.3');
+        await nachNeuaufbauFrei(t, p, { name: 'Mehr-Menü der Kopfzeile', auf: () => menueAuf(p, '#mainMore'), knopf: '#mainMore' });
+        await nachNeuaufbauFrei(t, p, { name: 'Sprechblase ‚Eintrag löschen‘', knopf: '#mainMore', auf: async () => { await menueAuf(p, '#mainMore');
+          await p.locator('.menu .mi', { hasText: 'Eintrag löschen' }).click(); await bis(p, `!!document.querySelector('.pop') && ${RUHE}`, 'Sprechblase offen'); } });
         await t.schritt(p, 'Q-3 Mehr der Kopfzeile mit der Tastatur', async () => t.liste(await checkFokus(p, { menue: '#mainMore', tab: false, where: 'Mehr der Kopfzeile' })));
       }
       // RLB-125/T-13 (seit 4.68.0, R-4.14): ein nicht verfügbarer Menüpunkt bleibt sichtbar – blass, `disabled`, Grund als graue Unterzeile; Antippen
@@ -773,6 +794,8 @@ export async function ablaufMenue(t, b) {
         await t.schritt(p, 'Untermenü ‚Darstellung‘ offen', async () => { await p.locator('.menu:not(.submenu) .mi', { hasText: 'Darstellung' }).click();
           await bis(p, `!!document.querySelector('.menu.submenu .mi') && ${RUHE}`, 'Untermenü offen'); });
         await t.schritt(p, 'Menü und Untermenü zu', () => allesZu(p));
+        await nachNeuaufbauFrei(t, p, { name: 'Untermenü ‚Darstellung‘', knopf: '#sideMore', auf: async () => { await menueAuf(p, '#sideMore');
+          await p.locator('.menu:not(.submenu) .mi', { hasText: 'Darstellung' }).click(); await bis(p, `!!document.querySelector('.menu.submenu .mi') && ${RUHE}`, 'Untermenü offen'); } });
         await t.schritt(p, 'Kontextmenü offen', async () => { await kachelLang(p); await bis(p, `!!document.querySelector('.menu.kontext .mi') && ${RUHE}`, 'Kontextmenü offen'); });
         await t.schritt(p, 'Kontextmenü zu', () => allesZu(p));
         if (ipad) await t.schritt(p, 'Q-3 Mehr der Liste mit der Tastatur, Untermenü', async () => t.liste(await checkFokus(p, { menue: '#sideMore', untermenue: 'Darstellung', tab: false, where: 'Mehr der Liste' })));
@@ -885,9 +908,14 @@ export async function checkSourcehighlight(p) {
     const ev9 = ev.splice(0);
     s.hold('#shA'); box.innerHTML = knoepfe; const vor = on('shA');
     s.refresh(box); const nach = on('shA'), held = s.heldItems.slice();
-    s.release('#shA'); const frei10 = !on('shA'); const ev10 = ev.splice(0);
+    s.release('#shA'); const frei10 = !on('shA'), leer = s.heldItems.length; const ev10 = ev.splice(0);
+    // P-124/F-2 (seit 4.70.2): gehalten als Element – Neuaufbau, refresh, dann hold und release mit dem alten Element: wirkt auf das neue
+    const alt = document.getElementById('shB'); s.hold(alt); box.innerHTML = knoepfe; s.refresh(box);
+    const neu = document.getElementById('shB'), tausch = [neu !== alt, s.heldItems.length === 1 && s.heldItems[0] === neu, on('shB')];
+    s.hold(alt); const doppelt = s.heldItems.length;
+    s.release(alt); const frei11 = [!on('shB'), s.heldItems.length]; ev.splice(0);
     ab(); box.remove();
-    return { a1, s9, frei9, ev9, vor, nach, held, frei10, ev10, leer: s.heldItems.length };
+    return { a1, s9, frei9, ev9, vor, nach, held, frei10, ev10, leer, tausch, doppelt, frei11 };
   });
   if (!r.a1) E('APD-136/S-9 sourceItem = erste Schaltfläche: nicht blau');
   if (JSON.stringify(r.s9) !== JSON.stringify([false, true, '#shB'])) E(`APD-136/S-9 sourceItem auf die zweite Schaltfläche: erster blau ${r.s9[0]}, zweiter blau ${r.s9[1]}, sourceItem ‚${r.s9[2]}‘ (soll: erster frei, zweiter blau, ‚#shB‘)`);
@@ -897,6 +925,9 @@ export async function checkSourcehighlight(p) {
   if (!r.nach || JSON.stringify(r.held) !== '["#shA"]') E(`APD-136/S-10 nach Neuaufbau und refresh: blau ${r.nach}, heldItems ${JSON.stringify(r.held)}`);
   if (!r.frei10 || r.leer) E(`APD-136/S-10 release: Schaltfläche ${r.frei10 ? 'frei' : 'noch blau'}, heldItems ${r.leer}`);
   if (JSON.stringify(r.ev10) !== JSON.stringify(['#shA true', '#shA false'])) E(`APD-136/S-10 Ereignis change ${JSON.stringify(r.ev10)} statt je einmal getönt und frei`);
+  if (JSON.stringify(r.tausch) !== '[true,true,true]') E(`P-124/F-2 hold(Element), Neuaufbau, refresh: neu aufgebaut ${r.tausch[0]}, gehalten ist das neue ${r.tausch[1]}, blau ${r.tausch[2]}`);
+  if (r.doppelt !== 1) E(`P-124/F-2 hold(altes Element) nach dem Tausch: ${r.doppelt} gehaltene statt 1 (das neue)`);
+  if (JSON.stringify(r.frei11) !== '[true,0]') E(`P-124/F-2 release(altes Element) nach dem Tausch: neue Schaltfläche ${r.frei11[0] ? 'frei' : 'noch blau'}, heldItems ${r.frei11[1]}`);
   return errors;
 }
 // ---------- B-3.3 Schritt 2 (APD-135/F-1 bis F-8, seit 4.69.0): Felder auf der Prüfseite ----------

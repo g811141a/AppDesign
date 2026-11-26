@@ -1,4 +1,4 @@
-// AppDesign 4.70.1 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
+// AppDesign 4.70.2 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
 // Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/fassung/X.Y.Z/ui.js"></script> (feste Fassung, R-10.3)
 // Klassisches Skript: alle Funktionen sind global und für das Skript der App sichtbar.
 //
@@ -19,7 +19,7 @@
 
 'use strict';
 // Version der Bausteine (R-10.3): die App vergleicht sie beim Start mit der benötigten Fassung.
-const AD_VERSION = '4.70.1';
+const AD_VERSION = '4.70.2';
 // ‚Bewegung reduzieren‘ (R-1.9) – die eine Abfrage für alle Bausteine (seit 4.64.0, APD-135/B-4.2; vorher fünfmal eigens gebaut)
 const bewegungRuhig = () => !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
 // APD-129 Teil 2 (seit 4.59.2, Messung 14.11.2026 arbeit/APD-129/messung-2026-11-14-2137.txt, Zeilen 9–17, 207–216, 263–272; Designrichtlinie 13
@@ -1390,10 +1390,14 @@ addEventListener('keydown', e => { if (!gross || !istAbbruch(e)) return; if (gro
 //   s.hold(item) · s.release(item) · s.refresh(root) – item = CSS-Auswahl oder Element; refresh tönt nach einem Neuaufbau in root alle Quellen wieder
 //   s.on('change', ({ item, highlighted }) => …) → abmelden
 // Eine Stelle ist frei erst, wenn sie weder Quelle noch gehalten ist. Ein Element, das die App neu aufgebaut hat, findet refresh über id, data-id
-// bzw. data-day wieder (wie fokusNachFenster).
+// bzw. data-day wieder (wie fokusNachFenster); hold und release mit dem alten Element wirken danach auf das neue (seit 4.70.2, P-124/F-2).
 function createSourcehighlight(root, { sourceItem = '' } = {}) {
   const hoerer = { change: new Set() };
   const gehalten = new Set();
+  // Seit 4.70.2 (P-124/F-2): tauscht refresh ein gehaltenes Element gegen das neu aufgebaute, merkt die Bean den Tausch (alt → neu) – release(alt) und
+  // hold(alt) wirken dann auf das neue (vorher blieb nach einem Neuaufbau bei offenem Menü die Schaltfläche gehalten und getönt)
+  const getauscht = new Map();
+  const aktuell = item => { for (let i = 0; item instanceof Element && getauscht.has(item) && i < 100; i++) item = getauscht.get(item); return item; };
   let quelle = '';
   const melde = (item, highlighted) => hoerer.change.forEach(fn => { try { fn({ item, highlighted }); } catch (e) { console.error(e); } });
   const finde = (item, r = root) => !item ? null : typeof item === 'string' ? (r.querySelector?.(item) || null) : item instanceof Element ? item : null;
@@ -1411,11 +1415,16 @@ function createSourcehighlight(root, { sourceItem = '' } = {}) {
       if (v) { toenen(v); melde(v, true); }
     },
     get heldItems() { return [...gehalten]; },
-    hold(item) { if (!item) return; const neu = !gehalten.has(item); gehalten.add(item); toenen(item); if (neu) melde(item, true); },
-    release(item) { if (!item || !gehalten.delete(item)) return; freigeben(item); melde(item, false); },
+    hold(item) { if (!item) return; item = aktuell(item); const neu = !gehalten.has(item); gehalten.add(item); toenen(item); if (neu) melde(item, true); },
+    release(item) {
+      if (!item) return; item = aktuell(item);
+      if (!gehalten.delete(item)) return;
+      for (const alt of [...getauscht.keys()]) if (aktuell(alt) === item) getauscht.delete(alt);
+      freigeben(item); melde(item, false);
+    },
     refresh(r = root) {
       for (const item of [...gehalten]) if (item instanceof Element && !item.isConnected) {
-        const neu = wiederFinden(item); if (neu && neu !== item) { gehalten.delete(item); gehalten.add(neu); }
+        const neu = wiederFinden(item); if (neu && neu !== item) { gehalten.delete(item); gehalten.add(neu); getauscht.set(item, neu); }
       }
       [...gehalten, quelle].forEach(item => { if (item instanceof Element) { if (item.isConnected && (r === document || r.contains(item))) item.classList.add('on'); } else if (item) r.querySelector?.(item)?.classList.add('on'); });
     },
@@ -1901,20 +1910,29 @@ function createSync({ list, sub, subAt = `${sub}At`, maxFields = [], nouns = ['E
 // einmal an (adAlert), inform(…) ist der kurze Aufruf dafür. Seit 4.67.0 (APD-136, Zusammenarbeit 1 ‚Code englisch‘) heißt sie `alert` (ersetzt
 // `hinweis`) – Namen nach Vorbild: Web `alert()` und `<dialog>` (`open`, `showModal()`, `close()`, Ereignis `close`), Apple *alert* (`title`, `message`).
 // Eigenschaft fitFileName (Standard ein): steht ein Dateiname (.fname) im Text, wird das Fenster am iPad so breit, dass er in einer Zeile
-// steht – mindestens die Grundbreite des Fensters, höchstens die des breiten Fensters (600 px × Textgröße, höchstens Bildschirmbreite − 32 px); darüber
-// Umbruch nur nach einem Leerzeichen (.fw). Am iPhone und im breiten Fenster bleibt die Breite aus design.css. Neu berechnet bei jedem resize (Drehen,
-// Textgröße – textWechsel meldet resize), vor placeDialogs.
+// steht – mindestens die Grundbreite, höchstens die verfügbare Breite (Bildschirmbreite − 32 px, quer also breiter als hoch; R-10.8); darüber
+// Umbruch nur nach einem Leerzeichen (.fw). Am iPhone bleibt die Breite aus design.css.
+// Seit 4.70.2 (P-124/F-1, Nutzer 26.11.2026, Sitzung 0162 – arbeit/0162 AD-Bean alert – wie sie rechnet.md): eine Funktion layout() rechnet Breite,
+// Höhe und Lage auf einmal – vorher Grundbreite aus design.css, Höchstbreite geborgt vom breiten Fenster (600 px), MutationObserver und Lage in
+// placeDialogs. Verfügbare Fläche = sichtbarer Bereich (visualViewport) minus sichere Ränder und ein fester Rand ALERT_RAND (16 px) je Seite
+// (ersetzt 32 px, 90vw und oben/unten 10 px). Breite = was der Inhalt braucht, mindestens 360 px × Textgröße (breit 600 px × Textgröße), höchstens die
+// verfügbare Breite; Höhe = Inhalt, höchstens die verfügbare Höhe (darüber rollt der Text); die Bean zentriert in der Fläche. Der Inhalt ist vor dem
+// Öffnen fertig: message ist HTML oder ein Element (z. B. Kästen der AD-Bean notice, vor showModal angelegt). Neu gerechnet bei resize (Drehen,
+// Textgröße – textWechsel meldet resize), über placeDialogs (Tastatur, sichtbarer Bereich), wenn die AD-Bean notice im Fenster neu aufbaut, und
+// wenn sich die Größe sonst ändert (ResizeObserver, im nächsten Bild – im Rückruf selbst meldete Safari eine ResizeObserver-Schleife).
 // Schnittstelle (R-1.13, Liste der AD-Beans in Designrichtlinie 15) – die App nutzt nur diese Namen:
-//   inform(title, html, { wide, action }) → Promise (erfüllt beim Schließen)
+//   inform(title, message, { wide, action }) → Promise (erfüllt beim Schließen) – message: HTML oder Element
 //   createAlert(dialog, { fitFileName = true }) – ui.js legt die eine Bean für #msg an
 //   a.fitFileName (lesen und setzen) · a.open (nur lesen) · a.showModal(title, message, { wide, action }) → Promise · a.close() · a.on('close', fn) → abmelden
 // CSS nur unter .ad-alert (Fenster), .ad-alert-wide, -form, -head, -message, -buttons, -button (seit 4.66.0 unter der Bean, APD-136 b1; englisch seit 4.67.0).
+const ALERT_RAND = 16;
+const alertLayouts = new Map();   // dialog → layout() jeder AD-Bean alert (placeDialogs und AD-Bean notice rufen sie)
 function createAlert(dialog, { fitFileName = true } = {}) {
   const hoerer = { close: new Set() };
   let fertig = null;
   const bean = {
     get fitFileName() { return fitFileName; },
-    set fitFileName(v) { fitFileName = !!v; if (dialog.open) passen(); },
+    set fitFileName(v) { fitFileName = !!v; layout(); },
     get open() { return !!dialog?.open; },
     showModal, close() { fertig?.(); },
     on(name, fn) { const h = hoerer[name]; if (!h || typeof fn !== 'function') return () => {}; h.add(fn); return () => { h.delete(fn); }; },
@@ -1922,30 +1940,45 @@ function createAlert(dialog, { fitFileName = true } = {}) {
   if (!(dialog instanceof HTMLDialogElement)) { console.error('alert: dialog fehlt'); return bean; }
   dialog.dataset.adBean = 'alert';
   dialog.classList.add('ad-alert');
-  // Breite nach Dateiname: Breite des Namens in einer Zeile + Rand des Fensters um den Text, zwischen Grund- und Höchstbreite
-  function passen() {
-    dialog.style.width = ''; dialog.style.maxWidth = '';
-    const n = dialog.querySelector('.fname');
-    if (!fitFileName || !n || !dialog.open || isPhone() || dialog.classList.contains('ad-alert-wide')) return;
+  // Verfügbare Fläche: sichtbarer Bereich (bei offener Tastatur darüber) minus sichere Ränder und ALERT_RAND je Seite
+  function flaeche() {
+    const vv = window.visualViewport, s = safeRand(), kb = kbOffen();
+    const top = vv ? Math.max(0, rolle.el ? Math.min(vv.offsetTop, scrollY) : vv.offsetTop) : 0;   // wie placeDialogs (APD-115/N-11)
+    const links = s.left + ALERT_RAND, oben = s.top + ALERT_RAND, unten = (kb ? 0 : s.bottom) + ALERT_RAND;
+    return { top, left: (vv ? vv.offsetLeft : 0) + links, oben,
+      breite: Math.max(0, (vv ? vv.width : innerWidth) - links - s.right - ALERT_RAND),
+      hoehe: Math.max(200, (vv ? vv.height : innerHeight) - oben - unten) };
+  }
+  // Breite, die der Inhalt braucht: der Dateiname in einer Zeile + Rand des Fensters um den Text; ohne Dateiname die Mindestbreite
+  function braucht(minimum) {
+    const n = fitFileName && dialog.querySelector('.fname');
+    if (!n) return minimum;
     const probe = n.cloneNode(true);
     probe.style.cssText = 'position:absolute;visibility:hidden;white-space:nowrap;display:inline-block;width:auto;left:0;top:0';
     n.parentNode.append(probe);
     const name = probe.getBoundingClientRect().width;
     probe.remove();
-    const grund = dialog.getBoundingClientRect().width, rand = grund - n.getBoundingClientRect().width;
-    dialog.classList.add('ad-alert-wide');
-    const hoechst = dialog.getBoundingClientRect().width;
-    dialog.classList.remove('ad-alert-wide');
-    const soll = Math.ceil(name + rand + 1);
-    // max-width wie beim breiten Fenster aufheben (dialog: höchstens 90vw) – die Höchstbreite liegt mit Bildschirmbreite − 32 px darunter
-    if (soll > grund + 0.5) { dialog.style.width = Math.min(soll, hoechst) + 'px'; dialog.style.maxWidth = 'none'; }
-    beobachter.takeRecords();   // die Messprobe selbst ist keine Änderung des Inhalts
+    return Math.ceil(name + dialog.getBoundingClientRect().width - n.getBoundingClientRect().width + 1);
   }
-  addEventListener('resize', () => { if (dialog.open) passen(); });
-  // Seit 4.70.1 (P-123/F-1): ändert sich der Inhalt des offenen Fensters (z. B. setzt die AD-Bean notice den Dateinamen erst nach showModal ein),
-  // misst die Bean neu – vorher galt die Breite vom Öffnen und der Dateiname brach um.
-  const beobachter = new MutationObserver(() => { if (dialog.open) { passen(); placeDialogs(); } });
-  beobachter.observe(dialog, { childList: true, subtree: true, characterData: true });
+  function layout() {
+    if (!dialog.open) return;
+    const f = flaeche();
+    dialog.style.setProperty('--msg-max', Math.round(f.hoehe) + 'px');
+    if (isPhone()) { dialog.style.width = ''; dialog.style.maxWidth = ''; }   // iPhone: Breite aus design.css
+    else {
+      const t = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--f-body')) || 1;
+      const grund = dialog.classList.contains('ad-alert-wide') ? 600 : 360, minimum = Math.max(grund, grund * t);
+      dialog.style.width = Math.floor(Math.min(f.breite, Math.max(minimum, braucht(minimum)))) + 'px';
+      dialog.style.maxWidth = 'none';
+    }
+    const b = dialog.getBoundingClientRect();
+    dialog.style.margin = '0'; dialog.style.right = 'auto'; dialog.style.bottom = 'auto';
+    dialog.style.left = Math.round(f.left + Math.max(0, (f.breite - b.width) / 2)) + 'px';
+    dialog.style.top = Math.round(f.top + f.oben + Math.max(0, (f.hoehe - b.height) / 2)) + 'px';
+  }
+  alertLayouts.set(dialog, layout);
+  addEventListener('resize', layout);
+  if (window.ResizeObserver) new ResizeObserver(() => requestAnimationFrame(layout)).observe(dialog);
   function showModal(title, message, { wide = false, action = null } = {}) {
     return new Promise(resolve => {
       dialog.classList.toggle('ad-alert-wide', wide);
@@ -1953,8 +1986,9 @@ function createAlert(dialog, { fitFileName = true } = {}) {
       <form method="dialog" class="ad-alert-form">
         <div class="dlg-head ad-alert-head"><div class="hl"><button type="button" class="round" data-x aria-label="Schließen">${ic('x')}</button></div>
           <div class="mid"><h3 id="msgTitel">${esc(title)}</h3></div><div class="hr"></div></div>
-        <div class="dlg-body"><div class="ad-alert-message" id="msgText">${message}</div>${action ? `<div class="ad-alert-buttons"><button type="button" class="primary ad-alert-button" data-act>${action.icon ? ic(action.icon) : ''}${esc(action.label)}</button></div>` : ''}</div>
+        <div class="dlg-body"><div class="ad-alert-message" id="msgText">${message instanceof Node ? '' : message}</div>${action ? `<div class="ad-alert-buttons"><button type="button" class="primary ad-alert-button" data-act>${action.icon ? ic(action.icon) : ''}${esc(action.label)}</button></div>` : ''}</div>
       </form>`;
+      if (message instanceof Node) dialog.querySelector('#msgText').append(message);
       const done = () => { fertig = null; if (dialog.open) dialog.close(); hoerer.close.forEach(fn => { try { fn(); } catch (e) { console.error(e); } }); resolve(); };
       fertig = done;
       if (action) dialog.querySelector('[data-act]').onclick = () => { done(); action.run(); };
@@ -1964,14 +1998,13 @@ function createAlert(dialog, { fitFileName = true } = {}) {
       dialog.setAttribute('aria-describedby', 'msgText');
       if (!dialog.open) msgVorher = document.activeElement;   // R-1.8 (APD-112)
       showModalQuiet(dialog);
-      passen();
-      placeDialogs();
+      layout();
     });
   }
   return bean;
 }
 const adAlert = createAlert(msg);
-const inform = (title, html, { wide = false, action = null } = {}) => adAlert.showModal(title, html, { wide, action });
+const inform = (title, message, { wide = false, action = null } = {}) => adAlert.showModal(title, message, { wide, action });
 
 /* ---------- AD-Bean notice: Hinweis-Kasten (seit 4.70.0, P-122/F-2, R-3.10, R-1.13) ---------- */
 
@@ -1992,6 +2025,8 @@ function createNotice(element, { message = '', detail = '', buttons = [] } = {})
     const knoepfe = (stand.buttons || []).map((b, i) => `<button type="button" data-i="${i}"${b.id ? ` id="${esc(b.id)}"` : ''}${b.primary ? ' class="primary"' : ''}>${b.icon ? ic(b.icon) : ''}${esc(b.label || '')}</button>`).join('');
     element.innerHTML = `${stand.message || ''}${stand.detail ? `<div class="hint">${stand.detail}</div>` : ''}${knoepfe ? `<div class="ad-notice-buttons">${knoepfe}</div>` : ''}`;
     element.querySelectorAll('.ad-notice-buttons button').forEach(x => x.onclick = () => melde(stand.buttons[+x.dataset.i]?.id || ''));
+    // seit 4.70.2 (P-124/F-1): steht der Kasten in einem offenen Hinweisfenster (AD-Bean alert), rechnet es Breite und Lage sofort neu
+    const d = element.closest('dialog'); if (d?.open) alertLayouts.get(d)?.();
   }
   const bean = {
     get message() { return stand.message; }, set message(v) { stand.message = v || ''; aufbauen(); },
@@ -3480,10 +3515,8 @@ function placeDialogs() {
   const blatt = full ? blattOben() : 0;
   const max = full ? h - blatt : h - oben - unten;
   root.setProperty('--dlg-max', Math.max(200, !full && dlgFest ? Math.min(max, dlgFest) : max) + 'px');
-  // seit 4.37.0 (R-1.10): die Meldung (#msg) ist auch im iPhone-Aufbau ein kleines Fenster – nie unter Statusleiste oder Home-Leiste;
-  // bei großer Schrift rollt ihr Inhalt
-  root.setProperty('--msg-max', Math.max(200, h - oben - unten) + 'px');
-  [dlg, msg].forEach(d => {
+  // Die Meldung (#msg, AD-Bean alert) stellt sich seit 4.70.2 (P-124/F-1) selbst (layout(): Breite, Höhe, Lage) – hier nur das Fenster (#dlg)
+  [dlg].forEach(d => {
     if (!d.open) return;
     // iPhone: das Blatt reicht bis zum unteren Rand des sichtbaren Bereichs (bei offener Tastatur bis zur Tastatur, R-4.5).
     if (full && d === dlg) { d.style.margin = '0'; d.style.bottom = 'auto'; d.style.top = Math.round(top + blatt) + 'px'; return; }
@@ -3499,11 +3532,12 @@ function placeDialogs() {
     if (ganz && (kbOffen() || d.contains(document.activeElement) && document.activeElement.matches(FELD))) return;
     d.style.top = Math.round(top + oben + Math.max(0, (h - oben - unten - d.offsetHeight) / 2)) + 'px';
   });
+  alertLayouts.forEach(layout => layout());
 }
 placeDialogs();   // --vv-h (Höhe des Rahmens, APD-28) gleich beim Start
 // Seit 4.9.1 (R-4.5): wächst ein Fenster nach dem Öffnen (Inhalt, Textfelder), wird es neu platziert –
 // es ragt nie über den Bildschirm hinaus.
-if (window.ResizeObserver) [dlg, msg].forEach(d => new ResizeObserver(() => { if (d.open) placeDialogs(); }).observe(d));
+if (window.ResizeObserver) new ResizeObserver(() => { if (dlg.open) placeDialogs(); }).observe(dlg);   // #msg: eigener ResizeObserver der AD-Bean alert (seit 4.70.2)
 
 // R-4.5 Tastatur ohne Springen (seit 4.28.1, APD-36, Testfall-Liste arbeit/APD-36 Testfall-Liste.md Abschnitt 8, Muster 9 am Gerät 10 von 10 still).
 // Safari verschiebt den sichtbaren Bereich (und mit ihm alle Leisten), wenn das Feld beim Fokus unter der künftigen Tastatur liegt,

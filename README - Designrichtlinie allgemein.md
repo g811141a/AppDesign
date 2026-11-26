@@ -1,6 +1,6 @@
 # Designrichtlinie allgemein
 
-**Version 4.70.1** · Stand 26.11.2026
+**Version 4.70.2** · Stand 26.11.2026
 
 Allgemeine Gestaltungs- und Bedienregeln für alle Web-Apps von g811141a auf iPad und iPhone. Die Datei liegt im Design-Repo
 **AppDesign** (g811141a/AppDesign); ihre Versionsnummer ist die des Repos. Die Komponenten sind dort einmal programmiert und
@@ -1399,7 +1399,7 @@ Testfall (User) in den Usertest, wenn eine Version es betrifft.
 | R-10.5 | **Icon und Text** eines Eintrags bleiben zusammen – Umbruch nur zwischen Einträgen; **in einer Aufzählung mit ‚·‘ (z. B. ‚8×☀️ · 6×🌧️‘) bleibt jeder Eintrag am Stück, wenn er in die Zeile passt, umgebrochen wird nur nach dem ‚·‘ – die neue Zeile beginnt mit dem nächsten Eintrag; ein Eintrag, der allein nicht passt, bricht im Text um, ein Zusatz in Klammern bleibt ganz, nichts ragt hinaus** | ablauf.mjs – `checkIconText` (Icon und erstes Wort auf derselben Zeile), **`checkAufzaehlung` (keine Zeile endet mit der Anzahl oder beginnt mit ‚·‘; ein Eintrag, der passt, ist nicht getrennt; Klammern nie getrennt; nichts ragt hinaus)** | – | 3 |
 | R-10.6 | **Ansprache:** sichtbare Texte ohne ‚wir/uns/unser‘ und ohne ‚klicken‘ (‚tippen‘) | hig.mjs – `texteMenues` (Texte der App, `title`, `aria-label`, Platzhalter) | – | 16 |
 | R-10.7 | **Datum und Dateinamen:** Datum in Texten TT.MM.JJJJ, Uhrzeit hh:mm; Dateinamen nach den Mustern aus 10 (Ausgabe, Backup, Abgleichbericht; Datum JJJJ.MM.TT, Uhrzeit hh.mm, nie zwei Leerzeichen) | hig.mjs – `texteMenues` (Datumsangaben und angezeigte Dateinamen nach jedem Schritt); backup.mjs (`dateinameFehler`) | – | 10 |
-| R-10.8 | **Dateiname im Hinweisfenster:** steht allein in einer eigenen Zeile unter dem Satz, fett und zentriert, ohne Punkt danach. Am iPad wird das Fenster so breit, dass der Name in einer Zeile steht – mindestens so breit wie sonst, höchstens wie das breite Hinweisfenster (600 px, wächst mit der Textgröße, höchstens Bildschirmbreite − 32 px); passt er auch dann nicht, bricht er nur nach einem Leerzeichen um – nur ein Wort, das länger ist als die Zeile, bricht in sich (R-6.3). Am iPhone bleibt die Breite wie bei jedem Hinweisfenster | ablauf.mjs – `checkDateiname` (Backup, Ausgabe, Abgleichbericht; vier Lagen, große Schrift; iPad: eine Zeile und Höchstbreite; Gegenprobe) | – | 10, 15.19 |
+| R-10.8 | **Dateiname im Hinweisfenster:** steht allein in einer eigenen Zeile unter dem Satz, fett und zentriert, ohne Punkt danach. Am iPad wird das Fenster so breit, dass der Name in einer Zeile steht – mindestens so breit wie sonst, höchstens Bildschirmbreite − 32 px (quer also breiter als hoch); passt er auch dann nicht, bricht er nur nach einem Leerzeichen um – nur ein Wort, das länger ist als die Zeile, bricht in sich (R-6.3). Am iPhone bleibt die Breite wie bei jedem Hinweisfenster | ablauf.mjs – `checkDateiname` (Backup, Ausgabe, Abgleichbericht; vier Lagen, große Schrift; iPad: eine Zeile und Höchstbreite; Gegenprobe) | – | 10, 15.19 |
 | R-10.9 | **Begriff ‚Schaltfläche‘:** in Texten, Kommentaren und Prüfmeldungen nie ‚Knopf‘ bzw. ‚Knöpfe‘ (auch nicht in Zusammensetzungen), Ausnahmen wie in 6 | doku.mjs – `checkBegriffe` (AppDesign und App: Doku, `v4/`, Katalog, Prüfungen, `index.html`; Namen im Code ausgenommen; Gegenprobe `--gegenprobe begriffe`) | – | 6 |
 
 ### Regeln ohne automatische Prüfung

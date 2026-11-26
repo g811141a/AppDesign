@@ -1,6 +1,6 @@
 # AppDesign – Backlog (allgemeine Themen)
 
-**Stand 26.11.2026** · Aktuelle Version: AppDesign 4.70.1
+**Stand 26.11.2026** · Aktuelle Version: AppDesign 4.70.2
 
 Allgemeine Themen, die alle Apps betreffen. App-Themen stehen im Backlog der jeweiligen App.
 Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.4.
@@ -11,16 +11,15 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Prio | Thema | bereit seit |
 |---|---|---|---|
-| P-124/F-1 | 1 | **AD-Bean `alert` neu berechnet (zu P-124/1, Reiselogbuch):** eine Funktion `layout()` – Inhalt fertig vor dem Öffnen, Breite nach Inhalt zwischen Mindestbreite und verfügbarer Breite (fester Rand 16 px je Seite), Höhe nach Inhalt, zentriert in der Bean (Nutzer 26.11.2026, Sitzung 0162, `arbeit/0162 AD-Bean alert – wie sie rechnet.md`); Dateiname am iPad höchstens Bildschirmbreite − 32 px (quer breiter als hoch); Wortlaut R-10.8 bestätigt; `ablauf.mjs` `checkDateiname` (Höchstbreite) zieht mit – `arbeit/0162 P-124 Nachbau und Vorschlag.md` | 26.11.2026 |
-| P-124/F-2 | 1 | **AD-Bean `sourcehighlight` (zu P-124/1, Reiselogbuch):** tauscht `refresh` ein gehaltenes Element gegen das neu aufgebaute, gibt `release(alt)` auch das neue frei (ebenso `hold(alt)`) – sonst bleibt nach einem Neuaufbau bei offenem Menü die Schaltfläche hellblau; neue Fälle in der Prüfung der Bean (Menü, Untermenü, Sprechblase) | 26.11.2026 |
 
-2 Punkte bereit.
+0 Punkte bereit.
 
 
 ## 1. Auf iPad und iPhone prüfen
 
 | Nr. | Prio | Thema | Status |
 |---|---|---|---|
+| P-125 | 1 | **Usertest P-125** im Reiselogbuch 3.58.5 (Backlog des Reiselogbuchs): P-125/1 bis P-125/4 – AD-Bean `alert` mit `layout()` (Rand 16 px, Dateiname bis Bildschirmbreite − 32 px, R-10.8) und `sourcehighlight` merkt sich den Tausch (AppDesign 4.70.2, P-124/F-1 und P-124/F-2) | prüfen |
 | P-124 | 1 | **Usertest P-124** im Reiselogbuch 3.58.4 (Backlog des Reiselogbuchs): P-124/1 und P-124/2 – `alert` misst neu, Ergebnis auf jedem Weg im Hinweisfenster (AppDesign 4.70.1, P-123/F-1 und P-123/F-2) · **Rückmeldung (Nutzer 26.11.2026, Sitzung 0161): nicht ok** – P-124/F-1 (Hinweisfenster nicht so breit wie möglich, `alert`) und P-124/F-2 (Teilen nach der Vorschau noch hellblau) im Backlog des Reiselogbuchs | nicht ok |
 | P-123 | 1 | **Usertest P-123** im Reiselogbuch 3.58.3 (Backlog des Reiselogbuchs): P-123/2 und P-123/3 – R-3.10 Hinweise mittig (AppDesign 4.70.0, P-122/F-2) · **Rückmeldung (Nutzer 22.11.2026, Sitzung 0159): nicht ok** – P-123/F-1 bis P-123/F-3 im Backlog des Reiselogbuchs (Breite und Höhe des Hinweisfensters, Meldung nach abgebrochenem Backup am iPad) | nicht ok |
 | P-122 | 1 | **Usertest P-122** im Reiselogbuch 3.58.2 (Backlog des Reiselogbuchs): P-122/5 – ein kurzer Blick auf ein Feld für APD-135/B-3.3 Schritt 2 (AppDesign 4.69.0) · **Rückmeldung (Nutzer 22.11.2026, Sitzung 0157): nicht ok** – P-122/5 ok; allgemein betroffen P-122/F-2 (Ausrichtung von Schaltflächen in Hinweisen, unten) | nicht ok |
