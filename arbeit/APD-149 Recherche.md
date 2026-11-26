@@ -106,3 +106,9 @@ V-3 (Empfehlung aus Runde 1) bekommt dadurch klare Vorbilder für die Teile, die
 - **Schließen mit Rückfrage:** `shouldDismiss`. Der Stapel meldet ‚vom Nutzer geschlossen‘ und ‚von der App geschlossen‘ getrennt.
 - **Anpassung je Gerät zentral:** Popover → Blatt auf dem iPhone. Bisher entscheidet das jede Art selbst (Designrichtlinie 15.17).
 - Neue Web-Recherche ist nicht nötig. Runde 1 hat die Safari-Versionen belegt, und du hast iOS 26.2 oder neuer.
+
+## 3. Antworten Runde 2 (Nutzer 26.11.2026, Sitzung 0165, im Fenster)
+
+- Frage 3: **Ja** – die HIG-Regeln kommen als Grundsätze in den Entwurf: ein Popover, ein Alert über allem, ein Sheet, eine Ebene Untermenü,
+  Hinweise in einer Warteschlange, Durchlass in der Kopfzeile, Darstellung je Ort. Neue Regeln folgen später mit Wortlaut (0 Nr. 29).
+- Frage 1 (Variante): Der Nutzer schreibt im Chat.
