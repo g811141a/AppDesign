@@ -35,7 +35,8 @@ Aufbau nach Zusammenarbeit allgemein 2.5. **Claude liest diese Datei zu Beginn j
     neue, das Menü gibt beim Schließen das alte frei (`release(alt)`), das neue bleibt gehalten und hellblau. In der Nachbildung belegt; was am Gerät neu aufbaut: Vermutung
     (Abgleich, Tageswechsel).
 - **Apple-Abgleich:** HIG ‚Alerts‘ (JSON-Fassung, Stand 2. Februar 2024) sagt nichts zur Breite; kurz halten, kein Rollen. Breiteres Fenster für den Dateinamen = unsere Lösung (R-10.8).
-- **Entscheidungen (Nutzer 26.11.2026, Sitzung 0162, im Fenster):** Wortlaut R-10.8 neu ‚Ja‘; Vorschlag P-124/F-2 ‚Ja‘; Bau ‚Ja, in Sitzung 0163‘ (Prüflauf Stufe voll).
+- **Entscheidungen (Nutzer 26.11.2026, Sitzung 0162, im Fenster):** Wortlaut R-10.8 neu ‚Ja‘; Vorschlag P-124/F-2 ‚Ja‘; Bau ‚Ja, in Sitzung 0163‘ (Prüflauf Stufe voll);
+  danach: AD-Bean `alert` in 4.70.2 **neu berechnen** (eine Funktion `layout()`), Rand **fest 16 px je Seite**. Tönung sah der Nutzer auch nach Teilen → HTML (direkter Weg, schon in P-124/F-2).
 - Backlogs: P-124/F-1 und P-124/F-2 in ‚0.‘ bereit (Reiselogbuch und AppDesign).
 - Arbeitsdateien: `arbeit/0162 Lagebild.md`, `arbeit/0162 P-124 Nachbau und Vorschlag.md` (mit Testfall-Liste und Entwurf Usertest P-125).
 
@@ -43,9 +44,14 @@ Aufbau nach Zusammenarbeit allgemein 2.5. **Claude liest diese Datei zu Beginn j
 
 1. Lesen, Repos dazuholen, Tests einrichten, Lagebild als eigene Antwort mit Kachel (0 Nr. 15).
 2. `vorbereiten --ad 4.70.2 --app reiselogbuch=3.58.5`, dann umsetzen wie im Vorschlag (Abschnitt 4 der Arbeitsdatei):
-   - **AppDesign `alert`:** `fitFileName` höchstens Bildschirmbreite − 32 px (nicht mehr die Breite von `ad-alert-wide`); Kommentar in `ui.js`; `tests/ablauf.mjs`
-     `checkDateiname` (Höchstbreite) anpassen; **R-10.8 Wortlaut neu** (bestätigt): „… höchstens Bildschirmbreite − 32 px (quer also breiter als hoch); passt er auch dann
-     nicht, bricht er nur nach einem Leerzeichen um – …“ statt „… höchstens wie das breite Hinweisfenster (600 px, wächst mit der Textgröße, höchstens Bildschirmbreite − 32 px) …“.
+   - **AppDesign `alert` – Neubau der Berechnung (Nutzer 26.11.2026, Sitzung 0162, im Fenster):** eine Funktion `layout()` in der Bean statt Messen und Nachbessern
+     (`arbeit/0162 AD-Bean alert – wie sie rechnet.md`, Abschnitt 3): Inhalt fertig vor dem Öffnen (Kästen der AD-Bean `notice` vor `showModal`, `MutationObserver`
+     entfällt); verfügbare Fläche = sichtbarer Bereich (`visualViewport`) minus sichere Ränder und **ein fester Rand 16 px je Seite** (ersetzt 32 px und `90vw`);
+     Breite = was der Inhalt braucht (Dateiname in einer Zeile), mindestens Mindestbreite (360 px × Textgröße), höchstens verfügbare Breite; Höhe = Inhalt, höchstens
+     verfügbare Höhe (darüber rollt der Text); die Bean zentriert selbst; neu bei `resize`, Drehen, Textgröße, Tastatur; iPhone-Breite wie heute.
+     `tests/ablauf.mjs` `checkDateiname` (Höchstbreite) anpassen; **R-10.8 Wortlaut neu** (bestätigt): „… höchstens Bildschirmbreite − 32 px (quer also breiter als hoch);
+     passt er auch dann nicht, bricht er nur nach einem Leerzeichen um – …“ statt „… höchstens wie das breite Hinweisfenster (600 px, wächst mit der Textgröße, höchstens
+     Bildschirmbreite − 32 px) …“. Weitere Regeltexte, die die Berechnung beschreiben (Designrichtlinie 7, 10, 15 Liste der AD-Beans), nur nach Rückfrage mit Wortlaut (0 Nr. 29).
    - **AppDesign `sourcehighlight`:** Tausch in `refresh` merken (alt → neu), `release(alt)` und `hold(alt)` wirken auf das neue; neue Fälle in der Prüfung der Bean (Menü,
      Untermenü, Sprechblase: `hold(alt)` → Neuaufbau → `release(alt)` frei).
    - **Reiselogbuch `outputSource`:** auf jedem Weg `hold`/`release` der angetippten Schaltfläche bis `#msg` schließt (Menü: `#shareBtn`; gesperrt: `#shareBtn` bzw. `#pdfBtn`),
@@ -70,5 +76,5 @@ In der neuen Sitzung müssen **AppDesign**, **ReiseLogBuch** und **ReiseLogBuch-
 ```
 Reiselogbuch 0163 – Bau AppDesign 4.70.2 / Reiselogbuch 3.58.5 (P-124/F-1 und P-124/F-2)
 
-Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md, dann die GANZE Zusammenarbeit allgemein (3.19.0) und die Überschriften der Designrichtlinien. Prüfe Modell und Aufwand (get_session: eingestellt, dazu rate_limit_info; Sitzungsdatei: tatsächlich, auch model_fallback; Umgebungsvariable CLAUDE_CODE_EFFORT_LEVEL), hole die Repos g811141a/ReiseLogBuch und g811141a/ReiseLogBuch-Import dazu, wie in der AppDesign-CLAUDE.md unter ‚Arbeitsumgebung‘, richte die Tests ein und prüfe, ob in ~/.claude/settings.json Hooks stehen. Lagebild als eigene Antwort (im Chat und als Markdown-Datei) mit Kachel; danach nach UEBERGABE.md Abschnitt 3 bauen – das Bau-‚Ja‘ (Stufe voll) liegt vor; Lösung und Wortlaut R-10.8 in AppDesign/arbeit/0162 P-124 Nachbau und Vorschlag.md. Hilfsagenten nur mit Opus 5.5 und Aufwand hoch, einzeln nacheinander, auch web-fetch; Fable 5.2 vorerst nicht verwenden.
+Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md, dann die GANZE Zusammenarbeit allgemein (3.19.0) und die Überschriften der Designrichtlinien. Prüfe Modell und Aufwand (get_session: eingestellt, dazu rate_limit_info; Sitzungsdatei: tatsächlich, auch model_fallback; Umgebungsvariable CLAUDE_CODE_EFFORT_LEVEL), hole die Repos g811141a/ReiseLogBuch und g811141a/ReiseLogBuch-Import dazu, wie in der AppDesign-CLAUDE.md unter ‚Arbeitsumgebung‘, richte die Tests ein und prüfe, ob in ~/.claude/settings.json Hooks stehen. Lagebild als eigene Antwort (im Chat und als Markdown-Datei) mit Kachel; danach nach UEBERGABE.md Abschnitt 3 bauen – das Bau-‚Ja‘ (Stufe voll) liegt vor; Lösung und Wortlaut R-10.8 in AppDesign/arbeit/0162 P-124 Nachbau und Vorschlag.md, Neubau der AD-Bean alert in AppDesign/arbeit/0162 AD-Bean alert – wie sie rechnet.md. Hilfsagenten nur mit Opus 5.5 und Aufwand hoch, einzeln nacheinander, auch web-fetch; Fable 5.2 vorerst nicht verwenden.
 ```
