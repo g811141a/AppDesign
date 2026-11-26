@@ -3,6 +3,23 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.70.1 – 26.11.2026
+
+AppDesign 4.70.1 · Designrichtlinie allgemein 4.70.1 · Zusammenarbeit allgemein 3.19.0 · Reiselogbuch 3.58.4 (Fassung 4.70.1)
+
+**P-123/F-1 und P-123/F-2 – Hinweisfenster misst neu, Ergebnis auf jedem Weg im Hinweisfenster** (Rückmeldung P-123/2, Nutzer 22.11.2026; Nachbau, Ursachen,
+Apple-Abgleich und Wortlaut in Sitzung 0160 – `arbeit/0160 P-123 Vorschlag.md`; Vorschlag und Wortlaut bestätigt 23.11.2026).
+
+- **`ui.js` – `createAlert`:** misst die Breite (`fitFileName`) neu, sobald sich der Inhalt des offenen Fensters ändert (`MutationObserver` auf dem Dialog, die eigene
+  Messprobe zählt nicht) – vorher galt die Breite vom Öffnen, und ein Dateiname, den die AD-Bean `notice` erst danach einsetzt, brach um (P-123/F-1).
+- **Designrichtlinie 10:** die Meldung nach Teilen bzw. PDF steht auf jedem Weg im Hinweisfenster (AD-Bean `alert`, so hoch wie nötig, kein Blatt in voller Höhe;
+  aus der Vorschau darüber). **Designrichtlinie 7**, Vorschaufenster: nach Teilen bzw. PDF folgt darüber das Hinweisfenster mit dem Ergebnis und ggf. der
+  Backup-Erinnerung (P-123/F-2; umgesetzt im Reiselogbuch 3.58.4).
+- **Prüfung:** im Reiselogbuch `ablauf-p120` Teile P-123/F-1 bis P-123/F-3 (rot gegen 4.70.0 / 3.58.3, grün mit der Korrektur in Chromium und WebKit).
+- AD-Bean: `alert` (neue Eigenschaft: misst die Breite neu, wenn sich der Inhalt des offenen Fensters ändert).
+
+Usertest im Reiselogbuch: P-124 (Backlog des Reiselogbuchs).
+
 ## 4.70.0 – 22.11.2026
 
 AppDesign 4.70.0 · Designrichtlinie allgemein 4.70.0 · Zusammenarbeit allgemein 3.19.0 · Reiselogbuch 3.58.3 (Fassung 4.70.0)

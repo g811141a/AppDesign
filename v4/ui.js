@@ -1,4 +1,4 @@
-// AppDesign 4.70.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
+// AppDesign 4.70.1 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
 // Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/fassung/X.Y.Z/ui.js"></script> (feste Fassung, R-10.3)
 // Klassisches Skript: alle Funktionen sind global und für das Skript der App sichtbar.
 //
@@ -19,7 +19,7 @@
 
 'use strict';
 // Version der Bausteine (R-10.3): die App vergleicht sie beim Start mit der benötigten Fassung.
-const AD_VERSION = '4.70.0';
+const AD_VERSION = '4.70.1';
 // ‚Bewegung reduzieren‘ (R-1.9) – die eine Abfrage für alle Bausteine (seit 4.64.0, APD-135/B-4.2; vorher fünfmal eigens gebaut)
 const bewegungRuhig = () => !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
 // APD-129 Teil 2 (seit 4.59.2, Messung 14.11.2026 arbeit/APD-129/messung-2026-11-14-2137.txt, Zeilen 9–17, 207–216, 263–272; Designrichtlinie 13
@@ -1939,8 +1939,13 @@ function createAlert(dialog, { fitFileName = true } = {}) {
     const soll = Math.ceil(name + rand + 1);
     // max-width wie beim breiten Fenster aufheben (dialog: höchstens 90vw) – die Höchstbreite liegt mit Bildschirmbreite − 32 px darunter
     if (soll > grund + 0.5) { dialog.style.width = Math.min(soll, hoechst) + 'px'; dialog.style.maxWidth = 'none'; }
+    beobachter.takeRecords();   // die Messprobe selbst ist keine Änderung des Inhalts
   }
   addEventListener('resize', () => { if (dialog.open) passen(); });
+  // Seit 4.70.1 (P-123/F-1): ändert sich der Inhalt des offenen Fensters (z. B. setzt die AD-Bean notice den Dateinamen erst nach showModal ein),
+  // misst die Bean neu – vorher galt die Breite vom Öffnen und der Dateiname brach um.
+  const beobachter = new MutationObserver(() => { if (dialog.open) { passen(); placeDialogs(); } });
+  beobachter.observe(dialog, { childList: true, subtree: true, characterData: true });
   function showModal(title, message, { wide = false, action = null } = {}) {
     return new Promise(resolve => {
       dialog.classList.toggle('ad-alert-wide', wide);

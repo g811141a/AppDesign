@@ -1,6 +1,6 @@
 # Designrichtlinie allgemein
 
-**Version 4.70.0** · Stand 22.11.2026
+**Version 4.70.1** · Stand 26.11.2026
 
 Allgemeine Gestaltungs- und Bedienregeln für alle Web-Apps von g811141a auf iPad und iPhone. Die Datei liegt im Design-Repo
 **AppDesign** (g811141a/AppDesign); ihre Versionsnummer ist die des Repos. Die Komponenten sind dort einmal programmiert und
@@ -273,8 +273,8 @@ Body = Grundgröße der Stufe (14 … 53). Zeilenabstände und Werte wörtlich a
   um hh:mm“ · Kapsel [chevron-left | chevron-right] zum Blättern · Häkchen; automatisches Speichern (8).
 - **Vorschaufenster** (R-6.4): fast bildschirmbreit, Inhalt immer hell und genau wie die ausgegebene Datei, in voller
   Seitenbreite – ist das Fenster schmaler (iPad hoch, iPhone), wischt man seitlich; kein Inhalt ragt aus der Tabelle (R-6.3);
-  Kopfzeile x · „Vorschau“ mit Dateiname als Zusatzzeile · Kapsel [PDF | share blau gefüllt]; nach Teilen bzw. PDF folgt das
-  Ergebnisfenster mit ggf. Backup-Erinnerung.
+  Kopfzeile x · „Vorschau“ mit Dateiname als Zusatzzeile · Kapsel [PDF | share blau gefüllt]; nach Teilen bzw. PDF folgt darüber
+  das Hinweisfenster mit dem Ergebnis und ggf. der Backup-Erinnerung (10).
 - **Meldung** (ohne Entscheidung, z. B. Fehler) **und Ergebnisfenster**: x links oben, Titel, Text und Schaltflächen zentriert (R-3.10); höchstens
   eine Schaltfläche zu den Einzelheiten (10).
 - Technisch: ein Dialog, dessen Inhalt ausgetauscht wird (nicht schließen und neu öffnen); ein zweiter Dialog nur für Meldungen.
@@ -361,7 +361,8 @@ Body = Grundgröße der Stufe (14 … 53). Zeilenabstände und Werte wörtlich a
   Vorschau in voller Breite und seitlich wischbar, Kapsel [PDF · Teilen] (R-6.4, Fenster 7).
 - Vorschau vor dem Sichern im App-Fenster; sie erhöht keinen Zähler.
 - Speichern immer über das Teilen-Menü („In Dateien sichern“); PDF über das Drucken-Menü. Die App meldet ehrlich, dass das Menü
-  geöffnet bzw. abgebrochen wurde; **der Dateiname steht dabei allein in einer Zeile unter dem Satz (R-10.8).**
+  geöffnet bzw. abgebrochen wurde – **auf jedem Weg im Hinweisfenster** (AD-Bean `alert`, so hoch wie nötig, kein Blatt in voller
+  Höhe; aus der Vorschau darüber); **der Dateiname steht dabei allein in einer Zeile unter dem Satz (R-10.8).**
 - **Ausgabe-Design** (HTML und PDF) = **Mustertabelle der Ausgabe** (R-6.2), ein Baustein `outputCss(scope)` in ui.js für jede
   Ausgabe, Vorschau und jeden Bericht (z. B. HTML-Ausgabe des Reiselogbuchs, Abgleichbericht), keine eigenen Nachbildungen:
   Systemschrift 11 pt, h1 20 pt, h2 14 pt, schwarzer Text auf Weiß, Links `#1a5fb4` ohne Unterstreichung, Tabellen wie in der App
