@@ -57,6 +57,21 @@
 5. Die Fälle S-1 bis S-15 automatisch gegen die Katalogseite (Chromium und WebKit), dazu die Gegenprobe S-15.
 6. Bericht mit Link, nummerierten Schritten und ‚Erwartet‘. Vor dem Hochladen auf `main` fragen (0 Nr. 21; kein Release, aber Pages).
 
+## 3a. Abstimmung mit RLB-126 (Nachricht aus Reiselogbuch 0165, 26.11.2026)
+
+- RLB-126 baut die AD-Bean `recentlydeleted`. Das Muster ist am iPad quer ok, der Wortlaut ist freigegeben (J-10):
+  - neue Regel R-7.10
+  - R-4.12 mit der Ausnahme ‚Löschen nach Zuletzt gelöscht fragt nicht‘
+  - R-7.8 bekommt einen Satz
+  - Unterlagen: `arbeit/0165 RLB-126 Muster.md`, `arbeit/0164 RLB-126 AD-Bean recentlydeleted Aufteilung.md`.
+- **Fälle für die Steuer-Bean:** Abfrage ‚Endgültig löschen‘, Kontextmenü und Wischen ‚Wiederherstellen‘, Vorschau mit Hinweis und die neue
+  Listen-Ebene in der Seitenleiste (Kopf ‹, Zurück, Fokus). Im Muster als zusätzliche Fälle prüfen, ob `presentation` und `commands` sie abdecken.
+  Die Befehle `restore` und `purge` sind gute Beispiele für H-7 (Darstellung je Ort).
+- **Laut Nachricht wartet der Bau von RLB-126 auf die Abstimmung.**
+  - Vorschlag (noch nicht entschieden): `recentlydeleted` in 4.x wie bisher bauen, mit `openMenu` und `swipeactions`. Sie zieht mit `v5/` auf
+    `commands`/`presentation` um, damit RLB-126 nicht auf das Framework warten muss.
+  - Das entscheidet der Nutzer.
+
 ## 4. Danach
 
 - `v5/` mit APD-145: Namensraum `AD`, AppDesign 5.0.0.
