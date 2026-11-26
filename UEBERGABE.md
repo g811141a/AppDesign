@@ -24,7 +24,7 @@ Aufbau nach Zusammenarbeit allgemein 2.5. **Claude liest diese Datei zu Beginn j
   Muster im Bean-Katalog‘. Die Sitzung arbeitet auch auf `main` von AppDesign (zuerst Wortlaut Designrichtlinie 14). Vor `vorbereiten` `git fetch origin main`.
   Ändert sie Designrichtlinie oder `v4/`, nennt Claude das vor dem Bau.
 - **Auffällig, nicht geändert – stoppt den vollen Lauf:** `doku-regeln` (Chromium) ist rot mit 4 Fehlern in `AppDesign/BACKLOG.md` Zeile 29. In der
-  APD-149-Zeile aus dem Framework-Chat (Commit `7db5acc`) stehen ‚V-3‘, ‚H-1‘, ‚H-9‘ … ohne Elternnummer (APD-78/S-1; richtig APD-149/V-3 usw.).
+  APD-149-Zeile aus dem Framework-Chat (Commit `7db5acc`) standen lokale Nummern der Grobentwurf-Datei ohne Elternnummer (APD-78/S-1; richtig mit ‚APD-149/‘ davor). **Behoben in der Sitzung ‚AppDesign 0001‘** (26.11.2026).
   Vor dem Bau mit der Sitzung ‚AppDesign 0001‘ abstimmen, wer es behebt. Es ist ein offensichtlicher Fehler: beheben und im Bericht nennen.
 
 ## 2. Ergebnisse der Sitzung 0166
