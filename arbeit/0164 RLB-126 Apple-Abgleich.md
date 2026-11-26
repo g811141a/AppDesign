@@ -74,3 +74,6 @@
 - **RLB-126/J-3** (Frage 2): a – Antippen öffnet eine Vorschau nur zum Lesen mit Hinweis und ‚Wiederherstellen‘.
 - **RLB-126/J-4** (Frage 3): a – Die Zeile zeigt die Restzeit (‚noch N Tage‘), eine eigene Ergänzung.
 - Frage 4 (wie weiter): Der Nutzer schreibt im Chat.
+- **RLB-126/J-5:** Aufteilung zwischen AD-Bean und App wie in `0164 RLB-126 AD-Bean recentlydeleted Aufteilung.md`, `days` Standard 30 (Nutzer 26.11.2026, im Fenster).
+- **RLB-126/J-6:** ‚Zuletzt gelöscht‘ wird allgemeine Regel, Wortlaut mit dem Muster.
+- Frage 4: Muster jetzt (Nutzer im Chat: „Weiter mit Muster wie empfohlen“).
