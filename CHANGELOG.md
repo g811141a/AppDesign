@@ -22,13 +22,15 @@ mit `v5/` – RLB-126/J-11; Bau-Frage mit Ja beantwortet 26.11.2026, Sitzung 016
   gelöscht‘, solange er danach nicht in der Liste steht (wiederhergestellt, danach geändert oder gesperrt), sein Eintrag in `deleted` besteht und nicht `purged` ist
   (gleich alt: `purged` gilt).
 - **`design.css`:** Klassen `.ad-recentlydeleted-…` (Kachel, Papierkorb, Anzahl, Hinweis zur Frist – macht die Seitenleiste nicht breiter –, Hinweis über der Vorschau
-  hell und dunkel, iPhone umbrechend).
+  hell und dunkel, bricht um, wenn er nicht in die Breite passt – R-6.3).
 - **Regeln (Wortlaut freigegeben RLB-126/J-10):** R-4.12 mit der Ausnahme „Ausgenommen ist das Löschen nach ‚Zuletzt gelöscht‘ (R-7.10): es lässt sich rückgängig machen
   und fragt nicht“; R-7.8 „Fragt die rote Aktion beim Antippen zuerst (R-4.12), bleibt die Kachel bis zur Entscheidung offen.“ statt „Die rote Aktion fragt …, die Kachel
   bleibt …“; neu **R-7.10 ‚Zuletzt gelöscht‘** (Prüfung `checkRecentlyDeleted`, Gerät: Wischgefühl, Abgleich zweier Geräte); neuer Abschnitt 15.24; Zeile
   `recentlydeleted` in der Liste der AD-Beans; `schnittstelle.json` mit `createRecentlydeleted`.
 - **Katalog:** `katalog/recentlydeleted.js` (neu) mit ‚Ausprobieren‘.
-- **Prüfungen:** PRUEFUNGEN_AD
+- **Prüfungen:** `tests/ablauf.mjs` – neu `checkRecentlyDeleted` (R-7.10, RLB-126/T-1 bis T-8) mit den Gegenproben `zuletzt:frage` und `zuletzt:frist`;
+  `checkErstFragen` mit den Optionen `trash` (Löschen ohne Sprechblase nach ‚Zuletzt gelöscht‘ ist kein Fehler, R-4.12) und `geladen`; `checkWischen` mit den Optionen
+  `frage` und `einstellen`, die feste offene Breite nur, wenn alle Kapselwörter passen, Vergleich der gewählten Kachel über `data-id`. `tests/pruefe.mjs`: Text der Gegenprobe `masse:sofort`.
 - AD-Bean: `recentlydeleted` (neu).
 
 Usertest im Reiselogbuch: P-126 (Backlog des Reiselogbuchs).

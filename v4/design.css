@@ -598,18 +598,18 @@ dialog form { display: flex; flex-direction: column; max-height: var(--dlg-max, 
 .ad-notice { text-align: center; }
 .ad-notice .ad-notice-buttons { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 10px; }
 /* R-7.10 (seit 4.71.0, RLB-126): AD-Bean recentlydeleted – Kachel ‚Zuletzt gelöscht‘ als letzte der Liste (Papierkorb blau, Anzahl grau rechts), Hinweis
-   zur Frist (macht die Seitenleiste nicht breiter), Restzeit in der Kachel, Hinweis über der Vorschau mit ‚Wiederherstellen‘ (wie der Sperr-Hinweis). */
+   zur Frist (macht die Seitenleiste nicht breiter), Restzeit in der Kachel, Hinweis über der Vorschau mit ‚Wiederherstellen‘ (wie der Sperr-Hinweis; bricht um, wenn er nicht in die Breite passt – R-6.3). */
 #side .side-row.ad-recentlydeleted-entry { margin-top: 18px; }
 .ad-recentlydeleted-icon { display: inline-flex; flex: none; color: var(--accent); }
 .side-row.current .ad-recentlydeleted-icon { color: inherit; }
 .ad-recentlydeleted-count { color: var(--muted); margin-left: auto; font-variant-numeric: tabular-nums; }
 .ad-recentlydeleted-note { color: var(--muted); font-size: var(--t-footnote, 13px); margin: 0 16px 10px; contain: inline-size; }
-.ad-recentlydeleted-notice { position: relative; display: flex; align-items: center; gap: 12px; background: #fff7ea; border: 1px solid #f3d7a6; border-radius: 16px; padding: 12px 14px; margin: 0; }
+.ad-recentlydeleted-notice { position: relative; display: flex; flex-wrap: wrap; align-items: center; gap: 12px; background: #fff7ea; border: 1px solid #f3d7a6; border-radius: 16px; padding: 12px 14px; margin: 0; }
 :root[data-theme="dark"] .ad-recentlydeleted-notice { background: #2b2112; border-color: #5e4519; }
 .ad-recentlydeleted-noticeicon { color: var(--warn); display: inline-flex; flex: none; }
-.ad-recentlydeleted-text { flex: 1; }
+.ad-recentlydeleted-text { flex: 1 1 14em; min-width: 0; }
 .ad-recentlydeleted-restore { flex: none; }
-html.phone .ad-recentlydeleted-notice { flex-wrap: wrap; align-items: flex-start; }
+html.phone .ad-recentlydeleted-notice { align-items: flex-start; }
 html.phone .ad-recentlydeleted-text { flex: 1 1 calc(100% - 38px); }
 /* seit 4.57.0 (APD-116, R-10.8): Dateiname allein in einer eigenen Zeile unter dem Satz (fett, zentriert wie der Text); jedes Wort am Stück
    (.fw), deshalb Umbruch nur nach einem Leerzeichen – nur ein Wort, das länger ist als die Zeile, bricht in sich (R-6.3) */
