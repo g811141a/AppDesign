@@ -39,14 +39,20 @@ Alle Entscheidungen sind in `arbeit/APD-149 0004 Stand.md` und in den Backlog-Ze
 - **APD-149/J-8:** Die neuen Schnittstellen-Teile `commands.toolbar`, `items`, `context`, die Optionen `from`, `dirty`, `align` und das Ereignis `reject` sind bestätigt –
   `arbeit/APD-149 0004 Schnittstelle bestaetigen.md`.
 - **Kasten ‚Ereignisse‘** (Vorschlag von 0003): zurückgestellt, der Nutzer meldet sich bei Bedarf – `arbeit/APD-149 0004 Punkt 5 Kasten Ereignisse.md`.
-- **Parallele Ketten:** Vorgabe des Nutzers (Abschnitt 5), zweimal an Reiselogbuch 0168 geschickt – `arbeit/APD-149 0004 Parallele Ketten.md`. Eine Bestätigung von 0168 kam bis zur Übergabe nicht.
+- **Parallele Ketten:** Vorgabe des Nutzers (Abschnitt 5), zweimal an Reiselogbuch 0168 geschickt – `arbeit/APD-149 0004 Parallele Ketten.md`.
+  - 0168 hat danach an **Reiselogbuch 0169** übergeben. Ihre `UEBERGABE.md` (982bf55) nennt die Vorgabe nicht und plant in Abschnitt 3 noch die Korrekturversion 4.71.1 / 3.59.1.
+  - Ich habe 0169 die Vorgabe darum direkt geschickt (`send_message`), mit der Bitte, ihre Übergabe zu berichtigen. Eine Bestätigung kam bis zur Übergabe nicht.
+- **`doku-regeln`** (Stand 6e1968c) meldet 3 Fehler, alle in Zeilen der Kette Reiselogbuch:
+  - `BACKLOG.md:16` und `UEBERGABE.md:41`: ‚W-97‘ ohne Elternnummer
+  - `UEBERGABE.md:59`: die alte Nummer ‚T-8‘
+  - Ich habe sie 0169 gemeldet und nicht selbst geändert.
 - Dateien: `arbeit/APD-149 0004 Lagebild.md`, `… Fund 1 …`, `… Fund 2 …`, `… Fund 3 …`, `… APD-151 Wie weiter.md`, `… Punkt 5 …`, `… Schnittstelle bestaetigen.md`, `… Parallele Ketten.md`, `… Stand.md`.
 - **Aufgefallen:** Eine überflüssige Prüfausgabe liegt unter `/muster-w.txt` (Wurzel des Containers). Löschen durfte ich sie nicht. Mit dem Container ist sie weg.
 
 ## 3. Nächster Schritt
 
 1. Lesen, Lagebild als eigene Antwort mit Kachel (0 Nr. 15). Tests einrichten (CLAUDE.md, ReiseLogBuch dazuholen).
-2. Prüfen, ob Reiselogbuch 0168 die Vorgabe bestätigt und in ihre `UEBERGABE.md` übernommen hat (`git log origin/main`). Sonst ihr bzw. ihrer Nachfolge-Sitzung die Vorgabe erneut schicken.
+2. Prüfen, ob Reiselogbuch 0169 die Vorgabe übernommen hat (`UEBERGABE.md`, keine Vorbereitungs-Zweige 4.71.1, `git log origin/main`) und ob die 3 Fehler in `doku-regeln` behoben sind. Sonst dem Nutzer melden und der Reiselogbuch-Sitzung die Vorgabe erneut schicken.
 3. **APD-151 Muster ‚Stufen am iPhone‘** (APD-151/J-1):
    1. Apple-Abgleich (0 Nr. 23, 2.6). Ausgangspunkt `arbeit/APD-149 0003 Schritt 15 und Blatt iPhone.md` Abschnitt 2: HIG ‚Sheets‘, `Detent.custom`, Griff, Mail und Nachrichten bleiben groß.
       Dazu prüfen, welche Fenster am iPhone kurz sind.
