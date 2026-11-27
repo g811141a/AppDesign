@@ -72,3 +72,5 @@ Die Schritte zum Ausprobieren kommen mit dem Muster (Bericht nach 0 Nr. 11).
   Vorschlag: nach deinem ‚Ja‘ zur Testfall-Liste an **‚AppDesign 0006 – APD-151 Muster Fenster am iPhone wie am iPad‘** übergeben.
 
 Nächste Version AppDesign (mit `v5/`): 3 Punkte bereit (APD-149/J-1, APD-152, APD-153). Offen im Backlog: APD-135, APD-136, APD-149, APD-148, APD-151, APD-154 (Prio 1) · APD-139, APD-141, APD-142, APD-145, APD-150, APD-155 (Prio 2) · APD-70, APD-147, APD-156 (Prio 3).
+
+**Freigegeben:** Testfall-Liste M-1 bis M-18 (Nutzer 27.11.2026, Sitzung AppDesign 0005, im Fenster). Übergabe jetzt: nein, es wird noch etwas geklärt.
