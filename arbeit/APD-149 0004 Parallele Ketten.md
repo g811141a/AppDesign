@@ -59,4 +59,11 @@ Bis dahin halten sich beide Ketten schon daran.
 - Ich schicke Reiselogbuch 0168 eine Nachricht mit dieser Absprache und dem Wortlaut, mit der Bitte, mir `vorbereiten`, `los` und ‚fertig‘ zu melden.
 - Bis 4.72.0 fertig ist, ändere ich am Muster nur, was du freigibst, und nicht während ihres `los`.
 
+## Entschieden (Nutzer 27.11.2026, Sitzung AppDesign 0004, im Chat)
+
+- „Ich möchte, dass der parallel chat im backlog des appdesign nur mehr reinschreibt aber vorerst nicht mehr weiter umsetzt bis wir hier /v5 finalisiert haben.“
+- Das ersetzt Vorschlag Punkt 1 (‚Eine baut‘). Bis `v5/` fertig ist, schreibt die Kette Reiselogbuch in AppDesign nur ins Backlog. Sie baut und ändert sonst nichts.
+- Am 27.11.2026 an Reiselogbuch 0168 geschickt (`send_message`), mit der Bitte, es in `UEBERGABE.md` zu übernehmen.
+- Offen bleibt, wie die bereiten Punkte APD-149/J-1, APD-152 und APD-153 kommen, und ob die Regel in die `CLAUDE.md` kommt.
+
 Nächste Version AppDesign: 3 Punkte bereit (APD-149/J-1, APD-152, APD-153). Offen im Backlog: APD-135, APD-136, APD-149, APD-148, APD-151, APD-154 (Prio 1) · APD-139, APD-141, APD-142, APD-145, APD-150, APD-155 (Prio 2) · APD-70, APD-147, APD-156 (Prio 3).
