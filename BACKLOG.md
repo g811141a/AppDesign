@@ -12,8 +12,9 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 | Nr. | Prio | Thema | bereit seit |
 |---|---|---|---|
 | APD-149/J-1 | 1 | **Teil ‚Beans im Entwurf im Bean-Katalog‘ (Wortlaut freigegeben, Nutzer 26.11.2026, Sitzung AppDesign 0001, im Fenster – APD-149/J-1, J-2):** neuer Punkt in Designrichtlinie 14, ein Satz in R-1.13 und die Spalte Prüfung; `checkKatalog` prüft `katalog/entwurf/` (Gegenprobe `beans:entwurf`); Text und Prüfungen `arbeit/APD-149 0001 Wortlaut Entwurf im Katalog.md` Abschnitte 2 bis 4 · AD-Bean: keine (Regel und Prüfung) | 26.11.2026 |
+| APD-152 | 1 | **Korrektur: Wiederherstellen behält die Zeitpunkte der Felder (Aufgefallen Punkt 1 aus `arbeit/0167 Bericht 4.71.0 – 3.59.0.md`; Lösung a in AppDesign, Schnittstelle, Testfall-Liste APD-152/T-1 bis T-9 und Wortlaut R-7.10, R-9.3, 15.18 Fall 24, 15.24 freigegeben – Nutzer 27.11.2026, Sitzung Reiselogbuch 0168, im Fenster):** heute stempelt `createSync.stamp` beim Wiederherstellen alle Felder neu – eine Änderung des anderen Geräts von vor dem Abgleich geht verloren (nachgespielt); künftig behalten Felder und Tage ihre Zeitpunkte, nur `changedAt`/`changedOn` neu; Korrekturversion vor allem Neuen (0 Nr. 8) – `arbeit/0168 Punkt 1 Vorschlag.md` · AD-Bean: `createSync` (Option `recentlyDeleted`, erweitertes Verhalten) | 27.11.2026 |
 
-1 Punkt bereit.
+2 Punkte bereit.
 
 
 ## 1. Auf iPad und iPhone prüfen
