@@ -15,7 +15,7 @@
   - Ein offenes Kontextmenü bleibt dann ohne sichtbare Kachel stehen. Das verstößt gegen R-8.1 und Designrichtlinie 15.6.
 - **Vorschlag:** Beim Drehen bleibt die Liste stehen. Ins Bild gerollt wird nur, wenn sich die Auswahl geändert hat.
 - **Apple-Abgleich:** Die HIG ‚Layout‘ verlangt, dass alles beim Drehen vertraut bleibt. Zur Rollposition steht dort nichts. Wie Notizen und Mail es halten, zeigt nur das Gerät.
-- **Freigabe:** Eine reine App-Version ist trotz der Vorgabe erlaubt (du, Sitzung 0169, im Fenster). Die Prüfung dazu steht in AppDesign APD-154 (T-6 bis T-8, T-11).
+- **Freigabe:** Eine reine App-Version ist trotz der Vorgabe erlaubt (du, Sitzung 0169, im Fenster). Die Prüfung dazu steht in AppDesign APD-154 (APD-154/T-6 bis T-8, APD-154/T-11).
 
 **RLB-6 – Ausschreibungstexte in Reiselogbücher umwandeln** (Prio 3, offen): Reiseprogramme von Veranstaltern werden zu Reiselogbüchern, für erledigte und für geplante Reisen.
 Übernommen werden Titel, Zeitraum, Reisemittel, das Programm je Tag mit echtem Datum und die Quartiere.
