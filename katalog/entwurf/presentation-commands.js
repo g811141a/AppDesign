@@ -123,6 +123,20 @@
         host.append(el);
       }
     }
+    // Neu füllen bei offenem Menü (revalidate): ein offenes Untermenü bleibt offen und bekommt seine neuen Einträge, Quelle ist der neue Eintrag
+    // gleichen Namens; der Fokus bleibt auf dem Eintrag an derselben Stelle (Rückmeldung am Gerät 27.11.2026, APD-149/S-16)
+    function neuZeichnen(h, items) {
+      const a = document.activeElement, wo = a?.closest?.('.menu'), stelle = wo ? [...wo.querySelectorAll('.mi')].indexOf(a) : -1;
+      menuZeigen(h, items);
+      for (const o of stack.filter(o => o.kind === 'submenu' && o.parent === h)) {
+        const i = items.findIndex(it => it && it.submenu && it.label === o.label);
+        if (i < 0) { entfernen(o, 'parent'); continue; }
+        o.find = () => h.el?.querySelector(`.mi[data-i="${i}"]`) || null;
+        menuZeigen(o, items[i].submenu);
+      }
+      if (wo?.isConnected && stelle >= 0) fokus(wo.querySelectorAll('.mi')[stelle]);
+      ableiten();
+    }
     function waehlen(h, it, b) {
       if ('schalter' in it) { it.schalter = !it.schalter; b.setAttribute('aria-checked', String(it.schalter)); it.act(it.schalter); return; }
       if (it.submenu) {
@@ -201,7 +215,7 @@
         const a = h.find();
         h.host = (h.kind === 'submenu' ? h.parent.host : a?.closest('dialog')) || document.body;
         const cmds = opts.commands || AD.commands, place = h.align === 'beside' ? 'context' : 'menu';
-        if (typeof content === 'string') { h.commands = cmds; h.rerender = () => { menuZeigen(h, cmds.items(content, { place })); layout(); }; }
+        if (typeof content === 'string') { h.commands = cmds; h.rerender = () => neuZeichnen(h, cmds.items(content, { place })); }
         menuZeigen(h, typeof content === 'string' ? cmds.items(content, { place }) : content);
         if (a) { if (h.kind === 'menu') placeAt(h.el, a, h.align); else unterLage(h); wachsen(h.el, a); }
         if (!tastenStapel.includes(tasten)) tastenStapel.push(tasten);
@@ -321,10 +335,9 @@
         c.execute?.(ctx);
         return true;
       },
-      // Neu fragen: Leisten neu zeichnen, offene Menüs neu füllen (ein offenes Untermenü schließt)
+      // Neu fragen: Leisten neu zeichnen, offene Menüs neu füllen (ein offenes Untermenü bleibt offen, APD-149/S-16)
       revalidate(id = null) {
         leisten.forEach(z => z());
-        for (const h of p.stack) if (h.kind === 'submenu') p.dismiss(h);
         for (const h of p.stack) if (h.kind === 'menu' && h.commands === bean) h.rerender?.();
         melden(hoerer.change, { id });
       },

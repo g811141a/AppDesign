@@ -105,6 +105,25 @@ if (!GP) {
   fall('S-4', `zweiter Tipp schließt das Untermenü, Fokus auf dem Eintrag (${JSON.stringify(u)})`, !u.sub && u.exp === 'false' && !u.on && u.f);
   await p.keyboard.press('Escape'); await ruhe();
 
+  // S-16 Untermenü bleibt beim Neuaufbau offen (Rückmeldung am Gerät 27.11.2026, Schritt 15: ‚Ansicht‘ schloss nach 2 s): Schalter ‚Kopfzeile alle 2 s
+  // neu aufbauen‘ ein, Mehr › Ansicht, 5 s warten – Untermenü offen, sein Eintrag im neu gezeichneten Menü aria-expanded und getönt, Untermenü am Eintrag
+  await t.schritt(p, 'S-16 Schalter ‚Kopfzeile alle 2 s neu aufbauen‘ ein', () => tippe('label:has(#adNeu)'));
+  await tippe('#adLeiste [data-command="more"]');
+  await tippe('.menu .mi[aria-haspopup]');
+  await t.schritt(p, 'S-16 Mehr › Ansicht, 5 s warten', () => ruhe(5000));
+  u = await p.evaluate(() => {
+    const it = document.querySelector('.menu:not(.submenu) .mi[aria-haspopup]'), sm = document.querySelector('.menu.submenu');
+    const ri = it?.getBoundingClientRect(), rs = sm?.getBoundingClientRect();
+    return { an: document.getElementById('adNeu').checked, stack: AD.presentation.stack.map(h => h.kind).join(' › '), sub: !!sm, exp: it?.getAttribute('aria-expanded'), on: it?.classList.contains('on'),
+      neben: !!(ri && rs && Math.abs(rs.top - ri.top) < 2 && (rs.right <= ri.left + 1 || rs.left >= ri.right - 1)), more: document.querySelector('#adLeiste [data-command="more"]').classList.contains('on') };
+  });
+  fall('S-16', `Untermenü nach 5 s mit Neuaufbau offen, Eintrag aria-expanded und getönt, am Eintrag, Mehr getönt (${JSON.stringify(u)})`, u.an && u.stack === 'menu › submenu' && u.sub && u.exp === 'true' && u.on && u.neben && u.more);
+  await t.schritt(p, 'S-16 Auswahl ‚Kompakt‘ im Untermenü', () => tippe('.menu.submenu .mi:nth-of-type(1)'));
+  s = await z();
+  fall('S-16', `Auswahl nach dem Neuaufbau: alles zu, frei, Befehl lief (Stapel ‚${s.stack}‘)`, !s.menu && !s.sub && s.more && !s.more.on && s.more.exp === 'false' && await p.evaluate(() => AD.commands.context.view === 'compact'));
+  await tippe('label:has(#adNeu)');
+  fall('S-16', 'Schalter wieder aus', !await p.evaluate(() => document.getElementById('adNeu').checked));
+
   // S-5 andere Schaltfläche der Kopfzeile bei offenem Menü: ein Tipp (H-1, H-6); eigene schließt; ohne Menü wirkt sie auch (J-3)
   await tippe('#adLeiste [data-command="more"]');
   await t.schritt(p, 'S-5 Ausgabe bei offenem Mehr', () => tippe('#adLeiste [data-command="output"]'));
