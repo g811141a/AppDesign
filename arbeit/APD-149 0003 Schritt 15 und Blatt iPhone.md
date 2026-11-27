@@ -7,7 +7,7 @@
 Link: https://g811141a.github.io/AppDesign/katalog/index.html#presentation – vorher in Safari die Seite neu laden.
 
 15. iPad quer, hell, ‚Stapel (Steuer-Bean)‘: Schalter ‚Kopfzeile alle 2 s neu aufbauen‘ ein, ‚Mehr‘ antippen, dann ‚Ansicht‘, 5 s warten. Erwartet: ‚Ansicht‘ bleibt offen neben dem Menü, ‚Ansicht‘ und ‚Mehr‘ bleiben blau.
-15a. Dann im Untermenü ‚Kompakt‘ antippen. Erwartet: Menü und Untermenü gehen zu, ‚Mehr‘ ist nicht mehr blau, im Protokoll ‚Ansicht kompakt‘.
+15a. Dann im Untermenü ‚Kompakt‘ antippen. Erwartet: Menü und Untermenü gehen zu, ‚Mehr‘ ist nicht mehr blau, im Kasten ‚Ereignisse‘ ‚Ansicht kompakt‘.
 15b. Dasselbe am iPhone hoch. Erwartet: wie 15 und 15a.
 
 Automatisch geprüft in `arbeit/APD-149/muster-pruefen.mjs`, Fall APD-149/S-16 (Chromium und WebKit grün).
