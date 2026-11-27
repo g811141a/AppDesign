@@ -275,8 +275,7 @@
       const r = dlg.getBoundingClientRect();
       if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) anfragen(dlgEntry);
     });
-    // Escape geht an das oberste (Grobentwurf 2.2): beim Fenster über shouldDismiss – nicht über das x (in Chromium kam dessen click() aus dem
-    // cancel-Hörer von v4 nicht an, Sitzung AppDesign 0002)
+    // Escape geht an das oberste (Grobentwurf 2.2): beim Fenster über shouldDismiss
     dlg.addEventListener('cancel', e => { if (!dlgEntry) return; e.preventDefault(); if (stack.at(-1) === dlgEntry) anfragen(dlgEntry); });
     dlg.addEventListener('close', () => {
       const h = dlgEntry; if (!h?.open) return;

@@ -41,4 +41,9 @@ Vermutung damals: v4 ist in Chromium selbst betroffen.
 - Im Entwurf nur den Kommentar berichtigen. Neu: ‚Escape geht an das oberste (Grobentwurf 2.2): beim Fenster über shouldDismiss.‘ Die Code-Zeile bleibt gleich.
   Danach laufen `muster-pruefen.mjs` und `bean-katalog` in Chromium und WebKit.
 
+## Entschieden (Nutzer 27.11.2026, Sitzung AppDesign 0004, im Fenster)
+
+- **APD-149/J-6:** v4 ist nicht betroffen, darum kein Backlog-Eintrag. Im Entwurf ist nur der Kommentar berichtigt (Zeile 278).
+- Danach geprüft: `muster-pruefen.mjs` in Chromium und WebKit 0 Fehler, nur die bekannte Abweichung R-1.4 (APD-149/J-5); `bean-katalog` in Chromium und WebKit ‚alles in Ordnung‘.
+
 Nächste Version AppDesign: 2 Punkte bereit (APD-149/J-1, APD-152). Offen im Backlog: APD-135, APD-136, APD-149, APD-148, APD-151 (Prio 1) · APD-139, APD-141, APD-142, APD-145, APD-150 (Prio 2) · APD-70, APD-147 (Prio 3).
