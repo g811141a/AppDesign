@@ -1,74 +1,74 @@
-# Übergabe APD-149 – Sitzung ‚AppDesign 0007‘ an ‚AppDesign 0008‘
+# Übergabe APD-149 – Sitzung ‚AppDesign 0008‘ an ‚AppDesign 0009‘
 
-**Stand 27.11.2026** · geschrieben in ‚AppDesign 0007 – APD-151 Rückmeldung vom Gerät‘ bei Kontext 202.698 (`messung.mjs`). Die Übergabe ist vorgezogen nach 0 Nr. 13: Das Thema der Sitzung ist abgeschlossen, und der Bau von `v5/` braucht eine frische Sitzung (Nutzer 27.11.2026, im Fenster).
-- Die Kette Reiselogbuch läuft **parallel**. 0170 hat Reiselogbuch **3.59.1** (RLB-128) veröffentlicht (ReiseLogBuch `main` `d1e19d0`, 198 Läufe grün, Pages ‚success‘; Nachricht an 0007). AppDesign blieb dabei unverändert. Die Vorgabe in Abschnitt 5 gilt weiter.
-- Vorige Fassung dieser Datei (0006 → 0007): Git-Verlauf, Commit afc439b.
+**Stand 27.11.2026** · geschrieben in ‚AppDesign 0008 – v5/ (AppDesign 5.0.0)‘ bei Kontext 246.500 (`messung.mjs`). Die Übergabe ist vorgezogen (0 Nr. 13): Die Bau-Frage ist beantwortet, und der Bau braucht eine frische Sitzung (Nutzer 27.11.2026, im Fenster: „Ja, in AppDesign 0009“).
+- Vorige Fassung dieser Datei (0007 → 0008): Git-Verlauf, Commit 8b0a7ee.
 
 ## 1. Lagebild
 
 | Teil | Version |
 |---|---|
-| Reiselogbuch | **3.59.1** (veröffentlicht von 0170) |
+| Reiselogbuch | **3.59.1** veröffentlicht; **3.59.2** (RLB-129) baut gerade die Kette Reiselogbuch (0171, `vorbereiten` gelaufen) |
 | AppDesign | 4.71.0; seither auf `main` nur `arbeit/`, `BACKLOG.md`, `UEBERGABE.md` und der Entwurf `katalog/entwurf/presentation-commands.js` |
 | Zusammenarbeit allgemein | 3.19.0 |
 | `CLAUDE.md` AppDesign | 2.14.0 |
 
-- **Chatnummer:** AppDesign-Kette, nächste Sitzung **AppDesign 0008**, danach 0009.
-- **Modell und Aufwand:** 0007 lief mit Opus 5.5, Aufwand **hoch**, eingestellt und tatsächlich gleich. Es gab keinen `model_fallback`, und `CLAUDE_CODE_EFFORT_LEVEL` ist ungesetzt.
-  Hilfsagenten nur Opus 5.5, Aufwand hoch, einzeln nacheinander (auch web-fetch); Fable 5.2 vorerst nicht.
-- **Nutzungsgrenze:** seven_day · **allowed_warning**, setzt am 03.12.2026 um 07:00 UTC zurück (Stand Beginn 0007).
-- **Sitzungskette:** `get_session` meldete in 0007 `lineage` Tiefe 7 von höchstens 8. 0008 ist damit vermutlich die letzte Sitzung, die `create_session` starten kann. Danach öffnet der Nutzer den neuen Chat selbst und fügt den Starttext ein (2.5).
+- **Chatnummer:** AppDesign-Kette, nächste Sitzung **AppDesign 0009**, danach 0010.
+- **Modell und Aufwand:** 0008 lief mit Opus 5.5, Aufwand **hoch**, eingestellt und tatsächlich gleich, kein `model_fallback`, `CLAUDE_CODE_EFFORT_LEVEL` ungesetzt. Hilfsagenten nur Opus 5.5, Aufwand hoch, einzeln nacheinander (auch web-fetch); Fable 5.2 vorerst nicht.
+- **Nutzungsgrenze:** seven_day · **allowed_warning**, setzt am 03.12.2026 um 07:00 UTC zurück.
+- **Sitzungskette:** `lineage` Tiefe 8 von 8 – 0008 konnte 0009 nicht starten. **Der Nutzer öffnet den neuen Chat selbst** in derselben Umgebung (Opus 5.5, Aufwand hoch) und fügt den Starttext ein.
 - **Hooks:** keine (`~/.claude/settings.json` erlaubt nur `create_session`).
-- **Prüfumgebung:** 4 Kerne, Chromium 158 (Verweise 1194 → 1243), WebKit 26.0, Playwright 1.56.1.
-- **Offene Usertests:** keine.
-- **Netz:** `github.io` ist gesperrt. Den Stand der Pages über die GitHub-API prüfen.
-- **Nächste Version AppDesign** (mit `v5/`): **4 Punkte bereit** (APD-149/J-1, APD-151, APD-152, APD-153).
-- **`doku-regeln`** (Stand 25ad6e9): alles in Ordnung.
+- **Prüfumgebung:** 4 Kerne, Chromium 158 (Verweise 1194 → 1243), WebKit 26.0, Playwright 1.56.1; `lauf-selbsttest` grün.
+- **Offene Usertests (AppDesign):** keine. Im Reiselogbuch kommt mit 3.59.2 ein Usertest (P-128) dazu – Stand in `UEBERGABE.md` der Kette Reiselogbuch.
+- **Netz:** `github.io` ist gesperrt; Pages über die GitHub-API.
+- **Nächste Version AppDesign 5.0.0: 7 Punkte bereit** (APD-149/J-1, APD-152, APD-153, APD-151, APD-145, APD-149 Beans, APD-154).
 
-## 2. Ergebnisse der Sitzung 0007
+## 2. Ergebnisse der Sitzung 0008
 
-- **Muster APD-151 am Gerät: alles ok** (Nutzer 27.11.2026, im Fenster, Schritte 0 bis 15 aus `arbeit/APD-151 0007 Bericht Muster.md`).
-- **Aufgefallen Nr. 1** (Fenster nach dem Schließen der Tastatur bildschirmhoch, v4, auch am iPad): **wird mit APD-151 in `v5/` behoben** (Nutzer, im Fenster).
-- **Wortlaut freigegeben** (Nutzer, im Fenster): R-4.6, R-4.5, 15.17, Designrichtlinie 7 und die abhängigen Stellen (3, 10, 13, 15.22, R-1.4, R-1.12, Prüfspalte R-4.8) – `arbeit/APD-151 0007 Wortlaut.md`.
-  - Eingetragen wird er **mit `v5/`**. Die Nummern in der Spalte ‚Prüfung‘ und die Namen der Technik (15.17 ‚Technisch‘) werden beim Bau festgelegt.
-  - Die Prüfung R-4.5 ‚Fenster nicht bildschirmbreit‘ am iPhone in `tests/hig.mjs:654–656` entfällt, R-4.8 (`masseStile`) prüft dann auch am iPhone.
-  - Grobentwurf H-9 (‚Tippen außerhalb‘) beim Bau der Bean `presentation` anpassen.
-- **Backlog:** APD-151 steht in ‚0. Nächste Version‘, bereit seit 27.11.2026.
-- Dateien: `arbeit/APD-149 0007 Lagebild.md`, `arbeit/APD-151 0007 Bericht Muster.md`, `arbeit/APD-151 0007 Wortlaut.md`, `arbeit/APD-151 0007 Stand.md`.
+- **Testfall-Listen aller Punkte von `v5/` geprüft**, Fehlendes vorgelegt und freigegeben (Nutzer 27.11.2026, im Fenster) – `arbeit/APD-149 0008 Testfall-Listen v5.md`:
+  - **APD-145/J-3:** Wortlaut R-1.14, R-1.13, Designrichtlinie 14, 15, R-10.3, R-10.9 und `CLAUDE.md` (→ 2.15.0) freigegeben.
+  - **APD-145/J-4:** alle deutschen Namen der Schnittstelle mit ihren Schlüsseln englisch – 23 App-Namen, ihre Optionsschlüssel und 15 Namen im Teil `pruefungen` (Tabelle Abschnitt 2.2).
+  - **APD-154/J-1:** Wortlaut Spalte Prüfung R-8.1 freigegeben.
+  - **APD-149/J-9:** Das Reiselogbuch nutzt `commands` und `presentation` in `v5/` noch nicht.
+  - **Testfall-Listen freigegeben:** APD-145/T-1 bis T-13, APD-149/S-10 (geändert), S-17, S-18, APD-151/M-17 bis M-20.
+- **Bau-Frage beantwortet:** **Ja** – AppDesign 5.0.0 mit Reiselogbuch 3.60.0 (gehoben auf 5.0.0), Prüflauf **voll**, Bau in AppDesign 0009 (Nutzer 27.11.2026, im Fenster) – `arbeit/APD-149 0008 Bau-Frage.md`.
+- **Backlog:** APD-145, ‚APD-149 (Beans)‘ und APD-154 stehen in ‚0. Nächste Version‘ (7 Punkte bereit, `e2ae23d`).
+- **Nachrichten der Kette Reiselogbuch:** 0170 (P-127 fehlgeschlagen, RLB-129) und 0171 (baut 3.59.2; laut 0171 will der Nutzer die Ketten zusammenführen – erst 3.59.2, dann übergibt 0171 an die Kette AppDesign; die Übernahme bestätigt der Nutzer selbst).
+- Dateien: `arbeit/APD-149 0008 Lagebild.md`, `arbeit/APD-149 0008 Testfall-Listen v5.md`, `arbeit/APD-149 0008 Bau-Frage.md`.
 
 ## 3. Nächster Schritt
 
-1. Lesen, dann das Lagebild als eigene Antwort mit Kachel (0 Nr. 15). Tests einrichten wie in der `CLAUDE.md`, ReiseLogBuch dazuholen.
-2. **Vorbereitung `v5/` (AppDesign 5.0.0)** mit APD-145 (Namensraum `AD`). Inhalt wie in Abschnitt 4.
-   - Zuerst für jeden Punkt prüfen, ob eine freigegebene Testfall-Liste vorliegt (0 Nr. 1), und fehlende vorlegen. In 0007 fand ich für APD-145 keine eigene Datei `arbeit/APD-145 …` (nur `arbeit/0150 APD-145 APD-142 RLB-126 Klaerung.md`); das Backlog bis ‚Erledigt‘ und die Testfall-Listen genau lesen.
-   - Dann die **Bau-Frage** (0 Nr. 21): AppDesign 5.0.0 mit Reiselogbuch (Heben auf 5.0.0 nur nach Rückfrage, R-10.3), Prüflauf **voll**. Vorher `node werkzeug/veroeffentlichen.mjs stufe --app reiselogbuch`.
-   - Die Kette Reiselogbuch vor `vorbereiten` per `send_message` informieren (Abschnitt 5).
+1. Lesen (Starttext), Tests einrichten, Lagebild als eigene Antwort mit Kachel (0 Nr. 15). Dabei prüfen, ob Reiselogbuch 3.59.2 auf `main` ist und die Pages ‚success‘ melden, und den Stand aus `UEBERGABE.md` (Kette Reiselogbuch) übernehmen.
+2. **Bau AppDesign 5.0.0 / Reiselogbuch 3.60.0** – das Ja liegt vor (0 Nr. 21), erst nach 3.59.2 auf `main`:
+   - Zweige `vorbereitung-5.0.0` (AppDesign) und `vorbereitung-3.60.0` (Reiselogbuch); vor `vorbereiten` die Kette Reiselogbuch per `send_message` informieren, falls sie noch läuft.
+   - **Das Veröffentlichungs-Skript kennt nur `v4/`** (`werkzeug/veroeffentlichen.mjs` Zeilen 49, 104–105, 108, 118, 131–132, 281, 358). Zuerst `v5/` als Kopie von `v4/` anlegen und Skript und Selbsttest auf `v5/` umstellen (APD-145/T-12), dann `vorbereiten --ad 5.0.0 --app reiselogbuch=3.60.0`.
+   - Inhalt nach `arbeit/APD-149 0008 Bau-Frage.md` und den freigegebenen Listen: APD-145 (Namensraum `AD`, Namen nach Tabelle 2.2, Prüfungen und Richtlinien auf `v5/`), Beans aus `katalog/entwurf/presentation-commands.js` nach `v5/ui.js` mit Liste 15 und Katalogdateien, APD-149/J-1, J-5, J-7, APD-151 (Weiche entfällt, Wortlaut `arbeit/APD-151 0007 Wortlaut.md`), APD-152, APD-153 (Stellen in `v5/`), APD-154, `recentlydeleted` unter `AD`.
+   - **Feste Prüfungen rot gegen 4.71.0 / 3.59.x** (0 Nr. 1): APD-151/M-19, APD-154/T-5 bis T-8, die freigegebenen roten Fälle von APD-152.
+   - Die freigegebenen Erwartungen gelten wörtlich; lässt sich eine nicht halten, vorher fragen.
+   - CHANGELOG mit Testfällen (Usertest P-n, /0 Version: Reiselogbuch 3.60.0, AppDesign 5.0.0), Backlog, Versionsgeschichten; `stufe` vor `los` (erwartet: voll), dann `los` im Hintergrund.
+   - Prüfseite und Katalog am iPhone: `#presentation` öffnet die Startliste; in Prüfungen die Bean mit `showBean('presentation')` öffnen.
+3. Nach ‚fertig‘ Bericht mit Usertest (0 Nr. 11).
+4. **Achtung Kontext:** Der Bau ist groß. Bei ‚⚠ Übergabe fällig‘ erst nach dem laufenden Schritt übergeben, nie mitten im Prüflauf (0 Nr. 13).
 
-## 4. Danach (Inhalt von `v5/`)
+## 4. Danach
 
-- `v5/` mit APD-145 (Namensraum `AD`, AppDesign 5.0.0). Darin kommen:
-  - die Beans `commands` und `presentation` aus dem Entwurf
-  - APD-149/J-5 (Wortlaut R-1.4, 15.6, `hig.mjs`)
-  - APD-151: Die Weiche entfällt, der iPad-Weg gilt in `ui.js` für alle Fenster. Dazu kommen `checkSheet`, `hig.mjs` R-4.5 und R-4.8 sowie im Reiselogbuch `ablauf-blatt` und `ablauf-fenster`, alle umgestellt, die Korrektur aus Aufgefallen Nr. 1 und der freigegebene Wortlaut (`arbeit/APD-151 0007 Wortlaut.md`). Die Tageserfassung im Reiselogbuch zeigt am iPhone, ob M-3 und M-8 dort gelten.
-  - die bereiten Punkte APD-149/J-1, APD-152, APD-153 und APD-154
-- `v5/` entsteht als Kopie des neuesten `v4/` (4.71.0). Für APD-149/J-7 den Testfall ‚Navigation schließt alles auf dem Stapel‘ bauen.
-- APD-150 löst S-3. APD-148 und APD-142 bauen auf `presentation` und `commands` auf. `recentlydeleted` zieht mit `v5/` um (RLB-126/J-11).
-- Nach `v5/` die dauerhafte Regel zu parallelen Ketten klären (`arbeit/APD-149 0004 Parallele Ketten.md`).
+- APD-150 löst S-3. APD-148 und APD-142 bauen auf `presentation` und `commands` auf; dann stellt die App auf die Beans um (APD-149/J-9).
+- Nach `v5/` die dauerhafte Regel zu parallelen Ketten klären (`arbeit/APD-149 0004 Parallele Ketten.md`), mit der Zusammenführung der Ketten.
+- Hinweis aus 0170: RLB-129 zeigt, dass die Drehprüfung auch mit der Lage vor dem ersten Drehen vergleichen muss (bei APD-154 mitprüfen).
 
 ## 5. Neue Vereinbarungen
 
-- **Vorgabe des Nutzers (27.11.2026, gilt weiter):** Bis `v5/` fertig ist, schreibt die Kette Reiselogbuch in AppDesign nur ins Backlog. Sie baut keine AppDesign-Version.
-  - `v4/`, `tests/`, `werkzeug/`, `katalog/`, Richtlinien und `CLAUDE.md` liegen bei der AppDesign-Kette.
-- Keine neuen Regeln in 0007 (der Wortlaut APD-151 ist freigegeben, aber erst mit `v5/` in Kraft).
-- **Vor jedem Commit** `git fetch origin main` ausführen, darauf aufsetzen, auf Konfliktmarken prüfen und sofort hochladen.
-- **Katalog am iPhone:** `#presentation` öffnet die Startliste. In Prüfungen die Bean mit `showBean('presentation')` öffnen.
+- Keine neuen Regeln in Kraft. Der freigegebene Wortlaut (APD-151, APD-145/J-3, APD-154/J-1, APD-149/J-5) gilt erst mit `v5/`.
+- **Vorgabe parallele Ketten** gilt bis `v5/` fertig ist: Die Kette Reiselogbuch schreibt in AppDesign nur ins Backlog; reine Reiselogbuch-Versionen mit AppDesign 4.71.0 sind erlaubt.
+- **Vor jedem Commit** `git fetch origin main`, darauf aufsetzen, auf Konfliktmarken prüfen, sofort hochladen.
 
 ## 6. Starttext für die neue Sitzung
 
-```
-AppDesign 0008 – v5/ (AppDesign 5.0.0)
+In der neuen Sitzung müssen **AppDesign** und **ReiseLogBuch** verfügbar sein (ReiseLogBuch holt die Sitzung mit `add_repo` dazu).
 
-Lies im Repo g811141a/AppDesign (Branch main) zuerst arbeit/APD-149 Uebergabe.md, dann UEBERGABE.md (nur Lagebild, die Kette Reiselogbuch läuft parallel und schreibt bis v5/ nur ins Backlog), dann die GANZE Zusammenarbeit allgemein (3.19.0) und die Überschriften der Designrichtlinien, dazu arbeit/APD-151 0007 Wortlaut.md und BACKLOG.md bis ‚## Erledigt‘. Prüfe Modell und Aufwand (get_session: eingestellt, dazu rate_limit_info und lineage; Sitzungsdatei: tatsächlich, auch model_fallback; Umgebungsvariable CLAUDE_CODE_EFFORT_LEVEL) und ob in ~/.claude/settings.json Hooks stehen; richte die Tests ein, wie in der AppDesign-CLAUDE.md unter ‚Arbeitsumgebung‘ (ReiseLogBuch dazuholen). Lagebild als eigene Antwort (im Chat und als Markdown-Datei) mit Kachel; danach nach arbeit/APD-149 Uebergabe.md Abschnitt 3: Testfall-Listen aller Punkte von v5/ prüfen, fehlende vorlegen, dann die Bau-Frage für AppDesign 5.0.0 (Prüflauf voll). Hilfsagenten nur mit Opus 5.5 und Aufwand hoch, einzeln nacheinander, auch web-fetch; Fable 5.2 vorerst nicht verwenden.
+```
+AppDesign 0009 – Bau v5/ (AppDesign 5.0.0)
+
+Lies im Repo g811141a/AppDesign (Branch main) zuerst arbeit/APD-149 Uebergabe.md, dann UEBERGABE.md (Stand der Kette Reiselogbuch, Reiselogbuch 3.59.2 mit RLB-129), dann die GANZE Zusammenarbeit allgemein (3.19.0) und die Überschriften der Designrichtlinien, dazu arbeit/APD-149 0008 Bau-Frage.md, arbeit/APD-149 0008 Testfall-Listen v5.md, arbeit/APD-151 0007 Wortlaut.md und BACKLOG.md bis ‚## Erledigt‘. Prüfe Modell und Aufwand (get_session: eingestellt, dazu rate_limit_info und lineage; Sitzungsdatei: tatsächlich, auch model_fallback; Umgebungsvariable CLAUDE_CODE_EFFORT_LEVEL) und ob in ~/.claude/settings.json Hooks stehen; hole g811141a/ReiseLogBuch dazu und richte die Tests ein, wie in der AppDesign-CLAUDE.md unter ‚Arbeitsumgebung‘. Lagebild als eigene Antwort (im Chat und als Markdown-Datei) mit Kachel; danach nach arbeit/APD-149 Uebergabe.md Abschnitt 3: Bau AppDesign 5.0.0 mit Reiselogbuch 3.60.0 (Ja des Nutzers liegt vor, Sitzung AppDesign 0008), erst wenn Reiselogbuch 3.59.2 auf main ist; Prüflauf voll. Hilfsagenten nur mit Opus 5.5 und Aufwand hoch, einzeln nacheinander, auch web-fetch; Fable 5.2 vorerst nicht verwenden.
 ```
 
-**Name der neuen Sitzung:** ‚AppDesign 0008 – v5/ (AppDesign 5.0.0)‘.
+**Name der neuen Sitzung:** ‚AppDesign 0009 – Bau v5/ (AppDesign 5.0.0)‘.
