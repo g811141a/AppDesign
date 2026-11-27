@@ -97,3 +97,5 @@ Datei: `README - Designrichtlinie allgemein.md`. Die Nummern der Prüfungen in d
 - **Backlog:** In der Zeile APD-151 sind eingetragen: Gerät ok, die Korrektur aus Aufgefallen Nr. 1 kommt mit, und der Wortlaut ist vorgelegt.
 - **Nach deinem Ja zum Wortlaut** ist APD-151 bereit für `v5/` (Nächste Version, 4 Punkte). Eingetragen wird der Wortlaut mit dem Bau.
 - **Nächster Schritt danach:** `v5/` mit APD-145 (Namensraum `AD`, AppDesign 5.0.0), nach `arbeit/APD-149 Uebergabe.md` Abschnitt 4. Vorher kommt die Bau-Frage (0 Nr. 21).
+
+**Freigegeben:** Wortlaut Abschnitte 1 bis 5 (Nutzer 27.11.2026, Sitzung AppDesign 0007, im Fenster). Eingetragen wird er mit `v5/`.
