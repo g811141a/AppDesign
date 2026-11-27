@@ -2,6 +2,8 @@
 
 **27.11.2026** · Nachgeprüft in 0007: Seit 52ca53d hat sich an `v4/`, `katalog/` und `tests/` nichts geändert, Pages ist ‚success‘ (GitHub-API, Stand 632f85c). Die Prüfergebnisse stammen aus der Sitzung 0006 (Bericht `arbeit/APD-151 0006 Bericht Muster.md`).
 
+- **Neu seit dem Lagebild:** Die Kette Reiselogbuch (0170) hat Reiselogbuch **3.59.1** (RLB-128) veröffentlicht, ReiseLogBuch `main` = `d1e19d0`, `APP_VERSION` 3.59.1. AppDesign 4.71.0 ist unverändert.
+
 ## Bericht
 
 - Das Muster ist im Entwurf `katalog/entwurf/presentation-commands.js` gebaut, nach APD-151/J-2 und J-3.
