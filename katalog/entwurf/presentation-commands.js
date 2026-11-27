@@ -3,14 +3,70 @@
 // diese Datei, sie steht in keiner Fassung und nicht in der Liste der AD-Beans (15). Der Code baut auf v4/ auf (placeAt, menuHtml, blockingLayer,
 // choosePop, openDialog, adAlert, adSourcehighlight …); eigenes CSS nur unter .ad-commands… bzw. .ad-presentation…. Der Namensraum AD kommt mit APD-145
 // (v5/); hier hängt der Entwurf seine Teile schon an window.AD.
-// Prüfung: APD-149/S-1 bis S-15 (Prüfskript der Sitzung AppDesign 0002), tests/katalog.mjs (öffnet jede angemeldete Bean, auch im Entwurf).
+// Prüfung: APD-149/S-1 bis S-15 (Prüfskript der Sitzung AppDesign 0002), APD-151/M-1 bis M-18 (dasselbe Skript arbeit/APD-149/muster-pruefen.mjs, seit AppDesign 0006),
+// tests/katalog.mjs (öffnet jede angemeldete Bean, auch im Entwurf).
 'use strict';
 (() => {
   const AD = window.AD = window.AD || {};
   const css = document.createElement('style');
   css.dataset.adEntwurf = 'presentation-commands';
-  css.textContent = '.ad-commands-toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 12px; padding: 4px 16px 12px; }';
+  css.textContent = '.ad-commands-toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 12px; padding: 4px 16px 12px; }'
+    // APD-151: das Fenster des Stapels hat im iPhone-Aufbau die Maße des iPad-Fensters (dialog in v4/design.css, R-4.8); die Kopfzeile bleibt kompakt (15.17)
+    + ' html.phone dialog:is(#dlg, .blatt-geist).ad-presentation-sheet { width: fit-content; min-width: min(max(480px, calc(480px * var(--f-body))), 90vw); max-width: 90vw;'
+    + ' height: auto; border-radius: 18px; box-shadow: 0 20px 60px rgba(0,0,0,.3); }'
+    + ' html.phone dialog:is(#dlg, .blatt-geist).ad-presentation-sheet form { height: auto; }'
+    + ' html.phone :is(#dlg, .blatt-geist).ad-presentation-sheet .dlg-body { padding: 8px 16px 20px; }'
+    + ' html.phone :is(#dlg, .blatt-geist).ad-presentation-sheet .dlg-head { padding-left: 12px; padding-right: 12px; }';
   document.head.append(css);
+
+  /* ---------- APD-151: Fenster am iPhone wie am iPad (Muster; mit v5/ direkt in ui.js) ---------- */
+  // Für das Fenster des Stapels (Klasse ad-presentation-sheet am #dlg) gilt im iPhone-Aufbau der Weg des iPad (APD-151/J-2, J-3): in der Mitte,
+  // Höhe nach Inhalt, Breite nach R-4.8, Abdunkelung 0,35, die Seite bleibt groß, Tastatur wie am iPad (R-4.5), Antippen der Abdunkelung
+  // schließt nicht. v4/ bleibt unverändert: die betroffenen Funktionen von ui.js werden aus ihrem eigenen Text neu gebaut; darin fragen
+  // isPhone(), blattOben(), blattZu() und blattDunkel() über die Weiche. Ohne die Klasse verhalten sie sich genau wie in v4.
+  // Gegenprobe APD-151/M-18: window.__adPresentationGegenprobe = 'blatt' setzt die Klasse nicht – das Fenster ist wieder das Blatt.
+  const SHEET = 'ad-presentation-sheet';
+  const wieIpad = () => dlg.classList.contains(SHEET);
+  const WEICHE = { isPhone: '__adPhone', blattOben: '__adBlattOben', blattZu: '__adBlattZu', blattDunkel: '__adBlattDunkel' };
+  const umbauen = src => src.replace(/\b(isPhone|blattOben|blattZu|blattDunkel)\(\)/g, (_, n) => WEICHE[n] + '()');
+  const global = src => (0, eval)('(' + src + ')');   // im globalen Bereich: die neuen Funktionen sehen blattY, dlgFest, dlg … wie ui.js
+  // neu gebaut aus dem Text der Funktion in ui.js; ohne ui.js (z. B. entwurf-regeln mit Platzhaltern: nur ‚native code‘) bleibt alles, wie es ist
+  const neuBauen = (name, f) => {
+    const src = typeof f === 'function' ? String(Function.prototype.toString.call(f)) : '', neu = umbauen(src);
+    if (!src || /\[native code\]/.test(src)) return null;
+    if (neu === src) { console.error(`presentation (APD-151): ${name} in ui.js ohne Weiche`); return null; }
+    return global(neu);
+  };
+  window.__adPhone = () => isPhone() && !wieIpad();
+  window.__adBlattOben = neuBauen('blattOben', blattOben) || blattOben;
+  window.__adBlattZu = neuBauen('blattZu', blattZu) || blattZu;
+  window.__adBlattDunkel = neuBauen('blattDunkel', blattDunkel) || blattDunkel;
+  for (const name of ['blattBild', 'blattFahre', 'blattAuf', 'blattGeist', 'blattWeg', 'blattLos', 'placeDialogs', 'noetig', 'feldZeigen', 'gemeldet']) {
+    const alt = window[name], neu = neuBauen(name, alt);
+    if (!neu) continue;
+    const fn = Object.assign(neu, alt);   // placeDialogs.top, gemeldet.t
+    window[name] = fn;
+    // gemeldet hängt direkt am sichtbaren Bereich (Tastatur auf und zu): dort austauschen
+    if (name === 'gemeldet' && window.visualViewport) for (const t of ['resize', 'scroll']) { visualViewport.removeEventListener(t, alt); visualViewport.addEventListener(t, fn); }
+  }
+  // Tastatur zu (APD-151/M-9): v4 gibt jedem Rollbereich vor dem Wachsen des Rahmens Platz (gemeldet, APD-115/N-13) – im Fenster wächst es damit auf die
+  // volle Höhe und bleibt so, mit leerem Platz unter dem Inhalt (im Safari-Modell auch am iPad mit v4: 454 → 1160 px). Passt der Inhalt ohne den Platz,
+  // nimmt das Muster ihn gleich weg: das Fenster gleitet zurück in die Mitte (gleitet, runter). Langer Inhalt bleibt wie in v4.
+  if (window.visualViewport) visualViewport.addEventListener('resize', () => {
+    const c = dlg.querySelector('.dlg-body'), a = document.activeElement, pl = c ? platzVon(c) : 0;
+    if (!wieIpad() || !dlg.open || kbOffen() || !pl || (dlg.contains(a) && a.matches?.(FELD)) || c.scrollHeight - pl > c.clientHeight + 1) return;
+    c.style.removeProperty('--platz'); dlgFest = 0; placeDialogs();
+  });
+  // Tastatur wie am iPad: die Höhe des Fensters vor dem Antippen gilt weiter (dlgFest) – der Platz unter dem Inhalt macht es nicht höher.
+  // v4 setzt sie im focusin-Hörer am document nur im iPad-Aufbau; dieser Hörer am window kommt vorher dran.
+  addEventListener('focusin', e => {
+    const f = e.target;
+    if (!wieIpad() || neuFokus || dlgFest || !dlg.contains(f) || !f.matches?.(FELD) || (!kbOffen() && performance.now() - beruehrt > 1500)) return;
+    const c = behaelter(f);
+    if (c && noetig(f, c) > 0) { dlgFest = Math.round(dlg.offsetHeight); placeDialogs(); }
+  }, true);
+  // Antippen der Abdunkelung schließt nicht (APD-151/J-3 Nr. 4, wie am iPad): v4 schließt am iPhone im click-Hörer am #dlg – er bekommt den Klick nicht
+  addEventListener('click', e => { if (wieIpad() && e.target === dlg && blattDraussen(e)) e.stopPropagation(); }, true);
 
   const melden = (set, daten) => set.forEach(fn => { try { fn(daten); } catch (e) { console.error(e); } });
   const anmelden = set => fn => { if (typeof fn !== 'function') return () => {}; set.add(fn); return () => { set.delete(fn); }; };
@@ -226,7 +282,13 @@
         h.pop = [...document.querySelectorAll('.pop')].at(-1);
       } else if (h.kind === 'sheet') {
         dlgEntry = h;
+        dlg.classList.toggle(SHEET, window.__adPresentationGegenprobe !== 'blatt');   // APD-151 (Gegenprobe M-18: ohne die Klasse das Blatt von v4)
+        // H-3 mit Gleiten (APD-151/M-13): das alte Fenster gleitet als Abbild hinaus, das neue gleitet wie beim Öffnen herein; die Abdunkelung bleibt
+        const ersetzt = dlg.open;
+        if (ersetzt) blattGeist();
         openDialog(content, !!opts.wide);
+        if (ersetzt && dlg.open) dlg.animate(bewegungRuhig() ? [{ opacity: 0 }, { opacity: 1 }] : [{ translate: `0 ${Math.round(__adBlattZu())}px` }, { translate: '0 0' }],
+          bewegungRuhig() ? { duration: 200, easing: 'ease-out' } : { duration: GLEIT_AUF_MS, easing: GLEIT_FEDER });
         dlgDirty = opts.dirty || null;
         const x = dlg.querySelector('#dlgX');
         if (x) x.onclick = () => anfragen(h);   // x, Escape und ⌘. (v4 drückt dann x) und Wischen mit Änderungen fragen über shouldDismiss
@@ -269,15 +331,12 @@
     };
     new MutationObserver(() => { if (stack.length) ableiten(); }).observe(root, { childList: true, subtree: true });
     floating.add(() => { if (stack.length) layout(); });   // Drehen, Größe, Tastatur (R-8.1)
-    // Fenster: Tippen neben das Fenster fragt wie x (H-9); schließt v4 es selbst (Häkchen, Wischen), ist es zu (reason 'user')
-    dlg.addEventListener('click', e => {
-      if (!dlgEntry || e.target !== dlg) return;
-      const r = dlg.getBoundingClientRect();
-      if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) anfragen(dlgEntry);
-    });
+    // Fenster: Tippen neben das Fenster schließt nicht, auch nicht über shouldDismiss (APD-151/J-3 Nr. 4: wie am iPad und bei Apple – Schließen
+    // über x, Escape und Ziehen nach unten; bis zum Muster APD-151 fragte es wie x, H-9). Schließt v4 es selbst (Häkchen, Wischen), ist es zu (reason 'user').
     // Escape geht an das oberste (Grobentwurf 2.2): beim Fenster über shouldDismiss
     dlg.addEventListener('cancel', e => { if (!dlgEntry) return; e.preventDefault(); if (stack.at(-1) === dlgEntry) anfragen(dlgEntry); });
     dlg.addEventListener('close', () => {
+      if (!dlg.open) dlg.classList.remove(SHEET);   // APD-151: nach dem Schließen (das Abbild hat die Klasse schon) gilt für #dlg wieder v4
       const h = dlgEntry; if (!h?.open) return;
       h.geschlossen = true; entfernen(h, 'user');
     });
@@ -392,10 +451,12 @@
   function demo(el, log) {
     const p = AD.presentation, ctx = { selection: true, view: 'compact', locked: false };
     const c = AD.commands = createCommands({ presentation: p, context: ctx });
-    const fenster = (titel, mitWegen, quelle = {}) => {
+    const fenster = (titel, mitWegen, quelle = {}, lang = false) => {
+      // lang (APD-151/M-3): Inhalt höher als der Bildschirm – er rollt, der Fensterkopf steht still
+      const orte = lang ? Array.from({ length: 14 }, (_, i) => `<div class="step"><label for="adOrt${i + 1}">Ort ${i + 1}</label><input type="text" id="adOrt${i + 1}" value="Station ${i + 1}" autocapitalize="sentences"></div>`).join('') : '';
       const html = `<form method="dialog">${dlgHead(titel)}<div class="dlg-body">
-        <div class="step"><label for="adTitel">Titel</label><input type="text" id="adTitel" value="Rom" autocapitalize="sentences"></div>
-        ${mitWegen ? `<div class="ilist">${[['adHinweis', 'Hinweisfenster über dem Fenster'], ['adZwei', 'Zwei Hinweisfenster nacheinander'], ['adAnderes', 'Anderes Fenster öffnen']]
+        <div class="step"><label for="adTitel">Titel</label><input type="text" id="adTitel" value="Rom" autocapitalize="sentences"></div>${orte}
+        ${mitWegen ? `<div class="ilist">${[['adHinweis', 'Hinweisfenster über dem Fenster'], ['adZwei', 'Zwei Hinweisfenster nacheinander'], ['adAnderes', 'Anderes Fenster öffnen'], ['adLang', 'Fenster mit langem Inhalt']]
           .map(([id, t]) => `<button type="button" class="irow" id="${id}"><span class="t"><b>${t}</b></span>${ic('chevron-right')}</button>`).join('')}</div>` : ''}</div></form>`;
       const dirty = () => (dlg.querySelector('#adTitel')?.value ?? 'Rom') !== 'Rom';
       const h = p.present('sheet', html, { command: mitWegen ? 'entry.edit' : 'entry.add', ...quelle, dirty,
@@ -406,6 +467,7 @@
       dlg.querySelector('#adHinweis')?.addEventListener('click', () => hinweis('Hinweis', 'Das Hinweisfenster liegt über dem Fenster.'));
       dlg.querySelector('#adZwei')?.addEventListener('click', () => { hinweis('Erster Hinweis', 'Der zweite kommt, wenn dieser zu ist (H-4).'); hinweis('Zweiter Hinweis', 'Jetzt der zweite.'); });
       dlg.querySelector('#adAnderes')?.addEventListener('click', () => fenster('Anderes Fenster', false, { from: h }));   // H-3: das alte schließt zuerst
+      dlg.querySelector('#adLang')?.addEventListener('click', () => fenster('Langes Fenster', false, { from: h }, true));
     };
     const teilen = () => {
       const name = 'Vorführung Bean-Katalog.txt';
@@ -459,8 +521,9 @@
 
   const gemeinsam = {
     draft: true, since: 'Entwurf', section: '15 (geplant)', demo,
-    howTo: '‚Mehr‘ öffnen und gleich auf ‚Ausgabe‘ oder ‚+‘ tippen – ein Tipp genügt · Ansicht im Untermenü · ‚Bearbeiten‘: Fenster, darin Hinweis, zwei Hinweise, anderes Fenster; Titel ändern und neben das Fenster tippen – es fragt · ‚Ausgabe › Teilen‘ · Kachel lange drücken oder wischen · Schalter ‚Eintrag ausgewählt‘ aus: Löschen gedimmt bzw. weg.',
-    history: [['Entwurf', 'Muster im Bean-Katalog (APD-149, Sitzung AppDesign 0002): Grobentwurf V-3, H-1 bis H-9, Durchlass in der Kopfzeile auch ohne Menü (APD-149/J-3).']],
+    howTo: '‚Mehr‘ öffnen und gleich auf ‚Ausgabe‘ oder ‚+‘ tippen – ein Tipp genügt · Ansicht im Untermenü · ‚Bearbeiten‘: Fenster, darin Hinweis, zwei Hinweise, anderes Fenster, langes Fenster; am iPhone steht das Fenster wie am iPad in der Mitte (APD-151) · Titel ändern und nach unten ziehen oder Escape – es fragt; neben das Fenster tippen schließt nicht · ‚Ausgabe › Teilen‘ · Kachel lange drücken oder wischen · Schalter ‚Eintrag ausgewählt‘ aus: Löschen gedimmt bzw. weg.',
+    history: [['Entwurf', 'Muster im Bean-Katalog (APD-149, Sitzung AppDesign 0002): Grobentwurf V-3, H-1 bis H-9, Durchlass in der Kopfzeile auch ohne Menü (APD-149/J-3).'],
+      ['Entwurf', 'Fenster am iPhone wie am iPad (APD-151, Sitzung AppDesign 0006): in der Mitte, Höhe nach Inhalt, 90 % breit; Antippen der Abdunkelung schließt nicht; Ersetzen gleitet.']],
   };
   catalogBean({
     ...gemeinsam, id: 'presentation', name: 'Stapel (Steuer-Bean)', icon: 'list-chevrons-up-down', area: 'Dienste',
