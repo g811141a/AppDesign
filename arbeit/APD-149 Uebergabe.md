@@ -41,7 +41,9 @@ Alle Entscheidungen sind in `arbeit/APD-149 0004 Stand.md` und in den Backlog-Ze
 - **Kasten ‚Ereignisse‘** (Vorschlag von 0003): zurückgestellt, der Nutzer meldet sich bei Bedarf – `arbeit/APD-149 0004 Punkt 5 Kasten Ereignisse.md`.
 - **Parallele Ketten:** Vorgabe des Nutzers (Abschnitt 5), zweimal an Reiselogbuch 0168 geschickt – `arbeit/APD-149 0004 Parallele Ketten.md`.
   - 0168 hat danach an **Reiselogbuch 0169** übergeben. Ihre `UEBERGABE.md` (982bf55) nennt die Vorgabe nicht und plant in Abschnitt 3 noch die Korrekturversion 4.71.1 / 3.59.1.
-  - Ich habe 0169 die Vorgabe darum direkt geschickt (`send_message`), mit der Bitte, ihre Übergabe zu berichtigen. Eine Bestätigung kam bis zur Übergabe nicht.
+  - Ich habe 0169 die Vorgabe darum direkt geschickt (`send_message`), mit der Bitte, ihre Übergabe zu berichtigen.
+  - **0168 hat bestätigt** (Nachrichten 15:39 und 15:40 UTC, hier erst nach der Übergabe gelesen) und beides an 0169 weitergeleitet. Die `UEBERGABE.md` pflegt jetzt 0169.
+  - Die geplante Version war 4.71.1 (Korrektur), nicht 4.72.0, wie in `arbeit/APD-149 0004 Parallele Ketten.md` steht.
 - **`doku-regeln`** (Stand 6e1968c) meldet 3 Fehler, alle in Zeilen der Kette Reiselogbuch:
   - `BACKLOG.md:16` und `UEBERGABE.md:41`: ‚W-97‘ ohne Elternnummer
   - `UEBERGABE.md:59`: die alte Nummer ‚T-8‘
