@@ -774,6 +774,10 @@ function placeAt(el, anchor, align) {
     if (top + el.offsetHeight > limit + 2 && r.top - 8 - el.offsetHeight >= T) top = r.top - 8 - el.offsetHeight;
     // seit 4.68.0: nie über den oberen Rand und nie über die Backup-Kachel – ist das Menü höher als der Platz (große Schrift), rollt sein Inhalt (R-4.5)
     top = Math.max(T, top);
+    // seit 4.71.0 (RLB-126, größte Schrift): rückt die Liste nicht weit genug (Kachel höher als der Bildschirm, z. B. nach dem Drehen), steht das Menü
+    // trotzdem ganz im Bild: bleiben darunter weniger als 120 px (und weniger als das Menü), steht es unten bündig über der Backup-Kachel, notfalls über
+    // der Kachel, sein Inhalt rollt (R-4.5, R-8.1)
+    if (limit - top < Math.min(120, el.scrollHeight)) top = Math.max(T, limit - el.scrollHeight);
     fit(limit - top);
     el.style.left = Math.max(L, Math.min(r.left, innerWidth - el.offsetWidth - R)) + 'px';
     el.style.top = top + 'px';
@@ -2128,12 +2132,12 @@ function createRecentlydeleted(root, { data, list, field = 'recentlyDeleted', da
       const n = sorted().length; if (!n) return '';
       return `<button type="button" class="side-row ad-recentlydeleted-entry"><span class="ad-recentlydeleted-icon">${ic('trash')}</span><span class="t"><b>Zuletzt gelöscht</b></span><span class="ad-recentlydeleted-count">${n}</span>${ic('chevron-right')}</button>`;
     },
+    // Der Hinweis zur Frist steht in der Liste und rollt mit (große Schrift, iPhone quer: sonst lägen die Kacheln hinter der Backup-Kachel, R-6.3)
     listHtml({ current = null, end = '' } = {}) {
       const items = sorted();
       return `<div class="side-head"><button type="button" class="round ad-recentlydeleted-back" aria-label="${esc(nouns[1])}">${ic('chevron-left')}</button>
       <div class="ttl"><h2>Zuletzt gelöscht</h2><small>${countText(items.length)}</small></div>${end}</div>
-    <p class="ad-recentlydeleted-note">Gelöschte ${esc(nouns[1])} bleiben hier ${days} Tage. Danach werden sie endgültig gelöscht.</p>
-    <div class="side-list">${items.map(x => `<button type="button" class="side-row${x.id === current ? ' current' : ''}" data-id="${esc(x.id)}"><span class="t"><b>${esc(label(x.item))}</b>${detail(x.item) ? `<small>${detail(x.item)}</small>` : ''}<small class="chg ad-recentlydeleted-left">Gelöscht am ${dateText(x.at)} · ${leftText(left(x.at))}</small></span>${ic('chevron-right')}</button>`).join('')}</div>`;
+    <div class="side-list"><p class="ad-recentlydeleted-note">Gelöschte ${esc(nouns[1])} bleiben hier ${days} Tage. Danach werden sie endgültig gelöscht.</p>${items.map(x => `<button type="button" class="side-row${x.id === current ? ' current' : ''}" data-id="${esc(x.id)}"><span class="t"><b>${esc(label(x.item))}</b>${detail(x.item) ? `<small>${detail(x.item)}</small>` : ''}<small class="chg ad-recentlydeleted-left">Gelöscht am ${dateText(x.at)} · ${leftText(left(x.at))}</small></span>${ic('chevron-right')}</button>`).join('')}</div>`;
     },
     noticeHtml(id) {
       const x = find(id); if (!x) return '';

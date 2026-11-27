@@ -28,6 +28,10 @@ mit `v5/` – RLB-126/J-11; Bau-Frage mit Ja beantwortet 26.11.2026, Sitzung 016
   bleibt …“; neu **R-7.10 ‚Zuletzt gelöscht‘** (Prüfung `checkRecentlyDeleted`, Gerät: Wischgefühl, Abgleich zweier Geräte); neuer Abschnitt 15.24; Zeile
   `recentlydeleted` in der Liste der AD-Beans; `schnittstelle.json` mit `createRecentlydeleted`.
 - **Katalog:** `katalog/recentlydeleted.js` (neu) mit ‚Ausprobieren‘.
+- **Größte Schrift (R-6.3, R-8.1):** der Hinweis zur Frist steht in der Liste und rollt mit (iPhone quer lagen die Kacheln sonst hinter der Backup-Kachel);
+  ‚Wiederherstellen‘ im Hinweis über der Vorschau bricht in sich um statt über den Rand. `placeAt` (Kontextmenü an einer Kachel der Seitenleiste, iPhone): rückt die
+  Liste nicht weit genug (Kachel höher als der Bildschirm, z. B. nach dem Drehen) und bleiben darunter weniger als 120 px, steht das Menü bzw. die Sprechblase unten
+  bündig über der Backup-Kachel und ihr Inhalt rollt – bisher stand sie unter dem Bildschirmrand.
 - **Prüfungen:** `tests/ablauf.mjs` – neu `checkRecentlyDeleted` (R-7.10, RLB-126/T-1 bis T-8) mit den Gegenproben `zuletzt:frage` und `zuletzt:frist`;
   `checkErstFragen` mit den Optionen `trash` (Löschen ohne Sprechblase nach ‚Zuletzt gelöscht‘ ist kein Fehler, R-4.12) und `geladen`; `checkWischen` mit den Optionen
   `frage` und `einstellen`, die feste offene Breite nur, wenn alle Kapselwörter passen, Vergleich der gewählten Kachel über `data-id`. `tests/pruefe.mjs`: Text der Gegenprobe `masse:sofort`.
