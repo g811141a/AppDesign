@@ -151,3 +151,12 @@ Die Weiche des Musters entfällt, der Weg gilt in `ui.js` für alle Fenster. Dar
 - Nach deinem Ja zum Wortlaut (Abschnitte 2.1 und 3), zu den Namen (2.2) und zu den Listen (2.3, 4, 5) sind alle Punkte von `v5/` bereit.
 - Dann `node werkzeug/veroeffentlichen.mjs stufe --app reiselogbuch` und die **Bau-Frage**: AppDesign 5.0.0 mit Reiselogbuch, gehoben auf 5.0.0, Prüflauf voll.
 - Vor `vorbereiten` informiere ich die Kette Reiselogbuch (`send_message`), weil der Bau auch `index.html` des Reiselogbuchs ändert.
+
+## 7. Entschieden (Nutzer 27.11.2026, Sitzung AppDesign 0008, im Fenster)
+
+- **APD-145/J-3:** Wortlaut Abschnitt 2.1 (R-1.14, R-1.13, Designrichtlinie 14, 15, R-10.3, R-10.9, `CLAUDE.md`) **freigegeben**, eingetragen mit `v5/`.
+- **APD-154/J-1:** Wortlaut Spalte Prüfung R-8.1 (Abschnitt 3) **freigegeben**, eingetragen mit `v5/`.
+- **APD-145/J-4:** Englisch werden alle deutschen Namen der Schnittstelle mit ihren Schlüsseln: 23 App-Namen, ihre Optionsschlüssel und die 15 Namen im Teil `pruefungen` (Abschnitt 2.2).
+- **APD-149/J-9:** Das Reiselogbuch nutzt die Beans `commands` und `presentation` in `v5/` noch nicht (Grobentwurf 6); APD-151 wirkt trotzdem für alle Fenster.
+- **Testfall-Listen freigegeben:** APD-145/T-1 bis T-13, APD-149/S-10 (geändert), S-17, S-18, APD-151/M-17 bis M-20.
+- Damit sind alle Punkte von `v5/` bereit. Als Nächstes kommt die Bau-Frage für AppDesign 5.0.0.
