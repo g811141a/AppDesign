@@ -1,7 +1,7 @@
 # Übergabe an die nächste Sitzung
 
-**Stand 27.11.2026** · geschrieben in der Sitzung ‚Reiselogbuch 0167‘ (`messung.mjs`: ‚⚠ Übergabe fällig‘; automatisch nach 0 Nr. 13, nach dem abgeschlossenen
-Schritt ‚Bau, voller Lauf, Bericht‘).
+**Stand 27.11.2026** · geschrieben in der Sitzung ‚Reiselogbuch 0168‘ bei Kontext 284.162. Die Übergabe ist vorgezogen nach 0 Nr. 13: Das Thema ‚Usertest und
+Aufgefallen‘ ist abgeschlossen, der nächste Schritt ist ein Bau mit vollem Lauf.
 Aufbau nach Zusammenarbeit allgemein 2.5. **Claude liest diese Datei zu Beginn jeder Sitzung zuerst, dann die ganze Zusammenarbeit** (0 Nr. 15); die Arbeitsumgebung steht in der AppDesign-`CLAUDE.md`.
 
 ## 1. Lagebild
@@ -9,61 +9,70 @@ Aufbau nach Zusammenarbeit allgemein 2.5. **Claude liest diese Datei zu Beginn j
 | Teil | Version |
 |---|---|
 | Reiselogbuch | **3.59.0** veröffentlicht (`1d9d2eb`, Pages ‚success‘) |
-| AppDesign | **4.71.0** veröffentlicht (`f852d77`, Pages ‚success‘) |
-| ReiseLogBuch-Import (privat) | **1.4.0**, unverändert – Kopf der `README.md` nennt noch 1.3.0 (auffällig, nicht geändert) |
-| Zusammenarbeit allgemein | **3.19.0** |
+| AppDesign | **4.71.0** veröffentlicht (`f852d77`); seither auf `main` nur Backlog und Arbeitsdateien (0168 und die Kette APD-149) |
+| ReiseLogBuch-Import (privat) | **1.4.1** (`1161b4c`, nur der Kopf der `README.md` berichtigt) |
+| Zusammenarbeit allgemein | **3.19.0** (mit APD-153 wird sie 3.20.0) |
 | `CLAUDE.md` | AppDesign **2.14.0** · Reiselogbuch 3.10.0 · Import 1.2.0 |
 
-- **Chatnummer:** Die nächste Sitzung heißt **Reiselogbuch 0168**, die danach 0169.
-- **Modell und Aufwand:** 0167 lief mit **Opus 5.5**, Aufwand **hoch**.
-  - Eingestellt und tatsächlich gleich, kein `model_fallback`, `CLAUDE_CODE_EFFORT_LEVEL` ungesetzt.
+- **Chatnummer:** Die nächste Sitzung heißt **Reiselogbuch 0169**, die danach 0170.
+- **Modell und Aufwand:** 0168 lief mit **Opus 5.5**, Aufwand **hoch**.
+  - Eingestellt und tatsächlich waren gleich, es gab keinen `model_fallback`, und `CLAUDE_CODE_EFFORT_LEVEL` war nicht gesetzt.
   - Festlegung (0122): Fable 5.2 vorerst nicht. Hilfsagenten nur Opus 5.5, Aufwand hoch, einzeln nacheinander (auch web-fetch).
-- **Hooks:** keine; `~/.claude/settings.json` enthält nur die Regel `create_session` erlauben.
-- **Prüfumgebung:** 4 Kerne; Chromium 158 (Ordner 1243, Verweise 1194 → 1243), WebKit 26.0.
-- **Offene Usertests:** **P-126** (RLB-126 ‚Zuletzt gelöscht‘), Text in `arbeit/0167 Bericht 4.71.0 – 3.59.0.md` und im CHANGELOG 3.59.0 des Reiselogbuchs.
-- **Parallel:** Die Kette AppDesign (APD-149) läuft in ‚AppDesign 0003 – APD-149 Muster hochladen und am Gerät prüfen‘ (`arbeit/APD-149 Uebergabe.md`).
-  - Ihr Muster liegt auf dem Zweig `apd-149-muster`.
-  - 0167 hat ihr per Nachricht gesagt, dass sie es erst nach dem vollen Lauf auf `main` hochladen soll. Der Lauf ist inzwischen fertig.
-  - Vor `vorbereiten` immer `git fetch origin main`.
+- **Hooks:** keine. `~/.claude/settings.json` enthält nur die Regel `create_session` erlauben.
+- **Prüfumgebung:** 4 Kerne; Chromium 158 (Ordner 1243, Verweise 1194 → 1243), WebKit (Ordner 2215).
+- **Offene Usertests:** keine. **P-126 ist ganz ok** (P-126/0 bis /8, Nutzer 27.11.2026, im Backlog des Reiselogbuchs unter ‚Erledigt‘). Der nächste Usertest ist **P-127**.
+- **Parallel:** Die Kette AppDesign (APD-149) läuft weiter, zuletzt ‚AppDesign 0003‘ mit Übergabe an ‚AppDesign 0004‘.
+  - Sie lädt Backlog und Arbeitsdateien auf `main` hoch und hat dabei APD-151 vergeben.
+  - Vor jedem Commit und vor `vorbereiten` immer `git fetch origin main` und darauf aufsetzen (in 0168 einmal Push abgewiesen, `rebase` half).
+  - Vor dem Bau klären, dass die Kette nicht gleichzeitig eine AppDesign-Version baut.
 
-## 2. Ergebnisse der Sitzung 0167
+## 2. Ergebnisse der Sitzung 0168
 
-- **Gebaut und veröffentlicht:** AppDesign 4.71.0 / Reiselogbuch 3.59.0 mit RLB-126 ‚Zuletzt gelöscht‘.
-  - Neue AD-Bean `recentlydeleted`.
-  - `createSync` hat die Option `recentlyDeleted`.
-  - Neu sind R-7.10 und 15.24; geändert sind R-4.12 und R-7.8.
-  - Neue Prüfung `ablauf-zuletzt-geloescht`.
-- **Voller Lauf grün:** 196 Läufe in 89:45. Ein Wackler: `ablauf-markierung-menues` in WebKit, das Menü wurde mitten im Aufgehen gemessen.
-- **Rote Läufe davor:**
-  - Der erste wurde vom Neustart des Containers beendet.
-  - Der zweite war rot in `hig (Text 53)`. Die Fehler bei der größten Schrift sind in 4.71.0 behoben, auch in `placeAt`.
-  - Der dritte brach in `doku-regeln` ab, wegen toter Verweise der APD-149-Texte. Ich habe sie umformuliert (`3d03454`).
-- **Bericht:** `arbeit/0167 Bericht 4.71.0 – 3.59.0.md`. Darin stehen alle Änderungen mit HIG, ‚Aufgefallen, nicht geändert‘ (7 Punkte) und Usertest P-126.
-- Dateien: `arbeit/0167 Lagebild.md`, `arbeit/0167 Bericht 4.71.0 – 3.59.0.md`.
+- **Usertest P-126:** alles ok.
+- **‚Aufgefallen, nicht geändert‘ aus `arbeit/0167 Bericht 4.71.0 – 3.59.0.md`:** alle 7 Punkte mit dem Nutzer geklärt, je im Fenster.
+  1. → **APD-152** bereit (Priorität 1).
+     - Wiederherstellen behält die Zeitpunkte der Felder. Heute stempelt `createSync.stamp` alle neu, und eine Änderung des anderen Geräts geht verloren. Das ist in Chromium mit `createSync` 4.71.0 nachgespielt, die Korrektur ebenso.
+     - Kein neuer Aufruf: `snapshot()` merkt sich die Einträge in ‚Zuletzt gelöscht‘, und `stamp()` vergleicht einen zurückkehrenden Eintrag mit seinem Stand beim Löschen. Nur `changedAt` und `changedOn` sind neu.
+     - Dazu kommt 6a: Der Hinweis zu `keptDeleted` lautet neu ‚Zurückholen in ‚Zuletzt gelöscht‘ → ‚Wiederherstellen‘ (noch N Tage)‘.
+     - **Wortlaut freigegeben:** R-7.10, R-9.3 (Spalte Prüfung), 15.18 Fall 24 (neu) und Fall 2, 15.24.
+     - **Testfall-Liste:** APD-152/T-1 bis T-11.
+     - Dateien: `arbeit/0168 Punkt 1 Vorschlag.md`, `arbeit/0168 Aufgefallen Punkt 6.md`.
+  2. → **APD-153** bereit (Priorität 1).
+     - Die Gegenprobe `wischen:W-97` sucht `gap: 11, margin: 11,` (die Stelle heißt seit der Umbenennung englisch).
+     - Neu ist die Wache `doku.mjs` – `checkGegenproben` im Vorlauf: Jede Stelle der Gegenprobe-Tabellen steht genau einmal in `v4/`.
+     - **Wortlaut 0 Nr. 2 freigegeben,** die Zusammenarbeit wird 3.20.0. Testfall-Liste APD-153/T-1 bis T-3.
+     - Datei: `arbeit/0168 Aufgefallen Punkt 2.md`.
+  3. → **APD-154** offen (Priorität 1): Die Drehprüfung `rotate` kennt ‚beside‘. Kommt in die Version nach der Korrekturversion (`arbeit/0168 Aufgefallen Punkt 3.md`).
+  4. → **APD-155** offen (Priorität 2): Zurückwischen über seitlich rollendem Inhalt, vorher Apple-Abgleich mit Quelle (`arbeit/0168 Aufgefallen Punkt 4.md`).
+  5. → **APD-156** offen (Priorität 3): Die Seitenleiste behält ihre Breite (gemessen 353 → 340 px). Der Umbruch des Hinweises bleibt (`arbeit/0168 Aufgefallen Punkt 5.md`).
+  6. → 6a zu APD-152. 6b: ReiseLogBuch-Import 1.4.1. 6c (‚Tag‘ bricht senkrecht um): nicht nachgestellt, fallen gelassen.
+  7. → **APD-157** offen (Priorität 2): Wackler `ablauf-markierung-menues`, Menü im Aufgehen gemessen. Ursache offen (`arbeit/0168 Aufgefallen Punkt 7.md`).
+- Dateien: `arbeit/0168 Lagebild.md`, `arbeit/0168 P-126 Abfrage.md`, `arbeit/0168 Aufgefallen Punkt 1.md` bis `Punkt 7.md`, `arbeit/0168 Punkt 1 Vorschlag.md`.
 
 ## 3. Nächster Schritt
 
 1. Lesen, Repos dazuholen, Tests einrichten, Lagebild als eigene Antwort mit Kachel (0 Nr. 15).
-2. **Usertest P-126 abfragen.** Im Fenster je Testfall P-126/0 bis P-126/8 ‚ok‘ oder ‚nicht ok‘ (0 Nr. 1).
-   - Ist etwas nicht ok: nachbauen, Ursache finden, Korrektur vorschlagen (Bau-Frage).
-3. Danach die Punkte aus ‚Aufgefallen, nicht geändert‘ im Bericht mit dem Nutzer klären. Vor allem Punkt 1: Wiederherstellen stempelt alle Felder neu, was den Abgleich betrifft.
+2. **Bau-Frage für die Korrekturversion** (0 Nr. 8, 21): AppDesign **4.71.1** / Reiselogbuch **3.59.1** mit **APD-152** und **APD-153**, Prüflauf **voll**.
+   - Vorher `node werkzeug/veroeffentlichen.mjs stufe --app reiselogbuch`.
+   - Vor dem Bau kurz prüfen, ob die Parallel-Kette APD-149 gleichzeitig eine Version vorbereitet.
+   - **APD-149/J-1 kommt nicht mit,** es braucht eine eigene Bau-Frage.
+   - Alles Nötige steht in den Backlog-Zeilen und den Dateien aus Abschnitt 2. Feste Prüfungen nach 0 Nr. 1: Fall 24 in `abgleich.mjs` und T-8 in `ablauf-zuletzt-geloescht` müssen rot gegen 4.71.0 bzw. 3.59.0 sein.
+3. Nach dem Bau Bericht mit Usertest **P-127** (/0 Version, /1 Ablauf zwei Geräte nach APD-152/T-1).
 
 ## 4. Danach
 
-- RLB-6.
-- APD-149/J-1 ist bereit, braucht aber eine eigene Bau-Frage. Sein Ablauf richtet sich nach der APD-149-Kette.
-- Die übrigen AppDesign-Themen nach Backlog.
+- APD-154 (Priorität 1, Testfall-Liste), APD-149/J-1 (eigene Bau-Frage), dann die übrigen Themen nach Backlog (APD-157, APD-155, APD-156, RLB-6 …).
 
 ## 5. Neue Vereinbarungen
 
-- keine neuen.
+- Keine neuen Regeln in Kraft. Freigegebener Wortlaut, der mit dem Bau in Kraft tritt: siehe APD-152 und APD-153.
 
 ## 6. Starttext für die neue Sitzung
 
 In der neuen Sitzung müssen **AppDesign**, **ReiseLogBuch** und **ReiseLogBuch-Import** verfügbar sein.
 
 ```
-Reiselogbuch 0168 – Usertest P-126 (Zuletzt gelöscht)
+Reiselogbuch 0169 – Korrekturversion APD-152 / APD-153
 
-Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md, dann die GANZE Zusammenarbeit allgemein (3.19.0) und die Überschriften der Designrichtlinien. Prüfe Modell und Aufwand (get_session: eingestellt, dazu rate_limit_info; Sitzungsdatei: tatsächlich, auch model_fallback; Umgebungsvariable CLAUDE_CODE_EFFORT_LEVEL), hole die Repos g811141a/ReiseLogBuch und g811141a/ReiseLogBuch-Import dazu, wie in der AppDesign-CLAUDE.md unter ‚Arbeitsumgebung‘, richte die Tests ein und prüfe, ob in ~/.claude/settings.json Hooks stehen. Lagebild als eigene Antwort (im Chat und als Markdown-Datei) mit Kachel; danach nach UEBERGABE.md Abschnitt 3: Usertest P-126 abfragen (Bericht arbeit/0167 Bericht 4.71.0 – 3.59.0.md), dann die Punkte ‚Aufgefallen, nicht geändert‘ klären. Hilfsagenten nur mit Opus 5.5 und Aufwand hoch, einzeln nacheinander, auch web-fetch; Fable 5.2 vorerst nicht verwenden.
+Lies im Repo g811141a/AppDesign (Branch main) zuerst UEBERGABE.md, dann die GANZE Zusammenarbeit allgemein (3.19.0) und die Überschriften der Designrichtlinien. Prüfe Modell und Aufwand (get_session: eingestellt, dazu rate_limit_info; Sitzungsdatei: tatsächlich, auch model_fallback; Umgebungsvariable CLAUDE_CODE_EFFORT_LEVEL), hole die Repos g811141a/ReiseLogBuch und g811141a/ReiseLogBuch-Import dazu, wie in der AppDesign-CLAUDE.md unter ‚Arbeitsumgebung‘, richte die Tests ein und prüfe, ob in ~/.claude/settings.json Hooks stehen. Lagebild als eigene Antwort (im Chat und als Markdown-Datei) mit Kachel; danach nach UEBERGABE.md Abschnitt 3: Bau-Frage für AppDesign 4.71.1 / Reiselogbuch 3.59.1 mit APD-152 und APD-153 (Prüflauf voll; Unterlagen arbeit/0168 Punkt 1 Vorschlag.md, arbeit/0168 Aufgefallen Punkt 2.md und Punkt 6.md, Backlog AppDesign ‚0. Nächste Version‘). Hilfsagenten nur mit Opus 5.5 und Aufwand hoch, einzeln nacheinander, auch web-fetch; Fable 5.2 vorerst nicht verwenden.
 ```
