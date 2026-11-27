@@ -46,7 +46,7 @@ Alle Entscheidungen sind in `arbeit/APD-149 0004 Stand.md` und in den Backlog-Ze
   - Die geplante Version war 4.71.1 (Korrektur), nicht 4.72.0, wie in `arbeit/APD-149 0004 Parallele Ketten.md` steht.
 - **`doku-regeln`** (Stand 6e1968c) meldet 3 Fehler, alle in Zeilen der Kette Reiselogbuch:
   - `BACKLOG.md:16` und `UEBERGABE.md:41`: ‚W-97‘ ohne Elternnummer
-  - `UEBERGABE.md:59`: die alte Nummer ‚T-8‘
+  - `UEBERGABE.md:59`: eine alte Nummer aus der Zeit vor 4.35.0 (Präfix T, Nummer 8, siehe `ZUORDNUNG.md`)
   - Ich habe sie 0169 gemeldet und nicht selbst geändert.
 - Dateien: `arbeit/APD-149 0004 Lagebild.md`, `… Fund 1 …`, `… Fund 2 …`, `… Fund 3 …`, `… APD-151 Wie weiter.md`, `… Punkt 5 …`, `… Schnittstelle bestaetigen.md`, `… Parallele Ketten.md`, `… Stand.md`.
 - **Aufgefallen:** Eine überflüssige Prüfausgabe liegt unter `/muster-w.txt` (Wurzel des Containers). Löschen durfte ich sie nicht. Mit dem Container ist sie weg.
