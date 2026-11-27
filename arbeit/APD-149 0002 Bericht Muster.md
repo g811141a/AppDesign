@@ -16,8 +16,8 @@ Offen ist ein Fund der Grundregeln (R-1.4, unten): Er folgt aus dem Durchlass un
 |---|---|
 | `katalog/entwurf/presentation-commands.js` (neu) | Beans `commands` und `presentation` unter `window.AD`, Vorführung ‚Ausprobieren‘, beide mit `draft: true` angemeldet |
 | `katalog/index.html` | lädt die Entwurfsdatei; Seitenleiste: Gruppe ‚Entwurf‘ nach den Bereichen, ‚Entwurf‘ statt ‚seit …‘, Kopf ‚4 AD-Beans · 2 geplant · 2 im Entwurf‘ |
-| `arbeit/APD-149/muster-pruefen.mjs` (neu) | APD-149/S-1 bis S-15 und APD-149/L-1 bis L-4, mit den Grundregeln nach jedem Schritt |
-| `arbeit/APD-149/entwurf-regeln.mjs` (neu) | die 7 Prüfungen aus Wortlaut Abschnitt 4, Gegenprobe `beans:entwurf` |
+| `APD-149/muster-pruefen.mjs` im Ordner `arbeit` (neu, nur auf dem Zweig `apd-149-muster`) | APD-149/S-1 bis S-15 und APD-149/L-1 bis L-4, mit den Grundregeln nach jedem Schritt |
+| `APD-149/entwurf-regeln.mjs` im Ordner `arbeit` (neu, nur auf dem Zweig `apd-149-muster`) | die 7 Prüfungen aus Wortlaut Abschnitt 4, Gegenprobe `beans:entwurf` |
 
 - Keine Änderung an `v4/`, `tests/`, den Richtlinien oder einer Fassung.
 

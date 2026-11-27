@@ -1,4 +1,4 @@
-// AppDesign 4.70.2 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
+// AppDesign 4.71.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
 // Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/fassung/X.Y.Z/ui.js"></script> (feste Fassung, R-10.3)
 // Klassisches Skript: alle Funktionen sind global und für das Skript der App sichtbar.
 //
@@ -19,7 +19,7 @@
 
 'use strict';
 // Version der Bausteine (R-10.3): die App vergleicht sie beim Start mit der benötigten Fassung.
-const AD_VERSION = '4.70.2';
+const AD_VERSION = '4.71.0';
 // ‚Bewegung reduzieren‘ (R-1.9) – die eine Abfrage für alle Bausteine (seit 4.64.0, APD-135/B-4.2; vorher fünfmal eigens gebaut)
 const bewegungRuhig = () => !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
 // APD-129 Teil 2 (seit 4.59.2, Messung 14.11.2026 arbeit/APD-129/messung-2026-11-14-2137.txt, Zeilen 9–17, 207–216, 263–272; Designrichtlinie 13
@@ -774,6 +774,10 @@ function placeAt(el, anchor, align) {
     if (top + el.offsetHeight > limit + 2 && r.top - 8 - el.offsetHeight >= T) top = r.top - 8 - el.offsetHeight;
     // seit 4.68.0: nie über den oberen Rand und nie über die Backup-Kachel – ist das Menü höher als der Platz (große Schrift), rollt sein Inhalt (R-4.5)
     top = Math.max(T, top);
+    // seit 4.71.0 (RLB-126, größte Schrift): rückt die Liste nicht weit genug (Kachel höher als der Bildschirm, z. B. nach dem Drehen), steht das Menü
+    // trotzdem ganz im Bild: bleiben darunter weniger als 120 px (und weniger als das Menü), steht es unten bündig über der Backup-Kachel, notfalls über
+    // der Kachel, sein Inhalt rollt (R-4.5, R-8.1)
+    if (limit - top < Math.min(120, el.scrollHeight)) top = Math.max(T, limit - el.scrollHeight);
     fit(limit - top);
     el.style.left = Math.max(L, Math.min(r.left, innerWidth - el.offsetWidth - R)) + 'px';
     el.style.top = top + 'px';
@@ -1645,7 +1649,10 @@ function whenText(ms) {
 // Seit 4.68.0 (RLB-125): protect – sagt, welche Einträge gesperrt sind (z. B. e => e.locked). Ein gesperrter Eintrag wird beim Abgleich
 // nie gelöscht, auch nicht, wenn das andere Gerät ihn gelöscht hat, ohne die Sperre zu kennen (15.18 Fall 23, R-9.3): auf dem Gerät, das
 // gelöscht hat, kommt er gesperrt zurück (restored), auf dem Gerät mit der Sperre bleibt er (keptProtected); sein Eintrag in deleted entfällt.
-function createSync({ list, sub, subAt = `${sub}At`, maxFields = [], nouns = ['Eintrag', 'Einträge', 'Einträgen'], labels = {}, values = {}, subLabel = null, protect = null, app = document.title }) {
+// Seit 4.71.0 (RLB-126, R-7.10): recentlyDeleted – Name des Felds mit ‚Zuletzt gelöscht‘ (AD-Bean recentlydeleted, z. B. 'recentlyDeleted'). Beim Abgleich
+// gilt je Eintrag der jüngere Löschzeitpunkt beider Geräte; er bleibt in ‚Zuletzt gelöscht‘, solange er nach dem Abgleich nicht in der Liste steht
+// (wiederhergestellt, danach geändert oder gesperrt), sein Eintrag in deleted besteht und nicht endgültig gelöscht ist (purged – gleich alt: purged gilt).
+function createSync({ list, sub, subAt = `${sub}At`, maxFields = [], nouns = ['Eintrag', 'Einträge', 'Einträgen'], labels = {}, values = {}, subLabel = null, protect = null, recentlyDeleted = null, app = document.title }) {
   const STAMPS = [sub, subAt, 'metaAt', 'changedAt', 'changedOn', ...maxFields];
   const metaKeys = e => Object.keys(e).filter(k => !STAMPS.includes(k));
   const metaObj = e => Object.fromEntries(metaKeys(e).map(k => [k, e[k]]));
@@ -1710,7 +1717,7 @@ function createSync({ list, sub, subAt = `${sub}At`, maxFields = [], nouns = ['E
     // Zeile der Tabelle: Felder, jüngster Zeitpunkt; Gerät, wenn es die letzte Änderung des Eintrags war.
     const row = (key, fields, e) => { const at = Math.max(0, ...fields.map(f => f.at || 0)); return { key, fields, at, on: at && at === e.changedAt ? e.changedOn : null }; };
     const del = new Map();
-    for (const x of [...(local.deleted || []), ...(remote.deleted || [])]) if (!del.has(x.id) || del.get(x.id).at < x.at) del.set(x.id, x);
+    for (const x of [...(local.deleted || []), ...(remote.deleted || [])]) if (!del.has(x.id) || del.get(x.id).at < x.at || (del.get(x.id).at === x.at && x.purged)) del.set(x.id, x);
     const L = new Map(local[list].map(e => [e.id, e])), R = new Map(remote[list].map(e => [e.id, e]));
     const out = [];
     for (const id of new Set([...L.keys(), ...R.keys()])) {
@@ -1751,7 +1758,13 @@ function createSync({ list, sub, subAt = `${sub}At`, maxFields = [], nouns = ['E
         out.push(structuredClone(r)); stats.added.push({ title: r.title, subs: Object.keys(r[sub] || {}).length, at: r.changedAt, on: r.changedOn });
       }
     }
-    return { data: { ...local, [list]: out, deleted: [...del.values()] }, stats };
+    const result = { ...local, [list]: out, deleted: [...del.values()] };
+    if (recentlyDeleted) {
+      const rd = new Map(), inList = new Set(out.map(e => e.id));
+      for (const x of [...(local[recentlyDeleted] || []), ...(remote[recentlyDeleted] || [])]) if (x?.id && (!rd.has(x.id) || rd.get(x.id).at < x.at)) rd.set(x.id, x);
+      result[recentlyDeleted] = [...rd.values()].filter(x => !inList.has(x.id) && del.has(x.id) && !del.get(x.id).purged).map(x => structuredClone(x));
+    }
+    return { data: result, stats };
   }
   // R-9.2: Abfrage beim Laden eines Backups – Zeitpunkt und Gerät, neuer oder älter, kurze Erklärung der Wege.
   function question(local, remote, savedAt, savedOn, unit = 'Tag') {
@@ -1896,7 +1909,7 @@ function createSync({ list, sub, subAt = `${sub}At`, maxFields = [], nouns = ['E
   // R-9.4: kleines Fenster nach dem Abgleichen; mit Schaltfläche zum Bericht, wenn es etwas zu berichten gibt.
   const showResult = (stats, savedAt, savedOn, title = 'Abgleichen') => inform(title, resultText(stats, savedAt, savedOn),
     worthReport(stats) ? { action: { label: 'Abgleichbericht anzeigen', icon: 'eye', run: () => openReport(stats, savedAt, savedOn) } } : {});
-  return { snapshot, stamp, latest, merge, question, choices, ask, resultText, reportHtml, openReport, showResult, changedLine, config: { list, sub, subAt, maxFields, nouns, labels, values, protect, app } };
+  return { snapshot, stamp, latest, merge, question, choices, ask, resultText, reportHtml, openReport, showResult, changedLine, config: { list, sub, subAt, maxFields, nouns, labels, values, protect, recentlyDeleted, app } };
 }
 
 /* ---------- Meldungen und Sicherheitsabfragen ---------- */
@@ -2039,6 +2052,123 @@ function createNotice(element, { message = '', detail = '', buttons = [] } = {})
   element.dataset.adBean = 'notice';
   element.classList.add('ad-notice');
   aufbauen();
+  return bean;
+}
+
+/* ---------- AD-Bean recentlydeleted: Zuletzt gelöscht (seit 4.71.0, RLB-126, R-7.10, R-4.12, R-1.13) ---------- */
+
+// Seit 4.71.0 (RLB-126, Muster AppDesign arbeit/RLB-126, Wortlaut freigegeben RLB-126/J-10): Löschen eines Eintrags der zentralen Liste verschiebt ihn
+// ohne Abfrage nach ‚Zuletzt gelöscht‘ (R-4.12 Ausnahme, HIG ‚Alerts‘: rückgängig zu machen); dort bleibt er mit ganzem Inhalt `days` Kalendertage
+// (Standard 30, je App), danach fällt er beim Start, beim Tageswechsel und beim Lesen weg. Vorbild Apple *Recently Deleted* (Notizen, Fotos, Dateien).
+// Daten je Eintrag { id, item, at, on } (ganzer Inhalt, Zeitpunkt, Gerät) im Feld `field` der Daten der App – so kommt ‚Zuletzt gelöscht‘ mit
+// Löschdatum ins Backup; der Abgleich (createSync mit recentlyDeleted) gilt auf beiden Geräten. Endgültig löschen vermerkt `purged` am Eintrag in
+// data.deleted (createSync), damit es auch auf dem anderen Gerät wegfällt; Wiederherstellen nimmt den Eintrag aus data.deleted (zählt als Änderung).
+// Oberfläche (R-7.10): letzte Kachel der Liste mit Papierkorb und Anzahl (entryHtml, nur wenn nicht leer) · Liste mit Kopf ‹, Titel, Anzahl, Hinweis zur
+// Frist, zuletzt gelöschte oben, je Kachel ‚Gelöscht am … · noch N Tage‘ (listHtml) · Hinweis über der Vorschau mit ‚Wiederherstellen‘ (noticeHtml) ·
+// Kontextmenü und Wischen ‚Wiederherstellen‘ · ‚Endgültig löschen‘ (rot, einzige Abfrage; actions). Die Kacheln tragen data-id – die App bindet
+// Antippen, langes Drücken und Wischen wie bei ihren eigenen Kacheln; ‹, Kachel und ‚Wiederherstellen‘ bindet die Bean selbst.
+// Schnittstelle (R-1.13, Liste der AD-Beans in Designrichtlinie 15) – die App nutzt nur diese Namen, kein CSS der Bean:
+//   createRecentlydeleted(root, { data, list, field, days, nouns, label, detail, question }) – root: Liste (z. B. die Seitenleiste)
+//   r.items (nur lesen, zuletzt gelöscht oben, ohne Abgelaufenes) · r.remove(item) · r.restore(id) · r.purge(id) · r.purgeAll() · r.daysLeft(id)
+//   r.entryHtml() · r.listHtml({ current, end }) · r.noticeHtml(id) · r.actions(row)
+//   r.on('change' | 'restore' | 'purge' | 'open' | 'close', fn) → abmelden; restore meldet { id, item, origin: 'notice' | 'menu' }
+// CSS nur unter .ad-recentlydeleted… (Kachel, Anzahl, Hinweis zur Frist, Zeile, Hinweis über der Vorschau).
+function createRecentlydeleted(root, { data, list, field = 'recentlyDeleted', days = 30, nouns = null, label = x => x.title || '',
+  detail = () => '', question = null } = {}) {
+  nouns ||= ['Eintrag', 'Einträge', 'Dieser Eintrag'];   // Einzahl, Mehrzahl, ‚Dieser …‘ (Hinweis über der Vorschau)
+  const hoerer = { change: new Set(), restore: new Set(), purge: new Set(), open: new Set(), close: new Set() };
+  const melde = (name, info) => hoerer[name].forEach(fn => { try { fn(info); } catch (e) { console.error(e); } });
+  const store = () => { const d = data?.(); if (!d) return null; if (!Array.isArray(d[field])) d[field] = []; return d; };
+  const DAY = 86400000;
+  // Restzeit in ganzen Kalendertagen (auch über die Zeitumstellung): am Tag des Löschens `days`, danach je Tag einer weniger, bei 0 endgültig weg
+  const left = at => { const d = new Date(at), n = new Date();
+    return days - Math.round((Date.UTC(n.getFullYear(), n.getMonth(), n.getDate()) - Date.UTC(d.getFullYear(), d.getMonth(), d.getDate())) / DAY); };
+  const dateText = at => { const d = new Date(at); return `${String(d.getDate()).padStart(2, '0')}.${String(d.getMonth() + 1).padStart(2, '0')}.${d.getFullYear()}`; };
+  const countText = n => `${n} ${n === 1 ? nouns[0] : nouns[1]}`;
+  const leftText = n => n === 1 ? 'noch 1 Tag' : `noch ${n} Tage`;
+  const inDays = n => n === 1 ? 'in 1 Tag' : `in ${n} Tagen`;
+  // Abgelaufenes fällt weg; true, wenn etwas wegfiel
+  function expire() {
+    const d = store(); if (!d) return false;
+    const vorher = d[field].length;
+    d[field] = d[field].filter(x => x && typeof x.id === 'string' && x.item && Number.isFinite(x.at) && left(x.at) > 0);
+    return d[field].length !== vorher;
+  }
+  const find = id => (store()?.[field] || []).find(x => x.id === id);
+  const sorted = () => { expire(); return [...(store()?.[field] || [])].sort((a, b) => b.at - a.at); };
+  const bean = {
+    get items() { return sorted(); },
+    daysLeft(id) { const x = find(id); return x ? Math.max(0, left(x.at)) : 0; },
+    // verschiebt item aus der Liste der App nach ‚Zuletzt gelöscht‘ (ohne Abfrage); den Eintrag in data.deleted schreibt createSync beim Speichern
+    remove(item) {
+      const d = store(); if (!d || !item) return;
+      d[list] = (d[list] || []).filter(e => e.id !== item.id);
+      d[field] = [{ id: item.id, item: structuredClone(item), at: Date.now(), on: deviceName() }, ...d[field].filter(x => x.id !== item.id)];
+      expire();
+      ansagen(`‚${label(item)}‘ nach ‚Zuletzt gelöscht‘ verschoben`);
+      melde('change');
+    },
+    restore(id, origin = 'menu') {
+      const d = store(), x = find(id); if (!d || !x) return;
+      d[field] = d[field].filter(y => y.id !== id);
+      d.deleted = (d.deleted || []).filter(y => y.id !== id);
+      d[list] = [...(d[list] || []).filter(e => e.id !== id), x.item];
+      ansagen(`‚${label(x.item)}‘ wiederhergestellt`);
+      melde('change'); melde('restore', { id, item: x.item, origin });
+    },
+    purge(id) {
+      const d = store(); if (!d || !find(id)) return;
+      d[field] = d[field].filter(y => y.id !== id);
+      const t = (d.deleted || []).find(y => y.id === id); if (t) t.purged = true;
+      melde('change'); melde('purge', { id });
+    },
+    purgeAll() {
+      const d = store(); if (!d || !d[field].length) return;
+      for (const x of d[field]) { const t = (d.deleted || []).find(y => y.id === x.id); if (t) t.purged = true; }
+      const ids = d[field].map(x => x.id); d[field] = [];
+      melde('change'); ids.forEach(id => melde('purge', { id }));
+    },
+    entryHtml() {
+      const n = sorted().length; if (!n) return '';
+      return `<button type="button" class="side-row ad-recentlydeleted-entry"><span class="ad-recentlydeleted-icon">${ic('trash')}</span><span class="t"><b>Zuletzt gelöscht</b></span><span class="ad-recentlydeleted-count">${n}</span>${ic('chevron-right')}</button>`;
+    },
+    // Der Hinweis zur Frist steht in der Liste und rollt mit (große Schrift, iPhone quer: sonst lägen die Kacheln hinter der Backup-Kachel, R-6.3)
+    listHtml({ current = null, end = '' } = {}) {
+      const items = sorted();
+      return `<div class="side-head"><button type="button" class="round ad-recentlydeleted-back" aria-label="${esc(nouns[1])}">${ic('chevron-left')}</button>
+      <div class="ttl"><h2>Zuletzt gelöscht</h2><small>${countText(items.length)}</small></div>${end}</div>
+    <div class="side-list"><p class="ad-recentlydeleted-note">Gelöschte ${esc(nouns[1])} bleiben hier ${days} Tage. Danach werden sie endgültig gelöscht.</p>${items.map(x => `<button type="button" class="side-row${x.id === current ? ' current' : ''}" data-id="${esc(x.id)}"><span class="t"><b>${esc(label(x.item))}</b>${detail(x.item) ? `<small>${detail(x.item)}</small>` : ''}<small class="chg ad-recentlydeleted-left">Gelöscht am ${dateText(x.at)} · ${leftText(left(x.at))}</small></span>${ic('chevron-right')}</button>`).join('')}</div>`;
+    },
+    noticeHtml(id) {
+      const x = find(id); if (!x) return '';
+      return `<div class="ad-recentlydeleted-notice" role="status"><span class="ad-recentlydeleted-noticeicon">${ic('trash')}</span>
+        <span class="ad-recentlydeleted-text"><b>${esc(nouns[2])} ist gelöscht.</b><br>Gelöscht am ${dateText(x.at)} – wird ${inDays(Math.max(1, left(x.at)))} endgültig gelöscht.</span>
+        <button type="button" class="ad-recentlydeleted-restore" data-restore="${esc(id)}">${ic('rotate-ccw')}Wiederherstellen</button></div>`;
+    },
+    // Einträge für Kontextmenü und Wischen (wie bei openMenu, mit shortTitle; act bekommt { sourceView } von swipeactions)
+    actions(row) {
+      const id = row?.dataset?.id, x = find(id); if (!x) return [];
+      return [
+        { icon: 'rotate-ccw', label: 'Wiederherstellen', shortTitle: 'Wiederherstellen', act: () => bean.restore(id, 'menu') },
+        'sep',
+        { icon: 'trash', label: 'Endgültig löschen', shortTitle: 'Löschen', red: true, act: async w => {
+          if (!w?.sourceView) adSourcehighlight.hold(row);
+          const frage = question ? question(x.item) : `‚${esc(label(x.item))}‘ endgültig löschen? Das kann nicht rückgängig gemacht werden.`;
+          if (await confirmPop(w?.sourceView || row, frage, { label: 'Endgültig löschen', icon: 'trash' })) bean.purge(id);
+        } },
+      ];
+    },
+    on(name, fn) { const h = hoerer[name]; if (!h || typeof fn !== 'function') return () => {}; h.add(fn); return () => { h.delete(fn); }; },
+  };
+  if (!(root instanceof Element)) { console.error('recentlydeleted: root fehlt'); return bean; }
+  root.dataset.adBean = 'recentlydeleted';
+  document.addEventListener('click', e => {
+    const b = e.target.closest?.('.ad-recentlydeleted-entry, .ad-recentlydeleted-back, .ad-recentlydeleted-restore'); if (!b) return;
+    if (b.classList.contains('ad-recentlydeleted-restore')) bean.restore(b.dataset.restore, 'notice');
+    else melde(b.classList.contains('ad-recentlydeleted-entry') ? 'open' : 'close');
+  });
+  if (expire()) setTimeout(() => melde('change'));
+  onNeuerTag(() => { if (expire()) melde('change'); });
   return bean;
 }
 

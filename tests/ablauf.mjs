@@ -3812,20 +3812,38 @@ export async function checkAutoSpeichern(p, { open, field, key, ohne = [], where
 // Menüs (menues: Selektoren bzw. Funktionen, die ein Menü öffnen) und jede sichtbare Schaltfläche mit ‚löschen‘, ‚entfernen‘, ‚ersetzen‘,
 // ‚zurücksetzen‘ oder ‚wiederherstellen‘ (Text bzw. aria-label, Entscheidung APD-40/C-F1) antippen: zuerst die Sprechblase mit roter Schaltfläche und
 // ‚Abbrechen‘, der Speicher bleibt; ‚Abbrechen‘ lässt alles, wie es war (verglichen wird der ganze localStorage).
-export async function checkErstFragen(p, { menues = [], zustaende = [], key, where = '' } = {}) {
+// Seit 4.71.0 (RLB-126, R-7.10, Wortlaut R-4.12 neu: ‚Ausgenommen ist das Löschen nach ‚Zuletzt gelöscht‘ (R-7.10): es lässt sich rückgängig machen und
+// fragt nicht‘): trash – Name des Felds mit ‚Zuletzt gelöscht‘ in den Daten unter key (z. B. 'recentlyDeleted'). Kommt nach dem Antippen keine
+// Sprechblase und liegt danach ein Eintrag mehr in diesem Feld, ist das kein Fehler (der Eintrag liegt jetzt dort); sonst die bisherigen Meldungen.
+// Danach wird der ganze Speicher (alle Schlüssel) auf den Stand vorher gesetzt und die Seite neu geladen (bis sie ruht), damit die weiteren Aktionen auf
+// denselben Daten laufen; geladen() bringt die App danach wieder in den Ausgangszustand (z. B. iPhone: ein Reiselogbuch öffnen; Standard: nichts). In
+// zustaende wird der Zustand nach dem Neuladen neu geöffnet und die übrigen Schaltflächen werden neu markiert.
+export async function checkErstFragen(p, { menues = [], zustaende = [], key, trash = null, geladen = null, where = '' } = {}) {
   const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}R-4.12 ${t}`);
   try {
   const alles = () => p.evaluate(() => JSON.stringify(Object.keys(localStorage).sort().map(k => [k, localStorage.getItem(k)])));
+  const papierkorb = () => p.evaluate(([k, f]) => { try { const d = JSON.parse(localStorage.getItem(k)); return Array.isArray(d?.[f]) ? d[f].length : 0; } catch { return 0; } }, [key, trash]);
+  // Speicher wie vorher, Seite neu laden und warten, bis sie ruht
+  const zurueck = async s0 => {
+    await p.evaluate(s => { localStorage.clear(); for (const [k, v] of JSON.parse(s)) localStorage.setItem(k, v); }, s0);
+    await p.reload(); await wait(p, 300); await navFertig(p); await ruhe(p);
+    if (geladen) { await geladen(); await navFertig(p); await ruhe(p); }
+  };
+  // Rückgabe true, wenn die Seite neu geladen wurde (Löschen nach ‚Zuletzt gelöscht‘)
   const frage = async (was, tippe) => {
-    const s0 = await alles();
+    const s0 = await alles(), n0 = trash ? await papierkorb() : 0;
     await tippe(); await wait(p, 350);
     const pop = await p.evaluate(() => { const q = document.querySelector('.pop'); if (!q) return null;
       const b = [...q.querySelectorAll('button')]; return { rot: b.some(x => /danger/.test(x.className)), abbrechen: b.some(x => x.textContent.trim() === 'Abbrechen') }; });
-    if (!pop) { E(`‚${was}‘ ohne Sprechblase`); if (await alles() !== s0) E(`‚${was}‘ ändert den Speicher ohne Rückfrage`); await dlgZu(p); return; }
+    if (!pop) {
+      if (trash && await papierkorb() > n0) { await dlgZu(p); await zurueck(s0); return true; }   // R-7.10: nach ‚Zuletzt gelöscht‘ – fragt nicht
+      E(`‚${was}‘ ohne Sprechblase`); if (await alles() !== s0) E(`‚${was}‘ ändert den Speicher ohne Rückfrage`); await dlgZu(p); return false;
+    }
     if (!pop.rot || !pop.abbrechen) E(`‚${was}‘: Sprechblase ohne rote Schaltfläche bzw. ohne ‚Abbrechen‘`);
     if (await alles() !== s0) E(`‚${was}‘ ändert den Speicher vor der Bestätigung`);
     await p.locator('.pop button', { hasText: 'Abbrechen' }).click(); await wait(p, 350);
     if (await alles() !== s0) E(`‚${was}‘: ‚Abbrechen‘ ändert den Speicher`);
+    return false;
   };
   for (const m of menues) {
     const auf = typeof m === 'function' ? m : async () => { await p.click(m); await wait(p, 200); };
@@ -3837,13 +3855,208 @@ export async function checkErstFragen(p, { menues = [], zustaende = [], key, whe
   }
   const zerst = /(löschen|entfernen|ersetzen|zurücksetzen|wiederherstellen)/i;
   for (const z of zustaende) {
-    await z.open(); await wait(p, 400); await navFertig(p);
-    const ids = await p.evaluate(re => [...document.querySelectorAll('button')].filter(b => { const r = b.getBoundingClientRect(); return r.width && r.height && !b.closest('.pop, .menu')
-      && new RegExp(re, 'i').test((b.getAttribute('aria-label') || '') + ' ' + b.textContent); }).map((b, i) => { b.dataset.erstFragen = i; return [i, (b.getAttribute('aria-label') || b.textContent).trim()]; }), zerst.source);
-    for (const [i, name] of ids) await frage(`${name} (${z.name})`, () => p.click(`[data-erst-fragen="${i}"]`));
+    const markiere = async () => { await z.open(); await wait(p, 400); await navFertig(p);
+      return p.evaluate(re => [...document.querySelectorAll('button')].filter(b => { const r = b.getBoundingClientRect(); return r.width && r.height && !b.closest('.pop, .menu')
+        && new RegExp(re, 'i').test((b.getAttribute('aria-label') || '') + ' ' + b.textContent); }).map((b, i) => { b.dataset.erstFragen = i; return [i, (b.getAttribute('aria-label') || b.textContent).trim()]; }), zerst.source); };
+    const ids = await markiere();
+    for (const [i, name] of ids) if (await frage(`${name} (${z.name})`, () => p.click(`[data-erst-fragen="${i}"]`))) await markiere();   // nach dem Neuladen: Zustand neu, übrige neu markiert
     await dlgZu(p); await wait(p, 200);
   }
   } catch (e) { E(`Ablauf bricht ab: ${e.message.split('\n')[0]}`); await dlgZu(p).catch(() => {}); }   // Meldungen davor bleiben
+  return errors;
+}
+
+// R-7.10 Zuletzt gelöscht (seit 4.71.0, RLB-126, Testfall-Liste AppDesign arbeit/0165 RLB-126 Muster.md, RLB-126/T-1 bis T-8 und T-15) – allgemein für jede App
+// mit der AD-Bean recentlydeleted (Selektoren der Bean: .ad-recentlydeleted-entry, -back, -count, -note, -left, -notice, -restore). Die App nennt:
+//   key: Speicher (localStorage) · list: Feld der zentralen Liste in den Daten (z. B. 'trips') · field: Feld ‚Zuletzt gelöscht‘ (Standard 'recentlyDeleted')
+//   ids: [a, b] – zwei Einträge der Liste, die sich löschen lassen (nicht gesperrt); b wird zuletzt gelöscht
+//   remove(id): löscht über die Bedienung der App (Standard: Kachel lange drücken → roter Menüpunkt) · rows: Kacheln der Liste (Standard '#side .side-row')
+//   start(): bringt die App nach dem Laden zur Liste mit der Kachel ‚Zuletzt gelöscht‘ (Standard: nichts; z. B. iPhone: zurück zur Startliste)
+//   days (Standard 30) · nouns: [Einzahl, Mehrzahl] wie in der Bean · messe(name): Grundregeln im aktuellen Zustand (pruefe.mjs – t.schritt)
+// Geprüft: RLB-126/T-1 Löschen ohne Sprechblase, der Eintrag liegt mit ganzem Inhalt, Zeitpunkt (at) und Gerät (on) in field, Ansage für VoiceOver ·
+// RLB-126/T-2 Kachel ‚Zuletzt gelöscht‘ nur wenn nicht leer, als letzte Kachel ihrer Liste, mit Papierkorb und Anzahl · RLB-126/T-3 Liste: Kopf ‹ und
+// ‚Zuletzt gelöscht‘ mit Anzahl, Hinweis zur Frist, zuletzt gelöschte oben, ‚Gelöscht am TT.MM.JJJJ · noch N Tage‘ · RLB-126/T-7 Kontextmenü
+// ‚Wiederherstellen‘ · ‚Endgültig löschen‘ (rot, zuletzt), dessen Sprechblase (rot und ‚Abbrechen‘); ‚Abbrechen‘ und Esc ändern nichts (R-4.12) ·
+// RLB-126/T-4 Antippen: Hinweis mit Löschdatum, ‚in N Tagen‘ und ‚Wiederherstellen‘ · RLB-126/T-5 Wiederherstellen: wieder in der Liste, aus field und
+// aus deleted entfernt · RLB-126/T-8 Frist: Löschdatum 29 Kalendertage zurück → ‚noch 1 Tag‘ und ‚in 1 Tag‘, 30 Tage → endgültig weg (nach dem Neuladen) ·
+// RLB-126/T-7 Bestätigen entfernt und vermerkt purged in deleted (Abgleich). Das Löschdatum wird im Speicher zurückgesetzt und die Seite neu geladen; am
+// Ende steht der ganze Speicher wieder wie vorher (Seite neu geladen, start()). Meldungen beginnen mit ‚R-7.10 ‘.
+// Gegenproben (RLB-126/T-15): PRUEF_GEGENPROBE=zuletzt:frage (Löschen fragt erst) bzw. zuletzt:frist (Frist 31 statt 30 Tage) – recentlyDeletedGegenprobe(p)
+// vor dem Laden der Seite schleust den Fehler in die Prüfkopie von ui.js ein; RLB-126/T-1 bzw. RLB-126/T-3 und T-8 werden rot.
+const ZULETZT_GEGENPROBEN = {
+  frage: ['    remove(item) {\n      const d = store(); if (!d || !item) return;',
+    "    async remove(item) {\n      if (!await confirmPop(root, 'Gegenprobe: wirklich löschen?', { label: 'Löschen', icon: 'trash' })) return;\n      const d = store(); if (!d || !item) return;"],
+  frist: ['    return days - Math.round(', '    return days + 1 - Math.round('],
+};
+export async function recentlyDeletedGegenprobe(p) {
+  const m = /^zuletzt:(frage|frist)$/.exec(process.env.PRUEF_GEGENPROBE || ''), g = m && ZULETZT_GEGENPROBEN[m[1]];
+  if (!g) return false;
+  const [alt, neu] = g, { readFileSync } = await import('node:fs');
+  await p.route(/\/(fassung\/\d+\.\d+\.\d+|v4)\/ui\.js(\?.*)?$/, r => {
+    const text = readFileSync(decodeURIComponent(new URL(r.request().url()).pathname), 'utf8');
+    if (text.split(alt).length !== 2) throw new Error(`Gegenprobe zuletzt:${m[1]}: Stelle in ui.js nicht gefunden`);
+    return r.fulfill({ body: text.replace(alt, neu), contentType: 'text/javascript' });
+  });
+  return true;
+}
+export async function checkRecentlyDeleted(p, { key, list, field = 'recentlyDeleted', ids = [], remove = null, rows = '#side .side-row', start = null, days = 30,
+  nouns = ['Eintrag', 'Einträge'], messe = async () => {}, where = '' } = {}) {
+  const errors = [], E = t => errors.push(`R-7.10 ${where ? where + ': ' : ''}${t}`);
+  const alles = () => p.evaluate(() => JSON.stringify(Object.keys(localStorage).sort().map(k => [k, localStorage.getItem(k)])));
+  const daten = () => p.evaluate(k => { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } }, key);
+  const ordne = v => JSON.stringify(v, (k, x) => x && typeof x === 'object' && !Array.isArray(x) ? Object.fromEntries(Object.keys(x).sort().map(y => [y, x[y]])) : x);
+  const still = async () => { await navFertig(p); await ruhe(p); };
+  const laden = async () => { await p.reload(); await wait(p, 300); await still(); if (start) { await start(); await still(); } };
+  const popDa = () => p.evaluate(() => !!document.querySelector('.pop:not(.zu-geist)'));
+  const zu = async () => { for (let n = 0; n < 4 && await p.evaluate(() => !!document.querySelector('.menu, .pop')); n++) { await p.keyboard.press('Escape'); await wait(p, 300); } await menueZu(p); await still(); };
+  const entfernen = remove || (async id => { const m = await langDruecken(p, `${rows}[data-id="${id}"]`); if (m) throw new Error(m); await p.locator('.menu:not(.zu-geist) .mi.red').last().click(); });
+  const eintrag = () => p.evaluate(() => { const e = document.querySelector('.ad-recentlydeleted-entry'); if (!e || !e.getClientRects().length) return null;
+    const geschw = [...e.parentElement.children].filter(x => x.matches('button, [role=button]') && x.getClientRects().length);
+    return { letzte: geschw.at(-1) === e, zahl: e.querySelector('.ad-recentlydeleted-count')?.textContent.trim() || '', titel: e.querySelector('b')?.textContent.trim() || '',
+      symbol: !!e.querySelector('.ad-recentlydeleted-icon svg') }; });
+  const datum = at => p.evaluate(at => { const d = new Date(at); return `${String(d.getDate()).padStart(2, '0')}.${String(d.getMonth() + 1).padStart(2, '0')}.${d.getFullYear()}`; }, at);
+  const liste = () => p.evaluate(() => { const b = document.querySelector('.ad-recentlydeleted-back'); if (!b || !b.getClientRects().length) return null;
+    const kopf = b.closest('.side-head') || b.parentElement, root = kopf.parentElement;
+    return { titel: kopf.querySelector('h2')?.textContent.trim() || '', zahl: kopf.querySelector('.ttl small, small')?.textContent.trim() || '',
+      hinweis: root.querySelector('.ad-recentlydeleted-note')?.textContent.replace(/\s+/g, ' ').trim() || '',
+      reihen: [...root.querySelectorAll('[data-id]')].filter(r => r.getClientRects().length).map(r => ({ id: r.dataset.id, rest: r.querySelector('.ad-recentlydeleted-left')?.textContent.trim() || '' })) }; });
+  const oeffneListe = async () => { await p.click('.ad-recentlydeleted-entry'); await wait(p, 300); await still(); };
+  const hinweis = () => p.evaluate(() => { const n = document.querySelector('.ad-recentlydeleted-notice'); if (!n || !n.getClientRects().length) return null;
+    return { text: n.querySelector('.ad-recentlydeleted-text')?.innerText.replace(/\s+/g, ' ').trim() || '', knopf: n.querySelector('.ad-recentlydeleted-restore')?.textContent.trim() || '' }; });
+  const zurueckDatieren = (id, tage) => p.evaluate(([k, f, id, n]) => { const d = JSON.parse(localStorage.getItem(k)), x = d[f].find(y => y.id === id);
+    const t = new Date(x.at); t.setDate(t.getDate() - n); x.at = t.getTime(); localStorage.setItem(k, JSON.stringify(d)); }, [key, field, id, tage]);
+  const [a, b] = ids;
+  if (!key || !list || !a || !b) { E('die App nennt key, list und zwei ids nicht – die Prüfung prüft nichts'); return errors; }
+  const s0 = await alles();
+  try {
+    if (start) { await start(); await still(); }
+    // RLB-126/T-2: vorher leer – keine Kachel ‚Zuletzt gelöscht‘
+    const d0 = await daten();
+    if ((d0?.[field] || []).length) E(`RLB-126/T-2 ${field} ist vor der Prüfung nicht leer (${d0[field].length}) – bitte mit leerem ‚Zuletzt gelöscht‘ aufrufen`);
+    else if (await eintrag()) E('RLB-126/T-2 die Kachel ‚Zuletzt gelöscht‘ steht da, obwohl nichts gelöscht ist (nur wenn nicht leer)');
+    // RLB-126/T-1: Löschen ohne Sprechblase – Eintrag mit ganzem Inhalt, Zeitpunkt und Gerät
+    for (const id of [a, b]) {
+      const vorher = (await daten())?.[list]?.find(x => x.id === id), t0 = await p.evaluate(() => Date.now());
+      if (!vorher) { E(`RLB-126/T-1 ${list} enthält ‚${id}‘ nicht`); return errors; }
+      await entfernen(id); await wait(p, 400);
+      const frage = await popDa();
+      await still();
+      if (frage) { E(`RLB-126/T-1 Löschen von ‚${id}‘ fragt (Sprechblase) – soll ohne Abfrage nach ‚Zuletzt gelöscht‘ (R-4.12 Ausnahme)`); await zu(); }
+      const d = await daten(), x = (d?.[field] || []).find(y => y.id === id);
+      if (!x) { E(`RLB-126/T-1 ‚${id}‘ liegt nach dem Löschen nicht in ${field}`); await p.evaluate(s => { localStorage.clear(); for (const [k, v] of JSON.parse(s)) localStorage.setItem(k, v); }, s0); await laden(); return errors; }
+      if (d[list].some(y => y.id === id)) E(`RLB-126/T-1 ‚${id}‘ steht nach dem Löschen noch in ${list}`);
+      // ganzer Inhalt: jedes gespeicherte Feld wie vor dem Löschen (Felder, die die App beim Laden ergänzt, z. B. normalize, dürfen dazukommen)
+      const anders = Object.keys(vorher).filter(f => ordne(x.item?.[f]) !== ordne(vorher[f]));
+      if (anders.length) E(`RLB-126/T-1 ‚${id}‘ in ${field} ohne den ganzen Inhalt (anders als vor dem Löschen: ${anders.join(', ')})`);
+      if (!Number.isFinite(x.at) || x.at < t0 - 1000 || x.at > t0 + 60000) E(`RLB-126/T-1 Zeitpunkt des Löschens (at) ${x.at} – soll der Zeitpunkt des Antippens sein`);
+      if (typeof x.on !== 'string' || !x.on) E(`RLB-126/T-1 Gerät des Löschens (on) fehlt (${JSON.stringify(x.on)})`);
+      const sag = await ansage(p, 200);
+      if (!sag || !/Zuletzt gelöscht/.test(sag)) E(`RLB-126/T-1 keine Ansage für VoiceOver nach dem Löschen (Ansage ${JSON.stringify(sag)})`);
+      await messe(`RLB-126/T-1 ‚${id}‘ gelöscht`);
+    }
+    // RLB-126/T-2: Kachel als letzte der Liste mit Papierkorb und Anzahl
+    let k = await eintrag();
+    if (!k) E('RLB-126/T-2 nach dem Löschen keine Kachel ‚Zuletzt gelöscht‘');
+    else {
+      if (!k.letzte) E('RLB-126/T-2 ‚Zuletzt gelöscht‘ ist nicht die letzte Kachel der Liste');
+      if (k.titel !== 'Zuletzt gelöscht' || !k.symbol || k.zahl !== '2') E(`RLB-126/T-2 Kachel ‚${k.titel}‘, Papierkorb ${k.symbol}, Anzahl ‚${k.zahl}‘ – soll ‚Zuletzt gelöscht‘ mit Papierkorb und ‚2‘`);
+    }
+    // RLB-126/T-3: Liste – Kopf, Hinweis zur Frist, zuletzt gelöschte oben, Restzeit
+    await oeffneListe();
+    await messe('RLB-126/T-3 Liste ‚Zuletzt gelöscht‘');
+    let l = await liste(), d = await daten();
+    const heute = await datum(d[field].find(x => x.id === a).at);
+    if (!l) E('RLB-126/T-3 ‚Zuletzt gelöscht‘ öffnet keine Liste mit ‹ im Kopf');
+    else {
+      if (l.titel !== 'Zuletzt gelöscht' || l.zahl !== `2 ${nouns[1]}`) E(`RLB-126/T-3 Kopf ‚${l.titel}‘ · ‚${l.zahl}‘ – soll ‚Zuletzt gelöscht‘ · ‚2 ${nouns[1]}‘`);
+      const soll = `Gelöschte ${nouns[1]} bleiben hier ${days} Tage. Danach werden sie endgültig gelöscht.`;
+      if (l.hinweis !== soll) E(`RLB-126/T-3 Hinweis zur Frist ‚${l.hinweis}‘ – soll ‚${soll}‘`);
+      if (l.reihen.map(r => r.id).join() !== [b, a].join()) E(`RLB-126/T-3 Reihenfolge ${l.reihen.map(r => r.id).join(', ')} – soll zuletzt gelöschte oben (${b}, ${a})`);
+      for (const r of l.reihen) if (r.rest !== `Gelöscht am ${heute} · noch ${days} Tage`) E(`RLB-126/T-3 Zeile ‚${r.id}‘ ‚${r.rest}‘ – soll ‚Gelöscht am ${heute} · noch ${days} Tage‘`);
+    }
+    // RLB-126/T-7: Kontextmenü, Abfrage ‚Endgültig löschen‘; ‚Abbrechen‘ und Esc ändern nichts
+    const m1 = await langDruecken(p, `[data-id="${b}"]:has(.ad-recentlydeleted-left)`);
+    if (m1) E(`RLB-126/T-7 langes Drücken auf ‚${b}‘ zeigt kein Kontextmenü – ${m1}`);
+    else {
+      const menue = await p.evaluate(() => [...document.querySelectorAll('.menu:not(.zu-geist):not(.submenu) .mi')].map(m => ({ text: m.textContent.trim(), rot: m.classList.contains('red') })));
+      if (ordne(menue) !== ordne([{ text: 'Wiederherstellen', rot: false }, { text: 'Endgültig löschen', rot: true }])) E(`RLB-126/T-7 Kontextmenü ${JSON.stringify(menue)} – soll ‚Wiederherstellen‘ · ‚Endgültig löschen‘ (rot)`);
+      await messe('RLB-126/T-7 Kontextmenü eines gelöschten');
+      const v = await alles();
+      for (const weg of ['Abbrechen', 'Escape']) {
+        if (weg === 'Escape') { const m = await langDruecken(p, `[data-id="${b}"]:has(.ad-recentlydeleted-left)`); if (m) { E(`RLB-126/T-7 Kontextmenü – ${m}`); break; } }
+        await p.locator('.menu:not(.zu-geist) .mi.red', { hasText: 'Endgültig löschen' }).click(); await wait(p, 400); await still();
+        const pop = await p.evaluate(() => { const q = document.querySelector('.pop:not(.zu-geist)'); if (!q) return null;
+          return { text: q.querySelector('p')?.textContent.trim() || '', knoepfe: [...q.querySelectorAll('button')].map(x => ({ text: x.textContent.trim(), rot: /danger/.test(x.className) })) }; });
+        if (!pop) { E('RLB-126/T-7 ‚Endgültig löschen‘ fragt nicht (R-4.12)'); break; }
+        if (weg === 'Abbrechen') {
+          if (!/endgültig löschen\? Das kann nicht rückgängig gemacht werden\.$/.test(pop.text)) E(`RLB-126/T-7 Text der Abfrage ‚${pop.text}‘ – soll ‚… endgültig löschen? Das kann nicht rückgängig gemacht werden.‘`);
+          if (ordne(pop.knoepfe) !== ordne([{ text: 'Endgültig löschen', rot: true }, { text: 'Abbrechen', rot: false }])) E(`RLB-126/T-7 Schaltflächen ${JSON.stringify(pop.knoepfe)} – soll ‚Endgültig löschen‘ (rot) · ‚Abbrechen‘`);
+          if (await alles() !== v) E('RLB-126/T-7 ‚Endgültig löschen‘ ändert den Speicher vor der Bestätigung (R-4.12)');
+          await messe('RLB-126/T-7 Abfrage ‚Endgültig löschen‘');
+          await p.locator('.pop:not(.zu-geist) button', { hasText: /^Abbrechen$/ }).click();
+        } else await p.keyboard.press('Escape');
+        await wait(p, 300); await still();
+        if (await popDa()) { E(`RLB-126/T-7 nach ${weg} ist die Sprechblase noch offen`); await zu(); }
+        if (await alles() !== v) E(`RLB-126/T-7 ${weg} ändert den Speicher (R-4.12)`);
+      }
+      await zu();
+    }
+    // RLB-126/T-4: Antippen zeigt den Hinweis mit Löschdatum, Restzeit und ‚Wiederherstellen‘
+    await p.click(`[data-id="${a}"]:has(.ad-recentlydeleted-left)`); await wait(p, 300); await still();
+    let h = await hinweis();
+    if (!h) E(`RLB-126/T-4 Antippen von ‚${a}‘ zeigt keinen Hinweis ‚… ist gelöscht.‘`);
+    else {
+      if (!h.text.endsWith(`ist gelöscht. Gelöscht am ${heute} – wird in ${days} Tagen endgültig gelöscht.`)) E(`RLB-126/T-4 Hinweis ‚${h.text}‘ – soll ‚… ist gelöscht. Gelöscht am ${heute} – wird in ${days} Tagen endgültig gelöscht.‘`);
+      if (h.knopf !== 'Wiederherstellen') E(`RLB-126/T-4 Schaltfläche im Hinweis ‚${h.knopf}‘ – soll ‚Wiederherstellen‘`);
+      await messe('RLB-126/T-4 Vorschau eines gelöschten');
+      // RLB-126/T-5: Wiederherstellen aus dem Hinweis
+      await p.click('.ad-recentlydeleted-restore'); await wait(p, 300); await still();
+      d = await daten();
+      const st = [d[list].some(x => x.id === a), (d[field] || []).some(x => x.id === a), (d.deleted || []).some(x => x.id === a)];
+      if (ordne(st) !== ordne([true, false, false])) E(`RLB-126/T-5 nach ‚Wiederherstellen‘: in ${list} ${st[0]}, in ${field} ${st[1]}, in deleted ${st[2]} – soll true, false, false`);
+      if (await hinweis()) E('RLB-126/T-5 nach ‚Wiederherstellen‘ steht der Hinweis ‚gelöscht‘ noch da');
+      await messe('RLB-126/T-5 wiederhergestellt');
+    }
+    // RLB-126/T-8: Frist – 29 Kalendertage zurück → ‚noch 1 Tag‘, ‚in 1 Tag‘
+    await zurueckDatieren(b, days - 1); await laden();
+    k = await eintrag();
+    if (!k || k.zahl !== '1') E(`RLB-126/T-2 nach Wiederherstellen eines von zwei: Kachel ‚Zuletzt gelöscht‘ ${k ? `mit ‚${k.zahl}‘` : 'fehlt'} – soll ‚1‘`);
+    if (k) {
+      await oeffneListe(); l = await liste(); d = await daten();
+      const am = await datum(d[field].find(x => x.id === b)?.at);
+      if (l?.reihen.map(r => r.rest).join() !== `Gelöscht am ${am} · noch 1 Tag` || l?.zahl !== `1 ${nouns[0]}`) E(`RLB-126/T-8 ${days - 1} Tage nach dem Löschen: ${JSON.stringify(l?.reihen)}, Kopf ‚${l?.zahl}‘ – soll ‚Gelöscht am ${am} · noch 1 Tag‘ und ‚1 ${nouns[0]}‘`);
+      await messe('RLB-126/T-8 noch 1 Tag');
+      await p.click(`[data-id="${b}"]:has(.ad-recentlydeleted-left)`); await wait(p, 300); await still();
+      h = await hinweis();
+      if (!h?.text.endsWith('wird in 1 Tag endgültig gelöscht.')) E(`RLB-126/T-8 Hinweis ‚${h?.text}‘ – soll ‚… wird in 1 Tag endgültig gelöscht.‘`);
+      // RLB-126/T-7: endgültig löschen bestätigen – weg, purged in deleted
+      await laden(); await oeffneListe();
+      const m = await langDruecken(p, `[data-id="${b}"]:has(.ad-recentlydeleted-left)`);
+      if (m) E(`RLB-126/T-7 Kontextmenü – ${m}`);
+      else {
+        await p.locator('.menu:not(.zu-geist) .mi.red', { hasText: 'Endgültig löschen' }).click(); await wait(p, 400); await still();
+        await p.locator('.pop:not(.zu-geist) button.danger, .pop:not(.zu-geist) button.danger-text').first().click(); await wait(p, 300); await still();
+        d = await daten();
+        const st = [(d[field] || []).some(x => x.id === b), (d.deleted || []).find(x => x.id === b)?.purged === true, d[list].some(x => x.id === b)];
+        if (ordne(st) !== ordne([false, true, false])) E(`RLB-126/T-7 nach ‚Endgültig löschen‘: in ${field} ${st[0]}, purged in deleted ${st[1]}, in ${list} ${st[2]} – soll false, true, false`);
+        if (await eintrag()) E('RLB-126/T-2 nach dem endgültigen Löschen des letzten steht die Kachel ‚Zuletzt gelöscht‘ noch da (nur wenn nicht leer)');
+        await messe('RLB-126/T-7 endgültig gelöscht');
+      }
+    }
+    // RLB-126/T-8: 30 Kalendertage nach dem Löschen endgültig weg (beim Start)
+    await laden();
+    await entfernen(a); await wait(p, 400); await still();
+    if (await popDa()) await zu();
+    if (!((await daten())?.[field] || []).some(x => x.id === a)) E(`RLB-126/T-8 ‚${a}‘ liegt nach dem zweiten Löschen nicht in ${field}`);
+    else {
+      await zurueckDatieren(a, days); await laden();
+      d = await daten();
+      if ((d?.[field] || []).some(x => x.id === a)) E(`RLB-126/T-8 ${days} Tage nach dem Löschen steht ‚${a}‘ noch in ${field} – soll endgültig weg`);
+      if (await eintrag()) E(`RLB-126/T-8 ${days} Tage nach dem Löschen steht die Kachel ‚Zuletzt gelöscht‘ noch da`);
+    }
+  } catch (e) { E(`Ablauf bricht ab: ${e.message.split('\n')[0]}`); }
+  // Speicher wie vorher, Seite neu geladen
+  try { await zu(); await p.evaluate(s => { localStorage.clear(); for (const [k, v] of JSON.parse(s)) localStorage.setItem(k, v); }, s0); await laden(); } catch (e) { E(`Speicher nicht zurückgesetzt: ${e.message.split('\n')[0]}`); }
   return errors;
 }
 
@@ -4387,8 +4600,11 @@ const WISCH_HELFER = () => {
     .map(e => Object.fromEntries([...e.style].map(n => [n, e.style.getPropertyValue(n)])));
 };
 const farbeVon = (p, v) => p.evaluate(v => { const d = document.createElement('div'); d.style.background = `var(${v})`; document.body.append(d); const c = getComputedStyle(d).backgroundColor; d.remove(); return c; }, v);
+// Seit 4.71.0 (RLB-126, R-7.10, R-4.12 Ausnahme): frage – die rote Aktion fragt zuerst (Standard true). false: sie verschiebt ohne Abfrage nach ‚Zuletzt
+// gelöscht‘ – die Teile mit der Sprechblase (W-13, W-14, W-20, W-22 bis W-25, W-78) entfallen hier; die App prüft sie mit checkWischen in der Liste
+// ‚Zuletzt gelöscht‘ (‚Endgültig löschen‘ fragt). einstellen: false – die erste Aktion öffnet kein Fenster (z. B. ‚Wiederherstellen‘), W-12 entfällt.
 export async function checkWischen(p, { bean, aktionen, liste = '#side', kacheln, kachel, kachel2, titel = 'b', kopf = null, inhalt = null, nicht = [], neuaufbau = null,
-  seitenleiste = null, einstellen = null, messe = async () => {}, ende = false, where = '' } = {}) {
+  seitenleiste = null, einstellen = null, frage = true, messe = async () => {}, ende = false, where = '' } = {}) {
   const errors = [], E = (t, r = 'R-7.8') => errors.push(`${where ? where + ': ' : ''}${r} ${t}`);
   const alles = () => p.evaluate(() => JSON.stringify(Object.keys(localStorage).sort().map(k => [k, localStorage.getItem(k)])));
   const ruhig = async () => { await warteBis(p, () => !document.getAnimations().some(a => a.playState === 'running'), { max: 3000 }); await wait(p, 30); };
@@ -4419,7 +4635,9 @@ export async function checkWischen(p, { bean, aktionen, liste = '#side', kacheln
     // W-1: 100 px nach links – rastet ein; zwei Kapseln (≥ 66 × 44) mit Wort, ganz in der Liste und im Bild; der Titel bleibt teilweise sichtbar
     const r1 = await wisch(kachel, [...weg(W(-50), 0, 5), { merke: 'w40' }, ...weg(W(-100), 0, 10).slice(5), { merke: 'w100' }]);
     let st = await stand();
-    const offenSoll = await p.evaluate(() => { const ts = document.documentElement.dataset.ts; return !ts || ts === 'l'; }) ? B0 : null;   // n × 66 + (n + 1) × 11 – 165 bei zwei Kapseln (seit 4.60.2, P-108; seit 4.68.0 je Zahl der Kapseln)
+    // seit 4.71.0 (RLB-126/J-8): ist ein Wort breiter als die Kapsel (‚Wiederherstellen‘), rückt die Bean die Kapseln weiter auseinander – die feste Breite gilt dann nicht
+    const offenSoll = await p.evaluate(bw => { const ts = document.documentElement.dataset.ts; if (ts && ts !== 'l') return false;
+      return ![...document.querySelectorAll('.ad-swipeactions-title')].some(w => { const r = document.createRange(); r.selectNodeContents(w); return r.getBoundingClientRect().width > bw + 0.5; }); }, masse.buttonWidth) ? B0 : null;   // n × 66 + (n + 1) × 11 – 165 bei zwei Kapseln (seit 4.60.2, P-108; seit 4.68.0 je Zahl der Kapseln)
     if (!st.offenIst) E(`W-1 100 px gewischt: Kachel nicht offen (tx ${st.tx})`);
     else {
       if (offenSoll && -st.tx !== offenSoll) E(`W-1 offen bei ${-st.tx} px statt ${offenSoll}`);
@@ -4671,7 +4889,7 @@ export async function checkWischen(p, { bean, aktionen, liste = '#side', kacheln
     if ((await stand(kachel2)).boxen || (await stand(kachel2)).tx) E('W-32 bei offenem Kontextmenü bewegt sich eine Kachel');
     // W-22/W-23 für jede Sprechblase: ‚Löschen‘ aus dem Kontextmenü – eingegraut, daneben tippen ändert nichts
     let textMenue = null;
-    if (eintr.at(-1).red) {
+    if (frage && eintr.at(-1).red) {
       await p.locator('.menu:not(.zu-geist) .mi.red').last().click(); await ruhig();
       textMenue = (await stand()).pop;
       const g = await p.evaluate(() => { const l = document.querySelector('.layer.schleier'); return l ? getComputedStyle(l).backgroundColor : null; });
@@ -4699,7 +4917,7 @@ export async function checkWischen(p, { bean, aktionen, liste = '#side', kacheln
     await zu();
     // W-16 bis W-19 entfallen seit 4.60.2 (P-108/Q-2: kein Durchwischen, Löschen nur über die Kapsel) – Überwischen prüfen W-93 und W-94
     const bw = (await stand()).kachel.r - (await stand()).kachel.l;
-    if (eintr.at(-1).red) {
+    if (frage && eintr.at(-1).red) {
       // W-13, W-21: ‚Löschen‘ antippen – Sprechblase aus der roten Kapsel, ganz im Bild, Speicher unverändert; W-22 bis W-25: eingegraut, gesperrt
       await wisch(kachel, weg(W(-100)));
       await p.locator('.ad-swipeactions-button.destructive').click(); await ruhig();
@@ -4747,7 +4965,7 @@ export async function checkWischen(p, { bean, aktionen, liste = '#side', kacheln
       if (rest.layer || rest.inert) E(`W-25 nach dem Schließen bleibt es grau bzw. gesperrt (Ebenen ${rest.layer}, inert ${rest.inert})`, 'R-1.4');
     }
     // W-12: erste Aktion (‚Einstellen‘) – derselbe Weg wie im Kontextmenü, die Kachel ist zu; nach x Fokus auf der Kachel
-    if (!eintr[0].red) {
+    if (!eintr[0].red && einstellen !== false) {
       await wisch(kachel, weg(W(-100)));
       await p.locator('.ad-swipeactions-button').first().click(); await ruhig(); await wait(p, 200);
       st = await stand();
@@ -4768,7 +4986,9 @@ export async function checkWischen(p, { bean, aktionen, liste = '#side', kacheln
     }
     // W-40: Drehen beim Ziehen bricht ab – Kachel geschlossen; W-41: Drehen bei offener Kachel – zu, Auswahl unverändert
     const vp0 = p.viewportSize(), dreh = { width: vp0.height, height: vp0.width };
-    const cur0 = await p.evaluate(l => document.querySelector(`${l} .current`)?.outerHTML.slice(0, 80) || '', liste);
+    // seit 4.71.0: verglichen wird die gewählte Kachel (data-id bzw. Text), nicht ihr HTML – ist die gewischte Kachel selbst gewählt (‚Zuletzt gelöscht‘ am iPad), trägt sie Klassen der Bean
+    const gewaehlt = l => { const e = document.querySelector(`${l} .current`); return e ? e.dataset.id || e.textContent.trim().slice(0, 80) : ''; };
+    const cur0 = await p.evaluate(gewaehlt, liste);
     await p.evaluate(([k, w]) => window.__wisch(k, w, { offenLassen: true }), [kachel, weg(W(-80), 0, 8)]);
     await p.setViewportSize(dreh); await wait(p, 300);
     await p.evaluate(() => window.__wischZug?.ende(false)); await ruhig();
@@ -4778,7 +4998,7 @@ export async function checkWischen(p, { bean, aktionen, liste = '#side', kacheln
     await p.setViewportSize(dreh); await wait(p, 300); await ruhig();
     if ((await stand()).offen || (await stand()).boxen) E('W-41 nach dem Drehen ist die Kachel noch offen', 'R-8.1');
     await p.setViewportSize(vp0); await wait(p, 400); await ruhig();
-    if (await p.evaluate(l => document.querySelector(`${l} .current`)?.outerHTML.slice(0, 80) || '', liste) !== cur0) E('W-41 nach dem Drehen ist eine andere Kachel gewählt', 'R-8.1');
+    if (await p.evaluate(gewaehlt, liste) !== cur0) E('W-41 nach dem Drehen ist eine andere Kachel gewählt', 'R-8.1');
     // W-65: Safari-Modell – Wischen mit Berührung, Safari nimmt dem Finger die entschiedene Geste nicht weg; senkrecht rollt Safari
     {
       const k = await p.evaluate(s => { const r = document.querySelector(s).getBoundingClientRect(); return { x: r.left + r.width * 0.7, y: r.top + r.height / 2 }; }, kachel);
@@ -4854,7 +5074,7 @@ export async function checkWischen(p, { bean, aktionen, liste = '#side', kacheln
       st = await stand();
       if (st.pop || !st.offenIst) E(`W-76 über 60 % gewischt: Sprechblase ${!!st.pop}, offen ${st.offenIst} (soll: rastet offen ein)`, 'R-1.13');
       if (st.pop) { await p.keyboard.press('Escape'); await ruhig(); }
-      if (eintr.at(-1).red) {
+      if (frage && eintr.at(-1).red) {
         await zu(); await wisch(kachel, weg(W(-100)));
         await p.locator('.ad-swipeactions-button.destructive').click(); await ruhig();
         const act = await p.evaluate(() => window.__wischAct.at(-1));

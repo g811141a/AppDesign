@@ -253,7 +253,7 @@ export const GEGENPROBEN_MASSE = {
   dateiname: { zeichen: /R-1[0]\.7 Dateiname .*zwei Leerzeichen/, was: 'Dateiname mit zwei Leerzeichen (APD-40/B-8)' },
   autoaus: { zeichen: /R-5\.10 .*nach 10 s nicht gesichert/, was: 'Zwischenspeichern aus (APD-40/C-1)', test: 'ablauf-texte-ablaeufe' },
   verwerfen: { zeichen: /R-5\.10 .*nicht wie beim Öffnen/, was: 'Verwerfen stellt den Stand beim Öffnen nicht her (APD-40/C-2)', test: 'ablauf-texte-ablaeufe' },
-  sofort: { zeichen: /R-4\.12 .*ohne Sprechblase/, was: '‚Reiselogbuch löschen‘ löscht sofort (APD-40/C-5)', test: 'ablauf-texte-ablaeufe' },
+  sofort: { zeichen: /R-4\.12 .*ohne Sprechblase/, was: 'Sprechblase übersprungen – bestätigt sofort (APD-40/C-5; seit 4.71.0 rot über ‚Standard-Smileys wiederherstellen‘ im Fenster Tag – Löschen fragt nicht mehr, RLB-126)', test: 'ablauf-texte-ablaeufe' },
   abbrechen2: { zeichen: /R-4\.12 .*‚Abbrechen‘ ändert/, was: 'Abbrechen löscht trotzdem (APD-40/C-6)', test: 'ablauf-texte-ablaeufe' },
   // seit 4.53.0 (R-3.9, APD-38/T-37): Kapsel und Menü ohne Glas · eine Leiste aus Glas
   glas: { zeichen: /R-3\.9 APD-62\/L-1 .*nicht aus Glas/, was: 'Kapsel und Menü ohne Unschärfe (APD-62/L-1)' },

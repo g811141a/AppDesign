@@ -41,7 +41,8 @@ automatisch nach 0 Nr. 13, nach dem abgeschlossenen Schritt ‚Muster bauen und 
    `apd-149-muster` holen (`git fetch origin apd-149-muster`).
 2. **Bericht zeigen** (Datei `arbeit/APD-149 0002 Bericht Muster.md` und Chat) und im Fenster fragen: ‚Soll ich das Muster auf `main` hochladen (Pages)?‘
    - Vorher: Hat 0167 inzwischen `katalog/` oder `v4/` auf `main` geändert, den Zweig auf `origin/main` setzen und die Prüfungen erneut laufen lassen:
-     `node arbeit/APD-149/muster-pruefen.mjs` (auch `PRUEF_BROWSER=webkit`, auch `APD149_GEGENPROBE=1`), `node arbeit/APD-149/entwurf-regeln.mjs`,
+     im Ordner `arbeit` (die Dateien liegen nur auf dem Zweig) `node APD-149/muster-pruefen.mjs` (auch `PRUEF_BROWSER=webkit`, auch `APD149_GEGENPROBE=1`),
+     `node APD-149/entwurf-regeln.mjs`,
      im Reiselogbuch `node tests/bean-katalog.mjs` in beiden Browsern.
    - Grund der Frage: Der volle Lauf des Reiselogbuchs öffnet jede angemeldete Bean im Katalog, auch die im Entwurf. Läuft 0167 gerade voll, besser danach.
 3. Nach dem Hochladen: Pages abwarten, dann Ausprobieren am iPad und iPhone nach den 16 Schritten im Bericht, Rückmeldung im Fenster.
