@@ -59,3 +59,16 @@ Die Schritte zum Ausprobieren kommen mit dem Muster (Bericht nach 0 Nr. 11).
 - **Wortlaut (0 Nr. 29):** R-4.6 (‚Blatt auf dem iPhone‘ entfällt, das Fenster ist wie am iPad), 15.17 (Fenster als Blatt, Variante A entfällt), dazu der Verweis in Designrichtlinie 7.
 - **Prüfungen:** `checkSheet` B1–B24 werden mit `v5/` auf das Fenster umgestellt.
 - **Reiselogbuch:** `ablauf-blatt` und `ablauf-fenster` werden mit `v5/` auf das Fenster umgestellt. Die Tageserfassung zeigt am iPhone, ob M-3 und M-8 dort gelten.
+
+## Stand der Sitzung AppDesign 0005 (zu dieser Antwort)
+
+- **Entschieden APD-151/J-3:** Breite 90 %, quer wie hoch, Tastatur wie am iPad, Antippen der Abdunkelung schließt nicht. Das steht im Backlog und in `arbeit/APD-151 Klaerung J-2.md`.
+- **Fehler von mir:**
+  - Mein Commit cc5e51e hat Konfliktmarken in `BACKLOG.md` auf `main` gebracht. Reiselogbuch 0169 hatte gleichzeitig die Zeile APD-154 geändert, und das Aufsetzen ist am Konflikt gescheitert. Ich habe trotzdem committet, weil mein Befehl nach dem Fehler weiterlief.
+  - Berichtigt in 281b5ca: Die Zeile von 0169 ist unverändert, APD-151 hat meinen Zusatz. 0169 hat einen Hinweis bekommen.
+  - Künftig hängt in der Befehlskette nach `stash pop` alles mit `&&` daran, und vor dem Commit prüfe ich auf Konfliktmarken.
+- **`doku-regeln`:** noch 2 Fehler, beide in der `UEBERGABE.md` der Kette Reiselogbuch. `BACKLOG.md:16` hat 0169 berichtigt.
+- **Übergabe:** Der Kontext steht bei 273.889, die Schwelle ist 300.000. Das Muster passt nicht mehr in diese Sitzung.
+  Vorschlag: nach deinem ‚Ja‘ zur Testfall-Liste an **‚AppDesign 0006 – APD-151 Muster Fenster am iPhone wie am iPad‘** übergeben.
+
+Nächste Version AppDesign (mit `v5/`): 3 Punkte bereit (APD-149/J-1, APD-152, APD-153). Offen im Backlog: APD-135, APD-136, APD-149, APD-148, APD-151, APD-154 (Prio 1) · APD-139, APD-141, APD-142, APD-145, APD-150, APD-155 (Prio 2) · APD-70, APD-147, APD-156 (Prio 3).
