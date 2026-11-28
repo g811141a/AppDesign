@@ -1,0 +1,18 @@
+# Auszug (Sitzung AppDesign 0009): Kopf, Spalten, letzte Rollstände vor dem Drehen und alle Zeilen ab dem ersten Drehen.
+# Lauf 2: Reiselogbücher (7), iPad Pro 2024. Die vollständige Messung steht im Chat der Sitzung (Nutzer 28.11.2026).
+# Messung · Reiselogbuch 3.59.2 · AppDesign 4.71.0 · Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/27.2 Safari/605.1.15 · Home-Bildschirm · 834×1194 @2 · Ränder 0/20/0/0 · hell · 2026-11-28T09:11:21.673Z · Kontrast normal · Bewegung normal · Text l 17
+t      sy     inh    sh     ih     vh     vt     vvtop  kopf   such   tag    lkopf  lsuch  lroll  fokus  lage
+7113   0      0      802    802    802    0      0      0      -      230    11     -      302    sideMore quer   ! scroll div
+7130   0      0      802    802    802    0      0      0      -      230    11     -      303    sideMore quer   ! scroll div
+8345   0      0      1162   802    802    0      0      0      -      230    11     -      303    sideMore quer
+8359   0      0      1162   1162   1162   0      0      0      -      230    11     -      135    sideMore hoch   ! resize
+8363   0      0      1162   1162   1162   0      0      0      -      230    11     -      135    sideMore hoch   ! vv resize
+8363   0      0      1162   1162   1162   0      0      0      -      230    11     -      135    sideMore hoch   ! scroll div
+8363   0      0      1162   1162   1162   0      0      0      -      230    11     -      135    sideMore hoch   ! vv scroll
+8372   0      0      1162   1162   1162   0      0      0      -      255    11     -      135    sideMore hoch
+8881   0      0      1162   1162   1162   0      0      0      -      255    11     -      135    sideMore hoch   ! drehen
+11401  0      0      802    802    802    0      0      0      -      230    11     -      135    sideMore quer   ! resize
+11405  0      0      802    802    802    0      0      0      -      230    11     -      135    sideMore quer   ! vv resize
+11405  0      0      802    802    802    0      0      0      -      230    11     -      135    sideMore quer   ! vv scroll
+11928  0      0      802    802    802    0      0      0      -      230    11     -      135    sideMore quer   ! drehen
+16998  0      0      802    802    802    0      0      0      -      230    11     -      135    sideMore quer   ! zeiger down 343 40 touch svg.ic in sideMore

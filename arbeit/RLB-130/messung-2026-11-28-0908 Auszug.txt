@@ -1,0 +1,32 @@
+# Auszug (Sitzung AppDesign 0009): Kopf, Spalten, letzte Rollstände vor dem Drehen und alle Zeilen ab dem ersten Drehen bis zum Antippen danach.
+# Lauf 1: ‚Zuletzt gelöscht‘, iPad Pro 2024, 7 Reiselogbücher. Die vollständige Messung steht im Chat der Sitzung (Nutzer 28.11.2026).
+# Messung · Reiselogbuch 3.59.2 · AppDesign 4.71.0 · Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/27.2 Safari/605.1.15 · Home-Bildschirm · 834×1194 @2 · Ränder 0/20/0/0 · hell · 2026-11-28T09:08:45.464Z · Kontrast normal · Bewegung normal · Text l 17
+t      sy     inh    sh     ih     vh     vt     vvtop  kopf   such   tag    lkopf  lsuch  lroll  fokus  lage
+1042   0      0      802    802    802    0      0      0      -      -      11     -      0      -      quer   ! neuaufbau side
+4060   0      0      802    802    802    0      0      0      -      -      11     -      230    -      quer   ! scroll div
+4127   0      0      802    802    802    0      0      0      -      -      11     -      231    -      quer   ! scroll div
+5073   0      0      1162   1162   1162   0      0      0      -      -      11     -      0      -      hoch   ! resize
+5076   0      0      1162   1162   1162   0      0      0      -      -      11     -      0      -      hoch   ! vv resize
+5077   0      0      1162   1162   1162   0      0      0      -      -      11     -      0      -      hoch   ! scroll div
+5077   0      0      1162   1162   1162   0      0      0      -      -      11     -      0      -      hoch   ! vv scroll
+5612   0      0      1162   1162   1162   0      0      0      -      -      11     -      0      -      hoch   ! drehen
+7245   0      0      802    802    802    0      0      0      -      -      11     -      0      -      quer   ! resize
+7249   0      0      802    802    802    0      0      0      -      -      11     -      0      -      quer   ! vv resize
+7249   0      0      802    802    802    0      0      0      -      -      11     -      0      -      quer   ! vv scroll
+7773   0      0      802    802    802    0      0      0      -      -      11     -      0      -      quer   ! drehen
+9846   0      0      802    802    802    0      0      0      -      -      11     -      329    -      quer   ! scroll div
+9862   0      0      802    802    802    0      0      0      -      -      11     -      339    -      quer   ! scroll div
+11587  0      0      802    802    802    0      0      0      -      -      11     -      339    button quer   ! focus button
+12113  0      0      802    802    802    0      0      0      -      -      11     -      339    button quer   ! zeiger up 159 579 touch small.chg.ad-recentlydeleted-left in button.side-row.on @side
+15595  0      0      1162   802    802    0      0      0      -      -      11     -      339    button quer
+15607  0      0      1162   1162   1162   0      0      0      -      -      11     -      0      button hoch   ! resize
+15611  0      0      1162   1162   1162   0      0      0      -      -      11     -      0      button hoch   ! vv resize
+15612  0      0      1162   1162   1162   0      0      0      -      -      11     -      0      button hoch   ! scroll div
+15612  0      0      1162   1162   1162   0      0      0      -      -      11     -      0      button hoch   ! vv scroll
+16126  0      0      1162   1162   1162   0      0      0      -      -      11     -      0      button hoch   ! drehen
+17413  0      0      802    1162   1162   0      0      0      -      -      11     -      0      button hoch
+17425  0      0      802    802    802    0      0      0      -      -      11     -      0      button quer   ! resize
+17429  0      0      802    802    802    0      0      0      -      -      11     -      0      button quer   ! vv resize
+17429  0      0      802    802    802    0      0      0      -      -      11     -      0      button quer   ! vv scroll
+17944  0      0      802    802    802    0      0      0      -      -      11     -      0      button quer   ! drehen
+21846  0      0      802    802    802    0      0      0      -      -      11     -      0      button quer   ! zeiger down 46 34 touch div.layer
