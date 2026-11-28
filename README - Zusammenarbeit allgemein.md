@@ -1,6 +1,6 @@
 # Zusammenarbeit allgemein
 
-**Version 3.19.0** · Stand 21.11.2026
+**Version 3.20.0** · Stand 28.11.2026
 
 Regeln für die Zusammenarbeit mit Claude bei allen Web-Apps für iPad und iPhone von g811141a. Die Datei liegt im Design-Repo **AppDesign**
 (g811141a/AppDesign); App-Eigenes steht in der `CLAUDE.md` des App-Repos. **Abschnitt 0 ist das Arbeitsmodell** (oben der Kasten ‚Immer‘ und ‚Jede
@@ -64,7 +64,8 @@ Ziel: nichts vergessen, Fehler finden, bevor der Nutzer sie findet, schnell und 
 **A. Testen und Qualität**
 
 1. **Testfall-Liste vor jedem Bau:** Gerät (iPad, iPhone) × Lage × Darstellung × Handlung (drehen, wischen, Tastatur, abgleichen,
-   teilen …) × Daten (leer, lang, viele); jeder Fall wird ein Testfall (automatisch) mit fester Prüfung, nach jeder Handlung gelten die Grundregeln (z. B. nach dem Drehen
+   teilen …) × Daten (leer, lang, viele); jeder Fall wird ein Testfall (automatisch) mit fester Prüfung. Ein Testfall erweitert, wo es geht, eine vorhandene Prüfung; eine neue
+   Prüfung nur für das, was keine vorhandene zeigen kann – jeder neue verlängert jeden Bau. Nach jeder Handlung gelten die Grundregeln (z. B. nach dem Drehen
    bleiben oberster Eintrag, Seitenleiste und Menüs). Die
    Liste kommt mit dem Muster; was nur das Gerät zeigt (Teilen-Menü, iCloud, Drucken, Silbentrennung, Wischgefühl), kommt als
    Testfall (User) in den Usertest. **‚Nicht ok‘ vom Gerät:** zuerst genau den Ablauf des Nutzers als feste Prüfung nachbauen (Ausgangszustand,
@@ -81,7 +82,9 @@ Ziel: nichts vergessen, Fehler finden, bevor der Nutzer sie findet, schnell und 
    enthalten, in Chromium und WebKit; sonst **voll** – **alle** (Chromium und WebKit, alle Ansichten, alle automatisch prüfbaren Regeln des
    Katalogs). Das Skript schlägt die Stufe aus dem Unterschied vor, Claude nennt sie in der Bau-Frage (Nr. 21), im Zweifel voll.
    Geräte-Regeln des Katalogs kommen als Testfall (User) in den Usertest, wenn die Version sie betrifft. Hilfsagenten bzw. eigene Sitzungen
-   arbeiten parallel, **wenn möglich und sinnvoll**. Prüfung: `lauf.mjs` (Selbsttest `tests/lauf-selbsttest.mjs`), Stufe
+   arbeiten parallel, **wenn möglich und sinnvoll**. **Eine Bean wird einmal geprüft** (gilt, sobald APD-147 das Werkzeug dafür gebaut
+   hat): Ihre Prüfungen laufen nur, wenn eine AppDesign-Version sie ändert, oder wenn die App eine falsche oder fehlende Reaktion von ihr
+   zeigt; der Prüflauf einer App-Version prüft das Ergebnis in der App. Prüfung: `lauf.mjs` (Selbsttest `tests/lauf-selbsttest.mjs`), Stufe
    `veroeffentlichen.mjs` (Selbsttest `werkzeug/veroeffentlichen-selbsttest.mjs`).
 3. **Regeln schlank halten:** Jede Regel steht an genau einer Stelle und nennt ihre Prüfung (Prüfdatei und Funktion; prüfen
    mehrere Funktionen Teile derselben Regel, nennt sie alle); eine neue Regel ersetzt oder ergänzt eine bestehende, Regeln zum
@@ -118,7 +121,10 @@ Ziel: nichts vergessen, Fehler finden, bevor der Nutzer sie findet, schnell und 
     Priorität 1 hoch · 2 mittel · 3 niedrig, die höchste zuerst. Neue Themen schlägt Claude einzeln vor und fragt ‚Ins Backlog
     übernehmen?‘ und die Priorität – mit Empfehlung. Wünsche, Fragen und Usertests trägt Claude sofort ein und erinnert an Offenes
     (2.4). Prüfung: Selbstkontrolle; Kopfzeile `veroeffentlichen.mjs` (vorbereiten), Themennummern `checkSchema`.
-25. **Ablauf einer Änderung:** nachfragen, bis alles geklärt ist → Muster (Nr. 6, 23) mit Testfall-Liste (Nr. 1) → allgemein oder App
+25. **Ablauf einer Änderung:** nachfragen, bis alles geklärt ist → **Möglichkeiten der Umsetzung** – bei einem einfachen Einbau eine
+    oder zwei, sonst drei –, je mit dem, was sie kann, wie sie eingebaut wird (neue Funktionen **vorrangig als AD-Bean**, R-1.13), wie
+    viele neue Testfälle (automatisch) dazukommen und wie viel länger der volle Prüflauf damit dauert (Schätzung), die Empfehlung zuerst
+    → Muster (Nr. 6, 23) mit Testfall-Liste (Nr. 1) → allgemein oder App
     (Nr. 4) → bei allgemein: welche AD-Bean – eine bestehende mit neuer Eigenschaft oder eine neue mit Kennung (R-1.13); das steht
     im Muster und in der Bau-Frage → in ‚0. Nächste Version‘ eintragen, nicht ohne Bau-Frage bauen (Fehler aus dem Testen als
     Korrekturversion nach Nr. 8) → bauen nur nach Nr. 8 und 21. Nur ändern, was besprochen wurde; Auffälliges nennen statt eigenmächtig ändern (offensichtliche Fehler beheben und

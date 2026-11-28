@@ -1,6 +1,6 @@
 # Designrichtlinie allgemein
 
-**Version 4.71.0** · Stand 27.11.2026
+**Version 4.71.1** · Stand 28.11.2026
 
 Allgemeine Gestaltungs- und Bedienregeln für alle Web-Apps von g811141a auf iPad und iPhone. Die Datei liegt im Design-Repo
 **AppDesign** (g811141a/AppDesign); ihre Versionsnummer ist die des Repos. Die Komponenten sind dort einmal programmiert und
@@ -467,6 +467,7 @@ Gemessene bzw. belegte Eigenheiten mit Quelle; sie gelten für alle Apps, die Pr
   ankommt (gemessen rund 200 ms). Ein Zeitgeber, der in dieser Lücke läuft, sieht die neue Größe, die App hat aber noch nicht umgebaut. ui.js
   übernimmt als ‚fertig gedreht‘ deshalb nur die mit `resize` gemeldete Größe (`keepMeldW`, `keepMeldH`); bis dahin bleibt das Gedächtnis für
   den obersten Eintrag gesperrt. Am Gerät nicht gemessen. Prüfung: Reiselogbuch `tests/ablauf-drehen-luecke.mjs` (hält `resize` zurück).
+- **Feste Elemente bekommen ihre neue Größe erst nach `resize` (iPad, Home-Bildschirm)** (R-8.1, Messung 28.11.2026, iPad Pro 2024, Safari 27.2, RLB-130 – `arbeit/RLB-130/`): Beim Drehen meldet Safari `resize` mit der neuen Fenstergröße, während feste Elemente (`position: fixed`, z. B. die Seitenleiste) noch die alte Höhe haben; die neue haben sie kurz danach (`visualViewport` meldet 4 ms später). Ein Rollstand, den die App im `resize` setzt, wird vom alten Rollweg gekürzt. Darum stellt die App die Liste noch einmal zurück, sobald die Leiste ihre neue Größe hat (`ResizeObserver`, solange gedreht wird). Ursache als Vermutung: Das Modell bildet beide Messungen genau nach. Safari-Modell `festNachResize`. Prüfung: Reiselogbuch `tests/ablauf-seitenleiste-drehen.mjs` (RLB-129/T-2 bis T-5 mit dem Modell).
 - **Verschiebung nach dem Drehen (iPhone, Home-Bildschirm):** quer → hoch meldet Safari kurz die ganze Bildschirmhöhe (874 statt 812), dann
   wieder 812, und lässt die Seite danach um die Statusleiste verschoben (`scrollY` und `visualViewport.offsetTop` 62) – ohne Tastatur, obwohl
   die Seite nicht rollen kann. Das Bild bleibt dabei unverschoben, Antippen trifft 62 px daneben; erst `scrollTo(0, 0)` bzw. ein Neuaufbau der

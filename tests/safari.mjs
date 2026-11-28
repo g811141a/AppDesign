@@ -82,6 +82,12 @@
 // - APD-127/W-3 Option auto: iPhone hoch öffnet sich die Tastatur nach dem Fokus erst nach aufVerzug (100 ms; gemessen meldet visualViewport sie
 //   in einem Schritt 95–110 ms nach dem Fokus) statt im nächsten Bild; die Lage beim Fokus (APD-36/S-7) bleibt die beim Fokus.
 // - Nicht nachgebildet: APD-127/W-7 – rollt die App im focusin, zeichnet Safari das erste Bild erst 88–91 ms nach dem Fokus (ohne Rollen nach 3 ms).
+// Seit 4.71.1 (RLB-130, Messung 28.11.2026 iPad Pro 2024, Safari 27.2, Home-Bildschirm, AppDesign arbeit/RLB-130/ und arbeit/RLB-130 Auswertung und
+// Testfall-Liste.md; Designrichtlinie 13 ‚Feste Elemente bekommen ihre neue Größe erst nach resize‘):
+// - festNachResize(p, groesse): iPad drehen – Safari meldet resize mit der neuen Fenstergröße, während feste Elemente (position: fixed, z. B. die
+//   Seitenleiste #side) noch die alte Höhe haben; die neue bekommen sie FEST_NACH ms danach (visualViewport meldet 4 ms nach resize). Ein Rollstand,
+//   den die App im resize setzt, wird vom alten Rollweg gekürzt (gemessen: zurück quer 231 → 0, 339 → 0, 303 → 135 = Rollweg hoch). Ohne
+//   safariModell nutzbar (iPad, offsetTop 0). Die Ursache ist eine Vermutung: das Modell ergibt beide Messungen genau.
 export const ABSTAND = 24, ABSTAND_FENSTER = 0;
 export const SAFARI = {
   'iPhone hoch': { tastatur: 403, ziffern: 376, fokusRollen: -120, fokusSchub: 0, zuVerzug: 400, wechselVerzug: 88, aufVerzug: 100 },
@@ -346,6 +352,24 @@ export async function safariDrehenHoch(p, { rand = true, bilder = null } = {}) {
   await p.evaluate(px => window.__safari?.drehRest(px), DREH_REST);
   await p.waitForTimeout(400);
   return bilder ? p.evaluate(bilder.ende) : null;
+}
+
+// RLB-130 (seit 4.71.1, Kopf oben): festNachResize(p, groesse) – Fenster auf die neue Größe; die festen Elemente (sel) behalten über eine Stilregel
+// ihre alte Höhe (oben fest, bottom auto), bis FEST_NACH ms nach dem ersten resize; kommt kein resize, nach 1 s. Danach wie die App es setzt.
+export const FEST_NACH = 4;
+export async function festNachResize(p, groesse, { sel = '#side', ms = FEST_NACH } = {}) {
+  await p.evaluate(([sel, ms]) => {
+    const el = document.querySelector(sel);
+    if (!el || getComputedStyle(el).position !== 'fixed' || !el.getBoundingClientRect().height) return;
+    let st = document.getElementById('__festNachResize');
+    if (!st) { st = document.createElement('style'); st.id = '__festNachResize'; document.head.append(st); }
+    st.textContent = `${sel} { bottom: auto !important; height: ${el.getBoundingClientRect().height}px !important; }`;
+    const weg = () => { clearTimeout(t); removeEventListener('resize', an); st.textContent = ''; };
+    const an = () => { removeEventListener('resize', an); setTimeout(weg, ms); };
+    const t = setTimeout(weg, 1000);
+    addEventListener('resize', an);
+  }, [sel, ms]);
+  await p.setViewportSize(groesse);
 }
 
 export const WISCH_SCHWELLE = 10;

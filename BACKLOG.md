@@ -1,6 +1,6 @@
 # AppDesign – Backlog (allgemeine Themen)
 
-**Stand 27.11.2026** · Aktuelle Version: AppDesign 4.71.0
+**Stand 28.11.2026** · Aktuelle Version: AppDesign 4.71.1
 
 Allgemeine Themen, die alle Apps betreffen. App-Themen stehen im Backlog der jeweiligen App.
 Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.4.
@@ -77,6 +77,7 @@ Aufbau und Regeln wie in `README - Zusammenarbeit allgemein.md`, 0 Nr. 24 und 2.
 
 | Nr. | Thema | Version | Datum |
 |---|---|---|---|
+| RLB-130 | **Allgemeiner Teil von RLB-130 (Seitenleiste nach dem Drehen am iPad):** Safari-Modell `festNachResize`, Designrichtlinie 13 ‚Feste Elemente bekommen ihre neue Größe erst nach `resize`‘; Zusammenarbeit 3.20.0 (0 Nr. 25, 1, 2); Usertest P-129 im Reiselogbuch | 4.71.1 | 28.11.2026 |
 | RLB-126 | **Allgemeiner Teil von RLB-126 (Zuletzt gelöscht):** neue AD-Bean `recentlydeleted` mit Katalogdatei, `createSync` mit `recentlyDeleted`, neue Regel R-7.10, R-4.12 mit Ausnahme, R-7.8 ein Satz, Abschnitt 15.24; Usertest P-126 im Reiselogbuch | 4.71.0 | 27.11.2026 |
 | P-125, P-124, P-123, P-122 | **Usertests P-122 bis P-125** (Reiselogbuch 3.58.2 bis 3.58.5): AD-Bean `alert` mit `layout()` (Rand 16 px, Dateiname bis Bildschirmbreite − 32 px, R-10.8), `sourcehighlight` merkt sich den Tausch, R-3.10 Hinweise mittig, Felder auf der Prüfseite (APD-135/B-3.3 Schritt 2) – **P-125 alles ok** (Nutzer 26.11.2026, Sitzung 0164) | 4.70.2 | 26.11.2026 |
 | P-121 | **Usertest P-121** (Reiselogbuch 3.58.1): P-121/1 bis P-121/4 zu R-1.15 ok (Nutzer 22.11.2026); die Rückmeldungen P-121/F-1 und P-121/F-2 betrafen nur die App | 4.69.0 | 22.11.2026 |
