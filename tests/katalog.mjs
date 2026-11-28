@@ -6,18 +6,23 @@
 //   Z-6: langes Drücken auf Schaltflächen und Kacheln unter ‚Ausprobieren‘ markiert keinen Text (R-1.15, Safari-Modell; seit 4.67.1, P-117/F-2; bis 4.68.0 R-3.6)
 //   Z-4: lädt vN/ui.js und vN/design.css des Arbeitsstands; AD.AD_VERSION = --ad-version = AD_VERSION in vN/ui.js; Versionszeile im Mehr-Menü nennt AD_VERSION
 // Die Liste ↔ katalog/ (Z-1, Gegenprobe Z-5) prüft checkBeans (doku.mjs, checkKatalog).
+// Seit 5.0.0 (APD-149) mit Teilen: teil 'presentation' prüft die AD-Beans presentation und commands an ihrer Vorführung im Katalog (tests/presentation.mjs,
+// APD-149/S-1 bis S-18, L-1 bis L-4); ohne Teil der Katalog wie bisher.
 // Einbinden in der App (tests/bean-katalog.mjs):  import { katalog } from '../../AppDesign/fassung/X.Y.Z/tests/katalog.mjs';
-//                                                 await katalog(pw, { out: new URL('out/', import.meta.url) });
+//                                                 await katalog(pw, { out: new URL('out/', import.meta.url), teil: process.env.PRUEF_TEIL });
 import { readFileSync } from 'node:fs';
 import { pruefung } from './pruefe.mjs';
 import { createCheck } from './hig.mjs';
 import { safariHalten } from './safari.mjs';
 import { checkBeruehren } from './ablauf.mjs';
 import { arbeitsOrdner } from './version.mjs';
+import { presentation } from './presentation.mjs';
 
 const ORDNER = new URL(import.meta.url.includes('/fassung/') ? '../../../' : '../', import.meta.url), V = arbeitsOrdner(ORDNER);
 
-export async function katalog(pw, { out } = {}) {
+export async function katalog(pw, { out, teil = '' } = {}) {
+  if (teil === 'presentation') return presentation(pw, { out });
+  if (teil) { console.log(`✗ R-1.13 bean-katalog: unbekannter Teil ‚${teil}‘ (presentation oder ohne)`); process.exit(1); }
   const t = pruefung('bean-katalog', pw, { hig: createCheck(), out });
   const url = new URL('katalog/index.html', ORDNER).href;
   const ver = readFileSync(new URL(`${V}/ui.js`, ORDNER), 'utf8').match(/const AD_VERSION = '([\d.]+)'/)?.[1];

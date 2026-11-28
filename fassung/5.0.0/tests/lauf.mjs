@@ -6,6 +6,8 @@
 // tests/out/wackelt-<Name>[-<Teil>]-<Browser>.txt (C-68), --abdeckung je Teil (PRUEF_TEIL, C-29).
 // Seit 4.64.0 (APD-135/B-4.1, S-6): `schnittstelle-regeln` (R-1.14, ohne Browser) im Vorlauf nach `version-regeln`, nur im ersten Browser.
 // Seit 5.0.0 (APD-145, R-1.14): --gegenprobe schnittstelle – `schnittstelle-regeln` je eingeschleustem Fehler (GEGENPROBEN_SCHNITTSTELLE) einmal, im ersten Browser.
+// Seit 5.0.0 (APD-149, R-1.13): --gegenprobe presentation – `bean-katalog` (Teil presentation, tests/presentation.mjs) je eingeschleustem Fehler der Beans
+// presentation und commands (GEGENPROBEN_PRESENTATION) einmal je Browser.
 // Seit 4.64.0 (APD-135/B-3.1, APD-135/E-6): --gegenprobe pruefseite – jeder Teil der Prüfseite (`bausteine-pruefseite`, tests/pruefseite.mjs) läuft je
 // eingeschleustem Fehler seiner Bausteine einmal (GEGENPROBEN_PRUEFSEITE) und muss mit der Meldung dieses Bausteins rot werden.
 // Seit 4.16.1 (APD-11): erst alle Läufe des ersten Browsers, dann die des nächsten – nie beide gleichzeitig. Im gemeinsamen
@@ -15,7 +17,7 @@
 //   import { lauf } from '../../AppDesign/tests/lauf.mjs';
 //   process.exit(await lauf({ dir: new URL('..', import.meta.url), pw, tests: ['ablauf-fenster', { name: 'hig', teile: { hell: { PRUEF_DARSTELLUNG: 'light' } } }] }));
 // Schalter: --alle (trotz Fehler weiter, am Ende alle roten) · --browser chromium,webkit · --nur name,name ·
-// --gegenprobe [grundregeln | bedienung | schema | begriffe | text | masse | pruefseite | schnittstelle] (jeder Test muss rot werden; zusammen mit --alle; bedienung seit 4.35.0: je eingeschleustem
+// --gegenprobe [grundregeln | bedienung | schema | begriffe | text | masse | pruefseite | schnittstelle | presentation] (jeder Test muss rot werden; zusammen mit --alle; bedienung seit 4.35.0: je eingeschleustem
 // Fehler der Bedienungshilfen ein Lauf der Prüfung ‚bedienung‘ der App, genau die passende Meldung muss rot werden, APD-43 P2;
 // schema seit 4.36.0: je Fall APD-78/S-1 bis APD-78/S-10 ein Lauf der Doku-Prüfung der App mit genau dieser Verletzung; text seit 4.37.0: je eingeschleustem Fehler der Textgröße ein Lauf der Prüfung ‚text-regeln‘ der App, APD-43 Teil 2 P3) · --jobs N (Standard seit 4.16.1: so viele wie Kerne – APD-10, unter Volllast mit 2 × Kernen schwankte WebKit) · --zeit S (Zeitgrenze je Test, Standard 300) · --abdeckung (Test × Ansicht ausgeben). masse seit 4.51.0: je eingeschleustem Fehler der Maße und Stile (APD-40/A-1 bis APD-40/A-8) ein Lauf der Prüfung ‚hig‘ der App;
 // Rote Läufe (seit 4.42.0, APD-85 Teil 1): kein Abbruch beim ersten, erst ab dem dritten roten Lauf; am Ende jeder rote einmal allein –
@@ -29,13 +31,14 @@ import { GEGENPROBEN_BEDIENUNG, GEGENPROBEN_TEXT, GEGENPROBEN_MASSE } from './pr
 import { GEGENPROBEN_SCHEMA, GEGENPROBEN_BEGRIFFE } from './doku.mjs';
 import { GEGENPROBEN_PRUEFSEITE } from './pruefseite.mjs';
 import { GEGENPROBEN_SCHNITTSTELLE } from './schnittstelle.mjs';
+import { GEGENPROBEN_PRESENTATION } from './presentation.mjs';
 
 const mmss = ms => { const s = Math.round(ms / 1000); return `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`; };
 
-export async function lauf({ dir, pw, tests, bedienung = 'ablauf-bedienung', text = 'text-regeln', doku = 'doku-regeln', masse = 'hig', schnittstelle = 'schnittstelle-regeln', pruefseite = 'bausteine-pruefseite', vorlauf = [doku, 'version-regeln', schnittstelle], argv = process.argv.slice(2) }) {
+export async function lauf({ dir, pw, tests, bedienung = 'ablauf-bedienung', text = 'text-regeln', doku = 'doku-regeln', masse = 'hig', schnittstelle = 'schnittstelle-regeln', pruefseite = 'bausteine-pruefseite', katalog = 'bean-katalog', vorlauf = [doku, 'version-regeln', schnittstelle], argv = process.argv.slice(2) }) {
   const arg = (n, d) => { const i = argv.indexOf(n); return i < 0 ? d : argv[i + 1]; };
   const art = argv[argv.indexOf('--gegenprobe') + 1];
-  const alle = argv.includes('--alle'), abdeckung = argv.includes('--abdeckung'), gegenprobe = argv.includes('--gegenprobe') ? (['grundregeln', 'bedienung', 'schema', 'begriffe', 'text', 'masse', 'pruefseite', 'schnittstelle'].includes(art) ? art : '1') : '';
+  const alle = argv.includes('--alle'), abdeckung = argv.includes('--abdeckung'), gegenprobe = argv.includes('--gegenprobe') ? (['grundregeln', 'bedienung', 'schema', 'begriffe', 'text', 'masse', 'pruefseite', 'schnittstelle', 'presentation'].includes(art) ? art : '1') : '';
   const alleLaufen = alle || !!gegenprobe;   // die Gegenprobe läuft immer ganz durch
   const browsers = arg('--browser', 'chromium,webkit').split(',');
   const nur = arg('--nur', '') ? arg('--nur', '').split(',') : null;
@@ -82,6 +85,11 @@ export async function lauf({ dir, pw, tests, bedienung = 'ablauf-bedienung', tex
     // (im Vorlauf nur im ersten Browser – hier ebenso)
     for (const [fall, g] of Object.entries(GEGENPROBEN_SCHNITTSTELLE)) if (!nur || nur.includes(fall))
       liste.push({ name: schnittstelle, teil: fall, br: browsers[0], env: { PRUEF_GEGENPROBE: 'schnittstelle:' + fall }, zeichen: g.zeichen, key: `${schnittstelle}:${fall}|${browsers[0]}`, label: `${schnittstelle} (${fall}: ${g.was}) · ${browsers[0]}` });
+  } else if (gegenprobe === 'presentation') {
+    // seit 5.0.0 (APD-149): je eingeschleustem Fehler der Beans presentation und commands ein Lauf von bean-katalog, Teil presentation
+    for (const br of browsers) for (const [fall, g] of Object.entries(GEGENPROBEN_PRESENTATION)) if (!nur || nur.includes(katalog) || nur.includes(fall))
+      liste.push({ name: katalog, teil: `presentation:${fall}`, br, env: { PRUEF_TEIL: 'presentation', PRUEF_GEGENPROBE: 'presentation:' + fall }, zeichen: g.zeichen,
+        key: `${katalog}:presentation:${fall}|${br}`, label: `${katalog} (presentation: ${g.was}) · ${br}` });
   } else if (gegenprobe === 'pruefseite') {
     // seit 4.64.0 (APD-135/B-3.1, APD-135/E-6): je Teil der Prüfseite und je eingeschleustem Fehler seiner Bausteine ein Lauf; ein Teil ohne Fehler prüft nichts
     const t = tests.find(x => (typeof x === 'string' ? x : x.name) === pruefseite);
@@ -202,7 +210,7 @@ export async function lauf({ dir, pw, tests, bedienung = 'ablauf-bedienung', tex
     // Rot zählt nur, wenn genau die Gegenprobe gemeldet wurde (nicht ein anderer Fehler).
     const zeichen = gegenprobe === 'grundregeln' ? /R-6\.3 Text ragt über div\.ad-alert-message hinaus: ‚#gegenprobe a/ : /Gegenprobe/;
     const gruen = pruefbar.filter(j => !rot.some(r => r.j === j && (j.zeichen || zeichen).test(r.text)));
-    console.log(gruen.length ? `\n✗ Gegenprobe: ${gruen.length} Test(s) meldeten die Gegenprobe nicht – sie prüfen nichts: ${gruen.map(j => j.label).join(', ')}` : `\nGegenprobe${gegenprobe === 'grundregeln' ? ' der Grundregeln' : gegenprobe === 'bedienung' ? ' der Bedienungshilfen' : gegenprobe === 'text' ? ' der Textgröße' : gegenprobe === 'masse' ? ' der Maße und Stile' : gegenprobe === 'schema' ? ' des Nummernschemas' : gegenprobe === 'pruefseite' ? ' der Prüfseite' : gegenprobe === 'schnittstelle' ? ' der Schnittstelle' : ''}: alle ${pruefbar.length} Läufe wurden rot – jeder mit der passenden Meldung.`);
+    console.log(gruen.length ? `\n✗ Gegenprobe: ${gruen.length} Test(s) meldeten die Gegenprobe nicht – sie prüfen nichts: ${gruen.map(j => j.label).join(', ')}` : `\nGegenprobe${gegenprobe === 'grundregeln' ? ' der Grundregeln' : gegenprobe === 'bedienung' ? ' der Bedienungshilfen' : gegenprobe === 'text' ? ' der Textgröße' : gegenprobe === 'masse' ? ' der Maße und Stile' : gegenprobe === 'schema' ? ' des Nummernschemas' : gegenprobe === 'pruefseite' ? ' der Prüfseite' : gegenprobe === 'schnittstelle' ? ' der Schnittstelle' : gegenprobe === 'presentation' ? ' der Beans presentation und commands' : ''}: alle ${pruefbar.length} Läufe wurden rot – jeder mit der passenden Meldung.`);
     return gruen.length ? 1 : 0;
   }
   if (rot.length) {

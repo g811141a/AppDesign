@@ -593,9 +593,18 @@ const found = new Map(), icons = new Map();
         // V11: ‚Automatisch gespeichert‘ wird nicht angesagt; V13: die Offline-Meldung ohne role="status" (sie sagt der Ansage-Bereich an)
         document.querySelectorAll('[aria-live], [role=status], [role=alert]').forEach(l => { if (/gespeichert um/i.test(l.textContent)) R('R-1.8', '‚Automatisch gespeichert‘ wird angesagt (aria-live) – es ist nur im Fensterkopf lesbar'); });
         if (document.querySelector('.nettoast[role]')) R('R-1.8', 'Offline-Meldung mit eigener Rolle – sie wird über den Ansage-Bereich angesagt');
-        // R-1.4 (V7): bei offenem Menü bzw. offener Sprechblase ist alles daneben gesperrt (inert), nach dem Schließen wieder frei
+        // R-1.4 (V7): bei offenem Menü bzw. offener Sprechblase ist alles daneben gesperrt (inert), nach dem Schließen wieder frei.
+        // Seit 5.0.0 (APD-149/J-5, Durchlass): liegt die Schaltfläche des offenen Menüs in einer Kopfzeile [data-ad-toolbar], ist der Weg vom Elternteil
+        // des Menüs bis zu ihr frei – auf diesem Weg ist jedes andere Kind gesperrt, die Kopfzeile selbst frei. Ohne [data-ad-toolbar] wie bisher.
         const oben = document.querySelector('.pop') || document.querySelector('.menu');
-        if (oben) [...oben.parentElement.children].forEach(c => { if (!c.matches('.menu, .pop, .layer, .ansage, script, style') && !c.closest('[inert]') && c.getClientRects().length) R('R-1.4', `bei offenem ${oben.matches('.pop') ? 'Abfrage' : 'Menü'} ist ${c.id ? '#' + c.id : c.tagName.toLowerCase() + (c.classList[0] ? '.' + c.classList[0] : '')} nicht gesperrt (inert) – VoiceOver und Tastatur erreichen es`); });
+        if (oben) {
+          const host = oben.parentElement, quelle = oben.matches('.menu') ? document.querySelector('[aria-haspopup="menu"][aria-expanded="true"]:not(.mi)') : null;
+          const bar = quelle?.closest('[data-ad-toolbar]'), path = new Set();
+          if (bar && host.contains(bar)) for (let e = bar; e && e !== host; e = e.parentElement) path.add(e);
+          const kinder = [host, ...[...path].filter(e => e !== bar)].flatMap(e => [...e.children]).filter(c => !path.has(c));
+          kinder.forEach(c => { if (!c.matches('.menu, .pop, .layer, .ansage, script, style') && !c.closest('[inert]') && c.getClientRects().length) R('R-1.4', `bei offenem ${oben.matches('.pop') ? 'Abfrage' : 'Menü'} ist ${c.id ? '#' + c.id : c.tagName.toLowerCase() + (c.classList[0] ? '.' + c.classList[0] : '')} nicht gesperrt (inert) – VoiceOver und Tastatur erreichen es`); });
+          if (path.size && bar.closest('[inert]')) R('R-1.4', 'Durchlass: die Kopfzeile der Schaltfläche des offenen Menüs ist gesperrt (inert) – ihre anderen Schaltflächen wirken nicht beim ersten Tipp');
+        }
         else document.querySelectorAll('[inert]').forEach(c => { if (!c.closest('.blatt-geist')) R('R-1.4', `${c.id ? '#' + c.id : c.tagName.toLowerCase()} bleibt nach dem Schließen gesperrt (inert)`); });
       }
       // R-1.3 Doppeltippen vergrößert nie

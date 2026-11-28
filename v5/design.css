@@ -610,6 +610,8 @@ dialog form { display: flex; flex-direction: column; max-height: var(--dlg-max, 
 .ad-recentlydeleted-text { flex: 1 1 14em; min-width: 0; }
 .ad-recentlydeleted-restore { flex: none; max-width: 100%; overflow-wrap: anywhere; }   /* größte Schrift: das Wort bricht in sich statt über den Rand (R-6.3) */
 html.phone .ad-recentlydeleted-notice { align-items: flex-start; }
+/* AD-Bean commands (seit 5.0.0, APD-149, R-1.13): Kopfzeile aus Befehlen und Menüs (toolbar) – Schaltflächen rechts, umbrechend */
+.ad-commands-toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 12px; padding: 4px 16px 12px; }
 html.phone .ad-recentlydeleted-text { flex: 1 1 calc(100% - 38px); }
 /* seit 4.57.0 (APD-116, R-10.8): Dateiname allein in einer eigenen Zeile unter dem Satz (fett, zentriert wie der Text); jedes Wort am Stück
    (.fw), deshalb Umbruch nur nach einem Leerzeichen – nur ein Wort, das länger ist als die Zeile, bricht in sich (R-6.3) */

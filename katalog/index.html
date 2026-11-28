@@ -78,9 +78,11 @@ function catalogBean(b) { BEANS.push(b); }
 <script src="sourcehighlight.js"></script>
 <script src="notice.js"></script>
 <script src="recentlydeleted.js"></script>
-<!-- Beans im Entwurf (Designrichtlinie 14, APD-149/J-1): eigener Code auf v5/, in der Seitenleiste unter ‚Entwurf‘, in keiner Fassung. Seit 5.0.0 (APD-145)
-     ist entwurf/presentation-commands.js nicht mehr geladen: er baut auf inneren Namen von ui.js, die im Namensraum AD nur noch innen stehen;
-     die Beans commands und presentation kommen mit APD-149 in v5/ui.js. -->
+<script src="presentation.js"></script>
+<script src="commands.js"></script>
+<!-- Beans im Entwurf (Designrichtlinie 14, APD-149/J-1): je Datei entwurf/<name>.js eine Zeile <script src="entwurf/<name>.js"></script> hier, nach den
+     gebauten Beans; eigener Code auf v5/, in der Seitenleiste unter ‚Entwurf‘, in keiner Fassung (checkKatalog, tests/doku.mjs). Seit 5.0.0 (APD-149)
+     sind commands und presentation gebaut (v5/ui.js, presentation.js, commands.js) – zurzeit gibt es keinen Entwurf. -->
 <script>
 'use strict';
 

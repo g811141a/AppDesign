@@ -11,7 +11,7 @@
 //
 // Inhalt: Icons (ic) · esc · Beträge (money, formatEuro) · autoGrow · onLongPress · Darstellung
 // (applyTheme, setAppearance) · Menüs (openMenu mit Untermenü) · Sprechblase (confirmPop) · gekürzter Titel (Sprechblase, seit 4.47.0) ·
-// hervorgehobene Quelle (AD-Bean sourcehighlight, seit 4.67.0) · Meldung (inform) · Hinweis-Kasten (AD-Bean notice, seit 4.70.0) · Fenster (openDialog, dlgHead) ·
+// hervorgehobene Quelle (AD-Bean sourcehighlight, seit 4.67.0) · Stapel und Befehle (AD-Beans presentation und commands, seit 5.0.0) · Meldung (inform) · Hinweis-Kasten (AD-Bean notice, seit 4.70.0) · Fenster (openDialog, dlgHead) ·
 // Berühren (R-3.6) und Großanzeige (R-2.6, seit 4.48.0) · Auswahl-Kapsel (capHtml, mountCap) · Tastatur/sichtbarer Bereich (placeDialogs) · iPhone (isPhone, applyLayout) ·
 // Messmodus (measureMenuItems, seit 4.26.0) · Schnellroll-Griff (seit 4.30.0) · Navigation und Gesten (navRegister, navPush,
 // navPop, navSidebar, seit 4.30.0) · Bedienungshilfen (announce, setFieldError, focusFirstInvalid, Fokus und Tasten in Menüs, Sprechblasen
@@ -2850,6 +2850,7 @@ function navFahre(art, von, nach, w, fertig) {
 function navSofort() { if (navLauf) navLauf.ende(); }
 // Öffnen aus der Startliste (iPhone-Aufbau): change() baut den Inhalt auf, er schiebt sich über die Liste
 function navPush(change) {
+  dismissPresented();   // APD-149/J-7 (S-17): zuerst ist der Stapel leer, dann wechselt die Ebene
   navSofort();
   change();
   if (!navApp?.back || !isPhone() || !navApp.back.shown()) return;
@@ -2861,6 +2862,7 @@ function navPush(change) {
 }
 // Zurück-Schaltfläche (iPhone-Aufbau): bei offener Tastatur erst sie schließen (APD-36), dann schiebt sich der Inhalt hinaus
 function navPop() {
+  dismissPresented();   // APD-149/J-7 (S-17): wie navPush
   const z = navApp?.back;
   if (!z || !isPhone() || !z.shown()) return z?.go();
   if (kbOffen()) document.activeElement?.blur?.();
@@ -3893,6 +3895,395 @@ function nachTastatur(fn) {
   setTimeout(() => { if (nachKb === fn) { nachKb = null; fn(); } }, 600);
 }
 
+/* ---------- AD-Bean presentation: Stapel (seit 5.0.0, APD-149, R-1.4, R-1.8, R-3.3, R-4.1, R-4.13, R-8.1, R-1.13) ---------- */
+
+// Alles, was erscheint und wieder geht – Fenster, Hinweisfenster, Menü, Untermenü, Sprechblase, laufende Aktion –, liegt auf einem Stapel
+// (arbeit/APD-149 Grobentwurf V-3.md 2.2, Muster im Bean-Katalog bis 5.0.0). Die App sagt nur present(…) und dismiss(); Tönung der Quelle
+// (sourcehighlight), aria-expanded, Mehr-Icon, Sperre (R-1.4, mit Durchlass in der Kopfzeile), Escape, Fokus und Lage leitet die Bean nach jeder
+// Änderung und jedem Neuaufbau selbst ab (derive). Grundsätze H-1 bis H-9: nur ein Menü bzw. eine Sprechblase (H-1), Untermenü eine Ebene (H-2),
+// ein Fenster (H-3), Hinweisfenster in einer Warteschlange (H-4), Menü schließt vor Fenster und Hinweis daraus (H-5), Durchlass (H-6, APD-149/J-3),
+// nur eine laufende Aktion (H-8), shouldDismiss vor jedem Schließen durch den Nutzer – Escape, Ziehen nach unten, x (H-9).
+// Die Navigation (Ebenen mit ‹, navPush/navPop) ist kein Eintrag im Stapel; vor jedem Ebenenwechsel leert sie ihn (APD-149/J-7, S-17).
+// ui.js legt die eine Bean für die Seite an (AD.presentation). Prüfung: tests/presentation.mjs (APD-149/S-1 bis S-18, L-1 bis L-4).
+const PRESENTATION_KINDS = ['sheet', 'alert', 'menu', 'submenu', 'popover', 'activity'];
+const PRESENTATION_MENUS = new Set(['menu', 'submenu']), PRESENTATION_EXPANDS = new Set(['menu', 'submenu', 'popover']);
+const presentationEmit = (set, data) => set.forEach(fn => { try { fn(data); } catch (e) { console.error(e); } });
+const presentationListen = set => fn => { if (typeof fn !== 'function') return () => {}; set.add(fn); return () => { set.delete(fn); }; };
+function createPresentation(root = document.body) {
+  const stack = [], queue = [], listeners = { change: new Set(), reject: new Set() };
+  let unlock = null, sheetEntry = null, focusTarget = null;
+
+  // Quelle über die Kennung (data-command) bzw. sourceItem – nach jedem Neuaufbau neu gesucht (APD-150)
+  const sourceFinder = (command, sourceItem) => () => {
+    if (sourceItem instanceof Element) return sourceItem.isConnected ? sourceItem : wiederFinden(sourceItem);
+    if (typeof sourceItem === 'string' && sourceItem) return root.querySelector(sourceItem);
+    return command ? root.querySelector(`[data-command="${CSS.escape(command)}"]`) : null;
+  };
+  const isShown = el => !!el?.isConnected && el.getClientRects().length > 0;
+  const notifyChange = () => presentationEmit(listeners.change, { stack: stack.map(h => h.kind) });
+
+  // Folgen aus dem Stapel: Tönung, aria-expanded, Mehr-Icon, Sperre und Lage – nach jeder Änderung und jedem Neuaufbau
+  function derive() {
+    for (const h of stack) {
+      const el = h.find();
+      if (el !== h.source) { if (h.source) releaseSource(h); h.source = el; }
+      if (!el) continue;
+      highlightSource(h, el);
+    }
+    root.querySelectorAll('[data-ad-presentation-source][aria-expanded="true"]').forEach(x => {
+      if (!stack.some(h => h.source === x && PRESENTATION_EXPANDS.has(h.kind))) { x.setAttribute('aria-expanded', 'false'); toggleMore(x, false); }
+    });
+    // ein Menü ohne Schaltfläche schließt (wie openMenu, R-8.1)
+    for (const h of stack.filter(h => PRESENTATION_MENUS.has(h.kind) && !isShown(h.source))) remove(h, 'app');
+    lockOthers();
+    layout();
+  }
+  function highlightSource(h, el) {
+    sourcehighlight.hold(el);
+    el.dataset.adPresentationSource = '';
+    if (PRESENTATION_MENUS.has(h.kind)) el.setAttribute('aria-haspopup', 'menu');   // R-1.8: auch eine Kachel mit Kontextmenü sagt ‚öffnet Menü‘
+    if (PRESENTATION_EXPANDS.has(h.kind)) el.setAttribute('aria-expanded', 'true');
+    if (h.kind === 'menu') toggleMore(el, true);
+  }
+  function releaseSource(h) {
+    const el = h.source; if (!el) return;
+    sourcehighlight.release(el);
+    if (stack.some(o => o !== h && o.source === el)) return;
+    if (PRESENTATION_EXPANDS.has(h.kind)) el.setAttribute('aria-expanded', 'false');
+    if (h.kind === 'menu') toggleMore(el, false);
+  }
+  // Mehr-Icon (R-4.1) nur bei Wechsel setzen – sonst meldet der MutationObserver den eigenen Tausch immer wieder
+  function toggleMore(el, open) { const s = el.querySelector(':scope > svg[data-mehr]'); if (s && s.dataset.adOpen !== String(open)) { s.dataset.adOpen = String(open); mehrKippen(el, open); } }
+
+  // Sperre bei offenem Menü (R-1.4): alles inert außer Menüs, Ebene und der Kopfzeile der Quelle ([data-ad-toolbar]) – Durchlass (H-6, APD-149/J-3, J-5)
+  function lockOthers() {
+    unlock?.(); unlock = null;
+    const menu = stack.find(h => h.kind === 'menu');
+    if (!menu) return;
+    const free = [menu.layer, ...stack.filter(h => PRESENTATION_MENUS.has(h.kind)).map(h => h.el)];
+    const bar = menu.source?.closest('[data-ad-toolbar]');
+    if (bar) free.push(bar);
+    const path = new Set(); free.forEach(f => { for (let e = f; e && e !== menu.host.parentNode; e = e.parentElement) path.add(e); });
+    const locked = [];
+    path.forEach(e => { if (free.includes(e)) return; for (const c of e.children) if (!path.has(c) && !c.inert && !/^(SCRIPT|STYLE)$/.test(c.tagName)) { c.inert = true; locked.push(c); } });
+    unlock = () => locked.forEach(c => { c.inert = false; });
+  }
+  // Lage: eine layout() für alle Arten im Stapel; Fenster und Hinweisfenster legt ui.js selbst (placeDialogs, alert)
+  function layout() {
+    for (const h of stack) {
+      if (h.kind === 'menu' && h.source) { placeAt(h.el, h.source, h.align); cutOut(h); }
+      if (h.kind === 'submenu' && h.source) placeSubmenu(h);
+    }
+  }
+  // Die Ebene deckt die Kopfzeile der Quelle nicht ab (H-6): ein Loch über ihr (clip-path wirkt auch auf das Antippen). Außerhalb schluckt die
+  // Ebene den Klick nach dem Schließen weiter (blockingLayer, klickVerschlucken – Safari gibt ihn sonst an die Seite darunter).
+  function cutOut(h) {
+    const bar = h.source.closest('[data-ad-toolbar]');
+    if (!bar) { h.layer.style.clipPath = ''; return; }
+    const r = bar.getBoundingClientRect(), W = innerWidth, H = innerHeight;
+    h.layer.style.clipPath = `polygon(evenodd, 0 0, ${W}px 0, ${W}px ${H}px, 0 ${H}px, 0 0, ${r.left}px ${r.top}px, ${r.left}px ${r.bottom}px, ${r.right}px ${r.bottom}px, ${r.right}px ${r.top}px, ${r.left}px ${r.top}px)`;
+  }
+  // Untermenü neben dem Menü, oben bündig mit seinem Eintrag (wie openMenu)
+  function placeSubmenu(h) {
+    const s = h.el, m = h.parent.el, b = h.source;
+    s.style.maxHeight = ''; s.style.overflowY = '';
+    const { L, R, T, B } = popoverMargins(), room = innerHeight - T - B;
+    if (s.scrollHeight > room) { s.style.maxHeight = room + 'px'; s.style.overflowY = 'auto'; }
+    const growing = m.getAnimations?.().length, ml = parseFloat(m.style.left), w = s.offsetWidth;
+    const mr = growing ? { left: ml, right: ml + m.offsetWidth } : m.getBoundingClientRect();
+    const top = growing ? parseFloat(m.style.top) + m.clientTop + b.offsetTop - m.scrollTop : b.getBoundingClientRect().top;
+    s.style.left = Math.max(L, mr.left - w - 8 >= L ? mr.left - w - 8 : Math.min(mr.right + 8, innerWidth - w - R)) + 'px';
+    s.style.top = Math.max(T, Math.min(top, innerHeight - s.offsetHeight - B)) + 'px';
+  }
+
+  // Menü bzw. Untermenü aus Einträgen (Befehle über commands.items, Format wie openMenu)
+  function renderMenu(h, items) {
+    const host = h.host;
+    h.items = items;
+    const el = h.el || document.createElement('div');
+    el.className = h.kind === 'submenu' ? 'menu submenu' : 'menu' + (h.align === 'beside' ? ' kontext' : '');
+    el.setAttribute('role', 'menu');
+    const name = h.kind === 'submenu' ? h.label : h.source?.getAttribute('aria-label') || h.source?.textContent.trim();
+    if (name) el.setAttribute('aria-label', name);
+    el.innerHTML = menuHtml(items);
+    el.querySelectorAll('[data-i]').forEach(b => b.onclick = () => choose(h, items[b.dataset.i], b));
+    if (!h.el) {
+      h.el = el;
+      if (h.kind === 'menu') { h.layer = blockingLayer(() => requestDismiss(h)); host.append(h.layer); }
+      host.append(el);
+    }
+  }
+  // Neu füllen bei offenem Menü (revalidate): ein offenes Untermenü bleibt offen und bekommt seine neuen Einträge, Quelle ist der neue Eintrag
+  // gleichen Namens; der Fokus bleibt auf dem Eintrag an derselben Stelle (APD-149/S-16)
+  function rerenderMenu(h, items) {
+    const a = document.activeElement, at = a?.closest?.('.menu'), place = at ? [...at.querySelectorAll('.mi')].indexOf(a) : -1;
+    renderMenu(h, items);
+    for (const o of stack.filter(o => o.kind === 'submenu' && o.parent === h)) {
+      const i = items.findIndex(it => it && it.submenu && it.label === o.label);
+      if (i < 0) { remove(o, 'parent'); continue; }
+      o.find = () => h.el?.querySelector(`.mi[data-i="${i}"]`) || null;
+      renderMenu(o, items[i].submenu);
+    }
+    if (at?.isConnected && place >= 0) focus(at.querySelectorAll('.mi')[place]);
+    derive();
+  }
+  function choose(h, it, b) {
+    if ('schalter' in it) { it.schalter = !it.schalter; b.setAttribute('aria-checked', String(it.schalter)); it.act(it.schalter); return; }
+    if (it.submenu) {
+      const open = stack.find(o => o.kind === 'submenu' && o.parent === h);
+      if (open) remove(open, open.source === b ? 'user' : 'replaced', { restoreFocus: open.source === b });
+      if (open?.source !== b) bean.present('submenu', it.submenu, { sourceItem: b, label: it.label });
+      return;
+    }
+    // Auswahl: der Befehl läuft, solange das Menü noch offen ist – ein Fenster, Hinweis oder eine Abfrage daraus schließt es (H-5, reason
+    // 'replaced') und übernimmt seine Quelle; zeigt der Befehl nichts, schließt das Menü danach (reason 'user', Fokus zurück).
+    try { it.act(); } finally { const m = stack.find(o => o.kind === 'menu'); if (m) remove(m, 'user', { restoreFocus: true }); }
+  }
+  // R-4.7: Tasten für das oberste Menü (über den Tastenstapel von ui.js)
+  function keys(e) {
+    const h = [...stack].reverse().find(o => PRESENTATION_MENUS.has(o.kind)); if (!h) return;
+    if (istAbbruch(e)) { verbrauchen(e); requestDismiss(h); return; }
+    const mis = [...h.el.querySelectorAll('.mi:not(:disabled)')]; if (!mis.length) return;
+    const i = mis.indexOf(document.activeElement), k = e.key;
+    const go = j => { verbrauchen(e); focus(mis[(j + mis.length) % mis.length]); };
+    if (k === 'ArrowDown' || (k === 'Tab' && !e.shiftKey)) return go(i + 1);
+    if (k === 'ArrowUp' || (k === 'Tab' && e.shiftKey)) return go(i < 0 ? -1 : i - 1);
+    if (k === 'Home') return go(0);
+    if (k === 'End') return go(-1);
+    if (k === 'ArrowLeft' && h.kind === 'submenu') { verbrauchen(e); remove(h, 'user', { restoreFocus: true }); return; }
+    if (i >= 0 && ((k === 'ArrowRight' && mis[i].getAttribute('aria-haspopup')) || k === 'Enter' || k === ' ')) { verbrauchen(e); mis[i].click(); }
+  }
+
+  // Schließen durch den Nutzer (daneben tippen beim Menü, Escape, x, Ziehen nach unten): vorher shouldDismiss (H-9)
+  async function requestDismiss(h) {
+    if (!h.open || h.asking) return false;
+    if (h.shouldDismiss) {
+      h.asking = true;
+      let ok = false;
+      try { ok = await h.shouldDismiss(); } finally { h.asking = false; }
+      if (!ok || !h.open) return false;
+    }
+    remove(h, 'user', { restoreFocus: true });
+    return true;
+  }
+  function remove(h, reason, { restoreFocus = false } = {}) {
+    if (!h.open) { const q = queue.findIndex(x => x[0] === h); if (q >= 0) queue.splice(q, 1); return; }
+    for (const o of stack.filter(o => o.parent === h)) remove(o, 'parent');
+    h.open = false;
+    stack.splice(stack.indexOf(h), 1);
+    if (PRESENTATION_MENUS.has(h.kind)) {
+      if (h.el.isConnected) schrumpfen(h.el, h.source);
+      h.el.remove(); h.layer?.remove();
+      tastenStapel.splice(tastenStapel.indexOf(keys) >>> 0, stack.some(o => PRESENTATION_MENUS.has(o.kind)) ? 0 : 1);
+      document.querySelectorAll('.side-list[data-padded]').forEach(l => { l.style.paddingBottom = ''; delete l.dataset.padded; });
+    }
+    if (h.kind === 'popover' && h.pop?.isConnected) tastenStapel.at(-1)?.({ key: 'Escape', preventDefault() {}, stopImmediatePropagation() {} });   // choosePop schließt mit Esc
+    // R-1.8: nach Fenster und Hinweisfenster zurück auf die Quelle – nach dem Fokus von ui.js (dessen close-Hörer läuft zuerst)
+    if ((h.kind === 'sheet' || h.kind === 'alert') && reason !== 'replaced') focusTarget = h.find();
+    if (h.kind === 'sheet') { sheetEntry = null; if (reason !== 'replaced' && dlg.open && !h.closed) dlg.close('cancel'); }
+    if (h.kind === 'alert' && !h.closed) alert.close();
+    releaseSource(h);
+    lockOthers();
+    presentationEmit(h.listeners.dismiss, { reason, kind: h.kind });
+    if (restoreFocus && PRESENTATION_MENUS.has(h.kind)) fokusZurueck(h.source, h.host);
+    if (h.kind === 'alert' && queue.length) { const [q, content, opts] = queue.shift(); show(q, content, opts); }
+    notifyChange();
+  }
+
+  function createHandle(kind, opts) {
+    const h = { kind, command: opts.command || '', open: false, queued: false, source: null, el: null, layer: null, parent: null,
+      align: opts.align || 'right', label: opts.label || '', shouldDismiss: opts.shouldDismiss || null, listeners: { dismiss: new Set() },
+      dismiss: () => remove(h, 'app'), on: (name, fn) => name === 'dismiss' ? presentationListen(h.listeners.dismiss)(fn) : () => {} };
+    h.find = sourceFinder(opts.command, opts.sourceItem);
+    return h;
+  }
+  function show(h, content, opts) {
+    h.open = true; h.queued = false;
+    stack.push(h);
+    h.source = h.find();
+    if (h.kind === 'menu' || h.kind === 'submenu') {
+      const a = h.find();
+      h.host = (h.kind === 'submenu' ? h.parent.host : a?.closest('dialog')) || document.body;
+      const cmds = opts.commands || null, place = h.align === 'beside' ? 'context' : 'menu';
+      if (typeof content === 'string' && !cmds) console.error(`presentation: Menü ‚${content}‘ ohne commands`);
+      if (typeof content === 'string' && cmds) { h.commands = cmds; h.rerender = () => rerenderMenu(h, cmds.items(content, { place })); }
+      renderMenu(h, typeof content === 'string' ? (cmds ? cmds.items(content, { place }) : []) : content);
+      if (a) { if (h.kind === 'menu') placeAt(h.el, a, h.align); else placeSubmenu(h); wachsen(h.el, a); }
+      if (!tastenStapel.includes(keys)) tastenStapel.push(keys);
+      focus(h.el.querySelector('.mi:not(:disabled)'));
+    } else if (h.kind === 'popover') {
+      const a = h.find();
+      h.result = choosePop(a, content.message, content.buttons || [{ label: 'Ok', value: true }]).then(v => { if (h.open) remove(h, 'user'); return v; });
+      h.pop = [...document.querySelectorAll('.pop')].at(-1);
+    } else if (h.kind === 'sheet') {
+      sheetEntry = h;
+      // H-3 mit Gleiten: das alte Fenster gleitet als Abbild hinaus, das neue gleitet wie beim Öffnen herein; die Abdunkelung bleibt
+      const replaced = dlg.open;
+      if (replaced) blattGeist();
+      openDialog(content, !!opts.wide);
+      if (replaced && dlg.open) dlg.animate(bewegungRuhig() ? [{ opacity: 0 }, { opacity: 1 }] : [{ translate: `0 ${Math.round(blattZu())}px` }, { translate: '0 0' }],
+        bewegungRuhig() ? { duration: 200, easing: 'ease-out' } : { duration: GLEIT_AUF_MS, easing: GLEIT_FEDER });
+      dlgDirty = opts.dirty || null;
+      const x = dlg.querySelector('#dlgX');
+      if (x) x.onclick = () => requestDismiss(h);   // x, Escape und ⌘. (ui.js drückt dann x) und Ziehen mit Änderungen fragen über shouldDismiss
+    } else if (h.kind === 'alert') {
+      h.result = alert.showModal(content.title, content.message, { wide: !!content.wide, action: content.action || null })
+        .then(() => { h.closed = true; if (h.open) remove(h, 'user'); });
+    } else if (h.kind === 'activity') {
+      h.result = Promise.resolve().then(content).finally(() => { if (h.open) remove(h, 'app'); });
+    }
+    derive();
+    notifyChange();
+    return h;
+  }
+
+  const bean = {
+    get stack() { return [...stack]; },
+    get top() { return stack.at(-1) || null; },
+    present(kind, content, opts = {}) {
+      if (!PRESENTATION_KINDS.includes(kind)) { console.error(`presentation: unbekannte Art ‚${kind}‘`); return null; }
+      const top = stack.at(-1);
+      if (kind === 'submenu' && top?.kind !== 'menu') { console.error('presentation: ein Untermenü nur aus einem Menü (H-2)'); return null; }
+      if (kind === 'activity' && stack.some(h => h.kind === 'activity')) { presentationEmit(listeners.reject, { kind, command: opts.command || '' }); return null; }   // H-8
+      const h = createHandle(kind, opts);
+      if (kind === 'submenu') { h.parent = top; h.host = top.host; }
+      // H-5: aus einem offenen Menü übernimmt alles außer einem Untermenü bzw. Menü die Quelle des Menüs; Menüs schließen (replaced)
+      const menu = stack.find(o => o.kind === 'menu');
+      if (menu && kind !== 'submenu') {
+        if (kind !== 'menu') { const f = menu.find; h.find = () => f(); h.command ||= menu.command; }
+        remove(menu, 'replaced');
+      }
+      if (opts.from) { const f = opts.from.find; h.find = () => f(); }
+      if (kind === 'popover') for (const o of stack.filter(o => o.kind === 'popover')) remove(o, 'replaced');   // H-1
+      if (kind === 'sheet') { const old = stack.find(o => o.kind === 'sheet'); if (old) remove(old, 'replaced'); }   // H-3
+      if (kind === 'alert' && stack.some(o => o.kind === 'alert')) { h.queued = true; queue.push([h, content, opts]); notifyChange(); return h; }   // H-4
+      return show(h, content, opts);
+    },
+    dismiss(handle = stack.at(-1), { reason = 'app' } = {}) { if (handle) remove(handle, reason, { restoreFocus: reason === 'user' }); },
+    refresh() { derive(); },
+    on(name, fn) { const s = listeners[name]; return s ? presentationListen(s)(fn) : () => {}; },
+  };
+  new MutationObserver(() => { if (stack.length) derive(); }).observe(root, { childList: true, subtree: true });
+  floating.add(() => { if (stack.length) layout(); });   // Drehen, Größe, Tastatur (R-8.1)
+  // Fenster: neben das Fenster tippen schließt nicht (wie am iPad und bei Apple – Schließen über x, Escape und Ziehen nach unten). Schließt ui.js
+  // es selbst (Häkchen, Ziehen), ist es zu (reason 'user'). Escape geht an das oberste (Grobentwurf 2.2): beim Fenster über shouldDismiss
+  dlg.addEventListener('cancel', e => { if (!sheetEntry) return; e.preventDefault(); if (stack.at(-1) === sheetEntry) requestDismiss(sheetEntry); });
+  dlg.addEventListener('close', () => {
+    const h = sheetEntry; if (!h?.open) return;
+    h.closed = true; remove(h, 'user');
+  });
+  for (const d of [dlg, msg]) d.addEventListener('close', () => { const z = focusTarget; focusTarget = null; if (z) focus(z); });
+  (root === document.body ? document.documentElement : root).dataset.adBean = 'presentation';
+  return bean;
+}
+const presentation = createPresentation(document.body);
+// APD-149/J-7 (S-17): vor jedem Ebenenwechsel der Navigation (navPush, navPop) ist der Stapel leer – von oben nach unten geschlossen (reason 'app')
+function dismissPresented() { for (const h of [...presentation.stack].reverse()) presentation.dismiss(h); }
+
+/* ---------- AD-Bean commands: Befehle (seit 5.0.0, APD-149, R-3.8, R-4.1, R-4.10, R-4.12, R-7.8, R-1.13) ---------- */
+
+// Die App beschreibt Befehle – was es gibt und wann es möglich ist –, nicht die Schaltflächen (Grobentwurf 2.1; Vorbild UIAction/UICommand,
+// validate, UIMenu). Derselbe Befehl erscheint je Ort anders (H-7): im Menü gedimmt, im Kontextmenü und beim Wischen fehlt er, zerstörend
+// steht er rot zuletzt. Menüs der Kopfzeile erscheinen über die Bean presentation. Prüfung: tests/presentation.mjs (APD-149/S-14, L-1 bis L-3).
+function createCommands({ presentation = null, context = {} } = {}) {
+  const commandMap = new Map(), menuMap = new Map(), listeners = { change: new Set(), execute: new Set() }, toolbars = new Set();
+  const p = presentation || pagePresentation();
+  // Darstellung je Ort (H-7): Menü gedimmt, Kontextmenü und Wischen ohne den Befehl; zerstörend rot und zuletzt
+  function itemFor(id, place, ctx) {
+    const c = commandMap.get(id); if (!c) { console.error(`commands: unbekannter Befehl ‚${id}‘`); return null; }
+    const v = bean.validate(id, ctx);
+    if (v.hidden || (!v.enabled && place !== 'menu')) return null;
+    const it = { icon: c.icon, label: v.label, act: o => bean.execute(id, o?.sourceView ? { ...ctx, sourceView: o.sourceView } : ctx) };   // Wischen: Kapsel als Quelle
+    if (c.role === 'destructive') it.red = true;
+    if (!v.enabled) it.disabled = true;
+    if (v.state != null) it.tick = v.state === 'on';
+    if (place === 'swipe') it.shortTitle = c.shortTitle || c.label;
+    return it;
+  }
+  function groupItems(g, place, ctx) {
+    if (typeof g === 'string') return [itemFor(g, place, ctx)].filter(Boolean);
+    if (Array.isArray(g)) return g.map(x => itemFor(x, place, ctx)).filter(Boolean);
+    if (g?.children) {   // Untermenü, eine Ebene (H-2); singleSelection: Häkchen am gewählten, sein Name rechts
+      const children = g.children.map(x => itemFor(x, place, ctx)).filter(Boolean);
+      if (!children.length) return [];
+      const selected = g.singleSelection ? children.find(k => k.tick) : null;
+      return place === 'menu' ? [{ icon: g.icon, label: g.title, value: selected?.label || '', submenu: children }] : children;
+    }
+    return [];
+  }
+  const bean = {
+    context,
+    presentation: p,
+    get ids() { return [...commandMap.keys()]; },
+    add(c) {
+      if (!c?.id || commandMap.has(c.id)) { console.error(`commands: Kennung ‚${c?.id}‘ fehlt oder kommt doppelt vor`); return bean; }
+      commandMap.set(c.id, c); return bean;
+    },
+    menu(id, children, { label = '', icon = 'ellipsis' } = {}) { menuMap.set(id, { children, label, icon }); return bean; },
+    validate(id, ctx = bean.context) {
+      const c = commandMap.get(id);
+      if (!c) return { enabled: false, hidden: true, state: null, label: id };
+      return { enabled: true, hidden: false, state: null, label: c.label, ...(c.validate?.(ctx) || {}) };
+    },
+    execute(id, ctx = bean.context) {
+      const c = commandMap.get(id), v = bean.validate(id, ctx);
+      if (!c || !v.enabled || v.hidden) return false;
+      presentationEmit(listeners.execute, { id });
+      c.execute?.(ctx);
+      return true;
+    },
+    // Neu fragen: Kopfzeilen neu zeichnen, offene Menüs neu füllen (ein offenes Untermenü bleibt offen, APD-149/S-16)
+    revalidate(id = null) {
+      toolbars.forEach(z => z());
+      for (const h of p.stack) if (h.kind === 'menu' && h.commands === bean) h.rerender?.();
+      presentationEmit(listeners.change, { id });
+    },
+    // Einträge eines Menüs im Format von openMenu; place: menu | context | swipe (H-7); Gruppen durch Abstand getrennt, Zerstörendes zuletzt
+    items(menuId, { place = 'menu', ctx = bean.context } = {}) {
+      const m = menuMap.get(menuId); if (!m) { console.error(`commands: unbekanntes Menü ‚${menuId}‘`); return []; }
+      let groups = m.children.map(g => groupItems(g, place, ctx)).filter(g => g.length);
+      if (place !== 'menu') { const red = groups.flat().filter(x => x.red); groups = [...groups.map(g => g.filter(x => !x.red)).filter(g => g.length), ...(red.length ? [red] : [])]; }
+      return groups.flatMap((g, i) => i ? ['sep', ...g] : g);
+    },
+    // Kopfzeile aus Befehlen und Menüs (Grobentwurf 4): Tippen auf ein Menü öffnet bzw. schließt es, auf einen Befehl führt ihn aus – bei offenem
+    // Menü schon beim ersten Tipp, das Menü geht dabei zu (Durchlass H-6, APD-149/J-3, R-1.4)
+    toolbar(element, ids, { label = 'Kopfzeile' } = {}) {
+      const draw = () => {
+        if (!element.isConnected) { toolbars.delete(draw); return; }
+        element.classList.add('ad-commands-toolbar');
+        element.dataset.adToolbar = '';
+        element.dataset.adBean = 'commands';
+        element.setAttribute('role', 'toolbar');
+        element.setAttribute('aria-label', label);
+        element.innerHTML = ids.map(id => {
+          const m = menuMap.get(id), c = commandMap.get(id), v = m ? { enabled: true } : bean.validate(id);
+          if (!m && (!c || v.hidden)) return '';
+          const name = m ? m.label : v.label;
+          return `<button type="button" class="round" data-command="${esc(id)}" aria-label="${esc(name)}"${m ? ' aria-haspopup="menu" aria-expanded="false"' : ''}${v.enabled ? '' : ' disabled'}>${ic(m ? m.icon : c.icon)}</button>`;
+        }).join('');
+        element.querySelectorAll('[data-command]').forEach(b => b.onclick = () => {
+          const id = b.dataset.command, open = p.stack.find(h => h.kind === 'menu');
+          if (menuMap.has(id)) {
+            if (open && open.command === id) { p.dismiss(open, { reason: 'user' }); return; }   // eigene Schaltfläche: schließt
+            p.present('menu', id, { command: id, commands: bean });   // H-1: ein anderes Menü ersetzt das offene
+            return;
+          }
+          if (open) p.dismiss(open, { reason: 'replaced' });   // J-3: Menü zu, Befehl wirkt beim ersten Tipp
+          bean.execute(id);
+        });
+        p.refresh();
+      };
+      toolbars.add(draw);
+      draw();
+      return () => toolbars.delete(draw);
+    },
+    on(name, fn) { const s = listeners[name]; return s ? presentationListen(s)(fn) : () => {}; },
+  };
+  return bean;
+}
+// der Stapel der Seite, wenn die App keinen eigenen übergibt (der Parameter presentation von createCommands verdeckt den Namen)
+function pagePresentation() { return presentation; }
+
 /* ---------- Messmodus (seit 4.26.0, APD-27, R-1.6) ---------- */
 
 // Zeichnet am Gerät auf, was Safari beim Rollen und Tippen tut, damit Claude misst statt rät: je Bild eine Zeile, nur wenn
@@ -4027,7 +4418,9 @@ return Object.seal({
   get confirmPop() { return confirmPop; }, set confirmPop(v) { confirmPop = v; },
   get contentUnavailableHtml() { return contentUnavailableHtml; }, set contentUnavailableHtml(v) { contentUnavailableHtml = v; },
   get createAlert() { return createAlert; }, set createAlert(v) { createAlert = v; },
+  get createCommands() { return createCommands; }, set createCommands(v) { createCommands = v; },
   get createNotice() { return createNotice; }, set createNotice(v) { createNotice = v; },
+  get createPresentation() { return createPresentation; }, set createPresentation(v) { createPresentation = v; },
   get createRecentlydeleted() { return createRecentlydeleted; }, set createRecentlydeleted(v) { createRecentlydeleted = v; },
   get createSourcehighlight() { return createSourcehighlight; }, set createSourcehighlight(v) { createSourcehighlight = v; },
   get createSwipeactions() { return createSwipeactions; }, set createSwipeactions(v) { createSwipeactions = v; },
@@ -4064,6 +4457,7 @@ return Object.seal({
   get openDialog() { return openDialog; }, set openDialog(v) { openDialog = v; },
   get openMenu() { return openMenu; }, set openMenu(v) { openMenu = v; },
   get outputCss() { return outputCss; },
+  get presentation() { return presentation; },
   get readBackup() { return readBackup; }, set readBackup(v) { readBackup = v; },
   get scrollBy() { return scrollBy; }, set scrollBy(v) { scrollBy = v; },
   get scrollRowHtml() { return scrollRowHtml; },

@@ -582,7 +582,8 @@ export function checkBeans(appDir, app) {
     const f = createList.find(x => x.name === create);
     if (!f) { E(`W-72 ${kennung}: ${create} fehlt in ui.js`); continue; }
     // W-95 (seit 4.60.2, P-108/M-12): die Eigenschaften der Liste (ohne Klammern) = die Parameter von Anlegen ({ … } im Kopf der Funktion)
-    const param = (f.text.match(/function \w+\([^,{)]*,\s*\{([^}]*)\}/)?.[1] || '').split(',').map(x => x.split('=')[0].trim()).filter(Boolean).sort();
+    // seit 5.0.0 (APD-149): auch ohne ersten Parameter (createCommands({ presentation, context }))
+    const param = (f.text.match(/function \w+\((?:[^,{)]*,\s*)?\{([^}]*)\}/)?.[1] || '').split(',').map(x => x.split('=')[0].trim()).filter(Boolean).sort();
     const inListe = namen(String(spalten[2] || '').replace(/\([^()]*\)/g, '')).sort();
     if (param.join() !== inListe.join()) E(`W-95 ${kennung}: Eigenschaften in der Liste ${inListe.join(', ') || '–'} – Parameter von ${create} ${param.join(', ') || '–'}`);
     if (!new RegExp(`adBean\\s*=\\s*'${kennung}'`).test(f.text)) E(`W-72 ${kennung}: ${create} setzt data-ad-bean="${kennung}" nicht`);
@@ -621,6 +622,13 @@ export function checkBeans(appDir, app) {
 //        Anlegen (Name), Eigenschaften, Nur lesen, Methoden, Ereignisse (Namen) und Regeln (Nummern) wie in der Liste
 // Gegenprobe Z-5: PRUEF_GEGENPROBE=beans:katalog – die Katalogdatei der ersten Bean fehlt, Anlegen der zweiten weicht ab → rot.
 // Felder der Katalogdateien englisch seit 4.67.0 (APD-136): id, area, create, properties, readOnly, methods, events, rules …
+// Beans im Entwurf (seit 5.0.0, APD-149/J-1, Designrichtlinie 14 ‚Beans im Entwurf‘; arbeit/APD-149 0001 Wortlaut Entwurf im Katalog.md Abschnitt 4) – checkDrafts:
+//   1 jede Datei katalog/entwurf/*.js lässt sich lesen und meldet mindestens eine Bean an · 2 katalog/index.html lädt jede (<script src="entwurf/<name>.js">) ·
+//   3 die Kennung steht nicht in der Liste (15), ui.js des Arbeitsstands hat kein create<Kennung>, im Katalog nur einmal · 4 Namen der Schnittstelle englisch
+//   (wie die Liste: kein Umlaut, kein ß, kein Wort der Sperrliste) · 5 keine App (index.html, sw.js), kein vN/ und keine Fassung (ihr Code: ui.js, design.css,
+//   schnittstelle.json, vorlage/) nennt katalog/entwurf/ · 6 in katalog/entwurf/ nur Beans mit draft: true, oben keine mit draft: true.
+//   Gegenprobe 7: PRUEF_GEGENPROBE=beans:entwurf – die Kennung eines Entwurfs (gibt es keinen, eines eingeschleusten) steht zusätzlich in der Liste und
+//   seine Datei fehlt in index.html → beide Meldungen (Punkt 2 und 3) rot.
 export function checkKatalog(appDir) {
   const errors = [], E = t => errors.push(`R-1.13 Z-1 ${t}`);
   const ad = new URL('../AppDesign/', appDir), kat = new URL('katalog/', ad);
@@ -644,6 +652,7 @@ export function checkKatalog(appDir) {
     if (gemeldet.length !== 1) { E(`katalog/${f} meldet ${gemeldet.length} Beans an statt einer`); continue; }
     const b = gemeldet[0];
     if (b.id !== f.slice(0, -3)) E(`katalog/${f}: Kennung ‚${b.id}‘ statt ‚${f.slice(0, -3)}‘`);
+    if (b.draft) errors.push(`R-1.13 APD-149/J-1 Punkt 6: katalog/${f} meldet ${b.id} mit draft: true an – ein Entwurf gehört nach katalog/entwurf/`);
     beans.set(f.slice(0, -3), b);
   }
   if (gp && zeilen[1] && beans.has(zeilen[1].kennung)) beans.get(zeilen[1].kennung).create = 'createAnders()';
@@ -658,5 +667,60 @@ export function checkKatalog(appDir) {
     for (const [was, [l, k]] of Object.entries(soll)) if (l !== k) E(`${kennung}: ${was} im Katalog ‚${k || '–'}‘ – in der Liste ‚${l || '–'}‘`);
   }
   for (const k of beans.keys()) if (!zeilen.some(z => z.kennung === k)) E(`katalog/${k}.js gehört zu keiner Bean der Liste der AD-Beans`);
+  errors.push(...checkDrafts(appDir, { ad, kat, index, listed: zeilen.map(z => z.kennung), built: [...beans.keys()] }));
+  return errors;
+}
+
+// Beans im Entwurf (APD-149/J-1) – Punkte 1 bis 7 oben bei checkKatalog. Ein Entwurf greift beim Laden auf DOM und ui.js zu: gelesen wird er mit einem
+// Platzhalter, der jeden Zugriff schluckt; nur catalogBean zählt.
+function checkDrafts(appDir, { ad, kat, index, listed, built }) {
+  const errors = [], E = (nr, t) => errors.push(`R-1.13 APD-149/J-1 Punkt ${nr}: ${t}`);
+  const read = u => { try { return readFileSync(u, 'utf8'); } catch { return ''; } };
+  const draftDir = new URL('entwurf/', kat);
+  let files = [];
+  try { files = readdirSync(draftDir).filter(f => f.endsWith('.js')).map(f => ({ name: f, text: read(new URL(f, draftDir)) })); } catch { /* kein Entwurf */ }
+  const listedIds = new Set(listed);
+  if (process.env.PRUEF_GEGENPROBE === 'beans:entwurf') {
+    if (!files.length) files.push({ name: 'gegenprobe.js', text: "catalogBean({ id: 'probe', draft: true, area: 'Dienste', create: 'AD.createProbe()', properties: [], readOnly: [], methods: [], events: [], rules: [] });" });
+    const probe = files[0], id = probe.text.match(/\bid:\s*'([a-z]+)'/)?.[1];
+    if (id) listedIds.add(id);
+    index = index.split(`<script src="entwurf/${probe.name}"></script>`).join('');
+  }
+  const ui = read(new URL(`${arbeitsOrdner(ad)}/ui.js`, ad));
+  const placeholder = new Proxy(function () {}, { get: (t, k) => k === Symbol.toPrimitive ? () => '' : k === Symbol.iterator ? function* () {} : placeholder,
+    apply: () => placeholder, construct: () => placeholder, set: () => true, has: () => true });
+  const seen = new Set(built);
+  for (const { name, text } of files) {
+    const announced = [];
+    const ctx = new Proxy({ catalogBean: b => announced.push(b) }, { has: () => true,
+      get: (t, k) => k in t ? t[k] : k in globalThis ? globalThis[k] : k === Symbol.unscopables ? undefined : placeholder });
+    try { runInNewContext(text, ctx, { filename: `katalog/entwurf/${name}` }); } catch (e) { E(1, `katalog/entwurf/${name} lässt sich nicht lesen: ${e.message}`); continue; }
+    if (!announced.length) E(1, `katalog/entwurf/${name} meldet keine Bean an`);
+    if (!index.includes(`<script src="entwurf/${name}"></script>`)) E(2, `katalog/index.html lädt entwurf/${name} nicht`);
+    for (const b of announced) {
+      if (b.draft !== true) E(6, `katalog/entwurf/${name}: ${b.id} ohne draft: true`);
+      if (listedIds.has(b.id)) E(3, `${b.id} (Entwurf) steht in der Liste der AD-Beans (15)`);
+      const create = 'create' + String(b.id)[0].toUpperCase() + String(b.id).slice(1);
+      if (new RegExp(`\\bfunction ${create}\\b|\\bconst ${create}\\b`).test(ui)) E(3, `${b.id} (Entwurf): ${create} steht in ui.js`);
+      if (seen.has(b.id)) E(3, `${b.id} kommt im Katalog doppelt vor`);
+      seen.add(b.id);
+      const names = [b.id, b.create, ...[b.properties, b.readOnly, b.methods, b.events].flatMap(l => (l || []).map(x => x[0]))]
+        .flatMap(x => String(x).replace(/'[^']*'/g, '').match(/[A-Za-zÄÖÜäöüß_$][\wÄÖÜäöüß$]*/g) || []);
+      for (const n of new Set(names)) {
+        const parts = n.replace(/([a-zäöüß])([A-ZÄÖÜ])/g, '$1 $2').toLowerCase().split(/[\s_]+/);
+        const word = [n.toLowerCase(), ...parts].find(w => SPERRLISTE.has(w));
+        if (/[ÄÖÜäöüß]/.test(n) || word) E(4, `${b.id} (Entwurf): Name ‚${n}‘ ist nicht englisch${word ? ` (‚${word}‘ steht in der Sperrliste deutscher Namen)` : ' (Umlaut bzw. ß)'}`);
+      }
+    }
+  }
+  // Punkt 5: keine App, kein Arbeitsstand vN/ und keine Fassung lädt oder nennt einen Entwurf
+  const code = f => /\.(js|css|html|json)$/.test(f);
+  const walk = (u, rel, skip = () => false) => { let out = []; let list = []; try { list = readdirSync(u, { withFileTypes: true }); } catch { return out; }
+    for (const d of list) { if (skip(d.name)) continue; if (d.isDirectory()) out = out.concat(walk(new URL(d.name + '/', u), rel + d.name + '/', skip)); else if (code(d.name)) out.push([new URL(d.name, u), rel + d.name]); } return out; };
+  const targets = [[new URL('index.html', appDir), 'index.html der App'], [new URL('sw.js', appDir), 'sw.js der App']];
+  for (const d of readdirSync(ad).filter(d => /^v\d+$/.test(d))) targets.push(...walk(new URL(d + '/', ad), d + '/'));
+  for (const d of (() => { try { return readdirSync(new URL('fassung/', ad)).filter(d => /^\d+\.\d+\.\d+$/.test(d)); } catch { return []; } })())
+    targets.push(...walk(new URL(`fassung/${d}/`, ad), `fassung/${d}/`, n => n === 'tests'));
+  for (const [u, name] of targets) if (read(u).includes('katalog/entwurf/')) E(5, `${name} nennt katalog/entwurf/ – keine App und keine Fassung lädt einen Entwurf`);
   return errors;
 }
