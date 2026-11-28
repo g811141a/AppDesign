@@ -164,9 +164,10 @@ export function masseStile() {
   document.querySelectorAll('button').forEach(e => { if (!vis(e) || e.textContent.replace(/\s+/g, ' ').trim() !== 'Abbrechen') return;
     if (e.querySelector('svg')) R('R-3.8', '‚Abbrechen‘ mit Icon');
     if (+cs(e).fontWeight !== 400) R('R-3.8', `‚Abbrechen‘ Schrift ${cs(e).fontWeight} statt normal (400)`); });
-  // R-4.8 Fensterbreite (iPad-Aufbau – html.blatt gilt auch dort, seit 4.38.0; im iPhone-Aufbau html.phone ist das Fenster ein Blatt, R-4.6): höchstens 90 % und mindestens 480 px (wächst mit der
-  // Textgröße, schmaler nur, wenn der Bildschirm es verlangt); Erfassung und Vorschau (dialog.wide) bis 1100 px. Meldungen (#msg) sind kleine Fenster (R-4.3).
-  if (!root.classList.contains('phone')) document.querySelectorAll('dialog[open]:not(#msg):not(.blatt-geist)').forEach(d => {
+  // R-4.8 Fensterbreite (iPad und iPhone, hoch und quer – seit 5.0.0 auch im iPhone-Aufbau, APD-151; bis 4.71.1 war das Fenster dort ein Blatt): höchstens
+  // 90 % und mindestens 480 px (wächst mit der Textgröße, schmaler nur, wenn der Bildschirm es verlangt); Erfassung und Vorschau (dialog.wide) bis 1100 px.
+  // Meldungen (#msg) sind kleine Fenster (R-4.3).
+  document.querySelectorAll('dialog[open]:not(#msg):not(.blatt-geist)').forEach(d => {
     if (!vis(d)) return;
     const w = d.getBoundingClientRect().width, W = innerWidth, min = Math.min(Math.max(480, 480 * fBody), 0.9 * W), wo = `Fenster ‚${name(d.querySelector('h3') || d)}‘`;
     if (d.classList.contains('wide')) { if (w > 1100.5) R('R-4.8', `${wo} (Erfassung/Vorschau) ${r1(w)} px breit statt höchstens 1100`); }
@@ -660,9 +661,8 @@ const found = new Map(), icons = new Map();
         if (typeof AD.isOffline === 'function' && AD.isOffline() && !vis(side.querySelector('.side-foot .offl'))) R('R-1.5', 'offline, aber die Zeile ‚Offline – …‘ fehlt unten');
       }
       if (document.querySelector('.pnav-head') && document.querySelector('.irow') && !document.querySelector('.bnote')) R('R-9.1', 'Backup-Kachel fehlt in der Startliste');
-      // R-4.5 Fenster auf dem iPhone bildschirmbreit (seit 4.32.0 als Blatt, R-4.6 – Lage und Höhe prüft checkSheet)
-      const dl = document.getElementById('dlg');
-      if (phone && dl?.open && Math.abs(dl.getBoundingClientRect().width - innerWidth) > 2) R('R-4.5', 'Fenster nicht bildschirmbreit');
+      // R-4.5 ‚Fenster auf dem iPhone bildschirmbreit‘ (4.32.0 bis 4.71.1, das Blatt) entfällt seit 5.0.0 (APD-151): am iPhone steht das Fenster wie am
+      // iPad in der Mitte – die Breite prüft R-4.8 (masseStile), Lage und Höhe checkSheet (R-4.6)
       // R-3.2 Nach oben / Ans Ende in einer senkrechten Kapsel
       document.querySelectorAll('.fab').forEach(f => { if (vis(f) && parseFloat(cs(f).borderTopLeftRadius) < 10) R('R-3.2', 'Nach oben / Ans Ende nicht in einer Kapsel'); });
       // R-3.2 (seit 4.27.1, APD-33): die Kapsel überdeckt nie Kopf- oder Suchzeile (Leisten und feste Zeilen des Rahmens)

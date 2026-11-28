@@ -803,31 +803,25 @@ html.phone body { padding-top: var(--pnav-h, 60px); }
   background: var(--focus); box-shadow: var(--float); font-size: var(--tb-footnote); color: var(--ink); }
 .bbar .bnote > div { flex: 1 1 160px; }
 .bbar .bnote button { font-size: var(--tb-body); }
-/* Fenster auf dem iPhone als Blatt (R-4.6); Kopfzeile kompakt, Titel einzeilig */
-/* R-4.6 (seit 4.32.0, APD-61 Teil 2): das Fenster ist ein Blatt – von knapp unter der Statusleiste (ui.js blattOben) bis zum unteren Rand
-   bzw. zur Tastatur, oben runde Ecken; die Seite dahinter weicht verkleinert zurück (html.blatt-zurueck), abgedunkelt wird mit
-   .blatt-schleier statt ::backdrop (damit Ziehen und Abdunkeln zusammen laufen). .blatt-geist = Abbild beim Schließen. */
-html.phone dialog:is(#dlg, .blatt-geist) { width: 100%; max-width: none; min-width: 0; height: var(--dlg-max); border-radius: 26px 26px 0 0;
-  box-shadow: 0 -1px 18px rgba(0,0,0,.12); }
-html.phone dialog:is(#dlg, .blatt-geist) form { height: 100%; }
-html.blatt #dlg::backdrop { background: transparent; }   /* seit 4.38.0 auch am iPad (APD-72): die Abdunkelung wird beim Ziehen heller */
+/* R-4.6 (seit 5.0.0, APD-151): das Fenster steht auf iPad und iPhone in der Mitte, so hoch wie sein Inhalt, Maße wie dialog oben (R-4.8, Ecken
+   18 px rundum); abgedunkelt wird mit .blatt-schleier statt ::backdrop (damit Ziehen und Abdunkeln zusammen laufen, APD-72), die Seite dahinter
+   bleibt groß. .blatt-geist = Abbild beim Schließen. Bis 4.71.1 war das Fenster am iPhone ein Blatt (APD-61 Teil 2): bildschirmbreit von knapp unter
+   der Statusleiste bis unten, oben 26 px rund, die Seite wich verkleinert zurück (html.blatt-zurueck). Am iPhone bleibt die Kopfzeile kompakt (15.17). */
+html.blatt #dlg::backdrop { background: transparent; }
 .blatt-schleier { position: fixed; inset: 0; z-index: 45; background: #000; opacity: 0; pointer-events: none; display: none; }
 html.blatt .blatt-schleier { display: block; }
 .blatt-geist { z-index: 46; pointer-events: none; overflow: hidden; }
-html.blatt-zurueck { background: #000; }
-html.blatt-zurueck body { background: transparent; }
-html.blatt-zurueck .blatt-seite { transform-origin: 50% 0; border-radius: 12px; overflow: hidden; background: var(--bg); }
 html.blatt-zieht, html.blatt-zieht * { -webkit-user-select: none; user-select: none; }
 #dlg .dlg-head { touch-action: none; }
 #dlg .dlg-body { overscroll-behavior: none; }
 html.phone .ad-alert { width: min(360px, calc(100vw - 32px)); }
 html.phone .ad-alert.ad-alert-wide { width: min(600px, calc(100vw - 24px)); }
-html.phone :is(#dlg, .blatt-geist) .dlg-head { gap: 8px; padding: 10px max(12px, var(--safe-right)) 8px max(12px, var(--safe-left)); }
+html.phone :is(#dlg, .blatt-geist) .dlg-head { gap: 8px; padding: 10px 12px 8px; }
 html.phone :is(#dlg, .blatt-geist) .dlg-head .hl, html.phone :is(#dlg, .blatt-geist) .dlg-head .hr { flex: none; gap: 8px; }
 html.phone :is(#dlg, .blatt-geist) .dlg-head .mid { flex: 1; max-width: none; min-width: 0; }
 html.phone :is(#dlg, .blatt-geist) .dlg-head h3 { font-size: var(--tb-body); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 html.phone :is(#dlg, .blatt-geist) .dlg-head .grp button:not(.txt) { width: 44px; min-width: 44px; }
-html.phone :is(#dlg, .blatt-geist) .dlg-body { padding: 4px max(12px, var(--safe-right)) calc(20px + var(--safe-bottom)) max(12px, var(--safe-left)); }
+html.phone :is(#dlg, .blatt-geist) .dlg-body { padding: 8px 16px 20px; }
 html.phone .step-head { flex-wrap: wrap; row-gap: 8px; }
 /* Kasten-Kopf: Titel und Mikrofon in der ersten Zeile, Options-Kapseln darunter */
 html.phone .step-head > label:first-child { flex: 1 0 60%; }   /* U5: der Titel bricht um, statt hinauszuragen */
@@ -875,7 +869,6 @@ dialog.gleitet.runter { transition: top .25s ease-in-out; }
   html.phone .pnav { min-height: 32px; padding-top: var(--safe-top); padding-bottom: 0; }
   html.phone .pnav .nb2 { margin: 0 0 3px; }
   html.phone :is(#dlg, .blatt-geist) .dlg-head { padding-top: 0; padding-bottom: 0; min-height: 32px; }
-  html.phone dialog:is(#dlg, .blatt-geist) { border-radius: 18px 18px 0 0; }
   html.phone :is(.pnav, :is(#dlg, .blatt-geist) .dlg-head) :is(.grp, .navgrp) { height: 32px; border-radius: 16px; }
   html.phone :is(.pnav, :is(#dlg, .blatt-geist) .dlg-head) :is(.grp, .navgrp) button { border-radius: 16px; }
   html.phone :is(.pnav, :is(#dlg, .blatt-geist) .dlg-head) :is(.grp, .navgrp) button:not(.txt):is(.on, .fill)::before { width: 25px; height: 25px; }

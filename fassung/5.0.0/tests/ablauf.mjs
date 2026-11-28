@@ -1404,16 +1404,17 @@ export async function checkGriff(p, { zeit = 2000, where = '' } = {}) {
 // (APD-34/F-4). Braucht das Safari-Modell (tests/safari.mjs, safariModell vorher): Safari verschiebt beim Antippen eines Felds unter der
 // Tastatur den sichtbaren Bereich, das Feld bleibt im Rahmen stehen – bis 4.27.1 unter der Tastatur (Messung iPhone quer).
 // vorher: bringt das Feld an seinen Platz (z. B. Inhalt ans Ende rollen), wie am Gerät vor dem Antippen.
+// Seit 5.0.0 (APD-151/M-20): ein Feld in einem Fenster misst gegen den Inhalt des Fensters (.dlg-body) statt gegen den Inhalt der Seite.
 export async function checkFieldVisible(p, { field, vorher = null, where = '' } = {}) {
   const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}R-4.5 ${t}`);
   if (!await p.evaluate(() => !!window.__safari)) { E('Vorbereitung: Safari-Modell fehlt (safariModell)'); return errors; }
   if (vorher) { await vorher(); await wait(p, 400); }
   // Bildschirm = Lage im Fenster minus offsetTop (Safari misst gegen den sichtbaren Bereich, Chromium gegen das Fenster)
   const lage = () => p.evaluate(({ field, R, RI }) => {
-    const vv = visualViewport, o = vv.offsetTop, fe = document.querySelector(field), f = fe?.getBoundingClientRect();
-    const re = document.querySelector('#app > .rolle')?.getBoundingClientRect(), k = document.querySelector('.nb, .pnav')?.getBoundingClientRect();
+    const vv = visualViewport, o = vv.offsetTop, fe = document.querySelector(field), f = fe?.getBoundingClientRect(), db = fe?.closest('dialog .dlg-body');
+    const re = (db || document.querySelector('#app > .rolle'))?.getBoundingClientRect(), k = document.querySelector('.nb, .pnav')?.getBoundingClientRect();
     const m = x => x == null ? null : Math.round(x - o);
-    return { oben: m(f?.top), unten: m(f?.bottom), rolle: m(re?.top), kopf: m(k?.top), kb: Math.round(vv.height), y: Math.round(eval(R).y), fenster: Math.round(scrollY),
+    return { oben: m(f?.top), unten: m(f?.bottom), rolle: m(re?.top), kopf: m(k?.top), kb: Math.round(vv.height), y: Math.round(db ? db.scrollTop : eval(R).y), fenster: Math.round(scrollY),
       fokus: document.activeElement === fe, ring: fe ? eval(RI)(fe) : 0 };
   }, { field, R: ROLL, RI: RING });
   const vorTastatur = await lage();
@@ -1996,38 +1997,64 @@ export async function checkNavigation(p, { eintrag, titel, zurueck = '#back', wa
   return errors;
 }
 
-// R-4.6 Blatt auf dem iPhone (seit 4.32.0, APD-61 Teil 2; Testfall-Liste arbeit/APD-61 Teil 2 Testfall-Liste.md B1–B24): open() öffnet ein Fenster,
-// change() ändert darin etwas (fehlt es, ist das Fenster ohne Eingaben, z. B. die Vorschau), field = ein Feld darin (Tastatur, B10).
-// Seit 4.32.1 (APD-71, P-68/2.3): B10 und B19 mit dem Safari-Modell (tests/safari.mjs, für diese Fälle eingesetzt und wieder
-// herausgenommen) – Feld antippen, Tastatur auf, R-4.5 rollt das Feld in die obere Hälfte; der Zug auf dem Feld zieht trotzdem das
-// Blatt (wie am Kopf), im gerollten Inhalt neben dem Feld schließt er nur die Tastatur.
-// iPhone-Aufbau: ein Blatt von knapp unter der Statusleiste bis unten, gleitet von unten herein (‚Bewegung reduzieren‘: überblendet), die
-// Seite weicht hoch verkleinert zurück, quer nicht; Ziehen am Kopf folgt dem Finger und federt zurück, weit oder schnell schließt, im
-// gerollten Inhalt bleibt es, waagerecht bleibt es; mit Änderungen federt es zurück und fragt am x; Abdunkelung und Escape wie x; Drehen
-// lässt es offen. Seit 4.38.0 (APD-72, Testfall-Liste arbeit/APD-72 Testfall-Liste.md APD-72/D-1 bis APD-72/D-15) im iPad-Aufbau dieselben Fälle: das Fenster
-// bleibt in der Mitte, gleitet von unten herein und hinaus, beim Ziehen fährt nur das Fenster mit, die Abdunkelung wird heller, die
-// Seite bleibt; Antippen der Abdunkelung schließt nicht (APD-72/D-12). Meldungen nennen am iPad die Nummer APD-72/D-n, am iPhone Bn.
-// ok = Häkchen, das ohne Änderung schließt (APD-72/D-11; nur wo die App es angibt).
-export async function checkSheet(p, { open, change = null, field = null, ok = null, where = '' } = {}) {
-  const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}R-4.6 ${t}`);
+// R-4.6 Fenster in der Mitte, nach unten ziehen – auf iPad und iPhone gleich (seit 5.0.0, APD-151; Testfall-Liste arbeit/APD-151 Testfall-Liste.md
+// APD-151/M-1 bis M-18, dazu arbeit/APD-149 0008 Testfall-Listen v5.md Abschnitt 5: M-17 bis M-20; davor iPad seit 4.38.0, Testfall-Liste
+// arbeit/APD-72 Testfall-Liste.md APD-72/D-1 bis APD-72/D-21). Eine Prüfung für iPad und iPhone, hoch und quer: open() öffnet ein Fenster,
+// change() ändert darin etwas (fehlt es, ist das Fenster ohne Eingaben, z. B. die Vorschau), field = ein Feld darin (Tastatur mit dem Safari-Modell,
+// tests/safari.mjs, für diese Fälle eingesetzt und wieder herausgenommen), ok = Häkchen, das ohne Änderung schließt (APD-72/D-11; nur wo die App es
+// angibt), rebuild() baut die Seite bei offenem Fenster neu auf (APD-151/M-16, z. B. render() der App), replace() ersetzt das offene Fenster durch ein
+// anderes (APD-151/M-13, H-3 der AD-Bean presentation).
+// Das Fenster steht im sichtbaren Bereich in der Mitte, so hoch wie sein Inhalt (oben und unten mindestens 10 px bzw. die sicheren Ränder, zu hoher
+// Inhalt rollt, der Kopf steht still), Breite nach R-4.8, Ecken rundum, Abdunkelung 0,35, die Seite bleibt groß; es gleitet von unten herein
+// (‚Bewegung reduzieren‘: überblendet) und hinaus; Ziehen am Kopf folgt dem Finger, die Abdunkelung wird heller, es federt zurück, weit oder schnell
+// schließt, im gerollten Inhalt bleibt es, waagerecht bleibt es; mit Änderungen federt es zurück und fragt am x; Antippen der Abdunkelung schließt
+// nicht, Escape wie x; Drehen lässt es offen in der Mitte (mit Fokus im Feld ganz sichtbar); eine Eingabe ändert weder Breite noch Lage; Tastatur:
+// das Fenster gleitet über sie, das Feld steht 16 px darüber, nach dem Schließen ist es wieder so hoch wie vorher (R-4.5, APD-151/M-19).
+// Bis 4.71.1 prüfte sie im iPhone-Aufbau das Blatt (APD-61 Teil 2, B1–B24). Meldungen: APD-72/D-n, dazu APD-151/M-n, wo der Fall neu ist.
+export async function checkSheet(p, { open, change = null, field = null, ok = null, rebuild = null, replace = null, where = '' } = {}) {
+  const errors = [], ER = (r, t) => errors.push(`${where ? where + ': ' : ''}${r} ${t}`), E = t => ER('R-4.6', t), E45 = t => ER('R-4.5', t);
+  const nr = (d, m = '') => [d && `APD-72/${d}`, m && `APD-151/${m}`].filter(Boolean).join(' · ');
   const ruhig = async () => { await wait(p, 120); await navFertig(p); await wait(p, 120); };
+  // Lage auf dem Bildschirm (top, bottom gegen den sichtbaren Bereich – im Safari-Modell meldet visualViewport seine Verschiebung)
   const lage = () => p.evaluate(() => {
-    const d = document.getElementById('dlg'), r = d.getBoundingClientRect(), cs = getComputedStyle(d), H = document.documentElement;
+    const d = document.getElementById('dlg'), r = d.getBoundingClientRect(), cs = getComputedStyle(d), H = document.documentElement, vv = visualViewport;
+    const o = vv?.offsetTop || 0, body = d.querySelector('.dlg-body'), kopf = d.querySelector('.dlg-head')?.getBoundingClientRect();
     const seite = [document.getElementById('app'), document.getElementById('side')].filter(e => e && e.getClientRects().length && getComputedStyle(e).position === 'fixed');
     const t = cs.translate && cs.translate !== 'none' ? parseFloat(cs.translate.split(' ')[1]) || 0 : 0;
-    const probe = document.body.appendChild(document.createElement('i')); probe.style.backgroundColor = 'var(--dlg-bg)';
-    const soll = getComputedStyle(probe).backgroundColor; probe.remove();
-    return { open: d.open, top: Math.round(r.top), bottom: Math.round(r.bottom), left: Math.round(r.left), right: Math.round(r.right), t: Math.round(t),
-      radius: parseFloat(cs.borderTopLeftRadius) || 0, phone: H.classList.contains('phone'), blatt: H.classList.contains('blatt'), faehrt: H.classList.contains('blatt-faehrt'),
-      zurueck: seite.some(e => { const s = getComputedStyle(e).scale; return s && s !== 'none' && parseFloat(s) < 0.99; }),
-      vvTop: Math.round(visualViewport?.offsetTop || 0), vvH: Math.round(visualViewport?.height || innerHeight), h: innerHeight, w: innerWidth,
+    const probe = document.body.appendChild(document.createElement('i'));
+    probe.style.cssText = 'position:fixed;visibility:hidden;padding:var(--safe-top) 0 var(--safe-bottom);background-color:var(--dlg-bg)';
+    const pc = getComputedStyle(probe), soll = pc.backgroundColor, safeTop = parseFloat(pc.paddingTop) || 0, safeBottom = parseFloat(pc.paddingBottom) || 0; probe.remove();
+    // leerer Platz unter dem Inhalt: Unterkante des letzten Elements (mit Rand) bis zur Unterkante des Inhalts (ohne Innenabstand)
+    let leer = 0;
+    if (body && d.open) {
+      const b = body.getBoundingClientRect(), bs = getComputedStyle(body), kinder = [...body.children].filter(e => e.getClientRects().length);
+      const ende = kinder.length ? Math.max(...kinder.map(e => e.getBoundingClientRect().bottom + (parseFloat(getComputedStyle(e).marginBottom) || 0))) : b.top;
+      if (body.scrollTop + body.clientHeight >= body.scrollHeight - 1) leer = Math.round(b.bottom - parseFloat(bs.paddingBottom) - parseFloat(bs.borderBottomWidth) - ende);
+    }
+    const kb = !!window.__safari?.offen, sichtbar = Math.round(window.__safari ? __safari.hoehe() : vv?.height || innerHeight);
+    const schleier = document.querySelector('.blatt-schleier'), a = document.activeElement;
+    return { open: d.open, top: Math.round(r.top - o), bottom: Math.round(r.bottom - o), left: Math.round(r.left), right: Math.round(r.right), width: +r.width.toFixed(1), height: Math.round(r.height), t: Math.round(t),
+      radien: ['TopLeft', 'TopRight', 'BottomLeft', 'BottomRight'].map(k => parseFloat(cs[`border${k}Radius`]) || 0), wide: d.classList.contains('wide'),
+      phone: H.classList.contains('phone'), blatt: H.classList.contains('blatt'), faehrt: H.classList.contains('blatt-faehrt'),
+      zurueck: H.classList.contains('blatt-zurueck') || seite.some(e => { const s = getComputedStyle(e).scale; return s && s !== 'none' && parseFloat(s) < 0.99; }),
+      sichtbar, h: innerHeight, w: innerWidth, oben: Math.max(10, safeTop), unten: Math.max(10, kb ? 0 : safeBottom), kb, leer,
+      rollt: body ? body.scrollHeight > body.clientHeight + 1 : false, kopfTop: kopf ? Math.round(kopf.top - o) : null,
       pop: [...document.querySelectorAll('.pop button')].map(b => b.textContent.trim()), geist: !!document.querySelector('.blatt-geist'),
       bg: cs.backgroundColor, soll, quer: matchMedia('(orientation: landscape) and (max-height: 500px)').matches,
+      fBody: parseFloat(getComputedStyle(H).getPropertyValue('--f-body')) || 1,
       // APD-72: Abdunkelung (Schleier) und ob die Seite dahinter sich bewegt (verschoben bzw. verkleinert)
-      schleier: +(+getComputedStyle(document.querySelector('.blatt-schleier') || document.body).opacity || 0).toFixed(3), backdrop: getComputedStyle(d, '::backdrop').backgroundColor,
+      schleier: +(+getComputedStyle(schleier || document.body).opacity || 0).toFixed(3), schleierVerborgen: schleier?.getAttribute('aria-hidden') === 'true',
+      backdrop: getComputedStyle(d, '::backdrop').backgroundColor,
       seiteBewegt: seite.some(e => { const c = getComputedStyle(e); return (c.translate && c.translate !== 'none' && !/^0px( 0px)?$/.test(c.translate)) || (c.scale && c.scale !== 'none' && c.scale !== '1'); }),
-      fokus: !!document.activeElement?.matches?.('#dlg input, #dlg textarea') };
+      fokus: !!a?.matches?.('#dlg input, #dlg textarea'), fokusImFenster: d.contains(a), name: d.getAttribute('aria-labelledby') ? document.getElementById(d.getAttribute('aria-labelledby'))?.textContent.trim() || '' : d.getAttribute('aria-label') || '' };
   });
+  const text = l => `${l.left}–${l.right} × ${l.top}–${l.bottom} px von ${l.w} × ${l.sichtbar}${l.rollt ? ', Inhalt rollt' : ''}`;
+  // in der Mitte, ganz sichtbar: waagerecht mittig, oben und unten mindestens 10 px bzw. die sicheren Ränder; passt der Inhalt, gleich viel Rand oben und unten
+  const mitte = l => {
+    const ro = l.top - l.oben, ru = l.sichtbar - l.bottom - l.unten;
+    return Math.abs(l.left - (l.w - l.right)) <= 2 && l.left >= 1 && ro >= -1 && ru >= -1 && (l.rollt || Math.abs(ro - ru) <= 2);
+  };
+  const ganz = l => l.top >= l.oben - 1 && l.bottom <= l.sichtbar - l.unten + 1 && Math.abs(l.left - (l.w - l.right)) <= 2;
   const kopf = async () => { const b = await p.locator('#dlg .dlg-head h3').boundingBox(); return { x: b.x + b.width / 2, y: b.y + b.height / 2 }; };
   // Ziehen mit dem Zeiger: langsam (danach still, Tempo 0) oder schnell (kurz und ohne Pause)
   const zieh = async ({ x, y }, dx, dy, schnell = false) => {
@@ -2062,86 +2089,89 @@ export async function checkSheet(p, { open, change = null, field = null, ok = nu
     // unter Last (voller Lauf, WebKit) endet das Hinausgleiten verspätet – bis zu 3 s auf das Schließen warten
     await p.waitForFunction(() => !document.getElementById('dlg').open, null, { timeout: 3000 }).catch(() => {});
     const l = await lage();
-    if (l.open) { E(`${was}: das Fenster bleibt offen (Blatt ${l.t} px versetzt, ${await p.evaluate(() => document.documentElement.className)}${l.pop.length ? ', Rückfrage offen' : ''})`); await zu(); return false; }
-    // seit 4.49.0 (APD-85 Teil 3, APD-85/Z-4): statt fester 600 ms warten, bis Blatt und Abbild weg sind und keine Bewegung mehr läuft (höchstens 5 s) –
-    // unter Last und bei langsamer Bewegung war die Seite nach 600 ms noch beim Zurückgleiten
+    if (l.open) { E(`${was}: das Fenster bleibt offen (${l.t} px versetzt, ${await p.evaluate(() => document.documentElement.className)}${l.pop.length ? ', Rückfrage offen' : ''})`); await zu(); return false; }
+    // seit 4.49.0 (APD-85 Teil 3, APD-85/Z-4): statt fester 600 ms warten, bis Fenster und Abbild weg sind und keine Bewegung mehr läuft (höchstens 5 s)
     await warteBis(p, () => !document.documentElement.classList.contains('blatt') && !document.querySelector('.blatt-geist') && !document.getAnimations().some(a => a.playState === 'running'), { max: 5000 });
     const n = await lage();
-    if (n.blatt || n.zurueck) E(`${was}: nach dem Schließen bleibt die Seite zurückgewichen bzw. abgedunkelt`);
-    if (n.geist) E(`${was}: das Abbild des Blatts bleibt nach dem Schließen stehen`);
+    if (n.blatt || n.zurueck || n.schleier) E(`${was}: nach dem Schließen bleibt die Seite abgedunkelt bzw. zurückgewichen`);
+    if (n.geist) E(`${was}: das Abbild des Fensters bleibt nach dem Schließen stehen`);
     return true; };
+  // Form und Lage (APD-72/D-1, APD-151/M-1, M-2, M-10): in der Mitte, Höhe nach Inhalt, Breite nach R-4.8, Ecken rundum, Abdunkelung, die Seite bleibt
+  const form = (l, was) => {
+    if (!mitte(l)) E(`${nr('D-1', 'M-1')} ${was}: das Fenster steht nicht in der Mitte des sichtbaren Bereichs bzw. nicht ganz darin (${text(l)}, Rand oben ${l.oben}, unten ${l.unten} px)`);
+    if (!l.rollt && l.leer > 4) E(`${nr('', 'M-1')} ${was}: das Fenster ist höher als sein Inhalt (${l.leer} px leer unter dem Inhalt, ${text(l)})`);
+    const min = Math.min(Math.max(480, 480 * l.fBody), 0.9 * l.w);
+    if (l.wide ? l.width > Math.min(1100, l.w - 24) + 1 : l.width > 0.9 * l.w + 1 || l.width < min - 1) E(`${nr('', 'M-1')} ${was}: das Fenster ist ${l.width} px breit – R-4.8: ${l.wide ? `höchstens ${Math.min(1100, l.w - 24)}` : `${Math.round(min)} bis ${Math.round(0.9 * l.w)}`} px bei ${l.w} px`);
+    if (!l.radien.every(x => x >= 12)) E(`${nr('', 'M-1')} ${was}: das Fenster hat nicht rundum runde Ecken (${l.radien.join(' ')} px)`);
+    if (Math.abs(l.schleier - 0.35) > 0.02) E(`${nr('D-1', 'M-1')} ${was}: Abdunkelung ${l.schleier} statt 0,35`);
+    if (!/rgba\(0, 0, 0, 0\)|transparent/.test(l.backdrop)) E(`${nr('D-1')} ${was}: ::backdrop dunkelt zusätzlich ab (${l.backdrop})`);
+    if (l.zurueck || l.seiteBewegt) E(`${nr('D-2', 'M-1')} ${was}: die Seite dahinter weicht zurück bzw. bewegt sich`);
+  };
 
-  // B1 Form und Öffnen
+  // APD-72/D-1, APD-151/M-1, M-2, M-10 Form und Öffnen
   await zu();
   await open();
   const frueh = await lage();
   await ruhig();
   let l = await lage();
   if (!l.open) { E('das Fenster öffnet nicht'); return errors; }
-  const ipad = !l.phone, nr = (b, d) => ipad ? `APD-72/${d} iPad:` : d.startsWith('D-') && b === d ? `APD-72/${d}` : b;
   const reduziert = await p.evaluate(() => matchMedia('(prefers-reduced-motion: reduce)').matches);
-  const T = l.quer ? 8 : null;
-  if (!l.blatt) E(`${nr('B1', 'D-1')} das Fenster ist kein Blatt (html.blatt fehlt)`);
-  if (ipad) {
-    // APD-72/D-1 (APD-72): in der Mitte, ganz sichtbar, nicht bildschirmbreit; abgedunkelt wie bisher (0,35), ::backdrop durchsichtig
-    if (Math.abs(l.left - (l.w - l.right)) > 2 || l.left < 1) E(`APD-72/D-1 iPad: das Fenster steht nicht in der Mitte (${l.left}–${l.right} von ${l.w} px)`);
-    if (l.top < l.vvTop || l.bottom > l.vvTop + l.vvH + 1) E(`APD-72/D-1 iPad: das Fenster ist nicht ganz sichtbar (${l.top}–${l.bottom} px, sichtbar ${l.vvTop}–${l.vvTop + l.vvH} px)`);
-    if (Math.abs(l.schleier - 0.35) > 0.02) E(`APD-72/D-1 iPad: Abdunkelung ${l.schleier} statt 0,35`);
-    if (!/rgba\(0, 0, 0, 0\)|transparent/.test(l.backdrop)) E(`APD-72/D-1 iPad: ::backdrop dunkelt zusätzlich ab (${l.backdrop})`);
-    if (l.zurueck || l.seiteBewegt) E('D-2 iPad: die Seite dahinter weicht zurück bzw. bewegt sich');
-  } else {
-    if (T !== null && Math.abs(l.top - l.vvTop - T) > 1) E(`B17 quer: das Blatt beginnt bei ${l.top - l.vvTop} px statt 8 px`);
-    if (T === null && (l.top - l.vvTop < 8 || l.top - l.vvTop > 70)) E(`B1 das Blatt beginnt bei ${l.top - l.vvTop} px – erwartet knapp unter der Statusleiste`);
-    if (Math.abs(l.bottom - (l.vvTop + l.vvH)) > 1) E(`B1 das Blatt endet bei ${l.bottom} px statt am unteren Rand (${l.vvTop + l.vvH} px)`);
-    if (l.left > 0 || l.right < l.w) E(`B1 das Blatt ist nicht bildschirmbreit (${l.left}–${l.right} von ${l.w} px)`);
-    if (l.radius < 12) E(`B1 das Blatt hat oben keine runden Ecken (${l.radius} px)`);
-    if (l.quer && l.zurueck) E('B17 quer: die Seite weicht zurück');
-    if (!l.quer && !l.zurueck && !reduziert) E('B1 die Seite dahinter weicht nicht verkleinert zurück');
-    // seit 4.35.0 (APD-43 M5, R-1.9): mit ‚Bewegung reduzieren‘ weicht die Seite nicht verkleinert zurück (kein Zoomen)
-    if (reduziert && l.zurueck) E('M5 ‚Bewegung reduzieren‘: die Seite dahinter weicht verkleinert zurück');
+  const ansicht = `${l.phone ? 'iPhone' : 'iPad'} ${l.w > l.h ? 'quer' : 'hoch'}`;
+  if (!l.blatt) E(`${nr('D-1')} html.blatt fehlt`);
+  form(l, 'nach dem Öffnen');
+  if (l.t) E(`${nr('D-1', 'M-1')} das Fenster ruht nicht an seinem Platz (${l.t} px versetzt)`);
+  if (l.bg !== l.soll) E(`${nr('D-20')} Hintergrund des Fensters ${l.bg} statt --dlg-bg (${l.soll})`);
+  if (reduziert && frueh.t) E(`${nr('D-13', 'M-14')} ‚Bewegung reduzieren‘: das Fenster gleitet (${frueh.t} px) statt überzublenden`);
+  if (!reduziert && frueh.t < 20 && !frueh.faehrt) E(`${nr('D-1', 'M-1')} das Fenster gleitet nicht von unten herein (kurz nach dem Öffnen ${frueh.t} px versetzt, keine Bewegung)`);
+  // APD-151/M-15 (R-1.8): der Fokus steht im Fenster, es heißt wie sein Titel, die Abdunkelung ist nicht im VoiceOver-Baum
+  if (!l.fokusImFenster) ER('R-1.8', `${nr('', 'M-15')} nach dem Öffnen steht der Fokus nicht im Fenster`);
+  if (!l.name) ER('R-1.8', `${nr('', 'M-15')} das Fenster hat keinen Namen (aria-labelledby)`);
+  if (!l.schleierVerborgen) ER('R-1.8', `${nr('', 'M-15')} die Abdunkelung steht im VoiceOver-Baum (aria-hidden fehlt)`);
+  // APD-151/M-3: zu hoher Inhalt rollt, Fensterkopf und Fenster stehen still
+  if (l.rollt) {
+    const y = await p.evaluate(() => { const b = document.querySelector('#dlg .dlg-body'); b.scrollTop = Math.min(400, b.scrollHeight - b.clientHeight); return b.scrollTop; });
+    await wait(p, 300);
+    const n = await lage();
+    if (y < 1 || Math.abs(n.kopfTop - l.kopfTop) > 1 || Math.abs(n.top - l.top) > 1) E(`${nr('', 'M-3')} beim Rollen des Inhalts (${y} px) steht der Fensterkopf nicht still (${l.kopfTop} → ${n.kopfTop} px, Fenster ${l.top} → ${n.top} px)`);
+    await p.evaluate(() => { document.querySelector('#dlg .dlg-body').scrollTop = 0; }); await wait(p, 100);
   }
-  if (l.t) E(`${nr('B1', 'D-1')} das Blatt ruht nicht an seinem Platz (${l.t} px versetzt)`);
-  if (l.bg !== l.soll) E(`${nr('B24', 'D-20')} Hintergrund des Blatts ${l.bg} statt --dlg-bg (${l.soll})`);
-  if (reduziert && frueh.t) E(`${nr('B22', 'D-13')} ‚Bewegung reduzieren‘: das Blatt gleitet (${frueh.t} px) statt überzublenden`);
-  if (!reduziert && frueh.t < 20 && !frueh.faehrt) E(`${nr('B1', 'D-1')} das Blatt gleitet nicht von unten herein (kurz nach dem Öffnen ${frueh.t} px versetzt, keine Bewegung)`);
   // APD-72/D-14 (APD-72): Anfassen mitten im Gleiten – hält dort an und folgt dem Finger (die Bewegung wird dazu angehalten, damit der Fall
   // nicht von der Last abhängt)
   if (!reduziert) {
     await zu(); await open();
-    // ein Viertel der Zeit: das Blatt ist schon zu sehen, aber noch nicht oben
+    // ein Viertel der Zeit: das Fenster ist schon zu sehen, aber noch nicht oben
     const mitten = await p.evaluate(() => { const a = document.getAnimations().filter(x => x.effect?.target?.id === 'dlg');
       a.forEach(x => { x.pause(); x.currentTime = x.effect.getTiming().duration / 4; });
       const t = getComputedStyle(document.getElementById('dlg')).translate; return { n: a.length, t: Math.round(parseFloat((t || '').split(' ')[1]) || 0) }; });
-    if (!mitten.n || mitten.t < 20) E(`${nr('D-14', 'D-14')} Vorbereitung: kein Gleiten nach dem Öffnen (${mitten.n} Bewegungen, ${mitten.t} px)`);
+    if (!mitten.n || mitten.t < 20) E(`${nr('D-14')} Vorbereitung: kein Gleiten nach dem Öffnen (${mitten.n} Bewegungen, ${mitten.t} px)`);
     else {
-      const b = await p.locator('#dlg .dlg-head').boundingBox(), x = b.x + b.width / 2, y = b.y + b.height / 2;
+      const b = await p.locator('#dlg .dlg-head').boundingBox(), x = b.x + b.width / 2, y = Math.min(b.y + b.height / 2, (p.viewportSize()?.height || 9999) - 40);
       await p.mouse.move(x, y); await p.mouse.down(); await p.mouse.move(x, y + 30, { steps: 6 }); await wait(p, 200);
       const h = await lage();
-      if (h.faehrt || Math.abs(h.t - (mitten.t + 30)) > 12) E(`${nr('D-14', 'D-14')} Anfassen mitten im Gleiten: das Blatt hält nicht an bzw. folgt dem Finger nicht (${h.t} px statt ${mitten.t + 30} px${h.faehrt ? ', gleitet weiter' : ''})`);
+      if (h.faehrt || Math.abs(h.t - (mitten.t + 30)) > 12) E(`${nr('D-14')} Anfassen mitten im Gleiten: das Fenster hält nicht an bzw. folgt dem Finger nicht (${h.t} px statt ${mitten.t + 30} px${h.faehrt ? ', gleitet weiter' : ''})`);
       await p.mouse.up(); await ruhig();
       const n = await lage();
-      if (!n.open) E(`${nr('D-14', 'D-14')} Anfassen mitten im Gleiten schließt das Fenster`);
-      else if (n.t) E(`${nr('D-14', 'D-14')} nach dem Anfassen mitten im Gleiten federt es nicht zurück (${n.t} px)`);
+      if (!n.open) E(`${nr('D-14')} Anfassen mitten im Gleiten schließt das Fenster`);
+      else if (n.t) E(`${nr('D-14')} nach dem Anfassen mitten im Gleiten federt es nicht zurück (${n.t} px)`);
     }
     l = await auf();
   }
 
-  // B2 ein Stück ziehen, langsam loslassen: folgt dem Finger, federt zurück
+  // APD-72/D-2, APD-151/M-4 ein Stück ziehen, langsam loslassen: nur das Fenster folgt dem Finger, die Abdunkelung wird heller, federt zurück
   let m = await zieh(await kopf(), 0, 120);
-  if (Math.abs(m.t - 120) > 12) E(`${nr('B2', 'D-2')} das Blatt folgt dem Finger nicht (${m.t} px statt 120 px)`);
-  if (reduziert && Math.abs(m.t - 120) > 12) E(`${nr('B22', 'D-13')} ‚Bewegung reduzieren‘: das Ziehen folgt dem Finger nicht`);
-  // APD-72/D-2 (APD-72): am iPad wird beim Ziehen nur die Abdunkelung heller, die Seite bleibt
-  if (ipad && !(m.schleier < l.schleier - 0.01)) E(`APD-72/D-2 iPad: die Abdunkelung wird beim Ziehen nicht heller (${m.schleier} bei ${l.schleier})`);
-  if (ipad && (m.zurueck || m.seiteBewegt)) E('D-2 iPad: beim Ziehen bewegt sich die Seite dahinter');
+  if (Math.abs(m.t - 120) > 12) E(`${nr('D-2', 'M-4')} das Fenster folgt dem Finger nicht (${m.t} px statt 120 px)`);
+  if (reduziert && Math.abs(m.t - 120) > 12) E(`${nr('D-13', 'M-14')} ‚Bewegung reduzieren‘: das Ziehen folgt dem Finger nicht`);
+  if (!(m.schleier < l.schleier - 0.01)) E(`${nr('D-2', 'M-4')} die Abdunkelung wird beim Ziehen nicht heller (${m.schleier} bei ${l.schleier})`);
+  if (m.zurueck || m.seiteBewegt) E(`${nr('D-2', 'M-4')} beim Ziehen bewegt sich die Seite dahinter`);
   l = await lage();
-  if (!l.open) { E(`${nr('B2', 'D-2')} ein Stück ziehen schließt das Fenster`); l = await auf(); }
-  else if (l.t) E(`${nr('B2', 'D-2')} das Blatt federt nicht zurück (${l.t} px)`);
-  // APD-108/W-9 (seit 4.50.0, iPhone): das Blatt über einem Kästchen bzw. Schalter (label) 60 px ziehen und loslassen – es federt zurück; der
-  // Klick, den Safari KLICK_NACH ms nach dem Loslassen an das Element unter dem Aufsetzen schickt, schaltet nichts um (Wischen tippt nie an)
-  if (!ipad && l.open) {
+  if (!l.open) { E(`${nr('D-2', 'M-4')} ein Stück ziehen schließt das Fenster`); l = await auf(); }
+  else if (l.t || !mitte(l)) E(`${nr('D-2', 'M-4')} das Fenster federt nicht zurück in die Mitte (${l.t} px, ${text(l)})`);
+  // APD-108/W-9 (seit 4.50.0; seit 5.0.0 auch am iPad): das Fenster über einem Kästchen bzw. Schalter (label) 60 px ziehen und loslassen – es federt
+  // zurück; der Klick, den Safari KLICK_NACH ms nach dem Loslassen an das Element unter dem Aufsetzen schickt, schaltet nichts um (Wischen tippt nie an)
+  if (l.open) {
     const w9 = await p.evaluate(async KLICK_NACH => {
       const warte = ms => new Promise(r => setTimeout(r, ms));
-      const lab = [...document.querySelectorAll('#dlg .dlg-body label')].find(x => x.control?.type === 'checkbox' && x.getClientRects().length);
+      const lab = [...document.querySelectorAll('#dlg .dlg-body label')].find(x => x.control?.type === 'checkbox' && x.getClientRects().length && x.getBoundingClientRect().bottom < innerHeight - 70);
       if (!lab) return null;
       const box = lab.control, vor = box.checked, r = lab.getBoundingClientRect(), x = r.left + r.width / 2, y = r.top + Math.min(r.height / 2, 20);
       const ev = (typ, dy) => lab.dispatchEvent(new PointerEvent(typ, { pointerId: 4109, pointerType: 'touch', isPrimary: true, clientX: x, clientY: y + dy,
@@ -2151,60 +2181,91 @@ export async function checkSheet(p, { open, change = null, field = null, ok = nu
       return { name: lab.textContent.trim().slice(0, 40), umgeschaltet: box.checked !== vor };
     }, KLICK_NACH);
     await ruhig();
-    if (w9?.umgeschaltet) E(`APD-108/W-9 Blatt über ‚${w9.name}‘ 60 px gezogen und losgelassen: der Klick danach schaltet um (Wischen tippt nie an)`);
+    if (w9?.umgeschaltet) E(`APD-108/W-9 Fenster über ‚${w9.name}‘ 60 px gezogen und losgelassen: der Klick danach schaltet um (Wischen tippt nie an)`);
     l = await lage();
-    if (!l.open) E('APD-108/W-9 60 px ziehen schließt das Blatt');
+    if (!l.open) E('APD-108/W-9 60 px ziehen schließt das Fenster');
     if (!l.open || w9?.umgeschaltet) l = await auf();
   }
-  // B7 waagerecht ziehen: bleibt
+  // APD-72/D-7 waagerecht ziehen: bleibt
   m = await zieh(await kopf(), 140, 10);
-  if (m.t) E(`${nr('B7', 'D-7')} waagerecht ziehen bewegt das Blatt (${m.t} px)`);
-  if (!(await lage()).open) { E(`${nr('B7', 'D-7')} waagerecht ziehen schließt das Fenster`); await auf(); }
+  if (m.t) E(`${nr('D-7')} waagerecht ziehen bewegt das Fenster (${m.t} px)`);
+  if (!(await lage()).open) { E(`${nr('D-7')} waagerecht ziehen schließt das Fenster`); await auf(); }
   // APD-72/D-8 (APD-72): im Zug nach oben über den Platz hinaus – Gummiband, federt zurück (erst nach unten: nur so beginnt der Zug)
-  // der waagerechte Mauszug davor (B7) hat den Titel markiert – ein Mauszug auf einer Markierung zieht sie (der Finger am Gerät nicht)
+  // der waagerechte Mauszug davor (D-7) hat den Titel markiert – ein Mauszug auf einer Markierung zieht sie (der Finger am Gerät nicht)
   await p.evaluate(() => getSelection().removeAllRanges());
   { const k = await kopf(), hoch = Math.round(Math.min(60, k.y - 4));
     await p.mouse.move(k.x, k.y); await p.mouse.down(); await p.mouse.move(k.x, k.y + 20, { steps: 4 }); await p.mouse.move(k.x, k.y - hoch, { steps: 10 }); await wait(p, 160);
     m = await lage(); await p.mouse.up(); await ruhig();
-    if (!(m.t < 0 && m.t > -hoch)) E(`${nr('D-8', 'D-8')} nach oben ziehen: kein Gummiband (${m.t} px bei −${hoch} px)`); }
+    if (!(m.t < 0 && m.t > -hoch)) E(`${nr('D-8')} nach oben ziehen: kein Gummiband (${m.t} px bei −${hoch} px)`); }
   l = await lage();
-  if (!l.open || l.t) E(`${nr('D-8', 'D-8')} nach oben ziehen: das Blatt ${l.open ? `federt nicht zurück (${l.t} px)` : 'schließt'}`);
+  if (!l.open || l.t) E(`${nr('D-8')} nach oben ziehen: das Fenster ${l.open ? `federt nicht zurück (${l.t} px)` : 'schließt'}`);
   if (!l.open) l = await auf();
-  // B5 Inhalt gerollt: im Inhalt nach unten ziehen bewegt das Blatt nicht
+  // APD-72/D-5 Inhalt gerollt: im Inhalt nach unten ziehen bewegt das Fenster nicht
   const gerollt = await p.evaluate(() => { const b = document.querySelector('#dlg .dlg-body'); b.scrollTop = 80; return b.scrollTop; });
   if (gerollt > 0) {
     const b = await p.locator('#dlg .dlg-body').boundingBox();
-    m = await zieh({ x: b.x + b.width / 2, y: b.y + 60 }, 0, 250);
-    if (m.t) E(`${nr('B5', 'D-5')} im gerollten Inhalt folgt das Blatt dem Finger (${m.t} px)`);
-    if (!(await lage()).open) { E(`${nr('B5', 'D-5')} im gerollten Inhalt schließt Ziehen das Fenster`); await auf(); }
+    m = await zieh({ x: b.x + b.width / 2, y: b.y + Math.min(60, b.height / 3) }, 0, Math.min(250, Math.round(l.h - b.y - 70)));
+    if (m.t) E(`${nr('D-5', 'M-5')} im gerollten Inhalt folgt das Fenster dem Finger (${m.t} px)`);
+    if (!(await lage()).open) { E(`${nr('D-5', 'M-5')} im gerollten Inhalt schließt Ziehen das Fenster`); await auf(); }
     await p.evaluate(() => { document.querySelector('#dlg .dlg-body').scrollTop = 0; });
   }
-  // B3 weit nach unten ziehen: schließt
-  m = await zieh(await kopf(), 0, Math.round(l.h * 0.6));
-  if (m.t < l.h * 0.5) E(`${nr('B3', 'D-3')} das Blatt folgt dem Finger nicht nach unten (${m.t} px)`);
-  await weg(`${nr('B3', 'D-3')} weit nach unten ziehen`);
-  // B4 kurz und schnell wischen: schließt
+  // APD-72/D-3, APD-151/M-5 weit nach unten ziehen: schließt (der Weg reicht bis knapp über den unteren Rand)
+  { const k = await kopf(), dy = Math.round(Math.min(l.h * 0.6, l.h - k.y - 4));
+    m = await zieh(k, 0, dy);
+    if (m.t < dy * 0.8) E(`${nr('D-3', 'M-5')} das Fenster folgt dem Finger nicht nach unten (${m.t} px bei ${dy} px)`); }
+  await weg(`${nr('D-3', 'M-5')} weit nach unten ziehen`);
+  // APD-72/D-4 kurz und schnell wischen: schließt
   await auf();
   await zieh(await kopf(), 0, 70, true);
-  await weg(`${nr('B4', 'D-4')} schnell nach unten wischen (${await p.evaluate(() => window.__b4)})`);
-  // B6 im Inhalt ganz oben nach unten: schließt
+  await weg(`${nr('D-4', 'M-5')} schnell nach unten wischen (${await p.evaluate(() => window.__b4)})`);
+  // APD-72/D-6 im Inhalt ganz oben nach unten: schließt
   await auf();
-  const b6 = await p.locator('#dlg .dlg-body').boundingBox();
-  await zieh({ x: b6.x + b6.width - 8, y: b6.y + 24 }, 0, Math.round(l.h * 0.6));
-  await weg(`${nr('B6', 'D-6')} im Inhalt ganz oben nach unten ziehen`);
+  { const b6 = await p.locator('#dlg .dlg-body').boundingBox(), y = b6.y + 24, dy = Math.round(Math.min(l.h * 0.6, l.h - y - 4));
+    await zieh({ x: b6.x + b6.width - 8, y }, 0, dy); }
+  await weg(`${nr('D-6', 'M-5')} im Inhalt ganz oben nach unten ziehen`);
   l = await auf();
-  if (ipad) {
-    // APD-72/D-12 (APD-72, wie iPadOS): Antippen der Abdunkelung schließt am iPad nicht
-    await p.mouse.click(Math.max(5, l.left / 2), Math.max(5, l.top / 2)); await ruhig();
+  // APD-72/D-12, APD-151/M-7 (wie iPadOS): Antippen der Abdunkelung schließt nicht, auf iPad und iPhone; darunter wird nichts angetippt
+  await p.evaluate(() => { window.__d12 = []; window.__d12f = e => { if (!document.getElementById('dlg').contains(e.target)) window.__d12.push(e.target.id || e.target.tagName.toLowerCase()); };
+    addEventListener('click', window.__d12f, true); });
+  await p.mouse.click(Math.max(3, Math.round(l.left / 2)), Math.max(3, Math.round(l.top / 2))); await ruhig();
+  { const n = await lage(), d12 = await p.evaluate(() => { removeEventListener('click', window.__d12f, true); return window.__d12; });
+    if (!n.open) { E(`${nr('D-12', 'M-7')} Antippen der Abdunkelung schließt das Fenster`); l = await auf(); }
+    else if (n.t || n.pop.length) E(`${nr('D-12', 'M-7')} nach dem Antippen der Abdunkelung ist das Fenster versetzt bzw. fragt (${n.t} px${n.pop.length ? ', ' + n.pop.join(' · ') : ''})`);
+    if (d12.length) E(`${nr('D-12', 'M-7')} Antippen der Abdunkelung tippt darunter an (${d12.join(', ')})`); }
+  // APD-151/M-13: eine Meldung über dem Fenster steht klein in der Mitte darüber, das Fenster bleibt darunter in der Mitte
+  if ((await lage()).open && await p.evaluate(() => typeof window.AD?.inform === 'function')) {
+    const vor = await lage();
+    await p.evaluate(() => { AD.inform('Hinweis', 'Prüfung'); }); await p.waitForSelector('#msg[open]', { timeout: 3000 }).catch(() => {}); await ruhig();
+    const a = await p.evaluate(() => { const m = document.getElementById('msg'), r = m?.getBoundingClientRect(); return m?.open ? { left: Math.round(r.left), right: Math.round(r.right), width: Math.round(r.width) } : null; });
     const n = await lage();
-    if (!n.open) { E('D-12 iPad: Antippen der Abdunkelung schließt das Fenster'); l = await auf(); }
-    else if (n.t) E(`APD-72/D-12 iPad: nach dem Antippen der Abdunkelung ist das Fenster versetzt (${n.t} px)`);
-  } else {
-    // B11 Abdunkelung oben antippen: wie x
-    await p.mouse.click(l.w / 2, Math.max(2, Math.round((l.top - l.vvTop) / 2) + l.vvTop)); await ruhig();
-    await weg('B11 Abdunkelung antippen');
+    if (!a) E(`${nr('', 'M-13')} Meldung über dem Fenster öffnet nicht`);
+    else if (Math.abs(a.left - (n.w - a.right)) > 2 || a.width > Math.min(Math.max(360, 360 * n.fBody), n.w - 32) + 1) E(`${nr('', 'M-13')} die Meldung über dem Fenster steht nicht klein in der Mitte (${a.left}–${a.right} von ${n.w} px)`);
+    if (!n.open || Math.abs(n.top - vor.top) > 1 || Math.abs(n.left - vor.left) > 1) E(`${nr('', 'M-13')} unter der Meldung bleibt das Fenster nicht, wo es war (${text(n)} statt ${text(vor)})`);
+    await p.locator('#msg [data-x]').click().catch(() => p.keyboard.press('Escape')); await ruhig();
+    if (!(await lage()).open) { E(`${nr('', 'M-13')} mit der Meldung schließt das Fenster`); await auf(); }
   }
-  // B12 bzw. D-11 (APD-72) x, Häkchen und Escape: das Blatt gleitet nach unten hinaus (‚Bewegung reduzieren‘: das Abbild blendet aus)
+  // APD-151/M-13 (H-3): ein Fenster ersetzen – das alte gleitet als Abbild hinaus, das neue gleitet wie beim Öffnen herein
+  if (replace) {
+    l = await auf();
+    await replace();
+    const g = await p.evaluate(() => { const y = v => parseFloat(String(v ?? '0 0').split(' ')[1]) || 0, geist = document.querySelector('.blatt-geist'), d = document.getElementById('dlg');
+      const k = geist?.getAnimations()[0]?.effect.getKeyframes() || [];
+      return { geist: !!geist, hinaus: k.length > 1 && (y(k.at(-1).translate) > y(k[0].translate) + 50 || +k.at(-1).opacity === 0),
+        herein: d.getAnimations().some(a => { const f = a.effect.getKeyframes(); return f.length > 1 && (y(f[0].translate) > 50 && Math.abs(y(f.at(-1).translate)) < 1 || +f[0].opacity === 0); }) }; });
+    if (!g.geist || !g.hinaus) E(`${nr('', 'M-13')} Fenster ersetzen: das alte gleitet nicht als Abbild hinaus (${JSON.stringify(g)})`);
+    if (!g.herein) E(`${nr('', 'M-13')} Fenster ersetzen: das neue gleitet nicht herein`);
+    await ruhig(); await warteBis(p, () => !document.querySelector('.blatt-geist') && !document.getAnimations().some(a => a.playState === 'running'), { max: 4000 });
+    const n = await lage();
+    if (!n.open || !mitte(n) || n.t) E(`${nr('', 'M-13')} nach dem Ersetzen steht das neue Fenster nicht ruhig in der Mitte (${text(n)}, ${n.t} px)`);
+  }
+  // APD-151/M-16: die Seite wird bei offenem Fenster neu aufgebaut – das Fenster bleibt offen und steht still
+  if (rebuild) {
+    l = await auf();
+    await rebuild(); await wait(p, 300); await ruhig();
+    const n = await lage();
+    if (!n.open || Math.abs(n.top - l.top) > 1 || Math.abs(n.left - l.left) > 1 || n.t) E(`${nr('', 'M-16')} nach dem Neuaufbau der Seite ist das Fenster ${n.open ? `nicht still (${text(n)} statt ${text(l)})` : 'zu'}`);
+  }
+  // APD-72/D-11, APD-151/M-7 x, Häkchen und Escape: das Fenster gleitet nach unten hinaus (‚Bewegung reduzieren‘: das Abbild blendet aus)
   for (const [was, tu] of [['x', () => p.click('#dlg #dlgX')], ...(ok ? [['Häkchen', () => p.click(ok)]] : []), ['Escape', () => p.keyboard.press('Escape')]]) {
     if (!(await lage()).open) await auf();
     if (was === 'x' && !await p.locator('#dlg #dlgX').count()) continue;
@@ -2218,85 +2279,111 @@ export async function checkSheet(p, { open, change = null, field = null, ok = nu
       return { da: !!g, offen: document.getElementById('dlg').open, von: y(k[0]?.translate), nach: y(k.at(-1)?.translate), aus: k.length > 1 && +k.at(-1).opacity === 0,
         unten: g ? Math.round(innerHeight - g.getBoundingClientRect().top) : 0 };
     });
-    if (g.offen) E(`${nr('B12', 'D-11')} ${was}: das Fenster bleibt offen`);
-    else if (!g.da) E(`${nr('B12', 'D-11')} ${was}: das Fenster verschwindet sofort (kein Abbild, das hinausgleitet)`);
-    else if (!reduziert && !(g.nach > g.von && g.nach - g.von >= g.unten - 2)) E(`${nr('B12', 'D-11')} ${was}: das Abbild gleitet nicht nach unten hinaus (${g.von} → ${g.nach} px, bis unten ${g.unten} px)`);
-    else if (reduziert && (!g.aus || g.nach !== g.von)) E(`${nr('B22', 'D-13')} ‚Bewegung reduzieren‘ ${was}: das Abbild ${g.aus ? 'gleitet' : 'blendet nicht aus'}`);
+    if (g.offen) E(`${nr('D-11', was === 'Escape' ? 'M-7' : '')} ${was}: das Fenster bleibt offen`);
+    else if (!g.da) E(`${nr('D-11')} ${was}: das Fenster verschwindet sofort (kein Abbild, das hinausgleitet)`);
+    else if (!reduziert && !(g.nach > g.von && g.nach - g.von >= g.unten - 2)) E(`${nr('D-11')} ${was}: das Abbild gleitet nicht nach unten hinaus (${g.von} → ${g.nach} px, bis unten ${g.unten} px)`);
+    else if (reduziert && (!g.aus || g.nach !== g.von)) E(`${nr('D-13', 'M-14')} ‚Bewegung reduzieren‘ ${was}: das Abbild ${g.aus ? 'gleitet' : 'blendet nicht aus'}`);
     await ruhig();
-    await weg(`${nr('B12', 'D-11')} ${was}`);
+    await weg(`${nr('D-11')} ${was}`);
   }
-  // B21 Drehen mit offenem Blatt: bleibt offen, quer volle Höhe ohne Zurückweichen, hoch mit
-  l = await auf();
+  // APD-72/D-15, APD-151/M-11 Drehen mit offenem Fenster, hin und zurück: bleibt offen, steht nach jedem Drehen in der Mitte (R-8.1); mit Fokus in
+  // einem Feld bleibt es, wo es ganz sichtbar ist, Fokus und Eingabe bleiben
   const vp = p.viewportSize();
-  await p.setViewportSize({ width: vp.height, height: vp.width }); await wait(p, 400); await ruhig();
-  const d = await lage();
-  if (!d.open) E(`${nr('B21', 'D-15')} Drehen schließt das Blatt`);
-  else if (ipad) {
-    // APD-72/D-15 (APD-72): am iPad bleibt das Fenster offen in der Mitte und ganz sichtbar (R-8.1)
-    if (!d.blatt) E('D-15 iPad: nach dem Drehen fehlt html.blatt');
-    if (d.t) E(`APD-72/D-15 iPad: nach dem Drehen ruht das Fenster nicht an seinem Platz (${d.t} px)`);
-    if (Math.abs(d.left - (d.w - d.right)) > 2) E(`APD-72/D-15 iPad: nach dem Drehen steht das Fenster nicht in der Mitte (${d.left}–${d.right} von ${d.w} px)`);
-    if (d.top < d.vvTop || d.bottom > d.vvTop + d.vvH + 1) E(`APD-72/D-15 iPad: nach dem Drehen ist das Fenster nicht ganz sichtbar (${d.top}–${d.bottom} px)`);
-    if (d.zurueck || d.seiteBewegt) E('D-15 iPad: nach dem Drehen weicht die Seite zurück');
-  } else {
-    if (!d.blatt) E('B21 nach dem Drehen ist das Fenster kein Blatt mehr');
-    if (d.t) E(`B21 nach dem Drehen ruht das Blatt nicht an seinem Platz (${d.t} px)`);
-    if (d.quer && d.zurueck) E('B21 nach dem Drehen quer weicht die Seite zurück');
-    if (!d.quer && !d.zurueck) E('B21 nach dem Drehen hoch weicht die Seite nicht zurück');
-    if (Math.abs(d.bottom - (d.vvTop + d.vvH)) > 1) E(`B21 nach dem Drehen endet das Blatt bei ${d.bottom} px statt ${d.vvTop + d.vvH} px`);
+  for (const mitFokus of field ? [false, true] : [false]) {
+    l = await auf();
+    let wert = null;
+    if (mitFokus) wert = await p.evaluate(sel => { const f = document.querySelector(`#dlg ${sel}`) || document.querySelector(sel); f?.focus({ preventScroll: true }); return document.activeElement === f ? f.value : null; }, field);
+    for (const [n, groesse] of [['quer', { width: vp.height, height: vp.width }], ['zurück', vp]]) {
+      await p.setViewportSize(groesse); await wait(p, 400); await ruhig();
+      const d = await lage(), w = `${mitFokus ? 'mit Fokus im Feld ' : ''}nach dem Drehen (${n})`;
+      if (!d.open) { E(`${nr('D-15', 'M-11')} Drehen ${w} schließt das Fenster`); break; }
+      if (!d.blatt) E(`${nr('D-15')} ${w} fehlt html.blatt`);
+      if (d.t) E(`${nr('D-15', 'M-11')} ${w} ruht das Fenster nicht an seinem Platz (${d.t} px)`);
+      if (mitFokus ? !ganz(d) : !mitte(d)) E(`${nr('D-15', 'M-11')} ${w} steht das Fenster nicht ${mitFokus ? 'ganz sichtbar' : 'in der Mitte'} (${text(d)})`);
+      if (d.zurueck || d.seiteBewegt) E(`${nr('D-15', 'M-11')} ${w} weicht die Seite zurück`);
+      if (mitFokus && wert !== null) {
+        const f = await p.evaluate(sel => { const f = document.querySelector(`#dlg ${sel}`) || document.querySelector(sel); return { fokus: document.activeElement === f, wert: f?.value }; }, field);
+        if (!f.fokus || f.wert !== wert) E(`${nr('', 'M-11')} ${w}: ${f.fokus ? '' : 'der Fokus ist nicht mehr im Feld '}${f.wert !== wert ? `Eingabe ‚${f.wert}‘ statt ‚${wert}‘` : ''}`.trim());
+      }
+    }
+    await p.setViewportSize(vp); await wait(p, 400); await ruhig();
+    await p.evaluate(() => document.activeElement?.blur?.());
   }
-  await p.setViewportSize(vp); await wait(p, 400); await ruhig();
   await zu();
   if (!change) return errors;
-  // B8 mit Änderung weit ziehen: zäh, federt zurück, Sprechblase am x; ‚Weiter bearbeiten‘ lässt es offen
+  // APD-72/D-9, APD-151/M-6 mit Änderung weit ziehen: zäh, federt zurück, Sprechblase am x; ‚Weiter bearbeiten‘ lässt es offen
   const vorher = await auf();
   await change(); await wait(p);
-  // APD-72/D-21 (seit 4.39.0, APD-83): am iPad ändert eine Eingabe Breite und Lage des Fensters nicht (P-76/4: die Meldung zum
-  // Zeitraum machte ‚Neues Reiselogbuch‘ breiter)
-  if (ipad) { const n = await lage(); if (Math.abs(n.left - vorher.left) > 1 || Math.abs(n.right - vorher.right) > 1) E(`APD-72/D-21 iPad: nach der Eingabe steht das Fenster bei ${n.left}–${n.right} px statt ${vorher.left}–${vorher.right} px (Breite und Lage bleiben)`); }
-  m = await zieh(await kopf(), 0, Math.round(l.h * 0.6));
-  if (m.t > l.h * 0.6 * 0.5) E(`${nr('B8', 'D-9')} mit Änderungen ist das Ziehen nicht zäh (${m.t} px bei ${Math.round(l.h * 0.6)} px)`);
+  // APD-72/D-21 (seit 4.39.0, APD-83; seit 5.0.0 auch am iPhone, APD-151/M-12): eine Eingabe ändert Breite und Lage des Fensters nicht (P-76/4: die
+  // Meldung zum Zeitraum machte ‚Neues Reiselogbuch‘ breiter)
+  { const n = await lage(); if (Math.abs(n.left - vorher.left) > 1 || Math.abs(n.right - vorher.right) > 1) E(`${nr('D-21', 'M-12')} nach der Eingabe steht das Fenster bei ${n.left}–${n.right} px statt ${vorher.left}–${vorher.right} px (Breite und Lage bleiben)`); }
+  { const k = await kopf(), dy = Math.round(Math.min(l.h * 0.6, l.h - k.y - 4));
+    m = await zieh(k, 0, dy);
+    if (m.t > dy * 0.5) E(`${nr('D-9', 'M-6')} mit Änderungen ist das Ziehen nicht zäh (${m.t} px bei ${dy} px)`); }
   await wait(p, 300);
   l = await lage();
-  if (!l.open) E(`${nr('B8', 'D-9')} mit Änderungen schließt Ziehen das Fenster ohne Rückfrage`);
+  if (!l.open) E(`${nr('D-9', 'M-6')} mit Änderungen schließt Ziehen das Fenster ohne Rückfrage`);
   else {
-    if (l.t) E(`${nr('B8', 'D-9')} mit Änderungen federt das Blatt nicht zurück (${l.t} px)`);
-    if (!l.pop.some(t => /Änderungen verwerfen/.test(t)) || !l.pop.some(t => /Weiter bearbeiten/.test(t))) E(`${nr('B8', 'D-9')} mit Änderungen fragt Ziehen nicht ‚Änderungen verwerfen‘ / ‚Weiter bearbeiten‘ (${l.pop.join(' · ') || 'keine Abfrage'})`);
+    if (l.t) E(`${nr('D-9', 'M-6')} mit Änderungen federt das Fenster nicht zurück (${l.t} px)`);
+    if (!l.pop.some(t => /Änderungen verwerfen/.test(t)) || !l.pop.some(t => /Weiter bearbeiten/.test(t))) E(`${nr('D-9', 'M-6')} mit Änderungen fragt Ziehen nicht ‚Änderungen verwerfen‘ / ‚Weiter bearbeiten‘ (${l.pop.join(' · ') || 'keine Abfrage'})`);
     else {
       await p.locator('.pop button', { hasText: 'Weiter bearbeiten' }).click(); await ruhig();
-      if (!(await lage()).open) E(`${nr('B8', 'D-9')} ‚Weiter bearbeiten‘ schließt das Fenster`);
+      if (!(await lage()).open) E(`${nr('D-9', 'M-6')} ‚Weiter bearbeiten‘ schließt das Fenster`);
     }
   }
-  // B19 und B10 bei offener Tastatur (Safari-Modell): Feld antippen – R-4.5 rollt es in die obere Hälfte, der Inhalt steht nicht mehr
-  // ganz oben (am Gerät P-68/2.3: der Zug auf dem Feld schloss nur die Tastatur, erst der zweite zog das Blatt)
+  // Tastatur (Safari-Modell): APD-151/M-8, M-9, M-19 (R-4.5), APD-72/D-10
   if (field && (await lage()).open) {
     const eigen = !await p.evaluate(() => !!window.__safari);
-    if (eigen) await safariModell(p, ipad ? (l.w > l.h ? 'iPad quer' : 'iPad hoch') : l.quer ? 'iPhone quer' : 'iPhone hoch', { auto: true });
+    if (eigen) await safariModell(p, ansicht, { auto: true });
     const tippen = async () => {
       // ein Mauszug wählt Text aus, Chromium fokussiert beim Antippen einer Auswahl nicht (der Finger am Gerät wählt nichts aus)
       await p.evaluate(() => getSelection().removeAllRanges());
       await p.locator(field).first().tap(); await wait(p, 600);
       return p.evaluate(({ sel, RI }) => {
         const f = document.querySelector(`#dlg ${sel}`) || document.querySelector(sel), b = f.closest('.dlg-body'), r = f.getBoundingClientRect(), br = b.getBoundingClientRect();
-        const x = Math.round(br.left + 4), y = Math.round((r.top + r.bottom) / 2), t = document.elementFromPoint(x, y);
+        const x = Math.round(br.left + 4), y = Math.round((r.top + r.bottom) / 2), t = document.elementFromPoint(x, y), o = visualViewport?.offsetTop || 0;
         // seit 4.56.0 (APD-115/V-3, R-4.5): ein mehrzeiliges Feld, höher als der sichtbare Inhalt, zeigt die Cursorzeile – sein oberer Rand darf
         // dann über dem Inhalt liegen (hoch); gezogen wird im sichtbaren Teil des Felds
         const ring = eval(RI)(f), unten = Math.min(br.bottom, window.__safari ? __safari.top() + __safari.hoehe() : innerHeight), oben = Math.max(r.top, br.top);
         const hoch = f.tagName === 'TEXTAREA' && r.height > unten - br.top - ring;
         return { gerollt: Math.round(b.scrollTop), tastatur: !!window.__safari?.offen, fokus: document.activeElement === f, abstand: Math.round(r.top - br.top), ring, hoch,
+          feldUnten: Math.round(r.bottom - (window.__safari ? __safari.top() : o)),
           feld: { x: Math.round(r.left + Math.min(40, r.width / 2)), y: Math.round(oben + Math.min(14, (Math.min(r.bottom, unten) - oben) / 2)) },
           daneben: t && !t.closest('input, textarea, select, button') && b.contains(t) ? { x, y } : null };
       }, { sel: field, RI: RING });
     };
     const tastaturZu = async () => { await wait(p, 300); await p.evaluate(() => { if (window.__safari?.offen) __safari.tastatur(false); }); await wait(p, 300); };
-    // B19 im gerollten Inhalt neben dem Feld nach unten ziehen: nur die Tastatur schließt, das Blatt bleibt, keine Rückfrage. Seit 4.32.2
-    // (APD-73, P-69/3) auch, wenn der Finger zuerst nach oben geht (gemessen am Rand: 244 → 231 → 76 → 302, entschieden war nach 8 px)
+    // APD-151/M-8: Feld antippen – das Fenster gleitet über die Tastatur und wird höchstens niedriger, das Feld steht 16 px über ihr
     let g;
+    { const vor = await lage();
+      g = await tippen();
+      const k = await lage();
+      if (!g.fokus || !g.tastatur) E45(`${nr('D-10', 'M-8')} Vorbereitung: nach dem Antippen von ${field} ${g.fokus ? '' : 'kein Fokus '}${g.tastatur ? '' : 'keine Tastatur'}`);
+      else {
+        if (k.bottom > k.sichtbar + 1) E45(`${nr('', 'M-8')} bei offener Tastatur endet das Fenster unter ihr (unten ${k.bottom} px, Tastatur ab ${k.sichtbar} px)`);
+        if (!g.hoch && g.feldUnten > k.sichtbar - 16 + 1) E45(`${nr('', 'M-8')} ${field} endet ${k.sichtbar - g.feldUnten} px über der Tastatur statt mindestens 16 px`);
+        if (k.height > vor.height + 1 || Math.abs(k.width - vor.width) > 1 || Math.abs(k.left - (k.w - k.right)) > 2 || k.top < k.oben - 1) E45(`${nr('', 'M-8')} bei offener Tastatur wird das Fenster nicht nur niedriger bzw. steht nicht mittig darüber (${vor.height} → ${k.height} px hoch, ${text(k)})`);
+        // APD-151/M-9, M-19: Tastatur schließen – das Fenster gleitet zurück in die Mitte, kein Sprung (je Bild höchstens 60 px), so hoch wie vorher
+        // (±2 px), kein leerer Platz unter dem Inhalt (bis 4.71.1 im Safari-Modell iPad hoch 454 → 1160 px)
+        await p.evaluate(() => { window.__m9 = []; const o = () => window.__safari ? __safari.top() : visualViewport.offsetTop;
+          const lauf = () => { if (!window.__m9) return; window.__m9.push(document.getElementById('dlg').getBoundingClientRect().top - o()); requestAnimationFrame(lauf); }; requestAnimationFrame(lauf); });
+        await p.evaluate(() => { document.activeElement?.blur(); __safari.tastatur(false); }); await wait(p, 900); await ruhig();
+        const bilder = await p.evaluate(() => { const b = window.__m9; window.__m9 = null; return b; }), z = await lage();
+        const sprung = bilder.slice(1).reduce((mx, y, i) => Math.max(mx, Math.abs(y - bilder[i])), 0);
+        if (!z.open) E45(`${nr('', 'M-9')} Tastatur schließen schließt das Fenster`);
+        else {
+          if (!mitte(z) || Math.abs(z.top - vor.top) > 2 || sprung > 60) E45(`${nr('', 'M-9')} nach dem Schließen der Tastatur steht das Fenster nicht wie vorher in der Mitte bzw. springt (größter Schritt ${Math.round(sprung)} px, ${text(z)} statt ${text(vor)})`);
+          if (Math.abs(z.height - vor.height) > 2 || (!z.rollt || !vor.rollt) && z.leer > 4) E45(`${nr('', 'M-19')} nach dem Schließen der Tastatur ist das Fenster ${z.height} px hoch statt ${vor.height} px${z.leer > 4 ? `, ${z.leer} px leer unter dem Inhalt` : ''}`);
+        }
+      }
+    }
+    // APD-72/D-10 im gerollten Inhalt neben dem Feld nach unten ziehen: nur die Tastatur schließt, das Fenster bleibt, keine Rückfrage. Seit 4.32.2
+    // (APD-73, P-69/3) auch, wenn der Finger zuerst nach oben geht (gemessen am Rand: 244 → 231 → 76 → 302, entschieden war nach 8 px)
     for (const [art, wege] of [['nach unten ziehen', [[0, 200]]], ['erst nach oben, dann nach unten ziehen', [[0, -20], [0, 200]]]]) {
       g = await tippen();
-      if (!g.fokus || !g.tastatur) { E(`${nr('B10', 'D-10')} Vorbereitung: nach dem Antippen von ${field} ${g.fokus ? '' : 'kein Fokus '}${g.tastatur ? '' : 'keine Tastatur'}`); break; }
+      if (!g.fokus || !g.tastatur) { E(`${nr('D-10')} Vorbereitung: nach dem Antippen von ${field} ${g.fokus ? '' : 'kein Fokus '}${g.tastatur ? '' : 'keine Tastatur'}`); break; }
       // R-4.5 (seit 4.32.2, APD-73, P-69/3 quer): über dem Feld bleibt Platz für Fokus-Umrandung und Schatten
-      if (art === 'nach unten ziehen' && !g.hoch && g.abstand < g.ring - 1) E(`${nr('B10', 'D-10')} ${field} mit Fokus steht ${g.abstand} px unter dem oberen Rand des Inhalts – Fokus-Umrandung und Schatten (${g.ring} px) oben abgeschnitten`);
+      if (art === 'nach unten ziehen' && !g.hoch && g.abstand < g.ring - 1) E(`${nr('D-10')} ${field} mit Fokus steht ${g.abstand} px unter dem oberen Rand des Inhalts – Fokus-Umrandung und Schatten (${g.ring} px) oben abgeschnitten`);
       if (g.gerollt > 0 && g.daneben) {
         // als Berührung (Zeigerereignisse in der Seite, je 16 ms wie gemessen): ein Mausklick auf den Inhalt nimmt dem Feld in Chromium
         // schon beim Drücken den Fokus – am Gerät nicht, sonst wäre der Fall nie rot
@@ -2312,31 +2399,48 @@ export async function checkSheet(p, { open, change = null, field = null, ok = nu
         await wait(p, 160); m = await lage();
         await p.evaluate(({ x, y, wege }) => { window.__b19('pointerup', x, y + wege.at(-1)[1], 99); delete window.__b19; }, { ...g.daneben, wege }); await ruhig();
         l = await lage();
-        if (l.fokus) E(`${nr('B19', 'D-10')} im gerollten Inhalt ${art} schließt die Tastatur nicht`);
-        if (m.t) E(`${nr('B19', 'D-10')} im gerollten Inhalt bei offener Tastatur (${art}) folgt das Blatt dem Finger (${m.t} px)`);
-        if (!l.open) { E(`${nr('B19', 'D-10')} im gerollten Inhalt bei offener Tastatur (${art}) schließt Ziehen das Fenster`); await auf(); await change(); await wait(p); }
-        else if (l.pop.length) { E(`${nr('B19', 'D-10')} im gerollten Inhalt bei offener Tastatur (${art}) fragt Ziehen (${l.pop.join(' · ')})`); await p.locator('.pop button', { hasText: 'Weiter bearbeiten' }).click(); await ruhig(); }
+        if (l.fokus) E(`${nr('D-10')} im gerollten Inhalt ${art} schließt die Tastatur nicht`);
+        if (m.t) E(`${nr('D-10')} im gerollten Inhalt bei offener Tastatur (${art}) folgt das Fenster dem Finger (${m.t} px)`);
+        if (!l.open) { E(`${nr('D-10')} im gerollten Inhalt bei offener Tastatur (${art}) schließt Ziehen das Fenster`); await auf(); await change(); await wait(p); }
+        else if (l.pop.length) { E(`${nr('D-10')} im gerollten Inhalt bei offener Tastatur (${art}) fragt Ziehen (${l.pop.join(' · ')})`); await p.locator('.pop button', { hasText: 'Weiter bearbeiten' }).click(); await ruhig(); }
       }
       await tastaturZu();
     }
-    // B10 mit Änderung auf einem Feld nach unten ziehen: ein Zug – Tastatur zu, das Blatt folgt zäh, federt zurück und fragt
+    // APD-72/D-10 mit Änderung auf einem Feld nach unten ziehen: ein Zug – Tastatur zu, das Fenster folgt zäh, federt zurück und fragt
     g = await tippen();
     const w = `bei offener Tastatur${g.gerollt ? ` (Inhalt um ${g.gerollt} px gerollt)` : ''}`;
-    m = await zieh(g.feld, 0, Math.round(l.h * 0.5));
+    m = await zieh(g.feld, 0, Math.round(Math.min(l.h * 0.5, l.h - g.feld.y - 4)));
     await tastaturZu();
     l = await lage();
-    if (l.fokus) E(`${nr('B10', 'D-10')} nach unten ziehen auf einem Feld ${w} schließt die Tastatur nicht (Feld behält den Fokus)`);
-    if (m.t < 20) E(`${nr('B10', 'D-10')} ein Zug auf einem Feld ${w} zieht das Blatt nicht (${m.t} px) – wie am Kopf erwartet`);
-    if (!l.open) E(`${nr('B10', 'D-10')} mit Änderungen schließt Ziehen auf einem Feld ${w} das Fenster ohne Rückfrage`);
-    else if (!l.pop.some(t => /Änderungen verwerfen/.test(t))) E(`${nr('B10', 'D-10')} mit Änderungen fragt ein Zug auf einem Feld ${w} nicht ‚Änderungen verwerfen‘${l.pop.length ? ` (${l.pop.join(' · ')})` : ''}`);
-    else {   // B9: ‚Änderungen verwerfen‘ schließt
+    if (l.fokus) E(`${nr('D-10')} nach unten ziehen auf einem Feld ${w} schließt die Tastatur nicht (Feld behält den Fokus)`);
+    if (m.t < 20) E(`${nr('D-10')} ein Zug auf einem Feld ${w} zieht das Fenster nicht (${m.t} px) – wie am Kopf erwartet`);
+    if (!l.open) E(`${nr('D-10')} mit Änderungen schließt Ziehen auf einem Feld ${w} das Fenster ohne Rückfrage`);
+    else if (!l.pop.some(t => /Änderungen verwerfen/.test(t))) E(`${nr('D-10')} mit Änderungen fragt ein Zug auf einem Feld ${w} nicht ‚Änderungen verwerfen‘${l.pop.length ? ` (${l.pop.join(' · ')})` : ''}`);
+    else {   // APD-72/D-9: ‚Änderungen verwerfen‘ schließt
       await p.locator('.pop button', { hasText: 'Änderungen verwerfen' }).click(); await ruhig();
-      await weg(`${nr('B9', 'D-9')} ‚Änderungen verwerfen‘`);
+      await weg(`${nr('D-9')} ‚Änderungen verwerfen‘`);
     }
     if (eigen) { await p.evaluate(() => window.__safari?.aus()); await wait(p, 300); }
   }
   await zu();
   return errors;
+}
+// Gegenprobe APD-151/M-18 (PRUEF_GEGENPROBE=fenster:M-18, vor dem Laden der Seite fensterGegenprobe(p)): die Stelle ‚Mitte‘ in placeDialogs setzt
+// das Fenster am iPhone wieder unten an – APD-151/M-1 (und im iPhone quer M-10) muss rot werden. Die Stelle steht genau einmal im Arbeitsstand.
+export const FENSTER_GEGENPROBEN = {
+  'M-18': ['ui.js', "    d.style.top = Math.round(top + oben + Math.max(0, (h - oben - unten - d.offsetHeight) / 2)) + 'px';",
+    "    d.style.top = Math.round(isPhone() ? top + h - d.offsetHeight : top + oben + Math.max(0, (h - oben - unten - d.offsetHeight) / 2)) + 'px';"],
+};
+export async function fensterGegenprobe(p) {
+  const m = /^fenster:(M-\d+)$/.exec(process.env.PRUEF_GEGENPROBE || ''), g = m && FENSTER_GEGENPROBEN[m[1]];
+  if (!g) return false;
+  const [datei, alt, neu] = g, { readFileSync } = await import('node:fs');
+  await p.route(new RegExp(`/(fassung/\\d+\\.\\d+\\.\\d+|v\\d+)/${datei.replace('.', '\\.')}(\\?.*)?$`), r => {
+    const text = readFileSync(decodeURIComponent(new URL(r.request().url()).pathname), 'utf8');
+    if (text.split(alt).length !== 2) throw new Error(`Gegenprobe ${m[1]}: Stelle in ${datei} nicht gefunden`);
+    return r.fulfill({ body: text.replace(alt, neu), contentType: datei.endsWith('.css') ? 'text/css' : 'text/javascript' });
+  });
+  return true;
 }
 
 // R-3.5 (seit 4.33.0, APD-76; Testfall-Liste arbeit/APD-76 Testfall-Liste.md L1–L4, L8): langes Drücken gilt nur, solange der Finger still steht –

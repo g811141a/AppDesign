@@ -1,6 +1,6 @@
 # Zusammenarbeit allgemein
 
-**Version 3.20.0** · Stand 28.11.2026
+**Version 3.21.0** · Stand 28.11.2026
 
 Regeln für die Zusammenarbeit mit Claude bei allen Web-Apps für iPad und iPhone von g811141a. Die Datei liegt im Design-Repo **AppDesign**
 (g811141a/AppDesign); App-Eigenes steht in der `CLAUDE.md` des App-Repos. **Abschnitt 0 ist das Arbeitsmodell** (oben der Kasten ‚Immer‘ und ‚Jede
@@ -179,6 +179,11 @@ Ziel: nichts vergessen, Fehler finden, bevor der Nutzer sie findet, schnell und 
     steht, gibt es in der nächsten Sitzung nicht. Prüfung: Selbstkontrolle.
 17. **Rückmeldung kurz:** Nummer, ‚nicht ok‘ und ein Stichwort genügen; bei Unklarem fragt Claude nach. Prüfung:
     Selbstkontrolle.
+30. **Hilfsagenten sichern Zwischenstände:** Jeder Auftrag an einen Hilfsagenten verlangt, den Stand nach jedem fertigen Teilschritt (spätestens alle
+    20–30 min) und vor jedem langen Prüflauf zu sichern. Dazu gehören eine Stand-Datei `arbeit/<Thema> <Chatnummer> Stand Hilfsagenten.md` (erledigt, gerade dran,
+    nächste Schritte, Prüfungen mit Ergebnis) und nach Änderungen an AppDesign `node werkzeug/veroeffentlichen.mjs fassung`. Danach kommen Commit und Push
+    auf den Vorbereitungs- bzw. Arbeitszweig. Bricht ein Hilfsagent ab (z. B. an der Nutzungsgrenze), setzt Claude ihn fort (`SendMessage`), statt neu zu beginnen. Der Hilfsagent
+    liest dann zuerst die Stand-Datei und `git status`. Prüfung: Selbstkontrolle.
 
 **F. Widerspruch**
 

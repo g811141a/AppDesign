@@ -41,7 +41,7 @@ function randOben() {
   else if (randEigen) { randEigen = false; if (root.getPropertyValue('--safe-top') === '0px') root.removeProperty('--safe-top'); return true; }
   return false;
 }
-// Ändert sich der Rand, stellt placeDialogs das Blatt sofort neu (es steht über style.top, R-4.6)
+// Ändert sich der Rand, stellt placeDialogs das Fenster sofort neu (es steht über style.top, R-4.6)
 addEventListener('resize', () => { if (randOben()) placeDialogs(); drehRestWeg(); });
 /* ---------- Icons ---------- */
 
@@ -465,7 +465,7 @@ addEventListener('focusout', e => { if (e.target === ceFeld) { ceFeld = null; ce
 /* ---------- Bedienungshilfen (seit 4.35.0, APD-43 Teil 1: R-1.8 VoiceOver, R-4.7 Hardware-Tastatur, R-5.3, R-3.4) ---------- */
 
 // R-1.8 (V9, V13): Ergebnisse höflich ansagen – VoiceOver liest sie, sobald es fertig gesprochen hat. Der Ansage-Bereich liegt im
-// obersten offenen Fenster (Meldung, Fenster bzw. Blatt – außerhalb eines modalen Fensters hört VoiceOver nichts), sonst auf der
+// obersten offenen Fenster (Meldung bzw. Fenster – außerhalb eines modalen Fensters hört VoiceOver nichts), sonst auf der
 // Seite. delay (ms, seit 5.0.0; vorher warten): erst nach einer Pause (Suche beim Tippen: 700); eine neue Ansage ersetzt eine wartende. Gleicher Text noch
 // einmal: der Bereich wird erst geleert, damit VoiceOver ihn wieder liest. ‚Automatisch gespeichert‘ wird nie angesagt (V11).
 let ansageUhr = 0;
@@ -530,7 +530,7 @@ function focus(el) {
   return document.activeElement === el;
 }
 // V5, V6: nach Menü bzw. Sprechblase zurück auf ihre Schaltfläche; gibt es sie nicht mehr, auf die Kopfzeile (Fenster bzw. Seite)
-// R-1.8 (seit 4.50.1, APD-112): nach dem Schließen eines Fensters, Blatts bzw. einer Meldung zurück auf die Schaltfläche bzw. die Zeile, die es
+// R-1.8 (seit 4.50.1, APD-112): nach dem Schließen eines Fensters bzw. einer Meldung zurück auf die Schaltfläche bzw. die Zeile, die es
 // öffnete (sel: gemerkte Schaltfläche, sonst das Element, das beim Öffnen den Fokus hatte) – baut die App neu auf, das neue Element mit derselben
 // Kennung; gibt es keins: die Kopfzeile des Fensters darunter bzw. der Seite. Hat die App bzw. der Browser den Fokus schon sinnvoll gesetzt
 // (ein Element außerhalb geschlossener Fenster) oder ist ein Menü bzw. eine Sprechblase offen, bleibt er dort. Ring nur mit der Tastatur (K6).
@@ -1295,7 +1295,7 @@ addEventListener('click', e => {
 // schickt nach dem Loslassen einen Klick an das Element unter dem Aufsetzen, auch nach weitem Weg, als eigene Aufgabe 1–4 ms nach pointerup –
 // nach einem setTimeout 0 (Messung APD-106, Fall 3). Eine Sperre ‚Wischen tippt nie an‘ gilt darum wie beruehrWeg: an() bis zum Loslassen,
 // los() danach noch 400 ms für genau einen Klick (der erste verbraucht sie); das nächste Aufsetzen (frei()) und jede Taste geben frei.
-// Klicks, die ui.js selbst auslöst (eigenKlick, z. B. das x nach dem Ziehen des Blatts), sperrt sie nicht.
+// Klicks, die ui.js selbst auslöst (eigenKlick, z. B. das x nach dem Ziehen des Fensters), sperrt sie nicht.
 let klickEigen = false;
 function eigenKlick(el) { klickEigen = true; try { el.click(); } finally { klickEigen = false; } }
 function klickSperre() {
@@ -2194,7 +2194,7 @@ function openDialog(html, wide = false) {
   if (neu) dlgVorher = document.activeElement;   // R-1.8 (APD-112): Rückgabe des Fokus, wenn keine Schaltfläche gemerkt ist
   if (neu) showModalQuiet(dlg);
   placeDialogs();
-  if (neu) blattAuf();   // R-4.6 (seit 4.32.0, am iPad seit 4.38.0, APD-72): das Blatt bzw. Fenster gleitet von unten herein
+  if (neu) blattAuf();   // R-4.6 (seit 4.32.0, APD-72; seit 5.0.0 auf iPad und iPhone gleich, APD-151): das Fenster gleitet von unten herein
   dlg.querySelector('.dlg-body')?.scrollTo(0, 0);
   const x = dlg.querySelector('#dlgX');
   // x schließt; wurde etwas geändert, fragt eine Sprechblase, ob die Änderungen verworfen werden sollen.
@@ -2209,7 +2209,7 @@ function openDialog(html, wide = false) {
   requestAnimationFrame(growAll);
 }
 
-// R-1.8 (seit 4.35.0, V2): Fenster und Blatt heißen wie ihr Titel (aria-labelledby), die graue Zusatzzeile ist die Beschreibung.
+// R-1.8 (seit 4.35.0, V2): Fenster heißen wie ihr Titel (aria-labelledby), die graue Zusatzzeile ist die Beschreibung.
 function fensterName(d) {
   const h = d.querySelector('.dlg-head h3'), s = d.querySelector('.dlg-head .sub');
   if (h) { h.id ||= d.id + 'Titel'; d.setAttribute('aria-labelledby', h.id); } else d.removeAttribute('aria-labelledby');
@@ -2451,7 +2451,7 @@ dlg.addEventListener('change', refreshOk);
 dlg.addEventListener('click', () => setTimeout(refreshOk));
 // Escape wirkt wie das x.
 dlg.addEventListener('cancel', e => { e.preventDefault(); dlg.querySelector('#dlgX')?.click(); });
-// R-4.7 (seit 4.35.0, K5): ⌘. wie Esc – in Fenster, Meldung und Blatt (auch aus einem Feld); Tab und Umschalt+Tab bleiben im obersten
+// R-4.7 (seit 4.35.0, K5): ⌘. wie Esc – in Fenster und Meldung (auch aus einem Feld); Tab und Umschalt+Tab bleiben im obersten
 // Fenster (mit Umlauf)
 document.addEventListener('keydown', e => {
   if (e.defaultPrevented || tastenStapel.length) return;
@@ -2532,7 +2532,7 @@ function mountCap(root) {
 /* ---------- iPhone ---------- */
 
 // Wie Apple: auf dem iPhone (hoch und quer) und in sehr schmalen Fenstern gilt die kompakte Ansicht –
-// eine Seite nach der anderen, Fenster als Blatt (seit 4.32.0, R-4.6). <html> bekommt dann die Klasse 'phone'.
+// eine Seite nach der anderen; Fenster stehen wie am iPad in der Mitte (R-4.6, seit 5.0.0, APD-151 – 4.32.0 bis 4.71.1 als Blatt). <html> bekommt dann die Klasse 'phone'.
 // Die App fragt isPhone() und baut ihre Seiten danach; bei einem Wechsel ruft ihr resize-Handler render().
 // Seit 4.28.1 (APD-36): die Höhe ohne Tastatur zählt (APD-36/S-3: verschiebt Safari den sichtbaren Bereich, wird innerHeight kleiner – das
 // iPad galt mit offener Tastatur als iPhone, das Fenster sprang an den linken Rand).
@@ -3359,23 +3359,24 @@ document.addEventListener('keydown', e => {
   }
 });
 
-/* ---------- Blatt auf dem iPhone (seit 4.32.0, APD-61 Teil 2, R-4.6) ---------- */
+/* ---------- Fenster in der Mitte, nach unten ziehen – auf iPad und iPhone gleich (R-4.6; seit 5.0.0, APD-151) ---------- */
 
-// Wie iOS 26 (‚Neuer Termin‘, Variante A ‚nur groß‘, Nutzer 23.10.2026; Testfall-Liste arbeit/APD-61 Teil 2 Testfall-Liste.md): im iPhone-Aufbau ist
-// jedes Fenster (#dlg) ein Blatt – es gleitet von unten bis knapp unter die Statusleiste, die Seite dahinter weicht verkleinert und
-// abgedunkelt zurück (quer: volle Höhe, die Seite bleibt). Nach unten ziehen schließt wie das x: am Kopf immer, im Inhalt, wenn er ganz
-// oben steht, ein schnelles Wischen genügt; mit Änderungen seit dem Öffnen (dlgDirty) zieht es sich zäh, federt zurück und fragt am x
-// (R-4.4). Bei offener Tastatur schließt der Zug nach unten zuerst die Tastatur; beginnt er auf einem Feld, zieht er im selben Zug das
-// Blatt wie am Kopf (seit 4.32.1, APD-71: R-4.5 hat den Inhalt gerollt, nicht der Nutzer – ein Feld, das selbst gerollt ist, rollt
-// weiter); im gerollten Inhalt daneben rollt er weiter. Antippen der Abdunkelung wirkt wie x. Meldungen (#msg)
-// bleiben kleine Fenster in der Mitte. Seit 4.38.0 (APD-72, Variante B, Testfall-Liste arbeit/APD-72 Testfall-Liste.md APD-72/D-1 bis APD-72/D-20) gilt
-// der Zug auch im iPad-Aufbau wie in iPadOS: das Fenster bleibt in der Mitte, gleitet beim Öffnen und Schließen von unten, beim Ziehen
-// fährt nur das Fenster mit, die Abdunkelung wird heller, die Seite bleibt; Antippen der Abdunkelung schließt dort nicht (wie ein
-// Formblatt in iPadOS). Entschieden nach 8 px, deutlich senkrecht (1,2 × so weit
-// wie waagerecht); waagerecht rollende Bereiche behalten ihr Rollen. Beim Loslassen zählt, wo das Blatt mit dem Tempo auslaufen würde.
-// Je Bild nur translate, scale und opacity (Web-Animation, damit die Prüfungen auf ihr Ende warten); ‚Bewegung reduzieren‘: Überblenden,
-// das Ziehen folgt weiter dem Finger. Das Schließen bleibt sofort (dlg.close, Häkchen): ein Abbild des Blatts gleitet hinaus.
-const BLATT_ENTSCHEID = 8, BLATT_SENKRECHT = 1.2, BLATT_ZAEH = 0.3, BLATT_DUNKEL = 0.3, BLATT_KLEINER = 0.07, BLATT_AUSLAUF = 400;
+// Wie ein Formblatt in iPadOS (z. B. ‚Neuer Kontakt‘; APD-72 Variante B, Testfall-Liste arbeit/APD-72 Testfall-Liste.md APD-72/D-1 bis APD-72/D-21): jedes
+// Fenster (#dlg) steht im sichtbaren Bereich in der Mitte, so hoch wie sein Inhalt (placeDialogs), gleitet beim Öffnen und Schließen von unten,
+// beim Ziehen fährt nur das Fenster mit, die Abdunkelung (0,35) wird heller, die Seite bleibt. Nach unten ziehen schließt wie das x: am Kopf immer,
+// im Inhalt, wenn er ganz oben steht, ein schnelles Wischen genügt; mit Änderungen seit dem Öffnen (dlgDirty) zieht es sich zäh, federt zurück und
+// fragt am x (R-4.4). Bei offener Tastatur schließt der Zug nach unten zuerst die Tastatur; beginnt er auf einem Feld, zieht er im selben Zug das
+// Fenster wie am Kopf (seit 4.32.1, APD-71: R-4.5 hat den Inhalt gerollt, nicht der Nutzer – ein Feld, das selbst gerollt ist, rollt weiter); im
+// gerollten Inhalt daneben rollt er weiter. Antippen der Abdunkelung schließt nicht (wie iPadOS). Meldungen (#msg) bleiben kleine Fenster in der Mitte.
+// Seit 5.0.0 (APD-151/J-2, J-3; Testfall-Liste arbeit/APD-151 Testfall-Liste.md APD-151/M-1 bis APD-151/M-20) gilt das auch im iPhone-Aufbau, hoch
+// und quer – bis 4.71.1 war das Fenster dort ein Blatt von knapp unter der Statusleiste bis unten (APD-61 Teil 2), die Seite wich verkleinert zurück
+// und Antippen der Abdunkelung schloss. Abweichung von Apple, bewusst: dort liegen Blätter am iPhone unten an (R-1.1, APD-151/J-2).
+// Entschieden nach 8 px, deutlich senkrecht (1,2 × so weit wie waagerecht); waagerecht rollende Bereiche behalten ihr Rollen. Beim Loslassen zählt,
+// wo das Fenster mit dem Tempo auslaufen würde. Je Bild nur translate und opacity (Web-Animation, damit die Prüfungen auf ihr Ende warten);
+// ‚Bewegung reduzieren‘: Überblenden, das Ziehen folgt weiter dem Finger. Das Schließen bleibt sofort (dlg.close, Häkchen): ein Abbild des
+// Fensters gleitet hinaus. Die Namen blatt… sind innere Namen von ui.js (bis 4.71.1 ‚Blatt‘), die Klassen html.blatt, .blatt-schleier, .blatt-geist,
+// .blatt-faehrt und .blatt-zieht bleiben (Prüfungen der Apps lesen sie).
+const BLATT_ENTSCHEID = 8, BLATT_SENKRECHT = 1.2, BLATT_ZAEH = 0.3, BLATT_DUNKEL = 0.35, BLATT_AUSLAUF = 400;
 // Kurven und Dauern seit 4.57.0 nach R-1.12 (GLEIT_FEDER, GLEIT_ZU; bis 4.56.0 BLATT_KURVE = cubic-bezier(.32,.72,0,1))
 const blattSchleier = document.createElement('div');
 blattSchleier.className = 'blatt-schleier';
@@ -3383,31 +3384,18 @@ blattSchleier.setAttribute('aria-hidden', 'true');
 document.body.append(blattSchleier);
 let blattY = 0, blattZug = null, blattLauf = null, blattGeistEl = null;
 const blattSperre = klickSperre();   // seit 4.50.0 (APD-108) statt blattKlickWeg
-const blattQuer = () => window.matchMedia?.('(orientation: landscape) and (max-height: 500px)').matches;
-// Oberkante des Blatts im sichtbaren Bereich: hoch 10 px unter der Statusleiste, quer 8 px
-const blattOben = () => !isPhone() ? 0 : blattQuer() ? 8 : Math.round(safeRand().top + 10);
-// Versatz, bei dem das Blatt bzw. Fenster unten ganz hinaus ist – am iPad (APD-72) vom Platz des Fensters in der Mitte aus
-const blattZu = () => Math.max(innerHeight, seitenHoehe()) - (isPhone() ? blattOben() : Math.min(innerHeight - 1, parseFloat(dlg.style.top) || 0));
-// Abdunkelung: am iPhone wie iOS, am iPad so dunkel wie bisher ::backdrop (design.css)
-const blattDunkel = () => isPhone() ? BLATT_DUNKEL : 0.35;
-// die Seite dahinter: was fest steht und zu sehen ist (Inhalt bzw. Startliste)
-const blattSeite = () => [document.getElementById('app'), document.getElementById('side')]
-  .filter(e => e && e.getClientRects().length && getComputedStyle(e).position === 'fixed');
-// Bild zum Versatz o (0 = offen, blattZu() = unten hinaus): Blatt, Abdunkeln und die Seite – sie weicht nur am iPhone hoch zurück
+// Versatz, bei dem das Fenster unten ganz hinaus ist – vom Platz des Fensters in der Mitte aus (APD-72; seit 5.0.0 auch am iPhone, APD-151)
+const blattZu = () => Math.max(innerHeight, seitenHoehe()) - Math.min(innerHeight - 1, parseFloat(dlg.style.top) || 0);
+// Bild zum Versatz o (0 = offen, blattZu() = unten hinaus): Fenster und Abdunkelung – die Seite dahinter bleibt (seit 5.0.0 auch am iPhone, APD-151)
 function blattBild(o) {
-  // R-1.9 (seit 4.35.0, M5): mit ‚Bewegung reduzieren‘ weicht die Seite nicht verkleinert zurück (kein Zoomen), sie dunkelt nur ab
-  const zu = blattZu(), q = Math.max(0, Math.min(1, 1 - o / zu)), s = !isPhone() || blattQuer() || bewegungRuhig() ? 0 : q;
-  return { blatt: `0 ${Math.round(o)}px`, schleier: +(blattDunkel() * q).toFixed(3), s,
-    seite: { translate: `0px ${(s * Math.max(0, blattOben() - 12)).toFixed(1)}px`, scale: (1 - BLATT_KLEINER * s).toFixed(4) } };
+  const q = Math.max(0, Math.min(1, 1 - o / blattZu()));
+  return { blatt: `0 ${Math.round(o)}px`, schleier: +(BLATT_DUNKEL * q).toFixed(3) };
 }
 function blattSetze(o) {
   blattY = o;
-  const b = blattBild(o), H = document.documentElement;
+  const b = blattBild(o);
   dlg.style.translate = o ? b.blatt : '';
   blattSchleier.style.opacity = b.schleier;
-  const seite = blattSeite();
-  for (const e of seite) { e.style.translate = b.s ? b.seite.translate : ''; e.style.scale = b.s ? b.seite.scale : ''; e.classList.toggle('blatt-seite', b.s > 0); }
-  H.classList.toggle('blatt-zurueck', b.s > 0 && seite.length > 0);
 }
 // laufende Bewegung an der Stelle anhalten, an der sie gerade ist (Anfassen mitten im Gleiten)
 function blattStopp() {
@@ -3445,13 +3433,11 @@ function blattFahre(nach, fertig, dauer) {
   const zu = nach > von;
   dauer = dauer || Math.max(GLEIT_MIN_MS, (zu ? GLEIT_ZU_MS : GLEIT_AUF_MS) * Math.min(1, Math.abs(nach - von) / Math.max(1, blattZu())));
   const a = blattBild(von), b = blattBild(nach);
-  blattSetze(Math.min(von, nach));   // die Seite weicht schon während der Bewegung zurück (runde Ecken, Hintergrund)
-  blattAnimiere([[dlg, { translate: a.blatt }, { translate: b.blatt }], [blattSchleier, { opacity: a.schleier }, { opacity: b.schleier }],
-    ...blattSeiteTeile(a, b)], dauer, zu ? GLEIT_ZU : GLEIT_FEDER, () => { blattSetze(nach); fertig?.(); });
+  blattSetze(Math.min(von, nach));
+  blattAnimiere([[dlg, { translate: a.blatt }, { translate: b.blatt }], [blattSchleier, { opacity: a.schleier }, { opacity: b.schleier }]],
+    dauer, zu ? GLEIT_ZU : GLEIT_FEDER, () => { blattSetze(nach); fertig?.(); });
 }
-// die Seite bewegt sich nur, wenn sie zurückweicht (iPhone hoch) – am iPad und quer bleibt sie ohne Animation (APD-72/D-2)
-const blattSeiteTeile = (a, b) => a.s || b.s ? blattSeite().map(e => [e, a.seite, b.seite]) : [];
-// Öffnen (openDialog): von unten herein (seit 4.38.0 auch am iPad, APD-72/D-1); ‚Bewegung reduzieren‘: überblenden
+// Öffnen (openDialog): von unten herein (APD-72/D-1); ‚Bewegung reduzieren‘: überblenden
 function blattAuf() {
   blattStopp();
   if (!dlg.open) return;
@@ -3470,10 +3456,9 @@ function blattAus() {
   blattY = 0;
   dlg.style.translate = '';
   blattSchleier.style.opacity = 0;
-  for (const e of [document.getElementById('app'), document.getElementById('side')]) if (e) { e.style.translate = ''; e.style.scale = ''; e.classList.remove('blatt-seite'); }
-  document.documentElement.classList.remove('blatt', 'blatt-zurueck', 'blatt-zieht');
+  document.documentElement.classList.remove('blatt', 'blatt-zieht');
 }
-// Abbild des Blatts beim Schließen: dlg.close() bleibt sofort (die App baut danach neu auf), das Abbild gleitet hinaus
+// Abbild des Fensters beim Schließen: dlg.close() bleibt sofort (die App baut danach neu auf), das Abbild gleitet hinaus
 function blattGeist() {
   if (blattGeistEl || !dlg.open || !document.documentElement.classList.contains('blatt')) return;
   const r = dlg.getBoundingClientRect();
@@ -3494,16 +3479,16 @@ function blattGeist() {
     : g.animate([{ translate: `0 ${Math.round(blattY)}px` }, { translate: `0 ${Math.round(blattZu())}px` }], { duration: GLEIT_ZU_MS, easing: GLEIT_ZU, fill: 'forwards' });   // R-1.12 (seit 4.57.0): 0,25 s ease-in-out
   a.onfinish = weg; a.oncancel = weg;
 }
-// geschlossen: Abdunkelung und Seite zurück, gleichzeitig mit dem Abbild
+// geschlossen: die Abdunkelung geht, gleichzeitig mit dem Abbild
 function blattWeg() {
   const H = document.documentElement;
   if (!H.classList.contains('blatt')) return;
   blattZug = null;
   blattStopp();
-  const von = blattBild(blattY), nach = blattBild(blattZu());
+  const von = blattBild(blattY);
   H.classList.remove('blatt-zieht');
-  if (!blattSeite().length && !von.schleier) return blattAus();
-  blattAnimiere([[blattSchleier, { opacity: von.schleier }, { opacity: 0 }], ...blattSeiteTeile(von, nach)],
+  if (!von.schleier) return blattAus();
+  blattAnimiere([[blattSchleier, { opacity: von.schleier }, { opacity: 0 }]],
     bewegungRuhig() ? 200 : GLEIT_ZU_MS, bewegungRuhig() ? 'ease-out' : GLEIT_ZU, blattAus);   // R-1.12 (seit 4.57.0): gleich mit dem Abbild (bis 4.56.0 0,38 s)
 }
 const dlgSchliessen = dlg.close.bind(dlg);
@@ -3511,18 +3496,18 @@ dlg.close = v => { blattGeist(); dlgSchliessen(v); };
 // Häkchen in <form method="dialog">: der Browser schließt nach dem submit-Ereignis
 dlg.addEventListener('submit', e => { if (!e.defaultPrevented && e.target.getAttribute?.('method') === 'dialog') blattGeist(); });
 dlg.addEventListener('close', () => { if (!dlg.open) blattWeg(); });
-// Drehen bzw. anderer Aufbau mit offenem Blatt: bleibt offen in der passenden Form (quer immer volle Höhe), am iPad in der Mitte (APD-72/D-15)
+// Drehen bzw. anderer Aufbau mit offenem Fenster: bleibt offen in der Mitte (APD-72/D-15, APD-151/M-11; placeDialogs stellt es)
 window.addEventListener('resize', () => {
   if (!dlg.open) return;
   document.documentElement.classList.add('blatt');
   if (!blattLauf && !blattZug?.aktiv) blattSetze(blattY);
 });
 const blattX = () => dlg.querySelector('#dlgX');
-// wie das x (Escape, Abdunkelung am iPhone, Ziehen): mit Änderungen fragt die Sprechblase am x
+// wie das x (Ziehen): mit Änderungen fragt die Sprechblase am x
 function blattWieX() { const x = blattX(); if (x) eigenKlick(x); else dlg.close('cancel'); }
 const blattDraussen = e => { if (e.target !== dlg) return false; const r = dlg.getBoundingClientRect();
   return e.clientY < r.top || e.clientY > r.bottom || e.clientX < r.left || e.clientX > r.right; };
-dlg.addEventListener('click', e => { if (blattDraussen(e) && isPhone() && !blattSperre.aktiv() && !document.querySelector('.pop, .menu')) blattWieX(); });
+// Antippen der Abdunkelung schließt nicht, auf iPad und iPhone (wie iPadOS; seit 5.0.0, APD-151/J-3 Nr. 4 – bis 4.71.1 am iPhone wie x)
 window.addEventListener('click', e => { if (blattSperre.nimm()) { e.preventDefault(); e.stopPropagation(); } }, true);
 window.addEventListener('pointerdown', e => { if (e.isPrimary) blattSperre.frei(); }, true);
 // steht der Inhalt unter dem Finger schon ganz oben? (auch Bereiche mit eigenem senkrechten Rollen)
@@ -3614,7 +3599,7 @@ function seitenHoehe() { return innerHeight + (scrollView.el ? Math.max(0, scrol
 function kbOffen() { return !!window.visualViewport && visualViewport.height < seitenHoehe() - 80; }
 // Felder, die eine Tastatur öffnen (Datum, Uhrzeit, Auswahl und Schalter öffnen keine)
 const FELD = 'textarea, input:not([type=date],[type=time],[type=datetime-local],[type=month],[type=checkbox],[type=radio],[type=button],[type=submit],[type=reset],[type=range],[type=color],[type=file],[type=hidden]):not([readonly])';
-let dlgFest = 0;   // seit 4.28.1: Höhe des iPad-Fensters vor dem Antippen – der Platz unter dem Inhalt macht es nicht höher
+let dlgFest = 0;   // seit 4.28.1: Höhe des Fensters vor dem Antippen (seit 5.0.0 auch am iPhone, APD-151) – der Platz unter dem Inhalt macht es nicht höher
 // R-1.7 (seit 4.29.0, APD-63): sichere Ränder in px – aus den Variablen --safe-… (design.css), über ein unsichtbares Element gelesen
 let safeEl = null;
 function safeRand() {
@@ -3639,7 +3624,6 @@ function placeDialogs() {
   // alt (iPhone) – mit Rollbereich ist scrollY nur Safaris Verschiebung, darum zählt der kleinere Wert
   const top = vv ? Math.max(0, scrollView.el ? Math.min(vv.offsetTop, scrollY) : vv.offsetTop) : 0;
   const h = vv ? vv.height : innerHeight;
-  const full = isPhone();
   const root = document.documentElement.style;
   const dTop = top - (placeDialogs.top ?? top); placeDialogs.top = top;
   root.setProperty('--vv-top', top + 'px');
@@ -3647,18 +3631,14 @@ function placeDialogs() {
   root.setProperty('--vv-h', Math.round(h) + 'px');
   // Abstand der Tastatur vom unteren Rand: die untere Leiste (iPhone) und die Kapsel bleiben darüber sichtbar.
   root.setProperty('--vv-bottom', Math.max(0, Math.round(seitenHoehe() - top - h)) + 'px');
-  // iPad-Fenster (seit 4.29.0, 3 APD-63/S-6): oben und unten mindestens 10 px, aber nie unter Statusleiste oder Home-Leiste
-  // (bei offener Tastatur liegt die Home-Leiste unter ihr)
+  // Fenster (seit 4.29.0, 3 APD-63/S-6; seit 5.0.0 auch am iPhone, APD-151): oben und unten mindestens 10 px, aber nie unter Statusleiste oder
+  // Home-Leiste (bei offener Tastatur liegt die Home-Leiste unter ihr)
   const s = safeRand(), oben = Math.max(10, s.top), unten = Math.max(10, kbOffen() ? 0 : s.bottom);
-  // R-4.6 (seit 4.32.0): im iPhone-Aufbau ist das Fenster ein Blatt – es beginnt knapp unter der Statusleiste (blattOben)
-  const blatt = full ? blattOben() : 0;
-  const max = full ? h - blatt : h - oben - unten;
-  root.setProperty('--dlg-max', Math.max(200, !full && dlgFest ? Math.min(max, dlgFest) : max) + 'px');
+  const max = h - oben - unten;
+  root.setProperty('--dlg-max', Math.max(200, dlgFest ? Math.min(max, dlgFest) : max) + 'px');
   // Die Meldung (#msg, AD-Bean alert) stellt sich seit 4.70.2 (P-124/F-1) selbst (layout(): Breite, Höhe, Lage) – hier nur das Fenster (#dlg)
   [dlg].forEach(d => {
     if (!d.open) return;
-    // iPhone: das Blatt reicht bis zum unteren Rand des sichtbaren Bereichs (bei offener Tastatur bis zur Tastatur, R-4.5).
-    if (full && d === dlg) { d.style.margin = '0'; d.style.bottom = 'auto'; d.style.top = Math.round(top + blatt) + 'px'; return; }
     // Fenster im sichtbaren Bereich zentrieren (bei offener Tastatur oberhalb der Tastatur). Seit 4.28.1 (APD-36): steht es dort
     // schon ganz, bleibt es stehen – auch nach dem Schließen der Tastatur, solange ein Feld darin den Fokus hat.
     d.style.margin = '0 auto';
@@ -3669,6 +3649,7 @@ function placeDialogs() {
       d.style.top = Math.round(parseFloat(d.style.top) + dTop) + 'px'; void d.offsetHeight; if (g) d.classList.add('gleitet'); }
     const jetzt = parseFloat(d.style.top), ganz = jetzt >= top + oben - 1 && jetzt + d.offsetHeight <= top + h - unten + 1;
     if (ganz && (kbOffen() || d.contains(document.activeElement) && document.activeElement.matches(FELD))) return;
+    // Mitte (R-4.6, seit 5.0.0 auch am iPhone hoch und quer, APD-151 – Gegenprobe APD-151/M-18 setzt es hier am iPhone wieder unten an)
     d.style.top = Math.round(top + oben + Math.max(0, (h - oben - unten - d.offsetHeight) / 2)) + 'px';
   });
   alertLayouts.forEach(layout => layout());
@@ -3764,9 +3745,9 @@ function noetig(f, c) {
   const offen = kbOffen(), kb = offen ? seitenHoehe() - visualViewport.height : kbHoehe(f), sichtbar = seitenHoehe() - kb;
   const r = f.getBoundingClientRect(), b = c.getBoundingClientRect(), rand = Math.max(4, fokusRand(f)), d = c.closest('dialog');
   const abstand = d ? 16 : 28;
-  // iPad-Fenster: es gleitet mit der Tastatur in die Mitte darüber (placeDialogs) – zählt dort; Safari liest die Lage aber jetzt (APD-36/S-7)
+  // Fenster: es gleitet mit der Tastatur in die Mitte darüber (placeDialogs) – zählt dort; Safari liest die Lage aber jetzt (APD-36/S-7)
   let dy = 0, untenNachher = Math.min(sichtbar, b.bottom);
-  if (d && !isPhone() && !offen) {
+  if (d && !offen) {
     const s = safeRand(), o = Math.max(10, s.top), dr = d.getBoundingClientRect(), dh = Math.min(d.offsetHeight, sichtbar - o - 10);   // placeDialogs: unten 10 px bei offener Tastatur
     const neu = o + Math.max(0, (sichtbar - o - 10 - dh) / 2);
     dy = neu - dr.top; untenNachher = Math.min(sichtbar, neu + dh - (dr.bottom - b.bottom));
@@ -3783,11 +3764,11 @@ function noetig(f, c) {
 // Feld ganz über der Tastatur (R-4.5, seit 4.28.0): 16 px darüber; reicht der Platz nicht, oben unter Kopf- bzw. Suchzeile mit Platz für
 // Umrandung und Schatten (seit 4.32.2, fokusRand).
 // Rahmen und Fenster enden über der Tastatur – Feld und Bereich werden gegeneinander gemessen (Safari wie Chromium). Gleitet das
-// iPad-Fenster noch, zählt seine neue Lage.
+// Fenster noch, zählt seine neue Lage.
 function feldZeigen(f) {
   const c = behaelter(f);
   if (!c) return;
-  const d = f.closest('dialog'), dy = d && !isPhone() ? (parseFloat(d.style.top) || 0) - d.getBoundingClientRect().top : 0;
+  const d = f.closest('dialog'), dy = d ? (parseFloat(d.style.top) || 0) - d.getBoundingClientRect().top : 0;
   const r = f.getBoundingClientRect(), b = c.getBoundingClientRect(), oben = b.top + dy, unten = b.bottom + dy - 16, ro = r.top + dy, ru = r.bottom + dy;
   const rand = fokusRand(f);
   if (f.tagName === 'TEXTAREA' && r.height > unten - oben - rand) {
@@ -3822,7 +3803,7 @@ document.addEventListener('focusin', e => {
   const n = noetig(f, c);
   measureLine(`V-3 ${messId(f)} rollt ${Math.round(n)}`);
   if (n <= 0) return;
-  if (c.closest('dialog') === dlg && !isPhone() && !dlgFest) { dlgFest = Math.round(dlg.offsetHeight); placeDialogs(); }
+  if (c.closest('dialog') === dlg && !dlgFest) { dlgFest = Math.round(dlg.offsetHeight); placeDialogs(); }
   reserveSpace(c, seitenHoehe());   // reichlich – gleich danach wieder knapp
   c.scrollTop += n;
   knapp(c);
@@ -3859,18 +3840,18 @@ document.addEventListener('input', e => {
   const f = e.target;
   if (f.tagName !== 'TEXTAREA' || !kbOffen() || document.activeElement !== f) return;
   requestAnimationFrame(() => { const c = behaelter(f); if (!c) return;
-    const d = f.closest('dialog'), dy = d && !isPhone() ? (parseFloat(d.style.top) || 0) - d.getBoundingClientRect().top : 0;
+    const d = f.closest('dialog'), dy = d ? (parseFloat(d.style.top) || 0) - d.getBoundingClientRect().top : 0;
     const b = c.getBoundingClientRect(), unten = Math.min(b.bottom + dy, visualViewport.offsetTop + visualViewport.height) - 16, z = cursorZeile(f), zu = z.bottom + z.lh / 2 + dy;
     if (zu > unten) { scrollBy(c, zu - unten); measureLine(`V-3 Cursor ${messId(f)} ${Math.round(zu - unten)}`); } });
 });
 // Jede Meldung von Safari (Tastatur auf und zu, sichtbarer Bereich verschoben): Rahmen und Fenster neu stellen, ohne dass ein Inhalt
-// rutscht – vor dem Wachsen des Rahmens Platz geben, sonst kürzt der Browser den Rollstand. Das iPad-Fenster gleitet mit (R-1.12).
+// rutscht – vor dem Wachsen des Rahmens Platz geben, sonst kürzt der Browser den Rollstand. Das Fenster gleitet mit (R-1.12).
 // Schließt die Tastatur (iPad: Tastatur-Taste), gibt das Feld den Fokus ab – erneutes Antippen ist dann ein gewöhnliches.
 function viewportResized() {
   const cs = [scrollView.el, dlg.open ? dlg.querySelector('.dlg-body') : null].filter(Boolean), y = cs.map(c => c.scrollTop);
   const offen = kbOffen(), f = document.activeElement, feld = f?.matches?.(FELD) ? f : null;
   // R-1.12 (seit 4.57.0, APD-127/B-2): hoch (Tastatur auf) mit der Feder 0,5 s, runter (.runter, Tastatur zu) ease-in-out 0,25 s (design.css)
-  if (dlg.open && !isPhone()) { dlg.classList.add('gleitet'); dlg.classList.toggle('runter', !offen); clearTimeout(viewportResized.t); viewportResized.t = setTimeout(() => dlg.classList.remove('gleitet', 'runter'), GLEIT_AUF_MS + 50); }
+  if (dlg.open) { dlg.classList.add('gleitet'); dlg.classList.toggle('runter', !offen); clearTimeout(viewportResized.t); viewportResized.t = setTimeout(() => dlg.classList.remove('gleitet', 'runter'), GLEIT_AUF_MS + 50); }
   // APD-115/N-13: wächst der Rahmen (Tastatur geht zu), bekommt jeder Rollbereich vorher Platz – sonst nur, wo schon Platz steht; Platz bei jeder
   // Meldung bräche das sanfte Rollen ab (‚Nach oben‘ bei offener Tastatur, APD-36/B-8)
   const waechst = kbWar && !offen, mit = cs.map(c => waechst || platzVon(c) > 0);
@@ -3882,7 +3863,20 @@ function viewportResized() {
     if (feld) feld.blur();
     if (nachKb) { const fn = nachKb; nachKb = null; fn(); }
   }
+  if (!offen) trimDialogSpace();
   kbWar = offen;
+}
+// R-4.5 (seit 5.0.0, APD-151/M-19, Aufgefallen Nr. 1 im Muster APD-151): nach dem Schließen der Tastatur ist das Fenster wieder so hoch wie vorher,
+// ohne leeren Platz unter dem Inhalt. Der Platz, den viewportResized beim Wachsen des Rahmens gibt (APD-115/N-13), machte es bis 4.71.1 bildschirmhoch
+// (Safari-Modell, iPad hoch: 454 → 1160 px) – passt der Inhalt ohne ihn, fällt er sofort weg, und das Fenster gleitet zurück in die Mitte (placeDialogs).
+// Langer Inhalt behält ihn, bis er beim Rollen schrumpft (wie bisher); ein Feld mit Fokus behält ihn ebenso.
+function trimDialogSpace() {
+  const c = dlg.open ? dlg.querySelector('.dlg-body') : null, a = document.activeElement, pl = c ? platzVon(c) : 0;
+  if (!pl || kbOffen() || (dlg.contains(a) && a.matches?.(FELD)) || c.scrollHeight - pl > c.clientHeight + 1) return;
+  c.style.removeProperty('--platz');
+  measureLine(`platz weg ${messId(c)} (Tastatur zu)`);
+  dlgFest = 0;
+  placeDialogs();
 }
 if (window.visualViewport) ['resize', 'scroll'].forEach(t => visualViewport.addEventListener(t, viewportResized));
 // APD-115/N-11: beim Schließen kommt Safaris ‚scroll‘ der Seite (scrollY 0) bis zu 400 ms vor ‚vv resize‘ – mit Rollbereich sofort neu stellen
