@@ -3,6 +3,24 @@
 Versionsnummer **Hauptversion.Nebenversion.Korrektur** – gleich der Version der Designrichtlinie
 allgemein. Hauptversion = neuer Ordner (`v5/`), Apps werden bewusst umgestellt.
 
+## 4.71.1 – 28.11.2026
+
+AppDesign 4.71.1 · Designrichtlinie allgemein 4.71.1 · Zusammenarbeit allgemein 3.20.0 · Reiselogbuch 3.59.3 (Fassung 4.71.1)
+
+**RLB-130 – Safari-Modell: feste Elemente bekommen ihre neue Größe erst nach `resize`** (Usertest P-128 fehlgeschlagen, Nutzer 28.11.2026; Messungen am iPad Pro 2024,
+Safari 27.2 – `arbeit/RLB-130/`, Auswertung `arbeit/RLB-130 Auswertung und Testfall-Liste.md`; Möglichkeit A und Bau-Frage mit Ja beantwortet 28.11.2026, Sitzung
+AppDesign 0009 – `arbeit/RLB-130 0009 Entscheidungen.md`; Wortlaut Designrichtlinie 13 freigegeben 28.11.2026, Sitzung AppDesign 0010; gebaut in Sitzung AppDesign 0010).
+
+- **`tests/safari.mjs` – `festNachResize(p, groesse, { sel, ms })` (neu, mit Kopfabsatz und Quelle):** setzt das Fenster auf die neue Größe; das feste Element `sel`
+  (Standard `#side`) behält über eine Stilregel seine alte Höhe bis `FEST_NACH` (4) ms nach dem ersten `resize` – wie am iPad gemessen (zurück quer blieb der Rollstand
+  der Liste auf dem Wert von hochkant: 231 → 0 → 0, 339 → 0 → 0, 303 → 135 → 135). Ohne `safariModell` nutzbar (iPad).
+- **Designrichtlinie 13:** neuer Punkt ‚Feste Elemente bekommen ihre neue Größe erst nach `resize` (iPad, Home-Bildschirm)‘ (Wortlaut freigegeben).
+- **Zusammenarbeit allgemein 3.20.0** (Wortlaut freigegeben 28.11.2026, Sitzung AppDesign 0009): 0 Nr. 25 Möglichkeiten der Umsetzung, 0 Nr. 1 vorhandene Prüfungen
+  erweitern, 0 Nr. 2 ‚Eine Bean wird einmal geprüft‘ (gilt mit dem Werkzeug aus APD-147).
+- AD-Bean: keine, weil nur Prüfung und Richtlinien.
+
+Usertest im Reiselogbuch: P-129 (Backlog des Reiselogbuchs).
+
 ## 4.71.0 – 27.11.2026
 
 AppDesign 4.71.0 · Designrichtlinie allgemein 4.71.0 · Zusammenarbeit allgemein 3.19.0 · Reiselogbuch 3.59.0 (Fassung 4.71.0)

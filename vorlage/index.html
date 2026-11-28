@@ -9,13 +9,13 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="theme-color" content="#f2f2f7">
 <title>Neue App</title>
-<!-- Vorlage für eine neue App (AppDesign 4.71.0) und zugleich die Prüfseite der Bausteine (Designrichtlinie 14, tests/pruefseite.mjs).
+<!-- Vorlage für eine neue App (AppDesign 4.71.1) und zugleich die Prüfseite der Bausteine (Designrichtlinie 14, tests/pruefseite.mjs).
      Eine kleine neutrale App mit Einträgen und Unterpunkten, gebaut wie das Reiselogbuch: Seitenleiste bzw. Startliste, Kopfzeile mit
      Teilen und Mehr, Rollbereich, ‚Nach oben / Ans Ende‘, Menüs, Kontextmenü, Löschen mit Sprechblase, Fenster, Suche, Backup und Abgleich,
      iPhone-Navigation. Daten in localStorage (neueapp.v1). Von ui.js nur Namen aus schnittstelle.json, Teil app (R-1.14).
      Im App-Repo liegt AppDesign daneben: ../AppDesign/fassung/X.Y.Z/… (R-10.3: ui.js und design.css aus der festen Fassung einbinden,
      auch in sw.js, AD_NEEDED = X.Y.Z). Für eine neue App: Namen, Daten und Texte ersetzen, manifest.json, Icons und sw.js ergänzen. -->
-<link rel="stylesheet" href="../fassung/4.71.0/design.css">
+<link rel="stylesheet" href="../fassung/4.71.1/design.css">
 <style>
   /* Nur, was zur App gehört – alles Gemeinsame kommt aus design.css */
   @media print { #app, #side, .side-shade, dialog, .fab { display: none !important; } }
@@ -32,14 +32,14 @@
 <dialog id="msg"></dialog>
 <input type="file" id="importFile" accept="application/json,.json" hidden>
 
-<script src="../fassung/4.71.0/ui.js"></script>
+<script src="../fassung/4.71.1/ui.js"></script>
 <script>
 'use strict';
 
 const APP_NAME = 'Neue App';
 const APP_VERSION = '0.1.0';
 // R-10.3: benötigte AppDesign-Fassung; ist eine andere geladen, erscheint beim Start ein Hinweis.
-const AD_NEEDED = '4.71.0';
+const AD_NEEDED = '4.71.1';
 const adLoaded = () => ({ js: typeof AD_VERSION === 'string' ? AD_VERSION : 'älter',
   css: getComputedStyle(document.documentElement).getPropertyValue('--ad-version').trim().replace(/"/g, '') || 'älter' });
 setTimeout(() => {
