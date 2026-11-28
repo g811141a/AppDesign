@@ -1,6 +1,6 @@
 # AppDesign – Hinweise für Claude
 
-**Version 2.14.0** · Stand 18.11.2026
+**Version 2.15.0** · Stand 28.11.2026
 
 ## Zuerst lesen (gezielt, Zusammenarbeit 0 Nr. 15)
 
@@ -18,8 +18,8 @@ Wiederholung.
 ## Technisch
 
 - **Feste Fassung** (R-10.3, Designrichtlinie 14): jede Version liegt unveränderlich in `fassung/X.Y.Z/`; jede App lädt genau
-  ihre Fassung (`../AppDesign/fassung/X.Y.Z/…`) und wird nur nach Rückfrage gehoben. `v4/` ist der Arbeitsstand (= neueste
-  Fassung), eine Hauptversion bekommt `v5/`. `AD_VERSION` (ui.js) und `--ad-version` (design.css) steigen mit jeder
+  ihre Fassung (`../AppDesign/fassung/X.Y.Z/…`) und wird nur nach Rückfrage gehoben. `v5/` ist der Arbeitsstand (= neueste
+  Fassung), `v4/` bleibt auf 4.71.1; eine Hauptversion bekommt `v6/`. `AD_VERSION` (ui.js) und `--ad-version` (design.css) steigen mit jeder
   AppDesign-Version (setzt das Skript).
 - **Prüfungen** in `tests/` (Designrichtlinie 17); sie laufen über die Prüfskripte der Apps (AppDesign liegt neben dem App-Repo),
   z. B. im Reiselogbuch `sh tests/alle.sh`. Während der Arbeit nur die betroffenen, genau ein Lauf in `… los` – Stufe Text oder voll (Zusammenarbeit 0 Nr. 2).
@@ -57,7 +57,7 @@ Wiederholung.
   (HEAD lose): committen und mit `git push origin HEAD:main` hochladen.
 - **Veröffentlichen** (Zusammenarbeit 0 Nr. 9): Vorbereitungs-Zweige `vorbereitung-X.Y.Z` in beiden Repos;
   `node werkzeug/veroeffentlichen.mjs vorbereiten --ad X.Y.Z --app reiselogbuch=X.Y.Z` (ohne `--ad`, wenn nur die App); Texte
-  schreiben (CHANGELOG mit Testfällen, Backlog, Versionsgeschichten); nach Änderungen an `v4/` oder `tests/` bzw. an Designrichtlinie
+  schreiben (CHANGELOG mit Testfällen, Backlog, Versionsgeschichten); nach Änderungen an `v5/` oder `tests/` bzw. an Designrichtlinie
   oder Zusammenarbeit nach `vorbereiten`: `node werkzeug/veroeffentlichen.mjs fassung`; committen; vor der Bau-Frage
   `node werkzeug/veroeffentlichen.mjs stufe --app reiselogbuch` (schlägt die Stufe vor und nennt die Prüfungen); dann
   `node werkzeug/veroeffentlichen.mjs los --app reiselogbuch [--stufe text]` im Hintergrund (prüft, führt eine neuere `main` vorher in die

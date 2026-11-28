@@ -4,8 +4,10 @@
 
 const KW = new Set('break case catch class const continue debugger default delete do else export extends finally for function if import in instanceof let new return super switch this throw try typeof var void while with yield async await of null true false undefined static get set'.split(' '));
 
-export function woerter(src) {
-  const out = []; let i = 0, zeile = 1, prev = '';
+// Seit 5.0.0 (APD-145, R-1.14) mit Optionen: { ad: true } liefert zusätzlich die Namen nach `AD.` bzw. `AD?.` als { name, zeile, ad: true }
+// (sonst fallen Namen nach einem Punkt weg); { schluessel: false } lässt Schlüssel in Objekten weg ({ halten: true } – ein Schlüssel ist kein Name).
+export function woerter(src, { ad = false, schluessel = true } = {}) {
+  const out = []; let i = 0, zeile = 1, prev = '', vorPunkt = '';
   const n = src.length; const stack = [];   // für `${ … }`: Tiefe der Klammern
   const regexErlaubt = () => prev === '' || /[(,=:[!&|?{};+\-*%<>~^]$/.test(prev) || ['return', 'typeof', 'case', 'do', 'else', 'in', 'of', 'new', 'delete', 'void', 'throw'].includes(prev);
   const vorlage = () => {           // innerhalb von `…`, i steht nach dem Backtick oder nach `}`
@@ -33,7 +35,12 @@ export function woerter(src) {
     if (m) {
       const w = m[0]; let j = i - 1; while (j >= 0 && /[ \t]/.test(src[j])) j--;
       const nachPunkt = src[j] === '.' && src[j - 1] !== '.';
-      if (!KW.has(w) && !nachPunkt) out.push({ name: w, zeile });
+      let k = i + w.length; while (k < n && /[ \t]/.test(src[k])) k++;
+      const istSchluessel = !schluessel && !nachPunkt && (prev === '{' || prev === ',') && src[k] === ':' && src[k + 1] !== ':';
+      if (!KW.has(w) && !nachPunkt && !istSchluessel) out.push({ name: w, zeile });
+      // AD.name bzw. AD?.name: der Name vor dem Punkt war AD (vorPunkt)
+      if (ad && nachPunkt && vorPunkt === 'AD') out.push({ name: w, zeile, ad: true });
+      vorPunkt = !nachPunkt && (src[k] === '.' || (src[k] === '?' && src[k + 1] === '.')) ? w : '';
       prev = w; i += w.length; continue;
     }
     if (/\d/.test(c)) { while (/[\w.]/.test(src[i] || '')) i++; prev = 'x'; continue; }

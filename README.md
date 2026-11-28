@@ -13,14 +13,16 @@ Jede Komponente ist hier einmal beschrieben **und** einmal programmiert; alle Ap
 | `… Versionsgeschichte.md` | ausgelagerte Versionsgeschichten (Designrichtlinie 11) |
 | `UEBERGABE.md` | Stand der letzten Sitzung – Claude liest sie zu Beginn jeder Sitzung zuerst |
 | `VERLAUF.md` | alle Wünsche und Entscheidungen des Nutzers (seit 04.10.2026) – damit nichts vergessen wird |
-| `v4/design.css` | Farben, Schrift und alle Komponenten (Arbeitsstand der Hauptversion 4 = neueste Fassung) |
-| `v4/ui.js` | Icons, Menüs, Sprechblasen, Fenster, Darstellung … (Arbeitsstand der Hauptversion 4 = neueste Fassung) |
+| `v5/design.css` | Farben, Schrift und alle Komponenten (Arbeitsstand der Hauptversion 5 = neueste Fassung) |
+| `v5/ui.js` | Icons, Menüs, Sprechblasen, Fenster, Darstellung … (Arbeitsstand der Hauptversion 5 = neueste Fassung); global nur `AD` (R-1.14) |
+| `v5/schnittstelle.json` | Namen von `AD`, die eine App (Teil `app`) bzw. ihre Prüfungen (Teil `pruefungen`) nutzen (R-1.14) |
+| `v4/` | Fassung 4.71.1 (Hauptversion 4, bleibt so stehen) |
 | `fassung/X.Y.Z/` | feste, unveränderliche Fassung je Version seit 4.14.0: `design.css`, `ui.js`, `tests/`, seit 4.64.0 `schnittstelle.json` und `vorlage/index.html`, seit 4.14.1 auch Designrichtlinie und Zusammenarbeit dieser Version; Prüfsummen in `fassung/PRUEFSUMMEN` |
 | `werkzeug/veroeffentlichen.mjs` | Veröffentlichungs-Skript: `vorbereiten` (Versionen erhöhen, Fassung anlegen), `stufe` (Prüfstufe Text oder voll vorschlagen, seit 4.58.0), `los` (prüfen – mit `--stufe text` nur die Prüfungen der Stufe Text –, erst AppDesign, dann die App, Pages abwarten) |
 | `werkzeug/pruefstufe.mjs` | Prüfstufe einer App-Version (APD-128, Zusammenarbeit 0 Nr. 2): erkennt ‚nur Texte‘ und wählt die Prüfungen der Stufe Text |
 | `apple-referenz/` | Vergleichsbilder aus Apple-Apps (private Inhalte verpixelt) |
 | `tests/` | Prüfungen des Regelkatalogs (`hig.mjs`, `ablauf.mjs` u. a.), werden von den Prüfskripten jeder App eingebunden |
-| `vorlage/index.html` | Startpunkt für eine neue App und Prüfseite der Bausteine: eine kleine neutrale App ‚Neue App‘ (Einträge mit Unterpunkten), gebaut wie das Reiselogbuch, nur mit Namen aus `v4/schnittstelle.json`; liegt seit 4.64.0 auch in der festen Fassung (`tests/pruefseite.mjs`) |
+| `vorlage/index.html` | Startpunkt für eine neue App und Prüfseite der Bausteine: eine kleine neutrale App ‚Neue App‘ (Einträge mit Unterpunkten), gebaut wie das Reiselogbuch, nur mit `AD.<Name>` aus `v5/schnittstelle.json`; liegt seit 4.64.0 auch in der festen Fassung (`tests/pruefseite.mjs`) |
 | `CHANGELOG.md` · `BACKLOG.md` | Versionsgeschichte · offene allgemeine Themen |
 
 ## Einbinden in eine App
@@ -47,7 +49,7 @@ Jede Komponente ist hier einmal beschrieben **und** einmal programmiert; alle Ap
 - Der Service Worker der App nimmt `design.css` und `ui.js` ihrer Fassung in seinen Cache auf, damit die App offline
   funktioniert.
 - **Schnittstelle:** Die App stellt bereit: `db.settings.appearance` (`auto` | `light` | `dark`),
-  `save()`, `render()`; optional `onDialogOpen()`. Von `ui.js` nutzt sie nur die Namen aus `v4/schnittstelle.json` (R-1.14).
+  `save()`, `render()`; optional `onDialogOpen()`. Von `ui.js` nutzt sie nur `AD.<Name>` mit den Namen aus `v5/schnittstelle.json` (R-1.14).
 
 ## Versionen
 
@@ -55,8 +57,8 @@ Jede Komponente ist hier einmal beschrieben **und** einmal programmiert; alle Ap
 - Jede Version liegt zusätzlich unveränderlich in `fassung/X.Y.Z/` – Bausteine, Prüfungen und (seit 4.14.1) der Text
   von Designrichtlinie und Zusammenarbeit dieser Version; die README der App verlinkt ihn. Eine neue AppDesign-Version ändert eine App **nicht**; eine App wird nur nach Rückfrage auf eine
   neuere Fassung gehoben (Zusammenarbeit 0 Nr. 10).
-- `v4/` ist der Arbeitsstand und zeigt die neueste 4er-Fassung (für schon installierte ältere App-Stände).
-- Eine Hauptversion bekommt einen neuen Ordner (`v5/`).
+- `v5/` ist der Arbeitsstand und zeigt die neueste 5er-Fassung; `v4/` bleibt auf 4.71.1 stehen (für schon installierte ältere App-Stände).
+- Eine Hauptversion bekommt einen neuen Ordner (`v6/`).
 - Veröffentlichen mit `werkzeug/veroeffentlichen.mjs` – Befehle und Reihenfolge in der AppDesign-`CLAUDE.md` (‚Veröffentlichen‘);
   **erst AppDesign, dann die App** (Selbsttest `werkzeug/veroeffentlichen-selbsttest.mjs`).
 

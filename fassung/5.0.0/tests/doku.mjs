@@ -9,6 +9,7 @@ import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { runInNewContext } from 'node:vm';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
+import { arbeitsOrdner } from './version.mjs';
 // Seit 4.14.1 (APD-5/D-6): Richtlinie und Zusammenarbeit so, wie sie in der Fassung der App stehen (fassung/X.Y.Z/) –
 // spätere AppDesign-Versionen ändern die Prüfung einer App nicht. Fassung ohne Text (4.14.0): der Arbeitsstand.
 export function adText(appDir, f, needed) {
@@ -162,7 +163,7 @@ export function checkCatalog(appDir, app) {
     [`Designrichtlinie ${app}`]: noHistory(read(appDir, readdirSync(appDir).find(f => /^README - Designrichtlinie (?!allgemein)/.test(f)) || 'x')),
     [`${app} PROMPT.md`]: noHistory(read(appDir, 'PROMPT.md')), 'Prüfskripte': tests,
     // Seit 4.12.1: auch die Kommentare im Code (Bausteine, Vorlage, App) – dort standen nach dem Umnummerieren dreistellige Nummern.
-    'Bausteine v4/': read(ad, 'v4/ui.js') + read(ad, 'v4/design.css') + read(ad, 'vorlage/index.html'), [`${app} index.html, sw.js`]: read(appDir, 'index.html') + read(appDir, 'sw.js') };
+    [`Bausteine ${arbeitsOrdner(ad)}/`]: read(ad, `${arbeitsOrdner(ad)}/ui.js`) + read(ad, `${arbeitsOrdner(ad)}/design.css`) + read(ad, 'vorlage/index.html'), [`${app} index.html, sw.js`]: read(appDir, 'index.html') + read(appDir, 'sw.js') };
   for (const [name, text] of Object.entries(docs)) {
     const o = [...new Set(text.match(/\bR-\d{2}(?![.\d])/g) || [])];
     if (o.length) E(`${name}: alte Nummern ${o.slice(0, 6).join(', ')}${o.length > 6 ? ' …' : ''}`);
@@ -319,13 +320,13 @@ export function checkKachel(collab, gp = (process.env.PRUEF_GEGENPROBE || '') ==
 
 // Seit 4.67.2 (P-118/F-2, R-10.9, Designrichtlinie 6; Testfall-Liste arbeit/0150 Bau-Frage 4.67.2.md P-118/Z-1 bis Z-6): ein antippbares
 // Bedienelement heißt in allen Texten ‚Schaltfläche‘ – nie ‚Knopf‘ bzw. ‚Knöpfe‘, auch nicht in Zusammensetzungen. Geprüft werden die lebenden
-// Texte von AppDesign (Doku, v4/, Katalog, Prüfungen, Werkzeug, Vorlage) und der App (Doku, index.html, Prüfungen); ausgenommen sind
+// Texte von AppDesign (Doku, Arbeitsstand vN/ – seit 5.0.0 v5/ –, Katalog, Prüfungen, Werkzeug, Vorlage) und der App (Doku, index.html, Prüfungen); ausgenommen sind
 // Geschichte (CHANGELOG, Versionsgeschichten, VERLAUF, ‚Erledigt‘ im Backlog, ZUORDNUNG.md), die festen Fassungen, arbeit/ und Namen im Code
 // (in Doku zwischen Backticks; im Code ein Name ohne Umlaut, der nicht mit dem großen Wort beginnt – `checkMehrKnopf`, `bk-knoepfe`), Dateinamen
 // (Messungen) und das Sperrwort in Anführungszeichen (Regeltext). Gegenprobe: PRUEF_GEGENPROBE=begriffe:P-118/Z-3a bis Z-3c (lauf.mjs --gegenprobe begriffe).
 const SPERR = 'Kn' + 'opf', SPERR_RE = /[\p{L}\w-]*[Kk]n(?:o|ö|oe)pf[\p{L}\w-]*/gu;
 export const GEGENPROBEN_BEGRIFFE = Object.fromEntries([
-  ['P-118/Z-3a', 'Kommentar in v4/ui.js', 'v4/ui.js'], ['P-118/Z-3b', 'Mehrzahl in der Designrichtlinie', 'Designrichtlinie allgemein'],
+  ['P-118/Z-3a', 'Kommentar in v5/ui.js', 'v5/ui.js'], ['P-118/Z-3b', 'Mehrzahl in der Designrichtlinie', 'Designrichtlinie allgemein'],
   ['P-118/Z-3c', 'Zusammensetzung im Katalog', 'katalog/'],
 ].map(([f, was, wo]) => [f, { was, zeichen: new RegExp('R-10.9 .*' + wo.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')) }]));
 export function begriffTreffer(text, doku) {
@@ -351,7 +352,7 @@ export function checkBegriffe(appDir, app, gp = (process.env.PRUEF_GEGENPROBE ||
   const geschichte = /CHANGELOG|Versionsgeschichte|VERLAUF|ZUORDNUNG/;
   const dateien = [];
   for (const [base, name] of [[ad, 'AppDesign'], [appDir, app]]) {
-    const liste = [...ls(base, '', /\.md$/), ...ls(base, '', /^index\.html$/), ...ls(base, 'v4/', /\.(js|css)$/), ...ls(base, 'katalog/', /\.(js|html|css|md)$/),
+    const liste = [...ls(base, '', /\.md$/), ...ls(base, '', /^index\.html$/), ...(name === 'AppDesign' ? ls(base, arbeitsOrdner(base) + '/', /\.(js|css)$/) : []), ...ls(base, 'katalog/', /\.(js|html|css|md)$/),
       ...ls(base, 'tests/', /\.(mjs|md|sh)$/), ...ls(base, 'werkzeug/', /\.(mjs|md)$/), ...ls(base, 'vorlage/', /\.(html|md|js)$/)];
     for (const f of liste) if (!geschichte.test(f) && !(name !== 'AppDesign' && /README - (Designrichtlinie|Zusammenarbeit) allgemein\.md$/.test(f))) dateien.push([base, name, f]);
   }
@@ -360,7 +361,7 @@ export function checkBegriffe(appDir, app, gp = (process.env.PRUEF_GEGENPROBE ||
     const u = new URL(f, base).href; if (seen.has(u)) continue; seen.add(u);
     let text = read(new URL(f, base));
     if (/BACKLOG\.md$/.test(f)) text = text.split(/\n## Erledigt/)[0];
-    if (name === 'AppDesign' && gp === 'P-118/Z-3a' && f === 'v4/ui.js') text += `\n// Gegenprobe: der ${SPERR} der Kopfzeile`;
+    if (name === 'AppDesign' && gp === 'P-118/Z-3a' && f === `${arbeitsOrdner(base)}/ui.js`) text += `\n// Gegenprobe: der ${SPERR} der Kopfzeile`;
     if (name === 'AppDesign' && gp === 'P-118/Z-3b' && f === 'README - Designrichtlinie allgemein.md') text += `\nGegenprobe: alle Kn` + `öpfe heben sich.`;
     if (name === 'AppDesign' && gp === 'P-118/Z-3c' && f === 'katalog/sourcehighlight.js') text += `\n// Gegenprobe: der Mehr-${SPERR}`;
     for (const t of begriffTreffer(text, /\.md$/.test(f)))
@@ -540,7 +541,7 @@ export function checkSchema(appDir, app, gp = (process.env.PRUEF_GEGENPROBE || '
 //         camelCase); Grenze: nur Wörter der Sperrliste, den Rest deckt die Selbstkontrolle ab. Gegenprobe PRUEF_GEGENPROBE=beans:englisch
 //         (in der ersten Zeile wird ein Name zu ‚schliessen‘) – rot.
 // Sperrliste deutscher Namen (R-1.13, Zusammenarbeit 1): Wörter, die als Name oder Teil eines Namens der Liste der AD-Beans nicht vorkommen dürfen
-const SPERRLISTE = new Set(['offen', 'zu', 'zeigen', 'schliessen', 'oeffnen', 'entfernen', 'kachel', 'kacheln', 'aktion', 'aktionen', 'masse', 'breite',
+export const SPERRLISTE = new Set(['offen', 'zu', 'zeigen', 'schliessen', 'oeffnen', 'entfernen', 'kachel', 'kacheln', 'aktion', 'aktionen', 'masse', 'breite',
   'breit', 'hinweis', 'gedrueckt', 'anker', 'quelle', 'kurz', 'rot', 'fenster', 'liste', 'eintrag', 'kapsel', 'wort', 'umbruch', 'traeger', 'fabrik',
   'anlegen', 'nach', 'dateiname', 'halten', 'frei', 'lesen', 'setzen', 'satz', 'knopf', 'knoepfe', 'kopf', 'titel', 'gehalten', 'quellen']);
 export function checkBeans(appDir, app) {
@@ -550,7 +551,8 @@ export function checkBeans(appDir, app) {
   const needed = html.match(/AD_NEEDED = '([\d.]+)'/)?.[1];
   if (process.env.PRUEF_GEGENPROBE === 'beans:W-80') html = html.replace('</style>', '.ad-swipeactions-button { color: red; }\n</style>');
   const guide = adText(appDir, 'README - Designrichtlinie allgemein.md', needed);
-  const ui = adText(appDir, needed ? 'ui.js' : 'v4/ui.js', needed) || adText(appDir, 'v4/ui.js'), css = adText(appDir, needed ? 'design.css' : 'v4/design.css', needed) || adText(appDir, 'v4/design.css');
+  const V = arbeitsOrdner(new URL('../AppDesign/', appDir));   // Arbeitsstand (seit 5.0.0 v5/), wenn die Fassung fehlt
+  const ui = adText(appDir, needed ? 'ui.js' : `${V}/ui.js`, needed) || adText(appDir, `${V}/ui.js`), css = adText(appDir, needed ? 'design.css' : `${V}/design.css`, needed) || adText(appDir, `${V}/design.css`);
   const abschnitt = guide.split('\n## 15. ')[1]?.split('\n### ')[0] || '';
   const tabelle = abschnitt.split('**Liste der AD-Beans**')[1] || '';
   if (!tabelle) { E('Designrichtlinie 15: ‚Liste der AD-Beans‘ fehlt'); return errors; }
@@ -630,7 +632,8 @@ export function checkKatalog(appDir) {
   try { index = readFileSync(new URL('index.html', kat), 'utf8'); dateien = readdirSync(kat).filter(f => /^[a-z]+\.js$/.test(f)); } catch { E('katalog/index.html fehlt'); return errors; }
   const gp = process.env.PRUEF_GEGENPROBE === 'beans:katalog';
   if (gp) dateien = dateien.filter(f => f !== `${zeilen[0].kennung}.js`);
-  const namen = s => [...String(s).matchAll(/`?([A-Za-z]\w*)/g)].map(m => m[1]);
+  // seit 5.0.0 (APD-145, R-1.13): Anlegen heißt AD.create<Kennung>(…) – der Name nach AD. zählt
+  const namen = s => [...String(s).matchAll(/`?(?:AD\.)?([A-Za-z]\w*)/g)].map(m => m[1]);
   const liste = (a, i = 0) => (a || []).map(x => namen(Array.isArray(x) ? x[i] : x)[0]).filter(Boolean).sort().join(', ');
   const nummern = s => [...String(s).matchAll(/R-\d+\.\d+/g)].map(m => m[0]).sort().join(', ');
   const beans = new Map();

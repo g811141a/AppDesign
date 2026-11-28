@@ -111,9 +111,10 @@ export async function checkVersions(appDir, browser = null) {
   errors.push(...checkFassungen(ad));
   if (browser && needed && existsSync(fdir)) {
     const ui = readFileSync(new URL('ui.js', fdir), 'utf8');
-    // Ältere ui.js simulieren (ohne AD_VERSION): beim Start muss der Hinweis erscheinen.
+    // Ältere ui.js simulieren: beim Start muss der Hinweis erscheinen. Seit 5.0.0 (APD-145) mit der Version 0.0.0 statt ohne AD_VERSION – im
+    // Namensraum AD fiele ohne die Bindung AD.AD_VERSION selbst aus (Fehler beim Lesen statt ‚älter‘).
     const p = await browser.newPage();
-    await p.route(/AppDesign\/fassung\/[\d.]+\/ui\.js/, async r => r.fulfill({ contentType: 'text/javascript', body: ui.replace(/const AD_VERSION = '[\d.]+';/, '') }));
+    await p.route(/AppDesign\/fassung\/[\d.]+\/ui\.js/, async r => r.fulfill({ contentType: 'text/javascript', body: ui.replace(/const AD_VERSION = '[\d.]+';/, "const AD_VERSION = '0.0.0';") }));
     await p.goto(new URL('index.html', appDir).href); await p.waitForTimeout(400);
     const t = await p.evaluate(() => document.querySelector('#msg[open]')?.textContent || '');
     if (!/AppDesign/.test(t) || !/neu öffnen/.test(t)) E('kein Hinweis beim Start, obwohl eine ältere AppDesign-Fassung geladen ist');
@@ -126,7 +127,7 @@ export async function checkVersions(appDir, browser = null) {
       body: r.request().url().endsWith('.css') ? 'button{background:red!important}' : 'throw new Error("v4 geladen")' }); });
     await q.goto(new URL('index.html', appDir).href); await q.waitForTimeout(400);
     if (await q.evaluate(() => /AppDesign/.test(document.querySelector('#msg[open]')?.textContent || ''))) E('Hinweis erscheint, obwohl die passende Fassung geladen ist');
-    const geladen = await q.evaluate(() => typeof AD_VERSION === 'string' ? AD_VERSION : '');
+    const geladen = await q.evaluate(() => typeof AD.AD_VERSION === 'string' ? AD.AD_VERSION : '');
     if (geladen !== needed) E(`geladen ist AppDesign ${geladen || '–'} statt der Fassung ${needed}`);
     if (v4.length) E(`die App ruft den Arbeitsstand vN/ ab (${v4.map(u => u.split('/AppDesign/')[1]).join(', ')}) – eine neue AppDesign-Version würde sie ändern (APD-5/D-3)`);
     if (fehler.length) E(`Skriptfehler beim Start: ${fehler.join('; ')}`);

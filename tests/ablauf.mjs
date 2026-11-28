@@ -270,7 +270,7 @@ export async function checkFieldErrors(p, { open, field, where = '' } = {}) {
     const same = (a, b) => rgbOf(a).every((v, i) => Math.abs(v - rgbOf(b)[i]) < 3);
     if (!same(r.color, r.red)) E(`Fehlermeldung nicht rot (${r.color})`);
     if (!same(r.border, r.red)) E(`Feld nicht rot umrandet (${r.border})`);
-    // seit 4.35.0 (APD-43 V10, Baustein feldFehler): auch hörbar – aria-invalid, Meldung verknüpft (aria-describedby), einmal angesagt;
+    // seit 4.35.0 (APD-43 V10, Baustein setFieldError): auch hörbar – aria-invalid, Meldung verknüpft (aria-describedby), einmal angesagt;
     // beim Häkchen hat das erste fehlerhafte Feld den Fokus
     await wait(p, 300);
     const a = await p.evaluate(sel => { const f = document.querySelector(sel), d = document.getElementById('dlg');
@@ -872,11 +872,11 @@ export async function checkListStill(p, { item, field, next = '', where = '', st
       // Safari rollt beim Öffnen der Tastatur; seit 4.27.0 (APD-28) als ungünstigster Fall auch den Rollbereich (Sicherung R-7.3)
       await p.evaluate(([resize, R]) => { window.__realVV ||= window.visualViewport;
         const fake = { height: resize ? innerHeight : Math.round(innerHeight * 0.6), width: innerWidth, offsetTop: 0, offsetLeft: 0, scale: 1, addEventListener() {}, removeEventListener() {} };
-        Object.defineProperty(window, 'visualViewport', { configurable: true, get: () => fake }); scrollBy(0, 250); eval(R).by(250); }, [resize, ROLL]);
+        Object.defineProperty(window, 'visualViewport', { configurable: true, get: () => fake }); window.scrollBy(0, 250); eval(R).by(250); }, [resize, ROLL]);
     } else {
       await wait(p, 250);
       if (resize) await p.setViewportSize(vp);
-      await p.evaluate(([late, R]) => { Object.defineProperty(window, 'visualViewport', { configurable: true, get: () => window.__realVV }); if (late) { scrollBy(0, -250); eval(R).by(-250); } }, [late, ROLL]);
+      await p.evaluate(([late, R]) => { Object.defineProperty(window, 'visualViewport', { configurable: true, get: () => window.__realVV }); if (late) { window.scrollBy(0, -250); eval(R).by(-250); } }, [late, ROLL]);
     }
   };
   const reset = async () => {
@@ -946,25 +946,25 @@ export async function checkListStill(p, { item, field, next = '', where = '', st
 export async function checkSearchWords(p, { where = '' } = {}) {
   const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}R-2.3 Wörter: ${t}`);
   const r = await p.evaluate(() => {
-    if (typeof searchWords !== 'function' || typeof markWords !== 'function') return null;
-    const W = t => searchWords(t), M = (h, t) => markWords(h, W(t));
+    if (typeof AD.searchWords !== 'function' || typeof AD.markWords !== 'function') return null;
+    const W = t => AD.searchWords(t), M = (h, t) => AD.markWords(h, W(t));
     return {
-      S2: findsAll('Freetour Sydney\nBesichtigung Opera House', W('sydney opera')), S3: findsAll('Freetour Sydney\nBesichtigung Opera House', W('opera sydney')),
-      S5: findsAll('Freetour Sydney', W('sydney opera')), any: findsAny('Freetour Sydney', W('sydney opera')),
+      S2: AD.findsAll('Freetour Sydney\nBesichtigung Opera House', W('sydney opera')), S3: AD.findsAll('Freetour Sydney\nBesichtigung Opera House', W('opera sydney')),
+      S5: AD.findsAll('Freetour Sydney', W('sydney opera')), any: AD.findsAny('Freetour Sydney', W('sydney opera')),
       S7: W('  sydney   '), S8: W('sydney '), S9: W('rom Rom rom'), S14: W('„Opera  House“ sydney'), S14b: W('"opera house" "x"'),
-      S14c: findsAll('Opera und House', W('„opera house“')), S15: W('„opera'), S15b: W('„“ ""'),
+      S14c: AD.findsAll('Opera und House', W('„opera house“')), S15: W('„opera'), S15b: W('„“ ""'),
       S10: M('Opera di Roma', 'oper opera'), S10b: M('Sydney', 'syd ney'), S2m: M('Freetour Sydney, Opera House', 'opera sydney'),
       S14m: M('Opera House und Opera', '„opera house“'), S16: M('Würzburg (Main) 3.5 * x', '( würzburg 3.5 *'),
       S17: M('Sehr​lange​Wörter', 'langewörter'), empty: M('Sydney', '   '),
       // APD-63 C2 (seit 4.29.0): ohne Akzente wie Apple
-      A1: [findsAll('Ankunft in Zürich', W('zurich')), M('Ankunft in Zürich', 'Zurich')], A2: [findsAll('Zurich', W('Zürich')), findsAll('ZÜRICH', W('zürich')), M('ZURICH', 'Zürich')],
-      A3: [findsAll('São Paulo', W('Sao Paulo')), M('Café Crème', 'cafe creme')], A4: [findsAll('São Paulo', W('„Sao Paulo“')), findsAll('Paulo in São', W('„Sao Paulo“')), M('in São Paulo', '„sao paulo“')],
-      A6: M('Sehr​lange​Grüße', 'langegruße'), A7: [M('Sonne ☀️ und A &amp; B', '☀️ & b'), findsAll('Sonne ☀️', W('☀️'))], A7b: M('Zu\u0308rich', 'zurich'),
-      A8: [findsAll('Straße', W('strasse')), findsAll('Øresund', W('oresund')), findsAll('Straße', W('straße'))],
+      A1: [AD.findsAll('Ankunft in Zürich', W('zurich')), M('Ankunft in Zürich', 'Zurich')], A2: [AD.findsAll('Zurich', W('Zürich')), AD.findsAll('ZÜRICH', W('zürich')), M('ZURICH', 'Zürich')],
+      A3: [AD.findsAll('São Paulo', W('Sao Paulo')), M('Café Crème', 'cafe creme')], A4: [AD.findsAll('São Paulo', W('„Sao Paulo“')), AD.findsAll('Paulo in São', W('„Sao Paulo“')), M('in São Paulo', '„sao paulo“')],
+      A6: M('Sehr​lange​Grüße', 'langegruße'), A7: [M('Sonne ☀️ und A &amp; B', '☀️ & b'), AD.findsAll('Sonne ☀️', W('☀️'))], A7b: M('Zu\u0308rich', 'zurich'),
+      A8: [AD.findsAll('Straße', W('strasse')), AD.findsAll('Øresund', W('oresund')), AD.findsAll('Straße', W('straße'))],
       // APD-122/S-7 (seit 4.55.0): Smileys wie Wörter – markiert wird das ganze Zeichen (mit Hautton bzw. als Folge mit Verbinder)
-      E1: [findsAll('👍🏽 gut', W('👍')), M('👍🏽 gut', '👍'), M('Daumen👍🏿', '👍'), M('Familie 👨‍👩‍👧 da', '👨')],
-      E2: [findsAll('👍 gut', W('👍🏽')), findsAll('👍🏽 gut', W('👍🏽')), M('👍🏽 und 👍', '👍🏽')],
-      E3: [findsAll('☕️ früh', W('☕')), findsAll('☕ früh', W('☕️')), M('☕️ früh', '☕'), M('☕ früh', '☕️')],
+      E1: [AD.findsAll('👍🏽 gut', W('👍')), M('👍🏽 gut', '👍'), M('Daumen👍🏿', '👍'), M('Familie 👨‍👩‍👧 da', '👨')],
+      E2: [AD.findsAll('👍 gut', W('👍🏽')), AD.findsAll('👍🏽 gut', W('👍🏽')), M('👍🏽 und 👍', '👍🏽')],
+      E3: [AD.findsAll('☕️ früh', W('☕')), AD.findsAll('☕ früh', W('☕️')), M('☕️ früh', '☕'), M('☕ früh', '☕️')],
       E4: [M('😀😡 Text', '😡'), M('😀 gut 😀', '😀')],
     };
   });
@@ -1014,14 +1014,14 @@ export async function checkMessung(p, { menu, search, secret = [], where = '' } 
   const item = () => p.locator('.menu .mi', { hasText: 'Messung' }).first();
   const label = async () => { await menu(); await wait(p, 200); const t = await item().evaluate(e => e.textContent.trim() + ' | ' + (e.nextElementSibling?.classList.contains('sub') ? e.nextElementSibling.textContent.trim() : '')).catch(() => ''); return t; };
   const close = async () => { await p.evaluate(() => document.querySelector('.layer')?.click()); await wait(p, 200); if (await p.locator('.menu').count()) await p.keyboard.press('Escape'); await wait(p, 150); };
-  const rows = () => p.evaluate(() => mess?.zeilen.length ?? 0);
+  const rows = () => p.evaluate(() => AD.measurement?.zeilen.length ?? 0);
   // F1: aus – nichts läuft
-  if (await p.evaluate(() => mess !== null)) E('Messung läuft, ohne gestartet zu sein');
+  if (await p.evaluate(() => AD.measurement !== null)) E('Messung läuft, ohne gestartet zu sein');
   const bar = () => p.evaluate(() => [...document.querySelectorAll('#bar, .side-head, .nb2')].filter(e => e.getClientRects().length).map(e => Math.round(e.getBoundingClientRect().top)).join(','));
   const vorher = await bar();
   // APD-77 (seit 4.40.0, Testfall-Liste arbeit/APD-77 Testfall-Liste.md F-1 bis F-6, F-8, F-9): ‚Messung starten‘ ist versteckt, bis langes
   // Drücken auf die graue Versionszeile ihn freischaltet – das Menü bleibt offen; kurz tippen bzw. dabei wegziehen schaltet nicht frei.
-  if (await p.evaluate(() => messFrei)) E('F-1: Messmodus ist schon freigeschaltet, ohne dass jemand lange gedrückt hat');
+  if (await p.evaluate(() => AD.measureAllowed)) E('F-1: Messmodus ist schon freigeschaltet, ohne dass jemand lange gedrückt hat');
   await menu(); await wait(p, 200);
   const menue = () => p.evaluate(() => { const m = document.querySelector('.menu'); if (!m) return null; const r = m.getBoundingClientRect();
     return { mess: [...m.querySelectorAll('.mi')].some(e => /Messung/.test(e.textContent)), doppelt: [...m.querySelectorAll('.sep, .line')].some(e => /\b(sep|line)\b/.test(e.nextElementSibling?.className || '') || !e.nextElementSibling),
@@ -1054,7 +1054,7 @@ export async function checkMessung(p, { menu, search, secret = [], where = '' } 
   if (!/^Messung starten \| Für Claude: Bewegungen aufzeichnen$/.test(l0)) { E(`Mehr-Menü ohne ‚Messung starten‘ mit grauer Zeile (‚${l0}‘)`); await close(); return errors; }
   if (!await item().locator('svg').count()) E('‚Messung starten‘ ohne Icon (R-4.1)');
   await item().click(); await wait(p, 300);
-  if (!await p.evaluate(() => mess?.an)) { E('‚Messung starten‘ startet keine Messung'); return errors; }
+  if (!await p.evaluate(() => AD.measurement?.an)) { E('‚Messung starten‘ startet keine Messung'); return errors; }
   // F12: die Messung verschiebt nichts
   if (await bar() !== vorher) E(`Leisten stehen nach dem Start anders (${vorher} → ${await bar()})`);
   const l1 = await label();
@@ -1071,7 +1071,7 @@ export async function checkMessung(p, { menu, search, secret = [], where = '' } 
   // F5: drehen
   const vp = p.viewportSize(); await p.setViewportSize({ width: vp.height, height: vp.width }); await wait(p, 400);
   await p.setViewportSize(vp); await wait(p, 400);
-  const z = await p.evaluate(() => mess.zeilen);
+  const z = await p.evaluate(() => AD.measurement.zeilen);
   for (const [re, was] of [[/! start$/, 'Start'], [new RegExp(`! focus ${input.replace('#', '')}$`), 'Fokus auf das Suchfeld'], [/! eingabe 1$/, 'Eingabe (Länge 1)'], [/! eingabe 3$/, 'Eingabe (Länge 3)'],
     [/! tippen /, 'Tippen'], [/! resize$/, 'Größenänderung'], [/ quer( |$)/, 'Lage quer'], [/! neuaufbau /, 'Neuaufbau']])
     if (!z.some(x => re.test(x))) E(`Datei ohne Zeile für ${was}`);
@@ -1080,27 +1080,27 @@ export async function checkMessung(p, { menu, search, secret = [], where = '' } 
   const daten = z.slice(2).filter(x => !x.startsWith('#'));
   if (daten.some(x => x.split('!')[0].trim().split(/\s+/).length !== kopf.length)) E('Zeilen haben nicht so viele Werte wie Spalten');
   // F4: Werte stimmen mit der Seite überein (letzte Zeile ohne Ereignis ↔ jetzt)
-  await p.evaluate(() => messZeile('probe'));
-  const probe = await p.evaluate(() => ({ z: mess.zeilen.at(-1).split(/\s+/), sy: Math.round(scrollY), ih: innerHeight, vh: Math.round(visualViewport?.height ?? innerHeight),
+  await p.evaluate(() => AD.measureLine('probe'));
+  const probe = await p.evaluate(() => ({ z: AD.measurement.zeilen.at(-1).split(/\s+/), sy: Math.round(scrollY), ih: innerHeight, vh: Math.round(visualViewport?.height ?? innerHeight),
     inh: document.querySelector('#app > .rolle') ? String(Math.round(document.querySelector('#app > .rolle').scrollTop)) : '-' }));
   if (+probe.z[kopf.indexOf('sy')] !== probe.sy || +probe.z[kopf.indexOf('ih')] !== probe.ih || +probe.z[kopf.indexOf('vh')] !== probe.vh || probe.z[kopf.indexOf('inh')] !== probe.inh)
     E(`Werte der Zeile passen nicht zur Seite (${probe.z.join(' ')} – scrollY ${probe.sy}, Rollbereich ${probe.inh}, innerHeight ${probe.ih}, vv ${probe.vh})`);
   // APD-28/F-17 (seit 4.27.0, APD-28): Spalte inh zeigt den Rollstand des Inhalts – nach dem Rollen um 40 px nicht 0
   if (probe.inh !== '-' && +probe.inh <= 0) E(`Spalte inh zeigt den Rollstand des Inhalts nicht (${probe.inh} nach dem Rollen)`);
   // F7: Grenze 5 Minuten – endet von selbst, Menü zeigt ‚beendet‘
-  await p.evaluate(() => { mess.start -= MESS_MAX_MS + 1000; messZeile('grenze'); });
-  if (await p.evaluate(() => mess.an)) E('Messung endet nach 5 Minuten nicht von selbst');
-  if (!/Grenze erreicht/.test(await p.evaluate(() => mess.zeilen.at(-1)))) E('Ende der Messung ohne Zeile ‚Grenze erreicht‘');
+  await p.evaluate(() => { AD.measurement.start -= AD.MEASURE_MAX_MS + 1000; AD.measureLine('grenze'); });
+  if (await p.evaluate(() => AD.measurement.an)) E('Messung endet nach 5 Minuten nicht von selbst');
+  if (!/Grenze erreicht/.test(await p.evaluate(() => AD.measurement.zeilen.at(-1)))) E('Ende der Messung ohne Zeile ‚Grenze erreicht‘');
   const l2 = await label();
   if (!/^Messung beenden und teilen \| beendet · /.test(l2)) E(`Mehr-Menü nach der Grenze nicht ‚beendet‘ (‚${l2}‘)`);
   await close();
   // F-8 (APD-77): eine Messung, die noch nicht geteilt ist, steht auch ohne Freischaltung da
-  await p.evaluate(() => { messFrei = false; });
+  await p.evaluate(() => { AD.measureAllowed = false; });
   const l3 = await label();
   if (!/^Messung beenden und teilen \| beendet · /.test(l3)) E(`F-8: ohne Freischaltung fehlt ‚Messung beenden und teilen‘ einer noch nicht geteilten Messung (‚${l3}‘)`);
-  await p.evaluate(() => { messFrei = true; });
+  await p.evaluate(() => { AD.measureAllowed = true; });
   // F8/F9: beenden und teilen – Datei messung-JJJJ-MM-TT-hhmm.txt (geladen, wo es kein Teilen-Menü gibt)
-  await p.evaluate(() => { window.__mess = []; const orig = shareFiles; shareFiles = files => { window.__mess.push(...files); return orig(files); }; });
+  await p.evaluate(() => { window.__mess = []; const orig = AD.shareFiles; AD.shareFiles = files => { window.__mess.push(...files); return orig(files); }; });
   const [dl] = await Promise.all([p.waitForEvent('download', { timeout: 5000 }).catch(() => null), item().click()]);
   await wait(p, 300);
   const f = (await p.evaluate(() => window.__mess.map(x => ({ name: x.name, content: x.content }))))[0];
@@ -1110,11 +1110,11 @@ export async function checkMessung(p, { menu, search, secret = [], where = '' } 
     if (!/^# Messung · .+ \d+\.\d+\.\d+ · AppDesign \d+\.\d+\.\d+ · .+ · (Home-Bildschirm|Safari) · \d+×\d+ @[\d.]+ · Ränder [\d.]+\/[\d.]+\/[\d.]+\/[\d.]+ · (hell|dunkel) · \d{4}-/.test(f.content)) E(`Kopf der Datei unvollständig (seit 4.29.0 mit ‚Ränder o/u/l/r‘, 3 APD-63/S-8): ${f.content.split('\n')[0]}`);
     for (const s of ['Rom', ...secret]) if (f.content.includes(s)) E(`Datei enthält den Text ‚${s}‘ (Datenschutz: nur Längen und ids)`);
   }
-  if (await p.evaluate(() => mess !== null)) E('nach dem Teilen ist die Messung nicht abgeschlossen');
+  if (await p.evaluate(() => AD.measurement !== null)) E('nach dem Teilen ist die Messung nicht abgeschlossen');
   // F11: neu laden verwirft eine laufende Messung
   await menu(); await wait(p, 200); await item().click(); await wait(p, 200);
   await p.reload(); await wait(p, 400);
-  if (await p.evaluate(() => mess !== null)) E('nach dem Neuladen läuft noch eine Messung');
+  if (await p.evaluate(() => AD.measurement !== null)) E('nach dem Neuladen läuft noch eine Messung');
   // F-6 (APD-77): neu laden versteckt ‚Messung starten‘ wieder
   await menu(); await wait(p, 200);
   if ((await menue())?.mess) E('F-6: nach dem Neuladen steht ‚Messung starten‘ noch im Mehr-Menü');
@@ -1364,7 +1364,7 @@ export async function checkGriff(p, { zeit = 2000, where = '' } = {}) {
   }, ROLL);
   if (!f5.zieht) E('während ‚Ans Ende‘ lässt sich der Griff nicht greifen (APD-37/F-5)');
   else if (Math.abs(f5.y - f5.ende / 4) > f5.ende * 0.1) E(`während ‚Ans Ende‘ gezogen: ${f5.y} px statt etwa ${Math.round(f5.ende / 4)} px – das weiche Rollen läuft weiter (APD-37/F-5)`);
-  await p.evaluate(() => rolle.halt()); await wait(p, 300);
+  await p.evaluate(() => AD.scrollView.stop()); await wait(p, 300);
   // APD-37/F-11: ‚Ans Ende‘ kommt schnell an
   await rolle(p, 0); await wait(p, 200);
   const t1 = Date.now();
@@ -1385,8 +1385,8 @@ export async function checkGriff(p, { zeit = 2000, where = '' } = {}) {
   // APD-37/F-14: eine Meldung überdeckt Griff und Kapsel nicht
   await rolle(p, '50%'); await wait(p, 150);
   const meldung = await p.evaluate(async () => {
-    if (typeof showNetToast !== 'function') return null;
-    showNetToast('an'); await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+    if (typeof AD.showNetToast !== 'function') return null;
+    AD.showNetToast('an'); await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
     const t = document.querySelector('.nettoast')?.getBoundingClientRect(), teile = ['.fab', '.schnell .griff'].map(s => document.querySelector(s)).filter(e => e && e.getClientRects().length);
     const ueber = t ? teile.filter(e => { const b = e.getBoundingClientRect(); return t.left < b.right && t.right > b.left && t.top < b.bottom && t.bottom > b.top; }).map(e => e.className.split(' ')[0]) : [];
     document.querySelector('.nettoast')?.click();
@@ -1515,12 +1515,12 @@ export async function checkTastaturStill(p, { field, vorher = null, wechsel = nu
   // APD-36/B-3, APD-36/B-18, APD-36/B-16: was die App beim Antippen sieht – geöffnete Fenster und Menüs, blur am Feld selbst, Zeilen des Messmodus
   const vorAntippen = sel => p.evaluate(sel => {
     const f = document.querySelector(sel); window.__b18 = 0; f.addEventListener('blur', () => window.__b18++, { once: true });
-    if (typeof messStart === 'function' && !(typeof mess !== 'undefined' && mess?.an)) messStart({ app: 'Prüfung' });
+    if (typeof AD.measureStart === 'function' && !(typeof AD.measurement !== 'undefined' && AD.measurement?.an)) AD.measureStart({ app: 'Prüfung' });
     return { offen: document.querySelectorAll('dialog[open], .menu, .pop').length, y: f.closest('.dlg-body, #app > .rolle')?.scrollTop ?? 0, kb: __safari.offen };
   }, sel);
   const nachAntippen = async (name, sel, v) => {
     const n = await p.evaluate(sel => {
-      const f = document.querySelector(sel), z = typeof mess !== 'undefined' && mess?.zeilen ? mess.zeilen.join('\n') : null;
+      const f = document.querySelector(sel), z = typeof AD.measurement !== 'undefined' && AD.measurement?.zeilen ? AD.measurement.zeilen.join('\n') : null;
       return { offen: document.querySelectorAll('dialog[open], .menu, .pop').length, blur: window.__b18, y: f.closest('.dlg-body, #app > .rolle')?.scrollTop ?? 0,
         neu: z == null ? null : new RegExp(`! neu fokussiert ${f.id || f.tagName.toLowerCase()}$`, 'm').test(z) };
     }, sel);
@@ -1819,7 +1819,7 @@ export async function checkNavigation(p, { eintrag, titel, zurueck = '#back', wa
     // APD-67/F-22 (seit 4.30.1, APD-67 Schritt 1): die Messung zeichnet Berührungen (Zeiger mit Lage, Art und Ziel, touchcancel) und die
     // Entscheidungen der Gestenstelle auf – fertig, zurück gefedert und abgebrochen (pointercancel und touchcancel nachgebildet, wie
     // Safari sie vermutlich über einem antippbaren Kasten schickt); keine Texte
-    await p.evaluate(() => { messStart({ app: 'Prüfung' }); addEventListener('pointerdown', e => { window.__zid = e.pointerId; }, true); });
+    await p.evaluate(() => { AD.measureStart({ app: 'Prüfung' }); addEventListener('pointerdown', e => { window.__zid = e.pointerId; }, true); });
     await ziehe(w * 0.3, h * 0.7, w * 0.95, h * 0.7); await zu('APD-67/F-22 Zurückwischen während der Messung');
     await oeffne();
     await ziehe(w * 0.2, h * 0.6, w * 0.4, h * 0.6); await offen('APD-67/F-22 unter der Hälfte losgelassen während der Messung');
@@ -1829,7 +1829,7 @@ export async function checkNavigation(p, { eintrag, titel, zurueck = '#back', wa
       t.dispatchEvent(new Event('touchcancel', { bubbles: true })); }, [w * 0.4, h * 0.6]);
     await p.mouse.up(); await ruhig(); await wait(p, 100);
     await keinTippen('APD-67/F-22 Loslassen nach dem Abbruch');
-    const mz = await p.evaluate(() => { messAus(); const z = mess.zeilen; mess = null; return z; });
+    const mz = await p.evaluate(() => { AD.measureOff(); const z = AD.measurement.zeilen; AD.measurement = null; return z; });
     for (const [re, was] of [[/! zeiger down \d+ \d+ mouse \S/, '‚zeiger down‘ mit Lage, Art und Ziel'], [/! zeiger move \d+ \d+ mouse /, '‚zeiger move‘'], [/! zeiger up \d+ \d+ mouse /, '‚zeiger up‘'],
       [/! zeiger cancel \d+ \d+ touch /, '‚zeiger cancel‘'], [/! touchcancel \d+ \S/, '‚touchcancel‘'], [/! nav kandidat phone$/, '‚nav kandidat‘'], [/! nav aktiv phone -?\d+ -?\d+$/, '‚nav aktiv‘ mit Weg'],
       [/! nav fertig weg [\d.]+ tempo -?[\d.]+$/, '‚nav fertig‘'], [/! nav zurück gefedert weg [\d.]+ tempo -?[\d.]+$/, '‚nav zurück gefedert‘'], [/! nav abgebrochen weg [\d.]+ tempo -?[\d.]+$/, '‚nav abgebrochen‘']])
@@ -1848,7 +1848,7 @@ export async function checkNavigation(p, { eintrag, titel, zurueck = '#back', wa
       await p.evaluate(() => document.querySelector('#app > .rolle')?.scrollTo(0, 0)); await wait(p, 150);
       const xy = await p.evaluate(([w, h, k]) => { for (let y = h * 0.15; y < h * 0.6; y += 12) for (let x = w * 0.08; x < w * 0.4; x += 12) {
         const t = document.elementFromPoint(x, y); if (!t || (k && t.closest(k))) continue;
-        if (navKandidat({ button: 0, isPrimary: true, target: t })) return [x, y]; } return null; }, [w, h, kasten]);
+        if (AD.navCandidate({ button: 0, isPrimary: true, target: t })) return [x, y]; } return null; }, [w, h, kasten]);
       if (!xy) E('APD-67/F-23 Vorbereitung: keine Stelle neben den Kästen, an der zurückgewischt werden kann');
       return xy;
     }]];
@@ -1874,8 +1874,8 @@ export async function checkNavigation(p, { eintrag, titel, zurueck = '#back', wa
     }
     // APD-67/H-5: die Messung zeigt, ob Safari das Rollen noch erlaubt (‚touchmove verhindert‘ nach der Entscheidung)
     { const xy = await orte.at(-1)[1](); if (xy) {
-      await p.evaluate(() => messStart({ app: 'Prüfung' })); await safariWischen(p, xy[0], xy[1], zuege[0][1]); await ruhig(); await wait(p, 100);
-      const mz = await p.evaluate(() => { messAus(); const z = mess.zeilen; mess = null; return z; });
+      await p.evaluate(() => AD.measureStart({ app: 'Prüfung' })); await safariWischen(p, xy[0], xy[1], zuege[0][1]); await ruhig(); await wait(p, 100);
+      const mz = await p.evaluate(() => { AD.measureOff(); const z = AD.measurement.zeilen; AD.measurement = null; return z; });
       if (!mz.some(x => x.endsWith('! touchmove verhindert'))) E('APD-67/F-23 Messung ohne Zeile ‚touchmove verhindert‘ (APD-67)');
       if ((await lage()).liste) await oeffne(); } }
     const senk = await safariWischen(p, w * 0.3, h * 0.7, zug(4, -120, 10, 160)); await ruhig(); await wait(p, 100);
@@ -1967,9 +1967,9 @@ export async function checkNavigation(p, { eintrag, titel, zurueck = '#back', wa
       if (!r.abgebrochen || !r.gerollt) E(`APD-68/Q-9 senkrecht mit Berührung rollt nicht (gerollt ${r.gerollt} px)`);
       await da(false, 'APD-68/Q-9 senkrecht mit Berührung'); }
     // APD-68/Q-10: Messung – ‚nav kandidat fest‘ … ‚nav fertig‘
-    await p.evaluate(() => messStart({ app: 'Prüfung' }));
+    await p.evaluate(() => AD.measureStart({ app: 'Prüfung' }));
     await ziehe(w * 0.4, h * 0.75, w * 0.4 + 330, h * 0.75);
-    { const mz = await p.evaluate(() => { messAus(); const z = mess.zeilen; mess = null; return z; });
+    { const mz = await p.evaluate(() => { AD.measureOff(); const z = AD.measurement.zeilen; AD.measurement = null; return z; });
       if (!mz.some(x => x.endsWith('! nav kandidat fest')) || !mz.some(x => /! nav fertig/.test(x))) E('APD-68/Q-10 Messung ohne ‚nav kandidat fest‘ bzw. ‚nav fertig‘'); }
     await da(true, 'APD-68/Q-10 Wischen mit Messung');
     // APD-68/Q-11: Drehen während des Ziehens – bricht ab, Zustand bleibt (weg), auch nach dem Zurückdrehen
@@ -2544,11 +2544,11 @@ export async function checkFokus(p, { menue = null, untermenue = null, fenster =
       for (let i = 0; i < n + 2; i++) { await p.keyboard.press(k); await wait(p, 30); if ((await aktiv(p)).inDlg !== 'dlg') { E('R-4.7', `${k === 'Tab' ? 'Tab' : 'Umschalt+Tab'} verlässt das Fenster (nach ${i + 1}×)`); break; } }
     }
     await taste(p, 'Escape'); await navFertig(p);
-    if ((await offen()).dlg) { E('R-4.7', 'Esc ohne Änderung schließt das Fenster nicht'); await p.evaluate(() => dlg.close()); }
+    if ((await offen()).dlg) { E('R-4.7', 'Esc ohne Änderung schließt das Fenster nicht'); await p.evaluate(() => AD.dlg.close()); }
     await open(); await wait(p, 400); await navFertig(p);
     if (feld) { await p.locator(feld).focus(); await wait(p, 100); }
     await taste(p, 'Meta+Period'); await navFertig(p);
-    if ((await offen()).dlg) { E('R-4.7', `⌘. ${feld ? 'aus einem Feld ' : ''}schließt das Fenster nicht`); await p.evaluate(() => dlg.close()); }
+    if ((await offen()).dlg) { E('R-4.7', `⌘. ${feld ? 'aus einem Feld ' : ''}schließt das Fenster nicht`); await p.evaluate(() => AD.dlg.close()); }
     // K4, V6: x mit Änderung → Sprechblase mit Fokus (ohne Rahmen); Eingabe nie die rote Aktion; Esc = Abbrechen, Fenster bleibt
     if (change) {
       await open(); await wait(p, 400); await navFertig(p); await change(); await wait(p);
@@ -2579,7 +2579,7 @@ export async function checkFokus(p, { menue = null, untermenue = null, fenster =
           if ((await offen()).dlg) E('R-4.7', 'Leertaste auf ‚Änderungen verwerfen‘ schließt das Fenster nicht');
         }
       }
-      await p.evaluate(() => { const z = [...document.querySelectorAll('.pop:not(.zu-geist) .btns button')].at(-1); if (z) z.click(); else document.querySelector('.layer')?.click(); if (dlg.open) dlg.close(); }); await wait(p);   // Sprechblase: Weg zurück (APD-30/V-7)
+      await p.evaluate(() => { const z = [...document.querySelectorAll('.pop:not(.zu-geist) .btns button')].at(-1); if (z) z.click(); else document.querySelector('.layer')?.click(); if (AD.dlg.open) AD.dlg.close(); }); await wait(p);   // Sprechblase: Weg zurück (APD-30/V-7)
     }
   }
   // K9, R-3.4: Textfelder nie mit Fokus-Rahmen – antippen und mit Tab erreichen
@@ -2677,7 +2677,7 @@ export async function checkKontrast(p, { vorschau = null, fenster = null, where 
       await setze(c, sch);
       if (await bild() !== basis) { E('R-6.2', `Ausgabe in der Vorschau mit ${c === 'more' ? '‚Kontrast erhöhen‘' : 'ohne Kontrast'} ${sch === 'dark' ? 'dunkel' : 'hell'} anders als hell – sie bleibt unverändert hell (H4, Kontrast)`); break; }
     }
-    await p.evaluate(() => dlg.open && dlg.close()); await wait(p);
+    await p.evaluate(() => AD.dlg.open && AD.dlg.close()); await wait(p);
   }
   // H5: Umschalten bei offenem Fenster mit Eingabe und gerollter Liste – kein Neuaufbau, alles bleibt
   if (fenster) {
@@ -2694,7 +2694,7 @@ export async function checkKontrast(p, { vorschau = null, fenster = null, where 
     if (r.marke !== 1) E('R-1.9', '‚Kontrast erhöhen‘ umschalten lädt die Seite neu');
     if (!r.offen || !r.fokus || !/Kontrast/.test(r.wert)) E('R-1.9', `‚Kontrast erhöhen‘ umschalten: Fenster, Fokus bzw. Eingabe verloren (offen ${r.offen}, Fokus ${r.fokus})`);
     if (nach['--accent'] === vor['--accent']) E('R-1.9', 'Farbtabelle wechselt nicht sofort beim Umschalten');
-    await p.evaluate(() => dlg.close()); await wait(p, 300); await navFertig(p);
+    await p.evaluate(() => AD.dlg.close()); await wait(p, 300); await navFertig(p);
     const y1 = (await rollstand(p)).y;
     if (Math.abs(y1 - y0) > 2) E('R-1.9', `Liste nach dem Umschalten verrückt (${y0} → ${y1} px)`);
   }
@@ -2732,7 +2732,7 @@ export async function checkRuhig(p, { fab = true, mic = null, fenster = null, wh
     await fenster(); await wait(p, 300); await navFertig(p);
     const z = await p.evaluate(() => ({ zurueck: document.documentElement.classList.contains('blatt-zurueck'), scale: [...document.querySelectorAll('#app, #side')].map(e => getComputedStyle(e).scale).filter(s => s !== 'none' && s !== '1') }));
     if (z.zurueck || z.scale.length) E(`Blatt: die Seite dahinter weicht verkleinert zurück (Zoomen, M5) – ${z.scale.join(' ')}`);
-    await p.evaluate(() => dlg.open && dlg.close()); await wait(p, 300); await navFertig(p);
+    await p.evaluate(() => AD.dlg.open && AD.dlg.close()); await wait(p, 300); await navFertig(p);
   }
   await p.emulateMedia({ reducedMotion: vorher ? 'reduce' : 'no-preference' });
   return errors;
@@ -2946,9 +2946,9 @@ export async function checkIconText(p, { sel, lang = false, where = '' } = {}) {
     const res = pruefe(root, root.getBoundingClientRect().width);
     if (lang) {
       const box = document.createElement('div'); box.style.cssText = 'width:160px;position:absolute;left:0;top:0;visibility:hidden';
-      box.innerHTML = typeof iconText === 'function' ? iconText('🚐', 'Sehr langes Reisemittel mit vielen Wörtern') : '🚐 Sehr langes Reisemittel mit vielen Wörtern';
+      box.innerHTML = typeof AD.iconText === 'function' ? AD.iconText('🚐', 'Sehr langes Reisemittel mit vielen Wörtern') : '🚐 Sehr langes Reisemittel mit vielen Wörtern';
       root.appendChild(box);
-      if (typeof iconText !== 'function') res.push('U-5: Baustein iconText fehlt in ui.js');
+      if (typeof AD.iconText !== 'function') res.push('U-5: Baustein iconText fehlt in ui.js');
       const ict = box.firstElementChild || box, br = box.getBoundingClientRect(), ir = ict.getBoundingClientRect();
       if (ir.right > br.right + 1) res.push(`U-5: zu langer Eintrag ragt ${Math.round(ir.right - br.right)} px aus der Spalte`);
       const n = [...box.querySelectorAll('*'), box].flatMap(e => [...e.childNodes]).find(t => t.nodeType === 3 && t.data.trim());
@@ -2984,7 +2984,7 @@ const zeilenVon = el => {   // Zeilen eines Elements: Text je Zeile (nach der La
   return z;
 };
 
-// Seit 4.57.0 (RLB-122, R-10.5; Muster arbeit/RLB-122 Muster prüfen.mjs, Testfälle RLB-122/B-1 bis B-5): Aufzählung mit Trennpunkt (aufzaehlung in
+// Seit 4.57.0 (RLB-122, R-10.5; Muster arbeit/RLB-122 Muster prüfen.mjs, Testfälle RLB-122/B-1 bis B-5): Aufzählung mit Trennpunkt (listHtml in
 // ui.js, z. B. Wetter und Smileys der Statistik ‚8×☀️ · 6×🌧️‘) – sel: die Zellen mit der Aufzählung (dd, td). Je Textgröße (groessen; für Ausgabe
 // und Vorschau, die nicht mitwachsen, ['l']) und Zelle: keine Zeile endet mit der Anzahl (B-1), keine Folgezeile beginnt mit ‚·‘ – bei Anzahlen
 // beginnt sie mit der Anzahl (B-2), jede umgebrochene Zeile endet mit ‚·‘ (B-3); der Text ist unverändert (texte: erwartete Texte je Zelle, ‚ · ‘
@@ -3028,7 +3028,7 @@ export async function checkAufzaehlung(p, { sel, groessen = ['l', 'xxxl', 'ax3']
       for (const x of e.eintraege) if (x.passt && x.zeilen > 1) E(`${w}: Eintrag passt in die Zeile, ist aber getrennt: ‚${x.text.trim()}‘ (RLB-121/M-9)`);
       if (e.zeilen.join('').replace(/\s/g, '') !== e.text.replace(/\s/g, '')) E(`${w}: Text verändert (RLB-122/B-5)`);
       if (texte && texte[j] != null && e.text !== texte[j]) E(`${w}: Text ‚${e.text}‘ statt ‚${texte[j]}‘ (RLB-122/B-5)`);
-      if (e.ict && e.text !== '–' && e.ict !== e.text.split(' · ').length) E(`${w}: ${e.ict} Einträge am Stück (.ict) statt ${e.text.split(' · ').length} – Baustein aufzaehlung`);
+      if (e.ict && e.text !== '–' && e.ict !== e.text.split(' · ').length) E(`${w}: ${e.ict} Einträge am Stück (.ict) statt ${e.text.split(' · ').length} – Baustein listHtml`);
       if (e.ragt) E(`${w}: ragt hinaus (R-6.3, RLB-122/B-5, RLB-121/M-10)`);
     }
   }
@@ -3164,7 +3164,7 @@ export const DATEINAME_SEHR_LANG = 'Ω Backup Reiselogbuch Australien Neuseeland
 export async function checkHinweisBreite(p, { where = '' } = {}) {
   const errors = [], vp = p.viewportSize();
   const dn = (name, wo, o = {}) => checkDateiname(p, { faelle: ['shared'], groessen: ['l'], name, where: `${where} ${wo}`.trim(),
-    ausloesen: () => p.evaluate(n => { inform('Backup', shareResultText('shared', n)); }, name), ...o });
+    ausloesen: () => p.evaluate(n => { AD.inform('Backup', AD.shareResultText('shared', n)); }, name), ...o });
   errors.push(...await dn('Kurz.json', 'kurzer Name (APD-138/D-3)'));
   errors.push(...await dn(DATEINAME_SEHR_LANG, 'sehr langer Name (APD-138/D-4)'));
   errors.push(...await dn(DATEINAME_BEISPIEL, 'Text 53 (APD-138/D-5)', { groessen: ['ax5'] }));
@@ -3173,9 +3173,9 @@ export async function checkHinweisBreite(p, { where = '' } = {}) {
   errors.push(...await dn(DATEINAME_BEISPIEL, 'schmales Fenster 760 px (APD-138/D-6)'));
   errors.push(...await dn(DATEINAME_SEHR_LANG, 'schmales Fenster 760 px, sehr langer Name (APD-138/D-6)'));
   await p.setViewportSize(vp); await p.waitForTimeout(400);
-  await p.evaluate(() => { adAlert.fitFileName = false; });
+  await p.evaluate(() => { AD.alert.fitFileName = false; });
   const gp = await dn(DATEINAME_BEISPIEL, 'Gegenprobe');
-  await p.evaluate(() => { adAlert.fitFileName = true; });
+  await p.evaluate(() => { AD.alert.fitFileName = true; });
   if (!gp.some(x => x.includes('APD-138/D-1'))) errors.push(`${where}: R-10.8 Gegenprobe (APD-138/D-10, D-14): ohne Breite nach Dateiname meldet checkDateiname nichts – ${gp.join(' · ') || 'keine Meldung'}`);
   return errors;
 }
@@ -3253,13 +3253,13 @@ export async function checkTitelBlase(p, { sel, daneben = [], rollen = null, esc
   // L-8: ein Tipp daneben schließt nur die Sprechblase
   for (const k of daneben) {
     if (!await offen() && !await zeige()) { E(`L-8 Sprechblase lässt sich nicht wieder öffnen (vor ${k})`); break; }
-    const vorher = await fenster(), wert = await p.evaluate(() => typeof dlgDirty === 'function' ? !!dlgDirty() : null);
+    const vorher = await fenster(), wert = await p.evaluate(() => typeof AD.dlgDirty === 'function' ? !!AD.dlgDirty() : null);
     await p.locator(k).click(); await wait(p, 400);
     if (await offen()) E(`L-8 Tipp auf ${k}: die Sprechblase bleibt offen`);
     const nachher = await fenster(), menue = await p.evaluate(() => !!document.querySelector('.menu, .pop'));
     if (nachher !== vorher) E(`L-8 Tipp auf ${k} schließt nicht nur die Sprechblase – ${vorher} Fenster vorher, ${nachher} nachher`);
     if (menue) E(`L-8 Tipp auf ${k} öffnet ein Menü bzw. eine Abfrage – er darf nur die Sprechblase schließen`);
-    if (wert !== null && wert !== await p.evaluate(() => typeof dlgDirty === 'function' ? !!dlgDirty() : null)) E(`L-8 Tipp auf ${k} ändert den Inhalt des Fensters`);
+    if (wert !== null && wert !== await p.evaluate(() => typeof AD.dlgDirty === 'function' ? !!AD.dlgDirty() : null)) E(`L-8 Tipp auf ${k} ändert den Inhalt des Fensters`);
     await p.evaluate(() => document.querySelector('.menu, .pop') && document.querySelector('.layer')?.click()); await wait(p, 250);
   }
   // L-9: Rollen schließt sie
@@ -3892,7 +3892,7 @@ export async function recentlyDeletedGegenprobe(p) {
   const m = /^zuletzt:(frage|frist)$/.exec(process.env.PRUEF_GEGENPROBE || ''), g = m && ZULETZT_GEGENPROBEN[m[1]];
   if (!g) return false;
   const [alt, neu] = g, { readFileSync } = await import('node:fs');
-  await p.route(/\/(fassung\/\d+\.\d+\.\d+|v4)\/ui\.js(\?.*)?$/, r => {
+  await p.route(/\/(fassung\/\d+\.\d+\.\d+|v\d+)\/ui\.js(\?.*)?$/, r => {
     const text = readFileSync(decodeURIComponent(new URL(r.request().url()).pathname), 'utf8');
     if (text.split(alt).length !== 2) throw new Error(`Gegenprobe zuletzt:${m[1]}: Stelle in ui.js nicht gefunden`);
     return r.fulfill({ body: text.replace(alt, neu), contentType: 'text/javascript' });
@@ -5018,13 +5018,13 @@ export async function checkWischen(p, { bean, aktionen, liste = '#side', kacheln
       await zu();
     }
     // W-67: Messmodus zeichnet die Entscheidungen auf
-    await p.evaluate(() => messStart({ app: 'Prüfung checkWischen' }));
+    await p.evaluate(() => AD.measureStart({ app: 'Prüfung checkWischen' }));
     await wisch(kachel, weg(W(-100))); await zu();
     await wisch(kachel, weg(W(-60), 0, 6));
     await wisch(kachel, weg(W(-100)), { abbruch: true });
     await wisch(kachel, weg(W(10), 40, 4));
     await wisch(kachel, weg(-bw * 0.72, 0, 12)); await zu();   // weit überwischt: ‚wisch offen‘, nie ‚wisch durch‘
-    const zeilen = await p.evaluate(() => { const z = mess?.zeilen?.join('\n') || ''; messAus(); mess = null; return z; });
+    const zeilen = await p.evaluate(() => { const z = AD.measurement?.zeilen?.join('\n') || ''; AD.measureOff(); AD.measurement = null; return z; });
     for (const w of ['wisch kandidat', 'wisch verworfen ', 'wisch offen weg ', 'wisch zurück gefedert weg ', 'wisch abgebrochen weg '])
       if (!zeilen.includes(w)) E(`W-67 Messung ohne ‚${w.trim()}‘`, 'R-1.6');
     if (zeilen.includes('wisch durch')) E('W-67 Messung mit ‚wisch durch‘ – seit 4.60.2 gibt es kein Durchwischen (P-108)', 'R-1.6');
@@ -5049,10 +5049,10 @@ export async function checkWischen(p, { bean, aktionen, liste = '#side', kacheln
       const f = await p.evaluate(async ([a, l, ks, k]) => {
         const fehler = [], alt = console.error; console.error = (...x) => { fehler.push(x.join(' ')); };
         try {
-          createSwipeactions(document.querySelector(l), { actions: (0, eval)(a) });
-          createSwipeactions(document.querySelector(l), { rows: ks });
+          AD.createSwipeactions(document.querySelector(l), { actions: (0, eval)(a) });
+          AD.createSwipeactions(document.querySelector(l), { rows: ks });
           (0, eval)(window.__wischBean).disconnect();
-          const b = createSwipeactions(document.querySelector(l), { rows: ks, actions: x => (0, eval)(a)(x).map(e => typeof e === 'object' ? { ...e, shortTitle: undefined } : e) });
+          const b = AD.createSwipeactions(document.querySelector(l), { rows: ks, actions: x => (0, eval)(a)(x).map(e => typeof e === 'object' ? { ...e, shortTitle: undefined } : e) });
           await window.__wisch(k, Array.from({ length: 10 }, (_, i) => [-(i + 1) * 10, 0]));
           await new Promise(r => setTimeout(r, 400));
           const tx = getComputedStyle(document.querySelector(k)).transform;
@@ -5067,7 +5067,7 @@ export async function checkWischen(p, { bean, aktionen, liste = '#side', kacheln
       if (m75 || !(await stand()).menu) E(`W-75 ohne Bean zeigt langes Drücken kein Kontextmenü${m75 ? ' – ' + m75 : ''}`, 'R-1.13');
       await p.keyboard.press('Escape'); await ruhig(); await menueZu(p);
       // W-76, W-78, W-79: eigene Bean mit aufgezeichnetem act (seit 4.60.2 ohne Eigenschaft durchwischen – über 60 % rastet die Kachel immer offen ein)
-      await p.evaluate(([a, l, ks]) => { window.__wischAct = []; window.__wischTest = createSwipeactions(document.querySelector(l), { rows: ks,
+      await p.evaluate(([a, l, ks]) => { window.__wischAct = []; window.__wischTest = AD.createSwipeactions(document.querySelector(l), { rows: ks,
         actions: x => (0, eval)(a)(x).map(e => typeof e === 'object' ? { ...e, act: w => { window.__wischAct.push({ sourceView: w?.sourceView?.className || '', keys: Object.keys(w || {}) }); return e.act(w); } } : e) });
         window.__wischBean = 'window.__wischTest'; }, [aktionen, liste, kacheln]);
       await wisch(kachel, weg(-bw * 0.72, 0, 12));
@@ -5117,7 +5117,7 @@ export async function wischenGegenprobe(p) {
   const m = /^wischen:(W-\d+)$/.exec(process.env.PRUEF_GEGENPROBE || ''), g = m && WISCH_GEGENPROBEN[m[1]];
   if (!g) return false;
   const [datei, alt, neu] = g, { readFileSync } = await import('node:fs');
-  await p.route(new RegExp(`/(fassung/\\d+\\.\\d+\\.\\d+|v4)/${datei.replace('.', '\\.')}(\\?.*)?$`), r => {
+  await p.route(new RegExp(`/(fassung/\\d+\\.\\d+\\.\\d+|v\\d+)/${datei.replace('.', '\\.')}(\\?.*)?$`), r => {
     const text = readFileSync(decodeURIComponent(new URL(r.request().url()).pathname), 'utf8');
     if (text.split(alt).length !== 2) throw new Error(`Gegenprobe ${m[1]}: Stelle in ${datei} nicht gefunden`);
     return r.fulfill({ body: text.replace(alt, neu), contentType: datei.endsWith('.css') ? 'text/css' : 'text/javascript' });

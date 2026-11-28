@@ -22,7 +22,7 @@ export async function checkBackup(page, { menu = '#sideMore', list, dateiname = 
   }
   // 2. Backup erstellen → Datei ‚Ω Backup <App> JJJJ.MM.TT hh.mm.json‘ mit Zeitpunkt und Gerät, Meldung ‚Backup‘, Kachel weg (APD-74)
   // Dateiname direkt beim Weitergeben mitlesen (der Testbrowser meldet ihn bei Downloads aus lokalen Dateien nicht).
-  await page.evaluate(() => { window.__shared = []; const orig = shareFiles; shareFiles = files => { window.__shared.push(...files.map(f => f.name)); return orig(files); }; });
+  await page.evaluate(() => { window.__shared = []; const orig = AD.shareFiles; AD.shareFiles = files => { window.__shared.push(...files.map(f => f.name)); return orig(files); }; });
   const [download] = await Promise.all([page.waitForEvent('download', { timeout: 5000 }).catch(() => null), page.locator('.menu .mi', { hasText: 'Backup erstellen' }).click()]);
   await page.waitForTimeout(400);
   let content = null;
@@ -81,16 +81,34 @@ export async function checkBackup(page, { menu = '#sideMore', list, dateiname = 
   await closeMsg();
   // 5. Backup-Kachel nur, solange heute noch kein Backup erstellt wurde und es Einträge gibt; die Offline-Zeile steht immer im Fuß (APD-74)
   const f = await page.evaluate(() => { const gestern = new Date(); gestern.setDate(gestern.getDate() - 1);
-    return [backupTileHtml(0), backupTileHtml(gestern.getTime()), backupTileHtml(Date.now()), backupTileHtml(0, true)].map(h => ({ kachel: h.includes('class="bhint"'), zeile: h.includes('class="offl"') })); });
+    return [AD.backupTileHtml(0), AD.backupTileHtml(gestern.getTime()), AD.backupTileHtml(Date.now()), AD.backupTileHtml(0, true)].map(h => ({ kachel: h.includes('class="bhint"'), zeile: h.includes('class="offl"') })); });
   if (!f[0].kachel || !f[1].kachel) E('R-9.1 Backup-Kachel fehlt, obwohl heute noch kein Backup erstellt wurde');
   if (f[2].kachel) E('R-9.1 Backup-Kachel steht, obwohl heute schon ein Backup erstellt wurde');
   if (f[3].kachel) E('R-9.1 Backup-Kachel steht bei leerer Liste');
   if (f.some(x => !x.zeile)) E('R-1.5 Offline-Zeile fehlt im Fuß (auch ohne Kachel und bei leerer Liste)');
-  if (await page.evaluate(() => typeof onNeuerTag !== 'function')) E('R-9.1 onNeuerTag fehlt (Kachel kommt um 0:00 nicht wieder)');
+  if (await page.evaluate(() => typeof AD.onDayChange !== 'function')) E('R-9.1 onDayChange fehlt (Kachel kommt um 0:00 nicht wieder)');
   // 6. Seit 4.57.0 (APD-116, R-10.8): Dateiname im Fenster ‚Backup‘ allein in einer Zeile unter dem Satz – geteilt, abgebrochen, Fehler und ohne
   // Teilen-Menü (heruntergeladen), Textgröße l, xxxl, ax3 (checkDateiname)
   if (dateiname) errors.push(...await checkDateiname(page, { where, name: /^Ω Backup .+ \d{4}\.\d\d\.\d\d \d\d\.\d\d\.json$/, ausloesen: async () => {
     if (await page.locator('.menu').count()) { await page.keyboard.press('Escape'); await page.waitForTimeout(200); }
     await openMenu(); await page.locator('.menu .mi', { hasText: 'Backup erstellen' }).click(); } }));
+  return errors;
+}
+// APD-145/T-8 (seit 5.0.0, Namensraum AD): ein Backup aus einer älteren App-Version (vorlage.backup, erzeugt mit dieser Version) lädt mit ‚Ersetzen‘ mit
+// denselben Daten – die Liste im Speicher der App (schluessel) gleicht danach der Liste der älteren Version (vorlage.speicher).
+//   t.liste(await checkBackupAlt(p, { list: 'trips', schluessel: 'reiselogbuch.v1', vorlage: new URL('alt-3.59.3.json', import.meta.url) }));
+export async function checkBackupAlt(page, { menu = '#sideMore', list, schluessel, vorlage, where = '' }) {
+  const errors = [], E = t => errors.push(`${where ? where + ': ' : ''}R-9.2 APD-145/T-8 ${t}`);
+  const v = JSON.parse(readFileSync(vorlage, 'utf8'));
+  const kanon = x => JSON.stringify(x, (k, w) => w && typeof w === 'object' && !Array.isArray(w) ? Object.fromEntries(Object.entries(w).sort(([a], [b]) => a < b ? -1 : a > b ? 1 : 0)) : w);
+  await page.click(menu); await page.waitForTimeout(200);
+  const [ch] = await Promise.all([page.waitForEvent('filechooser'), page.locator('.menu .mi', { hasText: 'Backup laden' }).click()]);
+  await ch.setFiles({ name: 'Ω Backup alt.json', mimeType: 'application/json', buffer: Buffer.from(v.backup) }); await page.waitForTimeout(400);
+  const ersetzen = page.locator('.pop .tile button', { hasText: 'Ersetzen' });
+  if (!await ersetzen.count()) { E(`Backup aus ${v.app}: keine Abfrage mit ‚Ersetzen‘`); return errors; }
+  await ersetzen.click(); await page.waitForTimeout(600);
+  if (await page.locator('#msg[open]').count()) { await page.click('#msg [data-x]').catch(() => {}); await page.waitForTimeout(200); }
+  const jetzt = JSON.parse(await page.evaluate(k => localStorage.getItem(k), schluessel) || 'null');
+  if (kanon(jetzt?.[list]) !== kanon(v.speicher[list])) E(`Backup aus ${v.app} (AppDesign ${v.appdesign}) lädt mit ‚Ersetzen‘ nicht mit denselben Daten (${list})`);
   return errors;
 }

@@ -30,7 +30,7 @@ export async function checkContextMenus(page, where = '') {
       const m = document.querySelector('.menu'); if (!m) return null;
       const r = document.querySelector(`#side .side-row[data-id="${id}"]`).getBoundingClientRect(), mr = m.getBoundingClientRect();
       const t = document.querySelector('#side .side-foot .bhint, #side .side-foot .offl:not([hidden])')?.getBoundingClientRect(), l = document.querySelector('#side .side-list').getBoundingClientRect();
-      const beside = mr.left >= r.right - 60, { T, B } = rand12(), limit = t && t.height ? Math.min(innerHeight - B, t.top - 12) : innerHeight - B;
+      const beside = mr.left >= r.right - 60, { T, B } = AD.popoverMargins(), limit = t && t.height ? Math.min(innerHeight - B, t.top - 12) : innerHeight - B;
       // seit 4.68.0 (RLB-125): rechtsbündig auf der Kachel, oben bündig mit ihr bzw. über der Backup-Kachel
       const onTile = !beside && mr.left >= r.left + r.width / 2 - 1 && Math.abs(mr.right - r.right) < 2 && Math.abs(mr.top - Math.max(T, Math.min(r.top, limit - mr.height))) < 2;
       return { beside, onTile, below: mr.top >= r.bottom - 1, above: mr.bottom <= r.top + 1, left: Math.abs(mr.left - r.left) < 2, clipped: m.scrollHeight > m.clientHeight + 1,
@@ -40,7 +40,7 @@ export async function checkContextMenus(page, where = '') {
     if (!g) { E(`kein Kontextmenü an Eintrag ${id}`); continue; }
     // APD-143/L-1: die Liste bleibt stehen, außer das Menü passt weder unter noch über die Kachel (Lage vor dem Öffnen)
     const offen = await lage(), { passt, unterOderUeber } = await page.evaluate(([id, top]) => {
-      const m = document.querySelector('.menu'), r = document.querySelector(`#side .side-row[data-id="${id}"]`).getBoundingClientRect(), { T, B } = rand12();
+      const m = document.querySelector('.menu'), r = document.querySelector(`#side .side-row[data-id="${id}"]`).getBoundingClientRect(), { T, B } = AD.popoverMargins();
       const f = document.querySelector('#side .side-foot .bhint, #side .side-foot .offl:not([hidden])')?.getBoundingClientRect();
       const limit = f && f.height ? Math.min(innerHeight - B, f.top - 12) : innerHeight - B, h = m.offsetHeight, dy = top - r.top;
       const unterOderUeber = r.bottom + dy + 8 + h <= limit + 1 || r.top + dy - 8 - h >= T - 1;

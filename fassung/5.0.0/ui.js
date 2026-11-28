@@ -1,23 +1,27 @@
 // AppDesign 5.0.0 · ui.js – gemeinsame Bausteine der iPad-Web-Apps von g811141a (Apple-like)
 // Einbinden am Ende von <body>, vor dem Skript der App:  <script src="../AppDesign/fassung/X.Y.Z/ui.js"></script> (feste Fassung, R-10.3)
-// Klassisches Skript: alle Funktionen sind global und für das Skript der App sichtbar.
+// Klassisches Skript. Seit 5.0.0 (APD-145, R-1.14) steht global nur AD: die App ruft AD.<Name>, z. B. AD.openMenu(…), AD.createSync(…), AD.alert.
 //
 // Die App muss bereitstellen (Schnittstelle):
 //   <dialog id="dlg"></dialog> und <dialog id="msg"></dialog> im Dokument
 //   db.settings.appearance ('auto' | 'light' | 'dark'), save(), render()     – für Darstellung
 //   optional: function onDialogOpen()                                       – wird bei jedem openDialog aufgerufen
-// Von ui.js nutzt die App nur die Namen aus schnittstelle.json (Teil app; R-1.14, Prüfung tests/schnittstelle.mjs, seit 4.64.0).
+// Von ui.js nutzt die App nur AD.<Name> mit den Namen aus schnittstelle.json (Teil app; R-1.14, Prüfung tests/schnittstelle.mjs, seit 4.64.0;
+// Namensraum AD seit 5.0.0).
 //
 // Inhalt: Icons (ic) · esc · Beträge (money, formatEuro) · autoGrow · onLongPress · Darstellung
 // (applyTheme, setAppearance) · Menüs (openMenu mit Untermenü) · Sprechblase (confirmPop) · gekürzter Titel (Sprechblase, seit 4.47.0) ·
 // hervorgehobene Quelle (AD-Bean sourcehighlight, seit 4.67.0) · Meldung (inform) · Hinweis-Kasten (AD-Bean notice, seit 4.70.0) · Fenster (openDialog, dlgHead) ·
 // Berühren (R-3.6) und Großanzeige (R-2.6, seit 4.48.0) · Auswahl-Kapsel (capHtml, mountCap) · Tastatur/sichtbarer Bereich (placeDialogs) · iPhone (isPhone, applyLayout) ·
-// Messmodus (messungMenuItems, seit 4.26.0) · Schnellroll-Griff (seit 4.30.0) · Navigation und Gesten (navAnmelden, navVor,
-// navZurueck, navSeite, seit 4.30.0) · Bedienungshilfen (ansagen, feldFehler, ersterFehler, Fokus und Tasten in Menüs, Sprechblasen
+// Messmodus (measureMenuItems, seit 4.26.0) · Schnellroll-Griff (seit 4.30.0) · Navigation und Gesten (navRegister, navPush,
+// navPop, navSidebar, seit 4.30.0) · Bedienungshilfen (announce, setFieldError, focusFirstInvalid, Fokus und Tasten in Menüs, Sprechblasen
 // und Fenstern, seit 4.35.0)
 // Regeln dazu: README - Designrichtlinie allgemein.md
 
 'use strict';
+// Namensraum AD (seit 5.0.0, APD-145, R-1.14): der ganze Code steht in einer Funktion, seine Namen sind innen. Ohne eigene Einrückung, damit
+// Zeilen und Stellen der Gegenproben gleich bleiben. Am Ende gibt sie AD zurück – das Einzige, was global wird.
+const AD = (() => {
 // Version der Bausteine (R-10.3): die App vergleicht sie beim Start mit der benötigten Fassung.
 const AD_VERSION = '5.0.0';
 // ‚Bewegung reduzieren‘ (R-1.9) – die eine Abfrage für alle Bausteine (seit 4.64.0, APD-135/B-4.2; vorher fünfmal eigens gebaut)
@@ -97,13 +101,14 @@ const ic = (name, cls = '') => {
 };
 // R-7.7 (seit 4.50.0, APD-30, Designrichtlinie 15.23; Testfall-Liste arbeit/APD-30 Testfall-Liste.md L-1 bis L-20): leerer Zustand wie Apple
 // ContentUnavailableView – Symbol (für VoiceOver verborgen), Titel als Überschrift, Satz, optional eine getönte Schaltfläche { id, label }, die dasselbe
-// auslöst wie die Schaltfläche oder der Menüpunkt, für die sie steht (die App setzt ihren onclick). klein: Seitenleiste neben dem Inhalt (nur Symbol und
-// Titel, ohne satz und aktion aufrufen); suche: ‚Keine Treffer für ‚…‘‘ – titel und satz werden hier maskiert (Begriff als Text, nie HTML).
-function leerHtml({ icon, titel, satz = '', aktion = null, klein = false, suche = false } = {}) {
-  return `<div class="leer${klein ? ' klein' : ''}${suche ? ' suche' : ''}">${ic(icon, 'sym')}<h3>${esc(titel)}</h3>${satz ? `<p>${esc(satz)}</p>` : ''}`
-    + `${aktion ? `<button type="button" class="leer-knopf" id="${esc(aktion.id)}">${esc(aktion.label)}</button>` : ''}</div>`;
+// auslöst wie die Schaltfläche oder der Menüpunkt, für die sie steht (die App setzt ihren onclick; Schlüssel actions). compact: Seitenleiste neben dem
+// Inhalt (nur Symbol und Titel, ohne description und actions aufrufen); search: ‚Keine Treffer für ‚…‘‘ – title und description werden hier maskiert
+// (Begriff als Text, nie HTML). Schlüssel englisch seit 5.0.0 (APD-145; vorher titel, satz, aktion, klein, suche).
+function contentUnavailableHtml({ icon, title, description = '', actions = null, compact = false, search = false } = {}) {
+  return `<div class="leer${compact ? ' klein' : ''}${search ? ' suche' : ''}">${ic(icon, 'sym')}<h3>${esc(title)}</h3>${description ? `<p>${esc(description)}</p>` : ''}`
+    + `${actions ? `<button type="button" class="leer-knopf" id="${esc(actions.id)}">${esc(actions.label)}</button>` : ''}</div>`;
 }
-const leerSuche = (begriff, klein = false) => leerHtml({ icon: 'search', titel: `Keine Treffer für ‚${begriff}‘`, satz: 'Schreibweise prüfen oder nach etwas anderem suchen.', klein, suche: true });
+const searchUnavailableHtml = (term, compact = false) => contentUnavailableHtml({ icon: 'search', title: `Keine Treffer für ‚${term}‘`, description: 'Schreibweise prüfen oder nach etwas anderem suchen.', compact, search: true });
 
 // Feste Elemente jeder App: <dialog id="dlg"> (Fenster) und <dialog id="msg"> (Meldungen).
 const dlg = document.getElementById('dlg');
@@ -132,7 +137,7 @@ const iconText = (icon, text) => `<span class="ict">${esc(icon)}\u00a0${esc(text
 // Der \u201a\u00b7\u2018 steht mit gesch\u00fctztem Leerzeichen im Block des Eintrags davor (.az-n, nowrap) \u2013 nach einem inline-block br\u00e4che der Browser
 // sonst vor dem \u201a\u00b7\u2018 um (Chromium und WebKit gemessen); ein Zusatz in Klammern (z. B. der Preis) steht ebenso darin und bleibt ganz.
 // liste: Texte oder [Text, Zusatz], z. B. ['Hotel Krone', '(120,00\u00a0\u20ac)'].
-function aufzaehlung(liste) {
+function listHtml(liste) {
   return liste.map((x, i) => {
     const [text, zusatz] = Array.isArray(x) ? x : [x, ''];
     const n = (zusatz ? '\u00a0' + esc(zusatz) : '') + (i < liste.length - 1 ? '\u00a0\u00b7' : '');
@@ -280,7 +285,7 @@ function markWords(html, words) {
 // Seit 4.27.0 (APD-28): der Rollbereich (.rolle mit id, direkt in el) bleibt dasselbe Element – nur sein Inhalt wird ersetzt. So
 // bleibt der Rollstand beim Neuaufbau erhalten (wie früher der des Fensters), und ein laufender Schwung reißt nicht ab.
 function setHtml(el, html) {
-  if (mess?.an) messEreignis('neuaufbau ' + (el.id || el.className || el.tagName.toLowerCase()));
+  if (measurement?.an) messEreignis('neuaufbau ' + (el.id || el.className || el.tagName.toLowerCase()));
   // seit 4.29.0: das ⓧ im Feld (APD-63 C3) steht nicht im neuen Inhalt – vorher heraus, danach wieder an das Feld mit Fokus
   if (el.contains(fxBtn)) { fxBtn.remove(); queueMicrotask(fxZeigen); }
   const f = document.activeElement;
@@ -461,7 +466,7 @@ addEventListener('focusout', e => { if (e.target === ceFeld) { ceFeld = null; ce
 
 // R-1.8 (V9, V13): Ergebnisse höflich ansagen – VoiceOver liest sie, sobald es fertig gesprochen hat. Der Ansage-Bereich liegt im
 // obersten offenen Fenster (Meldung, Fenster bzw. Blatt – außerhalb eines modalen Fensters hört VoiceOver nichts), sonst auf der
-// Seite. warten (ms): erst nach einer Pause (Suche beim Tippen: 700); eine neue Ansage ersetzt eine wartende. Gleicher Text noch
+// Seite. delay (ms, seit 5.0.0; vorher warten): erst nach einer Pause (Suche beim Tippen: 700); eine neue Ansage ersetzt eine wartende. Gleicher Text noch
 // einmal: der Bereich wird erst geleert, damit VoiceOver ihn wieder liest. ‚Automatisch gespeichert‘ wird nie angesagt (V11).
 let ansageUhr = 0;
 function ansageBereich() {
@@ -470,25 +475,25 @@ function ansageBereich() {
   if (!a) { a = document.createElement('div'); a.className = 'ansage'; a.setAttribute('aria-live', 'polite'); a.setAttribute('aria-atomic', 'true'); host.append(a); }
   return a;
 }
-function ansagen(text, { warten = 0 } = {}) {
+function announce(text, { delay = 0 } = {}) {
   clearTimeout(ansageUhr);
   ansageUhr = setTimeout(() => {
     const a = ansageBereich();
     a.textContent = '';
     ansageUhr = setTimeout(() => { ansageBereich().textContent = text; }, 50);
-  }, warten);
+  }, delay);
 }
 
 // R-5.3 (V10): Fehlermeldung eines oder mehrerer Felder (felder: Feld oder Liste, zeile: Element der Meldung). Mit Text: roter Rand,
 // aria-invalid, die Meldung mit den Feldern verknüpft (aria-describedby) und einmal angesagt – beim Erscheinen und bei neuem Text.
 // Ohne Text: alles weg. Ergebnis: true, solange ein Fehler steht.
 let fehlerNr = 0;
-function feldFehler(felder, zeile, text = '') {
+function setFieldError(felder, zeile, text = '') {
   felder = [felder].flat().filter(Boolean);
   const alt = zeile.hidden ? '' : zeile.textContent;
   zeile.textContent = text;
   zeile.hidden = !text;
-  if (!zeile.id) zeile.id = 'feldFehler' + ++fehlerNr;
+  if (!zeile.id) zeile.id = 'fieldError' + ++fehlerNr;
   for (const f of felder) {
     f.classList.toggle('invalid', !!text);
     if (text) f.setAttribute('aria-invalid', 'true'); else f.removeAttribute('aria-invalid');
@@ -496,12 +501,12 @@ function feldFehler(felder, zeile, text = '') {
     if (text) ids.push(zeile.id);
     if (ids.length) f.setAttribute('aria-describedby', ids.join(' ')); else f.removeAttribute('aria-describedby');
   }
-  if (text && text !== alt) ansagen(text);
+  if (text && text !== alt) announce(text);
   return !!text;
 }
 // Häkchen mit Fehler: der Abschnitt des ersten fehlerhaften Felds rollt in die Mitte (‚Bewegung reduzieren‘: springt, R-1.9),
 // danach hat das Feld den Fokus. Ergebnis: false, wenn kein Feld fehlerhaft ist.
-function ersterFehler(root = dlg) {
+function focusFirstInvalid(root = dlg) {
   const f = root.querySelector('[aria-invalid="true"]');
   if (!f) return false;
   const ruhig = bewegungRuhig();
@@ -518,7 +523,7 @@ addEventListener('keydown', e => { if (BEWEG_TASTEN.test(e.key) && !(e.key === '
 addEventListener('pointerdown', () => document.documentElement.classList.remove('tastatur'), true);
 // Fokus ohne Rollen (R-7.3); Ziele, die sonst keinen Fokus nehmen (Kopfzeile, Titel), bekommen tabindex -1 (nicht mit Tab erreichbar)
 const FOKUSBAR = 'button:not(:disabled), a[href], input:not(:disabled):not([type=hidden]), textarea:not(:disabled), select:not(:disabled), [tabindex]:not([tabindex="-1"])';
-function fokus(el) {
+function focus(el) {
   if (!el?.isConnected || !el.getClientRects().length || el.closest('[inert]')) return false;
   if (!el.matches('button, a[href], input, textarea, select, [tabindex]')) el.tabIndex = -1;
   el.focus({ preventScroll: true });
@@ -542,15 +547,15 @@ function fokusNachFenster(sel, vorher) {
   if (a && a !== document.body && a.isConnected && !a.closest('dialog:not([open])')) return;
   if (document.querySelector('.menu, .pop')) return;
   const k = (sel && document.querySelector(sel)) || wiederFinden(vorher);
-  if (k && fokus(k)) return;
-  if (dlg.open) fokus(dlg.querySelector('.dlg-head h3') || dlg);
-  else fokus(document.querySelector('#app .pnav, #app .nb, .pnav, .nb'));
+  if (k && focus(k)) return;
+  if (dlg.open) focus(dlg.querySelector('.dlg-head h3') || dlg);
+  else focus(document.querySelector('#app .pnav, #app .nb, .pnav, .nb'));
 }
 function fokusZurueck(anchor, host) {
   const a = anchor && liveAnchor(anchor);
-  if (a && fokus(a)) return;
-  if (host?.matches?.('dialog[open]')) fokus(host.querySelector('.dlg-head h3') || host);
-  else fokus(document.querySelector('#app .pnav, #app .nb, .pnav, .nb'));
+  if (a && focus(a)) return;
+  if (host?.matches?.('dialog[open]')) focus(host.querySelector('.dlg-head h3') || host);
+  else focus(document.querySelector('#app .pnav, #app .nb, .pnav, .nb'));
 }
 // R-1.4 (V7): bei offenem Menü und offener Sprechblase ist alles außerhalb für VoiceOver und Tastatur gesperrt (inert) – die übrigen
 // Teile des Fensters bzw. der Seite; frei bleiben genau die übergebenen Teile und alles, was danach dazukommt (Untermenü).
@@ -576,12 +581,12 @@ function applyTheme() {
 }
 // Seit 4.54.0 (APD-120, Testfall-Liste arbeit/APD-120 Testfall-Liste.md APD-120/J-1 bis J-13): Schalter ‚Glas‘ im Untermenü ‚Darstellung‘ – aus macht
 // Schwebendes deckend wie ‚Transparenz reduzieren‘ (R-3.9; die Einstellung des iPads kommt in Safari nicht an, Designrichtlinie 13). db.settings.glas:
-// fehlt = noch keine Wahl auf diesem Gerät (Glas ein); die App übernimmt beim Laden eines Backups den Wert aus der Datei nur dann (glasAusBackup).
+// fehlt = noch keine Wahl auf diesem Gerät (Glas ein); die App übernimmt beim Laden eines Backups den Wert aus der Datei nur dann (glassFromBackup).
 const glasAn = () => db.settings.glas !== false;
 function applyGlas() { document.documentElement.classList.toggle('ohne-glas', !glasAn()); }
 function setGlas(an) { db.settings.glas = !!an; save(); applyGlas(); }
 // Beim Laden eines Backups (Abgleichen oder Ersetzen): vorher = db.settings.glas dieses Geräts vor dem Laden – gilt weiter, wenn hier schon gewählt.
-function glasAusBackup(vorher) { if (typeof vorher === 'boolean') db.settings.glas = vorher; else if (typeof db.settings.glas !== 'boolean') delete db.settings.glas; applyGlas(); }
+function glassFromBackup(vorher) { if (typeof vorher === 'boolean') db.settings.glas = vorher; else if (typeof db.settings.glas !== 'boolean') delete db.settings.glas; applyGlas(); }
 darkQuery?.addEventListener?.('change', () => { if (db.settings.appearance === 'auto') applyTheme(); });
 
 function setAppearance(a) {
@@ -594,7 +599,7 @@ const APPEARANCES = { auto: 'Automatisch', light: 'Hell', dark: 'Dunkel' };
 // Seit 4.43.0 (APD-92, R-1.2): ‚Darstellung ›‘ steht im Mehr-Menü der Seitenleiste (iPhone: Startliste) nach Backup erstellen und
 // Backup laden – nie im Menü eines Eintrags, denn sie gilt für die ganze App; rechts grau der aktuelle Wert, Untermenü mit Häkchen.
 // Seit 4.54.0 (APD-120, Variante A): darunter als eigene Gruppe der Schalter ‚Glas‘ – das Menü bleibt beim Umschalten offen.
-const darstellungMenuItem = () => ({ icon: 'sun-moon', label: 'Darstellung', value: APPEARANCES[db.settings.appearance],
+const appearanceMenuItem = () => ({ icon: 'sun-moon', label: 'Darstellung', value: APPEARANCES[db.settings.appearance],
   submenu: [...Object.entries(APPEARANCES).map(([k, l]) => ({ tick: db.settings.appearance === k, label: l, act: () => setAppearance(k) })),
     'sep', { schalter: glasAn(), label: 'Glas', act: setGlas }] });
 
@@ -605,22 +610,23 @@ const darstellungMenuItem = () => ({ icon: 'sun-moon', label: 'Darstellung', val
 // Bereich (--vv-h, Variante B1) und endet über der Tastatur. Weil das Fenster nicht rollt, hat Safari beim Tippen nichts zu
 // verschieben (APD-27: jedes Rollen des Fensters bei offener Tastatur verschob den sichtbaren Bereich, der Ausgleich kam 2 Bilder
 // zu spät; Muster APD-28 und Versuch APD-28/M-1 am iPhone: 0 px). Alle Bausteine (Leiste, R-3.2, R-7.3, R-7.4, R-8.1, Messmodus) rollen
-// nur über rolle; die App ruft nie window.scrollTo. Ohne Rollbereich (App noch nicht umgebaut) rollt wie bisher das Fenster.
-const rolle = {
+// nur über scrollView (Namen seit 5.0.0 englisch: remaining, end, stop); die App ruft nie window.scrollTo. Ohne Rollbereich (App noch nicht umgebaut)
+// rollt wie bisher das Fenster.
+const scrollView = {
   get el() { return document.querySelector('#app > .rolle'); },
-  get y() { const e = rolle.el; return e ? e.scrollTop : scrollY; },
-  get max() { const e = rolle.el; return Math.max(0, e ? e.scrollHeight - e.clientHeight : document.documentElement.scrollHeight - innerHeight); },
-  get rest() { return rolle.max - rolle.y; },
-  to(y, smooth = false) { (rolle.el || window).scrollTo({ top: Math.max(0, Math.round(y)), behavior: smooth ? 'smooth' : 'instant' }); },
-  by(d) { if (Math.round(d)) rolle.to(rolle.y + d); },
+  get y() { const e = scrollView.el; return e ? e.scrollTop : scrollY; },
+  get max() { const e = scrollView.el; return Math.max(0, e ? e.scrollHeight - e.clientHeight : document.documentElement.scrollHeight - innerHeight); },
+  get remaining() { return scrollView.max - scrollView.y; },
+  to(y, smooth = false) { (scrollView.el || window).scrollTo({ top: Math.max(0, Math.round(y)), behavior: smooth ? 'smooth' : 'instant' }); },
+  by(d) { if (Math.round(d)) scrollView.to(scrollView.y + d); },
   // seit 4.28.1 (APD-36): bis zum Ende des Inhalts – Platz, der nach dem Schließen der Tastatur noch darunter steht, zählt nicht
-  ende(smooth = false) { rolle.to(rolle.max - platzVon(rolle.el), smooth); },
+  end(smooth = false) { scrollView.to(scrollView.max - platzVon(scrollView.el), smooth); },
   // seit 4.30.0 (7 APD-37/F-5, 1 APD-61/F-10): ein weiches Rollen (‚Nach oben / Ans Ende‘) sofort anhalten – WebKit hält es bei scrollTo
   // nicht an, wohl aber, wenn der Bereich kurz nicht rollen darf
-  halt() { const e = rolle.el; if (!e) return; const y = e.scrollTop; e.style.overflowY = 'hidden'; e.scrollTop = y; void e.offsetHeight; e.style.overflowY = ''; e.scrollTop = y; },
+  stop() { const e = scrollView.el; if (!e) return; const y = e.scrollTop; e.style.overflowY = 'hidden'; e.scrollTop = y; void e.offsetHeight; e.style.overflowY = ''; e.scrollTop = y; },
 };
 // Rollen hören (Fenster und Rollbereich): scroll-Ereignisse von Elementen steigen nicht auf – deshalb in der Einfangphase.
-const onRoll = fn => window.addEventListener('scroll', e => { if (e.target === document || e.target === rolle.el) fn(e); }, { capture: true, passive: true });
+const onRoll = fn => window.addEventListener('scroll', e => { if (e.target === document || e.target === scrollView.el) fn(e); }, { capture: true, passive: true });
 
 /* ---------- Menüs und Sprechblasen ---------- */
 
@@ -666,7 +672,7 @@ function blockingLayer(schliessen = () => {}) {
 // oder Wischen des Nutzers beendet das Festhalten. Auch nach ‹ › im Fenster steht die Liste wie beim Öffnen (Wunsch des Nutzers).
 let lockY = null, lockTop = null, holdTop = null, holdUntil = 0;
 function lockAnchor() {
-  if (rolle.y < 4) return null;
+  if (scrollView.y < 4) return null;
   const edge = keepEdge();
   const e = [...document.querySelectorAll(KEEP_SEL)].find(x => x.getClientRects().length && x.getBoundingClientRect().bottom > edge + 1);
   return e ? { sel: keepKey(e), top: e.getBoundingClientRect().top - edge } : null;
@@ -675,10 +681,10 @@ function alignTop(a) {
   if (!a) return;
   const e = [...document.querySelectorAll(KEEP_SEL.split(', ').map(s => `${s.split(' ')[0]} ${a.sel}`).join(', '))].find(x => x.getClientRects().length);
   const d = e ? Math.round(e.getBoundingClientRect().top - keepEdge() - a.top) : 0;
-  rolle.by(d);
+  scrollView.by(d);
 }
 function lockPage() {
-  if (lockY === null) { lockY = rolle.y; lockTop = lockAnchor(); holdTop = null; }
+  if (lockY === null) { lockY = scrollView.y; lockTop = lockAnchor(); holdTop = null; }
   document.documentElement.classList.add('locked');
 }
 function unlockPage() {
@@ -690,7 +696,7 @@ function unlockPage() {
   // gedreht, während das Fenster offen war (R-8.1) – nur eine neue Breite zählt: die Tastatur ändert die Höhe
   if (innerWidth !== keepWidth) return restoreTop();
   keepHeight = innerHeight;
-  if (Math.round(rolle.y) !== Math.round(y)) rolle.to(y);
+  if (Math.round(scrollView.y) !== Math.round(y)) scrollView.to(y);
   holdTop = a; holdUntil = performance.now() + 1500; alignTop(a);
 }
 // Festhalten nach dem Schließen: bei jeder Bewegung (Neuaufbau, Safari, Tastatur) die Zeile zurück an ihren Platz.
@@ -716,7 +722,7 @@ function showModalQuiet(d) {
 // Menü oder Sprechblase unter (bzw. über) der Schaltfläche, im Bildschirm gehalten.
 // R-1.7 (seit 4.29.0, APD-63): Abstände von Menüs und Sprechblasen zum Rand – 12 px, mindestens die sicheren Ränder
 // (bei offener Tastatur liegt die Home-Leiste unter ihr)
-function rand12() {
+function popoverMargins() {
   const g = safeRand();
   return { L: Math.max(12, g.left), R: Math.max(12, g.right), T: Math.max(12, g.top), B: Math.max(12, kbOffen() ? 0 : g.bottom) };
 }
@@ -727,7 +733,7 @@ function placeAt(el, anchor, align) {
   // darüber (APD-143).
   el.style.maxHeight = ''; el.style.overflowY = '';   // nach dem Drehen neu messen
   // Seit 4.29.0 (R-1.7, APD-63): Abstand 12 px vom Rand, mindestens aber die sicheren Ränder (Aussparung, Home-Leiste)
-  const { L, R, T, B } = rand12();
+  const { L, R, T, B } = popoverMargins();
   let r = anchor.getBoundingClientRect();
   const fit = room => { if (el.scrollHeight > room) { el.style.maxHeight = room + 'px'; el.style.overflowY = 'auto'; el.style.overscrollBehavior = 'contain'; } };
   let top;
@@ -803,7 +809,7 @@ function placeAt(el, anchor, align) {
 }
 
 // Einträge: { icon, label, sub, red, tick, disabled, act } (tick und icon zusammen: Häkchen vorne, dann Icon und Text) · { …, value, submenu: [Einträge] } (Untermenü ›, eine Ebene)
-// · { label, schalter: true|false, act(an) } (Schalter, seit 4.54.0) · 'sep' (Abstand) · 'line' (Strich) · { note } (graue Zeile) · { note, halten: true } (graue Zeile, langes Drücken schaltet den Messmodus frei,
+// · { label, schalter: true|false, act(an) } (Schalter, seit 4.54.0) · 'sep' (Abstand) · 'line' (Strich) · { note } (graue Zeile) · { note, longPress: true } (graue Zeile, langes Drücken schaltet den Messmodus frei,
 // seit 4.40.0, APD-77) · { messPlatz } (Platz des versteckten Messmodus, zeigt nichts). Ein Abstand ohne Eintrag danach entfällt.
 // Seit 4.35.0 (R-1.8, V3, V4): Einträge mit Häkchen-Spalte sind menuitemcheckbox mit aria-checked (‚Hell, ausgewählt‘), Einträge mit
 // Untermenü haben aria-haspopup und aria-expanded, die graue Zeile darunter ist ihre Beschreibung.
@@ -812,7 +818,7 @@ const menuDanach = (items, i) => items.slice(i + 1).find(x => !x?.messPlatz);
 const menuHtml = items => { const nr = ++menuNr; return items.map((it, i) => it?.messPlatz ? ''
   : it === 'sep' ? (n => !n || n === 'sep' || n === 'line' ? '' : '<div class="sep" role="separator"></div>')(menuDanach(items, i))
   : it === 'line' ? '<div class="line" role="separator"></div>'
-  : it.note ? `<div class="note${it.halten ? ' halten' : ''}" role="presentation">${esc(it.note)}</div>`
+  : it.note ? `<div class="note${it.longPress ? ' halten' : ''}" role="presentation">${esc(it.note)}</div>`
   // seit 4.54.0 (APD-120): Schalter im Menü – Rolle ‚Schalter‘ mit Zustand, rechts der Schalter wie in den Einstellungen (15.15)
   : 'schalter' in it ? `<button type="button" class="mi sw" data-i="${i}" role="switch" aria-checked="${it.schalter ? 'true' : 'false'}">${esc(it.label)}<span class="schalter" aria-hidden="true"></span></button>`
   : `<button type="button" class="mi ${it.red ? 'red' : ''} ${it.sub ? 'has-sub' : ''}" data-i="${i}" ${it.disabled ? 'disabled' : ''} role="${'tick' in it ? 'menuitemcheckbox' : 'menuitem'}"${
@@ -827,7 +833,7 @@ const floating = new Set();
 function liveAnchor(anchor) {
   if (anchor.isConnected) return anchor.getClientRects().length ? anchor : null;
   const again = wiederFinden(anchor);
-  if (again) adSourcehighlight.refresh(document);   // seit 4.67.0 (APD-136): die Bean tönt die wiedergefundene Schaltfläche, wenn sie Quelle ist
+  if (again) sourcehighlight.refresh(document);   // seit 4.67.0 (APD-136): die Bean tönt die wiedergefundene Schaltfläche, wenn sie Quelle ist
   return again || null;
 }
 function placeFloating() { floating.forEach(f => f()); }
@@ -904,10 +910,10 @@ function openMenu(anchor, items, align = 'right') {
     if (subMenu) schrumpfen(subMenu, subItem);   // R-4.13: das Untermenü schrumpft zu seinem Eintrag zurück
     subMenu?.remove(); subMenu = null;
     const it = subItem; subItem = null;
-    if (it) adSourcehighlight.release(it);
-    if (it) { it.setAttribute('aria-expanded', 'false'); if (zurueck) fokus(it); }
+    if (it) sourcehighlight.release(it);
+    if (it) { it.setAttribute('aria-expanded', 'false'); if (zurueck) focus(it); }
   };
-  adSourcehighlight.hold(anchor);   // seit 4.67.0 (APD-136/U-1): die Schaltfläche des offenen Menüs ist eine gehaltene Quelle
+  sourcehighlight.hold(anchor);   // seit 4.67.0 (APD-136/U-1): die Schaltfläche des offenen Menüs ist eine gehaltene Quelle
   mehrKippen(anchor, true);
   anchor.setAttribute('aria-haspopup', 'menu');
   anchor.setAttribute('aria-expanded', 'true');
@@ -915,7 +921,7 @@ function openMenu(anchor, items, align = 'right') {
   const placeSub = () => {
     if (!subMenu) return;
     subMenu.style.maxHeight = ''; subMenu.style.overflowY = '';
-    const { L, R, T, B } = rand12(), room = innerHeight - T - B;
+    const { L, R, T, B } = popoverMargins(), room = innerHeight - T - B;
     if (subMenu.scrollHeight > room) { subMenu.style.maxHeight = room + 'px'; subMenu.style.overflowY = 'auto'; }
     // R-4.13: Lage des Menüs aus left/top und Breite – während es wächst, wäre getBoundingClientRect verkleinert
     const waechst = menu.getAnimations?.().length, ml = parseFloat(menu.style.left), w = subMenu.offsetWidth;
@@ -939,7 +945,7 @@ function openMenu(anchor, items, align = 'right') {
   const schalten = (b, it) => { it.schalter = !it.schalter; b.setAttribute('aria-checked', it.schalter ? 'true' : 'false'); it.act(it.schalter); };
   const close = () => {
     if (!menu.isConnected) return;
-    closeSub(); schrumpfen(menu, anchor); layer.remove(); menu.remove(); adSourcehighlight.release(anchor); mehrKippen(anchor, false); anchor.setAttribute('aria-expanded', 'false'); floating.delete(place);
+    closeSub(); schrumpfen(menu, anchor); layer.remove(); menu.remove(); sourcehighlight.release(anchor); mehrKippen(anchor, false); anchor.setAttribute('aria-expanded', 'false'); floating.delete(place);
     entsperren?.(); tastenStapel.splice(tastenStapel.indexOf(tasten) >>> 0, 1);
     // Seit 4.11.0: den für das Kontextmenü dazugegebenen Platz unter der Liste wieder entfernen.
     document.querySelectorAll('.side-list[data-padded]').forEach(l => { l.style.paddingBottom = ''; delete l.dataset.padded; });
@@ -953,7 +959,7 @@ function openMenu(anchor, items, align = 'right') {
     const again = b.classList.contains('on');
     closeSub(again);
     if (again) return;
-    adSourcehighlight.hold(b);
+    sourcehighlight.hold(b);
     b.setAttribute('aria-expanded', 'true');
     subMenu = document.createElement('div');
     subMenu.className = 'menu submenu';
@@ -965,15 +971,15 @@ function openMenu(anchor, items, align = 'right') {
     subItem = b;
     placeSub();
     wachsen(subMenu, b);   // R-4.13: wächst aus seinem Menüpunkt
-    fokus(subMenu.querySelector('.mi:not(:disabled)'));   // K3: Fokus auf den ersten Eintrag des Untermenüs
+    focus(subMenu.querySelector('.mi:not(:disabled)'));   // K3: Fokus auf den ersten Eintrag des Untermenüs
   });
   binde();
   // R-1.6 (seit 4.40.0, APD-77): langes Drücken auf die graue Zeile mit der Version schaltet den Messmodus bis zum Neustart frei –
   // das Menü bleibt offen und zeigt ‚Messung starten‘ an seinem Platz; kurzes Tippen tut nichts
   menu.querySelectorAll('.note.halten').forEach(n => onLongPress(n, () => {
-    if (messFrei) return;
-    messFrei = true;
-    items = items.flatMap(it => it?.messPlatz ? messungMenuItems(it.messPlatz) : [it]);
+    if (measureAllowed) return;
+    measureAllowed = true;
+    items = items.flatMap(it => it?.messPlatz ? measureMenuItems(it.messPlatz) : [it]);
     menu.innerHTML = menuHtml(items); binde(); place();
   }, () => {}));
   // R-4.7 (K1–K3): Esc bzw. ⌘. schließt das oberste (Untermenü zuerst), ↑ ↓ Tab wandern mit Umlauf (Ausgegrautes, Striche und
@@ -986,7 +992,7 @@ function openMenu(anchor, items, align = 'right') {
     const geh = j => {
       verbrauchen(e);
       const m = mis[(j + mis.length) % mis.length];
-      fokus(m);
+      focus(m);
       if (m.offsetTop < liste.scrollTop) liste.scrollTop = m.offsetTop;   // langes Menü rollt mit
       else if (m.offsetTop + m.offsetHeight > liste.scrollTop + liste.clientHeight) liste.scrollTop = m.offsetTop + m.offsetHeight - liste.clientHeight;
     };
@@ -1005,7 +1011,7 @@ function openMenu(anchor, items, align = 'right') {
   floating.add(place);
   entsperren = sperreAusser(host, [layer, menu]);
   tastenStapel.push(tasten);
-  fokus(menu.querySelector('.mi:not(:disabled)'));   // V5: Fokus auf den ersten wählbaren Eintrag
+  focus(menu.querySelector('.mi:not(:disabled)'));   // V5: Fokus auf den ersten wählbaren Eintrag
   // Seit 4.11.0: Kontextmenü (lange drücken) – nach dem Loslassen noch einmal ausrichten; erst dann lässt iOS
   // die Liste sicher rücken (R-4.2).
   if (align === 'beside') {
@@ -1056,13 +1062,13 @@ function choosePop(anchor, html, buttons, { feld = null } = {}) {
     pop.setAttribute('aria-labelledby', pid);
     pop.tabIndex = -1;
     if (tiles) pop.classList.add('wide');
-    if (visible) adSourcehighlight.hold(anchor);
+    if (visible) sourcehighlight.hold(anchor);
     const place = () => {
       lochSetzen();
       if (!visible) { pop.style.left = (innerWidth - pop.offsetWidth) / 2 + 'px'; return; }
       const a = liveAnchor(anchor);
       // Schaltfläche nicht mehr zu sehen: die Abfrage bleibt offen und steht mittig (eine Entscheidung geht nicht verloren).
-      if (!a) { pop.style.left = (innerWidth - pop.offsetWidth) / 2 + 'px'; pop.style.top = Math.max(rand12().T, (innerHeight - pop.offsetHeight) / 2) + 'px'; return; }
+      if (!a) { pop.style.left = (innerWidth - pop.offsetWidth) / 2 + 'px'; pop.style.top = Math.max(popoverMargins().T, (innerHeight - pop.offsetHeight) / 2) + 'px'; return; }
       anchor = a;
       placeAt(pop, anchor, anchor.classList.contains('side-row') ? 'beside' : anchor.getBoundingClientRect().left > innerWidth / 2 ? 'right' : 'left');
     };
@@ -1070,7 +1076,7 @@ function choosePop(anchor, html, buttons, { feld = null } = {}) {
     let entsperren = null;
     const done = v => {
       if (!pop.isConnected) return;
-      floating.delete(place); schrumpfen(pop, visible ? anchor : null); layer.remove(); pop.remove(); if (visible) adSourcehighlight.release(anchor);
+      floating.delete(place); schrumpfen(pop, visible ? anchor : null); layer.remove(); pop.remove(); if (visible) sourcehighlight.release(anchor);
       entsperren?.(); tastenStapel.splice(tastenStapel.indexOf(tasten) >>> 0, 1);
       if (!feld) fokusZurueck(visible ? anchor : null, host);   // V6: zurück auf die Schaltfläche bzw. die Kopfzeile, ohne Rollen
       resolve(v);
@@ -1092,7 +1098,7 @@ function choosePop(anchor, html, buttons, { feld = null } = {}) {
       if (!d) return;
       verbrauchen(e);
       const i = bs.indexOf(document.activeElement);
-      fokus(bs[i < 0 ? (d > 0 ? 0 : bs.length - 1) : (i + d + bs.length) % bs.length]);
+      focus(bs[i < 0 ? (d > 0 ? 0 : bs.length - 1) : (i + d + bs.length) % bs.length]);
     };
     host.append(layer, pop);
     lochSetzen();
@@ -1102,7 +1108,7 @@ function choosePop(anchor, html, buttons, { feld = null } = {}) {
     tastenStapel.push(tasten);
     if (feld) { for (const el of [layer, pop]) { el.addEventListener('pointerdown', e => e.preventDefault()); el.addEventListener('mousedown', e => e.preventDefault()); } return; }
     entsperren = sperreAusser(host, [layer, pop]);
-    fokus(pop);
+    focus(pop);
   });
 }
 let popNr = 0;
@@ -1136,7 +1142,7 @@ function zeigeTitelBlase(t) {
   const r = t.getBoundingClientRect(), zeile = t.closest('.dlg-head') || t.parentElement;
   const unten = Math.max(r.bottom, ...[...zeile.querySelectorAll('button')].map(k => k.getBoundingClientRect())
     .filter(k => k.height && k.top < r.bottom && k.bottom > r.top).map(k => k.bottom));
-  const { L, R } = rand12(), w = el.offsetWidth, mitte = r.left + r.width / 2;
+  const { L, R } = popoverMargins(), w = el.offsetWidth, mitte = r.left + r.width / 2;
   const left = Math.max(L, Math.min(mitte - w / 2, innerWidth - R - w));
   el.style.left = left + 'px';
   el.style.top = (unten + 10) + 'px';
@@ -1175,12 +1181,12 @@ addEventListener('scroll', () => { titelDruckEnde(); titelBlaseZu(); }, { captur
 // das in der Home-Bildschirm-App für eigene Rollbereiche nicht wirkt (Abweichung, Designrichtlinie 16). Schon oben: nichts. Ein Tipp oder
 // Wischen während des Rollens hält es an; ‚Bewegung reduzieren‘: sofort oben (Inhalt blendet über wie bei ‚Nach oben‘, R-1.9). Kein Rollen
 // nach langem Drücken (R-2.5) und während eines Seitenwechsels bzw. Zurückwischens (R-7.5). Der Titel bleibt Überschrift (R-1.8).
-const TITEL_OBEN = [['.nb-title, .pnav-title', () => rolle.el || document.scrollingElement],
+const TITEL_OBEN = [['.nb-title, .pnav-title', () => scrollView.el || document.scrollingElement],
   ['.side-head .ttl, .side-head > h2', t => t.closest('#side')?.querySelector('.side-list')],
   ['.dlg-head h3', t => t.closest('dialog')?.querySelector('.dlg-body')]];
 let titelTipp = null, titelRollt = null;
 // Eigenes Rollen Bild für Bild statt scrollTo smooth: Chromium hält ein weiches Rollen unter Last nicht verlässlich an, WebKit gar nicht
-// (rolle.halt) – hier heißt Anhalten nur ‚kein weiteres Bild‘, in beiden Browsern gleich (H-6). Seit 4.57.0 (R-1.12, APD-127/B-5) mit der
+// (scrollView.stop) – hier heißt Anhalten nur ‚kein weiteres Bild‘, in beiden Browsern gleich (H-6). Seit 4.57.0 (R-1.12, APD-127/B-5) mit der
 // Feder aus Notizen über 0,5 s (bis 4.56.0 kubisch auslaufend in 0,3 bis 0,7 s je nach Weg).
 function titelRoll(el) {
   const y0 = el.scrollTop, t0 = performance.now(), dauer = GLEIT_AUF_MS, lauf = titelRollt = { el };
@@ -1213,7 +1219,7 @@ document.addEventListener('click', e => {
   const el = treffer && treffer[1](e.target.closest(treffer[0]));
   if (!el || el.scrollTop <= 0) return;   // H-4: schon oben
   const los = weich => { if (weich) titelRoll(el); else el.scrollTo({ top: 0, behavior: 'instant' }); };
-  if (el === rolle.el || el === document.scrollingElement) nachTastatur(() => rolleSpringt(los));
+  if (el === scrollView.el || el === document.scrollingElement) nachTastatur(() => rolleSpringt(los));
   else los(!bewegungRuhig());
 });
 
@@ -1308,7 +1314,7 @@ function klickSperre() {
 // nichts davon. Esc und Drehen schließen sie ohne Auslösen. Die Anzeige ist nur zu sehen (aria-hidden) – VoiceOver nennt jede Schaltfläche (R-1.8).
 // Solange sie offen ist, rollt die Seite nicht mit (touchmove), damit Safari den Finger nicht übernimmt.
 const GROSS_SEL = ':is(.nb, .pnav, .bbar, .dlg-head, .side-head, .side-search, .fab) button';
-let gross = null, grossEl = null, grossKlickWeg = 0, grossSelbst = false;
+let largeContent = null, grossEl = null, grossKlickWeg = 0, grossSelbst = false;
 const grossName = k => (k.getAttribute('aria-label') || k.textContent || '').trim();
 function grossKnopfBei(x, y) {
   const k = document.elementFromPoint(x, y)?.closest?.(GROSS_SEL);
@@ -1316,12 +1322,12 @@ function grossKnopfBei(x, y) {
 }
 function grossAnzeigeZu() {
   grossEl?.remove(); grossEl = null;
-  if (gross?.k) gross.k.classList.remove('beruehrt');
+  if (largeContent?.k) largeContent.k.classList.remove('beruehrt');
 }
-function grossZu() { if (!gross) return; clearTimeout(gross.timer); grossAnzeigeZu(); gross = null; }
+function grossZu() { if (!largeContent) return; clearTimeout(largeContent.timer); grossAnzeigeZu(); largeContent = null; }
 function grossZeige(k) {
-  if (gross.k && gross.k !== k) gross.k.classList.remove('beruehrt');
-  gross.k = k; pressScale(k); k.classList.add('beruehrt');
+  if (largeContent.k && largeContent.k !== k) largeContent.k.classList.remove('beruehrt');
+  largeContent.k = k; pressScale(k); k.classList.add('beruehrt');
   const host = k.closest('dialog') || document.body;
   if (!grossEl || grossEl.parentNode !== host) {
     grossEl?.remove();
@@ -1343,26 +1349,26 @@ addEventListener('pointerdown', e => {
   grossZu();
   const k = e.target.closest?.(GROSS_SEL);
   if (!k || !e.isPrimary || e.button > 0 || !document.documentElement.classList.contains('ts-ax')) return;
-  gross = { k: null, x0: e.clientX, y0: e.clientY, offen: false, timer: setTimeout(() => {
-    if (!gross || navZug?.aktiv || blattZug?.aktiv || !k.isConnected) { gross = null; return; }
-    gross.offen = true; grossKlickWeg = Infinity;   // der Klick nach dem Loslassen gehört der Großanzeige
+  largeContent = { k: null, x0: e.clientX, y0: e.clientY, offen: false, timer: setTimeout(() => {
+    if (!largeContent || navZug?.aktiv || blattZug?.aktiv || !k.isConnected) { largeContent = null; return; }
+    largeContent.offen = true; grossKlickWeg = Infinity;   // der Klick nach dem Loslassen gehört der Großanzeige
     if (beruehr) { clearTimeout(beruehr.timer); beruehr = null; }   // die Rückmeldung beim Berühren übernimmt die Großanzeige
     grossZeige(k);
   }, 600) };
 }, true);
 addEventListener('pointermove', e => {
-  if (!gross) return;
-  if (!gross.offen) { if (Math.hypot(e.clientX - gross.x0, e.clientY - gross.y0) > LANG_WEG) grossZu(); return; }
+  if (!largeContent) return;
+  if (!largeContent.offen) { if (Math.hypot(e.clientX - largeContent.x0, e.clientY - largeContent.y0) > LANG_WEG) grossZu(); return; }
   const k = grossKnopfBei(e.clientX, e.clientY);
-  if (k && k !== gross.k) grossZeige(k);
+  if (k && k !== largeContent.k) grossZeige(k);
 }, true);
 function grossEnde(e) {
-  if (!gross) return;
-  clearTimeout(gross.timer);
-  const offen = gross.offen;
-  if (!offen) { gross = null; return; }
+  if (!largeContent) return;
+  clearTimeout(largeContent.timer);
+  const offen = largeContent.offen;
+  if (!offen) { largeContent = null; return; }
   const k = e.type === 'pointerup' ? grossKnopfBei(e.clientX, e.clientY) : null;
-  grossAnzeigeZu(); gross = null;
+  grossAnzeigeZu(); largeContent = null;
   grossKlickWeg = performance.now() + 400;
   // seit 4.50.0 (APD-108): eigener Klick – die Sperre ‚Wischen tippt nie an‘ (klickSperre) gilt für ihn nicht, der Finger glitt über die Schaltflächen
   if (k && !k.disabled) { grossSelbst = true; klickEigen = true; try { k.click(); } finally { grossSelbst = false; klickEigen = false; } }
@@ -1373,11 +1379,11 @@ addEventListener('click', e => {
   if (grossSelbst || performance.now() >= grossKlickWeg) return;
   grossKlickWeg = 0; e.preventDefault(); e.stopImmediatePropagation();
 }, true);
-addEventListener('touchmove', e => { if (gross?.offen && e.cancelable) e.preventDefault(); }, { passive: false, capture: true });
+addEventListener('touchmove', e => { if (largeContent?.offen && e.cancelable) e.preventDefault(); }, { passive: false, capture: true });
 addEventListener('contextmenu', e => { if (document.documentElement.classList.contains('ts-ax') && e.target.closest?.(GROSS_SEL)) e.preventDefault(); }, true);
-addEventListener('scroll', () => { if (gross && !gross.offen) grossZu(); }, { capture: true, passive: true });
+addEventListener('scroll', () => { if (largeContent && !largeContent.offen) grossZu(); }, { capture: true, passive: true });
 // Esc bei offener Anzeige schließt nur sie (am iPhone sonst auch ‚zurück‘)
-addEventListener('keydown', e => { if (!gross || !istAbbruch(e)) return; if (gross.offen) verbrauchen(e); grossZu(); grossKlickWeg = performance.now() + 400; }, true);
+addEventListener('keydown', e => { if (!largeContent || !istAbbruch(e)) return; if (largeContent.offen) verbrauchen(e); grossZu(); grossKlickWeg = performance.now() + 400; }, true);
 { let breite = innerWidth; addEventListener('resize', () => { if (innerWidth !== breite) grossZu(); breite = innerWidth; }); }
 
 /* ---------- AD-Bean sourcehighlight: Hervorgehobene Quelle (seit 4.67.0, APD-136, R-3.3, R-4.13, R-8.1, R-1.13) ---------- */
@@ -1388,7 +1394,7 @@ addEventListener('keydown', e => { if (!gross || !istAbbruch(e)) return; if (gro
 // markHeld, setOpener, markOpener und dlgOpener sowie die Tönung in openMenu, im Untermenü und in confirmPop. Namen nach Vorbild (Zusammenarbeit 1):
 // Apple `sourceItem` (UIPopoverPresentationController), `highlighted` (UIControl ohne `is`), Web-Ereignis `change`.
 // Schnittstelle (R-1.13, Liste der AD-Beans in Designrichtlinie 15) – die App nutzt nur diese Namen:
-//   createSourcehighlight(root) – ui.js legt die eine Bean für die Seite an (adSourcehighlight)
+//   createSourcehighlight(root) – ui.js legt die eine Bean für die Seite an (AD.sourcehighlight)
 //   s.sourceItem (lesen und setzen; Standard '') – Quelle des offenen Fensters: setzen tönt sie und gibt die vorige frei, '' gibt frei
 //   s.heldItems (nur lesen) – gehaltene Quellen (laufende Aktion, offenes Menü, Untermenü, Sprechblase)
 //   s.hold(item) · s.release(item) · s.refresh(root) – item = CSS-Auswahl oder Element; refresh tönt nach einem Neuaufbau in root alle Quellen wieder
@@ -1440,7 +1446,7 @@ function createSourcehighlight(root, { sourceItem = '' } = {}) {
   if (sourceItem) bean.sourceItem = sourceItem;
   return bean;
 }
-const adSourcehighlight = createSourcehighlight(document.body);
+const sourcehighlight = createSourcehighlight(document.body);
 
 /* ---------- Backup erstellen und laden (R-9.1, R-9.2, seit 4.10.0) ---------- */
 
@@ -1515,7 +1521,7 @@ function backupFileOf(app, data) {
 // Fuß der Seitenleiste bzw. Startliste. Seit 4.34.0 (R-9.1, APD-74): die gelbe Backup-Kachel steht nur, solange heute auf diesem
 // Gerät noch kein Backup erstellt wurde und es etwas zu sichern gibt (leer = keine Einträge); danach verschwindet sie (wie die
 // Hinweise in den Einstellungen) – ‚Backup erstellen‘ und ‚Letztes Backup …‘ bleiben im Mehr-Menü. Um 0:00 kommt sie wieder
-// (onNeuerTag). Seit 4.15.0 (R-1.5): darunter grau die Zeile ‚Offline – …‘, solange die App offline arbeitet – seit 4.34.0 auch
+// (onDayChange). Seit 4.15.0 (R-1.5): darunter grau die Zeile ‚Offline – …‘, solange die App offline arbeitet – seit 4.34.0 auch
 // ohne Kachel; die App setzt den Fuß deshalb immer, auch bei leerer Liste.
 const backupTileHtml = (ms, leer = false) => `<div class="side-foot">${leer || backupToday(ms) ? '' : `<div class="bhint"><div>${backupLastText(ms)}</div>
       <button type="button" id="hintBackup">${ic('save')}Backup erstellen</button></div>`}${netLineHtml()}</div>`;
@@ -1523,7 +1529,7 @@ const backupTileHtml = (ms, leer = false) => `<div class="side-foot">${leer || b
 const sideFootRect = side => side?.querySelector('.side-foot .bhint, .side-foot .offl:not([hidden])')?.getBoundingClientRect();
 // Seit 4.34.0 (APD-74): fn läuft, sobald ein neuer Kalendertag beginnt – um 0:00 und bei der Rückkehr in die App (im Hintergrund
 // hält Safari Zeitgeber an). Die App zeichnet damit die Liste neu (Backup-Kachel kommt wieder).
-function onNeuerTag(fn) {
+function onDayChange(fn) {
   let tag = new Date().toDateString(), timer = null;
   const plane = () => { clearTimeout(timer); const n = new Date(); n.setHours(24, 0, 1, 0); timer = setTimeout(pruefe, n - Date.now()); };
   const pruefe = () => { const t = new Date().toDateString(); if (t !== tag) { tag = t; fn(); } plane(); };
@@ -1580,7 +1586,7 @@ function showNetToast(state) {
   t.onclick = weg;
   netTimer = setTimeout(weg, 4000);
   // R-1.8 (seit 4.35.0, V13): angesagt über den Ansage-Bereich (auch bei offenem Fenster), die Meldung selbst ohne role="status"
-  ansagen(state === 'aus' ? 'Du bist offline. Die App arbeitet weiter; alles bleibt auf diesem Gerät.' : 'Wieder online');
+  announce(state === 'aus' ? 'Du bist offline. Die App arbeitet weiter; alles bleibt auf diesem Gerät.' : 'Wieder online');
 }
 function setNet(state) {
   if (state !== 'aus' && state !== 'an') return;
@@ -1920,7 +1926,7 @@ function createSync({ list, sub, subAt = `${sub}At`, maxFields = [], nouns = ['E
 /* ---------- AD-Bean alert: Hinweisfenster (seit 4.64.0, APD-138, R-10.8, R-1.13; Kennung alert seit 4.67.0, APD-136) ---------- */
 
 // Seit 4.64.0 (APD-138, R-10.8, R-1.13): das Hinweisfenster ist eine AD-Bean (Fenster und Meldungen) auf <dialog id="msg">; ui.js legt sie
-// einmal an (adAlert), inform(…) ist der kurze Aufruf dafür. Seit 4.67.0 (APD-136, Zusammenarbeit 1 ‚Code englisch‘) heißt sie `alert` (ersetzt
+// einmal an (AD.alert), inform(…) ist der kurze Aufruf dafür. Seit 4.67.0 (APD-136, Zusammenarbeit 1 ‚Code englisch‘) heißt sie `alert` (ersetzt
 // `hinweis`) – Namen nach Vorbild: Web `alert()` und `<dialog>` (`open`, `showModal()`, `close()`, Ereignis `close`), Apple *alert* (`title`, `message`).
 // Eigenschaft fitFileName (Standard ein): steht ein Dateiname (.fname) im Text, wird das Fenster am iPad so breit, dass er in einer Zeile
 // steht – mindestens die Grundbreite, höchstens die verfügbare Breite (Bildschirmbreite − 32 px, quer also breiter als hoch; R-10.8); darüber
@@ -1956,7 +1962,7 @@ function createAlert(dialog, { fitFileName = true } = {}) {
   // Verfügbare Fläche: sichtbarer Bereich (bei offener Tastatur darüber) minus sichere Ränder und ALERT_RAND je Seite
   function flaeche() {
     const vv = window.visualViewport, s = safeRand(), kb = kbOffen();
-    const top = vv ? Math.max(0, rolle.el ? Math.min(vv.offsetTop, scrollY) : vv.offsetTop) : 0;   // wie placeDialogs (APD-115/N-11)
+    const top = vv ? Math.max(0, scrollView.el ? Math.min(vv.offsetTop, scrollY) : vv.offsetTop) : 0;   // wie placeDialogs (APD-115/N-11)
     const links = s.left + ALERT_RAND, oben = s.top + ALERT_RAND, unten = (kb ? 0 : s.bottom) + ALERT_RAND;
     return { top, left: (vv ? vv.offsetLeft : 0) + links, oben,
       breite: Math.max(0, (vv ? vv.width : innerWidth) - links - s.right - ALERT_RAND),
@@ -2016,8 +2022,8 @@ function createAlert(dialog, { fitFileName = true } = {}) {
   }
   return bean;
 }
-const adAlert = createAlert(msg);
-const inform = (title, message, { wide = false, action = null } = {}) => adAlert.showModal(title, message, { wide, action });
+const alert = createAlert(msg);
+const inform = (title, message, { wide = false, action = null } = {}) => alert.showModal(title, message, { wide, action });
 
 /* ---------- AD-Bean notice: Hinweis-Kasten (seit 4.70.0, P-122/F-2, R-3.10, R-1.13) ---------- */
 
@@ -2105,7 +2111,7 @@ function createRecentlydeleted(root, { data, list, field = 'recentlyDeleted', da
       d[list] = (d[list] || []).filter(e => e.id !== item.id);
       d[field] = [{ id: item.id, item: structuredClone(item), at: Date.now(), on: deviceName() }, ...d[field].filter(x => x.id !== item.id)];
       expire();
-      ansagen(`‚${label(item)}‘ nach ‚Zuletzt gelöscht‘ verschoben`);
+      announce(`‚${label(item)}‘ nach ‚Zuletzt gelöscht‘ verschoben`);
       melde('change');
     },
     restore(id, origin = 'menu') {
@@ -2113,7 +2119,7 @@ function createRecentlydeleted(root, { data, list, field = 'recentlyDeleted', da
       d[field] = d[field].filter(y => y.id !== id);
       d.deleted = (d.deleted || []).filter(y => y.id !== id);
       d[list] = [...(d[list] || []).filter(e => e.id !== id), x.item];
-      ansagen(`‚${label(x.item)}‘ wiederhergestellt`);
+      announce(`‚${label(x.item)}‘ wiederhergestellt`);
       melde('change'); melde('restore', { id, item: x.item, origin });
     },
     purge(id) {
@@ -2152,7 +2158,7 @@ function createRecentlydeleted(root, { data, list, field = 'recentlyDeleted', da
         { icon: 'rotate-ccw', label: 'Wiederherstellen', shortTitle: 'Wiederherstellen', act: () => bean.restore(id, 'menu') },
         'sep',
         { icon: 'trash', label: 'Endgültig löschen', shortTitle: 'Löschen', red: true, act: async w => {
-          if (!w?.sourceView) adSourcehighlight.hold(row);
+          if (!w?.sourceView) sourcehighlight.hold(row);
           const frage = question ? question(x.item) : `‚${esc(label(x.item))}‘ endgültig löschen? Das kann nicht rückgängig gemacht werden.`;
           if (await confirmPop(w?.sourceView || row, frage, { label: 'Endgültig löschen', icon: 'trash' })) bean.purge(id);
         } },
@@ -2168,7 +2174,7 @@ function createRecentlydeleted(root, { data, list, field = 'recentlyDeleted', da
     else melde(b.classList.contains('ad-recentlydeleted-entry') ? 'open' : 'close');
   });
   if (expire()) setTimeout(() => melde('change'));
-  onNeuerTag(() => { if (expire()) melde('change'); });
+  onDayChange(() => { if (expire()) melde('change'); });
   return bean;
 }
 
@@ -2197,7 +2203,7 @@ function openDialog(html, wide = false) {
       { label: 'Änderungen verwerfen', icon: 'trash' }, { label: 'Weiter bearbeiten', icon: 'pencil' })) return;
     dlg.close('cancel');
   };
-  adSourcehighlight.refresh(document);
+  sourcehighlight.refresh(document);
   mountCap(dlg);
   growAll();
   requestAnimationFrame(growAll);
@@ -2282,14 +2288,14 @@ const fabKnoepfe = f => [f.querySelector('button:first-of-type'), f.querySelecto
 function updateFab() {
   const f = document.querySelector('.fab');
   if (!f) return navKlassen();
-  const [oben, unten] = fabKnoepfe(f), e = rolle.el, vv = window.visualViewport;
-  const nah = (e ? e.clientHeight : innerHeight) / 2, ende = rolle.max - platzVon(e);
-  oben.hidden = !(rolle.y > nah);
-  unten.hidden = !(ende - rolle.y > nah);
+  const [oben, unten] = fabKnoepfe(f), e = scrollView.el, vv = window.visualViewport;
+  const nah = (e ? e.clientHeight : innerHeight) / 2, ende = scrollView.max - platzVon(e);
+  oben.hidden = !(scrollView.y > nah);
+  unten.hidden = !(ende - scrollView.y > nah);
   const knopf = [oben, unten].find(b => b.offsetHeight)?.offsetHeight;
   if (knopf) fabH = 2 * knopf + 1;   // volle Höhe (zwei Pfeile und Rand); ausgeblendet hat sie keine Höhe – dann die zuletzt gemessene
   const raum = e ? Math.min(e.getBoundingClientRect().bottom, vv ? vv.offsetTop + vv.height : innerHeight) - e.getBoundingClientRect().top : Infinity;
-  f.classList.toggle('still', rolle.max <= 1 || (oben.hidden && unten.hidden) || raum < (fabH || 97) + 32);
+  f.classList.toggle('still', scrollView.max <= 1 || (oben.hidden && unten.hidden) || raum < (fabH || 97) + 32);
   schnellZeigen(false);
   navKlassen();   // nach jedem Aufbau: wo gewischt werden kann, hängt auch vom Inhalt ab (z. B. erst ein offener Eintrag)
 }
@@ -2298,10 +2304,10 @@ function updateFab() {
 function rolleSpringt(fn) {
   if (!bewegungRuhig()) return fn(true);
   fn(false);
-  rolle.el?.animate?.([{ opacity: 0.4 }, { opacity: 1 }], { duration: 150, easing: 'ease-out' });
+  scrollView.el?.animate?.([{ opacity: 0.4 }, { opacity: 1 }], { duration: 150, easing: 'ease-out' });
 }
-const fabTop = () => nachTastatur(() => rolleSpringt(weich => rolle.to(0, weich)));
-const fabEnd = () => nachTastatur(() => rolleSpringt(weich => rolle.ende(weich)));
+const fabTop = () => nachTastatur(() => rolleSpringt(weich => scrollView.to(0, weich)));
+const fabEnd = () => nachTastatur(() => rolleSpringt(weich => scrollView.end(weich)));
 if (window.ResizeObserver) new ResizeObserver(() => requestAnimationFrame(updateFab)).observe(document.body);
 window.addEventListener('resize', () => requestAnimationFrame(updateFab));
 window.visualViewport?.addEventListener('resize', () => requestAnimationFrame(updateFab));
@@ -2314,25 +2320,25 @@ window.visualViewport?.addEventListener('resize', () => requestAnimationFrame(up
 // Höhe (zwei Pfeile und 8 px Abstand) – sie springt nicht, wenn ein Pfeil wegfällt. Ganz oben bzw. unten (auch darüber hinaus)
 // gezogen = Anfang bzw. Ende. VoiceOver: Regler ‚Schnell rollen‘ (Wert = Marke), Wischen nach oben/unten springt einen Abschnitt.
 const SCHNELL_AB = 3, SCHNELL_RUHE = 1500, SCHNELL_KAPSEL = 2 * 48 + 8;
-const schnell = document.createElement('div');
-schnell.className = 'schnell aus';
-schnell.hidden = true;
-schnell.innerHTML = `<div class="blase" aria-hidden="true"></div><div class="griff" role="slider" tabindex="-1" aria-label="Schnell rollen"
+const fastScroll = document.createElement('div');
+fastScroll.className = 'schnell aus';
+fastScroll.hidden = true;
+fastScroll.innerHTML = `<div class="blase" aria-hidden="true"></div><div class="griff" role="slider" tabindex="-1" aria-label="Schnell rollen"
   aria-orientation="vertical" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span>${ic('chevrons-up-down')}</span></div>`;
-document.body.append(schnell);
-const schnellGriff = schnell.querySelector('.griff'), schnellBlase = schnell.querySelector('.blase');
+document.body.append(fastScroll);
+const schnellGriff = fastScroll.querySelector('.griff'), schnellBlase = fastScroll.querySelector('.blase');
 let schnellZieht = null, schnellRuhe = 0, schnellH = 0;
-const schnellEnde = () => Math.max(0, rolle.max - platzVon(rolle.el));
+const schnellEnde = () => Math.max(0, scrollView.max - platzVon(scrollView.el));
 function schnellMoeglich() {
-  const f = document.querySelector('.fab'), e = rolle.el;
+  const f = document.querySelector('.fab'), e = scrollView.el;
   return !!f && !!e && !f.hidden && !f.classList.contains('still') && f.getClientRects().length > 0 && !kbOffen()
     && !document.documentElement.classList.contains('locked') && e.scrollHeight >= SCHNELL_AB * e.clientHeight;
 }
 // Marken in der Reihenfolge des Inhalts (Tage, Überschriften der Abschnitte); es gilt die letzte, die oben schon begonnen hat –
 // davor (Kopf des Inhalts) die erste. Steht oben eine Tabelle mit haftendem Kopf, zählt die Kante unter dem Kopf.
-const schnellMarken = () => [...rolle.el.querySelectorAll('[data-marke]')];
+const schnellMarken = () => [...scrollView.el.querySelectorAll('[data-marke]')];
 function schnellKante(marken) {
-  let kante = rolle.el.getBoundingClientRect().top + 4;
+  let kante = scrollView.el.getBoundingClientRect().top + 4;
   const tab = marken.find(m => m.closest('table'))?.closest('table'), th = tab?.tHead?.querySelector('th');
   if (th && getComputedStyle(th).position === 'sticky' && tab.getBoundingClientRect().bottom > kante + th.offsetHeight) kante += th.offsetHeight;
   return kante;
@@ -2346,13 +2352,13 @@ function schnellMarke(marken = schnellMarken()) {
 }
 // rollt: der Inhalt hat sich bewegt – Griff einblenden und nach 1,5 s Ruhe wieder aus
 function schnellZeigen(rollt) {
-  if (!schnellMoeglich()) { schnell.hidden = true; schnell.classList.add('aus'); return; }
-  schnell.hidden = false;
-  const r = rolle.el.getBoundingClientRect(), f = document.querySelector('.fab').getBoundingClientRect();
+  if (!schnellMoeglich()) { fastScroll.hidden = true; fastScroll.classList.add('aus'); return; }
+  fastScroll.hidden = false;
+  const r = scrollView.el.getBoundingClientRect(), f = document.querySelector('.fab').getBoundingClientRect();
   const oben = r.top + 8, h = Math.max(0, f.bottom - SCHNELL_KAPSEL - oben);
-  schnell.style.top = oben + 'px'; schnell.style.height = h + 'px';
+  fastScroll.style.top = oben + 'px'; fastScroll.style.height = h + 'px';
   schnellH = Math.max(0, h - schnellGriff.offsetHeight);
-  const ende = schnellEnde(), a = ende ? Math.min(1, Math.max(0, rolle.y / ende)) : 0;
+  const ende = schnellEnde(), a = ende ? Math.min(1, Math.max(0, scrollView.y / ende)) : 0;
   schnellGriff.style.transform = `translateY(${Math.round(a * schnellH)}px)`;
   const marken = schnellMarken(), i = schnellMarke(marken), marke = i < 0 ? '' : marken[i].dataset.marke;
   schnellGriff.setAttribute('aria-valuenow', Math.round(a * 100));
@@ -2360,28 +2366,28 @@ function schnellZeigen(rollt) {
   if (schnellBlase.textContent !== marke) schnellBlase.textContent = marke;
   schnellBlase.style.transform = `translateY(${Math.round(a * schnellH + schnellGriff.offsetHeight / 2)}px) translateY(-50%)`;
   if (!rollt) return;
-  schnell.classList.remove('aus');
+  fastScroll.classList.remove('aus');
   clearTimeout(schnellRuhe);
-  if (!schnellZieht) schnellRuhe = setTimeout(() => schnell.classList.add('aus'), SCHNELL_RUHE);
+  if (!schnellZieht) schnellRuhe = setTimeout(() => fastScroll.classList.add('aus'), SCHNELL_RUHE);
 }
 onRoll(() => { if (!keepBusy) schnellZeigen(true); });
 schnellGriff.addEventListener('pointerdown', e => {
-  if (e.button > 0 || schnell.classList.contains('aus')) return;
+  if (e.button > 0 || fastScroll.classList.contains('aus')) return;
   e.preventDefault(); e.stopPropagation();
-  rolle.halt();   // ein laufendes weiches Rollen (‚Ans Ende‘) endet, der Griff folgt dem Finger (APD-37/F-5)
+  scrollView.stop();   // ein laufendes weiches Rollen (‚Ans Ende‘) endet, der Griff folgt dem Finger (APD-37/F-5)
   try { schnellGriff.setPointerCapture(e.pointerId); } catch {}
-  schnellZieht = { id: e.pointerId, y: e.clientY, a: schnellEnde() ? rolle.y / schnellEnde() : 0 };
-  schnell.classList.add('zieht'); clearTimeout(schnellRuhe);
+  schnellZieht = { id: e.pointerId, y: e.clientY, a: schnellEnde() ? scrollView.y / schnellEnde() : 0 };
+  fastScroll.classList.add('zieht'); clearTimeout(schnellRuhe);
 });
 schnellGriff.addEventListener('pointermove', e => {
   if (schnellZieht?.id !== e.pointerId) return;
   e.preventDefault();
   const a = schnellH ? Math.min(1, Math.max(0, schnellZieht.a + (e.clientY - schnellZieht.y) / schnellH)) : 0;
-  rolle.to(a * schnellEnde());
+  scrollView.to(a * schnellEnde());
 }, { passive: false });
 const schnellLos = e => {
   if (schnellZieht?.id !== e.pointerId) return;
-  schnellZieht = null; schnell.classList.remove('zieht'); schnellZeigen(true);
+  schnellZieht = null; fastScroll.classList.remove('zieht'); schnellZeigen(true);
 };
 schnellGriff.addEventListener('pointerup', schnellLos);
 schnellGriff.addEventListener('pointercancel', schnellLos);
@@ -2389,15 +2395,15 @@ schnellGriff.addEventListener('click', e => { e.preventDefault(); e.stopPropagat
 // VoiceOver (Wischen nach oben/unten) und Tastatur: einen Abschnitt weiter bzw. zurück, ohne Marken eine Höhe des Rollbereichs
 schnellGriff.addEventListener('keydown', e => {
   const d = { ArrowUp: -1, ArrowLeft: -1, PageUp: -1, ArrowDown: 1, ArrowRight: 1, PageDown: 1 }[e.key];
-  if (e.key === 'Home' || e.key === 'End') { e.preventDefault(); rolle.to(e.key === 'Home' ? 0 : schnellEnde()); return; }
+  if (e.key === 'Home' || e.key === 'End') { e.preventDefault(); scrollView.to(e.key === 'Home' ? 0 : schnellEnde()); return; }
   if (!d) return;
   e.preventDefault();
   const marken = schnellMarken(), i = schnellMarke(marken), top = schnellKante(marken) - 4;
-  if (i < 0) return rolle.to(Math.min(schnellEnde(), rolle.y + d * rolle.el.clientHeight));
+  if (i < 0) return scrollView.to(Math.min(schnellEnde(), scrollView.y + d * scrollView.el.clientHeight));
   // zurück: steht der Anfang der aktuellen Marke über dem Rand, zuerst an ihren Anfang
   const j = d > 0 ? i + 1 : marken[i].getBoundingClientRect().top < top - 4 ? i : i - 1;
   const ziel = marken[Math.max(0, Math.min(marken.length - 1, j))];
-  rolle.to(Math.min(schnellEnde(), rolle.y + ziel.getBoundingClientRect().top - top));
+  scrollView.to(Math.min(schnellEnde(), scrollView.y + ziel.getBoundingClientRect().top - top));
 });
 
 // R-5.5 (seit 4.19.0, APD-14): in einzeiligen Feldern bestätigt die Eingabetaste und schließt die Tastatur (‚Fertig‘, HIG);
@@ -2422,19 +2428,19 @@ dlg.addEventListener('input', autoCapital);
 // neben einem Leerzeichen wird nicht eingefügt; beim Einfügen werden mehrere Leerzeichen oder Tabs zu einem (Zeilenumbrüche bleiben,
 // einzeilige Felder machen aus ihnen ein Leerzeichen). Der iOS-Kurzbefehl ‚.‘ (zweimal Leertaste) ersetzt das erste Leerzeichen selbst.
 const LEER_FELD = 'textarea, input[type=text], input[type=search], input:not([type])';
-const leer = c => c === ' ' || c === '\t';
+const blank = c => c === ' ' || c === '\t';
 document.addEventListener('beforeinput', e => {
   const f = e.target;
   if (e.inputType !== 'insertText' || e.data !== ' ' || !f.matches?.(LEER_FELD) || f.selectionStart == null) return;
-  if (leer(f.value.charAt(f.selectionStart - 1)) || leer(f.value.charAt(f.selectionEnd))) e.preventDefault();
+  if (blank(f.value.charAt(f.selectionStart - 1)) || blank(f.value.charAt(f.selectionEnd))) e.preventDefault();
 }, true);
 document.addEventListener('paste', e => {
   const f = e.target, t = e.clipboardData?.getData('text/plain');
   if (t == null || !f.matches?.(LEER_FELD) || f.selectionStart == null) return;
   const a = f.selectionStart, b = f.selectionEnd;
   let x = (f.matches('textarea') ? t : t.replace(/\r?\n/g, ' ')).replace(/[ \t]+/g, ' ');
-  if (x.startsWith(' ') && (a === 0 ? false : leer(f.value.charAt(a - 1)))) x = x.slice(1);
-  if (x.endsWith(' ') && leer(f.value.charAt(b))) x = x.slice(0, -1);
+  if (x.startsWith(' ') && (a === 0 ? false : blank(f.value.charAt(a - 1)))) x = x.slice(1);
+  if (x.endsWith(' ') && blank(f.value.charAt(b))) x = x.slice(0, -1);
   if (x === t) return;
   e.preventDefault();
   f.setRangeText(x, a, b, 'end');
@@ -2456,15 +2462,15 @@ document.addEventListener('keydown', e => {
   const z = [...d.querySelectorAll(FOKUSBAR)].filter(x => x.getClientRects().length && !x.closest('[inert]') && x.tabIndex >= 0);
   if (!z.length) return;
   const i = z.indexOf(document.activeElement), j = i < 0 ? (e.shiftKey ? z.length - 1 : 0) : i + (e.shiftKey ? -1 : 1);
-  if (i < 0 || j < 0 || j >= z.length) { e.preventDefault(); fokus(z[(j + z.length) % z.length]); }
+  if (i < 0 || j < 0 || j >= z.length) { e.preventDefault(); focus(z[(j + z.length) % z.length]); }
 });
 msg.addEventListener('close', unlockPage);
 dlg.addEventListener('close', () => {
   dlgFest = 0;
   unlockPage();
   if (dlg.open) return;
-  const sel = adSourcehighlight.sourceItem;
-  adSourcehighlight.sourceItem = '';
+  const sel = sourcehighlight.sourceItem;
+  sourcehighlight.sourceItem = '';
   // R-7.3: nach dem Neuaufbau durch die App die oberste Zeile zurück an ihren Platz, die Zeile aus dem Fenster kurz hervorheben
   // (seit 4.23.2 rollt nichts mehr – auch nach ‹ › nicht)
   requestAnimationFrame(() => { holdAlign(); if (sel) revealRow(sel); });
@@ -2503,7 +2509,7 @@ function revealRow(sel) {
 const capHtml = (buttons, id = '') => `<div class="cap"><div class="scroll" ${id ? `id="${id}"` : ''}>${buttons}</div>${ic('chevron-left', 'pf l')}${ic('chevron-right', 'pf r')}</div>`;
 // Wischzeile (seit 4.40.0, APD-86, R-5.4): eine Zeile Text, die seitlich wischt (z. B. Reisemittel im Kopf am iPhone) – Verlauf und Pfeile
 // wie in der Auswahl-Kapsel, ohne Kapsel-Form; mountCap stellt beide, die App ruft es nach dem Aufbau der Seite.
-const wischHtml = (inhalt, id = '') => `<div class="weiter"><div class="scroll" ${id ? `id="${id}"` : ''}>${inhalt}</div>${ic('chevron-left', 'pf l')}${ic('chevron-right', 'pf r')}</div>`;
+const scrollRowHtml = (inhalt, id = '') => `<div class="weiter"><div class="scroll" ${id ? `id="${id}"` : ''}>${inhalt}</div>${ic('chevron-left', 'pf l')}${ic('chevron-right', 'pf r')}</div>`;
 const capFertig = new WeakSet();
 function mountCap(root) {
   root.querySelectorAll('.cap .scroll, .weiter > .scroll').forEach(strip => {
@@ -2531,10 +2537,10 @@ function mountCap(root) {
 // Seit 4.28.1 (APD-36): die Höhe ohne Tastatur zählt (APD-36/S-3: verschiebt Safari den sichtbaren Bereich, wird innerHeight kleiner – das
 // iPad galt mit offener Tastatur als iPhone, das Fenster sprang an den linken Rand).
 // Seit 4.45.0 (APD-97, R-6.6): dieselbe Grenze für den Inhalt – ist er schmaler (z. B. am iPad hoch neben der Seitenleiste), zeigt die App
-// jede Tabelle im Inhalt als Kästen wie am iPhone. Die App fragt inhaltSchmal(#app) beim Aufbau und baut bei einem Wechsel neu.
+// jede Tabelle im Inhalt als Kästen wie am iPhone. Die App fragt compactWidth(#app) beim Aufbau und baut bei einem Wechsel neu.
 const SCHMAL = 700;
 const isPhone = () => innerWidth < SCHMAL || seitenHoehe() < 500;
-const inhaltSchmal = el => !!el && el.clientWidth < SCHMAL;
+const compactWidth = el => !!el && el.clientWidth < SCHMAL;
 // Seit 4.9.0: Name des Geräts für ‚geändert am … · iPad‘ und den Abgleich (iPadOS meldet sich als Mac mit Touch).
 function deviceName() {
   const ua = navigator.userAgent;
@@ -2555,7 +2561,7 @@ window.visualViewport?.addEventListener('resize', () => untenMessen());   // B7:
 function updateBar() {
   const bar = document.querySelector('.pnav, .nb');
   if (!bar) return;
-  bar.classList.toggle('line', rolle.y > 4);
+  bar.classList.toggle('line', scrollView.y > 4);
   if (bar.classList.contains('pnav')) document.documentElement.style.setProperty('--pnav-h', bar.offsetHeight + 'px');
   untenMessen();
   const big = document.querySelector('.ltitle');
@@ -2605,9 +2611,9 @@ const keepKante = el => keepEdge() + kopfHoehe(el);
 const keepKey = e => e.dataset.day ? `[data-day="${CSS.escape(e.dataset.day)}"]` : `[data-keep="${CSS.escape(e.dataset.keep)}"]`;
 // Oberster sichtbarer Eintrag unter der Leiste; ganz oben → null (ganz oben bleibt ganz oben). Steht oben kein Eintrag
 // (Ende der Seite, z. B. Fazit und Statistik), zählt der Abstand zum Ende – ganz unten bleibt ganz unten (seit 4.21.1).
-const scrollRest = () => rolle.rest;
+const scrollRest = () => scrollView.remaining;
 function topAnchor() {
-  if (rolle.y < 4) return null;
+  if (scrollView.y < 4) return null;
   const alle = [...document.querySelectorAll(KEEP_SEL)].filter(x => x.getClientRects().length);
   const e = alle.find(x => x.getBoundingClientRect().bottom > keepKante(x) + 1);
   const edge = keepKante(e);
@@ -2623,7 +2629,7 @@ function restoreTop() {
   if (!keepTop) return;
   if ('rest' in keepTop) {
     keepBusy = true;
-    rolle.to(rolle.y + scrollRest() - keepTop.rest);
+    scrollView.to(scrollView.y + scrollRest() - keepTop.rest);
     keepFrei();
     return;
   }
@@ -2634,15 +2640,15 @@ function restoreTop() {
   // Seit 4.45.0 (APD-97): ändert die App die Breite (keepPlace) und steht der erste Eintrag ganz unter der Kante (darüber der Kopf des
   // Inhalts), bleibt sein Abstand in px – als Anteil seiner Höhe rückte er mit, wenn er schmaler bzw. breiter anders hoch wird (große
   // Schrift, Seitenleiste am iPad hoch). Liegt ein Eintrag darüber, bleibt es beim Anteil – sonst schaute dessen Unterkante hervor.
-  rolle.by(r.top - keepKante(e) - (keepTop.app && keepTop.erstes && keepTop.part > 0 ? keepTop.ab : keepTop.part * r.height));
+  scrollView.by(r.top - keepKante(e) - (keepTop.app && keepTop.erstes && keepTop.part > 0 ? keepTop.ab : keepTop.part * r.height));
   keepFrei();
 }
 onRoll(() => { if (!keepBusy) rememberTop(); });
 // Ende einer eigenen Rollbewegung im nächsten Bild; hat inzwischen jemand anderes gerollt (Finger, unter Last auch die Prüfung), gilt
 // sein Stand fürs nächste Drehen – sonst bliebe das Gedächtnis beim alten Eintrag (seit 4.37.0)
 function keepFrei() {
-  const ziel = rolle.y;
-  requestAnimationFrame(() => { keepBusy = false; if (Math.abs(rolle.y - ziel) > 2) rememberTop(); });
+  const ziel = scrollView.y;
+  requestAnimationFrame(() => { keepBusy = false; if (Math.abs(scrollView.y - ziel) > 2) rememberTop(); });
 }
 
 // R-8.1 (seit 4.21.0, APD-17): Ändert die App die Anordnung selbst (z. B. Seitenleiste ein/aus – die Breite des Inhalts und
@@ -2657,7 +2663,7 @@ function keepPlace(change) {
   keepTop = anchor;
   if (anchor) { restoreTop(); delete anchor.app; return; }   // beim nächsten Drehen wieder als Anteil
   keepBusy = true;
-  if (rolle.y) rolle.to(0);
+  if (scrollView.y) scrollView.to(0);
   keepFrei();
 }
 
@@ -2666,10 +2672,10 @@ function keepPlace(change) {
 function openAt(el) {
   let top = 0;
   if (el) {
-    top = Math.max(0, Math.round(rolle.y + el.getBoundingClientRect().top - keepKante(el)));
+    top = Math.max(0, Math.round(scrollView.y + el.getBoundingClientRect().top - keepKante(el)));
   }
   keepBusy = true;
-  rolle.to(top);
+  scrollView.to(top);
   keepTop = topAnchor();
   keepFrei();
 }
@@ -2709,7 +2715,7 @@ function textStufe() {
     r.classList.toggle('ts-gross', TEXT_STUFEN[name] >= 21); r.classList.toggle('ts-ax', TEXT_STUFEN[name] >= 28); textUm();
   };
   if (erst) return setzen();
-  if (mess?.an) messEreignis(`text ${alt} → ${name}`);   // W4
+  if (measurement?.an) messEreignis(`text ${alt} → ${name}`);   // W4
   textWechsel(setzen);
 }
 // W1: ein Wechsel bei offener App wirkt wie das Drehen (R-8.1) – oberster Eintrag bleibt, Leisten, Menüs, Sprechblasen und Fenster
@@ -2761,15 +2767,16 @@ document.addEventListener('touchmove', e => {
 // nicht. Kein Wischen bei offenem Fenster, Menü oder offener Sprechblase. Drehen bricht ein Ziehen ab (Zustand wie vorher, R-8.1),
 // eine laufende Bewegung springt an ihr Ziel. Je Bild nur transform und opacity (APD-59), die Bewegung als Web-Animation.
 // Die App meldet sich an (Startliste bzw. Seitenleiste ist #side, der Inhalt #app, die Abdunkelung am iPad .side-shade):
-//   navAnmelden({ zurueck: { offen, darunter, los }, seite: { moeglich, offen, zeigen } })   (nicht ‚navigation‘ – so heißt die Navigation-API des Browsers)
-//     zurueck.offen()     – iPhone-Aufbau: ein Eintrag ist offen (Zurück möglich)
-//     zurueck.darunter(an) – die Startliste unter dem Inhalt aufbauen (true) bzw. wieder verbergen (false), ohne den Zustand zu ändern
-//     zurueck.los()       – zurück zur Startliste (Zustand ändern und neu aufbauen)
-//     seite.moeglich()    – Seitenleiste wird darübergelegt (iPad hoch), seite.offen() – sie ist sichtbar
-//     seite.zeigen(an)    – Seitenleiste ein- bzw. ausblenden (Zustand ändern, nur die Seitenleiste neu aufbauen)
-//     seite.fest()        – seit 4.31.0 (APD-68): Seitenleiste steht fest links (iPad quer); seite.neu() – alles neu aufbauen
-// Aufrufe der App: navVor(change) beim Öffnen eines Eintrags aus der Startliste, navZurueck() für die Zurück-Schaltfläche,
-// navSeite(an) für panel-left (iPad hoch und quer) und die Abdunkelung am iPad hoch.
+//   navRegister({ back: { shown, below, go }, sidebar: { possible, shown, show, fixed, refresh } })   (nicht ‚navigation‘ – so heißt die Navigation-API
+//   des Browsers; Namen und Schlüssel seit 5.0.0 englisch, APD-145)
+//     back.shown()        – iPhone-Aufbau: ein Eintrag ist offen (Zurück möglich)
+//     back.below(an)      – die Startliste unter dem Inhalt aufbauen (true) bzw. wieder verbergen (false), ohne den Zustand zu ändern
+//     back.go()           – zurück zur Startliste (Zustand ändern und neu aufbauen)
+//     sidebar.possible()  – Seitenleiste wird darübergelegt (iPad hoch), sidebar.shown() – sie ist sichtbar
+//     sidebar.show(an)    – Seitenleiste ein- bzw. ausblenden (Zustand ändern, nur die Seitenleiste neu aufbauen)
+//     sidebar.fixed()     – seit 4.31.0 (APD-68): Seitenleiste steht fest links (iPad quer); sidebar.refresh() – alles neu aufbauen
+// Aufrufe der App: navPush(change) beim Öffnen eines Eintrags aus der Startliste, navPop() für die Zurück-Schaltfläche,
+// navSidebar(an) für panel-left (iPad hoch und quer) und die Abdunkelung am iPad hoch.
 const NAV_ENTSCHEID = 10, NAV_WAAGRECHT = 1.2, NAV_TEMPO = 0.3, NAV_HALTEN = 500, NAV_DUNKEL = 0.1;
 const NAV_EIGEN = 'input, textarea, select, [contenteditable], .cap, .fab, .schnell, .searchbox, [data-eigene-geste], button:not(.side-row)';
 const navSchleier = document.createElement('div');
@@ -2779,11 +2786,11 @@ let navApp = null, navZug = null, navLauf = null;
 const navSperre = klickSperre();   // seit 4.50.0 (APD-108) statt navKlickWeg
 // seit 4.30.1 (APD-67): die Entscheidungen der Gestenstelle stehen in der Messung (15.21) – ‚nav kandidat‘, ‚nav verworfen‘, ‚nav aktiv‘,
 // ‚nav fertig‘, ‚nav zurück gefedert‘, ‚nav abgebrochen‘ mit Weg (Anteil der Breite) und Tempo (px/ms)
-const navMess = t => { if (mess?.an) messEreignis('nav ' + t); };
-function navAnmelden(app) { navApp = app; navKlassen(); }
+const navMess = t => { if (measurement?.an) messEreignis('nav ' + t); };
+function navRegister(app) { navApp = app; navKlassen(); }
 // touch-action: pan-y nur, wo gewischt werden kann (iPhone-Aufbau, iPad hoch, seit 4.31.0 iPad quer) – sonst bleibt alles wie bisher
 function navKlassen() {
-  document.documentElement.classList.toggle('wischt', !!navApp && (isPhone() || !!navApp.seite?.moeglich() || !!navApp.seite?.fest?.()));
+  document.documentElement.classList.toggle('wischt', !!navApp && (isPhone() || !!navApp.sidebar?.possible() || !!navApp.sidebar?.fixed?.()));
 }
 window.addEventListener('resize', navKlassen);
 const navTeile = art => art === 'phone'
@@ -2842,52 +2849,52 @@ function navFahre(art, von, nach, w, fertig) {
 // laufende Bewegung sofort an ihr Ziel (neue Bewegung, Drehen)
 function navSofort() { if (navLauf) navLauf.ende(); }
 // Öffnen aus der Startliste (iPhone-Aufbau): change() baut den Inhalt auf, er schiebt sich über die Liste
-function navVor(change) {
+function navPush(change) {
   navSofort();
   change();
-  if (!navApp?.zurueck || !isPhone() || !navApp.zurueck.offen()) return;
-  fokus(document.querySelector('#app .pnav'));   // R-1.8 (seit 4.35.0, V12): VoiceOver beginnt mit dem Seitentitel, ohne Rollen
+  if (!navApp?.back || !isPhone() || !navApp.back.shown()) return;
+  focus(document.querySelector('#app .pnav'));   // R-1.8 (seit 4.35.0, V12): VoiceOver beginnt mit dem Seitentitel, ohne Rollen
   const w = navAnfang('phone');
-  navApp.zurueck.darunter(true);
+  navApp.back.below(true);
   navSetze('phone', 0, w);
-  navFahre('phone', 0, 1, w, () => navApp.zurueck.darunter(false));
+  navFahre('phone', 0, 1, w, () => navApp.back.below(false));
 }
 // Zurück-Schaltfläche (iPhone-Aufbau): bei offener Tastatur erst sie schließen (APD-36), dann schiebt sich der Inhalt hinaus
-function navZurueck() {
-  const z = navApp?.zurueck;
-  if (!z || !isPhone() || !z.offen()) return z?.los();
+function navPop() {
+  const z = navApp?.back;
+  if (!z || !isPhone() || !z.shown()) return z?.go();
   if (kbOffen()) document.activeElement?.blur?.();
   nachTastatur(() => {
-    if (!z.offen()) return;
+    if (!z.shown()) return;
     const w = navAnfang('phone');
-    z.darunter(true);
+    z.below(true);
     navSetze('phone', 1, w);
-    navFahre('phone', 1, 0, w, () => { z.los(); navZurueckFokus(); });
+    navFahre('phone', 1, 0, w, () => { z.go(); navZurueckFokus(); });
   });
 }
 // R-1.8 (seit 4.35.0, V12): zurück in der Startliste liegt der Fokus auf der blauen Zeile, sonst auf ihrem Titel – ohne Rollen
 function navZurueckFokus() {
-  fokus(document.querySelector('#side .current')) || fokus(document.querySelector('#side .side-head h2, #side .pnav-head, .pnav-head'));
+  focus(document.querySelector('#side .current')) || focus(document.querySelector('#side .side-head h2, #side .pnav-head, .pnav-head'));
 }
 // panel-left und Abdunkelung am iPad hoch: die Seitenleiste gleitet herein bzw. hinaus
-function navSeite(an) {
-  const s = navApp?.seite;
+function navSidebar(an) {
+  const s = navApp?.sidebar;
   if (!s) return;
-  if (s.fest?.() && an !== s.offen()) return navFest(an);
-  if (!s.moeglich() || an === s.offen()) return s.zeigen(an);
-  if (an) { s.zeigen(true); const w = navAnfang('seite'); navSetze('seite', 0, w); navFahre('seite', 0, 1, w); }
-  else { const w = navAnfang('seite'); navFahre('seite', 1, 0, w, () => s.zeigen(false)); }
+  if (s.fixed?.() && an !== s.shown()) return navFest(an);
+  if (!s.possible() || an === s.shown()) return s.show(an);
+  if (an) { s.show(true); const w = navAnfang('seite'); navSetze('seite', 0, w); navFahre('seite', 0, 1, w); }
+  else { const w = navAnfang('seite'); navFahre('seite', 1, 0, w, () => s.show(false)); }
 }
 // Seit 4.31.0 (APD-68): iPad quer gleitet die feste Seitenleiste herein und der Inhalt rückt mit; am Ende rastet sie ein – der Inhalt wird
 // schmaler, der oberste Eintrag bleibt (keepPlace, R-8.1). Hinaus: erst wird der Inhalt wieder ganz breit (unter der Seitenleiste,
 // oberster Eintrag bleibt), dann gleiten beide nach links.
-function navEinrasten() { keepPlace(() => { navAufraeumen('fest'); navApp.seite.neu(); }); }
+function navEinrasten() { keepPlace(() => { navAufraeumen('fest'); navApp.sidebar.refresh(); }); }
 function navFest(an) {
-  const s = navApp.seite;
-  if (an) { navAnfang('fest'); s.zeigen(true); const w = navBreite('seite'); navSetze('fest', 0, w); navFahre('fest', 0, 1, w, navEinrasten); return; }
+  const s = navApp.sidebar;
+  if (an) { navAnfang('fest'); s.show(true); const w = navBreite('seite'); navSetze('fest', 0, w); navFahre('fest', 0, 1, w, navEinrasten); return; }
   let w;
   keepPlace(() => { w = navAnfang('fest'); navSetze('fest', 1, w); });
-  navFahre('fest', 1, 0, w, () => keepPlace(() => { navAufraeumen('fest'); s.zeigen(false); s.neu(); }));
+  navFahre('fest', 1, 0, w, () => keepPlace(() => { navAufraeumen('fest'); s.show(false); s.refresh(); }));
 }
 // Hat das Element (oder ein Vorfahr bis zur Seite) einen eigenen waagrechten Rollbereich, gehört ihm das Wischen.
 function navEigenesRollen(t, bis) {
@@ -2896,22 +2903,22 @@ function navEigenesRollen(t, bis) {
   }
   return false;
 }
-function navKandidat(e) {
+function navCandidate(e) {
   if (!navApp || e.button > 0 || !e.isPrimary || navLauf) return null;
   const t = e.target;
   if (!(t instanceof Element) || dlg.open || msg.open || document.querySelector('.menu, .pop, .layer') || t.closest(NAV_EIGEN)) return null;
   if (swipeFaengt(t)) return null;   // seit 4.60.0 (APD-30, R-7.8): auf einer wischbaren Kachel gehört das Wischen den Wischaktionen
   const app = document.getElementById('app'), side = document.getElementById('side');
   if (isPhone()) {
-    if (!navApp.zurueck?.offen() || !app?.contains(t) || navEigenesRollen(t, app)) return null;
+    if (!navApp.back?.shown() || !app?.contains(t) || navEigenesRollen(t, app)) return null;
     return { art: 'phone', richtung: 1, von: 1, nach: 0 };
   }
-  const s = navApp.seite;
+  const s = navApp.sidebar;
   // seit 4.31.0 (APD-68): iPad quer nur herein – ausblenden nur mit panel-left (die Kacheln bleiben frei für Wischaktionen, APD-38/T-10)
-  if (s?.fest?.()) return !s.offen() && app?.contains(t) && !navEigenesRollen(t, app) ? { art: 'fest', richtung: 1, von: 0, nach: 1 } : null;
-  if (!s?.moeglich()) return null;
-  if (!s.offen() && app?.contains(t) && !navEigenesRollen(t, app)) return { art: 'seite', richtung: 1, von: 0, nach: 1 };
-  if (s.offen() && (side?.contains(t) || t.closest('.side-shade')) && !navEigenesRollen(t, side)) return { art: 'seite', richtung: -1, von: 1, nach: 0 };
+  if (s?.fixed?.()) return !s.shown() && app?.contains(t) && !navEigenesRollen(t, app) ? { art: 'fest', richtung: 1, von: 0, nach: 1 } : null;
+  if (!s?.possible()) return null;
+  if (!s.shown() && app?.contains(t) && !navEigenesRollen(t, app)) return { art: 'seite', richtung: 1, von: 0, nach: 1 };
+  if (s.shown() && (side?.contains(t) || t.closest('.side-shade')) && !navEigenesRollen(t, side)) return { art: 'seite', richtung: -1, von: 1, nach: 0 };
   return null;
 }
 // Wischen tippt nie an: ein Zeiger, der sich zwischen Drücken und Loslassen mehr als 10 px bewegt hat, löst kein Antippen aus (am Gerät
@@ -2934,7 +2941,7 @@ window.addEventListener('pointermove', e => { if (navWeit(navStart, e)) navSperr
   navSperre.los();
 }, true));
 window.addEventListener('pointerdown', e => {
-  const k = navKandidat(e);
+  const k = navCandidate(e);
   navZug = k && { ...k, x0: e.clientX, y0: e.clientY, t0: e.timeStamp, id: e.pointerId, aktiv: false, spur: [[e.timeStamp, e.clientX]],
     breite: innerWidth, hoehe: innerHeight };
   if (navApp) navMess(k ? `kandidat ${k.art}` : `kein kandidat${e.target.closest?.(NAV_EIGEN) ? ' eigen' : ''}`);
@@ -2944,11 +2951,11 @@ function navAktiv(z, e) {
   navSperre.an();
   navMess(`aktiv ${z.art} ${Math.round(e.clientX - z.x0)} ${Math.round(e.clientY - z.y0)}`);
   if (kbOffen()) document.activeElement?.blur?.();   // APD-68/F-16: die Tastatur schließt, zurück geht es danach
-  rolle.halt();                                         // APD-68/F-10: ein weiches Rollen endet, das Wischen gilt
+  scrollView.stop();                                         // APD-68/F-10: ein weiches Rollen endet, das Wischen gilt
   try { e.target.setPointerCapture?.(e.pointerId); } catch {}
   z.w = navAnfang(z.art);
-  if (z.art === 'phone') navApp.zurueck.darunter(true);
-  else if (z.nach === 1) { navApp.seite.zeigen(true); z.w = navBreite('seite'); }
+  if (z.art === 'phone') navApp.back.below(true);
+  else if (z.nach === 1) { navApp.sidebar.show(true); z.w = navBreite('seite'); }
   document.documentElement.classList.add('nav-zieht');
   navSetze(z.art, z.von, z.w);
 }
@@ -2983,11 +2990,11 @@ function navLoslassen(e, abbruch) {
   const p = z.p ?? z.von;
   navMess(`${abbruch ? 'abgebrochen' : geschafft ? 'fertig' : 'zurück gefedert'} weg ${weg.toFixed(2)} tempo ${tempo.toFixed(2)}`);
   if (z.art === 'phone') {
-    if (geschafft) navFahre('phone', p, 0, z.w, () => { navApp.zurueck.los(); navZurueckFokus(); });
-    else navFahre('phone', p, 1, z.w, () => navApp.zurueck.darunter(false));
-  } else if (z.art === 'fest') navFahre('fest', p, geschafft ? 1 : 0, z.w, geschafft ? navEinrasten : () => navApp.seite.zeigen(false));
-  else if (z.nach === 1) navFahre('seite', p, geschafft ? 1 : 0, z.w, geschafft ? null : () => navApp.seite.zeigen(false));
-  else navFahre('seite', p, geschafft ? 0 : 1, z.w, geschafft ? () => navApp.seite.zeigen(false) : null);
+    if (geschafft) navFahre('phone', p, 0, z.w, () => { navApp.back.go(); navZurueckFokus(); });
+    else navFahre('phone', p, 1, z.w, () => navApp.back.below(false));
+  } else if (z.art === 'fest') navFahre('fest', p, geschafft ? 1 : 0, z.w, geschafft ? navEinrasten : () => navApp.sidebar.show(false));
+  else if (z.nach === 1) navFahre('seite', p, geschafft ? 1 : 0, z.w, geschafft ? null : () => navApp.sidebar.show(false));
+  else navFahre('seite', p, geschafft ? 0 : 1, z.w, geschafft ? () => navApp.sidebar.show(false) : null);
 }
 // APD-67 (Messung P-65): wo der Browser senkrecht rollen darf, beginnt Safari ab 10 px senkrechter Abweichung zu rollen und nimmt der
 // Seite den Finger (pointercancel) – auch mitten im Zurückwischen. Ist die Geste entschieden, verhindert touchmove das; nur touchmove
@@ -3004,8 +3011,8 @@ window.addEventListener('resize', () => {
     navZug = null;
     navMess('abgebrochen drehen');
     // das Loslassen danach tippt nichts an: navSperre bleibt bis zum Loslassen (navAktiv), dann noch 400 ms (APD-108/W-12)
-    if (z.art === 'phone') navApp.zurueck.darunter(false);
-    else if (z.nach === 1) navApp.seite.zeigen(false);
+    if (z.art === 'phone') navApp.back.below(false);
+    else if (z.nach === 1) navApp.sidebar.show(false);
     navAufraeumen(z.art);
   }
   navSofort();
@@ -3039,7 +3046,7 @@ window.addEventListener('resize', () => {
 //   w.on('toggle', ({ row, newState: 'open' | 'closed' }) => …) → abmelden
 // Messmodus (15.21): ‚wisch kandidat‘, ‚wisch verworfen dx dy‘, ‚wisch offen|zurück gefedert|abgebrochen weg W‘ (Weg in px).
 let swipeZieht = false;                 // eine Kachel folgt gerade dem Finger – langes Drücken löst dann nicht aus (onLongPress)
-const swipeBeans = new Set();           // angemeldete Listen – die Gestenstelle (navKandidat) überlässt ihnen das Wischen auf ihren Kacheln
+const swipeBeans = new Set();           // angemeldete Listen – die Gestenstelle (navCandidate) überlässt ihnen das Wischen auf ihren Kacheln
 const swipeFaengt = t => [...swipeBeans].some(f => f(t));
 const SWIPE_BEDIENBAR = 'button, a[href], input, select, textarea, label, summary, [contenteditable], [role=button], [role=link], [role=menuitem], [role=switch]';
 const schleierFrei = new WeakMap();     // Kapsel → () => Rechteck der offenen Kachel samt Kapseln (bleibt beim Grau der Sprechblase frei, choosePop)
@@ -3057,7 +3064,7 @@ function createSwipeactions(list, { rows, actions } = {}) {
   if (!kacheln || typeof kacheln !== 'string') return fehlt('rows');
   if (typeof aktionen !== 'function') return fehlt('actions');
   const melde = (newState, row) => hoerer.toggle.forEach(fn => { try { fn({ row, newState }); } catch (e) { console.error(e); } });
-  const wm = t => { if (mess?.an) messEreignis('wisch ' + t); };
+  const wm = t => { if (measurement?.an) messEreignis('wisch ' + t); };
   const kachelVon = t => { const k = t instanceof Element ? t.closest(kacheln) : null; return k && k !== liste && liste.contains(k) ? k : null; };
   const eintraegeVon = k => {
     let alle;
@@ -3214,7 +3221,7 @@ function createSwipeactions(list, { rows, actions } = {}) {
       if (ui !== u || offen !== u.k) return;
       const a = document.activeElement, zurueck = !a || a === document.body || u.box.contains(a);
       zumachen();
-      if (zurueck) fokus(u.k);   // W-14: Fokus auf der Kachel
+      if (zurueck) focus(u.k);   // W-14: Fokus auf der Kachel
     };
     if (r && typeof r.then === 'function') r.then(fertig, fertig); else fertig();
   }
@@ -3277,7 +3284,7 @@ function createSwipeactions(list, { rows, actions } = {}) {
     verbrauchen(e);
     const k = offen, f = !!ui?.box.contains(document.activeElement);
     zumachen();
-    if (f) fokus(k);
+    if (f) focus(k);
   };
   const roll = e => { if (!offen || warten || z?.aktiv) return; const t = e.target; if (t === document || t.contains?.(offen)) zumachen(); };
   let breiteVorher = innerWidth;
@@ -3324,11 +3331,11 @@ function createSwipeactions(list, { rows, actions } = {}) {
 }
 
 // Seit 4.43.0 (APD-91, R-2.3, R-4.7): die Suche öffnet ‚Suchen‘ als erster Punkt im Mehr-Menü (darunter ein Strich, wie ‚Find in
-// Note‘ in Notizen) oder ⌘F – im offenen Eintrag, ohne offenen Eintrag in allen; das entscheidet die App (sucheAnmelden). Ist die Suche
+// Note‘ in Notizen) oder ⌘F – im offenen Eintrag, ohne offenen Eintrag in allen; das entscheidet die App (searchRegister). Ist die Suche
 // schon offen, setzt die App nur den Cursor ins Feld; bei offenem Fenster, Meldung oder Menü wirkt ⌘F nicht.
-const suchenMenuItems = act => [{ icon: 'search', label: 'Suchen', act }, 'line'];
+const searchMenuItems = act => [{ icon: 'search', label: 'Suchen', act }, 'line'];
 let sucheApp = null;
-const sucheAnmelden = fn => { sucheApp = fn; };
+const searchRegister = fn => { sucheApp = fn; };
 document.addEventListener('keydown', e => {
   if (!e.metaKey || e.altKey || e.ctrlKey || e.key?.toLowerCase() !== 'f' || !sucheApp) return;
   e.preventDefault();
@@ -3336,17 +3343,17 @@ document.addEventListener('keydown', e => {
   sucheApp();
 });
 // Runde Schaltfläche x rechts in der Suchzeile (15.2): schließt die Suchzeile – Filter und Markierung weg, der Inhalt steht ganz oben.
-const sucheBeendenHtml = id => `<button type="button" class="round sclose" id="${id}" aria-label="Suche beenden">${ic('x')}</button>`;
+const searchCancelHtml = id => `<button type="button" class="round sclose" id="${id}" aria-label="Suche beenden">${ic('x')}</button>`;
 
 // APD-61/F-20 (VoiceOver): die ‚Zurück‘-Geste (Z) bzw. Escape geht zurück bzw. schließt die darübergelegte Seitenleiste
 document.addEventListener('keydown', e => {
   if (e.key !== 'Escape' || e.defaultPrevented || !navApp || dlg.open || msg.open || document.querySelector('.menu, .pop')) return;
   if (e.target.closest?.('input, textarea, select, [contenteditable]')) return;
-  if (isPhone() && navApp.zurueck?.offen()) { e.preventDefault(); navZurueck(); }
-  else if (!isPhone() && navApp.seite?.moeglich() && navApp.seite.offen()) {
-    e.preventDefault(); navSeite(false);
+  if (isPhone() && navApp.back?.shown()) { e.preventDefault(); navPop(); }
+  else if (!isPhone() && navApp.sidebar?.possible() && navApp.sidebar.shown()) {
+    e.preventDefault(); navSidebar(false);
     // R-4.7 (seit 4.35.0, K7): der Fokus geht auf panel-left (die Seitenleiste ist weg)
-    fokus([...document.querySelectorAll('[data-side-toggle]')].find(b => b.getClientRects().length && !b.closest('#side')));
+    focus([...document.querySelectorAll('[data-side-toggle]')].find(b => b.getClientRects().length && !b.closest('#side')));
   }
 });
 
@@ -3601,7 +3608,7 @@ window.addEventListener('pointercancel', e => blattLos(e, true), true);
 // Seit 4.28.1 (APD-36, Safari-Eigenheit APD-36/S-3): Höhe der Seite ohne Tastatur = innerHeight + scrollY – verschiebt Safari den sichtbaren
 // Bereich, wird innerHeight um genau so viel kleiner. Daraus der Abstand der Tastatur vom unteren Rand (Kapsel) und ob sie offen ist.
 // Mit Rollbereich rollt die Seite selbst nie – scrollY ist dann nur Safaris Verschiebung (ohne Rollbereich rollt das Fenster).
-function seitenHoehe() { return innerHeight + (rolle.el ? Math.max(0, scrollY) : 0); }
+function seitenHoehe() { return innerHeight + (scrollView.el ? Math.max(0, scrollY) : 0); }
 function kbOffen() { return !!window.visualViewport && visualViewport.height < seitenHoehe() - 80; }
 // Felder, die eine Tastatur öffnen (Datum, Uhrzeit, Auswahl und Schalter öffnen keine)
 const FELD = 'textarea, input:not([type=date],[type=time],[type=datetime-local],[type=month],[type=checkbox],[type=radio],[type=button],[type=submit],[type=reset],[type=range],[type=color],[type=file],[type=hidden]):not([readonly])';
@@ -3616,7 +3623,7 @@ function safeRand() {
   return { top: parseFloat(c.paddingTop) || 0, bottom: parseFloat(c.paddingBottom) || 0, left: parseFloat(c.paddingLeft) || 0, right: parseFloat(c.paddingRight) || 0 };
 }
 function drehRestWeg() {
-  if (window.visualViewport && scrollY > 0 && (rolle.el || document.documentElement.scrollHeight <= innerHeight + 1) && !kbOffen() && !document.activeElement?.matches?.(FELD)) scrollTo(0, 0);
+  if (window.visualViewport && scrollY > 0 && (scrollView.el || document.documentElement.scrollHeight <= innerHeight + 1) && !kbOffen() && !document.activeElement?.matches?.(FELD)) scrollTo(0, 0);
 }
 function placeDialogs() {
   const vv = window.visualViewport;
@@ -3628,7 +3635,7 @@ function placeDialogs() {
   drehRestWeg();
   // APD-115/N-11 (Messung 07.11.2026): beim Schließen der Tastatur setzt Safari scrollY sofort auf 0, meldet offsetTop aber noch bis zu 400 ms
   // alt (iPhone) – mit Rollbereich ist scrollY nur Safaris Verschiebung, darum zählt der kleinere Wert
-  const top = vv ? Math.max(0, rolle.el ? Math.min(vv.offsetTop, scrollY) : vv.offsetTop) : 0;
+  const top = vv ? Math.max(0, scrollView.el ? Math.min(vv.offsetTop, scrollY) : vv.offsetTop) : 0;
   const h = vv ? vv.height : innerHeight;
   const full = isPhone();
   const root = document.documentElement.style;
@@ -3700,19 +3707,19 @@ const behaelter = f => f.closest('.dlg-body, #app > .rolle');
 // Platz unter dem Inhalt: --platz verlängert den Platzhalter am Ende (::after, design.css) – ein Innenabstand machte den Bereich selbst
 // höher als seinen Platz (APD-33)
 const platzVon = c => parseFloat(c?.style.getPropertyValue('--platz')) || 0;
-const platz = (c, px) => { c.style.setProperty('--platz', Math.max(0, Math.ceil(px)) + 'px'); };
+const reserveSpace = (c, px) => { c.style.setProperty('--platz', Math.max(0, Math.ceil(px)) + 'px'); };
 // genau so viel Platz, dass der Rollstand bleibt
 function knapp(c) {
   const y = c.scrollTop;
-  platz(c, y + c.clientHeight - (c.scrollHeight - platzVon(c)));
+  reserveSpace(c, y + c.clientHeight - (c.scrollHeight - platzVon(c)));
   c.scrollTop = y;
 }
 // rollen, notfalls mit Platz darunter
-function rollen(c, d) {
+function scrollBy(c, d) {
   d = Math.round(d);
   if (!d) return;
   const fehlt = c.scrollTop + d - (c.scrollHeight - c.clientHeight);
-  if (fehlt > 0) platz(c, platzVon(c) + fehlt);
+  if (fehlt > 0) reserveSpace(c, platzVon(c) + fehlt);
   c.scrollTop += d;
 }
 // seit 4.32.2 (APD-73, P-69/3 quer): wie weit Fokus-Umrandung und Schatten des Felds über seine Oberkante reichen (berechneter Stil) –
@@ -3784,67 +3791,67 @@ function feldZeigen(f) {
   if (f.tagName === 'TEXTAREA' && r.height > unten - oben - rand) {
     // APD-115 V-3: mehrzeilig, passt nicht ganz – die Zeile mit dem Cursor und eine halbe Zeile darunter über der Tastatur
     const z = cursorZeile(f), zo = z.top + dy, zu = z.bottom + z.lh / 2 + dy, u = Math.min(unten, visualViewport.offsetTop + visualViewport.height - 16);
-    if (zu > u) rollen(c, zu - u); else if (zo < oben + rand) rollen(c, zo - oben - rand);
+    if (zu > u) scrollBy(c, zu - u); else if (zo < oben + rand) scrollBy(c, zo - oben - rand);
   }
-  else if (r.height > unten - oben - rand) { if (Math.abs(ro - oben - rand) > 1) rollen(c, ro - oben - rand); }
-  else if (ru > unten) rollen(c, ru - unten);
-  else if (ro < oben + rand) rollen(c, ro - oben - Math.max(16, rand));
+  else if (r.height > unten - oben - rand) { if (Math.abs(ro - oben - rand) > 1) scrollBy(c, ro - oben - rand); }
+  else if (ru > unten) scrollBy(c, ru - unten);
+  else if (ro < oben + rand) scrollBy(c, ro - oben - Math.max(16, rand));
 }
-let tipp = null, neuFokus = false, beruehrt = -1e9, gerollt = null, halten = null, kbWar = false, nachKb = null;
+let tap = null, neuFokus = false, touchedAt = -1e9, scrolled = null, fieldHold = null, kbWar = false, nachKb = null;
 // die Ereignisse des neuen Fokus nicht an die App weitergeben (Safari-Modell und Safari selbst lesen die Lage vorher, auf window)
 ['focusout', 'blur', 'focusin', 'focus'].forEach(t => document.addEventListener(t, e => { if (neuFokus) e.stopImmediatePropagation(); }, true));
 // jede neue Berührung bzw. jeder Klick mit Maus oder Trackpad beginnt hier (pointerdown kommt vor dem Fokus) – erst der Klick derselben
 // Berührung, die das Feld fokussiert hat, wird unterdrückt
-addEventListener('touchstart', e => { beruehrt = performance.now(); gerollt = null; halten = null; tipp = { y: e.touches?.[0]?.clientY, t: beruehrt }; }, { capture: true, passive: true });
-addEventListener('pointerdown', e => { gerollt = null; halten = null; if (e.pointerType !== 'touch') tipp = { y: e.clientY, t: performance.now() }; }, { capture: true, passive: true });
+addEventListener('touchstart', e => { touchedAt = performance.now(); scrolled = null; fieldHold = null; tap = { y: e.touches?.[0]?.clientY, t: touchedAt }; }, { capture: true, passive: true });
+addEventListener('pointerdown', e => { scrolled = null; fieldHold = null; if (e.pointerType !== 'touch') tap = { y: e.clientY, t: performance.now() }; }, { capture: true, passive: true });
 addEventListener('touchend', e => {
-  if (!kbOffen() || e.changedTouches?.length !== 1 || !tipp || performance.now() - tipp.t > 800) return;
+  if (!kbOffen() || e.changedTouches?.length !== 1 || !tap || performance.now() - tap.t > 800) return;
   const f = e.target.closest?.(FELD), t = e.changedTouches[0];
-  if (!f || f === document.activeElement || Math.abs(t.clientY - tipp.y) > 10) return;   // nur Antippen, kein Rollen
+  if (!f || f === document.activeElement || Math.abs(t.clientY - tap.y) > 10) return;   // nur Antippen, kein Rollen
   if (!behaelter(f)) return;
-  e.preventDefault(); f.focus({ preventScroll: true }); messZeile(`W-4 ${messId(f)} Fokus selbst`);
+  e.preventDefault(); f.focus({ preventScroll: true }); measureLine(`W-4 ${messId(f)} Fokus selbst`);
 }, { capture: true, passive: false });
-addEventListener('focusout', () => { if (!neuFokus) halten = null; }, true);
+addEventListener('focusout', () => { if (!neuFokus) fieldHold = null; }, true);
 document.addEventListener('focusin', e => {
   const f = e.target;
-  if (!f.matches?.(FELD) || !kbOffen() && performance.now() - beruehrt > 1500) return;
+  if (!f.matches?.(FELD) || !kbOffen() && performance.now() - touchedAt > 1500) return;
   const c = behaelter(f);
   if (!c) return;
   const n = noetig(f, c);
-  messZeile(`V-3 ${messId(f)} rollt ${Math.round(n)}`);
+  measureLine(`V-3 ${messId(f)} rollt ${Math.round(n)}`);
   if (n <= 0) return;
   if (c.closest('dialog') === dlg && !isPhone() && !dlgFest) { dlgFest = Math.round(dlg.offsetHeight); placeDialogs(); }
-  platz(c, seitenHoehe());   // reichlich – gleich danach wieder knapp
+  reserveSpace(c, seitenHoehe());   // reichlich – gleich danach wieder knapp
   c.scrollTop += n;
   knapp(c);
-  gerollt = { f, t: performance.now() };
-  halten = { f, c, y: c.scrollTop, bis: performance.now() + 1500 };
+  scrolled = { f, t: performance.now() };
+  fieldHold = { f, c, y: c.scrollTop, bis: performance.now() + 1500 };
   if (kbOffen()) return;
   neuFokus = true;
   try { f.blur(); f.focus({ preventScroll: true }); } finally { neuFokus = false; }
-  messZeile(`neu fokussiert ${messId(f)}${document.activeElement === f ? '' : ' Fokus weg'}`);
+  measureLine(`neu fokussiert ${messId(f)}${document.activeElement === f ? '' : ' Fokus weg'}`);
 }, true);
 addEventListener('click', e => {
-  const g = gerollt;
-  gerollt = null;
+  const g = scrolled;
+  scrolled = null;
   if (!g || performance.now() - g.t > 1000 || g.f.contains(e.target)) return;
   e.preventDefault(); e.stopImmediatePropagation();
-  messZeile(`klick unterdrückt ${messId(e.target)} (Feld ${messId(g.f)})`);
+  measureLine(`klick unterdrückt ${messId(e.target)} (Feld ${messId(g.f)})`);
 }, true);
 // Rückstellung (APD-36/S-9) und Platz schrumpft (nach dem Schließen der Tastatur, ohne Feld mit Fokus im Bereich)
 addEventListener('scroll', e => {
-  const c = e.target, h = halten;
+  const c = e.target, h = fieldHold;
   if (h && c === h.c) {
-    if (performance.now() > h.bis || document.activeElement !== h.f) halten = null;
-    else if (c.scrollTop < h.y - 20) { const alt = Math.round(c.scrollTop); c.scrollTop = h.y; messZeile(`zurückgestellt ${messId(h.f)} ${alt} → ${Math.round(c.scrollTop)}`); return; }
+    if (performance.now() > h.bis || document.activeElement !== h.f) fieldHold = null;
+    else if (c.scrollTop < h.y - 20) { const alt = Math.round(c.scrollTop); c.scrollTop = h.y; measureLine(`zurückgestellt ${messId(h.f)} ${alt} → ${Math.round(c.scrollTop)}`); return; }
   }
   if (!c.style?.getPropertyValue('--platz') || !c.matches?.('.dlg-body, #app > .rolle') || kbOffen() || c.contains(document.activeElement)) return;
   const pad = platzVon(c), n = Math.ceil(c.scrollTop + c.clientHeight - (c.scrollHeight - pad));
   if (n <= 0) {
     c.style.removeProperty('--platz');
-    messZeile(`platz weg ${messId(c)}`);
+    measureLine(`platz weg ${messId(c)}`);
     if (dlgFest && c.closest('dialog') === dlg) { dlgFest = 0; placeDialogs(); }
-  } else if (n < pad) platz(c, n);
+  } else if (n < pad) reserveSpace(c, n);
 }, { capture: true, passive: true });
 document.addEventListener('input', e => {
   const f = e.target;
@@ -3852,20 +3859,20 @@ document.addEventListener('input', e => {
   requestAnimationFrame(() => { const c = behaelter(f); if (!c) return;
     const d = f.closest('dialog'), dy = d && !isPhone() ? (parseFloat(d.style.top) || 0) - d.getBoundingClientRect().top : 0;
     const b = c.getBoundingClientRect(), unten = Math.min(b.bottom + dy, visualViewport.offsetTop + visualViewport.height) - 16, z = cursorZeile(f), zu = z.bottom + z.lh / 2 + dy;
-    if (zu > unten) { rollen(c, zu - unten); messZeile(`V-3 Cursor ${messId(f)} ${Math.round(zu - unten)}`); } });
+    if (zu > unten) { scrollBy(c, zu - unten); measureLine(`V-3 Cursor ${messId(f)} ${Math.round(zu - unten)}`); } });
 });
 // Jede Meldung von Safari (Tastatur auf und zu, sichtbarer Bereich verschoben): Rahmen und Fenster neu stellen, ohne dass ein Inhalt
 // rutscht – vor dem Wachsen des Rahmens Platz geben, sonst kürzt der Browser den Rollstand. Das iPad-Fenster gleitet mit (R-1.12).
 // Schließt die Tastatur (iPad: Tastatur-Taste), gibt das Feld den Fokus ab – erneutes Antippen ist dann ein gewöhnliches.
-function gemeldet() {
-  const cs = [rolle.el, dlg.open ? dlg.querySelector('.dlg-body') : null].filter(Boolean), y = cs.map(c => c.scrollTop);
+function viewportResized() {
+  const cs = [scrollView.el, dlg.open ? dlg.querySelector('.dlg-body') : null].filter(Boolean), y = cs.map(c => c.scrollTop);
   const offen = kbOffen(), f = document.activeElement, feld = f?.matches?.(FELD) ? f : null;
   // R-1.12 (seit 4.57.0, APD-127/B-2): hoch (Tastatur auf) mit der Feder 0,5 s, runter (.runter, Tastatur zu) ease-in-out 0,25 s (design.css)
-  if (dlg.open && !isPhone()) { dlg.classList.add('gleitet'); dlg.classList.toggle('runter', !offen); clearTimeout(gemeldet.t); gemeldet.t = setTimeout(() => dlg.classList.remove('gleitet', 'runter'), GLEIT_AUF_MS + 50); }
+  if (dlg.open && !isPhone()) { dlg.classList.add('gleitet'); dlg.classList.toggle('runter', !offen); clearTimeout(viewportResized.t); viewportResized.t = setTimeout(() => dlg.classList.remove('gleitet', 'runter'), GLEIT_AUF_MS + 50); }
   // APD-115/N-13: wächst der Rahmen (Tastatur geht zu), bekommt jeder Rollbereich vorher Platz – sonst nur, wo schon Platz steht; Platz bei jeder
   // Meldung bräche das sanfte Rollen ab (‚Nach oben‘ bei offener Tastatur, APD-36/B-8)
   const waechst = kbWar && !offen, mit = cs.map(c => waechst || platzVon(c) > 0);
-  cs.forEach((c, i) => { if (mit[i]) platz(c, 2000); });
+  cs.forEach((c, i) => { if (mit[i]) reserveSpace(c, 2000); });
   placeDialogs();
   cs.forEach((c, i) => { if (mit[i]) { c.scrollTop = y[i]; knapp(c); } });
   if (offen && feld) { kbMerken(feld); feldZeigen(feld); }
@@ -3875,9 +3882,9 @@ function gemeldet() {
   }
   kbWar = offen;
 }
-if (window.visualViewport) ['resize', 'scroll'].forEach(t => visualViewport.addEventListener(t, gemeldet));
+if (window.visualViewport) ['resize', 'scroll'].forEach(t => visualViewport.addEventListener(t, viewportResized));
 // APD-115/N-11: beim Schließen kommt Safaris ‚scroll‘ der Seite (scrollY 0) bis zu 400 ms vor ‚vv resize‘ – mit Rollbereich sofort neu stellen
-addEventListener('scroll', e => { if (rolle.el && (e.target === document || e.target === window) && Math.max(0, scrollY) !== placeDialogs.top) gemeldet(); }, { passive: true });
+addEventListener('scroll', e => { if (scrollView.el && (e.target === document || e.target === window) && Math.max(0, scrollY) !== placeDialogs.top) viewportResized(); }, { passive: true });
 // Seit 4.28.1 (APD-36, 6n): ‚Nach oben / Ans Ende‘ bei offener Tastatur – das Antippen schließt die Tastatur; gerollt wird erst danach
 // (sonst bricht der Ausgleich beim Schließen das sanfte Rollen ab und es braucht ein zweites Antippen), spätestens nach 600 ms.
 function nachTastatur(fn) {
@@ -3892,10 +3899,10 @@ function nachTastatur(fn) {
 // sich ein Wert geändert hat, dazu jedes Ereignis sofort mit den Werten in diesem Augenblick. Aus, solange nicht gestartet
 // (kein requestAnimationFrame, keine Hörer); nichts wird gespeichert (neu laden verwirft die Messung); keine Texte – vom
 // Eingabefeld nur die Länge, von Schaltflächen und Fokus nur die id. Endet von selbst nach 5 Minuten oder 20 000 Zeilen.
-// Die App setzt messungMenuItems({ app, teile, rollen }) ins Mehr-Menü der Seitenleiste: teile = { Spalte: Selektor } (Oberkante
-// des ersten sichtbaren Elements), rollen = { Spalte: Selektor } (scrollTop eines eigenen Rollbereichs).
-const MESS_MAX_MS = 5 * 60e3, MESS_MAX_ZEILEN = 20000;
-let mess = null;
+// Die App setzt measureMenuItems({ app, elements, scrollers }) ins Mehr-Menü der Seitenleiste: elements = { Spalte: Selektor } (Oberkante
+// des ersten sichtbaren Elements), scrollers = { Spalte: Selektor } (scrollTop eines eigenen Rollbereichs). Seit 5.0.0 englisch (vorher teile, rollen).
+const MEASURE_MAX_MS = 5 * 60e3, MESS_MAX_ZEILEN = 20000;
+let measurement = null;
 const messSicht = sel => [...document.querySelectorAll(sel)].find(e => e.getClientRects().length);
 const messId = e => !e || e === document.body ? '-' : e.id || e.tagName.toLowerCase();
 // seit 4.30.1 (APD-67): Ziel einer Berührung ohne Texte – id bzw. Tag mit Klassen und Rolle, dazu das antippbare Element darum
@@ -3909,45 +3916,45 @@ function messZiel(t) {
 }
 function messWerte() {
   const vv = window.visualViewport, r = Math.round, w = {
-    sy: r(scrollY), inh: rolle.el ? r(rolle.el.scrollTop) : '-', sh: document.documentElement.scrollHeight, ih: innerHeight, vh: vv ? r(vv.height) : '-', vt: vv ? r(vv.offsetTop) : '-',
+    sy: r(scrollY), inh: scrollView.el ? r(scrollView.el.scrollTop) : '-', sh: document.documentElement.scrollHeight, ih: innerHeight, vh: vv ? r(vv.height) : '-', vt: vv ? r(vv.offsetTop) : '-',
     vvtop: parseInt(document.documentElement.style.getPropertyValue('--vv-top')) || 0 };
-  for (const [k, sel] of Object.entries(mess.teile)) { const e = messSicht(sel); w[k] = e ? r(e.getBoundingClientRect().top) : '-'; }
-  for (const [k, sel] of Object.entries(mess.rollen)) { const e = messSicht(sel); w[k] = e ? r(e.scrollTop) : '-'; }
+  for (const [k, sel] of Object.entries(measurement.elements)) { const e = messSicht(sel); w[k] = e ? r(e.getBoundingClientRect().top) : '-'; }
+  for (const [k, sel] of Object.entries(measurement.scrollers)) { const e = messSicht(sel); w[k] = e ? r(e.scrollTop) : '-'; }
   w.fokus = messId(document.activeElement);
   w.lage = innerWidth > innerHeight ? 'quer' : 'hoch';
   return w;
 }
-function messZeile(ereignis) {
-  if (!mess?.an) return;
-  const t = Math.round(performance.now() - mess.start), w = messWerte(), werte = Object.values(w).join(' ');
-  if (!ereignis && werte === mess.zuletzt) return;
-  mess.zuletzt = werte;
-  mess.zeilen.push([t, ...Object.values(w)].map(v => String(v).padEnd(6)).join(' ').trimEnd() + (ereignis ? '   ! ' + ereignis : ''));
-  if (t > MESS_MAX_MS || mess.zeilen.length >= MESS_MAX_ZEILEN) messAus('Grenze erreicht');
+function measureLine(ereignis) {
+  if (!measurement?.an) return;
+  const t = Math.round(performance.now() - measurement.start), w = messWerte(), werte = Object.values(w).join(' ');
+  if (!ereignis && werte === measurement.zuletzt) return;
+  measurement.zuletzt = werte;
+  measurement.zeilen.push([t, ...Object.values(w)].map(v => String(v).padEnd(6)).join(' ').trimEnd() + (ereignis ? '   ! ' + ereignis : ''));
+  if (t > MEASURE_MAX_MS || measurement.zeilen.length >= MESS_MAX_ZEILEN) measureOff('Grenze erreicht');
 }
-const messEreignis = e => messZeile(e);
-function messBild() { if (!mess?.an) return; messZeile(); mess.bild = requestAnimationFrame(messBild); }
-function messAus(grund) {
-  if (!mess?.an) return;
-  mess.an = false;
-  cancelAnimationFrame(mess.bild);
-  mess.hoerer.forEach(([z, typ, fn]) => z.removeEventListener(typ, fn, true));
-  mess.zeilen.push(`# Ende nach ${Math.round((performance.now() - mess.start) / 1000)} s${grund ? ' · ' + grund : ''}`);
+const messEreignis = e => measureLine(e);
+function messBild() { if (!measurement?.an) return; measureLine(); measurement.bild = requestAnimationFrame(messBild); }
+function measureOff(grund) {
+  if (!measurement?.an) return;
+  measurement.an = false;
+  cancelAnimationFrame(measurement.bild);
+  measurement.hoerer.forEach(([z, typ, fn]) => z.removeEventListener(typ, fn, true));
+  measurement.zeilen.push(`# Ende nach ${Math.round((performance.now() - measurement.start) / 1000)} s${grund ? ' · ' + grund : ''}`);
 }
-function messStart({ app = '', teile = {}, rollen = {} } = {}) {
-  messAus();
+function measureStart({ app = '', elements = {}, scrollers = {} } = {}) {
+  measureOff();
   const st = matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
-  mess = { an: true, start: performance.now(), beginn: new Date(), teile, rollen, zeilen: [], zuletzt: '', hoerer: [] };
-  mess.zeilen.push(`# Messung · ${app} · AppDesign ${AD_VERSION} · ${navigator.userAgent} · ${st ? 'Home-Bildschirm' : 'Safari'} · ${screen.width}×${screen.height} @${devicePixelRatio} · ${
+  measurement = { an: true, start: performance.now(), beginn: new Date(), elements, scrollers, zeilen: [], zuletzt: '', hoerer: [] };
+  measurement.zeilen.push(`# Messung · ${app} · AppDesign ${AD_VERSION} · ${navigator.userAgent} · ${st ? 'Home-Bildschirm' : 'Safari'} · ${screen.width}×${screen.height} @${devicePixelRatio} · ${
     // seit 4.29.0 (3 APD-63/S-8): die sicheren Ränder des Geräts (oben/unten/links/rechts) – so kennen die Prüfungen die echten Werte
     (r => `Ränder ${r.top}/${r.bottom}/${r.left}/${r.right}`)(safeRand())} · ${
-    matchMedia('(prefers-color-scheme: dark)').matches ? 'dunkel' : 'hell'} · ${mess.beginn.toISOString()} · ${
+    matchMedia('(prefers-color-scheme: dark)').matches ? 'dunkel' : 'hell'} · ${measurement.beginn.toISOString()} · ${
     // seit 4.35.0 (APD-43 H5): die Bedienungshilfen des Geräts
     matchMedia('(prefers-contrast: more)').matches ? 'Kontrast erhöht' : 'Kontrast normal'} · ${bewegungRuhig() ? 'Bewegung reduziert' : 'Bewegung normal'} · ${
     // seit 4.37.0 (APD-43 W4): die Textgröße des Geräts (Stufe und Body in px)
     `Text ${textName} ${textPx()}`}`);
-  mess.zeilen.push(['t', ...Object.keys(messWerte())].map(v => v.padEnd(6)).join(' ').trimEnd());
-  const hoere = (z, typ, text) => { if (!z) return; const fn = e => { const t = text(e); if (t) messEreignis(t); }; z.addEventListener(typ, fn, true); mess.hoerer.push([z, typ, fn]); };
+  measurement.zeilen.push(['t', ...Object.keys(messWerte())].map(v => v.padEnd(6)).join(' ').trimEnd());
+  const hoere = (z, typ, text) => { if (!z) return; const fn = e => { const t = text(e); if (t) messEreignis(t); }; z.addEventListener(typ, fn, true); measurement.hoerer.push([z, typ, fn]); };
   hoere(document, 'focusin', e => 'focus ' + messId(e.target));   // seit 4.28.1: der neue Fokus (R-4.5) steht als ‚neu fokussiert‘ da
   hoere(document, 'focusout', e => 'blur ' + messId(e.target));
   hoere(document, 'input', e => 'eingabe ' + (e.target.value?.length ?? 0));
@@ -3967,31 +3974,136 @@ function messStart({ app = '', teile = {}, rollen = {} } = {}) {
   hoere(document, 'touchcancel', e => `touchcancel ${e.changedTouches?.length ?? 0} ${messZiel(e.target)}`);
   // seit 4.30.2 (APD-67): ob Safari das Rollen noch erlaubt – ‚touchmove frei‘, ‚verhindert‘ (die Geste hält den Finger) bzw. ‚fest‘
   // (nicht mehr verhinderbar, Safari rollt); nur beim Wechsel, jede Berührung beginnt neu
-  hoere(document, 'pointerdown', () => { mess.tm = ''; return ''; });
-  hoere(document, 'touchmove', e => { const z = e.cancelable ? e.defaultPrevented ? 'verhindert' : 'frei' : 'fest'; if (z === mess.tm) return ''; mess.tm = z; return 'touchmove ' + z; });
-  messZeile('start');
-  mess.bild = requestAnimationFrame(messBild);
+  hoere(document, 'pointerdown', () => { measurement.tm = ''; return ''; });
+  hoere(document, 'touchmove', e => { const z = e.cancelable ? e.defaultPrevented ? 'verhindert' : 'frei' : 'fest'; if (z === measurement.tm) return ''; measurement.tm = z; return 'touchmove ' + z; });
+  measureLine('start');
+  measurement.bild = requestAnimationFrame(messBild);
 }
 const messName = d => `messung-${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}-${
   String(d.getHours()).padStart(2, '0')}${String(d.getMinutes()).padStart(2, '0')}.txt`;
 // Beenden und teilen: bricht man das Teilen-Menü ab, bleibt die Messung und kann noch einmal geteilt werden.
 async function messTeilen() {
-  messZeile('messung beendet');   // seit 4.38.0 (RLB-103): das Ende ist eindeutig – das Nachspielen (abspielen.mjs) spielt das Beenden nicht nach
-  messAus();
-  const res = await shareFiles([{ name: messName(mess.beginn), content: mess.zeilen.join('\n') + '\n', type: 'txt' }]);
-  if (res === 'shared' || res === 'downloaded') mess = null;
+  measureLine('messung beendet');   // seit 4.38.0 (RLB-103): das Ende ist eindeutig – das Nachspielen (abspielen.mjs) spielt das Beenden nicht nach
+  measureOff();
+  const res = await shareFiles([{ name: messName(measurement.beginn), content: measurement.zeilen.join('\n') + '\n', type: 'txt' }]);
+  if (res === 'shared' || res === 'downloaded') measurement = null;
   return res;
 }
 // R-1.6 (seit 4.40.0, APD-77): ‚Messung starten‘ ist versteckt, bis langes Drücken auf die Versionszeile ihn freischaltet (bis zum
 // Neustart, nichts gespeichert); bis dahin nur ein Platzhalter. Eine Messung, die läuft oder noch nicht geteilt ist, steht immer da.
-let messFrei = false;
-function messungMenuItems(opt) {
-  if (!mess && !messFrei) return [{ messPlatz: opt }];
-  if (!mess) return [{ icon: 'activity', label: 'Messung starten', sub: 'Für Claude: Bewegungen aufzeichnen', act: () => messStart(opt) }];
-  const s = Math.round((performance.now() - mess.start) / 1000), n = mess.zeilen.length - 2;
+let measureAllowed = false;
+function measureMenuItems(opt) {
+  if (!measurement && !measureAllowed) return [{ messPlatz: opt }];
+  if (!measurement) return [{ icon: 'activity', label: 'Messung starten', sub: 'Für Claude: Bewegungen aufzeichnen', act: () => measureStart(opt) }];
+  const s = Math.round((performance.now() - measurement.start) / 1000), n = measurement.zeilen.length - 2;
   return [{ icon: 'circle-stop', label: 'Messung beenden und teilen', act: messTeilen,
-    sub: `${mess.an ? 'läuft' : 'beendet'} · ${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')} · ${n.toLocaleString('de-DE')} Zeilen` }];
+    sub: `${measurement.an ? 'läuft' : 'beendet'} · ${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')} · ${n.toLocaleString('de-DE')} Zeilen` }];
 }
 // Bei jedem resize stellt ui.js die Fenster selbst neu (placeDialogs; seit 4.64.0, APD-135/B-4.2 – bis dahin die erste Zeile im resize-Hörer
 // der App). Als letzter Hörer von ui.js beim Laden: er läuft wie bisher nach allen anderen von ui.js und direkt vor dem der App.
 window.addEventListener('resize', () => placeDialogs());
+
+/* ---------- Namensraum AD (seit 5.0.0, APD-145, R-1.14) ---------- */
+// Global steht nur AD; daran hängen genau die Namen aus schnittstelle.json (Teile app und pruefungen) – nicht mehr und nicht weniger
+// (tests/schnittstelle.mjs, checkSchnittstelle). Jeder Name liest die Bindung hier innen; Funktionen und let-Werte lassen sich auch setzen,
+// und das gilt dann auch innen: AD.dlgDirty = () => … der App, eine Prüfung ersetzt AD.shareFiles bzw. AD.confirmPop oder setzt AD.netState.
+// Versiegelt: kein Name kommt dazu, keiner geht weg.
+return Object.seal({
+  get AD_VERSION() { return AD_VERSION; },
+  get FX_SVG() { return FX_SVG; },
+  get announce() { return announce; }, set announce(v) { announce = v; },
+  get appearanceMenuItem() { return appearanceMenuItem; },
+  get applyTheme() { return applyTheme; }, set applyTheme(v) { applyTheme = v; },
+  get autoGrow() { return autoGrow; }, set autoGrow(v) { autoGrow = v; },
+  get backupFileOf() { return backupFileOf; }, set backupFileOf(v) { backupFileOf = v; },
+  get backupLastText() { return backupLastText; },
+  get backupMenuEntries() { return backupMenuEntries; },
+  get backupTileHtml() { return backupTileHtml; },
+  get backupToday() { return backupToday; },
+  get breakable() { return breakable; }, set breakable(v) { breakable = v; },
+  get capHtml() { return capHtml; },
+  get choosePop() { return choosePop; }, set choosePop(v) { choosePop = v; },
+  get compactWidth() { return compactWidth; },
+  get confirmPop() { return confirmPop; }, set confirmPop(v) { confirmPop = v; },
+  get contentUnavailableHtml() { return contentUnavailableHtml; }, set contentUnavailableHtml(v) { contentUnavailableHtml = v; },
+  get createAlert() { return createAlert; }, set createAlert(v) { createAlert = v; },
+  get createNotice() { return createNotice; }, set createNotice(v) { createNotice = v; },
+  get createRecentlydeleted() { return createRecentlydeleted; }, set createRecentlydeleted(v) { createRecentlydeleted = v; },
+  get createSourcehighlight() { return createSourcehighlight; }, set createSourcehighlight(v) { createSourcehighlight = v; },
+  get createSwipeactions() { return createSwipeactions; }, set createSwipeactions(v) { createSwipeactions = v; },
+  get createSync() { return createSync; }, set createSync(v) { createSync = v; },
+  get dlg() { return dlg; },
+  get dlgDirty() { return dlgDirty; }, set dlgDirty(v) { dlgDirty = v; },
+  get dlgHead() { return dlgHead; }, set dlgHead(v) { dlgHead = v; },
+  get esc() { return esc; }, set esc(v) { esc = v; },
+  get fabEnd() { return fabEnd; },
+  get fabTop() { return fabTop; },
+  get findsAll() { return findsAll; },
+  get findsAny() { return findsAny; },
+  get focus() { return focus; }, set focus(v) { focus = v; },
+  get focusFirstInvalid() { return focusFirstInvalid; }, set focusFirstInvalid(v) { focusFirstInvalid = v; },
+  get formatEuro() { return formatEuro; }, set formatEuro(v) { formatEuro = v; },
+  get glassFromBackup() { return glassFromBackup; }, set glassFromBackup(v) { glassFromBackup = v; },
+  get ic() { return ic; },
+  get iconText() { return iconText; },
+  get inform() { return inform; },
+  get isPhone() { return isPhone; },
+  get keepPlace() { return keepPlace; }, set keepPlace(v) { keepPlace = v; },
+  get listHtml() { return listHtml; }, set listHtml(v) { listHtml = v; },
+  get markWords() { return markWords; }, set markWords(v) { markWords = v; },
+  get measureMenuItems() { return measureMenuItems; }, set measureMenuItems(v) { measureMenuItems = v; },
+  get money() { return money; }, set money(v) { money = v; },
+  get mountCap() { return mountCap; }, set mountCap(v) { mountCap = v; },
+  get navPop() { return navPop; }, set navPop(v) { navPop = v; },
+  get navPush() { return navPush; }, set navPush(v) { navPush = v; },
+  get navRegister() { return navRegister; }, set navRegister(v) { navRegister = v; },
+  get navSidebar() { return navSidebar; }, set navSidebar(v) { navSidebar = v; },
+  get onDayChange() { return onDayChange; }, set onDayChange(v) { onDayChange = v; },
+  get onLongPress() { return onLongPress; }, set onLongPress(v) { onLongPress = v; },
+  get openAt() { return openAt; }, set openAt(v) { openAt = v; },
+  get openDialog() { return openDialog; }, set openDialog(v) { openDialog = v; },
+  get openMenu() { return openMenu; }, set openMenu(v) { openMenu = v; },
+  get outputCss() { return outputCss; },
+  get readBackup() { return readBackup; }, set readBackup(v) { readBackup = v; },
+  get scrollBy() { return scrollBy; }, set scrollBy(v) { scrollBy = v; },
+  get scrollRowHtml() { return scrollRowHtml; },
+  get scrollView() { return scrollView; },
+  get searchCancelHtml() { return searchCancelHtml; },
+  get searchMenuItems() { return searchMenuItems; },
+  get searchRegister() { return searchRegister; },
+  get searchUnavailableHtml() { return searchUnavailableHtml; },
+  get searchWords() { return searchWords; }, set searchWords(v) { searchWords = v; },
+  get setFieldError() { return setFieldError; }, set setFieldError(v) { setFieldError = v; },
+  get setHtml() { return setHtml; }, set setHtml(v) { setHtml = v; },
+  get shareFiles() { return shareFiles; }, set shareFiles(v) { shareFiles = v; },
+  get shareResultText() { return shareResultText; },
+  get sourcehighlight() { return sourcehighlight; },
+  get thousands() { return thousands; }, set thousands(v) { thousands = v; },
+  get updateBar() { return updateBar; }, set updateBar(v) { updateBar = v; },
+  get ICONS() { return ICONS; },
+  get MEASURE_MAX_MS() { return MEASURE_MAX_MS; },
+  get SHARE_RESULT() { return SHARE_RESULT; },
+  get alert() { return alert; },
+  get blank() { return blank; },
+  get fastScroll() { return fastScroll; },
+  get isOffline() { return isOffline; },
+  get largeContent() { return largeContent; }, set largeContent(v) { largeContent = v; },
+  get measureAllowed() { return measureAllowed; }, set measureAllowed(v) { measureAllowed = v; },
+  get measureLine() { return measureLine; }, set measureLine(v) { measureLine = v; },
+  get measureOff() { return measureOff; }, set measureOff(v) { measureOff = v; },
+  get measureStart() { return measureStart; }, set measureStart(v) { measureStart = v; },
+  get measurement() { return measurement; }, set measurement(v) { measurement = v; },
+  get msg() { return msg; },
+  get navCandidate() { return navCandidate; }, set navCandidate(v) { navCandidate = v; },
+  get netState() { return netState; }, set netState(v) { netState = v; },
+  get popoverMargins() { return popoverMargins; }, set popoverMargins(v) { popoverMargins = v; },
+  get reserveSpace() { return reserveSpace; },
+  get restoreTop() { return restoreTop; }, set restoreTop(v) { restoreTop = v; },
+  get scrolled() { return scrolled; }, set scrolled(v) { scrolled = v; },
+  get setNet() { return setNet; }, set setNet(v) { setNet = v; },
+  get showNetToast() { return showNetToast; }, set showNetToast(v) { showNetToast = v; },
+  get tap() { return tap; }, set tap(v) { tap = v; },
+  get touchedAt() { return touchedAt; }, set touchedAt(v) { touchedAt = v; },
+  get viewportResized() { return viewportResized; }, set viewportResized(v) { viewportResized = v; },
+});
+})();

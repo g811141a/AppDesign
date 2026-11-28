@@ -297,8 +297,8 @@ function gegenprobeMasse(fall) {
     glas: () => stil('.fab, .menu { -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }'),
     glasleiste: () => stil('.nb, .pnav { -webkit-backdrop-filter: blur(20px) !important; backdrop-filter: blur(20px) !important; }'),
     einzelkapsel: () => stil('.side-head .grp > button:not(:last-child) { display: none !important; }'),
-    sofort: () => addEventListener('load', () => { confirmPop = async () => true; }),
-    abbrechen2: () => addEventListener('load', () => { const alt = confirmPop; confirmPop = async (...a) => { await alt(...a); return true; }; }),
+    sofort: () => addEventListener('load', () => { AD.confirmPop = async () => true; }),
+    abbrechen2: () => addEventListener('load', () => { const alt = AD.confirmPop; AD.confirmPop = async (...a) => { await alt(...a); return true; }; }),
   }[fall];
   if (!f) throw new Error('Unbekannter Fall der Gegenprobe: ' + fall);
   f();

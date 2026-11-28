@@ -1,10 +1,10 @@
 // Bean-Katalog prüfen (seit 4.65.0, APD-140, R-1.13; Testfall-Liste arbeit/APD-140 Testfall-Liste.md Z-2 bis Z-4). Der Katalog (AppDesign katalog/)
-// zeigt immer den Arbeitsstand v4/ – darum öffnet diese Prüfung katalog/index.html im Arbeitsstand, auch wenn sie aus einer Fassung geladen wird.
+// zeigt immer den Arbeitsstand vN/ (seit 5.0.0 v5/, arbeitsOrdner in version.mjs) – darum öffnet diese Prüfung katalog/index.html im Arbeitsstand, auch wenn sie aus einer Fassung geladen wird.
 //   Z-2: lädt in Chromium und WebKit, in allen 4 Ansichten, jede Bean geöffnet, ohne Konsolen- oder Skriptfehler; Titel = Name der Bean, Adresse
 //        #kennung, ‚Ausprobieren‘ zeigt die Bean; iPhone: Startliste → Bean → Zurück
 //   Z-3: nach jedem Schritt die Grundregeln (pruefe.mjs schritt, dieselben Prüfungen wie hig.mjs, ohne Drehen)
 //   Z-6: langes Drücken auf Schaltflächen und Kacheln unter ‚Ausprobieren‘ markiert keinen Text (R-1.15, Safari-Modell; seit 4.67.1, P-117/F-2; bis 4.68.0 R-3.6)
-//   Z-4: lädt v4/ui.js und v4/design.css; AD_VERSION = --ad-version = AD_VERSION in v4/ui.js; Versionszeile im Mehr-Menü nennt AD_VERSION
+//   Z-4: lädt vN/ui.js und vN/design.css des Arbeitsstands; AD.AD_VERSION = --ad-version = AD_VERSION in vN/ui.js; Versionszeile im Mehr-Menü nennt AD_VERSION
 // Die Liste ↔ katalog/ (Z-1, Gegenprobe Z-5) prüft checkBeans (doku.mjs, checkKatalog).
 // Einbinden in der App (tests/bean-katalog.mjs):  import { katalog } from '../../AppDesign/fassung/X.Y.Z/tests/katalog.mjs';
 //                                                 await katalog(pw, { out: new URL('out/', import.meta.url) });
@@ -13,34 +13,35 @@ import { pruefung } from './pruefe.mjs';
 import { createCheck } from './hig.mjs';
 import { safariHalten } from './safari.mjs';
 import { checkBeruehren } from './ablauf.mjs';
+import { arbeitsOrdner } from './version.mjs';
 
-const AD = new URL(import.meta.url.includes('/fassung/') ? '../../../' : '../', import.meta.url);
+const ORDNER = new URL(import.meta.url.includes('/fassung/') ? '../../../' : '../', import.meta.url), V = arbeitsOrdner(ORDNER);
 
 export async function katalog(pw, { out } = {}) {
   const t = pruefung('bean-katalog', pw, { hig: createCheck(), out });
-  const url = new URL('katalog/index.html', AD).href;
-  const v4 = readFileSync(new URL('v4/ui.js', AD), 'utf8').match(/const AD_VERSION = '([\d.]+)'/)?.[1];
+  const url = new URL('katalog/index.html', ORDNER).href;
+  const ver = readFileSync(new URL(`${V}/ui.js`, ORDNER), 'utf8').match(/const AD_VERSION = '([\d.]+)'/)?.[1];
   const b = await t.browser();
   for (const ansicht of ['iPad quer', 'iPad hoch', 'iPhone hoch', 'iPhone quer']) {
     const phone = ansicht.startsWith('iPhone');
     const p = await t.seite(b, ansicht);
     p.on('console', m => { if (m.type() === 'error') t.fehler('R-1.13', `Z-2 Konsolenfehler: ${m.text().split('\n')[0]}`); });
     await t.schritt(p, 'Katalog öffnen', async () => { await p.goto(url); await p.waitForFunction(() => window.__katalog); await p.waitForTimeout(400); });
-    // Z-4: Arbeitsstand v4
-    const v = await p.evaluate(() => ({ ui: [...document.scripts].some(s => /\/v4\/ui\.js$/.test(s.src)), css: [...document.querySelectorAll('link[rel=stylesheet]')].some(l => /\/v4\/design\.css$/.test(l.href)),
-      ad: typeof AD_VERSION === 'string' ? AD_VERSION : '', cssVer: getComputedStyle(document.documentElement).getPropertyValue('--ad-version').trim().replace(/['"]/g, ''),
-      beans: window.__katalog.beans() }));
-    t.wahr('Z-4 lädt v4/ui.js und v4/design.css', v.ui && v.css, 'R-1.13');
-    t.ist('Z-4 AD_VERSION der Seite', v.ad, v4, 'R-1.13');
-    t.ist('Z-4 --ad-version', v.cssVer, v4, 'R-1.13');
+    // Z-4: Arbeitsstand vN
+    const v = await p.evaluate(V => ({ ui: [...document.scripts].some(s => s.src.endsWith(`/${V}/ui.js`)), css: [...document.querySelectorAll('link[rel=stylesheet]')].some(l => l.href.endsWith(`/${V}/design.css`)),
+      ad: typeof AD.AD_VERSION === 'string' ? AD.AD_VERSION : '', cssVer: getComputedStyle(document.documentElement).getPropertyValue('--ad-version').trim().replace(/['"]/g, ''),
+      beans: window.__katalog.beans() }), V);
+    t.wahr(`Z-4 lädt ${V}/ui.js und ${V}/design.css`, v.ui && v.css, 'R-1.13');
+    t.ist('Z-4 AD_VERSION der Seite', v.ad, ver, 'R-1.13');
+    t.ist('Z-4 --ad-version', v.cssVer, ver, 'R-1.13');
     if (phone) t.wahr('Z-2 iPhone: Startliste ohne blauen Eintrag', await p.evaluate(() => side.classList.contains('page') && !side.hidden && !side.querySelector('.current')), 'R-7.2');
     await t.schritt(p, 'Mehr-Menü der Seitenleiste', () => p.click('#sideMore'));
-    t.ist('Z-4 Versionszeile', await p.evaluate(() => document.querySelector('.menu')?.textContent || ''), new RegExp(`AppDesign ${v4.replace(/\./g, '\\.')}`), 'R-1.13');
+    t.ist('Z-4 Versionszeile', await p.evaluate(() => document.querySelector('.menu')?.textContent || ''), new RegExp(`AppDesign ${ver.replace(/\./g, '\\.')}`), 'R-1.13');
     await t.schritt(p, 'Mehr-Menü schließen', () => p.keyboard.press('Escape'));
     // Z-2: jede Bean öffnen
     for (const kennung of v.beans) {
       await t.schritt(p, `Bean ${kennung} öffnen`, async () => {
-        if (phone && !(await p.evaluate(() => side.classList.contains('page') && !side.hidden))) { await p.evaluate(() => navZurueck()); await p.waitForTimeout(900); }
+        if (phone && !(await p.evaluate(() => side.classList.contains('page') && !side.hidden))) { await p.evaluate(() => AD.navPop()); await p.waitForTimeout(900); }
         await p.click(`#side [data-bean="${kennung}"]`); await p.waitForTimeout(900);
       });
       const s = await p.evaluate(k => ({ titel: document.querySelector('#bar .nb-title, #bar .pnav-title')?.textContent || '', hash: location.hash,

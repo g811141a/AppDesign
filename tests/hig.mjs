@@ -648,7 +648,7 @@ const found = new Map(), icons = new Map();
         if (bh && bh.textContent.includes(`Letztes Backup erstellt am ${heute}`)) R('R-9.1', 'Backup-Kachel steht, obwohl heute schon ein Backup erstellt wurde');
         if (bh && !side.querySelector('.side-row') && !side.querySelector('.side-search')) R('R-9.1', 'Backup-Kachel steht bei leerer Liste');
         if (!side.querySelector('.side-foot')) R('R-1.5', 'Fuß der Seitenleiste fehlt (Offline-Zeile nicht möglich)');
-        if (typeof isOffline === 'function' && isOffline() && !vis(side.querySelector('.side-foot .offl'))) R('R-1.5', 'offline, aber die Zeile ‚Offline – …‘ fehlt unten');
+        if (typeof AD.isOffline === 'function' && AD.isOffline() && !vis(side.querySelector('.side-foot .offl'))) R('R-1.5', 'offline, aber die Zeile ‚Offline – …‘ fehlt unten');
       }
       if (document.querySelector('.pnav-head') && document.querySelector('.irow') && !document.querySelector('.bnote')) R('R-9.1', 'Backup-Kachel fehlt in der Startliste');
       // R-4.5 Fenster auf dem iPhone bildschirmbreit (seit 4.32.0 als Blatt, R-4.6 – Lage und Höhe prüft checkSheet)
@@ -856,9 +856,9 @@ const found = new Map(), icons = new Map();
       // Verglichen wird Eigenschaft für Eigenschaft mit einer unsichtbar aufgebauten Mustertabelle: Schrift, Kopf (Farbe,
       // Schriftstärke, Rand), Linien (überall gleich stark), Innenabstände, jede zweite Zeile grau.
       const grids = [...document.querySelectorAll('.rt table.grid, .sync-report table.grid')].filter(vis);
-      if (grids.length && typeof outputCss === 'function') {
+      if (grids.length && typeof AD.outputCss === 'function') {
         const ref = document.createElement('div'); ref.className = 'r52ref'; ref.style.cssText = 'position:absolute;left:-9999px;top:0;width:600px';
-        ref.innerHTML = `<style>${outputCss('.r52ref')}</style><table class="grid"><thead><tr><th>K</th><th>K</th></tr></thead><tbody><tr><td>a</td><td>b</td></tr><tr><td>c</td><td>d</td></tr></tbody></table>`;
+        ref.innerHTML = `<style>${AD.outputCss('.r52ref')}</style><table class="grid"><thead><tr><th>K</th><th>K</th></tr></thead><tbody><tr><td>a</td><td>b</td></tr><tr><td>c</td><td>d</td></tr></tbody></table>`;
         document.body.append(ref);
         const pick = (e, ks) => e ? ks.map(k => cs(e)[k]).join(' | ') : '–';
         // seit 4.57.0 (RLB-120/B-7): auch der Verlauf des Kopfs (background-image); die Mustertabelle selbst hat ihn von oben Weiß nach unten #d9d9d9

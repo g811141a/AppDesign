@@ -3,7 +3,7 @@
 // prüft AppDesign auf der Prüfseite – der Vorlage (vorlage/index.html) derselben Fassung mit neutralen Daten –, ihre Werte auf der daraus
 // abgeleiteten Mindestseite. Kein Playwright hier: die Hülle der App (tests/bausteine-pruefseite.mjs) übergibt es (pw) und den Ausgabeordner.
 //   oeffneVorlage(p, { daten, fehler })  – Vorlage mit neutralen Daten (localStorage neueapp.v1); ui.js und design.css der Fassung, in der diese
-//                                           Datei liegt (Arbeitsstand: v4/), über p.route – so passen die Pfade in Arbeitsstand und Fassung
+//                                           Datei liegt (Arbeitsstand: v5/), über p.route – so passen die Pfade in Arbeitsstand und Fassung
 //   oeffneMindestseite(p, { fehler })    – aus dem Text der Vorlage: <head>, #dlg, #msg, ui.js; das Skript der App durch Platzhalter ersetzt
 //   checkWerte(p)                         – Gruppe A (8 Bausteine mit festen Beispielwerten) auf der Mindestseite; Meldungen ‚R-x.y <Baustein>: …‘
 //   pruefseite(pw, { out, teil })         – ein Teil mit Ergebnis und Rückgabewert (pruefe.mjs): ‚werte‘ und seit B-3.2 (APD-135/E-7 bis E-11) die Abläufe
@@ -18,8 +18,9 @@
 // Die Vorlage in der Fassung (fassung/X.Y.Z/vorlage/index.html) nennt ../fassung/X.Y.Z/… – geladen wird trotzdem nur, was p.route liefert.
 import { readFileSync, existsSync } from 'node:fs';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import { pruefung, navFertig, warteBis, ruhe } from './pruefe.mjs';
+import { arbeitsOrdner } from './version.mjs';
 import { createCheck } from './hig.mjs';
 import { checkSync } from './abgleich.mjs';
 import { checkSearchWords, langDruecken, checkMessung, sucheAuf, checkTitelBlase, titelLang, titelBlaseOffen, checkTitelOben, checkSafariKlick,
@@ -30,15 +31,15 @@ import { obenOhneKlick } from './safari.mjs';
 import { checkContextMenus } from './kontextmenue.mjs';
 
 const hier = path.dirname(fileURLToPath(import.meta.url));
-// in der festen Fassung liegen ui.js und vorlage/ neben tests/, im Arbeitsstand ui.js unter v4/
+// in der festen Fassung liegen ui.js und vorlage/ neben tests/, im Arbeitsstand ui.js unter vN/ (seit 5.0.0 v5/, arbeitsOrdner)
 const inFassung = existsSync(path.join(hier, '..', 'ui.js'));
-const basis = inFassung ? path.join(hier, '..') : path.join(hier, '..', 'v4');
+const basis = inFassung ? path.join(hier, '..') : path.join(hier, '..', arbeitsOrdner(pathToFileURL(path.join(hier, '..') + '/')));
 const VORLAGE = path.join(hier, '..', 'vorlage', 'index.html');
 // Messdateien (Designrichtlinie 15.21) gehören nicht zur Fassung (nur Dateien direkt in tests/) – aus der Fassung liest der Ablauf sie aus
 // AppDesign/tests/messungen/ (wie bisher die Prüfdatei der App)
 const MESSUNGEN = inFassung ? path.join(hier, '..', '..', '..', 'tests', 'messungen') : path.join(hier, 'messungen');
 const lies = f => readFileSync(f, 'utf8');
-// Fassung, aus der geprüft wird: Ordnername (fassung/X.Y.Z) bzw. im Arbeitsstand die Version von v4/design.css
+// Fassung, aus der geprüft wird: Ordnername (fassung/X.Y.Z) bzw. im Arbeitsstand die Version von vN/design.css
 export const FASSUNG = inFassung ? path.basename(path.join(hier, '..')) : lies(path.join(basis, 'design.css')).match(/--ad-version:\s*"([\d.]+)"/)?.[1];
 export const URSPRUNG = 'https://pruefseite.test/';   // seit 4.69.0 https (APD-135/F-2): sicherer Kontext wie die App auf GitHub Pages – sonst fehlt navigator.clipboard
 export const SPEICHER = 'neueapp.v1';
@@ -59,7 +60,7 @@ const fall = (baustein, was, ersetze, zeichen = new RegExp(`R-\\d+\\.\\d+ ${baus
 export const GEGENPROBEN_PRUEFSEITE = { werte: {
   version: fall('Version', 'AD_VERSION falsch', [[/const AD_VERSION = '[\d.]+';/, "const AD_VERSION = '0.0.0';"]]),
   icons: fall('Icons', 'Icon ohne aria-hidden', [['viewBox="0 0 24 24" aria-hidden="true"${name', 'viewBox="0 0 24 24"${name']]),
-  leer: fall('Leerer Zustand', 'Titel nicht als Überschrift', [['<h3>${esc(titel)}</h3>', '<b>${esc(titel)}</b>']]),
+  leer: fall('Leerer Zustand', 'Titel nicht als Überschrift', [['<h3>${esc(title)}</h3>', '<b>${esc(title)}</b>']]),
   hilfen: fall('Hilfen', 'Tausenderkomma statt -punkt', [[".replace(/\\B(?=(\\d{3})+(?!\\d))/g, '.')", ".replace(/\\B(?=(\\d{3})+(?!\\d))/g, ',')"]]),
   suche: fall('Suche', 'markWords markiert nicht', [['m => `<mark>${m}</mark>`', 'm => m']]),
   teilen: fall('Teilen', 'Kopfverlauf endet nicht in #d9d9d9', [['#e9e9e9 75%, #d9d9d9 100%', '#e9e9e9 75%, #e9e9e9 100%']]),
@@ -137,7 +138,7 @@ felder: {
     /R-5\.2 Großbuchstaben fehlen/),
   enterBleibt: fall('Eingabetaste', 'Eingabetaste schließt die Tastatur im einzeiligen Feld nicht', [["  e.preventDefault();\n  e.target.blur();\n});", "});"]],
     /R-5\.5 #fTitle: Eingabetaste schließt/),
-  doppelLeer: fall('Leerzeichen', 'doppelte Leerzeichen beim Tippen', [["if (leer(f.value.charAt(f.selectionStart - 1)) || leer(f.value.charAt(f.selectionEnd))) e.preventDefault();", ""]],
+  doppelLeer: fall('Leerzeichen', 'doppelte Leerzeichen beim Tippen', [["if (blank(f.value.charAt(f.selectionStart - 1)) || blank(f.value.charAt(f.selectionEnd))) e.preventDefault();", ""]],
     /R-5\.2 doppelte Leerzeichen/),
   waechstNicht: fall('Textfeld wächst', 'Textfeld wächst nicht mit', [["ta.style.height = (ta.scrollHeight + 2) + 'px';", "ta.style.height = '';"]], /R-5\.2 APD-126\/B-[4-7] /),
 } };
@@ -168,7 +169,7 @@ export function mindestseiteHtml(vorlage = lies(VORLAGE)) {
   const dlg = teil(/<dialog id="dlg"[^>]*><\/dialog>/, '#dlg'), msg = teil(/<dialog id="msg"[^>]*><\/dialog>/, '#msg');
   const ui = teil(/<script src="[^"]*ui\.js"><\/script>/, 'ui.js');
   return `<!doctype html>\n<html lang="de">\n${head}\n<body>\n${dlg}\n${msg}\n${ui}\n<script>\n'use strict';\n` +
-    "let db = { settings: { appearance: 'auto' } }; function save() {} function render() {}\nconst sync = createSync({ list: 'items', sub: 'sub' });\n</script>\n</body>\n</html>\n";
+    "let db = { settings: { appearance: 'auto' } }; function save() {} function render() {}\nconst sync = AD.createSync({ list: 'items', sub: 'sub' });\n</script>\n</body>\n</html>\n";
 }
 
 // Prüfseite über einen eigenen Ursprung (http://pruefseite.test/), damit localStorage gilt und p.route jede Datei liefern kann.
@@ -210,7 +211,7 @@ export async function checkWerte(p) {
   if (!/fehlt #dlg/.test(wirft)) E('R-10.3', 'Mindestseite', `Vorlage ohne #dlg ergibt keinen Fehler (${wirft || 'keiner'})`);
 
   // Version (R-10.3): AD_VERSION = --ad-version = Fassung; die Vorlage braucht dieselbe (AD_NEEDED)
-  const v = await p.evaluate(() => ({ js: typeof AD_VERSION === 'string' ? AD_VERSION : '–',
+  const v = await p.evaluate(() => ({ js: typeof AD.AD_VERSION === 'string' ? AD.AD_VERSION : '–',
     css: getComputedStyle(document.documentElement).getPropertyValue('--ad-version').trim().replace(/"/g, '') }));
   if (v.js !== FASSUNG || v.css !== FASSUNG) E('R-10.3', 'Version', `AD_VERSION ${v.js}, --ad-version ${v.css || '–'}, soll beide ${FASSUNG}`);
   const needed = lies(VORLAGE).match(/const AD_NEEDED = '([\d.]+)'/)?.[1];
@@ -223,21 +224,21 @@ export async function checkWerte(p) {
     const leer = html => { const d = dom(html).firstElementChild;
       return { cls: d?.className, sym: !!d?.querySelector(':scope > svg.ic.sym[aria-hidden="true"]'), h3: d?.querySelector(':scope > h3')?.textContent ?? null,
         p: d?.querySelector(':scope > p')?.textContent ?? null, knopf: d?.querySelector(':scope > button.leer-knopf')?.id ?? null, knopfText: d?.querySelector(':scope > button')?.textContent ?? null }; };
-    const datei = backupFileOf('Neue App', { items: [{ id: 'x', title: 'A & B', sub: { u001: { text: '„Zitat“ 👍🏽' } } }], deleted: [] });
+    const datei = AD.backupFileOf('Neue App', { items: [{ id: 'x', title: 'A & B', sub: { u001: { text: '„Zitat“ 👍🏽' } } }], deleted: [] });
     const tag = 864e5;
     return {
-      icon: svg(ic('pencil')), iconUnbekannt: (() => { const alt = console.error; let meldung = ''; console.error = (...a) => { meldung = a.join(' '); };
-        try { return { html: ic('gibt-es-nicht'), meldung }; } finally { console.error = alt; } })(), symbole: Object.keys(ICONS), ellipsis: dom(ic('ellipsis')).firstElementChild?.hasAttribute('data-mehr'),
-      leer: leer(leerHtml({ icon: 'calendar', titel: 'Noch nichts <b>', satz: 'Ein Satz & mehr.', aktion: { id: 'leerNeu', label: 'Neu' } })),
-      leerKlein: leer(leerHtml({ icon: 'book-open', titel: 'Noch kein Eintrag', klein: true })), leerSuche: leer(leerSuche('a<b')),
-      esc: esc(`<a href="x">&'`), escLeer: esc(null), breakable: [breakable('kurz'), breakable('a'.repeat(22)), breakable('🤷🏻‍♂️'.repeat(21))],
-      iconText: iconText('☀️', 'Sonne & Mond'), aufz: aufzaehlung(['8×☀️', ['Hotel Krone', '(120,00 €)'], 'Ende']),
-      thousands: [thousands(4850), thousands(1234567), thousands('12'), thousands(999.6)], money: [money(4850), money(0.5), money(1234.567), money('x')],
-      euro: [formatEuro(4850), formatEuro(0)],
-      mark: [markWords('Café Crème in Zürich', searchWords('cafe zurich')), markWords('Sydney', []), markWords('A &amp; B', searchWords('&'))],
-      css: outputCss('.rt'), share: ['shared', 'downloaded', 'aborted', 'error'].map(k => shareResultText(k, 'Neue App 2026.11.19 10.05.html')),
+      icon: svg(AD.ic('pencil')), iconUnbekannt: (() => { const alt = console.error; let meldung = ''; console.error = (...a) => { meldung = a.join(' '); };
+        try { return { html: AD.ic('gibt-es-nicht'), meldung }; } finally { console.error = alt; } })(), symbole: Object.keys(AD.ICONS), ellipsis: dom(AD.ic('ellipsis')).firstElementChild?.hasAttribute('data-mehr'),
+      leer: leer(AD.contentUnavailableHtml({ icon: 'calendar', title: 'Noch nichts <b>', description: 'Ein Satz & mehr.', actions: { id: 'leerNeu', label: 'Neu' } })),
+      leerKlein: leer(AD.contentUnavailableHtml({ icon: 'book-open', title: 'Noch kein Eintrag', compact: true })), leerSearch: leer(AD.searchUnavailableHtml('a<b')),
+      esc: AD.esc(`<a href="x">&'`), escLeer: AD.esc(null), breakable: [AD.breakable('kurz'), AD.breakable('a'.repeat(22)), AD.breakable('🤷🏻‍♂️'.repeat(21))],
+      iconText: AD.iconText('☀️', 'Sonne & Mond'), aufz: AD.listHtml(['8×☀️', ['Hotel Krone', '(120,00 €)'], 'Ende']),
+      thousands: [AD.thousands(4850), AD.thousands(1234567), AD.thousands('12'), AD.thousands(999.6)], money: [AD.money(4850), AD.money(0.5), AD.money(1234.567), AD.money('x')],
+      euro: [AD.formatEuro(4850), AD.formatEuro(0)],
+      mark: [AD.markWords('Café Crème in Zürich', AD.searchWords('cafe zurich')), AD.markWords('Sydney', []), AD.markWords('A &amp; B', AD.searchWords('&'))],
+      css: AD.outputCss('.rt'), share: ['shared', 'downloaded', 'aborted', 'error'].map(k => AD.shareResultText(k, 'Neue App 2026.11.19 10.05.html')),
       datei: { name: datei.name, type: datei.type, content: datei.content },
-      kachel: { heute: backupTileHtml(Date.now()), alt: backupTileHtml(Date.now() - 3 * tag), nie: backupTileHtml(0), leer: backupTileHtml(0, true) },
+      kachel: { heute: AD.backupTileHtml(Date.now()), alt: AD.backupTileHtml(Date.now() - 3 * tag), nie: AD.backupTileHtml(0), leer: AD.backupTileHtml(0, true) },
     };
   });
   // Icons (R-1.8): svg.ic mit aria-hidden; unbekannter Name gibt kein kaputtes Markup (genau ein svg, nichts daneben)
@@ -254,19 +255,19 @@ export async function checkWerte(p) {
   // Leerer Zustand (R-7.7): Symbol, Titel als Überschrift, Satz, getönte Schaltfläche; klein nur Symbol und Titel; Suche mit dem Begriff als Text
   const L = r.leer;
   if (L.cls !== 'leer' || !L.sym || L.h3 !== 'Noch nichts <b>' || L.p !== 'Ein Satz & mehr.' || L.knopf !== 'leerNeu' || L.knopfText !== 'Neu')
-    E('R-7.7', 'Leerer Zustand', `leerHtml ergibt ${JSON.stringify(L)}`);
+    E('R-7.7', 'Leerer Zustand', `contentUnavailableHtml ergibt ${JSON.stringify(L)}`);
   if (r.leerKlein.cls !== 'leer klein' || !r.leerKlein.sym || r.leerKlein.h3 !== 'Noch kein Eintrag' || r.leerKlein.p !== null || r.leerKlein.knopf !== null)
-    E('R-7.7', 'Leerer Zustand', `leerHtml klein ergibt ${JSON.stringify(r.leerKlein)}`);
-  if (r.leerSuche.cls !== 'leer suche' || !r.leerSuche.sym || r.leerSuche.h3 !== 'Keine Treffer für ‚a<b‘' || !r.leerSuche.p)
-    E('R-7.7', 'Leerer Zustand', `leerSuche ergibt ${JSON.stringify(r.leerSuche)}`);
-  // Hilfen: esc (R-10.1), breakable (R-6.3), iconText und aufzaehlung (R-10.5), Beträge ‚4.850,00 €‘ (R-5.1)
+    E('R-7.7', 'Leerer Zustand', `contentUnavailableHtml compact ergibt ${JSON.stringify(r.leerKlein)}`);
+  if (r.leerSearch.cls !== 'leer suche' || !r.leerSearch.sym || r.leerSearch.h3 !== 'Keine Treffer für ‚a<b‘' || !r.leerSearch.p)
+    E('R-7.7', 'Leerer Zustand', `searchUnavailableHtml ergibt ${JSON.stringify(r.leerSearch)}`);
+  // Hilfen: esc (R-10.1), breakable (R-6.3), iconText und listHtml (R-10.5), Beträge ‚4.850,00 €‘ (R-5.1)
   if (r.esc !== '&lt;a href=&quot;x&quot;&gt;&amp;&#39;' || r.escLeer !== '') E('R-10.1', 'Hilfen', `esc ergibt ‚${r.esc}‘ bzw. ‚${r.escLeer}‘`);
   const [bk, ba, bs] = r.breakable;
   if (bk !== 'kurz' || ba !== 'a'.repeat(22).split('').join('​') || bs.split('​').length !== 21 || bs.replaceAll('​', '') !== '🤷🏻‍♂️'.repeat(21))
     E('R-6.3', 'Hilfen', `breakable bricht nicht nach jedem Zeichen eines langen Worts (${JSON.stringify(r.breakable.map(x => x.split('​').length))})`);
   if (r.iconText !== '<span class="ict">☀️ Sonne &amp; Mond</span>') E('R-10.5', 'Hilfen', `iconText ergibt ‚${r.iconText}‘`);
   if (r.aufz !== '<span class="ict az">8×☀️<span class="az-n"> ·</span></span> <span class="ict az">Hotel Krone<span class="az-n"> (120,00 €) ·</span></span> <span class="ict az">Ende</span>')
-    E('R-10.5', 'Hilfen', `aufzaehlung ergibt ‚${r.aufz}‘`);
+    E('R-10.5', 'Hilfen', `listHtml ergibt ‚${r.aufz}‘`);
   const soll = { thousands: ['4.850', '1.234.567', '12', '1.000'], money: ['4.850,00', '0,50', '1.234,57', '0,00'], euro: ['4.850,00 €', '0,00 €'] };
   for (const k of Object.keys(soll)) if (JSON.stringify(r[k]) !== JSON.stringify(soll[k])) E('R-5.1', 'Hilfen', `${k} ergibt ${JSON.stringify(r[k])}, soll ${JSON.stringify(soll[k])}`);
   // Suche (R-2.3): Wörter, „…“, Akzente (wie ablauf-suche-woerter) und markWords
@@ -281,8 +282,8 @@ export async function checkWerte(p) {
   r.share.forEach((t, i) => { if (!t.startsWith(i < 2 ? '✅ ' : '⚠️ ') || !t.includes(fname)) E('R-10.8', 'Teilen', `shareResultText(${['shared', 'downloaded', 'aborted', 'error'][i]}) ergibt ‚${t.slice(0, 160)}‘`); });
   // Backup: Dateiname (R-10.7), backupFileOf → readBackup ergibt dieselben Daten (R-9.1), Backup-Kachel heute/alt/nie/leer (R-9.1)
   if (!/^Ω Backup Neue App \d{4}\.\d{2}\.\d{2} \d{2}\.\d{2}\.json$/.test(r.datei.name) || r.datei.type !== 'json') E('R-10.7', 'Backup', `Dateiname ‚${r.datei.name}‘ (${r.datei.type})`);
-  const rund = await p.evaluate(async c => { try { const f = new File([c], 'b.json', { type: 'application/json' }); const x = await readBackup(f, 'items');
-    let fremd = ''; try { await readBackup(new File(['{"trips":[]}'], 'c.json'), 'items'); } catch (e) { fremd = e.message; }
+  const rund = await p.evaluate(async c => { try { const f = new File([c], 'b.json', { type: 'application/json' }); const x = await AD.readBackup(f, 'items');
+    let fremd = ''; try { await AD.readBackup(new File(['{"trips":[]}'], 'c.json'), 'items'); } catch (e) { fremd = e.message; }
     return { data: x.data, at: typeof x.savedAt, on: typeof x.savedOn, fremd }; } catch (e) { return { fehler: e.message }; } }, r.datei.content);
   const sollDaten = { items: [{ id: 'x', title: 'A & B', sub: { u001: { text: '„Zitat“ 👍🏽' } } }], deleted: [] };
   if (rund.fehler || JSON.stringify(rund.data) !== JSON.stringify(sollDaten) || rund.at !== 'number' || rund.on !== 'string')
@@ -345,15 +346,15 @@ const bis = async (p, bedingung, was) => { const m = await warteBis(p, bedingung
 async function vorlageStart(p, daten, id = daten.settings.lastItem) {
   await oeffneVorlage(p, { daten });
   await bis(p, `document.readyState === 'complete' && !!document.querySelector('#side .side-row, #shareBtn') && ${RUHE}`, 'Vorlage aufgebaut'); await navFertig(p);
-  if (id && await p.evaluate(() => isPhone()) && await p.locator('#side.page').isVisible()) {
+  if (id && await p.evaluate(() => AD.isPhone()) && await p.locator('#side.page').isVisible()) {
     await p.locator(`#side .side-row[data-id="${id}"]`).click(); await bis(p, `currentId === '${id}' && !phoneList && !!document.querySelector('#shareBtn') && ${RUHE}`, 'Eintrag offen'); await navFertig(p);
   }
 }
 const fensterAuf = async p => { await bis(p, `document.getElementById('dlg').open && ${RUHE}`, 'Fenster offen'); await navFertig(p); };
 // Fenster zu: das close-Ereignis kommt später als close() – erst danach baut die Vorlage neu auf (render, auch die Seitenleiste); gewartet wird
 // darauf, sonst ersetzt der Neuaufbau mitten im nächsten Schritt die Liste, die eine Prüfung gerade beobachtet
-const zuFenster = async p => { await p.evaluate(() => { window.__dlgZu = false; dlg.addEventListener('close', () => setTimeout(() => { window.__dlgZu = true; }), { once: true });
-  dlgDirty = () => false; dlg.close(); }); await bis(p, `window.__dlgZu && !document.getElementById('dlg').open && ${RUHE}`, 'Fenster zu'); await navFertig(p); };
+const zuFenster = async p => { await p.evaluate(() => { window.__dlgZu = false; AD.dlg.addEventListener('close', () => setTimeout(() => { window.__dlgZu = true; }), { once: true });
+  AD.dlgDirty = () => false; AD.dlg.close(); }); await bis(p, `window.__dlgZu && !document.getElementById('dlg').open && ${RUHE}`, 'Fenster zu'); await navFertig(p); };
 // Inhalt eines Fensters zum Rollen: ist er zu kurz, verlängert ihn ein Platzhalter (nur in der Prüfung; Fenster der Vorlage haben ein Feld)
 const fensterLang = p => p.evaluate(() => { const b = document.querySelector('#dlg .dlg-body'); if (b.scrollHeight - b.clientHeight < 400) { const d = document.createElement('div'); d.style.height = '1200px'; b.append(d); } });
 const gespeichert = p => p.evaluate(k => JSON.parse(localStorage.getItem(k) || '{"items":[]}'), SPEICHER);
@@ -376,8 +377,8 @@ export async function ablaufMessung(t, b) {
           await menu(); await bis(p, `!!document.querySelector('.menu .note.halten') && ${RUHE}`, 'Mehr-Menü offen');   // gemessen erst in der Endlage
           const v = await p.locator('.menu .note.halten').boundingBox();
           { const m = await langDruecken(p, { x: v.x + v.width / 2, y: v.y + v.height / 2 }, { ms: 900, offen: '.menu' }); if (m) throw new Error(m); }
-          await p.locator('.menu .mi', { hasText: 'Messung starten' }).click(); await bis(p, '!!mess?.an', 'Messung läuft').catch(() => {});
-          if (!await p.evaluate(() => mess?.an)) t.fehler('', 'R-1.6 leere Vorlage: ‚Messung starten‘ startet keine Messung');
+          await p.locator('.menu .mi', { hasText: 'Messung starten' }).click(); await bis(p, '!!AD.measurement?.an', 'Messung läuft').catch(() => {});
+          if (!await p.evaluate(() => AD.measurement?.an)) t.fehler('', 'R-1.6 leere Vorlage: ‚Messung starten‘ startet keine Messung');
           await menu(); await bis(p, `!!document.querySelector('.menu .mi') && ${RUHE}`, 'Mehr-Menü offen');
           const [dl] = await Promise.all([p.waitForEvent('download', { timeout: 5000 }).catch(() => null), p.locator('.menu .mi', { hasText: 'Messung beenden und teilen' }).click()]);
           if (!dl) t.fehler('', 'R-1.6 leere Vorlage: ‚Messung beenden und teilen‘ liefert keine Datei');
@@ -422,7 +423,7 @@ export async function ablaufTitelBlase(t, b) {
       await p.evaluate(() => openItemDialog(getItem('a'))); await fensterAuf(p); await langerTitel(p, `: ${TITEL}`); await fensterLang(p);   // L-9 rollt den Inhalt
       await pruefe(p, 'L-1 Fenster ‚Eintrag bearbeiten‘', { sel: FTITEL, daneben: ['#dlgX', '#dlgOk', '#fTitle'], rollen: '#dlg .dlg-body', esc: true }, true);
       t.ist('L-8 nach den Tipps: Fenster offen, Titel im Feld und gespeichert unverändert',
-        [await p.evaluate(() => dlg.open), await p.inputValue('#fTitle'), (await gespeichert(p)).items.find(e => e.id === 'a')?.title], [true, TITEL, TITEL], 'R-2.5');
+        [await p.evaluate(() => AD.dlg.open), await p.inputValue('#fTitle'), (await gespeichert(p)).items.find(e => e.id === 'a')?.title], [true, TITEL, TITEL], 'R-2.5');
       // L-11: Drehen schließt die Blase; danach Grundregeln (oberster Eintrag bleibt) – t.schritt
       await titelLang(p, FTITEL);
       t.wahr('L-11 vor dem Drehen ist die Sprechblase offen', await titelBlaseOffen(p), 'R-2.5');
@@ -431,7 +432,7 @@ export async function ablaufTitelBlase(t, b) {
         t.wahr('L-11 Drehen schließt die Sprechblase', !await titelBlaseOffen(p), 'R-2.5');
         await p.evaluate(() => { window.__gedreht = 0; }); await p.setViewportSize({ width: 393, height: 852 }); await bis(p, `innerWidth === 393 && ${RUHE} && (window.__gedreht = (window.__gedreht || 0) + 1) > 3`, 'zurückgedreht');
       });
-      t.wahr('L-11 nach dem Drehen ist das Fenster noch offen', await p.evaluate(() => dlg.open), 'R-2.5');
+      t.wahr('L-11 nach dem Drehen ist das Fenster noch offen', await p.evaluate(() => AD.dlg.open), 'R-2.5');
       await zuFenster(p);
       // L-3: Fenster eines Unterpunkts (neutral statt des Datums im Reiselogbuch)
       await p.evaluate(k => openSubDialog(getItem('a'), k), tag(4)); await fensterAuf(p);
@@ -649,7 +650,7 @@ export async function ablaufGrossanzeige(t, b) {
         await p.setViewportSize({ width: vp.height, height: vp.width }); await p.waitForTimeout(400);
         t.wahr('Drehen schließt die Großanzeige', !await p.locator('.grossanzeige').count(), 'R-2.6');
         await p.evaluate(() => window.__ev('pointerup')); await p.waitForTimeout(300);
-        t.wahr('nach dem Drehen löst das Loslassen ‚Abbrechen‘ nicht aus – das Fenster bleibt offen', await p.evaluate(() => dlg.open), 'R-2.6');
+        t.wahr('nach dem Drehen löst das Loslassen ‚Abbrechen‘ nicht aus – das Fenster bleibt offen', await p.evaluate(() => AD.dlg.open), 'R-2.6');
         await p.setViewportSize(vp); await p.waitForTimeout(400);
       });
       await zuFenster(p);
@@ -710,7 +711,7 @@ const ausMehr = (p, punkt) => async () => { await menueAuf(p, '#mainMore'); awai
 // Antippen und Eingabetaste (Fokus darauf) lösen nichts aus, der Fokus beginnt beim ersten verfügbaren Punkt.
 async function checkUnavailableItem(p, where) {
   const fehler = [], R = t => fehler.push(`R-4.14 RLB-125/T-13 ${where}: ${t}`);
-  await p.evaluate(() => { window.__r414 = 0; openMenu(document.querySelector('#mainMore'), [
+  await p.evaluate(() => { window.__r414 = 0; AD.openMenu(document.querySelector('#mainMore'), [
     { icon: 'settings', label: 'Eintrag einstellen', sub: 'Gesperrt', disabled: true, act: () => { window.__r414++; } },
     { icon: 'share', label: 'Eintrag teilen', act: () => {} }]); });
   await bis(p, `!!document.querySelector('.menu:not(.submenu) .mi') && ${RUHE}`, 'Menü mit nicht verfügbarem Punkt offen');
@@ -753,7 +754,7 @@ async function nachNeuaufbauFrei(t, p, { name, auf, knopf }) {
     return [!!n && n !== window.__altKnopf && !window.__altKnopf?.isConnected, !!n?.classList.contains('on')]; }, knopf), [true, true], 'R-3.3');
   await t.schritt(p, `P-124/F-2 ${name} zu`, () => allesZu(p));
   t.ist(`P-124/F-2 ${name} nach dem Neuaufbau zu: heldItems leer, ${knopf} frei`, await p.evaluate(k => { delete window.__altKnopf;
-    return [adSourcehighlight.heldItems.length, !!document.querySelector(k)?.classList.contains('on')]; }, knopf), [0, false], 'R-3.3');
+    return [AD.sourcehighlight.heldItems.length, !!document.querySelector(k)?.classList.contains('on')]; }, knopf), [0, false], 'R-3.3');
 }
 export async function ablaufMenue(t, b) {
   const daten = datenB33();
@@ -769,10 +770,10 @@ export async function ablaufMenue(t, b) {
       if (!ruhig) {
         await t.schritt(p, 'Mehr-Menü der Kopfzeile offen', () => menueAuf(p, '#mainMore'));
         // APD-136/S-6 (seit 4.67.0, AD-Bean sourcehighlight): die Mehr-Schaltfläche ist gehaltene Quelle, solange ihr Menü offen ist, danach ist nichts gehalten
-        t.wahr('APD-136/S-6 offenes Menü: Mehr-Schaltfläche in heldItems und blau', await p.evaluate(() => adSourcehighlight.heldItems.includes(document.querySelector('#mainMore'))
+        t.wahr('APD-136/S-6 offenes Menü: Mehr-Schaltfläche in heldItems und blau', await p.evaluate(() => AD.sourcehighlight.heldItems.includes(document.querySelector('#mainMore'))
           && document.querySelector('#mainMore').classList.contains('on')), 'R-3.3');
         await t.schritt(p, 'Mehr-Menü der Kopfzeile zu', () => allesZu(p));
-        t.ist('APD-136/S-6 Menü zu: heldItems leer, Mehr-Schaltfläche frei', await p.evaluate(() => [adSourcehighlight.heldItems.length, document.querySelector('#mainMore').classList.contains('on')]), [0, false], 'R-3.3');
+        t.ist('APD-136/S-6 Menü zu: heldItems leer, Mehr-Schaltfläche frei', await p.evaluate(() => [AD.sourcehighlight.heldItems.length, document.querySelector('#mainMore').classList.contains('on')]), [0, false], 'R-3.3');
         await nachNeuaufbauFrei(t, p, { name: 'Mehr-Menü der Kopfzeile', auf: () => menueAuf(p, '#mainMore'), knopf: '#mainMore' });
         await nachNeuaufbauFrei(t, p, { name: 'Sprechblase ‚Eintrag löschen‘', knopf: '#mainMore', auf: async () => { await menueAuf(p, '#mainMore');
           await p.locator('.menu .mi', { hasText: 'Eintrag löschen' }).click(); await bis(p, `!!document.querySelector('.pop') && ${RUHE}`, 'Sprechblase offen'); } });
@@ -898,7 +899,7 @@ export async function ablaufFenster(t, b) {
 export async function checkSourcehighlight(p) {
   const errors = [], E = t => errors.push(`R-3.3 ${t}`);
   const r = await p.evaluate(() => {
-    const s = adSourcehighlight, box = document.createElement('div'), knoepfe = '<button type="button" id="shA">A</button><button type="button" id="shB">B</button>';
+    const s = AD.sourcehighlight, box = document.createElement('div'), knoepfe = '<button type="button" id="shA">A</button><button type="button" id="shB">B</button>';
     box.id = 'shProbe'; box.innerHTML = knoepfe; document.body.append(box);
     const on = id => !!document.getElementById(id)?.classList.contains('on');
     const ev = [], ab = s.on('change', e => ev.push(`${typeof e.item === 'string' ? e.item : e.item?.id} ${e.highlighted}`));

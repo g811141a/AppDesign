@@ -10,9 +10,9 @@
 <title>Bean-Katalog</title>
 <!-- Bean-Katalog (AppDesign katalog/, APD-140, seit 4.65.0; Designrichtlinie 14, R-1.13): je AD-Bean eine Seite zum Ansehen und Ausprobieren –
      Split View wie die Apps (Seitenleiste nach Bereichen, geplante Beans grau), Bean-Seite wie Einstellungen am iPad: Karte, Ausprobieren, Ereignisse,
-     Regeln, Schnittstelle, Verlauf. Lädt immer den Arbeitsstand v4/ (gehört nicht zur festen Fassung). Je Bean eine Datei <kennung>.js, die sich mit
+     Regeln, Schnittstelle, Verlauf. Lädt immer den Arbeitsstand v5/ (gehört nicht zur festen Fassung). Je Bean eine Datei <kennung>.js, die sich mit
      catalogBean({…}) anmeldet. Prüfung: checkBeans (Liste ↔ katalog/), tests/katalog.mjs (lädt fehlerfrei, Grundregeln, Versionszeile). -->
-<link rel="stylesheet" href="../v4/design.css">
+<link rel="stylesheet" href="../v5/design.css">
 <style>
   /* Nur, was der Katalog selbst braucht – alles Gemeinsame kommt aus design.css */
   .bk-kopf { background: var(--card); border-radius: 22px; box-shadow: var(--table-shadow); padding: calc(18px * var(--f-body)) 20px; margin-top: 12px; }
@@ -66,7 +66,7 @@
 <dialog id="dlg"></dialog>
 <dialog id="msg"></dialog>
 
-<script src="../v4/ui.js"></script>
+<script src="../v5/ui.js"></script>
 <script>
 'use strict';
 // Anmeldung der Beans – vor den Bean-Dateien
@@ -78,8 +78,9 @@ function catalogBean(b) { BEANS.push(b); }
 <script src="sourcehighlight.js"></script>
 <script src="notice.js"></script>
 <script src="recentlydeleted.js"></script>
-<!-- Beans im Entwurf (Designrichtlinie 14, APD-149/J-1): eigener Code auf v4/, in der Seitenleiste unter ‚Entwurf‘, in keiner Fassung -->
-<script src="entwurf/presentation-commands.js"></script>
+<!-- Beans im Entwurf (Designrichtlinie 14, APD-149/J-1): eigener Code auf v5/, in der Seitenleiste unter ‚Entwurf‘, in keiner Fassung. Seit 5.0.0 (APD-145)
+     ist entwurf/presentation-commands.js nicht mehr geladen: er baut auf inneren Namen von ui.js, die im Namensraum AD nur noch innen stehen;
+     die Beans commands und presentation kommen mit APD-149 in v5/ui.js. -->
 <script>
 'use strict';
 
@@ -107,48 +108,48 @@ const GEPLANT = [
 
 let currentId = new URLSearchParams(location.search).get('bean') || location.hash.slice(1) || BEANS[0].id;
 if (!BEANS.some(b => b.id === currentId)) currentId = BEANS[0].id;
-let sideOpen = true, phoneList = isPhone(), abmelden = null;
+let sideOpen = true, phoneList = AD.isPhone(), abmelden = null;
 const ereignisse = [];
 const getBean = id => BEANS.find(b => b.id === id);
 
 /* ---------- Bean-Seite ---------- */
 
-const zeilen = (liste, mitWert) => `<div class="ilist">${liste.map(([n, w, s]) => `<div class="irow bk-zeile"><span class="t"><b><code>${esc(n)}</code></b><small>${esc(mitWert ? s : w)}</small></span>${mitWert ? `<span class="val">${esc(w)}</span>` : ''}</div>`).join('')}</div>`;
-const textZeilen = liste => `<div class="ilist">${liste.map(([n, s]) => `<div class="irow bk-zeile"><span class="t"><b>${esc(n)}</b><small>${esc(s)}</small></span></div>`).join('')}</div>`;
+const zeilen = (liste, mitWert) => `<div class="ilist">${liste.map(([n, w, s]) => `<div class="irow bk-zeile"><span class="t"><b><code>${AD.esc(n)}</code></b><small>${AD.esc(mitWert ? s : w)}</small></span>${mitWert ? `<span class="val">${AD.esc(w)}</span>` : ''}</div>`).join('')}</div>`;
+const textZeilen = liste => `<div class="ilist">${liste.map(([n, s]) => `<div class="irow bk-zeile"><span class="t"><b>${AD.esc(n)}</b><small>${AD.esc(s)}</small></span></div>`).join('')}</div>`;
 const abschnitt = t => `<h2 class="bk-abschnitt">${t}</h2>`;
-const protokollHtml = () => `<ul class="bk-protokoll" id="bkProt">${ereignisse.length ? ereignisse.map(([z, t, d]) => `<li>${esc(t)}${d ? ` · ${esc(d)}` : ''}<small>${z}</small></li>`).join('') : '<li class="bk-leer">Noch keine Ereignisse – probier die Bean oben aus.</li>'}</ul>`;
+const protokollHtml = () => `<ul class="bk-protokoll" id="bkProt">${ereignisse.length ? ereignisse.map(([z, t, d]) => `<li>${AD.esc(t)}${d ? ` · ${AD.esc(d)}` : ''}<small>${z}</small></li>`).join('') : '<li class="bk-leer">Noch keine Ereignisse – probier die Bean oben aus.</li>'}</ul>`;
 function protokoll(text, dazu = '') {
   ereignisse.unshift([new Date().toLocaleTimeString('de-DE'), text, dazu]);
   ereignisse.length = Math.min(ereignisse.length, 6);
   const p = app.querySelector('#bkProt'); if (p) p.outerHTML = protokollHtml();
 }
 
-function teilProbe(b) { return `${abschnitt('Ausprobieren')}<div id="bkProbe"></div><p class="hint bk-anleitung">${esc(b.howTo)}</p>${abschnitt('Ereignisse')}<div class="ilist">${protokollHtml()}</div>`; }
+function teilProbe(b) { return `${abschnitt('Ausprobieren')}<div id="bkProbe"></div><p class="hint bk-anleitung">${AD.esc(b.howTo)}</p>${abschnitt('Ereignisse')}<div class="ilist">${protokollHtml()}</div>`; }
 function teilRegeln(b) { return `${abschnitt('Regeln')}${textZeilen(b.rules)}`; }
 function teilSchnittstelle(b) {
-  return `${abschnitt('Schnittstelle')}<div class="ilist"><div class="irow bk-zeile"><span class="t"><b><code>${esc(b.create)}</code></b><small>Anlegen – die App nutzt nur Anlegen, Eigenschaften, Methoden und Ereignisse (R-1.13)</small></span></div></div>
+  return `${abschnitt('Schnittstelle')}<div class="ilist"><div class="irow bk-zeile"><span class="t"><b><code>${AD.esc(b.create)}</code></b><small>Anlegen – die App nutzt nur Anlegen, Eigenschaften, Methoden und Ereignisse (R-1.13)</small></span></div></div>
     ${abschnitt('Eigenschaften')}${zeilen(b.properties, true)}${abschnitt('Nur lesen')}${zeilen(b.readOnly)}
     ${abschnitt('Methoden')}${zeilen(b.methods)}${abschnitt('Ereignisse <code>on(…)</code>')}${zeilen(b.events)}`;
 }
 function teilVerlauf(b) { return `${abschnitt('Verlauf')}${textZeilen(b.history.map(([v, s]) => [b.draft ? v : `AppDesign ${v}`, s]))}`; }
 
 function render() {
-  const b = getBean(currentId), phone = isPhone();
+  const b = getBean(currentId), phone = AD.isPhone();
   if (phone && phoneList) { fab.hidden = true; app.innerHTML = ''; renderSide(); return; }
   renderSide();
   fab.hidden = false;
-  const kopf = `<div class="bk-kopf"><div class="bk-icon">${ic(b.icon)}</div><h1>${esc(b.name)}</h1><p>${esc(b.abstract)}</p>
-    <div class="bk-steck"><code>${b.id}</code> · ${esc(b.area)} · ${b.draft ? 'Entwurf' : `seit AppDesign ${b.since}`} · Designrichtlinie ${b.section}</div></div>`;
+  const kopf = `<div class="bk-kopf"><div class="bk-icon">${AD.ic(b.icon)}</div><h1>${AD.esc(b.name)}</h1><p>${AD.esc(b.abstract)}</p>
+    <div class="bk-steck"><code>${b.id}</code> · ${AD.esc(b.area)} · ${b.draft ? 'Entwurf' : `seit AppDesign ${b.since}`} · Designrichtlinie ${b.section}</div></div>`;
   const inhalt = teilProbe(b) + teilRegeln(b) + teilSchnittstelle(b) + teilVerlauf(b);
-  setHtml(app, `
-    ${phone ? `<div class="pnav" id="bar"><span><button type="button" class="round" id="back" aria-label="AD-Beans">${ic('chevron-left')}</button></span>
-      <span class="pnav-title">${esc(b.name)}</span><span></span></div>`
-    : `<div class="nb" id="bar"><div class="nb1"><span>${sideToggleHtml()}</span><span class="nb-title">${esc(b.name)}</span><span></span></div></div>`}
+  AD.setHtml(app, `
+    ${phone ? `<div class="pnav" id="bar"><span><button type="button" class="round" id="back" aria-label="AD-Beans">${AD.ic('chevron-left')}</button></span>
+      <span class="pnav-title">${AD.esc(b.name)}</span><span></span></div>`
+    : `<div class="nb" id="bar"><div class="nb1"><span>${sideToggleHtml()}</span><span class="nb-title">${AD.esc(b.name)}</span><span></span></div></div>`}
     <div class="rolle" id="rolle">${kopf}${inhalt}<div style="height:24px"></div></div>`);
   document.documentElement.style.setProperty('--bar-h', app.querySelector('#bar').offsetHeight + 'px');
   bindSideToggle(app);
-  updateBar();   // iPhone: ohne großen Titel steht der Titel in der Leiste (R-2.2)
-  const back = app.querySelector('#back'); if (back) back.onclick = navZurueck;
+  AD.updateBar();   // iPhone: ohne großen Titel steht der Titel in der Leiste (R-2.2)
+  const back = app.querySelector('#back'); if (back) back.onclick = AD.navPop;
   abmelden?.(); abmelden = null;
   const probe = app.querySelector('#bkProbe');
   if (probe) abmelden = b.demo(probe, protokoll);
@@ -158,18 +159,18 @@ function showBean(id) {
   if (id !== currentId) ereignisse.length = 0;
   currentId = id; phoneList = false;
   history.replaceState(null, '', '#' + id);
-  render(); rolle.to(0);
+  render(); AD.scrollView.to(0);
 }
 
 /* ---------- Seitenleiste bzw. Startliste ---------- */
 
-const sideFest = () => !isPhone();
-const sideToggleHtml = () => sideOpen && !isPhone() ? '' : `<button type="button" class="round" data-side-toggle aria-label="Seitenleiste einblenden">${ic('panel-left')}</button>`;
-function toggleSide() { if (sideFest()) return navSeite(!sideOpen); keepPlace(() => { sideOpen = !sideOpen; render(); }); }
+const sideFest = () => !AD.isPhone();
+const sideToggleHtml = () => sideOpen && !AD.isPhone() ? '' : `<button type="button" class="round" data-side-toggle aria-label="Seitenleiste einblenden">${AD.ic('panel-left')}</button>`;
+function toggleSide() { if (sideFest()) return AD.navSidebar(!sideOpen); AD.keepPlace(() => { sideOpen = !sideOpen; render(); }); }
 const bindSideToggle = root => root.querySelectorAll('[data-side-toggle]').forEach(x => x.onclick = toggleSide);
 
 function renderSide() {
-  const page = isPhone();
+  const page = AD.isPhone();
   if (page && !phoneList) { side.hidden = true; side.classList.remove('page'); return; }
   const show = page || sideOpen;
   side.hidden = !show;
@@ -179,42 +180,42 @@ function renderSide() {
   const gruppen = [...BEREICHE.map(g => [g, [...BEANS.filter(b => b.area === g && !b.draft), ...GEPLANT.filter(b => b.area === g).map(b => ({ ...b, geplant: true }))]]),
     ['Entwurf', BEANS.filter(b => b.draft)]].filter(([, l]) => l.length);   // Beans im Entwurf nach den Bereichen (Designrichtlinie 14)
   const entwuerfe = BEANS.filter(b => b.draft).length;
-  setHtml(side, `
+  AD.setHtml(side, `
     <div class="side-head"><div class="ttl"><h2>AD-Beans</h2><small>${BEANS.length - entwuerfe} AD-Beans · ${GEPLANT.length} geplant${entwuerfe ? ` · ${entwuerfe} im Entwurf` : ''}</small></div>
-      <button type="button" class="round" id="sideMore" aria-label="Mehr">${ic('ellipsis')}</button>
-      ${page ? '' : `<button type="button" class="round" id="sideHide" aria-label="Seitenleiste ausblenden">${ic('panel-left')}</button>`}
+      <button type="button" class="round" id="sideMore" aria-label="Mehr">${AD.ic('ellipsis')}</button>
+      ${page ? '' : `<button type="button" class="round" id="sideHide" aria-label="Seitenleiste ausblenden">${AD.ic('panel-left')}</button>`}
     </div>
     <div class="side-list">${gruppen.map(([g, l]) => `<h3 class="side-sec">${g}</h3>${l.map(b => b.geplant
-      ? `<div class="side-row geplant" aria-disabled="true"><span class="bk-sym">${ic('ellipsis')}</span><span class="t"><b>${esc(b.name)}</b><small><code>${b.id}</code> · geplant</small></span></div>`
-      : `<button type="button" class="side-row ${b.id === currentId && !page ? 'current' : ''}" data-bean="${b.id}"><span class="bk-sym">${ic(b.icon)}</span>
-         <span class="t"><b>${esc(b.name)}</b><small><code>${b.id}</code> · ${b.draft ? 'Entwurf' : `seit ${b.since}`}</small></span>${ic('chevron-right')}</button>`).join('')}`).join('')}</div>
-    ${backupTileHtml(0, true)}`);   // Fuß der Seitenleiste mit der Offline-Zeile (R-1.5); der Katalog hat nichts zu sichern
-  side.querySelector('#sideMore').onclick = e => openMenu(e.currentTarget, [
-    darstellungMenuItem(), 'line', { note: `${APP_NAME} · AppDesign ${AD_VERSION} (v4, neueste Fassung)` }], 'left');
+      ? `<div class="side-row geplant" aria-disabled="true"><span class="bk-sym">${AD.ic('ellipsis')}</span><span class="t"><b>${AD.esc(b.name)}</b><small><code>${b.id}</code> · geplant</small></span></div>`
+      : `<button type="button" class="side-row ${b.id === currentId && !page ? 'current' : ''}" data-bean="${b.id}"><span class="bk-sym">${AD.ic(b.icon)}</span>
+         <span class="t"><b>${AD.esc(b.name)}</b><small><code>${b.id}</code> · ${b.draft ? 'Entwurf' : `seit ${b.since}`}</small></span>${AD.ic('chevron-right')}</button>`).join('')}`).join('')}</div>
+    ${AD.backupTileHtml(0, true)}`);   // Fuß der Seitenleiste mit der Offline-Zeile (R-1.5); der Katalog hat nichts zu sichern
+  side.querySelector('#sideMore').onclick = e => AD.openMenu(e.currentTarget, [
+    AD.appearanceMenuItem(), 'line', { note: `${APP_NAME} · AppDesign ${AD.AD_VERSION} (v5, neueste Fassung)` }], 'left');
   const hide = side.querySelector('#sideHide'); if (hide) hide.onclick = toggleSide;
-  side.querySelectorAll('[data-bean]').forEach(x => x.onclick = () => navVor(() => showBean(x.dataset.bean)));
+  side.querySelectorAll('[data-bean]').forEach(x => x.onclick = () => AD.navPush(() => showBean(x.dataset.bean)));
   document.documentElement.style.setProperty('--side-w', side.offsetWidth + 'px');
 }
 
 /* ---------- Anmelden und Start ---------- */
 
-document.getElementById('toTop').innerHTML = ic('arrow-up-to-line');
-document.getElementById('toEnd').innerHTML = ic('arrow-down-to-line');
-document.getElementById('toTop').onclick = fabTop;
-document.getElementById('toEnd').onclick = fabEnd;
-navAnmelden({
-  zurueck: {
-    offen: () => isPhone() && !phoneList,
-    darunter: an => { if (an) { phoneList = true; renderSide(); phoneList = false; } else if (!phoneList && isPhone()) { side.hidden = true; side.classList.remove('page'); } },
-    los: () => { phoneList = true; rolle.to(0); render(); },
+document.getElementById('toTop').innerHTML = AD.ic('arrow-up-to-line');
+document.getElementById('toEnd').innerHTML = AD.ic('arrow-down-to-line');
+document.getElementById('toTop').onclick = AD.fabTop;
+document.getElementById('toEnd').onclick = AD.fabEnd;
+AD.navRegister({
+  back: {
+    shown: () => AD.isPhone() && !phoneList,
+    below: an => { if (an) { phoneList = true; renderSide(); phoneList = false; } else if (!phoneList && AD.isPhone()) { side.hidden = true; side.classList.remove('page'); } },
+    go: () => { phoneList = true; AD.scrollView.to(0); render(); },
   },
-  seite: { moeglich: () => false, fest: sideFest, offen: () => sideOpen, zeigen: an => { sideOpen = an; renderSide(); }, neu: () => render() },
+  sidebar: { possible: () => false, fixed: sideFest, shown: () => sideOpen, show: an => { sideOpen = an; renderSide(); }, refresh: () => render() },
 });
-applyTheme();
+AD.applyTheme();
 render();
-let wasPhone = isPhone();
+let wasPhone = AD.isPhone();
 window.addEventListener('resize', () => {
-  if (isPhone() !== wasPhone) { wasPhone = isPhone(); render(); return; }
+  if (AD.isPhone() !== wasPhone) { wasPhone = AD.isPhone(); render(); return; }
   const bar = document.getElementById('bar'); if (bar) document.documentElement.style.setProperty('--bar-h', bar.offsetHeight + 'px');
   if (!side.hidden) document.documentElement.style.setProperty('--side-w', side.offsetWidth + 'px');
 });

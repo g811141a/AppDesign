@@ -45,7 +45,7 @@ export async function checkOffline(appDir, browser, { ansichten, grenze = 4500, 
   await new Promise(r => server.listen(0, '127.0.0.1', r));
   const basis = `http://127.0.0.1:${server.address().port}/${repo}/`;
   // Jede Abfrage höchstens 0,5 s: solange die Seite auf das Netz wartet, kehrt evaluate nicht zurück.
-  const geladen = p => Promise.race([p.evaluate(() => !window.__alteSeite && document.body.innerText.trim().length > 0 && typeof AD_VERSION === 'string').catch(() => false), new Promise(r => setTimeout(() => r(false), 500))]);
+  const geladen = p => Promise.race([p.evaluate(() => !window.__alteSeite && document.body.innerText.trim().length > 0 && typeof AD.AD_VERSION === 'string').catch(() => false), new Promise(r => setTimeout(() => r(false), 500))]);
   const wartet = async (p, ms) => { const t0 = Date.now(); while (Date.now() - t0 < ms) { if (await geladen(p)) return Date.now() - t0; await p.waitForTimeout(100); } return null; };
   // Offline-Hinweis (seit 4.15.0): Zustand der Meldung und der Zeile in der Seite
   const hinweis = p => Promise.race([p.evaluate(() => {
@@ -134,7 +134,7 @@ export async function checkOffline(appDir, browser, { ansichten, grenze = 4500, 
     pruefeAus(name, 'schnell hin und her', h);
     // APD-6/F-11: offenes Fenster – die Meldung steht darüber
     await c.setOffline(false); await bis(p, 4000, h => h.toast === TEXT_AN);
-    const fenster = await p.evaluate(() => { if (typeof inform !== 'function') return false; inform('Test', 'Fenster offen'); return true; });
+    const fenster = await p.evaluate(() => { if (typeof AD.inform !== 'function') return false; AD.inform('Test', 'Fenster offen'); return true; });
     if (fenster) {
       await c.setOffline(true);
       h = await bis(p, 2000, h => h.toast === TEXT_AUS);

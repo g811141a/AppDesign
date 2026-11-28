@@ -1,7 +1,7 @@
 // Bean-Katalog – Entwurf (APD-149, Weg W-1; Wortlaut ‚Beans im Entwurf‘ APD-149/J-1): die AD-Beans `commands` (Befehle) und `presentation` (Stapel)
 // nach arbeit/APD-149 Grobentwurf V-3.md 2.1 und 2.2, mit den Grundsätzen H-1 bis H-9 und APD-149/J-3. Muster, keine AppDesign-Version: keine App lädt
 // diese Datei, sie steht in keiner Fassung und nicht in der Liste der AD-Beans (15). Der Code baut auf v4/ auf (placeAt, menuHtml, blockingLayer,
-// choosePop, openDialog, adAlert, adSourcehighlight …); eigenes CSS nur unter .ad-commands… bzw. .ad-presentation…. Der Namensraum AD kommt mit APD-145
+// choosePop, openDialog, alert, sourcehighlight …; Namen seit APD-145 englisch, nicht mehr geladen – Interna von ui.js gibt es nur noch innen); eigenes CSS nur unter .ad-commands… bzw. .ad-presentation…. Der Namensraum AD kommt mit APD-145
 // (v5/); hier hängt der Entwurf seine Teile schon an window.AD.
 // Prüfung: APD-149/S-1 bis S-15 (Prüfskript der Sitzung AppDesign 0002), APD-151/M-1 bis M-18 (dasselbe Skript arbeit/APD-149/muster-pruefen.mjs, seit AppDesign 0006),
 // tests/katalog.mjs (öffnet jede angemeldete Bean, auch im Entwurf).
@@ -41,15 +41,15 @@
   window.__adBlattOben = neuBauen('blattOben', blattOben) || blattOben;
   window.__adBlattZu = neuBauen('blattZu', blattZu) || blattZu;
   window.__adBlattDunkel = neuBauen('blattDunkel', blattDunkel) || blattDunkel;
-  for (const name of ['blattBild', 'blattFahre', 'blattAuf', 'blattGeist', 'blattWeg', 'blattLos', 'placeDialogs', 'noetig', 'feldZeigen', 'gemeldet']) {
+  for (const name of ['blattBild', 'blattFahre', 'blattAuf', 'blattGeist', 'blattWeg', 'blattLos', 'placeDialogs', 'noetig', 'feldZeigen', 'viewportResized']) {
     const alt = window[name], neu = neuBauen(name, alt);
     if (!neu) continue;
-    const fn = Object.assign(neu, alt);   // placeDialogs.top, gemeldet.t
+    const fn = Object.assign(neu, alt);   // placeDialogs.top, viewportResized.t
     window[name] = fn;
-    // gemeldet hängt direkt am sichtbaren Bereich (Tastatur auf und zu): dort austauschen
-    if (name === 'gemeldet' && window.visualViewport) for (const t of ['resize', 'scroll']) { visualViewport.removeEventListener(t, alt); visualViewport.addEventListener(t, fn); }
+    // viewportResized hängt direkt am sichtbaren Bereich (Tastatur auf und zu): dort austauschen
+    if (name === 'viewportResized' && window.visualViewport) for (const t of ['resize', 'scroll']) { visualViewport.removeEventListener(t, alt); visualViewport.addEventListener(t, fn); }
   }
-  // Tastatur zu (APD-151/M-9): v4 gibt jedem Rollbereich vor dem Wachsen des Rahmens Platz (gemeldet, APD-115/N-13) – im Fenster wächst es damit auf die
+  // Tastatur zu (APD-151/M-9): v4 gibt jedem Rollbereich vor dem Wachsen des Rahmens Platz (viewportResized, APD-115/N-13) – im Fenster wächst es damit auf die
   // volle Höhe und bleibt so, mit leerem Platz unter dem Inhalt (im Safari-Modell auch am iPad mit v4: 454 → 1160 px). Passt der Inhalt ohne den Platz,
   // nimmt das Muster ihn gleich weg: das Fenster gleitet zurück in die Mitte (gleitet, runter). Langer Inhalt bleibt wie in v4.
   if (window.visualViewport) visualViewport.addEventListener('resize', () => {
@@ -61,7 +61,7 @@
   // v4 setzt sie im focusin-Hörer am document nur im iPad-Aufbau; dieser Hörer am window kommt vorher dran.
   addEventListener('focusin', e => {
     const f = e.target;
-    if (!wieIpad() || neuFokus || dlgFest || !dlg.contains(f) || !f.matches?.(FELD) || (!kbOffen() && performance.now() - beruehrt > 1500)) return;
+    if (!wieIpad() || neuFokus || dlgFest || !dlg.contains(f) || !f.matches?.(FELD) || (!kbOffen() && performance.now() - touchedAt > 1500)) return;
     const c = behaelter(f);
     if (c && noetig(f, c) > 0) { dlgFest = Math.round(dlg.offsetHeight); placeDialogs(); }
   }, true);
@@ -97,7 +97,7 @@
         const el = h.find();
         if (el !== h.source) { if (h.source && !ohne) frei(h); h.source = el; }
         if (!el || ohne) continue;
-        adSourcehighlight.hold(el);
+        sourcehighlight.hold(el);
         el.dataset.adPresentationSource = '';
         if (MENUS.has(h.kind)) el.setAttribute('aria-haspopup', 'menu');   // R-1.8: auch eine Kachel mit Kontextmenü sagt ‚öffnet Menü‘
         if (EXPANDS.has(h.kind)) el.setAttribute('aria-expanded', 'true');
@@ -114,7 +114,7 @@
     }
     function frei(h) {
       const el = h.source; if (!el || window.__adPresentationGegenprobe === 'freigabe') return;
-      adSourcehighlight.release(el);
+      sourcehighlight.release(el);
       if (stack.some(o => o !== h && o.source === el)) return;
       if (EXPANDS.has(h.kind)) el.setAttribute('aria-expanded', 'false');
       if (h.kind === 'menu') kippen(el, false);
@@ -153,7 +153,7 @@
     function unterLage(h) {
       const s = h.el, m = h.parent.el, b = h.source;
       s.style.maxHeight = ''; s.style.overflowY = '';
-      const { L, R, T, B } = rand12(), room = innerHeight - T - B;
+      const { L, R, T, B } = popoverMargins(), room = innerHeight - T - B;
       if (s.scrollHeight > room) { s.style.maxHeight = room + 'px'; s.style.overflowY = 'auto'; }
       const waechst = m.getAnimations?.().length, ml = parseFloat(m.style.left), w = s.offsetWidth;
       const mr = waechst ? { left: ml, right: ml + m.offsetWidth } : m.getBoundingClientRect();
@@ -190,7 +190,7 @@
         o.find = () => h.el?.querySelector(`.mi[data-i="${i}"]`) || null;
         menuZeigen(o, items[i].submenu);
       }
-      if (wo?.isConnected && stelle >= 0) fokus(wo.querySelectorAll('.mi')[stelle]);
+      if (wo?.isConnected && stelle >= 0) focus(wo.querySelectorAll('.mi')[stelle]);
       ableiten();
     }
     function waehlen(h, it, b) {
@@ -211,7 +211,7 @@
       if (istAbbruch(e)) { verbrauchen(e); anfragen(h); return; }
       const mis = [...h.el.querySelectorAll('.mi:not(:disabled)')]; if (!mis.length) return;
       const i = mis.indexOf(document.activeElement), k = e.key;
-      const geh = j => { verbrauchen(e); fokus(mis[(j + mis.length) % mis.length]); };
+      const geh = j => { verbrauchen(e); focus(mis[(j + mis.length) % mis.length]); };
       if (k === 'ArrowDown' || (k === 'Tab' && !e.shiftKey)) return geh(i + 1);
       if (k === 'ArrowUp' || (k === 'Tab' && e.shiftKey)) return geh(i < 0 ? -1 : i - 1);
       if (k === 'Home') return geh(0);
@@ -247,7 +247,7 @@
       // R-1.8: nach Fenster und Hinweisfenster zurück auf die Quelle – nach dem Fokus von v4 (dessen close-Hörer läuft zuerst)
       if ((h.kind === 'sheet' || h.kind === 'alert') && reason !== 'replaced') fokusZiel = h.find();
       if (h.kind === 'sheet') { dlgEntry = null; if (reason !== 'replaced' && dlg.open && !h.geschlossen) dlg.close('cancel'); }
-      if (h.kind === 'alert' && !h.geschlossen) adAlert.close();
+      if (h.kind === 'alert' && !h.geschlossen) alert.close();
       if (!ohneAbleitung()) frei(h);
       sperren();
       melden(h.hoerer.dismiss, { reason, kind: h.kind });
@@ -275,7 +275,7 @@
         menuZeigen(h, typeof content === 'string' ? cmds.items(content, { place }) : content);
         if (a) { if (h.kind === 'menu') placeAt(h.el, a, h.align); else unterLage(h); wachsen(h.el, a); }
         if (!tastenStapel.includes(tasten)) tastenStapel.push(tasten);
-        fokus(h.el.querySelector('.mi:not(:disabled)'));
+        focus(h.el.querySelector('.mi:not(:disabled)'));
       } else if (h.kind === 'popover') {
         const a = h.find();
         h.result = choosePop(a, content.message, content.buttons || [{ label: 'Ok', value: true }]).then(v => { if (h.open) entfernen(h, 'user'); return v; });
@@ -293,7 +293,7 @@
         const x = dlg.querySelector('#dlgX');
         if (x) x.onclick = () => anfragen(h);   // x, Escape und ⌘. (v4 drückt dann x) und Wischen mit Änderungen fragen über shouldDismiss
       } else if (h.kind === 'alert') {
-        h.result = adAlert.showModal(content.title, content.message, { wide: !!content.wide, action: content.action || null })
+        h.result = alert.showModal(content.title, content.message, { wide: !!content.wide, action: content.action || null })
           .then(() => { h.geschlossen = true; if (h.open) entfernen(h, 'user'); });
       } else if (h.kind === 'activity') {
         h.result = Promise.resolve().then(content).finally(() => { if (h.open) entfernen(h, 'app'); });
@@ -340,7 +340,7 @@
       const h = dlgEntry; if (!h?.open) return;
       h.geschlossen = true; entfernen(h, 'user');
     });
-    for (const d of [dlg, msg]) d.addEventListener('close', () => { const z = fokusZiel; fokusZiel = null; if (z) fokus(z); });
+    for (const d of [dlg, msg]) d.addEventListener('close', () => { const z = fokusZiel; fokusZiel = null; if (z) focus(z); });
     return bean;
   }
 

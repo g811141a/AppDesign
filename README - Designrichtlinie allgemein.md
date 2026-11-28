@@ -46,7 +46,7 @@ Regeltext nicht; was dort ohne automatische Prüfung gilt, listet 17 als G-1 …
 - **Kein Fokus-Rahmen** (R-3.4): Fokus-Rahmen nur bei Bedienung mit Tastatur (eigener Ring in der Akzentfarbe, 2 px Abstand,
   folgt dem Radius); Textfelder nie – der Cursor zeigt den Fokus; ein Fenster öffnet ohne vorausgewählte Schaltfläche.
 - **Bedienungshilfen**: VoiceOver (R-1.8) – jedes Bedienelement mit Namen, Rolle und Zustand, der Fokus
-  geht in Menü, Sprechblase und Fenster und zurück, Ergebnisse werden angesagt (`ansagen`); Hardware-Tastatur am iPad (R-4.7) – Esc,
+  geht in Menü, Sprechblase und Fenster und zurück, Ergebnisse werden angesagt (`announce`); Hardware-Tastatur am iPad (R-4.7) – Esc,
   ⌘., Pfeile, Eingabe, Tab; ‚Kontrast erhöhen‘ und ‚Bewegung reduzieren‘ des Geräts (R-1.9). Testfall-Liste
   `arbeit/APD-43 Teil 1 Testfall-Liste.md`.
 - Bewusst verworfen: eigene Kennzeichnung von Pflichtfeldern; harte, schmale Schatten; Glas-Leiste (schlechter lesbar). Was aus Glas ist: R-3.9.
@@ -120,7 +120,7 @@ heller).
   Druck); Größen ohne Apple-Stil wachsen mit dem Faktor des nächsten Stils (`calc(19px * var(--f-title3))`).
 - **Icon und Text bleiben zusammen** (R-10.5), z. B. Reisemittel. **Technisch:** `iconText(icon, text)` (ui.js) – `.ict` (design.css,
   auch in `outputCss`). **Aufzählungen mit Trennpunkt** (R-10.5; z. B. Wetter und Smileys der Statistik, ‚8×☀️ · 6×🌧️‘, Quartiere
-  ‚Hotel Krone (120,00 €) · …‘): der ‚·‘ bleibt beim letzten Wort. **Technisch:** `aufzaehlung(liste)` (ui.js) – jeder Eintrag als Block
+  ‚Hotel Krone (120,00 €) · …‘): der ‚·‘ bleibt beim letzten Wort. **Technisch:** `listHtml(liste)` (ui.js) – jeder Eintrag als Block
   (`.az`, `inline-block`, höchstens so breit wie die Zeile), der ‚·‘ mit geschütztem Leerzeichen im Block des Eintrags davor, Zusatz in
   Klammern ohne Umbruch.
 - **Leisten** (Kopfzeile, Seitenkopf, Suchzeile, Seitenleisten-Kopf, Fensterkopf, untere Leiste, Backup-Kachel, Kapsel unten,
@@ -581,7 +581,7 @@ Gemessene bzw. belegte Eigenheiten mit Quelle; sie gelten für alle Apps, die Pr
   23.10.2026: Feld bei offener Tastatur, Ziehen auf einem Feld, Erfassen mit Änderung).
 - **Weiches Rollen anhalten:** WebKit hält ein laufendes `scrollTo({ behavior: 'smooth' })` bei einem neuen `scrollTo` ohne
   Bewegung nicht an (gemessen im Prüf-WebKit beim Bau von 4.30.0, am Gerät nicht gemessen); es endet, wenn der Rollbereich kurz
-  `overflow: hidden` bekommt – `rolle.halt()` (ui.js).
+  `overflow: hidden` bekommt – `scrollView.stop()` (ui.js).
 - **Klick nur mit Hörer (Messung P-90 vom 02.11.2026):** Safari auf iPad und iPhone schickt nach einem Tipp auf ein
   nicht antippbares Element (Text, Überschrift) nur dann `click`, wenn das Element, eines darüber oder das `document` einen Hörer hat; ein
   Hörer am `window` genügt nicht – gemessen: mit den Hörern des Messmodus am `document` kam der Klick, ohne nicht. `pointerdown`/`pointerup`
@@ -604,16 +604,16 @@ Gemessene bzw. belegte Eigenheiten mit Quelle; sie gelten für alle Apps, die Pr
 
 ## 14. Design-Repo AppDesign
 
-- **Inhalt:** diese Richtlinie, `README - Zusammenarbeit allgemein.md`, `v4/design.css` (Farben, Schrift, Schaltflächen,
+- **Inhalt:** diese Richtlinie, `README - Zusammenarbeit allgemein.md`, `v5/design.css` (Farben, Schrift, Schaltflächen,
   Suchfeld, Kapsel, Eingabe- und Datumsfelder, Kopfzeile, Seitenleiste, Menü, Sprechblase, schwebende Schaltflächen, Fenster,
   Kasten, Auswahl-Kapsel, Schalter, Options-Kapsel, Rahmen und Rollbereich; iPhone-Ansicht: Seitenkopf, großer Titel, Liste,
-  Kasten, untere Leiste), `v4/ui.js` (Icons, Menüs mit Untermenü, Sprechblase, gedrückte Schaltflächen, Meldung, Fenster,
+  Kasten, untere Leiste), `v5/ui.js` (Icons, Menüs mit Untermenü, Sprechblase, gedrückte Schaltflächen, Meldung, Fenster,
   Darstellung, Auswahl-Kapsel, Tastatur/sichtbarer Bereich, Beträge, Backup und Abgleich, Offline, Messmodus, Rollbereich,
   iPhone-Erkennung `isPhone()`), `apple-referenz/` (Vergleichsbilder), `tests/` (Prüfungen des Regelkatalogs, Messdateien in
   `tests/messungen/` zum Abspielen, 15.21 – nie umbenennen oder löschen: die Prüfungen jeder App lesen sie aus dem Arbeitsstand, nicht aus
   ihrer Fassung), `vorlage/index.html` (Startpunkt für neue Apps und Prüfseite der Bausteine), `katalog/` (Bean-Katalog: `index.html` als Split View mit den Beans
   nach Bereichen in der Seitenleiste – geplante Beans grau, nicht antippbar –, je Bean der Liste (15) eine Datei `<kennung>.js` mit Beschreibung,
-  Ausprobieren, Ereignissen, Regeln, Schnittstelle und Verlauf; lädt immer `v4/`, gehört nicht zur festen Fassung; R-1.13), `werkzeug/` (Veröffentlichen,
+  Ausprobieren, Ereignissen, Regeln, Schnittstelle und Verlauf; lädt immer `v5/`, gehört nicht zur festen Fassung; R-1.13), `werkzeug/` (Veröffentlichen,
   Kontextstand), `arbeit/` (Muster, Testfall-Listen, Auswertungen).
 - **Einbindung:** Jede App lädt die Bausteine von GitHub Pages aus **ihrer** Fassung:
   `<link rel="stylesheet" href="../AppDesign/fassung/X.Y.Z/design.css">` im `<head>` vor dem eigenen `<style>`,
@@ -623,12 +623,12 @@ Gemessene bzw. belegte Eigenheiten mit Quelle; sie gelten für alle Apps, die Pr
 - **Feste Fassung** (R-10.3): Jede AppDesign-Version liegt zusätzlich unveränderlich in `fassung/X.Y.Z/` (`design.css`, `ui.js`,
   `schnittstelle.json`, `tests/`, `vorlage/index.html`, der Text dieser Richtlinie und der Zusammenarbeit; Prüfsummen in `fassung/PRUEFSUMMEN`); die README der App verlinkt
   die Richtlinien in ihrer Fassung (eine Git-Markierung ist aus der Cloud nicht möglich). Eine neue AppDesign-Version ändert eine
-  App **nicht**; gehoben wird eine App nur nach Rückfrage (Zusammenarbeit 0 Nr. 10). `v4/` ist der Arbeitsstand und zeigt die
-  neueste 4er-Fassung; eine Hauptversion (5.0.0) bekommt einen neuen Ordner `v5/`. Veröffentlicht wird mit
+  App **nicht**; gehoben wird eine App nur nach Rückfrage (Zusammenarbeit 0 Nr. 10). `v5/` ist der Arbeitsstand und zeigt die
+  neueste 5er-Fassung; `v4/` bleibt auf 4.71.1 stehen; eine Hauptversion (6.0.0) bekommt einen neuen Ordner `v6/`. Veröffentlicht wird mit
   `werkzeug/veroeffentlichen.mjs` (Zusammenarbeit 0 Nr. 9).
 - **Schnittstelle von ui.js:** Die App stellt bereit: `<dialog id="dlg">`, `<dialog id="msg">`, `db.settings.appearance`
   (`auto` | `light` | `dark`), `save()`, `render()`; optional `onDialogOpen()` (wird bei jedem `openDialog` aufgerufen). Von `ui.js` nutzt
-  die App nur die Namen aus `v4/schnittstelle.json` (R-1.14); von einer AD-Bean nur Anlegen, Eigenschaften, Methoden und Ereignisse (R-1.13, Liste in 15).
+  die App nur `AD.<Name>` mit den Namen aus `v5/schnittstelle.json` (R-1.14); von einer AD-Bean nur Anlegen, Eigenschaften, Methoden und Ereignisse (R-1.13, Liste in 15).
 - **Prüfen:** Jede App hat eigene Prüfskripte, die ihre Ansichten und Fenster durchgehen und mit den Bausteinen aus
   `AppDesign/tests/` messen (AppDesign liegt beim Testen neben dem App-Repo): Fehler mit Sollwerten und Rückgabewert
   (`pruefe.mjs`), nach jedem Schritt die Grundregeln (dieselben Prüfungen wie `hig.mjs`, ohne Drehen), Chromium **und WebKit**;
@@ -640,7 +640,7 @@ Gemessene bzw. belegte Eigenheiten mit Quelle; sie gelten für alle Apps, die Pr
 ## 15. Komponenten
 
 Jede Komponente ist hier einmal beschrieben (Zweck · Aufbau · Maße · Aussehen · Zustände · Verhalten · technischer Name ·
-Regel). In AppDesign ist jede Komponente einmal programmiert (`v4/design.css`, `v4/ui.js`) und wird von allen Apps übernommen.
+Regel). In AppDesign ist jede Komponente einmal programmiert (`v5/design.css`, `v5/ui.js`) und wird von allen Apps übernommen.
 Komponenten, die als in sich geschlossener Baustein gebaut sind – analog einer Java Bean –, heißen **AD-Beans** (R-1.13); die
 folgende Liste ist ihre einzige Aufzählung, `checkBeans` liest sie; der Bean-Katalog (14) zeigt jede Bean zum Ansehen und Ausprobieren, `checkBeans`
 hält ihn gleich mit der Liste. Bereiche: Aktionen und Menüs · Navigation und Suche · Fenster
@@ -650,11 +650,11 @@ und Meldungen · Eingabe · Inhalt · Dienste (ohne eigene Oberfläche).
 
 | Kennung | Bereich | Anlegen | Eigenschaften (Standard) | Nur lesen | Methoden | Ereignisse | Regeln | Abschnitt |
 |---|---|---|---|---|---|---|---|---|
-| `swipeactions` | Aktionen und Menüs | `createSwipeactions(list, …)` | `rows` (Pflicht) · `actions` (Pflicht, dieselbe Funktion wie für das Kontextmenü; Einträge wie bei `openMenu` mit `shortTitle`) | `openRow` · `metrics` | `close()` · `disconnect()` | `toggle` | R-7.8, R-4.12, R-4.13, R-1.4, R-1.8 | 15.4 |
-| `alert` | Fenster und Meldungen | `createAlert(dialog, …)` | `fitFileName` (ein; wirkt nur am iPad) | `open` | `showModal(title, message, { wide, action })` · `close()` | `close` | R-10.8, R-1.8, R-4.3 | 7, 10; ersetzt `hinweis` (4.67.0) |
-| `sourcehighlight` | Aktionen und Menüs | `createSourcehighlight(root)` | `sourceItem` (`''` – Auswahl der Quelle des offenen Fensters; setzen tönt sie und gibt die vorige frei, `''` gibt frei) | `heldItems` | `hold(item)` · `release(item)` · `refresh(root)` | `change` | R-3.3, R-4.13, R-8.1 | 4, 15.6 |
-| `notice` | Fenster und Meldungen | `createNotice(element, …)` | `message` (`''`, HTML) · `detail` (`''`, grau darunter) · `buttons` (`[]`, je `{ id, label, icon, primary }`) | – | `remove()` | `action` | R-3.10, R-1.13 | 4, 7 |
-| `recentlydeleted` | Inhalt | `createRecentlydeleted(root, …)` | `data` (Pflicht, Funktion → Daten der App) · `list` (Pflicht, Feld der Liste, z. B. `'trips'`) · `field` (`'recentlyDeleted'`) · `days` (30) · `nouns` (`[Einzahl, Mehrzahl, ‚Dieser …‘]`, Standard Eintrag · Einträge · Dieser Eintrag) · `label` (Titel der Kachel) · `detail` (Zeile darunter, `''`) · `question` (Text der Abfrage beim endgültigen Löschen) | `items` | `remove(item)` · `restore(id)` · `purge(id)` · `purgeAll()` · `daysLeft(id)` · `entryHtml()` · `listHtml({ current, end })` · `noticeHtml(id)` · `actions(row)` | `change` · `restore` · `purge` · `open` · `close` | R-7.10, R-4.12, R-7.8, R-1.13 | 15.24 |
+| `swipeactions` | Aktionen und Menüs | `AD.createSwipeactions(list, …)` | `rows` (Pflicht) · `actions` (Pflicht, dieselbe Funktion wie für das Kontextmenü; Einträge wie bei `openMenu` mit `shortTitle`) | `openRow` · `metrics` | `close()` · `disconnect()` | `toggle` | R-7.8, R-4.12, R-4.13, R-1.4, R-1.8 | 15.4 |
+| `alert` | Fenster und Meldungen | `AD.createAlert(dialog, …)` | `fitFileName` (ein; wirkt nur am iPad) | `open` | `showModal(title, message, { wide, action })` · `close()` | `close` | R-10.8, R-1.8, R-4.3 | 7, 10; ersetzt `hinweis` (4.67.0) |
+| `sourcehighlight` | Aktionen und Menüs | `AD.createSourcehighlight(root)` | `sourceItem` (`''` – Auswahl der Quelle des offenen Fensters; setzen tönt sie und gibt die vorige frei, `''` gibt frei) | `heldItems` | `hold(item)` · `release(item)` · `refresh(root)` | `change` | R-3.3, R-4.13, R-8.1 | 4, 15.6 |
+| `notice` | Fenster und Meldungen | `AD.createNotice(element, …)` | `message` (`''`, HTML) · `detail` (`''`, grau darunter) · `buttons` (`[]`, je `{ id, label, icon, primary }`) | – | `remove()` | `action` | R-3.10, R-1.13 | 4, 7 |
+| `recentlydeleted` | Inhalt | `AD.createRecentlydeleted(root, …)` | `data` (Pflicht, Funktion → Daten der App) · `list` (Pflicht, Feld der Liste, z. B. `'trips'`) · `field` (`'recentlyDeleted'`) · `days` (30) · `nouns` (`[Einzahl, Mehrzahl, ‚Dieser …‘]`, Standard Eintrag · Einträge · Dieser Eintrag) · `label` (Titel der Kachel) · `detail` (Zeile darunter, `''`) · `question` (Text der Abfrage beim endgültigen Löschen) | `items` | `remove(item)` · `restore(id)` · `purge(id)` · `purgeAll()` · `daysLeft(id)` · `entryHtml()` · `listHtml({ current, end })` · `noticeHtml(id)` · `actions(row)` | `change` · `restore` · `purge` · `open` · `close` | R-7.10, R-4.12, R-7.8, R-1.13 | 15.24 |
 
 ### 15.1 Schwebende Schaltfläche
 - **Apple:** [HIG – Buttons](https://developer.apple.com/design/human-interface-guidelines/buttons)
@@ -897,8 +897,8 @@ und Meldungen · Eingabe · Inhalt · Dienste (ohne eigene Oberfläche).
   Zahlenfelder), Radius 10 px, 44 px hoch – Textfelder ebenso, solange sie leer sind oder eine Zeile haben, mit jeder weiteren Zeile wachsen sie (8),
   Schrift mindestens 16 px (R-1.3); Fehler: 1 px roter Rand und rote Meldung darunter (8, R-5.3). Datumsfelder so breit wie das Datum. Kein Fokus-Rahmen,
   auch nicht mit Tab (R-3.4).
-- **Technisch** (R-5.3): `feldFehler(felder, zeile, text)` setzt Meldung, roten Rand, `aria-invalid` und
-  `aria-describedby` und sagt eine neue Meldung einmal an (leerer Text nimmt alles weg); `ersterFehler(fenster)` beim Häkchen –
+- **Technisch** (R-5.3): `setFieldError(felder, zeile, text)` setzt Meldung, roten Rand, `aria-invalid` und
+  `aria-describedby` und sagt eine neue Meldung einmal an (leerer Text nimmt alles weg); `focusFirstInvalid(fenster)` beim Häkchen –
   der Abschnitt des ersten fehlerhaften Felds rollt in die Mitte (‚Bewegung reduzieren‘: springt), dann hat das Feld den Fokus.
 - **ⓧ zum Leeren** (R-5.6, wie Apple ‚whileEditing‘): das ⓧ wie im Suchfeld; wächst das Feld oder rollt es in sich, bleibt es oben
   rechts am Feld; keine Sprechblase. Das Rückgängig ist Lucide `undo-2` in `--muted` und wächst mit der Textgröße; nach dem Zurückholen
@@ -925,7 +925,7 @@ und Meldungen · Eingabe · Inhalt · Dienste (ohne eigene Oberfläche).
   in Nachrichten. Technisch `.cap` > `.scroll` + `.pf` (`capHtml`, `mountCap`).
 - **Wischzeile** (R-5.4): Jeder andere Bereich, der seitlich wischt (z. B. die Zeile ‚Reisemittel‘ im Kopf am iPhone), zeigt genauso
   mit Verlauf und Pfeil am Rand, wo es weitergeht – nie ein harter Schnitt mitten im Wort. Technisch `.weiter` > `.scroll` + `.pf`
-  (`wischHtml`, `mountCap` nach dem Aufbau der Seite). Ausgenommen sind Flächen, die höher als etwa zwei Zeilen sind (Vorschau,
+  (`scrollRowHtml`, `mountCap` nach dem Aufbau der Seite). Ausgenommen sind Flächen, die höher als etwa zwei Zeilen sind (Vorschau,
   breite Tabellen) – dort zeigt der angeschnittene Inhalt selbst, dass es weitergeht.
 - **Langes Drücken** (R-3.5) auf einem Smiley entfernt ihn (8) nach 1 s; beim Halten hebt sich das Emoji auf einem hellen Kreis mit Schatten
   über die Leiste – Ziehen ist kein langes Drücken: wandert der Finger mehr als 10 px oder rollt die Leiste, ist es abgebrochen und er senkt
@@ -935,7 +935,7 @@ und Meldungen · Eingabe · Inhalt · Dienste (ohne eigene Oberfläche).
 - **Apple:** [HIG – Lists and tables](https://developer.apple.com/design/human-interface-guidelines/lists-and-tables)
 - Siehe 9; Regeln R-6.1 bis R-6.3.
 - Im Inhalt zeigt jede Tabelle ihre Zeilen als Kästen (15.17, `.box` mit `.kv`), wenn der Inhalt schmaler als 700 px ist (R-6.6,
-  `inhaltSchmal(#app)`) oder ab AX1 (R-1.10); Vorschau und Ausgabe bleiben Tabellen (R-6.2). Ein Wechsel wirkt wie das Drehen (R-8.1).
+  `compactWidth(#app)`) oder ab AX1 (R-1.10); Vorschau und Ausgabe bleiben Tabellen (R-6.2). Ein Wechsel wirkt wie das Drehen (R-8.1).
 
 ### 15.14 Info-Icon mit Hinweis
 - **Apple:** [HIG – Buttons](https://developer.apple.com/design/human-interface-guidelines/buttons)
@@ -984,7 +984,7 @@ und Meldungen · Eingabe · Inhalt · Dienste (ohne eigene Oberfläche).
   Kein Wischen bei offenem Fenster, Menü oder offener Sprechblase. Bei offener Tastatur schließt das Wischen sie und geht zurück.
   Der Rollstand der Startliste bleibt, der zuletzt geöffnete Eintrag ist blau (R-7.2). ‚Bewegung reduzieren‘: Überblenden statt
   Schieben, auch beim Wischen. VoiceOver: Zurück-Schaltfläche, ‚Zurück‘-Geste (Escape). Wischen tippt nie an, worauf es begann.
-  **Technisch:** `navAnmelden({ zurueck, seite })` meldet die App an, `navVor(change)`, `navZurueck()`, `navSeite(an)` (ui.js); je
+  **Technisch:** `navRegister({ back, sidebar })` meldet die App an, `navPush(change)`, `navPop()`, `navSidebar(an)` (ui.js); je
   Bild nur `transform` und `opacity` (Web-Animation), wo gewischt werden kann `touch-action: pan-y pinch-zoom` (`html.wischt`);
   ist die Geste entschieden, verhindert ui.js `touchmove` – Safari rollt dann nicht mehr dazwischen (13 Wischgesten).
 - **Titel einer Inhaltsseite** steht wie am iPad **immer in der Leiste** (`.pnav-title`, ohne großen Titel darüber, R-2.2);
@@ -1089,7 +1089,7 @@ und Meldungen · Eingabe · Inhalt · Dienste (ohne eigene Oberfläche).
   - **Wo:** Backup-Kachel unten in der Seitenleiste bzw. Startliste – **nur, solange heute auf diesem Gerät noch kein Backup
     erstellt wurde** und es Einträge gibt: gelb, ‚Letztes Backup erstellt am …‘ bzw. ‚Noch kein Backup erstellt.‘ und die blaue
     Schaltfläche ‚Backup erstellen‘, Text und Schaltfläche mittig (R-3.10); danach verschwindet sie (wie die Hinweise ‚iPhone nicht gesichert‘ in den Einstellungen), um 0:00
-    und bei der Rückkehr am nächsten Tag kommt sie von selbst wieder (`onNeuerTag()`). Immer im Mehr-Menü der Seitenleiste: ‚Backup erstellen‘ (Icon `save`, darunter grau ‚Letztes Backup
+    und bei der Rückkehr am nächsten Tag kommt sie von selbst wieder (`onDayChange()`). Immer im Mehr-Menü der Seitenleiste: ‚Backup erstellen‘ (Icon `save`, darunter grau ‚Letztes Backup
     erstellt am …‘), direkt darunter ‚Backup laden‘ (Icon `folder-open`).
   - **Ablauf:** Teilen-Menü (iOS) → ‚In Dateien sichern‘ (z. B. iCloud Drive). Datei ‚Ω Backup <App> JJJJ.MM.TT hh.mm.json‘ mit
     allen Daten, Zeitpunkt und Gerät.
@@ -1140,7 +1140,7 @@ und Meldungen · Eingabe · Inhalt · Dienste (ohne eigene Oberfläche).
   (`activity`, grau ‚Für Claude: Bewegungen aufzeichnen‘) – versteckt, bis **langes Drücken** (R-3.5) auf die graue Versionszeile im
   selben Menü ihn freischaltet; das Menü bleibt dabei offen, die Freischaltung gilt bis zum Neustart der App (nichts gespeichert),
   kurzes Tippen tut nichts. So macht es Apple: Diagnose und Entwickler-Werkzeuge sind versteckt, bis man sie bewusst freischaltet.
-  Technisch `{ note, halten: true }` im Menü, `messungMenuItems` liefert bis dahin nur einen Platzhalter. Während und nach der Messung ‚Messung beenden und teilen‘
+  Technisch `{ note, longPress: true }` im Menü, `measureMenuItems` liefert bis dahin nur einen Platzhalter. Während und nach der Messung ‚Messung beenden und teilen‘
   (`circle-stop`, grau ‚läuft · 0:42 · 1.318 Zeilen‘ bzw. ‚beendet · …‘). Kein Zeichen auf dem Bildschirm – es würde selbst
   mitrutschen. Teilen-Menü mit `messung-JJJJ-MM-TT-hhmm.txt` (ohne Teilen-Menü: laden); abgebrochen bleibt die Messung.
 - **Inhalt:** Kopf mit App, AppDesign, Gerät, Home-Bildschirm/Safari, Bildschirm, Darstellung, Startzeit; dann je Bild eine
@@ -1161,7 +1161,7 @@ und Meldungen · Eingabe · Inhalt · Dienste (ohne eigene Oberfläche).
   (Weg in px).
 - **Grenzen:** aus, solange nicht gestartet (kein `requestAnimationFrame`, keine Hörer); keine Texte; nichts gespeichert (neu laden
   verwirft); Ende nach 5 Minuten oder 20 000 Zeilen.
-- **Technisch:** `ui.js` – `messungMenuItems({ app, teile, rollen })` ins Menü der Seitenleiste; `teile`/`rollen` = Spalte →
+- **Technisch:** `ui.js` – `measureMenuItems({ app, elements, scrollers })` ins Menü der Seitenleiste; `elements`/`scrollers` = Spalte →
   Selektor (erstes sichtbares Element). Prüfung `checkMessung` (Testfall-Liste `arbeit/APD-27 Testfall-Liste.md`, F1–F12), Berührungen und
   Gesten `checkNavigation` APD-67/F-22 und F-23 (`arbeit/APD-67 Testfall-Liste.md`).
 - **Abspielen:** Messdateien liegen in `tests/messungen/` (nur Zahlen, Längen und ids, keine Texte) und laufen in den Prüfungen
@@ -1186,13 +1186,13 @@ und Meldungen · Eingabe · Inhalt · Dienste (ohne eigene Oberfläche).
   Ergebnis lässt sich bis über die Tastatur rollen; die Kapsel ‚Nach oben / Ans Ende‘ steht über der Tastatur (`--vv-bottom`,
   15.1). Der Platz unter dem Inhalt ist ein Platzhalter am Ende (`.rolle::after`), kein Innenabstand – so wird der Rollbereich nie
   höher als sein Platz. Beim Antippen eines Felds verlängert ui.js ihn um `--platz` (ebenso `.dlg-body::after` im Fenster), damit
-  das Feld so weit wie nötig über die Tastatur rollen kann (R-4.5, 13); `rolle.ende()` zählt diesen Platz nicht.
+  das Feld so weit wie nötig über die Tastatur rollen kann (R-4.5, 13); `scrollView.end()` zählt diesen Platz nicht.
 - **Verhalten:** Treffer, Nach oben / Ans Ende, Schnellroll-Griff, Öffnen (R-7.4), Drehen (R-8.1), Liste steht still (R-7.3) und
   der Messmodus rollen bzw. messen nur den Rollbereich. Beim Neuaufbau bleibt der Rollbereich dasselbe Element (`setHtml`), der Rollstand bleibt.
   Solange ein Fenster offen ist, steht er still (`html.locked`). Im Druck ist nichts auf Bildschirmhöhe begrenzt (R-6.4).
-- **Technisch:** `design.css` (`#app:has(> .rolle)`, `.rolle`), `ui.js` – `rolle` (`rolle.y`, `rolle.max`, `rolle.rest`,
-  `rolle.to(y, weich)`, `rolle.by(d)`, `rolle.ende()`, `rolle.halt()`), `onRoll(fn)`, `fabTop()`/`fabEnd()`. Die App ruft **nie**
-  `window.scrollTo`. Ohne Rollbereich (`#app` ohne `.rolle`, z. B. die Startliste am iPhone) beziehen sich `rolle` und `onRoll` auf das Fenster. In Prüfungen rollen und messen `rolle(p, y)` und
+- **Technisch:** `design.css` (`#app:has(> .rolle)`, `.rolle`), `ui.js` – `scrollView` (`scrollView.y`, `scrollView.max`, `scrollView.remaining`,
+  `scrollView.to(y, weich)`, `scrollView.by(d)`, `scrollView.end()`, `scrollView.stop()`), `onRoll(fn)`, `fabTop()`/`fabEnd()`. Die App ruft **nie**
+  `window.scrollTo`. Ohne Rollbereich (`#app` ohne `.rolle`, z. B. die Startliste am iPhone) beziehen sich `scrollView` und `onRoll` auf das Fenster. In Prüfungen rollen und messen `rolle(p, y)` und
   `rollstand(p)` (`pruefe.mjs`); die Regeln dazu prüft der Katalog (R-2.1, R-2.3, R-3.2, R-4.5, R-6.4). Testfall-Liste und Muster:
   `arbeit/APD-28 Testfall-Liste.md`, `arbeit/APD-28 Muster.html`.
 
@@ -1200,7 +1200,7 @@ und Meldungen · Eingabe · Inhalt · Dienste (ohne eigene Oberfläche).
 
 - **Apple:** SwiftUI `ContentUnavailableView` – Symbol, Titel, Beschreibung, optional Aktionen; für die Suche `.search(text:)`.
 - **Zweck:** Ein leerer Bereich (keine Einträge, keine Treffer, alles ausgeblendet) sagt, warum er leer ist und wie es weitergeht. Regel R-7.7.
-- **Aufbau:** `leerHtml({ icon, titel, satz, aktion })` in ui.js → `.leer`: Symbol (grau, 36 pt, `aria-hidden`), Titel 17 pt halbfett als
+- **Aufbau:** `contentUnavailableHtml({ icon, title, description, actions })` in ui.js → `.leer`: Symbol (grau, 36 pt, `aria-hidden`), Titel 17 pt halbfett als
   Überschrift, Satz grau 15 pt, optional eine getönte Schaltfläche (Systemblau hell hinterlegt, 44 pt hoch). Mittig im freien Bereich unter
   Kopf, Inhalt und Suchzeile; die Textstile wachsen mit der Textgröße. Symbol und Titel sind überall gleich groß – im Inhalt, in der
   Startliste und in der Seitenleiste. In der Seitenleiste (`.leer.klein`) nur kleinere Abstände.
@@ -1292,13 +1292,13 @@ Testfall (User) in den Usertest, wenn eine Version es betrifft.
 | R-1.5 | **Offline nutzbar und erkennbar:** die App startet ohne Netz aus dem Speicher – auch unter anderer Adresse und bei hängendem Netz nach höchstens 3 s, nie eine weiße Seite; arbeitet sie offline, steht unten in Seitenleiste bzw. Startliste (unter der Backup-Kachel bzw. ohne sie) grau ‚Offline – alles bleibt auf diesem Gerät‘, beim Wechsel und beim Start ohne Netz kurz die Meldung ‚Du bist offline‘ bzw. ‚Wieder online‘ | offline.mjs | Gerät (Flugmodus) | 11, 15.20 |
 | R-1.6 | **Messmodus:** im Mehr-Menü der Seitenleiste bzw. Startliste ‚Messung starten‘ (grau ‚Für Claude: Bewegungen aufzeichnen‘) erst nach langem Drücken auf die graue Versionszeile (bis zum Neustart) und ‚Messung beenden und teilen‘ (grau ‚läuft · m:ss · N Zeilen‘); aus, solange nicht gestartet; je Bild eine Zeile nur bei Änderung, dazu jedes Ereignis; keine Texte (nur Längen und ids); endet nach 5 min bzw. 20 000 Zeilen; Datei `messung-JJJJ-MM-TT-hhmm.txt` über das Teilen-Menü; neu laden verwirft | ablauf.mjs – `checkMessung` | Gerät (Messung, Teilen) | 15.21 |
 | R-1.7 | **Sichere Ränder:** nichts fest Stehendes (Schaltfläche, Feld, Titel, Kachel, Leiste) liegt unter Statusleiste bzw. Dynamic Island, Aussparung oder Home-Leiste; Fenster, Menüs und Sprechblasen bleiben ganz innerhalb (am iPad mindestens 10 px bzw. der sichere Rand, das iPhone-Fenster füllt den Bildschirm); Inhalt darf darunter rollen, sein Ende lässt sich bis über die Home-Leiste rollen. `env(safe-area-inset-*)` nur in `--safe-top/-bottom/-left/-right` | hig.mjs – `safe` in jeder gemessenen Ansicht mit Gerätewerten (iPhone hoch 62/34, quer 62 links und rechts/20 unten, iPad 24/20); doku.mjs – nur die vier Festlegungen | Dynamic Island, Home-Leiste | 13 |
-| R-1.8 | **VoiceOver:** jedes Bedienelement hat Namen, Rolle und Zustand – Icon-Schaltflächen `aria-label`, Felder über ihr `label`, Icons `aria-hidden`; Menü-Schaltflächen ‚öffnet Menü‘ mit offen/zu (`aria-haspopup`, `aria-expanded`), Einträge mit Häkchen ‚ausgewählt‘ (`menuitemcheckbox`, `aria-checked`), Untermenü-Einträge wie Menü-Schaltflächen; Fenster, Meldung und Blatt heißen wie ihr Titel, die Zusatzzeile ist ihre Beschreibung; die Sprechblase ist eine modale Abfrage mit ihrem Text als Namen. **Fokus:** ins Menü auf den ersten wählbaren Eintrag, in die Sprechblase auf die Blase, ins Fenster auf das Fenster – danach zurück auf die Schaltfläche (fehlt er: Kopfzeile), immer ohne Rollen; iPhone: Eintrag öffnen → Seitentitel, zurück → blaue Zeile bzw. Titel der Startliste. **Ansagen** höflich über `ansagen()` (im obersten Fenster, sonst auf der Seite): Treffer der Suche nach 0,7 s Pause, ‚Treffer 2 von 3‘, Filter der Liste, Fehlermeldungen (R-5.3), offline/online; ‚Automatisch gespeichert‘ nicht | hig.mjs – Namen, Rollen, Zustände in jeder Ansicht; ablauf.mjs – `checkFokus`, `ansage` (Ansage-Bereich), `checkFieldErrors` | – (keine VoiceOver-Prüfung am Gerät, Nutzer 23.10.2026) | 1, 15.6, 15.7, 15.9 |
+| R-1.8 | **VoiceOver:** jedes Bedienelement hat Namen, Rolle und Zustand – Icon-Schaltflächen `aria-label`, Felder über ihr `label`, Icons `aria-hidden`; Menü-Schaltflächen ‚öffnet Menü‘ mit offen/zu (`aria-haspopup`, `aria-expanded`), Einträge mit Häkchen ‚ausgewählt‘ (`menuitemcheckbox`, `aria-checked`), Untermenü-Einträge wie Menü-Schaltflächen; Fenster, Meldung und Blatt heißen wie ihr Titel, die Zusatzzeile ist ihre Beschreibung; die Sprechblase ist eine modale Abfrage mit ihrem Text als Namen. **Fokus:** ins Menü auf den ersten wählbaren Eintrag, in die Sprechblase auf die Blase, ins Fenster auf das Fenster – danach zurück auf die Schaltfläche (fehlt er: Kopfzeile), immer ohne Rollen; iPhone: Eintrag öffnen → Seitentitel, zurück → blaue Zeile bzw. Titel der Startliste. **Ansagen** höflich über `announce()` (im obersten Fenster, sonst auf der Seite): Treffer der Suche nach 0,7 s Pause, ‚Treffer 2 von 3‘, Filter der Liste, Fehlermeldungen (R-5.3), offline/online; ‚Automatisch gespeichert‘ nicht | hig.mjs – Namen, Rollen, Zustände in jeder Ansicht; ablauf.mjs – `checkFokus`, `ansage` (Ansage-Bereich), `checkFieldErrors` | – (keine VoiceOver-Prüfung am Gerät, Nutzer 23.10.2026) | 1, 15.6, 15.7, 15.9 |
 | R-1.9 | **Bedienungshilfen des Geräts:** ‚Kontrast erhöhen‘ schaltet sofort und ohne Neuladen auf die zweite Farbtabelle (2, hell und dunkel), jeder Text und jedes Icon mindestens 4,5 : 1, die Ausgabe bleibt unverändert hell. ‚Bewegung reduzieren‘: erlaubt sind Überblenden (nur Deckkraft bzw. Farbe, bis 0,3 s), kleine Rückmeldungen unter 30 px und Bewegung direkt mit dem Finger; nicht erlaubt sind selbstständige Lageänderungen über 30 px, Zoomen bzw. Verkleinern, Federn, sanftes Rollen durch die App und Dauerschleifen – ‚Nach oben / Ans Ende‘ springen (Überblenden 0,15 s; Apple rollt an der Statusleiste auch dann, WCAG 2.3.3), das Blatt blendet über und die Seite dahinter bleibt groß, das Mikrofon pulsiert nicht | hig.mjs (4,5 : 1 mit ‚Kontrast erhöhen‘, Teile ‚Bedienungshilfen‘); ablauf.mjs – `checkKontrast`, `checkRuhig`; Bewegungswächter in pruefe.mjs (`PRUEF_BEDIENUNG=beide`, Gegenprobe `--gegenprobe bedienung`) | Aussehen mit ‚Kontrast erhöhen‘, Gefühl mit ‚Bewegung reduzieren‘ | 2, 13 |
 | R-1.10 | **Textgröße folgt dem Gerät:** die Schrift folgt der Einstellung ‚Textgröße‘ (14–53 pt) sofort und ohne Neuladen, alle Textstile nach Apples Tabelle (3), keine Schrift und keine Zeilenhöhe in px; Leisten wachsen nur bis XXXL (iPhone quer gar nicht); ab AX1 (bei schmalem Inhalt unter 600 px – iPhone hoch, iPad hoch neben der Seitenleiste – ab XXL) steht Nebeneinanderliegendes untereinander, Tabellen im Inhalt als Kästen; nichts ragt hinaus, **nichts überlappt** (Grundregel); der letzte Eintrag bleibt erreichbar; ein Wechsel wirkt wie das Drehen (R-8.1); Ausgabe und Vorschau unverändert (R-6.2). R-10.2 (mind. 11 pt) und R-1.3 (Felder mind. 16 px) bleiben Untergrenzen. | hig.mjs – `checkText` (Wechsel 17 → 53 px: Apples Wert je Stil, Leisten, Tabellen, Umbau, Ausgabe, letzter Eintrag), Stile ohne px, Grundregel ‚nichts überlappt‘ in jeder Größe; `PRUEF_TEXT` (hig bei 14, 23, 33, 53, Abläufe mit Bewegung bei 53), Gegenprobe `--gegenprobe text` | Aussehen in mehreren Stufen, Wechsel über das Kontrollzentrum | 3, 13 |
 | R-1.11 | **Verborgen heißt unsichtbar:** jedes Element mit `hidden` ist nicht zu sehen – eine eigene `display`-Regel hebt `[hidden]` nie auf | hig.mjs – `masseStile` (jede Ansicht, nach jedem Schritt, alle `[hidden]`) | – | 13 |
 | R-1.12 | **Gleitbewegungen wie die Seitenleiste in Notizen:** jede Bewegung, mit der die App selbst etwas an einen anderen Ort bringt – Fenster und Blatt (R-4.6), Navigation und Seitenleiste (R-7.5), das Fenster mit der Tastatur am iPad, ‚Titel antippen = nach oben‘ –: öffnen, hinein und nach oben mit einer Feder ohne Nachschwingen, Antwortzeit 0,35 s (gemessen an der Seitenleiste in Notizen, APD-127; CSS `linear()` über 0,5 s); schließen und hinaus mit `ease-in-out` in 0,25 s; nach einer Geste (Ziehen, Zurückwischen) der Rest anteilig, mindestens 0,15 s. Keine Gleitbewegung ist schneller als das Mehr-Menü (R-4.13). Ausgenommen: das Feld beim Antippen springt (Safari, 13, APD-127/W-4), die Wischaktionen (R-7.8: Feder mit 0,5 s Antwortzeit auf und zu, gemessen in Notizen, P-109), Rückmeldungen beim Drücken und Überblenden; ‚Bewegung reduzieren‘ nach R-1.9 | ablauf.mjs – `checkGleiten` (Dauer und Kurve jeder Bewegung, Endlage unverändert) | Gefühl am Gerät | 15 |
-| R-1.13 | **AD-Beans – allgemeine Elemente gekapselt:** ein allgemeines Element, das neu entsteht oder umgebaut wird, ist eine **AD-Bean** in `ui.js` – die App legt sie mit `create<Kennung>(…)` an (**Anlegen**), mit Eigenschaften und Standardwerten, Methoden und Ereignissen (`on(…)`), eigenem Zustand und eigenem CSS nur unter `.ad-<kennung>…`; die Liste der AD-Beans (15) nennt je Bean Kennung, Bereich, Anlegen, Schnittstelle, Regeln und Abschnitt. Jede Bean der Liste hat im Bean-Katalog (14) eine Datei `katalog/<kennung>.js` mit derselben Kennung, demselben Bereich, demselben Anlegen, Schnittstelle (Eigenschaften, Nur lesen, Methoden, Ereignisse) und denselben Regeln wie in der Liste; jede Katalogdatei gehört zu einer Bean der Liste. Wer eine Bean neu baut oder ändert, zieht ihre Katalogdatei in derselben AppDesign-Version nach. Die **Kennung** ist englisch wie die ganze Schnittstelle: der Name des Vorbilds (Zusammenarbeit 1, z. B. `swipeactions` nach Apples *swipe actions*), ohne Vorbild sprechend nach der Aufgabe (nie nach Geste oder Technik); keine Nummer, fest und nie wiederverwendet: gleiche Aufgabe in anderer Ausprägung = Eigenschaft, andere Aufgabe = eigene Bean, Ablösung mit ‚ersetzt …‘. Feldarten bauen auf der Grund-Bean `field` auf; ihre Gültigkeitsregeln, Meldungen und Prüfbeispiele stehen in der Bean. Maße und Schwellen der Bedienung legt die Bean fest (nur lesbar); Maße von Schaltflächen wachsen dabei mit der Textgröße wie alle Schaltflächen (R-1.10). Die App nutzt nur die Schnittstelle – kein CSS und keine inneren Namen einer Bean | doku.mjs – `checkBeans` (Liste ↔ `ui.js` und `design.css`, Kennung einmal, CSS nur unter dem Präfix, Namen in der App, Liste ↔ `katalog/`; Namen der Liste – Kennung, Anlegen, Eigenschaften, Nur lesen, Methoden, Ereignisse – ohne Umlaut und ß und ohne ein Wort der Sperrliste deutscher Namen, Gegenprobe `beans:englisch`) · `katalog.mjs` (Katalog lädt fehlerfrei, jede Bean geöffnet, Grundregeln, Versionszeile = `AD_VERSION`) | – | 14, 15 |
-| R-1.14 | **Schnittstelle von ui.js:** die App nutzt von `ui.js` nur die Namen aus `v4/schnittstelle.json` (Teil `app`), ihre Prüfungen dazu den Teil `pruefungen`; keine Deklaration der App trägt den Namen eines Bausteins von `ui.js` | schnittstelle.mjs – `checkSchnittstelle` (App, Vorlage, Prüfdateien, Namensgleichheit, Liste gegen `ui.js`; Gegenprobe) | – | 14 |
+| R-1.13 | **AD-Beans – allgemeine Elemente gekapselt:** ein allgemeines Element, das neu entsteht oder umgebaut wird, ist eine **AD-Bean** in `ui.js` – die App legt sie mit `AD.create<Kennung>(…)` an (**Anlegen**), mit Eigenschaften und Standardwerten, Methoden und Ereignissen (`on(…)`), eigenem Zustand und eigenem CSS nur unter `.ad-<kennung>…`; die Liste der AD-Beans (15) nennt je Bean Kennung, Bereich, Anlegen, Schnittstelle, Regeln und Abschnitt. Jede Bean der Liste hat im Bean-Katalog (14) eine Datei `katalog/<kennung>.js` mit derselben Kennung, demselben Bereich, demselben Anlegen, Schnittstelle (Eigenschaften, Nur lesen, Methoden, Ereignisse) und denselben Regeln wie in der Liste; jede Katalogdatei gehört zu einer Bean der Liste. Wer eine Bean neu baut oder ändert, zieht ihre Katalogdatei in derselben AppDesign-Version nach. Die **Kennung** ist englisch wie die ganze Schnittstelle: der Name des Vorbilds (Zusammenarbeit 1, z. B. `swipeactions` nach Apples *swipe actions*), ohne Vorbild sprechend nach der Aufgabe (nie nach Geste oder Technik); keine Nummer, fest und nie wiederverwendet: gleiche Aufgabe in anderer Ausprägung = Eigenschaft, andere Aufgabe = eigene Bean, Ablösung mit ‚ersetzt …‘. Feldarten bauen auf der Grund-Bean `field` auf; ihre Gültigkeitsregeln, Meldungen und Prüfbeispiele stehen in der Bean. Maße und Schwellen der Bedienung legt die Bean fest (nur lesbar); Maße von Schaltflächen wachsen dabei mit der Textgröße wie alle Schaltflächen (R-1.10). Die App nutzt nur die Schnittstelle – kein CSS und keine inneren Namen einer Bean | doku.mjs – `checkBeans` (Liste ↔ `ui.js` und `design.css`, Kennung einmal, CSS nur unter dem Präfix, Namen in der App, Liste ↔ `katalog/`; Namen der Liste – Kennung, Anlegen, Eigenschaften, Nur lesen, Methoden, Ereignisse – ohne Umlaut und ß und ohne ein Wort der Sperrliste deutscher Namen, Gegenprobe `beans:englisch`) · `katalog.mjs` (Katalog lädt fehlerfrei, jede Bean geöffnet, Grundregeln, Versionszeile = `AD_VERSION`) | – | 14, 15 |
+| R-1.14 | **Schnittstelle von ui.js – Namensraum `AD`:** `ui.js` stellt global nur `AD` bereit, alles andere hängt daran (`AD.openMenu(…)`, `AD.createSync(…)`, Bean-Exemplare wie `AD.alert`); die App nutzt nur `AD.<Name>` mit den Namen aus `v5/schnittstelle.json` (Teil `app`), ihre Prüfungen dazu den Teil `pruefungen`; alle Namen sind englisch (Zusammenarbeit 1); keine Deklaration der App heißt `AD` | schnittstelle.mjs – `checkSchnittstelle` (nur `AD` global, `AD` gegen die Liste, App, Vorlage und Prüfdateien nur `AD.<Name>` aus ihrem Teil, kein alter Name, Namen englisch; Gegenprobe) | – | 14 |
 | R-1.15 | **Text nur in Eingabefeldern auswählbar:** langes Drücken, Doppeltippen und Ziehen markieren Text und zeigen Lupe und Callout nur in Eingabefeldern (Textfeld, Textbereich, Suchfeld) und in der Vorschau der Ausgabe (Lesetext zum Kopieren, HIG ‚Labels‘); alles andere – Leisten, Titel, Kacheln, Listen und ihre Köpfe, Hinweise und Backup-Kachel, Menüs, Sprechblasen, Beschriftungen in Fenstern, Schaltflächen und die Flächen dazwischen – markiert nichts | hig.mjs – jeder sichtbare Text (jede Ansicht, nach jedem Schritt); ablauf-p120 der App | Lupe beim langen Drücken | 1, 13 |
 
 ### 2. Leisten, Suche, Rollen
@@ -1353,7 +1353,7 @@ Testfall (User) in den Usertest, wenn eine Version es betrifft.
 |---|---|---|---|---|
 | R-5.1 | **Felder:** Bezeichnung und Feld gehören zusammen (Umbruch nur davor); Schaltflächen im Schrittkopf bleiben als Gruppe zusammen und stehen neben dem Titel, wenn alles in eine Zeile passt; Datumsfelder so breit wie das Datum mit Kalender-Icon; Betragsfelder rechtsbündig, ‚4.850,00 €‘, der Tausenderpunkt schon beim Tippen, fehlende Nachkommastellen ergänzt das Feld beim Verlassen (‚,00‘) | hig.mjs; Tippen und Verlassen in den Abläufen der App (Reiselogbuch `ablauf-gesamt.mjs`, `ablauf-preis-km.mjs`) – bis die AD-Bean `decimal` (APD-136) es allgemein prüft | – | 8, 15.10 |
 | R-5.2 | **Texteingabe:** Großbuchstabe am Zeilenanfang, nicht nach einer Korrektur von Hand; nach einem Vorschlag klein weiter; keine doppelten Leerzeichen (Tippen und Einfügen, alle Textfelder); Textfelder leer einzeilig, wachsen mit; Diktieren nur über die Mikrofon-Taste der Tastatur (keine eigene Schaltfläche) | ablauf.mjs – `checkCapital`, `checkSpaces`, dazu `checkFeldCursor` für ‚leer einzeilig, wächst und schrumpft‘ | iOS-Tastatur, Kurzbefehl ‚.‘ | 8 |
-| R-5.3 | **Fehlermeldungen:** rot direkt unter dem Feld (Feld rot umrandet), erst nach einer Eingabe bzw. beim Häkchen; Pflichtfelder werden nicht gekennzeichnet; **auch hörbar** – Feld `aria-invalid`, Meldung mit dem Feld verknüpft (`aria-describedby`) und einmal angesagt; beim Häkchen hat das erste fehlerhafte Feld den Fokus (Baustein `feldFehler`, `ersterFehler`) | ablauf.mjs – `checkFieldErrors` | – | 8, 15.11 |
+| R-5.3 | **Fehlermeldungen:** rot direkt unter dem Feld (Feld rot umrandet), erst nach einer Eingabe bzw. beim Häkchen; Pflichtfelder werden nicht gekennzeichnet; **auch hörbar** – Feld `aria-invalid`, Meldung mit dem Feld verknüpft (`aria-describedby`) und einmal angesagt; beim Häkchen hat das erste fehlerhafte Feld den Fokus (Baustein `setFieldError`, `focusFirstInvalid`) | ablauf.mjs – `checkFieldErrors` | – | 8, 15.11 |
 | R-5.4 | **Auswahl-Kapsel und Wischzeile:** mehrere Auswahl-Schaltflächen in einer Kapsel, seitlich wischbar; jeder seitlich wischbare Bereich bis etwa zwei Zeilen Höhe (Kapsel oder Wischzeile) zeigt, wo es weitergeht, mit Verlauf und kleinem Pfeil am Rand (nur Anzeige), am jeweiligen Ende verschwinden beide; Markierung als eigene Form innen, Breite ändert sich nicht | hig.mjs – Verlauf und Pfeile am Rand, kein wischbarer Bereich ohne sie, Breite beim Wählen (Ablauf: `checkKapsel`) | Wischen, Pfeile verständlich | 15.12 |
 | R-5.5 | **Eingabetaste:** einzeilige Felder – ‚Fertig‘, die Eingabetaste schließt die Tastatur, ein Fenster bleibt offen; mehrzeilige Felder – Zeilenumbruch; Suchfeld – ‚Suchen‘ | ablauf.mjs – `checkEnterDone` | iOS-Tastatur (Beschriftung, iPhone-Ziffernfeld) | 8 |
 | R-5.6 | **ⓧ in Textfeldern (ein- und mehrzeilig), Rückgängig nach dem Leeren:** solange ein Textfeld den Fokus hat und etwas drinsteht, rechts darin ein graues ⓧ (44 × 44, Text läuft nicht darunter) – mehrzeilig oben rechts auf Höhe der ersten Zeile, der Text läuft in allen Zeilen nicht darunter; Antippen leert sofort, auch mehrzeilig; Fokus und Tastatur bleiben, die App erfährt es; der geleerte Text kommt in die Zwischenablage; **an Stelle des ⓧ steht dann ein graues Rückgängig** (Lucide `undo-2` als Linie, 44 × 44) – Antippen holt den ganzen Text zurück, der Cursor steht am Ende, danach wieder das ⓧ; mit der ersten Eingabe oder wenn das Feld den Fokus verliert, verfällt es (der Text bleibt in der Zwischenablage); geleert und zurückgeholt über den Bearbeiten-Befehl, die Undo-Taste und drei Finger holen den Text ebenso zurück; rollt mit, bleibt nach dem Drehen am Feld; nicht in Datums- und Suchfeldern, je Feld abschaltbar (`data-noclear`) | ablauf.mjs – `checkClear` (dazu Rückgängig, Verfallen, Zwischenablage in Chromium) | Antippen, Tastatur bleibt, Rückgängig im Feld, Zwischenablage (in Notizen einsetzen), Undo-Taste, drei Finger, iPhone schütteln | 15.11 |
@@ -1411,13 +1411,13 @@ Testfall (User) in den Usertest, wenn eine Version es betrifft.
 |---|---|---|---|---|
 | R-10.1 | **Texte:** deutsch, kein ‚OK‘/‚Close‘/‚Cancel‘; Anführungszeichen ‚…‘; gleiche Aktion = gleiche Bezeichnung und gleiches Icon überall; Teilen nur als Icon; die Feldnamen des Abgleichberichts heißen wie in der App | hig.mjs – auch Icon je Bezeichnung über alle Ansichten; Feldnamen: doku.mjs | – | 5, 6, 12 |
 | R-10.2 | **Lesbarkeit:** Schrift mindestens 11 pt; Kontrast 4,5 : 1 bzw. 3 : 1, hell und dunkel | hig.mjs | – | 3, 16 |
-| R-10.3 | **Versionskopplung:** ui.js/design.css aus der festen Fassung `fassung/X.Y.Z/` (index.html, sw.js), Fassungen unverändert (Prüfsummen), `v4/` = neueste Fassung; Versionen stimmen überein, sonst Hinweis beim Start; Versionszeile nennt AppDesign | version.mjs | – | 11, 14 |
+| R-10.3 | **Versionskopplung:** ui.js/design.css aus der festen Fassung `fassung/X.Y.Z/` (index.html, sw.js), Fassungen unverändert (Prüfsummen), `v5/` = neueste Fassung, `v4/` = Fassung 4.71.1; Versionen stimmen überein, sonst Hinweis beim Start; Versionszeile nennt AppDesign | version.mjs | – | 11, 14 |
 | R-10.4 | **README ‚Verwendete Versionen‘** ganz oben, je Version und Link | doku.mjs – `checkDocs`; Katalog selbst: `checkCatalog` | – | 11 |
 | R-10.5 | **Icon und Text** eines Eintrags bleiben zusammen – Umbruch nur zwischen Einträgen; **in einer Aufzählung mit ‚·‘ (z. B. ‚8×☀️ · 6×🌧️‘) bleibt jeder Eintrag am Stück, wenn er in die Zeile passt, umgebrochen wird nur nach dem ‚·‘ – die neue Zeile beginnt mit dem nächsten Eintrag; ein Eintrag, der allein nicht passt, bricht im Text um, ein Zusatz in Klammern bleibt ganz, nichts ragt hinaus** | ablauf.mjs – `checkIconText` (Icon und erstes Wort auf derselben Zeile), **`checkAufzaehlung` (keine Zeile endet mit der Anzahl oder beginnt mit ‚·‘; ein Eintrag, der passt, ist nicht getrennt; Klammern nie getrennt; nichts ragt hinaus)** | – | 3 |
 | R-10.6 | **Ansprache:** sichtbare Texte ohne ‚wir/uns/unser‘ und ohne ‚klicken‘ (‚tippen‘) | hig.mjs – `texteMenues` (Texte der App, `title`, `aria-label`, Platzhalter) | – | 16 |
 | R-10.7 | **Datum und Dateinamen:** Datum in Texten TT.MM.JJJJ, Uhrzeit hh:mm; Dateinamen nach den Mustern aus 10 (Ausgabe, Backup, Abgleichbericht; Datum JJJJ.MM.TT, Uhrzeit hh.mm, nie zwei Leerzeichen) | hig.mjs – `texteMenues` (Datumsangaben und angezeigte Dateinamen nach jedem Schritt); backup.mjs (`dateinameFehler`) | – | 10 |
 | R-10.8 | **Dateiname im Hinweisfenster:** steht allein in einer eigenen Zeile unter dem Satz, fett und zentriert, ohne Punkt danach. Am iPad wird das Fenster so breit, dass der Name in einer Zeile steht – mindestens so breit wie sonst, höchstens Bildschirmbreite − 32 px (quer also breiter als hoch); passt er auch dann nicht, bricht er nur nach einem Leerzeichen um – nur ein Wort, das länger ist als die Zeile, bricht in sich (R-6.3). Am iPhone bleibt die Breite wie bei jedem Hinweisfenster | ablauf.mjs – `checkDateiname` (Backup, Ausgabe, Abgleichbericht; vier Lagen, große Schrift; iPad: eine Zeile und Höchstbreite; Gegenprobe) | – | 10, 15.19 |
-| R-10.9 | **Begriff ‚Schaltfläche‘:** in Texten, Kommentaren und Prüfmeldungen nie ‚Knopf‘ bzw. ‚Knöpfe‘ (auch nicht in Zusammensetzungen), Ausnahmen wie in 6 | doku.mjs – `checkBegriffe` (AppDesign und App: Doku, `v4/`, Katalog, Prüfungen, `index.html`; Namen im Code ausgenommen; Gegenprobe `--gegenprobe begriffe`) | – | 6 |
+| R-10.9 | **Begriff ‚Schaltfläche‘:** in Texten, Kommentaren und Prüfmeldungen nie ‚Knopf‘ bzw. ‚Knöpfe‘ (auch nicht in Zusammensetzungen), Ausnahmen wie in 6 | doku.mjs – `checkBegriffe` (AppDesign und App: Doku, `v5/`, Katalog, Prüfungen, `index.html`; Namen im Code ausgenommen; Gegenprobe `--gegenprobe begriffe`) | – | 6 |
 
 ### Regeln ohne automatische Prüfung
 
