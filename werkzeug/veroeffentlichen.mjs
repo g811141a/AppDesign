@@ -4,7 +4,9 @@
 //        erhöht alle Versionsnummern (AppDesign und App) und legt die feste Fassung fassung/4.14.0/ an (APD-5/D-1);
 //        ohne --ad bleibt die App auf ihrer Fassung, ohne --app bleiben alle Apps unverändert (heben nur nach Rückfrage, APD-5/D-4).
 //   node werkzeug/veroeffentlichen.mjs fassung
-//        legt die Fassung der aktuellen AppDesign-Version neu an (nach Änderungen an v4/ oder tests/, nur vor dem Veröffentlichen).
+//        legt die Fassung der aktuellen AppDesign-Version neu an (nach Änderungen am Arbeitsstand vN/ oder tests/, nur vor dem Veröffentlichen).
+// Seit 5.0.0 (APD-145/T-12): der Arbeitsstand ist der Ordner vN/ mit der höchsten Hauptversion (tests/version.mjs – arbeitsOrdner); eine
+//        Hauptversion legt Claude vorher als Kopie an (v5/ aus v4/), dann setzt vorbereiten die Version nur dort, ältere Ordner bleiben unberührt.
 //   node werkzeug/veroeffentlichen.mjs los [--app reiselogbuch] [--nur-app] [--jobs N]
 //        prüft (Zweig, keine offenen Änderungen, Texte, Fassung, alle Tests der App) und veröffentlicht: erst AppDesign
 //        (--no-ff nach main, Push, Pages-Lauf abwarten), dann die App genauso. --nur-app: AppDesign ist schon online.
@@ -26,7 +28,7 @@ import { readFileSync, writeFileSync, existsSync, mkdirSync, rmSync, copyFileSyn
 import { execFileSync, spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { join } from 'node:path';
-import { vergleiche, fassungQuellen, fassungListe, pruefsummen, checkFassungen } from '../tests/version.mjs';
+import { vergleiche, fassungQuellen, fassungListe, pruefsummen, checkFassungen, arbeitsOrdner } from '../tests/version.mjs';
 import { bewerte, pruefungenAusListe } from './pruefstufe.mjs';
 
 const argv = process.argv.slice(2), befehl = argv[0];
@@ -46,7 +48,8 @@ const heute = () => new Intl.DateTimeFormat('de-DE', { timeZone: 'Europe/Berlin'
 const jetzt = () => { const p = Object.fromEntries(new Intl.DateTimeFormat('de-DE', { timeZone: 'Europe/Berlin', day: '2-digit', month: '2-digit',
   year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false }).formatToParts(new Date()).map(x => [x.type, x.value]));
   return `${p.day}.${p.month}.${p.year} um ${p.hour}:${p.minute}`; };
-const adVersion = () => lies(AD, 'v4/ui.js').match(/const AD_VERSION = '([\d.]+)'/)?.[1];
+const V = () => arbeitsOrdner(AD);
+const adVersion = () => lies(AD, `${V()}/ui.js`).match(/const AD_VERSION = '([\d.]+)'/)?.[1];
 const appVersion = a => lies(a.dir, 'index.html').match(/const APP_VERSION = '([\d.]+)'/)?.[1];
 const appFassung = a => lies(a.dir, 'index.html').match(/const AD_NEEDED = '([\d.]+)'/)?.[1];
 const version = text => text.match(/\*\*Version (\d+\.\d+\.\d+)\*\*/)?.[1];
@@ -100,12 +103,13 @@ function vorbereiten() {
     if (!re.test(X)) abbruch(`--ad ${X}: keine Version X.Y.Z`);
     if (vergleiche(X, altX) <= 0) abbruch(`AppDesign ${X} ist nicht höher als ${altX} – nichts geändert`);
     if (fassungListe(AD).includes(X) || online(X)) abbruch(`Fassung ${X} gibt es schon – nichts geändert`);
-    if (X.split('.')[0] !== altX.split('.')[0]) abbruch(`Hauptversion ${X}: neuer Ordner v${X.split('.')[0]}/ (Designrichtlinie 14) – das macht das Skript nicht`);
-    ch.ersetze(AD, 'v4/ui.js', [[/^\/\/ AppDesign [\d.]+ ·/m, `// AppDesign ${X} ·`], [/const AD_VERSION = '[\d.]+';/, `const AD_VERSION = '${X}';`]]);
-    ch.ersetze(AD, 'v4/design.css', [[/^\/\* AppDesign [\d.]+ ·/m, `/* AppDesign ${X} ·`], [/--ad-version: "[\d.]+";/, `--ad-version: "${X}";`]]);
+    // Hauptversion: der neue Ordner vN/ muss schon als Kopie des vorigen angelegt sein (Designrichtlinie 14) – das Skript legt ihn nicht an
+    if (X.split('.')[0] !== altX.split('.')[0] && V() !== `v${X.split('.')[0]}`) abbruch(`Hauptversion ${X}: zuerst den Ordner v${X.split('.')[0]}/ als Kopie von ${V()}/ anlegen (Designrichtlinie 14) – nichts geändert`);
+    ch.ersetze(AD, `${V()}/ui.js`, [[/^\/\/ AppDesign [\d.]+ ·/m, `// AppDesign ${X} ·`], [/const AD_VERSION = '[\d.]+';/, `const AD_VERSION = '${X}';`]]);
+    ch.ersetze(AD, `${V()}/design.css`, [[/^\/\* AppDesign [\d.]+ ·/m, `/* AppDesign ${X} ·`], [/--ad-version: "[\d.]+";/, `--ad-version: "${X}";`]]);
     for (const f of ['README.md', 'README - Designrichtlinie allgemein.md']) ch.ersetze(AD, f, [[/\*\*Version [\d.]+\*\* · Stand [\d.]+/, `**Version ${X}** · Stand ${d}`]]);
     ch.ersetze(AD, 'BACKLOG.md', [[/\*\*Stand [\d.]+\*\* · Aktuelle Version: AppDesign [\d.]+/, `**Stand ${d}** · Aktuelle Version: AppDesign ${X}`]]);
-    ch.ersetze(AD, 'vorlage/index.html', [[/\(AppDesign [\d.]+\)/, `(AppDesign ${X})`], [/\.\.\/(?:v4|fassung\/[\d.]+)\/(ui\.js|design\.css)(?:\?v=[\d.]+)?"/g, `../fassung/${X}/$1"`, 2],
+    ch.ersetze(AD, 'vorlage/index.html', [[/\(AppDesign [\d.]+\)/, `(AppDesign ${X})`], [/\.\.\/(?:v\d+|fassung\/[\d.]+)\/(ui\.js|design\.css)(?:\?v=[\d.]+)?"/g, `../fassung/${X}/$1"`, 2],
       [/const AD_NEEDED = '[\d.]+';/, `const AD_NEEDED = '${X}';`]]);
   }
   // Texte so, wie sie in der Fassung der App stehen (ohne --ad: ihre bisherige Fassung; mit --ad: der Arbeitsstand, der die Fassung wird).
@@ -115,7 +119,7 @@ function vorbereiten() {
     if (!re.test(a.Y)) abbruch(`--app ${a.name}=${a.Y}: keine Version X.Y.Z`);
     if (vergleiche(a.Y, altY) <= 0) abbruch(`${T} ${a.Y} ist nicht höher als ${altY} – nichts geändert`);
     const RA = X || version(text(F, 'README - Designrichtlinie allgemein.md')), zus = version(text(F, 'README - Zusammenarbeit allgemein.md'));
-    const ref = /\.\.\/AppDesign\/(?:v4|fassung\/[\d.]+)\/(ui\.js|design\.css)(?:\?v=[\d.]+)?(["'])/g;
+    const ref = /\.\.\/AppDesign\/(?:v\d+|fassung\/[\d.]+)\/(ui\.js|design\.css)(?:\?v=[\d.]+)?(["'])/g;
     ch.ersetze(a.dir, 'index.html', [[/const APP_VERSION = '[\d.]+';/, `const APP_VERSION = '${a.Y}';`], [/const APP_BUILT = '[^']*';/, `const APP_BUILT = '${jetzt()}';`],
       [/const AD_NEEDED = '[\d.]+';/, `const AD_NEEDED = '${F}';`], [ref, `../AppDesign/fassung/${F}/$1$2`, 2]]);
     ch.ersetze(a.dir, 'sw.js', [[new RegExp(`const CACHE = '${a.cache}-[\\d.]+';`), `const CACHE = '${a.cache}-${a.Y}';`], [ref, `../AppDesign/fassung/${F}/$1$2`, 2]]);
@@ -128,8 +132,8 @@ function vorbereiten() {
     ch.ersetze(a.dir, 'README.md', [row(T, a.Y), row('AppDesign', F), row('Designrichtlinie allgemein', RA), row(`Designrichtlinie ${T}`, a.Y), row('Zusammenarbeit allgemein', zus),
       // APD-5/D-6 (seit 4.14.1): Richtlinien und Bausteine aus dem Ordner der benutzten Fassung auf main
       [/(github\.com\/g811141a\/AppDesign\/blob\/)(?:main|v[\d.]+)\//g, '$1main/', 2],
-      [/(AppDesign\/blob\/main\/)(?:v4\/|fassung\/[\d.]+\/)?(ui\.js|design\.css|README%20-%20(?:Designrichtlinie|Zusammenarbeit)%20allgemein\.md)\)/g, `$1fassung/${F}/$2)`, 2],
-      [/\[(?:v4|fassung\/[\d.]+)\/(ui\.js|design\.css)\]/g, `[fassung/${F}/$1]`, 2]]);
+      [/(AppDesign\/blob\/main\/)(?:v\d+\/|fassung\/[\d.]+\/)?(ui\.js|design\.css|README%20-%20(?:Designrichtlinie|Zusammenarbeit)%20allgemein\.md)\)/g, `$1fassung/${F}/$2)`, 2],
+      [/\[(?:v\d+|fassung\/[\d.]+)\/(ui\.js|design\.css)\]/g, `[fassung/${F}/$1]`, 2]]);
     const own = `README - Designrichtlinie ${T}.md`;
     ch.ersetze(a.dir, own, [[/\*\*Version [\d.]+\*\* · Stand [\d.]+/, `**Version ${a.Y}** · Stand ${d}`], [/(Designrichtlinie allgemein aus AppDesign \(Version )[\d.]+\)/, `$1${RA})`]]);
     ch.ersetze(a.dir, 'PROMPT.md', [[/\(Stand [\d.]+, Version [\d.]+\)/, `(Stand ${d}, Version ${a.Y})`],
@@ -278,7 +282,7 @@ const geaendertSeitMain = (dir, dateien) => { try { execFileSync('git', ['-C', p
 const OHNE_VERSION = t => (t || '').replace(/^(\/\/|\/\*) AppDesign [\d.]+ ·/m, '').replace(/const AD_VERSION = '[\d.]+';/, '').replace(/--ad-version: "[\d.]+";/, '');
 function adBeanFehlt(X) {
   if (process.env.VEROEFF_GEGENPROBE === 'adbean') return [];
-  const geaendert = ['v4/ui.js', 'v4/design.css'].filter(f => OHNE_VERSION(gitOk(AD, 'show', `origin/main:${f}`)) !== OHNE_VERSION(lies(AD, f).trim()));
+  const geaendert = [`${V()}/ui.js`, `${V()}/design.css`].filter(f => OHNE_VERSION(gitOk(AD, 'show', `origin/main:${f}`)) !== OHNE_VERSION(lies(AD, f).trim()));
   if (!geaendert.length) return [];
   const eintrag = lies(AD, 'CHANGELOG.md').split(new RegExp(`^## ${X.replace(/\./g, '\\.')} – `, 'm'))[1]?.split(/^## /m)[0] || '';
   const themen = eintrag.split(/^(?=\*\*)/m).slice(1);
@@ -355,7 +359,7 @@ async function los() {
   const ergebnis = [];
   if (!nurApp) try {
     ergebnis.push(await veroeffentliche(AD, `AppDesign ${X}`, adBranch, show => {
-      if (!show('v4/ui.js').includes(`const AD_VERSION = '${X}'`) || !show(`fassung/${X}/ui.js`).includes(`const AD_VERSION = '${X}'`)) abbruch(`AppDesign: main enthält nicht die Version ${X}`);
+      if (!show(`${V()}/ui.js`).includes(`const AD_VERSION = '${X}'`) || !show(`fassung/${X}/ui.js`).includes(`const AD_VERSION = '${X}'`)) abbruch(`AppDesign: main enthält nicht die Version ${X}`);
     }));
   } catch (e) {
     if (e instanceof Abbruch) e.message += `\n  Die App${apps.length > 1 ? 's bleiben' : ' bleibt'} unverändert. Ist AppDesign ${X} schon auf main (fassung/${X}/) und der Pages-Lauf später doch ‚success‘: los --nur-app`;

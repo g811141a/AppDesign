@@ -1,11 +1,12 @@
 // AppDesign 4.14.1 · Selbsttest des Veröffentlichungs-Skripts (APD-5 Testfall-Liste Teil E und APD-5/D-4) in Kopien der Repos
 // AppDesign und Reiselogbuch, mit lokalen Schein-Remotes (kein echter Push) und nachgebildetem Pages-Lauf.
 // Aufruf in AppDesign: node werkzeug/veroeffentlichen-selbsttest.mjs (AppDesign und ReiseLogBuch liegen nebeneinander).
-import { mkdtempSync, mkdirSync, copyFileSync, writeFileSync, readFileSync, rmSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, copyFileSync, writeFileSync, readFileSync, rmSync, cpSync } from 'node:fs';
 import { execFileSync, spawnSync } from 'node:child_process';
 import { tmpdir } from 'node:os';
 import { join, dirname } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { arbeitsOrdner } from '../tests/version.mjs';
 
 const QUELLE = fileURLToPath(new URL('../../', import.meta.url)), TMP = mkdtempSync(join(tmpdir(), 'veroeff-'));
 let r;   // letzte Ausgabe des Skripts – bei einem roten Fall mit ausgegeben
@@ -70,7 +71,8 @@ function mainNeu(k, repo, datei, inhalt) {
 }
 const geprueft = k => { try { return lies(k.app, 'tests/out/geprueft').trim(); } catch { return ''; } };
 const istIn = (dir, sha, ref) => { try { git(dir, 'merge-base', '--is-ancestor', sha, ref); return true; } catch { return false; } };
-const X0 = lies(join(QUELLE, 'AppDesign'), 'v4/ui.js').match(/const AD_VERSION = '([\d.]+)'/)[1];
+const V0 = arbeitsOrdner(pathToFileURL(join(QUELLE, 'AppDesign') + '/'));   // seit 5.0.0 (APD-145/T-12): Arbeitsstand vN/
+const X0 = lies(join(QUELLE, 'AppDesign'), `${V0}/ui.js`).match(/const AD_VERSION = '([\d.]+)'/)[1];
 const Y0 = lies(join(QUELLE, 'ReiseLogBuch'), 'index.html').match(/const APP_VERSION = '([\d.]+)'/)[1];
 const hoch = v => v.replace(/^(\d+)\.(\d+)\.\d+$/, (_, a, b) => `${a}.${+b + 1}.0`);
 const X = hoch(X0), Y = hoch(Y0);
@@ -87,6 +89,20 @@ try {
   const vorher = git(k.ad, 'status', '--porcelain');
   r = skript(k, {}, 'vorbereiten', '--ad', hoch(X));
   pruefe(r.code === 1 && /gibt es schon/.test(r.text) && git(k.ad, 'status', '--porcelain') === vorher, 'APD-5/E-2 Fassung gibt es schon → Abbruch, nichts geändert');
+
+  // ——— Kopie 1b: APD-145/T-12 (seit 5.0.0) Hauptversion – vorbereiten setzt die Version nur im neuen Ordner, der alte bleibt unberührt ———
+  k = kopie();
+  const N = +V0.slice(1) + 1, XH = `${N}.0.0`, altUi = lies(k.ad, `${V0}/ui.js`), altCss = lies(k.ad, `${V0}/design.css`);
+  const stand1b = git(k.ad, 'status', '--porcelain');
+  r = skript(k, {}, 'vorbereiten', '--ad', XH);
+  pruefe(r.code === 1 && new RegExp(`zuerst den Ordner v${N}/`).test(r.text) && git(k.ad, 'status', '--porcelain') === stand1b,
+    `APD-145/T-12 Hauptversion ${XH} ohne Ordner v${N}/ → Abbruch, nichts geändert`);
+  cpSync(join(k.ad, V0), join(k.ad, `v${N}`), { recursive: true }); commitAlle(k, `v${N} als Kopie`);
+  r = skript(k, {}, 'vorbereiten', '--ad', XH);
+  pruefe(r.code === 0 && lies(k.ad, `v${N}/ui.js`).includes(`const AD_VERSION = '${XH}';`) && lies(k.ad, `v${N}/design.css`).includes(`--ad-version: "${XH}";`) &&
+    lies(k.ad, `${V0}/ui.js`) === altUi && lies(k.ad, `${V0}/design.css`) === altCss &&
+    lies(k.ad, `fassung/${XH}/ui.js`) === lies(k.ad, `v${N}/ui.js`) && lies(k.ad, 'vorlage/index.html').includes(`../fassung/${XH}/ui.js"`),
+    `APD-145/T-12 Hauptversion ${XH}: Version in v${N}/, ${V0}/ unberührt, fassung/${XH}/ aus v${N}/`);
 
   // ——— Kopie 2: APD-5/E-1, APD-5/E-2, APD-5/E-3, APD-5/E-4, APD-5/E-6 (hängt), APD-5/E-8 (--nur-app), APD-5/E-7 ———
   k = kopie(); const adStart = remote(k, 'ad');
@@ -118,9 +134,9 @@ try {
   r = skript(k, {}, 'los');
   pruefe(r.code === 1 && /Reiselogbuch: steht auf main/.test(r.text) && remote(k, 'ad') === adStart, 'APD-5/E-3 falscher Zweig (main) → Abbruch vor dem Push');
   git(k.app, 'checkout', '-q', 'vorbereitung-test'); git(k.app, 'branch', '-f', 'main', 'origin/main');
-  ersetze(k.ad, 'v4/ui.js', /$/, '\n// nachträglich geändert\n'); commitAlle(k, 'v4 geändert');
+  ersetze(k.ad, `${V0}/ui.js`, /$/, '\n// nachträglich geändert\n'); commitAlle(k, `${V0} geändert`);
   r = skript(k, {}, 'los');
-  pruefe(r.code === 1 && /weicht von fassung/.test(r.text), 'APD-5/E-3 v4/ nach dem Anlegen der Fassung geändert → Abbruch (APD-5/D-5)');
+  pruefe(r.code === 1 && /weicht von fassung/.test(r.text), `APD-5/E-3 ${V0}/ nach dem Anlegen der Fassung geändert → Abbruch (APD-5/D-5)`);
   r = skript(k, {}, 'fassung'); commitAlle(k, 'Fassung neu');
   pruefe(r.code === 0, 'Fassung neu angelegt (vor dem Veröffentlichen erlaubt)');
   const mainVorher = [remote(k, 'ad'), remote(k, 'app')].join();
@@ -129,7 +145,7 @@ try {
   r = skript(k, { VEROEFF_PAGES: 'haengt', VEROEFF_PAGES_MAX_S: '1' }, 'los');
   pruefe(r.code === 1 && /nicht fertig/.test(r.text) && /--nur-app/.test(r.text) && remote(k, 'app') === mainVorher.split(',')[1],
     'APD-5/E-6 Pages-Lauf von AppDesign hängt → Abbruch nach der Zeitgrenze, App unverändert, Hinweis ‚--nur-app‘');
-  pruefe(git(k.ad, 'show', `origin/main:fassung/${X}/ui.js`).includes(`'${X}'`) && git(k.ad, 'show', 'origin/main:v4/ui.js').includes(`'${X}'`) &&
+  pruefe(git(k.ad, 'show', `origin/main:fassung/${X}/ui.js`).includes(`'${X}'`) && git(k.ad, 'show', `origin/main:${V0}/ui.js`).includes(`'${X}'`) &&
     git(k.ad, 'log', '-1', '--format=%P', 'origin/main').split(' ').length === 2 && !git(k.ad, 'ls-remote', '--tags', 'origin'),
     'APD-5/E-5 AppDesign mit Fassung --no-ff auf main, ohne Markierung (Schein-Remote)');
   r = skript(k, {}, 'los');
@@ -359,11 +375,11 @@ try {
       aendere(k); skript(k, {}, 'fassung'); commitAlle(k, 'bereit');
       return k;
     };
-    const uiNeu = k => ersetze(k.ad, 'v4/ui.js', /$/, '\nfunction neuesElement() {}\n');
+    const uiNeu = k => ersetze(k.ad, `${V0}/ui.js`, /$/, '\nfunction neuesElement() {}\n');
     const zweiThemen = '**Thema A**\n\n- AD-Bean: `hinweis` (neu)\n\n**Thema B**\n\n- etwas ohne Zeile';
     const d15 = env => { const k = beanBereit(uiNeu, zweiThemen), ad0 = remote(k, 'ad');
       r = skript(k, { SCHEIN_ROT: '1', ...env }, 'los');
-      return r.code === 1 && /AD-Bean: .*fehlt \(Zusammenarbeit 0 Nr\. 25/.test(r.text) && /Thema B \(geändert: v4\/ui\.js\)/.test(r.text) && !/Thema A/.test(r.text) &&
+      return r.code === 1 && /AD-Bean: .*fehlt \(Zusammenarbeit 0 Nr\. 25/.test(r.text) && new RegExp(`Thema B \\(geändert: ${V0}\\/ui\\.js\\)`).test(r.text) && !/Thema A/.test(r.text) &&
         !/— Prüfungen/.test(r.text) && remote(k, 'ad') === ad0; };
     pruefe(d15({}), 'APD-138/D-15 ui.js geändert, ein Thema ohne ‚AD-Bean: …‘ → Abbruch vor dem Prüflauf mit dem Thema, nichts gepusht');
     let k = beanBereit(uiNeu, '**Thema A**\n\n- AD-Bean: `hinweis` (neu)\n\n**Thema B**\n\n- AD-Bean: keine, weil nur Prüfungen');

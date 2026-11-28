@@ -3,8 +3,8 @@
 // ui.js, tests/); die App lädt genau ihre Fassung: ../AppDesign/fassung/X.Y.Z/ui.js und …/design.css in index.html und in der
 // Dateiliste von sw.js (ohne ?v=, der Pfad enthält die Version), AD_NEEDED = X.Y.Z = AD_VERSION (ui.js) = --ad-version
 // (design.css) der Fassung; Cache-Name in sw.js mit der App-Version. checkFassungen: Prüfsummen (fassung/PRUEFSUMMEN) –
-// keine Datei geändert, keine fehlt, keine dazu; v4/ und tests/ = neueste Fassung (APD-5/D-5). Seit 4.14.1 mit dem Richtlinien-Text.
-// Mit einer Seite (page) zusätzlich: Hinweis beim Start bei einer älteren ui.js; kein Abruf aus v4/ (APD-5/D-3).
+// keine Datei geändert, keine fehlt, keine dazu; der Arbeitsstand vN/ und tests/ = neueste Fassung (APD-5/D-5). Seit 4.14.1 mit dem Richtlinien-Text.
+// Mit einer Seite (page) zusätzlich: Hinweis beim Start bei einer älteren ui.js; kein Abruf aus dem Arbeitsstand vN/ (APD-5/D-3).
 // Einbinden im Prüfskript der App (Repo-Ordner der App, AppDesign daneben):
 //   import { checkVersions } from '../../AppDesign/fassung/4.14.0/tests/version.mjs';
 //   const fehler = await checkVersions(new URL('..', import.meta.url), browser);   // [] = alles richtig
@@ -19,10 +19,15 @@ const dateien = (dir, pre = '') => readdirSync(dir).flatMap(f => statSync(new UR
 // Die Dateien einer Fassung: Ziel in fassung/X.Y.Z/ → Quelle im Arbeitsstand von AppDesign. Seit 4.14.1 auch der Text von
 // Designrichtlinie und Zusammenarbeit dieser Version (statt einer Git-Markierung, die aus der Cloud nicht angelegt werden kann).
 export const TEXTE = ['README - Designrichtlinie allgemein.md', 'README - Zusammenarbeit allgemein.md'];
+// Seit 5.0.0 (APD-145/T-9, T-12, Designrichtlinie 14): der Arbeitsstand ist der Ordner vN/ mit der höchsten Hauptversion (v5/);
+// ältere Ordner (v4/) bleiben auf der letzten Fassung ihrer Hauptversion stehen.
+export const arbeitsOrdner = ad => `v${Math.max(...readdirSync(ad).filter(d => /^v\d+$/.test(d)).map(d => +d.slice(1)))}`;
+export const alteOrdner = ad => readdirSync(ad).filter(d => /^v\d+$/.test(d) && d !== arbeitsOrdner(ad)).sort();
 export function fassungQuellen(ad) {
-  const q = { 'design.css': 'v4/design.css', 'ui.js': 'v4/ui.js', ...Object.fromEntries(TEXTE.map(f => [f, f])) };
+  const V = arbeitsOrdner(ad);
+  const q = { 'design.css': `${V}/design.css`, 'ui.js': `${V}/ui.js`, ...Object.fromEntries(TEXTE.map(f => [f, f])) };
   // seit 4.64.0 (APD-135/B-4.1, R-1.14): die Schnittstellenliste gehört zur Fassung – tests/schnittstelle.mjs liest sie neben ui.js
-  if (existsSync(new URL('v4/schnittstelle.json', ad))) q['schnittstelle.json'] = 'v4/schnittstelle.json';
+  if (existsSync(new URL(`${V}/schnittstelle.json`, ad))) q['schnittstelle.json'] = `${V}/schnittstelle.json`;
   // seit 4.64.0 (APD-135/B-3.1, APD-135/U-32): die Vorlage ist die Prüfseite der Bausteine – tests/pruefseite.mjs öffnet sie aus derselben Fassung
   if (existsSync(new URL('vorlage/index.html', ad))) q['vorlage/index.html'] = 'vorlage/index.html';
   for (const f of readdirSync(new URL('tests/', ad))) if (statSync(new URL('tests/' + f, ad)).isFile()) q['tests/' + f] = 'tests/' + f;
@@ -55,16 +60,25 @@ export function checkFassungen(ad) {
     const js = read('ui.js').match(/const AD_VERSION = '([\d.]+)'/)?.[1], css = read('design.css').match(/--ad-version:\s*"([\d.]+)"/)?.[1];
     if (js !== v || css !== v) E(`fassung/${v}: AD_VERSION ${js || 'fehlt'} bzw. --ad-version ${css || 'fehlt'} statt ${v}`);
   }
-  // APD-5/D-5: v4/ (und tests/) zeigen die neueste Fassung – oder sind schon weiter (neue Version in Arbeit, noch ohne Fassung).
-  const neu = readFileSync(new URL('v4/ui.js', ad), 'utf8').match(/const AD_VERSION = '([\d.]+)'/)?.[1] || '0.0.0', letzte = liste.at(-1);
-  if (vergleiche(neu, letzte) < 0) E(`v4/ hat AppDesign ${neu}, die neueste Fassung ist ${letzte} – v4/ muss die neueste Fassung zeigen`);
+  // APD-5/D-5: der Arbeitsstand vN/ (und tests/) zeigt die neueste Fassung – oder ist schon weiter (neue Version in Arbeit, noch ohne Fassung).
+  const V = arbeitsOrdner(ad);
+  const neu = readFileSync(new URL(`${V}/ui.js`, ad), 'utf8').match(/const AD_VERSION = '([\d.]+)'/)?.[1] || '0.0.0', letzte = liste.at(-1);
+  if (vergleiche(neu, letzte) < 0) E(`${V}/ hat AppDesign ${neu}, die neueste Fassung ist ${letzte} – ${V}/ muss die neueste Fassung zeigen`);
+  // APD-145/T-9 (seit 5.0.0): ein älterer Ordner (v4/) zeigt unverändert die letzte Fassung seiner Hauptversion
+  for (const A of alteOrdner(ad)) {
+    const F = liste.filter(v => v.split('.')[0] === A.slice(1)).at(-1);
+    if (!F) { E(`${A}/: keine Fassung ${A.slice(1)}.x`); continue; }
+    const ab = ['ui.js', 'design.css', 'schnittstelle.json'].filter(f => existsSync(new URL(`${A}/${f}`, ad)) &&
+      !readFileSync(new URL(`${A}/${f}`, ad)).equals(readFileSync(new URL(`fassung/${F}/${f}`, ad))));
+    if (ab.length) E(`${A}/ weicht von fassung/${F} ab: ${ab.join(', ')} – ${A}/ bleibt auf der letzten Fassung ${A.slice(1)}.x stehen (Designrichtlinie 14)`);
+  }
   if (liste.includes(neu)) {
     const q = fassungQuellen(ad), inFassung = dateien(new URL(`fassung/${neu}/`, ad));
-    // Die Texte ändern sich auch ohne neue AppDesign-Version (z. B. Zusammenarbeit) – verglichen werden nur v4/ und tests/.
+    // Die Texte ändern sich auch ohne neue AppDesign-Version (z. B. Zusammenarbeit) – verglichen werden nur der Arbeitsstand und tests/.
     const ab = Object.entries(q).filter(([z]) => !TEXTE.includes(z)).filter(([z, s]) => !existsSync(new URL(`fassung/${neu}/${z}`, ad)) ||
       !readFileSync(new URL(s, ad)).equals(readFileSync(new URL(`fassung/${neu}/${z}`, ad)))).map(([, s]) => s);
     ab.push(...inFassung.filter(z => !(z in q)).map(z => `fassung/${neu}/${z} (ohne Quelle)`));
-    if (ab.length) E(`v4/ bzw. tests/ weicht von fassung/${neu} ab: ${ab.join(', ')} – vor dem Veröffentlichen ‚node werkzeug/veroeffentlichen.mjs fassung‘, danach nur mit neuer Version`);
+    if (ab.length) E(`${V}/ bzw. tests/ weicht von fassung/${neu} ab: ${ab.join(', ')} – vor dem Veröffentlichen ‚node werkzeug/veroeffentlichen.mjs fassung‘, danach nur mit neuer Version`);
   }
   return errors;
 }
@@ -75,7 +89,7 @@ export async function checkVersions(appDir, browser = null) {
   const html = read('index.html'), sw = read('sw.js'), ad = new URL('../AppDesign/', appDir);
   const needed = html.match(/const AD_NEEDED = '([\d.]+)'/)?.[1], app = html.match(/const APP_VERSION = '([\d.]+)'/)?.[1];
   if (!needed) E('AD_NEEDED fehlt in index.html');
-  // APD-5/D-2, APD-5/D-8: genau die eigene Fassung, in index.html und sw.js, ohne ?v=; nichts mehr aus v4/
+  // APD-5/D-2, APD-5/D-8: genau die eigene Fassung, in index.html und sw.js, ohne ?v=; nichts mehr aus dem Arbeitsstand vN/
   const refs = (text, q) => [...text.matchAll(new RegExp(`\\.\\./AppDesign/([^"'\\s]+?)(\\?[^"'\\s]*)?${q}`, 'g'))].map(m => m[1] + (m[2] || ''));
   for (const f of ['ui.js', 'design.css']) {
     const soll = `fassung/${needed}/${f}`;
@@ -84,8 +98,8 @@ export async function checkVersions(appDir, browser = null) {
     if (inHtml.some(r => r !== soll)) E(`${f} in index.html nicht aus der eigenen Fassung ${soll} (${inHtml.join(', ')})`);
     if (inSw.length !== 1 || inSw[0] !== soll) E(`${f} in sw.js nicht genau einmal aus ${soll} (${inSw.join(', ') || 'keins'})`);
   }
-  if (/AppDesign\/v4\//.test(html.replace(/<!--[\s\S]*?-->/g, '').replace(/^\s*\/\/.*$/gm, '')) || /AppDesign\/v4\//.test(sw.replace(/^\s*\/\/.*$/gm, '')))
-    E('index.html bzw. sw.js lädt noch aus v4/ – die App lädt nur ihre Fassung (APD-5/D-2)');
+  if (/AppDesign\/v\d+\//.test(html.replace(/<!--[\s\S]*?-->/g, '').replace(/^\s*\/\/.*$/gm, '')) || /AppDesign\/v\d+\//.test(sw.replace(/^\s*\/\/.*$/gm, '')))
+    E('index.html bzw. sw.js lädt noch aus einem Arbeitsstand vN/ – die App lädt nur ihre Fassung (APD-5/D-2)');
   const fdir = new URL(`fassung/${needed}/`, ad);
   if (needed && !existsSync(fdir)) E(`AppDesign/fassung/${needed}/ fehlt`);
   else if (needed) {
@@ -105,16 +119,16 @@ export async function checkVersions(appDir, browser = null) {
     if (!/AppDesign/.test(t) || !/neu öffnen/.test(t)) E('kein Hinweis beim Start, obwohl eine ältere AppDesign-Fassung geladen ist');
     await p.close();
     // Frische Seite (WebKit nähme sonst die untergeschobene alte ui.js aus dem Zwischenspeicher). APD-5/D-3: ein geänderter
-    // Arbeitsstand v4/ (andere Schaltfläche, Skriptfehler) darf die App nicht erreichen – sie ruft v4/ gar nicht ab.
+    // Arbeitsstand vN/ (andere Schaltfläche, Skriptfehler) darf die App nicht erreichen – sie ruft vN/ gar nicht ab.
     const q = await browser.newPage(), v4 = [], fehler = [];
     q.on('pageerror', e => fehler.push(e.message));
-    await q.route(/AppDesign\/v4\//, async r => { v4.push(r.request().url()); await r.fulfill({ contentType: r.request().url().endsWith('.css') ? 'text/css' : 'text/javascript',
+    await q.route(/AppDesign\/v\d+\//, async r => { v4.push(r.request().url()); await r.fulfill({ contentType: r.request().url().endsWith('.css') ? 'text/css' : 'text/javascript',
       body: r.request().url().endsWith('.css') ? 'button{background:red!important}' : 'throw new Error("v4 geladen")' }); });
     await q.goto(new URL('index.html', appDir).href); await q.waitForTimeout(400);
     if (await q.evaluate(() => /AppDesign/.test(document.querySelector('#msg[open]')?.textContent || ''))) E('Hinweis erscheint, obwohl die passende Fassung geladen ist');
     const geladen = await q.evaluate(() => typeof AD_VERSION === 'string' ? AD_VERSION : '');
     if (geladen !== needed) E(`geladen ist AppDesign ${geladen || '–'} statt der Fassung ${needed}`);
-    if (v4.length) E(`die App ruft den Arbeitsstand v4/ ab (${v4.map(u => u.split('/AppDesign/')[1]).join(', ')}) – eine neue AppDesign-Version würde sie ändern (APD-5/D-3)`);
+    if (v4.length) E(`die App ruft den Arbeitsstand vN/ ab (${v4.map(u => u.split('/AppDesign/')[1]).join(', ')}) – eine neue AppDesign-Version würde sie ändern (APD-5/D-3)`);
     if (fehler.length) E(`Skriptfehler beim Start: ${fehler.join('; ')}`);
     await q.close();
   }

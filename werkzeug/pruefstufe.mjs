@@ -102,7 +102,7 @@ const versionsstellen = (f, t, cache) => f === 'index.html'
   ? t.replace(/const APP_VERSION = '[^']*';/, "const APP_VERSION = '';").replace(/const APP_BUILT = '[^']*';/, "const APP_BUILT = '';")
   : f === 'sw.js' ? t.replace(new RegExp(`const CACHE = '${cache}-[\\d.]+';`), `const CACHE = '${cache}-';`) : t;
 const adNeeded = t => t.match(/const AD_NEEDED = '([\d.]+)'/)?.[1];
-const fassungsPfade = t => (t.match(/\.\.\/AppDesign\/(?:v4|fassung\/[\d.]+)\//g) || []).join();
+const fassungsPfade = t => (t.match(/\.\.\/AppDesign\/(?:v\d+|fassung\/[\d.]+)\//g) || []).join();
 
 // aenderungen: [{ f, alt, neu }] (alt bzw. neu null = neu angelegt bzw. gelöscht); pruefungen: { name: Inhalt der Prüfdatei (neuer Stand) },
 // nur die Prüfungen aus tests/alle.mjs; adOnline: die AppDesign-Version der App ist veröffentlicht (nichts vorbereitet); vorigeText: die
